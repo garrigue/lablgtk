@@ -271,7 +271,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
 ac_unique_file="src/gtk.ml"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CAMLC CAMLOPT OCAMLCDOTOPT OCAMLOPTDOTOPT OCAMLDEP OCAMLDOC OCAMLLEX OCAMLLEXDOTOPT OCAMLYACC CAMLMKTOP CAMLMKLIB CAMLP4O RANLIB ac_ct_RANLIB CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT PKG_CONFIG GTK_CFLAGS GTK_LIBS GTKGL_CFLAGS GTKGL_LIBS GLADE_CFLAGS GLADE_LIBS RSVG_CFLAGS RSVG_LIBS GNOMECANVAS_CFLAGS GNOMECANVAS_LIBS GNOMEUI_CFLAGS GNOMEUI_LIBS GTKALL_CFLAGS GTKALL_LIBS EXE LIBDIR OCAMLBEST OCAMLWIN32 THREADS_LIB HAS_DLL_SUPPORT USE_GL USE_GNOME USE_GLADE USE_RSVG USE_GNOMECANVAS USE_GNOMEUI USE_CC DEBUG LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CAMLC CAMLOPT OCAMLCDOTOPT OCAMLOPTDOTOPT OCAMLDEP OCAMLDOC OCAMLLEX OCAMLLEXDOTOPT OCAMLYACC CAMLMKTOP CAMLMKLIB CAMLP4O RANLIB ac_ct_RANLIB CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT PKG_CONFIG GTK_CFLAGS GTK_LIBS GTKGL_CFLAGS GTKGL_LIBS GLADE_CFLAGS GLADE_LIBS RSVG_CFLAGS RSVG_LIBS GNOMECANVAS_CFLAGS GNOMECANVAS_LIBS GNOMEUI_CFLAGS GNOMEUI_LIBS PANEL_CFLAGS PANEL_LIBS GTKALL_CFLAGS GTKALL_LIBS EXE LIBDIR OCAMLBEST OCAMLWIN32 THREADS_LIB HAS_DLL_SUPPORT USE_GL USE_GNOME USE_GLADE USE_RSVG USE_GNOMECANVAS USE_GNOMEUI USE_PANEL USE_CC DEBUG LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -810,6 +810,7 @@ Optional Packages:
   --without-rsvg          override autodetected librsvg support
   --without-gnomecanvas   override autodetected libgnomecanvas support
   --without-gnomeui   override autodetected libgnomeui support
+  --without-panel     override autodetected libpanelapplet support
 
 Some influential environment variables:
   CC          C compiler command
@@ -3798,6 +3799,18 @@ else
 fi
 
 
+FORCE_PANEL=no
+
+# Check whether --with-panel or --without-panel was given.
+if test "${with_panel+set}" = set; then
+  withval="$with_panel"
+  USE_PANEL=$withval ; FORCE_PANEL=yes
+else
+  USE_PANEL=yes
+fi;
+
+if test $USE_PANEL = yes ; then
+
   succeeded=no
 
   if test -z "$PKG_CONFIG"; then
@@ -3851,23 +3864,135 @@ fi
   else
      PKG_CONFIG_MIN_VERSION=0.9.0
      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
-        echo "$as_me:$LINENO: checking for $GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG" >&5
-echo $ECHO_N "checking for $GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG... $ECHO_C" >&6
+        echo "$as_me:$LINENO: checking for libpanelapplet-2.0" >&5
+echo $ECHO_N "checking for libpanelapplet-2.0... $ECHO_C" >&6
 
-        if $PKG_CONFIG --exists "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG" ; then
+        if $PKG_CONFIG --exists "libpanelapplet-2.0" ; then
+            echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+            succeeded=yes
+
+            echo "$as_me:$LINENO: checking PANEL_CFLAGS" >&5
+echo $ECHO_N "checking PANEL_CFLAGS... $ECHO_C" >&6
+            PANEL_CFLAGS=`$PKG_CONFIG --cflags "libpanelapplet-2.0"`
+            echo "$as_me:$LINENO: result: $PANEL_CFLAGS" >&5
+echo "${ECHO_T}$PANEL_CFLAGS" >&6
+
+            echo "$as_me:$LINENO: checking PANEL_LIBS" >&5
+echo $ECHO_N "checking PANEL_LIBS... $ECHO_C" >&6
+            PANEL_LIBS=`$PKG_CONFIG --libs "libpanelapplet-2.0"`
+            echo "$as_me:$LINENO: result: $PANEL_LIBS" >&5
+echo "${ECHO_T}$PANEL_LIBS" >&6
+        else
+            PANEL_CFLAGS=""
+            PANEL_LIBS=""
+            ## If we have a custom action on failure, don't print errors, but
+            ## do set a variable so people can do so.
+            PANEL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libpanelapplet-2.0"`
+
+        fi
+
+
+
+     else
+        echo "*** Your version of pkg-config is too old. You need version $PKG_CONFIG_MIN_VERSION or newer."
+        echo "*** See http://www.freedesktop.org/software/pkgconfig"
+     fi
+  fi
+
+  if test $succeeded = yes; then
+     :
+  else
+     if test $FORCE_PANEL = yes ; then
+	{ { echo "$as_me:$LINENO: error: libpanel-applet enforced but support not found" >&5
+echo "$as_me: error: libpanel-applet enforced but support not found" >&2;}
+   { (exit 1); exit 1; }; }
+	else
+	echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+	USE_PANEL=no
+	fi
+  fi
+
+fi
+if test $USE_PANEL = yes ; then
+    USE_PANEL=1
+    PANELPKG=libpanelapplet-2.0
+else
+    USE_PANEL=
+fi
+
+
+  succeeded=no
+
+  if test -z "$PKG_CONFIG"; then
+    # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_PKG_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  test -z "$ac_cv_path_PKG_CONFIG" && ac_cv_path_PKG_CONFIG="no"
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+
+if test -n "$PKG_CONFIG"; then
+  echo "$as_me:$LINENO: result: $PKG_CONFIG" >&5
+echo "${ECHO_T}$PKG_CONFIG" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+  fi
+
+  if test "$PKG_CONFIG" = "no" ; then
+     echo "*** The pkg-config script could not be found. Make sure it is"
+     echo "*** in your path, or set the PKG_CONFIG environment variable"
+     echo "*** to the full path to pkg-config."
+     echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
+  else
+     PKG_CONFIG_MIN_VERSION=0.9.0
+     if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
+        echo "$as_me:$LINENO: checking for $GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG" >&5
+echo $ECHO_N "checking for $GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG... $ECHO_C" >&6
+
+        if $PKG_CONFIG --exists "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG" ; then
             echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
             succeeded=yes
 
             echo "$as_me:$LINENO: checking GTKALL_CFLAGS" >&5
 echo $ECHO_N "checking GTKALL_CFLAGS... $ECHO_C" >&6
-            GTKALL_CFLAGS=`$PKG_CONFIG --cflags "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG"`
+            GTKALL_CFLAGS=`$PKG_CONFIG --cflags "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG"`
             echo "$as_me:$LINENO: result: $GTKALL_CFLAGS" >&5
 echo "${ECHO_T}$GTKALL_CFLAGS" >&6
 
             echo "$as_me:$LINENO: checking GTKALL_LIBS" >&5
 echo $ECHO_N "checking GTKALL_LIBS... $ECHO_C" >&6
-            GTKALL_LIBS=`$PKG_CONFIG --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG"`
+            GTKALL_LIBS=`$PKG_CONFIG --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG"`
             echo "$as_me:$LINENO: result: $GTKALL_LIBS" >&5
 echo "${ECHO_T}$GTKALL_LIBS" >&6
         else
@@ -3875,7 +4000,7 @@ echo "${ECHO_T}$GTKALL_LIBS" >&6
             GTKALL_LIBS=""
             ## If we have a custom action on failure, don't print errors, but
             ## do set a variable so people can do so.
-            GTKALL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG"`
+            GTKALL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG"`
             echo $GTKALL_PKG_ERRORS
         fi
 
@@ -3890,8 +4015,8 @@ echo "${ECHO_T}$GTKALL_LIBS" >&6
   if test $succeeded = yes; then
      :
   else
-     { { echo "$as_me:$LINENO: error: Library requirements ($GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
-echo "$as_me: error: Library requirements ($GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}
+     { { echo "$as_me:$LINENO: error: Library requirements ($GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
+echo "$as_me: error: Library requirements ($GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}
    { (exit 1); exit 1; }; }
   fi
 
@@ -3905,6 +4030,7 @@ else
 fi;
 
 # substitutions to perform
+
 
 
 
@@ -4600,6 +4726,8 @@ s,@GNOMECANVAS_CFLAGS@,$GNOMECANVAS_CFLAGS,;t t
 s,@GNOMECANVAS_LIBS@,$GNOMECANVAS_LIBS,;t t
 s,@GNOMEUI_CFLAGS@,$GNOMEUI_CFLAGS,;t t
 s,@GNOMEUI_LIBS@,$GNOMEUI_LIBS,;t t
+s,@PANEL_CFLAGS@,$PANEL_CFLAGS,;t t
+s,@PANEL_LIBS@,$PANEL_LIBS,;t t
 s,@GTKALL_CFLAGS@,$GTKALL_CFLAGS,;t t
 s,@GTKALL_LIBS@,$GTKALL_LIBS,;t t
 s,@EXE@,$EXE,;t t
@@ -4614,6 +4742,7 @@ s,@USE_GLADE@,$USE_GLADE,;t t
 s,@USE_RSVG@,$USE_RSVG,;t t
 s,@USE_GNOMECANVAS@,$USE_GNOMECANVAS,;t t
 s,@USE_GNOMEUI@,$USE_GNOMEUI,;t t
+s,@USE_PANEL@,$USE_PANEL,;t t
 s,@USE_CC@,$USE_CC,;t t
 s,@DEBUG@,$DEBUG,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
@@ -4849,4 +4978,68 @@ if test "$no_create" != yes; then
 fi
 
 chmod a-w config.make
+
+
+
+echo -e "\nLablGTK configuration:"
+
+echo -ne "\tGtkGLArea\t"
+if test "$USE_GL"
+then echo "yes"
+else if test "$FORCE_GL" == "yes"
+     then echo "disabled"
+     else echo "not found"
+     fi
+fi
+
+echo -ne "\tlibglade\t"
+if test "$USE_GLADE"
+then echo "yes"
+else if test "$FORCE_GLADE" == "yes"
+     then echo "disabled"
+     else echo "not found"
+     fi
+fi
+
+echo -ne "\tlibrsvg \t"
+if test "$USE_RSVG"
+then echo "yes"
+else if test "$FORCE_RSVG" == "yes"
+     then echo "disabled"
+     else echo "not found"
+     fi
+fi
+
+echo -ne "\tlibgnomecanvas\t"
+if test "$USE_GNOMECANVAS"
+then echo "yes"
+else if test "$FORCE_GNOMECANVAS" == "yes"
+     then echo "disabled"
+     else echo "not found"
+     fi
+fi
+
+echo -ne "\tlibgnomeui\t"
+if test "$USE_GNOMEUI"
+then echo "yes"
+else if test "$FORCE_GNOMEUI" == "yes"
+     then echo "disabled"
+     else echo "not found"
+     fi
+fi
+
+echo -ne "\tlibpanelapplet\t"
+if test "$USE_PANEL"
+then echo "yes"
+else if test "$FORCE_PANEL" == "yes"
+     then echo "disabled"
+     else echo "not found"
+     fi
+fi
+echo
+echo -ne  "\tdebug   \t"
+if test "$DEBUG" ; then echo "yes" ; else echo "no" ; fi
+echo -e  "\tC compiler\t$CC"
+
+
 
