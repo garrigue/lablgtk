@@ -196,6 +196,9 @@ module Window :
     type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP of pixmap ]
     val set_back_pixmap : window -> background_pixmap -> unit
     val set_cursor : window -> cursor -> unit
+
+    (* for backward compatibility for lablgtk1 programs *)	  
+    val get_visual : window -> visual
   end
 
 module PointArray :
