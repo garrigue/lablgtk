@@ -300,16 +300,16 @@ module Caller = struct
     let call : ([> caller],unit->unit) t =
       { name = "call"; marshaller = marshal_unit }
   end
+  let call = Signal.emit sig:Signals.call
+  let create ?:cb ?(_ : unit option) =
+    let obj = create () in
+    may cb fun:(fun cb -> Signal.connect sig:Signals.call obj :cb);
+    obj
   module Connect = struct
     open Connect
     let destroy = destroy
     let call = Signal.connect sig:Signals.call
   end
-  let call = Signal.emit sig:Signals.call
-  let create ?:cb ?(_ : unit option) =
-    let obj = create () in
-    may cb fun:(fun cb -> Connect.call obj :cb);
-    obj
 end
 
 module Data = struct
