@@ -16,6 +16,8 @@ let _ =
   Container.add top hbox;
   let entry = Entry.create () in
   Entry.set entry max_length:20;
+  let tips = Tooltips.create () in
+  Tooltips.set_tip tips entry text:"Initial value for fix-point";
   let result = Entry.create () in
   Entry.set result max_length:20 editable:false;
   Box.pack hbox entry;

@@ -8,6 +8,7 @@ exception Warning of string
 let _ = Glib.set_warning_handler (fun msg -> raise (Warning msg))
 
 type 'a obj
+type clampf = float
 
 module Tags = struct
   type state = [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
@@ -92,6 +93,28 @@ module Adjustment = struct
   external clamp_page :
       [> adjustment] obj -> lower:float -> upper:float -> unit
       = "ml_gtk_adjustment_clamp_page"
+end
+
+module Tooltips = struct
+  type t = [tooltips] obj
+  external create : unit -> t = "ml_gtk_tooltips_new"
+  external enable : [> tooltips] obj -> unit = "ml_gtk_tooltips_enable"
+  external disable : [> tooltips] obj -> unit = "ml_gtk_tooltips_disable"
+  external set_delay : [> tooltips] obj -> int -> unit
+      = "ml_gtk_tooltips_set_delay"
+  external set_tip :
+      [> tooltips] obj ->
+      [> widget] obj -> ?text:string -> ?private:string -> unit
+      = "ml_gtk_tooltips_set_tip"
+  external set_colors :
+      [> tooltips] obj ->
+      ?foreground:Gdk.Color.t -> ?background:Gdk.Color.t -> unit
+      = "ml_gtk_tooltips_set_colors"
+  let set tt ?enable:able ?:delay ?:foreground ?:background =
+    may fun:(function true -> enable tt | false -> disable tt) able;
+    may fun:(set_delay tt) delay;
+    if foreground <> None || background <> None then
+      set_colors tt ?:foreground ?:background
 end
 
 module Widget = struct
@@ -229,6 +252,51 @@ module Container = struct
     may vadjustment fun:(set_focus_vadjustment w);
     may hadjustment fun:(set_focus_hadjustment w);
     ()
+end
+
+module Alignment = struct
+  type t = [widget container bin alignment] obj
+  external create :
+      x:clampf -> y:clampf -> xscale:clampf -> yscale:clampf -> t
+      = "ml_gtk_alignment_new"
+  let create ?:x [< 0.5 >] ?:y [< 0.5 >] ?:xscale [< 1.0 >]
+      ?:yscale [< 1.0 >] ?(_ : unit option) =
+    create :x :y :xscale :yscale
+  external set :
+      [> alignment] obj ->
+      ?x:clampf -> ?y:clampf -> ?xscale:clampf -> ?yscale:clampf -> unit
+      = "ml_gtk_alignment_set"
+end
+
+module EventBox = struct
+  type t = [widget container bin eventbox] obj
+  external create : unit -> t = "ml_gtk_event_box_new"
+end
+
+module Frame = struct
+  type t = [widget container bin frame] obj
+  external create : label:string -> t = "ml_gtk_frame_new"
+  external set_label : [> frame] obj -> string -> unit
+      = "ml_gtk_frame_set_label"
+  external set_label_align : [> frame] obj -> x:clampf -> y:clampf -> unit
+      = "ml_gtk_frame_set_label"
+  external set_shadow_type : [> frame] obj -> shadow -> unit
+      = "ml_gtk_frame_set_shadow_type"
+end
+
+module AspectFrame = struct
+  type t = [widget container bin frame aspect] obj
+  external create :
+      label:string ->
+      xalign:clampf -> yalign:clampf -> ratio:float -> obey:bool -> t
+      = "ml_gtk_aspect_frame_new"
+  let create :label ?:xalign [< 0.5 >] ?:yalign [< 0.5 >]
+      ?:ratio [< 1.0 >] ?:obey [< true >] =
+    create :label :xalign :yalign :ratio :obey
+  external set :
+      [> aspect] obj ->
+      xalign:clampf -> yalign:clampf -> ratio:float -> obey:bool -> unit
+      = "ml_gtk_aspect_frame_set"
 end
 
 module Window = struct
