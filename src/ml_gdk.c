@@ -35,6 +35,7 @@ value ml_test_##conv (value mask, value test) \
 { return Val_bool (conv(mask) & Int_val(test)); }
 
 Make_test(GdkModifier_val)
+Make_test(GdkWindowState_val)
 
 /* Colormap */
 
@@ -105,8 +106,10 @@ value ml_gdk_image_destroy (value val)
 
 #endif
 
+/* Broken in 2.0
 ML_4 (gdk_image_new_bitmap, GdkVisual_val, String_val, Int_val, Int_val,
       Val_GdkImage)
+*/
 ML_4 (gdk_image_new, GdkImageType_val, GdkVisual_val, Int_val, Int_val,
       Val_GdkImage)
 ML_5 (gdk_image_get, GdkWindow_val, Int_val, Int_val, Int_val, Int_val,
@@ -147,7 +150,7 @@ value ml_gdk_color_parse (char *spec)
 {
     GdkColor color;
     if (!gdk_color_parse (spec, &color))
-	ml_raise_gdk ("color_parse");
+        ml_raise_gdk ("color_parse");
     return Val_copy(color);
 }
 
@@ -246,7 +249,7 @@ ML_7 (gdk_pixmap_create_from_data, GdkWindow_val, String_val,
 ML_bc7 (ml_gdk_pixmap_create_from_data)
 
 value ml_gdk_pixmap_colormap_create_from_xpm
-	(value window, value colormap, value transparent, char *filename)
+        (value window, value colormap, value transparent, char *filename)
 {
     CAMLparam0();
     GdkPixmap *pixmap;
@@ -269,7 +272,7 @@ value ml_gdk_pixmap_colormap_create_from_xpm
 }
 
 value ml_gdk_pixmap_colormap_create_from_xpm_d
-	(value window, value colormap, value transparent, char **data)
+        (value window, value colormap, value transparent, char **data)
 {
     CAMLparam0();
     GdkPixmap *pixmap;
@@ -326,12 +329,12 @@ value ml_gdk_region_destroy (value val)
 ML_0 (gdk_region_new, Val_GdkRegion)
 ML_2 (gdk_region_polygon, Insert(PointArray_val(arg1)) PointArrayLen_val,
       GdkFillRule_val, Val_GdkRegion)
-ML_2 (gdk_regions_intersect, GdkRegion_val, GdkRegion_val, Val_GdkRegion)
-ML_2 (gdk_regions_union, GdkRegion_val, GdkRegion_val, Val_GdkRegion)
-ML_2 (gdk_regions_subtract, GdkRegion_val, GdkRegion_val, Val_GdkRegion)
-ML_2 (gdk_regions_xor, GdkRegion_val, GdkRegion_val, Val_GdkRegion)
-ML_2 (gdk_region_union_with_rect, GdkRegion_val, GdkRectangle_val,
-      Val_GdkRegion)
+ML_1 (gdk_region_copy, GdkRegion_val, Val_GdkRegion)
+ML_2 (gdk_region_intersect, GdkRegion_val, GdkRegion_val, Unit)
+ML_2 (gdk_region_union, GdkRegion_val, GdkRegion_val, Unit)
+ML_2 (gdk_region_subtract, GdkRegion_val, GdkRegion_val, Unit)
+ML_2 (gdk_region_xor, GdkRegion_val, GdkRegion_val, Unit)
+ML_2 (gdk_region_union_with_rect, GdkRegion_val, GdkRectangle_val, Unit)
 ML_3 (gdk_region_offset, GdkRegion_val, Int_val, Int_val, Unit)
 ML_3 (gdk_region_shrink, GdkRegion_val, Int_val, Int_val, Unit)
 ML_1 (gdk_region_empty, GdkRegion_val, Val_bool)
@@ -436,7 +439,7 @@ value ml_gdk_gc_get_values (value gc)
 value ml_point_array_new (value len)
 {
     value ret = alloc (1 + Wosize_asize(Int_val(len)*sizeof(GdkPoint)),
-		       Abstract_tag);
+                       Abstract_tag);
     Field(ret,0) = len;
     return ret;
 }
@@ -453,7 +456,7 @@ value ml_point_array_set (value arr, value pos, value x, value y)
 value ml_segment_array_new (value len)
 {
     value ret = alloc (1 + Wosize_asize(Int_val(len)*sizeof(GdkSegment)),
-		       Abstract_tag);
+                       Abstract_tag);
     Field(ret,0) = len;
     return ret;
 }
@@ -531,45 +534,75 @@ Make_Extractor (GdkEventExpose, GdkEvent_arg(Expose), area, Val_copy)
 Make_Extractor (GdkEventExpose, GdkEvent_arg(Expose), count, Val_int)
 
 Make_Extractor (GdkEventVisibility, GdkEvent_arg(Visibility), state,
-		Val_gdkVisibilityState)
+                Val_gdkVisibilityState)
 
 Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), time, Val_int)
 Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), x, copy_double)
 Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), y, copy_double)
-Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), pressure, copy_double)
-Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), xtilt, copy_double)
-Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), ytilt, copy_double)
+static value copy_axes(double *axes)
+{
+    CAMLparam0();
+    CAMLlocal2(x,y);
+    value ret;
+    if (axes) {
+        x = copy_double(axes[0]);
+        y = copy_double(axes[0]);
+        ret = alloc_small(2, 0);
+        Field(ret,0) = x;
+        Field(ret,1) = y;
+        ret = ml_some(ret);
+    }
+    else ret = Val_unit;
+    CAMLreturn(ret);
+}
+Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), axes, copy_axes)
 Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), state, Val_int)
 Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), is_hint, Val_int)
-Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), source, Val_gdkInputSource)
-Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), deviceid, Val_int)
+Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), device, Val_GdkDevice)
 Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), x_root, copy_double)
 Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), y_root, copy_double)
 
 Make_Extractor (GdkEventButton, GdkEvent_arg(Button), time, Val_int)
 Make_Extractor (GdkEventButton, GdkEvent_arg(Button), x, copy_double)
 Make_Extractor (GdkEventButton, GdkEvent_arg(Button), y, copy_double)
-Make_Extractor (GdkEventButton, GdkEvent_arg(Button), pressure, copy_double)
-Make_Extractor (GdkEventButton, GdkEvent_arg(Button), xtilt, copy_double)
-Make_Extractor (GdkEventButton, GdkEvent_arg(Button), ytilt, copy_double)
+Make_Extractor (GdkEventButton, GdkEvent_arg(Button), axes, copy_axes)
 Make_Extractor (GdkEventButton, GdkEvent_arg(Button), state, Val_int)
 Make_Extractor (GdkEventButton, GdkEvent_arg(Button), button, Val_int)
-Make_Extractor (GdkEventButton, GdkEvent_arg(Button), source, Val_gdkInputSource)
-Make_Extractor (GdkEventButton, GdkEvent_arg(Button), deviceid, Val_int)
+Make_Extractor (GdkEventButton, GdkEvent_arg(Button), device, Val_GdkDevice)
 Make_Extractor (GdkEventButton, GdkEvent_arg(Button), x_root, copy_double)
 Make_Extractor (GdkEventButton, GdkEvent_arg(Button), y_root, copy_double)
-
 Make_Setter (gdk_event_button_set, GdkEvent_arg(Button), Int_val, button)
+
+Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), time, Val_int)
+Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), x, copy_double)
+Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), y, copy_double)
+Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), state, Val_int)
+Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll),
+                direction, Val_gdkScrollDirection)
+Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), device, Val_GdkDevice)
+Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), x_root, copy_double)
+Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), y_root, copy_double)
 
 Make_Extractor (GdkEventKey, GdkEvent_arg(Key), time, Val_int)
 Make_Extractor (GdkEventKey, GdkEvent_arg(Key), state, Val_int)
 Make_Extractor (GdkEventKey, GdkEvent_arg(Key), keyval, Val_int)
 Make_Extractor (GdkEventKey, GdkEvent_arg(Key), string, Val_string)
+Make_Extractor (GdkEventKey, GdkEvent_arg(Key), hardware_keycode, Val_int)
+Make_Extractor (GdkEventKey, GdkEvent_arg(Key), group, Val_int)
 
-Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), subwindow,
-		Val_GdkWindow)
-Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), detail,
-		Val_gdkNotifyType)
+Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing),
+                subwindow, Val_GdkWindow)
+Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), time, Val_int)
+Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), x, copy_double)
+Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), y, copy_double)
+Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), x_root, copy_double)
+Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), y_root, copy_double)
+Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing),
+                mode, Val_gdkCrossingMode)
+Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing),
+                detail, Val_gdkNotifyType)
+Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), focus, Val_bool)
+Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), state, Val_int)
 
 Make_Extractor (GdkEventFocus, GdkEvent_arg(Focus), in, Val_int)
 
@@ -585,13 +618,33 @@ Make_Extractor (GdkEventProperty, GdkEvent_arg(Property), state, Val_int)
 Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), selection, Val_int)
 Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), target, Val_int)
 Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), property, Val_int)
-Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), requestor, Val_int)
+Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), requestor, Val_XID)
 Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), time, Val_int)
 
 Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity), time, Val_int)
-Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity), source,
-		Val_gdkInputSource)
-Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity), deviceid, Val_int)
+Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity),
+                device, Val_GdkDevice)
+
+Make_Extractor (GdkEventClient, GdkEvent_arg(Client), message_type, Val_int)
+Make_Extractor (GdkEventClient, GdkEvent_arg(Client), data_format, Val_int)
+typedef union {char b[20]; short s[10]; long l[5]; } client_data;
+value ml_GdkEventClient_data (value ev)
+{
+    CAMLparam1(ev);
+    value ret = alloc_string(sizeof(client_data));
+    memcpy(String_val(ret), (GdkEvent_arg(Client)(ev))->data.l,
+           sizeof(client_data));
+    CAMLreturn(ret);
+}
+
+Make_Extractor (GdkEventSetting, GdkEvent_arg(Setting),
+                action, Val_gdkSettingAction)
+Make_Extractor (GdkEventSetting, GdkEvent_arg(Setting), name, copy_string)
+
+Make_Extractor (GdkEventWindowState, GdkEvent_arg(WindowState),
+                changed_mask, Val_int)
+Make_Extractor (GdkEventWindowState, GdkEvent_arg(WindowState),
+                new_window_state, Val_int)
 
 /* DnD */
 Make_Val_final_pointer (GdkDragContext, gdk_drag_context_ref, gdk_drag_context_unref, 0)

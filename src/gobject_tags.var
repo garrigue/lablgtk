@@ -1,0 +1,10 @@
+(* $Id$ *)
+
+type gType = "G_TYPE_"
+  [ `INVALID | `NONE | `INTERFACE
+  | `CHAR | `UCHAR | `BOOLEAN
+  | `INT  | `UINT  | `LONG  | `ULONG  | `INT64  | `UINT64
+  | `ENUM | `FLAGS
+  | `FLOAT  | `DOUBLE
+  | `STRING | `POINTER  | `BOXED  | `PARAM
+  | `OBJECT ]

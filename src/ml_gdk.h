@@ -40,6 +40,9 @@ extern value Val_GdkGC (GdkGC *);
 #define GdkVisual_val(val) ((GdkVisual*) val)
 #define Val_GdkVisual(visual) ((value) visual)
 
+#define GdkDevice_val(val) ((GdkDevice*) val)
+#define Val_GdkDevice(device) ((value) device)
+
 #ifdef _WIN32
 #define Val_XID(id) copy_int32((long) id)
 #else

@@ -19,57 +19,68 @@ type +'a event
 type drag_context
 type cursor
 type xid = int32
+type device
 
 exception Error of string
 let _ = Callback.register_exception "gdkerror" (Error"")
 
 module Tags = struct
   type event_type =
-    [ `NOTHING|`DELETE|`DESTROY|`EXPOSE|`MOTION_NOTIFY|`BUTTON_PRESS
-     |`TWO_BUTTON_PRESS|`THREE_BUTTON_PRESS
-     |`BUTTON_RELEASE|`KEY_PRESS
-     |`KEY_RELEASE|`ENTER_NOTIFY|`LEAVE_NOTIFY|`FOCUS_CHANGE
-     |`CONFIGURE|`MAP|`UNMAP|`PROPERTY_NOTIFY|`SELECTION_CLEAR
-     |`SELECTION_REQUEST|`SELECTION_NOTIFY|`PROXIMITY_IN
-     |`PROXIMITY_OUT|`DRAG_ENTER|`DRAG_LEAVE|`DRAG_MOTION|`DRAG_STATUS
-     |`DROP_START|`DROP_FINISHED|`CLIENT_EVENT|`VISIBILITY_NOTIFY
-     |`NO_EXPOSE ]
+    [ `NOTHING | `DELETE | `DESTROY | `EXPOSE | `MOTION_NOTIFY
+    | `BUTTON_PRESS | `TWO_BUTTON_PRESS | `THREE_BUTTON_PRESS | `BUTTON_RELEASE
+    | `KEY_PRESS | `KEY_RELEASE
+    | `ENTER_NOTIFY | `LEAVE_NOTIFY | `FOCUS_CHANGE
+    | `CONFIGURE | `MAP | `UNMAP | `PROPERTY_NOTIFY
+    | `SELECTION_CLEAR | `SELECTION_REQUEST | `SELECTION_NOTIFY
+    | `PROXIMITY_IN | `PROXIMITY_OUT
+    | `DRAG_ENTER | `DRAG_LEAVE | `DRAG_MOTION | `DRAG_STATUS
+    | `DROP_START | `DROP_FINISHED | `CLIENT_EVENT | `VISIBILITY_NOTIFY
+    | `NO_EXPOSE | `SCROLL | `WINDOW_STATE | `SETTING ]
 
   type event_mask =
     [ `EXPOSURE
-     |`POINTER_MOTION|`POINTER_MOTION_HINT
-     |`BUTTON_MOTION|`BUTTON1_MOTION|`BUTTON2_MOTION|`BUTTON3_MOTION
-     |`BUTTON_PRESS|`BUTTON_RELEASE
-     |`KEY_PRESS|`KEY_RELEASE
-     |`ENTER_NOTIFY|`LEAVE_NOTIFY|`FOCUS_CHANGE
-     |`STRUCTURE|`PROPERTY_CHANGE|`VISIBILITY_NOTIFY
-     |`PROXIMITY_IN|`PROXIMITY_OUT|`SUBSTRUCTURE
-     |`ALL_EVENTS ]
+    | `POINTER_MOTION | `POINTER_MOTION_HINT
+    | `BUTTON_MOTION | `BUTTON1_MOTION | `BUTTON2_MOTION | `BUTTON3_MOTION
+    | `BUTTON_PRESS | `BUTTON_RELEASE
+    | `KEY_PRESS | `KEY_RELEASE
+    | `ENTER_NOTIFY | `LEAVE_NOTIFY | `FOCUS_CHANGE
+    | `STRUCTURE | `PROPERTY_CHANGE | `VISIBILITY_NOTIFY
+    | `PROXIMITY_IN | `PROXIMITY_OUT
+    | `SUBSTRUCTURE | `SCROLL
+    | `ALL_EVENTS ]
 
   type extension_events =
-    [ `NONE|`ALL|`CURSOR ]
+    [ `NONE | `ALL | `CURSOR ]
 
   type visibility_state =
-    [ `UNOBSCURED|`PARTIAL|`FULLY_OBSCURED ]
+    [ `UNOBSCURED | `PARTIAL | `FULLY_OBSCURED ]
 
   type input_source =
-    [ `MOUSE|`PEN|`ERASER|`CURSOR ]
+    [ `MOUSE | `PEN | `ERASER | `CURSOR ]
+
+  type scroll_direction =
+    [ `UP | `DOWN | `LEFT | `RIGHT ]
 
   type notify_type =
-    [ `ANCESTOR|`VIRTUAL|`INFERIOR|`NONLINEAR|`NONLINEAR_VIRTUAL|`UNKNOWN ] 
+    [ `ANCESTOR | `VIRTUAL | `INFERIOR | `NONLINEAR
+    | `NONLINEAR_VIRTUAL | `UNKNOWN ] 
 
-  type crossing_mode =
-    [ `NORMAL|`GRAB|`UNGRAB ]
+  type crossing_mode = [ `NORMAL | `GRAB | `UNGRAB ]
+
+  type setting_action = [ `NEW | `CHANGED | `DELETED ]
+
+  type window_state =
+    [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY ]
 
   type modifier =
-    [ `SHIFT|`LOCK|`CONTROL|`MOD1|`MOD2|`MOD3|`MOD4|`MOD5|`BUTTON1
-     |`BUTTON2|`BUTTON3|`BUTTON4|`BUTTON5 ]
+    [ `SHIFT | `LOCK | `CONTROL | `MOD1 | `MOD2 | `MOD3 | `MOD4 | `MOD5
+    | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 ]
 
   type drag_action =
-    [ `DEFAULT|`COPY|`MOVE|`LINK|`PRIVATE|`ASK ]
+    [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
 
   type rgb_dither = 
-    [ `NONE|`NORMAL|`MAX]
+    [ `NONE | `NORMAL | `MAX]
 end
 open Tags
 
@@ -80,6 +91,11 @@ module Convert = struct
     List.filter [`SHIFT;`LOCK;`CONTROL;`MOD1;`MOD2;`MOD3;`MOD4;`MOD5;
 		 `BUTTON1;`BUTTON2;`BUTTON3;`BUTTON4;`BUTTON5]
       ~f:(fun m -> test_modifier m i)
+  external test_window_state : window_state -> int -> bool
+      = "ml_test_GdkWindowState_val"
+  let window_state i =
+    List.filter [ `WITHDRAWN; `ICONIFIED; `MAXIMIZED; `STICKY ]
+      ~f:(fun m -> test_window_state m i)
 end
 
 module Screen = struct
@@ -111,9 +127,6 @@ module Image = struct
   type image_type =
     [ `NORMAL|`SHARED|`FASTEST ] 
 
-  external create_bitmap : visual: visual -> data: string -> 
-    width: int -> height: int -> image 
-      = "ml_gdk_image_new_bitmap"
   external create : kind: image_type -> visual: visual -> 
     width: int -> height: int -> image
       = "ml_gdk_image_new"
@@ -231,7 +244,9 @@ module Region = struct
     let arr = PointArray.create ~len in
     List.fold_left l ~init:0
       ~f:(fun pos (x,y) -> PointArray.set arr ~pos ~x ~y; pos+1);
-    polygon arr    
+    polygon arr
+  external copy : region -> region
+      = "ml_gdk_region_copy"
   external intersect : region -> region -> region
       = "ml_gdk_regions_intersect"
   external union : region -> region -> region 
@@ -242,6 +257,11 @@ module Region = struct
       = "ml_gdk_regions_xor"
   external union_with_rect : region -> Rectangle.t -> region
       = "ml_gdk_region_union_with_rect"
+  let intersect r1 r2 = let r3 = copy r1 in intersect r3 r2; r3
+  let union r1 r2 = let r3 = copy r1 in union r3 r2; r3
+  let subtract r1 r2 = let r3 = copy r1 in subtract r3 r2; r3
+  let xor r1 r2 = let r3 = copy r1 in xor r3 r2; r3
+  let union_with_rect r1 r2 = let r3 = copy r1 in union_with_rect r3 r2; r3
   external offset : region -> x:int -> y:int -> unit = "ml_gdk_region_offset"
   external shrink : region -> x:int -> y:int -> unit = "ml_gdk_region_shrink"
   external empty : region -> bool = "ml_gdk_region_empty"

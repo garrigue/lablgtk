@@ -113,18 +113,6 @@ value ml_gtk_style_set_font (value st, value font)
 Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,  dark_gc, Val_GdkGC)
 Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,  light_gc, Val_GdkGC)
 
-/* gtktypeutils.h */
-
-ML_1 (gtk_type_name, Int_val, Val_string)
-ML_1 (gtk_type_from_name, String_val, Val_int)
-ML_1 (gtk_type_parent, Int_val, Val_int)
-ML_1 (gtk_type_class, Int_val, (value))
-ML_1 (gtk_type_parent_class, Int_val, (value))
-ML_2 (gtk_type_is_a, Int_val, Int_val, Val_bool)
-value ml_gtk_type_fundamental (value type)
-{
-    return Val_fundamental_type (GTK_FUNDAMENTAL_TYPE (Int_val(type)));
-}
 
 /* gtkobject.h */
 

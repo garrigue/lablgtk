@@ -73,9 +73,6 @@ type submenu_placement = "GTK_"
 type toolbar_style = "GTK_TOOLBAR_"
   [ `ICONS | `TEXT | `BOTH ]
 
-type trough_type = "GTK_TROUGH_"
-  [ `NONE | `START | `END | `JUMP ]
-
 type update_type = "GTK_UPDATE_"
   [ `CONTINUOUS | `DISCONTINUOUS | `DELAYED ]
 
@@ -86,7 +83,7 @@ type window_position = "GTK_WIN_POS_"
   [ `NONE | `CENTER | `MOUSE | `CENTER_ALWAYS ]
 
 type window_type = "GTK_WINDOW_"
-  [ `TOPLEVEL | `DIALOG | `POPUP ]
+  [ `TOPLEVEL | `POPUP ]
 
 type sort_type = "GTK_SORT_"
   [ `ASCENDING | `DESCENDING ]

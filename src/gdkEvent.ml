@@ -49,13 +49,10 @@ module Motion = struct
   external time : t -> int = "ml_GdkEventMotion_time"
   external x : t -> float = "ml_GdkEventMotion_x"
   external y : t -> float = "ml_GdkEventMotion_y"
-  external pressure : t -> float = "ml_GdkEventMotion_pressure"
-  external xtilt : t -> float = "ml_GdkEventMotion_xtilt"
-  external ytilt : t -> float = "ml_GdkEventMotion_ytilt"
+  external axes : t -> (float * float) option = "ml_GdkEventMotion_axes"
   external state : t -> int = "ml_GdkEventMotion_state"
   external is_hint : t -> bool = "ml_GdkEventMotion_is_hint"
-  external source : t -> input_source = "ml_GdkEventMotion_source"
-  external deviceid : t -> int = "ml_GdkEventMotion_deviceid"
+  external device : t -> device = "ml_GdkEventMotion_device"
   external x_root : t -> float = "ml_GdkEventMotion_x_root"
   external y_root : t -> float = "ml_GdkEventMotion_y_root"
 end
@@ -72,19 +69,31 @@ module Button = struct
   external time : t -> int = "ml_GdkEventButton_time"
   external x : t -> float = "ml_GdkEventButton_x"
   external y : t -> float = "ml_GdkEventButton_y"
-  external pressure : t -> float = "ml_GdkEventButton_pressure"
-  external xtilt : t -> float = "ml_GdkEventButton_xtilt"
-  external ytilt : t -> float = "ml_GdkEventButton_ytilt"
+  external axes : t -> (float * float) option = "ml_GdkEventButton_axes"
   external state : t -> int = "ml_GdkEventButton_state"
   external button : t -> int = "ml_GdkEventButton_button"
-  external source : t -> input_source = "ml_GdkEventButton_source"
-  external deviceid : t -> int = "ml_GdkEventButton_deviceid"
+  external device : t -> device = "ml_GdkEventButton_device"
   external x_root : t -> float = "ml_GdkEventButton_x_root"
   external y_root : t -> float = "ml_GdkEventButton_y_root"
   external set_type : t -> [< types] -> unit
       = "ml_gdk_event_set_type"
   external set_button : t -> int -> unit
       = "ml_gdk_event_button_set_button"
+end
+
+module Scroll = struct
+  type t = [ `SCROLL ] event
+  let cast (ev : any) : t =
+    match get_type ev with `SCROLL -> Obj.magic ev
+    | _ -> invalid_arg "GdkEvent.Scroll.cast"
+  external time : t -> int = "ml_GdkEventScroll_time"
+  external x : t -> float = "ml_GdkEventScroll_x"
+  external y : t -> float = "ml_GdkEventScroll_y"
+  external state : t -> int = "ml_GdkEventScroll_state"
+  external direction : t -> scroll_direction = "ml_GdkEventScroll_direction"
+  external device : t -> device = "ml_GdkEventScroll_device"
+  external x_root : t -> float = "ml_GdkEventScroll_x_root"
+  external y_root : t -> float = "ml_GdkEventScroll_y_root"
 end
 
 module Key = struct
@@ -97,6 +106,8 @@ module Key = struct
   external state : t -> int = "ml_GdkEventKey_state"
   external keyval : t -> keysym = "ml_GdkEventKey_keyval"
   external string : t -> string = "ml_GdkEventKey_string"
+  external hardware_keycode : t -> int = "ml_GdkEventKey_hardware_keycode"
+  external group : t -> int = "ml_GdkEventKey_group"
   let state ev = Convert.modifier (state ev)
 end
 
@@ -107,7 +118,15 @@ module Crossing = struct
       `ENTER_NOTIFY|`LEAVE_NOTIFY -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Crossing.cast"
   external subwindow : t -> window = "ml_GdkEventCrossing_subwindow"
+  external time : t -> int = "ml_GdkEventCrossing_time"
+  external x : t -> float = "ml_GdkEventCrossing_x"
+  external y : t -> float = "ml_GdkEventCrossing_y"
+  external x_root : t -> float = "ml_GdkEventCrossing_x_root"
+  external y_root : t -> float = "ml_GdkEventCrossing_y_root"
+  external mode : t -> crossing_mode = "ml_GdkEventCrossing_mode"
   external detail : t -> notify_type = "ml_GdkEventCrossing_detail"
+  external focus : t -> bool = "ml_GdkEventCrossing_focus"
+  external state : t -> int = "ml_GdkEventCrossing_state"
 end
 
 module Focus = struct
@@ -148,7 +167,7 @@ module Selection = struct
   external selection : t -> atom = "ml_GdkEventSelection_selection"
   external target : t -> atom = "ml_GdkEventSelection_target"
   external property : t -> atom = "ml_GdkEventSelection_property"
-  external requestor : t -> int = "ml_GdkEventSelection_requestor"
+  external requestor : t -> xid = "ml_GdkEventSelection_requestor"
   external time : t -> int = "ml_GdkEventSelection_time"
 end
 
@@ -159,6 +178,35 @@ module Proximity = struct
       `PROXIMITY_IN|`PROXIMITY_OUT -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Proximity.cast"
   external time : t -> int = "ml_GdkEventProximity_time"
-  external source : t -> input_source = "ml_GdkEventProximity_source"
-  external deviceid : t -> int = "ml_GdkEventProximity_deviceid"
+  external device : t -> device = "ml_GdkEventProximity_device"
+end
+
+module Client = struct
+  type t = [ `CLIENT_EVENT ] event
+  let cast (ev : any) : t =
+    match get_type ev with `CLIENT_EVENT -> Obj.magic ev
+    | _ -> invalid_arg "GdkEvent.Client.cast"
+  external message_type : t -> int = "ml_GdkEventClient_message_type"
+  external data_format : t -> int = "ml_GdkEventClient_data_format"
+  external data : t -> string = "ml_GdkEventClient_data"
+end
+
+module Setting = struct
+  type t = [ `SETTING ] event
+  let cast (ev : any) : t =
+    match get_type ev with `SETTING -> Obj.magic ev
+    | _ -> invalid_arg "GdkEvent.Setting.cast"
+  external action : t -> setting_action = "ml_GdkEventSetting_action"
+  external name : t -> string = "ml_GdkEventSetting_name"
+end
+
+module WindowState = struct  type t = [ `WINDOW_STATE ] event
+  let cast (ev : any) : t =
+    match get_type ev with `WINDOW_STATE -> Obj.magic ev
+    | _ -> invalid_arg "GdkEvent.WindowState.cast"
+  external changed_mask : t -> int = "ml_GdkEventWindowState_changed_mask"
+  external new_window_state : t -> int
+      = "ml_GdkEventWindowState_new_window_state"
+  let changed_mask ev = Convert.window_state (changed_mask ev)
+  let new_window_state ev = Convert.window_state (new_window_state ev)
 end
