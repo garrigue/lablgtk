@@ -426,6 +426,7 @@ type cell_properties_text_only =
   | `FOREGROUND_SET of bool
   | `MARKUP of string
   | `RISE of int
+  | `SINGLE_PARAGRAPH_MODE of bool
   | `SIZE of int
   | `SIZE_POINTS of float
   | `STRETCH of Pango.Tags.stretch

@@ -460,6 +460,7 @@ type cell_properties_text =
   | `MARKUP of string
   | `RISE of int
   | `SCALE of Pango.Tags.scale
+  | `SINGLE_PARAGRAPH_MODE of bool
   | `SIZE of int
   | `SIZE_POINTS of float
   | `STRETCH of Pango.Tags.stretch

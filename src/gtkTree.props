@@ -94,6 +94,7 @@ class CellRendererText vset : CellRenderer {
   "rise-set"             gboolean             : Read / Write / NoVSet
   "scale"                gdouble              : Read / Write
   "scale-set"            gboolean             : Read / Write / NoVSet
+  "single-paragraph-mode" gboolean            : Read / Write
   "size"                 gint                 : Read / Write
   "size-points"          gdouble              : Read / Write
   "size-set"             gboolean             : Read / Write / NoVSet
