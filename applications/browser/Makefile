@@ -5,9 +5,9 @@ all: browser
 
 CAMLC = ocamlc
 CAMLOPT = ocamlopt
-COMPILER = $(CAMLC) $(MLFLAGS) -modern -w s -c
+COMPILER = $(CAMLC) $(MLFLAGS) -labels -w s -c
 LINKER = $(CAMLC) $(MLFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -modern -w s -c
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -labels -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 
 RANLIB = ranlib
@@ -29,14 +29,13 @@ MLFLAGS = -I ../.. -I ocaml-src/utils -I ocaml-src/parsing
 MLOBJS = text.cmo file.cmo lexical.cmo shell.cmo editor.cmo
 
 browser: $(MLOBJS)
-	$(LINKER) -o $@ -custom -cclib "-L../..	-llablgtk $(GTKLIBS)" \
-	toplevellib.cma str.cma unix.cma \
-	lablgtk.cma -cclib "-lstr -lunix" $(MLOBJS) 
+	$(LINKER) -o $@	toplevellib.cma str.cma unix.cma \
+	    lablgtk.cma	$(MLOBJS) 
 
 clean:
 	rm -f *.cm* browser
 
 .depend:
-	olabldep *.ml *.mli > .depend
+	ocamldep *.ml *.mli > .depend
 
 include .depend
