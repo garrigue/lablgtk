@@ -23,7 +23,7 @@ include $(CONFIG)
 TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB)
 
 all: byte
-world: byte $(OCAMLBEST)
+world: byte $(CAMLBEST)
 
 MLLIBS = lablgtk.cma
 CLIBS = liblablgtk2$(XA)
