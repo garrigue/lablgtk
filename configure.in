@@ -148,6 +148,24 @@ if test "$CAMLP4O" = no ; then
 	AC_MSG_ERROR(Cannot find camlp4o.)
 fi
 
+# Check for which kind of threads is used
+THREADS_LIB="no"
+AC_MSG_CHECKING(for ocaml threads)
+if test -r `ocamlc -where`/threads/stdlib.cma; then
+  THREADS_LIB="byte"
+elif test -r `ocamlc -where`/threads/threads.cma; then
+  THREADS_LIB="system"
+fi
+AC_MSG_RESULT($THREADS_LIB)
+# Check for dll support
+HAS_DLL_SUPPORT="no"
+AC_MSG_CHECKING(for ocaml dll support)
+if test -r `ocamlc -where`/stublibs/dllunix.so ||
+   test -r `ocamlc -where`/stublibs/dllunix.dll
+then HAS_DLL_SUPPORT="yes"
+fi
+AC_MSG_RESULT($HAS_DLL_SUPPORT)
+
 AC_PROG_RANLIB
 # get the C compiler used by ocamlc
 if test -z "$CC" ; then
@@ -281,6 +299,8 @@ AC_SUBST(OCAMLWIN32)
 AC_SUBST(OCAMLDEP)
 AC_SUBST(OCAMLLEX)
 AC_SUBST(OCAMLYACC)
+AC_SUBST(THREADS_LIB)
+AC_SUBST(HAS_DLL_SUPPORT)
 
 AC_SUBST(CAMLC)
 AC_SUBST(CAMLOPT)

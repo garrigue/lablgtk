@@ -14,6 +14,8 @@ DEBUG=
 CC=
 RANLIB=
 LIBDIR=c:/Program Files/Objective Caml/lib
+THREADS_LIB=system
+HAS_DLL_SUPPORT=yes
 
 # where to install the binaries
 BINDIR=$(LIBDIR)/../bin
