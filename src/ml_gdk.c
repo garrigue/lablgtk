@@ -46,6 +46,22 @@ ML_0 (gdk_screen_width, Val_int)
 ML_0 (gdk_screen_height, Val_int)
 
 /* Visual */
+value ml_gdk_visual_get_best (value depth, value type)
+{
+     GdkVisual *vis;
+     if (type = Val_unit)
+          if (depth = Val_unit) vis = gdk_visual_get_best ();
+          else vis = gdk_visual_get_best_with_depth (Int_val(Field(depth,0)));
+     else
+          if (depth = Val_unit)
+               vis = gdk_visual_get_best_with_type
+                    (GdkVisualType_val(Field(type,0)));
+          else vis = gdk_visual_get_best_with_both
+                    (Int_val(Field(depth,0)),GdkVisualType_val(Field(type,0)));
+     if (!vis) ml_raise_gdk("Gdk.Visual.get_best");
+     return Val_GdkVisual(vis);
+}
+
 Make_Extractor (GdkVisual,GdkVisual_val,type,Val_gdkVisualType)
 Make_Extractor (GdkVisual,GdkVisual_val,depth,Val_int)
 Make_Extractor (GdkVisual,GdkVisual_val,red_mask,Val_int)
@@ -66,6 +82,8 @@ ML_3 (gdk_image_get_pixel, GdkImage_val, Int_val, Int_val, Val_int)
 ML_1 (gdk_image_destroy, GdkImage_val, Unit)
 
 /* Color */
+
+ML_2 (gdk_colormap_new, GdkVisual_val, Bool_val, Val_GdkColormap)
 
 value ml_gdk_color_white (value cmap)
 {

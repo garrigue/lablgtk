@@ -11,12 +11,14 @@ type color = [
   | `RGB of int * int * int
 ]
 
-let color ?(colormap = GtkBase.Widget.get_default_colormap ()) (c : color) =
+let default_colormap = GtkBase.Widget.get_default_colormap
+
+let color ?(colormap = default_colormap ()) (c : color) =
   match c with
   | `COLOR col -> col
   | `WHITE|`BLACK|`NAME _|`RGB _ as def -> Color.alloc ~colormap def
 
-class ['a] drawable ?(colormap = GtkBase.Widget.get_default_colormap ()) w =
+class ['a] drawable ?(colormap = default_colormap ()) w =
 object (self)
   val colormap = colormap
   val gc = GC.create w
@@ -44,7 +46,11 @@ end
 
 class pixmap ?colormap ?mask pm = object
   inherit [[`pixmap]] drawable ?colormap pm as pixmap
-  val bitmap = may_map mask ~f:(fun x -> new drawable x)
+  val bitmap = may_map mask ~f:
+      begin fun x ->
+        let colormap = Color.get_colormap  (Visual.get_best ~depth:1 ()) in
+        new drawable ~colormap x
+      end
   val mask : Gdk.bitmap option = mask
   method pixmap = w
   method mask = mask

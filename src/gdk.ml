@@ -86,6 +86,8 @@ module Visual = struct
     [ `STATIC_GRAY|`GRAYSCALE|`STATIC_COLOR
      |`PSEUDO_COLOR|`TRUE_COLOR|`DIRECT_COLOR ]
 
+  external get_best : ?depth:int -> ?kind:visual_type -> unit -> visual
+      = "ml_gdk_visual_get_best"
   external get_type : visual -> visual_type = "ml_GdkVisual_type"
   external depth : visual -> int = "ml_GdkVisual_depth"
   external red_mask : visual -> int = "ml_GdkVisual_red_mask"
@@ -132,6 +134,10 @@ module Color = struct
 
   external get_system_colormap : unit -> colormap
       = "ml_gdk_colormap_get_system"
+  external colormap_new : visual -> privat:bool -> colormap
+      = "ml_gdk_colormap_new"
+  let get_colormap ?(privat=false) vis = colormap_new vis ~privat
+
   type spec = [ `BLACK | `NAME of string | `RGB of int * int * int | `WHITE]
   let color_alloc ~colormap color =
     if not (color_alloc colormap color) then raise (Error"Color.alloc");
