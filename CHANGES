@@ -1,5 +1,8 @@
 $Id$
 
+2002.06.19
+  * add Gpointer.region, to handle bigarray/string/Raw.t in an uniform way
+
 2002.06.18
   * add Gdk.Rgb.draw_image
 

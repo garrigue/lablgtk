@@ -61,6 +61,7 @@ object (self)
   method string s = Draw.string w gc s
   method put_image ~x ~y = Draw.image w gc ~xdest:x ~ydest:y
   method put_pixmap ~x ~y = Draw.pixmap w gc ~xdest:x ~ydest:y
+  method put_rgb_data = Rgb.draw_image w gc
   method points = Draw.points w gc
   method lines = Draw.lines w gc
   method segments = Draw.segments w gc

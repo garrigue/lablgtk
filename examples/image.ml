@@ -17,6 +17,8 @@ let rgb_at buf x y =
    int_of_char buf.[offset+1],
    int_of_char buf.[offset+2])
 
+let create_region = Gpointer.region_of_string
+
 (* alternate approach: map the file *)
 (* Requires bigarray.cma, but needed for Rgb.draw_image *)
 (*
@@ -31,6 +33,8 @@ let load_image file =
 let rgb_at buf x y =
   let offset = (y * 256 + x) * 3 in
   (buf.{offset}, buf.{offset+1}, buf.{offset+2})
+
+let create_region = Gpointer.region_of_bigarray
 *)
 
 (* Choose a visual appropriate for RGB *)
@@ -53,6 +57,7 @@ let () =
   window#connect#destroy ~callback:Main.quit;
 
   (* Using images *)
+
   let image =
     Image.create ~kind: `FASTEST ~visual: visual ~width: 256 ~height: 256
   in
@@ -68,14 +73,13 @@ let () =
  
   let display () = drawing#put_image image ~x:0 ~y:0 in
 
+
   (* Using Rgb.draw_image *)
   (*
-  let pixmap = Pixmap.create ~window:w ~width:256 ~height:256 () in
-  let buf = load_image "image256x256.rgb" in
-  Rgb.draw_image pixmap (GC.create pixmap) ~width:256 ~height:256 buf;
-    
-  let display () = drawing#put_pixmap pixmap ~x:0 ~y:0 in
-  *)
+  let buf = create_region (load_image "image256x256.rgb") in
+
+  let display () = drawing#put_rgb_data buf ~width:256 ~height:256 in
+   *)
 
   (* Bind display callback *)
   window#event#connect#after#expose ~callback:

@@ -44,8 +44,6 @@ value Val_GList (GList *list, value (*func)(gpointer))
     return cell;
 }
 
-value ml_get_null (value unit) { return 0L; }
-
 GList *GList_val (value list, gpointer (*func)(value))
 {
     CAMLparam1(list);
