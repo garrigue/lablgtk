@@ -16,11 +16,12 @@ GETRANLIB = which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/
 
 ifdef USE_GNOME
 GTKGETCFLAGS = gtk-config --cflags`" -I"`gnome-config --includedir
-GTKGETLIBS = gnome-config --libs gtkxmhtml
+GNOMELIBS = `gnome-config --libs gtkxmhtml`
 else
 GTKGETCFLAGS = gtk-config --cflags
-GTKGETLIBS = gtk-config --libs
 endif
+
+GTKGETLIBS = gtk-config --libs
 
 configure: .depend config.make
 
@@ -40,6 +41,9 @@ config.make:
 	@echo INSTALLDIR=$(INSTALLDIR) >> config.make
 	@echo GTKCFLAGS=`$(GTKGETCFLAGS)` >> config.make
 	@echo GTKLIBS=`$(GTKGETLIBS)` | \
+	  sed -e 's/-l/-cclib &/g' -e 's/-[LRWr][^ ]*/-ccopt &/g' \
+	  >> config.make
+	@echo GNOMELIBS=$(GNOMELIBS) | \
 	  sed -e 's/-l/-cclib &/g' -e 's/-[LRWr][^ ]*/-ccopt &/g' \
 	  >> config.make
 	cat config.make
