@@ -213,7 +213,7 @@ class TreeModelFilter : GObject {
 
 class IconView set wrap wrapsig : Container {
   "markup-column"        gint                  : Read / Write / NoWrap / NoSet
-  "model"                GtkTreeModel          : Read / Write / NoWrap
+  "model"                GtkTreeModel_opt      : Read / Write / NoWrap
   "orientation"          GtkOrientation        : Read / Write
   "pixbuf-column"        gint                  : Read / Write / NoWrap / NoSet
   "selection-mode"       GtkSelectionMode      : Read / Write
