@@ -2,16 +2,19 @@
 
 open GtkNew
 
-(* pour definir un nouveau widget, il faut faire
-   un tableau contenant les signaux qu'emettra le
-   widget; puis on appelle make_new_widget avec
-   comme parametres le nom de la classe, la classe parent
-   (type object_type), et le tableau;
-   cette fonction renvoie la fonction qui cree un nouveau
-   widget du nouveau type;
-
-   limitations: les signaux ne sont pour l'instant que du type
-   standard
+(* To create a new widget:
+   create an array sig_array containing the signals defined by
+   the new widget;
+   call:
+      make_new_widget name parent:parent signal_array:sig_array
+   where name is the name of the new widget (a string)
+   parent is the type of the parent: of type Gtk.New.object_type
+   This call returns a triple:
+     (get_type_func, new_func, sig_array_num)
+   where get_type_func is the new widget get_type function,
+   new_func is the function returning a new widget of the new type
+   sig_array_num is an array containing the Gtk id of the signals
+   of the new widget.
 *)
 
 module Tictactoe = struct
