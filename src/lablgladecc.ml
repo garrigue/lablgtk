@@ -86,22 +86,19 @@ let output_widget w =
       modul w.wname;
   with Not_found -> ()
 
-let parse_body lexbuf =
+let parse_body ~file lexbuf =
   while match token lexbuf with
     Tag("project", _, closed) ->
       if not closed then while token lexbuf <> Endtag "project" do () done;
       true
   | Tag("widget", _, false) ->
       let wtree = parse_widget lexbuf in
+      Printf.printf "class %s %s ?autoconnect(*=true*) () =\n  object (self)\n"
+        wtree.wname
+        (if file = "<stdin>" then "~file" else "?(file=\"" ^ file ^ "\")");
       Printf.printf
-	"class %s ~file =\n\
-      \032 let () = Glade.init () in\n\
-      \032 let xml = Glade.create ~file ~root:\"%s\" in\n\
-      \032 object (self)\n\
-      \032   method xml = xml\n\
-      \032   method extra_handlers = []\n\
-      \032   initializer Glade.bind_handlers ~extra:self#extra_handlers xml\n"
-	  wtree.wname wtree.wname;
+        "    inherit Glade.xml ~file ~root:\"%s\" ?autoconnect ()\n"
+        wtree.wname;
       let widgets = flatten_tree wtree in
       List.iter widgets ~f:output_widget;
       Printf.printf "    method check_widgets () =\n";
@@ -114,25 +111,24 @@ let parse_body lexbuf =
       if not closed then while token lexbuf <> Endtag tag do () done; true
   | Chars _ -> true
   | Endtag "gtk-interface" -> false
-  | Endtag _ ->
-      failwith "bad XML syntax"
+  | Endtag _ -> failwith "bad XML syntax"
   | EOF -> false
   do () done
 
-let process ~name chan =
+let process ?(file="<stdin>") chan =
   let lexbuf = Lexing.from_channel chan in
   try
     parse_header lexbuf;
     Printf.printf "(* Automatically generated from %s by lablgladecc *)\n\n"
-      name;
-    parse_body lexbuf
+      file;
+    parse_body ~file lexbuf
   with Failure s ->
     Printf.eprintf "lablgladecc: in %s, before char %d, %s\n"
-      name (Lexing.lexeme_start lexbuf) s
+      file (Lexing.lexeme_start lexbuf) s
 
 let main () =
   if Array.length Sys.argv = 1 then
-    process ~name:"standard input" stdin
+    process stdin
   else if List.mem Sys.argv.(1) ["-h"; "-help"; "--help"] then
     begin
       prerr_string "%s <file.glade> \n";
@@ -143,7 +139,7 @@ let main () =
   else
     for i = 1 to Array.length Sys.argv - 1 do
       let chan = open_in Sys.argv.(i) in
-      process ~name:Sys.argv.(i) chan;
+      process ~file:Sys.argv.(i) chan;
       close_in chan
     done  
 
