@@ -156,6 +156,8 @@ module Text = struct
     create (Gpointer.optboxed hadjustment) (Gpointer.optboxed vadjustment)
   external set_word_wrap : [>`text] obj -> bool -> unit
       = "ml_gtk_text_set_word_wrap"
+  external set_line_wrap : [>`text] obj -> bool -> unit
+      = "ml_gtk_text_set_line_wrap"
   external set_adjustment :
       [>`text] obj -> ?horizontal:[>`adjustment] obj ->
       ?vertical:[>`adjustment] obj -> unit -> unit

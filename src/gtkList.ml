@@ -257,5 +257,17 @@ module CList = struct
       { name = "unselect_row"; marshaller = marshal_select }
     let click_column : ([>`clist],_) t =
       { name = "click_column"; marshaller = marshal_int }
+    external val_scroll_type : int -> scroll_type = "ml_Val_scroll_type"
+    let marshal_scroll f argv =
+      f (val_scroll_type (GtkArgv.get_int argv ~pos:0))
+        ~pos:(GtkArgv.get_float argv ~pos:1)
+    let scroll_horizontal : ([>`clist],_) t =
+      { name = "scroll_horizontal"; marshaller = marshal_scroll }
+    let scroll_vertical : ([>`clist],_) t =
+      { name = "scroll_vertical"; marshaller = marshal_scroll }
+    external emit_scroll :
+        'a obj -> name:string -> Tags.scroll_type -> pos:clampf -> unit
+        = "ml_gtk_signal_emit_scroll"
+    let emit_scroll = emit ~emitter:emit_scroll
   end
 end
