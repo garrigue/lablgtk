@@ -62,7 +62,7 @@ module Type = struct
   external fundamental : t -> fundamental_type = "ml_gtk_type_fundamental"
 end
 
-module Arg = struct
+module GtkArg = struct
   type t
   external shift : t -> pos:int -> t = "ml_gtk_arg_shift"
   external get_type : t -> Type.t = "ml_gtk_arg_get_type"
@@ -87,9 +87,9 @@ module Arg = struct
 end
 
 module Argv = struct
-  open Arg
+  open GtkArg
   type raw_obj
-  type t = { referent: raw_obj; nargs: int; args: Arg.t }
+  type t = { referent: raw_obj; nargs: int; args: GtkArg.t }
   let nth arg :pos =
     if pos < 0 || pos >= arg.nargs then invalid_arg "Argv.nth";
     shift arg.args :pos
@@ -290,7 +290,7 @@ module Data = struct
 end
 
 module Adjustment = struct
-  type t = [data ajustment]
+  type t = [data adjustment]
   external create :
       value:float -> lower:float -> upper:float ->
       step_incr:float -> page_incr:float -> page_size:float -> t obj
@@ -300,6 +300,9 @@ module Adjustment = struct
   external clamp_page :
       [> adjustment] obj -> lower:float -> upper:float -> unit
       = "ml_gtk_adjustment_clamp_page"
+  external get_value :
+      [> adjustment] obj -> float
+      = "ml_gtk_adjustment_get_value"	  
   module Signals = struct
     open Signal
     let changed : ([> adjustment],_) t =
@@ -1981,15 +1984,15 @@ module Scale = struct
   let create (dir : orientation) ?:adjustment =
     let create = if dir = `HORIZONTAL then hscale_new else vscale_new  in
     create (optobj adjustment)
-  external set_digits : [> adjustment] obj -> int -> unit
+  external set_digits : [> scale] obj -> int -> unit
       = "ml_gtk_scale_set_digits"
-  external set_draw_value : [> adjustment] obj -> bool -> unit
+  external set_draw_value : [> scale] obj -> bool -> unit
       = "ml_gtk_scale_set_draw_value"
-  external set_value_pos : [> adjustment] obj -> position -> unit
+  external set_value_pos : [> scale] obj -> position -> unit
       = "ml_gtk_scale_set_value_pos"
-  external value_width : [> adjustment] obj -> int
+  external value_width : [> scale] obj -> int
       = "ml_gtk_scale_value_width"
-  external draw_value : [> adjustment] obj -> unit
+  external draw_value : [> scale] obj -> unit
       = "ml_gtk_scale_draw_value"
   let set w ?:digits ?:draw_value ?:value_pos =
     may digits fun:(set_digits w);
