@@ -49,7 +49,7 @@ ML_5(gdk_pixbuf_new, GDK_COLORSPACE_RGB Ignore, Int_val, Int_val,
 ML_1(gdk_pixbuf_copy, GdkPixbuf_val, Val_GdkPixbuf_noref)
 value ml_gdk_pixbuf_new_from_file(value f)
 {
-    GError *err;
+    GError *err = NULL;
     GdkPixbuf *res = gdk_pixbuf_new_from_file(String_val(f), &err);
     if (err) ml_raise_gerror(err);
     return Val_GdkPixbuf(res);

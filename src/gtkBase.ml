@@ -441,15 +441,15 @@ module DnD = struct
     open GtkSignal
     open Widget.Signals
     let marshal_drag1 f _ = function
-      | `POINTER(Some p) :: _ -> f (Obj.magic p : Gdk.drag_context)
+      | `OBJECT(Some p) :: _ -> f (unsafe_cast p : Gdk.drag_context)
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag1"
     let marshal_drag2 f _ = function
-      | `POINTER(Some p) :: `INT time :: _ ->
-	  f (Obj.magic p : Gdk.drag_context) ~time
+      | `OBJECT(Some p) :: `INT time :: _ ->
+	  f (unsafe_cast p : Gdk.drag_context) ~time
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag2"
     let marshal_drag3 f argv = function
-      | `POINTER(Some p) :: `INT x :: `INT y :: `INT time :: _ ->
-	  let res = f (Obj.magic p : Gdk.drag_context) ~x ~y ~time
+      | `OBJECT(Some p) :: `INT x :: `INT y :: `INT time :: _ ->
+	  let res = f (unsafe_cast p : Gdk.drag_context) ~x ~y ~time
 	  in Closure.set_result argv (`BOOL res)
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag3"
     let drag_begin =
@@ -471,9 +471,9 @@ module DnD = struct
       { name = "drag_drop"; classe = `widget; marshaller = marshal_drag3 }
     let drag_data_get =
       let marshal f argv = function
-        | `POINTER(Some p) :: `POINTER(Some q) ::
+        | `OBJECT(Some p) :: `POINTER(Some q) ::
           `INT info :: `INT time :: _ ->
-	    f (Obj.magic p : Gdk.drag_context)
+	    f (unsafe_cast p : Gdk.drag_context)
 	      (Obj.magic q : selection_data) 
 	      ~info
 	      ~time
@@ -482,9 +482,9 @@ module DnD = struct
       { name = "drag_data_get"; classe = `widget; marshaller = marshal }
     let drag_data_received =
       let marshal f _ = function
-        | `POINTER(Some p) :: `INT x :: `INT y :: `POINTER(Some q) ::
+        | `OBJECT(Some p) :: `INT x :: `INT y :: `POINTER(Some q) ::
           `INT info :: `INT time :: _ ->
-	    f (Obj.magic p : Gdk.drag_context) ~x ~y
+	    f (unsafe_cast p : Gdk.drag_context) ~x ~y
               (Obj.magic q : selection_data)
 	      ~info ~time
 	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_received"
