@@ -18,7 +18,7 @@
 
 #define GtkEditable_val(val) check_cast(GTK_EDITABLE,val)
 ML_3 (gtk_editable_select_region, GtkEditable_val, Int_val, Int_val, Unit)
-value ml_gtk_editable_insert_text (value w, value s, value pos)
+CAMLprim value ml_gtk_editable_insert_text (value w, value s, value pos)
 {
     int position = Int_val(pos);
     gtk_editable_insert_text (GtkEditable_val(w), String_val(s),
@@ -96,8 +96,8 @@ ML_1 (gtk_text_get_point, GtkText_val, Val_int)
 ML_1 (gtk_text_get_length, GtkText_val, Val_int)
 ML_1 (gtk_text_freeze, GtkText_val, Unit)
 ML_1 (gtk_text_thaw, GtkText_val, Unit)
-value ml_gtk_text_insert (value text, value font, value fore, value back,
-			  value str)
+CAMLprim value ml_gtk_text_insert (value text, value font, value fore,
+                                   value back, value str)
 {
     gtk_text_insert (GtkText_val(text),
 		     Option_val(font,GdkFont_val,NULL),

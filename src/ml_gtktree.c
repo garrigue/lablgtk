@@ -39,13 +39,13 @@ ML_2 (gtk_tree_set_view_mode, GtkTree_val, Tree_view_mode_val, Unit)
 ML_2 (gtk_tree_set_view_lines, GtkTree_val, Bool_val, Unit)
 
 static value val_gtkany (gpointer p) { return Val_GtkAny(p); }
-value ml_gtk_tree_selection (value tree)
+CAMLprim value ml_gtk_tree_selection (value tree)
 {
   GList *selection = GTK_TREE_SELECTION(GtkTree_val(tree));
   return Val_GList(selection, val_gtkany);
 }
 static gpointer gtkobject_val (value val) { return GtkObject_val(val); }
-value ml_gtk_tree_remove_items (value tree, value items)
+CAMLprim value ml_gtk_tree_remove_items (value tree, value items)
 {
   GList *items_list = GList_val (items, gtkobject_val);
   gtk_tree_remove_items (GtkTree_val(tree), items_list);

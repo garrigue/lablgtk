@@ -67,7 +67,7 @@ static void ml_warning_wrapper (const gchar *msg)
     callback (ml_warning_handler, arg);
 }
     
-value ml_g_set_warning_handler (value clos)
+CAMLprim value ml_g_set_warning_handler (value clos)
 {
     value old_handler = ml_warning_handler ? ml_warning_handler : clos;
     if (!ml_warning_handler) register_global_root (&ml_warning_handler);
@@ -84,7 +84,7 @@ static void ml_print_wrapper (const gchar *msg)
     callback (ml_print_handler, arg);
 }
     
-value ml_g_set_print_handler (value clos)
+CAMLprim value ml_g_set_print_handler (value clos)
 {
     value old_handler = ml_print_handler ? ml_print_handler : clos;
     if (!ml_print_handler) register_global_root (&ml_print_handler);
@@ -119,8 +119,8 @@ Make_Val_final_pointer_ext (GIOChannel, _noref, Ignore, g_io_channel_unref, 20)
 #ifndef _WIN32
 ML_1 (g_io_channel_unix_new, Int_val, Val_GIOChannel_noref)
 #else
-value ml_g_io_channel_unix_new(value v)
-{  invalid_argument("Glib.channel_unix_new: not implemented"); }
+CAMLprim value ml_g_io_channel_unix_new(value v)
+{  invalid_argument("Glib.channel_unix_new: not implemented"); return 1; }
 #endif
 
 gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c, gpointer data)
@@ -133,7 +133,7 @@ void ml_g_destroy_notify(gpointer data)
     ml_global_root_destroy(data);
 }
 
-value ml_g_io_add_watch(value cond, value clos, value prio, value io)
+CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
 {
     g_io_add_watch_full(GIOChannel_val(io),
                         Option_val(prio,Int_val,0),
@@ -146,7 +146,7 @@ value ml_g_io_add_watch(value cond, value clos, value prio, value io)
 
 /* This is not used, but could be someday... */
 /*
-value Val_GSList (GSList *list, value (*func)(gpointer))
+CAMLprim value Val_GSList (GSList *list, value (*func)(gpointer))
 {
     value new_cell, result, last_cell, cell;
 

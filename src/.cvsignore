@@ -9,3 +9,5 @@ xml_lexer.ml
 *_tags.c
 *_tags.h
 *.lib
+*.dll
+*.exp

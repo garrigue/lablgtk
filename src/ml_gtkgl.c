@@ -19,7 +19,7 @@
 
 #define GtkGLArea_val(val) ((GtkGLArea*)GtkObject_val(val))
 
-value ml_gtk_gl_area_new (value list, value share)
+CAMLprim value ml_gtk_gl_area_new (value list, value share)
 {
     value cursor, res;
     int len, i;

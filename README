@@ -287,20 +287,21 @@ Windows port
   Do not forget to get also iconv-dev-????.zip and extralibs-dev-????.zip,
   since you will need some of the DLLs.
 
-  Edit config.make.nt, then, using Visual C++,
-        nmake -f Makefile.nt
-        nmake -f Makefile.nt opt        (if you have an MS Assembler)
+  Edit config.make.nt, then, using Visual C++ with cygwin tools,
+        cd src
+        make -f Makefile.nt
+        make -f Makefile.nt opt        (if you have an MS Assembler)
   Then install with
-        nmake -f Makefile.nt install
+        make -f Makefile.nt install
 
   Since the link is dynamic you will also need to have in your path:
   gnu-intl.dll (extralibs), iconv-1.3.dll (iconv), glib-1.3.dll and
   gmodule-1.3.dll (glib), gdk-1.3.dll and gtk-1.3.dll (gtk+).
 
   I checked with the 2000-12-26 version of these libraries.
-  Currently threads do not seem to work, but otherwise everything
-  seems OK. In particular, you can run all examples, and build
-  applications\unison as usual.
+  Currently threads in the toplevel do not seem to work, but otherwise
+  everything seems OK. In particular, you can run all examples, and build
+  applications/unison as usual.
 
 Authors:
 	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>

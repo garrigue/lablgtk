@@ -43,6 +43,7 @@ static Make_Flags_val (Font_type_val)
 
 /* gtkobject.h */
 
+CAMLprim value Val_GtkObject (GtkObject *w);
 Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref, 0)
 
 #define gtk_object_ref_and_sink(w) (gtk_object_ref(w), gtk_object_sink(w))
@@ -130,7 +131,7 @@ Make_Extractor (gtk_style_get, GtkStyle_val, colormap, Val_GdkColormap)
 Make_Extractor (gtk_style_get, GtkStyle_val, depth, Val_int)
 Make_Extractor (gtk_style_get, GtkStyle_val, font, Val_GdkFont)
 /* Make_Setter (gtk_style_set, GtkStyle_val, GdkFont_val, font) */
-value ml_gtk_style_set_font (value st, value font)
+CAMLprim value ml_gtk_style_set_font (value st, value font)
 {
     GtkStyle *style = GtkStyle_val(st);
     if (style->font) gdk_font_unref(style->font);
@@ -152,7 +153,7 @@ ML_1 (gtk_type_parent, Int_val, Val_int)
 ML_1 (gtk_type_class, Int_val, (value))
 ML_1 (gtk_type_parent_class, Int_val, (value))
 ML_2 (gtk_type_is_a, Int_val, Int_val, Val_bool)
-value ml_gtk_type_fundamental (value type)
+CAMLprim value ml_gtk_type_fundamental (value type)
 {
     return Val_fundamental_type (GTK_FUNDAMENTAL_TYPE (Int_val(type)));
 }
@@ -160,7 +161,7 @@ value ml_gtk_type_fundamental (value type)
 /* gtkobject.h */
 
 /* ML_1 (GTK_OBJECT_TYPE, GtkObject_val, Val_int) */
-value ml_gtk_object_type (value val)
+CAMLprim value ml_gtk_object_type (value val)
 {
     return Val_int (GtkObject_val(val)->klass->type);
 }
@@ -190,7 +191,7 @@ Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, step_increment,
 Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, page_increment,
 		copy_double)
 Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, page_size, copy_double)
-value ml_gtk_adjustment_set(value lower, value upper,
+CAMLprim value ml_gtk_adjustment_set(value lower, value upper,
                             value step_increment, value page_increment,
                             value page_size, value adjustment)
 {
@@ -222,7 +223,7 @@ ML_3 (gtk_tooltips_set_colors, GtkTooltips_val,
 
 /* gtkwidget.h */
 
-value ml_gtk_widget_set_can_default (value val, value bool)
+CAMLprim value ml_gtk_widget_set_can_default (value val, value bool)
 {
     GtkWidget *w = GtkWidget_val(val);
     guint32 saved_flags = GTK_WIDGET_FLAGS(w);
@@ -232,7 +233,7 @@ value ml_gtk_widget_set_can_default (value val, value bool)
 	gtk_widget_queue_resize (w);
     return Val_unit;
 }
-value ml_gtk_widget_set_can_focus (value val, value bool)
+CAMLprim value ml_gtk_widget_set_can_focus (value val, value bool)
 {
     GtkWidget *w = GtkWidget_val(val);
     guint32 saved_flags = GTK_WIDGET_FLAGS(w);
@@ -263,7 +264,7 @@ ML_2 (gtk_widget_event, GtkWidget_val, GdkEvent_val, Val_bool)
 ML_1 (gtk_widget_activate, GtkWidget_val, Val_bool)
 ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit)
 ML_3 (gtk_widget_popup, GtkWidget_val, Int_val, Int_val, Unit)
-value ml_gtk_widget_intersect (value w, value area)
+CAMLprim value ml_gtk_widget_intersect (value w, value area)
 {
     GdkRectangle inter;
     if (gtk_widget_intersect(GtkWidget_val(w), GdkRectangle_val(area), &inter))
@@ -287,7 +288,7 @@ ML_1 (gtk_widget_get_toplevel, GtkWidget_val, Val_GtkWidget)
 ML_2 (gtk_widget_get_ancestor, GtkWidget_val, Int_val, Val_GtkWidget)
 ML_1 (gtk_widget_get_colormap, GtkWidget_val, Val_GdkColormap)
 ML_1 (gtk_widget_get_visual, GtkWidget_val, (value))
-value ml_gtk_widget_get_pointer (value w)
+CAMLprim value ml_gtk_widget_get_pointer (value w)
 {
     int x,y;
     value ret;
@@ -354,7 +355,7 @@ ML_0 (gtk_widget_pop_colormap, Unit)
 
 /* gtkdnd.h */
 
-value ml_gtk_drag_dest_set (value w, value f, value t, value a)
+CAMLprim value ml_gtk_drag_dest_set (value w, value f, value t, value a)
 {
   GtkTargetEntry *targets = (GtkTargetEntry *)Val_unit;
   int n_targets, i;
@@ -390,7 +391,7 @@ ML_1 (gtk_drag_set_icon_default, GdkDragContext_val, Unit)
 ML_5 (gtk_drag_set_default_icon, GdkColormap_val,
       GdkPixmap_val, Option_val(arg3, GdkBitmap_val, NULL) Ignore,
       Int_val, Int_val, Unit)
-value ml_gtk_drag_source_set (value w, value m, value t, value a)
+CAMLprim value ml_gtk_drag_source_set (value w, value m, value t, value a)
 {
   GtkTargetEntry *targets = (GtkTargetEntry *)Val_unit;
   int n_targets, i;
@@ -423,7 +424,7 @@ Make_Extractor (gtk_selection_data, GtkSelectionData_val, selection,
 Make_Extractor (gtk_selection_data, GtkSelectionData_val, target, Val_int)
 Make_Extractor (gtk_selection_data, GtkSelectionData_val, type, Val_int)
 Make_Extractor (gtk_selection_data, GtkSelectionData_val, format, Val_int)
-value ml_gtk_selection_data_get_data (value val)
+CAMLprim value ml_gtk_selection_data_get_data (value val)
 {
     value ret;
     GtkSelectionData *data = GtkSelectionData_val(val);
@@ -459,7 +460,7 @@ static void ml_gtk_simple_callback (GtkWidget *w, gpointer data)
     val = Val_GtkWidget(w);
     callback (*clos, val);
 }
-value ml_gtk_container_foreach (value w, value clos)
+CAMLprim value ml_gtk_container_foreach (value w, value clos)
 {
     CAMLparam1(clos);
     gtk_container_foreach (GtkContainer_val(w), ml_gtk_simple_callback,
@@ -548,8 +549,8 @@ ML_2 (gtk_color_selection_set_update_policy, GtkColorSelection_val,
       Update_type_val, Unit)
 ML_2 (gtk_color_selection_set_opacity, GtkColorSelection_val,
       Bool_val, Unit)
-value ml_gtk_color_selection_set_color (value w, value red, value green,
-					value blue, value opacity)
+CAMLprim value ml_gtk_color_selection_set_color
+         (value w, value red, value green, value blue, value opacity)
 {
     double color[4];
     color[0] = Double_val(red);
@@ -559,7 +560,7 @@ value ml_gtk_color_selection_set_color (value w, value red, value green,
     gtk_color_selection_set_color (GtkColorSelection_val(w), color);
     return Val_unit;
 }
-value ml_gtk_color_selection_get_color (value w)
+CAMLprim value ml_gtk_color_selection_get_color (value w)
 {
     value ret;
     double color[4];
@@ -651,19 +652,9 @@ ML_2 (gtk_ctree_remove_node, GtkCTree_val, GtkCTreeNode_val, Unit)
 ML_2 (gtk_ctree_is_viewable, GtkCTree_val, GtkCTreeNode_val, Val_bool)
 */
 
-/* gtkpreview.h */
-/*
-#define GtkPreview_val(val) GTK_PREVIEW(Pointer_val(val))
-ML_1 (gtk_preview_new, Preview_val, Val_GtkWidget_sink)
-ML_3 (gtk_preview_size, GtkPreview_val, Int_val, Int_val, Unit)
-ML_9 (gtk_preview_put, GtkPreview_val, GdkWindow_val, GdkGC_val,
-      Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
-ML_bc9 (ml_gtk_preview_put)
-*/
-
 /* gtkmain.h */
 
-value ml_gtk_init (value argv)
+CAMLprim value ml_gtk_init (value argv)
 {
     CAMLparam1 (argv);
     int argc = Wosize_val(argv), i;
@@ -687,7 +678,7 @@ ML_0 (gtk_main_quit, Unit)
 ML_1 (gtk_grab_add, GtkWidget_val, Unit)
 ML_1 (gtk_grab_remove, GtkWidget_val, Unit)
 ML_0 (gtk_grab_get_current, Val_GtkWidget)
-value ml_gtk_get_version (value unit)
+CAMLprim value ml_gtk_get_version (value unit)
 {
     value ret = alloc_small(3,0);
     Field(ret,0) = Val_int(gtk_major_version);
@@ -715,17 +706,17 @@ void ml_gtk_callback_marshal (GtkObject *object, gpointer data,
     CAMLreturn0;
 }
 
-value ml_gtk_arg_shift (GtkArg *args, value index)
+CAMLprim value ml_gtk_arg_shift (GtkArg *args, value index)
 {
     return (value) (&args[Int_val(index)]);
 }
 
-value ml_gtk_arg_get_type (GtkArg *arg)
+CAMLprim value ml_gtk_arg_get_type (GtkArg *arg)
 {
     return Val_int (arg->type);
 }
 
-value ml_gtk_arg_get (GtkArg *arg)
+CAMLprim value ml_gtk_arg_get (GtkArg *arg)
 {
     CAMLparam0();
     CAMLlocal1(tmp);
@@ -778,7 +769,7 @@ value ml_gtk_arg_get (GtkArg *arg)
     CAMLreturn(ret);
 }
 
-value ml_gtk_arg_set_retloc (GtkArg *arg, value val)
+CAMLprim value ml_gtk_arg_set_retloc (GtkArg *arg, value val)
 {
     value type = Fundamental_type_val(Is_block(val) ? Field(val,0) : val);
     value data = (Is_block(val) ? Field(val,1) : 0);
@@ -808,41 +799,7 @@ value ml_gtk_arg_set_retloc (GtkArg *arg, value val)
     return Val_unit;
 }
 
-/*
-value ml_gtk_arg_get_char (GtkArg *arg)
-{
-    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_CHAR)
-	ml_raise_gtk ("argument type mismatch");
-    return Val_char (GTK_VALUE_CHAR(*arg));
-}
-
-value ml_gtk_arg_get_bool (GtkArg *arg)
-{
-    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_BOOL)
-	ml_raise_gtk ("argument type mismatch");
-    return Val_bool (GTK_VALUE_BOOL(*arg));
-}
-
-value ml_gtk_arg_get_int (GtkArg *arg)
-{
-    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-    case GTK_TYPE_INT:
-    case GTK_TYPE_UINT:
-	return Val_int (GTK_VALUE_INT(*arg));
-    case GTK_TYPE_LONG:
-    case GTK_TYPE_ULONG:
-	return Val_long (GTK_VALUE_LONG(*arg));
-    case GTK_TYPE_ENUM:
-	return Val_int (GTK_VALUE_ENUM(*arg));
-    case GTK_TYPE_FLAGS:
-	return Val_int (GTK_VALUE_FLAGS(*arg));
-    default:
-	ml_raise_gtk ("argument type mismatch");
-    }
-    return Val_unit;
-}
-*/
-value ml_gtk_arg_get_nativeint(GtkArg *arg) {
+CAMLprim value ml_gtk_arg_get_nativeint(GtkArg *arg) {
 
      switch(GTK_FUNDAMENTAL_TYPE(arg->type)) {
      case GTK_TYPE_INT:
@@ -860,30 +817,8 @@ value ml_gtk_arg_get_nativeint(GtkArg *arg) {
      }
      return Val_unit;
 }
-/*
-value ml_gtk_arg_get_float (GtkArg *arg)
-{
-    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-    case GTK_TYPE_FLOAT:
-	return copy_double ((double)GTK_VALUE_FLOAT(*arg));
-    case GTK_TYPE_DOUBLE:
-	return copy_double (GTK_VALUE_DOUBLE(*arg));
-    default:
-	ml_raise_gtk ("argument type mismatch");
-    }
-    return Val_unit;
-}
 
-value ml_gtk_arg_get_string (GtkArg *arg)
-{
-    char *p;
-    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_STRING)
-	ml_raise_gtk ("argument type mismatch");
-    p = GTK_VALUE_STRING(*arg);
-    return Val_option (p, copy_string);
-}
-*/
-value ml_gtk_arg_get_pointer (GtkArg *arg)
+CAMLprim value ml_gtk_arg_get_pointer (GtkArg *arg)
 {
     gpointer p = NULL;
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
@@ -897,18 +832,8 @@ value ml_gtk_arg_get_pointer (GtkArg *arg)
     }
     return Val_pointer(p);
 }
-/*
-value ml_gtk_arg_get_object (GtkArg *arg)
-{
-    GtkObject *p;
-    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_OBJECT)
-	ml_raise_gtk ("argument type mismatch");
-    p = GTK_VALUE_OBJECT(*arg);
-    return Val_option (p, Val_GtkObject);
-}
-*/
 
-value ml_string_at_pointer (value ofs, value len, value ptr)
+CAMLprim value ml_string_at_pointer (value ofs, value len, value ptr)
 {
     char *start = ((char*)Pointer_val(ptr)) + Option_val(ofs, Int_val, 0);
     int length = Option_val(len, Int_val, strlen(start));
@@ -917,131 +842,16 @@ value ml_string_at_pointer (value ofs, value len, value ptr)
     return ret;
 }
 
-value ml_int_at_pointer (value ptr)
+CAMLprim value ml_int_at_pointer (value ptr)
 {
     return Val_int(*(int*)Pointer_val(ptr));
 }
 
-/*
-value ml_gtk_arg_set_char (GtkArg *arg, value val)
-{
-    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-    case GTK_TYPE_POINTER:
-    case GTK_TYPE_CHAR:
-         *GTK_RETLOC_CHAR(*arg) = Char_val(val); break;
-    default:
-	ml_raise_gtk ("argument type mismatch");
-    }
-    return Val_unit;
-}
-
-value ml_gtk_arg_set_bool (GtkArg *arg, value val)
-{
-    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-    case GTK_TYPE_POINTER:
-    case GTK_TYPE_BOOL:
-         *GTK_RETLOC_BOOL(*arg) = Bool_val(val); break;
-    default:
-	ml_raise_gtk ("argument type mismatch");
-    }
-    return Val_unit;
-}
-
-value ml_gtk_arg_set_int (GtkArg *arg, value val)
-{
-    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-    case GTK_TYPE_POINTER:
-    case GTK_TYPE_INT:
-    case GTK_TYPE_UINT:
-	*GTK_RETLOC_INT(*arg) = Int_val(val); break;
-    case GTK_TYPE_LONG:
-    case GTK_TYPE_ULONG:
-	*GTK_RETLOC_LONG(*arg) = Long_val(val); break;
-    case GTK_TYPE_ENUM:
-	*GTK_RETLOC_ENUM(*arg) = Int_val(val); break;
-    case GTK_TYPE_FLAGS:
-	*GTK_RETLOC_FLAGS(*arg) = Int_val(val); break;
-    default:
-	ml_raise_gtk ("argument type mismatch");
-    }
-    return Val_unit;
-}
-
-value ml_gtk_arg_set_nativeint (GtkArg *arg, value val)
-{
-    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-    case GTK_TYPE_POINTER:
-    case GTK_TYPE_INT:
-    case GTK_TYPE_UINT:
-	*GTK_RETLOC_INT(*arg) = Nativeint_val(val); break;
-    case GTK_TYPE_LONG:
-    case GTK_TYPE_ULONG:
-	*GTK_RETLOC_LONG(*arg) = Nativeint_val(val); break;
-    case GTK_TYPE_ENUM:
-	*GTK_RETLOC_ENUM(*arg) = Nativeint_val(val); break;
-    case GTK_TYPE_FLAGS:
-	*GTK_RETLOC_FLAGS(*arg) = Nativeint_val(val); break;
-    default:
-	ml_raise_gtk ("argument type mismatch");
-    }
-    return Val_unit;
-}
-
-value ml_gtk_arg_set_float (GtkArg *arg, value val)
-{
-    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-    case GTK_TYPE_POINTER:
-    case GTK_TYPE_FLOAT:
-	*GTK_RETLOC_FLOAT(*arg) = (float) Double_val(val); break;
-    case GTK_TYPE_DOUBLE:
-	*GTK_RETLOC_DOUBLE(*arg) = Double_val(val); break;
-    default:
-	ml_raise_gtk ("argument type mismatch");
-    }
-    return Val_unit;
-}
-
-value ml_gtk_arg_set_string (GtkArg *arg, value val)
-{
-    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-    case GTK_TYPE_POINTER:
-    case GTK_TYPE_STRING:
-         *GTK_RETLOC_STRING(*arg) = String_val(val); break;
-    default:
-	ml_raise_gtk ("argument type mismatch");
-    }
-    return Val_unit;
-}
-
-value ml_gtk_arg_set_pointer (GtkArg *arg, value val)
-{
-    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-    case GTK_TYPE_BOXED:
-	*GTK_RETLOC_BOXED(*arg) = Pointer_val(val); break;
-    case GTK_TYPE_POINTER:
-	*GTK_RETLOC_POINTER(*arg) = Pointer_val(val); break;
-    default:
-	ml_raise_gtk ("argument type mismatch");
-    }
-    return Val_unit;
-}
-
-value ml_gtk_arg_set_object (GtkArg *arg, value val)
-{
-    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-    case GTK_TYPE_POINTER:
-    case GTK_TYPE_OBJECT:
-         *GTK_RETLOC_OBJECT(*arg) = GtkObject_val(val); break;
-    default:
-	ml_raise_gtk ("argument type mismatch");
-    }
-    return Val_unit;
-}
-*/
 
 /* gtksignal.h */
 
-value ml_gtk_signal_connect (value object, value name, value clos, value after)
+CAMLprim value ml_gtk_signal_connect (value object, value name,
+                                      value clos, value after)
 {
     value *clos_p = ml_global_root_new (clos);
     return Val_int (gtk_signal_connect_full
@@ -1063,7 +873,7 @@ ML_4_name (ml_gtk_signal_emit_scroll, gtk_signal_emit_by_name,
 
 /* gtkmain.h (again) */
 
-value ml_gtk_timeout_add (value interval, value clos)
+CAMLprim value ml_gtk_timeout_add (value interval, value clos)
 {
     value *clos_p = ml_global_root_new (clos);
     return Val_int (gtk_timeout_add_full
