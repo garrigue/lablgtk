@@ -372,18 +372,16 @@ endif
 
 OCAMLDOC = ocamldoc
 lablgtk$(XO)doc : $(DOCFILES) $(ALLOBJS)
-	$(OCAMLDOC) -dump $@ -v  -I $(LABLGLDIR) $(DOCFILES)
+	$(OCAMLDOC) -dump $@ -v $(if $(LABLGLDIR),-I $(LABLGLDIR)) $(DOCFILES)
 gtkdoc.cmo : gtkdoc.ml
 	$(CAMLC) -I +ocamldoc -c $<
+DOCDIR=../doc
+DOC_BASE_URI=$(if $(DOC_URI),-base-uri $(DOC_URI))
 doc : lablgtk$(XO)doc gtkdoc.cmo
-	mkdir -p ../doc/html
-	$(OCAMLDOC) -g ./gtkdoc.cmo -v -t LablGTK -d ../doc/html -load $<
+	mkdir -p $(DOCDIR)/html
+	$(OCAMLDOC) -g ./gtkdoc.cmo $(DOC_BASE_URI) -v -t LablGTK -d $(DOCDIR)/html -load $<
 doc_texi : lablgtk$(XO)doc
-	$(OCAMLDOC) -texi -v -t LablGTK -o ../doc/lablgtk2.texi -load $<
-
-srcdoc: $(ALLOBJS)
-	mkdir -p doc
-	$(OCAMLDOC) -html -t "Lablgtk2" -d doc -I . `ls $(ALLOBJS:.cmo=.mli) 2> /dev/null`
+	$(OCAMLDOC) -texi -v -t LablGTK -o $(DOCDIR)/lablgtk2.texi -load $<
 
 $(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
 	    ml_gobject.h ml_glib.h wrappers.h
