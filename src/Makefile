@@ -114,9 +114,11 @@ lablgtk_t: liblablgtk.a lablgtk.cma $(THOBJS)
 
 var2conv: var2conv.cmo
 	$(LINKER) -o $@ var2conv.cmo
+	rm -f *_tags.c
 
 var2def: var2def.cmo
 	$(LINKER) -o $@ var2def.cmo
+	rm -f *_tags.h
 
 clean:
 	rm -f *.cm* *.o *.a *_tags.[ch] var2conv var2def lablgtk lablgtk_t
