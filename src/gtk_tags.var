@@ -85,3 +85,9 @@ type bbox_style = "GTK_BUTTONBOX_"
 
 type cell_type = "GTK_CELL_"
     [ EMPTY TEXT PIXMAP PIXTEXT WIDGET ]
+
+type toolbar_child = "GTK_TOOLBAR_CHILD_"
+    [ SPACE BUTTON TOGGLEBUTTON RADIOBUTTON WIDGET ]
+
+type tree_view_mode = "GTK_TREE_VIEW_"
+    [ LINE ITEM ]
