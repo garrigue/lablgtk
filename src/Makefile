@@ -128,6 +128,9 @@ config.make:
 	olablc -v | grep "^Standard" | sed "s/.*: */LABLLIB=/" > config.make
 	echo GTKCFLAGS=`gtk-config --cflags` >> config.make
 	echo GTKLIBS=`gtk-config --libs` >> config.make
+	echo MESA=$(MESA) >> config.make
+	echo USE_GL=$(USE_GL) >> config.make
+	echo USE_CC=$(USE_CC) >> config.make
 
 ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gdk.o: gdk_tags.c gdk_tags.h ml_gdk.h wrappers.h
