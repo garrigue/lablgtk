@@ -5,8 +5,8 @@
 (*                                                                           *)
 (*****************************************************************************)
 
-type handle = [`widget] Gobject.obj
-type menuhandle = [`gtk|`widget|`container|`menu_shell] Gobject.obj
+type handle = Gtk.widget Gobject.obj
+type menuhandle = Gtk.menu Gobject.obj
 type richcolor = Gdk.Color.t
 type hres
 type hresources
@@ -127,12 +127,13 @@ and
     method container : container
   end
 
-class type menu =
+class menu menu =
   object
-    method handle : menuhandle
-    method destroy : unit
+    method handle : menuhandle = menu
+    method destroy = GtkBase.Object.destroy menu
   end
 
+(*
 class type menuitem =
   object
     method caption : string -> unit
@@ -148,6 +149,7 @@ class type menuitem =
     method get_submenu : menu option    
     method on_click : event
   end
+*)
 
 class type window =
   object
@@ -357,9 +359,9 @@ let make_richcolor ~red ~green ~blue =
 open GdkKeysyms
 let keys = {
     k_del = _Delete;
-    k_enter : _Return;
-    k_esc : _Escape;
-    k_fun : _F1;
+    k_enter = _Return;
+    k_esc = _Escape;
+    k_fun = _F1;
 }
 
 let no_event _ = ()
@@ -371,6 +373,7 @@ open StdLabels
 open GtkBase
 open GtkButton
 open GtkMain
+open GtkMenu
 open GtkMisc
 open GtkWindow
 
@@ -450,3 +453,72 @@ let mouse_pos () =
   Gdk.Window.get_pointer_location (Gdk.Window.root_parent ())
 
 let exit_application = Main.quit
+
+class menuitem parent item =
+  object
+    val item = item
+    val mutable label = None
+    val mutable enabled = true
+    val mutable break = true
+    val mutable submenu = None
+    method caption s =
+      break <- false;
+      match label with
+        Some l ->
+          Label.set_text l s
+      | None ->
+          let l = Label.create s in
+          label <- Some l;
+          Widget.show l;
+          Container.add item l
+    method get_caption =
+      match label with
+        Some l -> Label.get_text l
+      | None   -> ""
+    method parent : menu = parent
+    method enable b =
+      Widget.set_sensitive item b;
+      enabled <- b
+    method is_enabled =
+      enabled
+    method check b =
+      break <- false;
+      CheckMenuItem.set_show_toggle item true;
+      CheckMenuItem.set_active item b
+    method is_checked =
+      CheckMenuItem.get_active item
+    method break b =
+      break <- b;
+      if b then begin
+        CheckMenuItem.set_show_toggle item false;
+        match label with None -> ()
+        | Some l ->
+            Container.remove item l;
+            Object.destroy l;
+            label <- None
+      end
+    method is_break = break
+    method submenu opt =
+      if submenu <> None then MenuItem.remove_submenu item;
+      match opt with
+        None -> ()
+      | Some (sub : menu) ->
+          break <- false;
+          MenuItem.set_submenu item sub#handle;
+          submenu <- Some sub
+    method get_submenu = submenu
+    method on_click : event = fun callback ->
+      ignore (GtkSignal.connect item ~sgn:MenuItem.Signals.activate ~callback)
+  end
+
+let new_menuitem (menu : menu) =
+  let item = CheckMenuItem.create () in
+  CheckMenuItem.set_show_toggle item false;
+  MenuShell.append menu#handle item;
+  Widget.show item;
+  new menuitem menu item
+
+let new_menu () =
+  let m = Menu.create () in
+  Widget.show m;
+  new menu m
