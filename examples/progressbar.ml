@@ -28,21 +28,21 @@ let main () =
   let table = new_table rows:3 columns:2 packing: window#add in
   
   let label = new_label label:"Progress Bar Example" in
-  table#attach label left:0 right:2 top:0 expand:`x shrink:`both;
+  table#attach label left:0 right:2 top:0 expand:`X shrink:`BOTH;
   
   let pbar = new_progress_bar () in
-  table#attach pbar left:0 right:2 top:1 fill:`x shrink:`both;
+  table#attach pbar left:0 right:2 top:1 fill:`X shrink:`BOTH;
 
   let bar = new bar pbar in
   let ptimer = Timeout.add 100 callback:bar#progress in
 
   let button = new_button label:"Reset" in
   button#connect#clicked callback:bar#reset;
-  table#attach button left:0 top:2 expand:`none fill:`x shrink:`both;
+  table#attach button left:0 top:2 expand:`NONE fill:`X shrink:`BOTH;
 
   let button = new_button label:"Cancel" in
   button#connect#clicked callback:Main.quit;
-  table#attach button left:1 top:2 expand:`none fill:`x shrink:`both;
+  table#attach button left:1 top:2 expand:`NONE fill:`X shrink:`BOTH;
 
   window#show_all ();
   Main.main ()

@@ -56,14 +56,14 @@ module Color = struct
 
   external get_system_colormap : unit -> colormap
       = "ml_gdk_colormap_get_system"
-  type spec = [Black Name(string) RGB(int * int * int) White]
+  type spec = [BLACK NAME(string) RGB(int * int * int) WHITE]
   let alloc color ?:colormap [< get_system_colormap () >] =
     match color with
-      `White -> color_white colormap
-    | `Black -> color_black colormap
-    | `Name _|`RGB _ as c ->
+      `WHITE -> color_white colormap
+    | `BLACK -> color_black colormap
+    | `NAME _|`RGB _ as c ->
 	let color =
-	  match c with `Name s -> color_parse s
+	  match c with `NAME s -> color_parse s
 	  | `RGB (red,green,blue) -> color_create :red :green :blue
 	in
 	if not (color_alloc colormap color) then raise (Error"Color.alloc");

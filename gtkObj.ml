@@ -99,11 +99,11 @@ class event_signals obj = object
   method unmap = Signal.connect sig:Event.Signals.unmap obj
 end
 
-class widget obj = object
+class widget obj = object (self)
   inherit gtkobj obj
   method frame = Widget.coerce obj
-  method misc = new widget_misc obj
-  method show () = Widget.show obj
+  method misc = new widget_misc self#frame
+  method show () = Widget.show self#frame
 end
 
 class widget_signals obj = object
@@ -125,7 +125,7 @@ class container obj = object
   method remove : 'b. (#framed as 'b) -> unit =
     fun w -> Container.remove obj w#frame
   method children = List.map fun:(new widget) (Container.children obj)
-  method set_size = Container.set ?obj
+  method set_size ?:border = Container.set ?obj ?border_width:border
 end
 
 class container_signals obj = object
@@ -242,8 +242,8 @@ class button_skel obj = object (self)
   inherit container obj
   method clicked = Button.clicked obj
   method grab_default () =
-    Widget.set_can_default (self#frame) true;
-    Widget.grab_default (self#frame)
+    Widget.set_can_default self#frame true;
+    Widget.grab_default self#frame
 end
 
 class button_signals obj = object
@@ -289,7 +289,7 @@ let new_check_button ?opt ?:label =
 
 class radio_button obj = object
   inherit toggle_button obj
-  method set_group = RadioButton.set ?obj
+  method set_group = RadioButton.set_group obj
   method group = RadioButton.group obj
 end
   
@@ -356,6 +356,22 @@ end
 let new_entry ?:max_length ?unit =
   Entry.setter ?(Entry.create ?:max_length ?unit) ?max_length:None
     ?cont:(pack_return (new entry))
+
+class combo obj = object
+  val combo = obj
+  inherit entry (Combo.entry obj)
+  method frame = Widget.coerce combo
+  method set_value_in_list = Combo.set_value_in_list combo
+  method set_use_arrows = Combo.set_use_arrows combo
+  method set_use_arrows_always = Combo.set_use_arrows_always combo
+  method set_case_sensitive = Combo.set_case_sensitive combo
+  method set_popdown_strings = Combo.set_popdown_strings combo
+  method disable_activate = Combo.disable_activate combo
+end
+
+let new_combo ?(_ : unit option) =
+  Combo.setter ?(Combo.create ())
+    ?cont:(Container.setter ?cont:(pack_return (new combo)))
 
 class text obj = object
   inherit editable obj

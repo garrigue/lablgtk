@@ -27,10 +27,10 @@ let main () =
   Container.add window table;
   
   let label = Label.create "Progress Bar Example" in
-  Table.attach table label left:0 right:2 top:0 expand:`x shrink:`both;
+  Table.attach table label left:0 right:2 top:0 expand:`X shrink:`BOTH;
   
   let pbar = ProgressBar.create () in
-  Table.attach table pbar left:0 right:2 top:1 fill:`x shrink:`both;
+  Table.attach table pbar left:0 right:2 top:1 fill:`X shrink:`BOTH;
 
   let bar = new bar pbar in
   let ptimer = Timeout.add 100 callback:(fun () -> bar#progress) in
@@ -38,11 +38,11 @@ let main () =
   let button = Button.create label:"Reset" in
   Signal.connect sig:Button.Signals.clicked button
     callback:(fun () -> bar#progress_r);
-  Table.attach table button left:0 top:2 expand:`none fill:`x shrink:`both;
+  Table.attach table button left:0 top:2 expand:`NONE fill:`X shrink:`BOTH;
 
   let button = Button.create label:"Cancel" in
   Signal.connect sig:Button.Signals.clicked button callback:Main.quit;
-  Table.attach table button left:1 top:2 expand:`none fill:`x shrink:`both;
+  Table.attach table button left:1 top:2 expand:`NONE fill:`X shrink:`BOTH;
 
   Widget.show_all window
 
