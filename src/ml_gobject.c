@@ -11,6 +11,7 @@
 #include "wrappers.h"
 #include "ml_glib.h"
 #include "ml_gobject.h"
+#include "ml_gvaluecaml.h"
 #include "gobject_tags.h"
 #include "gobject_tags.c"
 
@@ -46,7 +47,16 @@ ML_1 (g_type_parent, GType_val, Val_GType)
 ML_1 (g_type_depth, GType_val, Val_int)
 ML_2 (g_type_is_a, GType_val, GType_val, Val_bool)
 ML_1 (G_TYPE_FUNDAMENTAL, GType_val, Val_fundamental_type)
-ML_1 (Fundamental_type_val, ID, Val_GType)
+CAMLprim value ml_Fundamental_type_val(value fund)
+{
+  /* G_TYPE_CAML is not a constant, it's a function call, so it can't
+     be in the lookup_table.
+     It's not a true fundamental type because Gtk{Tree,List}Store won't
+     accept unknown fundamental types. */
+  if (fund == MLTAG_CAML)
+    return Val_GType(G_TYPE_CAML);
+  return Val_GType(Fundamental_type_val(fund));
+}
 
 #ifdef HASGTK22
 CAMLprim value  ml_g_type_interface_prerequisites(value type)
@@ -224,69 +234,79 @@ value g_value_get_variant (GValue *val)
     CAMLparam0();
     CAMLlocal1(tmp);
     value ret = MLTAG_NONE;
-    GType type = G_VALUE_TYPE(val);
+    GType type;
     int tag;
 
-    if (!g_type_check_value_holds(val,type))
-        invalid_argument("Gobject.Value.get");
-    switch (G_TYPE_FUNDAMENTAL(type)) {
+    if (! G_IS_VALUE(val))
+      invalid_argument("Gobject.Value.get");
+
+    type = G_VALUE_TYPE(val);
+
+    if (type == G_TYPE_CAML) {
+        tmp = DATA.v_long;
+	if (tmp == 0)
+	  CAMLreturn(ret);
+        tag = MLTAG_CAML;
+    }
+    else
+      switch (G_TYPE_FUNDAMENTAL(type)) {
         /* This is such a pain that we access the data directly :-( */
         /* We do like in gvaluetypes.c */
-    case G_TYPE_CHAR:
-    case G_TYPE_UCHAR:
+      case G_TYPE_CHAR:
+      case G_TYPE_UCHAR:
         tag = MLTAG_CHAR;
         tmp = Val_int(DATA.v_int);
         break;
-    case G_TYPE_BOOLEAN:
+      case G_TYPE_BOOLEAN:
         tag = MLTAG_BOOL;
         tmp = Val_bool(DATA.v_int);
         break;
-    case G_TYPE_INT:
-    case G_TYPE_UINT:
+      case G_TYPE_INT:
+      case G_TYPE_UINT:
         tag = MLTAG_INT;
         tmp = Val_int (DATA.v_int);
         break;
-    case G_TYPE_LONG:
-    case G_TYPE_ULONG:
-    case G_TYPE_ENUM:
-    case G_TYPE_FLAGS:
+      case G_TYPE_LONG:
+      case G_TYPE_ULONG:
+      case G_TYPE_ENUM:
+      case G_TYPE_FLAGS:
         tag = MLTAG_INT;
         tmp = Val_long (DATA.v_long);
         break;
-    case G_TYPE_FLOAT:
+      case G_TYPE_FLOAT:
         tag = MLTAG_FLOAT;
         tmp = copy_double ((double)DATA.v_float);
         break;
-    case G_TYPE_DOUBLE:
+      case G_TYPE_DOUBLE:
         tag = MLTAG_FLOAT;
         tmp = copy_double (DATA.v_double);
         break;
-    case G_TYPE_STRING:
+      case G_TYPE_STRING:
         tag = MLTAG_STRING;
         tmp = Val_option (DATA.v_pointer, copy_string);
         break;
-    case G_TYPE_INTERFACE: /* assume interfaces are for objects */
-    case G_TYPE_OBJECT:
+      case G_TYPE_INTERFACE: /* assume interfaces are for objects */
+      case G_TYPE_OBJECT:
         tag = MLTAG_OBJECT;
         tmp = Val_option ((GObject*)DATA.v_pointer, Val_GObject);
         break;
-    case G_TYPE_BOXED:
+      case G_TYPE_BOXED:
         tag = MLTAG_POINTER;
         tmp = (DATA.v_pointer == NULL ? Val_unit
                : ml_some(Val_gboxed(type, DATA.v_pointer)));
         break;
-    case G_TYPE_POINTER:
-        tag = MLTAG_POINTER;
+      case G_TYPE_POINTER:
+	  tag = MLTAG_POINTER;
         tmp = Val_option (DATA.v_pointer, Val_pointer);
         break;
-    case G_TYPE_INT64:
-    case G_TYPE_UINT64:
+      case G_TYPE_INT64:
+      case G_TYPE_UINT64:
         tag = MLTAG_INT64;
         tmp = copy_int64 (DATA.v_int64);
         break;
-    default:
-        tag = -1;
-    }
+      default:
+	tag = -1;
+      }
     if (tag != -1) {
         ret = alloc_small(2,0);
         Field(ret,0) = tag;
@@ -324,14 +344,15 @@ void g_value_set_variant (GValue *val, value arg)
     case G_TYPE_ULONG:
     case G_TYPE_ENUM:
     case G_TYPE_FLAGS:
-        if (tag == MLTAG_INT)
-            DATA.v_long = Int_val(data);
-        else if (tag == MLTAG_INT32)
-            DATA.v_long = Int32_val(data);
-        else if (tag == MLTAG_LONG)
-            DATA.v_long = Nativeint_val(data);
-        else break;
-        return;
+      switch (tag) {
+      case MLTAG_INT:
+	DATA.v_long = Int_val(data); return;
+      case MLTAG_INT32:
+	DATA.v_long = Int32_val(data); return;
+      case MLTAG_LONG:
+	DATA.v_long = Nativeint_val(data); return;
+      };
+      break;
     case G_TYPE_FLOAT:
         if (tag != MLTAG_FLOAT) break;
         DATA.v_float = (float)Double_val(data);
@@ -354,9 +375,15 @@ void g_value_set_variant (GValue *val, value arg)
         g_value_set_boxed(val, Option_val(data,MLPointer_val,NULL));
         return;
     case G_TYPE_POINTER:
-        if (tag != MLTAG_POINTER && tag != MLTAG_OBJECT) break;
-        DATA.v_pointer = Option_val(data,MLPointer_val,NULL);
-        return;
+      switch (tag) {
+        case MLTAG_CAML:
+	  DATA.v_long = data; return;
+        case MLTAG_POINTER:
+        case MLTAG_OBJECT:
+          DATA.v_pointer = Option_val(data,MLPointer_val,NULL);
+          return;
+      };
+      break;
     case G_TYPE_INT64:
     case G_TYPE_UINT64:
         if (tag == MLTAG_INT64)

@@ -133,7 +133,7 @@ GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkbin$(XO) ml_gtkbutton$(XO) \
 	ml_gtkpack$(XO) ml_gtkrange$(XO) ml_gtktext$(XO) ml_gtktree$(XO) \
 	ml_gtkstock$(XO) ml_gtkfile$(XO) ml_gtkaction$(XO)
 COBJS = ml_gdkpixbuf$(XO) ml_gdk$(XO) ml_glib$(XO) ml_gobject$(XO) \
-	ml_gpointer$(XO) wrappers$(XO) $(GTKOBJS)
+	ml_gpointer$(XO) ml_gvaluecaml$(XO) wrappers$(XO) $(GTKOBJS)
 GTKPROPS = gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
 	gtkList.props gtkMenu.props gtkMisc.props gtkPack.props \
 	gtkRange.props gtkText.props gtkTree.props gtkFile.props gtkAction.props
@@ -407,7 +407,8 @@ $(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
 $(GNOMEUICOBJS) : gnomeui_tags.h
 $(PANELCOBJS) : panel_tags.h
 ml_glib$(XO): glib_tags.h ml_glib.h wrappers.h
-ml_gobject$(XO): gobject_tags.h wrappers.h
+ml_gobject$(XO): gobject_tags.h ml_gvaluecaml.h wrappers.h
+ml_gvaluecaml$(XO): ml_gobject.h wrappers.h
 ml_gdk$(XO): gdk_tags.h ml_gdk.h ml_gpointer.h ml_pango.h wrappers.h
 ml_gtk$(XO) ml_gtktext$(XO): ml_pango.h
 ml_gtkgl$(XO): gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
