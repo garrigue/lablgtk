@@ -62,6 +62,7 @@ class clist :
   ?row_height:int ->
   ?titles_show:bool ->
   ?titles_active:bool ->
+  ?auto_sort:bool ->
   ?sort_column:int ->
   ?sort_type:Gtk.Tags.sort_type ->
   ?border_width:int ->
@@ -122,8 +123,9 @@ class clist :
       ?background:Gdk.Color.t -> ?selectable:bool -> unit
     method set_shift : int -> int -> vertical:int -> horizontal:int -> unit
     method set_size : ?border:int -> ?width:int -> ?height:int -> unit
-    method set_sort : ?column:int -> ?type:Tags.sort_type -> unit
+    method set_sort : ?auto:bool -> ?column:int -> ?type:Tags.sort_type -> unit
     method set_titles : ?show:bool -> ?active:bool -> unit
+    method sort : unit -> unit
     method swap_rows : int -> int -> unit
     method thaw : unit -> unit
     method unselect : int -> int -> unit

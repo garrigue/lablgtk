@@ -19,7 +19,7 @@ class container :
     inherit widget
     val obj : 'a obj
     method add : #is_widget -> unit
-    method children : widget list
+    method children : widget_wrapper list
     method remove : #is_widget -> unit
     method focus : focus
     method set_size : ?border:int -> ?width:int -> ?height:int -> unit

@@ -111,6 +111,7 @@ class widget_misc obj = object
   method unrealize () = Widget.realize obj
   method draw = Widget.draw obj
   method event : 'a. 'a Gdk.event -> bool = Widget.event obj
+  method add_events = Widget.add_events obj
   method activate () = Widget.activate obj
   method reparent : 'a. (#is_widget as 'a) -> unit =
     fun w -> Widget.reparent obj w#as_widget

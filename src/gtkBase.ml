@@ -66,7 +66,7 @@ module Widget = struct
   external set_can_default : [> widget] obj -> bool -> unit
       = "ml_gtk_widget_set_can_default"
   external set_can_focus : [> widget] obj -> bool -> unit
-      = "ml_gtk_widget_set_can_default"
+      = "ml_gtk_widget_set_can_focus"
   external grab_focus : [> widget] obj -> unit
       = "ml_gtk_widget_grab_focus"
   external grab_default : [> widget] obj -> unit
@@ -83,6 +83,13 @@ module Widget = struct
       = "ml_gtk_widget_set_uposition"
   external set_usize : [> widget] obj -> width:int -> height:int -> unit
       = "ml_gtk_widget_set_usize"
+  external add_events : [> widget] obj -> Gdk.Tags.event_mask list -> unit
+      = "ml_gtk_widget_add_events"
+  external set_events : [> widget] obj -> Gdk.Tags.event_mask list -> unit
+      = "ml_gtk_widget_set_events"
+  external set_extension_events :
+      [> widget] obj -> Gdk.Tags.extension_events -> unit
+      = "ml_gtk_widget_set_extension_events"
   external get_toplevel : [> widget] obj -> widget obj
       = "ml_gtk_widget_get_toplevel"
   external get_ancestor : [> widget] obj -> gtk_type -> widget obj
@@ -126,12 +133,15 @@ module Widget = struct
     "ml_gtk_widget_visible"
   external parent : [> widget] obj -> widget obj =
     "ml_gtk_widget_parent"
-  let setter w :cont ?:name ?:state ?:sensitive ?:can_default ?:can_focus
+  let setter w :cont ?:name ?:state ?:sensitive
+      ?:events ?:extension_events ?:can_default ?:can_focus
       ?:x [< -2 >] ?:y [< -2 >] ?:width [< -1 >] ?:height [< -1 >] ?:style =
     let may_set f arg = may fun:(f w) arg in
     may_set set_name name;
     may_set set_state state;
     may_set set_sensitive sensitive;
+    may_set set_events events;
+    may_set set_extension_events extension_events;
     may_set set_can_default can_default;
     may_set set_can_focus can_focus;
     may_set set_style style;

@@ -22,7 +22,6 @@ let _ =
   text#insert "こんにちは" :font;
   let style = button#misc#style#copy in
   button#misc#set :style;
-  List.iter button#children fun:(fun w -> w#misc#set :style);
   style#set :font bg:[`NORMAL,`NAME "green"; `PRELIGHT,`NAME "red"];
   button#connect#clicked callback:Main.quit
 

@@ -231,6 +231,10 @@ ML_2 (gtk_widget_set_state, GtkWidget_val, State_type_val, Unit)
 ML_2 (gtk_widget_set_sensitive, GtkWidget_val, Bool_val, Unit)
 ML_3 (gtk_widget_set_uposition, GtkWidget_val, Int_val, Int_val, Unit)
 ML_3 (gtk_widget_set_usize, GtkWidget_val, Int_val, Int_val, Unit)
+ML_2 (gtk_widget_add_events, GtkWidget_val, Flags_Event_mask_val, Unit)
+ML_2 (gtk_widget_set_events, GtkWidget_val, Flags_Event_mask_val, Unit)
+ML_2 (gtk_widget_set_extension_events, GtkWidget_val, Extension_events_val,
+      Unit)
 ML_1 (gtk_widget_get_toplevel, GtkWidget_val, Val_GtkWidget)
 ML_2 (gtk_widget_get_ancestor, GtkWidget_val, Int_val, Val_GtkWidget)
 ML_1 (gtk_widget_get_colormap, GtkWidget_val, Val_GdkColormap)
@@ -800,6 +804,8 @@ ML_3 (gtk_clist_swap_rows, GtkCList_val, Int_val, Int_val, Unit)
 ML_3 (gtk_clist_row_move, GtkCList_val, Int_val, Int_val, Unit)
 ML_2 (gtk_clist_set_sort_column, GtkCList_val, Int_val, Unit)
 ML_2 (gtk_clist_set_sort_type, GtkCList_val, Sort_type_val, Unit)
+ML_1 (gtk_clist_sort, GtkCList_val, Unit)
+ML_2 (gtk_clist_set_auto_sort, GtkCList_val, Bool_val, Unit)
 
 /* gtkfixed.h */
 
