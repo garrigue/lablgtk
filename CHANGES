@@ -1,5 +1,9 @@
 $Id$
 
+1999.5.28
+  * a few stylistic corrections
+  * added Packer in gtk.ml
+
 1999.5.27
   * new Gtk.Main.main Gtk.Main.quit and GtkThread.main (for modal windows)
   * added x: and y: to Window.setter

@@ -7,7 +7,7 @@ class gtkobj obj = object
   val obj = obj
   method destroy () = Object.destroy obj
   method disconnect = Signal.disconnect obj
-  method get_type () = Object.get_type obj
+  method get_type = Object.get_type obj
 end
 
 class gtkobj_signals obj = object
@@ -154,9 +154,9 @@ class container obj = object
     fun w -> Container.remove obj w#frame
   method children = List.map fun:(new widget) (Container.children obj)
   method set_size ?:border = Container.set ?obj ?border_width:border
-  method set_focus_vadjustment = fun (w : adjustment) ->
+  method set_focus_vadjustment (w : adjustment) =
     Container.set_focus_vadjustment obj (w # as_adjustment)
-  method set_focus_hadjustment = fun (w : adjustment) ->
+  method set_focus_hadjustment (w : adjustment) =
     Container.set_focus_hadjustment obj (w # as_adjustment)
 end
 
@@ -282,9 +282,12 @@ class menu_item obj = object
   method connect = new menu_item_signals obj
 end
 
-let new_menu_item ?opt ?:label ?:tearoff [< false >] =
-  Container.setter ?(MenuItem.create ?opt ?:label :tearoff)
+let new_menu_item ?opt ?:label =
+  Container.setter ?(MenuItem.create ?opt ?:label)
     ?cont:(pack_return (new menu_item))
+
+let new_tearoff_menu_item ?(opt : unit option) =
+  pack_return ?(new menu_item) ?(MenuItem.tearoff_create ())
 
 class check_menu_item_signals obj = object
   inherit menu_item_signals obj
@@ -764,11 +767,9 @@ class toolbar obj = object
         ?tooltip:string -> ?tooltip_private:string ->
         ?icon:([> widget] as 'a) Gtk.obj -> ?pos:int ->
 	?callback:(unit -> unit) -> Gtk.Button.t Gtk.obj =
-    fun ?type:t ?:text ?:tooltip ?:tooltip_private ?:icon ?:pos ?:callback ->
-    Toolbar.insert_button obj ?type:t ?:text ?:tooltip ?:tooltip_private
-	?:icon ?:pos ?:callback
+    Toolbar.insert_button ?obj
 
-  method insert_space ?:pos = Toolbar.insert_space obj ?:pos
+  method insert_space = Toolbar.insert_space ?obj
 
   method set_orientation = Toolbar.set_orientation obj
   method set_style = Toolbar.set_style obj
