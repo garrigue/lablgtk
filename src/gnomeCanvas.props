@@ -54,15 +54,20 @@ let path_def =
 end
 }
 
+oheader {
+open Gobject
+open GnomeCanvas
+}
+
 use "Gtk"
 tagprefix "canvas"
 
 conversions {
   GtkStock "GtkStock.conv"
   ArtWindRule "GnomeCanvasEnums.art_wind_rule_conv"
-  ArtVpathDash "GnomeCanvas.Conv.art_vpath_dash"
+  ArtVpathDash "Private.art_vpath_dash"
 }
-conversions "GnomeCanvas" "GnomeCanvas.Conv" { Points PathDef }
+conversions "GnomeCanvas" "Private" { Points PathDef }
 
 classes {
   GdkPixbuf "GdkPixbuf.pixbuf"
@@ -70,7 +75,7 @@ classes {
   GtkWidget "Gtk.widget obj"
 }
 
-class Item : GtkObject {
+class Item abstract vsetrec : GtkObject {
   "parent"               GnomeCanvasItem      : Read / Write
   method parent : "group obj"
   method canvas : "canvas obj"
@@ -99,7 +104,7 @@ class Item : GtkObject {
          "(GtkBase.Widget.Signals.Event.marshal : (item_event -> bool) -> _)"
 }
 
-class Shape : Item {
+class Shape abstract : Item {
   "cap-style"            GdkCapStyle          : Read / Write
   "dash"                 ArtVpathDash         : Read / Write
   "fill-color"           gchararray           : Write
@@ -117,36 +122,36 @@ class Shape : Item {
   "wind"                 ArtWindRule          : Read / Write
 }
 
-class Bpath : Shape {
+class Bpath abstract : Shape {
   "bpath"                GnomeCanvasPathDef   : Read / Write
 }
 
-class RE : Shape {
+class RE abstract : Shape {
   "x1"                   gdouble              : Read / Write
   "x2"                   gdouble              : Read / Write
   "y1"                   gdouble              : Read / Write
   "y2"                   gdouble              : Read / Write
 }
 
-class Ellipse : RE {}
-class Rect : RE {}
+class Ellipse abstract : RE {}
+class Rect abstract : RE {}
 
-class Polygon : Shape {
+class Polygon abstract : Shape {
   "points"               GnomeCanvasPoints    : Read / Write
 }
 
-class Group : Item {
+class Group abstract : Item {
   "x"                    gdouble              : Read / Write
   "y"                    gdouble              : Read / Write
   method get_items : "item obj list"
 }
 
-class Clipgroup : Group {
+class Clipgroup abstract : Group {
   "path"                 GnomeCanvasPathDef   : Read / Write
   "wind"                 ArtWindRule          : Read / Write
 }
 
-class Line : Item {
+class Line abstract : Item {
   "arrow-shape-a"        gdouble              : Read / Write
   "arrow-shape-b"        gdouble              : Read / Write
   "arrow-shape-c"        gdouble              : Read / Write
@@ -166,7 +171,7 @@ class Line : Item {
   "width-units"          gdouble              : Read / Write
 }
 
-class Pixbuf : Item {
+class Pixbuf abstract : Item {
   "anchor"               GtkAnchorType        : Read / Write
   "height"               gdouble              : Read / Write
   "height-in-pixels"     gboolean             : Read / Write
@@ -181,7 +186,7 @@ class Pixbuf : Item {
   "y-in-pixels"          gboolean             : Read / Write
 }
 
-class RichText : Item {
+class RichText abstract : Item {
   "anchor"               GtkAnchorType        : Read / Write
   "cursor-blink"         gboolean             : Read / Write
   "cursor-visible"       gboolean             : Read / Write
@@ -208,7 +213,7 @@ class RichText : Item {
   method get_buffer : "Gtk.text_buffer"
 }
 
-class Text : Item {
+class Text abstract : Item {
   "anchor"               GtkAnchorType        : Read / Write
   "attributes"           PangoAttrList        : Read / Write
   "clip"                 gboolean             : Read / Write
@@ -252,7 +257,7 @@ class Text : Item {
   "y-offset"             gdouble              : Read / Write
 }
 
-class Widget : Item {
+class Widget abstract : Item {
   "anchor"               GtkAnchorType        : Read / Write
   "height"               gdouble              : Read / Write
   "size-pixels"          gboolean             : Read / Write
