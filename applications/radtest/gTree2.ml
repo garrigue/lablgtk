@@ -50,8 +50,8 @@ class virtual ['a] pre_tree obj = object (self)
   method remove_items items =
     Tree.remove_items obj
       (List.map ~f:(fun (t : 'a) -> t#as_item) items)
-  method set_selection_mode = Tree.set_selection_mode obj
-  method set_view_mode = Tree.set_view_mode obj
+(*  method set_selection_mode = Tree.set_selection_mode obj
+  method set_view_mode = Tree.set_view_mode obj *)
   method set_view_lines = Tree.set_view_lines obj
   method selection =
     List.map ~f:(fun w -> self#wrap (Widget.coerce w)) (Tree.selection obj)
@@ -62,11 +62,7 @@ class tree obj = object (self)
   method private wrap w =
     new pre_tree_item ~wrapper:(new tree) (TreeItem.cast w)
   method item_up ~pos =
-    let l = self#children in
-    if pos < 1 || pos > List.length l then invalid_arg "GTree2.tree#item_up";
-    let node = List.nth l pos in
-    self#remove node;
-    self#insert ~pos:(pos-1) node
+    Tree.item_up obj pos
 end
 
 class tree_item obj =
