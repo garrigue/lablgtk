@@ -20,7 +20,21 @@ ML_0 (glade_init, Unit)
 
 #define GladeXML_val(val) ((GladeXML*)GtkObject_val(val))
 
-ML_2 (glade_xml_new, String_val, String_val, Val_GtkAny_sink)
+value ml_glade_xml_new (value file, value data, value root, value domain)
+{
+    GladeXML *ret;
+    if (Is_block(data))
+        ret = glade_xml_new_from_memory (String_val(Field(data,0)),
+                                         string_length(Field(data,0)),
+                                         String_option_val(root),
+                                         String_option_val(domain));
+    else if (Is_block(file))
+        ret = glade_xml_new_with_domain (String_val(Field(file,0)),
+                                         String_option_val(root),
+                                         String_option_val(domain));
+    else invalid_argument ("Glade.create");
+    return Val_GtkAny_sink (ret);
+}
 
 #define set(variable, expr) {value tmp = expr; initialize(&variable, tmp);}
 

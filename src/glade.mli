@@ -9,8 +9,13 @@ external init : unit -> unit = "ml_glade_init"
 (* The raw glade XML widget *)
 type glade_xml = [ `data | `glade_xml]
 
-external create : file:string -> root:string -> glade_xml Gtk.obj
-  = "ml_glade_xml_new"
+external create :
+    ?file:string -> ?data:string ->
+    ?root:string -> ?domain:string -> unit -> glade_xml Gtk.obj
+    = "ml_glade_xml_new"
+      (* One of [file] or [data] must be given, [data] is preferred when *)
+      (* both are given. If [root] is omitted the first widget is used *)
+      (* as root. [domain] is for localization. *)
 
 val signal_autoconnect :
   [> `glade_xml] Gtk.obj ->
@@ -59,7 +64,9 @@ val print_bindings : out_channel -> [> `glade_xml] Gtk.obj -> unit
 
 (* Class skeleton, for use in generated wrappers *)
 
-class xml : file:string -> root:string -> ?autoconnect:bool -> unit ->
+class xml :
+  ?file:string -> ?data:string -> ?root:string ->
+  ?domain:string -> ?autoconnect:bool -> unit ->
   object
     val xml : glade_xml Gtk.obj
     method xml : glade_xml Gtk.obj
