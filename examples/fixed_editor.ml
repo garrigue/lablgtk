@@ -4,20 +4,16 @@ open GObj
 open GMain
 
 let dnd_source_window () =
-  let window = GWindow.window (* type:`POPUP *) ~position:`MOUSE () in
-  let vbx =
-    GPack.vbox (* width:320 height:240 *) ~border_width:10 ~packing:window#add ()
+  let window = GWindow.window ~position:`MOUSE () in
+  let vbx = GPack.vbox ~border_width:10 ~packing:window#add ()
   in   
   let evb = GBin.event_box ~border_width:0 ~packing:vbx#add () in
-  (* type shadow_type = [ NONE IN OUT ETCHED_IN ETCHED_OUT ] *)
   let frm = GBin.frame ~shadow_type:`OUT ~packing:evb#add () in
   let lbl = GMisc.label ~text:"hello" ~packing:frm#add () in
   let lbl2 = GMisc.label ~text:"drag from here!" ~packing:vbx#add () in
   let targets = [ { target = "STRING"; flags = []; info = 0} ] in
   begin
     window#show ();
-(*  evb#misc#set_position x:150 y:110;
-    vbox#move evb x:150 y:110; *)
     evb#drag#source_set targets ~modi:[`BUTTON1] ~actions:[`COPY];
     evb#drag#connect#data_get ~callback: begin
       fun _ data ~info ~time:_ ->
@@ -108,26 +104,20 @@ class drag_info = object
 end
 
     
-let to_grid (* ?which:b [< GB_MIDDLE >] *) g x = x - (x mod g) (* + g * (
-  match b with
-    GB_RIGHT -> 1
-  | GB_LEFT  -> 0
-  | _  (* GB_MIDDLE *) -> if (x mod g) * 2 >= g then 1 else 0
- )
-*)
+let to_grid g x = x - (x mod g)
   
 let to_grid2 g (x, y) = (to_grid g x, to_grid g y)
 
-class fix_editor ~width ~height ~packing:pack_fun =     
+class fix_editor ~width ~height ~packing =
   let info = new drag_info in
-  let fix = GPack.fixed ~width ~height ~packing:pack_fun () in
+  let fix = GPack.fixed ~width ~height ~packing () in
   let _ = fix#misc#realize () in
   let fix_window = fix#misc#window in
   let fix_drawing = new GDraw.drawable fix_window in
 
   object (self)
+    inherit GObj.widget fix#as_widget
     val mutable grid = 1
-    method as_widget = fix#as_widget
     method set_grid g =
       if (grid != g) then begin
       	let pix =
@@ -144,18 +134,10 @@ class fix_editor ~width ~height ~packing:pack_fun =
     method new_child ~name ~x ~y ~width ~height ~callback =
       let evb = GBin.event_box ~border_width:0 ~packing:fix#add () in
       let lbl = GMisc.label ~text:name ~width ~height ~packing:evb#add () in
-      lbl#misc#set_usize ~width ~height;
       evb#misc#realize ();
-      evb#misc#set_uposition ~x ~y;
-      fix#move evb#coerce ~x ~y;
+      evb#misc#set_geometry ~x ~y ();
       self#connect_signals ~ebox:evb ~widget:lbl#coerce ~callback;
-      let ret_val ~x ~y ~width ~height ~name =
-	fix#move evb#coerce ~x ~y;
-	lbl#set_text name;
-	lbl#misc#set_usize ~width ~height;
-	evb#misc#set_uposition ~x ~y;
-      in
-      ret_val
+      ()
 
     method private connect_signals
       ~ebox:(ebox : GBin.event_box) ~widget:(widget : widget) ~callback:cbfun =
@@ -198,8 +180,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
 	  begin match action with
 	    GB_MIDDLE ->
 	      let (nx, ny) = to_grid2 grid (mx-ox, my-oy) in
-	      fix#move ebox#coerce ~x:nx ~y:ny;
-	      ebox#misc#set_uposition ~x:nx ~y:ny;
+	      ebox#misc#set_geometry ~x:nx ~y:ny ();
 	      if cbfun ~x:nx ~y:ny ~width:(-2) ~height:(-2) then
 	      	()
 	      else (* should we undo ? *) ()
@@ -213,18 +194,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
 	      let (ty, by) =
 	      	if my<toi_y then (my, toi_y) else (toi_y, my) in
 	      let (w, h) = (rx-lx, by-ty) in
-(*	      Misc.may (!draw_id)
-		fun:(fun id -> GtkSignal.handler_block ebox#as_widget id);
-	      Misc.may (!exps_id)
-		fun:(fun id -> GtkSignal.handler_block ebox#as_widget id); *)
-	      ebox#misc#set_usize ~width:w ~height:h;
-	      widget#misc#set_usize ~width:w ~height:h;
-	      fix#move ebox#coerce ~x:lx ~y:ty;
-	      ebox#misc#set_uposition ~x:lx ~y:ty;
-(*	      Misc.may (!draw_id)
-		fun:(fun id -> GtkSignal.handler_unblock ebox#as_widget id);
-	      Misc.may (!exps_id)
-		fun:(fun id -> GtkSignal.handler_unblock ebox#as_widget id); *)
+	      ebox#misc#set_geometry ~x:lx ~y:ty ~width:w ~height:h ();
 	      if cbfun ~x:lx ~y:ty ~width:w ~height:h then
 	      	()
 	      else (* should we undo ? *) ()
@@ -233,10 +203,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
 	      let my = to_grid grid my in
 	      let (ty, by) = if my<toi_y then (my, toi_y) else (toi_y, my) in
 	      let h = by-ty in
-	      ebox#misc#set_uposition ~y:ty ~x:(-2);
-	      fix#move ebox#coerce ~x:lx ~y:ty;
-	      ebox#misc#set_usize ~height:h ~width:(-2);
-	      widget#misc#set_usize ~height:h ~width:(-2);
+	      ebox#misc#set_geometry ~y:ty ~height:h ();
 	      if cbfun ~x:lx ~y:ty ~width:(-2) ~height:h then
 	      	()
 	      else (* should we undo ? *) ()
@@ -245,10 +212,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
 	      let mx = to_grid grid mx in
 	      let (lx, rx) = if mx<toi_x then (mx, toi_x) else (toi_x, mx) in
 	      let w = rx-lx in 
-	      ebox#misc#set_uposition ~x:lx ~y:(-2);
-	      fix#move ebox#coerce ~x:lx ~y:ty;
-	      ebox#misc#set_usize ~width:w ~height:(-2);
-	      widget#misc#set_usize ~width:w ~height:(-2);
+	      ebox#misc#set_geometry ~x:lx ~width:w ();
 	      if cbfun ~x:lx ~y:ty ~width:w ~height:(-2) then
 	      	()
 	      else (* should we undo ? *) ()

@@ -80,9 +80,9 @@ class frame obj = object
   method connect = new container_signals obj
 end
 
-let frame ?label ?label_xalign ?label_yalign ?shadow_type
+let frame ?(label="") ?label_xalign ?label_yalign ?shadow_type
     ?border_width ?width ?height ?packing ?show () =
-  let w = Frame.create ?label () in
+  let w = Frame.create label in
   Frame.set w ?label_xalign ?label_yalign ?shadow_type;
   Container.set w ?border_width ?width ?height;
   pack_return (new frame w) ~packing ~show

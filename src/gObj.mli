@@ -144,12 +144,12 @@ and misc_ops :
     method lock_accelerators : unit -> unit
     method map : unit -> unit
     method name : string
-    method parent : widget
+    method parent : widget option
     method pointer : int * int
     method popup : x:int -> y:int -> unit
     method realize : unit -> unit
     method remove_accelerator :
-      accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> unit
+      group:accel_group -> ?modi:Gdk.Tags.modifier list -> Gdk.keysym -> unit
     method reparent : widget -> unit
     method set_app_paintable : bool -> unit
     method set_can_default : bool -> unit
@@ -158,12 +158,12 @@ and misc_ops :
     method set_sensitive : bool -> unit
     method set_state : Tags.state_type -> unit
     method set_style : style -> unit
-    method set_uposition : x:int -> y:int -> unit
-    method set_usize : width:int -> height:int -> unit
+    method set_geometry :
+      ?x:int -> ?y:int -> ?width:int -> ?height:int -> unit -> unit
     method show : unit -> unit
     method show_all : unit -> unit
     method style : style
-    method toplevel : widget
+    method toplevel : widget option
     method unmap : unit -> unit
     method unparent : unit -> unit
     method unrealize : unit -> unit

@@ -102,9 +102,9 @@ object(self)
 	"auto_shrink", new prop_bool ~name:"auto_shrink" ~init:"false"
 	                 ~set:(ftrue window#set_auto_shrink);
 	"x position", new prop_int ~name:"x" ~init:"-2"
-	  ~set:(fun x -> window#misc#set_uposition ~x ~y:(-2); true);
+	  ~set:(fun x -> window#misc#set_geometry ~x (); true);
 	"y position", new prop_int ~name:"y" ~init:"-2"
-	  ~set:(fun y -> window#misc#set_uposition ~y ~x:(-2); true) ]
+	  ~set:(fun y -> window#misc#set_geometry ~y (); true) ]
 end
 
 let new_tiwindow ~name ?(listprop = []) =

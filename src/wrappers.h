@@ -214,6 +214,7 @@ int OptFlags_##conv (value list) \
 #define Val_copy(val) copy_memblock_indirected (&val, sizeof(val))
 #define Val_string copy_string_check
 #define Val_optstring copy_string_or_null
+#define Optstring_val(v) (string_length(v) ? String_val(v) : (char*)NULL)
 #define Val_option(v,f) (v ? ml_some(f(v)) : Val_unit)
 
 #define Check_null(v) (v ? v : (ml_raise_null_pointer (), v))

@@ -462,8 +462,8 @@ ML_0 (gtk_event_box_new, Val_GtkWidget_sink)
 /* gtkframe.h */
 
 #define GtkFrame_val(val) check_cast(GTK_FRAME,val)
-ML_1 (gtk_frame_new, String_val, Val_GtkWidget_sink)
-ML_2 (gtk_frame_set_label, GtkFrame_val, String_val, Unit)
+ML_1 (gtk_frame_new, Optstring_val, Val_GtkWidget_sink)
+ML_2 (gtk_frame_set_label, GtkFrame_val, Optstring_val, Unit)
 ML_3 (gtk_frame_set_label_align, GtkFrame_val, Float_val, Float_val, Unit)
 ML_2 (gtk_frame_set_shadow_type, GtkFrame_val, Shadow_type_val, Unit)
 Make_Extractor (gtk_frame_get, GtkFrame_val, label_xalign, copy_double)
@@ -472,7 +472,7 @@ Make_Extractor (gtk_frame_get, GtkFrame_val, label_yalign, copy_double)
 /* gtkaspectframe.h */
 
 #define GtkAspectFrame_val(val) check_cast(GTK_ASPECT_FRAME,val)
-ML_5 (gtk_aspect_frame_new, String_val,
+ML_5 (gtk_aspect_frame_new, Optstring_val,
       Float_val, Float_val, Float_val, Bool_val, Val_GtkWidget_sink)
 ML_5 (gtk_aspect_frame_set, GtkAspectFrame_val, Float_val, Float_val,
       Float_val, Bool_val, Unit)
@@ -952,14 +952,14 @@ ML_5 (gtk_clist_moveto, GtkCList_val, Int_val, Int_val,
       Double_val, Double_val, Unit)
 ML_2 (gtk_clist_row_is_visible, GtkCList_val, Int_val, Val_visibility)
 ML_3 (gtk_clist_get_cell_type, GtkCList_val, Int_val, Int_val, Val_cell_type)
-ML_4 (gtk_clist_set_text, GtkCList_val, Int_val, Int_val, String_val, Unit)
+ML_4 (gtk_clist_set_text, GtkCList_val, Int_val, Int_val, Optstring_val, Unit)
 value ml_gtk_clist_get_text (value clist, value row, value column)
 {
     char *text;
     if (!gtk_clist_get_text (GtkCList_val(clist), Int_val(row),
 			     Int_val(column), &text))
 	invalid_argument ("Gtk.Clist.get_text");
-    return Val_string(text);
+    return Val_optstring(text);
 }
 ML_5 (gtk_clist_set_pixmap, GtkCList_val, Int_val, Int_val, GdkPixmap_val,
       GdkBitmap_val, Unit)
@@ -973,7 +973,7 @@ value ml_gtk_clist_get_pixmap (value clist, value row, value column)
     if (!gtk_clist_get_pixmap (GtkCList_val(clist), Int_val(row),
 			       Int_val(column), &pixmap, &bitmap))
 	invalid_argument ("Gtk.Clist.get_pixmap");
-    vpixmap = Val_GdkPixmap (pixmap);
+    vpixmap = Val_option (pixmap, Val_GdkPixmap);
     vbitmap = Val_option (bitmap, Val_GdkBitmap);
     ret = alloc_tuple (2);
     Field(ret,0) = vpixmap;
@@ -986,6 +986,11 @@ ML_7 (gtk_clist_set_pixtext, GtkCList_val, Int_val, Int_val, String_val,
 ML_bc7 (ml_gtk_clist_set_pixtext)
 ML_3 (gtk_clist_set_foreground, GtkCList_val, Int_val, GdkColor_val, Unit)
 ML_3 (gtk_clist_set_background, GtkCList_val, Int_val, GdkColor_val, Unit)
+ML_3 (gtk_clist_get_cell_style, GtkCList_val, Int_val, Int_val, Val_GtkStyle)
+ML_4 (gtk_clist_set_cell_style, GtkCList_val, Int_val, Int_val, GtkStyle_val,
+      Unit)
+ML_2 (gtk_clist_get_row_style, GtkCList_val, Int_val, Val_GtkStyle)
+ML_3 (gtk_clist_set_row_style, GtkCList_val, Int_val, GtkStyle_val, Unit)
 ML_3 (gtk_clist_set_selectable, GtkCList_val, Int_val, Bool_val, Unit)
 ML_2 (gtk_clist_get_selectable, GtkCList_val, Int_val, Val_bool)
 ML_5 (gtk_clist_set_shift, GtkCList_val, Int_val, Int_val, Int_val, Int_val,
@@ -1256,11 +1261,11 @@ ML_2 (gtk_table_set_homogeneous, GtkTable_val, Bool_val, Unit)
 ML_2 (gtk_toolbar_new, Orientation_val, Toolbar_style_val, Val_GtkWidget_sink)
 ML_2 (gtk_toolbar_insert_space, GtkToolbar_val, Int_val, Unit)
 ML_7 (gtk_toolbar_insert_element, GtkToolbar_val, Toolbar_child_val,
-      Insert(NULL) String_val, String_val, String_val, GtkWidget_val,
+      Insert(NULL) Optstring_val, Optstring_val, Optstring_val, GtkWidget_val,
       Insert(NULL) Insert(NULL) Int_val, Val_GtkWidget)
 ML_bc7 (ml_gtk_toolbar_insert_element)
 ML_5 (gtk_toolbar_insert_widget, GtkToolbar_val, GtkWidget_val,
-      String_val, String_val, Int_val, Unit)
+      Optstring_val, Optstring_val, Int_val, Unit)
 ML_2 (gtk_toolbar_set_orientation, GtkToolbar_val, Orientation_val, Unit)
 ML_2 (gtk_toolbar_set_style, GtkToolbar_val, Toolbar_style_val, Unit)
 ML_2 (gtk_toolbar_set_space_size, GtkToolbar_val, Int_val, Unit)

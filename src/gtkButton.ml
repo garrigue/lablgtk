@@ -92,29 +92,25 @@ module Toolbar = struct
   let insert_space w ?(pos = -1) () = insert_space w ~pos
   external insert_button :
       [>`toolbar] obj -> kind:[`BUTTON|`TOGGLEBUTTON|`RADIOBUTTON] ->
-      text:Gpointer.optstring -> tooltip:Gpointer.optstring ->
-      tooltip_private:Gpointer.optstring ->
+      text:string -> tooltip:string ->
+      tooltip_private:string ->
       icon:[>`widget] optobj -> pos:int -> button obj
       = "ml_gtk_toolbar_insert_element_bc" "ml_gtk_toolbar_insert_element"
-  let insert_button w ?kind:(t=`BUTTON) ?text ?tooltip ?tooltip_private
-      ?icon ?(pos = -1) ?callback () =
-    let b =insert_button w ~kind:t ~text:(Gpointer.optstring text)
-	~tooltip:(Gpointer.optstring tooltip)
-	~tooltip_private:(Gpointer.optstring tooltip_private)
+  let insert_button w ?(kind=`BUTTON) ?(text="") ?(tooltip="")
+      ?(tooltip_private="") ?icon ?(pos = -1) ?callback () =
+    let b =insert_button w ~kind ~text ~tooltip ~tooltip_private ~pos
         ~icon:(Gpointer.optboxed icon)
-	~pos in
+    in
     match callback with
     | None   -> b
     | Some c -> GtkSignal.connect b ~sgn:Button.Signals.clicked
 	  ~callback: c; b
   external insert_widget :
       [>`toolbar] obj -> [>`widget] obj ->
-      tooltip:Gpointer.optstring ->
-      tooltip_private:Gpointer.optstring -> pos:int -> unit
+      tooltip:string -> tooltip_private:string -> pos:int -> unit
       = "ml_gtk_toolbar_insert_widget"
-  let insert_widget w ?tooltip ?tooltip_private ?(pos = -1) w' =
-    insert_widget w w' ~tooltip:(Gpointer.optstring tooltip)
-      ~tooltip_private:(Gpointer.optstring tooltip_private) ~pos
+  let insert_widget w ?(tooltip="") ?(tooltip_private="") ?(pos = -1) w' =
+    insert_widget w w' ~tooltip ~tooltip_private ~pos
   external set_orientation : [>`toolbar] obj -> orientation -> unit =
     "ml_gtk_toolbar_set_orientation"
   external set_style : [>`toolbar] obj -> toolbar_style -> unit =

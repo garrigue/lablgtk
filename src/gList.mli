@@ -66,7 +66,8 @@ class ['a] clist : Gtk.clist obj ->
     val obj : Gtk.clist obj
     method event : event_ops
     method append : string list -> int
-    method cell_pixmap : int -> int -> GDraw.pixmap
+    method cell_pixmap : int -> int -> GDraw.pixmap option
+    method cell_style : int -> int -> style option
     method cell_text : int -> int -> string
     method cell_type : int -> int -> Tags.cell_type
     method clear : unit -> unit
@@ -88,7 +89,8 @@ class ['a] clist : Gtk.clist obj ->
     method remove : row:int -> unit
     method row_is_visible : int -> Tags.visibility
     method row_move : int -> dst:int -> unit
-    method row_selectable : row:int -> bool
+    method row_selectable : int -> bool
+    method row_style : int -> style option
     method rows : int
     method scroll_vertical : Tags.scroll_type -> pos:clampf -> unit
     method scroll_horizontal : Tags.scroll_type -> pos:clampf -> unit
@@ -98,7 +100,8 @@ class ['a] clist : Gtk.clist obj ->
     method set_button_actions : int -> Tags.button_action list -> unit
     method set_cell :
       ?text:string ->
-      ?pixmap:GDraw.pixmap -> ?spacing:int -> int -> int -> unit
+      ?pixmap:GDraw.pixmap ->
+      ?spacing:int -> ?style:style -> int -> int -> unit
     method set_column :
       ?widget:widget ->
       ?title:string ->
@@ -112,7 +115,9 @@ class ['a] clist : Gtk.clist obj ->
     method set_reorderable : bool -> unit
     method set_row :
       ?foreground:GDraw.optcolor ->
-      ?background:GDraw.optcolor -> ?selectable:bool -> int -> unit
+      ?background:GDraw.optcolor ->
+      ?selectable:bool ->
+      ?style:style -> int -> unit
     method set_row_data : int -> data:'a -> unit
     method set_row_height : int -> unit
     method set_selection_mode : Tags.selection_mode -> unit
