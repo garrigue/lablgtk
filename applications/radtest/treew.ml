@@ -114,14 +114,7 @@ let menu_window name add _ =
   in
   mi_add#set_submenu menu_add;
   menu
-(*  let menu = new menu in
-  List.iter
-    fun:(fun n ->
-      let mi = new menu_item packing:menu#append label:n
-      in mi#connect#activate callback:(add n meth:`ADD); ())
-    widget_add_list;      
-  menu
-*)
+
 let menu_remove remove =
   let menu = new menu in
   let mi_remove = new menu_item packing:menu#append label:"remove" in
@@ -236,9 +229,9 @@ class tiw parent_tree:(parent_tree : tree) :name = object(self : 'stype)
     let classe = w#classe in
     if List.mem classe in:bin_list then begin
       let label = (List.hd tree_item#children) in
-      label#misc#drag#dest_set [`ALL] 
+      tree_item#misc#drag#dest_set [`ALL] 
 	[|  { target = "STRING"; flags = []; info = 0}  |] 1 [`COPY];
-      label#connect#drag#data_received callback:
+      tree_item#connect#drag#data_received callback:
 	(fun (context : drag_context) _ _  (data : selection_data) _ time ->
 	  self#add_child data#data meth:`ADD ();
 	  context#finish success:true del:false :time);

@@ -1,8 +1,6 @@
 # $Id$
 # Makefile for lablgtk.
 
-include ../../config.make
-
 all: radtest
 
 CAMLC = olablc
@@ -17,6 +15,28 @@ RANLIB = ranlib
 
 MLFLAGS = -I ../..
 
+ifdef DEBUG
+CFLAGS = -g $(GTKCFLAGS)
+LDFLAGS = $(GTKLIBS) -lcamlrund
+MLFLAGS += -g
+else
+CFLAGS = -O -DGTK_NO_CHECK_CASTS -DGTK_DISABLE_COMPAT_H $(GTKCFLAGS)
+LDFLAGS = $(GTKLIBS)
+endif
+
+THFLAGS = -thread
+THLIBS = unix.cma threads.cma
+THLDFLAGS = -lthreads -lunix
+
+GTKLIBS = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
+
+ifdef USE_CC
+CCOMPILER = $(CC) -c -I$(LABLLIB) $(CFLAGS)
+else
+CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
+endif
+
+
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
 .c.o:
@@ -29,7 +49,7 @@ MLFLAGS = -I ../..
 	$(COMPOPT) $<
 
 # Targets
-MLOBJS = property.cmo widget.cmo treew.cmo
+MLOBJS = xpm_window.cmo property.cmo widget.cmo treew.cmo
 
 radtest: $(MLOBJS)
 	$(LINKER) -o radtest -custom -cclib "-L../.. \
