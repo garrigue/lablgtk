@@ -288,12 +288,13 @@ static gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c,
 
 CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
 {
-    return Val_long ( g_io_add_watch_full(GIOChannel_val(io),
-					  Option_val(prio,Int_val,G_PRIORITY_DEFAULT),
-					  Io_condition_val(cond),
-					  ml_g_io_channel_watch,
-					  ml_global_root_new(clos),
-					  ml_global_root_destroy) );
+    return Val_long (
+      g_io_add_watch_full(GIOChannel_val(io),
+                          Option_val(prio,Int_val,G_PRIORITY_DEFAULT),
+                          Io_condition_val(cond),
+                          ml_g_io_channel_watch,
+                          ml_global_root_new(clos),
+                          ml_global_root_destroy) );
 }
 
 CAMLprim value ml_g_io_channel_read(value io, value str, value offset,
@@ -511,10 +512,11 @@ ML_0 (g_get_prgname, copy_string_or_null)
 ML_1 (g_set_prgname, String_val, Unit)
 #ifndef DISABLE_GTK22
 ML_0 (g_get_application_name, copy_string_or_null)
+ML_1 (g_set_application_name, String_val, Unit)
 #else
 Unsupported(g_get_application_name)
+Unsupported(g_set_application_name)
 #endif
-ML_1 (g_set_application_name, String_val, Unit)
 
 ML_0 (g_get_user_name, copy_string)
 ML_0 (g_get_real_name, copy_string)
