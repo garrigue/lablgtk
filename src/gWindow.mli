@@ -49,6 +49,9 @@ val window :
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> window
 
+val toplevel : #widget -> window option
+(** return the toplevel window of this widget, if existing *)
+
 class dialog : Gtk.dialog obj ->
   object
     inherit [window] window_skel

@@ -46,6 +46,12 @@ let window ?kind:(t=`TOPLEVEL) ?title ?wm_name ?wm_class ?position
   if show then Widget.show w;
   new window w
 
+let cast_window (w : #widget) =
+  new window (GtkWindow.Window.cast w#as_widget)
+
+let toplevel (w : #widget) =
+  try Some (cast_window w#misc#toplevel) with Cannot_cast _ -> None
+
 class dialog obj = object
   inherit [window] window_skel (obj : Gtk.dialog obj)
   method connect = new container_signals obj
