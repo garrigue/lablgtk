@@ -154,9 +154,18 @@ value ml_g_timeout_add (value interval, value clos)
 {
     value *clos_p = ml_global_root_new (clos);
     return Val_int
-        (g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, Long_val(interval),
+        (g_timeout_add_full (G_PRIORITY_DEFAULT, Long_val(interval),
                              ml_g_source_func, clos_p,
                              ml_global_root_destroy));
+}
+
+value ml_g_idle_add (value clos)
+{
+    value *clos_p = ml_global_root_new (clos);
+    return Val_int
+      (g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+			ml_g_source_func, clos_p,
+			ml_global_root_destroy));
 }
 
 ML_1 (g_source_remove, Int_val, Unit)

@@ -1,6 +1,9 @@
 $Id$
 
 
+2003.03.13
+ * Add Idle support
+
 2003.02.26 [Benjamin]
  * Use mnemonics by default in factories
 

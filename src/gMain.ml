@@ -17,6 +17,8 @@ module Rc = Rc
 
 module Timeout = Glib.Timeout
 
+module Idle = Glib.Idle
+
 module Io = Glib.Io
 
 open Main
