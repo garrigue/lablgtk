@@ -3,123 +3,583 @@ Index: otherlibs/threads/scheduler.c
 RCS file: /staff2/garrigue/repos/ocaml/otherlibs/threads/scheduler.c,v
 retrieving revision 1.1.1.6
 retrieving revision 1.2
-diff -r1.1.1.6 -r1.2
-438c438,439
-<   if (curr_thread == NULL) return RESUMED_WAKEUP;
----
->   /* Do the same thing for callbacks (Jacques Garrigue) */
->   if (curr_thread == NULL || callback_depth > 1) return RESUMED_WAKEUP;
+diff -c -r1.1.1.6 -r1.2
+*** scheduler.c	1998/08/20 01:28:53	1.1.1.6
+--- scheduler.c	1998/11/15 13:48:16	1.2
+***************
+*** 435,441 ****
+    /* Don't do an error if we're not initialized yet
+       (we can be called from thread-safe Pervasives before initialization),
+       just return immediately. */
+!   if (curr_thread == NULL) return RESUMED_WAKEUP;
+    check_callback();
+    Assign(curr_thread->readfds, Field(arg, 0));
+    Assign(curr_thread->writefds, Field(arg, 1));
+--- 435,442 ----
+    /* Don't do an error if we're not initialized yet
+       (we can be called from thread-safe Pervasives before initialization),
+       just return immediately. */
+!   /* Do the same thing for callbacks (Jacques Garrigue) */
+!   if (curr_thread == NULL || callback_depth > 1) return RESUMED_WAKEUP;
+    check_callback();
+    Assign(curr_thread->readfds, Field(arg, 0));
+    Assign(curr_thread->writefds, Field(arg, 1));
 Index: parsing/parser.mly
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/parsing/parser.mly,v
 retrieving revision 1.19
 retrieving revision 1.20
-diff -r1.19 -r1.20
-1177,1179c1177,1179
-<     simple_core_type2	{ $1 }
-<   | core_variant_type	{ $1 }
-<   | core_variant_type type_longident %prec prec_constr_appl
----
->     simple_core_type1	{ $1 }
->   | core_variant	{ mktyp (Ptyp_variant $1) }
->   | simple_core_type type_longident %prec prec_constr_appl
-1181c1181
-<   | core_variant_type SHARP class_longident variant_min
----
->   | simple_core_type SHARP class_longident variant_min
-1185,1186c1185
-< core_variant_type: core_variant	{ mktyp(Ptyp_variant $1) };
-< simple_core_type2:
----
-> simple_core_type1:
-1195,1196d1193
-<   | simple_core_type2 type_longident %prec prec_constr_appl
-<       { mktyp(Ptyp_constr($2, [$1])) }
-1208,1210d1204
-<   | simple_core_type2 SHARP class_longident variant_min
-<       %prec prec_constr_appl
-<       { mktyp(Ptyp_class($3, [$1], $4)) }
-1213a1208,1215
-> ;
-> simple_core_type2:
->     simple_core_type1		{ $1 }
->   | simple_core_type2 type_longident %prec prec_constr_appl
->       { mktyp(Ptyp_constr($2, [$1])) }
->   | simple_core_type2 SHARP class_longident variant_min
->       %prec prec_constr_appl
->       { mktyp(Ptyp_class($3, [$1], $4)) }
+diff -c -r1.19 -r1.20
+*** parser.mly	1998/09/02 07:02:14	1.19
+--- parser.mly	1998/11/24 11:54:33	1.20
+***************
+*** 1174,1189 ****
+  ;
+  
+  simple_core_type:
+!     simple_core_type2	{ $1 }
+!   | core_variant_type	{ $1 }
+!   | core_variant_type type_longident %prec prec_constr_appl
+        { mktyp(Ptyp_constr($2, [$1])) }
+!   | core_variant_type SHARP class_longident variant_min
+        %prec prec_constr_appl
+        { mktyp(Ptyp_class($3, [$1], $4)) }
+  ;
+! core_variant_type: core_variant	{ mktyp(Ptyp_variant $1) };
+! simple_core_type2:
+      QUOTE ident
+        { mktyp(Ptyp_var $2) }
+    | QUOTE ident core_variant
+--- 1174,1188 ----
+  ;
+  
+  simple_core_type:
+!     simple_core_type1	{ $1 }
+!   | core_variant	{ mktyp (Ptyp_variant $1) }
+!   | simple_core_type type_longident %prec prec_constr_appl
+        { mktyp(Ptyp_constr($2, [$1])) }
+!   | simple_core_type SHARP class_longident variant_min
+        %prec prec_constr_appl
+        { mktyp(Ptyp_class($3, [$1], $4)) }
+  ;
+! simple_core_type1:
+      QUOTE ident
+        { mktyp(Ptyp_var $2) }
+    | QUOTE ident core_variant
+***************
+*** 1192,1199 ****
+        { mktyp(Ptyp_any) }
+    | type_longident
+        { mktyp(Ptyp_constr($1, [])) }
+-   | simple_core_type2 type_longident %prec prec_constr_appl
+-       { mktyp(Ptyp_constr($2, [$1])) }
+    | LPAREN core_type_comma_list RPAREN type_longident
+        %prec prec_constr_appl
+        { mktyp(Ptyp_constr($4, List.rev $2)) }
+--- 1191,1196 ----
+***************
+*** 1205,1216 ****
+        { mktyp(Ptyp_object []) }
+    | SHARP class_longident variant_min
+        { mktyp(Ptyp_class($2, [], $3)) }
+-   | simple_core_type2 SHARP class_longident variant_min
+-       %prec prec_constr_appl
+-       { mktyp(Ptyp_class($3, [$1], $4)) }
+    | LPAREN core_type_comma_list RPAREN SHARP class_longident variant_min
+        %prec prec_constr_appl
+        { mktyp(Ptyp_class($5, List.rev $2, $6)) }
+  ;
+  
+  variant_min:
+--- 1202,1218 ----
+        { mktyp(Ptyp_object []) }
+    | SHARP class_longident variant_min
+        { mktyp(Ptyp_class($2, [], $3)) }
+    | LPAREN core_type_comma_list RPAREN SHARP class_longident variant_min
+        %prec prec_constr_appl
+        { mktyp(Ptyp_class($5, List.rev $2, $6)) }
++ ;
++ simple_core_type2:
++     simple_core_type1		{ $1 }
++   | simple_core_type2 type_longident %prec prec_constr_appl
++       { mktyp(Ptyp_constr($2, [$1])) }
++   | simple_core_type2 SHARP class_longident variant_min
++       %prec prec_constr_appl
++       { mktyp(Ptyp_class($3, [$1], $4)) }
+  ;
+  
+  variant_min:
 Index: typing/ctype.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/ctype.ml,v
 retrieving revision 1.46
 retrieving revision 1.47
-diff -r1.46 -r1.47
-536c536,538
-<           Fvar _ (* {contents = None} *) -> raise (Unify [(ty, newvar2 level)])
----
->           Fvar _ (* {contents = None} *) ->
-> 	    (* hideous hack for Didier *)
-> 	    if ty.level > level + 1 then raise (Unify [(ty, newvar2 level)])
+diff -c -r1.46 -r1.47
+*** ctype.ml	1998/09/01 09:30:20	1.46
+--- ctype.ml	1998/10/20 16:59:36	1.47
+***************
+*** 533,539 ****
+          end
+      | Tfield(_, k, _, _) ->
+          begin match field_kind_repr k with
+!           Fvar _ (* {contents = None} *) -> raise (Unify [(ty, newvar2 level)])
+          | _                              -> ()
+          end;
+          ty.level <- level;
+--- 533,541 ----
+          end
+      | Tfield(_, k, _, _) ->
+          begin match field_kind_repr k with
+!           Fvar _ (* {contents = None} *) ->
+! 	    (* hideous hack for Didier *)
+! 	    if ty.level > level + 1 then raise (Unify [(ty, newvar2 level)])
+          | _                              -> ()
+          end;
+          ty.level <- level;
 Index: typing/printtyp.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/printtyp.ml,v
 retrieving revision 1.27
-retrieving revision 1.28
-diff -r1.27 -r1.28
-191a192,197
-> let in_class_func = ref false
-> let enter_class_func () =
->   let old = !in_class_func in in_class_func :=true; old
-> let leave_class_func old =
->   in_class_func := old
-> 
-193c199
-<   reset_names (); reset_loop_marks (); delayed := []
----
->   reset_names (); reset_loop_marks (); delayed := []; in_class_func := false
-271a278
-> 	if !in_class_func then print_char '(';
-299a307
-> 	if !in_class_func then print_char ')';
-681a690
->       let old = enter_class_func () in
-687a697
->       leave_class_func old;
+retrieving revision 1.29
+diff -c -r1.27 -r1.29
+*** printtyp.ml	1998/09/01 09:30:21	1.27
+--- printtyp.ml	1998/11/30 09:09:16	1.29
+***************
+*** 189,196 ****
+  
+  let delayed = ref []
+  
+  let reset () =
+!   reset_names (); reset_loop_marks (); delayed := []
+  
+  let rec print_sep_list pr sep = function
+      [] -> ()
+--- 189,202 ----
+  
+  let delayed = ref []
+  
++ let in_class_func = ref false
++ let enter_class_func () =
++   let old = !in_class_func in in_class_func :=true; old
++ let leave_class_func old =
++   in_class_func := old
++ 
+  let reset () =
+!   reset_names (); reset_loop_marks (); delayed := []; in_class_func := false
+  
+  let rec print_sep_list pr sep = function
+      [] -> ()
+***************
+*** 269,274 ****
+--- 275,281 ----
+  	end;
+  	close_box()
+      | Tvariant var ->
++ 	if !in_class_func then print_char '(';
+        	let static = static_variant var
+   	and alias = List.memq ty' !aliased in
+  	if not alias & sch & ty'.level <> generic_level & ty'.desc = Tvar
+***************
+*** 297,302 ****
+--- 304,310 ----
+  	    end
+  	end;
+  	print_string "]";
++ 	if !in_class_func then print_char ')';
+  	close_box()
+      | Tarrow(p, ty1, ty2) ->
+          if prio >= 2 then begin open_box 1; print_string "(" end
+***************
+*** 355,361 ****
+      if alias then begin
+        print_string " as ";
+        begin match ty.desc with
+! 	Tvariant ({var_name = Some _} as var) ->
+  	  if sch & ty'.level <> generic_level & ty'.desc = Tvar
+  	  then print_string "'_"
+  	  else print_string "'";
+--- 363,369 ----
+      if alias then begin
+        print_string " as ";
+        begin match ty.desc with
+! 	Tvariant _ ->
+  	  if sch & ty'.level <> generic_level & ty'.desc = Tvar
+  	  then print_string "'_"
+  	  else print_string "'";
+***************
+*** 606,612 ****
+      print_string lab;
+      print_string " :";
+      print_space ();
+!     typexp sch 0 ty;
+      close_box ()
+    end
+  
+--- 614,620 ----
+      print_string lab;
+      print_string " :";
+      print_space ();
+!     typexp sch 0 (match (repr ty).desc with Tpoly (t, _) -> t | _ -> ty);
+      close_box ()
+    end
+  
+***************
+*** 623,629 ****
+        let rowvar = referent_type sty in
+        visited_objects := rowvar :: !visited_objects;
+        begin match sty.desc with
+!         Tobject (fi, _) -> mark_loops fi
+        | _               -> assert false
+        end;
+        Vars.iter (fun _ (_, ty) -> mark_loops ty) sign.cty_vars
+--- 631,643 ----
+        let rowvar = referent_type sty in
+        visited_objects := rowvar :: !visited_objects;
+        begin match sty.desc with
+!         Tobject (fi, _) ->
+! 	  let fields, rest = flatten_fields fi in
+! 	  List.iter
+! 	    (fun (_, kind, ty) -> if field_kind_repr kind = Fpresent then
+! 	      mark_loops (match (repr ty).desc with Tpoly(t,_) -> t | _ -> ty))
+! 	    fields;
+! 	  mark_loops rest
+        | _               -> assert false
+        end;
+        Vars.iter (fun _ (_, ty) -> mark_loops ty) sign.cty_vars
+***************
+*** 679,690 ****
+--- 693,706 ----
+        close_box()
+    | Tcty_fun (l, ty, cty) ->
+        open_box 0;
++       let old = enter_class_func () in
+        if l <> "" then print_string (if l = "?" then "?" else l^":");
+        begin match (repr ty).desc with
+        	Tconstr(c, [ty], _) when is_opt l & c = Predef.path_option ->
+  	  typexp sch 0 ty
+        | _ -> typexp sch 0 ty
+        end;
++       leave_class_func old;
+        print_string " ->";
+        print_space ();
+        perform_class_type sch p params cty;
+Index: typing/typeclass.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/typeclass.ml,v
+retrieving revision 1.25
+retrieving revision 1.26
+diff -c -r1.25 -r1.26
+*** typeclass.ml	1998/09/02 07:02:15	1.25
+--- typeclass.ml	1998/11/30 09:09:17	1.26
+***************
+*** 251,256 ****
+--- 251,270 ----
+    end;
+    generalize_poly ty'
+  
++ let declare_method val_env meths self_type lab priv sty loc =
++   let (_, ty') =
++      Ctype.filter_self_method val_env lab priv meths self_type
++   in
++   let ty =
++     match sty.ptyp_desc with
++       Ptyp_poly (sty,[]) -> transl_simple_type_univars val_env sty
++     | _                  -> transl_simple_type val_env false sty
++   in
++   begin try Ctype.unify val_env ty ty' with Ctype.Unify trace ->
++     raise(Error(loc, Method_type_mismatch (lab, trace)))
++   end;
++   generalize_poly ty'
++ 
+  let type_constraint val_env sty sty' loc =
+    let ty  = transl_simple_type val_env false sty in
+    let ty' = transl_simple_type val_env false sty' in
+***************
+*** 288,298 ****
+        (Vars.add lab (mut, ty) val_sig, concr_meths)
+  
+    | Pctf_virt (lab, priv, sty, loc) ->
+!       virtual_method env meths self_type lab priv sty loc;
+        (val_sig, concr_meths)
+  
+    | Pctf_meth (lab, priv, sty, loc)  ->
+!       virtual_method env meths self_type lab priv sty loc;
+        (val_sig, Concr.add lab concr_meths)
+  
+    | Pctf_cstr (sty, sty', loc) ->
+--- 302,312 ----
+        (Vars.add lab (mut, ty) val_sig, concr_meths)
+  
+    | Pctf_virt (lab, priv, sty, loc) ->
+!       declare_method env meths self_type lab priv sty loc;
+        (val_sig, concr_meths)
+  
+    | Pctf_meth (lab, priv, sty, loc)  ->
+!       declare_method env meths self_type lab priv sty loc;
+        (val_sig, Concr.add lab concr_meths)
+  
+    | Pctf_cstr (sty, sty', loc) ->
 Index: typing/typecore.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/typecore.ml,v
 retrieving revision 1.28
 retrieving revision 1.30
-diff -r1.28 -r1.30
-869c869
-<       fatal_error "Typecor.type_exp : Pexp_poly"
----
->       fatal_error "Typecore.type_exp : Pexp_poly"
-1203a1204,1206
->           if not !Clflags.nolabels then
-> 	    Location.print_warning loc
->               ("this expression is not known to have a method " ^ met ^ ".");
-1361,1362c1364,1365
-<       let string_of_llist l = String.concat " "
-<       	(List.map (function "" -> "\"\"" | s -> s ^ ":") l) in
----
->       let string_of_llist l =
-> 	String.concat " " (List.map (fun s -> "\"" ^ s ^ "\"") l) in
-1365c1368,1377
-<       else begin
----
->       else if List.length expected < List.length provided then
-> 	print_string "This function has too many arguments"
->       else let provided = List.map no_opt provided
->       and expected = List.map no_opt expected in
->       let unexpected = filter (fun x -> not (List.mem x expected)) provided in
->       if unexpected <> [] then begin
-> 	print_string "This function is applied on unexpected label";
-> 	print_string (if List.length unexpected > 1 then "s " else " ");
-> 	print_string (string_of_llist unexpected)
->       end else begin
-1368c1380,1381
-< 	print_space (); print_string "but is applied on label(s) ";
----
-> 	print_space (); print_string "but is applied on label";
-> 	print_string (if List.length provided > 1 then "s " else " ");
+diff -c -r1.28 -r1.30
+*** typecore.ml	1998/09/02 07:02:17	1.28
+--- typecore.ml	1998/11/30 01:32:47	1.30
+***************
+*** 866,872 ****
+          exp_env = env }
+  
+    | Pexp_poly _ ->
+!       fatal_error "Typecor.type_exp : Pexp_poly"
+  
+  (* Typing of an expression with an expected type.
+     Some constructs are treated specially to provide better error messages. *)
+--- 866,872 ----
+          exp_env = env }
+  
+    | Pexp_poly _ ->
+!       fatal_error "Typecore.type_exp : Pexp_poly"
+  
+  (* Typing of an expression with an expected type.
+     Some constructs are treated specially to provide better error messages. *)
+***************
+*** 1201,1206 ****
+--- 1201,1209 ----
+        |	{desc = Tvar} as ty ->
+  	  let ty' = newvar () in
+  	  unify env (instance_sep env ty) (newty(Tpoly(ty',[])));
++           if not !Clflags.nolabels then
++ 	    Location.print_warning loc
++               ("this expression is not known to have a method " ^ met ^ ".");
+  	  ty'
+        | _ ->
+  	  assert false
+***************
+*** 1358,1371 ****
+          (function () ->
+             print_string "but is here used with type")
+    | Apply_non_function (expected, provided) ->
+!       let string_of_llist l = String.concat " "
+!       	(List.map (function "" -> "\"\"" | s -> s ^ ":") l) in
+        if expected = [] then
+          print_string "This expression is not a function, it cannot be applied"
+!       else begin
+        	print_string "This function expects arguments labeled ";
+  	print_string (string_of_llist expected);
+! 	print_space (); print_string "but is applied on label(s) ";
+  	print_string (string_of_llist provided)
+        end
+    | Label_multiply_defined lid ->
+--- 1361,1384 ----
+          (function () ->
+             print_string "but is here used with type")
+    | Apply_non_function (expected, provided) ->
+!       let string_of_llist l =
+! 	String.concat " " (List.map (fun s -> "\"" ^ s ^ "\"") l) in
+        if expected = [] then
+          print_string "This expression is not a function, it cannot be applied"
+!       else if List.length expected < List.length provided then
+! 	print_string "This function has too many arguments"
+!       else let provided = List.map no_opt provided
+!       and expected = List.map no_opt expected in
+!       let unexpected = filter (fun x -> not (List.mem x expected)) provided in
+!       if unexpected <> [] then begin
+! 	print_string "This function is applied on unexpected label";
+! 	print_string (if List.length unexpected > 1 then "s " else " ");
+! 	print_string (string_of_llist unexpected)
+!       end else begin
+        	print_string "This function expects arguments labeled ";
+  	print_string (string_of_llist expected);
+! 	print_space (); print_string "but is applied on label";
+! 	print_string (if List.length provided > 1 then "s " else " ");
+  	print_string (string_of_llist provided)
+        end
+    | Label_multiply_defined lid ->
+Index: typing/typetexp.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/typetexp.ml,v
+retrieving revision 1.18
+retrieving revision 1.19
+diff -c -r1.18 -r1.19
+*** typetexp.ml	1998/08/20 10:13:12	1.18
+--- typetexp.ml	1998/11/30 09:09:17	1.19
+***************
+*** 44,49 ****
+--- 44,50 ----
+  let type_variables = ref (Tbl.empty : (string, type_expr) Tbl.t)
+  let aliases        = ref (Tbl.empty : (string, type_expr) Tbl.t)
+  let univars        = ref ([] : type_expr list)
++ let pre_univars    = ref ([] : type_expr list)
+  let saved_type_variables = ref ([] : (string, type_expr) Tbl.t list)
+  
+  let used_variables = ref (Tbl.empty : (string, type_expr) Tbl.t)
+***************
+*** 86,96 ****
+      Tpoly _ -> ty
+    | _ -> Ctype.newty (Tpoly (ty, []))
+  
+  let rec swap_list = function
+      x :: y :: l -> y :: x :: swap_list l
+    | l -> l
+  
+! type policy = Fixed | Extensible | Delayed
+  
+  let rec transl_type env policy rowvar styp =
+    if rowvar <> None then begin match styp.ptyp_desc with
+--- 87,100 ----
+      Tpoly _ -> ty
+    | _ -> Ctype.newty (Tpoly (ty, []))
+  
++ let new_pre_univar () =
++   let v = newvar () in pre_univars := v :: !pre_univars; v
++ 
+  let rec swap_list = function
+      x :: y :: l -> y :: x :: swap_list l
+    | l -> l
+  
+! type policy = Fixed | Extensible | Delayed | Univars
+  
+  let rec transl_type env policy rowvar styp =
+    if rowvar <> None then begin match styp.ptyp_desc with
+***************
+*** 98,104 ****
+    | _ -> raise(Error(styp.ptyp_loc, No_row_variable ""))
+    end;
+    match styp.ptyp_desc with
+!     Ptyp_any -> new_global_var()
+    | Ptyp_var name ->
+        begin try
+  	let ty0 = Tbl.find name !aliases in
+--- 102,109 ----
+    | _ -> raise(Error(styp.ptyp_loc, No_row_variable ""))
+    end;
+    match styp.ptyp_desc with
+!     Ptyp_any ->
+!       if policy = Univars then new_pre_univar () else new_global_var ()
+    | Ptyp_var name ->
+        begin try
+  	let ty0 = Tbl.find name !aliases in
+***************
+*** 122,127 ****
+--- 127,140 ----
+                type_variables := Tbl.add name v !type_variables;
+                v
+              end
++         | Univars ->
++             begin try
++               Tbl.find name !type_variables
++             with Not_found ->
++ 	      let v = new_pre_univar () in
++ 	      aliases := Tbl.add name v !aliases;
++ 	      v
++             end
+          | Delayed ->
+              begin try
+                Tbl.find name !used_variables
+***************
+*** 174,180 ****
+  	  var_name = None;
+  	  var_ext =
+  	    match rowvar with
+! 	      None -> if static then newty Tnil else new_global_var ()
+  	    | Some v -> v }
+        in
+        newty (Tvariant var)
+--- 187,196 ----
+  	  var_name = None;
+  	  var_ext =
+  	    match rowvar with
+! 	      None ->
+! 		if static then newty Tnil else
+! 		if policy = Univars then new_pre_univar ()
+! 		else new_global_var ()
+  	    | Some v -> v }
+        in
+        newty (Tvariant var)
+***************
+*** 261,267 ****
+  	        match rowvar with
+  		  None ->
+  		    if both or List.length var.var_max = List.length var_min
+! 		    then newty Tnil else newvar ()
+  		| Some v ->
+  		    if both then
+  		      raise(Error(styp.ptyp_loc, No_row_variable "variant "))
+--- 277,285 ----
+  	        match rowvar with
+  		  None ->
+  		    if both or List.length var.var_max = List.length var_min
+! 		    then newty Tnil
+! 		    else if policy = Univars then new_pre_univar ()
+! 		    else newvar ()
+  		| Some v ->
+  		    if both then
+  		      raise(Error(styp.ptyp_loc, No_row_variable "variant "))
+***************
+*** 343,349 ****
+  	None ->
+  	  if policy = Fixed then
+              raise(Error(field.pfield_loc, Unbound_type_variable ".."));
+! 	  newvar ()
+        |	Some v -> v
+        end
+    | {pfield_desc = Pfield(s, e)}::l ->
+--- 361,367 ----
+  	None ->
+  	  if policy = Fixed then
+              raise(Error(field.pfield_loc, Unbound_type_variable ".."));
+! 	  if policy = Univars then new_pre_univar () else newvar ()
+        |	Some v -> v
+        end
+    | {pfield_desc = Pfield(s, e)}::l ->
+***************
+*** 357,362 ****
+--- 375,401 ----
+    let typ = transl_type env (if fixed then Fixed else Extensible) None styp in
+    aliases := Tbl.empty;
+    typ
++ 
++ let transl_simple_type_univars env styp =
++   univars := [];
++   aliases := Tbl.empty;
++   pre_univars := [];
++   begin_def ();
++   let typ = transl_type env Univars None styp in
++   end_def ();
++   generalize typ;
++   let univars = List.map repr !pre_univars in
++   aliases := Tbl.empty;
++   pre_univars := [];
++   let univars =
++     filter (fun v -> v.desc = Tvar && v.level = Btype.generic_level) univars in
++   let univars =
++     List.fold_left
++       (fun acc v ->
++ 	if List.memq v acc then acc else (v.desc <- Tunivar ; v :: acc))
++       [] univars
++   in
++   instance (Btype.newgenty (Tpoly (typ, univars)))
+  
+  let transl_simple_type_delayed env styp =
+    univars := [];
+Index: typing/typetexp.mli
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/typetexp.mli,v
+retrieving revision 1.7
+retrieving revision 1.8
+diff -c -r1.7 -r1.8
+*** typetexp.mli	1998/08/20 10:13:13	1.7
+--- typetexp.mli	1998/11/30 09:09:18	1.8
+***************
+*** 15,20 ****
+--- 15,22 ----
+  
+  val transl_simple_type:
+          Env.t -> bool -> Parsetree.core_type -> Types.type_expr
++ val transl_simple_type_univars:
++         Env.t -> Parsetree.core_type -> Types.type_expr
+  val transl_simple_type_delayed:
+          Env.t -> Parsetree.core_type -> Types.type_expr * (unit -> unit)
+          (* Translate a type, but leave type variables unbound. Returns
