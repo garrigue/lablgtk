@@ -96,8 +96,9 @@ class type misc_ops =
   end
 
 val pixmap :
+  width:int -> height:int -> ?mask:bool ->
   ?window:< misc : #misc_ops; .. > -> ?colormap:colormap ->
-  width:int -> height:int -> ?mask:bool -> unit -> pixmap
+  unit -> pixmap
 val pixmap_from_xpm :
   file:string ->
   ?window:< misc : #misc_ops; .. > ->

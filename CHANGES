@@ -1,5 +1,9 @@
 $Id$
 
+2002.02.25
+  * add GtkPreview support
+  * add applications/camlirc
+
 2002.01.25
   * correct ml_gtk_spin_button_set_update_policy
   * update Makefile for gtkxmhtml

@@ -263,3 +263,28 @@ val font_selection :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> font_selection
+
+
+class preview :
+  Gtk.preview Gtk.obj ->
+  object
+    inherit widget_full
+    val obj : Gtk.preview Gtk.obj
+    method draw_row : data:int array -> x:int -> y:int -> unit
+    method event : GObj.event_ops
+    method put :
+      ?xsrc:int ->
+      ?ysrc:int ->
+      ?xdest:int ->
+      ?ydest:int -> ?width:int -> ?height:int -> Gdk.window -> Gdk.gc -> unit
+    method set_dither : Gdk.Tags.rgb_dither -> unit
+    method set_expand : bool -> unit
+    method size : width:int -> height:int -> unit
+  end
+val preview :
+  ?kind:Gtk.Tags.preview_type ->
+  ?dither:Gdk.Tags.rgb_dither ->
+  ?expand:bool ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> preview

@@ -57,21 +57,10 @@ object (self)
   method line = Draw.line w gc
   method rectangle = Draw.rectangle w gc
   method arc = Draw.arc w gc
-  method polygon ?filled l = Draw.polygon w gc ?filled l
-  method string s = Draw.string w gc ~string:s
-  method put_image ~x ~y ?(xsrc=0) ?(ysrc=0) ?width ?height image =
-    let width = may_default Image.width image ~opt:width in
-    let height = may_default Image.height image ~opt:height in
-    Draw.image w gc ~image ~width ~height ~xsrc ~ysrc ~xdest:x ~ydest:y
-  method put_pixmap ~x ~y ?(xsrc=0) ?(ysrc=0) ?width ?height pixmap =
-    let width, height =
-      match width, height with
-        Some w, Some h -> w, h
-      | _ ->
-          let w, h = Window.get_size pixmap in
-          default w ~opt:width, default h ~opt:height
-    in
-    Draw.pixmap w gc ~pixmap ~width ~height ~xsrc ~ysrc ~xdest:x ~ydest:y
+  method polygon = Draw.polygon w gc
+  method string s = Draw.string w gc s
+  method put_image ~x ~y = Draw.image w gc ~xdest:x ~ydest:y
+  method put_pixmap ~x ~y = Draw.pixmap w gc ~xdest:x ~ydest:y
   method points = Draw.points w gc
   method lines = Draw.lines w gc
   method segments = Draw.segments w gc
@@ -137,8 +126,8 @@ class type misc_ops = object
   method window : window
 end
 
-let pixmap ?(window : < misc : #misc_ops; .. > option) ?colormap
-    ~width ~height ?(mask=false) () =
+let pixmap ~width ~height ?(mask=false)
+    ?(window : < misc : #misc_ops; .. > option) ?colormap () =
   let window, depth, colormap =
     match window with
       Some w ->
