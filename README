@@ -39,9 +39,8 @@ How to compile:
 	Options are
                 USE_DOTOPT=1    to use ocaml.opt and ocamlopt.opt
 		USE_CC=1	to use $(CC) rather than gcc
-		USE_GL=1	not supported yet
-		USE_GNOME=1	not supported yet
-                USE_GLADE=1     not supported yet
+		USE_GL=1	to compile gtkglarea support
+                USE_GLADE=1     to compile libglade support
         The following variables will also be remembered if passed as options
                 BINDIR INSTALLDIR DLLDIR DEBUG CC
                 CAMLC CAMLOPT CAMLMKTOP CAMLMKLIB CAMLP40
@@ -236,6 +235,43 @@ Memory management:
   added to a container widget, it will automatically be destroyed when
   its last container is destroyed. For this reason you need only
   destroy toplevel widgets.
+
+LibGlade support:
+
+  There is support for Glade generated XML UI description files, using
+  libglade. You can read in a file, access to widgets, and define
+  callbacks.
+  A tool for extracting widget definitions from glade description is
+  provided. It generates a wrapper class, and you can then generate an
+  object corresponding to the intended layout, and access individual
+  widgets through its methods. Example:
+
+        % lablgladecc2 project1.glade > project1.ml
+        % lablgtk2 -thread
+        # #use "project1.ml" ;;
+        class window1 : ...
+        # let w1 = new window1 () ;;
+        # w1#bind ~name:"on_paste1_activate"
+            ~callback:(fun () -> w1#text1#insert "some text\n");;
+
+  See lablgladecc2 -help for other features (tracing and source
+  embedding).
+  The executable must be linked with lablglade.cma.
+
+GL extension:
+
+  You can use lablgtk in combination with LablGL
+
+  * get and install lablGL 0.99 from
+    http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
+  * get and install gtkglarea-1.99.x.tar.gz from
+    http://www.student.oulu.fi/~jlof/gtkglarea/index.html
+  * reconfigure: "make configure USE_GL=1"
+
+  You can then use the widget GlGtk.gl_area as an OpenGL window.
+  Some examples are in examples/GL, but basically any LablGL example
+  can be easily ported.
+  The executable must be linked with both lablgl.cma and lablgtkgl.cma.
 
 Windows port
 

@@ -4,7 +4,7 @@ In lablgtk2-20030210:
 
 2003.02.10
  * merge trunk
- * Add gtkgl-2.0 support
+ * Add gtkgl-2.0 and libglade-2.0 support
 
 2003.01.22
  * Support for interaction between GtkTextBuffer and GtkClipboard. (Benjamin)

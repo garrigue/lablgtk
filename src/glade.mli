@@ -26,13 +26,8 @@ val signal_autoconnect :
 external get_widget :
   [> `glade_xml] Gtk.obj -> name:string -> Gtk.widget Gtk.obj
   = "ml_glade_xml_get_widget"
-external get_widget_by_long_name :
-  [> `glade_xml] Gtk.obj -> name:string -> Gtk.widget Gtk.obj
-  = "ml_glade_xml_get_widget_by_long_name"
 external get_widget_name : [> `widget] Gtk.obj -> string
   = "ml_glade_get_widget_name"
-external get_widget_long_name : [> `widget] Gtk.obj -> string
-  = "ml_glade_get_widget_long_name"
 external get_widget_tree : [> `widget] Gtk.obj -> glade_xml Gtk.obj
   = "ml_glade_get_widget_tree"
 
@@ -41,8 +36,8 @@ external get_widget_tree : [> `widget] Gtk.obj -> glade_xml Gtk.obj
 type handler =
   [ `Simple of unit -> unit
   | `Object of string * (unit Gtk.obj -> unit)
-  | `Custom of GtkArgv.t -> GtkArgv.data list -> unit]
-val gtk_bool : bool -> GtkArgv.t -> 'a -> unit
+  | `Custom of Gobject.Closure.argv -> Gobject.data_get list -> unit]
+val gtk_bool : bool -> Gobject.Closure.argv -> 'a -> unit
 
 val add_handler : name:string -> handler -> unit
     (* Add a global handler for some well known name.

@@ -1,160 +1,217 @@
-<?xml version="1.0"?>
-<GTK-Interface>
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
 
-<project>
-  <name>Project1</name>
-  <program_name>project1</program_name>
-  <directory></directory>
-  <source_directory>src</source_directory>
-  <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
-  <gnome_support>False</gnome_support>
-  <gettext_support>False</gettext_support>
-  <output_build_files>False</output_build_files>
-</project>
+<glade-interface>
 
-<widget>
-  <class>GtkWindow</class>
-  <name>window1</name>
-  <signal>
-    <name>destroy</name>
-    <handler>gtk_main_quit</handler>
-    <last_modification_time>Sun, 11 Feb 2001 00:01:57 GMT</last_modification_time>
-  </signal>
-  <title>window1</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <default_width>320</default_width>
-  <default_height>200</default_height>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>True</allow_grow>
-  <auto_shrink>False</auto_shrink>
-  <wmclass_name>window1</wmclass_name>
-  <wmclass_class>LablGTK</wmclass_class>
+<widget class="GtkWindow" id="window1">
+  <property name="visible">True</property>
+  <property name="title" translatable="yes">window1</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">False</property>
+  <property name="resizable">True</property>
+  <property name="destroy_with_parent">False</property>
 
-  <widget>
-    <class>GtkVBox</class>
-    <name>vbox1</name>
-    <homogeneous>False</homogeneous>
-    <spacing>0</spacing>
+  <child>
+    <widget class="GtkVBox" id="vbox1">
+      <property name="visible">True</property>
+      <property name="homogeneous">False</property>
+      <property name="spacing">0</property>
 
-    <widget>
-      <class>GtkMenuBar</class>
-      <name>menubar1</name>
-      <shadow_type>GTK_SHADOW_OUT</shadow_type>
       <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
+	<widget class="GtkMenuBar" id="menubar1">
+	  <property name="visible">True</property>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="menuitem1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">_File</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="menu1">
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="new1">
+		      <property name="visible">True</property>
+		      <property name="label">gtk-new</property>
+		      <property name="use_stock">True</property>
+		      <signal name="activate" handler="on_new1_activate" last_modification_time="Mon, 10 Feb 2003 09:04:20 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="open1">
+		      <property name="visible">True</property>
+		      <property name="label">gtk-open</property>
+		      <property name="use_stock">True</property>
+		      <signal name="activate" handler="on_open1_activate" last_modification_time="Mon, 10 Feb 2003 09:04:20 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="save1">
+		      <property name="visible">True</property>
+		      <property name="label">gtk-save</property>
+		      <property name="use_stock">True</property>
+		      <signal name="activate" handler="on_save1_activate" last_modification_time="Mon, 10 Feb 2003 09:04:20 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="save_as1">
+		      <property name="visible">True</property>
+		      <property name="label">gtk-save-as</property>
+		      <property name="use_stock">True</property>
+		      <signal name="activate" handler="on_save_as1_activate" last_modification_time="Mon, 10 Feb 2003 09:04:20 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkSeparatorMenuItem" id="separatormenuitem1">
+		      <property name="visible">True</property>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="quit1">
+		      <property name="visible">True</property>
+		      <property name="label">gtk-quit</property>
+		      <property name="use_stock">True</property>
+		      <signal name="activate" handler="gtk_main_quit" last_modification_time="Mon, 10 Feb 2003 09:52:58 GMT"/>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="menuitem2">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">_Edit</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="menu2">
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="cut1">
+		      <property name="visible">True</property>
+		      <property name="label">gtk-cut</property>
+		      <property name="use_stock">True</property>
+		      <signal name="activate" handler="on_cut1_activate" last_modification_time="Mon, 10 Feb 2003 09:04:20 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="copy1">
+		      <property name="visible">True</property>
+		      <property name="label">gtk-copy</property>
+		      <property name="use_stock">True</property>
+		      <signal name="activate" handler="on_copy1_activate" last_modification_time="Mon, 10 Feb 2003 09:04:20 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="paste1">
+		      <property name="visible">True</property>
+		      <property name="label">gtk-paste</property>
+		      <property name="use_stock">True</property>
+		      <signal name="activate" handler="on_paste1_activate" last_modification_time="Mon, 10 Feb 2003 09:04:20 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="delete1">
+		      <property name="visible">True</property>
+		      <property name="label">gtk-delete</property>
+		      <property name="use_stock">True</property>
+		      <signal name="activate" handler="on_delete1_activate" last_modification_time="Mon, 10 Feb 2003 09:04:20 GMT"/>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="menuitem3">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">_View</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="menu3">
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="menuitem4">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">_Help</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="menu4">
+
+		  <child>
+		    <widget class="GtkMenuItem" id="about1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_About</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_about1_activate" last_modification_time="Mon, 10 Feb 2003 09:04:20 GMT"/>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">False</property>
+	  <property name="fill">False</property>
+	</packing>
       </child>
 
-      <widget>
-	<class>GtkMenuItem</class>
-	<name>file1</name>
-	<signal>
-	  <name>activate</name>
-	  <handler>on_file1_activate</handler>
-	  <last_modification_time>Fri, 09 Feb 2001 15:23:18 GMT</last_modification_time>
-	</signal>
-	<label>File</label>
-	<right_justify>False</right_justify>
-
-	<widget>
-	  <class>GtkMenu</class>
-	  <name>file1_menu</name>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>open1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_open1_activate</handler>
-	      <last_modification_time>Sat, 10 Feb 2001 23:58:59 GMT</last_modification_time>
-	    </signal>
-	    <label>Open...</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>quit1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>gtk_widget_destroy</handler>
-	      <object>window1</object>
-	      <last_modification_time>Sun, 11 Feb 2001 00:02:45 GMT</last_modification_time>
-	    </signal>
-	    <label>Quit</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkMenuItem</class>
-	<name>edit1</name>
-	<signal>
-	  <name>activate</name>
-	  <handler>on_edit1_activate</handler>
-	  <last_modification_time>Fri, 09 Feb 2001 15:23:18 GMT</last_modification_time>
-	</signal>
-	<label>Edit</label>
-	<right_justify>False</right_justify>
-
-	<widget>
-	  <class>GtkMenu</class>
-	  <name>edit1_menu</name>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>copy1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_copy1_activate</handler>
-	      <last_modification_time>Sat, 10 Feb 2001 23:58:59 GMT</last_modification_time>
-	    </signal>
-	    <label>Copy</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>paste1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_paste1_activate</handler>
-	      <last_modification_time>Sat, 10 Feb 2001 23:58:59 GMT</last_modification_time>
-	    </signal>
-	    <label>Paste</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkScrolledWindow</class>
-      <name>scrolledwindow1</name>
-      <hscrollbar_policy>GTK_POLICY_ALWAYS</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
       <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
+	<widget class="GtkScrolledWindow" id="scrolledwindow1">
+	  <property name="visible">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
+	  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
+	  <property name="shadow_type">GTK_SHADOW_NONE</property>
+	  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
-      <widget>
-	<class>GtkText</class>
-	<name>text1</name>
-	<can_focus>True</can_focus>
-	<editable>False</editable>
-	<text></text>
-      </widget>
+	  <child>
+	    <widget class="GtkTextView" id="textview1">
+	      <property name="visible">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="editable">True</property>
+	      <property name="justification">GTK_JUSTIFY_LEFT</property>
+	      <property name="wrap_mode">GTK_WRAP_NONE</property>
+	      <property name="cursor_visible">True</property>
+	      <property name="pixels_above_lines">0</property>
+	      <property name="pixels_below_lines">0</property>
+	      <property name="pixels_inside_wrap">0</property>
+	      <property name="left_margin">0</property>
+	      <property name="right_margin">0</property>
+	      <property name="indent">0</property>
+	      <property name="text" translatable="yes"></property>
+	    </widget>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
     </widget>
-  </widget>
+  </child>
 </widget>
 
-</GTK-Interface>
+</glade-interface>

@@ -31,7 +31,12 @@ GTKGLPKG = gtkgl-2.0
 GTKGLLIBS = `$(PKG_CONFIG) $(GTKGLPKG) --libs`
 endif
 
-GTKCFLAGS = `$(PKG_CONFIG) $(GTKPKG) $(GTKGLPKG) --cflags`
+ifdef USE_GLADE
+GLADEPKG = libglade-2.0
+GLADELIBS = `$(PKG_CONFIG) $(GLADEPKG) --libs`
+endif
+
+GTKCFLAGS = `$(PKG_CONFIG) $(GTKPKG) $(GTKGLPKG) $(GLADEPKG) --cflags`
 
 all: config.make
 	cd src && $(MAKE) $@
@@ -43,7 +48,6 @@ config.make:
 	@echo "You must first configure: make configure <options>"
 	@echo "Options are:"
 	@echo "  USE_GL=1       build GtkGLArea support. Requires LablGL"
-	@echo "  USE_GNOME=1    build GtkXmHTML and GdkPixbuf support"
 	@echo "  USE_GLADE=1    build libglade support"
 	@echo "  USE_DOTOPT=1   use ocamlc.opt and ocamlopt.opt"
 	@exit 2
@@ -74,4 +78,5 @@ configure:
 	@echo GTKCFLAGS=$(GTKCFLAGS) >> config.make
 	@echo GTKLIBS=$(GTKLIBS) >> config.make
 	@echo GTKGLLIBS=$(GTKGLLIBS) >> config.make
+	@echo GLADELIBS=$(GLADELIBS) >> config.make
 	@cat config.make

@@ -27,7 +27,6 @@ let classes = ref [
   "GtkEditable", ("GtkEdit.Editable", "GEdit.editable");
   "GtkEntry", ("GtkEdit.Entry", "GEdit.entry");
   "GtkSpinButton", ("GtkEdit.SpinButton", "GEdit.spin_button");
-  "GtkText", ("GtkEdit.Text", "GEdit.text");
   "GtkCombo", ("GtkEdit.Combo", "GEdit.combo");
   "GtkListItem", ("GtkList.ListItem", "GList.list_item");
   "GtkList", ("GtkList.Liste", "GList.liste");
@@ -76,6 +75,12 @@ let classes = ref [
   "GtkRuler", ("GtkRange.Ruler", "GRange.ruler");
   "GtkHRuler", ("GtkRange.Ruler", "GRange.ruler");
   "GtkVRuler", ("GtkRange.Ruler", "GRange.ruler");
+  "GtkTextMark", ("GtkText.Mark", "GText.mark");
+  "GtkTextTag", ("GtkText.Tag", "GText.tag");
+  "GtkTextTagTable", ("GtkText.TagTable", "GText.tag_table");
+  "GtkTextBuffer", ("GtkText.Buffer", "GText.buffer");
+  "GtkTextChildAnchor", ("GtkText.ChildAnchor", "GText.child_anchor");
+  "GtkTextView", ("GtkText.View", "GText.view");
   "GtkTreeItem", ("GtkTree.TreeItem", "GTree.tree_item");
   "GtkTree", ("GtkTree.Tree", "GTree.tree");
   "GtkCTree", ("GtkBase.Container", "GContainer.container");
@@ -93,9 +98,11 @@ open Xml_lexer
 let parse_header lexbuf =
   begin match token lexbuf with Tag ("?xml",_,true) -> ()
   | _ -> failwith "no XML header" end;
-  begin match token lexbuf with Tag ("gtk-interface",_,_) -> ()
+  begin match token lexbuf with Tag ("!doctype",_,_) -> ()
+  | _ -> failwith "no DOCTYPE declaration" end;
+  begin match token lexbuf with Tag ("glade-interface",_,_) -> ()
   | Tag(tag,_,_) -> prerr_endline tag
-  | _ -> failwith "no GTK-interface declaration" end
+  | _ -> failwith "no glade-interface declaration" end
 
 let parse_field lexbuf ~tag =
   let b = Buffer.create 80 and first = ref true in
@@ -118,15 +125,15 @@ type wtree = {
     mutable wrapped: bool;
   }
 
-let rec parse_widget lexbuf =
-  let wclass = ref None and wname = ref None and widgets = ref [] in
+let rec parse_widget ~wclass ~wname lexbuf =
+  let widgets = ref [] in
   while match token lexbuf with
-    Tag ("class",_,false) ->
-      wclass := Some (parse_field lexbuf ~tag:"class"); true
-  | Tag ("name",_,false) ->
-      wname := Some (parse_field lexbuf ~tag:"name"); true
-  | Tag ("widget",_,false) ->
-      widgets := parse_widget lexbuf :: !widgets; true
+  | Tag ("widget", attrs, closed) ->
+      widgets := parse_widget ~wclass:(List.assoc "class" attrs)
+	  ~wname:(List.assoc "id" attrs) lexbuf :: !widgets;
+      true
+  | Tag ("child",_,_) | Endtag "child" ->
+      true
   | Tag (tag,_,closed) ->
       if not closed then while token lexbuf <> Endtag tag do () done; true
   | Endtag "widget" ->
@@ -136,16 +143,8 @@ let rec parse_widget lexbuf =
   | Endtag _ | EOF ->
       failwith "bad XML syntax"
   do () done;
-  match !wclass, !wname with
-  | Some wclass, Some wname ->
-      { wclass = wclass; wname = wname;
-        wchildren = List.rev !widgets; wrapped = false }
-  | Some wclass, None ->
-      failwith ("no name for widget of class " ^ wclass)
-  | None, Some wname ->
-      failwith ("no class for widget " ^ wname)
-  | None, None ->
-      failwith "empty widget"
+  { wclass = wclass; wname = wname;
+    wchildren = List.rev !widgets; wrapped = false }
 
 let rec flatten_tree w =
   let children = List.map ~f:flatten_tree w.wchildren in
@@ -190,8 +189,9 @@ let parse_body ~file lexbuf =
     Tag("project", _, closed) ->
       if not closed then while token lexbuf <> Endtag "project" do () done;
       true
-  | Tag("widget", _, false) ->
-      let wtree = parse_widget lexbuf in
+  | Tag("widget", attrs, false) ->
+      let wtree = parse_widget ~wclass:(List.assoc "class" attrs)
+	  ~wname:(List.assoc "id" attrs) lexbuf in
       let rec output_roots wtree =
         if List.mem wtree.wname ~set:!roots then output_wrapper ~file wtree;
         List.iter ~f:output_roots wtree.wchildren
@@ -202,7 +202,7 @@ let parse_body ~file lexbuf =
   | Tag(tag, _, closed) ->
       if not closed then while token lexbuf <> Endtag tag do () done; true
   | Chars _ -> true
-  | Endtag "gtk-interface" -> false
+  | Endtag "glade-interface" -> false
   | Endtag _ -> failwith "bad XML syntax"
   | EOF -> false
   do () done

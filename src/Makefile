@@ -55,21 +55,21 @@ ifdef USE_GL
 MLFLAGS += -I $(LABLGLDIR)
 MLLINK += lablgl.cma
 MLLIBS += lablgtkgl.cma
-CLIBS += liblablgtkgl.a
+CLIBS += liblablgtkgl2.a
 GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.o
 endif
 
-ifdef USE_GNOME
-MLLIBS += lablgnome.cma
-CLIBS += liblablgnome.a
-GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo
-GNOMECOBJS = ml_gtkxmhtml.o
-endif
+#ifdef USE_GNOME
+#MLLIBS += lablgnome.cma
+#CLIBS += liblablgnome.a
+#GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo
+#GNOMECOBJS = ml_gtkxmhtml.o
+#endif
 
 ifdef USE_GLADE
 MLLIBS += lablglade.cma
-CLIBS += liblablglade.a
+CLIBS += liblablglade2.a
 GLADEMLOBJS = glade.cmo
 GLADECOBJS = ml_glade.o
 all:: lablgladecc
@@ -157,7 +157,7 @@ install:
 	   echo "Couldn't install dlls in default location"; \
 	fi
 	cp lablgtk2 $(BINDIR)
-	if test -f lablgladecc; then cp lablgladecc $(BINDIR); fi
+	if test -f lablgladecc; then cp lablgladecc $(BINDIR)/lablgladecc2; fi
 
 installopt:
 	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.a) $(INSTALLDIR)
@@ -174,29 +174,30 @@ lablgtk.cma: liblablgtk2.a $(MLOBJS)
 lablgtk.cmxa: liblablgtk2.a $(MLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
 
-liblablgtkgl.a: $(GLCOBJS)
-	$(LIBRARIAN) -o lablgtkgl $(GLCOBJS) \
+liblablgtkgl2.a: $(GLCOBJS)
+	$(LIBRARIAN) -o lablgtkgl2 $(GLCOBJS) \
 	    $(GTKGLLIBS)
-lablgtkgl.cma: liblablgtkgl.a $(GLMLOBJS)
-	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS) \
+lablgtkgl.cma: liblablgtkgl2.a $(GLMLOBJS)
+	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $(GLMLOBJS) \
 	    $(GLLIBS) $(GTKLIBS)
-lablgtkgl.cmxa: liblablgtkgl.a $(GLMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS:.cmo=.cmx) \
+lablgtkgl.cmxa: liblablgtkgl2.a $(GLMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $(GLMLOBJS:.cmo=.cmx) \
 	    $(GLLIBS) $(GTKLIBS)
 
-liblablgnome.a: $(GNOMECOBJS)
-	$(LIBRARIAN) -o lablgnome $(GNOMECOBJS) $(GNOMELIBS)
-lablgnome.cma: liblablgnome.a $(GNOMEMLOBJS)
-	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMELIBS)
-lablgnome.cmxa: liblablgnome.a $(GNOMEMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) $(GNOMELIBS)
+#liblablgnome.a: $(GNOMECOBJS)
+#	$(LIBRARIAN) -o lablgnome $(GNOMECOBJS) $(GNOMELIBS)
+#lablgnome.cma: liblablgnome.a $(GNOMEMLOBJS)
+#	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMELIBS)
+#lablgnome.cmxa: liblablgnome.a $(GNOMEMLOBJS:.cmo=.cmx)
+#	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) $(GNOMELIBS)
 
-liblablglade.a: $(GLADECOBJS)
-	$(LIBRARIAN) -o lablglade $(GLADECOBJS) $(GLADELIBS)
-lablglade.cma: liblablglade.a $(GLADEMLOBJS)
-	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS) $(GLADELIBS)
-lablglade.cmxa: liblablglade.a $(GLADEMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
+liblablglade2.a: $(GLADECOBJS)
+	$(LIBRARIAN) -o lablglade2 $(GLADECOBJS) $(GLADELIBS)
+lablglade.cma: liblablglade2.a $(GLADEMLOBJS)
+	$(LIBRARIAN) -o lablglade -oc lablglade2 $(GLADEMLOBJS) $(GLADELIBS)
+lablglade.cmxa: liblablglade2.a $(GLADEMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablglade -oc lablglade2 \
+	    $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
