@@ -253,7 +253,7 @@ CAMLprim value ml_gdk_window_get_position (value window)
   return ret;
 }
 
-value ml_gdk_window_get_pointer_location (value window)
+CAMLprim value ml_gdk_window_get_pointer_location (value window)
 {
   int x = 0;
   int y = 0;
@@ -352,7 +352,7 @@ Make_Extractor (GdkFont, GdkFont_val, descent, Val_int)
 ML_2 (gdk_atom_intern, String_val, Int_val, Val_GdkAtom)
 ML_1 (gdk_atom_name, GdkAtom_val, Val_string)
 
-value ml_gdk_property_change (value window, value property, value type,
+CAMLprim value ml_gdk_property_change (value window, value property, value type,
                               value mode, value xdata)
 {
     int format = Xdata_val (Field(xdata,0));
@@ -382,7 +382,7 @@ value ml_gdk_property_change (value window, value property, value type,
 }
 
 /* copy X11 property data */
-value copy_xdata (gint format, guchar *xdata, gulong nitems)
+CAMLprim value copy_xdata (gint format, guchar *xdata, gulong nitems)
 {
     CAMLparam0();
     CAMLlocal2(ret, data);
@@ -417,7 +417,7 @@ value copy_xdata (gint format, guchar *xdata, gulong nitems)
     CAMLreturn(ret);
 }
 
-value ml_gdk_property_get (value window, value property,
+CAMLprim value ml_gdk_property_get (value window, value property,
                            value length, value pdelete)
 {
 #if defined(_WIN32) || defined(__CYGWIN__)
@@ -782,7 +782,7 @@ Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity),
 
 Make_Extractor (GdkEventClient, GdkEvent_arg(Client), window, Val_GdkWindow)
 Make_Extractor(GdkEventClient, GdkEvent_arg(Client), message_type, Val_GdkAtom)
-value ml_GdkEventClient_data (GdkEventClient *ev)
+CAMLprim value ml_GdkEventClient_data (GdkEventClient *ev)
 {
     int nitems = 0;
     switch (ev->data_format) {

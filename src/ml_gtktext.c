@@ -28,7 +28,7 @@
 #define Val_GtkTextMark_new(val) (Val_GObject_new((GObject*)val))
 
 
-value Val_GtkTextMark_func(gpointer val){
+CAMLprim value Val_GtkTextMark_func(gpointer val){
   return(Val_GtkTextMark(val));
 }
 static value Val_GtkTextMark_opt(GtkTextMark *mrk) {
@@ -63,7 +63,7 @@ static struct custom_operations textiter_custom_operations =
 ;
 #define GtkTextIter_val(val) ((GtkTextIter*)Data_custom_val(val))
 
-value Val_GtkTextIter_new(GtkTextIter* val){
+CAMLprim value Val_GtkTextIter_new(GtkTextIter* val){
   value res = alloc_custom(&textiter_custom_operations,1,1,2);
   Field(res,1)=(value)gtk_text_iter_copy(val);
   return(res);
@@ -74,7 +74,7 @@ value Val_GtkTextIter_new(GtkTextIter* val){
 /*
 #define GtkTextIter_val(val) ((GtkTextIter*)Pointer_val(val))
 Make_Val_final_pointer_ext(GtkTextIter, _mine,Ignore,gtk_text_iter_free,1)
-value Val_GtkTextIter(GtkTextIter* it){
+CAMLprim value Val_GtkTextIter(GtkTextIter* it){
   return(Val_GtkTextIter_mine(gtk_text_iter_copy(it))); 
 }
 
@@ -724,24 +724,24 @@ ML_2 (gtk_text_iter_get_visible_slice, GtkTextIter_val,
 ML_2 (gtk_text_iter_get_visible_text, GtkTextIter_val,
       GtkTextIter_val, copy_string_g_free)
 
-value ml_gtk_text_iter_get_pixbuf(value ti)
+CAMLprim value ml_gtk_text_iter_get_pixbuf(value ti)
 {
   GdkPixbuf *ret = gtk_text_iter_get_pixbuf(GtkTextIter_val(ti));
   return Val_option(ret,Val_GdkPixbuf);
 }
 
-value ml_gtk_text_iter_get_marks(value ti) {
+CAMLprim value ml_gtk_text_iter_get_marks(value ti) {
   return Val_GSList_free(gtk_text_iter_get_marks(GtkTextIter_val(ti)),
                          Val_GtkTextMark_func);
 }
 
-value ml_gtk_text_iter_get_toggled_tags(value ti, value b) {
+CAMLprim value ml_gtk_text_iter_get_toggled_tags(value ti, value b) {
   return Val_GSList_free
     (gtk_text_iter_get_toggled_tags(GtkTextIter_val(ti), Bool_val(b)),
      Val_GtkTextMark_func);
 }
 
-value ml_gtk_text_iter_get_child_anchor(value ti)
+CAMLprim value ml_gtk_text_iter_get_child_anchor(value ti)
 {
   GtkTextChildAnchor *ret =
     gtk_text_iter_get_child_anchor(GtkTextIter_val(ti));
@@ -760,7 +760,7 @@ ML_2 (gtk_text_iter_toggles_tag,GtkTextIter_val,
 ML_2 (gtk_text_iter_has_tag,GtkTextIter_val,
       GtkTextTag_val, Val_bool)
 
-value ml_gtk_text_iter_get_tags(value ti) {
+CAMLprim value ml_gtk_text_iter_get_tags(value ti) {
   return Val_GSList_free(gtk_text_iter_get_tags(GtkTextIter_val(ti)),
                          Val_GtkTextMark_func);
 }

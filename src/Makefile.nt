@@ -2,9 +2,9 @@
 # Makefile for lablgtk.
 
 EXE = .exe
-TARGETS = varcc lablgtktop$(EXE) lablgtktop_t$(EXE)
+TARGETS = varcc lablgtktop$(EXE) lablgtktop_t$(EXE) # lablgtk2 lablgladecc
 
-all: $(TARGETS)
+all:: $(TARGETS)
 
 opt: lablgtkopt
 
@@ -17,7 +17,7 @@ COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 MKLIB = lib /nologo /debugtype:CV /out:
 MKDLL = link /nologo /dll "`ocamlc -where`/ocamlrun.lib" /out:
-TOPLEVEL = ocamlmktop $(MLFLAGS)
+TOPLEVEL = ocamlmktop -verbose $(MLFLAGS)
 CAMLP4 = camlp4o -I "$(LIBDIR)/camlp4" pr_o.cmo
 CONFIG = ../config.make.nt
 DLLDIR = $(LIBDIR)/stublibs
@@ -41,11 +41,12 @@ ifeq ($(USE_GL), 1)
 MLFLAGS += -I "$(LABLGLDIR)"
 MLLINK += lablgl.cma
 MLLIBS += lablgtkgl.cma
-CLIBS += liblablgtkgl.lib
+CLIBS += liblablgtkgl2.lib
 GLLINK = -cclib -llablgtkgl -cclib -lgtkgl
 GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.obj
 endif
+
 
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .obj .d.obj .var .h .opt .def .ml4
@@ -66,28 +67,28 @@ endif
 
 # Targets
 GTKOBJS =  ml_gtk.obj ml_pango.obj ml_gtkbin.obj ml_gtkbutton.obj ml_gtkedit.obj \
-	ml_gtklist.obj \
-	ml_gtkmenu.obj ml_gtkmisc.obj ml_gtkpack.obj ml_gtkrange.obj ml_gtktree.obj \
-	ml_gtktext.obj
+	ml_gtklist.obj ml_gtkmenu.obj ml_gtkmisc.obj ml_gtkpack.obj ml_gtkrange.obj \
+	ml_gtktext.obj ml_gtktree.obj ml_gtkstock.obj
 COBJS = ml_gdkpixbuf.obj ml_gdk.obj ml_glib.obj ml_gobject.obj ml_gpointer.obj \
 	wrappers.obj $(GTKOBJS)
 MLOBJS =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
 	gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
 	gtk.cmo pango.cmo gtkSignal.cmo \
-	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
+	gtkData.cmo gtkStock.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
-	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkTree.cmo gtkMain.cmo \
-	gtkText.cmo \
-	gDraw.cmo \
+	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
+	gtkMain.cmo \
+	gPango.cmo gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
 	gText.cmo \
-	gMenu.cmo gMisc.cmo gWindow.cmo gList.cmo gBin.cmo \
-	gEdit.cmo gRange.cmo gTree.cmo gUtil.cmo gToolbox.cmo
+	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gWindow.cmo gBin.cmo \
+	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
-ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(THOBJS) \
-	$(INITOBJS) $(THINITOBJS)
+ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
+	$(RSVGMLOBJS) $(GNOMECANVSMLOBJS) $(INITOBJS)
+ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
 lablgtktop$(EXE): $(CLIBS) $(MLLIBS) $(INITOBJS)
 	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
@@ -121,12 +122,12 @@ liblablgtk2.lib: $(COBJS)
 dlllablgtk2.dll: $(COBJS:.obj=.d.obj)
 	$(MKDLL)$@ $(COBJS:.obj=.d.obj) $(GTKLIBS)
 
-lablgtk.cma: liblablgtk.lib dlllablgtk.dll $(MLOBJS)
+lablgtk.cma: liblablgtk2.lib dlllablgtk2.dll $(MLOBJS)
 	$(LINKER) -a -o $@ $(MLOBJS) \
-	  -dllib -llablgtk -cclib -llablgtk -cclib "$(GTKLIBS)"
+	  -dllib -llablgtk2 -cclib -llablgtk2 -cclib "$(GTKLIBS)"
 lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \
-	  -cclib -llablgtk -cclib "$(GTKLIBS)"
+	  -cclib -llablgtk2 -cclib "$(GTKLIBS)"
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
@@ -156,6 +157,6 @@ ml_gtkgl.obj: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gtkxmhtml.obj: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gpointer.obj: ml_gpointer.h
 ml_gdkpixbuf.obj: gdkpixbuf_tags.h ml_gdk.h gdk_tags.h wrappers.h ml_gpointer.h
-ml_pango.obj: ml_pango.h
+ml_pango.obj: pango_tags.h
 
 include .depend
