@@ -13,28 +13,6 @@ let () = _gtkedit_init ()
 
 module Editable = struct
   include Editable
-  external select_region : [>`editable] obj -> start:int -> stop:int -> unit
-      = "ml_gtk_editable_select_region"
-  external get_selection_bounds : [>`editable] obj -> (int * int) option
-      = "ml_gtk_editable_get_selection_bounds"
-  external insert_text : [>`editable] obj -> string -> pos:int -> int
-      = "ml_gtk_editable_insert_text"
-  external delete_text : [>`editable] obj -> start:int -> stop:int -> unit
-      = "ml_gtk_editable_delete_text"
-  external get_chars : [>`editable] obj -> start:int -> stop:int -> string
-      = "ml_gtk_editable_get_chars"
-  external cut_clipboard : [>`editable] obj -> unit
-      = "ml_gtk_editable_cut_clipboard"
-  external copy_clipboard : [>`editable] obj -> unit
-      = "ml_gtk_editable_copy_clipboard"
-  external paste_clipboard : [>`editable] obj -> unit
-      = "ml_gtk_editable_paste_clipboard"
-  external delete_selection : [>`editable] obj -> unit
-      = "ml_gtk_editable_delete_selection"
-  external set_position : [>`editable] obj -> int -> unit
-      = "ml_gtk_editable_set_position"
-  external get_position : [>`editable] obj -> int
-      = "ml_gtk_editable_get_position"
   let marshal_insert f argv =
     match List.tl (Closure.get_args argv) with
     | `STRING _ :: `INT len :: `POINTER(Some p) :: _ ->

@@ -18,7 +18,7 @@ let file_dialog ~title ~callback ?filename () =
   sel#show ()
 
 class editor ?packing ?show () = object (self)
-  val text = GEdit.text ~editable:true ?packing ?show ()
+  val text = GBroken.text ~editable:true ?packing ?show ()
   val mutable filename = None
 
   method text = text

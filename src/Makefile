@@ -131,12 +131,13 @@ opt:  $(TARGETS) lablgtkopt
 GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkbin$(XO) ml_gtkbutton$(XO) \
 	ml_gtkedit$(XO) ml_gtklist$(XO) ml_gtkmenu$(XO) ml_gtkmisc$(XO) \
 	ml_gtkpack$(XO) ml_gtkrange$(XO) ml_gtktext$(XO) ml_gtktree$(XO) \
-	ml_gtkstock$(XO) ml_gtkfile$(XO) ml_gtkaction$(XO)
+	ml_gtkstock$(XO) ml_gtkfile$(XO) ml_gtkaction$(XO) ml_gtkbroken$(XO)
 COBJS = ml_gdkpixbuf$(XO) ml_gdk$(XO) ml_glib$(XO) ml_gobject$(XO) \
 	ml_gpointer$(XO) ml_gvaluecaml$(XO) wrappers$(XO) $(GTKOBJS)
 GTKPROPS = gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
 	gtkList.props gtkMenu.props gtkMisc.props gtkPack.props \
-	gtkRange.props gtkText.props gtkTree.props gtkFile.props gtkAction.props
+	gtkRange.props gtkText.props gtkTree.props gtkFile.props \
+	gtkAction.props gtkBroken.props
 MLOBJS1 =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo
 ENUMOBJS = gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
 MLOBJS2 = pango.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
@@ -144,11 +145,12 @@ MLOBJS2 = pango.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
 MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
-	gtkFile.cmo gtkMain.cmo \
+	gtkFile.cmo gtkMain.cmo gtkBroken.cmo \
 	gPango.cmo gDraw.cmo gObj.cmo gData.cmo gMain.cmo
 MLOBJS4 = gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
-	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gFile.cmo gWindow.cmo gBin.cmo \
-	gEdit.cmo gRange.cmo gAction.cmo gUtil.cmo gToolbox.cmo
+	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gFile.cmo gWindow.cmo \
+	gBin.cmo gEdit.cmo gRange.cmo gAction.cmo gBroken.cmo \
+	gUtil.cmo gToolbox.cmo
 MLOBJS =  $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(GTKPROPS:.props=Props.cmo) \
 	$(MLOBJS3) $(GTKPROPS:%.props=o%Props.cmo) $(MLOBJS4)
 MLXOBJS = $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(MLOBJS3) $(MLOBJS4)

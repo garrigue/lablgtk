@@ -24,6 +24,8 @@ class editable obj = object
   method delete_selection () = Editable.delete_selection obj
   method set_position = Editable.set_position obj
   method position = Editable.get_position obj
+  method set_editable = Editable.set_editable obj
+  method editable = Editable.get_editable obj
   method selection = Editable.get_selection_bounds obj
 end
 

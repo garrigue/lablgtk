@@ -20,15 +20,14 @@ class editable_signals : [> editable] obj ->
 
 (** Interface for text-editing widgets
    @gtkdoc gtk GtkEditable *)
-class editable : 'a obj ->
+class editable : ([> Gtk.editable] as 'a) obj ->
   object
-    inherit GObj.widget
-    constraint 'a = [> Gtk.editable]
-    val obj : 'a obj
+    inherit ['a] GObj.widget_impl
     method copy_clipboard : unit -> unit
     method cut_clipboard : unit -> unit
     method delete_selection : unit -> unit
     method delete_text : start:int -> stop:int -> unit
+    method editable : bool
     method get_chars : start:int -> stop:int -> string
     method insert_text : string -> pos:int -> int
     method paste_clipboard : unit -> unit
@@ -36,6 +35,7 @@ class editable : 'a obj ->
     method select_region : start:int -> stop:int -> unit
     method selection : (int * int) option
     method set_position : int -> unit
+    method set_editable : bool -> unit
   end
 
 (** {3 GtkEntry & GtkEntryCompletion} *)
@@ -100,7 +100,7 @@ class entry_signals : [> Gtk.entry] obj ->
 class entry : ([> Gtk.entry] as 'a) obj ->
   object
     inherit editable
-    val obj : 'a obj
+    inherit ['a] objvar
     method connect : entry_signals
     method event : event_ops
     method append_text : string -> unit

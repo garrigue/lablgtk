@@ -11,76 +11,8 @@ open OgtkTreeProps
 open GObj
 open GContainer
 
-(* Obsolete GtkTree/GtkTreeItem framework *)
-
-class tree_item_signals obj = object
-  inherit container_signals_impl (obj : tree_item obj)
-  inherit item_sigs
-  inherit tree_item_sigs
-end
-
-class tree_item obj = object
-  inherit container obj
-  method event = new GObj.event_ops obj
-  method as_item : Gtk.tree_item obj = obj
-  method connect = new tree_item_signals obj
-  method set_subtree (w : tree) = TreeItem.set_subtree obj w#as_tree
-  method remove_subtree () = TreeItem.remove_subtree obj
-  method expand () = TreeItem.expand obj
-  method collapse () = TreeItem.collapse obj
-  method subtree =
-    try Some(new tree (TreeItem.subtree obj)) with Gpointer.Null -> None
-end
-
-and tree_signals obj = object (self)
-  inherit container_signals_impl obj
-  method selection_changed = self#connect Tree.S.selection_changed
-  method select_child ~callback =
-    self#connect Tree.S.select_child
-      ~callback:(fun w -> callback (new tree_item (TreeItem.cast w))) 
-  method unselect_child ~callback =
-    self#connect Tree.S.unselect_child
-      ~callback:(fun w -> callback (new tree_item (TreeItem.cast w))) 
-end
-
-and tree obj = object (self)
-  inherit [tree_item] item_container obj
-  method event = new GObj.event_ops obj
-  method as_tree = (obj :> Gtk.tree obj)
-  method insert w ~pos = Tree.insert obj w#as_item ~pos
-  method connect = new tree_signals obj
-  method clear_items = Tree.clear_items obj
-  method select_item = Tree.select_item obj
-  method unselect_item = Tree.unselect_item obj
-  method child_position (w : tree_item) = Tree.child_position obj w#as_item
-  method remove_items items =
-    Tree.remove_items obj
-      (List.map ~f:(fun (t : tree_item) -> t#as_item) items)
-  method set_selection_mode = Tree.set_selection_mode obj
-  method set_view_mode = Tree.set_view_mode obj
-  method set_view_lines = Tree.set_view_lines obj
-  method selection =
-    List.map ~f:(fun w -> self#wrap (w :> Gtk.widget obj)) (Tree.selection obj)
-  method private wrap w =
-    new tree_item (TreeItem.cast w)
-end
-
-let tree_item ?label ?packing ?show () =
-  let w = TreeItem.create ?label () in
-  let self = new tree_item w in
-  may packing ~f:(fun f -> (f self : unit));
-  if show <> Some false then self#misc#show ();
-  self
-
-let tree ?selection_mode ?view_mode ?view_lines =
-  GContainer.pack_container [] ~create:(fun p ->
-    let w = Tree.create p in
-    Tree.set w ?selection_mode ?view_mode ?view_lines;
-    new tree w)
-
 (* New GtkTreeView/Model framework *)
 
-open Gobject
 type 'a column = {index: int; conv: 'a data_conv; creator: int}
 
 class column_list = object (self)
