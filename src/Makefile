@@ -82,15 +82,16 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gEdit.cmo gPix.cmo gRange.cmo gUtil.cmo $(GLMLOBJS)
 THOBJS = gtkThread.cmo threadObj.cmo
 INITOBJS = gtkInit.cmo
-ALLOBJS = $(MLOBJS) $(THOBJS) $(INITOBJS)
+THINITOBJS = gtkThInit.cmo
+ALLOBJS = $(MLOBJS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
 lablgtktop: liblablgtk.a lablgtk.cma $(INITOBJS)
 	$(TOPLEVEL) -custom -o $@ unix.cma str.cma $(GLLINK) \
 		-ccopt -L. lablgtk.cma $(INITOBJS)
 
-lablgtktop_t: liblablgtk.a lablgtk.cma $(THOBJS) $(INITOBJS)
+lablgtktop_t: liblablgtk.a lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	$(TOPLEVEL) -custom $(THFLAGS) -o $@ $(THLIBS) str.cma $(GLLINK) \
-	   -ccopt -L. lablgtk.cma $(THOBJS) $(INITOBJS)
+	   -ccopt -L. lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
 lablgtk: Makefile config.make lablgtk.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
@@ -108,7 +109,7 @@ lablgtkopt: liblablgtk.a lablgtk.cmxa
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(ALLOBJS:.cmo=.cmi) $(INSTALLDIR)
-	cp lablgtk.cma $(THOBJS) $(INITOBJS) $(INSTALLDIR)
+	cp lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
 	cp liblablgtk.a $(LIBDIR) || cp liblablgtk.a $(INSTALLDIR)
 	cp lablgtktop  lablgtktop_t $(INSTALLDIR)
 	cp lablgtk lablgtkrun $(INSTALLBINDIR)
