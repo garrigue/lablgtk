@@ -67,7 +67,7 @@ let pos = new position ~init_x:3 ~init_y:3 ~min_x:0 ~min_y:0 ~max_x:3 ~max_y:3
 open GdkKeysyms
 
 let _ =
-  window#connect#event#key_press ~callback:
+  window#event#connect#key_press ~callback:
     begin fun ev ->
       let (x0, y0) = pos#current in
       let wid0 = arr.(x0).(y0) in

@@ -116,7 +116,7 @@ class fixed :
   object
     inherit container_full
     val obj : Gtk.fixed obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method move : widget -> x:int -> y:int -> unit
     method put : widget -> x:int -> y:int -> unit
   end
@@ -131,7 +131,7 @@ class layout :
   object
     inherit container_full
     val obj : Gtk.layout obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method freeze : unit -> unit
     method hadjustment : GData.adjustment
     method height : int
@@ -167,7 +167,7 @@ class notebook : Gtk.notebook obj ->
   object
     inherit container
     val obj : Gtk.notebook obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method append_page :
       ?tab_label:widget -> ?menu_label:widget -> widget -> unit
     method connect : notebook_signals
@@ -249,7 +249,7 @@ class paned :
     val obj : Gtk.paned obj
     method add1 : widget -> unit
     method add2 : widget -> unit
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method child1 : widget
     method child2 : widget
     method gutter_size : int

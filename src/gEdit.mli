@@ -41,7 +41,7 @@ class entry : 'a obj ->
     inherit editable
     constraint 'a = [>`entry|`editable|`widget]
     val obj : 'a obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method append_text : string -> unit
     method prepend_text : string -> unit
     method set_max_length : int -> unit
@@ -120,7 +120,7 @@ class text : Gtk.text obj ->
   object
     inherit editable
     val obj : Gtk.text obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method freeze : unit -> unit
     method hadjustment : GData.adjustment
     method insert :

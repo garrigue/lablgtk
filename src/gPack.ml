@@ -71,7 +71,7 @@ let table ~rows ~columns ?homogeneous ?row_spacings ?col_spacings
 
 class fixed obj = object
   inherit container_full (obj : Gtk.fixed obj)
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method put w = Fixed.put obj (as_widget w)
   method move w = Fixed.move obj (as_widget w)
 end
@@ -83,7 +83,7 @@ let fixed ?border_width ?width ?height ?packing ?show () =
 
 class layout obj = object
   inherit container_full (obj : Gtk.layout obj)
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method put w = Layout.put obj (as_widget w)
   method move w = Layout.move obj (as_widget w)
   method set_hadjustment adj =
@@ -139,7 +139,7 @@ let packer ?spacing ?border_width ?width ?height ?packing ?show () =
 
 class paned obj = object
   inherit container_full (obj : Gtk.paned obj)
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method add w =
     if List.length (Container.children obj) = 2 then
       raise(Error "Gpack.paned#add: already full");
@@ -173,7 +173,7 @@ end
 
 class notebook obj = object (self)
   inherit GContainer.container (obj : Gtk.notebook obj)
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method connect = new notebook_signals obj
   method insert_page ?tab_label ?menu_label ~pos child =
       Notebook.insert_page obj (as_widget child) ~pos

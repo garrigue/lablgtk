@@ -9,7 +9,6 @@ class gtkobj :
   object
     val obj : 'a obj
     method destroy : unit -> unit
-    method get_type : string
     method get_id : int
   end
 
@@ -20,17 +19,21 @@ class gtkobj_signals :
     val after : bool
     method after : 'b
     method destroy : callback:(unit -> unit) -> GtkSignal.id
+  end
+
+class gtkobj_misc : 'a obj ->
+  object
     method disconnect : GtkSignal.id -> unit
+    method get_type : string
     method stop_emit : name:string -> unit
   end
 
 (* Widget *)
 
 class event_signals :
-  [>`widget] obj -> after:bool ->
-  object
-    val obj : Gtk.widget obj
-    val after : bool
+  [>`widget] obj ->
+  object ('a)
+    method after : 'a
     method any :
 	callback:(Gdk.Tags.event_type Gdk.event -> bool) -> GtkSignal.id
     method button_press : callback:(GdkEvent.Button.t -> bool) -> GtkSignal.id
@@ -66,6 +69,14 @@ class event_signals :
     method unmap : callback:([`UNMAP] Gdk.event -> bool) -> GtkSignal.id
   end
 
+class event_ops : [>`widget] obj ->
+  object
+    method add : Gdk.Tags.event_mask list -> unit
+    method connect : event_signals
+    method send : Gdk.Tags.event_type Gdk.event -> bool
+    method set_extensions : Gdk.Tags.extension_events -> unit
+  end
+
 class style : Gtk.style ->
   object ('a)
     val style : Gtk.style
@@ -93,7 +104,7 @@ class selection_data :
 
 class widget_drag : [>`widget] obj ->
   object
-    val obj : Gtk.widget obj
+    method connect : drag_signals
     method dest_set :
       ?flags:Tags.dest_defaults list ->
       ?actions:Gdk.Tags.drag_action list -> target_entry list -> unit
@@ -111,6 +122,7 @@ class widget_drag : [>`widget] obj ->
 and widget_misc :
   [>`widget] obj ->
   object
+    inherit gtkobj_misc
     val obj : Gtk.widget obj
     method activate : unit -> bool
     method add_accelerator :
@@ -120,7 +132,6 @@ and widget_misc :
     method allocation : rectangle
     method colormap : Gdk.colormap
     method draw : Gdk.Rectangle.t option -> unit
-    method event : Gdk.Tags.event_type Gdk.event -> bool
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
     method has_focus : bool
@@ -141,7 +152,6 @@ and widget_misc :
     method set_app_paintable : bool -> unit
     method set_can_default : bool -> unit
     method set_can_focus : bool -> unit
-    method set_extension_events : Gdk.Tags.extension_events -> unit
     method set_name : string -> unit
     method set_sensitive : bool -> unit
     method set_state : Tags.state_type -> unit
@@ -181,9 +191,8 @@ and widget_signals :
     val obj : 'a obj
     val after : bool
     method after : 'b
-    method drag : drag_signals 
     method draw : callback:(rectangle -> unit) -> GtkSignal.id
-    method event : event_signals
+    method hide : callback:(unit -> unit) -> GtkSignal.id
     method parent_set :	callback:(widget option -> unit) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id
     method show : callback:(unit -> unit) -> GtkSignal.id
@@ -214,9 +223,9 @@ and drag_context :
   end
 
 and drag_signals :
-  [>`widget] Gtk.obj -> after:bool ->
-  object
-    val obj : Gtk.widget obj
+  [`widget] Gtk.obj ->
+  object ('a)
+    method after : 'a
     method beginning :
       callback:(drag_context -> unit) -> GtkSignal.id
     method data_delete :

@@ -110,11 +110,12 @@ Structure of the G[A-Z]* modules:
   * an as_widget method, returning the raw Gtk widget used for packing, etc...
   * a misc sub-object, giving access to miscellanous functionality of
     the basic gtkwidget class.
-  * a grab sub-object, containing drag and drop functions.
   * a connect sub-object, allowing one to connect all available
     signals (this is what prevents width subtyping in subclasses.)
-  * connect#event and connect#grab sub-objects, for event and grab
-    signals.
+  * an event sub-object, for Xevent related functions (only if the widget
+    has an Xwindow), and an event#connect sub-object.
+  * a grab sub-object, containing drag and drop functions,
+    and a grab#connect sub-object.
 
   You create a widget by [<Module>.<widget name> options ... ()].
   Many optional arguments are admitted. The last two of them, packing:

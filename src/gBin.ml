@@ -36,7 +36,7 @@ let scrolled_window ?hadjustment ?vadjustment ?hpolicy ?vpolicy
 
 class event_box obj = object
   inherit container_full (obj : Gtk.event_box obj)
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
 end
 
 let event_box ?border_width ?width ?height ?packing ?show () =
@@ -60,7 +60,7 @@ class handle_box obj = object
   method set_handle_position = HandleBox.set_handle_position obj
   method set_snap_edge       = HandleBox.set_snap_edge       obj
   method connect = new handle_box_signals obj
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
 end
 
 let handle_box ?border_width ?width ?height ?packing ?show () =

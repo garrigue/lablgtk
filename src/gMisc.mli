@@ -53,7 +53,7 @@ class calendar : Gtk.calendar obj ->
   object
     inherit widget
     val obj : Gtk.calendar obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method clear_marks : unit
     method connect : calendar_signals
     method date : int * int * int
@@ -75,7 +75,7 @@ class drawing_area : Gtk.drawing_area obj ->
   object
     inherit widget_full
     val obj : Gtk.drawing_area obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method set_size : width:int -> height:int -> unit
   end
 val drawing_area :

@@ -205,7 +205,7 @@ class window_and_tree ~name =
 
       Propwin.show tiwin;
 
-      tree_window#connect#event#key_press ~callback:
+      tree_window#event#connect#key_press ~callback:
 	begin fun ev ->
 	  let state = GdkEvent.Key.state ev in
 	  let keyval = GdkEvent.Key.keyval ev in
@@ -227,7 +227,7 @@ class window_and_tree ~name =
 		  self#change_selected t#next
 		with Not_found -> ()
 	  end;
-	  tree_window#connect#stop_emit ~name:"key_press_event";
+	  tree_window#misc#stop_emit ~name:"key_press_event";
 	  true
 	end;
       ()
@@ -649,7 +649,7 @@ object(self)
 
     self#add_signal name_changed;
 
-    tree_item#connect#event#button_press ~callback:
+    tree_item#event#connect#button_press ~callback:
       (fun ev -> match GdkEvent.get_type ev with
       | `BUTTON_PRESS ->
 	  if GdkEvent.Button.button ev = 1 then begin
@@ -661,7 +661,7 @@ object(self)
 	    then self#menu ~time:(GdkEvent.Button.time ev)
 	    else self#restricted_menu ~time:(GdkEvent.Button.time ev);
 	  end;
-	  tree_item#connect#stop_emit ~name:"button_press_event";
+	  tree_item#misc#stop_emit ~name:"button_press_event";
 	  true
       | _ -> false);
     ()

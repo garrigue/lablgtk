@@ -8,7 +8,7 @@ open GtkXmHTML
 
 class xmhtml obj = object (self)
   inherit widget_full (obj : GtkXmHTML.xmhtml obj)
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method freeze = freeze obj
   method thaw = thaw obj
   method source = source obj

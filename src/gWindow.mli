@@ -12,7 +12,7 @@ class ['a] window_skel : 'b obj ->
     method activate_default : unit -> unit
     method activate_focus : unit -> unit
     method add_accel_group : accel_group -> unit
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method as_window : Gtk.window obj
     method set_allow_grow : bool -> unit
     method set_allow_shrink : bool -> unit
@@ -55,6 +55,7 @@ class dialog : [>`dialog] obj ->
     val obj : Gtk.dialog obj
     method action_area : GPack.box
     method connect : GContainer.container_signals
+    method event : event_ops
     method vbox : GPack.box
   end
 val dialog :
@@ -78,6 +79,7 @@ class color_selection_dialog : Gtk.color_selection_dialog obj ->
     method cancel_button : GButton.button
     method colorsel : GMisc.color_selection
     method connect : GContainer.container_signals
+    method event : event_ops
     method help_button : GButton.button
     method ok_button : GButton.button
   end
@@ -101,6 +103,7 @@ class file_selection : Gtk.file_selection obj ->
     val obj : Gtk.file_selection obj
     method cancel_button : GButton.button
     method connect : GContainer.container_signals
+    method event : event_ops
     method get_filename : string
     method help_button : GButton.button
     method ok_button : GButton.button
@@ -130,6 +133,7 @@ class font_selection_dialog : Gtk.font_selection_dialog obj ->
     method apply_button : GButton.button
     method cancel_button : GButton.button
     method connect : GContainer.container_signals
+    method event : event_ops
     method font : Gdk.font option
     method font_name : string option
     method ok_button : GButton.button

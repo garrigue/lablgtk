@@ -312,7 +312,7 @@ object
       let l = GMisc.label ~text:"value must be a float" ~packing:vb#pack () in
       let b = GButton.button ~label:"OK" ~packing:vb#pack () in
       b#connect#clicked ~callback:pop#destroy;
-      pop#connect#event#delete ~callback:(fun _ -> pop#destroy (); true);
+      pop#event#connect#delete ~callback:(fun _ -> pop#destroy (); true);
       pop#connect#destroy ~callback:GtkMain.Main.quit;
       pop#show ();
       GtkMain.Main.main ();

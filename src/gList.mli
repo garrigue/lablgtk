@@ -8,7 +8,7 @@ class list_item : Gtk.list_item obj ->
   object
     inherit container
     val obj : Gtk.list_item obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method as_item : Gtk.list_item obj
     method connect : item_signals
     method deselect : unit -> unit
@@ -60,7 +60,7 @@ class ['a] clist : Gtk.clist obj ->
   object
     inherit widget
     val obj : Gtk.clist obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method append : string list -> int
     method cell_pixmap : int -> int -> GDraw.pixmap
     method cell_text : int -> int -> string

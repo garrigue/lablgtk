@@ -596,7 +596,7 @@ let main () =
       GlMisc.hint `polygon_smooth `fastest
     end;
 
-  window#connect#event#key_press
+  window#event#connect#key_press
     ~callback:(fun ev -> view#key (GdkEvent.Key.string ev); true);
 
   Timeout.add ~ms:20

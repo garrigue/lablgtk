@@ -35,10 +35,12 @@ module Raw = struct
     = "ml_gtk_gl_area_make_current"
 end
 
-class area_signals obj = object (connect)
+class area_signals obj =
+  let event = new GObj.event_ops obj in
+object (connect)
   inherit GObj.widget_signals obj as super
   method display ~callback =
-    connect#event#expose ~callback:
+    event#connect#expose ~callback:
       begin fun ev ->
 	if GdkEvent.Expose.count ev = 0 then
 	  if Raw.make_current obj then callback ()
@@ -46,7 +48,7 @@ class area_signals obj = object (connect)
 	true
       end
   method reshape ~callback =
-    connect#event#configure ~callback:
+    event#connect#configure ~callback:
       begin fun ev ->
 	if Raw.make_current obj then begin
 	  callback ~width:(GdkEvent.Configure.width ev)
@@ -63,11 +65,11 @@ class area_signals obj = object (connect)
       end
 end
 
-class area obj = object
+class area obj = object (self)
   inherit GObj.widget (obj : gl_area obj)
   method as_area = obj
+  method event = new GObj.event_ops obj
   method connect = new area_signals obj
-  method add_events = GtkBase.Widget.add_events obj
   method set_size = GtkMisc.DrawingArea.size obj
   method swap_buffers () = Raw.swap_buffers obj
   method make_current () =

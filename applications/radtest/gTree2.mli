@@ -17,7 +17,7 @@ class tree_item : Gtk.tree_item obj ->
   object
     inherit GContainer.container
     val obj : Gtk.tree_item obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method as_item : Gtk.tree_item obj
     method collapse : unit -> unit
     method connect : tree_item_signals
@@ -41,7 +41,7 @@ and tree : Gtk.tree obj ->
   object
     inherit [tree_item] item_container
     val obj : Gtk.tree obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method as_tree : Gtk.tree obj
     method child_position : tree_item -> int
     method clear_items : start:int -> stop:int -> unit

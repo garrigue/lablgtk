@@ -42,7 +42,7 @@ and menu_item : 'a obj ->
     inherit menu_item_skel
     constraint 'a = [>`widget|`container|`item|`menuitem]
     val obj : 'a obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method connect : menu_item_signals
   end
 and menu : Gtk.menu obj ->
@@ -50,7 +50,7 @@ and menu : Gtk.menu obj ->
     inherit [menu_item] item_container
     val obj : Gtk.menu obj
     method add : menu_item -> unit
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method append : menu_item -> unit
     method as_menu : Gtk.menu obj
     method children : menu_item list
@@ -94,7 +94,7 @@ class check_menu_item : 'a obj ->
     constraint 'a = [>`widget|`checkmenuitem|`container|`item|`menuitem]
     val obj : 'a obj
     method active : bool
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method connect : check_menu_item_signals
     method set_active : bool -> unit
     method set_show_toggle : bool -> unit
@@ -131,7 +131,7 @@ class menu_shell : 'a obj ->
     inherit [menu_item] item_container
     constraint 'a = [>`widget|`container|`menushell]
     val obj : 'a obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method deactivate : unit -> unit
     method connect : menu_shell_signals
     method insert : menu_item -> pos:int -> unit
@@ -149,7 +149,7 @@ class option_menu : 'a obj ->
     inherit GButton.button_skel
     constraint 'a = [>`optionmenu|`button|`container|`widget]
     val obj : 'a obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method connect : GButton.button_signals
     method get_menu : menu
     method remove_menu : unit -> unit

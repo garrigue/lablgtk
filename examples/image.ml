@@ -57,7 +57,7 @@ let _ =
 
   draw (); 
 
-  window#connect#after#event#expose ~callback:
+  window#event#connect#after#expose ~callback:
     begin fun _ ->
       display (); false
     end;

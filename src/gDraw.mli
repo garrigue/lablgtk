@@ -57,7 +57,6 @@ class type widget_draw =
     method allocation : Gtk.rectangle
     method colormap : colormap
     method draw : Rectangle.t option -> unit
-    method event : Tags.event_type event -> bool
     method hide : unit -> unit
     method hide_all : unit -> unit
     method intersect : Rectangle.t -> Rectangle.t option

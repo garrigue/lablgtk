@@ -7,14 +7,14 @@ let _ =
   window#connect#destroy ~callback:Main.quit;
 
   let text = GEdit.text ~editable:true ~packing:window#add () in
-  text#connect#event#button_press ~callback:
+  text#event#connect#button_press ~callback:
     begin fun ev ->
       GdkEvent.Button.button ev = 3 &&
       GdkEvent.get_type ev = `BUTTON_PRESS &&
       begin
 	let pos = text#position in
 	GdkEvent.Button.set_button ev 1;
-	text#misc#event (GdkEvent.coerce ev);
+	text#event#send (GdkEvent.coerce ev);
 	Printf.printf "Position is %d.\n" text#position;
 	flush stdout;
 	text#set_position pos;

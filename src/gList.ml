@@ -9,7 +9,7 @@ open GContainer
 
 class list_item obj = object
   inherit container (obj : Gtk.list_item obj)
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method as_item = obj
   method select () = Item.select obj
   method deselect () = Item.deselect obj
@@ -57,7 +57,7 @@ end
 class ['a] clist obj = object (self)
   inherit widget (obj : Gtk.clist obj)
   method set_border_width = Container.set_border_width obj
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method connect = new clist_signals obj
   method rows = CList.get_rows obj
   method columns = CList.get_columns obj

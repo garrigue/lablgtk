@@ -112,7 +112,7 @@ object (self)
       input_start <- textw#position;
     end
   initializer
-    textw#connect#event#key_press ~callback:
+    textw#event#connect#key_press ~callback:
       begin fun ev ->
 	if GdkEvent.Key.keyval ev = _Return && GdkEvent.Key.state ev = []
 	then self#return ()
@@ -131,7 +131,7 @@ object (self)
           self#lex ~start:(Text.line_start textw ~pos)
             ~stop:(Text.line_end textw ~pos)
       end;
-    textw#connect#event#button_press ~callback:
+    textw#event#connect#button_press ~callback:
       begin fun ev ->
 	if GdkEvent.Button.button ev = 2 then self#paste ();
 	false

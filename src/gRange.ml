@@ -25,7 +25,7 @@ end
 
 class progress_bar obj = object
   inherit progress (obj : Gtk.progress_bar obj)
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method set_bar_style = ProgressBar.set_bar_style obj
   method set_discrete_blocks = ProgressBar.set_discrete_blocks obj
   method set_activity_step = ProgressBar.set_activity_step obj
@@ -73,7 +73,7 @@ let scale dir ?adjustment ?digits ?draw_value ?value_pos
 
 class scrollbar obj = object
   inherit range (obj : Gtk.scrollbar obj)
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
 end
 
 let scrollbar dir ?adjustment ?update_policy ?packing ?show () =
