@@ -1,7 +1,7 @@
 (* $Id$ *)
 
 open StdLabels
-open GTree.Data
+open Gobject.Data
 
 let cols = new GTree.column_list
 let title = cols#add string

@@ -227,7 +227,7 @@ module Tag = struct
         `POINTER (Some (Obj.magic (f : Pango.font_description)))
         (* Copy is handled by the marshalling code *)
     in
-    Gobject.Property.set o (property_to_string p) data
+    Gobject.Property.set_dyn o (property_to_string p) data
 
   module Signals = struct
     open GtkSignal

@@ -22,8 +22,9 @@ class gobject_ops obj = object
   method disconnect = GtkSignal.disconnect obj
   method handler_block = GtkSignal.handler_block obj
   method handler_unblock = GtkSignal.handler_unblock obj
-  method set_property : 'a. string -> 'a data_set -> unit = Property.set obj
-  method get_property = Property.get obj
+  method set_property : 'a. string -> 'a data_set -> unit =
+    Property.set_dyn obj
+  method get_property = Property.get_dyn obj
   method freeze_notify () = Property.freeze_notify obj
   method thaw_notify () = Property.thaw_notify obj
 end
