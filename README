@@ -1,0 +1,54 @@
+
+		LablGTK : an interface to the GIMP Tool Kit
+
+
+Needed:
+	olabl-2.00
+	gtk-1.0.x
+	gmake (standard make may work with a twist)
+
+How to compile:
+
+	Just type "make".
+	If anything changed, type "make configure; make".
+
+Contents:
+
+	gdk.ml		low-level interface to the General Drawing Kit
+	gtk.ml		low-level interface to the GIMP Tool Kit
+	gtkThread.ml	main loop for threaded version
+	gtkObj.ml	object-oriented interface to GTK
+
+	lablgtk		normal toplevel
+	lablgtk_t	threaded toplevel
+
+	examples/*.ml		various examples
+	examples/*_obj.ml	examples based on GtkObj
+
+How to run the examples:
+
+	./lablgtk examples/???.ml
+
+  some examples may need to be run from the examples directory
+
+	../lablgtk -I .. ???.ml
+
+How to use the threaded toplevel:
+
+	% ./lablgtk_t
+	        Objective Caml version 2.00 with Kyoto labels and variants
+	
+	# let id = Thread.create GtkThread.main ();;
+	val id : Thread.t = <abstr>
+
+  The GTK main loop is now running in a separate thread. Any command
+  is immediately reflected by the system.
+  Beware that you cannot switch threads within a callback, that is the
+  only thread related command you may use in a callback is
+  Thread.create. On the other hand, all newly created threads will be
+  run directly by the caml main loop, so they can use all thread
+  operations.
+
+Bug reports:
+	Jacques Garrigue
+	garrigue@kurims.kyoto-u.ac.jp

@@ -1,10 +1,12 @@
 # Makefile for lablgtk. $Id$
 
-all: config.make .depend var2conv var2def lablgtk
+all: var2conv var2def lablgtk lablgtk_t
 
-config.make:
-	echo GTKCFLAGS=`gtk-config --cflags` > config.make
-	echo GTKLIBS=`gtk-config --libs` >> config.make
+configure:
+	@rm -f config.make .depend
+	@$(MAKE) nothing > /dev/null 2> /dev/null
+
+nothing:
 
 include config.make
 
@@ -70,8 +72,9 @@ clean:
 .depend:
 	olabldep *.ml *.mli > .depend
 
-depend:
-	olabldep *.ml *.mli > .depend
+config.make:
+	echo GTKCFLAGS=`gtk-config --cflags` > config.make
+	echo GTKLIBS=`gtk-config --libs` >> config.make
 
 ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gdk.o: gdk_tags.c gdk_tags.h ml_gdk.h wrappers.h

@@ -1,9 +1,10 @@
+(* $Id$ *)
+
 open Gtk
-open Tags
 
 let main () =
   let window = Dialog.create () in
-  Signal.connect window sig:Signal.destroy cb:Main.quit;
+  Signal.connect window sig:Object.Sig.destroy cb:Main.quit;
   Window.set_title window "dialog";
   Container.border_width window 10;
   Widget.set_usize window width: 300 height: 300;
@@ -32,7 +33,7 @@ let main () =
   done;
 
   let button = Button.create_with_label "close" in
-  Signal.connect button sig:Signal.clicked cb:Main.quit;
+  Signal.connect button sig:Button.Sig.clicked cb:Main.quit;
   (* GTK_WIDGET_SET_FLAGS(button, GTK_CAN_DEFAULT) is as follows *)
   Widget.set_can_default button true;
   Box.pack_start (Dialog.action_area window) button expand: true

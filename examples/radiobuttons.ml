@@ -5,7 +5,7 @@ open Gtk
 let main () =
 
   let window = Window.create `TOPLEVEL in
-  Signal.connect window sig:Signal.destroy cb:Main.quit;
+  Signal.connect window sig:Object.Sig.destroy cb:Main.quit;
   Window.set_title window "radio buttons";
   Container.border_width window 0;
 
@@ -41,7 +41,7 @@ let main () =
   Widget.show box3;
 
   let button = Button.create_with_label "close" in
-  Signal.connect button sig:Signal.clicked cb:Main.quit;
+  Signal.connect button sig:Button.Sig.clicked cb:Main.quit;
   Box.pack box3 button;
   Widget.set button can_default:true;
   Widget.grab_default button;

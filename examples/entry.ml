@@ -18,13 +18,13 @@ let main () =
   let window = Window.create `TOPLEVEL in
   Widget.set window width:200 height:100;
   Window.set_title window "GTK Entry";
-  Signal.connect window sig:Signal.delete_event cb:(fun _ -> Main.quit ());
+  Signal.connect window sig:Object.Sig.destroy cb:Main.quit;
 
   let vbox = Box.create `VERTICAL in
   Container.add window vbox;
 
   let entry = Entry.create_with_max_length 50 in
-  Signal.connect entry sig:Signal.activate
+  Signal.connect entry sig:Editable.Sig.activate
     cb:(fun () -> enter_callback entry);
   Entry.set entry text:"Hello";
   Entry.append_text entry " world";
@@ -36,18 +36,18 @@ let main () =
 
   let check = ToggleButton.create `check label:"Editable" in
   Box.pack hbox check;
-  Signal.connect check sig:Signal.toggled
+  Signal.connect check sig:ToggleButton.Sig.toggled
     cb:(fun () -> entry_toggle_editable check entry);
   ToggleButton.set check state:true;
 
   let check = ToggleButton.create `check label:"Visible" in
   Box.pack hbox check;
-  Signal.connect check sig:Signal.toggled
+  Signal.connect check sig:ToggleButton.Sig.toggled
     cb:(fun () -> entry_toggle_visibility check entry);
   ToggleButton.set check state:true;
 
   let button = Button.create_with_label "Close" in
-  Signal.connect button sig:Signal.clicked cb:Main.quit;
+  Signal.connect button sig:Button.Sig.clicked cb:Main.quit;
   Box.pack vbox button;
   Widget.set button can_default:true;
   Widget.grab_default button;

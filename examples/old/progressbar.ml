@@ -3,7 +3,7 @@
 open Gtk
 
 class bar bar = object
-  val bar : ProgressBar.t = bar
+  val bar : ProgressBar.t obj= bar
   val mutable pstat = true
   method progress =
     let pvalue = ProgressBar.percent bar in
@@ -20,7 +20,7 @@ end
 let main () =
 
   let window = Window.create `TOPLEVEL in
-  Signal.connect window sig:Signal.delete_event cb:(fun _ -> Main.quit ());
+  Signal.connect window sig:Object.Sig.destroy cb:Main.quit;
   Container.border_width window 10;
 
   let table = Table.create 3 2 in
@@ -38,12 +38,12 @@ let main () =
   let ptimer = Timeout.add 100 cb:(fun () -> bar#progress) in
 
   let button = Button.create_with_label "Reset" in
-  Signal.connect button sig:Signal.clicked cb:(fun () -> bar#progress_r);
+  Signal.connect button sig:Button.Sig.clicked cb:(fun () -> bar#progress_r);
   Table.attach table button left:0 top:2 expand:`none fill:`x shrink:`both;
   Widget.show button;
 
   let button = Button.create_with_label "Cancel" in
-  Signal.connect button sig:Signal.clicked cb:Main.quit;
+  Signal.connect button sig:Button.Sig.clicked cb:Main.quit;
   Table.attach table button left:1 top:2 expand:`none fill:`x shrink:`both;
   Widget.show button;
 

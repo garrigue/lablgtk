@@ -14,7 +14,7 @@ let font = Gdk.Font.load_fontset
      -misc-fixed-medium-r-normal--14-*-jisx0201.1976-0"
 
 let _ =
-  Signal.connect window sig:Signal.delete_event cb:(fun _ -> Main.quit ());
+  Signal.connect window sig:Object.Sig.destroy cb:Main.quit;
   Container.add window text;
   Widget.realize text;
   Text.insert text "こんにちは" :font;
