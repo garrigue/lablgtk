@@ -133,7 +133,8 @@ and widget_misc :
     val obj : Gtk.widget obj
     method activate : unit -> bool
     method add_accelerator :
-      sig:(Gtk.widget, unit -> unit) GtkSignal.t -> accel_group -> key:char ->
+      sig:(Gtk.widget, unit -> unit) GtkSignal.t ->
+      accel_group -> key:Gdk.keysym ->
       ?mod:Gdk.Tags.modifier list -> ?flags:Tags.accel_flag list -> unit
     method allocation : rectangle
     method colormap : Gdk.colormap
@@ -154,7 +155,7 @@ and widget_misc :
     method popup : x:int -> y:int -> unit
     method realize : unit -> unit
     method remove_accelerator :
-      accel_group -> key:char -> ?mod:Gdk.Tags.modifier list -> unit
+      accel_group -> key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list -> unit
     method reparent : #is_widget -> unit
     method set :
       ?style:style ->

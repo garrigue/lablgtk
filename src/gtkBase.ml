@@ -114,12 +114,12 @@ module Widget = struct
       = "ml_gtk_widget_restore_default_style"
   external add_accelerator :
       'a[> widget] obj -> sig:('a,unit->unit) GtkSignal.t ->
-      accel_group -> key:char -> ?mod:Gdk.Tags.modifier list ->
+      accel_group -> key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list ->
       ?flags:accel_flag list -> unit
       = "ml_gtk_widget_add_accelerator_bc" "ml_gtk_widget_add_accelerator"
   external remove_accelerator :
       [> widget] obj -> accel_group ->
-      key:char -> ?mod:Gdk.Tags.modifier list -> unit
+      key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list -> unit
       = "ml_gtk_widget_remove_accelerator"
   external lock_accelerators : [> widget] obj -> unit
       = "ml_gtk_widget_lock_accelerators"

@@ -14,7 +14,7 @@ class menu_item_skel :
     method activate : unit -> unit
     method add_accelerator :
       accel_group ->
-      key:char ->
+      key:Gdk.keysym ->
       ?mod:Gdk.Tags.modifier list ->
       ?flags:Tags.accel_flag list -> unit
     method as_item : menu_item obj
@@ -179,17 +179,16 @@ class ['a] factory :
     constraint 'a = #menu_shell
     method accel_group : accel_group
     method add_check_item :
-      label:string ->
-      ?active:bool -> ?key:char -> ?callback:(bool -> unit) -> check_menu_item
+      label:string -> ?active:bool ->
+      ?key:Gdk.keysym -> ?callback:(bool -> unit) -> check_menu_item
     method add_item :
       label:string ->
-      ?key:char -> ?callback:(unit -> unit) -> ?submenu:menu -> menu_item
+      ?key:Gdk.keysym -> ?callback:(unit -> unit) -> ?submenu:menu -> menu_item
     method add_radio_item :
-      label:string ->
-      ?group:group ->
-      ?active:bool -> ?key:char -> ?callback:(bool -> unit) -> radio_menu_item
+      label:string -> ?group:group -> ?active:bool ->
+      ?key:Gdk.keysym -> ?callback:(bool -> unit) -> radio_menu_item
     method add_separator : unit -> menu_item
-    method add_submenu : label:string -> ?key:char -> menu
+    method add_submenu : label:string -> ?key:Gdk.keysym -> menu
     method add_tearoff : unit -> menu_item
     method menu : 'a
   end

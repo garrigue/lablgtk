@@ -7,10 +7,10 @@ open Tags
 module AccelGroup = struct
   external create : unit -> accel_group = "ml_gtk_accel_group_new"
   external activate :
-      accel_group -> key:char -> ?mod:Gdk.Tags.modifier list -> bool
+      accel_group -> key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list -> bool
       = "ml_gtk_accel_group_activate"
   external groups_activate :
-      'a obj -> key:char -> ?mod:Gdk.Tags.modifier list -> bool
+      'a obj -> key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list -> bool
       = "ml_gtk_accel_groups_activate"
   external attach : accel_group -> 'a obj -> unit
       = "ml_gtk_accel_group_attach"
@@ -21,18 +21,18 @@ module AccelGroup = struct
   external unlock : accel_group -> unit
       = "ml_gtk_accel_group_unlock"
   external lock_entry :
-      accel_group -> key:char -> ?mod:Gdk.Tags.modifier list -> bool
+      accel_group -> key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list -> bool
       = "ml_gtk_accel_group_lock_entry"
   external add :
-      accel_group -> key:char -> ?mod:Gdk.Tags.modifier list ->
+      accel_group -> key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list ->
       ?flags:accel_flag list ->
       call:'a obj -> sig:('a,unit->unit) GtkSignal.t -> unit
       = "ml_gtk_accel_group_add_bc" "ml_gtk_accel_group_add"
   external remove :
       accel_group ->
-      key:char -> ?mod:Gdk.Tags.modifier list -> call:'a obj -> unit
+      key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list -> call:'a obj -> unit
       = "ml_gtk_accel_group_remove"
-  external valid : key:char -> ?mod:Gdk.Tags.modifier list -> bool
+  external valid : key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list -> bool
       = "ml_gtk_accelerator_valid"
   external set_default_mod_mask : Gdk.Tags.modifier list option -> unit
       = "ml_gtk_accelerator_set_default_mod_mask"
