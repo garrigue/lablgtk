@@ -1,5 +1,8 @@
 $Id$
 
+2004.12.05 [Olivier]
+  * add GtkFileChooserButton (2.6)
+
 2004.12.04 [Jacques]
   * fix constraint in GUtil.memo
 

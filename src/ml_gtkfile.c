@@ -18,8 +18,12 @@ CAMLprim value ml_gtkfile_init(value unit)
 {
 #ifdef HASGTK24
   GType t =
+#ifdef HASGTK26
+    gtk_file_chooser_button_get_type () +
+#endif
     gtk_file_chooser_dialog_get_type () +
     gtk_file_chooser_widget_get_type ();
+
   ml_register_exn_map (GTK_FILE_CHOOSER_ERROR, 
 		       "gtk_file_chooser_error");
   return Val_GType(t);

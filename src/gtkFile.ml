@@ -95,3 +95,5 @@ module FileChooser = struct
   let dialog_create pl : [Gtk.dialog|Gtk.file_chooser] Gtk.obj = GtkObject.make "GtkFileChooserDialog" pl
   let widget_create pl : [Gtk.widget|Gtk.file_chooser] Gtk.obj = GtkObject.make "GtkFileChooserWidget" pl
 end
+
+module FileChooserButton = GtkFileProps.FileChooserButton

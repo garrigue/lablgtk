@@ -135,10 +135,33 @@ class chooser_widget obj = object
   method connect = new chooser_widget_signals obj
 end
 
+let may_cons = Gobject.Property.may_cons 
+
 let chooser_widget ~action ?backend ?packing ?show () =
   let w = FileChooser.widget_create 
-      (Gobject.Property.may_cons 
+      (may_cons 
 	 FileChooser.P.file_system_backend backend
 	 [ Gobject.param FileChooser.P.action action ]) in
   let o = new chooser_widget w in
   GObj.pack_return o ?packing ?show
+
+class chooser_button_signals obj = object
+  inherit GContainer.container_signals_impl obj
+  inherit OgtkFileProps.file_chooser_sigs
+end
+
+class chooser_button obj = object
+  method private obj = obj
+  inherit GPack.box_skel obj
+  inherit chooser_impl
+  inherit OgtkFileProps.file_chooser_button_props
+  method connect = new chooser_button_signals obj
+end
+
+let chooser_button ~action ?title ?width_chars ?backend =
+  GContainer.pack_container
+    (Gobject.param FileChooser.P.action action ::
+     (may_cons FileChooser.P.file_system_backend backend (
+      may_cons FileChooserButton.P.title title (
+      may_cons FileChooserButton.P.width_chars width_chars []))))
+    ~create:(fun pl -> new chooser_button (FileChooserButton.create pl))
