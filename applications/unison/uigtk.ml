@@ -50,7 +50,7 @@ type stateItem = { ri : reconItem;
 let theState = ref None
 
 let filterIgnoreStateItems sIList =
- List.filter sIList
+ Safelist.filter sIList
     pred:(fun sI -> not (Pred.test Globals.ignore (path2string sI.ri.path)))
 
 let detector1 = ref None
@@ -83,10 +83,10 @@ class scrolled_text ?:editable ?:word_wrap ?:width ?:height ?:packing ?:show
 let gtk_sync () = while Glib.Main.iteration false do () done
 
 (**********************************************************************)
-(* admitStupid: Display a message in a window and wait for the user   *)
+(* okBox: Display a message in a window and wait for the user   *)
 (* to hit the "OK" button.                                            *)
 (**********************************************************************)
-let admitStupid :title :message =
+let okBox :title :message =
     (* Create a new toplevel window *)
     let t = GWindow.dialog :title wm_name:title modal:true () in
     let theLabel = GMisc.label text:message
@@ -94,6 +94,25 @@ let admitStupid :title :message =
     let ok = GButton.button label:"OK" packing:t#action_area#add () in
     ok#grab_default ();
     ok#connect#clicked callback:(fun () -> t#destroy());
+    t#show ();
+    (* Do nothing until user destroys window *)
+    t#connect#destroy callback:Main.quit;
+    Main.main ()
+
+(**********************************************************************)
+(* warnBox: Display a warning message in a window and wait for the    *)
+(* user to hit "OK" or "Exit".                                        *)
+(**********************************************************************)
+let warnBox :title :message =
+    (* Create a new toplevel window *)
+    let t = GWindow.dialog :title wm_name:title modal:true () in
+    let theLabel = GMisc.label text:message
+	packing:(t#vbox#pack expand:false padding:4) () in
+    let ok = GButton.button label:"OK" packing:t#action_area#add () in
+    ok#grab_default ();
+    ok#connect#clicked callback:(fun () -> t#destroy());
+    let exitB = GButton.button label:"Exit" packing:t#action_area#add () in
+    ok#connect#clicked callback:(fun () -> t#destroy(); GMain.Main.quit ());
     t#show ();
     (* Do nothing until user destroys window *)
     t#connect#destroy callback:Main.quit;
@@ -108,9 +127,9 @@ let profileSelect toplevelWindow =
   then true (* First use, just return and build a default profile *)
   else (* > first use, look for existing profiles *)
     let profiles =
-      mapList
-        (fun f -> Filename.chop_suffix f suff:".prf")
-        (Files.ls dirString "*.prf") in
+      Safelist.map (Files.ls dirString "*.prf")
+        fun:(fun f -> Filename.chop_suffix f suff:".prf")
+    in
     match profiles with
       [] -> true (* No profiles; return and build a default profile *)
     | hd::_ -> begin
@@ -118,16 +137,16 @@ let profileSelect toplevelWindow =
            the default of the dialog; otherwise the first profile
            becomes the default. *)
         let profiles =
-          if List.mem item:"default" profiles
-          then "default":: List.filter pred:(fun f -> f<>"default") profiles
+          if Safelist.mem item:"default" profiles
+          then "default":: Safelist.filter pred:(fun f -> f<>"default") profiles
           else profiles in
-        let var1 = ref (List.hd profiles) in
+        let var1 = ref (Safelist.hd profiles) in
 
         let roots_of_profile f =
           try
             let filename = fspath2string (Os.fileInUnisonDir (f^".prf")) in
-            List.map fun:(fun (n,v) -> v)
-              (List.filter pred:(fun (n,v) -> n="root")
+            Safelist.map fun:(fun (n,v) -> v)
+              (Safelist.filter pred:(fun (n,v) -> n="root")
                  (Prefs.scanPreferencesFile filename))
           with _ -> []
         in
@@ -149,10 +168,10 @@ let profileSelect toplevelWindow =
           packing:(vb#pack expand:false) ();
 
         let buttons =
-          List.map profiles fun:
+          Safelist.map profiles fun:
             begin fun profile ->
               let b = GButton.radio_button label:profile packing:vb#add () in
-              List.iter (roots_of_profile profile) fun:
+              Safelist.iter (roots_of_profile profile) fun:
                 begin fun s ->
                   ignore (GMisc.label text:("          Root: "^s)
                             packing:vb#add ())
@@ -174,7 +193,7 @@ let profileSelect toplevelWindow =
             let fspath = Os.fileInUnisonDir file in
             let filename = fspath2string fspath in
             if Sys.file_exists filename then
-              admitStupid title:(myName^" error")
+              okBox title:(myName^" error")
                 message:("Profile \""
                          ^ profile
                          ^ "\" already exists!\nPlease select another name.")
@@ -206,7 +225,7 @@ let profileSelect toplevelWindow =
         in
         oldState();
 
-        let button0 = List.hd buttons in
+        let button0 = Safelist.hd buttons in
         List.iter2 (newValue::profiles) (newButton::buttons) fun:
           begin fun profile (button : GButton.radio_button) ->
             if button <> button0 then button#set_group button0#group;
@@ -370,14 +389,14 @@ let start _ =
   let displayHooks = ref [] in
   let addDisplayHook f = displayHooks := f::!displayHooks in
   let invokeDisplayHooks () =
-    List.iter fun:(fun f -> f()) (List.rev !displayHooks) in
+    Safelist.iter fun:(fun f -> f()) (Safelist.rev !displayHooks) in
 
   (**********************************************************************)
   (* Function to display a message in a new window                      *)
   (**********************************************************************)
-  let testString = String.make len:89 'M' in
-  let testW = Gdk.Font.char_width (Lazy.force fontMonospaceMedium) 'M'
-  and testH = Gdk.Font.char_height (Lazy.force fontMonospaceMedium) 'M' in
+  let charW = Gdk.Font.char_width (Lazy.force fontMonospaceMedium) 'M'
+  and charH = 15
+    (* Gdk.Font.char_height (Lazy.force fontMonospaceMedium) 'l' *) in
   let messageBox :title ?(:label = "Dismiss")
       ?(:action = fun t -> t#destroy) ?(:modal = false) message =
     begin
@@ -389,7 +408,7 @@ let start _ =
       t_dismiss#connect#clicked callback:(action t);
       (* Create the display area *)
       let t_text = new scrolled_text editable:false
-	  width:(testW*80) height:(testH*25) packing:t#vbox#add () in
+	  width:(charW*80) height:(charH*20) packing:t#vbox#add () in
       (* Insert text *)
       t_text#insert message;
       t#show ()
@@ -433,7 +452,7 @@ let start _ =
       titles_show:true packing:box#add ()
   in
   mainWindow#misc#grab_focus ();
-  Array.iteri [|100; 40; 100; 40; 280|]
+  Array.iteri [|100; 40; 100; 40; 200|]
     fun:(fun :i data -> mainWindow#set_column i width:data);
   let displayTitle() =
     let s = roots2string () in
@@ -447,7 +466,7 @@ let start _ =
   (**********************************************************************)
 
   let detailsWindow =
-    GEdit.text editable:false height:(3*testH) width:(testW*89)
+    GEdit.text editable:false height:(3*charH) width:(charW*96)
       packing:(toplevelVBox#pack expand:false) () in
   let displayDetails thePathString newtext =
     detailsWindow#freeze ();
@@ -659,14 +678,14 @@ let start _ =
           not (Pred.test Globals.ignore (path2string sI.ri.path)) in
         begin match !current with
           None ->
-            let theSIList = List.filter pred:keep theSIList in
+            let theSIList = Safelist.filter pred:keep theSIList in
             let theSIArray = Array.of_list theSIList in
             theState := Some theSIArray
         | Some index ->
             deselect ();
             let (theSIList,newCurrent) =
               if index < 0 then
-                (List.filter pred:keep theSIList,None)
+                (Safelist.filter pred:keep theSIList,None)
               else
                 try
                   let beforeIndex,atIndex,afterIndex =
@@ -674,21 +693,21 @@ let start _ =
                       match rest with
                         [] -> raise(Transient "ignoreAndRedisplay")
                       | hd::tl ->
-                          if i=index then (List.rev before,hd,tl)
+                          if i=index then (Safelist.rev before,hd,tl)
                           else loop (i+1) (hd::before,tl) in
                     loop 0 ([],theSIList) in
-                  let before = List.filter pred:keep beforeIndex in
-                  let after = List.filter pred:keep afterIndex in
+                  let before = Safelist.filter pred:keep beforeIndex in
+                  let after = Safelist.filter pred:keep afterIndex in
                   if keep atIndex then
-                    (appendLists before (atIndex::after),
-                     Some(List.length before))
-                  else if List.length after > 0 then
-                    (appendLists before after,Some(List.length before))
-                  else if List.length before > 0 then
-                    (before,Some(List.length before - 1))
+                    (Safelist.append before (atIndex::after),
+                     Some(Safelist.length before))
+                  else if Safelist.length after > 0 then
+                    (Safelist.append before after,Some(Safelist.length before))
+                  else if Safelist.length before > 0 then
+                    (before,Some(Safelist.length before - 1))
                   else ([],None)
                 with Transient "ignoreAndRedisplay" ->
-                  (List.filter pred:keep theSIList,None) in
+                  (Safelist.filter pred:keep theSIList,None) in
             let theSIArray = Array.of_list theSIList in
             current := newCurrent;
             theState := Some theSIArray
@@ -718,18 +737,17 @@ let start _ =
         let reconItemList = Recon.reconcileAll updates in
         Trace.showTimer t;
         let reconItemList = filterIgnore reconItemList in
-        let theLength = List.length reconItemList in
+        let theLength = Safelist.length reconItemList in
         if theLength = 0 then begin
           Trace.status "Everything is up to date";
           theState := None
         end else begin
           Trace.status ("Check and/or adjust selected actions; "
                         ^ "then press Proceed");
-          theState := Some(Array.of_list
-                             (mapList
-                                (fun ri -> { ri = ri;
-                                             whatHappened = None })
-                                reconItemList));
+          theState :=
+            Some(Array.of_list
+                   (Safelist.map reconItemList
+                      fun:(fun ri -> { ri = ri; whatHappened = None })))
 	end;
         displayMain()
       end
@@ -791,7 +809,7 @@ let start _ =
       (* Local copy of the regular expressions; the global copy will
          not be changed until the Apply button is pressed *)
       let theRegexps = Pred.extern Globals.ignore in
-      List.iter theRegexps fun:(fun r -> ignore (regExpWindow#append [r]));
+      Safelist.iter theRegexps fun:(fun r -> ignore (regExpWindow#append [r]));
       let maybeGettingBigger = ref false in
       let maybeGettingSmaller = ref false in
       let selectedRow = ref None in
@@ -890,7 +908,7 @@ let start _ =
     if not !busy then begin
      Remote.shutDown(); Main.quit ()
     end else
-      yesOrNo title:"prematured exit"
+      yesOrNo title:"Premature exit"
         message:"Unison is working, exit anyway ?"
         yes:(fun () -> Remote.shutDown(); Main.quit ())
         no:(fun () -> ())
@@ -905,7 +923,7 @@ let start _ =
 		callback:(fun () -> messageBox title:name docstr))
   in
 
-  List.iter fun:addDocSection Strings.docs;
+  Safelist.iter fun:addDocSection Strings.docs;
 
   (**********************************************************************)
   (* Add entries to the Ignore menu                                     *)
@@ -977,12 +995,13 @@ let start _ =
 
       let stateItemList = Array.to_list theSIArray in
       let rIConfList =
-        mapList
-          (fun sI ->
+        Safelist.map stateItemList fun:
+          begin fun sI ->
             match sI.whatHappened with
               None -> assert false
-            | Some conf -> (sI.ri, conf))
-          stateItemList in
+            | Some conf -> (sI.ri, conf)
+          end
+      in
       let pathList = Recon.selectPath rIConfList in
       let lastResult = Update.markUpdated pathList in
       Trace.showTimer t;
@@ -1235,6 +1254,7 @@ let start _ =
   (**********************************************************************)
   toplevelWindow#connect#destroy callback:safeExit;
   toplevelWindow#show ();
+  Util.warnPrinter := Some (fun message -> warnBox title:"Warning" :message);
   displayMessage "Starting up...";
   Main.main ()
 

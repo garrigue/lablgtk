@@ -6,10 +6,10 @@ Unison is a file synchronization software developped by Benjamin
 Pierce, Trevor Jim, and others.
 
 In order to use it you must:
- * get unison-1.180-src.tar.gz from http://www.cis.upenn.edu/~bcpierce/unison/
+ * get unison-1.200-src.tar.gz from http://www.cis.upenn.edu/~bcpierce/unison/
  * untar it in this directory
- * copy or make links for .ml files here inside unison-1.180
- * edit unison-1.180/Makefile
+ * copy or make links for .ml files here inside unison-1.200
+ * edit unison-1.200/Makefile
 	UISTYLE=tk		->	UISTYLE=gtk
         include Makefile.OCaml  ->      include ../Makefile.OCaml
  * make and follow instructions in INSTALL.txt
