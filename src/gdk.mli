@@ -175,6 +175,27 @@ module GC :
       style:gdkLineStyle -> cap:gdkCapStyle -> join:gdkJoinStyle -> unit
       = "ml_gdk_gc_set_line_attributes"
     external copy : dst:gc -> gc -> unit = "ml_gdk_gc_copy"
+    type values = {
+        foreground : Color.t;
+        background : Color.t;
+        font : font option;
+        fonction : gdkFunction;
+        fill : gdkFill;
+        tile : pixmap option;
+        stipple : pixmap option;
+        clip_mask : bitmap option;
+        subwindow_mode : gdkSubwindowMode;
+        ts_x_origin : int;
+        ts_y_origin : int;
+        clip_x_origin : int;
+        clip_y_origin : int;
+        graphics_exposures : bool;
+        line_width : int;
+        line_style : gdkLineStyle;
+        cap_style : gdkCapStyle;
+        join_style : gdkJoinStyle;
+      }
+    external get_values : gc -> values = "ml_gdk_gc_get_values"
   end
 
 module Pixmap :

@@ -26,7 +26,7 @@ let main () =
       GlDraw.ends ();
       Gl.flush ()
     end;
-  Timeout.add 10000 ~callback:(fun () -> w#destroy ();false);
+  Timeout.add ~ms:10000 ~callback:(fun () -> w#destroy ();false);
   w#show ();
   Main.main ()
 

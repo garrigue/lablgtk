@@ -20,7 +20,14 @@ class ['a] drawing w = object
   val w : 'a drawable = w
   method set_foreground col = GC.set_foreground gc (color col)
   method set_background col = GC.set_background gc (color col)
-  method set_line_attributes = GC.set_line_attributes gc
+  method gc_values = GC.get_values gc
+  method set_line_attributes ?width ?style ?cap ?join () =
+    let v = GC.get_values gc in
+    GC.set_line_attributes gc
+      ~width:(default v.GC.line_width width)
+      ~style:(default v.GC.line_style style)
+      ~cap:(default v.GC.cap_style cap)
+      ~join:(default v.GC.join_style join)
   method point = Draw.point w gc
   method line = Draw.line w gc
   method rectangle = Draw.rectangle w gc
@@ -36,6 +43,9 @@ class pixmap ?mask pm = object
   val mask : bitmap option = mask
   method pixmap = w
   method mask = mask
+  method set_line_attributes ?width ?style ?cap ?join () =
+    pixmap#set_line_attributes ?width ?style ?cap ?join ();
+    may bitmap ~f:(fun m -> m#set_line_attributes ?width ?style ?cap ?join ())
   method point ~x ~y =
     pixmap#point ~x ~y;
     may bitmap ~f:(fun m -> m#point ~x ~y)
@@ -56,11 +66,6 @@ class pixmap ?mask pm = object
     pixmap#string s ~font ~x ~y;
     may bitmap ~f:(fun m -> m#string s ~font ~x ~y)
 end
-
-let pixmap ~window ~width ~height =
-  window#misc#realize ();
-  new pixmap (Pixmap.create window#misc#window
-		~width ~height ~depth:window#misc#visual_depth)
 
 let pixmap_from_xpm ~window ~file ?colormap ?transparent () =
   let pm, mask =

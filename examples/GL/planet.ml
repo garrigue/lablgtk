@@ -107,7 +107,7 @@ let main () =
       true
     end;
   
-  Timeout.add 20 ~callback:
+  Timeout.add ~ms:20 ~callback:
     begin fun () ->
       planet#tick (Sys.time ()); planet#display (); true
     end;

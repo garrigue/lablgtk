@@ -599,7 +599,7 @@ let main () =
   window#connect#event#key_press
     ~callback:(fun ev -> view#key (GdkEvent.Key.string ev); true);
 
-  Timeout.add 20
+  Timeout.add ~ms:20
     ~callback:(fun _ -> if area#misc#visible then view#draw (); true);
   window#show ();
   Main.main ()
