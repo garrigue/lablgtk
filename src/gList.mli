@@ -6,7 +6,7 @@ open GContainer
 
 class list_item : Gtk.list_item obj ->
   object
-    inherit container
+    inherit GContainer.container
     val obj : Gtk.list_item obj
     method event : event_ops
     method as_item : Gtk.list_item obj
@@ -21,7 +21,7 @@ val list_item :
 
 class liste_signals : Gtk.liste obj ->
   object
-    inherit container_signals
+    inherit GContainer.container_signals
     val obj : Gtk.liste obj
     method select_child : callback:(list_item -> unit) -> GtkSignal.id
     method selection_changed : callback:(unit -> unit) -> GtkSignal.id
@@ -30,7 +30,7 @@ class liste_signals : Gtk.liste obj ->
 
 class liste : Gtk.liste obj ->
   object
-    inherit [list_item] item_container
+    inherit [list_item] GContainer.item_container
     val obj : Gtk.liste obj
     method child_position : list_item -> int
     method clear_items : start:int -> stop:int -> unit
@@ -51,7 +51,7 @@ val liste :
 
 class clist_signals : 'a obj ->
   object
-    inherit container_signals
+    inherit GContainer.container_signals
     constraint 'a = [> clist]
     val obj : 'a obj
     method click_column : callback:(int -> unit) -> GtkSignal.id
@@ -74,7 +74,7 @@ class clist_signals : 'a obj ->
 
 class ['a] clist : Gtk.clist obj ->
   object
-    inherit widget
+    inherit GObj.widget
     val obj : Gtk.clist obj
     method event : event_ops
     method append : string list -> int

@@ -6,20 +6,20 @@ open GContainer
 
 class menu_shell_signals : [> menu_shell] obj ->
   object
-    inherit container_signals
+    inherit GContainer.container_signals
     method deactivate : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class menu_item_signals : [> menu_item] obj ->
   object
-    inherit item_signals
+    inherit GContainer.item_signals
     method activate : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class menu_item_skel :
   'a obj ->
   object
-    inherit container
+    inherit GContainer.container
     constraint 'a = [> Gtk.menu_item]
     val obj : 'a obj
     method activate : unit -> unit
@@ -47,7 +47,7 @@ and menu_item : 'a obj ->
   end
 and menu : Gtk.menu obj ->
   object
-    inherit [menu_item] item_container
+    inherit [menu_item] GContainer.item_container
     val obj : Gtk.menu obj
     method add : menu_item -> unit
     method event : event_ops
@@ -146,7 +146,7 @@ val radio_menu_item :
 
 class menu_shell : 'a obj ->
   object
-    inherit [menu_item] item_container
+    inherit [menu_item] GContainer.item_container
     constraint 'a = [> Gtk.menu_shell]
     val obj : 'a obj
     method event : event_ops

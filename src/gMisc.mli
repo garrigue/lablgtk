@@ -22,7 +22,7 @@ class statusbar_context :
 
 class statusbar : Gtk.statusbar obj ->
   object
-    inherit container_full
+    inherit GContainer.container_full
     val obj : Gtk.statusbar obj
     method new_context : name:string -> statusbar_context
   end
@@ -34,7 +34,7 @@ val statusbar :
 
 class calendar_signals : 'a obj ->
   object
-    inherit widget_signals
+    inherit GObj.widget_signals
     constraint 'a = [> calendar]
     val obj : 'a obj
     method day_selected : callback:(unit -> unit) -> GtkSignal.id
@@ -49,7 +49,7 @@ class calendar_signals : 'a obj ->
 
 class calendar : Gtk.calendar obj ->
   object
-    inherit widget
+    inherit GObj.widget
     val obj : Gtk.calendar obj
     method event : event_ops
     method clear_marks : unit
@@ -69,7 +69,7 @@ val calendar :
 
 class drawing_area : Gtk.drawing_area obj ->
   object
-    inherit widget_full
+    inherit GObj.widget_full
     val obj : Gtk.drawing_area obj
     method event : event_ops
     method set_size : width:int -> height:int -> unit
@@ -81,7 +81,7 @@ val drawing_area :
 
 class misc : ([> Gtk.misc] as 'a) obj ->
   object
-    inherit widget
+    inherit GObj.widget
     val obj : 'a obj
     method set_xalign : float -> unit
     method set_yalign : float -> unit
@@ -225,7 +225,7 @@ val label_cast : < as_widget : 'a obj ; .. > -> label
 
 class tips_query_signals : Gtk.tips_query obj ->
   object
-    inherit widget_signals
+    inherit GObj.widget_signals
     method start_query : callback:(unit -> unit) -> GtkSignal.id
     method stop_query : callback:(unit -> unit) -> GtkSignal.id
     method widget_entered :
@@ -268,7 +268,7 @@ val tips_query :
 
 class color_selection : Gtk.color_selection obj ->
   object
-    inherit widget_full
+    inherit GObj.widget_full
     val obj : Gtk.color_selection obj
     method alpha : int
     method color : Gdk.color
@@ -292,7 +292,7 @@ val color_selection :
 
 class font_selection : Gtk.font_selection obj ->
   object
-    inherit widget_full
+    inherit GObj.widget_full
     val obj : Gtk.font_selection obj
     method event : event_ops
     method font_name : string

@@ -6,7 +6,7 @@ open GContainer
 
 class box_skel : ([> box] as 'a) obj ->
   object
-    inherit container
+    inherit GContainer.container
     val obj : 'a obj
     method pack :
       ?from:Tags.pack_type ->
@@ -47,7 +47,7 @@ val hbox :
 
 class button_box : ([> Gtk.button_box] as 'a) obj ->
   object
-    inherit container_full
+    inherit GContainer.container_full
     val obj : 'a obj
     method pack :
       ?from:Tags.pack_type ->
@@ -79,7 +79,7 @@ val button_box :
 class table :
   Gtk.table obj ->
   object
-    inherit container_full
+    inherit GContainer.container_full
     val obj : Gtk.table obj
     method attach :
       left:int ->
@@ -117,7 +117,7 @@ val table :
 class fixed :
   Gtk.fixed obj ->
   object
-    inherit container_full
+    inherit GContainer.container_full
     val obj : Gtk.fixed obj
     method event : event_ops
     method move : widget -> x:int -> y:int -> unit
@@ -135,7 +135,7 @@ val fixed :
 class layout :
   'a obj ->
   object
-    inherit container_full
+    inherit GContainer.container_full
     constraint 'a = [> Gtk.layout]
     val obj : 'a obj
     method event : event_ops
@@ -164,13 +164,13 @@ val layout :
 
 class notebook_signals : [> Gtk.notebook] obj ->
   object
-    inherit container_signals
+    inherit GContainer.container_signals
     method switch_page : callback:(int -> unit) -> GtkSignal.id
   end
 
 class notebook : Gtk.notebook obj ->
   object
-    inherit container
+    inherit GContainer.container
     val obj : Gtk.notebook obj
     method event : event_ops
     method append_page :
@@ -225,7 +225,7 @@ val notebook :
 class paned :
   Gtk.paned obj ->
   object
-    inherit container_full
+    inherit GContainer.container_full
     val obj : Gtk.paned obj
     method event : event_ops
     method add1 : widget -> unit

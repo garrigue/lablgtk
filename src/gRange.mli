@@ -5,7 +5,7 @@ open GObj
 
 class progress_bar : Gtk.progress_bar obj ->
   object
-    inherit widget_full
+    inherit GObj.widget_full
     val obj : Gtk.progress_bar Gtk.obj
     method adjustment : GData.adjustment
     method event : GObj.event_ops
@@ -28,7 +28,7 @@ val progress_bar :
 
 class range_signals : [> Gtk.range] obj ->
   object
-    inherit widget_signals
+    inherit GObj.widget_signals
     method adjust_bounds : callback:(float -> unit) -> GtkSignal.id
     method move_slider : callback:(Tags.scroll_type -> unit) -> GtkSignal.id
     method value_changed : callback:(unit -> unit) -> GtkSignal.id
@@ -36,7 +36,7 @@ class range_signals : [> Gtk.range] obj ->
 
 class range : ([> Gtk.range] as 'a) obj ->
   object
-    inherit widget
+    inherit GObj.widget
     val obj : 'a obj
     method connect : range_signals
     method set_adjustment : GData.adjustment -> unit
@@ -84,7 +84,7 @@ val scrollbar :
 class ruler :
   ([> Gtk.ruler] as 'a) Gtk.obj ->
   object
-    inherit widget_full
+    inherit GObj.widget_full
     val obj : 'a Gtk.obj
     method set_metric : Tags.metric_type -> unit
     method set_lower : float -> unit

@@ -6,7 +6,7 @@ open GContainer
 
 class scrolled_window : Gtk.scrolled_window obj ->
   object
-    inherit container_full
+    inherit GContainer.container_full
     val obj : Gtk.scrolled_window obj
     method add_with_viewport : widget -> unit
     method set_hadjustment : GData.adjustment -> unit
@@ -36,7 +36,7 @@ val scrolled_window :
 
 class event_box : ([> Gtk.event_box] as 'a) obj ->
   object
-    inherit container_full
+    inherit GContainer.container_full
     val obj : 'a obj
     method event : event_ops
   end
@@ -48,7 +48,7 @@ val event_box :
 
 class handle_box_signals : 'a obj ->
   object
-    inherit container_signals
+    inherit GContainer.container_signals
     constraint 'a = [> handle_box]
     val obj : 'a obj
     method child_attached : callback:(widget -> unit) -> GtkSignal.id
@@ -57,7 +57,7 @@ class handle_box_signals : 'a obj ->
 
 class handle_box : Gtk.handle_box obj ->
   object
-    inherit container
+    inherit GContainer.container
     val obj : Gtk.handle_box obj
     method event : event_ops
     method connect : handle_box_signals
@@ -79,7 +79,7 @@ val handle_box :
 
 class frame_skel : 'a obj ->
   object
-    inherit container
+    inherit GContainer.container
     constraint 'a = [> frame]
     val obj : 'a obj
     method set_label : string option -> unit
@@ -138,7 +138,7 @@ val aspect_frame :
 
 class viewport : Gtk.viewport obj ->
   object
-    inherit container_full
+    inherit GContainer.container_full
     val obj : Gtk.viewport obj
     method event : event_ops
     method set_hadjustment : GData.adjustment -> unit
@@ -159,7 +159,7 @@ val viewport :
 
 class alignment : Gtk.alignment obj ->
   object
-    inherit container_full
+    inherit GContainer.container_full
     val obj : Gtk.alignment obj
     method set_xalign : Gtk.clampf -> unit
     method set_yalign : Gtk.clampf -> unit
@@ -183,7 +183,7 @@ val alignment_cast : #widget -> alignment
 
 class socket_signals : ([>Gtk.socket] as 'a) obj ->
   object
-    inherit container_signals
+    inherit GContainer.container_signals
     val obj : 'a obj
     method plug_added : callback:(unit -> unit) -> GtkSignal.id
     method plug_removed : callback:(unit -> unit) -> GtkSignal.id
@@ -191,7 +191,7 @@ class socket_signals : ([>Gtk.socket] as 'a) obj ->
 
 class socket : Gtk.socket obj ->
   object
-    inherit container
+    inherit GContainer.container
     val obj : Gtk.socket obj
     method connect : socket_signals
     method steal : Gdk.xid -> unit
