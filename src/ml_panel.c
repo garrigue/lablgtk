@@ -67,7 +67,7 @@ static void ml_bonoboui_verb_fn(BonoboUIComponent *component,
 				const char *cname)
 {
   value *clos = user_data;
-  value verb, res;
+  value verb;
 
   verb = copy_string(cname);
   callback_exn(*clos, verb);
@@ -128,7 +128,7 @@ CAMLprim value ml_panel_applet_setup_menu_from_file(value app, value opt_dir,
 static void weak_notify(gpointer data, GObject *applet)
 {
   value *glob_root = data;
-  Pointer_val(*glob_root) = NULL;
+  Field (*glob_root, 1) = 0;
   ml_global_root_destroy(glob_root);
 }
 
