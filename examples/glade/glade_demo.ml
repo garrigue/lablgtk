@@ -12,14 +12,12 @@ let _ =
   Glade.bind_handlers xml
 
 (* This is to show initialization *)
+let ($) f g x = g (f x)
 let show_option sh = function None -> "None" | Some x -> "Some " ^ sh x
 let f ~handler ~signal ~after ?target obj =
-  let w = GtkBase.Widget.cast obj in
-  let target =
-    match target with None -> None | Some x -> Some (GtkBase.Widget.cast x) in
   Printf.printf "object=%s, signal=%s, handler=%s, target=%s\n"
-   (Glade.get_widget_name w) signal handler
-   (show_option Glade.get_widget_name target)
+   (Glade.get_widget_name (GtkBase.Widget.cast obj)) signal handler
+   (show_option (GtkBase.Widget.cast $ Glade.get_widget_name) target)
 let _ = Glade.signal_autoconnect xml ~f; flush stdout
 
 let _ = GtkMain.Main.main ()
