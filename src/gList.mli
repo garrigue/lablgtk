@@ -165,4 +165,24 @@ val clist :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> string clist
+val clist_poly :
+  ?columns:int ->
+  ?titles:string list ->
+  ?hadjustment:GData.adjustment ->
+  ?vadjustment:GData.adjustment ->
+  ?shadow_type:Tags.shadow_type ->
+  ?button_actions:(int * Tags.button_action list) list ->
+  ?selection_mode:Tags.selection_mode ->
+  ?reorderable:bool ->
+  ?use_drag_icons:bool ->
+  ?row_height:int ->
+  ?titles_show:bool ->
+  ?titles_active:bool ->
+  ?auto_sort:bool ->
+  ?sort_column:int ->
+  ?sort_type:Tags.sort_type ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> 'a clist

@@ -1,5 +1,9 @@
 $Id$
 
+2001.10.09
+  * GList.clist returns a monomorphic "string clist",
+    use GList.clist_poly for a polymorphic clist.
+
 2001.10.04
   * add Gdk.Window.get_colormap
   * change APIs in Gdk.Pixmap/Bitmap and GDraw.create_pixmap*
