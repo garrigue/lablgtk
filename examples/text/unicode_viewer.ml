@@ -20,14 +20,14 @@ let f_to_string n =
      
 let main () = 
   let w = GWindow.window 
-	    ~width:640 ~height:480 ~title:"2)view_with_buffer" ()
+	    ~width:640 ~height:480 ~title:"Unicode Viewer" ()
   in
   let sw = GBin.scrolled_window ~packing:(w#add) () in
   let b = GText.buffer () in
   let s = f_to_string file_name in
-    b#set_text ~text:s ();
-    let tv = GText.view ~buffer:b ~packing:(sw#add) () in
-      w#show ();;
+  b#set_text ~text:s ();
+  let tv = GText.view ~buffer:b ~packing:(sw#add) () in
+  w#show ();;
 
 
 main () ;; 

@@ -123,9 +123,9 @@ gtkRange.cmx: gaux.cmx gpointer.cmx gtk.cmx gtkBase.cmx
 gtkSignal.cmo: gaux.cmo gobject.cmo gtkSignal.cmi 
 gtkSignal.cmx: gaux.cmx gobject.cmx gtkSignal.cmi 
 gtkText.cmo: gDraw.cmi gaux.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi \
-    gobject.cmo gtk.cmo gtkBase.cmo gtkSignal.cmi 
+    gobject.cmo gtk.cmo gtkBase.cmo gtkSignal.cmi pango.cmo 
 gtkText.cmx: gDraw.cmx gaux.cmx gdk.cmx gdkEvent.cmx gdkPixbuf.cmx \
-    gobject.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx 
+    gobject.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx pango.cmx 
 gtkThInit.cmo: gtkThread.cmi 
 gtkThInit.cmx: gtkThread.cmx 
 gtkThread.cmo: glib.cmo gtkMain.cmo gtkSignal.cmi gtkThread.cmi 

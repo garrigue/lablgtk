@@ -183,6 +183,8 @@ class buffer_signals obj = object
      GtkSignal.connect ~sgn:GtkText.Buffer.Signals.remove_tag ~after obj
 end
 
+exception No_such_mark of string
+
 class buffer obj = object(self)
   inherit gtkobj (obj: Gtk.textbuffer obj)
   method as_buffer = obj
@@ -202,17 +204,15 @@ class buffer obj = object(self)
 	  end
       | _ -> begin match iter with
 	  | None -> 
-	      let iter = self#get_iter_at_mark 
-			   ~mark:(self#get_mark ~name:"insert")
-	      in 
-	      let start_offset = iter#get_offset () in
+	      let insert_iter () = self#get_iter_at_mark ~mark:(self#get_insert ()) in
+	      let start_offset = (insert_iter ())#get_offset () in
 		GtkText.Buffer.insert_at_cursor obj text length;
 		let start = self#get_iter_at ~char_offset:start_offset () in
 		  List.iter
 		    (fun t -> self#apply_tag 
 		       ~tag:t 
 		       ~start
-		       ~stop:iter) 
+		       ~stop:(insert_iter ())) 
 		    tags
 	  | Some iter -> 
 	      let start_offset = iter#get_offset () in
@@ -242,13 +242,13 @@ class buffer obj = object(self)
     GtkText.Buffer.delete_interactive obj start stop default_editable
   method set_text ?(length = (-1)) ~text () = 
     GtkText.Buffer.set_text obj text length
-  method get_text ?(include_hidden_chars=false) ?start ?stop () =
+  method get_text ?(include_hidden_chars=false) ?(start:iter option) ?(stop:iter option) () =
     let start,stop = 
       match start,stop with 
 	| None,None -> self#get_bounds ()
-	| Some start,None -> start,(self#get_start_iter ())#as_textiter
-	| None,Some stop -> (self#get_end_iter ())#as_textiter,stop
-	| Some start,Some stop -> start,stop
+	| Some start,None -> start#as_textiter,(self#get_start_iter ())#as_textiter
+	| None,Some stop -> (self#get_end_iter ())#as_textiter,stop#as_textiter
+	| Some start,Some stop -> start#as_textiter,stop#as_textiter
     in
       GtkText.Buffer.get_text obj start stop include_hidden_chars 
   method get_slice ?(include_hidden_chars=false) 
@@ -260,12 +260,16 @@ class buffer obj = object(self)
   method create_mark ?name ~(iter:iter) ?(left_gravity=true) () = 
     new mark 
       (GtkText.Buffer.create_mark obj name iter#as_textiter left_gravity)
-  method get_mark ~name = new mark (GtkText.Buffer.get_mark obj name)
+  method get_mark ~name = new mark (match GtkText.Buffer.get_mark obj name with 
+				      | None -> raise (No_such_mark name)
+				      | Some m -> m)
   method move_mark ~(mark:mark) ~where = GtkText.Buffer.move_mark obj mark#as_mark where
   method move_mark_by_name ~name ~where = GtkText.Buffer.move_mark_by_name obj name where
   method delete_mark ~(mark:mark) = GtkText.Buffer.delete_mark obj mark#as_mark
   method delete_mark_by_name ~name = GtkText.Buffer.delete_mark_by_name obj name
-  method get_mark ~name = new mark (GtkText.Buffer.get_mark obj name)
+  method get_mark ~name = new mark (match GtkText.Buffer.get_mark obj name with 
+				      | None -> raise (No_such_mark name)
+				      | Some m -> m)
   method get_insert () = new mark (GtkText.Buffer.get_insert obj)
   method get_selection_bound () = new mark (GtkText.Buffer.get_selection_bound obj)
   method place_cursor ~(where:iter) = 
