@@ -56,7 +56,7 @@ CAMLprim value ml_gdk_pixbuf_new_from_file(value f)
     if (err) ml_raise_gerror(err);
     return Val_GdkPixbuf_new(res);
 }
-#ifndef DISABLE_GTK24
+#ifdef HASGTK24
 CAMLprim value ml_gdk_pixbuf_new_from_file_at_size(value f, value w, value h)
 {
     GError *err = NULL;
@@ -210,7 +210,7 @@ CAMLprim value ml_gdk_pixbuf_save(value fname, value type, value options, value 
   return Val_unit;
 }
 
-#ifndef DISABLE_GTK24
+#ifdef HASGTK24
 /* work around missing prototype in ocaml 3.08 */
 #ifdef CAML_COMPATIBILITY_H
 char *caml_format_exception(value);
