@@ -67,9 +67,9 @@ class pixmap_from_xpm_d :data :window ?:colormap ?:transparent =
       ?transparent:(may_map transparent fun:color) in
   pixmap pm :mask
 
-class drag_context :context = object
+class drag_context context = object
   val context = context
-  method status = Gdk.DnD.drag_status context
+  method status act ?:time [< 0 >] = Gdk.DnD.drag_status context act :time
   method suggested_action = Gdk.DnD.drag_context_suggested_action context
   method targets = Gdk.DnD.drag_context_targets context
 end

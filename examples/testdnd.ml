@@ -275,7 +275,8 @@ let trashcan_open_xpm = [|
 "                                                                ";
 "                                                                "  |]
 
-let window = new window show:true
+let window = new window
+let _ = window#misc#realize ()
 
 let drag_icon = new pixmap_from_xpm_d data:drag_icon_xpm
     window:window#misc#window
@@ -286,21 +287,22 @@ let trashcan_open = new pixmap_from_xpm_d data:trashcan_open_xpm
 let trashcan_closed = new pixmap_from_xpm_d data:trashcan_closed_xpm
     window:window#misc#window
 
-let target_table = [|
+let targets = [
   { target = "STRING"; flags = []; info = 0};
   { target = "text/plain"; flags = []; info = 0};
   { target = "text/uri-list"; flags = []; info = 2};
-  { target = "application/x-rootwin-drop"; flags = []; info = 1}  |]
+  { target = "application/x-rootwin-drop"; flags = []; info = 1}
+]
 
 
 let have_drag = ref false
 
-let target_drag_leave (pixmap : pixmap) _ _ =
+let target_drag_leave (pixmap : pixmap) _ :time =
   print_string "leave\n"; flush stdout;
   have_drag := false;
   pixmap#set_pixmap trashcan_closed
 
-let target_drag_motion (pixmap : pixmap) (context : drag_context) x y time =
+let target_drag_motion (pixmap : pixmap) (context : drag_context) :x :y :time =
   if not !have_drag then begin
     have_drag := true;
     pixmap#set_pixmap trashcan_open
@@ -315,15 +317,16 @@ let target_drag_motion (pixmap : pixmap) (context : drag_context) x y time =
   context#status [context#suggested_action] :time;
   true
 
-let target_drag_drop (pixmap : pixmap) (context : drag_context) x y time =
+let target_drag_drop (pixmap : pixmap) (context : drag_context) :x :y :time =
   Printf.printf "drop\n"; flush stdout;
   have_drag := false;
   pixmap#set_pixmap trashcan_closed;
   match context#targets with
   | [] -> false
-  | d :: _ -> pixmap#misc#drag#get_data context#context target:d :time; true
+  | d :: _ -> pixmap#drag#get_data context target:d :time; true
 
-let target_drag_data_received _ (context : drag_context) _ _ (data : selection_data) _ time =
+let target_drag_data_received _ (context : drag_context) :x :y
+    (data : selection_data) :info :time =
   if data#format = 8 then begin
     Printf.printf "Received \"%s\" in trashcan\n" data#data;
     flush stdout;
@@ -331,7 +334,8 @@ let target_drag_data_received _ (context : drag_context) _ _ (data : selection_d
   end
   else context#finish success:false del:false :time
 
-let label_drag_data_received _ (context : drag_context) _ _ (data : selection_data) _ time =
+let label_drag_data_received _ (context : drag_context) :x :y
+    (data : selection_data) :info :time =
     if data#format = 8 then  begin
     Printf.printf "Received \"%s\" in label\n" data#data;
     flush stdout;
@@ -339,7 +343,7 @@ let label_drag_data_received _ (context : drag_context) _ _ (data : selection_da
   end
   else context#finish success:false del:false :time
 
-let source_drag_data_get _ (data : selection_data) info _ =
+let source_drag_data_get _ (data : selection_data) :info :time =
   if (info = 1) then begin
     Printf.printf "I was dropped on the rootwin\n";
     flush stdout
@@ -366,7 +370,7 @@ let popdown_cb _ =
   popped_up := false;
   false
 
-let popup_motion _ _ _ _ =
+let popup_motion _ :x :y :time =
   if not !in_popup then begin
     in_popup := true;
     match !popdown_timer with
@@ -378,7 +382,7 @@ let popup_motion _ _ _ _ =
   end;
   true
 
-let popup_leave _ _ =
+let popup_leave _ :time =
   if !in_popup then begin
     in_popup := false;
     match !popdown_timer with
@@ -399,7 +403,7 @@ let popup_cb _ =
 	    let button = new button label:((string_of_int i) ^ "," ^
 					   (string_of_int j)) in
 	    table#attach button left:i top:j;
-	    button#misc#drag#dest_set [`ALL] target_table 3 [`COPY; `MOVE ];
+	    button#drag#dest_set :targets actions:[`COPY; `MOVE ];
 	    button#connect#drag#motion callback:popup_motion;
 	    button#connect#drag#leave callback:popup_leave;
 	  done
@@ -416,7 +420,7 @@ let popup_cb _ =
   popup_timer := None;
   false
 
-let popsite_motion _ _ _ _ =
+let popsite_motion _ :x :y :time =
   begin match !popup_timer with
   | None -> Printf.printf "added popdown\n"; flush stdout;
       popup_timer := Some (GtkMain.Timeout.add 500 callback:popup_cb)
@@ -424,7 +428,7 @@ let popsite_motion _ _ _ _ =
   end;
   true
 
-let popsite_leave _ _ =
+let popsite_leave _ :time =
   match !popup_timer with
   | Some pdt -> GtkMain.Timeout.remove pdt;
       popup_timer := None
@@ -432,40 +436,38 @@ let popsite_leave _ _ =
 
 
 let main () =
-  window # connect # destroy callback: GMain.Main.quit;;
+  window # connect # destroy callback: GMain.Main.quit;
   let table = new table rows:2 columns:2 packing:window#add in
   let label = new label text:"Drop Here\n" in
-  label#misc#drag#dest_set [`ALL] target_table 3 [`COPY; `MOVE ];
+  label#drag#dest_set :targets actions:[`COPY; `MOVE ];
   label#connect#drag#data_received callback:(label_drag_data_received ());
   table#attach label left:0 top:0;
   let label = new label text:"Popup\n" in
-  label#misc#drag#dest_set [`ALL] target_table 3 [`COPY; `MOVE ];
+  label#drag#dest_set :targets actions:[`COPY; `MOVE ];
   table#attach label left:1 top:1;
   label#connect#drag#motion callback:popsite_motion;
   label#connect#drag#leave callback:popsite_leave;
  
   let pixmap = new pixmap trashcan_closed in
-  pixmap#misc#drag#dest_set [] [| |] 0 [];
+  pixmap#drag#dest_set flags:[] targets:[] actions:[];
   table#attach pixmap left:1 top:0;
   pixmap#connect#drag#leave callback:(target_drag_leave pixmap);
   pixmap#connect#drag#motion callback:(target_drag_motion pixmap);
   pixmap#connect#drag#drop callback:(target_drag_drop pixmap);
-  pixmap#connect#drag#data_received callback:(target_drag_data_received pixmap);
+  pixmap#connect#drag#data_received
+    callback:(target_drag_data_received pixmap);
 
   let button = new button label:"Drag Here\n" in
-  button#misc#drag#source_set mod:[`BUTTON1; `BUTTON3 ] target_table 4 [`COPY; `MOVE ];
-  button#misc#drag#source_set_icon drag_icon
+  button#drag#source_set mod:[`BUTTON1; `BUTTON3 ] :targets
+    actions:[`COPY; `MOVE ];
+  button#drag#source_set_icon drag_icon
     colormap:window#misc#style#colormap;
   table#attach button left:0 top:1;
   button#connect#drag#data_get callback:source_drag_data_get;
   button#connect#drag#data_delete callback:source_drag_data_delete;
-;;
 
+  window#show ();
+  GMain.Main.main ()
 
-main ();;
-
-GMain.Main.main ()
-
-
-
-	    
+let _ =
+  main ()

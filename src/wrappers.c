@@ -11,7 +11,7 @@
 
 value copy_memblock_indirected (void *src, asize_t size)
 {
-    value ret = alloc_shr ((size-1)/sizeof(value)+3, Abstract_tag);
+    value ret = alloc (Wosize_asize(size)+2, Abstract_tag);
     if (!src) ml_raise_null_pointer ();
     
     Field(ret,1) = (value)&Field(ret,2);

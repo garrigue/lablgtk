@@ -116,58 +116,63 @@ end
 
 class widget_drag obj = object
   val obj = Widget.coerce obj
-  method dest_set = DnD.dest_set obj
+  method dest_set ?:flags [< [`ALL] >] :targets =
+    DnD.dest_set obj :flags targets:(Array.of_list targets)
   method dest_unset () = DnD.dest_unset obj
-  method get_data = DnD.get_data obj
+  method get_data (context : drag_context) :target ?:time [< 0 >] =
+    DnD.get_data obj (context : < context : Gdk.drag_context; .. >)#context
+      :target :time
   method highlight () = DnD.highlight obj
   method unhighlight () = DnD.unhighlight obj
-  method source_set ?mod:m = DnD.source_set obj ?mod:m
-  method source_set_icon :colormap (pix : GdkObj.pixmap) =
-    DnD.source_set_icon obj colormap pix#pixmap pix#mask
+  method source_set ?mod:m :targets =
+    DnD.source_set obj ?mod:m targets:(Array.of_list targets)
+  method source_set_icon ?:colormap (pix : GdkObj.pixmap) =
+    DnD.source_set_icon obj ?:colormap pix#pixmap ?mask:pix#mask
   method source_unset () = DnD.source_unset obj
 end
 
 
-and drag_context :context = object
-  inherit GdkObj.drag_context :context
+and drag_context context = object
+  inherit GdkObj.drag_context context
   method context = context
-  method finish = DnD.finish context
+  method finish :success :del ?:time [< 0 >] =
+    DnD.finish context :success :del :time
   method get_source_widget =
     new widget_wrapper (Object.unsafe_cast (DnD.get_source_widget context))
   method set_icon_widget : 'a . (#is_widget as 'a) -> _ = fun w ->
     DnD.set_icon_widget context (w#as_widget)
-  method set_icon_pixmap :colormap (pix : GdkObj.pixmap) =
-    DnD.set_icon_pixmap context :colormap pix#pixmap pix#mask
+  method set_icon_pixmap ?:colormap (pix : GdkObj.pixmap) =
+    DnD.set_icon_pixmap context ?:colormap pix#pixmap ?mask:pix#mask
 end
 
 and drag_signals obj ?:after = object
   val obj =  Widget.coerce obj
   method beginning :callback =
     GtkSignal.connect sig:Widget.Signals.drag_begin obj ?:after
-      callback:(fun context -> callback (new drag_context :context))
+      callback:(fun context -> callback (new drag_context context))
   method ending :callback =
     GtkSignal.connect sig:Widget.Signals.drag_end obj ?:after
-      callback:(fun context -> callback (new drag_context :context))
+      callback:(fun context -> callback (new drag_context context))
   method data_delete :callback =
     GtkSignal.connect sig:Widget.Signals.drag_data_delete obj ?:after
-      callback:(fun context -> callback (new drag_context :context))
+      callback:(fun context -> callback (new drag_context context))
   method leave :callback =
     GtkSignal.connect sig:Widget.Signals.drag_leave obj ?:after
-      callback:(fun context -> callback (new drag_context :context))
+      callback:(fun context -> callback (new drag_context context))
   method motion :callback =
     GtkSignal.connect sig:Widget.Signals.drag_motion obj ?:after
-      callback:(fun context -> callback (new drag_context :context))
+      callback:(fun context -> callback (new drag_context context))
   method drop :callback =
     GtkSignal.connect sig:Widget.Signals.drag_drop obj ?:after
-      callback:(fun context -> callback (new drag_context :context))
+      callback:(fun context -> callback (new drag_context context))
   method data_get :callback =
     GtkSignal.connect sig:Widget.Signals.drag_data_get obj ?:after
-      callback:(fun context data -> callback (new drag_context :context)
+      callback:(fun context data -> callback (new drag_context context)
 	       (new selection_data data))
   method data_received :callback =
     GtkSignal.connect sig:Widget.Signals.drag_data_received obj ?:after
-      callback:(fun context x y data -> callback (new drag_context :context)
-	       x y (new selection_data data))
+      callback:(fun context :x :y data -> callback (new drag_context context)
+	       :x :y (new selection_data data))
 
 end
 
@@ -216,7 +221,6 @@ and widget_misc obj = object
     with Null_pointer -> raise Not_found
   method set_app_paintable = Widget.set_app_paintable obj
   method allocation = Widget.allocation obj
-  method drag = new widget_drag (Object.unsafe_cast obj)
 end
 
 and widget obj = object (self)
@@ -224,6 +228,7 @@ and widget obj = object (self)
   method as_widget = Widget.coerce obj
   method misc = new widget_misc obj
   method show () = Widget.show obj
+  method drag = new widget_drag (Object.unsafe_cast obj)
 end
 
 and widget_signals obj ?:after = object

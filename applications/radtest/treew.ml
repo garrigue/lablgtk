@@ -178,12 +178,15 @@ class tiw parent_tree:(parent_tree : tree2) :name = object(self : 'stype)
     widget <- Some w;
     let classe = w#classe in
     if List.mem classe in:bin_list then begin
-      tree_item#misc#drag#dest_set [`ALL] 
-	[|  { target = "STRING"; flags = []; info = 0}  |] 1 [`COPY];
+      tree_item#drag#dest_set
+	targets:[{ target = "STRING"; flags = []; info = 0}]
+	actions:[`COPY];
       tree_item#connect#drag#data_received callback:
-	(fun (context : drag_context) _ _  (data : selection_data) _ time ->
+	begin fun (context : drag_context) :x :y
+	    (data : selection_data) :info :time ->
 	  self#add_child data#data meth:`ADD ();
-	  context#finish success:true del:false :time);
+	  context#finish success:true del:false :time
+	end;
       self#set_add_menu classe w#name
     end
     else begin
@@ -208,7 +211,7 @@ class tiw parent_tree:(parent_tree : tree2) :name = object(self : 'stype)
     let classe = self#widget#classe in
     if List.mem classe in:bin1_list then begin
       may fun:tree_item#disconnect button_press_id;
-      tree_item#misc#drag#dest_unset ();
+      tree_item#drag#dest_unset ();
       if classe <> "window"
       then self#set_remove_menu ()
       else self#stop_third_button ()
@@ -235,8 +238,9 @@ class tiw parent_tree:(parent_tree : tree2) :name = object(self : 'stype)
       | Some tip ->
 	  let classe = tip#widget#classe in
 	  if List.mem classe in:bin1_list then begin
-	    tip#tree_item#misc#drag#dest_set [`ALL] 
-	      [|  { target = "STRING"; flags = []; info = 0}  |] 1 [`COPY];
+	    tip#tree_item#drag#dest_set
+	      targets:[{ target = "STRING"; flags = []; info = 0}]
+	      actions:[`COPY];
 	    tip#set_add_menu classe tip#widget#name
 	  end
       
