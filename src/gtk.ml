@@ -233,16 +233,21 @@ module AcceleratorTable = struct
       t -> 'a obj -> string -> key:char -> mod:Gdk.Tags.modifier list -> unit
       = "ml_gtk_accelerator_table_install"
   external remove : t -> 'a obj -> string -> unit
-      = "ml_gtk_accelerator_table_install"
+      = "ml_gtk_accelerator_table_remove"
+  external check : t -> key:char -> mod:Gdk.Tags.modifier list -> bool
+      = "ml_gtk_accelerator_table_check"
   external delete_tables : 'a obj -> unit = "ml_gtk_accelerator_tables_delete"
   external set_mod_mask : t -> Gdk.Tags.modifier list -> unit
       = "ml_gtk_accelerator_table_set_mod_mask"
-  let find (obj : 'a obj) sig:(sgn : ('a,unit->unit) Signal.t) =
-    find obj sgn.Signal.name
-  let install t (obj : 'a obj) sig:(sgn : ('a,unit->unit) Signal.t) =
-    install t obj sgn.Signal.name
+  let find (obj : 'a obj)
+      sig:(sgn : ('a,unit->unit) Signal.t) :key ?mod:m [< [] >] =
+    find obj sgn.Signal.name :key mod:m
+  let install t (obj : 'a obj)
+      sig:(sgn : ('a,unit->unit) Signal.t) :key ?mod:m [< [] >] =
+    install t obj sgn.Signal.name :key mod:m
   let remove t (obj : 'a obj) sig:(sgn : ('a,unit->unit) Signal.t) =
     remove t obj sgn.Signal.name
+  let check t :key ?mod:m [< [] >] = check t :key mod:m
 end
 
 module Style = struct

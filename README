@@ -60,6 +60,25 @@ Structure of the Gtk module:
   To avoid a blow-up in size, functions and signals in the Widget
   module are not propagated: use them directly.
 
+Memory management:
+
+  Important efforts have been dedicated to cooperate with Gtk's
+  reference counting mechanism. As a result you should generally be
+  able to use Gdk/Gtk data structures without caring about memory
+  management. They will be freed when nobody points to them any more.
+  This also means that you do not need to pay too much attention to
+  wether a data structure is still alive or not. If it is not, you
+  should get an error rather than a core dump.
+  The case of Gtk objects deserves special care. Since they are
+  interactive, we cannot just destroy them when they are no longer
+  referenced. They have to be explicitely destroyed. If a widget was
+  added to a container widget, it will automatically be destroyed when
+  its last container is destroyed. For this reason you should only
+  destroy toplevel widgets, and be careful about not loosing all
+  references to a still unused widget.
+				   
 Bug reports:
 	Jacques Garrigue
 	garrigue@kurims.kyoto-u.ac.jp
+
+$Id$

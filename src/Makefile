@@ -1,6 +1,7 @@
-# Makefile for lablgtk. $Id$
+# $Id$
+# Makefile for lablgtk.
 
-all: var2conv var2def lablgtk lablgtk_t
+all: var2conv var2def lablgtk lablgtk_t gtkObj.cmo
 
 configure:
 	@rm -f config.make .depend
