@@ -23,26 +23,26 @@ let marshal_what f _ = function
 let textiter_of_pointer = ref (fun _ -> failwith "textiter_of_pointer")
 
 module Mark = struct
-  let cast w : textmark obj = Object.try_cast w "GtkTextMark"
+  let cast w : textmark = Object.try_cast w "GtkTextMark"
   exception No_such_mark of string
-  external set_visible : textmark obj -> bool -> unit 
+  external set_visible : textmark -> bool -> unit 
     = "ml_gtk_text_mark_set_visible"
-  external get_visible : textmark obj -> bool = "ml_gtk_text_mark_get_visible"
-  external get_deleted : textmark obj -> bool = "ml_gtk_text_mark_get_deleted"
-  external get_name : textmark obj -> string option = "ml_gtk_text_mark_get_name"
-  external get_buffer : textmark obj -> textbuffer obj option
+  external get_visible : textmark -> bool = "ml_gtk_text_mark_get_visible"
+  external get_deleted : textmark -> bool = "ml_gtk_text_mark_get_deleted"
+  external get_name : textmark -> string option = "ml_gtk_text_mark_get_name"
+  external get_buffer : textmark -> textbuffer option
     = "ml_gtk_text_mark_get_buffer"
-  external get_left_gravity : textmark obj -> bool 
+  external get_left_gravity : textmark -> bool 
     = "ml_gtk_text_mark_get_left_gravity"
 end
 
 module Tag = struct
-  let cast w : texttag obj = Object.try_cast w "GtkTextTag"
-  external create : string -> texttag obj = "ml_gtk_text_tag_new"
-  external get_priority : texttag obj -> int = "ml_gtk_text_tag_get_priority"
-  external set_priority : texttag obj -> int -> unit 
+  let cast w : texttag = Object.try_cast w "GtkTextTag"
+  external create : string -> texttag = "ml_gtk_text_tag_new"
+  external get_priority : texttag -> int = "ml_gtk_text_tag_get_priority"
+  external set_priority : texttag -> int -> unit 
     = "ml_gtk_text_tag_set_priority"
-  external event : texttag obj -> 'a obj ->  'b Gdk.event -> textiter -> bool
+  external event : texttag -> 'a obj ->  'b Gdk.event -> textiter -> bool
     = "ml_gtk_text_tag_event"
   type property = 
       [ `NAME of string
@@ -281,24 +281,24 @@ module Tag = struct
 end
 
 module TagTable = struct
-  let cast w : texttagtable obj = Object.try_cast w "GtkTextTagTable"
-  external create : unit -> texttagtable obj = "ml_gtk_text_tag_table_new"
-  external add : texttagtable obj -> texttag obj -> unit = "ml_gtk_text_tag_table_add"
-  external remove : texttagtable obj -> texttag obj -> unit = "ml_gtk_text_tag_table_remove"
-  external lookup : texttagtable obj -> string -> (texttag obj) option 
+  let cast w : texttagtable = Object.try_cast w "GtkTextTagTable"
+  external create : unit -> texttagtable = "ml_gtk_text_tag_table_new"
+  external add : texttagtable -> texttag -> unit = "ml_gtk_text_tag_table_add"
+  external remove : texttagtable -> texttag -> unit = "ml_gtk_text_tag_table_remove"
+  external lookup : texttagtable -> string -> texttag option 
     = "ml_gtk_text_tag_table_add"
-  external get_size : texttagtable obj -> int = "ml_gtk_text_tag_table_get_size"
+  external get_size : texttagtable -> int = "ml_gtk_text_tag_table_get_size"
   module Signals = struct
   open GtkSignal
 
   let marshal_texttag f _ = function 
     |`OBJECT(Some p)::_ ->
-       f (Gobject.unsafe_cast p : texttag obj)
+       f (Gobject.unsafe_cast p : texttag)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_texttag"
 
   let marshal_tag_changed f _ = function 
     | `OBJECT(Some p)::`BOOL b::_ ->
-       f (Gobject.unsafe_cast p : texttag obj) b
+       f (Gobject.unsafe_cast p : texttag) b
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_tag_changed"
 
   let tag_added = 
@@ -323,128 +323,128 @@ module TagTable = struct
 end
 
 module Buffer = struct
-  let cast w : textbuffer obj = Object.try_cast w "GtkTextBuffer"
-  external create : texttagtable obj option 
-    -> textbuffer obj = "ml_gtk_text_buffer_new"
-  external get_line_count : textbuffer obj -> int 
+  let cast w : textbuffer = Object.try_cast w "GtkTextBuffer"
+  external create : texttagtable option 
+    -> textbuffer = "ml_gtk_text_buffer_new"
+  external get_line_count : textbuffer -> int 
     = "ml_gtk_text_buffer_get_line_count"
-  external get_char_count : textbuffer obj -> int 
+  external get_char_count : textbuffer -> int 
     = "ml_gtk_text_buffer_get_char_count"
-  external get_tag_table : textbuffer obj -> texttagtable obj 
+  external get_tag_table : textbuffer -> texttagtable 
     = "ml_gtk_text_buffer_get_tag_table"
-  external insert : textbuffer obj -> textiter -> string -> unit
+  external insert : textbuffer -> textiter -> string -> unit
     = "ml_gtk_text_buffer_insert"
-  external insert_at_cursor : textbuffer obj -> string -> unit
+  external insert_at_cursor : textbuffer -> string -> unit
     = "ml_gtk_text_buffer_insert_at_cursor"
   external insert_interactive :
-    textbuffer obj -> textiter -> string -> bool -> bool
+    textbuffer -> textiter -> string -> bool -> bool
     = "ml_gtk_text_buffer_insert_interactive"
   external insert_interactive_at_cursor :
-    textbuffer obj -> string -> bool -> bool
+    textbuffer -> string -> bool -> bool
     = "ml_gtk_text_buffer_insert_interactive_at_cursor"
-  external insert_range : textbuffer obj -> textiter -> textiter
+  external insert_range : textbuffer -> textiter -> textiter
     -> textiter -> unit = "ml_gtk_text_buffer_insert_range"
-  external insert_range_interactive : textbuffer obj -> textiter -> textiter
+  external insert_range_interactive : textbuffer -> textiter -> textiter
     -> textiter -> bool -> bool = "ml_gtk_text_buffer_insert_range_interactive"
-  external delete : textbuffer obj -> textiter -> textiter -> unit
+  external delete : textbuffer -> textiter -> textiter -> unit
     = "ml_gtk_text_buffer_delete"
-  external delete_interactive : textbuffer obj -> textiter -> textiter 
+  external delete_interactive : textbuffer -> textiter -> textiter 
     -> bool -> bool = "ml_gtk_text_buffer_delete_interactive"
-  external set_text : textbuffer obj -> string -> unit
+  external set_text : textbuffer -> string -> unit
     = "ml_gtk_text_buffer_set_text"
-  external get_text : textbuffer obj -> textiter -> textiter -> 
+  external get_text : textbuffer -> textiter -> textiter -> 
     bool -> string = "ml_gtk_text_buffer_get_text"
-  external get_slice : textbuffer obj -> textiter -> textiter -> 
+  external get_slice : textbuffer -> textiter -> textiter -> 
     bool -> string = "ml_gtk_text_buffer_get_slice"
-  external insert_pixbuf : textbuffer obj -> textiter -> GdkPixbuf.pixbuf
+  external insert_pixbuf : textbuffer -> textiter -> GdkPixbuf.pixbuf
     -> unit = "ml_gtk_text_buffer_insert_pixbuf"
-  external create_mark : textbuffer obj -> string option -> textiter
-    -> bool -> textmark obj = "ml_gtk_text_buffer_create_mark"
-  external move_mark : textbuffer obj -> textmark obj -> textiter
+  external create_mark : textbuffer -> string option -> textiter
+    -> bool -> textmark = "ml_gtk_text_buffer_create_mark"
+  external move_mark : textbuffer -> textmark -> textiter
    -> unit  = "ml_gtk_text_buffer_move_mark"
-  external move_mark_by_name : textbuffer obj -> string -> textiter
+  external move_mark_by_name : textbuffer -> string -> textiter
    -> unit  = "ml_gtk_text_buffer_move_mark_by_name"
-  external delete_mark : textbuffer obj -> textmark obj 
+  external delete_mark : textbuffer -> textmark 
     -> unit  = "ml_gtk_text_buffer_delete_mark"
-  external delete_mark_by_name : textbuffer obj -> string
+  external delete_mark_by_name : textbuffer -> string
    -> unit  = "ml_gtk_text_buffer_delete_mark_by_name"
-  external get_mark : textbuffer obj -> string -> textmark obj option 
+  external get_mark : textbuffer -> string -> textmark option 
     = "ml_gtk_text_buffer_get_mark"
-  external get_insert : textbuffer obj -> textmark obj 
+  external get_insert : textbuffer -> textmark 
     = "ml_gtk_text_buffer_get_insert"
-  external get_selection_bound : textbuffer obj -> textmark obj 
+  external get_selection_bound : textbuffer -> textmark 
     = "ml_gtk_text_buffer_get_selection_bound"
-  external place_cursor : textbuffer obj -> textiter -> unit 
+  external place_cursor : textbuffer -> textiter -> unit 
     = "ml_gtk_text_buffer_place_cursor"
-  external apply_tag : textbuffer obj -> texttag obj -> textiter -> textiter 
+  external apply_tag : textbuffer -> texttag -> textiter -> textiter 
     -> unit = "ml_gtk_text_buffer_apply_tag"
-  external remove_tag : textbuffer obj -> texttag obj -> textiter -> textiter 
+  external remove_tag : textbuffer -> texttag -> textiter -> textiter 
     -> unit = "ml_gtk_text_buffer_remove_tag"
-  external apply_tag_by_name : textbuffer obj -> string -> textiter -> textiter 
+  external apply_tag_by_name : textbuffer -> string -> textiter -> textiter 
     -> unit = "ml_gtk_text_buffer_apply_tag_by_name"
-  external remove_tag_by_name : textbuffer obj -> string -> textiter -> textiter 
+  external remove_tag_by_name : textbuffer -> string -> textiter -> textiter 
     -> unit = "ml_gtk_text_buffer_remove_tag_by_name"
-  external remove_all_tags : textbuffer obj -> textiter -> textiter 
+  external remove_all_tags : textbuffer -> textiter -> textiter 
     -> unit = "ml_gtk_text_buffer_remove_all_tags"
-  external create_tag_0 : textbuffer obj -> string option 
-    -> texttag obj = "ml_gtk_text_buffer_create_tag_0"
-  external create_tag_2 : textbuffer obj -> string option 
-    -> string -> string -> texttag obj = "ml_gtk_text_buffer_create_tag_2"
-  external get_iter_at_line_offset : textbuffer obj -> int -> int -> textiter
+  external create_tag_0 : textbuffer -> string option 
+    -> texttag = "ml_gtk_text_buffer_create_tag_0"
+  external create_tag_2 : textbuffer -> string option 
+    -> string -> string -> texttag = "ml_gtk_text_buffer_create_tag_2"
+  external get_iter_at_line_offset : textbuffer -> int -> int -> textiter
     = "ml_gtk_text_buffer_get_iter_at_line_offset"
-  external get_iter_at_offset : textbuffer obj -> int -> textiter
+  external get_iter_at_offset : textbuffer -> int -> textiter
     = "ml_gtk_text_buffer_get_iter_at_offset"
-  external get_iter_at_line : textbuffer obj ->  int -> textiter
+  external get_iter_at_line : textbuffer ->  int -> textiter
     = "ml_gtk_text_buffer_get_iter_at_line"
-  external get_iter_at_line_index : textbuffer obj ->  int -> int -> textiter
+  external get_iter_at_line_index : textbuffer ->  int -> int -> textiter
     = "ml_gtk_text_buffer_get_iter_at_line_index"
-  external get_iter_at_mark : textbuffer obj -> textmark obj -> textiter
+  external get_iter_at_mark : textbuffer -> textmark -> textiter
     = "ml_gtk_text_buffer_get_iter_at_mark"
-  external get_start_iter : textbuffer obj 
+  external get_start_iter : textbuffer 
     -> textiter = "ml_gtk_text_buffer_get_start_iter"
-  external get_end_iter : textbuffer obj 
+  external get_end_iter : textbuffer 
     -> textiter = "ml_gtk_text_buffer_get_end_iter"
-  external get_bounds : textbuffer obj -> textiter * textiter
+  external get_bounds : textbuffer -> textiter * textiter
     = "ml_gtk_text_buffer_get_bounds"
-  external get_modified : textbuffer obj -> bool
+  external get_modified : textbuffer -> bool
     = "ml_gtk_text_buffer_get_modified"
-  external set_modified : textbuffer obj -> bool -> unit
+  external set_modified : textbuffer -> bool -> unit
     = "ml_gtk_text_buffer_set_modified"
-  external delete_selection : textbuffer obj ->  bool -> bool -> bool
+  external delete_selection : textbuffer ->  bool -> bool -> bool
     = "ml_gtk_text_buffer_delete_selection"
-  external get_selection_bounds : textbuffer obj ->  textiter * textiter
+  external get_selection_bounds : textbuffer ->  textiter * textiter
     = "ml_gtk_text_buffer_get_selection_bounds"
-  external begin_user_action : textbuffer obj -> unit
+  external begin_user_action : textbuffer -> unit
     = "ml_gtk_text_buffer_begin_user_action"
-  external end_user_action : textbuffer obj -> unit
+  external end_user_action : textbuffer -> unit
     = "ml_gtk_text_buffer_end_user_action"
-  external create_child_anchor : textbuffer obj 
-    -> textiter -> textchildanchor obj
+  external create_child_anchor : textbuffer 
+    -> textiter -> textchildanchor
     = "ml_gtk_text_buffer_create_child_anchor"
   external insert_child_anchor : 
-    textbuffer obj -> textiter -> textchildanchor obj -> unit
+    textbuffer -> textiter -> textchildanchor -> unit
     = "ml_gtk_text_buffer_insert_child_anchor"
   external paste_clipboard :
-    textbuffer obj -> clipboard -> textiter option -> bool -> unit
+    textbuffer -> clipboard -> textiter option -> bool -> unit
     = "ml_gtk_text_buffer_paste_clipboard"
   external copy_clipboard :
-    textbuffer obj -> clipboard -> unit
+    textbuffer -> clipboard -> unit
     = "ml_gtk_text_buffer_copy_clipboard"
   external cut_clipboard :
-    textbuffer obj -> clipboard -> bool -> unit
+    textbuffer -> clipboard -> bool -> unit
     = "ml_gtk_text_buffer_cut_clipboard"
   external add_selection_clipboard :
-    textbuffer obj -> clipboard -> unit
+    textbuffer -> clipboard -> unit
     = "ml_gtk_text_buffer_add_selection_clipboard"
   external remove_selection_clipboard :
-    textbuffer obj -> clipboard -> unit
+    textbuffer -> clipboard -> unit
     = "ml_gtk_text_buffer_remove_selection_clipboard"
   module Signals = struct
   open GtkSignal
 
   let marshal_apply_tag f _ = function 
     |`OBJECT(Some p)::`POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
-       f (Gobject.unsafe_cast p : texttag obj)
+       f (Gobject.unsafe_cast p : texttag)
         ~start:(!textiter_of_pointer ti1) 
 	~stop:(!textiter_of_pointer ti2)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_apply_tag"
@@ -457,7 +457,7 @@ module Buffer = struct
   let marshal_insert_child_anchor f _ = function 
     | `POINTER(Some ti)::`OBJECT(Some tca)::_ ->
        f (!textiter_of_pointer ti) 
-	(Gobject.unsafe_cast tca : textchildanchor obj)
+	(Gobject.unsafe_cast tca : textchildanchor)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_insert_child_anchor"
 
 
@@ -480,17 +480,17 @@ module Buffer = struct
 	
   let marshal_textmark f _ = function 
     | `OBJECT(Some tm)::_ -> 
-	f (Gobject.unsafe_cast tm : textmark obj)
+	f (Gobject.unsafe_cast tm : textmark)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_textmark"
 
   let marshal_mark_set f _ = function 
     | `POINTER(Some ti)::`OBJECT(Some tm)::_ -> 
-	f (!textiter_of_pointer ti) (Gobject.unsafe_cast tm : textmark obj) 
+	f (!textiter_of_pointer ti) (Gobject.unsafe_cast tm : textmark) 
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_mark_set"
   
   let marshal_remove_tag f _ = function 
     |`OBJECT(Some p)::`POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
-       f (Gobject.unsafe_cast p : texttag obj) 
+       f (Gobject.unsafe_cast p : texttag) 
 	~start:(!textiter_of_pointer ti1) 
 	~stop:(!textiter_of_pointer ti2)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_remove_tag"
@@ -553,120 +553,120 @@ end
 end
 
 module Child_Anchor = struct
-  let cast w : textchildanchor obj = Object.try_cast w "GtkTextChildAnchor"
-  external create : unit -> textchildanchor obj =
+  let cast w : textchildanchor = Object.try_cast w "GtkTextChildAnchor"
+  external create : unit -> textchildanchor =
 	"ml_gtk_text_child_anchor_new"
-  external get_widgets : textchildanchor obj -> widget list =
+  external get_widgets : textchildanchor -> widget list =
 	"ml_gtk_text_child_anchor_get_widgets"
-  external get_deleted : textchildanchor obj -> bool =
+  external get_deleted : textchildanchor -> bool =
 	"ml_gtk_text_child_anchor_get_deleted"
 end
 
 module View = struct
   let cast w : textview obj = Object.try_cast w "GtkTextView"
   external create : unit -> textview obj = "ml_gtk_text_view_new"
-  external create_with_buffer : textbuffer obj -> textview obj = "ml_gtk_text_view_new_with_buffer"
-  external set_buffer : textview obj -> textbuffer obj -> unit = "ml_gtk_text_view_set_buffer"
-  external get_buffer : textview obj -> textbuffer obj = "ml_gtk_text_view_get_buffer"
-  external scroll_to_mark : textview obj -> textmark obj -> float -> bool -> float -> float -> unit = 
+  external create_with_buffer : textbuffer -> textview obj = "ml_gtk_text_view_new_with_buffer"
+  external set_buffer : [>`textview] obj -> textbuffer -> unit = "ml_gtk_text_view_set_buffer"
+  external get_buffer : [>`textview] obj -> textbuffer = "ml_gtk_text_view_get_buffer"
+  external scroll_to_mark : [>`textview] obj -> textmark -> float -> bool -> float -> float -> unit = 
 	    "ml_gtk_text_view_scroll_to_mark_bc" "ml_gtk_text_view_scroll_to_mark"
-  external scroll_to_iter : textview obj -> textiter -> float -> bool -> float -> float -> bool = 
+  external scroll_to_iter : [>`textview] obj -> textiter -> float -> bool -> float -> float -> bool = 
 	    "ml_gtk_text_view_scroll_to_iter_bc" "ml_gtk_text_view_scroll_to_iter"
-  external scroll_mark_onscreen : textview obj -> textmark obj -> unit = 
+  external scroll_mark_onscreen : [>`textview] obj -> textmark -> unit = 
 	   "ml_gtk_text_view_scroll_mark_onscreen"
-  external move_mark_onscreen : textview obj -> textmark obj -> bool = 
+  external move_mark_onscreen : [>`textview] obj -> textmark -> bool = 
 	   "ml_gtk_text_view_move_mark_onscreen"
-  external place_cursor_onscreen : textview obj -> bool = 
+  external place_cursor_onscreen : [>`textview] obj -> bool = 
 	   "ml_gtk_text_view_place_cursor_onscreen"
-  external get_visible_rect : textview obj -> Gdk.Rectangle.t = 
+  external get_visible_rect : [>`textview] obj -> Gdk.Rectangle.t = 
 	   "ml_gtk_text_view_get_visible_rect"
-  external get_iter_location : textview obj -> textiter -> Gdk.Rectangle.t = 
+  external get_iter_location : [>`textview] obj -> textiter -> Gdk.Rectangle.t = 
 	   "ml_gtk_text_view_get_iter_location"
-  external get_line_at_y : textview obj -> int -> textiter*int = 
+  external get_line_at_y : [>`textview] obj -> int -> textiter*int = 
 	   "ml_gtk_text_view_get_line_at_y"
-  external get_line_yrange : textview obj -> textiter -> int*int = 
+  external get_line_yrange : [>`textview] obj -> textiter -> int*int = 
 	   "ml_gtk_text_view_get_line_yrange"
-  external get_iter_at_location : textview obj -> int -> int -> textiter = 
+  external get_iter_at_location : [>`textview] obj -> int -> int -> textiter = 
 	   "ml_gtk_text_view_get_iter_at_location"
-  external buffer_to_window_coords : textview obj -> Gtk.Tags.text_window_type -> int -> int -> int*int =
+  external buffer_to_window_coords : [>`textview] obj -> Gtk.Tags.text_window_type -> int -> int -> int*int =
 	   "ml_gtk_text_view_buffer_to_window_coords"
-  external window_to_buffer_coords : textview obj -> Gtk.Tags.text_window_type -> int -> int -> int*int =
+  external window_to_buffer_coords : [>`textview] obj -> Gtk.Tags.text_window_type -> int -> int -> int*int =
 	   "ml_gtk_text_view_window_to_buffer_coords"
-  external get_window : textview obj -> Gtk.Tags.text_window_type -> Gdk.window option =
+  external get_window : [>`textview] obj -> Gtk.Tags.text_window_type -> Gdk.window option =
 	   "ml_gtk_text_view_get_window"
-  external get_window_type : textview obj -> Gdk.window -> Gtk.Tags.text_window_type =
+  external get_window_type : [>`textview] obj -> Gdk.window -> Gtk.Tags.text_window_type =
 	   "ml_gtk_text_view_get_window_type"
-  external set_border_window_size : textview obj -> [`LEFT | `RIGHT | `TOP | `BOTTOM ] -> int -> unit =
+  external set_border_window_size : [>`textview] obj -> [`LEFT | `RIGHT | `TOP | `BOTTOM ] -> int -> unit =
 	   "ml_gtk_text_view_set_border_window_size"
-  external get_border_window_size : textview obj ->  [`LEFT | `RIGHT | `TOP | `BOTTOM ] -> int =
+  external get_border_window_size : [>`textview] obj ->  [`LEFT | `RIGHT | `TOP | `BOTTOM ] -> int =
 	   "ml_gtk_text_view_get_border_window_size"
-  external forward_display_line : textview obj -> textiter -> bool =
+  external forward_display_line : [>`textview] obj -> textiter -> bool =
 	   "ml_gtk_text_view_forward_display_line"
-  external backward_display_line : textview obj -> textiter -> bool =
+  external backward_display_line : [>`textview] obj -> textiter -> bool =
 	   "ml_gtk_text_view_backward_display_line"
-  external forward_display_line_end : textview obj -> textiter -> bool =
+  external forward_display_line_end : [>`textview] obj -> textiter -> bool =
 	   "ml_gtk_text_view_forward_display_line_end"
-  external backward_display_line_start : textview obj -> textiter -> bool =
+  external backward_display_line_start : [>`textview] obj -> textiter -> bool =
 	   "ml_gtk_text_view_backward_display_line_start"
-  external starts_display_line : textview obj -> textiter -> bool =
+  external starts_display_line : [>`textview] obj -> textiter -> bool =
 	   "ml_gtk_text_view_starts_display_line"
-  external move_visually : textview obj -> textiter -> int -> bool =
+  external move_visually : [>`textview] obj -> textiter -> int -> bool =
 	   "ml_gtk_text_view_move_visually"
   external add_child_at_anchor : 
-    textview obj -> widget obj -> textchildanchor obj -> unit =
+    [>`textview] obj -> [>`widget] obj -> textchildanchor -> unit =
 	   "ml_gtk_text_view_add_child_at_anchor"
   external add_child_in_window : 
-    textview obj -> widget obj -> text_window_type -> int -> int -> unit =
+    [>`textview] obj -> [>`widget] obj -> text_window_type -> int -> int -> unit =
 	   "ml_gtk_text_view_add_child_in_window"
   external move_child : 
-    textview obj -> widget obj -> int -> int -> unit =
+    [>`textview] obj -> [>`widget] obj -> int -> int -> unit =
 	   "ml_gtk_text_view_move_child"
-  external set_wrap_mode : textview obj -> wrap_mode -> unit =
+  external set_wrap_mode : [>`textview] obj -> wrap_mode -> unit =
 	   "ml_gtk_text_view_set_wrap_mode"
-  external get_wrap_mode : textview obj -> wrap_mode =
+  external get_wrap_mode : [>`textview] obj -> wrap_mode =
 	   "ml_gtk_text_view_get_wrap_mode"
-  external set_editable : textview obj -> bool -> unit =
+  external set_editable : [>`textview] obj -> bool -> unit =
 	   "ml_gtk_text_view_set_editable"
-  external get_editable : textview obj -> bool =
+  external get_editable : [>`textview] obj -> bool =
 	   "ml_gtk_text_view_get_editable"
-  external set_cursor_visible : textview obj -> bool -> unit =
+  external set_cursor_visible : [>`textview] obj -> bool -> unit =
 	   "ml_gtk_text_view_set_cursor_visible"
-  external get_cursor_visible : textview obj -> bool =
+  external get_cursor_visible : [>`textview] obj -> bool =
 	   "ml_gtk_text_view_get_cursor_visible"
 
-  external set_pixels_above_lines : textview obj -> int -> unit =
+  external set_pixels_above_lines : [>`textview] obj -> int -> unit =
 	   "ml_gtk_text_view_set_pixels_above_lines"
-  external get_pixels_above_lines : textview obj -> int  =
+  external get_pixels_above_lines : [>`textview] obj -> int  =
 	   "ml_gtk_text_view_get_pixels_above_lines"
 
 
-  external set_pixels_below_lines : textview obj -> int -> unit =
+  external set_pixels_below_lines : [>`textview] obj -> int -> unit =
 	   "ml_gtk_text_view_set_pixels_below_lines"
-  external get_pixels_below_lines : textview obj -> int  =
+  external get_pixels_below_lines : [>`textview] obj -> int  =
 	   "ml_gtk_text_view_get_pixels_below_lines"
 
 
-  external set_pixels_inside_wrap : textview obj -> int -> unit =
+  external set_pixels_inside_wrap : [>`textview] obj -> int -> unit =
 	   "ml_gtk_text_view_set_pixels_inside_wrap"
-  external get_pixels_inside_wrap : textview obj -> int  =
+  external get_pixels_inside_wrap : [>`textview] obj -> int  =
 	   "ml_gtk_text_view_get_pixels_inside_wrap"
 
-  external set_justification : textview obj -> justification -> unit =
+  external set_justification : [>`textview] obj -> justification -> unit =
 	   "ml_gtk_text_view_set_justification"
-  external get_justification : textview obj -> justification =
+  external get_justification : [>`textview] obj -> justification =
 	   "ml_gtk_text_view_get_justification"
 
-  external set_left_margin : textview obj -> int -> unit =
+  external set_left_margin : [>`textview] obj -> int -> unit =
 	   "ml_gtk_text_view_set_left_margin"
-  external get_left_margin : textview obj -> int =
+  external get_left_margin : [>`textview] obj -> int =
 	   "ml_gtk_text_view_get_left_margin"
-  external set_right_margin : textview obj -> int -> unit =
+  external set_right_margin : [>`textview] obj -> int -> unit =
 	   "ml_gtk_text_view_set_right_margin"
-  external get_right_margin : textview obj -> int =
+  external get_right_margin : [>`textview] obj -> int =
 	   "ml_gtk_text_view_get_right_margin"
-  external set_indent : textview obj -> int -> unit =
+  external set_indent : [>`textview] obj -> int -> unit =
 	   "ml_gtk_text_view_set_indent"
-  external get_indent : textview obj -> int =
+  external get_indent : [>`textview] obj -> int =
 	   "ml_gtk_text_view_get_indent"
   external val_delete_type : int -> delete_type = "ml_Val_delete_type"
   external val_movement_step : int -> movement_step = "ml_Val_movement_step"
@@ -781,7 +781,7 @@ module Iter = struct
   external copy : textiter -> textiter = "ml_gtk_text_iter_copy"
   let () =
     textiter_of_pointer := (fun (p : Gpointer.boxed) -> copy (Obj.magic p))
-  external get_buffer : textiter -> textbuffer obj = "ml_gtk_text_iter_get_buffer"
+  external get_buffer : textiter -> textbuffer = "ml_gtk_text_iter_get_buffer"
   external get_offset : textiter -> int = "ml_gtk_text_iter_get_offset"
   external get_line : textiter -> int = "ml_gtk_text_iter_get_line"
   external get_line_offset : textiter -> int = "ml_gtk_text_iter_get_line_offset"
@@ -795,14 +795,14 @@ module Iter = struct
 	   "ml_gtk_text_iter_get_visible_slice"
   external get_visible_text : textiter -> textiter -> string = "ml_gtk_text_iter_get_visible_text"
   external get_pixbuf : textiter -> GdkPixbuf.pixbuf option = "ml_gtk_text_iter_get_pixbuf"
-  external get_marks : textiter -> textmark obj list = "ml_gtk_text_iter_get_marks"
-  external get_toggled_tags : textiter -> bool -> texttag obj list = "ml_gtk_text_iter_get_marks"
-  external get_child_anchor : textiter -> textchildanchor obj option ="ml_gtk_text_iter_get_child_anchor"
-  external begins_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_begins_tag"
-  external ends_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_ends_tag"
-  external toggles_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_toggles_tag"
-  external has_tag : textiter -> texttag obj -> bool = "ml_gtk_text_iter_has_tag"
-  external get_tags : textiter -> texttag obj list = "ml_gtk_text_iter_get_tags"
+  external get_marks : textiter -> textmark list = "ml_gtk_text_iter_get_marks"
+  external get_toggled_tags : textiter -> bool -> texttag list = "ml_gtk_text_iter_get_marks"
+  external get_child_anchor : textiter -> textchildanchor option ="ml_gtk_text_iter_get_child_anchor"
+  external begins_tag : textiter -> texttag option -> bool = "ml_gtk_text_iter_begins_tag"
+  external ends_tag : textiter -> texttag option -> bool = "ml_gtk_text_iter_ends_tag"
+  external toggles_tag : textiter -> texttag option -> bool = "ml_gtk_text_iter_toggles_tag"
+  external has_tag : textiter -> texttag -> bool = "ml_gtk_text_iter_has_tag"
+  external get_tags : textiter -> texttag list = "ml_gtk_text_iter_get_tags"
   external editable : textiter -> default:bool -> bool = "ml_gtk_text_iter_editable"
   external can_insert : textiter -> default:bool -> bool = "ml_gtk_text_iter_can_insert"
   external starts_word : textiter -> bool = "ml_gtk_text_iter_starts_word"
@@ -846,8 +846,8 @@ module Iter = struct
   external set_visible_line_offset : textiter -> int -> unit = "ml_gtk_text_iter_set_visible_line_offset"
   external forward_to_end : textiter -> unit = "ml_gtk_text_iter_forward_to_end"
   external forward_to_line_end : textiter -> bool = "ml_gtk_text_iter_forward_to_line_end"
-  external forward_to_tag_toggle : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_forward_to_tag_toggle"
-  external backward_to_tag_toggle : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_backward_to_tag_toggle"
+  external forward_to_tag_toggle : textiter -> texttag option -> bool = "ml_gtk_text_iter_forward_to_tag_toggle"
+  external backward_to_tag_toggle : textiter -> texttag option -> bool = "ml_gtk_text_iter_backward_to_tag_toggle"
   external equal : textiter -> textiter -> bool = "ml_gtk_text_iter_equal"
   external compare : textiter -> textiter -> int = "ml_gtk_text_iter_compare"
   external in_range : textiter -> textiter -> textiter -> int = "ml_gtk_text_iter_in_range"

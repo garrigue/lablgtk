@@ -1,5 +1,8 @@
 $Id$
 
+2003.02.13
+ * Starting to add GtkTreeView. See tree2.ml.
+
 2003.02.12
  * API changes and bug fixes in GText (Jacques)
 

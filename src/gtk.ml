@@ -173,12 +173,20 @@ type separator = [widget|`separator]
 type preview = [widget|`preview]
 
 type textview = [container|`textview]
-type textbuffer = [`textbuffer]
-type texttagtable = [`texttagtable]
-type texttag = [`texttag]
-type textmark = [`textmark ]
-type textchildanchor = [`textchildanchor ]
+type textbuffer = [`textbuffer] obj
+type texttagtable = [`texttagtable] obj
+type texttag = [`texttag] obj
+type textmark = [`textmark] obj
+type textchildanchor = [`textchildanchor] obj
 type textiter
+
+type tree_view = [container|`treeview]
+type tree_view_column = [`gtk|`treeviewcolumn]
+type tree_model = [`treemodel]
+type tree_store = [`treestore|`treemodel] obj
+type tree_iter
+type cell_renderer = [`gtk|`cellrenderer]
+type cell_renderer_text = [cell_renderer|`cell_renderer_text]
 
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj
