@@ -1,0 +1,78 @@
+(* $Id$ *)
+
+prefix "Gtk"
+
+header {
+open Gtk
+module Internal = struct
+  let marshal_insert =
+    ref (fun (_ : string -> pos:int ref -> unit) ->
+           failwith "GtkEditProps.Internal.marshal_insert")
+end
+}
+
+oheader{
+open GtkEditProps
+}
+
+classes {
+  GtkAdjustment "Gtk.adjustment obj"
+  GtkMenu "Gtk.menu obj"
+}
+
+class Editable abstract wrapsig : Widget { (* actually an interface *)
+  signal changed
+  signal delete_text : start:int stop:int
+  signal insert_text "(fun f -> !Internal.marshal_insert f)"
+}
+
+class Entry set wrap wrapsig : Editable {
+  "text"                 gchararray           : Read / Write
+  "visibility"           gboolean             : Read / Write
+  "max-length"           gint                 : Read / Write
+  "activates-default"    gboolean             : Read / Write
+  "cursor-position"      gint                 : Read / NoWrap
+  "editable"             gboolean             : Read / Write
+  "has-frame"            gboolean             : Read / Write
+  "invisible-char"       guint                : Read / Write / NoSet
+  "scroll-offset"        gint                 : Read
+  "selection-bound"      gint                 : Read / NoWrap
+  "width-chars"          gint                 : Read / Write
+  method append_text : "string -> unit"
+  method prepend_text : "string -> unit"
+  method text_length : "int"
+  signal activate
+  signal copy_clipboard
+  signal cut_clipboard
+  signal delete_from_cursor : GtkDeleteType int
+  signal insert_at_cursor : string
+  signal move_cursor : GtkMovementStep gint extend:gboolean
+  signal paste_clipboard
+  signal populate_popup : GtkMenu       / NoWrap
+  signal toggle_overwrite
+}
+
+class SpinButton set wrap wrapsig : Entry {
+  "adjustment"           GtkAdjustment        : Read / Write
+  "climb-rate"(rate)     gdouble              : Read / Write
+  "digits"               guint                : Read / Write
+  "numeric"              gboolean             : Read / Write
+  "snap-to-ticks"        gboolean             : Read / Write
+  "update-policy"        GtkSpinButtonUpdatePolicy : Read / Write
+  "value"                gdouble              : Read / Write
+  "wrap"                 gboolean             : Read / Write
+  method spin : "Tags.spin_type -> unit"
+  method update
+  signal change_value : GtkScrollType
+  signal input : -> int
+  signal output : -> bool
+  signal value_changed
+}
+
+class Combo set wrap : Box {
+  "allow-empty"          gboolean             : Read / Write
+  "case-sensitive"       gboolean             : Read / Write
+  "enable-arrow-keys"    gboolean             : Read / Write
+  "enable-arrows-always" gboolean             : Read / Write / NoSet / NoWrap
+  "value-in-list"        gboolean             : Read / Write
+}

@@ -1,0 +1,44 @@
+(* $Id$ *)
+
+prefix "Gtk"
+
+header {
+open Gtk
+}
+
+oheader{
+open GtkButtonProps
+}
+
+class Button set wrapsig : Bin {
+  "label"                gchararray           : Read / Write / Construct
+  "use-stock"            gboolean             : Read / Write / Construct
+  "use-underline"        gboolean             : Read / Write / Construct
+  "relief"               GtkReliefStyle       : Read / Write
+  signal activate        / NoWrap
+  signal clicked
+  signal enter
+  signal leave
+  signal pressed
+  signal released
+}
+
+class ToggleButton set : Button {
+  "active"               gboolean             : Read / Write
+  "draw-indicator"       gboolean             : Read / Write
+  "inconsistent"         gboolean             : Read / Write / NoSet
+  signal toggled
+}
+
+class CheckButton notype : ToggleButton {}
+
+class RadioButton : ToggleButton {
+  "group"                GtkRadioButton_opt   : Write
+}
+
+class Toolbar set : Container {
+  "orientation"          GtkOrientation       : Read / Write
+  "toolbar-style"        GtkToolbarStyle      : Read / Write
+  signal orientation_changed : GtkOrientation
+  signal style_changed :       GtkToolbarStyle
+}

@@ -5,7 +5,7 @@ open Gaux
 open Gtk
 open GtkBase
 open GtkList
-open OGtkProps
+open OgtkListProps
 open GObj
 open GContainer
 

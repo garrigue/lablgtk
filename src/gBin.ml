@@ -2,11 +2,11 @@
 
 open Gaux
 open Gtk
-open GtkProps
+open GtkBinProps
 open GtkBase
 open GtkBin
 open GObj
-open OGtkProps
+open OgtkBinProps
 open GContainer
 
 let set = Gobject.Property.set

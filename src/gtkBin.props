@@ -1,0 +1,75 @@
+(* $Id$ *)
+
+prefix "Gtk"
+
+header {
+open Gtk
+}
+
+oheader{
+open GtkPackProps
+}
+
+classes {
+  GtkAdjustment "Gtk.adjustment obj"
+}
+
+class Bin abstract : Container {}
+
+class Alignment set wrap : Bin {
+  "xalign"               gfloat               : Read / Write
+  "yalign"               gfloat               : Read / Write
+  "xscale"               gfloat               : Read / Write
+  "yscale"               gfloat               : Read / Write
+}
+
+class Frame set wrap : Bin {
+  "label"                gchararray_opt       : Read / Write
+  "label-widget"         GtkWidget_opt        : Read / Write / NoSet
+  "label-xalign"         gfloat               : Read / Write
+  "label-yalign"         gfloat               : Read / Write
+  "shadow-type"          GtkShadowType        : Read / Write
+}
+
+class AspectFrame set wrap : Frame {
+  "obey-child"           gboolean             : Read / Write
+  "ratio"                gfloat               : Read / Write
+  "xalign"               gfloat               : Read / Write
+  "yalign"               gfloat               : Read / Write
+}
+
+class EventBox : Bin {}
+
+class HandleBox set wrap wrapsig : Bin {
+  "handle-position"      GtkPositionType      : Read / Write
+  "snap-edge"            GtkPositionType      : Read / Write
+  "shadow_type"          GtkShadowType        : Read / Write
+  "snap-edge-set"        gboolean             : Read / Write / NoSet / NoWrap
+  signal child_attached : GtkWidget
+  signal child_detached : GtkWidget
+}
+
+class ScrolledWindow set wrap : Bin {
+  "hadjustment"          GtkAdjustment        : Read / Write / Construct
+  "vadjustment"          GtkAdjustment        : Read / Write / Construct
+  "hscrollbar-policy"(hpolicy)  GtkPolicyType : Read / Write
+  "vscrollbar-policy"(vpolicy)  GtkPolicyType : Read / Write
+  "window-placement"(placement) GtkCornerType : Read / Write
+  "shadow-type"          GtkShadowType        : Read / Write
+  method add_with_viewport : "[>`widget] obj -> unit"
+  signal move_focus_out : GtkDirectionType
+  signal scroll_child :   GtkScrollType gboolean
+}
+
+class Viewport set wrap : Bin {
+  "hadjustment"          GtkAdjustment        : Read / Write
+  "vadjustment"          GtkAdjustment        : Read / Write
+  "shadow-type"          GtkShadowType        : Read / Write
+  signal set_scroll_adjustments : GtkAdjustment_opt GtkAdjustment_opt
+}
+
+class Socket wrapsig : Container {
+  method steal : "Gdk.xid -> unit"
+  signal plug_added
+  signal plug_removed
+}

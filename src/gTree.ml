@@ -6,7 +6,8 @@ open Gobject
 open Gtk
 open GtkBase
 open GtkTree
-open OGtkProps
+open OgtkBaseProps
+open OgtkTreeProps
 open GObj
 open GContainer
 

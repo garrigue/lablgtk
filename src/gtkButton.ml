@@ -4,7 +4,7 @@ open Gaux
 open Gobject
 open Gtk
 open Tags
-open GtkProps
+open GtkButtonProps
 open GtkBase
 
 external _gtkbutton_init : unit -> unit = "ml_gtkbutton_init"

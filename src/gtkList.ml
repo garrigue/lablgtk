@@ -4,7 +4,7 @@ open StdLabels
 open Gaux
 open Gtk
 open Tags
-open GtkProps
+open GtkListProps
 open GtkBase
 
 external _gtklist_init : unit -> unit = "ml_gtklist_init"

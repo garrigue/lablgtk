@@ -1,0 +1,141 @@
+(* $Id$ *)
+
+prefix "Gtk"
+
+header {
+open Gtk
+}
+
+conversions {
+  GtkStock "GtkStock.conv"
+}
+
+boxed {
+  GdkEventButton    "GdkEvent.Button.t"
+}
+
+classes {
+  GdkPixbuf "GdkPixbuf.pixbuf"
+  GtkMenu "Gtk.menu obj"
+}
+
+class Misc abstract set wrap : Widget {
+  "xalign"               gfloat               : Read / Write
+  "yalign"               gfloat               : Read / Write
+  "xpad"                 gint                 : Read / Write
+  "ypad"                 gint                 : Read / Write
+}
+
+class Label set wrap : Misc {
+  "label"	         gchararray           : Read / Write
+  "use-markup"           gboolean             : Read / Write
+  "use-underline"        gboolean             : Read / Write
+  "mnemonic-keyval"      guint                : Read
+  "mnemonic-widget"      GtkWidget_opt        : Read / Write
+  "justify"              GtkJustification     : Read / Write
+  "wrap"(line_wrap)      gboolean             : Read / Write
+  "pattern"              gchararray           : Write
+  "selectable"           gboolean             : Read / Write
+  "attributes"           PangoAttrList        : Read / Write
+  "cursor-position"      gint                 : Read
+  "selection-bound"      gint                 : Read
+  method get_text : "string"
+  method set_text : "string -> unit"
+  signal copy_clipboard
+  signal move_cursor : GtkMovementStep gint gboolean
+  signal populate_popup : GtkMenu
+}
+
+class TipsQuery set wrap wrapsig : Label {
+  "caller"               GtkWidget_opt        : Read / Write
+  "emit-always"          gboolean             : Read / Write
+  "label-inactive"       gchararray           : Read / Write
+  "label-no-tip"         gchararray           : Read / Write
+  method start_query
+  method stop_query
+  signal start_query
+  signal stop_query
+  signal widget_entered :  GtkWidget_opt text:string privat:string
+  signal widget_selected :
+    GtkWidget_opt text:string privat:string GdkEventButton -> bool
+}
+
+class Arrow set wrap : Misc {
+  "arrow-type"(kind)     GtkArrowType         : Read / Write
+  "shadow-type"(shadow)  GtkShadowType        : Read / Write
+}
+
+class Image set wrap : Misc {
+  "file"                 gchararray           : Write
+  "image"                GdkImage             : Read / Write
+  "pixbuf"               GdkPixbuf            : Read / Write
+  "pixbuf-animation"     GdkPixbufAnimation   : Read / Write
+  "pixmap"               GdkPixmap            : Read / Write / NoWrap
+  "mask"                 GdkBitmap_opt        : Read / Write
+  "stock"                GtkStock             : Read / Write
+  "icon-set"             GtkIconSet           : Read / Write
+  "icon-size"            GtkIconSize          : Read / Write
+  "storage-type"         GtkImageType         : Read
+}
+
+class ColorSelection set wrap : Box {
+  "current-alpha"(alpha) guint                : Read / Write
+  "current-color"(color) GdkColor             : Read / Write
+  "has-opacity-control"  gboolean             : Read / Write
+  "has-palette"          gboolean             : Read / Write
+  signal color_changed
+}
+
+class FontSelection set wrap : Box {
+  (* bug in Gtk: "font"                 GdkFont_opt          : Read *)
+  "font-name"            gchararray           : Read / Write
+  "preview-text"         gchararray           : Read / Write
+}
+
+class GammaCurve : Box {
+  method get_gamma : "float"
+}
+
+class Statusbar : Box {
+  method get_context_id : "string -> statusbar_context"
+  method push : "statusbar_context -> text:string -> statusbar_message"
+  method pop : "statusbar_context ->  unit"
+  method remove : "statusbar_context -> statusbar_message -> unit"
+  signal text_popped : guint gchararray
+  signal text_pushed : guint gchararray
+}
+
+class Calendar wrapsig : Widget {
+  method select_month : "month:int -> year:int -> unit"
+  method select_day : "int -> unit"
+  method mark_day : "int -> unit"
+  method unmark_day : "int -> unit"
+  method clear_marks
+  method display_options : "Gtk.Tags.calendar_display_options list -> unit"
+  method get_date : "int * int * int" (* year * month * day *)
+  method freeze
+  method thaw
+  signal day_selected
+  signal day_selected_double_click
+  signal month_changed
+  signal next_month
+  signal next_year
+  signal prev_month
+  signal prev_year
+}
+
+class DrawingArea : Widget {
+  method size : "width:int -> height:int -> unit"
+}
+
+(*
+class Curve {
+  "curve-type"           GtkCurveType         : Read / Write
+  "max-x"                gfloat               : Read / Write
+  "max-y"                gfloat               : Read / Write
+  "min-x"                gfloat               : Read / Write
+  "min-y"                gfloat               : Read / Write
+}
+*)
+
+class Separator hv : Widget {}

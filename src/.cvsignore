@@ -8,8 +8,8 @@ lablgtktop_t
 lablgtkrun
 lablgladecc
 xml_lexer.ml
-gtkProps.ml
-oGtkProps.ml
+gtk*Props.ml
+ogtk*Props.ml
 *_tags.c
 *_tags.h
 *Enums.ml

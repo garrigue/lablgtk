@@ -4,7 +4,7 @@ open Gaux
 open Gobject
 open Gtk
 open Tags
-open GtkProps
+open GtkPackProps
 open GtkBase
 
 external _gtkpack_init : unit -> unit = "ml_gtkpack_init"

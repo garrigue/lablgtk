@@ -5,7 +5,7 @@ open Gobject
 open Gtk
 open GtkBase
 open GtkMisc
-open OGtkProps
+open OgtkMiscProps
 open GObj
 
 let separator dir ?packing ?show () =
@@ -111,8 +111,8 @@ let pixmap pm =
 class label_skel obj = object(self)
   inherit misc obj
   inherit label_props
-  method text = GtkProps.Label.get_text self#obj
-  method set_text = GtkProps.Label.set_text self#obj
+  method text = GtkMiscProps.Label.get_text self#obj
+  method set_text = GtkMiscProps.Label.set_text self#obj
 end
 
 class label obj = object

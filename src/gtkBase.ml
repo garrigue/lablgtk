@@ -4,10 +4,10 @@ open Gaux
 open Gobject
 open Gtk
 open Tags
-open GtkProps
+open GtkBaseProps
 
 module Object = struct
-  include Object
+  include GtkObject
   let try_cast = Gobject.try_cast
   external destroy : [>`gtk] obj -> unit = "ml_gtk_object_destroy"
   external get_flags : [>`gtk] obj -> int = "ml_GTK_OBJECT_FLAGS"

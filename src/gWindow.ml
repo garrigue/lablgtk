@@ -6,7 +6,7 @@ open GtkBase
 open GtkWindow
 open GtkMisc
 open GObj
-open OGtkProps
+open OgtkBaseProps
 open GContainer
 
 let set = Gobject.Property.set

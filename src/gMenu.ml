@@ -6,7 +6,8 @@ open Gtk
 open GtkData
 open GtkBase
 open GtkMenu
-open OGtkProps
+open OgtkBaseProps
+open OgtkMenuProps
 open GObj
 open GContainer
 

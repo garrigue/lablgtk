@@ -5,7 +5,7 @@ open Gobject
 open Gtk
 open GtkBase
 open GtkPack
-open OGtkProps
+open OgtkPackProps
 open GObj
 open GContainer
 

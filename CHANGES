@@ -1,5 +1,8 @@
 $Id$
 
+2003.08.15 [Jacques]
+  * split gtk.props in small pieces, to allow more generation
+
 2003.08.06 [Olivier]
   * in GWindow: color_selection_dialog, file_selection and 
     font_selection_dialog now inherit from GWindow.dialog
