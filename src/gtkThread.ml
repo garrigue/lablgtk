@@ -10,6 +10,7 @@ let with_jobs f =
   Mutex.lock m; let y = f jobs in Mutex.unlock m; y
 
 let loop_id = ref None
+let reset () = loop_id := None
 let cannot_sync () =
   match !loop_id with None -> true
   | Some id -> Thread.id (Thread.self ()) = id
@@ -38,8 +39,7 @@ let sync f x =
 (* We check first whether there are some event pending, and run
    some iterations. We then need to delay, thus focing a thread switch. *)
 
-let thread_main () =
-  let old_id = !loop_id in
+let thread_main_real () =
   try
     let loop = (Glib.Main.create true) in
     Main.loops := loop :: !Main.loops;
@@ -54,17 +54,20 @@ let thread_main () =
       for i = 1 to n_jobs () do do_next_job () done
     done;
     Main.loops := List.tl !Main.loops;
-    loop_id := old_id
   with exn ->
     Main.loops := List.tl !Main.loops;
-    loop_id := old_id;
     raise exn
+
+let thread_main () =
+  sync thread_main_real ()
 
 let main () =
   GtkMain.Main.main_func := thread_main;
   thread_main ()
       
-let start = Thread.create main
+let start () =
+  reset ();
+  Thread.create main ()
 
 let _ =
   let mutex = Mutex.create () in

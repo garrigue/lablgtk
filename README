@@ -306,16 +306,42 @@ GnomeCanvas support:
 
 Windows port
 
-  Windows is not explicitely supported in this release, but adapting
-  it to work on windows should not be particularly difficult.
+  Windows is not explicitely supported in this release, but some kind
+  souls seem to have made it work anyway. It should work pretty much
+  like on Unix.
+
+  If you want to use threads, you must be aware of windows specific
+  restrictions; see for instance:
+     http://groups.yahoo.com/group/gimpwin-dev/message/1828
+  I.e. all GTK related calls must occur in the same thread, the one
+  that runs the main loop. If you want to call them from other threads
+  you need to do some forwarding. Fortunately, with a functional
+  language this is easy. Two functions,
+    val async : ('a -> unit) -> 'a -> unit
+    val sync : ('a -> 'b) -> 'a -> 'b
+  are available in the GtkThread module to help you. They will forward
+  your call to the main thread (between handling two GUI events). This
+  can be either asynchronous or synchronous. In the synchronous case,
+  beware of deadlocks (the trivial case, when you are calling from the
+  same thread, is properly avoided). Note also that since callbacks
+  are always called from the main loop thread, you can freely use GTK
+  in them. Also, non-graphical operations are thread-safe.
+  Here is an example using the lablgtk toplevel with threads:
+	% lablgtk -thread
+	        Objective Caml version 3.06
+
+        # open GtkThread;;	
+	# let w = sync (GWindow.window ~show:true) ();;
+        # let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
+        # b#connect#clicked (fun () -> prerr_endline "Hello");;
 
 Authors:
 	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>
 	Benjamin Monate  <monate@lix.polytechnique.fr>
         Olivier Andrieu  <oandrieu@nerim.net>
+	Jun Furuse       <Jun.Furuse@inria.fr>
   For lablgtk1:
 	Hubert Fauque  <hubert.fauque@wanadoo.fr>
-	Jun Furuse     <Jun.Furuse@inria.fr>
 	Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
 				   
 Bug reports:
