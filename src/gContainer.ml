@@ -23,11 +23,7 @@ end
 
 class container obj = object (self)
   inherit widget obj
-  method add w =
-    (* Hack to avoid creating a bin class *)
-    if Gobject.is_a obj "GtkBin" && Container.children obj <> [] then
-      raise (Gtk.Error "GContainer.container#add: already full");
-    Container.add obj (as_widget w)
+  method add w = Container.add obj (as_widget w)
   method remove w = Container.remove obj (as_widget w)
   method children = List.map ~f:(new widget) (Container.children obj)
   method set_border_width = Container.set_border_width obj

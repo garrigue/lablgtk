@@ -44,9 +44,6 @@ static Make_Flags_val (Target_flags_val)
 
 /* gtkobject.h */
 
-Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref, 0)
-ML_1(Val_GtkObject, (GtkObject*), (value))
-
 #define gtk_object_ref_and_sink(w) (gtk_object_ref(w), gtk_object_sink(w))
 Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
                            gtk_object_unref, 20)
@@ -57,6 +54,7 @@ Make_OptFlags_val (Accel_flag_val)
 
 #define Signal_name_val(val) String_val(Field(val,0))
 
+#define Val_GtkAccelGroup_new(val) (Val_GObject_new(&val->parent))
 ML_0 (gtk_accel_group_new, Val_GtkAccelGroup_new)
 /*
 ML_0 (gtk_accel_group_get_default, Val_GtkAccelGroup)
@@ -85,10 +83,9 @@ ML_1 (gtk_accelerator_set_default_mod_mask, OptFlags_GdkModifier_val, Unit)
 
 /* gtkstyle.h */
 
-Make_Val_final_pointer (GtkStyle, gtk_style_ref, gtk_style_unref, 0)
-Make_Val_final_pointer_ext (GtkStyle, _no_ref, Ignore, gtk_style_unref, 20)
-ML_0 (gtk_style_new, Val_GtkStyle_no_ref)
-ML_1 (gtk_style_copy, GtkStyle_val, Val_GtkStyle_no_ref)
+#define Val_GtkStyle_new(val) (Val_GObject_new(&val->parent_instance))
+ML_0 (gtk_style_new, Val_GtkStyle_new)
+ML_1 (gtk_style_copy, GtkStyle_val, Val_GtkStyle_new)
 ML_2 (gtk_style_attach, GtkStyle_val, GdkWindow_val, Val_GtkStyle)
 ML_1 (gtk_style_detach, GtkStyle_val, Unit)
 ML_3 (gtk_style_set_background, GtkStyle_val, GdkWindow_val, State_type_val,
@@ -473,14 +470,16 @@ ML_2 (gtk_container_set_focus_hadjustment, GtkContainer_val,
 
 static void window_unref (GtkObject *w)
 {
-    /* If the window exists and is still not visible, then unreference it.
+    /* If the window exists, has no parent, and is still not visible,
+       then unreference it twice.
        This should be enough to destroy it. */
-    if (!GTK_WIDGET_VISIBLE(w))
+    if (GTK_WINDOW(w)->has_user_ref_count && !GTK_WIDGET_VISIBLE(w))
         gtk_object_unref (w);
+    gtk_object_unref(w);
 }
-Make_Val_final_pointer_ext (GtkObject, _window, Ignore, window_unref,
+Make_Val_final_pointer_ext (GtkObject, _window, gtk_object_ref, window_unref,
                             20)
-#define Val_GtkWidget_window(w) Val_GtkObject_window((GtkObject*)w)
+#define Val_GtkWidget_window(w) Val_GtkObject_window(GTK_OBJECT(w))
 
 #define GtkDialog_val(val) check_cast(GTK_DIALOG,val)
 ML_0 (gtk_dialog_new, Val_GtkWidget_window)

@@ -47,9 +47,10 @@ module CheckMenuItem = struct
       = "ml_gtk_check_menu_item_get_active"
   external set_show_toggle : [>`checkmenuitem] obj -> bool -> unit
       = "ml_gtk_check_menu_item_set_show_toggle"
-  let set ?active ?show_toggle w =
+  let set ?active ?show_toggle ?right_justified w =
     may active ~f:(set_active w);
-    may show_toggle ~f:(set_show_toggle w)
+    may show_toggle ~f:(set_show_toggle w);
+    may right_justified ~f:(MenuItem.set_right_justified w)
   external toggled : [>`checkmenuitem] obj -> unit
       = "ml_gtk_check_menu_item_toggled"
   module Signals = struct

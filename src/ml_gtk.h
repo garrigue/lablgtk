@@ -1,25 +1,22 @@
 /* $Id$ */
 
-#define GtkObject_val(obj) ((GtkObject*)Field(obj,1))
-value Val_GtkObject (GtkObject *w);
-value Val_GtkObject_sink (GtkObject *w);
-#define GtkAccelGroup_val(val) ((GtkAccelGroup*)GObject_val(val))
-#define Val_GtkAccelGroup(val) (Val_GObject(&val->parent))
-#define Val_GtkAccelGroup_new(val) (Val_GObject_new(&val->parent))
-#define GtkStyle_val(val) ((GtkStyle*)Pointer_val(val))
-value Val_GtkStyle (GtkStyle *);
+/* GObjects */
 
-#define Val_GtkAny(w) Val_GtkObject((GtkObject*)w)
-#define Val_GtkAny_sink(w) Val_GtkObject_sink((GtkObject*)w)
+#define Val_GtkAccelGroup(val) (Val_GObject(&val->parent))
+#define Val_GtkStyle(val) (Val_GObject(&val->parent_instance))
+
+#define GtkAccelGroup_val(val) check_cast(GTK_ACCEL_GROUP,val)
+#define GtkStyle_val(val) check_cast(GTK_STYLE,val)
+
+/* GtkObjects */
+value Val_GtkObject_sink (GtkObject *w);
+
+#define Val_GtkAny(w) (Val_GObject((GObject*)w))
+#define Val_GtkAny_sink(w) (Val_GtkObject_sink(GTK_OBJECT(w)))
 #define Val_GtkWidget Val_GtkAny
 #define Val_GtkWidget_sink Val_GtkAny_sink
 
-#ifdef GTK_NO_CHECK_CASTS
-#define check_cast(f,v) f(Pointer_val(v))
-#else
-#define check_cast(f,v) (Pointer_val(v) == NULL ? NULL : f(Pointer_val(v)))
-#endif
-
+#define GtkObject_val(val) check_cast(GTK_OBJECT,val)
 #define GtkWidget_val(val) check_cast(GTK_WIDGET,val)
 #define GtkAdjustment_val(val) check_cast(GTK_ADJUSTMENT,val)
 #define GtkItem_val(val) check_cast(GTK_ITEM,val)

@@ -69,6 +69,7 @@ val menu :
   ?border_width:int -> ?packing:(menu -> unit) -> ?show:bool -> unit -> menu
 val menu_item :
   ?label:string ->
+  ?right_justified:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
@@ -103,6 +104,7 @@ val check_menu_item :
   ?label:string ->
   ?active:bool ->
   ?show_toggle:bool ->
+  ?right_justified:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
@@ -120,6 +122,7 @@ val radio_menu_item :
   ?label:string ->
   ?active:bool ->
   ?show_toggle:bool ->
+  ?right_justified:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
