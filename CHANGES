@@ -1,5 +1,7 @@
 $Id$
 
+In lablgtk2-20030707
+
 2003.07.05 [Jacques]
   * #misc#set_geometry renamed in #misc#set_size_request
   * ?width and ?height in GWindow set default size rather than size request

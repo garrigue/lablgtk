@@ -14,7 +14,7 @@ Status:
   lablgtk2 is still in development.
   
   Support for the old text widget has been dropped, but it is
-  remplaced by a new one, much more powerful (thanks to Benjamin
+  replaced by a new one, much more powerful (thanks to Benjamin
   Monate). Yet many programs will not compile due to the absence of
   the old text widget.
 
@@ -32,21 +32,30 @@ Status:
   GTK_SETLOCALE to 0 in the environment), but LC_NUMERIC is reverted
   to "C" to avoid problems with floating point conversion in Caml.
 
+  This snapshot also includes extensive changes in various areas.
+  * removed #misc#set_geometry
+  * arguments to #misc#set_size_request are optional
+  * add #misc#set_size_chars to set request in number of characters
+  * ?width and ?height in GWindow set default size rather than size request
+  * add GWindow#move to position a window
+  * new clipboard handling in GMain
+  * etc...
+
 How to compile:
 
-	You should normally not need to modify Makefiles.
-	
-	In case you are using the CVS version first type "aclocal && autoconf".
-	
-	Type "./configure && make world && make install" to compile 
-	with all supported options enabled (libgl, libglade, libgnomecanvas, 
-	librsvg, native compilation, thread support).
-	
-	You may use "./configure --help" to check for the different 
-	configuration options.
+  You should normally not need to modify Makefiles.
+  
+  In case you are using the CVS version first type "aclocal && autoconf".
+  
+  Type "./configure && make world && make install" to compile 
+  with all supported options enabled (libgl, libglade, libgnomecanvas, 
+  librsvg, native compilation, thread support).
+  
+  You may use "./configure --help" to check for the different 
+  configuration options.
 
-	Lablgtk2 specific options are:
-		
+  Lablgtk2 specific options are:
+
 	--with-libdir=/path: install libs in /path/lablgtk2 
 			     and /path/stublibs
 	--with-gl --without-gl: override autodetected GtkGLArea support. 
@@ -57,12 +66,12 @@ How to compile:
 		override autodetected libgnomecanvas support
 	--enable-debug: enable debug mode
 
-        "make install DESTDIR=..." prefixes the installation
-	directories with DESTDIR.
+  "make install DESTDIR=..." prefixes the installation
+  directories with DESTDIR.
 
-	A META file for findlib is provided, but it only handles the
-        base library: I have no idea on how to avoid a combinatorial
-        explosion with the various extensions.
+  A META file for findlib is provided, but it only handles the
+  base library: I have no idea on how to avoid a combinatorial
+  explosion with the various extensions.
 
 Contents:
 
@@ -77,6 +86,7 @@ Contents:
 	examples/*.ml	various examples
 
         applications/browser    an ongoing port of ocamlbrowser
+        applications/unison     a patch for unison-2.9.45
 
 How to run the examples:
   In the examples directory just type:
