@@ -36,6 +36,7 @@ let fontMonospaceBold =
 (**********************************************************************)
 
 type stateItem = { ri : reconItem;
+                   mutable bytesTransferred : int;
                    mutable whatHappened : unit confirmation option }
 let theState = ref [||]
 
@@ -413,7 +414,7 @@ let profileSelect cont =
     GBin.scrolled_window ~packing:vb#add ~height:100
       ~hpolicy:`AUTOMATIC ~vpolicy:`AUTOMATIC ()
   in
-  let lst = GList.clist ~packing:(sw#add) () in
+  let lst = GList.clist ~selection_mode:`BROWSE ~packing:(sw#add) () in
   let fillLst default =
     lst#freeze ();
     lst#clear ();
@@ -426,7 +427,9 @@ let profileSelect cont =
          lst#set_row_data !i (profile, roots);
          incr i)
       (List.sort (fun (p, _) (p', _) -> compare p p') !profilesAndRoots);
-    lst#select !selRow 0;
+    let r = lst#rows in
+    let p = if r < 2 then 0. else float !selRow /. float (r - 1) in
+    lst#scroll_vertical `JUMP p;
     lst#thaw ()
   in
   let tbl =
@@ -508,17 +511,21 @@ let profileSelect cont =
     ed#misc#set_sensitive false;
     sd#misc#set_sensitive false));
   ignore (lst#connect#select_row ~callback:(fun i _ _ ->
-    let (profile, roots) = lst#get_row_data i in
-    selection := Some profile;
-    begin match roots with
-      [r1; r2] -> root1#set_text r1; root2#set_text r2;
-                  tbl#misc#set_sensitive true
-    | _        -> root1#set_text ""; root2#set_text "";
-                  tbl#misc#set_sensitive false
-    end;
-    okButton#misc#set_sensitive true;
-    ed#misc#set_sensitive true;
-    sd#misc#set_sensitive true));
+    (* Inserting the first row trigger the signal, even before the row
+       data is set. So, we need to catch the corresponding exception *)
+    try
+      let (profile, roots) = lst#get_row_data i in
+      selection := Some profile;
+      begin match roots with
+        [r1; r2] -> root1#set_text r1; root2#set_text r2;
+                    tbl#misc#set_sensitive true
+      | _        -> root1#set_text ""; root2#set_text "";
+                    tbl#misc#set_sensitive false
+      end;
+      okButton#misc#set_sensitive true;
+      ed#misc#set_sensitive true;
+      sd#misc#set_sensitive true
+    with Gpointer.Null -> ()));
   ignore (lst#event#connect#button_press ~callback:(fun ev ->
     match GdkEvent.get_type ev with
       `TWO_BUTTON_PRESS ->
@@ -527,43 +534,7 @@ let profileSelect cont =
     | _ ->
         false));
   fillLst "default";
-  ignore
-    (lst#event#connect#after#key_press ~callback:
-       begin fun ev ->
-         let key = GdkEvent.Key.keyval ev in
-         if key = _Up || key = _Down || key = _Prior || key = _Next ||
-         key = _Page_Up || key = _Page_Down then begin
-           lst#select (lst#focus_row) 0;
-           true
-         end else
-           false
-       end);
   lst#misc#grab_focus ();
-(*
-  let newCommand() =
-    let profile = entry#text in
-    if profile<>"" then
-      let file = profile^".prf" in
-      let fspath = Os.fileInUnisonDir file in
-      let filename = fspath2string fspath in
-      if Sys.file_exists filename then
-        okBox title:(myName^" error")
-          message:("Profile \""
-                   ^ profile
-                   ^ "\" already exists!\nPlease select another name.")
-      else begin
-        (* Make an empty file *)
-        let ch =
-          open_out_gen
-            [Open_wronly; Open_creat; Open_trunc] 0o600 filename in
-        close_out ch;
-        Globals.prefsFileName := file;
-        successful := true;
-        t#destroy ()
-      end in
-*)
-  
-
   currentWindow := Some (t :> GWindow.window);
   ignore (t#event#connect#delete ~callback:(fun _ -> Main.quit (); true));
   t#show ()
@@ -625,17 +596,17 @@ let createToplevelWindow () =
   let menus = new GMenu.factory ~accel_modi:[] menuBar in
   let accel_group = menus#accel_group in
   toplevelWindow#add_accel_group accel_group;
-  let add_submenu ~label =
-    new GMenu.factory ~accel_group ~accel_modi:[] (menus#add_submenu label)
+  let add_submenu ?(modi=[]) ~label () =
+    new GMenu.factory ~accel_group ~accel_modi:modi (menus#add_submenu label)
   in
   
   (**********************************************************************)
   (* Create the menus                                                   *)
   (**********************************************************************)
-  let fileMenu = add_submenu ~label:"Synchronization"
-  and actionsMenu = add_submenu ~label:"Actions"
-  and ignoreMenu = add_submenu ~label:"Ignore"
-  and helpMenu = add_submenu ~label:"Help" in
+  let fileMenu = add_submenu ~label:"Synchronization" ()
+  and actionsMenu = add_submenu ~label:"Actions" ()
+  and ignoreMenu = add_submenu ~modi:[`SHIFT] ~label:"Ignore" ()
+  and helpMenu = add_submenu ~label:"Help" () in
 
   (**********************************************************************)
   (* Create the main window                                             *)
@@ -646,16 +617,25 @@ let createToplevelWindow () =
         ~height:(Prefs.readPref mainWindowHeight * 12)
         ~hpolicy:`AUTOMATIC ~vpolicy:`AUTOMATIC ()
     in
-    GList.clist ~columns:5 ~titles_show:true ~packing:sw#add ()
+    GList.clist
+      ~columns:5 ~titles_show:true ~selection_mode:`BROWSE ~packing:sw#add ()
   in
   mainWindow#misc#grab_focus ();
   (* FIX: roots2string should return a pair *)
   let s = roots2string () in
   Array.iteri
     (fun i data ->
-       mainWindow#set_column ~title_active:false ~auto_resize:true ~title:data i)
-    [| String.sub s ~pos:0 ~len:12; "Action";
-       String.sub s ~pos:15 ~len:12; "Status"; "Path" |];
+       mainWindow#set_column
+         ~title_active:false ~auto_resize:true ~title:data i)
+    [| " " ^ String.sub s ~pos:0 ~len:12 ^ " "; "  Action  ";
+       " " ^ String.sub s ~pos:15 ~len:12 ^ " "; "  Status  "; " Path" |];
+  let status_width =
+    let font = mainWindow#misc#style#font in
+    4 + max (Gdk.Font.string_width font "working")
+            (Gdk.Font.string_width font "skipped")
+  in
+  mainWindow#set_column ~justification:`CENTER 1;
+  mainWindow#set_column ~auto_resize:false ~width:status_width 3;
 
   (**********************************************************************)
   (* Create the details window                                          *)
@@ -666,7 +646,7 @@ let createToplevelWindow () =
 
   let detailsWindow =
     GEdit.text ~editable:false ~height:(3 * charH) ~width: (96 * charW)
-      ~packing:toplevelVBox#pack () in
+      ~line_wrap:false ~packing:toplevelVBox#pack () in
   detailsWindow#misc#set_can_focus false;
   let style = detailsWindow#misc#style#copy in
   style#set_font (Lazy.force fontMonospaceMedium);
@@ -687,6 +667,18 @@ let createToplevelWindow () =
         grSet grDiff activate2
   in
 
+  let makeRowVisible row =
+    if mainWindow#row_is_visible row <> `FULL then begin
+      let adj = mainWindow#vadjustment in
+      let current = adj#value
+      and upper = adj#upper and lower = adj#lower in
+      let v =
+        float row /. float (mainWindow#rows + 1) *. (upper-.lower) +. lower
+      in
+      adj#set_value (min v (upper -. adj#page_size))
+    end
+  in
+
   let updateDetails () =
     detailsWindow#freeze ();
     detailsWindow#delete_text ~start:0 ~stop:detailsWindow#length;
@@ -694,16 +686,7 @@ let createToplevelWindow () =
       None ->
         ()
     | Some row ->
-        if mainWindow#row_is_visible row <> `FULL then begin
-          let adj = mainWindow#vadjustment in
-          let current = adj#value
-          and upper = adj#upper and lower = adj#lower in
-          let v =
-            (float row /. float (mainWindow#rows + 1) *.
-               (upper-.lower) +. lower)
-          in
-          adj#set_value (min v (upper -. adj#page_size))
-        end;
+        makeRowVisible row;
         let details =
           match !theState.(row).whatHappened with
             None -> details2string !theState.(row).ri "  "
@@ -745,7 +728,11 @@ let createToplevelWindow () =
   (*            FUNCTIONS USED TO PRINT IN THE MAIN WINDOW              *)
   (**********************************************************************)
 
-  let select i = mainWindow#select i 0 in
+  let select i =
+    let r = mainWindow#rows in
+    let p = if r < 2 then 0. else (float i +. 0.5) /. float (r - 1) in
+    mainWindow#scroll_vertical `JUMP (min p 1.)
+  in
 
   ignore (mainWindow#connect#unselect_row ~callback:
       (fun ~row ~column ~event -> current := None; updateDetails ()));
@@ -778,11 +765,11 @@ let createToplevelWindow () =
       | Some conf ->
           match !theState.(i).ri.replicas with
             Different(_,_,{contents=Conflict}) ->
-              "skipped "
+              "skipped"
           | _ ->
               match conf with
-                Succeeded _ -> "ok      "
-              | Failed _    -> "failed  "
+                Succeeded _ -> "done   "
+              | Failed _    -> "failed "
     in
     let s = reconItem2string oldPath !theState.(i).ri status in
     (* FIX: This is ugly *)
@@ -793,12 +780,28 @@ let createToplevelWindow () =
      String.sub s ~pos:33 ~len:(String.length s - 33))
   in
 
-  let resultof i =
-    match !theState.(i).whatHappened, !theState.(i).ri.replicas with
-      None, _                                    -> "        "
-    | Some _, Different(_,_,{contents=Conflict}) -> "skipped "
-    | Some (Succeeded ()), _                     -> "ok      "
-    | Some (Failed _),     _                     -> "failed  "
+  let rightArrow =
+    lazy (GDraw.pixmap_from_xpm_d
+            ~window:toplevelWindow ~data:Pixmaps.copyAB ()) in
+  let rightArrowBlack =
+    lazy (GDraw.pixmap_from_xpm_d
+            ~window:toplevelWindow ~data:Pixmaps.copyABblack ()) in
+  let leftArrow =
+    lazy (GDraw.pixmap_from_xpm_d
+            ~window:toplevelWindow ~data:Pixmaps.copyBA ()) in
+  let leftArrowBlack =
+    lazy (GDraw.pixmap_from_xpm_d
+            ~window:toplevelWindow ~data:Pixmaps.copyBAblack ()) in
+  let ignoreAct =
+    lazy (GDraw.pixmap_from_xpm_d
+            ~window:toplevelWindow ~data:Pixmaps.ignore ()) in
+
+  let displayArrow i action =
+    match action with
+      "<-?->" -> mainWindow#set_cell ~pixmap:(Lazy.force ignoreAct) i 1
+    | "---->" -> mainWindow#set_cell ~pixmap:(Lazy.force rightArrow) i 1
+    | "<----" -> mainWindow#set_cell ~pixmap:(Lazy.force leftArrow) i 1
+    | _       -> assert false
   in
 
   let displayMain() =
@@ -806,7 +809,8 @@ let createToplevelWindow () =
     mainWindow#clear ();
     for i = 0 to Array.length !theState - 1 do
       let (r1, action, r2, status, path) = columnsOf i in
-      ignore (mainWindow#append [ r1; action; r2; status; path ])
+      ignore (mainWindow#append [ r1; ""; r2; status; path ]);
+      displayArrow i action
     done;
     selectSomethingIfPossible ();
     begin match !current with Some idx -> select idx | None -> () end;
@@ -816,13 +820,35 @@ let createToplevelWindow () =
 
   let redisplay i =
     let (r1, action, r2, status, path) = columnsOf i in
+    mainWindow#freeze ();
     mainWindow#set_cell ~text:r1     i 0;
-    mainWindow#set_cell ~text:action i 1;
+    displayArrow i action;
     mainWindow#set_cell ~text:r2     i 2;
     mainWindow#set_cell ~text:status i 3;
     mainWindow#set_cell ~text:path   i 4;
+    if status = " failed " then mainWindow#set_row ~foreground:(`NAME"red") i;
+    mainWindow#thaw ();
+    if !current = Some i then updateDetails ();
     updateButtons ()
   in
+
+  let showProgress i bytes =
+    !theState.(i).bytesTransferred <- !theState.(i).bytesTransferred + bytes;
+    let b = !theState.(i).bytesTransferred in
+    let len = Common.riLength !theState.(i).ri in
+    let newstatus =
+      if b=0 || len = 0 then "working "
+      else if len = 0 then sprintf "%8d" b 
+      else sprintf "  %3d%%  "
+                   (int_of_float ((float b) *. 100.0 /. (float len))) in
+      Threads.do_on_main_thread (fun () ->
+        mainWindow#set_cell ~text:newstatus i 3;
+        gtk_sync ())
+  in
+
+  (* Install showProgress so that we get called back by low-level
+     file transfer stuff *)
+  Util.progressPrinter := Some(showProgress);
 
   (* Apply new ignore patterns to the current state, expecting that the
      number of reconitems will grow smaller. Adjust the display, being
@@ -860,12 +886,17 @@ let createToplevelWindow () =
 
     let (r1,r2) = Globals.getReplicaRoots () in
     let t = Trace.startTimer "Checking for updates" in
-    let updates = Update.findUpdates () in
+    let findUpdates () =
+      let updates = Update.findUpdates () in
+      Trace.showTimer t;
+      updates
+    in
+    let reconcile updates =
+      let t = Trace.startTimer "Reconciling" in
+      Recon.reconcileAll updates
+    in
+    let reconItemList = reconcile (findUpdates ()) in
     Trace.showTimer t;
-    let t = Trace.startTimer "Reconciling" in
-    let reconItemList = Recon.reconcileAll updates in
-    Trace.showTimer t;
-    let reconItemList = filterIgnore reconItemList in
     if reconItemList = [] then
       Trace.status "Everything is up to date"
     else
@@ -874,7 +905,7 @@ let createToplevelWindow () =
     theState :=
       Array.of_list
          (Safelist.map
-            (fun ri -> { ri = ri; whatHappened = None })
+            (fun ri -> { ri = ri; bytesTransferred = 0; whatHappened = None })
             reconItemList);
     current := None;
     displayMain();
@@ -1051,16 +1082,25 @@ let createToplevelWindow () =
       Trace.status "Propagating changes";
       let t = Trace.startTimer "Propagating changes" in
       let (start, wait) = Threads.thread_maker () in
+      let background = let i = 55000 in `RGB (i, i, i) in
+      let finish i =
+        redisplay i;
+        mainWindow#set_row ~background:`WHITE i;
+        gtk_sync ()
+      in
       for i = 0 to Array.length !theState - 1 do
         let theSI = !theState.(i) in
         assert (theSI.whatHappened = None);
         start
           (fun () ->
-            theSI.whatHappened <- Some (Transport.transportItem theSI.ri);
-            i)
-          (fun i -> redisplay i; select i; gtk_sync ())
+             Threads.do_on_main_thread (fun () ->
+               mainWindow#set_row ~background i;
+               makeRowVisible i);
+             theSI.whatHappened <- Some (Transport.transportItem theSI.ri i);
+             i)
+          finish
       done;
-      wait (fun i -> redisplay i; select i; gtk_sync ());
+      wait finish;
       
       Trace.showTimer t;
       Trace.status "Updating synchronizer state";
@@ -1142,17 +1182,21 @@ let createToplevelWindow () =
         getLock (fun () ->
           showDiffs !theState.(i).ri
             (fun title text -> messageBox ~title text)
-            Trace.status)
+            Trace.status i)
     | None ->
         ()
   in
 
   actionBar#insert_space ();
   grAdd grAction
-    (actionBar#insert_button ~text:"<--" ~callback:leftAction ());
+    (actionBar#insert_button
+       ~icon:((GMisc.pixmap (Lazy.force leftArrowBlack) ())#coerce)
+       ~callback:leftAction ());
   actionBar#insert_space ();
   grAdd grAction
-    (actionBar#insert_button ~text:"-->" ~callback:rightAction ());
+    (actionBar#insert_button
+       ~icon:((GMisc.pixmap (Lazy.force rightArrowBlack) ())#coerce)
+       ~callback:leftAction ());
   actionBar#insert_space ();
   grAdd grAction
     (actionBar#insert_button ~text:"Skip" ~callback:questionAction ());
@@ -1163,16 +1207,13 @@ let createToplevelWindow () =
   (* Configure keyboard commands                                        *)
   (**********************************************************************)
   ignore
-    (mainWindow#event#connect#after#key_press ~callback:
+    (mainWindow#event#connect#key_press ~callback:
        begin fun ev ->
          let key = GdkEvent.Key.keyval ev in
-         if key = _Up || key = _Down || key = _Prior || key = _Next ||
-         key = _Page_Up || key = _Page_Down then begin
-           select (mainWindow#focus_row); true
-         end else if key = _Left then begin
-           leftAction (); true
+         if key = _Left then begin
+           leftAction (); GtkSignal.stop_emit (); true
          end else if key = _Right then begin
-           rightAction (); true
+           rightAction (); GtkSignal.stop_emit (); true
          end else
            false
        end);
@@ -1273,7 +1314,7 @@ let start _ =
       (fun () ->
          let w =
            GWindow.window ~kind:`TOPLEVEL ~position:`CENTER
-             ~wm_name:"Contacting server..." ~border_width:16 () in
+             ~wm_name:"Unison" ~border_width:16 () in
          ignore (GMisc.label ~text: "Contacting server..."
                    ~packing:(w#add) ());
          w#show ();
@@ -1289,6 +1330,9 @@ let start _ =
     (**********************************************************************)
     (* Display the ui                                                     *)
     (**********************************************************************)
+    ignore (Timeout.add 500 (fun _ -> true));
+              (* Hack: this allows signals such as SIGINT to be
+                 handled even when Gtk is waiting for events *)
     Main.main ()
   with exn ->
     fatalError (exn2string exn)
