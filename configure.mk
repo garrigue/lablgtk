@@ -12,7 +12,7 @@ INSTALLDIR = $(LIBDIR)/lablgtk
 GETLIBDIR = ocamlc -v | grep "^Standard" | sed 's/^.*: *//'
 LIBDIR = `$(GETLIBDIR)`
 GETBINDIR = $(GETLIBDIR) | sed -e 's|/lib/[^/]*$$|/bin|' -e 's|/lib$$|/bin|'
-GETRANLIB = which ranlib 2>/dev/null | sed -e 's/.*ranlib$$/!/' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'
+GETRANLIB = which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'
 
 ifdef USE_GNOME
 GTKGETCFLAGS = gtk-config --cflags`" -I"`gnome-config --includedir
