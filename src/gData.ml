@@ -30,6 +30,7 @@ class adjustment obj = object
   method step_increment = Adjustment.get_step_increment obj
   method page_increment = Adjustment.get_page_increment obj
   method page_size = Adjustment.get_page_size obj
+  method set_bounds = Adjustment.set_bounds obj
 end
 
 let adjustment ?(value=0.) ?(lower=0.) ?(upper=100.)

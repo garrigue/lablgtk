@@ -1,5 +1,8 @@
 $Id$
 
+2001.12.10
+  * add Adjustment.set_bounds (Alan Schmitt)
+
 2001.11.22
   * add parameters to handle_box and color_selection (Maxence Guesdon)
 
