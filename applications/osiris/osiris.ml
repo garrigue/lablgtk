@@ -6,7 +6,7 @@
 (*****************************************************************************)
 
 type handle = Gtk.widget Gobject.obj
-type menuhandle = Gtk.menu Gobject.obj
+type menuhandle = Gtk.menu_shell Gobject.obj
 type richcolor = Gdk.Color.t
 type hres
 type hresources
@@ -504,7 +504,11 @@ class menuitem parent item =
         None -> ()
       | Some (sub : menu) ->
           break <- false;
-          MenuItem.set_submenu item sub#handle;
+          let menu =
+            try Menu.cast sub#handle
+            with _ -> failwith "Cannot add a menu bar as submenu"
+          in
+          MenuItem.set_submenu item menu;
           submenu <- Some sub
     method get_submenu = submenu
     method on_click : event = fun callback ->
@@ -521,4 +525,17 @@ let new_menuitem (menu : menu) =
 let new_menu () =
   let m = Menu.create () in
   Widget.show m;
-  new menu m
+  new menu (m :> menuhandle)
+
+class icomponent ?parent w =
+  object
+    val w = w
+    method handle = (w :> Gtk.widget Gobject.obj)
+    val parent = (parent : #container option :> container option)
+    method parent = parent
+    method visible b =
+      if b then Widget.show w else Widget.hide w
+    method is_visible = Object.get_flag w `VISIBLE
+    method enable = Widget.set_sensitive w
+    method is_enabled = Object.get_flag w `SENSITIVE
+end
