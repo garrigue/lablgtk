@@ -322,9 +322,9 @@ class ['a] file_chooser_dialog_signals obj ~decode = object
   inherit OgtkFileProps.file_chooser_sigs
 end
 
-class ['a] file_chooser_dialog _obj = object (self)
-  inherit ['a] dialog_ext _obj
-  inherit GFile.chooser_impl _obj
+class ['a] file_chooser_dialog obj = object (self)
+  inherit ['a] dialog_ext obj
+  inherit GFile.chooser_impl
   method connect : 'a file_chooser_dialog_signals = 
     new file_chooser_dialog_signals obj self#decode
 end

@@ -123,9 +123,8 @@ val chooser_widget :
 (**/**)
 
 class virtual chooser_impl :
-  ([> Gtk.file_chooser] as 'a) Gtk.obj ->
   object
-    method private virtual obj : 'a Gtk.obj
+    method private virtual obj : 'b .([> Gtk.file_chooser] as 'a) Gtk.obj
     inherit chooser
   end
 
