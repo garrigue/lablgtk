@@ -25,9 +25,12 @@ val popup_menu : entries: menu_entry list -> x: int -> y: int -> unit
    with a parametrized list of buttons. The function returns the number
    of the clicked button (starting at 1), or 0 if the window is 
    savagedly destroyed.
+   @param title the title of the dialog
+   @param buttons the list of button labels.
+   @param default the index of the default answer
    @param icon a widget (usually a pixmap) which can be displayed on the left
      of the window.
-   @param buttons the list of button labels.
+   @param message the text to display
 *)
 val question_box :
     title:string ->
@@ -36,9 +39,11 @@ val question_box :
 
 (**This function is used to display a message in a dialog box with just an Ok button.
    We use [question_box] with just an ok button.
+   @param title the title of the dialog
    @param icon a widget (usually a pixmap) which can be displayed on the left
      of the window.
-   @param cancel the text for the cancel button (default is "Cancel")
+   @param ok the text for the ok button (default is "Ok")
+   @param message the text to display
 *)
 val message_box :
     title:string -> ?icon:#GObj.widget -> ?ok:string -> string -> unit
@@ -46,9 +51,11 @@ val message_box :
 (** Make the user type in a string. 
    @return [None] if the user clicked on cancel, or [Some s] if the user
    clicked on the ok button.
+   @param title the title of the dialog
    @param ok the text for the confirmation button (default is "Ok")
    @param cancel the text for the cancel button (default is "Cancel")
    @param text the default text displayed in the entry widget
+   @param message the text to display
 *)
 val input_string :
     title:string ->
@@ -57,9 +64,11 @@ val input_string :
 (** Make the user type in a text.
    @return [None] if the user clicked on cancel, or [Some s] if the user
    clicked on the ok button.
+   @param title the title of the dialog
    @param ok the text for the confirmation button (default is "Ok")
    @param cancel the text for the cancel button (default is "Cancel")
    @param text the default text displayed in the entry widget
+   @param message the text to display
 *)
  val input_text :
     title:string ->
@@ -70,31 +79,53 @@ val input_string :
    A VOIR : multi-selection ?
 *)
 val select_file :
-    title:string -> ?dir:string ref -> ?filename:string -> unit -> string
+    title:string ->
+    ?dir:string ref -> ?filename:string -> unit -> string option
 
 (** A tree. *)
-type 'a tree = {
-    t_data : 'a ;
-    t_children : 'a tree list
-  } 
+type 'a tree = [ `L of 'a | `N of 'a * 'a tree list]
 
-(** A function to make the user select a node in a tree.
-   @param ok the text for the confirmation button (default is "Ok")
-   @param cancel the text for the cancel button (default is "Cancel")
+(** A class to make the user select a node in a tree.
    @param tree is the tree to display.
    @param label gives a label from the data of a node.
    @param info gives a string from the data of a node,
           to give more information to the user when he selects
           a node.
+   @param width is the width of the tree widget
+   @param height is the height of the tree widget
+*)
+class ['a] tree_selection :
+  tree:'a tree ->
+  label:('a -> string) ->
+  info:('a -> string) ->
+  ?width:int -> ?height:int ->
+  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit ->
+  object
+    inherit GObj.widget
+    val obj : Gtk.widget Gtk.obj
+    val mutable selection : 'a option
+    method clear_selection : unit -> unit
+    method selection : 'a option
+    method wtext : GEdit.text
+    method wtree : GTree.tree
+  end
+
+(** A function to make the user select a node in a tree.
+   @param tree the to build a tree selection widget
+   @param ok the text for the confirmation button (default is "Ok")
+   @param cancel the text for the cancel button (default is "Cancel")
    @param title is the title of the window.
    @return The data associated to the selected node, or None
    if the user canceled the selection.
 *)
-val tree_selection :
-    title:string ->
-    label:('a -> string) ->
-    info:('a -> string) ->
-    ?ok:string -> ?cancel:string -> 'a tree -> 'a option
+val tree_selection_dialog :
+  tree:'a tree ->
+  label:('a -> string) ->
+  info:('a -> string) ->
+  title:string ->
+  ?ok:string -> ?cancel:string ->
+  ?width:int -> ?height:int ->
+  ?tree_width:int -> ?tree_height:int -> ?show:bool -> unit -> 'a option
 
 (** {2 Miscellaneous functions} *)
 
