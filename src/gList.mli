@@ -22,12 +22,22 @@ val list_item :
   ?height:int ->
   ?packing:(list_item -> unit) -> ?show:bool -> unit -> list_item
 
+class liste_signals : Gtk.liste obj ->
+  object
+    inherit container_signals
+    val obj : Gtk.liste obj
+    method select_child : callback:(list_item -> unit) -> GtkSignal.id
+    method selection_changed : callback:(unit -> unit) -> GtkSignal.id
+    method unselect_child : callback:(list_item -> unit) -> GtkSignal.id
+  end
+
 class liste : Gtk.liste obj ->
   object
     inherit [list_item] item_container
     val obj : Gtk.liste obj
     method child_position : list_item -> int
     method clear_items : start:int -> stop:int -> unit
+    method connect : liste_signals
     method insert : list_item -> pos:int -> unit
     method select_item : pos:int -> unit
     method unselect_item : pos:int -> unit
