@@ -57,6 +57,11 @@ class pixmap ?mask pm = object
     may bitmap ~f:(fun m -> m#string s ~font ~x ~y)
 end
 
+let pixmap ~window ~width ~height =
+  window#misc#realize ();
+  new pixmap (Pixmap.create window#misc#window
+		~width ~height ~depth:window#misc#visual_depth)
+
 let pixmap_from_xpm ~window ~file ?colormap ?transparent () =
   let pm, mask =
     try Pixmap.create_from_xpm window ~file ?colormap
