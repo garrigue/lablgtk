@@ -1,0 +1,72 @@
+type state = "GTK_STATE_"
+    [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
+
+type window_type = "GTK_WINDOW_"
+    [ TOPLEVEL DIALOG POPUP ]
+
+type direction = "GTK_DIR_"
+    [ TAB_FORWARD TAB_BACKWARD UP DOWN LEFT RIGHT ]
+
+type shadow = "GTK_SHADOW_"
+    [ NONE IN OUT ETCHED_IN ETCHED_OUT ]
+
+type arrow = "GTK_ARROW_"
+    [ UP DOWN LEFT RIGHT ]
+
+type pack = "GTK_PACK_"
+    [ START END ]
+
+type policy = "GTK_POLICY_"
+    [ ALWAYS AUTOMATIC ]
+
+type update = "GTK_UPDATE_"
+    [ CONTINUOUS DISCONTINUOUS DELAYED ]
+
+type attach = "GTK_"
+    [ EXPAND SHRINK FILL ]
+
+type signal_run = "GTK_RUN_"
+    [ FIRST LAST BOTH MASK NO_RECURSE ]
+
+type window_position = "GTK_WIN_POS_"
+    [ NONE CENTER MOUSE ]
+
+type submenu_direction = "GTK_DIRECTION_"
+    [ LEFT RIGHT ]
+
+type submenu_placement = "GTK_"
+    [ TOP_BOTTOM LEFT_RIGHT ]
+
+type menu_factory = "GTK_MENU_FACTORY_"
+    [ MENU MENU_BAR OPTION_MENU ]
+
+type metric = "GTK_"
+    [ PIXELS INCHES CENTIMETERS ]
+
+type scroll = "GTK_SCROLL_"
+    [ NONE STEP_FORWARD STEP_BACKWARD PAGE_BACKWARD PAGE_FORWARD JUMP ]
+
+type through = "GTK_TROUGH_"
+    [ NONE START END JUMP ]
+
+type position = "GTK_POS_"
+    [ LEFT RIGHT TOP BOTTOM ]
+
+type preview = "GTK_PREVIEW_"
+    [ COLOR GRAYSCALE ]
+
+type justification = "GTK_JUSTIFY_"
+    [ LEFT RIGHT CENTER FILL ]
+
+type selection = "GTK_SELECTION_"
+    [ SINGLE BROWSE MULTIPLE EXTENDED ]
+
+
+type orientation = "GTK_ORIENTATION_"
+    [ HORIZONTAL VERTICAL ]
+
+type toolbar_style = "GTK_TOOLBAR_"
+    [ ICONS TEXT BOTH ]
+
+type visibility = "GTK_VISIBILITY_"
+    [ NONE PARTIAL FULL ]

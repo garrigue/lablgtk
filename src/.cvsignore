@@ -1,0 +1,7 @@
+.depend
+config.make
+var2conv
+var2def
+*_tags.c
+*_tags.h
+
