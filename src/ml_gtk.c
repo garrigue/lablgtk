@@ -305,7 +305,7 @@ ML_0 (gtk_event_box_new, Val_GtkWidget_sink)
 /* gtkframe.h */
 
 #define GtkFrame_val(val) check_cast(GTK_FRAME,val)
-ML_1 (gtk_frame_new, Option_val(arg1,String_val,NULL) Ignore, Val_GtkWidget_sink)
+ML_1 (gtk_frame_new, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_frame_set_label, GtkFrame_val, String_val, Unit)
 ML_3 (gtk_frame_set_label_align, GtkFrame_val, Float_val, Float_val, Unit)
 ML_2 (gtk_frame_set_shadow_type, GtkFrame_val, Shadow_val, Unit)
@@ -315,7 +315,7 @@ Make_Extractor (gtk_frame_get, GtkFrame_val, label_yalign, copy_double)
 /* gtkaspectframe.h */
 
 #define GtkAspectFrame_val(val) check_cast(GTK_ASPECT_FRAME,val)
-ML_5 (gtk_aspect_frame_new, Option_val(arg1,String_val,NULL) Ignore,
+ML_5 (gtk_aspect_frame_new, String_val,
       Float_val, Float_val, Float_val, Bool_val, Val_GtkWidget_sink)
 ML_5 (gtk_aspect_frame_set, GtkAspectFrame_val, Float_val, Float_val,
       Float_val, Bool_val, Unit)
@@ -389,8 +389,8 @@ ML_1 (gtk_tree_item_collapse, GtkTreeItem_val, Unit)
 /* gtkviewport.h */
 
 #define GtkViewport_val(val) check_cast(GTK_VIEWPORT,val)
-ML_2 (gtk_viewport_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
-      Option_val(arg2,GtkAdjustment_val,NULL) Ignore, Val_GtkWidget_sink)
+ML_2 (gtk_viewport_new, GtkAdjustment_val, GtkAdjustment_val,
+      Val_GtkWidget_sink)
 ML_1 (gtk_viewport_get_hadjustment, GtkViewport_val, Val_GtkWidget_sink)
 ML_1 (gtk_viewport_get_vadjustment, GtkViewport_val, Val_GtkWidget)
 ML_2 (gtk_viewport_set_hadjustment, GtkViewport_val, GtkAdjustment_val, Unit)
@@ -774,9 +774,7 @@ ML_1 (gtk_menu_shell_deactivate, GtkMenuShell_val, Unit)
 
 #define GtkMenu_val(val) check_cast(GTK_MENU,val)
 ML_0 (gtk_menu_new, Val_GtkWidget_sink)
-ML_5 (gtk_menu_popup, GtkMenu_val,
-      Option_val(arg2, GtkWidget_val, NULL) Ignore,
-      Option_val(arg3, GtkWidget_val, NULL) Ignore,
+ML_5 (gtk_menu_popup, GtkMenu_val, GtkWidget_val, GtkWidget_val,
       Insert(NULL) Insert(NULL) Int_val, Int_val, Unit)
 ML_1 (gtk_menu_popdown, GtkMenu_val, Unit)
 ML_1 (gtk_menu_get_active, GtkMenu_val, Val_GtkWidget)
@@ -827,8 +825,8 @@ ML_2 (gtk_paned_gutter_size, GtkPaned_val, Int_val, Unit)
 /* gtkscrolledwindow.h */
 
 #define GtkScrolledWindow_val(val) check_cast(GTK_SCROLLED_WINDOW,val)
-ML_2 (gtk_scrolled_window_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
-      Option_val(arg2,GtkAdjustment_val,NULL) Ignore, Val_GtkWidget_sink)
+ML_2 (gtk_scrolled_window_new, GtkAdjustment_val ,GtkAdjustment_val,
+      Val_GtkWidget_sink)
 ML_1 (gtk_scrolled_window_get_hadjustment, GtkScrolledWindow_val,
       Val_GtkWidget)
 ML_1 (gtk_scrolled_window_get_vadjustment, GtkScrolledWindow_val,
@@ -858,18 +856,13 @@ ML_2 (gtk_table_set_homogeneous, GtkTable_val, Bool_val, Unit)
 
 #define GtkToolbar_val(val) check_cast(GTK_TOOLBAR,val)
 ML_2 (gtk_toolbar_new, Orientation_val, Toolbar_style_val, Val_GtkWidget_sink)
-ML_2 (gtk_toolbar_insert_space, GtkToolbar_val,
-      Option_val (arg2, Int_val, -1) Ignore, Unit)
-ML_7 (gtk_toolbar_insert_element, GtkToolbar_val,
-      Option_val (arg1, Toolbar_child_val, GTK_TOOLBAR_CHILD_BUTTON) Ignore,
-      Insert(NULL) String_option_val, String_option_val, String_option_val,
-      Option_val (arg6, GtkWidget_val, NULL) Ignore,
-      Insert(NULL) Insert(NULL) Option_val(arg7, Int_val, -1) Ignore,
-      Val_GtkWidget)
+ML_2 (gtk_toolbar_insert_space, GtkToolbar_val, Int_val, Unit)
+ML_7 (gtk_toolbar_insert_element, GtkToolbar_val, Toolbar_child_val,
+      Insert(NULL) String_val, String_val, String_val, GtkWidget_val,
+      Insert(NULL) Insert(NULL) Int_val, Val_GtkWidget)
 ML_bc7 (ml_gtk_toolbar_insert_element)
 ML_5 (gtk_toolbar_insert_widget, GtkToolbar_val, GtkWidget_val,
-      String_option_val, String_option_val,
-      Option_val (arg5, Int_val, -1) Ignore, Unit)
+      String_val, String_val, Int_val, Unit)
 
 /* gtktree.h */
 
@@ -931,7 +924,7 @@ Make_Extractor (GtkEntry, GtkEntry_val, text_length, Val_int)
 /* gtkspinbutton.h */
 
 #define GtkSpinButton_val(val) check_cast(GTK_SPIN_BUTTON,val)
-ML_3 (gtk_spin_button_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
+ML_3 (gtk_spin_button_new, GtkAdjustment_val,
       Float_val, Int_val, Val_GtkWidget_sink)
 ML_2 (gtk_spin_button_set_adjustment, GtkSpinButton_val, GtkAdjustment_val,
       Unit)
@@ -948,8 +941,7 @@ ML_2 (gtk_spin_button_set_wrap, GtkSpinButton_val, Bool_val, Unit)
 /* gtktext.h */
 
 #define GtkText_val(val) check_cast(GTK_TEXT,val)
-ML_2 (gtk_text_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
-      Option_val(arg2,GtkAdjustment_val,NULL) Ignore, Val_GtkWidget_sink)
+ML_2 (gtk_text_new, GtkAdjustment_val, GtkAdjustment_val, Val_GtkWidget_sink)
 ML_2 (gtk_text_set_editable, GtkText_val, Bool_val, Unit)
 ML_2 (gtk_text_set_word_wrap, GtkText_val, Bool_val, Unit)
 ML_3 (gtk_text_set_adjustments, GtkText_val, GtkAdjustment_val,

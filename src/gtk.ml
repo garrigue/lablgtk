@@ -9,11 +9,7 @@ exception Warning of string
 type 'a obj
 type clampf = float
 
-type 'a optobj
-let optobj : 'a obj option -> 'a optobj =
-  function
-      None -> Obj.magic (0,null)
-    | Some obj -> Obj.magic obj
+type 'a optobj = 'a obj optboxed
 
 module Tags = struct
   type state = [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
@@ -576,7 +572,8 @@ module Frame = struct
     if Object.is_a w "GtkFrame" then Obj.magic w
     else invalid_arg "Gtk.Frame.cast"
   external coerce : [> frame] obj -> t obj = "%identity"
-  external create : ?label:string -> ?unit -> t obj = "ml_gtk_frame_new"
+  external create : optstring -> t obj = "ml_gtk_frame_new"
+  let create ?:label ?(_ : unit option) = create (optpointer label)
   external set_label : [> frame] obj -> string -> unit
       = "ml_gtk_frame_set_label"
   external set_label_align : [> frame] obj -> x:clampf -> y:clampf -> unit
@@ -604,12 +601,12 @@ module AspectFrame = struct
     if Object.is_a w "GtkAspectFrame" then Obj.magic w
     else invalid_arg "Gtk.AspectFrame.cast"
   external create :
-      ?label:string ->
+      label:optstring ->
       xalign:clampf -> yalign:clampf -> ratio:float -> obey_child:bool -> t obj
       = "ml_gtk_aspect_frame_new"
   let create ?:label ?:xalign [< 0.5 >] ?:yalign [< 0.5 >]
       ?:ratio [< 1.0 >] ?:obey_child [< true >] ?(_ : unit option) =
-    create ?:label :xalign :yalign :ratio :obey_child
+    create label:(optpointer label) :xalign :yalign :ratio :obey_child
   external set :
       [> aspect] obj ->
       xalign:clampf -> yalign:clampf -> ratio:float -> obey_child:bool -> unit
@@ -752,11 +749,11 @@ module RadioMenuItem = struct
     if Object.is_a w "GtkRadioMenuItem" then Obj.magic w
     else invalid_arg "Gtk.RadioMenuItem.cast"
   type group
-  let empty : group = Obj.obj null
-  external create : group -> t obj = "ml_gtk_radio_menu_item_new"
-  external create_with_label : group -> string -> t obj
+  external create : group optpointer -> t obj = "ml_gtk_radio_menu_item_new"
+  external create_with_label : group optpointer -> string -> t obj
       = "ml_gtk_radio_menu_item_new_with_label"
-  let create ?:group [< empty >] ?:label ?(_ : unit option) =
+  let create ?:group ?:label ?(_ : unit option) =
+    let group = optpointer group in
     match label with None -> create group
     | Some label -> create_with_label group label
   external group : [> radiomenuitem] obj -> group
@@ -806,17 +803,17 @@ module Viewport = struct
   let cast w : t obj =
     if Object.is_a w "GtkViewport" then Obj.magic w
     else invalid_arg "Gtk.Viewport.cast"
-  external create :
-      ?hadjustment:[> adjustment] obj ->
-      ?vadjustment:[> adjustment] obj -> ?unit -> t obj
+  external create : [> adjustment] optobj -> [> adjustment] optobj -> t obj
       = "ml_gtk_viewport_new"
-  external get_hadjustment : [> viewport] obj -> Adjustment.t
+  let create ?:hadjustment ?:vadjustment ?(_ : unit option) =
+    create (optboxed hadjustment) (optboxed vadjustment)
+  external get_hadjustment : [> viewport] obj -> Adjustment.t obj
       = "ml_gtk_viewport_get_hadjustment"
-  external get_vadjustment : [> viewport] obj -> Adjustment.t
+  external get_vadjustment : [> viewport] obj -> Adjustment.t obj
       = "ml_gtk_viewport_get_vadjustment"
-  external set_hadjustment : [> viewport] obj -> Adjustment.t -> unit
+  external set_hadjustment : [> viewport] obj -> [> adjustment] obj -> unit
       = "ml_gtk_viewport_set_hadjustment"
-  external set_vadjustment : [> viewport] obj -> Adjustment.t -> unit
+  external set_vadjustment : [> viewport] obj -> [> adjustment] obj -> unit
       = "ml_gtk_viewport_set_vadjustment"
   external set_shadow_type : [> viewport] obj -> shadow -> unit
       = "ml_gtk_viewport_set_shadow_type"
@@ -1114,9 +1111,8 @@ module RadioButton = struct
     if Object.is_a w "GtkRadioButton" then Obj.magic w
     else invalid_arg "Gtk.RadioButton.cast"
   type group
-  let empty : group = Obj.obj null
-  external create : group -> t obj = "ml_gtk_radio_button_new"
-  external create_with_label : group -> string -> t obj
+  external create : group optpointer -> t obj = "ml_gtk_radio_button_new"
+  external create_with_label : group optpointer -> string -> t obj
       = "ml_gtk_radio_button_new_with_label"
   external group : [> radio] obj -> group = "ml_gtk_radio_button_group"
   external set_group : [> radio] obj -> group -> unit
@@ -1125,7 +1121,8 @@ module RadioButton = struct
     may group fun:(set_group w);
     cont w
   let set = setter ?cont:ToggleButton.set
-  let create ?:group [< empty >] ?:label ?(_ : unit option) =
+  let create ?:group ?:label ?(_ : unit option) =
+    let group = optpointer group in
     match label with None -> create group
     | Some label -> create_with_label group label
 end
@@ -1348,9 +1345,11 @@ module Menu = struct
     else invalid_arg "Gtk.Menu.cast"
   external create : unit -> t obj = "ml_gtk_menu_new"
   external popup :
-      [> menu] obj -> ?parent_menu:[> menushell] obj ->
-      ?parent_item:[> menuitem] obj -> button:int -> time:int -> unit
+      [> menu] obj -> [> menushell] optobj ->
+      [> menuitem] optobj -> button:int -> time:int -> unit
       = "ml_gtk_menu_popup"
+  let popup w ?:parent_menu ?:parent_item =
+    popup w (optboxed parent_menu) (optboxed parent_item)
   external popdown : [> menu] obj -> unit = "ml_gtk_menu_popdown"
   external get_active : [> menu] obj -> Widget.t obj= "ml_gtk_menu_get_active"
   external set_active : [> menu] obj -> int -> unit = "ml_gtk_menu_set_active"
@@ -1480,13 +1479,13 @@ module ScrolledWindow = struct
   let cast w : t obj =
     if Object.is_a w "GtkScrolledWindow" then Obj.magic w
     else invalid_arg "Gtk.ScrolledWindow.cast"
-  external create :
-      ?hadjustment:[> adjustment] obj ->
-      ?vadjustment:[> adjustment] obj -> ?unit -> t obj
+  external create : [> adjustment] optobj -> [> adjustment] optobj -> t obj
       = "ml_gtk_scrolled_window_new"
-  external get_hadjustment : [> scrolled] obj -> Adjustment.t
+  let create ?:hadjustment ?:vadjustment ?(_ : unit option) =
+    create (optboxed hadjustment) (optboxed vadjustment)
+  external get_hadjustment : [> scrolled] obj -> Adjustment.t obj
       = "ml_gtk_scrolled_window_get_hadjustment"
-  external get_vadjustment : [> scrolled] obj -> Adjustment.t
+  external get_vadjustment : [> scrolled] obj -> Adjustment.t obj
       = "ml_gtk_scrolled_window_get_vadjustment"
   external set_policy :
       [> scrolled] obj -> horizontal:policy -> vertical:policy -> unit
@@ -1557,17 +1556,26 @@ module Toolbar = struct
     else invalid_arg "Gtk.Toolbar.cast"
   external create : orientation -> style:toolbar_style -> t obj
       = "ml_gtk_toolbar_new"
-  external insert_space : [> toolbar] obj -> ?pos:int -> unit
+  external insert_space : [> toolbar] obj -> pos:int -> unit
       = "ml_gtk_toolbar_insert_space"
+  let insert_space w ?:pos [< -1 >] = insert_space w :pos
   external insert_button :
-      [> toolbar] obj -> ?type:[BUTTON TOGGLEBUTTON RADIOBUTTON] ->
-      ?text:string -> ?tooltip:string -> ?tooltip_private:string ->
-      ?icon:[> widget] obj -> ?pos:int -> Button.t obj
-      = "ml_gtk_toolbar_insert_space"
+      [> toolbar] obj -> type:[BUTTON TOGGLEBUTTON RADIOBUTTON] ->
+      text:optstring -> tooltip:optstring -> tooltip_private:optstring ->
+      icon:[> widget] optobj -> pos:int -> Button.t obj
+      = "ml_gtk_toolbar_insert_element_bc" "ml_gtk_toolbar_insert_element"
+  let insert_button w ?type:t [< `BUTTON >] ?:text ?:tooltip ?:tooltip_private
+      ?:icon ?:pos [< -1 >] =
+    insert_button w type:t text:(optpointer text) tooltip:(optpointer tooltip)
+      tooltip_private:(optpointer tooltip_private) icon:(optboxed icon)
+      :pos
   external insert_widget :
       [> toolbar] obj -> [> widget] obj ->
-      ?tooltip:string -> ?tooltip_private:string -> ?pos:int -> unit
+      tooltip:optstring -> tooltip_private:optstring -> pos:int -> unit
       = "ml_gtk_toolbar_insert_widget"
+  let insert_widget w w' ?:tooltip ?:tooltip_private ?:pos [< -1 >] =
+    insert_widget w w' tooltip:(optpointer tooltip)
+      tooltip_private:(optpointer tooltip_private) :pos
   module Signals = struct
     open Signal
     external val_orientation : int -> orientation = "ml_Val_orientation"
@@ -1733,11 +1741,12 @@ module SpinButton = struct
     if Object.is_a w "GtkSpinButton" then Obj.magic w
     else invalid_arg "Gtk.SpinButton.cast"
   external create :
-      ?adjustment:[> adjustment] obj -> rate:float -> digits:int -> t obj
+      [> adjustment] optobj -> rate:float -> digits:int -> t obj
       = "ml_gtk_spin_button_new"
+  let create ?:adjustment = create (optboxed adjustment)
   external set_adjustment : [> spinbutton] obj -> [> adjustment] obj -> unit
       = "ml_gtk_spin_button_set_adjustment"
-  external get_adjustment : [> spinbutton] obj -> Adjustment.t
+  external get_adjustment : [> spinbutton] obj -> Adjustment.t obj
       = "ml_gtk_spin_button_get_adjustment"
   external set_digits : [> spinbutton] obj -> int -> unit
       = "ml_gtk_spin_button_set_digits"
@@ -1773,17 +1782,19 @@ module Text = struct
   let cast w : t obj =
     if Object.is_a w "GtkText" then Obj.magic w
     else invalid_arg "Gtk.Text.cast"
-  external create :
-      ?hadjustment:[> adjustment] obj ->
-      ?vadjustment:[> adjustment] obj -> ?unit -> t obj
+  external create : [> adjustment] optobj -> [> adjustment] optobj -> t obj
       = "ml_gtk_text_new"
+  let create ?:hadjustment ?:vadjustment ?(_ : unit option) =
+    create (optboxed hadjustment) (optboxed vadjustment)
   external set_editable : [> text] obj -> bool -> unit
       = "ml_gtk_text_set_editable"
   external set_word_wrap : [> text] obj -> bool -> unit
       = "ml_gtk_text_set_word_wrap"
   external set_adjustments :
-      [> text] obj -> [> adjustment] obj -> [> adjustment] obj -> unit
+      [> text] obj -> [> adjustment] optobj -> [> adjustment] optobj -> unit
       = "ml_gtk_text_set_adjustments"
+  let set_adjustment w ?:horizontal ?:vertical =
+    set_adjustments w (optboxed horizontal) (optboxed vertical)
   external set_point : [> text] obj -> int -> unit
       = "ml_gtk_text_set_point"
   external get_point : [> text] obj -> int = "ml_gtk_text_get_point"
@@ -2024,7 +2035,7 @@ module Range = struct
     if Object.is_a w "GtkRange" then Obj.magic w
     else invalid_arg "Gtk.Range.cast"
   external coerce : [> range] obj -> t obj = "%identity"
-  external get_adjustment : [> range] obj -> Adjustment.t
+  external get_adjustment : [> range] obj -> Adjustment.t obj
       = "ml_gtk_range_get_adjustment"
   external set_adjustment : [> range] obj -> [> adjustment] obj -> unit
       = "ml_gtk_range_set_adjustment"
@@ -2046,7 +2057,7 @@ module Scale = struct
   external vscale_new : [> adjustment] optobj -> t obj = "ml_gtk_vscale_new"
   let create (dir : orientation) ?:adjustment =
     let create = if dir = `HORIZONTAL then hscale_new else vscale_new  in
-    create (optobj adjustment)
+    create (optboxed adjustment)
   external set_digits : [> scale] obj -> int -> unit
       = "ml_gtk_scale_set_digits"
   external set_draw_value : [> scale] obj -> bool -> unit
@@ -2076,7 +2087,7 @@ module Scrollbar = struct
       = "ml_gtk_vscrollbar_new"
   let create (dir : orientation) ?:adjustment =
     let create = if dir = `HORIZONTAL then hscrollbar_new else vscrollbar_new
-    in create (optobj adjustment)
+    in create (optboxed adjustment)
 end
 
 module Ruler = struct

@@ -61,6 +61,10 @@ let table = factory#table
 let file_menu = factory#add_submenu label:"File"
 let edit_menu = factory#add_submenu label:"Edit"
 
+let hbox = new_box `HORIZONTAL packing:vbox#add
+let scrollbar = new_scrollbar `VERTICAL
+    packing:(hbox#pack from:`END expand:false)
+
 let _ =
   window#connect#destroy callback:Main.quit;
   let factory = new GtkExt.menu_factory file_menu :table in
@@ -78,12 +82,13 @@ let _ =
   factory#add_check_item label:"Read only" state:false
     callback:(fun b -> editor#text#set_editable (not b));
   window#add_accelerator_table table;
-  vbox#add editor#text;
+  hbox#add editor#text;
   editor#text#connect#event#button_press
     callback:(fun ev ->
       let button = Gdk.Event.Button.button ev in
       if button = 3 then begin
 	file_menu#popup :button time:(Gdk.Event.Button.time ev); true
       end else false);
+  editor#text#set_adjustment vertical:scrollbar#adjustment;
   window#show_all ();
   Main.main ()

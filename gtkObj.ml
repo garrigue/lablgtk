@@ -19,11 +19,37 @@ class gtkobj_full obj = object
   method connect = new gtkobj_signals obj
 end
 
+class data_signals obj = object
+  inherit gtkobj_signals obj
+  method disconnect = Signal.connect sig:Data.Signals.disconnect obj
+end
+
+class adjustment_signals obj = object
+  inherit data_signals obj
+  method changed = Signal.connect sig:Adjustment.Signals.changed obj
+  method value_changed =
+    Signal.connect sig:Adjustment.Signals.value_changed obj
+end
+
+class adjustment obj = object
+  inherit gtkobj obj
+  method as_adjustment : Adjustment.t obj = obj
+  method connect = new adjustment_signals obj
+  method set_value = Adjustment.set_value obj
+  method clamp_page = Adjustment.clamp_page obj
+  method value = Adjustment.get_value obj
+end
+
+let new_adjustment :value :lower :upper :step_incr :page_incr :page_size =
+  new adjustment
+    (Adjustment.create :value :lower :upper :step_incr :page_incr :page_size)
+
 class type has_frame = object method frame : Widget.t obj end
 class type is_widget = object method as_widget : Widget.t obj end
 
 class tooltips obj = object
-  inherit gtkobj_full obj
+  inherit gtkobj obj
+  method connect = new data_signals obj
   method enable () = Tooltips.enable obj
   method disable () = Tooltips.disable obj
   method set_tip : 'b . (#is_widget as 'b) -> _ =
@@ -483,8 +509,8 @@ let new_menu_bar ?(_ : unit option) =
 
 class scrolled_window obj = object
   inherit container_full obj
-  method hadjustment = ScrolledWindow.get_hadjustment obj
-  method vadjustment = ScrolledWindow.get_vadjustment obj
+  method hadjustment = new adjustment (ScrolledWindow.get_hadjustment obj)
+  method vadjustment = new adjustment (ScrolledWindow.get_vadjustment obj)
   method set_policy ?:horizontal ?:vertical =
     ScrolledWindow.setter obj cont:null_cont
       ?hscrollbar_policy:horizontal ?vscrollbar_policy:vertical
@@ -561,6 +587,12 @@ class text obj = object
   method set_editable = Text.set_editable obj
   method set_point = Text.set_point obj
   method set_word_wrap = Text.set_word_wrap obj
+  method set_adjustment ?:horizontal ?:vertical =
+    Text.set_adjustment obj
+      ?horizontal:(may_map horizontal
+		     fun:(fun (x : adjustment) -> x#as_adjustment))
+      ?vertical:(may_map vertical
+		     fun:(fun (x : adjustment) -> x#as_adjustment))
   method point = Text.get_point obj
   method length = Text.get_length obj
   method freeze () = Text.freeze obj
@@ -607,6 +639,21 @@ end
 
 let new_progress_bar ?(_ : unit option) =
   pack_return ?(new progress_bar) ?(ProgressBar.create ())
+
+class range obj = object
+  inherit widget_full obj
+  method adjustment = new adjustment (Range.get_adjustment obj)
+  method set_adjustment (adj : adjustment) =
+    Range.set_adjustment obj adj#as_adjustment
+  method set_update_policy = Range.set_update_policy obj
+end
+
+class scrollbar = range
+
+let new_scrollbar dir ?:adjustment ?:update_policy =
+  let w = Scrollbar.create dir ?:adjustment in
+  may update_policy fun:(Range.set_update_policy w);
+  pack_return ?(new scrollbar) ?w
 
 class separator = widget_full
 
