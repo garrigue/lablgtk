@@ -503,7 +503,9 @@ class cell_renderer_toggle : Gtk.cell_renderer_toggle obj ->
 
 (** @gtkdoc gtk GtkCellRendererPixbuf *)
 val cell_renderer_pixbuf : cell_properties_pixbuf list -> cell_renderer_pixbuf
+
 (** @gtkdoc gtk GtkCellRendererText *)
 val cell_renderer_text : cell_properties_text list -> cell_renderer_text
+
 (** @gtkdoc gtk GtkCellRendererToggle *)
 val cell_renderer_toggle : cell_properties_toggle list -> cell_renderer_toggle

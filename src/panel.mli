@@ -1,3 +1,6 @@
+(** Writing panel applets
+   @gtkdoc panel-applet panelapplet *)
+
 type panel_applet = [ `panelapplet | Gtk.event_box]
 type flags = [ `EXPAND_MAJOR | `EXPAND_MINOR | `HAS_HANDLE]
 type background_type = [
