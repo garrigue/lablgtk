@@ -378,13 +378,13 @@ object(self)
   method private get_packing packing =
     let aux name =
       let prop  = List.assoc name proplist in
-      if prop#modified then " " ^ name ^ ":" ^ prop#code else ""
+      if prop#modified then " ~" ^ name ^ ":" ^ prop#code else ""
     in
     let efp = try
       (aux "expand") ^ (aux "fill") ^ (aux "padding")
     with Not_found -> "" in
-    if efp = "" then ("packing:" ^ packing)
-    else ("packing:(" ^ packing ^ efp ^ ")")
+    if efp = "" then ("~packing:" ^ packing)
+    else ("~packing:(" ^ packing ^ efp ^ ")")
 
 (* this one emits the declaration code of the widget *)
   method emit_init_code formatter ~packing =
@@ -392,7 +392,7 @@ object(self)
       name self#class_name;
     List.iter self#get_mandatory_props ~f:
       begin fun name ->
-	Format.fprintf formatter "@ %s:%s" name
+	Format.fprintf formatter "@ ~%s:%s" name
 	  (List.assoc name proplist)#code
       end;
     let packing = self#get_packing packing in
@@ -408,7 +408,7 @@ object(self)
       begin  fun (name, prop) ->
 	if List.mem name mandatory then () else
 	if prop#modified then
-	  Format.fprintf formatter "@ %s:%s" prop#name prop#code
+	  Format.fprintf formatter "@ ~%s:%s" prop#name prop#code
       end
 
 (* this one emits the method returning this widget *)
