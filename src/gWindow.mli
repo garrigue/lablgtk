@@ -245,6 +245,13 @@ class ['a] file_chooser_dialog :
    inherit GFile.chooser
    val obj : 'b Gtk.obj
    method connect : 'a file_chooser_dialog_signals
+
+   (** The following methods should be used to add the [OPEN] or
+      [SAVE] button of a FileChooserDialog *)
+   method add_select_button : string -> 'a -> unit
+
+   (** ditto with a stock id *)
+   method add_select_button_stock : GtkStock.id -> 'a -> unit
  end
 
 (** @since GTK 2.4
