@@ -346,8 +346,14 @@ ML_2 (gtk_tree_view_collapse_row, GtkTreeView_val, GtkTreePath_val, Unit)
 ML_2 (gtk_tree_view_row_expanded, GtkTreeView_val, GtkTreePath_val, Val_bool)
 ML_4 (gtk_tree_view_set_cursor, GtkTreeView_val, GtkTreePath_val,
       GtkTreeViewColumn_val, Bool_val, Unit)
+
+#ifdef HASGTK22
 ML_5 (gtk_tree_view_set_cursor_on_cell, GtkTreeView_val, GtkTreePath_val,
       GtkTreeViewColumn_val, GtkCellRenderer_val, Bool_val, Unit)
+#else
+Unsupported(gtk_tree_view_set_cursor_on_cell)
+#endif
+
 CAMLprim value ml_gtk_tree_view_get_cursor (value arg)
 {
   CAMLparam0();
