@@ -108,7 +108,12 @@ if test "$CAMLOPT" != no ; then
     fi
 fi
 
-# ocamldep, ocamllex and ocamlyacc should also be present in the path
+# ocamlrun, ocamldep, ocamllex and ocamlyacc should also be present in the path
+AC_CHECK_PROG(OCAMLRUN,ocamlrun,ocamlrun,no)
+if test "$OCAMLRUN" = no ; then
+	AC_MSG_ERROR(Cannot find ocamlrun.)
+fi
+
 AC_CHECK_PROG(OCAMLDEP,ocamldep,ocamldep,no)
 if test "$OCAMLDEP" = no ; then
 	AC_MSG_ERROR(Cannot find ocamldep.)
@@ -362,6 +367,7 @@ AC_SUBST(LIBDIR)
 AC_SUBST(OCAMLBEST)
 AC_SUBST(OCAMLWIN32)
 AC_SUBST(OCAMLDEP)
+AC_SUBST(OCAMLRUN)
 AC_SUBST(OCAMLLEX)
 AC_SUBST(OCAMLYACC)
 AC_SUBST(THREADS_LIB)
