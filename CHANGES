@@ -1,5 +1,7 @@
 $Id$
 
+In lablgtk-2.2.0:
+
 2003.10.10 [Jacques]
   * merge Makefile.nt into Makefile, check for msvc
 
