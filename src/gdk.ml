@@ -154,8 +154,8 @@ module Color = struct
 	color_alloc ~colormap (color_create ~red ~green ~blue)
 
   external red : t -> int = "ml_GdkColor_red"
-  external blue : t -> int = "ml_GdkColor_green"
-  external green : t -> int = "ml_GdkColor_blue"
+  external blue : t -> int = "ml_GdkColor_blue"
+  external green : t -> int = "ml_GdkColor_green"
   external pixel : t -> int = "ml_GdkColor_pixel"
 end
 

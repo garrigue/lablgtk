@@ -648,39 +648,28 @@ ML_2 (gtk_color_selection_set_update_policy, GtkColorSelection_val,
       Update_type_val, Unit)
 ML_2 (gtk_color_selection_set_opacity, GtkColorSelection_val,
       Bool_val, Unit)
-enum
-{
-  COLOR_HUE,
-  COLOR_SATURATION,
-  COLOR_VALUE,
-  COLOR_RED,
-  COLOR_GREEN,
-  COLOR_BLUE,
-  COLOR_OPACITY,
-  COLOR_NUM_CHANNELS
-};
 value ml_gtk_color_selection_set_color (value w, value red, value green,
 					value blue, value opacity)
 {
-    double color[COLOR_NUM_CHANNELS];
-    color[COLOR_RED] = Double_val(red);
-    color[COLOR_GREEN] = Double_val(green);
-    color[COLOR_BLUE] = Double_val(blue);
-    color[COLOR_OPACITY] = Option_val(opacity,Double_val,0.0);
+    double color[4];
+    color[0] = Double_val(red);
+    color[1] = Double_val(green);
+    color[2] = Double_val(blue);
+    color[3] = Option_val(opacity,Double_val,0.0);
     gtk_color_selection_set_color (GtkColorSelection_val(w), color);
     return Val_unit;
 }
 value ml_gtk_color_selection_get_color (value w)
 {
     value ret;
-    double color[COLOR_NUM_CHANNELS];
-    color[COLOR_OPACITY] = 0.0;
+    double color[4];
+    color[3] = 0.0;
     gtk_color_selection_get_color (GtkColorSelection_val(w), color);
     ret = alloc (4*Double_wosize, Double_array_tag);
-    Store_double_field (ret, 0, color[COLOR_RED]);
-    Store_double_field (ret, 1, color[COLOR_GREEN]);
-    Store_double_field (ret, 2, color[COLOR_BLUE]);
-    Store_double_field (ret, 3, color[COLOR_OPACITY]);
+    Store_double_field (ret, 0, color[0]);
+    Store_double_field (ret, 1, color[1]);
+    Store_double_field (ret, 2, color[2]);
+    Store_double_field (ret, 3, color[3]);
     return ret;
 }
 ML_1 (gtk_color_selection_dialog_new, String_val, Val_GtkWidget_window)

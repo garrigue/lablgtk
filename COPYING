@@ -1,26 +1,23 @@
-This is a very early release of lablgtk, and we have not yet fixed the
-definitive copying policy (probably a combination of BSD and/or
-GPL/LGPL).  To preserve our ability to choose later, the following two
-conditions apply to this code.
+This library is made available under the LGPL.
+You should have got a copy of the LGPL with Objective Caml.
+The LGPL applies to all the files in this directory, but not in
+subdirectories.
+
+For the examples subdirectory, there is no specific licensing policy,
+but you may freely take inspiration from the code, and copy parts of
+it in your application.
+
+For the applications subdirectory, stricter rules apply:
 
 * You are free to do anything you want with this code as long as it is
   for personal use.
 
 * Redistribution can only be "as is".  Binary distribution and bug
-  fixes are allowed (cf. exceptions lower), but you cannot extensively
-  modify the code without asking the authors.
+  fixes are allowed, but you cannot extensively modify the code
+  without asking the authors.
 
 The authors may choose to remove any of the above restrictions on a
 per request basis.
-
-Exceptions:
-* you cannot redistribute binary version of the toplevel, due to the
-  Objective Caml copying policy.  Please read Objective Caml COPYING
-  before doing any binary distribution.
-* applications/radtest/gtktree2.c and gtktree2.h are patched version
-  of Gtk original files.  As such they follow LGPL copying guidelines.
-* applications/lablglade is a derivative of glade, and is released
-  under GPL.
 
 Authors:
 	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>

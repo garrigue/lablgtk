@@ -172,7 +172,8 @@ class color_selection obj = object
   inherit GObj.widget_full (obj : Gtk.color_selection obj)
   method set_update_policy = ColorSelection.set_update_policy obj
   method set_opacity = ColorSelection.set_opacity obj
-  method set_color = ColorSelection.set_color obj
+  method set_color ~red ~green ~blue ?opacity () =
+    ColorSelection.set_color obj ~red ~green ~blue ?opacity
   method get_color = ColorSelection.get_color obj
 end
 
