@@ -3,13 +3,6 @@
 
 TARGETS = varcc lablgtktop lablgtktop_t lablgtkrun lablgtk
 
-all: $(TARGETS)
-
-opt: lablgtkopt
-
-depend:
-	ocamldep *.ml *.mli > .depend
-
 COMPILER = $(CAMLC) $(MLFLAGS) -w s -labels -c
 LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -labels -c
@@ -50,7 +43,6 @@ CLIBS += liblablgtkgl.a
 GLLINK = -cclib -llablgtkgl -cclib -lgtkgl
 GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.o
-
 endif
 
 ifdef USE_GNOME
@@ -65,7 +57,17 @@ MLLIBS += lablglade.cma
 CLIBS += liblablglade.a
 GLADEMLOBJS = glade.cmo
 GLADECOBJS = ml_glade.o
+TARGETS += lablgladecc
 endif
+
+# Main targets
+
+all: $(TARGETS)
+
+opt: lablgtkopt
+
+depend:
+	ocamldep *.ml *.mli > .depend
 
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
@@ -120,6 +122,9 @@ lablgtkrun: $(CLIBS) $(MLLIBS)
 lablgtkopt: $(CLIBS) $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \
 	$(THOBJS:.cmo=.cmx)
 
+lablgladecc: xml_lexer.cmo lablgladecc.cmo
+	$(LINKER) -o $@ $(MLLINK) xml_lexer.cmo lablgladecc.cmo
+
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(ALLOBJS:.cmo=.cmi) $(THOBJS:.cmo=.cmi) $(INSTALLDIR)
@@ -130,6 +135,7 @@ install:
 	cp lablgtktop lablgtktop_t varcc $(INSTALLDIR)
 	cp -p *.h $(INSTALLDIR)
 	cp lablgtk lablgtkrun $(BINDIR)
+	if test -f lablgladecc; then cp lablgladecc $(BINDIR); fi
 	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
 
 installopt:
@@ -183,6 +189,9 @@ gtkThread.cmo: gtkThread.ml
 gtkThread.cmx: gtkThread.ml
 	if test -f $(LIBDIR)/libthreadsnat.a; then \
 	   $(COMPOPT) $(THFLAGS) gtkThread.ml; fi
+
+xml_lexer.ml: xml_lexer.mll
+	ocamllex xml_lexer.mll
 
 varcc: varcc.cmo
 	$(LINKER) -o $@ varcc.cmo

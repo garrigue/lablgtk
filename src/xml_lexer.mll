@@ -103,7 +103,7 @@ and entity = parse
       { raise (Error (Unterminated "entity", lexeme_start lexbuf)) }
 
 and tag_name = parse
-  | (['!' '?'] ?) (identchar +)
+  | (['!' '?'] ?) ([ ^ ' ' '\010' '\013' '\009' '\012' '<' '>' '/' '?' ] +)
       { String.lowercase (lexeme lexbuf) }
   | _
       { raise (Error(Tag_expected, lexeme_start lexbuf)) }

@@ -1,5 +1,8 @@
 $Id$
 
+2001.05.16
+  * add lablgladecc, a libglade wrapper compiler
+
 2001.04.16
   * clipping patch by Michael Welsh
 
