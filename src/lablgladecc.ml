@@ -160,16 +160,21 @@ let output_widget w =
       modul w.wname;
   with Not_found -> ()
 
-let output_wrapper ~file ~embed wtree =
+let roots = ref []
+let embed = ref false
+let trace = ref false
+
+let output_wrapper ~file wtree =
   Printf.printf "class %s %s?domain ?autoconnect(*=true*) () =\n"
     wtree.wname
-    (if embed then "" else
+    (if !embed then "" else
     if file = "<stdin>" then "~file " else "?(file=\"" ^ file ^ "\") ");
   print_string "  object (self)\n";
   Printf.printf
-    "    inherit Glade.xml %s ~root:\"%s\" ?domain ?autoconnect ()\n"
-    (if embed then "~data" else "~file")
-    wtree.wname;
+    "    inherit Glade.xml %s ~root:\"%s\" ?domain %s?autoconnect ()\n"
+    (if !embed then "~data" else "~file")
+    wtree.wname
+    (if !trace then "~trace:stderr " else "");
   let widgets = flatten_tree wtree in
   List.iter widgets ~f:output_widget;
   Printf.printf "    method check_widgets () =\n";
@@ -178,7 +183,7 @@ let output_wrapper ~file ~embed wtree =
       if w.wrapped then Printf.printf "      ignore self#%s;\n" w.wname);
   Printf.printf "  end\n"
 
-let parse_body ~file ~embed ~roots lexbuf =
+let parse_body ~file lexbuf =
   while match token lexbuf with
     Tag("project", _, closed) ->
       if not closed then while token lexbuf <> Endtag "project" do () done;
@@ -186,10 +191,10 @@ let parse_body ~file ~embed ~roots lexbuf =
   | Tag("widget", _, false) ->
       let wtree = parse_widget lexbuf in
       let rec output_roots wtree =
-        if List.mem wtree.wname roots then output_wrapper ~file ~embed wtree;
+        if List.mem wtree.wname !roots then output_wrapper ~file wtree;
         List.iter ~f:output_roots wtree.wchildren
       in
-      if roots = [] then output_wrapper ~file ~embed wtree
+      if !roots = [] then output_wrapper ~file wtree
       else output_roots wtree;
       true
   | Tag(tag, _, closed) ->
@@ -200,9 +205,9 @@ let parse_body ~file ~embed ~roots lexbuf =
   | EOF -> false
   do () done
 
-let process ?(file="<stdin>") ~embed ~roots chan =
+let process ?(file="<stdin>") chan =
   let lexbuf, data =
-    if embed then begin
+    if !embed then begin
       let b = Buffer.create 1024 in
       let buf = String.create 1024 in
       while
@@ -219,8 +224,8 @@ let process ?(file="<stdin>") ~embed ~roots chan =
     parse_header lexbuf;
     Printf.printf "(* Automatically generated from %s by lablgladecc *)\n\n"
       file;
-    if embed then Printf.printf "let data = \"%s\"\n\n" (String.escaped data);
-    parse_body ~file ~embed ~roots lexbuf
+    if !embed then Printf.printf "let data = \"%s\"\n\n" (String.escaped data);
+    parse_body ~file lexbuf
   with Failure s ->
     Printf.eprintf "lablgladecc: in %s, before char %d, %s\n"
       file (Lexing.lexeme_start lexbuf) s
@@ -237,26 +242,24 @@ let output_test () =
   print_string "let _ = print_endline \"lablgladecc test finished\"\n"
 
 let main () =
-  let files = ref [] and test = ref false and embed = ref false
-  and roots = ref [] in
-  Arg.parse ~errmsg:"lablgladecc <options> <file.glade>"
+  let files = ref [] and test = ref false in
+  Arg.parse ~errmsg:"lablgladecc [<options>] [<file.glade>]"
     ~keywords:
-    [ "-test", Arg.Set test,
-      "generate a check for internal widget definitions";
-      "-embed", Arg.Set embed,
-      "embed input file into generated program";
+    [ "-test", Arg.Set test, " check lablgladecc (takes no input)";
+      "-embed", Arg.Set embed, " embed input file into generated program";
+      "-trace", Arg.Set trace, " trace calls to handlers";
       "-root", Arg.String (fun s -> roots := s :: !roots),
-      "<widget> generate only wrapper for <widget> and its children" ]
+      "<widget>  generate only a wrapper for <widget> and its children" ]
     ~others:(fun s -> files := s :: !files);
   if !test then
     output_test ()
   else if !files = [] then
-    process ~file:"<stdin>" ~embed:!embed ~roots:!roots stdin
+    process ~file:"<stdin>" stdin
   else
     List.iter (List.rev !files) ~f:
       begin fun file ->
         let chan = open_in file in
-        process ~file ~embed:!embed ~roots:!roots chan;
+        process ~file chan;
         close_in chan
       end
 
