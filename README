@@ -212,19 +212,23 @@ Memory management:
 
 Glade support:
 
-  New in this version, there is some support for Glade generated XML
-  UI description files, using libglade. You can read in a file, access
-  to widgets, and define callbacks.
+  New in this version, there is support for Glade generated XML UI
+  description files, using libglade. You can read in a file, access to
+  widgets, and define callbacks.
   A tool for extracting widget definitions from glade description is
   provided. It generates a wrapper class, and you can then generate an
   object corresponding to the intended layout, and access individual
-  widgets though its methods. Example:
+  widgets through its methods. Example:
 
-       % lablgladecc project1.glade > project1.ml
-       % lablgtk -thread
-       # #use "project1.ml" ;;
-       class window1 : ...
-       # let w1 = new window1 () ;;
+        % lablgladecc project1.glade > project1.ml
+        % lablgtk -thread -labels
+        # #use "project1.ml" ;;
+        class window1 : ...
+        # let w1 = new window1 () ;;
+        # w1#bind ~name:"on_paste1_activate"
+            ~callback:(fun () -> w1#text1#insert "some text\n");;
+
+  See lablgladecc -help for other features (tracing and source embedding).
 
 GL extension:
 

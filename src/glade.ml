@@ -77,25 +77,23 @@ open Printf
 let check_handler ?target ?(name="<unknown>") handler =
   match handler with
     `Simple f ->
-      if target <> None then
-        eprintf "Glade.ml: %s does not take an object argument.\n" name;
       fun _ -> f ()
   | `Object (cls, f) ->
       begin match target with
         None ->
-          eprintf "Glade.ml: %s requires an object argument.\n" name;
+          eprintf "Glade-warning: %s requires an object argument.\n" name;
           raise Not_found
       | Some obj ->
           if GtkBase.Object.is_a obj cls then
             fun _ -> f obj
           else begin
-            eprintf "Glade.ml: %s expects a %s argument.\n" name cls;
+            eprintf "Glade-warning: %s expects a %s argument.\n" name cls;
             raise Not_found
           end
       end
   | `Custom f ->
       if target <> None then
-        eprintf "Glade.ml: %s does not take an object argument.\n" name;
+        eprintf "Glade-warning: %s does not take an object argument.\n" name;
       fun argv -> f argv (GtkArgv.get_args argv)
 
 let bind_handlers ?(extra=[]) ?(warn=false) xml =
@@ -122,7 +120,7 @@ let bind_handler ~name ~handler ?(warn=true) xml =
       ignore (GtkSignal.connect_by_name obj ~name:signal ~after ~callback)
     end;
   if !warn then begin
-    eprintf "Glade.bind_handler: handler %s is not used\n" name;
+    eprintf "Glade-warning: handler %s is not used\n" name;
     flush stderr
   end
 
@@ -136,11 +134,27 @@ let print_binding oc ~handler ~signal ~after ?target obj =
 let print_bindings oc xml =
   signal_autoconnect xml ~f:(print_binding oc); flush oc
 
+let trace_handlers oc xml =
+  signal_autoconnect xml ~f:
+    begin fun ~handler ~signal ~after ?target obj ->
+      let callback _ =
+        if signal = "" then
+          Printf.fprintf oc "Glade-debug: handler %s called\n" handler
+        else
+          Printf.fprintf oc
+            "Glade-debug: %s called by signal %s on widget %s\n"
+            handler signal (get_widget_name (GtkBase.Widget.cast obj));
+        flush oc
+      in
+      ignore (GtkSignal.connect_by_name obj ~name:signal ~after ~callback)
+    end
+      
 (* class skeleton, for use in generated wrappers *)
 
-class xml ?file ?data ?root ?domain ?(autoconnect = true) () =
+class xml ?file ?data ?root ?domain ?trace ?(autoconnect = true) () =
   let () = init () in
   let xml = create ?file ?data ?root ?domain () in
+  let () = match trace with Some oc -> trace_handlers oc xml | None -> () in
   let () = if autoconnect then bind_handlers xml in
   object (self)
     val xml = xml

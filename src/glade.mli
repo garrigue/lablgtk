@@ -62,11 +62,14 @@ val bind_handler :
 val print_bindings : out_channel -> [> `glade_xml] Gtk.obj -> unit
     (* List all the bindings in a xml widget *)
 
+val trace_handlers : out_channel -> [> `glade_xml] Gtk.obj -> unit
+    (* trace calls to glade handlers *)
+
 (* Class skeleton, for use in generated wrappers *)
 
 class xml :
   ?file:string -> ?data:string -> ?root:string ->
-  ?domain:string -> ?autoconnect:bool -> unit ->
+  ?domain:string -> ?trace:out_channel -> ?autoconnect:bool -> unit ->
   object
     val xml : glade_xml Gtk.obj
     method xml : glade_xml Gtk.obj
