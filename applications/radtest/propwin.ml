@@ -95,7 +95,7 @@ let remove name =
   Hashtbl.remove widget_pool key:name;
   if !shown_widget = name then begin
     shown_widget := "";
-    show_prop_box (Hashtbl.find widget_pool key:"")
+    show_prop_box (GMisc.label text:"No widget selected" ())
   end
 
 let change_name oldname newname =
