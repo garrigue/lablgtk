@@ -820,6 +820,8 @@ module Iter = struct
   external is_cursor_position : textiter -> bool = "ml_gtk_text_iter_is_cursor_position"
   external get_chars_in_line : textiter -> int = "ml_gtk_text_iter_get_chars_in_line"
   external get_bytes_in_line : textiter -> int = "ml_gtk_text_iter_get_bytes_in_line"
+  external get_language : textiter -> Pango.language = 
+   "ml_gtk_text_iter_get_language"
   external is_end : textiter -> bool = "ml_gtk_text_iter_is_end"
   external is_start : textiter -> bool = "ml_gtk_text_iter_is_start"
   external forward_char : textiter -> bool = "ml_gtk_text_iter_forward_char"

@@ -19,6 +19,7 @@
 #include "ml_gtk.h"
 #include "ml_gobject.h"
 #include "ml_gdkpixbuf.h"
+#include "ml_pango.h"
 #include "gtk_tags.h"
 #include "gdk_tags.h"
 
@@ -848,6 +849,8 @@ ML_1 (gtk_text_iter_is_cursor_position,GtkTextIter_val, Val_bool)
 ML_1 (gtk_text_iter_get_chars_in_line, GtkTextIter_val, Val_int)
 
 ML_1 (gtk_text_iter_get_bytes_in_line, GtkTextIter_val, Val_int)
+
+ML_1 (gtk_text_iter_get_language, GtkTextIter_val, Val_PangoLanguage)
 
 ML_1 (gtk_text_iter_is_end,GtkTextIter_val, Val_bool)
 

@@ -1,7 +1,14 @@
 $Id$
 
 2003.02.20
- * additions to Pango
+ * additions to Pango [Jacques]
+[Benjamin]:
+ * added set_stock to GMisc.image
+ * In GMisc.label_skel : 
+	added : #set_markup #set_markup_with_mnemonic #label
+	changed : semantic of #text (returns text with markups and mnemonics)
+		old semantic available with #label.
+ * In GText.iter : add #language
 
 2003.02.19
  * GdkDrawable is also a GObject
