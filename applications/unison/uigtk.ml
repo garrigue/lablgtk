@@ -76,7 +76,7 @@ let getLock f =
 class scrolled_text ?editable ?word_wrap ?width ?height ?packing ?show
     () =
   let sw =
-    GFrame.scrolled_window ?width ?height ?packing ~show:false
+    GBin.scrolled_window ?width ?height ?packing ~show:false
       ~hpolicy:`NEVER ~vpolicy:`AUTOMATIC ()
   in
   let text = GEdit.text ?editable ?word_wrap ~packing:sw#add () in
@@ -373,7 +373,7 @@ let documentation sect =
   t_dismiss#grab_default ();
   let dismiss () = t#destroy () in
   ignore (t_dismiss#connect#clicked ~callback:dismiss);
-  ignore (t#connect#event#delete ~callback:(fun _ -> dismiss (); true));
+  ignore (t#event#connect#delete ~callback:(fun _ -> dismiss (); true));
 
   let (name, docstr) = List.assoc sect Strings.docs in
   let hb = GPack.hbox ~packing:(t#vbox#pack ~expand:false ~padding:2) () in
@@ -702,7 +702,7 @@ let createToplevelWindow () =
 
   let detailsWindow =
     let sw =
-      GFrame.scrolled_window ~packing:(toplevelVBox#pack ~expand:false)
+      GBin.scrolled_window ~packing:(toplevelVBox#pack ~expand:false)
         ~hpolicy:`AUTOMATIC ~vpolicy:`AUTOMATIC ()
     in
     GEdit.text ~editable:false ~height:(3 * charH) ~width: (96 * charW)
