@@ -98,6 +98,7 @@ let parse_body lexbuf =
       \032 let () = Glade.init () in\n\
       \032 let xml = Glade.create ~file ~root:\"%s\" in\n\
       \032 object (self)\n\
+      \032   method xml = xml\n\
       \032   method extra_handlers = []\n\
       \032   initializer Glade.bind_handlers ~extra:self#extra_handlers xml\n"
 	  wtree.wname wtree.wname;

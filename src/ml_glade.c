@@ -55,6 +55,16 @@ value ml_glade_xml_signal_autoconnect_full (value self, value clos)
     return Val_unit;
 }
 
+value ml_glade_xml_signal_connect_full (value self, value name, value clos)
+{
+    value *clos_p = ml_global_root_new (clos);
+    glade_xml_signal_connect_full (GladeXML_val(self),
+                                   String_val(name),
+                                   ml_glade_callback_marshal,
+                                   clos_p);
+    return Val_unit;
+}
+
 ML_2 (glade_xml_get_widget, GladeXML_val, String_val, Val_GtkWidget)
 ML_2 (glade_xml_get_widget_by_long_name, GladeXML_val, String_val,
       Val_GtkWidget)

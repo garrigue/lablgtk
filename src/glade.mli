@@ -47,3 +47,7 @@ val bind_handlers :
   ?extra:(string * handler) list -> [> `glade_xml] Gtk.obj -> unit
     (* Bind handlers on a glade widget. You may add some local bindings
        specific to this widget. *)
+
+val bind_handler :
+  name:string -> handler:handler -> [> `glade_xml] Gtk.obj -> unit
+    (* Bind an individual handler *)

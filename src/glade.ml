@@ -20,6 +20,16 @@ let signal_autoconnect self ~f =
     (fun (handler, obj, signal, target, after) ->
       f ~handler ~signal ~after ?target obj)
 
+external _signal_connect :
+    [> `glade_xml] obj -> string ->
+    (string * unit obj * string * unit obj option * bool -> unit) -> unit
+    = "ml_glade_xml_signal_connect_full"
+
+let signal_connect self ~handler ~f =
+  _signal_connect self handler
+    (fun (handler, obj, signal, target, after) ->
+      f ~signal ~after ?target obj)
+
 external get_widget : [> `glade_xml] obj -> name:string -> widget obj
     = "ml_glade_xml_get_widget"
 external get_widget_by_long_name :
@@ -101,3 +111,10 @@ let bind_handlers ?(extra=[]) xml =
         then eprintf "Glade.ml: no handler for %s.\n" name
     end;
   flush stderr
+
+let bind_handler ~name ~handler xml =
+  signal_connect xml ~handler:name ~f:
+    begin fun ~signal ~after ?target obj ->
+      let callback = check_handler ?target ~name handler in
+      ignore (GtkSignal.connect_by_name obj ~name:signal ~after ~callback)
+    end
