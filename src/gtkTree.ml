@@ -134,6 +134,8 @@ module TreeModel = struct
     else failwith "GtkTree.TreeModel.iter_parent"
   external foreach : [>`treemodel] obj -> (tree_path -> tree_iter -> bool) -> unit
     = "ml_gtk_tree_model_foreach"
+  external row_changed : [>`treemodel] obj -> tree_path -> tree_iter -> unit
+    = "ml_gtk_tree_model_row_changed"
 end
 
 module TreeStore = struct
