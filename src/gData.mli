@@ -54,3 +54,12 @@ class tooltips :
     method set_tip : ?text:string -> ?privat:string -> GObj.widget -> unit
   end
 val tooltips : ?delay:int -> unit -> tooltips
+
+class clipboard : Gtk.clipboard ->
+  object
+    method clear : unit -> unit
+    method get_contents : target:Gdk.atom -> GObj.selection_data
+    method set_text : string -> unit
+    method text : string option
+  end
+val clipboard : ?selection:Gdk.atom -> unit -> clipboard

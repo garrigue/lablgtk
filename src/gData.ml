@@ -3,6 +3,7 @@
 open Gaux
 open Gobject
 open Gtk
+open GtkBase
 open GtkData
 open GObj
 
@@ -66,5 +67,13 @@ let tooltips ?delay () =
   may delay ~f:(Tooltips.set_delay tt);
   new tooltips tt
 
+class clipboard clip = object
+  method clear () = Clipboard.clear clip
+  method set_text = Clipboard.set_text clip
+  method text = Clipboard.wait_for_text clip
+  method get_contents ~target =
+    new GObj.selection_data (Clipboard.wait_for_contents clip ~target)
+end
 
-
+let clipboard ?(selection = Gdk.Atom.primary) () =
+  new clipboard (Clipboard.get selection)

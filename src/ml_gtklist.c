@@ -53,7 +53,6 @@ ML_2 (gtk_list_unselect_item, GtkList_val, Int_val, Unit)
 ML_2 (gtk_list_select_child, GtkList_val, GtkWidget_val, Unit)
 ML_2 (gtk_list_unselect_child, GtkList_val, GtkWidget_val, Unit)
 ML_2 (gtk_list_child_position, GtkList_val, GtkWidget_val, Val_int)
-ML_2 (gtk_list_set_selection_mode, GtkList_val, Selection_mode_val, Unit)
 
 /* gtkclist.h */
 

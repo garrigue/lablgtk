@@ -1,5 +1,8 @@
 $Id$
 
+2003.06.19 [Jacques]
+  * Add GData.clipboard.
+
 2003.06.18 [Jacques]
   * Massive change: generate properties automatically.
     Probable incompatibilities: inform immediately.
