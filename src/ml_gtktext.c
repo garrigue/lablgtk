@@ -770,3 +770,35 @@ ML_2 (gtk_text_iter_compare, GtkTextIter_val, GtkTextIter_val, Val_int)
 ML_3 (gtk_text_iter_in_range, GtkTextIter_val, GtkTextIter_val,
       GtkTextIter_val, Val_int)
 ML_2 (gtk_text_iter_order, GtkTextIter_val, GtkTextIter_val, Unit)
+
+
+#define Make_search(dir) \
+CAMLprim value ml_gtk_text_iter_##dir##_search (value ti_start, \
+						value str,\
+						value flag,\
+						value ti_lim)\
+{ CAMLparam4(ti_start,str,flag,ti_lim);\
+  CAMLlocal2(res,coup);\
+  GtkTextIter* ti1,*ti2;\
+  gboolean b;\
+  ti1=gtk_text_iter_copy(GtkTextIter_val(ti_start));\
+  ti2=gtk_text_iter_copy(GtkTextIter_val(ti_start));\
+  b=gtk_text_iter_##dir##_search(GtkTextIter_val(ti_start),\
+				 String_val(str),\
+				 Text_search_flag_val(flag),\
+				 ti1,\
+				 ti2,\
+				 Option_val(ti_lim,GtkTextIter_val,NULL));\
+  if (!b) res = Val_unit;\
+  else \
+    { res = alloc(1,0);\
+      coup = alloc_tuple(2);\
+      Store_field(coup,0,Val_GtkTextIter(ti1));\
+      Store_field(coup,1,Val_GtkTextIter(ti2));\
+      Store_field(res,0,coup);};\
+  CAMLreturn(res);}
+
+Make_search(forward);
+Make_search(backward);
+
+     

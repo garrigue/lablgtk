@@ -78,6 +78,8 @@ module Tags = struct
   type target_flags = [ `SAME_APP|`SAME_WIDGET ]
   type text_window_type = [ `PRIVATE | `WIDGET | `TEXT | `LEFT
 			  | `RIGHT | `TOP | `BOTTOM]
+  type text_search_flag = [ `VISIBLE_ONLY | `TEXT_ONLY ]
+
 end
 open Tags
 

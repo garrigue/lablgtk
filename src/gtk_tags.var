@@ -175,3 +175,5 @@ type text_window_type = "GTK_TEXT_WINDOW_"
   [ `PRIVATE | `WIDGET | `TEXT | `LEFT 
   | `RIGHT | `TOP | `BOTTOM ]
 
+type text_search_flag = "GTK_TEXT_SEARCH_"
+  [ `VISIBLE_ONLY | `TEXT_ONLY ]

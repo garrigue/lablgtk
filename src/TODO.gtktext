@@ -61,16 +61,9 @@ void        gtk_text_buffer_remove_selection_clipboard
 
 =====================================================================================
 GtkTextTag: 
+Il manque les PangoTabs.
 
-Les TextAttributes  sont cachés. Il faut utiliser les "properties".
 
-Il faut compléter le module GtkText.Tag pour supporter toutes les propriétés possibles
-et enlever les "assert false".
-Il faut ajouter le support de Pango avant.
-
-Signal "event" : il faut caster les arguments 'a obj et 'a event correctement. 
-	Je ne sais pas le faire sans laisser aparaître les g_type et g_values
-	 directement. Faut-il supprimer ce signal ?
 =====================================================================================
 GtkTextTagTable: 
 void        gtk_text_tag_table_foreach      (GtkTextTagTable *table,
