@@ -22,8 +22,7 @@ let main () =
   in
   let sw = GBin.scrolled_window ~packing:(w#add) () in
   let b = GText.buffer () in
-  b#set_text ~text:(Printf.sprintf "Unicode characters from %d to %d
-Click to continue\n" start stop) ();
+  b#set_text (Printf.sprintf "Unicode characters from %d to %d Click to continue\n" start stop);
   let font = Pango.Font.from_string "Sans 15" in
   let tv = GText.view ~buffer:b ~packing:(sw#add) () in
   let _ = tv#misc#modify_font font in
@@ -31,7 +30,7 @@ Click to continue\n" start stop) ();
 	    ~callback:
 	    (fun _ -> 
 	       for i=start to stop do 
-		 let c = Printf.sprintf "%d:%s:\n" i (Utf8.utf8 i) in
+		 let c = Printf.sprintf "%d:%s:\n" i (Glib.Utf8.from_unichar i) in
 		 b#insert ~text:(c) ()
 	       done;false));
   w#show ();;

@@ -25,7 +25,7 @@ let main () =
   let sw = GBin.scrolled_window ~packing:(w#add) () in
   let b = GText.buffer () in
   let s = f_to_string file_name in
-  b#set_text ~text:s ();
+  b#set_text s;
   let tv = GText.view ~buffer:b ~packing:(sw#add) () in
   w#show ();;
 
