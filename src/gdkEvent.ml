@@ -4,23 +4,23 @@ open Gaux
 open Gdk
 open Tags
 
-external unsafe_copy : Gpointer.boxed -> #event_type event
+external unsafe_copy : Gpointer.boxed -> [< event_type] event
     = "ml_gdk_event_copy"
-external copy : (#event_type as 'a) event -> 'a event
+external copy : ([< event_type] as 'a) event -> 'a event
     = "ml_gdk_event_copy"
 external get_type : 'a event -> 'a = "ml_GdkEventAny_type"
 external get_window : 'a event -> window = "ml_GdkEventAny_window"
 external get_send_event : 'a event -> bool = "ml_GdkEventAny_send_event"
 
-external create : (#event_type as 'a) -> 'a event
+external create : ([< event_type] as 'a) -> 'a event
     = "ml_gdk_event_new"
 external set_window : 'a event -> window -> unit
     = "ml_gdk_event_set_window"
 
 type any = event_type event
-let cast (ev : any) ~(kind : (#event_type as 'a) list )
+let cast (ev : any) ~(kind : ([< event_type] as 'a) list )
     : 'a event =
-  if List.mem (Obj.magic (get_type ev) : #event_type) kind then Obj.magic ev
+  if List.mem (Obj.magic (get_type ev) : [< event_type]) kind then Obj.magic ev
   else invalid_arg "GdkEvent.cast"
 
 module Expose = struct
@@ -81,7 +81,7 @@ module Button = struct
   external deviceid : t -> int = "ml_GdkEventButton_deviceid"
   external x_root : t -> float = "ml_GdkEventButton_x_root"
   external y_root : t -> float = "ml_GdkEventButton_y_root"
-  external set_type : t -> #types -> unit
+  external set_type : t -> [< types] -> unit
       = "ml_gdk_event_set_type"
   external set_button : t -> int -> unit
       = "ml_gdk_event_button_set_button"
