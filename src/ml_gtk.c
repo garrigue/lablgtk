@@ -120,11 +120,7 @@ ML_bc6 (ml_gtk_adjustment_new)
 ML_2 (gtk_adjustment_set_value, GtkAdjustment_val, Float_val, Unit)
 ML_3 (gtk_adjustment_clamp_page, GtkAdjustment_val,
       Float_val, Float_val, Unit)
-gfloat adjustment_get_value( GtkAdjustment* adj )
-{
-  return adj->value;
-}
-ML_1 (adjustment_get_value, GtkAdjustment_val, copy_double)
+Make_Extractor (GtkAdjustment, GtkAdjustment_val, value, copy_double)
 
 /* gtktooltips.h */
 
