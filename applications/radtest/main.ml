@@ -59,20 +59,20 @@ class project () =
       |	None ->
 	  selected <- Some sel;
 	  sel#project_tree_item#misc#set state:`SELECTED;
-	  copy_item#misc#set_sensitive true;
-	  cut_item#misc#set_sensitive true
+	  copy_item#misc#set sensitive:true;
+	  cut_item#misc#set sensitive:true
       |	Some old_sel ->
 	  if sel = old_sel then begin
 	    selected <- None;
 	    sel#project_tree_item#misc#set state:`NORMAL;
-	    copy_item#misc#set_sensitive false;
-	    cut_item#misc#set_sensitive false
+	    copy_item#misc#set sensitive:false;
+	    cut_item#misc#set sensitive:false
 	  end else begin
 	    old_sel#project_tree_item#misc#set state:`NORMAL;
 	    selected <- Some sel;
 	    sel#project_tree_item#misc#set state:`SELECTED;
-	    copy_item#misc#set_sensitive true;
-	    cut_item#misc#set_sensitive true
+	    copy_item#misc#set sensitive:true;
+	    cut_item#misc#set sensitive:true
 	  end
 
     val mutable filename = ""
@@ -177,7 +177,7 @@ class project () =
 
     method copy_wt (wt : window_and_tree) =
       wt#tiwin#copy ();
-      paste_item#misc#set_sensitive true
+      paste_item#misc#set sensitive:true
 
     method cut_wt (wt : window_and_tree) =
       self#copy_wt wt;
@@ -238,13 +238,13 @@ let load () =
 
 let interpret_undo = function
   | Add (parent_name, node, pos) ->
-      let parent = SMap.find key:parent_name !widget_map in
+      let parent = widget_map#find key:parent_name in
       parent#add_children node :pos
   | Remove child_name ->
-      let child  = SMap.find key:child_name !widget_map in
+      let child  = widget_map#find key:child_name in
       child#remove_me ()
   | Property (tiwidget_name, property, value_string) ->
-      let tiwidget  = SMap.find key:tiwidget_name !widget_map in
+      let tiwidget  = widget_map#find key:tiwidget_name in
       tiwidget#set_property property value_string
   | Add_window node -> !main_project#add_window_by_node node
   | Remove_window name -> !main_project#delete_window_by_name :name
@@ -335,9 +335,9 @@ paste_item#connect#activate callback:(fun () -> !main_project#paste ());
 open_item#connect#activate callback:load;
 save_item#connect#activate callback:(fun () -> !main_project#save ());
 save_as_item#connect#activate callback:(fun () -> !main_project#save_as ());
-copy_item#misc#set_sensitive false;
-cut_item#misc#set_sensitive false;
-paste_item#misc#set_sensitive false
+copy_item#misc#set sensitive:false;
+cut_item#misc#set sensitive:false;
+paste_item#misc#set sensitive:false
 ;;
 
 test_item#connect#activate callback:undo;;

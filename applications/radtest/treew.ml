@@ -99,7 +99,7 @@ let new_tiwidget :
   ref (fun classe:_ name:_ parent_tree:_ ?pos:_ [<-1>] parent_window:_ -> failwith "new_tiwidget")
 
 
-let widget_map = ref SMap.empty
+let widget_map = new Omap.c []
 
 (************* window creation class *************)
 (* an instance of this class is created for each window opened
@@ -331,7 +331,7 @@ object(self)
 	tip#tree#remove tree_item;
 	tip#remove (self : #tiwidget0 :> tiwidget0);
 	name_list := list_remove !name_list pred:(fun n -> n=name);
-	widget_map := SMap.remove key:name !widget_map;
+	widget_map#remove key:name;
 	prop_remove name
 
 (* used for undo in add_child_tiw *)
@@ -501,9 +501,8 @@ object(self)
 (* changes all that depends on the name *)
   method private set_new_name new_name =
     if test_unique new_name then begin
-      widget_map :=
-	SMap.add key:new_name data:(self : #tiwidget0 :> tiwidget0)
-	  (SMap.remove key:name !widget_map);
+      widget_map#remove key:name;
+      widget_map#add key:new_name data:(self : #tiwidget0 :> tiwidget0);
       label#set_text new_name;
       let old_name = name in
       name <- new_name;
@@ -572,8 +571,7 @@ object(self)
 	| h :: _ -> h#last
 
   initializer
-    widget_map := SMap.add key:name data:(self : #tiwidget0 :> tiwidget0)
-	!widget_map;
+    widget_map#add key:name data:(self : #tiwidget0 :> tiwidget0);
     name_list := name :: !name_list;
     parent_tree#insert tree_item :pos;
     tree_item#set_subtree stree;
@@ -661,7 +659,7 @@ object(self)
     mi_cut#connect#activate callback:self#cut;
     if !selection <> ""
     then begin mi_paste#connect#activate callback:self#paste; () end
-    else mi_paste#misc#set_sensitive false;
+    else mi_paste#misc#set sensitive:false;
     menu#popup button:3 :time
 
   method emit_init_code c :packing =
@@ -719,7 +717,7 @@ object(self)
     self#forall callback:(fun tiw -> tiw#remove_me_without_undo ());
     parent_window#remove_sel (self : #tiwidget0 :> tiwidget0);
     name_list := list_remove !name_list pred:(fun n -> n=name);
-    widget_map := SMap.remove key:name !widget_map;
+    widget_map#remove key:name;
     prop_remove name;
     widget#destroy ()
 
@@ -759,7 +757,7 @@ object(self)
     mi_add#set_submenu menu_add;
     if !selection <> ""
     then begin mi_paste#connect#activate callback:self#paste; () end
-    else mi_paste#misc#set_sensitive false;
+    else mi_paste#misc#set sensitive:false;
     menu#popup button:3 :time
 
 
@@ -1131,7 +1129,7 @@ object(self)
              setfun:(fun v -> labelw#set_text v));
        "line_wrap",  Bool (new rval init:true inits:"true" codename:"line_wrap"
            undo_fun:(fun vs -> add_undo (Property (name, "line_wrap", vs)))
-	  setfun:(fun v -> labelw#set_line_wrap v));    ]
+	  setfun:(fun v -> labelw#set_label line_wrap:v));    ]
 end
 
 let new_tilabel :name = new tilabel widget:(new label text:name) :name

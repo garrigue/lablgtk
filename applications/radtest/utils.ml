@@ -208,8 +208,3 @@ let last_action_was_undo = ref false
 let add_undo f =
   undo_info := f :: !undo_info;
   last_action_was_undo := false
-
-
-
-module SMap = Map.Make (struct type t = string let compare = compare end)
-
