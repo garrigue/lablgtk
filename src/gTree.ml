@@ -286,6 +286,7 @@ class view obj = object
   inherit [Gtk.tree_view] GContainer.container_impl obj
   inherit tree_view_props
   method connect = new view_signals obj
+  method event = new GObj.event_ops obj
   method selection = new selection (TreeView.get_selection obj)
   method expander_column = may_map (new view_column) (get expander_column obj)
   method set_expander_column c =
