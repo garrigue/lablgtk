@@ -2,7 +2,7 @@
              LablGTK2 : an interface to the GIMP Tool Kit
 
 Needed:
-	ocaml-3.07
+	ocaml-3.07 or 3.08
 	gtk+-2.x (preferably gtk+-2.4.x)
           (avoid gtk+-2.4.0, as the GtkTree widget is broken)
 	GNU make (there is no standard for conditionals)
@@ -339,7 +339,7 @@ Windows port
   in them. Also, non-graphical operations are thread-safe.
   Here is an example using the lablgtk toplevel with threads:
 	% lablgtk -thread
-	        Objective Caml version 3.06
+	        Objective Caml version 3.08
 
         # open GtkThread;;	
 	# let w = sync (GWindow.window ~show:true) ();;

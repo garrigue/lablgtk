@@ -14,7 +14,7 @@ let calendar_file = Filename.concat (Sys.getenv "HOME") ".camlendar"
 
 let schedule =
   try
-    let ichan = open_in calendar_file in
+    let ichan = open_in_bin calendar_file in
     let (s : (int * int * int, string) Hashtbl.t) =
       Marshal.from_channel ichan in
     close_in ichan;
@@ -25,7 +25,7 @@ let schedule =
 
     (* Saves the schedule data when the application terminates *)
 at_exit (fun () ->
-  let ochan = open_out calendar_file in
+  let ochan = open_out_bin calendar_file in
   Marshal.to_channel ochan schedule [];
   close_out ochan);;
 

@@ -15,14 +15,14 @@ USE_GNOMECANVAS=
 USE_CC=
 DEBUG=
 CC=
-RANLIB=
+RANLIB=:
 XA=.lib
 XB=.bat
 XE=.exe
 XO=.obj
 XS=.dll
 TOOLCHAIN=msvc
-LIBDIR=$(CAMLC) -where
+LIBDIR=`$(CAMLC) -where`
 THREADS_LIB=system
 HAS_DLL_SUPPORT=yes
 
@@ -39,6 +39,7 @@ DLLDIR=$(LIBDIR)/stublibs
 ODOC_DEF=
 
 #GTKROOT=c:/GTK
-GTKROOT=c:/Home/garrigue/gtk2
+GTKROOT=c:/Home/garrigue/gtk2.4
 GTKCFLAGS=-I$(GTKROOT)/include/glib-2.0 -I$(GTKROOT)/lib/glib-2.0/include -I$(GTKROOT)/include/gtk-2.0/ -I$(GTKROOT)/lib/gtk-2.0/include -I$(GTKROOT)/include/pango-1.0 -I$(GTKROOT)/include/atk-1.0 -I$(GTKROOT)/include 
-GTKLIBS=/link /libpath:$(GTKROOT)/lib gtk-win32-2.0.lib gdk_pixbuf-2.0.lib gdk-win32-2.0.lib  pango-1.0.lib atk-1.0.lib glib-2.0.lib gobject-2.0.lib #gthread-2.0.lib
+GTKLIBS=gtk-win32-2.0.lib gdk_pixbuf-2.0.lib gdk-win32-2.0.lib  pango-1.0.lib atk-1.0.lib glib-2.0.lib gobject-2.0.lib #gthread-2.0.lib
+GTKLIBPATH=/libpath:$(GTKROOT)/lib
