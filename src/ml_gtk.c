@@ -954,6 +954,25 @@ ML_2 (gtk_clist_set_sort_type, GtkCList_val, Sort_type_val, Unit)
 ML_1 (gtk_clist_sort, GtkCList_val, Unit)
 ML_2 (gtk_clist_set_auto_sort, GtkCList_val, Bool_val, Unit)
 
+/* gtkctree.h */
+
+#define GtkCTree_val(val) check_cast(GTK_CTREE,val)
+/* Beware: this definition axpects arg1 to be a GtkCTree */
+#define GtkCTreeNode_val(val) \
+     (gtk_ctree_find(GtkCTree_val(arg1),NULL,(GtkCTreeNode*)(val-1)) \
+     ? (GtkCTreeNode*)(val-1) : (ml_raise_gtk ("Bad GtkCTreeNode"), NULL))
+#define Val_GtkCTreeNode Val_addr
+ML_2 (gtk_ctree_new, Int_val, Int_val, Val_GtkWidget_sink)
+ML_3 (gtk_ctree_new_with_titles, Int_val, Int_val, (char **),
+      Val_GtkWidget_sink)
+ML_11 (gtk_ctree_insert_node, GtkCTree_val, GtkCTreeNode_val,
+       GtkCTreeNode_val, (char**), Int_val, GdkPixmap_val, GdkBitmap_val,
+       GdkPixmap_val, GdkBitmap_val, Bool_val, Bool_val,
+       Val_GtkCTreeNode)
+ML_2 (gtk_ctree_remove_node, GtkCTree_val, GtkCTreeNode_val, Unit)
+ML_2 (gtk_ctree_is_viewable, GtkCTree_val, GtkCTreeNode_val, Val_bool)
+
+
 /* gtkfixed.h */
 
 #define GtkFixed_val(val) check_cast(GTK_FIXED,val)

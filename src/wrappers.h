@@ -69,6 +69,14 @@ value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
 		      conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8), \
 		      conv9(arg9), conv10(arg10))); }
+#define ML_11(cname, conv1, conv2, conv3, conv4, conv5, conv6, conv7, conv8, \
+	      conv9, conv10, conv11, conv) \
+value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
+		  value arg6, value arg7, value arg8, value arg9, value arg10,\
+		  value arg11) \
+{ return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
+		      conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8), \
+		      conv9(arg9), conv10(arg10), conv11(arg11))); }
 #define ML_12(cname, conv1, conv2, conv3, conv4, conv5, conv6, conv7, conv8, \
 	      conv9, conv10, conv11, conv12, conv) \
 value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
@@ -106,6 +114,10 @@ value cname##_bc (value *argv, int argn) \
 value cname##_bc (value *argv, int argn) \
 { return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5],argv[6], \
 	       argv[7],argv[8],argv[9]); }
+#define ML_bc11(cname) \
+value cname##_bc (value *argv, int argn) \
+{ return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5],argv[6], \
+	       argv[7],argv[8],argv[9],argv[10]); }
 #define ML_bc12(cname) \
 value cname##_bc (value *argv, int argn) \
 { return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5],argv[6], \
