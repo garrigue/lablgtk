@@ -9,7 +9,7 @@ In order to use it you must:
  * get unison-1.231/src.tar.gz from http://www.cis.upenn.edu/~bcpierce/unison/
  * untar it in this directory
  * copy or make links for .ml/.mli files here inside unison-1.231
-        ln -fs *.ml *.mli unison-1.231/
+        ln -fs ../*.ml ../*.mli .
  * edit unison-1.231/Makefile
 	UISTYLE=tk		->	UISTYLE=gtk
         include Makefile.OCaml  ->      include ../Makefile.OCaml
