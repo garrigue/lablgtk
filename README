@@ -1,9 +1,9 @@
 
-             LablGTK2 alpha : an interface to the GIMP Tool Kit
+             LablGTK2 beta : an interface to the GIMP Tool Kit
 
 Needed:
 	ocaml-3.06
-	gtk-2.x
+	gtk+-2.x (preferably gtk+-2.2.x)
 	GNU make (there is no standard for conditionals)
 
 Info/upgrades:
@@ -11,12 +11,12 @@ Info/upgrades:
 
 Status:
   Contrary to lablgtk, which is a mature interface to gtk-1.2,
-  lablgtk2 is still in early development.
+  lablgtk2 is still in development.
   
   Support for the old text widget has been dropped, but it is
   remplaced by a new one, much more powerful (thanks to Benjamin
-  Monate). However its API is not yet fixed. Many examples do not
-  compile due to the absence of the old text widget.
+  Monate). Yet many programs will not compile due to the absence of
+  the old text widget.
 
   In other widgets many methods are missing, and will be progressively
   added, as we review the changes. Requests may be considered.
@@ -41,6 +41,7 @@ How to compile:
 		USE_CC=1	to use $(CC) rather than gcc
 		USE_GL=1	to compile gtkglarea support
                 USE_GLADE=1     to compile libglade support
+                USE_RSVG=1      to compile librsvg support
         The following variables will also be remembered if passed as options
                 BINDIR INSTALLDIR DLLDIR DEBUG CC
                 CAMLC CAMLOPT CAMLMKTOP CAMLMKLIB CAMLP40
@@ -66,6 +67,8 @@ Contents:
 	lablgtk2	toplevel
 
 	examples/*.ml	various examples
+
+        applications/browser    an ongoing port of ocamlbrowser
 
 How to run the examples:
   In the examples directory just type:
@@ -116,6 +119,7 @@ Structure of the G[A-Z]* modules:
   These modules provide classes to wrap the raw function calls.
   Here are the widget classes contained in each module:
 
+  GPango        Pango font handling
   GDraw         Gdk pixmaps, etc...
   GObj		gtkobj, widget, style
   GData		data, adjustment, tooltips
@@ -130,7 +134,7 @@ Structure of the G[A-Z]* modules:
   GMisc		separator, statusbar, calendar, drawing_area,
 		misc, arrow, image, pixmap, label, tips_query,
                 color_selection, font_selection
-  GTree		tree_item, tree
+  GTree		tree_item, tree, view (also tree/list_store, model)
   GList		list_item, liste, clist
   GEdit		editable, entry, spin_button, combo
   GRange	progress, progress_bar, range, scale, scrollbar
@@ -209,11 +213,9 @@ ML-side signals:
   various components. Explanations are provided in GUtil.mli.
 
 Comments on some widgets:
-  GText.iter may be tricky to use, for 2 reasons. 1) Any change inside
-  the buffer buffer will invalidate its iterators, causing exceptions
-  if you try to use them afterwards. 2) Some functions modify the
-  iterator they are passed as argument; if you want to keep the old
-  value, use #copy beforehand.
+  GText has changed a lot since the alpha release. In particular, most
+  movements with GText.iter are now functional. You can still modify
+  destructively by using the #nocopy interface.
 
 Contributed components:
 
@@ -235,6 +237,13 @@ Memory management:
   added to a container widget, it will automatically be destroyed when
   its last container is destroyed. For this reason you need only
   destroy toplevel widgets.
+
+  IMPORTANT: Some Gtk data structures are allocated in the Caml heap,
+  and there use in signals (Gtk functions internally cally callbacks)
+  relies on their address being stable during a function call. For
+  this reason automatic compation is disabled in GtkMain. If you need
+  it, you may use compaction through Gc.compact where it is safe
+  (timeouts, other threads...), but do not enable automatic compaction.
 
 LibGlade support:
 
@@ -271,7 +280,14 @@ GL extension:
   You can then use the widget GlGtk.gl_area as an OpenGL window.
   Some examples are in examples/GL, but basically any LablGL example
   can be easily ported.
-  The executable must be linked with both lablgl.cma and lablgtkgl.cma.
+  The executable must be linked with both lablgl.cma and
+  lablgtkgl.cma.
+
+SVG support:
+
+  This binding was contributed by Olivier Andrieu.
+  It requires librsvg-2.x (preferably 2.2.x).
+  See an example in examples/rsvg.ml.
 
 Windows port
 
