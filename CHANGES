@@ -5,6 +5,7 @@ $Id$
   * remove Main.flush (enough to have it as Gdk.X.flush)
   * include [main] and [quit] in GMain, so you can now write GMain.main
     rather than GMain.Main.main
+  * move glade examples to examples/glade
 
 2001.05.18
   * add -trace flag to lablgladecc, to trace handler calls
