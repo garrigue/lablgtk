@@ -1,35 +1,29 @@
 (* $Id$ *)
 
-open Gtk;;
+open Gtk
 
-let hello l = print_endline "Hello World"; Arg.Unit ;;
+let _ =
+  Main.init Sys.argv
 
-let args = ref [] ;;
-let delete_event l =
-  args := l;;
-  print_endline "Delete event occured";
-  Arg.Bool true
-;;
+let window = Window.create `TOPLEVEL
 
-let destroy l = Main.quit (); Arg.Unit ;;
+let button = Button.create_with_label "Hello World"
 
-Main.init Sys.argv;;
+let _ =
+  Signal.connect window sig:Signal.delete_event
+    cb:(fun () -> print_endline "Delete event occured"; true);
+  Signal.connect window sig:Signal.destroy cb:Main.quit;
+  Container.border_width window 10;
+  Signal.connect button sig:Signal.clicked
+    cb:(fun () -> print_endline "Hello World");
+  Signal.connect button sig:Signal.clicked
+    cb:(fun () -> Widget.destroy window);
+  Container.add window button
 
-let window = Window.create `TOPLEVEL;;
+let rec loop () =
+  Main.iteration_do true; (flush stdout; loop ())
 
-Signal.connect window name:"delete_event" cb:delete_event ;;
-Signal.connect window name:"destroy" cb:destroy ;;
+let _ =
+  Widget.show_all window;
+  loop ()
 
-Container.border_width window 10 ;;
-
-let button = Button.create_with_label "Hello World" ;;
-
-Signal.connect button name:"clicked" cb:hello ;;
-Signal.connect button name:"clicked"
-    cb:(fun _ -> Widget.destroy window; Arg.Unit) ;;
-
-Container.add window button ;;
-
-Widget.show_all window ;;
-
-Main.main () ;;

@@ -8,12 +8,14 @@ config.make:
 
 include config.make
 
-COMPILER = olablc -c
-LINKER = olablc
-TOPLEVEL = olablmktop
+COMPILER = olablc $(MLFLAGS) -c
+LINKER = olablc $(MLFLAGS)
+TOPLEVEL = olablmktop $(MLFLAGS)
 RANLIB = ranlib
+MLFLAGS = -thread
+MLLIBS = unix.cma threads.cma
 CFLAGS = $(GTKCFLAGS)
-LDFLAGS = $(GTKLIBS)
+LDFLAGS = $(GTKLIBS) -lthreads -lunix
 
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
@@ -33,7 +35,8 @@ COBJS = ml_gtk.o ml_gdk.o
 MLOBJS = misc.cmo gdk.cmo gtk.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
-	$(TOPLEVEL) -o $@ -custom -cclib "$(LDFLAGS)" liblablgtk.a lablgtk.cma
+	$(TOPLEVEL) -o $@ -custom -cclib "$(LDFLAGS)" \
+	liblablgtk.a $(MLLIBS) lablgtk.cma
 
 liblablgtk.a: $(COBJS)
 	ar rc $@ $(COBJS)
@@ -47,6 +50,9 @@ var2conv: var2conv.cmo
 
 var2def: var2def.cmo
 	olablc -o $@ var2def.cmo
+
+clean:
+	rm -f *.cm* *.o *.a *_tags.[ch] var2conv var2def lablgtk
 
 .depend:
 	olabldep *.ml *.mli > .depend
