@@ -66,10 +66,10 @@ module Editable = struct
       { name = "copy_clipboard"; classe = `editable; 
 	marshaller = marshal_unit }
     let cut_clipboard =
-      { name = "copy_clipboard"; classe = `editable; 
+      { name = "cut_clipboard"; classe = `editable; 
 	marshaller = marshal_unit }
     let paste_clipboard =
-      { name = "copy_clipboard"; classe = `editable; 
+      { name = "paste_clipboard"; classe = `editable; 
 	marshaller = marshal_unit }
     let move_cursor =
       { name = "move_cursor"; classe = `editable; 
