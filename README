@@ -15,17 +15,19 @@ How to compile:
 	On FreeBSD, you need to link with libxpg4.so for Japanese
 	output.
 
-	If you intend to use threads, apply threads.patch to the olabl
-	distribution.
+	If present, apply olabl.patch to the fresh olabl distribution.
+	If you intend to use threads, apply also threads.patch.
 
 Contents:
 
-	threads.patch	patch for olabl-2.02
+	olabl.patch	patch for olabl-2.02 compiler
+	threads.patch	patch for olabl-2.02 thread library
 
 	gdk.ml		low-level interface to the General Drawing Kit
 	gtk.ml		low-level interface to the GIMP Tool Kit
 	gtkThread.ml	main loop for threaded version
-	gtkObj.ml	object-oriented interface to GTK
+	g[A-Z]*.ml	object-oriented interface to GTK
+	gdkObj.ml	object-oriented interface to GDK
 
 	lablgtk		normal toplevel
 	lablgtk_t	threaded toplevel
@@ -65,7 +67,7 @@ Structure of the (raw) Gtk module:
   The set function has a weak form of inheritance: it provides access
   to all parameters in superclasses.
 
-Structure of the GtkObj module:
+Structure of the G[A-Z]* modules:
 
   The structure has been greatly simplified.
   You can now freely inherit and subtype between widget classes.
@@ -77,17 +79,16 @@ Structure of the GtkObj module:
   these classes (cf. #container in pousse.ml for instance).
 
   Practically, each widget class is composed of:
-  * a frame method, returning the Gtk widget used for packing, etc...
-    Usually this is the widget itself.
+  * an as_widget method, returning the Gtk widget used for packing, etc...
   * a misc sub-object, giving access to miscellanous functionality of
     the basic gtkwidget class
   * a connect sub-object, allowing one to connect all available
     signals (this is what prevents width subtyping in subcases)
   * a connect#event sub-object, for event signals
 
-  Use the new_??? functions to create widgets. They admit many
-  optional arguments. The last of them, packing:, allows you to call a
-  function on your newly created widget.
+  You create a widget by [new <widget name> options ...].
+  Many optional arguments are admitted. The last of them, packing:,
+  allows you to call a function on your newly created widget.
 
 Note about unit as method argument:
 

@@ -103,7 +103,7 @@ var2def: var2def.cmo
 	$(LINKER) -o $@ var2def.cmo
 
 clean:
-	rm -f *.cm* *.o *.a *_tags.[ch] var2conv var2def lablgtk
+	rm -f *.cm* *.o *.a *_tags.[ch] var2conv var2def lablgtk lablgtk_t
 
 .depend:
 	olabldep *.ml *.mli > .depend
