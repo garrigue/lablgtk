@@ -1,8 +1,6 @@
 (* $Id$ *)
 
-open StdLabels
-open GtkNew
-open GtkBase
+module Array = StdLabels.Array
 
 (* To create a new widget:
    create an array sig_array containing the signals defined by
@@ -20,20 +18,19 @@ open GtkBase
 *)
 
 module Tictactoe = struct
-  type t = [`widget|`container|`box|`tictactoe]
+  type t = [`base|`widget|`container|`box|`tictactoe]
   module Signals = struct
-    open GtkSignal
-    let tictactoe : ([>`tictactoe],_) t =
-      { name = "tictactoe"; marshaller = marshal_unit }
-    let emit_tictactoe = emit_unit ~sgn:tictactoe
+    module S = GtkSignal
+    let tictactoe : ([>`tictactoe],_) S.t =
+      { S.classe = `tictactoe; S.name = "tictactoe";
+        S.marshaller = S.marshal_unit }
+    let emit_tictactoe = S.emit_unit ~sgn:tictactoe
   end
   let create : unit -> t Gtk.obj =
-    let _,tictactoe_new = make_new_widget
-	~name:"Tictactoe" ~parent:VBOX ~signals:[Signals.tictactoe]
-    in fun () -> Object.try_cast (tictactoe_new ()) "Tictactoe"
+    let _,tictactoe_new = GtkNew.make_new_widget
+	~name:"Tictactoe" ~parent:GtkNew.VBOX ~signals:[Signals.tictactoe]
+    in fun () -> GtkBase.Object.try_cast (tictactoe_new ()) "Tictactoe"
 end
-
-open GMain
 
 class tictactoe_signals obj = object
   inherit GContainer.container_signals obj
@@ -100,15 +97,16 @@ end
 
 let win (ttt : tictactoe)  _ =
   Printf.printf "Gagne!!\n" ;
+  flush stdout;
   ttt #clear ()
 
 let essai () =
   let window = GWindow.window ~title:"Tictactoe" ~border_width:10 () in
-  window #connect#destroy ~callback:Main.quit;
+  window #connect#destroy ~callback:GMain.Main.quit;
   let ttt = new tictactoe ~packing:window#add () in
   ttt #connect#tictactoe ~callback:(win ttt);
   window #show ();
-  Main.main ()
+  GMain.Main.main ()
 
 let _ = essai ()
   
