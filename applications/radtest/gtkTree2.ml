@@ -17,7 +17,7 @@ module TreeItem = struct
   external create : unit -> tree_item obj = "ml_gtk_tree_item2_new"
   external create_with_label : string -> tree_item obj
       = "ml_gtk_tree_item2_new_with_label"
-  let create ?:label () =
+  let create ?label () =
     match label with None -> create ()
     | Some label -> create_with_label label
   external set_subtree : [>`treeitem] obj -> [>`widget] obj -> unit
@@ -50,7 +50,7 @@ module Tree = struct
       = "ml_gtk_tree2_insert"
   external remove_items : [>`tree] obj -> [>`treeitem] obj list -> unit
       = "ml_gtk_tree2_remove_items"
-  external clear_items : [>`tree] obj -> start:int -> end:int -> unit
+  external clear_items : [>`tree] obj -> start:int -> stop:int -> unit
       = "ml_gtk_tree2_clear_items"
   external select_item : [>`tree] obj -> pos:int -> unit
       = "ml_gtk_tree2_select_item"
@@ -66,8 +66,8 @@ module Tree = struct
       = "ml_gtk_tree2_set_view_lines"
   external selection : [>`tree] obj -> tree_item obj list =
     "ml_gtk_tree2_selection"
-  let set ?:selection_mode ?:view_mode ?:view_lines w =
-    let may_set f = may fun:(f w) in
+  let set ?selection_mode ?view_mode ?view_lines w =
+    let may_set f = may ~f:(f w) in
     may_set set_selection_mode selection_mode;
     may_set set_view_mode view_mode;
     may_set set_view_lines view_lines
