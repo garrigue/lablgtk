@@ -26,7 +26,7 @@ class ['a] drawing w = object
   method string s = Draw.string w gc string:s
 end
 
-class pixdraw parent:(w : _ #GtkObj.widget_skel) :width :height =
+class pixdraw parent:(w : #GtkObj.widget) :width :height =
   let depth = w#misc#realize (); Gtk.Style.get_depth w#misc#style in
   let window = w#misc#window in
   object

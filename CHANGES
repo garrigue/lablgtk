@@ -1,9 +1,15 @@
 $Id$
 
+1998.12.7
+  * simplified GtkObj: use simple inheritance and allow easy subtyping
+  * updated olabl.diffs for bugs in class functions parsing and printing
+  * add ThreadObj for concurrent object programming
+  (Jacques)
+
 1998.12.3
   * pousse.ml is now a reversi game (idea for strategy ?)
   * solved startup bug (a value checker for ocaml is now available)
- (Jacques)
+  (Jacques)
 
 1998.12.2
   * added GdkObj for high level drawing primitives (Jacques)

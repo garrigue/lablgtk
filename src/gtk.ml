@@ -1926,11 +1926,11 @@ module Label = struct
     else invalid_arg "Gtk.Label.cast"
   external coerce : [> label] obj -> t obj = "%identity"
   external create : string -> t obj = "ml_gtk_label_new"
-  external set : [> label] obj -> string -> unit = "ml_gtk_label_set"
+  external set_label : [> label] obj -> string -> unit = "ml_gtk_label_set"
   external set_justify : [> label] obj -> justification -> unit
       = "ml_gtk_label_set_justify"
   let setter w :cont ?:label ?:justify =
-    may fun:(set w) label;
+    may fun:(set_label w) label;
     may fun:(set_justify w) justify;
     cont w
   let set = setter ?cont:Misc.set

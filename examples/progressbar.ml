@@ -22,12 +22,10 @@ end
 
 let main () =
 
-  let window = new_window `TOPLEVEL in
-  window#connect#destroy callback:Main.quit;
-  window#set border_width: 10;
+  let window = new_window `TOPLEVEL border_width: 10 in
+  window#connect_destroy callback:Main.quit;
 
-  let table = new_table rows:3 columns:2 in
-  window#add table;
+  let table = new_table rows:3 columns:2 packing: window#add in
   
   let label = new_label label:"Progress Bar Example" in
   table#attach label left:0 right:2 top:0 expand:`x shrink:`both;
@@ -39,11 +37,11 @@ let main () =
   let ptimer = Timeout.add 100 callback:bar#progress in
 
   let button = new_button label:"Reset" in
-  button#connect#clicked callback:bar#reset;
+  button#connect_clicked callback:bar#reset;
   table#attach button left:0 top:2 expand:`none fill:`x shrink:`both;
 
   let button = new_button label:"Cancel" in
-  button#connect#clicked callback:Main.quit;
+  button#connect_clicked callback:Main.quit;
   table#attach button left:1 top:2 expand:`none fill:`x shrink:`both;
 
   window#show_all ();
