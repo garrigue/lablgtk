@@ -15,7 +15,7 @@ RANLIB = ranlib
 
 include ../../config.make
 
-MLFLAGS = -I ../.. -I olabl-src/util -I olabl-src/parsing
+MLFLAGS = -thread -I ../.. -I olabl-src/utils -I olabl-src/parsing
 
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
@@ -27,11 +27,13 @@ MLFLAGS = -I ../.. -I olabl-src/util -I olabl-src/parsing
 	$(COMPOPT) $<
 
 # Targets
-MLOBJS = lexical.cmo editor.cmo
+MLOBJS = text.cmo file.cmo lexical.cmo shell.cmo editor.cmo
 
 browser: $(MLOBJS)
 	$(LINKER) -o $@ -custom -cclib "-L../..	-llablgtk $(GTKLIBS)" \
-	toplevellib.cma stdclass.cma lablgtk.cma $(MLOBJS)
+	toplevellib.cma stdclass.cma str.cma unix.cma threads.cma \
+	lablgtk.cma gtkThread.cmo \
+	-cclib "-lstr -lunix -lthreads" $(MLOBJS) 
 
 clean:
 	rm -f *.cm* browser

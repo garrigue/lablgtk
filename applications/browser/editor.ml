@@ -2,18 +2,6 @@
 
 open GMain
 
-let file_dialog :title :callback ?:filename =
-  let sel =
-    new GWindow.file_selection :title modal:true ?:filename in
-  sel#cancel_button#connect#clicked callback:sel#destroy;
-  sel#ok_button#connect#clicked callback:
-    begin fun () ->
-      let name = sel#get_filename in
-      sel#destroy ();
-      callback name
-    end;
-  sel#show ()
-
 class editor ?:packing ?:show =
   let text = new GEdit.text editable:true ?:packing ?:show in
 object (self)
@@ -39,10 +27,10 @@ object (self)
       close_in ic
     with _ -> ()
 
-  method open_file () = file_dialog title:"Open" callback:self#load_file
+  method open_file () = File.dialog title:"Open" callback:self#load_file
 
   method save_file () =
-    file_dialog title:"Save" ?:filename callback:
+    File.dialog title:"Save" ?:filename callback:
       begin fun name ->
 	try
 	  if Sys.file_exists name then Sys.rename old:name new:(name ^ "~");
@@ -82,6 +70,8 @@ object (self)
     let factory = new GMenu.factory file_menu :accel_group in
     factory#add_item label:"Open..." key:_O callback:editor#open_file;
     factory#add_item label:"Save..." key:_S callback:editor#save_file;
+    factory#add_item label:"Shell"
+      callback:(fun () -> Shell.f prog:"olabl" title:"Objective Label Shell");
     factory#add_separator ();
     factory#add_item label:"Quit" key:_Q callback:window#destroy;
     let factory = new GMenu.factory edit_menu :accel_group in
@@ -97,16 +87,10 @@ object (self)
     factory#add_item label:"Lex" key:_L
       callback:(fun () -> Lexical.tag editor#text);
     window#add_accel_group accel_group;
-    editor#text#connect#event#button_press
-      callback:(fun ev ->
-	let button = GdkEvent.Button.button ev in
-	if button = 3 then begin
-	  file_menu#popup :button time:(GdkEvent.Button.time ev); true
-	end else false);
     editor#text#set_vadjustment scrollbar#adjustment;
     if show then self#show ()
 end
 
 let _ =
   new editor_window show:true;
-  Main.main ()
+  GtkThread.main ()
