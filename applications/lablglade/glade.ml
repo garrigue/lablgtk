@@ -1,5 +1,3 @@
-open Gtk
-
 type project = [project]
 type project_view = [widget container clist project_view]
 type project_window = [widget container box project_window]

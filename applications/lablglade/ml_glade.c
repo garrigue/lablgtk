@@ -16,6 +16,7 @@
 #include "gbwidget.h"
 #include "load.h"
 #include "utils.h"
+#include "property.h"
 
 #include "wrappers.h"
 #include "ml_gtk.h"
@@ -100,6 +101,8 @@ value ml_gb_widget_data_##fname (value arg) \
   return conv(wdata->##fname );\
 }
 
+#define Val_string2(str) str?Val_string(str):Val_string("")
+
 Make_Extractor(gb_widget_data, (GbWidgetData*), flags, Val_int)
 Make_Extractor(gb_widget_data, (GbWidgetData*), x, Val_int)
 Make_Extractor(gb_widget_data, (GbWidgetData*), y, Val_int)
@@ -132,11 +135,11 @@ value ml_gb_signal_##fname (value arg) \
   return conv(wdata->##fname);\
 }
 
-Make_Extractor(gb_signal, (GbSignal*), name, Val_string)
-Make_Extractor(gb_signal, (GbSignal*), handler, Val_string)
-Make_Extractor(gb_signal, (GbSignal*), object, Val_string)
+Make_Extractor(gb_signal, (GbSignal*), name, Val_string2)
+Make_Extractor(gb_signal, (GbSignal*), handler, Val_string2)
+Make_Extractor(gb_signal, (GbSignal*), object, Val_string2)
 Make_Extractor(gb_signal, (GbSignal*), after, Val_bool)
-Make_Extractor(gb_signal, (GbSignal*), data, Val_string)
+Make_Extractor(gb_signal, (GbSignal*), data, Val_string2)
 
 #define GB_Accelerator(fname, conv) \
 value ml_gb_accelerator_##fname (value arg) \
@@ -173,3 +176,17 @@ value ml_gb_style_bg_pixmap_filenames (value arg1, value arg2) {
     Val_string("");
   }
 }
+
+/* property.c */
+
+value ml_property_set_combo(value arg) {
+  gchar* str = String_val(arg);
+  property_set_combo(GbSignalHandler, str);
+  return Val_unit;
+}
+
+value ml_property_get_combo() {
+  gchar* handler = property_get_combo (GbSignalHandler, NULL, NULL);
+  return Val_string(handler);
+}
+

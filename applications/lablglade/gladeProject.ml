@@ -1,13 +1,13 @@
 open Misc
 open Gtk
 open Tags
-open GtkBase
+(* open GtkBase *)
 open Glade
 
 
 module Project = struct
   let cast w : project obj =
-    if Object.is_a w "GladeProject" then Obj.magic w
+    if GtkBase.Object.is_a w "GladeProject" then Obj.magic w
     else invalid_arg "Glade.Project.cast"
   external coerce : [> project] obj -> project obj = "%identity"
   external set_source_files : [> project] obj ->
