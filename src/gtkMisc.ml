@@ -151,7 +151,7 @@ module Misc = struct
       set_alignment w ?x:xalign ?y:yalign ();
     if xpad <> None || ypad <> None then
       set_padding w ?x:xpad ?y:ypad ();
-    if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height
+    if width <> -2 || height <> -2 then Widget.set_size_request w ~width ~height
 end
 
 module Arrow = struct

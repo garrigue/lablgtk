@@ -28,6 +28,7 @@ class ['a] window_skel obj = object
   method set_allow_shrink allow_shrink = Window.set_policy obj ~allow_shrink
   method set_allow_grow allow_grow = Window.set_policy obj ~allow_grow
   method show () = Widget.show obj
+  method present () = Window.present obj
 end
 
 class window obj = object
@@ -123,6 +124,7 @@ class font_selection_dialog obj = object
   method connect = new container_signals obj
 (*
   method font = FontSelectionDialog.get_font obj
+
   method font_name = FontSelectionDialog.get_font_name obj
   method set_font_name = FontSelectionDialog.set_font_name obj
   method preview_text = FontSelectionDialog.get_preview_text obj

@@ -193,6 +193,48 @@ let find_anchor (iter:GText.iter) =
     false
   with Exit -> true
 
+let rec recursive_attach_view depth (view:GText.view) anchor =
+  if depth <= 4 then begin
+    let child_view = GText.view ~buffer:(view#get_buffer) () in
+    let event_box = GBin.event_box () in
+    let color = `NAME "black" in
+    event_box#misc#modify_bg [`NORMAL,color];
+    let align = GBin.alignment () in
+    align#set_border_width 1;
+    event_box#add align#coerce;
+    align#add child_view#coerce;
+    view#add_child_at_anchor event_box#coerce anchor;
+    recursive_attach_view (depth+1) child_view anchor
+  end
+
+    
+let easter_egg_callback =
+  let window = ref None in
+  fun () -> match !window with Some w -> w#present ()
+    | None -> 
+	let buffer = GText.buffer () in
+	let iter = buffer#get_start_iter in
+	buffer#insert ~iter ~text:"This buffer is shared by a set of nested text views.\n Nested view:\n" () ;
+	let anchor = buffer#create_child_anchor iter in
+	buffer#insert ~iter 
+	  ~text:"\nDon't do this in real applications, please.\n" ();
+	let view = GText.view ~buffer () in
+	recursive_attach_view 0 view anchor;
+	let w' = GWindow.window ~kind:`TOPLEVEL () in
+	w'#connect#destroy ~callback:(fun () -> window:=None);
+	window := Some w';
+	let sw = GBin.scrolled_window () in
+	sw#set_hpolicy `AUTOMATIC;
+	sw#set_vpolicy `AUTOMATIC;
+	w'#add sw#coerce;
+	sw#add view#coerce;
+	w'#set_default_size ~width:300 ~height:400;
+	w'#misc#show_all ()
+
+    
+  
+
+
 let attach_widgets (text_view:GText.view) =
   let buffer = text_view#get_buffer in
   let iter = buffer#get_start_iter in
@@ -203,7 +245,9 @@ let attach_widgets (text_view:GText.view) =
       | None -> assert false
     in
     let widget = match !i with 
-      | 0 -> (GButton.button ~label:"Click me!" ())#coerce
+      | 0 -> let b = GButton.button ~label:"Click me!" () in
+	b#connect#clicked ~callback:easter_egg_callback;
+	b#coerce
       | 1 -> let menu = GMenu.menu () in
 	let widget = GMenu.option_menu () in
 	let menu_item = GMenu.menu_item  ~label:"Option 1" () in
@@ -216,7 +260,7 @@ let attach_widgets (text_view:GText.view) =
 	widget#coerce
       | 2 -> let widget = GRange.scale `HORIZONTAL () in
 	widget#adjustment#set_bounds ~lower:0. ~upper:100. ();
-	(* HOWTO to do :  gtk_widget_set_size_request (widget, 70, -1); *)
+	widget#misc#set_size_request ~width:70 ();
 	widget#coerce
       | 3 -> let image = GMisc.image () in
 	image#set_file "floppybuddy.gif";

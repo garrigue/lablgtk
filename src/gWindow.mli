@@ -25,6 +25,7 @@ class ['a] window_skel : 'b obj ->
     method set_wm_class : string -> unit
     method set_wm_name : string -> unit
     method show : unit -> unit
+    method present : unit -> unit
   end
 
 class window : Gtk.window obj ->

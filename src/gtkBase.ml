@@ -70,6 +70,8 @@ module Widget = struct
       = "ml_gtk_widget_set_uposition"
   external set_usize : [>`widget] obj -> width:int -> height:int -> unit
       = "ml_gtk_widget_set_usize"
+  external set_size_request : [>`widget] obj -> width:int -> height:int -> unit
+      = "ml_gtk_widget_set_size_request"
   external add_events : [>`widget] obj -> Gdk.Tags.event_mask list -> unit
       = "ml_gtk_widget_add_events"
   external set_events : [>`widget] obj -> Gdk.Tags.event_mask list -> unit
@@ -292,7 +294,7 @@ module Container = struct
   let set ?border_width ?(width = -2) ?(height = -2) w =
     may border_width ~f:(set_border_width w);
     if width <> -2 || height <> -2 then
-      Widget.set_usize w ?width ?height
+      Widget.set_size_request w ?width ?height
   external foreach : [>`container] obj -> f:(widget obj-> unit) -> unit
       = "ml_gtk_container_foreach"
   let children w =

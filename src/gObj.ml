@@ -274,7 +274,9 @@ and misc_ops obj = object
   method set_can_focus = Widget.set_can_focus obj
   method set_geometry ?(x = -2) ?(y = -2) ?(width = -2) ?(height = -2)  () =
     if x+y <> -4 then Widget.set_uposition obj ~x ~y;
-    if width+height <> -4 then Widget.set_usize obj ~width ~height
+    if width+height <> -4 then Widget.set_size_request obj ~width ~height
+  method set_size_request ?(width= -1) ?(height= -1) () = 
+    Widget.set_size_request obj ~width ~height
   method set_style (style : style) = Widget.set_style obj style#as_style
   method modify_fg = iter_setcol Widget.modify_fg obj
   method modify_bg = iter_setcol Widget.modify_bg obj

@@ -47,7 +47,7 @@ end
 
 let set_editable ?editable ?(width = -2) ?(height = -2) w =
   may editable ~f:(Editable.set_editable w);
-  if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height
+  if width <> -2 || height <> -2 then Widget.set_size_request w ~width ~height
 
 let entry ?max_length ?text ?visibility ?editable
     ?width ?height ?packing ?show () =
