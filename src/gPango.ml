@@ -4,7 +4,7 @@ open Gaux
 open Pango
 open Font
 
-let to_pixels x = (x-1 / scale) + 1
+let to_pixels x = (x-1) / scale + 1
 let from_pixels x = x * scale
 
 class metrics obj = object
