@@ -6,6 +6,7 @@ exception Error of string
 let _ = Callback.register_exception "gtkerror" (Error"")
 exception Warning of string
 let _ = Glib.set_warning_handler (fun msg -> raise (Warning msg))
+let _ = Glib.set_print_handler (fun msg -> print_string msg; flush stdout)
 
 type 'a obj
 type clampf = float
@@ -1570,8 +1571,8 @@ module Main = struct
   (* external exit : int -> unit = "ml_gtk_exit" *)
   external set_locale : unit -> string = "ml_gtk_set_locale"
   (* external main : unit -> unit = "ml_gtk_main" *)
-  let locale = set_locale ()
   let argv = init Sys.argv
+  let locale = set_locale ()
   external iteration_do : bool -> bool = "ml_gtk_main_iteration_do"
   let main () = while not (iteration_do true) do () done
   external quit : unit -> unit = "ml_gtk_main_quit"
