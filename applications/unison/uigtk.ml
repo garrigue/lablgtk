@@ -161,6 +161,7 @@ let start () =
     new GList.clist columns:5 vadjustment:sb#adjustment
       titles_show:true packing:box#add
   in
+  mainWindow#misc#grab_focus ();
   Array.iteri [|100; 40; 100; 40; 280|]
     fun:(fun :i :data -> mainWindow#set_column i width:data);
   let displayTitle() =
@@ -258,12 +259,14 @@ let start () =
       try
 	let a = derefSome theState in
 	current := Some row;
-	if mainWindow#row_is_visible row = `NONE then begin
+	if mainWindow#row_is_visible row <> `FULL then begin
 	  let adj = mainWindow#vadjustment in
 	  let current = adj#value
 	  and upper = adj#upper and lower = adj#lower in
-	  adj#set_value
+	  let v =
 	    (float row /. float (Array.length a +1) *. (upper-.lower) +. lower)
+	  in
+	  adj#set_value (min v (upper -. adj#page_size))
 	end;
 	displayDetails (path2string a.(row).ri.path)
 	  (details2string a.(row).ri)
@@ -429,51 +432,50 @@ let start () =
   (**********************************************************************)
   (*                       FUNCTION TO ASK FOR NEW ROOTS                *)
   (**********************************************************************)
-(*
+
   let getRoots() =
-    begin
-      let t = Toplevel.create toplevelWindow [] in
-      Wm.title_set t "Enter roots";
-      Wm.iconname_set t "Enter roots";
-      (* Create the display area *)
-      let frame1 = Frame.create t [ ] in
-      pack [frame1] [Side Side_Top;Fill Fill_X;PadY(Pixels 4)];
-      let label1 = Label.create frame1 [Text "Local root:"] in
-      let var1 = Textvariable.create() in
-      let entry1 = Entry.create frame1 [TextVariable var1] in
-      pack [label1;entry1] [Side Side_Left];
-      Focus.set entry1;
-      let frame2 = Frame.create t [ ] in
-      pack [frame2] [Side Side_Top;Fill Fill_X;PadY(Pixels 4)];
-      let label2 = Label.create frame2 [Text "Second root:"] in
-      let var2 = Textvariable.create() in
-      let entry2 = Entry.create frame2 [TextVariable var2] in
-      let label3 = Label.create frame2 [Text "with optional host:"] in
-      let var3 = Textvariable.create() in
-      let entry3 = Entry.create frame2 [TextVariable var3] in
-      pack [label2;entry2;label3;entry3] [Side Side_Left;Fill Fill_X];
-      let frame3 = Frame.create t [ ] in
-      pack [frame3] [Side Side_Top;Fill Fill_X;PadY(Pixels 4)];
-      let go = Button.create t
-          [ Relief Raised;
-            Text "Go!";
-            Command(fun () ->
-             let root1 = Local (string2fspath (Textvariable.get var1)) in
-             let fspath2 = string2fspath (Textvariable.get var2) in
-             let host2 = Textvariable.get var3 in
-             let root2 =
-              (if (compare host2 "" = 0) then
-                Local fspath2
-               else Remote (host2, fspath2)) in
-             Globals.replicaRoots := [root1; root2];
-             detectUpdatesAndReconcile true;
-             Tk.destroy t)
-          ] in
-      let dismiss = Button.create t
-          [Relief Raised; Text "Dismiss"; Command(fun () -> Tk.destroy t)] in
-      pack [go;dismiss] [Side Side_Left;PadX(Pixels 4)];
-    end in
-  (*
+    let t =
+      new GWindow.dialog title:"Enter roots" wm_name:"Enter roots" modal:true
+    in
+    (* Create the display area *)
+    let hbox = new GPack.hbox packing:(t#vbox#pack expand:false padding:10) in
+    let label1 = new GMisc.label text:"Local root:"
+	packing:(hbox#pack padding:2 expand:false) in
+    let entry1 = new GEdit.entry packing:hbox#add in
+    entry1#misc#grab_focus ();
+    let hbox = new GPack.hbox packing:(t#vbox#pack expand:false padding:10) in
+    new GMisc.label text: "Second root:"
+      packing:(hbox#pack padding:2 expand:false);
+    let entry2 = new GEdit.entry width:100 packing:hbox#add in
+    new GMisc.label text:"with optional host:"
+      packing:(hbox#pack padding:2 expand:false);
+    let entry3 = new GEdit.entry width:100 packing:hbox#add in
+    let go () =
+      if entry1#text = "" || entry2#text = "" then () else
+      let root1 = (Local, string2fspath entry1#text) in
+      let fspath2 = string2fspath entry2#text in
+      let host2 = entry3#text in
+      let root2 =
+        if (compare host2 "" = 0) then
+          (Local, fspath2)
+        else (Remote host2, fspath2)
+      in
+      Globals.replicaRoots := [root1; root2];
+      detectUpdatesAndReconcile true;
+      t#destroy ()
+    in
+    let goButton = new GButton.button label: "Go!" packing:t#action_area#add in
+    goButton#connect#clicked callback:go;
+    goButton#grab_default ();
+    List.iter [entry1;entry2;entry2]
+      fun:(fun (e : GEdit.entry) -> ignore (e#connect#activate callback:go));
+    let dismiss =
+      new GButton.button label: "Dismiss" packing:t#action_area#add in
+    dismiss#connect#clicked callback:t#destroy;
+    dismiss#misc#set_can_default true;
+    t#show ()
+  in
+
   (**********************************************************************)
   (* Function to ask for editing preferences                            *)
   (**********************************************************************)
@@ -481,11 +483,11 @@ let start () =
   let editPreferences() =
     displayErrorMessage "Not implemented"
   in
-  *)
+
   (**********************************************************************)
   (*                     LOCK MANAGEMENT FUNCTIONS                      *)
   (**********************************************************************)
-*)
+
   let getLock theFunction =
     if !busy then
      (displayMessage "Synchronizer is busy, please wait..")
@@ -744,13 +746,9 @@ let start () =
   (**********************************************************************)
   (* Add a command to obtain new roots to the File menu                 *)
   (**********************************************************************)
-  (*
-  Menu.add_command fileMenu
-    [ Label "New roots";
-      Font fontBold;
-      Command(fun () -> getLock (fun () -> getRoots()))
-    ];
-  *)
+
+  fileMenu#add_item label: "New roots"
+    callback:(fun () -> getLock getRoots);
 
   (**********************************************************************)
   (* Add entries to the Help menu                                       *)
@@ -985,13 +983,15 @@ let start () =
   let diffCmd () = 
     getLock
       begin fun () ->
-        selectSomethingIfPossible();
-        let i = derefSome current in
-        let a = derefSome theState in
-        let theSI = a.(i) in
-        showDiffs a.(i).ri
-          (fun title text -> messageBox title text)
-          Trace.status
+	try
+          selectSomethingIfPossible();
+          let i = derefSome current in
+          let a = derefSome theState in
+          let theSI = a.(i) in
+          showDiffs a.(i).ri
+            (fun title text -> messageBox title text)
+            Trace.status
+	with DerefSome -> ()
       end
   in
   actionBar#insert_space;
@@ -1003,31 +1003,38 @@ let start () =
   (* Configure keyboard commands                                        *)
   (**********************************************************************)
 
-  mainWindow#connect#event#key_press callback:
+  mainWindow#connect#event#key_press after:true callback:
     begin fun ev ->
       let key = GdkEvent.Key.keyval ev in
-      if key = _Up then (prev (); true) else
-      if key = _Down then (next (); true) else
-      false
+      if key = _Up || key = _Down || key = _Prior || key = _Next ||
+      key = _Page_Up || key = _Page_Down then begin
+	select (mainWindow#focus_row);
+	true
+      end else
+	false
     end;
 
   (**********************************************************************)
   (* Add entries to the Navigate menu                                   *)
   (**********************************************************************)
-  let root1 = try host2string(List.nth !Globals.replicaRoots pos:0)
+  let root1 = try root2hostname(List.nth !Globals.replicaRoots pos:0)
               with Failure(_) -> "??" in
-  let root2 = try host2string(List.nth !Globals.replicaRoots pos:1)
+  let root2 = try root2hostname(List.nth !Globals.replicaRoots pos:1)
               with Failure(_) -> "??" in
 
   let descr = if root1=root2 then "left to right"
               else ("from "^root1^" to "^root2) in
-  navigateMenu#add_item label:("Propagate " ^ descr) key:_less
-    callback:rightAction;
+  let left =
+    navigateMenu#add_item label:("Propagate " ^ descr) key:_greater
+      callback:rightAction in
+  left#add_accelerator accel_group key:_greater mod:[`SHIFT];
 
   let descl = if root1=root2 then "right to left"
               else ("from "^root2^" to "^root1) in
-  navigateMenu#add_item label:("Propagate " ^ descl) key:_greater
-    callback:leftAction;
+  let right =
+    navigateMenu#add_item label:("Propagate " ^ descl) key:_less
+      callback:leftAction in
+  right#add_accelerator accel_group key:_less mod:[`SHIFT];
 
   navigateMenu#add_item label:"Do not propagate changes" key:_slash
     callback:questionAction;
@@ -1048,6 +1055,26 @@ let start () =
       Trace.printTrace := b;
       if !Trace.printTrace then messagesWindow#misc#show ()
       else messagesWindow#misc#hide ()
+    end;
+
+  fileMenu#add_check_item label:"Ignore files" active:(not !Ignore.noignore)
+    callback: begin fun b ->
+      Ignore.noignore := not b;
+      Globals.propagatePrefs();
+      if !Ignore.noignore then
+        (* We are no longer ignoring files; we must re-detect *)
+        detectUpdatesAndReconcile false
+      else try
+          (* We are now ignoring files; we don't need to re-detect,
+             we just need to filter out files which should now be
+             ignored. *)
+        let theSIArray = derefSome theState in
+        let theSIList = Array.to_list theSIArray in
+        let theSIList = filterIgnoreStateItems theSIList in
+        let theSIArray = Array.of_list theSIList in
+        theState := Some theSIArray;
+        displayMain()
+      with DerefSome -> ()
     end;
 
   fileMenu#add_item label:"Exit" key:_q callback:safeExit;
