@@ -101,7 +101,7 @@ class iter :
     method get_bytes_in_line : int
     method get_char : char
     method get_chars_in_line : int
-    method get_child_anchor : textchildanchor option
+    method get_child_anchor : child_anchor option
     method get_line : int
     method get_line_index : int
     method get_line_offset : int
@@ -202,6 +202,8 @@ class buffer :
     method as_buffer : textbuffer obj
     method begin_user_action : unit -> unit
     method connect : buffer_signals
+    method create_child_anchor : iter -> child_anchor
+    method insert_child_anchor : iter -> child_anchor -> unit
     method create_mark : ?name:string -> ?left_gravity:bool -> iter -> mark
     method create_tag :
       ?name:string -> ?properties:GtkText.Tag.property list -> unit -> tag
@@ -215,7 +217,7 @@ class buffer :
       ?interactive:bool -> ?default_editable:bool -> unit -> unit
     method destroy : unit -> unit
     method end_user_action : unit -> unit
-    method get_bounds : textiter * textiter
+    method get_bounds : iter * iter
     method get_char_count : int
     method get_end_iter : iter
     method get_insert : mark
@@ -236,7 +238,8 @@ class buffer :
       ?include_hidden_chars:bool ->
       ?start:iter -> ?stop:iter -> unit -> string
     method insert :
-      text:string -> ?iter:iter -> ?tags:tag list -> unit -> unit
+      text:string -> ?iter:iter -> ?tags_names:string list -> ?tags:tag list 
+      -> unit -> unit
     method insert_interactive :
       text:string ->
       ?iter:textiter -> ?default_editable:bool -> unit -> bool

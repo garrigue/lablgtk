@@ -19,7 +19,7 @@ let t_2 () =
   let sw = GBin.scrolled_window ~packing:(w#add) () in
   let b = GText.buffer () in
   let s = f_to_string "test.txt" in
-    b#set_text ~text:s ();
+    b#set_text s;
     GText.view ~buffer:b ~packing:(sw#add) ();
     w#show ();;
 
@@ -27,14 +27,14 @@ let t_2 () =
 let t_3 () = 
   let w = GWindow.window  ~title:"3)view_with_buffer"  () in
   let b = GText.buffer () in
-    b#set_text ~length:5 ~text:"Bout de mon texte" ();
+    b#set_text  "Bout de mon texte";
     GText.view ~buffer:b ~packing:(w#add) ();
     w#show ();;
 
 let t_4 () = 
   let w = GWindow.window  ~title:"4)set_buffer"  () in
   let b = GText.buffer () in
-    b#set_text ~text:"Un buffer a priori" ();
+    b#set_text "Un buffer a priori" ;
     let tv = GText.view ~packing:(w#add) () in
       tv#set_buffer b;
       w#show ();;
@@ -43,7 +43,7 @@ let t_4 () =
 let t_5 () = 
   let w = GWindow.window  ~title:"5)get_buffer"  () in
   let tv = GText.view ~packing:(w#add) () in
-      (tv#get_buffer ())#set_text ~text:"Un nouveau texte" ();
+      tv#get_buffer#set_text "Un nouveau texte";
       w#show ();;
 
 let t_6 () = 
@@ -70,14 +70,14 @@ Not able to set it because not in a tagtable: this is normal
 let t_8 () = 
   let w = GWindow.window  ~title:"8)tags"  () in
   let t = GText.view ~packing:(w#add) () in
-  let tb = t#get_buffer () in
+  let tb = t#get_buffer in
   let tt = tb#create_tag ~properties:[ `BACKGROUND "red";
 				       `FOREGROUND "blue";
 				       `EDITABLE false] () 
   in
-    tb#set_text ~text:"Un nouveau texte" ();    
-    let start = tb#get_start_iter () in
-    let stop = tb#get_end_iter () in
+    tb#set_text "Un nouveau texte";    
+    let start = tb#get_start_iter in
+    let stop = tb#get_end_iter in
       tb#apply_tag tt start stop;
       Printf.printf "Je vois :\"%s\"\n"
 	(tb#get_text ~include_hidden_chars:true ~start ~stop ());
@@ -87,15 +87,15 @@ let t_8 () =
 let t_9 () = 
   let w = GWindow.window  ~title:"8)tags"  () in
   let t = GText.view ~packing:(w#add) () in
-  let tb = t#get_buffer () in
-    tb#set_text ~text:"Un nouveau texte" ();    
-    let start = tb#get_start_iter () in
-    let stop = tb#get_end_iter () in
+  let tb = t#get_buffer in
+    tb#set_text "Un nouveau texte" ;    
+    let start = tb#get_start_iter in
+    let stop = tb#get_end_iter in
       tb#insert ~text:"1en plus1" ~iter:start ();
       tb#insert ~text:"2en plus2" ~iter:start ();
-      tb#insert ~text:"3en plus3" ~iter:(tb#get_end_iter ()) ();
-      let start = tb#get_start_iter () in
-      let stop = tb#get_end_iter () in
+      tb#insert ~text:"3en plus3" ~iter:tb#get_end_iter ();
+      let start = tb#get_start_iter in
+      let stop = tb#get_end_iter in
 	Printf.printf "Je vois :\"%s\"\n"
  	  (tb#get_text ~include_hidden_chars:true ~start ~stop ());
 	flush stdout;
@@ -105,17 +105,17 @@ let t_9 () =
 let t_10 () = 
   let w = GWindow.window  ~title:"8)tags"  () in
   let t = GText.view ~packing:(w#add) () in
-  let tb = t#get_buffer () in
-    tb#set_text ~text:"Un nouveau texte" ();    
-    let start = tb#get_start_iter () in
-    let stop = tb#get_end_iter () in
+  let tb = t#get_buffer in
+    tb#set_text "Un nouveau texte" ;    
+    let start = tb#get_start_iter in
+    let stop = tb#get_end_iter in
       tb#insert ~text:"1en plus1" ~iter:start ();
       tb#insert ~text:"2en plus2" ~iter:start ();
-      tb#insert ~text:"3en plus3" ~iter:(tb#get_end_iter ()) ();
+      tb#insert ~text:"3en plus3" ~iter:tb#get_end_iter ();
       let _ = tb#connect#begin_user_action 
 		~callback:(fun () ->   
-			     let start = tb#get_start_iter () in
-			     let stop = tb#get_end_iter () in
+			     let start = tb#get_start_iter in
+			     let stop = tb#get_end_iter  in
 			       Printf.printf "Dan cette action je vois :\"%s\"\n"
  				 (tb#get_text ~include_hidden_chars:true ~start ~stop ());
 			  flush stdout) 
@@ -133,13 +133,13 @@ let t_10 () =
 let t_11 () = 
   let w = GWindow.window  ~title:"testing fonts"  () in
   let t = GText.view ~packing:(w#add) () in
-  let tb = t#get_buffer () in
-  let font()  = Pango.Font.from_string "Fixed 15" in
-  let font2 () = Pango.Font.from_string "Sans 25" in
-  let f () = `FONT_DESC (font()) in
-  let f2 () = `FONT_DESC (font2()) in
-  let font_tag = tb#create_tag ~properties:[f ()] () in
-  let font_tag2 = tb#create_tag ~properties:[f2()] () in
+  let tb = t#get_buffer in
+  let font  = Pango.Font.from_string "Fixed 15" in
+  let font2  = Pango.Font.from_string "Sans 25" in
+  let f  = `FONT_DESC font in
+  let f2 = `FONT_DESC font2 in
+  let font_tag = tb#create_tag ~properties:[f] () in
+  let font_tag2 = tb#create_tag ~properties:[f2] () in
   tb#insert ~tags:[font_tag] ~text:"Un nouveau texte" ();
   t#connect#toggle_overwrite ~callback:
     (fun _ -> tb#insert ~tags:[font_tag] ~text:"Un nouveau texte" () );
@@ -147,8 +147,28 @@ let t_11 () =
     (fun _ -> tb#insert ~tags:[font_tag2] ~text:"OH OH" () );
   w#show ();;
     
+let t_12 () = 
+  let w = GWindow.window  ~title:"testing properties"  () in
+  let t = GText.view ~packing:w#add () in
+  let tb = t#get_buffer in
+  let font  = Pango.Font.from_string "Fixed 15" in
+  let font2  = Pango.Font.from_string "Sans 25" in
+  let f  = `FONT_DESC font in
+  let f2 = `FONT_DESC font2 in
+
+  let f' = `STYLE `ITALIC in
+  let f2' = `STYLE `OBLIQUE in
+  let tag = tb#create_tag ~properties:[f';f] () in
+  let tag2 = tb#create_tag ~properties:[f2';f2] () in
+  tb#insert ~tags:[] ~text:"Un nouveau texte" ();
+  t#connect#toggle_overwrite ~callback:
+    (fun _ -> tb#insert ~tags:[tag] ~text:"<Italic>" () );
+  t#connect#toggle_overwrite ~callback:
+    (fun _ -> tb#insert ~tags:[tag2] ~text:"<Oblique>" () );
+  w#show ();;
+
 (* t_1();t_2 ();t_3();t_4();t_5();t_6();t_7() ; t_8 ; t_9 ; t_10 ;; *)
 
-t_11();;
+t_12();;
 
 GMain.Main.main ();;

@@ -74,7 +74,11 @@ object
   method get_pixbuf = Iter.get_pixbuf it
   method get_marks = Iter.get_marks it
   method get_toggled_tags  = Iter.get_toggled_tags it
-  method get_child_anchor  = Iter.get_child_anchor it
+  method get_child_anchor  = 
+    match (Iter.get_child_anchor it)
+    with 
+      |None -> None
+      |Some c -> Some (new child_anchor c)
   method begins_tag t = Iter.begins_tag it t
   method ends_tag t = Iter.ends_tag it t
   method toggles_tag t = Iter.toggles_tag it t
@@ -206,9 +210,14 @@ class buffer obj = object(self)
   method get_line_count = Buffer.get_line_count obj
   method get_char_count = Buffer.get_char_count obj
   method get_tag_table =  Buffer.get_tag_table obj
-  method insert ~text ?iter ?(tags=([]:tag list)) () =  
-    match tags with
-      | [] -> 
+  method insert ~text 
+    ?iter 
+    ?(tags_names=([]:string list))
+    ?(tags=([]:tag list)) 
+    () 
+    =  
+    match tags,tags_names with
+      | [],[] -> 
 	  begin match iter with
 	  | None      -> Buffer.insert_at_cursor obj text
 	  | Some iter -> Buffer.insert obj (as_textiter iter) text
@@ -221,12 +230,16 @@ class buffer obj = object(self)
 	      let start_offset = (insert_iter ())#get_offset in
 	      Buffer.insert_at_cursor obj text;
 	      let start = self#get_iter_at ~char_offset:start_offset () in
-	      List.iter tags ~f:(self#apply_tag ~start ~stop:(insert_iter ())) 
+	      List.iter tags ~f:(self#apply_tag ~start ~stop:(insert_iter ()));
+	      List.iter tags_names 
+		~f:(self#apply_tag_by_name ~start ~stop:(insert_iter ())) 
 	  | Some iter -> 
 	      let start_offset = iter#get_offset in
 	      Buffer.insert obj (as_textiter iter) text;
 	      let start = self#get_iter_at ~char_offset:start_offset () in
-	      List.iter tags ~f:(self#apply_tag ~start ~stop:iter)
+	      List.iter tags ~f:(self#apply_tag ~start ~stop:iter);
+	      List.iter tags_names 
+		~f:(self#apply_tag_by_name ~start ~stop:iter)
 	end
   method insert_interactive ~text ?iter ?(default_editable = true) () = 
     match iter with
@@ -248,7 +261,7 @@ class buffer obj = object(self)
   method get_text ?(include_hidden_chars=false) ?start ?stop () =
     let start,stop = 
       match start,stop with 
-	| None,None -> self#get_bounds
+	| None,None -> Buffer.get_bounds obj
 	| Some start,None -> as_textiter start, self#get_start_iter#as_textiter
 	| None,Some stop -> self#get_end_iter#as_textiter, as_textiter stop
 	| Some start,Some stop -> as_textiter start, as_textiter stop
@@ -304,7 +317,10 @@ class buffer obj = object(self)
     new iter (Buffer.get_iter_at_mark obj mark#as_mark)
   method get_start_iter = new iter (Buffer.get_start_iter obj)
   method get_end_iter = new iter (Buffer.get_end_iter obj)
-  method get_bounds = Buffer.get_bounds obj
+  method get_bounds = 
+    let s,t=Buffer.get_bounds obj in
+    new iter s,new iter t
+				
   method get_modified = Buffer.get_modified  obj
   method set_modified setting = Buffer.set_modified  obj setting
   method delete_selection ?(interactive=true) ?(default_editable=true) () = 
@@ -312,6 +328,10 @@ class buffer obj = object(self)
   method get_selection_bounds = Buffer.get_selection_bounds obj
   method begin_user_action () = Buffer.begin_user_action obj
   method end_user_action () = Buffer.end_user_action obj
+  method create_child_anchor (iter:iter) = 
+    new child_anchor (Buffer.create_child_anchor obj iter#as_textiter)
+  method insert_child_anchor (iter:iter) (child_anchor:child_anchor) = 
+    Buffer.insert_child_anchor obj iter#as_textiter child_anchor#as_childanchor
 end
 
 let buffer ?(tagtable:tagtable option) ?text () =

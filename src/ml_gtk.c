@@ -36,6 +36,7 @@ ML_1 (Val_toolbar_style, Int_val, Id)
 ML_1 (Val_state_type, Int_val, Id)
 ML_1 (Val_scroll_type, Int_val, Id)
 
+
 static Make_Flags_val (Dest_defaults_val)
 static Make_Flags_val (Target_flags_val)
 
