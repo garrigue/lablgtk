@@ -141,7 +141,8 @@ let try_cast w name =
   if is_a w name then unsafe_cast w
   else raise (Cannot_cast(Type.name(get_type w), name))
 
-external coerce : 'a obj -> [`base] obj = "%identity"
+external coerce : 'a obj -> unit obj = "%identity"
+external coerce_option : 'a obj option -> unit obj option = "%identity"
   (* [coerce] is safe *)
 
 external unsafe_create : g_type -> (string * 'a data_set) list -> 'b obj

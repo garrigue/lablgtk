@@ -31,12 +31,9 @@ class ['a] container_impl :([> Gtk.container] as 'a) obj ->
     inherit ['a] objvar
   end
 
-class container_signals :
-  'a obj ->
+class container_signals : [> Gtk.container] obj ->
   object
     inherit widget_signals
-    constraint 'a = [> Gtk.container]
-    val obj : 'a obj
     method add : callback:(widget -> unit) -> GtkSignal.id
     method remove : callback:(widget -> unit) -> GtkSignal.id
   end
@@ -75,12 +72,9 @@ class virtual ['a] item_container : ([> Gtk.container] as 'c) obj ->
     method private virtual wrap : Gtk.widget obj -> 'a
   end
 
-class item_signals :
-  'a obj ->
+class item_signals : [> Gtk.item] obj ->
   object
     inherit container_signals
-    constraint 'a = [> Gtk.item]
-    val obj : 'a obj
     method deselect : callback:(unit -> unit) -> GtkSignal.id
     method select : callback:(unit -> unit) -> GtkSignal.id
     method toggle : callback:(unit -> unit) -> GtkSignal.id

@@ -52,10 +52,13 @@ exception Cannot_cast of string * string
 
 val get_type : 'a obj -> g_type
 val is_a : 'a obj -> string -> bool
-external unsafe_cast : 'a obj -> 'b obj = "%identity"
 val try_cast : 'a obj -> string -> 'b obj
-external coerce : 'a obj -> [ `base ] obj = "%identity"
 val get_oid : 'a obj -> int
+
+external unsafe_cast : 'a obj -> 'b obj = "%identity"
+external coerce : 'a obj -> unit obj = "%identity"
+external coerce_option : 'a obj option -> unit obj option = "%identity"
+    (* [coerce] and [coerce_option] are safe *)
 
 type +'a param
 val dyn_param : string -> 'a data_set -> 'b param

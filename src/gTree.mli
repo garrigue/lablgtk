@@ -7,11 +7,9 @@ open GContainer
 
 (* Obsolete GtkTree/GtkTreeItem framework *)
 
-class tree_item_signals : 'a obj ->
+class tree_item_signals : tree_item obj ->
   object
     inherit item_signals
-    constraint 'a = [> tree_item]
-    val obj : 'a obj
     method collapse : callback:(unit -> unit) -> GtkSignal.id
     method expand : callback:(unit -> unit) -> GtkSignal.id
   end
@@ -84,10 +82,9 @@ class column_list :
     method lock : unit -> unit
   end
 
-class model_signals : ([> `treemodel] as 'b) obj ->
+class model_signals : [> `treemodel] obj ->
   object ('a)
-    inherit gobject_signals
-    val obj : 'b obj
+    method after : 'a
     method row_changed :
       callback:(tree_path -> tree_iter -> unit) -> GtkSignal.id
     method row_deleted : callback:(tree_path -> unit) -> GtkSignal.id
@@ -160,9 +157,8 @@ class list_store : Gtk.list_store ->
 val list_store : column_list -> list_store
 
 class selection_signals : tree_selection ->
-  object
-    inherit gobject_signals
-    val obj : Gtk.tree_selection
+  object ('a)
+    method after : 'a
     method changed : callback:(unit -> unit) -> GtkSignal.id
   end
 class selection :
@@ -172,7 +168,7 @@ class selection :
     method connect : selection_signals
     method misc : gobject_ops
     method count_selected_rows : int
-    method get_mode : Gtk.Tags.selection_mode
+    method get_mode : Tags.selection_mode
     method get_selected_rows : tree_path list
     method iter_is_selected : tree_iter -> bool
     method path_is_selected : tree_path -> bool
@@ -180,7 +176,7 @@ class selection :
     method select_iter : tree_iter -> unit
     method select_path : tree_path -> unit
     method select_range : tree_path -> tree_path -> unit
-    method set_mode : Gtk.Tags.selection_mode -> unit
+    method set_mode : Tags.selection_mode -> unit
     method set_select_function : (tree_path -> bool -> bool) -> unit
     method unselect_all : unit
     method unselect_iter : tree_iter -> unit
@@ -188,17 +184,16 @@ class selection :
     method unselect_range : tree_path -> tree_path -> unit
   end
 
-class view_column_signals : ([> `gtk | `treeviewcolumn] as 'b) obj ->
-  object ('a)
+class view_column_signals : [> `gtk | `treeviewcolumn] obj ->
+  object
     inherit gtkobj_signals
-    val obj : 'b obj
     method clicked : callback:(unit -> unit) -> GtkSignal.id
   end
 class view_column : tree_view_column obj ->
   object
     inherit gtkobj
     val obj : tree_view_column obj
-    method as_column : Gtk.tree_view_column Gtk.obj
+    method as_column : Gtk.tree_view_column obj
     method misc : GObj.gobject_ops
     method add_attribute :
       [> `cellrenderer ] obj -> string -> 'a column -> unit
@@ -240,17 +235,16 @@ val view_column :
   ?renderer:([>`cellrenderer] obj * (string * 'a column) list) ->
   unit -> view_column
 
-class view_signals : ([> tree_view] as 'b) obj ->
+class view_signals : [> tree_view] obj ->
   object ('a)
     inherit GContainer.container_signals
-    val obj : 'b obj
     method columns_changed : callback:(unit -> unit) -> GtkSignal.id
     method cursor_changed : callback:(unit -> unit) -> GtkSignal.id
     method expand_collapse_cursor_row :
       callback:(logical:bool -> expand:bool -> all:bool -> bool) ->
       GtkSignal.id
     method move_cursor :
-      callback:(Gtk.Tags.movement_step -> int -> bool) -> GtkSignal.id
+      callback:(Tags.movement_step -> int -> bool) -> GtkSignal.id
     method row_activated :
       callback:(tree_path -> view_column -> unit) -> GtkSignal.id
     method row_collapsed :
@@ -265,7 +259,8 @@ class view_signals : ([> tree_view] as 'b) obj ->
       callback:(GData.adjustment option -> GData.adjustment option -> unit) ->
       GtkSignal.id
     method start_interactive_search : callback:(unit -> bool) -> GtkSignal.id
-    method test_collapse_row : callback:(unit -> bool) -> GtkSignal.id
+    method test_collapse_row :
+      callback:(tree_iter -> tree_path -> bool) -> GtkSignal.id
     method test_expand_row :
       callback:(tree_iter -> tree_path -> bool) -> GtkSignal.id
     method toggle_cursor_row : callback:(unit -> bool) -> GtkSignal.id
@@ -279,18 +274,15 @@ class view : tree_view obj ->
     method connect : view_signals
     method append_column : view_column -> int
     method collapse_all : unit -> unit
-    method collapse_row : Gtk.tree_path -> unit
+    method collapse_row : tree_path -> unit
     method enable_search : bool
     method expand_all : unit -> unit
-    method expand_row : ?all:bool -> Gtk.tree_path -> unit
+    method expand_row : ?all:bool -> tree_path -> unit
     method expander_column : view_column option
     method get_column : int -> view_column
-
-    method get_cursor :
-        unit -> Gtk.tree_path option * Gtk.tree_view_column option
+    method get_cursor : unit -> tree_path option * tree_view_column option
     method get_path_at_pos :
-        x:int -> y:int ->
-        (Gtk.tree_path * Gtk.tree_view_column Gtk.obj * int * int) option
+      x:int -> y:int -> (tree_path * tree_view_column obj * int * int) option
     method hadjustment : GData.adjustment
     method headers_visible : bool
     method insert_column : view_column -> int -> int
@@ -298,17 +290,17 @@ class view : tree_view obj ->
     method move_column : view_column -> after:view_column -> int
     method remove_column : view_column -> int
     method reorderable : bool
-    method row_activated : Gtk.tree_path -> view_column -> unit
-    method row_expanded : Gtk.tree_path -> bool
+    method row_activated : tree_path -> view_column -> unit
+    method row_expanded : tree_path -> bool
     method rules_hint : bool
     method scroll_to_cell :
-      ?align:float * float -> Gtk.tree_path -> view_column -> unit
+      ?align:float * float -> tree_path -> view_column -> unit
     method scroll_to_point : int -> int -> unit
     method search_column : int
     method selection : selection
     method set_cursor :
-      ?cell:[> `cellrenderer] Gtk.obj ->
-      ?edit:bool -> Gtk.tree_path -> view_column -> unit
+      ?cell:[> `cellrenderer] obj ->
+      ?edit:bool -> tree_path -> view_column -> unit
     method set_enable_search : bool -> unit
     method set_expander_column : view_column option -> unit
     method set_hadjustment : GData.adjustment -> unit

@@ -65,13 +65,13 @@ let toplevel (w : #widget) =
 
 (** Dialog **)
 
-class ['a] dialog_signals (obj : [>Gtk.dialog] obj) tbl = object
-  inherit container_signals obj
+class ['a] dialog_signals (obj : [>Gtk.dialog] obj) tbl = object (self)
+  inherit widget_signals_impl obj
+  inherit container_sigs
   method response ~(callback : 'a -> unit) = 
-    GtkSignal.connect ~sgn:Dialog.Signals.response obj ~after 
+    self#connect Dialog.S.response
       ~callback:(fun i -> callback (List.assoc i !tbl))
-  method close =
-    GtkSignal.connect ~sgn:Dialog.Signals.close obj ~after
+  method close = self#connect Dialog.S.close
 end
 
 let rec list_rassoc k = function

@@ -171,10 +171,10 @@ end
 let paned dir =
   pack_container [] ~create:(fun p -> new paned (Paned.create dir p))
 
-class notebook_signals obj = object
-  inherit GContainer.container_signals obj
-  method change_current_page =
-    GtkSignal.connect obj ~sgn:Notebook.S.change_current_page ~after
+class notebook_signals obj = object (self)
+  inherit widget_signals_impl obj
+  inherit container_sigs
+  method change_current_page = self#connect Notebook.S.change_current_page
 end
 
 class notebook obj = object (self)

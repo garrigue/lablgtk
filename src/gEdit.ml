@@ -8,12 +8,12 @@ open OGtkProps
 open GObj
 
 class editable_signals obj = object
-  inherit widget_signals obj
-  method changed = GtkSignal.connect ~sgn:Editable.Signals.changed obj ~after
+  inherit widget_signals_impl (obj : [>editable] obj)
+  method changed = GtkSignal.connect ~sgn:Editable.Signals.changed obj
   method insert_text =
-    GtkSignal.connect ~sgn:Editable.Signals.insert_text obj ~after
+    GtkSignal.connect ~sgn:Editable.Signals.insert_text obj
   method delete_text =
-    GtkSignal.connect ~sgn:Editable.Signals.delete_text obj ~after
+    GtkSignal.connect ~sgn:Editable.Signals.delete_text obj
 end
 
 class editable obj = object
@@ -33,7 +33,7 @@ end
 
 class entry_signals obj = object
   inherit editable_signals obj
-  method activate = GtkSignal.connect ~sgn:Entry.S.activate obj ~after
+  method activate = GtkSignal.connect ~sgn:Entry.S.activate obj
 end
 
 class entry obj = object

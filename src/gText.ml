@@ -546,31 +546,8 @@ let buffer ?(tagtable:tagtable option) ?text () =
  
 
 class view_signals obj = object
-  inherit gtkobj_signals (obj : [> Gtk.text_view] obj)
-  method copy_clipboard = 
-     GtkSignal.connect ~sgn:View.Signals.copy_clipboard ~after obj
-  method cut_clipboard = 
-     GtkSignal.connect ~sgn:View.Signals.cut_clipboard ~after obj
-  method delete_from_cursor = 
-     GtkSignal.connect ~sgn:View.Signals.delete_from_cursor ~after obj
-  method insert_at_cursor = 
-     GtkSignal.connect ~sgn:View.Signals.insert_at_cursor ~after obj
-  method move_cursor = 
-     GtkSignal.connect ~sgn:View.Signals.move_cursor ~after obj
-  method move_focus = 
-     GtkSignal.connect ~sgn:View.Signals.move_focus ~after obj
-  method page_horizontally = 
-     GtkSignal.connect ~sgn:View.Signals.page_horizontally ~after obj
-  method paste_clipboard = 
-     GtkSignal.connect ~sgn:View.Signals.paste_clipboard ~after obj
-  method populate_popup = 
-     GtkSignal.connect ~sgn:View.Signals.populate_popup ~after obj
-  method set_anchor = 
-     GtkSignal.connect ~sgn:View.Signals.set_anchor ~after obj
-  method set_scroll_adjustments = 
-     GtkSignal.connect ~sgn:View.Signals.set_scroll_adjustments ~after obj
-  method toggle_overwrite = 
-     GtkSignal.connect ~sgn:View.Signals.toggle_overwrite ~after obj
+  inherit widget_signals_impl (obj : [> Gtk.text_view] obj)
+  inherit text_view_sigs
 end
 
 class view obj = object (self)

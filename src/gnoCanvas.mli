@@ -57,7 +57,7 @@ type items_properties = [
   | `Y1 of float
   | `Y2 of float] 
       
-val propertize : [< items_properties] -> string * [`base] Gobject.data_set
+val propertize : [< items_properties] -> string * unit Gobject.data_set
 
 type item_event = [
   | `BUTTON_PRESS of GdkEvent.Button.t

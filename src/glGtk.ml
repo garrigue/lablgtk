@@ -37,7 +37,7 @@ end
 
 class area_signals obj =
 object (connect)
-  inherit GObj.widget_signals (obj : [> gl_area] obj)
+  inherit GObj.widget_signals_impl (obj : [> gl_area] obj)
   method display ~callback =
     (new GObj.event_signals ~after obj)#expose ~callback:
       begin fun ev ->

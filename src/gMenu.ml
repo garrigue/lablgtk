@@ -6,15 +6,16 @@ open Gtk
 open GtkData
 open GtkBase
 open GtkMenu
+open OGtkProps
 open GObj
 open GContainer
 
 (* Menu type *)
 
-class menu_shell_signals obj = object
-  inherit container_signals obj
-  method deactivate =
-    GtkSignal.connect ~sgn:MenuShell.Signals.deactivate obj ~after
+class menu_shell_signals obj = object (self)
+  inherit widget_signals_impl obj
+  inherit container_sigs
+  method deactivate = self#connect MenuShell.S.deactivate
 end
 
 class type virtual ['a] pre_menu = object
@@ -31,9 +32,11 @@ end
 
 (* Menu items *)
 
-class menu_item_signals obj = object
-  inherit item_signals obj
-  method activate = GtkSignal.connect ~sgn:MenuItem.Signals.activate obj
+class menu_item_signals obj = object (self)
+  inherit widget_signals_impl (obj : [>menu_item] obj)
+  inherit container_sigs
+  inherit item_sigs
+  method activate = self#connect MenuItem.S.activate
 end
 
 
@@ -51,7 +54,7 @@ class ['a] pre_menu_item_skel obj = object
   method set_right_justified = MenuItem.set_right_justified obj
   method right_justified = MenuItem.get_right_justified obj
   method add_accelerator ~group ?modi:m ?flags key=
-    Widget.add_accelerator obj ~sgn:MenuItem.Signals.activate group ?flags
+    Widget.add_accelerator obj ~sgn:MenuItem.S.activate group ?flags
       ?modi:m ~key
 end
 
@@ -98,10 +101,9 @@ let image_menu_item
   may image ~f:(fun im -> set ImageMenuItem.P.image w im#as_widget);
   pack_item (new image_menu_item w) ?packing ?show
 
-class check_menu_item_signals obj = object
+class check_menu_item_signals obj = object (self)
   inherit menu_item_signals obj
-  method toggled =
-    GtkSignal.connect ~sgn:CheckMenuItem.Signals.toggled obj ~after
+  method toggled = self#connect CheckMenuItem.S.toggled
 end
 
 class check_menu_item obj = object

@@ -376,7 +376,8 @@ object ('a)
     callback:(menu obj -> unit) -> GtkSignal.id
   method set_anchor : callback:(unit -> unit) -> GtkSignal.id
   method set_scroll_adjustments :
-    callback:(adjustment obj -> adjustment obj -> unit) -> GtkSignal.id
+    callback:(GData.adjustment option -> GData.adjustment option -> unit)
+    -> GtkSignal.id
   method toggle_overwrite : callback:(unit -> unit) -> GtkSignal.id
 end
 

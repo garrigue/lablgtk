@@ -224,7 +224,8 @@ val label_cast : < as_widget : 'a obj ; .. > -> label
 class tips_query_signals : Gtk.tips_query obj ->
   object
     inherit widget_signals
-    val obj : Gtk.tips_query obj
+    method start_query : callback:(unit -> unit) -> GtkSignal.id
+    method stop_query : callback:(unit -> unit) -> GtkSignal.id
     method widget_entered :
       callback:(widget option -> text:string -> privat:string -> unit) ->
       GtkSignal.id

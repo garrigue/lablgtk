@@ -16,23 +16,8 @@ module TreeItem = struct
   let create ?label () =
     match label with None -> create []
     | Some label -> create_with_label label
-  external set_subtree : [>`treeitem] obj -> [>`widget] obj -> unit
-      = "ml_gtk_tree_item_set_subtree"
-  external remove_subtree : [>`treeitem] obj -> unit
-      = "ml_gtk_tree_item_remove_subtree"
-  external expand : [>`treeitem] obj -> unit
-      = "ml_gtk_tree_item_expand"
-  external collapse : [>`treeitem] obj -> unit
-      = "ml_gtk_tree_item_collapse"
   external subtree : [>`treeitem] obj -> tree obj
       = "ml_GTK_TREE_ITEM_SUBTREE"
-  module Signals = struct
-    open GtkSignal
-    let expand =
-      { name = "expand"; classe = `treeitem; marshaller = marshal_unit }
-    let collapse =
-      { name = "collapse"; classe = `treeitem; marshaller = marshal_unit }
-  end
 end
 
 module Tree = struct
@@ -62,17 +47,6 @@ module Tree = struct
     may_set set_selection_mode selection_mode;
     may_set set_view_mode view_mode;
     may_set set_view_lines view_lines
-  module Signals = struct
-    open GtkSignal
-    let selection_changed =
-      { name = "selection_changed"; classe = `tree; marshaller = marshal_unit }
-    let select_child =
-      { name = "select_child"; classe = `tree;
-        marshaller = Widget.Signals.marshal }
-    let unselect_child =
-      { name = "unselect_child"; classe = `tree;
-        marshaller = Widget.Signals.marshal }
-  end
 end
 
 module TreePath = struct
@@ -97,6 +71,12 @@ module TreePath = struct
   external down : tree_path -> unit = "ml_gtk_tree_path_down"
   external is_ancestor : tree_path -> tree_path -> bool
     = "ml_gtk_tree_path_is_ancestor"
+  open Gobject
+  open Data
+  let () =
+    Internal.tree_path_string :=
+      {kind=`STRING; inj=(fun x -> string.inj (to_string x));
+       proj=(fun x -> from_string (string.proj x))}
 end
 
 module RowReference = struct
@@ -150,35 +130,6 @@ module TreeModel = struct
     let i = alloc_iter () in
     if iter_parent m i ~child then i
     else failwith "GtkTree.TreeModel.iter_parent"
-  module Signals = struct
-    open GtkSignal
-    external extract_iter : Gpointer.boxed -> tree_iter
-      = "ml_gtk_tree_iter_copy"
-    external extract_path : Gpointer.boxed -> tree_path
-      = "ml_gtk_tree_path_copy"
-    let marshal_path_iter f _ = function
-      | `POINTER(Some p) :: `POINTER(Some i) :: _ ->
-          f (extract_path p) (extract_iter i)
-      |	_ -> invalid_arg "GtkTree.TreeModel.Signals.marshal_path_iter"
-    let marshal_path f _ = function
-      | `POINTER(Some p) :: _ -> f (extract_path p)
-      |	_ -> invalid_arg "GtkTree.TreeModel.Signals.marshal_path"
-    let row_changed =
-      { name = "row-changed"; classe = `treemodel;
-        marshaller = marshal_path_iter }
-    let row_inserted =
-      { name = "row-inserted"; classe = `treemodel;
-        marshaller = marshal_path_iter }
-    let row_has_child_toggled =
-      { name = "row-has-child-toggled"; classe = `treemodel;
-        marshaller = marshal_path_iter }
-    let row_deleted =
-      { name = "row-deleted"; classe = `treemodel;
-        marshaller = marshal_path }
-    let rows_reordered =
-      { name = "rows-reordered"; classe = `treemodel;
-        marshaller = marshal_path_iter }
-  end
 end
 
 module TreeStore = struct
@@ -274,7 +225,7 @@ module ListStore = struct
 end
 
 module TreeSelection = struct
-  let cast w : tree_selection = Object.try_cast w "GtkTreeSelection"
+  include TreeSelection
   external set_mode : tree_selection -> selection_mode -> unit
     = "ml_gtk_tree_selection_set_mode"
   external get_mode : tree_selection -> selection_mode
@@ -309,11 +260,6 @@ module TreeSelection = struct
     = "ml_gtk_tree_selection_select_range"
   external unselect_range : tree_selection -> tree_path -> tree_path -> unit
     = "ml_gtk_tree_selection_unselect_range"
-  module Signals = struct
-    open GtkSignal
-    let changed = { name = "changed"; classe = `treeselection;
-                    marshaller = marshal_unit }
-  end
 end
 
 module TreeViewColumn = struct
@@ -332,11 +278,6 @@ module TreeViewColumn = struct
     = "ml_gtk_tree_view_column_add_attribute"
   external set_sort_column_id : [>`treeviewcolumn] obj -> int -> unit	
     = "ml_gtk_tree_view_column_set_sort_column_id"      
-  module Signals = struct
-    open GtkSignal
-    let clicked = { name = "clicked"; classe = `treeviewcolumn;
-                    marshaller = marshal_unit }
-  end
 end
 
 module TreeView = struct
@@ -393,123 +334,12 @@ module TreeView = struct
     [>`treeview] obj -> x:int -> y:int ->
     (tree_path * tree_view_column obj * int * int) option
     = "ml_gtk_tree_view_get_path_at_pos"
-
-  module Signals = struct
-    open GtkSignal
-    let return = Gobject.Closure.set_result
-    let columns_changed =
-      { name = "columns-changed"; classe = `treeview;
-        marshaller = marshal_unit }
-    let cursor_changed =
-      { name = "cursor-changed"; classe = `treeview;
-        marshaller = marshal_unit }
-    let marshal_expand_bool3 f argv = function
-      | `BOOL logical :: `BOOL expand :: `BOOL all :: _ ->
-          return argv (`BOOL (f ~logical ~expand ~all))
-      | _ -> failwith "GtkTree.TreeView.Signals.expand_collapse_cursor_row"
-    let expand_collapse_cursor_row =
-      { name = "expand_collapse_cursor_row"; classe = `treeview;
-        marshaller = marshal_expand_bool3 }
-    let marshal_move_cursor f argv = function
-      | `INT step :: `INT n :: _ ->
-          return argv
-            (`BOOL (f (Gpointer.decode_variant GtkEnums.movement_step step) n))
-      | _ -> failwith "GtkTree.TreeView.Signals.move_cursor"
-    let move_cursor =
-      { name = "move_cursor"; classe = `treeview;
-        marshaller = marshal_move_cursor }
-    let marshal_row_activated f _ = function
-      | `POINTER(Some i) :: `OBJECT(Some c) :: _ ->
-          f (TreeModel.Signals.extract_path i)
-            (Gobject.unsafe_cast c : tree_view_column obj)
-      | _ -> failwith "GtkTree.TreeView.Signals.row_activated"
-    let row_activated =
-      { name = "row_activated"; classe = `treeview;
-        marshaller = marshal_row_activated }
-    let marshal_iter_path f _ = function
-      | `POINTER(Some i) :: `POINTER(Some p) :: _ ->
-          f (TreeModel.Signals.extract_iter i)
-            (TreeModel.Signals.extract_path p)
-      |	_ -> invalid_arg "GtkTree.TreeView.Signals.marshal_iter_path"
-    let row_collapsed =
-      { name = "row_collapsed"; classe = `treeview;
-        marshaller = marshal_iter_path }
-    let row_expanded =
-      { name = "row_expanded"; classe = `treeview;
-        marshaller = marshal_iter_path }
-    let marshal_ret_bool f argv _ = return argv (`BOOL (f ()))
-    let select_all =
-      { name = "select_all"; classe = `treeview;
-        marshaller = marshal_ret_bool }
-    let select_cursor_parent =
-      { name = "select_cursor_parent"; classe = `treeview;
-        marshaller = marshal_ret_bool }
-    let marshal_select_cursor_row f argv = function
-      | `BOOL start_editing :: _ ->
-          return argv (`BOOL (f ~start_editing))
-      | _ -> failwith "GtkTree.TreeView.Signals.select_cursor_row"
-    let select_cursor_row =
-      { name = "select_cursor_row"; classe = `treeview;
-        marshaller = marshal_select_cursor_row }
-    let marshal_adjustments f _ = function
-      | `OBJECT a :: `OBJECT b :: _ ->
-          f (may_map Gobject.unsafe_cast a : adjustment obj option)
-            (may_map Gobject.unsafe_cast b : adjustment obj option)
-      | _ -> failwith "GtkTree.TreeView.Signals.set_scroll_adjustments"
-    let set_scroll_adjustments =
-      { name = "set_scroll_adjustments"; classe = `treeview;
-        marshaller = marshal_adjustments }
-    let start_interactive_search =
-      { name = "start_interactive_search"; classe = `treeview;
-        marshaller = marshal_ret_bool }
-    let test_collapse_row =
-      { name = "test_collapse_row"; classe = `treeview;
-        marshaller = marshal_ret_bool }
-    let marshal_expand_row f argv = function
-      | `POINTER(Some i) :: `POINTER(Some p) :: _ ->
-          return argv (`BOOL (f (TreeModel.Signals.extract_iter i)
-                                (TreeModel.Signals.extract_path p)))
-      |	_ -> invalid_arg "GtkTree.TreeView.Signals.marshal_expand_row"
-    let test_expand_row =
-      { name = "test_expand_row"; classe = `treeview;
-        marshaller = marshal_expand_row }
-    let toggle_cursor_row =
-      { name = "toggle_cursor_row"; classe = `treeview;
-        marshaller = marshal_ret_bool }
-    let unselect_all =
-      { name = "unselect_all"; classe = `treeview;
-        marshaller = marshal_ret_bool }
-  end
 end
 
 module CellRenderer = CellRenderer
 
 module CellRendererPixbuf = CellRendererPixbuf
 
-module CellRendererText = struct
-  include CellRendererText
-  external set_fixed_height_from_font : cell_renderer_text obj -> int -> unit
-    = "ml_gtk_cell_renderer_text_set_fixed_height_from_font"
-  module Signals = struct
-    open GtkSignal
-    let marshal_edited f _ = function
-        `STRING(Some path) :: `STRING(Some text) :: _ ->
-          f (TreePath.from_string path) text
-      | _ -> failwith "GtkTree.CellRendererText.Signals.marshal_edited"
-    let edited = { name = "edited"; classe = `cellrenderertext;
-                   marshaller = marshal_edited }
-  end
-end
+module CellRendererText = CellRendererText
 
-module CellRendererToggle = struct
-  include CellRendererToggle
-  module Signals = struct
-    open GtkSignal
-    let marshal_toggled f _ = function
-        `STRING(Some path) :: _ ->
-          f (TreePath.from_string path)
-      | _ -> failwith "GtkTree.CellRendererToggle.Signals.marshal_toggled"
-    let toggled = { name = "toggled"; classe = `cellrenderertoggle;
-                    marshaller = marshal_toggled }
-  end
-end
+module CellRendererToggle = CellRendererToggle

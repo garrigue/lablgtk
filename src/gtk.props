@@ -19,12 +19,26 @@ module Internal = struct
     {kind=`POINTER;inj=(fun _ -> failwith "GtkProps.Internal.allocation");
      proj=(function `POINTER(Some p) -> allocation_at_pointer p
           | _ -> failwith "GtkProps.Internal.allocation")}
+  let tree_path_string = ref (unsafe_boxed : tree_path data_conv)
 end
+}
+
+oheader{
+open GtkSignal
+open Gobject
+open Data
+open GtkProps
+
+(* Redefining saves space in bytecode! *)
+let set = set
+let get = get
+let param = param
 }
 
 conversions {
   GtkStock "GtkStock.conv"
   GtkAllocation "Internal.allocation"
+  GtkTreePathString "!Internal.tree_path_string" 
 }
 
 boxed {
@@ -126,7 +140,7 @@ class Label set wrap : Misc {
   signal populate_popup : GtkMenu
 }
 
-class TipsQuery set wrap : Label {
+class TipsQuery set wrap wrapsig : Label {
   "caller"               GtkWidget_opt        : Read / Write
   "emit-always"          gboolean             : Read / Write
   "label-inactive"       gchararray           : Read / Write
@@ -135,9 +149,9 @@ class TipsQuery set wrap : Label {
   method stop_query
   signal start_query
   signal stop_query
-  signal widget_entered :  GtkWidget_opt gchararray gchararray
+  signal widget_entered :  GtkWidget_opt text:string privat:string
   signal widget_selected :
-    GtkWidget_opt gchararray gchararray GdkEventButton -> gboolean
+    GtkWidget_opt text:string privat:string GdkEventButton -> bool
 }
 
 class Arrow set wrap : Misc {
@@ -170,8 +184,8 @@ class Container abstract : Widget {
   method set_focus_child : "[>`widget] optobj -> unit"
   method set_focus_vadjustment : "[>`adjustment] optobj -> unit"
   method set_focus_hadjustment : "[>`adjustment] optobj -> unit"
-  signal add :       GtkWidget
-  signal remove :    GtkWidget
+  signal add :       GtkWidget   / Wrap
+  signal remove :    GtkWidget   / Wrap
   signal check_resize
   signal set_focus : GtkWidget_opt
 }
@@ -200,12 +214,12 @@ class AspectFrame set wrap : Frame {
   "yalign"               gfloat               : Read / Write
 }
 
-class Button set : Bin {
+class Button set wrapsig : Bin {
   "label"                gchararray           : Read / Write / Construct
   "use-stock"            gboolean             : Read / Write / Construct
   "use-underline"        gboolean             : Read / Write / Construct
   "relief"               GtkReliefStyle       : Read / Write
-  signal activate
+  signal activate        / NoWrap
   signal clicked
   signal enter
   signal leave
@@ -228,10 +242,12 @@ class RadioButton : ToggleButton {
 
 class OptionMenu : Button {
   "menu"                 GtkMenu              : Read / Write
+  method remove_menu
+  method set_history : "int -> unit"
   signal changed
 }
 
-class Item abstract : Bin {
+class Item abstract wrapsig : Bin {
   method select
   method deselect
   method toggle
@@ -241,6 +257,17 @@ class Item abstract : Bin {
 }
 
 class MenuItem : Item {
+  method set_submenu : "[>`menu] obj -> unit"
+  method get_submenu : "widget obj option"
+  method remove_submenu
+  method activate
+  method select
+  method deselect
+  method set_right_justified : "bool -> unit"
+  method get_right_justified : "bool"
+  method set_accel_path : "string -> unit"
+  method toggle_size_request : "int -> unit"
+  method toggle_size_allocate : "int -> unit"
   signal activate
   signal activate_item
 (*signal toggle_size_allocate : gint
@@ -250,10 +277,14 @@ class MenuItem : Item {
 class CheckMenuItem : MenuItem {
   "active"               gboolean             : Read / Write
   "inconsistent"         gboolean             : Read / Write
+  method set_show_toggle : "bool -> unit"
+  method toggled
   signal toggled
 }
 
-class RadioMenuItem abstract : CheckMenuItem {}
+class RadioMenuItem abstract : CheckMenuItem {
+  method set_group : "radio_menu_item group -> unit"
+}
 
 class ImageMenuItem : MenuItem {
   "image"                GtkWidget            : Read / Write
@@ -264,7 +295,14 @@ class SeparatorMenuItem {}
 class TearoffMenuItem {}
 *)
 class ListItem : Item { (* omit signals *) }
-class TreeItem : Item {}
+class TreeItem wrapsig : Item {
+  method set_subtree : "[>`widget] obj -> unit"
+  method remove_subtree
+  method collapse
+  method expand
+  signal collapse
+  signal expand
+}
 
 class Window set wrap : Bin {
   "title"                gchararray           : Read / Write
@@ -318,7 +356,7 @@ class Plug abstract : Bin {
 }
 class EventBox : Bin {}
 
-class HandleBox set wrap : Bin {
+class HandleBox set wrap wrapsig : Bin {
   "handle-position"      GtkPositionType      : Read / Write
   "snap-edge"            GtkPositionType      : Read / Write
   "shadow_type"          GtkShadowType        : Read / Write
@@ -399,7 +437,7 @@ class Statusbar : Box {
   signal text_pushed : guint gchararray
 }
 
-class Clist "GtkCList" set wrap abstract : Container {
+class Clist "GtkCList" set wrap wrapsig abstract : Container {
   "n-columns"            guint                : Read / Write / Construct Only
   "sort-type"            GtkSortType          : Read / Write
   "reorderable"          gboolean             : Read / Write
@@ -411,10 +449,13 @@ class Clist "GtkCList" set wrap abstract : Container {
   (* not all signals *)
   signal click_column :  gint
   signal resize_column : gint gint
+  signal scroll_horizontal : GtkScrollType pos:gfloat
+  signal scroll_vertical : GtkScrollType pos:gfloat
   signal select_all
-  signal select_row :    gint gint GdkEventButton
+  signal select_row :    row:gint column:gint event:GdkEventButton_opt
   signal unselect_all
-  signal unselect_row :  gint gint GdkEventButton
+  signal unselect_row :  row:gint column:gint event:GdkEventButton_opt
+  
 }
 
 class Fixed : Container {
@@ -455,6 +496,10 @@ class List set wrap : Container {
 }
 
 class MenuShell abstract : Container {
+  method append : "[>`widget] obj -> unit"
+  method prepend : "[>`widget] obj -> unit"
+  method insert : "[>`widget] obj -> pos:int -> unit"
+  method deactivate
   signal activate_current : gboolean
   signal cancel
   signal cycle_focus : GtkDirectionType
@@ -465,6 +510,18 @@ class MenuShell abstract : Container {
 class MenuBar : MenuShell {}
 class Menu : MenuShell {
   "tearoff-title"        gchararray           : Read / Write
+  method popup :
+      "[>`menushell] optobj ->
+       [>`menuitem] optobj -> button:int -> time:int32 -> unit"
+  method popdown
+  method get_active : "widget obj"
+  method set_active : "int -> unit"
+  method set_accel_group : "accel_group -> unit"
+  method get_accel_group : "accel_group"
+  method set_accel_path : "string -> unit"
+  method attach_to_widget : "[>`widget] obj -> unit"
+  method get_attach_widget : "widget obj"
+  method detach
   signal move_scroll : GtkScrollType
 }
 
@@ -498,7 +555,7 @@ class Notebook set wrap : Container {
   (* omit others *)
 }
 
-class Socket : Container {
+class Socket wrapsig : Container {
   method steal : "Gdk.xid -> unit"
   signal plug_added
   signal plug_removed
@@ -518,7 +575,7 @@ class Table set wrap :Container {
   method set_col_spacing : "int -> int -> unit"
 }
 
-class TextView wrap : Container {
+class TextView wrap wrapsig : Container {
   "editable"             gboolean             : Read / Write / Set
   "cursor-visible"       gboolean             : Read / Write / Set
   "indent"               gint                 : Read / Write
@@ -557,7 +614,7 @@ class Tree : Container {
   signal unselect_child : GtkWidget
 }
 
-class TreeView set wrap : Container {
+class TreeView set wrap wrapsig : Container {
   "model"                GtkTreeModel_opt     : Read / Write / NoWrap
   "hadjustment"          GtkAdjustment        : Read / Write
   "vadjustment"          GtkAdjustment        : Read / Write
@@ -570,15 +627,16 @@ class TreeView set wrap : Container {
   "search-column"        gint                 : Read / Write
   signal columns_changed
   signal cursor_changed
-  signal expander_collapse_cursor_row : gboolean gboolean gboolean -> gboolean
+  signal expand_collapse_cursor_row :
+    logical:gboolean expand:gboolean all:gboolean -> gboolean
   signal move_cursor :   GtkMovementStep gint -> gboolean
-  signal row_activated : GtkTreePath GtkTreeViewColumn
+  signal row_activated : GtkTreePath GtkTreeViewColumn          / NoWrap
   signal row_collapsed : GtkTreeIter GtkTreePath
   signal row_expanded :  GtkTreeIter GtkTreePath 
   signal select_all : -> gboolean
   signal select_cursor_parent : -> gboolean
-  signal select_cursor_row : gboolean -> gboolean
-  signal set_scroll_adjustment : GtkAdjustment_opt GtkAdjustment_opt
+  signal select_cursor_row : start_editing:gboolean -> gboolean
+  signal set_scroll_adjustments : GtkAdjustment_opt GtkAdjustment_opt
   signal start_interactive_search : -> gboolean
   signal test_collapse_row : GtkTreeIter GtkTreePath -> gboolean
   signal test_expand_row :   GtkTreeIter GtkTreePath -> gboolean
@@ -586,7 +644,7 @@ class TreeView set wrap : Container {
   signal unselect_all : -> gboolean
 }
 
-class Calendar : Widget {
+class Calendar wrapsig : Widget {
   method select_month : "month:int -> year:int -> unit"
   method select_day : "int -> unit"
   method mark_day : "int -> unit"
@@ -696,7 +754,10 @@ class ProgressBar : Widget {
   "text"                 gchararray           : Read / Write / Wrap
 }
 
-class Adjustment : Object {}
+class Adjustment : Object {
+  signal changed
+  signal value_changed
+}
 
 class CellRenderer vset : Object {
   "cell-background"      gchararray           : Write
@@ -758,6 +819,8 @@ class CellRendererText vset : CellRenderer {
   "variant-set"          gboolean             : Read / Write / NoVSet
   "weight"               gint                 : Read / Write
   "weight-set"           gboolean             : Read / Write / NoVSet
+  method set_fixed_height_from_font : "int -> unit"
+  signal edited : GtkTreePathString string
 }
 
 class CellRendererToggle vset : CellRenderer {
@@ -765,6 +828,7 @@ class CellRendererToggle vset : CellRenderer {
   "active"               gboolean             : Read / Write
   "inconsistent"         gboolean             : Read / Write
   "radio"                gboolean             : Read / Write
+  signal toggled : GtkTreePathString
 }
 
 class Tooltips : Object {}
@@ -784,6 +848,7 @@ class TreeViewColumn wrap : Object {
   "visible"              gboolean             : Read / Write
   "widget"               GtkWidget_opt        : Read / Write
   "width"                gint                 : Read
+  signal clicked
 }
 
 class TextTag abstract vset : GObject {
@@ -848,4 +913,16 @@ class TextTag abstract vset : GObject {
   "weight-set"           gboolean             : Read / Write
   "wrap-mode"            GtkWrapMode          : Read / Write
   "wrap-mode-set"        gboolean             : Read / Write
+}
+
+class TreeSelection abstract : Gobject {
+  signal changed
+}
+
+class TreeModel abstract wrapsig : GObject {
+  signal row_changed : GtkTreePath GtkTreeIter
+  signal row_deleted : GtkTreePath
+  signal row_has_child_toggled : GtkTreePath GtkTreeIter
+  signal row_inserted : GtkTreePath GtkTreeIter
+  signal rows_reordered : GtkTreePath GtkTreeIter (* gpointer *)
 }

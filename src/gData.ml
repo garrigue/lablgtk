@@ -7,11 +7,11 @@ open GtkBase
 open GtkData
 open GObj
 
-class adjustment_signals obj = object
-  inherit gtkobj_signals obj
-  method changed = GtkSignal.connect ~sgn:Adjustment.Signals.changed obj ~after
-  method value_changed =
-    GtkSignal.connect ~sgn:Adjustment.Signals.value_changed obj ~after
+class adjustment_signals obj = object (self)
+  inherit ['a] gobject_signals obj
+  method destroy = self#connect Object.S.destroy
+  method changed = self#connect Adjustment.S.changed
+  method value_changed = self#connect Adjustment.S.value_changed
 end
 
 class adjustment obj = object

@@ -283,7 +283,7 @@ check_externals: check_externals.cmo
 clean:
 	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml xml_lexer.ml \
 	  propcc check_externals check_externals.ml propcc.ml \
-	  *Enums.ml gtkProps.ml
+	  *Enums.ml *Props.ml
 	rm -f \#*\# *~
 
 srcdoc: $(ALLOBJS)

@@ -2,12 +2,9 @@
 
 open Gtk
 
-class adjustment_signals :
-  'a obj ->
+class adjustment_signals : [> adjustment] obj ->
   object
     inherit GObj.gtkobj_signals
-    constraint 'a = [> adjustment]
-    val obj : 'a obj
     method changed : callback:(unit -> unit) -> GtkSignal.id
     method value_changed : callback:(unit -> unit) -> GtkSignal.id
   end

@@ -5,6 +5,7 @@ open Gaux
 open Gobject
 open Gtk
 open GtkBase
+open OGtkProps
 open GObj
 open GData
 
@@ -36,13 +37,8 @@ end
 class container = ['a] container_impl
 
 class container_signals obj = object
-  inherit widget_signals obj
-  method add ~callback =
-    GtkSignal.connect ~sgn:S.add obj ~after
-      ~callback:(fun w -> callback (new widget w))
-  method remove ~callback =
-    GtkSignal.connect ~sgn:S.remove obj ~after
-      ~callback:(fun w -> callback (new widget w))
+  inherit widget_signals_impl obj
+  inherit container_sigs
 end
 
 class container_full obj = object
@@ -76,7 +72,5 @@ end
 
 class item_signals obj = object
   inherit container_signals (obj : [> Gtk.item] obj)
-  method select = GtkSignal.connect ~sgn:Item.S.select obj ~after
-  method deselect = GtkSignal.connect ~sgn:Item.S.deselect obj ~after
-  method toggle = GtkSignal.connect ~sgn:Item.S.toggle obj ~after
+  inherit item_sigs
 end
