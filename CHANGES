@@ -1,5 +1,8 @@
 $Id$
 
+1999.8.25
+  * re-added connect#draw
+
 1999.8.10
   * reduced the number of methods in widget
   * moved disconnect and stop_emit to object_signals
