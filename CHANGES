@@ -1,5 +1,9 @@
 $Id$
 
+2002.11.18
+  * added META (by Stefano Zacchiroli)
+  * fixed applications/camlric (Tim Freeman)
+
 2002.10.31
   * add gdk_property_*
 
