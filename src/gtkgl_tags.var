@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-package "gtkgl"
+(* package "glGtk" *)
 
 type visual_options = "GDK_GL_" [
   | `USE_GL

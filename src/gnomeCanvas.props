@@ -7,8 +7,8 @@ open GtkProps
 let art_wind_rule = enum GnomeCanvasEnums.art_wind_rule
 }
 
-use Gtk
-prefix GnomeCanvas
+use "Gtk"
+tagprefix "canvas"
 
 conversions {
   GtkStock "GtkStock.conv"
@@ -20,6 +20,7 @@ conversions "GnomeCanvas" "GnomeCanvas.Conv" { Points PathDef }
 classes {
   GdkPixbuf "GdkPixbuf.pixbuf"
   GdkDrawable "[`drawable] obj"
+  GtkWidget "Gtk.widget obj"
 }
 
 class Item : GtkObject {
@@ -184,6 +185,6 @@ class Widget : Item {
   "y"                    gdouble              : Read / Write
 }
 
-class Canvas "GnomeCanvas" : Layout {
+class Canvas "GnomeCanvas" tag "canvas" : Layout {
   "aa"                   gboolean             : Read / Write / Construct Only
 }

@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-package "glib"
+(* package "glib" *)
 
 type log_level = "G_LOG_LEVEL_"
    [ `ERROR | `CRITICAL | `WARNING | `MESSAGE | `INFO | `DEBUG
