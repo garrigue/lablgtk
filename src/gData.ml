@@ -58,8 +58,8 @@ end
 let tooltips ?delay ?foreground ?background () =
   let tt = Tooltips.create () in
   Tooltips.set tt ?delay
-    ?foreground:(may_map foreground ~f:GDraw.color)
-    ?background:(may_map background ~f:GDraw.color);
+    ?foreground:(may_map foreground ~f:(fun c -> GDraw.color c))
+    ?background:(may_map background ~f:(fun c -> GDraw.color c));
   new tooltips tt
 
 

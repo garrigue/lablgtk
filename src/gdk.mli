@@ -106,7 +106,7 @@ module Color :
       | `RGB of int * int * int
       | `WHITE
     ]
-    val alloc : ?colormap:colormap -> spec -> t
+    val alloc : colormap:colormap -> spec -> t
     external get_system_colormap : unit -> colormap
 	= "ml_gdk_colormap_get_system"
     external red : t -> int = "ml_GdkColor_red"

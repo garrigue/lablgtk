@@ -136,7 +136,7 @@ module Color = struct
   let color_alloc ~colormap color =
     if not (color_alloc colormap color) then raise (Error"Color.alloc");
     color
-  let alloc ?(colormap=get_system_colormap()) color =
+  let alloc ~colormap color =
     match color with
       `WHITE -> color_white colormap
     | `BLACK -> color_black colormap
