@@ -556,6 +556,8 @@ Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, cancel_button,
 		Val_GtkWidget)
 Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, help_button,
 		Val_GtkWidget)
+Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, file_list,
+		Val_GtkWidget)
 
 /* gtkwindow.h */
 

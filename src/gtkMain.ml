@@ -28,12 +28,14 @@ module Main = struct
     if setlocale then Glib.Main.setlocale `ALL None else ""
   open Glib
   let loops = ref []
-  let main () =
+  let default_main () =
     let loop = (Main.create true) in
     loops := loop :: !loops;
     while Main.is_running loop do Main.iteration true done;
     if !loops <> [] then loops := List.tl !loops
-  and quit () = if !loops <> [] then Main.quit (List.hd !loops)
+  let main_func = ref default_main
+  let main () = !main_func ()
+  let quit () = if !loops <> [] then Main.quit (List.hd !loops)
   external get_version : unit -> int * int * int = "ml_gtk_get_version"
   let version = get_version ()
   external get_current_event_time : unit -> int32

@@ -145,6 +145,7 @@ class ['a] clist : Gtk.clist obj ->
     method unselect : int -> int -> unit
     method unselect_all : unit -> unit
     method vadjustment : GData.adjustment
+    method get_row_state : int -> Gtk.Tags.state_type
   end
 val clist :
   ?columns:int ->

@@ -38,7 +38,7 @@ let sync f x =
 (* We check first whether there are some event pending, and run
    some iterations. We then need to delay, thus focing a thread switch. *)
 
-let main () =
+let thread_main () =
   let old_id = !loop_id in
   try
     let loop = (Glib.Main.create true) in
@@ -59,6 +59,10 @@ let main () =
     Main.loops := List.tl !Main.loops;
     loop_id := old_id;
     raise exn
+
+let main () =
+  GtkMain.Main.main_func := thread_main;
+  thread_main ()
       
 let start = Thread.create main
 

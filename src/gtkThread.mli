@@ -2,10 +2,14 @@
 
 (* Basic functions *)
 
-(** The main loop to use with threads. GMain.main does not work! *)
+(** The main loop to use with threads. [GMain.main] does not work!
+    This changes [GMain.main] to call [threaded_main] rather than
+    [GtkMain.Main.default_main], so subsequent calls will work. *)
 val main : unit -> unit
 (** Start the main loop in another thread. *)
 val start : unit -> Thread.t
+(** The real main function *)
+val thread_main : unit -> unit
 
 (* Jobs are needed for windows, as you cannot do GTK work from
    another thread.
