@@ -30,7 +30,7 @@ let setup_combobox_demo_grid packing =
   changed_and_get_active combo column prerr_endline ;
   ()
 
-let create_model (w : #GObj.widget) =
+let create_model () =
   let column_list = new GTree.column_list in
   let column      = column_list#add GtkStock.conv in
   let store = GTree.list_store column_list in
@@ -48,7 +48,7 @@ let setup_combobox_demo packing =
   let tmp = GBin.frame ~label:"GtkComboBox" ~packing () in
   let box = GPack.vbox ~border_width:5 ~packing:tmp#add () in
 
-  let model, column = create_model tmp in
+  let model, column = create_model () in
   let combobox = GEdit.combo_box ~model ~packing:box#pack () in
     
   begin
