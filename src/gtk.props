@@ -342,6 +342,23 @@ class Window set wrap : Bin {
   "type"                 GtkWindowType        : Read / Write / Construct Only
   "type-hint"            GdkWindowTypeHint    : Read / Write
   "window-position"(position) GtkWindowPosition    : Read / Write
+  method present
+  method iconify
+  method deiconify
+  method stick
+  method unstick
+  method maximize
+  method unmaximize
+  method fullscreen
+  method unfullscreen
+  method set_decorated : "bool -> unit"
+  method set_mnemonic_modifier : "Gdk.Tags.modifier list -> unit"
+  method move : "x:int -> y:int -> unit"
+  method parse_geometry : "string -> bool"
+  method reshow_with_initial_size
+  method resize : "width:int -> height:int -> unit"
+  method set_role : "string -> unit"
+  method get_role : "string"
   signal activate_default
   signal activate_focus
   signal frame_event : GdkEvent

@@ -14,6 +14,8 @@ class ['a] window_skel : 'b obj ->
     method add_accel_group : accel_group -> unit
     method as_window : Gtk.window obj
     method event : event_ops
+    method move : x:int -> y:int -> unit
+    method parse_geometry : string -> bool
     method present : unit -> unit
     method resize : width:int -> height:int -> unit
     method show : unit -> unit
@@ -23,6 +25,15 @@ class ['a] window_skel : 'b obj ->
     method set_default_size : width:int -> height:int -> unit
     method set_default_width : int -> unit
     method set_destroy_with_parent : bool -> unit
+    method set_geometry_hints :
+      ?min_size:int * int ->
+      ?max_size:int * int ->
+      ?base_size:int * int ->
+      ?aspect:float * float ->
+      ?resize_inc:int * int ->
+      ?win_gravity:Gdk.Tags.gravity ->
+      ?pos:bool -> ?user_pos:bool -> ?user_size:bool -> GObj.widget -> unit
+    method set_gravity : Gdk.Tags.gravity -> unit
     method set_icon : GdkPixbuf.pixbuf option -> unit
     method set_modal : bool -> unit
     method set_position : Tags.window_position -> unit

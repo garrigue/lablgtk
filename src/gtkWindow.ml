@@ -20,8 +20,7 @@ module Window = struct
       = "ml_gtk_window_get_wmclass_class"
   external add_accel_group : [>`window] obj -> accel_group -> unit
       = "ml_gtk_window_add_accel_group"
-  external remove_accel_group :
-      [>`window] obj -> accel_group -> unit
+  external remove_accel_group : [>`window] obj -> accel_group -> unit
       = "ml_gtk_window_remove_accel_group"
   external activate_focus : [>`window] obj -> bool
       = "ml_gtk_window_activate_focus"
@@ -61,28 +60,7 @@ module Window = struct
       = "ml_gtk_window_set_focus"
   external set_default : [>`window] obj -> [>`widget] obj -> unit
       = "ml_gtk_window_set_default"
-  external present :  [>`window] obj -> unit = "ml_gtk_window_present"
-  external iconify :  [>`window] obj -> unit = "ml_gtk_window_iconify"
-  external deiconify :  [>`window] obj -> unit = "ml_gtk_window_deiconify"
-  external stick :  [>`window] obj -> unit = "ml_gtk_window_stick"
-  external unstick :  [>`window] obj -> unit = "ml_gtk_window_unstick"
-  external maximize :  [>`window] obj -> unit = "ml_gtk_window_maximize"
-  external unmaximize :  [>`window] obj -> unit = "ml_gtk_window_unmaximize"
-  external fullscreen :  [>`window] obj -> unit = "ml_gtk_window_fullscreen"
-  external unfullscreen :  [>`window] obj -> unit
-      = "ml_gtk_window_unfullscreen"
-  external set_decorated : [>`window] obj -> bool -> unit
-      = "ml_gtk_window_set_decorated"
-  external set_mnemonic_modifier :
-      [>`window] obj -> Gdk.Tags.modifier list -> unit
-      = "ml_gtk_window_set_mnemonic_modifier"
-  external resize :
-      [>`window] obj -> width:int -> height:int -> unit
-      = "ml_gtk_window_resize"
-  external set_role : [>`window] obj -> string -> unit
-      = "ml_gtk_window_set_role"
-  external get_role : [>`window] obj -> string
-      = "ml_gtk_window_get_role"
+  (* see gtk.props for others *)
 
   let make_params ~cont =
     make_params ~cont:(fun pl ?width ?height ?border_width ->

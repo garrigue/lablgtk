@@ -29,7 +29,14 @@ class ['a] window_skel obj = object (self)
   method set_default_size ~width ~height =
     set obj P.default_width width;
     set obj P.default_height height
+  method move = Window.move obj
+  method parse_geometry = Window.parse_geometry obj
   method resize = Window.resize obj
+  method set_geometry_hints ?min_size ?max_size ?base_size ?aspect
+      ?resize_inc ?win_gravity ?pos ?user_pos ?user_size w =
+    Window.set_geometry_hints obj ?min_size ?max_size ?base_size ?aspect
+      ?resize_inc ?win_gravity ?pos ?user_pos ?user_size (as_widget w)
+  method set_gravity = Window.set_gravity obj
   method set_transient_for (w : 'a) =
     Window.set_transient_for obj w#as_window
   method set_wm_name name = Window.set_wmclass obj ~name
