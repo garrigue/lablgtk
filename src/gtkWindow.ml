@@ -174,7 +174,7 @@ module FileSelection = struct
   external get_select_multiple : [>`filesel] obj -> bool
       = "ml_gtk_file_selection_get_select_multiple"
   external get_selections : [>`filesel] obj -> string list
-      = "ml_gtk_file_selection_get_select_multiple"
+      = "ml_gtk_file_selection_get_selections"
   let set_fileop_buttons w = function
       true -> show_fileop_buttons w
     | false -> hide_fileop_buttons w
