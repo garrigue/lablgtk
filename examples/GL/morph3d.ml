@@ -567,8 +567,11 @@ let main () =
   let area = GlGtk.area [`DEPTH_SIZE 1;`RGBA;`DOUBLEBUFFER]
       width:640 height:480 packing:window#add () in
 
+  let view = new view area in
+
   area#connect#realize callback:
     begin fun () ->
+      view#pinit;
       GlClear.depth 1.0;
       GlClear.color (0.0, 0.0, 0.0);
       GlDraw.color (1.0, 1.0, 1.0);
@@ -593,8 +596,6 @@ let main () =
       GlMisc.hint `polygon_smooth `fastest
     end;
 
-  let view = new view area in
-  view#pinit;
   window#connect#event#key_press
     callback:(fun ev -> view#key (GdkEvent.Key.string ev); true);
 
