@@ -19,6 +19,7 @@ class button_skel obj = object (self)
   method grab_default () =
     set Widget.P.can_default obj true;
     set Widget.P.has_default obj true
+  method event = new GObj.event_ops obj
 end
 
 class button_signals obj = object
