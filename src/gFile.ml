@@ -24,10 +24,8 @@ end
 
 class type chooser =
   object
-    method set_action : Gtk.Tags.file_chooser_action -> unit
-    method action : Gtk.Tags.file_chooser_action
-    method set_folder_mode : bool -> unit
-    method folder_mode : bool
+    method set_action : GtkEnums.file_chooser_action -> unit
+    method action : GtkEnums.file_chooser_action
     method set_local_only : bool -> unit
     method local_only : bool
     method set_select_multiple : bool -> unit
@@ -36,20 +34,20 @@ class type chooser =
     method show_hidden : bool
     method set_show_hidden : bool -> unit
 
-    method set_filename : string -> unit
+    method set_filename : string -> bool
     method filename : string
-    method select_filename : string -> unit
+    method select_filename : string -> bool
     method unselect_filename : string -> unit
     method get_filenames : string list
-    method set_current_folder : string -> unit
+    method set_current_folder : string -> bool
     method current_folder : string
 
-    method set_uri : string -> unit
+    method set_uri : string -> bool
     method uri : string
-    method select_uri : string -> unit
+    method select_uri : string -> bool
     method unselect_uri : string -> unit
     method get_uris : string list
-    method set_current_folder_uri : string -> unit
+    method set_current_folder_uri : string -> bool
     method current_folder_uri : string
 
     method select_all : unit
@@ -61,6 +59,8 @@ class type chooser =
     method preview_widget_active : bool
     method preview_filename : string
     method preview_uri : string
+    method set_use_preview_label : bool -> unit
+    method use_preview_label : bool
 
     method set_extra_widget : GObj.widget -> unit
     method extra_widget : GObj.widget
@@ -131,8 +131,10 @@ class chooser_widget obj = object
   method connect = new chooser_widget_signals obj
 end
 
-let chooser_widget ~action ?packing ?show () =
+let chooser_widget ~action ?backend ?packing ?show () =
   let w = FileChooser.widget_create 
-      [ Gobject.param FileChooser.P.action action ] in
+      (Gobject.Property.may_cons 
+	 FileChooser.P.file_system_backend backend
+	 [ Gobject.param FileChooser.P.action action ]) in
   let o = new chooser_widget w in
   GObj.pack_return o ?packing ?show

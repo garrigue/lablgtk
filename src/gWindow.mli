@@ -250,7 +250,8 @@ class ['a] file_chooser_dialog :
 (** @since GTK 2.4
     @gtkdoc gtk GtkFileChooserDialog *)
 val file_chooser_dialog :
-  action:Gtk.Tags.file_chooser_action ->
+  action:GtkEnums.file_chooser_action ->
+  ?backend:string ->
   ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->

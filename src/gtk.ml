@@ -98,8 +98,6 @@ module Tags = struct
     | `NO_REPARENT | `APP_PAINTABLE | `RECEIVES_DEFAULT | `DOUBLE_BUFFERED ]
   type size_group_mode =
     [ `NONE | `HORIZONTAL | `VERTICAL | `BOTH ]
-  type file_chooser_action =
-    [ `OPEN | `SAVE ]
 end
 open Tags
 
