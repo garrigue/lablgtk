@@ -29,7 +29,7 @@ let rec until ~chars ?(escapes="") ?(buf = Buffer.create 80) s =
         Buffer.add_char buf (Stream.next s);
         until ~chars ~escapes ~buf s
       end else if mem_string ~char:c chars then
-        Buffer.contents buf
+        Glib.Convert.locale_to_utf8 (Buffer.contents buf)
       else begin
         Buffer.add_char buf c;
         Stream.junk s;
@@ -124,8 +124,8 @@ let main argv =
     prerr_endline "Usage: csview <csv file>";
     exit 2
   end;
-  let data = read_file argv.(1) in
   let locale = Main.init ~setlocale:true () in
+  let data = read_file argv.(1) in
   let w = GWindow.window () in
   w#misc#realize ();
   let style = w#misc#style in
@@ -149,7 +149,7 @@ let main argv =
         try
           let ali = GBin.alignment_cast (cl#column_widget acc) in
           let lbl = GMisc.label_cast (List.hd ali#children) in
-          lbl#set_alignment ~x:0. ()
+          lbl#set_xalign 0.
         with _ ->
           prerr_endline ("No column widget for field " ^ f)
       end;
