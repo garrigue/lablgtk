@@ -1,5 +1,7 @@
 $Id$
 
+199.6.20
+  * new example: radtest.ml (Hubert)
 1999.6.18
   * added GL extension
 
