@@ -180,6 +180,7 @@ CAMLprim value ml_gtk_tree_model_foreach(value m, value cb)
 			 &cb);
   CAMLreturn(Val_unit);
 }
+ML_3 (gtk_tree_model_row_changed, GtkTreeModel_val, GtkTreePath_val, GtkTreeIter_val, Unit)
 
 /* gtktreestore.h */
 

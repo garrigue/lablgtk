@@ -139,6 +139,7 @@ class model obj = object (self)
   method iter_children = TreeModel.iter_children obj
   method iter_parent = TreeModel.iter_parent obj
   method foreach = TreeModel.foreach obj
+  method row_changed = TreeModel.row_changed obj
 end
 
 class tree_sortable_signals obj = object

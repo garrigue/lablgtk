@@ -147,6 +147,7 @@ class model : ([> `treemodel] as 'a) obj ->
     method iter_children : ?nth:int -> tree_iter -> tree_iter
     method iter_parent : tree_iter -> tree_iter
     method foreach : (tree_path -> tree_iter -> bool) -> unit
+    method row_changed : tree_path -> tree_iter -> unit
   end
 
 (** @gtkdoc gtk GtkTreeSortable *)

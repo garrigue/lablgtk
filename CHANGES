@@ -2,6 +2,7 @@ $Id$
 
 2004.02.29 [Olivier]
   * add Gobject.Data.caml to store caml values in GtkTreeModels.
+  * add signal emitting gtk_tree_model_row_changed
 
 2004.02.15 [Olivier]
   * change type of gdk_drag_status: argument is drag_action option
