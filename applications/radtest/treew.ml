@@ -191,7 +191,7 @@ class window_and_tree :name =
 	    match selected with
 	    | None -> ()
 	    | Some t -> 
-		if test_modifier `CONTROL state then t#up ()
+		if List.mem `CONTROL in:state then t#up ()
 		else try
 		  self#change_selected t#prev
 		with Not_found -> ()
@@ -200,7 +200,7 @@ class window_and_tree :name =
 	    match selected with
 	    | None -> ()
 	    | Some t -> 
-		if test_modifier `CONTROL state then t#down ()
+		if List.mem `CONTROL in:state then t#down ()
 		else try
 		  self#change_selected t#next
 		with Not_found -> ()
