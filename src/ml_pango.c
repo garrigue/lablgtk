@@ -18,6 +18,12 @@
 #include "gtk_tags.h"
 #include "pango_tags.c"
 
+CAMLprim value ml_pango_get_tables ()
+{
+  return (value)ml_lookup_tables;
+}
+
+
 /* PangoFontDescription */
 
 Make_Val_final_pointer_ext (PangoFontDescription, _new, Ignore,
@@ -81,20 +87,6 @@ CAMLprim value ml_PANGO_SCALE ()
 {
   return(Val_int(PANGO_SCALE));
 }
-
-CAMLprim value ml_pango_get_tables ()
-{
-  static lookup_info *ret[6] = { ml_table_pango_style,
-                                 ml_table_pango_variant,
-                                 ml_table_pango_stretch,
-                                 ml_table_pango_underline,
-                                 ml_table_justification,
-                                 ml_table_text_direction };
-  return (value)ret;
-}
-
-
-ML_1 (Pango_weight_val, 0+, Val_int)
 
 /* This one uses the generated MLTAG but not the conversion functions because
    we have defined float values */

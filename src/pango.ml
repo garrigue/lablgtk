@@ -16,13 +16,7 @@ module Tags = struct
 
   type weight_internal =
       [ `ULTRALIGHT | `LIGHT | `NORMAL |`BOLD | `ULTRABOLD |`HEAVY ]
-  external weight_to_int_internal : weight_internal -> int 
-    = "ml_Pango_weight_val"
   type weight = [ weight_internal | `CUSTOM of int]
-  let weight_to_int (w : weight) =
-    match w with 
-      | `CUSTOM b -> b 
-      | #weight_internal as w -> weight_to_int_internal w
 
   type variant =
         [ `NORMAL | `SMALL_CAPS ]
@@ -42,16 +36,20 @@ module Tags = struct
   type underline = [ `NONE | `SINGLE | `DOUBLE | `LOW ]
 
   open Gpointer
-  external get_tables : unit ->
-    style variant_table
-    * variant variant_table
-    * stretch variant_table
-    * underline variant_table
-    * Gtk.Tags.justification variant_table
-    * Gtk.Tags.text_direction variant_table
+  external get_tables :
+    unit -> style variant_table *
+        weight_internal variant_table *
+        variant variant_table *
+        stretch variant_table *
+        underline variant_table
     = "ml_pango_get_tables"
-  let style, variant, stretch, underline, justification, text_direction =
+  let style, weight, variant, stretch, underline =
     get_tables ()
+
+  let weight_to_int (w : weight) =
+    match w with 
+      | `CUSTOM b -> b 
+      | #weight_internal as w -> encode_variant weight w
 end
 
 module Font = struct

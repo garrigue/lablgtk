@@ -36,16 +36,9 @@ CAMLprim value ml_gtk_get_tables ()
   return (value)ml_lookup_tables;
 }
 
-ML_1 (Val_direction_type, Int_val, Id)
-ML_1 (Val_orientation, Int_val, Id)
-ML_1 (Val_toolbar_style, Int_val, Id)
-ML_1 (Val_state_type, Int_val, Id)
-ML_1 (Val_scroll_type, Int_val, Id)
-ML_1 (Response_val, Id, Val_int)
-ML_1 (Widget_flags_val, Id, Val_int)
-
 static Make_Flags_val (Dest_defaults_val)
 static Make_Flags_val (Target_flags_val)
+static Make_Flags_val (GdkModifier_val)
 
 value Val_GtkWidget_func(gpointer w)
 {
@@ -603,20 +596,15 @@ Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, file_list,
 #define GtkWindow_val(val) check_cast(GTK_WINDOW,val)
 ML_1 (gtk_window_new, Window_type_val, Val_GtkWidget_window)
 ML_2 (gtk_window_set_title, GtkWindow_val, String_val, Unit)
-ML_1 (gtk_window_get_title, GtkWindow_val, Val_optstring)
 ML_3 (gtk_window_set_wmclass, GtkWindow_val, String_val, String_val, Unit)
 Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_name, Val_optstring)
 Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_class, Val_optstring)
-ML_2 (gtk_window_set_resizable, GtkWindow_val, Bool_val, Unit)
-ML_1 (gtk_window_get_resizable, GtkWindow_val, Val_bool)
 ML_2 (gtk_window_add_accel_group, GtkWindow_val,
       GtkAccelGroup_val, Unit)
 ML_2 (gtk_window_remove_accel_group, GtkWindow_val,
       GtkAccelGroup_val, Unit)
 ML_1 (gtk_window_activate_focus, GtkWindow_val, Val_bool)
 ML_1 (gtk_window_activate_default, GtkWindow_val, Val_bool)
-ML_2 (gtk_window_set_modal, GtkWindow_val, Bool_val, Unit)
-ML_3 (gtk_window_set_default_size, GtkWindow_val, Int_val, Int_val, Unit)
 CAMLprim value ml_gtk_window_set_geometry_hints (
   value win, value pos, value min_size, value max_size, value base_size, 
   value aspect, value resize_inc, value win_gravity, value user_pos,
@@ -667,12 +655,8 @@ CAMLprim value ml_gtk_window_set_geometry_hints (
 ML_bc11 (ml_gtk_window_set_geometry_hints)
 ML_2 (gtk_window_set_gravity, GtkWindow_val, Gravity_val, Unit)
 ML_1 (gtk_window_get_gravity, GtkWindow_val, Val_gravity)
-ML_2 (gtk_window_set_position, GtkWindow_val, Window_position_val, Unit)
 ML_2 (gtk_window_set_transient_for, GtkWindow_val, GtkWindow_val, Unit)
 ML_1 (gtk_window_get_transient_for, GtkWindow_val, Val_GtkWidget)
-ML_2 (gtk_window_set_destroy_with_parent, GtkWindow_val, Bool_val, Unit)
-ML_2 (gtk_window_set_screen, GtkWindow_val, GdkScreen_val, Unit)
-ML_1 (gtk_window_get_screen, GtkWindow_val, Val_GdkScreen)
 static value wrap_widget (gpointer arg)
 { return Val_GtkWidget(arg); }
 CAMLprim value ml_gtk_window_list_toplevels(value unit)
@@ -694,13 +678,13 @@ ML_1 (gtk_window_unmaximize, GtkWindow_val, Unit)
 #ifdef HASGTK22
 ML_1 (gtk_window_fullscreen, GtkWindow_val, Unit)
 ML_1 (gtk_window_unfullscreen, GtkWindow_val, Unit)
+#else
+Unsupported (gtk_window_fullscreen)
+Unsupported (gtk_window_unfullscreen)
 #endif
 ML_2 (gtk_window_set_decorated, GtkWindow_val, Bool_val, Unit)
 ML_2 (gtk_window_set_mnemonic_modifier, GtkWindow_val,
-      OptFlags_GdkModifier_val, Unit)
-ML_2 (gtk_window_set_type_hint, GtkWindow_val, Window_type_hint_val,
-      Unit)
-ML_2 (gtk_window_set_skip_taskbar_hint, GtkWindow_val, Bool_val, Unit)
+      Flags_GdkModifier_val, Unit)
 ML_3 (gtk_window_resize, GtkWindow_val, Int_val, Int_val, Unit)
 ML_2 (gtk_window_set_role, GtkWindow_val, String_val, Unit)
 ML_1 (gtk_window_get_role, GtkWindow_val, Val_optstring)
