@@ -1,10 +1,15 @@
 $Id$
 
+2002.06.20
+  * add all color settings in GtkData.Style/GObj.style
+    (requested by N. Raynaud)
+  * add GMain.Rc
+
 2002.06.19
   * add Gpointer.region, to handle bigarray/string/Raw.t in an uniform way
 
 2002.06.18
-  * add Gdk.Rgb.draw_image
+  * add Gdk.Rgb.draw_image (requested by F. Dellaert)
 
 2002.05.30
   * change typing of GtkSignal.t
@@ -16,7 +21,7 @@ $Id$
 
 2002.04.30
   * added button#set_relief, paned#pack1/pack2/set_position,
-    Gdk.Window.set_cursor (required by malc)
+    Gdk.Window.set_cursor (requested by malc)
 
 2002.02.25
   * add GtkPreview support

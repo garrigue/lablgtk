@@ -43,7 +43,7 @@ module Style = struct
   external copy : style -> style = "ml_gtk_style_copy"
   external attach : style -> Gdk.window -> style = "ml_gtk_style_attach"
   external detach : style -> unit = "ml_gtk_style_detach"
-  external set_background : style -> Gdk.window -> state_type -> unit
+  external set_window_background : style -> Gdk.window -> state_type -> unit
       = "ml_gtk_style_set_background"
   external draw_hline :
       style -> Gdk.window -> state_type -> x:int -> x:int -> y:int -> unit
@@ -51,23 +51,45 @@ module Style = struct
   external draw_vline :
       style -> Gdk.window -> state_type -> y:int -> y:int -> x:int -> unit
       = "ml_gtk_draw_vline_bc" "ml_gtk_draw_vline"
-  external get_bg : style -> state:state_type -> Gdk.Color.t
+  external get_bg : style -> state_type -> Gdk.Color.t
       = "ml_gtk_style_get_bg"
-  external set_bg : style -> state:state_type -> color:Gdk.Color.t -> unit
+  external set_bg : style -> state_type -> Gdk.Color.t -> unit
       = "ml_gtk_style_set_bg"
-  external get_dark_gc : style -> state:state_type -> Gdk.gc
-      = "ml_gtk_style_get_dark_gc"
-  external get_light_gc : style -> state:state_type -> Gdk.gc
-      = "ml_gtk_style_get_light_gc"
+  external get_fg : style -> state_type -> Gdk.Color.t
+      = "ml_gtk_style_get_fg"
+  external set_fg : style -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_style_set_fg"
+  external get_light : style -> state_type -> Gdk.Color.t
+      = "ml_gtk_style_get_light"
+  external set_light : style -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_style_set_light"
+  external get_dark : style -> state_type -> Gdk.Color.t
+      = "ml_gtk_style_get_dark"
+  external set_dark : style -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_style_set_dark"
+  external get_mid : style -> state_type -> Gdk.Color.t
+      = "ml_gtk_style_get_mid"
+  external set_mid : style -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_style_set_mid"
+  external get_base : style -> state_type -> Gdk.Color.t
+      = "ml_gtk_style_get_base"
+  external set_base : style -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_style_set_base"
+  external get_text : style -> state_type -> Gdk.Color.t
+      = "ml_gtk_style_get_text"
+  external set_text : style -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_style_set_text"
   external get_colormap : style -> Gdk.colormap = "ml_gtk_style_get_colormap"
   external get_font : style -> Gdk.font = "ml_gtk_style_get_font"
   external set_font : style -> Gdk.font -> unit = "ml_gtk_style_set_font"
-(*
+  (* external get_dark_gc : style -> state:state_type -> Gdk.gc
+      = "ml_gtk_style_get_dark_gc"
+  external get_light_gc : style -> state:state_type -> Gdk.gc
+      = "ml_gtk_style_get_light_gc"
   let set st ?:background ?:font =
     let may_set f = may fun:(f st) in
     may_set set_background background;
-    may_set set_font font
-*)
+    may_set set_font font *)
 end
 
 module Data = struct

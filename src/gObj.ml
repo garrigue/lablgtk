@@ -86,18 +86,30 @@ class event_ops obj = object
   method set_extensions = Widget.set_extension_events obj
 end
 
+let iter_setcol set style =
+  List.iter ~f:(fun (state, color) -> set style state (GDraw.color color))
+
 class style st = object
   val style = st
   method as_style = style
   method copy = {< style = Style.copy style >}
-  method bg state = Style.get_bg style ~state
   method colormap = Style.get_colormap style
   method font = Style.get_font style
-  method set_bg =
-    List.iter ~f:
-      (fun (state,c) -> Style.set_bg style ~state ~color:(GDraw.color c))
+  method bg = Style.get_bg style
+  method set_bg = iter_setcol Style.set_bg style
+  method fg = Style.get_fg style
+  method set_fg = iter_setcol Style.set_fg style
+  method light = Style.get_light style
+  method set_light = iter_setcol Style.set_light style
+  method dark = Style.get_dark style
+  method set_dark = iter_setcol Style.set_dark style
+  method mid = Style.get_mid style
+  method set_mid = iter_setcol Style.set_mid style
+  method base = Style.get_base style
+  method set_base = iter_setcol Style.set_base style
+  method text = Style.get_text style
+  method set_text = iter_setcol Style.set_text style
   method set_font = Style.set_font style
-  method set_background = Style.set_background style
 end
 
 class selection_input (sel : Gtk.selection_data) = object
