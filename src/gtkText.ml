@@ -56,9 +56,9 @@ module Tag = struct
       | `FONT_DESC of Pango.font_description
       | `FAMILY of string
       | `STYLE of Pango.Tags.style 
-      (* | `VARIANT of Pango.Tags.variant *)
+      | `VARIANT of Pango.Tags.variant
       | `WEIGHT of Pango.Tags.weight
-      (* | `STRETCH of Pango.Tags.stretch *)
+      | `STRETCH of Pango.Tags.stretch
       | `SIZE of int
       | `SIZE_POINTS of float
       | `SCALE of Pango.Tags.scale
@@ -215,7 +215,9 @@ module Tag = struct
 
     | `UNDERLINE u -> `INT (Pango.Tags.underline_to_int u)
 
-    (* | `STRETCH _ | `VARIANT _ -> assert false *)
+    | `STRETCH s ->  `INT (Pango.Tags.stretch_to_int s)
+    
+    | `VARIANT s ->  `INT (Pango.Tags.variant_to_int s)
 
     | `DIRECTION b  -> `INT (Pango.Tags.text_direction_to_int b)
 

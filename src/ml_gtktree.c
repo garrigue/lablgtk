@@ -201,6 +201,7 @@ CAMLprim value ml_gtk_tree_selection_set_select_function (value s, value clos)
                                           ml_global_root_destroy);
   return Val_unit;
 }
+#ifdef HASGTK22
 CAMLprim value ml_gtk_tree_selection_get_selected_rows (value s)
 {
   return Val_GList_free (gtk_tree_selection_get_selected_rows
@@ -208,6 +209,11 @@ CAMLprim value ml_gtk_tree_selection_get_selected_rows (value s)
                          (value_in)Val_GtkTreePath);
 }
 ML_1 (gtk_tree_selection_count_selected_rows, GtkTreeSelection_val, Val_int)
+#else
+Unsupported(gtk_tree_selection_get_selected_rows)
+Unsupported(gtk_tree_selection_count_selected_rows)
+#endif
+
 ML_2 (gtk_tree_selection_select_path, GtkTreeSelection_val, GtkTreePath_val,
       Unit)
 ML_2 (gtk_tree_selection_unselect_path, GtkTreeSelection_val, GtkTreePath_val,
@@ -224,8 +230,13 @@ ML_1 (gtk_tree_selection_select_all, GtkTreeSelection_val, Unit)
 ML_1 (gtk_tree_selection_unselect_all, GtkTreeSelection_val, Unit)
 ML_3 (gtk_tree_selection_select_range, GtkTreeSelection_val, GtkTreePath_val,
       GtkTreePath_val, Unit)
+
+#ifdef HASGTK22
 ML_3 (gtk_tree_selection_unselect_range, GtkTreeSelection_val, GtkTreePath_val,
       GtkTreePath_val, Unit)
+#else
+Unsupported(gtk_tree_selection_unselect_range)
+#endif
 
 /* GtkCellRenderer{Text,...} */
 

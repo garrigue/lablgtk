@@ -1,5 +1,9 @@
 $Id$
 
+2003.03.17 [Benjamin]
+ * Restore Variant and stretch properties in GtkText
+ * GTK 2.0 fixes in GtkTree
+
 2003.03.16 [Olivier]
  * GnomeCanvas: avoid duplicate properties type declaration
 

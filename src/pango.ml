@@ -24,11 +24,15 @@ module Tags = struct
       | #weight_internal as w -> weight_to_int_internal w
   type variant =
         [ `NORMAL | `SMALL_CAPS ]
+  external variant_to_int : variant -> int = "ml_Pango_variant_val"
+    
   type stretch =
       [ `ULTRA_CONDENSED | `EXTRA_CONDENSED 
       | `CONDENSED | `SEMI_CONDENSED 
       | `NORMAL | `SEMI_EXPANDED
       | `EXPANDED | `EXTRA_EXPANDED | `ULTRA_EXPANDED ]
+  external stretch_to_int : stretch -> int = "ml_Pango_stretch_val"
+
   type scale =
       [ `XX_SMALL | `X_SMALL | `SMALL | `MEDIUM 
       | `LARGE | `X_LARGE | `XX_LARGE

@@ -62,6 +62,8 @@ ML_1 (Pango_underline_val, 0+, Val_int)
 ML_1 (Justification_val, 0+, Val_int)
 ML_1 (Text_direction_val, 0+, Val_int)
 ML_1 (Pango_weight_val, 0+, Val_int)
+ML_1 (Pango_variant_val, 0+, Val_int)
+ML_1 (Pango_stretch_val, 0+, Val_int)
 
 /* This one uses the generated MLTAG but not the conversion functions because
    we have defined float values */
