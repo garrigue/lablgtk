@@ -31,6 +31,9 @@ class ['a] signal :
     method connect : after:bool -> callback:('a -> unit) -> GtkSignal.id
     method disconnect : GtkSignal.id -> bool
   end
+(* As with GTK signals, you can use [GtkSignal.stop_emit] inside a
+   callback to prevent other callbacks from being called. *)
+
 class virtual ml_signals : (GtkSignal.id -> bool) list ->
   object ('a)
     val after : bool
@@ -64,7 +67,7 @@ class virtual add_ml_signals :
    end
 
    You can also add ML signals to an arbitrary object; just inherit
-   from ml_signals in place of widget_signals+add_ml_signals.
+   from [ml_signals] in place of [widget_signals]+[add_ml_signals].
 
    class mysignals ~mysignal1 ~mysignal2 = object
      inherit ml_signals [mysignal1#disconnect; mysignal2#disconnect]

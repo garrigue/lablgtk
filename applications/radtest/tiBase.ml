@@ -227,8 +227,7 @@ class window_and_tree ~name =
 		  self#change_selected t#next
 		with Not_found -> ()
 	  end;
-	  tree_window#misc#stop_emit ~name:"key_press_event";
-	  true
+	  GtkSignal.stop_emit ()
 	end;
       ()
   end
@@ -661,8 +660,7 @@ object(self)
 	    then self#menu ~time:(GdkEvent.Button.time ev)
 	    else self#restricted_menu ~time:(GdkEvent.Button.time ev);
 	  end;
-	  tree_item#misc#stop_emit ~name:"button_press_event";
-	  true
+	  GtkSignal.stop_emit ()
       | _ -> false);
     ()
 end

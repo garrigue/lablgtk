@@ -95,7 +95,6 @@ let prop_widget (prop : prop) =
 	| `TWO_BUTTON_PRESS ->
 	    if GdkEvent.Button.button ev = 1 then begin
 	      wpop#misc#show ();
-	      e#misc#stop_emit ~name:"button_press_event";
 	      true
 	    end
 	    else false
