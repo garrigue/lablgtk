@@ -8,8 +8,8 @@ all: $(TARGETS)
 opt: lablgtkopt
 
 configure:
-	rm -f config.make .depend
-	$(MAKE) -s nothing 2> /dev/null
+	@rm -f config.make .depend
+	@$(MAKE) -s nothing 2> /dev/null
 
 nothing:
 
@@ -51,16 +51,6 @@ GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.o
 endif
 
-ifdef USE_GNOME
-GNOMEMLOBJS = gtkXmHTML.cmo
-GNOMECOBJS = ml_gtkxmhtml.o
-GTKGETCFLAGS = `gtk-config --cflags`" -I"`gnome-config --includedir`
-GTKGETLIBS = `gnome-config --libs gtkxmhtml`
-else
-GTKGETCFLAGS = `gtk-config --cflags`
-GTKGETLIBS = `gtk-config --libs`
-endif
-
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
 .c.o:
@@ -77,7 +67,7 @@ endif
 	./var2conv < $< > $@
 
 # Targets
-COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o $(GLCOBJS) $(GNOMECOBJS)
+COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o $(GLCOBJS)
 OLDMLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gtkObj.cmo gtkExt.cmo
 MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
@@ -87,7 +77,7 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
 	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gFrame.cmo \
-	gEdit.cmo gRange.cmo gUtil.cmo $(GLMLOBJS) $(GNOMEMLOBJS)
+	gEdit.cmo gRange.cmo gUtil.cmo $(GLMLOBJS)
 THOBJS = gtkThread.cmo threadObj.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
@@ -169,11 +159,10 @@ config.make:
 	ocamlc -v | grep "^Standard" \
 	  | sed -e 's/.*: */BINDIR=/' -e 's|/lib/[^/]*$$|/bin|' \
 	        -e 's|/lib$$|/bin|' >> config.make
-	echo GTKCFLAGS=$(GTKGETCFLAGS) >> config.make
-	echo GTKLIBS=$(GTKGETLIBS) | \
+	echo GTKCFLAGS=`gtk-config --cflags` >> config.make
+	echo GTKLIBS=`gtk-config --libs` | \
 	  sed -e 's/-l/-cclib &/g' -e 's/-[LRWr][^ ]*/-ccopt &/g' >> config.make
 	echo USE_GL=$(USE_GL) >> config.make
-	echo USE_GNOME=$(USE_GNOME) >> config.make
 	echo USE_CC=$(USE_CC) >> config.make
 	(which ranlib > /dev/null 2>&1 && echo RANLIB=ranlib >> config.make) \
 	  || echo RANLIB=: >> config.make
@@ -181,6 +170,5 @@ config.make:
 ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gdk.o: gdk_tags.c gdk_tags.h ml_gdk.h wrappers.h
 ml_gtkgl.o: gtkgl_tags.c gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
-ml_gtkxmhtml.o: gtkxmhtml_tags.c gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
 
 include .depend
