@@ -2,6 +2,7 @@
 
 (* reverse polish calculator *)
 
+open StdLabels
 open GMain
 
 let wow _ = prerr_endline "Wow!"; ()

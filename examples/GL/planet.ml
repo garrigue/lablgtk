@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+open StdLabels
+
 class planet area = object (self)
   val area : GlGtk.area = area
   val mutable year = 0.0

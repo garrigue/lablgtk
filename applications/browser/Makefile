@@ -5,9 +5,9 @@ all: browser
 
 CAMLC = ocamlc
 CAMLOPT = ocamlopt
-COMPILER = $(CAMLC) $(MLFLAGS) -labels -w s -c
+COMPILER = $(CAMLC) $(MLFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -labels -w s -c
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 
 RANLIB = ranlib

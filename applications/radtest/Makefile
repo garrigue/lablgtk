@@ -14,7 +14,7 @@ RANLIB = ranlib
 
 include ../../config.make
 
-MLFLAGS = -I ../../src -w s -labels
+MLFLAGS = -I ../../src -w s
 
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS) -I../../src

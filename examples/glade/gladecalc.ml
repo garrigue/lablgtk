@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+open StdLabels
+
 (* lablgladecc project2.glade > project2.ml *)
 #use "project2.ml";;
 

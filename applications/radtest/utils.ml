@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open GObj
 
 open Common
