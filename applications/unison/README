@@ -5,8 +5,8 @@ You may just compile it after having installed lablgtk.
 
 	http://www.cis.upenn.edu/~bcpierce/unison/
 
-Due to recent changes in ocaml and lablgtk, we provide patches for
-versions 2.6.11 and 2.7.1.
+Since unison 2.9.1 compiles with the current version, there is
+currently no patches in this directory.
 
 Jacques Garrigue
 
