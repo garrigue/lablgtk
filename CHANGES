@@ -1,5 +1,8 @@
 $Id$
 
+2002.07.06
+  * add g_io_add_watch support in GMain.Io (requested by Maxence)
+
 2002.07.04
   * add rpm spec (Ben Martin)
 

@@ -204,6 +204,7 @@ clean:
 	rm -f *.cm* *.o *.a *_tags.[ch] $(TARGETS)
 
 $(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_glib.o: glib_tags.h ml_glib.h wrappers.h
 ml_gdk.o: gdk_tags.h ml_gdk.h ml_gpointer.h wrappers.h
 ml_gtkgl.o: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gtkxmhtml.o: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
