@@ -47,7 +47,9 @@ ML_1 (g_type_depth, GType_val, Val_int)
 ML_2 (g_type_is_a, GType_val, GType_val, Val_bool)
 ML_1 (G_TYPE_FUNDAMENTAL, GType_val, Val_fundamental_type)
 ML_1 (Fundamental_type_val, ID, Val_GType)
-CAMLprim value ml_g_type_interface_prerequisites(value type)
+
+#ifdef HASGTK22
+CAMLprim value  ml_g_type_interface_prerequisites(value type)
 {
     value res = Val_unit;
     CAMLparam1(res);
@@ -62,6 +64,9 @@ CAMLprim value ml_g_type_interface_prerequisites(value type)
     }
     CAMLreturn(res);
 }
+#else
+Unsupported(g_type_interface_prerequisites)
+#endif
 
 CAMLprim value ml_g_type_register_static(value parent_type,value type_name)
 {

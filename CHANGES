@@ -1,5 +1,8 @@
 $Id$
 
+2003.06.17 [Benjamin]
+  * Fix Gtk 2.0 compatibility
+
 2003.06.16 [Benjamin]
   * Fix dependencies in Makefile. Now make -j works.
   * Add "world" target in Makefile. 

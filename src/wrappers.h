@@ -24,6 +24,12 @@ typedef struct { value key; int data; } lookup_info;
 value ml_lookup_from_c (lookup_info *table, int data);
 int ml_lookup_to_c (lookup_info *table, value key);
 
+/* Compatibility */
+#include <gtk/gtkversion.h>
+#if GTK_CHECK_VERSION(2,2,0) && !defined(DISABLE_GTK22)
+#define HASGTK22
+#endif
+
 /* Wrapper generators */
 
 #define Unsupported(cname) \
