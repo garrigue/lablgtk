@@ -57,7 +57,7 @@ class tooltips :
     method set_delay : int -> unit
     method set_foreground : GdkObj.color -> unit
     method set_background : GdkObj.color -> unit
-    method set_tip : ?text:string -> ?private:string -> GObj.widget -> unit
+    method set_tip : ?text:string -> ?privat:string -> GObj.widget -> unit
   end
 val tooltips :
   ?delay:int ->

@@ -11,7 +11,7 @@ class editable_signals : 'a obj ->
     method activate : callback:(unit -> unit) -> GtkSignal.id
     method changed : callback:(unit -> unit) -> GtkSignal.id
     method delete_text :
-      callback:(start:int -> end:int -> unit) -> GtkSignal.id
+      callback:(start:int -> stop:int -> unit) -> GtkSignal.id
     method insert_text :
       callback:(string -> pos:int -> unit) -> GtkSignal.id
   end
@@ -25,12 +25,12 @@ class editable : 'a obj ->
     method copy_clipboard : unit -> unit
     method cut_clipboard : unit -> unit
     method delete_selection : unit -> unit
-    method delete_text : start:int -> end:int -> unit
-    method get_chars : start:int -> end:int -> string
+    method delete_text : start:int -> stop:int -> unit
+    method get_chars : start:int -> stop:int -> string
     method insert_text : string -> pos:int -> int
     method paste_clipboard : unit -> unit
     method position : int
-    method select_region : start:int -> end:int -> unit
+    method select_region : start:int -> stop:int -> unit
     method selection : (int * int) option
     method set_editable : bool -> unit
     method set_position : int -> unit

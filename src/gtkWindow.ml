@@ -11,7 +11,7 @@ module Window = struct
   external create : window_type -> window obj = "ml_gtk_window_new"
   external set_title : [>`window] obj -> string -> unit
       = "ml_gtk_window_set_title"
-  external set_wmclass : [>`window] obj -> name:string -> class:string -> unit
+  external set_wmclass : [>`window] obj -> name:string -> clas:string -> unit
       = "ml_gtk_window_set_title"
   external get_wmclass_name : [>`window] obj -> string
       = "ml_gtk_window_get_wmclass_name"
@@ -46,24 +46,24 @@ module Window = struct
   external set_transient_for : [>`window] obj ->[>`window] obj -> unit
       = "ml_gtk_window_set_transient_for"
 
-  let set_wmclass ?:name ?class:wm_class w =
-    set_wmclass w name:(may_default get_wmclass_name w for:name)
-      class:(may_default get_wmclass_class w for:wm_class)
-  let set_policy ?:allow_shrink ?:allow_grow ?:auto_shrink w =
+  let set_wmclass ?name ?clas:wm_class w =
+    set_wmclass w ~name:(may_default get_wmclass_name w ~opt:name)
+      ~clas:(may_default get_wmclass_class w ~opt:wm_class)
+  let set_policy ?allow_shrink ?allow_grow ?auto_shrink w =
     set_policy w
-      allow_shrink:(may_default get_allow_shrink w for:allow_shrink)
-      allow_grow:(may_default get_allow_grow w for:allow_grow)
-      auto_shrink:(may_default get_auto_shrink w for:auto_shrink)
-  let set ?:title ?:wm_name ?:wm_class ?:position ?:allow_shrink ?:allow_grow
-      ?:auto_shrink ?:modal ?(:x = -2) ?(:y = -2) w =
-    may title fun:(set_title w);
+      ~allow_shrink:(may_default get_allow_shrink w ~opt:allow_shrink)
+      ~allow_grow:(may_default get_allow_grow w ~opt:allow_grow)
+      ~auto_shrink:(may_default get_auto_shrink w ~opt:auto_shrink)
+  let set ?title ?wm_name ?wm_class ?position ?allow_shrink ?allow_grow
+      ?auto_shrink ?modal ?(x = -2) ?(y = -2) w =
+    may title ~f:(set_title w);
     if wm_name <> None || wm_class <> None then
-      set_wmclass w ?name:wm_name ?class:wm_class;
-    may position fun:(set_position w);
+      set_wmclass w ?name:wm_name ?clas:wm_class;
+    may position ~f:(set_position w);
     if allow_shrink <> None || allow_grow <> None || auto_shrink <> None then
-      set_policy w ?:allow_shrink ?:allow_grow ?:auto_shrink;
-    may fun:(set_modal w) modal;
-    if x <> -2 || y <> -2 then Widget.set_uposition w :x :y
+      set_policy w ?allow_shrink ?allow_grow ?auto_shrink;
+    may ~f:(set_modal w) modal;
+    if x <> -2 || y <> -2 then Widget.set_uposition w ~x ~y
   external add_accel_group : [>`window] obj -> accel_group -> unit
       = "ml_gtk_window_add_accel_group"
   external remove_accel_group :
@@ -124,9 +124,9 @@ module FileSelection = struct
   let set_fileop_buttons w = function
       true -> show_fileop_buttons w
     | false -> hide_fileop_buttons w
-  let set ?:filename ?:fileop_buttons w =
-    may filename fun:(set_filename w);
-    may fileop_buttons fun:(set_fileop_buttons w)
+  let set ?filename ?fileop_buttons w =
+    may filename ~f:(set_filename w);
+    may fileop_buttons ~f:(set_fileop_buttons w)
 end
 
 module FontSelectionDialog = struct
@@ -161,8 +161,8 @@ module FontSelectionDialog = struct
     null_terminated -> null_terminated -> null_terminated -> unit
     = "ml_gtk_font_selection_dialog_set_filter_bc"
       "ml_gtk_font_selection_dialog_set_filter"
-  let set_filter w ?(type:tl=[`ALL]) ?:foundry
-      ?:weight ?:slant ?:setwidth ?:spacing ?:charset filter =
+  let set_filter w ?kind:(tl=[`ALL]) ?foundry
+      ?weight ?slant ?setwidth ?spacing ?charset filter =
     set_filter w filter tl (null_terminated foundry)
       (null_terminated weight) (null_terminated slant)
       (null_terminated setwidth) (null_terminated spacing)

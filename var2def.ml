@@ -27,9 +27,9 @@ let main () =
 	begin try
 	  let tag' = Hashtbl.find tags hash in
 	  if tag <> tag' then
-	    failwith (String.concat sep:" " ["Doublon tag:";tag;"and";tag'])
+	    failwith (String.concat ~sep:" " ["Doublon tag:";tag;"and";tag'])
 	with Not_found ->
-	  Hashtbl.add key:hash data:tag tags;
+	  Hashtbl.add ~key:hash ~data:tag tags;
 	  print_string "#define MLTAG_";
 	  print_string tag;
 	  print_string "\tVal_int(";

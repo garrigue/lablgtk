@@ -1,24 +1,24 @@
 (* $Id$ *)
 
-let push x on:l = l := x :: !l
+let push x ~on:l = l := x :: !l
 (*
 let pop l =
   match !l with [] -> invalid_arg "Misc.pop"
   | a :: l' ->  l := l'; a
 *)
 
-let may fun:f x =
+let may ~f x =
   match x with None -> ()
   | Some x -> let _ = f x in ()
 
-let may_map fun:f x =
+let may_map ~f x =
   match x with None -> None
   | Some x -> Some (f x)
 
 let default x =
   function None -> x | Some y -> y
 
-let may_default f x for:opt =
+let may_default f x ~opt =
   match opt with None -> f x | Some y -> y
 
 (* marked pointers *)
@@ -48,7 +48,7 @@ let optboxed : 'a option -> 'a optboxed =
       None -> Obj.magic (0,null)
     | Some obj -> Obj.magic obj
 
-let may_box fun:f obj : 'a optboxed =
+let may_box ~f obj : 'a optboxed =
   match obj with
     None -> Obj.magic (0,null)
   | Some obj -> Obj.magic (f obj : 'a)

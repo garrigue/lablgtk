@@ -8,8 +8,8 @@ module Timeout = struct
   type id
   external add : int -> callback:(GtkArgv.t -> unit) -> id
       = "ml_gtk_timeout_add"
-  let add inter :callback =
-    add inter callback:(fun arg -> GtkArgv.set_result_bool arg (callback ()))
+  let add inter ~callback =
+    add inter ~callback:(fun arg -> GtkArgv.set_result_bool arg (callback ()))
   external remove : id -> unit = "ml_gtk_timeout_remove"
 end
 
@@ -22,9 +22,9 @@ module Main = struct
   let init () =
     (* let locale = set_locale () in *)
     let argv = init Sys.argv in
-    Array.blit src:argv dst:Sys.argv len:(Array.length argv)
-      src_pos:0 dst_pos:0;
-    Obj.truncate (Obj.repr Sys.argv) len:(Array.length argv);
+    Array.blit ~src:argv ~dst:Sys.argv ~len:(Array.length argv)
+      ~src_pos:0 ~dst_pos:0;
+    Obj.truncate (Obj.repr Sys.argv) ~len:(Array.length argv);
     locale
   open Glib
   let loops = ref [] 

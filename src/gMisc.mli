@@ -131,11 +131,11 @@ class tips_query_signals : 'a obj ->
     val obj : 'a obj
     method widget_entered :
       callback:(widget option ->
-                text:string option -> private:string option -> unit) ->
+                text:string option -> privat:string option -> unit) ->
       GtkSignal.id
     method widget_selected :
       callback:(widget option -> text:string option ->
-                private:string option -> GdkEvent.Button.t option -> bool) ->
+                privat:string option -> GdkEvent.Button.t option -> bool) ->
       GtkSignal.id
   end
 
