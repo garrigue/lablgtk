@@ -9,7 +9,7 @@ opt: lablgtkopt
 
 configure:
 	rm -f config.make .depend
-	$(MAKE) -s nothing 2> /dev/null
+	$(MAKE) nothing > /dev/null
 
 nothing:
 
@@ -52,7 +52,7 @@ GLCOBJS = ml_gtkgl.o
 endif
 
 ifdef USE_GNOME
-GNOMEMLOBJS = gtkXmHTML.cmo
+GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo
 GNOMECOBJS = ml_gtkxmhtml.o
 GTKGETCFLAGS = `gtk-config --cflags`" -I"`gnome-config --includedir`
 GTKGETLIBS = `gnome-config --libs gtkxmhtml`

@@ -1,5 +1,11 @@
 $Id$
 
+2000.4.27
+  * add GtkXmHTML widget
+
+2000.4.26
+  * release 1.00
+
 2000.4.24
   * merge in changes for ocaml 3.00: label and syntax changes, autolink
   * added better visual and colormap handling to Gdk

@@ -37,12 +37,12 @@ ML_3 (gtk_xmhtml_set_font_familty_fixed, GtkXmHTML_val, String_val, String_val,
 ML_2 (gtk_xmhtml_set_font_charset, GtkXmHTML_val, String_val, Unit)
 ML_2 (gtk_xmhtml_set_allow_body_colors, GtkXmHTML_val, Bool_val, Unit)
 ML_2 (gtk_xmhtml_set_hilight_on_enter, GtkXmHTML_val, Bool_val, Unit)
-ML_2 (gtk_xmhtml_set_anchor_underline_type, GtkXmHTML_val, Line_type_val,
+ML_2 (gtk_xmhtml_set_anchor_underline_type, GtkXmHTML_val, Flags_Line_type_val,
       Unit)
 ML_2 (gtk_xmhtml_set_anchor_visited_underline_type, GtkXmHTML_val,
-      Line_type_val, Unit)
+      Flags_Line_type_val, Unit)
 ML_2 (gtk_xmhtml_set_anchor_target_underline_type, GtkXmHTML_val,
-      Line_type_val, Unit)
+      Flags_Line_type_val, Unit)
 ML_2 (gtk_xmhtml_set_allow_color_switching, GtkXmHTML_val, Bool_val, Unit)
 ML_2 (gtk_xmhtml_set_dithering, GtkXmHTML_val, Dither_type_val, Unit)
 ML_2 (gtk_xmhtml_set_allow_font_switching, GtkXmHTML_val, Bool_val, Unit)
