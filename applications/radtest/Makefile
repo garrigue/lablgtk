@@ -13,7 +13,7 @@ LINKOPT = $(CAMLOPT) $(MLFLAGS)
 TOPLEVEL = olablmktop $(MLFLAGS)
 RANLIB = ranlib
 
-include ../../config.make
+include config.make
 
 MLFLAGS = -I ../..
 
@@ -29,6 +29,8 @@ endif
 THFLAGS = -thread
 THLIBS = unix.cma threads.cma
 THLDFLAGS = -lthreads -lunix
+
+GTKLIBS = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
 
 ifdef USE_CC
 CCOMPILER = $(CC) -c -I$(LABLLIB) $(CFLAGS)
@@ -51,15 +53,26 @@ endif
 # Targets
 MLOBJS = xpm_window.cmo property.cmo widget.cmo treew.cmo
 
-radtest: $(MLOBJS)
-	$(LINKER) -o radtest -custom -cclib "-L../.. \
-		-llablgtk $(GTKLIBS)" \
-		stdclass.cma lablgtk.cma $(MLOBJS)
+radtest: $(MLOBJS)  libtree2.a gtree2.cma
+	$(LINKER) -o radtest -custom -cclib "-L../.. -L. \
+		-llablgtk -ltree2 $(GTKLIBS)" \
+		stdclass.cma lablgtk.cma gtree2.cma $(MLOBJS)
+
+libtree2.a: gtktree2.o gtktreeitem2.o ml_gtk2.o
+	ar rc $@ gtktree2.o gtktreeitem2.o ml_gtk2.o
+	$(RANLIB) $@
+
+gtree2.cma: gtkTree2.cmo gTree2.cmo
+	$(LINKER) -a -o $@ gtkTree2.cmo gTree2.cmo
+
 clean:
-	rm -f *.cm* radtest
+	rm -f *.cm* *.o *.a radtest
 
 .depend:
 	olabldep *.ml *.mli > .depend
 
+config.make:
+	echo GTKCFLAGS=`gtk-config --cflags` >> config.make
+	echo GTKLIBS=`gtk-config --libs` >> config.make
 
 include .depend

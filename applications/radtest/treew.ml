@@ -1,6 +1,5 @@
 open Gtk
 open GObj
-open GTree
 open GWindow
 open GMenu
 open GMisc
@@ -8,6 +7,7 @@ open GMain
 open GFrame
 open Misc
 open GPack
+open GTree2
 
 open Property
 open Widget
@@ -38,16 +38,17 @@ let index = ref 0
 (* this is necessary to avoid the "self type cannot escape its class"
    error *)
 class virtual tiw0 = object
-  method virtual parent_tree : tree
+  method virtual parent_tree : tree2
   method virtual parent_ti : tiw0 option
   method virtual set_parent_ti : tiw0 -> unit
   method virtual set_new_name : string -> unit
-  method virtual tree : tree
-  method virtual tree_item : tree_item
-  method virtual new_tree : unit -> unit
+  method virtual tree : tree2
+  method virtual tree_item : tree_item2
   method virtual widget : rwidget
   method virtual set_widget : rwidget -> unit
   method virtual add_child : string -> meth:[ADD END START] -> unit -> unit
+  method virtual remove : unit -> unit
+  method virtual set_add_menu : string -> string -> unit
 end
 
 (* possible children *)
@@ -65,29 +66,6 @@ let bin2_list = [ "frame"; "scrolled_window"]
 
 (* widgets which can accept only one child window included *)
 let bin1_list = bin2_list @ [ "window" ]
-
-(* let menu_box add remove =
-  let menu = new menu in
-  let menu_end = new menu in
-  let menu_start = new menu in
-  let mi_start = new menu_item packing:menu#append label:"add at start"
-  and mi_end = new menu_item packing:menu#append label:"add at end" in
-  List.iter
-    fun:(fun n ->
-      let mi = new menu_item packing:menu_start#append label:n
-      in mi#connect#activate callback:(add n meth:`START); ())
-    widget_add_list;
-  List.iter
-    fun:(fun n ->
-      let mi = new menu_item packing:menu_end#append label:n
-      in mi#connect#activate callback:(add n meth:`END); ())
-    widget_add_list;
-  let mi_remove = new menu_item packing:menu#append label:"remove" in
-  mi_remove#connect#activate callback:remove;
-  mi_start#set_submenu menu_start;
-  mi_end#set_submenu menu_end;
-  menu
-*)
 
 let menu_bin name add remove = 
   let menu = new menu and menu_add = new menu in
@@ -121,32 +99,10 @@ let menu_remove remove =
   mi_remove#connect#activate callback:remove;
   menu
 
-let remove_widget (tiw : tiw0) () =
-  let remove_one_tiw (tiw : tiw0) =
-    match tiw#parent_ti with
-    | None -> ()
-    | Some tip ->
-	memo#remove tiw#tree_item;
-	tiw#parent_tree#remove tiw#tree_item ;
-	tiw#widget#parent#remove tiw#widget;
-	property_remove tiw#widget in
-  let rec remove_tiws (tiw : tiw0) =
-    List.iter fun:remove_tiws
-      (List.map fun:(fun ti -> memo#find ti) tiw#tree#children);
-    remove_one_tiw tiw in
-  let one = List.length tiw#parent_tree#children = 1 in
-  remove_tiws tiw;
-  if one then begin
-    match tiw#parent_ti with 
-    | None -> failwith "bug remove_widget"
-    | Some tip -> tip#new_tree ()
-  end
-
-
-class tiw parent_tree:(parent_tree : tree) :name = object(self : 'stype)
+class tiw parent_tree:(parent_tree : tree2) :name = object(self : 'stype)
   inherit tiw0
-  val tree_item = new tree_item
-  val  mutable stree = new tree
+  val tree_item = new tree_item2
+  val  mutable stree = new tree2
   val label = new label text:name xalign:0. yalign:0.5
   val mutable parent_ti : tiw option = None
   val parent_tree = parent_tree
@@ -156,12 +112,6 @@ class tiw parent_tree:(parent_tree : tree) :name = object(self : 'stype)
   method tree = stree
   method tree_item = tree_item
 
-(* this is necessary because gtk_tree#remove deletes the tree
-   when removing the last item  *)
-  method new_tree () =
-    stree <- new tree;
-    tree_item#set_subtree stree;
-    tree_item#expand ()
   val mutable widget : rwidget option = None
   method widget = match widget with
   | None -> raise Not_found
@@ -175,7 +125,7 @@ class tiw parent_tree:(parent_tree : tree) :name = object(self : 'stype)
 
 (* sets the add menu of the tree_item; the stop_emit
  stops the default action of button 3 (hiding the tree) *)
-  method private set_add_menu classe name =
+  method set_add_menu classe name =
     menu_add_set <- true;
     may button_press_id fun:tree_item#disconnect;
     button_press_id <- Some
@@ -187,7 +137,7 @@ class tiw parent_tree:(parent_tree : tree) :name = object(self : 'stype)
 	       if GdkEvent.Button.button ev = 3 then begin
 		 tree_item#stop_emit "button_press_event";
 		 (menu self#add_child
-		    (remove_widget (self : #tiw0 :> tiw0)))#popup  button:3 time:(GdkEvent.Button.time ev) end;
+		    self#remove)#popup  button:3 time:(GdkEvent.Button.time ev) end;
 	       true
 	   | _ -> false)))
 
@@ -208,7 +158,7 @@ class tiw parent_tree:(parent_tree : tree) :name = object(self : 'stype)
 	   | `BUTTON_PRESS ->
 	       if GdkEvent.Button.button ev = 3 then begin
 		 tree_item#stop_emit "button_press_event";
-		 (menu_remove (remove_widget (self : #tiw0 :> tiw0)))#popup  button:3 time:(GdkEvent.Button.time ev);
+		 (menu_remove self#remove)#popup  button:3 time:(GdkEvent.Button.time ev);
 		 true end else false
 	   | _ -> false))
 
@@ -228,7 +178,6 @@ class tiw parent_tree:(parent_tree : tree) :name = object(self : 'stype)
     widget <- Some w;
     let classe = w#classe in
     if List.mem classe in:bin_list then begin
-      let label = (List.hd tree_item#children) in
       tree_item#misc#drag#dest_set [`ALL] 
 	[|  { target = "STRING"; flags = []; info = 0}  |] 1 [`COPY];
       tree_item#connect#drag#data_received callback:
@@ -244,8 +193,7 @@ class tiw parent_tree:(parent_tree : tree) :name = object(self : 'stype)
   method add_child classe meth:(meth : [ START END ADD ]) () =
     incr index;
     let name = classe ^ (string_of_int !index) in
-    let t = new tiw parent_tree:stree :name in
-    let t = (t : #tiw0 :> tiw0) in
+    let (t : tiw0) = new tiw parent_tree:stree :name in
     t#set_parent_ti (self : #tiw0 :> tiw0); 
     let w = new_rwidget :classe :name  setname:t#set_new_name in
     t#set_widget w;
@@ -266,6 +214,31 @@ class tiw parent_tree:(parent_tree : tree) :name = object(self : 'stype)
       else self#stop_third_button ()
     end
 
+(* removes the present tiw from his parent and from the memo
+   and does this recursively on the children *)
+  method remove () =
+    let remove_one_tiw (tiw : tiw0) =
+      match tiw#parent_ti with
+      | None -> ()
+      | Some tip ->
+	  memo#remove tiw#tree_item;
+	  tiw#parent_tree#remove tiw#tree_item ;
+	  tiw#widget#parent#remove tiw#widget;
+	  property_remove tiw#widget in
+    let rec remove_tiws (tiw : tiw0) =
+      List.iter fun:remove_tiws
+	(List.map fun:(fun ti -> memo#find ti) tiw#tree#children2);
+      remove_one_tiw tiw in
+    remove_tiws (self : #tiw0 :> tiw0);
+      match parent_ti with 
+      | None -> failwith "bug remove_widget"
+      | Some tip ->
+	  let classe = tip#widget#classe in
+	  if List.mem classe in:bin1_list then begin
+	    tip#tree_item#misc#drag#dest_set [`ALL] 
+	      [|  { target = "STRING"; flags = []; info = 0}  |] 1 [`COPY];
+	    tip#set_add_menu classe tip#widget#name
+	  end
       
   initializer
     parent_tree#append tree_item; 
@@ -282,7 +255,7 @@ let new_window :name =
   let mi = new menu_item label:"File" packing:menu_bar#append in
   let menu = new menu packing:mi#set_submenu in
   let mi_emit = new menu_item label:"emit code" packing:menu#append in
-  let root_tree = new tree packing:vbox#pack in
+  let root_tree = new tree2 packing:vbox#pack in
   let tiw1 = new tiw parent_tree:root_tree :name in
   memo#add tiw1#tree_item data:tiw1;
   let gtk_window = new_rwidget classe:"window" :name setname:tiw1#set_new_name in
@@ -311,6 +284,10 @@ let new_window :name =
     | [] ->  last_sel := None
     | sel :: _  -> let ti = memo#find sel in
       ti#widget#base#misc#set state:`SELECTED;
+      let x, y = Gdk.Window.get_position ti#tree_item#misc#window in
+      let w, h = Gdk.Window.get_size ti#tree_item#misc#window in
+      let x, y = Gdk.Window.get_position ti#tree#misc#window in
+      let w, h = Gdk.Window.get_size ti#tree#misc#window in
       last_sel := Some ti#widget
 					       );    
   tree_window#connect#event#focus_out callback:

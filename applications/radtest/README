@@ -1,7 +1,7 @@
 	Lablgtk RADTEST
 
-Author: Hubert Fauque, hubert.fauque@wanadoo.fr
+Author: Hubert Fauque, hubert.fauque@inria.fr
 
 This is an experimental R.A.D. for Lablgtk.
-You can compile it simply by make, but to use drag-and-drop you must
-apply the patch gtkdnd.patch to gtk/gtkdnd.c in gtk+-1.2.3 sources.
+You can compile it simply by make.
+
