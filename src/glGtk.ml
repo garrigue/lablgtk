@@ -21,7 +21,7 @@ type visual_options = [
   | `ACCUM_ALPHA_SIZE of int
 ]
 
-type gl_area = [`widget|`drawing|`glarea]
+type gl_area = [Gtk.widget|`drawing|`glarea]
 
 module Raw = struct
   external create :
@@ -37,7 +37,7 @@ end
 
 class area_signals obj =
 object (connect)
-  inherit GObj.widget_signals obj
+  inherit GObj.widget_signals (obj : [> gl_area] obj)
   method display ~callback =
     (new GObj.event_signals ~after obj)#expose ~callback:
       begin fun ev ->

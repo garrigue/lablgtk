@@ -8,7 +8,7 @@ class box_skel :
   'a obj ->
   object
     inherit container
-    constraint 'a = [>`box|`container|`widget]
+    constraint 'a = [> box]
     val obj : 'a obj
     method pack :
       ?from:Tags.pack_type ->
@@ -24,7 +24,7 @@ class box :
   'a obj ->
   object
     inherit box_skel
-    constraint 'a = [>`box|`container|`widget]
+    constraint 'a = [> Gtk.box]
     val obj : 'a obj
     method connect : GContainer.container_signals
   end
@@ -158,12 +158,12 @@ val layout :
 class notebook_signals : 'a obj ->
   object
     inherit container_signals
-    constraint 'a = [>`notebook|`container|`widget]
+    constraint 'a = [> Gtk.notebook]
     val obj : 'a obj
     method switch_page : callback:(int -> unit) -> GtkSignal.id
   end
 
-class notebook : ([> `widget | `container | `notebook] as 'a) obj ->
+class notebook : ([> Gtk.notebook] as 'a) obj ->
   object
     inherit container
     val obj : 'a obj

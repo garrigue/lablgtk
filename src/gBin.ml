@@ -45,7 +45,7 @@ let event_box ?border_width ?width ?height ?packing ?show () =
   pack_return (new event_box w) ~packing ~show
 
 class handle_box_signals obj = object
-  inherit container_signals obj
+  inherit container_signals (obj : [> handle_box] obj)
   method child_attached ~callback =
     GtkSignal.connect ~sgn:HandleBox.Signals.child_attached obj ~after
       ~callback:(fun obj -> callback (new widget obj))
@@ -71,7 +71,7 @@ let handle_box ?handle_position ?snap_edge ?shadow_type
   pack_return (new handle_box w) ~packing ~show
 
 class frame_skel obj = object
-  inherit container obj
+  inherit container (obj : [> frame] obj)
   method set_label = Frame.set_label obj
   method set_label_align ?x ?y () = Frame.set_label_align' obj ?x ?y
   method set_shadow_type = Frame.set_shadow_type obj

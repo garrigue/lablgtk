@@ -1,5 +1,8 @@
 $Id$
 
+2002.05.30
+  * change typing of GtkSignal.t
+
 2002.05.28
   * move GtkData.Selection to GtkBase.Selection
   * add actual selection handling

@@ -7,7 +7,7 @@ class ['a] window_skel : 'b obj ->
   object
     inherit GContainer.container
     constraint 'a = 'a #window_skel
-    constraint 'b = [>`widget|`container|`bin|`window]
+    constraint 'b = [> window]
     val obj : 'b obj
     method activate_default : unit -> unit
     method activate_focus : unit -> unit

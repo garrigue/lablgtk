@@ -74,10 +74,11 @@ module Window = struct
       = "ml_gtk_window_activate_default"
   module Signals = struct
     open GtkSignal
-    let move_resize : ([>`window],_) t =
-      { name = "move_resize"; marshaller = marshal_unit }
-    let set_focus : ([>`window],_) t =
-      { name = "set_focus"; marshaller = Widget.Signals.marshal_opt }
+    let move_resize =
+      { name = "move_resize"; classe = `window; marshaller = marshal_unit }
+    let set_focus =
+      { name = "set_focus"; classe = `window;
+        marshaller = Widget.Signals.marshal_opt }
   end
 end
 
@@ -95,10 +96,12 @@ module InputDialog = struct
   external create : unit -> input_dialog obj = "ml_gtk_input_dialog_new"
   module Signals = struct
     open GtkSignal
-    let enable_device : ([>`inputdialog],_) t =
-      { name = "enable_device"; marshaller = marshal_int }
-    let disable_device : ([>`inputdialog],_) t =
-      { name = "disable_device"; marshaller = marshal_int }
+    let enable_device =
+      { name = "enable_device"; classe = `inputdialog;
+        marshaller = marshal_int }
+    let disable_device =
+      { name = "disable_device"; classe = `inputdialog;
+        marshaller = marshal_int }
   end
 end
 

@@ -73,8 +73,8 @@ end
 module Data = struct
   module Signals = struct
     open GtkSignal
-    let disconnect : ([>`data],_) t =
-      { name = "disconnect"; marshaller = marshal_unit }
+    let disconnect =
+      { name = "disconnect"; classe = `data; marshaller = marshal_unit }
   end
 end
 
@@ -105,10 +105,11 @@ module Adjustment = struct
       =  "ml_gtk_adjustment_set_bc" "ml_gtk_adjustment_set"
   module Signals = struct
     open GtkSignal
-    let changed : ([>`adjustment],_) t =
-      { name = "changed"; marshaller = marshal_unit }
-    let value_changed : ([>`adjustment],_) t =
-      { name = "value_changed"; marshaller = marshal_unit }
+    let changed =
+      { name = "changed"; classe = `adjustment; marshaller = marshal_unit }
+    let value_changed =
+      { name = "value_changed"; classe = `adjustment;
+        marshaller = marshal_unit }
   end
   let set_bounds adj ?lower ?upper ?step_incr ?page_incr ?page_size () =
     set adj ?lower ?upper ?step_incr ?page_incr ?page_size;
