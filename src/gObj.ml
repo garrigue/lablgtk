@@ -275,8 +275,8 @@ and misc_ops obj = object
   (* get functions *)
   method name = Widget.get_name obj
   method toplevel =
-    try Some (new widget (Object.unsafe_cast (Widget.get_toplevel obj)))
-    with Gpointer.Null -> None
+    try new widget (Object.unsafe_cast (Widget.get_toplevel obj))
+    with Gpointer.Null -> failwith "GObj.misc_ops#toplevel"
   method window = Widget.window obj
   method colormap = Widget.get_colormap obj
   method visual = Widget.get_visual obj

@@ -186,7 +186,7 @@ and misc_ops : Gtk.widget obj ->
     method show : unit -> unit
     method show_all : unit -> unit
     method style : style
-    method toplevel : widget option
+    method toplevel : widget
     method unmap : unit -> unit
     method unparent : unit -> unit
     method unrealize : unit -> unit
