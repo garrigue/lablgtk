@@ -44,7 +44,7 @@ endif
 
 ifdef USE_GL
 MLFLAGS += -I $(LABLLIB)/lablGL
-GLLINK = -I $(LABLLIB)/lablGL -ccopt -L$(LABLLIB)/lablGL -cclib -lgtkgl
+GLLINK = -I $(LABLLIB)/lablGL -ccopt -L$(LABLLIB)/lablGL lablgl.cma -cclib -lgtkgl
 GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.o
 endif
@@ -79,11 +79,11 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 THOBJS = gtkThread.cmo threadObj.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma gtkInit.cmo
-	$(TOPLEVEL) -custom -o $@ $(GLLINK) lablgl.cma \
+	$(TOPLEVEL) -custom -o $@ $(GLLINK) \
 		-ccopt -L. lablgtk.cma gtkInit.cmo
 
 lablgtkrun: liblablgtk.a lablgtk.cma
-	$(LINKER) -o $@ -make-runtime $(GLLINK) lablgl.cmxa \
+	$(LINKER) -o $@ -make-runtime $(GLLINK) \
 		-ccopt -L. lablgtk.cma
 
 lablgtkopt: liblablgtk.a lablgtk.cmxa
@@ -98,7 +98,7 @@ lablgtk.cma: $(MLOBJS)
 
 lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \
-	  -cclib -llablgtk $(GTKLIBS) $(GLLINK)
+	  -cclib -llablgtk $(GTKLIBS)
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
