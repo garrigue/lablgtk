@@ -76,11 +76,17 @@ Make_Extractor (GdkVisual,GdkVisual_val,blue_prec,Val_int)
 
 /* Image */
 
-Make_Val_final_pointer (GdkImage, Ignore, gdk_image_destroy, 5)
+Make_Val_final_pointer (GdkImage, Ignore, gdk_image_destroy, 0)
 GdkImage *GdkImage_val(value val)
 {
     if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkImage");
     return (GdkImage*)(Field(val,1));
+}
+value ml_gdk_image_destroy (value val)
+{
+    if (Field(val,1)) gdk_image_destroy((GdkImage*)(Field(val,1)));
+    Field(val,1) = NULL;
+    return Val_unit;
 }
 ML_4 (gdk_image_new_bitmap, GdkVisual_val, String_val, Int_val, Int_val,
       Val_GdkImage)
@@ -90,12 +96,6 @@ ML_5 (gdk_image_get, GdkWindow_val, Int_val, Int_val, Int_val, Int_val,
       Val_GdkImage)
 ML_4 (gdk_image_put_pixel, GdkImage_val, Int_val, Int_val, Int_val, Unit)
 ML_3 (gdk_image_get_pixel, GdkImage_val, Int_val, Int_val, Val_int)
-value ml_gdk_image_destroy (value val)
-{
-    if (Field(val,1)) gdk_image_destroy((GdkImage*)(Field(val,1)));
-    modify(&Field(val,1), NULL);
-    return Val_unit;
-}
 
 /* Color */
 
@@ -174,7 +174,7 @@ value ml_gdk_window_get_position (value window)
 
   gdk_window_get_position (GdkWindow_val(window), &x, &y);
   
-  ret = alloc_tuple (2);
+  ret = alloc_small (2,0);
   Field(ret,0) = Val_int(x);
   Field(ret,1) = Val_int(y);
   return ret;
@@ -187,7 +187,7 @@ value ml_gdk_window_get_size (value window)
 
   gdk_window_get_size (GdkWindow_val(window), &x, &y);
   
-  ret = alloc_tuple (2);
+  ret = alloc_small (2,0);
   Field(ret,0) = Val_int(x);
   Field(ret,1) = Val_int(y);
   return ret;
@@ -219,38 +219,40 @@ ML_bc7 (ml_gdk_pixmap_create_from_data)
 value ml_gdk_pixmap_colormap_create_from_xpm
 	(value window, value colormap, value transparent, char *filename)
 {
+    CAMLparam0();
     GdkBitmap *mask;
-    value vpixmap = Val_unit, vmask = Val_unit, ret;
-    CAMLparam2 (vpixmap, vmask);
+    CAMLlocal2(vpixmap, vmask);
+    value ret;
 
     vpixmap = Val_GdkPixmap_no_ref
 	(gdk_pixmap_colormap_create_from_xpm
 	 (GdkWindow_val(window), Option_val(colormap,GdkColormap_val,NULL),
 	  &mask, Option_val(transparent,GdkColor_val,NULL), filename));
     vmask = Val_GdkBitmap_no_ref (mask);
-    ret = alloc_tuple (2);
+
+    ret = alloc_small (2,0);
     Field(ret,0) = vpixmap;
     Field(ret,1) = vmask;
-
     CAMLreturn(ret);
 }
 
 value ml_gdk_pixmap_colormap_create_from_xpm_d
 	(value window, value colormap, value transparent, char **data)
 {
+    CAMLparam0();
     GdkBitmap *mask;
-    value ret, vpixmap = Val_unit, vmask = Val_unit;
-    CAMLparam2 (vpixmap, vmask);
+    CAMLlocal2(vpixmap, vmask);
+    value ret;
 
     vpixmap = Val_GdkPixmap_no_ref
 	(gdk_pixmap_colormap_create_from_xpm_d
 	 (GdkWindow_val(window), Option_val(colormap,GdkColormap_val,NULL),
 	  &mask, Option_val(transparent,GdkColor_val,NULL), data));
     vmask = Val_GdkBitmap_no_ref (mask);
-    ret = alloc_tuple (2);
+
+    ret = alloc_small (2, 0);
     Field(ret,0) = vpixmap;
     Field(ret,1) = vmask;
-
     CAMLreturn(ret);
 }
 
@@ -270,6 +272,40 @@ Make_Extractor (GdkFont, GdkFont_val, type, Val_gdkFontType)
 Make_Extractor (GdkFont, GdkFont_val, ascent, Val_int)
 Make_Extractor (GdkFont, GdkFont_val, descent, Val_int)
 
+/* Region */
+
+#define PointArray_val(val) ((GdkPoint*)&Field(val,1))
+#define PointArrayLen_val(val) Int_val(Field(val,0))
+Make_Val_final_pointer (GdkRegion, Ignore, gdk_region_destroy, 0)
+GdkRegion *GdkRegion_val(value val)
+{
+    if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkRegion");
+    return (GdkRegion*)(Field(val,1));
+}
+value ml_gdk_region_destroy (value val)
+{
+    if (Field(val,1)) gdk_region_destroy((GdkRegion*)(Field(val,1)));
+    Field(val,1) = NULL;
+    return Val_unit;
+}
+ML_0 (gdk_region_new, Val_GdkRegion)
+ML_2 (gdk_region_polygon, Insert(PointArray_val(arg1)) PointArrayLen_val,
+      GdkFillRule_val, Val_GdkRegion)
+ML_2 (gdk_regions_intersect, GdkRegion_val, GdkRegion_val, Val_GdkRegion)
+ML_2 (gdk_regions_union, GdkRegion_val, GdkRegion_val, Val_GdkRegion)
+ML_2 (gdk_regions_subtract, GdkRegion_val, GdkRegion_val, Val_GdkRegion)
+ML_2 (gdk_regions_xor, GdkRegion_val, GdkRegion_val, Val_GdkRegion)
+ML_2 (gdk_region_union_with_rect, GdkRegion_val, GdkRectangle_val,
+      Val_GdkRegion)
+ML_3 (gdk_region_offset, GdkRegion_val, Int_val, Int_val, Unit)
+ML_3 (gdk_region_shrink, GdkRegion_val, Int_val, Int_val, Unit)
+ML_1 (gdk_region_empty, GdkRegion_val, Val_bool)
+ML_2 (gdk_region_equal, GdkRegion_val, GdkRegion_val, Val_bool)
+ML_3 (gdk_region_point_in, GdkRegion_val, Int_val, Int_val, Val_bool)
+ML_2 (gdk_region_rect_in, GdkRegion_val, GdkRectangle_val, Val_gdkOverlapType)
+ML_2 (gdk_region_get_clipbox, GdkRegion_val, GdkRectangle_val, Unit)
+
+
 /* GC */
 
 Make_Val_final_pointer (GdkGC, gdk_gc_ref, gdk_gc_unref, 0)
@@ -286,7 +322,7 @@ ML_3 (gdk_gc_set_ts_origin, GdkGC_val, Int_val, Int_val, Unit)
 ML_3 (gdk_gc_set_clip_origin, GdkGC_val, Int_val, Int_val, Unit)
 ML_2 (gdk_gc_set_clip_mask, GdkGC_val, GdkBitmap_val, Unit)
 ML_2 (gdk_gc_set_clip_rectangle, GdkGC_val, GdkRectangle_val, Unit)
-ML_2 (gdk_gc_set_clip_region, GdkGC_val, (GdkRegion*), Unit)
+ML_2 (gdk_gc_set_clip_region, GdkGC_val, GdkRegion_val, Unit)
 ML_2 (gdk_gc_set_subwindow, GdkGC_val, GdkSubwindowMode_val, Unit)
 ML_2 (gdk_gc_set_exposures, GdkGC_val, Bool_val, Unit)
 ML_5 (gdk_gc_set_line_attributes, GdkGC_val, Int_val, GdkLineStyle_val,
@@ -294,50 +330,48 @@ ML_5 (gdk_gc_set_line_attributes, GdkGC_val, Int_val, GdkLineStyle_val,
 ML_2 (gdk_gc_copy, GdkGC_val, GdkGC_val, Unit)
 value ml_gdk_gc_get_values (value gc)
 {
-     GdkGCValues values;
-     int i;
-     value ret, tmp;
-     CAMLparam2(ret, tmp);
-     gdk_gc_get_values (GdkGC_val(gc), &values);
-     ret = alloc (18, 0);
-     for (i = 0; i < 18; i++) Field(ret,i) = Val_unit;
-     tmp = Val_copy(values.foreground); modify (&Field(ret,0), tmp);
-     tmp = Val_copy(values.background); modify (&Field(ret,1), tmp);
-     if (values.font) {
-          tmp = ml_some(Val_GdkFont(values.font));
-          modify (&Field(ret,2), tmp);
-     }
-     Field(ret,3) = Val_gdkFunction(values.function);
-     Field(ret,4) = Val_gdkFill(values.fill);
-     if (values.tile) {
-          tmp = ml_some(Val_GdkPixmap(values.tile));
-          modify (&Field(ret,5), tmp);
-     }
-     if (values.tile) {
-          tmp = ml_some(Val_GdkPixmap(values.stipple));
-          modify (&Field(ret,6), tmp);
-     }
-     if (values.tile) {
-          tmp = ml_some(Val_GdkPixmap(values.clip_mask));
-          modify (&Field(ret,7), tmp);
-     }
-     Field(ret,8) = Val_gdkSubwindowMode(values.subwindow_mode);
-     Field(ret,9) = Val_int(values.ts_x_origin);
-     Field(ret,10) = Val_int(values.ts_y_origin);
-     Field(ret,11) = Val_int(values.clip_x_origin);
-     Field(ret,12) = Val_int(values.clip_y_origin);
-     Field(ret,13) = Val_bool(values.graphics_exposures);
-     Field(ret,14) = Val_int(values.line_width);
-     Field(ret,15) = Val_gdkLineStyle(values.line_style);
-     Field(ret,16) = Val_gdkCapStyle(values.cap_style);
-     Field(ret,17) = Val_gdkJoinStyle(values.join_style);
-     CAMLreturn(ret);
+    CAMLparam0();
+    GdkGCValues values;
+    int i;
+    CAMLlocal2(ret, tmp);
+
+    gdk_gc_get_values (GdkGC_val(gc), &values);
+    ret = alloc (18, 0);
+    tmp = Val_copy(values.foreground); Store_field(ret, 0, tmp);
+    tmp = Val_copy(values.background); Store_field(ret, 1, tmp);
+    if (values.font) {
+        tmp = ml_some(Val_GdkFont(values.font));
+        Store_field(ret, 2, tmp);
+    }
+    Field(ret,3) = Val_gdkFunction(values.function);
+    Field(ret,4) = Val_gdkFill(values.fill);
+    if (values.tile) {
+        tmp = ml_some(Val_GdkPixmap(values.tile));
+        Store_field(ret, 5, tmp);
+    }
+    if (values.tile) {
+        tmp = ml_some(Val_GdkPixmap(values.stipple));
+        Store_field(ret, 6, tmp);
+    }
+    if (values.tile) {
+        tmp = ml_some(Val_GdkPixmap(values.clip_mask));
+        Store_field(ret, 7, tmp);
+    }
+    Field(ret,8) = Val_gdkSubwindowMode(values.subwindow_mode);
+    Field(ret,9) = Val_int(values.ts_x_origin);
+    Field(ret,10) = Val_int(values.ts_y_origin);
+    Field(ret,11) = Val_int(values.clip_x_origin);
+    Field(ret,12) = Val_int(values.clip_y_origin);
+    Field(ret,13) = Val_bool(values.graphics_exposures);
+    Field(ret,14) = Val_int(values.line_width);
+    Field(ret,15) = Val_gdkLineStyle(values.line_style);
+    Field(ret,16) = Val_gdkCapStyle(values.cap_style);
+    Field(ret,17) = Val_gdkJoinStyle(values.join_style);
+    CAMLreturn(ret);
 }
 
 /* Draw */
 
-#define PointArray_val(val) ((GdkPoint*)&Field(val,1))
-#define PointArrayLen_val(val) Int_val(Field(val,0))
 value ml_point_array_new (value len)
 {
     value ret = alloc (1 + Wosize_asize(Int_val(len)*sizeof(GdkPoint)),

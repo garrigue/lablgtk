@@ -2,6 +2,7 @@
 
 type colormap
 type visual
+type region
 type gc
 type 'a drawable
 type window = [`window] drawable
@@ -147,6 +148,42 @@ module Window :
     val set_back_pixmap : window -> background_pixmap -> unit
   end
 
+module PointArray :
+  sig
+    type t = { len: int }
+    external create : len:int -> t = "ml_point_array_new"
+    val set : t -> pos:int -> x:int -> y:int -> unit
+  end
+
+module Region :
+  sig
+    type gdkFillRule = [ `EVEN_ODD_RULE|`WINDING_RULE ]
+    type gdkOverlapType = [ `IN|`OUT|`PART ]
+    external create : unit -> region = "ml_gdk_region_new"
+    external destroy : region -> unit = "ml_gdk_region_destroy"
+    val polygon : (int * int) list -> gdkFillRule -> region 
+    external intersect : region -> region -> region
+      = "ml_gdk_regions_intersect"
+    external union : region -> region -> region 
+      = "ml_gdk_regions_union"
+    external subtract : region -> region -> region 
+      = "ml_gdk_regions_subtract"
+    external xor : region -> region -> region 
+      = "ml_gdk_regions_xor"
+    external union_with_rect : region -> Rectangle.t -> region
+      = "ml_gdk_region_union_with_rect"
+    external offset : region -> x:int -> y:int -> unit = "ml_gdk_region_offset"
+    external shrink : region -> x:int -> y:int -> unit = "ml_gdk_region_shrink"
+    external empty : region -> bool = "ml_gdk_region_empty"
+    external equal : region -> region -> bool = "ml_gdk_region_equal"
+    external point_in : region -> x:int -> y:int -> bool 
+      = "ml_gdk_region_point_in"
+    external rect_in : region -> Rectangle.t -> gdkOverlapType
+      = "ml_gdk_region_rect_in"
+    external get_clipbox : region -> Rectangle.t -> unit
+      = "ml_gdk_region_get_clipbox"
+  end
+
 module GC :
   sig
     type gdkFunction = [ `COPY|`INVERT|`XOR ]
@@ -173,6 +210,8 @@ module GC :
     external set_clip_mask : gc -> bitmap -> unit = "ml_gdk_gc_set_clip_mask"
     external set_clip_rectangle : gc -> Rectangle.t -> unit
       = "ml_gdk_gc_set_clip_rectangle"
+    external set_clip_region : gc -> region -> unit
+	= "ml_gdk_gc_set_clip_region"
     external set_subwindow : gc -> gdkSubwindowMode -> unit
       = "ml_gdk_gc_set_subwindow"
     external set_exposures : gc -> bool -> unit = "ml_gdk_gc_set_exposures"
@@ -246,13 +285,9 @@ module Font :
     external char_height : font -> char -> int = "ml_gdk_char_height"
     external string_measure : font -> string -> int = "ml_gdk_string_measure"
     external char_measure : font -> char -> int = "ml_gdk_char_measure"
-  end
-
-module PointArray :
-  sig
-    type t = { len: int }
-    external create : len:int -> t = "ml_point_array_new"
-    val set : t -> pos:int -> x:int -> y:int -> unit
+    external get_type : font -> [`FONT | `FONTSET] = "ml_GdkFont_type"
+    external ascent : font -> int = "ml_GdkFont_ascent"
+    external descent : font -> int = "ml_GdkFont_descent"
   end
 
 module Draw :

@@ -262,7 +262,7 @@ value ml_gtk_widget_get_pointer (value w)
     int x,y;
     value ret;
     gtk_widget_get_pointer (GtkWidget_val(w), &x, &y);
-    ret = alloc_tuple (2);
+    ret = alloc_small (2,0);
     Field(ret,0) = Val_int(x);
     Field(ret,1) = Val_int(y);
     return ret;
@@ -292,7 +292,7 @@ Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
 Make_Extractor (gtk_widget, GtkWidget_val, parent, Val_GtkWidget)
 static value Val_GtkAllocation (GtkAllocation allocation)
 {
-    value ret = alloc (4, 0);
+    value ret = alloc_small (4, 0);
     Field(ret,0) = Val_int(allocation.x);
     Field(ret,1) = Val_int(allocation.y);
     Field(ret,2) = Val_int(allocation.width);
@@ -753,7 +753,7 @@ value ml_gtk_box_query_child_packing (value box, value child)
     value ret;
     gtk_box_query_child_packing (GtkBox_val(box), GtkWidget_val(child),
 				 &expand, &fill, &padding, &pack_type);
-    ret = alloc_tuple(4);
+    ret = alloc_small(4,0);
     Field(ret,0) = Val_bool(expand);
     Field(ret,1) = Val_bool(fill);
     Field(ret,2) = Val_int(padding);
@@ -965,20 +965,21 @@ ML_5 (gtk_clist_set_pixmap, GtkCList_val, Int_val, Int_val, GdkPixmap_val,
       GdkBitmap_val, Unit)
 value ml_gtk_clist_get_pixmap (value clist, value row, value column)
 {
-    CAMLparam3 (clist,row,column);
+    CAMLparam0 ();
     GdkPixmap *pixmap;
     GdkBitmap *bitmap;
-    CAMLlocal3 (ret,vpixmap,vbitmap);
+    CAMLlocal2 (vpixmap,vbitmap);
+    value ret;
 
     if (!gtk_clist_get_pixmap (GtkCList_val(clist), Int_val(row),
 			       Int_val(column), &pixmap, &bitmap))
 	invalid_argument ("Gtk.Clist.get_pixmap");
     vpixmap = Val_option (pixmap, Val_GdkPixmap);
     vbitmap = Val_option (bitmap, Val_GdkBitmap);
-    ret = alloc_tuple (2);
+
+    ret = alloc_small (2,0);
     Field(ret,0) = vpixmap;
     Field(ret,1) = vbitmap;
-
     CAMLreturn(ret);
 }
 ML_7 (gtk_clist_set_pixtext, GtkCList_val, Int_val, Int_val, String_val,
@@ -1016,7 +1017,7 @@ value ml_gtk_clist_get_selection_info (value clist, value x, value y)
     if (!gtk_clist_get_selection_info (GtkCList_val(clist), Int_val(x),
 			     Int_val(y), &row, &column))
 	invalid_argument ("Gtk.Clist.get_selection_info");
-    ret = alloc_tuple (2);
+    ret = alloc_small (2,0);
     Field(ret,0) = row;
     Field(ret,1) = column;
     return ret;
@@ -1319,7 +1320,7 @@ value ml_gtk_calendar_get_date (value w)
     value ret;
 
     gtk_calendar_get_date (GtkCalendar_val(w), &year, &month, &day);
-    ret = alloc (3, 0);
+    ret = alloc_small (3, 0);
     Field(ret,0) = Val_int(year);
     Field(ret,1) = Val_int(month);
     Field(ret,2) = Val_int(day);
@@ -1592,16 +1593,17 @@ ML_0 (gtk_vseparator_new, Val_GtkWidget_sink)
 
 value ml_gtk_init (value argv)
 {
+    CAMLparam1 (argv);
     int argc = Wosize_val(argv), i;
-    value copy = Val_unit, ret;
-    CAMLparam2 (argv, copy);
+    CAMLlocal1 (copy);
 
     copy = (argc ? alloc (argc, Abstract_tag) : Atom(0));
     for (i = 0; i < argc; i++) Field(copy,i) = Field(argv,i);
     gtk_init (&argc, (char ***)&copy);
-    ret = (argc ? alloc (argc, 0) : Atom(0));
-    for (i = 0; i < argc; i++) initialize(&Field(ret,i), Field(copy,i));
-    CAMLreturn(ret);
+
+    argv = (argc ? alloc (argc, 0) : Atom(0));
+    for (i = 0; i < argc; i++) modify(&Field(argv,i), Field(copy,i));
+    CAMLreturn (argv);
 }
 ML_1 (gtk_exit, Int_val, Unit)
 ML_0 (gtk_set_locale, Val_string)
@@ -1613,7 +1615,7 @@ ML_1 (gtk_grab_remove, GtkWidget_val, Unit)
 ML_0 (gtk_grab_get_current, Val_GtkWidget)
 value ml_gtk_get_version (value unit)
 {
-    value ret = alloc_tuple(3);
+    value ret = alloc_small(3,0);
     Field(ret,0) = Val_int(gtk_major_version);
     Field(ret,1) = Val_int(gtk_minor_version);
     Field(ret,2) = Val_int(gtk_micro_version);
@@ -1625,7 +1627,7 @@ value ml_gtk_get_version (value unit)
 void ml_gtk_callback_marshal (GtkObject *object, gpointer data,
 			       guint nargs, GtkArg *args)
 {
-    value vargs = alloc_tuple(3);
+    value vargs = alloc_small(3,0);
 
     CAMLparam1 (vargs);
     Field(vargs,0) = (value) object;
@@ -1652,7 +1654,8 @@ value ml_gtk_arg_get_type (GtkArg *arg)
 value ml_gtk_arg_get (GtkArg *arg)
 {
     CAMLparam0();
-    CAMLlocal2(ret,tmp);
+    CAMLlocal1(tmp);
+    value ret;
     GtkFundamentalType type = GTK_FUNDAMENTAL_TYPE(arg->type);
     int tag;
 
@@ -1695,7 +1698,7 @@ value ml_gtk_arg_get (GtkArg *arg)
         tag = -1; ret = Val_unit;
     }
     if (tag != -1) {
-        ret = alloc(1,tag);
+        ret = alloc_small(1,tag);
         Field(ret,0) = tmp;
     }
     CAMLreturn(ret);

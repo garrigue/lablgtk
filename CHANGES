@@ -1,5 +1,8 @@
 $Id$
 
+2000.6.19
+  * patch by Michael Welsh for Gdk regions
+
 2000.6.15
   * add CList.set_cell_style/set_row_style
   * change set_usize/set_uposition into set_geometry

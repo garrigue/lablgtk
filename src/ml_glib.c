@@ -63,13 +63,13 @@ value Val_GList (GList *list, value (*func)(gpointer))
     last_cell = cell = Val_unit;
     result = func(list->data);
     Begin_roots3 (last_cell, cell, result);
-    cell = last_cell = alloc_tuple (2);
+    cell = last_cell = alloc_small(2,0);
     Field(cell,0) = result;
     Field(cell,1) = Val_unit;
     list = list->next;
     while (list != NULL) {
 	result = func(list->data);
-	new_cell = alloc_tuple(2);
+	new_cell = alloc_small(2,0);
 	Field(new_cell,0) = result;
 	Field(new_cell,1) = Val_unit;
 	modify(&Field(last_cell,1), new_cell);
@@ -82,16 +82,12 @@ value Val_GList (GList *list, value (*func)(gpointer))
 
 GList *GList_val (value list, gpointer (*func)(value))
 {
+    CAMLparam1(list);
     GList *res = NULL;
-    value cell = list;
-    if (list == Val_unit) return res;
-    Begin_root (cell);
-    while (cell != Val_unit) {
-      res = g_list_append (res, func(Field(cell,0)));
-      cell = Field(cell,1);
-    }
-    End_roots ();
-    return res;
+    if (list == Val_unit) CAMLreturn (res);
+    for (; Is_block(list); list = Field(list,1))
+      res = g_list_append (res, func(Field(list,0)));
+    CAMLreturn (res);
 }
 
 static value ml_warning_handler = 0L;

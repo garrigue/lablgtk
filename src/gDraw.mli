@@ -45,6 +45,7 @@ class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
       y:int -> width:int -> height:int -> ?filled:bool -> unit -> unit
     method set_background : color -> unit
     method set_foreground : color -> unit
+    method set_clip_region : region -> unit
     method set_line_attributes :
       ?width:int ->
       ?style:GC.gdkLineStyle ->

@@ -29,6 +29,9 @@ extern value Val_GdkImage (GdkImage *); /* finalizer is destroy! */
 #define GdkFont_val(val) ((GdkFont*)Pointer_val(val))
 extern value Val_GdkFont (GdkFont *);
 
+extern GdkRegion *GdkRegion_val (value); /* check argument */
+extern value Val_GdkRegion (GdkRegion *); /* finalizer is destroy! */
+
 #define GdkGC_val(val) ((GdkGC*)Pointer_val(val))
 extern value Val_GdkGC (GdkGC *);
 

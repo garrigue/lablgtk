@@ -22,7 +22,7 @@ value copy_memblock_indirected (void *src, asize_t size)
 value ml_some (value v)
 {
      CAMLparam1(v);
-     value ret = alloc_tuple(1);
+     value ret = alloc_small(1,0);
      Field(ret,0) = v;
      CAMLreturn(ret);
 }
@@ -37,7 +37,7 @@ void ml_raise_null_pointer ()
 
 value Val_pointer (void *ptr)
 {
-    value ret = alloc (2, Abstract_tag);
+    value ret = alloc_small (2, Abstract_tag);
     if (!ptr) ml_raise_null_pointer ();
     Field(ret,1) = (value)ptr;
     return ret;
