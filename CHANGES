@@ -1,5 +1,8 @@
 $Id$
 
+2003.10.07 [Jacques]
+  * add Gpointer.{peek,poke}_nativeint
+
 2003.09.27 [Olivier]
   * remove `NONE response in dialogs
   * improved ocamldoc documentation

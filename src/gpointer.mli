@@ -17,6 +17,8 @@ val boxed_null : boxed
 val peek_string : ?pos:int -> ?len:int -> boxed -> string
 val peek_int : boxed -> int
 val poke_int : boxed -> int -> unit
+val peek_nativeint : boxed -> nativeint
+val poke_nativeint : boxed -> nativeint -> unit
 
 type 'a optboxed
 val optboxed : 'a option -> 'a optboxed
