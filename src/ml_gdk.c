@@ -339,7 +339,7 @@ for (field=0; field<len; field++) Field(ret,field) = 0; field = 3
 	break;
     case GDK_PROXIMITY_IN:
     case GDK_PROXIMITY_OUT:
-	Init_field(6);
+	Init_fields(6);
 	Get_field (ev->proximity, time, Val_int);
 	Get_field (ev->proximity, source, Val_gdkInputSource);
 	Get_field (ev->proximity, deviceid, Val_int);
