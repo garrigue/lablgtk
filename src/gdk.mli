@@ -65,6 +65,8 @@ module Visual :
     type visual_type =
       [ `STATIC_GRAY|`GRAYSCALE|`STATIC_COLOR
        |`PSEUDO_COLOR|`TRUE_COLOR|`DIRECT_COLOR ]
+    external get_best : ?depth:int -> ?kind:visual_type -> unit -> visual
+        = "ml_gdk_visual_get_best"
     external get_type : visual -> visual_type = "ml_GdkVisual_type"
     external depth : visual -> int = "ml_GdkVisual_depth"
     external red_mask : visual -> int = "ml_GdkVisual_red_mask"
@@ -99,6 +101,10 @@ module Image :
 
 module Color :
   sig
+    external get_system_colormap : unit -> colormap
+	= "ml_gdk_colormap_get_system"
+    val get_colormap : ?privat:bool -> visual -> colormap
+
     type t
     type spec = [
       | `BLACK
@@ -107,8 +113,6 @@ module Color :
       | `WHITE
     ]
     val alloc : colormap:colormap -> spec -> t
-    external get_system_colormap : unit -> colormap
-	= "ml_gdk_colormap_get_system"
     external red : t -> int = "ml_GdkColor_red"
     external blue : t -> int = "ml_GdkColor_green"
     external green : t -> int = "ml_GdkColor_blue"
