@@ -10,6 +10,10 @@ class editable_signals obj = object
   inherit widget_signals obj
   method activate = GtkSignal.connect sig:Editable.Signals.activate obj :after
   method changed = GtkSignal.connect sig:Editable.Signals.changed obj :after
+  method insert_text =
+    GtkSignal.connect sig:Editable.Signals.insert_text obj :after
+  method delete_text =
+    GtkSignal.connect sig:Editable.Signals.delete_text obj :after
 end
 
 class editable obj = object
@@ -103,7 +107,11 @@ let combo ?:popdown_strings ?:use_arrows
   pack_return (new combo w) :packing :show
 
 class text obj = object
-  inherit editable (obj : Gtk.text obj)
+  inherit editable (obj : Gtk.text obj) as super
+  method get_chars :start end:e =
+    if start < 0 || e > Text.get_length obj || e < start then
+      invalid_arg "GEdit.text::get_chars";
+    super#get_chars :start end:e
   method add_events = Widget.add_events obj
   method set_point = Text.set_point obj
   method set_hadjustment adj =

@@ -1643,6 +1643,9 @@ value ml_gtk_arg_get_pointer (GtkArg *arg)
 {
     gpointer p;
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
+    case GTK_TYPE_STRING:
+        p = GTK_VALUE_STRING(*arg);
+        break;
     case GTK_TYPE_BOXED:
 	p = GTK_VALUE_BOXED(*arg);
 	break;
@@ -1662,6 +1665,19 @@ value ml_gtk_arg_get_object (GtkArg *arg)
 	ml_raise_gtk ("argument type mismatch");
     p = GTK_VALUE_OBJECT(*arg);
     return Val_option (p, Val_GtkObject);
+}
+
+value ml_substring_of_pointer (value ptr, value pos, value len)
+{
+    value ret = alloc_string(Int_val(len));
+    memcpy ((char*)ret, ((char*)Pointer_val(ptr)) + Int_val(pos),
+            Int_val(len));
+    return ret;
+}
+
+value ml_int_of_pointer (value ptr)
+{
+    return Val_int(*(int*)Pointer_val(ptr));
 }
 
 value ml_gtk_arg_set_char (GtkArg *arg, value val)
