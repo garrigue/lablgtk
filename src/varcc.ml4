@@ -219,7 +219,6 @@ let main () =
       if !code = "" then code := rad ^ ".c"
   end;
   let hc = open_out !header and cc = open_out !code in
-  let chars = Stream.of_channel stdin in
   if inputs = [] then process stdin ~hc ~cc else begin
     List.iter inputs ~f:
       begin fun file ->
