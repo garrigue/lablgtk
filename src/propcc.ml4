@@ -16,7 +16,10 @@ let camlize id =
   Buffer.contents b
 
 let enums =
-    [ "Justification"; "ArrowType"; "ShadowType"; "ResizeMode"; "ReliefStyle" ]
+  [ "Gtk",
+    [ "Justification"; "ArrowType"; "ShadowType"; "ResizeMode";
+      "ReliefStyle" ];
+  ]
 
 let () =
   List.iter ~f:(fun t -> Hashtbl.add conversions ("g"^t) t)
@@ -25,8 +28,11 @@ let () =
   List.iter ~f:(fun (gtype,conv) -> Hashtbl.add conversions gtype conv)
     [ "gchararray", "string";
       "gchararray_option", "string_option" ];
-  List.iter enums
-    ~f:(fun name -> Hashtbl.add conversions ("Gtk" ^ name) (camlize name))
+  List.iter enums ~f:(fun (pre, l) ->
+    List.iter l ~f:
+      begin fun name ->
+        Hashtbl.add conversions (pre ^ name) ("Conv." ^camlize name)
+      end)
 
 open Genlex
 
@@ -100,17 +106,23 @@ let process_file f =
         (Printf.sprintf "(gobject_option : Gtk.%s obj option data_conv)"
            (camlize name));
     end;
-  List.iter enums ~f:
-    begin fun s ->
-      out "let %s = Gobject.Data.enum GtkEnums.%s\n" (camlize s) (camlize s)
-    end;
+  out "open Gobject\n";
+  out "open Data\n\n";
+  if enums <> [] then begin
+    out "module Conv = struct\n";
+    List.iter enums ~f:(fun (pre, l) ->
+      List.iter l ~f:
+        begin fun s ->
+          out "  let %s = enum %sEnums.%s\n"
+            (camlize s) pre (camlize s)
+        end);
+    out "end\n\n";
+  end;
   List.iter decls ~f:
     begin fun (name, gtk_name, attrs, props) ->
       if props = [] then () else
       let tag = String.lowercase name in
       out "module P%s = struct\n" name;
-      out "  open Gobject\n";
-      out "  open Data\n";
       List.iter props ~f:
         begin fun (name, gtype, attrs) ->
           try
@@ -120,7 +132,7 @@ let process_file f =
           with Not_found ->
             prerr_endline ("Warning: no conversion for type " ^ gtype)
         end;
-      out "end\n"
+      out "end\n\n"
     end
 
 let main () =
