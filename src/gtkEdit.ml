@@ -62,8 +62,37 @@ module Editable = struct
       | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_delete"
     let delete_text =
       { name = "delete_text"; classe = `editable; marshaller = marshal_delete }
+    let copy_clipboard =
+      { name = "copy_clipboard"; classe = `editable; 
+	marshaller = marshal_unit }
+    let cut_clipboard =
+      { name = "copy_clipboard"; classe = `editable; 
+	marshaller = marshal_unit }
+    let paste_clipboard =
+      { name = "copy_clipboard"; classe = `editable; 
+	marshaller = marshal_unit }
+    let move_cursor =
+      { name = "move_cursor"; classe = `editable; 
+	marshaller = marshal_int2 }
+    let move_word =
+      { name = "move_word"; classe = `editable; 
+	marshaller = marshal_int }
+    let move_page =
+      { name = "move_page"; classe = `editable; 
+	marshaller = marshal_int }
+    let move_to_row =
+      { name = "move_to_row"; classe = `editable; 
+	marshaller = marshal_int }
+    let move_to_column =
+      { name = "move_to_column"; classe = `editable; 
+	marshaller = marshal_int }
   end
-end
+  let emit_move_cursor = GtkSignal.emit_int2 ~sgn:Signals.move_cursor
+  let emit_move_word = GtkSignal.emit_int ~sgn:Signals.move_word
+  let emit_move_page = GtkSignal.emit_int ~sgn:Signals.move_page
+  let emit_move_to_row = GtkSignal.emit_int ~sgn:Signals.move_to_row
+  let emit_move_to_column = GtkSignal.emit_int ~sgn:Signals.move_to_column
+ end
 
 module Entry = struct
   let cast w : entry obj = Object.try_cast w "GtkEntry"
@@ -175,6 +204,10 @@ module Text = struct
     if hadjustment <> None || vadjustment <> None then
       set_adjustment w ?horizontal: hadjustment ?vertical: vadjustment ();
     may word_wrap ~f:(set_word_wrap w)
+  external forward_delete: [>`text] obj -> int -> unit = 
+    "ml_gtk_text_forward_delete"
+  external backward_delete: [>`text] obj -> int -> unit = 
+    "ml_gtk_text_backward_delete"
 end
 
 module Combo = struct

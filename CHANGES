@@ -1,5 +1,8 @@
 $Id$
 
+2003.05.13
+  * various improvements to GtkText (Antoine Mine)
+
 2003.04.14
   * fix Glib.IO (Henri Dubois-Ferriere)
 
