@@ -328,6 +328,51 @@ module TreeSelection = struct
   end
 end
 
+module TreeViewColumn = struct
+  let cast w : tree_view_column obj = Object.try_cast w "GtkTreeViewColumn"
+  external create : unit -> tree_view_column obj
+    = "ml_gtk_tree_view_column_new"
+  external pack_start :
+    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> bool -> unit
+    = "ml_gtk_tree_view_column_pack_start"
+  external pack_end :
+    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> bool -> unit
+    = "ml_gtk_tree_view_column_pack_end"
+  let pack obj ?(expand=true) ?(from:[`START|`END]=`START) crr =
+    (if from = `START then pack_start else pack_end)
+      obj crr expand
+  external add_attribute :
+    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> string -> int -> unit
+    = "ml_gtk_tree_view_column_add_attribute"
+  external set_sort_column_id : [>`treeviewcolumn] obj -> int -> unit	
+    = "ml_gtk_tree_view_column_set_sort_column_id"      
+  let classe = `treeviewcolumn
+  module Properties = struct
+    open Gobject
+    open Gobject.Data
+    let alignment = {name="alignment"; classe=classe; conv=float}
+    let clickable = {name="clickable"; classe=classe; conv=boolean}
+    let fixed_width = {name="fixed_width"; classe=classe; conv=int}
+    let max_width = {name="max_width"; classe=classe; conv=int}
+    let min_width = {name="min_width"; classe=classe; conv=int}
+    let reorderable = {name="reorderable"; classe=classe; conv=boolean}
+    let resizable = {name="resizable"; classe=classe; conv=boolean}
+    let sizing = {name="sizing"; classe=classe; conv=Tables.conv_sizing}
+    let sort_indicator = {name="sort_indicator"; classe=classe; conv=boolean}
+    let sort_order = {name="sort_order"; classe=classe; conv=Tables.conv_sort}
+    let title = {name="title"; classe=classe; conv=string}
+    let visible = {name="visible"; classe=classe; conv=boolean}
+    let widget = {name="widget"; classe=classe;
+                  conv=(gobject : widget obj option conv)}
+    let width = {name="width"; classe=classe; conv=int}
+  end
+  module Signals = struct
+    open GtkSignal
+    let clicked = { name = "clicked"; classe = classe;
+                    marshaller = marshal_unit }
+  end
+end
+
 module TreeView = struct
   let cast w : tree_view obj = Object.try_cast w "GtkTreeView"
   external create : unit -> tree_view obj = "ml_gtk_tree_view_new"
@@ -384,6 +429,21 @@ module TreeView = struct
   external get_cursor :
     [>`treeview] obj -> tree_path option * tree_view_column option
     = "ml_gtk_tree_view_get_cursor"
+  external get_path_at_pos_ :
+    [>`treeview] obj -> tree_path -> [>`treeviewcolumn] obj -> int -> int ->
+      (int * int) option
+    = "ml_gtk_tree_view_get_path_at_pos"
+  let get_path_at_pos treeview ~x ~y =
+    let path = TreePath.create_ () 
+    and column = TreeViewColumn.create ()
+    in
+    match get_path_at_pos_ treeview path column x y with
+    | Some xy -> Some (path, column, xy)
+    | None -> None
+
+external set_model : [>`treeview] obj -> tree_model obj -> unit
+    = "ml_gtk_tree_view_set_model"
+	  
   module Properties = struct
     open Gobject
     open Gobject.Data
@@ -490,49 +550,6 @@ module TreeView = struct
     let unselect_all =
       { name = "unselect_all"; classe = `treeview;
         marshaller = marshal_ret_bool }
-  end
-end
-
-module TreeViewColumn = struct
-  let cast w : tree_view_column obj = Object.try_cast w "GtkTreeViewColumn"
-  external create : unit -> tree_view_column obj
-    = "ml_gtk_tree_view_column_new"
-  external pack_start :
-    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> bool -> unit
-    = "ml_gtk_tree_view_column_pack_start"
-  external pack_end :
-    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> bool -> unit
-    = "ml_gtk_tree_view_column_pack_end"
-  let pack obj ?(expand=true) ?(from:[`START|`END]=`START) crr =
-    (if from = `START then pack_start else pack_end)
-      obj crr expand
-  external add_attribute :
-    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> string -> int -> unit
-    = "ml_gtk_tree_view_column_add_attribute"
-  let classe = `treeviewcolumn
-  module Properties = struct
-    open Gobject
-    open Gobject.Data
-    let alignment = {name="alignment"; classe=classe; conv=float}
-    let clickable = {name="clickable"; classe=classe; conv=boolean}
-    let fixed_width = {name="fixed_width"; classe=classe; conv=int}
-    let max_width = {name="max_width"; classe=classe; conv=int}
-    let min_width = {name="min_width"; classe=classe; conv=int}
-    let reorderable = {name="reorderable"; classe=classe; conv=boolean}
-    let resizable = {name="resizable"; classe=classe; conv=boolean}
-    let sizing = {name="sizing"; classe=classe; conv=Tables.conv_sizing}
-    let sort_indicator = {name="sort_indicator"; classe=classe; conv=boolean}
-    let sort_order = {name="sort_order"; classe=classe; conv=Tables.conv_sort}
-    let title = {name="title"; classe=classe; conv=string}
-    let visible = {name="visible"; classe=classe; conv=boolean}
-    let widget = {name="widget"; classe=classe;
-                  conv=(gobject : widget obj option conv)}
-    let width = {name="width"; classe=classe; conv=int}
-  end
-  module Signals = struct
-    open GtkSignal
-    let clicked = { name = "clicked"; classe = classe;
-                    marshaller = marshal_unit }
   end
 end
 

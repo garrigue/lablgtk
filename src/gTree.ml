@@ -225,6 +225,8 @@ class view_column (obj : tree_view_column obj) = object
   method add_attribute :
     'a 'b. ([>`cellrenderer] as 'a) obj -> string -> 'b column -> unit
     = fun crr attr col -> TreeViewColumn.add_attribute obj crr attr col.index
+  method set_sort_column_id = TreeViewColumn.set_sort_column_id obj
+
   method set_alignment = set_prop obj TVCProps.alignment
   method set_clickable = set_prop obj TVCProps.clickable
   method set_fixed_width = set_prop obj TVCProps.fixed_width
@@ -236,6 +238,7 @@ class view_column (obj : tree_view_column obj) = object
   method set_visible = set_prop obj TVCProps.visible
   method set_widget = set_prop obj TVCProps.widget
   method set_width = set_prop obj TVCProps.width
+  method set_sort_order = set_prop obj TVCProps.sort_order
 end
 let view_column ?title ?renderer () =
   let w = new view_column (TreeViewColumn.create ()) in
@@ -334,6 +337,8 @@ class view obj = object
   method set_headers_visible = set obj headers_visible
   method model = new model (get_some obj model)
   method set_model (m:model) = set obj model (Some m#as_model)
+  method set_model2 (m:model) = TreeView.set_model obj m#as_model
+
   method reorderable = get obj reorderable
   method set_reorderable = set obj reorderable
   method rules_hint = get obj rules_hint
@@ -364,6 +369,8 @@ class view obj = object
         None -> TreeView.set_cursor obj ~edit row (as_column col)
       | Some cell ->
           TreeView.set_cursor_on_cell obj ~edit row (as_column col) cell
+  method get_cursor () = TreeView.get_cursor obj
+  method get_path_at_pos ~x ~y = TreeView.get_path_at_pos obj ~x ~y
 end
 let view ?model ?border_width ?width ?height ?packing ?show () =
   let model = may_map ~f:(fun (model : #model) -> model#as_model) model in
