@@ -88,6 +88,7 @@ class clist :
     method columns : int
     method columns_autosize : unit -> unit
     method connect : clist_signals
+    method focus_row : int
     method freeze : unit -> unit
     method get_row_column : x:int -> y:int -> int * int
     method hadjustment : GData.adjustment_wrapper

@@ -66,6 +66,7 @@ class clist_wrapper obj = object (self)
   method connect = new clist_signals ?obj
   method rows = CList.get_rows obj
   method columns = CList.get_columns obj
+  method focus_row = CList.get_focus_row obj
   method hadjustment = new GData.adjustment_wrapper (CList.get_hadjustment obj)
   method vadjustment = new GData.adjustment_wrapper (CList.get_vadjustment obj)
   method set_button_actions = CList.set_button_actions obj
