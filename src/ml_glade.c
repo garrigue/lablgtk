@@ -66,7 +66,7 @@ void ml_glade_callback_marshal (const gchar *handler_name,
     set(Field(vargs,4), Val_bool(after));
 #undef set
     
-    callback (*(value*)user_data, vargs);
+    callback_exn (*(value*)user_data, vargs);
 
     CAMLreturn0;
 }

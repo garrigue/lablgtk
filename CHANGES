@@ -1,5 +1,12 @@
 $Id$
 
+2004.09.21 [Olivier]
+  * add optional priority argument for timeouts and idle callbacks in Glib
+  * get rid of the print handler in Glib.Message (it's not used by libraries)
+  * get rid of the Glib.Critical exception (callbacks should never raise exceptions)
+  * add Glib.Message.log and a couple other functions related to logging
+  * generally prevent exceptions from escaping callbacks
+
 2004.09.18 [Jacques]
   * revert to using `OTHER in Gobject.data_kind
 

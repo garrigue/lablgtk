@@ -1,14 +1,11 @@
 (* $Id$ *)
 
-open StdLabels
-
 type unichar = int
 type unistring = unichar array
 
 exception GError of string
 external _init : unit -> unit = "ml_glib_init"
 let () =  _init () ; Callback.register_exception "gerror" (GError "")
-exception Critical of string * string
 
 module Main = struct
   type t
@@ -24,16 +21,23 @@ module Main = struct
     = "ml_setlocale"
 end
 
+let int_of_priority = function
+  | `HIGH -> -100
+  | `DEFAULT -> 0
+  | `HIGH_IDLE -> 100
+  | `DEFAULT_IDLE -> 200
+  | `LOW -> 300
+
 module Timeout = struct
   type id
-  external add : ms:int -> callback:(unit -> bool) -> id
+  external add : ?prio:int -> ms:int -> callback:(unit -> bool) -> id
     = "ml_g_timeout_add"
   external remove : id -> unit = "ml_g_source_remove"
 end
 
 module Idle = struct
   type id
-  external add : callback:(unit -> bool) -> id
+  external add : ?prio:int -> callback:(unit -> bool) -> id
     = "ml_g_idle_add"
   external remove : id -> unit = "ml_g_source_remove"
 end
@@ -53,33 +57,38 @@ module Io = struct
 end
 
 module Message = struct
-  type print_func = string -> unit
-  external set_print_handler : (string -> unit) -> print_func
-    = "ml_g_set_print_handler"
-
   type log_level =
     [ `ERROR | `CRITICAL | `WARNING | `MESSAGE | `INFO | `DEBUG
     | `FLAG_RECURSION | `FLAG_FATAL ]
-  external log_level : log_level -> int = "ml_Log_level_val"
+  external _log_level : log_level -> int = "ml_Log_level_val"
+  let log_level = function
+    | `CUSTOM i -> i lsl 8
+    | #log_level as level -> _log_level level
+
+  let int_of_log_levels levels =
+    List.fold_left (fun acc lev -> acc lor (log_level lev)) 0 levels
 
   type log_handler
-  external set_log_handler :
-    domain:string -> levels:int -> (level:int -> string -> unit) -> log_handler
+  external _set_log_handler :
+    ?domain:string -> levels:int -> (level:int -> string -> unit) -> log_handler
     = "ml_g_log_set_handler"
-  let set_log_handler ~domain ~levels f =
-    let levels = List.fold_left levels ~init:0
-        ~f:(fun acc lev -> acc lor (log_level lev)) in
-    set_log_handler ~domain ~levels f
+  let set_log_handler ?domain ~levels f =
+    _set_log_handler ?domain ~levels:(int_of_log_levels levels) f
 
   external remove_log_handler : log_handler -> unit
     = "ml_g_log_remove_handler"
 
-  let handle_criticals ~domain =
-    set_log_handler ~domain ~levels:[`CRITICAL]
-      (fun ~level s -> raise (Critical (domain, s)));
-    ()
+  external _set_always_fatal : int -> unit = "ml_g_log_set_always_fatal"
+  let set_always_fatal (levels : log_level list) = 
+    _set_always_fatal (int_of_log_levels levels)
 
-  let () = handle_criticals "GLib"; handle_criticals "GLib-GObject"
+  external _set_fatal_mask : ?domain:string -> int -> unit = "ml_g_log_set_fatal_mask"
+  let set_fatal_mask ?domain levels =
+    _set_fatal_mask ?domain (int_of_log_levels levels)
+
+  external _log : string -> int -> string -> unit = "ml_g_log"
+  let log ?(domain="") level fmt =
+    Printf.kprintf (_log domain (log_level level)) fmt
 end
 
 (*    

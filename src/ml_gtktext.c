@@ -165,7 +165,7 @@ ML_1(gtk_text_tag_table_get_size, GtkTextTagTable_val, Int_val)
 static void tag_foreach_func (GtkTextTag* t, gpointer user_data)
 {
   value arg = Val_GtkTextTag(t);
-  callback (*(value*)user_data, arg);
+  callback_exn (*(value*)user_data, arg);
 }
 
 CAMLprim value ml_gtk_text_tag_table_foreach (value t, value fun)
@@ -914,9 +914,15 @@ CAMLprim value ml_gtk_text_iter_##dir##_search (value ti_start, \
 Make_search(forward);
 Make_search(backward);
 
-static gboolean call_fun(gunichar ch, gpointer user_data)
+static gboolean ml_gtk_text_char_predicate(gunichar ch, gpointer user_data)
 {
-  return(Bool_val(callback(*(value*)user_data,Val_int(ch))));
+  value res, *clos = user_data;
+  res = callback_exn (*clos, Val_int(ch));
+  if (Is_exception_result (res)) {
+    CAML_EXN_LOG (G_STRFUNC);
+    return FALSE;
+  }
+  return Bool_val(res);
 }
 
 CAMLprim value ml_gtk_text_iter_forward_find_char(value i,value fun,value ito)
@@ -925,7 +931,7 @@ CAMLprim value ml_gtk_text_iter_forward_find_char(value i,value fun,value ito)
   CAMLreturn
     (Val_bool
      (gtk_text_iter_forward_find_char(GtkTextIter_val(i),
-                                      call_fun,
+                                      ml_gtk_text_char_predicate,
                                       &fun,
                                       Option_val(ito,GtkTextIter_val,NULL))));
 }
@@ -936,7 +942,7 @@ CAMLprim value ml_gtk_text_iter_backward_find_char(value i,value fun,value ito)
   CAMLreturn
     (Val_bool
      (gtk_text_iter_backward_find_char(GtkTextIter_val(i),
-                                       call_fun,
+                                       ml_gtk_text_char_predicate,
                                        &fun,
                                        Option_val(ito,GtkTextIter_val,NULL))));
 }
