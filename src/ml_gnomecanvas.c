@@ -27,14 +27,14 @@ static inline value copy_two_doubles(double a, double b)
   v = alloc_small(2, 0);
   Field(v, 0) = va;
   Field(v, 1) = vb;
-  return v;
+  CAMLreturn(v);
 }
 
 static inline value copy_double_array(double *a, size_t len)
 {
   value v;
   register unsigned int i;
-  v = alloc_small(len * Double_wosize, Double_array_tag);
+  v = alloc(len * Double_wosize, Double_array_tag);
   for(i=0; i<len; i++)
     Store_double_field(v, i, a[i]);
   return v;
@@ -109,10 +109,11 @@ CAMLprim value ml_gnome_canvas_get_item_at(value c, value x, value y)
     raise_not_found();
   return Val_GtkAny(it);
 }
-  
+
 /* gnome_canvas_request_redraw_uta */
 /* gnome_canvas_request_redraw */
 
+#ifndef ARCH_ALIGN_DOUBLE
 CAMLprim value ml_gnome_canvas_w2c_affine(value c)
 {
   GnomeCanvas *canvas = GnomeCanvas_val(c);
@@ -120,6 +121,17 @@ CAMLprim value ml_gnome_canvas_w2c_affine(value c)
   gnome_canvas_w2c_affine(canvas, (double *)v);
   return v;
 }
+#else
+CAMLprim value ml_gnome_canvas_w2c_affine(value c)
+{
+  GnomeCanvas *canvas = GnomeCanvas_val(c);
+  value v = alloc_small(6 * Double_wosize, Double_array_tag);
+  double coords[6];
+  gnome_canvas_w2c_affine(canvas, coords);
+  memcpy(Bp_val(v), coords, sizeof coords);
+  return v;
+}
+#endif /* ARCH_ALIGN_DOUBLE */
 
 CAMLprim value ml_gnome_canvas_w2c(value c, value wx, value wy)
 {
@@ -193,7 +205,7 @@ CAMLprim value ml_gnome_canvas_item_xform(value i)
     else
       len = 2;
     arr = alloc_small(Double_wosize * len, Double_array_tag);
-    memcpy((double *)arr, item->xform, len * sizeof (double));
+    memcpy(Bp_val(arr), item->xform, len * sizeof (double));
     v = alloc_small(2, 0);
     Field(v, 0) = (len == 6) ? ML_TAG_AFFINE : ML_TAG_TRANSL;
     Field(v, 1) = arr;
@@ -203,6 +215,7 @@ CAMLprim value ml_gnome_canvas_item_xform(value i)
     return ML_TAG_IDENTITY;
 }
 
+#ifndef ARCH_ALIGN_DOUBLE
 CAMLprim value ml_gnome_canvas_item_affine_relative(value i, value a)
 {
   if(Wosize_val(a) != 6 * Double_wosize)
@@ -220,6 +233,30 @@ CAMLprim value ml_gnome_canvas_item_affine_absolute(value i, value a)
   else invalid_argument("affine transform");
   return Val_unit;
 }
+#else
+CAMLprim value ml_gnome_canvas_item_affine_relative(value i, value a)
+{
+  double coords[6];
+  if(Wosize_val(a) != 6 * Double_wosize)
+    invalid_argument("affine transform");
+  memcpy(coords, Bp_val(a), sizeof coords);
+  gnome_canvas_item_affine_relative(GnomeCanvasItem_val(i), coords);
+  return Val_unit;
+}
+
+CAMLprim value ml_gnome_canvas_item_affine_absolute(value i, value a)
+{
+  double coords[6];
+  if(Wosize_val(a) == 0)
+    gnome_canvas_item_affine_absolute(GnomeCanvasItem_val(i), NULL);
+  else if(Wosize_val(a) == 6 * Double_wosize) {
+    memcpy(coords, Bp_val(a), sizeof coords);
+    gnome_canvas_item_affine_absolute(GnomeCanvasItem_val(i), coords);
+  }
+  else invalid_argument("affine transform");
+  return Val_unit;
+}
+#endif /* ARCH_ALIGN_DOUBLE */
 
 CAMLprim value ml_gnome_canvas_item_set(value i)
 {
@@ -254,6 +291,7 @@ CAMLprim value ml_gnome_canvas_item_i2w(value i, value x, value y)
   return copy_two_doubles(ox, oy);
 }
 
+#ifndef ARCH_ALIGN_DOUBLE
 CAMLprim value ml_gnome_canvas_item_i2w_affine(value i)
 {
   GnomeCanvasItem *item = GnomeCanvasItem_val(i);
@@ -269,6 +307,27 @@ CAMLprim value ml_gnome_canvas_item_i2c_affine(value i)
   gnome_canvas_item_i2c_affine(item, (double *)v);
   return v;
 }
+#else
+CAMLprim value ml_gnome_canvas_item_i2w_affine(value i)
+{
+  GnomeCanvasItem *item = GnomeCanvasItem_val(i);
+  value v = alloc_small(6 * Double_wosize, Double_array_tag);
+  double coords[6];
+  gnome_canvas_item_i2w_affine(item, coords);
+  memcpy(Bp_val(v), coords, sizeof coords);
+  return v;
+}
+
+CAMLprim value ml_gnome_canvas_item_i2c_affine(value i)
+{
+  GnomeCanvasItem *item = GnomeCanvasItem_val(i);
+  value v = alloc_small(6 * Double_wosize, Double_array_tag);
+  double coords[6];
+  gnome_canvas_item_i2c_affine(item, coords);
+  memcpy(Bp_val(v), coords, sizeof coords);
+  return v;
+}
+#endif /* ARCH_ALIGN_DOUBLE */
 
 ML_2 (gnome_canvas_item_reparent, GnomeCanvasItem_val, GnomeCanvasGroup_val, Unit)
 ML_1 (gnome_canvas_item_grab_focus, GnomeCanvasItem_val, Unit)
@@ -319,8 +378,8 @@ CAMLprim value ml_gnome_canvas_convert_dash(value off, value dash)
   d = g_malloc(sizeof *d);
   d->offset = Double_val(off);
   d->n_dash = len;
-  d->dash = g_malloc(d->n_dash * sizeof *d->dash);
-  memcpy(d->dash, (double *)dash, Wosize_val(dash) * sizeof (value));
+  d->dash = g_malloc(d->n_dash * sizeof (double));
+  memcpy(d->dash, Bp_val(dash), Bosize_val(dash));
   return Val_ArtVpathDash_new(d);
 }
 CAMLprim value ml_gnome_canvas_get_dash(value dash)
@@ -329,9 +388,9 @@ CAMLprim value ml_gnome_canvas_get_dash(value dash)
   CAMLlocal3(ret,dashes,offset);
   ArtVpathDash *d = Pointer_val(dash);
   dashes = alloc(d->n_dash * Double_wosize, Double_array_tag);
-  memcpy((double *)dashes, d->dash, d->n_dash * sizeof (double));
+  memcpy(Bp_val(dashes), d->dash, d->n_dash * sizeof (double));
   offset = copy_double(d->offset);
-  ret = alloc_tuple(2);
+  ret = alloc_small(2, 0);
   Field(ret,0) = offset;
   Field(ret,1) = dashes;
   CAMLreturn (ret);
