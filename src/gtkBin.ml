@@ -92,10 +92,12 @@ module HandleBox = struct
     may snap_edge ~f:(set_snap_edge w)
   module Signals = struct
     open GtkSignal
-    let child_attached : ([>`handlebox],_) t =
-      { name = "child_attached"; marshaller = Widget.Signals.marshal }
-    let child_detached : ([>`handlebox],_) t =
-      { name = "child_detached"; marshaller = Widget.Signals.marshal }
+    let child_attached =
+      { name = "child_attached"; classe = `handlebox;
+        marshaller = Widget.Signals.marshal }
+    let child_detached =
+      { name = "child_detached"; classe = `handlebox;
+        marshaller = Widget.Signals.marshal }
   end
 end
 

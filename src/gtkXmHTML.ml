@@ -31,7 +31,7 @@ type dither_type = [
   | `DISABLED
 ]
 
-type xmhtml = [`widget|`container|`xmhtml]
+type xmhtml = [widget|`container|`xmhtml]
 
 external create : unit -> xmhtml obj = "ml_gtk_xmhtml_new"
 external freeze : [> `xmhtml] obj -> unit = "ml_gtk_xmhtml_freeze"

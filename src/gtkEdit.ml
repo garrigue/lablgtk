@@ -43,10 +43,10 @@ module Editable = struct
   module Signals = struct
     open GtkArgv
     open GtkSignal
-    let activate : ([>`editable],_) t =
-      { name = "activate"; marshaller = marshal_unit }
-    let changed : ([>`editable],_) t =
-      { name = "changed"; marshaller = marshal_unit }
+    let activate =
+      { name = "activate"; classe = `editable; marshaller = marshal_unit }
+    let changed =
+      { name = "changed"; classe = `editable; marshaller = marshal_unit }
     let marshal_insert f argv = function
       | STRING _ :: INT len :: POINTER(Some pos) :: _ ->
           (* XXX These two accesses are implementation-dependent *)
@@ -54,14 +54,14 @@ module Editable = struct
           and pos = int_at_pointer pos in
           f s ~pos
       | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_insert"
-    let insert_text : ([>`editable],_) t =
-      { name = "insert_text"; marshaller = marshal_insert }
+    let insert_text =
+      { name = "insert_text"; classe = `editable; marshaller = marshal_insert }
     let marshal_delete f _ = function
       | INT start :: INT stop :: _ ->
           f ~start ~stop
       | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_delete"
-    let delete_text : ([>`editable],_) t =
-      { name = "delete_text"; marshaller = marshal_delete }
+    let delete_text =
+      { name = "delete_text"; classe = `editable; marshaller = marshal_delete }
   end
 end
 

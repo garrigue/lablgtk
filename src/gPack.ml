@@ -8,7 +8,7 @@ open GObj
 open GContainer
 
 class box_skel obj = object
-  inherit container obj
+  inherit container (obj : [> box] obj)
   method pack ?from:f ?expand ?fill ?padding w =
     Box.pack obj (as_widget w) ?from:f ?expand ?fill ?padding
   method set_homogeneous = Box.set_homogeneous obj

@@ -40,8 +40,8 @@ module ColorSelection = struct
     "ml_gtk_color_selection_dialog_colorsel"
   module Signals = struct
     open GtkSignal
-    let color_changed : ([>`colorsel],_) t =
-      { name = "color_changed"; marshaller = marshal_unit }
+    let color_changed =
+      { name = "color_changed"; classe = `colorsel; marshaller = marshal_unit }
   end
 end
 
@@ -61,13 +61,13 @@ module Statusbar = struct
       = "ml_gtk_statusbar_remove"
   module Signals = struct
     open GtkSignal
-    let text_pushed : ([>`statusbar],_) t =
+    let text_pushed =
       let marshal f _ = function
         | GtkArgv.INT ctx :: GtkArgv.STRING s :: _ ->
 	    f (Obj.magic ctx : statusbar_context) s
         | _ -> invalid_arg "GtkMisc.Statusbar.Signals.marshal_text"
       in
-      { name = "text_pushed"; marshaller = marshal }
+      { name = "text_pushed"; classe = `statusbar; marshaller = marshal }
   end
 end
 
@@ -95,20 +95,20 @@ module Calendar = struct
       = "ml_gtk_calendar_thaw"
   module Signals = struct
     open GtkSignal
-    let month_changed : ([>`calendar],_) t =
-      { name = "month_changed"; marshaller = marshal_unit }
-    let day_selected : ([>`calendar],_) t =
-      { name = "day_selected"; marshaller = marshal_unit }
-    let day_selected_double_click : ([>`calendar],_) t =
-      { name = "day_selected_double_click"; marshaller = marshal_unit }
-    let prev_month : ([>`calendar],_) t =
-      { name = "prev_month"; marshaller = marshal_unit }
-    let next_month : ([>`calendar],_) t =
-      { name = "next_month"; marshaller = marshal_unit }
-    let prev_year : ([>`calendar],_) t =
-      { name = "prev_year"; marshaller = marshal_unit }
-    let next_year : ([>`calendar],_) t =
-      { name = "next_year"; marshaller = marshal_unit }
+    let month_changed =
+      { name = "month_changed"; classe = `calendar; marshaller = marshal_unit }
+    let day_selected =
+      { name = "day_selected"; classe = `calendar; marshaller = marshal_unit }
+    let day_selected_double_click =
+      { name = "day_selected_double_click"; classe = `calendar; marshaller = marshal_unit }
+    let prev_month =
+      { name = "prev_month"; classe = `calendar; marshaller = marshal_unit }
+    let next_month =
+      { name = "next_month"; classe = `calendar; marshaller = marshal_unit }
+    let prev_year =
+      { name = "prev_year"; classe = `calendar; marshaller = marshal_unit }
+    let next_year =
+      { name = "next_year"; classe = `calendar; marshaller = marshal_unit }
   end
 end
 
@@ -225,10 +225,10 @@ module TipsQuery = struct
   module Signals = struct
     open GtkArgv
     open GtkSignal
-    let start_query : ([>`tipsquery],_) t =
-      { name = "start_query"; marshaller = marshal_unit }
-    let stop_query : ([>`tipsquery],_) t =
-      { name = "stop_query"; marshaller = marshal_unit }
+    let start_query =
+      { name = "start_query"; classe = `tipsquery; marshaller = marshal_unit }
+    let stop_query =
+      { name = "stop_query"; classe = `tipsquery; marshaller = marshal_unit }
     let widget_entered :
 	([>`tipsquery],
 	 widget obj option ->
@@ -238,7 +238,7 @@ module TipsQuery = struct
 	    f (may_map ~f:Widget.cast opt) ~text ~privat
         | _ -> invalid_arg "GtkMisc.TipsQuery.Signals.marshal_entered"
       in
-      { name = "widget_entered"; marshaller = marshal }
+      { name = "widget_entered"; classe = `tipsquery; marshaller = marshal }
     let widget_selected :
 	([>`tipsquery],
 	 widget obj option ->
@@ -252,7 +252,7 @@ module TipsQuery = struct
             in set_result argv (`BOOL stop)
         | _ -> invalid_arg "GtkMisc.TipsQuery.Signals.marshal_selected"
       in
-      { name = "widget_selected"; marshaller = marshal }
+      { name = "widget_selected"; classe = `tipsquery; marshaller = marshal }
   end
 end
 

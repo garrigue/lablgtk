@@ -6,7 +6,7 @@ open GObj
 class focus :
   'a obj ->
   object
-    constraint 'a = [>`container]
+    constraint 'a = [> `container]
     val obj : 'a obj
     method circulate : Tags.direction_type -> bool
     method set : widget option -> unit
@@ -18,7 +18,7 @@ class container :
   'a obj ->
   object
     inherit widget
-    constraint 'a = [>`container|`widget]
+    constraint 'a = [> Gtk.container]
     val obj : 'a obj
     method add : widget -> unit
     method children : widget list
@@ -31,7 +31,7 @@ class container_signals :
   'a obj ->
   object
     inherit widget_signals
-    constraint 'a = [>`container|`widget]
+    constraint 'a = [> Gtk.container]
     val obj : 'a obj
     method add : callback:(widget -> unit) -> GtkSignal.id
     method remove : callback:(widget -> unit) -> GtkSignal.id
@@ -41,7 +41,7 @@ class container_full :
   'a obj ->
   object
     inherit container
-    constraint 'a = [>`container|`widget]
+    constraint 'a = [> Gtk.container]
     val obj : 'a obj
     method connect : container_signals
   end
@@ -53,7 +53,7 @@ class virtual ['a] item_container :
   'c obj ->
   object
     constraint 'a = < as_item : [>`widget] obj; .. >
-    constraint 'c = [>`container|`widget]
+    constraint 'c = [> Gtk.container]
     inherit widget
     val obj : 'c obj
     method add : 'a -> unit
@@ -71,7 +71,7 @@ class item_signals :
   'a obj ->
   object
     inherit container_signals
-    constraint 'a = [>`container|`item|`widget]
+    constraint 'a = [> Gtk.item]
     val obj : 'a obj
     method deselect : callback:(unit -> unit) -> GtkSignal.id
     method select : callback:(unit -> unit) -> GtkSignal.id

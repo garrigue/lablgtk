@@ -43,7 +43,7 @@ val event_box :
 class handle_box_signals : 'a obj ->
   object
     inherit container_signals
-    constraint 'a = [>`handlebox|`container|`widget]
+    constraint 'a = [> handle_box]
     val obj : 'a obj
     method child_attached : callback:(widget -> unit) -> GtkSignal.id
     method child_detached : callback:(widget -> unit) -> GtkSignal.id
@@ -71,7 +71,7 @@ val handle_box :
 class frame_skel : 'a obj ->
   object
     inherit container
-    constraint 'a = [>`frame|`container|`widget]
+    constraint 'a = [> frame]
     val obj : 'a obj
     method set_label : string -> unit
     method set_label_align : ?x:clampf -> ?y:clampf -> unit -> unit

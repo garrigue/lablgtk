@@ -7,7 +7,7 @@ open GContainer
 class tree_item_signals : 'a obj ->
   object
     inherit item_signals
-    constraint 'a = [>`treeitem|`container|`item|`widget]
+    constraint 'a = [> tree_item]
     val obj : 'a obj
     method collapse : callback:(unit -> unit) -> GtkSignal.id
     method expand : callback:(unit -> unit) -> GtkSignal.id

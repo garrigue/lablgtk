@@ -24,16 +24,16 @@ module Button = struct
       = "ml_gtk_button_get_relief"
   module Signals = struct
     open GtkSignal
-    let pressed : ([>`button],_) t =
-      { name = "pressed"; marshaller = marshal_unit }
-    let released : ([>`button],_) t =
-      { name = "released"; marshaller = marshal_unit }
-    let clicked : ([>`button],_) t =
-      { name = "clicked"; marshaller = marshal_unit }
-    let enter : ([>`button],_) t =
-      { name = "enter"; marshaller = marshal_unit }
-    let leave : ([>`button],_) t =
-      { name = "leave"; marshaller = marshal_unit }
+    let pressed =
+      { name = "pressed"; classe = `button; marshaller = marshal_unit }
+    let released =
+      { name = "released"; classe = `button; marshaller = marshal_unit }
+    let clicked =
+      { name = "clicked"; classe = `button; marshaller = marshal_unit }
+    let enter =
+      { name = "enter"; classe = `button; marshaller = marshal_unit }
+    let leave =
+      { name = "leave"; classe = `button; marshaller = marshal_unit }
   end
 end
 
@@ -66,8 +66,8 @@ module ToggleButton = struct
       = "ml_gtk_toggle_button_toggled"
   module Signals = struct
     open GtkSignal
-    let toggled : ([>`toggle],_) t =
-      { name = "toggled"; marshaller = marshal_unit }
+    let toggled =
+      { name = "toggled"; classe = `toggle; marshaller = marshal_unit }
   end
 end
 
@@ -140,11 +140,12 @@ module Toolbar = struct
     external val_orientation : int -> orientation = "ml_Val_orientation"
     external val_toolbar_style : int -> toolbar_style
 	= "ml_Val_toolbar_style"
-    let orientation_changed : ([>`toolbar],_) t =
+    let orientation_changed =
       let marshal f = marshal_int (fun x -> f (val_orientation x)) in
-      { name = "orientation_changed"; marshaller = marshal }
-    let style_changed : ([>`toolbar],_) t =
+      { name = "orientation_changed"; classe = `toolbar;
+        marshaller = marshal }
+    let style_changed =
       let marshal f = marshal_int (fun x -> f (val_toolbar_style x)) in
-      { name = "style_changed"; marshaller = marshal }
+      { name = "style_changed"; classe = `toolbar; marshaller = marshal }
   end
 end

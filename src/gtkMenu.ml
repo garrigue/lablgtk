@@ -27,10 +27,10 @@ module MenuItem = struct
       = "ml_gtk_menu_item_right_justify"
   module Signals = struct
     open GtkSignal
-    let activate : ([>`menuitem],_) t =
-      { name = "activate"; marshaller = marshal_unit }
-    let activate_item : ([>`menuitem],_) t =
-      { name = "activate_item"; marshaller = marshal_unit }
+    let activate =
+      { name = "activate"; classe = `menuitem; marshaller = marshal_unit }
+    let activate_item =
+      { name = "activate_item"; classe = `menuitem; marshaller = marshal_unit }
   end
 end
 
@@ -55,8 +55,8 @@ module CheckMenuItem = struct
       = "ml_gtk_check_menu_item_toggled"
   module Signals = struct
     open GtkSignal
-    let toggled : ([>`checkmenuitem],_) t =
-      { name = "toggled"; marshaller = marshal_unit }
+    let toggled =
+      { name = "toggled"; classe = `checkmenuitem; marshaller = marshal_unit }
   end
 end
 
@@ -102,8 +102,8 @@ module MenuShell = struct
       = "ml_gtk_menu_shell_deactivate"
   module Signals = struct
     open GtkSignal
-    let deactivate : ([>`menushell],_) t =
-      { name = "deactivate"; marshaller = marshal_unit }
+    let deactivate =
+      { name = "deactivate"; classe = `menushell; marshaller = marshal_unit }
   end
 end
 

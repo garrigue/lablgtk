@@ -28,10 +28,10 @@ module TreeItem = struct
   let subtree t = try subtree t with Gpointer.Null -> raise Not_found
   module Signals = struct
     open GtkSignal
-    let expand : ([>`treeitem],_) t =
-      { name = "expand"; marshaller = marshal_unit }
-    let collapse : ([>`treeitem],_) t =
-      { name = "collapse"; marshaller = marshal_unit }
+    let expand =
+      { name = "expand"; classe = `treeitem; marshaller = marshal_unit }
+    let collapse =
+      { name = "collapse"; classe = `treeitem; marshaller = marshal_unit }
   end
 end
 
@@ -72,11 +72,13 @@ module Tree = struct
     may_set set_view_lines view_lines
   module Signals = struct
     open GtkSignal
-    let selection_changed : ([>`tree],_) t =
-      { name = "selection_changed"; marshaller = marshal_unit }
-    let select_child : ([>`tree],_) t =
-      { name = "select_child"; marshaller = Widget.Signals.marshal }
-    let unselect_child : ([>`tree],_) t =
-      { name = "unselect_child"; marshaller = Widget.Signals.marshal }
+    let selection_changed =
+      { name = "selection_changed"; classe = `tree; marshaller = marshal_unit }
+    let select_child =
+      { name = "select_child"; classe = `tree;
+        marshaller = Widget.Signals.marshal }
+    let unselect_child =
+      { name = "unselect_child"; classe = `tree;
+        marshaller = Widget.Signals.marshal }
   end
 end

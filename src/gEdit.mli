@@ -6,7 +6,7 @@ open GObj
 class editable_signals : 'a obj ->
   object
     inherit widget_signals
-    constraint 'a = [>`editable|`widget]
+    constraint 'a = [> editable]
     val obj : 'a obj
     method activate : callback:(unit -> unit) -> GtkSignal.id
     method changed : callback:(unit -> unit) -> GtkSignal.id
@@ -19,7 +19,7 @@ class editable_signals : 'a obj ->
 class editable : 'a obj ->
   object
     inherit widget
-    constraint 'a = [>`editable|`widget]
+    constraint 'a = [> Gtk.editable]
     val obj : 'a obj
     method connect : editable_signals
     method copy_clipboard : unit -> unit
@@ -39,7 +39,7 @@ class editable : 'a obj ->
 class entry : 'a obj ->
   object
     inherit editable
-    constraint 'a = [>`entry|`editable|`widget]
+    constraint 'a = [> Gtk.entry]
     val obj : 'a obj
     method event : event_ops
     method append_text : string -> unit

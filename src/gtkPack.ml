@@ -314,7 +314,7 @@ module Notebook = struct
     let marshal_page f argv = function
       |	_ :: INT page :: _ -> f page
       |	_ -> invalid_arg "GtkPack.Notebook.Signals.marshal_page"
-    let switch_page : ([>`notebook],_) t =
-      { name = "switch_page"; marshaller = marshal_page }
+    let switch_page =
+      { name = "switch_page"; classe = `notebook; marshaller = marshal_page }
   end
 end

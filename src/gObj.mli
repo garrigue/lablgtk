@@ -13,7 +13,7 @@ class gtkobj :
   end
 
 class gtkobj_signals :
-  ?after:bool -> 'a obj ->
+  ?after:bool -> ([>`base] as 'a) obj ->
   object ('b)
     val obj : 'a obj
     val after : bool
@@ -32,7 +32,7 @@ class gtkobj_misc : 'a obj ->
 (* Widget *)
 
 class event_signals :
-  ?after:bool -> [>`widget] obj ->
+  ?after:bool -> [> widget] obj ->
   object ('a)
     method after : 'a
     method any :
@@ -70,7 +70,7 @@ class event_signals :
     method unmap : callback:([`UNMAP] Gdk.event -> bool) -> GtkSignal.id
   end
 
-class event_ops : [>`widget] obj ->
+class event_ops : [> widget] obj ->
   object
     method add : Gdk.Tags.event_mask list -> unit
     method connect : event_signals
@@ -186,10 +186,9 @@ and misc_ops : Gtk.widget obj ->
   end
 
 and widget :
-  'a obj ->
+  ([> Gtk.widget] as 'a) obj ->
   object
     inherit gtkobj
-    constraint 'a = [>`widget]
     val obj : 'a obj
     method as_widget : Gtk.widget obj
     method coerce : widget
@@ -266,14 +265,14 @@ and drag_signals :
 class widget_signals : ?after:bool -> 'a obj ->
   object
     inherit gtkobj_signals
-    constraint 'a = [>`widget]
+    constraint 'a = [> Gtk.widget]
     val obj : 'a obj
   end
 
 class widget_full : 'a obj ->
   object
     inherit widget
-    constraint 'a = [>`widget]
+    constraint 'a = [> Gtk.widget]
     val obj : 'a obj
     method connect : widget_signals
   end
