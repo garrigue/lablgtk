@@ -1,5 +1,9 @@
 $Id$
 
+1999.7.9
+  * corrected bug in Container.children
+  * added ML signal support in GUtil
+
 1999.7.6
   * added DnD, improved radtest (Hubert)
   * small corrections (Jacques)
