@@ -1,8 +1,8 @@
 
-             LablGTK 1.2.4 : an interface to the GIMP Tool Kit
+             LablGTK 1.2.5 : an interface to the GIMP Tool Kit
 
 Needed:
-	ocaml-3.05
+	ocaml-3.06
 	gtk-1.2.x
 	GNU make (there is no standard for conditionals)
 
@@ -75,21 +75,22 @@ How to link them:
 How to use the threaded toplevel:
 
 	% lablgtk -thread           (or ./lablgtktop_t before installing)
-	        Objective Caml version 3.05
+	        Objective Caml version 3.06
 	
 	# let w = GWindow.window ~show:true ();;
+        # let b = GButton.button ~packing:w#add ~label:"Hello!" ();;
 
-  You should at once see a window appear.
+  You should at once see a window appear, and then a button.
   The GTK main loop is running in a separate thread. Any command
   is immediately reflected by the system.
   Beware that with bytecode threads, you cannot switch threads within
-  a callback. That is the only thread related command you may use in a
+  a callback. The only thread related command you may use in a
   callback is Thread.create. Calling blocking operations may cause
   deadlocks. On the other hand, all newly created threads will be run
-  directly by the caml main loop, so they can use all thread
-  operations. There is no such problem for posix and win32 threads,
-  but win32 threads have problems of their own. See the windows port
-  section lower.
+  outside of the callback, so they can use all thread operations.
+  There is no such problem for posix and win32 threads, but win32
+  threads have problems of their own. See the windows port section
+  lower.
 
 Locale or not locale ?
   Until version 1.2.0, lablgtk called setlocale automatically on
@@ -254,7 +255,7 @@ LibGlade support:
   widgets through its methods. Example:
 
         % lablgladecc project1.glade > project1.ml
-        % lablgtk -thread -labels
+        % lablgtk -thread
         # #use "project1.ml" ;;
         class window1 : ...
         # let w1 = new window1 () ;;
@@ -319,6 +320,7 @@ Windows port
   I checked with the 2002-07-03 version of these libraries.
   Everything seems OK. In particular, you can run all examples, and build
   applications/unison as usual.
+
   However, if you want to use threads, you must be aware of windows
   specific restrictions; see for instance:
      http://groups.yahoo.com/group/gimpwin-dev/message/1828
@@ -334,7 +336,15 @@ Windows port
   beware of deadlocks (the trivial case, when you are calling from the
   same thread, is properly avoided). Note also that since callbacks
   are always called from the main loop thread, you can freely use GTK
-  in them.
+  in them. Also, non-graphical operations are thread-safe.
+  Here is an example using the lablgtk toplevel with threads:
+	% lablgtk -thread
+	        Objective Caml version 3.06
+
+        # open GtkThread ();;	
+	# let w = sync (GWindow.window ~show:true) ();;
+        # let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
+        # b#connect#clicked (fun () -> prerr_endline "Hello");;
 
 Authors:
 	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>
