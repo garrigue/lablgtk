@@ -1,5 +1,11 @@
 $Id$
 
+1998.11.30
+  * removed cast checking for NULL valued widgets (ml_gtk.[ch])
+  * module Arg is renamed as GtkArg because of the name corrision with
+	the module Arg in the standard library
+  * Makefile : native code compilation added
+ 
 1998.11.29
   * renamed widget_ops sub-object to misc
   * various improvements of set functions
