@@ -6,7 +6,6 @@ open GtkBase
 open GtkFrame
 open GObj
 open GContainer
-open GUtil
 
 class scrolled_window_wrapper obj = object
   inherit container_wrapper (obj : scrolled_window obj)

@@ -4,7 +4,6 @@ open Misc
 open Gtk
 open GtkBase
 open GtkTree
-open GUtil
 open GObj
 open GContainer
 

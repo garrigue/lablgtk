@@ -7,7 +7,6 @@ open GtkWindow
 open GtkMisc
 open GObj
 open GContainer
-open GUtil
 
 class window_skel obj = object
   inherit container obj

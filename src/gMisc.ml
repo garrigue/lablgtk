@@ -4,7 +4,6 @@ open Misc
 open Gtk
 open GtkBase
 open GtkMisc
-open GUtil
 open GObj
 
 class separator_wrapper w = widget_wrapper (w : separator obj)

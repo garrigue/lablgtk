@@ -4,7 +4,6 @@ open Misc
 open Gtk
 open GtkBase
 open GtkEdit
-open GUtil
 open GObj
 
 class editable_signals obj ?:after = object

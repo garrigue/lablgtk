@@ -4,7 +4,6 @@ open Misc
 open Gtk
 open GtkData
 open GtkMisc
-open GUtil
 open GObj
 
 class pixmap_wrapper obj = object

@@ -28,7 +28,7 @@ class box dir ?:homogeneous ?:spacing
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit box_wrapper w
-    initializer GUtil.pack_return :packing (self :> box_wrapper)
+    initializer pack_return :packing (self :> box_wrapper)
   end
 
 class button_box_wrapper obj = object
@@ -48,7 +48,7 @@ class button_box dir ?:spacing ?:child_width ?:child_height ?:child_ipadx
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit button_box_wrapper w
-    initializer GUtil.pack_return :packing (self :> button_box_wrapper)
+    initializer pack_return :packing (self :> button_box_wrapper)
   end
 
 class table_wrapper obj = object
@@ -66,7 +66,7 @@ class table :rows :columns ?:homogeneous ?:row_spacings ?:col_spacings
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit table_wrapper w
-    initializer GUtil.pack_return :packing (self :> table_wrapper)
+    initializer pack_return :packing (self :> table_wrapper)
   end
 
 class fixed_wrapper obj = object
@@ -82,5 +82,5 @@ class fixed ?:border_width ?:width ?:height ?:packing =
   let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit fixed_wrapper w
-    initializer GUtil.pack_return :packing (self :> fixed_wrapper)
+    initializer pack_return :packing (self :> fixed_wrapper)
   end
