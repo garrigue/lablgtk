@@ -72,8 +72,7 @@ let main () =
   let control = GPack.table ~rows:3 ~columns:7 ~packing:vbx#pack () in
 
   let abuttonClicked num (lbl : GMisc.label) _ = begin
-    let dialog =
-      GWindow.window ~kind:`DIALOG ~border_width:10 ~title:"Key remap" () in
+    let dialog = GWindow.window ~border_width:10 ~title:"Key remap" () in
     let dvbx = GPack.box `VERTICAL ~packing:dialog#add () in
     let entry  = GEdit.entry ~max_length:1 ~packing: dvbx#add () in
     let txt = String.make 1 keys.[num] in
