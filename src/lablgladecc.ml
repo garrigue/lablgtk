@@ -160,26 +160,37 @@ let output_widget w =
       modul w.wname;
   with Not_found -> ()
 
-let parse_body ~file lexbuf =
+let output_wrapper ~file ~embed wtree =
+  Printf.printf "class %s %s?domain ?autoconnect(*=true*) () =\n"
+    wtree.wname
+    (if embed then "" else
+    if file = "<stdin>" then "~file " else "?(file=\"" ^ file ^ "\") ");
+  print_string "  object (self)\n";
+  Printf.printf
+    "    inherit Glade.xml %s ~root:\"%s\" ?domain ?autoconnect ()\n"
+    (if embed then "~data" else "~file")
+    wtree.wname;
+  let widgets = flatten_tree wtree in
+  List.iter widgets ~f:output_widget;
+  Printf.printf "    method check_widgets () =\n";
+  List.iter widgets ~f:
+    (fun w ->
+      if w.wrapped then Printf.printf "      ignore self#%s;\n" w.wname);
+  Printf.printf "  end\n"
+
+let parse_body ~file ~embed ~roots lexbuf =
   while match token lexbuf with
     Tag("project", _, closed) ->
       if not closed then while token lexbuf <> Endtag "project" do () done;
       true
   | Tag("widget", _, false) ->
       let wtree = parse_widget lexbuf in
-      Printf.printf "class %s %s ?autoconnect(*=true*) () =\n  object (self)\n"
-        wtree.wname
-        (if file = "<stdin>" then "~file" else "?(file=\"" ^ file ^ "\")");
-      Printf.printf
-        "    inherit Glade.xml ~file ~root:\"%s\" ?autoconnect ()\n"
-        wtree.wname;
-      let widgets = flatten_tree wtree in
-      List.iter widgets ~f:output_widget;
-      Printf.printf "    method check_widgets () =\n";
-      List.iter widgets ~f:
-	(fun w ->
-	  if w.wrapped then Printf.printf "      ignore self#%s;\n" w.wname);
-      Printf.printf "  end\n";
+      let rec output_roots wtree =
+        if List.mem wtree.wname roots then output_wrapper ~file ~embed wtree;
+        List.iter ~f:output_roots wtree.wchildren
+      in
+      if roots = [] then output_wrapper ~file ~embed wtree
+      else output_roots wtree;
       true
   | Tag(tag, _, closed) ->
       if not closed then while token lexbuf <> Endtag tag do () done; true
@@ -189,13 +200,27 @@ let parse_body ~file lexbuf =
   | EOF -> false
   do () done
 
-let process ?(file="<stdin>") chan =
-  let lexbuf = Lexing.from_channel chan in
+let process ?(file="<stdin>") ~embed ~roots chan =
+  let lexbuf, data =
+    if embed then begin
+      let b = Buffer.create 1024 in
+      let buf = String.create 1024 in
+      while
+        let len = input chan ~buf ~pos:0 ~len:1024 in
+        Buffer.add_substring b buf ~pos:0 ~len;
+        len > 0
+      do () done;
+      let data = Buffer.contents b in
+      Lexing.from_string data, data
+    end else
+      Lexing.from_channel chan, ""
+  in
   try
     parse_header lexbuf;
     Printf.printf "(* Automatically generated from %s by lablgladecc *)\n\n"
       file;
-    parse_body ~file lexbuf
+    if embed then Printf.printf "let data = \"%s\"\n\n" (String.escaped data);
+    parse_body ~file ~embed ~roots lexbuf
   with Failure s ->
     Printf.eprintf "lablgladecc: in %s, before char %d, %s\n"
       file (Lexing.lexeme_start lexbuf) s
@@ -212,22 +237,27 @@ let output_test () =
   print_string "let _ = print_endline \"lablgladecc test finished\"\n"
 
 let main () =
-  if Array.length Sys.argv = 1 then
-    process stdin
-  else if List.mem Sys.argv.(1) ["-h"; "-help"; "--help"] then
-    begin
-      prerr_string "%s <file.glade> \n";
-      prerr_string
-        "  Convert glade specification file to caml wrappers, to be used\n";
-      prerr_string "  with libglade. Results are on standard output.\n"
-    end
-  else if Sys.argv.(1) = "-test" then
+  let files = ref [] and test = ref false and embed = ref false
+  and roots = ref [] in
+  Arg.parse ~errmsg:"lablgladecc <options> <file.glade>"
+    ~keywords:
+    [ "-test", Arg.Set test,
+      "generate a check for internal widget definitions";
+      "-embed", Arg.Set embed,
+      "embed input file into generated program";
+      "-root", Arg.String (fun s -> roots := s :: !roots),
+      "<widget> generate only wrapper for <widget> and its children" ]
+    ~others:(fun s -> files := s :: !files);
+  if !test then
     output_test ()
+  else if !files = [] then
+    process ~file:"<stdin>" ~embed:!embed ~roots:!roots stdin
   else
-    for i = 1 to Array.length Sys.argv - 1 do
-      let chan = open_in Sys.argv.(i) in
-      process ~file:Sys.argv.(i) chan;
-      close_in chan
-    done  
+    List.iter (List.rev !files) ~f:
+      begin fun file ->
+        let chan = open_in file in
+        process ~file ~embed:!embed ~roots:!roots chan;
+        close_in chan
+      end
 
 let () = main ()

@@ -8,8 +8,11 @@ type glade_xml = [`data|`glade_xml]
 
 external init : unit -> unit = "ml_glade_init"
 (* external gnome_init : unit -> unit = "ml_glade_gnome_init" *)
-external create : file:string -> root:string -> glade_xml obj
+external create :
+    ?file:string -> ?data:string ->
+    ?root:string -> ?domain:string -> unit -> glade_xml obj
     = "ml_glade_xml_new"
+
 external _signal_autoconnect :
     [> `glade_xml] obj ->
     (string * unit obj * string * unit obj option * bool -> unit) -> unit
@@ -135,9 +138,9 @@ let print_bindings oc xml =
 
 (* class skeleton, for use in generated wrappers *)
 
-class xml ~file ~root ?(autoconnect = true) () =
+class xml ?file ?data ?root ?domain ?(autoconnect = true) () =
   let () = init () in
-  let xml = create ~file ~root in
+  let xml = create ?file ?data ?root ?domain () in
   let () = if autoconnect then bind_handlers xml in
   object (self)
     val xml = xml
