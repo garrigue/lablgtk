@@ -1,7 +1,7 @@
 # $Id$
 # Makefile for lablgtk.
 
-TARGETS = varcc lablgtktop lablgtktop_t lablgtk2
+TARGETS = varcc lablgtktop lablgtktop_t lablgtk2 lablgladecc
 
 all:: $(TARGETS)
 
@@ -156,7 +156,7 @@ testcc: lablgladecc lablgtktop
 	rm -f testcc.ml
 
 install:
-	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
+	mkdir -p $(INSTALLDIR) $(BINDIR) $(DLLDIR)
 	cp $(ALLOBJS:.cmo=.cmi) $(THOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp -p *.mli $(INSTALLDIR)
 	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(INSTALLDIR)

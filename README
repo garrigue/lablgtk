@@ -41,6 +41,7 @@ How to compile:
 		USE_CC=1	to use $(CC) rather than gcc
 		USE_GL=1	to compile gtkglarea support
                 USE_GLADE=1     to compile libglade support
+                USE_GNOMECANVAS=1 to compile libgnomecanvas support
                 USE_RSVG=1      to compile librsvg support
         The following variables will also be remembered if passed as options
                 BINDIR INSTALLDIR DLLDIR DEBUG CC
@@ -55,6 +56,12 @@ How to compile:
 	Then just type "make" to build the library and toplevels.
 	"make opt" to compile native libraries.
 	"make install" installs to the default locations.
+        "make install DESTDIR=..." prefixes the installation
+	directories with DESTDIR.
+
+        A META file for findlib is provided, but it only handles the
+        base library: I have no idea on how to avoid a combinatorial
+        explosion with the various extensions.
 
 Contents:
 
@@ -287,7 +294,15 @@ SVG support:
 
   This binding was contributed by Olivier Andrieu.
   It requires librsvg-2.x (preferably 2.2.x).
-  See an example in examples/rsvg.ml.
+  See an example in examples/rsvg.
+  The executable must be linked with lablrsvg.cma.
+
+GnomeCanvas support:
+
+  This binding was also contributed by Olivier Andrieu.
+  It requires libcnomecanvas-2.x.
+  See examples in examples/canvas.
+  The executable must be linked with lablgnomecanvas.cma.
 
 Windows port
 
@@ -296,7 +311,8 @@ Windows port
 
 Authors:
 	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>
-	Benjamin Monate <monate@lix.polytechnique.fr>
+	Benjamin Monate  <monate@lix.polytechnique.fr>
+        Olivier Andrieu  <oandrieu@nerim.net>
   For lablgtk1:
 	Hubert Fauque  <hubert.fauque@wanadoo.fr>
 	Jun Furuse     <Jun.Furuse@inria.fr>

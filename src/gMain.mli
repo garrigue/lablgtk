@@ -33,6 +33,12 @@ module Timeout : sig
   val remove : id -> unit
 end
 
+module Idle : sig
+  type id = Glib.Idle.id
+  val add : callback:(unit -> bool) -> id
+  val remove : id -> unit
+end
+
 module Io : sig
   type channel = Glib.Io.channel
   type condition = [ `IN | `OUT | `PRI | `ERR | `HUP | `NVAL ]

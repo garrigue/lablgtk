@@ -252,7 +252,7 @@ let main () =
       "-root", Arg.String (fun s -> roots := s :: !roots),
       "<widget>  generate only a wrapper for <widget> and its children" ]
     (fun s -> files := s :: !files)
-    "lablgladecc [<options>] [<file.glade>]";
+    "lablgladecc2 [<options>] [<file.glade>]";
   if !test then
     output_test ()
   else if !files = [] then
