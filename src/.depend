@@ -1,21 +1,21 @@
 gAction.cmo: gObj.cmi gaux.cmo gobject.cmi gtk.cmo gtkActionProps.cmo \
-    gtkData.cmo gtkSignal.cmi ogtkActionProps.cmo gAction.cmi 
+    gtkSignal.cmi ogtkActionProps.cmo gAction.cmi 
 gAction.cmx: gObj.cmx gaux.cmx gobject.cmx gtk.cmx gtkActionProps.cmx \
-    gtkData.cmx gtkSignal.cmx ogtkActionProps.cmx gAction.cmi 
+    gtkSignal.cmx ogtkActionProps.cmx gAction.cmi 
 gBin.cmo: gContainer.cmi gData.cmi gObj.cmi gaux.cmo gobject.cmi gtk.cmo \
     gtkBase.cmo gtkBin.cmo gtkBinProps.cmo ogtkBinProps.cmo gBin.cmi 
 gBin.cmx: gContainer.cmx gData.cmx gObj.cmx gaux.cmx gobject.cmx gtk.cmx \
     gtkBase.cmx gtkBin.cmx gtkBinProps.cmx ogtkBinProps.cmx gBin.cmi 
-gBroken.cmo: gContainer.cmi gDraw.cmi gEdit.cmi gObj.cmi gaux.cmo gobject.cmi \
-    gpointer.cmi gtk.cmo gtkBase.cmo gtkBroken.cmo ogtkBaseProps.cmo \
-    ogtkBrokenProps.cmo ogtkEditProps.cmo gBroken.cmi 
-gBroken.cmx: gContainer.cmx gDraw.cmx gEdit.cmx gObj.cmx gaux.cmx gobject.cmx \
-    gpointer.cmx gtk.cmx gtkBase.cmx gtkBroken.cmx ogtkBaseProps.cmx \
-    ogtkBrokenProps.cmx ogtkEditProps.cmx gBroken.cmi 
-gButton.cmo: gContainer.cmi gObj.cmi gaux.cmo gobject.cmi gtk.cmo gtkBase.cmo \
-    gtkButton.cmo ogtkButtonProps.cmo gButton.cmi 
-gButton.cmx: gContainer.cmx gObj.cmx gaux.cmx gobject.cmx gtk.cmx gtkBase.cmx \
-    gtkButton.cmx ogtkButtonProps.cmx gButton.cmi 
+gBroken.cmo: gContainer.cmi gData.cmi gDraw.cmi gEdit.cmi gObj.cmi gaux.cmo \
+    gobject.cmi gpointer.cmi gtk.cmo gtkBase.cmo gtkBroken.cmo \
+    ogtkBaseProps.cmo ogtkBrokenProps.cmo ogtkEditProps.cmo gBroken.cmi 
+gBroken.cmx: gContainer.cmx gData.cmx gDraw.cmx gEdit.cmx gObj.cmx gaux.cmx \
+    gobject.cmx gpointer.cmx gtk.cmx gtkBase.cmx gtkBroken.cmx \
+    ogtkBaseProps.cmx ogtkBrokenProps.cmx ogtkEditProps.cmx gBroken.cmi 
+gButton.cmo: gContainer.cmi gData.cmi gObj.cmi gaux.cmo gobject.cmi gtk.cmo \
+    gtkBase.cmo gtkButton.cmo ogtkButtonProps.cmo gButton.cmi 
+gButton.cmx: gContainer.cmx gData.cmx gObj.cmx gaux.cmx gobject.cmx gtk.cmx \
+    gtkBase.cmx gtkButton.cmx ogtkButtonProps.cmx gButton.cmi 
 gContainer.cmo: gData.cmi gObj.cmi gaux.cmo gobject.cmi gpointer.cmi gtk.cmo \
     gtkBase.cmo ogtkBaseProps.cmo gContainer.cmi 
 gContainer.cmx: gData.cmx gObj.cmx gaux.cmx gobject.cmx gpointer.cmx gtk.cmx \
@@ -144,10 +144,10 @@ gpointer.cmo: gpointer.cmi
 gpointer.cmx: gpointer.cmi 
 gtk.cmo: gobject.cmi gpointer.cmi 
 gtk.cmx: gobject.cmx gpointer.cmx 
-gtkActionProps.cmo: gobject.cmi gtk.cmo gtkObject.cmo gtkSignal.cmi \
-    gtkStock.cmo 
-gtkActionProps.cmx: gobject.cmx gtk.cmx gtkObject.cmx gtkSignal.cmx \
-    gtkStock.cmx 
+gtkActionProps.cmo: gobject.cmi gtk.cmo gtkEnums.cmo gtkObject.cmo \
+    gtkSignal.cmi gtkStock.cmo 
+gtkActionProps.cmx: gobject.cmx gtk.cmx gtkEnums.cmx gtkObject.cmx \
+    gtkSignal.cmx gtkStock.cmx 
 gtkBase.cmo: gaux.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi gobject.cmi \
     gpointer.cmi gtk.cmo gtkBaseProps.cmo gtkEnums.cmo gtkObject.cmo \
     gtkSignal.cmi pango.cmo 
@@ -167,13 +167,13 @@ gtkBroken.cmx: gaux.cmx gdk.cmx gtk.cmx gtkBase.cmx gtkBrokenProps.cmx
 gtkBrokenProps.cmo: gobject.cmi gtk.cmo gtkObject.cmo gtkSignal.cmi 
 gtkBrokenProps.cmx: gobject.cmx gtk.cmx gtkObject.cmx gtkSignal.cmx 
 gtkButton.cmo: gaux.cmo gobject.cmi gpointer.cmi gtk.cmo gtkBase.cmo \
-    gtkButtonProps.cmo gtkSignal.cmi gtkStock.cmo 
+    gtkButtonProps.cmo gtkEnums.cmo gtkSignal.cmi gtkStock.cmo 
 gtkButton.cmx: gaux.cmx gobject.cmx gpointer.cmx gtk.cmx gtkBase.cmx \
-    gtkButtonProps.cmx gtkSignal.cmx gtkStock.cmx 
+    gtkButtonProps.cmx gtkEnums.cmx gtkSignal.cmx gtkStock.cmx 
 gtkButtonProps.cmo: gdk.cmi gobject.cmi gtk.cmo gtkEnums.cmo gtkObject.cmo \
-    gtkSignal.cmi 
+    gtkSignal.cmi gtkStock.cmo 
 gtkButtonProps.cmx: gdk.cmx gobject.cmx gtk.cmx gtkEnums.cmx gtkObject.cmx \
-    gtkSignal.cmx 
+    gtkSignal.cmx gtkStock.cmx 
 gtkData.cmo: gaux.cmo gdk.cmi gobject.cmi gtk.cmo gtkBaseProps.cmo \
     gtkSignal.cmi 
 gtkData.cmx: gaux.cmx gdk.cmx gobject.cmx gtk.cmx gtkBaseProps.cmx \
@@ -278,8 +278,8 @@ ogtkBinProps.cmx: gData.cmx gObj.cmx gobject.cmx gtkBinProps.cmx \
     gtkPackProps.cmx gtkSignal.cmx 
 ogtkBrokenProps.cmo: gData.cmi gobject.cmi gtkBrokenProps.cmo gtkSignal.cmi 
 ogtkBrokenProps.cmx: gData.cmx gobject.cmx gtkBrokenProps.cmx gtkSignal.cmx 
-ogtkButtonProps.cmo: gobject.cmi gtkButtonProps.cmo gtkSignal.cmi 
-ogtkButtonProps.cmx: gobject.cmx gtkButtonProps.cmx gtkSignal.cmx 
+ogtkButtonProps.cmo: gObj.cmi gobject.cmi gtkButtonProps.cmo gtkSignal.cmi 
+ogtkButtonProps.cmx: gObj.cmx gobject.cmx gtkButtonProps.cmx gtkSignal.cmx 
 ogtkEditProps.cmo: gData.cmi gobject.cmi gtkEditProps.cmo gtkSignal.cmi 
 ogtkEditProps.cmx: gData.cmx gobject.cmx gtkEditProps.cmx gtkSignal.cmx 
 ogtkFileProps.cmo: gObj.cmi gobject.cmi gtkFileProps.cmo gtkSignal.cmi 
@@ -310,16 +310,17 @@ pango.cmo: gaux.cmo glib.cmi gobject.cmi gpointer.cmi
 pango.cmx: gaux.cmx glib.cmx gobject.cmx gpointer.cmx 
 pangoEnums.cmo: gobject.cmi gpointer.cmi 
 pangoEnums.cmx: gobject.cmx gpointer.cmx 
-rsvg.cmo: gdkPixbuf.cmi rsvg.cmi 
-rsvg.cmx: gdkPixbuf.cmx rsvg.cmi 
+rsvg.cmo: gaux.cmo gdkPixbuf.cmi rsvg.cmi 
+rsvg.cmx: gaux.cmx gdkPixbuf.cmx rsvg.cmi 
 xml_lexer.cmo: xml_lexer.cmi 
 xml_lexer.cmx: xml_lexer.cmi 
-gAction.cmi: gObj.cmi gobject.cmi gtk.cmo gtkSignal.cmi gtkStock.cmo 
+gAction.cmi: gObj.cmi gobject.cmi gtk.cmo gtkEnums.cmo gtkSignal.cmi \
+    gtkStock.cmo 
 gBin.cmi: gContainer.cmi gData.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
 gBroken.cmi: gContainer.cmi gData.cmi gDraw.cmi gEdit.cmi gObj.cmi gdk.cmi \
     gobject.cmi gtk.cmo gtkSignal.cmi 
-gButton.cmi: gContainer.cmi gObj.cmi gdk.cmi gtk.cmo gtkSignal.cmi \
-    gtkStock.cmo 
+gButton.cmi: gContainer.cmi gData.cmi gObj.cmi gdk.cmi gtk.cmo gtkEnums.cmo \
+    gtkSignal.cmi gtkStock.cmo 
 gContainer.cmi: gData.cmi gObj.cmi gobject.cmi gtk.cmo gtkSignal.cmi 
 gData.cmi: gObj.cmi gdk.cmi gobject.cmi gtk.cmo gtkSignal.cmi 
 gDraw.cmi: gdk.cmi gdkPixbuf.cmi gobject.cmi gpointer.cmi pango.cmo 

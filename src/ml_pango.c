@@ -23,6 +23,14 @@
 #include "pango_tags.c"
 
 
+CAMLprim value ml_pango_init(value unit)
+{
+  /* Since these are declared const, must force gcc to call them! */
+  GType t =
+    pango_font_description_get_type();
+  return Val_GType(t);
+}
+
 /* PangoFontDescription */
 
 Make_Val_final_pointer_ext (PangoFontDescription, _new, Ignore,

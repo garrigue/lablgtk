@@ -5,7 +5,7 @@ prefix "Gtk"
 header {
 open Gtk
 module Internal = struct
-  let tree_path_string = ref (unsafe_boxed : tree_path data_conv)
+  let tree_path_string = ref (unsafe_pointer : tree_path data_conv)
 end
 }
 

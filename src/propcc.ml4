@@ -106,7 +106,7 @@ let add_pointer conv gtk name =
     (Printf.sprintf "(%s_option : %s option data_conv)" conv name)
 
 let add_object = add_pointer "gobject"
-let add_boxed = add_pointer "unsafe_boxed"
+let add_boxed = add_pointer "unsafe_pointer" (* the type is not used *)
 
 let () =
   List.iter ~f:(fun t -> Hashtbl.add conversions ("g"^t) t)

@@ -52,16 +52,22 @@ ML_1 (g_type_from_name, String_val, Val_GType)
 ML_1 (g_type_parent, GType_val, Val_GType)
 ML_1 (g_type_depth, GType_val, Val_int)
 ML_2 (g_type_is_a, GType_val, GType_val, Val_bool)
-ML_1 (G_TYPE_FUNDAMENTAL, GType_val, Val_fundamental_type)
+/* ML_1 (G_TYPE_FUNDAMENTAL, GType_val, Val_fundamental_type) */
+CAMLprim value ml_G_TYPE_FUNDAMENTAL(value ty)
+{
+  GType fund = G_TYPE_FUNDAMENTAL(GType_val(ty));
+  if (fund == G_TYPE_BOXED) {
+    value r = alloc_tuple(2);
+    Field(r,0) = MLTAG_BOXED;
+    Field(r,1) = Val_GType(ty);
+    return r;
+  }
+  return Val_fundamental_type(fund);
+}
 CAMLprim value ml_Fundamental_type_val(value fund)
 {
-  /* G_TYPE_CAML is not a constant, it's a function call, so it can't
-     be in the lookup_table.
-     It's not a true fundamental type because Gtk{Tree,List}Store won't
-     accept unknown fundamental types. */
-  if (fund == MLTAG_CAML)
-    return Val_GType(G_TYPE_CAML);
-  return Val_GType(Fundamental_type_val(fund));
+  return Val_GType(Is_block(fund) ? Field(fund,1)
+                   : Fundamental_type_val(fund));
 }
 
 #ifdef HASGTK22

@@ -28,7 +28,8 @@ CAMLprim value ml_gtktree_init(value unit)
         gtk_cell_renderer_text_get_type() +
         gtk_cell_renderer_toggle_get_type () +
         gtk_list_store_get_type() +
-        gtk_tree_model_sort_get_type()
+        gtk_tree_model_sort_get_type() +
+        gtk_tree_path_get_type()
 #ifdef HASGTK24
         + gtk_tree_model_filter_get_type()
 #endif

@@ -26,6 +26,9 @@ type device
 exception Error of string
 let _ = Callback.register_exception "gdkerror" (Error"")
 
+external _gdk_init : unit -> unit = "ml_gdk_init"
+let () = _gdk_init ()
+
 module Tags = struct
   type event_type =
     [ `NOTHING | `DELETE | `DESTROY | `EXPOSE | `MOTION_NOTIFY
