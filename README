@@ -2,7 +2,7 @@
              LablGTK : an interface to the GIMP Tool Kit
 
 Needed:
-	ocaml-3.01
+	ocaml-3.03-alpha
 	gtk-1.2.x
 	gmake (there is no standard for conditionals)
 
@@ -259,6 +259,9 @@ GL extension:
   * get and install gtkglarea-1.2.x.tar.gz from
     http://www.student.oulu.fi/~jlof/gtkglarea/index.html
   * reconfigure: "make configure USE_GL=1"
+      You can also set the GLLIBS variable to the libraries you must
+      link with. The default is "-lGLU -lGL". Due to a bug in ld.so,
+      this should be empty on some systems, including Solaris 8.
 
   You can then use the widget GlGtk.gl_area as an OpenGL window.
   Some examples are in examples/GL, but basically any LablGL example
