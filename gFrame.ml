@@ -35,7 +35,7 @@ class scrolled_window ?:hscrollbar_policy ?:vscrollbar_policy
 
 class event_box_wrapper obj = object
   inherit container_wrapper (obj : event_box obj)
-  method event = new event_ops obj
+  method add_events = Widget.add_events obj
 end
 
 class event_box ?:border_width ?:width ?:height ?:packing ?:show =
@@ -60,7 +60,7 @@ class handle_box_wrapper obj = object
   method set_handle_position = HandleBox.set_handle_position obj
   method set_snap_edge       = HandleBox.set_snap_edge       obj
   method connect = new handle_box_signals ?obj
-  method event = new event_ops obj
+  method add_events = Widget.add_events obj
 end
 
 class handle_box ?:border_width ?:width ?:height ?:packing ?:show =

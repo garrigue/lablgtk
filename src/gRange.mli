@@ -7,7 +7,7 @@ class progress_bar :
   object
     inherit GObj.widget_wrapper
     val obj : Gtk.progress_bar obj
-    method event : GObj.event_ops
+    method add_events : Gdk.Tags.event_mask list -> unit
     method percentage : float
     method update : float -> unit
   end
@@ -31,6 +31,6 @@ class scrollbar :
   object
     inherit range
     val obj : Gtk.scrollbar obj
-    method event : GObj.event_ops
+    method add_events : Gdk.Tags.event_mask list -> unit
   end
 class scrollbar_wrapper : Gtk.scrollbar obj -> scrollbar

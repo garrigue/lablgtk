@@ -11,6 +11,8 @@ let main () =
   (* toplevel window *)
   let window =
     new GWindow.window border_width: 10 title:"Reverse Polish Calculator" in
+  window#connect#event#delete
+     callback:(fun _ -> prerr_endline "Delete event occured"; false);
   window#connect#destroy callback:Main.quit;
 
 

@@ -257,7 +257,7 @@ let rw = ref None in
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
-	window #event#connect#delete callback:(fun _ -> true);
+	window #connect#event#delete callback:(fun _ -> true);
 
 	let accel_group = GtkData.AccelGroup.create () in
 	window #add_accel_group accel_group  ;
