@@ -1,5 +1,8 @@
 $Id$
 
+1999.8.5
+  * corrected a bad bug with indirected pointers in caml heap
+
 1999.7.15
   * add GdkKeysyms for exotic keysyms
 

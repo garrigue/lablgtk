@@ -123,7 +123,10 @@ class text_wrapper obj = object
   method length = Text.get_length obj
   method freeze () = Text.freeze obj
   method thaw () = Text.thaw obj
-  method insert = Text.insert ?obj
+  method insert text ?:font ?:foreground ?:background =
+    Text.insert obj text ?:font
+      ?foreground:(may_map foreground fun:GdkObj.color)
+      ?background:(may_map background fun:GdkObj.color)
 end
 
 class text ?:hadjustment ?:vadjustment ?:editable
