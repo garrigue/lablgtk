@@ -1,5 +1,9 @@
 $Id$
 
+2003.03.20 [Olivier]
+ * add stocks and mnemonics for buttons
+ * add icon factories
+
 2003.03.19 [Jacques]
  * more property support (phantom type like for signals)
 
