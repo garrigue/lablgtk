@@ -122,7 +122,7 @@ let pixmap_from_xpm ~window ~file ?colormap ?transparent () =
   let pm, mask =
     try Pixmap.create_from_xpm window ~file ?colormap
 	?transparent:(may_map transparent ~f:(fun c -> color c))
-    with Null_pointer -> invalid_arg "GdkObj.pixmap_from_xpm" in
+    with Null_pointer -> invalid_arg ("GDraw.pixmap_from_xpm : " ^ file) in
   new pixmap pm ?colormap ~mask
 
 let pixmap_from_xpm_d ~window ~data ?colormap ?transparent () =
