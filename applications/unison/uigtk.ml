@@ -49,12 +49,6 @@ type stateItem = { ri : reconItem;
                    mutable whatHappened : unit confirmation option }
 let theState = ref None
 
-let filterIgnoreStateItems sIList =
- Safelist.filter sIList
-    pred:(fun sI -> not (Pred.test Globals.ignore (path2string sI.ri.path)))
-
-let detector1 = ref None
-let detector2 = ref None
 let current = ref None
 let busy = ref false
 
@@ -128,7 +122,7 @@ let profileSelect toplevelWindow =
   else (* > first use, look for existing profiles *)
     let profiles =
       Safelist.map (Files.ls dirString "*.prf")
-        fun:(fun f -> Filename.chop_suffix f suff:".prf")
+        f:(fun f -> Filename.chop_suffix f ".prf")
     in
     match profiles with
       [] -> true (* No profiles; return and build a default profile *)
@@ -137,16 +131,16 @@ let profileSelect toplevelWindow =
            the default of the dialog; otherwise the first profile
            becomes the default. *)
         let profiles =
-          if Safelist.mem item:"default" profiles
-          then "default":: Safelist.filter pred:(fun f -> f<>"default") profiles
+          if Safelist.mem "default" profiles
+          then "default":: Safelist.filter f:(fun f -> f<>"default") profiles
           else profiles in
         let var1 = ref (Safelist.hd profiles) in
 
         let roots_of_profile f =
           try
             let filename = fspath2string (Os.fileInUnisonDir (f^".prf")) in
-            Safelist.map fun:(fun (n,v) -> v)
-              (Safelist.filter pred:(fun (n,v) -> n="root")
+            Safelist.map f:(fun (n,v) -> v)
+              (Safelist.filter f:(fun (n,v) -> n="root")
                  (Prefs.scanPreferencesFile filename))
           with _ -> []
         in
@@ -168,10 +162,10 @@ let profileSelect toplevelWindow =
           packing:(vb#pack expand:false) ();
 
         let buttons =
-          Safelist.map profiles fun:
+          Safelist.map profiles f:
             begin fun profile ->
               let b = GButton.radio_button label:profile packing:vb#add () in
-              Safelist.iter (roots_of_profile profile) fun:
+              Safelist.iter (roots_of_profile profile) f:
                 begin fun s ->
                   ignore (GMisc.label text:("          Root: "^s)
                             packing:vb#add ())
@@ -199,7 +193,9 @@ let profileSelect toplevelWindow =
                          ^ "\" already exists!\nPlease select another name.")
             else begin
               (* Make an empty file *)
-              let ch = open_out filename in
+              let ch =
+                open_out_gen filename
+                  mode:[Open_wronly; Open_creat; Open_trunc] perm:0o600 in
               close_out ch;
               Globals.prefsFileName := file;
               successful := true;
@@ -226,7 +222,7 @@ let profileSelect toplevelWindow =
         oldState();
 
         let button0 = Safelist.hd buttons in
-        List.iter2 (newValue::profiles) (newButton::buttons) fun:
+        List.iter2 (newValue::profiles) (newButton::buttons) f:
           begin fun profile (button : GButton.radio_button) ->
             if button <> button0 then button#set_group button0#group;
             button#connect#clicked callback:
@@ -389,7 +385,7 @@ let start _ =
   let displayHooks = ref [] in
   let addDisplayHook f = displayHooks := f::!displayHooks in
   let invokeDisplayHooks () =
-    Safelist.iter fun:(fun f -> f()) (Safelist.rev !displayHooks) in
+    Safelist.iter f:(fun f -> f()) (Safelist.rev !displayHooks) in
 
   (**********************************************************************)
   (* Function to display a message in a new window                      *)
@@ -453,10 +449,10 @@ let start _ =
   in
   mainWindow#misc#grab_focus ();
   Array.iteri [|100; 40; 100; 40; 200|]
-    fun:(fun :i data -> mainWindow#set_column i width:data);
+    f:(fun i data -> mainWindow#set_column i width:data);
   let displayTitle() =
     let s = roots2string () in
-    Array.iteri fun:(fun :i data -> mainWindow#set_column i title:data)
+    Array.iteri f:(fun i data -> mainWindow#set_column i title:data)
       [| String.sub pos:0 len:12 s; "Action";
 	 String.sub pos:15 len:12 s; "Status"; "Path" |]
   in
@@ -522,7 +518,7 @@ let start _ =
   let displayStatus s1 s2 =
     (* Concatenate the new message *)
     let m =
-      s1 ^ (String.make len:(max 2 (30 - String.length s1)) ' ') ^ s2 in
+      s1 ^ (String.make (max 2 (30 - String.length s1)) ' ') ^ s2 in
     statusContext#pop ();
     ignore (statusContext#push m);
     (* Force message to be displayed immediately *)
@@ -678,14 +674,14 @@ let start _ =
           not (Pred.test Globals.ignore (path2string sI.ri.path)) in
         begin match !current with
           None ->
-            let theSIList = Safelist.filter pred:keep theSIList in
+            let theSIList = Safelist.filter f:keep theSIList in
             let theSIArray = Array.of_list theSIList in
             theState := Some theSIArray
         | Some index ->
             deselect ();
             let (theSIList,newCurrent) =
               if index < 0 then
-                (Safelist.filter pred:keep theSIList,None)
+                (Safelist.filter f:keep theSIList,None)
               else
                 try
                   let beforeIndex,atIndex,afterIndex =
@@ -696,8 +692,8 @@ let start _ =
                           if i=index then (Safelist.rev before,hd,tl)
                           else loop (i+1) (hd::before,tl) in
                     loop 0 ([],theSIList) in
-                  let before = Safelist.filter pred:keep beforeIndex in
-                  let after = Safelist.filter pred:keep afterIndex in
+                  let before = Safelist.filter f:keep beforeIndex in
+                  let after = Safelist.filter f:keep afterIndex in
                   if keep atIndex then
                     (Safelist.append before (atIndex::after),
                      Some(Safelist.length before))
@@ -707,7 +703,7 @@ let start _ =
                     (before,Some(Safelist.length before - 1))
                   else ([],None)
                 with Transient "ignoreAndRedisplay" ->
-                  (Safelist.filter pred:keep theSIList,None) in
+                  (Safelist.filter f:keep theSIList,None) in
             let theSIArray = Array.of_list theSIList in
             current := newCurrent;
             theState := Some theSIArray
@@ -732,13 +728,13 @@ let start _ =
         (* displayRoots(); *)
         displayTitle();
         let (r1,r2) = Globals.getReplicaRoots() in
+        let t = Trace.startTimer "Checking for updates" in
         let updates = Update.findUpdates() in
+        Trace.showTimer t;
         let t = Trace.startTimer "Reconciling" in
         let reconItemList = Recon.reconcileAll updates in
         Trace.showTimer t;
-        let reconItemList = filterIgnore reconItemList in
-        let theLength = Safelist.length reconItemList in
-        if theLength = 0 then begin
+        if reconItemList = [] then begin
           Trace.status "Everything is up to date";
           theState := None
         end else begin
@@ -747,7 +743,7 @@ let start _ =
           theState :=
             Some(Array.of_list
                    (Safelist.map reconItemList
-                      fun:(fun ri -> { ri = ri; whatHappened = None })))
+                      f:(fun ri -> { ri = ri; whatHappened = None })))
 	end;
         displayMain()
       end
@@ -809,7 +805,7 @@ let start _ =
       (* Local copy of the regular expressions; the global copy will
          not be changed until the Apply button is pressed *)
       let theRegexps = Pred.extern Globals.ignore in
-      Safelist.iter theRegexps fun:(fun r -> ignore (regExpWindow#append [r]));
+      Safelist.iter theRegexps f:(fun r -> ignore (regExpWindow#append [r]));
       let maybeGettingBigger = ref false in
       let maybeGettingSmaller = ref false in
       let selectedRow = ref None in
@@ -923,7 +919,7 @@ let start _ =
 		callback:(fun () -> messageBox title:name docstr))
   in
 
-  Safelist.iter fun:addDocSection Strings.docs;
+  Safelist.iter f:addDocSection Strings.docs;
 
   (**********************************************************************)
   (* Add entries to the Ignore menu                                     *)
@@ -992,18 +988,7 @@ let start _ =
       Trace.showTimer t;
       Trace.status "Updating synchronizer state";
       let t = Trace.startTimer "Updating synchronizer state" in
-
-      let stateItemList = Array.to_list theSIArray in
-      let rIConfList =
-        Safelist.map stateItemList fun:
-          begin fun sI ->
-            match sI.whatHappened with
-              None -> assert false
-            | Some conf -> (sI.ri, conf)
-          end
-      in
-      let pathList = Recon.selectPath rIConfList in
-      let lastResult = Update.markUpdated pathList in
+      Update.commitUpdates ();
       Trace.showTimer t;
       Trace.status "Synchronization complete";
     with DerefSome ->
@@ -1131,7 +1116,8 @@ let start _ =
     ()
   end;
 
-  fileMenu#add_item "Show diffs" key:_d callback:diffCmd;
+  if Sys.os_type <> "Win32" then
+    ignore (fileMenu#add_item "Show diffs" key:_d callback:diffCmd);
 
   (**********************************************************************)
   (* Configure keyboard commands                                        *)
@@ -1167,7 +1153,7 @@ let start _ =
     let descl =
       if root1=root2 then "right to left"
       else (Printf.sprintf "from %s to %s"
-              (root2hostname root1) (root2hostname root2)) in
+              (root2hostname root2) (root2hostname root1)) in
     let right =
       actionsMenu#add_item ("Propagate " ^ descl) key:_less
         callback:leftAction in
