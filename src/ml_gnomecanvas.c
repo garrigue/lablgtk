@@ -175,6 +175,51 @@ CAMLprim value ml_gnome_canvas_item_new(value p, value type)
 }
 
 Make_Extractor (gnome_canvas_item, GnomeCanvasItem_val, parent, Val_GtkAny)
+Make_Extractor (gnome_canvas_item, GnomeCanvasItem_val, canvas, Val_GtkAny)
+
+#define ML_TAG_AFFINE Val_int(-105142369)
+#define ML_TAG_TRANSL Val_int(-133679292)
+#define ML_TAG_IDENTITY Val_int(313840958)
+
+CAMLprim value ml_gnome_canvas_item_xform(value i)
+{
+  GnomeCanvasItem *item = GnomeCanvasItem_val(i);
+  if (item->xform) {
+    CAMLparam0();
+    CAMLlocal2(arr, v);
+    mlsize_t len;
+    if( GTK_OBJECT_FLAGS(GTK_OBJECT(item)) & GNOME_CANVAS_ITEM_AFFINE_FULL )
+      len = 6;
+    else
+      len = 2;
+    arr = alloc_small(Double_wosize * len, Double_array_tag);
+    memcpy((double *)arr, item->xform, len * sizeof (double));
+    v = alloc_small(2, 0);
+    Field(v, 0) = (len == 6) ? ML_TAG_AFFINE : ML_TAG_TRANSL;
+    Field(v, 1) = arr;
+    CAMLreturn(v);
+  }
+  else
+    return ML_TAG_IDENTITY;
+}
+
+CAMLprim value ml_gnome_canvas_item_affine_relative(value i, value a)
+{
+  if(Wosize_val(a) != 6 * Double_wosize)
+    invalid_argument("affine transform");
+  gnome_canvas_item_affine_relative(GnomeCanvasItem_val(i), (double *)a);
+  return Val_unit;
+}
+
+CAMLprim value ml_gnome_canvas_item_affine_absolute(value i, value a)
+{
+  if(Wosize_val(a) == 0)
+    gnome_canvas_item_affine_absolute(GnomeCanvasItem_val(i), NULL);
+  else if(Wosize_val(a) == 6 * Double_wosize)
+    gnome_canvas_item_affine_absolute(GnomeCanvasItem_val(i), (double *)a);
+  else invalid_argument("affine transform");
+  return Val_unit;
+}
 
 CAMLprim value ml_gnome_canvas_item_set(value i, value key_v_list)
 {

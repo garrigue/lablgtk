@@ -1,8 +1,11 @@
 type items_properties = [ 
+  | `pixbuf of GdkPixbuf.pixbuf
+  | `width of float
+  | `height of float
   | `bpath of GnomeCanvas.PathDef.t
-  | `parent of GnomeCanvas.item Gtk.obj
   | `anchor of Gtk.Tags.anchor_type
   | `cap_style of Gdk.GC.gdkCapStyle
+  | `smooth of bool
   | `first_arrowhead of bool
   | `last_arrowhead of bool
   | `arrow_shape_a of float
@@ -10,6 +13,7 @@ type items_properties = [
   | `arrow_shape_c of float
   | `points of float array
   | `fill_color of string
+  | `fill_color_rgba of int32
   | `font of string
   | `outline_color of string
   | `size of int
@@ -51,7 +55,11 @@ class ['a] item : 'b Gtk.obj ->
     method lower_to_bottom : unit
     method move : x:float -> y:float -> unit
     method parent : GnomeCanvas.group Gobject.obj
-    method raise_item : int -> unit
+    method canvas : GnomeCanvas.canvas Gobject.obj
+    method xform : [`IDENTITY|`TRANSL of float array|`AFFINE of float array]
+    method affine_relative : float array -> unit
+    method affine_absolute : float array -> unit
+    method raise : int -> unit
     method raise_to_top : unit
     method reparent : GnomeCanvas.group Gobject.obj -> unit
     method set_raw : (string * Gobject.g_value) list -> unit
@@ -136,5 +144,17 @@ type bpath = GnomeCanvas.Types.bpath_p item
 val bpath :
   ?props:GnomeCanvas.Types.bpath_p list ->
   #group -> bpath
+
+type pixbuf = GnomeCanvas.Types.pixbuf_p item
+val pixbuf :
+  ?x:float -> ?y:float -> ?pixbuf:GdkPixbuf.pixbuf ->
+  ?props:GnomeCanvas.Types.pixbuf_p list ->
+  #group -> pixbuf
+
+type polygon = GnomeCanvas.Types.polygon_p item
+val polygon :
+  ?points:float array ->
+  ?props:GnomeCanvas.Types.polygon_p list ->
+  #group -> polygon
 
 val parent : 'a #item -> group
