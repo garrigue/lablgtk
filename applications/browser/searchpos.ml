@@ -22,10 +22,12 @@ let lines_to_chars n ~text:s =
   in ltc n ~pos:0
 
 let in_loc loc ~pos =
-  loc.loc_ghost || pos >= loc.loc_start && pos < loc.loc_end
+  loc.loc_ghost || pos >= loc.loc_start.Lexing.pos_cnum
+                   && pos < loc.loc_end.Lexing.pos_cnum
 
 let le_loc loc1 loc2 =
-  loc1.loc_start <= loc2.loc_start && loc1.loc_end >= loc2.loc_end
+  loc1.loc_start.Lexing.pos_cnum <= loc2.loc_start.Lexing.pos_cnum
+  && loc1.loc_end.Lexing.pos_cnum >= loc2.loc_end.Lexing.pos_cnum
 
 let add_found ~found sol ~env ~loc =
   if loc.loc_ghost then () else
@@ -361,8 +363,7 @@ let rec view_signature ?title ?path ?(env = !start_env) ?(detach=false) sign =
   Lexical.tag tb;
   tw#set_editable false;
   let text = tb#get_text () in
-  let lines = Lexical.line_starts text in
-  let tpos = Lexical.tpos ~start:tb#start_iter ~lines in
+  let tpos = Lexical.tpos ~start:tb#start_iter in
   let pt =
     try Parse.interface (Lexing.from_string text) with
       Syntaxerr.Error e ->
@@ -378,11 +379,11 @@ let rec view_signature ?title ?path ?(env = !start_env) ?(detach=false) sign =
         tb#place_cursor (tpos l.loc_start);
         tw#scroll_mark_onscreen `INSERT;
         []
-    | Lexer.Error (_, start, stop) ->
+    | Lexer.Error (_, l) ->
         tb#apply_tag_by_name "error"
-          ~start:(tpos start)
-          ~stop:(tpos stop);
-        tb#place_cursor (tpos start);
+          ~start:(tpos l.loc_start)
+          ~stop:(tpos l.loc_end);
+        tb#place_cursor (tpos l.loc_start);
         tw#scroll_mark_onscreen `INSERT;
         []
   in
