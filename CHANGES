@@ -5,6 +5,9 @@ $Id$
     unique identifier to gtk objects. Nice for hash-tables, etc...
   * GUtil.memo is such an hash-table, allowing you to recover an
     object's wrapper.
+  * added a show option to all classes, commanding whether the widget
+    should be shown immediately.  It is by default true on all widgets
+    except in module GWindow.
 
 1999.6.8
   * updated olabl.patch

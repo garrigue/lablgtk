@@ -7,7 +7,7 @@ class list_item :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(list_item -> unit) ->
+  ?packing:(list_item -> unit) -> ?show:bool ->
   object
     inherit GContainer.container
     val obj : Gtk.list_item obj
@@ -24,7 +24,7 @@ class liste :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(liste -> unit) ->
+  ?packing:(liste -> unit) -> ?show:bool ->
   object
     inherit [Gtk.list_item,list_item] GContainer.item_container
     val obj : Gtk.liste obj

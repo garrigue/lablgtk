@@ -119,7 +119,9 @@ class widget_misc obj = object
   method pointer = Widget.get_pointer obj
   method style = Widget.get_style obj
   method visible = Widget.visible obj
-  method parent = new widget_wrapper (Object.unsafe_cast (Widget.parent obj))
+  method parent =
+    try new widget_wrapper (Object.unsafe_cast (Widget.parent obj))
+    with Null_pointer -> raise Not_found
 end
 
 and widget obj = object (self)
@@ -147,5 +149,6 @@ and widget_wrapper obj = object
   method connect = new widget_signals ?obj
 end
 
-let pack_return self :packing =
-  may packing fun:(fun f -> (f self : unit))
+let pack_return (self : #widget) :packing ?:show [< true >] =
+  may packing fun:(fun f -> (f self : unit));
+  if show then self#show ()

@@ -29,13 +29,13 @@ class button_wrapper obj = object
   method connect = new button_signals ?obj
 end
 
-class button ?:label ?:border_width ?:width ?:height ?:packing =
+class button ?:label ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Button.create ?:label ?None in
   let () =
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit button_wrapper w
-    initializer pack_return :packing (self :> button_wrapper)
+    initializer pack_return :packing ?:show (self :> button_wrapper)
   end
 
 class toggle_button_signals obj ?:after = object
@@ -56,25 +56,25 @@ class toggle_button_wrapper obj =
   pre_toggle_button_wrapper (ToggleButton.coerce obj)
 
 class toggle_button ?:label ?:active ?:draw_indicator
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show =
   let w = ToggleButton.create_toggle ?:label ?None in
   let () =
     ToggleButton.setter w cont:null_cont ?:active ?:draw_indicator;
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit toggle_button_wrapper w
-    initializer pack_return :packing (self :> toggle_button_wrapper)
+    initializer pack_return :packing ?:show (self :> toggle_button_wrapper)
   end
 
 class check_button ?:label ?:active ?:draw_indicator
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show =
   let w = ToggleButton.create_check ?:label ?None in
   let () =
     ToggleButton.setter w cont:null_cont ?:active ?:draw_indicator;
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit toggle_button_wrapper w
-    initializer pack_return :packing (self :> toggle_button_wrapper)
+    initializer pack_return :packing ?:show (self :> toggle_button_wrapper)
   end
 
 class radio_button_wrapper obj = object
@@ -84,14 +84,14 @@ class radio_button_wrapper obj = object
 end
 
 class radio_button ?:group ?:label ?:active ?:draw_indicator
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show =
   let w = RadioButton.create ?:group ?:label ?None in
   let () =
     ToggleButton.setter w cont:null_cont ?:active ?:draw_indicator;
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit radio_button_wrapper w
-    initializer pack_return :packing (self :> radio_button_wrapper)
+    initializer pack_return :packing ?:show (self :> radio_button_wrapper)
   end
 
 let may_as_widget = function
@@ -137,7 +137,7 @@ end
 
 class toolbar ?:orientation [< `HORIZONTAL >] ?:style
     ?:space_size ?:space_style ?:tooltips ?:button_relief
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Toolbar.create orientation ?:style in
   let () =
     Toolbar.setter w cont:null_cont ?:space_size ?:space_style
@@ -146,5 +146,5 @@ class toolbar ?:orientation [< `HORIZONTAL >] ?:style
   in
   object (self)
     inherit toolbar_wrapper w
-    initializer pack_return :packing (self :> toolbar_wrapper)
+    initializer pack_return :packing ?:show (self :> toolbar_wrapper)
   end

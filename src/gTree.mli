@@ -16,7 +16,7 @@ class tree_item :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(tree_item -> unit) ->
+  ?packing:(tree_item -> unit) -> ?show:bool ->
   object
     inherit GContainer.container
     val obj : Gtk.tree_item obj
@@ -46,7 +46,7 @@ and tree :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(tree -> unit) ->
+  ?packing:(tree -> unit) -> ?show:bool ->
   object
     inherit [Gtk.tree_item, tree_item] GContainer.item_container
     val obj : Gtk.tree obj

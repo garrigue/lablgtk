@@ -14,12 +14,12 @@ class pixmap_wrapper obj = object
   method mask = Pixmap.mask obj
 end
 
-class pixmap pix ?:mask ?:xalign ?:yalign ?:xpad ?:ypad ?:packing =
+class pixmap pix ?:mask ?:xalign ?:yalign ?:xpad ?:ypad ?:packing ?:show =
   let w = Pixmap.create pix ?:mask in
   let () = Misc.setter w cont:null_cont ?:xalign ?:yalign ?:xpad ?:ypad in
   object (self)
     inherit pixmap_wrapper w
-    initializer pack_return :packing (self :> pixmap_wrapper)
+    initializer pack_return :packing ?:show (self :> pixmap_wrapper)
   end
 
 open GdkObj

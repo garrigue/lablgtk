@@ -53,7 +53,7 @@ let create_button_box =
 	hbox#pack (create_bbox `VERTICAL "Edge"   30 85 20 `EDGE)  padding: 5;
 	hbox#pack (create_bbox `VERTICAL "Start"  30 85 20 `START) padding: 5;
 	hbox#pack (create_bbox `VERTICAL "End"    30 85 20 `END)   padding: 5;
-	window #show_all ()	
+	window #show ()	
 
     | Some window -> window #destroy ()
 in aux
@@ -76,19 +76,16 @@ let create_buttons =
 	window #connect#destroy callback:(fun _ -> rw := None);
 
 	let box1 = new box `VERTICAL packing:window#add in
-	box1 #show ();
 	
 	let table = new table rows:3 columns:3 homogeneous:false 
 	    row_spacings:3 col_spacings:3 border_width:10
 	    packing:box1#pack in
-	table #show ();
 
 	let button = Array.create len:9 fill:(new button label:"button1") in
 	for i = 2 to 9 do
 	  button.(i-1) <- new button label:("button" ^ (string_of_int i));
-	  button.(i-1) #show ()
 	done;
-	button.(0) #show ();
+
 	let f i l r t b =
 	  button.(i) #connect#clicked callback:(button_window button.(i+1));
 	  table #attach button.(i) left:l right:r top:t bottom:b
@@ -108,16 +105,13 @@ let create_buttons =
 
 	let separator = new separator `HORIZONTAL in
 	box1 #pack separator expand: false;
-	separator #show ();
 	
 	let box2 = new box `VERTICAL spacing: 10 border_width: 10 in
 	box1 #pack box2 expand: false;
-	box2 #show ();
 
 	let button = new button label: "close" packing:box2#pack in
 	button #connect#clicked callback: window#destroy;
 	button #grab_default ();
-	button #show ();
 	window #show ()
 
     | Some window -> window #destroy ()
@@ -152,7 +146,7 @@ let create_check_buttons =
 	let button = new button label: "close" packing:box2#pack in
 	button #connect#clicked callback: window#destroy;
 	button #grab_default ();
-	window #show_all ()
+	window #show ()
 	
     | Some window ->  window #destroy ()
 in aux
@@ -189,7 +183,7 @@ let create_radio_buttons =
 	let button = new button label:"close" packing:box2#pack in
 	button #connect#clicked callback: window #destroy;
 	button #grab_default ();
-	window #show_all ()
+	window #show ()
 	
     | Some window -> window #destroy ()
 in aux
@@ -225,7 +219,7 @@ let create_toggle_buttons =
 	button #connect#clicked callback: window#destroy;
 	box2 #pack button;
 	button #grab_default ();
-	  window #show_all ()
+	window #show ()
 	
     | Some window -> window #destroy ()
 in aux
@@ -236,11 +230,7 @@ in aux
 let create_menu depth tearoff =
   let rec aux depth tearoff =
     let menu = new menu and group = ref None in
-    if tearoff then begin
-      let menuitem = new tearoff_item in
-      menu #append menuitem;
-      menuitem #show ()
-    end;
+    if tearoff then ignore (new tearoff_item packing: menu#append);
     for i = 0 to 4 do
       let menuitem = new radio_menu_item ?group:!group
 	  label:("item " ^ (string_of_int depth) ^ " - " ^
@@ -249,7 +239,6 @@ let create_menu depth tearoff =
       if ((depth mod 2) <> 0) then
 	menuitem #set_show_toggle true;
       menu #append menuitem;
-      menuitem #show ();
       if i = 3 then menuitem #misc#set sensitive:false;
       if depth > 1 then
 	menuitem #set_submenu (aux (depth-1) true)
@@ -274,49 +263,38 @@ let rw = ref None in
 	window #add_accel_group accel_group  ;
 
 	let box1 = new box `VERTICAL packing:window#add in
-	box1 #show ();
 
 	let menubar = new menu_bar packing:(box1#pack expand:false) in
-	menubar #show ();
 
-	let menuitem = new menu_item label:"test\nline2" in
+	let menuitem =
+	  new menu_item label:"test\nline2" packing: menubar#append in
 	menuitem #set_submenu (create_menu 2 true);
-	menubar #append menuitem;
-	menuitem #show ();
 
-	let menuitem = new menu_item label:"foo" in
+	let menuitem = new menu_item label:"foo" packing: menubar#append in
 	menuitem #set_submenu (create_menu 3 true);
-	menubar #append menuitem;
-	menuitem #show ();
 
-	let menuitem = new menu_item label:"bar" in
+	let menuitem = new menu_item label:"bar" packing: menubar#append in
 	menuitem #set_submenu (create_menu 4 true);
 	menuitem #right_justify ();
-	menubar #append menuitem;
-	menuitem #show ();
 
 	let box2 = new box `VERTICAL spacing:10 packing:box1#pack
 	    border_width:10 in
-	box2 #show ();
 
 	let menu = create_menu 1 false in
 	menu #set_accel_group accel_group;
 
 	let menuitem = new check_menu_item label:"Accelerate Me" in
 	menu #append menuitem;
-	menuitem #show ();
 	menuitem #add_accelerator accel_group key:'M'
 	  flags:[`VISIBLE; `SIGNAL_VISIBLE];
 
 	let menuitem = new check_menu_item label:"Accelerator Locked" in
 	menu #append menuitem;
-	menuitem #show ();
 	menuitem #add_accelerator accel_group key:'L'
 	  flags:[`VISIBLE; `LOCKED];
 
 	let menuitem = new check_menu_item label:"Accelerators Frozen" in
 	menu #append menuitem;
-	menuitem #show ();
 	menuitem #add_accelerator accel_group key:'F'
 	  flags:[`VISIBLE];
 	menuitem #misc#lock_accelerators ();
@@ -324,7 +302,6 @@ let rw = ref None in
 	let optionmenu = new option_menu packing:box2#pack in
 	optionmenu #set_menu menu;
 	optionmenu #set_history 3;
-	optionmenu #show ();
 
 	(new separator `HORIZONTAL packing:(box1#pack expand:false))#show ();
 
@@ -334,7 +311,6 @@ let rw = ref None in
 	let button = new button label: "close" packing:box2#pack in
 	button #connect#clicked callback: window#destroy;
 	button #grab_default ();
-	button #show ();
 	window #show ()
 
     | Some window -> window #destroy ()
@@ -386,7 +362,7 @@ let create_modal_window () =
   window #connect#destroy callback:cmw_destroy_cb;
   btnColor #connect#clicked callback: (cmw_color window);
   btnFile #connect#clicked callback: (cmw_file window);
-  window # show_all ();
+  window # show ();
   Main.main ()
 
 
@@ -435,21 +411,18 @@ let create_scrolled_windows =
 	    hscrollbar_policy: `AUTOMATIC
 	    vscrollbar_policy:`AUTOMATIC
 	    packing: window#vbox#pack in
-	scrolled_window #show ();
 
 	let table = new table rows:20 columns:20 row_spacings:10
 	    col_spacings:10 in
 	scrolled_window #add_with_viewport table;
 	table #focus#set_hadjustment (scrolled_window # hadjustment);
 	table #focus#set_vadjustment (scrolled_window # vadjustment);
-	table #show ();
 
 	for i = 0 to 19 do
 	  for j=0 to 19 do
 	    let button = new toggle_button label:("button (" ^
 	       (string_of_int i) ^ "," ^ (string_of_int j) ^ ")\n") in
 	    table #attach button left:i top:j;
-	    button #show ()
 	  done
 	done;
 
@@ -457,14 +430,12 @@ let create_scrolled_windows =
 	button #connect#clicked callback:(window #destroy);
 	window #action_area #pack button;
 	button #grab_default ();
-	button #show ();
 
 	let button = new button label:"remove" in
 	button #connect#clicked
 	  callback:(scrolled_windows_remove scrolled_window);
 	window #action_area # pack button;
 	button #grab_default ();
-	button #show ();
 	
 	window #set_default_size width:300 height:300;
 	window #show ()
@@ -476,7 +447,10 @@ let create_scrolled_windows =
 (* Toolbar *)
 
 let pixmap_new filename window background =
-  let pixmap,mask = Gdk.Pixmap.create_from_xpm window file:filename in
+  let pixmap,mask =
+    try Gdk.Pixmap.create_from_xpm window file:filename
+    with _ -> failwith "Pixmap creation failed"
+  in
   new GPix.pixmap pixmap :mask
 
 let make_toolbar (toolbar : toolbar) (window : window) =
@@ -583,7 +557,7 @@ let create_toolbar =
 	let toolbar = new toolbar packing: window#add in
 	make_toolbar toolbar window;
 	
-	window #show_all ()
+	window #show ()
 	  
     | Some window -> window #destroy ()
   in aux
@@ -642,7 +616,7 @@ let create_handle_box =
 	  callback:(handle_box_child_signal "detached" handle_box);
 
 	new label text:"Fooo!" packing:handle_box2#add;
-	window #show_all ()
+	window #show ()
 	  
     | Some window -> window #destroy ()
   in aux
@@ -683,7 +657,6 @@ let cb_add_new_item (treeb : tree_and_buttons) _ =
   let item_new = new tree_item label:
       ("item add " ^ (string_of_int treeb # nb_item_add)) in
   subtree #insert item_new pos:0;
-  item_new #show ();
   treeb #incr_nb_item_add
 
 
@@ -723,7 +696,6 @@ let rec create_subtree (item : tree_item) level nb_item_max recursion_level_max 
 	  ("item" ^ (string_of_int level) ^ "-" ^ (string_of_int nb_item)) in
       item_subtree #insert item_new pos:0;
       create_subtree item_new (level + 1) nb_item_max recursion_level_max;
-      item_new # show ()
     done;
     item # set_subtree item_subtree
   end
@@ -733,13 +705,10 @@ let create_tree_sample selection_mode draw_line view_line no_root_item nb_item_m
     recursion_level_max =
   let window = new window `TOPLEVEL title:"Tree Sample" in
   let box1 = new box `VERTICAL packing:window#add in
-  box1 #show ();
   let box2 = new box `VERTICAL packing:box1#pack border_width:5 in
-  box2 #show ();
   let scrolled_win = new scrolled_window packing:box2#pack
       hscrollbar_policy: `AUTOMATIC vscrollbar_policy:`AUTOMATIC
       width:200 height:200 in
-  scrolled_win #show ();
 
   let root_treeb = new tree_and_buttons in
   let root_tree = root_treeb#tree in
@@ -749,7 +718,6 @@ let create_tree_sample selection_mode draw_line view_line no_root_item nb_item_m
   root_tree #set_view_lines draw_line;
   root_tree #set_view_mode
     (match view_line with `LINE -> `ITEM | `ITEM -> `LINE);
-  root_tree #show ();
 
   if no_root_item then
     for nb_item = 1 to nb_item_max do
@@ -757,43 +725,35 @@ let create_tree_sample selection_mode draw_line view_line no_root_item nb_item_m
 	  label:("item0-" ^ (string_of_int nb_item)) in
       root_tree #insert item_new pos:0;
       create_subtree item_new 1 nb_item_max recursion_level_max;
-      item_new #show ()
     done
   else begin
     let root_item = new tree_item label:"root item" in
     root_tree #insert root_item pos:0;
-    root_item #show ();
     create_subtree root_item 0 nb_item_max recursion_level_max
   end;
 
   let box2 = new box `VERTICAL border_width:5
       packing:(box1#pack expand:false fill:false) in
-  box2 #show ();
 
   let button = root_treeb #add_button in
   button #misc#set sensitive: false;
   button #connect#clicked callback:(cb_add_new_item root_treeb);
   box2 #pack button;
-  button #show ();
 
   let button = root_treeb #remove_button in
   button #misc#set sensitive: false;
   button #connect#clicked callback:(cb_remove_item root_treeb);
   box2 #pack button;
-  button #show ();
 
   let button = root_treeb #subtree_button in
   button #misc#set sensitive: false;
   button #connect#clicked callback:(cb_remove_subtree root_treeb);
   box2 #pack button;
-  button #show ();
 
-  (new separator `HORIZONTAL
-     packing:(box1#pack expand:false fill:false)) #show ();
+ new separator `HORIZONTAL packing:(box1#pack expand:false fill:false);
 
   let button = new button label:"Close" packing:box2#pack in
   button #connect#clicked callback:window#destroy;
-  button #show ();
 
   window #show ()
 
@@ -896,7 +856,7 @@ let create_tree_mode_window =
 	let button = new button label: "close" packing:(box2#pack) in
 	button #connect#clicked callback: window#destroy;
 	button #grab_default ();
-	window #show_all ()
+	window #show ()
 	
     | Some window -> window #destroy ()
   in aux
@@ -991,7 +951,7 @@ let create_tooltips =
 	tooltips #set_tip button text:"Push this button to close window"
 	  private:"ContextHelp/buttons/Close";
 
-	window #show_all ();
+	window #show ();
 
     | Some window -> window #destroy ()
   in aux
@@ -1044,7 +1004,7 @@ let create_labels =
 	  justify:`LEFT pattern:"_________________________ _ _________ _ _____ _ __ __  ___ ____ _____";
 
 
-	window #show_all ();
+	window #show ();
 
     | Some window -> window #destroy ()
   in aux
@@ -1061,8 +1021,7 @@ let set_parent child old_parent =
   Printf.printf
     "set parent for \"%s\": new parent: \"%s\", old parent: \"%s\"\n" 
     (name child)
-    (try name child#misc#parent
-     with Not_found -> "(NULL)")
+    (try name child#misc#parent with Not_found -> "(NULL)")
     (name_opt old_parent)
 
 let reparent_label (label : label) new_parent _ =
@@ -1112,7 +1071,7 @@ let create_reparent =
 	button #connect#clicked callback: window#destroy;
 	button #grab_default ();
 
-	window #show_all ();
+	window #show ();
 
     | Some window -> window #destroy ()
   in aux
@@ -1209,7 +1168,7 @@ let create_main_window () =
   button #connect#clicked callback: window#destroy;
   button #grab_default ();
 
-  window #show_all ();
+  window #show ();
 
   Main.main ()
 ;;

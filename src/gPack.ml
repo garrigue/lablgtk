@@ -22,13 +22,13 @@ class box_wrapper obj = object
 end
 
 class box dir ?:homogeneous ?:spacing
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Box.create dir ?:homogeneous ?:spacing in
   let () =
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit box_wrapper w
-    initializer pack_return :packing (self :> box_wrapper)
+    initializer pack_return :packing ?:show (self :> box_wrapper)
   end
 
 class button_box_wrapper obj = object
@@ -40,7 +40,7 @@ class button_box_wrapper obj = object
 end
 
 class button_box dir ?:spacing ?:child_width ?:child_height ?:child_ipadx
-    ?:child_ipady ?:layout ?:border_width ?:width ?:height ?:packing =
+    ?:child_ipady ?:layout ?:border_width ?:width ?:height ?:packing ?:show =
   let w = BBox.create dir in
   let () =
     BBox.setter w cont:null_cont ?:spacing ?:child_width ?:child_height
@@ -48,7 +48,7 @@ class button_box dir ?:spacing ?:child_width ?:child_height ?:child_ipadx
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit button_box_wrapper w
-    initializer pack_return :packing (self :> button_box_wrapper)
+    initializer pack_return :packing ?:show (self :> button_box_wrapper)
   end
 
 class table_wrapper obj = object
@@ -59,14 +59,14 @@ class table_wrapper obj = object
 end
 
 class table :rows :columns ?:homogeneous ?:row_spacings ?:col_spacings
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Table.create :rows :columns ?:homogeneous in
   let () =
     Table.setter w cont:null_cont ?:row_spacings ?:col_spacings;
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit table_wrapper w
-    initializer pack_return :packing (self :> table_wrapper)
+    initializer pack_return :packing ?:show (self :> table_wrapper)
   end
 
 class fixed_wrapper obj = object
@@ -77,10 +77,10 @@ class fixed_wrapper obj = object
     fun w -> Fixed.move obj w#as_widget
 end
 
-class fixed ?:border_width ?:width ?:height ?:packing =
+class fixed ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Fixed.create () in
   let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit fixed_wrapper w
-    initializer pack_return :packing (self :> fixed_wrapper)
+    initializer pack_return :packing ?:show (self :> fixed_wrapper)
   end

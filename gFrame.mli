@@ -8,7 +8,7 @@ class scrolled_window :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(scrolled_window -> unit) ->
+  ?packing:(scrolled_window -> unit) -> ?show:bool ->
   object
     inherit GContainer.container_wrapper
     val obj : Gtk.scrolled_window obj
@@ -24,7 +24,7 @@ class event_box :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(event_box -> unit) ->
+  ?packing:(event_box -> unit) -> ?show:bool ->
   object
     inherit GContainer.container_wrapper
     val obj : Gtk.event_box obj
@@ -45,7 +45,7 @@ class handle_box :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(handle_box -> unit) ->
+  ?packing:(handle_box -> unit) -> ?show:bool ->
   object
     inherit GContainer.container
     val obj : Gtk.handle_box obj
@@ -73,7 +73,7 @@ class frame :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(frame -> unit) ->
+  ?packing:(frame -> unit) -> ?show:bool ->
   object
     inherit frame_skel
     val obj : Gtk.frame obj
@@ -93,7 +93,7 @@ class aspect_frame :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(aspect_frame -> unit) ->
+  ?packing:(aspect_frame -> unit) -> ?show:bool ->
   object
     inherit frame_skel
     val obj : Gtk.aspect_frame obj

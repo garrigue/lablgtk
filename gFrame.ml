@@ -21,7 +21,7 @@ class scrolled_window_wrapper obj = object
 end
 
 class scrolled_window ?:hscrollbar_policy ?:vscrollbar_policy
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show =
   let w = ScrolledWindow.create () in
   let () =
     ScrolledWindow.setter w cont:null_cont
@@ -30,15 +30,15 @@ class scrolled_window ?:hscrollbar_policy ?:vscrollbar_policy
   in
   object (self)
     inherit scrolled_window_wrapper w
-    initializer pack_return :packing (self :> scrolled_window_wrapper)
+    initializer pack_return :packing ?:show (self :> scrolled_window_wrapper)
   end
 
-class event_box ?:border_width ?:width ?:height ?:packing =
+class event_box ?:border_width ?:width ?:height ?:packing ?:show =
   let w = EventBox.create () in
   let () = Container.setter w ?:border_width ?:width ?:height cont:null_cont in
   object (self)
     inherit container_wrapper w
-    initializer pack_return :packing (self :> container_wrapper)
+    initializer pack_return :packing ?:show (self :> container_wrapper)
   end
 
 class handle_box_signals obj ?:after = object
@@ -57,12 +57,12 @@ class handle_box_wrapper obj = object
   method connect = new handle_box_signals ?obj
 end
 
-class handle_box ?:border_width ?:width ?:height ?:packing =
+class handle_box ?:border_width ?:width ?:height ?:packing ?:show =
   let w = HandleBox.create () in
   let () = Container.setter w ?:border_width ?:width ?:height cont:null_cont in
   object (self)
     inherit handle_box_wrapper w
-    initializer pack_return :packing (self :> handle_box_wrapper)
+    initializer pack_return :packing ?:show (self :> handle_box_wrapper)
   end
 
 class frame_skel obj = object
@@ -79,7 +79,7 @@ class frame_wrapper obj = object
 end
 
 class frame ?:label ?:label_xalign ?:label_yalign ?:shadow_type
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Frame.create ?:label ?None in
   let () =
     Frame.setter w cont:null_cont ?:label_xalign ?:label_yalign ?:shadow_type;
@@ -87,7 +87,7 @@ class frame ?:label ?:label_xalign ?:label_yalign ?:shadow_type
   in
   object (self)
     inherit frame_wrapper w
-    initializer pack_return :packing (self :> frame_wrapper)
+    initializer pack_return :packing ?:show (self :> frame_wrapper)
   end
 
 class aspect_frame_wrapper obj = object
@@ -98,7 +98,7 @@ end
 
 class aspect_frame ?:label ?:xalign ?:yalign ?:ratio ?:obey_child
     ?:label_xalign ?:label_yalign ?:shadow_type
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show =
   let w =
     AspectFrame.create ?:label ?:xalign ?:yalign ?:ratio ?:obey_child ?None in
   let () =
@@ -107,5 +107,5 @@ class aspect_frame ?:label ?:xalign ?:yalign ?:ratio ?:obey_child
   in
   object (self)
     inherit aspect_frame_wrapper w
-    initializer pack_return :packing (self :> aspect_frame_wrapper)
+    initializer pack_return :packing ?:show (self :> aspect_frame_wrapper)
   end

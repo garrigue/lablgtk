@@ -33,20 +33,20 @@ class menu_item_wrapper obj = object
   method connect = new menu_item_signals ?obj
 end
 
-class menu_item ?:label ?:border_width ?:width ?:height ?:packing =
+class menu_item ?:label ?:border_width ?:width ?:height ?:packing ?:show =
   let w = MenuItem.create ?None ?:label in
   let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
   object (self)
     inherit menu_item_wrapper w
-    initializer pack_return :packing (self :> menu_item_wrapper)
+    initializer pack_return :packing ?:show (self :> menu_item_wrapper)
   end
 
-class tearoff_item ?:border_width ?:width ?:height ?:packing =
+class tearoff_item ?:border_width ?:width ?:height ?:packing ?:show =
   let w = MenuItem.tearoff_create () in
   let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
   object (self)
     inherit menu_item_wrapper w
-    initializer pack_return :packing (self :> menu_item_wrapper)
+    initializer pack_return :packing ?:show (self :> menu_item_wrapper)
   end
 
 class check_menu_item_signals obj ?:after = object
@@ -68,14 +68,14 @@ class check_menu_item_wrapper obj = object
 end
 
 class check_menu_item ?:label
-    ?:active ?:show_toggle ?:border_width ?:width ?:height ?:packing =
+    ?:active ?:show_toggle ?:border_width ?:width ?:height ?:packing ?:show =
   let w = CheckMenuItem.create ?None ?:label in
   let () =
     CheckMenuItem.setter w cont:ignore ?:active ?:show_toggle;
     Container.setter w cont:ignore ?:border_width ?:width ?:height in
   object (self)
     inherit check_menu_item_wrapper w
-    initializer pack_return :packing (self :> check_menu_item_wrapper)
+    initializer pack_return :packing ?:show (self :> check_menu_item_wrapper)
   end
 
 class radio_menu_item_wrapper obj = object
@@ -86,14 +86,14 @@ class radio_menu_item_wrapper obj = object
 end
 
 class radio_menu_item ?:group ?:label
-    ?:active ?:show_toggle ?:border_width ?:width ?:height ?:packing =
+    ?:active ?:show_toggle ?:border_width ?:width ?:height ?:packing ?:show =
   let w = RadioMenuItem.create ?None ?:group ?:label in
   let () =
     CheckMenuItem.setter w cont:ignore ?:active ?:show_toggle;
     Container.setter w cont:ignore ?:border_width ?:width ?:height in
   object (self)
     inherit radio_menu_item_wrapper w
-    initializer pack_return :packing (self :> radio_menu_item_wrapper)
+    initializer pack_return :packing ?:show (self :> radio_menu_item_wrapper)
   end
 
 (* Menu Shell *)
@@ -123,12 +123,12 @@ class menu_wrapper obj = object
   method set_accel_group = Menu.set_accel_group obj
 end
 
-class menu ?:border_width ?:packing =
+class menu ?:border_width ?:packing ?:show =
   let w = Menu.create () in
   let () = may border_width fun:(Container.set_border_width w) in
   object (self)
     inherit menu_wrapper w
-    initializer pack_return :packing (self :> menu_wrapper)
+    initializer pack_return :packing ?:show (self :> menu_wrapper)
   end
 
 (* Option Menu (GtkButton?) *)
@@ -142,22 +142,22 @@ class option_menu_wrapper obj = object
   method set_history = OptionMenu.set_history obj
 end
 
-class option_menu ?:border_width ?:width ?:height ?:packing =
+class option_menu ?:border_width ?:width ?:height ?:packing ?:show =
   let w = OptionMenu.create () in
   let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
   object (self)
     inherit option_menu_wrapper w
-    initializer pack_return :packing (self :> option_menu_wrapper)
+    initializer pack_return :packing ?:show (self :> option_menu_wrapper)
   end
 
 (* Menu Bar *)
 
-class menu_bar ?:border_width ?:width ?:height ?:packing =
+class menu_bar ?:border_width ?:width ?:height ?:packing ?:show =
   let w = MenuBar.create () in
   let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
   object (self)
     inherit menu_shell w
-    initializer pack_return :packing (self :> menu_shell)
+    initializer pack_return :packing ?:show (self :> menu_shell)
   end
 
 (* Menu Factory *)

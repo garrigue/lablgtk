@@ -36,7 +36,7 @@ class window :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(window -> unit) ->
+  ?packing:(window -> unit) -> ?show:bool ->
   object
     inherit window_skel
     val obj : Gtk.window obj
@@ -58,7 +58,7 @@ class dialog :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(dialog -> unit) ->
+  ?packing:(dialog -> unit) -> ?show:bool ->
   object
     inherit window
     val obj : Gtk.dialog obj
@@ -81,7 +81,7 @@ class color_selection_dialog :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(color_selection_dialog -> unit) ->
+  ?packing:(color_selection_dialog -> unit) -> ?show:bool ->
   object
     inherit window
     val obj : Gtk.color_selection_dialog obj
@@ -109,7 +109,7 @@ class file_selection :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(file_selection -> unit) ->
+  ?packing:(file_selection -> unit) -> ?show:bool ->
   object
     inherit window
     val obj : Gtk.file_selection obj

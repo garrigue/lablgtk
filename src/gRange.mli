@@ -3,7 +3,7 @@
 open Gtk
 
 class progress_bar :
-  ?packing:(progress_bar -> unit) ->
+  ?packing:(progress_bar -> unit) -> ?show:bool ->
   object
     inherit GObj.widget_wrapper
     val obj : Gtk.progress_bar obj
@@ -26,7 +26,7 @@ class scrollbar :
   Tags.orientation ->
   ?adjustment:[> adjustment] obj ->
   ?update_policy:Tags.update_type ->
-  ?packing:(scrollbar -> unit) ->
+  ?packing:(scrollbar -> unit) -> ?show:bool ->
   object
     inherit range
     val obj : Gtk.scrollbar obj

@@ -34,7 +34,7 @@ end
 
 class window t ?:title ?:wmclass_name ?:wmclass_class ?:position ?:allow_shrink
     ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y ?:border_width ?:width ?:height
-    ?:packing =
+    ?:packing ?:show [< false >] =
   let w = Window.create t in
   let () =
     Window.setter w ?:title ?:wmclass_name ?:wmclass_class ?:position
@@ -43,7 +43,7 @@ class window t ?:title ?:wmclass_name ?:wmclass_class ?:position ?:allow_shrink
   in
   object (self)
     inherit window_wrapper w
-    initializer pack_return :packing (self :> window_wrapper)
+    initializer pack_return :packing :show (self :> window_wrapper)
   end
 
 class dialog_wrapper obj = object
@@ -55,7 +55,7 @@ end
 
 class dialog ?:title ?:wmclass_name ?:wmclass_class ?:position ?:allow_shrink
     ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y ?:border_width ?:width ?:height
-    ?:packing =
+    ?:packing ?:show [< false >] =
   let w = Dialog.create () in
   let () =
     Window.setter w ?:title ?:wmclass_name ?:wmclass_class ?:position
@@ -64,7 +64,7 @@ class dialog ?:title ?:wmclass_name ?:wmclass_class ?:position ?:allow_shrink
   in
   object (self)
     inherit dialog_wrapper w
-    initializer pack_return :packing (self :> dialog_wrapper)
+    initializer pack_return :packing :show (self :> dialog_wrapper)
   end
 
 class color_selection_dialog_wrapper obj = object
@@ -82,7 +82,7 @@ end
 
 class color_selection_dialog :title ?:wmclass_name ?:wmclass_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
   let w = ColorSelection.create_dialog title in
   let () =
     Window.setter w ?title:None ?:wmclass_name ?:wmclass_class ?:position
@@ -91,7 +91,8 @@ class color_selection_dialog :title ?:wmclass_name ?:wmclass_class ?:position
   in
   object (self)
     inherit color_selection_dialog_wrapper w
-    initializer pack_return :packing (self :> color_selection_dialog_wrapper)
+    initializer
+      pack_return :packing :show (self :> color_selection_dialog_wrapper)
   end
 
 class file_selection_wrapper obj = object
@@ -112,7 +113,7 @@ end
 class file_selection :title ?:filename ?:fileop_buttons
     ?:wmclass_name ?:wmclass_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
   let w = FileSelection.create title in
   let () =
     FileSelection.setter w cont:null_cont ?:filename ?:fileop_buttons;
@@ -122,5 +123,5 @@ class file_selection :title ?:filename ?:fileop_buttons
   in
   object (self)
     inherit file_selection_wrapper w
-    initializer pack_return :packing (self :> file_selection_wrapper)
+    initializer pack_return :packing :show (self :> file_selection_wrapper)
   end

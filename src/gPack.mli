@@ -27,7 +27,7 @@ class box :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(box -> unit) ->
+  ?packing:(box -> unit) -> ?show:bool ->
   object
     inherit box_skel
     val obj : Gtk.box obj
@@ -46,7 +46,7 @@ class button_box :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(button_box -> unit) ->
+  ?packing:(button_box -> unit) -> ?show:bool ->
   object
     inherit box_skel
     val obj : Gtk.button_box obj
@@ -70,7 +70,7 @@ class table :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(table -> unit) ->
+  ?packing:(table -> unit) -> ?show:bool ->
   object
     inherit container_wrapper
     val obj : Gtk.table obj
@@ -92,7 +92,7 @@ class fixed :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(fixed -> unit) ->
+  ?packing:(fixed -> unit) -> ?show:bool ->
   object
     inherit container_wrapper
     val obj : Gtk.fixed obj

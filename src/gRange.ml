@@ -11,11 +11,11 @@ class progress_bar_wrapper obj = object
   method percentage = Progress.get_percentage obj
 end
 
-class progress_bar ?:packing =
+class progress_bar ?:packing ?:show =
   let w = ProgressBar.create () in
   object (self)
     inherit progress_bar_wrapper w
-    initializer pack_return :packing (self :> progress_bar_wrapper)
+    initializer pack_return :packing ?:show (self :> progress_bar_wrapper)
   end
 
 class range obj = object
@@ -28,10 +28,10 @@ end
 
 class scrollbar_wrapper obj = range (obj : Gtk.scrollbar obj)
 
-class scrollbar dir ?:adjustment ?:update_policy ?:packing =
+class scrollbar dir ?:adjustment ?:update_policy ?:packing ?:show =
   let w = Scrollbar.create dir ?:adjustment in
   let () = may update_policy fun:(Range.set_update_policy w) in
   object (self)
     inherit scrollbar_wrapper w
-    initializer pack_return :packing (self :> scrollbar_wrapper)
+    initializer pack_return :packing ?:show (self :> scrollbar_wrapper)
   end

@@ -158,5 +158,6 @@ and widget_wrapper :
     method connect : ?after:bool -> widget_signals
   end
 
-val pack_return : 'a -> packing:('a -> unit) option -> unit
+val pack_return :
+    (#widget as 'a) -> packing:('a -> unit) option -> ?show:bool -> unit
     (* To use in initializers to provide a ?packing: option *)

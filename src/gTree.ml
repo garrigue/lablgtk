@@ -77,22 +77,22 @@ class tree_signals obj =
   [tree_item_wrapper] pre_tree_signals ?obj
     ?wrapper:(fun w -> new tree_item_wrapper (TreeItem.cast w))
 
-class tree_item ?:label ?:border_width ?:width ?:height ?:packing =
+class tree_item ?:label ?:border_width ?:width ?:height ?:packing ?:show =
   let w = TreeItem.create ?None ?:label in
   let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit tree_item_wrapper w
-    initializer pack_return :packing (self :> tree_item_wrapper)
+    initializer pack_return :packing ?:show (self :> tree_item_wrapper)
   end
 
 class tree ?:selection_mode ?:view_mode ?:view_lines
-    ?:border_width ?:width ?:height ?:packing =
+    ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Tree.create () in
   let () =
     Tree.setter w cont:null_cont ?:selection_mode ?:view_mode ?:view_lines;
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit tree_wrapper w
-    initializer pack_return :packing (self :> tree_wrapper)
+    initializer pack_return :packing ?:show (self :> tree_wrapper)
   end
 
