@@ -2218,7 +2218,7 @@ module Combo = struct
     let remove = remove
     let need_resize = need_resize
     let focus = focus
-    (* let activate w = Entry.Connect.activate (entry w) *)
+    let activate w = Signal.connect sig:Editable.Signals.activate (entry w)
   end
 end
 
