@@ -41,6 +41,7 @@ object (self)
   method set_foreground col = GC.set_foreground gc (self#color col)
   method set_background col = GC.set_background gc (self#color col)
   method gc_values = GC.get_values gc
+  method set_clip_region region = GC.set_clip_region gc region
   method set_line_attributes ?width ?style ?cap ?join () =
     let v = GC.get_values gc in
     GC.set_line_attributes gc

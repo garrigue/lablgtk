@@ -42,6 +42,12 @@ type gdkNotifyType = "GDK_NOTIFY_"
   [ `ANCESTOR | `VIRTUAL | `INFERIOR | `NONLINEAR | `NONLINEAR_VIRTUAL
   | `UNKNOWN ] 
 
+type gdkFillRule = "GDK_"
+  [ `EVEN_ODD_RULE | `WINDING_RULE ]
+
+type gdkOverlapType = "GDK_OVERLAP_RECTANGLE_"
+  [ `IN | `OUT | `PART ]
+
 type gdkFunction = "GDK_"
   [ `COPY | `INVERT | `XOR ]
 
