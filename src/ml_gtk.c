@@ -33,6 +33,11 @@ value copy_string_and_free (char *str)
 
 #include "gtk_tags.c"
 
+ML_1 (Val_direction, Int_val, )
+ML_1 (Val_orientation, Int_val, )
+ML_1 (Val_toolbar_style, Int_val, )
+ML_1 (Val_state, Int_val, )
+
 Make_Flags_val (Attach_val)
 
 /* gtkobject.h */
@@ -91,6 +96,7 @@ value ml_gtk_class_type (GtkObjectClass *cl)
 {
     return Val_int (cl->type);
 }
+ML_1 (gtk_object_destroy, GtkObject_val, Unit)
 
 /* gtkdata.h */
 
@@ -143,7 +149,6 @@ value ml_gtk_widget_set_can_focus (value val, value bool)
 	gtk_widget_queue_resize (w);
     return Val_unit;
 }
-ML_1 (gtk_widget_destroy, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unparent, GtkWidget_val, Unit)
 ML_1 (gtk_widget_show, GtkWidget_val, Unit)
 ML_1 (gtk_widget_show_now, GtkWidget_val, Unit)

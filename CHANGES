@@ -1,0 +1,4 @@
+1998.11.22
+  * added gtkObj.ml and examples/*_obj.ml
+  * various modifications in gtk.ml
+				   

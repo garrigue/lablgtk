@@ -130,68 +130,57 @@ module Signal = struct
   external disconnect : 'a obj -> id -> unit
       = "ml_gtk_signal_disconnect"
   let marshal_unit f _ = f ()
-  let break_value = ref false
-  let break () = break_value := true
-  let marshal_event f argv =
-    let p = Argv.get_pointer argv pos:0 in
-    let ev = Gdk.Event.unsafe_copy p in
-    let old_break = !break_value in
-    break_value := false;
-    try f ev; Argv.set_result_bool argv !break_value;
-      break_value := old_break
-    with exn -> break_value := old_break; raise exn
-  let destroy : ([> widget],_) t =
-    { name = "destroy"; marshaller = marshal_unit }
-  let clicked : ([> button],_) t =
-    { name = "clicked"; marshaller = marshal_unit }
-  let toggled : ([> toggle],_) t =
-    { name = "toggled"; marshaller = marshal_unit }
-  let activate : ([> editable],_) t =
-    { name = "activate"; marshaller = marshal_unit }
-  let event : ([> widget], Gdk.Tags.event_type Gdk.event -> unit) t =
-    { name = "delete_event"; marshaller = marshal_event }
-  let button_press_event : ([> widget], Gdk.Event.Button.t -> unit) t =
-    { name = "button_press_event"; marshaller = marshal_event }
-  let button_release_event : ([> widget], Gdk.Event.Button.t -> unit) t =
-    { name = "button_release_event"; marshaller = marshal_event }
-  let motion_notify_event : ([> widget], Gdk.Event.Motion.t -> unit) t =
-    { name = "motion_notify_event"; marshaller = marshal_event }
-  let delete_event : ([> widget], [DELETE] Gdk.event -> unit) t =
-    { name = "delete_event"; marshaller = marshal_event }
-  let destroy_event : ([> widget], [DESTROY] Gdk.event -> unit) t =
-    { name = "destroy_event"; marshaller = marshal_event }
-  let expose_event : ([> widget], Gdk.Event.Expose.t -> unit) t =
-    { name = "expose_event"; marshaller = marshal_event }
-  let key_press_event : ([> widget], Gdk.Event.Key.t -> unit) t =
-    { name = "key_press_event"; marshaller = marshal_event }
-  let key_release_event : ([> widget], Gdk.Event.Key.t -> unit) t =
-    { name = "key_release_event"; marshaller = marshal_event }
-  let enter_notify_event : ([> widget], Gdk.Event.Crossing.t -> unit) t =
-    { name = "enter_notify_event"; marshaller = marshal_event }
-  let leave_notify_event : ([> widget], Gdk.Event.Crossing.t -> unit) t =
-    { name = "leave_notify_event"; marshaller = marshal_event }
-  let configure_event : ([> widget], Gdk.Event.Configure.t -> unit) t =
-    { name = "configure_event"; marshaller = marshal_event }
-  let focus_in_event : ([> widget], Gdk.Event.Focus.t -> unit) t =
-    { name = "focus_in_event"; marshaller = marshal_event }
-  let focus_out_event : ([> widget], Gdk.Event.Focus.t -> unit) t =
-    { name = "focus_out_event"; marshaller = marshal_event }
-  let map_event : ([> widget], [MAP] Gdk.event -> unit) t =
-    { name = "map_event"; marshaller = marshal_event }
-  let unmap_event : ([> widget], [UNMAP] Gdk.event -> unit) t =
-    { name = "unmap_event"; marshaller = marshal_event }
-  let property_notify_event : ([> widget], Gdk.Event.Property.t -> unit) t =
-    { name = "property_notify_event"; marshaller = marshal_event }
-  let selection_clear_event : ([> widget], Gdk.Event.Selection.t -> unit) t =
-    { name = "selection_clear_event"; marshaller = marshal_event }
-  let selection_request_event : ([> widget], Gdk.Event.Selection.t -> unit) t =
-    { name = "selection_request_event"; marshaller = marshal_event }
-  let selection_notify_event : ([> widget], Gdk.Event.Selection.t -> unit) t =
-    { name = "selection_notify_event"; marshaller = marshal_event }
-  let proximity_in_event : ([> widget], Gdk.Event.Proximity.t -> unit) t =
-    { name = "proximity_in_event"; marshaller = marshal_event }
-  let proximity_in_event : ([> widget], Gdk.Event.Proximity.t -> unit) t =
-    { name = "proximity_in_event"; marshaller = marshal_event }
+  let marshal_int f argv = f (Argv.get_int argv pos:0)
+  module Event = struct
+    let marshal f argv =
+      let p = Argv.get_pointer argv pos:0 in
+      let ev = Gdk.Event.unsafe_copy p in
+      Argv.set_result_bool argv (f ev)
+    let any : ([> widget], Gdk.Tags.event_type Gdk.event -> bool) t =
+      { name = "event"; marshaller = marshal }
+    let button_press : ([> widget], Gdk.Event.Button.t -> bool) t =
+      { name = "button_press_event"; marshaller = marshal }
+    let button_release : ([> widget], Gdk.Event.Button.t -> bool) t =
+      { name = "button_release_event"; marshaller = marshal }
+    let motion_notify : ([> widget], Gdk.Event.Motion.t -> bool) t =
+      { name = "motion_notify_event"; marshaller = marshal }
+    let delete : ([> widget], [DELETE] Gdk.event -> bool) t =
+      { name = "delete_event"; marshaller = marshal }
+    let destroy : ([> widget], [DESTROY] Gdk.event -> bool) t =
+      { name = "destroy_event"; marshaller = marshal }
+    let expose : ([> widget], Gdk.Event.Expose.t -> bool) t =
+      { name = "expose_event"; marshaller = marshal }
+    let key_press : ([> widget], Gdk.Event.Key.t -> bool) t =
+      { name = "key_press_event"; marshaller = marshal }
+    let key_release : ([> widget], Gdk.Event.Key.t -> bool) t =
+      { name = "key_release_event"; marshaller = marshal }
+    let enter_notify : ([> widget], Gdk.Event.Crossing.t -> bool) t =
+      { name = "enter_notify_event"; marshaller = marshal }
+    let leave_notify : ([> widget], Gdk.Event.Crossing.t -> bool) t =
+      { name = "leave_notify_event"; marshaller = marshal }
+    let configure : ([> widget], Gdk.Event.Configure.t -> bool) t =
+      { name = "configure_event"; marshaller = marshal }
+    let focus_in : ([> widget], Gdk.Event.Focus.t -> bool) t =
+      { name = "focus_in_event"; marshaller = marshal }
+    let focus_out : ([> widget], Gdk.Event.Focus.t -> bool) t =
+      { name = "focus_out_event"; marshaller = marshal }
+    let map : ([> widget], [MAP] Gdk.event -> bool) t =
+      { name = "map_event"; marshaller = marshal }
+    let unmap : ([> widget], [UNMAP] Gdk.event -> bool) t =
+      { name = "unmap_event"; marshaller = marshal }
+    let property_notify : ([> widget], Gdk.Event.Property.t -> bool) t =
+      { name = "property_notify_event"; marshaller = marshal }
+    let selection_clear : ([> widget], Gdk.Event.Selection.t -> bool) t =
+      { name = "selection_clear_event"; marshaller = marshal }
+    let selection_request : ([> widget], Gdk.Event.Selection.t -> bool) t =
+      { name = "selection_request_event"; marshaller = marshal }
+    let selection_notify : ([> widget], Gdk.Event.Selection.t -> bool) t =
+      { name = "selection_notify_event"; marshaller = marshal }
+    let proximity_in : ([> widget], Gdk.Event.Proximity.t -> bool) t =
+      { name = "proximity_in_event"; marshaller = marshal }
+    let proximity_in : ([> widget], Gdk.Event.Proximity.t -> bool) t =
+      { name = "proximity_in_event"; marshaller = marshal }
+  end
 end
 
 module Timeout = struct
@@ -221,32 +210,54 @@ module Style = struct
   external draw_vline :
       t -> Gdk.window -> state -> y:int -> y:int -> c:int -> unit
       = "ml_gtk_draw_vline"
-  external bg : t -> state:state -> Gdk.Color.t = "ml_GtkStyle_bg"
-  let bg st ?:state [< `NORMAL >] = bg st :state
+  external get_bg : t -> state:state -> Gdk.Color.t = "ml_gtk_style_get_bg"
+  let get_bg st ?:state [< `NORMAL >] = get_bg st :state
+  external get_colormap : t -> Gdk.colormap = "ml_gtk_style_get_colormap"
 end
 
 module Object = struct
   external get_type : 'a obj -> Type.t = "ml_gtk_object_type"
   let is_a obj name =
     Type.is_a (get_type obj) (Type.from_name name)
+  external destroy : 'a obj -> unit = "ml_gtk_object_destroy"
+  module Sig = struct
+    open Signal
+    let destroy : (_,_) t =
+      { name = "destroy"; marshaller = marshal_unit }
+  end
+end
+
+module Data = struct
+  module Sig = struct
+    open Signal
+    let disconnect : ([> data],_) t =
+      { name = "disconnect"; marshaller = marshal_unit }
+  end
 end
 
 module Adjustment = struct
-  type t = [ajustment] obj
+  type t = [data ajustment]
   external create :
       value:float -> lower:float -> upper:float ->
-      step_incr:float -> page_incr:float -> page_size:float -> t
+      step_incr:float -> page_incr:float -> page_size:float -> t obj
       = "ml_gtk_adjustment_new_bc" "ml_gtk_adjustment_new"
   external set_value : [> adjustment] obj -> float -> unit
       = "ml_gtk_adjustment_set_value"
   external clamp_page :
       [> adjustment] obj -> lower:float -> upper:float -> unit
       = "ml_gtk_adjustment_clamp_page"
+  module Sig = struct
+    open Signal
+    let changed : ([> adjustment],_) t =
+      { name = "changed"; marshaller = marshal_unit }
+    let value_changed : ([> adjustment],_) t =
+      { name = "value_changed"; marshaller = marshal_unit }
+  end
 end
 
 module Tooltips = struct
-  type t = [tooltips] obj
-  external create : unit -> t = "ml_gtk_tooltips_new"
+  type t = [data tooltips]
+  external create : unit -> t obj = "ml_gtk_tooltips_new"
   external enable : [> tooltips] obj -> unit = "ml_gtk_tooltips_enable"
   external disable : [> tooltips] obj -> unit = "ml_gtk_tooltips_disable"
   external set_delay : [> tooltips] obj -> int -> unit
@@ -267,12 +278,11 @@ module Tooltips = struct
 end
 
 module Widget = struct
-  type t = [widget] obj
-  let cast w : t =
+  type t = [widget]
+  let cast w : t obj =
     if Object.is_a w "GtkWidget" then Obj.magic w
     else invalid_arg "Gtk.Widget.cast"
-  external coerce : [> widget] obj -> t = "%identity"
-  external destroy : [> widget] obj -> unit = "ml_gtk_widget_destroy"
+  external coerce : [> widget] obj -> t obj = "%identity"
   external unparent : [> widget] obj -> unit = "ml_gtk_widget_unparent"
   external show : [> widget] obj -> unit = "ml_gtk_widget_show"
   external show_now : [> widget] obj -> unit = "ml_gtk_widget_show_now"
@@ -326,9 +336,9 @@ module Widget = struct
       = "ml_gtk_widget_set_uposition"
   external set_usize : [> widget] obj -> width:int -> height:int -> unit
       = "ml_gtk_widget_set_usize"
-  external get_toplevel : [> widget] obj -> t
+  external get_toplevel : [> widget] obj -> t obj
       = "ml_gtk_widget_get_toplevel"
-  external get_ancestor : [> widget] obj -> Type.t -> t
+  external get_ancestor : [> widget] obj -> Type.t -> t obj
       = "ml_gtk_widget_get_ancestor"
   external get_colormap : [> widget] obj -> Gdk.colormap
       = "ml_gtk_widget_get_colormap"
@@ -363,11 +373,41 @@ module Widget = struct
     may_set set_style style;
     if x > -2 || y > -2 then set_uposition w :x :y;
     if width > -1 || height > -1 then set_usize w :width :height
+  module Sig = struct
+    open Signal
+    let marshal f argv = f (cast (Argv.get_object argv pos:0))
+
+    let show : ([> widget],_) t =
+      { name = "show"; marshaller = marshal_unit }
+    let hide : ([> widget],_) t =
+      { name = "hide"; marshaller = marshal_unit }
+    let map : ([> widget],_) t =
+      { name = "map"; marshaller = marshal_unit }
+    let unmap : ([> widget],_) t =
+      { name = "unmap"; marshaller = marshal_unit }
+    let realize : ([> widget],_) t =
+      { name = "realize"; marshaller = marshal_unit }
+    let draw : ([> widget],_) t =
+      let marshal f argv =
+	let p = Argv.get_pointer argv pos:0 in
+	f (Obj.magic p : Gdk.Rectangle.t)
+      in { name = "draw"; marshaller = marshal }
+    let draw_focus : ([> widget],_) t =
+      { name = "draw_focus"; marshaller = marshal_unit }
+    let draw_default : ([> widget],_) t =
+      { name = "draw_default"; marshaller = marshal_unit }
+    external val_state : int -> state = "ml_Val_state"
+    let state_changed : ([> widget],_) t =
+      let marshal f argv = f (val_state (Argv.get_int argv pos:0)) in
+      { name = "state_changed"; marshaller = marshal }
+    let parent_set : ([> widget],_) t =
+      { name = "parent_set"; marshaller = marshal }
+  end
 end
 
 module Container = struct
-  type t = [widget container] obj
-  let cast w : t =
+  type t = [widget container]
+  let cast w : t obj =
     if Object.is_a w "GtkContainer" then Obj.magic w
     else invalid_arg "Gtk.Container.cast"
   external border_width : [> container] obj -> int -> unit
@@ -386,7 +426,7 @@ module Container = struct
       = "ml_gtk_container_unblock_resize"
   external need_resize : [> container] obj -> bool
       = "ml_gtk_container_need_resize"
-  external foreach : [> container] obj -> fun:(Widget.t -> unit) -> unit
+  external foreach : [> container] obj -> fun:(Widget.t obj-> unit) -> unit
       = "ml_gtk_container_foreach"
   let children w =
     let l = ref [] in
@@ -406,15 +446,31 @@ module Container = struct
     may child fun:(set_focus_child w);
     may vadjustment fun:(set_focus_vadjustment w);
     may hadjustment fun:(set_focus_hadjustment w)
+  module Sig = struct
+    open Signal
+    let add : ([> container],_) t =
+      { name = "add"; marshaller = Widget.Sig.marshal }
+    let remove : ([> container],_) t =
+      { name = "remove"; marshaller = Widget.Sig.marshal }
+    let need_resize : ([> container],_) t =
+      let marshal f argv = Argv.set_result_bool argv (f ()) in
+      { name = "need_resize"; marshaller = marshal }
+    external val_direction : int -> direction = "ml_Val_direction"
+    let focus : ([> container],_) t =
+      let marshal f argv =
+	let dir = val_direction (Argv.get_int argv pos:0) in
+	Argv.set_result_bool argv (f dir)
+      in { name = "focus"; marshaller = marshal }
+  end
 end
 
 module Alignment = struct
-  type t = [widget container bin alignment] obj
-  let cast w : t =
+  type t = [widget container bin alignment]
+  let cast w : t obj =
     if Object.is_a w "GtkAlignment" then Obj.magic w
     else invalid_arg "Gtk.Alignment.cast"
   external create :
-      x:clampf -> y:clampf -> xscale:clampf -> yscale:clampf -> t
+      x:clampf -> y:clampf -> xscale:clampf -> yscale:clampf -> t obj
       = "ml_gtk_alignment_new"
   let create ?:x [< 0.5 >] ?:y [< 0.5 >] ?:xscale [< 1.0 >]
       ?:yscale [< 1.0 >] ?(_ : unit option) =
@@ -426,19 +482,19 @@ module Alignment = struct
 end
 
 module EventBox = struct
-  type t = [widget container bin eventbox] obj
-  let cast w : t =
+  type t = [widget container bin eventbox]
+  let cast w : t obj =
     if Object.is_a w "GtkEventBox" then Obj.magic w
     else invalid_arg "Gtk.EventBox.cast"
-  external create : unit -> t = "ml_gtk_event_box_new"
+  external create : unit -> t obj = "ml_gtk_event_box_new"
 end
 
 module Frame = struct
-  type t = [widget container bin frame] obj
-  let cast w : t =
+  type t = [widget container bin frame]
+  let cast w : t obj =
     if Object.is_a w "GtkFrame" then Obj.magic w
     else invalid_arg "Gtk.Frame.cast"
-  external create : label:string -> t = "ml_gtk_frame_new"
+  external create : label:string -> t obj = "ml_gtk_frame_new"
   external set_label : [> frame] obj -> string -> unit
       = "ml_gtk_frame_set_label"
   external set_label_align : [> frame] obj -> x:clampf -> y:clampf -> unit
@@ -448,13 +504,13 @@ module Frame = struct
 end
 
 module AspectFrame = struct
-  type t = [widget container bin frame aspect] obj
-  let cast w : t =
+  type t = [widget container bin frame aspect]
+  let cast w : t obj =
     if Object.is_a w "GtkAspectFrame" then Obj.magic w
     else invalid_arg "Gtk.AspectFrame.cast"
   external create :
       label:string ->
-      xalign:clampf -> yalign:clampf -> ratio:float -> obey:bool -> t
+      xalign:clampf -> yalign:clampf -> ratio:float -> obey:bool -> t obj
       = "ml_gtk_aspect_frame_new"
   let create :label ?:xalign [< 0.5 >] ?:yalign [< 0.5 >]
       ?:ratio [< 1.0 >] ?:obey [< true >] =
@@ -466,41 +522,63 @@ module AspectFrame = struct
 end
 
 module HandleBox = struct
-  type t = [widget container bin handle] obj
-  let cast w : t =
+  type t = [widget container bin handlebox]
+  let cast w : t obj =
     if Object.is_a w "GtkHandleBox" then Obj.magic w
     else invalid_arg "Gtk.HandleBox.cast"
-  external create : unit -> t = "ml_gtk_handle_box_new"
+  external create : unit -> t obj = "ml_gtk_handle_box_new"
+  module Sig = struct
+    open Signal
+    let child_attached : ([> handlebox],_) t =
+      { name = "child_attached"; marshaller = Widget.Sig.marshal }
+    let child_detached : ([> handlebox],_) t =
+      { name = "child_detached"; marshaller = Widget.Sig.marshal }
+  end
 end
 
 module Item = struct
-  type t = [widget container bin item] obj
-  let cast w : t =
+  type t = [widget container bin item]
+  let cast w : t obj =
     if Object.is_a w "GtkItem" then Obj.magic w
     else invalid_arg "Gtk.Item.cast"
   external select : [> item] obj -> unit = "ml_gtk_item_select"
   external deselect : [> item] obj -> unit = "ml_gtk_item_deselect"
   external toggle : [> item] obj -> unit = "ml_gtk_item_toggle"
+  module Sig = struct
+    open Signal
+    let select : ([> item],_) t =
+      { name = "select"; marshaller = marshal_unit }
+    let deselect : ([> item],_) t =
+      { name = "deselect"; marshaller = marshal_unit }
+    let toggle : ([> item],_) t =
+      { name = "toggle"; marshaller = marshal_unit }
+  end
 end
 
 module ListItem = struct
-  type t = [widget container bin item list] obj
-  let cast w : t =
+  type t = [widget container bin item list]
+  let cast w : t obj =
     if Object.is_a w "GtkListItem" then Obj.magic w
     else invalid_arg "Gtk.ListItem.cast"
-  external create : unit -> t = "ml_gtk_list_item_new"
-  external create_with_label : string -> t
+  external create : unit -> t obj = "ml_gtk_list_item_new"
+  external create_with_label : string -> t obj
       = "ml_gtk_list_item_new_with_label"
+  let create ?:label ?(_ : unit option) =
+    match label with None -> create ()
+    | Some label -> create_with_label label
 end
 
 module MenuItem = struct
-  type t = [widget container bin item menuitem] obj
-  let cast w : t =
+  type t = [widget container bin item menuitem]
+  let cast w : t obj =
     if Object.is_a w "GtkMenuItem" then Obj.magic w
     else invalid_arg "Gtk.MenuItem.cast"
-  external create : unit -> t = "ml_gtk_menu_item_new"
-  external create_with_label : string -> t
+  external create : unit -> t obj = "ml_gtk_menu_item_new"
+  external create_with_label : string -> t obj
       = "ml_gtk_menu_item_new_with_label"
+  let create ?:label ?(_ : unit option) =
+    match label with None -> create ()
+    | Some label -> create_with_label label
   external set_submenu : [> menuitem] obj -> [> widget] obj -> unit
       = "ml_gtk_menu_item_set_submenu"
   external remove_submenu : [> menuitem] obj -> unit
@@ -516,48 +594,67 @@ module MenuItem = struct
       = "ml_gtk_menu_item_activate"
   external right_justify : [> menuitem] obj -> unit
       = "ml_gtk_menu_item_right_justify"
+  module Sig = struct
+    open Signal
+    let activate : ([> menuitem],_) t =
+      { name = "activate"; marshaller = marshal_unit }
+  end
 end
 
 module CheckMenuItem = struct
-  type t = [widget container bin item menuitem checkmenuitem] obj
-  let cast w : t =
+  type t = [widget container bin item menuitem checkmenuitem]
+  let cast w : t obj =
     if Object.is_a w "GtkCheckMenuItem" then Obj.magic w
     else invalid_arg "Gtk.CheckMenuItem.cast"
-  external create : unit -> t = "ml_gtk_check_menu_item_new"
-  external create_with_label : string -> t
+  external create : unit -> t obj = "ml_gtk_check_menu_item_new"
+  external create_with_label : string -> t obj
       = "ml_gtk_check_menu_item_new_with_label"
+  let create ?:label ?(_ : unit option) =
+    match label with None -> create ()
+    | Some label -> create_with_label label
   external set_state : [> checkmenuitem] obj -> bool -> unit
       = "ml_gtk_check_menu_item_set_state"
   external set_show_toggle : [> checkmenuitem] obj -> bool -> unit
       = "ml_gtk_check_menu_item_set_show_toggle"
   external toggled : [> checkmenuitem] obj -> unit
       = "ml_gtk_check_menu_item_toggled"
+  module Sig = struct
+    open Signal
+    let toggled : ([> checkmenuitem],_) t =
+      { name = "toggled"; marshaller = marshal_unit }
+  end
 end
 
 module RadioMenuItem = struct
-  type t = [widget container bin item menuitem checkmenuitem radiomenuitem] obj
-  let cast w : t =
+  type t = [widget container bin item menuitem checkmenuitem radiomenuitem]
+  let cast w : t obj =
     if Object.is_a w "GtkRadioMenuItem" then Obj.magic w
     else invalid_arg "Gtk.RadioMenuItem.cast"
   type group
   let empty : group = Obj.obj null
-  external create : group -> t = "ml_gtk_radio_menu_item_new"
-  external create_with_label : group -> string -> t
+  external create : group -> t obj = "ml_gtk_radio_menu_item_new"
+  external create_with_label : group -> string -> t obj
       = "ml_gtk_radio_menu_item_new_with_label"
-  external group : [> radiotmenuitem] -> group
+  let create ?:group [< empty >] ?:label ?(_ : unit option) =
+    match label with None -> create group
+    | Some label -> create_with_label group label
+  external group : [> radiomenuitem] obj -> group
       = "ml_gtk_radio_menu_item_group"
-  external set_group : [> radiotmenuitem] -> group -> unit
+  external set_group : [> radiomenuitem] obj -> group -> unit
       = "ml_gtk_radio_menu_item_set_group"
 end
 
 module TreeItem = struct
-  type t = [widget container bin item treeitem] obj
-  let cast w : t =
+  type t = [widget container bin item treeitem]
+  let cast w : t obj =
     if Object.is_a w "GtkTreeItem" then Obj.magic w
     else invalid_arg "Gtk.TreeItem.cast"
-  external create : unit -> t = "ml_gtk_tree_item_new"
-  external create_with_label : string -> t
+  external create : unit -> t obj = "ml_gtk_tree_item_new"
+  external create_with_label : string -> t obj
       = "ml_gtk_tree_item_new_with_label"
+  let create ?:label ?(_ : unit option) =
+    match label with None -> create ()
+    | Some label -> create_with_label label
   external set_subtree : [> treeitem] obj -> [> widget] obj -> unit
       = "ml_gtk_tree_item_set_subtree"
   external remove_subtree : [> treeitem] obj -> unit
@@ -566,15 +663,22 @@ module TreeItem = struct
       = "ml_gtk_tree_item_expand"
   external collapse : [> treeitem] obj -> unit
       = "ml_gtk_tree_item_collapse"
+  module Sig = struct
+    open Signal
+    let expand : ([> treeitem],_) t =
+      { name = "expand"; marshaller = marshal_unit }
+    let collapse : ([> treeitem],_) t =
+      { name = "collapse"; marshaller = marshal_unit }
+  end
 end
 
 module Viewport = struct
-  type t = [widget container bin viewport] obj
-  let cast w : t =
+  type t = [widget container bin viewport]
+  let cast w : t obj =
     if Object.is_a w "GtkViewport" then Obj.magic w
     else invalid_arg "Gtk.Viewport.cast"
   external create :
-      ?hadj:[> adjustment] obj -> ?vadj:[> adjustment] obj -> ?unit -> t
+      ?hadj:[> adjustment] obj -> ?vadj:[> adjustment] obj -> ?unit -> t obj
       = "ml_gtk_viewport_new"
   external get_hadjustment : [> viewport] obj -> Adjustment.t
       = "ml_gtk_viewport_get_hadjustment"
@@ -588,32 +692,12 @@ module Viewport = struct
       = "ml_gtk_viewport_set_shadow_type"
 end
 
-module Dialog = struct
-  type t = [widget container bin dialog window] obj
-  let cast w : t =
-    if Object.is_a w "GtkDialog" then Obj.magic w
-    else invalid_arg "Gtk.Dialog.cast"
-  external create : unit -> t = "ml_gtk_dialog_new"
-  external action_area : [> dialog] obj -> [> box] obj
-      = "ml_GtkDialog_action_area"
-  external vbox : [> dialog] obj -> [> box] obj
-      = "ml_GtkDialog_vbox"
-end
-
-module InputDialog = struct
-  type t = [widget container bin dialog inputdialog] obj
-  let cast w : t =
-    if Object.is_a w "GtkInputDialog" then Obj.magic w
-    else invalid_arg "Gtk.InputDialog.cast"
-  external create : unit -> t = "ml_gtk_input_dialog_new"
-end
-
 module FileSelection = struct
-  type t = [widget container bin filesel] obj
-  let cast w : t =
+  type t = [widget container bin window filesel]
+  let cast w : t obj =
     if Object.is_a w "GtkFileSelection" then Obj.magic w
     else invalid_arg "Gtk.FileSelection.cast"
-  external create : string -> t = "ml_gtk_file_selection_new"
+  external create : string -> t obj = "ml_gtk_file_selection_new"
   external set_filename : [> filesel] obj -> string -> unit
       = "ml_gtk_file_selection_set_filename"
   external get_filename : [> filesel] obj -> string
@@ -625,11 +709,11 @@ module FileSelection = struct
 end
 
 module Window = struct
-  type t = [widget container bin window] obj
-  let cast w : t =
+  type t = [widget container bin window]
+  let cast w : t obj =
     if Object.is_a w "GtkWindow" then Obj.magic w
     else invalid_arg "Gtk.Window.cast"
-  external create : window_type -> t = "ml_gtk_window_new"
+  external create : window_type -> t obj = "ml_gtk_window_new"
   external set_title : [> window] obj -> string -> unit
       = "ml_gtk_window_set_title"
   external set_wmclass : [> window] obj -> name:string -> class:string -> unit
@@ -651,16 +735,23 @@ module Window = struct
       = "ml_gtk_window_activate_focus"
   external activate_default : [> window] obj -> unit
       = "ml_gtk_window_activate_default"
+  module Sig = struct
+    open Signal
+    let move_resize : ([> window],_) t =
+      { name = "move_resize"; marshaller = marshal_unit }
+    let set_focus : ([> window],_) t =
+      { name = "set_focus"; marshaller = Widget.Sig.marshal }
+  end
 end
 
 module ColorSelection = struct
-  type t = [widget container box colorsel] obj
-  let cast w : t =
+  type t = [widget container box colorsel]
+  let cast w : t obj =
     if Object.is_a w "GtkColorSelection" then Obj.magic w
     else invalid_arg "Gtk.ColorSelection.cast"
-  type dialog = [widget container window colorseldialog] obj
-  external create : unit -> t = "ml_gtk_color_selection_new"
-  external create_dialog : string -> dialog
+  type dialog = [widget container window colorseldialog]
+  external create : unit -> t obj = "ml_gtk_color_selection_new"
+  external create_dialog : string -> dialog obj
       = "ml_gtk_color_selection_dialog_new"
   external set_update_policy : [> colorsel] obj -> update -> unit
       = "ml_gtk_color_selection_set_update_policy"
@@ -673,11 +764,16 @@ module ColorSelection = struct
   type color = { red: float; green: float; blue: float; opacity: float }
   external get_color : [> colorsel] obj -> color
       = "ml_gtk_color_selection_get_color"
+  module Sig = struct
+    open Signal
+    let color_changed : ([> colorsel],_) t =
+      { name = "color_changed"; marshaller = marshal_unit }
+  end
 end
 
 module Box = struct
-  type t = [widget container box] obj
-  let cast w : t =
+  type t = [widget container box]
+  let cast w : t obj =
     if Object.is_a w "GtkBox" then Obj.magic w
     else invalid_arg "Gtk.Box.cast"
   external pack_start :
@@ -696,6 +792,9 @@ module Box = struct
       = "ml_gtk_box_set_homogeneous"
   external set_spacing : [> box] obj -> int -> unit
       = "ml_gtk_box_set_spacing"
+  let set w ?:homogeneous ?:spacing =
+    may homogeneous fun:(set_homogeneous w);
+    may spacing fun:(set_spacing w)
   type packing =
       { expand: bool; fill: bool; padding: int; pack_type: pack_type }
   external query_child_packing : [> box] obj -> [> widget] obj -> packing
@@ -704,68 +803,113 @@ module Box = struct
       [> box] obj -> [> widget] obj ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> ?from:pack_type -> unit
       = "ml_gtk_box_set_child_packing_bc" "ml_gtk_box_set_child_packing"
-  external hbox_new : homogeneous:bool -> spacing:int -> t
+  external hbox_new : homogeneous:bool -> spacing:int -> t obj
       = "ml_gtk_hbox_new"
-  external vbox_new : homogeneous:bool -> spacing:int -> t
+  external vbox_new : homogeneous:bool -> spacing:int -> t obj
       = "ml_gtk_vbox_new"
   let create (dir : orientation) ?:homogeneous [< false >] ?:spacing [< 0 >] =
     (match dir with `HORIZONTAL -> hbox_new | `VERTICAL -> vbox_new)
       :homogeneous :spacing
 end
 
+module Dialog = struct
+  type t = [widget container bin window dialog]
+  let cast w : t obj =
+    if Object.is_a w "GtkDialog" then Obj.magic w
+    else invalid_arg "Gtk.Dialog.cast"
+  external create : unit -> t obj = "ml_gtk_dialog_new"
+  external action_area : [> dialog] obj -> Box.t obj
+      = "ml_GtkDialog_action_area"
+  external vbox : [> dialog] obj -> Box.t obj
+      = "ml_GtkDialog_vbox"
+end
+
+module InputDialog = struct
+  type t = [widget container bin window dialog inputdialog]
+  let cast w : t obj =
+    if Object.is_a w "GtkInputDialog" then Obj.magic w
+    else invalid_arg "Gtk.InputDialog.cast"
+  external create : unit -> t obj = "ml_gtk_input_dialog_new"
+  module Sig = struct
+    open Signal
+    let enable_device : ([> inputdialog],_) t =
+      { name = "enable_device"; marshaller = marshal_int }
+    let disable_device : ([> inputdialog],_) t =
+      { name = "disable_device"; marshaller = marshal_int }
+  end
+end
+
 module BBox = struct
   (* Omitted defaults setting *)
-  type t = [widget container bbox] obj
-  let cast w : t =
+  type t = [widget container bbox]
+  let cast w : t obj =
     if Object.is_a w "GtkBBox" then Obj.magic w
     else invalid_arg "Gtk.BBox.cast"
   type bbox_style = [ DEFAULT_STYLE SPREAD EDGE START END ]
-  external spacing : [> bbox] -> int = "ml_gtk_button_box_spacing"
-  external child_width : [> bbox] -> int
+  external spacing : [> bbox] obj -> int = "ml_gtk_button_box_spacing"
+  external child_width : [> bbox] obj -> int
       = "ml_gtk_button_box_child_min_width"
-  external child_height : [> bbox] -> int
+  external child_height : [> bbox] obj -> int
       = "ml_gtk_button_box_child_min_height"
-  external child_ipad_x : [> bbox] -> int = "ml_gtk_button_box_child_ipad_x"
-  external child_ipad_y : [> bbox] -> int = "ml_gtk_button_box_child_ipad_y"
-  external layout : [> bbox] -> bbox_style
+  external child_ipad_x : [> bbox] obj -> int
+      = "ml_gtk_button_box_child_ipad_x"
+  external child_ipad_y : [> bbox] obj -> int
+      = "ml_gtk_button_box_child_ipad_y"
+  external layout : [> bbox] obj -> bbox_style
       = "ml_gtk_button_box_layout_style"
-  external set_spacing : [> bbox] -> int = "ml_gtk_button_box_set_spacing"
-  external set_child_size : [> bbox] -> width:int -> height:int -> unit
+  external set_spacing : [> bbox] obj -> int = "ml_gtk_button_box_set_spacing"
+  external set_child_size : [> bbox] obj -> width:int -> height:int -> unit
       = "ml_gtk_button_box_set_child_size"
-  external set_child_ipadding : [> bbox] -> x:int -> y:int -> unit
+  external set_child_ipadding : [> bbox] obj -> x:int -> y:int -> unit
       = "ml_gtk_button_box_set_child_ipadding"
-  external set_layout : [> bbox] -> bbox_style -> unit
+  external set_layout : [> bbox] obj -> bbox_style -> unit
       = "ml_gtk_button_box_set_layout"
-  external create_hbbox : unit -> t = "ml_gtk_hbutton_box_new"
-  external create_vbbox : unit -> t = "ml_gtk_vbutton_box_new"
+  external create_hbbox : unit -> t obj = "ml_gtk_hbutton_box_new"
+  external create_vbbox : unit -> t obj = "ml_gtk_vbutton_box_new"
   let create (dir : orientation) =
     if dir = `HORIZONTAL then create_hbbox () else create_vbbox ()
 end
 
 module Button = struct
-  type t = [widget container button] obj
-  let cast w : t =
+  type t = [widget container button]
+  let cast w : t obj =
     if Object.is_a w "GtkButton" then Obj.magic w
     else invalid_arg "Gtk.Button.cast"
-  external create : unit -> t = "ml_gtk_button_new"
-  external create_with_label : string -> t = "ml_gtk_button_new_with_label"
+  external create : unit -> t obj = "ml_gtk_button_new"
+  external create_with_label : string -> t obj = "ml_gtk_button_new_with_label"
+  let create ?:label ?(_ : unit option) =
+    match label with None -> create ()
+    | Some x -> create_with_label x
   external pressed : [> button] obj -> unit = "ml_gtk_button_pressed"
   external released : [> button] obj -> unit = "ml_gtk_button_released"
   external clicked : [> button] obj -> unit = "ml_gtk_button_clicked"
   external enter : [> button] obj -> unit = "ml_gtk_button_enter"
   external leave : [> button] obj -> unit = "ml_gtk_button_leave"
+  module Sig = struct
+    open Signal
+    let pressed : ([> button],_) t =
+      { name = "pressed"; marshaller = marshal_unit }
+    let released : ([> button],_) t =
+      { name = "released"; marshaller = marshal_unit }
+    let clicked : ([> button],_) t =
+      { name = "clicked"; marshaller = marshal_unit }
+    let enter : ([> button],_) t =
+      { name = "enter"; marshaller = marshal_unit }
+    let leaver : ([> button],_) t =
+      { name = "leave"; marshaller = marshal_unit }
+  end
 end
 
 module ToggleButton = struct
-  type t = [widget container button toggle] obj
-  let cast w : t =
+  type t = [widget container button toggle]
+  let cast w : t obj =
     if Object.is_a w "GtkToggleButton" then Obj.magic w
     else invalid_arg "Gtk.ToggleButton.cast"
-  external toggle_button_create : unit -> t = "ml_gtk_toggle_button_new"
-  external toggle_button_create_with_label : string -> t
+  external toggle_button_create : unit -> t obj = "ml_gtk_toggle_button_new"
+  external toggle_button_create_with_label : string -> t obj
       = "ml_gtk_toggle_button_new_with_label"
-  external check_button_create : unit -> t = "ml_gtk_check_button_new"
-  external check_button_create_with_label : string -> t
+  external check_button_create : unit -> t obj = "ml_gtk_check_button_new"
+  external check_button_create_with_label : string -> t obj
       = "ml_gtk_check_button_new_with_label"
   let create (kind : [toggle check]) ?:label =
     match label with None ->
@@ -781,19 +925,24 @@ module ToggleButton = struct
   let set button ?:mode ?:state =
     may fun:(set_mode button) mode;
     may fun:(set_state button) state
-  external toggled : [> toggle] obj -> unit = "ml_gtk_toggle_button_toggled"
   external active : [> toggle] obj -> bool = "ml_GtkToggleButton_active"
+  external toggled : [> toggle] obj -> unit = "ml_gtk_toggle_button_toggled"
+  module Sig = struct
+    open Signal
+    let toggled : ([> toggle],_) t =
+      { name = "toggled"; marshaller = marshal_unit }
+  end
 end
 
 module RadioButton = struct
-  type t = [widget container button toggle radio] obj
-  let cast w : t =
+  type t = [widget container button toggle radio]
+  let cast w : t obj =
     if Object.is_a w "GtkRadioButton" then Obj.magic w
     else invalid_arg "Gtk.RadioButton.cast"
   type group
   let empty : group = Obj.obj null
-  external create : group -> t = "ml_gtk_radio_button_new"
-  external create_with_label : group -> string -> t
+  external create : group -> t obj = "ml_gtk_radio_button_new"
+  external create_with_label : group -> string -> t obj
       = "ml_gtk_radio_button_new_with_label"
   external group : [> radio] obj -> group = "ml_gtk_radio_button_group"
   external set_group : [> radio] obj -> group -> unit
@@ -807,12 +956,12 @@ module RadioButton = struct
 end
 
 module CList = struct
-  type t = [widget container clist] obj
-  let cast w : t =
+  type t = [widget container clist]
+  let cast w : t obj =
     if Object.is_a w "GtkCList" then Obj.magic w
     else invalid_arg "Gtk.CList.cast"
-  external create : cols:int -> t = "ml_gtk_clist_new"
-  external create_with_titles : string array -> t
+  external create : cols:int -> t obj = "ml_gtk_clist_new"
+  external create_with_titles : string array -> t obj
       = "ml_gtk_clist_new_with_titles"
   external set_border : [> clist] obj -> shadow -> unit
       = "ml_gtk_clist_set_border"
@@ -892,14 +1041,25 @@ module CList = struct
   external clear : [> clist] obj -> unit = "ml_gtk_clist_clear"
   external get_row_column : [> clist] obj -> x:int -> y:int -> int * int
       = "ml_gtk_clist_get_selection_info"
+  open Signal
+  let marshal_select f argv =
+    let p = Argv.get_pointer argv pos:2 in
+    let ev = Gdk.Event.unsafe_copy p in
+    f row:(Argv.get_int argv pos:0) column:(Argv.get_pointer argv pos:1) ev
+  let select_row : ([> clist],_) t =
+    { name = "select_row"; marshaller = marshal_select }
+  let unselect_row : ([> clist],_) t =
+    { name = "unselect_row"; marshaller = marshal_select }
+  let click_column : ([> clist],_) t =
+    { name = "unselect_row"; marshaller = marshal_int }
 end
 
 module Fixed = struct
-  type t = [widget container fixed] obj
-  let cast w : t =
+  type t = [widget container fixed]
+  let cast w : t obj =
     if Object.is_a w "GtkFixed" then Obj.magic w
     else invalid_arg "Gtk.Fixed.cast"
-  external create : unit -> t = "ml_gtk_fixed_new"
+  external create : unit -> t obj = "ml_gtk_fixed_new"
   external put : [> fixed] obj -> [> widget] obj -> x:int -> y:int -> unit
       = "ml_gtk_fixed_put"
   external move : [> fixed] obj -> [> widget] obj -> x:int -> y:int -> unit
@@ -907,11 +1067,11 @@ module Fixed = struct
 end
 
 module GtkList = struct
-  type t = [widget container list] obj
-  let cast w : t =
+  type t = [widget container list]
+  let cast w : t obj =
     if Object.is_a w "GtkList" then Obj.magic w
     else invalid_arg "Gtk.GtkList.cast"
-  external create : unit -> t = "ml_gtk_list_new"
+  external create : unit -> t obj = "ml_gtk_list_new"
   external insert_item :
       [> list] obj -> [> widget] obj -> pos:int -> unit
       = "ml_gtk_list_insert_item"
@@ -934,11 +1094,20 @@ module GtkList = struct
       = "ml_gtk_list_child_position"
   external set_selection_mode : [> list] obj -> selection -> unit
       = "ml_gtk_list_set_selection_mode"
+  module Sig = struct
+    open Signal
+    let selection_changed : ([> list],_) t =
+      { name = "selection_changed"; marshaller = marshal_unit }
+    let select_child : ([> list],_) t =
+      { name = "select_child"; marshaller = Widget.Sig.marshal }
+    let unselect_child : ([> list],_) t =
+      { name = "unselect_child"; marshaller = Widget.Sig.marshal }
+  end
 end
 
 module MenuShell = struct
-  type t = [widget container menushell] obj
-  let cast w : t =
+  type t = [widget container menushell]
+  let cast w : t obj =
     if Object.is_a w "GtkMenuShell" then Obj.magic w
     else invalid_arg "Gtk.MenuShell.cast"
   external append : [> menushell] obj -> [> widget] obj -> unit
@@ -949,37 +1118,42 @@ module MenuShell = struct
       = "ml_gtk_menu_shell_insert"
   external deactivate : [> menushell] obj -> unit
       = "ml_gtk_menu_shell_deactivate"
+  module Sig = struct
+    open Signal
+    let deactivate : ([> menushell],_) t =
+      { name = "deactivate"; marshaller = marshal_unit }
+  end
 end
 
 module Menu = struct
-  type t = [widget container menushell menu] obj
-  let cast w : t =
+  type t = [widget container menushell menu]
+  let cast w : t obj =
     if Object.is_a w "GtkMenu" then Obj.magic w
     else invalid_arg "Gtk.Menu.cast"
-  external create : unit -> t = "ml_gtk_menu_new"
+  external create : unit -> t obj = "ml_gtk_menu_new"
   external popup :
       [> menu] obj -> ?parent_menu:[> menushell] obj ->
       ?parent_item:[> menuitem] obj -> button:int -> activate_time:int -> unit
       = "ml_gtk_menu_popup"
   external popdown : [> menu] obj -> unit = "ml_gtk_menu_popdown"
-  external get_active : [> menu] obj -> Widget.t = "ml_gtk_menu_get_active"
+  external get_active : [> menu] obj -> Widget.t obj= "ml_gtk_menu_get_active"
   external set_active : [> menu] obj -> int -> unit = "ml_gtk_menu_set_active"
   external set_accelerator_table : [> menu] obj -> [> accelerator] obj -> unit
       = "ml_gtk_menu_set_accelerator_table"
   external attach_to_widget : [> menu] obj -> [> widget] obj -> unit
       = "ml_gtk_menu_attach_to_widget"
-  external get_attach_widget : [> menu] obj -> Widget.t
+  external get_attach_widget : [> menu] obj -> Widget.t obj
       = "ml_gtk_menu_get_attach_widget"
   external detach : [> menu] obj -> unit = "ml_gtk_menu_detach"
 end
 
 module OptionMenu = struct
-  type t = [widget container button optionmenu] obj
-  let cast w : t =
+  type t = [widget container button optionmenu]
+  let cast w : t obj =
     if Object.is_a w "GtkOptionMenu" then Obj.magic w
     else invalid_arg "Gtk.OptionMenu.cast"
-  external create : unit -> t = "ml_gtk_option_menu_new"
-  external get_menu : [> optionmenu] obj -> Menu.t
+  external create : unit -> t obj = "ml_gtk_option_menu_new"
+  external get_menu : [> optionmenu] obj -> Menu.t obj
       = "ml_gtk_option_menu_get_menu"
   external set_menu : [> optionmenu] obj -> [> menu] obj -> unit
       = "ml_gtk_option_menu_set_menu"
@@ -993,19 +1167,19 @@ module OptionMenu = struct
 end
 
 module MenuBar = struct
-  type t = [widget container menushell menubar] obj
-  let cast w : t =
+  type t = [widget container menushell menubar]
+  let cast w : t obj =
     if Object.is_a w "GtkMenuBar" then Obj.magic w
     else invalid_arg "Gtk.MenuBar.cast"
-  external create : unit -> t = "ml_gtk_menu_bar_new"
+  external create : unit -> t obj = "ml_gtk_menu_bar_new"
 end
 
 module Notebook = struct
-  type t = [widget container notebook] obj
-  let cast w : t =
+  type t = [widget container notebook]
+  let cast w : t obj =
     if Object.is_a w "GtkNotebook" then Obj.magic w
     else invalid_arg "Gtk.Notebook.cast"
-  external create : unit -> t = "ml_gtk_notebook_new"
+  external create : unit -> t obj = "ml_gtk_notebook_new"
   external insert_page :
       [> notebook] obj -> [> widget] obj -> tab:[> widget] obj ->
       ?menu:[> widget] obj -> ?pos:int -> unit
@@ -1041,11 +1215,17 @@ module Notebook = struct
     may_set set_scrollable scrollable;
     may_set set_tab_border tab_border;
     may fun:(fun b -> if b then popup_enable w else popup_disable w) popup
+  module Sig = struct
+    open Signal
+    let switch_page : ([> notebook],_) t =
+      let marshal f argv = f (Argv.get_int argv pos:1) in
+      { name = "notebook"; marshaller = marshal }
+  end
 end
 
 module Paned = struct
-  type t = [widget container paned] obj
-  let cast w : t =
+  type t = [widget container paned]
+  let cast w : t obj =
     if Object.is_a w "GtkPaned" then Obj.magic w
     else invalid_arg "Gtk.Paned.cast"
   external add1 : [> paned] obj -> [> widget] obj -> unit
@@ -1062,19 +1242,19 @@ module Paned = struct
   let set_size w ?:handle ?:gutter =
     may fun:(handle_size w) handle;
     may fun:(gutter_size w) gutter
-  external hpaned_new : unit -> t = "ml_gtk_hpaned_new"
-  external vpaned_new : unit -> t = "ml_gtk_vpaned_new"
+  external hpaned_new : unit -> t obj = "ml_gtk_hpaned_new"
+  external vpaned_new : unit -> t obj = "ml_gtk_vpaned_new"
   let create (dir : orientation) =
     if dir = `HORIZONTAL then hpaned_new () else vpaned_new ()
 end
 
 module ScrolledWindow = struct
-  type t = [widget container scrolled] obj
-  let cast w : t =
+  type t = [widget container scrolled]
+  let cast w : t obj =
     if Object.is_a w "GtkScrolledWindow" then Obj.magic w
     else invalid_arg "Gtk.ScrolledWindow.cast"
   external create :
-      ?hadj:[> adjustment] obj -> ?vadj:[> adjustment] obj -> ?unit -> t
+      ?hadj:[> adjustment] obj -> ?vadj:[> adjustment] obj -> ?unit -> t obj
       = "ml_gtk_scrolled_window_new"
   external get_hadjustment : [> scrolled] obj -> Adjustment.t
       = "ml_gtk_scrolled_window_get_hadjustment"
@@ -1085,11 +1265,11 @@ module ScrolledWindow = struct
 end
 
 module Table = struct
-  type t = [widget container table] obj
-  let cast w : t =
+  type t = [widget container table]
+  let cast w : t obj =
     if Object.is_a w "GtkTable" then Obj.magic w
     else invalid_arg "Gtk.Table.cast"
-  external create : int -> int -> homogeneous:bool -> t
+  external create : int -> int -> homogeneous:bool -> t obj
       = "ml_gtk_table_new"
   let create r c ?:homogeneous [< false >] = create r c :homogeneous
   external attach :
@@ -1098,8 +1278,8 @@ module Table = struct
       yoptions:attach list -> xpadding:int -> ypadding:int -> unit
       = "ml_gtk_table_attach_bc" "ml_gtk_table_attach"
   type dirs = [x y both none]
-  let has_x = function `x|`both -> true | `y|`none -> false
-  let has_y = function `y|`both -> true | `x|`none -> false
+  let has_x : dirs -> bool = function `x|`both -> true | `y|`none -> false
+  let has_y : dirs -> bool = function `y|`both -> true | `x|`none -> false
   let attach t w :left :top ?:right [< left+1 >] ?:bottom [< top+1 >]
       ?:expand [< `both >] ?:fill [< `both >]
       ?:shrink [< `none >] ?:xpadding [< 0 >] ?:ypadding [< 0 >] =
@@ -1115,30 +1295,42 @@ end
 
 module Toolbar = struct
   type t = [widget container toolbar]
-  let cast w : t =
+  let cast w : t obj =
     if Object.is_a w "GtkToolbar" then Obj.magic w
     else invalid_arg "Gtk.Toolbar.cast"
-  external create : orientation -> style:toolbar_style -> t
+  external create : orientation -> style:toolbar_style -> t obj
       = "ml_gtk_toolbar_new"
   external insert_space : [> toolbar] obj -> ?pos:int -> unit
       = "ml_gtk_toolbar_insert_space"
   external insert_button :
       [> toolbar] obj -> ?type:[BUTTON TOGGLEBUTTON RADIOBUTTON] ->
       ?text:string -> ?tooltip:string -> ?tooltip_private:string ->
-      ?icon:[> widget] obj -> ?pos:int -> Button.t
+      ?icon:[> widget] obj -> ?pos:int -> Button.t obj
       = "ml_gtk_toolbar_insert_space"
   external insert_widget :
       [> toolbar] obj -> [> widget] obj ->
       ?tooltip:string -> ?tooltip_private:string -> ?pos:int -> unit
       = "ml_gtk_toolbar_insert_widget"
+  module Sig = struct
+    open Signal
+    external val_orientation : int -> orientation = "ml_Val_orientation"
+    external val_toolbar_style : int -> toolbar_style
+	= "ml_Val_toolbar_style"
+    let orientation_changed : ([> toolbar],_) t =
+      let marshal f argv = f (val_orientation (Argv.get_int argv pos:0)) in
+      { name = "orientation_changed"; marshaller = marshal }
+    let style_changed : ([> toolbar],_) t =
+      let marshal f argv = f (val_toolbar_style (Argv.get_int argv pos:0)) in
+      { name = "style_changed"; marshaller = marshal }
+  end
 end
 
 module Tree = struct
-  type t = [widget container tree] obj
-  let cast w : t =
+  type t = [widget container tree]
+  let cast w : t obj =
     if Object.is_a w "GtkTree" then Obj.magic w
     else invalid_arg "Gtk.Tree.cast"
-  external create : unit -> t = "ml_gtk_tree_new"
+  external create : unit -> t obj = "ml_gtk_tree_new"
   external insert : [> tree] obj -> [> widget] obj -> ?pos:int -> unit
       = "ml_gtk_tree_insert"
   external remove : [> tree] obj -> [> widget] obj -> unit
@@ -1162,6 +1354,15 @@ module Tree = struct
     may_set set_selection_mode selection_mode;
     may_set set_view_mode view_mode;
     may_set set_view_lines view_lines
+  module Sig = struct
+    open Signal
+    let widget_entered : ([> tree],_) t =
+      { name = "selection_changed"; marshaller = marshal_unit }
+    let select_child : ([> tree],_) t =
+      { name = "select_child"; marshaller = Widget.Sig.marshal }
+    let unselect_child : ([> tree],_) t =
+      { name = "unselect_child"; marshaller = Widget.Sig.marshal }
+  end
 end
 
 (* Does not seem very useful ...
@@ -1192,14 +1393,15 @@ end
 *)
 
 module Editable = struct
-  type t = [widget editable] obj
-  let cast w : t =
+  type t = [widget editable]
+  let cast w : t obj =
     if Object.is_a w "GtkEditable" then Obj.magic w
     else invalid_arg "Gtk.Editable.cast"
   external select_region : [> editable] obj -> start:int -> end:int -> unit
       = "ml_gtk_editable_select_region"
   external insert_text : [> editable] obj -> string -> pos:int -> int
       = "ml_gtk_editable_select_region"
+  let insert_text w s ?:pos [< -1 >] = insert_text w s :pos
   external delete_text : [> editable] obj -> start:int -> end:int -> unit
       = "ml_gtk_editable_delete_text"
   external get_chars : [> editable] obj -> start:int -> end:int -> string
@@ -1215,18 +1417,27 @@ module Editable = struct
       = "ml_gtk_editable_claim_selection"
   external delete_selection : [> editable] obj -> unit
       = "ml_gtk_editable_delete_selection"
-  external changed : [> editable] obj -> unit
-      = "ml_gtk_editable_changed"
+  external changed : [> editable] obj -> unit = "ml_gtk_editable_changed"
+  module Sig = struct
+    open Signal
+    let activate : ([> editable],_) t =
+      { name = "activate"; marshaller = marshal_unit }
+    let changed : ([> editable],_) t =
+      { name = "changed"; marshaller = marshal_unit }
+  end
 end
 
 module Entry = struct
-  type t = [widget editable entry] obj
-  let cast w : t =
+  type t = [widget editable entry]
+  let cast w : t obj =
     if Object.is_a w "GtkEntry" then Obj.magic w
     else invalid_arg "Gtk.Entry.cast"
-  external create : unit -> t = "ml_gtk_entry_new"
-  external create_with_max_length : int -> t
+  external create : unit -> t obj = "ml_gtk_entry_new"
+  external create_with_max_length : int -> t obj
       = "ml_gtk_entry_new_with_max_length"
+  let create ?:max_length ?(_ : unit option) =
+    match max_length with None -> create ()
+    | Some len -> create_with_max_length len
   external set_text : [> entry] obj -> string -> unit
       = "ml_gtk_entry_set_text"
   external append_text : [> entry] obj -> string -> unit
@@ -1254,11 +1465,11 @@ module Entry = struct
 end
 
 module SpinButton = struct
-  type t = [widget editable entry spinbutton] obj
-  let cast w : t =
+  type t = [widget editable entry spinbutton]
+  let cast w : t obj =
     if Object.is_a w "GtkSpinButton" then Obj.magic w
     else invalid_arg "Gtk.SpinButton.cast"
-  external create : ?adj:[> adjustment] obj -> rate:float -> digits:int -> t
+  external create : ?adj:[> adjustment] obj -> rate:float -> digits:int -> t obj
       = "ml_gtk_spin_button_new"
   external set_adjustment : [> spinbutton] obj -> [> adjustment] obj -> unit
       = "ml_gtk_spin_button_set_adjustment"
@@ -1291,12 +1502,12 @@ module SpinButton = struct
 end
 
 module Text = struct
-  type t = [widget editable text] obj
-  let cast w : t =
+  type t = [widget editable text]
+  let cast w : t obj =
     if Object.is_a w "GtkText" then Obj.magic w
     else invalid_arg "Gtk.Text.cast"
   external create :
-      ?hadj:[> adjustment] obj -> ?vadj:[> adjustment] obj -> ?unit -> t
+      ?hadj:[> adjustment] obj -> ?vadj:[> adjustment] obj -> ?unit -> t obj
       = "ml_gtk_text_new"
   external set_editable : [> text] obj -> bool -> unit
       = "ml_gtk_text_set_editable"
@@ -1318,11 +1529,11 @@ module Text = struct
 end
 
 module Combo = struct
-  type t = [widget container bbox combo] obj
-  let cast w : t =
+  type t = [widget container bbox combo]
+  let cast w : t obj =
     if Object.is_a w "GtkCombo" then Obj.magic w
     else invalid_arg "Gtk.Combo.cast"
-  external create : unit -> t = "ml_gtk_combo_new"
+  external create : unit -> t obj = "ml_gtk_combo_new"
   external set_value_in_list :
       [> combo] obj -> bool -> ok_if_empty:bool -> unit
       = "ml_gtk_combo_set_value_in_list"
@@ -1334,8 +1545,8 @@ module Combo = struct
       = "ml_gtk_combo_set_case_sensitive"
   external set_item_string : [> combo] obj -> [> item] obj -> string -> unit
       = "ml_gtk_combo_set_item_string"
-  external entry : [> combo] obj -> Entry.t = "ml_gtk_combo_entry"
-  external list : [> combo] obj -> GtkList.t = "ml_gtk_combo_list"
+  external entry : [> combo] obj -> Entry.t obj= "ml_gtk_combo_entry"
+  external list : [> combo] obj -> GtkList.t obj= "ml_gtk_combo_list"
   let set_popdown_strings combo strings =
     GtkList.clear_items (list combo) start:0 end:(-1);
     List.iter strings fun:
@@ -1350,12 +1561,12 @@ end
 
 module Statusbar = struct
   type t = [widget container bbox statusbar]
-  let cast w : t =
+  let cast w : t obj =
     if Object.is_a w "GtkStatusbar" then Obj.magic w
     else invalid_arg "Gtk.Statusbar.cast"
   type context
   type message
-  external create : unit -> t = "ml_gtk_statusbar_new"
+  external create : unit -> t obj = "ml_gtk_statusbar_new"
   external get_context : [> statusbar] obj -> string -> context
       = "ml_gtk_statusbar_get_context_id"
   external push : [> statusbar] obj -> context -> text:string -> message
@@ -1364,19 +1575,28 @@ module Statusbar = struct
       = "ml_gtk_statusbar_pop"
   external remove : [> statusbar] obj -> context -> message -> unit
       = "ml_gtk_statusbar_push"
+  module Sig = struct
+    open Signal
+    let text_pushed : ([> statusbar],_) t =
+      let marshal f argv =
+	f (Obj.magic (Argv.get_int argv pos:0) : context)
+	  (Argv.get_string argv pos:1)
+      in
+      { name = "text_pushed"; marshaller = marshal }
+  end
 end
 
 module GammaCurve = struct
   type t = [widget container bbox gamma]
-  let cast w : t =
+  let cast w : t obj =
     if Object.is_a w "GtkGammaCurve" then Obj.magic w
     else invalid_arg "Gtk.GammaCurve.cast"
-  external create : unit -> t = "ml_gtk_gamma_curve_new"
+  external create : unit -> t obj = "ml_gtk_gamma_curve_new"
   external get : [> gamma] obj -> float = "ml_gtk_gamma_curve_get_gamma"
 end
     
 module Misc = struct
-  type t = [widget misc] obj
+  type t = [widget misc]
   external set_alignment : [> misc] obj -> x:float -> y:float -> unit
       = "ml_gtk_misc_set_alignment"
   external set_padding : [> misc] obj -> x:int -> y:int -> unit
@@ -1384,31 +1604,31 @@ module Misc = struct
 end
 
 module Arrow = struct
-  type t = [widget misc arrow] obj
-  let cast w : t =
+  type t = [widget misc arrow]
+  let cast w : t obj =
     if Object.is_a w "GtkArrow" then Obj.magic w
     else invalid_arg "Gtk.Arrow.cast"
-  external create : type:arrow -> :shadow -> t = "ml_gtk_arrow_new"
+  external create : type:arrow -> :shadow -> t obj = "ml_gtk_arrow_new"
   external set : [> arrow] obj -> type:arrow -> :shadow -> unit
       = "ml_gtk_arrow_set"
 end
 
 module Image = struct
-  type t = [widget misc image] obj
-  let cast w : t =
+  type t = [widget misc image]
+  let cast w : t obj =
     if Object.is_a w "GtkImage" then Obj.magic w
     else invalid_arg "Gtk.Image.cast"
-  external create : Gdk.image -> ?mask:Gdk.bitmap -> t = "ml_gtk_image_new"
+  external create : Gdk.image -> ?mask:Gdk.bitmap -> t obj = "ml_gtk_image_new"
   external set : [> image] obj -> Gdk.image -> ?mask:Gdk.bitmap -> unit
       = "ml_gtk_image_set"
 end
 
 module Label = struct
-  type t = [widget misc label] obj
-  let cast w : t =
+  type t = [widget misc label]
+  let cast w : t obj =
     if Object.is_a w "GtkLabel" then Obj.magic w
     else invalid_arg "Gtk.Label.cast"
-  external create : string -> t = "ml_gtk_label_new"
+  external create : string -> t obj = "ml_gtk_label_new"
   external set : [> label] obj -> string -> unit = "ml_gtk_label_set"
   external set_justify : [> label] obj -> justification -> unit
       = "ml_gtk_label_set_justify"
@@ -1419,11 +1639,11 @@ module Label = struct
 end
 
 module TipsQuery = struct
-  type t = [widget misc label tipsquery] obj
-  let cast w : t =
+  type t = [widget misc label tipsquery]
+  let cast w : t obj =
     if Object.is_a w "GtkTipsQuery" then Obj.magic w
     else invalid_arg "Gtk.TipsQuery.cast"
-  external create : unit -> t = "ml_gtk_tips_query_new"
+  external create : unit -> t obj = "ml_gtk_tips_query_new"
   external start : [> tipsquery] obj -> unit = "ml_gtk_tips_query_start_query"
   external stop : [> tipsquery] obj -> unit = "ml_gtk_tips_query_stop_query"
   external set_caller : [> tipsquery] obj -> [> widget] obj -> unit
@@ -1433,7 +1653,7 @@ module TipsQuery = struct
       = "ml_gtk_tips_query_set_labels"
   external set_emit_always : [> tipsquery] obj -> bool -> unit
       = "ml_gtk_tips_query_set_emit_always"
-  external get_caller : [> tipsquery] obj -> Widget.t
+  external get_caller : [> tipsquery] obj -> Widget.t obj
       = "ml_gtk_tips_query_get_caller"
   external get_label_inactive : [> tipsquery] obj -> string
       = "ml_gtk_tips_query_get_label_inactive"
@@ -1448,14 +1668,26 @@ module TipsQuery = struct
       set_labels w
 	inactive:(may_default get_label_inactive w for:label_inactive)
 	no_tip:(may_default get_label_no_tip w for:label_no_tip)
+  module Sig = struct
+    open Signal
+    let start_query : ([> tipsquery],_) t =
+      { name = "start_query"; marshaller = marshal_unit }
+    let stop_query : ([> tipsquery],_) t =
+      { name = "stop_query"; marshaller = marshal_unit }
+    (* Not really implemented *)
+    let widget_entered : ([> tipsquery],_) t =
+      { name = "widget_entered"; marshaller = marshal_unit }
+    let widget_selected : ([> tipsquery],_) t =
+      { name = "widget_selected"; marshaller = marshal_unit }
+  end
 end
 
 module Pixmap = struct
-  type t = [widget misc pixmap] obj
-  let cast w : t =
+  type t = [widget misc pixmap]
+  let cast w : t obj =
     if Object.is_a w "GtkPixmap" then Obj.magic w
     else invalid_arg "Gtk.Pixmap.cast"
-  external create : Gdk.pixmap -> mask:Gdk.bitmap -> t
+  external create : Gdk.pixmap -> mask:Gdk.bitmap -> t obj
       = "ml_gtk_pixmap_new"
   external set :
       [> pixmap] obj -> ?pixmap:Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
@@ -1465,20 +1697,20 @@ module Pixmap = struct
 end
 
 module ProgressBar = struct
-  type t = [widget progress] obj
-  let cast w : t =
+  type t = [widget progressbar]
+  let cast w : t obj =
     if Object.is_a w "GtkProgressBar" then Obj.magic w
     else invalid_arg "Gtk.ProgressBar.cast"
-  external create : unit -> t = "ml_gtk_progress_bar_new"
-  external update : [> progress] obj -> percent:float -> unit
+  external create : unit -> t obj = "ml_gtk_progress_bar_new"
+  external update : [> progressbar] obj -> percent:float -> unit
       = "ml_gtk_progress_bar_update"
-  external percent : [> progress] obj -> float
+  external percent : [> progressbar] obj -> float
       = "ml_GtkProgressBar_percentage"
 end
 
 module Range = struct
-  type t = [widget range] obj
-  let cast w : t =
+  type t = [widget range]
+  let cast w : t obj =
     if Object.is_a w "GtkRange" then Obj.magic w
     else invalid_arg "Gtk.Range.cast"
   external get_adjustment : [> range] obj -> Adjustment.t
@@ -1493,12 +1725,12 @@ module Range = struct
 end
 
 module Scale = struct
-  type t = [widget range scale] obj
-  let cast w : t =
+  type t = [widget range scale]
+  let cast w : t obj =
     if Object.is_a w "GtkScale" then Obj.magic w
     else invalid_arg "Gtk.Scale.cast"
-  external hscale_new : [> adjustment] optobj -> t = "ml_gtk_hscale_new"
-  external vscale_new : [> adjustment] optobj -> t = "ml_gtk_vscale_new"
+  external hscale_new : [> adjustment] optobj -> t obj = "ml_gtk_hscale_new"
+  external vscale_new : [> adjustment] optobj -> t obj = "ml_gtk_vscale_new"
   let create (dir : orientation) ?:adjustment =
     let create = if dir = `HORIZONTAL then hscale_new else vscale_new  in
     create (optobj adjustment)
@@ -1520,13 +1752,13 @@ module Scale = struct
 end
 
 module Scrollbar = struct
-  type t = [widget range scrollbar] obj
-  let cast w : t =
+  type t = [widget range scrollbar]
+  let cast w : t obj =
     if Object.is_a w "GtkScrollbar" then Obj.magic w
     else invalid_arg "Gtk.Scrollbar.cast"
-  external hscrollbar_new : [> adjustment] optobj -> t
+  external hscrollbar_new : [> adjustment] optobj -> t obj
       = "ml_gtk_hscrollbar_new"
-  external vscrollbar_new : [> adjustment] optobj -> t
+  external vscrollbar_new : [> adjustment] optobj -> t obj
       = "ml_gtk_vscrollbar_new"
   let create (dir : orientation) ?:adjustment =
     let create = if dir = `HORIZONTAL then hscrollbar_new else vscrollbar_new
@@ -1534,12 +1766,12 @@ module Scrollbar = struct
 end
 
 module Ruler = struct
-  type t = [widget ruler] obj
-  let cast w : t =
+  type t = [widget ruler]
+  let cast w : t obj =
     if Object.is_a w "GtkRuler" then Obj.magic w
     else invalid_arg "Gtk.Ruler.cast"
-  external hruler_new : unit -> t = "ml_gtk_hruler_new"
-  external vruler_new : unit -> t = "ml_gtk_vruler_new"
+  external hruler_new : unit -> t obj = "ml_gtk_hruler_new"
+  external vruler_new : unit -> t obj = "ml_gtk_vruler_new"
   let create (dir : orientation) =
     if dir = `HORIZONTAL then hruler_new () else vruler_new ()
   external set_metric : [> ruler] obj -> metric -> unit
@@ -1563,12 +1795,12 @@ module Ruler = struct
 end
 
 module Separator = struct
-  type t = [widget separator] obj
-  let cast w : t =
+  type t = [widget separator]
+  let cast w : t obj =
     if Object.is_a w "GtkSeparator" then Obj.magic w
     else invalid_arg "Gtk.Separator.cast"
-  external hseparator_new : unit -> t = "ml_gtk_hseparator_new"
-  external vseparator_new : unit -> t = "ml_gtk_vseparator_new"
+  external hseparator_new : unit -> t obj = "ml_gtk_hseparator_new"
+  external vseparator_new : unit -> t obj = "ml_gtk_vseparator_new"
   let create (dir : orientation) =
     if dir = `HORIZONTAL then hseparator_new () else vseparator_new ()
 end
@@ -1590,5 +1822,5 @@ end
 module Grab = struct
   external add : [> widget] obj -> unit = "ml_gtk_grab_add"
   external remove : [> widget] obj -> unit = "ml_gtk_grab_remove"
-  external get_current : unit -> Widget.t = "ml_gtk_grab_get_current"
+  external get_current : unit -> Widget.t obj= "ml_gtk_grab_get_current"
 end
