@@ -186,12 +186,12 @@ module Pixmap :
     external create_from_xpm :
       window ->
       ?colormap:colormap ->
-      ?transparent:Color.t -> string -> pixmap * bitmap
+      ?transparent:Color.t -> file:string -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm"
     external create_from_xpm_d :
       window ->
       ?colormap:colormap ->
-      ?transparent:Color.t -> string array -> pixmap * bitmap
+      ?transparent:Color.t -> data:string array -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm_d"
   end
 

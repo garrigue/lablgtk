@@ -139,10 +139,12 @@ module Widget = struct
       = "ml_gtk_widget_set_app_paintable"
   external allocation : [>`widget] obj -> rectangle
       = "ml_gtk_widget_allocation"
+(*
   let set_position ?:x{= -2} ?:y{= -2} w =
     set_uposition w :x :y
   let set_size ?:width{= -2} ?:height{= -2} w =
     set_usize w :width :height
+*)
 (*
   let setter w :cont ?:name ?:state ?:sensitive ?:extension_events
       ?:can_default ?:can_focus ?:x ?:y ?:width ?:height ?:style =
@@ -311,10 +313,10 @@ module Container = struct
       = "ml_gtk_container_add"
   external remove : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_remove"
-  let setter w :cont ?:border_width ?:width ?:height =
+  let set w :cont ?:border_width ?:width{= -2} ?:height{= -2} =
     may border_width fun:(set_border_width w);
-    if width <> None || height <> None then
-      Widget.set_size w ?:width ?:height;
+    if width <> -2 || height <> -2 then
+      Widget.set_usize w ?:width ?:height;
     cont w
   external foreach : [>`container] obj -> fun:(widget obj-> unit) -> unit
       = "ml_gtk_container_foreach"

@@ -10,7 +10,7 @@ module GammaCurve = struct
     if Object.is_a w "GtkGammaCurve" then Obj.magic w
     else invalid_arg "Gtk.GammaCurve.cast"
   external create : unit -> gamma_curve obj = "ml_gtk_gamma_curve_new"
-  external get_gamma : [> gamma] obj -> float = "ml_gtk_gamma_curve_get_gamma"
+  external get_gamma : [>`gamma] obj -> float = "ml_gtk_gamma_curve_get_gamma"
 end
 
 module ColorSelection = struct
@@ -20,31 +20,32 @@ module ColorSelection = struct
   external create : unit -> color_selection obj = "ml_gtk_color_selection_new"
   external create_dialog : string -> color_selection_dialog obj
       = "ml_gtk_color_selection_dialog_new"
-  external set_update_policy : [> colorsel] obj -> update_type -> unit
+  external set_update_policy : [>`colorsel] obj -> update_type -> unit
       = "ml_gtk_color_selection_set_update_policy"
-  external set_opacity : [> colorsel] obj -> bool -> unit
+  external set_opacity : [>`colorsel] obj -> bool -> unit
       = "ml_gtk_color_selection_set_opacity"
   let set w :cont ?:update_policy ?:opacity =
     may update_policy fun:(set_update_policy w);
-    may opacity fun:(set_opacity w)
+    may opacity fun:(set_opacity w);
+    cont w
   external set_color :
-      [> colorsel] obj ->
+      [>`colorsel] obj ->
       red:float -> green:float -> blue:float -> ?opacity:float -> unit
       = "ml_gtk_color_selection_set_color"
-  external get_color : [> colorsel] obj -> color
+  external get_color : [>`colorsel] obj -> color
       = "ml_gtk_color_selection_get_color"
 
-  external ok_button : [> colorseldialog] obj -> button obj =
+  external ok_button : [>`colorseldialog] obj -> button obj =
     "ml_gtk_color_selection_dialog_ok_button"
-  external cancel_button : [> colorseldialog] obj -> button obj =
+  external cancel_button : [>`colorseldialog] obj -> button obj =
     "ml_gtk_color_selection_dialog_cancel_button"
-  external help_button : [> colorseldialog] obj -> button obj =
+  external help_button : [>`colorseldialog] obj -> button obj =
     "ml_gtk_color_selection_dialog_help_button"
-  external colorsel : [> colorseldialog] obj -> color_selection obj =
+  external colorsel : [>`colorseldialog] obj -> color_selection obj =
     "ml_gtk_color_selection_dialog_colorsel"
   module Signals = struct
     open GtkSignal
-    let color_changed : ([> colorsel],_) t =
+    let color_changed : ([>`colorsel],_) t =
       { name = "color_changed"; marshaller = marshal_unit }
   end
 end
@@ -54,20 +55,20 @@ module Statusbar = struct
     if Object.is_a w "GtkStatusbar" then Obj.magic w
     else invalid_arg "Gtk.Statusbar.cast"
   external create : unit -> statusbar obj = "ml_gtk_statusbar_new"
-  external get_context : [> statusbar] obj -> string -> statusbar_context
+  external get_context : [>`statusbar] obj -> string -> statusbar_context
       = "ml_gtk_statusbar_get_context_id"
   external push :
-      [> statusbar] obj ->
+      [>`statusbar] obj ->
       statusbar_context -> text:string -> statusbar_message
       = "ml_gtk_statusbar_push"
-  external pop : [> statusbar] obj -> statusbar_context ->  unit
+  external pop : [>`statusbar] obj -> statusbar_context ->  unit
       = "ml_gtk_statusbar_pop"
   external remove :
-      [> statusbar] obj -> statusbar_context -> statusbar_message -> unit
+      [>`statusbar] obj -> statusbar_context -> statusbar_message -> unit
       = "ml_gtk_statusbar_remove"
   module Signals = struct
     open GtkSignal
-    let text_pushed : ([> statusbar],_) t =
+    let text_pushed : ([>`statusbar],_) t =
       let marshal f argv =
 	f (Obj.magic (GtkArgv.get_int argv pos:0) : statusbar_context)
 	  (GtkArgv.get_string argv pos:1)
@@ -82,51 +83,51 @@ module Notebook = struct
     else invalid_arg "Gtk.Notebook.cast"
   external create : unit -> notebook obj = "ml_gtk_notebook_new"
   external insert_page :
-      [> notebook] obj -> [> widget] obj -> tab_label:[> widget] optobj ->
-      menu_label:[> widget] optobj -> pos:int -> unit
+      [>`notebook] obj -> [>`widget] obj -> tab_label:[>`widget] optobj ->
+      menu_label:[>`widget] optobj -> pos:int -> unit
       = "ml_gtk_notebook_insert_page_menu"
       (* default is append to end *)
-  external remove_page : [> notebook] obj -> int -> unit
+  external remove_page : [>`notebook] obj -> int -> unit
       = "ml_gtk_notebook_remove_page"
-  external get_current_page : [> notebook] obj -> int
+  external get_current_page : [>`notebook] obj -> int
       = "ml_gtk_notebook_get_current_page"
-  external set_page : [> notebook] obj -> int -> unit
+  external set_page : [>`notebook] obj -> int -> unit
       = "ml_gtk_notebook_set_page"
-  external set_tab_pos : [> notebook] obj -> position -> unit
+  external set_tab_pos : [>`notebook] obj -> position -> unit
       = "ml_gtk_notebook_set_tab_pos"
-  external set_homogeneous_tabs : [> notebook] obj -> bool -> unit
+  external set_homogeneous_tabs : [>`notebook] obj -> bool -> unit
       = "ml_gtk_notebook_set_homogeneous_tabs"
-  external set_show_tabs : [> notebook] obj -> bool -> unit
+  external set_show_tabs : [>`notebook] obj -> bool -> unit
       = "ml_gtk_notebook_set_show_tabs"
-  external set_show_border : [> notebook] obj -> bool -> unit
+  external set_show_border : [>`notebook] obj -> bool -> unit
       = "ml_gtk_notebook_set_show_border"
-  external set_scrollable : [> notebook] obj -> bool -> unit
+  external set_scrollable : [>`notebook] obj -> bool -> unit
       = "ml_gtk_notebook_set_scrollable"
-  external set_tab_border : [> notebook] obj -> int -> unit
+  external set_tab_border : [>`notebook] obj -> int -> unit
       = "ml_gtk_notebook_set_tab_border"
-  external popup_enable : [> notebook] obj -> unit
+  external popup_enable : [>`notebook] obj -> unit
       = "ml_gtk_notebook_popup_enable"
-  external popup_disable : [> notebook] obj -> unit
+  external popup_disable : [>`notebook] obj -> unit
       = "ml_gtk_notebook_popup_disable"
-  external get_nth_page : [> notebook] obj -> int -> widget obj
+  external get_nth_page : [>`notebook] obj -> int -> widget obj
       = "ml_gtk_notebook_get_nth_page"
-  external page_num : [> notebook] obj -> [> widget] obj -> int
+  external page_num : [>`notebook] obj -> [>`widget] obj -> int
       = "ml_gtk_notebook_page_num"
-  external next_page : [> notebook] obj -> unit
+  external next_page : [>`notebook] obj -> unit
       = "ml_gtk_notebook_next_page"
-  external prev_page : [> notebook] obj -> unit
+  external prev_page : [>`notebook] obj -> unit
       = "ml_gtk_notebook_prev_page"
-  external get_tab_label : [> notebook] obj -> [> widget] obj -> widget obj
+  external get_tab_label : [>`notebook] obj -> [>`widget] obj -> widget obj
       = "ml_gtk_notebook_get_tab_label"
   external set_tab_label :
-      [> notebook] obj -> [> widget] obj -> [> widget] obj -> unit
+      [>`notebook] obj -> [>`widget] obj -> [>`widget] obj -> unit
       = "ml_gtk_notebook_set_tab_label"
-  external get_menu_label : [> notebook] obj -> [> widget] obj -> widget obj
+  external get_menu_label : [>`notebook] obj -> [>`widget] obj -> widget obj
       = "ml_gtk_notebook_get_menu_label"
   external set_menu_label :
-      [> notebook] obj -> [> widget] obj -> [> widget] obj -> unit
+      [>`notebook] obj -> [>`widget] obj -> [>`widget] obj -> unit
       = "ml_gtk_notebook_set_menu_label"
-  external reorder_child : [> notebook] obj -> [> widget] obj -> int -> unit
+  external reorder_child : [>`notebook] obj -> [>`widget] obj -> int -> unit
       = "ml_gtk_notebook_reorder_child"
 
   let set_popup w = function
@@ -142,10 +143,11 @@ module Notebook = struct
     may_set set_show_border show_border;
     may_set set_scrollable scrollable;
     may_set set_tab_border tab_border;
-    may_set set_popup popup
+    may_set set_popup popup;
+    cont w
   module Signals = struct
     open GtkSignal
-    let switch_page : ([> notebook],_) t =
+    let switch_page : ([>`notebook],_) t =
       let marshal f argv = f (GtkArgv.get_int argv pos:1) in
       { name = "switch_page"; marshaller = marshal }
   end
@@ -156,40 +158,40 @@ module Calendar = struct
     if Object.is_a w "GtkCalendar" then Obj.magic w
     else invalid_arg "Gtk.Calendar.cast"
   external create : unit -> calendar obj = "ml_gtk_calendar_new"
-  external select_month : [> calendar] obj -> month:int -> year:int -> unit
+  external select_month : [>`calendar] obj -> month:int -> year:int -> unit
       = "ml_gtk_calendar_select_month"
-  external select_day : [> calendar] obj -> int -> unit
+  external select_day : [>`calendar] obj -> int -> unit
       = "ml_gtk_calendar_select_day"
-  external mark_day : [> calendar] obj -> int -> unit
+  external mark_day : [>`calendar] obj -> int -> unit
       = "ml_gtk_calendar_mark_day"
-  external unmark_day : [> calendar] obj -> int -> unit
+  external unmark_day : [>`calendar] obj -> int -> unit
       = "ml_gtk_calendar_unmark_day"
-  external clear_marks : [> calendar] obj -> unit
+  external clear_marks : [>`calendar] obj -> unit
       = "ml_gtk_calendar_clear_marks"
   external display_options :
-      [> calendar] obj -> Tags.calendar_display_options list -> unit
+      [>`calendar] obj -> Tags.calendar_display_options list -> unit
       = "ml_gtk_calendar_display_options"
-  external get_date : [> calendar] obj -> int * int * int
+  external get_date : [>`calendar] obj -> int * int * int
       = "ml_gtk_calendar_get_date"   (* year * month * day *)
-  external freeze : [> calendar] obj -> unit
+  external freeze : [>`calendar] obj -> unit
       = "ml_gtk_calendar_freeze"
-  external thaw : [> calendar] obj -> unit
+  external thaw : [>`calendar] obj -> unit
       = "ml_gtk_calendar_thaw"
   module Signals = struct
     open GtkSignal
-    let month_changed : ([> calendar],_) t =
+    let month_changed : ([>`calendar],_) t =
       { name = "month_changed"; marshaller = marshal_unit }
-    let day_selected : ([> calendar],_) t =
+    let day_selected : ([>`calendar],_) t =
       { name = "day_selected"; marshaller = marshal_unit }
-    let day_selected_double_click : ([> calendar],_) t =
+    let day_selected_double_click : ([>`calendar],_) t =
       { name = "day_selected_double_click"; marshaller = marshal_unit }
-    let prev_month : ([> calendar],_) t =
+    let prev_month : ([>`calendar],_) t =
       { name = "prev_month"; marshaller = marshal_unit }
-    let next_month : ([> calendar],_) t =
+    let next_month : ([>`calendar],_) t =
       { name = "next_month"; marshaller = marshal_unit }
-    let prev_year : ([> calendar],_) t =
+    let prev_year : ([>`calendar],_) t =
       { name = "prev_year"; marshaller = marshal_unit }
-    let next_year : ([> calendar],_) t =
+    let next_year : ([>`calendar],_) t =
       { name = "next_year"; marshaller = marshal_unit }
   end
 end
@@ -199,7 +201,7 @@ module DrawingArea = struct
     if Object.is_a w "GtkDrawingArea" then Obj.magic w
     else invalid_arg "Gtk.DrawingArea.cast"
   external create : unit -> drawing_area obj = "ml_gtk_drawing_area_new"
-  external size : [> drawing] obj -> width:int -> height:int -> unit
+  external size : [>`drawing] obj -> width:int -> height:int -> unit
       = "ml_gtk_drawing_area_size"
 end
 
@@ -210,11 +212,11 @@ module Curve = struct
     if Object.is_a w "GtkCurve" then Obj.magic w
     else invalid_arg "Gtk.Curve.cast"
   external create : unit -> t = "ml_gtk_curve_new"
-  external reset : [> curve] obj -> unit = "ml_gtk_curve_reset"
-  external set_gamma : [> curve] obj -> float -> unit
+  external reset : [>`curve] obj -> unit = "ml_gtk_curve_reset"
+  external set_gamma : [>`curve] obj -> float -> unit
       = "ml_gtk_curve_set_gamma"
   external set_range :
-      [> curve] obj -> min_x:float -> max_x:float ->
+      [>`curve] obj -> min_x:float -> max_x:float ->
       min_y:float -> max_y:float -> unit
       = "ml_gtk_curve_set_gamma"
 end
@@ -224,26 +226,27 @@ module Misc = struct
   let cast w : misc obj =
     if Object.is_a w "GtkMisc" then Obj.magic w
     else invalid_arg "Gtk.Misc.cast"
-  external coerce : [> misc] obj -> misc obj = "%identity"
-  external set_alignment : [> misc] obj -> x:float -> y:float -> unit
+  external coerce : [>`misc] obj -> misc obj = "%identity"
+  external set_alignment : [>`misc] obj -> x:float -> y:float -> unit
       = "ml_gtk_misc_set_alignment"
-  external set_padding : [> misc] obj -> x:int -> y:int -> unit
+  external set_padding : [>`misc] obj -> x:int -> y:int -> unit
       = "ml_gtk_misc_set_padding"
-  external get_xalign : [> misc] obj -> float = "ml_gtk_misc_get_xalign"
-  external get_yalign : [> misc] obj -> float = "ml_gtk_misc_get_yalign"
-  external get_xpad : [> misc] obj -> int = "ml_gtk_misc_get_xpad"
-  external get_ypad : [> misc] obj -> int = "ml_gtk_misc_get_ypad"
-  let set_alignment w ?:x ?:y =
+  external get_xalign : [>`misc] obj -> float = "ml_gtk_misc_get_xalign"
+  external get_yalign : [>`misc] obj -> float = "ml_gtk_misc_get_yalign"
+  external get_xpad : [>`misc] obj -> int = "ml_gtk_misc_get_xpad"
+  external get_ypad : [>`misc] obj -> int = "ml_gtk_misc_get_ypad"
+  let set_alignment w ?:x ?:y () =
     set_alignment w x:(may_default get_xalign w for:x)
       y:(may_default get_yalign w for:y)
-  let set_padding w ?:x ?:y =
+  let set_padding w ?:x ?:y () =
     set_padding w x:(may_default get_xpad w for:x)
       y:(may_default get_ypad w for:y)
-  let set w ?:xalign ?:yalign ?:xpad ?:ypad =
+  let set w :cont ?:xalign ?:yalign ?:xpad ?:ypad =
     if xalign <> None || yalign <> None then
-      set_alignment w ?x:xalign ?y:yalign;
+      set_alignment w ?x:xalign ?y:yalign ();
     if xpad <> None || ypad <> None then
-      set_padding w ?x:xpad ?y:ypad
+      set_padding w ?x:xpad ?y:ypad ();
+    cont w
 end
 
 module Arrow = struct
@@ -252,7 +255,7 @@ module Arrow = struct
     else invalid_arg "Gtk.Arrow.cast"
   external create : type:arrow_type -> shadow:shadow_type -> arrow obj
       = "ml_gtk_arrow_new"
-  external set : [> arrow] obj -> type:arrow_type -> shadow:shadow_type -> unit
+  external set : [>`arrow] obj -> type:arrow_type -> shadow:shadow_type -> unit
       = "ml_gtk_arrow_set"
 end
 
@@ -262,7 +265,8 @@ module Image = struct
     else invalid_arg "Gtk.Image.cast"
   external create : Gdk.image -> ?mask:Gdk.bitmap -> image obj
       = "ml_gtk_image_new"
-  external set : [> image] obj -> Gdk.image -> ?mask:Gdk.bitmap -> unit
+  let create ?:mask img = create img ?:mask
+  external set : [>`image] obj -> Gdk.image -> ?mask:Gdk.bitmap -> unit
       = "ml_gtk_image_set"
 end
 
@@ -270,21 +274,22 @@ module Label = struct
   let cast w : label obj =
     if Object.is_a w "GtkLabel" then Obj.magic w
     else invalid_arg "Gtk.Label.cast"
-  external coerce : [> label] obj -> label obj = "%identity"
+  external coerce : [>`label] obj -> label obj = "%identity"
   external create : string -> label obj = "ml_gtk_label_new"
-  external set_text : [> label] obj -> string -> unit = "ml_gtk_label_set_text"
-  external set_justify : [> label] obj -> justification -> unit
+  external set_text : [>`label] obj -> string -> unit = "ml_gtk_label_set_text"
+  external set_justify : [>`label] obj -> justification -> unit
       = "ml_gtk_label_set_justify"
-  external set_pattern : [> label] obj -> string -> unit
+  external set_pattern : [>`label] obj -> string -> unit
       = "ml_gtk_label_set_pattern"
-  external set_line_wrap : [> label] obj -> bool -> unit
+  external set_line_wrap : [>`label] obj -> bool -> unit
       = "ml_gtk_label_set_line_wrap"
-  let set w ?:text ?:justify ?:line_wrap ?:pattern =
+  let set w :cont ?:text ?:justify ?:line_wrap ?:pattern =
     may fun:(set_text w) text;
     may fun:(set_justify w) justify;
     may fun:(set_line_wrap w) line_wrap;
-    may fun:(set_pattern w) pattern
-  external get_text : [> label] obj -> string = "ml_gtk_label_get_label"
+    may fun:(set_pattern w) pattern;
+    cont w
+  external get_text : [>`label] obj -> string = "ml_gtk_label_get_label"
 end
 
 module TipsQuery = struct
@@ -292,40 +297,41 @@ module TipsQuery = struct
     if Object.is_a w "GtkTipsQuery" then Obj.magic w
     else invalid_arg "Gtk.TipsQuery.cast"
   external create : unit -> tips_query obj = "ml_gtk_tips_query_new"
-  external start : [> tipsquery] obj -> unit = "ml_gtk_tips_query_start_query"
-  external stop : [> tipsquery] obj -> unit = "ml_gtk_tips_query_stop_query"
-  external set_caller : [> tipsquery] obj -> [> widget] obj -> unit
+  external start : [>`tipsquery] obj -> unit = "ml_gtk_tips_query_start_query"
+  external stop : [>`tipsquery] obj -> unit = "ml_gtk_tips_query_stop_query"
+  external set_caller : [>`tipsquery] obj -> [>`widget] obj -> unit
       = "ml_gtk_tips_query_set_caller"
   external set_labels :
-      [> tipsquery] obj -> inactive:string -> no_tip:string -> unit
+      [>`tipsquery] obj -> inactive:string -> no_tip:string -> unit
       = "ml_gtk_tips_query_set_labels"
-  external set_emit_always : [> tipsquery] obj -> bool -> unit
+  external set_emit_always : [>`tipsquery] obj -> bool -> unit
       = "ml_gtk_tips_query_set_emit_always"
-  external get_caller : [> tipsquery] obj -> widget obj
+  external get_caller : [>`tipsquery] obj -> widget obj
       = "ml_gtk_tips_query_get_caller"
-  external get_label_inactive : [> tipsquery] obj -> string
+  external get_label_inactive : [>`tipsquery] obj -> string
       = "ml_gtk_tips_query_get_label_inactive"
-  external get_label_no_tip : [> tipsquery] obj -> string
+  external get_label_no_tip : [>`tipsquery] obj -> string
       = "ml_gtk_tips_query_get_label_no_tip"
-  external get_emit_always : [> tipsquery] obj -> bool
+  external get_emit_always : [>`tipsquery] obj -> bool
       = "ml_gtk_tips_query_get_emit_always"
-  let set_labels w ?:inactive ?:no_tip =
+  let set_labels ?:inactive ?:no_tip w =
     set_labels w
       inactive:(may_default get_label_inactive w for:inactive)
       no_tip:(may_default get_label_no_tip w for:no_tip)
-  let set w ?:caller ?:emit_always ?:label_inactive ?:label_no_tip =
+  let set w :cont ?:caller ?:emit_always ?:label_inactive ?:label_no_tip =
     may caller fun:(set_caller w);
     may emit_always fun:(set_emit_always w);
     if label_inactive <> None || label_no_tip <> None then
-      set_labels w ?inactive:label_inactive ?no_tip:label_no_tip
+      set_labels w ?inactive:label_inactive ?no_tip:label_no_tip;
+    cont w
   module Signals = struct
     open GtkSignal
-    let start_query : ([> tipsquery],_) t =
+    let start_query : ([>`tipsquery],_) t =
       { name = "start_query"; marshaller = marshal_unit }
-    let stop_query : ([> tipsquery],_) t =
+    let stop_query : ([>`tipsquery],_) t =
       { name = "stop_query"; marshaller = marshal_unit }
     let widget_entered :
-	([> tipsquery],
+	([>`tipsquery],
 	 widget obj option ->
 	 text:string option -> private:string option -> unit) t =
       let marshal f argv =
@@ -335,7 +341,7 @@ module TipsQuery = struct
       in
       { name = "widget_entered"; marshaller = marshal }
     let widget_selected :
-	([> tipsquery],
+	([>`tipsquery],
 	 widget obj option ->
 	 text:string option ->
 	 private:string option -> GdkEvent.Button.t option -> bool) t =
@@ -357,11 +363,12 @@ module Pixmap = struct
     else invalid_arg "Gtk.Pixmap.cast"
   external create : Gdk.pixmap -> ?mask:Gdk.bitmap -> pixmap obj
       = "ml_gtk_pixmap_new"
+  let create ?:mask img = create img ?:mask
   external set :
-      [> pixmap] obj -> ?pixmap:Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
+      [>`pixmap] obj -> ?pixmap:Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
       = "ml_gtk_pixmap_set"
-  external pixmap : [> pixmap] obj -> Gdk.pixmap = "ml_GtkPixmap_pixmap"
-  external mask : [> pixmap] obj -> Gdk.bitmap = "ml_GtkPixmap_mask"
+  external pixmap : [>`pixmap] obj -> Gdk.pixmap = "ml_GtkPixmap_pixmap"
+  external mask : [>`pixmap] obj -> Gdk.bitmap = "ml_GtkPixmap_mask"
 end
 
 module Separator = struct
