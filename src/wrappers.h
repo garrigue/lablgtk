@@ -138,6 +138,14 @@ value ml_##name##_##field (value val) \
 value ml_##name##_##field (value val, value new) \
 { (conv1(val))->field = conv2(new); return Val_unit; }
 
+#define Make_Array_Extractor(name,conv1,conv2,field,conv) \
+value ml_##name##_##field (value val, value index) \
+{ return conv ((conv1(val))->field[conv2(index)]); }
+
+#define Make_Array_Setter(name,conv1,conv2,conv3,field) \
+value ml_##name##_##field (value val, value index, value new) \
+{ (conv1(val))->field[conv2(index)] = conv3(new); return Val_unit; }
+
 #define Make_Flags_val(conv) \
 long Flags_##conv (value list) \
 { long flags = 0L; \
