@@ -47,7 +47,7 @@ object
     frame#set_label name;
     proplist <- proplist @
       [ "obey_child",
-	new prop_bool ~name:"obey child" ~init:"true"
+	new prop_bool ~name:"obey_child" ~init:"true"
 	  ~set:(ftrue aspect_frame#set_obey_child);
        "ratio",
 	new prop_float ~name:"ratio" ~init:"1.0" ~min:0. ~max:1.
@@ -90,13 +90,13 @@ object
   initializer
     classe <- "handle_box";
     proplist <- proplist @
-      [ "shadow type",
+      [ "shadow_type",
 	new prop_shadow ~name:"shadow_type" ~init:"OUT"
 	  ~set:(ftrue handle_box#set_shadow_type);
-	"handle position",
+	"handle_position",
 	new prop_position ~name:"handle_position" ~init:"LEFT"
 	  ~set:(ftrue handle_box#set_handle_position);
-	"snap edge",
+	"snap_edge",
 	new prop_position ~name:"snap_edge" ~init:"TOP"
 	  ~set:(ftrue handle_box#set_snap_edge)
       ]
@@ -121,7 +121,7 @@ object
   initializer
     classe <- "viewport";
     proplist <- proplist @
-      [ "shadow type",
+      [ "shadow_type",
 	new prop_shadow ~name:"shadow_type" ~init:"OUT"
 	  ~set:(ftrue viewport#set_shadow_type)
       ]
@@ -167,10 +167,10 @@ class tiscrolled_window ~(widget : GBin.scrolled_window)
     initializer
       classe <- "scrolled_window";
       proplist <- proplist @
-	[ "hscrollbar policy",
+	[ "hscrollbar_policy",
 	  new prop_policy ~name:"hscrollbar_policy" ~init:"ALWAYS"
 	    ~set:(ftrue scrolled_window#set_hpolicy);
-	  "vscrollbar policy",
+	  "vscrollbar_policy",
 	  new prop_policy ~name:"vscrollbar_policy" ~init:"ALWAYS"
 	    ~set:(ftrue scrolled_window#set_vpolicy) ]
 end

@@ -42,7 +42,7 @@ object
       [ "digits",
 	new prop_int ~name:"digits" ~init:"0"
 	             ~set:(ftrue spin_button#set_digits);
-	"update policy",
+	"update_policy",
 	new prop_spin_button_update_policy ~name:"update_policy"
 	  ~init:"ALWAYS"
 	  ~set:(ftrue spin_button#set_update_policy);
@@ -53,7 +53,7 @@ object
 	new prop_bool ~name:"wrap" ~init:"false"
 	  ~set:(ftrue spin_button#set_wrap);
 	"shadow_type",
-	new prop_shadow ~name:"shadow type" ~init:"NONE"
+	new prop_shadow ~name:"shadow_type" ~init:"NONE"
 	  ~set:(ftrue spin_button#set_shadow_type);
 	"snap_to_ticks",
 	new prop_bool ~name:"snap_to_ticks" ~init:"false"
@@ -137,10 +137,10 @@ object
   initializer
     classe <- "combo";
       proplist <- proplist @
-      [ "use arrows",
-	new prop_combo_use_arrows_values ~name:"use_arrows" ~init:"true"
+      [ "use_arrows",
+	new prop_combo_use_arrows ~name:"use_arrows" ~init:"true"
 	             ~set:(ftrue combo#set_use_arrows);
-	"case sensitive",
+	"case_sensitive",
 	new prop_bool ~name:"case_sensitive" ~init:"false"
 	             ~set:(ftrue combo#set_case_sensitive)
       ]

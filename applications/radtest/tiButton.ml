@@ -33,7 +33,7 @@ object(self)
   initializer
     classe <- "button";
     proplist <-  proplist @
-      [ "border width",	new prop_int ~name:"border_width" ~init:"0"
+      [ "border_width",	new prop_int ~name:"border_width" ~init:"0"
 	                  ~set:(ftrue button#set_border_width);
 	"label",
 	new prop_string ~name:"label" ~init:name ~set:
@@ -79,7 +79,7 @@ object(self)
   initializer
     classe <- "check_button";
     proplist <-  proplist @
-      [ "border width",	new prop_int ~name:"border_width" ~init:"0"
+      [ "border_width",	new prop_int ~name:"border_width" ~init:"0"
 	                 ~set:(ftrue button#set_border_width);
 	"label",
 	new prop_string ~name:"label" ~init:name ~set:
@@ -188,7 +188,7 @@ object(self)
       (List.tl !radio_button_pool);
 
     proplist <-  proplist @
-      [ "border width",	new prop_int ~name:"border_width" ~init:"0"
+      [ "border_width",	new prop_int ~name:"border_width" ~init:"0"
 	                  ~set:(ftrue button#set_border_width);
 	"label",
 	new prop_string ~name:"label" ~init:name ~set:
@@ -291,16 +291,16 @@ object(self)
 	new prop_toolbar_style ~name:"style" ~init:"BOTH"
 	  ~set:(ftrue toolbar#set_style);
 	"space_size",
-	new prop_int ~name:"space size" ~init:"5"
+	new prop_int ~name:"space_size" ~init:"5"
 	  ~set:(ftrue toolbar#set_space_size);
 	"space_style",
-	new prop_toolbar_space_style ~name:"space style" ~init:"EMPTY"
+	new prop_toolbar_space_style ~name:"space_style" ~init:"EMPTY"
 	  ~set:(ftrue toolbar#set_space_style);
 	"tooltips",
 	new prop_bool ~name:"tooltips" ~init:"TRUE"
 	  ~set:(ftrue toolbar#set_tooltips);
 	"button_relief",
-	new prop_relief_style ~name:"button relief" ~init:"NORMAL"
+	new prop_relief_style ~name:"button_relief" ~init:"NORMAL"
 	  ~set:(ftrue toolbar#set_button_relief)
       ]	
 end
