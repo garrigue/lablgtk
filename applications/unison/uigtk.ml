@@ -460,7 +460,7 @@ let profileSelect cont =
     prof#misc#grab_focus ();
 
     let exit () = t#destroy (); Main.quit () in
-    ignore (t#connect#event#delete ~callback:(fun _ -> exit (); true));
+    ignore (t#event#connect#delete ~callback:(fun _ -> exit (); true));
 
     let f3 = t#action_area in
     let okCommand () =
@@ -519,7 +519,7 @@ let profileSelect cont =
     okButton#misc#set_sensitive true;
     ed#misc#set_sensitive true;
     sd#misc#set_sensitive true));
-  ignore (lst#connect#event#button_press ~callback:(fun ev ->
+  ignore (lst#event#connect#button_press ~callback:(fun ev ->
     match GdkEvent.get_type ev with
       `TWO_BUTTON_PRESS ->
         okCommand ();
@@ -528,7 +528,7 @@ let profileSelect cont =
         false));
   fillLst "default";
   ignore
-    (lst#connect#after#event#key_press ~callback:
+    (lst#event#connect#after#key_press ~callback:
        begin fun ev ->
          let key = GdkEvent.Key.keyval ev in
          if key = _Up || key = _Down || key = _Prior || key = _Next ||
@@ -565,7 +565,7 @@ let profileSelect cont =
   
 
   currentWindow := Some (t :> GWindow.window);
-  ignore (t#connect#event#delete ~callback:(fun _ -> Main.quit (); true));
+  ignore (t#event#connect#delete ~callback:(fun _ -> Main.quit (); true));
   t#show ()
 
 (**********************************************************************)
@@ -584,7 +584,7 @@ let messageBox ~title ?(label = "Dismiss") ?(action = fun t -> t#destroy)
       ~width:(charW * 80) ~height:(charH * 20) ~packing:t#vbox#add ()
   in
   t_text#insert message;
-  ignore (t#connect#event#delete ~callback:(fun _ -> action t (); true));
+  ignore (t#event#connect#delete ~callback:(fun _ -> action t (); true));
   t#show ();
   if modal then begin
     grabFocus t;
@@ -946,7 +946,7 @@ let createToplevelWindow () =
     ignore (deleteButton#connect#clicked ~callback:delete);
     
     ignore
-      (regExpWindow#connect#after#event#key_press ~callback:
+      (regExpWindow#event#connect#after#key_press ~callback:
          begin fun ev ->
            let key = GdkEvent.Key.keyval ev in
            if key = _Up || key = _Down || key = _Prior || key = _Next ||
@@ -1163,7 +1163,7 @@ let createToplevelWindow () =
   (* Configure keyboard commands                                        *)
   (**********************************************************************)
   ignore
-    (mainWindow#connect#after#event#key_press ~callback:
+    (mainWindow#event#connect#after#key_press ~callback:
        begin fun ev ->
          let key = GdkEvent.Key.keyval ev in
          if key = _Up || key = _Down || key = _Prior || key = _Next ||
@@ -1241,7 +1241,7 @@ let createToplevelWindow () =
   grSet grProceed false;
   grSet grRestart false;
 
-  ignore (toplevelWindow#connect#event#delete ~callback:
+  ignore (toplevelWindow#event#connect#delete ~callback:
             (fun _ -> safeExit (); true));
   toplevelWindow#show ();
   currentWindow := Some toplevelWindow;
@@ -1277,7 +1277,7 @@ let start _ =
          ignore (GMisc.label ~text: "Contacting server..."
                    ~packing:(w#add) ());
          w#show ();
-         ignore (w#connect#event#delete ~callback:(fun _ -> exit 0));
+         ignore (w#event#connect#delete ~callback:(fun _ -> exit 0));
          msg := Some w)
       (fun () ->
          begin match !msg with

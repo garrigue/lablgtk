@@ -38,7 +38,7 @@ end
 
 class entry obj = object
   inherit editable obj
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method set_text = Entry.set_text obj
   method append_text = Entry.append_text obj
   method prepend_text = Entry.prepend_text obj
@@ -115,7 +115,7 @@ class text obj = object (self)
     if start < 0 || e > Text.get_length obj || e < start then
       invalid_arg "GEdit.text#get_chars";
     super#get_chars ~start ~stop:e
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method set_point = Text.set_point obj
   method set_hadjustment adj =
     Text.set_adjustment obj ~horizontal:(GData.as_adjustment adj) ()

@@ -106,7 +106,7 @@ open GdkKeysyms
 
 let _ =
   w#connect#destroy ~callback:Main.quit;
-  w#connect#event#key_press ~callback:
+  w#event#connect#key_press ~callback:
     begin fun ev ->
       let key = GdkEvent.Key.keyval ev and adj = vp#vadjustment in
       if key = _Page_Up then

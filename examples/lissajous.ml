@@ -6,7 +6,7 @@ open GMain
 
 let main () =
   let window = GWindow.window ~border_width: 10 () in
-  window#connect#event#delete
+  window#event#connect#delete
      ~callback:(fun _ -> prerr_endline "Delete event occured"; true);
   window#connect#destroy ~callback:Main.quit;
   let vbx = GPack.vbox ~packing:window#add () in
@@ -37,7 +37,7 @@ let main () =
     done;  
     false
   in 
-  area#connect#event#expose ~callback:expose_event;
+  area#event#connect#expose ~callback:expose_event;
   let timeout _ = c := !c +. 0.01*.m_pi;
                   expose_event ();
 		  true in 

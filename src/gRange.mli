@@ -26,7 +26,7 @@ class progress_bar : Gtk.progress_bar obj ->
   object
     inherit progress
     val obj : Gtk.progress_bar obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method set_activity_blocks : int -> unit
     method set_activity_step : int -> unit
     method set_bar_style : [`CONTINUOUS|`DISCRETE] -> unit
@@ -78,7 +78,7 @@ class scrollbar : Gtk.scrollbar obj ->
   object
     inherit range
     val obj : Gtk.scrollbar obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
   end
 val scrollbar :
   Tags.orientation ->

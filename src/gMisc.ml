@@ -56,7 +56,7 @@ end
 
 class calendar obj = object
   inherit widget (obj : Gtk.calendar obj)
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method connect = new calendar_signals obj
   method select_month = Calendar.select_month obj
   method select_day = Calendar.select_day obj
@@ -77,7 +77,7 @@ let calendar ?options ?(width = -2) ?(height = -2) ?packing ?show () =
 
 class drawing_area obj = object
   inherit widget_full (obj : Gtk.drawing_area obj)
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method set_size = DrawingArea.size obj
 end
 

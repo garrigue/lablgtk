@@ -47,7 +47,7 @@ class area : gl_area obj ->
   object
     inherit widget
     val obj : gl_area obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method as_area : gl_area obj
     method connect : area_signals
     method make_current : unit -> unit

@@ -22,7 +22,7 @@ class multibox ~rows ~columns ?(row_view = rows) ?(col_view = columns)
     initializer
       let id = ref None in
       id := Some
-	  (sw#connect#event#expose ~after:true ~callback:
+	  (sw#event#connect#expose ~after:true ~callback:
 	     begin fun _ ->
 	       may !id ~f:sw#connect#disconnect;
 	       let height = table#misc#allocation.height * row_view / rows

@@ -2,6 +2,10 @@ $Id$
 
 2000.6.6
   * move notebook from GMisc to GPack
+  * #connect#event, #add_event, #misc#event, #misc#set_events_extension
+    transferred to #event su-bobject.
+  * #connect#drag -> #drag#connect.
+  * #get_type, #connect#disconnect, #connect#stop_emit transferred to #misc.
 
 2000.5.25
   * split misc.ml into gaux.ml and gpointer.ml

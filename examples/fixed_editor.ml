@@ -19,7 +19,7 @@ let dnd_source_window () =
 (*  evb#misc#set_position x:150 y:110;
     vbox#move evb x:150 y:110; *)
     evb#drag#source_set targets ~modi:[`BUTTON1] ~actions:[`COPY];
-    evb#connect#drag#data_get ~callback: begin
+    evb#drag#connect#data_get ~callback: begin
       fun _ data ~info ~time:_ ->
       	data#set ~typ:data#target ~format:0 ~data:"hello! "
     end
@@ -182,7 +182,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
       	  false
 	end
       in
-      ebox#connect#event#button_press ~callback:
+      ebox#event#connect#button_press ~callback:
       	begin fun ev -> 
 	  let bx = int_of_float (GdkEvent.Button.x ev) in
 	  let by = int_of_float (GdkEvent.Button.y ev) in
@@ -190,7 +190,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
 	  info#set_drag_offset ~x:bx ~y:by;
 	  true
       	end;
-      ebox#connect#event#motion_notify ~callback:
+      ebox#event#connect#motion_notify ~callback:
       	begin fun ev ->
 	  info#set_drag_widget ebox#coerce;
 	  let action = info#drag_action in
@@ -256,19 +256,19 @@ class fix_editor ~width ~height ~packing:pack_fun =
 	  end;
 	  true
       	end;
-      ebox#connect#event#button_release ~callback:
+      ebox#event#connect#button_release ~callback:
       	begin fun ev -> 
 	  info#unset_drag_action ();
 	  info#unset_drag_widget ();
 	  true
       	end;
-      exps_id := Some (ebox#connect#after#event#expose ~callback:on_paint);
+      exps_id := Some (ebox#event#connect#after#expose ~callback:on_paint);
       draw_id := Some (ebox#connect#draw ~callback:(fun ev -> on_paint ev; ()));
       ()
     initializer
       fix#drag#dest_set ~actions:[`COPY]
       	[ { target = "STRING"; flags = []; info = 0} ];
-      fix#connect#drag#data_received ~callback: begin
+      fix#drag#connect#data_received ~callback: begin
 	fun context ~x ~y data ~info ~time ->
 	  let name = data#data in
 	  let _ = self#new_child ~name ~x ~y ~width:32 ~height:32

@@ -21,7 +21,7 @@ class type virtual ['a] pre_menu = object
   method as_menu : Gtk.menu Gtk.obj
   method deactivate : unit -> unit
   method connect : menu_shell_signals
-  method add_events : Gdk.Tags.event_mask list -> unit
+  method event : event_ops
   method popup : button:int -> time:int -> unit
   method popdown : unit -> unit
   method set_accel_group : accel_group -> unit
@@ -51,7 +51,7 @@ end
 class menu_item obj = object
   inherit [menu_item] pre_menu_item_skel obj
   method connect = new menu_item_signals obj
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
 end
 
 class menu_item_skel = [menu_item] pre_menu_item_skel
@@ -84,7 +84,7 @@ class check_menu_item obj = object
   method active = CheckMenuItem.get_active obj
   method toggled () = CheckMenuItem.toggled obj
   method connect = new check_menu_item_signals obj
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
 end
 
 let check_menu_item ?label ?active ?show_toggle
@@ -115,7 +115,7 @@ class menu_shell obj = object
   method insert w = MenuShell.insert obj w#as_item
   method deactivate () = MenuShell.deactivate obj
   method connect = new menu_shell_signals obj
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
 end
 
 class menu obj = object
@@ -139,7 +139,7 @@ let menu ?border_width ?packing ?show () =
 class option_menu obj = object
   inherit GButton.button_skel obj
   method connect = new GButton.button_signals obj
-  method add_events = Widget.add_events obj
+  method event = new GObj.event_ops obj
   method set_menu (menu : menu) = OptionMenu.set_menu obj menu#as_menu
   method get_menu = new menu (OptionMenu.get_menu obj)
   method remove_menu () = OptionMenu.remove_menu obj

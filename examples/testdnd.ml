@@ -324,8 +324,8 @@ object (self)
     end;
     let source_typename =
       try
-	context#source_widget#get_type
-      with Null_pointer -> "unknown"
+	context#source_widget#misc#get_type
+      with Gpointer.Null -> "unknown"
     in
     Printf.printf "motion, source %s\n" source_typename; flush stdout;
     context#status [context#suggested_action] ~time;
@@ -349,10 +349,10 @@ object (self)
 
   initializer
     pixmap#drag#dest_set targets ~actions:[`COPY;`MOVE];
-    pixmap#connect#drag#leave ~callback:self#leave;
-    pixmap#connect#drag#motion ~callback:self#motion;
-    pixmap#connect#drag#drop ~callback:self#drop;
-    pixmap#connect#drag#data_received ~callback:self#data_received;
+    pixmap#drag#connect#leave ~callback:self#leave;
+    pixmap#drag#connect#motion ~callback:self#motion;
+    pixmap#drag#connect#drop ~callback:self#drop;
+    pixmap#drag#connect#data_received ~callback:self#data_received;
     ()
 end
 
@@ -371,7 +371,7 @@ object (self)
 
   initializer
     label#drag#dest_set targets ~actions:[`COPY; `MOVE ];
-    label#connect#drag#data_received ~callback:self#data_received;
+    label#drag#connect#data_received ~callback:self#data_received;
     ()
 end
 
@@ -397,8 +397,8 @@ object (self)
     button#drag#source_set targets
       ~modi:[`BUTTON1; `BUTTON3 ] ~actions:[`COPY; `MOVE ];
     button#drag#source_set_icon drag_icon;
-    button#connect#drag#data_get ~callback:self#data_get;
-    button#connect#drag#data_delete ~callback:self#data_delete;
+    button#drag#connect#data_get ~callback:self#data_get;
+    button#drag#connect#data_delete ~callback:self#data_delete;
     ()
 end
 
@@ -457,8 +457,8 @@ class popup () = object (self)
 		~packing:(table#attach ~left:i ~top:j ~expand:`BOTH) ()
 	    in
 	    button#drag#dest_set targets ~actions:[`COPY; `MOVE ];
-	    button#connect#drag#motion ~callback:self#motion;
-	    button#connect#drag#leave ~callback:self#leave;
+	    button#drag#connect#motion ~callback:self#motion;
+	    button#drag#connect#leave ~callback:self#leave;
 	  done
 	done
       end;
@@ -489,8 +489,8 @@ object (self)
 
   initializer
     label#drag#dest_set targets ~actions:[`COPY; `MOVE ];
-    label#connect#drag#motion ~callback:self#motion;
-    label#connect#drag#leave ~callback:self#leave;
+    label#drag#connect#motion ~callback:self#motion;
+    label#drag#connect#leave ~callback:self#leave;
     ()
 end
 

@@ -32,7 +32,7 @@ class event_box : Gtk.event_box obj ->
   object
     inherit container_full
     val obj : Gtk.event_box obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
   end
 val event_box :
   ?border_width:int ->
@@ -53,7 +53,7 @@ class handle_box : Gtk.handle_box obj ->
   object
     inherit container
     val obj : Gtk.handle_box obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    method event : event_ops
     method connect : handle_box_signals
     method set_handle_position : Tags.position -> unit
     method set_shadow_type : Tags.shadow_type -> unit

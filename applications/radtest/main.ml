@@ -66,7 +66,7 @@ class project () =
       let project_tree_item = wt#project_tree_item in
       project_tree#append project_tree_item;
       let show = ref true in
-      project_tree_item#connect#event#button_press ~callback:
+      project_tree_item#event#connect#button_press ~callback:
 	(fun ev ->
 	match GdkEvent.get_type ev with
 	| `BUTTON_PRESS ->
@@ -90,7 +90,7 @@ class project () =
 		~callback:(fun () -> self#cut_wt wt);
 	      menu#popup ~button:3 ~time:(GdkEvent.Button.time ev)
 	    end;
-	    project_tree_item#connect#stop_emit ~name:"button_press_event";
+	    project_tree_item#misc#stop_emit ~name:"button_press_event";
 	    true
 	| `TWO_BUTTON_PRESS ->
 	    if GdkEvent.Button.button ev = 1 then begin
@@ -109,7 +109,7 @@ class project () =
 	| _ -> false);
       tiwin#connect_event#delete ~callback:
 	(fun _ -> show := false; tiwin#widget#misc#hide (); true);
-      tw#connect#event#delete ~callback:
+      tw#event#connect#delete ~callback:
 	(fun _ -> show := false; tw#misc#hide (); true);
       window_list <- wt :: window_list;
       add_undo (Remove_window name);
@@ -264,7 +264,7 @@ let xpm_window () =
     let gdk_pix = GDraw.pixmap_from_xpm ~file ~window () in
     let ev = GBin.event_box ~packing:(table#attach ~left ~top) () in
     let pix = GMisc.pixmap gdk_pix ~packing:ev#add () in
-    ev#connect#event#button_press ~callback:
+    ev#event#connect#button_press ~callback:
       (fun ev -> match GdkEvent.get_type ev with
 	| `BUTTON_PRESS ->
 	    if GdkEvent.Button.button ev = 1 then begin
@@ -285,7 +285,7 @@ let xpm_window () =
     ev#drag#source_set ~modi:[`BUTTON1] targets ~actions:[`COPY];
     ev#drag#source_set_icon ~colormap:window#misc#style#colormap 
       gdk_pix; 
-    ev#connect#drag#data_get ~callback:(source_drag_data_get classe);
+    ev#drag#connect#data_get ~callback:(source_drag_data_get classe);
     tooltips#set_tip ev#coerce ~text:classe
   in
   
@@ -365,7 +365,7 @@ let main () =
   edit_menu#add_item "Undo" ~key:_Z ~callback:undo;
 
   let palette_visible = ref true in
-  palette#connect#event#delete ~callback:
+  palette#event#connect#delete ~callback:
     (fun _ -> palette_visible := false; palette#misc#hide (); true);
   view_menu#add_item "Palette"
     ~callback:(fun () ->
@@ -377,7 +377,7 @@ let main () =
 	palette_visible := true
       end);
   let prop_win_visible = ref true in
-  prop_win#connect#event#delete ~callback:
+  prop_win#event#connect#delete ~callback:
     (fun _ -> prop_win_visible := false; prop_win#misc#hide (); true);
   view_menu#add_item "Properties window"
     ~callback:(fun () ->

@@ -90,12 +90,12 @@ let prop_widget (prop : prop) =
 	  wpop#misc#hide ();
 	  List.iter2 ~f:(fun f v -> f v) !rset !rtitles);
       let e = GEdit.entry ~text:"double click here" ~editable:false () in
-      e#connect#event#button_press ~callback:
+      e#event#connect#button_press ~callback:
 	(fun ev -> match GdkEvent.get_type ev with
 	| `TWO_BUTTON_PRESS ->
 	    if GdkEvent.Button.button ev = 1 then begin
 	      wpop#misc#show ();
-	      e#connect#stop_emit ~name:"button_press_event";
+	      e#misc#stop_emit ~name:"button_press_event";
 	      true
 	    end
 	    else false

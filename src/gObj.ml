@@ -10,8 +10,14 @@ open GtkBase
 class gtkobj obj = object
   val obj = obj
   method destroy () = Object.destroy obj
-  method get_type = Type.name (Object.get_type obj)
   method get_id = Object.get_id obj
+end
+
+class gtkobj_misc obj = object
+  val obj = obj
+  method get_type = Type.name (Object.get_type obj)
+  method disconnect = GtkSignal.disconnect obj
+  method stop_emit ~name = GtkSignal.emit_stop_by_name obj ~name
 end
 
 class gtkobj_signals obj = object
@@ -19,15 +25,14 @@ class gtkobj_signals obj = object
   val after = false
   method after = {< after = true >}
   method destroy = GtkSignal.connect ~sgn:Object.Signals.destroy obj
-  method disconnect = GtkSignal.disconnect obj
-  method stop_emit ~name = GtkSignal.emit_stop_by_name obj ~name
 end
 
 (* Widget *)
 
-class event_signals obj ~after = object
-  val after = after
+class event_signals obj = object
   val obj = Widget.coerce obj
+  val after = false
+  method after = {< after = true >}
   method any = GtkSignal.connect ~sgn:Widget.Signals.Event.any ~after obj
   method button_press =
     GtkSignal.connect ~sgn:Widget.Signals.Event.button_press ~after obj
@@ -73,8 +78,9 @@ end
 
 class event_ops obj = object
   val obj = Widget.coerce obj
-  method connect = new event_signals obj ~after:false
-  method connect_after = new event_signals obj ~after:true
+  method add = Widget.add_events obj
+  method connect = new event_signals obj
+  method send : Gdk.Tags.event_type Gdk.event -> bool = Widget.event obj
   method set_extensions = Widget.set_extension_events obj
 end
 
@@ -104,6 +110,7 @@ end
 
 class widget_drag obj = object
   val obj = Widget.coerce obj
+  method connect = new drag_signals obj
   method dest_set ?(flags=[`ALL]) ?(actions=[]) targets =
     DnD.dest_set obj ~flags ~actions ~targets:(Array.of_list targets)
   method dest_unset () = DnD.dest_unset obj
@@ -134,7 +141,7 @@ and drag_context context = object
 end
 
 and widget_misc obj = object
-  val obj = Widget.coerce obj
+  inherit gtkobj_misc (Widget.coerce obj)
   method show () = Widget.show obj
   method unparent () = Widget.unparent obj
   method show_all () = Widget.show_all obj
@@ -145,7 +152,6 @@ and widget_misc obj = object
   method realize () = Widget.realize obj
   method unrealize () = Widget.unrealize obj
   method draw = Widget.draw obj
-  method event : Gdk.Tags.event_type Gdk.event -> bool = Widget.event obj
   method activate () = Widget.activate obj
   method reparent (w : widget) =  Widget.reparent obj w#as_widget
   method popup = Widget.popup obj
@@ -160,7 +166,6 @@ and widget_misc obj = object
   method set_name = Widget.set_name obj
   method set_state = Widget.set_state obj
   method set_sensitive = Widget.set_sensitive obj
-  method set_extension_events = Widget.set_extension_events obj
   method set_can_default = Widget.set_can_default obj
   method set_can_focus = Widget.set_can_focus obj
   method set_uposition = Widget.set_uposition obj
@@ -189,15 +194,16 @@ end
 and widget obj = object (self)
   inherit gtkobj obj
   method as_widget = Widget.coerce obj
-  method coerce = (self :> < destroy : _; get_type : _; get_id : _;
-		             as_widget : _; coerce : _; misc : _; drag : _ >)
+  method coerce = (self :> < destroy : _; get_id : _; as_widget : _;
+                             coerce : _; misc : _; drag : _ >)
   method misc = new widget_misc obj
   method drag = new widget_drag (Object.unsafe_cast obj)
 end
 
-class drag_signals obj ~after = object
+and drag_signals obj = object
   val obj =  Widget.coerce obj
-  val after = after
+  val after = false
+  method after = {< after = true >}
   method beginning ~callback =
     GtkSignal.connect ~sgn:Widget.Signals.drag_begin ~after obj
       ~callback:(fun context -> callback (new drag_context context))
@@ -229,8 +235,6 @@ end
 
 class widget_signals obj = object
   inherit gtkobj_signals obj
-  method event = new event_signals obj ~after
-  method drag = new drag_signals obj ~after
   method draw ~callback =
     GtkSignal.connect obj ~sgn:Widget.Signals.draw ~after ~callback:
       begin fun rect ->
@@ -241,6 +245,7 @@ class widget_signals obj = object
       end
   method realize = GtkSignal.connect ~sgn:Widget.Signals.realize ~after obj
   method show = GtkSignal.connect ~sgn:Widget.Signals.show ~after obj
+  method hide = GtkSignal.connect ~sgn:Widget.Signals.hide ~after obj
   method parent_set ~callback =
     GtkSignal.connect obj ~sgn:Widget.Signals.parent_set ~after ~callback:
       begin function

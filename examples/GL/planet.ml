@@ -86,7 +86,7 @@ let main () =
   let hb = GPack.hbox ~packing:w#add () in
   let area = GlGtk.area [`DOUBLEBUFFER;`RGBA;`DEPTH_SIZE 1]
       ~width:700 ~height:500 ~packing:hb#add () in
-  area#add_events [`KEY_PRESS];
+  area#event#add [`KEY_PRESS];
 
   let planet = new planet area in
   let adjustment = GData.adjustment ~value:0. ~lower:(-90.) ~upper:90.
@@ -95,7 +95,7 @@ let main () =
       ~packing:hb#pack () in
   adjustment#connect#value_changed
     ~callback:(fun () -> planet#eye adjustment#value);
-  w#connect#event#key_press ~callback:
+  w#event#connect#key_press ~callback:
     begin fun ev ->
       let key = GdkEvent.Key.keyval ev in
       if key = _Left then planet#year_subtract () else

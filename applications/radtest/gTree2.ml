@@ -15,7 +15,7 @@ end
 
 class ['a] pre_tree_item ~wrapper obj = object
   inherit container obj
-  method add_events = Widget.add_events obj
+  method event = new event_ops obj
   method as_item : tree_item obj = obj
   method connect = new tree_item_signals obj
   method set_subtree (w : 'a) = TreeItem.set_subtree obj w#as_tree
@@ -39,7 +39,7 @@ end
 
 class virtual ['a] pre_tree obj = object (self)
   inherit ['a] item_container obj
-  method add_events = Widget.add_events obj
+  method event = new event_ops obj
   method as_tree = Tree.coerce obj
   method insert w ~pos = Tree.insert obj w#as_item ~pos
   method connect = new pre_tree_signals obj ~wrapper:self#wrap

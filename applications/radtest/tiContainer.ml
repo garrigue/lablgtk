@@ -82,7 +82,7 @@ object(self)
 
     tree_item#drag#dest_set ~actions:[`COPY]
       [ { target = "STRING"; flags = []; info = 0} ];
-    tree_item#connect#drag#data_received ~callback:
+    tree_item#drag#connect#data_received ~callback:
       begin fun (context : drag_context) ~x ~y
 	  (data : selection_data) ~info ~time ->
 	    self#add_child data#data ();

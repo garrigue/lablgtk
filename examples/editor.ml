@@ -90,7 +90,7 @@ let _ =
   factory#add_check_item "Read only" ~active:false
     ~callback:(fun b -> editor#text#set_editable (not b));
   window#add_accel_group accel_group;
-  editor#text#connect#event#button_press
+  editor#text#event#connect#button_press
     ~callback:(fun ev ->
       let button = GdkEvent.Button.button ev in
       if button = 3 then begin

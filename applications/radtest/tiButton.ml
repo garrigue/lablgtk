@@ -34,10 +34,10 @@ end
 
 let new_tibutton ~name ?(listprop = []) =
   let b = GButton.button ~label:name () in
-  b#connect#event#enter_notify
-    ~callback:(fun _ -> b#connect#stop_emit ~name:"enter_notify_event"; true);
-  b#connect#event#leave_notify
-    ~callback:(fun _ -> b#connect#stop_emit ~name:"leave_notify_event"; true);
+  b#event#connect#enter_notify
+    ~callback:(fun _ -> b#misc#stop_emit ~name:"enter_notify_event"; true);
+  b#event#connect#leave_notify
+    ~callback:(fun _ -> b#misc#stop_emit ~name:"leave_notify_event"; true);
   new tibutton ~widget:b ~name
 
 
@@ -100,10 +100,12 @@ end
 
 let new_titoggle_button ~name ?(listprop = []) =
   let b = GButton.toggle_button ~label:name () in
-  b#connect#event#enter_notify
-    ~callback:(fun _ -> b#connect#stop_emit ~name:"enter_notify_event"; true);
-    b#connect#event#leave_notify
-      ~callback:(fun _ -> b#connect#stop_emit ~name:"leave_notify_event"; true);
+(*
+  b#event#connect#enter_notify
+    ~callback:(fun _ -> b#misc#stop_emit ~name:"enter_notify_event"; true);
+  b#event#connect#leave_notify
+    ~callback:(fun _ -> b#misc#stop_emit ~name:"leave_notify_event"; true);
+*)
   new titoggle_button ~name ~widget:b
 
 
@@ -159,10 +161,12 @@ end
 
 let new_tiradio_button ~name ?(listprop = []) =
   let b = GButton.radio_button ~label:name () in
-  b#connect#event#enter_notify
-    ~callback:(fun _ -> b#connect#stop_emit ~name:"enter_notify_event"; true);
-  b#connect#event#leave_notify
-    ~callback:(fun _ -> b#connect#stop_emit ~name:"leave_notify_event"; true);
+  (*
+  b#event#connect#enter_notify
+    ~callback:(fun _ -> b#misc#stop_emit ~name:"enter_notify_event"; true);
+  b#event#connect#leave_notify
+    ~callback:(fun _ -> b#misc#stop_emit ~name:"leave_notify_event"; true);
+  *)
   new tiradio_button ~name ~widget:b
 
 

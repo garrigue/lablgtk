@@ -248,7 +248,7 @@ let rw = ref None in
 	    ~border_width: 0 () in
 	rw := Some window;
 	window #connect#destroy ~callback:(fun _ -> rw := None);
-	window #connect#event#delete ~callback:(fun _ -> true);
+	window #event#connect#delete ~callback:(fun _ -> true);
 
 	let accel_group = GtkData.AccelGroup.create () in
 	window #add_accel_group accel_group  ;
@@ -554,7 +554,7 @@ let create_toolbar =
 (* Handlebox *)
 
 let handle_box_child_signal action (hb : GBin.handle_box) child =
-  Printf.printf "%s: child <%s> %s\n" hb#get_type child#get_type action
+  Printf.printf "%s: child <%s> %s\n" hb#misc#get_type child#misc#get_type action
 
 let create_handle_box =
   let rw = ref None in
@@ -847,7 +847,7 @@ if toggle #active then begin
   tq #set_text
     (match text with
     | None -> "There is no tip!" | Some _ -> "There is a tip!");
-  tq #connect#stop_emit ~name:"widget_entered"
+  tq #misc#stop_emit ~name:"widget_entered"
 end
 
 let tips_query_widget_selected (w : #widget option) ~text ~privat:tp _ =
@@ -856,7 +856,7 @@ let tips_query_widget_selected (w : #widget option) ~text ~privat:tp _ =
   | Some w -> 
     Printf.printf "Help \"%s\" requested for <%s>\n"
 	(match tp with None -> "None" | Some t -> t)
-	(w #get_type));
+	(w #misc#get_type));
    true
 
 
@@ -993,11 +993,11 @@ let create_labels =
 let set_parent child old_parent =
   let name_opt = function
     | None -> "(NULL)"
-    | Some w -> w#get_type in
+    | Some w -> w#misc#get_type in
   Printf.printf
     "set parent for \"%s\": new parent: \"%s\", old parent: \"%s\"\n" 
-    child#get_type
-    (try child#misc#parent#get_type with Not_found -> "(NULL)")
+    child#misc#get_type
+    (try child#misc#parent#misc#get_type with Not_found -> "(NULL)")
     (name_opt old_parent)
 
 let reparent_label (label : GMisc.label) new_parent _ =
