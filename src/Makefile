@@ -97,6 +97,7 @@ MLLIBS += lablrsvg.cma
 CLIBS += liblablrsvg$(XA)
 RSVGMLOBJS = rsvg.cmo
 RSVGCOBJS = ml_rsvg$(XO)
+$(RSVGCOBJS) : CFLAGS+=$(HAVE_SVGZ)
 endif
 
 
