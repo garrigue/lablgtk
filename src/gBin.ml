@@ -63,9 +63,11 @@ class handle_box obj = object
   method event = new GObj.event_ops obj
 end
 
-let handle_box ?border_width ?width ?height ?packing ?show () =
+let handle_box ?handle_position ?snap_edge ?shadow_type
+    ?border_width ?width ?height ?packing ?show () =
   let w = HandleBox.create () in
-  let () = Container.set w ?border_width ?width ?height in
+  HandleBox.set w ?handle_position ?snap_edge ?shadow_type;
+  Container.set w ?border_width ?width ?height;
   pack_return (new handle_box w) ~packing ~show
 
 class frame_skel obj = object

@@ -231,6 +231,8 @@ class color_selection : Gtk.color_selection obj ->
     method set_update_policy : Tags.update_type -> unit
   end
 val color_selection :
+  ?update_policy:Tags.update_type ->
+  ?opacity:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

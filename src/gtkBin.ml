@@ -86,6 +86,10 @@ module HandleBox = struct
    "ml_gtk_handle_box_set_handle_position"
   external set_snap_edge : [>`handlebox] obj -> position -> unit =
    "ml_gtk_handle_box_set_snap_edge"
+  let set ?shadow_type ?handle_position ?snap_edge w =
+    may shadow_type ~f:(set_shadow_type w);
+    may handle_position ~f:(set_handle_position w);
+    may snap_edge ~f:(set_snap_edge w)
   module Signals = struct
     open GtkSignal
     let child_attached : ([>`handlebox],_) t =
