@@ -3,7 +3,7 @@
 
 
 Needed:
-	ocaml-2.99 or more
+	ocaml-3.00
 	gtk-1.2.x
 	gmake (there is no standard for conditionals)
 
@@ -38,6 +38,8 @@ Contents:
 				(by Hubert Fauque)
 		browser		the begin of a port of OCamlBrowser
 				(by Jacques Garrigue)
+                unison          a frontend for the Unison file synchronizer
+                                see the README for details.
 
 How to run the examples:
 
@@ -51,7 +53,7 @@ How to run the examples:
 How to use the threaded toplevel:
 
 	% ./lablgtk_t -modern
-	        Objective Caml version 2.99 (99/12/08)
+	        Objective Caml version 2.99+6 (2000/02/25)
 	
 	# let id = GtkThread.start ();;
 	val id : Thread.t = <abstr>
