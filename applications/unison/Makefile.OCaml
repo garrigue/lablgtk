@@ -223,15 +223,15 @@ ifeq ($(NATIVE),true)
 
   %.cmi : %.mli
 	@echo "OCAMLOPT: $< $(ZFLAGS) --->  $@"
-	ocamlopt $(COMPFLAGS) -c $(CWD)/$<
+	@ocamlopt $(COMPFLAGS) -c $(CWD)/$<
 
   %.cmx : %.ml
 	@echo "OCAMLOPT: $< $(ZFLAGS) --->  $@"
-	ocamlopt $(COMPFLAGS) -c $(CWD)/$<
+	@ocamlopt $(COMPFLAGS) -c $(CWD)/$<
 
   uigtk.cmx : uigtk.ml
 	@echo "OCAMLOPT: $< $(ZFLAGS) --->  $@"
-	ocamlopt -modern -w s -I $(LABLGTKDIR) -c $(CWD)/$<
+	@ocamlopt -modern -w s -I $(LABLGTKDIR) -c $(CWD)/$<
 
   OBJS=$(OBJS_NATIVE)
   LINK = unix.cmxa -cclib -lunix str.cmxa -cclib -lstr
