@@ -74,6 +74,25 @@ Structure of the (raw) Gtk* modules:
 Structure of the G[A-Z]* modules:
 
   These modules provide classes to wrap the raw function calls.
+  Here are the widget classes contained in each module:
+
+  GObj		gtkobj, widget, style
+  GData		data, adjustment, tooltips
+  GContainer	container, item_container
+  GWindow	window, dialog, color_selection_dialog, file_selection
+  GPack		box, button_box, table, fixed, layout, packer, paned
+  GButton	button, toggle_button, check_button, radio_button, toolbar
+  GMenu		menu_item, tearoff_item, check_menu_item, radio_menu_item,
+		menu_shell, menu, option_menu, menu_bar, factory
+  GMisc		separator, statusbar, calendar, drawing_area,
+		misc, label, tips_query, notebook, color_selection
+  GTree		tree_item, tree
+  GList		list_item, liste, clist
+  GFrame	scrolled_window, event_box, handle_box, frame,
+		aspect_frame, viewport
+  GEdit		editable, entry, spin_button, combo, text
+  GPix		pixmap
+  GRange	progress, progress_bar, range, scale, scrollbar
 
   While subtyping follows the Gtk widget hierarchy, you cannot always
   use width subtyping (i.e. #super is not unifiable with all the
@@ -84,10 +103,12 @@ Structure of the G[A-Z]* modules:
   Practically, each widget class is composed of:
   * an as_widget method, returning the Gtk widget used for packing, etc...
   * a misc sub-object, giving access to miscellanous functionality of
-    the basic gtkwidget class
+    the basic gtkwidget class.
+  * a grab sub-object, containing drag and drop signals.
   * a connect sub-object, allowing one to connect all available
-    signals (this is what prevents width subtyping in subcases)
-  * a connect#event sub-object, for event signals
+    signals (this is what prevents width subtyping in subcases.)
+  * connect#event and connect#grab sub-objects, for event and grab
+    signals.
 
   You create a widget by [new <widget name> options ...].
   Many optional arguments are admitted. The two last of them, packing:
@@ -130,6 +151,7 @@ GL extension
   * reconfigure: "make configure USE_GL=1"
   * if you use Mesa, then "make configure USE_GL=1 MESA=Mesa"
 
+  You can then use the widget GlGtk.gl_area as an OpenGL window.
   Some examples are in examples/GL, but basically any LablGL example
   can be easily ported.
 
