@@ -1,5 +1,8 @@
 $Id$
 
+2004.03.17 [Olivier]
+  * add GFile.filter#add_custom
+
 2004.03.15 [Jacques]
   * allow destroying pixmaps manually
   * update GdkPixbuf support

@@ -12,6 +12,8 @@ class filter :
     method as_file_filter : Gtk.file_filter Gtk.obj
     method add_mime_type : string -> unit
     method add_pattern : string -> unit
+    method add_custom : GtkEnums.file_filter_flags list -> 
+      (Gtk.file_filter_info -> bool) -> unit
     method name : string
     method set_name : string -> unit
   end

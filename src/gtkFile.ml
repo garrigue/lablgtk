@@ -14,6 +14,9 @@ module FileFilter = struct
       = "ml_gtk_file_filter_add_mime_type"
   external add_pattern : [> Gtk.file_filter] Gtk.obj -> string -> unit
       = "ml_gtk_file_filter_add_pattern"
+  external add_custom : [> Gtk.file_filter] Gtk.obj -> 
+    GtkEnums.file_filter_flags list -> (Gtk.file_filter_info -> bool) -> unit
+      = "ml_gtk_file_filter_add_custom"
 end
 
 module FileChooser = struct
