@@ -543,9 +543,10 @@ ML_2 (gtk_viewport_set_shadow_type, GtkViewport_val, Shadow_type_val, Unit)
 
 static void window_unref (GtkObject *w)
 {
-    /* If the window is still not visible, then unreference it.
+    /* If the window exists and is still not visible, then unreference twice.
        This should be enough to destroy it. */
-    if (!GTK_WIDGET_VISIBLE(GTK_WIDGET(w))) gtk_object_unref (w);
+    if (!GTK_OBJECT_DESTROYED(w) && !GTK_WIDGET_VISIBLE(w))
+	gtk_object_unref (w);
     gtk_object_unref (w);
 }
 Make_Val_final_pointer (GtkObject, _window, gtk_object_ref, window_unref)
