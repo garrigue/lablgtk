@@ -598,7 +598,7 @@ class icon_view :
     (** Properties *)
 
     method model : model
-    method set_model : model -> unit
+    method set_model : model option -> unit
     method set_markup_column : string column -> unit
     method set_pixbuf_column : GdkPixbuf.pixbuf column -> unit
     method set_text_column : string column -> unit

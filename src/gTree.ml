@@ -568,9 +568,9 @@ class icon_view obj = object
   method event = new GObj.event_ops obj
 
   method model =
-    new model (Gobject.get IconView.P.model obj)
-  method set_model (m : model) =
-    Gobject.set IconView.P.model obj m#as_model
+    new model (Gobject.Property.get_some obj IconView.P.model)
+  method set_model (m : model option) =
+    Gobject.set IconView.P.model obj (Gaux.may_map (fun m -> m#as_model) m)
   method set_markup_column (c : string column) =
     Gobject.set IconView.P.markup_column obj c.index
   method set_text_column (c : string column) =
