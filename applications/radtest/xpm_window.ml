@@ -13,7 +13,7 @@ let target_table = [|   { target = "STRING"; flags = []; info = 0}  |]
 let xpm_window () =
   let source_drag_data_get classe _ (data : selection_data) _ _ =
     data#set type:data#target format:0 data:classe in
-  let window = new window show:true in
+  let window = new window show:true title:"icons" in
   let table = new table rows:5 columns:5 packing:window#add in
 
   let add_xpm :file :left :top :classe =
