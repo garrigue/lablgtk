@@ -123,7 +123,7 @@ let highlight_box item ev =
   | `LEAVE_NOTIFY ev ->
       let state = GdkEvent.Crossing.state ev in
       if not (Gdk.Convert.test_modifier `BUTTON1 state)
-      then item#set [ `FILL_COLOR "" ]
+      then item#set [ `NO_FILL_COLOR ]
   | `BUTTON_PRESS ev ->
       let curs = Gdk.Cursor.create `FLEUR in
       item#grab [`POINTER_MOTION; `BUTTON_RELEASE] curs 
@@ -136,7 +136,7 @@ let highlight_box item ev =
 
 let create_drag_box grp cb =
   let box = GnoCanvas.rect 
-      ~props:[ `FILL_COLOR "" ; `OUTLINE_COLOR "black" ; `WIDTH_PIXELS 0 ]
+      ~props:[ `NO_FILL_COLOR ; `OUTLINE_COLOR "black" ; `WIDTH_PIXELS 0 ]
       grp in
   let sigs = box#connect in
   sigs#event (highlight_box box) ;
