@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include <stdio.h>
+#include <string.h>
 #include <gtk/gtk.h>
 
 #include <caml/mlvalues.h>
@@ -173,17 +174,110 @@ ML_1 (gtk_text_buffer_get_char_count,GtkTextBuffer_val,Val_int)
 
 ML_1 (gtk_text_buffer_get_tag_table,GtkTextBuffer_val,Val_GtkTextTagTable)
 
-ML_3 (gtk_text_buffer_insert, GtkTextBuffer_val,
-      GtkTextIter_val, SizedString_val, Unit)
 
-ML_2 (gtk_text_buffer_insert_at_cursor,GtkTextBuffer_val,
-      SizedString_val, Unit)
 
-ML_4 (gtk_text_buffer_insert_interactive,GtkTextBuffer_val,
-      GtkTextIter_val, SizedString_val, Bool_val, Val_bool)
+/* [Benjamin] 
+   WARNING : something strange happens here : various segfaults 
+   we we insert non constant string a lot of times and the signal "insert-text"
+   is connected. See : 
 
-ML_3 (gtk_text_buffer_insert_interactive_at_cursor,GtkTextBuffer_val,
-      SizedString_val, Bool_val, Val_bool)
+let bug () = 
+  let w = GWindow.window  ~title:"Insertion bug"  () in
+  let b = GText.buffer () in
+  b#set_text  "Initial text\n";
+  GText.view ~buffer:b ~packing:(w#add) ();
+  w#show ();
+  b#connect#insert_text (fun it s -> Printf.printf "Handler got: \"%s\"\n" s;
+			flush stdout);
+  let s = "azert"^"yuiop" in
+  for i = 0 to 100 do 
+    Printf.printf "Number %d, \"%s\"\n" i s;
+    flush stdout;
+    b#insert ~text:s ()
+  done
+;;
+
+   The GC seems to free/move the string to early...
+
+   An explicite allocation of the string seems to fix it.
+   Jacques : any idea of what is happening ?
+*/
+
+/* ML_3 (gtk_text_buffer_insert, GtkTextBuffer_val, */
+/*       GtkTextIter_val, SizedString_val, Unit) */
+/* ML_2 (gtk_text_buffer_insert_at_cursor,GtkTextBuffer_val, */
+/*       SizedString_val, Unit) */
+
+CAMLprim value ml_gtk_text_buffer_insert (value tb, value ti,value st)
+{
+  CAMLparam3(tb,ti,st);
+  char* c;
+  int l = string_length(st);
+  c=g_malloc(l);
+  strncpy(c,String_val(st),l);
+  gtk_text_buffer_insert(GtkTextBuffer_val(tb),
+			 GtkTextIter_val(ti),
+			 c,
+			 l);
+  g_free(c);
+  CAMLreturn(0);
+}
+
+CAMLprim value ml_gtk_text_buffer_insert_at_cursor (value tb,value st)
+{
+  CAMLparam2(tb,st);
+  char* c;
+  int l = string_length(st);
+  c=g_malloc(l);
+  strncpy(c,String_val(st),l);
+  gtk_text_buffer_insert_at_cursor(GtkTextBuffer_val(tb),
+				   c,
+				   l);
+  g_free(c);
+
+
+
+  CAMLreturn(0);
+}
+
+CAMLprim value ml_gtk_text_buffer_insert_interactive (value tb, value ti,value st,value b)
+{
+  CAMLparam4(tb,ti,st,b);
+  char* c;
+  gboolean r;
+  int l = string_length(st);
+  c=g_malloc(l);
+  strncpy(c,String_val(st),l);
+  r = gtk_text_buffer_insert_interactive(GtkTextBuffer_val(tb),
+			     GtkTextIter_val(ti),
+			     c,
+			     l,Bool_val(b));
+  g_free(c);
+  CAMLreturn(Val_bool(r));
+}
+
+CAMLprim value ml_gtk_text_buffer_insert_interactive_at_cursor (value tb,value st,value b)
+{
+  CAMLparam3(tb,st,b);
+  char* c;
+  gboolean r;
+  int l = string_length(st);
+  c=g_malloc(l);
+  strncpy(c,String_val(st),l);
+  r = gtk_text_buffer_insert_interactive_at_cursor(GtkTextBuffer_val(tb),
+				       c,
+				       l,
+				       Bool_val(b));
+  g_free(c);
+  CAMLreturn(Val_bool(r));
+}
+
+/* ML_4 (gtk_text_buffer_insert_interactive,GtkTextBuffer_val,
+   GtkTextIter_val, SizedString_val, Bool_val, Val_bool)
+
+   ML_3 (gtk_text_buffer_insert_interactive_at_cursor,GtkTextBuffer_val,
+   SizedString_val, Bool_val, Val_bool)
+*/
 
 ML_4 (gtk_text_buffer_insert_range,GtkTextBuffer_val,
       GtkTextIter_val, GtkTextIter_val,GtkTextIter_val,Unit)
@@ -807,9 +901,11 @@ ML_2 (gtk_text_iter_set_visible_line_offset, GtkTextIter_val, Int_val, Unit)
 
 ML_1 (gtk_text_iter_forward_to_end, GtkTextIter_val, Unit)
 ML_1 (gtk_text_iter_forward_to_line_end, GtkTextIter_val, Val_bool)
-ML_2 (gtk_text_iter_forward_to_tag_toggle, GtkTextIter_val, GtkTextTag_val,
+ML_2 (gtk_text_iter_forward_to_tag_toggle, GtkTextIter_val, 
+      Option_val(arg2,GtkTextTag_val,NULL) Ignore,
       Val_bool)
-ML_2 (gtk_text_iter_backward_to_tag_toggle, GtkTextIter_val, GtkTextTag_val,
+ML_2 (gtk_text_iter_backward_to_tag_toggle, GtkTextIter_val, 
+      Option_val(arg2,GtkTextTag_val,NULL) Ignore,
       Val_bool)
      
 

@@ -29,7 +29,14 @@ let t_3 () =
   let b = GText.buffer () in
     b#set_text  "Bout de mon texte";
     GText.view ~buffer:b ~packing:(w#add) ();
-    w#show ();;
+    w#show ();
+    let s= "toto_\n" in
+    b#connect#insert_text 
+      (fun it s -> ());
+      
+    for i = 0 to 100 do b#insert ~text:s ()done;
+    for i = 0 to 100 do b#insert ~text:(s^"opierzuu") ()done
+;;
 
 let t_4 () = 
   let w = GWindow.window  ~title:"4)set_buffer"  () in
@@ -169,6 +176,6 @@ let t_12 () =
 
 (* t_1();t_2 ();t_3();t_4();t_5();t_6();t_7() ; t_8 ; t_9 ; t_10 ;; *)
 
-t_12();;
+t_3();;
 
 GMain.Main.main ();;

@@ -80,16 +80,23 @@ object
     Iter.get_visible_text it stop#as_textiter
   method get_pixbuf = Iter.get_pixbuf it
   method get_marks = Iter.get_marks it
-  method get_toggled_tags  = Iter.get_toggled_tags it
+  method get_toggled_tags b = List.map (fun x -> new tag x) 
+			      (Iter.get_toggled_tags it b)
   method get_child_anchor  = 
     match (Iter.get_child_anchor it)
     with 
       |None -> None
       |Some c -> Some (new child_anchor c)
-  method begins_tag t = Iter.begins_tag it t
-  method ends_tag t = Iter.ends_tag it t
-  method toggles_tag t = Iter.toggles_tag it t
-  method has_tag t = Iter.has_tag it t
+  method begins_tag ?(tag:tag option) () = 
+    Iter.begins_tag it (match tag with | None -> None 
+			  | Some t -> Some t#as_tag)
+  method ends_tag ?(tag:tag option) () = 
+    Iter.ends_tag it (match tag with | None -> None 
+			  | Some t -> Some t#as_tag)
+					   
+  method toggles_tag ?(tag:tag option) () = 
+    Iter.toggles_tag it (match tag with None -> None | Some t -> Some t#as_tag)
+  method has_tag (t:tag) = Iter.has_tag it t#as_tag
   method get_tags = List.map (fun t -> new tag t) (Iter.get_tags it)
   method editable = Iter.editable it
   method can_insert = Iter.can_insert it
@@ -134,8 +141,12 @@ object
   method set_visible_line_offset  = Iter.set_visible_line_offset it
   method forward_to_end () = Iter.forward_to_end it
   method forward_to_line_end () = Iter.forward_to_line_end it
-  method forward_to_tag_toggle  = Iter.forward_to_tag_toggle it
-  method backward_to_tag_toggle  = Iter.backward_to_tag_toggle it
+  method forward_to_tag_toggle ?(tag:tag option) () = 
+    Iter.forward_to_tag_toggle it 
+      (match tag with None -> None | Some t -> Some t#as_tag) 
+  method backward_to_tag_toggle ?(tag:tag option) () = 
+    Iter.backward_to_tag_toggle it 
+      (match tag with None -> None | Some t -> Some t#as_tag) 
   method equal (a:iter) = Iter.equal it a#as_textiter
   method compare (a:iter) = Iter.compare it a#as_textiter
   method in_range ~(start:iter) ~(stop:iter)  = 
@@ -286,9 +297,11 @@ class buffer obj = object(self)
       ?(default_editable = true) () = 
     Buffer.insert_range_interactive obj iter start stop
       default_editable
-  method delete ~start ~stop = Buffer.delete obj start stop
+  method delete ~start ~stop = Buffer.delete obj (as_textiter start) 
+				 (as_textiter stop)
   method delete_interactive ~start ~stop ?(default_editable = true) () = 
-    Buffer.delete_interactive obj start stop default_editable
+    Buffer.delete_interactive obj (as_textiter start) 
+      (as_textiter stop) default_editable
   method set_text text = 
     Buffer.set_text obj text
   method get_text ?(include_hidden_chars=false) ?start ?stop () =

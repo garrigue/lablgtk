@@ -468,14 +468,16 @@ module Buffer = struct
 
   let marshal_insert_text f argv = function 
     | `POINTER(Some ti)::`STRING(Some s)::`INT len::_  ->
-        let s =
-          if len = -1 then s else
-          Gpointer.peek_string ~pos:0 ~len
-            (Gobject.Closure.get_pointer argv ~pos:2)
+(*        let s' =
+          if len = -1 then (prerr_endline "HERE -1";s) else
+            (prerr_endline "HERE NOW";
+	     Gpointer.peek_string ~pos:0 ~len
+               (Gobject.Closure.get_pointer argv ~pos:2))
         in
-        f (!textiter_of_pointer ti) s
+*)
+	f (!textiter_of_pointer ti) s
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_insert_text"
-
+	
   let marshal_textmark f _ = function 
     | `OBJECT(Some tm)::_ -> 
 	f (Gobject.unsafe_cast tm : textmark obj)
@@ -844,8 +846,8 @@ module Iter = struct
   external set_visible_line_offset : textiter -> int -> unit = "ml_gtk_text_iter_set_visible_line_offset"
   external forward_to_end : textiter -> unit = "ml_gtk_text_iter_forward_to_end"
   external forward_to_line_end : textiter -> bool = "ml_gtk_text_iter_forward_to_line_end"
-  external forward_to_tag_toggle : textiter -> texttag obj -> bool = "ml_gtk_text_iter_forward_to_tag_toggle"
-  external backward_to_tag_toggle : textiter -> texttag obj -> bool = "ml_gtk_text_iter_backward_to_tag_toggle"
+  external forward_to_tag_toggle : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_forward_to_tag_toggle"
+  external backward_to_tag_toggle : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_backward_to_tag_toggle"
   external equal : textiter -> textiter -> bool = "ml_gtk_text_iter_equal"
   external compare : textiter -> textiter -> int = "ml_gtk_text_iter_compare"
   external in_range : textiter -> textiter -> textiter -> int = "ml_gtk_text_iter_in_range"
