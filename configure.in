@@ -127,11 +127,11 @@ fi
 AC_CHECK_PROG(OCAMLLEX,ocamllex,ocamllex,no)
 if test "$OCAMLLEX" = no ; then
     AC_MSG_ERROR(Cannot find ocamllex.)
-else
-    AC_CHECK_PROG(OCAMLLEXDOTOPT,ocamllex.opt,ocamllex.opt,no)
-    if test "$OCAMLLEXDOTOPT" != no ; then
-	OCAMLLEX=$OCAMLLEXDOTOPT
-    fi
+#else
+#    AC_CHECK_PROG(OCAMLLEXDOTOPT,ocamllex.opt,ocamllex.opt,no)
+#    if test "$OCAMLLEXDOTOPT" != no ; then
+#	OCAMLLEX=$OCAMLLEXDOTOPT
+#    fi
 fi
 
 AC_CHECK_PROG(OCAMLYACC,ocamlyacc,ocamlyacc,no)
