@@ -4,7 +4,7 @@
 Needed:
 	ocaml-3.05
 	gtk-1.2.x
-	gmake (there is no standard for conditionals)
+	GNU make (there is no standard for conditionals)
 
 Info/upgrades:
         http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgtk.html
