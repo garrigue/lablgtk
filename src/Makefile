@@ -23,8 +23,11 @@ THFLAGS = -thread
 THLIBS = unix.cma threads.cma
 THLDFLAGS = -lthreads -lunix
 
-#CCOMPILER = cc -c -I/usr/local/lib/olabl $(CFLAGS)
+ifdef USE_CC
+CCOMPILER = $(CC) -c -I/usr/local/lib/olabl -DGTK_NO_CHECK_CASTS $(CFLAGS)
+else
 CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
+endif
 
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
@@ -40,7 +43,7 @@ CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
 	./var2conv < $< > $@
 
 # Targets
-COBJS = ml_gtk.o ml_gdk.o ml_glib.o ml_gtkcaller.o
+COBJS = ml_gtk.o ml_gdk.o ml_glib.o ml_gtkcaller.o wrappers.o
 MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma

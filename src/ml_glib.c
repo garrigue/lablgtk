@@ -9,6 +9,7 @@
 #include "wrappers.h"
 #include "ml_glib.h"
 
+/*
 value Val_GSList (GSList *list, value (*func)(gpointer))
 {
     value new_cell, result, last_cell, cell;
@@ -51,6 +52,7 @@ GSList *GSList_val (value list, gpointer (*func)(value))
     End_roots ();
     return res;
 }
+*/
 
 static value ml_warning_handler = 0L;
 
