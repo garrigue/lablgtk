@@ -446,6 +446,10 @@ type cell_properties_toggle_only =
   | `INCONSISTENT of bool
   | `RADIO of bool ]
 type cell_properties_toggle = [ cell_properties | cell_properties_toggle_only ]
+type cell_properties_progress_only =
+  [ `VALUE of int
+  | `TEXT of string option ]
+type cell_properties_progress = [ cell_properties | cell_properties_progress_only ]
 
 let cell_renderer_pixbuf_param' = function
   | #cell_properties_pixbuf_only as x -> cell_renderer_pixbuf_param x
@@ -457,6 +461,9 @@ let cell_renderer_text_param' = function
   | #cell_properties_text_only as x -> cell_renderer_text_param x
 let cell_renderer_toggle_param' = function
   | #cell_properties_toggle_only as x -> cell_renderer_toggle_param x
+  | #cell_properties as x -> cell_renderer_param x
+let cell_renderer_progress_param' = function
+  | #cell_properties_progress_only as x -> cell_renderer_progress_param x
   | #cell_properties as x -> cell_renderer_param x
 
 class type ['a, 'b] cell_renderer_skel =
@@ -504,6 +511,13 @@ class cell_renderer_toggle obj = object
   method connect = new cell_renderer_toggle_signals obj
 end
 
+class cell_renderer_progress obj = object
+  inherit [Gtk.cell_renderer_progress,cell_properties_progress]
+      cell_renderer_impl obj
+  method private param = cell_renderer_progress_param'
+  method connect = new gtkobj_signals_impl obj
+end
+
 let cell_renderer_pixbuf l =
   new cell_renderer_pixbuf
     (CellRendererPixbuf.create (List.map cell_renderer_pixbuf_param' l))
@@ -513,3 +527,6 @@ let cell_renderer_text l =
 let cell_renderer_toggle l =
   new cell_renderer_toggle
     (CellRendererToggle.create (List.map cell_renderer_toggle_param' l))
+let cell_renderer_progress l =
+  new cell_renderer_progress
+    (CellRendererProgress.create (List.map cell_renderer_progress_param' l))
