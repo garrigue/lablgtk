@@ -140,12 +140,13 @@ install:
 	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
 	cp $(CLIBS) $(INSTALLDIR)
 	cd $(INSTALLDIR) && $(RANLIB) $(CLIBS)
-	cp lablgtktop lablgtktop_t varcc $(INSTALLDIR)
+	cp lablgtktop varcc $(INSTALLDIR)
 	cp -p *.h $(INSTALLDIR)
 	cp lablgtk $(BINDIR)
 	if test -f dlllablgtk.so; then cp $(CLIBS:lib%.a=dll%.so) $(INSTALLDIR); fi
 	if test -f lablgladecc; then cp lablgladecc $(BINDIR); fi
 	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
+	cp lablgtktop_t $(INSTALLDIR)
 
 installopt:
 	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.a) $(INSTALLDIR)
