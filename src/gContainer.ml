@@ -13,17 +13,17 @@ class focus obj = object
     let child = may_map child fun:(fun x -> x#as_widget) in
     Container.set_focus_child obj (optboxed child)
   method set_hadjustment adj =
-    Container.set_focus_hadjustment obj (optboxed (adjustment_option adj))
+    Container.set_focus_hadjustment obj
+      (optboxed (may_map adj fun:as_adjustment))
   method set_vadjustment adj =
-    Container.set_focus_vadjustment obj (optboxed (adjustment_option adj))
+    Container.set_focus_vadjustment obj
+      (optboxed (may_map adj fun:as_adjustment))
 end
 
 class container obj = object
   inherit widget obj
-  method add (w : widget) =
-    Container.add obj w#as_widget
-  method remove (w : widget) =
-    Container.remove obj w#as_widget
+  method add w = Container.add obj (as_widget w)
+  method remove w = Container.remove obj (as_widget w)
   method children = List.map fun:(new widget_full) (Container.children obj)
   method set_border_width = Container.set_border_width obj
   method focus = new focus obj

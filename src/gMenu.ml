@@ -35,7 +35,7 @@ class menu_item_signals obj = object
 end
 
 
-class ['a] menu_item_skel obj = object
+class ['a] pre_menu_item_skel obj = object
   inherit container obj
   method as_item = MenuItem.coerce obj
   method set_submenu (w : 'a pre_menu) = MenuItem.set_submenu obj w#as_menu
@@ -48,10 +48,12 @@ class ['a] menu_item_skel obj = object
 end
 
 class menu_item obj = object
-  inherit [menu_item] menu_item_skel obj
+  inherit [menu_item] pre_menu_item_skel obj
   method connect = new menu_item_signals obj
   method add_events = Widget.add_events obj
 end
+
+class menu_item_skel = [menu_item] pre_menu_item_skel
 
 let pack_item self :packing :show =
   may packing fun:(fun f -> (f (self :> menu_item) : unit));
@@ -75,7 +77,7 @@ class check_menu_item_signals obj = object
 end
 
 class check_menu_item obj = object
-  inherit [menu_item] menu_item_skel obj
+  inherit menu_item_skel obj
   method set_active = CheckMenuItem.set_active obj
   method set_show_toggle = CheckMenuItem.set_show_toggle obj
   method active = CheckMenuItem.get_active obj

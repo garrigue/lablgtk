@@ -5,17 +5,9 @@ open Gdk
 
 type color = [`COLOR Color.t|`WHITE|`BLACK|`NAME string|`RGB (int*int*int)]
 
-(*
 let color : color -> Color.t = function
     `COLOR col -> col
   | `WHITE|`BLACK|`NAME _|`RGB _ as def -> Color.alloc def
-*)
-let color : color -> Color.t = function
-    `COLOR col -> col
-  | `WHITE -> Color.alloc `WHITE
-  | `BLACK -> Color.alloc `BLACK
-  | `NAME x -> Color.alloc (`NAME x)
-  | `RGB x -> Color.alloc (`RGB x)
 
 class ['a] drawing w = object
   val gc = GC.create w

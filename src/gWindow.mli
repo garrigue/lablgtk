@@ -1,31 +1,39 @@
 (* $Id$ *)
 
 open Gtk
+open GObj
 
-class window_skel :
-  'a[> container widget window] obj ->
+class ['a] window_skel : 'b obj ->
   object
     inherit GContainer.container
-    val obj : 'a obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    constraint 'a = 'a #window_skel
+    constraint 'b = [>`widget|`container|`window]
+    val obj : 'b obj
     method activate_default : unit -> unit
     method activate_focus : unit -> unit
     method add_accel_group : accel_group -> unit
-    method as_window : window obj
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method as_window : Gtk.window obj
+    method set_allow_grow : bool -> unit
+    method set_allow_shrink : bool -> unit
+    method set_auto_shrink : bool -> unit
     method set_default_size : width:int -> height:int -> unit
     method set_modal : bool -> unit
-    method set_allow_shrink : bool -> unit
-    method set_allow_grow : bool -> unit
-    method set_auto_shrink : bool -> unit
     method set_position : Tags.window_position -> unit
-    method set_transient_for : #GObj.is_window -> unit
     method set_title : string -> unit
-    method set_wm_name : string -> unit
+    method set_transient_for : 'a -> unit
     method set_wm_class : string -> unit
+    method set_wm_name : string -> unit
     method show : unit -> unit
   end
 
-class window :
+class window : [>`window] obj ->
+  object
+    inherit [window] window_skel
+    val obj : Gtk.window obj
+    method connect : GContainer.container_signals
+  end
+val window :
   ?type:Tags.window_type ->
   ?title:string ->
   ?wm_name:string ->
@@ -40,38 +48,17 @@ class window :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(window -> unit) -> ?show:bool ->
-  object
-    inherit window_skel
-    val obj : Gtk.window obj
-    method connect : GContainer.container_signals
-  end
-class window_wrapper : ([> window]) obj -> window
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> window
 
-class dialog :
-  ?title:string ->
-  ?wm_name:string ->
-  ?wm_class:string ->
-  ?position:Tags.window_position ->
-  ?allow_shrink:bool ->
-  ?allow_grow:bool ->
-  ?auto_shrink:bool ->
-  ?modal:bool ->
-  ?x:int ->
-  ?y:int ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(dialog -> unit) -> ?show:bool ->
+class dialog : [>`dialog] obj ->
   object
-    inherit window
+    inherit [window] window_skel
     val obj : Gtk.dialog obj
     method action_area : GPack.box
+    method connect : GContainer.container_signals
     method vbox : GPack.box
   end
-class dialog_wrapper : ([> dialog]) obj -> dialog
-
-class color_selection_dialog :
+val dialog :
   ?title:string ->
   ?wm_name:string ->
   ?wm_class:string ->
@@ -85,19 +72,48 @@ class color_selection_dialog :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(color_selection_dialog -> unit) -> ?show:bool ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> dialog
+
+class color_selection_dialog : Gtk.color_selection_dialog obj ->
   object
-    inherit window
+    inherit [window] window_skel
     val obj : Gtk.color_selection_dialog obj
     method cancel_button : GButton.button
     method colorsel : GMisc.color_selection
+    method connect : GContainer.container_signals
     method help_button : GButton.button
     method ok_button : GButton.button
   end
-class color_selection_dialog_wrapper :
-  Gtk.color_selection_dialog obj -> color_selection_dialog
+val color_selection_dialog :
+  ?title:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
+  ?position:Tags.window_position ->
+  ?allow_shrink:bool ->
+  ?allow_grow:bool ->
+  ?auto_shrink:bool ->
+  ?modal:bool ->
+  ?x:int ->
+  ?y:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) ->
+  ?show:bool -> unit -> color_selection_dialog
 
-class file_selection :
+class file_selection : Gtk.file_selection obj ->
+  object
+    inherit [window] window_skel
+    val obj : Gtk.file_selection obj
+    method cancel_button : GButton.button
+    method connect : GContainer.container_signals
+    method get_filename : string
+    method help_button : GButton.button
+    method ok_button : GButton.button
+    method set_filename : string -> unit
+    method set_fileop_buttons : bool -> unit
+  end
+val file_selection :
   ?title:string ->
   ?filename:string ->
   ?fileop_buttons:bool ->
@@ -113,20 +129,31 @@ class file_selection :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(file_selection -> unit) -> ?show:bool ->
-  object
-    inherit window
-    val obj : Gtk.file_selection obj
-    method cancel_button : GButton.button
-    method get_filename : string
-    method help_button : GButton.button
-    method ok_button : GButton.button
-    method set_filename : string -> unit
-    method set_fileop_buttons : bool -> unit
-  end
-class file_selection_wrapper : Gtk.file_selection obj -> file_selection
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> file_selection
 
-class font_selection_dialog :
+class font_selection_dialog : Gtk.font_selection_dialog obj ->
+  object
+    inherit [window] window_skel
+    val obj : Gtk.font_selection_dialog obj
+    method apply_button : GButton.button
+    method cancel_button : GButton.button
+    method connect : GContainer.container_signals
+    method font : Gdk.font option
+    method font_name : string option
+    method ok_button : GButton.button
+    method preview_text : string
+    method set_filter :
+      ?type:Tags.font_type list ->
+      ?foundry:string list ->
+      ?weight:string list ->
+      ?slant:string list ->
+      ?setwidth:string list ->
+      ?spacing:string list ->
+      ?charset:string list -> Tags.font_filter_type -> unit
+    method set_font_name : string -> unit
+    method set_preview_text : string -> unit
+  end
+val font_selection_dialog :
   ?title:string ->
   ?wm_name:string ->
   ?wm_class:string ->
@@ -140,27 +167,5 @@ class font_selection_dialog :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(font_selection_dialog -> unit) ->
-  ?show:bool ->
-  object
-    inherit window
-    val obj : Gtk.font_selection_dialog obj
-    method font : Gdk.font option
-    method font_name : string option
-    method preview_text : string
-    method set_filter :
-      filter:Tags.font_filter_type ->
-      ?type:Tags.font_type list ->
-      ?foundry:string list ->
-      ?weight:string list ->
-      ?slant:string list ->
-      ?setwidth:string list ->
-      ?spacing:string list -> ?charset:string list -> unit
-    method set_font_name : string -> unit
-    method set_preview_text : string -> unit
-    method ok_button : GButton.button
-    method apply_button : GButton.button
-    method cancel_button : GButton.button
-  end
-class font_selection_dialog_wrapper :
-    Gtk.font_selection_dialog obj -> font_selection_dialog
+  ?packing:(widget -> unit) ->
+  ?show:bool -> unit -> font_selection_dialog

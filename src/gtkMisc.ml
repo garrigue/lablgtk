@@ -239,11 +239,12 @@ module Misc = struct
   let set_padding w ?:x ?:y () =
     set_padding w x:(may_default get_xpad w for:x)
       y:(may_default get_ypad w for:y)
-  let set ?:xalign ?:yalign ?:xpad ?:ypad w =
+  let set ?:xalign ?:yalign ?:xpad ?:ypad ?:width{= -2} ?:height{= -2} w =
     if xalign <> None || yalign <> None then
       set_alignment w ?x:xalign ?y:yalign ();
     if xpad <> None || ypad <> None then
-      set_padding w ?x:xpad ?y:ypad ()
+      set_padding w ?x:xpad ?y:ypad ();
+    if width <> -2 || height <> -2 then Widget.set_usize w :width :height
 end
 
 module Arrow = struct

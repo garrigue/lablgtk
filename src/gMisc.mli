@@ -1,67 +1,61 @@
 (* $Id$ *)
 
 open Gtk
+open GObj
+open GContainer
 
-class separator :
+val separator :
   Tags.orientation ->
   ?width:int ->
   ?height:int ->
-  ?packing:(separator -> unit) -> ?show:bool ->
-  object
-    inherit GObj.widget_wrapper
-    val obj : Gtk.separator obj
-  end
-class separator_wrapper : Gtk.separator obj -> separator
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> widget_full
 
 class statusbar_context :
-  Gtk.statusbar obj ->
-  Gtk.statusbar_context ->
+  Gtk.statusbar obj -> Gtk.statusbar_context ->
   object
+    val context : Gtk.statusbar_context
+    val obj : Gtk.statusbar obj
     method context : Gtk.statusbar_context
-    method flash : string -> ?delay:int -> unit
+    method flash : ?delay:int -> string -> unit
     method pop : unit -> unit
     method push : string -> statusbar_message
     method remove : statusbar_message -> unit
   end
 
-class statusbar :
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(statusbar -> unit) -> ?show:bool ->
+class statusbar : Gtk.statusbar obj ->
   object
-    inherit GContainer.container_wrapper
+    inherit container_full
     val obj : Gtk.statusbar obj
     method new_context : name:string -> statusbar_context
   end
-class statusbar_wrapper : Gtk.statusbar obj -> statusbar
+val statusbar :
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> statusbar
 
-class calendar_signals :
-  'a[> calendar widget] Gtk.obj ->
+class calendar_signals : 'a obj ->
   object
-    inherit GObj.widget_signals
-    val obj : 'a Gtk.obj
-    method day_selected :
-	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    inherit widget_signals
+    constraint 'a = [>`calendar|`widget]
+    val obj : 'a obj
+    method day_selected : callback:(unit -> unit) -> GtkSignal.id
     method day_selected_double_click :
-	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
-    method month_changed :
-	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
-    method next_month : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
-    method next_year : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
-    method prev_month : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
-    method prev_year : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+      callback:(unit -> unit) -> GtkSignal.id
+    method month_changed : callback:(unit -> unit) -> GtkSignal.id
+    method next_month : callback:(unit -> unit) -> GtkSignal.id
+    method next_year : callback:(unit -> unit) -> GtkSignal.id
+    method prev_month : callback:(unit -> unit) -> GtkSignal.id
+    method prev_year : callback:(unit -> unit) -> GtkSignal.id
   end
-class calendar :
-  ?options:Tags.calendar_display_options list ->
-  ?width:int -> ?height:int ->
-  ?packing:(calendar -> unit) -> ?show:bool ->
+
+class calendar : Gtk.calendar obj ->
   object
-    inherit GObj.widget
+    inherit widget
     val obj : Gtk.calendar obj
     method add_events : Gdk.Tags.event_mask list -> unit
-    method connect : calendar_signals
     method clear_marks : unit
+    method connect : calendar_signals
     method date : int * int * int
     method display_options : Tags.calendar_display_options list -> unit
     method freeze : unit -> unit
@@ -71,42 +65,52 @@ class calendar :
     method thaw : unit -> unit
     method unmark_day : int -> unit
   end
-class calendar_wrapper : Gtk.calendar obj -> calendar
-
-class drawing_area :
+val calendar :
+  ?options:Tags.calendar_display_options list ->
   ?width:int ->
   ?height:int ->
-  ?packing:(drawing_area -> unit) -> ?show:bool ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> calendar
+
+class drawing_area : Gtk.drawing_area obj ->
   object
-    inherit GObj.widget_wrapper
+    inherit widget_full
     val obj : Gtk.drawing_area obj
     method add_events : Gdk.Tags.event_mask list -> unit
     method set_size : width:int -> height:int -> unit
   end
-class drawing_area_wrapper : Gtk.drawing_area obj -> drawing_area
+val drawing_area :
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> drawing_area
 
-class misc :
-  'a[> misc widget] obj ->
+class misc : 'a obj ->
   object
-    inherit GObj.widget
+    inherit widget
+    constraint 'a = [>`misc|`widget]
     val obj : 'a obj
-    method set_alignment : ?x:float -> ?y:float -> unit
-    method set_padding : ?x:int -> ?y:int -> unit
+    method set_alignment : ?x:float -> ?y:float -> unit -> unit
+    method set_padding : ?x:int -> ?y:int -> unit -> unit
   end
 
-class label_skel :
-  'a[> label misc widget] obj ->
+class label_skel : 'a obj ->
   object
     inherit misc
+    constraint 'a = [>`label|`misc|`widget]
     val obj : 'a obj
     method set_justify : Tags.justification -> unit
-    method set_line_wrap : bool -> unit 
+    method set_line_wrap : bool -> unit
     method set_pattern : string -> unit
     method set_text : string -> unit
     method text : string
   end
 
-class label :
+class label : [>`label] obj ->
+  object
+    inherit label_skel
+    val obj : Gtk.label obj
+    method connect : widget_signals
+  end
+val label :
   ?text:string ->
   ?justify:Tags.justification ->
   ?line_wrap:bool ->
@@ -115,60 +119,88 @@ class label :
   ?yalign:float ->
   ?xpad:int ->
   ?ypad:int ->
-  ?width:int -> ?height:int ->
-  ?packing:(label -> unit) -> ?show:bool ->
-  object
-    inherit label_skel
-    val obj : Gtk.label obj
-    method connect : GObj.widget_signals
-  end
-class label_wrapper : ([> label]) obj -> label
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> label
 
-class tips_query_signals :
-  'a[> tipsquery widget] obj ->
+class tips_query_signals : 'a obj ->
   object
-    inherit GObj.widget_signals
+    inherit widget_signals
+    constraint 'a = [>`tipsquery|`widget]
     val obj : 'a obj
     method widget_entered :
-      callback:(GObj.widget_wrapper option ->
+      callback:(widget_full option ->
                 text:string option -> private:string option -> unit) ->
-      ?after:bool -> GtkSignal.id
+      GtkSignal.id
     method widget_selected :
-      callback:(GObj.widget_wrapper option ->
-                text:string option ->
-		private:string option -> GdkEvent.Button.t option -> bool) ->
-      ?after:bool -> GtkSignal.id
+      callback:(widget_full option -> text:string option ->
+                private:string option -> GdkEvent.Button.t option -> bool) ->
+      GtkSignal.id
   end
 
-class tips_query :
-  ?caller:#GObj.is_widget ->
-  ?emit_always:bool ->
-  ?label_inactive:string ->
-  ?label_no_tip:string ->
-  ?width:int -> ?height:int ->
-  ?packing:(tips_query -> unit) -> ?show:bool ->
+class tips_query : Gtk.tips_query obj ->
   object
     inherit label_skel
     val obj : Gtk.tips_query obj
     method connect : tips_query_signals
-    method set_caller : #GObj.is_widget -> unit
+    method set_caller : widget -> unit
     method set_emit_always : bool -> unit
     method set_label_inactive : string -> unit
     method set_label_no_tip : string -> unit
     method start : unit -> unit
     method stop : unit -> unit
   end
-class tips_query_wrapper : Gtk.tips_query obj -> tips_query
+val tips_query :
+  ?caller:#widget ->
+  ?emit_always:bool ->
+  ?label_inactive:string ->
+  ?label_no_tip:string ->
+  ?xalign:float ->
+  ?yalign:float ->
+  ?xpad:int ->
+  ?ypad:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> tips_query
 
-class notebook_signals :
-  'a[> container notebook widget] Gtk.obj ->
+class notebook_signals : 'a obj ->
   object
-    inherit GContainer.container_signals
-    val obj : 'a Gtk.obj
-    method switch_page : callback:(int -> unit) -> ?after:bool -> GtkSignal.id
+    inherit container_signals
+    constraint 'a = [>`notebook|`container|`widget]
+    val obj : 'a obj
+    method switch_page : callback:(int -> unit) -> GtkSignal.id
   end
 
-class notebook :
+class notebook : Gtk.notebook obj ->
+  object
+    inherit container
+    val obj : Gtk.notebook obj
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method append_page :
+      ?tab_label:widget -> ?menu_label:widget -> widget -> unit
+    method connect : notebook_signals
+    method current_page : int
+    method goto_page : int -> unit
+    method insert_page :
+      ?tab_label:widget -> ?menu_label:widget -> pos:int -> widget -> unit
+    method next_page : unit -> unit
+    method nth_page : int -> widget
+    method page_num : widget -> int
+    method prepend_page :
+      ?tab_label:widget -> ?menu_label:widget -> widget -> unit
+    method previous_page : unit -> unit
+    method remove_page : int -> unit
+    method set_homogeneous_tabs : bool -> unit
+    method set_page :
+      ?tab_label:widget -> ?menu_label:widget -> widget -> unit
+    method set_popup : bool -> unit
+    method set_scrollable : bool -> unit
+    method set_show_border : bool -> unit
+    method set_show_tabs : bool -> unit
+    method set_tab_border : int -> unit
+    method set_tab_pos : Tags.position -> unit
+  end
+val notebook :
   ?tab_pos:Tags.position ->
   ?tab_border:int ->
   ?show_tabs:bool ->
@@ -179,54 +211,20 @@ class notebook :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(notebook -> unit) ->
-  ?show:bool ->
-  object
-    inherit GContainer.container
-    val obj : Gtk.notebook obj
-    method add_events : Gdk.Tags.event_mask list -> unit
-    method connect : notebook_signals
-    method append_page :
-      #GObj.is_widget ->
-      ?tab_label:#GObj.is_widget -> ?menu_label:#GObj.is_widget -> unit
-    method current_page : int
-    method goto_page : int -> unit
-    method insert_page :
-      #GObj.is_widget -> ?tab_label:#GObj.is_widget ->
-      ?menu_label:#GObj.is_widget -> pos:int -> unit
-    method next_page : unit -> unit
-    method nth_page : int -> GObj.widget
-    method page_num : #GObj.is_widget -> int
-    method prepend_page :
-      #GObj.is_widget ->
-      ?tab_label:#GObj.is_widget -> ?menu_label:#GObj.is_widget -> unit
-    method previous_page : unit -> unit
-    method remove_page : int -> unit
-    method set_tab_pos : Tags.position -> unit
-    method set_show_tabs : bool -> unit
-    method set_homogeneous_tabs : bool -> unit
-    method set_show_border : bool -> unit
-    method set_scrollable : bool -> unit
-    method set_tab_border : int -> unit
-    method set_popup : bool -> unit
-    method set_page :
-      #GObj.is_widget ->
-      ?tab_label:#GObj.is_widget -> ?menu_label:#GObj.is_widget -> unit
-  end
-class notebook_wrapper : Gtk.notebook obj -> notebook
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> notebook
 
-class color_selection :
+class color_selection : Gtk.color_selection obj ->
+  object
+    inherit widget_full
+    val obj : Gtk.color_selection obj
+    method get_color : Gtk.color
+    method set_color :
+      red:float -> green:float -> blue:float -> ?opacity:float -> unit
+    method set_opacity : bool -> unit
+    method set_update_policy : Tags.update_type -> unit
+  end
+val color_selection :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(color_selection -> unit) -> ?show:bool ->
-  object
-    inherit GObj.widget_wrapper
-    val obj : Gtk.color_selection obj
-    method get_color : color
-    method set_color :
-      red:float -> green:float -> blue:float -> ?opacity:float -> unit
-    method set_update_policy : Tags.update_type -> unit
-    method set_opacity : bool -> unit
-  end
-class color_selection_wrapper : Gtk.color_selection obj -> color_selection
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> color_selection

@@ -254,7 +254,7 @@ and widget_full obj = object
   method connect = new widget_signals obj
 end
 
-
+let as_widget (w : widget) = w#as_widget
 
 let pack_return self :packing :show =
   may packing fun:(fun f -> (f (self : #widget :> widget) : unit));

@@ -43,6 +43,8 @@ val adjustment :
   ?step_incr:float ->
   ?page_incr:float -> ?page_size:float -> unit -> adjustment
 
+val as_adjustment : adjustment -> Gtk.adjustment obj
+
 class tooltips :
   Gtk.tooltips obj ->
   object
@@ -60,5 +62,3 @@ class tooltips :
 val tooltips :
   ?delay:int ->
   ?foreground:GdkObj.color -> ?background:GdkObj.color -> unit -> tooltips
-
-val adjustment_option : adjustment option -> Gtk.adjustment obj option
