@@ -74,7 +74,7 @@ let t_6 () =
   let tt = GText.tagtable () in
   let tb = GText.buffer ~tagtable:tt ~text:"un certain exemple...." () in
   let tv = GText.view ~buffer:tb ~packing:(w#add) () in
-    Printf.printf "Size = %d \n" (tt#size ());
+    Printf.printf "Size = %d \n" tt#size;
     flush stdout;
     w#show ();;
 

@@ -853,11 +853,13 @@ module Iter = struct
   external in_range : textiter -> textiter -> textiter -> int = "ml_gtk_text_iter_in_range"
   external order : textiter -> textiter -> unit = "ml_gtk_text_iter_order"
 
-  external forward_search : textiter -> string -> 
-    text_search_flag -> textiter option -> (textiter * textiter) option 
+  external forward_search :
+    textiter -> string -> ?flags:text_search_flag list ->
+    textiter option -> (textiter * textiter) option 
     = "ml_gtk_text_iter_forward_search"
-  external backward_search : textiter -> string -> 
-    text_search_flag -> textiter option -> (textiter * textiter) option 
+  external backward_search :
+    textiter -> string -> ?flags:text_search_flag list ->
+    textiter option -> (textiter * textiter) option 
     = "ml_gtk_text_iter_backward_search"
   external forward_find_char : 
     textiter -> (Glib.unichar -> bool) -> textiter option -> bool

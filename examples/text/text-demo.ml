@@ -162,14 +162,11 @@ let insert_text (buffer:GText.buffer) =
    ()
 
 
-let find_anchor (iter:GText.iter) =
-  try
-    while iter#forward_char ()
-    do
-      match iter#contents with `CHILD _ -> raise Exit | _ -> ()
-    done;
-    false
-  with Exit -> true
+let rec find_anchor (iter : GText.iter) =
+  if iter#is_end then false else
+  match iter#forward_char#contents with
+    `CHILD _ -> true
+  | _ -> find_anchor iter
 
 let rec recursive_attach_view depth (view:GText.view) anchor =
   if depth <= 4 then begin

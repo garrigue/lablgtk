@@ -61,17 +61,19 @@ type contents =
     | `UNKNOWN ]
 
 class iter it =
-object
+object (self)
   val it = (it: textiter)
   method as_textiter = it
   method copy = new iter (Iter.copy it)
   method buffer = Iter.get_buffer it
+
   method offset = Iter.get_offset it
   method line = Iter.get_line it
   method line_offset = Iter.get_line_offset it
   method line_index = Iter.get_line_index it
   method visible_line_index = Iter.get_visible_line_index it
   method visible_line_offset = Iter.get_visible_line_offset it
+
   method char = Iter.get_char it
   method contents : contents =
     let c = Iter.get_char it in
@@ -87,20 +89,19 @@ object
     Iter.get_visible_slice it stop#as_textiter
   method get_visible_text ~(stop:iter) = 
     Iter.get_visible_text it stop#as_textiter
+
   method marks = Iter.get_marks it
   method get_toggled_tags b = List.map (fun x -> new tag x) 
 			      (Iter.get_toggled_tags it b)
-  method begins_tag ?(tag:tag option) () = 
-    Iter.begins_tag it (match tag with | None -> None 
-			  | Some t -> Some t#as_tag)
-  method ends_tag ?(tag:tag option) () = 
-    Iter.ends_tag it (match tag with | None -> None 
-			  | Some t -> Some t#as_tag)
-					   
-  method toggles_tag ?(tag:tag option) () = 
-    Iter.toggles_tag it (match tag with None -> None | Some t -> Some t#as_tag)
-  method has_tag (t:tag) = Iter.has_tag it t#as_tag
+  method begins_tag (tag : tag option) = 
+    Iter.begins_tag it (may_map tag ~f:(fun t -> t#as_tag))
+  method ends_tag (tag : tag option) = 
+    Iter.ends_tag it (may_map tag ~f:(fun t -> t#as_tag))
+  method toggles_tag (tag : tag option) = 
+    Iter.toggles_tag it (may_map tag ~f:(fun t -> t#as_tag))
+  method has_tag (t : tag) = Iter.has_tag it t#as_tag
   method tags = List.map (fun t -> new tag t) (Iter.get_tags it)
+
   method editable = Iter.editable it
   method can_insert = Iter.can_insert it
   method starts_word = Iter.starts_word it
@@ -116,63 +117,60 @@ object
   method bytes_in_line = Iter.get_bytes_in_line it
   method is_end = Iter.is_end it
   method is_start = Iter.is_start it
-  method forward_char () = Iter.forward_char it
-  method backward_char () = Iter.backward_char it
-  method forward_chars = Iter.forward_chars it
-  method backward_chars  = Iter.backward_chars it
-  method forward_line () = Iter.forward_line it
-  method backward_line () = Iter.backward_line it
-  method forward_lines  = Iter.forward_lines it
-  method backward_lines  = Iter.backward_lines it
-  method forward_word_end () = Iter.forward_word_end it
-  method forward_word_ends  = Iter.forward_word_ends it
-  method backward_word_start () = Iter.backward_word_start it
-  method backward_word_starts  = Iter.backward_word_starts it
-  method forward_cursor_position () = Iter.forward_cursor_position it
-  method backward_cursor_position () = Iter.backward_cursor_position it
-  method forward_cursor_positions  = Iter.forward_cursor_positions it
-  method backward_cursor_positions  = Iter.backward_cursor_positions it
-  method forward_sentence_end () = Iter.forward_sentence_end it
-  method backward_sentence_start () = Iter.backward_sentence_start it
-  method forward_sentence_ends  = Iter.forward_sentence_ends it
-  method backward_sentence_starts  = Iter.backward_sentence_starts it
-  method set_offset  = Iter.set_offset it
-  method set_line  = Iter.set_line it
-  method set_line_offset  = Iter.set_line_offset it
-  method set_line_index  = Iter.set_line_index it
-  method set_visible_line_index  = Iter.set_visible_line_index it
-  method set_visible_line_offset  = Iter.set_visible_line_offset it
-  method forward_to_end () = Iter.forward_to_end it
-  method forward_to_line_end () = Iter.forward_to_line_end it
-  method forward_to_tag_toggle ?(tag:tag option) () = 
-    Iter.forward_to_tag_toggle it 
-      (match tag with None -> None | Some t -> Some t#as_tag) 
-  method backward_to_tag_toggle ?(tag:tag option) () = 
-    Iter.backward_to_tag_toggle it 
-      (match tag with None -> None | Some t -> Some t#as_tag) 
+
+  method forward_char = Iter.forward_char it; self
+  method backward_char = Iter.backward_char it; self
+  method forward_chars n = Iter.forward_chars it n; self
+  method backward_chars n = Iter.backward_chars it n; self
+  method forward_line = Iter.forward_line it; self
+  method backward_line = Iter.backward_line it; self
+  method forward_lines n = Iter.forward_lines it n; self
+  method backward_lines n = Iter.backward_lines it n; self
+  method forward_word_end = Iter.forward_word_end it; self
+  method forward_word_ends n = Iter.forward_word_ends it n; self
+  method backward_word_start = Iter.backward_word_start it; self
+  method backward_word_starts n = Iter.backward_word_starts it n; self
+  method forward_cursor_position = Iter.forward_cursor_position it; self
+  method backward_cursor_position = Iter.backward_cursor_position it; self
+  method forward_cursor_positions n = Iter.forward_cursor_positions it n; self
+  method backward_cursor_positions n =
+    Iter.backward_cursor_positions it n; self
+  method forward_sentence_end = Iter.forward_sentence_end it; self
+  method backward_sentence_start = Iter.backward_sentence_start it; self
+  method forward_sentence_ends n = Iter.forward_sentence_ends it n; self
+  method backward_sentence_starts n = Iter.backward_sentence_starts it n; self
+
+  method set_offset = Iter.set_offset it
+  method set_line = Iter.set_line it
+  method set_line_offset = Iter.set_line_offset it
+  method set_line_index = Iter.set_line_index it
+  method set_visible_line_index = Iter.set_visible_line_index it
+  method set_visible_line_offset = Iter.set_visible_line_offset it
+
+  method forward_to_end = Iter.forward_to_end it; self
+  method forward_to_line_end = Iter.forward_to_line_end it; self
+  method forward_to_tag_toggle (tag : tag option) = 
+    Iter.forward_to_tag_toggle it (may_map tag ~f:(fun t -> t#as_tag)); self
+  method backward_to_tag_toggle (tag : tag option) = 
+    Iter.backward_to_tag_toggle it (may_map tag ~f:(fun t -> t#as_tag)); self
+
   method equal (a:iter) = Iter.equal it a#as_textiter
   method compare (a:iter) = Iter.compare it a#as_textiter
   method in_range ~(start:iter) ~(stop:iter)  = 
     Iter.in_range it start#as_textiter stop#as_textiter
-  method forward_search ~flag ?(limit:iter option) s =
-    let r = Iter.forward_search it s flag (match limit with None -> None 
-					     | Some i -> Some i#as_textiter ) 
-    in
-    match r with 
-	Some(s,t) -> Some((new iter s),(new iter t))
-      | _ -> None
-  method backward_search ~flag ?(limit:iter option) s =
-    let r = Iter.backward_search it s flag (match limit with None -> None 
-				   | Some i -> Some i#as_textiter ) in
-    match r with 
-	Some(s,t) -> Some((new iter s),(new iter t))
-      | _ -> None
-  method forward_find_char ?(limit:iter option) f = 
-    Iter.forward_find_char it f (match limit with None -> None 
-				   | Some i -> Some i#as_textiter )
-  method backward_find_char ?(limit:iter option) f = 
-    Iter.backward_find_char it f  (match limit with None -> None 
-				     | Some i -> Some i#as_textiter )
+
+  method forward_search ?flags ?(limit : iter option) s =
+    may_map (Iter.forward_search it s ?flags
+               (may_map limit ~f:(fun t -> t#as_textiter)))
+      ~f:(fun (s,t) -> new iter s, new iter t)
+  method backward_search ?flags ?(limit : iter option) s =
+    may_map (Iter.backward_search it s ?flags
+               (may_map limit ~f:(fun t -> t#as_textiter)))
+      ~f:(fun (s,t) -> new iter s, new iter t)
+  method forward_find_char ?(limit : iter option) f = 
+    Iter.forward_find_char it f (may_map limit ~f:(fun t -> t#as_textiter))
+  method backward_find_char ?(limit : iter option) f = 
+    Iter.backward_find_char it f (may_map limit ~f:(fun t -> t#as_textiter))
 end
 
 (* let iter i = new iter (Iter.copy i) *)
@@ -200,7 +198,7 @@ object
   method remove =  TagTable.remove obj
   method lookup =  TagTable.lookup obj
 
-  method size () = TagTable.get_size obj
+  method size = TagTable.get_size obj
 end
 
 let tagtable () = 
@@ -247,6 +245,11 @@ class buffer_signals obj = object
 end
 
 exception No_such_mark of string
+
+type position =
+    [ `OFFSET of int | `LINE of int
+    | `LINECHAR of int * int | `LINEBYTE of int * int
+    | `START | `END | `ITER of iter | mark ]
 
 class buffer obj = object(self)
   val obj = obj
@@ -347,6 +350,19 @@ class buffer obj = object(self)
     let t = new tag (Buffer.create_tag_0 obj name) in
     if properties <> [] then t#set_properties properties;
     t
+  method get_iter (pos : position) =
+    let it =
+      match pos with
+        `START -> Buffer.get_start_iter obj
+      | `END -> Buffer.get_end_iter obj
+      | `OFFSET n -> Buffer.get_iter_at_offset obj n
+      | `LINE n -> Buffer.get_iter_at_line obj n
+      | `LINECHAR (l,c) -> Buffer.get_iter_at_line_offset obj l c
+      | `LINEBYTE (l,c) -> Buffer.get_iter_at_line_index  obj l c
+      | `ITER it -> it#as_textiter
+      | #mark as mark ->
+          Buffer.get_iter_at_mark obj (self#get_mark mark)
+    in new iter it
   method get_iter_at_char ?line char_offset =
     match line,char_offset with
     | Some v, 0   -> new iter (Buffer.get_iter_at_line obj v)
