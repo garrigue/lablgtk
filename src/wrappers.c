@@ -1,6 +1,6 @@
 /* $Id$ */
 
-#include <strings.h>
+#include <string.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
@@ -47,6 +47,11 @@ value copy_string_check (const char*str)
 {
     if (!str) ml_raise_null_pointer ();
     return copy_string ((char*) str);
+}
+
+value copy_string_or_null (const char*str)
+{
+    return copy_string (str ? (char*) str : "");
 }
 
 value ml_lookup_from_c (lookup_info *table, int data)

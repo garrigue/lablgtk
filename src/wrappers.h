@@ -11,6 +11,7 @@ value ml_some (value);
 void ml_raise_null_pointer (void) Noreturn;
 value Val_pointer (void *);
 value copy_string_check (const char*);
+value copy_string_or_null (const char *);
 
 typedef struct { value key; int data; } lookup_info;
 value ml_lookup_from_c (lookup_info *table, int data);
@@ -124,6 +125,7 @@ value cname##_bc (value *argv, int argn) \
 
 /* result conversion */
 #define Unit(x) ((x), Val_unit)
+#define Id(x) x
 #define Val_char Val_int
 
 /* parameter conversion */
@@ -144,7 +146,15 @@ value cname##_bc (value *argv, int argn) \
  else { int i; ret = alloc_shr(l,0); \
    for(i=0;i<l;i++) initialize (&Field(ret,i), conv(src[i])); }
 
-#define Make_Val_final_pointer(type, ext, init, final) \
+#define Make_Val_final_pointer(type, init, final) \
+static void ml_final_##type (value val) \
+{ final ((type*)Field(val,1)); } \
+value Val_##type (type *p) \
+{ value ret; if (!p) ml_raise_null_pointer(); \
+  ret = alloc_final (2, ml_final_##type, 1, 200); \
+  initialize (&Field(ret,1), (value) p); init(p); return ret; }
+
+#define Make_Val_final_pointer_ext(type, ext, init, final) \
 static void ml_final_##type##ext (value val) \
 { final ((type*)Field(val,1)); } \
 value Val_##type##ext (type *p) \
@@ -194,6 +204,7 @@ int OptFlags_##conv (value list) \
 
 #define Val_copy(val) copy_memblock_indirected (&val, sizeof(val))
 #define Val_string copy_string_check
+#define Val_optstring copy_string_or_null
 #define Val_option(v,f) (v ? ml_some(f(v)) : Val_unit)
 
 #define Check_null(v) (v ? v : (ml_raise_null_pointer (), v))

@@ -29,7 +29,7 @@ extern value Val_GdkFont (GdkFont *);
 #define GdkGC_val(val) ((GdkGC*)Pointer_val(val))
 extern value Val_GdkGC (GdkGC *);
 
-#define GdkEvent_val(type) (GdkEvent##type *)MLPointer_val
+#define GdkEvent_val (GdkEvent*)MLPointer_val
 
 #define GdkVisual_val(val) ((GdkVisual*) val)
 #define Val_GdkVisual(visual) ((value) visual)
