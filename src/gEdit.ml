@@ -27,6 +27,41 @@ class editable obj = object
   method selection = Editable.get_selection_bounds obj
 end
 
+class entry_completion_signals obj = object (self)
+  inherit [[> `entrycompletion]] GObj.gobject_signals obj
+  method action_activated = self#connect EntryCompletion.S.action_activated
+  method match_selected ~callback = 
+    self#connect EntryCompletion.S.match_selected
+      ~callback:(fun _model iter -> callback (new GTree.model _model) iter)
+end
+
+class entry_completion obj = object
+  method as_entry_completion = (obj :> Gtk.entry_completion)
+
+  method set_minimum_key_length =
+    Gobject.set EntryCompletion.P.minimum_key_length obj
+  method minimum_key_length =
+    Gobject.get EntryCompletion.P.minimum_key_length obj
+  method set_model (m : GTree.model) = Gobject.set EntryCompletion.P.model obj m#as_model
+  method model = new GTree.model (Gobject.get EntryCompletion.P.model obj)
+
+  method misc = new GObj.gobject_ops obj
+  method connect = new entry_completion_signals obj
+
+  method get_entry = may_map (new GObj.widget) (EntryCompletion.get_entry obj)
+  method complete () = EntryCompletion.complete obj
+  method insert_action_text = EntryCompletion.insert_action_text obj
+  method insert_action_markup = EntryCompletion.insert_action_markup obj
+  method delete_action = EntryCompletion.delete_action obj
+  method set_text_column c = 
+    EntryCompletion.set_text_column obj (c : string GTree.column).GTree.index
+  method set_match_func =
+    EntryCompletion.set_match_func obj
+
+  inherit GTree.cell_layout obj
+  val obj = obj
+end
+
 class entry_signals obj = object (self)
   inherit editable_signals obj
   inherit entry_sigs
@@ -43,6 +78,9 @@ class entry obj = object
   method append_text = Entry.append_text obj
   method prepend_text = Entry.prepend_text obj
   method text_length = Entry.text_length obj
+  method get_completion = may_map (new entry_completion) (Entry.get_completion obj)
+  method set_completion (c : entry_completion) = 
+    Entry.set_completion obj c#as_entry_completion
 end
 
 let pack_sized ~create pl =
@@ -52,6 +90,14 @@ let pack_sized ~create pl =
 let entry =
   Entry.make_params [] ~cont:(
   pack_sized ~create:(fun pl -> new entry (Entry.create pl)))
+
+let entry_completion ?model =
+  EntryCompletion.make_params []
+    ?model:(may_map (fun m -> m#as_model) model)
+    ~cont:(fun pl ?entry () -> 
+      let c = new entry_completion (EntryCompletion.create pl) in
+      may (fun e -> e#set_completion c) entry ;
+      c)
 
 class spin_button_signals obj = object
   inherit entry_signals obj

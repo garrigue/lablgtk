@@ -232,6 +232,7 @@ type combo_box_entry = [combo_box|`comboboxentry]
 type expander = [bin|`expander]
 type file_filter = [`gtk|`filefilter]
 type file_chooser = [ `filechooser]
+type entry_completion = [`entrycompletion|cell_layout] obj
 
 type action = [`action]
 type toggle_action = [action|`toggleaction]

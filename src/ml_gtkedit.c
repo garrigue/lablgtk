@@ -25,7 +25,8 @@ CAMLprim value ml_gtkedit_init(value unit)
         gtk_combo_get_type() +
 #ifdef HASGTK24
         gtk_combo_box_get_type() +
-        gtk_combo_box_entry_get_type();
+        gtk_combo_box_entry_get_type() +
+        gtk_entry_completion_get_type();
 #else
         0;
 #endif
@@ -185,6 +186,46 @@ ml_gtk_combo_box_get_active_iter(value combo)
 #define GtkTreeIterOption(v) Option_val(v,GtkTreeIter_val,NULL)
 ML_2(gtk_combo_box_set_active_iter, GtkComboBox_val, GtkTreeIterOption, Unit)
 
+/* gtkentrycompletion.h */
+#define GtkEntryCompletion_val(val) check_cast(GTK_ENTRY_COMPLETION,val)
+ML_1(gtk_entry_completion_get_entry,GtkEntryCompletion_val,Val_GtkWidget)
+ML_1(gtk_entry_completion_complete,GtkEntryCompletion_val,Unit)
+ML_3(gtk_entry_completion_insert_action_text,GtkEntryCompletion_val,Int_val,String_val,Unit)
+ML_3(gtk_entry_completion_insert_action_markup,GtkEntryCompletion_val,Int_val,String_val,Unit)
+ML_2(gtk_entry_completion_delete_action,GtkEntryCompletion_val,Int_val,Unit)
+ML_2(gtk_entry_completion_set_text_column,GtkEntryCompletion_val,Int_val,Unit)
+
+static gboolean ml_gtk_entry_completion_match_func (GtkEntryCompletion *completion,
+						    const gchar *key,
+						    GtkTreeIter *iter,
+						    gpointer user_data)
+{
+  value *closure = user_data;
+  CAMLparam0();
+  CAMLlocal3(vkey, viter, vret);
+  vkey = copy_string(key);
+  viter = Val_GtkTreeIter(iter);
+  vret = callback2_exn(*closure, vkey, viter);
+  if (Is_exception_result(vret))
+    CAMLreturn(FALSE);
+  CAMLreturn(Bool_val(vret));
+}
+CAMLprim value ml_gtk_entry_completion_set_match_func(value compl, value cb)
+{
+  value *closure = ml_global_root_new(cb);
+  gtk_entry_completion_set_match_func(GtkEntryCompletion_val(compl),
+				      ml_gtk_entry_completion_match_func,
+				      closure,
+				      ml_global_root_destroy);
+  return Val_unit;
+}
+
+ML_2 (gtk_entry_set_completion, GtkEntry_val, GtkEntryCompletion_val, Unit)
+CAMLprim value ml_gtk_entry_get_completion(value entry)
+{
+  GtkEntryCompletion *c = gtk_entry_get_completion(GtkEntry_val(entry));
+  return c ? ml_some(Val_GAnyObject(c)) : Val_unit;
+}
 #else
 Unsupported_24(gtk_combo_box_new_text)
 Unsupported_24(gtk_combo_box_append_text)
@@ -192,4 +233,15 @@ Unsupported_24(gtk_combo_box_insert_text)
 Unsupported_24(gtk_combo_box_prepend_text)
 Unsupported_24(gtk_combo_box_get_active_iter)
 Unsupported_24(gtk_combo_box_set_active_iter)
+
+Unsupported_24(gtk_entry_completion_get_entry)
+Unsupported_24(gtk_entry_completion_complete)
+Unsupported_24(gtk_entry_completion_insert_action_text)
+Unsupported_24(gtk_entry_completion_insert_action_markup)
+Unsupported_24(gtk_entry_completion_delete_action)
+Unsupported_24(gtk_entry_completion_set_text_column)
+Unsupported_24(gtk_entry_completion_set_match_func)
+
+Unsupported_24(gtk_entry_get_completion)
+Unsupported_24(gtk_entry_set_completion)
 #endif /* HASGTK24 */
