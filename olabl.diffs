@@ -1,0 +1,125 @@
+Index: otherlibs/threads/scheduler.c
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/otherlibs/threads/scheduler.c,v
+retrieving revision 1.1.1.6
+retrieving revision 1.2
+diff -r1.1.1.6 -r1.2
+438c438,439
+<   if (curr_thread == NULL) return RESUMED_WAKEUP;
+---
+>   /* Do the same thing for callbacks (Jacques Garrigue) */
+>   if (curr_thread == NULL || callback_depth > 1) return RESUMED_WAKEUP;
+Index: parsing/parser.mly
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/parsing/parser.mly,v
+retrieving revision 1.19
+retrieving revision 1.20
+diff -r1.19 -r1.20
+1177,1179c1177,1179
+<     simple_core_type2	{ $1 }
+<   | core_variant_type	{ $1 }
+<   | core_variant_type type_longident %prec prec_constr_appl
+---
+>     simple_core_type1	{ $1 }
+>   | core_variant	{ mktyp (Ptyp_variant $1) }
+>   | simple_core_type type_longident %prec prec_constr_appl
+1181c1181
+<   | core_variant_type SHARP class_longident variant_min
+---
+>   | simple_core_type SHARP class_longident variant_min
+1185,1186c1185
+< core_variant_type: core_variant	{ mktyp(Ptyp_variant $1) };
+< simple_core_type2:
+---
+> simple_core_type1:
+1195,1196d1193
+<   | simple_core_type2 type_longident %prec prec_constr_appl
+<       { mktyp(Ptyp_constr($2, [$1])) }
+1208,1210d1204
+<   | simple_core_type2 SHARP class_longident variant_min
+<       %prec prec_constr_appl
+<       { mktyp(Ptyp_class($3, [$1], $4)) }
+1213a1208,1215
+> ;
+> simple_core_type2:
+>     simple_core_type1		{ $1 }
+>   | simple_core_type2 type_longident %prec prec_constr_appl
+>       { mktyp(Ptyp_constr($2, [$1])) }
+>   | simple_core_type2 SHARP class_longident variant_min
+>       %prec prec_constr_appl
+>       { mktyp(Ptyp_class($3, [$1], $4)) }
+Index: typing/ctype.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/ctype.ml,v
+retrieving revision 1.46
+retrieving revision 1.47
+diff -r1.46 -r1.47
+536c536,538
+<           Fvar _ (* {contents = None} *) -> raise (Unify [(ty, newvar2 level)])
+---
+>           Fvar _ (* {contents = None} *) ->
+> 	    (* hideous hack for Didier *)
+> 	    if ty.level > level + 1 then raise (Unify [(ty, newvar2 level)])
+Index: typing/printtyp.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/printtyp.ml,v
+retrieving revision 1.27
+retrieving revision 1.28
+diff -r1.27 -r1.28
+191a192,197
+> let in_class_func = ref false
+> let enter_class_func () =
+>   let old = !in_class_func in in_class_func :=true; old
+> let leave_class_func old =
+>   in_class_func := old
+> 
+193c199
+<   reset_names (); reset_loop_marks (); delayed := []
+---
+>   reset_names (); reset_loop_marks (); delayed := []; in_class_func := false
+271a278
+> 	if !in_class_func then print_char '(';
+299a307
+> 	if !in_class_func then print_char ')';
+681a690
+>       let old = enter_class_func () in
+687a697
+>       leave_class_func old;
+Index: typing/typecore.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/typecore.ml,v
+retrieving revision 1.28
+retrieving revision 1.30
+diff -r1.28 -r1.30
+869c869
+<       fatal_error "Typecor.type_exp : Pexp_poly"
+---
+>       fatal_error "Typecore.type_exp : Pexp_poly"
+1203a1204,1206
+>           if not !Clflags.nolabels then
+> 	    Location.print_warning loc
+>               ("this expression is not known to have a method " ^ met ^ ".");
+1361,1362c1364,1365
+<       let string_of_llist l = String.concat " "
+<       	(List.map (function "" -> "\"\"" | s -> s ^ ":") l) in
+---
+>       let string_of_llist l =
+> 	String.concat " " (List.map (fun s -> "\"" ^ s ^ "\"") l) in
+1365c1368,1377
+<       else begin
+---
+>       else if List.length expected < List.length provided then
+> 	print_string "This function has too many arguments"
+>       else let provided = List.map no_opt provided
+>       and expected = List.map no_opt expected in
+>       let unexpected = filter (fun x -> not (List.mem x expected)) provided in
+>       if unexpected <> [] then begin
+> 	print_string "This function is applied on unexpected label";
+> 	print_string (if List.length unexpected > 1 then "s " else " ");
+> 	print_string (string_of_llist unexpected)
+>       end else begin
+1368c1380,1381
+< 	print_space (); print_string "but is applied on label(s) ";
+---
+> 	print_space (); print_string "but is applied on label";
+> 	print_string (if List.length provided > 1 then "s " else " ");
