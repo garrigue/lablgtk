@@ -6,7 +6,6 @@ open StdLabels
 #use "project2.ml";;
 
 let w1 = new window1 ()
-let _ = w1#check_widgets
 
 let numbers =
   [| w1#button0; w1#button1; w1#button2; w1#button3; w1#button4;
