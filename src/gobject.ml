@@ -19,17 +19,14 @@ type data_get = [ basic | `NONE | `OBJECT of unit obj option ]
 type 'a data_set =
  [ basic | `OBJECT of 'a obj option | `INT32 of int32 | `LONG of nativeint ]
 
-module Tags = struct
-  type fundamental_type =
-    [ `INVALID | `NONE | `INTERFACE
-    | `CHAR | `UCHAR | `BOOLEAN
-    | `INT  | `UINT  | `LONG  | `ULONG  | `INT64  | `UINT64
-    | `ENUM | `FLAGS
-    | `FLOAT  | `DOUBLE
-    | `STRING | `POINTER  | `BOXED  | `PARAM
-    | `OBJECT ]
-end
-open Tags
+type fundamental_type =
+  [ `INVALID | `NONE | `INTERFACE
+  | `CHAR | `UCHAR | `BOOLEAN
+  | `INT  | `UINT  | `LONG  | `ULONG  | `INT64  | `UINT64
+  | `ENUM | `FLAGS
+  | `FLOAT  | `DOUBLE
+  | `STRING | `POINTER  | `BOXED  | `PARAM
+  | `OBJECT ]
 
 module Type = struct
   external init : unit -> unit = "ml_g_type_init"
@@ -95,12 +92,27 @@ let try_cast w name =
   if is_a w name then unsafe_cast w
   else raise (Cannot_cast(Type.name(get_type w), name))
 
+external coerce : 'a -> [`base] obj = "%identity"
+  (* [coerce] is safe *)
+
 let get_oid (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
 
-external freeze_notify : 'a obj -> unit = "ml_g_object_freeze_notify"
-external thaw_notify : 'a obj -> unit = "ml_g_object_thaw_notify"
-
-external set_property : 'a obj -> string -> g_value -> unit 
-  = "ml_g_object_set_property"
-external get_property : 'a obj -> string -> g_value -> unit
-  = "ml_g_object_get_property"
+module Property = struct
+  external freeze_notify : 'a obj -> unit = "ml_g_object_freeze_notify"
+  external thaw_notify : 'a obj -> unit = "ml_g_object_thaw_notify"
+  external notify : 'a obj -> string -> unit = "ml_g_object_notify"
+  external set_property : 'a obj -> string -> g_value -> unit 
+    = "ml_g_object_set_property"
+  external get_property : 'a obj -> string -> g_value -> unit
+    = "ml_g_object_get_property"
+  external get_property_type : 'a obj -> string -> g_type
+    = "ml_g_object_get_property_type"
+  let set obj prop data =
+    let v = Value.create (get_property_type obj prop) in
+    Value.set v data;
+    set_property obj prop v
+  let get obj prop =
+    let v = Value.create (get_property_type obj prop) in
+    get_property obj prop v;
+    Value.get v
+end

@@ -1,3 +1,5 @@
+(* $Id$ *)
+
 type items_properties = [ 
   | `NO_WIDGET
   | `NO_FILL_COLOR
@@ -54,7 +56,7 @@ type items_properties = [
   | `Y1 of float
   | `Y2 of float] 
       
-val propertize : [< items_properties] -> string * Gobject.g_value
+val propertize : [< items_properties] -> string * [`base] Gobject.data_set
 
 type item_event = [
   | `BUTTON_PRESS of GdkEvent.Button.t
@@ -103,7 +105,6 @@ class ['a] item : 'b Gtk.obj ->
     method raise : int -> unit
     method raise_to_top : unit -> unit
     method reparent : GnomeCanvas.group Gobject.obj -> unit
-    method set_raw : (string * Gobject.g_value) list -> unit
     method set : 'a list -> unit
     method show : unit -> unit
     method ungrab : int32 -> unit

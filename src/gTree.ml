@@ -154,8 +154,7 @@ let of_value kind v =
 let to_value kind x =
   let v =
     Gobject.Value.create
-      (Gobject.Type.of_fundamental
-         (kind.kind :> Gobject.Tags.fundamental_type)) in
+      (Gobject.Type.of_fundamental (kind.kind :> Gobject.fundamental_type)) in
   Gobject.Value.set v (kind.inj x);
   v
 end
@@ -189,7 +188,7 @@ class model obj ~id = object (self)
       let v =
         Gobject.Value.create
           (Gobject.Type.of_fundamental
-             (column.conv.Data.kind :> Gobject.Tags.fundamental_type)) in
+             (column.conv.Data.kind :> Gobject.fundamental_type)) in
       TreeModel.get_value obj ~row ~column:column.index v;
       Data.of_value column.conv v
 end
@@ -221,7 +220,7 @@ let tree_store (cols : column_list) =
   cols#lock ();
   let types =
     List.map Gobject.Type.of_fundamental
-      (cols#kinds :> Gobject.Tags.fundamental_type list) in
+      (cols#kinds :> Gobject.fundamental_type list) in
   new tree_store (TreeStore.create (Array.of_list types)) ~id:cols#id
 
 class list_store obj ~id = object
@@ -249,7 +248,7 @@ let list_store (cols : column_list) =
   cols#lock ();
   let types =
     List.map Gobject.Type.of_fundamental
-      (cols#kinds :> Gobject.Tags.fundamental_type list) in
+      (cols#kinds :> Gobject.fundamental_type list) in
   new list_store (ListStore.create (Array.of_list types)) ~id:cols#id
 
 (*

@@ -21,9 +21,10 @@ class gtkobj_misc obj = object
   method disconnect = GtkSignal.disconnect obj
   method handler_block = GtkSignal.handler_block obj
   method handler_unblock = GtkSignal.handler_unblock obj
-  method set_property = set_property obj
-  method freeze_notify () = freeze_notify obj
-  method thaw_notify () = thaw_notify obj
+  method set_property : 'a. string -> 'a data_set -> unit = Property.set obj
+  method get_property = Property.get obj
+  method freeze_notify () = Property.freeze_notify obj
+  method thaw_notify () = Property.thaw_notify obj
 end
 
 class gtkobj_signals ?(after=false) obj = object
