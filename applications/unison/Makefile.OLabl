@@ -1,0 +1,262 @@
+########################################################################
+# Makefile rules for compiling olabl programs
+
+COMPFLAGS += -nolabels
+THFLAGS =
+
+########################################################################
+# Try to automatically guess OS -- WIN32, SUNOS, or LINUX.
+
+ifeq (${OSTYPE},cygwin32) # Cygwin Beta 19
+  WIN32=true
+  ETAGS=c:/emacs/bin/etags
+  OSARCH=win32
+else
+ifeq (${OSTYPE},cygwin)	  # Cygwin Beta 20
+  WIN32=true
+  ETAGS=c:/emacs/bin/etags
+  OSARCH=win32
+else			  # A unix variant
+ifeq ($(shell hostname),saul.cis.upenn.edu)
+  SUNOS=true
+  OSARCH=solaris
+else
+  LINUX=true
+  OSARCH=linux
+endif
+  ETAGS=etags
+endif
+endif
+
+# MS WINDOWS
+ifdef WIN32
+  EXEC_EXT=.exe
+  OBJ_EXT=.obj
+  ifndef CAMLLIB
+    CAMLLIB=c:/ocaml/lib
+  endif
+  CWD = .
+else
+# UNIX
+  EXEC_EXT=
+  OBJ_EXT=.o
+  CWD = $(shell pwd)
+endif
+
+
+########################################################################
+# Find and load camltk Makefile
+
+# Try to figure out where the ocaml libraries live
+#  This doesn't work in Windows:
+#    OCAMLLIBDIR=$(filter /%,$(shell ocamlc -v | tail -1))
+#  So use the following instead
+OCAMLLIBDIR:=$(word 4,$(shell olablc -v | tail -1))
+OCAMLLIBDIR:=$(subst 
+,,$(OCAMLLIBDIR))
+
+ifeq ($(UISTYLE),gtk)
+
+LABLGTKDIR=/home/garrigue/Projects/lablgtk
+
+include $(LABLGTKDIR)/config.make
+WITH_TK= -I $(LABLGTKDIR) lablgtk.cma \
+	-cclib "-L$(LABLGTKDIR) -llablgtk $(GTKLIBS)" \
+#	-thread -cclib -lthreads threads.cma gtkThread.cmo
+
+endif
+
+ifeq ($(UISTYLE),tk)
+
+ifndef CAMLTKLIB
+  ifneq (,$(wildcard $(OCAMLLIBDIR)/camltk41))
+    CAMLTKLIB=$(OCAMLLIBDIR)/camltk41
+  endif
+endif
+
+ifndef CAMLTKLIB
+  ifneq (,$(wildcard $(OCAMLLIBDIR)/camltk))
+    CAMLTKLIB=$(OCAMLLIBDIR)/camltk
+  endif
+endif
+
+# BCPFIX:
+# (I think that most of the following should be unnecessary, since the
+# one above captures their intent in a more general way)
+
+ifndef CAMLTKLIB
+  ifneq (,$(wildcard /pkg/lib/ocaml-2.01/camltk41))
+    CAMLTKLIB=/pkg/lib/ocaml-2.01/camltk41
+  endif
+endif
+
+ifndef CAMLTKLIB
+  ifneq (,$(wildcard c:/ocaml/lib/ocamltk41))
+    CAMLTKLIB=c:/ocaml/lib/ocamltk41
+  endif
+endif
+
+ifndef CAMLTKLIB
+  ifneq (,$(wildcard /usr/lib/ocaml/camltk))
+    CAMLTKLIB=/usr/lib/ocaml/camltk
+  endif
+endif
+
+ifndef CAMLTKLIB
+  ifneq (,$(wildcard /usr/lib/ocaml/camltk))
+    CAMLTKLIB=/usr/lib/ocaml/camltk
+  endif
+endif
+
+ifndef CAMLTKLIB
+  ifneq (,$(wildcard /usr/local/lib/ocaml/camltk41))
+    CAMLTKLIB=/usr/local/lib/ocaml/camltk41
+  endif
+endif
+
+ifndef CAMLTKLIB
+  ifneq (,$(wildcard /home/bcpierce/lib/camltk41))
+    CAMLTKLIB=/home/bcpierce/lib/camltk41
+  endif
+endif
+
+checktk:
+ ifndef CAMLTKLIB
+	@echo Please set CAMLTKLIB environment variable in Makefile
+	@exit 1
+ endif
+
+ifdef CAMLTKLIB
+  include $(CAMLTKLIB)/Makefile.camltk
+endif
+
+COMPFLAGS+= $(TKCOMPFLAGS)
+
+buildexecutable:: checktk
+
+endif
+
+####################################################################
+# Dependencies
+
+# Include an automatically generated list of dependencies
+include .depend
+
+# Rebuild dependencies (must be invoked manually)
+.PHONY: depend
+depend:
+	olabldep *.mli *.ml > .depend
+
+####################################################################
+# Compilation and linking
+
+buildexecutable:: $(NAME)$(EXEC_EXT)
+
+ifeq ($(UISTYLE),tk)
+  UIOBJS=uitk.cmx
+endif
+
+ifeq ($(UISTYLE),gtk)
+  UIOBJS=uigtk.cmx
+endif
+
+# Object code files for the native-code version (the names of the
+# corresponding bytecode files are generated automatically if needed)
+OBJS_NATIVE0 = \
+	strings.cmx util.cmx os.cmx arg.cmx prefs.cmx trace.cmx common.cmx \
+	ignore.cmx remote.cmx uri.cmx \
+	globals.cmx files.cmx update.cmx recon.cmx transport.cmx \
+	uicommon.cmx uitext.cmx $(UIOBJS) \
+	main.cmx
+OBJS_NATIVE = $(OBJS_NATIVE0) link$(UISTYLE).cmx
+
+####################################################################
+# Compilation boilerplate
+
+ifeq ($(NATIVE),true)
+  # Set up for native code compilation
+
+  ifeq ($(PROFILING),true)
+    COMPFLAGS+= -p
+  endif
+
+  %.cmi : %.mli
+	@echo "OCAMLOPT: $< $(ZFLAGS) --->  $@"
+	@olablopt $(COMPFLAGS) -c $(CWD)/$<
+
+  %.cmx : %.ml
+	@echo "OCAMLOPT: $< $(ZFLAGS) --->  $@"
+	@olablopt $(COMPFLAGS) -c $(CWD)/$<
+
+  OBJS=$(OBJS_NATIVE)
+  LINK = unix.cmxa -cclib -lunix str.cmxa -cclib -lstr
+
+  ifdef WIN32
+
+  # This is a hack to get around what looks like a limit on
+  # the length of a command line in the Windows version
+
+  $(NAME)$(EXEC_EXT): $(OBJS_NATIVE)
+	@echo Linking $@
+	olablopt -a -o library.cmxa $(OBJS_NATIVE0)
+	olablopt $(COMPFLAGS) -o $@ $(LINK) $(WITH_TK_OPT) \
+	  library.cmxa link$(UISTYLE).cmx
+	$(RM) library.cmxa library.lib
+
+  else
+
+  $(NAME)$(EXEC_EXT): $(OBJS)
+	@echo Linking $@
+	olablopt $(COMPFLAGS) -o $@ $(LINK) $(WITH_TK_OPT) $^
+
+  endif
+
+else
+  # Set up for bytecode compilation
+
+  OBJS=$(patsubst %.cmx, %.cmo, $(OBJS_NATIVE))
+  LINK = unix.cma -cclib -lunix str.cma -cclib -lstr
+
+  ifeq ($(DEBUGGING),true)
+    COMPFLAGS+= -g
+  endif
+
+  OCAMLC=olablc
+  # (Doesn't seem to work as documented...)
+  # ifeq ($(PROFILING),true)
+  #   OCAMLC=ocamlcp
+  # else
+  #  OCAMLC=ocamlc
+  # endif
+
+  %.cmi : %.mli
+	@echo "$(OCAMLC): $< $(ZFLAGS) --->  $@"
+	@$(OCAMLC) $(COMPFLAGS) -c $(CWD)/$<
+
+  %.cmo : %.ml
+	@echo "$(OCAMLC): $< $(ZFLAGS) --->  $@"
+	@$(OCAMLC) $(COMPFLAGS) -c $(CWD)/$<
+
+  uigtk.cmo : uigtk.ml
+	@echo "$(OCAMLC): $< $(ZFLAGS) --->  $@"
+	@$(OCAMLC) $(THFLAGS) -I /home/garrigue/Projects/lablgtk -c $(CWD)/$<
+
+  $(NAME)$(EXEC_EXT): $(OBJS)
+	@echo Linking $@
+	$(OCAMLC) $(COMPFLAGS) -custom -o $@ $(LINK) $(WITH_TK) $^
+endif
+
+%$(EXEC_EXT): %.ml
+	$(OCAMLC) -o $@ $^
+
+%.ml : %.mll
+	-rm -f $@
+	olabllex $<
+
+######################################################################
+# Misc
+
+clean::
+	$(RM) -rf *.tmp *.o *.obj *.cmo *.cmx *.cmi core TAGS *~
+	$(RM) -rf *.bak?.tmp .*.bak?.tmp
+	$(RM) library.lib library.cmxa
