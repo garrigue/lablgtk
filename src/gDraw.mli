@@ -113,5 +113,5 @@ class drag_context : Gdk.drag_context ->
     val context : Gdk.drag_context
     method status : ?time:int -> Tags.drag_action list -> unit
     method suggested_action : Tags.drag_action
-    method targets : atom list
+    method targets : string list
   end

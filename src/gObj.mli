@@ -98,8 +98,17 @@ class selection_data :
     method data : string	(* May raise Null_pointer *)
     method format : int
     method selection : Gdk.Tags.selection
-    method seltype : string
+    method typ : string
     method target : string
+  end
+
+class selection_context :
+  Gtk.selection_data ->
+  object
+    val sel : Gtk.selection_data
+    method selection : Gdk.Tags.selection
+    method target : string
+    method return : ?typ:string -> ?format:int -> string -> unit
   end
 
 class drag_ops : Gtk.widget obj ->
@@ -199,10 +208,8 @@ and misc_signals :
     method map : callback:(unit -> unit) -> GtkSignal.id
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id
-    method selection_get : callback:
-      (info:int -> time:int ->
-       return:(?seltype:string -> ?format:int -> string -> unit) ->
-       unit) ->
+    method selection_get :
+      callback:(selection_context -> info:int -> time:int -> unit) ->
       GtkSignal.id
     method selection_received :
       callback:(selection_data -> time:int -> unit) -> GtkSignal.id
@@ -226,7 +233,7 @@ and drag_context :
     method set_icon_widget : widget -> hot_x:int -> hot_y:int -> unit
     method status : ?time:int -> Gdk.Tags.drag_action list -> unit
     method suggested_action : Gdk.Tags.drag_action
-    method targets : Gdk.atom list
+    method targets : string list
   end
 
 and drag_signals :
@@ -238,8 +245,9 @@ and drag_signals :
     method data_delete :
       callback:(drag_context -> unit) -> GtkSignal.id
     method data_get :
-      callback:(drag_context -> selection_data -> info:int -> time:int -> unit)
-      -> GtkSignal.id
+      callback:
+      (drag_context -> selection_context -> info:int -> time:int -> unit) ->
+      GtkSignal.id
     method data_received :
       callback:(drag_context -> x:int -> y:int ->
 	        selection_data -> info:int -> time:int -> unit) -> GtkSignal.id

@@ -341,8 +341,8 @@ module Selection = struct
   external get_data : selection_data -> string
       = "ml_gtk_selection_data_get_data"       (* May raise Gpointer.null *)
   external set :
-      selection_data -> seltype:Gdk.atom -> format:int ->
-      data:string option -> unit
+      selection_data ->
+      typ:Gdk.atom -> format:int -> data:string option -> unit
       = "ml_gtk_selection_data_set"
 
   external owner_set :

@@ -100,13 +100,25 @@ class style st = object
   method set_background = Style.set_background style
 end
 
-class selection_data (sel : Gtk.selection_data) = object (self)
+class selection_input (sel : Gtk.selection_data) = object
   val sel = sel
   method selection = Selection.selection sel
   method target = Gdk.Atom.name (Selection.target sel)
-  method seltype = Gdk.Atom.name (Selection.seltype sel)
-  method format = Selection.format sel
+end
+
+class selection_data sel = object
+  inherit selection_input sel
+  method typ = Gdk.Atom.name (Selection.seltype sel)
   method data = Selection.get_data sel
+  method format = Selection.format sel
+end
+
+class selection_context sel = object
+  inherit selection_input sel
+  method return ?typ ?(format=0) data =
+    let typ =
+      match typ with Some t -> Gdk.Atom.intern t | _ -> Selection.target sel in
+    Selection.set sel ~typ ~format ~data:(Some data)
 end
 
 class drag_signals ?(after=false) obj = object
@@ -132,9 +144,11 @@ class drag_signals ?(after=false) obj = object
     GtkSignal.connect ~sgn:DnD.Signals.drag_drop ~after obj
       ~callback:(fun context -> callback (new drag_context context))
   method data_get ~callback =
-    GtkSignal.connect ~sgn:DnD.Signals.drag_data_get ~after obj
-      ~callback:(fun context data -> callback (new drag_context context)
-	       (new selection_data data))
+    GtkSignal.connect ~sgn:DnD.Signals.drag_data_get ~after obj ~callback:
+      begin fun context seldata ~info ~time ->
+        callback (new drag_context context) (new selection_context seldata)
+          ~info ~time
+      end
   method data_received ~callback =
     GtkSignal.connect ~sgn:DnD.Signals.drag_data_received ~after obj
       ~callback:(fun context ~x ~y data -> callback (new drag_context context)
@@ -205,10 +219,7 @@ and misc_signals ?after obj = object
     GtkSignal.connect obj ~sgn:Selection.Signals.selection_get ~after
       ~callback:
       begin fun seldata ~info ~time ->
-        let return ?(seltype="STRING") ?(format=8) data =
-          Selection.set seldata ~seltype:(Gdk.Atom.intern seltype)
-            ~format ~data:(Some data) in
-         callback ~info ~time ~return
+        callback (new selection_context seldata) ~info ~time
       end
   method selection_received ~callback =
     GtkSignal.connect obj ~sgn:Selection.Signals.selection_received ~after

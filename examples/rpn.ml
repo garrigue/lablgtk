@@ -69,12 +69,7 @@ let main () =
   (* Period *)
   let periodClicked _ = 
      let txt = entry#text in
-     if (String.contains txt '.') then begin
-      	Printf.printf "\a";
-        flush stdout;
-     end
-     else
-       entry#append_text "." in
+     if not (String.contains txt '.') then entry#append_text "." in
   (GButton.button ~label:" . "
      ~packing:(table1#attach ~left:1 ~top:3 ~expand:`BOTH) ())
     #connect#clicked ~callback:periodClicked;

@@ -16,8 +16,8 @@ let dnd_source_window () =
     window#show ();
     evb#drag#source_set targets ~modi:[`BUTTON1] ~actions:[`COPY];
     evb#drag#connect#data_get ~callback: begin
-      fun _ data ~info ~time:_ ->
-      	data#set ~typ:data#target ~format:0 ~data:"hello! "
+      fun _ sel ~info ~time ->
+      	sel#return "hello! "
     end
   end
 
