@@ -3,51 +3,96 @@ Index: browser/searchpos.ml
 RCS file: /staff2/garrigue/repos/labltk/browser/searchpos.ml,v
 retrieving revision 1.32
 retrieving revision 1.33
-diff -r1.32 -r1.33
-386,387c386,395
-<   view_signature_item :path :env
-<     [Tsig_type(ident_of_path path default:"t", td)]
----
->   try match td.type_manifest with None -> raise Not_found
->     | Some ty -> match Ctype.repr ty with
-> 	{desc = Tobject _} ->
-> 	  let clt = find_cltype path env in
-> 	  view_signature_item :path :env
-> 	    [Tsig_cltype(ident_of_path path default:"ct", clt)]
->       |	_ -> raise Not_found
->   with Not_found ->
->     view_signature_item :path :env
->       [Tsig_type(ident_of_path path default:"t", td)]
-390c398
-<   let path, _ = lookup_type li env in
----
->   let path, decl = lookup_type li env in
+diff -c -r1.32 -r1.33
+*** searchpos.ml	1998/09/02 07:00:59	1.32
+--- searchpos.ml	1998/11/24 11:54:33	1.33
+***************
+*** 383,393 ****
+  
+  and view_type_decl path :env =
+    let td = find_type path env in
+!   view_signature_item :path :env
+!     [Tsig_type(ident_of_path path default:"t", td)]
+  
+  and view_type_id li :env =
+!   let path, _ = lookup_type li env in
+    view_type_decl path :env
+  
+  and view_class_id li :env =
+--- 383,401 ----
+  
+  and view_type_decl path :env =
+    let td = find_type path env in
+!   try match td.type_manifest with None -> raise Not_found
+!     | Some ty -> match Ctype.repr ty with
+! 	{desc = Tobject _} ->
+! 	  let clt = find_cltype path env in
+! 	  view_signature_item :path :env
+! 	    [Tsig_cltype(ident_of_path path default:"ct", clt)]
+!       |	_ -> raise Not_found
+!   with Not_found ->
+!     view_signature_item :path :env
+!       [Tsig_type(ident_of_path path default:"t", td)]
+  
+  and view_type_id li :env =
+!   let path, decl = lookup_type li env in
+    view_type_decl path :env
+  
+  and view_class_id li :env =
 Index: browser/viewer.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/labltk/browser/viewer.ml,v
 retrieving revision 1.19
 retrieving revision 1.20
-diff -r1.19 -r1.20
-174,175c174
-<     let l = List.map sign fun:
-<       begin function
----
->     let ident_of_decl = function
-183,186c182,193
-<       end in
-<     let l = List2.filter l pred:
-<       (function Lident s, Ptype when s <> "" & s.[0] = '#' -> false
-<       	      | _ -> true) in
----
->     in
->     let rec iter_sign sign idents =
->       match sign with
-> 	[] -> List.rev idents
->       |	decl :: rem ->
-> 	  let rem = match decl, rem with
-> 	    Tsig_class _, cty :: ty1 :: ty2 :: rem -> rem
-> 	  | Tsig_cltype _, ty1 :: ty2 :: rem -> rem
-> 	  | _, rem -> rem
-> 	  in iter_sign rem (ident_of_decl decl :: idents)
->     in
->     let l = iter_sign sign [] in
+diff -c -r1.19 -r1.20
+*** viewer.ml	1998/09/01 09:31:04	1.19
+--- viewer.ml	1998/11/24 11:54:33	1.20
+***************
+*** 171,178 ****
+  let view_defined modlid :env =
+    try match lookup_module modlid env with
+      path, Tmty_signature sign ->
+!     let l = List.map sign fun:
+!       begin function
+        	Tsig_value (id, _) -> Lident (Ident.name id), Pvalue
+        | Tsig_type (id, _) -> Lident (Ident.name id), Ptype
+        | Tsig_exception (id, _) -> Ldot (modlid, Ident.name id), Pconstructor
+--- 171,177 ----
+  let view_defined modlid :env =
+    try match lookup_module modlid env with
+      path, Tmty_signature sign ->
+!     let ident_of_decl = function
+        	Tsig_value (id, _) -> Lident (Ident.name id), Pvalue
+        | Tsig_type (id, _) -> Lident (Ident.name id), Ptype
+        | Tsig_exception (id, _) -> Ldot (modlid, Ident.name id), Pconstructor
+***************
+*** 180,189 ****
+        | Tsig_modtype (id, _) -> Lident (Ident.name id), Pmodtype
+        | Tsig_class (id, _) -> Lident (Ident.name id), Pclass
+        | Tsig_cltype (id, _) -> Lident (Ident.name id), Pcltype
+!       end in
+!     let l = List2.filter l pred:
+!       (function Lident s, Ptype when s <> "" & s.[0] = '#' -> false
+!       	      | _ -> true) in
+      choose_symbol l title:(string_of_path path) signature:sign
+         env:(open_signature path sign env) :path
+    | _ -> ()
+--- 179,196 ----
+        | Tsig_modtype (id, _) -> Lident (Ident.name id), Pmodtype
+        | Tsig_class (id, _) -> Lident (Ident.name id), Pclass
+        | Tsig_cltype (id, _) -> Lident (Ident.name id), Pcltype
+!     in
+!     let rec iter_sign sign idents =
+!       match sign with
+! 	[] -> List.rev idents
+!       |	decl :: rem ->
+! 	  let rem = match decl, rem with
+! 	    Tsig_class _, cty :: ty1 :: ty2 :: rem -> rem
+! 	  | Tsig_cltype _, ty1 :: ty2 :: rem -> rem
+! 	  | _, rem -> rem
+! 	  in iter_sign rem (ident_of_decl decl :: idents)
+!     in
+!     let l = iter_sign sign [] in
+      choose_symbol l title:(string_of_path path) signature:sign
+         env:(open_signature path sign env) :path
+    | _ -> ()
