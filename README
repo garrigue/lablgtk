@@ -36,6 +36,7 @@ Contents:
 	gdkObj.ml	object-oriented interface to GDK
 
 	lablgtk		toplevel
+        lablgladecc     glade compiler
 
 	examples/*.ml	various examples
 	applications/*	applications using the library
@@ -209,13 +210,21 @@ Memory management:
   its last container is destroyed. For this reason you need only
   destroy toplevel widgets.
 
-Glade support (preliminary):
+Glade support:
 
   New in this version, there is some support for Glade generated XML
   UI description files, using libglade. You can read in a file, access
-  to widgets, and define callbacks. A tool for extracting widget
-  definitions from a glade description is in project, but nothing done
-  yet. See examples/glade_demo.ml for details.
+  to widgets, and define callbacks.
+  A tool for extracting widget definitions from glade description is
+  provided. It generates a wrapper class, and you can then generate an
+  object corresponding to the intended layout, and access individual
+  widgets though its methods. Example:
+
+       % lablgladecc project1.glade > project1.ml
+       % lablgtk -thread
+       # #use "project1.ml" ;;
+       class window1 : ...
+       # let w1 = new window1 ~file:"project1.glade" ;;
 
 GL extension:
 
