@@ -15,14 +15,13 @@ end
 
 let signal_id = ref 0
 
-let next_id () : GtkSignal.id =
+let next_callback_id () : GtkSignal.id =
   decr signal_id; Obj.magic (!signal_id : int)
 
-class ['a] signal obj = object
-  val obj = obj
+class ['a] signal = object
   val mutable callbacks : (GtkSignal.id * ('a -> unit)) list = []
   method connect :callback ?:after [< false >] =
-    let id = next_id () in
+    let id = next_callback_id () in
     callbacks <-
       if after then callbacks @ [id,callback] else (id,callback)::callbacks;
     id
@@ -30,10 +29,25 @@ class ['a] signal obj = object
     List.iter callbacks fun:(fun (_,f) -> f arg)
   method disconnect id =
     List.mem_assoc id in:callbacks &&
-    (callbacks <- List.filter callbacks pred:(fun (id',_) -> id = id'); true)
-    
+    (callbacks <- List.remove_assoc id in:callbacks; true)
+  method reset () = callbacks <- []
+end
+
+class type disconnector = object
+  method disconnect : GtkSignal.id -> bool
+  method reset : unit -> unit
+end
+
+class has_ml_signals obj = object
+  val obj2 = obj
+  val mutable disconnectors = []
+  method private add_signal : 'a. 'a signal -> unit =
+    fun sgn -> disconnectors <- (sgn :> disconnector) :: disconnectors
+  method disconnect id =
+    if List.exists disconnectors pred:(fun d -> d#disconnect id) then ()
+    else GtkSignal.disconnect obj2 id
   initializer
     GtkSignal.connect obj sig:GtkBase.Object.Signals.destroy
-      callback:(fun () -> callbacks <- []);
+      callback:(fun () -> List.iter disconnectors fun:(fun d -> d#reset ()));
     ()
 end
