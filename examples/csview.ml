@@ -132,7 +132,7 @@ let main argv =
   let cl = GList.clist ~titles:data.titles ~packing:sw#add () in
   List.fold_left data.fields ~init:0 ~f:
     begin fun acc f ->
-      let width = try List.assoc f ~map:field_widths with Not_found -> -1 in
+      let width = try List.assoc f field_widths with Not_found -> -1 in
       if width = 0 then
         cl#set_column ~visibility:false acc
       else begin
