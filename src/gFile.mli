@@ -20,7 +20,10 @@ class filter :
 
 (** @since GTK 2.4
     @gtkdoc gtk gtk-gtkfilefilter *)
-val filter : ?name:string -> unit -> filter
+val filter : 
+  ?name:string -> 
+  ?patterns:string list ->
+  ?mime_types:string list -> unit -> filter
 
 (** {3 GtkFileChooser} *)
 
@@ -49,20 +52,20 @@ class type chooser =
     method set_show_hidden : bool -> unit
 
     method set_filename : string -> bool
-    method get_filename : string option
+    method filename : string option
     method select_filename : string -> bool
     method unselect_filename : string -> unit
     method get_filenames : string list
     method set_current_folder : string -> bool
-    method get_current_folder : string option
+    method current_folder : string option
 
     method set_uri : string -> bool
-    method get_uri : string option
+    method uri : string option
     method select_uri : string -> bool
     method unselect_uri : string -> unit
     method get_uris : string list
     method set_current_folder_uri : string -> bool
-    method get_current_folder_uri : string
+    method current_folder_uri : string
 
     method select_all : unit
     method unselect_all : unit
@@ -71,8 +74,8 @@ class type chooser =
     method preview_widget : GObj.widget
     method set_preview_widget_active : bool -> unit
     method preview_widget_active : bool
-    method get_preview_filename : string option
-    method get_preview_uri : string option
+    method preview_filename : string option
+    method preview_uri : string option
     method set_use_preview_label : bool -> unit
     method use_preview_label : bool
 

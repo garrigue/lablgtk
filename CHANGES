@@ -2,6 +2,7 @@ $Id$
 
 2004.07.05 [Olivier]
   * add ocamldoc comments for some optional parameters.
+  * add some optional parameters to the GtkFileFilter constructor.
 
 2004.06.28 [Olivier]
   * support SVGZ files in Rsvg, fix for render_from_file on Win32, fix
@@ -20,8 +21,7 @@ $Id$
 
 2004.06.06 [Olivier]
   * changed methods returning a char* or NULL in GFile: now they
-    return string option instead of converting NULL into "". Changed
-    several names too (#filename is now #get_filename, etc.)
+    return string option instead of converting NULL into "".
 
 2004.06.02 [Olivier]
   * add some properties for the GnomeCanvasText item, introduce a
