@@ -254,7 +254,7 @@ module Pixmap :
       string ->
       width:int ->
       height:int -> depth:int -> fg:Color.t -> bg:Color.t -> pixmap
-      = "ml_gdk_pixmap_create_from_data_bc" "ml_gk_pixmap_create_from_data"
+      = "ml_gdk_pixmap_create_from_data_bc" "ml_gdk_pixmap_create_from_data"
     external create_from_xpm :
       window ->
       ?colormap:colormap ->
