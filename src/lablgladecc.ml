@@ -207,9 +207,6 @@ let output_widget w =
     begin match clas with
     | "GList.clist" ->
   	printf "    val %s : int %s =\n" w.wcamlname clas
-    | "GWindow.dialog" ->
-  	printf "    val %s : [`NONE | `DELETE_EVENT | `ID of int] %s =\n"
-          w.wcamlname clas
     | _ ->
         printf "    val %s =\n" w.wcamlname
     end;
