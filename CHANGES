@@ -3,6 +3,7 @@ $Id$
 2004.10.24 [Olivier]
   * add a .mli for GnoDruid, reorganize gnoDruid.ml a bit
   * add the single-paragraph-mode property in GtkCellRendererText
+  * add GtkCellRendererProgress (2.6)
 
 2004.10.05 [Jacques]
   * revise Timeout.add and Idle.add for compatibility

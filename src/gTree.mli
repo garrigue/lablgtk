@@ -476,6 +476,10 @@ type cell_properties_toggle =
   | `ACTIVE of bool
   | `INCONSISTENT of bool
   | `RADIO of bool ]
+type cell_properties_progress =
+  [ cell_properties 
+  | `VALUE of int
+  | `TEXT of string option ]
 
 (** @gtkdoc gtk GtkCellRenderer *)
 class type ['a, 'b] cell_renderer_skel =
@@ -530,6 +534,14 @@ class cell_renderer_toggle : Gtk.cell_renderer_toggle obj ->
     method connect : cell_renderer_toggle_signals
   end
 
+(** @since GTK 2.6
+    @gtkdoc gtk GtkCellRendererProgress *)
+class cell_renderer_progress : Gtk.cell_renderer_progress obj ->
+  object
+    inherit[Gtk.cell_renderer_progress,cell_properties_progress] cell_renderer_skel
+    method connect : GObj.gtkobj_signals_impl
+  end
+
 (** @gtkdoc gtk GtkCellRendererPixbuf *)
 val cell_renderer_pixbuf : cell_properties_pixbuf list -> cell_renderer_pixbuf
 
@@ -538,3 +550,7 @@ val cell_renderer_text : cell_properties_text list -> cell_renderer_text
 
 (** @gtkdoc gtk GtkCellRendererToggle *)
 val cell_renderer_toggle : cell_properties_toggle list -> cell_renderer_toggle
+
+(** @since GTK 2.6 
+    @gtkdoc gtk GtkCellRendererProgress *)
+val cell_renderer_progress : cell_properties_progress list -> cell_renderer_progress

@@ -123,6 +123,11 @@ class CellRendererToggle vset : CellRenderer {
   signal toggled : GtkTreePathString
 }
 
+class CellRendererProgress vset : CellRenderer {
+  "value"                gint                 : Read / Write
+  "text"                 gchararray_opt       : Read / Write
+}
+
 class CellLayout abstract : Object {
   method pack_start : "Gtk.cell_renderer Gtk.obj -> expand:bool -> unit"
   method pack_end   : "Gtk.cell_renderer Gtk.obj -> expand:bool -> unit"
