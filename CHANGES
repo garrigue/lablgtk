@@ -1,5 +1,9 @@
 $Id$
 
+2001.09.06
+  * merge strict labels
+  * attempt dll-ization
+
 2001.08.10
   * change ?nolocale to ?setlocale, defaulting to false.
     Setting the locale must be required explicitly, by setting

@@ -57,13 +57,10 @@ configure:
 	@echo BINDIR=$(BINDIR) >> config.make
 	@echo INSTALLDIR=$(INSTALLDIR) >> config.make
 	@echo GTKCFLAGS=$(GTKCFLAGS) >> config.make
-	@echo GTKLIBS=$(GTKLIBS) | \
-	  sed -e 's/-l/-cclib &/g' -e 's/-[LRWr][^ ]*/-ccopt &/g' \
+	@echo GTKLIBS=$(GTKLIBS) | sed -e 's/-[RWr][^ ]*/-ccopt &/g' \
 	  >> config.make
-	@echo GNOMELIBS=$(GNOMELIBS) | \
-	  sed -e 's/-l/-cclib &/g' -e 's/-[LRWr][^ ]*/-ccopt &/g' \
+	@echo GNOMELIBS=$(GNOMELIBS) | sed -e 's/-[RWr][^ ]*/-ccopt &/g' \
 	  >> config.make
-	@echo GLADELIBS=$(GLADELIBS) | \
-	  sed -e 's/-l/-cclib &/g' -e 's/-[LRWr][^ ]*/-ccopt &/g' \
+	@echo GLADELIBS=$(GLADELIBS) | sed -e 's/-[RWr][^ ]*/-ccopt &/g' \
 	  >> config.make
 	@cat config.make

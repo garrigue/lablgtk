@@ -48,7 +48,7 @@ MLFLAGS += -I $(LABLGLDIR)
 MLLINK += lablgl.cma
 MLLIBS += lablgtkgl.cma
 CLIBS += liblablgtkgl.a
-GLLINK = -cclib -llablgtkgl -cclib -lgtkgl
+GLLINK = -llablgtkgl -lgtkgl
 GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.o
 endif
@@ -155,19 +155,26 @@ lablgtk.cmxa: lablgtk.cma $(MLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtk $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
 
 lablgtkgl.cma: $(GLMLOBJS) $(GLCOBJS)
-	$(LIBRARIAN) -o lablgtkgl $(GLLINK) $(GLMLOBJS) $(GLCOBJS)
+	$(LIBRARIAN) -o lablgtkgl -L. -llablgtk \
+		-L`ocamlc -where`/lablGL -llablgl \
+		-lgtkgl $(GTKLIBS) $(GLMLOBJS) $(GLCOBJS)
 lablgtkgl.cmxa: lablgtkgl.cma $(GLMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtkgl $(GLLINK) $(GLMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GTKLIBS) \
+		$(GLMLOBJS:.cmo=.cmx)
 
 lablgnome.cma: $(GNOMEMLOBJS) $(GNOMECOBJS)
-	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMECOBJS) $(GNOMELIBS)
+	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMECOBJS) \
+		-L. -llablgtk $(GNOMELIBS)
 lablgnome.cmxa: lablgnome.cma $(GNOMEMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) $(GNOMELIBS)
+	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) \
+		-L. -llablgtk $(GNOMELIBS)
 
 lablglade.cma: $(GLADEMLOBJS) $(GLADECOBJS)
-	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS) $(GLADECOBJS) $(GLADELIBS)
+	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS) $(GLADECOBJS) \
+		-L. -llablgtk $(GLADELIBS)
 lablglade.cmxa: lablglade.cma $(GLADEMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
+	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS:.cmo=.cmx) \
+		-L. -llablgtk $(GLADELIBS)
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
