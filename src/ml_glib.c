@@ -112,10 +112,10 @@ value ml_g_log_set_handler (value domain, value levels, value clos)
 
 value ml_g_log_remove_handler (value hnd)
 {
-    if (Field(hnd,2) != NULL) {
+    if (Field(hnd,2) != 0) {
         g_log_remove_handler (String_val(Field(hnd,0)), Int_val(Field(hnd,1)));
         ml_global_root_destroy ((value*)Field(hnd,2));
-        Field(hnd,2) = NULL;
+        Field(hnd,2) = 0;
     }
     return Val_unit;
 }
@@ -241,105 +241,32 @@ GSList *GSList_val (value list, gpointer (*func)(value))
 
 /* Character Set Conversion */
 
-CAMLprim value ml_g_convert(value str, value len, value to, value from)
+CAMLprim value ml_g_convert(value str, value to, value from)
 {
-  CAMLparam4(str,len,to,from);
-  CAMLlocal1(res);
-  gsize br,bw;
+  gsize br=0,bw=0;
   gchar* c_res;
   GError *error=NULL;
-  br=0;
-  bw=0;
-  c_res = g_convert(String_val(str),Int_val(len),
-			     String_val(to),String_val(from),
-			     &br,&bw,&error);
-  if (error != NULL)
-    {
-      ml_raise_gerror(error);
-    };
-  res = Val_string(c_res);
-  CAMLreturn(res);
+  c_res = g_convert(String_val(str),string_length(str),
+                    String_val(to),String_val(from),
+                    &br,&bw,&error);
+  if (error != NULL) ml_raise_gerror(error);
+  return Val_string(c_res);
 }
 
-CAMLprim value ml_g_locale_to_utf8(value str, value len)
-{
-  CAMLparam2(str,len);
-  CAMLlocal1(res);
-  gsize br,bw;
-  gchar* c_res;
-  GError *error=NULL;
-  br=0;
-  bw=0;
-  c_res = g_locale_to_utf8(String_val(str),Int_val(len),
-			   &br,&bw,&error);
-  if (error != NULL)
-    {
-      ml_raise_gerror(error);
-    };
-  res = Val_string(c_res);
-  CAMLreturn(res);
+#define Make_conversion(cname) \
+CAMLprim value ml_##cname(value str) { \
+  gsize br=0,bw=0; \
+  gchar* c_res; \
+  GError *error=NULL; \
+  c_res = cname(String_val(str),string_length(str),&br,&bw,&error); \
+  if (error != NULL) ml_raise_gerror(error); \
+  return Val_string(c_res); \
 }
 
-
-CAMLprim value ml_g_filename_to_utf8(value str, value len)
-{
-  CAMLparam2(str,len);
-  CAMLlocal1(res);
-  gsize br,bw;
-  gchar* c_res;
-  GError *error=NULL;
-  br=0;
-  bw=0;
-  c_res = g_filename_to_utf8(String_val(str),Int_val(len),
-			   &br,&bw,&error);
-  if (error != NULL)
-    {
-      ml_raise_gerror(error);
-    };
-  res = Val_string(c_res);
-  CAMLreturn(res);
-}
-
-
-
-CAMLprim value ml_g_locale_from_utf8(value str, value len)
-{
-  CAMLparam2(str,len);
-  CAMLlocal1(res);
-  gsize br,bw;
-  gchar* c_res;
-  GError *error=NULL;
-  br=0;
-  bw=0;
-  c_res = g_locale_from_utf8(String_val(str),Int_val(len),
-			   &br,&bw,&error);
-  if (error != NULL)
-    {
-      ml_raise_gerror(error);
-    };
-  res = Val_string(c_res);
-  CAMLreturn(res);
-}
-
-
-CAMLprim value ml_g_filename_from_utf8(value str, value len)
-{
-  CAMLparam2(str,len);
-  CAMLlocal1(res);
-  gsize br,bw;
-  gchar* c_res;
-  GError *error=NULL;
-  br=0;
-  bw=0;
-  c_res = g_filename_from_utf8(String_val(str),Int_val(len),
-			   &br,&bw,&error);
-  if (error != NULL)
-    {
-      ml_raise_gerror(error);
-    };
-  res = Val_string(c_res);
-  CAMLreturn(res);
-}
+Make_conversion(g_locale_to_utf8)
+Make_conversion(g_filename_to_utf8)
+Make_conversion(g_locale_from_utf8)
+Make_conversion(g_filename_from_utf8)
 
 CAMLprim value ml_g_get_charset()
 {
@@ -356,9 +283,6 @@ CAMLprim value ml_g_get_charset()
 
 CAMLprim value ml_utf8_validate(value s)
 {
-  CAMLparam1(s);
-  CAMLlocal1(b);
   const gchar *c=NULL;
-  b = Val_bool(g_utf8_validate(String_val(s),-1,&c));
-  CAMLreturn(b);
+  return Val_bool(g_utf8_validate(String_val(s),string_length(s),&c));
 }

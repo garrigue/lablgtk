@@ -82,6 +82,15 @@ CAMLprim value ml_gtk_text_iter_copy (value tm)
 }
 
 
+/* "Lighter" version: allocate in the ocaml heap */
+/*
+#define GtkTextIter_val(val) ((GtkTextIter*)MLPointer_val(val))
+value Val_GtkTextIter(GtkTextIter *it) {
+  return Val_copy(it);
+}
+#define alloc_GtkTextIter (alloc_memblock_indirected(sizeof(GtkTextIter)))
+*/
+
 #define GtkTextView_val(val) check_cast(GTK_TEXT_VIEW,val)
 
 
