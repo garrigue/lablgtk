@@ -1,5 +1,4 @@
 
-
 type panel_applet = [`panelapplet| Gtk.event_box]
 
 type background_type = [
@@ -13,7 +12,6 @@ type flags = [
   | `HAS_HANDLE
 ]
 type orient_type = GtkEnums.arrow_type
-
 
 external get_orient : [> panel_applet] Gtk.obj -> orient_type = "ml_panel_applet_get_orient"
 external get_size : [> panel_applet] Gtk.obj -> int = "ml_panel_applet_get_size"
@@ -74,15 +72,15 @@ class applet_signals obj = object (self)
 end
 
 class applet obj = object (self)
-  inherit GContainer.container obj
+  inherit GContainer.bin obj
   method connect = new applet_signals (obj :> panel_applet Gtk.obj)
   method event   = new GObj.event_ops obj
 
-  method get_background () = get_background obj
-  method get_orient () 	   = get_orient obj
-  method get_size   () 	   = get_size obj
-  method get_flags  () 	   = get_flags obj
-  method set_flags     	   = set_flags obj
+  method get_background = get_background obj
+  method get_orient     = get_orient obj
+  method get_size       = get_size obj
+  method get_flags      = get_flags obj
+  method set_flags      = set_flags obj
 
   method setup_menu           = setup_menu obj
   method setup_menu_from_file = setup_menu_from_file obj

@@ -1,5 +1,9 @@
 $Id$
 
+2003.10.28 [Olivier]
+  * make Panel.applet inherit GContainer.bin; 
+    remove the unit arg for getters
+
 2003.10.20 [Jacques]
   * add bin class for #child
 

@@ -29,15 +29,15 @@ class applet_signals :
 class applet :
   ([> panel_applet] as 'a) Gtk.obj ->
   object
-    inherit GContainer.container
+    inherit GContainer.bin
     val obj : 'a Gtk.obj
     method connect : applet_signals
     method event : GObj.event_ops
 
-    method get_background : unit -> background_type
-    method get_orient : unit -> orient_type
-    method get_size : unit -> int
-    method get_flags : unit -> flags list
+    method get_background : background_type
+    method get_orient : orient_type
+    method get_size : int
+    method get_flags : flags list
     method set_flags : flags list -> unit
 
     method setup_menu : xml:string -> verb list -> unit

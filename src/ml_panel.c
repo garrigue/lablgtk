@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include <libgnomeui/gnome-client.h>
 #include <panel-applet.h>
 
 #include <caml/mlvalues.h>
