@@ -13,3 +13,5 @@ let main () =
   with exn ->
     Timeout.remove timer;
     raise exn
+
+let start = Thread.create main
