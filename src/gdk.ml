@@ -171,7 +171,7 @@ module Image = struct
       = "ml_gdk_image_new"
   external get :
       'a drawable -> x: int -> y: int -> width: int -> height: int -> image
-      = "ml_gdk_image_get"
+      = "ml_gdk_drawable_get_image"
   external put_pixel : image -> x: int -> y: int -> pixel: int -> unit
     = "ml_gdk_image_put_pixel"
   external get_pixel : image -> x: int -> y: int -> int

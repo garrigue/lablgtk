@@ -16,6 +16,7 @@
 #include "wrappers.h"
 #include "ml_gpointer.h"
 #include "ml_glib.h"
+#include "ml_gobject.h"
 #include "ml_gdk.h"
 #include "gdk_tags.h"
 
@@ -41,7 +42,6 @@ Make_test(GdkWindowState_val)
 
 /* Colormap */
 
-Make_Val_final_pointer (GdkColormap, gdk_colormap_ref, gdk_colormap_unref, 0)
 ML_0 (gdk_colormap_get_system, Val_GdkColormap)
 
 /* Screen geometry */
@@ -84,28 +84,18 @@ Make_Extractor (GdkVisual,GdkVisual_val,blue_prec,Val_int)
 Make_Val_final_pointer (GdkImage, Ignore, gdk_image_destroy, 0)
 GdkImage *GdkImage_val(value val)
 {
-  if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkImage");
-  return (GdkImage*)(Field(val,1));
+    if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkImage");
+    return check_cast(GDK_IMAGE,val);
 }
 CAMLprim value ml_gdk_image_destroy (value val)
 {
-    if (Field(val,1)) gdk_image_destroy((GdkImage*)(Field(val,1)));
+    if (Field(val,1)) g_object_unref (GObject_val(val));
     Field(val,1) = 0;
     return Val_unit;
 }
 
 #else
-
-/* Unsafe Image */
-
-#define GdkImage_val(val) ((GdkImage*)val)
-#define Val_GdkImage(img) ((value) img)
-CAMLprim value ml_gdk_image_destroy (value val)
-{
-  gdk_image_destroy(GdkImage_val(val));
-  return Val_unit;
-}
-
+ML_1 (gdk_image_destroy, GdkImage_val, Unit)
 #endif
 
 /* Broken in 2.0
@@ -114,8 +104,8 @@ ML_4 (gdk_image_new_bitmap, GdkVisual_val, String_val, Int_val, Int_val,
 */
 ML_4 (gdk_image_new, GdkImageType_val, GdkVisual_val, Int_val, Int_val,
       Val_GdkImage)
-ML_5 (gdk_image_get, GdkWindow_val, Int_val, Int_val, Int_val, Int_val,
-      Val_GdkImage)
+ML_5 (gdk_drawable_get_image, GdkDrawable_val, Int_val, Int_val, Int_val,
+      Int_val, Val_GdkImage)
 ML_4 (gdk_image_put_pixel, GdkImage_val, Int_val, Int_val, Int_val, Unit)
 ML_3 (gdk_image_get_pixel, GdkImage_val, Int_val, Int_val, Val_int)
 Make_Extractor(gdk_image, GdkImage_val, visual, Val_GdkVisual)
@@ -192,7 +182,6 @@ Make_Extractor (GdkRectangle, GdkRectangle_val, height, Val_int)
 
 /* Window */
 
-Make_Val_final_pointer (GdkWindow, gdk_window_ref, gdk_window_unref, 0)
 Make_Extractor (gdk_visual_get, GdkVisual_val, depth, Val_int)
 ML_1 (gdk_window_get_visual, GdkWindow_val, Val_GdkVisual)
 ML_1 (gdk_window_get_colormap, GdkWindow_val, Val_GdkColormap)
@@ -242,18 +231,15 @@ value ml_gdk_window_get_pointer_location (value window)
 
 /* Cursor */
 
-ML_1 (gdk_cursor_new, GdkCursorType_val, Val_GdkCursor)
+Make_Val_final_pointer_ext (GdkCursor, _new, Ignore, gdk_cursor_unref, 20)
+ML_1 (gdk_cursor_new, GdkCursorType_val, Val_GdkCursor_new)
 ML_6 (gdk_cursor_new_from_pixmap, GdkPixmap_val, GdkPixmap_val,
-      GdkColor_val, GdkColor_val, Int_val, Int_val, Val_GdkCursor)
+      GdkColor_val, GdkColor_val, Int_val, Int_val, Val_GdkCursor_new)
 ML_bc6 (ml_gdk_cursor_new_from_pixmap)
 ML_1 (gdk_cursor_destroy, GdkCursor_val, Unit)
 
 /* Pixmap */
 
-Make_Val_final_pointer (GdkPixmap, gdk_pixmap_ref, gdk_pixmap_unref, 0)
-Make_Val_final_pointer (GdkBitmap, gdk_bitmap_ref, gdk_bitmap_unref, 0)
-Make_Val_final_pointer_ext (GdkPixmap, _no_ref, Ignore, gdk_pixmap_unref, 20)
-Make_Val_final_pointer_ext (GdkBitmap, _no_ref, Ignore, gdk_bitmap_unref, 20)
 ML_4 (gdk_pixmap_new, GdkWindow_val, Int_val, Int_val, Int_val,
       Val_GdkPixmap_no_ref)
 ML_4 (gdk_bitmap_create_from_data, GdkWindow_val,
@@ -463,8 +449,6 @@ ML_2 (gdk_region_get_clipbox, GdkRegion_val, GdkRectangle_val, Unit)
 
 /* GC */
 
-Make_Val_final_pointer (GdkGC, gdk_gc_ref, gdk_gc_unref, 0)
-Make_Val_final_pointer_ext (GdkGC, _no_ref, Ignore, gdk_gc_unref, 20)
 ML_1 (gdk_gc_new, GdkWindow_val, Val_GdkGC_no_ref)
 ML_2 (gdk_gc_set_foreground, GdkGC_val, GdkColor_val, Unit)
 ML_2 (gdk_gc_set_background, GdkGC_val, GdkColor_val, Unit)
@@ -762,7 +746,6 @@ Make_Extractor (GdkEventWindowState, GdkEvent_arg(WindowState),
                 new_window_state, Val_int)
 
 /* DnD */
-Make_Val_final_pointer (GdkDragContext, gdk_drag_context_ref, gdk_drag_context_unref, 0)
 Make_Flags_val (GdkDragAction_val)
 ML_3 (gdk_drag_status, GdkDragContext_val, Flags_GdkDragAction_val, copy_int32, Unit)
 Make_Extractor (GdkDragContext, GdkDragContext_val, suggested_action, Val_gdkDragAction)

@@ -7,11 +7,11 @@ open Tags
 
 module Object = struct
   let try_cast = Gobject.try_cast
-  external destroy : 'a obj -> unit = "ml_gtk_object_destroy"
+  external destroy : [>`gtk] obj -> unit = "ml_gtk_object_destroy"
   module Signals = struct
     open GtkSignal
     let destroy =
-      { name = "destroy"; classe = `base; marshaller = marshal_unit }
+      { name = "destroy"; classe = `gtk; marshaller = marshal_unit }
   end
 end
 

@@ -5,14 +5,8 @@ open Gtk
 open GtkData
 open GObj
 
-class data_signals obj = object
-  inherit gtkobj_signals obj
-  method disconnect_data =
-    GtkSignal.connect ~sgn:Data.Signals.disconnect obj ~after
-end
-
 class adjustment_signals obj = object
-  inherit data_signals obj
+  inherit gtkobj_signals obj
   method changed = GtkSignal.connect ~sgn:Adjustment.Signals.changed obj ~after
   method value_changed =
     GtkSignal.connect ~sgn:Adjustment.Signals.value_changed obj ~after
@@ -44,7 +38,7 @@ let as_adjustment (adj : adjustment) = adj#as_adjustment
 class tooltips obj = object
   inherit gtkobj (obj : Gtk.tooltips obj)
   method as_tooltips = obj
-  method connect = new data_signals obj
+  method connect = new gtkobj_signals obj
   method enable () = Tooltips.enable obj
   method disable () = Tooltips.disable obj
   method set_tip ?text ?privat w =

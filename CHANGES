@@ -1,5 +1,9 @@
 $Id$
 
+2002.01.16
+ * fix memory management in ml_gdk.h
+ * GObject and GtkObject are different! fix gtk.ml
+
 2002.01.15
   * added GtkAccelGroup and GtkClipboard support (Jacques)
   * suppress Gdk.Tags.selection (use Gdk.Atom.primary/secondary/clipboard)

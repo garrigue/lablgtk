@@ -3,8 +3,8 @@
 #define GdkAtom_val(val) ((GdkAtom)Long_val(val))
 #define Val_GdkAtom(val) (Val_long(val))
 
-#define GdkColormap_val(val) ((GdkColormap*)Pointer_val(val))
-extern value Val_GdkColormap (GdkColormap *);
+#define GdkColormap_val(val) check_cast(GDK_COLORMAP,val)
+#define Val_GdkColormap Val_GObject_child
 
 #define GdkColor_val(val) ((GdkColor*)MLPointer_val(val))
 #define Val_GdkColor Val_pointer
@@ -12,24 +12,28 @@ extern value Val_GdkColormap (GdkColormap *);
 #define GdkRectangle_val(val) ((GdkRectangle*)MLPointer_val(val))
 #define Val_GdkRectangle Val_pointer
 
-#define GdkDrawable_val(val) ((GdkDrawable*)Pointer_val(val))
+#define GdkDrawable_val(val) check_cast(GDK_DRAWABLE,val)
 
-#define GdkWindow_val(val) ((GdkWindow*)Pointer_val(val))
-extern value Val_GdkWindow (GdkWindow *);
+#define GdkWindow_val(val) check_cast(GDK_WINDOW,val)
+#define Val_GdkWindow Val_GObject_child
 
 #define GdkCursor_val(val) ((GdkCursor*)Pointer_val(val))
-#define Val_GdkCursor Val_pointer
 
-#define GdkPixmap_val(val) ((GdkPixmap*)Pointer_val(val))
-extern value Val_GdkPixmap (GdkPixmap *);
-extern value Val_GdkPixmap_no_ref (GdkPixmap *);
+#define GdkPixmap_val(val) check_cast(GDK_PIXMAP,val)
+#define Val_GdkPixmap Val_GObject_child
+#define Val_GdkPixmap_no_ref Val_GObject_child_new
 
-#define GdkBitmap_val(val) ((GdkBitmap*)Pointer_val(val))
-extern value Val_GdkBitmap (GdkBitmap *);
-extern value Val_GdkBitmap_no_ref (GdkBitmap *);
+#define GdkBitmap_val(val) ((GdkBitmap*)GdkPixmap_val(val))
+#define Val_GdkBitmap Val_GdkPixmap
+#define Val_GdkBitmap_no_ref Val_GdkPixmap_no_ref
 
-extern GdkImage *GdkImage_val (value); /* check argument */
-extern value Val_GdkImage (GdkImage *); /* finalizer is destroy! */
+#ifndef UnsafeImage
+extern GdkImage *GdkImage_val (value);  /* check argument */
+extern value Val_GdkImage (GdkImage *);
+#else
+#define GdkImage_val(val) ((GdkImage*)val)
+#define Val_GdkImage(img) ((value) img)
+#endif
 
 #define GdkFont_val(val) ((GdkFont*)Pointer_val(val))
 extern value Val_GdkFont (GdkFont *);
@@ -37,8 +41,9 @@ extern value Val_GdkFont (GdkFont *);
 extern GdkRegion *GdkRegion_val (value); /* check argument */
 extern value Val_GdkRegion (GdkRegion *); /* finalizer is destroy! */
 
-#define GdkGC_val(val) ((GdkGC*)Pointer_val(val))
-extern value Val_GdkGC (GdkGC *);
+#define GdkGC_val(val) check_cast(GDK_GC,val)
+#define Val_GdkGC Val_GObject_child
+#define Val_GdkGC_no_ref Val_GObject_child_new
 
 #define GdkEvent_val (GdkEvent*)MLPointer_val
 
@@ -60,6 +65,6 @@ extern int Flags_Event_mask_val (value);
 extern lookup_info ml_table_extension_events[];
 #define Extension_events_val(key) ml_lookup_to_c (ml_table_extension_events, key)
 
-#define GdkDragContext_val(val) ((GdkDragContext*)Pointer_val(val))
-extern value Val_GdkDragContext (GdkDragContext *);
+#define GdkDragContext_val(val) check_cast(GDK_DRAG_CONTEXT,val)
+#define Val_GdkDragContext Val_GObject_child
 extern int Flags_GdkDragAction_val (value);

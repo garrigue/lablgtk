@@ -436,7 +436,7 @@ ML_2 (gtk_clipboard_wait_for_contents, GtkClipboard_val, GdkAtom_val,
 CAMLprim value ml_gtk_clipboard_wait_for_text (value c)
 {
   const char *res = gtk_clipboard_wait_for_text (GtkClipboard_val(c));
-  return (res != NULL ? ml_some(copy_string_g_free(res)) : Val_unit);
+  return (res != NULL ? ml_some(copy_string_g_free((char*)res)) : Val_unit);
 }
 static void clipboard_received_func (GtkClipboard *clipboard,
                                      GtkSelectionData *selection_data,
