@@ -2,14 +2,48 @@
 
 open Gtk
 
-class progress_bar :
-  ?packing:(progress_bar -> unit) -> ?show:bool ->
+class progress :
+  'a[> progress widget] Gtk.obj ->
   object
     inherit GObj.widget_wrapper
-    val obj : Gtk.progress_bar obj
-    method add_events : Gdk.Tags.event_mask list -> unit
+    val obj : 'a Gtk.obj
+    method adjustment : GData.adjustment
+    method configure : current:float -> min:float -> max:float -> unit
+    method current_text : string
     method percentage : float
-    method update : float -> unit
+    method set_percentage : float -> unit
+    method set_adjustment : GData.adjustment -> unit
+    method set_activity_mode : bool -> unit
+    method set_text :
+      ?show:bool ->
+      ?format_string:string -> ?xalign:float -> ?yalign:float -> unit
+    method set_value : float -> unit
+    method value : float
+  end
+
+class progress_bar :
+  ?adjustment:GData.adjustment ->
+  ?bar_style:[CONTINUOUS DISCRETE] ->
+  ?discrete_blocks:int ->
+  ?activity_step:int ->
+  ?activity_blocks:int ->
+  ?value:float ->
+  ?percentage:float ->
+  ?activity_mode:bool ->
+  ?show_text:bool ->
+  ?format_string:string ->
+  ?text_xalign:float ->
+  ?text_yalign:float ->
+  ?packing:(progress_bar -> unit) ->
+  ?show:bool ->
+  object
+    inherit progress
+    val obj : Gtk.progress_bar Gtk.obj
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method set_bar :
+      ?bar_style:[CONTINUOUS DISCRETE] ->
+      ?discrete_blocks:int ->
+      ?activity_step:int -> ?activity_blocks:int -> unit
   end
 class progress_bar_wrapper : Gtk.progress_bar obj -> progress_bar
 

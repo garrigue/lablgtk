@@ -199,12 +199,13 @@ module CList = struct
       = "ml_gtk_clist_sort"
   external set_auto_sort : [> clist] obj -> bool -> unit
       = "ml_gtk_clist_set_auto_sort"
-  let set w ?:hadjustment ?:vadjustment ?:shadow_type ?:selection_mode
-      ?:reorderable ?:use_drag_icons ?:row_height =
+  let set w ?:hadjustment ?:vadjustment ?:shadow_type ?:button_actions [< [] >]
+      ?:selection_mode ?:reorderable ?:use_drag_icons ?:row_height =
     let may_set f param = may param fun:(f w) in
     may_set set_hadjustment hadjustment;
     may_set set_vadjustment vadjustment;
     may_set set_shadow_type shadow_type;
+    List.iter button_actions fun:(fun (n,act) -> set_button_actions w n act);
     may_set set_selection_mode selection_mode;
     may_set set_reorderable reorderable;
     may_set set_use_drag_icons use_drag_icons;

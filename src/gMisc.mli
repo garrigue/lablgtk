@@ -4,6 +4,8 @@ open Gtk
 
 class separator :
   Tags.orientation ->
+  ?width:int ->
+  ?height:int ->
   ?packing:(separator -> unit) -> ?show:bool ->
   object
     inherit GObj.widget_wrapper
@@ -49,6 +51,7 @@ class calendar_signals :
   end
 class calendar :
   ?options:Tags.calendar_display_options list ->
+  ?width:int -> ?height:int ->
   ?packing:(calendar -> unit) -> ?show:bool ->
   object
     inherit GObj.widget
@@ -84,8 +87,8 @@ class misc :
   object
     inherit GObj.widget
     val obj : 'a obj
-    method set_alignment : x:float -> y:float -> unit
-    method set_padding : x:int -> y:int -> unit
+    method set_misc :
+      ?xalign:float -> ?yalign:float -> ?xpad:int -> ?ypad:int -> unit
   end
 
 class label_skel :
@@ -107,6 +110,7 @@ class label :
   ?yalign:float ->
   ?xpad:int ->
   ?ypad:int ->
+  ?width:int -> ?height:int ->
   ?packing:(label -> unit) -> ?show:bool ->
   object
     inherit label_skel
@@ -134,12 +138,15 @@ class tips_query :
   ?emit_always:bool ->
   ?label_inactive:string ->
   ?label_no_tip:string ->
+  ?width:int -> ?height:int ->
   ?packing:(tips_query -> unit) -> ?show:bool ->
   object
     inherit label_skel
     val obj : Gtk.tips_query obj
     method connect : ?after:bool -> tips_query_signals
-    method set_labels : inactive:string -> no_tip:string -> unit
+    method set_tips :
+      ?emit_always:bool ->
+      ?label_inactive:string -> ?label_no_tip:string -> unit
     method set_caller : #GObj.is_widget -> unit
     method start : unit -> unit
     method stop : unit -> unit

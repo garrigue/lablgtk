@@ -240,6 +240,7 @@ module Misc = struct
       set_padding w x:(may_default get_xpad w for:xpad)
 	y:(may_default get_ypad w for:ypad);
     cont w
+  let set = setter ?cont:Widget.set_size
 end
 
 module Arrow = struct

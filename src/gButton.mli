@@ -58,7 +58,8 @@ class toggle_button :
     val obj : Gtk.toggle_button obj
     method active : bool
     method connect : ?after:bool -> toggle_button_signals
-    method set_toggle : ?active:bool -> ?draw_indicator:bool -> unit
+    method set_active : bool -> unit
+    method set_toggle : draw_indicator:bool -> unit
   end
 class toggle_button_wrapper : ([> toggle] obj) -> toggle_button
 
@@ -81,13 +82,10 @@ class radio_button :
   ?height:int ->
   ?packing:(radio_button -> unit) -> ?show:bool ->
   object
-    inherit button_skel
+    inherit toggle_button
     val obj : Gtk.radio_button obj
-    method active : bool
-    method connect : ?after:bool -> toggle_button_signals
     method group : group
     method set_group : group -> unit
-    method set_toggle : ?active:bool -> ?draw_indicator:bool -> unit
   end
 class radio_button_wrapper : Gtk.radio_button obj -> radio_button
 
@@ -105,7 +103,7 @@ class toolbar :
   object
     inherit GContainer.container_wrapper
     val obj : Gtk.toolbar obj
-    method get_button_relief : Tags.relief_type
+    method button_relief : Tags.relief_type
     method insert_button :
       ?icon:#GObj.is_widget ->
       ?text:string ->
@@ -128,11 +126,11 @@ class toolbar :
     method insert_widget :
       #GObj.is_widget ->
       ?tooltip:string -> ?tooltip_private:string -> ?pos:int -> unit
-    method set_button_relief : Tags.relief_type -> unit
-    method set_orientation : Tags.orientation -> unit
-    method set_space_size : int -> unit
-    method set_space_style : [EMPTY LINE] -> unit
-    method set_style : Tags.toolbar_style -> unit
-    method set_tooltips : bool -> unit
+    method set_toolbar :
+      ?orientation:Gtk.Tags.orientation ->
+      ?style:Gtk.Tags.toolbar_style ->
+      ?space_size:int ->
+      ?space_style:[EMPTY LINE] ->
+      ?tooltips:bool -> ?button_relief:Gtk.Tags.relief_type -> unit
   end
 class toolbar_wrapper : Gtk.toolbar obj -> toolbar

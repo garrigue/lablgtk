@@ -129,3 +129,9 @@ type button_action = "GTK_BUTTON_"
 type calendar_display_options = "GTK_CALENDAR_"
     [ SHOW_HEADING SHOW_DAY_NAMES NO_MONTH_CHANGE SHOW_WEEK_NUMBERS
       WEEK_START_MONDAY ]
+
+type progress_bar_style = "GTK_PROGRESS_"
+    [ CONTINUOUS DISCRETE ]
+
+type progress_bar_orientation = "GTK_PROGRESS_"
+    [ LEFT_TO_RIGHT RIGHT_TO_LEFT BOTTOM_TO_TOP TOP_TO_BOTTOM ]

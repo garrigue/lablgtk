@@ -22,7 +22,7 @@ class container :
     method children : widget_wrapper list
     method remove : #is_widget -> unit
     method focus : focus
-    method set_size : ?border:int -> ?width:int -> ?height:int -> unit
+    method set_border_width : int -> unit
   end
 
 class container_signals :
@@ -57,7 +57,7 @@ class virtual ['a, 'b] item_container :
     method prepend : 'a #is_item -> unit
     method remove : 'a #is_item -> unit
     method focus : focus
-    method set_size : ?border:int -> ?width:int -> ?height:int -> unit
+    method set_border_width : int -> unit
     method private virtual wrap : Gtk.widget obj -> 'b
   end
 

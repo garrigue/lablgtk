@@ -8,7 +8,7 @@ let main () =
   window#connect#destroy callback:Main.quit;
 
   let scrolled_window = new GFrame.scrolled_window
-      border_width: 10 hscrollbar_policy: `AUTOMATIC packing: window#vbox#pack
+      border_width: 10 hpolicy: `AUTOMATIC packing: window#vbox#pack
   in
 
   let table = new GPack.table rows:10 columns:10

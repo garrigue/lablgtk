@@ -17,9 +17,11 @@ class pixmap_wrapper obj = object
 end
 
 class pixmap (pm : #GdkObj.pixmap)
-    ?:xalign ?:yalign ?:xpad ?:ypad ?:packing ?:show =
+    ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height ?:packing ?:show =
   let w = Pixmap.create pm#pixmap ?mask:pm#mask in
-  let () = Misc.setter w cont:null_cont ?:xalign ?:yalign ?:xpad ?:ypad in
+  let () =
+    Misc.set w ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height
+  in
   object (self)
     inherit pixmap_wrapper w
     initializer pack_return :packing ?:show (self :> pixmap_wrapper)

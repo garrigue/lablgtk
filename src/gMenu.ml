@@ -36,7 +36,7 @@ end
 
 class menu_item ?:label ?:border_width ?:width ?:height ?:packing ?:show =
   let w = MenuItem.create ?None ?:label in
-  let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
+  let () = Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit menu_item_wrapper w
     initializer pack_return :packing ?:show (self :> menu_item_wrapper)
@@ -44,7 +44,7 @@ class menu_item ?:label ?:border_width ?:width ?:height ?:packing ?:show =
 
 class tearoff_item ?:border_width ?:width ?:height ?:packing ?:show =
   let w = MenuItem.tearoff_create () in
-  let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
+  let () = Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit menu_item_wrapper w
     initializer pack_return :packing ?:show (self :> menu_item_wrapper)
@@ -74,7 +74,7 @@ class check_menu_item ?:label
   let w = CheckMenuItem.create ?None ?:label in
   let () =
     CheckMenuItem.setter w cont:ignore ?:active ?:show_toggle;
-    Container.setter w cont:ignore ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit check_menu_item_wrapper w
     initializer pack_return :packing ?:show (self :> check_menu_item_wrapper)
@@ -93,7 +93,7 @@ class radio_menu_item ?:group ?:label
   let w = RadioMenuItem.create ?None ?:group ?:label in
   let () =
     CheckMenuItem.setter w cont:ignore ?:active ?:show_toggle;
-    Container.setter w cont:ignore ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit radio_menu_item_wrapper w
     initializer pack_return :packing ?:show (self :> radio_menu_item_wrapper)
@@ -129,7 +129,7 @@ end
 
 class menu ?:border_width ?:packing ?:show =
   let w = Menu.create () in
-  let () = may border_width fun:(Container.set_border_width w) in
+  let () = Container.setter w cont:null_cont ?:border_width in
   object (self)
     inherit menu_wrapper w
     initializer pack_return :packing ?:show (self :> menu_wrapper)
@@ -149,7 +149,7 @@ end
 
 class option_menu ?:border_width ?:width ?:height ?:packing ?:show =
   let w = OptionMenu.create () in
-  let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
+  let () = Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit option_menu_wrapper w
     initializer pack_return :packing ?:show (self :> option_menu_wrapper)
@@ -159,7 +159,7 @@ class option_menu ?:border_width ?:width ?:height ?:packing ?:show =
 
 class menu_bar ?:border_width ?:width ?:height ?:packing ?:show =
   let w = MenuBar.create () in
-  let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
+  let () = Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit menu_shell w
     initializer pack_return :packing ?:show (self :> menu_shell)

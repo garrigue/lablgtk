@@ -8,6 +8,7 @@ class pixmap :
   ?yalign:float ->
   ?xpad:int ->
   ?ypad:int ->
+  ?width:int -> ?height:int ->
   ?packing:(pixmap -> unit) -> ?show:bool ->
   object
     inherit GMisc.misc

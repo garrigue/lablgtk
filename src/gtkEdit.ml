@@ -66,15 +66,13 @@ module Entry = struct
       = "ml_gtk_entry_set_editable"
   external set_max_length : [> entry] obj -> int -> unit
       = "ml_gtk_entry_set_max_length"
-  let setter w :cont ?:text ?:position ?:visibility ?:editable ?:max_length =
+  let setter w :cont ?:text ?:visibility ?:editable ?:max_length =
     let may_set f = may fun:(f w) in
     may_set set_text text;
-    may_set set_position position;
     may_set set_visibility visibility;
     may_set set_editable editable;
     may_set set_max_length max_length;
     cont w
-  let set = setter ?cont:null_cont
   external text_length : [> entry] obj -> int
       = "ml_GtkEntry_text_length"
 end

@@ -13,11 +13,9 @@ class focus obj = object
     let child = may_map child fun:(#as_widget) in
     Container.set_focus_child obj (optboxed child)
   method set_hadjustment ?adj =
-    let adj = may_map adj fun:adjustment_obj in
-    Container.set_focus_hadjustment obj (optboxed adj)
+    Container.set_focus_hadjustment obj (optboxed (adjustment_option adj))
   method set_vadjustment ?adj =
-    let adj = may_map adj fun:adjustment_obj in
-    Container.set_focus_vadjustment obj (optboxed adj)
+    Container.set_focus_vadjustment obj (optboxed (adjustment_option adj))
 end
 
 class container obj = object
@@ -27,7 +25,7 @@ class container obj = object
   method remove : 'b. (#is_widget as 'b) -> unit =
     fun w -> Container.remove obj w#as_widget
   method children = List.map fun:(new widget_wrapper) (Container.children obj)
-  method set_size ?:border = Container.set ?obj ?border_width:border
+  method set_border_width = Container.set_border_width obj
   method focus = new focus obj
 end
 
@@ -55,7 +53,7 @@ class virtual ['a,'b] item_container obj = object (self)
   method private virtual wrap : Gtk.widget obj -> 'b
   method children : 'b list =
     List.map fun:self#wrap (Container.children obj)
-  method set_size ?:border = Container.set ?obj ?border_width:border
+  method set_border_width = Container.set_border_width obj
   method focus = new focus obj
   method virtual insert : 'c. ('a #is_item as 'c) -> pos:int -> unit
   method append : 'c. ('a #is_item as 'c) -> unit =

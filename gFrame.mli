@@ -3,22 +3,29 @@
 open Gtk
 
 class scrolled_window :
-  ?hscrollbar_policy:Tags.policy_type ->
-  ?vscrollbar_policy:Tags.policy_type ->
+  ?hadjustment:GData.adjustment ->
+  ?vadjustment:GData.adjustment ->
+  ?hpolicy:Gtk.Tags.policy_type ->
+  ?vpolicy:Gtk.Tags.policy_type ->
+  ?placement:Gtk.Tags.corner_type ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(scrolled_window -> unit) -> ?show:bool ->
   object
     inherit GContainer.container_wrapper
-    val obj : Gtk.scrolled_window obj
+    val obj : Gtk.scrolled_window Gtk.obj
     method add_with_viewport : #GObj.is_widget -> unit
-    method hadjustment : GData.adjustment
-    method set_policy :
-      ?hscrollbar:Tags.policy_type ->
-      ?vscrollbar:Tags.policy_type -> unit
-    method vadjustment : GData.adjustment
+    method hadjustment : GData.adjustment_wrapper
+    method set_scrolled :
+      ?hadjustment:GData.adjustment ->
+      ?vadjustment:GData.adjustment ->
+      ?hpolicy:Gtk.Tags.policy_type ->
+      ?vpolicy:Gtk.Tags.policy_type ->
+      ?placement:Gtk.Tags.corner_type -> unit
+    method vadjustment : GData.adjustment_wrapper
   end
+class scrolled_window_wrapper : Gtk.scrolled_window obj -> scrolled_window
 
 class event_box :
   ?border_width:int ->

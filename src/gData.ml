@@ -31,7 +31,13 @@ class adjustment :value :lower :upper :step_incr :page_incr :page_size =
     Adjustment.create :value :lower :upper :step_incr :page_incr :page_size in
   adjustment_wrapper w
 
-let adjustment_obj (adj : adjustment) = adj#as_adjustment
+let adjustment_option = function None -> None
+  | Some (adj : adjustment) -> Some adj#as_adjustment
+
+let set_tooltips obj ?:delay ?:foreground ?:background =
+  Tooltips.set obj ?:delay
+    ?foreground:(may_map foreground fun:GdkObj.color)
+    ?background:(may_map background fun:GdkObj.color)
 
 class tooltips_wrapper obj = object
   inherit gtkobj (obj : tooltips obj)
@@ -40,10 +46,11 @@ class tooltips_wrapper obj = object
   method disable () = Tooltips.disable obj
   method set_tip : 'b . (#is_widget as 'b) -> _ =
     fun w -> Tooltips.set_tip ?obj ?w#as_widget
-  method set = Tooltips.set ?obj
+  method set = set_tooltips ?obj
+
 end
 
 class tooltips ?:delay ?:foreground ?:background =
   let w = Tooltips.create () in
-  let () = Tooltips.setter w cont:null_cont ?:delay ?:foreground ?:background
+  let () = set_tooltips w ?:delay ?:foreground ?:background
   in tooltips_wrapper w

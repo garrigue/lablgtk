@@ -30,9 +30,9 @@ class editable :
 class entry :
   ?max_length:int ->
   ?text:string ->
-  ?position:int ->
   ?visibility:bool ->
   ?editable:bool ->
+  ?width:int -> ?height:int ->
   ?packing:(entry -> unit) -> ?show:bool ->
   object
     inherit editable
@@ -41,8 +41,8 @@ class entry :
     method append_text : string -> unit
     method prepend_text : string -> unit
     method set_entry :
-      ?position:int ->
       ?visibility:bool -> ?editable:bool -> ?max_length:int -> unit
+    method set_position : int -> unit
     method set_text : string -> unit
     method text : string
     method text_length : int
@@ -59,6 +59,7 @@ class spin_button :
   ?wrap:bool ->
   ?shadow_type:Tags.shadow_type ->
   ?snap_to_ticks:bool ->
+  ?width:int -> ?height:int ->
   ?packing:(spin_button -> unit) -> ?show:bool ->
   object
     inherit entry
@@ -71,11 +72,11 @@ class spin_button :
     method set_spin :
       ?adjustment:GData.adjustment ->
       ?digits:int ->
-      ?value:float ->
       ?update_policy:[ALWAYS IF_VALID] ->
       ?numeric:bool ->
       ?wrap:bool ->
       ?shadow_type:Tags.shadow_type -> ?snap_to_ticks:bool -> unit
+    method set_value : float -> unit
   end
 class spin_button_wrapper : Gtk.spin_button obj -> spin_button
 
@@ -109,6 +110,7 @@ class text :
   ?vadjustment:GData.adjustment ->
   ?editable:bool ->
   ?word_wrap:bool ->
+  ?width:int -> ?height:int ->
   ?packing:(text -> unit) -> ?show:bool ->
   object
     inherit editable
