@@ -90,10 +90,10 @@ class frame obj = object
 end
 
 let frame ?label =
-  Frame.setter ?label ~cont:
-    (fun f1 -> Container.setter ~cont:
-        (fun f2 ?packing ?show () ->
-          let w = Frame.create label in f1 w; f2 w;
+  Frame.make_params ?label ~cont:
+    (fun params -> Container.setter ~cont:
+        (fun f ?packing ?show () ->
+          let w = Frame.create params in f w;
           pack_return (new frame w) ~packing ~show))
 
 class aspect_frame obj = object

@@ -5,6 +5,9 @@ open Gtk
 open Tags
 open GtkBase
 
+external gtkbin_init : unit -> unit = "ml_gtkbin_init"
+let () = gtkbin_init ()
+
 module Alignment = struct
   let cast w : alignment obj = Object.try_cast w "GtkAlignment"
   external create :
@@ -20,13 +23,11 @@ end
 
 module EventBox = struct
   let cast w : event_box obj = Object.try_cast w "GtkEventBox"
-  external create : unit -> event_box obj = "ml_gtk_event_box_new"
+  let create () : event_box obj = Gobject.make "GtkEventBox" []
 end
 
 module Frame = struct
   let cast w : frame obj = Object.try_cast w "GtkFrame"
-  external create : Gpointer.optstring -> frame obj = "ml_gtk_frame_new"
-  let create s = create (Gpointer.optstring s)
   module Prop = struct
     open Gobject
     open Data
@@ -39,19 +40,27 @@ module Frame = struct
     let shadow_type = {name="shadow_type"; classe=`frame;
                        conv=conv_shadow_type}
     let check () =
-      let w = create None in
+      let w = Gobject.make "GtkFrame" [] in
       let c p = Gobject.Property.check w p in
       c label; c label_widget; c label_xalign; c label_yalign;
       c shadow_type;
       Object.destroy w
   end
-  let setter ~cont ?label ?label_xalign ?label_yalign ?shadow_type =
-    cont (fun w ->
-      let may_set p = may ~f:(Gobject.Property.set w p) in
-      if label <> None then Gobject.Property.set w Prop.label label;
-      may_set Prop.label_xalign label_xalign;
-      may_set Prop.label_yalign label_yalign;
-      may_set Prop.shadow_type shadow_type)
+
+  let make_params ~cont ?label ?label_xalign ?label_yalign ?shadow_type =
+    let may_cons prop x l =
+      match x with Some x -> Gobject.param prop x :: l | None -> l in
+    cont (
+    may_cons Prop.label_xalign label_xalign (
+    may_cons Prop.label_yalign label_yalign (
+    may_cons Prop.shadow_type shadow_type (
+    if label <> None then [Gobject.param Prop.label label] else []))))
+
+  let create params : frame obj = Gobject.make "GtkFrame" params
+    
+  let setter ~cont =
+    make_params ~cont:(fun params ->
+      cont (fun w -> Gobject.Property.set_params w params))
 
   let set ?label = setter ~cont:(fun f w -> f w) ?label
 end

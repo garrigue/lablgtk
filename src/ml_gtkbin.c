@@ -15,6 +15,24 @@
 #include "ml_gtk.h"
 #include "gtk_tags.h"
 
+/* Init all */
+
+CAMLprim value ml_gtkbin_init(value unit)
+{
+    /* Since these are declared const, must force gcc to call them! */
+    GType t =
+        gtk_alignment_get_type() +
+        gtk_event_box_get_type() +
+        gtk_frame_get_type() +
+        gtk_aspect_frame_get_type() +
+        gtk_handle_box_get_type() +
+        gtk_item_get_type() +
+        gtk_viewport_get_type() +
+        gtk_scrolled_window_get_type() +
+        gtk_socket_get_type();
+    return Val_GType(t);
+}
+
 /* gtkalignment.h */
 
 #define GtkAlignment_val(val) check_cast(GTK_ALIGNMENT,val)
@@ -34,12 +52,7 @@ CAMLprim value ml_gtk_alignment_set (value x, value y,
 
 /* gtkeventbox.h */
 
-ML_0 (gtk_event_box_new, Val_GtkWidget_sink)
-
 /* gtkframe.h */
-
-#define GtkFrame_val(val) check_cast(GTK_FRAME,val)
-ML_1 (gtk_frame_new, Optstring_val, Val_GtkWidget_sink)
 
 /* gtkaspectframe.h */
 
