@@ -32,7 +32,7 @@ class timer ?packing ?show () =
     method draw =
       let current =
         if start = 0. then 0 else truncate (Unix.time () -. start) in
-      let {Gtk.x=x0; Gtk.y=y0; Gtk.width=width; Gtk.height=height} =
+      let {Gtk.x=x0; y=y0; width=width; height=height} =
         da#misc#allocation in
       let size = (min width height) * 49 / 50 in
       let x = (width - size) / 2
@@ -42,7 +42,7 @@ class timer ?packing ?show () =
           ~destroy:(fun pm -> Gdk.Pixmap.destroy pm#pixmap)
           ~create:
           (fun () ->
-            context#set_font_by_name ("sans " ^ string_of_int (size*2/11));
+            context#set_font_by_name ("sans " ^ string_of_int (size*2/13));
             GDraw.pixmap ~width ~height ~window:da ())
       in
       pixmap <- Some dr;

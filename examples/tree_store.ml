@@ -109,6 +109,7 @@ let owen = cols#add boolean
 let dave = cols#add boolean
 let visible = cols#add boolean
 let world = cols#add boolean
+let bg = cols#add (unsafe_boxed (Gobject.Type.from_name "GdkColor"))
 
 let create_model () =
   let model = GTree.tree_store cols in
@@ -128,6 +129,7 @@ let create_model () =
           set dave d;
           set visible true;
           set world w;
+          set bg (GDraw.color (`NAME "orange"))
         end;
     end;
   model
@@ -142,9 +144,11 @@ open GtkTree
 
 let add_columns ~(view : GTree.view) ~model =
   let renderer = GTree.cell_renderer_text [`XALIGN 0.] in
-  view#append_column
-    (GTree.view_column ~title:"Holiday" ~renderer:(renderer, ["text", name])
-       ());
+  let vc =
+    GTree.view_column ~title:"Holiday" ~renderer:(renderer, ["text", name]) ()
+  in
+  vc#add_attribute renderer "background-gdk" bg;
+  view#append_column vc;
 
   List.iter
     ["Alex",alex,true; "Havoc",havoc,false; "Tim",tim,true;
