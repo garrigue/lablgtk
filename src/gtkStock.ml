@@ -146,7 +146,7 @@ let make_icon_factory ?(default = true) ?icons () =
   let f = Icon_factory.new_factory () in
   Gaux.may icons 
     ~f:(List.iter (fun (n, i) -> Icon_factory.add f (convert_id n) i)) ;
-  if true then Icon_factory.add_default f ;
+  if default then Icon_factory.add_default f ;
   f
 
 type item = {
