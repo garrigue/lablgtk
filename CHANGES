@@ -1,5 +1,8 @@
 $Id$
 
+2000.8.21
+  * correct GtkStyle.set_font bug reported by Patrick Doane
+
 2000.7.27
   * changed GUtil.signal and GUtil.variable for better usability
   * suppressed obsolete color settings in tooltips

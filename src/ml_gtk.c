@@ -123,7 +123,15 @@ Make_Array_Setter (gtk_style_set, GtkStyle_val, State_type_val, *GdkColor_val, b
 Make_Extractor (gtk_style_get, GtkStyle_val, colormap, Val_GdkColormap)
 Make_Extractor (gtk_style_get, GtkStyle_val, depth, Val_int)
 Make_Extractor (gtk_style_get, GtkStyle_val, font, Val_GdkFont)
-Make_Setter (gtk_style_set, GtkStyle_val, GdkFont_val, font)
+/* Make_Setter (gtk_style_set, GtkStyle_val, GdkFont_val, font) */
+value ml_gtk_style_set_font (value st, value font)
+{
+    GtkStyle *style = GtkStyle_val(st);
+    if (style->font) gdk_font_unref(style->font);
+    style->font = GdkFont_val(font);
+    gdk_font_ref(style->font);
+    return Val_unit;
+}   
 Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,  dark_gc, Val_GdkGC)
 Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,  light_gc, Val_GdkGC)
 
