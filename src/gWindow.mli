@@ -8,7 +8,7 @@ open GObj
 (** {3 GtkWindow} *)
 
 (** @gtkdoc gtk GtkWindow *)
-class window_skel : 'a obj ->
+class window : 'a obj ->
   object
     inherit GContainer.bin
     constraint 'a = [> Gtk.window]
@@ -73,9 +73,9 @@ class window_skel : 'a obj ->
 
 (** Toplevel widget which can contain other widgets
    @gtkdoc gtk GtkWindow *)
-and window : ([> Gtk.window] as 'a) obj ->
+class window_full : ([> Gtk.window] as 'a) obj ->
   object
-    inherit window_skel
+    inherit window
     val obj : 'a obj
     method connect : GContainer.container_signals
     method fullscreen : unit -> unit
@@ -101,9 +101,9 @@ val window :
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> window
+  ?width:int -> ?height:int -> ?show:bool -> unit -> window_full
 
-val toplevel : #widget -> window option
+val toplevel : #widget -> window_full option
 (** return the toplevel window of this widget, if existing *)
 
 (** {3 GtkDialog} *)
@@ -122,7 +122,7 @@ class ['a] dialog_signals :
 class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
   object
     constraint 'a = [> `DELETE_EVENT]
-    inherit window_skel
+    inherit window
     val obj : 'b obj
     method action_area : GPack.box
     method connect : 'a dialog_signals
@@ -323,7 +323,7 @@ class plug_signals : ([> Gtk.plug] as 'a) obj ->
    @gtkdoc gtk GtkPlug *)
 class plug : Gtk.plug obj ->
   object
-    inherit window_skel
+    inherit window
     val obj : Gtk.plug obj
     method connect : plug_signals
   end
