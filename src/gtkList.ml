@@ -205,7 +205,7 @@ module CList = struct
       true -> column_titles_active w
     | false -> column_titles_passive w
   let set ?:hadjustment ?:vadjustment ?:shadow_type
-      ?:button_actions[=[]] ?:selection_mode ?:reorderable
+      ?(:button_actions=[]) ?:selection_mode ?:reorderable
       ?:use_drag_icons ?:row_height ?:titles_show ?:titles_active w =
     let may_set f param = may param fun:(f w) in
     may_set set_hadjustment hadjustment;

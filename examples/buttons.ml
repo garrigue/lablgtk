@@ -3,7 +3,7 @@
 open GMain
 
 let xpm_label_box parent:(parent : #GContainer.container)
-    :file :text ?:packing[=parent#add] () =
+    :file :text ?(:packing=parent#add) () =
   if not (Sys.file_exists file) then failwith (file ^ " does not exist");
   let box = GPack.hbox border_width: 2 :packing show:false () in
   parent#misc#realize ();

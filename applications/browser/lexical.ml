@@ -16,7 +16,7 @@ let colors : (tags * GdkObj.color) list Lazy.t =
 	 `uident, "midnightblue";
          `none, "black" ])
 
-let tag ?:start[=0] ?end:pend (tw : GEdit.text) =
+let tag ?(:start=0) ?end:pend (tw : GEdit.text) =
   let pend = Misc.default tw#length pend in
   let colors = Lazy.force colors in
   tw#freeze ();

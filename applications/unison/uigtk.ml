@@ -90,7 +90,7 @@ class scrolled_text ?:editable ?:word_wrap ?:width ?:height ?:packing ?:show
     inherit GObj.widget_full hbox#as_widget
     method scrollbar = scrollbar
     method text = text
-    method insert ?:font[=fontMonospaceMedium] s =
+    method insert ?(:font=fontMonospaceMedium) s =
       text#insert font:(Lazy.force font) s
     method show () = hbox#misc#show ()
     initializer

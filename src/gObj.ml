@@ -104,17 +104,17 @@ end
 
 class widget_drag obj = object
   val obj = Widget.coerce obj
-  method dest_set ?:flags[=[`ALL]] ?:actions[=[]] targets =
+  method dest_set ?(:flags=[`ALL]) ?(:actions=[]) targets =
     DnD.dest_set obj :flags :actions targets:(Array.of_list targets)
   method dest_unset () = DnD.dest_unset obj
-  method get_data ?:time[=0] context:(context : drag_context) target =
+  method get_data ?(:time=0) context:(context : drag_context) target =
     DnD.get_data obj (context : < context : Gdk.drag_context; .. >)#context
       :target :time
   method highlight () = DnD.highlight obj
   method unhighlight () = DnD.unhighlight obj
-  method source_set ?mod:m ?:actions[=[]] targets =
+  method source_set ?mod:m ?(:actions=[]) targets =
     DnD.source_set obj ?mod:m :actions targets:(Array.of_list targets)
-  method source_set_icon ?:colormap[= Gdk.Color.get_system_colormap ()]
+  method source_set_icon ?(:colormap = Gdk.Color.get_system_colormap ())
       (pix : GdkObj.pixmap) =
     DnD.source_set_icon obj :colormap pix#pixmap ?mask:pix#mask
   method source_unset () = DnD.source_unset obj
@@ -128,7 +128,7 @@ and drag_context context = object
     new widget (Object.unsafe_cast (DnD.get_source_widget context))
   method set_icon_widget (w : widget) =
     DnD.set_icon_widget context (w#as_widget)
-  method set_icon_pixmap ?:colormap[=Gdk.Color.get_system_colormap ()]
+  method set_icon_pixmap ?(:colormap = Gdk.Color.get_system_colormap ())
       (pix : GdkObj.pixmap) =
     DnD.set_icon_pixmap context :colormap pix#pixmap ?mask:pix#mask
 end

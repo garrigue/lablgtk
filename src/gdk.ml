@@ -136,7 +136,7 @@ module Color = struct
   let color_alloc :colormap color =
     if not (color_alloc colormap color) then raise (Error"Color.alloc");
     color
-  let alloc ?:colormap[=get_system_colormap()] color =
+  let alloc ?(:colormap=get_system_colormap()) color =
     match color with
       `WHITE -> color_white colormap
     | `BLACK -> color_black colormap
@@ -266,20 +266,20 @@ module Draw = struct
       'a drawable -> gc ->
       filled:bool -> x:int -> y:int -> width:int -> height:int -> unit
       = "ml_gdk_draw_rectangle_bc" "ml_gdk_draw_rectangle"
-  let rectangle w gc :x :y :width :height ?:filled[=false] () =
+  let rectangle w gc :x :y :width :height ?(:filled=false) () =
     rectangle w gc :x :y :width :height :filled
   external arc :
       'a drawable -> gc -> filled:bool -> x:int -> y:int ->
       width:int -> height:int -> start:int -> angle:int -> unit
       = "ml_gdk_draw_arc_bc" "ml_gdk_draw_arc"
-  let arc w gc :x :y :width :height ?:filled[=false] ?:start[=0.0]
-      ?:angle[=360.0] () =
+  let arc w gc :x :y :width :height ?(:filled=false) ?(:start=0.)
+      ?(:angle=360.) () =
     arc w gc :x :y :width :height :filled
       start:(truncate(start *. 64.))
       angle:(truncate(angle *. 64.))
   external polygon : 'a drawable -> gc -> filled:bool -> PointArray.t -> unit
       = "ml_gdk_draw_polygon"
-  let polygon w gc ?:filled[=false] l =
+  let polygon w gc ?(:filled=false) l =
     let len = List.length l in
     let arr = PointArray.create :len in
     List.fold_left l acc:0

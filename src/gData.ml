@@ -32,8 +32,8 @@ class adjustment obj = object
   method page_size = Adjustment.get_page_size obj
 end
 
-let adjustment ?:value[=0.] ?:lower[=0.] ?:upper[=100.]
-    ?:step_incr[=1.] ?:page_incr[=10.] ?:page_size[=10.] () =
+let adjustment ?(:value=0.) ?(:lower=0.) ?(:upper=100.)
+    ?(:step_incr=1.) ?(:page_incr=10.) ?(:page_size=10.) () =
   let w =
     Adjustment.create :value :lower :upper :step_incr :page_incr :page_size in
   new adjustment w

@@ -18,7 +18,7 @@ class pixmap obj = object
 end
 
 let pixmap (pm : #GdkObj.pixmap) ?:xalign ?:yalign ?:xpad ?:ypad
-    ?:width[= -2] ?:height[= -2] ?:packing ?:show () =
+    ?(:width = -2) ?(:height = -2) ?:packing ?:show () =
   let w = Pixmap.create pm#pixmap ?mask:pm#mask in
   Misc.set w ?:xalign ?:yalign ?:xpad ?:ypad;
   if width <> -2 || height <> -2 then Widget.set_usize w :width :height;
