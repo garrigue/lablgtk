@@ -11,7 +11,7 @@ module Window = struct
   external set_title : [>`window] obj -> string -> unit
       = "ml_gtk_window_set_title"
   external set_wmclass : [>`window] obj -> name:string -> clas:string -> unit
-      = "ml_gtk_window_set_title"
+      = "ml_gtk_window_set_wmclass"
   external get_wmclass_name : [>`window] obj -> string
       = "ml_gtk_window_get_wmclass_name"
   external get_wmclass_class : [>`window] obj -> string
