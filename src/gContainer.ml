@@ -5,6 +5,20 @@ open Gtk
 open GObj
 open GData
 
+class focus obj = object
+  val obj = obj
+  method circulate = Container.focus obj
+  method set : 'a. ?(#is_widget as 'a) -> unit = fun ?child ->
+    let child = may_map child fun:(#as_widget) in
+    Container.set_focus_child obj (optboxed child)
+  method set_hadjustment ?(adj : adjustment option) =
+    let adj = may_map adj fun:(#as_adjustment) in
+    Container.set_focus_hadjustment obj (optboxed adj)
+  method set_vadjustment ?(adj : adjustment option) =
+    let adj = may_map adj fun:(#as_adjustment) in
+    Container.set_focus_vadjustment obj (optboxed adj)
+end
+
 class container obj = object
   inherit widget obj
   method add : 'b . (#is_widget as 'b) -> unit =
@@ -13,13 +27,7 @@ class container obj = object
     fun w -> Container.remove obj w#as_widget
   method children = List.map fun:(new widget) (Container.children obj)
   method set_size ?:border = Container.set ?obj ?border_width:border
-  method set_focus ?:hadjustment ?:vadjustment =
-    may hadjustment fun:
-      (fun (w : adjustment) ->
-	Container.set_focus_hadjustment obj w#as_adjustment);
-    may vadjustment fun:
-      (fun (w : adjustment) ->
-	Container.set_focus_vadjustment obj w#as_adjustment)
+  method focus = new focus obj
 end
 
 class container_signals obj ?:after = object
@@ -47,13 +55,7 @@ class virtual ['a,'b] item_container obj = object (self)
   method children : 'b list =
     List.map fun:self#wrap (Container.children obj)
   method set_size ?:border = Container.set ?obj ?border_width:border
-  method set_focus ?:hadjustment ?:vadjustment =
-    may hadjustment fun:
-      (fun (w : adjustment) ->
-	Container.set_focus_hadjustment obj w#as_adjustment);
-    may vadjustment fun:
-      (fun (w : adjustment) ->
-	Container.set_focus_vadjustment obj w#as_adjustment)
+  method focus = new focus obj
   method virtual insert : 'c. ('a #is_item as 'c) -> pos:int -> unit
   method append : 'c. ('a #is_item as 'c) -> unit =
     fun w -> self#insert w pos:(-1)
