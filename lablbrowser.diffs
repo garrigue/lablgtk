@@ -1,0 +1,53 @@
+Index: browser/searchpos.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/labltk/browser/searchpos.ml,v
+retrieving revision 1.32
+retrieving revision 1.33
+diff -r1.32 -r1.33
+386,387c386,395
+<   view_signature_item :path :env
+<     [Tsig_type(ident_of_path path default:"t", td)]
+---
+>   try match td.type_manifest with None -> raise Not_found
+>     | Some ty -> match Ctype.repr ty with
+> 	{desc = Tobject _} ->
+> 	  let clt = find_cltype path env in
+> 	  view_signature_item :path :env
+> 	    [Tsig_cltype(ident_of_path path default:"ct", clt)]
+>       |	_ -> raise Not_found
+>   with Not_found ->
+>     view_signature_item :path :env
+>       [Tsig_type(ident_of_path path default:"t", td)]
+390c398
+<   let path, _ = lookup_type li env in
+---
+>   let path, decl = lookup_type li env in
+Index: browser/viewer.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/labltk/browser/viewer.ml,v
+retrieving revision 1.19
+retrieving revision 1.20
+diff -r1.19 -r1.20
+174,175c174
+<     let l = List.map sign fun:
+<       begin function
+---
+>     let ident_of_decl = function
+183,186c182,193
+<       end in
+<     let l = List2.filter l pred:
+<       (function Lident s, Ptype when s <> "" & s.[0] = '#' -> false
+<       	      | _ -> true) in
+---
+>     in
+>     let rec iter_sign sign idents =
+>       match sign with
+> 	[] -> List.rev idents
+>       |	decl :: rem ->
+> 	  let rem = match decl, rem with
+> 	    Tsig_class _, cty :: ty1 :: ty2 :: rem -> rem
+> 	  | Tsig_cltype _, ty1 :: ty2 :: rem -> rem
+> 	  | _, rem -> rem
+> 	  in iter_sign rem (ident_of_decl decl :: idents)
+>     in
+>     let l = iter_sign sign [] in
