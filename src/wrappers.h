@@ -15,6 +15,8 @@ typedef struct { value key; int data; } lookup_info;
 value ml_lookup_from_c (lookup_info *table, int data);
 int ml_lookup_to_c (lookup_info *table, value key);
 
+value ml_option (value);
+
 /* Wrapper generators */
 
 #define ML_0(cname, conv) \
