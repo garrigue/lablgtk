@@ -1,4 +1,6 @@
+(* $Id$ *)
 
+open Gtk
 open GObj
 open GEdit
 open GData
@@ -8,102 +10,75 @@ open GWindow
 
 open Utils
 
-class ['a] rval :init :inits :undo_fun :setfun ?:value_list [< [] >] :codename = object
-  val mutable value : 'a = init
-  val mutable value_string : string = inits
-  val value_list : (string * 'a) list = value_list
-(*  method codename = (codename : string)   the string used in the init code *)
-  val codename : string = codename
-  method value = value
-  method value_list = value_list
-  method value_string = value_string
-  method set = fun value:v value_string:vs -> 
-    if value <> v then begin
-      undo_fun value_string;
-      value <- v; 
-      value_string <- vs;
-      setfun v
-    end
-  method modified =
-    if value <> init then Some (codename, value_string) else None
+external id : 'a -> 'a = "%identity"
+
+type range =
+    String
+  | Int
+  | Float of float * float
+  | Enum of string list
+
+class property :name :init :range :parse :set :encode =
+  object
+    val mutable v : 'a = parse init
+    val mutable s : string = init
+    val name : string = name
+    method get = s
+    method set s' =
+      if s' <> s then begin
+	let v' = parse s' in
+	(* undo s'; *)
+	s <- s';
+	v <- v';
+	set v'
+      end
+    method modified = s <> init
+    method name = name
+    method code : string = encode s
+    method range : range = range
 end
 
+let prop_enum :name :init :values =
+  let parse s =
+    try List.assoc s in:values
+    with Not_found -> invalid_arg "Property.prop_enum#parse"
+  in
+  new property :name range:(Enum (List.map fun:fst values))
+    :init :parse
 
-type property =
-  | Int    of int rval
-  | Float  of float rval
-  | String of string rval
-  | Bool   of bool rval
-  | Shadow of Gtk.Tags.shadow_type rval
-  | Policy of Gtk.Tags.policy_type rval
+let bool_values =
+  [ "true", true; "false", false ]
 
-let prop_modified = function
-  | Int    r -> r#modified
-  | Float  r -> r#modified
-  | String r -> r#modified
-  | Bool   r -> r#modified
-  | Shadow r -> r#modified
-  | Policy r -> r#modified
+let shadow_type_values : (string * Tags.shadow_type) list =
+  [ "NONE", `NONE; "IN", `IN; "OUT", `OUT;
+    "ETCHED_IN", `ETCHED_IN; "ETCHED_OUT", `ETCHED_OUT ]
 
-let get_value_string = function
-  | Int    r -> r#value_string
-  | Float  r -> r#value_string
-  | String r -> r#value_string
-  | Bool   r -> r#value_string
-  | Shadow r -> r#value_string
-  | Policy r -> r#value_string
+let policy_type_values : (string * Tags.policy_type) list =
+  [ "ALWAYS", `ALWAYS; "AUTOMATIC", `AUTOMATIC ]
 
-let bool_values = ["true", true; "false", false]
+let bq = (^) "`"
 
-let shadow_type_values = ["NONE", `NONE; "IN", `IN; "OUT", `OUT;
-		  "ETCHED_IN", `ETCHED_IN; "ETCHED_OUT", `ETCHED_OUT ]
-let policy_type_values = ["ALWAYS", `ALWAYS; "AUTOMATIC", `AUTOMATIC ]
+let prop_bool = prop_enum values:bool_values encode:id
+let prop_shadow = prop_enum values:shadow_type_values encode:bq
+let prop_policy = prop_enum values:policy_type_values encode:bq
 
-(* value_string is the string representation of the value *)
-let change_value_in_prop :value_string = function
-  | Int rval  -> rval#set value:(int_of_string value_string) :value_string
-  | Float rval ->  rval#set value:(float_of_string value_string) :value_string
-  | String rval ->
-      rval#set value:value_string
-	value_string:("\"" ^ String.escaped value_string ^ "\"")
-  | Bool rval ->  rval#set :value_string
-	value:(List.assoc value_string in:bool_values)
-  | Shadow rval -> rval#set :value_string
-	value:(List.assoc value_string in:shadow_type_values)
-  | Policy rval -> rval#set :value_string
-	value:(List.assoc value_string in:policy_type_values)
+let prop_int =
+  let parse s =
+    try int_of_string s with _ -> invalid_arg "Property.prop_int#parse"
+  in
+  new property :parse range:Int encode:id
 
-let rec set_property_in_list name value_string = function
-  | (n, p) :: tl ->
-      if name = n then change_value_in_prop p :value_string
-      else  (set_property_in_list name value_string tl)
-  | [] -> failwith ("set_property_in_list: property not found " ^ name)
+let prop_float :name :init :min :max =
+  let parse s =
+    try float_of_string s with _ -> invalid_arg "Property.prop_float#parse"
+  and encode s =
+    if String.contains s '.' || String.contains s 'e' then s else s ^ ".0"
+  in
+  new property :name :init :parse range:(Float(min,max)) :encode
 
-
-
-(* these functions return a string except int and float *)
-let get_int_prop name in:l =
-  match List.assoc name in:l with
-  | Int rval -> rval#value
-  | _ -> failwith "bug get_int_prop"
-
-let get_float_prop name in:l =
-  match List.assoc name in:l with
-  | Float rval -> rval#value
-  | _ -> failwith "bug get_float_prop"
-
-let get_string_prop name in:l =
-  match List.assoc name in:l with
-  | String rval -> rval#value
-  | _ -> failwith "bug get_string_prop"
-
-let get_enum_prop name in:l =
-  match List.assoc name in:l with
-  | Bool rval -> rval#value_string
-  | Shadow rval -> rval#value_string
-  | Policy rval -> rval#value_string
-  | _ -> failwith "bug get_enum_prop"
-
+let prop_string =
+  new property range:String parse:id
+    encode:(fun s -> "\"" ^ String.escaped s ^ "\"")
 
 class type tiwidget_base = object
   method name : string
@@ -111,161 +86,103 @@ class type tiwidget_base = object
 (*  method base : widget *)
 end
 
-class prop_enumtype l :callback ?:packing :value = object(self)
-  inherit combo popdown_strings:(List.map fun:fst l) show:true
-      ?:packing use_arrows:`ALWAYS
+let property_widget (property : property) =
+  match property#range with
+    Enum l ->
+      let w =
+	new combo popdown_strings:l use_arrows:`ALWAYS
+      in
+      w#entry#connect#changed callback:(fun () -> property#set w#entry#text);
+      w#entry#set_editable false;
+      w#entry#set_text property#get;
+      (w :> widget)
+  | String ->
+      let w = new entry text:property#get in
+      w#connect#activate callback:(fun () -> property#set w#text);
+      (w :> widget)
+  | Int ->
+      let adjustment =
+	new adjustment value:(float_of_string property#get)
+	  lower:(-2.) upper:5000. step_incr:1. page_incr:10. page_size:0.
+      in
+      let w =
+	new spin_button rate:0.5 digits:0 :adjustment in
+      w#connect#activate
+	callback:(fun () -> property#set (string_of_int w#value_as_int));
+      (w :> widget)
+  | Float (lower, upper) ->
+      let adjustment =
+	new adjustment value:(float_of_string property#get)
+	  :lower :upper step_incr:((upper-.lower)/.100.)
+	  page_incr:((upper-.lower)/.10.) page_size:0.
+      in
+      let w = new spin_button rate:0.5 digits:2 :adjustment in
+      w#connect#activate
+	callback:(fun () -> property#set (string_of_float w#value));
+      (w :> widget)
 
-  val revl = List.map fun:(fun (a,b) -> (b,a)) l
-  initializer
-    self#entry#connect#changed callback:
-      (fun _ -> let text = self#entry#text in
-	callback value:(List.assoc text in:l) value_string:text);
-    self#entry#set_editable false;
-    self#entry#set_text (List.assoc value in:revl)
-end
-
-
-class prop_bool = prop_enumtype bool_values
-class prop_shadow = prop_enumtype shadow_type_values
-class prop_policy = prop_enumtype policy_type_values
-
-class prop_string :callback ?:packing :value = object(self)
-  inherit entry text:value ?:packing show:true
-  initializer
-    self#connect#activate callback:
-      (fun _ -> let text = self#text in
-        callback value:text value_string:("\"" ^ String.escaped text ^ "\""));
-    ()
-end
-
-class spin_int ?:value [< 0 >] :lower :upper ?:step_incr [< 1. >]
-    ?:page_incr [< 1. >] ?:packing :callback =
-object(self)
-  inherit spin_button rate:0.5 digits:0
-      adjustment:(new adjustment value:(float_of_int value) :lower
-		    :upper :step_incr :page_incr page_size:0.)
-      show:true ?:packing
-  initializer
-    self#connect#activate callback:
-      (fun _ -> let value = self#value_as_int in
-        callback :value value_string:(string_of_int value));
-    ()
-end
-
-class spin_float ?:value [< 0. >] :lower :upper ?:step_incr [< 1. >]
-    ?:page_incr [< 1. >] ?:packing :callback =
-object(self)
-  inherit spin_button rate:0.5 digits:2
-      adjustment:(new adjustment value:value :lower
-		    :upper :step_incr :page_incr page_size:0.)
-      show:true ?:packing
-  initializer
-    self#connect#activate callback:
-      (fun _ -> let value = self#value in
-	callback :value value_string:(string_of_float value));
-    ()
-end
-
-let plist_affich list =
-  let une_prop_affich prop = 
-    let hbox = new hbox homogeneous:true in
-    begin
-      match prop with
-      | name, Bool prop -> new label text:name
-	    packing:(hbox#pack fill:true);
-	  new prop_bool callback:prop#set packing:(hbox#pack fill:true)
-	    value:prop#value;
-	  ()
-      | name, Int prop -> new label text:name
-	    packing:(hbox#pack fill:true);
-	  new spin_int lower:(-2.) upper:5000. callback:prop#set
-	    packing:(hbox#pack fill:true) value:prop#value;
-	  ()
-      | name, Float prop -> new label text:name
-	    packing:(hbox#pack fill:true);
-	  let mini = List.assoc "min" in:prop#value_list
-	  and maxi = List.assoc "max" in:prop#value_list in
-	  new spin_float lower:mini upper:maxi
-	    step_incr:((maxi-.mini)/.100.) callback:prop#set
-	    packing:(hbox#pack fill:true) value:prop#value;
-	  ()
-      | name, String prop -> new label text:name
-	    packing:(hbox#pack fill:true);
-	  new prop_string  callback:prop#set
-	    packing:(hbox#pack fill:true) value:prop#value;
-	  ()
-      | name, Shadow prop -> new label text:name
-	    packing:(hbox#pack fill:true);
-	  new prop_shadow  callback:prop#set
-	    packing:(hbox#pack fill:true) value:prop#value;
-	  ()
-      | name, Policy prop -> new label text:name
-	    packing:(hbox#pack fill:true);
-	  new prop_policy  callback:prop#set
-	    packing:(hbox#pack fill:true) value:prop#value;
-	  ()
+let property_box list ?:packing ?:show =
+  let vbox = new box `VERTICAL ?:packing ?:show in
+  List.iter list fun:
+    begin fun (name, property) ->
+      let hbox = new hbox homogeneous:true packing:(vbox#pack expand:false) in
+      hbox#pack fill:true (new label text:name);
+      hbox#pack fill:true (property_widget property);
+      vbox#pack expand:false (new separator `HORIZONTAL)
     end;
-    hbox
-  in let vbox = new vbox in
-  List.iter
-    fun:(fun (n, p) ->
-      vbox#pack (une_prop_affich (n,p)) expand:false;
-      new separator `HORIZONTAL packing:(vbox#pack expand:false);
-      ())
-    list;
   vbox
-;;
 
+let property_window = new window show:true title:"Properties"
+let vbox = new vbox packing:property_window#add
 
+let widget_pool = new Omap.c []
 
-let propwin = new window show:true title:"properties"
-let vbox = new vbox packing:propwin#add
+let null_box = property_box [] packing:vbox#add
+let () = widget_pool#add key:"" data:null_box
 
-let vbox2 = plist_affich [];;
-vbox#pack vbox2;;
-let vboxref = ref vbox2
-let affiched = ref ""
+let vboxref = ref null_box
+let shown_widget = ref ""
 
-let affich_vb vb =
+let show_property_box vb =
   vbox#remove !vboxref;
   vbox#pack vb;
   vboxref := vb
 
-let prop_affich_pool = new Omap.c []
-
-let prop_affich (w : #tiwidget_base) =
+let prop_show (w : #tiwidget_base) =
   let name = w#name in
-  let vb = try
-    prop_affich_pool#find key:name
-  with Not_found ->
-    let vb = plist_affich w#proplist in
-    prop_affich_pool#add key:name data:vb;
-    vb in
-  affich_vb vb;
-  affiched := name
-
+  let vb =
+    try
+      widget_pool#find key:name
+    with Not_found ->
+      let vb = property_box w#proplist in
+      widget_pool#add key:name data:vb;
+      vb
+  in
+  show_property_box vb;
+  shown_widget := name
 
 let prop_add (w : #tiwidget_base) =
-  let vb = plist_affich w#proplist in
-  prop_affich_pool#add key:w#name data:vb
+  let vb = property_box w#proplist in
+  widget_pool#add key:w#name data:vb
 
 
 let prop_remove name =
-  prop_affich_pool#remove key:name;
-  if !affiched = name then begin
-    affich_vb (plist_affich [])
+  widget_pool#remove key:name;
+  if !shown_widget = name then begin
+    shown_widget := "";
+    show_property_box (widget_pool#find key:"")
   end
 
 let prop_change_name oldname newname =
-  let vb = prop_affich_pool#find key:oldname in
-  prop_affich_pool#remove key:oldname;
-  prop_affich_pool#add key:newname data:vb
+  let vb = widget_pool#find key:oldname in
+  widget_pool#remove key:oldname;
+  widget_pool#add key:newname data:vb
 
 let prop_update (w : #tiwidget_base) =
-  let vb = plist_affich w#proplist in
-  prop_affich_pool#remove key:w#name;
-  prop_affich_pool#add key:w#name data:vb;
-  if !affiched = w#name then affich_vb vb
+  let vb = property_box w#proplist in
+  widget_pool#remove key:w#name;
+  widget_pool#add key:w#name data:vb;
+  if !shown_widget = w#name then show_property_box vb
 
 
 
