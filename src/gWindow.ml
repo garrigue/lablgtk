@@ -99,7 +99,7 @@ class ['a] dialog_skel obj = object (self)
   inherit [window] window_skel obj
   inherit dialog_props
   val tbl : (int * 'a) list ref = 
-    ref [rnone, `NONE; rdelete, `DELETE_EVENT]
+    ref [rdelete, `DELETE_EVENT]
   val mutable id = 0
   method action_area = new GPack.box (Dialog.action_area obj)
   method vbox = new GPack.box (Dialog.vbox obj)
@@ -111,7 +111,9 @@ class ['a] dialog_skel obj = object (self)
     Dialog.set_default_response obj (list_rassoc v !tbl)
   method run () = 
     let resp = Dialog.run obj in
-    List.assoc resp !tbl
+    if resp = rnone
+    then failwith "dialog destroyed"
+    else List.assoc resp !tbl
 end
 
 class ['a] dialog obj = object (self)
@@ -144,14 +146,13 @@ and rclose = Dialog.std_response `CLOSE
 and ryes = Dialog.std_response `YES
 and rno = Dialog.std_response `NO
 and rcancel = Dialog.std_response `CANCEL
-let none = `NONE, [ ]
 let ok = `OK, [ rok, `OK ]
 let close = `CLOSE, [ rclose, `CLOSE ]
 let yes_no = `YES_NO, [ ryes, `YES ; rno, `NO ]
 let ok_cancel = `OK_CANCEL, [ rok, `OK; rcancel, `CANCEL ]
-type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT | `NONE]
-type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT | `NONE]
-type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT | `NONE]
+type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
+type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
+type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT]
 end
 
 class ['a] message_dialog obj ~(buttons : 'a buttons) = object
