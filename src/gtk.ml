@@ -4,6 +4,8 @@ open Misc
 
 exception Error of string
 let _ = Callback.register_exception "gdkerror" (Error"")
+exception Warning of string
+let _ = Glib.set_warning_handler (fun msg -> raise (Warning msg))
 
 type 'a obj
 
@@ -128,6 +130,10 @@ module Widget = struct
       = "ml_gtk_widget_intersect"
   external basic : [> widget] obj -> bool
       = "ml_gtk_widget_basic"
+  external set_can_default : [> widget] obj -> bool -> unit
+      = "ml_gtk_widget_set_can_default"
+  external set_can_focus : [> widget] obj -> bool -> unit
+      = "ml_gtk_widget_set_can_default"
   external grab_focus : [> widget] obj -> unit
       = "ml_gtk_widget_grab_focus"
   external grab_default : [> widget] obj -> unit
@@ -170,6 +176,17 @@ module Widget = struct
       = "ml_gtk_widget_restore_default_style"
   external window : [> widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
+  let set w ?:name ?:state ?:sensitive ?:can_default ?:can_focus
+      ?:x [< -2 >] ?:y [< -2 >] ?:width [< -1 >] ?:height [< -1 >] ?:style =
+    let may_set f arg = may fun:(f w) arg in
+    may_set set_name name;
+    may_set set_state state;
+    may_set set_sensitive sensitive;
+    may_set set_can_default can_default;
+    may_set set_can_focus can_focus;
+    may_set set_style style;
+    if x > -2 || y > -2 then set_uposition w :x :y;
+    if width > -1 || height > -1 then set_usize w :width :height
 end
 
 module Container = struct
@@ -330,6 +347,32 @@ module RadioButton = struct
     | Some label -> create_with_label group label
 end
 
+module Table = struct
+  type t = [widget container table] obj
+  external create : int -> int -> homogeneous:bool -> t
+      = "ml_gtk_table_new"
+  let create r c ?:homogeneous [< false >] = create r c :homogeneous
+  external attach :
+      [> table] obj -> [> widget obj] -> left:int -> right:int ->
+      top:int -> bottom:int -> xoptions:attach list ->
+      yoptions:attach list -> xpadding:int -> ypadding:int -> unit
+      = "ml_gtk_table_attach_bc" "ml_gtk_table_attach"
+  type dirs = [x y both none]
+  let has_x = function `x|`both -> true | `y|`none -> false
+  let has_y = function `y|`both -> true | `x|`none -> false
+  let attach t w :left :top ?:right [< left+1 >] ?:bottom [< right+1 >]
+      ?:expand [< `both >] ?:fill [< `both >]
+      ?:shrink [< `none >] ?:xpadding [< 0 >] ?:ypadding [< 0 >] =
+    let xoptions = if has_x shrink then [`SHRINK] else [] in
+    let xoptions = if has_x fill then `FILL::xoptions else xoptions in
+    let xoptions = if has_x expand then `EXPAND::xoptions else xoptions in
+    let yoptions = if has_y shrink then [`SHRINK] else [] in
+    let yoptions = if has_y fill then `FILL::yoptions else yoptions in
+    let yoptions = if has_y expand then `EXPAND::yoptions else yoptions in
+    attach t w :left :top :right :bottom :xoptions :yoptions
+      :xpadding :ypadding
+end
+
 module Misc = struct
   type t = [widget misc] obj
   external set_alignment : [> misc] obj -> x:float -> y:float -> unit
@@ -360,6 +403,23 @@ module Pixmap = struct
       = "ml_gtk_pixmap_set"
   external pixmap : [> pixmap] obj -> Gdk.pixmap = "ml_GtkPixmap_pixmap"
   external mask : [> pixmap] obj -> Gdk.bitmap = "ml_GtkPixmap_mask"
+end
+
+module ProgressBar = struct
+  type t = [widget progress] obj
+  external create : unit -> t = "ml_gtk_progress_bar_new"
+  external update : [> progress] obj -> percent:float -> unit
+      = "ml_gtk_progress_bar_update"
+  external percent : [> progress] obj -> float
+      = "ml_GtkProgressBar_percentage"
+end
+
+module Separator = struct
+  type t = [widget separator] obj
+  external hseparator_new : unit -> t = "ml_gtk_hseparator_new"
+  external vseparator_new : unit -> t = "ml_gtk_vseparator_new"
+  let create (dir : orientation) =
+    if dir = `HORIZONTAL then hseparator_new () else vseparator_new ()
 end
 
 module Main = struct

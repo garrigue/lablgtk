@@ -24,14 +24,13 @@ void ml_raise_gtk (const char *errmsg)
 
 value ml_get_null (value unit) { return 0L; }
 
+/* conversion functions */
+
 #include "gtk_tags.c"
 
-inline value Val_pointer (void *p)
-{
-    value ret = alloc_shr (2, Abstract_tag);
-    initialize (&Field(ret,1), (value) p);
-    return ret;
-}
+Make_Flags_val (Attach_val)
+
+/* gtkobject.h */
 
 Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref)
 
@@ -104,6 +103,26 @@ ML_3 (gtk_adjustment_clamp_page, GtkAdjustment_val,
 
 #define GtkWidget_val(val) GTK_WIDGET(Pointer_val(val))
 #define Val_GtkWidget(w) Val_GtkObject((GtkObject*)w)
+value ml_gtk_widget_set_can_default (value val, value bool)
+{
+    GtkWidget *w = GtkWidget_val(val);
+    guint32 saved_flags = GTK_WIDGET_FLAGS(w);
+    if (Bool_val(bool)) GTK_WIDGET_SET_FLAGS(w, GTK_CAN_DEFAULT);
+    else GTK_WIDGET_UNSET_FLAGS(w, GTK_CAN_DEFAULT);
+    if (saved_flags != GTK_WIDGET_FLAGS(w))
+	gtk_widget_queue_resize (w);
+    return Val_unit;
+}
+value ml_gtk_widget_set_can_focus (value val, value bool)
+{
+    GtkWidget *w = GtkWidget_val(val);
+    guint32 saved_flags = GTK_WIDGET_FLAGS(w);
+    if (Bool_val(bool)) GTK_WIDGET_SET_FLAGS(w, GTK_CAN_FOCUS);
+    else GTK_WIDGET_UNSET_FLAGS(w, GTK_CAN_FOCUS);
+    if (saved_flags != GTK_WIDGET_FLAGS(w))
+	gtk_widget_queue_resize (w);
+    return Val_unit;
+}
 ML_1 (gtk_widget_destroy, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unparent, GtkWidget_val, Unit)
 ML_1 (gtk_widget_show, GtkWidget_val, Unit)
@@ -303,6 +322,15 @@ ML_2 (gtk_radio_button_new_with_label, (GSList*), String_val, Val_GtkWidget)
 ML_1 (gtk_radio_button_group, GtkRadioButton_val, (value))
 ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, (GSList*), Unit)
 
+/* gtktable.h */
+
+#define GtkTable_val(val) GTK_TABLE(Pointer_val(val))
+ML_3 (gtk_table_new, Int_val, Int_val, Int_val, Val_GtkWidget)
+ML_10 (gtk_table_attach, GtkTable_val, GtkWidget_val,
+       Int_val, Int_val, Int_val, Int_val,
+       Flags_Attach_val, Flags_Attach_val, Int_val, Int_val, Unit)
+ML_bc10 (ml_gtk_table_attach)
+
 /* gtkmisc.h */
 
 #define GtkMisc_val(val) GTK_MISC(Pointer_val(val))
@@ -330,6 +358,18 @@ value ml_gtk_pixmap_set (value val, value pixmap, value mask)
 }
 Make_Extractor (GtkPixmap, GtkPixmap_val, pixmap, Val_GdkPixmap)
 Make_Extractor (GtkPixmap, GtkPixmap_val, mask, Val_GdkBitmap)
+
+/* gtkprogressbar.h */
+
+#define GtkProgressBar_val(val) GTK_PROGRESS_BAR(Pointer_val(val))
+ML_0 (gtk_progress_bar_new, Val_GtkWidget)
+ML_2 (gtk_progress_bar_update, GtkProgressBar_val, Float_val, Unit)
+Make_Extractor (GtkProgressBar, GtkProgressBar_val, percentage, copy_double)
+
+/* gtk[hv]separator.h */
+
+ML_0 (gtk_hseparator_new, Val_GtkWidget)
+ML_0 (gtk_vseparator_new, Val_GtkWidget)
 
 /* gtkmain.h */
 

@@ -51,5 +51,22 @@ GSList *GSList_val (value list, gpointer (*func)(value))
     End_roots ();
     return res;
 }
+
+static value ml_warning_handler = 0L;
+
+static void ml_warning_wrapper (char *msg)
+{
+    value arg = copy_string (msg);
+    callback (ml_warning_handler, arg);
+}
     
-    
+value ml_g_set_warning_handler (value clos)
+{
+    value old_handler = ml_warning_handler ? ml_warning_handler : clos;
+    if (!ml_warning_handler) {
+	register_global_root (&ml_warning_handler);
+	g_set_warning_handler (ml_warning_wrapper);
+    }
+    ml_warning_handler = clos;
+    return old_handler;
+}

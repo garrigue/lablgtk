@@ -30,6 +30,10 @@ let main () =
   let button3 = RadioButton.create (`widget button1) label:"button3" in
   Box.pack box2 button3;
   Widget.show button3;
+
+  let separator = Separator.create `HORIZONTAL in
+  Box.pack box1 separator expand:false;
+  Widget.show separator;
   
   let box3 = Box.create `VERTICAL spacing:10 in
   Container.border_width box3 10;
@@ -39,9 +43,8 @@ let main () =
   let button = Button.create_with_label "close" in
   Signal.connect button sig:Signal.clicked cb:Main.quit;
   Box.pack box3 button;
-(*
+  Widget.set button can_default:true;
   Widget.grab_default button;
-*)
   Widget.show button;
   Widget.show window;
 
