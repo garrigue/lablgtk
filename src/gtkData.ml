@@ -121,3 +121,21 @@ module Tooltips = struct
     cont tt
   let set = setter cont:null_cont
 end
+
+
+module Selection = struct
+  type t
+  external selection : t -> Gdk.atom
+      = "ml_gtk_selection_data_selection"
+  external target : t -> Gdk.atom
+      = "ml_gtk_selection_data_target"
+  external seltype : t -> Gdk.atom
+      = "ml_gtk_selection_data_type"
+  external format : t -> int
+      = "ml_gtk_selection_data_format"
+  external get_data : t -> string
+      = "ml_gtk_selection_data_get_data"       (* May raise Null_pointer *)
+  external set :
+      t -> type:Gdk.atom -> format:int -> ?data:string -> unit
+      = "ml_gtk_selection_data_set"
+end

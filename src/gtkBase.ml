@@ -162,6 +162,18 @@ module Widget = struct
     let marshal f argv = f (cast (GtkArgv.get_object argv pos:0))
     let marshal_opt f argv = f (try Some(cast (GtkArgv.get_object argv pos:0))
 	                        with Null_pointer -> None)
+    let marshal_drag1 f argv =
+      let p = GtkArgv.get_pointer argv pos:0 in
+      f (Obj.magic p : Gdk.drag_context)
+    let marshal_drag2 f argv =
+      let p = GtkArgv.get_pointer argv pos:0 in
+      f (Obj.magic p : Gdk.drag_context) (GtkArgv.get_int argv pos:1)
+    let marshal_drag3 f argv =
+      let p = GtkArgv.get_pointer argv pos:0 in
+      let res =
+	f (Obj.magic p : Gdk.drag_context) (GtkArgv.get_int argv pos:1)
+	  (GtkArgv.get_int argv pos:2) (GtkArgv.get_int argv pos:3) in
+      GtkArgv.set_result_bool argv res
 
     let show : ([> widget],_) t =
       { name = "show"; marshaller = marshal_unit }
@@ -188,6 +200,33 @@ module Widget = struct
       { name = "state_changed"; marshaller = marshal }
     let parent_set : ([> widget],_) t =
       { name = "parent_set"; marshaller = marshal_opt }
+    let drag_begin : ([> widget],_) t =
+      { name = "drag_begin"; marshaller = marshal_drag1 }
+    let drag_end : ([> widget],_) t =
+      { name = "drag_end"; marshaller = marshal_drag1 }
+    let drag_data_delete : ([> widget],_) t =
+      { name = "drag_data_delete"; marshaller = marshal_drag1 }
+    let drag_leave : ([> widget],_) t =
+      { name = "drag_leave"; marshaller = marshal_drag2 }
+    let drag_motion : ([> widget],_) t =
+      { name = "drag_motion"; marshaller = marshal_drag3 }
+    let drag_drop : ([> widget],_) t =
+      { name = "drag_drop"; marshaller = marshal_drag3 }
+    let drag_data_get : ([> widget],_) t =
+      let marshal f argv = 
+	let p = GtkArgv.get_pointer argv pos:0
+	and q = GtkArgv.get_pointer argv pos:1 in
+	f (Obj.magic p : Gdk.drag_context) (Obj.magic q : GtkData.Selection.t) 
+	  (GtkArgv.get_int argv pos:2) (GtkArgv.get_int argv pos:3) in
+      { name = "drag_data_get"; marshaller = marshal }
+    let drag_data_received : ([> widget],_) t =
+      let marshal f argv = 
+	let p = GtkArgv.get_pointer argv pos:0
+	and q = GtkArgv.get_pointer argv pos:3 in
+	f (Obj.magic p : Gdk.drag_context) (GtkArgv.get_int argv pos:1)
+	  (GtkArgv.get_int argv pos:2) (Obj.magic q : GtkData.Selection.t)
+	  (GtkArgv.get_int argv pos:4) (GtkArgv.get_int argv pos:5) in
+      { name = "drag_data_received"; marshaller = marshal }
 
     module Event = struct
       let marshal f argv =
@@ -309,4 +348,34 @@ module Item = struct
     let toggle : ([> item],_) t =
       { name = "toggle"; marshaller = marshal_unit }
   end
+end
+
+
+module DnD = struct
+  external dest_set : [> widget] obj -> dest_defaults list -> target_entry array -> int -> Gdk.Tags.drag_action list -> unit 
+      = "ml_gtk_drag_dest_set"
+  external dest_unset : [> widget] obj -> unit
+      = "ml_gtk_drag_dest_unset"
+  external finish : Gdk.drag_context -> success:bool -> del:bool -> time:int -> unit
+      = "ml_gtk_drag_finish"
+  external get_data : [> widget] obj -> Gdk.drag_context -> target:Gdk.atom -> time:int -> unit
+      = "ml_gtk_drag_get_data"
+  external get_source_widget : Gdk.drag_context -> widget obj
+      = "ml_gtk_drag_get_source_widget"
+  external highlight : [> widget] obj -> unit = "ml_gtk_drag_highlight"
+  external unhighlight : [> widget] obj -> unit = "ml_gtk_drag_unhighlight"
+  external set_icon_widget : Gdk.drag_context -> [> widget] obj -> hot_x:int -> hot_y:int -> unit
+      = "ml_gtk_drag_set_icon_widget"
+  external set_icon_pixmap : Gdk.drag_context -> colormap:Gdk.colormap -> Gdk.pixmap -> Gdk.bitmap option -> hot_x:int -> hot_y:int -> unit
+      = "ml_gtk_drag_set_icon_pixmap_bc" "ml_gtk_drag_set_icon_pixmap"
+  external set_icon_default : Gdk.drag_context -> unit
+      = "ml_gtk_drag_set_icon_default"
+  external set_default_icon : Gdk.colormap -> Gdk.pixmap -> Gdk.bitmap -> int -> int -> unit
+      = "ml_gtk_drag_set_default_icon"
+  external source_set : [> widget] obj -> ?mod:Gdk.Tags.modifier list -> target_entry array -> int -> Gdk.Tags.drag_action list -> unit
+      = "ml_gtk_drag_source_set"
+  external source_set_icon : [> widget] obj -> Gdk.colormap -> Gdk.pixmap -> Gdk.bitmap option -> unit
+      = "ml_gtk_drag_source_set_icon"
+  external source_unset : [> widget] obj -> unit = "ml_gtk_drag_source_unset"
+(*  external dest_handle_event : [> widget] -> *)
 end

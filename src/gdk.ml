@@ -13,6 +13,7 @@ type font
 type image
 type atom = int
 type 'a event
+type drag_context
 
 exception Error of string
 let _ = Callback.register_exception "gdkerror" (Error"")
@@ -58,6 +59,10 @@ module Tags = struct
   type modifier =
     [ SHIFT LOCK CONTROL MOD1 MOD2 MOD3 MOD4 MOD5 BUTTON1
       BUTTON2 BUTTON3 BUTTON4 BUTTON5 ]
+
+  type drag_action =
+    [ DEFAULT COPY MOVE LINK PRIVATE ASK ]
+
 end
 open Tags
 
@@ -149,6 +154,10 @@ module Window = struct
   type backgroundPixmap = [ NONE PARENT_RELATIVE PIXMAP(pixmap) ]
   external visual_depth : visual -> int = "ml_gdk_visual_get_depth"
   external get_visual : window -> visual = "ml_gdk_window_get_visual"
+  external get_parent : window -> window = "ml_gdk_window_get_parent"
+  external get_size : window -> int * int = "ml_gdk_window_get_size"
+  external get_position : window -> int * int =
+    "ml_gdk_window_get_position"
   external root_parent : unit -> window = "ml_GdkRootParent"
   external set_back_pixmap : window -> pixmap -> int -> unit = 
     "ml_gdk_window_set_back_pixmap"
@@ -266,11 +275,20 @@ module Draw = struct
     List.fold_left l acc:0
       fun:(fun (x,y) acc:pos -> PointArray.set arr :pos :x :y; pos+1);
     polygon w gc :filled arr
-  external string : 'a drawable -> font: font -> gc -> x: int -> y: int -> 
+  external string : 'a drawable -> font: font -> gc -> x: int -> y: int ->
     string: string -> unit
       = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"	
   external image : 'a drawable -> gc -> image: image -> 
     xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
     width: int -> height: int -> unit
       = "ml_gdk_draw_image_bc" "ml_gdk_draw_image"
+end
+
+module DnD = struct
+  external drag_status : drag_context -> drag_action list -> time:int -> unit
+      = "ml_gdk_drag_status"
+  external drag_context_suggested_action : drag_context -> drag_action
+      = "ml_GdkDragContext_suggested_action"
+  external drag_context_targets : drag_context -> atom list
+      = "ml_GdkDragContext_targets"
 end

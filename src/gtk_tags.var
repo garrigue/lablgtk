@@ -135,3 +135,9 @@ type progress_bar_style = "GTK_PROGRESS_"
 
 type progress_bar_orientation = "GTK_PROGRESS_"
     [ LEFT_TO_RIGHT RIGHT_TO_LEFT BOTTOM_TO_TOP TOP_TO_BOTTOM ]
+
+type dest_defaults = "GTK_DEST_DEFAULT_"
+    [ MOTION HIGHLIGHT DROP ALL ]
+
+type target_flags = "GTK_TARGET_"
+    [ SAME_APP SAME_WIDGET ]

@@ -31,6 +31,9 @@ class box dir ?:homogeneous ?:spacing
     initializer pack_return :packing ?:show (self :> box_wrapper)
   end
 
+class vbox = box ?`VERTICAL
+class hbox = box ?`HORIZONTAL
+
 class button_box_wrapper obj = object
   inherit box_skel (BBox.coerce obj)
   method connect = new container_signals ?obj

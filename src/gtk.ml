@@ -60,6 +60,8 @@ module Tags = struct
   type progress_bar_style = [ CONTINUOUS DISCRETE ]
   type progress_bar_orientation =
     [ LEFT_TO_RIGHT RIGHT_TO_LEFT BOTTOM_TO_TOP TOP_TO_BOTTOM ]
+  type dest_defaults = [ MOTION HIGHLIGHT DROP ALL ]
+  type target_flags = [ SAME_APP SAME_WIDGET ]
 end
 open Tags
 
@@ -75,7 +77,8 @@ type statusbar_message
 type statusbar_context
 
 type color = { red: float; green: float; blue: float; opacity: float }
-type rectangle = { x: int; y: int; width: int; height: int }
+type rectangle  = { x: int; y: int; width: int; height: int }
+type target_entry = { target: string; flags: target_flags list; info: int }
 
 type data = [data]
 type adjustment = [data adjustment]

@@ -40,6 +40,8 @@ ML_1 (Val_state_type, Int_val, )
 
 Make_Flags_val (Attach_options_val)
 Make_Flags_val (Button_action_val)
+Make_Flags_val (Dest_defaults_val)
+Make_Flags_val (Target_flags_val)
 
 /* gtkobject.h */
 
@@ -295,6 +297,83 @@ Make_Extractor (gtk_allocation, GtkAllocation_val, height, Val_int)
 */
 
 ML_2 (gtk_widget_set_app_paintable, GtkWidget_val, Bool_val, Unit)
+
+
+/* gtkdnd.h */
+
+value ml_gtk_drag_dest_set (value w, value f, value t, value n, value a)
+{
+  GtkTargetEntry *targets;
+  int n_targets, i;
+  
+  n_targets = Int_val(n);
+  targets = (GtkTargetEntry *)g_malloc (n_targets * sizeof(GtkTargetEntry));
+  for (i=0; i<n_targets; i++) {
+    targets[i].target = String_val(Field(Field(t, i), 0));
+    targets[i].flags = Flags_Target_flags_val(Field(Field(t, i), 1));
+    targets[i].info = Int_val(Field(Field(t, i), 2));
+  }
+  gtk_drag_dest_set (GtkWidget_val(w), Flags_Dest_defaults_val(f), targets, n_targets, Flags_GdkDragAction_val(a));
+  g_free (targets);
+  return Val_unit;
+}
+ML_1 (gtk_drag_dest_unset, GtkWidget_val, Unit)
+ML_4 (gtk_drag_finish, GdkDragContext_val, Bool_val, Bool_val, Int_val, Unit)
+ML_4 (gtk_drag_get_data, GtkWidget_val, GdkDragContext_val, Int_val, Int_val, Unit)
+ML_1 (gtk_drag_get_source_widget, GdkDragContext_val, Val_GtkWidget)
+ML_1 (gtk_drag_highlight, GtkWidget_val, Unit)
+ML_1 (gtk_drag_unhighlight, GtkWidget_val, Unit)
+ML_4 (gtk_drag_set_icon_widget, GdkDragContext_val, GtkWidget_val, Int_val, Int_val, Unit)
+ML_6 (gtk_drag_set_icon_pixmap, GdkDragContext_val, GdkColormap_val,
+      GdkPixmap_val,
+      Option_val(arg4, GdkBitmap_val, NULL) Ignore, Int_val, Int_val, Unit)
+ML_bc6 (ml_gtk_drag_set_icon_pixmap)
+ML_1 (gtk_drag_set_icon_default, GdkDragContext_val, Unit)
+ML_5 (gtk_drag_set_default_icon, GdkColormap_val, GdkPixmap_val, GdkBitmap_val, Int_val, Int_val, Unit)
+value ml_gtk_drag_source_set (value w, value m, value t, value n, value a)
+{
+  GtkTargetEntry *targets;
+  int n_targets, i;
+  
+  n_targets = Int_val(n);
+  targets = (GtkTargetEntry *)g_malloc (n_targets * sizeof(GtkTargetEntry));
+  for (i=0; i<n_targets; i++) {
+    targets[i].target = String_val(Field(Field(t, i), 0));
+    targets[i].flags = Flags_Target_flags_val(Field(Field(t, i), 1));
+    targets[i].info = Int_val(Field(Field(t, i), 2));
+  }
+  gtk_drag_source_set (GtkWidget_val(w), OptFlags_GdkModifier_val(m), targets, n_targets, Flags_GdkDragAction_val(a));
+  g_free (targets);
+  return Val_unit;
+}
+ML_4 (gtk_drag_source_set_icon, GtkWidget_val, GdkColormap_val, GdkPixmap_val,
+      Option_val(arg4, GdkBitmap_val, NULL) Ignore, Unit)
+ML_1 (gtk_drag_source_unset, GtkWidget_val, Unit)
+
+/* gtkwidget.h / gtkselection.h */
+
+#define GtkSelectionData_val(val) ((GtkSelectionData *)Pointer_val(val))
+
+Make_Extractor (gtk_selection_data, GtkSelectionData_val, selection, Val_int)
+Make_Extractor (gtk_selection_data, GtkSelectionData_val, target, Val_int)
+Make_Extractor (gtk_selection_data, GtkSelectionData_val, type, Val_int)
+Make_Extractor (gtk_selection_data, GtkSelectionData_val, format, Val_int)
+value ml_gtk_selection_data_get_data (value val)
+{
+    value ret;
+    GtkSelectionData *data = GtkSelectionData_val(val);
+
+    if (data->length < 0) ml_raise_null_pointer();
+    ret = alloc_string (data->length);
+    if (data->length) memcpy ((void*)ret, data->data, data->length);
+    return ret;
+}
+
+ML_4 (gtk_selection_data_set, GtkSelectionData_val, Int_val, Int_val,
+      Insert((guchar*)String_option_val(arg4))
+      Option_val(arg4, string_length, -1) Ignore,
+      Unit)
+
 /* gtkcontainer.h */
 
 #define GtkContainer_val(val) check_cast(GTK_CONTAINER,val)
