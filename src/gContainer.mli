@@ -75,6 +75,23 @@ val pack_container :
   ?width:int ->
   ?height:int -> ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> 'a
 
+(** {3 GtkBin} *)
+
+(** @gtkdoc gtk GtkContainer *)
+class bin : ([> Gtk.bin] as 'a) obj ->
+  object
+    inherit container
+    val obj : 'a obj
+    method child : widget
+  end
+
+(** @gtkdoc gtk GtkContainer *)
+class ['a] bin_impl :([> Gtk.bin] as 'a) obj ->
+  object
+    inherit bin
+    inherit ['a] GObj.objvar
+  end
+
 (** {3 GtkItem} *)
 
 (** @gtkdoc gtk GtkContainer *)

@@ -12,8 +12,9 @@ open GContainer
    @gtkdoc gtk GtkScrolledWindow  *)
 class scrolled_window : Gtk.scrolled_window obj ->
   object
-    inherit GContainer.container_full
+    inherit GContainer.bin
     val obj : Gtk.scrolled_window obj
+    method connect : container_signals
     method add_with_viewport : widget -> unit
     method set_hadjustment : GData.adjustment -> unit
     method set_hpolicy : Tags.policy_type -> unit
@@ -48,8 +49,9 @@ val scrolled_window :
    @gtkdoc gtk GtkEventBox *)
 class event_box : ([> Gtk.event_box] as 'a) obj ->
   object
-    inherit GContainer.container_full
+    inherit GContainer.bin
     val obj : 'a obj
+    method connect : container_signals
     method event : event_ops
   end
 
@@ -76,7 +78,7 @@ class handle_box_signals : 'a obj ->
    @gtkdoc gtk GtkHandleBox *)
 class handle_box : Gtk.handle_box obj ->
   object
-    inherit GContainer.container
+    inherit GContainer.bin
     val obj : Gtk.handle_box obj
     method event : event_ops
     method connect : handle_box_signals
@@ -102,7 +104,7 @@ val handle_box :
 
 class frame_skel : 'a obj ->
   object
-    inherit GContainer.container
+    inherit GContainer.bin
     constraint 'a = [> frame]
     val obj : 'a obj
     method set_label : string option -> unit
@@ -173,8 +175,9 @@ val aspect_frame :
 (** @gtkdoc gtk GtkViewport *)
 class viewport : Gtk.viewport obj ->
   object
-    inherit GContainer.container_full
+    inherit GContainer.bin
     val obj : Gtk.viewport obj
+    method connect : container_signals
     method event : event_ops
     method set_hadjustment : GData.adjustment -> unit
     method set_shadow_type : Tags.shadow_type -> unit
@@ -199,8 +202,9 @@ val viewport :
    @gtkdoc gtk GtkAlignment *)
 class alignment : Gtk.alignment obj ->
   object
-    inherit GContainer.container_full
+    inherit GContainer.bin
     val obj : Gtk.alignment obj
+    method connect : container_signals
     method set_xalign : Gtk.clampf -> unit
     method set_yalign : Gtk.clampf -> unit
     method set_xscale : Gtk.clampf -> unit

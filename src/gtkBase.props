@@ -130,6 +130,10 @@ class Container abstract : Widget {
   signal set_focus : GtkWidget_opt
 }
 
+class Bin abstract : Container {
+  method get_child : "widget obj"
+}
+
 class Item abstract wrapsig : Bin {
   method select
   method deselect

@@ -18,7 +18,7 @@ module P = Window.P
 
 class ['a] window_skel obj = object (self)
   constraint 'a = _ #window_skel
-  inherit ['b] container_impl obj
+  inherit ['b] bin_impl obj
   inherit window_props
   method event = new GObj.event_ops obj
   method as_window = (obj :> Gtk.window obj)

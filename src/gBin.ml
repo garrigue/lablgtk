@@ -12,7 +12,7 @@ open GContainer
 let set = Gobject.Property.set
 
 class scrolled_window obj = object
-  inherit [Gtk.scrolled_window] container_impl obj
+  inherit [Gtk.scrolled_window] bin_impl obj
   method connect = new container_signals_impl obj
   inherit scrolled_window_props
   method add_with_viewport w =
@@ -28,7 +28,8 @@ let scrolled_window ?hadjustment ?vadjustment =
     new scrolled_window (ScrolledWindow.create pl)))
 
 class event_box obj = object
-  inherit container_full obj
+  inherit bin obj
+  method connect = new container_signals_impl obj
   method event = new GObj.event_ops (obj :> Gtk.event_box obj)
 end
 
@@ -41,7 +42,7 @@ class handle_box_signals (obj : [> handle_box] obj) = object
 end
 
 class handle_box obj = object
-  inherit [Gtk.handle_box] container_impl obj
+  inherit [Gtk.handle_box] bin_impl obj
   method connect = new handle_box_signals obj
   method event = new GObj.event_ops obj
   inherit handle_box_props
@@ -52,7 +53,7 @@ let handle_box =
   pack_container ~create:(fun pl -> new handle_box (HandleBox.create pl)))
 
 class frame_skel obj = object
-  inherit [[> frame]] container_impl obj
+  inherit [[> frame]] bin_impl obj
   inherit frame_props
 end
 
@@ -77,7 +78,7 @@ let aspect_frame =
   pack_container ~create:(fun pl -> new aspect_frame (AspectFrame.create pl))))
 
 class viewport obj = object
-  inherit [Gtk.viewport] container_impl obj
+  inherit [Gtk.viewport] bin_impl obj
   method connect = new container_signals_impl obj
   method event = new event_ops obj
   inherit viewport_props
@@ -90,7 +91,7 @@ let viewport ?hadjustment ?vadjustment =
   pack_container ~create:(fun pl -> new viewport (Viewport.create pl)))
 
 class alignment obj = object
-  inherit [Gtk.alignment] container_impl obj
+  inherit [Gtk.alignment] bin_impl obj
   method connect = new container_signals_impl obj
   inherit alignment_props
 end

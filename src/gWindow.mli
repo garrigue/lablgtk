@@ -10,7 +10,7 @@ open GObj
 (** @gtkdoc gtk GtkWindow *)
 class ['a] window_skel : 'b obj ->
   object
-    inherit GContainer.container
+    inherit GContainer.bin
     constraint 'a = 'a #window_skel
     constraint 'b = [> window]
     val obj : 'b obj
