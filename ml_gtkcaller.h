@@ -39,6 +39,7 @@ struct _GtkCallerClass
 
 GtkType gtk_caller_get_type (void);
 
+GtkObject *gtk_caller_new ();
 
 #ifdef __cplusplus
 }
