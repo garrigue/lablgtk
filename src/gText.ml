@@ -273,14 +273,14 @@ class buffer obj = object(self)
                 self#get_iter_at_mark (self#get_insert) in
 	      let start_offset = (insert_iter ())#get_offset in
 	      Buffer.insert_at_cursor obj text;
-	      let start = self#get_iter_at ~char_offset:start_offset () in
+	      let start = self#get_iter_at_char start_offset in
 	      List.iter tags ~f:(self#apply_tag ~start ~stop:(insert_iter ()));
 	      List.iter tags_names 
 		~f:(self#apply_tag_by_name ~start ~stop:(insert_iter ())) 
 	  | Some iter -> 
 	      let start_offset = iter#get_offset in
 	      Buffer.insert obj (as_textiter iter) text;
-	      let start = self#get_iter_at ~char_offset:start_offset () in
+	      let start = self#get_iter_at_char start_offset in
 	      List.iter tags ~f:(self#apply_tag ~start ~stop:iter);
 	      List.iter tags_names 
 		~f:(self#apply_tag_by_name ~start ~stop:iter)
@@ -348,17 +348,14 @@ class buffer obj = object(self)
     let t = new tag (Buffer.create_tag_0 obj name) in
     if properties <> [] then t#set_properties properties;
     t
-  method get_iter_at ?line_number ?char_offset () =
-    match line_number,char_offset with
-    | None,   None ->
-        raise (Invalid_argument
-		 "?line_number and/or ?char_offset missing for get_iter_at")
-    | Some v, None   -> new iter (Buffer.get_iter_at_line obj v)
-    | None  , Some v -> new iter (Buffer.get_iter_at_offset obj v)
-    | Some l, Some c -> new iter (Buffer.get_iter_at_line_offset obj l c)
-  method get_iter_at_line_index ?(line_number=0) line_index = 
+  method get_iter_at_char ?line char_offset =
+    match line,char_offset with
+    | Some v, 0   -> new iter (Buffer.get_iter_at_line obj v)
+    | None  , v -> new iter (Buffer.get_iter_at_offset obj v)
+    | Some l, c -> new iter (Buffer.get_iter_at_line_offset obj l c)
+  method get_iter_at_byte ?(line=0) index =
     new iter
-      (Buffer.get_iter_at_line_index  obj line_number line_index)
+      (Buffer.get_iter_at_line_index  obj line index)
   method get_iter_at_mark (mark:mark) = 
     new iter (Buffer.get_iter_at_mark obj mark#as_mark)
   method get_start_iter = new iter (Buffer.get_start_iter obj)

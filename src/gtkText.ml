@@ -860,9 +860,9 @@ module Iter = struct
     text_search_flag -> textiter option -> (textiter * textiter) option 
     = "ml_gtk_text_iter_backward_search"
   external forward_find_char : 
-    textiter -> (char -> bool) -> textiter option -> bool
+    textiter -> (Glib.Utf8.unichar -> bool) -> textiter option -> bool
       = "ml_gtk_text_iter_forward_find_char"
   external backward_find_char : 
-    textiter -> (char -> bool) -> textiter option -> bool
+    textiter -> (Glib.Utf8.unichar -> bool) -> textiter option -> bool
       = "ml_gtk_text_iter_backward_find_char"
 end

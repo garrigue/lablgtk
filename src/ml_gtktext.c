@@ -945,34 +945,29 @@ CAMLprim value ml_gtk_text_iter_##dir##_search (value ti_start, \
 Make_search(forward);
 Make_search(backward);
 
-
+static gboolean call_fun(gunichar ch, gpointer user_data)
+{
+  return(Bool_val(callback(*(value*)user_data,Val_int(ch))));
+}
 
 CAMLprim value ml_gtk_text_iter_forward_find_char(value i,value fun,value ito)
 {
-  /* Non ANSI C */
-  gboolean call_fun(gunichar ch,gpointer user_data)
-    {
-      return(Bool_val(callback(fun,Val_char(ch))));
-    }
-  return
-    Val_bool
-    (gtk_text_iter_forward_find_char(GtkTextIter_val(i),
-				    call_fun,
-				    NULL,
-				    Option_val(ito,GtkTextIter_val,NULL)));
+  CAMLparam1(fun);
+  CAMLreturn
+    (Val_bool
+     (gtk_text_iter_forward_find_char(GtkTextIter_val(i),
+                                      call_fun,
+                                      &fun,
+                                      Option_val(ito,GtkTextIter_val,NULL))));
 }
      
 CAMLprim value ml_gtk_text_iter_backward_find_char(value i,value fun,value ito)
 {
-  /* Non ANSI C */
-  gboolean call_fun(gunichar ch,gpointer user_data)
-    {
-      return(Bool_val(callback(fun,Val_char(ch))));
-    }
-  return
-    Val_bool
-    (gtk_text_iter_backward_find_char(GtkTextIter_val(i),
-				      call_fun,
-				      NULL,
-				      Option_val(ito,GtkTextIter_val,NULL)));
+  CAMLparam1(fun);
+  CAMLreturn
+    (Val_bool
+     (gtk_text_iter_backward_find_char(GtkTextIter_val(i),
+                                       call_fun,
+                                       &fun,
+                                       Option_val(ito,GtkTextIter_val,NULL))));
 }
