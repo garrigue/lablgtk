@@ -71,6 +71,7 @@ value Val_GtkTextIter_new(GtkTextIter* val){
 */
 
 /* This is the classical version for lablgtk */
+/*
 #define GtkTextIter_val(val) ((GtkTextIter*)Pointer_val(val))
 Make_Val_final_pointer_ext(GtkTextIter, _mine,Ignore,gtk_text_iter_free,1)
 value Val_GtkTextIter(GtkTextIter* it){
@@ -78,16 +79,16 @@ value Val_GtkTextIter(GtkTextIter* it){
 }
 
 ML_1 (gtk_text_iter_copy, GtkTextIter_val, Val_GtkTextIter_mine)
+*/
 
 /* "Lighter" version: allocate in the ocaml heap */
-/*
 #define GtkTextIter_val(val) ((GtkTextIter*)MLPointer_val(val))
 #define Val_GtkTextIter(it) (copy_memblock_indirected(it,sizeof(GtkTextIter)))
-value obj_dup(value arg);
+CAMLextern value obj_dup(value arg);
 CAMLprim value ml_gtk_text_iter_copy (value it) {
-  return (Field(it,1) == 2 ? obj_dup(it) : Val_GtkTextIter(GtkTextIter_val(it)));
+  return (Field(it,1) == 2 ? obj_dup(it) :
+          Val_GtkTextIter(GtkTextIter_val(it)));
 }
-*/
 
 #define GtkTextView_val(val) check_cast(GTK_TEXT_VIEW,val)
 
@@ -201,6 +202,10 @@ let bug () =
 Update: This has probably something to do with garbage at the end of the caml 
 string.
 
+[Jacques] No, I think the first answer is right: the GC is moving the string.
+Caml string are correctly 0-terminated, so this is not the cause.
+By the way, I had problems with "light" textiters for the same reason.
+
 */
 
 /* ML_3 (gtk_text_buffer_insert, GtkTextBuffer_val, */
@@ -211,60 +216,50 @@ string.
 CAMLprim value ml_gtk_text_buffer_insert (value tb, value ti,value st)
 {
   CAMLparam3(tb,ti,st);
-  char* c;
+  GtkTextIter it = *GtkTextIter_val(ti);
   int l = string_length(st);
-  c=g_malloc(l+1); /* Do not forget the null char */
-  strncpy(c,String_val(st),l);
-  c[l] = 0;
-  gtk_text_buffer_insert(GtkTextBuffer_val(tb),
-			 GtkTextIter_val(ti),
-			 c,
-			 l);
+  char* c = g_malloc(l+1); /* Do not forget the null char */
+  memcpy(c, String_val(st), l+1);
+  gtk_text_buffer_insert(GtkTextBuffer_val(tb), &it, c, l);
   g_free(c);
+  *GtkTextIter_val(ti) = it;
   CAMLreturn(0);
 }
 
 CAMLprim value ml_gtk_text_buffer_insert_at_cursor (value tb,value st)
 {
   CAMLparam2(tb,st);
-  char* c;
   int l = string_length(st);
-  c=g_malloc(l+1);
-  strncpy(c,String_val(st),l);
-  c[l] = 0;
-  gtk_text_buffer_insert_at_cursor(GtkTextBuffer_val(tb),
-				   c,
-				   l);
+  char* c = g_malloc(l+1);
+  memcpy(c, String_val(st), l+1);
+  gtk_text_buffer_insert_at_cursor(GtkTextBuffer_val(tb), c, l);
   g_free(c);
   CAMLreturn(0);
 }
 
-CAMLprim value ml_gtk_text_buffer_insert_interactive (value tb, value ti,value st,value b)
+CAMLprim value ml_gtk_text_buffer_insert_interactive (value tb, value ti,
+                                                      value st, value b)
 {
   CAMLparam4(tb,ti,st,b);
-  char* c;
-  gboolean r;
+  GtkTextIter it = *GtkTextIter_val(ti);
   int l = string_length(st);
-  c=g_malloc(l+1);
-  strncpy(c,String_val(st),l);
-  c[l] = 0;
+  char* c = g_malloc(l+1);
+  gboolean r;
+  memcpy(c, String_val(st), l+1);
   r = gtk_text_buffer_insert_interactive(GtkTextBuffer_val(tb),
-			     GtkTextIter_val(ti),
-			     c,
-			     l,Bool_val(b));
+                                         &it, c, l, Bool_val(b));
   g_free(c);
+  *GtkTextIter_val(ti) = it;
   CAMLreturn(Val_bool(r));
 }
 
 CAMLprim value ml_gtk_text_buffer_insert_interactive_at_cursor (value tb,value st,value b)
 {
   CAMLparam3(tb,st,b);
-  char* c;
-  gboolean r;
   int l = string_length(st);
-  c=g_malloc(l+1);
-  strncpy(c,String_val(st),l);
-  c[l] = 0;
+  char* c = g_malloc(l+1);
+  gboolean r;
+  memcpy(c, String_val(st), l+1);
   r = gtk_text_buffer_insert_interactive_at_cursor(GtkTextBuffer_val(tb),
 				       c,
 				       l,
