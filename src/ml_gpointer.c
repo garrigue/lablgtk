@@ -46,5 +46,5 @@ value ml_gpointer_blit (value region1, value region2)
 
 value ml_gpointer_get_addr (value region)
 {
-    return copy_nativeint (ml_gpointer_base (region));
+    return copy_nativeint ((long)ml_gpointer_base (region));
 }
