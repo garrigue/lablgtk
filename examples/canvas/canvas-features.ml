@@ -2,18 +2,14 @@
 let pad = 4
 
 let item_callback it (p1, p2) ev =
-  let process = 
-    match GdkEvent.get_type ev with
-    | `BUTTON_PRESS ->
-	GdkEvent.Button.button (GdkEvent.Button.cast ev) = 1
-    | _ -> false
-  in
-  if process
-  then begin
-    if (GnoCanvas.parent it)#get_oid = p1#get_oid
-    then it#reparent p2#as_group
-    else it#reparent p1#as_group
-  end
+  match GdkEvent.get_type ev with
+  | `BUTTON_PRESS when 
+      GdkEvent.Button.button (GdkEvent.Button.cast ev) = 1 ->
+        if (GnoCanvas.parent it)#get_oid = p1#get_oid
+	then it#reparent p2#as_group
+	else it#reparent p1#as_group ;
+	true
+  | _ -> false
 
 
 let create_canvas_features window =
@@ -30,12 +26,12 @@ let create_canvas_features window =
   let canvas = GnoCanvas.canvas ~width:400 ~height:200 ~packing:frame#add () in
   canvas#set_scroll_region 0. 0. 400. 200. ;
 
-  let parent_1 = GnoCanvas.group canvas#root ~props:[ `x 0. ; `y 0. ] in
+  let parent_1 = GnoCanvas.group canvas#root ~x:0. ~y:0. in
   GnoCanvas.rect parent_1
     ~props:[ `x1 0.; `y1 0.; 
 	     `x2 200.; `y2 200.; 
 	     `fill_color "tan" ] ;
-  let parent_2 = GnoCanvas.group canvas#root ~props:[ `x 200. ; `y 0. ] in
+  let parent_2 = GnoCanvas.group canvas#root ~x:200. ~y:0. in
   GnoCanvas.rect parent_2
     ~props:[ `x1 0.; `y1 0.; 
 	     `x2 200.; `y2 200.; 
@@ -49,7 +45,7 @@ let create_canvas_features window =
 	       `width_units 3. ] in
   item#connect#event (item_callback item (parent_1, parent_2)) ;
   
-  let group = GnoCanvas.group parent_2 ~props:[ `x 100.; `y 100. ] in
+  let group = GnoCanvas.group parent_2 ~x:100. ~y:100. in
   GnoCanvas.ellipse group 
     ~props:[ `x1 (-50.); `y1 (-50.); 
 	     `x2 50.; `y2 50.; 

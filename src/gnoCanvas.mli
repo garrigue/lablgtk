@@ -1,6 +1,8 @@
 type items_properties = [ 
+  | `bpath of GnomeCanvas.PathDef.t
   | `parent of GnomeCanvas.item Gtk.obj
   | `anchor of Gtk.Tags.anchor_type
+  | `cap_style of Gdk.GC.gdkCapStyle
   | `first_arrowhead of bool
   | `last_arrowhead of bool
   | `arrow_shape_a of float
@@ -29,7 +31,7 @@ class item_signals :
     constraint 'b = [> GnomeCanvas.item]
     inherit GObj.gtkobj_signals
     val obj : 'b Gtk.obj
-    method event : callback:(GdkEvent.any -> unit) -> GtkSignal.id
+    method event : callback:(GdkEvent.any -> bool) -> GtkSignal.id
   end
 
 class ['a] item : 'b Gtk.obj ->
@@ -71,6 +73,7 @@ class canvas : GnomeCanvas.canvas Gtk.obj ->
   object
     inherit GObj.widget_full
     val obj : GnomeCanvas.canvas Gtk.obj
+    method aa : bool
     method c2w : cx:float -> cy:float -> float * float
     method event : GObj.event_ops
     method get_center_scroll_region : bool
@@ -100,14 +103,14 @@ val canvas :
   ?show:bool ->
   unit -> canvas 
 
+val wrap_item : 
+  [> GnomeCanvas.item] Gtk.obj -> ('a, 'p) GnomeCanvas.Types.t -> 'p item
+
 val item :
-  ([> GnomeCanvas.item], [< items_properties] as 'a) GnomeCanvas.Types.t ->
-  ?props:'a list -> #group -> 'a item
+  ('a, 'p) GnomeCanvas.Types.t ->
+  ?props:'p list -> #group -> 'p item
 
-val group :
-  ?props:GnomeCanvas.Types.group_p list ->
-  #group -> group
-
+val group : ?x:float -> ?y:float -> #group -> group
 
 type rect = GnomeCanvas.Types.re_p item
 val rect :
@@ -129,4 +132,9 @@ val line :
   ?props:GnomeCanvas.Types.line_p list ->
   #group -> line
 
-val parent : 'a #item -> [< items_properties] item
+type bpath = GnomeCanvas.Types.bpath_p item
+val bpath :
+  ?props:GnomeCanvas.Types.bpath_p list ->
+  #group -> bpath
+
+val parent : 'a #item -> group

@@ -100,3 +100,5 @@ external thaw_notify : 'a obj -> unit = "ml_g_object_thaw_notify"
 
 external set_property : 'a obj -> string -> g_value -> unit 
   = "ml_g_object_set_property"
+external get_property : 'a obj -> string -> g_value -> unit
+  = "ml_g_object_get_property"

@@ -1,6 +1,8 @@
 type items_properties = [ 
+  | `bpath of GnomeCanvas.PathDef.t
   | `parent of GnomeCanvas.item Gtk.obj
   | `anchor of Gtk.Tags.anchor_type
+  | `cap_style of Gdk.GC.gdkCapStyle
   | `first_arrowhead of bool
   | `last_arrowhead of bool
   | `arrow_shape_a of float
@@ -46,7 +48,9 @@ let propertize p =
   | `first_arrowhead b -> "first_arrowhead", `BOOLEAN, `BOOL b
   | `last_arrowhead  b -> "last_arrowhead", `BOOLEAN, `BOOL b
   | `anchor a -> "anchor", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.ANCHOR a))
+  | `cap_style c -> "cap_style", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.CAPSTYLE c))
   | `parent (i : GnomeCanvas.item Gtk.obj) -> "parent", `OBJECT, `OBJECT (Some i)
+  | `bpath p -> "bpath", `POINTER , `POINTER (Some p)
   in
   let v = match g_fund with
   | `GVAL v -> v
@@ -58,7 +62,7 @@ let propertize p =
 
 class item_signals ?after obj = object
   inherit GObj.gtkobj_signals ?after obj
-  method event : callback:(GdkEvent.any -> unit) -> GtkSignal.id =
+  method event : callback:(GdkEvent.any -> bool) -> GtkSignal.id =
     GtkSignal.connect ~sgn:GnomeCanvas.Item.Signals.event ~after obj
 end
 
@@ -100,10 +104,12 @@ class canvas obj = object
   method event = new GObj.event_ops obj
 
   method root = new group (GnomeCanvas.Canvas.root obj)
-(*   method aa =  *)
-(*     match Gobject.Value.get (Gobject.get_property obj "aa") with *)
-(*     | `BOOL b -> b *)
-(*     | _ -> failwith "unexpected type for property" *)
+  method aa =
+    let v = Gobject.Value.create (Gobject.Type.of_fundamental `BOOLEAN) in
+    Gobject.get_property obj "aa" v ;
+    match Gobject.Value.get v with
+    | `BOOL b -> b
+    | _ -> failwith "unexpected type for property"
   method set_scroll_region = GnomeCanvas.Canvas.set_scroll_region obj
   method get_scroll_region = GnomeCanvas.Canvas.get_scroll_region obj
   method set_center_scroll_region = GnomeCanvas.Canvas.set_center_scroll_region obj
@@ -128,16 +134,27 @@ let canvas ?(aa=false) ?border_width ?width ?height ?packing ?show () =
   GtkBase.Container.set w ?border_width ?width ?height ;
   GObj.pack_return (new canvas w) ~packing ~show
 
+let wrap_item o (typ : (_, 'p) GnomeCanvas.Types.t) =
+  if not (GnomeCanvas.Types.is_a o typ)
+  then failwith "type error" ;
+  (new item o : 'p item)
+
 let item (typ : (_, 'p) GnomeCanvas.Types.t) ?props parent =
   let i = GnomeCanvas.Item.new_item parent#as_group typ in
   let o = (new item i : 'p item) in
   Gaux.may o#set props ;
   o
 
-let group ?props parent =
+let unoption_list l =
+  List.fold_left (fun acc -> function Some v -> v :: acc | None -> acc) [] l
+
+let group ?x ?y parent =
   let i = GnomeCanvas.Item.new_item parent#as_group GnomeCanvas.Types.group in
   let g = new group i in
-  Gaux.may g#set  props ;
+  let props = unoption_list
+      [ Gaux.may_map (fun i -> `x i) x ;
+	Gaux.may_map (fun i -> `y i) y ; ] in
+  if props <> [] then g#set props ;
   g
 
 type rect = GnomeCanvas.Types.re_p item
@@ -148,6 +165,8 @@ type text = GnomeCanvas.Types.text_p item
 let text ?props p = item GnomeCanvas.Types.text ?props p
 type line = GnomeCanvas.Types.line_p item
 let line ?props p = item GnomeCanvas.Types.line ?props p
+type bpath = GnomeCanvas.Types.bpath_p item
+let bpath ?props p = item GnomeCanvas.Types.bpath ?props p
 
 let parent i =
-  new item (i#parent)
+  new group (i#parent)
