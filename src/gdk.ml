@@ -280,6 +280,9 @@ module Window = struct
     | `PARENT_RELATIVE -> set_back_pixmap w null_pixmap 1
     | `PIXMAP(pixmap) -> set_back_pixmap w pixmap 0 
        (* anything OK, Maybe... *) 
+
+  (* for backward compatibility for lablgtk1 programs *)	  
+  let get_visual = Drawable.get_visual
 end
 
 module PointArray = struct
