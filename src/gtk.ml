@@ -528,13 +528,13 @@ module Container = struct
   external focus : [> container] obj -> direction_type -> bool
       = "ml_gtk_container_focus"
   (* Called by Widget.grab_focus *)
-  external set_focus_child : [> container] obj -> [> widget] obj -> unit
+  external set_focus_child : [> container] obj -> [> widget] optobj -> unit
       = "ml_gtk_container_set_focus_child"
   external set_focus_vadjustment :
-      [> container] obj -> [> adjustment] obj -> unit
+      [> container] obj -> [> adjustment] optobj -> unit
       = "ml_gtk_container_set_focus_vadjustment"
   external set_focus_hadjustment :
-      [> container] obj -> [> adjustment] obj -> unit
+      [> container] obj -> [> adjustment] optobj -> unit
       = "ml_gtk_container_set_focus_hadjustment"
   module Signals = struct
     open Signal

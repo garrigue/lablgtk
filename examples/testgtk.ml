@@ -440,8 +440,8 @@ let create_scrolled_windows =
 	let table = new table rows:20 columns:20 row_spacings:10
 	    col_spacings:10 in
 	scrolled_window #add_with_viewport table;
-	table #set_focus hadjustment:(scrolled_window # hadjustment)
-	  vadjustment:(scrolled_window # vadjustment);
+	table #focus#set_hadjustment (scrolled_window # hadjustment);
+	table #focus#set_vadjustment (scrolled_window # vadjustment);
 	table #show ();
 
 	for i = 0 to 19 do
@@ -1187,7 +1187,7 @@ let create_main_window () =
 
   let box2 = new box `VERTICAL border_width: 10 in
   scrolled_window #add_with_viewport box2;
-  box2 #set_focus vadjustment:(scrolled_window #vadjustment);
+  box2 #focus#set_vadjustment (scrolled_window #vadjustment);
 
   let rec aux = function
     | [] -> ()

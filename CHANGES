@@ -1,5 +1,8 @@
 $Id$
 
+1999.6.5
+  * grouped Container focus operations in a "focus" subwidget
+
 1999.6.4
   * slightly reorganized widget grouping
 
