@@ -1,5 +1,9 @@
 $Id$
 
+2000.7.27
+  * changed GUtil.signal and GUtil.variable for better usability
+  * suppressed obsolete color settings in tooltips
+
 2000.6.19
   * patch by Michael Welsh for Gdk regions
 

@@ -18,6 +18,7 @@ let next_callback_id () : GtkSignal.id =
 
 class ['a] signal () = object (self)
   val mutable callbacks : (GtkSignal.id * ('a -> unit)) list = []
+  method callbacks = callbacks
   method connect ~after ~callback =
     let id = next_callback_id () in
     callbacks <-
@@ -53,19 +54,27 @@ class virtual add_ml_signals obj disconnectors =
       else GtkSignal.disconnect obj key
   end
 
-class ['a] variable_signals ~(changed : 'a signal)~(accessed : unit signal) =
+class ['a] variable_signals ~(set : 'a signal) ~(changed : 'a signal) =
   object
-    inherit ml_signals [changed#disconnect; accessed#disconnect]
+    inherit ml_signals [changed#disconnect; set#disconnect]
     method changed = changed#connect ~after
-    method accessed = accessed#connect ~after
+    method set = set#connect ~after
   end
 
 class ['a] variable x =
   object (self)
     val changed = new signal ()
-    val accessed = new signal ()
-    method connect = new variable_signals ~changed ~accessed
+    val set = new signal ()
+    method connect = new variable_signals ~set ~changed
     val mutable x : 'a = x
-    method set y = x <- y; changed#call y
-    method get = accessed#call (); x
+    method get = x
+    method set = set#call
+    method private equal : 'a -> 'a -> bool = (=)
+    method private real_set y =
+      let x0 = x in x <- y;
+      if changed#callbacks <> [] && not (self#equal x x0)
+      then changed#call y
+    initializer
+      ignore (set#connect ~after:false ~callback:self#real_set)
   end
+
