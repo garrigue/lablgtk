@@ -93,4 +93,4 @@ end
 
 let _ =
   new editor_window show:true;
-  GtkThread.main ()
+  Main.main ()

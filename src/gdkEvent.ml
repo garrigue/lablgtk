@@ -91,6 +91,7 @@ module Key = struct
   external state : t -> int = "ml_GdkEventKey_state"
   external keyval : t -> keysym = "ml_GdkEventKey_keyval"
   external string : t -> string = "ml_GdkEventKey_string"
+  let state ev = Convert.modifier (state ev)
 end
 
 module Crossing = struct

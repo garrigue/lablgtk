@@ -37,11 +37,6 @@ object (self)
   val mutable alive = true
   val mutable reading = false
   val mutable input_start = 0
-  val mutex = Mutex.create ()
-  method private lock =
-    Mutex.lock mutex; textw#set_editable false
-  method private unlock =
-    Mutex.unlock mutex; textw#set_editable alive
   method text = textw
   method alive = alive
   method kill () =
@@ -49,10 +44,10 @@ object (self)
     if alive then begin
       alive <- false;
       protect close_out out;
-      List.iter fun:(protect Unix.close) [in2; out2; err2];
+      List.iter fun:(protect Unix.close) [in1; err1; in2; out2; err2];
       try
 	Unix.kill :pid signal:Sys.sigkill;
-	Thread.create Thread.wait_pid pid; ()
+	Unix.waitpid pid flags:[]; ()
       with _ -> ()
     end
   method interrupt () =
@@ -68,83 +63,78 @@ object (self)
   method private read :fd :len =
     try
       let buffer = String.create :len in
-      let len = ThreadUnix.read fd :buffer pos:0 :len in
+      let len = Unix.read fd :buffer pos:0 :len in
       if len > 0 then begin
-	self#lock;
+	textw#set_position textw#length;
 	self#insert (String.sub buffer pos:0 :len);
-	input_start <- textw#point;
-	self#unlock
-      end
-    with Unix.Unix_error _ -> ()
+	input_start <- textw#position;
+      end;
+      len
+    with Unix.Unix_error _ -> 0
   method history (dir : [next previous]) =
     if not h#empty then begin
-      self#lock;
       if reading then begin
-	textw#delete_text start:input_start end:textw#point;
+	textw#delete_text start:input_start end:textw#position;
       end else begin
 	reading <- true;
-	input_start <- textw#point
+	input_start <- textw#position
       end;
-      self#insert (if dir = `previous then h#previous else h#next);
-      self#unlock
+      self#insert lex:true (if dir = `previous then h#previous else h#next);
     end
   method private lex ?:start [< Text.line_start textw >]
       ?end:e [< Text.line_end textw >] =
     if start < e then Lexical.tag textw :start end:e
-  method insert text =
+  method insert text ?:lex [< false >] =
     let start = Text.line_start textw in
     textw#insert text;
-    self#lex :start
+    if lex then self#lex :start
   method private keypress c =
-    self#lock;
     if not reading & c > " " then begin
       reading <- true;
-      input_start <- textw#point
-    end;
-    self#unlock
+      input_start <- textw#position
+    end
   method private keyrelease c =
-    self#lock;
-    if c <> "" then self#lex;
-    self#unlock
+    if c <> "" then self#lex
   method private return () =
-    self#lock;
     if reading then reading <- false
     else input_start <- Text.line_start textw;
     self#lex start:(Text.line_start textw pos:input_start);
-    let s = textw#get_chars start:input_start end:textw#point in
+    let s = textw#get_chars start:input_start end:textw#position in
     h#add s;
     self#send s;
-    self#send "\n";
-    self#unlock
+    self#send "\n"
   method private paste () =
     if not reading then begin
-      self#lock;
       reading <- true;
       input_start <- textw#position;
-      self#unlock
     end
   initializer
     textw#connect#event#key_press callback:
       begin fun ev ->
-	if GdkEvent.Key.keyval ev = _Return &&
-	  GdkEvent.Key.state ev = 0
+	if GdkEvent.Key.keyval ev = _Return && GdkEvent.Key.state ev = []
 	then self#return ()
 	else self#keypress (GdkEvent.Key.string ev);
 	false
       end;
-    textw#connect#event#key_release
+    (*
+    textw#connect#event#key_press after:true
       callback:(fun ev -> self#keyrelease (GdkEvent.Key.string ev); false);
-    textw#connect#event#button_press after:true callback:
+    *)
+    textw#connect#event#button_press callback:
       begin fun ev ->
 	if GdkEvent.Button.button ev = 2 then self#paste ();
 	false
       end;
     textw#connect#destroy callback:self#kill;
-    let make_thread fd =
-      while alive do self#read :fd len:1024 done;
-      Unix.close fd
-    in
-    ignore (List.map [in1;err1] fun:(Thread.create make_thread))
+    GMain.Timeout.add 100 callback:
+      begin fun () ->
+	if alive then begin
+	  List.iter [err1;in1]
+	    fun:(fun fd -> while self#read :fd len:1024 = 1024 do () done);
+	  true
+	end else false
+      end;
+    ()
 end
 
 (* Specific use of shell, for LablBrowser *)
@@ -155,6 +145,7 @@ let shells : (string * shell) list ref = ref []
 let kill_all () =
   List.iter !shells fun:(fun (_,sh) -> if sh#alive then sh#kill ());
   shells := []
+let _ = at_exit kill_all
 
 let get_all () =
   let all = List.filter !shells pred:(fun (_,sh) -> sh#alive) in
@@ -205,7 +196,6 @@ let f :prog :title =
   let menus = new GMenu.menu_bar packing:(vbox#pack expand:false) in
   let f = new GMenu.factory menus in
   let accel_group = f#accel_group in
-  tl#add_accel_group accel_group;
   let file_menu = f#add_submenu label:"File"
   and history_menu = f#add_submenu label:"History"
   and signal_menu = f#add_submenu label:"Signal" in
@@ -225,7 +215,7 @@ let f :prog :title =
 	  current_dir := Filename.dirname name;
 	  if Filename.check_suffix name suffix:".ml" then
 	    let cmd = "#use \"" ^ name ^ "\";;\n" in
-	    sh#insert cmd;
+	    sh#insert cmd lex:true;
 	    sh#send cmd
 	end
     end;
@@ -238,7 +228,7 @@ let f :prog :title =
 	    Filename.check_suffix name suffix:".cma"
 	  then
 	    let cmd = Printf.sprintf "#load \"%s\";;\n" name in
-	    sh#insert cmd;
+	    sh#insert cmd lex:true;
 	    sh#send cmd
 	end
     end;
@@ -247,13 +237,14 @@ let f :prog :title =
       List.iter (List.rev !Config.load_path)
 	fun:(fun dir -> sh#send (sprintf "#directory \"%s\";;\n" dir))
     end;
-  f#add_item label:"Close" callback:tl#destroy;
+  f#add_item label:"Close" key:_W callback:tl#destroy;
 
-  let h = new GMenu.factory history_menu :accel_group in
+  let h = new GMenu.factory history_menu :accel_group accel_mod:[`MOD1] in
   h#add_item label:"Previous" key:_P callback:(fun () -> sh#history `previous);
   h#add_item label:"Next" key:_N callback:(fun () -> sh#history `next);
   let s = new GMenu.factory signal_menu :accel_group in
   s#add_item label:"Interrupt" key:_C callback:sh#interrupt;
   s#add_item label:"Kill" callback:sh#kill;
   shells := (title, sh) :: !shells;
+  tl#add_accel_group accel_group;
   tl#show ()
