@@ -128,9 +128,9 @@ class ['a] clist obj = object (self)
   method set_row_data n ~data =
     CList.set_row_data obj ~row:n (Obj.repr (data : 'a))
   method get_row_data n : 'a = Obj.obj (CList.get_row_data obj ~row:n)
-  method emit_scroll_vertical =
+  method scroll_vertical =
     CList.Signals.emit_scroll obj ~sgn:CList.Signals.scroll_vertical
-  method emit_scroll_horizontal =
+  method scroll_horizontal =
     CList.Signals.emit_scroll obj ~sgn:CList.Signals.scroll_horizontal
 end
 

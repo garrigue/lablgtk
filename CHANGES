@@ -2,7 +2,7 @@ $Id$
 
 2000.6.8
   * apply Jerome Vouillon's patch
-  * changes in GtkSignal
+  * changes in GtkSignal and GtkArgv.ml
 
 2000.6.7
   * create #misc#connect for widget generic signals

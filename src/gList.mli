@@ -75,8 +75,6 @@ class ['a] clist : Gtk.clist obj ->
     method columns : int
     method columns_autosize : unit -> unit
     method connect : clist_signals
-    method emit_scroll_vertical : Tags.scroll_type -> pos:clampf -> unit
-    method emit_scroll_horizontal : Tags.scroll_type -> pos:clampf -> unit
     method focus_row : int
     method freeze : unit -> unit
     method get_row_column : x:int -> y:int -> int * int
@@ -92,6 +90,8 @@ class ['a] clist : Gtk.clist obj ->
     method row_move : int -> dst:int -> unit
     method row_selectable : row:int -> bool
     method rows : int
+    method scroll_vertical : Tags.scroll_type -> pos:clampf -> unit
+    method scroll_horizontal : Tags.scroll_type -> pos:clampf -> unit
     method select : int -> int -> unit
     method select_all : unit -> unit
     method set_border_width : int -> unit

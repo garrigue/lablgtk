@@ -309,7 +309,6 @@ module Notebook = struct
   module Signals = struct
     open GtkSignal
     let switch_page : ([>`notebook],_) t =
-      let marshal f argv = f (GtkArgv.get_int argv ~pos:1) in
-      { name = "switch_page"; marshaller = marshal }
+      { name = "switch_page"; marshaller = marshal_int }
   end
 end

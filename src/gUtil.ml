@@ -24,8 +24,13 @@ class ['a] signal () = object (self)
       if after then callbacks @ [id,callback] else (id,callback)::callbacks;
     id
   method call arg =
-    try List.iter callbacks ~f:(fun (_,f) -> f arg)
-    with GtkSignal.Stop_emit -> ()
+    List.exists callbacks ~f:
+      begin fun (_,f) ->
+        let old = GtkSignal.push_callback () in
+        try f arg; GtkSignal.pop_callback old
+        with exn -> GtkSignal.pop_callback old; raise exn
+      end;
+    ()
   method disconnect key =
     List.mem_assoc key callbacks &&
     (callbacks <- List.remove_assoc key callbacks; true)

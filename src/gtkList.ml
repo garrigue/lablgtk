@@ -243,14 +243,15 @@ module CList = struct
     may background ~f:(set_background w ~row);
     may selectable ~f:(set_selectable w ~row)
   module Signals = struct
+    open GtkArgv
     open GtkSignal
-    let marshal_select f argv =
-      let event : GdkEvent.Button.t option =
-	  let p = GtkArgv.get_pointer argv ~pos:2 in
-	  may_map ~f:GdkEvent.unsafe_copy p
-      in
-      f ~row:(GtkArgv.get_int argv ~pos:0)
-	~column:(GtkArgv.get_int argv ~pos:1) ~event
+    let marshal_select f argv = function
+      | INT row :: INT column :: POINTER p :: _ ->
+          let event : GdkEvent.Button.t option =
+	    may_map ~f:GdkEvent.unsafe_copy p
+          in
+          f ~row ~column ~event
+      | _ -> invalid_arg "GtkList.CList.Signals.marshal_select"
     let select_row : ([>`clist],_) t =
       { name = "select_row"; marshaller = marshal_select }
     let unselect_row : ([>`clist],_) t =
@@ -258,9 +259,10 @@ module CList = struct
     let click_column : ([>`clist],_) t =
       { name = "click_column"; marshaller = marshal_int }
     external val_scroll_type : int -> scroll_type = "ml_Val_scroll_type"
-    let marshal_scroll f argv =
-      f (val_scroll_type (GtkArgv.get_int argv ~pos:0))
-        ~pos:(GtkArgv.get_float argv ~pos:1)
+    let marshal_scroll f argv = function
+      | INT st :: FLOAT (pos : clampf) :: _ ->
+          f (val_scroll_type st) ~pos
+      | _ -> invalid_arg "GtkList.CList.Signals.marshal_scroll"
     let scroll_horizontal : ([>`clist],_) t =
       { name = "scroll_horizontal"; marshaller = marshal_scroll }
     let scroll_vertical : ([>`clist],_) t =

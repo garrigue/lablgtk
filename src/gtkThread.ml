@@ -23,3 +23,11 @@ let main () =
     raise exn
       
 let start = Thread.create main
+
+let _ =
+  let mutex = Mutex.create () in
+  let depth = ref 0 in
+  GtkSignal.enter_callback :=
+    (fun () -> if !depth = 0 then Mutex.lock mutex; incr depth);
+  GtkSignal.exit_callback :=
+    (fun () -> decr depth; if !depth = 0 then Mutex.unlock mutex)

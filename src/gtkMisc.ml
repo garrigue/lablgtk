@@ -62,9 +62,10 @@ module Statusbar = struct
   module Signals = struct
     open GtkSignal
     let text_pushed : ([>`statusbar],_) t =
-      let marshal f argv =
-	f (Obj.magic (GtkArgv.get_int argv ~pos:0) : statusbar_context)
-	  (GtkArgv.get_string argv ~pos:1)
+      let marshal f _ = function
+        | GtkArgv.INT ctx :: GtkArgv.STRING s :: _ ->
+	    f (Obj.magic ctx : statusbar_context) s
+        | _ -> invalid_arg "GtkMisc.Statusbar.Signals.marshal_text"
       in
       { name = "text_pushed"; marshaller = marshal }
   end
@@ -224,6 +225,7 @@ module TipsQuery = struct
     if label_inactive <> None || label_no_tip <> None then
       set_labels w ?inactive:label_inactive ?no_tip:label_no_tip
   module Signals = struct
+    open GtkArgv
     open GtkSignal
     let start_query : ([>`tipsquery],_) t =
       { name = "start_query"; marshaller = marshal_unit }
@@ -233,10 +235,10 @@ module TipsQuery = struct
 	([>`tipsquery],
 	 widget obj option ->
 	 text:string option -> privat:string option -> unit) t =
-      let marshal f argv =
-	f (may_map ~f:Widget.cast (GtkArgv.get_object argv ~pos:0))
-	  ~text:(GtkArgv.get_string argv ~pos:1)
-	  ~privat:(GtkArgv.get_string argv ~pos:2)
+      let marshal f _ = function
+        | OBJECT opt :: STRING text :: STRING privat :: _ ->
+	    f (may_map ~f:Widget.cast opt) ~text ~privat
+        | _ -> invalid_arg "GtkMisc.TipsQuery.Signals.marshal_entered"
       in
       { name = "widget_entered"; marshaller = marshal }
     let widget_selected :
@@ -244,14 +246,14 @@ module TipsQuery = struct
 	 widget obj option ->
 	 text:string option ->
 	 privat:string option -> GdkEvent.Button.t option -> bool) t =
-      let marshal f argv =
-	let stop = 
-	  f (may_map ~f:Widget.cast (GtkArgv.get_object argv ~pos:0))
-	    ~text:(GtkArgv.get_string argv ~pos:1)
-	    ~privat:(GtkArgv.get_string argv ~pos:2)
-	    (may_map ~f:GdkEvent.unsafe_copy
-	       (GtkArgv.get_pointer argv ~pos:3)) in
-	GtkArgv.set_result_bool argv stop in
+      let marshal f argv = function
+        | OBJECT obj :: STRING text :: STRING privat :: POINTER p :: _ ->
+	    let stop = 
+	      f (may_map ~f:Widget.cast obj) ~text ~privat
+	        (may_map ~f:GdkEvent.unsafe_copy p)
+            in set_result argv (`BOOL stop)
+        | _ -> invalid_arg "GtkMisc.TipsQuery.Signals.marshal_selected"
+      in
       { name = "widget_selected"; marshaller = marshal }
   end
 end

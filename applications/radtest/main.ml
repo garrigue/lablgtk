@@ -90,7 +90,8 @@ class project () =
 		~callback:(fun () -> self#cut_wt wt);
 	      menu#popup ~button:3 ~time:(GdkEvent.Button.time ev)
 	    end;
-            GtkSignal.stop_emit ()
+            GtkSignal.stop_emit ();
+            true
 	| `TWO_BUTTON_PRESS ->
 	    if GdkEvent.Button.button ev = 1 then begin
 	      if !show then begin
