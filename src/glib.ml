@@ -15,7 +15,7 @@ module Main = struct
   external destroy : t -> unit = "ml_g_main_destroy"
   type locale_category =
     [ `ALL | `COLLATE | `CTYPE | `MESSAGES | `MONETARY | `NUMERIC | `TIME ]
-  external setlocale : locale_category -> string -> string 
+  external setlocale : locale_category -> string option -> string 
     = "ml_setlocale"
 end
 

@@ -5,44 +5,26 @@ open Gtk
 
 let _ = Callback.register_exception "gtkerror" (Error"")
 
-let critical_warnings =
-  ref [ "Invalid text buffer iterator" ]
-
 module Main = struct
   external init : string array -> string array = "ml_gtk_init"
   (* external exit : int -> unit = "ml_gtk_exit" *)
-  external set_locale : unit -> string = "ml_gtk_set_locale"
+  (* external set_locale : unit -> string = "ml_gtk_set_locale" *)
   external disable_setlocale : unit -> unit = "ml_gtk_disable_setlocale"
   (* external main : unit -> unit = "ml_gtk_main" *)
   let init ?(setlocale=true) () =
-    let locale =
-      if try Sys.getenv "GTK_SETLOCALE" <> "0" with Not_found -> setlocale
-      then set_locale ()
-      else (disable_setlocale (); "")
-    in
+    if try Sys.getenv "GTK_SETLOCALE" = "0" with Not_found -> not setlocale
+    then disable_setlocale ();
     let argv =
       try
 	init Sys.argv
       with Error err ->
         raise (Error ("GtkMain.init: initialization failed\n" ^ err))
     in
-    Glib.Main.setlocale `NUMERIC "C";
-    let is_critical s =
-      List.exists !critical_warnings ~f:
-        (fun w ->
-          let len = String.length w in
-          String.length s >= len && w = String.sub s ~pos:0 ~len)
-    in
-    Glib.Message.set_log_handler ~domain:"Gtk" ~levels:[`WARNING;`CRITICAL]
-      (fun ~level msg ->
-        let crit = level land (Glib.Message.log_level `CRITICAL) <> 0 in
-        if crit || is_critical msg then
-          raise (Gtk.Error ("Gtk-CRITICAL ***: " ^ msg))
-        else prerr_endline ("Gtk-WARNING **: " ^ msg));
+    Glib.Main.setlocale `NUMERIC (Some "C");
     Array.blit ~src:argv ~dst:Sys.argv ~len:(Array.length argv)
       ~src_pos:0 ~dst_pos:0;
     Obj.truncate (Obj.repr Sys.argv) (Array.length argv);
-    locale
+    Glib.Main.setlocale `ALL None
   open Glib
   let loops = ref [] 
   let main () =
@@ -65,6 +47,29 @@ module Rc = struct
   external add_default_file : string -> unit = "ml_gtk_rc_add_default_file"
 end
 
-let _ =
-  Glib.Message.set_print_handler (fun msg -> print_string msg)
+module Message = struct
+  (* Use normal caml printing function *)
+  let _ =
+    Glib.Message.set_print_handler (fun msg -> print_string msg)
 
+  (* A list of strings used as prefix to determine whether a warning
+     should cause an exception or not *)
+  let critical_warnings =
+    ref [ "Invalid text buffer iterator" ]
+
+  let is_critical_warning s =
+    List.exists !critical_warnings ~f:
+      (fun w ->
+        let len = String.length w in
+        String.length s >= len && w = String.sub s ~pos:0 ~len)
+
+  let () =
+    (* Cause exceptions for critical messages in the Gtk domain,
+       including "critical" warnings *)
+    Glib.Message.set_log_handler ~domain:"Gtk" ~levels:[`WARNING;`CRITICAL]
+      (fun ~level msg ->
+        let crit = level land (Glib.Message.log_level `CRITICAL) <> 0 in
+        if crit || is_critical_warning msg then
+          raise (Gtk.Error ("Gtk-CRITICAL: " ^ msg))
+        else prerr_endline ("Gtk-WARNING **: " ^ msg))
+end
