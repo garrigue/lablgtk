@@ -82,8 +82,9 @@ endif
 	./varcc $<
 
 # Targets
-GTKOBJS = ml_gtk.o ml_gtkbutton.o ml_gtkedit.o ml_gtklist.o \
-	ml_gtkpack.o ml_gtkmenu.o ml_gtknew.o ml_gtkrange.o ml_gtktree.o
+GTKOBJS = ml_gtk.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o ml_gtklist.o \
+	ml_gtkmenu.o ml_gtkmisc.o ml_gtknew.o ml_gtkpack.o ml_gtkrange.o \
+	ml_gtktree.o
 COBJS = ml_gdk.o ml_glib.o wrappers.o $(GTKOBJS)
 MLOBJS = gaux.cmo gpointer.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtk.cmo gtkArgv.cmo gtkSignal.cmo \

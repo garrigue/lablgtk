@@ -416,81 +416,6 @@ ML_2 (gtk_container_set_focus_vadjustment, GtkContainer_val,
 ML_2 (gtk_container_set_focus_hadjustment, GtkContainer_val,
       GtkAdjustment_val, Unit)
 
-/* gtkbin.h */
-
-/* gtkalignment.h */
-
-#define GtkAlignment_val(val) check_cast(GTK_ALIGNMENT,val)
-ML_4 (gtk_alignment_new, Float_val, Float_val, Float_val, Float_val,
-      Val_GtkWidget_sink)
-value ml_gtk_alignment_set (value x, value y,
-			   value xscale, value yscale, value val)
-{
-    GtkAlignment *alignment = GtkAlignment_val(val);
-    gtk_alignment_set (alignment,
-		       Option_val(x, Float_val, alignment->xalign),
-		       Option_val(y, Float_val, alignment->yalign),
-		       Option_val(xscale, Float_val, alignment->xscale),
-		       Option_val(yscale, Float_val, alignment->xscale));
-    return Val_unit;
-}
-
-/* gtkeventbox.h */
-
-ML_0 (gtk_event_box_new, Val_GtkWidget_sink)
-
-/* gtkframe.h */
-
-#define GtkFrame_val(val) check_cast(GTK_FRAME,val)
-ML_1 (gtk_frame_new, Optstring_val, Val_GtkWidget_sink)
-ML_2 (gtk_frame_set_label, GtkFrame_val, Optstring_val, Unit)
-ML_3 (gtk_frame_set_label_align, GtkFrame_val, Float_val, Float_val, Unit)
-ML_2 (gtk_frame_set_shadow_type, GtkFrame_val, Shadow_type_val, Unit)
-Make_Extractor (gtk_frame_get, GtkFrame_val, label_xalign, copy_double)
-Make_Extractor (gtk_frame_get, GtkFrame_val, label_yalign, copy_double)
-
-/* gtkaspectframe.h */
-
-#define GtkAspectFrame_val(val) check_cast(GTK_ASPECT_FRAME,val)
-ML_5 (gtk_aspect_frame_new, Optstring_val,
-      Float_val, Float_val, Float_val, Bool_val, Val_GtkWidget_sink)
-ML_5 (gtk_aspect_frame_set, GtkAspectFrame_val, Float_val, Float_val,
-      Float_val, Bool_val, Unit)
-Make_Extractor (gtk_aspect_frame_get, GtkAspectFrame_val, xalign, copy_double)
-Make_Extractor (gtk_aspect_frame_get, GtkAspectFrame_val, yalign, copy_double)
-Make_Extractor (gtk_aspect_frame_get, GtkAspectFrame_val, ratio, copy_double)
-Make_Extractor (gtk_aspect_frame_get, GtkAspectFrame_val, obey_child, Val_bool)
-
-/* gtkhandlebox.h */
-
-#define GtkHandleBox_val(val) check_cast(GTK_HANDLE_BOX,val)
-ML_0 (gtk_handle_box_new, Val_GtkWidget_sink)
-ML_2 (gtk_handle_box_set_shadow_type, GtkHandleBox_val, Shadow_type_val, Unit)
-ML_2 (gtk_handle_box_set_handle_position, GtkHandleBox_val, Position_val, Unit)
-ML_2 (gtk_handle_box_set_snap_edge, GtkHandleBox_val, Position_val, Unit)
-
-/* gtkinvisible.h */
-/* private class
-ML_0 (gtk_invisible_new, Val_GtkWidget_sink)
-*/
-
-/* gtkitem.h */
-
-ML_1 (gtk_item_select, GtkItem_val, Unit)
-ML_1 (gtk_item_deselect, GtkItem_val, Unit)
-ML_1 (gtk_item_toggle, GtkItem_val, Unit)
-
-/* gtkviewport.h */
-
-#define GtkViewport_val(val) check_cast(GTK_VIEWPORT,val)
-ML_2 (gtk_viewport_new, GtkAdjustment_val, GtkAdjustment_val,
-      Val_GtkWidget_sink)
-ML_1 (gtk_viewport_get_hadjustment, GtkViewport_val, Val_GtkWidget_sink)
-ML_1 (gtk_viewport_get_vadjustment, GtkViewport_val, Val_GtkWidget)
-ML_2 (gtk_viewport_set_hadjustment, GtkViewport_val, GtkAdjustment_val, Unit)
-ML_2 (gtk_viewport_set_vadjustment, GtkViewport_val, GtkAdjustment_val, Unit)
-ML_2 (gtk_viewport_set_shadow_type, GtkViewport_val, Shadow_type_val, Unit)
-
 /* gtkdialog.h */
 
 static void window_unref (GtkObject *w)
@@ -647,21 +572,6 @@ Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
 
 ML_1 (gtk_plug_new, XID_val, Val_GtkWidget_window)
 
-/* gtkstatusbar.h */
-
-#define GtkStatusbar_val(val) check_cast(GTK_STATUSBAR,val)
-ML_0 (gtk_statusbar_new, Val_GtkWidget_sink)
-ML_2 (gtk_statusbar_get_context_id, GtkStatusbar_val, String_val, Val_int)
-ML_3 (gtk_statusbar_push, GtkStatusbar_val, Int_val, String_val, Val_int)
-ML_2 (gtk_statusbar_pop, GtkStatusbar_val, Int_val, Unit)
-ML_3 (gtk_statusbar_remove, GtkStatusbar_val, Int_val, Int_val, Unit)
-
-/* gtkgamma.h */
-
-#define GtkGammaCurve_val(val) check_cast(GTK_GAMMA_CURVE,val)
-ML_0 (gtk_gamma_curve_new, Val_GtkWidget_sink)
-Make_Extractor (gtk_gamma_curve_get, GtkGammaCurve_val, gamma, copy_double)
-
 /* gtkctree.h */
 #define GtkCTree_val(val) check_cast(GTK_CTREE,val)
 /* Beware: this definition axpects arg1 to be a GtkCTree */
@@ -681,140 +591,6 @@ ML_2 (gtk_ctree_remove_node, GtkCTree_val, GtkCTreeNode_val, Unit)
 ML_2 (gtk_ctree_is_viewable, GtkCTree_val, GtkCTreeNode_val, Val_bool)
 */
 
-/* gtkscrolledwindow.h */
-
-#define GtkScrolledWindow_val(val) check_cast(GTK_SCROLLED_WINDOW,val)
-ML_2 (gtk_scrolled_window_new, GtkAdjustment_val ,GtkAdjustment_val,
-      Val_GtkWidget_sink)
-ML_2 (gtk_scrolled_window_set_hadjustment, GtkScrolledWindow_val ,
-      GtkAdjustment_val, Unit)
-ML_2 (gtk_scrolled_window_set_vadjustment, GtkScrolledWindow_val ,
-      GtkAdjustment_val, Unit)
-ML_1 (gtk_scrolled_window_get_hadjustment, GtkScrolledWindow_val,
-      Val_GtkWidget)
-ML_1 (gtk_scrolled_window_get_vadjustment, GtkScrolledWindow_val,
-      Val_GtkWidget)
-ML_3 (gtk_scrolled_window_set_policy, GtkScrolledWindow_val,
-      Policy_type_val, Policy_type_val, Unit)
-Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
-		hscrollbar_policy, Val_policy_type)
-Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
-		vscrollbar_policy, Val_policy_type)
-ML_2 (gtk_scrolled_window_set_placement, GtkScrolledWindow_val,
-      Corner_type_val, Unit)
-ML_2 (gtk_scrolled_window_add_with_viewport, GtkScrolledWindow_val,
-      GtkWidget_val, Unit)
-
-/* gtksocket.h */
-
-#define GtkSocket_val(val) check_cast(GTK_SOCKET,val)
-ML_0 (gtk_socket_new, Val_GtkWidget_sink)
-ML_2 (gtk_socket_steal, GtkSocket_val, XID_val, Unit)
-
-/* gtkcalendar.h */
-
-#define GtkCalendar_val(val) check_cast(GTK_CALENDAR,val)
-ML_0 (gtk_calendar_new, Val_GtkWidget_sink)
-ML_3 (gtk_calendar_select_month, GtkCalendar_val, Int_val, Int_val, Unit)
-ML_2 (gtk_calendar_select_day, GtkCalendar_val, Int_val, Unit)
-ML_2 (gtk_calendar_mark_day, GtkCalendar_val, Int_val, Unit)
-ML_2 (gtk_calendar_unmark_day, GtkCalendar_val, Int_val, Unit)
-ML_1 (gtk_calendar_clear_marks, GtkCalendar_val, Unit)
-Make_Flags_val (Calendar_display_options_val)
-ML_2 (gtk_calendar_display_options, GtkCalendar_val,
-      Flags_Calendar_display_options_val, Unit)
-value ml_gtk_calendar_get_date (value w)
-{
-    guint year, month, day;
-    value ret;
-
-    gtk_calendar_get_date (GtkCalendar_val(w), &year, &month, &day);
-    ret = alloc_small (3, 0);
-    Field(ret,0) = Val_int(year);
-    Field(ret,1) = Val_int(month);
-    Field(ret,2) = Val_int(day);
-    return ret;
-}
-ML_1 (gtk_calendar_freeze, GtkCalendar_val, Unit)
-ML_1 (gtk_calendar_thaw, GtkCalendar_val, Unit)
-
-/* gtkdrawingarea.h */
-
-#define GtkDrawingArea_val(val) check_cast(GTK_DRAWING_AREA,val)
-ML_0 (gtk_drawing_area_new, Val_GtkWidget_sink)
-ML_3 (gtk_drawing_area_size, GtkDrawingArea_val, Int_val, Int_val, Unit)
-
-/* gtkmisc.h */
-
-#define GtkMisc_val(val) check_cast(GTK_MISC,val)
-ML_3 (gtk_misc_set_alignment, GtkMisc_val, Double_val, Double_val, Unit)
-ML_3 (gtk_misc_set_padding, GtkMisc_val, Int_val, Int_val, Unit)
-Make_Extractor (gtk_misc_get, GtkMisc_val, xalign, copy_double)
-Make_Extractor (gtk_misc_get, GtkMisc_val, yalign, copy_double)
-Make_Extractor (gtk_misc_get, GtkMisc_val, xpad, Val_int)
-Make_Extractor (gtk_misc_get, GtkMisc_val, ypad, Val_int)
-
-/* gtkarrow.h */
-
-#define GtkArrow_val(val) check_cast(GTK_ARROW,val)
-ML_2 (gtk_arrow_new, Arrow_type_val, Shadow_type_val, Val_GtkWidget_sink)
-ML_3 (gtk_arrow_set, GtkArrow_val, Arrow_type_val, Shadow_type_val, Unit)
-
-/* gtkimage.h */
-
-#define GtkImage_val(val) check_cast(GTK_IMAGE,val)
-ML_2 (gtk_image_new, GdkImage_val,
-      Option_val (arg2, GdkBitmap_val, NULL) Ignore, Val_GtkWidget_sink)
-ML_3 (gtk_image_set, GtkImage_val, GdkImage_val,
-      Option_val (arg2, GdkBitmap_val, NULL) Ignore, Unit)
-
-/* gtklabel.h */
-
-#define GtkLabel_val(val) check_cast(GTK_LABEL,val)
-ML_1 (gtk_label_new, String_val, Val_GtkWidget_sink)
-ML_2 (gtk_label_set_text, GtkLabel_val, String_val, Unit)
-ML_2 (gtk_label_set_pattern, GtkLabel_val, String_val, Unit)
-ML_2 (gtk_label_set_justify, GtkLabel_val, Justification_val, Unit)
-ML_2 (gtk_label_set_line_wrap, GtkLabel_val, Bool_val, Unit)
-Make_Extractor (gtk_label_get, GtkLabel_val, label, Val_string)
-
-/* gtktipsquery.h */
-
-#define GtkTipsQuery_val(val) check_cast(GTK_TIPS_QUERY,val)
-ML_0 (gtk_tips_query_new, Val_GtkWidget_sink)
-ML_1 (gtk_tips_query_start_query, GtkTipsQuery_val, Unit)
-ML_1 (gtk_tips_query_stop_query, GtkTipsQuery_val, Unit)
-ML_2 (gtk_tips_query_set_caller, GtkTipsQuery_val, GtkWidget_val, Unit)
-ML_3 (gtk_tips_query_set_labels, GtkTipsQuery_val,
-      String_val, String_val, Unit)
-value ml_gtk_tips_query_set_emit_always (value w, value arg)
-{
-    GtkTipsQuery_val(w)->emit_always = Bool_val(arg);
-    return Val_unit;
-}
-Make_Extractor (gtk_tips_query_get, GtkTipsQuery_val, emit_always, Val_bool)
-Make_Extractor (gtk_tips_query_get, GtkTipsQuery_val, caller, Val_GtkWidget)
-Make_Extractor (gtk_tips_query_get, GtkTipsQuery_val, label_inactive,
-		Val_string)
-Make_Extractor (gtk_tips_query_get, GtkTipsQuery_val, label_no_tip,
-		Val_string)
-
-/* gtkpixmap.h */
-
-#define GtkPixmap_val(val) check_cast(GTK_PIXMAP,val)
-ML_2 (gtk_pixmap_new, GdkPixmap_val,
-      Option_val (arg2, GdkBitmap_val, NULL) Ignore,
-      Val_GtkWidget_sink)
-value ml_gtk_pixmap_set (value val, value pixmap, value mask)
-{
-    GtkPixmap *w = GtkPixmap_val(val);
-    gtk_pixmap_set (w, Option_val(pixmap,GdkPixmap_val,w->pixmap),
-		    Option_val(mask,GdkBitmap_val,w->mask));
-    return Val_unit;
-}
-Make_Extractor (GtkPixmap, GtkPixmap_val, pixmap, Val_GdkPixmap)
-Make_Extractor (GtkPixmap, GtkPixmap_val, mask, Val_GdkBitmap)
-
 /* gtkpreview.h */
 /*
 #define GtkPreview_val(val) GTK_PREVIEW(Pointer_val(val))
@@ -824,11 +600,6 @@ ML_9 (gtk_preview_put, GtkPreview_val, GdkWindow_val, GdkGC_val,
       Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
 ML_bc9 (ml_gtk_preview_put)
 */
-
-/* gtk[hv]separator.h */
-
-ML_0 (gtk_hseparator_new, Val_GtkWidget_sink)
-ML_0 (gtk_vseparator_new, Val_GtkWidget_sink)
 
 /* gtkmain.h */
 
