@@ -66,11 +66,13 @@ and menu : Gtk.menu obj ->
     method prepend : menu_item -> unit
     method remove : menu_item -> unit
     method set_accel_group : accel_group -> unit
+    method set_accel_path : string -> unit
     method set_border_width : int -> unit
     method private wrap : Gtk.widget obj -> menu_item
   end
 
 val menu :
+  ?accel_path:string ->
   ?border_width:int -> ?packing:(menu -> unit) -> ?show:bool -> unit -> menu
 val menu_item :
   ?use_mnemonic:bool ->
@@ -85,6 +87,29 @@ val tearoff_item :
   ?width:int ->
   ?height:int ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
+
+
+class image_menu_item : 'a obj ->
+object
+  inherit menu_item_skel
+  constraint 'a =  Gtk.image_menu_item
+  val obj : 'a obj
+  method event : event_ops
+  method connect : menu_item_signals
+  method image : Gtk.widget
+  method set_image : Gtk.widget -> unit
+end
+
+val image_menu_item :
+  ?image:Gtk.widget ->
+  ?label:string ->
+  ?stock:GtkStock.id ->
+  ?use_mnemonic:bool ->
+  ?right_justified:bool ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(menu_item -> unit) -> ?show:bool -> unit -> image_menu_item
 
 class check_menu_item_signals : 'a obj ->
   object
@@ -103,6 +128,8 @@ class check_menu_item : 'a obj ->
     method event : event_ops
     method connect : check_menu_item_signals
     method set_active : bool -> unit
+    method set_inconsistent : bool -> unit
+    method inconsistent : bool
     method set_show_toggle : bool -> unit
     method toggled : unit -> unit
   end
@@ -126,6 +153,7 @@ class radio_menu_item : Gtk.radio_menu_item obj ->
 val radio_menu_item :
   ?group:Gtk.radio_menu_item group ->
   ?label:string ->
+  ?use_mnemonic:bool ->
   ?active:bool ->
   ?show_toggle:bool ->
   ?right_justified:bool ->
@@ -172,6 +200,7 @@ val option_menu :
 
 class ['a] factory :
   ?accel_group:accel_group ->
+  ?accel_path:string -> 
   ?accel_modi:Gdk.Tags.modifier list ->
   ?accel_flags:Tags.accel_flag list ->
   'a ->
@@ -190,6 +219,11 @@ class ['a] factory :
       ?key:Gdk.keysym ->
       ?callback:(unit -> unit) ->
       ?submenu:menu -> string -> menu_item
+    method add_image_item :
+      ?image:Gtk.widget ->
+      ?key:Gdk.keysym ->
+      ?callback:(unit -> unit) ->
+      ?stock:GtkStock.id -> ?label:string -> unit -> image_menu_item
     method add_radio_item :
       ?group:Gtk.radio_menu_item group ->
       ?active:bool ->
@@ -199,6 +233,8 @@ class ['a] factory :
     method add_submenu : ?key:Gdk.keysym -> string -> menu
     method add_tearoff : unit -> menu_item
     method private bind :
-      ?key:Gdk.keysym -> ?callback:(unit -> unit) -> menu_item -> unit
+      ?modi:Gdk.Tags.modifier list -> 
+      ?key:Gdk.keysym -> 
+      ?callback:(unit -> unit) -> menu_item -> string -> unit
     method menu : 'a
   end

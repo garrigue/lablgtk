@@ -69,8 +69,11 @@ let window = GWindow.window ~width:500 ~height:300 ~title:"editor" ()
 let vbox = GPack.vbox ~packing:window#add ()
 
 let menubar = GMenu.menu_bar ~packing:vbox#pack ()
-let factory = new GMenu.factory menubar
+
+
+let factory = new GMenu.factory ~accel_path:"<EDITOR2>/" menubar 
 let accel_group = factory#accel_group
+
 let file_menu = factory#add_submenu "File"
 let edit_menu = factory#add_submenu "Edit"
 
@@ -82,13 +85,14 @@ open GdkKeysyms
 
 let _ =
   window#connect#destroy ~callback:Main.quit;
-  let factory = new GMenu.factory file_menu ~accel_group in
-  factory#add_item "Open..." ~key:_O ~callback:editor#open_file;
+  let factory = new GMenu.factory ~accel_path:"<EDITOR2 File>/////" file_menu ~accel_group 
+  in
+  factory#add_item "Open" ~key:_O ~callback:editor#open_file;
   factory#add_item "Save" ~key:_S ~callback:editor#save_file;
   factory#add_item "Save as..." ~callback:editor#save_dialog;
   factory#add_separator ();
   factory#add_item "Quit" ~key:_Q ~callback:window#destroy;
-  let factory = new GMenu.factory edit_menu ~accel_group in
+  let factory = new GMenu.factory ~accel_path:"<EDITOR2 File>///" edit_menu ~accel_group in
   factory#add_item "Copy" ~key:_C ~callback:
     (fun () -> GtkSignal.emit_unit
         editor#text#as_view GtkText.View.Signals.copy_clipboard);
@@ -103,6 +107,8 @@ let _ =
     (fun b -> editor#text#set_wrap_mode (if b then `WORD else `NONE));
   factory#add_check_item "Read only" ~active:false
     ~callback:(fun b -> editor#text#set_editable (not b));
+  factory#add_item "Save accels"
+    ~callback:(fun () -> GtkData.AccelMap.save "test.accel");
   window#add_accel_group accel_group;
   editor#text#event#connect#button_press
     ~callback:(fun ev ->
@@ -111,4 +117,5 @@ let _ =
 	file_menu#popup ~button ~time:(GdkEvent.Button.time ev); true
       end else false);
   window#show ();
+  let () = GtkData.AccelMap.load "test.accel" in
   Main.main ()
