@@ -17,7 +17,7 @@ val build_menu : GMenu.menu -> entries: menu_entry list -> unit
 
 (** Popup a menu created from the given list of 
    labels and functions. *)
-val popup_menu : entries: menu_entry list -> button: int -> time: int -> unit
+val popup_menu : entries: menu_entry list -> button: int -> time: int32 -> unit
 
 (** {2 Parametrized dialog windows} *)
 

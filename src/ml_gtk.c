@@ -365,9 +365,9 @@ CAMLprim value ml_gtk_drag_dest_set (value w, value f, value t, value a)
   CAMLreturn(Val_unit);
 }
 ML_1 (gtk_drag_dest_unset, GtkWidget_val, Unit)
-ML_4 (gtk_drag_finish, GdkDragContext_val, Bool_val, Bool_val, Int_val, Unit)
+ML_4 (gtk_drag_finish, GdkDragContext_val, Bool_val, Bool_val, Int32_val, Unit)
 ML_4 (gtk_drag_get_data, GtkWidget_val, GdkDragContext_val,
-      GdkAtom_val, Int_val, Unit)
+      GdkAtom_val, Int32_val, Unit)
 ML_1 (gtk_drag_get_source_widget, GdkDragContext_val, Val_GtkWidget)
 ML_1 (gtk_drag_highlight, GtkWidget_val, Unit)
 ML_1 (gtk_drag_unhighlight, GtkWidget_val, Unit)
@@ -431,11 +431,11 @@ ML_4 (gtk_selection_data_set, GtkSelectionData_val, GdkAtom_val, Int_val,
       Unit)
 
 ML_3 (gtk_selection_owner_set, GtkWidget_val, (GdkAtom)GdkSelection_val,
-      Int_val, Val_bool)
+      Int32_val, Val_bool)
 ML_4 (gtk_selection_add_target, GtkWidget_val, (GdkAtom)GdkSelection_val,
       GdkAtom_val, Int_val, Unit)
 ML_4 (gtk_selection_convert, GtkWidget_val, (GdkAtom)GdkSelection_val,
-      GdkAtom_val, Int_val, Val_bool)
+      GdkAtom_val, Int32_val, Val_bool)
 
 /* gtkcontainer.h */
 
@@ -693,6 +693,8 @@ CAMLprim value ml_gtk_get_version (value unit)
     Field(ret,2) = Val_int(gtk_micro_version);
     return ret;
 }
+
+ML_0 (gtk_get_current_event_time,copy_int32)
 
 /* Marshalling */
 

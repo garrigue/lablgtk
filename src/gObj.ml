@@ -178,7 +178,7 @@ and drag_ops obj = object
   method dest_set ?(flags=[`ALL]) ?(actions=[]) targets =
     DnD.dest_set obj ~flags ~actions ~targets:(Array.of_list targets)
   method dest_unset () = DnD.dest_unset obj
-  method get_data ~target ?(time=0) (context : drag_context) =
+  method get_data ~target ?(time=Int32.zero) (context : drag_context) =
     DnD.get_data obj context#context ~target:(Gdk.Atom.intern target) ~time
   method highlight () = DnD.highlight obj
   method unhighlight () = DnD.unhighlight obj
@@ -301,9 +301,9 @@ and misc_ops obj = object
     with Gpointer.Null -> None
   method set_app_paintable = Widget.set_app_paintable obj
   method allocation = Widget.allocation obj
-  method convert_selection ~target ?(time=0) sel =
+  method convert_selection ~target ?(time=Int32.zero) sel =
     Selection.convert obj ~sel ~target:(Gdk.Atom.intern target) ~time
-  method grab_selection ?(time=0) sel = Selection.owner_set obj ~sel ~time
+  method grab_selection ?(time=Int32.zero) sel = Selection.owner_set obj ~sel ~time
   method add_selection_target ~target ?(info=0) sel =
     Selection.add_target obj ~sel ~target:(Gdk.Atom.intern target) ~info
 end

@@ -520,7 +520,7 @@ module Rgb = struct
 end
 
 module DnD = struct
-  external drag_status : drag_context -> drag_action list -> time:int -> unit
+  external drag_status : drag_context -> drag_action list -> time:int32 -> unit
       = "ml_gdk_drag_status"
   external drag_context_suggested_action : drag_context -> drag_action
       = "ml_GdkDragContext_suggested_action"

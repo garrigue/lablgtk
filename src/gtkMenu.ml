@@ -112,7 +112,7 @@ module Menu = struct
   external create : unit -> menu obj = "ml_gtk_menu_new"
   external popup :
       [>`menu] obj -> [>`menushell] optobj ->
-      [>`menuitem] optobj -> button:int -> time:int -> unit
+      [>`menuitem] optobj -> button:int -> time:int32 -> unit
       = "ml_gtk_menu_popup"
   let popup ?parent_menu ?parent_item w =
     popup w (Gpointer.optboxed parent_menu) (Gpointer.optboxed parent_item)

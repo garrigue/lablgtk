@@ -36,6 +36,7 @@ module Main = struct
   and quit () = if !loops <> [] then Main.quit (List.hd !loops)
   external get_version : unit -> int * int * int = "ml_gtk_get_version"
   let version = get_version ()
+  external get_current_event_time : unit -> int32 = "ml_gtk_get_current_event_time"
 end
 
 module Grab = struct

@@ -132,7 +132,7 @@ class drag_ops : Gtk.widget obj ->
       ?flags:Tags.dest_defaults list ->
       ?actions:Gdk.Tags.drag_action list -> target_entry list -> unit
     method dest_unset : unit -> unit
-    method get_data : target:string -> ?time:int -> drag_context ->unit
+    method get_data : target:string -> ?time:int32 -> drag_context ->unit
     method highlight : unit -> unit
     method source_set :
       ?modi:Gdk.Tags.modifier list ->
@@ -157,11 +157,11 @@ and misc_ops : Gtk.widget obj ->
     method colormap : Gdk.colormap
     method connect : misc_signals
     method convert_selection :
-      target:string -> ?time:int -> Gdk.Tags.selection -> bool
+      target:string -> ?time:int32 -> Gdk.Tags.selection -> bool
     method draw : Gdk.Rectangle.t option -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
-    method grab_selection : ?time:int -> Gdk.Tags.selection -> bool
+    method grab_selection : ?time:int32 -> Gdk.Tags.selection -> bool
     method has_focus : bool
     method hide : unit -> unit
     method hide_all : unit -> unit
@@ -226,10 +226,10 @@ and misc_signals :
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id
     method selection_get :
-      callback:(selection_context -> info:int -> time:int -> unit) ->
+      callback:(selection_context -> info:int -> time:int32 -> unit) ->
       GtkSignal.id
     method selection_received :
-      callback:(selection_data -> time:int -> unit) -> GtkSignal.id
+      callback:(selection_data -> time:int32 -> unit) -> GtkSignal.id
     method show : callback:(unit -> unit) -> GtkSignal.id
     method size_allocate : callback:(Gtk.rectangle -> unit) -> GtkSignal.id
     method state_changed :
@@ -243,12 +243,12 @@ and drag_context :
   object
     val context : Gdk.drag_context
     method context : Gdk.drag_context
-    method finish : success:bool -> del:bool -> time:int -> unit
+    method finish : success:bool -> del:bool -> time:int32 -> unit
     method source_widget : widget 
     method set_icon_pixmap :
       ?colormap:Gdk.colormap -> GDraw.pixmap -> hot_x:int -> hot_y:int -> unit
     method set_icon_widget : widget -> hot_x:int -> hot_y:int -> unit
-    method status : ?time:int -> Gdk.Tags.drag_action list -> unit
+    method status : ?time:int32 -> Gdk.Tags.drag_action list -> unit
     method suggested_action : Gdk.Tags.drag_action
     method targets : string list
   end
@@ -263,20 +263,20 @@ and drag_signals :
       callback:(drag_context -> unit) -> GtkSignal.id
     method data_get :
       callback:
-      (drag_context -> selection_context -> info:int -> time:int -> unit) ->
+      (drag_context -> selection_context -> info:int -> time:int32 -> unit) ->
       GtkSignal.id
     method data_received :
       callback:(drag_context -> x:int -> y:int ->
-	        selection_data -> info:int -> time:int -> unit) -> GtkSignal.id
+	        selection_data -> info:int -> time:int32 -> unit) -> GtkSignal.id
     method drop :
-      callback:(drag_context -> x:int -> y:int -> time:int -> bool) ->
+      callback:(drag_context -> x:int -> y:int -> time:int32 -> bool) ->
       GtkSignal.id
     method ending :
       callback:(drag_context -> unit) -> GtkSignal.id
     method leave :
-      callback:(drag_context -> time:int -> unit) -> GtkSignal.id
+      callback:(drag_context -> time:int32 -> unit) -> GtkSignal.id
     method motion :
-      callback:(drag_context -> x:int -> y:int -> time:int -> bool) ->
+      callback:(drag_context -> x:int -> y:int -> time:int32 -> bool) ->
       GtkSignal.id
   end
 

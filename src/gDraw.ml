@@ -179,7 +179,7 @@ let pixmap_from_xpm_d ~data ?window ?colormap ?transparent () =
 
 class drag_context context = object
   val context = context
-  method status ?(time=0) act = DnD.drag_status context act ~time
+  method status ?(time=Int32.zero) act = DnD.drag_status context act ~time
   method suggested_action = DnD.drag_context_suggested_action context
   method targets = List.map Gdk.Atom.name (DnD.drag_context_targets context)
 end
