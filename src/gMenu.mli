@@ -34,7 +34,12 @@ class menu_item_skel :
     method as_item : Gtk.menu_item obj
     method remove_submenu : unit -> unit
     method set_right_justified : bool -> unit
+    method select : unit -> unit
+    method deselect : unit -> unit
+    method right_justified : bool
     method set_submenu : menu -> unit
+    method get_submenu : GObj.widget option
+
   end
 and menu_item : 'a obj ->
   object
@@ -68,6 +73,7 @@ and menu : Gtk.menu obj ->
 val menu :
   ?border_width:int -> ?packing:(menu -> unit) -> ?show:bool -> unit -> menu
 val menu_item :
+  ?use_mnemonic:bool ->
   ?label:string ->
   ?right_justified:bool ->
   ?border_width:int ->

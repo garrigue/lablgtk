@@ -9,27 +9,48 @@ module MenuItem = struct
   external create : unit -> menu_item obj = "ml_gtk_menu_item_new"
   external create_with_label : string -> menu_item obj
       = "ml_gtk_menu_item_new_with_label"
+  external create_with_mnemonic : string -> menu_item obj
+      = "ml_gtk_menu_item_new_with_mnemonic"
   external tearoff_create : unit -> menu_item obj
       = "ml_gtk_tearoff_menu_item_new"
-  let create ?label () =
+  let create ?(use_mnemonic=false) ?label () =
     match label with None -> create ()
-    | Some label -> create_with_label label
+    | Some label -> if use_mnemonic then 
+	create_with_mnemonic label else create_with_label label
   external set_submenu : [>`menuitem] obj -> [>`menu] obj -> unit
       = "ml_gtk_menu_item_set_submenu"
+  external get_submenu : [>`menuitem] obj -> widget obj option
+      = "ml_gtk_menu_item_get_submenu"
   external remove_submenu : [>`menuitem] obj -> unit
       = "ml_gtk_menu_item_remove_submenu"
   external activate : [>`menuitem] obj -> unit
       = "ml_gtk_menu_item_activate"
+  external select : [>`menuitem] obj -> unit
+      = "ml_gtk_menu_item_select"
+  external deselect : [>`menuitem] obj -> unit
+      = "ml_gtk_menu_item_deselect"
   external set_right_justified : [>`menuitem] obj -> bool -> unit
       = "ml_gtk_menu_item_set_right_justified"
   external get_right_justified : [>`menuitem] obj -> bool
       = "ml_gtk_menu_item_get_right_justified"
+  external set_accel_path : [> `menuitem] obj -> string -> unit
+    = "ml_gtk_menu_item_set_accel_path"
+  external toggle_size_request : [> `menuitem] obj -> int -> unit
+    = "ml_gtk_menu_item_toggle_size_request"
+  external toggle_size_allocate : [> `menuitem] obj -> int -> unit
+    = "ml_gtk_menu_item_toggle_size_allocate"
   module Signals = struct
     open GtkSignal
     let activate =
       { name = "activate"; classe = `menuitem; marshaller = marshal_unit }
     let activate_item =
       { name = "activate_item"; classe = `menuitem; marshaller = marshal_unit }
+    let toggle_size_allocate =
+      { name = "toggle-size-allocate"; classe = `menuitem; 
+	marshaller = marshal_int }
+    let toggle_size_request =
+      { name = "toggle-size-request"; classe = `menuitem; 
+	marshaller = marshal_unit }
   end
 end
 

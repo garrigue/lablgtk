@@ -40,9 +40,14 @@ class ['a] pre_menu_item_skel obj = object
   method as_item = (obj :> Gtk.menu_item obj)
   method set_submenu (w : 'a pre_menu) = MenuItem.set_submenu obj w#as_menu
   method remove_submenu () = MenuItem.remove_submenu obj
-  (* method configure = MenuItem.configure obj *)
+  method get_submenu = match MenuItem.get_submenu obj with 
+    | None -> None
+    | Some w -> Some (new GObj.widget w)
   method activate () = MenuItem.activate obj
+  method select () = MenuItem.select obj
+  method deselect () = MenuItem.deselect obj
   method set_right_justified = MenuItem.set_right_justified obj
+  method right_justified = MenuItem.get_right_justified obj
   method add_accelerator ~group ?modi:m ?flags key=
     Widget.add_accelerator obj ~sgn:MenuItem.Signals.activate group ?flags
       ?modi:m ~key
@@ -61,9 +66,9 @@ let pack_item self ~packing ~show =
   if show <> Some false then self#misc#show ();
   self
 
-let menu_item ?label ?right_justified
+let menu_item ?use_mnemonic ?label ?right_justified
     ?border_width ?width ?height ?packing ?show () =
-  let w = MenuItem.create ?label () in
+  let w = MenuItem.create ?use_mnemonic ?label () in
   may right_justified ~f:(MenuItem.set_right_justified w);
   Container.set w ?border_width ?width ?height;
   pack_item (new menu_item w) ?packing ?show
@@ -178,7 +183,7 @@ class ['a] factory
       may key ~f:(item#add_accelerator ~group ~modi:m ~flags);
       may callback ~f:(fun callback -> item#connect#activate ~callback)
     method add_item ?key ?callback ?submenu label =
-      let item = menu_item ~label () in
+      let item = menu_item  ~use_mnemonic:true ~label () in
       self#bind item ?key ?callback;
       may (submenu : menu option) ~f:item#set_submenu;
       item
