@@ -1,38 +1,37 @@
-let ui_info = String.concat "\n" [
-"<ui>" ;
-"  <menubar name='MenuBar'>" ;
-"    <menu action='FileMenu'>" ;
-"      <menuitem action='New'/>" ;
-"      <menuitem action='Open'/>" ;
-"      <menuitem action='Save'/>" ;
-"      <menuitem action='SaveAs'/>" ;
-"      <separator/>" ;
-"      <menuitem action='Quit'/>" ;
-"    </menu>" ;
-"    <menu action='PreferencesMenu'>" ;
-"      <menu action='ColorMenu'>" ;
-"	<menuitem action='Red'/>" ;
-"	<menuitem action='Green'/>" ;
-"	<menuitem action='Blue'/>" ;
-"      </menu>" ;
-"      <menu action='ShapeMenu'>" ;
-"        <menuitem action='Square'/>" ;
-"        <menuitem action='Rectangle'/>" ;
-"        <menuitem action='Oval'/>" ;
-"      </menu>" ;
-"      <menuitem action='Bold'/>" ;
-"    </menu>" ;
-"    <menu action='HelpMenu'>" ;
-"      <menuitem action='About'/>" ;
-"    </menu>" ;
-"  </menubar>" ;
-"  <toolbar  name='ToolBar'>" ;
-"    <toolitem action='Open'/>" ;
-"    <toolitem action='Quit'/>" ;
-"    <separator/>" ;
-"    <toolitem action='Logo'/>" ;
-"  </toolbar>" ;
-"</ui>"; ]
+let ui_info = "<ui>\
+  <menubar name='MenuBar'>\
+    <menu action='FileMenu'>\
+      <menuitem action='New'/>\
+      <menuitem action='Open'/>\
+      <menuitem action='Save'/>\
+      <menuitem action='SaveAs'/>\
+      <separator/>\
+      <menuitem action='Quit'/>\
+    </menu>\
+    <menu action='PreferencesMenu'>\
+      <menu action='ColorMenu'>\
+	<menuitem action='Red'/>\
+	<menuitem action='Green'/>\
+	<menuitem action='Blue'/>\
+      </menu>\
+      <menu action='ShapeMenu'>\
+        <menuitem action='Square'/>\
+        <menuitem action='Rectangle'/>\
+        <menuitem action='Oval'/>\
+      </menu>\
+      <menuitem action='Bold'/>\
+    </menu>\
+    <menu action='HelpMenu'>\
+      <menuitem action='About'/>\
+    </menu>\
+  </menubar>\
+  <toolbar name='ToolBar'>\
+    <toolitem action='Open'/>\
+    <toolitem action='Quit'/>\
+    <separator/>\
+    <toolitem action='Logo'/>\
+  </toolbar>\
+</ui>"
 
 let activ_action ac =
   Printf.printf "Action '%s' activated\n" ac#name ;
@@ -70,19 +69,15 @@ let setup_ui window =
       a "ShapeMenu" ~label:"_Shape" ;
       a "HelpMenu" ~label:"_Help" ;
 
-      a "New" ~stock:`NEW ~label:"_New" 
-	~accel:"<control>N" ~tooltip:"Create a new file"
+      a "New" ~stock:`NEW ~tooltip:"Create a new file"
 	~callback:activ_action ;
-      a "Open" ~label:"_Open" ~stock:`OPEN
-	~accel:"<control>O" ~tooltip:"Open a file"
+      a "Open" ~stock:`OPEN ~tooltip:"Open a file"
 	~callback:activ_action ;
-      a "Save" ~label:"_Save" ~stock:`SAVE
-	~accel:"<control>S" ~tooltip:"Save current file"
+      a "Save" ~stock:`SAVE ~tooltip:"Save current file"
 	~callback:activ_action ;
-      a "SaveAs" ~label:"Save _As" ~stock:`SAVE_AS
+      a "SaveAs" ~stock:`SAVE_AS
 	~tooltip:"Save to a file" ~callback:activ_action ;
-      a "Quit" ~label:"_Quit" ~stock:`QUIT
-	~accel:"<control>Q" ~tooltip:"Quit"
+      a "Quit" ~stock:`QUIT ~tooltip:"Quit"
 	~callback:activ_action ;
       a "About" ~label:"_About" ~accel:"<control>A" ~tooltip:"About"
 	~callback:activ_action ;

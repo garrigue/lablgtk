@@ -1,5 +1,10 @@
 $Id$
 
+2004.09.08 [Olivier]
+  * add GAction.ui_manager#add_ui
+  * have #get_widget and #get_action raise Not_found instead of
+    Null_pointer. 
+
 2004.09.03 [Olivier]
   * in GAction.action_group, do not merge #add_action and
     #add_action_with_accel in a single method because they have

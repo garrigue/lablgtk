@@ -203,6 +203,8 @@ end
 
 type ui_id = int
 
+let invalid_id = 0
+
 class ui_manager obj = object
   val obj = obj
   method private obj = obj
@@ -222,7 +224,8 @@ class ui_manager obj = object
   method get_action s = new action (UIManager.get_action obj s)
   method add_ui_from_string = UIManager.add_ui_from_string obj
   method add_ui_from_file = UIManager.add_ui_from_file obj
-  (* method new_merge_id = UIManager.new_merge_id obj *)
+  method new_merge_id () = UIManager.new_merge_id obj
+  method add_ui = UIManager.add_ui obj
   method remove_ui = UIManager.remove_ui obj
   method ensure_update () = UIManager.ensure_update obj
 end

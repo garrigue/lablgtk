@@ -86,8 +86,9 @@ ML_3 (gtk_ui_manager_insert_action_group, GtkUIManager_val, GtkActionGroup_val, 
 ML_2 (gtk_ui_manager_remove_action_group, GtkUIManager_val, GtkActionGroup_val, Unit)
 ML_1 (gtk_ui_manager_get_action_groups, GtkUIManager_val, gobject_list_of_GList)
 ML_1 (gtk_ui_manager_get_accel_group, GtkUIManager_val, Val_GtkAccelGroup)
-ML_2 (gtk_ui_manager_get_widget, GtkUIManager_val, String_val, Val_GtkWidget)
-ML_2 (gtk_ui_manager_get_action, GtkUIManager_val, String_val, Val_GAnyObject)
+#define not_found_or_obj(o) (o ? Val_GAnyObject(o) : (raise_not_found(), Val_unit))
+ML_2 (gtk_ui_manager_get_widget, GtkUIManager_val, String_val, not_found_or_obj)
+ML_2 (gtk_ui_manager_get_action, GtkUIManager_val, String_val, not_found_or_obj)
 CAMLprim value ml_gtk_ui_manager_add_ui_from_string(value uim, value s)
 {
   GError *error = NULL;
@@ -109,7 +110,9 @@ CAMLprim value ml_gtk_ui_manager_add_ui_from_file(value uim, value s)
 }
 ML_2 (gtk_ui_manager_remove_ui, GtkUIManager_val, Int_val, Unit)
 ML_1 (gtk_ui_manager_ensure_update, GtkUIManager_val, Unit)
-/* ML_1 (gtk_ui_manager_new_merge_id, GtkUIManager_val, Val_int) */
+ML_1 (gtk_ui_manager_new_merge_id, GtkUIManager_val, Val_int)
+ML_7 (gtk_ui_manager_add_ui, GtkUIManager_val, Int_val, String_val, String_val, String_option_val, Ui_manager_item_type_val, Bool_val, Unit)
+ML_bc7(ml_gtk_ui_manager_add_ui)
 Make_Flags_val(Ui_manager_item_type_val)
 ML_2 (gtk_ui_manager_get_toplevels, GtkUIManager_val, Flags_Ui_manager_item_type_val, gobject_list_of_GSList_free)
 
@@ -148,5 +151,8 @@ Unsupported_24(gtk_ui_manager_add_ui_from_string)
 Unsupported_24(gtk_ui_manager_add_ui_from_file)
 Unsupported_24(gtk_ui_manager_remove_ui)
 Unsupported_24(gtk_ui_manager_ensure_update)
+Unsupported_24(gtk_ui_manager_add_ui)
+Unsupported_24(gtk_ui_manager_new_merge_id)
+Unsupported_24(gtk_ui_manager_new_merge_id_bc)
 
 #endif /* HASGTK24 */
