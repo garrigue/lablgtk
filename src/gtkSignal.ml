@@ -11,6 +11,7 @@ external connect :
   'a obj -> name:string -> callback:(GtkArgv.t -> unit) -> after:bool -> id
   = "ml_gtk_signal_connect"
 exception Stop_emit
+let stop_emit () = raise Stop_emit
 external emit_stop_by_name : 'a obj -> name:string -> unit
   = "ml_gtk_signal_emit_stop_by_name"
 let connect  ~(sgn : ('a, _) t) ~callback ?(after=false) (obj : 'a obj) =
@@ -35,7 +36,7 @@ let emit (obj : 'a obj) ~(sgn : ('a, 'b) t)
   emitter obj ~name:sgn.name
 external emit_none : 'a obj -> name:string -> unit -> unit
     = "ml_gtk_signal_emit_none"
-let emit_none obj ~sgn = emit obj ~emitter:emit_none ~sgn ()
+let emit_unit obj ~sgn = emit obj ~emitter:emit_none ~sgn ()
 external emit_int : 'a obj -> name:string -> int -> unit
     = "ml_gtk_signal_emit_int"
 let emit_int = emit ~emitter:emit_int

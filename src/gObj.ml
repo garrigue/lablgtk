@@ -17,7 +17,6 @@ class gtkobj_misc obj = object
   val obj = obj
   method get_type = Type.name (Object.get_type obj)
   method disconnect = GtkSignal.disconnect obj
-  method stop_emit () : unit = raise GtkSignal.Stop_emit
   method handler_block = GtkSignal.handler_block obj
   method handler_unblock = GtkSignal.handler_unblock obj
 end

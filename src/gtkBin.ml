@@ -162,8 +162,10 @@ module Socket = struct
   external steal : [>`socket] obj -> Gdk.xid -> unit = "ml_gtk_socket_steal"
 end
 
-module Inivisible = struct
+(*
+module Invisible = struct
   let cast w : socket obj = Object.try_cast w "GtkInvisible"
   external coerce : [>`invisible] obj -> invisible obj = "%identity"
   external create : unit -> invisible obj = "ml_gtk_invisible_new"
 end
+*)

@@ -843,12 +843,12 @@ let create_tree_mode_window =
 
 let tips_query_widget_entered (toggle : GButton.toggle_button)
     (tq : GMisc.tips_query) _ ~text ~privat:_  =
-if toggle #active then begin
-  tq #set_text
-    (match text with
-    | None -> "There is no tip!" | Some _ -> "There is a tip!");
-  tq #misc#stop_emit ~name:"widget_entered"
-end
+  if toggle #active then begin
+    tq #set_text
+      (match text with
+      | None -> "There is no tip!" | Some _ -> "There is a tip!");
+    GtkSignal.stop_emit ()
+  end
 
 let tips_query_widget_selected (w : #widget option) ~text ~privat:tp _ =
   (match w with

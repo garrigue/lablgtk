@@ -29,26 +29,28 @@ external signal_new : string -> int -> t -> object_type -> int  -> int
     = "ml_gtk_signal_new"
 external object_class_add_signals : t -> int array -> int -> unit
     = "ml_gtk_object_class_add_signals"
-external type_unique : string -> parent:object_type -> nsignals:int -> int
+external type_unique :
+    name:string -> parent:object_type -> nsignals:int -> gtk_type
     = "ml_gtk_type_unique"
-external type_new : int -> unit obj
+external type_new : gtk_type -> unit obj
     = "ml_gtk_type_new"
 
 open GtkSignal
 
-let make_new_widget name ~parent ~signal_array =
-  let nsignals = Array.length signal_array in
-  let get_type () =
-    let new_type = lazy (type_unique name ~parent ~nsignals) in
-    Lazy.force new_type in
+let make_new_widget ~name ~parent
+    ~(signals : ('a, unit -> unit) GtkSignal.t list) =
+  let nsignals = List.length signals in
+  let new_type = type_unique ~name ~parent ~nsignals in
   let signal_num_array = Array.create nsignals 0 in
   let class_init_func classe =
-    for i = 0 to nsignals-1 do
-      signal_num_array.(i) <- signal_new signal_array.(i).name 1 classe parent i
-    done;
-    object_class_add_signals classe signal_num_array nsignals in
-  get_type,
+    List.fold_left signals ~init:0 ~f:
+      (fun i signal ->
+	signal_num_array.(i) <- signal_new signal.name 1 classe parent i;
+	i+1);
+    object_class_add_signals classe signal_num_array nsignals
+  in
+  new_type,
   (fun () ->
     set_ml_class_init class_init_func;
-    type_new (get_type ())),
-  signal_num_array
+    type_new new_type)
+  (* , signal_num_array *)
