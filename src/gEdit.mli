@@ -132,6 +132,7 @@ class text : Gtk.text obj ->
     method set_point : int -> unit
     method set_vadjustment : GData.adjustment -> unit
     method set_word_wrap : bool -> unit
+    method set_line_wrap : bool -> unit
     method thaw : unit -> unit
     method vadjustment : GData.adjustment
   end
@@ -140,5 +141,6 @@ val text :
   ?vadjustment:GData.adjustment ->
   ?editable:bool ->
   ?word_wrap:bool ->
+  ?line_wrap:bool ->
   ?width:int ->
   ?height:int -> ?packing:(widget -> unit) -> ?show:bool -> unit -> text

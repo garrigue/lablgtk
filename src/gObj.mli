@@ -25,7 +25,9 @@ class gtkobj_misc : 'a obj ->
   object
     method disconnect : GtkSignal.id -> unit
     method get_type : string
-    method stop_emit : name:string -> unit
+    method handler_block : GtkSignal.id -> unit
+    method handler_unblock : GtkSignal.id -> unit
+    method stop_emit : unit -> unit        (* = raise GtkSignal.Stop_emit *)
   end
 
 (* Widget *)

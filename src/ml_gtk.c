@@ -52,6 +52,7 @@ ML_1 (Val_direction_type, Int_val, Id)
 ML_1 (Val_orientation, Int_val, Id)
 ML_1 (Val_toolbar_style, Int_val, Id)
 ML_1 (Val_state_type, Int_val, Id)
+ML_1 (Val_scroll_type, Int_val, Id)
 
 Make_Flags_val (Attach_options_val)
 Make_Flags_val (Button_action_val)
@@ -1397,6 +1398,7 @@ ML_1 (gtk_spin_button_update, GtkSpinButton_val, Unit)
 #define GtkText_val(val) check_cast(GTK_TEXT,val)
 ML_2 (gtk_text_new, GtkAdjustment_val, GtkAdjustment_val, Val_GtkWidget_sink)
 ML_2 (gtk_text_set_word_wrap, GtkText_val, Bool_val, Unit)
+ML_2 (gtk_text_set_line_wrap, GtkText_val, Bool_val, Unit)
 ML_3 (gtk_text_set_adjustments, GtkText_val,
       Option_val(arg2,GtkAdjustment_val,GtkText_val(arg1)->hadj) Ignore,
       Option_val(arg3,GtkAdjustment_val,GtkText_val(arg1)->vadj) Ignore,
@@ -1884,10 +1886,15 @@ value ml_gtk_signal_connect (value object, value name, value clos, value after)
 }
 
 ML_2 (gtk_signal_disconnect, GtkObject_val, Int_val, Unit)
-ML_2 (gtk_signal_emit_by_name, GtkObject_val, String_val, Unit)
 ML_2 (gtk_signal_emit_stop_by_name, GtkObject_val, String_val, Unit)
 ML_2 (gtk_signal_handler_block, GtkObject_val, Int_val, Unit)
 ML_2 (gtk_signal_handler_unblock, GtkObject_val, Int_val, Unit)
+ML_2_name (ml_gtk_signal_emit_none, gtk_signal_emit_by_name,
+           GtkObject_val, String_val, Unit)
+ML_3_name (ml_gtk_signal_emit_int, gtk_signal_emit_by_name,
+           GtkObject_val, String_val, Int_val, Unit)
+ML_4_name (ml_gtk_signal_emit_scroll, gtk_signal_emit_by_name,
+           GtkObject_val, String_val, Scroll_type_val, Double_val, Unit)
 
 /* gtkmain.h (again) */
 

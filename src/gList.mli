@@ -54,6 +54,10 @@ class clist_signals : 'a obj ->
       callback:(row:int ->
                 column:int -> event:GdkEvent.Button.t option -> unit) ->
       GtkSignal.id
+    method scroll_horizontal :
+      callback:(Tags.scroll_type -> pos:clampf -> unit) -> GtkSignal.id
+    method scroll_vertical :
+      callback:(Tags.scroll_type -> pos:clampf -> unit) -> GtkSignal.id
   end
 
 class ['a] clist : Gtk.clist obj ->
@@ -71,6 +75,8 @@ class ['a] clist : Gtk.clist obj ->
     method columns : int
     method columns_autosize : unit -> unit
     method connect : clist_signals
+    method emit_scroll_vertical : Tags.scroll_type -> pos:clampf -> unit
+    method emit_scroll_horizontal : Tags.scroll_type -> pos:clampf -> unit
     method focus_row : int
     method freeze : unit -> unit
     method get_row_column : x:int -> y:int -> int * int

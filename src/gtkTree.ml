@@ -72,3 +72,52 @@ module Tree = struct
       { name = "unselect_child"; marshaller = Widget.Signals.marshal }
   end
 end
+(*
+module CTree = struct
+  type t
+  type node =  [`ctree] obj * t
+  let cast w : ctree obj = Object.try_cast w "GtkCTree"
+  external create : cols:int -> treecol:int -> ctree obj = "ml_gtk_ctree_new"
+  external insert_node :
+      [>`ctree] obj -> ?parent:node -> ?sibling:node ->
+      titles:optstring array ->
+      spacing:int -> ?pclosed:Gdk.pixmap -> ?mclosed:Gdk.bitmap obj ->
+      ?popened:Gdk.pixmap -> ?mopened:Gdk.bitmap obj ->
+      is_leaf:bool -> expanded:bool -> node
+      = "ml_gtk_ctree_insert_node_bc" "ml_gtk_ctree_insert_node"
+  let insert_node'
+      w ?parent ?sibling ?(spacing = 0) ?(is_leaf = true)
+      ?(expanded = false)
+      ?pclosed ?mclosed ?popened ?mopened titles =
+    let len = GtkList.CList.get_columns w in
+    if List.length titles > len then invalid_arg "CTree.insert_node";
+    let arr = Array.create ~len None in
+    List.fold_left titles ~acc:0
+      ~f:(fun ~acc text -> arr.(acc) <- Some text; acc+1);
+    insert_node w
+      ?parent ?sibling ~titles:(Array.map ~f:optstring arr)
+      ~spacing ~is_leaf ~expanded
+      ?pclosed ?mclosed ?popened ?mopened 
+  external node_set_row_data : [>`ctree] obj -> node:node -> Obj.t -> unit
+      = "ml_gtk_ctree_node_set_row_data"
+  external node_get_row_data : [>`ctree] obj -> node:node -> Obj.t
+      = "ml_gtk_ctree_node_get_row_data"
+  external set_indent : [>`ctree] obj -> int -> unit
+      = "ml_gtk_ctree_set_indent"
+  module Signals = struct
+    open GtkSignal
+    let marshal_select f argv =
+      let node : node =
+        match GtkArgv.get_pointer argv ~pos:0 with
+          Some p -> Obj.magic p
+        | None -> invalid_arg "GtkTree.CTree.Signals.marshal_select"
+      in
+      f ~node ~column:(GtkArgv.get_int argv ~pos:1)
+
+    let tree_select_row : ([>`ctree],_) t =
+      { name = "tree_select_row"; marshaller = marshal_select }
+    let tree_unselect_row : ([>`ctree],_) t =
+      { name = "tree_unselect_row"; marshaller = marshal_select }
+  end
+end
+*)

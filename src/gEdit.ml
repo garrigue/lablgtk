@@ -122,6 +122,7 @@ class text obj = object (self)
   method set_vadjustment adj =
     Text.set_adjustment obj ~vertical:(GData.as_adjustment adj) ()
   method set_word_wrap = Text.set_word_wrap obj
+  method set_line_wrap = Text.set_line_wrap obj
   method hadjustment = new GData.adjustment (Text.get_hadjustment obj)
   method vadjustment = new GData.adjustment (Text.get_vadjustment obj)
   method point = Text.get_point obj
@@ -136,10 +137,11 @@ class text obj = object (self)
 end
 
 let text ?hadjustment ?vadjustment ?editable
-    ?word_wrap ?width ?height ?packing ?show () =
+    ?word_wrap ?line_wrap ?width ?height ?packing ?show () =
   let w = Text.create ()
       ?hadjustment:(may_map ~f:GData.as_adjustment hadjustment)
       ?vadjustment:(may_map ~f:GData.as_adjustment vadjustment) in
   may word_wrap ~f:(Text.set_word_wrap w);
+  may line_wrap ~f:(Text.set_line_wrap w);
   set_editable w ?editable ?width ?height;
   pack_return (new text w) ~packing ~show

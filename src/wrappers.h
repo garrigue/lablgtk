@@ -29,11 +29,20 @@ value ml_##cname (value arg1) \
 #define ML_2(cname, conv1, conv2, conv) \
 value ml_##cname (value arg1, value arg2) \
 { return conv (cname (conv1(arg1), conv2(arg2))); }
+#define ML_2_name(mlname, cname, conv1, conv2, conv) \
+value mlname (value arg1, value arg2) \
+{ return conv (cname (conv1(arg1), conv2(arg2))); }
 #define ML_3(cname, conv1, conv2, conv3, conv) \
 value ml_##cname (value arg1, value arg2, value arg3) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3))); }
+#define ML_3_name(mlname, cname, conv1, conv2, conv3, conv) \
+value mlname (value arg1, value arg2, value arg3) \
+{ return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3))); }
 #define ML_4(cname, conv1, conv2, conv3, conv4, conv) \
 value ml_##cname (value arg1, value arg2, value arg3, value arg4) \
+{ return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4))); }
+#define ML_4_name(mlname, cname, conv1, conv2, conv3, conv4, conv) \
+value mlname (value arg1, value arg2, value arg3, value arg4) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4))); }
 #define ML_5(cname, conv1, conv2, conv3, conv4, conv5, conv) \
 value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5) \
