@@ -1,6 +1,15 @@
 # $Id$
 # Makefile for lablgtk.
 
+EXE = .exe
+
+all:: $(TARGETS)
+
+opt: lablgtkopt
+
+depend:
+	ocamldep *.ml *.mli > .depend
+
 COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
