@@ -127,6 +127,44 @@ val chooser_widget :
   unit ->
   chooser_widget
 
+(** @since GTK 2.6
+    @gtkdoc gtk GtkFileChooserButton *)
+class chooser_button_signals :
+  ([> Gtk.container | `filechooser] as 'a) Gtk.obj ->
+  object
+    inherit GContainer.container_signals
+    inherit chooser_signals
+  end
+
+(** @since GTK 2.6
+    @gtkdoc gtk GtkFileChooserButton *)
+class chooser_button : 
+  ([> Gtk.file_chooser_button] as 'a) Gtk.obj ->
+  object
+    inherit GPack.box_skel
+    inherit chooser
+    val obj : 'a Gtk.obj
+    method connect : chooser_button_signals
+
+    method title : string
+    method set_title : string -> unit
+    method width_chars : int
+    method set_width_chars : int -> unit
+  end
+
+val chooser_button :
+  action:GtkEnums.file_chooser_action ->
+  ?title:string ->
+  ?width_chars:int ->
+  ?backend:string ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) -> 
+  ?show:bool ->
+  unit ->
+  chooser_button
+
 (**/**)
 
 class virtual chooser_impl :
