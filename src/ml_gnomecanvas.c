@@ -13,6 +13,7 @@
 
 #include "wrappers.h"
 #include "ml_gobject.h"
+#include "ml_glib.h"
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 
@@ -253,10 +254,11 @@ CAMLprim value ml_gnome_canvas_group_get_items(value cg)
 
 /* Converion functions for properties */
 #include "gtk_tags.h"
+#include "gdk_tags.h"
 
 CAMLprim value ml_gnome_canvas_convert_tags(value tag)
 {
-  lookup_info *tables[] = { ml_table_anchor_type };
+  lookup_info *tables[] = { ml_table_anchor_type, ml_table_gdkCapStyle };
   return Val_int(ml_lookup_to_c( tables[ Tag_val(tag) ], Field(tag, 0)));
 }
 
@@ -275,3 +277,49 @@ CAMLprim value ml_gnome_canvas_convert_points(value arr)
   g_value_set_boxed_take_ownership(v, p);
   return Val_GValue_new(v);
 }
+
+
+
+/* gome-canvas-path-def.h */
+
+Make_Val_final_pointer_ext(GnomeCanvasPathDef, _new, Ignore, gnome_canvas_path_def_unref, 50)
+#define Val_GnomeCanvasPathDef     Val_pointer
+#define GnomeCanvasPathDef_val(v) ((GnomeCanvasPathDef *)Pointer_val(v))
+
+CAMLprim value ml_gnome_canvas_path_def_new(value olen, value unit)
+{
+  gint len = Option_val(olen, Int_val, -1);
+  GnomeCanvasPathDef *p;
+  if(len < 0)
+    p = gnome_canvas_path_def_new();
+  else
+    p = gnome_canvas_path_def_new_sized(len);
+  return Val_GnomeCanvasPathDef_new(p);
+}
+
+/* ML_1 (gnome_canvas_path_def_finish, GnomeCanvasPathDef_val, Unit) */
+ML_1 (gnome_canvas_path_def_duplicate, GnomeCanvasPathDef_val, Val_GnomeCanvasPathDef_new)
+
+static gpointer path_def_val(value v)
+{
+  return GnomeCanvasPathDef_val(v);
+}
+
+CAMLprim value ml_gnome_canvas_path_def_concat(value plist)
+{
+  GSList *l = GSList_val(plist, path_def_val);
+  return Val_GnomeCanvasPathDef_new(gnome_canvas_path_def_concat(l));
+}
+
+ML_1 (gnome_canvas_path_def_reset, GnomeCanvasPathDef_val, Unit)
+ML_3 (gnome_canvas_path_def_moveto, GnomeCanvasPathDef_val, Double_val, Double_val, Unit)
+ML_3 (gnome_canvas_path_def_lineto, GnomeCanvasPathDef_val, Double_val, Double_val, Unit)
+ML_3 (gnome_canvas_path_def_lineto_moving, GnomeCanvasPathDef_val, Double_val, Double_val, Unit)
+ML_7 (gnome_canvas_path_def_curveto, GnomeCanvasPathDef_val, Double_val, Double_val, Double_val, Double_val, Double_val, Double_val, Unit)
+ML_bc7 (ml_gnome_canvas_path_def_curveto)
+ML_1 (gnome_canvas_path_def_closepath, GnomeCanvasPathDef_val, Unit)
+ML_1 (gnome_canvas_path_def_closepath_current, GnomeCanvasPathDef_val, Unit)
+
+ML_1 (gnome_canvas_path_def_length, GnomeCanvasPathDef_val, Val_int)
+ML_1 (gnome_canvas_path_def_is_empty, GnomeCanvasPathDef_val, Val_bool)
+ML_1 (gnome_canvas_path_def_has_currentpoint, GnomeCanvasPathDef_val, Val_bool)

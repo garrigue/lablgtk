@@ -31,46 +31,78 @@ external world_to_window : [> canvas] Gobject.obj -> wox:float -> woy:float -> f
 
 end
 
+module PathDef =
+  struct
+  type t = Gpointer.boxed
+  external new_path : ?size:int -> unit -> t = "ml_gnome_canvas_path_def_new"
+  external duplicate : t -> t = "ml_gnome_canvas_path_def_duplicate"
+  external concat : t list -> t = "ml_gnome_canvas_path_def_concat"
+  external reset : t -> unit = "ml_gnome_canvas_path_def_reset"
+  external moveto : t -> float -> float -> unit = "ml_gnome_canvas_path_def_moveto"
+  external lineto : t -> float -> float -> unit = "ml_gnome_canvas_path_def_lineto"
+  external lineto_moving : t -> float -> float -> unit = "ml_gnome_canvas_path_def_lineto_moving"
+  external curveto : t -> float -> float -> float -> float -> float -> float -> unit = "ml_gnome_canvas_path_def_curveto_bc" "ml_gnome_canvas_path_def_curveto"
+  external closepath : t -> unit = "ml_gnome_canvas_path_def_closepath"
+  external closepath_current : t -> unit = "ml_gnome_canvas_path_def_closepath_current"
+  external length : t -> int = "ml_gnome_canvas_path_def_length"
+  external is_empty : t -> bool = "ml_gnome_canvas_path_def_is_empty"
+  external has_currentpoint : t -> bool = "ml_gnome_canvas_path_def_has_currentpoint"
+end
+
 module Types : sig
   type ('a, 'b) t constraint 'a = [> `gtk|`canvasitem]
 
   type group_p = [`x of float| `y of float]
-  type shape_p = [`fill_color of string| `outline_color of string| `width_units of float| `width_pixels of int]
-  type re_p = [shape_p|`x1 of float| `y1 of float| `x2 of float| `y2 of float]
-  type text_p = [`x of float| `y of float| `text of string| `font of string|
-                 `size of int| `fill_color of string| 
-		 `anchor of Gtk.Tags.anchor_type]
-  type line_p = [`arrow_shape_a of float| `arrow_shape_b of float| `arrow_shape_c of float| 
-                 `fill_color of string| `width_units of float| `width_pixels of int|
-		 `points of float array| `first_arrowhead of bool|
-		 `last_arrowhead of bool]
+  type shape_p = [`fill_color of string| `outline_color of string
+                 | `width_units of float| `width_pixels of int
+		 | `cap_style of Gdk.GC.gdkCapStyle]
+  type re_p = [shape_p| `x1 of float| `y1 of float| `x2 of float| `y2 of float]
+  type text_p = [`x of float| `y of float| `text of string| `font of string
+                | `size of int| `fill_color of string
+		| `anchor of Gtk.Tags.anchor_type]
+  type line_p = [`arrow_shape_a of float| `arrow_shape_b of float| `arrow_shape_c of float
+                | `fill_color of string| `width_units of float| `width_pixels of int
+                | `points of float array| `first_arrowhead of bool
+		| `last_arrowhead of bool]
+  type bpath_p = [shape_p| `bpath of PathDef.t]
 
-  val group : ([item|`canvasgroup], group_p) t
+  val group : (group, group_p) t
   val rect : ([item|`canvasshape|`canvasRE|`canvasrect], re_p) t
   val ellipse : ([item|`canvasshape|`canvasRE|`canvasellipse], re_p) t
   val text : ([item|`canvastext], text_p) t
   val line : ([item|`canvasline], line_p) t
+  val bpath : ([item|`canvasshape|`canvasbpath], bpath_p) t
   val points : Gobject.g_type
+  val is_a : 'a Gobject.obj -> ('b, 'c) t -> bool
 end = 
   struct
   type ('a, 'b) t = Gobject.g_type constraint 'a = [> `gtk|`canvasitem]
+
   type group_p = [`x of float| `y of float]
-  type shape_p = [`fill_color of string| `outline_color of string| `width_units of float| `width_pixels of int]
-  type re_p = [shape_p|`x1 of float| `y1 of float| `x2 of float| `y2 of float]
-  type text_p = [`x of float| `y of float| `text of string| `font of string|
-                 `size of int| `fill_color of string|
-		 `anchor of Gtk.Tags.anchor_type]
-  type line_p = [`arrow_shape_a of float| `arrow_shape_b of float| `arrow_shape_c of float| 
-                 `fill_color of string| `width_units of float| `width_pixels of int|
-                 `points of float array| `first_arrowhead of bool|
-		 `last_arrowhead of bool]
+  type shape_p = [`fill_color of string| `outline_color of string
+                 | `width_units of float| `width_pixels of int
+		 | `cap_style of Gdk.GC.gdkCapStyle]
+  type re_p = [shape_p| `x1 of float| `y1 of float| `x2 of float| `y2 of float]
+  type text_p = [`x of float| `y of float| `text of string| `font of string
+                | `size of int| `fill_color of string
+		| `anchor of Gtk.Tags.anchor_type]
+  type line_p = [`arrow_shape_a of float| `arrow_shape_b of float| `arrow_shape_c of float
+                | `fill_color of string| `width_units of float| `width_pixels of int
+                | `points of float array| `first_arrowhead of bool
+		| `last_arrowhead of bool]
+  type bpath_p = [shape_p| `bpath of PathDef.t]
+
   let canvas_types = register_types ()
   let group = canvas_types.(4)
   let rect = canvas_types.(11)
   let ellipse = canvas_types.(3)
   let text = canvas_types.(14)
   let line = canvas_types.(6)
+  let bpath = canvas_types.(1)
   let points = canvas_types.(8)
+
+  let is_a obj typ =
+    Gobject.Type.is_a (Gobject.get_type obj) typ
   end
 
 (* GnomeCanvasItem *)
@@ -95,11 +127,9 @@ external grab_focus : [> item] Gobject.obj -> unit = "ml_gnome_canvas_item_grab_
 external get_bounds : [> item] Gobject.obj -> float array = "ml_gnome_canvas_item_get_bounds"
 module Signals = struct
   open GtkSignal
-  let marshal f _ = function
-    | `POINTER (Some p) :: _ -> f (Obj.magic p : GdkEvent.any) (* ((GdkEvent.unsafe_copy p) : GdkEvent.any) *)
-    | _ -> invalid_arg "GnomeCanvas.Item.Signals.marshal"
-  let event =
-    { name = "event" ; classe = `canvasitem; marshaller = marshal; }
+  let marshal = GtkBase.Widget.Signals.Event.marshal
+  let event : ([> `canvasitem], Gdk.Tags.event_type Gdk.event -> bool) t =
+    { name = "event"; classe = `canvasitem; marshaller = marshal; }
   end
 end
 
@@ -110,8 +140,8 @@ external get_items : [> group] Gobject.obj -> item Gobject.obj list  = "ml_gnome
 end
 
 (* Conversion  functions for properties *)
-
 type tags =
   | ANCHOR of Gtk.Tags.anchor_type
+  | CAPSTYLE of Gdk.GC.gdkCapStyle
 external convert_tags : tags -> int = "ml_gnome_canvas_convert_tags"
 external convert_points : float array -> Gobject.g_value = "ml_gnome_canvas_convert_points"

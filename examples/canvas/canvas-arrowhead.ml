@@ -98,7 +98,7 @@ let set_arrow_shape c =
   set_dimension d.shape_c_items
     ~x1:(right +. 10.) ~y1:(middle -. 10. *. (float c.width /. 2.))
     ~x2:(right +. 10.) 
-    ~y2:(middle +. 10. *. (float c.width /. 2. +. float c.shape_c))
+    ~y2:(middle -. 10. *. (float c.width /. 2. +. float c.shape_c))
     ~tx:(right +. 15.) 
     ~ty:(middle -. 10. *. (float (c.width + c.shape_c) /. 2.))
     c.shape_c ;
@@ -116,8 +116,8 @@ let set_arrow_shape c =
     d.samples
 
   
-let highlight_box item ev =
-  match GdkEvent.get_type ev with
+let highlight_box item ev = 
+  begin match GdkEvent.get_type ev with
   | `ENTER_NOTIFY ->
       item#set [ `fill_color "red" ]
   | `LEAVE_NOTIFY ->
@@ -131,7 +131,8 @@ let highlight_box item ev =
   | `BUTTON_RELEASE ->
       item#ungrab (GdkEvent.Button.time (GdkEvent.Button.cast ev))
   | _ -> ()
-
+  end ;
+  false
 
 let create_drag_box grp cb =
   let box = GnoCanvas.rect 
@@ -144,7 +145,7 @@ let create_drag_box grp cb =
 
 
 let width_event c ev =
-  match GdkEvent.get_type ev with
+  begin match GdkEvent.get_type ev with
   | `MOTION_NOTIFY ->
       let ev = GdkEvent.Motion.cast ev in
       let state = GdkEvent.Motion.state ev in
@@ -155,9 +156,10 @@ let width_event c ev =
 	set_arrow_shape c
       end
   | _ -> ()
+  end ; false
 
 let shape_a_event c ev =
-  match GdkEvent.get_type ev with
+  begin match GdkEvent.get_type ev with
   | `MOTION_NOTIFY ->
       let ev = GdkEvent.Motion.cast ev in
       let state = GdkEvent.Motion.state ev in
@@ -169,9 +171,10 @@ let shape_a_event c ev =
 	set_arrow_shape c
       end
   | _ -> ()
+  end ; false
 
 let shape_b_c_event c ev =
-  match GdkEvent.get_type ev with
+  begin match GdkEvent.get_type ev with
   | `MOTION_NOTIFY ->
       let ev = GdkEvent.Motion.cast ev in
       let state = GdkEvent.Motion.state ev in
@@ -195,7 +198,7 @@ let shape_b_c_event c ev =
 	if !change then set_arrow_shape c
       end
   | _ -> ()
-
+  end ; false
 
 let create_dimension grp anchor =
   let a = 
