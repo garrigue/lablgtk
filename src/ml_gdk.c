@@ -32,36 +32,44 @@ ML_0 (gdk_colormap_get_system, Val_GdkColormap)
 
 value ml_gdk_color_white (value cmap)
 {
-    value color = alloc (Wosizeof(GdkColor), Abstract_tag);
-    gdk_color_white (GdkColormap_val(cmap), GdkColor_val(color));
-    return color;
+    value ret = alloc (Wosizeof(GdkColor)+2, Abstract_tag);
+    GdkColor *color = (GdkColor*) &Field(ret,2);
+    Field(ret,1) = (value) color;
+    gdk_color_white (GdkColormap_val(cmap), color);
+    return ret;
 }
     
 value ml_gdk_color_black (value cmap)
 {
-    value color = alloc (Wosizeof(GdkColor), Abstract_tag);
-    gdk_color_black (GdkColormap_val(cmap), GdkColor_val(color));
-    return color;
+    value ret = alloc (Wosizeof(GdkColor)+2, Abstract_tag);
+    GdkColor *color = (GdkColor*) &Field(ret,2);
+    Field(ret,1) = (value) color;
+    gdk_color_black (GdkColormap_val(cmap), color);
+    return ret;
 }
 
 value ml_gdk_color_parse (char *spec)
 {
-    value color = alloc (Wosizeof(GdkColor), Abstract_tag);
-    if (!gdk_color_parse (spec, GdkColor_val(color)))
+    value ret = alloc (Wosizeof(GdkColor)+2, Abstract_tag);
+    GdkColor *color = (GdkColor*) &Field(ret,2);
+    Field(ret,1) = (value) color;
+    if (!gdk_color_parse (spec, color))
 	ml_raise_gdk ("color_parse");
-    return color;
+    return ret;
 }
 
 ML_2 (gdk_color_alloc, GdkColormap_val, GdkColor_val, Val_bool)
 
 value ml_GdkColor (value red, value green, value blue)
 {
-    GdkColor *color = (GdkColor*) alloc (Wosizeof(GdkColor), Abstract_tag);
+    value ret = alloc (Wosizeof(GdkColor)+2, Abstract_tag);
+    GdkColor *color = (GdkColor*) &Field(ret,2);
+    Field(ret,1) = (value) color;
     color->red = Int_val(red);
     color->green = Int_val(green);
     color->blue = Int_val(blue);
     color->pixel = 0;
-    return Val_GdkColor(color);
+    return ret;
 }
 
 Make_Extractor (GdkColor,GdkColor_val,red,Val_int)
@@ -73,19 +81,20 @@ Make_Extractor (GdkColor,GdkColor_val,pixel,Val_int)
 
 value ml_GdkRectangle (value x, value y, value width, value height)
 {
-    GdkRectangle *rectangle =
-        (GdkRectangle*) alloc (Wosizeof(GdkRectangle), Abstract_tag);
+    value ret = alloc (Wosizeof(GdkRectangle)+2, Abstract_tag);
+    GdkRectangle *rectangle = (GdkRectangle*) &Field(ret,2);
+    Field(ret,1) = (value) rectangle;
     rectangle->x = Int_val(x);
     rectangle->y = Int_val(y);
     rectangle->width = Int_val(width);
     rectangle->height = Int_val(height);
-    return (value)rectangle;
+    return ret;
 }
 
-Make_Extractor (GdkRectangle,(GdkRectangle*),x,Val_int)
-Make_Extractor (GdkRectangle,(GdkRectangle*),y,Val_int)
-Make_Extractor (GdkRectangle,(GdkRectangle*),width,Val_int)
-Make_Extractor (GdkRectangle,(GdkRectangle*),height,Val_int)
+Make_Extractor (GdkRectangle,GdkRectangle_val,x,Val_int)
+Make_Extractor (GdkRectangle,GdkRectangle_val,y,Val_int)
+Make_Extractor (GdkRectangle,GdkRectangle_val,width,Val_int)
+Make_Extractor (GdkRectangle,GdkRectangle_val,height,Val_int)
 
 /* Window */
 
@@ -179,7 +188,7 @@ ML_2 (gdk_gc_set_stipple, GdkGC_val, GdkPixmap_val, Unit)
 ML_3 (gdk_gc_set_ts_origin, GdkGC_val, Int_val, Int_val, Unit)
 ML_3 (gdk_gc_set_clip_origin, GdkGC_val, Int_val, Int_val, Unit)
 ML_2 (gdk_gc_set_clip_mask, GdkGC_val, GdkBitmap_val, Unit)
-ML_2 (gdk_gc_set_clip_rectangle, GdkGC_val, (GdkRectangle*), Unit)
+ML_2 (gdk_gc_set_clip_rectangle, GdkGC_val, GdkRectangle_val, Unit)
 ML_2 (gdk_gc_set_clip_region, GdkGC_val, (GdkRegion*), Unit)
 ML_2 (gdk_gc_set_subwindow, GdkGC_val, GdkSubwindowMode_val, Unit)
 ML_2 (gdk_gc_set_exposures, GdkGC_val, Bool_val, Unit)
@@ -223,7 +232,7 @@ ML_bc6 (ml_gdk_draw_string)
 /* Events */
 
 Make_Val_final_pointer (GdkEvent, , Ignore, gdk_event_free)
-ML_1 (gdk_event_copy, (GdkEvent*), Val_GdkEvent)
+ML_1 (gdk_event_copy, GdkEvent_val( ), Val_GdkEvent)
 
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), type, Val_gdkEventType)
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), window, Val_GdkWindow)

@@ -29,7 +29,8 @@ end
 class scrollbar_wrapper obj = range (obj : Gtk.scrollbar obj)
 
 class scrollbar dir ?:adjustment ?:update_policy ?:packing ?:show =
-  let w = Scrollbar.create dir ?:adjustment in
+  let w = Scrollbar.create dir
+      ?adjustment:(may_map adjustment fun:GData.adjustment_obj) in
   let () = may update_policy fun:(Range.set_update_policy w) in
   object (self)
     inherit scrollbar_wrapper w

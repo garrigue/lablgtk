@@ -111,6 +111,7 @@ class tips_query ?:caller ?:emit_always ?:label_inactive ?:label_no_tip
     ?:packing ?:show =
   let w = TipsQuery.create () in
   let () =
+    let caller = may_map (caller : #is_widget option) fun:(#as_widget) in
     TipsQuery.setter w cont:null_cont ?:caller ?:emit_always
       ?:label_inactive ?:label_no_tip
   in

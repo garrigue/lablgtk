@@ -31,6 +31,8 @@ class adjustment :value :lower :upper :step_incr :page_incr :page_size =
     Adjustment.create :value :lower :upper :step_incr :page_incr :page_size in
   adjustment_wrapper w
 
+let adjustment_obj (adj : adjustment) = adj#as_adjustment
+
 class tooltips_wrapper obj = object
   inherit gtkobj (obj : tooltips obj)
   method connect = new data_signals ?obj

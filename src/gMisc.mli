@@ -96,7 +96,7 @@ class tips_query_signals :
   end
 
 class tips_query :
-  ?caller:[> widget] obj ->
+  ?caller:#GObj.is_widget ->
   ?emit_always:bool ->
   ?label_inactive:string ->
   ?label_no_tip:string ->

@@ -78,9 +78,9 @@ module RadioButton = struct
   let cast w : radio_button obj =
     if Object.is_a w "GtkRadioButton" then Obj.magic w
     else invalid_arg "Gtk.RadioButton.cast"
-  external create : group optpointer -> radio_button obj
+  external create : group optaddr -> radio_button obj
       = "ml_gtk_radio_button_new"
-  external create_with_label : group optpointer -> string -> radio_button obj
+  external create_with_label : group optaddr -> string -> radio_button obj
       = "ml_gtk_radio_button_new_with_label"
   external group : [> radio] obj -> group = "ml_gtk_radio_button_group"
   external set_group : [> radio] obj -> group -> unit
@@ -89,7 +89,7 @@ module RadioButton = struct
     may group fun:(set_group w);
     cont w
   let create ?:group ?:label ?(_ : unit option) =
-    let group = optpointer group in
+    let group = optaddr group in
     match label with None -> create group
     | Some label -> create_with_label group label
 end
@@ -111,9 +111,9 @@ module Toolbar = struct
       = "ml_gtk_toolbar_insert_element_bc" "ml_gtk_toolbar_insert_element"
   let insert_button w ?type:t [< `BUTTON >] ?:text ?:tooltip ?:tooltip_private
       ?:icon ?:pos [< -1 >] ?:callback =
-    let b =insert_button w type:t text:(optpointer text)
-	tooltip:(optpointer tooltip)
-	tooltip_private:(optpointer tooltip_private) icon:(optboxed icon)
+    let b =insert_button w type:t text:(optstring text)
+	tooltip:(optstring tooltip)
+	tooltip_private:(optstring tooltip_private) icon:(optboxed icon)
 	:pos in
     match callback with
     | None   -> b
@@ -124,8 +124,8 @@ module Toolbar = struct
       tooltip:optstring -> tooltip_private:optstring -> pos:int -> unit
       = "ml_gtk_toolbar_insert_widget"
   let insert_widget w w' ?:tooltip ?:tooltip_private ?:pos [< -1 >] =
-    insert_widget w w' tooltip:(optpointer tooltip)
-      tooltip_private:(optpointer tooltip_private) :pos
+    insert_widget w w' tooltip:(optstring tooltip)
+      tooltip_private:(optstring tooltip_private) :pos
   external set_orientation : [> toolbar] obj -> orientation -> unit =
     "ml_gtk_toolbar_set_orientation"
   external set_style : [> toolbar] obj -> toolbar_style -> unit =

@@ -21,18 +21,26 @@ let default x =
 let may_default f x =
   function for:None -> f x | for:Some y -> y
 
-external get_null : unit -> Obj.t = "ml_get_null"
-let null = get_null ()
+(* marked pointers *)
+type 'a optaddr
 
-type 'a optpointer
-
-let optpointer : 'a option -> 'a optpointer =
+let optaddr : 'a option -> 'a optaddr =
   function
-      None -> Obj.obj null
+      None -> Obj.magic 0
     | Some x -> Obj.magic x
 
-type optstring = string optpointer
+(* naked pointers *)
+type optstring
 
+external get_null : unit -> optstring = "ml_get_null"
+let null = get_null ()
+
+let optstring : string option -> optstring =
+  function
+      None -> null
+    | Some x -> Obj.magic x
+
+(* boxed pointers *)
 type 'a optboxed
 
 let optboxed : 'a option -> 'a optboxed =

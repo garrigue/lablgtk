@@ -3,8 +3,11 @@
 #define GdkColormap_val(val) ((GdkColormap*)Pointer_val(val))
 extern value Val_GdkColormap (GdkColormap *);
 
-#define GdkColor_val(val) ((GdkColor *) val)
-#define Val_GdkColor Val_any
+#define GdkColor_val(val) ((GdkColor*)Pointer_val(val))
+#define Val_GdkColor Val_pointer
+
+#define GdkRectangle_val(val) ((GdkRectangle*)Pointer_val(val))
+#define Val_GdkRectangle Val_pointer
 
 #define GdkDrawable_val(val) ((GdkDrawable*)Pointer_val(val))
 
@@ -27,7 +30,7 @@ extern value Val_GdkGC (GdkGC *);
 
 #define GdkEvent_val(type) (GdkEvent##type *)Pointer_val
 
-#define GdkVisual_val(val) ((GdkVisual*)Unmark_val(val))
-#define Val_GdkVisual Mark_ptr
+#define GdkVisual_val(val) ((GdkVisual*) val)
+#define Val_GdkVisual(visual) ((value) visual)
 
 extern long OptFlags_GdkModifier_val (value);
