@@ -122,6 +122,8 @@ module FileSelection = struct
       = "ml_gtk_file_selection_get_help_button"
   external get_file_list : [>`filesel] obj -> clist obj
       = "ml_gtk_file_selection_get_file_list"
+  external get_dir_list : [>`filesel] obj -> clist obj
+      = "ml_gtk_file_selection_get_dir_list"
   let set_fileop_buttons w = function
       true -> show_fileop_buttons w
     | false -> hide_fileop_buttons w
