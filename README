@@ -4,7 +4,7 @@
 Needed:
 	ocaml-3.07
 	gtk+-2.x (preferably gtk+-2.4.x)
-          (gtk+-2.4.0 requires a patch for the GtkTreeItem widget)
+          (avoid gtk+-2.4.0, as the GtkTree widget is broken)
 	GNU make (there is no standard for conditionals)
 
 Info/upgrades:
