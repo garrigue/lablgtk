@@ -37,6 +37,9 @@ var2def: var2def.cmo
 .depend:
 	olabldep *.ml *.mli > .depend
 
+depend:
+	olabldep *.ml *.mli > .depend
+
 ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h wrappers.h
 
 include .depend

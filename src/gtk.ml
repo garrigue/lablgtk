@@ -33,4 +33,10 @@ module Widget = struct
   external draw_focus : 'a t -> unit = "ml_gtk_widget_draw_focus"
   external draw_default : 'a t -> unit = "ml_gtk_widget_draw_default"
   external draw_children : 'a t -> unit = "ml_gtk_widget_draw_children"
+  external event : 'a t -> Gdk.Event.t -> unit = "ml_gtk_widget_event"
+  external activate : 'a t -> unit = "ml_gtk_widget_activate"
+  external reparent : 'a t -> 'b t -> unit = "ml_gtk_widget_reparent"
+  external popup : 'a t -> x:int -> y:int -> unit = "ml_gtk_widget_popup"
+  external intersect : 'a t -> Gdk.Rectangle.t -> Gdk.Rectangle.t option
+      = "ml_gtk_widget_intersect"
 end
