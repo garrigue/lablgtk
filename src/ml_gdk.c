@@ -402,7 +402,7 @@ CAMLprim value ml_gdk_property_get (value window, value property,
     guchar *data;
     int nitems;
     int ok = gdk_property_get (GdkWindow_val(window), GdkAtom_val(property),
-                               AnyPropertyType, 0,
+                               0, 0,
                                Long_val(length), Bool_val(pdelete),
                                &atype, &aformat, &alength, &data);
 
