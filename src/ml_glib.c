@@ -315,6 +315,30 @@ CAMLprim value ml_g_utf8_validate(value s)
   return Val_bool(g_utf8_validate(SizedString_val(s),&c));
 }
 
+
 ML_1 (g_unichar_tolower, Int_val, Val_int)
 ML_1 (g_unichar_toupper, Int_val, Val_int)
+ML_1 (g_unichar_totitle, Int_val, Val_int)
+
+ML_1 (g_unichar_digit_value, Int_val, Val_int)
+ML_1 (g_unichar_xdigit_value, Int_val, Val_int)
+
 ML_1 (g_utf8_strlen, SizedString_val, Val_int)
+
+#define UNI_BOOL(f) ML_1(g_unichar_##f, Int_val, Val_bool)
+UNI_BOOL(validate)
+UNI_BOOL(isalnum)
+UNI_BOOL(isalpha)
+UNI_BOOL(iscntrl)
+UNI_BOOL(isdigit)
+UNI_BOOL(isgraph)
+UNI_BOOL(islower)
+UNI_BOOL(isprint)
+UNI_BOOL(ispunct)
+UNI_BOOL(isspace)
+UNI_BOOL(isupper)
+UNI_BOOL(isxdigit)
+UNI_BOOL(istitle)
+UNI_BOOL(isdefined)
+UNI_BOOL(iswide)
+#undef UNI_BOOL

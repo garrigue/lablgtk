@@ -1,5 +1,8 @@
 $Id$
 
+2003.07.18 [Benjamin]
+  * New Glib.Unichar module 
+
 2003.07.17 [Benjamin]
   * Fix Win32 compilation
 

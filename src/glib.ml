@@ -114,11 +114,35 @@ module Convert = struct
 *)
 end
 
+module Unichar = struct
+  external to_lower : unichar -> unichar = "ml_g_unichar_tolower"
+  external to_upper : unichar -> unichar = "ml_g_unichar_toupper"
+  external to_title : unichar -> unichar = "ml_g_unichar_totitle"
+
+  external digit_value : unichar -> int = "ml_g_unichar_digit_value"
+  external xdigit_value : unichar -> int = "ml_g_unichar_xdigit_value"
+
+  external validate : unichar -> bool = "ml_g_unichar_validate"
+  external isalnum : unichar -> bool = "ml_g_unichar_isalnum"
+  external isalpha : unichar -> bool = "ml_g_unichar_isalpha"
+  external iscntrl : unichar -> bool = "ml_g_unichar_iscntrl"
+  external isdigit : unichar -> bool = "ml_g_unichar_isdigit"
+  external isgraph : unichar -> bool = "ml_g_unichar_isgraph"
+  external islower : unichar -> bool = "ml_g_unichar_islower"
+  external isprint : unichar -> bool = "ml_g_unichar_isprint"
+  external ispunct : unichar -> bool = "ml_g_unichar_ispunct"
+  external isspace : unichar -> bool = "ml_g_unichar_isspace"
+  external isupper : unichar -> bool = "ml_g_unichar_isupper"
+  external isxdigit : unichar -> bool = "ml_g_unichar_isxdigit"
+  external istitle : unichar -> bool = "ml_g_unichar_istitle"
+  external isdefined : unichar -> bool = "ml_g_unichar_isdefined"
+  external iswide : unichar -> bool = "ml_g_unichar_iswide"
+
+end
+
 module Utf8 = struct
   external validate : string -> bool = "ml_g_utf8_validate"
   external length : string -> int = "ml_g_utf8_strlen"
-  external to_lower : unichar -> unichar = "ml_g_unichar_tolower"
-  external to_upper : unichar -> unichar = "ml_g_unichar_toupper"
 
   let from_unichar (n : unichar) =
     if n < 0 || n >= 0x4000000 then

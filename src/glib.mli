@@ -88,14 +88,36 @@ module Convert :  sig
   val get_charset : unit -> bool * string
 end
 
+module Unichar : sig 
+  val to_lower : unichar -> unichar
+  val to_upper : unichar -> unichar
+  val to_title : unichar -> unichar
+
+  val digit_value : unichar -> int
+  val xdigit_value : unichar -> int
+  val validate : unichar -> bool
+  val isalnum : unichar -> bool
+  val isalpha : unichar -> bool
+  val iscntrl : unichar -> bool
+  val isdigit : unichar -> bool
+  val isgraph : unichar -> bool
+  val islower : unichar -> bool
+  val isprint : unichar -> bool
+  val ispunct : unichar -> bool
+  val isspace : unichar -> bool
+  val isupper : unichar -> bool
+  val isxdigit : unichar -> bool
+  val istitle : unichar -> bool
+  val isdefined : unichar -> bool
+  val iswide : unichar -> bool
+end
+
 module Utf8 : sig
   (* Utf8 handling, and conversion to ucs4 *)
   (* If you read an utf8 string from somewhere, you should validate it,
      or risk random segmentation faults *)
   val validate : string -> bool
   val length : string -> int
-  val to_lower : unichar -> unichar
-  val to_upper : unichar -> unichar
   (* [from_unichar 0xiii] converts an index [iii] (usually in hexadecimal form)
      into a string containing the UTF-8 encoded character [0xiii]. See 
      http://www.unicode.org for charmaps.
