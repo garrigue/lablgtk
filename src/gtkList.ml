@@ -10,7 +10,7 @@ module ListItem = struct
   external create : unit -> list_item obj = "ml_gtk_list_item_new"
   external create_with_label : string -> list_item obj
       = "ml_gtk_list_item_new_with_label"
-  let create ?:label () =
+  let create ?label () =
     match label with None -> create ()
     | Some label -> create_with_label label
 end
@@ -21,12 +21,12 @@ module Liste = struct
   external insert_item :
       [>`list] obj -> [>`listitem] obj -> pos:int -> unit
       = "ml_gtk_list_insert_item"
-  let insert_items l wl :pos =
+  let insert_items l wl ~pos =
     let wl = if pos < 0 then wl else List.rev wl in
-    List.iter wl fun:(insert_item l :pos)
-  let append_items l = insert_items l pos:(-1)
-  let prepend_items l = insert_items l pos:0
-  external clear_items : [>`list] obj -> start:int -> end:int -> unit =
+    List.iter wl ~f:(insert_item l ~pos)
+  let append_items l = insert_items l ~pos:(-1)
+  let prepend_items l = insert_items l ~pos:0
+  external clear_items : [>`list] obj -> start:int -> stop:int -> unit =
     "ml_gtk_list_clear_items"
   external select_item : [>`list] obj -> pos:int -> unit
       = "ml_gtk_list_select_item"
@@ -138,7 +138,7 @@ module CList = struct
   external set_pixmap :
       [>`clist] obj -> int -> int -> Gdk.pixmap -> Gdk.bitmap optboxed -> unit
       = "ml_gtk_clist_set_pixmap"
-  let set_pixmap w row col ?:mask pixmap =
+  let set_pixmap w row col ?mask pixmap =
     set_pixmap w row col pixmap (optboxed mask)
   external get_pixmap :
       [>`clist] obj -> int -> int -> Gdk.pixmap * Gdk.bitmap option
@@ -147,7 +147,7 @@ module CList = struct
       [>`clist] obj -> int -> int ->
       string -> int -> Gdk.pixmap -> Gdk.bitmap optboxed -> unit
       = "ml_gtk_clist_set_pixtext"
-  let set_pixtext w row col :spacing :pixmap ?:mask text =
+  let set_pixtext w row col ~spacing ~pixmap ?mask text =
     set_pixtext w row col text spacing pixmap (optboxed mask)
   external set_foreground : [>`clist] obj -> row:int -> Gdk.Color.t -> unit
       = "ml_gtk_clist_set_foreground"
@@ -162,13 +162,13 @@ module CList = struct
       = "ml_gtk_clist_set_shift"
   external insert : [>`clist] obj -> row:int -> optstring array -> int
       = "ml_gtk_clist_insert"
-  let insert w :row texts =
+  let insert w ~row texts =
     let len = get_columns w in
     if List.length texts > len then invalid_arg "CList.insert";
-    let arr = Array.create len:(get_columns w) None in
-    List.fold_left texts acc:0
-      fun:(fun :acc text -> arr.(acc) <- text; acc+1);
-    let r = insert w :row (Array.map fun:optstring arr) in
+    let arr = Array.create (get_columns w) None in
+    List.fold_left texts ~init:0
+      ~f:(fun pos text -> arr.(pos) <- text; pos+1);
+    let r = insert w ~row (Array.map ~f:optstring arr) in
     if r = -1 then invalid_arg "GtkCList::insert";
     r
   external remove : [>`clist] obj -> row:int -> unit
@@ -188,7 +188,7 @@ module CList = struct
   external unselect_all : [>`clist] obj -> unit = "ml_gtk_clist_unselect_all"
   external swap_rows : [>`clist] obj -> int -> int -> unit
       = "ml_gtk_clist_swap_rows"
-  external row_move : [>`clist] obj -> int -> to:int -> unit
+  external row_move : [>`clist] obj -> int -> dst:int -> unit
       = "ml_gtk_clist_row_move"
   external set_sort_column : [>`clist] obj -> int -> unit
       = "ml_gtk_clist_set_sort_column"
@@ -204,32 +204,32 @@ module CList = struct
   let set_titles_active w = function
       true -> column_titles_active w
     | false -> column_titles_passive w
-  let set ?:hadjustment ?:vadjustment ?:shadow_type
-      ?(:button_actions=[]) ?:selection_mode ?:reorderable
-      ?:use_drag_icons ?:row_height ?:titles_show ?:titles_active w =
-    let may_set f param = may param fun:(f w) in
+  let set ?hadjustment ?vadjustment ?shadow_type
+      ?(button_actions=[]) ?selection_mode ?reorderable
+      ?use_drag_icons ?row_height ?titles_show ?titles_active w =
+    let may_set f param = may param ~f:(f w) in
     may_set set_hadjustment hadjustment;
     may_set set_vadjustment vadjustment;
     may_set set_shadow_type shadow_type;
-    List.iter button_actions fun:(fun (n,act) -> set_button_actions w n act);
+    List.iter button_actions ~f:(fun (n,act) -> set_button_actions w n act);
     may_set set_selection_mode selection_mode;
     may_set set_reorderable reorderable;
     may_set set_use_drag_icons use_drag_icons;
     may_set set_row_height row_height;
     may_set set_titles_show titles_show;
     may_set set_titles_active titles_active
-  let set_sort w ?:auto ?:column ?type:sort_type () =
-    may auto fun:(set_auto_sort w);
-    may column fun:(set_sort_column w);
-    may sort_type fun:(set_sort_type w)
-  let set_column w ?:widget ?:title ?:title_active ?:justification
-      ?:visibility ?:resizeable ?:auto_resize ?:width ?:min_width ?:max_width
+  let set_sort w ?auto ?column ?dir:sort_type () =
+    may auto ~f:(set_auto_sort w);
+    may column ~f:(set_sort_column w);
+    may sort_type ~f:(set_sort_type w)
+  let set_column w ?widget ?title ?title_active ?justification
+      ?visibility ?resizeable ?auto_resize ?width ?min_width ?max_width
       col =
-    let may_set f param = may param fun:(f w col) in
+    let may_set f param = may param ~f:(f w col) in
     may_set set_column_widget widget;
     may_set set_column_title title;
     may title_active
-      fun:(fun active -> if active then column_title_active w col
+      ~f:(fun active -> if active then column_title_active w col
                                    else column_title_passive w col);
     may_set set_column_justification justification;
     may_set set_column_visibility visibility;
@@ -238,19 +238,19 @@ module CList = struct
     may_set set_column_width width;
     may_set set_column_max_width min_width;
     may_set set_column_max_width max_width
-  let set_row w ?:foreground ?:background ?:selectable row =
-    may foreground fun:(set_foreground w :row);
-    may background fun:(set_background w :row);
-    may selectable fun:(set_selectable w :row)
+  let set_row w ?foreground ?background ?selectable row =
+    may foreground ~f:(set_foreground w ~row);
+    may background ~f:(set_background w ~row);
+    may selectable ~f:(set_selectable w ~row)
   module Signals = struct
     open GtkSignal
     let marshal_select f argv =
       let event : GdkEvent.Button.t option =
-	  let p = GtkArgv.get_pointer argv pos:2 in
-	  may_map fun:GdkEvent.unsafe_copy p
+	  let p = GtkArgv.get_pointer argv ~pos:2 in
+	  may_map ~f:GdkEvent.unsafe_copy p
       in
-      f row:(GtkArgv.get_int argv pos:0)
-	column:(GtkArgv.get_int argv pos:1) :event
+      f ~row:(GtkArgv.get_int argv ~pos:0)
+	~column:(GtkArgv.get_int argv ~pos:1) ~event
     let select_row : ([>`clist],_) t =
       { name = "select_row"; marshaller = marshal_select }
     let unselect_row : ([>`clist],_) t =

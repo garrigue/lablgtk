@@ -4,24 +4,24 @@ open GObj
 open GMain
 
 let dnd_source_window () =
-  let window = GWindow.window (* type:`POPUP *) position:`MOUSE () in
+  let window = GWindow.window (* type:`POPUP *) ~position:`MOUSE () in
   let vbx =
-    GPack.vbox (* width:320 height:240 *) border_width:10 packing:window#add ()
+    GPack.vbox (* width:320 height:240 *) ~border_width:10 ~packing:window#add ()
   in   
-  let evb = GFrame.event_box border_width:0 packing:vbx#add () in
+  let evb = GFrame.event_box ~border_width:0 ~packing:vbx#add () in
   (* type shadow_type = [ NONE IN OUT ETCHED_IN ETCHED_OUT ] *)
-  let frm = GFrame.frame shadow_type:`OUT packing:evb#add () in
-  let lbl = GMisc.label text:"hello" packing:frm#add () in
-  let lbl2 = GMisc.label text:"drag from here!" packing:vbx#add () in
+  let frm = GFrame.frame ~shadow_type:`OUT ~packing:evb#add () in
+  let lbl = GMisc.label ~text:"hello" ~packing:frm#add () in
+  let lbl2 = GMisc.label ~text:"drag from here!" ~packing:vbx#add () in
   let targets = [ { target = "STRING"; flags = []; info = 0} ] in
   begin
     window#show ();
 (*  evb#misc#set_position x:150 y:110;
     vbox#move evb x:150 y:110; *)
-    evb#drag#source_set targets mod:[`BUTTON1] actions:[`COPY];
-    evb#connect#drag#data_get callback: begin
-      fun _ data :info time:_ ->
-      	data#set type:data#target format:0 data:"hello! "
+    evb#drag#source_set targets ~modi:[`BUTTON1] ~actions:[`COPY];
+    evb#connect#drag#data_get ~callback: begin
+      fun _ data ~info ~time:_ ->
+      	data#set ~typ:data#target ~format:0 ~data:"hello! "
     end
   end
 
@@ -40,7 +40,7 @@ type drag_action_type =
   | GB_BOTTOM_LEFT
   | GB_BOTTOM_RIGHT
 
-let get_position_in_widget w :x :y :width :height =
+let get_position_in_widget w ~x ~y ~width ~height =
   if (x <= corner_width) then
     if (y <= corner_height) then
       GB_TOP_LEFT
@@ -85,12 +85,12 @@ class drag_info = object
       end
     | None -> ()
   end
-  method set_drag_offset :x :y = drag_offset <- (x, y)
-  method set_drag_action (w : Gdk.window) :x :y =
+  method set_drag_offset ~x ~y = drag_offset <- (x, y)
+  method set_drag_action (w : Gdk.window) ~x ~y =
     begin
       let (x0, y0) = Window.get_position w in
       let (width, height) = Window.get_size w in
-      drag_action <- get_position_in_widget w :x :y :width :height;
+      drag_action <- get_position_in_widget w ~x ~y ~width ~height;
       let (x1, y1) = (x0+width, y0+height) in
       toimen <-
 	match drag_action with
@@ -118,79 +118,80 @@ let to_grid (* ?which:b [< GB_MIDDLE >] *) g x = x - (x mod g) (* + g * (
   
 let to_grid2 g (x, y) = (to_grid g x, to_grid g y)
 
-class fix_editor :width :height packing:pack_fun =     
+class fix_editor ~width ~height ~packing:pack_fun =     
   let info = new drag_info in
-  let fix = GPack.fixed :width :height packing:pack_fun () in
+  let fix = GPack.fixed ~width ~height ~packing:pack_fun () in
   let _ = fix#misc#realize () in
   let fix_window = fix#misc#window in
-  let fix_drawing = new GdkObj.drawing fix_window in
+  let fix_drawing = new GDraw.drawable fix_window in
 
   object (self)
     val mutable grid = 1
     method as_widget = fix#as_widget
     method set_grid g =
       if (grid != g) then begin
-      	let pix = new GPix.pixdraw parent:fix width:g height:g in
+      	let pix =
+          GDraw.pixmap ~window:fix ~width:g ~height:g ~mask:true () in
 	let c = fix#misc#style#bg `NORMAL in
 	pix#set_foreground (`COLOR c);
-	pix#rectangle filled:true x:0 y:0 width:g height:g ();
+	pix#rectangle ~filled:true ~x:0 ~y:0 ~width:g ~height:g ();
 	pix#set_foreground `BLACK;
-      	pix#point x:0 y:0;
+      	pix#point ~x:0 ~y:0;
       	Gdk.Window.set_back_pixmap (fix#misc#window)
-	  pixmap:(`PIXMAP pix#pixmap) ;
+	  ~pixmap:(`PIXMAP pix#pixmap) ;
       end;
       grid <- g
 
-    method new_child :name :x :y :width :height :callback =
-      let evb = GFrame.event_box border_width:0 packing:fix#add () in
-      let lbl = GMisc.label text:name :width :height packing:evb#add () in
-      lbl#misc#set_usize :width :height;
+    method new_child ~name ~x ~y ~width ~height ~callback =
+      let evb = GFrame.event_box ~border_width:0 ~packing:fix#add () in
+      let lbl = GMisc.label ~text:name ~width ~height ~packing:evb#add () in
+      lbl#misc#set_usize ~width ~height;
       evb#misc#realize ();
-      evb#misc#set_uposition :x :y;
-      fix#move evb#coerce :x :y;
-      self#connect_signals ebox:evb widget:lbl#coerce :callback;
-      let ret_val :x :y :width :height :name =
-	fix#move evb#coerce :x :y;
+      evb#misc#set_uposition ~x ~y;
+      fix#move evb#coerce ~x ~y;
+      self#connect_signals ~ebox:evb ~widget:lbl#coerce ~callback;
+      let ret_val ~x ~y ~width ~height ~name =
+	fix#move evb#coerce ~x ~y;
 	lbl#set_text name;
-	lbl#misc#set_usize :width :height;
-	evb#misc#set_uposition :x :y;
+	lbl#misc#set_usize ~width ~height;
+	evb#misc#set_uposition ~x ~y;
       in
       ret_val
 
     method private connect_signals
-      ebox:(ebox : GFrame.event_box) widget:(widget : widget) callback:cbfun =
-      let drawing = new GdkObj.drawing (ebox#misc#window) in
+      ~ebox:(ebox : GFrame.event_box) ~widget:(widget : widget) ~callback:cbfun =
+      let drawing = new GDraw.drawable (ebox#misc#window) in
       let draw_id = ref None in
       let exps_id = ref None in
       let on_paint ev =
       	let (width, height) = Window.get_size (ebox#misc#window) in begin
       	  drawing#set_foreground `BLACK;
-      	  drawing#rectangle filled:true x:0 y:0
-	    width:corner_width height:corner_height ();
-      	  drawing#rectangle filled:true x:(width-corner_width) y:0
-	    width:corner_width height:corner_height ();
-      	  drawing#rectangle filled:true
-	    x:(width-corner_width)
-	    y:(height-corner_height)
-	    width:corner_width height:corner_height ();
-      	  drawing#rectangle filled:true
-	    x:0
-	    y:(height-corner_height)
-	    width:corner_width height:corner_height ();
-      	  drawing#rectangle filled:false
-	    x:0 y:0 width:(width-1) height:(height-1) ();
+      	  drawing#rectangle ~filled:true ~x:0 ~y:0
+	    ~width:corner_width ~height:corner_height ();
+      	  drawing#rectangle ~filled:true ~x:(width-corner_width) ~y:0
+	    ~width:corner_width ~height:corner_height ();
+      	  drawing#rectangle ~filled:true
+	    ~x:(width-corner_width)
+	    ~y:(height-corner_height)
+	    ~width:corner_width ~height:corner_height ();
+      	  drawing#rectangle ~filled:true
+	    ~x:0
+	    ~y:(height-corner_height)
+	    ~width:corner_width ~height:corner_height ();
+      	  drawing#rectangle ~filled:false
+	    ~x:0 ~y:0 ~width:(width-1) ~height:(height-1) ();
       	  false
 	end
       in
-      ebox#connect#event#button_press callback:
+      ebox#connect#event#button_press ~callback:
       	begin fun ev -> 
 	  let bx = int_of_float (GdkEvent.Button.x ev) in
 	  let by = int_of_float (GdkEvent.Button.y ev) in
-	  info#set_drag_action (ebox#misc#window) x:bx y:by;
-	  info#set_drag_offset x:bx y:by;
+	  info#set_drag_action (ebox#misc#window) ~x:bx ~y:by;
+	  info#set_drag_offset ~x:bx ~y:by;
 	  true
       	end;
-      ebox#connect#event#motion_notify callback:
+      ebox#connect#event#motion_notify ~callback:
       	begin fun ev ->
 	  info#set_drag_widget ebox#coerce;
 	  let action = info#drag_action in
@@ -199,9 +200,9 @@ class fix_editor :width :height packing:pack_fun =
 	  begin match action with
 	    GB_MIDDLE ->
 	      let (nx, ny) = to_grid2 grid (mx-ox, my-oy) in
-	      fix#move ebox#coerce x:nx y:ny;
-	      ebox#misc#set_uposition x:nx y:ny;
-	      if cbfun x:nx y:ny width:(-2) height:(-2) then
+	      fix#move ebox#coerce ~x:nx ~y:ny;
+	      ebox#misc#set_uposition ~x:nx ~y:ny;
+	      if cbfun ~x:nx ~y:ny ~width:(-2) ~height:(-2) then
 	      	()
 	      else (* should we undo ? *) ()
 	  | GB_DRAG_NONE -> () (* do nothing *)
@@ -218,15 +219,15 @@ class fix_editor :width :height packing:pack_fun =
 		fun:(fun id -> GtkSignal.handler_block ebox#as_widget id);
 	      Misc.may (!exps_id)
 		fun:(fun id -> GtkSignal.handler_block ebox#as_widget id); *)
-	      ebox#misc#set_usize width:w height:h;
-	      widget#misc#set_usize width:w height:h;
-	      fix#move ebox#coerce x:lx y:ty;
-	      ebox#misc#set_uposition x:lx y:ty;
+	      ebox#misc#set_usize ~width:w ~height:h;
+	      widget#misc#set_usize ~width:w ~height:h;
+	      fix#move ebox#coerce ~x:lx ~y:ty;
+	      ebox#misc#set_uposition ~x:lx ~y:ty;
 (*	      Misc.may (!draw_id)
 		fun:(fun id -> GtkSignal.handler_unblock ebox#as_widget id);
 	      Misc.may (!exps_id)
 		fun:(fun id -> GtkSignal.handler_unblock ebox#as_widget id); *)
-	      if cbfun x:lx y:ty width:w height:h then
+	      if cbfun ~x:lx ~y:ty ~width:w ~height:h then
 	      	()
 	      else (* should we undo ? *) ()
 	  | GB_TOP | GB_BOTTOM ->
@@ -234,11 +235,11 @@ class fix_editor :width :height packing:pack_fun =
 	      let my = to_grid grid my in
 	      let (ty, by) = if my<toi_y then (my, toi_y) else (toi_y, my) in
 	      let h = by-ty in
-	      ebox#misc#set_uposition y:ty x:(-2);
-	      fix#move ebox#coerce x:lx y:ty;
-	      ebox#misc#set_usize height:h width:(-2);
-	      widget#misc#set_usize height:h width:(-2);
-	      if cbfun x:lx y:ty width:(-2) height:h then
+	      ebox#misc#set_uposition ~y:ty ~x:(-2);
+	      fix#move ebox#coerce ~x:lx ~y:ty;
+	      ebox#misc#set_usize ~height:h ~width:(-2);
+	      widget#misc#set_usize ~height:h ~width:(-2);
+	      if cbfun ~x:lx ~y:ty ~width:(-2) ~height:h then
 	      	()
 	      else (* should we undo ? *) ()
 	  | GB_LEFT | GB_RIGHT ->
@@ -246,36 +247,36 @@ class fix_editor :width :height packing:pack_fun =
 	      let mx = to_grid grid mx in
 	      let (lx, rx) = if mx<toi_x then (mx, toi_x) else (toi_x, mx) in
 	      let w = rx-lx in 
-	      ebox#misc#set_uposition x:lx y:(-2);
-	      fix#move ebox#coerce x:lx y:ty;
-	      ebox#misc#set_usize width:w height:(-2);
-	      widget#misc#set_usize width:w height:(-2);
-	      if cbfun x:lx y:ty width:w height:(-2) then
+	      ebox#misc#set_uposition ~x:lx ~y:(-2);
+	      fix#move ebox#coerce ~x:lx ~y:ty;
+	      ebox#misc#set_usize ~width:w ~height:(-2);
+	      widget#misc#set_usize ~width:w ~height:(-2);
+	      if cbfun ~x:lx ~y:ty ~width:w ~height:(-2) then
 	      	()
 	      else (* should we undo ? *) ()
 	  end;
 	  true
       	end;
-      ebox#connect#event#button_release callback:
+      ebox#connect#event#button_release ~callback:
       	begin fun ev -> 
 	  info#unset_drag_action ();
 	  info#unset_drag_widget ();
 	  true
       	end;
-      exps_id := Some (ebox#connect#after#event#expose callback:on_paint);
-      draw_id := Some (ebox#connect#draw callback:(fun ev -> on_paint ev; ()));
+      exps_id := Some (ebox#connect#after#event#expose ~callback:on_paint);
+      draw_id := Some (ebox#connect#draw ~callback:(fun ev -> on_paint ev; ()));
       ()
     initializer
-      fix#drag#dest_set actions:[`COPY]
+      fix#drag#dest_set ~actions:[`COPY]
       	[ { target = "STRING"; flags = []; info = 0} ];
-      fix#connect#drag#data_received callback: begin
-	fun context :x :y data :info :time ->
+      fix#connect#drag#data_received ~callback: begin
+	fun context ~x ~y data ~info ~time ->
 	  let name = data#data in
-	  let _ = self#new_child :name :x :y width:32 height:32
-	      callback:(fun :x :y :width :height -> true) in
+	  let _ = self#new_child ~name ~x ~y ~width:32 ~height:32
+	      ~callback:(fun ~x ~y ~width ~height -> true) in
 (*		  Printf.printf "%s %d %d\n" (data#data) x y;
 		  flush stdout; *)
-	  context#finish success:true del:false :time;
+	  context#finish ~success:true ~del:false ~time;
       end;
       ()
   end
@@ -283,11 +284,11 @@ class fix_editor :width :height packing:pack_fun =
 (* the following is for test only *)
 let window1 () =    
   let window = GWindow.window () in
-  let _ = window#connect#destroy callback: Main.quit in
-  let fix = new fix_editor width:640 height:480 packing:window#add in
+  let _ = window#connect#destroy ~callback: Main.quit in
+  let fix = new fix_editor ~width:640 ~height:480 ~packing:window#add in
   fix#set_grid 5;
-  let setter = fix#new_child name:"hello" x:100 y:200 width:32 height:32
-      callback:begin fun :x :y :width :height ->
+  let setter = fix#new_child ~name:"hello" ~x:100 ~y:200 ~width:32 ~height:32
+      ~callback:begin fun ~x ~y ~width ~height ->
 	(* Printf.printf "name=%s, x=%d, y=%d, width=%d, height=%d\n"
 	              "hello" x y width height;
 	flush stdout; *)

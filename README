@@ -14,7 +14,6 @@ How to compile:
 	Options are
 		USE_CC=1	to use $(CC) rather than gcc
 		USE_GL=1	to compile with OpenGL support (see lower)
-		MESA=Mesa	to link with Mesa libs rather than OpenGL
 
 	Then just type "make" to build the library and toplevels.
 
@@ -43,16 +42,16 @@ Contents:
 
 How to run the examples:
 
-	./lablgtk -modern -w s examples/???.ml
+	./lablgtk -labels -w s examples/???.ml
 
   some examples (e.g. buttons.ml) may need to be run from the examples
   directory
 
-	../lablgtk -modern -w s -I .. ???.ml
+	../lablgtk -labels -w s -I .. ???.ml
 
 How to use the threaded toplevel:
 
-	% ./lablgtk_t -modern
+	% ./lablgtk_t -labels
 	        Objective Caml version 2.99+6 (2000/02/25)
 	
 	# let id = GtkThread.start ();;
@@ -151,7 +150,6 @@ GL extension
   * get and install gtkglarea-1.2.x.tar.gz from
     http://www.student.oulu.fi/~jlof/gtkglarea/index.html
   * reconfigure: "make configure USE_GL=1"
-  * if you use Mesa, then "make configure USE_GL=1 MESA=Mesa"
 
   You can then use the widget GlGtk.gl_area as an OpenGL window.
   Some examples are in examples/GL, but basically any LablGL example

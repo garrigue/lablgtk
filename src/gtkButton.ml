@@ -11,7 +11,7 @@ module Button = struct
   external create : unit -> button obj = "ml_gtk_button_new"
   external create_with_label : string -> button obj
       = "ml_gtk_button_new_with_label"
-  let create ?:label () =
+  let create ?label () =
     match label with None -> create ()
     | Some x -> create_with_label x
   external pressed : [>`button] obj -> unit = "ml_gtk_button_pressed"
@@ -45,19 +45,19 @@ module ToggleButton = struct
       = "ml_gtk_check_button_new"
   external check_button_create_with_label : string -> toggle_button obj
       = "ml_gtk_check_button_new_with_label"
-  let create_toggle ?:label () =
+  let create_toggle ?label () =
     match label with None -> toggle_button_create ()
     | Some label -> toggle_button_create_with_label label
-  let create_check ?:label () =
+  let create_check ?label () =
     match label with None -> check_button_create ()
     | Some label -> check_button_create_with_label label
   external set_mode : [>`toggle] obj -> bool -> unit
       = "ml_gtk_toggle_button_set_mode"
   external set_active : [>`toggle] obj -> bool -> unit
       = "ml_gtk_toggle_button_set_active"
-  let set ?:active ?:draw_indicator w =
-    may fun:(set_mode w) draw_indicator;
-    may fun:(set_active w) active
+  let set ?active ?draw_indicator w =
+    may ~f:(set_mode w) draw_indicator;
+    may ~f:(set_active w) active
   external get_active : [>`toggle] obj -> bool
       = "ml_gtk_toggle_button_get_active"
   external toggled : [>`toggle] obj -> unit
@@ -77,7 +77,7 @@ module RadioButton = struct
       = "ml_gtk_radio_button_new_with_label"
   external set_group : [>`radio] obj -> radio_button group -> unit
       = "ml_gtk_radio_button_set_group"
-  let create ?(:group = None) ?:label () =
+  let create ?(group = None) ?label () =
     match label with None -> create group
     | Some label -> create_with_label group label
 end
@@ -86,32 +86,32 @@ module Toolbar = struct
   let cast w : toolbar obj = Object.try_cast w "GtkToolbar"
   external create : orientation -> style:toolbar_style -> toolbar obj
       = "ml_gtk_toolbar_new"
-  let create dir ?(:style=`BOTH) () = create dir :style
+  let create dir ?(style=`BOTH) () = create dir ~style
   external insert_space : [>`toolbar] obj -> pos:int -> unit
       = "ml_gtk_toolbar_insert_space"
-  let insert_space w ?(:pos = -1) () = insert_space w :pos
+  let insert_space w ?(pos = -1) () = insert_space w ~pos
   external insert_button :
-      [>`toolbar] obj -> type:[`BUTTON|`TOGGLEBUTTON|`RADIOBUTTON] ->
+      [>`toolbar] obj -> kind:[`BUTTON|`TOGGLEBUTTON|`RADIOBUTTON] ->
       text:optstring -> tooltip:optstring -> tooltip_private:optstring ->
       icon:[>`widget] optobj -> pos:int -> button obj
       = "ml_gtk_toolbar_insert_element_bc" "ml_gtk_toolbar_insert_element"
-  let insert_button w ?(type:t=`BUTTON) ?:text ?:tooltip ?:tooltip_private
-      ?:icon ?(:pos = -1) ?:callback () =
-    let b =insert_button w type:t text:(optstring text)
-	tooltip:(optstring tooltip)
-	tooltip_private:(optstring tooltip_private) icon:(optboxed icon)
-	:pos in
+  let insert_button w ?kind:(t=`BUTTON) ?text ?tooltip ?tooltip_private
+      ?icon ?(pos = -1) ?callback () =
+    let b =insert_button w ~kind:t ~text:(optstring text)
+	~tooltip:(optstring tooltip)
+	~tooltip_private:(optstring tooltip_private) ~icon:(optboxed icon)
+	~pos in
     match callback with
     | None   -> b
-    | Some c -> GtkSignal.connect b sig:Button.Signals.clicked
-	  callback: c; b
+    | Some c -> GtkSignal.connect b ~sgn:Button.Signals.clicked
+	  ~callback: c; b
   external insert_widget :
       [>`toolbar] obj -> [>`widget] obj ->
       tooltip:optstring -> tooltip_private:optstring -> pos:int -> unit
       = "ml_gtk_toolbar_insert_widget"
-  let insert_widget w ?:tooltip ?:tooltip_private ?(:pos = -1) w' =
-    insert_widget w w' tooltip:(optstring tooltip)
-      tooltip_private:(optstring tooltip_private) :pos
+  let insert_widget w ?tooltip ?tooltip_private ?(pos = -1) w' =
+    insert_widget w w' ~tooltip:(optstring tooltip)
+      ~tooltip_private:(optstring tooltip_private) ~pos
   external set_orientation : [>`toolbar] obj -> orientation -> unit =
     "ml_gtk_toolbar_set_orientation"
   external set_style : [>`toolbar] obj -> toolbar_style -> unit =
@@ -126,25 +126,25 @@ module Toolbar = struct
     "ml_gtk_toolbar_set_button_relief"
   external get_button_relief : [>`toolbar] obj -> relief_style =
     "ml_gtk_toolbar_get_button_relief"
-  let set ?:orientation ?:style ?:space_size
-      ?:space_style ?:tooltips ?:button_relief w =
-    may orientation fun:(set_orientation w);
-    may style fun:(set_style w);
-    may space_size fun:(set_space_size w);
-    may space_style fun:(set_space_style w);
-    may tooltips fun:(set_tooltips w);
-    may button_relief fun:(set_button_relief w)
+  let set ?orientation ?style ?space_size
+      ?space_style ?tooltips ?button_relief w =
+    may orientation ~f:(set_orientation w);
+    may style ~f:(set_style w);
+    may space_size ~f:(set_space_size w);
+    may space_style ~f:(set_space_style w);
+    may tooltips ~f:(set_tooltips w);
+    may button_relief ~f:(set_button_relief w)
   module Signals = struct
     open GtkSignal
     external val_orientation : int -> orientation = "ml_Val_orientation"
     external val_toolbar_style : int -> toolbar_style
 	= "ml_Val_toolbar_style"
     let orientation_changed : ([>`toolbar],_) t =
-      let marshal f argv = f (val_orientation (GtkArgv.get_int argv pos:0)) in
+      let marshal f argv = f (val_orientation (GtkArgv.get_int argv ~pos:0)) in
       { name = "orientation_changed"; marshaller = marshal }
     let style_changed : ([>`toolbar],_) t =
       let marshal f argv =
-	f (val_toolbar_style (GtkArgv.get_int argv pos:0)) in
+	f (val_toolbar_style (GtkArgv.get_int argv ~pos:0)) in
       { name = "style_changed"; marshaller = marshal }
   end
 end

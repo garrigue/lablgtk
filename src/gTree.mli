@@ -44,7 +44,7 @@ and tree : Gtk.tree obj ->
     method add_events : Gdk.Tags.event_mask list -> unit
     method as_tree : Gtk.tree obj
     method child_position : tree_item -> int
-    method clear_items : start:int -> end:int -> unit
+    method clear_items : start:int -> stop:int -> unit
     method connect : tree_signals
     method insert : tree_item -> pos:int -> unit
     method remove_items : tree_item list -> unit

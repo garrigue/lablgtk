@@ -65,6 +65,8 @@ module Visual :
     type visual_type =
       [ `STATIC_GRAY|`GRAYSCALE|`STATIC_COLOR
        |`PSEUDO_COLOR|`TRUE_COLOR|`DIRECT_COLOR ]
+    external get_best : ?depth:int -> ?kind:visual_type -> unit -> visual
+        = "ml_gdk_visual_get_best"
     external get_type : visual -> visual_type = "ml_GdkVisual_type"
     external depth : visual -> int = "ml_GdkVisual_depth"
     external red_mask : visual -> int = "ml_GdkVisual_red_mask"
@@ -85,7 +87,7 @@ module Image :
       visual:visual -> data:string -> width:int -> height:int -> image
       = "ml_gdk_image_new_bitmap"
     external create :
-      image_type:image_type ->
+      kind:image_type ->
       visual:visual -> width:int -> height:int -> image = "ml_gdk_image_new"
     external get :
       'a drawable -> x:int -> y:int -> width:int -> height:int -> image
@@ -99,11 +101,18 @@ module Image :
 
 module Color :
   sig
-    type t
-    type spec = [ `BLACK|`NAME string |`RGB (int * int * int)|`WHITE ]
-    val alloc : ?colormap:colormap -> spec -> t
     external get_system_colormap : unit -> colormap
 	= "ml_gdk_colormap_get_system"
+    val get_colormap : ?privat:bool -> visual -> colormap
+
+    type t
+    type spec = [
+      | `BLACK
+      | `NAME of string
+      | `RGB of int * int * int
+      | `WHITE
+    ]
+    val alloc : colormap:colormap -> spec -> t
     external red : t -> int = "ml_GdkColor_red"
     external blue : t -> int = "ml_GdkColor_green"
     external green : t -> int = "ml_GdkColor_blue"
@@ -123,7 +132,7 @@ module Rectangle :
 
 module Window :
   sig
-    type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP pixmap ]
+    type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP of pixmap ]
     external visual_depth : visual -> int = "ml_gdk_visual_get_depth"
     external get_visual : window -> visual = "ml_gdk_window_get_visual"
     external get_parent : window -> window = "ml_gdk_window_get_parent"
@@ -169,7 +178,28 @@ module GC :
       width:int ->
       style:gdkLineStyle -> cap:gdkCapStyle -> join:gdkJoinStyle -> unit
       = "ml_gdk_gc_set_line_attributes"
-    external copy : to:gc -> gc -> unit = "ml_gdk_gc_copy"
+    external copy : dst:gc -> gc -> unit = "ml_gdk_gc_copy"
+    type values = {
+        foreground : Color.t;
+        background : Color.t;
+        font : font option;
+        fonction : gdkFunction;
+        fill : gdkFill;
+        tile : pixmap option;
+        stipple : pixmap option;
+        clip_mask : bitmap option;
+        subwindow_mode : gdkSubwindowMode;
+        ts_x_origin : int;
+        ts_y_origin : int;
+        clip_x_origin : int;
+        clip_y_origin : int;
+        graphics_exposures : bool;
+        line_width : int;
+        line_style : gdkLineStyle;
+        cap_style : gdkCapStyle;
+        join_style : gdkJoinStyle;
+      }
+    external get_values : gc -> values = "ml_gdk_gc_get_values"
   end
 
 module Pixmap :
@@ -249,6 +279,13 @@ module Draw :
       xsrc:int ->
       ysrc:int -> xdest:int -> ydest:int -> width:int -> height:int -> unit
       = "ml_gdk_draw_image_bc" "ml_gdk_draw_image"
+  end
+
+module Rgb :
+  sig
+    external init : unit -> unit = "ml_gdk_rgb_init"
+    external get_visual : unit -> visual = "ml_gdk_rgb_get_visual"
+    external get_cmap : unit -> colormap = "ml_gdk_rgb_get_cmap"
   end
 
 module DnD :

@@ -18,33 +18,33 @@ module Board (Spec : BoardSpec) = struct
   let on_board x y =
     x >= 0 && x < size && y >= 0 && y < size
 
-  let rec string board :x :y :dx :dy :color l =
+  let rec string board ~x ~y ~dx ~dy ~color l =
     let x = x+dx and y = y+dy in
     if on_board x y then
-      let col = get board :x :y in 
+      let col = get board ~x ~y in 
       if col = (color : [`white|`black] :> color) then l else
       if col = `none then [] else
-      string board :x :y :dx :dy :color ((x,y)::l)
+      string board ~x ~y ~dx ~dy ~color ((x,y)::l)
     else []
 
-  let find_swaps board :x :y :color =
-    if get board :x :y <> `none then [] else
+  let find_swaps board ~x ~y ~color =
+    if get board ~x ~y <> `none then [] else
     List.fold_left [-1,-1; -1,0; -1,1; 0,-1; 0,1; 1,-1; 1,0; 1,1]
-      acc:[]
-      fun:(fun :acc (dx,dy) -> string board :x :y :dx :dy :color [] @ acc)
+      ~init:[]
+      ~f:(fun acc (dx,dy) -> string board ~x ~y ~dx ~dy ~color [] @ acc)
 
-  let action board :x :y :color =
-    let swaps = find_swaps board :x :y :color in
+  let action board ~x ~y ~color =
+    let swaps = find_swaps board ~x ~y ~color in
     if swaps = [] then false else begin
       List.iter ((x,y)::swaps)
-	fun:(fun (x,y) -> set board :x :y color:(color :> color));
+	~f:(fun (x,y) -> set board ~x ~y ~color:(color :> color));
       true
     end
 
-  let check_impossible board :color =
+  let check_impossible board ~color =
     try
       for x = 0 to size - 1 do for y = 0 to size - 1 do
-	if find_swaps board :x :y :color <> [] then raise Exit
+	if find_swaps board ~x ~y ~color <> [] then raise Exit
       done done;
       true
     with Exit -> false
@@ -52,7 +52,7 @@ module Board (Spec : BoardSpec) = struct
   let count_cells board =
     let w = ref 0 and b = ref 0 in
     for x = 0 to size - 1 do for y = 0 to size - 1 do
-      match get board :x :y with
+      match get board ~x ~y with
 	`white -> incr w
       | `black -> incr b
       | `none -> ()
@@ -66,31 +66,34 @@ open GMain
 
 (* Toplevel window *)
 
-let window = GWindow.window title:"pousse" ()
+let window = GWindow.window ~title:"pousse" ()
 
 (* Create pixmaps *)
 
-let pixdraw = new GPix.pixdraw parent:window width:40 height:40
-let pixdraw1 = new GPix.pixdraw parent:window width:40 height:40
-let pixdraw2 = new GPix.pixdraw parent:window width:40 height:40
+let pixdraw =
+  GDraw.pixmap ~window ~width:40 ~height:40 ~mask:true ()
+let pixdraw1 =
+  GDraw.pixmap ~window ~width:40 ~height:40 ~mask:true ()
+let pixdraw2 =
+  GDraw.pixmap ~window ~width:40 ~height:40 ~mask:true ()
 
 let _ =
   pixdraw1#set_foreground `BLACK;
-  pixdraw1#arc x:3 y:3 width:34 height:34 filled:true ();
+  pixdraw1#arc ~x:3 ~y:3 ~width:34 ~height:34 ~filled:true ();
   pixdraw2#set_foreground `WHITE;
-  pixdraw2#arc x:3 y:3 width:34 height:34 filled:true ();
+  pixdraw2#arc ~x:3 ~y:3 ~width:34 ~height:34 ~filled:true ();
   pixdraw2#set_foreground `BLACK;
-  pixdraw2#arc x:3 y:3 width:34 height:34 ()
+  pixdraw2#arc ~x:3 ~y:3 ~width:34 ~height:34 ()
 
 (* The cell class: a button with a pixmap on it *)
 
-class cell ?:packing ?:show () =
-  let button = GButton.button ?:packing ?:show () in
+class cell ?packing ?show () =
+  let button = GButton.button ?packing ?show () in
 object (self)
   inherit GObj.widget button#as_widget
   method connect = button#connect
   val mutable color : color = `none
-  val pm = GPix.pixmap pixdraw packing:button#add ()
+  val pm = GMisc.pixmap pixdraw ~packing:button#add ()
   method color = color
   method set_color col =
     if col <> color then begin
@@ -106,8 +109,8 @@ module RealBoard = Board (
   struct
     type t = cell array array
     let size = 8
-    let get (board : t) :x :y = board.(x).(y)#color
-    let set (board : t) :x :y :color = board.(x).(y)#set_color color
+    let get (board : t) ~x ~y = board.(x).(y)#color
+    let set (board : t) ~x ~y ~color = board.(x).(y)#set_color color
   end
 )
 
@@ -115,17 +118,17 @@ module RealBoard = Board (
 
 open RealBoard
 
-class game (:frame : #GContainer.container) (:label : #GMisc.label)
-    (:statusbar : #GMisc.statusbar) =
-  let table = GPack.table columns:size rows:size packing:frame#add () in
+class game ~(frame : #GContainer.container) ~(label : #GMisc.label)
+    ~(statusbar : #GMisc.statusbar) =
+  let table = GPack.table ~columns:size ~rows:size ~packing:frame#add () in
 object (self)
   val cells =
-    Array.init len:size
-      fun:(fun i -> Array.init len:size
-	  fun:(fun j -> new cell packing:(table#attach top:i left:j) ()))
+    Array.init size
+      ~f:(fun i -> Array.init size
+	  ~f:(fun j -> new cell ~packing:(table#attach ~top:i ~left:j) ()))
   val label = label
-  val turn = statusbar#new_context name:"turn"
-  val messages = statusbar#new_context name:"messages"
+  val turn = statusbar#new_context ~name:"turn"
+  val messages = statusbar#new_context ~name:"messages"
   val mutable current_color = `black
   method board = cells
   method table = table
@@ -151,12 +154,12 @@ object (self)
     label#set_text (Printf.sprintf "White: %d Black: %d " w b)
 
   method play x y =
-    if action cells :x :y color:current_color then begin
+    if action cells ~x ~y ~color:current_color then begin
       self#update_label ();
       self#swap_players ();
-      if check_impossible cells color:current_color then begin
+      if check_impossible cells ~color:current_color then begin
 	self#swap_players ();
-	if check_impossible cells color:current_color then self#finish ()
+	if check_impossible cells ~color:current_color then self#finish ()
       end
     end else
       messages#flash "You cannot play there"
@@ -164,10 +167,10 @@ object (self)
   initializer
     for i = 0 to size-1 do for j = 0 to size-1 do
       let cell = cells.(i).(j) in
-      cell#connect#enter callback:cell#misc#grab_focus;
-      cell#connect#clicked callback:(fun () -> self#play i j)
+      cell#connect#enter ~callback:cell#misc#grab_focus;
+      cell#connect#clicked ~callback:(fun () -> self#play i j)
     done done;
-    List.iter fun:(fun (x,y,col) -> cells.(x).(y)#set_color col)
+    List.iter ~f:(fun (x,y,col) -> cells.(x).(y)#set_color col)
       [ 3,3,`black; 4,4,`black; 3,4,`white; 4,3,`white ];
     self#update_label ();
     turn#push "Player is black";
@@ -176,20 +179,20 @@ end
 
 (* Graphical elements *)
 
-let vbox = GPack.vbox packing:window#add ()
-let frame = GFrame.frame shadow_type:`IN packing:vbox#add ()
-let hbox = GPack.hbox packing:(vbox#pack expand:false) ()
+let vbox = GPack.vbox ~packing:window#add ()
+let frame = GFrame.frame ~shadow_type:`IN ~packing:vbox#add ()
+let hbox = GPack.hbox ~packing:(vbox#pack ~expand:false) ()
 
-let bar = GMisc.statusbar packing:hbox#add ()
+let bar = GMisc.statusbar ~packing:hbox#add ()
 
-let frame2 = GFrame.frame shadow_type:`IN packing:(hbox#pack expand:false) ()
-let label = GMisc.label justify:`LEFT xpad:5 xalign:0.0 packing:frame2#add ()
+let frame2 = GFrame.frame ~shadow_type:`IN ~packing:(hbox#pack ~expand:false) ()
+let label = GMisc.label ~justify:`LEFT ~xpad:5 ~xalign:0.0 ~packing:frame2#add ()
 
-let game = new game :frame :label statusbar:bar
+let game = new game ~frame ~label ~statusbar:bar
 
 (* Start *)
 
 let _ =
-  window#connect#destroy callback:Main.quit;
+  window#connect#destroy ~callback:Main.quit;
   window#show ();
   Main.main ()

@@ -131,11 +131,11 @@ class tips_query_signals : 'a obj ->
     val obj : 'a obj
     method widget_entered :
       callback:(widget option ->
-                text:string option -> private:string option -> unit) ->
+                text:string option -> privat:string option -> unit) ->
       GtkSignal.id
     method widget_selected :
       callback:(widget option -> text:string option ->
-                private:string option -> GdkEvent.Button.t option -> bool) ->
+                privat:string option -> GdkEvent.Button.t option -> bool) ->
       GtkSignal.id
   end
 
@@ -229,3 +229,21 @@ val color_selection :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> color_selection
+
+class pixmap : Gtk.pixmap Gtk.obj ->
+  object
+    inherit misc
+    val obj : Gtk.pixmap Gtk.obj
+    method connect : GObj.widget_signals
+    method pixmap : GDraw.pixmap
+    method set_pixmap : GDraw.pixmap -> unit
+  end
+val pixmap :
+  #GDraw.pixmap ->
+  ?xalign:float ->
+  ?yalign:float ->
+  ?xpad:int ->
+  ?ypad:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> pixmap
