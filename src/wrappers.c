@@ -19,6 +19,14 @@ value copy_memblock_indirected (void *src, asize_t size)
     return ret;
 }
 
+value alloc_memblock_indirected (asize_t size)
+{
+    value ret = alloc (Wosize_asize(size)+2, Abstract_tag);
+    Field(ret,1) = 2;
+    return ret;
+}
+
+
 value ml_some (value v)
 {
      CAMLparam1(v);

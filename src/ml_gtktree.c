@@ -49,7 +49,7 @@ ML_2 (gtk_tree_set_view_lines, GtkTree_val, Bool_val, Unit)
 static value val_gtkany (gpointer p) { return Val_GtkAny(p); }
 CAMLprim value ml_gtk_tree_selection (value tree)
 {
-  GList *selection = GTK_TREE_SELECTION(GtkTree_val(tree));
+  GList *selection = GTK_TREE_SELECTION_OLD(GtkTree_val(tree));
   return Val_GList(selection, val_gtkany);
 }
 static gpointer gtkobject_val (value val) { return GtkObject_val(val); }
