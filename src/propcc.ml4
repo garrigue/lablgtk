@@ -1,6 +1,7 @@
 (* $Id$ *)
 
 open StdLabels
+open MoreLabels
 
 let caml_keywords = ["type","kind"; "class","classe"; "list", "liste"]
 let caml_modules = ["List", "Liste"]
@@ -172,6 +173,9 @@ let process_phrase ~chars = parser
   | [< >] ->
       raise End_of_file
 
+let all_props = Hashtbl.create 137
+let all_pnames = Hashtbl.create 137
+
 let process_file f =
   let base = Filename.chop_extension f in
   let baseM = String.capitalize base in
@@ -201,7 +205,7 @@ let process_file f =
   let oc = open_out (base ^ "Props.ml") in
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
-  List.iter !headers ~f:(fun s -> out "%s\n" s);
+  List.iter !headers ~f:(fun s -> out "%s@." s);
   if enums <> [] && !use = "" then begin
     out "@[<hv2>module Conv = struct";
     List.iter ["enum", enums; "flags", flags] ~f:
@@ -220,13 +224,44 @@ let process_file f =
       begin fun (name, gtk_name, attrs, props) ->
         (name, gtk_name, attrs,
          List.filter props ~f:
-           begin fun (_,_,gtype,_) ->
-             try ignore (Hashtbl.find conversions gtype); true
+           begin fun (name,_,gtype,_) ->
+             try ignore (Hashtbl.find conversions gtype);
+               try
+                 let count, _ = Hashtbl.find all_props (name,gtype) in
+                 incr count;
+                 true
+               with Not_found ->
+                 Hashtbl.add all_props (name,gtype) (ref 1, ref ""); true
              with Not_found ->
                prerr_endline ("Warning: no conversion for type " ^ gtype);
                false
            end)
       end in
+  let defprop ~name ~mlname ~gtype ~tag =
+    let conv = Hashtbl.find conversions gtype in
+    out "@ @[<hv2>let %s " mlname;
+    if tag <> "gtk" then out ": ([>`%s],_) property " tag;
+    out "=@ @[<hov1>{name=\"%s\";@ conv=%s}@]@]" name conv
+  in
+  let shared_props =
+    Hashtbl.fold all_props ~init:[] ~f:
+      begin fun ~key:(name,gtype) ~data:(count,rpname) acc ->
+        if !count <= 1 then acc else
+        let pname = camlize name in
+        let pname =
+          if Hashtbl.mem all_pnames pname then pname ^ "_" ^ gtype
+          else (Hashtbl.add all_pnames pname (); pname) in
+        rpname := "Shared." ^ pname;
+        (pname,name,gtype) :: acc
+      end
+  in
+  if shared_props <> [] then begin
+    out "@[<hv2>module Shared = struct";
+    List.iter (List.sort compare shared_props) ~f:
+      (fun (pname,name,gtype) ->
+        defprop ~name ~mlname:pname ~gtype ~tag:"gtk");
+    out "@]\nend\n@.";
+  end;
   (* Redefining saves space in bytecode! *)
   out "let may_cons = Property.may_cons\n";
   out "let may_cons_opt = Property.may_cons_opt\n@.";
@@ -234,11 +269,11 @@ let process_file f =
     if props <> [] then begin
       out "@ @[<hv2>let pl = ";
       List.iter props ~f:
-        begin fun (_,name,gtype,_) ->
+        begin fun (name,mlname,gtype,_) ->
           let op =
             if check_suffix gtype "_opt" then "may_cons_opt" else "may_cons"
           in
-          out "(@;%s P.%s %s " op name name;
+          out "(@;<0>%s P.%s %s " op (camlize name) mlname;
         end;
       out "pl";
       for k = 1 to List.length props do out ")" done;
@@ -254,11 +289,13 @@ let process_file f =
         out "@ @[<hv2>module P = struct";
         let tag = String.lowercase name in
         List.iter props ~f:
-          begin fun (name, mlname, gtype, attrs) ->
-            let conv = Hashtbl.find conversions gtype in
-            out "@ @[<hv2>let %s =" mlname;
-            out "@ @[<hov1>{name=\"%s\";@ classe=`%s;@ conv=%s}@]@]"
-              name tag conv
+          begin fun (name, _, gtype, attrs) ->
+            let count, rpname = Hashtbl.find all_props (name,gtype) in
+            if !count > 1 then begin
+              out "@ let %s : ([>`%s],_) property = %s"
+                (camlize name) tag !rpname
+            end else
+              defprop ~name ~mlname:(camlize name) ~gtype ~tag
           end;
         out "@]@ end"
       end;
@@ -307,7 +344,7 @@ let process_file f =
         out "@ let c p = Property.check w p in";
         out "@ @[<hov>";
         List.iter props ~f:
-          (fun (_,name,gtype,attrs) ->
+          (fun (name,_,gtype,attrs) ->
             if List.mem "Read" attrs then out "c P.%s;@ " (camlize name));
         out "()@]";
       end;
@@ -324,9 +361,10 @@ let process_file f =
   let oprop ~name ~gtype ppf pname =
     try
       let conv = List.assoc gtype specials in
-      Format.fprintf ppf "{%s.P.%s with conv=%s}" (camlizeM name) pname conv
+      Format.fprintf ppf "{%s.P.%s with conv=%s}"
+        (camlizeM name) (camlize pname) conv
     with Not_found ->
-      Format.fprintf ppf "%s.P.%s" (camlizeM name) pname
+      Format.fprintf ppf "%s.P.%s" (camlizeM name) (camlize pname)
   in
   List.iter decls ~f:
     begin fun (name, gtk_name, attrs, props) ->
@@ -347,12 +385,12 @@ let process_file f =
       in
       if wr_props <> [] || rd_props <> [] then begin
         out "@ @[<hv2>class virtual %s_props = object (self)" (camlize name);
-        List.iter wr_props ~f:(fun (_,pname,gtype,_) ->
+        List.iter wr_props ~f:(fun (pname,mlname,gtype,_) ->
           out "@ @[<hv2>method set_%s =@ set %a self#obj@]"
-            pname (oprop ~name ~gtype) pname);
-        List.iter rd_props ~f:(fun (_,pname,gtype,_) ->
+            mlname (oprop ~name ~gtype) pname);
+        List.iter rd_props ~f:(fun (pname,mlname,gtype,_) ->
           out "@ @[<hv2>method %s =@ get %a self#obj@]"
-            pname (oprop ~name ~gtype) pname);
+            mlname (oprop ~name ~gtype) pname);
         out "@]@ end@ "
       end;
       let vset = List.mem "vset" attrs in
@@ -365,9 +403,9 @@ let process_file f =
       in
       if vprops <> [] then begin
         out "@ @[<hv2>let %s_param = function" (camlize name);
-        List.iter vprops ~f:(fun (_,pname,gtype,_) ->
+        List.iter vprops ~f:(fun (pname,mlname,gtype,_) ->
           out "@ @[<hv4>| `%s p ->@ param %a p@]"
-            (String.uppercase pname) (oprop ~name ~gtype) pname);
+            (String.uppercase mlname) (oprop ~name ~gtype) pname);
         out "@]@ ";
       end;
     end;
