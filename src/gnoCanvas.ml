@@ -40,7 +40,8 @@ type items_properties = [
   | `TEXT of string
   | `EDITABLE of bool
   | `VISIBLE of bool
-  | `CURSOR_VISIBLE of bool| `CURSOR_BLINK of bool
+  | `CURSOR_VISIBLE of bool
+  | `CURSOR_BLINK of bool
   | `GROW_HEIGHT of bool
   | `LEFT_MARGIN of int
   | `RIGHT_MARGIN of int
@@ -196,14 +197,14 @@ class ['p] item obj = object
 end
 
 class group grp_obj = object
-  inherit [Types.group_p] item grp_obj
+  inherit [GnomeCanvas.group_p] item grp_obj
   method as_group = (grp_obj : GnomeCanvas.group Gtk.obj)
   method get_items =
     Group.get_items grp_obj
 end
 
 class richtext rchtxt_obj = object
-  inherit [Types.richtext_p] item (rchtxt_obj : GnomeCanvas.richtext Gtk.obj)
+  inherit [GnomeCanvas.richtext_p] item (rchtxt_obj : GnomeCanvas.richtext Gtk.obj)
   method cut_clipboard () = RichText.cut_clipboard obj
   method copy_clipboard () = RichText.copy_clipboard obj
   method paste_clipboard () = RichText.paste_clipboard obj
@@ -267,7 +268,7 @@ let group ?x ?y parent =
   if props <> [] then g#set props ;
   g
 
-type rect = Types.re_p item
+type rect = GnomeCanvas.re_p item
 let rect ?x1 ?y1 ?x2 ?y2 ?fill_color ?(props=[]) p = 
   let props = unoption_list ~rest:props
       [ ( match x1 with None -> None | Some v -> Some (`X1 v) ) ;
@@ -278,7 +279,7 @@ let rect ?x1 ?y1 ?x2 ?y2 ?fill_color ?(props=[]) p =
       ] in
   construct_item Types.rect ~props p
 
-type ellipse = Types.re_p item
+type ellipse = GnomeCanvas.re_p item
 let ellipse ?x1 ?y1 ?x2 ?y2 ?fill_color ?(props=[]) p = 
   let props = unoption_list ~rest:props
       [ ( match x1 with None -> None | Some v -> Some (`X1 v) ) ;
@@ -289,7 +290,7 @@ let ellipse ?x1 ?y1 ?x2 ?y2 ?fill_color ?(props=[]) p =
       ] in
   construct_item Types.ellipse ~props p
 
-type text = Types.text_p item
+type text = GnomeCanvas.text_p item
 let text ?x ?y ?text ?font ?size ?anchor ?(props=[]) p =
   let props = unoption_list ~rest:props
       [ ( match x with None -> None | Some v -> Some (`X v) ) ;
@@ -301,7 +302,7 @@ let text ?x ?y ?text ?font ?size ?anchor ?(props=[]) p =
       ] in
   construct_item Types.text ~props p
 
-type line = Types.line_p item
+type line = GnomeCanvas.line_p item
 let line ?points ?fill_color ?(props=[]) p = 
   let props = unoption_list ~rest:props
       [ ( match points with None -> None | Some v -> Some (`POINTS v) ) ;
@@ -309,7 +310,7 @@ let line ?points ?fill_color ?(props=[]) p =
       ] in
   construct_item Types.line ~props p
 
-type bpath = Types.bpath_p item
+type bpath = GnomeCanvas.bpath_p item
 let bpath ?bpath ?fill_color ?(props=[]) p = 
   let props = unoption_list ~rest:props
       [ ( match bpath with None -> None | Some v -> Some (`BPATH v) ) ;
@@ -317,7 +318,7 @@ let bpath ?bpath ?fill_color ?(props=[]) p =
       ] in
   construct_item Types.bpath ~props p
 
-type pixbuf = Types.pixbuf_p item
+type pixbuf = GnomeCanvas.pixbuf_p item
 let pixbuf ?x ?y ?pixbuf ?width ?height ?(props=[]) p =
   let width = match (width, pixbuf) with
   | (None, Some p) -> Some (`WIDTH (float (GdkPixbuf.get_width p)))
@@ -335,7 +336,7 @@ let pixbuf ?x ?y ?pixbuf ?width ?height ?(props=[]) p =
       ] in
   construct_item Types.pixbuf ~props p
 
-type polygon = Types.polygon_p item
+type polygon = GnomeCanvas.polygon_p item
 let polygon ?points ?fill_color ?(props=[]) p =
   let props = unoption_list ~rest:props
       [ ( match points with None -> None | Some v -> Some (`POINTS v) ) ;
@@ -343,7 +344,7 @@ let polygon ?points ?fill_color ?(props=[]) p =
       ] in
   construct_item Types.polygon ~props p
 
-type widget = Types.widget_p item
+type widget = GnomeCanvas.widget_p item
 let widget ?widget ?x ?y ?width ?height ?(props=[]) p =
   let w = match widget with None -> None | Some wi -> Some (`WIDGET wi#coerce) in
   let props = unoption_list ~rest:props

@@ -38,7 +38,8 @@ type items_properties = [
   | `TEXT of string
   | `EDITABLE of bool
   | `VISIBLE of bool
-  | `CURSOR_VISIBLE of bool| `CURSOR_BLINK of bool
+  | `CURSOR_VISIBLE of bool
+  | `CURSOR_BLINK of bool
   | `GROW_HEIGHT of bool
   | `LEFT_MARGIN of int
   | `RIGHT_MARGIN of int
@@ -113,7 +114,7 @@ class ['a] item : 'b Gtk.obj ->
 
 class group : GnomeCanvas.group Gtk.obj ->
   object
-    inherit [GnomeCanvas.Types.group_p] item
+    inherit [GnomeCanvas.group_p] item
     val obj : GnomeCanvas.group Gtk.obj
     method as_group : GnomeCanvas.group Gtk.obj
     method get_items : GnomeCanvas.item Gobject.obj list
@@ -121,7 +122,7 @@ class group : GnomeCanvas.group Gtk.obj ->
 
 class richtext : GnomeCanvas.richtext Gtk.obj ->
   object
-    inherit [GnomeCanvas.Types.richtext_p] item
+    inherit [GnomeCanvas.richtext_p] item
     val obj : GnomeCanvas.richtext Gtk.obj
     method copy_clipboard : unit -> unit
     method cut_clipboard : unit -> unit
@@ -167,70 +168,70 @@ val wrap_item :
 
 val group : ?x:float -> ?y:float -> #group -> group
 
-type rect = GnomeCanvas.Types.re_p item
+type rect = GnomeCanvas.re_p item
 val rect :
   ?x1:float -> ?y1:float -> 
   ?x2:float -> ?y2:float -> 
   ?fill_color:string ->
-  ?props:GnomeCanvas.Types.re_p list ->
+  ?props:GnomeCanvas.re_p list ->
   #group -> rect
 
-type ellipse = GnomeCanvas.Types.re_p item
+type ellipse = GnomeCanvas.re_p item
 val ellipse :
   ?x1:float -> ?y1:float -> 
   ?x2:float -> ?y2:float -> 
   ?fill_color:string ->
-  ?props:GnomeCanvas.Types.re_p list ->
+  ?props:GnomeCanvas.re_p list ->
   #group -> ellipse
 
-type text = GnomeCanvas.Types.text_p item
+type text = GnomeCanvas.text_p item
 val text :
   ?x:float -> ?y:float -> ?text:string ->
   ?font:string -> ?size:int -> ?anchor:Gtk.Tags.anchor_type ->
-  ?props:GnomeCanvas.Types.text_p list ->
+  ?props:GnomeCanvas.text_p list ->
   #group -> text
 
-type line = GnomeCanvas.Types.line_p item
+type line = GnomeCanvas.line_p item
 val line :
   ?points:float array ->
   ?fill_color:string ->
-  ?props:GnomeCanvas.Types.line_p list ->
+  ?props:GnomeCanvas.line_p list ->
   #group -> line
 
-type bpath = GnomeCanvas.Types.bpath_p item
+type bpath = GnomeCanvas.bpath_p item
 val bpath :
   ?bpath:GnomeCanvas.PathDef.t ->
   ?fill_color:string ->
-  ?props:GnomeCanvas.Types.bpath_p list ->
+  ?props:GnomeCanvas.bpath_p list ->
   #group -> bpath
 
-type pixbuf = GnomeCanvas.Types.pixbuf_p item
+type pixbuf = GnomeCanvas.pixbuf_p item
 val pixbuf :
   ?x:float -> ?y:float -> ?pixbuf:GdkPixbuf.pixbuf ->
   ?width:float -> ?height:float ->
-  ?props:GnomeCanvas.Types.pixbuf_p list ->
+  ?props:GnomeCanvas.pixbuf_p list ->
   #group -> pixbuf
 
-type polygon = GnomeCanvas.Types.polygon_p item
+type polygon = GnomeCanvas.polygon_p item
 val polygon :
   ?points:float array ->
   ?fill_color:string ->
-  ?props:GnomeCanvas.Types.polygon_p list ->
+  ?props:GnomeCanvas.polygon_p list ->
   #group -> polygon
 
-type widget = GnomeCanvas.Types.widget_p item
+type widget = GnomeCanvas.widget_p item
 val widget :
   ?widget:< coerce: GObj.widget; .. > ->
   ?x:float -> ?y:float -> 
   ?width:float -> ?height:float ->
-  ?props:GnomeCanvas.Types.widget_p list ->
+  ?props:GnomeCanvas.widget_p list ->
   #group -> widget
 
 val richtext :
   ?x:float -> ?y:float ->
   ?text:string ->
   ?width:float -> ?height:float ->
-  ?props:GnomeCanvas.Types.richtext_p list ->
+  ?props:GnomeCanvas.richtext_p list ->
   #group -> richtext
 
 val parent : 'a #item -> group
