@@ -32,7 +32,7 @@ How to compile:
 	Then just type "make" to build the library and toplevels.
 
         If you are using the windows precompiled version, you must
-        first obtain gtk-win32-dlls.zip from the above location,
+        first obtain gtk-1.3-dlls-win32.zip from the above location,
         and then copy bin\lablgtk.bat, lib\stublibs\dlllablgtk.dll and
         lib\lablgtk to their respective locations in the OCaml
         distribution.
