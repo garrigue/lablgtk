@@ -36,7 +36,9 @@ Contents:
 	examples/*.ml	various examples
 	applications/*	application using the library
 		radtest		a very experimental RAD for lablgtk
+				(by Hubert Fauque)
 		lablglade	another experimental RAD, based on glade
+				(by Koji Kagawa)
 
 	lablgl.patch	patch for lablgl-0.92
 
