@@ -162,12 +162,12 @@ let menu_bar ?border_width ?width ?height ?packing ?show () =
 
 class ['a] factory
     ?(accel_group=AccelGroup.create ())
-    ?(accel_mod=[`CONTROL])
+    ?(accel_modi=[`CONTROL])
     ?(accel_flags=[`VISIBLE]) (menu_shell : 'a) =
   object (self)
     val menu_shell : #menu_shell = menu_shell
     val group = accel_group
-    val m = accel_mod
+    val m = accel_modi
     val flags = accel_flags
     method menu = menu_shell
     method accel_group = group

@@ -164,7 +164,7 @@ val option_menu :
 
 class ['a] factory :
   ?accel_group:accel_group ->
-  ?accel_mod:Gdk.Tags.modifier list ->
+  ?accel_modi:Gdk.Tags.modifier list ->
   ?accel_flags:Tags.accel_flag list ->
   'a ->
   object
