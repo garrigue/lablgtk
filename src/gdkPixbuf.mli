@@ -11,8 +11,7 @@ type uint8 = int
 (* Creation *)
 
 val create :
-  width:int ->
-  height:int ->
+  width:int -> height:int ->
   ?bits:int -> ?colorspace:colorspace -> ?has_alpha:bool -> unit -> pixbuf
 
 external copy : pixbuf -> pixbuf = "ml_gdk_pixbuf_copy"
@@ -20,9 +19,15 @@ external from_file : string -> pixbuf = "ml_gdk_pixbuf_new_from_file"
 external from_xpm_data : string array -> pixbuf
   = "ml_gdk_pixbuf_new_from_xpm_data"
 val from_data :
-  width:int ->
-  height:int ->
+  width:int -> height:int ->
   ?bits:int -> ?rowstride:int -> ?has_alpha:bool -> Gpointer.region -> pixbuf
+
+val get_from_drawable :
+  dest:pixbuf ->
+  ?dest_x:int -> ?dest_y:int ->
+  ?width:int ->  ?height:int ->
+  ?src_x:int -> ?src_y:int ->
+  ?colormap:Gdk.colormap -> 'a Gdk.drawable -> unit
 
 (* Accessors *)
 

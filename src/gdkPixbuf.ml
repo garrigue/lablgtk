@@ -55,6 +55,22 @@ let from_data ~width ~height ?(bits=8) ?rowstride ?(has_alpha=false) data =
   then invalid_arg "GdkPixbuf.from_data";
   _from_data data ~has_alpha ~bits ~width ~height ~rowstride
 
+external _get_from_drawable :
+  pixbuf -> 'a drawable -> colormap -> src_x:int -> src_y:int ->
+  dest_x:int -> dest_y:int -> width:int -> height:int -> unit
+  = "ml_gdk_pixbuf_get_from_drawable_bc" "ml_gdk_pixbuf_get_from_drawable"
+let get_from_drawable ~dest ?(dest_x=0) ?(dest_y=0) ?width ?height
+    ?(src_x=0) ?(src_y=0) ?(colormap=Gdk.Rgb.get_cmap()) src =
+  let dw, dh = Gdk.Window.get_size src in
+  let mw = min (dw - src_x) (get_width dest - dest_x)
+  and mh = min (dh - src_y) (get_height dest - dest_y) in
+  let width = default mw ~opt:width and height = default mh ~opt:height in
+  if src_x < 0 || src_y < 0 || dest_x < 0 || dest_y < 0
+  || width <= 0 || height <= 0 || width > mw || height > mh
+  then invalid_arg "GdkPixbuf.get_from_drawable";
+  _get_from_drawable dest src colormap ~src_x ~src_y ~dest_x ~dest_y
+    ~width ~height
+
 (* Render *)
 
 external _render_alpha :
