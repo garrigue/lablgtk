@@ -1,5 +1,8 @@
 $Id$
 
+2003.07.17 [Benjamin]
+  * Fix Win32 compilation
+
 2003.07.09 [Jun Furuse]
   Improvements of lablgladecc:
   * Internal widgets are now also accessible by instance variables.
