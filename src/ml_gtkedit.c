@@ -14,6 +14,7 @@
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
+#include "ml_gtktree.h"
 
 /* Init all */
 
@@ -166,9 +167,6 @@ Make_Extractor (gtk_combo, GtkCombo_val, list, Val_GtkWidget)
 /* gtkcombobox.h */
 #define GtkComboBox_val(val) check_cast(GTK_COMBO_BOX,val)
 
-/* taken from ml_gtktree.c, this should go in a .h */
-#define GtkTreeIter_val(val) ((GtkTreeIter*)MLPointer_val(val))
-#define Val_GtkTreeIter(it) (copy_memblock_indirected(it,sizeof(GtkTreeIter)))
 CAMLprim value 
 ml_gtk_combo_box_get_active_iter(value combo)
 {
@@ -237,46 +235,25 @@ Unsupported_24(gtk_entry_set_completion)
 #endif /* HASGTK24 */
 
 #ifdef HASGTK26
-static gboolean
-ml_gtk_combo_row_separator_func (GtkTreeModel *model,
-				 GtkTreeIter *iter,
-				 gpointer data)
-{
-  gboolean ret;
-  value *closure = data;
-  CAMLparam0();
-  CAMLlocal3 (arg1, arg2, mlret);
-  arg1 = Val_GAnyObject (model);
-  arg2 = Val_GtkTreeIter (iter);
-  mlret = callback2_exn (*closure, arg1, arg2);
-  if (Is_exception_result (ret))
-    {
-      CAML_EXN_LOG ("gtk_combo_box_set_row_separator_func");
-      ret = FALSE;
-    }
-  else
-    ret = Bool_val (mlret);
-  CAMLreturn (ret);
-}
-
 CAMLprim value
 ml_gtk_combo_box_set_row_separator_func (value cb, value fun_o)
 {
   gpointer data;
   GtkDestroyNotify dnotify;
+  GtkTreeViewRowSeparatorFunc func;
   if (Is_long (fun_o))
     {
       data = NULL;
       dnotify = NULL;
+      func = NULL;
     }
   else
     {
       data = ml_global_root_new (Field (fun_o, 0));
       dnotify = ml_global_root_destroy;
+      func = ml_gtk_row_separator_func;
     }
-  gtk_combo_box_set_row_separator_func (GtkComboBox_val (cb),
-					ml_gtk_combo_row_separator_func,
-					data, dnotify);
+  gtk_combo_box_set_row_separator_func (GtkComboBox_val (cb), func, data, dnotify);
   return Val_unit;
 }
 #else

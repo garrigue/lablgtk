@@ -26,6 +26,8 @@ class progress_bar : Gtk.progress_bar obj ->
     method orientation : Tags.progress_bar_orientation
     method pulse_step : float
     method text : string
+    method ellipsize : PangoEnums.ellipsize_mode (** @since GTK 2.6 *)
+    method set_ellipsize : PangoEnums.ellipsize_mode -> unit (** @since GTK 2.6 *)
   end
 
 (** @gtkdoc gtk GtkProgress

@@ -54,5 +54,6 @@ class ProgressBar : Widget {
   "fraction"             gdouble              : Read / Write / Wrap
   "pulse-step"           gdouble              : Read / Write / Set / Wrap
   "text"                 gchararray           : Read / Write / Wrap
+  "ellipsize"            PangoEllipsizeMode    : Read / Write / Wrap
   method pulse
 }

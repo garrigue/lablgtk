@@ -383,6 +383,9 @@ class view obj = object
     match TreeView.get_path_at_pos obj ~x ~y with
       Some (p, c, x, y) -> Some (p, new view_column c, x, y)
     | None -> None
+  method set_row_separator_func fo =
+    TreeView.set_row_separator_func obj 
+      (Gaux.may_map (fun f m -> f (new model m)) fo)
 end
 let view ?model ?hadjustment ?vadjustment =
   let model = may_map (fun m -> m#as_model) model in
