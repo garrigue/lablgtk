@@ -3,7 +3,8 @@
 open StdLabels
 open Gtk
 
-let _ = Callback.register_exception "gtkerror" (Error"")
+let () = Callback.register_exception "gtkerror" (Error"")
+let () = Gc.set {(Gc.get()) with Gc.max_overhead = 1000000}
 
 module Main = struct
   external init : string array -> string array = "ml_gtk_init"

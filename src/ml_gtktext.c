@@ -83,12 +83,12 @@ ML_1 (gtk_text_iter_copy, GtkTextIter_val, Val_GtkTextIter_mine)
 
 /* "Lighter" version: allocate in the ocaml heap */
 #define GtkTextIter_val(val) ((GtkTextIter*)MLPointer_val(val))
-#define Val_GtkTextIter(it) \
-  (copy_memblock_indirected_shr(it,sizeof(GtkTextIter)))
+#define Val_GtkTextIter(it) (copy_memblock_indirected(it,sizeof(GtkTextIter)))
 CAMLprim value ml_gtk_text_iter_copy (value it) {
   /* Only valid if in old generation and compaction off */
   return Val_GtkTextIter(GtkTextIter_val(it));
 }
+#define alloc_GtkTextIter() (alloc_memblock_indirected(sizeof(GtkTextIter))
 
 #define GtkTextView_val(val) check_cast(GTK_TEXT_VIEW,val)
 
@@ -147,17 +147,17 @@ CAMLprim value ml_gtk_text_tag_table_lookup (value tv, value s)
 
 ML_1(gtk_text_tag_table_get_size, GtkTextTagTable_val, Int_val)
 
-CAMLprim value ml_gtk_text_tag_table_foreach(value t,value fun)
+static void tag_foreach_func (GtkTextTag* t, gpointer user_data)
 {
-  /* Non ANSI C */
-  void call_fun(GtkTextTag* t,gpointer user_data)
-    {
-      callback(fun,Val_GtkTextTag(t));
-      return;
-    }
-    gtk_text_tag_table_foreach(GtkTextTagTable_val(t), call_fun, NULL);
-    return(Val_unit);
+  value arg = Val_GtkTextTag(t);
+  callback (*(value*)user_data, arg);
+}
 
+CAMLprim value ml_gtk_text_tag_table_foreach (value t, value fun)
+{
+  CAMLparam1(fun);
+  gtk_text_tag_table_foreach(GtkTextTagTable_val(t), tag_foreach_func, &fun);
+  CAMLreturn(Val_unit);
 }
 
 /* gtktextbuffer */
@@ -190,14 +190,14 @@ let bug () =
   b#connect#delete_range (fun ~start ~stop -> Gc.full_major ());
   let s = "azert"^"yuiop" in
   let iter_ref = ref b#start_iter in
-  for i = 0 to 100 do 
+  for i = 0 to 10 do 
     let start = !iter_ref#offset in
     Printf.printf "Number %d, \"%s\", %d\n" i s start;
     flush stdout;
     let iter = !iter_ref#copy in
     b#insert ~iter s;
     let iter' = iter#copy in
-    b#delete (b#get_iter (`OFFSET start)) iter';
+    b#delete (b#get_iter (`OFFSET(start+2))) iter';
     iter_ref := iter'
   done
 ;;
@@ -219,33 +219,16 @@ as will do most code... Disabling compaction is essential.
 
 */
 
-/*
-   Old_val(val) makes sure a value is in the old generation.
-   Old values are not moved by the GC, only by compaction.
-   Beware that if young values are included in one another they may be
-   moved around.
-*/
-#ifndef _WIN32
-void oldify_one (value v, value *p);
-#define Old_val(val) (oldify_one(val,&val),val)
-#else
-/* oldify+one not shared under windows: initialize dummy_shr somewhere... */
-#define Old_val(val) (modify(&Field(*dummy_shr,0),val),Field(dummy_shr,0))
-#endif
-
-#define SizedString_old_val(val) \
-  Insert(String_val(Old_val(val))) string_length(val)
-
 ML_3 (gtk_text_buffer_insert, GtkTextBuffer_val,
-      GtkTextIter_val, SizedString_old_val, Unit)
+      GtkTextIter_val, SizedStableString_val, Unit)
 ML_2 (gtk_text_buffer_insert_at_cursor, GtkTextBuffer_val,
-      SizedString_old_val, Unit)
+      SizedStableString_val, Unit)
 
 ML_4 (gtk_text_buffer_insert_interactive,GtkTextBuffer_val,
-      GtkTextIter_val, SizedString_old_val, Bool_val, Val_bool)
+      GtkTextIter_val, SizedStableString_val, Bool_val, Val_bool)
 
 ML_3 (gtk_text_buffer_insert_interactive_at_cursor,GtkTextBuffer_val,
-      SizedString_old_val, Bool_val, Val_bool)
+      SizedStableString_val, Bool_val, Val_bool)
 
 ML_4 (gtk_text_buffer_insert_range,GtkTextBuffer_val,
       GtkTextIter_val, GtkTextIter_val,GtkTextIter_val,Unit)
@@ -658,18 +641,10 @@ ML_3(gtk_text_view_add_child_at_anchor,GtkTextView_val,
 
 ML_0(gtk_text_child_anchor_new,Val_GtkTextChildAnchor_new)
 
-CAMLprim value ml_gtk_text_child_anchor_get_widgets(value tca)
-{
-  CAMLparam1(tca);
-  CAMLlocal1(camlret);
-  GList* res;
-  res = gtk_text_child_anchor_get_widgets(GtkTextChildAnchor_val(tca));
-  camlret = Val_GList(res,Val_GtkWidget_func);
-/*
-    [BM] Should I free res ? Will it free the widgets also ?
-    g_list_free(res); 
-*/
-  CAMLreturn(camlret);
+CAMLprim value ml_gtk_text_child_anchor_get_widgets (value tca) {
+  return Val_GList_free
+    (gtk_text_child_anchor_get_widgets(GtkTextChildAnchor_val(tca)),
+     Val_GtkWidget_func);
 }
 
 ML_1(gtk_text_child_anchor_get_deleted,GtkTextChildAnchor_val,Bool_val)
@@ -751,17 +726,15 @@ value ml_gtk_text_iter_get_pixbuf(value ti)
   return Val_option(ret,Val_GdkPixbuf);
 }
 
-value ml_gtk_text_iter_get_marks(value ti)
-{
-  return Val_GSList(gtk_text_iter_get_marks(GtkTextIter_val(ti)),
-                    Val_GtkTextMark_func);
+value ml_gtk_text_iter_get_marks(value ti) {
+  return Val_GSList_free(gtk_text_iter_get_marks(GtkTextIter_val(ti)),
+                         Val_GtkTextMark_func);
 }
 
-value ml_gtk_text_iter_get_toggled_tags(value ti, value b)
-{
-  return
-    Val_GSList(gtk_text_iter_get_toggled_tags(GtkTextIter_val(ti),Bool_val(b)),
-               Val_GtkTextMark_func);
+value ml_gtk_text_iter_get_toggled_tags(value ti, value b) {
+  return Val_GSList_free
+    (gtk_text_iter_get_toggled_tags(GtkTextIter_val(ti), Bool_val(b)),
+     Val_GtkTextMark_func);
 }
 
 value ml_gtk_text_iter_get_child_anchor(value ti)
@@ -783,11 +756,9 @@ ML_2 (gtk_text_iter_toggles_tag,GtkTextIter_val,
 ML_2 (gtk_text_iter_has_tag,GtkTextIter_val,
       GtkTextTag_val, Val_bool)
 
-value ml_gtk_text_iter_get_tags(value ti){
-  CAMLparam1(ti);
-  CAMLreturn(Val_GSList(gtk_text_iter_get_tags
-			(GtkTextIter_val(ti)),
-			Val_GtkTextMark_func));
+value ml_gtk_text_iter_get_tags(value ti) {
+  return Val_GSList_free(gtk_text_iter_get_tags(GtkTextIter_val(ti)),
+                         Val_GtkTextMark_func);
 }
 
 ML_2 (gtk_text_iter_editable,GtkTextIter_val,

@@ -1,5 +1,11 @@
 $Id$
 
+2003.02.25
+ * copy_block_indirected allocates in old generation
+ * disable compaction in gtkMain.ml
+ * copy young strings to the stack when needed
+ * free lists obtained from Gtk
+
 2003.02.24
  * replace alloc_final by alloc_custom (wrapper.h)
  * better gtk-2.0 support (ml_gdk.c)

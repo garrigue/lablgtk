@@ -12,28 +12,18 @@
 
 value copy_memblock_indirected (void *src, asize_t size)
 {
-    value ret = alloc (Wosize_asize(size)+2, Abstract_tag);
+    mlsize_t i, wosize = Wosize_asize(size);
+    value ret = alloc_shr (wosize+2, Abstract_tag);
     if (!src) ml_raise_null_pointer ();
-    
     Field(ret,1) = 2;
-    memcpy (&Field(ret,2), src, size);
+    for (i=0; i < wosize; i++) Field(ret,i+2) = ((value*)src)[i];
     return ret;
 }
 
 value alloc_memblock_indirected (asize_t size)
 {
-    value ret = alloc (Wosize_asize(size)+2, Abstract_tag);
-    Field(ret,1) = 2;
-    return ret;
-}
-
-value copy_memblock_indirected_shr (void *src, asize_t size)
-{
     value ret = alloc_shr (Wosize_asize(size)+2, Abstract_tag);
-    if (!src) ml_raise_null_pointer ();
-    
     Field(ret,1) = 2;
-    memcpy (&Field(ret,2), src, size);
     return ret;
 }
 
@@ -70,13 +60,6 @@ value copy_string_check (const char*str)
 value copy_string_or_null (const char*str)
 {
     return copy_string (str ? (char*) str : "");
-}
-
-value copy_string_g_free (char *str)
-{
-    value ret = copy_string (str);
-    g_free (str);
-    return ret;
 }
 
 value *ml_global_root_new (value v)

@@ -44,7 +44,7 @@ CAMLprim value ml_gtk_editable_insert_text (value w, value s, value pos)
 }
 ML_3 (gtk_editable_delete_text, GtkEditable_val, Int_val, Int_val, Unit)
 ML_3 (gtk_editable_get_chars, GtkEditable_val, Int_val, Int_val,
-      copy_string_and_free)
+      copy_string_g_free)
 ML_1 (gtk_editable_cut_clipboard, GtkEditable_val, Unit)
 ML_1 (gtk_editable_copy_clipboard, GtkEditable_val, Unit)
 ML_1 (gtk_editable_paste_clipboard, GtkEditable_val, Unit)
