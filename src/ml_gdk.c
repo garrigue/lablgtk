@@ -396,6 +396,26 @@ value ml_point_array_set (value arr, value pos, value x, value y)
     return Val_unit;
 }
 
+#define SegmentArray_val(val) ((GdkSegment*)&Field(val,1))
+#define SegmentArrayLen_val(val) Int_val(Field(val,0))
+value ml_segment_array_new (value len)
+{
+    value ret = alloc (1 + Wosize_asize(Int_val(len)*sizeof(GdkSegment)),
+		       Abstract_tag);
+    Field(ret,0) = len;
+    return ret;
+}
+value ml_segment_array_set (value arr, value pos, value x1, value y1, value x2, value y2)
+{
+    GdkSegment *pt = SegmentArray_val(arr) + Int_val(pos);
+    pt->x1 = Int_val(x1);
+    pt->y1 = Int_val(y1);
+    pt->x2 = Int_val(x2);
+    pt->y2 = Int_val(y2);
+    return Val_unit;
+}
+ML_bc6 (ml_segment_array_set)
+
 ML_4 (gdk_draw_point, GdkDrawable_val, GdkGC_val, Int_val, Int_val, Unit)
 ML_6 (gdk_draw_line, GdkDrawable_val, GdkGC_val, Int_val, Int_val,
       Int_val, Int_val, Unit)
@@ -419,6 +439,12 @@ ML_9 (gdk_draw_pixmap, GdkDrawable_val, GdkGC_val, GdkPixmap_val, Int_val, Int_v
 ML_bc9 (ml_gdk_draw_pixmap)
 ML_9 (gdk_draw_image, GdkDrawable_val, GdkGC_val, GdkImage_val, Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
 ML_bc9 (ml_gdk_draw_image)
+ML_3 (gdk_draw_points, GdkDrawable_val, GdkGC_val, 
+      Insert(PointArray_val(arg3)) PointArrayLen_val, Unit)
+ML_3 (gdk_draw_segments, GdkDrawable_val, GdkGC_val, 
+      Insert(SegmentArray_val(arg3)) SegmentArrayLen_val, Unit)
+ML_3 (gdk_draw_lines, GdkDrawable_val, GdkGC_val, 
+      Insert(PointArray_val(arg3)) PointArrayLen_val, Unit)
 
 /* RGB */
 

@@ -72,6 +72,9 @@ object (self)
           default w ~opt:width, default h ~opt:height
     in
     Draw.pixmap w gc ~pixmap ~width ~height ~xsrc ~ysrc ~xdest:x ~ydest:y
+  method points = Draw.points w gc
+  method lines = Draw.lines w gc
+  method segments = Draw.segments w gc
 end
 
 class pixmap ?colormap ?mask pm = object
@@ -107,6 +110,9 @@ class pixmap ?colormap ?mask pm = object
   method string s ~font ~x ~y =
     pixmap#string s ~font ~x ~y;
     may bitmap ~f:(fun m -> m#string s ~font ~x ~y)
+  method points pts = pixmap#points pts; may bitmap ~f:(fun m -> m#points pts)
+  method lines pts = pixmap#lines pts; may bitmap ~f:(fun m -> m#lines pts)
+  method segments lns = pixmap#segments lns; may bitmap ~f:(fun m -> m#segments lns)
 end
 
 class type misc_ops = object
