@@ -17,13 +17,13 @@ type 'a column = {index: int; conv: 'a data_conv; creator: int}
 
 class column_list = object (self)
   val mutable index = 0
-  val mutable kinds = []
+  val mutable types = []
   val mutable locked = false
-  method kinds = List.rev kinds
+  method types = List.rev types
   method add : 'a. 'a data_conv -> 'a column = fun conv ->
     if locked then failwith "GTree.column_list#add";
     let n = index in
-    kinds <- Data.get_fundamental conv :: kinds;
+    types <- Data.get_type conv :: types;
     index <- index + 1;
     {index = n; conv = conv; creator = Oo.id self}
   method id = Oo.id self
@@ -119,9 +119,7 @@ end
 
 let tree_store (cols : column_list) =
   cols#lock ();
-  let types =
-    List.map Type.of_fundamental cols#kinds in
-  let store = TreeStore.create (Array.of_list types) in
+  let store = TreeStore.create (Array.of_list cols#types) in
   Hashtbl.add model_ids(Gobject.get_oid store) cols#id;
   new tree_store store
 
@@ -148,9 +146,7 @@ end
 
 let list_store (cols : column_list) =
   cols#lock ();
-  let types =
-    List.map Type.of_fundamental cols#kinds in
-  let store = ListStore.create (Array.of_list types) in
+  let store = ListStore.create (Array.of_list cols#types) in
   Hashtbl.add model_ids (Gobject.get_oid store) cols#id;
   new list_store store
 

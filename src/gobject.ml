@@ -8,6 +8,7 @@ type g_type
 type g_class
 type g_value
 type g_closure
+type 'a objtype = g_type
 
 type basic =
   [ `CHAR of char
@@ -39,10 +40,10 @@ type base_data =
   | `DOUBLE
   | `STRING
   | `POINTER
-  | `BOXED of g_type
+  | `BOXED
   | `OBJECT ]
 
-type data_kind = [ `INT32 | `UINT32 | base_data ]
+type data_kind = [ `INT32 | `UINT32 | `OTHER of g_type | base_data ]
 type data_conv_get = [ `INT32 of int32 | data_get ]
 
 type 'a data_conv =
@@ -57,7 +58,7 @@ module Type = struct
   external init : unit -> unit = "ml_g_type_init"
   let () = init ()
   external name : g_type -> string = "ml_g_type_name"
-  external from_name : string -> g_type = "ml_g_type_from_name"
+  external _from_name : string -> g_type = "ml_g_type_from_name"
   external parent : g_type -> g_type = "ml_g_type_parent"
   external depth : g_type -> int = "ml_g_type_depth"
   external is_a : g_type -> g_type -> bool = "ml_g_type_is_a"
@@ -71,7 +72,7 @@ module Type = struct
       = "ml_g_type_register_static"
   let invalid =  of_fundamental `INVALID
   let from_name s =
-    let t = from_name s in
+    let t = _from_name s in
     if t = invalid then
       failwith ("Gobject.Type.from_name: " ^ s);
     t
@@ -138,7 +139,7 @@ module Closure = struct
 end
 
 let objtype_from_name ~caller name =
-  let t = Type.from_name name in
+  let t = Type._from_name name in
   let f = Type.fundamental t in
   if f = `INVALID then
     failwith (caller ^ " : type " ^ name ^ " is not yet defined");
@@ -247,9 +248,12 @@ module Data = struct
       proj = (function `POINTER c -> magic c
              | _ -> failwith "Gobject.get_pointer");
       inj = (fun c -> `POINTER (magic c)) }
-  let boxed t = {pointer with kind = `BOXED t}
-  let unsafe_boxed t = {unsafe_pointer with kind = `BOXED t}
-  let unsafe_boxed_option t = {unsafe_pointer_option with kind = `BOXED t}
+  let boxed_type t =
+    if Type.fundamental t <> `BOXED then failwith "Gobject.Data.boxed_type";
+    `OTHER t
+  let boxed t = {pointer with kind = boxed_type t}
+  let unsafe_boxed t = {unsafe_pointer with kind = boxed_type t}
+  let unsafe_boxed_option t = {unsafe_pointer_option with kind = boxed_type t}
   let gobject_option =
     { kind = `OBJECT;
       proj = (function `OBJECT c -> may_map ~f:unsafe_cast c
@@ -262,12 +266,12 @@ module Data = struct
              | _ -> failwith "Gobject.get_object");
       inj = (fun c -> `OBJECT (Some (unsafe_cast c))) }
   let caml =
-    { kind = `BOXED Type.caml;
+    { kind = `OTHER Type.caml;
       proj = (function `CAML v -> Obj.obj v
              | _ -> failwith "Gobject.get_caml") ;
       inj = (fun v -> `CAML (Obj.repr v)) }
   let caml_option =
-    { kind = `BOXED Type.caml;
+    { kind = `OTHER Type.caml;
       proj = (function `CAML v -> Some (Obj.obj v)
 	     | `NONE -> None
              | _ -> failwith "Gobject.get_caml") ;
@@ -275,16 +279,16 @@ module Data = struct
 
   let of_value conv v =
     conv.proj (Value.get_conv conv.kind v)
-  let to_fundamental = function
-    | `INT32 -> `INT
-    | `UINT32 -> `UINT
-    | #base_data as x -> x
-  let get_fundamental conv = to_fundamental conv.kind
+  let type_of_kind = function
+    | `INT32 -> Type.of_fundamental `INT
+    | `UINT32 -> Type.of_fundamental `UINT
+    | `OTHER t -> t
+    | #base_data as x -> Type.of_fundamental x
+  let get_type conv = type_of_kind conv.kind
   let to_value conv x =
-    let v =
-      Value.create (Type.of_fundamental (get_fundamental conv)) in
+    let v = Value.create (get_type conv) in
     Value.set v (conv.inj x);
-  v
+    v
 end
 
 module Property = struct

@@ -232,7 +232,7 @@ external get_dash : Gpointer.boxed -> float * float array
 open Gaux
 open Gobject
 let points =
-  { kind = `BOXED (Type.from_name "GnomeCanvasPoints");
+  { kind = `OTHER (Type.from_name "GnomeCanvasPoints");
     inj = (fun x -> `POINTER (may_map convert_points x));
     proj = (fun x -> may_map get_points (Data.pointer.proj x)) }
 let art_vpath_dash =

@@ -16,7 +16,7 @@ class column_list :
   object
     method add : 'a data_conv -> 'a column
     method id : int
-    method kinds : fundamental_type list
+    method types : g_type list
     method lock : unit -> unit
   end
 

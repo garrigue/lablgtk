@@ -35,10 +35,10 @@ type base_data =
   | `DOUBLE
   | `STRING
   | `POINTER
-  | `BOXED of g_type
+  | `BOXED
   | `OBJECT ]
 
-type data_kind = [ `INT32 | `UINT32 | base_data ]
+type data_kind = [ `INT32 | `UINT32 | `OTHER of g_type | base_data ]
 type data_conv_get = [ `INT32 of int32 | data_get ]
 
 type 'a data_conv =
@@ -165,7 +165,7 @@ module Data :
     val caml_option : 'a option data_conv
     val of_value : 'a data_conv -> g_value -> 'a
     val to_value : 'a data_conv -> 'a -> g_value
-    val get_fundamental : 'a data_conv -> fundamental_type
+    val get_type : 'a data_conv -> g_type
   end
 
 module Property :

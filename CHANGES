@@ -1,5 +1,8 @@
 $Id$
 
+2004.09.18 [Jacques]
+  * revert to using `OTHER in Gobject.data_kind
+
 2004.09.17 [Olivier]
   * more unicode fixes, add a Utf8.to_unichar_validated function
 
