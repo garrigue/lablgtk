@@ -58,12 +58,8 @@ configure:
 	@echo BINDIR=$(BINDIR) >> config.make
 	@echo INSTALLDIR=$(INSTALLDIR) >> config.make
 	@echo GTKCFLAGS=$(GTKCFLAGS) >> config.make
-	@echo GTKLIBS=$(GTKLIBS) | sed -e 's/-[RWr][^ ]*/-ccopt &/g' \
-	  >> config.make
-	@echo GLLIBS=$(GLLIBS) | sed -e 's/-[RWr][^ ]*/-ccopt &/g' \
-	  >> config.make
-	@echo GNOMELIBS=$(GNOMELIBS) | sed -e 's/-[RWr][^ ]*/-ccopt &/g' \
-	  >> config.make
-	@echo GLADELIBS=$(GLADELIBS) | sed -e 's/-[RWr][^ ]*/-ccopt &/g' \
-	  >> config.make
+	@echo GTKLIBS=$(GTKLIBS) >> config.make
+	@echo GLLIBS=$(GLLIBS) >> config.make
+	@echo GNOMELIBS=$(GNOMELIBS) >> config.make
+	@echo GLADELIBS=$(GLADELIBS) >> config.make
 	@cat config.make
