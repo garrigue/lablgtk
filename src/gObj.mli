@@ -205,6 +205,7 @@ and widget_signals :
     inherit gtkobj_signals 
     val obj : 'a obj
     method drag : drag_signals 
+    method draw : callback:(rectangle -> unit) -> ?after:bool -> GtkSignal.id
     method event : event_signals
     method parent_set :
 	callback:(widget_wrapper option -> unit) -> ?after:bool -> GtkSignal.id
