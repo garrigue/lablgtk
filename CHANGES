@@ -1,5 +1,8 @@
 $Id$
 
+2003.04.12 [Olivier]
+ * add GWindow.message_dialog, add methods in GWindow.dialog
+
 2003.04.11 [Jun]
  * add GtkWindow.Window.resize and its C interface 
 

@@ -53,11 +53,47 @@ let cast_window (w : #widget) =
 let toplevel (w : #widget) =
   try Some (cast_window w#misc#toplevel) with Gobject.Cannot_cast _ -> None
 
-class dialog obj = object
+class ['a] dialog_signals obj tbl = object
+  inherit container_signals (obj : Gtk.dialog obj)
+  method response ~(callback : 'a -> unit) = 
+    GtkSignal.connect ~sgn:Dialog.Signals.response obj ~after 
+      ~callback:(fun i -> callback (List.assoc i !tbl))
+end
+
+let rec list_rassoc k = function
+  | (a, b) :: _ when b = k -> a
+  | _ :: l -> list_rassoc k l
+  | [] -> raise Not_found
+
+class ['a] dialog obj = object
   inherit [window] window_skel (obj : Gtk.dialog obj)
-  method connect = new container_signals obj
+  val tbl = ref [ (-1), `NONE ; (-4), `DELETE_EVENT ]
+  val mutable id = 0
   method action_area = new GPack.box (Dialog.action_area obj)
   method vbox = new GPack.box (Dialog.vbox obj)
+  method connect : 'a dialog_signals = new dialog_signals obj tbl
+  method add_button text (v : 'a) =
+    tbl := (id, v) :: !tbl ;
+    Dialog.add_button obj text id ;
+    id <- succ id
+  method add_button_stock s_id (v : 'a) =
+    tbl := (id, v) :: !tbl ;
+    Dialog.add_button obj (GtkStock.convert_id s_id) id ;
+    id <- succ id
+  method response v = Dialog.response obj (list_rassoc v !tbl)
+  method set_response_sensitive v s =
+    Dialog.set_response_sensitive obj (list_rassoc v !tbl) s
+  method set_default_response v = 
+    Dialog.set_default_response obj (list_rassoc v !tbl)
+  val separator_property = 
+    { Gobject.name = "has-separator" ;
+      Gobject.classe = `dialog ;
+      Gobject.conv = Gobject.Data.boolean }
+  method set_has_separator = Gobject.Property.set obj separator_property
+  method get_has_separator = Gobject.Property.get obj separator_property
+  method run () = 
+    let resp = Dialog.run obj in
+    List.assoc resp !tbl
 end
 
 let dialog ?title ?wm_name ?wm_class ?position ?allow_shrink
@@ -69,6 +105,53 @@ let dialog ?title ?wm_name ?wm_class ?position ?allow_shrink
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new dialog w
+
+let dialog ?parent ?destroy_with_parent ?(no_separator=false) ?title 
+    ?wm_name ?wm_class ?position ?allow_shrink
+    ?allow_grow ?modal ?x ?y ?border_width ?width ?height
+    ?(show=false) () =
+  let w = Dialog.create () in
+  Window.set w ?title ?wm_name ?wm_class ?position
+    ?allow_shrink ?allow_grow ?modal ?x ?y ;
+  Gaux.may (fun p -> Window.set_transient_for w p#as_window) parent ;
+  Gaux.may ~f:(Window.set_destroy_with_parent w) destroy_with_parent ;
+  Container.set w ?border_width ?width ?height;
+  if show then Widget.show w;
+  let d = new dialog w in
+  if no_separator then d#set_has_separator false ;
+  d
+
+type 'a buttons = Gtk.Tags.buttons * (int * 'a) list
+module Buttons = struct
+let none = `NONE, [ ]
+let ok = `OK, [ (-5), `OK ]
+let close = `CLOSE, [ (-7), `CLOSE ]
+let yes_no = `YES_NO, [ (-8), `YES ; (-9), `NO ]
+let ok_cancel = `OK_CANCEL, [ (-5), `OK; (-6), `CANCEL ]
+end
+
+class ['a] message_dialog obj (buttons : 'a buttons) = object
+  inherit ['a] dialog obj
+  initializer
+    tbl := snd buttons @ !tbl
+end
+
+let message_dialog ~message ~message_type ~buttons ~parent 
+    ?destroy_with_parent ?(no_separator=false) 
+    ?title ?wm_name ?wm_class ?position ?allow_shrink
+    ?allow_grow ?modal ?x ?y ?border_width ?width ?height
+    ?(show=false) () =
+  let w = Dialog.create_message (parent#as_window) 
+      message_type (fst buttons) message in
+  Window.set w ?title ?wm_name ?wm_class ?position
+    ?allow_shrink ?allow_grow ?modal ?x ?y ;
+  Gaux.may ~f:(Window.set_destroy_with_parent w) destroy_with_parent ;
+  Container.set w ?border_width ?width ?height;
+  if show then Widget.show w;
+  let d = new message_dialog w buttons in
+  if no_separator then d#set_has_separator false ;
+  d
+
 
 class color_selection_dialog obj = object
   inherit [window] window_skel (obj : Gtk.color_selection_dialog obj)

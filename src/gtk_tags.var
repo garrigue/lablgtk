@@ -183,3 +183,10 @@ type tree_view_column_sizing = "GTK_TREE_VIEW_COLUMN_"
 
 type cell_renderer_mode = "GTK_CELL_RENDERER_MODE_"
   [ `INERT | `ACTIVATABLE | `EDITABLE ]
+
+type message_type = "GTK_MESSAGE_"
+  [ `INFO | `WARNING | `QUESTION | `ERROR ]
+
+type buttons = "GTK_BUTTONS_"
+  [ `NONE | `OK | `CLOSE
+  | `CANCEL | `YES_NO | `OK_CANCEL ]
