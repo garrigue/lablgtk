@@ -424,6 +424,21 @@ module Buffer = struct
   external insert_child_anchor : 
     textbuffer obj -> textiter -> textchildanchor obj -> unit
     = "ml_gtk_text_buffer_insert_child_anchor"
+  external paste_clipboard :
+    textbuffer obj -> clipboard -> textiter option -> bool -> unit
+    = "ml_gtk_text_buffer_paste_clipboard"
+  external copy_clipboard :
+    textbuffer obj -> clipboard -> unit
+    = "ml_gtk_text_buffer_copy_clipboard"
+  external cut_clipboard :
+    textbuffer obj -> clipboard -> bool -> unit
+    = "ml_gtk_text_buffer_cut_clipboard"
+  external add_selection_clipboard :
+    textbuffer obj -> clipboard -> unit
+    = "ml_gtk_text_buffer_add_selection_clipboard"
+  external remove_selection_clipboard :
+    textbuffer obj -> clipboard -> unit
+    = "ml_gtk_text_buffer_remove_selection_clipboard"
   module Signals = struct
   open GtkSignal
 

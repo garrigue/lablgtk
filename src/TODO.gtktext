@@ -1,4 +1,4 @@
-======================================================================================
+===============================================================================
 GtkTextIter:  
 Il manque :
 1) Fonction avec TextAttributes
@@ -17,63 +17,22 @@ Il manque :
                 	                             GtkTextCharPredicate pred,
                         	                     gpointer user_data,
                                 	             const GtkTextIter *limit);
-	enum        GtkTextSearchFlags;
-	gboolean    gtk_text_iter_forward_search    (const GtkTextIter *iter,
-        	                                     const gchar *str,
-                	                             GtkTextSearchFlags flags,
-                        	                     GtkTextIter *match_start,
-                                	             GtkTextIter *match_end,
-                                        	     const GtkTextIter *limit);
-	gboolean    gtk_text_iter_backward_search   (const GtkTextIter *iter,
-        	                                     const gchar *str,
-                	                             GtkTextSearchFlags flags,
-                        	                     GtkTextIter *match_start,
-                                	             GtkTextIter *match_end,
-                                        	     const GtkTextIter *limit);	
-=====================================================================================
+===============================================================================
 GtkTextMark : FINI
-=====================================================================================
-GtkTextBuffer:
-Manquent les fonctions liées aux Clipboards :
-gboolean    gtk_text_buffer_delete_selection
-                                            (GtkTextBuffer *buffer,
-                                             gboolean interactive,
-                                             gboolean default_editable);
-void        gtk_text_buffer_paste_clipboard (GtkTextBuffer *buffer,
-                                             GtkClipboard *clipboard,
-                                             GtkTextIter *override_location,
-                                             gboolean default_editable);
-void        gtk_text_buffer_copy_clipboard  (GtkTextBuffer *buffer,
-                                             GtkClipboard *clipboard);
-void        gtk_text_buffer_cut_clipboard   (GtkTextBuffer *buffer,
-                                             GtkClipboard *clipboard,
-                                             gboolean default_editable);
-gboolean    gtk_text_buffer_get_selection_bounds
-                                            (GtkTextBuffer *buffer,
-                                             GtkTextIter *start,
-                                             GtkTextIter *end);
-void        gtk_text_buffer_add_selection_clipboard
-                                            (GtkTextBuffer *buffer,
-                                             GtkClipboard *clipboard);
-void        gtk_text_buffer_remove_selection_clipboard
-                                            (GtkTextBuffer *buffer,
-                                             GtkClipboard *clipboard);
-
-=====================================================================================
+===============================================================================
+GtkTextBuffer: FINI
+===============================================================================
 GtkTextTag: 
 Il manque les PangoTabs.
-
-
-=====================================================================================
+===============================================================================
 GtkTextTagTable: 
 void        gtk_text_tag_table_foreach      (GtkTextTagTable *table,
                                              GtkTextTagTableForeach func,
                                              gpointer data);
-
-=====================================================================================
+===============================================================================
 GtkTextView: 
 Manquent les fonctions concernant Pango :  
 	void gtk_text_view_set_tabs(GtkTextView *text_view,PangoTabArray *tabs);
 	PangoTabArray* gtk_text_view_get_tabs(GtkTextView *text_view);
 	GtkTextAttributes* gtk_text_view_get_default_attributes(GtkTextView *text_view);
-=====================================================================================
+===============================================================================
