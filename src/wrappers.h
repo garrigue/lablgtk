@@ -136,6 +136,9 @@ value Val_##type##ext (type *p) \
 
 #define Pointer_val(val) (void *)Field(val,1)
 
+#define Mark_ptr(ptr) ((value)ptr|1)
+#define Unmark_val(val) ((void*)(val & (value)-1))
+
 #define Wosizeof(x) ((sizeof(x)-1)/sizeof(value)+1)
 
 #define Make_Extractor(name,conv1,field,conv2) \

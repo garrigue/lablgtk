@@ -25,7 +25,7 @@ class pixmap pix ?:mask ?:xalign ?:yalign ?:xpad ?:ypad ?:packing ?:show =
 open GdkObj
 
 class pixdraw parent:(w : #GObj.widget) :width :height =
-  let depth = w#misc#realize (); Style.get_depth w#misc#style in
+  let depth = w#misc#realize (); w#misc#visual_depth in
   let window = w#misc#window in
   object (self)
     inherit [[pixmap]] drawing

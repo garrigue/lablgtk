@@ -10,6 +10,7 @@ $Id$
     except in module GWindow.
   * moved non-OO examples to examples/old. Do "cvs update -d old" to
     get them.
+  * changes in Gdk/GtkData/GObj about styles.
 
 1999.6.8
   * updated olabl.patch

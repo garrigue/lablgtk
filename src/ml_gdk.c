@@ -90,6 +90,8 @@ Make_Extractor (GdkRectangle,(GdkRectangle*),height,Val_int)
 /* Window */
 
 Make_Val_final_pointer (GdkWindow, , gdk_window_ref, gdk_window_unref)
+Make_Extractor (gdk_visual_get,GdkVisual_val,depth,Val_int)
+ML_1 (gdk_window_get_visual, GdkWindow_val, Val_GdkVisual)
 
 /* Pixmap */
 
