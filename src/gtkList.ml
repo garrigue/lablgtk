@@ -264,6 +264,12 @@ module CList = struct
     may_set set_background  background;
     may_set set_selectable  selectable;
     may_set set_row_style style
+
+  external get_row_state :
+      [>`clist] obj -> int -> Gtk.Tags.state_type
+	  = "ml_gtk_clist_get_row_state"
+
+
   module Signals = struct
     open GtkSignal
     let marshal_select f argv = function

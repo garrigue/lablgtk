@@ -108,8 +108,8 @@ MLOBJS =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
 	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
 	gText.cmo \
-	gMenu.cmo gMisc.cmo gWindow.cmo gList.cmo gBin.cmo \
-	gEdit.cmo gRange.cmo gTree.cmo gUtil.cmo gToolbox.cmo
+	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gWindow.cmo gBin.cmo \
+	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo

@@ -104,6 +104,8 @@ class file_selection obj = object
   method cancel_button =
     new GButton.button (FileSelection.get_cancel_button obj)
   method help_button = new GButton.button (FileSelection.get_help_button obj)
+  method file_list =
+    ((new GList.clist (FileSelection.get_file_list obj)) : string GList.clist)
 end
 
 let file_selection ?(title="Choose a file") ?filename
