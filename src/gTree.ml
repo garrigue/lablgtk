@@ -266,8 +266,8 @@ class selection obj = object
   method select_iter = TreeSelection.select_iter obj
   method unselect_iter = TreeSelection.unselect_iter obj
   method iter_is_selected = TreeSelection.iter_is_selected obj
-  method select_all = TreeSelection.select_all obj
-  method unselect_all = TreeSelection.unselect_all obj
+  method select_all () = TreeSelection.select_all obj
+  method unselect_all () = TreeSelection.unselect_all obj
   method select_range = TreeSelection.select_range obj
   method unselect_range = TreeSelection.unselect_range obj
 end
