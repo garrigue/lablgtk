@@ -362,9 +362,7 @@ type cell_properties_text =
   | `BACKGROUND_GDK of Gdk.color
   | `BACKGROUND_SET of bool
   | `EDITABLE of bool
-  | `EDITABLE_SET of bool
   | `FAMILY of string
-  | `FAMILY_SET of bool
   | `FONT of string
   | `FONT_DESC of Pango.font_description
   | `FOREGROUND of string
@@ -372,25 +370,16 @@ type cell_properties_text =
   | `FOREGROUND_SET of bool
   | `MARKUP of string
   | `RISE of int
-  | `RISE_SET of bool
-  | `SCALE of float
-  | `SCALE_SET of bool
+  | `SCALE of Pango.Tags.scale
   | `SIZE of int
   | `SIZE_POINTS of float
-  | `SIZE_SET of bool
   | `STRETCH of Pango.Tags.stretch
-  | `STRETCH_SET of bool
   | `STRIKETHROUGH of bool
-  | `STRIKETHROUGH_SET of bool
   | `STYLE of Pango.Tags.style
-  | `STYLE_SET of bool
   | `TEXT of string
   | `UNDERLINE of Pango.Tags.underline
-  | `UNDERLINE_SET of bool
   | `VARIANT of Pango.Tags.variant
-  | `VARIANT_SET of bool
-  | `WEIGHT of int
-  | `WEIGHT_SET of bool ]
+  | `WEIGHT of Pango.Tags.weight ]
 type cell_properties_toggle =
   [ cell_properties
   | `ACTIVATABLE of bool
