@@ -1,5 +1,8 @@
 $Id$
 
+2003.08.18 [Olivier]
+  * wrap GtkNotebook::switch_page instead of change_current_page
+
 2003.08.15 [Jacques]
   * split gtk.props in small pieces, to allow more generation
 
