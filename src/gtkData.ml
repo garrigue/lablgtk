@@ -88,9 +88,18 @@ module Adjustment = struct
   external clamp_page :
       [> adjustment] obj -> lower:float -> upper:float -> unit
       = "ml_gtk_adjustment_clamp_page"
-  external get_value :
-      [> adjustment] obj -> float
-      = "ml_GtkAdjustment_value"
+  external get_lower : [> adjustment] obj -> float
+      = "ml_gtk_adjustment_get_lower"
+  external get_upper : [> adjustment] obj -> float
+      = "ml_gtk_adjustment_get_upper"
+  external get_value : [> adjustment] obj -> float
+      = "ml_gtk_adjustment_get_value"
+  external get_step_increment : [> adjustment] obj -> float
+      = "ml_gtk_adjustment_get_step_increment"
+  external get_page_increment : [> adjustment] obj -> float
+      = "ml_gtk_adjustment_get_page_increment"
+  external get_page_size : [> adjustment] obj -> float
+      = "ml_gtk_adjustment_get_page_size"
   module Signals = struct
     open GtkSignal
     let changed : ([> adjustment],_) t =
