@@ -1,5 +1,9 @@
 (* $Id$ *)
 
+(* Compile with
+   ocamlc -pp camlp4o -I +lablgtk lablgtk.cma csview.ml -o csview
+*)
+
 open StdLabels
 
 (* A simple CSV data viewer *)
@@ -121,6 +125,7 @@ let main argv =
     exit 2
   end;
   let data = read_file argv.(1) in
+  let locale = Main.init ~setlocale:true () in
   let w = GWindow.window () in
   w#misc#realize ();
   let style = w#misc#style in
