@@ -1,4 +1,5 @@
-Edit $(GLADETOPDIR) and $(LABLGTKDIR) in Makefile and libglade/Makefile, 
+To compile,
+edit $(GLADETOPDIR) and $(LABLGTKDIR) in Makefile and libglade/Makefile, 
 if necessary.
 
 Then
@@ -8,3 +9,10 @@ Then
 To try, 
 
   ./lablglade -I ../.. examples/main.ml
+
+----------------------------------------------------------------------
+ToDo:
+
+Lablglade should produce a class whose members are widgets.
+
+It should be possible to edit signal handlers.

@@ -4,17 +4,13 @@ open GMain
 
 let main () =
    let window1 = new GWindow.window in
-   let vbox1 = new GPack.box `VERTICAL packing:window1#add in
-   let hbox1 = new GPack.box `HORIZONTAL packing:vbox1#add in
-   let fixed1 = new GPack.fixed packing:hbox1#add in
-   let label1 = new GMisc.label text:"Hello!" width:34 height:16 packing:fixed1#add in
-   label1#misc#set x:0 y:8;
-   let entry1 = new GEdit.entry text:"100" width:72 height:24 packing:fixed1#add in
-   entry1#misc#set x:72 y:8;
-   let button1 = new GButton.button label:"OK" width:47 height:22 packing:fixed1#add in
-   button1#misc#set x:72 y:56;
-   (* GtkText(hbox1#add): Not (yet) implemented *)   
-   let drawingarea1 = new GMisc.drawing_area packing:vbox1#add in
+   let fixed1 = new GPack.fixed packing:window1#add in
+   let button1 = new GButton.button label:"button1" width:47 height:22 packing:fixed1#add in
+   button1#misc#set x:24 y:8;
+   let entry1 = new GEdit.entry text:"" width:158 height:22 packing:fixed1#add in
+   entry1#misc#set x:24 y:40;
+   let drawingarea1 = new GMisc.drawing_area width:368 height:200 packing:fixed1#add in
+   drawingarea1#misc#set x:16 y:80;
    window1#show ();
    Main.main () 
 
