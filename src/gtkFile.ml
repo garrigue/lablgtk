@@ -15,7 +15,8 @@ module FileFilter = struct
   external add_pattern : [> Gtk.file_filter] Gtk.obj -> string -> unit
       = "ml_gtk_file_filter_add_pattern"
   external add_custom : [> Gtk.file_filter] Gtk.obj -> 
-    GtkEnums.file_filter_flags list -> (Gtk.file_filter_info -> bool) -> unit
+    GtkEnums.file_filter_flags list ->
+    callback:((GtkEnums.file_filter_flags * string) list -> bool) -> unit
       = "ml_gtk_file_filter_add_custom"
 end
 
