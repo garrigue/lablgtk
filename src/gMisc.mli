@@ -120,6 +120,7 @@ class image : 'a obj ->
     method set_pixmap : ?mask:Gdk.bitmap -> Gdk.pixmap -> unit
     method set_file : string -> unit
     method set_pixbuf : GdkPixbuf.pixbuf -> unit
+    method set_stock : string -> size:int -> unit
   end
 
 val image :
