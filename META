@@ -1,5 +1,5 @@
 requires=""
-version="1.2.5"
+version="1.2.7"
 archive(byte)="lablgtk.cma"
 archive(byte,init)="lablgtk.cma gtkInit.cmo"
 archive(byte,gnome)="lablgtk.cma lablgnome.cma"

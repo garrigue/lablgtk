@@ -516,6 +516,9 @@ Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, help_button,
 		Val_GtkWidget)
 Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, file_list,
 		Val_GtkWidget)
+Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, dir_list,
+		Val_GtkWidget)
+
 
 /* gtkwindow.h */
 
@@ -870,6 +873,8 @@ ML_2_name (ml_gtk_signal_emit_none, gtk_signal_emit_by_name,
            GtkObject_val, String_val, Unit)
 ML_3_name (ml_gtk_signal_emit_int, gtk_signal_emit_by_name,
            GtkObject_val, String_val, Int_val, Unit)
+ML_4_name (ml_gtk_signal_emit_int2, gtk_signal_emit_by_name,
+           GtkObject_val, String_val, Int_val, Int_val, Unit)
 ML_4_name (ml_gtk_signal_emit_scroll, gtk_signal_emit_by_name,
            GtkObject_val, String_val, Scroll_type_val, Double_val, Unit)
 

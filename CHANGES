@@ -1,5 +1,31 @@
 $Id$
 
+2002.10.30
+  * add GWindow.file_selection#dir_list  (Francois Pessaux)
+
+In lablgtk-1.2.6:
+
+2003.05.21
+  * fixed a problem of SpinButton.get_value_as_int for the case of 
+    the value is minus' src/gtkEdit.ml (Jun Furuse)
+
+2003.05.15
+  * ocamllex is abstracted by CAMLLEX in Makefiles (Jun Furuse)
+  * more parametrizations in config.make.nt (Jun)
+  * added the selection method to clist. (Jun)
+  * Glib.Io.add_watch returns event source, so that we can remove it later (J)
+  * added Glib.Io.read (J)
+  * added a new module Gdk.Input (J)
+
+2003.05.13
+  * various improvements to GtkText (Antoine Mine)
+
+2003.04.14
+  * fix Glib.IO (Henri Dubois-Ferriere)
+
+2003.04.08
+  * fixes in ml_gdk.c: win32 and ClientData
+
 2003.01.22
   * GtkThread.main switches GtkMain.Main.main to call GtkThread.thread_main
 

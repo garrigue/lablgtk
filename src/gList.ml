@@ -156,6 +156,7 @@ class ['a] clist obj = object (self)
   method scroll_horizontal =
     CList.Signals.emit_scroll obj ~sgn:CList.Signals.scroll_horizontal
   method get_row_state row = CList.get_row_state obj row
+  method selection = CList.selection obj
 end
 
 let clist_poly ?(columns=1) ?titles ?hadjustment ?vadjustment

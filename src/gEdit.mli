@@ -14,6 +14,14 @@ class editable_signals : 'a obj ->
       callback:(start:int -> stop:int -> unit) -> GtkSignal.id
     method insert_text :
       callback:(string -> pos:int -> unit) -> GtkSignal.id
+    method copy_clipboard : callback:(unit -> unit) -> GtkSignal.id
+    method cut_clipboard : callback:(unit -> unit) -> GtkSignal.id
+    method paste_clipboard : callback:(unit -> unit) -> GtkSignal.id
+    method move_cursor : callback:(int -> int -> unit) -> GtkSignal.id
+    method move_page : callback:(int -> unit) -> GtkSignal.id
+    method move_word : callback:(int -> unit) -> GtkSignal.id
+    method move_to_row : callback:(int -> unit) -> GtkSignal.id
+    method move_to_column : callback:(int -> unit) -> GtkSignal.id
   end
 
 class editable : 'a obj ->
@@ -34,6 +42,11 @@ class editable : 'a obj ->
     method selection : (int * int) option
     method set_editable : bool -> unit
     method set_position : int -> unit
+    method move_cursor : int -> int -> unit
+    method move_page : int -> unit
+    method move_word : int -> unit
+    method move_to_row : int -> unit
+    method move_to_column : int -> unit
   end
 
 class entry : 'a obj ->
@@ -135,6 +148,8 @@ class text : Gtk.text obj ->
     method set_line_wrap : bool -> unit
     method thaw : unit -> unit
     method vadjustment : GData.adjustment
+    method forward_delete : int -> unit
+    method backward_delete : int -> unit
   end
 val text :
   ?hadjustment:GData.adjustment ->
