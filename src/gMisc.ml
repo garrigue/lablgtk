@@ -92,6 +92,28 @@ class misc obj = object
   method set_padding = Misc.set_padding obj
 end
 
+class arrow obj = object
+  inherit misc obj
+  method set_arrow kind ~shadow = Arrow.set obj ~kind ~shadow
+end
+
+let arrow ~kind ~shadow
+    ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
+  let w = Arrow.create ~kind ~shadow in
+  Misc.set w ?xalign ?yalign ?xpad ?ypad ?width ?height;
+  pack_return (new arrow w) ~packing ~show
+
+class image obj = object
+  inherit misc obj
+  method set_image ?mask image = Image.set obj image ?mask
+end
+
+let image image ?mask
+    ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
+  let w = Image.create image ?mask in
+  Misc.set w ?xalign ?yalign ?xpad ?ypad ?width ?height;
+  pack_return (new image w) ~packing ~show
+
 class label_skel obj = object
   inherit misc obj
   method set_text = Label.set_text obj

@@ -17,10 +17,13 @@ class list_item obj = object
   method connect = new item_signals obj
 end
 
-let list_item ?label ?border_width ?width ?height ?packing ?show () =
+let list_item ?label ?border_width ?width ?height ?packing ?(show=true) () =
   let w = ListItem.create ?label () in
   Container.set w ?border_width ?width ?height;
-  pack_return (new list_item w) ~packing ~show
+  let item = new list_item w in
+  may packing ~f:(fun f -> (f item : unit));
+  if show then item#misc#show ();
+  item
 
 class liste obj = object
   inherit [list_item] item_container (obj : Gtk.liste obj)

@@ -37,6 +37,9 @@ extern value Val_GdkGC (GdkGC *);
 #define GdkVisual_val(val) ((GdkVisual*) val)
 #define Val_GdkVisual(visual) ((value) visual)
 
+#define Val_XID copy_int32
+#define XID_val Int32_val
+
 extern int OptFlags_GdkModifier_val (value);
 extern int Flags_Event_mask_val (value);
 extern lookup_info ml_table_extension_events[];

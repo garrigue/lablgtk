@@ -158,3 +158,10 @@ val font_selection_dialog :
   ?y:int ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> font_selection_dialog
+
+class plug : Gtk.plug obj -> window
+
+val plug :
+  window:Gdk.xid ->
+  ?border_width:int ->
+  ?width:int -> ?height:int -> ?show:bool -> unit -> plug

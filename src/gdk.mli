@@ -14,6 +14,7 @@ type keysym = int
 type 'a event
 type drag_context
 type cursor
+type xid = int32
 
 exception Error of string
 
@@ -140,9 +141,10 @@ module Window :
     external get_size : window -> int * int = "ml_gdk_window_get_size"
     external get_position : window -> int * int
       = "ml_gdk_window_get_position"
-    external root_parent : unit -> window = "ml_GdkRootParent"
+    external root_parent : unit -> window = "ml_GDK_ROOT_PARENT"
     external clear : window -> unit = "ml_gdk_window_clear"
-    val set_back_pixmap : window -> pixmap:background_pixmap -> unit
+    external get_xwindow : window -> xid = "ml_GDK_WINDOW_XWINDOW"
+    val set_back_pixmap : window -> background_pixmap -> unit
   end
 
 module GC :

@@ -705,6 +705,10 @@ Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
 Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
 		cancel_button, Val_GtkWidget)
 
+/* gtkplug.h */
+
+ML_1 (gtk_plug_new, XID_val, Val_GtkWidget_window)
+
 /* gtkbox.h */
 
 #define GtkBox_val(val) check_cast(GTK_BOX,val)
@@ -1198,6 +1202,12 @@ ML_2 (gtk_scrolled_window_set_placement, GtkScrolledWindow_val,
       Corner_type_val, Unit)
 ML_2 (gtk_scrolled_window_add_with_viewport, GtkScrolledWindow_val,
       GtkWidget_val, Unit)
+
+/* gtksocket.h */
+
+#define GtkSocket_val(val) check_cast(GTK_SOCKET,val)
+ML_0 (gtk_socket_new, Val_GtkWidget_sink)
+ML_2 (gtk_socket_steal, GtkSocket_val, XID_val, Unit)
 
 /* gtktable.h */
 

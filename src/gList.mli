@@ -20,7 +20,7 @@ val list_item :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> list_item
+  ?packing:(list_item -> unit) -> ?show:bool -> unit -> list_item
 
 class liste : Gtk.liste obj ->
   object

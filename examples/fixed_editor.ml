@@ -137,8 +137,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
 	pix#rectangle ~filled:true ~x:0 ~y:0 ~width:g ~height:g ();
 	pix#set_foreground `BLACK;
       	pix#point ~x:0 ~y:0;
-      	Gdk.Window.set_back_pixmap (fix#misc#window)
-	  ~pixmap:(`PIXMAP pix#pixmap) ;
+      	Gdk.Window.set_back_pixmap (fix#misc#window) (`PIXMAP pix#pixmap)
       end;
       grid <- g
 

@@ -137,3 +137,11 @@ let font_selection_dialog ?title ?wm_name ?wm_class ?position
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new font_selection_dialog w
+
+class plug (obj : Gtk.plug obj) = window obj
+
+let plug ~window:xid ?border_width ?width ?height ?(show=false) () =
+  let w = Plug.create xid in
+  Container.set w ?border_width ?width ?height;
+  if show then Widget.show w;
+  new plug w
