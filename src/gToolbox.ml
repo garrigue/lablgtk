@@ -86,7 +86,7 @@ let message_box ~title ?icon ?(ok=mOk) message =
   ignore (question_box ?icon ~title message ~buttons:[ ok ])
 
 
-let input_widget ~widget ~event ~get_text ~bind_ok
+let input_widget ~widget ~event ~get_text ~bind_ok ~expand
     ~title ?(ok=mOk) ?(cancel=mCancel) message =
   let retour = ref None in
   let window = GWindow.dialog ~title ~modal:true () in
@@ -94,7 +94,7 @@ let input_widget ~widget ~event ~get_text ~bind_ok
   let main_box = window#vbox in
   let hbox_boutons = window#action_area in
 
-  let vbox_saisie = GPack.vbox ~packing: main_box#pack () in
+  let vbox_saisie = GPack.vbox ~packing: (main_box#pack ~expand: true) () in
   
   let wl_invite = GMisc.label
       ~text: message
@@ -102,7 +102,7 @@ let input_widget ~widget ~event ~get_text ~bind_ok
       ()
   in
 
-  vbox_saisie#pack widget ~padding: 3;
+  vbox_saisie#pack widget ~expand ~padding: 3;
 
   let wb_ok = GButton.button ~label: ok
       ~packing: (hbox_boutons#pack ~expand: true ~padding: 3) () in
@@ -126,7 +126,7 @@ let input_widget ~widget ~event ~get_text ~bind_ok
     begin fun ev -> 
       if GdkEvent.Key.keyval ev = GdkKeysyms._Return && bind_ok then f_ok ();
       if GdkEvent.Key.keyval ev = GdkKeysyms._Escape then f_cancel ();
-      true
+      false
     end;
 
   widget#misc#grab_focus ();
@@ -141,19 +141,25 @@ let input_string ~title ?ok ?cancel ?(text="") message =
     we_chaine#select_region 0 (we_chaine#text_length);
   input_widget ~widget:we_chaine#coerce ~event:we_chaine#event
     ~get_text:(fun () -> we_chaine#text) ~bind_ok:true
+    ~expand: false
     ~title ?ok ?cancel message
 
-(*
+
 let input_text ~title ?ok ?cancel ?(text="") message =
-  let wt_chaine = GEdit.text ~editable: true () in
+  let wscroll = GBin.scrolled_window
+      ~vpolicy: `AUTOMATIC
+      ~hpolicy: `AUTOMATIC
+      () 
+  in
+  let wview_chaine = GText.view ~editable: true ~packing: wscroll#add () in
   if text <> "" then begin
-    wt_chaine#insert text;
-    wt_chaine#select_region 0 (wt_chaine#length);
+    wview_chaine#buffer#insert text;
+(* A VOIR    wview_chaine#select_region 0 (wt_chaine#length); *)
   end;
-  input_widget ~widget:wt_chaine#coerce ~event:wt_chaine#event
-    ~get_text:(fun () -> wt_chaine#get_chars ~start:0 ~stop:wt_chaine#length)
-    ~bind_ok:false ~title ?ok ?cancel message
-*)
+  input_widget ~widget:wscroll#coerce ~event:wview_chaine#event
+    ~get_text: wview_chaine#buffer#get_text
+    ~bind_ok:false ~expand: true ~title ?ok ?cancel message
+
 
 (**This variable contains the last directory where the user selected a file.*)
 let last_dir = ref ""
@@ -187,7 +193,7 @@ let select_file ~title ?(dir = last_dir) ?(filename="") () =
 
 type 'a tree = [`L of 'a | `N of 'a * 'a tree list]
 
-(*
+
 class ['a] tree_selection ~tree ~label ~info ?packing ?show () =
   let main_box = GPack.vbox ?packing ?show () in
   (* The scroll window used for the tree of the versions *)
@@ -196,7 +202,7 @@ class ['a] tree_selection ~tree ~label ~info ?packing ?show () =
   let wtree = GTree.tree
       ~packing:wscroll_tree#add_with_viewport () in
   (* the text widget used to display information on the selected node. *)
-  let wtext = GEdit.text ~editable: false ~packing: main_box#pack () in
+  let wview = GText.view ~editable: false ~packing: main_box#pack () in
   (* build the tree *)
   object
     inherit GObj.widget main_box#as_widget
@@ -204,7 +210,7 @@ class ['a] tree_selection ~tree ~label ~info ?packing ?show () =
     method selection = selection
     method clear_selection () = selection <- None
     method wtree = wtree
-    method wtext = wtext
+    method wview = wview
 
     initializer
       let rec insert_node wt (t : 'a tree) =
@@ -215,14 +221,14 @@ class ['a] tree_selection ~tree ~label ~info ?packing ?show () =
         item#connect#select ~callback:
           begin fun () -> 
 	    selection <- Some data;
-	    wtext#delete_text ~start:0 ~stop:wtext#length;
-            wtext#insert (info data);
+	    wview#buffer#delete ~start: wview#buffer#start_iter ~stop:wview#buffer#end_iter ;
+            wview#buffer#insert ~iter: wview#buffer#start_iter (info data);
 	    ()
           end;
         item#connect#deselect ~callback:
           begin fun () ->
 	    selection <- None;
-	    wtext#delete_text ~start:0 ~stop:wtext#length
+	    wview#buffer#set_text "";
           end;
         match children with
           [] ->
@@ -264,7 +270,7 @@ let tree_selection_dialog ~tree ~label ~info ~title
   window#show ();
   GMain.Main.main () ;
   ts#selection
-*)
+
 
 (** Misc *)
 

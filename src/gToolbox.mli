@@ -67,14 +67,13 @@ val input_string :
    @param title the title of the dialog
    @param ok the text for the confirmation button (default is "Ok")
    @param cancel the text for the cancel button (default is "Cancel")
-   @param text the default text displayed in the entry widget
+   @param text the default text displayed in the entry widget (utf8)
    @param message the text to display
 *)
-(*
- val input_text :
+val input_text :
     title:string ->
-    ?ok:string -> ?cancel:string -> ?text:string -> string -> string option
-*)
+      ?ok:string -> ?cancel:string -> ?text:string -> string -> string option
+
 
 (**This function allows the user to select a file and returns the
    selected file name.
@@ -90,13 +89,12 @@ type 'a tree = [ `L of 'a | `N of 'a * 'a tree list]
 (** A class to make the user select a node in a tree.
    @param tree is the tree to display.
    @param label gives a label from the data of a node.
-   @param info gives a string from the data of a node,
+   @param info gives a (Utf8) string from the data of a node,
           to give more information to the user when he selects
           a node.
    @param width is the width of the tree widget
    @param height is the height of the tree widget
 *)
-(*
 class ['a] tree_selection :
   tree:'a tree ->
   label:('a -> string) ->
@@ -108,10 +106,9 @@ class ['a] tree_selection :
     val mutable selection : 'a option
     method clear_selection : unit -> unit
     method selection : 'a option
-    method wtext : GEdit.text
+    method wview : GText.view
     method wtree : GTree.tree
   end
-*)
 
 (** A function to make the user select a node in a tree.
    @param tree the to build a tree selection widget
@@ -121,7 +118,6 @@ class ['a] tree_selection :
    @return The data associated to the selected node, or None
    if the user canceled the selection.
 *)
-(*
 val tree_selection_dialog :
   tree:'a tree ->
   label:('a -> string) ->
@@ -130,7 +126,6 @@ val tree_selection_dialog :
   ?ok:string -> ?cancel:string ->
   ?width:int -> ?height:int ->
   ?show:bool -> unit -> 'a option
-*)
 
 (** {2 Miscellaneous functions} *)
 
