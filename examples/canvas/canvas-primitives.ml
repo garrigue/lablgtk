@@ -7,6 +7,7 @@ type 'p item_state = {
     mutable dragging : bool ;
     mutable x : float ;
     mutable y : float ;
+    mutable theta : float ;
   }
 
 let affine_rotate angle =
@@ -15,6 +16,10 @@ let affine_rotate angle =
   let sin_a = sin rad_angle in
   [| cos_a ; sin_a ; ~-. sin_a ; cos_a ; 0. ; 0. |]
 
+let affine_apply a x y =
+  ( a.(0) *. x +. a.(2) *. y +. a.(4) ,
+    a.(1) *. x +. a.(3) *. y +. a.(5) )
+
 let affine_compose a1 a2 =
   [| a1.(0) *. a2.(0) +. a1.(1) *. a2.(2) ;
      a1.(0) *. a2.(1) +. a1.(1) *. a2.(3) ;
@@ -22,6 +27,7 @@ let affine_compose a1 a2 =
      a1.(2) *. a2.(1) +. a1.(3) *. a2.(3) ;
      a1.(4) *. a2.(0) +. a1.(5) *. a2.(2) +. a2.(4) ;
      a1.(4) *. a2.(1) +. a1.(5) *. a2.(3) +. a2.(5) ; |]
+
 let affine_transl x y =
   [| 1. ; 0. ; 0. ; 1. ; x ; y |]
 
@@ -32,6 +38,8 @@ let affine_rotate_around_point x y angle =
        (affine_rotate angle))
     (affine_transl x y)
 
+let d_theta = 15.
+
 let item_event_button_press config ev =
   let state = GdkEvent.Button.state ev in
   match GdkEvent.Button.button ev with
@@ -39,16 +47,20 @@ let item_event_button_press config ev =
       config.item#destroy ()
   | 1 when Gdk.Convert.test_modifier `CONTROL state ->
       let (x, y) = config.item#w2i (GdkEvent.Button.x ev) (GdkEvent.Button.y ev) in
-      config.item#affine_relative (affine_rotate_around_point x y (15.))
+      config.theta <- config.theta +. d_theta ;
+      config.item#affine_relative
+	(affine_rotate_around_point x y d_theta) ;
   | 3 when Gdk.Convert.test_modifier `CONTROL state ->
       let (x, y) = config.item#w2i (GdkEvent.Button.x ev) (GdkEvent.Button.y ev) in
-      config.item#affine_relative (affine_rotate_around_point x y (~-. 15.))
+      config.theta <- config.theta -. d_theta ;
+      config.item#affine_relative 
+	(affine_rotate_around_point x y (~-. d_theta)) ;
   | 1 ->
       let x = GdkEvent.Button.x ev in
       let y = GdkEvent.Button.y ev in
-      let (item_x, item_y) = (GnoCanvas.parent config.item)#w2i x y in
-      config.x <- item_x ;
-      config.y <- item_y ;
+      let (p_x, p_y) = (GnoCanvas.parent config.item)#w2i x y in
+      config.x <- p_x ;
+      config.y <- p_y ;
       config.dragging <- true
   | 2 when Gdk.Convert.test_modifier `SHIFT state ->
       config.item#lower_to_bottom ()
@@ -60,30 +72,28 @@ let item_event_button_press config ev =
       config.item#raise 1
   | _ -> ()
 
-
-let item_event_button_release config ev =
-  config.dragging <- false
-
 let item_event_motion config ev = 
   if config.dragging && Gdk.Convert.test_modifier `BUTTON1 (GdkEvent.Motion.state ev)
   then
     let x = GdkEvent.Motion.x ev in
     let y = GdkEvent.Motion.y ev in
-    let (item_x, item_y) = (GnoCanvas.parent config.item)#w2i x y in
-    config.item#move (item_x -. config.x) (item_y -. config.y) ;
-    config.x <- item_x ;
-    config.y <- item_y
+    let (p_x, p_y) = (GnoCanvas.parent config.item)#w2i x y in
+    let dx = p_x -. config.x in
+    let dy = p_y -. config.y in
+    let dix, diy =
+      affine_apply
+	(affine_rotate (~-. (config.theta))) dx dy in
+    config.item#move dix diy ;
+    config.x <- p_x ;
+    config.y <- p_y
     
-let item_event config ev =
-  begin match GdkEvent.get_type ev with
-  | `BUTTON_PRESS ->
-      let ev = GdkEvent.Button.cast ev in
+let item_event config ev = 
+  begin match ev with
+  | `BUTTON_PRESS ev ->
       item_event_button_press config ev
-  | `BUTTON_RELEASE ->
-      let ev = GdkEvent.Button.cast ev in
-      item_event_button_release config ev
-  | `MOTION_NOTIFY ->
-      let ev = GdkEvent.Motion.cast ev in
+  | `BUTTON_RELEASE _ ->
+      config.dragging <- false
+  | `MOTION_NOTIFY ev ->
       item_event_motion config ev
   | _ -> () end ;
   false
@@ -92,7 +102,7 @@ let setup_item (it : 'a #GnoCanvas.item) =
   let config = { 
     item = (it : 'a #GnoCanvas.item :> 'a GnoCanvas.item) ;
     dragging = false ;
-    x = 0. ; y = 0. ; } in
+    x = 0. ; y = 0. ; theta = 0. } in
   it#connect#event (item_event config)
 
 
@@ -359,7 +369,8 @@ let create_canvas_primitives window ~aa =
   GMisc.label 
     ~text:"Drag an item with button 1.  Click button 2 on an item to lower it,\n\
            or button 3 to raise it.  Shift+click with buttons 2 or 3 to send\n\
-           an item to the bottom or top, respectively."
+           an item to the bottom or top, respectively.  Control+click with \n\
+           button 1 or button 3 to rotate an item."
     ~packing:vbox#pack () ;
   let hbox = GPack.hbox ~spacing:4 ~packing:vbox#pack () in
   GtkBase.Widget.push_colormap (Gdk.Rgb.get_cmap ()) ;

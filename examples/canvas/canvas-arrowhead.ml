@@ -117,19 +117,19 @@ let set_arrow_shape c =
 
   
 let highlight_box item ev = 
-  begin match GdkEvent.get_type ev with
-  | `ENTER_NOTIFY ->
+  begin match ev with
+  | `ENTER_NOTIFY _ ->
       item#set [ `FILL_COLOR "red" ]
-  | `LEAVE_NOTIFY ->
-      let state = GdkEvent.Crossing.state (GdkEvent.Crossing.cast ev) in
+  | `LEAVE_NOTIFY ev ->
+      let state = GdkEvent.Crossing.state ev in
       if not (Gdk.Convert.test_modifier `BUTTON1 state)
       then item#set [ `FILL_COLOR "" ]
-  | `BUTTON_PRESS ->
+  | `BUTTON_PRESS ev ->
       let curs = Gdk.Cursor.create `FLEUR in
       item#grab [`POINTER_MOTION; `BUTTON_RELEASE] curs 
-	(GdkEvent.Button.time (GdkEvent.Button.cast ev))
-  | `BUTTON_RELEASE ->
-      item#ungrab (GdkEvent.Button.time (GdkEvent.Button.cast ev))
+	(GdkEvent.Button.time ev)
+  | `BUTTON_RELEASE ev ->
+      item#ungrab (GdkEvent.Button.time ev)
   | _ -> ()
   end ;
   false
@@ -145,9 +145,8 @@ let create_drag_box grp cb =
 
 
 let width_event c ev =
-  begin match GdkEvent.get_type ev with
-  | `MOTION_NOTIFY ->
-      let ev = GdkEvent.Motion.cast ev in
+  begin match ev with
+  | `MOTION_NOTIFY ev ->
       let state = GdkEvent.Motion.state ev in
       let width = int_of_float ((middle -. GdkEvent.Motion.y ev) /. 5.) in
       if Gdk.Convert.test_modifier `BUTTON1 state && width >= 0
@@ -159,9 +158,8 @@ let width_event c ev =
   end ; false
 
 let shape_a_event c ev =
-  begin match GdkEvent.get_type ev with
-  | `MOTION_NOTIFY ->
-      let ev = GdkEvent.Motion.cast ev in
+  begin match ev with
+  | `MOTION_NOTIFY ev ->
       let state = GdkEvent.Motion.state ev in
       let shape_a = int_of_float ((right -. GdkEvent.Motion.x ev) /. 10.) in
       if Gdk.Convert.test_modifier `BUTTON1 state && 
@@ -174,9 +172,8 @@ let shape_a_event c ev =
   end ; false
 
 let shape_b_c_event c ev =
-  begin match GdkEvent.get_type ev with
-  | `MOTION_NOTIFY ->
-      let ev = GdkEvent.Motion.cast ev in
+  begin match ev with
+  | `MOTION_NOTIFY ev ->
       let state = GdkEvent.Motion.state ev in
       let change = ref false in
       let shape_b = int_of_float ((right -. GdkEvent.Motion.x ev) /. 10.) in

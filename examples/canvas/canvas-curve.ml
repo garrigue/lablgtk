@@ -82,9 +82,8 @@ end
 
       
 let item_event curve ev =
-  match GdkEvent.get_type ev with
-  | `BUTTON_PRESS ->
-      let ev = GdkEvent.Button.cast ev in
+  match ev with
+  | `BUTTON_PRESS ev ->
       if GdkEvent.Button.button ev = 1 &&
 	Gdk.Convert.test_modifier `SHIFT (GdkEvent.Button.state ev)
       then (curve#kill () ; true)
@@ -94,37 +93,30 @@ let item_event curve ev =
 
 
 let canvas_event curves root ev =
-  match GdkEvent.get_type ev with
-  | `BUTTON_PRESS ->
-      let ev = GdkEvent.Button.cast ev in
-      if GdkEvent.Button.button ev = 1
-      then begin
-	let curve = 
-	  match !curves with
-	  | Some b when b#is_not_complete -> b
-	  | _ -> 
-	      let c = new curve root item_event in
-	      curves := Some c ; c
-	in
-	curve#click ev end ;
-      false
-  | `BUTTON_RELEASE -> 
-      let ev = GdkEvent.Button.cast ev in
-      if GdkEvent.Button.button ev = 1
-      then begin
+  match ev with
+  | `BUTTON_PRESS ev when GdkEvent.Button.button ev = 1 ->
+      let curve = 
 	match !curves with
-	| Some b when b#is_not_complete -> 
-	    b#click ev
-	| _ -> ()
+	| Some b when b#is_not_complete -> b
+	| _ -> 
+	    let c = new curve root item_event in
+	    curves := Some c ; c
+      in
+      curve#click ev ;
+      false
+  | `BUTTON_RELEASE ev when GdkEvent.Button.button ev = 1 -> 
+      begin match !curves with
+      | Some b when b#is_not_complete -> 
+	  b#click ev
+      | _ -> ()
       end ; 
       false
-  | `MOTION_NOTIFY -> begin
-      let ev = GdkEvent.Motion.cast ev in
-      match !curves with
+  | `MOTION_NOTIFY ev -> 
+      begin match !curves with
       | Some b when b#is_not_complete -> 
 	  b#motion ev ; true
       | _ -> false
-  end
+      end
   | _ -> false
 
 

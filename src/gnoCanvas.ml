@@ -12,10 +12,12 @@ type items_properties = [
   | `WIDTH of float
   | `HEIGHT of float
   | `BPATH of GnomeCanvas.PathDef.t
+  | `DASH of float * float array
   | `ANCHOR of Gtk.Tags.anchor_type
   | `JUSTIFICATION of Gtk.Tags.justification
   | `CAP_STYLE of Gdk.GC.gdkCapStyle
   | `JOIN_STYLE of Gdk.GC.gdkJoinStyle
+  | `LINE_STYLE of Gdk.GC.gdkLineStyle
   | `SMOOTH of bool
   | `FIRST_ARROWHEAD of bool
   | `LAST_ARROWHEAD of bool
@@ -28,6 +30,8 @@ type items_properties = [
   | `FILL_STIPPLE of Gdk.bitmap
   | `FONT of string
   | `OUTLINE_COLOR of string
+  | `OUTLINE_COLOR_RGBA of int32
+  | `OUTLINE_STIPPLE of Gdk.bitmap
   | `SIZE of int
   | `TEXT of string
   | `EDITABLE of bool
@@ -58,15 +62,14 @@ let propertize p =
   | `Y1 v -> "y1", `DOUBLE, `FLOAT v
   | `X2 v -> "x2", `DOUBLE, `FLOAT v
   | `Y2 v -> "y2", `DOUBLE, `FLOAT v
-  | `OUTLINE_COLOR "" -> "outline_color", `STRING, `STRING None
   | `OUTLINE_COLOR c -> "outline_color", `STRING, `STRING (Some c)
-  | `FILL_COLOR "" -> "fill_color", `STRING, `STRING None
+  | `OUTLINE_COLOR_RGBA c -> "outline_color_rgba", `UINT, `INT32 c
+  | `OUTLINE_STIPPLE (d : Gdk.bitmap) -> "outline_stipple", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast d))
   | `FILL_COLOR c -> "fill_color", `STRING, `STRING (Some c)
   | `FILL_COLOR_RGBA c -> "fill_color_rgba", `UINT, `INT32 c
   | `FILL_STIPPLE (d : Gdk.bitmap) -> "fill_stipple", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast d))
   | `WIDTH_UNITS v -> "width_units", `DOUBLE, `FLOAT v
   | `WIDTH_PIXELS v -> "width_pixels", `UINT, `INT v
-  (* | `TEXT "" -> "text", `STRING, `STRING None *)
   | `TEXT t -> "text", `STRING, `STRING (Some t)
   | `FONT t -> "font", `STRING, `STRING (Some t)
   | `SIZE i -> "size", `INT, `INT i
@@ -92,7 +95,9 @@ let propertize p =
   | `JUSTIFICATION j -> "justification", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.JUSTIFICATION j))
   | `CAP_STYLE c -> "cap_style", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.CAPSTYLE c))
   | `JOIN_STYLE c -> "join_style", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.JOINSTYLE c))
+  | `LINE_STYLE c -> "line_style", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.LINESTYLE c))
   | `BPATH p -> "bpath", `POINTER , `POINTER (Some p)
+  | `DASH (off, d) -> "dash", `POINTER, `POINTER (Some (GnomeCanvas.convert_dash off d))
   | `SMOOTH b -> "smooth", `BOOLEAN, `BOOL b
   | `PIXBUF (p : GdkPixbuf.pixbuf) -> "pixbuf", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast p))
   | `WIDTH v -> "width", `DOUBLE, `FLOAT v
@@ -115,10 +120,47 @@ let propertize p =
   in
   name, v
 
+type item_event = [
+  | `BUTTON_PRESS of GdkEvent.Button.t
+  | `TWO_BUTTON_PRESS of GdkEvent.Button.t
+  | `THREE_BUTTON_PRESS of GdkEvent.Button.t
+  | `BUTTON_RELEASE of GdkEvent.Button.t
+  | `MOTION_NOTIFY of GdkEvent.Motion.t
+  | `KEY_PRESS of GdkEvent.Key.t
+  | `KEY_RELEASE of GdkEvent.Key.t
+  | `ENTER_NOTIFY of GdkEvent.Crossing.t
+  | `LEAVE_NOTIFY of GdkEvent.Crossing.t
+  | `FOCUS_CHANGE of GdkEvent.Focus.t ]
+
+let event_proxy : (item_event -> bool) -> GnomeCanvas.item_event -> bool = 
+  fun cb ev -> match GdkEvent.get_type ev with
+  | `BUTTON_PRESS ->
+      cb (`BUTTON_PRESS (Obj.magic ev))
+  | `TWO_BUTTON_PRESS ->
+      cb (`TWO_BUTTON_PRESS (Obj.magic ev))
+  | `THREE_BUTTON_PRESS ->
+      cb (`THREE_BUTTON_PRESS (Obj.magic ev))
+  | `BUTTON_RELEASE ->
+      cb (`BUTTON_RELEASE (Obj.magic ev))
+  | `MOTION_NOTIFY ->
+      cb (`MOTION_NOTIFY (Obj.magic ev))
+  | `KEY_PRESS ->
+      cb (`KEY_PRESS (Obj.magic ev))
+  | `KEY_RELEASE ->
+      cb (`KEY_RELEASE (Obj.magic ev))
+  | `ENTER_NOTIFY ->
+      cb (`ENTER_NOTIFY (Obj.magic ev))
+  | `LEAVE_NOTIFY ->
+      cb (`LEAVE_NOTIFY (Obj.magic ev))
+  | `FOCUS_CHANGE ->
+      cb (`FOCUS_CHANGE (Obj.magic ev))
+
 class item_signals ?after obj = object
   inherit GObj.gtkobj_signals ?after obj
-  method event : callback:(GdkEvent.any -> bool) -> GtkSignal.id =
-    GtkSignal.connect ~sgn:GnomeCanvas.Item.Signals.event ~after obj
+  method event ~callback =
+    GtkSignal.connect 
+      ~sgn:GnomeCanvas.Item.Signals.event 
+      ~callback:(event_proxy callback) ~after obj
 end
 
 class ['p] item obj = object
@@ -144,6 +186,8 @@ class ['p] item obj = object
   method ungrab = GnomeCanvas.Item.ungrab obj
   method w2i = GnomeCanvas.Item.w2i obj
   method i2w = GnomeCanvas.Item.i2w obj
+  method i2w_affine = GnomeCanvas.Item.i2w_affine obj
+  method i2c_affine = GnomeCanvas.Item.i2c_affine obj
   method reparent grp = GnomeCanvas.Item.reparent obj grp
   method grab_focus () = GnomeCanvas.Item.grab_focus obj
   method get_bounds = GnomeCanvas.Item.get_bounds obj
@@ -153,8 +197,7 @@ class group grp_obj = object
   inherit [GnomeCanvas.Types.group_p] item grp_obj
   method as_group = (grp_obj : GnomeCanvas.group Gtk.obj)
   method get_items =
-    (* List.map (fun i -> new item i) *)
-      (GnomeCanvas.Group.get_items grp_obj)
+    GnomeCanvas.Group.get_items grp_obj
 end
 
 class richtext rchtxt_obj = object
@@ -167,8 +210,6 @@ end
 
 class canvas obj = object
   inherit GPack.layout (obj : GnomeCanvas.canvas Gtk.obj)
-  (* inherit GObj.widget_full (obj : GnomeCanvas.canvas Gtk.obj) *)
-  (* method event = new GObj.event_ops obj *)
   method root = new group (GnomeCanvas.Canvas.root obj)
   method aa =
     let v = Gobject.Value.create (Gobject.Type.of_fundamental `BOOLEAN) in
@@ -206,7 +247,7 @@ let wrap_item o (typ : (_, 'p) GnomeCanvas.Types.t) =
 				   GnomeCanvas.Types.name typ)) ;
   (new item o : 'p item)
 
-let item (typ : (_, 'p) GnomeCanvas.Types.t) ?(props=[]) parent =
+let construct_item (typ : (_, 'p) GnomeCanvas.Types.t) ~props parent =
   let i = GnomeCanvas.Item.new_item parent#as_group typ in
   let o = (new item i : 'p item) in
   if props <> [] then o#set props ;
@@ -227,10 +268,26 @@ let group ?x ?y parent =
   g
 
 type rect = GnomeCanvas.Types.re_p item
-let rect ?props p = item GnomeCanvas.Types.rect ?props p
+let rect ?x1 ?y1 ?x2 ?y2 ?fill_color ?(props=[]) p = 
+  let props = unoption_list ~rest:props
+      [ ( match x1 with None -> None | Some v -> Some (`X1 v) ) ;
+	( match y1 with None -> None | Some v -> Some (`Y1 v) ) ;
+	( match x2 with None -> None | Some v -> Some (`X2 v) ) ;
+	( match y2 with None -> None | Some v -> Some (`Y2 v) ) ;
+	( match fill_color with None -> None | Some v -> Some (`FILL_COLOR v) ) ;
+      ] in
+  construct_item GnomeCanvas.Types.rect ~props p
 
 type ellipse = GnomeCanvas.Types.re_p item
-let ellipse ?props p = item GnomeCanvas.Types.ellipse ?props p
+let ellipse ?x1 ?y1 ?x2 ?y2 ?fill_color ?(props=[]) p = 
+  let props = unoption_list ~rest:props
+      [ ( match x1 with None -> None | Some v -> Some (`X1 v) ) ;
+	( match y1 with None -> None | Some v -> Some (`Y1 v) ) ;
+	( match x2 with None -> None | Some v -> Some (`X2 v) ) ;
+	( match y2 with None -> None | Some v -> Some (`Y2 v) ) ;
+	( match fill_color with None -> None | Some v -> Some (`FILL_COLOR v) ) ;
+      ] in
+  construct_item GnomeCanvas.Types.ellipse ~props p
 
 type text = GnomeCanvas.Types.text_p item
 let text ?x ?y ?text ?font ?size ?anchor ?(props=[]) p =
@@ -242,10 +299,15 @@ let text ?x ?y ?text ?font ?size ?anchor ?(props=[]) p =
 	( match size with None -> None | Some v -> Some (`SIZE v) ) ;
 	( match anchor with None -> None | Some v -> Some (`ANCHOR v) ) ; 
       ] in
-  item GnomeCanvas.Types.text ~props p
+  construct_item GnomeCanvas.Types.text ~props p
 
 type line = GnomeCanvas.Types.line_p item
-let line ?props p = item GnomeCanvas.Types.line ?props p
+let line ?points ?fill_color ?(props=[]) p = 
+  let props = unoption_list ~rest:props
+      [ ( match points with None -> None | Some v -> Some (`POINTS v) ) ;
+	( match fill_color with None -> None | Some v -> Some (`FILL_COLOR v) ) ;
+      ] in
+  construct_item GnomeCanvas.Types.line ~props p
 
 type bpath = GnomeCanvas.Types.bpath_p item
 let bpath ?bpath ?fill_color ?(props=[]) p = 
@@ -253,7 +315,7 @@ let bpath ?bpath ?fill_color ?(props=[]) p =
       [ ( match bpath with None -> None | Some v -> Some (`BPATH v) ) ;
 	( match fill_color with None -> None | Some v -> Some (`FILL_COLOR v) ) ;
       ] in
-  item GnomeCanvas.Types.bpath ~props p
+  construct_item GnomeCanvas.Types.bpath ~props p
 
 type pixbuf = GnomeCanvas.Types.pixbuf_p item
 let pixbuf ?x ?y ?pixbuf ?width ?height ?(props=[]) p =
@@ -271,13 +333,15 @@ let pixbuf ?x ?y ?pixbuf ?width ?height ?(props=[]) p =
 	( match pixbuf with None -> None | Some v -> Some (`PIXBUF v) ) ;
 	width ; height ;
       ] in
-  item GnomeCanvas.Types.pixbuf ~props p
+  construct_item GnomeCanvas.Types.pixbuf ~props p
 
 type polygon = GnomeCanvas.Types.polygon_p item
-let polygon ?points ?(props=[]) p =
-  let props = 
-    match points with None -> props | Some p -> `POINTS p :: props in
-  item GnomeCanvas.Types.polygon ~props p
+let polygon ?points ?fill_color ?(props=[]) p =
+  let props = unoption_list ~rest:props
+      [ ( match points with None -> None | Some v -> Some (`POINTS v) ) ;
+	( match fill_color with None -> None | Some v -> Some (`FILL_COLOR v) ) ;
+      ] in
+  construct_item GnomeCanvas.Types.polygon ~props p
 
 type widget = GnomeCanvas.Types.widget_p item
 let widget ?widget ?x ?y ?width ?height ?(props=[]) p =
@@ -288,7 +352,7 @@ let widget ?widget ?x ?y ?width ?height ?(props=[]) p =
 	( match width with None -> None | Some v -> Some (`WIDTH v) ) ;
 	( match height with None -> None | Some v -> Some (`HEIGHT v) ) ;
 	w ] in
-  item GnomeCanvas.Types.widget ~props p
+  construct_item GnomeCanvas.Types.widget ~props p
 
 let richtext ?x ?y ?text ?width ?height ?(props=[]) p =
   let props = unoption_list ~rest:props
