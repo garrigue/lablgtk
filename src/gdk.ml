@@ -358,3 +358,11 @@ module Truecolor = struct
 	  ((pixel lsr shift_prec.blue_shift) lsl blue_lsr) land mask
     | _ -> raise (Invalid_argument "Gdk.Truecolor.color_parser")
 end
+
+module X = struct
+  (* X related functions *)
+  external flush : unit -> unit
+      = "ml_gdk_flush"
+  external beep : unit -> unit
+      = "ml_gdk_beep"
+end

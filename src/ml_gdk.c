@@ -383,3 +383,7 @@ value ml_GdkDragContext_targets (value c)
   t = (GdkDragContext_val(c))->targets;
   return Val_GList (t, val_int);
 }
+
+/* Misc */
+ML_0 (gdk_flush, Unit)
+ML_0 (gdk_beep, Unit)
