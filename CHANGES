@@ -1,5 +1,10 @@
 $Id$
 
+2004.09.17 [Jacques]
+  * Gobject.Data.boxed parameterized by the real type, to be able to
+    create tree store columns from it. Gobject.fundamental_type
+    modified accordingly.
+
 2004.09.15 [Olivier]
   * add GText.buffer#select_range
 

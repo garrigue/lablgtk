@@ -12,6 +12,9 @@ type layout = [`pangolayout] obj
 type units = int
 type rectangle = {x:int; y:int; width:int; height:int}
 
+external _pango_init : unit -> unit = "ml_pango_init"
+let () = _pango_init ()
+
 module Tags = struct
   type style =
       [ `NORMAL | `OBLIQUE | `ITALIC ]

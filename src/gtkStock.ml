@@ -5,6 +5,9 @@ open Gtk
 
 (** Stock Items: prebuilt common menu/toolbar items and corresponding icons *)
 
+external _gtkstock_init : unit -> unit = "ml_gtkstock_init"
+let () = _gtkstock_init ()
+
 type gtk_stock_id = [
   | `DIALOG_AUTHENTICATION	(** since GTK 2.4 *)
   | `DIALOG_INFO 

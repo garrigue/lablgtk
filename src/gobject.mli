@@ -21,7 +21,6 @@ type 'a data_set =
 
 type base_data =
   [ `BOOLEAN
-  | `CAML
   | `CHAR
   | `UCHAR
   | `INT
@@ -36,7 +35,7 @@ type base_data =
   | `DOUBLE
   | `STRING
   | `POINTER
-  | `BOXED
+  | `BOXED of g_type
   | `OBJECT ]
 
 type data_kind = [ `INT32 | `UINT32 | base_data ]
@@ -157,9 +156,9 @@ module Data :
     val unsafe_pointer : 'a data_conv
     val unsafe_pointer_option : 'a option data_conv
     (* use boxed to enable copy of parameter *)
-    val boxed : Gpointer.boxed option data_conv
-    val unsafe_boxed : 'a data_conv
-    val unsafe_boxed_option : 'a option data_conv
+    val boxed : g_type -> Gpointer.boxed option data_conv
+    val unsafe_boxed : g_type -> 'a data_conv
+    val unsafe_boxed_option : g_type -> 'a option data_conv
     val gobject : 'a obj data_conv
     val gobject_option : 'a obj option data_conv
     val caml : 'a data_conv

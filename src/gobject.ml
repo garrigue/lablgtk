@@ -25,7 +25,6 @@ type 'a data_set =
 
 type base_data =
   [ `BOOLEAN
-  | `CAML
   | `CHAR
   | `UCHAR
   | `INT
@@ -40,7 +39,7 @@ type base_data =
   | `DOUBLE
   | `STRING
   | `POINTER
-  | `BOXED
+  | `BOXED of g_type
   | `OBJECT ]
 
 type data_kind = [ `INT32 | `UINT32 | base_data ]
@@ -70,6 +69,12 @@ module Type = struct
       = "ml_g_type_interface_prerequisites" (** @since GTK 2.2 *)
   external register_static : parent:g_type -> name:string -> g_type
       = "ml_g_type_register_static"
+  let invalid =  of_fundamental `INVALID
+  let from_name s =
+    let t = from_name s in
+    if t = invalid then
+      failwith ("Gobject.Type.from_name: " ^ s);
+    t
   external g_caml_get_type : unit -> g_type = "ml_g_caml_get_type"
   let caml = g_caml_get_type ()
 end
@@ -242,9 +247,9 @@ module Data = struct
       proj = (function `POINTER c -> magic c
              | _ -> failwith "Gobject.get_pointer");
       inj = (fun c -> `POINTER (magic c)) }
-  let boxed = {pointer with kind = `BOXED}
-  let unsafe_boxed = {unsafe_pointer with kind = `BOXED}
-  let unsafe_boxed_option = {unsafe_pointer_option with kind = `BOXED}
+  let boxed t = {pointer with kind = `BOXED t}
+  let unsafe_boxed t = {unsafe_pointer with kind = `BOXED t}
+  let unsafe_boxed_option t = {unsafe_pointer_option with kind = `BOXED t}
   let gobject_option =
     { kind = `OBJECT;
       proj = (function `OBJECT c -> may_map ~f:unsafe_cast c
@@ -257,12 +262,12 @@ module Data = struct
              | _ -> failwith "Gobject.get_object");
       inj = (fun c -> `OBJECT (Some (unsafe_cast c))) }
   let caml =
-    { kind = `CAML;
+    { kind = `BOXED Type.caml;
       proj = (function `CAML v -> Obj.obj v
              | _ -> failwith "Gobject.get_caml") ;
       inj = (fun v -> `CAML (Obj.repr v)) }
   let caml_option =
-    { kind = `CAML;
+    { kind = `BOXED Type.caml;
       proj = (function `CAML v -> Some (Obj.obj v)
 	     | `NONE -> None
              | _ -> failwith "Gobject.get_caml") ;

@@ -37,6 +37,14 @@ void ml_raise_gdk (const char *errmsg)
   raise_with_string (*exn, (char*)errmsg);
 }
 
+CAMLprim value ml_gdk_init(value unit)
+{
+  /* Since these are declared const, must force gcc to call them! */
+  GType t =
+    gdk_color_get_type();
+  return Val_GType(t);
+}
+
 #include "gdk_tags.c"
 
 Make_OptFlags_val (GdkModifier_val)

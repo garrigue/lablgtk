@@ -14,6 +14,16 @@
 #include "gtk_tags.h"
 #include "gdk_tags.h"
 
+CAMLprim value ml_gtkstock_init(value unit)
+{
+  /* Since these are declared const, must force gcc to call them! */
+  GType t =
+    gtk_icon_set_get_type() +
+    gtk_icon_source_get_type() +
+    gtk_icon_factory_get_type();
+  return Val_GType(t);
+}
+
 /* gtkiconfactory.h */
 
 /* GtkIconSource */

@@ -395,8 +395,8 @@ endif
 OCAMLDOC = ocamldoc
 lablgtk$(XO)doc : $(DOCFILES) $(ALLOBJS)
 	$(OCAMLDOC) -dump $@ -v $(if $(LABLGLDIR),-I $(LABLGLDIR)) $(DOCFILES)
-gtkdoc.cmo : gtkdoc.ml
-	$(CAMLC) -I +ocamldoc -pp "$(CAMLP4O) pa_macro.cmo $(ODOC_DEF)" -c $<
+gtkdoc.cmo : gtkdoc.ml4
+	$(CAMLC) -I +ocamldoc -pp "$(CAMLP4O) pa_macro.cmo $(ODOC_DEF) -impl" -c -impl $<
 DOCDIR=../doc
 DOC_URI=
 DOC_BASE_URI=$(if $(DOC_URI),-base-uri $(DOC_URI))
