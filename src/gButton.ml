@@ -2,6 +2,8 @@
 
 open Misc
 open Gtk
+open GtkBase
+open GtkButton
 open GUtil
 open GObj
 open GContainer
@@ -16,11 +18,11 @@ end
 
 class button_signals obj ?:after = object
   inherit container_signals obj ?:after
-  method clicked = Signal.connect sig:Button.Signals.clicked obj ?:after
-  method pressed = Signal.connect sig:Button.Signals.pressed obj ?:after
-  method released = Signal.connect sig:Button.Signals.released obj ?:after
-  method enter = Signal.connect sig:Button.Signals.enter obj ?:after
-  method leave = Signal.connect sig:Button.Signals.leave obj ?:after
+  method clicked = GtkSignal.connect sig:Button.Signals.clicked obj ?:after
+  method pressed = GtkSignal.connect sig:Button.Signals.pressed obj ?:after
+  method released = GtkSignal.connect sig:Button.Signals.released obj ?:after
+  method enter = GtkSignal.connect sig:Button.Signals.enter obj ?:after
+  method leave = GtkSignal.connect sig:Button.Signals.leave obj ?:after
 end
 
 class button_wrapper obj = object
@@ -39,7 +41,8 @@ class button ?:label ?:border_width ?:width ?:height ?:packing =
 
 class toggle_button_signals obj ?:after = object
   inherit button_signals obj ?:after
-  method toggled = Signal.connect sig:ToggleButton.Signals.toggled obj ?:after
+  method toggled =
+    GtkSignal.connect sig:ToggleButton.Signals.toggled obj ?:after
 end
 
 class pre_toggle_button_wrapper obj = object
@@ -76,7 +79,7 @@ class check_button ?:label ?:active ?:draw_indicator
   end
 
 class radio_button_wrapper obj = object
-  inherit pre_toggle_button_wrapper (RadioButton.coerce obj)
+  inherit pre_toggle_button_wrapper (obj : radio_button obj)
   method set_group = RadioButton.set_group obj
   method group = RadioButton.group obj
 end
@@ -97,7 +100,7 @@ let may_as_widget = function
   | Some (w : #is_widget) -> Some w#as_widget
 
 class toolbar_wrapper obj = object
-  inherit container_wrapper (obj : Toolbar.t obj)
+  inherit container_wrapper (obj : toolbar obj)
   method insert_widget : 'a . (#is_widget as 'a) -> _ =
     fun w -> Toolbar.insert_widget ?obj ?(w#as_widget)
 

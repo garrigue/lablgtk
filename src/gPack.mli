@@ -30,7 +30,7 @@ class box :
   ?packing:(box -> unit) ->
   object
     inherit box_skel
-    val obj : Box.t obj
+    val obj : Gtk.box obj
     method connect : ?after:bool -> container_signals
   end
 class box_wrapper : ([> box] obj) -> box
@@ -42,21 +42,21 @@ class button_box :
   ?child_height:int ->
   ?child_ipadx:int ->
   ?child_ipady:int ->
-  ?layout:BBox.bbox_style ->
+  ?layout:Tags.button_box_style ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(button_box -> unit) ->
   object
     inherit box_skel
-    val obj : BBox.t obj
+    val obj : Gtk.button_box obj
     method connect : ?after:bool -> container_signals
     method set_child_packing :
       #is_widget ->
       ?expand:bool ->
       ?fill:bool -> ?padding:int -> ?from:Tags.pack_type -> unit
     method set_child_size : width:int -> height:int -> unit
-    method set_layout : BBox.bbox_style -> unit
+    method set_layout : Tags.button_box_style -> unit
     method set_spacing : int -> unit
   end
 class button_box_wrapper : ([> bbox] obj) -> button_box
@@ -73,20 +73,20 @@ class table :
   ?packing:(table -> unit) ->
   object
     inherit container_wrapper
-    val obj : Gtk.Table.t Gtk.obj
+    val obj : Gtk.table obj
     method attach :
       #GObj.is_widget ->
       left:int ->
       top:int ->
       ?right:int ->
       ?bottom:int ->
-      ?expand:Gtk.Table.dirs ->
-      ?fill:Gtk.Table.dirs ->
-      ?shrink:Gtk.Table.dirs -> ?xpadding:int -> ?ypadding:int -> unit
+      ?expand:Tags.expand_type ->
+      ?fill:Tags.expand_type ->
+      ?shrink:Tags.expand_type -> ?xpadding:int -> ?ypadding:int -> unit
     method set_packing :
       ?row_spacings:int -> ?col_spacings:int -> ?homogeneous:bool -> unit
   end
-class table_wrapper : Table.t obj -> table
+class table_wrapper : Gtk.table obj -> table
 
 class fixed :
   ?border_width:int ->
@@ -95,8 +95,8 @@ class fixed :
   ?packing:(fixed -> unit) ->
   object
     inherit container_wrapper
-    val obj : Fixed.t obj
+    val obj : Gtk.fixed obj
     method move : #GObj.is_widget -> x:int -> y:int -> unit
     method put : #GObj.is_widget -> x:int -> y:int -> unit
   end
-class fixed_wrapper : Fixed.t obj -> fixed
+class fixed_wrapper : Gtk.fixed obj -> fixed

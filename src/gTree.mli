@@ -7,8 +7,8 @@ class tree_item_signals :
   object
     inherit GContainer.item_signals
     val obj : 'a obj
-    method collapse : callback:(unit -> unit) -> Signal.id
-    method expand : callback:(unit -> unit) -> Signal.id
+    method collapse : callback:(unit -> unit) -> GtkSignal.id
+    method expand : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class tree_item :
@@ -19,8 +19,8 @@ class tree_item :
   ?packing:(tree_item -> unit) ->
   object
     inherit GContainer.container
-    val obj : TreeItem.t obj
-    method as_item : TreeItem.t obj
+    val obj : Gtk.tree_item obj
+    method as_item : Gtk.tree_item obj
     method collapse : unit -> unit
     method connect : ?after:bool -> tree_item_signals
     method expand : unit -> unit
@@ -34,9 +34,9 @@ and tree_signals :
   object
     inherit GContainer.container_signals
     val obj : 'a obj
-    method selection_changed : callback:(unit -> unit) -> Signal.id
-    method select_child : callback:(tree_item -> unit) -> Gtk.Signal.id
-    method unselect_child : callback:(tree_item -> unit) -> Gtk.Signal.id
+    method selection_changed : callback:(unit -> unit) -> GtkSignal.id
+    method select_child : callback:(tree_item -> unit) -> GtkSignal.id
+    method unselect_child : callback:(tree_item -> unit) -> GtkSignal.id
   end
 
 and tree :
@@ -48,14 +48,13 @@ and tree :
   ?height:int ->
   ?packing:(tree -> unit) ->
   object
-    inherit [TreeItem.t, tree_item] GContainer.item_container
-    val obj : Tree.t obj
-    method as_tree : Tree.t obj
-    method child_position : TreeItem.t #GObj.is_item -> int
+    inherit [Gtk.tree_item, tree_item] GContainer.item_container
+    val obj : Gtk.tree obj
+    method as_tree : Gtk.tree obj
+    method child_position : Gtk.tree_item #GObj.is_item -> int
     method clear_items : start:int -> end:int -> unit
     method connect : ?after:bool -> tree_signals
-    method insert : TreeItem.t #GObj.is_item -> pos:int -> unit
-    method prepend : TreeItem.t #GObj.is_item -> unit
+    method insert : Gtk.tree_item #GObj.is_item -> pos:int -> unit
     method remove_items : tree_item list -> unit
     method select_item : pos:int -> unit
     method unselect_item : pos:int -> unit
@@ -63,9 +62,9 @@ and tree :
     method set_selection_mode : Gtk.Tags.selection_mode -> unit
     method set_view_lines : bool -> unit
     method set_view_mode : [ITEM LINE] -> unit
-    method private wrap : Widget.t obj -> tree_item
+    method private wrap : Gtk.widget obj -> tree_item
   end
 
-class tree_item_wrapper : ([> treeitem] obj) -> tree_item
+class tree_item_wrapper : Gtk.tree_item obj -> tree_item
 
 class tree_wrapper : ([> tree] obj) -> tree

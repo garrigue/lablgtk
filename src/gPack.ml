@@ -2,6 +2,8 @@
 
 open Misc
 open Gtk
+open GtkBase
+open GtkPack
 open GObj
 open GContainer
 
@@ -50,7 +52,7 @@ class button_box dir ?:spacing ?:child_width ?:child_height ?:child_ipadx
   end
 
 class table_wrapper obj = object
-  inherit container_wrapper (obj : Table.t obj)
+  inherit container_wrapper (obj : Gtk.table obj)
   method attach : 'a. (#is_widget as 'a) -> _ =
     fun w -> Table.attach obj w#as_widget
   method set_packing = Table.setter ?obj ?cont:null_cont
@@ -68,7 +70,7 @@ class table :rows :columns ?:homogeneous ?:row_spacings ?:col_spacings
   end
 
 class fixed_wrapper obj = object
-  inherit container_wrapper (obj : Fixed.t obj)
+  inherit container_wrapper (obj : fixed obj)
   method put : 'a. (#is_widget as 'a) -> _ =
     fun w -> Fixed.put obj w#as_widget
   method move : 'a. (#is_widget as 'a) -> _ =

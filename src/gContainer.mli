@@ -30,9 +30,10 @@ class container_signals :
   object
     inherit widget_signals
     val obj : 'a obj
-    method add : callback:(widget_wrapper -> unit) -> Signal.id
-    method parent_set : callback:(widget_wrapper option -> unit) -> Signal.id
-    method remove : callback:(widget_wrapper -> unit) -> Signal.id
+    method add : callback:(widget_wrapper -> unit) -> GtkSignal.id
+    method parent_set :
+	callback:(widget_wrapper option -> unit) -> GtkSignal.id
+    method remove : callback:(widget_wrapper -> unit) -> GtkSignal.id
   end
 
 class container_wrapper :
@@ -57,7 +58,7 @@ class virtual ['a, 'b] item_container :
     method remove : 'a #is_item -> unit
     method focus : focus
     method set_size : ?border:int -> ?width:int -> ?height:int -> unit
-    method private virtual wrap : Widget.t obj -> 'b
+    method private virtual wrap : Gtk.widget obj -> 'b
   end
 
 class item_signals :
@@ -65,7 +66,7 @@ class item_signals :
   object
     inherit container_signals
     val obj : 'a obj
-    method deselect : callback:(unit -> unit) -> Signal.id
-    method select : callback:(unit -> unit) -> Signal.id
-    method toggle : callback:(unit -> unit) -> Signal.id
+    method deselect : callback:(unit -> unit) -> GtkSignal.id
+    method select : callback:(unit -> unit) -> GtkSignal.id
+    method toggle : callback:(unit -> unit) -> GtkSignal.id
   end

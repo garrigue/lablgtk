@@ -12,13 +12,13 @@ class pixmap :
   ?packing:(pixmap -> unit) ->
   object
     inherit GMisc.misc
-    val obj : Pixmap.t obj
+    val obj : Gtk.pixmap obj
     method connect : ?after:bool -> GObj.widget_signals
     method mask : Gdk.bitmap
     method pixmap : Gdk.pixmap
     method set : ?pixmap:Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
   end
-class pixmap_wrapper : Pixmap.t obj -> pixmap
+class pixmap_wrapper : Gtk.pixmap obj -> pixmap
 
 class pixdraw :
   parent:#GObj.widget ->

@@ -2,6 +2,9 @@
 
 open Misc
 open Gtk
+open GtkBase
+open GtkWindow
+open GtkMisc
 open GObj
 open GContainer
 open GUtil
@@ -66,7 +69,7 @@ class dialog ?:title ?:wmclass_name ?:wmclass_class ?:position ?:allow_shrink
   end
 
 class color_selection_dialog_wrapper obj = object
-  inherit window_skel (obj : ColorSelection.dialog obj)
+  inherit window_skel (obj : Gtk.color_selection_dialog obj)
   method connect = new GContainer.container_signals ?obj
   method ok_button =
     new GButton.button_wrapper (ColorSelection.ok_button obj)
@@ -93,7 +96,7 @@ class color_selection_dialog :title ?:wmclass_name ?:wmclass_class ?:position
   end
 
 class file_selection_wrapper obj = object
-  inherit window_skel (obj : FileSelection.t obj)
+  inherit window_skel (obj : Gtk.file_selection obj)
   method connect = new GContainer.container_signals ?obj
   method set_filename = FileSelection.set_filename obj
   method get_filename = FileSelection.get_filename obj

@@ -2,19 +2,21 @@
 
 open Misc
 open Gtk
+open GtkBase
+open GtkTree
 open GUtil
 open GObj
 open GContainer
 
 class tree_item_signals obj ?:after = object
   inherit item_signals obj ?:after
-  method expand = Signal.connect obj sig:TreeItem.Signals.expand ?:after
-  method collapse = Signal.connect obj sig:TreeItem.Signals.collapse ?:after
+  method expand = GtkSignal.connect obj sig:TreeItem.Signals.expand ?:after
+  method collapse = GtkSignal.connect obj sig:TreeItem.Signals.collapse ?:after
 end
 
 class ['a] pre_tree_item_wrapper :wrapper obj = object
   inherit container obj
-  method as_item : TreeItem.t obj = obj
+  method as_item : tree_item obj = obj
   method connect = new tree_item_signals ?obj
   method set_subtree : 'b. (#is_tree as 'b) -> unit =
     fun w -> TreeItem.set_subtree obj w#as_tree
@@ -27,17 +29,17 @@ end
 class ['a] pre_tree_signals obj :wrapper ?:after = object
   inherit container_signals obj ?:after
   method selection_changed =
-    Signal.connect ?obj ?sig:Tree.Signals.selection_changed ?:after
+    GtkSignal.connect ?obj ?sig:Tree.Signals.selection_changed ?:after
   method select_child :callback =
-    Signal.connect obj sig:Tree.Signals.select_child ?:after
+    GtkSignal.connect obj sig:Tree.Signals.select_child ?:after
       callback:(fun w -> callback (wrapper w : 'a)) 
   method unselect_child :callback =
-    Signal.connect obj sig:Tree.Signals.unselect_child ?:after
+    GtkSignal.connect obj sig:Tree.Signals.unselect_child ?:after
       callback:(fun w -> callback (wrapper w : 'a)) 
 end
 
 class virtual ['a] pre_tree_wrapper obj = object (self)
-  inherit [TreeItem.t,'a] item_container obj
+  inherit [tree_item,'a] item_container obj
   method as_tree = Tree.coerce obj
   method insert w :pos =
     Tree.insert obj (w #as_item) :pos
@@ -45,7 +47,7 @@ class virtual ['a] pre_tree_wrapper obj = object (self)
   method clear_items = Tree.clear_items obj
   method select_item = Tree.select_item obj
   method unselect_item = Tree.unselect_item obj
-  method child_position : 'b. (TreeItem.t #is_item as 'b) -> _ =
+  method child_position : 'b. (tree_item #is_item as 'b) -> _ =
     fun w -> Tree.child_position obj w#as_item
   method remove_items (items : 'a list) =
     Tree.remove_items obj
@@ -65,7 +67,7 @@ end
 
 class tree_item_wrapper obj =
   [tree_wrapper'] pre_tree_item_wrapper wrapper:(new tree_wrapper')
-    (TreeItem.coerce obj)
+    (obj : tree_item obj)
 
 class tree_wrapper obj = object
   inherit [tree_item_wrapper] pre_tree_wrapper (Tree.coerce obj)

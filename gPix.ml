@@ -2,11 +2,13 @@
 
 open Misc
 open Gtk
+open GtkData
+open GtkMisc
 open GUtil
 open GObj
 
 class pixmap_wrapper obj = object
-  inherit GMisc.misc (obj : Pixmap.t obj)
+  inherit GMisc.misc (obj : pixmap obj)
   method connect = new widget_signals ?obj
   method set = Pixmap.setter ?obj ?cont:null_cont
   method pixmap = Pixmap.pixmap obj

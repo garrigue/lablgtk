@@ -7,19 +7,19 @@ class separator :
   ?packing:(separator -> unit) ->
   object
     inherit GObj.widget_wrapper
-    val obj : Separator.t obj
+    val obj : Gtk.separator obj
   end
-class separator_wrapper : ([> separator] obj) -> separator
+class separator_wrapper : Gtk.separator obj -> separator
 
 class statusbar_context :
-  Statusbar.t obj ->
-  Statusbar.context ->
+  Gtk.statusbar obj ->
+  Gtk.statusbar_context ->
   object
-    method context : Statusbar.context
+    method context : Gtk.statusbar_context
     method flash : string -> ?delay:int -> unit
     method pop : unit -> unit
-    method push : string -> Statusbar.message
-    method remove : Statusbar.message -> unit
+    method push : string -> statusbar_message
+    method remove : statusbar_message -> unit
   end
 
 class statusbar :
@@ -29,10 +29,10 @@ class statusbar :
   ?packing:(statusbar -> unit) ->
   object
     inherit GContainer.container_wrapper
-    val obj : Statusbar.t obj
+    val obj : Gtk.statusbar obj
     method new_context : name:string -> statusbar_context
   end
-class statusbar_wrapper : Statusbar.t obj -> statusbar
+class statusbar_wrapper : Gtk.statusbar obj -> statusbar
 
 class drawing_area :
   ?width:int ->
@@ -40,10 +40,10 @@ class drawing_area :
   ?packing:(drawing_area -> unit) ->
   object
     inherit GObj.widget_wrapper
-    val obj : DrawingArea.t obj
+    val obj : Gtk.drawing_area obj
     method set_size : width:int -> height:int -> unit
   end
-class drawing_area_wrapper : DrawingArea.t obj -> drawing_area
+class drawing_area_wrapper : Gtk.drawing_area obj -> drawing_area
 
 class misc :
   'a[> misc widget] obj ->
@@ -76,7 +76,7 @@ class label :
   ?packing:(label -> unit) ->
   object
     inherit label_skel
-    val obj : Label.t obj
+    val obj : Gtk.label obj
     method connect : ?after:bool -> GObj.widget_signals
   end
 class label_wrapper : ([> label]) obj -> label
@@ -88,11 +88,11 @@ class tips_query_signals :
     val obj : 'a obj
     method widget_entered :
       callback:(GObj.widget_wrapper option ->
-                string option -> string option -> unit) -> Signal.id
+                string option -> string option -> unit) -> GtkSignal.id
     method widget_selected :
       callback:(GObj.widget_wrapper option ->
                 string option ->
-		string option -> Gdk.Event.Button.t -> bool) -> Signal.id
+		string option -> Gdk.Event.Button.t -> bool) -> GtkSignal.id
   end
 
 class tips_query :
@@ -103,14 +103,14 @@ class tips_query :
   ?packing:(tips_query -> unit) ->
   object
     inherit label_skel
-    val obj : TipsQuery.t obj
+    val obj : Gtk.tips_query obj
     method connect : ?after:bool -> tips_query_signals
     method set_labels : inactive:string -> no_tip:string -> unit
     method set_caller : #GObj.is_widget -> unit
     method start : unit -> unit
     method stop : unit -> unit
   end
-class tips_query_wrapper : TipsQuery.t obj -> tips_query
+class tips_query_wrapper : Gtk.tips_query obj -> tips_query
 
 class color_selection :
   ?border_width:int ->
@@ -119,11 +119,11 @@ class color_selection :
   ?packing:(color_selection -> unit) ->
   object
     inherit GPack.box_wrapper
-    val obj : ColorSelection.t obj
-    method get_color : ColorSelection.color
+    val obj : Gtk.color_selection obj
+    method get_color : color
     method set_color :
       red:float -> green:float -> blue:float -> ?opacity:float -> unit
     method set_update_policy : Tags.update_type -> unit
     method set_opacity : bool -> unit
   end
-class color_selection_wrapper : ([> colorsel] obj) -> color_selection
+class color_selection_wrapper : Gtk.color_selection obj -> color_selection

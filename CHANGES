@@ -1,5 +1,8 @@
 $Id$
 
+1999.6.7
+  * split gtk.ml into gtk*.ml
+
 1999.6.5
   * grouped Container focus operations in a "focus" subwidget
 

@@ -10,14 +10,14 @@ class list_item :
   ?packing:(list_item -> unit) ->
   object
     inherit GContainer.container
-    val obj : ListItem.t obj
-    method as_item : ListItem.t obj
+    val obj : Gtk.list_item obj
+    method as_item : Gtk.list_item obj
     method connect : ?after:bool -> GContainer.item_signals
     method deselect : unit -> unit
     method select : unit -> unit
     method toggle : unit -> unit
   end
-class list_item_wrapper : ListItem.t obj -> list_item
+class list_item_wrapper : Gtk.list_item obj -> list_item
 
 class liste :
   ?selection_mode:Tags.selection_mode ->
@@ -26,14 +26,14 @@ class liste :
   ?height:int ->
   ?packing:(liste -> unit) ->
   object
-    inherit [ListItem.t,list_item] GContainer.item_container
-    val obj : GtkList.t obj
-    method child_position : ListItem.t #GObj.is_item -> int
+    inherit [Gtk.list_item,list_item] GContainer.item_container
+    val obj : Gtk.liste obj
+    method child_position : Gtk.list_item #GObj.is_item -> int
     method clear_items : start:int -> end:int -> unit
-    method insert : ListItem.t #GObj.is_item -> pos:int -> unit
+    method insert : Gtk.list_item #GObj.is_item -> pos:int -> unit
     method select_item : pos:int -> unit
     method unselect_item : pos:int -> unit
-    method private wrap : Widget.t obj -> list_item
+    method private wrap : Gtk.widget obj -> list_item
   end
-class liste_wrapper : GtkList.t obj -> liste
+class liste_wrapper : Gtk.liste obj -> liste
 

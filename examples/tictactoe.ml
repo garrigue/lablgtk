@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Gtk.New
+open GtkNew
 
 (* pour definir un nouveau widget, il faut faire
    un tableau contenant les signaux qu'emettra le
@@ -15,7 +15,7 @@ open Gtk.New
 *)
 
 module Tictactoe = struct
-  open Gtk.Signal
+  open GtkSignal
   let tictactoe : (_,_) t =
     { name = "tictactoe"; marshaller = marshal_unit }
   let tictactoe_sig : ([widget] Gtk.obj, _) t array
@@ -31,7 +31,7 @@ open GMain
 
 class tictactoe_signals obj = object
   inherit GContainer.container_signals obj
-  method tictactoe = Gtk.Signal.connect sig:Tictactoe.tictactoe obj
+  method tictactoe = GtkSignal.connect sig:Tictactoe.tictactoe obj
 end
 
 exception Trouve
@@ -47,15 +47,15 @@ object(self)
   method clear () =
     for i = 0 to 2 do
       for j = 0 to 2 do
-	Gtk.Signal.handler_block (buttons.(i).(j) #as_widget)
+	GtkSignal.handler_block (buttons.(i).(j) #as_widget)
 	  buttons_handlers.(i).(j);
 	buttons.(i).(j)#set_active false;
-	Gtk.Signal.handler_unblock (buttons.(i).(j) #as_widget)
+	GtkSignal.handler_unblock (buttons.(i).(j) #as_widget)
 	  buttons_handlers.(i).(j)
       done
     done
   method connect = new tictactoe_signals obj
-  method emit_tictactoe () = Gtk.Signal.emit obj sig:Tictactoe.tictactoe
+  method emit_tictactoe () = GtkSignal.emit obj sig:Tictactoe.tictactoe
   method toggle () =
     let rwins = [| [| 0; 0; 0 |]; [| 1; 1; 1 |]; [| 2; 2; 2 |];
                   [| 0; 1; 2 |]; [| 0; 1; 2 |]; [| 0; 1; 2 |];

@@ -1,17 +1,20 @@
 (* $Id$ *)
 
-open Gtk
+open GtkBase
+open GtkButton
+open GtkWindow
+open GtkMain
 
 let window = Window.create `TOPLEVEL
 
 let button = Button.create label:"Hello World"
 
 let main () =
-  Signal.connect sig:Event.Signals.delete window
+  GtkSignal.connect sig:Widget.Signals.Event.delete window
     callback:(fun _ -> prerr_endline "Delete event occured"; true);
-  Signal.connect sig:Object.Signals.destroy window callback:Main.quit;
-  Window.set window border_width:10;
-  Signal.connect sig:Button.Signals.clicked button
+  GtkSignal.connect sig:Object.Signals.destroy window callback:Main.quit;
+  Container.set_border_width window 10;
+  GtkSignal.connect sig:Button.Signals.clicked button
     callback:(fun () -> prerr_endline "Hello World"; Object.destroy window);
   Container.add window button;
   Widget.show_all window;

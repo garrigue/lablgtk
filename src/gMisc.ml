@@ -2,10 +2,12 @@
 
 open Misc
 open Gtk
+open GtkBase
+open GtkMisc
 open GUtil
 open GObj
 
-class separator_wrapper w = widget_wrapper (Separator.coerce w)
+class separator_wrapper w = widget_wrapper (w : separator obj)
 
 class separator dir ?:packing =
   object (self)
@@ -14,20 +16,20 @@ class separator dir ?:packing =
   end
 
 class statusbar_context obj ctx = object (self)
-  val obj : Statusbar.t obj = obj
-  val context : Statusbar.context = ctx
+  val obj : statusbar obj = obj
+  val context : Gtk.statusbar_context = ctx
   method context = context
   method push text = Statusbar.push obj context :text
   method pop () = Statusbar.pop obj context
   method remove = Statusbar.remove obj context
   method flash text ?:delay [< 1000 >] =
     let msg = self#push text in
-    Timeout.add delay callback:(fun () -> self#remove msg; false);
+    GtkMain.Timeout.add delay callback:(fun () -> self#remove msg; false);
     ()
 end
 
 class statusbar_wrapper obj = object
-  inherit GContainer.container_wrapper (obj : Statusbar.t obj)
+  inherit GContainer.container_wrapper (obj : Gtk.statusbar obj)
   method new_context :name =
     new statusbar_context obj (Statusbar.get_context obj name)
 end
@@ -41,7 +43,7 @@ class statusbar ?:border_width ?:width ?:height ?:packing =
   end
 
 class drawing_area_wrapper obj = object
-  inherit widget_wrapper (obj : DrawingArea.t obj)
+  inherit widget_wrapper (obj : Gtk.drawing_area obj)
   method set_size = DrawingArea.size obj
 end
 
@@ -87,17 +89,17 @@ class label ?:text [< "" >] ?:justify ?:line_wrap ?:pattern
 class tips_query_signals obj ?:after = object
   inherit widget_signals obj ?:after
   method widget_entered :callback = 
-    Signal.connect sig:TipsQuery.Signals.widget_entered obj ?:after
+    GtkSignal.connect sig:TipsQuery.Signals.widget_entered obj ?:after
       callback:(function None -> callback None
 	| Some w -> callback (Some (new widget_wrapper w)))
   method widget_selected :callback = 
-    Signal.connect sig:TipsQuery.Signals.widget_selected obj ?:after
+    GtkSignal.connect sig:TipsQuery.Signals.widget_selected obj ?:after
       callback:(function None -> callback None
 	| Some w -> callback (Some (new widget_wrapper w)))
 end
 
 class tips_query_wrapper obj = object
-  inherit label_skel (obj : TipsQuery.t obj)
+  inherit label_skel (obj : Gtk.tips_query obj)
   method start () = TipsQuery.start obj
   method stop () = TipsQuery.stop obj
   method set_caller : 'a . (#is_widget as 'a) -> unit =
@@ -119,7 +121,7 @@ class tips_query ?:caller ?:emit_always ?:label_inactive ?:label_no_tip
   end
 
 class color_selection_wrapper obj = object
-  inherit GPack.box_skel (ColorSelection.coerce obj)
+  inherit GPack.box_skel (obj : Gtk.color_selection obj)
   method connect = new GContainer.container_signals ?obj
   method set_update_policy = ColorSelection.set_update_policy obj
   method set_opacity = ColorSelection.set_opacity obj

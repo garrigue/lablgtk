@@ -4,18 +4,18 @@ open Gtk
 
 (* Forward declarations *)
 
-class type is_widget = object method as_widget : Widget.t obj end
+class type is_widget = object method as_widget : Gtk.widget obj end
 
 class type ['a] is_item = object
   constraint 'a = [> item]
   method as_item : 'a obj
 end
 
-class type is_menu = object method as_menu : Menu.t obj end
+class type is_menu = object method as_menu : menu obj end
 
-class type is_tree = object method as_tree : Tree.t obj end
+class type is_tree = object method as_tree : tree obj end
 
-class type is_window = object method as_window : Window.t obj end
+class type is_window = object method as_window : window obj end
 
 (* Object *)
 
@@ -24,8 +24,8 @@ class gtkobj :
   object
     val obj : 'a obj
     method destroy : unit -> unit
-    method disconnect : Signal.id -> unit
-    method get_type : Type.t
+    method disconnect : GtkSignal.id -> unit
+    method get_type : gtk_type
     method stop_emit : string -> unit
   end
 
@@ -34,7 +34,7 @@ class gtkobj_signals :
   object
     val obj : 'a obj
     val after : bool option
-    method destroy : callback:(unit -> unit) -> Signal.id
+    method destroy : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class gtkobj_wrapper :
@@ -50,46 +50,52 @@ class gtkobj_wrapper :
 class event_signals :
   ([> widget]) obj -> ?after:bool ->
   object
-    val obj : Widget.t obj
+    val obj : Gtk.widget obj
     val after : bool option
-    method any : callback:(Gdk.Tags.event_type Gdk.event -> bool) -> Signal.id
-    method button_press : callback:(Gdk.Event.Button.t -> bool) -> Signal.id
-    method button_release : callback:(Gdk.Event.Button.t -> bool) -> Signal.id
-    method configure : callback:(Gdk.Event.Configure.t -> bool) -> Signal.id
-    method delete : callback:([DELETE] Gdk.event -> bool) -> Signal.id
-    method destroy : callback:([DESTROY] Gdk.event -> bool) -> Signal.id
-    method enter_notify : callback:(Gdk.Event.Crossing.t -> bool) -> Signal.id
-    method expose : callback:(Gdk.Event.Expose.t -> bool) -> Signal.id
-    method focus_in : callback:(Gdk.Event.Focus.t -> bool) -> Signal.id
-    method focus_out : callback:(Gdk.Event.Focus.t -> bool) -> Signal.id
-    method key_press : callback:(Gdk.Event.Key.t -> bool) -> Signal.id
-    method key_release : callback:(Gdk.Event.Key.t -> bool) -> Signal.id
-    method leave_notify : callback:(Gdk.Event.Crossing.t -> bool) -> Signal.id
-    method map : callback:([MAP] Gdk.event -> bool) -> Signal.id
-    method motion_notify : callback:(Gdk.Event.Motion.t -> bool) -> Signal.id
+    method any :
+	callback:(Gdk.Tags.event_type Gdk.event -> bool) -> GtkSignal.id
+    method button_press :
+	callback:(Gdk.Event.Button.t -> bool) -> GtkSignal.id
+    method button_release :
+	callback:(Gdk.Event.Button.t -> bool) -> GtkSignal.id
+    method configure : callback:(Gdk.Event.Configure.t -> bool) -> GtkSignal.id
+    method delete : callback:([DELETE] Gdk.event -> bool) -> GtkSignal.id
+    method destroy : callback:([DESTROY] Gdk.event -> bool) -> GtkSignal.id
+    method enter_notify :
+	callback:(Gdk.Event.Crossing.t -> bool) -> GtkSignal.id
+    method expose : callback:(Gdk.Event.Expose.t -> bool) -> GtkSignal.id
+    method focus_in : callback:(Gdk.Event.Focus.t -> bool) -> GtkSignal.id
+    method focus_out : callback:(Gdk.Event.Focus.t -> bool) -> GtkSignal.id
+    method key_press : callback:(Gdk.Event.Key.t -> bool) -> GtkSignal.id
+    method key_release : callback:(Gdk.Event.Key.t -> bool) -> GtkSignal.id
+    method leave_notify :
+	callback:(Gdk.Event.Crossing.t -> bool) -> GtkSignal.id
+    method map : callback:([MAP] Gdk.event -> bool) -> GtkSignal.id
+    method motion_notify :
+	callback:(Gdk.Event.Motion.t -> bool) -> GtkSignal.id
     method property_notify :
-	callback:(Gdk.Event.Property.t -> bool) -> Signal.id
+	callback:(Gdk.Event.Property.t -> bool) -> GtkSignal.id
     method proximity_in :
-	callback:(Gdk.Event.Proximity.t -> bool) -> Signal.id
+	callback:(Gdk.Event.Proximity.t -> bool) -> GtkSignal.id
     method proximity_out :
-      callback:(Gdk.Event.Proximity.t -> bool) -> Signal.id
+      callback:(Gdk.Event.Proximity.t -> bool) -> GtkSignal.id
     method selection_clear :
-      callback:(Gdk.Event.Selection.t -> bool) -> Signal.id
+      callback:(Gdk.Event.Selection.t -> bool) -> GtkSignal.id
     method selection_notify :
-      callback:(Gdk.Event.Selection.t -> bool) -> Signal.id
+      callback:(Gdk.Event.Selection.t -> bool) -> GtkSignal.id
     method selection_request :
-      callback:(Gdk.Event.Selection.t -> bool) -> Signal.id
-    method unmap : callback:([UNMAP] Gdk.event -> bool) -> Signal.id
+      callback:(Gdk.Event.Selection.t -> bool) -> GtkSignal.id
+    method unmap : callback:([UNMAP] Gdk.event -> bool) -> GtkSignal.id
   end
 
 class widget_misc :
   ([> widget]) obj ->
   object
-    val obj : Widget.t obj
+    val obj : Gtk.widget obj
     method activate : unit -> bool
     method add_accelerator :
-      sig:(Widget.t, unit -> unit) Signal.t -> AccelGroup.t -> key:char ->
-      ?mod:Gdk.Tags.modifier list -> ?flags:AccelGroup.accel_flag list -> unit
+      sig:(Gtk.widget, unit -> unit) GtkSignal.t -> accel_group -> key:char ->
+      ?mod:Gdk.Tags.modifier list -> ?flags:Tags.accel_flag list -> unit
     method colormap : Gdk.colormap
     method draw : Gdk.Rectangle.t -> unit
     method event : 'a Gdk.event -> bool
@@ -107,7 +113,7 @@ class widget_misc :
     method popup : x:int -> y:int -> unit
     method realize : unit -> unit
     method remove_accelerator :
-      AccelGroup.t -> key:char -> ?mod:Gdk.Tags.modifier list -> unit
+      accel_group -> key:char -> ?mod:Gdk.Tags.modifier list -> unit
     method reparent : #is_widget -> unit
     method set :
       ?name:string ->
@@ -116,12 +122,12 @@ class widget_misc :
       ?can_default:bool ->
       ?can_focus:bool ->
       ?x:int ->
-      ?y:int -> ?width:int -> ?height:int -> ?style:Style.t -> unit
+      ?y:int -> ?width:int -> ?height:int -> ?style:style -> unit
     method show : unit -> unit
     method show_all : unit -> unit
     method show_now : unit -> unit
-    method style : Style.t
-    method toplevel : Widget.t obj
+    method style : style
+    method toplevel : Gtk.widget obj
     method unmap : unit -> unit
     method unrealize : unit -> unit
     method visible : bool
@@ -134,7 +140,7 @@ and widget :
   object
     inherit gtkobj
     val obj : 'a obj
-    method as_widget : Widget.t obj
+    method as_widget : Gtk.widget obj
     method misc : widget_misc
     method show : unit -> unit
   end
@@ -144,10 +150,11 @@ and widget_signals :
   object
     inherit gtkobj_signals 
     val obj : 'a obj
-    method draw : callback:(Gdk.Rectangle.t -> unit) -> Signal.id
+    method draw : callback:(Gdk.Rectangle.t -> unit) -> GtkSignal.id
     method event : event_signals
-    method parent_set : callback:(widget_wrapper option -> unit) -> Signal.id
-    method show : callback:(unit -> unit) -> Signal.id
+    method parent_set :
+	callback:(widget_wrapper option -> unit) -> GtkSignal.id
+    method show : callback:(unit -> unit) -> GtkSignal.id
   end
 
 and widget_wrapper :
