@@ -20,12 +20,15 @@ let init_tags (tb : GText.buffer) =
   ()
 
 let tpos ~(start : GText.iter) pos =
-  let bol = start#copy#forward_lines pos.pos_lnum in
-  bol#set_line_index (pos.pos_cnum - pos.pos_bol);
-  bol
+  let it = start#copy and l = pos.pos_lnum - 1 in
+  if l = 0 then
+    it#set_line_index (pos.pos_cnum + it#line_index)
+  else
+    (it#forward_lines l)#set_line_index (pos.pos_cnum - pos.pos_bol);
+  it
 
 let tag ?start ?stop (tb : GText.buffer) =
-  let start = Gaux.default tb#start_iter~opt:start
+  let start = Gaux.default tb#start_iter ~opt:start
   and stop = Gaux.default tb#end_iter ~opt:stop in
   let tpos = tpos ~start in
   let text = tb#get_text ~start ~stop () in
