@@ -127,6 +127,13 @@ CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
     return Val_unit;
 }
 
+/* Thread initialization ? */
+/*
+ML_1(g_thread_init, NULL Ignore, Unit)
+ML_0(gdk_threads_enter, Unit)
+ML_0(gdk_threads_leave, Unit)
+*/
+
 /* This is not used, but could be someday... */
 /*
 CAMLprim value Val_GSList (GSList *list, value (*func)(gpointer))

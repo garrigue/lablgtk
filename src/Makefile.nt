@@ -126,6 +126,9 @@ lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
+gtkThread.cmi: gtkThread.mli
+	$(COMPILER) $(THFLAGS) gtkThread.mli
+
 gtkThread.cmx: gtkThread.ml
 	$(COMPOPT) $(THFLAGS) gtkThread.ml
 

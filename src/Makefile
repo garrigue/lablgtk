@@ -196,6 +196,9 @@ lablglade.cmxa: liblablglade.a $(GLADEMLOBJS:.cmo=.cmx)
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
+gtkThread.cmi: gtkThread.mli
+	$(COMPILER) $(THFLAGS) gtkThread.mli
+
 gtkThread.cmx: gtkThread.ml
 	if test -f $(LIBDIR)/libthreadsnat.a; then \
 	   $(COMPOPT) $(THFLAGS) gtkThread.ml; fi
