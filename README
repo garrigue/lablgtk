@@ -39,6 +39,19 @@ Contents:
                 unison          a frontend for the Unison file synchronizer
                                 see the README for details.
 
+Upgrading from lablgtk-1.00:
+  There are a few incompatibilities between this version and the
+  previous release. We do not describe them all, since usually a type
+  error message will inform you.
+  * all signals are no longer under #connect. #connect#event changed
+    to #event#connect, and some signals are under #misc#connect or
+    #grab#connect. See lower for a description of the new widget
+    structure.
+  * some defaults changed. In particular GPack.box#pack have now all
+    its parameter defaulting to false rather than true. See lower for
+    the new default policy. Beware that this does not cause type
+    errors, just changes in the aspect.
+
 How to run the examples:
   In the examples directory just type:
 	lablgtk -labels examples/???.ml

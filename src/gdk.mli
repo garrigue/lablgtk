@@ -117,8 +117,8 @@ module Color :
     ]
     val alloc : colormap:colormap -> spec -> t
     external red : t -> int = "ml_GdkColor_red"
-    external blue : t -> int = "ml_GdkColor_green"
-    external green : t -> int = "ml_GdkColor_blue"
+    external blue : t -> int = "ml_GdkColor_blue"
+    external green : t -> int = "ml_GdkColor_green"
     external pixel : t -> int = "ml_GdkColor_pixel"
   end
 

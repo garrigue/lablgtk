@@ -226,7 +226,7 @@ class color_selection : Gtk.color_selection obj ->
     val obj : Gtk.color_selection obj
     method get_color : Gtk.color
     method set_color :
-      red:float -> green:float -> blue:float -> ?opacity:float -> unit
+      red:float -> green:float -> blue:float -> ?opacity:float -> unit -> unit
     method set_opacity : bool -> unit
     method set_update_policy : Tags.update_type -> unit
   end

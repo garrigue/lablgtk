@@ -1,5 +1,9 @@
 $Id$
 
+2000.8.29
+  * bugs in color selection reported by Nicolas George
+  * changed the license
+
 2000.8.21
   * correct GtkStyle.set_font bug reported by Patrick Doane
 
