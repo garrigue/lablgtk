@@ -125,6 +125,11 @@ void       gtk_tree2_remove_item        (GtkTree2          *tree,
 void       gtk_tree2_item_up             (GtkTree2   *tree,
 		                         gint       position);
 
+void gtk_tree2_select_next_child (GtkTree2   *tree,
+				  GtkWidget *tree_item, gboolean descend);
+
+void gtk_tree2_select_prev_child (GtkTree2   *tree,
+				  GtkWidget *tree_item);
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,9 @@
 $Id$
 
+2000.05.15
+  * suppressed treew.ml; replaced by ti*.ml
+  * new widgets
+  * less known bugs  (Hubert)
 1999.10.28
   * re-objectified property.ml
   * split it into common.mli/property.ml/propwin.ml

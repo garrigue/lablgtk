@@ -1364,3 +1364,22 @@ gtk_tree2_set_view_lines (GtkTree2       *tree,
   
   tree->view_line = flag;
 }
+
+void 
+gtk_tree2_item_up_1 (GtkTree2       *tree,
+		   guint pos)
+{
+  GList *tmp;
+  guint length;
+  gpointer data;
+
+  g_return_if_fail (tree != NULL);
+  g_return_if_fail (GTK_IS_TREE2 (tree));
+  
+  tmp = tree->children;
+  length = g_list_length (tmp);
+  if (pos <= 0 || pos >= length) { return; }
+  data = g_list_nth_data (tree->children, pos);
+  g_list_remove (tree->children, data);
+  tree->children = g_list_insert (tree->children, data, pos-1);
+}

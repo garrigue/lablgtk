@@ -51,9 +51,9 @@ and tree : Gtk.tree obj ->
     method remove_items : tree_item list -> unit
     method select_item : pos:int -> unit
     method selection : tree_item list
-    method set_selection_mode : Tags.selection_mode -> unit
+(*    method set_selection_mode : Tags.selection_mode -> unit *)
     method set_view_lines : bool -> unit
-    method set_view_mode : [`LINE|`ITEM] -> unit
+(*    method set_view_mode : [`LINE|`ITEM] -> unit *)
     method unselect_item : pos:int -> unit
     method private wrap : Gtk.widget obj -> tree_item
   end
