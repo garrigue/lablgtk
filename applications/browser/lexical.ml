@@ -125,4 +125,4 @@ let tag ?start ?stop (tb : GText.buffer) =
     done
   with
     End_of_file -> ()
-  | Lexer.Error (err, loc) -> ()
+  | Lexer.Error _ -> ()
