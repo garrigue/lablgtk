@@ -321,6 +321,29 @@ for (field=0; field<len; field++) Field(ret,field) = 0; field = 3
 	Get_field (ev->configure, width, Val_int);
 	Get_field (ev->configure, height, Val_int);
 	break;
+    case GDK_PROPERTY_NOTIFY:
+	Init_fields(6);
+	Get_field (ev->property, atom, Val_int);
+	Get_field (ev->property, time, Val_int);
+	Get_field (ev->property, state, Val_int);
+	break;
+    case GDK_SELECTION_CLEAR:
+    case GDK_SELECTION_REQUEST:
+    case GDK_SELECTION_NOTIFY:
+	Init_fields(8);
+	Get_field (ev->selection, selection, Val_int);
+	Get_field (ev->selection, target, Val_int);
+	Get_field (ev->selection, property, Val_int);
+	Get_field (ev->selection, requestor, Val_int);
+	Get_field (ev->selection, time, Val_int);
+	break;
+    case GDK_PROXIMITY_IN:
+    case GDK_PROXIMITY_OUT:
+	Init_field(6);
+	Get_field (ev->proximity, time, Val_int);
+	Get_field (ev->proximity, source, Val_gdkInputSource);
+	Get_field (ev->proximity, deviceid, Val_int);
+	break;
     }
     field = 0;
     Get_field ((*ev), type, Val_gdkEventType);
