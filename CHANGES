@@ -1,5 +1,10 @@
 $Id$
 
+2001.10.04
+  * add Gdk.Window.get_colormap
+  * change APIs in Gdk.Pixmap/Bitmap and GDraw.create_pixmap*
+    (window parameter is not strictly necessary)
+
 2001.09.13
   * improve dll-ization
   * add patch for unison-2.7.1

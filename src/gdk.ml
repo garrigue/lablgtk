@@ -144,6 +144,8 @@ module Color = struct
   external colormap_new : visual -> privat:bool -> colormap
       = "ml_gdk_colormap_new"
   let get_colormap ?(privat=false) vis = colormap_new vis ~privat
+  external get_visual : colormap -> visual
+      = "ml_gdk_colormap_get_visual"
 
   type spec = [ `BLACK | `NAME of string | `RGB of int * int * int | `WHITE]
   let color_alloc ~colormap color =
@@ -177,6 +179,7 @@ module Window = struct
   type background_pixmap = [ `NONE | `PARENT_RELATIVE | `PIXMAP of pixmap]
   external visual_depth : visual -> int = "ml_gdk_visual_get_depth"
   external get_visual : window -> visual = "ml_gdk_window_get_visual"
+  external get_colormap : window -> colormap = "ml_gdk_window_get_colormap"
   external get_parent : window -> window = "ml_gdk_window_get_parent"
   external get_size : 'a drawable -> int * int = "ml_gdk_window_get_size"
   external get_position : 'a drawable -> int * int =
@@ -307,28 +310,40 @@ module GC = struct
 end
 
 module Pixmap = struct
-  external create : window -> width:int -> height:int -> depth:int -> pixmap
+  open Gpointer
+  external create :
+      window optboxed -> width:int -> height:int -> depth:int -> pixmap
       = "ml_gdk_pixmap_new"
+  let create ?window ~width ~height ?(depth = -1) () =
+    try create (optboxed window) ~width ~height ~depth
+    with _ -> failwith "Gdk.Pixmap.create"
   external create_from_data :
-      window -> string -> width:int -> height:int -> depth:int ->
+      window optboxed -> string -> width:int -> height:int -> depth:int ->
       fg:Color.t -> bg:Color.t -> pixmap
       = "ml_gdk_pixmap_create_from_data_bc" "ml_gdk_pixmap_create_from_data"
+  let create_from_data ?window ~width ~height ?(depth = -1) ~fg ~bg data =
+    try create_from_data (optboxed window) data ~width ~height ~depth ~fg ~bg
+    with _ -> failwith "Gdk.Pixmap.create_from_data"
   external create_from_xpm :
-      window -> ?colormap:colormap -> ?transparent:Color.t ->
+      ?window:window -> ?colormap:colormap -> ?transparent:Color.t ->
       file:string -> unit -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm"
   external create_from_xpm_d :
-      window -> ?colormap:colormap -> ?transparent:Color.t ->
+      ?window:window -> ?colormap:colormap -> ?transparent:Color.t ->
       data:string array -> unit -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm_d"
 end
 
 module Bitmap = struct
-  let create : window -> width:int -> height:int -> bitmap =
-    Obj.magic (Pixmap.create ~depth:1)
+  open Gpointer
+  let create ?window ~width ~height () : bitmap =
+    Obj.magic (Pixmap.create ?window ~width ~height ~depth:1 () : pixmap)
   external create_from_data :
-      window -> string -> width:int -> height:int -> bitmap
+      window optboxed -> string -> width:int -> height:int -> bitmap
       = "ml_gdk_bitmap_create_from_data"
+  let create_from_data ?window ~width ~height data =
+    try create_from_data (optboxed window) data ~width ~height
+    with _ -> failwith "Gdk.Bitmap.create_from_data"
 end
 
 module Font = struct

@@ -96,15 +96,15 @@ class type misc_ops =
   end
 
 val pixmap :
-  window:< misc : #misc_ops; .. > ->
+  ?window:< misc : #misc_ops; .. > -> ?colormap:colormap ->
   width:int -> height:int -> ?mask:bool -> unit -> pixmap
 val pixmap_from_xpm :
-  window:< misc : #misc_ops; .. > ->
   file:string ->
+  ?window:< misc : #misc_ops; .. > ->
   ?colormap:colormap -> ?transparent:color -> unit -> pixmap
 val pixmap_from_xpm_d :
-  window:< misc : #misc_ops; .. > ->
   data:string array ->
+  ?window:< misc : #misc_ops; .. > ->
   ?colormap:colormap -> ?transparent:color -> unit -> pixmap
 
 class drag_context : Gdk.drag_context ->
