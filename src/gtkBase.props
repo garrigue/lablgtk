@@ -122,7 +122,8 @@ class Container abstract : Widget {
   method check_resize
   method add : "[>`widget] obj -> unit"
   method remove : "[>`widget] obj -> unit"
-  method foreach : "f:(widget obj-> unit) -> unit"
+  method forall : "f:(widget obj -> unit) -> unit"
+  method foreach : "f:(widget obj -> unit) -> unit"
   (* Called by Widget.grab_focus *)
   method set_focus_child : "[>`widget] optobj -> unit"
   method set_focus_vadjustment : "[>`adjustment] optobj -> unit"

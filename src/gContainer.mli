@@ -25,7 +25,8 @@ class container : ([> Gtk.container] as 'a) obj ->
     inherit GObj.widget
     val obj : 'a obj
     method add : widget -> unit
-    method children : widget list
+    method children : widget list     (* using foreach *)
+    method all_children : widget list (* using forall *)
     method remove : widget -> unit
     method focus : focus
     method set_border_width : int -> unit
@@ -104,6 +105,7 @@ class virtual ['a] item_container : ([> Gtk.container] as 'c) obj ->
     method add : 'a -> unit
     method append : 'a -> unit
     method children : 'a list
+    method all_children : 'a list
     method virtual insert : 'a -> pos:int -> unit
     method prepend : 'a -> unit
     method remove : 'a -> unit

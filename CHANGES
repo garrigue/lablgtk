@@ -3,6 +3,8 @@ $Id$
 2004.03.18 [Jacques]
   * move GTree.tree to GBroken.tree (really broken in 2.4?)
   * add GBroken.text
+  * add GContainer#all_children
+  * add GUtil.print_widget
 
 2004.03.17 [Olivier]
   * add GFile.filter#add_custom
