@@ -5,15 +5,6 @@ open Gtk
 
 let _ = Callback.register_exception "gtkerror" (Error"")
 
-module Timeout = struct
-  type id
-  external add : ms:int -> callback:(GtkArgv.t -> unit) -> id
-      = "ml_gtk_timeout_add"
-  let add ~ms ~callback =
-    add ~ms ~callback:(fun arg -> GtkArgv.set_result arg (`BOOL(callback ())))
-  external remove : id -> unit = "ml_gtk_timeout_remove"
-end
-
 module Main = struct
   external init : string array -> string array = "ml_gtk_init"
   (* external exit : int -> unit = "ml_gtk_exit" *)

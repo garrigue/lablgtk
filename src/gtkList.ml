@@ -265,10 +265,9 @@ module CList = struct
     may_set set_selectable  selectable;
     may_set set_row_style style
   module Signals = struct
-    open GtkArgv
     open GtkSignal
     let marshal_select f argv = function
-      | INT row :: INT column :: POINTER p :: _ ->
+      | `INT row :: `INT column :: `POINTER p :: _ ->
           let event : GdkEvent.Button.t option =
 	    may_map ~f:GdkEvent.unsafe_copy p
           in
@@ -282,7 +281,7 @@ module CList = struct
       { name = "click_column"; classe = `clist; marshaller = marshal_int }
     external val_scroll_type : int -> scroll_type = "ml_Val_scroll_type"
     let marshal_scroll f argv = function
-      | INT st :: FLOAT (pos : clampf) :: _ ->
+      | `INT st :: `FLOAT (pos : clampf) :: _ ->
           f (val_scroll_type st) ~pos
       | _ -> invalid_arg "GtkList.CList.Signals.marshal_scroll"
     let scroll_horizontal =
@@ -291,9 +290,10 @@ module CList = struct
     let scroll_vertical =
       { name = "scroll_vertical"; classe = `clist;
         marshaller = marshal_scroll }
-    external emit_scroll :
-        'a obj -> name:string -> Tags.scroll_type -> pos:clampf -> unit
-        = "ml_gtk_signal_emit_scroll"
-    let emit_scroll = emit ~emitter:emit_scroll
+    external scroll_type : Tags.scroll_type -> int = "ml_Scroll_type_val"
+    let emit_scroll =
+      emit ~conv:ignore ~emitter:
+        (fun ~cont (t : Tags.scroll_type) ~(pos:clampf) ->
+          cont [|`INT(scroll_type t); `FLOAT pos|])
   end
 end

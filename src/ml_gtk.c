@@ -688,6 +688,7 @@ CAMLprim value ml_gtk_get_version (value unit)
 
 /* Marshalling */
 
+/*
 void ml_gtk_callback_marshal (GtkObject *object, gpointer data,
 			       guint nargs, GtkArg *args)
 {
@@ -748,14 +749,12 @@ CAMLprim value ml_gtk_arg_get (GtkArg *arg)
     case GTK_TYPE_DOUBLE:
         tag = 3;
         tmp = copy_double (GTK_VALUE_DOUBLE(*arg)); break;
-/*
     case GTK_TYPE_STRING:
         tag = 4;
         tmp = Val_option (GTK_VALUE_STRING(*arg), copy_string); break;
     case GTK_TYPE_OBJECT:
         tag = 5;
         tmp = Val_option (GTK_VALUE_OBJECT(*arg), Val_GtkObject); break;
-*/
     case GTK_TYPE_BOXED:
     case GTK_TYPE_POINTER:
         tag = 6;
@@ -788,12 +787,10 @@ CAMLprim value ml_gtk_arg_set_retloc (GtkArg *arg, value val)
     case GTK_TYPE_ULONG:  *GTK_RETLOC_LONG(*arg) = Nativeint_val(data); break;
     case GTK_TYPE_FLOAT:  *GTK_RETLOC_FLOAT(*arg) = Float_val(data); break;
     case GTK_TYPE_DOUBLE: *GTK_RETLOC_DOUBLE(*arg) = Double_val(data); break;
-/*
     case GTK_TYPE_STRING:
          *GTK_RETLOC_STRING(*arg) = Option_val(data, String_val, NULL);
          break;
     case GTK_TYPE_OBJECT:
-*/
     case GTK_TYPE_BOXED:
     case GTK_TYPE_POINTER:
          *GTK_RETLOC_POINTER(*arg) = Option_val(data, Pointer_val, NULL);
@@ -835,9 +832,11 @@ CAMLprim value ml_gtk_arg_get_pointer (GtkArg *arg)
     }
     return Val_pointer(p);
 }
+*/
 
 /* gtksignal.h */
 
+/*
 CAMLprim value ml_gtk_signal_connect (value object, value name,
                                       value clos, value after)
 {
@@ -858,16 +857,8 @@ ML_3_name (ml_gtk_signal_emit_int, gtk_signal_emit_by_name,
            GtkObject_val, String_val, Int_val, Unit)
 ML_4_name (ml_gtk_signal_emit_scroll, gtk_signal_emit_by_name,
            GtkObject_val, String_val, Scroll_type_val, Double_val, Unit)
+*/
 
 /* gtkmain.h (again) */
-
-CAMLprim value ml_gtk_timeout_add (value interval, value clos)
-{
-    value *clos_p = ml_global_root_new (clos);
-    return Val_int (gtk_timeout_add_full
-		    (Int_val(interval), NULL, ml_gtk_callback_marshal, clos_p,
-		     ml_global_root_destroy));
-}
-ML_1 (gtk_timeout_remove, Int_val, Unit)
 
 ML_1 (gtk_rc_add_default_file, String_val, Unit)

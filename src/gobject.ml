@@ -45,12 +45,14 @@ end
 
 module Value = struct
   external create : g_type -> g_value = "ml_g_value_new"
+      (* create a g_value owned by ML *)
+  external release : g_value -> unit = "ml_g_value_release"
+      (* invalidate a g_value, releasing the data if owned by ML *)
   external get_type : g_value -> g_type = "ml_G_VALUE_TYPE"
   external copy : g_value -> g_value -> unit = "ml_g_value_copy"
   external reset : g_value -> unit = "ml_g_value_reset"
-  external unset : g_value -> unit = "ml_g_value_unset"
   external get : g_value -> data_get = "ml_g_value_get"
-  external set : g_value -> 'a data_set -> unit = "ml_g_value_set"
+  external set : g_value -> 'a data_set -> unit = "ml_g_value_set_variant"
   external get_pointer : g_value -> Gpointer.boxed = "ml_g_value_get_pointer"
   external get_nativeint : g_value -> nativeint = "ml_g_value_get_nativeint"
 end

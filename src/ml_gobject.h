@@ -10,5 +10,6 @@ value Val_GObject_new (GObject *);
 #define GClosure_val(val) ((GClosure*)Pointer_val(val))
 value Val_GClosure (GClosure *);
 
-#define Val_GValue(val) ((value)val)
-#define GValue_val(val) ((GValue *)val)
+#define Val_GValue Val_pointer  /* Must use Value.copy on ML side */
+#define GValue_val(val) ((GValue *)Pointer_val(val))
+GValue *GValue_check(value);    /* Error if NULL */
