@@ -5,6 +5,7 @@ open Gtk
 open Tags
 open GtkBase
 
+(* DEPRECATED in GTK 2 :
 module Progress = struct
   let cast w : progress obj = Object.try_cast w "GtkProgress"
   external set_show_text : [>`progress] obj -> bool -> unit
@@ -43,10 +44,36 @@ module Progress = struct
     if text_xalign <> None || text_yalign <> None then
       set_text_alignment w ?x:text_xalign ?y:text_yalign ()
 end
+*)
 
 module ProgressBar = struct
   let cast w : progress_bar obj = Object.try_cast w "GtkProgressBar"
   external create : unit -> progress_bar obj = "ml_gtk_progress_bar_new"
+
+  external pulse : [>`progressbar] obj -> unit = "ml_gtk_progress_bar_pulse"
+
+  external set_text : [>`progressbar] obj -> string -> unit = "ml_gtk_progress_bar_set_text"
+
+  external set_fraction : [>`progressbar] obj -> float -> unit = "ml_gtk_progress_bar_set_fraction"
+
+  external set_pulse_step : [>`progressbar] obj -> float -> unit = "ml_gtk_progress_bar_set_pulse_step"
+
+  external get_text : [>`progressbar] obj -> string = "ml_gtk_progress_bar_get_text"
+
+  external get_fraction : [>`progressbar] obj -> float = "ml_gtk_progress_bar_get_fraction"
+
+  external get_pulse_step : [>`progressbar] obj -> float = "ml_gtk_progress_bar_get_pulse_step"
+
+
+  external set_orientation :
+      [>`progressbar] obj -> Tags.progress_bar_orientation -> unit
+      = "ml_gtk_progress_bar_set_orientation"
+  external get_orientation :
+      [>`progressbar] obj -> Tags.progress_bar_orientation
+      = "ml_gtk_progress_bar_get_orientation"
+
+
+(* DEPRECATED in GTK 2 
   external create_with_adjustment : [>`adjustment] obj -> progress_bar obj
       = "ml_gtk_progress_bar_new_with_adjustment"
   external set_bar_style :
@@ -61,12 +88,13 @@ module ProgressBar = struct
   external set_orientation :
       [>`progressbar] obj -> Tags.progress_bar_orientation -> unit
       = "ml_gtk_progress_bar_set_orientation"
-  let set ?bar_style ?discrete_blocks ?activity_step ?activity_blocks w =
+*)
+  let set ?text ?fraction ?pulse_step ?orientation w =
     let may_set f opt = may opt ~f:(f w) in
-    may_set set_bar_style bar_style;
-    may_set set_discrete_blocks discrete_blocks;
-    may_set set_activity_step activity_step;
-    may_set set_activity_blocks activity_blocks
+    may_set set_text text;
+    may_set set_fraction fraction;
+    may_set set_pulse_step pulse_step;
+    may_set set_orientation orientation
 end
 
 module Range = struct

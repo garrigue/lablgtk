@@ -1,5 +1,8 @@
 $Id$
 
+2003.04.21 [Benjamin]
+ * GRange.progress_bar updated. Old functions deprecated.
+
 2003.04.12 [Olivier]
  * add GWindow.message_dialog, add methods in GWindow.dialog
 

@@ -16,7 +16,7 @@
 #include "gtk_tags.h"
 
 /* gtkprogress.h */
-
+/*
 #define GtkProgress_val(val) check_cast(GTK_PROGRESS,val)
 ML_2 (gtk_progress_set_show_text, GtkProgress_val, Bool_val, Unit)
 ML_3 (gtk_progress_set_text_alignment, GtkProgress_val,
@@ -34,20 +34,33 @@ ML_2 (gtk_progress_set_activity_mode, GtkProgress_val, Bool_val, Unit)
 ML_1 (gtk_progress_get_current_text, GtkProgress_val, Val_string)
 Make_Extractor (gtk_progress_get, GtkProgress_val, adjustment,
 		Val_GtkAny)
-
+*/
 /* gtkprogressbar.h */
 
 #define GtkProgressBar_val(val) check_cast(GTK_PROGRESS_BAR,val)
 ML_0 (gtk_progress_bar_new, Val_GtkWidget_sink)
-ML_1 (gtk_progress_bar_new_with_adjustment, GtkAdjustment_val,
+
+ML_2 (gtk_progress_bar_set_orientation, GtkProgressBar_val,Progress_bar_orientation_val, Unit)
+ML_1 (gtk_progress_bar_get_orientation, GtkProgressBar_val,Val_progress_bar_orientation)
+
+
+ML_2 (gtk_progress_bar_set_pulse_step, GtkProgressBar_val,Float_val, Unit)
+ML_1 (gtk_progress_bar_get_pulse_step, GtkProgressBar_val,copy_double)
+ML_2 (gtk_progress_bar_set_fraction, GtkProgressBar_val,Float_val, Unit)
+ML_1 (gtk_progress_bar_get_fraction, GtkProgressBar_val,copy_double)
+ML_2 (gtk_progress_bar_set_text, GtkProgressBar_val,String_val, Unit)
+ML_1 (gtk_progress_bar_get_text, GtkProgressBar_val,Val_string)
+ML_1 (gtk_progress_bar_pulse, GtkProgressBar_val, Unit)
+
+     /*ML_1 (gtk_progress_bar_new_with_adjustment, GtkAdjustment_val,
       Val_GtkWidget_sink)
 ML_2 (gtk_progress_bar_set_bar_style, GtkProgressBar_val,
       Progress_bar_style_val, Unit)
 ML_2 (gtk_progress_bar_set_discrete_blocks, GtkProgressBar_val, Int_val, Unit)
 ML_2 (gtk_progress_bar_set_activity_step, GtkProgressBar_val, Int_val, Unit)
 ML_2 (gtk_progress_bar_set_activity_blocks, GtkProgressBar_val, Int_val, Unit)
-ML_2 (gtk_progress_bar_set_orientation, GtkProgressBar_val,
-      Progress_bar_orientation_val, Unit)
+
+ */
 /* ML_2 (gtk_progress_bar_update, GtkProgressBar_val, Float_val, Unit) */
 
 /* gtkrange.h */
