@@ -1,7 +1,12 @@
 $Id$
 
+1998.12.3
+  * pousse.ml is now a reversi game (idea for strategy ?)
+  * solved startup bug (a value checker for ocaml is now available)
+ (Jacques)
+
 1998.12.2
-  * added GdkObj for high level drawing primitives
+  * added GdkObj for high level drawing primitives (Jacques)
 
 1998.11.30
   * removed cast checking for NULL valued widgets (ml_gtk.[ch])

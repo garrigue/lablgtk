@@ -1764,7 +1764,7 @@ module Text = struct
 end
 
 module Combo = struct
-  type t = [widget container bbox combo]
+  type t = [widget container box combo]
   let cast w : t obj =
     if Object.is_a w "GtkCombo" then Obj.magic w
     else invalid_arg "Gtk.Combo.cast"
@@ -1803,7 +1803,7 @@ module Combo = struct
 end
 
 module Statusbar = struct
-  type t = [widget container bbox statusbar]
+  type t = [widget container box statusbar]
   let cast w : t obj =
     if Object.is_a w "GtkStatusbar" then Obj.magic w
     else invalid_arg "Gtk.Statusbar.cast"
@@ -1817,7 +1817,7 @@ module Statusbar = struct
   external pop : [> statusbar] obj -> context ->  unit
       = "ml_gtk_statusbar_pop"
   external remove : [> statusbar] obj -> context -> message -> unit
-      = "ml_gtk_statusbar_push"
+      = "ml_gtk_statusbar_remove"
   module Signals = struct
     open Signal
     let text_pushed : ([> statusbar],_) t =
