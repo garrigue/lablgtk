@@ -1,5 +1,9 @@
 $Id$
 
+2004.11.17 [Jacques]
+  * fix make depend
+  * cleanup lablgtk2.in
+
 2004.11.15 [Olivier]
   * add max-position and min-position in GPack.paned (2.4)
   * add GtkSpell interface (http://gtkspell.sf.net/)

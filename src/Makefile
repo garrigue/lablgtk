@@ -132,10 +132,6 @@ endif
 %Props.ml o%Props.ml: %.props propcc$(XE)
 	./propcc $<
 
-# Targets
-byte: $(TARGETS)
-opt:  $(TARGETS) lablgtkopt
-
 # Files
 GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkaction$(XO) \
 	ml_gtkbin$(XO) ml_gtkbroken$(XO) ml_gtkbutton$(XO) \
@@ -173,16 +169,20 @@ ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
+# Targets
+byte: $(TARGETS) $(INITOBJS)
+opt:  $(TARGETS) lablgtkopt
+
 depend: $(ENUMOBJS:.cmo=.ml) $(GTKPROPS:%.props=%Props.ml) $(GTKPROPS:%.props=o%Props.ml)
 	ocamldep $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) *.mli > .depend
 
 ifeq ($(THREADS_LIB),no)
-lablgtktop$(XE): $(MLLIBS) $(INITOBJS)
-	$(TOPLEVEL) $(CUSTOM) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
+lablgtktop$(XE): $(MLLIBS)
+	$(TOPLEVEL) $(CUSTOM) -o $@ $(MLLINK) -I . $(MLLIBS)
 else
-lablgtktop$(XE): $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
+lablgtktop$(XE): $(MLLIBS) $(ALLTHOBJS)
 	$(TOPLEVEL) $(THFLAGS) $(CUSTOM) -o $@ $(THLINK) $(MLLINK) \
-	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS)
+	   -I . $(MLLIBS) $(THOBJS)
 endif
 
 lablgtk2: Makefile $(CONFIG) lablgtk2.in
