@@ -263,6 +263,7 @@ ML_2 (gtk_widget_set_state, GtkWidget_val, State_type_val, Unit)
 ML_2 (gtk_widget_set_sensitive, GtkWidget_val, Bool_val, Unit)
 ML_3 (gtk_widget_set_uposition, GtkWidget_val, Int_val, Int_val, Unit)
 ML_3 (gtk_widget_set_usize, GtkWidget_val, Int_val, Int_val, Unit)
+ML_3 (gtk_widget_set_size_request, GtkWidget_val, Int_val, Int_val, Unit)
 ML_2 (gtk_widget_add_events, GtkWidget_val, Flags_Event_mask_val, Unit)
 ML_2 (gtk_widget_set_events, GtkWidget_val, Flags_Event_mask_val, Unit)
 ML_2 (gtk_widget_set_extension_events, GtkWidget_val, Extension_events_val,
@@ -539,6 +540,7 @@ Make_Extractor (gtk_window_get, GtkWindow_val, allow_shrink, Val_bool)
 Make_Extractor (gtk_window_get, GtkWindow_val, allow_grow, Val_bool)
 ML_2 (gtk_window_set_modal, GtkWindow_val, Bool_val, Unit)
 ML_3 (gtk_window_set_default_size, GtkWindow_val, Int_val, Int_val, Unit)
+ML_1 (gtk_window_present, GtkWindow_val, Unit)
 
 /* gtkcolorsel.h */
 

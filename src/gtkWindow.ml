@@ -79,6 +79,8 @@ module Window = struct
       = "ml_gtk_window_activate_focus"
   external activate_default : [>`window] obj -> unit
       = "ml_gtk_window_activate_default"
+  external present :  [>`window] obj -> unit
+      = "ml_gtk_window_present"
   module Signals = struct
     open GtkSignal
     let move_resize =

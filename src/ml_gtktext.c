@@ -392,7 +392,7 @@ ML_0 (gtk_text_view_new, Val_GtkWidget_sink)
 ML_1 (gtk_text_view_new_with_buffer, GtkTextBuffer_val, Val_GtkWidget_sink)
 
 ML_2 (gtk_text_view_set_buffer, GtkTextView_val, GtkTextBuffer_val, Unit)
-ML_1 (gtk_text_view_get_buffer, GtkTextView_val, Val_GtkTextBuffer_new)
+ML_1 (gtk_text_view_get_buffer, GtkTextView_val, Val_GtkTextBuffer)
 
 ML_6(gtk_text_view_scroll_to_mark, GtkTextView_val, GtkTextMark_val,
      Float_val, Bool_val, Float_val,Float_val, Unit)
@@ -651,7 +651,7 @@ value ml_gtk_text_iter_get_toggled_tags(value ti, value b){
 
 value ml_gtk_text_iter_get_child_anchor(value ti)
 {
-  return (Val_option(gtk_text_iter_get_child_anchor(GtkTextIter_val(ti)),Val_GtkTextChildAnchor_new));
+  return (Val_option(gtk_text_iter_get_child_anchor(GtkTextIter_val(ti)),Val_GtkTextChildAnchor));
 }
 
 ML_2 (gtk_text_iter_begins_tag,GtkTextIter_val,

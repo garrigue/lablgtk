@@ -8,7 +8,7 @@ open GObj
 
 let separator dir ?(width = -2) ?(height = -2) ?packing ?show () =
   let w = Separator.create dir in
-  if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height;
+  if width <> -2 || height <> -2 then Widget.set_size_request w ~width ~height;
   pack_return (new widget_full w) ~packing ~show
 
 class statusbar_context obj ctx = object (self)
@@ -71,7 +71,7 @@ end
 
 let calendar ?options ?(width = -2) ?(height = -2) ?packing ?show () =
   let w = Calendar.create () in
-  if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height;
+  if width <> -2 || height <> -2 then Widget.set_size_request w ~width ~height;
   may options ~f:(Calendar.display_options w);
   pack_return (new calendar w) ~packing ~show
 
@@ -199,7 +199,7 @@ let pixmap (pm : #GDraw.pixmap) ?xalign ?yalign ?xpad ?ypad
     ?(width = -2) ?(height = -2) ?packing ?show () =
   let w = Pixmap.create pm#pixmap ?mask:pm#mask in
   Misc.set w ?xalign ?yalign ?xpad ?ypad;
-  if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height;
+  if width <> -2 || height <> -2 then Widget.set_size_request w ~width ~height;
   pack_return (new pixmap w) ~packing ~show
 
 class font_selection obj = object
