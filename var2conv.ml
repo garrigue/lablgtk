@@ -16,15 +16,16 @@ let hash_variant s =
 
 open Genlex
 
-let lexer = make_lexer ["type"; "="; "["; "]"]
+let lexer = make_lexer ["type"; "exception"; "="; "["; "]"]
 
+let exn_name = ref "invalid_argument"
 
 let may_string = parser
     [< ' String s >] -> s
   | [< >] -> ""
 
 let rec ident_list = parser
-    [< ' Ident x; s >] -> x :: ident_list s
+    [< ' Ident x; trans = may_string; s >] -> (x, trans) :: ident_list s
   | [< >] -> []
 
 open Printf
@@ -33,20 +34,34 @@ let declaration = parser
     [< ' Kwd "type"; ' Ident name; ' Kwd "=";
        prefix = may_string; ' Kwd "[";
        tags = ident_list; ' Kwd "]"; suffix = may_string >] ->
-    let ctag =
-      if prefix = "" or prefix.[String.length prefix - 1] <> '#'
-      then (fun x -> prefix ^ x ^ suffix)
-      else
-	let prefix = String.sub prefix pos:0 len:(String.length prefix - 1) in
-	(fun x -> prefix ^ String.uncapitalize (String.copy x) ^ suffix)
+    let ctag tag trans =
+      if trans <> "" then trans else
+      let tag =
+	if tag.[0] = '_' then
+	  String.sub tag pos:1 len:(String.length tag -1)
+	else tag
+      in
+      match
+	if prefix = "" then None, ""
+	else
+	  Some (prefix.[String.length prefix - 1]), 
+	  String.sub prefix pos:0 len:(String.length prefix - 1)
+      with
+	Some '#', prefix ->
+	  prefix ^ String.uncapitalize tag ^ suffix
+      |	Some '^', prefix ->
+	  prefix ^ String.uppercase tag ^ suffix
+      |	_ ->
+	  prefix ^ tag ^ suffix
     and cname =
-      String.capitalize (String.copy name)
+      String.capitalize name
     in
     printf "/* %s : ML to C */\n" name;
     printf "long %s_val (value tag) {\n" cname;
     printf "  switch (tag) {\n";
     List.iter tags fun:
-      (fun tag -> printf "  case MLTAG_%s: return %s;\n" tag (ctag tag));
+      (fun (tag,trans) ->
+	printf "  case MLTAG_%s: return %s;\n" tag (ctag tag trans));
     printf "  }\n";
     printf "  ml_raise_gtk(\"%s_val : unknown tag\");\n" cname;
     printf "}\n\n";
@@ -54,10 +69,13 @@ let declaration = parser
     printf "value Val_%s (long tag) {\n" name;
     printf "  switch (tag) {\n";
     List.iter tags fun:
-      (fun tag -> printf "  case %s: return MLTAG_%s;\n" (ctag tag) tag);
+      (fun (tag, trans) ->
+	printf "  case %s: return MLTAG_%s;\n" (ctag tag trans) tag);
     printf "  }\n";
-    printf "  ml_raise_gtk(\"Val_%s : unknown tag\");\n" name;
+    printf "  %s(\"Val_%s : unknown tag\");\n" !exn_name name;
     printf "}\n\n"
+  | [< 'Kwd"exception"; 'Ident name >] ->
+      exn_name := name
   | [< >] -> raise End_of_file
 
 let main () =
