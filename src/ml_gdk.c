@@ -182,11 +182,27 @@ Make_Extractor (GdkRectangle, GdkRectangle_val, y, Val_int)
 Make_Extractor (GdkRectangle, GdkRectangle_val, width, Val_int)
 Make_Extractor (GdkRectangle, GdkRectangle_val, height, Val_int)
 
+/* Drawable */
+
+ML_1 (gdk_drawable_get_visual, GdkDrawable_val, Val_GdkVisual)
+ML_1 (gdk_drawable_get_colormap, GdkDrawable_val, Val_GdkColormap)
+ML_1 (gdk_drawable_get_depth, GdkDrawable_val, Val_int)
+
+CAMLprim value ml_gdk_drawable_get_size (value drawable)
+{
+  int x, y;
+  value ret;
+
+  gdk_drawable_get_size (GdkDrawable_val(drawable), &x, &y);
+  
+  ret = alloc_small (2,0);
+  Field(ret,0) = Val_int(x);
+  Field(ret,1) = Val_int(y);
+  return ret;
+}
+
 /* Window */
 
-Make_Extractor (gdk_visual_get, GdkVisual_val, depth, Val_int)
-ML_1 (gdk_window_get_visual, GdkWindow_val, Val_GdkVisual)
-ML_1 (gdk_window_get_colormap, GdkWindow_val, Val_GdkColormap)
 ML_3 (gdk_window_set_back_pixmap, GdkWindow_val, GdkPixmap_val, Int_val, Unit)
 ML_2 (gdk_window_set_cursor, GdkWindow_val, GdkCursor_val, Unit)
 ML_1 (gdk_window_clear, GdkWindow_val, Unit)
@@ -209,19 +225,6 @@ CAMLprim value ml_gdk_window_get_position (value window)
   value ret;
 
   gdk_window_get_position (GdkWindow_val(window), &x, &y);
-  
-  ret = alloc_small (2,0);
-  Field(ret,0) = Val_int(x);
-  Field(ret,1) = Val_int(y);
-  return ret;
-}
-
-CAMLprim value ml_gdk_window_get_size (value window)
-{
-  int x, y;
-  value ret;
-
-  gdk_window_get_size (GdkWindow_val(window), &x, &y);
   
   ret = alloc_small (2,0);
   Field(ret,0) = Val_int(x);

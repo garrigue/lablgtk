@@ -229,16 +229,24 @@ module Rectangle = struct
   external height : t -> int = "ml_GdkRectangle_height"
 end
 
+module Drawable = struct
+  let cast w : [`drawable] obj = Gobject.try_cast w "GdkDrawable"
+  external get_visual : [>`drawable] obj -> visual
+    = "ml_gdk_drawable_get_visual"
+  external get_depth : [>`drawable] obj -> int
+    = "ml_gdk_drawable_get_depth"
+  external get_colormap : [>`drawable] obj -> colormap
+    = "ml_gdk_drawable_get_colormap"
+  external get_size : [>`drawable] obj -> int * int
+    = "ml_gdk_drawable_get_size"
+end
+
 module Window = struct
+  let cast w : window = Gobject.try_cast w "GdkWindow"
   type background_pixmap = [ `NONE | `PARENT_RELATIVE | `PIXMAP of pixmap]
-  external visual_depth : visual -> int = "ml_gdk_visual_get_depth"
-  external get_visual : window -> visual = "ml_gdk_window_get_visual"
-  external get_colormap : window -> colormap = "ml_gdk_window_get_colormap"
   external get_parent : window -> window = "ml_gdk_window_get_parent"
-  external get_size : [>`drawable] obj -> int * int = "ml_gdk_window_get_size"
-  external get_position : [>`drawable] obj -> int * int =
-    "ml_gdk_window_get_position"
-  external get_pointer_location: window -> int * int =
+  external get_position : window -> int * int = "ml_gdk_window_get_position"
+  external get_pointer_location : window -> int * int =
     "ml_gdk_window_get_pointer_location"
   external root_parent : unit -> window = "ml_GDK_ROOT_PARENT"
   external set_back_pixmap : window -> pixmap -> int -> unit = 
@@ -375,6 +383,7 @@ module GC = struct
 end
 
 module Pixmap = struct
+  let cast w : pixmap = Gobject.try_cast w "GdkPixmap"
   open Gpointer
   external create :
       window optboxed -> width:int -> height:int -> depth:int -> pixmap
@@ -400,9 +409,14 @@ module Pixmap = struct
 end
 
 module Bitmap = struct
+  let cast w : bitmap =
+    let w = Gobject.try_cast w "GdkPixmap" in
+    if Drawable.get_depth w <> 1 then
+      raise (Gobject.Cannot_cast("GdkPixmap","GdkBitmap"));
+    w
   open Gpointer
   let create ?window ~width ~height () : bitmap =
-    Obj.magic (Pixmap.create ?window ~width ~height ~depth:1 () : pixmap)
+    Gobject.unsafe_cast (Pixmap.create ?window ~width ~height ~depth:1 ())
   external create_from_data :
       window optboxed -> string -> width:int -> height:int -> bitmap
       = "ml_gdk_bitmap_create_from_data"

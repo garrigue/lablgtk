@@ -170,19 +170,26 @@ module Rectangle :
     val height : t -> int
   end
 
+module Drawable :
+  sig
+    val cast : 'a obj -> [`drawable] obj
+    val get_visual : [>`drawable] obj -> visual
+    val get_depth : [>`drawable] obj -> int
+    val get_colormap : [>`drawable] obj -> colormap
+    val get_size : [>`drawable] obj -> int * int
+end
+
+
 module Window :
   sig
-    type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP of pixmap ]
-    val visual_depth : visual -> int
-    val get_visual : window -> visual
-    val get_colormap : window -> colormap
+    val cast : 'a obj -> window
     val get_parent : window -> window
-    val get_size : [>`drawable] obj -> int * int
-    val get_position : [>`drawable] obj -> int * int
+    val get_position : window -> int * int
     val get_pointer_location : window -> int * int
     val root_parent : unit -> window
     val clear : window -> unit
     val get_xwindow : [>`drawable] obj -> xid
+    type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP of pixmap ]
     val set_back_pixmap : window -> background_pixmap -> unit
     val set_cursor : window -> cursor -> unit
   end
@@ -269,6 +276,7 @@ module GC :
 
 module Pixmap :
   sig
+    val cast : 'a obj -> pixmap
     val create :
       ?window:window -> width:int -> height:int -> ?depth:int -> unit -> pixmap
     val create_from_data :
@@ -284,6 +292,7 @@ module Pixmap :
 
 module Bitmap :
   sig
+    val cast : 'a obj -> bitmap
     val create : ?window:window -> width:int -> height:int -> unit -> bitmap
     val create_from_data :
       ?window:window -> width:int -> height:int -> string -> bitmap
