@@ -194,6 +194,8 @@ module Window = struct
   external get_size : 'a drawable -> int * int = "ml_gdk_window_get_size"
   external get_position : 'a drawable -> int * int =
     "ml_gdk_window_get_position"
+  external get_pointer_location: window -> int * int =
+    "ml_gdk_window_get_pointer_location"
   external root_parent : unit -> window = "ml_GDK_ROOT_PARENT"
   external set_back_pixmap : window -> pixmap -> int -> unit = 
     "ml_gdk_window_set_back_pixmap"

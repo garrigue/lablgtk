@@ -225,6 +225,18 @@ CAMLprim value ml_gdk_window_get_size (value window)
   return ret;
 }
 
+value ml_gdk_window_get_pointer_location (value window)
+{
+  int x = 0;
+  int y = 0;
+  value ret;
+  gdk_window_get_pointer (GdkWindow_val(window), &x, &y, NULL);
+  ret = alloc_small (2, 0);
+  Field(ret, 0) = Val_int(x);
+  Field(ret, 1) = Val_int(y);
+  return ret;
+}
+
 /* Cursor */
 
 ML_1 (gdk_cursor_new, GdkCursorType_val, Val_GdkCursor)

@@ -1,5 +1,8 @@
 $Id$
 
+2002.08.26
+  * add Gdk.Window.get_pointer_location (Tim Freeman)
+
 2002.08.19
   * add GWindow.toplevel (Tim Freeman report)
 
