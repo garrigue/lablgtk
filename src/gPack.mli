@@ -21,7 +21,9 @@ class box_skel : ([> box] as 'a) obj ->
       ?from:Tags.pack_type ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> widget -> unit
     method set_homogeneous : bool -> unit
+    method homogeneous : bool
     method set_spacing : int -> unit
+    method spacing : int
   end
 
 (** A base class for box containers
@@ -57,21 +59,14 @@ val hbox :
 (** @gtkdoc gtk GtkButtonBox *)
 class button_box : ([> Gtk.button_box] as 'a) obj ->
   object
-    inherit GContainer.container_full
+    inherit box
     val obj : 'a obj
-    method pack :
-      ?from:Tags.pack_type ->
-      ?expand:bool -> ?fill:bool -> ?padding:int -> widget -> unit
-    method reorder_child : widget -> pos:int -> unit
-    method set_child_ipadding : ?x:int -> ?y:int -> unit -> unit
-    method set_child_packing :
-      ?from:Tags.pack_type ->
-      ?expand:bool -> ?fill:bool -> ?padding:int -> widget -> unit
-    method set_child_size : ?width:int -> ?height:int -> unit -> unit
-    method set_homogeneous : bool -> unit
-    method set_layout : GtkPack.BBox.bbox_style -> unit
-    method layout : GtkPack.BBox.bbox_style
-    method set_spacing : int -> unit
+    method set_child_ipadding : ?x:int -> ?y:int -> unit -> unit (** @deprecated *)
+    method set_child_size : ?width:int -> ?height:int -> unit -> unit (** @deprecated *)
+    method set_layout : Gtk.Tags.button_box_style -> unit
+    method layout : Gtk.Tags.button_box_style
+    method get_child_secondary : widget -> bool (** @since GTK 2.4 *)
+    method set_child_secondary : widget -> bool -> unit (** @since GTK 2.4 *)
   end
 
 (** @gtkdoc gtk GtkButtonBox *)

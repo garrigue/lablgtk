@@ -124,7 +124,7 @@ class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
     constraint 'a = [> `DELETE_EVENT]
     inherit window_skel
     val obj : 'b obj
-    method action_area : GPack.box
+    method action_area : GPack.button_box
     method event : event_ops
     method vbox : GPack.box
     method response : 'a -> unit

@@ -16,7 +16,9 @@ class box_skel obj = object
   method pack ?from:f ?expand ?fill ?padding w =
     Box.pack obj (as_widget w) ?from:f ?expand ?fill ?padding
   method set_homogeneous = set P.homogeneous obj
+  method homogeneous = get P.homogeneous obj
   method set_spacing = set P.spacing obj
+  method spacing = get P.spacing obj
   method set_child_packing ?from:f ?expand ?fill ?padding w =
     Box.set_child_packing obj (as_widget w) ?from:f ?expand ?fill ?padding
   method reorder_child w = Box.reorder_child obj (as_widget w)
@@ -39,9 +41,10 @@ class button_box obj = object
   method connect = new container_signals_impl obj
   method set_layout  = set BBox.P.layout_style  obj
   method layout  = get BBox.P.layout_style  obj
-  (* method set_spacing = BBox.set_spacing obj *)
   method set_child_size = BBox.set_child_size obj
   method set_child_ipadding = BBox.set_child_ipadding obj
+  method get_child_secondary (w : widget) = BBox.get_child_secondary obj w#as_widget
+  method set_child_secondary (w : widget) = BBox.set_child_secondary obj w#as_widget
 end
 
 let button_box dir ?spacing ?child_width ?child_height ?child_ipadx

@@ -107,7 +107,7 @@ and rhelp = resp `HELP
 class virtual ['a] dialog_base obj = object (self)
   inherit window_skel obj
   inherit dialog_props
-  method action_area = new GPack.box (Dialog.action_area obj)
+  method action_area = new GPack.button_box (Dialog.action_area obj)
   method vbox = new GPack.box (Dialog.vbox obj)
   method private virtual encode : 'a -> int
   method private virtual decode : int -> 'a
