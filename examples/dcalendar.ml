@@ -3,6 +3,8 @@
 (* A small calendar *)
 (* Needs Unix module, so use with lablgtk_t *)
 
+open StdLabels
+module Unix = UnixLabels
 open Printf
 
 type date = { mutable year: int; mutable mon: int; mutable mday: int }
@@ -24,7 +26,7 @@ let schedule =
     (* Saves the schedule data when the application terminates *)
 at_exit (fun () ->
   let ochan = open_out calendar_file in
-  Marshal.to_channel ochan schedule ~mode: [];
+  Marshal.to_channel ochan schedule [];
   close_out ochan);;
 
     (* date: Current date initialized to "today" *)
@@ -178,7 +180,7 @@ let create_GUI () =
     let key = (date.year, date.mon, date.mday) in
     Hashtbl.remove schedule key;
     if data <> "" then
-      (Hashtbl.add schedule ~key ~data;
+      (Hashtbl.add schedule key data;
        buttons.(date.mday - 1)#set_plan)
     else buttons.(date.mday - 1)#unset_plan in
 

@@ -1,4 +1,6 @@
+(* $Id$ *)
 
+open StdLabels
 open Gtk
 open GObj
 open GContainer

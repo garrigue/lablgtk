@@ -1,12 +1,13 @@
 (* $Id$ *)
 
+open StdLabels
 open GObj
 
 class ['a] memo () = object
   constraint 'a = #widget
   val tbl = Hashtbl.create 7
   method add (obj : 'a) =
-    Hashtbl.add tbl ~key:obj#get_id ~data:obj
+    Hashtbl.add tbl obj#get_id obj
   method find (obj : widget) = Hashtbl.find tbl obj#get_id
   method remove (obj : widget) = Hashtbl.remove tbl obj#get_id
 end
@@ -33,8 +34,8 @@ class ['a] signal () = object (self)
       end;
     ()
   method disconnect key =
-    List.mem_assoc key callbacks &&
-    (callbacks <- List.remove_assoc key callbacks; true)
+    List.mem_assoc key ~map:callbacks &&
+    (callbacks <- List.remove_assoc key ~map:callbacks; true)
 end
 
 class virtual ml_signals disconnectors =

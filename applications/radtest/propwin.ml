@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open GObj
 
 open Common
@@ -148,7 +149,7 @@ let show (w : #tiwidget_base) =
       Hashtbl.find widget_pool name
     with Not_found ->
       let vb = prop_box w#proplist in
-      Hashtbl.add widget_pool ~key:name ~data:vb;
+      Hashtbl.add widget_pool name vb;
       vb
   in
   show_prop_box vb;
@@ -156,7 +157,7 @@ let show (w : #tiwidget_base) =
 
 let add (w : #tiwidget_base) =
   let vb = prop_box w#proplist in
-  Hashtbl.add widget_pool ~key:w#name ~data:vb
+  Hashtbl.add widget_pool w#name vb
 
 
 let remove name =
@@ -176,5 +177,5 @@ let change_name oldname newname =
 let update (w : #tiwidget_base) show_modif =
   let vb = prop_box w#proplist in
   Hashtbl.remove widget_pool w#name;
-  Hashtbl.add widget_pool ~key:w#name ~data:vb;
+  Hashtbl.add widget_pool w#name vb;
   if show_modif && !shown_widget = w#name then show_prop_box vb

@@ -669,9 +669,19 @@ let rec create_subtree (item : GTree.tree_item) level nb_item_max
   else begin
     let item_subtree = GTree.tree () in
     for nb_item = 1 to nb_item_max do
-      let item_new = GTree.tree_item ~packing:(item_subtree#insert ~pos:0)
-	  ~label:("item" ^ string_of_int level ^ "-" ^ string_of_int nb_item) ()
+      let item_new = GTree.tree_item ~packing:(item_subtree#insert ~pos:0) ()in
+      let ali = GBin.alignment ~x:0. ~xscale:0. ~packing:item_new#add () in
+      let label = GMisc.label ~packing:ali#add
+          ~text:("item" ^ string_of_int level ^ "-" ^ string_of_int nb_item) ()
       in
+      if nb_item = 2 then begin
+        ali#remove label#coerce;
+        let evbox = GBin.event_box ~packing:ali#add () in
+        evbox#add label#coerce;
+        let style = evbox#misc#style#copy in
+        evbox#misc#set_style style;
+        style#set_bg [`NORMAL, `NAME "green"];
+      end;
       create_subtree item_new (level + 1) nb_item_max recursion_level_max;
     done;
     item # set_subtree item_subtree

@@ -8,6 +8,8 @@
  * Lablgtk version by Eric Cooper <ecc@cmu.edu>
  *)
 
+open StdLabels
+
 let pi = acos (-1.)
 
 (*

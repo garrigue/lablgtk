@@ -1,3 +1,7 @@
+(* $Id$ *)
+
+open StdLabels
+
 open Utils
 open Property
 
