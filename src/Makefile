@@ -88,7 +88,7 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
 	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gFrame.cmo \
 	gEdit.cmo gRange.cmo gUtil.cmo $(GLMLOBJS) $(GNOMEMLOBJS)
-THOBJS = gtkThread.cmo threadObj.cmo
+THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
 ALLOBJS = $(MLOBJS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
@@ -112,7 +112,7 @@ lablgtkrun: liblablgtk.a lablgtk.cma
 	$(LINKER) -o $@ -make-runtime unix.cma str.cma $(GLLINK) \
 		-ccopt -L. lablgtk.cma
 
-lablgtkopt: liblablgtk.a lablgtk.cmxa gtkInit.cmx
+lablgtkopt: liblablgtk.a lablgtk.cmxa gtkInit.cmx gtkThread.cmx
 
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
@@ -123,8 +123,10 @@ install:
 	cp liblablgtk.a $(INSTALLDIR)
 	cp lablgtktop  lablgtktop_t $(INSTALLDIR)
 	cp lablgtk lablgtkrun $(BINDIR)
-	if test -f lablgtk.cmxa; \
-	   then cp lablgtk.cmxa lablgtk.a gtkInit.cmx gtkInit.o $(INSTALLDIR); fi
+	if test -f lablgtk.cmxa; then \
+	   cp lablgtk.cmxa lablgtk.a gtkInit.cmx gtkInit.o $(INSTALLDIR); fi
+	if test -f gtkThread.cmx; then \
+	   cp gtkThread.cmx gtkThread.o $(INSTALLDIR); fi
 
 liblablgtk.a: $(COBJS)
 	ar rc $@ $(COBJS)
@@ -141,14 +143,9 @@ lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
-threadObj.cmo: threadObj.ml
-	$(COMPILER) $(THFLAGS) threadObj.ml
-
 gtkThread.cmx: gtkThread.ml
-	$(COMPOPT) $(THFLAGS) gtkThread.ml
-
-threadObj.cmx: threadObj.ml
-	$(COMPOPT) $(THFLAGS) threadObj.ml
+	if test -f $(LIBDIR)/libthreadsnat.a; then \
+	   $(COMPOPT) $(THFLAGS) gtkThread.ml; fi
 
 var2conv: var2conv.cmo
 	$(LINKER) -o $@ var2conv.cmo
