@@ -22,9 +22,10 @@ class virtual vprop ~name ~init ~set =
     method set s' =
       if s' <> s then begin
 	let v = self#parse s' in
-	add_undo (Property ((self :> prop), s));
-	s <- s';
-	set v
+	if (set v) then begin
+	  add_undo (Property ((self :> prop), s));
+	  s <- s'
+	end
       end
     method modified = s <> init
     method name = name
@@ -44,6 +45,16 @@ class prop_enum ~values ~name ~init ~set =
     method range = Enum (List.map ~f:fst values)
   end
 
+(* used for radio_button groups; there is nothing to do
+  in radtest when setting a radio_button group, only when writing
+  code or saving *)
+class prop_enum_dyn ~values ~name ~init ~set =
+  object (self)
+    inherit vprop ~name ~init ~set
+    method private parse s = ()
+    method range = Enum (values ())
+  end
+
 let bool_values =
   [ "true", true; "false", false ]
 
@@ -53,6 +64,33 @@ let shadow_type_values : (string * Tags.shadow_type) list =
 
 let policy_type_values : (string * Tags.policy_type) list =
   [ "ALWAYS", `ALWAYS; "AUTOMATIC", `AUTOMATIC ]
+
+let orientation_values : (string * Tags.orientation) list =
+  [ "HORIZONTAL", `HORIZONTAL; "VERTICAL", `VERTICAL ]
+
+let toolbar_style_values : (string * Tags.toolbar_style) list =
+  [ "ICONS", `ICONS; "TEXT", `TEXT; "BOTH", `BOTH ]
+
+let toolbar_space_style_values : (string * [`EMPTY | `LINE]) list =
+  [ "EMPTY", `EMPTY; "LINE", `LINE ]
+
+let relief_style_values : (string * Tags.relief_style) list =
+  [ "NORMAL", `NORMAL; "HALF", `HALF; "NONE", `NONE ]
+
+let position_values : (string * Tags.position) list =
+  [ "LEFT", `LEFT; "RIGHT", `RIGHT; "TOP", `TOP; "BOTTOM", `BOTTOM ]
+
+let combo_use_arrows_values : (string * [ `NEVER | `DEFAULT | `ALWAYS ]) list =
+[ "NEVER", `NEVER; "DEFAULT", `DEFAULT; "ALWAYS", `ALWAYS ] 
+
+let spin_button_update_policy_values :
+    (string * Tags. spin_button_update_policy) list =
+  [ "ALWAYS", `ALWAYS; "IF_VALID", `IF_VALID ]
+
+let button_box_style_values : (string * Tags.button_box_style) list =
+  [ "DEFAULT_STYLE", `DEFAULT_STYLE; "SPREAD", `SPREAD; "EDGE", `EDGE;
+    "START", `START; "END", `END ]
+
 
 class prop_bool = prop_enum ~values:bool_values
 
@@ -64,6 +102,16 @@ class prop_variant ~values ~name ~init ~set : prop =
 
 class prop_shadow = prop_enum ~values:shadow_type_values
 class prop_policy = prop_enum ~values:policy_type_values
+class prop_orientation = prop_enum ~values:orientation_values
+class prop_toolbar_style = prop_enum ~values:toolbar_style_values
+class prop_toolbar_space_style = prop_enum ~values:toolbar_space_style_values
+class prop_relief_style = prop_enum ~values:relief_style_values
+class prop_position = prop_enum ~values:position_values
+class prop_combo_use_arrows = prop_enum ~values:combo_use_arrows_values
+class prop_spin_button_update_policy = prop_enum
+    ~values:spin_button_update_policy_values
+class prop_button_box_style = prop_enum ~values:button_box_style_values
+
 
 class prop_int ~name ~init ~set : prop =
   object

@@ -10,7 +10,7 @@ open Property
 
 (* possible children; used to make the menus *)
 let widget_add_list =
-  [ "vbox"; "hbox";
+  [ "vbox"; "hbox"; "vbutton_box"; "hbutton_box";
     "frame"; "aspect_frame"; "handle_box"; "event_box";
     "hseparator"; "vseparator"; "statusbar"; "label"; "notebook";
     "button";
@@ -259,6 +259,8 @@ object(self)
     | None -> widget
     | Some ev -> ev#coerce
 
+(* this is the name used in new_tiwidget for the creation
+   of an object of this class *)
   val mutable classe = ""
 
   val tree_item = GTree2.tree_item ()
@@ -272,7 +274,9 @@ object(self)
   val mutable name : string = name
   method name = name
 
-  method private class_name = ""  (* used in the init code *)
+(* this is the complete name for the creation of the widget
+   in lablgtk e.g. GPack.vbox; used in emit_init_code *)
+  method private class_name = ""
 
   val mutable proplist : (string * prop) list = []
   method proplist = proplist

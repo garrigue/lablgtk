@@ -8,8 +8,8 @@ class tibox ~(dir : Gtk.Tags.orientation) ~(widget : GPack.box)
     ~name ~parent_tree ~pos ?(insert_evbox=true) parent_window =
 object(self)
   val box = widget
-  inherit ticontainer ~name ~widget ~parent_tree ~pos parent_window ~insert_evbox
-       as container
+  inherit ticontainer ~name ~widget ~parent_tree ~pos ~insert_evbox
+      parent_window as container
 
   method private class_name =
     match dir with `VERTICAL -> "GPack.vbox" | _ -> "GPack.hbox"
@@ -110,10 +110,13 @@ object(self)
   initializer
     classe <- (match dir with `VERTICAL -> "vbox" | _ -> "hbox");
     proplist <-  proplist @
-      [ "homogeneous", new prop_bool ~name:"homogeneous" ~init:"false"
-	                 ~set:(ftrue box#set_homogeneous);
-	"spacing", new prop_int ~name:"spacing" ~init:"0"
-	                 ~set:(ftrue box#set_spacing) ]
+      [ "homogeneous",
+	new prop_bool ~name:"homogeneous" ~init:"false"
+	  ~set:(ftrue box#set_homogeneous);
+	"spacing",
+	new prop_int ~name:"spacing" ~init:"0"
+	  ~set:(ftrue box#set_spacing)
+      ]
 end
 
 class tihbox = tibox ~dir:`HORIZONTAL
@@ -122,4 +125,34 @@ class tivbox = tibox ~dir:`VERTICAL
 let new_tihbox ~name = new tihbox ~widget:(GPack.hbox ()) ~name
 let new_tivbox ~name = new tivbox ~widget:(GPack.vbox ()) ~name
 
+
+
+
+class tibbox ~(dir : Gtk.Tags.orientation) ~(widget : GPack.button_box)
+    ~name ~parent_tree ~pos ?(insert_evbox=true) parent_window =
+  let class_name =
+    match dir with `VERTICAL -> "GPack.button_box `VERTICAL"
+    | _ -> "GPack.button_box `HORIZONTAL" in
+object(self)
+  val bbox = widget
+  inherit tibox ~dir ~widget:(widget :> GPack.box)
+    ~name ~parent_tree ~pos ~insert_evbox parent_window
+
+  method private class_name = class_name
+
+initializer
+    classe <- (match dir with `VERTICAL -> "vbutton_box" | _ -> "hbutton_box");
+    proplist <-  proplist @
+      [ "layout",
+	new prop_button_box_style ~name:"layout" ~init:"DEFAULT_STYLE"
+	  ~set:(ftrue bbox#set_layout);
+	"spacing",
+	new prop_int ~name:"spacing" ~init:"-1"
+	  ~set:(ftrue bbox#set_spacing);
+      ]
+end
+
+let new_tihbutton_box ~name = new tibbox ~dir:`HORIZONTAL ~widget:(GPack.button_box `HORIZONTAL ()) ~name
+
+let new_tivbutton_box ~name = new tibbox ~dir:`VERTICAL ~widget:(GPack.button_box `VERTICAL ()) ~name
 

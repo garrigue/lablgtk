@@ -77,7 +77,7 @@ object(self)
 
   initializer
     proplist <-  proplist @
-      [ "border width",	new prop_int ~name:"border_width" ~init:"0"
+      [ "border_width",	new prop_int ~name:"border_width" ~init:"0"
 	                  ~set:(ftrue container#set_border_width) ];
 
     tree_item#drag#dest_set ~actions:[`COPY]
