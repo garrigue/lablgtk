@@ -568,6 +568,7 @@ let process_file f =
       in
       if wr_props <> [] || rd_props <> [] || wr_meths <> [] then begin
         out "@ @[<hv2>class virtual %s_props = object (self)" (camlize name);
+        out "@ method private virtual obj : _ obj";
         List.iter wr_props ~f:(fun (pname,mlname,gtype,_) ->
           out "@ @[<hv2>method set_%s =@ set %a self#obj@]"
             mlname (oprop ~name ~gtype) pname);
