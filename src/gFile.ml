@@ -11,9 +11,11 @@ class filter obj = object
    method add_custom = FileFilter.add_custom obj
 end
 
-let filter ?name () =
+let filter ?name ?(patterns=[]) ?(mime_types=[]) () =
    let w = FileFilter.create () in
    Gaux.may (FileFilter.set_name w) name ;
+   List.iter (FileFilter.add_pattern w) patterns ;
+   List.iter (FileFilter.add_mime_type w) mime_types ;
    new filter w
 
 class type chooser_signals = object
@@ -36,20 +38,20 @@ class type chooser =
     method set_show_hidden : bool -> unit
 
     method set_filename : string -> bool
-    method get_filename : string option
+    method filename : string option
     method select_filename : string -> bool
     method unselect_filename : string -> unit
     method get_filenames : string list
     method set_current_folder : string -> bool
-    method get_current_folder : string option
+    method current_folder : string option
 
     method set_uri : string -> bool
-    method get_uri : string option
+    method uri : string option
     method select_uri : string -> bool
     method unselect_uri : string -> unit
     method get_uris : string list
     method set_current_folder_uri : string -> bool
-    method get_current_folder_uri : string
+    method current_folder_uri : string
 
     method select_all : unit
     method unselect_all : unit
@@ -58,8 +60,8 @@ class type chooser =
     method preview_widget : GObj.widget
     method set_preview_widget_active : bool -> unit
     method preview_widget_active : bool
-    method get_preview_filename : string option
-    method get_preview_uri : string option
+    method preview_filename : string option
+    method preview_uri : string option
     method set_use_preview_label : bool -> unit
     method use_preview_label : bool
 
@@ -87,25 +89,25 @@ class virtual chooser_impl = object (self)
   method set_current_name = FileChooser.set_current_name self#obj
 
   method set_filename = FileChooser.set_filename self#obj
-  method get_filename = FileChooser.get_filename self#obj
+  method filename = FileChooser.get_filename self#obj
   method select_filename = FileChooser.select_filename self#obj
   method unselect_filename = FileChooser.unselect_filename self#obj
   method select_all = FileChooser.select_all self#obj
   method unselect_all = FileChooser.unselect_all self#obj
   method get_filenames = FileChooser.get_filenames self#obj
   method set_current_folder = FileChooser.set_current_folder self#obj
-  method get_current_folder = FileChooser.get_current_folder self#obj
+  method current_folder = FileChooser.get_current_folder self#obj
 
   method set_uri = FileChooser.set_uri self#obj
-  method get_uri = FileChooser.get_uri self#obj
+  method uri = FileChooser.get_uri self#obj
   method select_uri = FileChooser.select_uri self#obj
   method unselect_uri = FileChooser.unselect_uri self#obj
   method get_uris = FileChooser.get_uris self#obj
   method set_current_folder_uri = FileChooser.set_current_folder_uri self#obj
-  method get_current_folder_uri = FileChooser.get_current_folder_uri self#obj
+  method current_folder_uri = FileChooser.get_current_folder_uri self#obj
 
-  method get_preview_filename = FileChooser.get_preview_filename self#obj
-  method get_preview_uri = FileChooser.get_preview_uri self#obj
+  method preview_filename = FileChooser.get_preview_filename self#obj
+  method preview_uri = FileChooser.get_preview_uri self#obj
 
   method add_filter (f : filter) = FileChooser.add_filter self#obj f#as_file_filter
   method remove_filter (f : filter) = FileChooser.remove_filter self#obj f#as_file_filter
