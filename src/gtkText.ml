@@ -10,109 +10,17 @@ open GtkBase
 external _gtktext_init : unit -> unit = "ml_gtktext_init"
 let () = _gtktext_init ()
 
-(* This function helps one to guess the type of the arguments of signals *)
-let marshal_what f _ = function 
-  | `OBJECT _ :: _  -> invalid_arg "OBJECT"
-  | `BOOL _ ::_ -> invalid_arg "BOOL"  
-  | `CHAR _::_ -> invalid_arg "CHAR"
-  | `FLOAT _::_ -> invalid_arg "FLOAT"
-  | `INT _::_ -> invalid_arg "INT"
-  | `INT64 _::_ -> invalid_arg "INT64"
-  | `NONE::_ -> invalid_arg "NONE"
-  | `POINTER _::_ -> invalid_arg "POINTER"
-  | `STRING _::_  -> invalid_arg "STRING"
-  | [] -> invalid_arg "NO ARGUMENTS"
+exception No_such_mark of string
 
+module Mark = TextMark
 
-let text_iter_of_pointer = ref (fun _ -> failwith "text_iter_of_pointer")
+module Tag = TextTag
 
-module Mark = struct
-  let cast w : text_mark = Object.try_cast w "GtkTextMark"
-  exception No_such_mark of string
-  external set_visible : text_mark -> bool -> unit 
-    = "ml_gtk_text_mark_set_visible"
-  external get_visible : text_mark -> bool = "ml_gtk_text_mark_get_visible"
-  external get_deleted : text_mark -> bool = "ml_gtk_text_mark_get_deleted"
-  external get_name : text_mark -> string option = "ml_gtk_text_mark_get_name"
-  external get_buffer : text_mark -> text_buffer option
-    = "ml_gtk_text_mark_get_buffer"
-  external get_left_gravity : text_mark -> bool 
-    = "ml_gtk_text_mark_get_left_gravity"
-end
-
-module Tag = struct
-  include TextTag
-  external create : string -> text_tag = "ml_gtk_text_tag_new"
-  external get_priority : text_tag -> int = "ml_gtk_text_tag_get_priority"
-  external set_priority : text_tag -> int -> unit 
-    = "ml_gtk_text_tag_set_priority"
-  external event : text_tag -> 'a obj ->  'b Gdk.event -> text_iter -> bool
-    = "ml_gtk_text_tag_event"
-  module Signals = struct
-    open GtkSignal
-    let marshal_event f _ = function
-      |`OBJECT(Some p)::`POINTER(Some ev)::`POINTER(Some ti)::_ ->
-	 f ~origin:p 
-	  (GdkEvent.unsafe_copy ev : GdkEvent.any)
-	  (!text_iter_of_pointer ti)
-      | _ -> invalid_arg "GtkText.Tag.Signals.marshal_event"
-	  
-    let event = 
-      {
-	name = "event";
-	classe = `texttag;
-	marshaller = marshal_event
-      }
-  end
-end
-
-module TagTable = struct
-  let cast w : text_tag_table = Object.try_cast w "GtkTextTagTable"
-  external create : unit -> text_tag_table = "ml_gtk_text_tag_table_new"
-  external add : text_tag_table -> text_tag -> unit = "ml_gtk_text_tag_table_add"
-  external remove : text_tag_table -> text_tag -> unit = "ml_gtk_text_tag_table_remove"
-  external lookup : text_tag_table -> string -> text_tag option 
-    = "ml_gtk_text_tag_table_lookup"
-  external get_size : text_tag_table -> int = "ml_gtk_text_tag_table_get_size"
-  module Signals = struct
-  open GtkSignal
-
-  let marshal_text_tag f _ = function 
-    |`OBJECT(Some p)::_ ->
-       f (Gobject.unsafe_cast p : text_tag)
-    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_text_tag"
-
-  let marshal_tag_changed f _ = function 
-    | `OBJECT(Some p)::`BOOL b::_ ->
-       f (Gobject.unsafe_cast p : text_tag) b
-    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_tag_changed"
-
-  let tag_added = 
-      {
-	name = "tag-added";
-	classe = `texttagtable;
-	marshaller = marshal_text_tag
-      }
-  let tag_changed = 
-      {
-	name = "tag-changed";
-	classe = `texttagtable;
-	marshaller = marshal_tag_changed
-      }
-  let tag_removed = 
-      {
-	name = "tag-removed";
-	classe = `texttagtable;
-	marshaller = marshal_text_tag
-      }
-  end
-end
+module TagTable = TextTagTable
 
 module Buffer = struct
   open Gpointer
-  let cast w : text_buffer = Object.try_cast w "GtkTextBuffer"
-  external create : text_tag_table option 
-    -> text_buffer = "ml_gtk_text_buffer_new"
+  include TextBuffer
   external get_line_count : text_buffer -> int 
     = "ml_gtk_text_buffer_get_line_count"
   external get_char_count : text_buffer -> int 
@@ -232,128 +140,9 @@ module Buffer = struct
   external remove_selection_clipboard :
     text_buffer -> clipboard -> unit
     = "ml_gtk_text_buffer_remove_selection_clipboard"
-  module Signals = struct
-  open GtkSignal
-
-  let marshal_apply_tag f _ = function 
-    |`OBJECT(Some p)::`POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
-       f (Gobject.unsafe_cast p : text_tag)
-        ~start:(!text_iter_of_pointer ti1) 
-	~stop:(!text_iter_of_pointer ti2)
-    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_apply_tag"
-
-  let marshal_delete_range f _ = function 
-    | `POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
-       f ~start:(!text_iter_of_pointer ti1) 
-	~stop:(!text_iter_of_pointer ti2)
-    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_delete_range"
-  let marshal_insert_child_anchor f _ = function 
-    | `POINTER(Some ti)::`OBJECT(Some tca)::_ ->
-       f (!text_iter_of_pointer ti) 
-	(Gobject.unsafe_cast tca : text_child_anchor)
-    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_insert_child_anchor"
-
-
-  let marshal_insert_pixbuf f _ = function 
-    | `POINTER(Some ti)::`OBJECT(Some pb)::_ ->
-       f (!text_iter_of_pointer ti) (Gobject.unsafe_cast pb : GdkPixbuf.pixbuf)
-    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_insert_pixbuf"
-
-  let marshal_insert_text f argv = function 
-    | `POINTER(Some ti)::`STRING(Some s)::`INT len::_  ->
-(*        let s' =
-          if len = -1 then (prerr_endline "HERE -1";s) else
-            (prerr_endline "HERE NOW";
-	     Gpointer.peek_string ~pos:0 ~len
-               (Gobject.Closure.get_pointer argv ~pos:2))
-        in
-*)
-	f (!text_iter_of_pointer ti) s
-    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_insert_text"
-	
-  let marshal_text_mark f _ = function 
-    | `OBJECT(Some tm)::_ -> 
-	f (Gobject.unsafe_cast tm : text_mark)
-    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_text_mark"
-
-  let marshal_mark_set f _ = function 
-    | `POINTER(Some ti)::`OBJECT(Some tm)::_ -> 
-	f (!text_iter_of_pointer ti) (Gobject.unsafe_cast tm : text_mark) 
-    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_mark_set"
-  
-  let marshal_remove_tag f _ = function 
-    |`OBJECT(Some p)::`POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
-       f (Gobject.unsafe_cast p : text_tag) 
-	~start:(!text_iter_of_pointer ti1) 
-	~stop:(!text_iter_of_pointer ti2)
-    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_remove_tag"
-
-  let apply_tag = 
-      {
-	name = "apply_tag";
-	classe = `textbuffer;
-	marshaller = marshal_apply_tag
-      }
-    let begin_user_action = 
-      { name = "begin_user_action"; 
-	classe = `textbuffer;
-	marshaller = marshal_unit }
-    let changed = 
-      { name = "changed"; 
-	classe = `textbuffer;
-	marshaller = marshal_unit }
-    let delete_range =
-      { name = "delete-range";
-	classe = `textbuffer;
-	marshaller = marshal_delete_range }
-    let end_user_action = 
-      { name = "end_user_action"; 
-	classe = `textbuffer;
-	marshaller = marshal_unit }
-    let insert_child_anchor =
-      { name = "insert-child-anchor";
-	classe = `textbuffer;
-	marshaller = marshal_insert_child_anchor}
-    let insert_pixbuf =
-      {name = "insert-pixbuf";
-       classe = `textbuffer;
-       marshaller = marshal_insert_pixbuf
-      }
-    let insert_text =
-      {name = "insert-text";
-       classe = `textbuffer;
-       marshaller = marshal_insert_text
-      }
-    let mark_deleted =
-      {name = "mark-deleted";
-       classe = `textbuffer;
-       marshaller = marshal_text_mark
-      }
-    let mark_set = 
-      {name = "mark-set";
-       classe = `textbuffer;
-       marshaller = marshal_mark_set
-      }
-    let modified_changed = 
-      { name = "modified-changed"; 
-	classe = `textbuffer;
-	marshaller = marshal_unit }
-    let remove_tag = 
-      { name = "remove-tag"; 
-	classe = `textbuffer;
-	marshaller = marshal_remove_tag }
-end    
 end
 
-module ChildAnchor = struct
-  let cast w : text_child_anchor = Object.try_cast w "GtkTextChildAnchor"
-  external create : unit -> text_child_anchor =
-	"ml_gtk_text_child_anchor_new"
-  external get_widgets : text_child_anchor -> widget obj list =
-	"ml_gtk_text_child_anchor_get_widgets"
-  external get_deleted : text_child_anchor -> bool =
-	"ml_gtk_text_child_anchor_get_deleted"
-end
+module ChildAnchor = TextChildAnchor
 
 module View = struct
   include TextView
@@ -388,9 +177,9 @@ module View = struct
 	   "ml_gtk_text_view_get_window"
   external get_window_type : [>`textview] obj -> Gdk.window -> Gtk.Tags.text_window_type =
 	   "ml_gtk_text_view_get_window_type"
-  external set_border_window_size : [>`textview] obj -> [`LEFT | `RIGHT | `TOP | `BOTTOM ] -> int -> unit =
-	   "ml_gtk_text_view_set_border_window_size"
-  external get_border_window_size : [>`textview] obj ->  [`LEFT | `RIGHT | `TOP | `BOTTOM ] -> int =
+  external set_border_window_size : [>`textview] obj -> Gtk.Tags.side_type -> int -> unit =
+           "ml_gtk_text_view_set_border_window_size"
+  external get_border_window_size : [>`textview] obj ->  Gtk.Tags.side_type -> int =
 	   "ml_gtk_text_view_get_border_window_size"
   external forward_display_line : [>`textview] obj -> text_iter -> bool =
 	   "ml_gtk_text_view_forward_display_line"
@@ -413,117 +202,10 @@ module View = struct
   external move_child : 
     [>`textview] obj -> [>`widget] obj -> int -> int -> unit =
 	   "ml_gtk_text_view_move_child"
-
-  module Signals = struct
-    open GtkSignal
-
-    let marshal_delete_from_cursor f _ = function 
-      |`INT ty ::`INT i ::_ ->
-	 f (Gpointer.decode_variant GtkEnums.delete_type ty) i
-      | _ -> invalid_arg "GtkText.View.Signals.marshal_delete_from_cursor"
-    let marshal_move_cursor f _ = function 
-      |`INT step :: `INT i :: `BOOL b :: _ ->
-	 f (Gpointer.decode_variant GtkEnums.movement_step step) i b
-      | _ -> invalid_arg "GtkText.View.Signals.marshal_move_cursor"
-    let marshal_move_focus f _ = function 
-      |`INT dir :: _ ->
-	 f (Gpointer.decode_variant GtkEnums.direction_type dir)
-      | _ -> invalid_arg "GtkText.View.Signals.marshal_move_focus"
-    let marshal_page_horizontally f _ = function 
-      | (`INT i)::(`BOOL b)::_ ->
-	 f i b
-      | _ -> invalid_arg "GtkText.View.Signals.marshal_page_horizontally"
-    let marshal_populate_popup f _ = function 
-      |`OBJECT(Some p)::_ ->
-	 f (Gobject.unsafe_cast p : menu obj) 
-      | _ -> invalid_arg "GtkText.View.Signals.marshal_populate_popup"
-    
-    let marshal_set_scroll_adjustments f _ = function 
-      |`OBJECT(Some p1)::`OBJECT(Some p2)::_ ->
-	  f (Gobject.unsafe_cast p1 : adjustment obj)
-            (Gobject.unsafe_cast p2 : adjustment obj) 
-      | _ -> invalid_arg "GtkText.View.Signals.marshal_set_scroll_adjustments"
-
-
-    let copy_clipboard = 
-      {
-	name = "copy-clipboard";
-	classe = `textview;
-	marshaller = marshal_unit
-      }
-    let cut_clipboard = 
-      {
-	name = "cut-clipboard";
-	classe = `textview;
-	marshaller = marshal_unit
-      }
-    let delete_from_cursor = 
-      {
-	name = "delete-from-cursor";
-	classe = `textview;
-	marshaller = marshal_delete_from_cursor
-      }
-    let insert_at_cursor = 
-      {
-	name = "insert-at-cursor";
-	classe = `textview;
-	marshaller = marshal_string
-      }
-    let move_cursor = 
-      {
-	name = "move-cursor";
-	classe = `textview;
-	marshaller = marshal_move_cursor
-      }
-    let move_focus = 
-      {
-	name = "move-focus";
-	classe = `textview;
-	marshaller = marshal_move_focus
-      }
-    let page_horizontally = 
-      {
-	name = "page-horizontally";
-	classe = `textview;
-	marshaller = marshal_page_horizontally
-      }
-    let paste_clipboard = 
-      {
-	name = "paste-clipboard";
-	classe = `textview;
-	marshaller = marshal_unit
-      }
-    let populate_popup = 
-      {
-	name = "populate-popup";
-	classe = `textview;
-	marshaller = marshal_populate_popup
-      }
-    let set_anchor = 
-      {
-	name = "set-anchor";
-	classe = `textview;
-	marshaller = marshal_unit
-      }
-    let set_scroll_adjustments = 
-      {
-	name = "set-scroll-adjustments";
-	classe = `textview;
-	marshaller = marshal_set_scroll_adjustments
-      }
-    let toggle_overwrite = 
-      {
-	name = "toggle-overwrite";
-	classe = `textview;
-	marshaller = marshal_unit
-      }
-  end
 end
 
 module Iter = struct
   external copy : text_iter -> text_iter = "ml_gtk_text_iter_copy"
-  let () =
-    text_iter_of_pointer := (fun (p : Gpointer.boxed) -> copy (Obj.magic p))
   external get_buffer : text_iter -> text_buffer = "ml_gtk_text_iter_get_buffer"
   external get_offset : text_iter -> int = "ml_gtk_text_iter_get_offset"
   external get_line : text_iter -> int = "ml_gtk_text_iter_get_line"

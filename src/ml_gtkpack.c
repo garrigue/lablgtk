@@ -32,7 +32,8 @@ CAMLprim value ml_gtkpack_init(value unit)
         gtk_notebook_get_type() +
         gtk_hpaned_get_type() +
         gtk_vpaned_get_type() +
-        gtk_table_get_type();
+        gtk_table_get_type() +
+        gtk_size_group_get_type();
     return Val_GType(t);
 }
 
@@ -152,3 +153,8 @@ ML_10 (gtk_table_attach, GtkTable_val, GtkWidget_val,
 ML_bc10 (ml_gtk_table_attach)
 ML_3 (gtk_table_set_row_spacing, GtkTable_val, Int_val, Int_val, Unit)
 ML_3 (gtk_table_set_col_spacing, GtkTable_val, Int_val, Int_val, Unit)
+
+/* gtksizegroup.h */
+#define GtkSizeGroup_val(val) check_cast(GTK_SIZE_GROUP,val)
+ML_2 (gtk_size_group_add_widget, GtkSizeGroup_val, GtkWidget_val, Unit)
+ML_2 (gtk_size_group_remove_widget, GtkSizeGroup_val, GtkWidget_val, Unit)

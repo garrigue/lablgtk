@@ -29,6 +29,8 @@ external peek_string : ?pos:int -> ?len:int -> boxed -> string
     = "ml_string_at_pointer"
 external peek_int : boxed -> int
     = "ml_int_at_pointer"
+external poke_int : boxed -> int -> unit
+    = "ml_set_int_at_pointer"
 
 type 'a optboxed
 

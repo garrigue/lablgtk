@@ -9,11 +9,7 @@ open GObj
 
 class editable_signals obj = object
   inherit widget_signals_impl (obj : [>editable] obj)
-  method changed = GtkSignal.connect ~sgn:Editable.Signals.changed obj
-  method insert_text =
-    GtkSignal.connect ~sgn:Editable.Signals.insert_text obj
-  method delete_text =
-    GtkSignal.connect ~sgn:Editable.Signals.delete_text obj
+  inherit editable_sigs
 end
 
 class editable obj = object
@@ -31,9 +27,12 @@ class editable obj = object
   method selection = Editable.get_selection_bounds obj
 end
 
-class entry_signals obj = object
+class entry_signals obj = object (self)
   inherit editable_signals obj
-  method activate = GtkSignal.connect ~sgn:Entry.S.activate obj
+  inherit entry_sigs
+  method populate_popup ~callback =
+    self#connect Entry.S.populate_popup ~callback:
+      (fun m -> callback (new GMenu.menu m))
 end
 
 class entry obj = object
@@ -54,9 +53,14 @@ let entry =
   Entry.make_params [] ~cont:(
   pack_sized ~create:(fun pl -> new entry (Entry.create pl)))
 
+class spin_button_signals obj = object
+  inherit entry_signals obj
+  inherit spin_button_sigs
+end
+
 class spin_button obj = object
   inherit [Gtk.spin_button] widget_impl obj
-  method connect = new editable_signals obj
+  method connect = new spin_button_signals obj
   method event = new event_ops obj
   inherit spin_button_props
   method value_as_int = SpinButton.get_value_as_int obj

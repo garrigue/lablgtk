@@ -77,3 +77,5 @@ module Table = struct
 end
 
 module Notebook = Notebook
+
+module SizeGroup = SizeGroup

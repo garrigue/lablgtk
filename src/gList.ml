@@ -27,8 +27,7 @@ let list_item ?label ?packing ?(show=true) () =
   item
 
 class liste_signals obj = object (self)
-  inherit widget_signals_impl (obj : Gtk.liste obj)
-  inherit container_sigs
+  inherit container_signals_impl (obj : Gtk.liste obj)
   method selection_changed = self#connect Liste.S.selection_changed
   method select_child ~callback =
     self#connect Liste.S.select_child
@@ -58,8 +57,7 @@ let liste =
 (* Cell lists *)
 
 class clist_signals obj = object
-  inherit widget_signals_impl (obj : [> Gtk.clist] obj)
-  inherit container_sigs
+  inherit container_signals_impl (obj : [> Gtk.clist] obj)
   inherit clist_sigs
 end
 
@@ -143,9 +141,9 @@ class ['a] clist obj = object (self)
     CList.set_row_data obj ~row:n (Obj.repr (data : 'a))
   method get_row_data n : 'a = Obj.obj (CList.get_row_data obj ~row:n)
   method scroll_vertical =
-    CList.Signals.emit_scroll obj ~sgn:CList.Signals.scroll_vertical
+    CList.emit_scroll obj ~sgn:CList.S.scroll_vertical
   method scroll_horizontal =
-    CList.Signals.emit_scroll obj ~sgn:CList.Signals.scroll_horizontal
+    CList.emit_scroll obj ~sgn:CList.S.scroll_horizontal
   method get_row_state row = CList.get_row_state obj row
 end
 

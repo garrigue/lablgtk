@@ -26,11 +26,19 @@ val progress_bar :
   ?pulse_step:float ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> progress_bar
 
-class range : 'a obj ->
+class range_signals : [> Gtk.range] obj ->
   object
-    inherit widget_full
-    constraint 'a = [> Gtk.range]
+    inherit widget_signals
+    method adjust_bounds : callback:(float -> unit) -> GtkSignal.id
+    method move_slider : callback:(Tags.scroll_type -> unit) -> GtkSignal.id
+    method value_changed : callback:(unit -> unit) -> GtkSignal.id
+  end
+
+class range : ([> Gtk.range] as 'a) obj ->
+  object
+    inherit widget
     val obj : 'a obj
+    method connect : range_signals
     method set_adjustment : GData.adjustment -> unit
     method set_inverted : bool -> unit
     method set_update_policy : Tags.update_type -> unit

@@ -1,7 +1,6 @@
 (* $Id$ *)
 
 open StdLabels
-open GMain
 
 let file_dialog ~title ~callback ?filename () =
   let sel =
@@ -84,7 +83,7 @@ let editor = new editor ~packing:scrollwin#add ()
 open GdkKeysyms
 
 let _ =
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit;
   let factory = new GMenu.factory ~accel_path:"<EDITOR2 File>/////" file_menu ~accel_group 
   in
   factory#add_item "Open" ~key:_O ~callback:editor#open_file;
@@ -94,14 +93,13 @@ let _ =
   factory#add_item "Quit" ~key:_Q ~callback:window#destroy;
   let factory = new GMenu.factory ~accel_path:"<EDITOR2 File>///" edit_menu ~accel_group in
   factory#add_item "Copy" ~key:_C ~callback:
-    (fun () -> GtkSignal.emit_unit
-        editor#text#as_view GtkText.View.Signals.copy_clipboard);
+    (fun () -> editor#text#buffer#copy_clipboard GMain.clipboard);
   factory#add_item "Cut" ~key:_X ~callback:
     (fun () -> GtkSignal.emit_unit
-        editor#text#as_view GtkText.View.Signals.cut_clipboard);
+        editor#text#as_view GtkText.View.S.cut_clipboard);
   factory#add_item "Paste" ~key:_V ~callback:
     (fun () -> GtkSignal.emit_unit
-        editor#text#as_view GtkText.View.Signals.paste_clipboard);
+        editor#text#as_view GtkText.View.S.paste_clipboard);
   factory#add_separator ();
   factory#add_check_item "Word wrap" ~active:false ~callback:
     (fun b -> editor#text#set_wrap_mode (if b then `WORD else `NONE));
@@ -118,4 +116,4 @@ let _ =
       end else false);
   window#show ();
   let () = GtkData.AccelMap.load "test.accel" in
-  Main.main ()
+  GMain.main ()

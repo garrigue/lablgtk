@@ -157,8 +157,7 @@ let event_proxy : (item_event -> bool) -> GnomeCanvas.item_event -> bool =
       cb (`FOCUS_CHANGE (GdkEvent.unsafe_cast ev))
 
 class item_signals ?after obj = object (self)
-  inherit ['a] GObj.gobject_signals ?after obj
-  method destroy = self#connect GtkBase.Object.S.destroy
+  inherit GObj.gtkobj_signals_impl ?after obj
   method event ~callback =
     self#connect Item.Signals.event ~callback:(event_proxy callback)
 end

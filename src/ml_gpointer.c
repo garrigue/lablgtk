@@ -40,6 +40,11 @@ CAMLprim value ml_int_at_pointer (value ptr)
     return Val_int(*(int*)Pointer_val(ptr));
 }
 
+CAMLprim value ml_set_int_at_pointer (value ptr, value n)
+{
+    *(int*)Pointer_val(ptr) = Int_val(n);
+    return Val_unit;
+}
 
 unsigned char* ml_gpointer_base (value region)
 {

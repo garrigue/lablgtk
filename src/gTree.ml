@@ -13,8 +13,7 @@ open GContainer
 (* Obsolete GtkTree/GtkTreeItem framework *)
 
 class tree_item_signals obj = object
-  inherit widget_signals_impl (obj : tree_item obj)
-  inherit container_sigs
+  inherit container_signals_impl (obj : tree_item obj)
   inherit item_sigs
   inherit tree_item_sigs
 end
@@ -33,8 +32,7 @@ class tree_item obj = object
 end
 
 and tree_signals obj = object (self)
-  inherit widget_signals_impl obj
-  inherit container_sigs
+  inherit container_signals_impl obj
   method selection_changed = self#connect Tree.S.selection_changed
   method select_child ~callback =
     self#connect Tree.S.select_child
@@ -110,7 +108,7 @@ class model obj = object (self)
   val id =
     try Hashtbl.find model_ids (Gobject.get_oid obj) with Not_found -> 0
   val obj = obj
-  method as_model = (obj :> tree_model obj)
+  method as_model = (obj :> tree_model)
   method coerce = (self :> model)
   method misc = new gobject_ops obj
   method connect = new model_signals obj
@@ -198,9 +196,12 @@ let checked = cols#add boolean;;
 let store = new GTree.tree_store cols;;
 *)
 
+class type cell_renderer = object
+  method as_renderer : Gtk.cell_renderer obj
+end
+
 class view_column_signals obj = object (self)
-  inherit ['a] gobject_signals obj
-  method destroy = self#connect Object.S.destroy
+  inherit gtkobj_signals_impl obj
   method clicked = self#connect TreeViewColumn.S.clicked
 end
 
@@ -212,11 +213,12 @@ class view_column (obj : tree_view_column obj) = object
   method as_column = obj
   method misc = new gobject_ops obj
   method connect = new view_column_signals obj
-  method pack : 'a. ?expand:_ -> ?from:_ -> ([>`cellrenderer] as 'a) obj -> _ =
-    TreeViewColumn.pack obj
+  method pack : 'a. ?expand:_ -> ?from:_ -> (#cell_renderer as 'a)-> _ =
+    fun ?expand ?from  r -> TreeViewColumn.pack obj ?expand ?from r#as_renderer
   method add_attribute :
-    'a 'b. ([>`cellrenderer] as 'a) obj -> string -> 'b column -> unit
-    = fun crr attr col -> TreeViewColumn.add_attribute obj crr attr col.index
+    'a 'b. (#cell_renderer as 'a) -> string -> 'b column -> unit =
+      fun crr attr col ->
+        TreeViewColumn.add_attribute obj crr#as_renderer attr col.index
   method set_sort_column_id = TreeViewColumn.set_sort_column_id obj
 end
 let view_column ?title ?renderer () =
@@ -225,7 +227,8 @@ let view_column ?title ?renderer () =
   may renderer ~f:
     begin fun (crr, l) ->
       w#pack crr;
-      List.iter l ~f:(fun (attr,col) -> w#add_attribute crr attr col)
+      List.iter l ~f:
+        (fun (attr,col) -> w#add_attribute crr attr col)
     end;
   w
 
@@ -258,8 +261,7 @@ class selection obj = object
 end
 
 class view_signals obj = object (self)
-  inherit widget_signals_impl obj
-  inherit container_sigs
+  inherit container_signals_impl obj
   inherit tree_view_sigs
   method row_activated ~callback =
     self#connect TreeView.S.row_activated
@@ -294,12 +296,13 @@ class view obj = object
   method expand_row ?(all=false) = TreeView.expand_row obj ~all
   method collapse_row = TreeView.collapse_row obj
   method row_expanded = TreeView.row_expanded obj
-  method set_cursor : 'a. ?cell:([> `cellrenderer ] as 'a) Gtk.obj -> _ =
+  method set_cursor : 'a. ?cell:(#cell_renderer as 'a) -> _ =
     fun ?cell ?(edit=false) row col ->
       match cell with
         None -> TreeView.set_cursor obj ~edit row (as_column col)
       | Some cell ->
-          TreeView.set_cursor_on_cell obj ~edit row (as_column col) cell
+          TreeView.set_cursor_on_cell obj ~edit row (as_column col)
+            cell#as_renderer
   method get_cursor () = TreeView.get_cursor obj
   method get_path_at_pos = TreeView.get_path_at_pos obj
 end
@@ -377,18 +380,57 @@ let cell_renderer_toggle_param' = function
   | #cell_properties_toggle_only as x -> cell_renderer_toggle_param x
   | #cell_properties as x -> cell_renderer_param x
 
-let cell_renderer_pixbuf l =
-  CellRendererPixbuf.create (List.map cell_renderer_pixbuf_param' l)
-let cell_renderer_text l =
-  CellRendererText.create (List.map cell_renderer_text_param' l)
-let cell_renderer_toggle l =
-  CellRendererToggle.create (List.map cell_renderer_toggle_param' l)
+class type ['a, 'b] cell_renderer_skel =
+  object
+    inherit gtkobj
+    val obj : 'a obj
+    method as_renderer : Gtk.cell_renderer obj
+    method get_property : ('a, 'c) property -> 'c
+    method set_properties : 'b list -> unit
+  end
 
-let set_cell_properties o l =
-  Gobject.set_params o (List.map cell_renderer_param l)
-let set_pixbuf_properties o l =
-  Gobject.set_params o (List.map cell_renderer_pixbuf_param' l)
-let set_text_properties o l =
-  Gobject.set_params o (List.map cell_renderer_text_param' l)
-let set_toggle_properties o l =
-  Gobject.set_params o (List.map cell_renderer_toggle_param' l)
+class virtual ['a,'b] cell_renderer_impl obj = object (self)
+  inherit gtkobj obj
+  method as_renderer = (obj :> Gtk.cell_renderer obj)
+  method private virtual param : 'b -> 'a param
+  method set_properties l = set_params obj (List.map ~f:self#param l)
+  method get_property : 'c. ('a,'c) property -> 'c = Gobject.Property.get obj
+end
+
+class cell_renderer_pixbuf obj = object
+  inherit [Gtk.cell_renderer_pixbuf,cell_properties_pixbuf]
+      cell_renderer_impl obj
+  method private param = cell_renderer_pixbuf_param'
+  method connect = new gtkobj_signals_impl obj
+end
+class cell_renderer_text_signals obj = object (self)
+  inherit gtkobj_signals_impl (obj : Gtk.cell_renderer_text obj)
+  method edited = self#connect CellRendererText.S.edited
+end
+class cell_renderer_text obj = object
+  inherit [Gtk.cell_renderer_text,cell_properties_text] cell_renderer_impl obj
+  method private param = cell_renderer_text_param'
+  method set_fixed_height_from_font =
+    CellRendererText.set_fixed_height_from_font obj
+  method connect = new cell_renderer_text_signals obj
+end
+class cell_renderer_toggle_signals obj = object (self)
+  inherit gtkobj_signals_impl (obj : Gtk.cell_renderer_toggle obj)
+  method toggled = self#connect CellRendererToggle.S.toggled
+end
+class cell_renderer_toggle obj = object
+  inherit [Gtk.cell_renderer_toggle,cell_properties_toggle]
+      cell_renderer_impl obj
+  method private param = cell_renderer_toggle_param'
+  method connect = new cell_renderer_toggle_signals obj
+end
+
+let cell_renderer_pixbuf l =
+  new cell_renderer_pixbuf
+    (CellRendererPixbuf.create (List.map cell_renderer_pixbuf_param' l))
+let cell_renderer_text l =
+  new cell_renderer_text
+    (CellRendererText.create (List.map cell_renderer_text_param' l))
+let cell_renderer_toggle l =
+  new cell_renderer_toggle
+    (CellRendererToggle.create (List.map cell_renderer_toggle_param' l))

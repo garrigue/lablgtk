@@ -40,9 +40,15 @@ class gtkobj : ([> `gtk] as 'a) obj ->
     method get_oid : int
   end
 
-class gtkobj_signals : [>`gtk] obj ->
+class gtkobj_signals_impl : ?after:bool -> ([>`gtk] as 'a) obj ->
   object ('b)
-    method after : 'b
+    inherit ['a] gobject_signals
+    method destroy : callback:(unit -> unit) -> GtkSignal.id
+  end
+
+class type gtkobj_signals =
+  object ('a)
+    method after : 'a
     method destroy : callback:(unit -> unit) -> GtkSignal.id
   end
 
@@ -300,12 +306,12 @@ class ['a] widget_impl : ([> Gtk.widget] as 'a) obj ->
     inherit ['a] objvar
   end
 
-class widget_signals : [> `gtk] obj -> gtkobj_signals
+class type widget_signals = gtkobj_signals
 
 class widget_signals_impl : ([> Gtk.widget] as 'a) obj ->
   object
     inherit ['a] gobject_signals
-    inherit gtkobj_signals
+    inherit widget_signals
   end
 
 class widget_full : ([> Gtk.widget] as 'a) obj ->

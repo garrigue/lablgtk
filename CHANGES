@@ -1,5 +1,10 @@
 $Id$
 
+2003.06.24 [Jacques]
+  * finish going to generation, add missing signals
+  * wrap clipboard and cell renderers
+  * add GMain.init to avoid "open GMain"
+
 2003.06.23 [Jacques]
   * Lots of changes: generate signals and externals too.
 

@@ -105,6 +105,7 @@ module Value :
     val get_pointer : g_value -> Gpointer.boxed
     val get_nativeint : g_value -> nativeint
     val get_int32 : g_value -> int32
+    val get_conv : data_kind -> g_value -> data_conv_get
   end
 
 module Closure :
@@ -143,7 +144,11 @@ module Data :
     val double : float data_conv
     val string : string data_conv
     val string_option : string option data_conv
+    (* pointers disable copy *)
     val pointer : Gpointer.boxed option data_conv
+    val unsafe_pointer : 'a data_conv
+    val unsafe_pointer_option : 'a option data_conv
+    (* use boxed to enable copy of parameter *)
     val boxed : Gpointer.boxed option data_conv
     val unsafe_boxed : 'a data_conv
     val unsafe_boxed_option : 'a option data_conv

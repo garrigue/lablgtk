@@ -24,7 +24,7 @@ end
 
 class box obj = object
   inherit box_skel obj
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
 end
   
 let box dir =
@@ -36,7 +36,7 @@ let hbox = box `HORIZONTAL
 
 class button_box obj = object
   inherit box_skel obj
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
   method set_layout  = set BBox.P.layout_style  obj
   method layout  = get BBox.P.layout_style  obj
   (* method set_spacing = BBox.set_spacing obj *)
@@ -172,8 +172,7 @@ let paned dir =
   pack_container [] ~create:(fun p -> new paned (Paned.create dir p))
 
 class notebook_signals obj = object (self)
-  inherit widget_signals_impl obj
-  inherit container_sigs
+  inherit container_signals_impl obj
   method change_current_page = self#connect Notebook.S.change_current_page
 end
 

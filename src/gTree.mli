@@ -102,7 +102,7 @@ class model : ([> `treemodel] as 'a) obj ->
   object
     val obj : 'a obj
     val id : int
-    method as_model : Gtk.tree_model obj
+    method as_model : Gtk.tree_model
     method coerce : model
     method connect : model_signals
     method get : row:tree_iter -> column:'b column -> 'b
@@ -184,6 +184,10 @@ class selection :
     method unselect_range : tree_path -> tree_path -> unit
   end
 
+class type cell_renderer = object
+  method as_renderer : Gtk.cell_renderer obj
+end
+
 class view_column_signals : [> `gtk | `treeviewcolumn] obj ->
   object
     inherit gtkobj_signals
@@ -195,8 +199,7 @@ class view_column : tree_view_column obj ->
     val obj : tree_view_column obj
     method as_column : Gtk.tree_view_column obj
     method misc : GObj.gobject_ops
-    method add_attribute :
-      [> `cellrenderer ] obj -> string -> 'a column -> unit
+    method add_attribute : #cell_renderer -> string -> 'a column -> unit
     method alignment : float
     method clickable : bool
     method connect : view_column_signals
@@ -204,8 +207,7 @@ class view_column : tree_view_column obj ->
     method max_width : int
     method min_width : int
     method pack :
-      ?expand:bool ->
-      ?from:[ `END | `START ] -> [> `cellrenderer ] obj -> unit
+      ?expand:bool -> ?from:[ `END | `START ] -> #cell_renderer -> unit
     method reorderable : bool
     method resizable : bool
     method set_alignment : float -> unit
@@ -232,7 +234,7 @@ class view_column : tree_view_column obj ->
   end
 val view_column :
   ?title:string ->
-  ?renderer:([>`cellrenderer] obj * (string * 'a column) list) ->
+  ?renderer:(#cell_renderer * (string * 'a column) list) ->
   unit -> view_column
 
 class view_signals : [> tree_view] obj ->
@@ -299,7 +301,7 @@ class view : tree_view obj ->
     method search_column : int
     method selection : selection
     method set_cursor :
-      ?cell:[> `cellrenderer] obj ->
+      ?cell:#cell_renderer ->
       ?edit:bool -> tree_path -> view_column -> unit
     method set_enable_search : bool -> unit
     method set_expander_column : view_column option -> unit
@@ -379,17 +381,48 @@ type cell_properties_toggle =
   | `INCONSISTENT of bool
   | `RADIO of bool ]
 
-val cell_renderer_pixbuf :
-    cell_properties_pixbuf list -> cell_renderer_pixbuf obj
-val cell_renderer_text :
-    cell_properties_text list -> cell_renderer_text obj
-val cell_renderer_toggle :
-    cell_properties_toggle list -> cell_renderer_toggle obj
+class type ['a, 'b] cell_renderer_skel =
+  object
+    inherit gtkobj
+    val obj : 'a obj
+    method as_renderer : Gtk.cell_renderer obj
+    method get_property : ('a, 'c) property -> 'c
+    method set_properties : 'b list -> unit
+  end
 
-val set_cell_properties : [> cell_renderer] obj -> cell_properties list -> unit
-val set_pixbuf_properties :
-    cell_renderer_pixbuf obj -> cell_properties_pixbuf list -> unit
-val set_text_properties :
-    cell_renderer_text obj -> cell_properties_text list -> unit
-val set_toggle_properties :
-    cell_renderer_toggle obj -> cell_properties_toggle list -> unit
+class virtual ['a, 'b] cell_renderer_impl : ([>Gtk.cell_renderer] as 'a) obj ->
+  object
+    inherit ['a,'b] cell_renderer_skel
+    method private virtual param : 'b -> 'a param
+  end
+
+class cell_renderer_pixbuf : Gtk.cell_renderer_pixbuf obj ->
+  object
+    inherit[Gtk.cell_renderer_pixbuf,cell_properties_pixbuf] cell_renderer_skel
+    method connect : GObj.gtkobj_signals_impl
+  end
+class cell_renderer_text_signals : Gtk.cell_renderer_text obj ->
+  object
+    inherit gtkobj_signals
+    method edited : callback:(Gtk.tree_path -> string -> unit) -> GtkSignal.id
+  end
+class cell_renderer_text : Gtk.cell_renderer_text obj ->
+  object
+    inherit [Gtk.cell_renderer_text,cell_properties_text] cell_renderer_skel
+    method connect : cell_renderer_text_signals
+    method set_fixed_height_from_font : int -> unit
+  end
+class cell_renderer_toggle_signals :  Gtk.cell_renderer_toggle obj ->
+  object
+    inherit gtkobj_signals
+    method toggled : callback:(Gtk.tree_path -> unit) -> GtkSignal.id
+  end
+class cell_renderer_toggle : Gtk.cell_renderer_toggle obj ->
+  object
+    inherit[Gtk.cell_renderer_toggle,cell_properties_toggle] cell_renderer_skel
+    method connect : cell_renderer_toggle_signals
+  end
+
+val cell_renderer_pixbuf : cell_properties_pixbuf list -> cell_renderer_pixbuf
+val cell_renderer_text : cell_properties_text list -> cell_renderer_text
+val cell_renderer_toggle : cell_properties_toggle list -> cell_renderer_toggle

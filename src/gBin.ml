@@ -13,7 +13,7 @@ let set = Gobject.Property.set
 
 class scrolled_window obj = object
   inherit [Gtk.scrolled_window] container_impl obj
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
   inherit scrolled_window_props
   method add_with_viewport w =
     ScrolledWindow.add_with_viewport obj (as_widget w)
@@ -36,8 +36,7 @@ let event_box =
   pack_container [] ~create:(fun pl -> new event_box (EventBox.create pl))
 
 class handle_box_signals (obj : [> handle_box] obj) = object
-  inherit widget_signals_impl obj
-  inherit container_sigs
+  inherit container_signals_impl obj
   inherit handle_box_sigs
 end
 
@@ -59,7 +58,7 @@ end
 
 class frame obj = object
   inherit frame_skel (obj : Gtk.frame obj)
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
 end
 
 let frame =
@@ -68,7 +67,7 @@ let frame =
 
 class aspect_frame obj = object
   inherit frame_skel (obj : Gtk.aspect_frame obj)
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
   inherit aspect_frame_props
 end
 
@@ -79,7 +78,7 @@ let aspect_frame =
 
 class viewport obj = object
   inherit [Gtk.viewport] container_impl obj
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
   method event = new event_ops obj
   inherit viewport_props
 end
@@ -92,7 +91,7 @@ let viewport ?hadjustment ?vadjustment =
 
 class alignment obj = object
   inherit [Gtk.alignment] container_impl obj
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
   inherit alignment_props
 end
 
@@ -103,8 +102,7 @@ let alignment =
 let alignment_cast w = new alignment (Alignment.cast w#as_widget)
 
 class socket_signals obj = object
-  inherit widget_signals_impl (obj : [> socket] obj)
-  inherit container_sigs
+  inherit container_signals_impl (obj : [> socket] obj)
   inherit socket_sigs
 end
 

@@ -54,9 +54,11 @@ val tooltips : ?delay:int -> unit -> tooltips
 
 class clipboard : Gtk.clipboard Lazy.t ->
   object
+    method as_clipboard : Gtk.clipboard
     method clear : unit -> unit
     method get_contents : target:Gdk.atom -> GObj.selection_data
     method set_text : string -> unit
     method text : string option
   end
 val clipboard : Gdk.atom -> clipboard
+val as_clipboard : clipboard -> Gtk.clipboard

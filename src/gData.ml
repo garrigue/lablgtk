@@ -8,8 +8,7 @@ open GtkData
 open GObj
 
 class adjustment_signals obj = object (self)
-  inherit ['a] gobject_signals obj
-  method destroy = self#connect Object.S.destroy
+  inherit gtkobj_signals_impl obj
   method changed = self#connect Adjustment.S.changed
   method value_changed = self#connect Adjustment.S.value_changed
 end
@@ -54,7 +53,7 @@ let conv_adjustment =
 class tooltips obj = object
   inherit gtkobj (obj : Gtk.tooltips obj)
   method as_tooltips = obj
-  method connect = new gtkobj_signals obj
+  method connect = new gtkobj_signals_impl obj
   method enable () = Tooltips.enable obj
   method disable () = Tooltips.disable obj
   method set_tip ?text ?privat w =
@@ -68,13 +67,16 @@ let tooltips ?delay () =
   new tooltips tt
 
 class clipboard clip = object (self)
-  method private clip = Lazy.force clip
-  method clear () = Clipboard.clear self#clip
-  method set_text = Clipboard.set_text self#clip
-  method text = Clipboard.wait_for_text self#clip
+  method as_clipboard = Lazy.force clip
+  method clear () = Clipboard.clear self#as_clipboard
+  method set_text = Clipboard.set_text self#as_clipboard
+  method text = Clipboard.wait_for_text self#as_clipboard
   method get_contents ~target =
-    new GObj.selection_data (Clipboard.wait_for_contents self#clip ~target)
+    new GObj.selection_data
+      (Clipboard.wait_for_contents self#as_clipboard ~target)
 end
 
 let clipboard selection =
   new clipboard (lazy (Clipboard.get selection))
+
+let as_clipboard clip = clip#as_clipboard

@@ -27,10 +27,14 @@
 
 CAMLprim value ml_gtktext_init(value unit)
 {
-    /* Since these are declared const, must force gcc to call them! */
-    GType t =
-        gtk_text_view_get_type() +
-        gtk_text_buffer_get_type();
+  /* Since these are declared const, must force gcc to call them! */
+  GType t =
+    gtk_text_view_get_type() +
+    gtk_text_buffer_get_type() +
+    gtk_text_child_anchor_get_type() +
+    gtk_text_mark_get_type() +
+    gtk_text_tag_get_type() +
+    gtk_text_tag_table_get_type();
     return Val_GType(t);
 }
 

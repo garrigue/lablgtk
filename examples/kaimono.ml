@@ -47,8 +47,9 @@ let add_entry () =
 
 let _ =
   List.iter2 ["Number";"Name";"Count";"Price"] [40;200;40;60] ~f:
-    begin fun text width ->
-      ignore (GButton.button ~label:text ~width ~packing:add_to_table ())
+    begin fun label width ->
+      let b = GButton.button ~label ~packing:add_to_table () in
+      b#misc#set_geometry ~width ()
     end;
   for i = 1 to 9 do add_entry () done
 

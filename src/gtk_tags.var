@@ -206,3 +206,6 @@ type widget_flags = "GTK_"
 
 type image_type = "GTK_IMAGE_"
   [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION ]
+
+type size_group_mode = "GTK_SIZE_GROUP_"
+  [ `NONE | `HORIZONTAL | `VERTICAL | `BOTH ]

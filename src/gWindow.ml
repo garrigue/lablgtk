@@ -40,7 +40,7 @@ end
 
 class window obj = object
   inherit [window] window_skel (obj : Gtk.window obj)
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
 end
 
 let make_window ~create =
@@ -66,8 +66,7 @@ let toplevel (w : #widget) =
 (** Dialog **)
 
 class ['a] dialog_signals (obj : [>Gtk.dialog] obj) tbl = object (self)
-  inherit widget_signals_impl obj
-  inherit container_sigs
+  inherit container_signals_impl obj
   method response ~(callback : 'a -> unit) = 
     self#connect Dialog.S.response
       ~callback:(fun i -> callback (List.assoc i !tbl))
@@ -155,7 +154,7 @@ let message_dialog ?(message="") ~message_type ~buttons
 
 class color_selection_dialog obj = object
   inherit [window] window_skel (obj : Gtk.color_selection_dialog obj)
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
   method ok_button =
     new GButton.button (ColorSelectionDialog.ok_button obj)
   method cancel_button =
@@ -176,7 +175,7 @@ let color_selection_dialog ?(title="Pick a color") =
 class file_selection obj = object
   inherit [window] window_skel (obj : Gtk.file_selection obj)
   inherit file_selection_props
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
   method complete = FileSelection.complete obj
   method get_selections = FileSelection.get_selections obj
   method ok_button = new GButton.button (FileSelection.get_ok_button obj)
@@ -199,7 +198,7 @@ let file_selection ?(title="Choose a file") ?(show_fileops=false) =
 
 class font_selection_dialog obj = object
   inherit [window] window_skel (obj : Gtk.font_selection_dialog obj)
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
   method selection =
     new GMisc.font_selection (FontSelectionDialog.font_selection obj)
   method ok_button =  new GButton.button (FontSelectionDialog.ok_button obj)

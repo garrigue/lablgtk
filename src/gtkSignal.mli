@@ -3,7 +3,7 @@
 open Gobject
 
 type id
-type 'a marshaller = 'a -> Closure.argv -> data_get list -> unit
+type 'a marshaller = 'a -> Closure.argv -> unit
 type ('a,'b) t =
  { name: string; classe: 'a; marshaller: 'b marshaller }
     (* When writing marshallers, beware that the list omits the 0th
@@ -46,6 +46,13 @@ val marshal3 :
 val marshal4 :
   'a data_conv -> 'b data_conv -> 'c data_conv -> 'd data_conv ->
   string -> ('a -> 'b -> 'c -> 'd -> unit) marshaller
+val marshal5 :
+  'a data_conv -> 'b data_conv -> 'c data_conv -> 'd data_conv ->
+  'e data_conv -> string -> ('a -> 'b -> 'c -> 'd -> 'e -> unit) marshaller
+val marshal6 :
+  'a data_conv -> 'b data_conv -> 'c data_conv -> 'd data_conv ->
+  'e data_conv -> 'f data_conv ->
+  string -> ('a -> 'b -> 'c -> 'd -> 'e -> 'f -> unit) marshaller
 
 val marshal0_ret : ret:'a data_conv -> (unit -> 'a) marshaller
 val marshal1_ret :

@@ -96,6 +96,8 @@ module Tags = struct
     | `SENSITIVE | `PARENT_SENSITIVE | `CAN_FOCUS | `HAS_FOCUS
     | `CAN_DEFAULT | `HAS_DEFAULT | `HAS_GRAB | `RC_STYLE | `COMPOSITE_CHILD
     | `NO_REPARENT | `APP_PAINTABLE | `RECEIVES_DEFAULT | `DOUBLE_BUFFERED ]
+  type size_group_mode =
+    [ `NONE | `HORIZONTAL | `VERTICAL | `BOTH ]
 end
 open Tags
 
@@ -201,7 +203,7 @@ type text_iter
 type tree_view = [container|`treeview]
 type tree_view_column = [`gtk|`treeviewcolumn]
 type tree_selection = [`treeselection] obj
-type tree_model = [`treemodel]
+type tree_model = [`treemodel] obj
 type tree_store = [`treestore|`treemodel] obj
 type list_store = [`liststore|`treemodel] obj
 type tree_iter
@@ -215,6 +217,8 @@ type cell_renderer_toggle = [cell_renderer|`cellrenderertoggle]
 type icon_source
 type icon_set
 type icon_factory = [`iconfactory] obj
+
+type size_group = [`sizegroup] obj
 
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj

@@ -96,25 +96,6 @@ module Window = struct
         Gobject.set_params w p))
 
   let set ?title = setter ~cont:(fun f w -> f w) ?title
-
-  module Signals = struct
-    open GtkSignal
-    let activate_default =
-      { name = "activate_default"; classe = `window; marshaller =marshal_unit }
-    let activate_focus =
-      { name = "activate_focus"; classe = `window; marshaller = marshal_unit }
-    let keys_changed =
-      { name = "keys_changed"; classe = `window; marshaller = marshal_unit }
-    let move_focus =
-      let marshal f argv = function
-        | `INT dir :: _ ->
-            f (Gpointer.decode_variant GtkEnums.direction_type dir)
-        | _ -> invalid_arg "GtkWindow.Window.Signals.marshal_focus"
-      in { name = "move_focus"; classe = `window; marshaller = marshal }
-    let set_focus =
-      { name = "set_focus"; classe = `window;
-        marshaller = Widget.Signals.marshal_opt }
-  end
 end
 
 module Dialog = struct
@@ -134,13 +115,6 @@ module Dialog = struct
   external run : [>`dialog] obj -> int
       = "ml_gtk_dialog_run"
   let std_response = Gpointer.encode_variant GtkEnums.response
-  module Signals = struct
-    open GtkSignal
-    let response =
-      { name = "response"; classe = `dialog; marshaller = marshal_int }
-    let close =
-      { name = "close"; classe = `dialog; marshaller = marshal_unit }
-  end
 end
 
 module MessageDialog = struct

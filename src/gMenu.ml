@@ -13,8 +13,7 @@ open GContainer
 (* Menu type *)
 
 class menu_shell_signals obj = object (self)
-  inherit widget_signals_impl obj
-  inherit container_sigs
+  inherit container_signals_impl obj
   method deactivate = self#connect MenuShell.S.deactivate
 end
 
@@ -33,8 +32,7 @@ end
 (* Menu items *)
 
 class menu_item_signals obj = object (self)
-  inherit widget_signals_impl (obj : [>menu_item] obj)
-  inherit container_sigs
+  inherit container_signals_impl (obj : [>menu_item] obj)
   inherit item_sigs
   method activate = self#connect MenuItem.S.activate
 end

@@ -72,7 +72,7 @@ ML_1 (gtk_editable_get_editable, GtkEditable_val, Val_bool)
 #define GtkEntry_val(val) check_cast(GTK_ENTRY,val)
 ML_2 (gtk_entry_append_text, GtkEntry_val, String_val, Unit)
 ML_2 (gtk_entry_prepend_text, GtkEntry_val, String_val, Unit)
-Make_Extractor (GtkEntry, GtkEntry_val, text_length, Val_int)
+Make_Extractor (gtk_entry, GtkEntry_val, text_length, Val_int)
 /*
 ML_0 (gtk_entry_new, Val_GtkWidget_sink)
 ML_1 (gtk_entry_new_with_max_length, (gint16)Long_val, Val_GtkWidget_sink)

@@ -16,24 +16,19 @@ let mark_name = function
 
 type mark = [mark_name | `MARK of text_mark]
 
-class child_anchor obj =
-object
-  val obj = obj
+class child_anchor obj = object
   method get_oid = Gobject.get_oid obj
-  method as_childanchor = obj
+  method as_childanchor : text_child_anchor = obj
   method widgets = List.map (new widget) (ChildAnchor.get_widgets obj)
   method deleted = ChildAnchor.get_deleted obj
 end
 
-let child_anchor () = new child_anchor (ChildAnchor.create ())
+let child_anchor () = new child_anchor (ChildAnchor.create [])
 
 
-class tag_signals obj = object
-  val obj = obj
-  val after = false
-  method after = {< after = true >}
-  method event = 
-    GtkSignal.connect ~sgn:Tag.Signals.event ~after obj
+class tag_signals obj = object (self)
+  inherit ['a] gobject_signals obj
+  method event = self#connect Tag.S.event
 end
 
 type tag_property0 = [
@@ -108,11 +103,9 @@ let text_tag_param (x : tag_property) = text_tag_param
     | `SCALE s  -> `SCALE (Pango.Tags.scale_to_float s)
     | #tag_property0 as x -> x)
 
-class tag obj =
-object (self)
-  val obj = obj
+class tag obj = object (self)
   method get_oid = Gobject.get_oid obj
-  method as_tag = obj
+  method as_tag : text_tag = obj
   method connect = new tag_signals obj
   method priority = Tag.get_priority obj
   method set_priority p = Tag.set_priority obj p
@@ -127,7 +120,7 @@ object (self)
     Gobject.Property.get obj
 end
 
-let tag s = new tag(Tag.create s)
+let tag ?name () = new tag (Tag.create ?name [])
 
 type contents =
     [ `CHAR of Glib.unichar
@@ -309,71 +302,51 @@ end
 (* let iter i = new iter (Iter.copy i) *)
 let as_iter (it : iter) = it#as_iter
 
-class tagtable_signals obj = object
-  val obj = obj
-  val after = false
-  method after = {< after = true >}
-  method tag_added = 
-     GtkSignal.connect ~sgn:TagTable.Signals.tag_added ~after obj
-  method tag_changed = 
-     GtkSignal.connect ~sgn:TagTable.Signals.tag_changed ~after obj
-  method tag_removed = 
-     GtkSignal.connect ~sgn:TagTable.Signals.tag_removed ~after obj
+class tag_table_signals obj = object
+  inherit ['a] gobject_signals obj
+  inherit text_tag_table_sigs
 end
 
-class tagtable obj = 
+class tag_table obj = 
 object
-  val obj = obj
   method get_oid = Gobject.get_oid obj
-  method as_tagtable = obj
-  method connect = new tagtable_signals obj
+  method as_tag_table : text_tag_table = obj
+  method connect = new tag_table_signals obj
   method add =  TagTable.add obj
   method remove =  TagTable.remove obj
   method lookup =  TagTable.lookup obj
-
   method size = TagTable.get_size obj
 end
 
-let tagtable () = 
-  new tagtable (TagTable.create ())
+let tag_table () = 
+  new tag_table (TagTable.create [])
 
-class buffer_signals obj = object
-  val obj = obj
-  val after = false
-  method after = {< after = true >}
+class buffer_signals obj = object (self)
+  inherit ['a] gobject_signals obj
+  inherit text_buffer_sigs
   method apply_tag ~callback = 
-    GtkSignal.connect ~sgn:Buffer.Signals.apply_tag ~after obj
-      ~callback:(fun tag ~start ~stop ->
+    self#connect Buffer.S.apply_tag
+      ~callback:(fun tag start stop ->
         callback (new tag tag) ~start:(new iter start) ~stop:(new iter stop))
-  method begin_user_action = 
-    GtkSignal.connect ~sgn:Buffer.Signals.begin_user_action ~after obj
-  method changed = 
-    GtkSignal.connect ~sgn:Buffer.Signals.changed ~after obj
-  method delete_range ~callback = 
-    GtkSignal.connect ~sgn:Buffer.Signals.delete_range ~after obj
-      ~callback:(fun ~start ~stop ->
+   method delete_range ~callback = 
+    self#connect Buffer.S.delete_range
+      ~callback:(fun start stop ->
         callback ~start:(new iter start) ~stop:(new iter stop))
-  method end_user_action = 
-    GtkSignal.connect ~sgn:Buffer.Signals.end_user_action ~after obj
-  method insert_child_anchor ~callback = 
-    GtkSignal.connect ~sgn:Buffer.Signals.insert_child_anchor ~after obj
+   method insert_child_anchor ~callback = 
+    self#connect Buffer.S.insert_child_anchor
       ~callback:(fun iter -> callback (new iter iter))
   method insert_pixbuf ~callback = 
-    GtkSignal.connect ~sgn:Buffer.Signals.insert_pixbuf ~after obj
+    self#connect Buffer.S.insert_pixbuf
       ~callback:(fun iter -> callback (new iter iter))
   method insert_text ~callback = 
-    GtkSignal.connect ~sgn:Buffer.Signals.insert_text ~after obj
+    self#connect Buffer.S.insert_text
       ~callback:(fun iter -> callback (new iter iter))
-  method mark_deleted =
-    GtkSignal.connect ~sgn:Buffer.Signals.mark_deleted ~after obj
-  method mark_set ~callback = 
-    GtkSignal.connect ~sgn:Buffer.Signals.mark_set ~after obj
+   method mark_set ~callback = 
+    self#connect Buffer.S.mark_set
       ~callback:(fun it -> callback (new iter it))
-  method modified_changed = 
-    GtkSignal.connect ~sgn:Buffer.Signals.modified_changed ~after obj
-  method remove_tag ~callback = 
-    GtkSignal.connect ~sgn:Buffer.Signals.remove_tag ~after obj
-      ~callback:(fun tag ~start ~stop ->
+   method remove_tag ~callback = 
+    self#connect Buffer.S.remove_tag
+      ~callback:(fun tag start stop ->
         callback (new tag tag) ~start:(new iter start) ~stop:(new iter stop))
 end
 
@@ -385,7 +358,6 @@ type position =
     | `START | `END | `ITER of iter | mark ]
 
 class buffer obj = object(self)
-  val obj = obj
   method get_oid = Gobject.get_oid obj
   method as_buffer = obj
   method connect = new buffer_signals obj
@@ -524,26 +496,25 @@ class buffer obj = object(self)
     new child_anchor (Buffer.create_child_anchor obj iter#as_iter)
   method insert_child_anchor (iter:iter) (child_anchor:child_anchor) = 
     Buffer.insert_child_anchor obj iter#as_iter child_anchor#as_childanchor
-  method paste_clipboard ?(iter:iter option) ?(default_editable=true)
-    clipboard = 
-    Buffer.paste_clipboard obj clipboard 
-      (match iter with None -> None | Some i -> Some i#as_iter)
-      default_editable
-  method copy_clipboard = Buffer.copy_clipboard obj
+  method paste_clipboard ?iter ?(default_editable=true) clipboard = 
+    Buffer.paste_clipboard obj (GData.as_clipboard clipboard)
+      (may_map as_iter iter) default_editable
+  method copy_clipboard clip =
+    Buffer.copy_clipboard obj (GData.as_clipboard clip)
   method cut_clipboard ?(default_editable=true) clipboard = 
-    Buffer.cut_clipboard obj clipboard default_editable
-  method add_selection_clipboard = Buffer.add_selection_clipboard obj
-  method remove_selection_clipboard = Buffer.remove_selection_clipboard obj
+    Buffer.cut_clipboard obj (GData.as_clipboard clipboard) default_editable
+  method add_selection_clipboard clip =
+    Buffer.add_selection_clipboard obj (GData.as_clipboard clip)
+  method remove_selection_clipboard clip =
+    Buffer.remove_selection_clipboard obj (GData.as_clipboard clip)
 end
 
-let buffer ?(tagtable:tagtable option) ?text () =
-  let b = 
-    match tagtable with 
-      | None -> new buffer (Buffer.create None)
-      | Some t -> new buffer (Buffer.create (Some t#as_tagtable))
-  in
-    match text with | None -> b | Some t -> b#set_text t; b
- 
+let buffer ?tag_table ?text () =
+  let tag_table =
+    match tag_table with None -> None | Some x -> Some x#as_tag_table in
+  let b = new buffer (Buffer.create ?tag_table []) in
+  match text with None -> b | Some t -> b#set_text t; b
+
 
 class view_signals obj = object
   inherit widget_signals_impl (obj : [> Gtk.text_view] obj)

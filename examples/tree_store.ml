@@ -152,9 +152,7 @@ let add_columns ~(view : GTree.view) ~model =
     ~f:
     begin fun (title, column, euro) ->
       let renderer = GTree.cell_renderer_toggle [`XALIGN 0.] in
-      GtkSignal.connect renderer
-        ~sgn:CellRendererToggle.Signals.toggled
-        ~callback:(item_toggled ~model ~column);
+      renderer#connect#toggled ~callback:(item_toggled ~model ~column);
       let attrs =
         if euro then
           ["active", column; "visible", visible; "activatable", world]

@@ -115,7 +115,7 @@ end
 
 class label obj = object
   inherit label_skel (obj : Gtk.label obj)
-  method connect = new widget_signals obj
+  method connect = new widget_signals_impl obj
 end
 
 let label =
@@ -146,7 +146,7 @@ let tips_query ?caller =
 
 class color_selection obj = object
   inherit [Gtk.color_selection] GObj.widget_impl obj
-  method connect = new GObj.widget_signals obj
+  method connect = new GObj.widget_signals_impl obj
   method set_border_width = set Container.P.border_width obj
   inherit color_selection_props
 end
@@ -160,7 +160,7 @@ class font_selection obj = object
   inherit [Gtk.font_selection] widget_impl obj
   inherit font_selection_props
   method event = new event_ops obj
-  method connect = new GObj.widget_signals obj
+  method connect = new GObj.widget_signals_impl obj
   method set_border_width = set Container.P.border_width obj
 end
 

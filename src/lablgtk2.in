@@ -33,8 +33,10 @@ if test $localdir = no; then
 else
     base=`dirname "$cmd"`
     libpath="-I $base $libpath"
-    LD_LIBRARY_PATH=${base}:$LD_LIBRARY_PATH
-    if test $verbose = yes; then echo LD_LIBRARY_PATH=$LD_LIBRARY_PATH; fi
+    CAML_LD_LIBRARY_PATH=${base}:$CAML_LD_LIBRARY_PATH
+    if test $verbose = yes; then
+        echo CAML_LD_LIBRARY_PATH=$CAML_LD_LIBRARY_PATH
+    fi
 fi
 
 if test $thread = yes; then
@@ -54,7 +56,7 @@ if test $thread = yes; then
 else
     if test $usedll = yes; then
         toplevel="ocaml"
-        libraries="@MLLIBS@"
+        libraries="unix.cma @MLLIBS@"
     else
         toplevel="@INSTALLDIR@/lablgtktop"
     fi
