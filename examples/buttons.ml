@@ -20,7 +20,7 @@ class xpm_label_box parent:(parent : #widget) :file :label =
     val label = new_label :label
 
     initializer
-      box#set_size border_width: 2;
+      box#set_size border: 2;
       List.iter [(pixmapwid :> framed); (label :> framed)]
 	fun:(box#pack expand:false fill:false padding:3)
 

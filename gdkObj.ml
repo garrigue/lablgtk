@@ -3,11 +3,11 @@
 open Misc
 open Gdk
 
-type color = [Color(Color.t) White Black Name(string) RGB(int*int*int)]
+type color = [COLOR(Color.t) WHITE BLACK NAME(string) RGB(int*int*int)]
 
 let color : color -> Color.t = function
-    `Color col -> col
-  | `White|`Black|`Name _|`RGB _ as def -> Color.alloc def
+    `COLOR col -> col
+  | `WHITE|`BLACK|`NAME _|`RGB _ as def -> Color.alloc def
 
 let gc_set gc ?:foreground ?:background =
   Misc.may foreground fun:(fun col -> GC.set_foreground gc (color col));
@@ -53,9 +53,9 @@ class pixdraw parent:(w : #GtkObj.widget) :width :height =
       pixmap#string s :font :x :y;
       mask#string s :font :x :y
     initializer
-      mask#set foreground:`Black;
+      mask#set foreground:`BLACK;
       mask#rectangle x:0 y:0 :width :height filled:true;
-      mask#set foreground:`White
+      mask#set foreground:`WHITE
   end
 
 

@@ -1514,12 +1514,12 @@ module Table = struct
       top:int -> bottom:int -> xoptions:attach list ->
       yoptions:attach list -> xpadding:int -> ypadding:int -> unit
       = "ml_gtk_table_attach_bc" "ml_gtk_table_attach"
-  type dirs = [x y both none]
-  let has_x : dirs -> bool = function `x|`both -> true | `y|`none -> false
-  let has_y : dirs -> bool = function `y|`both -> true | `x|`none -> false
+  type dirs = [X Y BOTH NONE]
+  let has_x : dirs -> bool = function `X|`BOTH -> true | `Y|`NONE -> false
+  let has_y : dirs -> bool = function `Y|`BOTH -> true | `X|`NONE -> false
   let attach t w :left :top ?:right [< left+1 >] ?:bottom [< top+1 >]
-      ?:expand [< `both >] ?:fill [< `both >]
-      ?:shrink [< `none >] ?:xpadding [< 0 >] ?:ypadding [< 0 >] =
+      ?:expand [< `BOTH >] ?:fill [< `BOTH >]
+      ?:shrink [< `NONE >] ?:xpadding [< 0 >] ?:ypadding [< 0 >] =
     let xoptions = if has_x shrink then [`SHRINK] else [] in
     let xoptions = if has_x fill then `FILL::xoptions else xoptions in
     let xoptions = if has_x expand then `EXPAND::xoptions else xoptions in

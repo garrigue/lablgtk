@@ -77,11 +77,11 @@ let pixdraw1 = new pixdraw parent:window width:40 height:40
 let pixdraw2 = new pixdraw parent:window width:40 height:40
 
 let _ =
-  pixdraw1#set foreground:`Black;
+  pixdraw1#set foreground:`BLACK;
   pixdraw1#arc x:3 y:3 width:34 height:34 filled:true;
-  pixdraw2#set foreground:`White;
+  pixdraw2#set foreground:`WHITE;
   pixdraw2#arc x:3 y:3 width:34 height:34 filled:true;
-  pixdraw2#set foreground:`Black;
+  pixdraw2#set foreground:`BLACK;
   pixdraw2#arc x:3 y:3 width:34 height:34
 
 (* The cell class: a button with a pixmap on it *)

@@ -23,7 +23,7 @@ let _ =
   text#insert "こんにちは" :font;
   let style = button#misc#style in
   Style.set style :font;
-  Style.set_bg style color:(Gdk.Color.alloc (`Name "green"));
+  Style.set_bg style color:(Gdk.Color.alloc (`NAME "green"));
   button#connect#clicked callback:Main.quit
 
 let _ =
