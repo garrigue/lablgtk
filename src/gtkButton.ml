@@ -147,15 +147,14 @@ module Toolbar = struct
     may tooltips ~f:(set_tooltips w)
   module Signals = struct
     open GtkSignal
-    external val_orientation : int -> orientation = "ml_Val_orientation"
-    external val_toolbar_style : int -> toolbar_style
-	= "ml_Val_toolbar_style"
     let orientation_changed =
-      let marshal f = marshal_int (fun x -> f (val_orientation x)) in
+      let marshal f = marshal_int
+          (fun x -> f (Gpointer.decode_variant Tables.orientation x)) in
       { name = "orientation_changed"; classe = `toolbar;
         marshaller = marshal }
     let style_changed =
-      let marshal f = marshal_int (fun x -> f (val_toolbar_style x)) in
+      let marshal f = marshal_int
+          (fun x -> f (Gpointer.decode_variant Tables.toolbar_style x)) in
       { name = "style_changed"; classe = `toolbar; marshaller = marshal }
   end
 end

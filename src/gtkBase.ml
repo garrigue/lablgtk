@@ -92,8 +92,8 @@ module Object = struct
   external destroy : [>`gtk] obj -> unit = "ml_gtk_object_destroy"
   let cast w : [`gtk] obj = try_cast w "GtkObject"
   external get_flags : [>`gtk] obj -> int = "ml_GTK_OBJECT_FLAGS"
-  external widget_flag : widget_flags -> int = "ml_Widget_flags_val"
-  let get_flag obj wf = (get_flags obj) land (widget_flag wf) <> 0
+  let get_flag obj wf =
+    (get_flags obj) land (Gpointer.encode_variant Tables.widget_flags wf) <> 0
   module Signals = struct
     open GtkSignal
     let destroy =
@@ -278,9 +278,9 @@ module Widget = struct
       { name = "unmap"; classe = `widget; marshaller = marshal_unit }
     let realize =
       { name = "realize"; classe = `widget; marshaller = marshal_unit }
-    external val_state : int -> state_type = "ml_Val_state_type"
     let state_changed =
-      let marshal f = marshal_int (fun x -> f (val_state x)) in
+      let marshal f = marshal_int
+          (fun x -> f (Gpointer.decode_variant Tables.state_type x)) in
       { name = "state_changed"; classe = `widget; marshaller = marshal }
     let parent_set =
       { name = "parent_set"; classe = `widget; marshaller = marshal_opt }
@@ -377,10 +377,14 @@ module Container = struct
       = "ml_gtk_container_add"
   external remove : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_remove"
-  let set ?border_width ?(width = -1) ?(height = -1) w =
-    may border_width ~f:(set_border_width w);
-    if width <> -1 || height <> -1 then
-      Widget.set_size_request w ?width ?height
+
+  let setter ~cont ?border_width ?(width = -2) ?(height = -2) =
+    cont (fun w ->
+      may border_width ~f:(set_border_width w);
+      if width <> -2 || height <> -2 then Widget.set_usize w ?width ?height)
+  let set ?border_width =
+    setter ?border_width ~cont:(fun f w -> f w)
+
   external foreach : [>`container] obj -> f:(widget obj-> unit) -> unit
       = "ml_gtk_container_foreach"
   let children w =

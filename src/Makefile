@@ -251,6 +251,9 @@ varcc: varcc.cmo
 	$(LINKER) -o $@ $<
 	rm -f *_tags.h *_tags.c
 
+check_externals: check_externals.cmo
+	$(LINKER) -o $@ $<
+
 clean:
 	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml xml_lexer.ml
 	rm -f \#*\# *~

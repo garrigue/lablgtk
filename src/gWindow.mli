@@ -14,10 +14,10 @@ class ['a] window_skel : 'b obj ->
     method add_accel_group : accel_group -> unit
     method event : event_ops
     method as_window : Gtk.window obj
-    method set_default_size : width:int -> height:int -> unit
     method resize : width:int -> height:int -> unit
     method set_allow_shrink : bool -> unit
     method set_allow_grow : bool -> unit
+    method set_default_size : width:int -> height:int -> unit
     method set_modal : bool -> unit
     method set_position : Tags.window_position -> unit
     method set_resizable : bool -> unit

@@ -143,7 +143,7 @@ module TreeModel = struct
     it
   external iter_parent :
     [>`treemodel] obj -> tree_iter -> child:tree_iter -> bool
-    = "ml_gtk_tree_model_iter_children"
+    = "ml_gtk_tree_model_iter_parent"
   let iter_parent m child =
     let i = alloc_iter () in
     if iter_parent m i ~child then i
@@ -481,11 +481,10 @@ module TreeView = struct
     let expand_collapse_cursor_row =
       { name = "expand_collapse_cursor_row"; classe = `treeview;
         marshaller = marshal_expand_bool3 }
-    external extract_movement_step : int -> Gtk.Tags.movement_step
-      = "ml_Val_movement_step"
     let marshal_move_cursor f argv = function
       | `INT step :: `INT n :: _ ->
-          return argv (`BOOL (f (extract_movement_step step) n))
+          return argv
+            (`BOOL (f (Gpointer.decode_variant Tables.movement_step step) n))
       | _ -> failwith "GtkTree.TreeView.Signals.move_cursor"
     let move_cursor =
       { name = "move_cursor"; classe = `treeview;

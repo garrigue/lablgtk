@@ -170,8 +170,6 @@ module Tag = struct
     | `TABS_SET _ -> "tabs-set"
     | `INVISIBLE_SET _ -> "invisible-set"
 
-  external wrap_mode : Gtk.Tags.wrap_mode -> int = "ml_Wrap_mode_val"
-
   let set_property o (p:property) =
     let encode tbl v = `INT (Gpointer.encode_variant tbl v) in
     let data = match p with 
@@ -210,7 +208,7 @@ module Tag = struct
     | `FOREGROUND_GDK b | `BACKGROUND_GDK b  ->
  	`POINTER (Some (Obj.magic (b : Gdk.Color.t)))
 
-    | `WRAP_MODE b -> `INT (wrap_mode b)
+    | `WRAP_MODE b -> `INT (Gpointer.encode_variant Tables.wrap_mode b)
 
     | `STYLE b  -> encode Pango.Tags.style b
 
@@ -220,9 +218,9 @@ module Tag = struct
     
     | `VARIANT s ->  encode Pango.Tags.variant s
 
-    | `DIRECTION b  -> encode Pango.Tags.text_direction b
+    | `DIRECTION b  -> encode Tables.text_direction b
 
-    | `JUSTIFICATION b -> encode Pango.Tags.justification b
+    | `JUSTIFICATION b -> encode Tables.justification b
 
     | `FONT_DESC f ->
         `POINTER (Some (Obj.magic (f : Pango.font_description)))
@@ -254,7 +252,7 @@ module TagTable = struct
   external add : texttagtable -> texttag -> unit = "ml_gtk_text_tag_table_add"
   external remove : texttagtable -> texttag -> unit = "ml_gtk_text_tag_table_remove"
   external lookup : texttagtable -> string -> texttag option 
-    = "ml_gtk_text_tag_table_add"
+    = "ml_gtk_text_tag_table_lookup"
   external get_size : texttagtable -> int = "ml_gtk_text_tag_table_get_size"
   module Signals = struct
   open GtkSignal
@@ -643,9 +641,6 @@ module View = struct
 	   "ml_gtk_text_view_set_indent"
   external get_indent : [>`textview] obj -> int =
 	   "ml_gtk_text_view_get_indent"
-  external val_delete_type : int -> delete_type = "ml_Val_delete_type"
-  external val_movement_step : int -> movement_step = "ml_Val_movement_step"
-  external val_direction_type : int -> direction_type = "ml_Val_direction_type"
 
   let set ?editable ?cursor_visible ?wrap_mode w =
     may editable ~f:(set_editable w);
@@ -657,15 +652,15 @@ module View = struct
 
     let marshal_delete_from_cursor f _ = function 
       |`INT ty ::`INT i ::_ ->
-	 f (val_delete_type ty) i
+	 f (Gpointer.decode_variant Tables.delete_type ty) i
       | _ -> invalid_arg "GtkText.View.Signals.marshal_delete_from_cursor"
     let marshal_move_cursor f _ = function 
       |`INT step :: `INT i :: `BOOL b :: _ ->
-	 f (val_movement_step step) i b
+	 f (Gpointer.decode_variant Tables.movement_step step) i b
       | _ -> invalid_arg "GtkText.View.Signals.marshal_move_cursor"
     let marshal_move_focus f _ = function 
       |`INT dir :: _ ->
-	 f (val_direction_type dir)
+	 f (Gpointer.decode_variant Tables.direction_type dir)
       | _ -> invalid_arg "GtkText.View.Signals.marshal_move_focus"
     let marshal_page_horizontally f _ = function 
       | (`INT i)::(`BOOL b)::_ ->
@@ -777,7 +772,7 @@ module Iter = struct
   external get_visible_text : textiter -> textiter -> string = "ml_gtk_text_iter_get_visible_text"
   external get_pixbuf : textiter -> GdkPixbuf.pixbuf option = "ml_gtk_text_iter_get_pixbuf"
   external get_marks : textiter -> textmark list = "ml_gtk_text_iter_get_marks"
-  external get_toggled_tags : textiter -> bool -> texttag list = "ml_gtk_text_iter_get_marks"
+  external get_toggled_tags : textiter -> bool -> texttag list = "ml_gtk_text_iter_get_toggled_tags"
   external get_child_anchor : textiter -> textchildanchor option ="ml_gtk_text_iter_get_child_anchor"
   external begins_tag : textiter -> texttag option -> bool = "ml_gtk_text_iter_begins_tag"
   external ends_tag : textiter -> texttag option -> bool = "ml_gtk_text_iter_ends_tag"

@@ -1,7 +1,9 @@
 $Id$
 
 2003.06.11 [Jacques]
-  * changes in object properties (GtkBase.Tables, gtkWindow.ml)
+  * changes in object properties (GtkBase.Tables, ...)
+  * add check_externals utility, fix some bugs
+  * additions in GtkWindow.ml
 
 2003.06.10 [Jacques]
   * changes in object properties (gobject.ml, gtkTree.ml)

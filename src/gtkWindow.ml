@@ -8,6 +8,8 @@ open GtkBase
 module Window = struct
   let cast w : window obj = Object.try_cast w "GtkWindow"
   external create : window_type -> window obj = "ml_gtk_window_new"
+  external set_title : [>`window] obj -> string -> unit
+      = "ml_gtk_window_set_title"
   external set_wmclass : [>`window] obj -> name:string -> clas:string -> unit
       = "ml_gtk_window_set_wmclass"
   external get_wmclass_name : [>`window] obj -> string
@@ -23,9 +25,6 @@ module Window = struct
       = "ml_gtk_window_activate_focus"
   external activate_default : [>`window] obj -> bool
       = "ml_gtk_window_activate_default"
-  external set_default_size :
-      [>`window] obj -> width:int -> height:int -> unit
-      = "ml_gtk_window_set_default_size"
   external set_geometry_hints :
       [>`window] obj -> ?pos: bool -> ?min_size: int * int ->
       ?max_size: int * int -> ?base_size: int * int ->
@@ -60,8 +59,21 @@ module Window = struct
       = "ml_gtk_window_set_focus"
   external set_default : [>`window] obj -> [>`widget] obj -> unit
       = "ml_gtk_window_set_default"
-  external present :  [>`window] obj -> unit
-      = "ml_gtk_window_present"
+  external present :  [>`window] obj -> unit = "ml_gtk_window_present"
+  external iconify :  [>`window] obj -> unit = "ml_gtk_window_iconify"
+  external deiconify :  [>`window] obj -> unit = "ml_gtk_window_deiconify"
+  external stick :  [>`window] obj -> unit = "ml_gtk_window_stick"
+  external unstick :  [>`window] obj -> unit = "ml_gtk_window_unstick"
+  external maximize :  [>`window] obj -> unit = "ml_gtk_window_maximize"
+  external unmaximize :  [>`window] obj -> unit = "ml_gtk_window_unmaximize"
+  external fullscreen :  [>`window] obj -> unit = "ml_gtk_window_fullscreen"
+  external unfullscreen :  [>`window] obj -> unit
+      = "ml_gtk_window_unfullscreen"
+  external set_decorated : [>`window] obj -> bool -> unit
+      = "ml_gtk_window_set_decorated"
+  external set_mnemonic_modifier :
+      [>`window] obj -> Gdk.Tags.modifier list -> unit
+      = "ml_gtk_window_set_decorated"
   external resize :
       [>`window] obj -> width:int -> height:int -> unit
       = "ml_gtk_window_resize"
@@ -114,20 +126,23 @@ module Window = struct
     set_wmclass w ~name:(may_default get_wmclass_name w ~opt:name)
       ~clas:(may_default get_wmclass_class w ~opt:wm_class)
 
-  let set ?title ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
-      ?allow_shrink ?resizable ?modal ?(x = -2) ?(y = -2) w =
-    let may_set p = may ~f:(Gobject.Property.set w p) in
-    may_set Prop.title title;
-    if wm_name <> None || wm_class <> None then
-      set_wmclass w ?name:wm_name ?clas:wm_class;
-    if icon <> None then Gobject.Property.set w Prop.icon icon;
-    may_set Prop.screen screen;
-    may_set Prop.window_position position;
-    may_set Prop.allow_grow allow_grow;
-    may_set Prop.allow_shrink allow_shrink;
-    may_set Prop.resizable resizable;
-    may_set Prop.modal modal;
-    if x <> -2 || y <> -2 then Widget.set_uposition w ~x ~y
+  let setter ~cont ?title ?wm_name ?wm_class ?icon ?screen ?position
+      ?allow_grow ?allow_shrink ?resizable ?modal ?(x = -2) ?(y = -2) =
+    cont (fun w ->
+      may title ~f:(set_title w);
+      let may_set p = may ~f:(Gobject.Property.set w p) in
+      if wm_name <> None || wm_class <> None then
+        set_wmclass w ?name:wm_name ?clas:wm_class;
+      if icon <> None then Gobject.Property.set w Prop.icon icon;
+      may_set Prop.screen screen;
+      may_set Prop.window_position position;
+      may_set Prop.allow_grow allow_grow;
+      may_set Prop.allow_shrink allow_shrink;
+      may_set Prop.resizable resizable;
+      may_set Prop.modal modal;
+      if x <> -2 || y <> -2 then Widget.set_uposition w ~x ~y)
+
+  let set ?title = setter ~cont:(fun f w -> f w) ?title
 
   module Signals = struct
     open GtkSignal
@@ -137,10 +152,10 @@ module Window = struct
       { name = "activate_focus"; classe = `window; marshaller = marshal_unit }
     let keys_changed =
       { name = "keys_changed"; classe = `window; marshaller = marshal_unit }
-    external val_direction : int -> direction_type = "ml_Val_direction_type"
     let move_focus =
       let marshal f argv = function
-        | `INT dir :: _ -> f (val_direction dir)
+        | `INT dir :: _ ->
+            f (Gpointer.decode_variant Tables.direction_type dir)
         | _ -> invalid_arg "GtkWindow.Window.Signals.marshal_focus"
       in { name = "move_focus"; classe = `window; marshaller = marshal }
     let set_focus =
@@ -166,8 +181,7 @@ module Dialog = struct
       = "ml_gtk_dialog_set_default_response"
   external run : [>`dialog] obj -> int
       = "ml_gtk_dialog_run"
-  external std_response : Gtk.Tags.response -> int
-      = "ml_Response_val"
+  let std_response = Gpointer.encode_variant Tables.response
   external create_message :
       ?parent:[>`window] obj -> message_type:Gtk.Tags.message_type ->
       buttons:Gtk.Tags.buttons -> message:string -> unit -> dialog obj
@@ -179,7 +193,7 @@ module Dialog = struct
     let close =
       { name = "close"; classe = `dialog; marshaller = marshal_unit }
   end
-  module Properties = struct
+  module Prop = struct
     open Gobject
     let has_separator = 
       { name = "has_separator" ; classe = `dialog ; conv = Data.boolean }
