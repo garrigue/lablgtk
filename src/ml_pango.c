@@ -29,7 +29,8 @@ ML_1(pango_font_description_from_string, String_val,
      Val_PangoFontDescription_new)
 ML_1(pango_font_description_copy, PangoFontDescription_val,
      Val_PangoFontDescription_new)
-ML_1(pango_font_description_free, PangoFontDescription_val, Unit)
+ML_1(pango_font_description_to_string, PangoFontDescription_val,
+     copy_string_g_free)
 
 /* PangoFontMetrics */
 
@@ -105,4 +106,4 @@ ML_2 (pango_context_load_font, PangoContext_val, PangoFontDescription_val,
 ML_3 (pango_context_load_fontset, PangoContext_val, PangoFontDescription_val,
       PangoLanguage_val, Val_PangoFont_new)
 ML_3 (pango_context_get_metrics, PangoContext_val, PangoFontDescription_val,
-      PangoLanguage_val, Val_PangoFontMetrics_new)
+      Option_val(arg3,PangoLanguage_val,NULL) Ignore, Val_PangoFontMetrics_new)

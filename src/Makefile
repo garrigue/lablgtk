@@ -111,7 +111,7 @@ MLOBJS =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
 	gtkMain.cmo \
-	gDraw.cmo \
+	gPango.cmo gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
 	gText.cmo \
 	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gWindow.cmo gBin.cmo \
@@ -186,10 +186,10 @@ liblablgtkgl2.a: $(GLCOBJS)
 	    $(GTKGLLIBS)
 lablgtkgl.cma: liblablgtkgl2.a $(GLMLOBJS)
 	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $(GLMLOBJS) \
-	    $(GLLIBS) $(GTKLIBS)
+	    $(GTKGLLIBS)
 lablgtkgl.cmxa: liblablgtkgl2.a $(GLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $(GLMLOBJS:.cmo=.cmx) \
-	    $(GLLIBS) $(GTKLIBS)
+	    $(GTKGLLIBS)
 
 #liblablgnome.a: $(GNOMECOBJS)
 #	$(LIBRARIAN) -o lablgnome $(GNOMECOBJS) $(GNOMELIBS)

@@ -44,6 +44,8 @@ end
 module Font = struct
   external from_string : string -> font_description = 
     "ml_pango_font_description_from_string"
+  external to_string : font_description -> string = 
+    "ml_pango_font_description_to_string"
   external copy : font_description -> font_description = 
     "ml_pango_font_description_copy"
 
@@ -82,7 +84,7 @@ module Context = struct
   external load_fontset : context -> font_description -> language -> font =
     "ml_pango_context_load_fontset"
   external get_metrics :
-    context -> font_description -> language -> font_metrics =
+    context -> font_description -> language option -> font_metrics =
     "ml_pango_context_get_metrics"
 end
 
