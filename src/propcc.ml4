@@ -267,6 +267,8 @@ let process_phrase ~chars = parser
 
 let all_props = Hashtbl.create 137
 let all_pnames = Hashtbl.create 137
+let outfile = ref ""
+let ooutfile = ref ""
 
 let process_file f =
   let base = Filename.chop_extension f in
@@ -299,7 +301,7 @@ let process_file f =
     (fun (name, gtk_name, attrs, _, _, _) ->
       add_object gtk_name (type_name name ~attrs));
   (* Output modules *)
-  let oc = open_out (base ^ "Props.ml") in
+  let oc = open_out (if !outfile = "" then base ^ "Props.ml" else !outfile) in
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
   List.iter !headers ~f:(fun s -> out "%s@." s);
@@ -348,12 +350,12 @@ let process_file f =
         let pname =
           if Hashtbl.mem all_pnames pname then pname ^ "_" ^ gtype
           else (Hashtbl.add all_pnames pname (); pname) in
-        rpname := "Shared." ^ pname;
+        rpname := "PrivateProps." ^ pname;
         (pname,name,gtype) :: acc
       end
   in
   if shared_props <> [] then begin
-    out "@[<hv2>module Shared = struct";
+    out "@[<hv2>module PrivateProps = struct";
     List.iter (List.sort compare shared_props) ~f:
       (fun (pname,name,gtype) ->
         defprop ~name ~mlname:pname ~gtype ~tag:"gtk");
@@ -511,7 +513,8 @@ let process_file f =
     end;
   close_out oc;
   (* Output classes *)
-  let oc = open_out ("o" ^ baseM ^ "Props.ml") in
+  let oc = open_out
+      (if !ooutfile = "" then "o" ^ baseM ^ "Props.ml" else !ooutfile) in
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
   List.iter !oheaders ~f:(fun s -> out "%s@." s);
@@ -597,11 +600,15 @@ let process_file f =
       end
     end;
   out "@.";
-  close_out oc
+  close_out oc;
+  outfile := "";
+  ooutfile := ""
 
 let main () =
   Arg.parse
-    [ "-checks", Arg.Set checks, "generate code for checks"]
-    process_file "usage: propcc file.props ..."
+    [ "-checks", Arg.Set checks, "generate code for checks";
+      "-o", Arg.String (fun s -> outfile := s), "basic output file name";
+      "-oo", Arg.String (fun s -> ooutfile := s), "wrappers output file name" ]
+    process_file "usage: propcc <options> file.props ..."
 
 let () = Printexc.print main ()
