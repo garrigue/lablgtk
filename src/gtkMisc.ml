@@ -194,7 +194,8 @@ module Label = struct
   external create : string -> label obj = "ml_gtk_label_new"
   external set_text : [>`label] obj -> string -> unit = "ml_gtk_label_set_text"
   external set_markup : [>`label] obj -> string -> unit = "ml_gtk_label_set_markup"
-  external set_markup_with_mnemonic : [>`label] obj -> string -> unit = "ml_gtk_label_set_markup"
+  external set_markup_with_mnemonic : [>`label] obj -> string -> unit
+      = "ml_gtk_label_set_markup_with_mnemonic"
   external set_pattern : [>`label] obj -> string -> unit
       = "ml_gtk_label_set_pattern"
   external set_justify : [>`label] obj -> justification -> unit
