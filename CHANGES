@@ -1,5 +1,8 @@
 $Id$
 
+2000.6.6
+  * move notebook from GMisc to GPack
+
 2000.5.25
   * split misc.ml into gaux.ml and gpointer.ml
 

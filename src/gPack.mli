@@ -155,6 +155,58 @@ val layout :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> layout
 
+class notebook_signals : 'a obj ->
+  object
+    inherit container_signals
+    constraint 'a = [>`notebook|`container|`widget]
+    val obj : 'a obj
+    method switch_page : callback:(int -> unit) -> GtkSignal.id
+  end
+
+class notebook : Gtk.notebook obj ->
+  object
+    inherit container
+    val obj : Gtk.notebook obj
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method append_page :
+      ?tab_label:widget -> ?menu_label:widget -> widget -> unit
+    method connect : notebook_signals
+    method current_page : int
+    method get_menu_label : widget -> widget
+    method get_nth_page : int -> widget
+    method get_tab_label : widget -> widget
+    method goto_page : int -> unit
+    method insert_page :
+      ?tab_label:widget -> ?menu_label:widget -> pos:int -> widget -> unit
+    method next_page : unit -> unit
+    method page_num : widget -> int
+    method prepend_page :
+      ?tab_label:widget -> ?menu_label:widget -> widget -> unit
+    method previous_page : unit -> unit
+    method remove_page : int -> unit
+    method set_homogeneous_tabs : bool -> unit
+    method set_page :
+      ?tab_label:widget -> ?menu_label:widget -> widget -> unit
+    method set_popup : bool -> unit
+    method set_scrollable : bool -> unit
+    method set_show_border : bool -> unit
+    method set_show_tabs : bool -> unit
+    method set_tab_border : int -> unit
+    method set_tab_pos : Tags.position -> unit
+  end
+val notebook :
+  ?tab_pos:Tags.position ->
+  ?tab_border:int ->
+  ?show_tabs:bool ->
+  ?homogeneous_tabs:bool ->
+  ?show_border:bool ->
+  ?scrollable:bool ->
+  ?popup:bool ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> notebook
+
 class packer :
   Gtk.packer obj ->
   object

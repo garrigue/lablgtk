@@ -244,3 +244,57 @@ end
 
 let new_tifixed ~name ?(listprop = []) =
   new tifixed ~widget:(GPack.fixed ()) ~name
+
+
+
+
+
+class tinotebook ~(widget : GPack.notebook) ~name ~parent_tree ~pos
+    ?(insert_evbox=true) parent_window =
+object(self)
+  val notebook = widget
+  inherit ticontainer ~name ~widget ~insert_evbox
+      ~parent_tree ~pos parent_window as widget
+
+  method private class_name = "GPack.notebook"
+
+  method private add child ~pos =
+    children <- children @ [child, `START];
+    notebook#insert_page child#base ~pos;
+    child#add_to_proplist
+      [ "tab_label",
+	new prop_string ~name:"tab_label" ~init:""
+	  ~set:(fun v -> notebook#set_page
+	      ~tab_label:((GMisc.label ~text:v())#coerce) child#base; true)
+      ]
+
+
+  initializer
+    classe <- "notebook";
+    proplist <-  proplist @
+      [ "tab_pos",
+	new prop_position ~name:"tab_ pos" ~init:"TOP"
+	  ~set:(ftrue notebook#set_tab_pos);
+	"show_tabs",
+	new prop_bool ~name:"show_tabs" ~init:"true"
+	  ~set:(ftrue notebook#set_show_tabs);
+	"homogeneous_tabs",
+	new prop_bool ~name:"homogeneous_tabs" ~init:"true"
+	  ~set:(ftrue notebook#set_homogeneous_tabs);
+	"show_border",
+	new prop_bool ~name:"show_border" ~init:"true"
+	  ~set:(ftrue notebook#set_show_border);
+	"scrollable",
+	new prop_bool ~name:"scrollable" ~init:"false"
+	  ~set:(ftrue notebook#set_scrollable);
+	"tab_border",
+	new prop_int ~name:"tab_border" ~init:"2"
+	  ~set:(ftrue notebook#set_tab_border);
+	"popup_enable",
+	new prop_bool ~name:"popup_enable" ~init:"false"
+	  ~set:(ftrue notebook#set_popup)
+      ]
+end
+
+let new_tinotebook ~name ?(listprop = []) =
+  new tinotebook ~widget:(GPack.notebook ()) ~name

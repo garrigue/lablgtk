@@ -28,8 +28,7 @@ Contents:
 	g[A-Z]*.ml	object-oriented interface to GTK
 	gdkObj.ml	object-oriented interface to GDK
 
-	lablgtk		normal toplevel
-	lablgtk_t	threaded toplevel
+	lablgtk		toplevel
 
 	examples/*.ml	various examples
 	applications/*	applications using the library
@@ -86,7 +85,7 @@ Structure of the G[A-Z]* modules:
   GData		data, adjustment, tooltips
   GContainer	container, item_container
   GWindow	window, dialog, color_selection_dialog, file_selection, plug
-  GPack		box, button_box, table, fixed, layout, packer, paned
+  GPack		box, button_box, table, fixed, layout, packer, paned, notebook
   GBin  	scrolled_window, event_box, handle_box, frame,
 		aspect_frame, viewport, socket
   GButton	button, toggle_button, check_button, radio_button, toolbar
@@ -94,7 +93,7 @@ Structure of the G[A-Z]* modules:
 		menu_shell, menu, option_menu, menu_bar, factory
   GMisc		separator, statusbar, calendar, drawing_area,
 		misc, arrow, image, pixmap, label, tips_query,
-                notebook, color_selection
+                color_selection
   GTree		tree_item, tree
   GList		list_item, liste, clist
   GEdit		editable, entry, spin_button, combo, text

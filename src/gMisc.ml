@@ -168,57 +168,6 @@ let tips_query ?caller ?emit_always ?label_inactive ?label_no_tip
   Misc.set w ?xalign ?yalign ?xpad ?ypad ?width ?height;
   pack_return (new tips_query w) ~packing ~show
 
-class notebook_signals obj = object
-  inherit GContainer.container_signals obj
-  method switch_page =
-    GtkSignal.connect obj ~sgn:Notebook.Signals.switch_page ~after
-end
-
-class notebook obj = object (self)
-  inherit GContainer.container (obj : Gtk.notebook obj)
-  method add_events = Widget.add_events obj
-  method connect = new notebook_signals obj
-  method insert_page ?tab_label ?menu_label ~pos child =
-      Notebook.insert_page obj (as_widget child) ~pos
-	~tab_label:(Gpointer.may_box tab_label ~f:as_widget)
-	~menu_label:(Gpointer.may_box menu_label ~f:as_widget)
-  method append_page = self#insert_page ~pos:(-1)
-  method prepend_page = self#insert_page ~pos:0
-  method remove_page = Notebook.remove_page obj
-  method current_page = Notebook.get_current_page obj
-  method goto_page = Notebook.set_page obj
-  method previous_page () = Notebook.prev_page obj
-  method next_page () = Notebook.next_page obj
-  method set_tab_pos = Notebook.set_tab_pos obj
-  method set_show_tabs = Notebook.set_show_tabs obj
-  method set_homogeneous_tabs = Notebook.set_homogeneous_tabs obj
-  method set_show_border = Notebook.set_show_border obj
-  method set_scrollable = Notebook.set_scrollable obj
-  method set_tab_border = Notebook.set_tab_border obj
-  method set_popup = Notebook.set_popup obj
-  method page_num w = Notebook.page_num obj (as_widget w)
-  method get_nth_page n = new widget (Notebook.get_nth_page obj n)
-  method get_tab_label w =
-    new widget (Notebook.get_tab_label obj (as_widget w))
-  method get_menu_label w =
-    new widget (Notebook.get_tab_label obj (as_widget w))
-  method set_page ?tab_label ?menu_label page =
-    let child = as_widget page in
-    may tab_label
-      ~f:(fun lbl -> Notebook.set_tab_label obj child (as_widget lbl));
-    may menu_label
-      ~f:(fun lbl -> Notebook.set_menu_label obj child (as_widget lbl))
-end
-
-let notebook ?tab_pos ?tab_border ?show_tabs ?homogeneous_tabs
-    ?show_border ?scrollable ?popup
-    ?border_width ?width ?height ?packing ?show () =
-  let w = Notebook.create () in
-  Notebook.set w ?tab_pos ?tab_border ?show_tabs
-    ?homogeneous_tabs ?show_border ?scrollable ?popup;
-  Container.set w ?border_width ?width ?height;
-  pack_return (new notebook w) ~packing ~show
-
 class color_selection obj = object
   inherit GObj.widget_full (obj : Gtk.color_selection obj)
   method set_update_policy = ColorSelection.set_update_policy obj

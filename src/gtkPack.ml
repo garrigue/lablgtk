@@ -240,3 +240,76 @@ module Table = struct
     may col_spacings ~f:(set_col_spacings w);
     may homogeneous ~f:(set_homogeneous w)
 end
+
+module Notebook = struct
+  let cast w : notebook obj = Object.try_cast w "GtkNotebook"
+  external create : unit -> notebook obj = "ml_gtk_notebook_new"
+  external insert_page :
+      [>`notebook] obj -> [>`widget] obj -> tab_label:[>`widget] optobj ->
+      menu_label:[>`widget] optobj -> pos:int -> unit
+      = "ml_gtk_notebook_insert_page_menu"
+      (* default is append to end *)
+  external remove_page : [>`notebook] obj -> int -> unit
+      = "ml_gtk_notebook_remove_page"
+  external get_current_page : [>`notebook] obj -> int
+      = "ml_gtk_notebook_get_current_page"
+  external set_page : [>`notebook] obj -> int -> unit
+      = "ml_gtk_notebook_set_page"
+  external set_tab_pos : [>`notebook] obj -> position -> unit
+      = "ml_gtk_notebook_set_tab_pos"
+  external set_homogeneous_tabs : [>`notebook] obj -> bool -> unit
+      = "ml_gtk_notebook_set_homogeneous_tabs"
+  external set_show_tabs : [>`notebook] obj -> bool -> unit
+      = "ml_gtk_notebook_set_show_tabs"
+  external set_show_border : [>`notebook] obj -> bool -> unit
+      = "ml_gtk_notebook_set_show_border"
+  external set_scrollable : [>`notebook] obj -> bool -> unit
+      = "ml_gtk_notebook_set_scrollable"
+  external set_tab_border : [>`notebook] obj -> int -> unit
+      = "ml_gtk_notebook_set_tab_border"
+  external popup_enable : [>`notebook] obj -> unit
+      = "ml_gtk_notebook_popup_enable"
+  external popup_disable : [>`notebook] obj -> unit
+      = "ml_gtk_notebook_popup_disable"
+  external get_nth_page : [>`notebook] obj -> int -> widget obj
+      = "ml_gtk_notebook_get_nth_page"
+  external page_num : [>`notebook] obj -> [>`widget] obj -> int
+      = "ml_gtk_notebook_page_num"
+  external next_page : [>`notebook] obj -> unit
+      = "ml_gtk_notebook_next_page"
+  external prev_page : [>`notebook] obj -> unit
+      = "ml_gtk_notebook_prev_page"
+  external get_tab_label : [>`notebook] obj -> [>`widget] obj -> widget obj
+      = "ml_gtk_notebook_get_tab_label"
+  external set_tab_label :
+      [>`notebook] obj -> [>`widget] obj -> [>`widget] obj -> unit
+      = "ml_gtk_notebook_set_tab_label"
+  external get_menu_label : [>`notebook] obj -> [>`widget] obj -> widget obj
+      = "ml_gtk_notebook_get_menu_label"
+  external set_menu_label :
+      [>`notebook] obj -> [>`widget] obj -> [>`widget] obj -> unit
+      = "ml_gtk_notebook_set_menu_label"
+  external reorder_child : [>`notebook] obj -> [>`widget] obj -> int -> unit
+      = "ml_gtk_notebook_reorder_child"
+
+  let set_popup w = function
+      true -> popup_enable w
+    | false -> popup_disable w
+  let set ?page ?tab_pos ?show_tabs ?homogeneous_tabs
+      ?show_border ?scrollable ?tab_border ?popup w =
+    let may_set f = may ~f:(f w) in
+    may_set set_page page;
+    may_set set_tab_pos tab_pos;
+    may_set set_show_tabs show_tabs;
+    may_set set_homogeneous_tabs homogeneous_tabs;
+    may_set set_show_border show_border;
+    may_set set_scrollable scrollable;
+    may_set set_tab_border tab_border;
+    may_set set_popup popup
+  module Signals = struct
+    open GtkSignal
+    let switch_page : ([>`notebook],_) t =
+      let marshal f argv = f (GtkArgv.get_int argv ~pos:1) in
+      { name = "switch_page"; marshaller = marshal }
+  end
+end

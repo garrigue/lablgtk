@@ -13,6 +13,7 @@ let new_class_list (* :
   "hbutton_box",     TiPack.new_tihbutton_box;
   "vbutton_box",     TiPack.new_tivbutton_box;
   "fixed",           TiPack.new_tifixed;
+  "notebook",        TiPack.new_tinotebook;
   "button",          TiButton.new_tibutton;
   "check_button",    TiButton.new_ticheck_button;
   "toggle_button",   TiButton.new_titoggle_button;
@@ -22,7 +23,6 @@ let new_class_list (* :
   "vseparator",      TiMisc.new_tivseparator;
   "statusbar",       TiMisc.new_tistatusbar;
   "label",           TiMisc.new_tilabel;
-  "notebook",        TiMisc.new_tinotebook;
   "color_selection", TiMisc.new_ticolor_selection;
   "frame",           TiBin.new_tiframe;
   "aspect_frame",    TiBin.new_tiaspect_frame;
