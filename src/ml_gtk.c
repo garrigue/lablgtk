@@ -729,6 +729,124 @@ ML_2 (gtk_message_dialog_set_markup, GtkMessageDialog_val, String_val, Unit)
 Unsupported_24(gtk_message_dialog_set_markup)
 #endif
 
+/* gtkaboutdialog.h */
+#ifndef DISABLE_GTK26
+static void
+ml_activate_link_func (GtkAboutDialog *about, const gchar *link, gpointer data)
+{
+  value v_link, *closure;
+  closure = data;
+  v_link = copy_string (link);
+  callback_exn (*closure, v_link);
+}
+
+CAMLprim value
+ml_gtk_about_dialog_set_url_hook (value hook)
+{
+  gtk_about_dialog_set_url_hook (&ml_activate_link_func,
+				 ml_global_root_new (hook),
+				 ml_global_root_destroy);
+  return Val_unit;
+}
+
+CAMLprim value
+ml_gtk_about_dialog_set_email_hook (value hook)
+{
+  gtk_about_dialog_set_email_hook (&ml_activate_link_func,
+				   ml_global_root_new (hook),
+				   ml_global_root_destroy);
+  return Val_unit;
+}
+
+static gchar **
+strv_of_string_list (value list)
+{
+  gchar **str_v;
+  gsize i, len;
+  value l;
+  for (len = 0, l = list; l != Val_emptylist; len++, l = Field (l, 1))
+    ;
+  l = list;
+  str_v = g_new (gchar *, len+1);
+  for (i = 0; i < len; i++)
+    {
+      str_v[i] = g_strdup (String_val (Field (l, 0)));
+      l = Field (l, 1);
+    }
+  str_v[len] = NULL;
+  return str_v;
+}
+static value
+string_list_of_strv (const gchar * const *v)
+{
+  CAMLparam0();
+  CAMLlocal4(head, l, cell, s);
+  gsize i;
+  if (v == NULL)
+    CAMLreturn (Val_emptylist);
+  i = 0;
+  head = l = Val_emptylist;
+  while (v[i] != NULL)
+    {
+      s = copy_string (v[i]);
+      cell = alloc_small (2, Tag_cons);
+      Field (cell, 0) = s;
+      Field (cell, 1) = Val_emptylist;
+      if (l == Val_emptylist)
+	  head = l = cell;
+      else
+	{
+	  Field (l, 1) = cell;
+	  l = cell;
+	}
+      i++;
+    }
+  CAMLreturn (head);
+}
+
+#define GtkAboutDialog_val(v) (check_cast (GTK_ABOUT_DIALOG, v))
+
+CAMLprim value
+ml_gtk_about_dialog_set_artists (value dialog, value l)
+{
+  gchar **s_l = strv_of_string_list (l);
+  gtk_about_dialog_set_artists (GtkAboutDialog_val (dialog), (const gchar **) s_l);
+  g_strfreev (s_l);
+  return Val_unit;
+}
+ML_1 (gtk_about_dialog_get_artists, GtkAboutDialog_val, string_list_of_strv)
+CAMLprim value
+ml_gtk_about_dialog_set_authors (value dialog, value l)
+{
+  gchar **s_l = strv_of_string_list (l);
+  gtk_about_dialog_set_authors (GtkAboutDialog_val (dialog), (const gchar **) s_l);
+  g_strfreev (s_l);
+  return Val_unit;
+}
+ML_1 (gtk_about_dialog_get_authors, GtkAboutDialog_val, string_list_of_strv)
+CAMLprim value
+ml_gtk_about_dialog_set_documenters (value dialog, value l)
+{
+  gchar **s_l = strv_of_string_list (l);
+  gtk_about_dialog_set_documenters (GtkAboutDialog_val (dialog), (const gchar **) s_l);
+  g_strfreev (s_l);
+  return Val_unit;
+}
+ML_1 (gtk_about_dialog_get_documenters, GtkAboutDialog_val, string_list_of_strv)
+
+ML_0 (gtk_about_dialog_new, Val_GtkWidget_window)
+#else
+Unsupported_26(gtk_about_dialog_set_url_hook)
+Unsupported_26(gtk_about_dialog_set_email_hook)
+Unsupported_26(gtk_about_dialog_set_artists)
+Unsupported_26(gtk_about_dialog_get_artists)
+Unsupported_26(gtk_about_dialog_set_authors)
+Unsupported_26(gtk_about_dialog_get_authors)
+Unsupported_26(gtk_about_dialog_set_documenters)
+Unsupported_26(gtk_about_dialog_get_documenters)
+Unsupported_26(gtk_about_dialog_new)
+#endif
+
 /* gtkcolorsel.h */
 #define GtkColorSelectionDialog_val(val) check_cast(GTK_COLOR_SELECTION_DIALOG,val)
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, ok_button, Val_GtkWidget)

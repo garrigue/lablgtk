@@ -96,6 +96,11 @@ module MessageDialog = struct
   external set_markup : [>`messagedialog] obj -> string -> unit = "ml_gtk_message_dialog_set_markup"
 end
 
+module AboutDialog = struct
+  include AboutDialog
+  external create : unit -> Gtk.about_dialog obj = "ml_gtk_about_dialog_new"
+end
+
 module FileSelection = struct
   include FileSelection
   external create : string -> file_selection obj = "ml_gtk_file_selection_new"

@@ -218,6 +218,32 @@ class MessageDialog abstract wrap : Dialog {
   "message-type"         GtkMessageType       : Read / Write / Construct
 }
 
+class AboutDialog abstract set wrap : Dialog {
+(*  "artists"              GStrv                 : Read / Write *)
+(*  "authors"              GStrv                 : Read / Write *)
+  "comments"             gchararray            : Read / Write
+  "copyright"            gchararray            : Read / Write
+(*  "documenters"          GStrv                 : Read / Write *)
+  "license"              gchararray            : Read / Write
+  "logo"                 GdkPixbuf             : Read / Write
+  "logo-icon-name"       gchararray            : Read / Write
+  "name"                 gchararray            : Read / Write
+  "translator-credits"   gchararray            : Read / Write
+  "version"              gchararray            : Read / Write
+  "website"              gchararray            : Read / Write
+  "website-label"        gchararray            : Read / Write
+
+  method set_artists     : "string list -> unit"
+  method get_artists     : "string list"
+  method set_authors     : "string list -> unit"
+  method get_authors     : "string list"
+  method set_documenters : "string list -> unit"
+  method get_documenters : "string list"
+
+  method set_email_hook : "(string -> unit) -> unit"
+  method set_url_hook   : "(string -> unit) -> unit"
+}
+
 class Plug abstract wrapsig : Bin {
   signal embedded
 }

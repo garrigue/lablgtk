@@ -198,6 +198,7 @@ module Buttons : sig
   type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
   type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
   type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT]
+  type about = [`CLOSE | `DELETE_EVENT]
 end
 
 (** Convenient message window
@@ -233,6 +234,91 @@ val message_dialog :
   ?wm_class:string ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> 'a message_dialog
+
+(** {3 GtkAboutDialog} *)
+
+(** @gtkdoc gtk GtkAboutDialog 
+    @since GTK 2.6 *)
+class about_dialog :
+  ([> Gtk.about_dialog] as 'a) Gtk.obj ->
+  object
+    inherit [Buttons.about] dialog_skel
+    val obj : 'a Gtk.obj
+    method connect : Buttons.about dialog_signals
+
+    method artists : string list
+    method authors : string list
+    method comments : string
+    method copyright : string
+    method documenters : string list
+    method license : string
+    method logo : GdkPixbuf.pixbuf
+    method logo_icon_name : string
+    method name : string
+    method translator_credits : string
+    method version : string
+    method website : string
+    method website_label : string
+
+    method set_artists : string list -> unit
+    method set_authors : string list -> unit
+    method set_comments : string -> unit
+    method set_copyright : string -> unit
+    method set_documenters : string list -> unit
+    method set_license : string -> unit
+    method set_logo : GdkPixbuf.pixbuf -> unit
+    method set_logo_icon_name : string -> unit
+    method set_name : string -> unit
+    method set_translator_credits : string -> unit
+    method set_version : string -> unit
+    method set_website : string -> unit
+    method set_website_label : string -> unit
+
+    method set_email_hook : (string -> unit) -> unit
+    method set_url_hook : (string -> unit) -> unit
+  end
+
+(** Display information about an application. 
+    A default handler is already connected to the [response] signal. It simply hides the dialog.
+    You could use it like this: 
+{[let about_dialog = ref (fun () -> raise Not_found)
+let show_dialog () =
+  try !about_dialog ()
+  with Not_found ->
+    let dialog = GWindow.about_dialog ~name:"..." (* etc. *) () in
+    about_dialog := dialog#present ;
+    dialog#show () ]}
+    @gtkdoc gtk GtkAboutDialog 
+    @since GTK 2.6 
+*)
+val about_dialog :
+  ?authors:string list ->
+  ?comments:string ->
+  ?copyright:string ->
+  ?license:string ->
+  ?logo:GdkPixbuf.pixbuf ->
+  ?logo_icon_name:string ->
+  ?name:string ->
+  ?translator_credits:string ->
+  ?version:string ->
+  ?website:string ->
+  ?website_label:string ->
+  ?parent:#window_skel ->
+  ?destroy_with_parent:bool ->
+  ?title:string ->
+  ?allow_grow:bool ->
+  ?allow_shrink:bool ->
+  ?icon:GdkPixbuf.pixbuf ->
+  ?modal:bool ->
+  ?resizable:bool ->
+  ?screen:Gdk.screen ->
+  ?type_hint:GdkEnums.window_type_hint ->
+  ?position:GtkEnums.window_position ->
+  ?wm_name:string ->
+  ?wm_class:string ->
+  ?border_width:int ->
+  ?width:int -> ?height:int -> ?show:bool -> unit -> about_dialog
+
 
 (** {3 File Chooser Dialog} *)
 

@@ -190,6 +190,7 @@ module Buttons = struct
   type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
   type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
   type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT]
+  type about = [`CLOSE | `DELETE_EVENT]
 end
 
 class ['a] message_dialog obj ~(buttons : 'a buttons) = object (self)
@@ -210,6 +211,33 @@ let message_dialog ?(message="") ?(use_markup=false) ~message_type ~buttons =
     if use_markup then MessageDialog.set_markup w message ;
     new message_dialog ~buttons w)
 
+
+(** AboutDialog *)
+
+class about_dialog obj =
+  object (self)
+    inherit [Buttons.about] dialog_skel obj
+    inherit about_dialog_props
+    method connect : Buttons.about dialog_signals = new dialog_signals obj self#decode
+    method set_artists = AboutDialog.set_artists obj
+    method artists = AboutDialog.get_artists obj
+    method set_authors = AboutDialog.set_authors obj
+    method authors = AboutDialog.get_authors obj
+    method set_documenters = AboutDialog.set_documenters obj
+    method documenters = AboutDialog.get_documenters obj
+    method set_url_hook = AboutDialog.set_url_hook obj
+    method set_email_hook = AboutDialog.set_email_hook obj
+    initializer
+      tbl <- [ rclose, `CLOSE ] @ tbl
+  end
+
+let about_dialog ?authors =
+  AboutDialog.make_params [] ~cont:(fun pl ->
+    make_dialog pl ~create:(fun pl ->
+      let d = AboutDialog.create () in
+      Gobject.set_params d pl ;
+      may (AboutDialog.set_authors d) authors ;
+      new about_dialog d))
 
 (** ColorSelectionDialog **)
 
