@@ -118,10 +118,10 @@ dlllablgtk.dll: $(COBJS:.obj=.d.obj)
 
 lablgtk.cma: liblablgtk.lib dlllablgtk.dll $(MLOBJS)
 	$(LINKER) -a -o $@ $(MLOBJS) \
-	  -dllib -llablgtk -cclib -llablgtk $(GTKLIBS)
+	  -dllib -llablgtk -cclib -llablgtk -cclib "$(GTKLIBS)"
 lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \
-	  -cclib -llablgtk $(GTKLIBS)
+	  -cclib -llablgtk -cclib "$(GTKLIBS)"
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml

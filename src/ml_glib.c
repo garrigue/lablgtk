@@ -57,24 +57,7 @@ GList *GList_val (value list, gpointer (*func)(value))
     CAMLreturn (res);
 }
 
-/* Redirect printers */
-/* Currently broken for warning */
-static value ml_warning_handler = 0L;
-
-static void ml_warning_wrapper (const gchar *msg)
-{
-    value arg = copy_string ((char*)msg);
-    callback (ml_warning_handler, arg);
-}
-    
-CAMLprim value ml_g_set_warning_handler (value clos)
-{
-    value old_handler = ml_warning_handler ? ml_warning_handler : clos;
-    if (!ml_warning_handler) register_global_root (&ml_warning_handler);
-    g_set_warning_handler (ml_warning_wrapper);
-    ml_warning_handler = clos;
-    return old_handler;
-}
+/* Redirect printer */
 
 static value ml_print_handler = 0L;
 
