@@ -20,10 +20,10 @@ GDK_PIXBUF_CONFIG = gdk-pixbuf-config
 
 ifdef USE_GNOME
 ifdef USE_GLADE
-GTKCFLAGS = `$(GLADE_CONFIG) --cflags gnome`
+GTKCFLAGS = `$(GLADE_CONFIG) --cflags gnome` `$(GDK_PIXBUF_CONFIG) --cflags`
 GLADELIBS = `$(GLADE_CONFIG) --libs gnome`
 else
-GTKCFLAGS = `$(GNOME_CONFIG) --cflags gnome`
+GTKCFLAGS = `$(GNOME_CONFIG) --cflags gnome` `$(GDK_PIXBUF_CONFIG) --cflags`
 endif
 GNOMELIBS = `$(GNOME_CONFIG) --libs gtkxmhtml` `$(GDK_PIXBUF_CONFIG) --libs`
 else
