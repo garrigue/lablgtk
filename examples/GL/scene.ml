@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+open StdLabels
+
 (*  Initialize material property and light source.
  *)
 let myinit () =

@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open Gtk
 
 type t

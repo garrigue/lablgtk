@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+open StdLabels
+
 (*-
  * morph3d.c - Shows 3D morphing objects (TK Version)
  *

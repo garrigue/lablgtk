@@ -1,12 +1,13 @@
 (* $Id$ *)
 
+open StdLabels
 open GObj
 
 class ['a] memo () = object
   constraint 'a = #widget
   val tbl = Hashtbl.create 7
   method add (obj : 'a) =
-    Hashtbl.add tbl ~key:obj#get_id ~data:obj
+    Hashtbl.add' tbl ~key:obj#get_id ~data:obj
   method find (obj : widget) = Hashtbl.find tbl obj#get_id
   method remove (obj : widget) = Hashtbl.remove tbl obj#get_id
 end

@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open Gaux
 
 type colormap

@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open Gtk
 
 (* GladeXML widget *)
@@ -43,7 +44,7 @@ let ($) f g x = g (f x)
 let gtk_bool b argv _ = GtkArgv.set_result argv (`BOOL b)
 let known_handlers : (string, handler) Hashtbl.t = Hashtbl.create 7
 let add_handler ~name handler =
-  Hashtbl.add known_handlers ~key:name ~data:handler
+  Hashtbl.add' known_handlers ~key:name ~data:handler
 open GtkBase
 let _ = List.iter ~f:(fun (name,h) -> add_handler ~name h)
     [ "gtk_widget_destroy", `Object ("GtkObject", Object.destroy);

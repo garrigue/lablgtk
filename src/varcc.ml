@@ -2,6 +2,8 @@
 
 (* Compile a list of variant tags into CPP defines *) 
 
+open StdLabels
+
 (* hash_variant, from ctype.ml *)
 
 let hash_variant s =
@@ -56,7 +58,7 @@ let declaration ~hc ~cc = parser
 	  if tag <> tag' then
 	    failwith (String.concat ~sep:" " ["Doublon tag:";tag;"and";tag'])
         with Not_found ->
-	  Hashtbl.add ~key:hash ~data:tag hashes;
+	  Hashtbl.add' ~key:hash ~data:tag hashes;
           if !first then begin
             oh "/* %s : tags and macros */\n" name; first := false
           end;
@@ -86,8 +88,9 @@ let declaration ~hc ~cc = parser
       String.capitalize name
     in
     let tags =
-      Sort.list tags
-	~order:(fun (tag1,_) (tag2,_) -> hash_variant tag1 < hash_variant tag2)
+      List.sort tags ~cmp:
+        (fun (tag1,_) (tag2,_) ->
+          compare (hash_variant tag1) (hash_variant tag2))
     in
     (* Output table to code file *)
     oc "/* %s : conversion table */\n" name;
@@ -124,12 +127,13 @@ let main () =
   let inputs = ref [] in
   let header = ref "" in
   let code = ref "" in
-  Arg.parse ~errmsg:"usage: varcc [options] file.var" ~keywords:
+  Arg.parse
     [ "-h", Arg.String ((:=) header), "file to output macros (file.h)";
       "-c", Arg.String ((:=) code),
       "file to output conversion tables (file.c)";
       "-static", Arg.Set static, "do not export conversion tables" ]
-    ~others:(fun s -> inputs := s :: !inputs);
+    (fun s -> inputs := s :: !inputs)
+    "usage: varcc [options] file.var";
   let inputs = List.rev !inputs in
   begin match inputs with
   | [] ->

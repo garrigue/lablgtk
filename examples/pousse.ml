@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+open StdLabels
+
 (* The game logic *)
 
 type color = [`none|`white|`black]

@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open Gaux
 open Gtk
 open GObj

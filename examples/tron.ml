@@ -14,7 +14,7 @@ let main () =
 (* Game State *)
   let gameSize = 64 in
   let gameState =
-    Array.create_matrix ~dimx:(gameSize+2) ~dimy:(gameSize+2) 0 in
+    Array.create_matrix (gameSize+2) (gameSize+2) 0 in
   let gameInit _ = 
     for i=1 to gameSize do
       for j=1 to gameSize do
