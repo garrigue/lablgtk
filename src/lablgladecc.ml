@@ -109,13 +109,9 @@ let classes = ref [
 open Xml_lexer
 
 let parse_header lexbuf =
-  begin match token lexbuf with Tag ("?xml",_,true) -> ()
-  | _ -> failwith "no XML header" end;
-  begin match token lexbuf with Tag ("!doctype",_,_) -> ()
-  | _ -> failwith "no DOCTYPE declaration" end;
-  begin match token lexbuf with Tag ("glade-interface",_,_) -> ()
-  | Tag(tag,_,_) -> prerr_endline tag
-  | _ -> failwith "no glade-interface declaration" end
+  match token lexbuf with 
+  | Tag ("glade-interface",_,_) -> ()
+  | _ -> failwith "no glade-interface declaration" 
 
 let parse_field lexbuf ~tag =
   let b = Buffer.create 80 and first = ref true in

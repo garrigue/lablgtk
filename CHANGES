@@ -1,5 +1,8 @@
 $Id$
 
+2004.07.09 [Olivier]
+  * Rewrite Xml_lexer so that it is more conformant.
+
 2004.07.08 [Olivier]
   * fix the support of SVGZ files for older versions of librsvg where
     the header is not always present.

@@ -197,7 +197,7 @@ lablgtkopt:: $(THOBJS:.cmo=.cmx)
 endif
 
 lablgladecc$(XE): xml_lexer.cmo lablgladecc.cmo
-	$(LINKER) -o $@ $(MLLINK) xml_lexer.cmo lablgladecc.cmo
+	$(LINKER) -o $@ xml_lexer.cmo lablgladecc.cmo
 
 testcc$(XE): lablgladecc$(XE) lablgtktop
 	./lablgladecc -test > testcc.ml
