@@ -2,10 +2,20 @@
 
 open Gtk
 
-class ['a] gtkobj obj = object
+class ['a] gtkobj_skel obj = object
   val obj : 'a obj = obj
   method raw = obj
   method destroy () = Object.destroy obj
+end
+
+class ['a] gtkobj_signals obj = object
+  val obj : 'a obj = obj
+  method destroy = Signal.connect sig:Object.Signals.destroy obj
+end
+
+class gtkobj obj = object
+  inherit [unit] gtkobj_skel obj
+  method connect = new gtkobj_signals obj
 end
 
 class widget_ops obj = object
@@ -30,7 +40,7 @@ class type widgeter = object
 end
 
 class ['a] widget_skel obj = object
-  inherit ['a] gtkobj obj
+  inherit ['a] gtkobj_skel obj
   method widget = Widget.coerce obj
   method widget_ops = new widget_ops obj
   method show () = Widget.show obj
@@ -38,16 +48,15 @@ end
 
 class event_signal obj = object
   val obj = Widget.coerce obj
-  method any = Event.Connect.any obj
-  method delete = Event.Connect.delete obj
-  method expose = Event.Connect.expose obj
+  method any = Signal.connect sig:Event.Signals.any obj
+  method delete = Signal.connect sig:Event.Signals.delete obj
+  method expose = Signal.connect sig:Event.Signals.expose obj
 end
 
 class ['a] widget_signals obj = object
-  val obj : 'a obj = obj
-  method destroy = Widget.Connect.destroy obj
-  method draw = Widget.Connect.draw obj
-  method show = Widget.Connect.show obj
+  inherit ['a] gtkobj_signals obj
+  method draw = Signal.connect sig:Widget.Signals.draw obj
+  method show = Signal.connect sig:Widget.Signals.show obj
   method event = new event_signal obj
 end
 
@@ -57,12 +66,13 @@ class widget obj = object
 end
 
 class tooltips obj = object
-  inherit [Tooltips.t] gtkobj obj
+  inherit [Tooltips.t] gtkobj_skel obj
   method enable () = Tooltips.enable obj
   method disable () = Tooltips.disable obj
   method set_tip : 'b . (#widgeter as 'b) -> _ =
     fun w -> Tooltips.set_tip ?obj ?w#widget
   method set = Tooltips.set ?obj
+  method connect = new gtkobj_signals obj
 end
 
 let new_tooltips () = new tooltips (Tooltips.create ())
@@ -78,8 +88,8 @@ end
 
 class ['a] container_signals obj = object
   inherit ['a] widget_signals obj
-  method add = Container.Connect.add obj
-  method remove = Container.Connect.remove obj
+  method add = Signal.connect sig:Container.Signals.add obj
+  method remove = Signal.connect sig:Container.Signals.remove obj
 end
 
 class ['a] box_skel obj = object
@@ -114,7 +124,7 @@ let new_window dir = new window (Window.create dir)
 
 class ['a] button_signals obj = object
   inherit ['a] widget_signals obj
-  method clicked = Button.Connect.clicked obj
+  method clicked = Signal.connect sig:Button.Signals.clicked obj
 end
 
 class ['a] button_skel obj = object
@@ -153,8 +163,8 @@ end
 
 class ['a] editable_signals obj = object
   inherit ['a] widget_signals obj
-  method activate = Editable.Connect.activate obj
-  method changed = Editable.Connect.changed obj
+  method activate = Signal.connect sig:Editable.Signals.activate obj
+  method changed = Signal.connect sig:Editable.Signals.changed obj
 end
 
 class entry obj = object
