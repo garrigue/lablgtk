@@ -28,10 +28,10 @@ let item_event config num ev =
   begin match GdkEvent.get_type ev with
   | `ENTER_NOTIFY ->
       let (_, text) = config.board.(num) in
-      text#set [ `fill_color "white" ]
+      text#set [ `FILL_COLOR "white" ]
   | `LEAVE_NOTIFY ->
       let (_, text) = config.board.(num) in
-      text#set [ `fill_color "black" ]
+      text#set [ `FILL_COLOR "black" ]
   | `BUTTON_PRESS ->
       let pos = config.pos.(num) in
       if List.mem (config.hole - pos) [ -1; 1; 4; -4; ]
@@ -96,17 +96,17 @@ let create_canvas_fifteen window =
 	    ~x:(float (x * piece_size)) ~y:(float (y * piece_size))
 	    canvas#root in
 	GnoCanvas.rect tile
-	  ~props:[ `x1 0.; `y1 0. ; `x2 (float piece_size) ; `y2 (float piece_size) ;
-		   `fill_color (piece_color i) ; `outline_color "black" ;
-		   `width_pixels 0 ] ;
+	  ~props:[ `X1 0.; `Y1 0. ; `X2 (float piece_size) ; `Y2 (float piece_size) ;
+		   `FILL_COLOR (piece_color i) ; `OUTLINE_COLOR "black" ;
+		   `WIDTH_PIXELS 0 ] ;
 	let text = 
 	  GnoCanvas.text tile
-	    ~props:[ `text (string_of_int (succ i)) ; 
-		     `x (float piece_size /. 2.) ;
-		     `y (float piece_size /. 2.) ;
-		     `font "Sans bold 24" ;
-		     `fill_color "black" ;
-		     `anchor `CENTER ] in
+	    ~props:[ `TEXT (string_of_int (succ i)) ; 
+		     `X (float piece_size /. 2.) ;
+		     `Y (float piece_size /. 2.) ;
+		     `FONT "Sans bold 24" ;
+		     `FILL_COLOR "black" ;
+		     `ANCHOR `CENTER ] in
 	(tile, text)) in
   let config = {
     canvas = canvas ;
@@ -115,7 +115,7 @@ let create_canvas_fifteen window =
     hole = 15 ;
   } in
   Array.iteri
-    (fun i ((tile : GnoCanvas.group), _) -> ignore (tile#connect#event (item_event config i)))
+    (fun i ((tile : GnoCanvas.group), _) -> tile#connect#event (item_event config i) ; ())
     config.board ;
   let button = GButton.button ~label:"Scramble" ~packing:vbox#add () in
   button#connect#clicked (scramble config)

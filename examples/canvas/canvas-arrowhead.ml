@@ -37,14 +37,14 @@ let config = {
 
 let set_dimension (arrow, text) ~x1 ~y1 ~x2 ~y2 ~tx ~ty dim =
   let points = [| x1; y1; x2; y2 |] in
-  arrow#set [ `points points ] ;
-  text#set  [ `text (string_of_int dim); `x tx; `y ty]
+  arrow#set [ `POINTS points ] ;
+  text#set  [ `TEXT (string_of_int dim); `X tx; `Y ty]
 
 
 
 let move_drag_box item ~x ~y =
-  item#set [ `x1 (x -. 5.) ; `y1 (y -. 5.) ;
-	     `x2 (x +. 5.) ; `y2 (y +. 5.) ; ]
+  item#set [ `X1 (x -. 5.) ; `Y1 (y -. 5.) ;
+	     `X2 (x +. 5.) ; `Y2 (y +. 5.) ; ]
 
 
 
@@ -52,10 +52,10 @@ let set_arrow_shape c =
   let d = match !global_data with
   | None -> failwith "argl"
   | Some v -> v in
-  d.big_arrow#set [ `width_pixels (10 * c.width) ;
-		    `arrow_shape_a (float c.shape_a *. 10.) ;
-		    `arrow_shape_b (float c.shape_b *. 10.) ;
-		    `arrow_shape_c (float c.shape_c *. 10.) ; ] ;
+  d.big_arrow#set [ `WIDTH_PIXELS (10 * c.width) ;
+		    `ARROW_SHAPE_A (float c.shape_a *. 10.) ;
+		    `ARROW_SHAPE_B (float c.shape_b *. 10.) ;
+		    `ARROW_SHAPE_C (float c.shape_c *. 10.) ; ] ;
   let p = [| right -. 10. *. float c.shape_a ; middle ;
 	     right -. 10. *. float c.shape_b ; 
 	     middle -. 10. *. (float c.shape_c +. float c.width /. 2.) ;
@@ -63,7 +63,7 @@ let set_arrow_shape c =
 	     right -. 10. *. float c.shape_b ; 
 	     middle +. 10. *. (float c.shape_c +. float c.width /. 2.) ;
 	     right -. 10. *. float c.shape_a ; middle ; |] in
-  d.outline#set [ `points p ] ;
+  d.outline#set [ `POINTS p ] ;
 
   move_drag_box d.width_drag_box ~x:left ~y:(middle -. 10. *. float c.width /. 2.) ;
   move_drag_box d.shape_a_drag_box ~x:(right -. 10. *. float c.shape_a) ~y:middle ;
@@ -103,27 +103,27 @@ let set_arrow_shape c =
     ~ty:(middle -. 10. *. (float (c.width + c.shape_c) /. 2.))
     c.shape_c ;
   
-  d.width_info#set [ `text (Printf.sprintf "width: %d" c.width) ] ;
-  d.shape_a_info#set [ `text (Printf.sprintf "arrow_shape_a: %d" c.shape_a) ] ;
-  d.shape_b_info#set [ `text (Printf.sprintf "arrow_shape_b: %d" c.shape_b) ] ;
-  d.shape_c_info#set [ `text (Printf.sprintf "arrow_shape_c: %d" c.shape_c) ] ;
+  d.width_info#set [ `TEXT (Printf.sprintf "width: %d" c.width) ] ;
+  d.shape_a_info#set [ `TEXT (Printf.sprintf "arrow_shape_a: %d" c.shape_a) ] ;
+  d.shape_b_info#set [ `TEXT (Printf.sprintf "arrow_shape_b: %d" c.shape_b) ] ;
+  d.shape_c_info#set [ `TEXT (Printf.sprintf "arrow_shape_c: %d" c.shape_c) ] ;
 			
   List.iter 
-    (fun i -> i#set [ `width_pixels c.width ;
-		      `arrow_shape_a (float c.shape_a) ;
-		      `arrow_shape_b (float c.shape_b) ;
-		      `arrow_shape_c (float c.shape_c) ; ] )
+    (fun i -> i#set [ `WIDTH_PIXELS c.width ;
+		      `ARROW_SHAPE_A (float c.shape_a) ;
+		      `ARROW_SHAPE_B (float c.shape_b) ;
+		      `ARROW_SHAPE_C (float c.shape_c) ; ] )
     d.samples
 
   
 let highlight_box item ev = 
   begin match GdkEvent.get_type ev with
   | `ENTER_NOTIFY ->
-      item#set [ `fill_color "red" ]
+      item#set [ `FILL_COLOR "red" ]
   | `LEAVE_NOTIFY ->
       let state = GdkEvent.Crossing.state (GdkEvent.Crossing.cast ev) in
       if not (Gdk.Convert.test_modifier `BUTTON1 state)
-      then item#set [ `fill_color "" ]
+      then item#set [ `FILL_COLOR "" ]
   | `BUTTON_PRESS ->
       let curs = Gdk.Cursor.create `FLEUR in
       item#grab [`POINTER_MOTION; `BUTTON_RELEASE] curs 
@@ -136,7 +136,7 @@ let highlight_box item ev =
 
 let create_drag_box grp cb =
   let box = GnoCanvas.rect 
-      ~props:[ `fill_color "" ; `outline_color "black" ; `width_pixels 0 ]
+      ~props:[ `FILL_COLOR "" ; `OUTLINE_COLOR "black" ; `WIDTH_PIXELS 0 ]
       grp in
   let sigs = box#connect in
   sigs#event (highlight_box box) ;
@@ -203,33 +203,33 @@ let shape_b_c_event c ev =
 let create_dimension grp anchor =
   let a = 
     GnoCanvas.line 
-      ~props:[ `fill_color "black" ;
-	       `first_arrowhead true ;
-	       `last_arrowhead true ;
-	       `arrow_shape_a 5. ;
-	       `arrow_shape_b 5. ;
-	       `arrow_shape_c 3. ; ] 
+      ~props:[ `FILL_COLOR "black" ;
+	       `FIRST_ARROWHEAD true ;
+	       `LAST_ARROWHEAD true ;
+	       `ARROW_SHAPE_A 5. ;
+	       `ARROW_SHAPE_B 5. ;
+	       `ARROW_SHAPE_C 3. ; ] 
       grp in
   let t = GnoCanvas.text 
-      ~props:[ `fill_color "black" ;
-	       `font "Sans 12" ;
-	       `anchor anchor ] grp in
+      ~props:[ `FILL_COLOR "black" ;
+	       `FONT "Sans 12" ;
+	       `ANCHOR anchor ] grp in
   (a, t)
   
 
 let create_info grp ~x ~y =
   GnoCanvas.text
-    ~props:[ `x x; `y y;
-	     `fill_color "black" ;
-	     `font "Sans 14" ;
-	     `anchor `NW ]
+    ~props:[ `X x; `Y y;
+	     `FILL_COLOR "black" ;
+	     `FONT "Sans 14" ;
+	     `ANCHOR `NW ]
     grp
 
 
 let create_sample_arrow grp p =
   GnoCanvas.line
-    ~props:[ `points p ; `fill_color "black" ;
-	     `first_arrowhead true ; `last_arrowhead true ]
+    ~props:[ `POINTS p ; `FILL_COLOR "black" ;
+	     `FIRST_ARROWHEAD true ; `LAST_ARROWHEAD true ]
     grp
 
 
@@ -252,13 +252,13 @@ let create_canvas_arrowhead window =
 
   let p = [| left; middle; right; middle |] in
   let big_arrow = GnoCanvas.line root
-      ~props:[ `points p ; `fill_color "mediumseagreen" ;
-	       `width_pixels (config.width * 10) ;
-	       `last_arrowhead true ] in
+      ~props:[ `POINTS p ; `FILL_COLOR "mediumseagreen" ;
+	       `WIDTH_PIXELS (config.width * 10) ;
+	       `LAST_ARROWHEAD true ] in
   let outline = GnoCanvas.line root
-      ~props:[ `fill_color "black" ;
-	       (* `capstyle `ROUND ; `join_style `ROUND ; *)
-	       `width_pixels 2; ] in
+      ~props:[ `FILL_COLOR "black" ;
+	       `CAP_STYLE `ROUND ; `JOIN_STYLE `ROUND ;
+	       `WIDTH_PIXELS 2; ] in
   
   let width_drag_box = create_drag_box root (width_event config) in
   let shape_a_drag_box = create_drag_box root (shape_a_event config) in
@@ -276,8 +276,8 @@ let create_canvas_arrowhead window =
 
   let p = [| right +. 50.; 0.; right +. 50.; 1000. |] in
   GnoCanvas.line root
-    ~props:[ `points p; `fill_color "black" ;
-	     `width_pixels 2 ] ;
+    ~props:[ `POINTS p; `FILL_COLOR "black" ;
+	     `WIDTH_PIXELS 2 ] ;
 
   let samples = 
     List.map (create_sample_arrow root)

@@ -10,9 +10,9 @@ class curve parent cb = object (self)
   val points = Array.make 8 0.
   val item = 
     GnoCanvas.bpath parent
-      ~props:[ `outline_color "blue" ;
-	       `width_pixels 5 ; 
-	       `cap_style `ROUND ]
+      ~props:[ `OUTLINE_COLOR "blue" ;
+	       `WIDTH_PIXELS 5 ; 
+	       `CAP_STYLE `ROUND ]
 
   method click ev =
     let x = GdkEvent.Button.x ev in
@@ -28,8 +28,8 @@ class curve parent cb = object (self)
 	let path = GnomeCanvas.PathDef.new_path () in
 	GnomeCanvas.PathDef.moveto path points.(0) points.(1) ;
 	GnomeCanvas.PathDef.lineto path points.(2) points.(3) ;
-	item#set [ `bpath path ] ;
-	item#show ; 
+	item#set [ `BPATH path ] ;
+	item#show () ; 
 	state <- FIRST_RELEASE
     | `BUTTON_PRESS when state = FIRST_RELEASE ->
 	points.(4) <- x ;
@@ -40,7 +40,7 @@ class curve parent cb = object (self)
 	  points.(4) points.(5) 
 	  points.(4) points.(5) 
 	  points.(2) points.(3) ;
-	item#set [ `bpath path ] ;
+	item#set [ `BPATH path ] ;
 	state <- SECOND_PRESS
     | `BUTTON_PRESS when state = SECOND_PRESS ->
 	points.(6) <- x ;
@@ -51,7 +51,7 @@ class curve parent cb = object (self)
 	  points.(4) points.(5) 
 	  points.(6) points.(7) 
 	  points.(2) points.(3) ;
-	item#set [ `bpath path ] ;
+	item#set [ `BPATH path ] ;
     	state <- FINISHED
     | _ -> ()
 
@@ -65,7 +65,7 @@ class curve parent cb = object (self)
       let path = GnomeCanvas.PathDef.new_path () in
       GnomeCanvas.PathDef.moveto path points.(0) points.(1) ;
       GnomeCanvas.PathDef.lineto path points.(2) points.(3) ;
-      item#set [ `bpath path ] ;
+      item#set [ `BPATH path ] ;
     end
 
   method is_not_complete = 
@@ -134,15 +134,15 @@ let create_canvas ~aa cont =
   let canvas = GnoCanvas.canvas ~aa ~width:600 ~height:250 ~packing:frame#add () in
   canvas#set_scroll_region 0. 0. 600. 250. ;
   let r = GnoCanvas.rect canvas#root
-      ~props:[ `outline_color "black" ;
-	       `fill_color "white" ;
-	       `x1 0.; `y1 0. ; `x2 600. ; `y2 250. ] in
+      ~props:[ `OUTLINE_COLOR "black" ;
+	       `FILL_COLOR "white" ;
+	       `X1 0.; `Y1 0. ; `X2 600. ; `Y2 250. ] in
   let t = GnoCanvas.text canvas#root
-      ~props:[ `text (if aa then "AntiAlias" else "Non-AntiAlias") ;
-	       `x 270. ; `y 5. ;
-	       `font "Sans 12" ;
-	       `anchor `NORTH ;
-	       `fill_color "black" ] in
+      ~props:[ `TEXT (if aa then "AntiAlias" else "Non-AntiAlias") ;
+	       `X 270. ; `Y 5. ;
+	       `FONT "Sans 12" ;
+	       `ANCHOR `NORTH ;
+	       `FILL_COLOR "black" ] in
   r#connect#event (canvas_event (ref None) canvas#root)
 
 

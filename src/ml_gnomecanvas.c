@@ -369,3 +369,12 @@ ML_1 (gnome_canvas_path_def_closepath_current, GnomeCanvasPathDef_val, Unit)
 ML_1 (gnome_canvas_path_def_length, GnomeCanvasPathDef_val, Val_int)
 ML_1 (gnome_canvas_path_def_is_empty, GnomeCanvasPathDef_val, Val_bool)
 ML_1 (gnome_canvas_path_def_has_currentpoint, GnomeCanvasPathDef_val, Val_bool)
+
+
+/* gnome-canvas-rich-text.h */
+#define GnomeCanvasRichText_val(val)      check_cast(GNOME_CANVAS_RICH_TEXT,val)
+
+ML_1 (gnome_canvas_rich_text_cut_clipboard, GnomeCanvasRichText_val, Unit)
+ML_1 (gnome_canvas_rich_text_copy_clipboard, GnomeCanvasRichText_val, Unit)
+ML_1 (gnome_canvas_rich_text_paste_clipboard, GnomeCanvasRichText_val, Unit)
+ML_1 (gnome_canvas_rich_text_get_buffer, GnomeCanvasRichText_val, Val_GAnyObject)
