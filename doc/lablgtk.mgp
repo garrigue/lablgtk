@@ -1,0 +1,340 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%deffont "code" xfont "itc avant garde gothic-demi-r", tfont "verdana.ttf"
+%deffont "code-bold" xfont "terminal-bold-r", tfont "verdanab.ttf"
+%deffont "sans" xfont "helvetica-medium-r", tfont "comic.ttf"
+%deffont "sans-bold" xfont "helvetica-bold-r", tfont "comicbd.ttf"
+%deffont "sansit" xfont "helvetica-medium-i", tfont "marlett.ttf"
+%deffont "title" xfont "times-medium-r", tfont "times.ttf"
+%deffont "title-bold" xfont "times-bold-r", tfont "timesbd.ttf"
+%default 1 right, size 2, fore "white", bgrad
+%default 1 vfont "goth", font "sans-bold", vgap 100
+%default 2 leftfill, size 8, vgap 60, prefix " ", font "sans"
+%default 3 size 4, bar "beige", vgap 10
+%default 4 size 5, fore "white", vgap 20, prefix " "
+%tab 1 size 5, vgap 40, prefix "  ", icon box "green" 50
+%tab 2 size 5, vgap 40, prefix "      ", icon arc "yellow" 50
+%tab 3 size 5, vgap 40, prefix "            ", icon arc "white" 40
+%tab com1 size 4, prefix "     "
+%tab com2 size 4, prefix "          "
+%tab com3 size 4, prefix "             "
+%tab com font "sans", size 5, fore "white", prefix " "
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+%nodefault
+%size 9, font "title-bold"
+%fore "beige", back "navyblue", vgap 20
+%center
+
+
+A Type System in Action:
+
+the LablGTK Interface
+
+
+%size 7, font "title"
+Jacques Garrigue
+Kyoto University
+%size 6, font "code"
+garrigue@kurims.kyoto-u.ac.jp
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+2
+Synopsis
+
+	Why GTK+?
+%size 2
+
+	GTK+ structure
+%size 2
+
+	Low Level
+		Variant types in interfaces
+		Labeled parameters
+%size 2
+
+	High Level
+		Object-orientation
+		Optional arguments
+		Polymorphism difficulties
+%size 2
+
+	Conclusion
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+3
+Why GTK+ ?
+
+Why use the GIMP Tool Kit?
+%size 3
+
+	Widely used in free software
+
+	Easy to interface
+		Written in C (QT uses C++)
+		Memory management
+
+Drawbacks
+%size 3
+
+	Design lacks uniformity
+	Extensive use of dynamic typing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+4
+GTK+ Structure
+
+Class hierarchy based on GtkObject
+%size 2
+
+	Single inheritance
+&com1 New widgets may redefine methods
+%size 2
+
+	Dynamically checked
+&com1 Casting necessay both up and down
+%size 2
+
+	Developper-side hierarchy
+&com1 Inheritance is not always meaningful to the user
+%size 2
+
+%size 5
+Signal-based callback mechanism
+%size 2
+
+	May use multiple callbacks
+%size 2
+
+	Signals are polymorphic
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+5
+Low Level Interface
+
+Goals
+
+	Strongly typed interface
+&com1 heavy use of advanced typing techniques
+
+	Very little ML code
+&com1 C-stubs and external declarations
+
+	Safe memory management
+&com1 have the library cooperate with the GC
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+6
+Low level object encoding (I)
+
+Example: buttons' hierarchy
+%size 2
+
+%font "code", size 4, prefix "    "
+GtkObject
+    GtkWidget
+        GtkContainer
+            GtkButton
+                GtkToggleButton
+                    GtkRadioButton
+
+&com In ML
+%size 2
+
+%font "code", size 4, prefix "    ", fore "yellow"
+type 'a obj
+type widget = [widget] obj
+type container = [widget container] obj
+type button = [widget container button] obj
+type toggle_button =
+    [widget ... togglebutton] obj
+type radio_button =
+    [widget ... radiobutton] obj
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+7
+Variants as set constraints
+
+
+Variants can be seen as sets of possible values:
+
+	[tag1 ... tagn] = {tag1,...,tagn}
+
+
+Polymorphic variants introduce constraints
+
+	α[> tag1 ... tagn] ⇔ α ⊃ {tag1,...,tagn}
+	α[< tag1 ... tagn] ⇔ α ⊂ {tag1,...,tagn}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+8
+Low level object encoding (II)
+
+Some functions
+%size 2
+
+%font "code", size 4, prefix "    ", fore "yellow", vgap 50
+type state_type =
+    [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
+val set_state : [> widget] obj -> state_type -> unit
+val children : [> container] obj -> [widget] obj list
+val clicked : [> button] obj -> unit
+val set_group : [> radiobutton] obj -> group -> unit
+
+&com Signals
+%size 2
+
+%font "code", size 4, prefix "    ", fore "yellow", vgap 50
+type ('a,'b) signal
+val connect : 'a obj -> sig:('a,'b) signal ->
+               callback:'b -> ?after:bool -> id
+val button_clicked : ([> button], unit -> unit) signal
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+9
+Why an High-Level Interface
+
+Problems with GTK+
+
+	Name space is scattered
+&com1 One has to know in which superclass a function is defined
+	Developper oriented design
+&com1 There is no clear distinction between public and private definitions
+
+&com LablGTK design
+
+	OCaml classes to reunify name space
+	Omit developper-oriented methods
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+10
+Variants at work (I)
+
+
+	Monomorphic uses
+
+		Overloaded constructors
+&com2 Use the same name in mutiple types
+
+		Implicit datatypes
+&com2 No definition needed
+
+		Shared datatypes
+&com2 Sharing without dependency
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+11
+Monomorphic examples
+
+	Overloading [LablTk]
+
+%font "code", prefix "    "
+%fore "gray90", size 4
+Entry.index : entry widget ->
+    [anchor at(int) end insert num(int)
+     selfirst sellast] -> int
+Listbox.index : listbox widget ->
+    [active anchor atxy(int * int) end
+     num(int)] -> int
+Menu.index : menu widget ->
+    [active at(int) end last none num(int)
+     pattern(string)] -> int
+
+%font "sans", fore "white", prefix " ", size 5
+ cf. [TkGofer] use of type classes
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+12
+Variants at work (II)
+
+
+	Polymorphism and subtyping
+
+		Variant hierarchy
+&com2 Subtyping(matching) relation available
+
+		Safe programming
+&com2 Using subtypes
+
+		Encoding subtyping in variants
+&com2 Allow mixing static and dynamic typing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+13
+Polymorphic examples
+
+	Encoding subtyping [LablGL]
+%font "code", prefix "   ", left, size 4
+%fore "lightgreen"
+type 'a t
+%fore "lightblue"
+type kind =
+    [bitmap byte double float int long short
+     ubyte uint ulong ushort]
+type fkind = [double float]
+type ikind =
+    [bitmap byte int long short ubyte uint
+     ulong ushort]
+%fore "gray90"
+val create : (#kind as 'a) -> int -> 'a t
+val get : #ikind t -> int -> int
+val set : #ikind t -> int -> int -> unit
+val get_float : #fkind t -> int -> float
+val set_float : #fkind t -> int -> float -> unit
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+14
+Compiling Variants
+
+Compilation can be reduced to this formula
+
+%center
+#%image "hash.eps" 0 600x450
+
+%left
+	tags compiled to 31-bit integers
+	matching compiled to binary trees
+
+	conflicts detected at compile-time
+%size 4, fore "yellow"
+    probability of 1.5E-5 for a 256 tag type
+%fore "white"
+	compatible with separate compilation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+15
+Representation & Efficiency
+
+Representation can be bigger
+
+#%center, image "repr.eps" 0 400x300
+
+
+%leftfill
+Matching is almost as efficient as for datatypes
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+16
+Conclusion
+
+	Polymorphic variants are a useful feature, with many applications
+
+	They can be compiled simply and efficiently
+
+	We proposed a type system adapted to our needs
+
+	And gave a type inference algorithm
