@@ -223,7 +223,7 @@ let create_menu depth tearoff =
   let rec aux depth tearoff =
     let menu = new_menu () and group = ref None in
     if tearoff then begin
-      let menuitem = new_menu_item () tearoff:true in
+      let menuitem = new_tearoff_menu_item () in
       menu #append menuitem;
       menuitem #show ()
     end;
@@ -563,8 +563,8 @@ let create_toolbar =
 
 
 let handle_box_child_signal action (hb : handle_box) child =
-  Printf.printf "%s\n" ((Gtk.Type.name (hb #get_type ())) ^ ": child <" ^
-		(Gtk.Type.name (Gtk.Object.get_type child)) ^ "> " ^ action)
+  Printf.printf "%s: child <%s> %s\n" (Gtk.Type.name hb#get_type)
+    (Gtk.Type.name (Gtk.Object.get_type child)) action
 
 let create_handle_box =
   let rw = ref None in

@@ -101,6 +101,9 @@ type cell_type = "GTK_CELL_"
 type toolbar_child = "GTK_TOOLBAR_CHILD_"
     [ SPACE BUTTON TOGGLEBUTTON RADIOBUTTON WIDGET ]
 
+type toolbar_space_style = "GTK_TOOLBAR_SPACE_"
+    [ EMPTY LINE ]
+
 type tree_view_mode = "GTK_TREE_VIEW_"
     [ LINE ITEM ]
 
@@ -110,5 +113,11 @@ type spin_button_update_policy = "GTK_UPDATE_"
 type accel_flag = "GTK_ACCEL_"
     [ VISIBLE SIGNAL_VISIBLE LOCKED ]
 
-type toolbar_space_style = "GTK_TOOLBAR_SPACE_"
-    [ EMPTY LINE ]
+type packer_options = "GTK_"
+    [ PACK_EXPAND FILL_X FILL_Y ]
+
+type side_type = "GTK_SIDE_"
+    [ TOP BOTTOM LEFT RIGHT ]
+
+type anchor_type = "GTK_ANCHOR_"
+    [ CENTER N NW NE S SW SE W E ]

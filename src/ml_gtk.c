@@ -839,6 +839,60 @@ ML_2 (gtk_notebook_set_tab_border, GtkNotebook_val, Int_val, Unit)
 ML_1 (gtk_notebook_popup_enable, GtkNotebook_val, Unit)
 ML_1 (gtk_notebook_popup_disable, GtkNotebook_val, Unit)
 
+/* gtkpacker.h */
+
+Make_OptFlags_val(Packer_options_val)
+
+#define GtkPacker_val(val) check_cast(GTK_PACKER,val)
+ML_0 (gtk_packer_new, Val_GtkWidget_sink)
+ML_10 (gtk_packer_add, GtkPacker_val, GtkWidget_val,
+       Option_val(arg3,Side_type_val,GTK_SIDE_TOP) Ignore,
+       Option_val(arg4,Anchor_type_val,GTK_ANCHOR_CENTER) Ignore,
+       OptFlags_Packer_options_val,
+       Option_val(arg6,Int_val,GtkPacker_val(arg1)->default_border_width) Ignore,
+       Option_val(arg7,Int_val,GtkPacker_val(arg1)->default_pad_x) Ignore,
+       Option_val(arg8,Int_val,GtkPacker_val(arg1)->default_pad_y) Ignore,
+       Option_val(arg9,Int_val,GtkPacker_val(arg1)->default_i_pad_x) Ignore,
+       Option_val(arg10,Int_val,GtkPacker_val(arg1)->default_i_pad_y) Ignore,
+       Unit)
+ML_bc10 (ml_gtk_packer_add)
+ML_5 (gtk_packer_add_defaults, GtkPacker_val, GtkWidget_val,
+       Option_val(arg3,Side_type_val,GTK_SIDE_TOP) Ignore,
+       Option_val(arg4,Anchor_type_val,GTK_ANCHOR_CENTER) Ignore,
+       OptFlags_Packer_options_val, Unit)
+ML_10 (gtk_packer_set_child_packing, GtkPacker_val, GtkWidget_val,
+       Option_val(arg3,Side_type_val,GTK_SIDE_TOP) Ignore,
+       Option_val(arg4,Anchor_type_val,GTK_ANCHOR_CENTER) Ignore,
+       OptFlags_Packer_options_val,
+       Option_val(arg6,Int_val,GtkPacker_val(arg1)->default_border_width) Ignore,
+       Option_val(arg7,Int_val,GtkPacker_val(arg1)->default_pad_x) Ignore,
+       Option_val(arg8,Int_val,GtkPacker_val(arg1)->default_pad_y) Ignore,
+       Option_val(arg9,Int_val,GtkPacker_val(arg1)->default_i_pad_x) Ignore,
+       Option_val(arg10,Int_val,GtkPacker_val(arg1)->default_i_pad_y) Ignore,
+       Unit)
+ML_bc10 (ml_gtk_packer_set_child_packing)
+ML_3 (gtk_packer_reorder_child, GtkPacker_val, GtkWidget_val,
+      Int_val, Unit)
+ML_2 (gtk_packer_set_spacing, GtkPacker_val, Int_val, Unit)
+value ml_gtk_packer_set_defaults (value w, value border_width,
+				  value pad_x, value pad_y,
+				  value i_pad_x, value i_pad_y)
+{
+    GtkPacker *p = GtkPacker_val(w);
+    if (Is_block(border_width))
+	gtk_packer_set_default_border_width (p,Int_val(Field(border_width,0)));
+    if (Is_block(pad_x) || Is_block(pad_y))
+	gtk_packer_set_default_pad
+	    (p, Option_val(pad_x,Int_val,p->default_pad_x),
+	        Option_val(pad_y,Int_val,p->default_pad_y));
+    if (Is_block(i_pad_x) || Is_block(i_pad_y))
+	gtk_packer_set_default_ipad
+	    (p, Option_val(pad_x,Int_val,p->default_i_pad_x),
+	        Option_val(pad_y,Int_val,p->default_i_pad_y));
+    return Val_unit;
+}
+ML_bc6 (ml_gtk_packer_set_defaults)
+
 /* gtkpaned.h */
 
 #define GtkPaned_val(val) check_cast(GTK_PANED,val)
