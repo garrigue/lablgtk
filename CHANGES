@@ -1,5 +1,11 @@
 $Id$
 
+2004.08.19 [Olivier]
+  * add 'active' property of ComboBox as a constructor parameter.
+  * qualify conversion tables as 'const' (so they end up in read-only
+    pages)
+  * add some ocamldoc comments
+
 2004.08.11 [Olivier]
   * have GAction.ui_manager#add_ui_from_string raise an exception in
     case of error.

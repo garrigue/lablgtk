@@ -129,7 +129,7 @@ let declaration ~hc ~cc = parser
     let static =
       if !static && not (List.mem "public" flags) || List.mem "private" flags
       then "static " else "" in
-    oc "%slookup_info ml_table_%s[] = {\n" static name;
+    oc "%sconst lookup_info ml_table_%s[] = {\n" static name;
     may guard
       (fun m -> oc "#ifdef %s\n" m) ;
     oc "  { 0, %d },\n" (List.length tags);
@@ -141,7 +141,7 @@ let declaration ~hc ~cc = parser
     oc "};\n\n";
     (* Output macros to headers *)
     if not !first then oh "\n";
-    if static = "" then oh "extern lookup_info ml_table_%s[];\n" name;
+    if static = "" then oh "extern const lookup_info ml_table_%s[];\n" name;
     oh "#define Val_%s(data) ml_lookup_from_c (ml_table_%s, data)\n"
       name name;
     oh "#define %s_val(key) ml_lookup_to_c (ml_table_%s, key)\n\n"
@@ -163,7 +163,7 @@ let process ic ~hc ~cc =
     if !all_convs <> [] && !package <> "" then begin
       let oc x = fprintf cc x in
       oc "CAMLprim value ml_%s_get_tables ()\n{\n" (camlize !package);
-      oc "  static lookup_info *ml_lookup_tables[] = {\n";
+      oc "  static const lookup_info *ml_lookup_tables[] = {\n";
       let convs = List.rev !all_convs in
       List.iter convs ~f:(fun (s,_,_,_) -> oc "    ml_table_%s,\n" s);
       oc "  };\n";

@@ -93,7 +93,7 @@ class Combo set wrap : Box {
 }
 
 class ComboBox set wrap wrapsig : Bin {
-  "active"               gint                 : Read / Write / NoSet
+  "active"               gint                 : Read / Write
   "column-span-column"   gint                 : Read / Write / NoSet / NoWrap
   "model"                GtkTreeModel         : Read / Write         / NoWrap
   "row-span-column"      gint                 : Read / Write / NoSet / NoWrap
