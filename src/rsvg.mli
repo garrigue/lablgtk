@@ -10,6 +10,19 @@ val at_zoom_with_max : float -> float -> int -> int -> size_fun
 
 val set_default_dpi : float -> unit
 
-val render : ?dpi:float -> ?size_cb:size_fun -> string -> GdkPixbuf.pixbuf
+(** @raise Error if an error occurs loading data *)
+(** @raise Sys_error if an error occurs while reading from the channel *)
+val render_from_string :
+  ?gz:bool -> 
+  ?dpi:float -> 
+  ?size_cb:size_fun -> 
+  ?pos:int -> ?len:int ->
+  string -> GdkPixbuf.pixbuf
+
+(** @raise Error if an error occurs loading data *)
+(** @raise Sys_error if an error occurs while reading from the file *)
 val render_from_file :
-             ?dpi:float -> ?size_cb:size_fun -> string -> GdkPixbuf.pixbuf
+  ?gz:bool -> 
+  ?dpi:float -> 
+  ?size_cb:size_fun -> 
+  string -> GdkPixbuf.pixbuf
