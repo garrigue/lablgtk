@@ -16,14 +16,20 @@
 CAMLprim value ml_gtkaction_init(value unit)
 {
   GType t =
+#ifdef HASGTK24
     gtk_action_get_type () +
     gtk_toggle_action_get_type () +
     gtk_radio_action_get_type () +
     gtk_toggle_action_get_type () +
     gtk_action_group_get_type () +
     gtk_ui_manager_get_type () ;
+#else
+    0;
+#endif
   return Val_GType(t);
 }
+
+#ifdef HAS_GTK24
 
 #define gobject_list_of_GSList(l) Val_GSList(l, (value_in) Val_GObject)
 #define gobject_list_of_GList(l)  Val_GList (l, (value_in) Val_GObject)
@@ -88,3 +94,34 @@ CAMLprim value ml_gtk_ui_manager_add_ui_from_file(value uim, value s)
 ML_2 (gtk_ui_manager_remove_ui, GtkUIManager_val, Int_val, Unit)
 ML_1 (gtk_ui_manager_ensure_update, GtkUIManager_val, Unit)
 /* ML_1 (gtk_ui_manager_new_merge_id, GtkUIManager_val, Val_int) */
+
+#else /* HASGTK24 */
+
+Unsupported_24(gtk_action_activate)
+Unsupported_24(gtk_action_connect_proxy)
+Unsupported_24(gtk_action_disconnect_proxy)
+Unsupported_24(gtk_action_get_proxies)
+Unsupported_24(gtk_action_connect_accelerator)
+Unsupported_24(gtk_action_disconnect_accelerator)
+Unsupported_24(gtk_action_set_accel_path)
+Unsupported_24(gtk_toggle_action_toggled)
+Unsupported_24(gtk_toggle_action_set_active)
+Unsupported_24(gtk_toggle_action_get_active)
+Unsupported_24(gtk_radio_action_set_group)
+Unsupported_24(gtk_radio_action_get_current_value)
+Unsupported_24(gtk_action_group_get_action)
+Unsupported_24(gtk_action_group_list_actions)
+Unsupported_24(gtk_action_group_add_action)
+Unsupported_24(gtk_action_group_remove_action)
+Unsupported_24(gtk_ui_manager_insert_action_group)
+Unsupported_24(gtk_ui_manager_remove_action_group)
+Unsupported_24(gtk_ui_manager_get_action_groups)
+Unsupported_24(gtk_ui_manager_get_accel_group)
+Unsupported_24(gtk_ui_manager_get_widget)
+Unsupported_24(gtk_ui_manager_get_action)
+Unsupported_24(gtk_ui_manager_add_ui_from_string)
+Unsupported_24(gtk_ui_manager_add_ui_from_file)
+Unsupported_24(gtk_ui_manager_remove_ui)
+Unsupported_24(gtk_ui_manager_ensure_update)
+
+#endif /* HASGTK24 */
