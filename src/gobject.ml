@@ -32,6 +32,8 @@ end
 open Tags
 
 module Type = struct
+  external init : unit -> unit = "ml_g_type_init"
+  let () = init ()
   external name : g_type -> string = "ml_g_type_name"
   external from_name : string -> g_type = "ml_g_type_from_name"
   external parent : g_type -> g_type = "ml_g_type_parent"

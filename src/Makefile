@@ -76,7 +76,6 @@ all:: lablgladecc
 endif
 
 ifdef USE_GNOMECANVAS
-POST_MLLIBS += lablgnomecanvas.cma
 MLLIBS += lablgnomecanvas.cma
 CLIBS += liblablgnomecanvas.a
 GNOMECANVASMLOBJS = gnomeCanvas.cmo gnoCanvas.cmo
@@ -127,15 +126,16 @@ MLOBJS =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
-ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(INITOBJS)
+ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
+	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
 lablgtktop: $(MLLIBS) $(INITOBJS)
-	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(filter-out $(POST_MLLIBS),$(MLLIBS)) $(INITOBJS) $(filter $(POST_MLLIBS),$(MLLIBS))
+	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
 
 lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
-	   -I . $(filter-out $(POST_MLLIBS),$(MLLIBS)) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(filter $(POST_MLLIBS),$(MLLIBS))
+	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
 lablgtk2: Makefile $(CONFIG) lablgtk.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
