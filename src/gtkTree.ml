@@ -80,7 +80,7 @@ module TreePath = struct
 end
 
 module RowReference = struct
-  external create : tree_model obj -> tree_path -> row_reference
+  external create : [>`treemodel] obj -> tree_path -> row_reference
     = "ml_gtk_tree_row_reference_new"
   external get_path : row_reference -> tree_path
     = "ml_gtk_tree_row_reference_get_path"

@@ -72,6 +72,12 @@ class window : Gtk.window obj ->
     inherit [window] window_skel
     val obj : Gtk.window obj
     method connect : GContainer.container_signals
+    method fullscreen : unit -> unit
+    method maximize : unit -> unit
+    method stick : unit -> unit
+    method unfullscreen : unit -> unit
+    method unmaximize : unit -> unit
+    method unstick : unit -> unit
   end
 val window :
   ?kind:Tags.window_type ->

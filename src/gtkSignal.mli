@@ -19,6 +19,11 @@ val connect :
   sgn:('a, 'b) t -> callback:'b -> ?after:bool -> 'a obj -> id
     (* You may use [stop_emit] inside the callback *)
 
+val user_handler : (exn -> unit) ref
+    (* A hook to allow changing the behaviour of exceptions in callbacks
+       The default behaviour of printing the exception and ignoring it
+       is obtained when [user_handler] is set to [Pervasives.raise] *)
+
 external connect_by_name :
   'a obj -> name:string -> callback:g_closure -> after:bool -> id
   = "ml_g_signal_connect_closure"
