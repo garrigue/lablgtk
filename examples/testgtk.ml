@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open GdkKeysyms
 open GMain
 open GData
 open GObj
@@ -285,17 +286,17 @@ let rw = ref None in
 
 	let menuitem = new check_menu_item label:"Accelerate Me" in
 	menu #append menuitem;
-	menuitem #add_accelerator accel_group key:'M'
+	menuitem #add_accelerator accel_group key:_M
 	  flags:[`VISIBLE; `SIGNAL_VISIBLE];
 
 	let menuitem = new check_menu_item label:"Accelerator Locked" in
 	menu #append menuitem;
-	menuitem #add_accelerator accel_group key:'L'
+	menuitem #add_accelerator accel_group key:_L
 	  flags:[`VISIBLE; `LOCKED];
 
 	let menuitem = new check_menu_item label:"Accelerators Frozen" in
 	menu #append menuitem;
-	menuitem #add_accelerator accel_group key:'F'
+	menuitem #add_accelerator accel_group key:_F
 	  flags:[`VISIBLE];
 	menuitem #misc#lock_accelerators ();
 

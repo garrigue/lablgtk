@@ -22,7 +22,7 @@ let main () =
   (* entry *)
   let entry = new GEdit.entry max_length: 20 packing: vbx#add in
   entry#set_text "0";
-  entry#set_entry editable:false;
+  entry#set_editable false;
 
   (* BackSpace, Clear, All Clear, Quit *) 
   let table0 = new GPack.table rows:1 columns:4 packing:vbx#add in
