@@ -1,5 +1,24 @@
 $Id$
 
+1999.5.27
+  * new Gtk.Main.main Gtk.Main.quit and GtkThread.main (for modal windows)
+  * added x: and y: to Window.setter
+  * new methods: object#get_type widget#misc#lock_accelerators
+    widget#misc#visible widget#misc#parent container#set_focus#vadjustment
+    container#set_focus#hadjustment (could be container#set_focus#adjustment with a dir param)
+    window#set_modal window#set_position window#set_default_size
+    window#set_transient_for
+    menu#set_accel_group
+  * new classes: handle_box_skel handle_box_signals handle_box
+    bbox color_selection color_selection_dialog toolbar
+    and the corresponding modules in gtk.ml
+    new class type: is_window and method as_window
+  * new param tearoff: in new_menu_item
+    new param x: and y: modal: in Window.setter
+  * Widget.event and Widget.activate return bool
+  * new example: examples/testgtk.ml and test.xpm
+  (Hubert)
+
 1999.5.25
   * upgraded to gtk+-1.2.3 (all examples work)
   * suppressed deprecated function calls and corrected examples

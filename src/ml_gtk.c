@@ -203,8 +203,8 @@ ML_2 (gtk_widget_draw, GtkWidget_val, (GdkRectangle*), Unit)
 ML_1 (gtk_widget_draw_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_draw_default, GtkWidget_val, Unit)
 /* ML_1 (gtk_widget_draw_children, GtkWidget_val, Unit) */
-ML_2 (gtk_widget_event, GtkWidget_val, GdkEvent_val( ), Unit)
-ML_1 (gtk_widget_activate, GtkWidget_val, Unit)
+ML_2 (gtk_widget_event, GtkWidget_val, GdkEvent_val( ), Val_bool)
+ML_1 (gtk_widget_activate, GtkWidget_val, Val_bool)
 ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit)
 ML_3 (gtk_widget_popup, GtkWidget_val, Int_val, Int_val, Unit)
 value ml_gtk_widget_intersect (value w, GdkRectangle *area)
@@ -260,6 +260,11 @@ ML_1 (gtk_widget_unlock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_accelerators_locked, GtkWidget_val, Val_bool)
 
 Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
+ml_gtk_widget_visible (value w)
+{ 
+  return Val_bool(GTK_WIDGET_VISIBLE(GtkWidget_val(w)));
+}
+Make_Extractor (gtk_widget, GtkWidget_val, parent, Val_GtkWidget)
 
 /* gtkcontainer.h */
 
@@ -339,7 +344,11 @@ Make_Extractor (gtk_aspect_frame_get, GtkAspectFrame_val, obey_child, Val_bool)
 
 /* gtkhandlebox.h */
 
+#define GtkHandleBox_val(val) check_cast(GTK_HANDLE_BOX,val)
 ML_0 (gtk_handle_box_new, Val_GtkWidget_sink)
+ML_2 (gtk_handle_box_set_shadow_type, GtkHandleBox_val, Shadow_type_val, Unit)
+ML_2 (gtk_handle_box_set_handle_position, GtkHandleBox_val, Position_val, Unit)
+ML_2 (gtk_handle_box_set_snap_edge, GtkHandleBox_val, Position_val, Unit)
 
 /* gtkitem.h */
 
@@ -357,6 +366,7 @@ ML_1 (gtk_list_item_new_with_label, String_val, Val_GtkWidget_sink)
 
 #define GtkMenuItem_val(val) check_cast(GTK_MENU_ITEM,val)
 ML_0 (gtk_menu_item_new, Val_GtkWidget_sink)
+ML_0 (gtk_tearoff_menu_item_new, Val_GtkWidget_sink)
 ML_1 (gtk_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_menu_item_set_submenu, GtkMenuItem_val, GtkWidget_val, Unit)
 ML_1 (gtk_menu_item_remove_submenu, GtkMenuItem_val, Unit)
@@ -452,13 +462,17 @@ ML_2 (gtk_window_add_accel_group, GtkWindow_val,
       GtkAccelGroup_val, Unit)
 ML_2 (gtk_window_remove_accel_group, GtkWindow_val,
       GtkAccelGroup_val, Unit)
-ML_2 (gtk_window_set_position, GtkWindow_val, Window_position_val, Unit)
 ML_1 (gtk_window_activate_focus, GtkWindow_val, Val_bool)
 ML_1 (gtk_window_activate_default, GtkWindow_val, Val_bool)
+ML_2 (gtk_window_set_modal, GtkWindow_val, Bool_val, Unit)
+ML_3 (gtk_window_set_default_size, GtkWindow_val, Int_val, Int_val, Unit)
+ML_2 (gtk_window_set_position, GtkWindow_val, Window_position_val, Unit)
+ML_2 (gtk_window_set_transient_for, GtkWindow_val, GtkWindow_val, Unit)
 
 /* gtkcolorsel.h */
 
 #define GtkColorSelection_val(val) check_cast(GTK_COLOR_SELECTION,val)
+#define GtkColorSelectionDialog_val(val) check_cast(GTK_COLOR_SELECTION_DIALOG,val)
 ML_0 (gtk_color_selection_new, Val_GtkWidget_sink)
 ML_2 (gtk_color_selection_set_update_policy, GtkColorSelection_val,
       Update_type_val, Unit)
@@ -500,6 +514,11 @@ value ml_gtk_color_selection_get_color (value w)
     return ret;
 }
 ML_1 (gtk_color_selection_dialog_new, String_val, Val_GtkWidget)
+Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, ok_button, Val_GtkWidget)
+Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, cancel_button, Val_GtkWidget)
+Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, help_button, Val_GtkWidget)
+Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, colorsel, Val_GtkWidget)
+
 
 /* gtkbox.h */
 
@@ -874,6 +893,13 @@ ML_7 (gtk_toolbar_insert_element, GtkToolbar_val, Toolbar_child_val,
 ML_bc7 (ml_gtk_toolbar_insert_element)
 ML_5 (gtk_toolbar_insert_widget, GtkToolbar_val, GtkWidget_val,
       String_val, String_val, Int_val, Unit)
+ML_2 (gtk_toolbar_set_orientation, GtkToolbar_val, Orientation_val, Unit)
+ML_2 (gtk_toolbar_set_style, GtkToolbar_val, Toolbar_style_val, Unit)
+ML_2 (gtk_toolbar_set_space_size, GtkToolbar_val, Int_val, Unit)
+ML_2 (gtk_toolbar_set_space_style, GtkToolbar_val, Toolbar_space_style_val, Unit)
+ML_2 (gtk_toolbar_set_tooltips, GtkToolbar_val, Bool_val, Unit)
+ML_2 (gtk_toolbar_set_button_relief, GtkToolbar_val, Relief_type_val, Unit)
+ML_1 (gtk_toolbar_get_button_relief, GtkToolbar_val, Val_relief_type)
 
 /* gtktree.h */
 

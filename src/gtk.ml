@@ -369,9 +369,9 @@ module Widget = struct
       = "ml_gtk_widget_draw_focus"
   external draw_default : [> widget] obj -> unit
       = "ml_gtk_widget_draw_default"
-  external event : [> widget] obj -> 'a Gdk.event -> unit
+  external event : [> widget] obj -> 'a Gdk.event -> bool
       = "ml_gtk_widget_event"
-  external activate : [> widget] obj -> unit
+  external activate : [> widget] obj -> bool
       = "ml_gtk_widget_activate"
   external reparent : [> widget] obj -> [> widget] obj -> unit
       = "ml_gtk_widget_reparent"
@@ -380,10 +380,6 @@ module Widget = struct
   external intersect :
       [> widget] obj -> Gdk.Rectangle.t -> Gdk.Rectangle.t option
       = "ml_gtk_widget_intersect"
-(*
-  external basic : [> widget] obj -> bool
-      = "ml_gtk_widget_basic"
-*)
   external set_can_default : [> widget] obj -> bool -> unit
       = "ml_gtk_widget_set_can_default"
   external set_can_focus : [> widget] obj -> bool -> unit
@@ -416,10 +412,6 @@ module Widget = struct
       = "ml_gtk_widget_get_pointer"
   external is_ancestor : [> widget] obj -> [> widget] obj -> bool
       = "ml_gtk_widget_is_ancestor"
-(*
-  external is_child : [> widget] obj -> [> widget] obj -> bool
-      = "ml_gtk_widget_is_ancestor"
-*)
   external set_style : [> widget] obj -> Style.t -> unit
       = "ml_gtk_widget_set_style"
   external set_rc_style : [> widget] obj -> unit
@@ -447,6 +439,10 @@ module Widget = struct
       = "ml_gtk_widget_accelerators_locked"
   external window : [> widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
+  external visible : [> widget] obj -> bool =
+    "ml_gtk_widget_visible"
+  external parent : [> widget] obj -> t obj =
+    "ml_gtk_widget_parent"
   let setter w :cont ?:name ?:state ?:sensitive ?:can_default ?:can_focus
       ?:x [< -2 >] ?:y [< -2 >] ?:width [< -1 >] ?:height [< -1 >] ?:style =
     let may_set f arg = may fun:(f w) arg in
@@ -498,10 +494,6 @@ module Container = struct
     if Object.is_a w "GtkContainer" then Obj.magic w
     else invalid_arg "Gtk.Container.cast"
   external coerce : [> container] obj -> t obj = "%identity"
-(*
-  external draw_children : [> container] obj -> unit
-      = "ml_gtk_widget_draw_children"
-*)
   external set_border_width : [> container] obj -> int -> unit
       = "ml_gtk_container_set_border_width"
   external add : [> container] obj -> [> widget] obj -> unit
@@ -647,6 +639,12 @@ module HandleBox = struct
     if Object.is_a w "GtkHandleBox" then Obj.magic w
     else invalid_arg "Gtk.HandleBox.cast"
   external create : unit -> t obj = "ml_gtk_handle_box_new"
+  external set_shadow_type : t obj -> shadow_type -> unit =
+   "ml_gtk_handle_box_set_shadow_type"
+  external set_handle_position : t obj -> position -> unit =
+   "ml_gtk_handle_box_set_handle_position"
+  external set_snap_edge : t obj -> position -> unit =
+   "ml_gtk_handle_box_set_snap_edge"
   module Signals = struct
     open Signal
     let child_attached : ([> handlebox],_) t =
@@ -698,9 +696,13 @@ module MenuItem = struct
   external create : unit -> t obj = "ml_gtk_menu_item_new"
   external create_with_label : string -> t obj
       = "ml_gtk_menu_item_new_with_label"
-  let create ?:label ?(_ : unit option) =
-    match label with None -> create ()
-    | Some label -> create_with_label label
+  external tearoff_create : unit -> t obj
+      = "ml_gtk_tearoff_menu_item_new"
+  let create ?:label ?(_ : unit option) :tearoff =
+    match label, tearoff with None, false -> create ()
+    | Some label, false -> create_with_label label
+    | None, true -> tearoff_create ()
+    | _ -> invalid_arg "MenuItem.create"
   external set_submenu : [> menuitem] obj -> [> menu] obj -> unit
       = "ml_gtk_menu_item_set_submenu"
   external remove_submenu : [> menuitem] obj -> unit
@@ -857,16 +859,28 @@ module Window = struct
       [> window] obj ->
       allow_shrink:bool -> allow_grow:bool -> auto_shrink:bool -> unit
       = "ml_gtk_window_set_policy"
-  external set_position : [> window] obj -> window_position -> unit
-      = "ml_gtk_window_set_position"
   external get_allow_shrink : [> window] obj -> bool
       = "ml_gtk_window_get_allow_shrink"
   external get_allow_grow : [> window] obj -> bool
       = "ml_gtk_window_get_allow_grow"
   external get_auto_shrink : [> window] obj -> bool
       = "ml_gtk_window_get_auto_shrink"
+  external activate_focus : [> window] obj -> bool
+      = "ml_gtk_window_activate_focus"
+  external activate_default : [> window] obj -> bool
+      = "ml_gtk_window_activate_default"
+  external set_modal : [>window] obj -> bool -> unit =
+    "ml_gtk_window_set_modal"
+  external set_default_size : [> window] obj -> int -> int -> unit =
+    "ml_gtk_window_set_default_size"
+  external set_position : [> window] obj -> window_position -> unit =
+    "ml_gtk_window_set_position"
+  external set_transient_for : [> window] obj ->[> window] obj -> unit =
+    "ml_gtk_window_set_transient_for"
+
   let setter w :cont ?:title ?:wmclass_name ?:wmclass_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink =
+      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal
+      ?:x [< -2 >] ?:y [< -2 >] =
     may title fun:(set_title w);
     if wmclass_name <> None || wmclass_class <> None then
       set_wmclass w name:(may_default get_wmclass_name w for:wmclass_name)
@@ -877,6 +891,8 @@ module Window = struct
 	allow_shrink:(may_default get_allow_shrink w for:allow_shrink)
 	allow_grow:(may_default get_allow_grow w for:allow_grow)
 	auto_shrink:(may_default get_auto_shrink w for:auto_shrink);
+    may fun:(set_modal w) modal;
+    if x > -2 || y > -2 then Widget.set_uposition w :x :y;
     cont w
   let set = setter ?cont:Container.set
   external add_accel_group : [> window] obj -> AccelGroup.t -> unit
@@ -939,38 +955,6 @@ module Box = struct
   let create (dir : orientation) ?:homogeneous [< false >] ?:spacing [< 0 >] =
     (match dir with `HORIZONTAL -> hbox_new | `VERTICAL -> vbox_new)
       :homogeneous :spacing
-end
-
-module ColorSelection = struct
-  type t = [widget container box colorsel]
-  let cast w : t obj =
-    if Object.is_a w "GtkColorSelection" then Obj.magic w
-    else invalid_arg "Gtk.ColorSelection.cast"
-  type dialog = [widget container window colorseldialog]
-  external create : unit -> t obj = "ml_gtk_color_selection_new"
-  external create_dialog : string -> dialog obj
-      = "ml_gtk_color_selection_dialog_new"
-  external set_update_policy : [> colorsel] obj -> update_type -> unit
-      = "ml_gtk_color_selection_set_update_policy"
-  external set_opacity : [> colorsel] obj -> bool -> unit
-      = "ml_gtk_color_selection_set_opacity"
-  let setter w :cont ?:update_policy ?:opacity =
-    may update_policy fun:(set_update_policy w);
-    may opacity fun:(set_opacity w);
-    cont w
-  let set = setter ?cont:Box.set
-  external set_color :
-      [> colorsel] obj ->
-      red:float -> green:float -> blue:float -> ?opacity:float -> unit
-      = "ml_gtk_color_selection_set_color"
-  type color = { red: float; green: float; blue: float; opacity: float }
-  external get_color : [> colorsel] obj -> color
-      = "ml_gtk_color_selection_get_color"
-  module Signals = struct
-    open Signal
-    let color_changed : ([> colorsel],_) t =
-      { name = "color_changed"; marshaller = marshal_unit }
-  end
 end
 
 module Dialog = struct
@@ -1037,6 +1021,7 @@ module BBox = struct
       set_child_ipadding w
 	x:(may_default get_child_ipadx w for:child_ipadx)
 	y:(may_default get_child_ipady w for:child_ipady);
+    may layout fun:(set_layout w);
     cont w
   let set = setter ?cont:Box.set
   external set_child_size_default : width:int -> height:int -> unit
@@ -1138,6 +1123,47 @@ module RadioButton = struct
     let group = optpointer group in
     match label with None -> create group
     | Some label -> create_with_label group label
+end
+
+module ColorSelection = struct
+  type t = [widget container box colorsel]
+  let cast w : t obj =
+    if Object.is_a w "GtkColorSelection" then Obj.magic w
+    else invalid_arg "Gtk.ColorSelection.cast"
+  type dialog = [widget container window colorseldialog]
+  external create : unit -> t obj = "ml_gtk_color_selection_new"
+  external create_dialog : string -> dialog obj
+      = "ml_gtk_color_selection_dialog_new"
+  external set_update_policy : [> colorsel] obj -> update_type -> unit
+      = "ml_gtk_color_selection_set_update_policy"
+  external set_opacity : [> colorsel] obj -> bool -> unit
+      = "ml_gtk_color_selection_set_opacity"
+  let setter w :cont ?:update_policy ?:opacity =
+    may update_policy fun:(set_update_policy w);
+    may opacity fun:(set_opacity w);
+    cont w
+  let set = setter ?cont:Box.set
+  external set_color :
+      [> colorsel] obj ->
+      red:float -> green:float -> blue:float -> ?opacity:float -> unit
+      = "ml_gtk_color_selection_set_color"
+  type color = { red: float; green: float; blue: float; opacity: float }
+  external get_color : [> colorsel] obj -> color
+      = "ml_gtk_color_selection_get_color"
+
+  external ok_button : [> colorseldialog] obj -> Button.t obj =
+    "ml_gtk_color_selection_dialog_ok_button"
+  external cancel_button : [> colorseldialog] obj -> Button.t obj =
+    "ml_gtk_color_selection_dialog_cancel_button"
+  external help_button : [> colorseldialog] obj -> Button.t obj =
+    "ml_gtk_color_selection_dialog_help_button"
+  external colorsel : [> colorseldialog] obj -> t obj =
+    "ml_gtk_color_selection_dialog_colorsel"
+  module Signals = struct
+    open Signal
+    let color_changed : ([> colorsel],_) t =
+      { name = "color_changed"; marshaller = marshal_unit }
+  end
 end
 
 module FileSelection = struct
@@ -1499,6 +1525,8 @@ module ScrolledWindow = struct
   external set_policy :
       [> scrolled] obj -> horizontal:policy_type -> vertical:policy_type -> unit
       = "ml_gtk_scrolled_window_set_policy"
+  external add_with_viewport : [> scrolled] obj -> [> widget] obj -> unit
+      = "ml_gtk_scrolled_window_add_with_viewport"
   external get_hscrollbar_policy : [> scrolled] obj -> policy_type
       = "ml_gtk_scrolled_window_get_hscrollbar_policy"
   external get_vscrollbar_policy : [> scrolled] obj -> policy_type
@@ -1567,6 +1595,7 @@ module Toolbar = struct
     else invalid_arg "Gtk.Toolbar.cast"
   external create : orientation -> style:toolbar_style -> t obj
       = "ml_gtk_toolbar_new"
+  let create dir ?:style [< `BOTH >] = create dir :style
   external insert_space : [> toolbar] obj -> pos:int -> unit
       = "ml_gtk_toolbar_insert_space"
   let insert_space w ?:pos [< -1 >] = insert_space w :pos
@@ -1576,10 +1605,15 @@ module Toolbar = struct
       icon:[> widget] optobj -> pos:int -> Button.t obj
       = "ml_gtk_toolbar_insert_element_bc" "ml_gtk_toolbar_insert_element"
   let insert_button w ?type:t [< `BUTTON >] ?:text ?:tooltip ?:tooltip_private
-      ?:icon ?:pos [< -1 >] =
-    insert_button w type:t text:(optpointer text) tooltip:(optpointer tooltip)
-      tooltip_private:(optpointer tooltip_private) icon:(optboxed icon)
-      :pos
+      ?:icon ?:pos [< -1 >] ?:callback =
+    let b =insert_button w type:t text:(optpointer text)
+	tooltip:(optpointer tooltip)
+	tooltip_private:(optpointer tooltip_private) icon:(optboxed icon)
+	:pos in
+    match callback with
+    | None   -> b
+    | Some c -> Signal.connect b sig:Button.Signals.clicked
+	  callback: c; b
   external insert_widget :
       [> toolbar] obj -> [> widget] obj ->
       tooltip:optstring -> tooltip_private:optstring -> pos:int -> unit
@@ -1587,6 +1621,20 @@ module Toolbar = struct
   let insert_widget w w' ?:tooltip ?:tooltip_private ?:pos [< -1 >] =
     insert_widget w w' tooltip:(optpointer tooltip)
       tooltip_private:(optpointer tooltip_private) :pos
+  external set_orientation : [> toolbar] obj -> orientation -> unit =
+    "ml_gtk_toolbar_set_orientation"
+  external set_style : [> toolbar] obj -> toolbar_style -> unit =
+    "ml_gtk_toolbar_set_style"
+  external set_space_size : [> toolbar] obj -> int -> unit =
+    "ml_gtk_toolbar_set_space_size"
+  external set_space_style : [> toolbar] obj -> [ EMPTY LINE ] -> unit =
+    "ml_gtk_toolbar_set_space_style"
+  external set_tooltips : [> toolbar] obj -> bool -> unit =
+    "ml_gtk_toolbar_set_tooltips"
+  external set_button_relief : [> toolbar] obj -> relief_type -> unit =
+    "ml_gtk_toolbar_set_button_relief"
+  external get_button_relief : [> toolbar] obj -> relief_type =
+    "ml_gtk_toolbar_get_button_relief"
   module Signals = struct
     open Signal
     external val_orientation : int -> orientation = "ml_Val_orientation"
@@ -2183,9 +2231,13 @@ module Main = struct
   let locale = set_locale ()
   let argv = init Sys.argv
   open Glib
-  let loop = Main.create true
-  let main () = while Main.is_running loop do Main.iteration true done
-  let quit () = Main.quit loop
+  let loops = ref [] 
+  let main () =
+    let loop = (Main.create true) in
+    loops := loop :: !loops;
+    while Main.is_running loop do Main.iteration true done;
+    loops := List.tl !loops
+  and quit () = Main.quit (List.hd !loops)
   external get_version : unit -> int * int * int = "ml_gtk_get_version"
   let version = get_version ()
 end
