@@ -35,31 +35,32 @@ Status:
 How to compile:
 
 	You should normally not need to modify Makefiles.
-	First type "make configure <options>".
-	Options are
-                USE_DOTOPT=1    to use ocaml.opt and ocamlopt.opt
-		USE_CC=1	to use $(CC) rather than gcc
-		USE_GL=1	to compile gtkglarea support
-                USE_GLADE=1     to compile libglade support
-                USE_GNOMECANVAS=1 to compile libgnomecanvas support
-                USE_RSVG=1      to compile librsvg support
-        The following variables will also be remembered if passed as options
-                BINDIR INSTALLDIR DLLDIR DEBUG CC
-                CAMLC CAMLOPT CAMLMKTOP CAMLMKLIB CAMLP40
-        or you may directly edit config.make.
-        Note that if you change DLLDIR, you should add the new directory
-        either to OCAMLLIB/ld.conf or to CAML_LD_LIBRARY_PATH before
-	running programs.
-        If gtk-config has a different name, you can set the GTK_CONFIG
-        variable  to it (e.g. FreeBSD).
+	
+	In case you are using the CVS version first type "autoconf".
+	
+	Type "./configure && make && make install" to compile 
+	with all supported options enabled (libgl, libglade, libgnomecanvas, 
+	librsvg, native compilation, thread support).
+	
+	You may use "./configure --help" to check for the different 
+	configuration options.
 
-	Then just type "make" to build the library and toplevels.
-	"make opt" to compile native libraries.
-	"make install" installs to the default locations.
+	Lablgtk2 specific options are:
+		
+	--with-libdir=/path: install libs in /path/lablgtk2 
+			     and /path/stublibs
+	--with-gl --without-gl: override autodetected GtkGLArea support. 
+				Requires LablGL
+	--with-glade --without-glade: override autodetected libglade support
+	--with-rsvg --without-rsvg: override autodetected librsvg support
+	--with-gnomecanvas --without-gnomecanvas: 
+		override autodetected libgnomecanvas support
+	--enable-debug: enable debug mode
+
         "make install DESTDIR=..." prefixes the installation
 	directories with DESTDIR.
 
-        A META file for findlib is provided, but it only handles the
+	A META file for findlib is provided, but it only handles the
         base library: I have no idea on how to avoid a combinatorial
         explosion with the various extensions.
 
@@ -309,6 +310,8 @@ Windows port
   Windows is not explicitely supported in this release, but some kind
   souls seem to have made it work anyway. It should work pretty much
   like on Unix.
+	
+  See README.win32 for detailed information on installation.
 
   If you want to use threads, you must be aware of windows specific
   restrictions; see for instance:

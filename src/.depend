@@ -27,9 +27,9 @@ gList.cmx: gContainer.cmx gData.cmx gDraw.cmx gObj.cmx gaux.cmx gpointer.cmx \
 gMain.cmo: gObj.cmi glib.cmi gtk.cmo gtkMain.cmo gMain.cmi 
 gMain.cmx: gObj.cmx glib.cmx gtk.cmx gtkMain.cmx gMain.cmi 
 gMenu.cmo: gButton.cmi gContainer.cmi gObj.cmi gaux.cmo gtk.cmo gtkBase.cmo \
-    gtkData.cmo gtkMenu.cmo gtkSignal.cmi gMenu.cmi 
+    gtkData.cmo gtkMenu.cmo gtkSignal.cmi gtkStock.cmo gMenu.cmi 
 gMenu.cmx: gButton.cmx gContainer.cmx gObj.cmx gaux.cmx gtk.cmx gtkBase.cmx \
-    gtkData.cmx gtkMenu.cmx gtkSignal.cmx gMenu.cmi 
+    gtkData.cmx gtkMenu.cmx gtkSignal.cmx gtkStock.cmx gMenu.cmi 
 gMisc.cmo: gContainer.cmi gDraw.cmi gObj.cmi gPack.cmi gaux.cmo glib.cmi \
     gpointer.cmi gtk.cmo gtkBase.cmo gtkMisc.cmo gtkSignal.cmi gtkStock.cmo \
     gMisc.cmi 
