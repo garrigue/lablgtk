@@ -1,10 +1,9 @@
 (* $Id$ *)
 
 module Main : sig
-  val init : ?nolocale:bool -> unit -> string
+  val init : ?setlocale:bool -> unit -> string
     (* [init] returns the locale name *)
-    (* If your program core dumps for a mysterious reason,
-       you can try passing ~nolocale:true. *)
+    (* Set [~setlocale] to [true] if your program needs a non-C locale *)
   val main : unit -> unit
     (* [main] runs the main loop, until [quit] is called. *)
     (* Do not use in multi-threaded programs. *)

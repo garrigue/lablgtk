@@ -24,9 +24,6 @@ How to compile:
 
 	Then just type "make" to build the library and toplevels.
 
-	On FreeBSD, you need to link with libxpg4.so for Japanese
-	output.
-
 Contents:
 
 	gdk.ml		low-level interface to the General Drawing Kit
@@ -91,6 +88,20 @@ How to use the threaded toplevel:
   Thread.create. On the other hand, all newly created threads will be
   run directly by the caml main loop, so they can use all thread
   operations.
+
+Locale or not locale ?
+  Until version 1.2.0, lablgtk called setlocale automatically on
+  intitialization. Unfortunately, this appears to have side effects
+  in some cases, paritcularly when the locale defines a numeric
+  format different from the standard one.
+  Since locale must be set before initialization, you may do it in two
+  ways:
+    * set the GTK_SETLOCALE environment variable to a non-0 value
+    * use the ~setlocale parameter to GMain.Main.init (if you do not link
+      gtkInit.cmo)
+  Note that GTK_SETLOCALE, when set, overrides ~setlocale.
+  On some systems you may also need to link libxpg4.so for the locale to
+  work.
 
 Structure of the (raw) Gtk* modules:
 

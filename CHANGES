@@ -1,5 +1,11 @@
 $Id$
 
+2001.08.10
+  * change ?nolocale to ?setlocale, defaulting to false.
+    Setting the locale must be required explicitly, by setting
+    the environment variable GTK_SETLOCALE for instance
+  * release version 1.2.1
+
 2001.07.04
   * add signals to GList.liste
 
