@@ -7,7 +7,6 @@ type 'p item_state = {
     mutable dragging : bool ;
     mutable x : float ;
     mutable y : float ;
-    mutable theta : float ;
   }
 
 let affine_rotate angle =
@@ -28,6 +27,15 @@ let affine_compose a1 a2 =
      a1.(4) *. a2.(0) +. a1.(5) *. a2.(2) +. a2.(4) ;
      a1.(4) *. a2.(1) +. a1.(5) *. a2.(3) +. a2.(5) ; |]
 
+let affine_invert a =
+  let r_det = 1. /. (a.(0) *. a.(3) -. a.(1) *. a.(2)) in
+  [| a.(3) *. r_det ;
+     ~-. (a.(1)) *. r_det ;
+     ~-. (a.(2)) *. r_det ;
+     a.(0) *. r_det ;
+     (a.(2) *. a.(5) -. a.(3) *. a.(4)) *. r_det ;
+     (a.(1) *. a.(4) -. a.(0) *. a.(5)) *. r_det ; |]
+
 let affine_transl x y =
   [| 1. ; 0. ; 0. ; 1. ; x ; y |]
 
@@ -47,12 +55,10 @@ let item_event_button_press config ev =
       config.item#destroy ()
   | 1 when Gdk.Convert.test_modifier `CONTROL state ->
       let (x, y) = config.item#w2i (GdkEvent.Button.x ev) (GdkEvent.Button.y ev) in
-      config.theta <- config.theta +. d_theta ;
       config.item#affine_relative
 	(affine_rotate_around_point x y d_theta) ;
   | 3 when Gdk.Convert.test_modifier `CONTROL state ->
       let (x, y) = config.item#w2i (GdkEvent.Button.x ev) (GdkEvent.Button.y ev) in
-      config.theta <- config.theta -. d_theta ;
       config.item#affine_relative 
 	(affine_rotate_around_point x y (~-. d_theta)) ;
   | 1 ->
@@ -78,12 +84,14 @@ let item_event_motion config ev =
     let x = GdkEvent.Motion.x ev in
     let y = GdkEvent.Motion.y ev in
     let (p_x, p_y) = (GnoCanvas.parent config.item)#w2i x y in
-    let dx = p_x -. config.x in
-    let dy = p_y -. config.y in
-    let dix, diy =
-      affine_apply
-	(affine_rotate (~-. (config.theta))) dx dy in
-    config.item#move dix diy ;
+    let aff = affine_invert 
+      ( match config.item#xform with 
+        | `AFFINE a -> a 
+	| `IDENTITY -> affine_transl 0. 0. 
+	| `TRANSL a -> affine_transl a.(0) a.(1) ) in
+    let (apx, apy) = affine_apply aff p_x p_y in
+    let (acx, acy) = affine_apply aff config.x config.y in
+    config.item#move (apx -. acx) (apy -. acy) ;
     config.x <- p_x ;
     config.y <- p_y
     
@@ -102,7 +110,7 @@ let setup_item (it : 'a #GnoCanvas.item) =
   let config = { 
     item = (it : 'a #GnoCanvas.item :> 'a GnoCanvas.item) ;
     dragging = false ;
-    x = 0. ; y = 0. ; theta = 0. } in
+    x = 0. ; y = 0. } in
   it#connect#event (item_event config)
 
 
