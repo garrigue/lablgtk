@@ -21,6 +21,10 @@ class Alignment set wrap : Bin {
   "yalign"               gfloat               : Read / Write
   "xscale"               gfloat               : Read / Write
   "yscale"               gfloat               : Read / Write
+  "bottom-padding"       guint                : Read / Write / NoSet
+  "left-padding"         guint                : Read / Write / NoSet
+  "right-padding"        guint                : Read / Write / NoSet
+  "top-padding"          guint                : Read / Write / NoSet
 }
 
 class Frame set wrap : Bin {
