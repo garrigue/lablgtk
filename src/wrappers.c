@@ -27,7 +27,7 @@ value alloc_memblock_indirected (asize_t size)
     return ret;
 }
 
-value ml_some (value v)
+CAMLprim value ml_some (value v)
 {
      CAMLparam1(v);
      value ret = alloc_small(1,0);
@@ -51,7 +51,7 @@ value Val_pointer (void *ptr)
     return ret;
 }
 
-value copy_string_check (const char*str)
+CAMLprim value copy_string_check (const char*str)
 {
     if (!str) ml_raise_null_pointer ();
     return copy_string ((char*) str);
@@ -62,7 +62,7 @@ value copy_string_or_null (const char*str)
     return copy_string (str ? (char*) str : "");
 }
 
-value *ml_global_root_new (value v)
+CAMLprim value *ml_global_root_new (value v)
 {
     value *p = stat_alloc(sizeof(value));
     *p = v;
