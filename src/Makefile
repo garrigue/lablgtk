@@ -75,6 +75,14 @@ GLADECOBJS = ml_glade.o
 all:: lablgladecc
 endif
 
+ifdef USE_RSVG
+MLLIBS += lablrsvg.cma
+CLIBS += liblablrsvg.a
+RSVGMLOBJS = rsvg.cmo
+RSVGCOBJS = ml_rsvg.o
+endif
+
+
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def .ml4
 .c.o:
@@ -112,7 +120,7 @@ MLOBJS =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
-ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(INITOBJS)
+ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) $(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
 lablgtktop: $(MLLIBS) $(INITOBJS)
@@ -198,6 +206,14 @@ lablglade.cma: liblablglade2.a $(GLADEMLOBJS)
 lablglade.cmxa: liblablglade2.a $(GLADEMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablglade -oc lablglade2 \
 	    $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
+
+liblablrsvg.a: $(RSVGCOBJS)
+	$(LIBRARIAN) -o lablrsvg $(RSVGCOBJS) $(RSVGLIBS)
+lablrsvg.cma: liblablrsvg.a $(RSVGMLOBJS)
+	$(LIBRARIAN) -o lablrsvg -oc lablrsvg $(RSVGMLOBJS) $(RSVGLIBS)
+lablrsvg.cmxa: liblablrsvg.a $(RSVGMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablrsvg -oc lablrsvg \
+	    $(RSVGMLOBJS:.cmo=.cmx) $(RSVGLIBS)
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml

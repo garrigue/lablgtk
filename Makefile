@@ -36,7 +36,12 @@ GLADEPKG = libglade-2.0
 GLADELIBS = `$(PKG_CONFIG) $(GLADEPKG) --libs`
 endif
 
-GTKCFLAGS = `$(PKG_CONFIG) $(GTKPKG) $(GTKGLPKG) $(GLADEPKG) --cflags`
+ifdef USE_RSVG
+RSVGPKG = librsvg-2.0
+RSVGLIBS = `$(PKG_CONFIG) $(RSVGPKG) --libs`
+endif
+
+GTKCFLAGS = `$(PKG_CONFIG) $(GTKPKG) $(GTKGLPKG) $(GLADEPKG) $(RSVGPKG) --cflags`
 
 all: config.make
 	cd src && $(MAKE) $@
@@ -49,6 +54,7 @@ config.make:
 	@echo "Options are:"
 	@echo "  USE_GL=1       build GtkGLArea support. Requires LablGL"
 	@echo "  USE_GLADE=1    build libglade support"
+	@echo "  USE_RSVG=1     build librsvg support"
 	@echo "  USE_DOTOPT=1   use ocamlc.opt and ocamlopt.opt"
 	@exit 2
 
@@ -67,6 +73,7 @@ configure:
 	@echo USE_GL=$(USE_GL) >> config.make
 	@echo USE_GNOME=$(USE_GNOME) >> config.make
 	@echo USE_GLADE=$(USE_GLADE) >> config.make
+	@echo USE_RSVG=$(USE_RSVG) >> config.make
 	@echo USE_CC=$(USE_CC) >> config.make
 	@echo DEBUG=$(DEBUG) >> config.make
 	@echo CC=$(CC) >> config.make
@@ -79,4 +86,5 @@ configure:
 	@echo GTKLIBS=$(GTKLIBS) >> config.make
 	@echo GTKGLLIBS=$(GTKGLLIBS) >> config.make
 	@echo GLADELIBS=$(GLADELIBS) >> config.make
+	@echo RSVGLIBS=$(RSVGLIBS) >> config.make
 	@cat config.make
