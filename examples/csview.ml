@@ -148,6 +148,23 @@ let rec parse_fields = parser
   | [< '','|' '; s >] -> parse_fields s
   | [< >] -> []
 
+let select_columns ~items ~titles =
+  let w = GWindow.dialog ~modal:true () in
+  let vbox = w#vbox in
+  List.iter2 titles (Array.to_list items) ~f:
+    begin fun title item ->
+      match item with None -> ()
+      | Some it ->
+          let b =
+            GButton.check_button ~label:title ~active:it#active
+              ~packing:vbox#add () in
+          ignore (b#connect#toggled
+                    ~callback:(fun () -> it#set_active b#active))
+    end;
+  let close = GButton.button ~label:"Close" ~packing:w#action_area#add () in
+  close#connect#clicked ~callback:w#destroy;
+  w#show ()
+
 let main () =
   let file = ref "" and fields = ref "" in
   Arg.parse ["-fields", Arg.Set_string fields, "fields to display"]
@@ -168,10 +185,17 @@ let main () =
   let metrics = cl#misc#pango_context#get_metrics () in
   let w0 = GPango.to_pixels metrics#approx_digit_width in
   let items = Array.create (List.length data.titles) None in
+  columns#add_item "Select"
+    ~callback:(fun () -> select_columns ~items ~titles:data.titles);
+  let sort_col = ref (-1) in
   cl#connect#click_column ~callback:
     begin fun n ->
+      cl#set_sort ~column:n ();
+      cl#sort ();
+      (*
       match items.(n) with None -> ()
       | Some it -> it#set_active false
+       *)
     end;
   let width ~col ~f =
     let w =
