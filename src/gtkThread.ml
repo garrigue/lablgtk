@@ -14,6 +14,9 @@ let cannot_sync () =
   match !loop_id with None -> true
   | Some id -> Thread.id (Thread.self ()) = id
 
+let gui_safe () =
+  not (Sys.os_type = "Win32") || !loop_id = Some(Thread.id (Thread.self ()))
+
 let has_jobs () = not (with_jobs Queue.is_empty)
 let n_jobs () = with_jobs Queue.length
 let do_next_job () = with_jobs Queue.take ()
