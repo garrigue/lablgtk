@@ -1,7 +1,7 @@
 # $Id$
 # Makefile for lablgtk.
 
-all: var2conv var2def lablgtk lablgtk_t gtkObj.cmo
+all: var2conv var2def lablgtk
 
 configure:
 	@rm -f config.make .depend
@@ -44,7 +44,7 @@ endif
 
 # Targets
 COBJS = ml_gtk.o ml_gdk.o ml_glib.o ml_gtkcaller.o wrappers.o
-MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo
+MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gtkObj.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
 	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" lablgtk.cma

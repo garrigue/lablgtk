@@ -14,7 +14,7 @@ let eq_float x y = abs_float (x -. y) < 1e-13
 
 let _ =
   let top = new_window `TOPLEVEL in
-  top#connect#destroy cb:Main.quit;
+  top#connect#destroy callback:Main.quit;
   let vbox = new_box `VERTICAL in
   top#add vbox;
   let entry = new_entry max_length:20 in
@@ -25,7 +25,7 @@ let _ =
   vbox#pack entry;
   vbox#pack result;
 
-  entry#connect#activate cb:
+  entry#connect#activate callback:
     begin fun () ->
       let x = try float_of_string entry#text with _ -> 0.0 in
       entry#set text:(string_of_float (cos x));

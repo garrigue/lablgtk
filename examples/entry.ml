@@ -1,58 +1,57 @@
 (* $Id$ *)
 
 open Gtk
+open GtkObj
 open Printf
 
-let enter_callback entry =
-  printf "Entry contents: %s\n" (Entry.get_text entry);
+let enter_callback (entry : entry) =
+  printf "Entry contents: %s\n" entry#text;
   flush stdout
 
-let entry_toggle_editable button entry =
-  Entry.set entry editable:(ToggleButton.active button)
+let entry_toggle_editable (button : toggle_button) (entry : entry) =
+  entry#set editable:button#active
 
-let entry_toggle_visibility button entry =
-  Entry.set entry visibility:(ToggleButton.active button)
+let entry_toggle_visibility (button : toggle_button) (entry : entry) =
+  entry#set visibility:button#active
 
 let main () =
 
-  let window = Window.create `TOPLEVEL in
-  Widget.set window width:200 height:100;
-  Window.set_title window "GTK Entry";
-  Window.Connect.destroy window cb:Main.quit;
+  let window = new_window `TOPLEVEL in
+  window#widget_ops#set width:200 height:100;
+  window#set title:"GTK Entry";
+  window#connect#destroy callback:Main.quit;
 
-  let vbox = Box.create `VERTICAL in
-  Window.add window vbox;
+  let vbox = new_box `VERTICAL in
+  window#add vbox;
 
-  let entry = Entry.create_with_max_length 50 in
-  Entry.Connect.activate entry
-    cb:(fun () -> enter_callback entry);
-  Entry.set entry text:"Hello";
-  Entry.append_text entry " world";
-  Entry.select_region entry start:0 end:(Entry.text_length entry);
-  Box.pack vbox entry;
+  let entry = new_entry max_length: 50 in
+  entry#connect#activate callback:(fun () -> enter_callback entry);
+  entry#set_text "Hello";
+  entry#append_text " world";
+  entry#select_region start:0 end:entry#text_length;
+  vbox#pack entry;
 
-  let hbox = Box.create `HORIZONTAL in
-  Box.add vbox hbox;
+  let hbox = new_box `HORIZONTAL in
+  vbox#add hbox;
 
-  let check = ToggleButton.create `check label:"Editable" in
-  Box.pack hbox check;
-  ToggleButton.Connect.toggled check
-    cb:(fun () -> entry_toggle_editable check entry);
-  ToggleButton.set check state:true;
+  let check = new_check_button label:"Editable" in
+  hbox#pack check;
+  check#connect#toggled callback:(fun () -> entry_toggle_editable check entry);
+  check#set state:true;
 
-  let check = ToggleButton.create `check label:"Visible" in
-  Box.pack hbox check;
-  ToggleButton.Connect.toggled check
-    cb:(fun () -> entry_toggle_visibility check entry);
-  ToggleButton.set check state:true;
+  let check = new_check_button label:"Visible" in
+  hbox#pack check;
+  check#connect#toggled
+    callback:(fun () -> entry_toggle_visibility check entry);
+  check#set state:true;
 
-  let button = Button.create_with_label "Close" in
-  Button.Connect.clicked button cb:Main.quit;
-  Box.pack vbox button;
-  Widget.set button can_default:true;
-  Widget.grab_default button;
+  let button = new_button label:"Close" in
+  button#connect#clicked callback:Main.quit;
+  vbox#pack button;
+  button#widget_ops#set can_default:true;
+  button#widget_ops#grab_default ();
 
-  Window.show_all window;
+  window#show_all ();
 
   Main.main ()
 

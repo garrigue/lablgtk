@@ -20,11 +20,11 @@ end
 let main () =
 
   let window = Window.create `TOPLEVEL in
-  Window.Connect.destroy window cb:Main.quit;
+  Signal.connect sig:Object.Signals.destroy window callback:Main.quit;
   Window.set window border_width: 10;
 
   let table = Table.create rows:3 columns:2 in
-  Window.add window table;
+  Container.add window table;
   
   let label = Label.create "Progress Bar Example" in
   Table.attach table label left:0 right:2 top:0 expand:`x shrink:`both;
@@ -33,17 +33,18 @@ let main () =
   Table.attach table pbar left:0 right:2 top:1 fill:`x shrink:`both;
 
   let bar = new bar pbar in
-  let ptimer = Timeout.add 100 cb:(fun () -> bar#progress) in
+  let ptimer = Timeout.add 100 callback:(fun () -> bar#progress) in
 
   let button = Button.create label:"Reset" in
-  Button.Connect.clicked button cb:(fun () -> bar#progress_r);
+  Signal.connect sig:Button.Signals.clicked button
+    callback:(fun () -> bar#progress_r);
   Table.attach table button left:0 top:2 expand:`none fill:`x shrink:`both;
 
   let button = Button.create label:"Cancel" in
-  Button.Connect.clicked button cb:Main.quit;
+  Signal.connect sig:Button.Signals.clicked button callback:Main.quit;
   Table.attach table button left:1 top:2 expand:`none fill:`x shrink:`both;
 
-  Window.show_all window
+  Widget.show_all window
 
 
 let _ =

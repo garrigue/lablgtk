@@ -12,6 +12,9 @@ How to compile:
 	Just type "make".
 	If anything changed, type "make configure; make".
 
+	On FreeBSD, you need to link with libxpg4.so for Japanese
+	output.
+
 Contents:
 
 	gdk.ml		low-level interface to the General Drawing Kit
@@ -22,14 +25,14 @@ Contents:
 	lablgtk		normal toplevel
 	lablgtk_t	threaded toplevel
 
-	examples/*.ml		various examples
-	examples/*_obj.ml	examples based on GtkObj
+	examples/*.ml	various examples
 
 How to run the examples:
 
 	./lablgtk examples/???.ml
 
-  some examples may need to be run from the examples directory
+  some examples (e.g. buttons.ml) may need to be run from the examples
+  directory
 
 	../lablgtk -I .. ???.ml
 
@@ -49,16 +52,37 @@ How to use the threaded toplevel:
   run directly by the caml main loop, so they can use all thread
   operations.
 
-Structure of the Gtk module:
+Structure of the (raw) Gtk module:
 
   This module is composed of one submodule for each class.
-  Signals shall be connected through the Mywidget.Connect.??? functions.
+  Signals specific to a widget are in a Signals inner module.
   Also, you can use "set w param: value" in place of "set_param w value".
-  There is a weak form of inheritance: signals in Connect and
-  parameters in set are propagated to submodules, along with some
-  functions.
-  To avoid a blow-up in size, functions and signals in the Widget
-  module are not propagated: use them directly.
+  The set function has a weak form of inheritance: it provides access
+  to all parameters in superclasses.
+
+Structure of the GtkObj module:
+
+  Up to 3 classes and two functions are defined for each widget:
+  * a skeleton class mywidget_skel providing widget-specific methods
+    (except the set function, which cannot be inherited)
+  * a connection class mywidget_signals allowing to connect signals
+  * a "set" function, to set all parameters available
+  For all these, inheritance follows the widget hierarchy
+  * the real class, which has basically the following definition
+	class mywidget obj = object
+	  inherit [MyWidget.t] mywidget_skel obj
+	  method connect = new mywidget_signals obj
+	  method set = MyWidget.set ?obj
+	end
+  * a constructor function, new_mywidget.
+
+  This means that contrary to mywidget_skel and mywidget_signals,
+  mywidget is not a subtype of its superclasses. However you can
+  coerce any widget to the widgeter class.
+
+  Also, to avoid having too many methods in mywidget_skel, some
+  miscellanous widget methods are available through the widget_ops
+  sub-object.
 
 Memory management:
 
