@@ -1,5 +1,9 @@
 $Id$
 
+2003.12.20 [Olivier]
+  * make the comparison function use gtk_tree_path_compare
+    for Gtk.tree_path values.
+
 2003.12.19 [Olivier]
   * added support for GtkTreeSortable, GtkTreeModelSort
     and GtkTreeModelFilter (2.4)
