@@ -31,7 +31,7 @@ class ticlist ~(widget : 'a GList.clist) ~name ~parent_tree ~pos
       List.iter self#get_mandatory_props ~f:
 	begin fun name ->
 	  Format.fprintf formatter "@ ~%s:%s" name
-	    (List.assoc name proplist)#code
+	    (List.assoc name ~map:proplist)#code
 	end;
       let packing = self#get_packing packing in
       if packing <> "" then Format.fprintf formatter "@ %s" packing;

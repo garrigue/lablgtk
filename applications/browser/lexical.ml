@@ -27,7 +27,7 @@ let tag ?(start=0) ?stop:pend (tw : GEdit.text) =
     if pend > pstart then begin
       tw#delete_text ~start:(start+pstart) ~stop:(start+pend);
       tw#set_point (start+pstart);
-      tw#insert ~foreground:(List.assoc tag colors)
+      tw#insert ~foreground:(List.assoc tag ~map:colors)
 	(String.sub text ~pos:pstart ~len:(pend-pstart));
     end
   and next_lf = ref (-1) in

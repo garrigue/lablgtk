@@ -191,12 +191,12 @@ object(self)
     List.iter self#get_mandatory_props ~f:
       begin fun name ->
 	Format.fprintf formatter "@ ~%s:%s" name
-	  (List.assoc name proplist)#code
+	  (List.assoc name ~map:proplist)#code
       end;
     Format.fprintf formatter "@ ()@ in@]@]"
 
   initializer
-    proplist <- List.remove_assoc "label" proplist
+    proplist <- List.remove_assoc "label" ~map:proplist
 end
 
 
@@ -217,12 +217,12 @@ object(self)
     List.iter self#get_mandatory_props ~f:
       begin fun name ->
 	Format.fprintf formatter "@ ~%s:%s" name
-	  (List.assoc name proplist)#code
+	  (List.assoc name ~map:proplist)#code
       end;
     Format.fprintf formatter "@ ()@ in@]@]"
 
   initializer
-    proplist <- List.remove_assoc "label" proplist
+    proplist <- List.remove_assoc "label" ~map:proplist
 end
 
 
@@ -243,12 +243,12 @@ object(self)
     List.iter self#get_mandatory_props ~f:
       begin fun name ->
 	Format.fprintf formatter "@ ~%s:%s" name
-	  (List.assoc name proplist)#code
+	  (List.assoc name ~map:proplist)#code
       end;
     Format.fprintf formatter "@ ()@ in@]@]"
 
   initializer
-    proplist <- List.remove_assoc "label" proplist
+    proplist <- List.remove_assoc "label" ~map:proplist
 end
 
 
@@ -276,9 +276,9 @@ object(self)
       ?(insert_evbox = true) ?(listprop = []) parent_window =
     match classe with
     | "button" ->
-	let t = try List.assoc "text" listprop with Not_found -> "" in
-	let tt = try List.assoc "tooltip" listprop with Not_found -> "" in
-	let ptt = try List.assoc "tooltip_private" listprop
+	let t = try List.assoc "text" ~map:listprop with Not_found -> "" in
+	let tt = try List.assoc "tooltip" ~map:listprop with Not_found -> "" in
+	let ptt = try List.assoc "tooltip_private" ~map:listprop
 	with Not_found -> "" in
 	let listp = List.fold_left ~f:(fun l p -> List.remove_assoc p l)
 	    ~init:listprop
@@ -298,9 +298,9 @@ object(self)
 	  [ "text", tp; "tooltip", ttp; "tooltip_private", pttp ];
 	child
     | "toggle_button" ->
-	let t = try List.assoc "text" listprop with Not_found -> "" in
-	let tt = try List.assoc "tooltip" listprop with Not_found -> "" in
-	let ptt = try List.assoc "tooltip_private" listprop
+	let t = try List.assoc "text" ~map:listprop with Not_found -> "" in
+	let tt = try List.assoc "tooltip" ~map:listprop with Not_found -> "" in
+	let ptt = try List.assoc "tooltip_private" ~map:listprop
 	with Not_found -> "" in
 	let listp = List.fold_left ~f:(fun l p -> List.remove_assoc p l)
 	    ~init:listprop
@@ -319,9 +319,9 @@ object(self)
 	  [ "text", tp; "tooltip", ttp; "tooltip_private", pttp ];
 	child
     | "radio_button" ->
-	let t = try List.assoc "text" listprop with Not_found -> "" in
-	let tt = try List.assoc "tooltip" listprop with Not_found -> "" in
-	let ptt = try List.assoc "tooltip_private" listprop
+	let t = try List.assoc "text" ~map:listprop with Not_found -> "" in
+	let tt = try List.assoc "tooltip" ~map:listprop with Not_found -> "" in
+	let ptt = try List.assoc "tooltip_private" ~map:listprop
 	with Not_found -> "" in
 	let listp = List.fold_left ~f:(fun l p -> List.remove_assoc p l)
 	    ~init:listprop

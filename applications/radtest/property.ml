@@ -42,7 +42,7 @@ class prop_enum ~values ~name ~init ~set =
   object (self)
     inherit vprop ~name ~init ~set
     method private parse s =
-      try List.assoc s values
+      try List.assoc s ~map:values
       with Not_found -> invalid_prop "enum" name s
     method range = Enum (List.map ~f:fst values)
   end

@@ -54,7 +54,7 @@ MLSRC = common.mli utils.ml property.mli property.ml propwin.mli \
 	tiWidget.ml main.ml
 
 radtest: $(MLOBJS)  libgtk2.a gtk2.cma
-	$(LINKER) -o $@ lablgtk.cma gtkInit.cmo -I . gtk2.cma \
+	$(LINKER) -custom -o $@ lablgtk.cma gtkInit.cmo -I . gtk2.cma \
 	    $(MLOBJS)
 
 radtestopt: $(MLOBJS:.cmo=.cmx) libgtk2.a gtk2.cmxa
