@@ -153,6 +153,9 @@ type font_type = "GTK_FONT_"
 type font_filter_type = "GTK_FONT_FILTER_"
   [ `BASE | `USER ]
 
+type spin_button_update_policy = "GTK_UPDATE_"
+  [ `ALWAYS | `IF_VALID ]
+
 (*
 type tree_pos = "GTK_CTREE_POS_"
   [ `BEFORE | `AS_CHILD | `AFTER ]
