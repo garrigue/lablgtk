@@ -202,22 +202,6 @@ val tips_query :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> tips_query
 
-class color_selection : Gtk.color_selection obj ->
-  object
-    inherit widget_full
-    val obj : Gtk.color_selection obj
-    method get_color : Gtk.color
-    method set_color :
-      red:float -> green:float -> blue:float -> ?opacity:float -> unit
-    method set_opacity : bool -> unit
-    method set_update_policy : Tags.update_type -> unit
-  end
-val color_selection :
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> color_selection
-
 class pixmap : Gtk.pixmap Gtk.obj ->
   object
     inherit misc
@@ -235,6 +219,22 @@ val pixmap :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> pixmap
+
+class color_selection : Gtk.color_selection obj ->
+  object
+    inherit widget_full
+    val obj : Gtk.color_selection obj
+    method get_color : Gtk.color
+    method set_color :
+      red:float -> green:float -> blue:float -> ?opacity:float -> unit
+    method set_opacity : bool -> unit
+    method set_update_policy : Tags.update_type -> unit
+  end
+val color_selection :
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> color_selection
 
 class font_selection : Gtk.font_selection obj ->
   object
@@ -256,3 +256,8 @@ class font_selection : Gtk.font_selection obj ->
     method set_font_name : string -> unit
     method set_preview_text : string -> unit
   end
+val font_selection :
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> font_selection
