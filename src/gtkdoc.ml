@@ -7,49 +7,57 @@ let may ov f =
   | None -> ()
   | Some v -> f v
 
+let make_prepare_header style index module_list =
+  fun b ?(nav=None) ?(comments=[]) t ->
+    let link l dest =
+      Printf.bprintf b "<link rel=\"%s\" href=\"%s\">\n" l dest in
+    let link_file l dest =
+      link l (fst (Odoc_html.Naming.html_files dest)) in
+    Buffer.add_string b "<head>\n" ;
+    Buffer.add_string b style ;
+    link "Start" index ;
+    may nav
+      (fun (pre_opt, post_opt, name) ->
+	may pre_opt  (link_file "previous") ;
+	may post_opt (link_file "next") ;
+	match Odoc_info.Name.father name with
+	| "" -> link "Up" index
+	| s  -> link_file "Up" s
+      ) ;
+    Printf.bprintf b "<title>%s</title>\n</head>\n" t
+
+let gtkdoc = function
+  | Odoc_info.Raw name :: _ ->
+      begin match Str.split (Str.regexp "[ \t]+") name with
+      | dir :: widget :: _ ->
+	  Printf.sprintf
+	    "<small>GTK documentation:&nbsp;\
+               <a href=\"%s/%s/%s.html\">%s</a>\
+             </small>"
+	    !base_uri dir widget widget
+      | _ -> failwith "bad @gtkdoc format"
+      end
+  | _ -> failwith "bad @gtkdoc format"
+
 class gtkdoc =
   object (self)
     inherit Odoc_html.html
 
     method prepare_header module_list =
-      let f ?(nav=None) ?(comments=[]) t = 
-	let b = Buffer.create 1024 in
-	let link l dest =
-	  Printf.bprintf b "<link rel=\"%s\" href=\"%s\">\n" l dest in
-	let link_file l dest =
-	  link l (fst (Odoc_html.Naming.html_files dest)) in
-	Buffer.add_string b "<head>\n" ;
-        Buffer.add_string b style ;
-	link "Start" index ;
-	may nav
-	  (fun (pre_opt, post_opt, name) ->
-	    may pre_opt  (link_file "previous") ;
-	    may post_opt (link_file "next") ;
-	    match Odoc_info.Name.father name with
-	    | "" -> link "Up" index
-	    | s  -> link_file "Up" s
-	  ) ;
-	Printf.bprintf b "<title>%s</title>\n</head>\n" t ;
-	Buffer.contents b
-      in
-      header <- f
-
-
-    method gtkdoc = function
-      | Odoc_info.Raw name :: _ ->
-	  begin match Str.split (Str.regexp "[ \t]+") name with
-	  | dir :: widget :: _ ->
-	      Printf.sprintf
-		"<small>GTK documentation:&nbsp;\
-                   <a href=\"%s/%s/%s.html\">%s</a>\
-                 </small>"
-		!base_uri dir widget widget
-	  | _ -> failwith "bad @gtkdoc format"
-	  end
-      | _ -> failwith "bad @gtkdoc format"
+      header <-
+IFDEF OCAML_308 
+THEN
+        make_prepare_header style self#index module_list
+ELSE
+    	let b = Buffer.create 1024 in
+    	fun ?nav ?comments t ->
+    	  Buffer.clear b ;
+    	  make_prepare_header style index module_list b ?nav ?comments t ;
+    	  Buffer.contents b
+END
 
     initializer
-      tag_functions <- ("gtkdoc", self#gtkdoc) :: tag_functions 
+      tag_functions <- ("gtkdoc", gtkdoc) :: tag_functions 
   end
 
 let _ = 

@@ -154,6 +154,11 @@ if test "$CAMLP4O" = no ; then
 	AC_MSG_ERROR(Cannot find camlp4o.)
 fi
 
+if expr "$OCAMLVERSION" '>=' '3.08' > /dev/null ; then
+   ODOC_DEF="-D OCAML_308"
+fi
+AC_SUBST(ODOC_DEF)
+
 # Check for which kind of threads is used
 THREADS_LIB="no"
 AC_MSG_CHECKING(for ocaml threads)

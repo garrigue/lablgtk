@@ -34,6 +34,9 @@ MANDIR=$(LIBDIR)/../man
 INSTALLDIR=$(LIBDIR)/lablgtk2
 DLLDIR=$(LIBDIR)/stublibs
 
+# if using ocaml >= 3.08, add a -DOCAML_308 (for camlp4)
+ODOC_DEF=
+
 #GTKROOT=c:/GTK
 GTKROOT=c:/Home/garrigue/gtk2
 GTKCFLAGS=-I$(GTKROOT)/include/glib-2.0 -I$(GTKROOT)/lib/glib-2.0/include -I$(GTKROOT)/include/gtk-2.0/ -I$(GTKROOT)/lib/gtk-2.0/include -I$(GTKROOT)/include/pango-1.0 -I$(GTKROOT)/include/atk-1.0 -I$(GTKROOT)/include 
