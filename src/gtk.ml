@@ -97,10 +97,9 @@ type color = { red: float; green: float; blue: float; opacity: float }
 type rectangle  = { x: int; y: int; width: int; height: int }
 type target_entry = { target: string; flags: target_flags list; info: int }
 
-type data = [`base|`data]
-type adjustment = [data|`adjustment]
-type tooltips = [data|`tooltips]
-type widget = [`base|`widget]
+type adjustment = [`gtk|`adjustment]
+type tooltips = [`gtk|`tooltips]
+type widget = [`gtk|`widget]
 type container = [widget|`container]
 type bin = [container|`bin]
 type alignment = [bin|`alignment]
@@ -169,12 +168,13 @@ type scrollbar = [widget|`range|`scrollbar]
 type ruler = [widget|`ruler]
 type separator = [widget|`separator]
 type preview = [widget|`preview]
+
 type textview = [container|`textview]
-type textbuffer = [`base|`textbuffer]
-type texttagtable = [`base|`texttagtable]
-type texttag = [`base|`texttag]
-type textmark = [`base | `textmark ]
-type textchildanchor = [`base | `textchildanchor ]
+type textbuffer = [`textbuffer]
+type texttagtable = [`texttagtable]
+type texttag = [`texttag]
+type textmark = [`textmark ]
+type textchildanchor = [`textchildanchor ]
 type textiter
 
 (* re-export Gobject.obj *)

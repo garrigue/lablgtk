@@ -5,6 +5,8 @@
 #define GObject_val(val) ((GObject*)Pointer_val(val))
 value Val_GObject (GObject *);
 value Val_GObject_new (GObject *);
+#define Val_GObject_child(val) (Val_GObject(&(val)->parent_instance))
+#define Val_GObject_child_new(val) (Val_GObject_new(&(val)->parent_instance))
 
 #define GType_val Int_val
 #define Val_GType Val_int

@@ -2,19 +2,10 @@
 
 open Gtk
 
-class data_signals :
-  'a obj ->
-  object
-    inherit GObj.gtkobj_signals
-    constraint 'a = [> data]
-    val obj : 'a obj
-    method disconnect_data : callback:(unit -> unit) -> GtkSignal.id
-  end
-
 class adjustment_signals :
   'a obj ->
   object
-    inherit data_signals
+    inherit GObj.gtkobj_signals
     constraint 'a = [> adjustment]
     val obj : 'a obj
     method changed : callback:(unit -> unit) -> GtkSignal.id
@@ -54,7 +45,7 @@ class tooltips :
     inherit GObj.gtkobj
     val obj : Gtk.tooltips obj
     method as_tooltips : Gtk.tooltips obj
-    method connect : data_signals
+    method connect : GObj.gtkobj_signals
     method disable : unit -> unit
     method enable : unit -> unit
     method set_delay : int -> unit

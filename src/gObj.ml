@@ -26,18 +26,18 @@ class gtkobj_misc obj = object
   method thaw_notify () = thaw_notify obj
 end
 
-class gtkobj_signals ?(after=false) obj = object
+class gtkobj_signals obj = object
   val obj = obj
-  val after = after
+  val after = false
   method after = {< after = true >}
   method destroy = GtkSignal.connect ~sgn:Object.Signals.destroy obj
 end
 
 (* Widget *)
 
-class event_signals ?(after=false) obj = object
+class event_signals obj = object
   val obj = (obj :> Gtk.widget obj)
-  val after = after
+  val after = false
   method after = {< after = true >}
   method any = GtkSignal.connect ~sgn:Widget.Signals.Event.any ~after obj
   method button_press =
@@ -137,9 +137,9 @@ class selection_context sel = object
     Selection.set sel ~typ ~format ~data:(Some data)
 end
 
-class drag_signals ?(after=false) obj = object
+class drag_signals obj = object
   val obj =  obj
-  val after = after
+  val after = false
   method after = {< after = true >}
   method beginning ~callback =
     GtkSignal.connect ~sgn:DnD.Signals.drag_begin ~after obj
@@ -203,8 +203,8 @@ and drag_context context = object
     DnD.set_icon_pixmap context ~colormap pix#pixmap ?mask:pix#mask
 end
 
-and misc_signals ?after obj = object
-  inherit gtkobj_signals ?after obj
+and misc_signals obj = object
+  inherit gtkobj_signals obj
   method draw ~callback =
     GtkSignal.connect obj ~sgn:Widget.Signals.draw ~after ~callback:
       begin fun rect ->
@@ -318,8 +318,8 @@ end
 (* just to check that GDraw.misc_ops is compatible with misc_ops *)
 let _ = fun (x : #GDraw.misc_ops) -> (x : misc_ops)
 
-class widget_signals ?after (obj : [> `widget] obj) =
-  gtkobj_signals ?after obj
+class widget_signals (obj : [> `widget] obj) =
+  gtkobj_signals obj
 
 class widget_full obj = object
   inherit widget obj

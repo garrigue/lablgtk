@@ -84,14 +84,6 @@ module Style = struct
     may_set set_font font *)
 end
 
-module Data = struct
-  module Signals = struct
-    open GtkSignal
-    let disconnect =
-      { name = "disconnect"; classe = `data; marshaller = marshal_unit }
-  end
-end
-
 module Adjustment = struct
   external create :
       value:float -> lower:float -> upper:float ->

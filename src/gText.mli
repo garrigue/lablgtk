@@ -7,7 +7,6 @@ class mark :
   object
     val obj : textmark obj
     method as_mark : textmark obj
-    method destroy : unit -> unit
     method get_buffer : textbuffer obj option
     method get_deleted : bool
     method get_left_gravity : bool
@@ -22,7 +21,6 @@ class child_anchor :
   object
     val obj : textchildanchor obj
     method as_childanchor : textchildanchor obj
-    method destroy : unit -> unit
     method get_deleted : bool
     method get_oid : int
     method get_widgets : widget list
@@ -30,15 +28,13 @@ class child_anchor :
 val child_anchor : unit -> child_anchor
 
 class tag_signals :
-  ([> `base | `texttag] as 'b) obj ->
+  ([> `texttag] as 'b) obj ->
   object ('a)
     val after : bool
     val obj : 'b obj
     method after : 'a
-    method destroy : callback:(unit -> unit) -> GtkSignal.id
     method event :
-      callback:(origin:unit Gobject.obj ->
-                GdkEvent.any -> textiter -> unit) ->
+      callback:(origin:unit Gobject.obj -> GdkEvent.any -> textiter -> unit) ->
       GtkSignal.id
   end
 
@@ -48,7 +44,6 @@ class tag :
     val obj : texttag obj
     method as_tag : texttag obj
     method connect : tag_signals
-    method destroy : unit -> unit
     method event : 'a obj -> GdkEvent.any -> textiter -> bool
     method get_oid : int
     method get_priority : unit -> int
@@ -137,12 +132,11 @@ class iter :
 val as_textiter : iter -> textiter
 
 class tagtable_signals :
-  ([> `base | `texttagtable] as 'b) obj ->
+  ([> `texttagtable] as 'b) obj ->
   object ('a)
     val after : bool
     val obj : 'b obj
     method after : 'a
-    method destroy : callback:(unit -> unit) -> GtkSignal.id
     method tag_added : callback:(texttag obj -> unit) -> GtkSignal.id
     method tag_changed :
       callback:(texttag obj -> bool -> unit) -> GtkSignal.id
@@ -157,7 +151,6 @@ class tagtable :
     method add : texttag obj -> unit
     method as_tagtable : texttagtable obj
     method connect : tagtable_signals
-    method destroy : unit -> unit
     method get_oid : int
     method lookup : string -> texttag obj option
     method remove : texttag obj -> unit
@@ -166,7 +159,7 @@ class tagtable :
 val tagtable : unit -> tagtable
 
 class buffer_signals :
-  ([> `base | `textbuffer] as 'b) obj ->
+  ([> `textbuffer] as 'b) obj ->
   object ('a)
     val after : bool
     val obj : 'b obj
@@ -177,7 +170,6 @@ class buffer_signals :
     method changed : callback:(unit -> unit) -> GtkSignal.id
     method delete_range :
       callback:(start:iter -> stop:iter -> unit) -> GtkSignal.id
-    method destroy : callback:(unit -> unit) -> GtkSignal.id
     method end_user_action : callback:(unit -> unit) -> GtkSignal.id
     method insert_child_anchor :
       callback:(iter -> textchildanchor obj -> unit) -> GtkSignal.id
@@ -215,7 +207,6 @@ class buffer :
     method delete_mark_by_name : string -> unit
     method delete_selection :
       ?interactive:bool -> ?default_editable:bool -> unit -> unit
-    method destroy : unit -> unit
     method end_user_action : unit -> unit
     method get_bounds : iter * iter
     method get_char_count : int
@@ -263,7 +254,7 @@ class buffer :
 val buffer : ?tagtable:tagtable -> ?text:string -> unit -> buffer
 
 class view_signals :
-  ([> `base | `textview] as 'b) obj ->
+  ([> Gtk.textview] as 'b) obj ->
   object ('a)
     val after : bool
     val obj : 'b obj

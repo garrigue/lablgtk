@@ -5,7 +5,7 @@ open Gtk
 (* Object *)
 
 class gtkobj :
-  'a obj ->
+  ([> `gtk] as 'a) obj ->
   object
     val obj : 'a obj
     method destroy : unit -> unit
@@ -13,7 +13,7 @@ class gtkobj :
   end
 
 class gtkobj_signals :
-  ?after:bool -> ([>`base] as 'a) obj ->
+  ([>`gtk] as 'a) obj ->
   object ('b)
     val obj : 'a obj
     val after : bool
@@ -35,7 +35,7 @@ class gtkobj_misc : 'a obj ->
 (* Widget *)
 
 class event_signals :
-  ?after:bool -> [> widget] obj ->
+  [> widget] obj ->
   object ('a)
     method after : 'a
     method any :
@@ -215,7 +215,7 @@ and widget :
   end
 
 and misc_signals :
-  ?after:bool -> Gtk.widget obj ->
+  Gtk.widget obj ->
   object ('b)
     inherit gtkobj_signals 
     val obj : Gtk.widget obj
@@ -254,7 +254,7 @@ and drag_context :
   end
 
 and drag_signals :
-  ?after:bool -> Gtk.widget obj ->
+  Gtk.widget obj ->
   object ('a)
     method after : 'a
     method beginning :
@@ -280,7 +280,7 @@ and drag_signals :
       GtkSignal.id
   end
 
-class widget_signals : ?after:bool -> 'a obj ->
+class widget_signals : 'a obj ->
   object
     inherit gtkobj_signals
     constraint 'a = [> Gtk.widget]

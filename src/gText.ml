@@ -9,7 +9,8 @@ open GObj
 
 class mark obj =
 object
-  inherit gtkobj (obj : Gtk.textmark obj)
+  val obj = obj
+  method get_oid = Gobject.get_oid obj
   method as_mark = obj
   method set_visible b = Mark.set_visible obj b
   method get_visible = Mark.get_visible obj
@@ -21,7 +22,8 @@ end
 
 class child_anchor obj =
 object
-  inherit gtkobj (obj :Gtk.textchildanchor obj)
+  val obj = obj
+  method get_oid = Gobject.get_oid obj
   method as_childanchor = obj
   method get_widgets = Child_Anchor.get_widgets obj
   method get_deleted = Child_Anchor.get_deleted obj
@@ -31,14 +33,17 @@ let child_anchor () = new child_anchor (Child_Anchor.create ())
 
 
 class tag_signals obj = object
-  inherit GObj.gtkobj_signals obj
+  val obj = obj
+  val after = false
+  method after = {< after = true >}
   method event = 
     GtkSignal.connect ~sgn:Tag.Signals.event ~after obj
 end
 
 class tag obj =
 object (self)
-  inherit gtkobj (obj :Gtk.texttag obj)
+  val obj = obj
+  method get_oid = Gobject.get_oid obj
   method as_tag = obj
   method connect = new tag_signals obj
   method get_priority () = Tag.get_priority obj
@@ -138,7 +143,9 @@ end
 let as_textiter (it : iter) = it#as_textiter
 
 class tagtable_signals obj = object
-  inherit gtkobj_signals obj
+  val obj = obj
+  val after = false
+  method after = {< after = true >}
   method tag_added = 
      GtkSignal.connect ~sgn:TagTable.Signals.tag_added ~after obj
   method tag_changed = 
@@ -149,7 +156,8 @@ end
 
 class tagtable obj = 
 object
-  inherit gtkobj (obj :Gtk.texttagtable obj)
+  val obj = obj
+  method get_oid = Gobject.get_oid obj
   method as_tagtable = obj
   method connect = new tagtable_signals obj
   method add =  TagTable.add obj
@@ -163,7 +171,9 @@ let tagtable () =
   new tagtable (TagTable.create ())
 
 class buffer_signals obj = object
-  inherit gtkobj_signals obj
+  val obj = obj
+  val after = false
+  method after = {< after = true >}
   method apply_tag ~callback = 
     GtkSignal.connect ~sgn:Buffer.Signals.apply_tag ~after obj
       ~callback:(fun tag ~start ~stop ->
@@ -204,7 +214,8 @@ end
 exception No_such_mark of string
 
 class buffer obj = object(self)
-  inherit gtkobj (obj: Gtk.textbuffer obj)
+  val obj = obj
+  method get_oid = Gobject.get_oid obj
   method as_buffer = obj
   method connect = new buffer_signals obj
   method get_line_count = Buffer.get_line_count obj
@@ -344,7 +355,7 @@ let buffer ?(tagtable:tagtable option) ?text () =
  
 
 class view_signals obj = object
-  inherit gtkobj_signals obj
+  inherit gtkobj_signals (obj : [> Gtk.textview] obj)
   method copy_clipboard = 
      GtkSignal.connect ~sgn:View.Signals.copy_clipboard ~after obj
   method cut_clipboard = 
