@@ -1,18 +1,9 @@
 	A GUI for Unison
 
-Here is a lablGTK port of Unison's GUI.
-Or rather was, since this is now the standard GUI for unison.
+As of version 2.6.1, unison works with LablGTK snapshots.
+You may just compile it after having installed lablgtk.
 
-Unison is a file synchronization software developped by Benjamin
-Pierce, Trevor Jim, and others.
-
-As of version 2.5.1, unison is based on LablGTK 1.00.
-To use it with the current version, you must:
- * get unison-2.5.1/src.tar.gz from http://www.cis.upenn.edu/~bcpierce/unison/
- * untar it in this directory
- * copy or make links for uigtk.ml here inside unison-2.5.1
-        ln -fs ../uigtk.ml .
- * make and follow instructions in INSTALL.txt
+	http://www.cis.upenn.edu/~bcpierce/unison/
 
 Jacques Garrigue
 
