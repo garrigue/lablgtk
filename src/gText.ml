@@ -580,10 +580,12 @@ class view obj = object (self)
 end
 
 
-let view ?(buffer:buffer option) ?packing ?show () = 
+let view ?(buffer:buffer option) ?editable ?cursor_visible ?wrap_mode
+    ?packing ?show () = 
     let w = match buffer with 
       | None -> View.create ()
       | Some b -> View.create_with_buffer b#as_buffer
     in
+    View.set w ?editable ?cursor_visible ?wrap_mode;
     pack_return (new view w) ~packing ~show
 

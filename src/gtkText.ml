@@ -675,6 +675,12 @@ module View = struct
   external val_delete_type : int -> delete_type = "ml_Val_delete_type"
   external val_movement_step : int -> movement_step = "ml_Val_movement_step"
   external val_direction_type : int -> direction_type = "ml_Val_direction_type"
+
+  let set ?editable ?cursor_visible ?wrap_mode w =
+    may editable ~f:(set_editable w);
+    may cursor_visible ~f:(set_cursor_visible w);
+    may wrap_mode ~f:(set_wrap_mode w)
+
   module Signals = struct
     open GtkSignal
 
