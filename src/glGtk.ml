@@ -23,7 +23,7 @@ type visual_options = [
 
 type gl_area = [Gtk.widget|`drawing|`glarea]
 
-module Raw = struct
+module GtkRaw = struct
   external create :
     visual_options list -> share:[>`glarea] optobj -> gl_area obj
     = "ml_gtk_gl_area_new"
@@ -42,14 +42,14 @@ object (connect)
     (new GObj.event_signals ~after obj)#expose ~callback:
       begin fun ev ->
 	if GdkEvent.Expose.count ev = 0 then
-	  if Raw.make_current obj then callback ()
+	  if GtkRaw.make_current obj then callback ()
 	  else prerr_endline "GlGtk-WARNING **: could not make current";
 	true
       end
   method reshape ~callback =
     (new GObj.event_signals ~after obj)#configure ~callback:
       begin fun ev ->
-	if Raw.make_current obj then begin
+	if GtkRaw.make_current obj then begin
 	  callback ~width:(GdkEvent.Configure.width ev)
 	    ~height:(GdkEvent.Configure.height ev)
 	end
@@ -59,7 +59,7 @@ object (connect)
   method realize ~callback =
     (new GObj.misc_signals ~after (obj :> Gtk.widget obj))#realize ~callback:
       begin fun ev ->
-	if Raw.make_current obj then callback ()
+	if GtkRaw.make_current obj then callback ()
 	else prerr_endline "GlGtk-WARNING **: could not make current"
       end
 end
@@ -70,16 +70,19 @@ class area obj = object (self)
   method event = new GObj.event_ops obj
   method connect = new area_signals obj
   method set_size = GtkMisc.DrawingArea.size obj
-  method swap_buffers () = Raw.swap_buffers obj
+  method swap_buffers () = GtkRaw.swap_buffers obj
   method make_current () =
-    if not (Raw.make_current obj) then
+    if not (GtkRaw.make_current obj) then
       raise (Gl.GLerror "make_current")
 end
 
 let area options ?share ?(width=0) ?(height=0) ?packing ?show () =
   let share =
     match share with Some (x : area) -> Some x#as_area | None -> None in
-  let w = Raw.create options ~share:(Gpointer.optboxed share) in
+  let w = GtkRaw.create options ~share:(Gpointer.optboxed share) in
   if width <> 0 || height <> 0 then GtkMisc.DrawingArea.size w ~width ~height;
   GtkBase.Widget.add_events w [`EXPOSURE];
   GObj.pack_return (new area w) ~packing ~show
+
+let region_of_raw raw =
+  Gpointer.unsafe_create_region ~path:[|1|] ~get_length:Raw.byte_size raw

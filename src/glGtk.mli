@@ -22,7 +22,7 @@ type visual_options = [
 ]
 type gl_area = [Gtk.widget|`drawing|`glarea]
 
-module Raw :
+module GtkRaw :
   sig
     external create :
       visual_options list -> share:[>`glarea] optobj -> gl_area obj
@@ -61,3 +61,5 @@ val area :
   ?share:area ->
   ?width:int ->
   ?height:int -> ?packing:(widget -> unit) -> ?show:bool -> unit -> area
+
+val region_of_raw : 'a Raw.t -> Gpointer.region
