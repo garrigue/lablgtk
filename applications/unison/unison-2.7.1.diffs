@@ -1,0 +1,194 @@
+diff -rc unison-2.7.1/safelist.mli unison-2.7.1-strict/safelist.mli
+*** unison-2.7.1/safelist.mli	Wed Aug 29 05:27:01 2001
+--- unison-2.7.1-strict/safelist.mli	Thu Sep 13 11:53:23 2001
+***************
+*** 32,38 ****
+  val fold_left : ('a -> 'b -> 'a) -> 'a -> 'b list -> 'a
+  val map2 : ('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list
+  val iter2 : ('a -> 'b -> unit) -> 'a list -> 'b list -> unit
+! val stable_sort : cmp:('a -> 'a -> int) -> 'a list -> 'a list
+  
+  (* Other useful list-processing functions *)
+  val filterMap : ('a -> 'b option) -> 'a list -> 'b list
+--- 32,38 ----
+  val fold_left : ('a -> 'b -> 'a) -> 'a -> 'b list -> 'a
+  val map2 : ('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list
+  val iter2 : ('a -> 'b -> unit) -> 'a list -> 'b list -> unit
+! val stable_sort : ('a -> 'a -> int) -> 'a list -> 'a list
+  
+  (* Other useful list-processing functions *)
+  val filterMap : ('a -> 'b option) -> 'a list -> 'b list
+diff -rc unison-2.7.1/uicommon.ml unison-2.7.1-strict/uicommon.ml
+*** unison-2.7.1/uicommon.ml	Wed Aug 29 05:27:01 2001
+--- unison-2.7.1-strict/uicommon.ml	Thu Sep 13 11:54:33 2001
+***************
+*** 346,352 ****
+     we ignore the command line *)
+  let firstTime = ref(true)
+  
+! let initPrefs profileName displayWaitMessage getFirstRoot getSecondRoot =
+    (* Restore prefs to their default values, if necessary *)
+    if not !firstTime then Prefs.resetToDefaults();
+  
+--- 346,352 ----
+     we ignore the command line *)
+  let firstTime = ref(true)
+  
+! let initPrefs ~profileName ~displayWaitMessage ~getFirstRoot ~getSecondRoot =
+    (* Restore prefs to their default values, if necessary *)
+    if not !firstTime then Prefs.resetToDefaults();
+  
+***************
+*** 449,460 ****
+  (* ---- *)
+  
+  let uiInit
+!     (reportError : string -> unit)
+!     (tryAgainOrQuit : string -> bool)
+!     (displayWaitMessage : unit -> unit)
+!     (getProfile : unit -> string option)
+!     (getFirstRoot : unit -> string option)
+!     (getSecondRoot : unit -> string option) =
+  
+    (* Print header for debugging output *)
+    Trace.debug "" (fun() ->
+--- 449,460 ----
+  (* ---- *)
+  
+  let uiInit
+!     ~(reportError : string -> unit)
+!     ~(tryAgainOrQuit : string -> bool)
+!     ~(displayWaitMessage : unit -> unit)
+!     ~(getProfile : unit -> string option)
+!     ~(getFirstRoot : unit -> string option)
+!     ~(getSecondRoot : unit -> string option) =
+  
+    (* Print header for debugging output *)
+    Trace.debug "" (fun() ->
+diff -rc unison-2.7.1/uigtk.ml unison-2.7.1-strict/uigtk.ml
+*** unison-2.7.1/uigtk.ml	Wed Aug 29 05:27:01 2001
+--- unison-2.7.1-strict/uigtk.ml	Thu Sep 13 12:01:37 2001
+***************
+*** 3,8 ****
+--- 3,9 ----
+  (* $I3: Copyright 1999-2001 (see COPYING for details) $ *)
+  
+  open Common
++ module String = StringLabels
+  
+  module Private : Uicommon.UI = struct
+  
+***************
+*** 263,269 ****
+  
+  (* ------ *)
+  
+! let fatalError ~message =
+    Trace.log (message ^ "\n");
+    oneBox ~title:(Printf.sprintf "%s: Fatal error"
+                     (String.capitalize Util.myName))
+--- 264,270 ----
+  
+  (* ------ *)
+  
+! let fatalError message =
+    Trace.log (message ^ "\n");
+    oneBox ~title:(Printf.sprintf "%s: Fatal error"
+                     (String.capitalize Util.myName))
+***************
+*** 271,277 ****
+  
+  (* ------ *)
+  
+! let tryAgainOrQuit ~message =
+    twoBox ~title:"Error" ~message ~alabel:"Try again" ~blabel:"Quit";;
+  
+  (* ------ *)
+--- 272,278 ----
+  
+  (* ------ *)
+  
+! let tryAgainOrQuit message =
+    twoBox ~title:"Error" ~message ~alabel:"Try again" ~blabel:"Quit";;
+  
+  (* ------ *)
+***************
+*** 620,626 ****
+      GMain.Main.main ();
+      releaseFocus ()));
+  
+!   ignore (lst#connect#unselect_row ~callback:(fun _ _ _ ->
+      root1#set_text ""; root2#set_text "";
+      result := None;
+      tbl#misc#set_sensitive false;
+--- 621,627 ----
+      GMain.Main.main ();
+      releaseFocus ()));
+  
+!   ignore (lst#connect#unselect_row ~callback:(fun ~row ~column ~event ->
+      root1#set_text ""; root2#set_text "";
+      result := None;
+      tbl#misc#set_sensitive false;
+***************
+*** 641,647 ****
+        okButton#misc#set_sensitive true
+      with Gpointer.Null -> ()) in
+  
+!   ignore (lst#connect#select_row ~callback:(fun i _ _ -> select_row i));
+  
+    ignore (lst#event#connect#button_press ~callback:(fun ev ->
+      match GdkEvent.get_type ev with
+--- 642,649 ----
+        okButton#misc#set_sensitive true
+      with Gpointer.Null -> ()) in
+  
+!   ignore (lst#connect#select_row
+!             ~callback:(fun ~row ~column ~event -> select_row row));
+  
+    ignore (lst#event#connect#button_press ~callback:(fun ev ->
+      match GdkEvent.get_type ev with
+***************
+*** 1671,1677 ****
+      (* Initialize the GTK library *)
+      ignore (GMain.Main.init ());
+  
+!     Util.warnPrinter := Some (warnBox "Warning");
+  
+      (* Ask the Remote module to call us back at regular intervals during
+         long network operations. *)
+--- 1673,1680 ----
+      (* Initialize the GTK library *)
+      ignore (GMain.Main.init ());
+  
+!     Util.warnPrinter :=
+!       Some (fun message -> warnBox ~title:"Warning" ~message);
+  
+      (* Ask the Remote module to call us back at regular intervals during
+         long network operations. *)
+***************
+*** 1678,1689 ****
+      Threads.tickProc := Some gtk_sync;
+  
+      Uicommon.uiInit
+!       fatalError
+!       tryAgainOrQuit
+!       displayWaitMessage
+!       getProfile 
+!       getFirstRoot 
+!       getSecondRoot;
+  
+      scanProfiles();
+      createToplevelWindow();
+--- 1681,1692 ----
+      Threads.tickProc := Some gtk_sync;
+  
+      Uicommon.uiInit
+!       ~reportError:fatalError
+!       ~tryAgainOrQuit
+!       ~displayWaitMessage
+!       ~getProfile 
+!       ~getFirstRoot 
+!       ~getSecondRoot;
+  
+      scanProfiles();
+      createToplevelWindow();
