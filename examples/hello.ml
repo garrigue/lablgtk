@@ -2,7 +2,7 @@
 
 open GMain
 
-let window = new GWindow.window `TOPLEVEL border_width: 10
+let window = new GWindow.window border_width: 10
 
 let button = new GButton.button label:"Hello World" packing: window#add
 
@@ -12,7 +12,7 @@ let main () =
   window#connect#destroy callback:Main.quit;
   button#connect#clicked callback:(fun () -> prerr_endline "Hello World");
   button#connect#clicked callback:window#destroy;
-  window#show_all ();
+  window#show ();
   Main.main ()
 
 let _ = Printexc.print main ()

@@ -10,8 +10,7 @@ let main () =
 
   (* toplevel window *)
   let window =
-    new GWindow.window `TOPLEVEL border_width: 10
-      title:"Reverse Polish Calculator" in
+    new GWindow.window border_width: 10 title:"Reverse Polish Calculator" in
   window#connect#event#delete
      callback:(fun _ -> prerr_endline "Delete event occured"; false);
   window#connect#destroy callback:Main.quit;
@@ -121,7 +120,7 @@ let main () =
   loop2 labels2 0;
 
   (* show all and enter event loop *)
-  window#show_all ();
+  window#show ();
   Main.main ()
 
 let _ = Printexc.print main()

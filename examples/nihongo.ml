@@ -6,7 +6,7 @@
 
 open GMain
 
-let window = new GWindow.window `TOPLEVEL
+let window = new GWindow.window
 let box = new GPack.box `VERTICAL packing: window#add
 let text = new GEdit.text editable: true packing: box#add
 let font = Gdk.Font.load_fontset
@@ -26,5 +26,5 @@ let _ =
   button#connect#clicked callback:Main.quit
 
 let _ =
-  window#show_all ();
+  window#show ();
   Main.main ()

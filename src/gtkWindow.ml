@@ -48,13 +48,13 @@ module Window = struct
   external set_transient_for : [> window] obj ->[> window] obj -> unit
       = "ml_gtk_window_set_transient_for"
 
-  let setter w :cont ?:title ?:wmclass_name ?:wmclass_class ?:position
+  let setter w :cont ?:title ?:wm_name ?:wm_class ?:position
       ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal
       ?:x [< -2 >] ?:y [< -2 >] =
     may title fun:(set_title w);
-    if wmclass_name <> None || wmclass_class <> None then
-      set_wmclass w name:(may_default get_wmclass_name w for:wmclass_name)
-	class:(may_default get_wmclass_class w for:wmclass_class);
+    if wm_name <> None || wm_class <> None then
+      set_wmclass w name:(may_default get_wmclass_name w for:wm_name)
+	class:(may_default get_wmclass_class w for:wm_class);
     may position fun:(set_position w);
     if allow_shrink <> None || allow_grow <> None || auto_shrink <> None then
       set_policy w

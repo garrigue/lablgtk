@@ -5,7 +5,7 @@ open GdkObj
 
 
 let main () =
-  let window = new GWindow.window `TOPLEVEL border_width: 10 in
+  let window = new GWindow.window border_width: 10 in
   window#connect#event#delete
      callback:(fun _ -> prerr_endline "Delete event occured"; true);
   window#connect#destroy callback:Main.quit;
@@ -42,7 +42,7 @@ let main () =
                   expose_event ();
 		  true in 
   Timeout.add 500 callback:timeout;
-  window#show_all ();
+  window#show ();
   Main.main ()
 
 let _ = Printexc.print main()

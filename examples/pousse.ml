@@ -66,7 +66,7 @@ open GMain
 
 (* Toplevel window *)
 
-let window = new GWindow.window `TOPLEVEL title:"pousse"
+let window = new GWindow.window title:"pousse"
 
 (* Create pixmaps *)
 
@@ -191,5 +191,5 @@ let game = new game :frame :label statusbar:bar
 
 let _ =
   window#connect#destroy callback:Main.quit;
-  window#show_all ();
+  window#show ();
   Main.main ()

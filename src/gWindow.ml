@@ -11,7 +11,6 @@ open GContainer
 class window_skel obj = object
   inherit container obj
   method as_window = Window.coerce obj
-  method show_all () = Widget.show_all obj
   method activate_focus () = Window.activate_focus obj
   method activate_default () = Window.activate_default obj
   method add_accel_group = Window.add_accel_group obj
@@ -22,7 +21,7 @@ class window_skel obj = object
       = fun w -> Window.set_transient_for obj (w #as_window)
   method set_wm ?:title ?:name ?class:c =
     Window.setter obj cont:null_cont
-      ?:title ?wmclass_name:name ?wmclass_class:c
+      ?:title ?wm_name:name ?wm_class:c
   method set_policy ?:allow_shrink ?:allow_grow ?:auto_shrink =
     Window.setter obj cont:null_cont ?:allow_shrink ?:allow_grow ?:auto_shrink
 end
@@ -32,12 +31,12 @@ class window_wrapper obj = object
   method connect = new container_signals ?obj
 end
 
-class window t ?:title ?:wmclass_name ?:wmclass_class ?:position ?:allow_shrink
-    ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y ?:border_width ?:width ?:height
-    ?:packing ?:show [< false >] =
+class window ?type:t [< `TOPLEVEL >] ?:title ?:wm_name ?:wm_class ?:position
+    ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
+    ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
   let w = Window.create t in
   let () =
-    Window.setter w ?:title ?:wmclass_name ?:wmclass_class ?:position
+    Window.setter w ?:title ?:wm_name ?:wm_class ?:position
       ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
     Container.setter w ?:border_width ?:width ?:height cont:null_cont
   in
@@ -53,12 +52,12 @@ class dialog_wrapper obj = object
   method vbox = new GPack.box_wrapper (Dialog.vbox obj)
 end
 
-class dialog ?:title ?:wmclass_name ?:wmclass_class ?:position ?:allow_shrink
+class dialog ?:title ?:wm_name ?:wm_class ?:position ?:allow_shrink
     ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y ?:border_width ?:width ?:height
     ?:packing ?:show [< false >] =
   let w = Dialog.create () in
   let () =
-    Window.setter w ?:title ?:wmclass_name ?:wmclass_class ?:position
+    Window.setter w ?:title ?:wm_name ?:wm_class ?:position
       ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
     Container.setter w ?:border_width ?:width ?:height cont:null_cont
   in
@@ -80,12 +79,13 @@ class color_selection_dialog_wrapper obj = object
     new GMisc.color_selection_wrapper (ColorSelection.colorsel obj)
 end
 
-class color_selection_dialog :title ?:wmclass_name ?:wmclass_class ?:position
+class color_selection_dialog ?:title [< "Pick a color" >]
+    ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
     ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
   let w = ColorSelection.create_dialog title in
   let () =
-    Window.setter w ?title:None ?:wmclass_name ?:wmclass_class ?:position
+    Window.setter w ?title:None ?:wm_name ?:wm_class ?:position
       ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
     Container.setter w ?:border_width ?:width ?:height cont:null_cont
   in
@@ -110,14 +110,15 @@ class file_selection_wrapper obj = object
     new GButton.button_wrapper (FileSelection.get_help_button obj)
 end
 
-class file_selection :title ?:filename ?:fileop_buttons
-    ?:wmclass_name ?:wmclass_class ?:position
+class file_selection ?:title [< "Choose a file" >] ?:filename
+    ?:fileop_buttons [< false >]
+    ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
     ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
   let w = FileSelection.create title in
   let () =
-    FileSelection.setter w cont:null_cont ?:filename ?:fileop_buttons;
-    Window.setter w ?title:None ?:wmclass_name ?:wmclass_class ?:position
+    FileSelection.setter w cont:null_cont ?:filename :fileop_buttons;
+    Window.setter w ?title:None ?:wm_name ?:wm_class ?:position
       ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
     Container.setter w ?:border_width ?:width ?:height cont:null_cont
   in

@@ -120,7 +120,7 @@ class widget_misc :
     method show_all : unit -> unit
     method show_now : unit -> unit
     method style : style
-    method toplevel : Gtk.widget obj
+    method toplevel : widget_wrapper
     method unmap : unit -> unit
     method unrealize : unit -> unit
     method visible : bool

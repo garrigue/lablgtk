@@ -18,14 +18,13 @@ class window_skel :
     method set_position : Tags.window_position -> unit
     method set_transient_for : #GObj.is_window -> unit
     method set_wm : ?title:string -> ?name:string -> ?class:string -> unit
-    method show_all : unit -> unit
   end
 
 class window :
-  Tags.window_type ->
+  ?type:Tags.window_type ->
   ?title:string ->
-  ?wmclass_name:string ->
-  ?wmclass_class:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
   ?position:Tags.window_position ->
   ?allow_shrink:bool ->
   ?allow_grow:bool ->
@@ -46,8 +45,8 @@ class window_wrapper : ([> window]) obj -> window
 
 class dialog :
   ?title:string ->
-  ?wmclass_name:string ->
-  ?wmclass_class:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
   ?position:Tags.window_position ->
   ?allow_shrink:bool ->
   ?allow_grow:bool ->
@@ -68,9 +67,9 @@ class dialog :
 class dialog_wrapper : ([> dialog]) obj -> dialog
 
 class color_selection_dialog :
-  title:string ->
-  ?wmclass_name:string ->
-  ?wmclass_class:string ->
+  ?title:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
   ?position:Tags.window_position ->
   ?allow_shrink:bool ->
   ?allow_grow:bool ->
@@ -94,11 +93,11 @@ class color_selection_dialog_wrapper :
   Gtk.color_selection_dialog obj -> color_selection_dialog
 
 class file_selection :
-  title:string ->
+  ?title:string ->
   ?filename:string ->
   ?fileop_buttons:bool ->
-  ?wmclass_name:string ->
-  ?wmclass_class:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
   ?position:Tags.window_position ->
   ?allow_shrink:bool ->
   ?allow_grow:bool ->

@@ -27,7 +27,7 @@ let main () =
     new GButton.button label: "close" packing: window#action_area#pack in
   button#connect#clicked callback: Main.quit;
   button#grab_default ();
-  window#show_all ();
+  window#show ();
   Main.main ()
 
 let _ = main ()

@@ -2,11 +2,12 @@
 
 open GMain
 
-class xpm_label_box parent:(parent : #GObj.widget) :file :text =
+class xpm_label_box parent:(parent : #GContainer.container)
+    :file :text ?:packing =
   let _ = 
     if not (Sys.file_exists file) then failwith (file ^ " does not exist") in
-  object
-    inherit GPack.box `HORIZONTAL border_width: 2 as box
+  object (self)
+    inherit GPack.box `HORIZONTAL border_width: 2 ?:packing as box
 
     val pixmapwid =
       parent#misc#realize ();
@@ -19,29 +20,19 @@ class xpm_label_box parent:(parent : #GObj.widget) :file :text =
     val label = new GMisc.label :text
 
     initializer
-      box#set_size border: 2;
+      if packing = None then parent#add self;
       List.iter [(pixmapwid :> GObj.widget); (label :> GObj.widget)]
 	fun:(box#pack expand:false fill:false padding:3)
-
-    method show () =
-      pixmapwid#show ();
-      label#show ();
-      box#show ()
   end
 
 let main () =
   let window =
-    new GWindow.window `TOPLEVEL title:"Pixmap'd Buttons!" border_width:10 in
+    new GWindow.window title:"Pixmap'd Buttons!" border_width:10 in
   window#connect#destroy callback:Main.quit;
-  let button = new GButton.button in
+  let button = new GButton.button packing:window#add in
   button#connect#clicked
     callback:(fun () -> prerr_endline "Hello again - cool button was pressed");
-  let box =
-    new xpm_label_box parent:window file:"info.xpm" text:"cool button" in
-  box#show ();
-  button#add box;
-  button#show ();
-  window#add button;
+  new xpm_label_box parent:button file:"info.xpm" text:"cool button";
   window#show ();
   Main.main ()
 

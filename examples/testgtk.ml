@@ -27,7 +27,7 @@ let create_button_box =
   let aux () =
     match !rw with
     | None ->
-	let window = new window `TOPLEVEL title: "Button Boxes"
+	let window = new window title: "Button Boxes"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
@@ -70,7 +70,7 @@ let create_buttons =
   let aux () =
     match !rw with
     | None ->
-	let window = new window `TOPLEVEL title: "GtkButton"
+	let window = new window title: "GtkButton"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
@@ -124,7 +124,7 @@ let create_check_buttons =
   let aux () =
     match !rw with
     | None ->
-	let window = new window `TOPLEVEL title: "GtkCheckButton"
+	let window = new window title: "GtkCheckButton"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
@@ -157,7 +157,7 @@ let create_radio_buttons =
   let aux () =
     match !rw with
     | None ->
-	let window = new window `TOPLEVEL title: "radio buttons"
+	let window = new window title: "radio buttons"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
@@ -194,7 +194,7 @@ let create_toggle_buttons =
   let aux () =
     match !rw with
     | None ->
-	let window = new window `TOPLEVEL title: "GtkToggleButton"
+	let window = new window title: "GtkToggleButton"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
@@ -253,7 +253,7 @@ let rw = ref None in
   let aux () =
     match !rw with
     | None ->
-	let window = new window `TOPLEVEL title: "menus"
+	let window = new window title: "menus"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
@@ -345,7 +345,7 @@ let cmw_file parent _ =
   Main.main ()
 
 let create_modal_window () =
-  let window = new window `TOPLEVEL modal:true title:"This window is modal" in
+  let window = new window modal:true title:"This window is modal" in
   let box1 = new box `VERTICAL spacing:5 border_width:3 packing:window#add in
   let frame1 = new frame label:"Standard dialogs in modal form"
       packing:(box1#pack padding:4) in
@@ -375,7 +375,7 @@ let scrolled_windows_remove, scrolled_windows_clean =
 	parent :=
 	  begin try Some scrollwin#misc#parent
 	  with Not_found -> None end;
-	let f = new window `TOPLEVEL title:"new parent" in
+	let f = new window title:"new parent" in
 	float_parent := Some f;
 	f #set_default_size width:200 height:200;
 	scrollwin #misc#reparent f;
@@ -547,7 +547,7 @@ let create_toolbar =
   let aux () =
     match !rw with
     | None ->
-	let window = new window `TOPLEVEL title: "Toolbar test"
+	let window = new window title: "Toolbar test"
 	    border_width: 0 allow_shrink: false allow_grow: true
 	    auto_shrink: true in
 	rw := Some window;
@@ -574,7 +574,7 @@ let create_handle_box =
   let aux () =
     match !rw with
     | None ->
-	let window = new window `TOPLEVEL title: "Handle box test"
+	let window = new window title: "Handle box test"
 	    border_width: 20 allow_shrink: false allow_grow: true
 	    auto_shrink: true in
 	rw := Some window;
@@ -703,7 +703,7 @@ let rec create_subtree (item : tree_item) level nb_item_max recursion_level_max 
 
 let create_tree_sample selection_mode draw_line view_line no_root_item nb_item_max
     recursion_level_max =
-  let window = new window `TOPLEVEL title:"Tree Sample" in
+  let window = new window title:"Tree Sample" in
   let box1 = new box `VERTICAL packing:window#add in
   let box2 = new box `VERTICAL packing:box1#pack border_width:5 in
   let scrolled_win = new scrolled_window packing:box2#pack
@@ -795,7 +795,7 @@ let create_tree_mode_window =
     in
     match !rw with
     | None ->
-	let window = new window `TOPLEVEL title:"Set Tree Parameters" in
+	let window = new window title:"Set Tree Parameters" in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
 
@@ -889,7 +889,7 @@ let create_tooltips =
      match !rw with
     | None ->
 
-	let window = new window `TOPLEVEL title:"Tooltips"
+	let window = new window title:"Tooltips"
 	    border_width:0 allow_shrink:false allow_grow:false
 	    auto_shrink:true in
 	rw := Some window;
@@ -964,7 +964,7 @@ let create_labels =
      match !rw with
     | None ->
 
-	let window = new window `TOPLEVEL title:"Labels"
+	let window = new window title:"Labels"
 	    border_width:5 in
 	rw := Some window;
 	window #connect#destroy 
@@ -1035,7 +1035,7 @@ let create_reparent =
      match !rw with
     | None ->
 
-	let window = new window `TOPLEVEL title:"Reparent"
+	let window = new window title:"Reparent"
 	    border_width:5 in
 	rw := Some window;
 	window #connect#destroy 
@@ -1130,7 +1130,7 @@ let create_main_window () =
     "WM hints", None
   ] in
 
-  let window = new window `TOPLEVEL title:"main window" allow_shrink:false
+  let window = new window title:"main window" allow_shrink:false
       allow_grow:false auto_shrink:false width:200 height:400 x:20 y:20 in
 
   window #connect#destroy callback: Main.quit;

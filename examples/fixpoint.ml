@@ -11,7 +11,7 @@ let rec fix fun:f :eq x =
 let eq_float x y = abs_float (x -. y) < 1e-13
 
 let _ =
-  let top = new GWindow.window `TOPLEVEL in
+  let top = new GWindow.window in
   top#connect#destroy callback:Main.quit;
   let vbox = new GPack.box `VERTICAL packing: top#add in
   let entry = new entry max_length: 20 packing: vbox#pack in
@@ -26,5 +26,5 @@ let _ =
       let res = fix fun:cos eq:eq_float x in
       result#set_text (string_of_float res)
     end;
-  top#show_all ();
+  top#show ();
   Main.main ()

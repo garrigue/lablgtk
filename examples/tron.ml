@@ -37,7 +37,7 @@ let main () =
   let keyMapR = [|(-1, 0); (0, 1); (0, -1); (1, 0)|] in
 
 (* User Interface *)
-  let window = new GWindow.window `TOPLEVEL border_width:10 title:"tron(?)" in
+  let window = new GWindow.window border_width:10 title:"tron(?)" in
   window#connect#event#delete
      callback:(fun _ -> prerr_endline "Delete event occured"; false);
   window#connect#destroy callback:Main.quit;
@@ -70,18 +70,21 @@ let main () =
 
   let abuttonClicked num (lbl : GMisc.label) _ = begin
     let dialog =
-      new GWindow.window `TOPLEVEL border_width:10 title:"Key remap" in
+      new GWindow.window type:`DIALOG border_width:10 title:"Key remap" in
     let dvbx = new GPack.box `VERTICAL packing:dialog#add in
     let entry  = new GEdit.entry max_length:1 packing: dvbx#pack in
     let txt = String.make len:1 fill:keys.[num] in
     entry#set_text txt;
     let dquit = new GButton.button label:"OK" packing: dvbx#pack in 
-    dquit#connect#clicked callback: (fun _ -> let chr = entry#text.[0] in
-                                              let txt2 = String.make len:1 fill:chr in
-                                              lbl#set_text txt2;
-                                              keys.[num]<-chr; 
-                                              dialog#destroy ());
-    dialog#show_all ()
+    dquit#connect#clicked callback:
+      begin fun _ ->
+	let chr = entry#text.[0] in
+        let txt2 = String.make len:1 fill:chr in
+        lbl#set_text txt2;
+        keys.[num]<-chr; 
+        dialog#destroy ()
+      end;
+    dialog#show ()
   end in
   let new_my_button label:label left:left top:top =
       let str = String.make len:1 fill:keys.[label] in
@@ -188,7 +191,7 @@ let main () =
   restart#connect#clicked callback:restartClicked;
   restartClicked ();
 
-  window#show_all ();
+  window#show ();
   Main.main ()
 
 let _ = Printexc.print main ()

@@ -19,7 +19,7 @@ let entry_toggle_visibility (button : #toggle_button) (entry : #entry) =
 let main () =
 
   let window =
-    new GWindow.window `TOPLEVEL title: "GTK Entry" width: 200 height: 100 in
+    new GWindow.window title: "GTK Entry" width: 200 height: 100 in
   window#connect#destroy callback:Main.quit;
 
   let vbox = new box `VERTICAL packing: window#add in
@@ -45,7 +45,7 @@ let main () =
   button#connect#clicked callback:window#destroy;
   button#grab_default ();
 
-  window#show_all ();
+  window#show ();
 
   Main.main ()
 
