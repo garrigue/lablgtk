@@ -178,45 +178,6 @@ module FontSelectionDialog = struct
       = "ml_gtk_font_selection_dialog_apply_button"
   external cancel_button : [>`fontseldialog] obj -> button obj
       = "ml_gtk_font_selection_dialog_cancel_button"
-(*
-  type null_terminated
-  let null_terminated arg : null_terminated =
-    match arg with None -> Obj.magic Gpointer.raw_null
-    | Some l ->
-	let len = List.length l in
-	let arr = Array.create (len + 1) "" in
-	let rec loop i = function
-	    [] -> arr.(i) <- Obj.magic Gpointer.raw_null
-	  | s::l -> arr.(i) <- s; loop (i+1) l
-	in loop 0 l;
-	Obj.magic (arr : string array)
-  external get_font : [>`fontseldialog] obj -> Gdk.font
-      = "ml_gtk_font_selection_dialog_get_font"
-  let get_font w =
-    try Some (get_font w) with Gpointer.Null -> None
-  external get_font_name : [>`fontseldialog] obj -> string
-      = "ml_gtk_font_selection_dialog_get_font_name"
-  let get_font_name w =
-    try Some (get_font_name w) with Gpointer.Null -> None
-  external set_font_name : [>`fontseldialog] obj -> string -> unit
-      = "ml_gtk_font_selection_dialog_set_font_name"
-  external set_filter :
-    [>`fontseldialog] obj -> font_filter_type -> font_type list ->
-    null_terminated -> null_terminated -> null_terminated ->
-    null_terminated -> null_terminated -> null_terminated -> unit
-    = "ml_gtk_font_selection_dialog_set_filter_bc"
-      "ml_gtk_font_selection_dialog_set_filter"
-  let set_filter w ?kind:(tl=[`ALL]) ?foundry
-      ?weight ?slant ?setwidth ?spacing ?charset filter =
-    set_filter w filter tl (null_terminated foundry)
-      (null_terminated weight) (null_terminated slant)
-      (null_terminated setwidth) (null_terminated spacing)
-      (null_terminated charset)
-  external get_preview_text : [>`fontseldialog] obj -> string
-      = "ml_gtk_font_selection_dialog_get_preview_text"
-  external set_preview_text : [>`fontseldialog] obj -> string -> unit
-      = "ml_gtk_font_selection_dialog_set_preview_text"
-*)
 end
 
 module Plug = struct
