@@ -64,6 +64,15 @@ let rec list_reorder_up :pos = function
 let rec list_reorder_down :pos = 
   list_reorder_up pos:(pos+1)
 
+
+let rec list_insert elt in:l :pos =
+  if pos=0 then elt :: l
+  else
+    match l with
+    | [] ->  failwith "list_insert"
+    | hd :: tl -> hd :: (list_insert elt in:tl pos:(pos-1))
+
+
 let rec change_property_name oldname newname = function
   | (n, p) :: tl when oldname = n -> (newname, p) :: tl
   | (n, p) :: tl -> (n, p) :: change_property_name oldname newname tl
@@ -89,21 +98,61 @@ let split name =
     (String.sub name pos:0 len:(!i+1)),
     int_of_string (String.sub name pos:(!i+1) len:(l- !i-1))
 
-let change_name name =
-  let n, i = split name in
-  n ^ (string_of_int (i+1))
-
 let test_unique name = not (List.mem name in: !name_list)
 
-let message_name () =
+let make_new_name base ?:index [< 1 >] =
+  let index = ref index in
+  let name = ref (base ^ (string_of_int !index)) in
+  while not (test_unique !name) do
+    incr index;
+    name := base ^ (string_of_int !index)
+  done;
+  !name
+
+let change_name name =
+  let base, index = split name in make_new_name base :index
+
+let message s =
   let w = new window show:true modal:true in
   let v = new vbox packing:w#add in
-  let l = new label text:"name already in use\npick a new name"
+  let l = new label text:s
       packing:v#add in
   let b = new button label:"OK" packing:v#add in
   b#connect#clicked callback:w#destroy;
   w#connect#destroy callback:GMain.Main.quit;
   GMain.Main.main ()
+
+let message_name () = message "name already in use\npick a new name"
+
+
+(*************** file selection *****************)
+
+let get_filename set_fun:set_filename ?:dir [< "" >] =
+  let res = ref false in
+  let file_selection = new file_selection modal:true in
+  if dir <> "" then file_selection#set_filename dir;
+  file_selection#show ();
+  file_selection#ok_button#connect#clicked
+    callback:(fun () -> set_filename file_selection#get_filename;
+      res := true;
+      file_selection#destroy ());
+  file_selection#cancel_button#connect#clicked
+    callback:file_selection#destroy;
+  file_selection#connect#destroy callback:GMain.Main.quit;
+  GMain.Main.main ();
+  !res
+
+(* returns the directory and the file name (without the extension) *)
+let split_filename filename :ext =
+  let lext = String.length ext in
+  let l = String.length filename in
+  let filename, l =
+    if (l > lext) && (String.sub filename pos:(l - lext) len:lext = ext)
+    then (String.sub filename pos:0 len:(l-lext)), l-lext
+    else filename, l in
+  let i = 1 + (String.rindex filename char:'/') in
+  String.sub filename pos:0 len:i,
+  String.sub filename pos:i len:(l-i)
 
 
 (******************  ML signals *****************)
@@ -141,4 +190,26 @@ class has_ml_signals = object
   method disconnect id =
     List.exists disconnectors pred:(fun d -> d#disconnect id)
 end
+
+
+(****************** undo information ********************)
+
+type undo_action =
+  | Add of string * yywidget_tree * int
+  | Remove of string
+  | Property of string * string * string
+  | Add_window of yywidget_tree
+  | Remove_window of string
+
+let undo_info = ref ([] : undo_action list)
+let next_undo_info = ref ([] : undo_action list)
+let last_action_was_undo = ref false
+
+let add_undo f =
+  undo_info := f :: !undo_info;
+  last_action_was_undo := false
+
+
+
+module SMap = Map.Make (struct type t = string let compare = compare end)
 
