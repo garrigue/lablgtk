@@ -58,6 +58,7 @@ endif
 # Targets
 COBJS = ml_gtk.o ml_gdk.o ml_glib.o ml_gtkcaller.o wrappers.o
 MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gtkObj.cmo gdkObj.cmo
+THOBJS = gtkThread.cmo threadObj.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
 	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" lablgtk.cma
@@ -77,13 +78,19 @@ lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
+threadObj.cmo: threadObj.ml
+	$(COMPILER) $(THFLAGS) threadObj.ml
+
 gtkThread.cmx: gtkThread.ml
 	$(COMPOPT) $(THFLAGS) gtkThread.ml
 
-lablgtk_t: liblablgtk.a lablgtk.cma gtkThread.cmo
+threadObj.cmx: threadObj.ml
+	$(COMPOPT) $(THFLAGS) threadObj.ml
+
+lablgtk_t: liblablgtk.a lablgtk.cma $(THOBJS)
 	$(TOPLEVEL) $(THFLAGS) -o $@ -custom \
 		-cclib "-L. -llablgtk $(LDFLAGS) $(THLDFLAGS)" \
-		$(THLIBS) lablgtk.cma gtkThread.cmo
+		$(THLIBS) lablgtk.cma $(THOBJS)
 
 var2conv: var2conv.cmo
 	$(LINKER) -o $@ var2conv.cmo
