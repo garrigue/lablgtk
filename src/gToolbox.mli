@@ -70,9 +70,11 @@ val input_string :
    @param text the default text displayed in the entry widget
    @param message the text to display
 *)
+(*
  val input_text :
     title:string ->
     ?ok:string -> ?cancel:string -> ?text:string -> string -> string option
+*)
 
 (**This function allows the user to select a file and returns the
    selected file name.
@@ -94,6 +96,7 @@ type 'a tree = [ `L of 'a | `N of 'a * 'a tree list]
    @param width is the width of the tree widget
    @param height is the height of the tree widget
 *)
+(*
 class ['a] tree_selection :
   tree:'a tree ->
   label:('a -> string) ->
@@ -109,6 +112,7 @@ class ['a] tree_selection :
     method wtext : GEdit.text
     method wtree : GTree.tree
   end
+*)
 
 (** A function to make the user select a node in a tree.
    @param tree the to build a tree selection widget
@@ -118,6 +122,7 @@ class ['a] tree_selection :
    @return The data associated to the selected node, or None
    if the user canceled the selection.
 *)
+(*
 val tree_selection_dialog :
   tree:'a tree ->
   label:('a -> string) ->
@@ -126,6 +131,7 @@ val tree_selection_dialog :
   ?ok:string -> ?cancel:string ->
   ?width:int -> ?height:int ->
   ?tree_width:int -> ?tree_height:int -> ?show:bool -> unit -> 'a option
+*)
 
 (** {2 Miscellaneous functions} *)
 

@@ -88,14 +88,12 @@ class style : Gtk.style ->
     method copy : 'a
     method dark : Gtk.Tags.state_type -> Gdk.Color.t
     method fg : Gtk.Tags.state_type -> Gdk.Color.t
-    method font : Gdk.font
     method light : Gtk.Tags.state_type -> Gdk.Color.t
     method mid : Gtk.Tags.state_type -> Gdk.Color.t
     method set_bg : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method set_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method set_dark : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method set_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
-    method set_font : Gdk.font -> unit
     method set_light : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method set_mid : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method set_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
@@ -108,7 +106,7 @@ class selection_data :
     val sel : Gtk.selection_data
     method data : string	(* May raise Gpointer.Null *)
     method format : int
-    method selection : Gdk.Tags.selection
+    method selection : Gdk.atom
     method typ : string
     method target : string
   end
@@ -117,7 +115,7 @@ class selection_context :
   Gtk.selection_data ->
   object
     val sel : Gtk.selection_data
-    method selection : Gdk.Tags.selection
+    method selection : Gdk.atom
     method target : string
     method return : ?typ:string -> ?format:int -> string -> unit
   end
@@ -164,12 +162,10 @@ and misc_ops : Gtk.widget obj ->
     method hide_all : unit -> unit
     method intersect : Gdk.Rectangle.t -> Gdk.Rectangle.t option
     method is_ancestor : widget -> bool
-    method lock_accelerators : unit -> unit
     method map : unit -> unit
     method name : string
     method parent : widget option
     method pointer : int * int
-    method popup : x:int -> y:int -> unit
     method realize : unit -> unit
     method remove_accelerator :
       group:accel_group -> ?modi:Gdk.Tags.modifier list -> Gdk.keysym -> unit

@@ -32,9 +32,8 @@ class menu_item_skel :
       ?modi:Gdk.Tags.modifier list ->
       ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
     method as_item : Gtk.menu_item obj
-    method configure : show_toggle:bool -> show_indicator:bool -> unit
     method remove_submenu : unit -> unit
-    method right_justify : unit -> unit
+    method set_right_justified : bool -> unit
     method set_submenu : menu -> unit
   end
 and menu_item : 'a obj ->

@@ -36,7 +36,7 @@ class button_box obj = object
   inherit box_skel (obj : Gtk.button_box obj)
   method connect = new container_signals obj
   method set_layout  = BBox.set_layout  obj
-  method set_spacing = BBox.set_spacing obj
+  (* method set_spacing = BBox.set_spacing obj *)
   method set_child_size = BBox.set_child_size obj
   method set_child_ipadding = BBox.set_child_ipadding obj
 end
@@ -44,8 +44,9 @@ end
 let button_box dir ?spacing ?child_width ?child_height ?child_ipadx
     ?child_ipady ?layout ?border_width ?width ?height ?packing ?show ()=
   let w = BBox.create dir in
-  BBox.set w ?spacing ?child_width ?child_height ?child_ipadx
+  BBox.set w ?child_width ?child_height ?child_ipadx
     ?child_ipady ?layout;
+  may spacing ~f:(Box.set_spacing w);
   Container.set w ?border_width ?width ?height;
   pack_return (new button_box w) ~packing ~show
 
@@ -110,7 +111,7 @@ let layout ?hadjustment ?vadjustment ?layout_width ?layout_height
   Container.set w ?border_width ?width ?height;
   pack_return (new layout w) ~packing ~show
 
-
+(*
 class packer obj = object
   inherit container_full (obj : Gtk.packer obj)
   method pack ?side ?anchor ?expand ?fill
@@ -136,6 +137,7 @@ let packer ?spacing ?border_width ?width ?height ?packing ?show () =
   may spacing ~f:(Packer.set_spacing w);
   Container.set w ?border_width ?width ?height;
   pack_return (new packer w) ~packing ~show
+*)
 
 class paned obj = object
   inherit container_full (obj : Gtk.paned obj)
@@ -158,16 +160,15 @@ class paned obj = object
     try ignore(Paned.child2 obj);
       raise(Error "GPack.paned#pack2: already full")
     with _ -> Paned.pack2 obj (as_widget w) ~resize ~shrink
-  method set_handle_size = Paned.set_handle_size obj
+  (* method set_handle_size = Paned.set_handle_size obj *)
   method set_position = Paned.set_position obj
   method child1 = new widget (Paned.child1 obj)
   method child2 = new widget (Paned.child2 obj)
-  method handle_size = Paned.handle_size obj
+  (* method handle_size = Paned.handle_size obj *)
 end
 
-let paned dir ?handle_size ?border_width ?width ?height ?packing ?show () =
+let paned dir ?border_width ?width ?height ?packing ?show () =
   let w = Paned.create dir in
-  Paned.set w ?handle_size;
   Container.set w ?border_width ?width ?height;
   pack_return (new paned w) ~packing ~show
 

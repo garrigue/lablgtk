@@ -9,7 +9,7 @@ open GData
 
 class focus obj = object
   val obj = obj
-  method circulate = Container.focus obj
+  (* method circulate = Container.focus obj *)
   method set (child : widget option) =
     let child = may_map child ~f:(fun x -> x#as_widget) in
     Container.set_focus_child obj (Gpointer.optboxed child)
@@ -25,7 +25,7 @@ class container obj = object (self)
   inherit widget obj
   method add w =
     (* Hack to avoid creating a bin class *)
-    if GtkBase.Object.is_a obj "GtkBin" && Container.children obj <> [] then
+    if Gobject.is_a obj "GtkBin" && Container.children obj <> [] then
       raise (Gtk.Error "GContainer.container#add: already full");
     Container.add obj (as_widget w)
   method remove w = Container.remove obj (as_widget w)

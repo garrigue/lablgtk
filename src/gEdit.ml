@@ -30,10 +30,7 @@ class editable obj = object
   method set_position = Editable.set_position obj
   method position = Editable.get_position obj
   method set_editable = Editable.set_editable obj
-  method selection =
-    if Editable.has_selection obj then
-      Some (Editable.selection_start_pos obj, Editable.selection_end_pos obj)
-    else None
+  method selection = Editable.get_selection_bounds obj
 end
 
 class entry obj = object
@@ -73,17 +70,15 @@ class spin_button obj = object
   method set_update_policy = SpinButton.set_update_policy obj
   method set_numeric = SpinButton.set_numeric obj
   method set_wrap = SpinButton.set_wrap obj
-  method set_shadow_type = SpinButton.set_shadow_type obj
   method set_snap_to_ticks = SpinButton.set_snap_to_ticks obj
 end
 
 let spin_button ?adjustment ?rate ?digits ?value ?update_policy
-    ?numeric ?wrap ?shadow_type ?snap_to_ticks
+    ?numeric ?wrap ?snap_to_ticks
     ?width ?height ?packing ?show () =
   let w = SpinButton.create ?rate ?digits
       ?adjustment:(may_map ~f:GData.as_adjustment adjustment) () in
-  SpinButton.set w ?value ?update_policy
-    ?numeric ?wrap ?shadow_type ?snap_to_ticks;
+  SpinButton.set w ?value ?update_policy ?numeric ?wrap ?snap_to_ticks;
   set_editable w ?width ?height;
   pack_return (new spin_button w) ~packing ~show
 
@@ -109,6 +104,7 @@ let combo ?popdown_strings ?use_arrows
   Container.set w ?border_width ?width ?height;
   pack_return (new combo w) ~packing ~show
 
+(*
 class text obj = object (self)
   inherit editable (obj : Gtk.text obj) as super
   method get_chars ~start ~stop:e =
@@ -145,3 +141,4 @@ let text ?hadjustment ?vadjustment ?editable
   may line_wrap ~f:(Text.set_line_wrap w);
   set_editable w ?editable ?width ?height;
   pack_return (new text w) ~packing ~show
+*)
