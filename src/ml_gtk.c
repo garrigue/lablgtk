@@ -364,6 +364,8 @@ ML_2 (gtk_check_menu_item_set_state, GtkCheckMenuItem_val, Bool_val, Unit)
 ML_2 (gtk_check_menu_item_set_show_toggle, GtkCheckMenuItem_val,
       Bool_val, Unit)
 ML_1 (gtk_check_menu_item_toggled, GtkCheckMenuItem_val, Unit)
+Make_Extractor (gtk_check_menu_item_get, GtkCheckMenuItem_val,
+		active, Val_bool)
 
 /* gtkradiomenuitem.h */
 

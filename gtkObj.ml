@@ -19,14 +19,15 @@ class gtkobj_full obj = object
   method connect = new gtkobj_signals obj
 end
 
-class type framed = object method frame : Widget.t obj end
+class type has_frame = object method frame : Widget.t obj end
+class type is_widget = object method as_widget : Widget.t obj end
 
 class tooltips obj = object
   inherit gtkobj_full obj
   method enable () = Tooltips.enable obj
   method disable () = Tooltips.disable obj
-  method set_tip : 'b . (#framed as 'b) -> _ =
-    fun w -> Tooltips.set_tip ?obj ?w#frame
+  method set_tip : 'b . (#is_widget as 'b) -> _ =
+    fun w -> Tooltips.set_tip ?obj ?w#as_widget
   method set = Tooltips.set ?obj
 end
 
@@ -46,17 +47,17 @@ class widget_misc obj = object
   method draw = Widget.draw obj
   method event : 'a. 'a Gdk.event -> unit = Widget.event obj
   method activate () = Widget.activate obj
-  method reparent : 'a. (#framed as 'a) -> unit =
-    fun w -> Widget.reparent obj w#frame
+  method reparent : 'a. (#is_widget as 'a) -> unit =
+    fun w -> Widget.reparent obj w#as_widget
   method popup = Widget.popup obj
   method intersect = Widget.intersect obj
   method basic = Widget.basic obj
   method grab_focus () = Widget.grab_focus obj
   method grab_default () = Widget.grab_default obj
-  method is_ancestor : 'a. (#framed as 'a) -> bool =
-    fun w -> Widget.is_ancestor obj w#frame
-  method is_child : 'a. (#framed as 'a) -> bool =
-    fun w -> Widget.is_child obj w#frame
+  method is_ancestor : 'a. (#is_widget as 'a) -> bool =
+    fun w -> Widget.is_ancestor obj w#as_widget
+  method is_child : 'a. (#is_widget as 'a) -> bool =
+    fun w -> Widget.is_child obj w#as_widget
   method install_accelerator : 'a. _ -> sig:('a[> widget],_) Signal.t -> _ =
     Widget.install_accelerator obj
   method remove_accelerator : 'a. _ -> sig:('a[> widget],_) Signal.t -> _ =
@@ -103,8 +104,9 @@ end
 class widget obj = object (self)
   inherit gtkobj obj
   method frame = Widget.coerce obj
-  method misc = new widget_misc self#frame
-  method show () = Widget.show self#frame
+  method as_widget = Widget.coerce obj
+  method misc = new widget_misc obj
+  method show () = Widget.show obj
 end
 
 class widget_signals obj = object
@@ -121,9 +123,9 @@ end
 
 class container obj = object
   inherit widget obj
-  method add : 'b . (#framed as 'b) -> unit =
+  method add : 'b . (#has_frame as 'b) -> unit =
     fun w -> Container.add obj w#frame
-  method remove : 'b. (#framed as 'b) -> unit =
+  method remove : 'b. (#has_frame as 'b) -> unit =
     fun w -> Container.remove obj w#frame
   method children = List.map fun:(new widget) (Container.children obj)
   method set_size ?:border = Container.set ?obj ?border_width:border
@@ -179,9 +181,8 @@ let new_aspect_frame ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child =
   Frame.setter ?w ?label:None
     ?cont:(Container.setter ?cont:(pack_return (new aspect_frame)))
 
-class type ['a] item = object
-  inherit container
-  method item : 'a obj
+class type ['a] is_item = object
+  method as_item : 'a obj
 end
 
 class item_signals obj = object
@@ -193,7 +194,7 @@ end
 
 class list_item obj = object
   inherit container obj
-  method item : ListItem.t obj = obj
+  method as_item : ListItem.t obj = obj
   method select = Item.select obj
   method deselect = Item.deselect obj
   method toggle = Item.toggle obj
@@ -204,15 +205,15 @@ let new_list_item ?opt ?:label =
   Container.setter ?(ListItem.create ?opt ?:label)
     ?cont:(pack_return (new list_item))
 
-class type menup = object
-  method menu : Menu.t obj
+class type is_menu = object
+  method as_menu : Menu.t obj
 end
 
 class menu_item_skel obj = object
   inherit container obj
-  method item = MenuItem.coerce obj
-  method set_submenu : 'a. (#menup as 'a) -> unit =
-    fun w -> MenuItem.set_submenu obj w#menu
+  method as_item = MenuItem.coerce obj
+  method set_submenu : 'a. (#is_menu as 'a) -> unit =
+    fun w -> MenuItem.set_submenu obj w#as_menu
   method remove_submenu = MenuItem.remove_submenu obj
   method configure = MenuItem.configure obj
   method activate = MenuItem.activate obj
@@ -244,6 +245,7 @@ class check_menu_item obj = object
   inherit menu_item_skel obj
   method set_state = CheckMenuItem.set_state obj
   method set_show_toggle = CheckMenuItem.set_show_toggle obj
+  method active = CheckMenuItem.get_active obj
   method toggled = CheckMenuItem.toggled obj
   method connect = new check_menu_item_signals obj
 end
@@ -268,12 +270,16 @@ class tree_item_signals obj = object
   method collapse = Signal.connect obj sig:TreeItem.Signals.collapse
 end
 
+class type is_tree = object
+  method as_tree : Tree.t obj
+end
+
 class tree_item obj = object
   inherit container obj
-  method item : TreeItem.t obj = obj
+  method as_item : TreeItem.t obj = obj
   method connect = new tree_item_signals obj
-  method set_subtree : 'a. (#framed as 'a) -> unit =
-    fun w -> TreeItem.set_subtree obj w#frame
+  method set_subtree : 'a. (#is_tree as 'a) -> unit =
+    fun w -> TreeItem.set_subtree obj w#as_tree
   method remove_subtree = TreeItem.remove_subtree obj
   method expand = TreeItem.expand obj
   method collapse = TreeItem.collapse obj
@@ -285,9 +291,10 @@ let new_tree_item ?opt ?:label =
 
 class box obj = object
   inherit container_full obj
-  method pack : 'b . (#framed as 'b) -> _ = fun w ->  Box.pack ?obj ?w#frame
+  method pack : 'b . (#has_frame as 'b) -> _ =
+    fun w ->  Box.pack ?obj ?w#frame
   method set_packing = Box.setter ?obj ?cont:null_cont
-  method set_child_packing : 'b . (#framed as 'b) -> _ =
+  method set_child_packing : 'b . (#has_frame as 'b) -> _ =
     fun w -> Box.set_child_packing ?obj ?w#frame
 end
 
@@ -352,8 +359,8 @@ class button_skel obj = object (self)
   inherit container obj
   method clicked = Button.clicked obj
   method grab_default () =
-    Widget.set_can_default self#frame true;
-    Widget.grab_default self#frame
+    Widget.set_can_default obj true;
+    Widget.grab_default obj
 end
 
 class button_signals obj = object
@@ -431,18 +438,18 @@ end
 
 class menu_shell obj = object
   inherit widget obj
-  method remove : 'b. (MenuItem.t #item as 'b) -> unit =
-    fun w -> Container.remove obj w#item
+  method remove : 'b. (MenuItem.t #is_item as 'b) -> unit =
+    fun w -> Container.remove obj w#as_item
   method children =
     List.map (Container.children obj)
       fun:(fun w -> new widget (MenuItem.cast w))
   method set_size ?:border = Container.set ?obj ?border_width:border
-  method append : 'a. (MenuItem.t #item as 'a) -> unit =
-    fun w -> MenuShell.append obj w#frame
-  method prepend : 'a. (MenuItem.t #item as 'a) -> unit =
-    fun w -> MenuShell.prepend obj w#frame
-  method insert : 'a. (MenuItem.t #item as 'a) -> _ =
-    fun w -> MenuShell.insert obj w#frame
+  method append : 'a. (MenuItem.t #is_item as 'a) -> unit =
+    fun w -> MenuShell.append obj w#as_item
+  method prepend : 'a. (MenuItem.t #is_item as 'a) -> unit =
+    fun w -> MenuShell.prepend obj w#as_item
+  method insert : 'a. (MenuItem.t #is_item as 'a) -> _ =
+    fun w -> MenuShell.insert obj w#as_item
   method deactivate = MenuShell.deactivate obj
   method connect = new menu_shell_signals obj
 end
@@ -451,7 +458,7 @@ class menu obj = object
   inherit menu_shell obj
   method popup = Menu.popup obj
   method popdown () = Menu.popdown obj
-  method menu : Menu.t obj = obj
+  method as_menu : Menu.t obj = obj
 end
 
 let new_menu ?(_ : unit option) =
@@ -459,7 +466,7 @@ let new_menu ?(_ : unit option) =
 
 class option_menu obj = object
   inherit button obj
-  method set_menu (menu : menu) = OptionMenu.set_menu obj menu#menu
+  method set_menu (menu : menu) = OptionMenu.set_menu obj menu#as_menu
   method get_menu = new menu (OptionMenu.get_menu obj)
   method remove_menu = OptionMenu.remove_menu obj
   method set_history = OptionMenu.set_history obj
@@ -489,7 +496,7 @@ let new_scrolled_window () =
 
 class table obj = object
   inherit container_full obj
-  method attach : 'a. (#framed as 'a) -> _ =
+  method attach : 'a. (#has_frame as 'a) -> _ =
     fun w -> Table.attach obj w#frame
   method set_packing = Table.setter ?obj ?cont:null_cont
 end
@@ -511,9 +518,9 @@ class editable obj = object
   method insert_text = Editable.insert_text obj
   method delete_text = Editable.delete_text obj
   method get_chars = Editable.get_chars obj
-  method cut_clipboard = Editable.cut_clipboard obj
-  method copy_clipboard = Editable.copy_clipboard obj
-  method paste_clipboard = Editable.paste_clipboard obj
+  method cut_clipboard () = Editable.cut_clipboard obj time:0
+  method copy_clipboard () = Editable.copy_clipboard obj time:0
+  method paste_clipboard () = Editable.paste_clipboard obj time:0
 end
 
 class entry obj = object
@@ -617,8 +624,8 @@ end = Main
 
 module Grab = struct
   open Grab
-  let add (w : #framed) = add w#frame
-  let remove (w : #framed) = remove w#frame
+  let add (w : #is_widget) = add w#as_widget
+  let remove (w : #is_widget) = remove w#as_widget
   let get_current () = new widget_full (get_current ())
 end
 

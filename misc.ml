@@ -11,6 +11,10 @@ let may fun:f x =
   match x with None -> ()
   | Some x -> let _ = f x in ()
 
+let may_map fun:f x =
+  match x with None -> None
+  | Some x -> Some (f x)
+
 let default x =
   function None -> x | Some y -> y
 

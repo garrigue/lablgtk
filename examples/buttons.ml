@@ -20,7 +20,7 @@ class xpm_label_box parent:(parent : #widget) :file :label =
 
     initializer
       box#set_size border: 2;
-      List.iter [(pixmapwid :> framed); (label :> framed)]
+      List.iter [(pixmapwid :> widget); (label :> widget)]
 	fun:(box#pack expand:false fill:false padding:3)
 
     method show () =

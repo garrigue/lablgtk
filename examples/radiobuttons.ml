@@ -15,12 +15,15 @@ let main () =
 
   let button1 = new_radio_button
       label:"button1" packing: box2#pack in
+  button1#connect#clicked callback:(fun () -> prerr_endline "button1");
 
   let button2 = new_radio_button
       group:button1#group label:"button2" state:true packing: box2#pack in
+  button2#connect#clicked callback:(fun () -> prerr_endline "button2");
 
   let button3 = new_radio_button
       group:button1#group label:"button3" packing: box2#pack in
+  button3#connect#clicked callback:(fun () -> prerr_endline "button3");
 
   let separator = new_separator `HORIZONTAL
       packing:(box1#pack expand:false) in
