@@ -46,6 +46,10 @@ gRange.cmo: gData.cmi gObj.cmi gaux.cmo gtk.cmo gtkBase.cmo gtkRange.cmo \
     gRange.cmi 
 gRange.cmx: gData.cmx gObj.cmx gaux.cmx gtk.cmx gtkBase.cmx gtkRange.cmx \
     gRange.cmi 
+gToolbox.cmo: gBin.cmi gButton.cmi gEdit.cmi gMain.cmi gMenu.cmi gMisc.cmi \
+    gPack.cmi gTree.cmi gWindow.cmi gdkEvent.cmo gdkKeysyms.cmo gToolbox.cmi 
+gToolbox.cmx: gBin.cmx gButton.cmx gEdit.cmx gMain.cmx gMenu.cmx gMisc.cmx \
+    gPack.cmx gTree.cmx gWindow.cmx gdkEvent.cmx gdkKeysyms.cmx gToolbox.cmi 
 gTree.cmo: gContainer.cmi gObj.cmi gaux.cmo gpointer.cmo gtk.cmo gtkBase.cmo \
     gtkSignal.cmi gtkTree.cmo gTree.cmi 
 gTree.cmx: gContainer.cmx gObj.cmx gaux.cmx gpointer.cmx gtk.cmx gtkBase.cmx \
@@ -141,6 +145,7 @@ gObj.cmi: gDraw.cmi gdk.cmi gdkEvent.cmo gtk.cmo gtkData.cmo gtkSignal.cmi
 gPack.cmi: gContainer.cmi gData.cmi gObj.cmi gtk.cmo gtkPack.cmo \
     gtkSignal.cmi 
 gRange.cmi: gData.cmi gObj.cmi gtk.cmo 
+gToolbox.cmi: gList.cmi gMenu.cmi gObj.cmi 
 gTree.cmi: gContainer.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
 gUtil.cmi: gObj.cmi gtk.cmo gtkSignal.cmi 
 gWindow.cmi: gButton.cmi gContainer.cmi gMisc.cmi gObj.cmi gPack.cmi gdk.cmi \

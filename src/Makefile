@@ -16,6 +16,7 @@ COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 LIBRARIAN = ocamlmklib
 TOPLEVEL = ocamlmktop $(MLFLAGS)
+CAMLP4 = camlp4o pr_o.cmo
 CONFIG = ../config.make
 
 include $(CONFIG)
@@ -69,7 +70,7 @@ all:: lablgladecc
 endif
 
 # Rules
-.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def .ml4
 .c.o:
 	$(CCOMPILER) $<
 .ml.cmo:
@@ -80,6 +81,8 @@ endif
 	$(COMPOPT) $<
 .var.h:
 	./varcc $<
+.ml4.ml:
+	$(CAMLP4) -impl $< -o $@
 
 # Targets
 GTKOBJS = ml_gtk.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o ml_gtklist.o \
@@ -94,7 +97,7 @@ MLOBJS = gaux.cmo gpointer.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
 	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gBin.cmo \
-	gEdit.cmo gRange.cmo gUtil.cmo
+	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
@@ -183,8 +186,8 @@ gtkThread.cmx: gtkThread.ml
 xml_lexer.ml: xml_lexer.mll
 	ocamllex xml_lexer.mll
 
-varcc: varcc.ml
-	$(LINKER) -pp camlp4o -o $@ varcc.ml
+varcc: varcc.cmo
+	$(LINKER) -o $@ $<
 	rm -f *_tags.h *_tags.c
 
 clean:

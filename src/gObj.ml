@@ -273,13 +273,6 @@ let _ = fun (x : #GDraw.misc_ops) -> (x : misc_ops)
 class widget_signals ?after (obj : [> `widget] obj) =
   gtkobj_signals ?after obj
 
-(*
-class widget_coerce obj = object
-  inherit widget obj
-  method coerce = (self :> widget)
-end
-*)
-
 class widget_full obj = object
   inherit widget obj
   method connect = new widget_signals obj
