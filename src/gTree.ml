@@ -194,7 +194,7 @@ class model_filter (obj : Gtk.tree_model_filter) = object
   method virtual_root = Gobject.get GtkTree.TreeModelFilter.P.virtual_root obj
   method set_visible_func f =
     GtkTree.TreeModelFilter.set_visible_func obj
-      (fun o it -> f (new model obj) it)
+      (fun o it -> f (new model o) it)
   method set_visible_column (c : bool column) = 
     GtkTree.TreeModelFilter.set_visible_column obj c.index
   method convert_child_path_to_path = GtkTree.TreeModelFilter.convert_child_path_to_path obj
