@@ -27,6 +27,7 @@ end
 class range obj = object
   inherit ['a] widget_impl obj
   method connect = new range_signals obj
+  method event = new GObj.event_ops obj
   inherit range_props
 end
 

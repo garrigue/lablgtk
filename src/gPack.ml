@@ -142,6 +142,7 @@ let packer ?spacing ?border_width ?width ?height ?packing ?show () =
 
 class paned obj = object
   inherit container_full (obj : Gtk.paned obj)
+  method event = new GObj.event_ops obj
   method add w =
     if List.length (Container.children obj) = 2 then
       raise(Error "Gpack.paned#add: already full");
@@ -179,6 +180,7 @@ end
 class notebook obj = object (self)
   inherit [Gtk.notebook] GContainer.container_impl obj
   inherit notebook_props
+  method event = new GObj.event_ops obj
   method connect = new notebook_signals obj
   method insert_page ?tab_label ?menu_label ~pos child =
       Notebook.insert_page_menu obj (as_widget child) ~pos

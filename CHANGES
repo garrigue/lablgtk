@@ -1,9 +1,8 @@
 $Id$
 
 2003.11.30 [Olivier]
-  * remove event method from GButton.button_skel, GPack.notebook,
-      GPack.paned, GRange.scrollbar
-  * removed GRange.scrollbar
+  * move event method of GRange.scrollbar in GRange.range (GtkScale
+    widgets also receive events), removed GRange.scrollbar class
   * added event method in GTree.view, GRange.ruler
 
 2003.10.30 [Jacques]

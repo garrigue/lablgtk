@@ -53,6 +53,7 @@ class range : ([> Gtk.range] as 'a) obj ->
     inherit GObj.widget
     val obj : 'a obj
     method connect : range_signals
+    method event : GObj.event_ops
     method set_adjustment : GData.adjustment -> unit
     method set_inverted : bool -> unit
     method set_update_policy : Tags.update_type -> unit
