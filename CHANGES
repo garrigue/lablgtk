@@ -1,5 +1,7 @@
 $Id$
 
+In lablgtk-1.2.6:
+
 2003.05.21
   * fixed a problem of SpinButton.get_value_as_int for the case of 
     the value is minus' src/gtkEdit.ml (Jun Furuse)
