@@ -11,13 +11,14 @@
 %default 2 leftfill, size 8, vgap 60, prefix " ", font "sans"
 %default 3 size 4, bar "beige", vgap 10
 %default 4 size 5, fore "white", vgap 20, prefix " "
-%tab 1 size 5, vgap 40, prefix "  ", icon box "green" 50
-%tab 2 size 5, vgap 40, prefix "      ", icon arc "yellow" 50
-%tab 3 size 5, vgap 40, prefix "            ", icon arc "white" 40
-%tab com1 size 4, prefix "     "
-%tab com2 size 4, prefix "          "
-%tab com3 size 4, prefix "             "
-%tab com font "sans", size 5, fore "white", prefix " "
+%tab 1	size 5, vgap 40, prefix "  ", icon box "green" 50
+%tab 2	size 5, vgap 40, prefix "      ", icon arc "yellow" 50
+%tab 3	size 5, vgap 40, prefix "            ", icon arc "white" 40
+%tab com1	size 4, prefix "     "
+%tab com2	size 4, prefix "          "
+%tab com3	size 4, prefix "             "
+%tab txt	font "sans", size 5, fore "white", prefix " "
+%tab vspace	size 2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 %nodefault
@@ -56,7 +57,7 @@ Synopsis
 	High Level
 		Object-orientation
 		Optional arguments
-		Polymorphism difficulties
+		Polymorphic methods
 %size 2
 
 	Conclusion
@@ -142,7 +143,7 @@ GtkObject
                 GtkToggleButton
                     GtkRadioButton
 
-&com In ML
+&txt In ML
 %size 2
 
 %font "code", size 4, prefix "    ", fore "yellow"
@@ -172,6 +173,30 @@ Polymorphic variants introduce constraints
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 8
+Encoding subtyping hierarchies
+
+Define an abstract type
+&vspace
+%font "code", fore "yellow", size 5
+      type 'a obj
+
+&txt Use tags to represent properties
+&vspace
+%font "code", fore "yellow", size 5
+      type t = [class1 ... classn] obj
+
+&txt Functions check properties
+&vspace
+%font "code", fore "yellow", size 5
+      val f : [> class1 ... classn] obj -> ...
+&txt
+	Subsumes Haskell type classes
+&vspace
+	Allows multiple inheritance
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+9
 Low level encoding (II)
 
 Some functions
@@ -185,16 +210,19 @@ val children : [> container] obj -> [widget] obj list
 val clicked : [> button] obj -> unit
 val set_group : [> radiobutton] obj -> group -> unit
 
-&com Signals
+&txt Signals
+%size 2
+
 %font "code", size 4, prefix "  ", fore "yellow", vgap 50
-type ('a,'b) signal
+type ('a,'b) signal =
+    { name: string; marshaller: 'b -> GtkArgv.t -> unit }
 val connect : 'a obj -> sig:('a,'b) signal ->
                callback:'b -> ?after:bool -> id
 val button_clicked : ([> button], unit -> unit) signal
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-9
+10
 High-Level Interface
 
 Problems with GTK+
@@ -205,7 +233,7 @@ Problems with GTK+
 	Developper oriented design
 &com1 There is no clear distinction between public and private definitions
 
-&com LablGTK design
+&txt LablGTK design
 %size 2
 
 	OCaml classes to reunify name space
@@ -213,126 +241,119 @@ Problems with GTK+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-10
-Variants at work (I)
-
-
-	Monomorphic uses
-
-		Overloaded constructors
-&com2 Use the same name in mutiple types
-
-		Implicit datatypes
-&com2 No definition needed
-
-		Shared datatypes
-&com2 Sharing without dependency
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%page
 11
-Monomorphic examples
+High-level classes
 
-	Overloading [LablTk]
-
-%font "code", prefix "    "
-%fore "gray90", size 4
-Entry.index : entry widget ->
-    [anchor at(int) end insert num(int)
-     selfirst sellast] -> int
-Listbox.index : listbox widget ->
-    [active anchor atxy(int * int) end
-     num(int)] -> int
-Menu.index : menu widget ->
-    [active at(int) end last none num(int)
-     pattern(string)] -> int
-
-%font "sans", fore "white", prefix " ", size 5
- cf. [TkGofer] use of type classes
+%font "code", size 4, prefix "  ", fore "yellow", vgap 50
+class button :
+%fore "lightgreen"
+  ?label:string ->
+%fore "lightblue"
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+%fore "lightgray"
+  ?packing:(GButton.button -> unit) ->
+  ?show:bool ->
+%fore "yellow"
+  object
+%fore "lightgray"
+    method destroy : unit -> unit
+    method as_widget : Gtk.widget obj
+    method misc : GObj.widget_misc
+%fore "lightblue"
+    method add : #is_widget -> unit
+    method set_border_width : int -> unit
+%fore "lightgreen"
+    method clicked : unit -> unit
+    method connect : GButton.button_signals
+    method grab_default : unit -> unit
+%fore "yellow"
+  end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 12
-Variants at work (II)
+High-level features
 
 
-	Polymorphism and subtyping
+	Objective Caml classes
+&com1 allow collecting methods from different modules
 
-		Variant hierarchy
-&com2 Subtyping(matching) relation available
+	Use optionals in class constructors
+&com1 makes widget creation much easier
 
-		Safe programming
-&com2 Using subtypes
+	Polymorphic methods
+&com1 needed for container widgets
+%size 2
 
-		Encoding subtyping in variants
-&com2 Allow mixing static and dynamic typing
+%font "code", size 4, fore "yellow", vgap 50
+        method add : 'a. (#is_widget as 'a) -> unit
+&txt
+	Polymorphic variants
+&com1 for C-style enumeration types, avoid name-space dependancies
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 13
-Polymorphic examples
+Polymorphic methods (I)
 
-	Encoding subtyping [LablGL]
-%font "code", prefix "   ", left, size 4
-%fore "lightgreen"
-type 'a t
-%fore "lightblue"
-type kind =
-    [bitmap byte double float int long short
-     ubyte uint ulong ushort]
-type fkind = [double float]
-type ikind =
-    [bitmap byte int long short ubyte uint
-     ulong ushort]
-%fore "gray90"
-val create : (#kind as 'a) -> int -> 'a t
-val get : #ikind t -> int -> int
-val set : #ikind t -> int -> int -> unit
-val get_float : #fkind t -> int -> float
-val set_float : #fkind t -> int -> float -> unit
+	Instance of first-class polymorphism
+%size 2
+
+		first-class polytypes cannot be inferred
+		they are propagated by the definition flow
+
+	Technically
+%size 2
+
+		use polymorphism to track available information
+		type system excludes derivations based on "guessed" information
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 14
-Compiling Variants
+Polymorphic methods (II)
 
-Compilation can be reduced to this formula
+Definitions
+%size 2
 
-%center
-#%image "hash.eps" 0 600x450
+%font "code", size 4, prefix "    ", fore "yellow", vgap 50
+type is_widget = < as_widget : widget obj >
+type #is_widget = < as_widget : widget obj; .. >
+type container =
+    < ... ; add : 'a. (#as_widget as 'a) -> unit; ... >
 
-%left
-	tags compiled to 31-bit integers
-	matching compiled to binary trees
+%pause
+&txt Propagation
+%size 2
 
-	conflicts detected at compile-time
-%size 4, fore "yellow"
-    probability of 1.5E-5 for a 256 tag type
-%fore "white"
-	compatible with separate compilation
+%font "code", size 4, prefix "    ", fore "lightgreen", vgap 50
+fun (cont : container) -> cont#add wid
+
+%pause
+let but = new button in but#add wid
+
+%pause, fore "red"
+fun cont -> cont#add wid
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 15
-Representation & Efficiency
-
-Representation can be bigger
-
-#%center, image "repr.eps" 0 400x300
-
-
-%leftfill
-Matching is almost as efficient as for datatypes
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%page
-16
 Conclusion
 
-	Polymorphic variants are a useful feature, with many applications
+	Results
+%size 2
 
-	They can be compiled simply and efficiently
+		Could build a strongly typed interface
 
-	We proposed a type system adapted to our needs
+		It is easier to use than the C API
 
-	And gave a type inference algorithm
+		Makes effective use of extensions to the type system
+
+	Comments
+%size 2
+
+		Still difficulties sith the Caml object system 
+

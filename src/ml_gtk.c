@@ -223,18 +223,10 @@ ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit)
 ML_3 (gtk_widget_popup, GtkWidget_val, Int_val, Int_val, Unit)
 value ml_gtk_widget_intersect (value w, value area)
 {
-    value ret = Val_unit;
-    value inter = alloc (Wosizeof(GdkRectangle)+2, Abstract_tag);
-    Field(inter,1) = 2;
-    if (gtk_widget_intersect (GtkWidget_val(w), GdkRectangle_val(area),
-			      GdkRectangle_val(inter)))
-    {
-	Begin_root(inter);
-	ret = alloc_tuple(1);
-	Field(ret,0) = inter;
-	End_roots ();
-    }
-    return ret;
+    GdkRectangle inter;
+    if (gtk_widget_intersect(GtkWidget_val(w), GdkRectangle_val(area), &inter))
+	return ml_option (Val_copy (inter));
+    return Val_unit;
 }
 /* ML_1 (gtk_widget_basic, GtkWidget_val, Val_bool) */
 ML_1 (gtk_widget_grab_focus, GtkWidget_val, Unit)
@@ -256,8 +248,9 @@ ML_1 (gtk_widget_get_visual, GtkWidget_val, (value))
 value ml_gtk_widget_get_pointer (value w)
 {
     int x,y;
-    value ret = alloc_tuple (2);
+    value ret;
     gtk_widget_get_pointer (GtkWidget_val(w), &x, &y);
+    ret = alloc_tuple (2);
     Field(ret,0) = Val_int(x);
     Field(ret,1) = Val_int(y);
     return ret;
@@ -313,6 +306,7 @@ value ml_gtk_drag_dest_set (value w, value f, value t, value a)
   GtkTargetEntry *targets;
   int n_targets, i;
   
+  CAMLparam4 (w,f,t,a);
   n_targets = Wosize_val(t);
   if (n_targets)
       targets = (GtkTargetEntry *)
@@ -325,7 +319,7 @@ value ml_gtk_drag_dest_set (value w, value f, value t, value a)
   }
   gtk_drag_dest_set (GtkWidget_val(w), Flags_Dest_defaults_val(f),
 		     targets, n_targets, Flags_GdkDragAction_val(a));
-  return Val_unit;
+  CAMLreturn Val_unit;
 }
 ML_1 (gtk_drag_dest_unset, GtkWidget_val, Unit)
 ML_4 (gtk_drag_finish, GdkDragContext_val, Bool_val, Bool_val, Int_val, Unit)
@@ -349,6 +343,7 @@ value ml_gtk_drag_source_set (value w, value m, value t, value a)
 {
   GtkTargetEntry *targets;
   int n_targets, i;
+  CAMLparam4 (w,m,t,a);
   
   n_targets = Wosize_val(t);
   if (n_targets)
@@ -362,7 +357,7 @@ value ml_gtk_drag_source_set (value w, value m, value t, value a)
   }
   gtk_drag_source_set (GtkWidget_val(w), OptFlags_GdkModifier_val(m),
 		       targets, n_targets, Flags_GdkDragAction_val(a));
-  return Val_unit;
+  CAMLreturn Val_unit;
 }
 ML_4 (gtk_drag_source_set_icon, GtkWidget_val,
       Option_val(arg2, GdkColormap_val, NULL) Ignore,
@@ -885,22 +880,19 @@ value ml_gtk_clist_get_pixmap (value clist, value row, value column)
 {
     GdkPixmap *pixmap;
     GdkBitmap *bitmap;
-    value ret = Val_unit, vpixmap = Val_unit, vbitmap = Val_unit;
+    value ret, vpixmap = Val_unit, vbitmap = Val_unit;
+    CAMLparam2 (vpixmap,vbitmap);
+
     if (!gtk_clist_get_pixmap (GtkCList_val(clist), Int_val(row),
 			       Int_val(column), &pixmap, &bitmap))
 	invalid_argument ("Gtk.Clist.get_pixmap");
-    Begin_roots3 (ret,vpixmap,vbitmap);
     vpixmap = Val_GdkPixmap(pixmap);
-    if (bitmap) {
-	vbitmap = alloc (1,0);
-	ret = Val_GdkBitmap(bitmap);
-	Field(vbitmap,0) = ret;
-    }
+    if (bitmap) vbitmap = ml_option (Val_GdkBitmap (bitmap));
     ret = alloc_tuple (2);
     Field(ret,0) = vpixmap;
     Field(ret,1) = vbitmap;
-    End_roots ();
-    return ret;
+
+    CAMLreturn ret;
 }
 ML_7 (gtk_clist_set_pixtext, GtkCList_val, Int_val, Int_val, String_val,
       Int_val, GdkPixmap_val, GdkBitmap_val, Unit)
@@ -1194,7 +1186,7 @@ ML_2 (gtk_calendar_display_options, GtkCalendar_val,
 value ml_gtk_calendar_get_date (value w)
 {
     guint year, month, day;
-    value ret = Val_unit;
+    value ret;
 
     gtk_calendar_get_date (GtkCalendar_val(w), &year, &month, &day);
     ret = alloc (3, 0);
@@ -1469,17 +1461,16 @@ ML_0 (gtk_vseparator_new, Val_GtkWidget_sink)
 
 value ml_gtk_init (value argv)
 {
-    int argc = Wosize_val(argv);
-    value copy = (argc ? alloc (argc, Abstract_tag) : Atom(0));
-    value ret;
-    int i;
+    int argc = Wosize_val(argv), i;
+    value copy = Val_unit, ret;
+    CAMLparam2 (argv, copy);
+
+    copy = (argc ? alloc (argc, Abstract_tag) : Atom(0));
     for (i = 0; i < argc; i++) Field(copy,i) = Field(argv,i);
     gtk_init (&argc, (char ***)&copy);
     ret = (argc ? alloc (argc, 0) : Atom(0));
-    Begin_root (ret);
     for (i = 0; i < argc; i++) initialize(&Field(ret,i), Field(copy,i));
-    End_roots ();
-    return ret;
+    CAMLreturn ret;
 }
 ML_1 (gtk_exit, Int_val, Unit)
 ML_0 (gtk_set_locale, Val_string)
@@ -1504,9 +1495,8 @@ void ml_gtk_callback_marshal (GtkObject *object, gpointer data,
 			       guint nargs, GtkArg *args)
 {
     value vargs = alloc_tuple(3);
-    value vobject;
 
-    Begin_root (vargs);
+    CAMLparam1 (vargs);
     Field(vargs,0) = (value) object;
     Field(vargs,1) = Val_int(nargs);
     Field(vargs,2) = (value) args;
@@ -1515,7 +1505,7 @@ void ml_gtk_callback_marshal (GtkObject *object, gpointer data,
 
     Field(vargs,0) = Val_int(-1);
     Field(vargs,1) = Val_int(-1);
-    End_roots ();
+    CAMLreturn;
 }
 
 value ml_gtk_arg_shift (GtkArg *args, value index)

@@ -176,45 +176,38 @@ value ml_gdk_pixmap_colormap_create_from_xpm
 	(value window, value colormap, value transparent, char *filename)
 {
     GdkBitmap *mask;
-    value vpixmap =
-	Val_GdkPixmap_no_ref
-	(gdk_pixmap_colormap_create_from_xpm (GdkWindow_val(window),
-				     Option_val(colormap,GdkColormap_val,NULL),
-				     &mask,
-				     Option_val(transparent,GdkColor_val,NULL),
-				     filename));
-    value ret, vmask = Val_unit;
+    value vpixmap = Val_unit, vmask = Val_unit, ret;
+    CAMLparam2 (vpixmap, vmask);
 
-    Begin_roots2 (vpixmap, vmask);
+    vpixmap = Val_GdkPixmap_no_ref
+	(gdk_pixmap_colormap_create_from_xpm
+	 (GdkWindow_val(window), Option_val(colormap,GdkColormap_val,NULL),
+	  &mask, Option_val(transparent,GdkColor_val,NULL), filename));
     vmask = Val_GdkBitmap_no_ref (mask);
     ret = alloc_tuple (2);
     Field(ret,0) = vpixmap;
     Field(ret,1) = vmask;
-    End_roots ();
 
-    return ret;
+    CAMLreturn ret;
 }
 
 value ml_gdk_pixmap_colormap_create_from_xpm_d
 	(value window, value colormap, value transparent, char **data)
 {
     GdkBitmap *mask;
-    value ret, vpixmap, vmask;
-    vpixmap =
-	Val_GdkPixmap_no_ref
+    value ret, vpixmap = Val_unit, vmask = Val_unit;
+    CAMLparam2 (vpixmap, vmask);
+
+    vpixmap = Val_GdkPixmap_no_ref
 	(gdk_pixmap_colormap_create_from_xpm_d
 	 (GdkWindow_val(window), Option_val(colormap,GdkColormap_val,NULL),
 	  &mask, Option_val(transparent,GdkColor_val,NULL), data));
-    vmask = Val_unit;
-
-    Begin_roots2 (vpixmap, vmask);
     vmask = Val_GdkBitmap_no_ref (mask);
     ret = alloc_tuple (2);
     Field(ret,0) = vpixmap;
     Field(ret,1) = vmask;
-    End_roots ();
 
-    return ret;
+    CAMLreturn ret;
 }
 
 /* Font */
