@@ -14,6 +14,7 @@ class list_item_wrapper obj = object
   method deselect () = Item.deselect obj
   method toggle () = Item.toggle obj
   method connect = new item_signals ?obj
+  method event = new event_ops obj
 end
 
 class list_item ?:label ?:border_width ?:width ?:height ?:packing ?:show =
@@ -61,6 +62,7 @@ end
 class clist_wrapper obj = object (self)
   inherit widget (obj : clist obj)
   method connect = new clist_signals ?obj
+  method event = new event_ops obj
   method rows = CList.get_rows obj
   method columns = CList.get_columns obj
   method hadjustment = new GData.adjustment_wrapper (CList.get_hadjustment obj)

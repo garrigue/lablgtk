@@ -42,6 +42,7 @@ class menu_item :
     inherit menu_item_skel
     val obj : Gtk.menu_item obj
     method connect : ?after:bool -> menu_item_signals
+    method event : GObj.event_ops
   end
 
 class menu_item_wrapper : ([> menuitem] obj) -> menu_item
@@ -83,6 +84,7 @@ class check_menu_item :
     inherit check_menu_item_skel
     val obj : Gtk.check_menu_item obj
     method connect : ?after:bool -> check_menu_item_signals
+    method event : GObj.event_ops
   end
 
 class check_menu_item_wrapper : ([> checkmenuitem] obj) -> check_menu_item
@@ -100,6 +102,7 @@ class radio_menu_item :
     inherit check_menu_item_skel
     val obj : Gtk.radio_menu_item obj
     method connect : ?after:bool -> check_menu_item_signals
+    method event : GObj.event_ops
     method group : group
     method set_group : group -> unit
   end
@@ -121,6 +124,7 @@ class menu_shell :
     inherit [Gtk.menu_item,menu_item] item_container
     val obj : 'a obj
     method connect : ?after:bool -> menu_shell_signals
+    method event : GObj.event_ops
     method deactivate : unit -> unit
     method insert : Gtk.menu_item #is_item -> pos:int -> unit
     method private wrap : Gtk.widget obj -> menu_item

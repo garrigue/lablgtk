@@ -26,6 +26,7 @@ end
 
 class entry_wrapper obj = object
   inherit editable (Entry.coerce obj) 
+  method event = new event_ops obj
   method set_text = Entry.set_text obj
   method append_text = Entry.append_text obj
   method prepend_text = Entry.prepend_text obj
@@ -102,6 +103,7 @@ class combo ?:popdown_strings ?:use_arrows ?:use_arrows_always
 
 class text_wrapper obj = object
   inherit editable (obj : Gtk.text obj)
+  method event = new event_ops obj
   method set_editable = Text.set_editable obj
   method set_point = Text.set_point obj
   method set_word_wrap = Text.set_word_wrap obj

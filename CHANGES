@@ -1,7 +1,10 @@
 $Id$
 
 1999.6.13
-  * added two examples, and more event handling
+  * added two examples
+  * event functions transferred to #event subobject, available only
+    in object with proper window
+  * #connect#event -> #event#connect
 
 1999.6.11
   * added CList widget in GList module, and examples/clist.ml

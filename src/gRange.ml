@@ -7,6 +7,7 @@ open GObj
 
 class progress_bar_wrapper obj = object
   inherit widget_wrapper (obj : Gtk.progress_bar obj)
+  method event = new event_ops obj
   method update percent = ProgressBar.update obj :percent
   method percentage = Progress.get_percentage obj
 end
@@ -26,7 +27,10 @@ class range obj = object
   method set_update_policy = Range.set_update_policy obj
 end
 
-class scrollbar_wrapper obj = range (obj : Gtk.scrollbar obj)
+class scrollbar_wrapper obj = object
+  inherit range (obj : Gtk.scrollbar obj)
+  method event = new event_ops obj
+end
 
 class scrollbar dir ?:adjustment ?:update_policy ?:packing ?:show =
   let w = Scrollbar.create dir

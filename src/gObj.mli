@@ -81,6 +81,16 @@ class event_signals :
     method unmap : callback:([UNMAP] Gdk.event -> bool) -> GtkSignal.id
   end
 
+class event_ops :
+  ([> widget]) Gtk.obj ->
+  object
+    val obj : Gtk.widget Gtk.obj
+    method add : Gdk.Tags.event_mask list -> unit
+    method connect : ?after:bool -> event_signals
+    method send : 'a Gdk.event -> bool
+    method set_extensions : Gdk.Tags.extension_events -> unit
+  end
+
 class style : Gtk.style ->
   object ('a)
     val style : Gtk.style
@@ -104,8 +114,6 @@ class widget_misc :
       ?mod:Gdk.Tags.modifier list -> ?flags:Tags.accel_flag list -> unit
     method colormap : Gdk.colormap
     method draw : Gdk.Rectangle.t -> unit
-    method event : 'a Gdk.event -> bool
-    method add_events : Gdk.Tags.event_mask list -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
     method hide : unit -> unit
@@ -127,8 +135,6 @@ class widget_misc :
       ?name:string ->
       ?state:Tags.state_type ->
       ?sensitive:bool ->
-      ?events:Gdk.Tags.event_mask list ->
-      ?extension_events:Gdk.Tags.extension_events ->
       ?can_default:bool ->
       ?can_focus:bool ->
       ?x:int -> ?y:int -> ?width:int -> ?height:int -> unit
@@ -161,7 +167,6 @@ and widget_signals :
     inherit gtkobj_signals 
     val obj : 'a obj
     method draw : callback:(Gdk.Rectangle.t -> unit) -> GtkSignal.id
-    method event : event_signals
     method parent_set :
 	callback:(widget_wrapper option -> unit) -> GtkSignal.id
     method show : callback:(unit -> unit) -> GtkSignal.id

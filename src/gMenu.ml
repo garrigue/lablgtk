@@ -31,6 +31,7 @@ end
 class menu_item_wrapper obj = object
   inherit menu_item_skel (MenuItem.coerce obj)
   method connect = new menu_item_signals ?obj
+  method event = new event_ops obj
 end
 
 class menu_item ?:label ?:border_width ?:width ?:height ?:packing ?:show =
@@ -65,6 +66,7 @@ end
 class check_menu_item_wrapper obj = object
   inherit check_menu_item_skel (CheckMenuItem.coerce obj)
   method connect = new check_menu_item_signals ?obj
+  method event = new event_ops obj
 end
 
 class check_menu_item ?:label
@@ -81,6 +83,7 @@ class check_menu_item ?:label
 class radio_menu_item_wrapper obj = object
   inherit check_menu_item_skel (obj : radio_menu_item obj)
   method connect = new check_menu_item_signals ?obj
+  method event = new event_ops obj
   method group = RadioMenuItem.group obj
   method set_group = RadioMenuItem.set_group obj
 end
@@ -111,6 +114,7 @@ class menu_shell obj = object
     fun w -> MenuShell.insert obj w#as_item
   method deactivate () = MenuShell.deactivate obj
   method connect = new menu_shell_signals ?obj
+  method event = new event_ops obj
 end
 
 (* Menu *)
@@ -136,6 +140,7 @@ class menu ?:border_width ?:packing ?:show =
 class option_menu_wrapper obj = object
   inherit GButton.button_skel (obj : Gtk.option_menu obj)
   method connect = new GButton.button_signals ?obj
+  method event = new event_ops obj
   method set_menu (menu : menu) = OptionMenu.set_menu obj menu#as_menu
   method get_menu = new menu_wrapper (OptionMenu.get_menu obj)
   method remove_menu () = OptionMenu.remove_menu obj

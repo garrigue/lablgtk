@@ -13,6 +13,7 @@ class list_item :
     val obj : Gtk.list_item obj
     method as_item : Gtk.list_item obj
     method connect : ?after:bool -> GContainer.item_signals
+    method event : GObj.event_ops
     method deselect : unit -> unit
     method select : unit -> unit
     method toggle : unit -> unit
@@ -82,6 +83,7 @@ class clist :
     method columns : int
     method columns_autosize : unit -> unit
     method connect : ?after:bool -> clist_signals
+    method event : GObj.event_ops
     method freeze : unit -> unit
     method get_row_column : x:int -> y:int -> int * int
     method hadjustment : GData.adjustment_wrapper

@@ -39,8 +39,6 @@ let main () =
 
 (* User Interface *)
   let window = new GWindow.window border_width:10 title:"tron(?)" in
-  window#connect#event#delete
-     callback:(fun _ -> prerr_endline "Delete event occured"; false);
   window#connect#destroy callback:Main.quit;
   let vbx = new GPack.box `VERTICAL packing:window#add in   
   let area =
@@ -70,7 +68,7 @@ let main () =
     done;
     false
   in
-  area#connect#event#expose callback:area_expose;
+  area#event#connect#expose callback:area_expose;
   let control = new GPack.table rows:3 columns:7 packing:vbx#add in
 
   let abuttonClicked num (lbl : GMisc.label) _ = begin
@@ -139,7 +137,7 @@ let main () =
        end
     done;       
     false end in
-  window#connect#event#key_press callback:keyDown;
+  window#event#connect#key_press callback:keyDown;
   let safe_check _ = 
     if lpos.x == rpos.x && lpos.y == rpos.y then
       3

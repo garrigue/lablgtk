@@ -28,7 +28,9 @@ class event_box :
   object
     inherit GContainer.container_wrapper
     val obj : Gtk.event_box obj
+    method event : GObj.event_ops
   end
+class event_box_wrapper : Gtk.event_box obj -> event_box
 
 class handle_box_signals :
   'a[> container handlebox widget] obj -> ?after:bool ->
@@ -50,6 +52,7 @@ class handle_box :
     inherit GContainer.container
     val obj : Gtk.handle_box obj
     method connect : ?after:bool -> handle_box_signals
+    method event : GObj.event_ops
     method set_handle_position : Tags.position -> unit
     method set_shadow_type : Tags.shadow_type -> unit
     method set_snap_edge : Tags.position -> unit

@@ -37,6 +37,7 @@ class entry :
   object
     inherit editable
     val obj : Gtk.entry obj
+    method event : GObj.event_ops
     method append_text : string -> unit
     method prepend_text : string -> unit
     method set_editable : bool -> unit
@@ -111,6 +112,7 @@ class text :
   object
     inherit editable
     val obj : Gtk.text obj
+    method event : GObj.event_ops
     method freeze : unit -> unit
     method insert :
       ?font:Gdk.font ->
