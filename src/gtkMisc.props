@@ -39,6 +39,14 @@ class Label set wrap : Misc {
   "attributes"           PangoAttrList        : Read / Write
   "cursor-position"      gint                 : Read
   "selection-bound"      gint                 : Read
+
+  (* new properties in GTK 2.6 *)
+  "angle"                gdouble               : Read / Write / NoSet
+  "ellipsize"            PangoEllipsizeMode    : Read / Write
+  "max-width-chars"      gint                  : Read / Write / NoSet
+  "single-line-mode"     gboolean              : Read / Write / NoSet
+  "width-chars"          gint                  : Read / Write / NoSet
+
   method get_text : "string"
   method set_text : "string -> unit"
   method select_region : "int -> int -> unit"

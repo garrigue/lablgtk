@@ -1,5 +1,10 @@
 $Id$
 
+2005.01.04 [Olivier]
+  * new stock items (2.6)
+  * add PangoEllipsizeMode for PangoLayout (2.6)
+  * new GtkLabel properties (2.6)
+
 2005.01.02 [Olivier]
   * 2.6 improvements to GtkComboBox (separators and a couple of new
     properties)

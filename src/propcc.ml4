@@ -77,7 +77,7 @@ let enums = [
     (* for canvas *)
     "CapStyle"; "JoinStyle"; "LineStyle"];
   "Pango", "PangoEnums",
-  [ "Stretch"; "Style"; "Underline"; "Variant"; ]
+  [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode" ]
 ]
 
 (* These types must be registered with g_boxed_register! *)

@@ -220,3 +220,10 @@ CAMLprim value ml_pango_layout_get_pixel_extent(value layout)
   pango_layout_get_pixel_extents(PangoLayout_val(layout), &ink, NULL);
   return Val_PangoRectangle(&ink);
 }
+#ifdef HASGTK26
+ML_1(pango_layout_get_ellipsize, PangoLayout_val, Val_pango_ellipsize_mode)
+ML_2(pango_layout_set_ellipsize, PangoLayout_val, Pango_ellipsize_mode_val, Unit)
+#else
+Unsupported_26(pango_layout_get_ellipsize)
+Unsupported_26(pango_layout_set_ellipsize)
+#endif /* HASGTK26 */
