@@ -9,9 +9,9 @@ class child_anchor :
 object
   val obj : textchildanchor obj
   method as_childanchor : textchildanchor obj
-  method get_deleted : bool
+  method deleted : bool
   method get_oid : int
-  method get_widgets : widget list
+  method widgets : widget list
 end
 val child_anchor : unit -> child_anchor
 
@@ -34,7 +34,7 @@ object
   method connect : tag_signals
   method event : 'a obj -> GdkEvent.any -> textiter -> bool
   method get_oid : int
-  method get_priority : unit -> int
+  method priority : unit -> int
   method set_priority : int -> unit
   method set_properties : GtkText.Tag.property list -> unit
   method set_property : GtkText.Tag.property -> unit
@@ -82,23 +82,23 @@ object
   method forward_to_tag_toggle : ?tag:tag -> unit -> bool
   method forward_word_end : unit -> bool
   method forward_word_ends : int -> bool
-  method get_buffer : textbuffer obj
-  method get_bytes_in_line : int
-  method get_char : char
-  method get_chars_in_line : int
-  method get_child_anchor : child_anchor option
-  method get_line : int
-  method get_line_index : int
-  method get_line_offset : int
-  method get_marks : textmark obj list
-  method get_offset : int
-  method get_pixbuf : GdkPixbuf.pixbuf
+  method buffer : textbuffer obj
+  method bytes_in_line : int
+  method char : char
+  method chars_in_line : int
+  method child_anchor : child_anchor option
+  method line : int
+  method line_index : int
+  method line_offset : int
+  method marks : textmark obj list
+  method offset : int
+  method pixbuf : GdkPixbuf.pixbuf
   method get_slice : stop:iter -> string
-  method get_tags : tag list
+  method tags : tag list
   method get_text : stop:iter -> string
   method get_toggled_tags : bool -> tag list
-  method get_visible_line_index : int
-  method get_visible_line_offset : int
+  method visible_line_index : int
+  method visible_line_offset : int
   method get_visible_slice : stop:iter -> string
   method get_visible_text : stop:iter -> string
   method has_tag : tag -> bool
@@ -205,19 +205,19 @@ object
   method delete_selection :
     ?interactive:bool -> ?default_editable:bool -> unit -> unit
   method end_user_action : unit -> unit
-  method get_bounds : iter * iter
-  method get_char_count : int
-  method get_end_iter : iter
+  method bounds : iter * iter
+  method char_count : int
+  method end_iter : iter
   method get_iter_at_char : ?line:int -> int -> iter
   method get_iter_at_byte : ?line:int -> int -> iter
   method get_iter_at_mark : mark -> iter
-  method get_line_count : int
+  method line_count : int
   method get_mark : mark -> textmark obj
-  method get_modified : bool
+  method modified : bool
   method get_oid : int
-  method get_selection_bounds : iter * iter
-  method get_start_iter : iter
-  method get_tag_table : texttagtable obj
+  method selection_bounds : iter * iter
+  method start_iter : iter
+  method tag_table : texttagtable obj
   method get_text :
     ?start:iter -> ?stop:iter -> ?slice:bool ->
     ?include_hidden:bool -> unit -> string
@@ -293,25 +293,25 @@ object
   method forward_display_line : iter -> bool
   method forward_display_line_end : iter -> bool
   method get_border_window_size : [ `BOTTOM | `LEFT | `RIGHT | `TOP] -> int
-  method get_buffer : buffer
-  method get_cursor_visible : bool
-  method get_editable : bool
-  method get_indent : int
+  method buffer : buffer
+  method cursor_visible : bool
+  method editable : bool
+  method indent : int
   method get_iter_at_location : x:int -> y:int -> iter
   method get_iter_location : iter -> Gdk.Rectangle.t
-  method get_justification : Tags.justification
-  method get_left_margin : int
+  method justification : Tags.justification
+  method left_margin : int
   method get_line_at_y : int -> iter * int
   method get_line_yrange : iter -> int * int
   method get_oid : int
-  method get_pixels_above_lines : int
-  method get_pixels_below_lines : int
-  method get_pixels_inside_wrap : int
-  method get_right_margin : int
-  method get_visible_rect : Gdk.Rectangle.t
+  method pixels_above_lines : int
+  method pixels_below_lines : int
+  method pixels_inside_wrap : int
+  method right_margin : int
+  method visible_rect : Gdk.Rectangle.t
   method get_window : Tags.text_window_type -> Gdk.window option
   method get_window_type : Gdk.window -> Tags.text_window_type
-  method get_wrap_mode : Tags.wrap_mode
+  method wrap_mode : Tags.wrap_mode
   method misc : GObj.misc_ops
   method move_child : child:GObj.widget -> x:int -> y:int -> unit
   method move_mark_onscreen : mark -> bool

@@ -1,4 +1,4 @@
-(* $Id$ *)
+ (* $Id$ *)
 
 open StdLabels
 open Gaux
@@ -20,8 +20,8 @@ object
   val obj = obj
   method get_oid = Gobject.get_oid obj
   method as_childanchor = obj
-  method get_widgets = Child_Anchor.get_widgets obj
-  method get_deleted = Child_Anchor.get_deleted obj
+  method widgets = Child_Anchor.get_widgets obj
+  method deleted = Child_Anchor.get_deleted obj
 end
 
 let child_anchor () = new child_anchor (Child_Anchor.create ())
@@ -41,7 +41,7 @@ object (self)
   method get_oid = Gobject.get_oid obj
   method as_tag = obj
   method connect = new tag_signals obj
-  method get_priority () = Tag.get_priority obj
+  method priority () = Tag.get_priority obj
   method set_priority p = Tag.set_priority obj p
   (* [BM] my very first polymorphic method in OCaml...*)
   method event : 'a. 'a Gtk.obj -> GdkEvent.any -> Gtk.textiter -> bool = 
@@ -59,25 +59,25 @@ object
   val it = (it: textiter)
   method as_textiter = it
   method copy = new iter (Iter.copy it)
-  method get_buffer = Iter.get_buffer it
-  method get_offset = Iter.get_offset it
-  method get_line = Iter.get_line it
-  method get_line_offset = Iter.get_line_offset it
-  method get_line_index = Iter.get_line_index it
-  method get_visible_line_index = Iter.get_visible_line_index it
-  method get_visible_line_offset = Iter.get_visible_line_offset it
-  method get_char = Iter.get_char it
+  method buffer = Iter.get_buffer it
+  method offset = Iter.get_offset it
+  method line = Iter.get_line it
+  method line_offset = Iter.get_line_offset it
+  method line_index = Iter.get_line_index it
+  method visible_line_index = Iter.get_visible_line_index it
+  method visible_line_offset = Iter.get_visible_line_offset it
+  method char = Iter.get_char it
   method get_slice ~(stop:iter) = Iter.get_slice it stop#as_textiter
   method get_text ~(stop:iter) = Iter.get_text it stop#as_textiter
   method get_visible_slice ~(stop:iter) = 
     Iter.get_visible_slice it stop#as_textiter
   method get_visible_text ~(stop:iter) = 
     Iter.get_visible_text it stop#as_textiter
-  method get_pixbuf = Iter.get_pixbuf it
-  method get_marks = Iter.get_marks it
+  method pixbuf = Iter.get_pixbuf it
+  method marks = Iter.get_marks it
   method get_toggled_tags b = List.map (fun x -> new tag x) 
 			      (Iter.get_toggled_tags it b)
-  method get_child_anchor  = 
+  method child_anchor  = 
     match (Iter.get_child_anchor it)
     with 
       |None -> None
@@ -92,7 +92,7 @@ object
   method toggles_tag ?(tag:tag option) () = 
     Iter.toggles_tag it (match tag with None -> None | Some t -> Some t#as_tag)
   method has_tag (t:tag) = Iter.has_tag it t#as_tag
-  method get_tags = List.map (fun t -> new tag t) (Iter.get_tags it)
+  method tags = List.map (fun t -> new tag t) (Iter.get_tags it)
   method editable = Iter.editable it
   method can_insert = Iter.can_insert it
   method starts_word = Iter.starts_word it
@@ -104,8 +104,8 @@ object
   method ends_sentence = Iter.ends_sentence it
   method inside_sentence = Iter.inside_sentence it
   method is_cursor_position = Iter.is_cursor_position it
-  method get_chars_in_line = Iter.get_chars_in_line it
-  method get_bytes_in_line = Iter.get_bytes_in_line it
+  method chars_in_line = Iter.get_chars_in_line it
+  method bytes_in_line = Iter.get_bytes_in_line it
   method is_end = Iter.is_end it
   method is_start = Iter.is_start it
   method forward_char () = Iter.forward_char it
@@ -245,9 +245,9 @@ class buffer obj = object(self)
   method get_oid = Gobject.get_oid obj
   method as_buffer = obj
   method connect = new buffer_signals obj
-  method get_line_count = Buffer.get_line_count obj
-  method get_char_count = Buffer.get_char_count obj
-  method get_tag_table =  Buffer.get_tag_table obj
+  method line_count = Buffer.get_line_count obj
+  method char_count = Buffer.get_char_count obj
+  method tag_table =  Buffer.get_tag_table obj
   method insert
     ?iter 
     ?(tag_names : string list = [])
@@ -265,14 +265,14 @@ class buffer obj = object(self)
 	  | None -> 
 	      let insert_iter () =
                 self#get_iter_at_mark `INSERT in
-	      let start_offset = (insert_iter ())#get_offset in
+	      let start_offset = (insert_iter ())#offset in
 	      Buffer.insert_at_cursor obj text;
 	      let start = self#get_iter_at_char start_offset in
 	      List.iter tags ~f:(self#apply_tag ~start ~stop:(insert_iter ()));
 	      List.iter tag_names 
 		~f:(self#apply_tag_by_name ~start ~stop:(insert_iter ())) 
 	  | Some iter -> 
-	      let start_offset = iter#get_offset in
+	      let start_offset = iter#offset in
 	      Buffer.insert obj (as_textiter iter) text;
 	      let start = self#get_iter_at_char start_offset in
 	      List.iter tags ~f:(self#apply_tag ~start ~stop:iter);
@@ -348,17 +348,17 @@ class buffer obj = object(self)
     new iter (Buffer.get_iter_at_line_index  obj line index)
   method get_iter_at_mark mark = 
     new iter (Buffer.get_iter_at_mark obj (self#get_mark mark))
-  method get_start_iter = new iter (Buffer.get_start_iter obj)
-  method get_end_iter = new iter (Buffer.get_end_iter obj)
-  method get_bounds = 
+  method start_iter = new iter (Buffer.get_start_iter obj)
+  method end_iter = new iter (Buffer.get_end_iter obj)
+  method bounds = 
     let s,t=Buffer.get_bounds obj in
     new iter s,new iter t
 				
-  method get_modified = Buffer.get_modified  obj
+  method modified = Buffer.get_modified  obj
   method set_modified setting = Buffer.set_modified  obj setting
   method delete_selection ?(interactive=true) ?(default_editable=true) () = 
     Buffer.delete_selection obj interactive default_editable
-  method get_selection_bounds =
+  method selection_bounds =
     let start, stop = Buffer.get_selection_bounds obj in
     (new iter start, new iter stop)
   method begin_user_action () = Buffer.begin_user_action obj
@@ -422,23 +422,23 @@ class view obj = object (self)
   method connect = new view_signals obj
   method as_view = obj
   method set_buffer (b:buffer) = View.set_buffer obj (b#as_buffer)
-  method get_buffer = new buffer (View.get_buffer obj)
+  method buffer = new buffer (View.get_buffer obj)
   method scroll_to_mark 
     ?(within_margin=0.) ?(use_align=false)  
     ?(xalign=0.) ?(yalign=0.) mark =  
-    View.scroll_to_mark obj (self#get_buffer#get_mark mark)
+    View.scroll_to_mark obj (self#buffer#get_mark mark)
       within_margin use_align xalign yalign
   method scroll_to_iter  ?(within_margin=0.) ?(use_align=false)
       ?(xalign=0.) ?(yalign=0.) iter =
     View.scroll_to_iter obj (as_textiter iter) within_margin
       use_align xalign yalign
   method scroll_mark_onscreen mark =  
-    View.scroll_mark_onscreen obj (self#get_buffer#get_mark mark)
+    View.scroll_mark_onscreen obj (self#buffer#get_mark mark)
   method move_mark_onscreen mark =  
-    View.move_mark_onscreen obj (self#get_buffer#get_mark mark)
+    View.move_mark_onscreen obj (self#buffer#get_mark mark)
   method place_cursor_onscreen () =  
     View.place_cursor_onscreen obj
-  method get_visible_rect =  View.get_visible_rect obj
+  method visible_rect =  View.get_visible_rect obj
   method get_iter_location iter = View.get_iter_location obj (as_textiter iter)
   method get_line_at_y y =
     let it, n = View.get_line_at_y obj y in (new iter it, n)
@@ -476,24 +476,24 @@ class view obj = object (self)
   method move_child ~(child : widget) ~x ~y =
     View.move_child obj child#as_widget x y
   method set_wrap_mode wr = View.set_wrap_mode obj wr
-  method get_wrap_mode = View.get_wrap_mode obj
+  method wrap_mode = View.get_wrap_mode obj
   method set_editable b = View.set_editable obj b
-  method get_editable = View.get_editable obj
+  method editable = View.get_editable obj
   method set_cursor_visible b = View.set_cursor_visible obj b
-  method get_cursor_visible = View.get_cursor_visible obj
-  method get_pixels_above_lines = View.get_pixels_above_lines obj 
+  method cursor_visible = View.get_cursor_visible obj
+  method pixels_above_lines = View.get_pixels_above_lines obj 
   method set_pixels_above_lines n = View.set_pixels_above_lines obj n
-  method get_pixels_below_lines = View.get_pixels_below_lines obj 
+  method pixels_below_lines = View.get_pixels_below_lines obj 
   method set_pixels_below_lines n = View.set_pixels_below_lines obj n
-  method get_pixels_inside_wrap = View.get_pixels_inside_wrap obj 
+  method pixels_inside_wrap = View.get_pixels_inside_wrap obj 
   method set_pixels_inside_wrap n = View.set_pixels_inside_wrap obj n
-  method get_justification = View.get_justification obj 
+  method justification = View.get_justification obj 
   method set_justification j = View.set_justification obj j
-  method get_left_margin = View.get_left_margin obj 
+  method left_margin = View.get_left_margin obj 
   method set_left_margin n = View.set_left_margin obj n
-  method get_right_margin = View.get_right_margin obj 
+  method right_margin = View.get_right_margin obj 
   method set_right_margin n = View.set_right_margin obj n
-  method get_indent = View.get_indent obj 
+  method indent = View.get_indent obj 
   method set_indent n = View.set_indent obj n
 end
 
