@@ -49,6 +49,9 @@ class widget_misc obj = object
   method visual = Widget.get_visual obj
   method pointer = Widget.get_pointer obj
   method style = Widget.get_style obj
+  (* signals *)
+  method connect_show = Signal.connect sig:Widget.Signals.show obj
+  method connect_draw = Signal.connect sig:Widget.Signals.draw obj
 end
 
 class event_signal obj = object
@@ -84,7 +87,6 @@ class widget obj = object
   method frame = Widget.coerce obj
   method misc = new widget_misc obj
   method show () = Widget.show obj
-  method connect_show = Signal.connect sig:Widget.Signals.show obj
   method connect_event = new event_signal obj
 end
 

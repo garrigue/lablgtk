@@ -164,8 +164,7 @@ let frame : #container = frame in object (self)
   initializer
     for i = 0 to size-1 do for j = 0 to size-1 do
       let cell = cells.(i).(j) in
-      cell#connect_event#enter_notify
-	callback:(fun _ -> cell#misc#grab_focus (); false);
+      cell#connect_enter callback:cell#misc#grab_focus;
       cell#connect_clicked callback:(fun () -> self#play i j);
       table#attach left:i top:j cell
     done done;
