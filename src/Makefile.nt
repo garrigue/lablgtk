@@ -2,35 +2,38 @@
 # Makefile for lablgtk.
 
 EXE = .exe
-TARGETS = var2conv var2def lablgtk$(EXE) lablgtk_t$(EXE) \
-	lablgtkrun$(EXE) config.make
+CONFIG = ..\config.make
+TARGETS = varcc lablgtk$(EXE) lablgtk_t$(EXE) lablgtkrun$(EXE) $(CONFIG)
 
 all: $(TARGETS)
 
 opt: lablgtkopt
 
-CAMLC = ocamlc
-CAMLOPT = ocamlopt
+depend:
+	ocamldep *.ml *.mli > .depend
+
 COMPILER = $(CAMLC) $(MLFLAGS) -w s -labels -c
 LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -labels -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
-
 TOPLEVEL = ocamlmktop $(MLFLAGS)
 ### How to invoke the librarian
 MKLIB=lib /nologo /debugtype:CV /out:
 
-!include config.make.nt
+!include $(CONFIG)
 
 INSTALLDIR = $(LIBDIR:/=\)\lablgtk
 BINDIR = $(LIBDIR:/=\)\..\bin
 LABLGLDIR = $(LIBDIR)/lablGL
 
+MLLIBS = lablgtk.cma
+CLIBS = liblablgtk.lib
+MLLINK = unix.cma str.cma
+
 CFLAGS = -O -DGTK_NO_CHECK_CASTS -DGTK_DISABLE_COMPAT_H $(GTKCFLAGS)
-LDFLAGS = $(GTKLIBS)
 
 THFLAGS = -thread
-THLIBS = unix.cma threads.cma
+THLINK = unix.cma threads.cma
 
 !if $(USE_CC) == 1
 CCOMPILER = $(CC) -c -I$(LIBDIR) $(CFLAGS)
@@ -38,11 +41,14 @@ CCOMPILER = $(CC) -c -I$(LIBDIR) $(CFLAGS)
 CCOMPILER = ocamlc -c -ccopt "$(CFLAGS)"
 !endif
 
-!if $(USE_GL) == 1
-MLFLAGS = $(MLFLAGS) -I $(LIBDIR)/lablGL
-GLLINK = -I $(LABLGLDIR) lablgl.cma -cclib -lgtkgl
+ifdef USE_GL
+MLFLAGS += -I $(LABLGLDIR)
+MLLINK += lablgl.cma
+MLLIBS += lablgtkgl.cma
+CLIBS += liblablgtkgl.lib
+GLLINK = -cclib -llablgtkgl -cclib -lgtkgl
 GLMLOBJS = glGtk.cmo
-GLCOBJS = ml_gtkgl.o
+GLCOBJS = ml_gtkgl.obj
 !endif
 
 # Rules
@@ -56,49 +62,55 @@ GLCOBJS = ml_gtkgl.o
 .ml.cmx:
 	$(COMPOPT) $<
 .var.h:
-	ocamlrun ./var2def < $< > $@
-.var.c:
-	ocamlrun ./var2conv < $< > $@
+	ocamlrun ./varcc $<
 
 # Targets
-COBJS = ml_gtk.obj ml_gdk.obj ml_glib.obj wrappers.obj $(GLCOBJS)
-OLDMLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gtkObj.cmo gtkExt.cmo
-MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
+GTKOBJS = ml_gtk.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o ml_gtklist.o \
+	ml_gtkmenu.o ml_gtkmisc.o ml_gtknew.o ml_gtkpack.o ml_gtkrange.o \
+	ml_gtktree.o
+COBJS = ml_gdk.o ml_glib.o wrappers.o $(GTKOBJS)
+MLOBJS = gaux.cmo gpointer.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkTree.cmo gtkList.cmo \
-	gtkFrame.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
+	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
 	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
-	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gFrame.cmo \
-	gEdit.cmo gRange.cmo gUtil.cmo $(GLMLOBJS)
-THOBJS = gtkThread.cmo threadObj.cmo
+	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gBin.cmo \
+	gEdit.cmo gRange.cmo gUtil.cmo
+THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
-ALLOBJS = $(MLOBJS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
+ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(THOBJS) \
+	$(INITOBJS) $(THINITOBJS)
 
-lablgtk$(EXE): liblablgtk.lib lablgtk.cma $(INITOBJS)
-	$(TOPLEVEL) -custom -o $@ unix.cma str.cma $(GLLINK) \
-	    lablgtk.cma $(INITOBJS)
+lablgtk$(EXE): $(CLIBS) $(MLLIBS) $(INITOBJS)
+	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
 
-lablgtk_t$(EXE): liblablgtk.lib lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS)
-	$(TOPLEVEL) -custom $(THFLAGS) -o $@ $(THLIBS) str.cma $(GLLINK) \
-	    lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS)
+lablgtk_t: $(CLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
+	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
+	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
-lablgtkrun$(EXE): liblablgtk.lib lablgtk.cma
-	$(LINKER) -o $@ -make-runtime $(GLLINK) lablgtk.cma
+lablgtkrun$(EXE): $(CLIBS) $(MLLIBS)
+	$(LINKER) -o $@ -make-runtime $(MLLINK) -I . $(MLLIBS)
 
-lablgtkopt: liblablgtk.lib lablgtk.cmxa gtkInit.cmx
+lablgtkopt: $(CLIBS) $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \
+	$(THOBJS:.cmo=.cmx)
 
 install:
 	if not exist $(INSTALLDIR) mkdir $(INSTALLDIR)
 	cp $(ALLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp *.mli $(INSTALLDIR)
 	cp $(ALLOBJS:.cmo=.ml) $(INSTALLDIR)
-	cp lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
-	cp liblablgtk.lib $(INSTALLDIR)
+	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
+	cp $(CLIBS) $(INSTALLDIR)
 	cp lablgtk$(EXE) lablgtk_t$(EXE) lablgtkrun$(EXE) $(BINDIR)
-	if exist lablgtk.cmxa cp lablgtk.cmxa lablgtk.lib gtkInit.cmx gtkInit.obj $(INSTALLDIR)
+	cp varcc *.h $(INSTALLDIR)
+	if test -f lablgtk.cmxa; then \
+	   cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.lib) \
+	      $(INITOBJS:.cmo=.cmx) $(INITOBJS:.cmo=.obj) $(INSTALLDIR); fi
+	if test -f gtkThread.cmx; then \
+	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=.obj) $(INSTALLDIR); fi
 
 liblablgtk.lib: $(COBJS)
 	$(MKLIB)$@ $(COBJS)
@@ -106,7 +118,6 @@ liblablgtk.lib: $(COBJS)
 lablgtk.cma: $(MLOBJS)
 	$(LINKER) -a -custom -o $@ $(MLOBJS) \
 	  -cclib -llablgtk $(GTKLIBS)
-
 lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \
 	  -cclib -llablgtk $(GTKLIBS)
@@ -114,28 +125,18 @@ lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
-threadObj.cmo: threadObj.ml
-	$(COMPILER) $(THFLAGS) threadObj.ml
-
 gtkThread.cmx: gtkThread.ml
 	$(COMPOPT) $(THFLAGS) gtkThread.ml
 
-threadObj.cmx: threadObj.ml
-	$(COMPOPT) $(THFLAGS) threadObj.ml
-
-var2conv: var2conv.cmo
-	$(LINKER) -o $@ var2conv.cmo
-	rm -f *_tags.c
-
-var2def: var2def.cmo
-	$(LINKER) -o $@ var2def.cmo
-	rm -f *_tags.h
+varcc: varcc.cmo
+	$(LINKER) -o $@ varcc.cmo
+	rm -f *_tags.h *_tags.c
 
 clean:
 	rm -f *.cm* *.obj *.lib *_tags.[ch] $(TARGETS)
 
 config.make: config.make.nt
-	cp config.make.nt config.make
+	cp ../config.make.nt ../config.make
 
 depend .depend:
 	ocamldep *.ml *.mli > .depend
