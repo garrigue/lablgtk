@@ -21,7 +21,7 @@
 
 value ml_gtk_gl_area_new (value list, value share)
 {
-    value cursor;
+    value cursor, res;
     int len, i;
     int *attrs;
 
@@ -31,11 +31,7 @@ value ml_gtk_gl_area_new (value list, value share)
 	else len++;
     }
 
-#ifdef ARCH_SIXTYFOUR
-    attrs = (int*) alloc ((len+2)/2, Abstract_tag);
-#else
-    attrs = (int*) alloc (len+1, Abstract_tag);
-#endif
+    attrs = (int*) stat_alloc ((len+1)*sizeof(int));
     
     for (i = 0, cursor = list; cursor != Val_unit; cursor = Field(cursor,1))
     {
@@ -48,8 +44,10 @@ value ml_gtk_gl_area_new (value list, value share)
     }
     attrs[i] = GDK_GL_NONE;
 
-    return Val_GtkObject
+    res = Val_GtkObject
 	((GtkObject*)gtk_gl_area_share_new(attrs,GtkGLArea_val(share)));
+    stat_free(attrs);
+    return res;
 }
 
 ML_1 (gtk_gl_area_make_current, GtkGLArea_val, Val_bool)
