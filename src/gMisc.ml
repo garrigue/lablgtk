@@ -28,7 +28,7 @@ end
 class statusbar obj = object
   inherit GContainer.container_full (obj : Gtk.statusbar obj)
   method new_context ~name =
-    new statusbar_context obj (Statusbar.get_context obj name)
+    new statusbar_context obj (Statusbar.get_context_id obj name)
 end
 
 let statusbar =
@@ -38,20 +38,19 @@ let statusbar =
 class calendar_signals obj = object
   inherit widget_signals obj
   method month_changed =
-    GtkSignal.connect obj ~sgn:Calendar.Signals.month_changed ~after
+    GtkSignal.connect obj ~sgn:Calendar.S.month_changed ~after
   method day_selected =
-    GtkSignal.connect obj ~sgn:Calendar.Signals.day_selected ~after
+    GtkSignal.connect obj ~sgn:Calendar.S.day_selected ~after
   method day_selected_double_click =
-    GtkSignal.connect obj
-      ~sgn:Calendar.Signals.day_selected_double_click ~after
+    GtkSignal.connect obj ~sgn:Calendar.S.day_selected_double_click ~after
   method prev_month =
-    GtkSignal.connect obj ~sgn:Calendar.Signals.prev_month ~after
+    GtkSignal.connect obj ~sgn:Calendar.S.prev_month ~after
   method next_month =
-    GtkSignal.connect obj ~sgn:Calendar.Signals.next_month ~after
+    GtkSignal.connect obj ~sgn:Calendar.S.next_month ~after
   method prev_year =
-    GtkSignal.connect obj ~sgn:Calendar.Signals.prev_year ~after
+    GtkSignal.connect obj ~sgn:Calendar.S.prev_year ~after
   method next_year =
-    GtkSignal.connect obj ~sgn:Calendar.Signals.next_year ~after
+    GtkSignal.connect obj ~sgn:Calendar.S.next_year ~after
 end
 
 class calendar obj = object
@@ -70,7 +69,7 @@ class calendar obj = object
 end
 
 let calendar ?options ?packing ?show () =
-  let w = Calendar.create () in
+  let w = Calendar.create [] in
   may options ~f:(Calendar.display_options w);
   pack_return (new calendar w) ~packing ~show
 
@@ -81,7 +80,7 @@ class drawing_area obj = object
 end
 
 let drawing_area ?(width=0) ?(height=0) ?packing ?show () =
-  let w = DrawingArea.create () in
+  let w = DrawingArea.create [] in
   if width <> 0 || height <> 0 then DrawingArea.size w ~width ~height;
   pack_return (new drawing_area w) ~packing ~show
 
@@ -142,19 +141,17 @@ let label_cast w = new label (Label.cast w#as_widget)
 class tips_query_signals obj = object
   inherit widget_signals (obj : Gtk.tips_query obj)
   method widget_entered ~callback = 
-    GtkSignal.connect ~sgn:TipsQuery.Signals.widget_entered obj ~after
-      ~callback:(function None -> callback None
-	| Some w -> callback (Some (new widget w)))
+    GtkSignal.connect ~sgn:TipsQuery.S.widget_entered obj ~after ~callback:
+      (fun w text privat -> callback (may_map (new widget) w) ~text ~privat)
   method widget_selected ~callback = 
-    GtkSignal.connect ~sgn:TipsQuery.Signals.widget_selected obj ~after
-      ~callback:(function None -> callback None
-	| Some w -> callback (Some (new widget w)))
+    GtkSignal.connect ~sgn:TipsQuery.S.widget_selected obj ~after ~callback:
+      (fun w text privat -> callback (may_map (new widget) w) ~text ~privat)
 end
 
 class tips_query obj = object
   inherit label_skel obj
-  method start () = TipsQuery.start obj
-  method stop () = TipsQuery.stop obj
+  method start () = TipsQuery.start_query obj
+  method stop () = TipsQuery.stop_query obj
   inherit tips_query_props
   method connect = new tips_query_signals obj
 end

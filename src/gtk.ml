@@ -111,9 +111,10 @@ type statusbar_message
 type statusbar_context
 type selection_data
 
-type color = { red: float; green: float; blue: float; opacity: float }
 type rectangle  = { x: int; y: int; width: int; height: int }
 type target_entry = { target: string; flags: target_flags list; info: int }
+type box_packing =
+    { expand: bool; fill: bool; padding: int; pack_type: pack_type }
 
 type adjustment = [`gtk|`adjustment]
 type tooltips = [`gtk|`tooltips]
@@ -169,7 +170,7 @@ type table = [container|`table]
 type toolbar = [container|`toolbar]
 type tree = [container|`tree]
 type calendar = [widget|`calendar]
-type drawing_area = [widget|`drawing]
+type drawing_area = [widget|`drawingarea]
 type editable = [widget|`editable]
 type entry = [editable|`entry]
 type spin_button = [editable|`entry|`spinbutton]
@@ -210,6 +211,10 @@ type cell_renderer = [`gtk|`cellrenderer]
 type cell_renderer_pixbuf = [cell_renderer|`cellrendererpixbuf]
 type cell_renderer_text = [cell_renderer|`cellrenderertext]
 type cell_renderer_toggle = [cell_renderer|`cellrenderertoggle]
+
+type icon_source
+type icon_set
+type icon_factory = [`iconfactory] obj
 
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj

@@ -155,37 +155,6 @@ module Widget = struct
       | `OBJECT(Some obj) :: _ -> f (Some (cast obj))
       | `OBJECT None :: _ -> f None
       | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_opt"
-    let marshal_style f _ = function
-      | `POINTER p :: _ -> f (Obj.magic p : Gtk.style option)
-      | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_style"
-    external allocation_at_pointer : Gpointer.boxed -> rectangle
-        = "ml_Val_GtkAllocation"
-    let marshal_allocation f argv = function
-      | `POINTER(Some p) :: _ ->
-          f (allocation_at_pointer p)
-      |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_allocation"
-    let show =
-      { name = "show"; classe = `widget; marshaller = marshal_unit }
-    let hide =
-      { name = "hide"; classe = `widget; marshaller = marshal_unit }
-    let map =
-      { name = "map"; classe = `widget; marshaller = marshal_unit }
-    let unmap =
-      { name = "unmap"; classe = `widget; marshaller = marshal_unit }
-    let realize =
-      { name = "realize"; classe = `widget; marshaller = marshal_unit }
-    let state_changed =
-      let marshal f = marshal_int
-          (fun x -> f (Gpointer.decode_variant GtkEnums.state_type x)) in
-      { name = "state_changed"; classe = `widget; marshaller = marshal }
-    let parent_set =
-      { name = "parent_set"; classe = `widget; marshaller = marshal_opt }
-    let size_allocate =
-      { name = "size_allocate"; classe = `widget;
-        marshaller = marshal_allocation }
-    let style_set =
-      { name = "style_set"; classe = `widget; marshaller = marshal_style }
-
     module Event = struct
       let marshal f argv = function
         | [`POINTER(Some p)] ->
@@ -258,63 +227,17 @@ end
 
 module Container = struct
   include Container
-  external check_resize : [>`container] obj -> unit
-      = "ml_gtk_container_check_resize"
-  external add : [>`container] obj -> [>`widget] obj -> unit
-      = "ml_gtk_container_add"
-  external remove : [>`container] obj -> [>`widget] obj -> unit
-      = "ml_gtk_container_remove"
-
   let make_params ~cont pl ?border_width =
     Widget.size_params pl ~cont:(fun p ->
       cont (Property.may_cons P.border_width border_width p))
 
-  external foreach : [>`container] obj -> f:(widget obj-> unit) -> unit
-      = "ml_gtk_container_foreach"
   let children w =
     let l = ref [] in
     foreach w ~f:(fun c -> l := c :: !l);
     List.rev !l
-  (* Called by Widget.grab_focus *)
-  external set_focus_child : [>`container] obj -> [>`widget] optobj -> unit
-      = "ml_gtk_container_set_focus_child"
-  external set_focus_vadjustment :
-      [>`container] obj -> [>`adjustment] optobj -> unit
-      = "ml_gtk_container_set_focus_vadjustment"
-  external set_focus_hadjustment :
-      [>`container] obj -> [>`adjustment] optobj -> unit
-      = "ml_gtk_container_set_focus_hadjustment"
-  module Signals = struct
-    open GtkSignal
-    let add =
-      { name = "add"; classe = `container;
-        marshaller = Widget.Signals.marshal }
-    let remove =
-      { name = "remove"; classe = `container;
-        marshaller = Widget.Signals.marshal }
-    let check_resize =
-      { name = "check_resize"; classe = `container; marshaller = marshal_unit }
-    let set_focus =
-      { name = "set_focus"; classe = `container;
-        marshaller = Widget.Signals.marshal_opt }
-  end
 end
 
-module Item = struct
-  let cast w : item obj = Object.try_cast w "GtkItem"
-  external select : [>`item] obj -> unit = "ml_gtk_item_select"
-  external deselect : [>`item] obj -> unit = "ml_gtk_item_deselect"
-  external toggle : [>`item] obj -> unit = "ml_gtk_item_toggle"
-  module Signals = struct
-    open GtkSignal
-    let select =
-      { name = "select"; classe = `item; marshaller = marshal_unit }
-    let deselect =
-      { name = "deselect"; classe = `item; marshaller = marshal_unit }
-    let toggle =
-      { name = "toggle"; classe = `item; marshaller = marshal_unit }
-  end
-end
+module Item = Item
 
 (* Clipboard provides high-level access to Selection *)
 module Clipboard = struct
@@ -346,9 +269,8 @@ module Selection = struct
   external get_data : selection_data -> string
       = "ml_gtk_selection_data_get_data"       (* May raise Gpointer.null *)
   external set :
-      selection_data ->
-      typ:Gdk.atom -> format:int -> data:string option -> unit
-      = "ml_gtk_selection_data_set"
+    selection_data -> typ:Gdk.atom -> format:int -> data:string option -> unit
+    = "ml_gtk_selection_data_set"
 
   (* Create a memory-managed copy of the data *)
   external copy : selection_data -> selection_data
@@ -358,12 +280,10 @@ module Selection = struct
     [>`widget] obj -> sel:Gdk.atom -> time:int32 -> bool
     = "ml_gtk_selection_owner_set"
   external add_target :
-    [>`widget] obj -> sel:Gdk.atom -> target:Gdk.atom ->
-    info:int -> unit
+    [>`widget] obj -> sel:Gdk.atom -> target:Gdk.atom -> info:int -> unit
     = "ml_gtk_selection_add_target"
   external convert :
-    [> `widget] obj -> sel:Gdk.atom -> target:Gdk.atom ->
-    time:int32 -> bool
+    [> `widget] obj -> sel:Gdk.atom -> target:Gdk.atom -> time:int32 -> bool
     = "ml_gtk_selection_convert"
   
   module Signals = struct

@@ -1,6 +1,7 @@
 (* $Id$ *)
 
 open Gobject
+open Gtk
 
 type gtk_stock_id = [ `DIALOG_INFO | `DIALOG_WARNING
   | `DIALOG_ERROR | `DIALOG_QUESTION | `DND | `DND_MULTIPLE
@@ -110,7 +111,6 @@ let () =
       `ZOOM_IN, "gtk-zoom-in";
       `ZOOM_OUT, "gtk-zoom-out" ]
 
-type icon_source
 module Icon_source = struct
 external new_icon_source : unit -> icon_source = "ml_gtk_icon_source_new"
 external set_filename : icon_source -> string -> unit = "ml_gtk_icon_source_set_filename"
@@ -123,7 +123,6 @@ external set_state : icon_source -> Gtk.Tags.state_type -> unit = "ml_gtk_icon_s
 external set_size : icon_source -> Gtk.Tags.icon_size -> unit = "ml_gtk_icon_source_set_size"
 end
 
-type icon_set
 module Icon_set = struct
 external new_icon_set : unit -> icon_set = "ml_gtk_icon_set_new"
 external new_from_pixbuf : GdkPixbuf.pixbuf -> icon_set = "ml_gtk_icon_set_new_from_pixbuf"
@@ -131,7 +130,6 @@ external add_source : icon_set -> icon_source -> unit = "ml_gtk_icon_set_add_sou
 external get_sizes : icon_set -> Gtk.Tags.icon_size list = "ml_gtk_icon_set_get_sizes"
 end
 
-type icon_factory = [`iconfactory] Gobject.obj
 module Icon_factory = struct
 external new_factory : unit -> icon_factory = "ml_gtk_icon_factory_new"
 external add : icon_factory -> string -> icon_set -> unit = "ml_gtk_icon_factory_add"

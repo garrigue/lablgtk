@@ -129,12 +129,14 @@ class image : 'a obj ->
     method set_file : string -> unit
     method set_pixbuf : GdkPixbuf.pixbuf -> unit
     method set_stock : GtkStock.id -> unit
+    method set_icon_set : icon_set -> unit
     method set_icon_size : Tags.icon_size -> unit
     method image : Gdk.image
     method pixmap : GDraw.pixmap
     method mask : Gdk.bitmap option
     method pixbuf : GdkPixbuf.pixbuf
     method stock : GtkStock.id
+    method icon_set : icon_set
     method icon_size : Tags.icon_size
   end
 
@@ -145,6 +147,7 @@ val image :
   ?pixmap:Gdk.pixmap ->
   ?mask:Gdk.bitmap ->
   ?stock:GtkStock.id ->
+  ?icon_set:icon_set ->
   ?icon_size:Tags.icon_size ->
   ?xalign:float ->
   ?yalign:float ->
@@ -223,12 +226,11 @@ class tips_query_signals : Gtk.tips_query obj ->
     inherit widget_signals
     val obj : Gtk.tips_query obj
     method widget_entered :
-      callback:(widget option ->
-                text:string option -> privat:string option -> unit) ->
+      callback:(widget option -> text:string -> privat:string -> unit) ->
       GtkSignal.id
     method widget_selected :
-      callback:(widget option -> text:string option ->
-                privat:string option -> GdkEvent.Button.t option -> bool) ->
+      callback:(widget option -> text:string -> privat:string ->
+                GdkEvent.Button.t -> bool) ->
       GtkSignal.id
   end
 

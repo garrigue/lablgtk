@@ -52,9 +52,9 @@ exception Cannot_cast of string * string
 
 val get_type : 'a obj -> g_type
 val is_a : 'a obj -> string -> bool
-val unsafe_cast : 'a obj -> 'b obj
+external unsafe_cast : 'a obj -> 'b obj = "%identity"
 val try_cast : 'a obj -> string -> 'b obj
-val coerce : 'a -> [ `base ] obj
+external coerce : 'a obj -> [ `base ] obj = "%identity"
 val get_oid : 'a obj -> int
 
 type +'a param
@@ -141,9 +141,9 @@ module Data :
     val string : string data_conv
     val string_option : string option data_conv
     val pointer : Gpointer.boxed option data_conv
-    val unsafe_pointer : 'a data_conv
-    val unsafe_pointer_option : 'a option data_conv
     val boxed : Gpointer.boxed option data_conv
+    val unsafe_boxed : 'a data_conv
+    val unsafe_boxed_option : 'a option data_conv
     val gobject : 'a obj data_conv
     val gobject_option : 'a obj option data_conv
     val of_value : 'a data_conv -> g_value -> 'a

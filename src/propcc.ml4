@@ -26,6 +26,17 @@ let check_suffix s suff =
   let len1 = String.length s and len2 = String.length suff in
   len1 > len2 && String.sub s (len1-len2) len2 = suff
 
+(* Arity of a caml type. Doesn't handle object types... *)
+let arity s =
+  let parens = ref 0 and arity = ref 0 in
+  for i = 0 to String.length s - 1 do
+    if s.[i] = '(' || s.[i] = '[' then incr parens else
+    if s.[i] = ')' || s.[i] = ']' then decr parens else
+    if !parens = 0 && s.[i] = '-' && s.[i+1] = '>' then incr arity
+  done;
+  if !parens <> 0 then failwith ("bad type : " ^ s);
+  !arity
+
 let conversions = Hashtbl.create 17
 
 let enums = [
@@ -38,24 +49,25 @@ let enums = [
     "SpinButtonUpdatePolicy"; "UpdateType"; "ProgressBarStyle";
     "ProgressBarOrientation"; "CellRendererMode";
     "TreeViewColumnSizing"; "SortType"; "TextDirection";
+    (* in signals *)
+    "MovementStep"; "ScrollType"; "MenuDirectionType"; "DeleteType";
+    "StateType";
     (* for canvas *)
     "AnchorType"; "DirectionType"; 
   ];
   "Gdk", "GdkEnums",
-  [ "ExtensionMode"; "WindowTypeHint";
+  [ "ExtensionMode"; "WindowTypeHint"; "EventMask";
     (* for canvas *)
     "CapStyle"; "JoinStyle"; "LineStyle"];
   "Pango", "PangoEnums",
   [ "Stretch"; "Style"; "Underline"; "Variant"; ]
 ]
 
-let flags = [
-  "Gdk", "GdkEnums", ["EventMask"]
-]
-
-let pointers = [
-  "Gdk", ["Color"; "Font"; ];
+(* These types must be registered with g_boxed_register! *)
+let boxeds = [
+  "Gdk", ["Color"; "Font";];
   "Pango", ["FontDescription";];
+  "Gtk", ["IconSet";"TextIter";"TreePath"; "TreeIter";];
 ]
 
 let classes = [
@@ -77,7 +89,7 @@ let add_pointer conv gtk name =
     (Printf.sprintf "(%s_option : %s option data_conv)" conv name)
 
 let add_object = add_pointer "gobject"
-let add_unsafe = add_pointer "unsafe_pointer"
+let add_boxed = add_pointer "unsafe_boxed"
 
 let () =
   List.iter ~f:(fun t -> Hashtbl.add conversions ("g"^t) t)
@@ -86,24 +98,29 @@ let () =
   List.iter ~f:(fun (gtype,conv) -> Hashtbl.add conversions gtype conv)
     [ "gchararray", "string";
       "gchararray_opt", "string_option";
+      "string", "string"; "bool", "boolean"; "int", "int";
     ];
-  List.iter (enums @ flags) ~f:(fun (pre, _, l) ->
+  List.iter enums ~f:(fun (pre, modu, l) ->
     List.iter l ~f:
       begin fun name ->
-        Hashtbl.add conversions (pre ^ name) ("Conv." ^camlize name)
+        Hashtbl.add conversions (pre ^ name)
+          (Printf.sprintf "%s.%s_conv" modu (camlize name))
       end);
-  List.iter pointers ~f:(fun (pre, l) ->
-    List.iter l ~f:(fun name -> add_unsafe (pre^name) (pre^"."^camlize name)));
+  List.iter boxeds ~f:(fun (pre, l) ->
+    List.iter l ~f:(fun name -> add_boxed (pre^name) (pre^"."^camlize name)));
   List.iter classes ~f:(fun (pre,l) ->
     List.iter l ~f:(fun t -> add_object (pre^t) (pre^"."^camlize t)))
 
 open Genlex
 
-let lexer = make_lexer ["{"; "}"; ":"; "/"; "("; ")"]
+let lexer = make_lexer ["{"; "}"; ":"; "/"; "("; ")";"->";"method";"signal"]
 
 let rec star ?(acc=[]) p = parser
     [< x = p ; s >] -> star ~acc:(x::acc) p s
   | [< >] -> List.rev acc
+
+let may_token tok s =
+  if Stream.peek s = Some tok then Stream.junk s
 
 let ident = parser [< ' Ident id >] -> id
 
@@ -125,16 +142,49 @@ let attributes =
   ["Read";"Write";"Construct";"ConstructOnly";"NoSet";"Set";
    "NoWrap";"Wrap";"NoGet";"VSet";"NoVSet"]
 
-let prop = parser
+let return_type types = parser
+    [< ' Kwd"->"; ' Ident ret >] -> `Types (types, ret)
+  | [< >] -> `Types (types, "")
+
+let marshaller = parser
+  | [< ' String s >] -> `Function s
+  | [< ' Kwd":"; types = star ident; s >] -> return_type types s
+  | [< >] -> `Types ([], "")
+
+let may_type = parser
+  | [< ' Kwd":"; ' String s >] -> s
+  | [< >] -> "unit"
+
+let field = parser
     [< ' String name; mlname = may_name name; ' Ident gtype; ' Kwd":";
        ' Ident attr0; attrs = star ~acc:[attr0] next_attr >] ->
          if List.exists attrs ~f:(fun x -> not (List.mem x attributes))
          then raise (Stream.Error "bad attribute");
-         (name, mlname, gtype, attrs)
+         `Prop (name, mlname, gtype, attrs)
+  | [< ' Kwd"method"; ' Ident name; ty = may_type >] ->
+      `Method (name, ty)
+  | [< ' Kwd"signal"; ' Ident name; m = marshaller >] ->
+      `Signal (name, m)
+
+let split_fields l =
+  List.fold_right l ~init:([],[],[]) ~f:
+    (fun field (props,meths,sigs) -> match field with
+      `Prop p   -> (p::props,meths,sigs)
+    | `Method m -> (props,m::meths,sigs)
+    | `Signal s -> (props,meths,s::sigs))
+
+let verb_braces = ref 0
 
 let rec verbatim buf = parser
-    [< ''}' >] -> Buffer.contents buf
-  | [< ''\\' ; 'c ; s >] -> Buffer.add_char buf c; verbatim buf s
+  | [< ''}' ; s >] ->
+      if !verb_braces = 0 then Buffer.contents buf else begin
+        decr verb_braces; Buffer.add_char buf '}'; verbatim buf s;
+      end
+  | [< ''{'; s >] ->
+      Buffer.add_char buf '{'; incr verb_braces; verbatim buf s
+  | [< ''\\' ; 'c ; s >] ->
+      if c <> '}' && c <> '{' then Buffer.add_char buf '\\';
+      Buffer.add_char buf c; verbatim buf s
   | [< 'c ; s >] -> Buffer.add_char buf c; verbatim buf s
 
 let read_pair = parser
@@ -151,14 +201,16 @@ let headers = ref []
 let checks = ref false
 let class_qualifiers = ["abstract";"hv";"set";"wrap";"wrapset";"vset";"tag"]
 
+
 let process_phrase ~chars = parser
     [< ' Ident"class"; ' Ident name; gtk_name = may_string (!prefix ^ name);
        attrs = star qualifier; ' Kwd":"; ' Ident parent;
-       ' Kwd"{"; props = star prop; ' Kwd"}" >] ->
+       ' Kwd"{"; fields = star field; ' Kwd"}" >] ->
          if List.exists attrs ~f:
              (fun (x,_) -> not (List.mem x class_qualifiers))
          then raise (Stream.Error "bad qualifier");
-         decls := (name, gtk_name, attrs, props) :: !decls
+         let props, meths, sigs = split_fields fields in
+         decls := (name, gtk_name, attrs, props, meths, sigs) :: !decls
   | [< ' Ident"header"; ' Kwd"{" >] ->
       let h = verbatim (Buffer.create 1000) chars in
       headers := !headers @ [h]
@@ -174,6 +226,8 @@ let process_phrase ~chars = parser
         Hashtbl.add conversions (pre1^k) (if pre2="" then d else pre2^"."^d))
   | [< ' Ident"classes"; ' Kwd"{"; l = star read_pair; ' Kwd"}" >] ->
       List.iter l ~f:(fun (k,d) -> add_object k d)
+  | [< ' Ident"boxed"; ' Kwd"{"; l = star read_pair; ' Kwd"}" >] ->
+      List.iter l ~f:(fun (k,d) -> add_boxed k d)
   | [< ' _ >] ->
       raise (Stream.Error "")
   | [< >] ->
@@ -205,29 +259,16 @@ let process_file f =
   (* Preproccess *)
   let decls = List.rev !decls in
   List.iter decls ~f:
-    (fun (name, gtk_name, _, _) ->
+    (fun (name, gtk_name, _, _, _, _) ->
       add_object gtk_name (baseM ^ "." ^ camlize name ^ " obj"));
   (* Output modules *)
   let oc = open_out (base ^ "Props.ml") in
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
   List.iter !headers ~f:(fun s -> out "%s@." s);
-  if enums <> [] && !use = "" then begin
-    out "@[<hv2>module Conv = struct";
-    List.iter ["enum", enums; "flags", flags] ~f:
-      begin fun (conv,defs) ->
-        List.iter defs ~f:(fun (pre, tables, l) ->
-          List.iter l ~f:
-            begin fun s ->
-              out "@ let %s = %s %s.%s"
-                (camlize s) conv tables (camlize s)
-            end)
-      end;
-    out "@]@.end\n@.";
-  end;
   let decls =
     List.map decls ~f:
-      begin fun (name, gtk_name, attrs, props) ->
+      begin fun (name, gtk_name, attrs, props, meths, sigs) ->
         (name, gtk_name, attrs,
          List.filter props ~f:
            begin fun (name,_,gtype,_) ->
@@ -241,6 +282,17 @@ let process_file f =
              with Not_found ->
                prerr_endline ("Warning: no conversion for type " ^ gtype);
                false
+           end,
+         meths,
+         List.filter sigs ~f:
+           begin function
+           | _, `Function _ -> true
+           | _, `Types(l, ret) ->
+               List.for_all (if ret = "" then l else ret::l) ~f:
+                 (fun ty ->
+                   if Hashtbl.mem conversions ty then true else
+                   (prerr_endline ("Warning: no conversion for type " ^ ty);
+                    false))
            end)
       end in
   let defprop ~name ~mlname ~gtype ~tag =
@@ -287,16 +339,16 @@ let process_file f =
     end
   in
   List.iter decls ~f:
-    begin fun (name, gtk_class, attrs, props) ->
+    begin fun (name, gtk_class, attrs, props, meths, sigs) ->
       out "@[<hv2>module %s = struct" (camlizeM name);
       out "@ @[<hv2>let cast w : %s.%s obj =@ try_cast w \"%s\"@]"
         baseM (camlize name) gtk_class;
+      let tag =
+        try List.assoc "tag" attrs
+        with Not_found -> !tagprefix ^ String.lowercase name
+      in
       if props <> [] then begin
         out "@ @[<hv2>module P = struct";
-        let tag =
-          try List.assoc "tag" attrs
-          with Not_found -> !tagprefix ^ String.lowercase name
-        in
         List.iter props ~f:
           begin fun (name, _, gtype, attrs) ->
             let count, rpname = Hashtbl.find all_props (name,gtype) in
@@ -307,6 +359,30 @@ let process_file f =
               defprop ~name ~mlname:(camlize name) ~gtype ~tag
           end;
         out "@]@ end"
+      end;
+      if sigs <> [] then begin
+        out "@ @[<hv2>module S = struct@ open GtkSignal";
+        List.iter sigs ~f:
+          begin fun (name,marshaller) ->
+            out "@ @[<hv2>let %s =" (camlize name);
+            out "@ @[<hv1>{name=\"%s\"; classe=`%s; marshaller=@;<0>"
+              name tag;
+            begin match marshaller with
+            | `Function s -> out "%s" s
+            | `Types ([], "") -> out "marshal_unit" 
+            | `Types ([], ret) ->
+                out "marshal0_ret ~ret:%s" (Hashtbl.find conversions ret)
+            | `Types (l, ret) ->
+                out "(fun f -> @[<hov2>marshal%d" (List.length l);
+                if ret <> "" then
+                  out "_ret@ ~ret:%s" (Hashtbl.find conversions ret);
+                List.iter l ~f:
+                  (fun ty -> out "@ %s" (Hashtbl.find conversions ty));
+                out "@ \"%s::%s\" f@])" gtk_class name;
+            end;
+            out "}@]@]";
+          end;
+        out "@]@ end";
       end;
       if not (List.mem_assoc "abstract" attrs) then begin
         let cprops = List.filter props ~f:(fun (_,_,_,a) ->
@@ -327,6 +403,15 @@ let process_file f =
           out "@ Object.make \"%s\" pl@]" gtk_class;
         end
       end;
+      List.iter meths ~f:
+        begin fun (name, typ) ->
+          out "@ @[<hov2>external %s :" name;
+          out "@ @[<hv>[>`%s] obj ->@ %s@]" tag typ;
+          let cname = camlize ("ml" ^ gtk_class) ^ "_" ^ name in
+          out "@ = \"";
+          if arity typ > 4 then out "%s_bc\" \"" cname;
+          out "%s\"@]" cname;
+        end;
       let set_props =
         let set = List.mem_assoc "set" attrs in
         List.filter props ~f:
@@ -342,7 +427,7 @@ let process_file f =
         may_cons_props props;
         out "@ cont pl@]";
       end;
-      if !checks then begin
+      if !checks && (props <> [] || sigs <> []) then begin
         if List.mem_assoc "abstract" attrs then 
           out "@ @[<hv2>let check w ="
         else begin
@@ -350,11 +435,17 @@ let process_file f =
           out "@ let w = create%s [] in"
             (if List.mem_assoc "hv" attrs then " `HORIZONTAL" else "");
         end;
-        out "@ let c p = Property.check w p in";
+        if props <> [] then out "@ let c p = Property.check w p in";
+        if sigs <> [] then begin
+          out "@ let closure = Closure.create ignore in";
+          out "@ let s name = GtkSignal.connect_by_name";
+          out " w ~name ~closure ~after:false in";
+        end;
         out "@ @[<hov>";
         List.iter props ~f:
           (fun (name,_,gtype,attrs) ->
             if List.mem "Read" attrs then out "c P.%s;@ " (camlize name));
+        List.iter sigs ~f:(fun (name,_) -> out "s %s;@ " name);
         out "()@]";
       end;
       out "@]@.end\n@."
@@ -376,7 +467,7 @@ let process_file f =
       Format.fprintf ppf "%s.P.%s" (camlizeM name) (camlize pname)
   in
   List.iter decls ~f:
-    begin fun (name, gtk_class, attrs, props) ->
+    begin fun (name, gtk_class, attrs, props, meths, sigs) ->
       let wrap = List.mem_assoc "wrap" attrs in
       let wrapset = wrap || List.mem_assoc "wrapset" attrs in
       let wr_props =

@@ -3,9 +3,9 @@
 open Gobject
 
 type id
+type 'a marshaller = 'a -> Closure.argv -> data_get list -> unit
 type ('a,'b) t =
- { name: string; classe: 'a;
-   marshaller: ('b -> Closure.argv -> data_get list -> unit) }
+ { name: string; classe: 'a; marshaller: 'b marshaller }
     (* When writing marshallers, beware that the list omits the 0th
        argument of argv, which is the referent object *)
 
@@ -33,9 +33,32 @@ external handler_unblock : 'a obj -> id -> unit
   = "ml_g_signal_handler_unblock"
 
 (* Some marshaller functions, to build signals *)
-val marshal_unit : (unit -> unit) -> Closure.argv -> data_get list -> unit
-val marshal_int : (int -> unit) -> Closure.argv -> data_get list -> unit
-val marshal_string : (string -> unit) -> Closure.argv -> data_get list -> unit
+val marshal_unit : (unit -> unit) marshaller
+val marshal_int : (int -> unit) marshaller
+val marshal_string : (string -> unit) marshaller
+
+val marshal1 : 'a data_conv -> string -> ('a -> unit) marshaller
+val marshal2 :
+  'a data_conv -> 'b data_conv -> string -> ('a -> 'b -> unit) marshaller
+val marshal3 :
+  'a data_conv -> 'b data_conv -> 'c data_conv ->
+  string -> ('a -> 'b -> 'c -> unit) marshaller
+val marshal4 :
+  'a data_conv -> 'b data_conv -> 'c data_conv -> 'd data_conv ->
+  string -> ('a -> 'b -> 'c -> 'd -> unit) marshaller
+
+val marshal0_ret : ret:'a data_conv -> (unit -> 'a) marshaller
+val marshal1_ret :
+  ret:'a data_conv -> 'b data_conv -> string -> ('b -> 'a) marshaller
+val marshal2_ret :
+  ret:'a data_conv -> 'b data_conv -> 'c data_conv ->
+  string -> ('b -> 'c -> 'a) marshaller
+val marshal3_ret :
+  ret:'a data_conv -> 'b data_conv -> 'c data_conv -> 'd data_conv ->
+  string -> ('b -> 'c -> 'd -> 'a) marshaller
+val marshal4_ret :
+  ret:'a data_conv -> 'b data_conv -> 'c data_conv -> 'd data_conv ->
+  'e data_conv -> string -> ('b -> 'c -> 'd -> 'e -> 'a) marshaller
 
 (* Emitter functions *)
 val emit :

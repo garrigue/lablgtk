@@ -141,7 +141,7 @@ let try_cast w name =
   if is_a w name then unsafe_cast w
   else raise (Cannot_cast(Type.name(get_type w), name))
 
-external coerce : 'a -> [`base] obj = "%identity"
+external coerce : 'a obj -> [`base] obj = "%identity"
   (* [coerce] is safe *)
 
 external unsafe_create : g_type -> (string * 'a data_set) list -> 'b obj
@@ -217,16 +217,16 @@ module Data = struct
     { kind = `POINTER;
       proj = (function `POINTER c -> c | _ -> failwith "Gobject.get_pointer");
       inj = (fun c -> `POINTER c) }
-  let unsafe_pointer =
-    { kind = `POINTER;
+  let unsafe_boxed =
+    { kind = `BOXED;
       proj = (function `POINTER (Some c) -> Obj.magic c
-             | _ -> failwith "Gobject.get_pointer");
+             | _ -> failwith "Gobject.get_boxed");
       inj = (fun c -> `POINTER (Some (Obj.magic c))) }
   let magic : 'a option -> 'b option = Obj.magic
-  let unsafe_pointer_option =
-    { kind = `POINTER;
+  let unsafe_boxed_option =
+    { kind = `BOXED;
       proj = (function `POINTER c -> magic c
-             | _ -> failwith "Gobject.get_pointer");
+             | _ -> failwith "Gobject.get_boxed");
       inj = (fun c -> `POINTER (magic c)) }
   let boxed = {pointer with kind = `BOXED}
   let gobject_option =
@@ -242,7 +242,11 @@ module Data = struct
       inj = (fun c -> `OBJECT (Some (unsafe_cast c))) }
 
   let of_value conv v =
-    conv.proj (Value.get v :> data_conv_get)
+    let d =
+      match conv.kind with
+      | `INT32 | `UINT32 -> `INT32 (Value.get_int32 v)
+      | _ -> (Value.get v :> data_conv_get)
+    in conv.proj d
   let to_fundamental = function
     | `INT32 -> `INT
     | `UINT32 -> `UINT

@@ -173,8 +173,8 @@ let paned dir =
 
 class notebook_signals obj = object
   inherit GContainer.container_signals obj
-  method switch_page =
-    GtkSignal.connect obj ~sgn:Notebook.Signals.switch_page ~after
+  method change_current_page =
+    GtkSignal.connect obj ~sgn:Notebook.S.change_current_page ~after
 end
 
 class notebook obj = object (self)
@@ -183,7 +183,7 @@ class notebook obj = object (self)
   method event = new GObj.event_ops obj
   method connect = new notebook_signals obj
   method insert_page ?tab_label ?menu_label ~pos child =
-      Notebook.insert_page obj (as_widget child) ~pos
+      Notebook.insert_page_menu obj (as_widget child) ~pos
 	~tab_label:(Gpointer.may_box tab_label ~f:as_widget)
 	~menu_label:(Gpointer.may_box menu_label ~f:as_widget)
   method append_page = self#insert_page ~pos:(-1)
