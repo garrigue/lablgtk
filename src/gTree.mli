@@ -480,6 +480,11 @@ type cell_properties_progress =
   [ cell_properties 
   | `VALUE of int
   | `TEXT of string option ]
+type cell_properties_combo =
+  [ cell_properties_text
+  | `MODEL of model option
+  | `TEXT_COLUMN of string column
+  | `HAS_ENTRY of bool ]
 
 (** @gtkdoc gtk GtkCellRenderer *)
 class type ['a, 'b] cell_renderer_skel =
@@ -542,6 +547,15 @@ class cell_renderer_progress : Gtk.cell_renderer_progress obj ->
     method connect : GObj.gtkobj_signals_impl
   end
 
+(** @since GTK 2.6
+    @gtkdoc gtk GtkCellRendererCombo *)
+class cell_renderer_combo : Gtk.cell_renderer_combo obj ->
+  object
+    inherit[Gtk.cell_renderer_combo,cell_properties_combo] cell_renderer_skel
+    method connect : cell_renderer_text_signals
+    method set_fixed_height_from_font : int -> unit
+  end
+
 (** @gtkdoc gtk GtkCellRendererPixbuf *)
 val cell_renderer_pixbuf : cell_properties_pixbuf list -> cell_renderer_pixbuf
 
@@ -554,3 +568,7 @@ val cell_renderer_toggle : cell_properties_toggle list -> cell_renderer_toggle
 (** @since GTK 2.6 
     @gtkdoc gtk GtkCellRendererProgress *)
 val cell_renderer_progress : cell_properties_progress list -> cell_renderer_progress
+
+(** @since GTK 2.6 
+    @gtkdoc gtk GtkCellRendererCombo *)
+val cell_renderer_combo : cell_properties_combo list -> cell_renderer_combo
