@@ -244,6 +244,7 @@ and misc_signals : ?after:bool -> Gtk.widget obj ->
     method map : callback:(unit -> unit) -> GtkSignal.id
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id
+    method unrealize : callback:(unit -> unit) -> GtkSignal.id
     method selection_get :
       callback:(selection_context -> info:int -> time:int32 -> unit) ->
       GtkSignal.id

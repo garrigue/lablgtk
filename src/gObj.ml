@@ -205,6 +205,7 @@ and misc_signals ?after obj = object (self)
   method map = self#connect S.map
   method unmap = self#connect S.unmap
   method realize = self#connect S.realize
+  method unrealize = self#connect S.unrealize
   method state_changed = self#connect S.state_changed
   method size_allocate = self#connect S.size_allocate
   method parent_set ~callback =

@@ -66,6 +66,7 @@ class Widget abstract : Object {
   signal map
   signal unmap
   signal realize
+  signal unrealize
   signal state_changed : GtkStateType
   signal parent_set : GtkWidget_opt
   signal size_allocate : GtkAllocation
