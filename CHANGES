@@ -6,6 +6,8 @@ $Id$
     This means that all options default to false/`NONE, except ~show
     (true for all widgets except windows) and ~fill (always true but
     effect controlled by ~expand).
+  * add GtkArgv.get_nativeint and GtkArgv.set_nativeint.
+  * make offset and length optional in GtkArgv.string_at_pointer.
 
 2000.5.10
   * rename GtkFrame to GtkBin and GFrame to GBin
