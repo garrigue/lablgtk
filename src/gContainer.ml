@@ -27,10 +27,10 @@ end
 
 class ['a] container_impl obj = object (self)
   inherit ['a] widget_impl obj
+  inherit container_props
   method add w = add obj (as_widget w)
   method remove w = remove obj (as_widget w)
   method children = List.map ~f:(new widget) (children obj)
-  method set_border_width = set P.border_width obj
   method focus = new focus obj
 end
 
@@ -57,7 +57,8 @@ let pack_container ~create =
 
 
 class virtual ['a] item_container obj = object (self)
-  inherit widget obj
+  inherit ['b] widget_impl obj
+  inherit container_props
   method add (w : 'a) =
     add obj w#as_item
   method remove (w : 'a) =
