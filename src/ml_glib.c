@@ -21,6 +21,14 @@ value copy_string_and_free (char *str)
     return res;
 }
 
+void ml_raise_glib (const char *errmsg)
+{
+  static value * exn = NULL;
+  if (exn == NULL)
+      exn = caml_named_value ("gliberror");
+  raise_with_string (*exn, (char*)errmsg);
+}
+
 value Val_GList (GList *list, value (*func)(gpointer))
 {
     value new_cell, result, last_cell, cell;
@@ -116,15 +124,41 @@ void ml_g_destroy_notify(gpointer data)
     ml_global_root_destroy(data);
 }
 
+ML_1( g_source_remove, Int_val, Val_bool );
+
 CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
 {
-    g_io_add_watch_full(GIOChannel_val(io),
-                        Option_val(prio,Int_val,0),
-                        Io_condition_val(cond),
-                        ml_g_io_channel_watch,
-                        ml_global_root_new(clos),
-                        ml_g_destroy_notify);
-    return Val_unit;
+    return Val_int ( g_io_add_watch_full(GIOChannel_val(io),
+					 Option_val(prio,Int_val,0),
+					 Io_condition_val(cond),
+					 ml_g_io_channel_watch,
+					 ml_global_root_new(clos),
+					 ml_g_destroy_notify) );
+}
+
+CAMLprim value ml_g_io_channel_read(value io, value str, value offset, value count)
+{
+  guint ret;
+  gsize read;
+  switch (g_io_channel_read(GIOChannel_val(io), 
+			    String_val(str) + Int_val(offset),
+			    Int_val(count),
+			    &read)) {
+  case G_IO_ERROR_NONE:
+    return Val_int( read );
+    break;
+  case G_IO_ERROR_AGAIN:
+    ml_raise_glib("g_io_channel_read: G_IO_ERROR_AGAIN");
+    break;
+  case G_IO_ERROR_INVAL:
+    ml_raise_glib("g_io_channel_read: G_IO_ERROR_INVAL");
+    break;
+  default:
+    ml_raise_glib("g_io_channel_read: G_IO_ERROR_AGAIN");
+    break;
+  }
+  /* no one reaches here... */
+  return Val_unit;
 }
 
 /* Thread initialization ? */

@@ -659,3 +659,12 @@ module Cursor = struct
     = "ml_gdk_cursor_new_from_pixmap_bc" "ml_gdk_cursor_new_from_pixmap"
   external destroy : cursor -> unit = "ml_gdk_cursor_destroy"
 end
+
+module Input = struct
+  type callback_id
+  type condition = [`READ|`WRITE|`EXCEPTION] 
+  external add : Unix.file_descr -> cond: condition -> callback: (unit -> unit) -> callback_id = 
+    "ml_gdk_input_add"
+  external remove : callback_id -> unit
+      = "ml_gdk_input_remove"
+end
