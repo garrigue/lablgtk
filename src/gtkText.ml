@@ -48,8 +48,8 @@ module Tag = struct
       [ `NAME of string
       | `BACKGROUND of string
       | `FOREGROUND of string 
-      | `BACKGROUND_GDK of GDraw.color
-      | `FOREGROUND_GDK of  GDraw.color
+      | `BACKGROUND_GDK of Gdk.Color.t
+      | `FOREGROUND_GDK of  Gdk.Color.t
       | `BACKGROUND_STIPPLE of Gdk.bitmap
       | `FOREGROUND_STIPPLE of Gdk.bitmap
       | `FONT of string
@@ -222,9 +222,13 @@ module Tag = struct
     | `FOREGROUND_STIPPLE b | `BACKGROUND_STIPPLE b -> 
 	let gtyp = Gobject.Type.from_name "GdkPixmap" in 
 	let v = Gobject.Value.create gtyp in
-	Gobject.Value.set v (`OBJECT (Some (Obj.magic b))); 
+	Gobject.Value.set v (`OBJECT (Some b)); 
 	Gobject.set_property o (property_to_string p) v 
-    | `FOREGROUND_GDK b | `BACKGROUND_GDK b  -> assert false
+    | `FOREGROUND_GDK b | `BACKGROUND_GDK b  ->
+        let gtyp = Gobject.Type.from_name "GdkColor" in
+	let v = Gobject.Value.create gtyp in
+	Gobject.Value.set v (`POINTER (Some (Obj.magic b))); 
+	Gobject.set_property o (property_to_string p) v 
     | `WRAP_MODE b ->
 	let gtyp = Gobject.Type.from_name "GtkWrapMode" in 
 	let v = Gobject.Value.create gtyp in 

@@ -2,15 +2,15 @@
 
 open StdLabels
 open Gaux
+open Gobject
 
 type colormap
 type visual
 type region
 type gc
-type +'a drawable
-type window = [`window] drawable
-type pixmap = [`pixmap] drawable
-type bitmap = [`bitmap] drawable
+type window = [`drawable|`gdkwindow] obj
+type pixmap = [`drawable|`gdkpixmap] obj
+type bitmap = [`drawable|`gdkpixmap|`gdkbitmap] obj
 type font
 type image
 type atom
@@ -170,7 +170,7 @@ module Image = struct
     width: int -> height: int -> image
       = "ml_gdk_image_new"
   external get :
-      'a drawable -> x: int -> y: int -> width: int -> height: int -> image
+      [>`drawable] obj -> x: int -> y: int -> width: int -> height: int -> image
       = "ml_gdk_drawable_get_image"
   external put_pixel : image -> x: int -> y: int -> pixel: int -> unit
     = "ml_gdk_image_put_pixel"
@@ -235,8 +235,8 @@ module Window = struct
   external get_visual : window -> visual = "ml_gdk_window_get_visual"
   external get_colormap : window -> colormap = "ml_gdk_window_get_colormap"
   external get_parent : window -> window = "ml_gdk_window_get_parent"
-  external get_size : 'a drawable -> int * int = "ml_gdk_window_get_size"
-  external get_position : 'a drawable -> int * int =
+  external get_size : [>`drawable] obj -> int * int = "ml_gdk_window_get_size"
+  external get_position : [>`drawable] obj -> int * int =
     "ml_gdk_window_get_position"
   external get_pointer_location: window -> int * int =
     "ml_gdk_window_get_pointer_location"
@@ -246,7 +246,7 @@ module Window = struct
   external set_cursor : window -> cursor -> unit = 
     "ml_gdk_window_set_cursor"
   external clear : window -> unit = "ml_gdk_window_clear"
-  external get_xwindow : 'a drawable -> xid = "ml_GDK_WINDOW_XWINDOW"
+  external get_xwindow : [>`drawable] obj -> xid = "ml_GDK_WINDOW_XWINDOW"
 
   let set_back_pixmap w pix = 
     let null_pixmap = (Obj.magic Gpointer.boxed_null : pixmap) in
@@ -325,7 +325,7 @@ module GC = struct
   type gdkLineStyle = [ `SOLID|`ON_OFF_DASH|`DOUBLE_DASH ]
   type gdkCapStyle = [ `NOT_LAST|`BUTT|`ROUND|`PROJECTING ]
   type gdkJoinStyle = [ `MITER|`ROUND|`BEVEL ]
-  external create : 'a drawable -> gc = "ml_gdk_gc_new"
+  external create : [>`drawable] obj -> gc = "ml_gdk_gc_new"
   external set_foreground : gc -> Color.t -> unit = "ml_gdk_gc_set_foreground"
   external set_background : gc -> Color.t -> unit = "ml_gdk_gc_set_background"
   external set_font : gc -> font -> unit = "ml_gdk_gc_set_font"
@@ -426,18 +426,19 @@ module Font = struct
 end
 
 module Draw = struct
-  external point : 'a drawable -> gc -> x:int -> y:int -> unit
+  external point : [>`drawable] obj -> gc -> x:int -> y:int -> unit
       = "ml_gdk_draw_point"
-  external line : 'a drawable -> gc -> x:int -> y:int -> x:int -> y:int -> unit
+  external line :
+      [>`drawable] obj -> gc -> x:int -> y:int -> x:int -> y:int -> unit
       = "ml_gdk_draw_line_bc" "ml_gdk_draw_line"
   external rectangle :
-      'a drawable -> gc ->
+      [>`drawable] obj -> gc ->
       filled:bool -> x:int -> y:int -> width:int -> height:int -> unit
       = "ml_gdk_draw_rectangle_bc" "ml_gdk_draw_rectangle"
   let rectangle w gc ~x ~y ~width ~height ?(filled=false) () =
     rectangle w gc ~x ~y ~width ~height ~filled
   external arc :
-      'a drawable -> gc -> filled:bool -> x:int -> y:int ->
+      [>`drawable] obj -> gc -> filled:bool -> x:int -> y:int ->
       width:int -> height:int -> start:int -> angle:int -> unit
       = "ml_gdk_draw_arc_bc" "ml_gdk_draw_arc"
   let arc w gc ~x ~y ~width ~height ?(filled=false) ?(start=0.)
@@ -467,14 +468,15 @@ module Draw = struct
     in
     f (array_of_segments l)
 
-  external polygon : 'a drawable -> gc -> filled:bool -> PointArray.t -> unit
-      = "ml_gdk_draw_polygon"
+  external polygon :
+    [>`drawable] obj -> gc -> filled:bool -> PointArray.t -> unit
+    = "ml_gdk_draw_polygon"
   let polygon w gc ?(filled=false) l =
     f_pointarray (polygon w gc ~filled) l
   external string :
-    'a drawable -> font: font -> gc -> x: int -> y: int -> string -> unit
-     = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"	
-  external image_ : 'a drawable -> gc -> image -> 
+    [>`drawable] obj -> font: font -> gc -> x: int -> y: int -> string -> unit
+    = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"	
+  external image_ : [>`drawable] obj -> gc -> image -> 
     xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
     width: int -> height: int -> unit
     = "ml_gdk_draw_image_bc" "ml_gdk_draw_image"
@@ -482,12 +484,12 @@ module Draw = struct
       ?(width= -1) ?(height= -1) image =
     image_ w gc image ~xsrc ~ysrc ~xdest ~ydest ~width ~height
 (*
-  external bitmap : 'a drawable -> gc -> bitmap: bitmap -> 
+  external bitmap : [>`drawable] obj -> gc -> bitmap: bitmap -> 
     xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
     width: int -> height: int -> unit
       = "ml_gdk_draw_bitmap_bc" "ml_gdk_draw_bitmap"
 *)
-  external pixmap_ : 'a drawable -> gc -> pixmap -> 
+  external pixmap_ : [>`drawable] obj -> gc -> pixmap -> 
     xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
     width: int -> height: int -> unit
     = "ml_gdk_draw_pixmap_bc" "ml_gdk_draw_pixmap"
@@ -495,13 +497,13 @@ module Draw = struct
       ?(width= -1) ?(height= -1) pixmap =
     pixmap_ w gc pixmap ~xsrc ~ysrc ~xdest ~ydest ~width ~height
 
-  external points : 'a drawable -> gc -> PointArray.t -> unit
+  external points : [>`drawable] obj -> gc -> PointArray.t -> unit
       = "ml_gdk_draw_points"
   let points w gc l = f_pointarray (points w gc) l
-  external lines : 'a drawable -> gc -> PointArray.t -> unit
+  external lines : [>`drawable] obj -> gc -> PointArray.t -> unit
       = "ml_gdk_draw_lines"
   let lines w gc l = f_pointarray (lines w gc) l
-  external segments : 'a drawable -> gc -> SegmentArray.t -> unit
+  external segments : [>`drawable] obj -> gc -> SegmentArray.t -> unit
       = "ml_gdk_draw_segments"
   let segments w gc l = f_segmentarray (segments w gc) l
 end
@@ -511,7 +513,7 @@ module Rgb = struct
   external get_visual : unit -> visual = "ml_gdk_rgb_get_visual"
   external get_cmap : unit -> colormap = "ml_gdk_rgb_get_cmap"
   external draw_image_ :
-    'a drawable -> gc -> x:int -> y:int -> width:int -> height:int ->
+    [>`drawable] obj -> gc -> x:int -> y:int -> width:int -> height:int ->
     dither:rgb_dither -> buf:Gpointer.region -> row_stride:int -> unit
     = "ml_gdk_draw_rgb_image_bc" "ml_gdk_draw_rgb_image"
   let draw_image w gc ~width ~height ?(x=0) ?(y=0) ?(dither=`NORMAL)
