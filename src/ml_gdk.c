@@ -106,22 +106,11 @@ Make_Extractor (GdkVisual,GdkVisual_val,blue_prec,Val_int)
 /* Image */
 
 #ifndef UnsafeImage
-
-Make_Val_final_pointer (GdkImage, Ignore, gdk_image_destroy, 0)
 GdkImage *GdkImage_val(value val)
 {
     if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkImage");
     return check_cast(GDK_IMAGE,val);
 }
-CAMLprim value ml_gdk_image_destroy (value val)
-{
-    if (Field(val,1)) g_object_unref (GObject_val(val));
-    Field(val,1) = 0;
-    return Val_unit;
-}
-
-#else
-ML_1 (gdk_image_destroy, GdkImage_val, Unit)
 #endif
 
 /* Broken in 2.0
@@ -129,9 +118,9 @@ ML_4 (gdk_image_new_bitmap, GdkVisual_val, String_val, Int_val, Int_val,
       Val_GdkImage)
 */
 ML_4 (gdk_image_new, GdkImageType_val, GdkVisual_val, Int_val, Int_val,
-      Val_GdkImage)
+      Val_GdkImage_new)
 ML_5 (gdk_drawable_get_image, GdkDrawable_val, Int_val, Int_val, Int_val,
-      Int_val, Val_GdkImage)
+      Int_val, Val_GdkImage_new)
 ML_4 (gdk_image_put_pixel, GdkImage_val, Int_val, Int_val, Int_val, Unit)
 ML_3 (gdk_image_get_pixel, GdkImage_val, Int_val, Int_val, Val_int)
 Make_Extractor(gdk_image, GdkImage_val, visual, Val_GdkVisual)
@@ -278,6 +267,13 @@ ML_bc6 (ml_gdk_cursor_new_from_pixmap)
 ML_1 (gdk_cursor_destroy, GdkCursor_val, Unit)
 
 /* Pixmap */
+
+
+GdkPixmap *GdkPixmap_val(value val)
+{
+    if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkPixmap");
+    return check_cast(GDK_PIXMAP,val);
+}
 
 ML_4 (gdk_pixmap_new, GdkWindow_val, Int_val, Int_val, Int_val,
       Val_GdkPixmap_no_ref)

@@ -190,7 +190,10 @@ end
 
 module Image = struct
   type image_type =
-    [ `NORMAL|`SHARED|`FASTEST ] 
+    [ `NORMAL|`SHARED|`FASTEST ]
+
+  let cast w : image = Gobject.try_cast w "GdkImage"
+  let destroy = Gobject.unsafe_unref
 
   external create : kind: image_type -> visual: visual -> 
     width: int -> height: int -> image
@@ -202,7 +205,6 @@ module Image = struct
     = "ml_gdk_image_put_pixel"
   external get_pixel : image -> x: int -> y: int -> int
     = "ml_gdk_image_get_pixel"
-  external destroy : image -> unit = "ml_gdk_image_destroy"
   external width : image -> int = "ml_gdk_image_width"
   external height : image -> int = "ml_gdk_image_height"
   external depth : image -> int = "ml_gdk_image_depth"
@@ -411,6 +413,7 @@ end
 
 module Pixmap = struct
   let cast w : pixmap = Gobject.try_cast w "GdkPixmap"
+  let destroy = Gobject.unsafe_unref
   open Gpointer
   external create :
       window optboxed -> width:int -> height:int -> depth:int -> pixmap

@@ -19,7 +19,7 @@
 
 #define GdkCursor_val(val) ((GdkCursor*)Pointer_val(val))
 
-#define GdkPixmap_val(val) check_cast(GDK_PIXMAP,val)
+extern GdkPixmap *GdkPixmap_val (value);  /* check argument */
 #define Val_GdkPixmap Val_GAnyObject
 #define Val_GdkPixmap_no_ref Val_GAnyObject_new
 
@@ -29,11 +29,11 @@
 
 #ifndef UnsafeImage
 extern GdkImage *GdkImage_val (value);  /* check argument */
-extern value Val_GdkImage (GdkImage *);
 #else
-#define GdkImage_val(val) ((GdkImage*)val)
-#define Val_GdkImage(img) ((value) img)
+#define GdkImage_val(val) check_cast(GDK_IMAGE,val)
 #endif
+#define Val_GdkImage Val_GAnyObject
+#define Val_GdkImage_new Val_GAnyObject_new
 
 #define GdkFont_val(val) ((GdkFont*)Pointer_val(val))
 extern value Val_GdkFont (GdkFont *);

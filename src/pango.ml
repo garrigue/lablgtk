@@ -166,7 +166,7 @@ module Layout = struct
   external set_single_paragraph_mode : layout -> bool -> unit
     = "ml_pango_layout_set_single_paragraph_mode"
   external context_changed : layout -> unit = "ml_pango_layout_context_changed"
-  external get_size : layout -> int * int = "ml_pango_layout_get_size"
+  external get_size : layout -> units * units = "ml_pango_layout_get_size"
   external get_pixel_size : layout -> int * int
     = "ml_pango_layout_get_pixel_size"
   external get_extent : layout -> rectangle = "ml_pango_layout_get_extent"

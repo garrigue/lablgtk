@@ -290,6 +290,7 @@ module GC :
 module Pixmap :
   sig
     val cast : 'a obj -> pixmap
+    val destroy : [> `gdkpixmap] obj -> unit
     val create :
       ?window:window -> width:int -> height:int -> ?depth:int -> unit -> pixmap
     val create_from_data :

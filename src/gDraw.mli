@@ -46,6 +46,8 @@ class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
     method line : x:int -> y:int -> x:int -> y:int -> unit
     method point : x:int -> y:int -> unit
     method polygon : ?filled:bool -> (int * int) list -> unit
+    method put_layout :
+      x: int -> y: int -> ?fore:color -> ?back:color -> Pango.layout -> unit
     method put_image :
       x:int -> y:int ->
       ?xsrc:int -> ?ysrc:int -> ?width:int -> ?height:int -> image -> unit
@@ -56,6 +58,12 @@ class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
       width:int -> height:int ->
       ?x:int -> ?y:int -> ?dither:Gdk.Tags.rgb_dither ->
       ?row_stride:int -> Gpointer.region -> unit
+    method put_pixbuf :
+      x:int -> y:int ->
+      ?width:int -> ?height:int ->
+      ?dither:Gdk.Tags.rgb_dither ->
+      ?x_dither:int ->
+      ?y_dither:int -> ?src_x:int -> ?src_y:int -> GdkPixbuf.pixbuf -> unit
     method rectangle :
       x:int ->
       y:int -> width:int -> height:int -> ?filled:bool -> unit -> unit
@@ -71,9 +79,7 @@ class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
       ?cap:GC.gdkCapStyle -> ?join:GC.gdkJoinStyle -> unit -> unit
     method size : int * int
     method string : string -> font:font -> x:int -> y:int -> unit
-    method layout :
-      x: int -> y: int -> ?fore:color -> ?back:color -> Pango.layout -> unit
-  method points : (int * int) list -> unit
+    method points : (int * int) list -> unit
     method lines : (int * int) list -> unit
     method segments : ((int * int) * (int * int)) list -> unit
   end

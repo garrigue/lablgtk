@@ -99,19 +99,22 @@ let render_alpha bm ?(dest_x=0) ?(dest_y=0) ?width ?height ?(threshold=128)
   and height = may_default get_height src ~opt:height in
   _render_alpha ~src bm ~src_x ~src_y ~dest_x ~dest_y ~width ~height ~threshold
 
-external _render_to_drawable :
-  src:pixbuf -> [>`drawable] obj -> gc -> src_x:int -> src_y:int ->
+external _draw_pixbuf :
+  [>`drawable] obj -> gc -> src:pixbuf -> src_x:int -> src_y:int ->
   dest_x:int -> dest_y:int -> width:int -> height:int ->
   dither:Tags.rgb_dither -> x_dither:int -> y_dither:int -> unit
   = "ml_gdk_pixbuf_render_to_drawable_bc"
     "ml_gdk_pixbuf_render_to_drawable"
-let render_to_drawable dw ?(gc=Gdk.GC.create dw) ?(dest_x=0) ?(dest_y=0)
+let draw_pixbuf dw gc ?(dest_x=0) ?(dest_y=0)
     ?width ?height ?(dither=`NONE) ?(x_dither=0) ?(y_dither=0)
     ?(src_x=0) ?(src_y=0) src =
   let width = may_default get_width src ~opt:width
   and height = may_default get_height src ~opt:height in
-  _render_to_drawable ~src dw gc ~src_x ~src_y ~dest_x ~dest_y ~width ~height
+  _draw_pixbuf dw gc ~src ~src_x ~src_y ~dest_x ~dest_y ~width ~height
     ~dither ~x_dither ~y_dither
+
+let render_to_drawable dw ?(gc=Gdk.GC.create dw) =
+  draw_pixbuf dw gc
 
 external _render_to_drawable_alpha :
   src:pixbuf -> [>`drawable] obj -> src_x:int -> src_y:int ->

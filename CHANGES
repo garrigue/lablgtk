@@ -1,5 +1,10 @@
 $Id$
 
+2004.03.15 [Jacques]
+  * allow destroying pixmaps manually
+  * update GdkPixbuf support
+  * PangoLayout corrections (incompatible with previous snapshot)
+
 2004.03.10 [Olivier]
   * update several 2.4 widgets to the latest API (ComboBox, TreeView,
     FileChooser).

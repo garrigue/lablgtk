@@ -44,7 +44,7 @@ class context obj = object (self)
   method get_metrics
       ?(desc = self#font_description) ?(lang = self#language) () =
     new metrics (get_metrics obj desc (Some (Language.from_string lang)))
-  method new_layout = Layout.create obj
+  method create_layout = Layout.create obj
 end
 
 class context_rw obj = object
