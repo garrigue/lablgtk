@@ -12,7 +12,7 @@ endif
 CAMLMKTOP = ocamlmktop
 CAMLMKLIB = ocamlmklib
 CAMLP4O = camlp4o
-CAMLLEX = camllex
+CAMLLEX = ocamllex
 # Default installation directories
 BINDIR = `$(GETLIBDIR) | sed -e 's|/lib/[^/]*$$|/bin|' -e 's|/lib$$|/bin|'`
 INSTALLDIR = $(LIBDIR)/lablgtk
