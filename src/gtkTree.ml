@@ -304,7 +304,7 @@ module TreeView = struct
     [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> edit:bool -> unit
     = "ml_gtk_tree_view_set_cursor_on_cell"
   external get_cursor :
-    [>`treeview] obj -> tree_path option * tree_view_column option
+    [>`treeview] obj -> tree_path option * tree_view_column obj option
     = "ml_gtk_tree_view_get_cursor"
   external get_path_at_pos :
     [>`treeview] obj -> x:int -> y:int ->

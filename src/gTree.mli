@@ -360,9 +360,9 @@ class view : tree_view obj ->
     method expander_column : view_column option
     method fixed_height_mode : bool
     method get_column : int -> view_column
-    method get_cursor : unit -> tree_path option * tree_view_column option
+    method get_cursor : unit -> tree_path option * view_column option
     method get_path_at_pos :
-      x:int -> y:int -> (tree_path * tree_view_column obj * int * int) option
+      x:int -> y:int -> (tree_path * view_column * int * int) option
     method hadjustment : GData.adjustment
     method headers_visible : bool
     method insert_column : view_column -> int -> int

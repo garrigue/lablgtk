@@ -365,8 +365,14 @@ class view obj = object
       | Some cell ->
           TreeView.set_cursor_on_cell obj ~edit row (as_column col)
             cell#as_renderer
-  method get_cursor () = TreeView.get_cursor obj
-  method get_path_at_pos = TreeView.get_path_at_pos obj
+  method get_cursor () =
+    match TreeView.get_cursor obj with
+      path, Some vc -> path, Some (new view_column vc)
+    | _, None as pair -> pair
+  method get_path_at_pos ~x ~y =
+    match TreeView.get_path_at_pos obj ~x ~y with
+      Some (p, c, x, y) -> Some (p, new view_column c, x, y)
+    | None -> None
 end
 let view ?model ?hadjustment ?vadjustment =
   let model = may_map (fun m -> m#as_model) model in
