@@ -38,12 +38,13 @@ end
 
 let window ?kind:(t=`TOPLEVEL) ?title ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y
-    ?border_width ?width ?height ?packing ?(show=false) () =
+    ?border_width ?width ?height ?(show=false) () =
   let w = Window.create t in
   Window.set w ?title ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
-  pack_return (new window w) ~packing ~show:(Some show)
+  if show then Widget.show w;
+  new window w
 
 class dialog obj = object
   inherit [window] window_skel (Dialog.coerce obj)
@@ -54,12 +55,13 @@ end
 
 let dialog ?title ?wm_name ?wm_class ?position ?allow_shrink
     ?allow_grow ?auto_shrink ?modal ?x ?y ?border_width ?width ?height
-    ?packing ?(show=false) () =
+    ?(show=false) () =
   let w = Dialog.create () in
   Window.set w ?title ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
-  pack_return (new dialog w) ~packing ~show:(Some show)
+  if show then Widget.show w;
+  new dialog w
 
 class color_selection_dialog obj = object
   inherit [window] window_skel (obj : Gtk.color_selection_dialog obj)
@@ -77,12 +79,13 @@ end
 let color_selection_dialog ?(title="Pick a color")
     ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y
-    ?border_width ?width ?height ?packing ?(show=false) () =
+    ?border_width ?width ?height ?(show=false) () =
   let w = ColorSelection.create_dialog title in
   Window.set w ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
-  pack_return (new color_selection_dialog w) ~packing ~show:(Some show)
+  if show then Widget.show w;
+  new color_selection_dialog w
 
 class file_selection obj = object
   inherit [window] window_skel (obj : Gtk.file_selection obj)
@@ -100,13 +103,14 @@ let file_selection ?(title="Choose a file") ?filename
     ?(fileop_buttons=false)
     ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y
-    ?border_width ?width ?height ?packing ?(show=false) () =
+    ?border_width ?width ?height ?(show=false) () =
   let w = FileSelection.create title in
   FileSelection.set w ?filename ~fileop_buttons;
   Window.set w ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
-  pack_return (new file_selection w) ~packing ~show:(Some show)
+  if show then Widget.show w;
+  new file_selection w
 
 class font_selection_dialog obj = object
   inherit [window] window_skel (obj : Gtk.font_selection_dialog obj)
@@ -126,9 +130,10 @@ end
 
 let font_selection_dialog ?title ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y
-    ?border_width ?width ?height ?packing ?(show=false) () =
+    ?border_width ?width ?height ?(show=false) () =
   let w = FontSelectionDialog.create ?title () in
   Window.set w ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
-  pack_return (new font_selection_dialog w) ~packing ~show:(Some show)
+  if show then Widget.show w;
+  new font_selection_dialog w

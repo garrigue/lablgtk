@@ -47,9 +47,7 @@ val window :
   ?x:int ->
   ?y:int ->
   ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> window
+  ?width:int -> ?height:int -> ?show:bool -> unit -> window
 
 class dialog : [>`dialog] obj ->
   object
@@ -71,9 +69,7 @@ val dialog :
   ?x:int ->
   ?y:int ->
   ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> dialog
+  ?width:int -> ?height:int -> ?show:bool -> unit -> dialog
 
 class color_selection_dialog : Gtk.color_selection_dialog obj ->
   object
@@ -97,10 +93,7 @@ val color_selection_dialog :
   ?x:int ->
   ?y:int ->
   ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(widget -> unit) ->
-  ?show:bool -> unit -> color_selection_dialog
+  ?width:int -> ?height:int -> ?show:bool -> unit -> color_selection_dialog
 
 class file_selection : Gtk.file_selection obj ->
   object
@@ -128,9 +121,7 @@ val file_selection :
   ?x:int ->
   ?y:int ->
   ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> file_selection
+  ?width:int -> ?height:int -> ?show:bool -> unit -> file_selection
 
 class font_selection_dialog : Gtk.font_selection_dialog obj ->
   object
@@ -166,7 +157,4 @@ val font_selection_dialog :
   ?x:int ->
   ?y:int ->
   ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(widget -> unit) ->
-  ?show:bool -> unit -> font_selection_dialog
+  ?width:int -> ?height:int -> ?show:bool -> unit -> font_selection_dialog

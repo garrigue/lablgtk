@@ -112,7 +112,7 @@ install:
 	cp liblablgtk.a $(LIBDIR) || cp liblablgtk.a $(INSTALLDIR)
 	cp lablgtktop  lablgtktop_t $(INSTALLDIR)
 	cp lablgtk lablgtkrun $(BINDIR)
-	if test -f lablgtk.cmxa; then cp lablgtk.cmxa $(INSTALLDIR); fi
+	if test -f lablgtk.cmxa; then cp lablgtk.cmxa lablgtk.a $(INSTALLDIR); fi
 
 liblablgtk.a: $(COBJS)
 	ar rc $@ $(COBJS)
