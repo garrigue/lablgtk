@@ -1,5 +1,8 @@
 $Id$
 
+2003.10.09 [Olivier]
+  * wrap GtkButton label property in button_skel
+
 In lablgtk-2.2.0:
 
 2003.10.10 [Jacques]

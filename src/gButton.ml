@@ -14,6 +14,8 @@ class button_skel obj = object (self)
   method clicked () = Button.clicked obj
   method set_relief = set Button.P.relief obj
   method relief = get Button.P.relief obj
+  method set_label = set Button.P.label obj
+  method label = get Button.P.label obj
   method grab_default () =
     set Widget.P.can_default obj true;
     set Widget.P.has_default obj true
