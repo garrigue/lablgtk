@@ -11,6 +11,8 @@ module MenuItem = struct
       = "ml_gtk_menu_item_new_with_label"
   external create_with_mnemonic : string -> menu_item obj
       = "ml_gtk_menu_item_new_with_mnemonic"
+  external separator_create : unit -> menu_item obj
+      = "ml_gtk_separator_menu_item_new"
   external tearoff_create : unit -> menu_item obj
       = "ml_gtk_tearoff_menu_item_new"
   let create ?(use_mnemonic=false) ?label () =

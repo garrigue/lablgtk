@@ -79,6 +79,11 @@ let tearoff_item ?border_width ?width ?height ?packing ?show () =
   Container.set w ?border_width ?width ?height;
   pack_item (new menu_item w) ?packing ?show
 
+let separator_item ?border_width ?width ?height ?packing ?show () =
+  let w = MenuItem.separator_create () in
+  Container.set w ?border_width ?width ?height;
+  pack_item (new menu_item w) ?packing ?show
+
 
 class image_menu_item obj = object
   inherit menu_item_skel obj
@@ -262,7 +267,7 @@ class ['a] factory
 	label;
       item
     method add_separator () = 
-      let m = menu_item ~packing:menu_shell#append () in
+      let m = separator_item ~packing:menu_shell#append () in
       m
     method add_submenu ?key label =
       let item = menu_item ~use_mnemonic:true ~label () in

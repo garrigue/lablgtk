@@ -87,6 +87,11 @@ val tearoff_item :
   ?width:int ->
   ?height:int ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
+val separator_item :
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
 
 
 class image_menu_item : 'a obj ->
