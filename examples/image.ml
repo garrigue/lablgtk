@@ -1,12 +1,14 @@
+(* $Id$ *)
+
 open GdkObj
 open GMain
 open Gdk
 
 (* load image *)
 let buf = String.create len: (256*256*3)
-let ic = open_in_bin file: "image256x256.rgb"
+let ic = open_in_bin "image256x256.rgb"
 let _ = 
-  input ic buffer:buf pos:0 len:(256*256*3);
+  input ic buf:buf pos:0 len:(256*256*3);
   close_in ic
 
 let rgb_at x y =
@@ -18,7 +20,7 @@ let rgb_at x y =
 (* let id = Thread.create GtkThread.main () *)
 
 (* We need show: true because of the need of visual *)
-let window = new GWindow.window show:true width: 256 height: 256
+let window = GWindow.window show:true width: 256 height: 256 ()
 
 let visual = window#misc#visual
 
@@ -45,13 +47,12 @@ let _ =
   in
  
   let display () =
-    drawing#image image: image
-        xsrc:0 ysrc:0 xdest:0 ydest:0 width:256 height:256
+    drawing#image image xsrc:0 ysrc:0 xdest:0 ydest:0 width:256 height:256
   in
 
   draw (); 
 
-  window#connect#event#expose after:true callback:
+  window#connect#after#event#expose callback:
     begin fun _ ->
       display (); false
     end;

@@ -4,12 +4,7 @@
 open Misc
 open Gtk
 open GdkObj
-open GPix
-open GWindow
 open GObj
-open GPack
-open GButton
-open GMisc
 open GMain
 
 (* GtkThread.start() *)
@@ -276,17 +271,17 @@ let trashcan_open_xpm = [|
 "                                                                ";
 "                                                                "  |]
 
-let window = new window
+let window = GWindow.window title:"DnD Test" ()
 let _ = window#misc#realize ()
 
-let drag_icon = new pixmap_from_xpm_d data:drag_icon_xpm
-    window:window#misc#window
+let drag_icon =
+  pixmap_from_xpm_d data:drag_icon_xpm window:window#misc#window ()
 
-let trashcan_open = new pixmap_from_xpm_d data:trashcan_open_xpm
-    window:window#misc#window
+let trashcan_open =
+  pixmap_from_xpm_d data:trashcan_open_xpm window:window#misc#window ()
 
-let trashcan_closed = new pixmap_from_xpm_d data:trashcan_closed_xpm
-    window:window#misc#window
+let trashcan_closed =
+  pixmap_from_xpm_d data:trashcan_closed_xpm window:window#misc#window ()
 
 let targets = [
   { target = "STRING"; flags = []; info = 0};
@@ -311,8 +306,8 @@ class drag_handler = object
 end
 
 
-class target_drag ?:packing ?:show =
-  let pixmap = new pixmap trashcan_closed ?:packing ?:show in
+class target_drag ?:packing ?:show () =
+  let pixmap = GPix.pixmap trashcan_closed ?:packing ?:show () in
 object (self)
   inherit widget pixmap#as_widget
   inherit drag_handler
@@ -330,7 +325,7 @@ object (self)
     end;
     let source_typename =
       try
-	GtkBase.Type.name context#source_widget#get_type
+	context#source_widget#get_type
       with Null_pointer -> "unknown"
     in
     Printf.printf "motion, source %s\n" source_typename; flush stdout;
@@ -343,7 +338,7 @@ object (self)
     pixmap#set_pixmap trashcan_closed;
     match context#targets with
     | [] -> false
-    | d :: _ -> pixmap#drag#get_data context target:d :time; true
+    | d :: _ -> pixmap#drag#get_data d :context :time; true
 
   method data_received context :x :y data :info :time =
     if data#format = 8 then begin
@@ -354,7 +349,7 @@ object (self)
     else context#finish success:false del:false :time
 
   initializer
-    pixmap#drag#dest_set flags:[] targets:[] actions:[];
+    pixmap#drag#dest_set targets actions:[`COPY;`MOVE];
     pixmap#connect#drag#leave callback:self#leave;
     pixmap#connect#drag#motion callback:self#motion;
     pixmap#connect#drag#drop callback:self#drop;
@@ -362,8 +357,8 @@ object (self)
     ()
 end
 
-class label_drag ?:packing ?:show =
-  let label = new label text:"Drop Here\n" ?:packing ?:show in
+class label_drag ?:packing ?:show () =
+  let label = GMisc.label text:"Drop Here\n" ?:packing ?:show () in
 object (self)
   inherit widget label#as_widget
   inherit drag_handler
@@ -376,13 +371,13 @@ object (self)
     else context#finish success:false del:false :time
 
   initializer
-    label#drag#dest_set :targets actions:[`COPY; `MOVE ];
+    label#drag#dest_set targets actions:[`COPY; `MOVE ];
     label#connect#drag#data_received callback:self#data_received;
     ()
 end
 
-class source_drag ?:packing ?:show =
-  let button = new button label:"Drag Here\n" ?:packing ?:show in
+class source_drag ?:packing ?:show () =
+  let button = GButton.button label:"Drag Here\n" ?:packing ?:show () in
 object (self)
   inherit widget button#as_widget
   inherit drag_handler
@@ -400,8 +395,8 @@ object (self)
     print_endline "Delete the data!"; flush stdout
 
   initializer
-    button#drag#source_set mod:[`BUTTON1; `BUTTON3 ] :targets
-      actions:[`COPY; `MOVE ];
+    button#drag#source_set targets
+      mod:[`BUTTON1; `BUTTON3 ] actions:[`COPY; `MOVE ];
     button#drag#source_set_icon drag_icon;
     button#connect#drag#data_get callback:self#data_get;
     button#connect#drag#data_delete callback:self#data_delete;
@@ -410,7 +405,7 @@ end
 
 class popup () = object (self)
   inherit drag_handler
-  val mutable popup_window = (None : window option)
+  val mutable popup_window = (None : GWindow.window option)
   val mutable popped_up = false
   val mutable in_popup = false
   val mutable popdown_timer = None
@@ -453,15 +448,16 @@ class popup () = object (self)
   method popup () =
     if not popped_up then begin
       if popup_window = None then begin
-	let w = new window type:`POPUP position:`MOUSE in
+	let w = GWindow.window type:`POPUP position:`MOUSE () in
 	popup_window <- Some w;
-	let table = new table rows:3 columns:3 packing:w#add in
+	let table = GPack.table rows:3 columns:3 packing:w#add () in
 	for i = 0 to 2 do
 	  for j = 0 to 2 do
-	    let button = new button label:((string_of_int i) ^ "," ^
-					   (string_of_int j)) in
-	    table#attach button left:i top:j;
-	    button#drag#dest_set :targets actions:[`COPY; `MOVE ];
+	    let button =
+	      GButton.button label:(string_of_int i ^ "," ^ string_of_int j)
+		packing:(table#attach left:i top:j) ()
+	    in
+	    button#drag#dest_set targets actions:[`COPY; `MOVE ];
 	    button#connect#drag#motion callback:self#motion;
 	    button#connect#drag#leave callback:self#leave;
 	  done
@@ -476,8 +472,9 @@ class popup () = object (self)
     false
 end
 
-class popsite ?:packing ?:show =
-  let label = new label text:"Popup\n" and popup = new popup () in
+class popsite ?:packing ?:show () =
+  let label = GMisc.label text:"Popup\n" ?:packing ?:show ()
+  and popup = new popup () in
 object (self)
   inherit widget label#as_widget
   inherit drag_handler
@@ -492,7 +489,7 @@ object (self)
     popup#remove_timer ()
 
   initializer
-    label#drag#dest_set :targets actions:[`COPY; `MOVE ];
+    label#drag#dest_set targets actions:[`COPY; `MOVE ];
     label#connect#drag#motion callback:self#motion;
     label#connect#drag#leave callback:self#leave;
     ()
@@ -500,11 +497,11 @@ end
 
 let main () =
   window#connect#destroy callback: Main.quit;
-  let table = new table rows:2 columns:2 packing:window#add in
-  table#attach (new label_drag) left:0 top:0;
-  table#attach (new target_drag) left:1 top:0;
-  table#attach (new source_drag) left:0 top:1;
-  table#attach (new popsite) left:1 top:1;
+  let table = GPack.table rows:2 columns:2 packing:window#add () in
+  new label_drag packing:(table#attach left:0 top:0) ();
+  new target_drag packing:(table#attach left:1 top:0) ();
+  new source_drag packing:(table#attach left:0 top:1) ();
+  new popsite packing:(table#attach left:1 top:1) ();
 
   window#show ();
   Main.main ()

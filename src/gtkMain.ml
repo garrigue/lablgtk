@@ -21,8 +21,9 @@ module Main = struct
   let locale = set_locale ()
   let init () =
     let argv = init Sys.argv in
-    Array.blit argv to:Sys.argv len:(Array.length argv) pos:0 to_pos:0;
-    Obj.truncate (Obj.repr Sys.argv) (Array.length argv)
+    Array.blit src:argv dst:Sys.argv len:(Array.length argv)
+      src_pos:0 dst_pos:0;
+    Obj.truncate (Obj.repr Sys.argv) len:(Array.length argv)
   open Glib
   let loops = ref [] 
   let main () =
@@ -38,8 +39,8 @@ module Main = struct
 end
 
 module Grab = struct
-  external add : [> widget] obj -> unit = "ml_gtk_grab_add"
-  external remove : [> widget] obj -> unit = "ml_gtk_grab_remove"
+  external add : [>`widget] obj -> unit = "ml_gtk_grab_add"
+  external remove : [>`widget] obj -> unit = "ml_gtk_grab_remove"
   external get_current : unit -> widget obj= "ml_gtk_grab_get_current"
 end
 

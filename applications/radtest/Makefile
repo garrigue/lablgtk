@@ -3,8 +3,8 @@
 
 all: radtest
 
-CAMLC = olablc
-CAMLOPT = olablopt
+CAMLC = ocamlc
+CAMLOPT = ocamlopt
 COMPILER = $(CAMLC) $(MLFLAGS) -c
 LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -c
@@ -15,7 +15,7 @@ RANLIB = ranlib
 
 include ../../config.make
 
-MLFLAGS = -I ../..
+MLFLAGS = -I ../.. -w s -modern
 
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
@@ -33,7 +33,7 @@ THLDFLAGS = -lthreads -lunix
 ifdef USE_CC
 CCOMPILER = $(CC) -c -I$(LABLLIB) $(CFLAGS)
 else
-CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
+CCOMPILER = ocamlc -c -ccopt "$(CFLAGS)"
 endif
 
 
@@ -58,18 +58,18 @@ MLSRC = paste_parser.ml paste_lexer.ml wpaste_parser.ml wpaste_lexer.ml \
 radtest: $(MLOBJS)  libtree2.a gtree2.cma
 	$(LINKER) -o $@ -custom -cclib "-L../.. -L. \
 	-llablgtk -ltree2 $(GTKLIBS)" \
-	stdclass.cma lablgtk.cma gtkInit.cmo gtree2.cma $(MLOBJS)
+	lablgtk.cma gtkInit.cmo gtree2.cma $(MLOBJS)
 
 radtestopt: $(MLOBJS:.cmo=.cmx) libtree2.a gtree2.cmxa
 	$(LINKOPT) -o $@ -cclib "-L../.. -L. \
 	-llablgtk -ltree2 $(GTKLIBS)" \
-	stdclass.cmxa lablgtk.cmxa gtkInit.cmx gtree2.cmxa $(MLOBJS:.cmo=.cmx)
+	lablgtk.cmxa gtkInit.cmx gtree2.cmxa $(MLOBJS:.cmo=.cmx)
 
 %.mli %.ml: %.mly
-	olablyacc $<
+	ocamlyacc $<
 
 %.ml: %.mll
-	olabllex $<
+	ocamllex $<
 
 libtree2.a: gtktree2.o gtktreeitem2.o ml_gtk2.o
 	ar rc $@ gtktree2.o gtktreeitem2.o ml_gtk2.o
@@ -85,6 +85,6 @@ clean:
 	rm -f *.cm* *.o *.a radtest *_parser.ml *_parser.mli *_lexer.ml
 
 .depend: $(MLSRC)
-	olabldep *.ml *.mli > .depend
+	ocamldep *.ml *.mli > .depend
 
 include .depend

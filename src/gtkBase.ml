@@ -21,6 +21,9 @@ module Object = struct
     Type.is_a (get_type obj) (Type.from_name name)
   external destroy : 'a obj -> unit = "ml_gtk_object_destroy"
   external unsafe_cast : 'a obj -> 'b obj = "%identity"
+  let try_cast w name =
+    if is_a w name then unsafe_cast w
+    else raise (Cannot_cast name)
   let get_id (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
   module Signals = struct
     open GtkSignal
@@ -30,119 +33,119 @@ module Object = struct
 end
 
 module Widget = struct
-  let cast w : widget obj =
-    if Object.is_a w "GtkWidget" then Obj.magic w
-    else invalid_arg "Gtk.Widget.cast"
-  external coerce : [> widget] obj -> widget obj = "%identity"
-  external unparent : [> widget] obj -> unit = "ml_gtk_widget_unparent"
-  external show : [> widget] obj -> unit = "ml_gtk_widget_show"
-  external show_now : [> widget] obj -> unit = "ml_gtk_widget_show_now"
-  external show_all : [> widget] obj -> unit = "ml_gtk_widget_show_all"
-  external hide : [> widget] obj -> unit = "ml_gtk_widget_hide"
-  external hide_all : [> widget] obj -> unit = "ml_gtk_widget_hide_all"
-  external map : [> widget] obj -> unit = "ml_gtk_widget_map"
-  external unmap : [> widget] obj -> unit = "ml_gtk_widget_unmap"
-  external realize : [> widget] obj -> unit = "ml_gtk_widget_realize"
-  external unrealize : [> widget] obj -> unit = "ml_gtk_widget_unrealize"
-  external queue_draw : [> widget] obj -> unit = "ml_gtk_widget_queue_draw"
-  external queue_resize : [> widget] obj -> unit = "ml_gtk_widget_queue_resize"
-  external draw : [> widget] obj -> Gdk.Rectangle.t option -> unit
+  let cast w : widget obj = Object.try_cast w "GtkWidget"
+  external coerce : [>`widget] obj -> widget obj = "%identity"
+  external unparent : [>`widget] obj -> unit = "ml_gtk_widget_unparent"
+  external show : [>`widget] obj -> unit = "ml_gtk_widget_show"
+  external show_now : [>`widget] obj -> unit = "ml_gtk_widget_show_now"
+  external show_all : [>`widget] obj -> unit = "ml_gtk_widget_show_all"
+  external hide : [>`widget] obj -> unit = "ml_gtk_widget_hide"
+  external hide_all : [>`widget] obj -> unit = "ml_gtk_widget_hide_all"
+  external map : [>`widget] obj -> unit = "ml_gtk_widget_map"
+  external unmap : [>`widget] obj -> unit = "ml_gtk_widget_unmap"
+  external realize : [>`widget] obj -> unit = "ml_gtk_widget_realize"
+  external unrealize : [>`widget] obj -> unit = "ml_gtk_widget_unrealize"
+  external queue_draw : [>`widget] obj -> unit = "ml_gtk_widget_queue_draw"
+  external queue_resize : [>`widget] obj -> unit = "ml_gtk_widget_queue_resize"
+  external draw : [>`widget] obj -> Gdk.Rectangle.t option -> unit
       = "ml_gtk_widget_draw"
-  external draw_focus : [> widget] obj -> unit
+  external draw_focus : [>`widget] obj -> unit
       = "ml_gtk_widget_draw_focus"
-  external draw_default : [> widget] obj -> unit
+  external draw_default : [>`widget] obj -> unit
       = "ml_gtk_widget_draw_default"
-  external event : [> widget] obj -> 'a Gdk.event -> bool
+  external event : [>`widget] obj -> 'a Gdk.event -> bool
       = "ml_gtk_widget_event"
-  external activate : [> widget] obj -> bool
+  external activate : [>`widget] obj -> bool
       = "ml_gtk_widget_activate"
-  external reparent : [> widget] obj -> [> widget] obj -> unit
+  external reparent : [>`widget] obj -> [>`widget] obj -> unit
       = "ml_gtk_widget_reparent"
-  external popup : [> widget] obj -> x:int -> y:int -> unit
+  external popup : [>`widget] obj -> x:int -> y:int -> unit
       = "ml_gtk_widget_popup"
   external intersect :
-      [> widget] obj -> Gdk.Rectangle.t -> Gdk.Rectangle.t option
+      [>`widget] obj -> Gdk.Rectangle.t -> Gdk.Rectangle.t option
       = "ml_gtk_widget_intersect"
-  external set_can_default : [> widget] obj -> bool -> unit
+  external set_can_default : [>`widget] obj -> bool -> unit
       = "ml_gtk_widget_set_can_default"
-  external set_can_focus : [> widget] obj -> bool -> unit
+  external set_can_focus : [>`widget] obj -> bool -> unit
       = "ml_gtk_widget_set_can_focus"
-  external grab_focus : [> widget] obj -> unit
+  external grab_focus : [>`widget] obj -> unit
       = "ml_gtk_widget_grab_focus"
-  external grab_default : [> widget] obj -> unit
+  external grab_default : [>`widget] obj -> unit
       = "ml_gtk_widget_grab_default"
-  external set_name : [> widget] obj -> string -> unit
+  external set_name : [>`widget] obj -> string -> unit
       = "ml_gtk_widget_set_name"
-  external get_name : [> widget] obj -> string
+  external get_name : [>`widget] obj -> string
       = "ml_gtk_widget_get_name"
-  external set_state : [> widget] obj -> state_type -> unit
+  external set_state : [>`widget] obj -> state_type -> unit
       = "ml_gtk_widget_set_state"
-  external set_sensitive : [> widget] obj -> bool -> unit
+  external set_sensitive : [>`widget] obj -> bool -> unit
       = "ml_gtk_widget_set_sensitive"
-  external set_uposition : [> widget] obj -> x:int -> y:int -> unit
+  external set_uposition : [>`widget] obj -> x:int -> y:int -> unit
       = "ml_gtk_widget_set_uposition"
-  external set_usize : [> widget] obj -> width:int -> height:int -> unit
+  external set_usize : [>`widget] obj -> width:int -> height:int -> unit
       = "ml_gtk_widget_set_usize"
-  external add_events : [> widget] obj -> Gdk.Tags.event_mask list -> unit
+  external add_events : [>`widget] obj -> Gdk.Tags.event_mask list -> unit
       = "ml_gtk_widget_add_events"
-  external set_events : [> widget] obj -> Gdk.Tags.event_mask list -> unit
+  external set_events : [>`widget] obj -> Gdk.Tags.event_mask list -> unit
       = "ml_gtk_widget_set_events"
   external set_extension_events :
-      [> widget] obj -> Gdk.Tags.extension_events -> unit
+      [>`widget] obj -> Gdk.Tags.extension_events -> unit
       = "ml_gtk_widget_set_extension_events"
-  external get_toplevel : [> widget] obj -> widget obj
+  external get_toplevel : [>`widget] obj -> widget obj
       = "ml_gtk_widget_get_toplevel"
-  external get_ancestor : [> widget] obj -> gtk_type -> widget obj
+  external get_ancestor : [>`widget] obj -> gtk_type -> widget obj
       = "ml_gtk_widget_get_ancestor"
-  external get_colormap : [> widget] obj -> Gdk.colormap
+  external get_colormap : [>`widget] obj -> Gdk.colormap
       = "ml_gtk_widget_get_colormap"
-  external get_visual : [> widget] obj -> Gdk.visual
+  external get_visual : [>`widget] obj -> Gdk.visual
       = "ml_gtk_widget_get_visual"
-  external get_pointer : [> widget] obj -> int * int
+  external get_pointer : [>`widget] obj -> int * int
       = "ml_gtk_widget_get_pointer"
-  external is_ancestor : [> widget] obj -> [> widget] obj -> bool
+  external is_ancestor : [>`widget] obj -> [>`widget] obj -> bool
       = "ml_gtk_widget_is_ancestor"
-  external set_style : [> widget] obj -> style -> unit
+  external set_style : [>`widget] obj -> style -> unit
       = "ml_gtk_widget_set_style"
-  external set_rc_style : [> widget] obj -> unit
+  external set_rc_style : [>`widget] obj -> unit
       = "ml_gtk_widget_set_rc_style"
-  external ensure_style : [> widget] obj -> unit
+  external ensure_style : [>`widget] obj -> unit
       = "ml_gtk_widget_ensure_style"
-  external get_style : [> widget] obj -> style
+  external get_style : [>`widget] obj -> style
       = "ml_gtk_widget_get_style"
-  external restore_default_style : [> widget] obj -> unit
+  external restore_default_style : [>`widget] obj -> unit
       = "ml_gtk_widget_restore_default_style"
   external add_accelerator :
-      'a[> widget] obj -> sig:('a,unit->unit) GtkSignal.t ->
+      ([>`widget] as 'a) obj -> sig:('a,unit->unit) GtkSignal.t ->
       accel_group -> key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list ->
       ?flags:accel_flag list -> unit
       = "ml_gtk_widget_add_accelerator_bc" "ml_gtk_widget_add_accelerator"
   external remove_accelerator :
-      [> widget] obj -> accel_group ->
+      [>`widget] obj -> accel_group ->
       key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list -> unit
       = "ml_gtk_widget_remove_accelerator"
-  external lock_accelerators : [> widget] obj -> unit
+  external lock_accelerators : [>`widget] obj -> unit
       = "ml_gtk_widget_lock_accelerators"
-  external unlock_accelerators : [> widget] obj -> unit
+  external unlock_accelerators : [>`widget] obj -> unit
       = "ml_gtk_widget_unlock_accelerators"
-  external accelerators_locked : [> widget] obj -> bool
+  external accelerators_locked : [>`widget] obj -> bool
       = "ml_gtk_widget_accelerators_locked"
-  external window : [> widget] obj -> Gdk.window
+  external window : [>`widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
-  external visible : [> widget] obj -> bool
+  external visible : [>`widget] obj -> bool
       = "ml_GTK_WIDGET_VISIBLE"
-  external has_focus : [> widget] obj -> bool
+  external has_focus : [>`widget] obj -> bool
       = "ml_GTK_WIDGET_HAS_FOCUS"
-  external parent : [> widget] obj -> widget obj
+  external parent : [>`widget] obj -> widget obj
       = "ml_gtk_widget_parent"
-  external set_app_paintable : [> widget] obj -> bool -> unit
+  external set_app_paintable : [>`widget] obj -> bool -> unit
       = "ml_gtk_widget_set_app_paintable"
-  external allocation : [> widget] obj -> rectangle
+  external allocation : [>`widget] obj -> rectangle
       = "ml_gtk_widget_allocation"
-  let set_position w ?:x [< -2 >] ?:y [< -2 >] =
+(*
+  let set_position ?:x{= -2} ?:y{= -2} w =
     set_uposition w :x :y
-  let set_size w ?:width [< -2 >] ?:height [< -2 >] =
+  let set_size ?:width{= -2} ?:height{= -2} w =
     set_usize w :width :height
+*)
 (*
   let setter w :cont ?:name ?:state ?:sensitive ?:extension_events
       ?:can_default ?:can_focus ?:x ?:y ?:width ?:height ?:style =
@@ -184,45 +187,45 @@ module Widget = struct
 	      y:(GtkArgv.get_int argv pos:2) time:(GtkArgv.get_int argv pos:3)
 	  in GtkArgv.set_result_bool argv res
       |	None -> invalid_arg "GtkBase.Widget.Signals.marshal_drag3"
-    let show : ([> widget],_) t =
+    let show : ([>`widget],_) t =
       { name = "show"; marshaller = marshal_unit }
-    let hide : ([> widget],_) t =
+    let hide : ([>`widget],_) t =
       { name = "hide"; marshaller = marshal_unit }
-    let map : ([> widget],_) t =
+    let map : ([>`widget],_) t =
       { name = "map"; marshaller = marshal_unit }
-    let unmap : ([> widget],_) t =
+    let unmap : ([>`widget],_) t =
       { name = "unmap"; marshaller = marshal_unit }
-    let realize : ([> widget],_) t =
+    let realize : ([>`widget],_) t =
       { name = "realize"; marshaller = marshal_unit }
-    let draw : ([> widget],_) t =
+    let draw : ([>`widget],_) t =
       let marshal f argv =
 	match GtkArgv.get_pointer argv pos:0 with
 	  Some p -> f (Obj.magic p : Gdk.Rectangle.t)
 	| None -> invalid_arg "GtkBase.Widget.Signals.marshal_draw"
       in { name = "draw"; marshaller = marshal }
-    let draw_focus : ([> widget],_) t =
+    let draw_focus : ([>`widget],_) t =
       { name = "draw_focus"; marshaller = marshal_unit }
-    let draw_default : ([> widget],_) t =
+    let draw_default : ([>`widget],_) t =
       { name = "draw_default"; marshaller = marshal_unit }
     external val_state : int -> state_type = "ml_Val_state_type"
-    let state_changed : ([> widget],_) t =
+    let state_changed : ([>`widget],_) t =
       let marshal f argv = f (val_state (GtkArgv.get_int argv pos:0)) in
       { name = "state_changed"; marshaller = marshal }
-    let parent_set : ([> widget],_) t =
+    let parent_set : ([>`widget],_) t =
       { name = "parent_set"; marshaller = marshal_opt }
-    let drag_begin : ([> widget],_) t =
+    let drag_begin : ([>`widget],_) t =
       { name = "drag_begin"; marshaller = marshal_drag1 }
-    let drag_end : ([> widget],_) t =
+    let drag_end : ([>`widget],_) t =
       { name = "drag_end"; marshaller = marshal_drag1 }
-    let drag_data_delete : ([> widget],_) t =
+    let drag_data_delete : ([>`widget],_) t =
       { name = "drag_data_delete"; marshaller = marshal_drag1 }
-    let drag_leave : ([> widget],_) t =
+    let drag_leave : ([>`widget],_) t =
       { name = "drag_leave"; marshaller = marshal_drag2 }
-    let drag_motion : ([> widget],_) t =
+    let drag_motion : ([>`widget],_) t =
       { name = "drag_motion"; marshaller = marshal_drag3 }
-    let drag_drop : ([> widget],_) t =
+    let drag_drop : ([>`widget],_) t =
       { name = "drag_drop"; marshaller = marshal_drag3 }
-    let drag_data_get : ([> widget],_) t =
+    let drag_data_get : ([>`widget],_) t =
       let marshal f argv =
 	match GtkArgv.get_pointer argv pos:0, GtkArgv.get_pointer argv pos:1
 	with Some p, Some q ->
@@ -233,7 +236,7 @@ module Widget = struct
 	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_get"
       in
       { name = "drag_data_get"; marshaller = marshal }
-    let drag_data_received : ([> widget],_) t =
+    let drag_data_received : ([>`widget],_) t =
       let marshal f argv = 
 	match GtkArgv.get_pointer argv pos:0, GtkArgv.get_pointer argv pos:3
 	with Some p, Some q ->
@@ -252,97 +255,97 @@ module Widget = struct
 	in
 	let ev = GdkEvent.unsafe_copy p in
 	GtkArgv.set_result_bool argv (f ev)
-      let any : ([> widget], Gdk.Tags.event_type Gdk.event -> bool) t =
+      let any : ([>`widget], Gdk.Tags.event_type Gdk.event -> bool) t =
 	{ name = "event"; marshaller = marshal }
-      let button_press : ([> widget], GdkEvent.Button.t -> bool) t =
+      let button_press : ([>`widget], GdkEvent.Button.t -> bool) t =
 	{ name = "button_press_event"; marshaller = marshal }
-      let button_release : ([> widget], GdkEvent.Button.t -> bool) t =
+      let button_release : ([>`widget], GdkEvent.Button.t -> bool) t =
 	{ name = "button_release_event"; marshaller = marshal }
-      let motion_notify : ([> widget], GdkEvent.Motion.t -> bool) t =
+      let motion_notify : ([>`widget], GdkEvent.Motion.t -> bool) t =
 	{ name = "motion_notify_event"; marshaller = marshal }
-      let delete : ([> widget], [DELETE] Gdk.event -> bool) t =
+      let delete : ([>`widget], [`DELETE] Gdk.event -> bool) t =
 	{ name = "delete_event"; marshaller = marshal }
-      let destroy : ([> widget], [DESTROY] Gdk.event -> bool) t =
+      let destroy : ([>`widget], [`DESTROY] Gdk.event -> bool) t =
 	{ name = "destroy_event"; marshaller = marshal }
-      let expose : ([> widget], GdkEvent.Expose.t -> bool) t =
+      let expose : ([>`widget], GdkEvent.Expose.t -> bool) t =
 	{ name = "expose_event"; marshaller = marshal }
-      let key_press : ([> widget], GdkEvent.Key.t -> bool) t =
+      let key_press : ([>`widget], GdkEvent.Key.t -> bool) t =
 	{ name = "key_press_event"; marshaller = marshal }
-      let key_release : ([> widget], GdkEvent.Key.t -> bool) t =
+      let key_release : ([>`widget], GdkEvent.Key.t -> bool) t =
 	{ name = "key_release_event"; marshaller = marshal }
-      let enter_notify : ([> widget], GdkEvent.Crossing.t -> bool) t =
+      let enter_notify : ([>`widget], GdkEvent.Crossing.t -> bool) t =
 	{ name = "enter_notify_event"; marshaller = marshal }
-      let leave_notify : ([> widget], GdkEvent.Crossing.t -> bool) t =
+      let leave_notify : ([>`widget], GdkEvent.Crossing.t -> bool) t =
 	{ name = "leave_notify_event"; marshaller = marshal }
-      let configure : ([> widget], GdkEvent.Configure.t -> bool) t =
+      let configure : ([>`widget], GdkEvent.Configure.t -> bool) t =
 	{ name = "configure_event"; marshaller = marshal }
-      let focus_in : ([> widget], GdkEvent.Focus.t -> bool) t =
+      let focus_in : ([>`widget], GdkEvent.Focus.t -> bool) t =
 	{ name = "focus_in_event"; marshaller = marshal }
-      let focus_out : ([> widget], GdkEvent.Focus.t -> bool) t =
+      let focus_out : ([>`widget], GdkEvent.Focus.t -> bool) t =
 	{ name = "focus_out_event"; marshaller = marshal }
-      let map : ([> widget], [MAP] Gdk.event -> bool) t =
+      let map : ([>`widget], [`MAP] Gdk.event -> bool) t =
 	{ name = "map_event"; marshaller = marshal }
-      let unmap : ([> widget], [UNMAP] Gdk.event -> bool) t =
+      let unmap : ([>`widget], [`UNMAP] Gdk.event -> bool) t =
 	{ name = "unmap_event"; marshaller = marshal }
-      let property_notify : ([> widget], GdkEvent.Property.t -> bool) t =
+      let property_notify : ([>`widget], GdkEvent.Property.t -> bool) t =
 	{ name = "property_notify_event"; marshaller = marshal }
-      let selection_clear : ([> widget], GdkEvent.Selection.t -> bool) t =
+      let selection_clear : ([>`widget], GdkEvent.Selection.t -> bool) t =
 	{ name = "selection_clear_event"; marshaller = marshal }
-      let selection_request : ([> widget], GdkEvent.Selection.t -> bool) t =
+      let selection_request : ([>`widget], GdkEvent.Selection.t -> bool) t =
 	{ name = "selection_request_event"; marshaller = marshal }
-      let selection_notify : ([> widget], GdkEvent.Selection.t -> bool) t =
+      let selection_notify : ([>`widget], GdkEvent.Selection.t -> bool) t =
 	{ name = "selection_notify_event"; marshaller = marshal }
-      let proximity_in : ([> widget], GdkEvent.Proximity.t -> bool) t =
+      let proximity_in : ([>`widget], GdkEvent.Proximity.t -> bool) t =
 	{ name = "proximity_in_event"; marshaller = marshal }
-      let proximity_out : ([> widget], GdkEvent.Proximity.t -> bool) t =
+      let proximity_out : ([>`widget], GdkEvent.Proximity.t -> bool) t =
 	{ name = "proximity_out_event"; marshaller = marshal }
     end
   end
 end
 
 module Container = struct
-  let cast w : container obj =
-    if Object.is_a w "GtkContainer" then Obj.magic w
-    else invalid_arg "Gtk.Container.cast"
-  external coerce : [> container] obj -> container obj = "%identity"
-  external set_border_width : [> container] obj -> int -> unit
+  let cast w : container obj = Object.try_cast w "GtkContainer"
+  external coerce : [>`container] obj -> container obj = "%identity"
+  external set_border_width : [>`container] obj -> int -> unit
       = "ml_gtk_container_set_border_width"
-  external add : [> container] obj -> [> widget] obj -> unit
+  external set_resize_mode : [>`container] obj -> resize_mode -> unit
+      = "ml_gtk_container_set_resize_mode"
+  external add : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_add"
-  external remove : [> container] obj -> [> widget] obj -> unit
+  external remove : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_remove"
-  let set w ?:border_width ?:width ?:height =
+  let set ?:border_width ?(:width = -2) ?(:height = -2) w =
     may border_width fun:(set_border_width w);
-    if width <> None || height <> None then
-      Widget.set_size w ?:width ?:height
-  external foreach : [> container] obj -> fun:(widget obj-> unit) -> unit
+    if width <> -2 || height <> -2 then
+      Widget.set_usize w ?:width ?:height
+  external foreach : [>`container] obj -> fun:(widget obj-> unit) -> unit
       = "ml_gtk_container_foreach"
   let children w =
     let l = ref [] in
     foreach w fun:(push on:l);
     List.rev !l
-  external focus : [> container] obj -> direction_type -> bool
+  external focus : [>`container] obj -> direction_type -> bool
       = "ml_gtk_container_focus"
   (* Called by Widget.grab_focus *)
-  external set_focus_child : [> container] obj -> [> widget] optobj -> unit
+  external set_focus_child : [>`container] obj -> [>`widget] optobj -> unit
       = "ml_gtk_container_set_focus_child"
   external set_focus_vadjustment :
-      [> container] obj -> [> adjustment] optobj -> unit
+      [>`container] obj -> [>`adjustment] optobj -> unit
       = "ml_gtk_container_set_focus_vadjustment"
   external set_focus_hadjustment :
-      [> container] obj -> [> adjustment] optobj -> unit
+      [>`container] obj -> [>`adjustment] optobj -> unit
       = "ml_gtk_container_set_focus_hadjustment"
   module Signals = struct
     open GtkSignal
-    let add : ([> container],_) t =
+    let add : ([>`container],_) t =
       { name = "add"; marshaller = Widget.Signals.marshal }
-    let remove : ([> container],_) t =
+    let remove : ([>`container],_) t =
       { name = "remove"; marshaller = Widget.Signals.marshal }
-    let need_resize : ([> container],_) t =
+    let need_resize : ([>`container],_) t =
       let marshal f argv = GtkArgv.set_result_bool argv (f ()) in
       { name = "need_resize"; marshaller = marshal }
     external val_direction : int -> direction_type = "ml_Val_direction_type"
-    let focus : ([> container],_) t =
+    let focus : ([>`container],_) t =
       let marshal f argv =
 	let dir = val_direction (GtkArgv.get_int argv pos:0) in
 	GtkArgv.set_result_bool argv (f dir)
@@ -351,20 +354,18 @@ module Container = struct
 end
 
 module Item = struct
-  let cast w : item obj =
-    if Object.is_a w "GtkItem" then Obj.magic w
-    else invalid_arg "Gtk.Item.cast"
-  external coerce : [> item] obj -> item obj = "%identity"
-  external select : [> item] obj -> unit = "ml_gtk_item_select"
-  external deselect : [> item] obj -> unit = "ml_gtk_item_deselect"
-  external toggle : [> item] obj -> unit = "ml_gtk_item_toggle"
+  let cast w : item obj = Object.try_cast w "GtkItem"
+  external coerce : [>`item] obj -> item obj = "%identity"
+  external select : [>`item] obj -> unit = "ml_gtk_item_select"
+  external deselect : [>`item] obj -> unit = "ml_gtk_item_deselect"
+  external toggle : [>`item] obj -> unit = "ml_gtk_item_toggle"
   module Signals = struct
     open GtkSignal
-    let select : ([> item],_) t =
+    let select : ([>`item],_) t =
       { name = "select"; marshaller = marshal_unit }
-    let deselect : ([> item],_) t =
+    let deselect : ([>`item],_) t =
       { name = "deselect"; marshaller = marshal_unit }
-    let toggle : ([> item],_) t =
+    let toggle : ([>`item],_) t =
       { name = "toggle"; marshaller = marshal_unit }
   end
 end
@@ -372,23 +373,23 @@ end
 
 module DnD = struct
   external dest_set :
-      [> widget] obj -> flags:dest_defaults list ->
+      [>`widget] obj -> flags:dest_defaults list ->
       targets:target_entry array -> actions:Gdk.Tags.drag_action list -> unit 
     = "ml_gtk_drag_dest_set"
-  external dest_unset : [> widget] obj -> unit
+  external dest_unset : [>`widget] obj -> unit
       = "ml_gtk_drag_dest_unset"
   external finish :
       Gdk.drag_context -> success:bool -> del:bool -> time:int -> unit
       = "ml_gtk_drag_finish"
   external get_data :
-      [> widget] obj -> Gdk.drag_context -> target:Gdk.atom -> time:int -> unit
+      [>`widget] obj -> Gdk.drag_context -> target:Gdk.atom -> time:int -> unit
       = "ml_gtk_drag_get_data"
   external get_source_widget : Gdk.drag_context -> widget obj
       = "ml_gtk_drag_get_source_widget"
-  external highlight : [> widget] obj -> unit = "ml_gtk_drag_highlight"
-  external unhighlight : [> widget] obj -> unit = "ml_gtk_drag_unhighlight"
+  external highlight : [>`widget] obj -> unit = "ml_gtk_drag_highlight"
+  external unhighlight : [>`widget] obj -> unit = "ml_gtk_drag_unhighlight"
   external set_icon_widget :
-      Gdk.drag_context -> [> widget] obj -> hot_x:int -> hot_y:int -> unit
+      Gdk.drag_context -> [>`widget] obj -> hot_x:int -> hot_y:int -> unit
       = "ml_gtk_drag_set_icon_widget"
   external set_icon_pixmap :
       Gdk.drag_context -> colormap:Gdk.colormap ->
@@ -401,14 +402,14 @@ module DnD = struct
       ?mask:Gdk.bitmap -> hot_x:int -> hot_y:int -> unit
       = "ml_gtk_drag_set_default_icon"
   external source_set :
-      [> widget] obj -> ?mod:Gdk.Tags.modifier list ->
+      [>`widget] obj -> ?mod:Gdk.Tags.modifier list ->
       targets:target_entry array -> actions:Gdk.Tags.drag_action list -> unit
       = "ml_gtk_drag_source_set"
   external source_set_icon :
-      [> widget] obj -> colormap:Gdk.colormap ->
+      [>`widget] obj -> colormap:Gdk.colormap ->
       Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
       = "ml_gtk_drag_source_set_icon"
-  external source_unset : [> widget] obj -> unit
+  external source_unset : [>`widget] obj -> unit
       = "ml_gtk_drag_source_unset"
-(*  external dest_handle_event : [> widget] -> *)
+(*  external dest_handle_event : [>`widget] -> *)
 end

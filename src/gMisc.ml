@@ -6,15 +6,10 @@ open GtkBase
 open GtkMisc
 open GObj
 
-class separator_wrapper w = widget_wrapper (w : separator obj)
-
-class separator dir ?:width ?:height ?:packing ?:show =
+let separator dir ?(:width = -2) ?(:height = -2) ?:packing ?:show () =
   let w = Separator.create dir in
-  let () = Widget.set_size w ?:width ?:height in
-  object (self)
-    inherit separator_wrapper w
-    initializer pack_return :packing ?:show (self :> separator_wrapper)
-  end
+  if width <> -2 || height <> -2 then Widget.set_usize w :width :height;
+  pack_return (new widget_full w) :packing :show
 
 class statusbar_context obj ctx = object (self)
   val obj : statusbar obj = obj
@@ -23,49 +18,46 @@ class statusbar_context obj ctx = object (self)
   method push text = Statusbar.push obj context :text
   method pop () = Statusbar.pop obj context
   method remove = Statusbar.remove obj context
-  method flash text ?:delay [< 1000 >] =
+  method flash ?(:delay=1000) text =
     let msg = self#push text in
     GtkMain.Timeout.add delay callback:(fun () -> self#remove msg; false);
     ()
 end
 
-class statusbar_wrapper obj = object
-  inherit GContainer.container_wrapper (obj : Gtk.statusbar obj)
+class statusbar obj = object
+  inherit GContainer.container_full (obj : Gtk.statusbar obj)
   method new_context :name =
     new statusbar_context obj (Statusbar.get_context obj name)
 end
 
-class statusbar ?:border_width ?:width ?:height ?:packing ?:show =
+let statusbar ?:border_width ?:width ?:height ?:packing ?:show () =
   let w = Statusbar.create () in
-  let () = Container.set w ?:border_width ?:width ?:height in
-  object (self)
-    inherit statusbar_wrapper w
-    initializer pack_return :packing ?:show (self :> statusbar_wrapper)
-  end
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new statusbar w) :packing :show
 
 class calendar_signals obj = object
   inherit widget_signals obj
   method month_changed =
-    GtkSignal.connect obj sig:Calendar.Signals.month_changed
+    GtkSignal.connect obj sig:Calendar.Signals.month_changed :after
   method day_selected =
-    GtkSignal.connect obj sig:Calendar.Signals.day_selected
+    GtkSignal.connect obj sig:Calendar.Signals.day_selected :after
   method day_selected_double_click =
     GtkSignal.connect obj
-      sig:Calendar.Signals.day_selected_double_click
+      sig:Calendar.Signals.day_selected_double_click :after
   method prev_month =
-    GtkSignal.connect obj sig:Calendar.Signals.prev_month
+    GtkSignal.connect obj sig:Calendar.Signals.prev_month :after
   method next_month =
-    GtkSignal.connect obj sig:Calendar.Signals.next_month
+    GtkSignal.connect obj sig:Calendar.Signals.next_month :after
   method prev_year =
-    GtkSignal.connect obj sig:Calendar.Signals.prev_year
+    GtkSignal.connect obj sig:Calendar.Signals.prev_year :after
   method next_year =
-    GtkSignal.connect obj sig:Calendar.Signals.next_year
+    GtkSignal.connect obj sig:Calendar.Signals.next_year :after
 end
 
-class calendar_wrapper obj = object
+class calendar obj = object
   inherit widget (obj : Gtk.calendar obj)
   method add_events = Widget.add_events obj
-  method connect = new calendar_signals ?obj
+  method connect = new calendar_signals obj
   method select_month = Calendar.select_month obj
   method select_day = Calendar.select_day obj
   method mark_day = Calendar.mark_day obj
@@ -77,36 +69,27 @@ class calendar_wrapper obj = object
   method thaw () = Calendar.thaw obj
 end
 
-class calendar ?:options ?:width ?:height ?:packing ?:show =
+let calendar ?:options ?(:width = -2) ?(:height = -2) ?:packing ?:show () =
   let w = Calendar.create () in
-  let () =
-    if width <> None || height <> None then
-      Widget.set_size w ?:width ?:height;
-    may options fun:(Calendar.display_options w) in
-  object (self)
-    inherit calendar_wrapper w
-    initializer pack_return :packing ?:show (self :> calendar_wrapper)
-  end
+  if width <> -2 || height <> -2 then Widget.set_usize w :width :height;
+  may options fun:(Calendar.display_options w);
+  pack_return (new calendar w) :packing :show
 
-class drawing_area_wrapper obj = object
-  inherit widget_wrapper (obj : Gtk.drawing_area obj)
+class drawing_area obj = object
+  inherit widget_full (obj : Gtk.drawing_area obj)
   method add_events = Widget.add_events obj
   method set_size = DrawingArea.size obj
 end
 
-class drawing_area  ?:width [< 0 >] ?:height [< 0 >] ?:packing ?:show =
+let drawing_area ?(:width=0) ?(:height=0) ?:packing ?:show () =
   let w = DrawingArea.create () in
-  let () =
-    if width <> 0 || height <> 0 then DrawingArea.size w :width :height in
-  object (self)
-    inherit drawing_area_wrapper w
-    initializer pack_return :packing ?:show (self :> drawing_area_wrapper)
-  end
+  if width <> 0 || height <> 0 then DrawingArea.size w :width :height;
+  pack_return (new drawing_area w) :packing :show
 
 class misc obj = object
   inherit widget obj
-  method set_alignment = Misc.set_alignment ?obj
-  method set_padding = Misc.set_padding ?obj
+  method set_alignment = Misc.set_alignment obj
+  method set_padding = Misc.set_padding obj
 end
 
 class label_skel obj = object
@@ -118,83 +101,65 @@ class label_skel obj = object
   method text = Label.get_text obj
 end
 
-class label_wrapper obj = object
+class label obj = object
   inherit label_skel (Label.coerce obj)
-  method connect = new widget_signals ?obj
+  method connect = new widget_signals obj
 end
 
-class label ?:text [< "" >] ?:justify ?:line_wrap ?:pattern
-    ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height ?:packing ?:show =
+let label ?(:text="") ?:justify ?:line_wrap ?:pattern
+    ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height ?:packing ?:show () =
   let w = Label.create text in
-  let () =
-    Label.set w ?:justify ?:line_wrap ?:pattern;
-    Misc.set w ?:xalign ?:yalign ?:xpad ?:ypad;
-    if width <> None || height <> None then Widget.set_size w ?:width ?:height
-  in
-  object (self)
-    inherit label_wrapper w
-    initializer pack_return :packing ?:show (self :> label_wrapper)
-  end
+  Label.set w ?:justify ?:line_wrap ?:pattern;
+  Misc.set w ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height;
+  pack_return (new label w) :packing :show
 
 class tips_query_signals obj = object
   inherit widget_signals obj
   method widget_entered :callback = 
-    GtkSignal.connect ?sig:TipsQuery.Signals.widget_entered ?obj
-      ?callback:(function None -> callback None
-	| Some w -> callback (Some (new widget_wrapper w)))
+    GtkSignal.connect sig:TipsQuery.Signals.widget_entered obj :after
+      callback:(function None -> callback None
+	| Some w -> callback (Some (new widget w)))
   method widget_selected :callback = 
-    GtkSignal.connect ?sig:TipsQuery.Signals.widget_selected ?obj
-      ?callback:(function None -> callback None
-	| Some w -> callback (Some (new widget_wrapper w)))
+    GtkSignal.connect sig:TipsQuery.Signals.widget_selected obj :after
+      callback:(function None -> callback None
+	| Some w -> callback (Some (new widget w)))
 end
 
-class tips_query_wrapper obj = object
+class tips_query obj = object
   inherit label_skel (obj : Gtk.tips_query obj)
   method start () = TipsQuery.start obj
   method stop () = TipsQuery.stop obj
-  method set_caller : 'a . (#is_widget as 'a) -> unit =
-    fun w -> TipsQuery.set_caller obj (w #as_widget)
+  method set_caller (w : widget) = TipsQuery.set_caller obj w#as_widget
   method set_emit_always = TipsQuery.set_emit_always obj
   method set_label_inactive inactive = TipsQuery.set_labels obj :inactive
   method set_label_no_tip no_tip = TipsQuery.set_labels obj :no_tip
-  method connect = new tips_query_signals ?obj
+  method connect = new tips_query_signals obj
 end
 
-class tips_query ?:caller ?:emit_always ?:label_inactive ?:label_no_tip
-    ?:width ?:height ?:packing ?:show =
+let tips_query ?:caller ?:emit_always ?:label_inactive ?:label_no_tip
+    ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height ?:packing ?:show () =
   let w = TipsQuery.create () in
-  let () =
-    let caller = may_map (caller : #is_widget option) fun:(#as_widget) in
-    TipsQuery.set w ?:caller ?:emit_always ?:label_inactive ?:label_no_tip;
-    if width <> None || height <> None then Widget.set_size w ?:width ?:height
-  in
-  object (self)
-    inherit tips_query_wrapper w
-    initializer pack_return :packing ?:show (self :> tips_query_wrapper)
-  end
+  let caller = may_map caller fun:(fun (w : #widget) -> w#as_widget) in
+  TipsQuery.set w ?:caller ?:emit_always ?:label_inactive ?:label_no_tip;
+  Misc.set w ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height;
+  pack_return (new tips_query w) :packing :show
 
 class notebook_signals obj = object
   inherit GContainer.container_signals obj
   method switch_page =
-    GtkSignal.connect obj sig:Notebook.Signals.switch_page
+    GtkSignal.connect obj sig:Notebook.Signals.switch_page :after
 end
 
-class notebook_wrapper obj = object (self)
-  inherit GContainer.container (obj : notebook obj)
+class notebook obj = object (self)
+  inherit GContainer.container (obj : Gtk.notebook obj)
   method add_events = Widget.add_events obj
-  method connect = new notebook_signals ?obj
-  method insert_page : 'a 'b 'c. (#is_widget as 'a) ->
-    ?tab_label:(#is_widget as 'b) -> ?menu_label:(#is_widget as 'c) -> _ =
-    fun child ?:tab_label ?:menu_label ->
-      Notebook.insert_page obj child#as_widget
-	tab_label:(may_box tab_label fun:(#as_widget))
-	menu_label:(may_box menu_label fun:(#as_widget))
-  method append_page : 'a 'b 'c. (#is_widget as 'a) ->
-    ?tab_label:(#is_widget as 'b) -> ?menu_label:(#is_widget as 'c) -> _ =
-    self#insert_page pos:(-1)
-  method prepend_page : 'a 'b 'c. (#is_widget as 'a) ->
-    ?tab_label:(#is_widget as 'b) -> ?menu_label:(#is_widget as 'c) -> _ =
-    self#insert_page pos:0
+  method connect = new notebook_signals obj
+  method insert_page ?:tab_label ?:menu_label :pos child =
+      Notebook.insert_page obj (as_widget child) :pos
+	tab_label:(may_box tab_label fun:as_widget)
+	menu_label:(may_box menu_label fun:as_widget)
+  method append_page = self#insert_page pos:(-1)
+  method prepend_page = self#insert_page pos:0
   method remove_page = Notebook.remove_page obj
   method current_page = Notebook.get_current_page obj
   method goto_page = Notebook.set_page obj
@@ -207,44 +172,34 @@ class notebook_wrapper obj = object (self)
   method set_scrollable = Notebook.set_scrollable obj
   method set_tab_border = Notebook.set_tab_border obj
   method set_popup = Notebook.set_popup obj
-  method page_num : 'a. (#is_widget as 'a) -> _ =
-    fun w -> Notebook.page_num obj w#as_widget
+  method page_num w = Notebook.page_num obj (as_widget w)
   method nth_page n = new widget (Notebook.get_nth_page obj n)
-  method set_page : 'a 'b 'c. (#is_widget as 'a) ->
-    ?tab_label:(#is_widget as 'b) -> ?menu_label:(#is_widget as 'c) -> _ =
-    fun page ?:tab_label ?:menu_label ->
-      let child = page#as_widget in
-      may tab_label
-	fun:(fun lbl -> Notebook.set_tab_label obj child lbl#as_widget);
-      may menu_label
-	fun:(fun lbl -> Notebook.set_menu_label obj child lbl#as_widget)
+  method set_page ?:tab_label ?:menu_label page =
+    let child = as_widget page in
+    may tab_label
+      fun:(fun lbl -> Notebook.set_tab_label obj child (as_widget lbl));
+    may menu_label
+      fun:(fun lbl -> Notebook.set_menu_label obj child (as_widget lbl))
 end
 
-class notebook ?:tab_pos ?:tab_border ?:show_tabs ?:homogeneous_tabs
+let notebook ?:tab_pos ?:tab_border ?:show_tabs ?:homogeneous_tabs
     ?:show_border ?:scrollable ?:popup
-    ?:border_width ?:width ?:height ?:packing ?:show =
+    ?:border_width ?:width ?:height ?:packing ?:show () =
   let w = Notebook.create () in
-  let () =
-    Notebook.set w cont:null_cont ?:tab_pos ?:tab_border ?:show_tabs
-      ?:homogeneous_tabs ?:show_border ?:scrollable ?:popup;
-    Container.set w ?:border_width ?:width ?:height in
-  object (self)
-    inherit notebook_wrapper w
-    initializer pack_return :packing ?:show (self :> notebook_wrapper)
-  end
+  Notebook.set w ?:tab_pos ?:tab_border ?:show_tabs
+    ?:homogeneous_tabs ?:show_border ?:scrollable ?:popup;
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new notebook w) :packing :show
 
-class color_selection_wrapper obj = object
-  inherit GObj.widget_wrapper (obj : Gtk.color_selection obj)
+class color_selection obj = object
+  inherit GObj.widget_full (obj : Gtk.color_selection obj)
   method set_update_policy = ColorSelection.set_update_policy obj
   method set_opacity = ColorSelection.set_opacity obj
   method set_color = ColorSelection.set_color obj
   method get_color = ColorSelection.get_color obj
 end
 
-class color_selection ?:border_width ?:width ?:height ?:packing ?:show =
+let color_selection ?:border_width ?:width ?:height ?:packing ?:show () =
   let w = ColorSelection.create () in
-  let () = Container.set w ?:border_width ?:width ?:height in
-  object (self)
-    inherit color_selection_wrapper w
-    initializer pack_return :packing ?:show (self :> color_selection_wrapper)
-  end
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new color_selection w) :packing :show

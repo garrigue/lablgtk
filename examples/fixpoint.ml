@@ -1,6 +1,5 @@
 (* $Id$ *)
 
-open GEdit
 open GMain
 
 let rec fix fun:f :eq x =
@@ -11,13 +10,14 @@ let rec fix fun:f :eq x =
 let eq_float x y = abs_float (x -. y) < 1e-13
 
 let _ =
-  let top = new GWindow.window in
+  let top = GWindow.window () in
   top#connect#destroy callback:Main.quit;
-  let vbox = new GPack.box `VERTICAL packing: top#add in
-  let entry = new entry max_length: 20 packing: vbox#pack in
-  let tips = new GData.tooltips in
-  tips#set_tip entry text:"Initial value for fix-point";
-  let result = new entry max_length: 20 editable: false packing: vbox#pack in
+  let vbox = GPack.vbox packing: top#add () in
+  let entry = GEdit.entry max_length: 20 packing: vbox#pack () in
+  let tips = GData.tooltips () in
+  tips#set_tip entry#coerce text:"Initial value for fix-point";
+  let result =
+    GEdit.entry max_length: 20 editable: false packing: vbox#pack () in
 
   entry#connect#activate callback:
     begin fun () ->

@@ -3,32 +3,29 @@
 open Misc
 open Gdk
 
-type color = [COLOR(Color.t) WHITE BLACK NAME(string) RGB(int*int*int)]
+type color = [`COLOR Color.t|`WHITE|`BLACK|`NAME string|`RGB (int*int*int)]
 
 let color : color -> Color.t = function
     `COLOR col -> col
   | `WHITE|`BLACK|`NAME _|`RGB _ as def -> Color.alloc def
 
-let gc_set gc ?:foreground ?:background =
-  Misc.may foreground fun:(fun col -> GC.set_foreground gc (color col));
-  Misc.may background fun:(fun col -> GC.set_background gc (color col))
-
 class ['a] drawing w = object
   val gc = GC.create w
   val w : 'a drawable = w
-  method set = gc_set ?gc
+  method set_foreground col = GC.set_foreground gc (color col)
+  method set_background col = GC.set_background gc (color col)
   method set_line_attributes = GC.set_line_attributes gc
   method point = Draw.point w gc
   method line = Draw.line w gc
   method rectangle = Draw.rectangle w gc
   method arc = Draw.arc w gc
-  method polygon = Draw.polygon w gc
+  method polygon ?:filled l = Draw.polygon w gc ?:filled l
   method string s = Draw.string w gc string:s
-  method image = Draw.image w gc 
+  method image image = Draw.image w gc :image
 end
 
-class pixmap pm ?:mask = object
-  inherit [[pixmap]] drawing pm as pixmap
+class pixmap ?:mask pm = object
+  inherit [[`pixmap]] drawing pm as pixmap
   val bitmap = may_map mask fun:(new drawing)
   val mask : bitmap option = mask
   method pixmap = w
@@ -39,37 +36,37 @@ class pixmap pm ?:mask = object
   method line :x :y :x :y =
     pixmap#line :x :y :x :y;
     may bitmap fun:(fun m -> m#line :x :y :x :y)
-  method rectangle :x :y :width :height ?:filled =
-    pixmap#rectangle :x :y :width :height ?:filled;
-    may bitmap fun:(fun m -> m#rectangle :x :y :width :height ?:filled)
-  method arc :x :y :width :height ?:filled ?:start ?:angle =
-    pixmap#arc :x :y :width :height ?:filled ?:start ?:angle;
+  method rectangle :x :y :width :height ?:filled () =
+    pixmap#rectangle :x :y :width :height ?:filled ();
+    may bitmap fun:(fun m -> m#rectangle :x :y :width :height ?:filled ())
+  method arc :x :y :width :height ?:filled ?:start ?:angle () =
+    pixmap#arc :x :y :width :height ?:filled ?:start ?:angle ();
     may bitmap
-      fun:(fun m -> m#arc :x :y :width :height ?:filled ?:start ?:angle);
-  method polygon l ?:filled =
-    pixmap#polygon l ?:filled;
-    may bitmap fun:(fun m -> m#polygon l ?:filled)
+      fun:(fun m -> m#arc :x :y :width :height ?:filled ?:start ?:angle ());
+  method polygon ?:filled l =
+    pixmap#polygon ?:filled l;
+    may bitmap fun:(fun m -> m#polygon ?:filled l)
   method string s :font :x :y =
     pixmap#string s :font :x :y;
     may bitmap fun:(fun m -> m#string s :font :x :y)
 end
 
-class pixmap_from_xpm :file :window ?:colormap ?:transparent =
+let pixmap_from_xpm :window :file ?:colormap ?:transparent () =
   let pm, mask =
     try Pixmap.create_from_xpm window :file ?:colormap
 	?transparent:(may_map transparent fun:color)
-    with Null_pointer -> invalid_arg "GdkObj.pixmap_from_xpm"
-  in pixmap pm :mask
+    with Null_pointer -> invalid_arg "GdkObj.pixmap_from_xpm" in
+  new pixmap pm :mask
 
-class pixmap_from_xpm_d :data :window ?:colormap ?:transparent =
+let pixmap_from_xpm_d :window :data ?:colormap ?:transparent () =
   let pm, mask =
     Pixmap.create_from_xpm_d window :data ?:colormap
       ?transparent:(may_map transparent fun:color) in
-  pixmap pm :mask
+  new pixmap pm :mask
 
 class drag_context context = object
   val context = context
-  method status act ?:time [< 0 >] = Gdk.DnD.drag_status context act :time
+  method status ?(:time=0) act = Gdk.DnD.drag_status context act :time
   method suggested_action = Gdk.DnD.drag_context_suggested_action context
   method targets = Gdk.DnD.drag_context_targets context
 end

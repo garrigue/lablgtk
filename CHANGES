@@ -1,5 +1,21 @@
 $Id$
 
+1999.12.19
+  * release lablGTK beta2
+
+1999.12.16
+  * upgraded unison to version 1.169
+  * radio groups are of type {radio_menu_item,radio_button} obj option,
+    otherwise you could not use them several times
+
+1999.12.13
+  * added GtkEdit::{insert_text,delete_text} signals
+  * better syntax highlighting and ergonomy in the browser's shell
+
+1999.11...
+  * switched to Objective Caml 3
+  * constructors are no longer classes, but simple functions
+
 1999.10.29
   * changed GtkArgv.get_{string,pointer,object} to return option types
 

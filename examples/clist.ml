@@ -3,19 +3,17 @@
 open GMain
 
 let main () =
-  let window =
-    new GWindow.window title:"CList example" width:300 height:150 in
+  let window = GWindow.window title:"CList example" width:300 height:150 () in
   window#connect#destroy callback:Main.quit;
 
-  let vbox =
-    new GPack.box `VERTICAL border_width:5 packing:window#add in
+  let vbox = GPack.vbox border_width:5 packing:window#add () in
 
-  let hbox = new GPack.box `HORIZONTAL packing:vbox#add in
-  let sb = new GRange.scrollbar `VERTICAL
-      packing:(hbox#pack from:`END expand:false) in
+  let hbox = GPack.hbox packing:vbox#add () in
+  let sb =
+    GRange.scrollbar `VERTICAL packing:(hbox#pack from:`END expand:false) () in
   let clist =
-    new GList.clist titles:["Ingredients";"Amount"] shadow_type:`OUT
-      packing:hbox#add vadjustment:sb#adjustment in
+    GList.clist titles:["Ingredients";"Amount"] shadow_type:`OUT
+      packing:hbox#add vadjustment:sb#adjustment () in
   clist#connect#select_row callback:
     begin fun :row :column :event ->
       let text = clist#cell_text row column in
@@ -23,9 +21,9 @@ let main () =
       flush stdout
     end;
 
-  let hbox = new GPack.box `HORIZONTAL packing:(vbox#pack expand:false) in
+  let hbox = GPack.hbox packing:(vbox#pack expand:false) () in
 
-  let button_add = new GButton.button label:"Add List" packing:hbox#add in
+  let button_add = GButton.button label:"Add List" packing:hbox#add () in
   button_add#connect#clicked callback:
     begin fun () ->
       List.iter fun:(fun t -> ignore (clist#append t))
@@ -35,11 +33,11 @@ let main () =
 	  ["Snakes"; "55"] ]
     end;
 
-  let button_clear = new GButton.button label:"Clear List" packing:hbox#add in
+  let button_clear = GButton.button label:"Clear List" packing:hbox#add () in
   button_clear#connect#clicked callback:clist#clear;
 
   let button_hide_show =
-    new GButton.button label:"Hide/Show titles" packing:hbox#add in
+    GButton.button label:"Hide/Show titles" packing:hbox#add () in
   let flag = ref false in
   button_hide_show#connect#clicked callback:
     begin fun () ->

@@ -18,8 +18,8 @@ let may_map fun:f x =
 let default x =
   function None -> x | Some y -> y
 
-let may_default f x =
-  function for:None -> f x | for:Some y -> y
+let may_default f x for:opt =
+  match opt with None -> f x | Some y -> y
 
 (* marked pointers *)
 type 'a optaddr
@@ -60,6 +60,8 @@ let null_cont _ = ()
 let identity x = x
 
 let kill x y = x
+
+let end_cont _ () = ()
 
 (* Exceptions *)
 

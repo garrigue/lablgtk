@@ -3,7 +3,7 @@
 
 
 Needed:
-	olabl-2.02 Summer edition (olabl-2.02-summer.tar.gz)
+	ocaml-2.99 or more
 	gtk-1.2.x
 	gmake (there is no standard for conditionals)
 
@@ -16,8 +16,7 @@ How to compile:
 		USE_GL=1	to compile with OpenGL support (see lower)
 		MESA=Mesa	to link with Mesa libs rather than OpenGL
 
-	Then just type "make" to build the library and toplevel.
-	Also type "make lablgtk_t" to make the threaded toplevel.
+	Then just type "make" to build the library and toplevels.
 
 	On FreeBSD, you need to link with libxpg4.so for Japanese
 	output.
@@ -34,27 +33,25 @@ Contents:
 	lablgtk_t	threaded toplevel
 
 	examples/*.ml	various examples
-	applications/*	application using the library
+	applications/*	applications using the library
 		radtest		a very experimental RAD for lablgtk
 				(by Hubert Fauque)
-		browser		the begin of a port of LablBrowser
+		browser		the begin of a port of OCamlBrowser
 				(by Jacques Garrigue)
-
-	lablgl.patch	patch for lablgl-0.92
 
 How to run the examples:
 
-	./lablgtk examples/???.ml
+	./lablgtk -modern -w s examples/???.ml
 
   some examples (e.g. buttons.ml) may need to be run from the examples
   directory
 
-	../lablgtk -I .. ???.ml
+	../lablgtk -modern -w s -I .. ???.ml
 
 How to use the threaded toplevel:
 
-	% ./lablgtk_t
-	        Objective Caml version 2.02 with Kyoto extensions (99/08/05)
+	% ./lablgtk_t -modern
+	        Objective Caml version 2.99 (99/12/08)
 	
 	# let id = GtkThread.start ();;
 	val id : Thread.t = <abstr>
@@ -98,26 +95,28 @@ Structure of the G[A-Z]* modules:
 
   While subtyping follows the Gtk widget hierarchy, you cannot always
   use width subtyping (i.e. #super is not unifiable with all the
-  subclasses of super). Still, it works for the gtkobj, widget and
+  subclasses of super). Still, it works for the gtkobj and
   container classes, and allows subtyping without coercion towards
   these classes (cf. #container in pousse.ml for instance).
+  You must coerce to widget with the #coerce method.
 
   Practically, each widget class is composed of:
-  * an as_widget method, returning the Gtk widget used for packing, etc...
+  * a coerce method, returning the object coerced to the type widget.
+  * an as_widget method, returning the raw Gtk widget used for packing, etc...
   * a misc sub-object, giving access to miscellanous functionality of
     the basic gtkwidget class.
-  * a grab sub-object, containing drag and drop signals.
+  * a grab sub-object, containing drag and drop functions.
   * a connect sub-object, allowing one to connect all available
-    signals (this is what prevents width subtyping in subcases.)
+    signals (this is what prevents width subtyping in subclasses.)
   * connect#event and connect#grab sub-objects, for event and grab
     signals.
 
-  You create a widget by [new <widget name> options ...].
-  Many optional arguments are admitted. The two last of them, packing:
+  You create a widget by [<Module>.<widget name> options ... ()].
+  Many optional arguments are admitted. The last two of them, packing:
   and show:, allow you respectively to call a function on your newly
   created widget, and to decide wether to show it immediately or not.
-  By default all widgets except toplevel windows are shown
-  immediately.
+  By default all widgets except toplevel windows (GWindow module) are
+  shown immediately.
 
 Note about unit as method argument:
 
@@ -140,14 +139,14 @@ Memory management:
   interactive, we cannot just destroy them when they are no longer
   referenced. They have to be explicitely destroyed. If a widget was
   added to a container widget, it will automatically be destroyed when
-  its last container is destroyed. For this reason you should only
+  its last container is destroyed. For this reason you need only
   destroy toplevel widgets.
 
 GL extension
 
   You can use lablgtk in combination with LablGL
 
-  * apply lablgl.patch to lablgl-0.92, compile and install
+  * compile and install lablGL/ocaml3
   * get and install gtkglarea-1.2.x.tar.gz from
     http://www.student.oulu.fi/~jlof/gtkglarea/index.html
   * reconfigure: "make configure USE_GL=1"

@@ -3,14 +3,14 @@
 open GMain
 
 let main () =
-  let window = new GWindow.window in
+  let window = GWindow.window () in
   window#misc#set_name "Test input";
   window#connect#destroy callback:Main.quit;
 
-  let vbox = new GPack.box `VERTICAL packing:window#add in
+  let vbox = GPack.vbox packing:window#add () in
 
   let drawing_area =
-    new GMisc.drawing_area width:200 height:200 packing:vbox#add in
+    GMisc.drawing_area width:200 height:200 packing:vbox#add () in
 
   drawing_area#connect#event#key_press callback:
     begin fun ev ->
@@ -30,11 +30,10 @@ let main () =
   drawing_area#misc#set_can_focus true;
   drawing_area#misc#grab_focus ();
 
-  let button =
-    new GButton.button label:"Input Dialog" packing:(vbox#pack expand:false) in
+  GButton.button label:"Input Dialog" packing:(vbox#pack expand:false) ();
 
   let button =
-    new GButton.button label:"Quit" packing:(vbox#pack expand:false) in
+    GButton.button label:"Quit" packing:(vbox#pack expand:false) () in
 
   button#connect#clicked callback:window#destroy;
 

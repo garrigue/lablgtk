@@ -6,15 +6,15 @@
 
 open GMain
 
-let window = new GWindow.window
-let box = new GPack.box `VERTICAL packing: window#add
-let text = new GEdit.text editable: true packing: box#add
+let window = GWindow.window ()
+let box = GPack.vbox packing: window#add ()
+let text = GEdit.text editable: true packing: box#add ()
 let font = Gdk.Font.load_fontset
     "-*-fixed-medium-r-normal--24-*-c-120-iso8859-1, \
      -*-fixed-medium-r-normal--24-*-jisx0208.1983-0, \
      -*-fixed-medium-r-normal--24-*-jisx0201.1976-0"
-let button = new GButton.button label: "終了" packing: box#add
-let label = new GMisc.label text:"これには影響しない" packing: box#add
+let button = GButton.button label: "終了" packing: box#add ()
+let label = GMisc.label text:"これには影響しない" packing: box#add ()
 
 let _ =
   window#connect#destroy callback:Main.quit;
