@@ -23,6 +23,11 @@ void ml_raise_gdk (const char *errmsg)
 
 #include "gdk_tags.c"
 
+/* Colormap */
+
+Make_Val_final_pointer (GdkColormap, gdk_colormap_ref, gdk_colormap_unref)
+ML_0 (gdk_colormap_get_system, Val_GdkColormap)
+
 /* Color */
 
 value ml_gdk_color_white (value cmap)
@@ -84,10 +89,6 @@ Make_Extractor (GdkRectangle,(GdkRectangle*),height,Val_int)
 
 Make_Copy (rectangle, GdkRectangle)    
 
-/* Colormap */
-
-Make_Val_final_pointer (GdkColormap, gdk_colormap_ref, gdk_colormap_unref)
-
 /* Window */
 
 Make_Val_final_pointer (GdkWindow, gdk_window_ref, gdk_window_unref)
@@ -96,11 +97,13 @@ Make_Val_final_pointer (GdkWindow, gdk_window_ref, gdk_window_unref)
 
 Make_Val_final_pointer (GdkPixmap, gdk_pixmap_ref, gdk_pixmap_unref)
 Make_Val_final_pointer (GdkBitmap, gdk_bitmap_ref, gdk_bitmap_unref)
-ML_4 (gdk_pixmap_new, GdkWindow_val, Int_val, Int_val, Int_val, Val_GdkPixmap)
+ML_4 (gdk_pixmap_new, GdkWindow_val, Int_val, Int_val, Int_val,
+      Val_GdkPixmap_no_ref)
 ML_4 (gdk_bitmap_create_from_data, GdkWindow_val,
-      String_val, Int_val, Int_val, Val_GdkBitmap)
+      String_val, Int_val, Int_val, Val_GdkBitmap_no_ref)
 ML_7 (gdk_pixmap_create_from_data, GdkWindow_val, String_val,
-      Int_val, Int_val, Int_val, GdkColor_val, GdkColor_val, Val_GdkPixmap)
+      Int_val, Int_val, Int_val, GdkColor_val, GdkColor_val,
+      Val_GdkPixmap_no_ref)
 ML_bc7 (ml_gdk_pixmap_create_from_data)
 
 value ml_gdk_pixmap_colormap_create_from_xpm
@@ -108,7 +111,7 @@ value ml_gdk_pixmap_colormap_create_from_xpm
 {
     GdkBitmap *mask;
     value vpixmap =
-	Val_GdkPixmap
+	Val_GdkPixmap_no_ref
 	(gdk_pixmap_colormap_create_from_xpm (GdkWindow_val(window),
 				     Option_val(colormap,GdkColormap_val,NULL),
 				     &mask,
@@ -117,8 +120,8 @@ value ml_gdk_pixmap_colormap_create_from_xpm
     value ret, vmask = Val_unit;
 
     Begin_roots2 (vpixmap, vmask);
-    vmask = Val_GdkBitmap(mask);
-    ret = alloc_tuple(2);
+    vmask = Val_GdkBitmap_no_ref (mask);
+    ret = alloc_tuple (2);
     Field(ret,0) = vpixmap;
     Field(ret,1) = vmask;
     End_roots ();
@@ -132,15 +135,15 @@ value ml_gdk_pixmap_colormap_create_from_xpm_d
     GdkBitmap *mask;
     value ret, vpixmap, vmask;
     vpixmap =
-	Val_GdkPixmap
+	Val_GdkPixmap_no_ref
 	(gdk_pixmap_colormap_create_from_xpm_d
 	 (GdkWindow_val(window), Option_val(colormap,GdkColormap_val,NULL),
 	  &mask, Option_val(transparent,GdkColor_val,NULL), data));
     vmask = Val_unit;
 
     Begin_roots2 (vpixmap, vmask);
-    vmask = Val_GdkBitmap(mask);
-    ret = alloc_tuple(2);
+    vmask = Val_GdkBitmap_no_ref (mask);
+    ret = alloc_tuple (2);
     Field(ret,0) = vpixmap;
     Field(ret,1) = vmask;
     End_roots ();
@@ -151,8 +154,8 @@ value ml_gdk_pixmap_colormap_create_from_xpm_d
 /* Font */
 
 Make_Val_final_pointer (GdkFont, gdk_font_ref, gdk_font_unref)
-ML_1 (gdk_font_load, String_val, Val_GdkFont)
-ML_1 (gdk_fontset_load, String_val, Val_GdkFont)
+ML_1 (gdk_font_load, String_val, Val_GdkFont_no_ref)
+ML_1 (gdk_fontset_load, String_val, Val_GdkFont_no_ref)
 ML_2 (gdk_string_width, GdkFont_val, String_val, Val_int)
 ML_2 (gdk_char_width, GdkFont_val, Char_val, Val_int)
 ML_2 (gdk_string_measure, GdkFont_val, String_val, Val_int)
@@ -161,7 +164,7 @@ ML_2 (gdk_char_measure, GdkFont_val, Char_val, Val_int)
 /* GC */
 
 Make_Val_final_pointer (GdkGC, gdk_gc_ref, gdk_gc_unref)
-ML_1_post (gdk_gc_new, GdkWindow_val, Val_GdkGC, gdk_gc_unref(GdkGC_val(ret)))
+ML_1 (gdk_gc_new, GdkWindow_val, Val_GdkGC_no_ref)
 ML_2 (gdk_gc_set_foreground, GdkGC_val, GdkColor_val, Unit)
 ML_2 (gdk_gc_set_background, GdkGC_val, GdkColor_val, Unit)
 ML_2 (gdk_gc_set_font, GdkGC_val, GdkFont_val, Unit)
@@ -214,7 +217,7 @@ ML_4 (gdk_draw_polygon, GdkDrawable_val, GdkGC_val, Bool_val,
 /* Events */
 
 Make_Val_final_pointer (GdkEvent, , gdk_event_free)
-ML_1 (gdk_event_copy, (GdkEvent*), Val_GdkEvent)
+ML_1 (gdk_event_copy, (GdkEvent*), Val_GdkEvent_no_ref)
 
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), type, Val_gdkEventType)
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), window, Val_GdkWindow)

@@ -50,8 +50,10 @@ module Color = struct
   external color_create : red:int -> green:int -> blue:int -> t
       = "ml_GdkColor"
 
+  external get_system_colormap : unit -> colormap
+      = "ml_gdk_colormap_get_system"
   type spec = [Black Name(string) RGB(int * int * int) White]
-  let alloc color in:colormap =
+  let alloc color ?:colormap [< get_system_colormap () >] =
     match color with
       `White -> color_white colormap
     | `Black -> color_black colormap
@@ -60,7 +62,7 @@ module Color = struct
 	  match c with `Name s -> color_parse s
 	  | `RGB (red,green,blue) -> color_create :red :green :blue
 	in
-	if not (color_alloc colormap color) then raise (Error"color_alloc");
+	if not (color_alloc colormap color) then raise (Error"Color.alloc");
 	color
 
   external red : t -> int = "ml_GdkColor_red"
@@ -164,11 +166,13 @@ module Draw = struct
   let rectangle w gc ?:filled [< false >] = rectangle w gc :filled
   external arc :
       'a drawable -> gc -> filled:bool -> x:int -> y:int ->
-      width:int -> height:int -> start:int -> end:int -> unit
+      width:int -> height:int -> start:int -> angle:int -> unit
       = "ml_gdk_draw_arc_bc" "ml_gdk_draw_arc"
-  let arc w gc :x :y :width :height ?:filled [< false >] ?:start [< 0 >]
-      ?end:_end [< 360 >] =
-    arc w gc :x :y :width :height :filled :start end:_end
+  let arc w gc :x :y :width :height ?:filled [< false >] ?:start [< 0.0 >]
+      ?:angle [< 360.0 >] =
+    arc w gc :x :y :width :height :filled
+      start:(truncate(start *. 64.))
+      angle:(truncate(angle *. 64.))
   external polygon : 'a drawable -> gc -> filled:bool -> PointArray.t -> unit
       = "ml_gdk_draw_polygon"
   let polygon w gc l ?:filled [< false >] =
