@@ -327,6 +327,11 @@ class ['a] file_chooser_dialog obj = object (self)
   inherit GFile.chooser_impl
   method connect : 'a file_chooser_dialog_signals = 
     new file_chooser_dialog_signals obj self#decode
+  method add_select_button text v =
+    tbl <- (raccept, v) :: tbl ;
+    Dialog.add_button obj text raccept
+  method add_select_button_stock s_id v =
+    self#add_select_button (GtkStock.convert_id s_id) v
 end
 
 let file_chooser_dialog ~action ?backend =

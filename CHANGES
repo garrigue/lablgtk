@@ -2,6 +2,8 @@ $Id$
 
 2004.03.17 [Olivier]
   * add GFile.filter#add_custom
+  * add special methods for adding open/save button in 
+    GWindow.file_chooser_dialog
 
 2004.03.15 [Jacques]
   * allow destroying pixmaps manually
