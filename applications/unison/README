@@ -6,7 +6,7 @@ You may just compile it after having installed lablgtk.
 	http://www.cis.upenn.edu/~bcpierce/unison/
 
 Due to recent changes to lablgtk2, you need to apply the patch in this
-directory to compile unison-2.9.45.
+directory to compile unison-2.9.50.
 
 Jacques Garrigue
 
