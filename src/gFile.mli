@@ -110,6 +110,7 @@ class chooser_widget :
     inherit GObj.widget
     inherit chooser
     val obj : 'a Gtk.obj
+    method event : GObj.event_ops
     method connect : chooser_widget_signals
   end
 

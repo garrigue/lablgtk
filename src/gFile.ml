@@ -129,6 +129,7 @@ end
 class chooser_widget obj = object
   inherit [_] GObj.widget_impl obj
   inherit chooser_impl
+  method event = new GObj.event_ops obj
   method connect = new chooser_widget_signals obj
 end
 

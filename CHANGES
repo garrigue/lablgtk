@@ -1,5 +1,9 @@
 $Id$
 
+2004.06.10 [Olivier]
+  * add #event method for GtkComboBox (and descendants), and
+    GtkFileChooserWidget 
+
 2004.06.06 [Olivier]
   * changed methods returning a char* or NULL in GFile: now they
     return string option instead converting NULL into "". Changed

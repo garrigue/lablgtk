@@ -148,6 +148,7 @@ class combo_box _obj = object
   inherit [[> Gtk.combo_box]] GContainer.bin_impl _obj
   inherit OgtkEditProps.combo_box_props
   inherit GTree.cell_layout _obj
+  method event = new GObj.event_ops obj
   method connect = new combo_box_signals obj
   method model =
     new GTree.model (Gobject.get GtkEdit.ComboBox.P.model obj)

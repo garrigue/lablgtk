@@ -253,6 +253,7 @@ class combo_box :
     inherit GContainer.bin
     inherit GTree.cell_layout
     val obj : 'a Gtk.obj
+    method event : GObj.event_ops
     method active : int
     method active_iter : Gtk.tree_iter option
     method connect : combo_box_signals
