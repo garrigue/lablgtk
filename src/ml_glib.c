@@ -100,7 +100,7 @@ ML_1 (Log_level_val, , Val_int)
 value ml_g_log_set_handler (value domain, value levels, value clos)
 {
     value *clos_p = ml_global_root_new (clos);
-    int id = g_log_set_handler (String_option_val(domain), Int_val(levels),
+    int id = g_log_set_handler (String_val(domain), Int_val(levels),
                                 ml_g_log_func, clos_p);
     CAMLparam1(domain);
     value ret = alloc_small(3,0);
@@ -281,8 +281,12 @@ CAMLprim value ml_g_get_charset()
   CAMLreturn(couple);
 }
 
-CAMLprim value ml_utf8_validate(value s)
+CAMLprim value ml_g_utf8_validate(value s)
 {
   const gchar *c=NULL;
-  return Val_bool(g_utf8_validate(String_val(s),string_length(s),&c));
+  return Val_bool(g_utf8_validate(SizedString_val(s),&c));
 }
+
+ML_1 (g_unichar_tolower, Int_val, Val_int)
+ML_1 (g_unichar_toupper, Int_val, Val_int)
+ML_1 (g_utf8_strlen, SizedString_val, Val_int)

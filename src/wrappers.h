@@ -176,6 +176,7 @@ CAMLprim value cname##_bc (value *argv, int argn) \
 #define Bool_ptr(x) ((long) x - 1)
 #define Char_val Int_val
 #define Float_val(x) ((float)Double_val(x))
+#define SizedString_val(x) String_val(x), string_length(x)
 
 #define Option_val(val,unwrap,default) \
 ((long)val-1 ? unwrap(Field(val,0)) : default)
