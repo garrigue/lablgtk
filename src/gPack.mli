@@ -198,6 +198,10 @@ class paned :
     method add1 : widget -> unit
     method add2 : widget -> unit
     method add_events : Gdk.Tags.event_mask list -> unit
+    method child1 : widget
+    method child2 : widget
+    method gutter_size : int
+    method handle_size : int
     method set_gutter_size : int -> unit
     method set_handle_size : int -> unit
   end
