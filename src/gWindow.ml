@@ -10,6 +10,7 @@ open GContainer
 
 class window_skel obj = object
   inherit container obj
+  method event = new event_ops obj
   method as_window = Window.coerce obj
   method activate_focus () = Window.activate_focus obj
   method activate_default () = Window.activate_default obj

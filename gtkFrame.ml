@@ -169,6 +169,4 @@ module ScrolledWindow = struct
 	horizontal:(may_default get_hscrollbar_policy w for:hscrollbar_policy)
 	vertical:(may_default get_vscrollbar_policy w for:vscrollbar_policy);
     cont w
-  external add_with_viewport : [> scrolled] obj -> [> widget] obj -> unit
-      = "ml_gtk_scrolled_window_add_with_viewport"
 end

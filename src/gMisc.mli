@@ -41,6 +41,7 @@ class drawing_area :
   object
     inherit GObj.widget_wrapper
     val obj : Gtk.drawing_area obj
+    method event : GObj.event_ops
     method set_size : width:int -> height:int -> unit
   end
 class drawing_area_wrapper : Gtk.drawing_area obj -> drawing_area

@@ -83,7 +83,7 @@ let _ =
     callback:(fun b -> editor#text#set_editable (not b));
   window#add_accel_group accel_group;
   hbox#add editor#text;
-  editor#text#connect#event#button_press
+  editor#text#event#connect#button_press
     callback:(fun ev ->
       let button = Gdk.Event.Button.button ev in
       if button = 3 then begin

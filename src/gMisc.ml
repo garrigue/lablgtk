@@ -43,6 +43,7 @@ class statusbar ?:border_width ?:width ?:height ?:packing ?:show =
 
 class drawing_area_wrapper obj = object
   inherit widget_wrapper (obj : Gtk.drawing_area obj)
+  method event = new event_ops obj
   method set_size = DrawingArea.size obj
 end
 

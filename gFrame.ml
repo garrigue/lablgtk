@@ -33,12 +33,17 @@ class scrolled_window ?:hscrollbar_policy ?:vscrollbar_policy
     initializer pack_return :packing ?:show (self :> scrolled_window_wrapper)
   end
 
+class event_box_wrapper obj = object
+  inherit container_wrapper (obj : event_box obj)
+  method event = new event_ops obj
+end
+
 class event_box ?:border_width ?:width ?:height ?:packing ?:show =
   let w = EventBox.create () in
   let () = Container.setter w ?:border_width ?:width ?:height cont:null_cont in
   object (self)
-    inherit container_wrapper w
-    initializer pack_return :packing ?:show (self :> container_wrapper)
+    inherit event_box_wrapper w
+    initializer pack_return :packing ?:show (self :> event_box_wrapper)
   end
 
 class handle_box_signals obj ?:after = object
@@ -55,6 +60,7 @@ class handle_box_wrapper obj = object
   method set_handle_position = HandleBox.set_handle_position obj
   method set_snap_edge       = HandleBox.set_snap_edge       obj
   method connect = new handle_box_signals ?obj
+  method event = new event_ops obj
 end
 
 class handle_box ?:border_width ?:width ?:height ?:packing ?:show =

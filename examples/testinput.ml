@@ -12,7 +12,7 @@ let main () =
   let drawing_area =
     new GMisc.drawing_area width:200 height:200 packing:vbox#add in
 
-  drawing_area#connect#event#key_press callback:
+  drawing_area#event#connect#key_press callback:
     begin fun ev ->
       let key = Gdk.Event.Key.keyval ev in
       if key >= 32 && key < 256 then
@@ -23,11 +23,11 @@ let main () =
       true
     end;
 
-  drawing_area#misc#set
-    events:[`EXPOSURE;`LEAVE_NOTIFY;`BUTTON_PRESS;`KEY_PRESS;
-	    `POINTER_MOTION;`POINTER_MOTION_HINT;`PROXIMITY_OUT]
-    extension_events:`ALL
-    can_focus:true;
+  drawing_area#event#add
+    [`EXPOSURE;`LEAVE_NOTIFY;`BUTTON_PRESS;`KEY_PRESS;
+     `POINTER_MOTION;`POINTER_MOTION_HINT;`PROXIMITY_OUT];
+  drawing_area#event#set_extensions `ALL;
+  drawing_area#misc#set can_focus:true;
   drawing_area#misc#grab_focus ();
 
   let button =
