@@ -537,7 +537,6 @@ CAMLprim value ml_gdk_gc_get_values (value gc)
 {
     CAMLparam0();
     GdkGCValues values;
-    int i;
     CAMLlocal2(ret, tmp);
 
     gdk_gc_get_values (GdkGC_val(gc), &values);

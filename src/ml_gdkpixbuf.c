@@ -211,6 +211,11 @@ CAMLprim value ml_gdk_pixbuf_save(value fname, value type, value options, value 
 }
 
 #ifndef DISABLE_GTK24
+/* work around missing prototype in ocaml 3.08 */
+#ifdef CAML_COMPATIBILITY_H
+char *caml_format_exception(value);
+#endif
+
 static gboolean
 ml_gdkpixbuf_savefunc (const gchar *buf, gsize count, GError **error, gpointer data)
 {
