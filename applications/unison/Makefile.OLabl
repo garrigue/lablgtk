@@ -1,9 +1,6 @@
 ########################################################################
 # Makefile rules for compiling olabl programs
 
-COMPFLAGS += -nolabels
-THFLAGS =
-
 ########################################################################
 # Try to automatically guess OS -- WIN32, SUNOS, or LINUX.
 
@@ -51,7 +48,7 @@ endif
 #  This doesn't work in Windows:
 #    OCAMLLIBDIR=$(filter /%,$(shell ocamlc -v | tail -1))
 #  So use the following instead
-OCAMLLIBDIR:=$(word 4,$(shell olablc -v | tail -1))
+OCAMLLIBDIR:=$(word 4,$(shell ocamlc -v | tail -1))
 OCAMLLIBDIR:=$(subst 
 ,,$(OCAMLLIBDIR))
 
@@ -145,7 +142,7 @@ include .depend
 # Rebuild dependencies (must be invoked manually)
 .PHONY: depend
 depend:
-	olabldep *.mli *.ml > .depend
+	ocamldep *.mli *.ml > .depend
 
 ####################################################################
 # Compilation and linking
@@ -182,11 +179,11 @@ ifeq ($(NATIVE),true)
 
   %.cmi : %.mli
 	@echo "OCAMLOPT: $< $(ZFLAGS) --->  $@"
-	@olablopt $(COMPFLAGS) -c $(CWD)/$<
+	@ocamlopt $(COMPFLAGS) -c $(CWD)/$<
 
   %.cmx : %.ml
 	@echo "OCAMLOPT: $< $(ZFLAGS) --->  $@"
-	@olablopt $(COMPFLAGS) -c $(CWD)/$<
+	@ocamlopt $(COMPFLAGS) -c $(CWD)/$<
 
   OBJS=$(OBJS_NATIVE)
   LINK = unix.cmxa -cclib -lunix str.cmxa -cclib -lstr
@@ -198,8 +195,8 @@ ifeq ($(NATIVE),true)
 
   $(NAME)$(EXEC_EXT): $(OBJS_NATIVE)
 	@echo Linking $@
-	olablopt -a -o library.cmxa $(OBJS_NATIVE0)
-	olablopt $(COMPFLAGS) -o $@ $(LINK) $(WITH_TK_OPT) \
+	ocamlopt -a -o library.cmxa $(OBJS_NATIVE0)
+	ocamlopt $(COMPFLAGS) -o $@ $(LINK) $(WITH_TK_OPT) \
 	  library.cmxa link$(UISTYLE).cmx
 	$(RM) library.cmxa library.lib
 
@@ -207,7 +204,7 @@ ifeq ($(NATIVE),true)
 
   $(NAME)$(EXEC_EXT): $(OBJS)
 	@echo Linking $@
-	olablopt $(COMPFLAGS) -o $@ $(LINK) $(WITH_TK_OPT) $^
+	ocamlopt $(COMPFLAGS) -o $@ $(LINK) $(WITH_TK_OPT) $^
 
   endif
 
@@ -221,7 +218,7 @@ else
     COMPFLAGS+= -g
   endif
 
-  OCAMLC=olablc
+  OCAMLC=ocamlc
   # (Doesn't seem to work as documented...)
   # ifeq ($(PROFILING),true)
   #   OCAMLC=ocamlcp
@@ -239,7 +236,7 @@ else
 
   uigtk.cmo : uigtk.ml
 	@echo "$(OCAMLC): $< $(ZFLAGS) --->  $@"
-	@$(OCAMLC) $(THFLAGS) -I /home/garrigue/Projects/lablgtk -c $(CWD)/$<
+	@$(OCAMLC) -modern -w s -I /home/garrigue/Projects/lablgtk -c $(CWD)/$<
 
   $(NAME)$(EXEC_EXT): $(OBJS)
 	@echo Linking $@
@@ -251,7 +248,7 @@ endif
 
 %.ml : %.mll
 	-rm -f $@
-	olabllex $<
+	ocamllex $<
 
 ######################################################################
 # Misc

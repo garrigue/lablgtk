@@ -1,7 +1,0 @@
-glade_project_window.{c,h}:
-	Some static functions are turned into non-static.
-	Now, GladeProjectWindow is a widget.
-
-source.c:
-	Entirely rewritten. 
-	Some stub functions to call ML functions. 
