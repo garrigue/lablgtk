@@ -16,6 +16,16 @@ object
   method get_left_gravity () = Mark.get_left_gravity obj
 end
 
+class child_anchor obj =
+object
+  inherit gtkobj (obj :Gtk.textchildanchor obj)
+  method as_childanchor = obj
+  method get_widgets () = Child_Anchor.get_widgets obj
+  method get_deleted () = Child_Anchor.get_deleted obj
+end
+
+let child_anchor = new child_anchor(Child_Anchor.create ())
+
 class iter it =
 object
   val iterator = (it: textiter)
@@ -193,6 +203,25 @@ class view obj = object
     GtkText.View.starts_display_line obj iter
   method move_visually iter count =
     GtkText.View.move_visually obj iter count
+  method add_child_at_anchor (w : widget) (anchor : child_anchor) =
+    GtkText.View.add_child_at_anchor obj w#as_widget anchor#as_childanchor
+  method add_child_in_window ~(child : widget) ~which_window ~x ~y =
+    GtkText.View.add_child_in_window obj child#as_widget which_window x y
+  method move_child ~(child : widget) ~x ~y =
+    GtkText.View.move_child obj child#as_widget x y
+  method set_wrap_mode wr =
+    GtkText.View.set_wrap_mode obj wr
+  method get_wrap_mode () =
+    GtkText.View.get_wrap_mode obj
+  method set_editable b =
+    GtkText.View.set_editable obj b
+  method get_editable () =
+    GtkText.View.get_editable obj
+  method set_cursor_visible b =
+    GtkText.View.set_cursor_visible obj b
+  method get_cursor_visible () =
+    GtkText.View.get_cursor_visible obj
+
 end
 
 

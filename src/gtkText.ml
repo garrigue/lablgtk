@@ -317,6 +317,16 @@ module Buffer = struct
 end    
 end
 
+module Child_Anchor = struct
+  let cast w : textchildanchor obj = Object.try_cast w "GtkTextChildAnchor"
+  external create : unit -> textchildanchor obj =
+	"ml_gtk_text_child_anchor_new"
+  external get_widgets : textchildanchor obj -> widget list =
+	"ml_gtk_text_child_anchor_get_widgets"
+  external get_deleted : textchildanchor obj -> bool =
+	"ml_gtk_text_child_anchor_get_deleted"
+end
+
 module View = struct
   let cast w : textview obj = Object.try_cast w "GtkTextView"
   external create : unit -> textview obj = "ml_gtk_text_view_new"
@@ -367,4 +377,39 @@ module View = struct
 	   "ml_gtk_text_view_starts_display_line"
   external move_visually : textview obj -> textiter -> int -> bool =
 	   "ml_gtk_text_view_move_visually"
+  external add_child_at_anchor : 
+    textview obj -> widget obj -> textchildanchor obj -> unit =
+	   "ml_gtk_text_view_add_child_at_anchor"
+  external add_child_in_window : 
+    textview obj -> widget obj -> text_window_type -> int -> int -> unit =
+	   "ml_gtk_text_view_add_child_in_window"
+  external move_child : 
+    textview obj -> widget obj -> int -> int -> unit =
+	   "ml_gtk_text_view_move_child"
+  external set_wrap_mode : textview obj -> wrap_mode -> unit =
+	   "ml_gtk_text_view_set_wrap_mode"
+  external get_wrap_mode : textview obj -> wrap_mode =
+	   "ml_gtk_text_view_get_wrap_mode"
+  external set_editable : textview obj -> bool -> unit =
+	   "ml_gtk_text_view_set_editable"
+  external get_editable : textview obj -> bool =
+	   "ml_gtk_text_view_get_editable"
+  external set_cursor_visible : textview obj -> bool -> unit =
+	   "ml_gtk_text_view_set_cursor_visible"
+  external get_cursor_visible : textview obj -> bool =
+	   "ml_gtk_text_view_get_cursor_visible"
+
+
+(*
+  external : textview obj -> =
+	   "ml_gtk_text_view_"
+  external : textview obj -> =
+	   "ml_gtk_text_view_"
+  external : textview obj -> =
+	   "ml_gtk_text_view_"
+  external : textview obj -> =
+	   "ml_gtk_text_view_"
+  external : textview obj -> =
+	   "ml_gtk_text_view_"
+*)
 end

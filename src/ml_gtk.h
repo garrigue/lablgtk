@@ -16,6 +16,9 @@ value Val_GtkObject_sink (GtkObject *w);
 #define Val_GtkWidget Val_GtkAny
 #define Val_GtkWidget_sink Val_GtkAny_sink
 
+/* For GList containing widgets */
+value Val_GtkWidget_func(gpointer w);
+
 #define GtkObject_val(val) check_cast(GTK_OBJECT,val)
 #define GtkWidget_val(val) check_cast(GTK_WIDGET,val)
 #define GtkAdjustment_val(val) check_cast(GTK_ADJUSTMENT,val)
