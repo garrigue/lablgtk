@@ -164,12 +164,9 @@ Make_Extractor (gdk_visual_get, GdkVisual_val, depth, Val_int)
 ML_1 (gdk_window_get_visual, GdkWindow_val, Val_GdkVisual)
 ML_3 (gdk_window_set_back_pixmap, GdkWindow_val, GdkPixmap_val, Int_val, Unit)
 ML_1 (gdk_window_clear, GdkWindow_val, Unit)
-value ml_GdkRootParent (value unit)
-{
-  return Val_GdkWindow( GDK_ROOT_PARENT () );
-}
-
+ML_0 (GDK_ROOT_PARENT, Val_GdkWindow)
 ML_1 (gdk_window_get_parent, GdkWindow_val, Val_GdkWindow)
+ML_1 (GDK_WINDOW_XWINDOW, GdkWindow_val, Val_XID)
 value ml_gdk_window_get_position (value window)
 {
   int x, y;

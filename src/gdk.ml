@@ -16,6 +16,7 @@ type keysym = int
 type 'a event
 type drag_context
 type cursor
+type xid = int32
 
 exception Error of string
 let _ = Callback.register_exception "gdkerror" (Error"")
@@ -175,12 +176,13 @@ module Window = struct
   external get_size : window -> int * int = "ml_gdk_window_get_size"
   external get_position : window -> int * int =
     "ml_gdk_window_get_position"
-  external root_parent : unit -> window = "ml_GdkRootParent"
+  external root_parent : unit -> window = "ml_GDK_ROOT_PARENT"
   external set_back_pixmap : window -> pixmap -> int -> unit = 
     "ml_gdk_window_set_back_pixmap"
   external clear : window -> unit = "ml_gdk_window_clear"
+  external get_xwindow : window -> xid = "ml_GDK_WINDOW_XWINDOW"
 
-  let set_back_pixmap w ~pixmap: pix = 
+  let set_back_pixmap w pix = 
     let null_pixmap = (Obj.magic null : pixmap) in
     match pix with
       `NONE -> set_back_pixmap w null_pixmap 0

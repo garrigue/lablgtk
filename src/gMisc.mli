@@ -92,6 +92,44 @@ class misc : 'a obj ->
     method set_padding : ?x:int -> ?y:int -> unit -> unit
   end
 
+class arrow : 'a obj ->
+  object
+    inherit misc
+    constraint 'a = [>`arrow|`misc|`widget]
+    val obj : 'a obj
+    method set_arrow : Tags.arrow_type -> shadow:Tags.shadow_type -> unit
+  end
+
+val arrow :
+  kind:Tags.arrow_type ->
+  shadow:Tags.shadow_type ->
+  ?xalign:float ->
+  ?yalign:float ->
+  ?xpad:int ->
+  ?ypad:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> arrow
+
+class image : 'a obj ->
+  object
+    inherit misc
+    constraint 'a = [>`image|`misc|`widget]
+    val obj : 'a obj
+    method set_image : ?mask:Gdk.bitmap -> Gdk.image -> unit
+  end
+
+val image :
+  Gdk.image ->
+  ?mask:Gdk.bitmap ->
+  ?xalign:float ->
+  ?yalign:float ->
+  ?xpad:int ->
+  ?ypad:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> image
+
 class label_skel : 'a obj ->
   object
     inherit misc

@@ -90,11 +90,14 @@ let spin_button ?adjustment ?rate ?digits ?value ?update_policy
 class combo obj = object
   inherit GObj.widget (obj : Gtk.combo obj)
   method entry = new entry (Combo.entry obj)
+  method list = new GList.liste (Combo.list obj)
   method set_popdown_strings = Combo.set_popdown_strings obj
   method set_use_arrows = Combo.set_use_arrows' obj
   method set_case_sensitive = Combo.set_case_sensitive obj
   method set_value_in_list = Combo.set_value_in_list obj
   method disable_activate () = Combo.disable_activate obj
+  method set_item_string (item : GList.list_item) =
+    Combo.set_item_string obj item#as_item
 end
 
 let combo ?popdown_strings ?use_arrows

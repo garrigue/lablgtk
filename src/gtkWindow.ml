@@ -178,3 +178,8 @@ module FontSelectionDialog = struct
   external cancel_button : [>`fontseldialog] obj -> button obj
       = "ml_gtk_font_selection_dialog_cancel_button"
 end
+
+module Plug = struct
+  let cast w : plug obj = Object.try_cast w "GtkPlug"
+  external create : Gdk.xid -> plug obj = "ml_gtk_plug_new"
+end

@@ -49,6 +49,19 @@ class container_full :
 val cast_container : widget -> container_full
 (* may raise [Gtk.Cannot_cast "GtkContainer"] *)
 
+class socket :
+  Gtk.socket obj ->
+  object
+    inherit container_full
+    val obj : Gtk.socket obj
+    method steal : Gdk.xid -> unit
+    method xwindow : Gdk.xid
+  end
+
+val socket :
+  ?border_width:int -> ?width:int -> ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> socket
+
 class virtual ['a] item_container :
   'c obj ->
   object

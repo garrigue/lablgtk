@@ -97,7 +97,9 @@ class combo : Gtk.combo obj ->
     val obj : Gtk.combo obj
     method disable_activate : unit -> unit
     method entry : entry
+    method list : GList.liste
     method set_case_sensitive : bool -> unit
+    method set_item_string : GList.list_item -> string -> unit
     method set_popdown_strings : string list -> unit
     method set_use_arrows : [`NEVER|`DEFAULT|`ALWAYS] -> unit
     method set_value_in_list :

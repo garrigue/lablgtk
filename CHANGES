@@ -1,5 +1,11 @@
 $Id$
 
+2000.5.9
+  * add arrow and image classes to GMisc
+  * add list and set_item_string methods to GEdit.combo
+  * add socket and plug classes to GContainer and GWindow
+  * two new examples: combo.ml and socket.ml
+
 2000.4.28
   * add GUtil.variable
 

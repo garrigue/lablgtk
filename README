@@ -84,14 +84,15 @@ Structure of the G[A-Z]* modules:
   GDraw         Gdk pixmaps, etc...
   GObj		gtkobj, widget, style
   GData		data, adjustment, tooltips
-  GContainer	container, item_container
-  GWindow	window, dialog, color_selection_dialog, file_selection
+  GContainer	container, item_container, socket
+  GWindow	window, dialog, color_selection_dialog, file_selection, plug
   GPack		box, button_box, table, fixed, layout, packer, paned
   GButton	button, toggle_button, check_button, radio_button, toolbar
   GMenu		menu_item, tearoff_item, check_menu_item, radio_menu_item,
 		menu_shell, menu, option_menu, menu_bar, factory
   GMisc		separator, statusbar, calendar, drawing_area,
-		misc, label, tips_query, notebook, color_selection
+		misc, arrow, image, pixmap, label, tips_query,
+                notebook, color_selection
   GTree		tree_item, tree
   GList		list_item, liste, clist
   GFrame	scrolled_window, event_box, handle_box, frame,
