@@ -14,6 +14,8 @@ class ['a] window_skel : 'b obj ->
     method add_accel_group : accel_group -> unit
     method as_window : Gtk.window obj
     method event : event_ops
+    method deiconify : unit -> unit
+    method iconify : unit -> unit
     method move : x:int -> y:int -> unit
     method parse_geometry : string -> bool
     method present : unit -> unit

@@ -43,6 +43,8 @@ class ['a] window_skel obj = object (self)
   method set_wm_class cls = Window.set_wmclass obj ~clas:cls
   method show () = Widget.show obj
   method present () = Window.present obj
+  method iconify () = Window.iconify obj
+  method deiconify () = Window.deiconify obj
 end
 
 class window obj = object

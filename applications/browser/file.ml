@@ -6,7 +6,7 @@ let dialog ~title ~callback ?filename () =
   sel#cancel_button#connect#clicked ~callback:sel#destroy;
   sel#ok_button#connect#clicked ~callback:
     begin fun () ->
-      let name = sel#get_filename in
+      let name = sel#filename in
       sel#destroy ();
       callback name
     end;
