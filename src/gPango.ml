@@ -27,29 +27,29 @@ class font_description fd = object
   method modify = modify fd
 end
 
-let font_description x = new font_description (from_string x)
+let font_description = from_string
 
 open Context
 
 class context obj = object (self)
   val obj = obj
   method as_context = obj
-  method font_description = new font_description (get_font_description obj)
+  method font_description = get_font_description obj
   method font_name = Font.to_string (get_font_description obj)
   method language = Language.to_string (get_language obj)
   method load_font desc = load_font obj (Font.from_string desc)
   method load_fontset
-      ?(desc = self#font_description#fd) ?(lang = self#language) () =
+      ?(desc = self#font_description) ?(lang = self#language) () =
     load_fontset obj desc (Language.from_string lang)
   method get_metrics
-      ?(desc = self#font_description#fd) ?(lang = self#language) () =
+      ?(desc = self#font_description) ?(lang = self#language) () =
     new metrics (get_metrics obj desc (Some (Language.from_string lang)))
 end
 
 class context_rw obj = object
   inherit context obj
-  method set_font_description (desc : font_description) =
-    set_font_description obj desc#fd
+  method set_font_description desc =
+    set_font_description obj desc
   method set_font_by_name desc =
     set_font_description obj (Font.from_string desc)
   method set_language lang = set_language obj (Language.from_string lang)

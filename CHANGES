@@ -1,5 +1,8 @@
 $Id$
 
+2003.06.23 [Jacques]
+  * Lots of changes: generate signals and externals too.
+
 2003.06.19 [Jacques]
   * Add GData.clipboard.
   * Properties for GtkCellRenderer.

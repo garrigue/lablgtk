@@ -1,0 +1,52 @@
+#!/bin/sh
+
+thread="no"
+localdir="no"
+usedll="yes"
+verbose="no"
+libraries=""
+libpath="-I @LABLGLDIR@"
+cmd="$0"
+
+while test -n "$1"; do
+case $1 in
+-help)
+    echo "Usage: lablgtk2 <options> <ocaml options> [script-file]"
+    echo "  -thread   use the threaded version of the toplevel"
+    echo "  -localdir use libraries in the same directory (before install)"
+    echo "  -verbose  show actions executed"
+    exit 0
+    ;;
+-thread) thread=yes; shift ;;
+-localdir) localdir=yes; shift ;;
+-verbose) verbose=yes; shift ;;
+*)  break ;;
+esac
+done
+
+if test $localdir = no; then
+    libpath="-I @INSTALLDIR@ $libpath"
+else
+    base=`dirname "$cmd"`
+    libpath="-I $base $libpath"
+    LD_LIBRARY_PATH=${base}:$LD_LIBRARY_PATH
+    if test $verbose = yes; then echo LD_LIBRARY_PATH=$LD_LIBRARY_PATH; fi
+fi
+
+if test $usedll = yes; then
+    libraries="@MLLIBS@"
+    if test $thread = yes; then
+        libpath="$libpath -I +threads"
+        libraries="unix.cma threads.cma $libraries @THINITOBJS@"
+    else
+        libraries="$libraries @INITOBJS@"
+    fi
+    toplevel="ocaml"
+elif test $thread = yes; then
+    toplevel="@INSTALLDIR@/lablgtktop_t -I +threads"
+else
+    toplevel="@INSTALLDIR@/lablgtktop"
+fi
+
+if test $verbose = yes; then echo $toplevel -w s $libpath $libraries $*; fi
+exec $toplevel -w s $libpath $libraries $*

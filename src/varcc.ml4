@@ -45,14 +45,13 @@ let rec ident_list = parser
   | [< >] -> []
 
 let static = ref false
-let may_public = parser
-    [< ' Ident "public" >] -> true
-  | [< ' Ident "private" >] -> false
-  | [< >] -> not !static
 
-let may_noconv = parser
-    [< ' Ident "noconv" >] -> true
-  | [< >] -> false
+let rec star ?(acc=[]) p = parser
+    [< x = p ; s >] -> star ~acc:(x::acc) p s
+  | [< >] -> List.rev acc
+
+let flag = parser
+    [< ' Ident ("public"|"private"|"noconv"|"flags" as s) >] -> s
 
 open Printf
 
@@ -63,7 +62,7 @@ let package = ref ""
 let pkgprefix = ref ""
 
 let declaration ~hc ~cc = parser
-    [< ' Kwd "type"; public = may_public; noconv = may_noconv;
+    [< ' Kwd "type"; flags = star flag;
        ' Ident mlname; name = may_string; ' Kwd "="; prefix = may_string;
        ' Kwd "["; _ = may_bar; tags = ident_list; ' Kwd "]";
        suffix = may_string >] ->
@@ -85,7 +84,7 @@ let declaration ~hc ~cc = parser
           end;
 	  oh "#define MLTAG_%s\tVal_int(%d)\n" tag hash;
       end;
-    if noconv then () else
+    if List.mem "noconv" flags then () else
     (* compute C name *)
     let ctag tag trans =
       if trans <> "" then trans else
@@ -109,7 +108,7 @@ let declaration ~hc ~cc = parser
     and cname =
       String.capitalize name
     in
-    all_convs := (name, mlname, tags) :: !all_convs;
+    all_convs := (name, mlname, tags, flags) :: !all_convs;
     let tags =
       List.sort tags ~cmp:
         (fun (tag1,_) (tag2,_) ->
@@ -117,7 +116,9 @@ let declaration ~hc ~cc = parser
     in
     (* Output table to code file *)
     oc "/* %s : conversion table */\n" name;
-    let static = if not public then "static " else "" in
+    let static =
+      if !static && not (List.mem "public" flags) || List.mem "private" flags
+      then "static " else "" in
     oc "%slookup_info ml_table_%s[] = {\n" static name;
     oc "  { 0, %d },\n" (List.length tags);
     List.iter tags ~f:
@@ -127,7 +128,7 @@ let declaration ~hc ~cc = parser
     oc "};\n\n";
     (* Output macros to headers *)
     if not !first then oh "\n";
-    if public then oh "extern lookup_info ml_table_%s[];\n" name;
+    if static = "" then oh "extern lookup_info ml_table_%s[];\n" name;
     oh "#define Val_%s(data) ml_lookup_from_c (ml_table_%s, data)\n"
       name name;
     oh "#define %s_val(key) ml_lookup_to_c (ml_table_%s, key)\n\n"
@@ -151,7 +152,7 @@ let process ic ~hc ~cc =
       oc "CAMLprim value ml_%s_get_tables ()\n{\n" (camlize !package);
       oc "  static lookup_info *ml_lookup_tables[] = {\n";
       let convs = List.rev !all_convs in
-      List.iter convs ~f:(fun (s,_,_) -> oc "    ml_table_%s,\n" s);
+      List.iter convs ~f:(fun (s,_,_,_) -> oc "    ml_table_%s,\n" s);
       oc "  };\n";
       oc "  return (value)ml_lookup_tables;";
       oc "}\n";
@@ -160,21 +161,33 @@ let process ic ~hc ~cc =
       let out fmt = Format.fprintf ppf fmt in
       out "open Gpointer\n@.";
       List.iter convs ~f:
-        begin fun (_,name,tags) ->
+        begin fun (_,name,tags,_) ->
           out "@[<hv 2>type %s =@ @[<hov>[ `%s" name (fst (List.hd tags));
           List.iter (List.tl tags) ~f:
             (fun (s,_) -> out "@ | `%s" s);
           out " ]@]@]@."
         end;
       out "\nexternal _get_tables : unit ->\n";
-      let (_,name0,_) = List.hd convs in
+      let (_,name0,_,_) = List.hd convs in
       out "    %s variant_table\n" name0;
       List.iter (List.tl convs) ~f:
-        (fun (_,s,_) -> out "  * %s variant_table\n" s);
+        (fun (_,s,_,_) -> out "  * %s variant_table\n" s);
       out "  = \"ml_%s_get_tables\"\n\n" (camlize !package);
       out "@[<hov 4>let %s" name0;
-      List.iter (List.tl convs) ~f:(fun (_,s,_) -> out ",@ %s" s);
-      out " = _get_tables ()@]@.";
+      List.iter (List.tl convs) ~f:(fun (_,s,_,_) -> out ",@ %s" s);
+      out " = _get_tables ()@]\n@.";
+      let enum =
+        if List.length convs > 10 then begin
+          out "let _make_enum = Gobject.Data.enum@.";
+          "_make_enum"
+        end else "Gobject.Data.enum"
+      in
+      List.iter convs ~f:
+        begin fun (_,s,_,flags) ->
+          let conv =
+            if List.mem "flags" flags then "Gobject.Data.flags" else enum in
+          out "let %s_conv = %s %s@." s conv s
+        end;
       close_out mlc
     end
   | Stream.Error err ->

@@ -222,23 +222,21 @@ end
 
 and misc_signals ?after obj = object
   inherit gtkobj_signals ?after obj
-  method show = GtkSignal.connect ~sgn:Signals.show ~after obj
-  method hide = GtkSignal.connect ~sgn:Signals.hide ~after obj
-  method map = GtkSignal.connect ~sgn:Signals.map ~after obj
-  method unmap = GtkSignal.connect ~sgn:Signals.unmap ~after obj
-  method realize = GtkSignal.connect ~sgn:Signals.realize ~after obj
-  method size_allocate =
-    GtkSignal.connect ~sgn:Signals.size_allocate ~after obj
-  method state_changed =
-    GtkSignal.connect ~sgn:Signals.state_changed ~after obj
+  method show = GtkSignal.connect ~sgn:S.show ~after obj
+  method hide = GtkSignal.connect ~sgn:S.hide ~after obj
+  method map = GtkSignal.connect ~sgn:S.map ~after obj
+  method unmap = GtkSignal.connect ~sgn:S.unmap ~after obj
+  method realize = GtkSignal.connect ~sgn:S.realize ~after obj
+  method size_allocate = GtkSignal.connect ~sgn:S.size_allocate ~after obj
+  method state_changed = GtkSignal.connect ~sgn:S.state_changed ~after obj
   method parent_set ~callback =
-    GtkSignal.connect obj ~sgn:Signals.parent_set ~after ~callback:
+    GtkSignal.connect obj ~sgn:S.parent_set ~after ~callback:
       begin function
 	  None   -> callback None
 	| Some w -> callback (Some (new widget (unsafe_cast w)))
       end
   method style_set ~callback =
-    GtkSignal.connect obj ~sgn:Signals.style_set ~after ~callback:
+    GtkSignal.connect obj ~sgn:S.style_set ~after ~callback:
       (fun opt -> callback (may opt ~f:(new style)))
   method selection_get ~callback =
     GtkSignal.connect obj ~sgn:Selection.Signals.selection_get ~after

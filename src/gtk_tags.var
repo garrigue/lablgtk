@@ -45,7 +45,7 @@ type justification = "GTK_JUSTIFY_"
 type match_type = "GTK_MATCH_"
   [ `ALL | `ALL_TAIL | `HEAD | `TAIL | `EXACT | `LAST ]
 
-type menu_direction = "GTK_MENU_DIR_"
+type menu_direction_type = "GTK_MENU_DIR_"
   [ `PARENT | `CHILD | `NEXT | `PREV ]
 
 type metric_type = "GTK_"

@@ -25,6 +25,31 @@ classes {
 
 class Item : GtkObject {
   "parent"               GnomeCanvasItem      : Read / Write
+  method parent : "group obj"
+  method canvas : "canvas obj"
+  method xform : "[`IDENTITY|`TRANSL of float array|`AFFINE of float array]"
+  method affine_relative : "float array -> unit"
+  method affine_absolute : "float array -> unit"
+  method set : "unit"
+  (* Must call [set] after using [Property.set] *)
+  method move : "x:float -> y:float -> unit"
+  method raise : "int -> unit"
+  method lower : "int -> unit"
+  method raise_to_top : "unit"
+  method lower_to_bottom : "unit"
+  method show : "unit"
+  method hide : "unit"
+  method grab : "Gdk.Tags.event_mask list -> Gdk.cursor -> int32 -> unit"
+  method ungrab : "int32 -> unit"
+  method w2i : "x:float -> y:float -> float * float"
+  method i2w : "x:float -> y:float -> float * float"
+  method i2w_affine : "float array"
+  method i2c_affine : "float array"
+  method reparent : "group obj -> unit"
+  method grab_focus : "unit"
+  method get_bounds : "float array"
+  signal event
+         "(GtkBase.Widget.Signals.Event.marshal : (item_event -> bool) -> _)"
 }
 
 class Shape : Item {
@@ -66,6 +91,7 @@ class Polygon : Shape {
 class Group : Item {
   "x"                    gdouble              : Read / Write
   "y"                    gdouble              : Read / Write
+  method get_items : "item obj list"
 }
 
 class Clipgroup : Group {
@@ -129,6 +155,10 @@ class RichText : Item {
   "wrap-mode"            GtkWrapMode          : Read / Write
   "x"                    gdouble              : Read / Write
   "y"                    gdouble              : Read / Write
+  method cut_clipboard : "unit"
+  method copy_clipboard : "unit"
+  method paste_clipboard : "unit"
+  method get_buffer : "Gtk.text_buffer"
 }
 
 class Text : Item {
@@ -187,4 +217,21 @@ class Widget : Item {
 
 class Canvas "GnomeCanvas" tag "canvas" : Layout {
   "aa"                   gboolean             : Read / Write / Construct Only
+  method root : "group obj"
+  method set_scroll_region :
+    "x1:float -> y1:float -> x2:float -> y2:float -> unit"
+  method get_scroll_region : "float array"
+  method set_center_scroll_region : "bool -> unit"
+  method get_center_scroll_region : "bool"
+  method set_pixels_per_unit : "float -> unit"
+  method scroll_to : "x:int -> y:int -> unit"
+  method get_scroll_offsets : "int * int"
+  method update_now : "unit"
+  method get_item_at : "x:float -> y:float -> item obj"
+  method w2c_affine : "float array"
+  method w2c : "wx:float -> wy:float -> int * int"
+  method w2c_d : "wx:float -> wy:float -> float * float"
+  method c2w : "cx:float -> cy:float -> float * float"
+  method window_to_world : "winx:float -> winy:float -> float * float"
+  method world_to_window : "wox:float -> woy:float -> float * float"
 }

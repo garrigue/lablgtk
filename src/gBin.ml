@@ -38,10 +38,10 @@ let event_box =
 class handle_box_signals obj = object
   inherit container_signals (obj : [> handle_box] obj)
   method child_attached ~callback =
-    GtkSignal.connect ~sgn:HandleBox.Signals.child_attached obj ~after
+    GtkSignal.connect ~sgn:HandleBox.S.child_attached obj ~after
       ~callback:(fun obj -> callback (new widget obj))
   method child_detached ~callback =
-    GtkSignal.connect ~sgn:HandleBox.Signals.child_detached obj ~after
+    GtkSignal.connect ~sgn:HandleBox.S.child_detached obj ~after
       ~callback:(fun obj -> callback (new widget obj))
 end
 

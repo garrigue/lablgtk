@@ -31,7 +31,7 @@ LABLGLDIR = $(LIBDIR)/lablGL
 
 MLLIBS = lablgtk.cma
 CLIBS = liblablgtk2.a
-MLLINK = unix.cma str.cma
+#MLLINK = unix.cma str.cma
 
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
@@ -114,10 +114,9 @@ GTKOBJS =  ml_gtk.o ml_pango.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o \
 	ml_gtktext.o ml_gtktree.o ml_gtkstock.o
 COBJS = ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o \
 	wrappers.o $(GTKOBJS)
-MLOBJS1 =  gaux.cmo gpointer.cmo
+MLOBJS1 =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo
 ENUMOBJS = gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
-MLOBJS2 = glib.cmo gobject.cmo \
-	gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
+MLOBJS2 = gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
 	gtk.cmo pango.cmo gtkSignal.cmo gtkStock.cmo
 MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
@@ -147,11 +146,14 @@ lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	$(TOPLEVEL) $(THFLAGS) $(CUSTOM) -o $@ $(THLINK) $(MLLINK) \
 	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
-lablgtk2: Makefile $(CONFIG) lablgtk.in
+lablgtk2: Makefile $(CONFIG) lablgtk2.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
 	    -e "s|@LABLGLDIR@|$(LABLGLDIR)|g" \
 	    -e "s|@LIBDIR@|$(LIBDIR)|g" \
-	    < lablgtk.in > $@
+	    -e "s|@MLLIBS@|$(MLLINK) $(MLLIBS)|g" \
+	    -e "s|@INITOBJS@|$(INITOBJS)|g" \
+	    -e "s|@THINITOBJS@|$(THOBJS) $(INITOBJS) $(THINITOBJS)|g" \
+	    < lablgtk2.in > $@
 	chmod 755 $@
 
 lablgtkopt: $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \

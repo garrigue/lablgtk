@@ -20,7 +20,7 @@ type visual_options = [
   | `ACCUM_GREEN_SIZE of int
   | `ACCUM_ALPHA_SIZE of int
 ]
-type gl_area = [Gtk.widget|`drawing|`glarea]
+type gl_area = [Gtk.drawing_area|`glarea]
 
 module GtkRaw :
   sig

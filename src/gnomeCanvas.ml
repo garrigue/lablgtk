@@ -231,6 +231,6 @@ let art_vpath_dash =
     inj = (fun x -> `POINTER (may_map (fun (x,y) -> convert_dash x y) x));
     proj = (fun x -> may_map get_dash (Data.pointer.proj x)) }
 let path_def =
-  { Data.unsafe_pointer_option with proj =
-    (fun x -> may_map PathDef.duplicate (Data.unsafe_pointer_option.proj x)) }
+  { kind = `POINTER; inj = Data.unsafe_boxed_option.inj; proj =
+    (fun x -> may_map PathDef.duplicate (Data.unsafe_boxed_option.proj x)) }
 end

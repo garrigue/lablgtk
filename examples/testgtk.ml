@@ -517,7 +517,9 @@ let create_toolbar =
 (* Handlebox *)
 
 let handle_box_child_signal action (hb : GBin.handle_box) child =
-  Printf.printf "%s: child <%s> %s\n" hb#misc#get_type child#misc#get_type action
+  Printf.printf "%s: child <%s> %s\n" hb#misc#get_type
+    child#misc#get_type action;
+  flush stdout
 
 let create_handle_box =
   let rw = ref None in
@@ -815,9 +817,7 @@ let create_tree_mode_window =
 let tips_query_widget_entered (toggle : GButton.toggle_button)
     (tq : GMisc.tips_query) _ ~text ~privat:_  =
   if toggle #active then begin
-    tq #set_text
-      (match text with
-      | None -> "There is no tip!" | Some _ -> "There is a tip!");
+    tq #set_text (if text = "" then "There is no tip!" else "There is a tip!");
     GtkSignal.stop_emit ()
   end
 
@@ -826,7 +826,7 @@ let tips_query_widget_selected (w : #widget option) ~text ~privat:tp _ =
   | None -> ()
   | Some w -> 
     Printf.printf "Help \"%s\" requested for <%s>\n"
-	(match tp with None -> "None" | Some t -> t)
+	(if tp = "" then "None" else tp)
 	(w #misc#get_type));
    true
 

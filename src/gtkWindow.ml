@@ -151,19 +151,6 @@ module MessageDialog = struct
       = "ml_gtk_message_dialog_new"
 end
 
-module InputDialog = struct
-  include InputDialog
-  module Signals = struct
-    open GtkSignal
-    let enable_device =
-      { name = "enable_device"; classe = `inputdialog;
-        marshaller = marshal_int }
-    let disable_device =
-      { name = "disable_device"; classe = `inputdialog;
-        marshaller = marshal_int }
-  end
-end
-
 module FileSelection = struct
   include FileSelection
   external create : string -> file_selection obj = "ml_gtk_file_selection_new"

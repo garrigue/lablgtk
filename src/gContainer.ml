@@ -10,9 +10,10 @@ open GData
 
 open Container
 
+(* Not really useful
 class focus obj = object
   val obj = obj
-  (* method circulate = focus obj *)
+  method circulate = focus obj
   method set (child : widget option) =
     let child = may_map child ~f:(fun x -> x#as_widget) in
     set_focus_child obj (Gpointer.optboxed child)
@@ -23,6 +24,7 @@ class focus obj = object
     set_focus_vadjustment obj
       (Gpointer.optboxed (may_map adj ~f:as_adjustment))
 end
+*)
 
 class ['a] container_impl obj = object (self)
   inherit ['a] widget_impl obj
@@ -30,7 +32,6 @@ class ['a] container_impl obj = object (self)
   method remove w = remove obj (as_widget w)
   method children = List.map ~f:(new widget) (children obj)
   method set_border_width = set P.border_width obj
-  method focus = new focus obj
 end
 
 class container = ['a] container_impl
@@ -38,10 +39,10 @@ class container = ['a] container_impl
 class container_signals obj = object
   inherit widget_signals obj
   method add ~callback =
-    GtkSignal.connect ~sgn:Signals.add obj ~after
+    GtkSignal.connect ~sgn:S.add obj ~after
       ~callback:(fun w -> callback (new widget w))
   method remove ~callback =
-    GtkSignal.connect ~sgn:Signals.remove obj ~after
+    GtkSignal.connect ~sgn:S.remove obj ~after
       ~callback:(fun w -> callback (new widget w))
 end
 
@@ -68,7 +69,6 @@ class virtual ['a] item_container obj = object (self)
   method children : 'a list =
     List.map ~f:self#wrap (children obj)
   method set_border_width = set Container.P.border_width obj
-  method focus = new focus obj
   method virtual insert : 'a -> pos:int -> unit
   method append (w : 'a) = self#insert w ~pos:(-1)
   method prepend (w : 'a) = self#insert w ~pos:0
@@ -76,7 +76,7 @@ end
 
 class item_signals obj = object
   inherit container_signals (obj : [> Gtk.item] obj)
-  method select = GtkSignal.connect ~sgn:Item.Signals.select obj ~after
-  method deselect = GtkSignal.connect ~sgn:Item.Signals.deselect obj ~after
-  method toggle = GtkSignal.connect ~sgn:Item.Signals.toggle obj ~after
+  method select = GtkSignal.connect ~sgn:Item.S.select obj ~after
+  method deselect = GtkSignal.connect ~sgn:Item.S.deselect obj ~after
+  method toggle = GtkSignal.connect ~sgn:Item.S.toggle obj ~after
 end

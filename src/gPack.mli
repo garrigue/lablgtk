@@ -167,7 +167,7 @@ class notebook_signals : 'a obj ->
     inherit container_signals
     constraint 'a = [> Gtk.notebook]
     val obj : 'a obj
-    method switch_page : callback:(int -> unit) -> GtkSignal.id
+    method change_current_page : callback:(int -> unit) -> GtkSignal.id
   end
 
 class notebook : Gtk.notebook obj ->
