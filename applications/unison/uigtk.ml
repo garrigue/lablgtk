@@ -112,7 +112,7 @@ let profileSelect toplevelWindow =
            the default of the dialog; otherwise the first profile
            becomes the default. *)
         let profiles =
-          if List.mem key:"default" profiles
+          if List.mem item:"default" profiles
           then "default":: List.filter pred:(fun f -> f<>"default") profiles
           else profiles in
         let var1 = ref (List.hd profiles) in

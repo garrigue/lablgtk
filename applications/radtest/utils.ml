@@ -25,17 +25,17 @@ let rec list_remove pred:f = function
 
 (* cut the list at the element elt; elt stays in tail;
    hd stays in reverse order *)
-let cut_list :key l =
+let cut_list :item l =
   let rec aux h t = match t with
-  | hd :: tl -> if hd = key then h, t
+  | hd :: tl -> if hd = item then h, t
 	else aux (hd :: h) tl
   | [] -> failwith "cut_list"
   in aux [] l
 
-let list_pos :key l =
+let list_pos :item l =
   let rec aux pos = function
     | [] -> raise Not_found
-    | hd :: tl -> if hd = key then pos else aux (pos+1) tl
+    | hd :: tl -> if hd = item then pos else aux (pos+1) tl
   in aux 0 l
 
 (* moves the pos element up; pos is >= 1;
@@ -51,12 +51,12 @@ let rec list_reorder_down :pos =
   list_reorder_up pos:(pos+1)
 
 
-let rec list_insert :key l :pos =
-  if pos=0 then key :: l
+let rec list_insert :item l :pos =
+  if pos=0 then item :: l
   else
     match l with
     | [] ->  failwith "list_insert"
-    | hd :: tl -> hd :: (list_insert :key tl pos:(pos-1))
+    | hd :: tl -> hd :: (list_insert :item tl pos:(pos-1))
 
 
 let rec change_property_name oldname newname = function
@@ -84,7 +84,7 @@ let split name =
     (String.sub name pos:0 len:(!i+1)),
     int_of_string (String.sub name pos:(!i+1) len:(l- !i-1))
 
-let test_unique name = not (List.mem key:name !name_list)
+let test_unique name = not (List.mem item:name !name_list)
 
 let make_new_name ?(:index=1) base =
   let index = ref index in

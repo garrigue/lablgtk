@@ -181,7 +181,7 @@ class window_and_tree :name =
 	    match selected with
 	    | None -> ()
 	    | Some t -> 
-		if List.mem key:`CONTROL state then t#up ()
+		if List.mem item:`CONTROL state then t#up ()
 		else try
 		  self#change_selected t#prev
 		with Not_found -> ()
@@ -190,7 +190,7 @@ class window_and_tree :name =
 	    match selected with
 	    | None -> ()
 	    | Some t -> 
-		if List.mem key:`CONTROL state then t#down ()
+		if List.mem item:`CONTROL state then t#down ()
 		else try
 		  self#change_selected t#next
 		with Not_found -> ()
@@ -303,7 +303,7 @@ object(self)
   method remove_me () =
     let sref = ref "" in
     self#save_to_string sref;
-    let pos = list_pos key:(self : #tiwidget0 :> tiwidget0)
+    let pos = list_pos item:(self : #tiwidget0 :> tiwidget0)
 	(List.map self#sure_parent#children fun:fst) in
     let lexbuf = Lexing.from_string !sref in
     let node = Paste_parser.widget Paste_lexer.token lexbuf in
@@ -406,7 +406,7 @@ object(self)
     let mandatory = self#get_mandatory_props in
     List.iter (self#emit_clean_proplist proplist) fun:
       begin  fun (name, prop) ->
-	if List.mem key:name mandatory then () else
+	if List.mem item:name mandatory then () else
 	if prop#modified then
 	  Format.fprintf formatter "@ %s:%s" prop#name prop#code
       end
@@ -536,7 +536,7 @@ object(self)
     end
 
   method next_child child =
-    let _, tl = cut_list key:child (List.map fun:fst children) in
+    let _, tl = cut_list item:child (List.map fun:fst children) in
     match tl with
     | ch :: next :: _ -> next
     | ch :: [] -> begin
@@ -557,7 +557,7 @@ object(self)
     match parent with
     | None -> raise Not_found
     | Some p ->
-	let hd, _ = cut_list key:(self : #tiwidget0 :> tiwidget0)
+	let hd, _ = cut_list item:(self : #tiwidget0 :> tiwidget0)
 	    (List.map fun:fst p#children) in
 	match hd with
 	| [] -> p
@@ -811,7 +811,7 @@ object(self)
     Propwin.update (self : #tiwidget0 :> tiwidget0)
 
   method child_up child =
-    let pos = list_pos key:child (List.map fun:fst children) in
+    let pos = list_pos item:child (List.map fun:fst children) in
     if pos > 0 then begin
       box#reorder_child child#base pos:(pos-1);
       children <- list_reorder_up children :pos;
@@ -819,7 +819,7 @@ object(self)
     end
 	    
   method child_down child =
-    let pos = list_pos key:child (List.map fun:fst children) in
+    let pos = list_pos item:child (List.map fun:fst children) in
     if pos < (List.length children - 1) then begin
       box#reorder_child child#base pos:(pos+1);
       children <- list_reorder_down children :pos;
@@ -832,7 +832,7 @@ object(self)
       children <-  children @ [(child, `START)]
     end
     else begin
-      children <- list_insert key:(child, `START) children :pos;
+      children <- list_insert item:(child, `START) children :pos;
       box#reorder_child child#base :pos
     end;
     let n = child#name in

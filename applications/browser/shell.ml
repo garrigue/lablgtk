@@ -32,7 +32,7 @@ class shell :prog :args :env ?:packing ?:show () =
 object (self)
   val textw = GEdit.text editable:true ?:packing ?:show ()
   val pid = Unix.create_process_env
-      name:prog :args :env stdin:in2 stdout:out2 stderr:err2
+      :prog :args :env stdin:in2 stdout:out2 stderr:err2
   val out = Unix.out_channel_of_descr out1
   val h = new history ()
   val mutable alive = true
@@ -164,7 +164,7 @@ let get_all () =
   all
 
 let may_exec prog =
-  try Unix.access name:prog perm:[Unix.X_OK]; true
+  try Unix.access file:prog perm:[Unix.X_OK]; true
   with Unix.Unix_error _ -> false
 
 let f :prog :title =
