@@ -1,6 +1,6 @@
 # Toplevel makefile for LablGtk2
 
-all opt srcdoc install byte clean depend: config.make
+all opt srcdoc install byte clean depend world: config.make
 	$(MAKE) -C src $@
 
 arch-clean:

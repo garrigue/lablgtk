@@ -22,12 +22,10 @@ TARGETS = varcc lablgtktop lablgtktop_t lablgtk2 lablgladecc
 
 all: byte
 
+world: byte $(OCAMLBEST)
+
 byte: $(TARGETS)
 opt:  $(TARGETS) lablgtkopt
-
-depend:
-	ocamldep *.ml *.mli > .depend
-
 
 LABLGLDIR = $(LIBDIR)/lablGL
 
@@ -101,10 +99,14 @@ endif
 	$(COMPILER) $<
 .ml.cmx:
 	$(COMPOPT) $<
-.var.h:
-	./varcc $<
+#.var.h _tags.:
+#	./varcc $<
 .ml4.ml:
 	$(CAMLP4) -impl $< -o $@
+
+%_tags.h %_tags.c %Enums.ml: %_tags.var varcc
+	./varcc $<
+
 
 # Targets
 GTKOBJS =  ml_gtk.o ml_pango.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o \
@@ -131,6 +133,9 @@ THINITOBJS = gtkThInit.cmo
 ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
+
+depend: $(ENUMOBJS:.cmo=.ml)
+	ocamldep *.ml *.mli > .depend
 
 lablgtktop: $(MLLIBS) $(INITOBJS)
 	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
@@ -263,7 +268,8 @@ check_externals: check_externals.cmo
 
 clean:
 	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml xml_lexer.ml \
-	  check_externals.ml propcc.ml *Enums.ml gtkProps.ml
+	  propcc check_externals check_externals.ml propcc.ml \
+	  *Enums.ml gtkProps.ml
 	rm -f \#*\# *~
 
 srcdoc: $(ALLOBJS)

@@ -38,7 +38,7 @@ How to compile:
 	
 	In case you are using the CVS version first type "aclocal && autoconf".
 	
-	Type "./configure && make && make install" to compile 
+	Type "./configure && make world && make install" to compile 
 	with all supported options enabled (libgl, libglade, libgnomecanvas, 
 	librsvg, native compilation, thread support).
 	
