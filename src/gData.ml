@@ -67,13 +67,14 @@ let tooltips ?delay () =
   may delay ~f:(Tooltips.set_delay tt);
   new tooltips tt
 
-class clipboard clip = object
-  method clear () = Clipboard.clear clip
-  method set_text = Clipboard.set_text clip
-  method text = Clipboard.wait_for_text clip
+class clipboard clip = object (self)
+  method private clip = Lazy.force clip
+  method clear () = Clipboard.clear self#clip
+  method set_text = Clipboard.set_text self#clip
+  method text = Clipboard.wait_for_text self#clip
   method get_contents ~target =
-    new GObj.selection_data (Clipboard.wait_for_contents clip ~target)
+    new GObj.selection_data (Clipboard.wait_for_contents self#clip ~target)
 end
 
-let clipboard ?(selection = Gdk.Atom.primary) () =
-  new clipboard (Clipboard.get selection)
+let clipboard selection =
+  new clipboard (lazy (Clipboard.get selection))
