@@ -68,13 +68,14 @@ module Message = struct
   external remove_log_handler : log_handler -> unit
     = "ml_g_log_remove_handler"
 end
-    
+(*    
 module Thread = struct
   external init : unit -> unit = "ml_g_thread_init"
       (* Call only once! *)
   external enter : unit -> unit = "ml_gdk_threads_enter"
   external leave : unit -> unit = "ml_gdk_threads_leave"
 end
+*)
 
 module Convert = struct
   external convert :
