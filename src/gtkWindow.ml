@@ -62,14 +62,6 @@ module Window = struct
       = "ml_gtk_window_set_default"
   (* see gtk.props for others *)
 
-  let make_params ~cont =
-    make_params ~cont:(fun pl ?width ?height ?border_width ->
-      let may_cons = Property.may_cons in
-      cont (
-      may_cons Container.P.border_width border_width (
-      may_cons P.default_width width (
-      may_cons P.default_height height pl))))
-
   let set_wmclass ?name ?clas:wm_class w =
     set_wmclass w ~name:(may_default get_wmclass_name w ~opt:name)
       ~clas:(may_default get_wmclass_class w ~opt:wm_class)

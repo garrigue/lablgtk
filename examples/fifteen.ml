@@ -48,7 +48,7 @@ let window = GWindow.window ()
 let _ = window#connect#destroy ~callback:GMain.Main.quit
 
 let tbl = GPack.table ~rows:4 ~columns:4 ~homogeneous:true ~packing:window#add ()
-let dummy = GMisc.label ~label:"" ~packing:(tbl#attach ~left:3 ~top:3) ()
+let dummy = GMisc.label ~text:"" ~packing:(tbl#attach ~left:3 ~top:3) ()
 let arr = Array.create_matrix ~dimx:4 ~dimy:4 dummy
 let init = game_init ()
 let _ =
@@ -60,7 +60,7 @@ let _ =
 	~packing:(tbl#attach ~left:j ~top:k) () in
     if i < 15 then
       arr.(j).(k) <-
-	GMisc.label ~label:(string_of_int (List.nth init i))
+	GMisc.label ~text:(string_of_int (List.nth init i))
 	  ~packing:frame#add ()
   done
 let pos = new position ~init_x:3 ~init_y:3 ~min_x:0 ~min_y:0 ~max_x:3 ~max_y:3

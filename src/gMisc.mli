@@ -206,12 +206,12 @@ class label : Gtk.label obj ->
     method connect : widget_signals
   end
 val label :
-  ?label:string ->
+  ?text:string ->
+  ?markup:string ->     (* overrides ~text if present *)
+  ?use_underline:bool ->
+  ?mnemonic_widget:#widget ->
   ?justify:Tags.justification ->
   ?line_wrap:bool ->
-  ?use_markup:bool ->
-  ?use_underline:bool ->
-  ?mnemonic_widget:Gtk.widget obj ->
   ?pattern:string ->
   ?selectable:bool ->
   ?xalign:float ->

@@ -1,5 +1,11 @@
 $Id$
 
+2003.07.09 [Jacques]
+  * ?width and ?height in GWindow back to setting size_request
+    (default size did not work properly)
+  * backward compatibility: GMisc.label has two exclusive parameters, 
+    ?text and ?markup (and no ?use_markup).
+
 2003.07.07 [Benjamin]
   * Fixed confusion between text/label in a Label. Now GMisc.label expects 
     ~label instead of ~text. This is consistant with the semantic of text and 
