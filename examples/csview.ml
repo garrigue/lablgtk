@@ -15,13 +15,19 @@ let mem_string ~char s =
     false
   with Exit -> true
 
-let rec until ~chars ?(buf = Buffer.create 80) s =
+let rec until ~chars ?(escapes="") ?(buf = Buffer.create 80) s =
   match Stream.peek s with
     Some c ->
-      if mem_string ~char:c chars then Buffer.contents buf else begin
+      if mem_string ~char:c escapes then begin
+        Stream.junk s;
+        Buffer.add_char buf (Stream.next s);
+        until ~chars ~escapes ~buf s
+      end else if mem_string ~char:c chars then
+        Buffer.contents buf
+      else begin
         Buffer.add_char buf c;
         Stream.junk s;
-        until ~chars ~buf s
+        until ~chars ~escapes ~buf s
       end
   | None ->
       if Buffer.length buf > 0 then raise (Stream.Error "until")
@@ -34,7 +40,7 @@ let rec ignores ?(chars = " \t") s =
   | _ -> ()
 
 let parse_field = parser
-    [< ''"'; f = until ~chars:"\""; ''"'; _ = ignores >] ->
+    [< ''"'; f = until ~chars:"\"" ~escapes:"\\"; ''"'; _ = ignores >] ->
       for i = 0 to String.length f - 1 do
         if f.[i] = '\031' then f.[i] <- '\n'
       done;
