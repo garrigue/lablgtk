@@ -30,14 +30,14 @@ val int_of_priority : [< `HIGH | `DEFAULT | `HIGH_IDLE | `DEFAULT_IDLE | `LOW] -
 (** @gtkdoc glib glib-The-Main-Event-Loop *)
 module Timeout : sig
   type id
-  val add : ?prio:int -> ms:int -> callback:(unit -> bool) -> id
+  val add : ms:int -> callback:(unit -> bool) -> id
   val remove : id -> unit
 end
 
 (** @gtkdoc glib glib-The-Main-Event-Loop *)
 module Idle : sig
   type id
-  val add : ?prio:int -> callback:(unit -> bool) -> id
+  val add : ?prio:int -> (unit -> bool) -> id
   val remove : id -> unit
 end
 
