@@ -93,7 +93,8 @@ endif
 
 # Targets
 GTKOBJS = ml_gtk.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o ml_gtklist.o \
-	ml_gtkmenu.o ml_gtkmisc.o ml_gtkpack.o ml_gtkrange.o ml_gtktree.o
+	ml_gtkmenu.o ml_gtkmisc.o ml_gtkpack.o ml_gtkrange.o ml_gtktree.o \
+	ml_gtktext.o
 COBJS = ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o \
 	wrappers.o $(GTKOBJS)
 MLOBJS = gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
@@ -102,8 +103,10 @@ MLOBJS = gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkTree.cmo gtkMain.cmo \
+	gtkText.cmo \
 	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
+	gText.cmo \
 	gMenu.cmo gMisc.cmo gWindow.cmo gList.cmo gBin.cmo \
 	gEdit.cmo gRange.cmo gTree.cmo gUtil.cmo gToolbox.cmo
 THOBJS = gtkThread.cmo
