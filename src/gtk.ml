@@ -569,7 +569,7 @@ module Frame = struct
     if Object.is_a w "GtkFrame" then Obj.magic w
     else invalid_arg "Gtk.Frame.cast"
   external coerce : [> frame] obj -> t obj = "%identity"
-  external create : label:string -> t obj = "ml_gtk_frame_new"
+  external create : ?label:string -> ?unit -> t obj = "ml_gtk_frame_new"
   external set_label : [> frame] obj -> string -> unit
       = "ml_gtk_frame_set_label"
   external set_label_align : [> frame] obj -> x:clampf -> y:clampf -> unit
@@ -596,12 +596,12 @@ module AspectFrame = struct
     if Object.is_a w "GtkAspectFrame" then Obj.magic w
     else invalid_arg "Gtk.AspectFrame.cast"
   external create :
-      label:string ->
+      ?label:string ->
       xalign:clampf -> yalign:clampf -> ratio:float -> obey:bool -> t obj
       = "ml_gtk_aspect_frame_new"
-  let create :label ?:xalign [< 0.5 >] ?:yalign [< 0.5 >]
-      ?:ratio [< 1.0 >] ?:obey [< true >] =
-    create :label :xalign :yalign :ratio :obey
+  let create ?:label ?:xalign [< 0.5 >] ?:yalign [< 0.5 >]
+      ?:ratio [< 1.0 >] ?:obey [< true >] ?(_ : unit option) =
+    create ?:label :xalign :yalign :ratio :obey
   external set :
       [> aspect] obj ->
       xalign:clampf -> yalign:clampf -> ratio:float -> obey_child:bool -> unit
@@ -1848,6 +1848,17 @@ module Misc = struct
       = "ml_gtk_misc_set_alignment"
   external set_padding : [> misc] obj -> x:int -> y:int -> unit
       = "ml_gtk_misc_set_padding"
+  external get_xalign : [> misc] obj -> float = "ml_gtk_misc_get_xalign"
+  external get_yalign : [> misc] obj -> float = "ml_gtk_misc_get_yalign"
+  external get_xpad : [> misc] obj -> int = "ml_gtk_misc_get_xpad"
+  external get_ypad : [> misc] obj -> int = "ml_gtk_misc_get_ypad"
+  let set w ?:xalign ?:yalign ?:xpad ?:ypad =
+    if xalign <> None || yalign <> None then
+      set_alignment w x:(may_default get_xalign w for:xalign)
+	y:(may_default get_yalign w for:yalign);
+    if xpad <> None || ypad <> None then
+      set_padding w x:(may_default get_xpad w for:xpad)
+	y:(may_default get_ypad w for:ypad)
 end
 
 module Arrow = struct
@@ -1882,7 +1893,8 @@ module Label = struct
       = "ml_gtk_label_set_justify"
   let set w ?:label ?:justify =
     may fun:(set w) label;
-    may fun:(set_justify w) justify
+    may fun:(set_justify w) justify;
+    Misc.set ?w
   external get_label : [> label] obj -> string = "ml_GtkLabel_label"
 end
 
@@ -1915,7 +1927,8 @@ module TipsQuery = struct
     if label_inactive <> None || label_no_tip <> None then
       set_labels w
 	inactive:(may_default get_label_inactive w for:label_inactive)
-	no_tip:(may_default get_label_no_tip w for:label_no_tip)
+	no_tip:(may_default get_label_no_tip w for:label_no_tip);
+    Misc.set ?w
   module Signals = struct
     open Signal
     let start_query : ([> tipsquery],_) t =
@@ -1940,6 +1953,10 @@ module Pixmap = struct
   external set :
       [> pixmap] obj -> ?pixmap:Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
       = "ml_gtk_pixmap_set"
+  let set w ?:pixmap ?:mask =
+    if pixmap <> None || mask <> None then
+      set w ?:pixmap ?:mask;
+    Misc.set ?w
   external pixmap : [> pixmap] obj -> Gdk.pixmap = "ml_GtkPixmap_pixmap"
   external mask : [> pixmap] obj -> Gdk.bitmap = "ml_GtkPixmap_mask"
 end

@@ -160,7 +160,7 @@ class frame obj = object
   method set = Frame.set ?obj
 end
 
-let new_frame :label = new frame (Frame.create :label)
+let new_frame ?:label ?opt = new frame (Frame.create ?:label ?opt)
 
 class aspect_frame obj = object
   inherit [AspectFrame.t] container_skel obj
@@ -168,8 +168,9 @@ class aspect_frame obj = object
   method set = AspectFrame.set ?obj
 end
 
-let new_aspect_frame :label ?:xalign ?:yalign ?:ratio ?:obey =
-  new aspect_frame (AspectFrame.create :label ?:xalign ?:yalign ?:ratio ?:obey)
+let new_aspect_frame ?:label ?:xalign ?:yalign ?:ratio ?:obey ?opt =
+  new aspect_frame
+    (AspectFrame.create ?:label ?:xalign ?:yalign ?:ratio ?:obey ?opt)
 
 class ['a] box_skel obj = object
   inherit ['a] container_skel obj

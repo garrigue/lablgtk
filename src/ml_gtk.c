@@ -293,7 +293,7 @@ ML_0 (gtk_event_box_new, Val_GtkWidget)
 /* gtkframe.h */
 
 #define GtkFrame_val(val) check_cast(GTK_FRAME,val)
-ML_1 (gtk_frame_new, String_val, Val_GtkWidget)
+ML_1 (gtk_frame_new, Option_val(arg1,String_val,NULL) Ignore, Val_GtkWidget)
 ML_2 (gtk_frame_set_label, GtkFrame_val, String_val, Unit)
 ML_3 (gtk_frame_set_label_align, GtkFrame_val, Float_val, Float_val, Unit)
 ML_2 (gtk_frame_set_shadow_type, GtkFrame_val, Shadow_val, Unit)
@@ -303,8 +303,8 @@ Make_Extractor (gtk_frame_get, GtkFrame_val, label_yalign, copy_double)
 /* gtkaspectframe.h */
 
 #define GtkAspectFrame_val(val) check_cast(GTK_ASPECT_FRAME,val)
-ML_5 (gtk_aspect_frame_new, String_val, Float_val, Float_val,
-      Float_val, Bool_val, Val_GtkWidget)
+ML_5 (gtk_aspect_frame_new, Option_val(arg1,String_val,NULL) Ignore,
+      Float_val, Float_val, Float_val, Bool_val, Val_GtkWidget)
 ML_5 (gtk_aspect_frame_set, GtkAspectFrame_val, Float_val, Float_val,
       Float_val, Bool_val, Unit)
 Make_Extractor (gtk_aspect_frame_get, GtkAspectFrame_val, xalign, copy_double)
@@ -957,6 +957,10 @@ ML_2 (gtk_text_backward_delete, GtkText_val, Int_val, Val_int)
 #define GtkMisc_val(val) check_cast(GTK_MISC,val)
 ML_3 (gtk_misc_set_alignment, GtkMisc_val, Double_val, Double_val, Unit)
 ML_3 (gtk_misc_set_padding, GtkMisc_val, Int_val, Int_val, Unit)
+Make_Extractor (gtk_misc_get, GtkMisc_val, xalign, copy_double)
+Make_Extractor (gtk_misc_get, GtkMisc_val, yalign, copy_double)
+Make_Extractor (gtk_misc_get, GtkMisc_val, xpad, Val_int)
+Make_Extractor (gtk_misc_get, GtkMisc_val, ypad, Val_int)
 
 /* gtkarrow.h */
 
