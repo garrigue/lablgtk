@@ -97,20 +97,12 @@ class style st = object
   method colormap = Style.get_colormap style
   method font = Style.get_font style
   method bg = Style.get_bg style
-  method set_bg = iter_setcol Style.set_bg style
   method fg = Style.get_fg style
-  method set_fg = iter_setcol Style.set_fg style
   method light = Style.get_light style
-  method set_light = iter_setcol Style.set_light style
   method dark = Style.get_dark style
-  method set_dark = iter_setcol Style.set_dark style
   method mid = Style.get_mid style
-  method set_mid = iter_setcol Style.set_mid style
   method base = Style.get_base style
-  method set_base = iter_setcol Style.set_base style
   method text = Style.get_text style
-  method set_text = iter_setcol Style.set_text style
-  method set_font = Style.set_font style
 end
 
 class selection_input (sel : Gtk.selection_data) = object
@@ -273,6 +265,10 @@ and misc_ops obj = object
     if x+y <> -4 then Widget.set_uposition obj ~x ~y;
     if width+height <> -4 then Widget.set_usize obj ~width ~height
   method set_style (style : style) = Widget.set_style obj style#as_style
+  method modify_fg = iter_setcol Widget.modify_fg obj
+  method modify_bg = iter_setcol Widget.modify_bg obj
+  method modify_text = iter_setcol Widget.modify_text obj
+  method modify_base = iter_setcol Widget.modify_base obj
   (* get functions *)
   method name = Widget.get_name obj
   method toplevel =

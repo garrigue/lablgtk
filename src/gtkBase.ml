@@ -91,14 +91,18 @@ module Widget = struct
       = "ml_gtk_widget_is_ancestor"
   external set_style : [>`widget] obj -> style -> unit
       = "ml_gtk_widget_set_style"
-  external set_rc_style : [>`widget] obj -> unit
-      = "ml_gtk_widget_set_rc_style"
   external ensure_style : [>`widget] obj -> unit
       = "ml_gtk_widget_ensure_style"
   external get_style : [>`widget] obj -> style
       = "ml_gtk_widget_get_style"
-  external restore_default_style : [>`widget] obj -> unit
-      = "ml_gtk_widget_restore_default_style"
+  external modify_fg : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_widget_modify_fg"
+  external modify_bg : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_widget_modify_bg"
+  external modify_text : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_widget_modify_text"
+  external modify_base : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_widget_modify_base"
   external add_accelerator :
       ([>`widget] as 'a) obj -> sgn:('a,unit->unit) GtkSignal.t ->
       accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list ->
