@@ -5,8 +5,7 @@ open GtkMain
 open GObj
 
 module Main : sig
-  val locale : string
-  val init : unit -> unit
+  val init : unit -> string (* returns the locale name *)
   val main : unit -> unit
   val quit : unit -> unit
   val version : int * int * int

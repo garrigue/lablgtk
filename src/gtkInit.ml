@@ -2,4 +2,4 @@
 
 (* Does the initialization for toplevels *)
 
-let () = GtkMain.Main.init ()
+let locale = GtkMain.Main.init ()
