@@ -70,6 +70,35 @@ let t_8 () =
   let w = GWindow.window  ~title:"8)tags"  () in
   let t = GText.view ~packing:(w#add) () in
   let tb = t#get_buffer () in
+  let _ = tb#connect#apply_tag 
+	    ~callback:(fun tag ~start ~stop ->   
+			 Printf.printf "Apply_tag has :\"%s\"\n"
+ 			 (tb#get_text ~include_hidden_chars:true ~start ~stop ());
+			 flush stdout
+		      ) 
+  in
+  let _ = tb#connect#delete_range 
+	    ~callback:(fun ~start ~stop ->   
+			 Printf.printf "delete_range_tag has :\"%s\"\n"
+ 			 (tb#get_text ~include_hidden_chars:true ~start ~stop ());
+			 flush stdout
+		      ) 
+  in
+  let _ = tb#connect#insert_child_anchor 
+	    ~callback:(fun ti tca ->   
+			 Printf.printf "insert_child_anchor is there :\"%c\"\n"
+ 			 (GtkText.Iter.get_char ti );
+			 flush stdout
+		      ) 
+  in
+  let _ = tb#connect#insert_text
+	    ~callback:(fun ti s i ->   
+			 Printf.printf "insert_text is there :'%c' \"%s\" %d\n"
+ 			 (GtkText.Iter.get_char ti ) s i ;
+			 flush stdout
+		      ) 
+  in
+
   let tt = tb#create_tag ~properties:[GtkText.Tag.Background "red";
 			  GtkText.Tag.Foreground "blue";
 			  GtkText.Tag.Editable false] () in
@@ -101,7 +130,7 @@ let t_9 () =
 
 
 let t_10 () = 
-  let w = GWindow.window  ~title:"8)tags"  () in
+  let w = GWindow.window  ~title:"10)Buffer signals"  () in
   let t = GText.view ~packing:(w#add) () in
   let tb = t#get_buffer () in
     tb#set_text ~text:"Un nouveau texte" ();    
@@ -114,10 +143,9 @@ let t_10 () =
 		~callback:(fun () ->   
 			     let start = tb#get_start_iter () in
 			     let stop = tb#get_end_iter () in
-			       Printf.printf "Dan cette action je vois :\"%s\"\n"
+			       Printf.printf "Dans cette action je vois :\"%s\"\n"
  				 (tb#get_text ~include_hidden_chars:true ~start ~stop ());
-			  flush stdout) 
-      in 
+			  flush stdout) in 
 	tb#begin_user_action ();
 	tb#end_user_action ();
 	tb#begin_user_action ();
@@ -126,9 +154,11 @@ let t_10 () =
 	tb#end_user_action ();
 	tb#begin_user_action ();
 	tb#end_user_action ();
+	
 	w#show ();;
 
     
-t_1();t_2 ();t_3();t_4();t_5();t_6();t_7();t_8;t_9;t_10;; 
+(* t_1();t_2 ();t_3();t_4();t_5();t_6();t_7();t_8;t_9;t_10 ();; *)
+t_8 () ;; 
 
 GMain.Main.main ();;
