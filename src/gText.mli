@@ -3,6 +3,9 @@
 open Gtk
 open GObj
 
+(** The text widget and associated objects
+   @gtkdoc gtk TextWidget *)
+
 type mark = [`INSERT | `SEL_BOUND | `NAME of string | `MARK of text_mark]
 
 class child_anchor : text_child_anchor ->
@@ -13,6 +16,8 @@ object
   method widgets : widget list
 end
 val child_anchor : unit -> child_anchor
+
+(** {3 GtkTextTag} *)
 
 type tag_property = [
   | `BACKGROUND of string
@@ -76,6 +81,7 @@ type tag_property = [
   | `WRAP_MODE_SET of bool
 ]
 
+(** @gtkdoc gtk GtkTextTag *)
 class tag_signals : ([> `texttag] as 'b) obj ->
 object ('a)
   method after : 'a
@@ -84,6 +90,8 @@ object ('a)
     GtkSignal.id
 end
 
+(** A tag that can be applied to text in a {!GText.buffer}
+   @gtkdoc gtk GtkTextTag *)
 class tag : text_tag ->
 object
   method as_tag : text_tag
@@ -96,7 +104,11 @@ object
   method set_property : tag_property -> unit
   method get_property : ([`texttag],'a) Gobject.property -> 'a
 end
+
+(** @gtkdoc gtk GtkTextTag *)
 val tag : ?name:string -> unit -> tag
+
+(** {3 Text buffer iterator} *)
 
 type contents =
   [ `CHAR of Glib.unichar
@@ -104,12 +116,14 @@ type contents =
   | `CHILD of child_anchor
   | `UNKNOWN ]
 
-(* 
-   Movement functions returning an iter are truly functional i.e. the returned iter shares nothing 
-   with the originale one.
-   If you need to move some iter in an imperative way use [#nocopy#...].
+(** Movement functions returning an iter are truly functional i.e. the
+   returned iter shares nothing with the originale one.  
+
+   If you need to move some iter in an imperative way use
+   [#nocopy#...].  
 *)
 
+(** @gtkdoc gtk gtk-GtkTextIter *)
 class nocopy_iter :  text_iter -> 
 object
   method backward_char : bool
@@ -146,6 +160,7 @@ object
   method set_visible_line_offset : int -> unit
 end 
 
+(** @gtkdoc gtk gtk-GtkTextIter *)
 and iter : text_iter ->
 object ('self)
   method as_iter : text_iter
@@ -228,8 +243,12 @@ object ('self)
   method visible_line_offset : int
 end
 
+(** @gtkdoc gtk gtk-GtkTextIter *)
 val as_iter : iter -> text_iter
 
+(** {3 GtkTextTagTable} *)
+
+(** @gtkdoc gtk GtkTextTagTable *)
 class tag_table_signals : ([> `texttagtable] as 'b) obj ->
 object ('a)
   method after : 'a
@@ -238,6 +257,8 @@ object ('a)
   method tag_removed : callback:(text_tag -> unit) -> GtkSignal.id
 end
 
+(** Collection of tags that can be used together
+   @gtkdoc gtk GtkTextTagTable *)
 class tag_table : text_tag_table ->
 object
   method as_tag_table : text_tag_table
@@ -248,8 +269,13 @@ object
   method remove : text_tag -> unit
   method size : int
 end
+
+(** @gtkdoc gtk GtkTextTagTable *)
 val tag_table : unit -> tag_table
 
+(** {3 GtkTextBuffer} *)
+
+(** @gtkdoc gtk GtkTextBuffer *)
 class buffer_signals : ([> `textbuffer] as 'b) obj ->
 object ('a)
   method after : 'a
@@ -279,6 +305,8 @@ type position =
     | `LINECHAR of int * int | `LINEBYTE of int * int
     | `START | `END | `ITER of iter | mark ]
 
+(** Stores attributed text for display in a {!GText.view}
+   @gtkdoc gtk GtkTextBuffer *)
 class buffer : text_buffer ->
 object
   method as_buffer : text_buffer
@@ -340,8 +368,13 @@ object
   method start_iter : iter
   method tag_table : text_tag_table
 end
+
+(** @gtkdoc gtk GtkTextBuffer *)
 val buffer : ?tag_table:tag_table -> ?text:string -> unit -> buffer
 
+(** {3 GtkTextView} *)
+
+(** @gtkdoc gtk GtkTextView *)
 class view_signals : ([> Gtk.text_view] as 'b) obj ->
 object ('a)
   method after : 'a
@@ -367,6 +400,8 @@ object ('a)
   method toggle_overwrite : callback:(unit -> unit) -> GtkSignal.id
 end
 
+(** Widget that displays a {!GText.buffer}
+   @gtkdoc gtk GtkTextView *)
 class view : text_view obj ->
 object
   inherit GObj.widget
@@ -433,6 +468,8 @@ object
     tag:Tags.text_window_type -> x:int -> y:int -> int * int
   method wrap_mode : Tags.wrap_mode
 end
+
+(** @gtkdoc gtk GtkTextView *)
 val view :
   ?buffer:buffer ->
   ?editable:bool ->

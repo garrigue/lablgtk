@@ -3,6 +3,11 @@
 open Gtk
 open GObj
 
+(** Windows *)
+
+(** {3 GtkWindow} *)
+
+(** @gtkdoc gtk GtkWindow *)
 class ['a] window_skel : 'b obj ->
   object
     inherit GContainer.container
@@ -67,6 +72,8 @@ class ['a] window_skel : 'b obj ->
     method type_hint : Gdk.Tags.window_type_hint
   end
 
+(** Toplevel widget which can contain other widgets
+   @gtkdoc gtk GtkWindow *)
 class window : Gtk.window obj ->
   object
     inherit [window] window_skel
@@ -79,6 +86,8 @@ class window : Gtk.window obj ->
     method unmaximize : unit -> unit
     method unstick : unit -> unit
   end
+
+(** @gtkdoc gtk GtkWindow *)
 val window :
   ?kind:Tags.window_type ->
   ?title:string ->
@@ -98,6 +107,9 @@ val window :
 val toplevel : #widget -> window option
 (** return the toplevel window of this widget, if existing *)
 
+(** {3 GtkDialog} *)
+
+(** @gtkdoc gtk GtkDialog *)
 class ['a] dialog_signals :
   ([> Gtk.dialog] as 'b) obj -> (int * 'a) list ref ->
   object
@@ -106,6 +118,8 @@ class ['a] dialog_signals :
     method response : callback:('a -> unit) -> GtkSignal.id
     method close : callback:(unit -> unit) -> GtkSignal.id
   end
+
+(** @gtkdoc gtk GtkDialog *)
 class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
   object
     constraint 'a = [> `DELETE_EVENT]
@@ -122,12 +136,17 @@ class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
     method set_has_separator : bool -> unit
     method run : unit -> 'a
   end
+
+(** Create popup windows
+   @gtkdoc gtk GtkDialog *)
 class ['a] dialog : [>Gtk.dialog] obj ->
   object
     inherit ['a] dialog_skel
     method add_button : string -> 'a -> unit
     method add_button_stock : GtkStock.id -> 'a -> unit
   end
+
+(** @gtkdoc gtk GtkDialog *)
 val dialog :
   ?no_separator:bool ->
   ?parent:#window ->
@@ -146,6 +165,8 @@ val dialog :
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> 'a dialog
 
+(** {3 GtkMessageDialog} *)
+
 type 'a buttons
 module Buttons : sig
 val ok : [>`OK] buttons
@@ -156,6 +177,9 @@ type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
 type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
 type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT]
 end
+
+(** Convenient message window
+   @gtkdoc gtk GtkMessageDialog *)
 class type ['a] message_dialog =
   object
     inherit ['a] dialog_skel
@@ -163,6 +187,8 @@ class type ['a] message_dialog =
     method message_type : Tags.message_type
     method set_message_type : Tags.message_type -> unit
   end
+
+(** @gtkdoc gtk GtkMessageDialog *)
 val message_dialog :
   ?message:string ->
   message_type:Tags.message_type ->
@@ -183,6 +209,9 @@ val message_dialog :
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> 'a message_dialog
 
+(** {3 Selection Dialogs} *)
+
+(** @gtkdoc gtk GtkColorSelectionDialog *)
 class color_selection_dialog : Gtk.color_selection_dialog obj ->
   object
     inherit [Buttons.color_selection] dialog_skel
@@ -192,6 +221,8 @@ class color_selection_dialog : Gtk.color_selection_dialog obj ->
     method help_button : GButton.button
     method ok_button : GButton.button
   end
+
+(** @gtkdoc gtk GtkColorSelectionDialog *)
 val color_selection_dialog :
   ?title:string ->
   ?parent:#window ->
@@ -208,6 +239,8 @@ val color_selection_dialog :
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> color_selection_dialog
 
+
+(** @gtkdoc gtk GtkFileSelection *)
 class file_selection : Gtk.file_selection obj ->
   object
     inherit [Buttons.file_selection] dialog_skel
@@ -225,6 +258,8 @@ class file_selection : Gtk.file_selection obj ->
     method set_show_fileops : bool -> unit
     method set_select_multiple : bool -> unit
   end
+
+(** @gtkdoc gtk GtkFileSelection *)
 val file_selection :
   ?title:string ->
   ?show_fileops:bool ->
@@ -245,6 +280,7 @@ val file_selection :
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> file_selection
 
+(** @gtkdoc gtk GtkFontSelectionDialog*)
 class font_selection_dialog : Gtk.font_selection_dialog obj ->
   object
     inherit [Buttons.font_selection] dialog_skel
@@ -254,6 +290,8 @@ class font_selection_dialog : Gtk.font_selection_dialog obj ->
     method selection : GMisc.font_selection
     method ok_button : GButton.button
   end
+
+(** @gtkdoc gtk GtkFontSelectionDialog*)
 val font_selection_dialog :
   ?title:string ->
   ?parent:#window ->
@@ -271,8 +309,13 @@ val font_selection_dialog :
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> font_selection_dialog
 
+(** {3 GtkPlug} *)
+
+(** Toplevel for embedding into other processes 
+   @gtkdoc gtk GtkPlug *)
 class plug : Gtk.plug obj -> window
 
+(** @gtkdoc gtk GtkPlug *)
 val plug :
   window:Gdk.xid ->
   ?border_width:int ->

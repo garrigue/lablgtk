@@ -4,6 +4,11 @@ open Gtk
 open GObj
 open GContainer
 
+(** A widget that creates a signal when clicked on *)
+
+(** {3 GtkButton} *)
+
+(** @gtkdoc gtk GtkButton *)
 class button_skel : 'a obj ->
   object
     inherit GContainer.container
@@ -15,6 +20,8 @@ class button_skel : 'a obj ->
     method grab_default : unit -> unit
     method event : event_ops
   end
+
+(** @gtkdoc gtk GtkButton *)
 class button_signals : 'b obj ->
   object ('a)
     inherit GContainer.container_signals
@@ -27,13 +34,16 @@ class button_signals : 'b obj ->
     method released : callback:(unit -> unit) -> GtkSignal.id
   end
 
-(** @gtkdoc GtkButton *)
+(** A widget that creates a signal when clicked on
+   @gtkdoc gtk GtkButton *)
 class button : Gtk.button obj ->
   object
     inherit button_skel
     val obj : Gtk.button obj
     method connect : button_signals
   end
+
+(** @gtkdoc gtk GtkButton *)
 val button :
   ?label:string ->
   ?use_mnemonic:bool ->
@@ -41,6 +51,9 @@ val button :
   ?relief:Tags.relief_style ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> button
 
+(** {4 GtkToggleButton & GtkRadioButton} *)
+
+(** @gtkdoc gtk GtkToggleButton *)
 class toggle_button_signals : 'b obj ->
   object ('a)
     inherit button_signals
@@ -49,6 +62,8 @@ class toggle_button_signals : 'b obj ->
     method toggled : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** Create buttons which retain their state
+   @gtkdoc gtk GtkToggleButton *)
 class toggle_button :
   'a obj ->
   object
@@ -60,6 +75,8 @@ class toggle_button :
     method set_active : bool -> unit
     method set_draw_indicator : bool -> unit
   end
+
+(** @gtkdoc gtk GtkToggleButton *)
 val toggle_button :
   ?label:string ->
   ?use_mnemonic:bool ->
@@ -68,6 +85,8 @@ val toggle_button :
   ?active:bool ->
   ?draw_indicator:bool ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> toggle_button
+
+(** @gtkdoc gtk GtkCheckButton *)
 val check_button :
   ?label:string ->
   ?use_mnemonic:bool ->
@@ -77,6 +96,8 @@ val check_button :
   ?draw_indicator:bool ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> toggle_button
 
+(** A choice from multiple check buttons
+   @gtkdoc gtk GtkRadioButton *)
 class radio_button :
   Gtk.radio_button obj ->
   object
@@ -85,6 +106,8 @@ class radio_button :
     method group : Gtk.radio_button group
     method set_group : Gtk.radio_button group -> unit
   end
+
+(** @gtkdoc gtk GtkRadioButton *)
 val radio_button :
   ?group:Gtk.radio_button group ->
   ?label:string ->
@@ -95,6 +118,10 @@ val radio_button :
   ?draw_indicator:bool ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> radio_button
 
+(** {3 GtkToolbar} *)
+
+(** Create bars of buttons and other widgets 
+   @gtkdoc gtk GtkToolbar *)
 class toolbar :
   Gtk.toolbar obj ->
   object
@@ -126,6 +153,8 @@ class toolbar :
     method set_style : Tags.toolbar_style -> unit
     method set_tooltips : bool -> unit
   end
+
+(** @gtkdoc gtk GtkToolbar *)
 val toolbar :
   ?orientation:Tags.orientation ->
   ?style:Tags.toolbar_style ->

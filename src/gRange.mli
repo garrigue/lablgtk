@@ -3,6 +3,13 @@
 open Gtk
 open GObj
 
+(** Scrollbars, progressbars, etc. *)
+
+(** {3 GtkProgressBar} *)
+
+(** A widget which indicates progress visually
+   @gtkdoc gtk GtkProgress
+   @gtkdoc gtk GtkProgressBar *)
 class progress_bar : Gtk.progress_bar obj ->
   object
     inherit GObj.widget_full
@@ -21,11 +28,16 @@ class progress_bar : Gtk.progress_bar obj ->
     method text : string
   end
 
+(** @gtkdoc gtk GtkProgress
+   @gtkdoc gtk GtkProgressBar *)
 val progress_bar :
   ?orientation:Tags.progress_bar_orientation ->
   ?pulse_step:float ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> progress_bar
 
+(** {3 GtkRange} *)
+
+(** @gtkdoc gtk GtkRange *)
 class range_signals : [> Gtk.range] obj ->
   object
     inherit GObj.widget_signals
@@ -34,6 +46,8 @@ class range_signals : [> Gtk.range] obj ->
     method value_changed : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** Base class for widgets which visualize an adjustment
+   @gtkdoc gtk GtkRange *)
 class range : ([> Gtk.range] as 'a) obj ->
   object
     inherit GObj.widget
@@ -47,6 +61,10 @@ class range : ([> Gtk.range] as 'a) obj ->
     method update_policy : Tags.update_type
   end
 
+(** A slider widget for selecting a value from a range
+   @gtkdoc gtk GtkScale
+   @gtkdoc gtk GtkHScale
+   @gtkdoc gtk GtkVScale *)
 class scale : Gtk.scale obj ->
   object
     inherit range
@@ -58,6 +76,10 @@ class scale : Gtk.scale obj ->
     method draw_value : bool
     method value_pos : Tags.position
   end
+
+(** @gtkdoc gtk GtkScale
+   @gtkdoc gtk GtkHScale
+   @gtkdoc gtk GtkVScale *)
 val scale :
   Tags.orientation ->
   ?adjustment:GData.adjustment ->
@@ -68,12 +90,19 @@ val scale :
   ?update_policy:Tags.update_type ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> scale
 
+(** @gtkdoc gtk GtkScrollbar
+   @gtkdoc gtk GtkHScrollbar
+   @gtkdoc gtk GtkVScrollbar *)
 class scrollbar : Gtk.scrollbar obj ->
   object
     inherit range
     val obj : Gtk.scrollbar obj
     method event : event_ops
   end
+
+(** @gtkdoc gtk GtkScrollbar
+   @gtkdoc gtk GtkHScrollbar
+   @gtkdoc gtk GtkVScrollbar *)
 val scrollbar :
   Tags.orientation ->
   ?adjustment:GData.adjustment ->
@@ -81,6 +110,11 @@ val scrollbar :
   ?update_policy:Tags.update_type ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> scrollbar
 
+(** {3 GtkRuler} *)
+
+(** @gtkdoc gtk GtkRuler
+   @gtkdoc gtk GtkHRuler
+   @gtkdoc gtk GtkVRuler *)
 class ruler :
   ([> Gtk.ruler] as 'a) Gtk.obj ->
   object
@@ -97,6 +131,10 @@ class ruler :
     method position : float
     method upper : float
   end
+
+(** @gtkdoc gtk GtkRuler
+   @gtkdoc gtk GtkHRuler
+   @gtkdoc gtk GtkVRuler *)
 val ruler :
   Tags.orientation ->
   ?metric:Tags.metric_type ->

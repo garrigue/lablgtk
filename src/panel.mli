@@ -9,9 +9,10 @@ type orient_type = [ `UP | `DOWN | `LEFT | `RIGHT ]
 
 type verb = string * (string -> unit)
 
+(** @gtkdoc panel-applet panelapplet *)
 class applet_signals :
   panel_applet Gtk.obj ->
-  object ('a)
+  object
     inherit GContainer.container_signals
     val obj : panel_applet Gtk.obj
     method change_background : callback:(background_type -> unit) -> GtkSignal.id
@@ -21,6 +22,7 @@ class applet_signals :
       callback:(GtkEnums.direction_type -> unit) -> GtkSignal.id
   end
 
+(** @gtkdoc panel-applet panelapplet *)
 class applet :
   ([> panel_applet] as 'a) Gtk.obj ->
   object
@@ -40,5 +42,5 @@ class applet :
       ?dir:string -> file:string -> ?app_name:string -> verb list -> unit
   end
 
-
+(** A generic 'main' routine for applets. *)
 val factory_main : iid:string -> (applet -> iid:string -> bool) -> bool

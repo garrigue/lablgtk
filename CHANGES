@@ -1,5 +1,11 @@
 $Id$
 
+2003.09.27 [Olivier]
+  * remove `NONE response in dialogs
+  * improved ocamldoc documentation
+    (custom generator with links to 
+     GTK+ API reference)
+
 2003.09.22 [Jacques] (request F.Pottier)
   * add window#maximize/fulscreen/stick
   * add GTree.row_reference and GTree.Path
@@ -8,7 +14,7 @@ $Id$
   * GNOME libpanelapplet support. Now we can write panel applets in caml.
 
 2003.09.11 [Olivier]
-  * configure scripts prints a summary of the libraries that will be built.
+  * configure script prints a summary of the libraries that will be built.
   * in the output of pkg-config, filter out the options that
     ocamlmklib doesn't like.
 

@@ -4,6 +4,11 @@ open Gtk
 open GObj
 open GContainer
 
+(** Several container widgets *)
+
+(** {3 Boxes} *)
+
+(** @gtkdoc gtk GtkBox *)
 class box_skel : ([> box] as 'a) obj ->
   object
     inherit GContainer.container
@@ -18,6 +23,9 @@ class box_skel : ([> box] as 'a) obj ->
     method set_homogeneous : bool -> unit
     method set_spacing : int -> unit
   end
+
+(** A base class for box containers
+   @gtkdoc gtk GtkBox *)
 class box : ([> Gtk.box] as 'a) obj ->
   object
     inherit box_skel
@@ -25,6 +33,7 @@ class box : ([> Gtk.box] as 'a) obj ->
     method connect : GContainer.container_signals
   end
 
+(** @gtkdoc gtk GtkBox *)
 val box :
   Tags.orientation ->
   ?homogeneous:bool ->
@@ -45,6 +54,7 @@ val hbox :
   ?width:int ->
   ?height:int -> ?packing:(widget -> unit) -> ?show:bool -> unit -> box
 
+(** @gtkdoc gtk GtkButtonBox *)
 class button_box : ([> Gtk.button_box] as 'a) obj ->
   object
     inherit GContainer.container_full
@@ -63,6 +73,8 @@ class button_box : ([> Gtk.button_box] as 'a) obj ->
     method layout : GtkPack.BBox.bbox_style
     method set_spacing : int -> unit
   end
+
+(** @gtkdoc gtk GtkButtonBox *)
 val button_box :
   Tags.orientation ->
   ?spacing:int ->
@@ -76,6 +88,10 @@ val button_box :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> button_box
 
+(** {3 GtkTable} *)
+
+(** Pack widgets in regular patterns
+   @gtkdoc gtk GtkTable *)
 class table :
   Gtk.table obj ->
   object
@@ -103,6 +119,8 @@ class table :
     method set_row_spacings : int -> unit
     method set_rows : int -> unit
   end
+
+(** @gtkdoc gtk GtkTable *)
 val table :
   ?columns:int ->
   ?rows:int ->
@@ -114,6 +132,10 @@ val table :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> table
 
+(** {3 GtkFixed} *)
+
+(** A container which allows you to position widgets at fixed coordinates
+   @gtkdoc gtk GtkFixed *)
 class fixed :
   Gtk.fixed obj ->
   object
@@ -125,6 +147,8 @@ class fixed :
     method set_has_window : bool -> unit
     method has_window : bool
   end
+
+(** @gtkdoc gtk GtkFixed *)
 val fixed :
   ?has_window: bool ->
   ?border_width:int ->
@@ -132,6 +156,10 @@ val fixed :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> fixed
 
+(** {3 GtkLayout} *)
+
+(** Infinite scrollable area containing child widgets and/or custom drawing
+   @gtkdoc gtk GtkLayout *)
 class layout :
   'a obj ->
   object
@@ -152,6 +180,8 @@ class layout :
     method vadjustment : GData.adjustment
     method width : int
   end
+
+(** @gtkdoc gtk GtkLayout *)
 val layout :
   ?hadjustment:GData.adjustment ->
   ?vadjustment:GData.adjustment ->
@@ -162,12 +192,17 @@ val layout :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> layout
 
+(** {3 GtkNotebook} *)
+
+(** @gtkdoc gtk GtkNotebook *)
 class notebook_signals : [> Gtk.notebook] obj ->
   object
     inherit GContainer.container_signals
     method switch_page : callback:(int -> unit) -> GtkSignal.id
   end
 
+(** A tabbed notebook container
+   @gtkdoc gtk GtkNotebook *)
 class notebook : Gtk.notebook obj ->
   object
     inherit GContainer.container
@@ -209,6 +244,8 @@ class notebook : Gtk.notebook obj ->
     method tab_pos : GtkEnums.position_type
     method tab_vborder : int
   end
+
+(** @gtkdoc gtk GtkNotebook *)
 val notebook :
   ?enable_popup:bool ->
   ?homogeneous_tabs:bool ->
@@ -222,6 +259,10 @@ val notebook :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> notebook
 
+(** {3 GtkPaned} *)
+
+(** Base class for widgets with two adjustable panes
+   @gtkdoc gtk GtkPaned *)
 class paned :
   Gtk.paned obj ->
   object
@@ -236,6 +277,8 @@ class paned :
     method child2 : widget
     method set_position : int -> unit
   end
+
+(** @gtkdoc gtk GtkPaned *)
 val paned :
   Tags.orientation ->
   ?border_width:int ->

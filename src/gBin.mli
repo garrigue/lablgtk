@@ -4,6 +4,12 @@ open Gtk
 open GObj
 open GContainer
 
+(** Containers with just one child *)
+
+(** {3  GtkScrolledWindow } *)
+
+(** Adds scrollbars to its child widget
+   @gtkdoc gtk GtkScrolledWindow  *)
 class scrolled_window : Gtk.scrolled_window obj ->
   object
     inherit GContainer.container_full
@@ -22,6 +28,8 @@ class scrolled_window : Gtk.scrolled_window obj ->
     method vadjustment : GData.adjustment
     method vpolicy : Tags.policy_type
   end
+
+(** @gtkdoc gtk GtkScrolledWindow  *)
 val scrolled_window :
   ?hadjustment:GData.adjustment ->
   ?vadjustment:GData.adjustment ->
@@ -34,18 +42,27 @@ val scrolled_window :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> scrolled_window
 
+(** {3 GtkEventBox} *)
+
+(** A widget used to catch events for widgets which do not have their own window
+   @gtkdoc gtk GtkEventBox *)
 class event_box : ([> Gtk.event_box] as 'a) obj ->
   object
     inherit GContainer.container_full
     val obj : 'a obj
     method event : event_ops
   end
+
+(** @gtkdoc gtk GtkEventBox *)
 val event_box :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> event_box
 
+(** {3 GtkHandleBox} *)
+
+(** @gtkdoc gtk GtkHandleBox *)
 class handle_box_signals : 'a obj ->
   object
     inherit GContainer.container_signals
@@ -55,6 +72,8 @@ class handle_box_signals : 'a obj ->
     method child_detached : callback:(widget -> unit) -> GtkSignal.id
   end
 
+(** A widget for detachable window portions
+   @gtkdoc gtk GtkHandleBox *)
 class handle_box : Gtk.handle_box obj ->
   object
     inherit GContainer.container
@@ -68,6 +87,8 @@ class handle_box : Gtk.handle_box obj ->
     method shadow_type : Tags.shadow_type
     method snap_edge : Tags.position
   end
+
+(** @gtkdoc gtk GtkHandleBox *)
 val handle_box :
   ?handle_position:Tags.position ->
   ?snap_edge:Tags.position ->
@@ -76,6 +97,8 @@ val handle_box :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> handle_box
+
+(** {3 GtkFrame & GtkAspectFrame} *)
 
 class frame_skel : 'a obj ->
   object
@@ -93,12 +116,17 @@ class frame_skel : 'a obj ->
     method label_yalign : float
     method shadow_type : Tags.shadow_type
   end
+
+(** A bin with a decorative frame and optional label
+   @gtkdoc gtk GtkFrame *)
 class frame : Gtk.frame obj ->
   object
     inherit frame_skel
     val obj : Gtk.frame obj
     method connect : GContainer.container_signals
   end
+
+(** @gtkdoc gtk GtkFrame *)
 val frame :
   ?label:string ->
   ?label_xalign:clampf ->
@@ -109,6 +137,8 @@ val frame :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> frame
 
+(** A frame that constrains its child to a particular aspect ratio
+   @gtkdoc gtk GtkAspectFrame *)
 class aspect_frame : Gtk.aspect_frame obj ->
   object
     inherit frame
@@ -122,6 +152,8 @@ class aspect_frame : Gtk.aspect_frame obj ->
     method xalign : float
     method yalign : float
   end
+
+(** @gtkdoc gtk GtkAspectFrame *)
 val aspect_frame :
   ?obey_child:bool ->
   ?ratio:float ->
@@ -136,6 +168,9 @@ val aspect_frame :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> aspect_frame
 
+(** {3 GtkViewport} *)
+
+(** @gtkdoc gtk GtkViewport *)
 class viewport : Gtk.viewport obj ->
   object
     inherit GContainer.container_full
@@ -148,6 +183,8 @@ class viewport : Gtk.viewport obj ->
     method shadow_type : Tags.shadow_type
     method vadjustment : GData.adjustment
   end
+
+(** @gtkdoc gtk GtkViewport *)
 val viewport :
   ?hadjustment:GData.adjustment ->
   ?vadjustment:GData.adjustment ->
@@ -157,6 +194,9 @@ val viewport :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> viewport
 
+(** {3 GtkAlignment}
+   A widget which controls the alignment and size of its child
+   @gtkdoc gtk GtkAlignment *)
 class alignment : Gtk.alignment obj ->
   object
     inherit GContainer.container_full
@@ -170,6 +210,8 @@ class alignment : Gtk.alignment obj ->
     method xscale : Gtk.clampf
     method yscale : Gtk.clampf
   end
+
+(** @gtkdoc gtk GtkAlignment *)
 val alignment :
   ?xalign:Gtk.clampf ->
   ?yalign:Gtk.clampf ->
@@ -181,6 +223,9 @@ val alignment :
   ?packing:(widget -> unit) -> ?show:bool -> unit -> alignment
 val alignment_cast : #widget -> alignment
 
+(** {3 GtkSocket} *)
+
+(** @gtkdoc gtk GtkSocket *)
 class socket_signals : ([>Gtk.socket] as 'a) obj ->
   object
     inherit GContainer.container_signals
@@ -189,6 +234,8 @@ class socket_signals : ([>Gtk.socket] as 'a) obj ->
     method plug_removed : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** Container for widgets from other processes
+   @gtkdoc gtk GtkSocket *)
 class socket : Gtk.socket obj ->
   object
     inherit GContainer.container
@@ -198,6 +245,7 @@ class socket : Gtk.socket obj ->
     method xwindow : Gdk.xid
   end
 
+(** @gtkdoc gtk GtkSocket *)
 val socket :
   ?border_width:int -> ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> socket

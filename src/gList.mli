@@ -4,6 +4,13 @@ open Gtk
 open GObj
 open GContainer
 
+(** Widget for packing a list of selectable items *)
+
+(** {3 GtkListItem} *)
+
+(** An item in a {!GList.liste}
+   @gtkdoc gtk GtkListItem 
+   @deprecated . *)
 class list_item : Gtk.list_item obj ->
   object
     inherit GContainer.container
@@ -15,10 +22,16 @@ class list_item : Gtk.list_item obj ->
     method select : unit -> unit
     method toggle : unit -> unit
   end
+
+(** @gtkdoc gtk GtkListItem
+   @deprecated . *)
 val list_item :
   ?label:string ->
   ?packing:(list_item -> unit) -> ?show:bool -> unit -> list_item
 
+(** {3 GtkList} *)
+
+(** @gtkdoc gtk GtkList *)
 class liste_signals : Gtk.liste obj ->
   object
     inherit GContainer.container_signals
@@ -28,6 +41,9 @@ class liste_signals : Gtk.liste obj ->
     method unselect_child : callback:(list_item -> unit) -> GtkSignal.id
   end
 
+(** Widget for packing a list of selectable items
+   @gtkdoc gtk GtkList
+   @deprecated . *)
 class liste : Gtk.liste obj ->
   object
     inherit [list_item] GContainer.item_container
@@ -42,6 +58,9 @@ class liste : Gtk.liste obj ->
     method set_selection_mode : Tags.selection_mode -> unit
     method selection_mode : Tags.selection_mode
   end
+
+(** @gtkdoc gtk GtkList
+   @deprecated . *)
 val liste :
   ?selection_mode:Tags.selection_mode ->
   ?border_width:int ->
@@ -49,6 +68,9 @@ val liste :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> liste
 
+(** {3 GtkCList} *)
+
+(** @gtkdoc gtk GtkCList *)
 class clist_signals : 'a obj ->
   object
     inherit GContainer.container_signals
@@ -72,6 +94,9 @@ class clist_signals : 'a obj ->
       callback:(Tags.scroll_type -> pos:clampf -> unit) -> GtkSignal.id
   end
 
+(** A multi-columned scrolling list widget
+   @gtkdoc gtk GtkCList
+   @deprecated . *)
 class ['a] clist : Gtk.clist obj ->
   object
     inherit GObj.widget
@@ -149,6 +174,9 @@ class ['a] clist : Gtk.clist obj ->
     method vadjustment : GData.adjustment
     method get_row_state : int -> Gtk.Tags.state_type
   end
+
+(** @gtkdoc gtk GtkCList 
+   @deprecated . *)
 val clist :
   ?columns:int ->
   ?hadjustment:GData.adjustment ->

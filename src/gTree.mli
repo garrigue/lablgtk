@@ -5,8 +5,13 @@ open Gtk
 open GObj
 open GContainer
 
-(* Obsolete GtkTree/GtkTreeItem framework *)
+(** Tree and list widgets
+   @gtkdoc gtk TreeWidget *)
 
+
+(** {3 Obsolete GtkTree/GtkTreeItem framework} *)
+
+(** @gtkdoc gtk GtkTreeItem *)
 class tree_item_signals : tree_item obj ->
   object
     inherit GContainer.item_signals
@@ -14,6 +19,7 @@ class tree_item_signals : tree_item obj ->
     method expand : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** @gtkdoc gtk GtkTreeItem *)
 class tree_item : Gtk.tree_item obj ->
   object
     inherit GContainer.container
@@ -28,6 +34,7 @@ class tree_item : Gtk.tree_item obj ->
     method subtree : tree option
   end
 
+(** @gtkdoc gtk GtkTree *)
 and tree_signals : Gtk.tree obj ->
   object
     inherit GContainer.container_signals
@@ -37,6 +44,7 @@ and tree_signals : Gtk.tree obj ->
     method unselect_child : callback:(tree_item -> unit) -> GtkSignal.id
   end
 
+(** @gtkdoc gtk GtkTree *)
 and tree : Gtk.tree obj ->
   object
     inherit [tree_item] GContainer.item_container
@@ -57,10 +65,12 @@ and tree : Gtk.tree obj ->
     method private wrap : Gtk.widget obj -> tree_item
   end
 
+(** @gtkdoc gtk GtkTreeItem *)
 val tree_item :
   ?label:string ->
   ?packing:(tree_item -> unit) -> ?show:bool -> unit -> tree_item
 
+(** @gtkdoc gtk GtkTree *)
 val tree :
   ?selection_mode:Tags.selection_mode ->
   ?view_mode:[`LINE|`ITEM] ->
@@ -70,7 +80,7 @@ val tree :
   ?height:int -> ?packing:(widget -> unit) -> ?show:bool -> unit -> tree
 
 
-(* New GtkTreeView/Model framework *)
+(** {3 New GtkTreeView/Model framework} *)
 
 type 'a column = {index: int; conv: 'a data_conv; creator: int}
 
@@ -90,6 +100,9 @@ class row_reference : Gtk.row_reference -> model:[> `treemodel ] obj ->
     method valid : bool
   end
 
+(** {4 Models} *)
+
+(** @gtkdoc gtk GtkTreeModel *)
 class model_signals : [> `treemodel] obj ->
   object ('a)
     method after : 'a
@@ -106,6 +119,7 @@ class model_signals : [> `treemodel] obj ->
 
 val model_ids : (int,int) Hashtbl.t
 
+(** @gtkdoc gtk GtkTreeModel *)
 class model : ([> `treemodel] as 'a) obj ->
   object
     val obj : 'a obj
@@ -125,6 +139,7 @@ class model : ([> `treemodel] as 'a) obj ->
     method n_columns : int
   end
 
+(** @gtkdoc gtk GtkTreeStore *)
 class tree_store : Gtk.tree_store ->
   object
     inherit model
@@ -144,8 +159,11 @@ class tree_store : Gtk.tree_store ->
     method set : row:tree_iter -> column:'a column -> 'a -> unit
     method swap : tree_iter -> tree_iter -> bool
   end
+
+(** @gtkdoc gtk GtkTreeStore *)
 val tree_store : column_list -> tree_store
 
+(** @gtkdoc gtk GtkListStore *)
 class list_store : Gtk.list_store ->
   object
     inherit model
@@ -163,6 +181,8 @@ class list_store : Gtk.list_store ->
     method set : row:tree_iter -> column:'a column -> 'a -> unit
     method swap : tree_iter -> tree_iter -> bool
   end
+
+(** @gtkdoc gtk GtkListStore *)
 val list_store : column_list -> list_store
 
 module Path : sig
@@ -182,11 +202,17 @@ module Path : sig
   val down : Gtk.tree_path -> unit
 end
 
+(** {4 Selection} *)
+
+(** @gtkdoc gtk GtkTreeSelection *)
 class selection_signals : tree_selection ->
   object ('a)
     method after : 'a
     method changed : callback:(unit -> unit) -> GtkSignal.id
   end
+
+(** The selection object for {!GTree.view}
+   @gtkdoc gtk GtkTreeSelection *)
 class selection :
   Gtk.tree_selection ->
   object
@@ -210,15 +236,21 @@ class selection :
     method unselect_range : tree_path -> tree_path -> unit
   end
 
+(** {4 Views} *)
+
 class type cell_renderer = object
   method as_renderer : Gtk.cell_renderer obj
 end
 
+(** @gtkdoc gtk GtkTreeViewColumn *)
 class view_column_signals : [> `gtk | `treeviewcolumn] obj ->
   object
     inherit GObj.gtkobj_signals
     method clicked : callback:(unit -> unit) -> GtkSignal.id
   end
+
+(** A visible column in a {!GTree.view} widget
+   @gtkdoc gtk GtkTreeViewColumn *)
 class view_column : tree_view_column obj ->
   object
     inherit GObj.gtkobj
@@ -258,11 +290,14 @@ class view_column : tree_view_column obj ->
     method widget : widget option
     method width : int
   end
+
+(** @gtkdoc gtk GtkTreeViewColumn *)
 val view_column :
   ?title:string ->
   ?renderer:(#cell_renderer * (string * 'a column) list) ->
   unit -> view_column
 
+(** @gtkdoc gtk GtkTreeView *)
 class view_signals : [> tree_view] obj ->
   object ('a)
     inherit GContainer.container_signals
@@ -295,6 +330,8 @@ class view_signals : [> tree_view] obj ->
     method unselect_all : callback:(unit -> bool) -> GtkSignal.id
   end
 
+(** A widget for displaying both trees and lists
+   @gtkdoc gtk GtkTreeView *)
 class view : tree_view obj ->
   object
     inherit GContainer.container
@@ -341,6 +378,8 @@ class view : tree_view obj ->
     method set_vadjustment : GData.adjustment -> unit
     method vadjustment : GData.adjustment
   end
+
+(** @gtkdoc gtk GtkTreeView *)
 val view :
   ?model:#model ->
   ?hadjustment:GData.adjustment ->
@@ -353,6 +392,8 @@ val view :
   ?search_column:int ->
   ?border_width:int -> ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> view
+
+(** {4 Cell Renderers} *)
 
 type cell_properties =
   [ `CELL_BACKGROUND of string
@@ -407,6 +448,7 @@ type cell_properties_toggle =
   | `INCONSISTENT of bool
   | `RADIO of bool ]
 
+(** @gtkdoc gtk GtkCellRenderer *)
 class type ['a, 'b] cell_renderer_skel =
   object
     inherit GObj.gtkobj
@@ -416,39 +458,52 @@ class type ['a, 'b] cell_renderer_skel =
     method set_properties : 'b list -> unit
   end
 
+(** @gtkdoc gtk GtkCellRenderer *)
 class virtual ['a, 'b] cell_renderer_impl : ([>Gtk.cell_renderer] as 'a) obj ->
   object
     inherit ['a,'b] cell_renderer_skel
     method private virtual param : 'b -> 'a param
   end
 
+(** @gtkdoc gtk GtkCellRendererPixbuf *)
 class cell_renderer_pixbuf : Gtk.cell_renderer_pixbuf obj ->
   object
     inherit[Gtk.cell_renderer_pixbuf,cell_properties_pixbuf] cell_renderer_skel
     method connect : GObj.gtkobj_signals_impl
   end
+
+(** @gtkdoc gtk GtkCellRendererText *)
 class cell_renderer_text_signals : Gtk.cell_renderer_text obj ->
   object
     inherit GObj.gtkobj_signals
     method edited : callback:(Gtk.tree_path -> string -> unit) -> GtkSignal.id
   end
+
+(** @gtkdoc gtk GtkCellRendererText *)
 class cell_renderer_text : Gtk.cell_renderer_text obj ->
   object
     inherit [Gtk.cell_renderer_text,cell_properties_text] cell_renderer_skel
     method connect : cell_renderer_text_signals
     method set_fixed_height_from_font : int -> unit
   end
+
+(** @gtkdoc gtk GtkCellRendererToggle *)
 class cell_renderer_toggle_signals :  Gtk.cell_renderer_toggle obj ->
   object
     inherit GObj.gtkobj_signals
     method toggled : callback:(Gtk.tree_path -> unit) -> GtkSignal.id
   end
+
+(** @gtkdoc gtk GtkCellRendererToggle *)
 class cell_renderer_toggle : Gtk.cell_renderer_toggle obj ->
   object
     inherit[Gtk.cell_renderer_toggle,cell_properties_toggle] cell_renderer_skel
     method connect : cell_renderer_toggle_signals
   end
 
+(** @gtkdoc gtk GtkCellRendererPixbuf *)
 val cell_renderer_pixbuf : cell_properties_pixbuf list -> cell_renderer_pixbuf
+(** @gtkdoc gtk GtkCellRendererText *)
 val cell_renderer_text : cell_properties_text list -> cell_renderer_text
+(** @gtkdoc gtk GtkCellRendererToggle *)
 val cell_renderer_toggle : cell_properties_toggle list -> cell_renderer_toggle

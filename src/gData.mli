@@ -2,6 +2,11 @@
 
 open Gtk
 
+(** Non-Widgets objects carrying data *)
+
+(** {3 GtkAdjustement} *)
+
+(** @gtkdoc gtk GtkAjustement *)
 class adjustment_signals : [> adjustment] obj ->
   object
     inherit GObj.gtkobj_signals
@@ -9,6 +14,8 @@ class adjustment_signals : [> adjustment] obj ->
     method value_changed : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** A GtkObject representing an adjustable bounded value
+   @gtkdoc gtk GtkAjustement *)
 class adjustment : Gtk.adjustment obj ->
   object
     inherit GObj.gtkobj
@@ -27,6 +34,8 @@ class adjustment : Gtk.adjustment obj ->
       ?lower:float -> ?upper:float -> ?step_incr:float ->
       ?page_incr:float -> ?page_size:float -> unit -> unit
   end
+
+(** @gtkdoc gtk GtkAjustement *)
 val adjustment :
   ?value:float ->
   ?lower:float ->
@@ -38,6 +47,10 @@ val as_adjustment : adjustment -> Gtk.adjustment obj
 val conv_adjustment : adjustment Gobject.data_conv
 val conv_adjustment_option : adjustment option Gobject.data_conv
 
+(** {3 Tooltips} *)
+
+(** Add tips to your widgets
+   @gtkdoc gtk GtkTooltips *)
 class tooltips :
   Gtk.tooltips obj ->
   object
@@ -50,8 +63,14 @@ class tooltips :
     method set_delay : int -> unit
     method set_tip : ?text:string -> ?privat:string -> GObj.widget -> unit
   end
+
+(** @gtkdoc gtk GtkTooltips *)
 val tooltips : ?delay:int -> unit -> tooltips
 
+(** {3 Clipboards} *)
+
+(** Storing data on clipboards
+   @gtkdoc gtk gtk-Clipboards *)
 class clipboard : Gtk.clipboard Lazy.t ->
   object
     method as_clipboard : Gtk.clipboard
@@ -60,5 +79,7 @@ class clipboard : Gtk.clipboard Lazy.t ->
     method set_text : string -> unit
     method text : string option
   end
+
+(** @gtkdoc gtk gtk-Clipboards *)
 val clipboard : Gdk.atom -> clipboard
 val as_clipboard : clipboard -> Gtk.clipboard
