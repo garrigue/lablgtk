@@ -16,7 +16,7 @@ type image
 type atom
 type keysym = int
 type +'a event
-type drag_context
+type drag_context = [`dragcontext] Gobject.obj
 type cursor
 type xid = int32
 type device
