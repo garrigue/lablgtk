@@ -102,7 +102,8 @@ CAMLprim value ml_g_type_register_static(value parent_type,value type_name)
       NULL, /* class_data */
       query.instance_size,
       0,    /* n_preallocs */
-      NULL, /*(GInstanceInitFunc) tictactoe_init*/}; 
+      NULL, /*(GInstanceInitFunc) tictactoe_init*/
+      NULL }; 
 
   res = Val_GType
     (g_type_register_static(GType_val(parent_type),
@@ -182,7 +183,7 @@ value Val_GValue_copy(GValue *gv)
 CAMLprim value ml_g_value_release(value val)
 {
     ml_final_GValue (val);
-    Pointer_val(val) = NULL;
+    Store_pointer(val,NULL);
     return Val_unit;
 }
 
@@ -219,14 +220,14 @@ static struct custom_operations ml_custom_gboxed =
 value Val_gboxed(GType t, gpointer p)
 {
     value ret = alloc_custom(&ml_custom_gboxed, 2*sizeof(value), 10, 1000);
-    Pointer_val(ret) = g_boxed_copy (t,p);
+    Store_pointer(ret, g_boxed_copy (t,p));
     Field(ret,2) = t;
     return ret;
 }
 value Val_gboxed_new(GType t, gpointer p)
 {
     value ret = alloc_custom(&ml_custom_gboxed, 2*sizeof(value), 10, 1000);
-    Pointer_val(ret) = p;
+    Store_pointer(ret, p);
     Field(ret,2) = t;
     return ret;
 }
@@ -537,7 +538,7 @@ CAMLprim value ml_g_signal_emit_by_name (value obj, value sig, value params)
     GType itype = G_TYPE_FROM_INSTANCE (instance);
     GType return_type;
     guint signal_id;
-    int i;
+    unsigned int i;
     GSignalQuery query;
 
     if(!g_signal_parse_name(String_val(sig), itype, &signal_id, &detail, TRUE))

@@ -57,7 +57,7 @@ CAMLprim value ml_set_long_at_pointer (value ptr, value n)
 
 unsigned char* ml_gpointer_base (value region)
 {
-    int i;
+    unsigned int i;
     value ptr = RegData_val(region);
     value path = RegPath_val(region);
 

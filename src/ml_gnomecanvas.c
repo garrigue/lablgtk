@@ -33,7 +33,7 @@ static inline value copy_two_doubles(double a, double b)
 static inline value copy_double_array(double *a, size_t len)
 {
   value v;
-  register int i;
+  register unsigned int i;
   v = alloc_small(len * Double_wosize, Double_array_tag);
   for(i=0; i<len; i++)
     Store_double_field(v, i, a[i]);

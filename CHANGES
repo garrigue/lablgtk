@@ -2,6 +2,7 @@ $Id$
 
 2004.06.15 [Olivier]
   * fix the ocamldoc generator for ocaml 3.08
+  * silence some GCC 3.4 warnings
 
 2004.06.10 [Olivier]
   * add #event method for GtkComboBox (and descendants), and

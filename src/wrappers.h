@@ -258,6 +258,7 @@ value Val_##type (type *p) \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
 #define Pointer_val(val) ((void*)Field(val,1))
+#define Store_pointer(val,p) (Field(val,1)=Val_bp(p))
 #define MLPointer_val(val) \
         (Field(val,1) == 2 ? &Field(val,2) : (void*)Field(val,1))
 
