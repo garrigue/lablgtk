@@ -19,9 +19,12 @@ end
 let threader dispatcher =
   let mutex = Mutex.create () in
   let dispatch msg =
-    Mutex.lock mutex;
-    dispatcher msg;
-    Mutex.unlock mutex
+    try
+      Mutex.lock mutex;
+      dispatcher msg;
+      Mutex.unlock mutex
+    with exn ->
+      Mutex.unlock mutex; raise exn
   in
   fun msg -> Thread.create dispatch msg; ()
 
@@ -43,7 +46,15 @@ class virtual ['a] server () = object (self)
   method bind =
     Thread.create
       (fun ic ->
-	let msg = input_value ic in
-	self#send msg)
+	let run = ref true in
+	while !run do try
+	  let msg = input_value ic in
+	  self#send msg;
+	with End_of_file -> run := false | _ -> () done)
 end
 
+class ['a] client oc = object
+  inherit ['a] threaded ()
+  val oc = oc
+  method private dispatch = output_value to:oc
+end
