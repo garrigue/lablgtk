@@ -34,7 +34,7 @@ external _get_pixels : pixbuf -> Obj.t * int = "ml_gdk_pixbuf_get_pixels"
 let get_pixels pixbuf =
   let obj, pos = _get_pixels pixbuf in
   let get_length (_, pixbuf) =
-    get_rowstride pixbuf * (get_height pixbuf - 1) + get_width pixbuf + pos
+    get_rowstride pixbuf * get_height pixbuf + pos
   in
   let r =
     Gpointer.unsafe_create_region ~path:[|0|] ~get_length (obj, pixbuf) in
