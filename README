@@ -221,7 +221,7 @@ Memory management:
   its last container is destroyed. For this reason you need only
   destroy toplevel widgets.
 
-Glade support:
+LibGlade support:
 
   New in this version, there is support for Glade generated XML UI
   description files, using libglade. You can read in a file, access to
@@ -240,6 +240,15 @@ Glade support:
             ~callback:(fun () -> w1#text1#insert "some text\n");;
 
   See lablgladecc -help for other features (tracing and source embedding).
+
+Glade support:
+
+  This is an experimental version of a glade xml file compiler.
+  Compile it with 
+	cd mlglade
+	make
+  See the mlglade/README file for more informations.
+	
 
 GL extension:
 

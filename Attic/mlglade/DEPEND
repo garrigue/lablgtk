@@ -1,0 +1,24 @@
+xml.cmi: ./mylib/pp.cmi 
+xmlparse.cmi: xml.cmi 
+error.cmo: error.cmi 
+error.cmx: error.cmi 
+glade.cmo: error.cmi xml.cmi 
+glade.cmx: error.cmx xml.cmx 
+main.cmo: error.cmi glade.cmo ./mylib/pc.cmi this.cmo xml.cmi xmlparse.cmi \
+    xmlscan.cmo 
+main.cmx: error.cmx glade.cmx ./mylib/pc.cmx this.cmx xml.cmx xmlparse.cmx \
+    xmlscan.cmx 
+parser.cmo: error.cmi ./mylib/pc.cmi this.cmo xml.cmi xmlparse.cmi \
+    xmlscan.cmo 
+parser.cmx: error.cmx ./mylib/pc.cmx this.cmx xml.cmx xmlparse.cmx \
+    xmlscan.cmx 
+regen.cmo: regen.cmi 
+regen.cmx: regen.cmi 
+xml.cmo: ./mylib/lc.cmi ./mylib/pp.cmi ./mylib/std.cmi xml.cmi 
+xml.cmx: ./mylib/lc.cmx ./mylib/pp.cmx ./mylib/std.cmx xml.cmi 
+xmlparse.cmo: error.cmi xml.cmi xmlstate.cmi xmlparse.cmi 
+xmlparse.cmx: error.cmx xml.cmx xmlstate.cmx xmlparse.cmi 
+xmlscan.cmo: error.cmi ./mylib/lc.cmi xmlparse.cmi xmlstate.cmi 
+xmlscan.cmx: error.cmx ./mylib/lc.cmx xmlparse.cmx xmlstate.cmx 
+xmlstate.cmo: xmlstate.cmi 
+xmlstate.cmx: xmlstate.cmi 
