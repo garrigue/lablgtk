@@ -38,9 +38,6 @@ class event_box : Gtk.event_box obj ->
     method event : event_ops
   end
 val event_box :
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> event_box
 
 class handle_box_signals : 'a obj ->
@@ -76,8 +73,10 @@ class frame_skel : 'a obj ->
     inherit container
     constraint 'a = [> frame]
     val obj : 'a obj
-    method set_label : string -> unit
-    method set_label_align : ?x:clampf -> ?y:clampf -> unit -> unit
+    method set_label : string option -> unit
+    method set_label_widget : GObj.widget option -> unit
+    method set_label_xalign : float -> unit
+    method set_label_yalign : float -> unit
     method set_shadow_type : Tags.shadow_type -> unit
   end
 class frame : Gtk.frame obj ->

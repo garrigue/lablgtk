@@ -81,17 +81,17 @@ let tree ?selection_mode ?view_mode ?view_lines
 (* New GtkTreeView/Model framework *)
 
 open Gobject
-type 'a column = {index: int; conv: 'a Data.conv; creator: int}
+type 'a column = {index: int; conv: 'a data_conv; creator: int}
 
 class column_list = object (self)
   val mutable index = 0
   val mutable kinds = []
   val mutable locked = false
   method kinds = List.rev kinds
-  method add : 'a. 'a Data.conv -> 'a column = fun conv ->
+  method add : 'a. 'a data_conv -> 'a column = fun conv ->
     if locked then failwith "GTree.column_list#add";
     let n = index in
-    kinds <- conv.Data.kind :: kinds;
+    kinds <- conv.kind :: kinds;
     index <- index + 1;
     {index = n; conv = conv; creator = Oo.id self}
   method id = Oo.id self

@@ -21,14 +21,32 @@ type data_get = [ basic | `NONE | `OBJECT of unit obj option ]
 type 'a data_set =
  [ basic | `OBJECT of 'a obj option | `INT32 of int32 | `LONG of nativeint ]
 
-type fundamental_type =
-  [ `INVALID | `NONE | `INTERFACE
-  | `CHAR | `UCHAR | `BOOLEAN
-  | `INT  | `UINT  | `LONG  | `ULONG  | `INT64  | `UINT64
-  | `ENUM | `FLAGS
-  | `FLOAT  | `DOUBLE
-  | `STRING | `POINTER  | `BOXED  | `PARAM
+type data_kind =
+  [ `BOOLEAN
+  | `CHAR
+  | `UCHAR
+  | `INT
+  | `UINT
+  | `LONG
+  | `ULONG
+  | `INT64
+  | `UINT64
+  | `ENUM
+  | `FLAGS
+  | `FLOAT
+  | `DOUBLE
+  | `STRING
+  | `POINTER
+  | `BOXED
   | `OBJECT ]
+
+type 'a data_conv =
+    { kind: data_kind;
+      proj: (data_get -> 'a);
+      inj: ('a -> unit data_set) }
+
+type fundamental_type =
+  [ `INVALID | `NONE | `INTERFACE | `PARAM | data_kind ]
 
 module Type = struct
   external init : unit -> unit = "ml_g_type_init"
@@ -107,32 +125,13 @@ let try_cast w name =
 external coerce : 'a -> [`base] obj = "%identity"
   (* [coerce] is safe *)
 
+external make : g_type -> (string * 'a data_set) list -> 'b obj
+    = "ml_g_object_new"
+  (* This is dangerous! *)
+
 let get_oid (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
 
 module Data = struct
-  type kind =
-    [ `BOOLEAN
-    | `CHAR
-    | `UCHAR
-    | `INT
-    | `UINT
-    | `LONG
-    | `ULONG
-    | `INT64
-    | `UINT64
-    | `ENUM
-    | `FLAGS
-    | `FLOAT
-    | `DOUBLE
-    | `STRING
-    | `POINTER
-    | `BOXED
-    | `OBJECT ]
-
-  type 'a conv =
-      { kind: kind;
-        proj: (data_get -> 'a);
-        inj: ('a -> unit data_set) }
   let boolean =
     { kind = `BOOLEAN;
       proj = (function `BOOL b -> b | _ -> failwith "Gobject.get_bool");
@@ -206,7 +205,16 @@ module Data = struct
   v
 end
 
-type ('a,'b) property = { name: string; classe: 'a; conv: 'b Data.conv }
+type ('a,'b) property = { name: string; classe: 'a; conv: 'b data_conv }
+
+type 'a param = string * unit data_set
+let dyn_param prop v =
+  (prop, (Obj.magic (v : 'a data_set) : unit data_set))
+let param (prop : ('a,'b) property) d : 'a param =
+  dyn_param prop.name (prop.conv.inj d)
+
+let make ~classe l =
+  make (Type.from_name classe) l
 
 module Property = struct
   external freeze_notify : 'a obj -> unit = "ml_g_object_freeze_notify"
@@ -236,9 +244,9 @@ module Property = struct
   external get_dyn : 'a obj -> string -> data_get
     = "ml_g_object_get_property_dyn"
   let set (obj : 'a obj) (prop : ('a,_) property) x =
-    set_dyn obj prop.name (prop.conv.Data.inj x)
+    set_dyn obj prop.name (prop.conv.inj x)
   let get (obj : 'a obj) (prop : ('a,_) property) =
-    prop.conv.Data.proj (get_dyn obj prop.name)
+    prop.conv.proj (get_dyn obj prop.name)
   let get_some obj prop =
     match get obj prop with Some x -> x
     | None -> failwith ("Gobject.Property.get_some: " ^ prop.name)
@@ -254,7 +262,7 @@ module Property = struct
             ("exception while looking for " ^ tp obj ^ "->" ^ prop.name);
           raise exn
     in
-    try ignore (prop.conv.Data.proj data) with
+    try ignore (prop.conv.proj data) with
       Failure s ->
         failwith (s ^ " cannot handle " ^ tp obj ^ "->" ^ prop.name)
     | exn ->

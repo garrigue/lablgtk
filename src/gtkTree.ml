@@ -351,7 +351,7 @@ module TreeViewColumn = struct
     let title = {name="title"; classe=classe; conv=string}
     let visible = {name="visible"; classe=classe; conv=boolean}
     let widget = {name="widget"; classe=classe;
-                  conv=(gobject_option : widget obj option conv)}
+                  conv=(gobject_option : widget obj option data_conv)}
     let width = {name="width"; classe=classe; conv=int}
     let check () =
       let w = create () in
