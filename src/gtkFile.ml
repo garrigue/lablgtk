@@ -33,7 +33,7 @@ module FileChooser = struct
   external set_current_name : [> Gtk.file_chooser] Gtk.obj -> string -> unit
       = "ml_gtk_file_chooser_set_current_name"
 
-  external get_filename : [> Gtk.file_chooser] Gtk.obj -> string
+  external get_filename : [> Gtk.file_chooser] Gtk.obj -> string option
       = "ml_gtk_file_chooser_get_filename"
   external set_filename : [> Gtk.file_chooser] Gtk.obj -> string -> bool
       = "ml_gtk_file_chooser_set_filename"
@@ -47,12 +47,12 @@ module FileChooser = struct
       = "ml_gtk_file_chooser_unselect_all"
   external get_filenames : [> Gtk.file_chooser] Gtk.obj -> string list
       = "ml_gtk_file_chooser_get_filenames"
-  external get_current_folder : [> Gtk.file_chooser] Gtk.obj -> string
+  external get_current_folder : [> Gtk.file_chooser] Gtk.obj -> string option
       = "ml_gtk_file_chooser_get_current_folder"
   external set_current_folder : [> Gtk.file_chooser] Gtk.obj -> string -> bool
       = "ml_gtk_file_chooser_set_current_folder"
 
-  external get_uri : [> Gtk.file_chooser] Gtk.obj -> string
+  external get_uri : [> Gtk.file_chooser] Gtk.obj -> string option
       = "ml_gtk_file_chooser_get_uri"
   external set_uri : [> Gtk.file_chooser] Gtk.obj -> string -> bool
       = "ml_gtk_file_chooser_set_uri"
@@ -67,9 +67,9 @@ module FileChooser = struct
   external set_current_folder_uri : [> Gtk.file_chooser] Gtk.obj -> string -> bool
       = "ml_gtk_file_chooser_set_current_folder_uri"
 
-  external get_preview_filename : [> Gtk.file_chooser] Gtk.obj -> string
+  external get_preview_filename : [> Gtk.file_chooser] Gtk.obj -> string option
       = "ml_gtk_file_chooser_get_preview_filename"
-  external get_preview_uri : [> Gtk.file_chooser] Gtk.obj -> string
+  external get_preview_uri : [> Gtk.file_chooser] Gtk.obj -> string option
       = "ml_gtk_file_chooser_get_preview_uri"
 
   external add_filter : [> Gtk.file_chooser] Gtk.obj -> Gtk.file_filter Gtk.obj -> unit

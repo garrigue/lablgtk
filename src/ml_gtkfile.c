@@ -31,17 +31,17 @@ CAMLprim value ml_gtkfile_init(value unit)
 #ifdef HASGTK24
 #define GtkFileChooser_val(val) check_cast(GTK_FILE_CHOOSER,val)
 
-ML_2 (gtk_file_chooser_set_current_name, GtkFileChooser_val, String_val, Unit)
-static value copy_string_and_free(gchar *s)
+static value some_string_and_free(gchar *s)
 {
-  value v = copy_string(s ? s : "");
+  value v = s ? ml_some(copy_string(s)) : Val_unit;
   g_free(s);
   return v;
 }
-#define string_list_of_GSList(l) Val_GSList_free(l, (value_in) copy_string_and_free)
+#define string_list_of_GSList(l) Val_GSList_free(l, (value_in) copy_string_g_free)
 #define widget_list_of_GSList(l) Val_GSList_free(l, (value_in) Val_GObject)
 
-ML_1 (gtk_file_chooser_get_filename, GtkFileChooser_val, copy_string_and_free)
+ML_2 (gtk_file_chooser_set_current_name, GtkFileChooser_val, String_val, Unit)
+ML_1 (gtk_file_chooser_get_filename, GtkFileChooser_val, some_string_and_free)
 ML_2 (gtk_file_chooser_set_filename, GtkFileChooser_val, String_val, Val_bool)
 ML_2 (gtk_file_chooser_select_filename, GtkFileChooser_val, String_val, Val_bool)
 ML_2 (gtk_file_chooser_unselect_filename, GtkFileChooser_val, String_val, Unit)
@@ -49,18 +49,18 @@ ML_1 (gtk_file_chooser_select_all, GtkFileChooser_val, Unit)
 ML_1 (gtk_file_chooser_unselect_all, GtkFileChooser_val, Unit)
 ML_1 (gtk_file_chooser_get_filenames, GtkFileChooser_val, string_list_of_GSList)
 ML_2 (gtk_file_chooser_set_current_folder, GtkFileChooser_val, String_val, Val_bool)
-ML_1 (gtk_file_chooser_get_current_folder, GtkFileChooser_val, copy_string_and_free)
+ML_1 (gtk_file_chooser_get_current_folder, GtkFileChooser_val, some_string_and_free)
 
-ML_1 (gtk_file_chooser_get_uri, GtkFileChooser_val, copy_string_and_free)
+ML_1 (gtk_file_chooser_get_uri, GtkFileChooser_val, some_string_and_free)
 ML_2 (gtk_file_chooser_set_uri, GtkFileChooser_val, String_val, Val_bool)
 ML_2 (gtk_file_chooser_select_uri, GtkFileChooser_val, String_val, Val_bool)
 ML_2 (gtk_file_chooser_unselect_uri, GtkFileChooser_val, String_val, Unit)
 ML_1 (gtk_file_chooser_get_uris, GtkFileChooser_val, string_list_of_GSList)
 ML_2 (gtk_file_chooser_set_current_folder_uri, GtkFileChooser_val, String_val, Val_bool)
-ML_1 (gtk_file_chooser_get_current_folder_uri, GtkFileChooser_val, copy_string_and_free)
+ML_1 (gtk_file_chooser_get_current_folder_uri, GtkFileChooser_val, copy_string_g_free)
 
-ML_1 (gtk_file_chooser_get_preview_filename, GtkFileChooser_val, copy_string_and_free)
-ML_1 (gtk_file_chooser_get_preview_uri, GtkFileChooser_val, copy_string_and_free)
+ML_1 (gtk_file_chooser_get_preview_filename, GtkFileChooser_val, some_string_and_free)
+ML_1 (gtk_file_chooser_get_preview_uri, GtkFileChooser_val, some_string_and_free)
 
 #define GtkFileFilter_val(val)  check_cast(GTK_FILE_FILTER, val)
 ML_0 (gtk_file_filter_new, Val_GtkAny_sink)
