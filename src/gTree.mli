@@ -236,7 +236,7 @@ class view_signals : ([> tree_view] as 'b) obj ->
     method move_cursor :
       callback:(Gtk.Tags.movement_step -> int -> bool) -> GtkSignal.id
     method row_activated :
-      callback:(tree_iter -> view_column -> unit) -> GtkSignal.id
+      callback:(tree_path -> view_column -> unit) -> GtkSignal.id
     method row_collapsed :
       callback:(tree_iter -> tree_path -> unit) -> GtkSignal.id
     method row_expanded :
