@@ -92,7 +92,7 @@ ML_3 (gtk_image_set_from_pixmap, GtkImage_val, GdkPixmap_val,
       Option_val (arg2, GdkBitmap_val, NULL) Ignore, Unit)
 ML_2 (gtk_image_set_from_file, GtkImage_val, String_val, Unit)
 ML_2 (gtk_image_set_from_pixbuf, GtkImage_val, GdkPixbuf_val, Unit)
-ML_3 (gtk_image_set_from_stock, GtkImage_val, String_val, Int_val, Unit)
+ML_3 (gtk_image_set_from_stock, GtkImage_val, String_val, Icon_size_val, Unit)
 
 /* gtklabel.h */
 
