@@ -213,8 +213,8 @@ CAMLprim value ml_gtk_text_buffer_insert (value tb, value ti,value st)
   CAMLparam3(tb,ti,st);
   char* c;
   int l = string_length(st);
-  c=g_malloc(l);
-  strncpy(c,String_val(st),l);
+  c=g_malloc(l+1); /* Do not forget the null char */
+  strncpy(c,String_val(st),l+1);
   gtk_text_buffer_insert(GtkTextBuffer_val(tb),
 			 GtkTextIter_val(ti),
 			 c,
@@ -228,8 +228,8 @@ CAMLprim value ml_gtk_text_buffer_insert_at_cursor (value tb,value st)
   CAMLparam2(tb,st);
   char* c;
   int l = string_length(st);
-  c=g_malloc(l);
-  strncpy(c,String_val(st),l);
+  c=g_malloc(l+1);
+  strncpy(c,String_val(st),l+1);
   gtk_text_buffer_insert_at_cursor(GtkTextBuffer_val(tb),
 				   c,
 				   l);
@@ -246,8 +246,8 @@ CAMLprim value ml_gtk_text_buffer_insert_interactive (value tb, value ti,value s
   char* c;
   gboolean r;
   int l = string_length(st);
-  c=g_malloc(l);
-  strncpy(c,String_val(st),l);
+  c=g_malloc(l+1);
+  strncpy(c,String_val(st),l+1);
   r = gtk_text_buffer_insert_interactive(GtkTextBuffer_val(tb),
 			     GtkTextIter_val(ti),
 			     c,
@@ -262,8 +262,8 @@ CAMLprim value ml_gtk_text_buffer_insert_interactive_at_cursor (value tb,value s
   char* c;
   gboolean r;
   int l = string_length(st);
-  c=g_malloc(l);
-  strncpy(c,String_val(st),l);
+  c=g_malloc(l+1);
+  strncpy(c,String_val(st),l+1);
   r = gtk_text_buffer_insert_interactive_at_cursor(GtkTextBuffer_val(tb),
 				       c,
 				       l,
