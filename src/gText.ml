@@ -101,12 +101,22 @@ object
   method in_range ~start ~stop  = GtkText.Iter.in_range it start stop
 end
 
+class tag_signals obj = object
+  inherit gtkobj_signals obj
+  method event = 
+    GtkSignal.connect ~sgn:GtkText.Tag.Signals.event ~after obj
+end
+
 class tag obj =
 object (self)
   inherit gtkobj (obj :Gtk.texttag obj)
   method as_tag = obj
+  method connect = new tag_signals obj
   method get_priority () = Tag.get_priority obj
   method set_priority p = Tag.set_priority obj p
+  (* [BM] my very first polymorphic method in OCaml...*)
+  method event : 'a. 'a Gtk.obj -> 'a Gdk.event -> Gtk.textiter -> bool = 
+    Tag.event obj 
   method set_property p = 
     Tag.set_property obj p
   method set_properties l = 
@@ -149,6 +159,8 @@ class buffer_signals obj = object
      GtkSignal.connect ~sgn:GtkText.Buffer.Signals.mark_set ~after obj
   method modified_changed = 
      GtkSignal.connect ~sgn:GtkText.Buffer.Signals.modified_changed ~after obj
+  method remove_tag = 
+     GtkSignal.connect ~sgn:GtkText.Buffer.Signals.remove_tag ~after obj
 end
 
 class buffer obj = object
