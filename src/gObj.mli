@@ -2,7 +2,7 @@
 
 open Gtk
 
-(** Base classes for objects an dwidgets *)
+(** Base classes for objects an widgets *)
 
 (** {3 GObject} *)
 
