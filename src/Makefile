@@ -11,10 +11,12 @@ configure:
 
 nothing:
 
-COMPILER = olablc $(MLFLAGS) -c
-LINKER = olablc $(MLFLAGS)
-COMPOPT = olablopt $(MLFLAGS) -c
-LINKOPT = olablopt $(MLFLAGS)
+CAMLC = olablc
+CAMLOPT = olablopt
+COMPILER = $(CAMLC) $(MLFLAGS) -c
+LINKER = $(CAMLC) $(MLFLAGS)
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -c
+LINKOPT = $(CAMLOPT) $(MLFLAGS)
 
 TOPLEVEL = olablmktop $(MLFLAGS)
 RANLIB = ranlib
