@@ -15,9 +15,9 @@ let color : color -> Color.t = function
     `COLOR col -> col
   | `WHITE|`BLACK|`NAME _|`RGB _ as def -> Color.alloc def
 
-class ['a] drawing w = object
+class ['a] drawable w = object
   val gc = GC.create w
-  val w : 'a drawable = w
+  val w : 'a Gdk.drawable = w
   method set_foreground col = GC.set_foreground gc (color col)
   method set_background col = GC.set_background gc (color col)
   method gc_values = GC.get_values gc
@@ -39,9 +39,9 @@ class ['a] drawing w = object
 end
 
 class pixmap ?mask pm = object
-  inherit [[`pixmap]] drawing pm as pixmap
-  val bitmap = may_map mask ~f:(new drawing)
-  val mask : bitmap option = mask
+  inherit [[`pixmap]] drawable pm as pixmap
+  val bitmap = may_map mask ~f:(new drawable)
+  val mask : Gdk.bitmap option = mask
   method pixmap = w
   method mask = mask
   method set_line_attributes ?width ?style ?cap ?join () =
@@ -68,6 +68,46 @@ class pixmap ?mask pm = object
     may bitmap ~f:(fun m -> m#string s ~font ~x ~y)
 end
 
+class type widget_draw = object
+  method allocation : Gtk.rectangle
+  method colormap : colormap
+  method draw : Rectangle.t option -> unit
+  method event : Tags.event_type event -> bool
+  method hide : unit -> unit
+  method hide_all : unit -> unit
+  method intersect : Rectangle.t -> Rectangle.t option
+  method pointer : int * int
+  method realize : unit -> unit
+  method set_app_paintable : bool -> unit
+  method set_uposition : x:int -> y:int -> unit
+  method set_usize : width:int -> height:int -> unit
+  method show : unit -> unit
+  method unmap : unit -> unit
+  method unparent : unit -> unit
+  method unrealize : unit -> unit
+  method visible : bool
+  method visual : visual
+  method visual_depth : int
+  method window : window
+end
+
+let pixmap ~(window : < misc : #widget_draw; .. >)
+    ~width ~height ?(mask=false) () =
+  window#misc#realize ();
+  let depth = window#misc#visual_depth and window = window#misc#window in
+  let pm =
+    new pixmap (Pixmap.create window ~width ~height ~depth)
+      ?mask:(if mask then Some(Bitmap.create window ~width ~height)
+                     else None)
+  in
+  may pm#mask ~f:
+    begin fun mask ->
+      let mask = new drawable mask in
+      mask#set_foreground `BLACK;
+      mask#rectangle ~x:0 ~y:0 ~width ~height ~filled:true ()
+    end;
+  pm
+
 let pixmap_from_xpm ~window ~file ?colormap ?transparent () =
   let pm, mask =
     try Pixmap.create_from_xpm window ~file ?colormap
@@ -83,7 +123,7 @@ let pixmap_from_xpm_d ~window ~data ?colormap ?transparent () =
 
 class drag_context context = object
   val context = context
-  method status ?(time=0) act = Gdk.DnD.drag_status context act ~time
-  method suggested_action = Gdk.DnD.drag_context_suggested_action context
-  method targets = Gdk.DnD.drag_context_targets context
+  method status ?(time=0) act = DnD.drag_status context act ~time
+  method suggested_action = DnD.drag_context_suggested_action context
+  method targets = DnD.drag_context_targets context
 end

@@ -76,7 +76,7 @@ class ['a] clist obj = object (self)
   method cell_text = CList.get_text obj
   method cell_pixmap row col =
     let pm, mask = CList.get_pixmap obj row col in
-    new GdkObj.pixmap pm ?mask
+    new GDraw.pixmap pm ?mask
   method row_selectable = CList.get_selectable obj
   method set_shift = CList.set_shift obj
   method insert ~row texts =
@@ -113,9 +113,9 @@ class ['a] clist obj = object (self)
   method set_cell ?text ?pixmap ?(spacing=0) row col =
     match text, pixmap with
       _, None -> CList.set_text obj row col text
-    | None, Some (pm : GdkObj.pixmap) ->
+    | None, Some (pm : GDraw.pixmap) ->
 	CList.set_pixmap obj row col pm#pixmap ?mask:pm#mask
-    | Some text, Some (pm : GdkObj.pixmap) ->
+    | Some text, Some (pm : GDraw.pixmap) ->
 	CList.set_pixtext obj row col
 	  text ~spacing ~pixmap:pm#pixmap ?mask:pm#mask
   method set_row_data n ~data =

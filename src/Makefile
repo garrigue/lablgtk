@@ -75,10 +75,10 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkTree.cmo gtkList.cmo \
 	gtkFrame.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
-	gdkObj.cmo \
+	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
 	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gFrame.cmo \
-	gEdit.cmo gPix.cmo gRange.cmo gUtil.cmo $(GLMLOBJS)
+	gEdit.cmo gRange.cmo gUtil.cmo $(GLMLOBJS)
 THOBJS = gtkThread.cmo threadObj.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
@@ -108,6 +108,7 @@ lablgtkopt: liblablgtk.a lablgtk.cmxa
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(ALLOBJS:.cmo=.cmi) $(INSTALLDIR)
+	cp $(ALLOBJS:.cmo=.ml) $(INSTALLDIR)
 	cp lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
 	cp liblablgtk.a $(LIBDIR) || cp liblablgtk.a $(INSTALLDIR)
 	cp lablgtktop  lablgtktop_t $(INSTALLDIR)

@@ -62,7 +62,7 @@ class ['a] clist : Gtk.clist obj ->
     val obj : Gtk.clist obj
     method add_events : Gdk.Tags.event_mask list -> unit
     method append : string list -> int
-    method cell_pixmap : int -> int -> GdkObj.pixmap
+    method cell_pixmap : int -> int -> GDraw.pixmap
     method cell_text : int -> int -> string
     method cell_type : int -> int -> Tags.cell_type
     method clear : unit -> unit
@@ -92,7 +92,7 @@ class ['a] clist : Gtk.clist obj ->
     method set_button_actions : int -> Tags.button_action list -> unit
     method set_cell :
       ?text:string ->
-      ?pixmap:GdkObj.pixmap -> ?spacing:int -> int -> int -> unit
+      ?pixmap:GDraw.pixmap -> ?spacing:int -> int -> int -> unit
     method set_column :
       ?widget:widget ->
       ?title:string ->

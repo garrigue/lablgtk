@@ -229,3 +229,21 @@ val color_selection :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> color_selection
+
+class pixmap : Gtk.pixmap Gtk.obj ->
+  object
+    inherit misc
+    val obj : Gtk.pixmap Gtk.obj
+    method connect : GObj.widget_signals
+    method pixmap : GDraw.pixmap
+    method set_pixmap : GDraw.pixmap -> unit
+  end
+val pixmap :
+  #GDraw.pixmap ->
+  ?xalign:float ->
+  ?yalign:float ->
+  ?xpad:int ->
+  ?ypad:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> pixmap
