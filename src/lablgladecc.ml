@@ -70,7 +70,8 @@ let classes = ref [
   "GtkFixed", ("GtkPack.Fixed", "GPack.fixed");
   "GtkLayout", ("GtkPack.Layout", "GPack.layout");
 (*  "GtkPacker", ("GtkPack.Packer", "GPack.packer"); *)
-  "GtkPaned", ("GtkPack.Paned", "GPack.paned");
+  "GtkHPaned", ("GtkPack.Paned", "GPack.paned");
+  "GtkVPaned", ("GtkPack.Paned", "GPack.paned");
   "GtkTable", ("GtkPack.Table", "GPack.table");
   "GtkNotebook", ("GtkPack.Notebook", "GPack.notebook");
 (*   "GtkProgress", ("GtkRange.Progress", "GRange.progress"); *)
