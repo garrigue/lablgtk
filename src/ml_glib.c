@@ -269,6 +269,18 @@ CAMLprim value ml_g_convert(value str, value to, value from)
   return Val_string(c_res);
 }
 
+CAMLprim value ml_g_convert_with_fallback(value fallback, value to, value from, value str)
+{
+  gsize br=0,bw=0;
+  gchar* c_res;
+  GError *error=NULL;
+  c_res = g_convert_with_fallback(String_val(str),string_length(str),
+				  String_val(to),String_val(from),Option_val(fallback ,String_val,NULL),
+		      &br,&bw,&error);
+  if (error != NULL) ml_raise_gerror(error);
+  return Val_string(c_res);
+}
+
 #define Make_conversion(cname) \
 CAMLprim value ml_##cname(value str) { \
   gsize br=0,bw=0; \

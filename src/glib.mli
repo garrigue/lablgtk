@@ -75,6 +75,8 @@ end
 module Convert :  sig
   val convert :
     string -> to_codeset:string -> from_codeset:string -> string
+  val convert_with_fallback :
+    ?fallback:string -> to_codeset:string -> from_codeset:string -> string -> string
   (* All internal strings are encoded in utf8: you should use
      the following conversion functions *)
   val locale_from_utf8 : string -> string
