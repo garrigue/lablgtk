@@ -1,5 +1,3 @@
-(* $Id$ *)
-
 open GdkKeysyms
 open Gtk
 open GObj
@@ -9,7 +7,7 @@ open TiBase
 
 let main_project_modify = ref false
 
-let main_window  = GWindow.window (* ~width:200 ~height:200 *) ()
+let main_window  = GWindow.window ~title:"ZOOM" ()
 let main_vbox    = GPack.vbox ~packing:main_window#add ()
 let main_menu    = GMenu.menu_bar ~packing:main_vbox#pack ()
 
@@ -277,7 +275,7 @@ let xpm_window () =
   in
   add_xpm ~file:"window.xpm" ~left:0 ~top:0 ~tip:"window";
   GMisc.separator `HORIZONTAL ~packing:vbox#add ();
-  let table = GPack.table ~rows:5 ~columns:6 ~packing:vbox#add
+  let table = GPack.table ~rows:6 ~columns:6 ~packing:vbox#add
       ~row_spacings:20 ~col_spacings:20 ~border_width:20 () in
   let add_xpm file ~left ~top ~classe =
     let gdk_pix = GDraw.pixmap_from_xpm ~file ~window () in
@@ -312,9 +310,10 @@ let xpm_window () =
   add_xpm "label.xpm"          ~left:0 ~top:4 ~classe:"label";
   add_xpm "statusbar.xpm"      ~left:1 ~top:4 ~classe:"statusbar";
   add_xpm "notebook.xpm"       ~left:2 ~top:4 ~classe:"notebook";
-  add_xpm "entry.xpm"          ~left:3 ~top:4 ~classe:"entry";
-  add_xpm "spinbutton.xpm"     ~left:4 ~top:4 ~classe:"spin_button";
-  add_xpm "combo.xpm"          ~left:5 ~top:4 ~classe:"combo";
+  add_xpm "colorselection.xpm" ~left:3 ~top:4 ~classe:"color_selection";
+  add_xpm "entry.xpm"          ~left:0 ~top:5 ~classe:"entry";
+  add_xpm "spinbutton.xpm"     ~left:1 ~top:5 ~classe:"spin_button";
+  add_xpm "combo.xpm"          ~left:2 ~top:5 ~classe:"combo";
 
   window#show ();
   window
@@ -365,6 +364,8 @@ let main () =
   edit_menu#add_item "Undo" ~key:_Z ~callback:undo;
 
   let palette_visible = ref true in
+  palette#connect#event#delete ~callback:
+    (fun _ -> palette_visible := false; palette#misc#hide (); true);
   view_menu#add_item "Palette"
     ~callback:(fun () ->
       if !palette_visible then begin
@@ -375,6 +376,8 @@ let main () =
 	palette_visible := true
       end);
   let prop_win_visible = ref true in
+  prop_win#connect#event#delete ~callback:
+    (fun _ -> prop_win_visible := false; prop_win#misc#hide (); true);
   view_menu#add_item "Properties window"
     ~callback:(fun () ->
       if !prop_win_visible then begin

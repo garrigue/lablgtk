@@ -91,14 +91,20 @@ let button_box_style_values : (string * Tags.button_box_style) list =
   [ "DEFAULT_STYLE", `DEFAULT_STYLE; "SPREAD", `SPREAD; "EDGE", `EDGE;
     "START", `START; "END", `END ]
 
+let update_type_values : (string * Tags.update_type) list =
+  [ "CONTINUOUS", `CONTINUOUS; "DISCONTINUOUS", `DISCONTINUOUS;
+    "DELAYED", `DELAYED ]
+
 
 class prop_bool = prop_enum ~values:bool_values
 
+(*
 class prop_variant ~values ~name ~init ~set : prop =
   object
     inherit prop_enum ~values ~name ~init ~set
     method code = "`" ^ s
   end
+*)
 
 class prop_shadow = prop_enum ~values:shadow_type_values
 class prop_policy = prop_enum ~values:policy_type_values
@@ -111,7 +117,7 @@ class prop_combo_use_arrows = prop_enum ~values:combo_use_arrows_values
 class prop_spin_button_update_policy = prop_enum
     ~values:spin_button_update_policy_values
 class prop_button_box_style = prop_enum ~values:button_box_style_values
-
+class prop_update_type = prop_enum ~values:update_type_values
 
 class prop_int ~name ~init ~set : prop =
   object
@@ -138,4 +144,11 @@ class prop_string ~name ~init ~set : prop =
     method private parse s = s
     method range = String
     method code = "\"" ^ String.escaped s ^ "\""
+  end
+
+class prop_adjustment ~name ~init ~set : prop =
+  object
+    inherit vprop ~name ~init ~set
+    method private parse = get5floats_from_string
+    method range = Adjust
   end

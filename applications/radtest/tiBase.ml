@@ -13,6 +13,7 @@ let widget_add_list =
   [ "vbox"; "hbox"; "vbutton_box"; "hbutton_box"; "fixed";
     "frame"; "aspect_frame"; "handle_box"; "event_box";
     "hseparator"; "vseparator"; "statusbar"; "label"; "notebook";
+    "color_selection";
     "button";
     "toggle_button"; "check_button"; "radio_button"; "scrolled_window";
 

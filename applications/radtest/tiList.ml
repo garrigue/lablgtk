@@ -25,6 +25,8 @@ end
 
 let new_clist ~name =
   let c = get_a_number "number of columns" 3 in
-  new ticlist ~name ~widget:(GList.clist ~columns:c ()) ~columns:c
-
+  let rtitles = ref [] in
+  for i = c downto 1 do rtitles := ("column" ^(string_of_int i)):: !rtitles done;
+  new ticlist ~name ~widget:(GList.clist ~columns:c ~titles: !rtitles ()) ~columns:c
+    
 

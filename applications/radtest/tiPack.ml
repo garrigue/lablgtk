@@ -240,7 +240,6 @@ object(self)
     children <-  children @ [(child, `START)]
   initializer
     classe <- "fixed"
-	
 end
 
 let new_tifixed ~name =
