@@ -131,9 +131,6 @@ testcc: lablgladecc lablgtktop
 
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
-	if test `grep -s -c '^$(INSTALLDIR)$$' $(LIBDIR)/ld.conf` = 0; then \
-	    echo $(INSTALLDIR) >> $(LIBDIR)/ld.conf; \
-	fi
 	cp $(ALLOBJS:.cmo=.cmi) $(THOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp -p *.mli $(INSTALLDIR)
 	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(INSTALLDIR)
@@ -143,7 +140,7 @@ install:
 	cp lablgtktop varcc $(INSTALLDIR)
 	cp -p *.h $(INSTALLDIR)
 	cp lablgtk $(BINDIR)
-	if test -f dlllablgtk.so; then cp $(CLIBS:lib%.a=dll%.so) $(INSTALLDIR); fi
+	if test -f dlllablgtk.so; then cp $(CLIBS:lib%.a=dll%.so) $(DLLDIR); fi
 	if test -f lablgladecc; then cp lablgladecc $(BINDIR); fi
 	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
 	cp lablgtktop_t $(INSTALLDIR)

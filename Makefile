@@ -12,6 +12,7 @@ endif
 # Default installation directories
 BINDIR = `$(GETLIBDIR) | sed -e 's|/lib/[^/]*$$|/bin|' -e 's|/lib$$|/bin|'`
 INSTALLDIR = $(LIBDIR)/lablgtk
+DLLDIR = $(LIBDIR)/stublibs
 
 # Autoconf
 GETLIBDIR = ocamlc -where
@@ -72,6 +73,7 @@ configure:
 	@echo LIBDIR=$(LIBDIR) >> config.make
 	@echo BINDIR=$(BINDIR) >> config.make
 	@echo INSTALLDIR=$(INSTALLDIR) >> config.make
+	@echo DLLDIR=$(DLLDIR) >> config.make
 	@echo GTKCFLAGS=$(GTKCFLAGS) >> config.make
 	@echo GTKLIBS=$(GTKLIBS) >> config.make
 	@echo GLLIBS=$(GLLIBS) >> config.make
