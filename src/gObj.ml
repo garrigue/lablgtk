@@ -137,7 +137,7 @@ and drag_context context = object
   method context = context
   method finish :success :del ?:time [< 0 >] =
     DnD.finish context :success :del :time
-  method get_source_widget =
+  method source_widget =
     new widget_wrapper (Object.unsafe_cast (DnD.get_source_widget context))
   method set_icon_widget : 'a . (#is_widget as 'a) -> _ = fun w ->
     DnD.set_icon_widget context (w#as_widget)

@@ -216,7 +216,7 @@ and drag_context :
     val context : Gdk.drag_context
     method context : Gdk.drag_context
     method finish : success:bool -> del:bool -> ?time:int -> unit
-    method get_source_widget : widget_wrapper 
+    method source_widget : widget_wrapper 
     method set_icon_pixmap :
       ?colormap:Gdk.colormap -> GdkObj.pixmap -> hot_x:int -> hot_y:int -> unit
     method set_icon_widget : #is_widget -> hot_x:int -> hot_y:int -> unit
