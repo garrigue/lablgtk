@@ -79,45 +79,45 @@ class type chooser =
     method list_shortcut_folder_uris : string list
   end
 
-class virtual chooser_impl obj = object (self)
+class virtual chooser_impl = object (self)
   method private virtual obj : 'a Gtk.obj
   inherit OgtkFileProps.file_chooser_props
 
-  method set_current_name = FileChooser.set_current_name obj
+  method set_current_name = FileChooser.set_current_name self#obj
 
-  method set_filename = FileChooser.set_filename obj
-  method filename = FileChooser.get_filename obj
-  method select_filename = FileChooser.select_filename obj
-  method unselect_filename = FileChooser.unselect_filename obj
-  method select_all = FileChooser.select_all obj
-  method unselect_all = FileChooser.unselect_all obj
-  method get_filenames = FileChooser.get_filenames obj
-  method set_current_folder = FileChooser.set_current_folder obj
-  method current_folder = FileChooser.get_current_folder obj
+  method set_filename = FileChooser.set_filename self#obj
+  method filename = FileChooser.get_filename self#obj
+  method select_filename = FileChooser.select_filename self#obj
+  method unselect_filename = FileChooser.unselect_filename self#obj
+  method select_all = FileChooser.select_all self#obj
+  method unselect_all = FileChooser.unselect_all self#obj
+  method get_filenames = FileChooser.get_filenames self#obj
+  method set_current_folder = FileChooser.set_current_folder self#obj
+  method current_folder = FileChooser.get_current_folder self#obj
 
-  method set_uri = FileChooser.set_uri obj
-  method uri = FileChooser.get_uri obj
-  method select_uri = FileChooser.select_uri obj
-  method unselect_uri = FileChooser.unselect_uri obj
-  method get_uris = FileChooser.get_uris obj
-  method set_current_folder_uri = FileChooser.set_current_folder_uri obj
-  method current_folder_uri = FileChooser.get_current_folder_uri obj
+  method set_uri = FileChooser.set_uri self#obj
+  method uri = FileChooser.get_uri self#obj
+  method select_uri = FileChooser.select_uri self#obj
+  method unselect_uri = FileChooser.unselect_uri self#obj
+  method get_uris = FileChooser.get_uris self#obj
+  method set_current_folder_uri = FileChooser.set_current_folder_uri self#obj
+  method current_folder_uri = FileChooser.get_current_folder_uri self#obj
 
-  method preview_filename = FileChooser.get_preview_filename obj
-  method preview_uri = FileChooser.get_preview_uri obj
+  method preview_filename = FileChooser.get_preview_filename self#obj
+  method preview_uri = FileChooser.get_preview_uri self#obj
 
-  method add_filter (f : filter) = FileChooser.add_filter obj f#as_file_filter
-  method remove_filter (f : filter) = FileChooser.remove_filter obj f#as_file_filter
-  method list_filters = List.map (new filter) (FileChooser.list_filters obj )
-  method set_filter (f : filter) = Gobject.set FileChooser.P.filter obj f#as_file_filter
-  method filter = new filter (Gobject.get FileChooser.P.filter obj)
+  method add_filter (f : filter) = FileChooser.add_filter self#obj f#as_file_filter
+  method remove_filter (f : filter) = FileChooser.remove_filter self#obj f#as_file_filter
+  method list_filters = List.map (new filter) (FileChooser.list_filters self#obj )
+  method set_filter (f : filter) = Gobject.set FileChooser.P.filter self#obj f#as_file_filter
+  method filter = new filter (Gobject.get FileChooser.P.filter self#obj)
       
-  method add_shortcut_folder = FileChooser.add_shortcut_folder obj
-  method remove_shortcut_folder = FileChooser.remove_shortcut_folder obj
-  method list_shortcut_folders = FileChooser.list_shortcut_folders obj
-  method add_shortcut_folder_uri = FileChooser.add_shortcut_folder_uri obj
-  method remove_shortcut_folder_uri = FileChooser.remove_shortcut_folder_uri obj
-  method list_shortcut_folder_uris = FileChooser.list_shortcut_folder_uris obj
+  method add_shortcut_folder = FileChooser.add_shortcut_folder self#obj
+  method remove_shortcut_folder = FileChooser.remove_shortcut_folder self#obj
+  method list_shortcut_folders = FileChooser.list_shortcut_folders self#obj
+  method add_shortcut_folder_uri = FileChooser.add_shortcut_folder_uri self#obj
+  method remove_shortcut_folder_uri = FileChooser.remove_shortcut_folder_uri self#obj
+  method list_shortcut_folder_uris = FileChooser.list_shortcut_folder_uris self#obj
 end
 
 class chooser_widget_signals obj = object
@@ -125,9 +125,9 @@ class chooser_widget_signals obj = object
   inherit OgtkFileProps.file_chooser_sigs
 end
 
-class chooser_widget _obj = object
-  inherit [[> Gtk.widget|Gtk.file_chooser]] GObj.widget_impl _obj
-  inherit chooser_impl _obj
+class chooser_widget obj = object
+  inherit [_] GObj.widget_impl obj
+  inherit chooser_impl
   method connect = new chooser_widget_signals obj
 end
 
