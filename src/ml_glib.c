@@ -58,6 +58,7 @@ GList *GList_val (value list, gpointer (*func)(value))
 
 /* Redirect printers */
 /* Currently broken for warning */
+/*
 static value ml_warning_handler = 0L;
 
 static void ml_warning_wrapper (const gchar *msg)
@@ -74,6 +75,7 @@ value ml_g_set_warning_handler (value clos)
     ml_warning_handler = clos;
     return old_handler;
 }
+*/
 
 static value ml_print_handler = 0L;
 

@@ -32,16 +32,11 @@ module Tags = struct
   type submenu_direction = [ `LEFT|`RIGHT ]
   type submenu_placement = [ `TOP_BOTTOM|`LEFT_RIGHT ]
   type toolbar_style = [ `ICONS|`TEXT|`BOTH ]
-  type trough_type = [ `NONE|`START|`END|`JUMP ]
   type update_type = [ `CONTINUOUS|`DISCONTINUOUS|`DELAYED ]
   type visibility = [ `NONE|`PARTIAL|`FULL ]
   type window_position = [ `NONE|`CENTER|`MOUSE|`CENTER_ALWAYS ]
-  type window_type = [ `TOPLEVEL|`DIALOG|`POPUP ]
+  type window_type = [ `TOPLEVEL|`POPUP ]
   type sort_type = [ `ASCENDING|`DESCENDING ]
-  type fundamental_type =
-    [ `INVALID|`NONE|`CHAR|`BOOL|`INT|`UINT|`LONG|`ULONG|`FLOAT|`DOUBLE
-     |`STRING|`ENUM|`FLAGS|`BOXED|`FOREIGN|`CALLBACK|`ARGS|`POINTER
-     |`SIGNAL|`C_CALLBACK|`OBJECT ]
 
   type accel_flag = [ `VISIBLE|`SIGNAL_VISIBLE|`LOCKED ]
   type button_box_style = [ `DEFAULT_STYLE|`SPREAD|`EDGE|`START|`END ]
@@ -70,7 +65,6 @@ module Tags = struct
 end
 open Tags
 
-type gtk_type
 type gtk_class
 
 type accel_group

@@ -4,17 +4,6 @@ open Gaux
 open Gtk
 open Tags
 
-module Type = struct
-  external name : gtk_type -> string = "ml_gtk_type_name"
-  external from_name : string -> gtk_type = "ml_gtk_type_from_name"
-  external parent : gtk_type -> gtk_type = "ml_gtk_type_parent"
-  external get_class : gtk_type -> gtk_class = "ml_gtk_type_class"
-  external parent_class : gtk_type -> gtk_class = "ml_gtk_type_parent_class"
-  external is_a : gtk_type -> gtk_type -> bool = "ml_gtk_type_is_a"
-  external fundamental : gtk_type -> fundamental_type
-      = "ml_gtk_type_fundamental"
-end
-
 module Object = struct
   external get_type : 'a obj -> gtk_type = "ml_gtk_object_type"
   let is_a obj name =
