@@ -6,9 +6,33 @@ type window
 type pixmap
 type bitmap
 type font
+type atom = int
 
 exception Error of string
 let _ = Callback.register_exception "gdkerror" (Error"")
+
+module Tags = struct
+  type event_type =
+    [ NOTHING DELETE DESTROY EXPOSE MOTION_NOTIFY BUTTON_PRESS
+      TWO_BUTTON_PRESS THREE_BUTTON_PRESS
+      BUTTON_RELEASE KEY_PRESS
+      KEY_RELEASE ENTER_NOTIFY LEAVE_NOTIFY FOCUS_CHANGE
+      CONFIGURE MAP UNMAP PROPERTY_NOTIFY SELECTION_CLEAR
+      SELECTION_REQUEST SELECTION_NOTIFY PROXIMITY_IN
+      PROXIMITY_OUT DRAG_BEGIN DRAG_REQUEST DROP_ENTER
+      DROP_LEAVE DROP_DATA_AVAIL CLIENT_EVENT VISIBILITY_NOTIFY
+      NO_EXPOSE OTHER_EVENT ]
+
+  type visibility_state =
+    [ UNOBSCURED PARTIAL FULLY_OBSCURED ]
+
+  type input_source =
+    [ MOUSE PEN ERASER CURSOR ]
+
+  type notify_type =
+    [ ANCESTOR VIRTUAL INFERIOR NONLINEAR NONLINEAR_VIRTUAL UNKNOWN ] 
+end
+open Tags
 
 module Color = struct
   type t
@@ -49,10 +73,6 @@ module Rectangle = struct
   external height : t -> int = "ml_GdkRectangle_height"
 end
 
-module Event = struct
-  type t
-end
-
 module Pixmap = struct
   external create : window -> width:int -> height:int -> depth:int -> pixmap
       = "ml_gdk_pixmap_new"
@@ -83,4 +103,107 @@ module Font = struct
   external char_width : font -> char -> int = "ml_gdk_char_width"
   external string_measure : font -> string -> int = "ml_gdk_string_measure"
   external char_measure : font -> char -> int = "ml_gdk_char_measure"
+end
+
+module Event = struct
+  type t
+  external copy : t -> t = "ml_gdk_event_copy"
+  external free : t -> unit = "ml_gdk_event_free"
+  external get_type : t -> event_type = "ml_GdkEventAny_type"
+  external get_window : t -> window = "ml_GdkEventAny_window"
+  external get_send_event : t -> bool = "ml_GdkEventAny_send_event"
+
+  module Expose = struct
+    type t
+    external area : t -> Rectangle.t = "ml_GdkEventExpose_area"
+    external count : t -> int = "ml_GdkEventExpose_count"
+  end
+
+  module Visibility = struct
+    type t
+    external visibility : t -> visibility_state
+	= "ml_GdkEventVisibility_state"
+  end
+
+  module Motion = struct
+    type t
+    external time : t -> int = "ml_GdkEventMotion_time"
+    external x : t -> float = "ml_GdkEventMotion_x"
+    external y : t -> float = "ml_GdkEventMotion_y"
+    external pressure : t -> float = "ml_GdkEventMotion_pressure"
+    external xtilt : t -> float = "ml_GdkEventMotion_xtilt"
+    external ytilt : t -> float = "ml_GdkEventMotion_ytilt"
+    external state : t -> int = "ml_GdkEventMotion_state"
+    external is_hint : t -> bool = "ml_GdkEventMotion_is_hint"
+    external source : t -> input_source = "ml_GdkEventMotion_source"
+    external deviceid : t -> int = "ml_GdkEventMotion_deviceid"
+    external x_root : t -> float = "ml_GdkEventMotion_x_root"
+    external y_root : t -> float = "ml_GdkEventMotion_y_root"
+  end
+
+  module Button = struct
+    type t
+    external time : t -> int = "ml_GdkEventButton_time"
+    external x : t -> float = "ml_GdkEventButton_x"
+    external y : t -> float = "ml_GdkEventButton_y"
+    external pressure : t -> float = "ml_GdkEventButton_pressure"
+    external xtilt : t -> float = "ml_GdkEventButton_xtilt"
+    external ytilt : t -> float = "ml_GdkEventButton_ytilt"
+    external state : t -> int = "ml_GdkEventButton_state"
+    external button : t -> int = "ml_GdkEventButton_button"
+    external source : t -> input_source = "ml_GdkEventButton_source"
+    external deviceid : t -> int = "ml_GdkEventButton_deviceid"
+    external x_root : t -> float = "ml_GdkEventButton_x_root"
+    external y_root : t -> float = "ml_GdkEventButton_y_root"
+  end
+
+  module Key = struct
+    type t
+    external time : t -> int = "ml_GdkEventKey_time"
+    external state : t -> int = "ml_GdkEventKey_state"
+    external keyval : t -> int = "ml_GdkEventKey_keyval"
+    external string : t -> string = "ml_GdkEventKey_string"
+  end
+
+  module Crossing = struct
+    type t
+    external subwindow : t -> window = "ml_GdkEventCrossing_subwindow"
+    external detail : t -> notify_type = "ml_GdkEventCrossing_detail"
+  end
+
+  module Focus = struct
+    type t
+    external focus_in : t -> bool = "ml_GdkEventFocus_in"
+  end
+
+  module Configure = struct
+    type t
+    external x : t -> int = "ml_GdkEventConfigure_x"
+    external y : t -> int = "ml_GdkEventConfigure_y"
+    external width : t -> int = "ml_GdkEventConfigure_width"
+    external height : t -> int = "ml_GdkEventConfigure_height"
+  end
+
+  module Property = struct
+    type t
+    external atom : t -> atom = "ml_GdkEventProperty_atom"
+    external time : t -> int = "ml_GdkEventProperty_time"
+    external state : t -> int = "ml_GdkEventProperty_state"
+  end
+
+  module Selection = struct
+    type t
+    external selection : t -> atom = "ml_GdkEventSelection_selection"
+    external target : t -> atom = "ml_GdkEventSelection_target"
+    external property : t -> atom = "ml_GdkEventSelection_property"
+    external requestor : t -> int = "ml_GdkEventSelection_requestor"
+    external time : t -> int = "ml_GdkEventSelection_time"
+  end
+
+  module Proximity = struct
+    type t
+    external time : t -> int = "ml_GdkEventProximity_time"
+    external source : t -> input_source = "ml_GdkEventProximity_source"
+    external deviceid : t -> int = "ml_GdkEventProximity_deviceid"
+  end
 end

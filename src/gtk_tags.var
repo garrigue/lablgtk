@@ -1,3 +1,7 @@
+(* $Id$ *)
+
+exception ml_raise_gtk
+
 type state = "GTK_STATE_"
     [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
 

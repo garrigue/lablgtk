@@ -70,6 +70,7 @@ clean:
 depend:
 	olabldep *.ml *.mli > .depend
 
-ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h wrappers.h
+ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gdk.o: gdk_tags.c gdk_tags.h ml_gdk.h wrappers.h
 
 include .depend

@@ -8,6 +8,7 @@
 
 #include "wrappers.h"
 #include "ml_gdk.h"
+#include "gdk_tags.h"
 
 extern void raise_with_string (value tag, const char * msg) Noreturn;
 
@@ -18,6 +19,8 @@ void ml_raise_gdk (const char *errmsg)
       exn = caml_named_value ("gdkerror");
   raise_with_string (*exn, errmsg);
 }
+
+#include "gdk_tags.c"
 
 /* Color */
 
@@ -151,3 +154,76 @@ ML_2 (gdk_string_width, GdkFont_val, String_val, Val_int)
 ML_2 (gdk_char_width, GdkFont_val, Char_val, Val_int)
 ML_2 (gdk_string_measure, GdkFont_val, String_val, Val_int)
 ML_2 (gdk_char_measure, GdkFont_val, Char_val, Val_int)
+
+/* Events */
+
+ML_1 (gdk_event_copy, (GdkEvent *), Val_any)
+ML_1 (gdk_event_free, (GdkEvent *), Unit)
+
+Make_Extractor (GdkEventAny, (GdkEventAny*), type, Val_gdkEventType)
+Make_Extractor (GdkEventAny, (GdkEventAny*), window, Val_GdkWindow)
+Make_Extractor (GdkEventAny, (GdkEventAny*), send_event, Val_bool)
+
+Make_Extractor (GdkEventExpose, (GdkEventExpose*), area, (value)&)
+Make_Extractor (GdkEventExpose, (GdkEventExpose*), count, Val_int)
+
+Make_Extractor (GdkEventVisibility, (GdkEventVisibility*), state,
+		Val_gdkVisibilityState)
+
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), time, Val_int)
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), x, copy_double)
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), y, copy_double)
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), pressure, copy_double)
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), xtilt, copy_double)
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), ytilt, copy_double)
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), state, Val_int)
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), is_hint, Val_int)
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), source, Val_gdkInputSource)
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), deviceid, Val_int)
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), x_root, copy_double)
+Make_Extractor (GdkEventMotion, (GdkEventMotion*), y_root, copy_double)
+
+Make_Extractor (GdkEventButton, (GdkEventButton*), time, Val_int)
+Make_Extractor (GdkEventButton, (GdkEventButton*), x, copy_double)
+Make_Extractor (GdkEventButton, (GdkEventButton*), y, copy_double)
+Make_Extractor (GdkEventButton, (GdkEventButton*), pressure, copy_double)
+Make_Extractor (GdkEventButton, (GdkEventButton*), xtilt, copy_double)
+Make_Extractor (GdkEventButton, (GdkEventButton*), ytilt, copy_double)
+Make_Extractor (GdkEventButton, (GdkEventButton*), state, Val_int)
+Make_Extractor (GdkEventButton, (GdkEventButton*), button, Val_int)
+Make_Extractor (GdkEventButton, (GdkEventButton*), source, Val_gdkInputSource)
+Make_Extractor (GdkEventButton, (GdkEventButton*), deviceid, Val_int)
+Make_Extractor (GdkEventButton, (GdkEventButton*), x_root, copy_double)
+Make_Extractor (GdkEventButton, (GdkEventButton*), y_root, copy_double)
+
+Make_Extractor (GdkEventKey, (GdkEventKey*), time, Val_int)
+Make_Extractor (GdkEventKey, (GdkEventKey*), state, Val_int)
+Make_Extractor (GdkEventKey, (GdkEventKey*), keyval, Val_int)
+Make_Extractor (GdkEventKey, (GdkEventKey*), string, copy_string)
+
+Make_Extractor (GdkEventCrossing, (GdkEventCrossing*), subwindow,
+		Val_GdkWindow)
+Make_Extractor (GdkEventCrossing, (GdkEventCrossing*), detail,
+		Val_gdkNotifyType)
+
+Make_Extractor (GdkEventFocus, (GdkEventFocus*), in, Val_int)
+
+Make_Extractor (GdkEventConfigure, (GdkEventConfigure*), x, Val_int)
+Make_Extractor (GdkEventConfigure, (GdkEventConfigure*), y, Val_int)
+Make_Extractor (GdkEventConfigure, (GdkEventConfigure*), width, Val_int)
+Make_Extractor (GdkEventConfigure, (GdkEventConfigure*), height, Val_int)
+
+Make_Extractor (GdkEventProperty, (GdkEventProperty*), atom, Val_int)
+Make_Extractor (GdkEventProperty, (GdkEventProperty*), time, Val_int)
+Make_Extractor (GdkEventProperty, (GdkEventProperty*), state, Val_int)
+
+Make_Extractor (GdkEventSelection, (GdkEventSelection*), selection, Val_int)
+Make_Extractor (GdkEventSelection, (GdkEventSelection*), target, Val_int)
+Make_Extractor (GdkEventSelection, (GdkEventSelection*), property, Val_int)
+Make_Extractor (GdkEventSelection, (GdkEventSelection*), requestor, Val_int)
+Make_Extractor (GdkEventSelection, (GdkEventSelection*), time, Val_int)
+
+Make_Extractor (GdkEventProximity, (GdkEventProximity*), time, Val_int)
+Make_Extractor (GdkEventProximity, (GdkEventProximity*), source,
+		Val_gdkInputSource)
+Make_Extractor (GdkEventProximity, (GdkEventProximity*), deviceid, Val_int)
