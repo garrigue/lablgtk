@@ -29,6 +29,8 @@ let tpos ~(start : GText.iter) pos =
 let tag ?start ?stop (tb : GText.buffer) =
   let start = Gaux.default tb#start_iter ~opt:start
   and stop = Gaux.default tb#end_iter ~opt:stop in
+  (* Printf.printf "tagging: %d-%d\n" start#offset stop#offset;
+     flush stdout; *)
   let tpos = tpos ~start in
   let text = tb#get_text ~start ~stop () in
   let buffer = Lexing.from_string text in
@@ -126,8 +128,11 @@ let tag ?start ?stop (tb : GText.buffer) =
       | EOF -> raise End_of_file
       | _ -> ""
     in
-    if tag <> "" then
+    if tag <> "" then begin
+      (* Printf.printf "%d-%d: %s\n" start.pos_cnum stop.pos_cnum tag;
+         flush stdout; *)
       tb#apply_tag_by_name tag ~start:(tpos start) ~stop:(tpos stop);
+    end;
     last := (token, start, stop)
     done
   with
