@@ -11,11 +11,7 @@ COMPFLAGS= -I ../..
 
 THFLAGS= 
 
-GTKCFLAGS=-I/usr/local/lib/glib/include -I/usr/local/include -I/usr/X11R6/include
-GTKLIBS=-L/usr/local/lib -L/usr/X11R6/lib -lgtk -lgdk -lglib -lXext -lX11 -lm
-
-CC = gcc
-CCFLAGS= -I /usr/local/lib/ocaml/
+include ../../config.make
 
 CAMLLIBS= unix.cma
 LINKLIBS= -cclib -lunix
@@ -34,6 +30,7 @@ LABLGTKOBJS= lablgtk.cma
 LABLGTKLIBS= -cclib "-L../.. -llablgtk $(GTKLIBS)"
 
 all: xxaplay
+byte: xxaplay.bc
 
 xxaplay: $(DSPOBJS:.cmo=.cmx) $(DSPO) $(XAOBJS:.cmo=.cmx) $(XAO) $(WAVOBJS:.cmo=.cmx) xxaplay.cmx
 	$(LABLOPT) $(COMPFLAGS) -o $@ $(CAMLLIBS:.cma=.cmxa) \
@@ -41,7 +38,12 @@ xxaplay: $(DSPOBJS:.cmo=.cmx) $(DSPO) $(XAOBJS:.cmo=.cmx) $(XAO) $(WAVOBJS:.cmo=
 		$(DSPOBJS:.cmo=.cmx) \
 		$(XAOBJS:.cmo=.cmx) \
 		$(WAVOBJS:.cmo=.cmx) \
-			xxaplay.cmx $(DSPLIBS) $(XALIBS) $(LINKLIBS) $(LABLGTKLIBS)
+		xxaplay.cmx $(DSPLIBS) $(XALIBS) $(LINKLIBS) $(LABLGTKLIBS)
+
+xxaplay.bc: $(DSPOBJS) $(DSPO) $(XAOBJS) $(XAO) $(WAVOBJS) xxaplay.cmo
+	$(CAMLC) -custom $(COMPFLAGS) -o $@ $(CAMLLIBS) $(LABLGTKOBJS) \
+		$(DSPOBJS) $(XAOBJS) $(WAVOBJS) xxaplay.cmo \
+		$(DSPLIBS) $(XALIBS) $(LINKLIBS) $(LABLGTKLIBS)
 
 xxaplay.cmo: xxaplay.ml
 	$(LABLCOMP) $(COMPFLAGS) -c $<
@@ -50,7 +52,7 @@ xxaplay.cmx: xxaplay.ml
 	$(LABLOPT) $(COMPFLAGS) -c $<
 
 clean:
-	rm -f core *.o *.cm* *~ xxaplay
+	rm -f core *.o *.cm* *~ xxaplay xxaplay.bc
 
 depend:
 	$(CAMLDEP) $(INCS) *.ml *.mli > .depend
