@@ -1,5 +1,11 @@
 $Id$
 
+2004.11.22 [Olivier]
+  * add GtkCellRendererCombo (2.6)
+  * add GtkCellRendererProgress (2.6)
+
+In lablgtk2-20041119:
+
 2004.11.17 [Jacques]
   * fix make depend
   * cleanup lablgtk2.in
