@@ -14,6 +14,7 @@ How to compile:
 	Options are
 		USE_CC=1	to use $(CC) rather than gcc
 		USE_GL=1	to compile with OpenGL support (see lower)
+		USE_GNOME=1	to compile GtkXmHTML support (requires gnome)
 
 	Then just type "make" to build the library and toplevels.
 
