@@ -136,7 +136,6 @@ end
 
 module Misc = struct
   let cast w : misc obj = Object.try_cast w "GtkMisc"
-  external coerce : [>`misc] obj -> misc obj = "%identity"
   external set_alignment : [>`misc] obj -> x:float -> y:float -> unit
       = "ml_gtk_misc_set_alignment"
   external set_padding : [>`misc] obj -> x:int -> y:int -> unit
@@ -178,7 +177,6 @@ end
 
 module Label = struct
   let cast w : label obj = Object.try_cast w "GtkLabel"
-  external coerce : [>`label] obj -> label obj = "%identity"
   external create : string -> label obj = "ml_gtk_label_new"
   external set_text : [>`label] obj -> string -> unit = "ml_gtk_label_set_text"
   external set_justify : [>`label] obj -> justification -> unit

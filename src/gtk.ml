@@ -3,7 +3,7 @@
 exception Error of string
 exception Warning of string
 exception Cannot_cast of string * string
-type 'a obj
+type -'a obj
 type 'a optobj = 'a obj Gpointer.optboxed
 type clampf = float
 
@@ -105,7 +105,7 @@ type radio_menu_item =
 type tree_item = [`widget|`container|`bin|`item|`treeitem]
 type viewport = [`widget|`container|`bin|`viewport]
 type window = [`widget|`container|`bin|`window]
-type color_selection_dialog = [`widget|`container|`window|`colorseldialog]
+type color_selection_dialog = [`widget|`container|`bin|`window|`colorseldialog]
 type dialog = [`widget|`container|`bin|`window|`dialog]
 type input_dialog = [`widget|`container|`bin|`window|`dialog|`inputdialog]
 type file_selection = [`widget|`container|`bin|`window|`filesel]

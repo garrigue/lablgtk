@@ -74,7 +74,7 @@ class frame_skel : 'a obj ->
     method set_label_align : ?x:clampf -> ?y:clampf -> unit -> unit
     method set_shadow_type : Tags.shadow_type -> unit
   end
-class frame : [>`frame] obj ->
+class frame : Gtk.frame obj ->
   object
     inherit frame_skel
     val obj : Gtk.frame obj

@@ -55,7 +55,7 @@ and tree obj = object (self)
   method set_view_mode = Tree.set_view_mode obj *)
   method set_view_lines = Tree.set_view_lines obj
   method selection =
-    List.map ~f:(fun w -> self#wrap (Widget.coerce w)) (Tree.selection obj)
+    List.map ~f:(fun w -> self#wrap (w :> Gtk.widget obj)) (Tree.selection obj)
   method item_up ~pos =
     Tree.item_up obj pos
   method private wrap w =

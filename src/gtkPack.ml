@@ -7,7 +7,6 @@ open GtkBase
 
 module Box = struct
   let cast w : box obj = Object.try_cast w "GtkBox"
-  external coerce : [>`box] obj -> box obj = "%identity"
   external pack_start :
       [>`box] obj -> [>`widget] obj ->
       expand:bool -> fill:bool -> padding:int -> unit
@@ -49,7 +48,6 @@ end
 module BBox = struct
   (* Omitted defaults setting *)
   let cast w : button_box obj = Object.try_cast w "GtkBBox"
-  external coerce : [>`bbox] obj -> button_box obj = "%identity"
   type bbox_style = [ `DEFAULT_STYLE|`SPREAD|`EDGE|`START|`END ]
   external get_spacing : [>`bbox] obj -> int = "ml_gtk_button_box_get_spacing"
   external get_child_width : [>`bbox] obj -> int

@@ -3,7 +3,7 @@
 
 
 Needed:
-	ocaml-3.00
+	ocaml-3.01
 	gtk-1.2.x
 	gmake (there is no standard for conditionals)
 
@@ -73,8 +73,8 @@ How to link them:
 
 How to use the threaded toplevel:
 
-	% lablgtk -thread           (or lablgtktop_t before installing)
-	        Objective Caml version 3.00
+	% lablgtk -thread           (or ./lablgtktop_t before installing)
+	        Objective Caml version 3.01
 	
 	# let w = GWindow.window ~show:true ();;
 

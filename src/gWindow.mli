@@ -7,7 +7,7 @@ class ['a] window_skel : 'b obj ->
   object
     inherit GContainer.container
     constraint 'a = 'a #window_skel
-    constraint 'b = [>`widget|`container|`window]
+    constraint 'b = [>`widget|`container|`bin|`window]
     val obj : 'b obj
     method activate_default : unit -> unit
     method activate_focus : unit -> unit
@@ -28,7 +28,7 @@ class ['a] window_skel : 'b obj ->
     method show : unit -> unit
   end
 
-class window : [>`window] obj ->
+class window : Gtk.window obj ->
   object
     inherit [window] window_skel
     val obj : Gtk.window obj
@@ -49,7 +49,7 @@ val window :
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> window
 
-class dialog : [>`dialog] obj ->
+class dialog : Gtk.dialog obj ->
   object
     inherit [window] window_skel
     val obj : Gtk.dialog obj

@@ -25,7 +25,7 @@ class button_signals obj = object
 end
 
 class button obj = object
-  inherit button_skel (Button.coerce obj)
+  inherit button_skel (obj : Gtk.button obj)
   method connect = new button_signals obj
   method event = new GObj.event_ops obj
 end
