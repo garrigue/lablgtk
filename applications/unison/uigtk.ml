@@ -1214,7 +1214,7 @@ let start _ =
   (* This makes a difference when the replicas are large and it takes   *)
   (* a lot of time to detect updates.                                   *)
   (**********************************************************************)
-  ignore(Timeout.add 1   (* = 1 millisecond *)
+  ignore(Timeout.add ~ms:1
            ~callback:(fun () ->
              begin  try
                let successful =
