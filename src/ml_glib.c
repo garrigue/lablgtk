@@ -9,6 +9,7 @@
 #include "wrappers.h"
 #include "ml_glib.h"
 
+/* Utility functions */
 value copy_string_and_free (char *str)
 {
     value res;
@@ -43,6 +44,8 @@ value Val_GList (GList *list, value (*func)(gpointer))
     return cell;
 }
 
+value ml_get_null (value unit) { return 0L; }
+
 GList *GList_val (value list, gpointer (*func)(value))
 {
     CAMLparam1(list);
@@ -53,6 +56,8 @@ GList *GList_val (value list, gpointer (*func)(value))
     CAMLreturn (res);
 }
 
+/* Redirect printers */
+/* Currently broken for warning */
 static value ml_warning_handler = 0L;
 
 static void ml_warning_wrapper (const gchar *msg)
@@ -87,7 +92,7 @@ value ml_g_set_print_handler (value clos)
     return old_handler;
 }
 
-value ml_get_null (value unit) { return 0L; }
+/* Main loop handling */
 
 #define GMainLoop_val(val) ((GMainLoop*)Addr_val(val))
 ML_1 (g_main_new, Bool_val, Val_addr)
@@ -97,6 +102,10 @@ ML_1 (g_main_is_running, GMainLoop_val, Val_bool)
 ML_1 (g_main_quit, GMainLoop_val, Unit)
 ML_1 (g_main_destroy, GMainLoop_val, Unit)
 
+
+
+
+/* This is not used, but could be someday... */
 /*
 value Val_GSList (GSList *list, value (*func)(gpointer))
 {
