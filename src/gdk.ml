@@ -13,6 +13,7 @@ type font
 type image
 type atom = int
 type 'a event
+type rectangle = { x: int; y: int; width: int; height: int }
 
 exception Error of string
 let _ = Callback.register_exception "gdkerror" (Error"")

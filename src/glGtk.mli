@@ -22,6 +22,16 @@ type visual_options = [
 
 type gl_area = [drawing glarea widget]
 
+class area_signals :
+  'a[> glarea widget] obj -> ?after:bool ->
+  object
+    inherit GObj.widget_signals
+    val obj : 'a obj
+    method display : callback:(unit -> unit) -> GtkSignal.id
+    method reshape :
+      callback:(width:int -> height:int -> unit) -> GtkSignal.id
+  end
+
 class area :
   visual_options list ->
   ?share:[> glarea] obj ->
@@ -30,8 +40,11 @@ class area :
   ?packing:(area -> unit) ->
   ?show:bool ->
   object
-    inherit GMisc.drawing_area
+    inherit GObj.widget
     val obj : gl_area obj
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method connect : ?after:bool -> area_signals
+    method set_size : width:int -> height:int -> unit
     method make_current : unit -> unit
     method swap_buffers : unit -> unit
   end
@@ -45,6 +58,6 @@ module Raw :
       = "ml_gtk_gl_area_new"
     external swap_buffers : [> glarea] obj -> unit
       = "ml_gtk_gl_area_swapbuffers"
-    external make_current : [> glarea] obj -> unit
+    external make_current : [> glarea] obj -> bool
       = "ml_gtk_gl_area_make_current"
   end

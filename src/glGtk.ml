@@ -31,16 +31,40 @@ module Raw = struct
   external swap_buffers : [> glarea] obj -> unit
     = "ml_gtk_gl_area_swapbuffers"
 
-  external make_current : [> glarea] obj -> unit
+  external make_current : [> glarea] obj -> bool
     = "ml_gtk_gl_area_make_current"
 end
 
+class area_signals obj ?:after = object (connect)
+  inherit GObj.widget_signals obj ?:after
+  method display :callback =
+    connect#event#expose callback:
+      begin fun ev ->
+	if Gdk.Event.Expose.count ev = 0 && Raw.make_current obj then begin
+	  callback ()
+	end;
+	true
+      end
+  method reshape :callback =
+    connect#event#configure callback:
+      begin fun ev ->
+	if Raw.make_current obj then begin
+	  callback width:(Gdk.Event.Configure.width ev)
+	    height:(Gdk.Event.Configure.height ev)
+	end;
+	true
+      end
+end
+
 class area_wrapper obj = object
-  inherit GObj.widget_wrapper (obj : gl_area obj)
+  inherit GObj.widget (obj : gl_area obj)
+  method connect = new area_signals ?obj
   method add_events = GtkBase.Widget.add_events obj
   method set_size = GtkMisc.DrawingArea.size obj
   method swap_buffers () = Raw.swap_buffers obj
-  method make_current () = Raw.make_current obj
+  method make_current () =
+    if not (Raw.make_current obj) then
+      raise (Gl.GLerror "make_current")
 end
 
 class area options ?:share ?:width [< 0 >] ?:height [< 0 >]

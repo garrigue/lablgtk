@@ -133,6 +133,8 @@ module Widget = struct
       = "ml_GTK_WIDGET_VISIBLE"
   external parent : [> widget] obj -> widget obj
       = "ml_gtk_widget_parent"
+  external allocation : [> widget] obj -> Gdk.rectangle
+      = "ml_gtk_widget_allocation"
   let set_position w ?:x [< -2 >] ?:y [< -2 >] =
     if x > -2 || y > -2 then set_uposition w :x :y
   let set_size w ?:width [< -2 >] ?:height [< -2 >] =
