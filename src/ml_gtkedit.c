@@ -221,10 +221,6 @@ CAMLprim value ml_gtk_entry_get_completion(value entry)
   return c ? ml_some(Val_GAnyObject(c)) : Val_unit;
 }
 #else
-Unsupported_24(gtk_combo_box_new_text)
-Unsupported_24(gtk_combo_box_append_text)
-Unsupported_24(gtk_combo_box_insert_text)
-Unsupported_24(gtk_combo_box_prepend_text)
 Unsupported_24(gtk_combo_box_get_active_iter)
 Unsupported_24(gtk_combo_box_set_active_iter)
 
@@ -239,3 +235,50 @@ Unsupported_24(gtk_entry_completion_set_match_func)
 Unsupported_24(gtk_entry_get_completion)
 Unsupported_24(gtk_entry_set_completion)
 #endif /* HASGTK24 */
+
+#ifdef HASGTK26
+static gboolean
+ml_gtk_combo_row_separator_func (GtkTreeModel *model,
+				 GtkTreeIter *iter,
+				 gpointer data)
+{
+  gboolean ret;
+  value *closure = data;
+  CAMLparam0();
+  CAMLlocal3 (arg1, arg2, mlret);
+  arg1 = Val_GAnyObject (model);
+  arg2 = Val_GtkTreeIter (iter);
+  mlret = callback2_exn (*closure, arg1, arg2);
+  if (Is_exception_result (ret))
+    {
+      CAML_EXN_LOG ("gtk_combo_box_set_row_separator_func");
+      ret = FALSE;
+    }
+  else
+    ret = Bool_val (mlret);
+  CAMLreturn (ret);
+}
+
+CAMLprim value
+ml_gtk_combo_box_set_row_separator_func (value cb, value fun_o)
+{
+  gpointer data;
+  GtkDestroyNotify dnotify;
+  if (Is_long (fun_o))
+    {
+      data = NULL;
+      dnotify = NULL;
+    }
+  else
+    {
+      data = ml_global_root_new (Field (fun_o, 0));
+      dnotify = ml_global_root_destroy;
+    }
+  gtk_combo_box_set_row_separator_func (GtkComboBox_val (cb),
+					ml_gtk_combo_row_separator_func,
+					data, dnotify);
+  return Val_unit;
+}
+#else
+Unsupported_26 (gtk_combo_box_set_row_separator_func)
+#endif /* HASGTK26 */
