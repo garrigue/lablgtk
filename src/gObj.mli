@@ -29,11 +29,10 @@ class gtkobj :
   end
 
 class gtkobj_signals :
-  'a obj -> ?after:bool ->
+  'a obj ->
   object
     val obj : 'a obj
-    val after : bool option
-    method destroy : callback:(unit -> unit) -> GtkSignal.id
+    method destroy : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
     method disconnect : GtkSignal.id -> unit
     method stop_emit : name:string -> unit
   end
@@ -41,44 +40,54 @@ class gtkobj_signals :
 (* Widget *)
 
 class event_signals :
-  ([> widget]) obj -> ?after:bool ->
+  ([> widget]) obj ->
   object
     val obj : Gtk.widget obj
-    val after : bool option
     method any :
-	callback:(Gdk.Tags.event_type Gdk.event -> bool) -> GtkSignal.id
+	callback:(Gdk.Tags.event_type Gdk.event -> bool) ->
+	?after:bool -> GtkSignal.id
     method button_press :
-	callback:(GdkEvent.Button.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Button.t -> bool) -> ?after:bool -> GtkSignal.id
     method button_release :
-	callback:(GdkEvent.Button.t -> bool) -> GtkSignal.id
-    method configure : callback:(GdkEvent.Configure.t -> bool) -> GtkSignal.id
-    method delete : callback:([DELETE] Gdk.event -> bool) -> GtkSignal.id
-    method destroy : callback:([DESTROY] Gdk.event -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Button.t -> bool) -> ?after:bool -> GtkSignal.id
+    method configure :
+	callback:(GdkEvent.Configure.t -> bool) -> ?after:bool -> GtkSignal.id
+    method delete :
+	callback:([DELETE] Gdk.event -> bool) -> ?after:bool -> GtkSignal.id
+    method destroy :
+	callback:([DESTROY] Gdk.event -> bool) -> ?after:bool -> GtkSignal.id
     method enter_notify :
-	callback:(GdkEvent.Crossing.t -> bool) -> GtkSignal.id
-    method expose : callback:(GdkEvent.Expose.t -> bool) -> GtkSignal.id
-    method focus_in : callback:(GdkEvent.Focus.t -> bool) -> GtkSignal.id
-    method focus_out : callback:(GdkEvent.Focus.t -> bool) -> GtkSignal.id
-    method key_press : callback:(GdkEvent.Key.t -> bool) -> GtkSignal.id
-    method key_release : callback:(GdkEvent.Key.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Crossing.t -> bool) -> ?after:bool -> GtkSignal.id
+    method expose :
+	callback:(GdkEvent.Expose.t -> bool) -> ?after:bool -> GtkSignal.id
+    method focus_in :
+	callback:(GdkEvent.Focus.t -> bool) -> ?after:bool -> GtkSignal.id
+    method focus_out :
+	callback:(GdkEvent.Focus.t -> bool) -> ?after:bool -> GtkSignal.id
+    method key_press :
+	callback:(GdkEvent.Key.t -> bool) -> ?after:bool -> GtkSignal.id
+    method key_release :
+	callback:(GdkEvent.Key.t -> bool) -> ?after:bool -> GtkSignal.id
     method leave_notify :
-	callback:(GdkEvent.Crossing.t -> bool) -> GtkSignal.id
-    method map : callback:([MAP] Gdk.event -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Crossing.t -> bool) -> ?after:bool -> GtkSignal.id
+    method map :
+	callback:([MAP] Gdk.event -> bool) -> ?after:bool -> GtkSignal.id
     method motion_notify :
-	callback:(GdkEvent.Motion.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Motion.t -> bool) -> ?after:bool -> GtkSignal.id
     method property_notify :
-	callback:(GdkEvent.Property.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Property.t -> bool) -> ?after:bool -> GtkSignal.id
     method proximity_in :
-	callback:(GdkEvent.Proximity.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Proximity.t -> bool) -> ?after:bool -> GtkSignal.id
     method proximity_out :
-      callback:(GdkEvent.Proximity.t -> bool) -> GtkSignal.id
+      callback:(GdkEvent.Proximity.t -> bool) -> ?after:bool -> GtkSignal.id
     method selection_clear :
-      callback:(GdkEvent.Selection.t -> bool) -> GtkSignal.id
+      callback:(GdkEvent.Selection.t -> bool) -> ?after:bool -> GtkSignal.id
     method selection_notify :
-      callback:(GdkEvent.Selection.t -> bool) -> GtkSignal.id
+      callback:(GdkEvent.Selection.t -> bool) -> ?after:bool -> GtkSignal.id
     method selection_request :
-      callback:(GdkEvent.Selection.t -> bool) -> GtkSignal.id
-    method unmap : callback:([UNMAP] Gdk.event -> bool) -> GtkSignal.id
+      callback:(GdkEvent.Selection.t -> bool) -> ?after:bool -> GtkSignal.id
+    method unmap :
+      callback:([UNMAP] Gdk.event -> bool) -> ?after:bool -> GtkSignal.id
   end
 
 class style : Gtk.style ->
@@ -191,15 +200,15 @@ and widget :
   end
 
 and widget_signals :
-  'a[> widget] obj -> ?after:bool ->
+  'a[> widget] obj ->
   object
     inherit gtkobj_signals 
     val obj : 'a obj
     method drag : drag_signals 
     method event : event_signals
     method parent_set :
-	callback:(widget_wrapper option -> unit) -> GtkSignal.id
-    method show : callback:(unit -> unit) -> GtkSignal.id
+	callback:(widget_wrapper option -> unit) -> ?after:bool -> GtkSignal.id
+    method show : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 and widget_wrapper :
@@ -207,7 +216,7 @@ and widget_wrapper :
   object
     inherit widget
     val obj : 'a obj
-    method connect : ?after:bool -> widget_signals
+    method connect : widget_signals
   end
 
 and drag_context :
@@ -227,26 +236,30 @@ and drag_context :
 
 and drag_signals :
   ([> widget]) Gtk.obj ->
-  ?after:bool ->
   object
     val obj : Gtk.widget obj
-    method beginning : callback:(drag_context -> unit) -> GtkSignal.id
-    method data_delete : callback:(drag_context -> unit) -> GtkSignal.id
+    method beginning :
+	callback:(drag_context -> unit) -> ?after:bool -> GtkSignal.id
+    method data_delete :
+	callback:(drag_context -> unit) -> ?after:bool -> GtkSignal.id
     method data_get :
       callback:(drag_context -> selection_data -> info:int -> time:int -> unit)
-      -> GtkSignal.id
+      -> ?after:bool -> GtkSignal.id
     method data_received :
       callback:(drag_context -> x:int -> y:int ->
 	        selection_data -> info:int -> time:int -> unit) ->
-      GtkSignal.id
+      ?after:bool -> GtkSignal.id
     method drop :
       callback:(drag_context -> x:int -> y:int -> time:int -> bool) ->
-      GtkSignal.id
-    method ending : callback:(drag_context -> unit) -> GtkSignal.id
-    method leave : callback:(drag_context -> time:int -> unit) -> GtkSignal.id
+      ?after:bool -> GtkSignal.id
+    method ending :
+	callback:(drag_context -> unit) -> ?after:bool -> GtkSignal.id
+    method leave :
+	callback:(drag_context -> time:int -> unit) ->
+	?after:bool -> GtkSignal.id
     method motion :
       callback:(drag_context -> x:int -> y:int -> time:int -> bool) ->
-	GtkSignal.id
+      ?after:bool -> GtkSignal.id
   end
 
 val pack_return :

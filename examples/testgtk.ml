@@ -64,7 +64,7 @@ let button_window (button : button) _ =
   if button #misc#visible then
     button #misc#hide ()
   else
-    button # show ()
+    button #misc#show ()
 
 let create_buttons =
   let rw = ref None in
@@ -304,7 +304,7 @@ let rw = ref None in
 	optionmenu #set_menu menu;
 	optionmenu #set_history 3;
 
-	(new separator `HORIZONTAL packing:(box1#pack expand:false))#show ();
+	new separator `HORIZONTAL packing:(box1#pack expand:false);
 
 	let box2 = new box `VERTICAL spacing:10 border_width:10
 	    packing:(box1#pack expand:false) in
@@ -863,7 +863,7 @@ if toggle #active then begin
   tq #set_text
     (match text with
     | None -> "There is no tip!" | Some _ -> "There is a tip!");
-  tq #stop_emit "widget_entered"
+  tq #connect#stop_emit name:"widget_entered"
 end
 
 let tips_query_widget_selected (w : #widget option) :text private:tp _ =

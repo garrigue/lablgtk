@@ -33,7 +33,7 @@ class box :
   object
     inherit box_skel
     val obj : Gtk.box obj
-    method connect : ?after:bool -> container_signals
+    method connect : container_signals
   end
 class box_wrapper : ([> box] obj) -> box
 class vbox :
@@ -66,7 +66,7 @@ class button_box :
   object
     inherit box_skel
     val obj : Gtk.button_box obj
-    method connect : ?after:bool -> container_signals
+    method connect : container_signals
     method set_child_packing :
       #is_widget ->
       ?expand:bool ->

@@ -23,9 +23,9 @@ class menu_item_skel obj = object
     Widget.add_accelerator obj sig:MenuItem.Signals.activate
 end
 
-class menu_item_signals obj ?:after = object
-  inherit item_signals obj ?:after
-  method activate = GtkSignal.connect sig:MenuItem.Signals.activate obj ?:after
+class menu_item_signals obj = object
+  inherit item_signals obj
+  method activate = GtkSignal.connect sig:MenuItem.Signals.activate obj
 end
 
 class menu_item_wrapper obj = object
@@ -50,9 +50,9 @@ class tearoff_item ?:border_width ?:width ?:height ?:packing ?:show =
     initializer pack_return :packing ?:show (self :> menu_item_wrapper)
   end
 
-class check_menu_item_signals obj ?:after = object
-  inherit menu_item_signals obj ?:after
-  method toggled = GtkSignal.connect sig:CheckMenuItem.Signals.toggled obj ?:after
+class check_menu_item_signals obj = object
+  inherit menu_item_signals obj
+  method toggled = GtkSignal.connect sig:CheckMenuItem.Signals.toggled obj
 end
 
 class check_menu_item_skel obj = object
@@ -101,10 +101,10 @@ class radio_menu_item ?:group ?:label
 
 (* Menu Shell *)
 
-class menu_shell_signals obj ?:after = object
-  inherit container_signals obj ?:after
+class menu_shell_signals obj = object
+  inherit container_signals obj
   method deactivate =
-    GtkSignal.connect sig:MenuShell.Signals.deactivate obj ?:after
+    GtkSignal.connect sig:MenuShell.Signals.deactivate obj
 end
 
 class menu_shell obj = object

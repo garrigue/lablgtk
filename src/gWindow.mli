@@ -44,7 +44,7 @@ class window :
   object
     inherit window_skel
     val obj : Gtk.window obj
-    method connect : ?after:bool -> GContainer.container_signals
+    method connect : GContainer.container_signals
   end
 class window_wrapper : ([> window]) obj -> window
 

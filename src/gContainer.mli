@@ -26,14 +26,17 @@ class container :
   end
 
 class container_signals :
-  'a[> container widget] obj -> ?after:bool ->
+  'a[> container widget] obj ->
   object
     inherit widget_signals
     val obj : 'a obj
-    method add : callback:(widget_wrapper -> unit) -> GtkSignal.id
+    method add :
+	callback:(widget_wrapper -> unit) -> ?after:bool -> GtkSignal.id
     method parent_set :
-	callback:(widget_wrapper option -> unit) -> GtkSignal.id
-    method remove : callback:(widget_wrapper -> unit) -> GtkSignal.id
+	callback:(widget_wrapper option -> unit) ->
+	?after:bool -> GtkSignal.id
+    method remove :
+	callback:(widget_wrapper -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class container_wrapper :
@@ -41,7 +44,7 @@ class container_wrapper :
   object
     inherit container
     val obj : 'a obj
-    method connect : ?after:bool -> container_signals
+    method connect : container_signals
   end
 
 class virtual ['a, 'b] item_container :
@@ -62,11 +65,11 @@ class virtual ['a, 'b] item_container :
   end
 
 class item_signals :
-  'a[> container item widget] obj -> ?after:bool ->
+  'a[> container item widget] obj ->
   object
     inherit container_signals
     val obj : 'a obj
-    method deselect : callback:(unit -> unit) -> GtkSignal.id
-    method select : callback:(unit -> unit) -> GtkSignal.id
-    method toggle : callback:(unit -> unit) -> GtkSignal.id
+    method deselect : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method select : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method toggle : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end

@@ -43,23 +43,23 @@ class statusbar ?:border_width ?:width ?:height ?:packing ?:show =
     initializer pack_return :packing ?:show (self :> statusbar_wrapper)
   end
 
-class calendar_signals obj ?:after = object
-  inherit widget_signals obj ?:after
+class calendar_signals obj = object
+  inherit widget_signals obj
   method month_changed =
-    GtkSignal.connect obj sig:Calendar.Signals.month_changed ?:after
+    GtkSignal.connect obj sig:Calendar.Signals.month_changed
   method day_selected =
-    GtkSignal.connect obj sig:Calendar.Signals.day_selected ?:after
+    GtkSignal.connect obj sig:Calendar.Signals.day_selected
   method day_selected_double_click =
     GtkSignal.connect obj
-      sig:Calendar.Signals.day_selected_double_click ?:after
+      sig:Calendar.Signals.day_selected_double_click
   method prev_month =
-    GtkSignal.connect obj sig:Calendar.Signals.prev_month ?:after
+    GtkSignal.connect obj sig:Calendar.Signals.prev_month
   method next_month =
-    GtkSignal.connect obj sig:Calendar.Signals.next_month ?:after
+    GtkSignal.connect obj sig:Calendar.Signals.next_month
   method prev_year =
-    GtkSignal.connect obj sig:Calendar.Signals.prev_year ?:after
+    GtkSignal.connect obj sig:Calendar.Signals.prev_year
   method next_year =
-    GtkSignal.connect obj sig:Calendar.Signals.next_year ?:after
+    GtkSignal.connect obj sig:Calendar.Signals.next_year
 end
 
 class calendar_wrapper obj = object
@@ -136,15 +136,15 @@ class label ?:text [< "" >] ?:justify ?:line_wrap ?:pattern
     initializer pack_return :packing ?:show (self :> label_wrapper)
   end
 
-class tips_query_signals obj ?:after = object
-  inherit widget_signals obj ?:after
+class tips_query_signals obj = object
+  inherit widget_signals obj
   method widget_entered :callback = 
-    GtkSignal.connect sig:TipsQuery.Signals.widget_entered obj ?:after
-      callback:(function None -> callback None
+    GtkSignal.connect ?sig:TipsQuery.Signals.widget_entered ?obj
+      ?callback:(function None -> callback None
 	| Some w -> callback (Some (new widget_wrapper w)))
   method widget_selected :callback = 
-    GtkSignal.connect sig:TipsQuery.Signals.widget_selected obj ?:after
-      callback:(function None -> callback None
+    GtkSignal.connect ?sig:TipsQuery.Signals.widget_selected ?obj
+      ?callback:(function None -> callback None
 	| Some w -> callback (Some (new widget_wrapper w)))
 end
 
@@ -173,10 +173,10 @@ class tips_query ?:caller ?:emit_always ?:label_inactive ?:label_no_tip
     initializer pack_return :packing ?:show (self :> tips_query_wrapper)
   end
 
-class notebook_signals obj ?:after = object
-  inherit GContainer.container_signals obj ?:after
+class notebook_signals obj = object
+  inherit GContainer.container_signals obj
   method switch_page =
-    GtkSignal.connect obj sig:Notebook.Signals.switch_page ?:after
+    GtkSignal.connect obj sig:Notebook.Signals.switch_page
 end
 
 class notebook_wrapper obj = object (self)

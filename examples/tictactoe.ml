@@ -39,7 +39,7 @@ end
 
 exception Trouve
 
-class tictactoe =
+class tictactoe ?:packing ?:show =
   let obj = tictactoe_new () in
 object(self)
   inherit GPack.box_skel obj
@@ -88,7 +88,8 @@ object(self)
 	  buttons.(i).(j) #connect#toggled callback:self#toggle;
 	buttons.(i).(j) #misc#set_size width:20 height:20;
       done
-    done
+    done;
+    GObj.pack_return ?:packing ?:show (self :> GObj.widget)
 end
 
 let win (ttt : tictactoe)  _ =
@@ -99,9 +100,7 @@ let essai () =
   let window =
     new GWindow.window title:"Tictactoe" border_width:10 in
   window #connect#destroy callback:Main.quit;
-  let ttt = new tictactoe in
-  window#add ttt;
-  ttt #show ();
+  let ttt = new tictactoe packing:window#add in
   ttt #connect#tictactoe callback:(win ttt);
   window #show ();
   Main.main ()

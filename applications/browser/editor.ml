@@ -97,7 +97,6 @@ object (self)
     factory#add_item label:"Lex" key:_L
       callback:(fun () -> Lexical.tag editor#text);
     window#add_accel_group accel_group;
-    hbox#add editor#text;
     editor#text#connect#event#button_press
       callback:(fun ev ->
 	let button = GdkEvent.Button.button ev in

@@ -13,7 +13,7 @@ class pixmap :
   object
     inherit GMisc.misc
     val obj : Gtk.pixmap obj
-    method connect : ?after:bool -> GObj.widget_signals
+    method connect : GObj.widget_signals
     method pixmap : GdkObj.pixmap
     method set_pixmap : #GdkObj.pixmap -> unit
   end

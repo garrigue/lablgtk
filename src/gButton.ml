@@ -15,13 +15,13 @@ class button_skel obj = object (self)
     Widget.grab_default obj
 end
 
-class button_signals obj ?:after = object
-  inherit container_signals obj ?:after
-  method clicked = GtkSignal.connect sig:Button.Signals.clicked obj ?:after
-  method pressed = GtkSignal.connect sig:Button.Signals.pressed obj ?:after
-  method released = GtkSignal.connect sig:Button.Signals.released obj ?:after
-  method enter = GtkSignal.connect sig:Button.Signals.enter obj ?:after
-  method leave = GtkSignal.connect sig:Button.Signals.leave obj ?:after
+class button_signals obj = object
+  inherit container_signals obj
+  method clicked = GtkSignal.connect sig:Button.Signals.clicked obj
+  method pressed = GtkSignal.connect sig:Button.Signals.pressed obj
+  method released = GtkSignal.connect sig:Button.Signals.released obj
+  method enter = GtkSignal.connect sig:Button.Signals.enter obj
+  method leave = GtkSignal.connect sig:Button.Signals.leave obj
 end
 
 class button_wrapper obj = object
@@ -39,10 +39,10 @@ class button ?:label ?:border_width ?:width ?:height ?:packing ?:show =
     initializer pack_return :packing ?:show (self :> button_wrapper)
   end
 
-class toggle_button_signals obj ?:after = object
-  inherit button_signals obj ?:after
+class toggle_button_signals obj = object
+  inherit button_signals obj
   method toggled =
-    GtkSignal.connect sig:ToggleButton.Signals.toggled obj ?:after
+    GtkSignal.connect sig:ToggleButton.Signals.toggled obj
 end
 
 class pre_toggle_button_wrapper obj = object
