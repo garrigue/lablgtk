@@ -3,7 +3,7 @@
 open Misc
 open Gtk
 open GObj
-open GCont
+open GContainer
 
 class box_skel obj = object
   inherit container obj

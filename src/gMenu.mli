@@ -2,7 +2,7 @@
 
 open Gtk
 open GObj
-open GCont
+open GContainer
 
 (* Menu items *)
 
@@ -27,7 +27,7 @@ class menu_item_skel :
 class menu_item_signals :
   'a[> container item menuitem widget] obj -> ?after:bool ->
   object
-    inherit GCont.item_signals
+    inherit item_signals
     val obj : 'a obj
     method activate : callback:(unit -> unit) -> Signal.id
   end

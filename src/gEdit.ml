@@ -75,7 +75,7 @@ class spin_button :rate :digits ?:adjustment ?:value ?:update_policy
 
 class combo_wrapper obj = object
   inherit GPack.box_skel (obj : Combo.t obj)
-  method connect = new GCont.container_signals ?obj
+  method connect = new GContainer.container_signals ?obj
   method entry = new entry_wrapper (Combo.entry obj)
   method set_value_in_list = Combo.set_value_in_list obj
   method set_use_arrows = Combo.set_use_arrows obj

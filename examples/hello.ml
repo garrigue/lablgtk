@@ -2,7 +2,7 @@
 
 open GMain
 
-let window = new GWin.window `TOPLEVEL border_width: 10
+let window = new GWindow.window `TOPLEVEL border_width: 10
 
 let button = new GButton.button label:"Hello World" packing: window#add
 

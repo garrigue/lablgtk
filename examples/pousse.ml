@@ -66,7 +66,7 @@ open GMain
 
 (* Toplevel window *)
 
-let window = new GWin.window `TOPLEVEL title:"pousse"
+let window = new GWindow.window `TOPLEVEL title:"pousse"
 
 (* Create pixmaps *)
 
@@ -87,12 +87,12 @@ let _ =
 class cell ?:packing = object (self)
   inherit GButton.button ?:packing
   val mutable color : color = `none
-  val pm = GPix.new_pixdraw pixdraw
+  val pm = pixdraw#new_pixmap
   method color = color
   method set_color col =
     if col <> color then begin
       color <- col;
-      GPix.set_pixdraw pm
+      GPix.set_pixmap pm
 	(match col with `none -> pixdraw
 	| `black -> pixdraw1
 	| `white -> pixdraw2)
@@ -115,7 +115,7 @@ module RealBoard = Board (
 
 open RealBoard
 
-class game frame:(frame : #GCont.container) label:(label : #GMisc.label)
+class game frame:(frame : #GContainer.container) label:(label : #GMisc.label)
     statusbar:(bar : #GMisc.statusbar) =
 object (self)
   val cells =
@@ -177,12 +177,12 @@ end
 (* Graphical elements *)
 
 let vbox = new GPack.box `VERTICAL packing:window#add
-let frame = new GWin.frame shadow_type:`IN packing:vbox#add
+let frame = new GFrame.frame shadow_type:`IN packing:vbox#add
 let hbox = new GPack.box `HORIZONTAL packing:(vbox#pack expand:false)
 
 let bar = new GMisc.statusbar packing:hbox#add
 
-let frame2 = new GWin.frame shadow_type:`IN packing:(hbox#pack expand:false)
+let frame2 = new GFrame.frame shadow_type:`IN packing:(hbox#pack expand:false)
 let label = new GMisc.label justify:`LEFT xpad:5 xalign:0.0 packing:frame2#add
 
 let game = new game :frame :label statusbar:bar

@@ -5,7 +5,7 @@ open Gtk
 class button_skel :
   'a[> button container widget] obj ->
   object
-    inherit GCont.container
+    inherit GContainer.container
     val obj : 'a obj
     method clicked : unit -> unit
     method grab_default : unit -> unit
@@ -14,7 +14,7 @@ class button_skel :
 class button_signals :
   'a[> button container widget] obj -> ?after:bool ->
   object
-    inherit GCont.container_signals
+    inherit GContainer.container_signals
     val obj : 'a obj
     method clicked : callback:(unit -> unit) -> Signal.id
     method enter : callback:(unit -> unit) -> Signal.id
@@ -104,7 +104,7 @@ class toolbar :
   ?height:int ->
   ?packing:(toolbar -> unit) ->
   object
-    inherit GCont.container_wrapper
+    inherit GContainer.container_wrapper
     val obj : Toolbar.t obj
     method get_button_relief : Tags.relief_type
     method insert_button :

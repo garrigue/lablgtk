@@ -19,7 +19,7 @@ end
 
 let main () =
 
-  let window = new GWin.window `TOPLEVEL border_width: 10 in
+  let window = new GWindow.window `TOPLEVEL border_width: 10 in
   window#connect#destroy callback:Main.quit;
 
   let table = new GPack.table rows:3 columns:2 packing: window#add in

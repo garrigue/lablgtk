@@ -31,7 +31,7 @@ class xpm_label_box parent:(parent : #GObj.widget) :file :text =
 
 let main () =
   let window =
-    new GWin.window `TOPLEVEL title:"Pixmap'd Buttons!" border_width:10 in
+    new GWindow.window `TOPLEVEL title:"Pixmap'd Buttons!" border_width:10 in
   window#connect#destroy callback:Main.quit;
   let button = new GButton.button in
   button#connect#clicked

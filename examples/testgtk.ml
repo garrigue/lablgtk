@@ -3,10 +3,10 @@
 open GMain
 open GData
 open GObj
-open GWin
+open GWindow
 open GPack
 open GButton
-open GDialog
+open GFrame
 open GMisc
 open GMenu
 open GEdit

@@ -1,5 +1,8 @@
 $Id$
 
+1999.6.4
+  * slightly reorganized widget grouping
+
 1999.6.3
   * disabled gtk_caller
   * subtle hack to have GTree get the right interface

@@ -30,7 +30,7 @@ let _,tictactoe_new,_ = make_new_widget "Tictactoe" parent:VBOX
 open GMain
 
 class tictactoe_signals obj = object
-  inherit GCont.container_signals obj
+  inherit GContainer.container_signals obj
   method tictactoe = Gtk.Signal.connect sig:Tictactoe.tictactoe obj
 end
 
@@ -96,7 +96,8 @@ let win (ttt : tictactoe)  _ =
   ttt #clear ()
 
 let essai () =
-  let window = new GWin.window `TOPLEVEL title:"Tictactoe" border_width:10 in
+  let window =
+    new GWindow.window `TOPLEVEL title:"Tictactoe" border_width:10 in
   window #connect#destroy callback:Main.quit;
   let ttt = new tictactoe in
   window#add ttt;
