@@ -197,7 +197,11 @@ class notebook obj = object (self)
   method set_tab_border = Notebook.set_tab_border obj
   method set_popup = Notebook.set_popup obj
   method page_num w = Notebook.page_num obj (as_widget w)
-  method nth_page n = new widget (Notebook.get_nth_page obj n)
+  method get_nth_page n = new widget (Notebook.get_nth_page obj n)
+  method get_tab_label w =
+    new widget (Notebook.get_tab_label obj (as_widget w))
+  method get_menu_label w =
+    new widget (Notebook.get_tab_label obj (as_widget w))
   method set_page ?tab_label ?menu_label page =
     let child = as_widget page in
     may tab_label

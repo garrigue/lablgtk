@@ -219,11 +219,13 @@ class notebook : Gtk.notebook obj ->
       ?tab_label:widget -> ?menu_label:widget -> widget -> unit
     method connect : notebook_signals
     method current_page : int
+    method get_menu_label : widget -> widget
+    method get_nth_page : int -> widget
+    method get_tab_label : widget -> widget
     method goto_page : int -> unit
     method insert_page :
       ?tab_label:widget -> ?menu_label:widget -> pos:int -> widget -> unit
     method next_page : unit -> unit
-    method nth_page : int -> widget
     method page_num : widget -> int
     method prepend_page :
       ?tab_label:widget -> ?menu_label:widget -> widget -> unit

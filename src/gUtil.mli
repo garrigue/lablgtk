@@ -17,13 +17,43 @@ class ['a] memo : unit ->
     method remove : widget -> unit
   end
 
-(* To add ML signals to an object:
+(* The ML signal mechanism allows one to add GTK-like signals to
+   arbitrary objects.
+*)
+
+val next_callback_id : unit -> GtkSignal.id
+
+class ['a] signal :
+  unit ->
+  object
+    val mutable callbacks : (GtkSignal.id * ('a -> unit)) list
+    method call : 'a -> unit
+    method connect : after:bool -> callback:('a -> unit) -> GtkSignal.id
+    method disconnect : GtkSignal.id -> bool
+  end
+class ml_signals :
+  object ('a)
+    val after : bool
+    method after : 'a
+    method disconnect : GtkSignal.id -> unit
+    method private disconnectors : (GtkSignal.id -> bool) list
+  end
+class add_ml_signals :
+  'a Gtk.obj ->
+  object
+    method disconnect : GtkSignal.id -> unit
+    method private disconnectors : (GtkSignal.id -> bool) list
+  end
+
+(* To add ML signals to a LablGTK object:
 
    class mywidget_signals obj ~mysignal1 ~mysignal2 = object
      inherit somewidget_signals obj
-     inherit has_ml_signals obj
+     inherit add_ml_signals obj as super
      method mysignal1 = mysignal1#connect ~after
      method mysignal2 = mysignal2#connect ~after
+     method disconnectors =
+       [mysignal1#disconnect; mysignal2#disconnect] @ super#disconnectors
    end
 
    class mywidget obj = object (self)
@@ -35,52 +65,41 @@ class ['a] memo : unit ->
      method call2 = mysignal2#call
    end
 
-   Remark: you only need to inherit once from has_ml_signals.
-   If you want to add new signals do not inherit again.
+   You can also add ML signals to an arbitrary object; just inherit
+   from ml_signals in place of widget_signals+add_ml_signals.
+
+   class mysignals ~mysignal1 ~mysignal2 = object
+     inherit ml_signals as super
+     method mysignal1 = mysignal1#connect ~after
+     method mysignal2 = mysignal2#connect ~after
+     method disconnectors =
+       [mysignal1#disconnect; mysignal2#disconnect] @ super#disconnectors
+   end
 *)
 
-val next_callback_id : unit -> GtkSignal.id
-
-class ['a] signal : 'b Gtk.obj ->
-  object
-    method call : 'a -> unit
-    method connect : after:bool -> callback:('a -> unit) -> GtkSignal.id
-    method disconnect : GtkSignal.id -> bool
-    method reset : unit -> unit
-  end
-
-class has_ml_signals : 'a Gtk.obj ->
-  object
-    method disconnect : GtkSignal.id -> unit
-  end
-
 (* The variable class provides an easy way to propagate state modifications.
-   A new variable is created by [new variable ~on:w init], where [w] is
-   the widget on which this variable lives. When [w] is destroyed, the
-   destroy signal is called. [changed] and [accessed] are called
-   respectively when [set] and [get] are used.
- *)
+   A new variable is created by [new variable init]. [changed] and
+   [accessed] are called respectively when [set] and [get] are used.
+*)
 
 class ['a] variable_signals :
-  'b Gtk.obj ->
-  changed:'a signal -> accessed:unit signal -> destroy:unit signal ->
-  object ('c)
-    inherit has_ml_signals
+  changed:'a signal -> accessed:unit signal ->
+  object ('b)
     val after : bool
-    val obj : 'b Gtk.obj
-    method after : 'c
-    method changed : callback:('a -> unit) -> GtkSignal.id
+    method after : 'b
     method accessed : callback:(unit -> unit) -> GtkSignal.id
-    method destroy : callback:(unit -> unit) -> GtkSignal.id
+    method changed : callback:('a -> unit) -> GtkSignal.id
+    method disconnect : GtkSignal.id -> unit
+    method private disconnectors : (GtkSignal.id -> bool) list
   end
 
-class ['a] variable :
-  on:#GObj.widget -> 'a ->
+class ['a] variable : 'a ->
   object
-    val obj : Gtk.widget Gtk.obj
+    val accessed : unit signal
+    val changed : 'a signal
     val mutable x : 'a
     method connect : 'a variable_signals
-    method destroy : unit -> unit
-    method set : 'a -> unit
     method get : 'a
+    method set : 'a -> unit
   end
+
