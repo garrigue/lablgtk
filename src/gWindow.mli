@@ -63,6 +63,8 @@ class window : Gtk.window obj ->
 val window :
   ?kind:Tags.window_type ->
   ?title:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
   ?icon:GdkPixbuf.pixbuf ->
@@ -71,12 +73,9 @@ val window :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
-  ?wm_name:string ->
-  ?wm_class:string ->
-  ?x:int ->
-  ?y:int ->
-  ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> window
+  ?width:int ->
+  ?height:int ->
+  ?border_width:int -> ?show:bool -> unit -> window
 
 val toplevel : #widget -> window option
 (** return the toplevel window of this widget, if existing *)
@@ -112,6 +111,8 @@ val dialog :
   ?destroy_with_parent:bool ->
   ?no_separator:bool ->
   ?title:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
   ?icon:GdkPixbuf.pixbuf ->
@@ -120,12 +121,9 @@ val dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
-  ?wm_name:string ->
-  ?wm_class:string ->
-  ?x:int ->
-  ?y:int ->
-  ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a dialog
+  ?width:int ->
+  ?height:int ->
+  ?border_width:int -> ?show:bool -> unit -> 'a dialog
 
 type 'a buttons
 module Buttons : sig
@@ -149,6 +147,8 @@ val message_dialog :
   ?parent:#window ->
   ?destroy_with_parent:bool ->
   ?title:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
   ?icon:GdkPixbuf.pixbuf ->
@@ -157,12 +157,9 @@ val message_dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
-  ?wm_name:string ->
-  ?wm_class:string ->
-  ?x:int ->
-  ?y:int ->
-  ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a message_dialog
+  ?width:int ->
+  ?height:int ->
+  ?border_width:int -> ?show:bool -> unit -> 'a message_dialog
 
 class color_selection_dialog : Gtk.color_selection_dialog obj ->
   object
@@ -176,6 +173,8 @@ class color_selection_dialog : Gtk.color_selection_dialog obj ->
   end
 val color_selection_dialog :
   ?title:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
   ?icon:GdkPixbuf.pixbuf ->
@@ -183,12 +182,9 @@ val color_selection_dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
-  ?wm_name:string ->
-  ?wm_class:string ->
-  ?x:int ->
-  ?y:int ->
-  ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> color_selection_dialog
+  ?width:int ->
+  ?height:int ->
+  ?border_width:int -> ?show:bool -> unit -> color_selection_dialog
 
 class file_selection : Gtk.file_selection obj ->
   object
@@ -213,6 +209,8 @@ val file_selection :
   ?show_fileops:bool ->
   ?filename:string ->
   ?select_multiple:bool ->
+  ?wm_name:string ->
+  ?wm_class:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
   ?icon:GdkPixbuf.pixbuf ->
@@ -221,12 +219,9 @@ val file_selection :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
-  ?wm_name:string ->
-  ?wm_class:string ->
-  ?x:int ->
-  ?y:int ->
-  ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> file_selection
+  ?width:int ->
+  ?height:int ->
+  ?border_width:int -> ?show:bool -> unit -> file_selection
 
 class font_selection_dialog : Gtk.font_selection_dialog obj ->
   object
@@ -240,6 +235,8 @@ class font_selection_dialog : Gtk.font_selection_dialog obj ->
   end
 val font_selection_dialog :
   ?title:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
   ?icon:GdkPixbuf.pixbuf ->
@@ -248,12 +245,9 @@ val font_selection_dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
-  ?wm_name:string ->
-  ?wm_class:string ->
-  ?x:int ->
-  ?y:int ->
-  ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> font_selection_dialog
+  ?width:int ->
+  ?height:int ->
+  ?border_width:int -> ?show:bool -> unit -> font_selection_dialog
 
 class plug : Gtk.plug obj -> window
 

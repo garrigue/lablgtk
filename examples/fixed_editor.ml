@@ -135,7 +135,7 @@ class fix_editor ~width ~height ~packing =
       let evb = GBin.event_box ~border_width:0 ~packing:fix#add () in
       let lbl = GMisc.label ~text:name ~width ~height ~packing:evb#add () in
       evb#misc#realize ();
-      evb#misc#set_geometry ~x ~y ();
+      fix#move evb#coerce ~x ~y;
       self#connect_signals ~ebox:evb ~widget:lbl#coerce ~callback;
       ()
 
@@ -180,7 +180,7 @@ class fix_editor ~width ~height ~packing =
 	  begin match action with
 	    GB_MIDDLE ->
 	      let (nx, ny) = to_grid2 grid (mx-ox, my-oy) in
-	      ebox#misc#set_geometry ~x:nx ~y:ny ();
+	      fix#move ebox#coerce ~x:nx ~y:ny;
 	      if cbfun ~x:nx ~y:ny ~width:(-2) ~height:(-2) then
 	      	()
 	      else (* should we undo ? *) ()
@@ -194,7 +194,8 @@ class fix_editor ~width ~height ~packing =
 	      let (ty, by) =
 	      	if my<toi_y then (my, toi_y) else (toi_y, my) in
 	      let (w, h) = (rx-lx, by-ty) in
-	      ebox#misc#set_geometry ~x:lx ~y:ty ~width:w ~height:h ();
+	      ebox#misc#set_size_request ~width:w ~height:h ();
+              fix#move ebox#coerce ~x:lx ~y:ty;
 	      if cbfun ~x:lx ~y:ty ~width:w ~height:h then
 	      	()
 	      else (* should we undo ? *) ()
@@ -203,7 +204,8 @@ class fix_editor ~width ~height ~packing =
 	      let my = to_grid grid my in
 	      let (ty, by) = if my<toi_y then (my, toi_y) else (toi_y, my) in
 	      let h = by-ty in
-	      ebox#misc#set_geometry ~y:ty ~height:h ();
+	      fix#move ebox#coerce ~x:lx ~y:ty;
+              ebox#misc#set_size_request ~height:h ();
 	      if cbfun ~x:lx ~y:ty ~width:(-2) ~height:h then
 	      	()
 	      else (* should we undo ? *) ()
@@ -212,7 +214,8 @@ class fix_editor ~width ~height ~packing =
 	      let mx = to_grid grid mx in
 	      let (lx, rx) = if mx<toi_x then (mx, toi_x) else (toi_x, mx) in
 	      let w = rx-lx in 
-	      ebox#misc#set_geometry ~x:lx ~width:w ();
+              fix#move ebox#coerce ~x:lx ~y:ty;
+	      ebox#misc#set_size_request ~width:w ();
 	      if cbfun ~x:lx ~y:ty ~width:w ~height:(-2) then
 	      	()
 	      else (* should we undo ? *) ()

@@ -213,8 +213,7 @@ and misc_ops : Gtk.widget obj ->
       ?lang:string -> ?width:int -> ?height:int -> unit -> unit
     method set_state : Tags.state_type -> unit
     method set_style : style -> unit
-    method set_geometry :
-      ?x:int -> ?y:int -> ?width:int -> ?height:int -> unit -> unit
+    method set_size_request : ?width:int -> ?height:int -> unit -> unit
     method show : unit -> unit
     method show_all : unit -> unit
     method style : style

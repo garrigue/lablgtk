@@ -1074,8 +1074,7 @@ let create_main_window () =
     "WM hints", None
   ] in
 
-  let window = GWindow.window ~title:"main window" ~allow_shrink:false
-      ~allow_grow:false ~width:200 ~height:400 ~x:20 ~y:20 () in
+  let window = GWindow.window ~title:"main window" ~width:200 ~height:400 () in
 
   window #connect#destroy ~callback: Main.quit;
 

@@ -1,5 +1,8 @@
 $Id$
 
+2003.07.05 [Jacques]
+  * #misc#set_geometry renamed in #misc#set_size_request
+  * ?width and ?height in GWindow set default size rather than size request
 
 2003.07.02 [Jacques]
   * fix configure (split PKG_CHECK_MODULES for GTK and GTKALL)
