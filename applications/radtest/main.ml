@@ -9,7 +9,7 @@ open TiBase
 
 let main_project_modify = ref false
 
-let main_window  = GWindow.window ~title:"ZOOM" ()
+let main_window  = GWindow.window ~title:"ZOOM" ~x:10 ~y:10 ()
 let main_vbox    = GPack.vbox ~packing:main_window#add ()
 let main_menu    = GMenu.menu_bar ~packing:(main_vbox#pack ~expand:false) ()
 
@@ -253,9 +253,8 @@ let targets = [  { target = "STRING"; flags = []; info = 0}  ]
 let xpm_window () =
   let source_drag_data_get classe _ (data : selection_data) ~info ~time =
     data#set ~typ:data#target ~format:0 ~data:classe in
-  let window = GWindow.window ~title:"icons" () in
+  let window = GWindow.window ~title:"icons" ~x:250 ~y:10 () in
   window#misc#realize ();
-  window#misc#set_uposition ~x:250 ~y:10;
   let vbox = GPack.vbox ~packing:window#add () in
   let table = GPack.table ~rows:1 ~columns:5 ~border_width:20
       ~packing:vbox#pack () in
@@ -325,7 +324,6 @@ let main () =
   let _ = GMain.Main.init () in
   let prop_win = Propwin.init () in
   let palette = xpm_window () in
-  main_window#misc#set_uposition ~x:10 ~y:10;
   main_window#show ();
   main_window#connect#destroy ~callback:GMain.Main.quit;
 

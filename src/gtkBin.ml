@@ -26,8 +26,7 @@ end
 module Frame = struct
   let cast w : frame obj = Object.try_cast w "GtkFrame"
   external coerce : [>`frame] obj -> frame obj = "%identity"
-  external create : Gpointer.optstring -> frame obj = "ml_gtk_frame_new"
-  let create ?label () = create (Gpointer.optstring label)
+  external create : string -> frame obj = "ml_gtk_frame_new"
   external set_label : [>`frame] obj -> string -> unit
       = "ml_gtk_frame_set_label"
   external set_label_align : [>`frame] obj -> x:clampf -> y:clampf -> unit
@@ -52,12 +51,12 @@ end
 module AspectFrame = struct
   let cast w : aspect_frame obj = Object.try_cast w "GtkAspectFrame"
   external create :
-      label:Gpointer.optstring -> xalign:clampf ->
+      label:string -> xalign:clampf ->
       yalign:clampf -> ratio:float -> obey_child:bool -> aspect_frame obj
       = "ml_gtk_aspect_frame_new"
-  let create ?label ?(xalign=0.5) ?(yalign=0.5)
+  let create ?(label="") ?(xalign=0.5) ?(yalign=0.5)
       ?(ratio=1.0) ?(obey_child=true) () =
-    create ~label:(Gpointer.optstring label) ~xalign ~yalign ~ratio ~obey_child
+    create ~label ~xalign ~yalign ~ratio ~obey_child
   external set :
       [>`aspect] obj ->
       xalign:clampf -> yalign:clampf -> ratio:float -> obey_child:bool -> unit

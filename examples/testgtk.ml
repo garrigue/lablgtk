@@ -360,16 +360,14 @@ let scrolled_windows_remove, scrolled_windows_clean =
   let remove (scrollwin : GBin.scrolled_window) () =
     match !parent with
     | None ->
-	parent :=
-	  begin try Some scrollwin#misc#parent
-	  with Not_found -> None end;
+	parent := scrollwin#misc#parent;
 	let f = GWindow.window ~title:"new parent" () in
-	float_parent := Some f;
+	float_parent := Some f#coerce;
 	f #set_default_size ~width:200 ~height:200;
 	scrollwin #misc#reparent f#coerce;
 	f #show ()
     | Some p ->
-	scrollwin #misc#reparent p#coerce;
+	scrollwin #misc#reparent p;
 	match !float_parent with
 	| None -> ()
 	| Some f ->
@@ -623,14 +621,15 @@ end
 let cb_tree_destroy_event w = ()
 
 let cb_add_new_item (treeb : tree_and_buttons) _ =
-  let subtree = match treeb#tree#selection with
-  | []  -> treeb#tree
-  | selected_item :: _ ->
-      try selected_item#subtree
-      with Not_found ->
-	let t = GTree.tree () in
-	selected_item#set_subtree t;
-	t
+  let subtree =
+    match treeb#tree#selection with
+    | []  -> treeb#tree
+    | selected_item :: _ ->
+       match selected_item#subtree with Some t -> t
+       | None ->
+	   let t = GTree.tree () in
+	   selected_item#set_subtree t;
+	   t
   in
   let item_new = GTree.tree_item ~packing:(subtree#insert ~pos:0)
       ~label:("item add " ^ string_of_int treeb # nb_item_add) () in
@@ -992,7 +991,7 @@ let set_parent child old_parent =
   Printf.printf
     "set parent for \"%s\": new parent: \"%s\", old parent: \"%s\"\n" 
     child#misc#get_type
-    (try child#misc#parent#misc#get_type with Not_found -> "(NULL)")
+    (match child#misc#parent with Some p -> p#misc#get_type | None -> "(NULL)")
     (name_opt old_parent)
 
 let reparent_label (label : GMisc.label) new_parent _ =

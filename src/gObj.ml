@@ -222,23 +222,25 @@ and misc_ops obj = object
   method grab_focus () = Widget.grab_focus obj
   method grab_default () = Widget.grab_default obj
   method is_ancestor (w : widget) = Widget.is_ancestor obj w#as_widget
-  method add_accelerator ~sgn:sg ~group ?modi:m ?flags key =
-    Widget.add_accelerator obj ~sgn:sg group ~key ?modi:m ?flags
-  method remove_accelerator = Widget.remove_accelerator obj
+  method add_accelerator ~sgn:sg ~group ?modi ?flags key =
+    Widget.add_accelerator obj ~sgn:sg group ~key ?modi ?flags
+  method remove_accelerator ~group ?modi key =
+    Widget.remove_accelerator obj group ~key ?modi
   method lock_accelerators () = Widget.lock_accelerators obj
   method set_name = Widget.set_name obj
   method set_state = Widget.set_state obj
   method set_sensitive = Widget.set_sensitive obj
   method set_can_default = Widget.set_can_default obj
   method set_can_focus = Widget.set_can_focus obj
-  method set_uposition = Widget.set_uposition obj
-  method set_usize = Widget.set_usize obj
+  method set_geometry ?(x = -2) ?(y = -2) ?(width = -2) ?(height = -2)  () =
+    if x+y <> -4 then Widget.set_uposition obj ~x ~y;
+    if width+height <> -4 then Widget.set_usize obj ~width ~height
   method set_style (style : style) = Widget.set_style obj style#as_style
   (* get functions *)
   method name = Widget.get_name obj
   method toplevel =
-    try new widget (Object.unsafe_cast (Widget.get_toplevel obj))
-    with Gpointer.Null -> raise Not_found
+    try Some (new widget (Object.unsafe_cast (Widget.get_toplevel obj)))
+    with Gpointer.Null -> None
   method window = Widget.window obj
   method colormap = Widget.get_colormap obj
   method visual = Widget.get_visual obj
@@ -248,8 +250,8 @@ and misc_ops obj = object
   method visible = Widget.visible obj
   method has_focus = Widget.has_focus obj
   method parent =
-    try new widget (Object.unsafe_cast (Widget.parent obj))
-    with Gpointer.Null -> raise Not_found
+    try Some (new widget (Object.unsafe_cast (Widget.parent obj)))
+    with Gpointer.Null -> None
   method set_app_paintable = Widget.set_app_paintable obj
   method allocation = Widget.allocation obj
 end
@@ -257,15 +259,25 @@ end
 and widget obj = object (self)
   inherit gtkobj obj
   method as_widget = Widget.coerce obj
-  method coerce = (self :> < destroy : _; get_id : _; as_widget : _;
-                             coerce : _; misc : _; drag : _ >)
   method misc = new misc_ops obj
   method drag = new drag_ops (Object.unsafe_cast obj)
+  method coerce =
+    (self :> < destroy : _; get_id : _; as_widget : _; misc : _;
+               drag : _; coerce : _ >)
 end
 
+(* just to check that GDraw.misc_ops is compatible with misc_ops *)
+let _ = fun (x : #GDraw.misc_ops) -> (x : misc_ops)
 
 class widget_signals ?after (obj : [> `widget] obj) =
   gtkobj_signals ?after obj
+
+(*
+class widget_coerce obj = object
+  inherit widget obj
+  method coerce = (self :> widget)
+end
+*)
 
 class widget_full obj = object
   inherit widget obj

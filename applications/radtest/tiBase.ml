@@ -642,11 +642,12 @@ object(self)
     tree_item#expand ();
 
     proplist <-  proplist @
-      [  "name", new prop_string ~name:"name" ~init:name ~set:self#set_new_name; 
-         "width", new prop_int ~name:"width" ~init:"-2"
-	   ~set:(fun v -> widget#misc#set_usize ~width:v ~height:(-2); true);
-         "height", new prop_int ~name:"height" ~init:"-2"
-	   ~set:(fun v -> widget#misc#set_usize ~height:v ~width:(-2); true) ];
+      [ "name",
+        new prop_string ~name:"name" ~init:name ~set:self#set_new_name; 
+        "width", new prop_int ~name:"width" ~init:"-2"
+	  ~set:(fun v -> widget#misc#set_geometry ~width:v (); true);
+        "height", new prop_int ~name:"height" ~init:"-2"
+	  ~set:(fun v -> widget#misc#set_geometry ~height:v (); true) ];
 
     self#add_signal name_changed;
 

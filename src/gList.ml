@@ -83,8 +83,14 @@ class ['a] clist obj = object (self)
   method cell_text = CList.get_text obj
   method cell_pixmap row col =
     let pm, mask = CList.get_pixmap obj row col in
-    new GDraw.pixmap pm ?mask
-  method row_selectable = CList.get_selectable obj
+    may_map pm ~f:(fun x -> new GDraw.pixmap ?mask x)
+  method cell_style  row col =
+    try Some (new style (CList.get_cell_style obj row col))
+    with Gpointer.Null -> None
+  method row_selectable row = CList.get_selectable obj ~row
+  method row_style row =
+    try Some (new style (CList.get_row_style obj ~row))
+    with Gpointer.Null -> None
   method set_shift = CList.set_shift obj
   method insert ~row texts =
     let texts = List.map texts ~f:(fun x -> Some x) in
@@ -116,18 +122,18 @@ class ['a] clist obj = object (self)
   method set_sort = CList.set_sort obj
   method set_column ?widget =
     CList.set_column obj ?widget:(may_map widget ~f:as_widget)
-  method set_row ?foreground ?background =
-    let color = may_map ~f:(fun c -> Gpointer.optboxed (GDraw.optcolor c)) in
+  method set_row ?foreground ?background ?selectable ?style =
+    let color = may_map ~f:(fun c -> Gpointer.optboxed (GDraw.optcolor c))
+    and style = may_map ~f:(fun (st : style) -> st#as_style) style in
     CList.set_row obj
       ?foreground:(color foreground) ?background:(color background)
-  method set_cell ?text ?pixmap ?(spacing=0) row col =
-    match text, pixmap with
-      _, None -> CList.set_text obj row col text
-    | None, Some (pm : GDraw.pixmap) ->
-	CList.set_pixmap obj row col pm#pixmap ?mask:pm#mask
-    | Some text, Some (pm : GDraw.pixmap) ->
-	CList.set_pixtext obj row col
-	  text ~spacing ~pixmap:pm#pixmap ?mask:pm#mask
+      ?selectable ?style
+  method set_cell ?text ?pixmap ?spacing ?style =
+    let pixmap, mask =
+      match pixmap with None -> None, None
+      | Some (pm : GDraw.pixmap) -> Some pm#pixmap, pm#mask
+    and style = may_map ~f:(fun (st : style) -> st#as_style) style in
+    CList.set_cell obj ?text ?pixmap ?mask ?spacing ?style
   method set_row_data n ~data =
     CList.set_row_data obj ~row:n (Obj.repr (data : 'a))
   method get_row_data n : 'a = Obj.obj (CList.get_row_data obj ~row:n)

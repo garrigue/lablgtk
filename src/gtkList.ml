@@ -130,31 +130,35 @@ module CList = struct
       = "ml_gtk_clist_row_is_visible"
   external get_cell_type : [>`clist] obj -> int -> int -> cell_type
       = "ml_gtk_clist_get_cell_type"
-  external set_text : [>`clist] obj -> int -> int -> Gpointer.optstring -> unit
+  external set_text : [>`clist] obj -> int -> int -> string -> unit
       = "ml_gtk_clist_set_text"
-  let set_text w row col text = set_text w row col (Gpointer.optstring text)
   external get_text : [>`clist] obj -> int -> int -> string
       = "ml_gtk_clist_get_text"
   external set_pixmap :
-      [>`clist] obj -> int -> int -> Gdk.pixmap -> Gdk.bitmap Gpointer.optboxed -> unit
+      [>`clist] obj ->
+      int -> int -> Gdk.pixmap -> Gdk.bitmap Gpointer.optboxed -> unit
       = "ml_gtk_clist_set_pixmap"
-  let set_pixmap w row col ?mask pixmap =
-    set_pixmap w row col pixmap (Gpointer.optboxed mask)
   external get_pixmap :
-      [>`clist] obj -> int -> int -> Gdk.pixmap * Gdk.bitmap option
+      [>`clist] obj -> int -> int -> Gdk.pixmap option * Gdk.bitmap option
       = "ml_gtk_clist_get_pixmap"
   external set_pixtext :
       [>`clist] obj -> int -> int ->
       string -> int -> Gdk.pixmap -> Gdk.bitmap Gpointer.optboxed -> unit
       = "ml_gtk_clist_set_pixtext_bc" "ml_gtk_clist_set_pixtext"
-  let set_pixtext w row col ~spacing ~pixmap ?mask text =
-    set_pixtext w row col text spacing pixmap (Gpointer.optboxed mask)
   external set_foreground :
       [>`clist] obj -> row:int -> Gdk.Color.t Gpointer.optboxed -> unit
       = "ml_gtk_clist_set_foreground"
   external set_background :
       [>`clist] obj -> row:int -> Gdk.Color.t Gpointer.optboxed -> unit
       = "ml_gtk_clist_set_background"
+  external get_cell_style : [>`clist] obj -> int -> int -> Gtk.style
+      = "ml_gtk_clist_get_cell_style"
+  external set_cell_style : [>`clist] obj -> int -> int -> Gtk.style -> unit
+      = "ml_gtk_clist_set_cell_style"
+  external get_row_style : [>`clist] obj -> row:int -> Gtk.style
+      = "ml_gtk_clist_get_row_style"
+  external set_row_style : [>`clist] obj -> row:int -> Gtk.style -> unit
+      = "ml_gtk_clist_set_row_style"
   external set_selectable : [>`clist] obj -> row:int -> bool -> unit
       = "ml_gtk_clist_set_selectable"
   external get_selectable : [>`clist] obj -> row:int -> bool
@@ -224,6 +228,17 @@ module CList = struct
     may auto ~f:(set_auto_sort w);
     may column ~f:(set_sort_column w);
     may sort_type ~f:(set_sort_type w)
+  let set_cell w ?text ?pixmap ?mask ?(spacing=0) ?style row col =
+    begin match text, pixmap with
+    | Some text, None ->
+        set_text w row col text
+    | None, Some pm ->
+        set_pixmap w row col pm (Gpointer.optboxed mask)
+    | Some text, Some pm ->
+        set_pixtext w row col text spacing pm (Gpointer.optboxed mask)
+    | _ -> ()
+    end;
+    may style ~f:(set_cell_style w row col)
   let set_column w ?widget ?title ?title_active ?justification
       ?visibility ?resizeable ?auto_resize ?width ?min_width ?max_width
       col =
@@ -240,10 +255,12 @@ module CList = struct
     may_set set_column_width width;
     may_set set_column_max_width min_width;
     may_set set_column_max_width max_width
-  let set_row w ?foreground ?background ?selectable row =
-    may foreground ~f:(set_foreground w ~row);
-    may background ~f:(set_background w ~row);
-    may selectable ~f:(set_selectable w ~row)
+  let set_row w ?foreground ?background ?selectable ?style row =
+    let may_set f = may ~f:(f w ~row) in
+    may_set set_foreground foreground;
+    may_set set_background  background;
+    may_set set_selectable  selectable;
+    may_set set_row_style style
   module Signals = struct
     open GtkArgv
     open GtkSignal

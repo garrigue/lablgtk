@@ -62,7 +62,7 @@ class pixmap :
     method pixmap : Gdk.pixmap
   end
 
-class type widget_draw =
+class type misc_ops =
   object
     method allocation : Gtk.rectangle
     method colormap : colormap
@@ -73,8 +73,8 @@ class type widget_draw =
     method pointer : int * int
     method realize : unit -> unit
     method set_app_paintable : bool -> unit
-    method set_uposition : x:int -> y:int -> unit
-    method set_usize : width:int -> height:int -> unit
+    method set_geometry :
+      ?x:int -> ?y:int -> ?width:int -> ?height:int -> unit -> unit
     method show : unit -> unit
     method unmap : unit -> unit
     method unparent : unit -> unit
@@ -86,14 +86,14 @@ class type widget_draw =
   end
 
 val pixmap :
-  window:< misc : #widget_draw; .. > ->
+  window:< misc : #misc_ops; .. > ->
   width:int -> height:int -> ?mask:bool -> unit -> pixmap
 val pixmap_from_xpm :
-  window:< misc : #widget_draw; .. > ->
+  window:< misc : #misc_ops; .. > ->
   file:string ->
   ?colormap:colormap -> ?transparent:color -> unit -> pixmap
 val pixmap_from_xpm_d :
-  window:< misc : #widget_draw; .. > ->
+  window:< misc : #misc_ops; .. > ->
   data:string array ->
   ?colormap:colormap -> ?transparent:color -> unit -> pixmap
 

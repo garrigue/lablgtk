@@ -24,14 +24,13 @@ class tree_item : Gtk.tree_item obj ->
     method expand : unit -> unit
     method remove_subtree : unit -> unit
     method set_subtree : tree -> unit
-    method subtree : tree
+    method subtree : tree option
   end
 
-and tree_signals : 'a obj ->
+and tree_signals : Gtk.tree obj ->
   object
     inherit container_signals
-    constraint 'a = [>`tree|`container|`widget]
-    val obj : 'a obj
+    val obj : Gtk.tree obj
     method select_child : callback:(tree_item -> unit) -> GtkSignal.id
     method selection_changed : callback:(unit -> unit) -> GtkSignal.id
     method unselect_child : callback:(tree_item -> unit) -> GtkSignal.id

@@ -93,7 +93,7 @@ class pixmap ?colormap ?mask pm = object
     may bitmap ~f:(fun m -> m#string s ~font ~x ~y)
 end
 
-class type widget_draw = object
+class type misc_ops = object
   method allocation : Gtk.rectangle
   method colormap : colormap
   method draw : Rectangle.t option -> unit
@@ -103,8 +103,8 @@ class type widget_draw = object
   method pointer : int * int
   method realize : unit -> unit
   method set_app_paintable : bool -> unit
-  method set_uposition : x:int -> y:int -> unit
-  method set_usize : width:int -> height:int -> unit
+  method set_geometry :
+    ?x:int -> ?y:int -> ?width:int -> ?height:int -> unit -> unit
   method show : unit -> unit
   method unmap : unit -> unit
   method unparent : unit -> unit
@@ -115,7 +115,7 @@ class type widget_draw = object
   method window : window
 end
 
-let pixmap ~(window : < misc : #widget_draw; .. >)
+let pixmap ~(window : < misc : #misc_ops; .. >)
     ~width ~height ?(mask=false) () =
   window#misc#realize ();
   let window =
