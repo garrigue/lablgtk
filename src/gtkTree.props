@@ -35,16 +35,17 @@ class Tree : Container {
 }
 
 class TreeView set wrap wrapsig : Container {
-  "model"                GtkTreeModel_opt     : Read / Write / NoWrap
-  "hadjustment"          GtkAdjustment        : Read / Write
-  "vadjustment"          GtkAdjustment        : Read / Write
   "enable-search"        gboolean             : Read / Write
   "expander-column"      GtkTreeViewColumn_opt: Read / Write / NoSet / NoWrap
+  "fixed-height-mode"    gboolean             : Read / Write
+  "hadjustment"          GtkAdjustment        : Read / Write
   "headers-clickable"    gboolean             : Write
   "headers-visible"      gboolean             : Read / Write
+  "model"                GtkTreeModel_opt     : Read / Write / NoWrap
   "reorderable"          gboolean             : Read / Write
   "rules-hint"           gboolean             : Read / Write
   "search-column"        gint                 : Read / Write
+  "vadjustment"          GtkAdjustment        : Read / Write
   signal columns_changed
   signal cursor_changed
   signal expand_collapse_cursor_row :
