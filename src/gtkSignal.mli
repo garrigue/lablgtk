@@ -17,6 +17,9 @@ val connect :
   sgn:('a, 'b) t -> callback:'b -> ?after:bool -> 'a obj -> id
     (* You may use [stop_emit] inside the callback *)
 
+external connect_by_name :
+  'a obj -> name:string -> callback:(GtkArgv.t -> unit) -> after:bool -> id
+  = "ml_gtk_signal_connect"
 external disconnect : 'a obj -> id -> unit
   = "ml_gtk_signal_disconnect"
 external emit_stop_by_name : 'a obj -> name:string -> unit
