@@ -87,6 +87,7 @@ class Widget abstract : Object {
   signal drag_motion : GdkDragContext x:int y:int time:int32 -> bool
   (* events *)
   signal event : GdkEvent -> bool
+  signal event_after : GdkEvent
   (* events share the same marshaller
   signal button_press_event : GdkEventButton -> bool
   signal button_release_event : GdkEventButton -> bool
