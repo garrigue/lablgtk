@@ -339,7 +339,7 @@ module Rgb :
 module DnD :
   sig
     val drag_status :
-      drag_context -> Tags.drag_action list -> time:int -> unit
+      drag_context -> Tags.drag_action list -> time:int32 -> unit
     val drag_context_suggested_action : drag_context -> Tags.drag_action
     val drag_context_targets : drag_context -> atom list
   end

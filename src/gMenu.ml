@@ -22,7 +22,7 @@ class type virtual ['a] pre_menu = object
   method deactivate : unit -> unit
   method connect : menu_shell_signals
   method event : event_ops
-  method popup : button:int -> time:int -> unit
+  method popup : button:int -> time:int32 -> unit
   method popdown : unit -> unit
   method set_accel_group : accel_group -> unit
 end

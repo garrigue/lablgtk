@@ -57,7 +57,7 @@ and menu : Gtk.menu obj ->
     method deactivate : unit -> unit
     method insert : menu_item -> pos:int -> unit
     method popdown : unit -> unit
-    method popup : button:int -> time:int -> unit
+    method popup : button:int -> time:int32 -> unit
     method prepend : menu_item -> unit
     method remove : menu_item -> unit
     method set_accel_group : accel_group -> unit

@@ -80,7 +80,7 @@ ML_1 (gtk_menu_shell_deactivate, GtkMenuShell_val, Unit)
 #define GtkMenu_val(val) check_cast(GTK_MENU,val)
 ML_0 (gtk_menu_new, Val_GtkWidget_sink)
 ML_5 (gtk_menu_popup, GtkMenu_val, GtkWidget_val, GtkWidget_val,
-      Insert(NULL) Insert(NULL) Int_val, Int_val, Unit)
+      Insert(NULL) Insert(NULL) Int_val, Int32_val, Unit)
 ML_1 (gtk_menu_popdown, GtkMenu_val, Unit)
 ML_1 (gtk_menu_get_active, GtkMenu_val, Val_GtkWidget)
 ML_2 (gtk_menu_set_active, GtkMenu_val, Int_val, Unit)
