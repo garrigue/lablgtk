@@ -728,6 +728,8 @@ module CheckMenuItem = struct
     | Some label -> create_with_label label
   external set_state : [> checkmenuitem] obj -> bool -> unit
       = "ml_gtk_check_menu_item_set_state"
+  external get_active : [> checkmenuitem] obj -> bool
+      = "ml_gtk_check_menu_item_get_active"
   external set_show_toggle : [> checkmenuitem] obj -> bool -> unit
       = "ml_gtk_check_menu_item_set_show_toggle"
   let setter w :cont ?:state ?:show_toggle =

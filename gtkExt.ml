@@ -23,11 +23,13 @@ class ['a] menu_factory (menu : 'a)
       item
     method add_check_item :label ?:state ?:key ?:callback =
       let item = new_check_menu_item :label ?:state in
-      self#bind (item :> menu_item) ?:key ?:callback;
+      self#bind (item :> menu_item) ?:key
+	?callback:(may_map callback fun:(fun f () -> f item#active));
       item
     method add_radio_item :label ?:group ?:state ?:key ?:callback =
       let item = new_radio_menu_item :label ?:group ?:state in
-      self#bind (item :> menu_item) ?:key ?:callback;
+      self#bind (item :> menu_item) ?:key
+	?callback:(may_map callback fun:(fun f () -> f item#active));
       item
     method add_separator () = new_menu_item packing:menu#append
     method add_submenu :label ?:key =
