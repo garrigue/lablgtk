@@ -51,6 +51,10 @@ value mlname (value arg1, value arg2, value arg3, value arg4) \
 value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
 		      conv5(arg5))); }
+#define ML_5_name(mlname, cname, conv1, conv2, conv3, conv4, conv5, conv) \
+value mlname (value arg1, value arg2, value arg3, value arg4, value arg5) \
+{ return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
+		      conv5(arg5))); }
 #define ML_6(cname, conv1, conv2, conv3, conv4, conv5, conv6, conv) \
 value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
 		  value arg6) \
@@ -70,6 +74,13 @@ value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
 #define ML_9(cname, conv1, conv2, conv3, conv4, conv5, conv6, conv7, conv8, \
 	      conv9, conv) \
 value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
+		  value arg6, value arg7, value arg8, value arg9) \
+{ return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
+		      conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8), \
+		      conv9(arg9))); }
+#define ML_9_name(mlname, cname, conv1, conv2, conv3, conv4, conv5, conv6, conv7, conv8, \
+	      conv9, conv) \
+value mlname (value arg1, value arg2, value arg3, value arg4, value arg5, \
 		  value arg6, value arg7, value arg8, value arg9) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
 		      conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8), \
