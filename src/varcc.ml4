@@ -53,6 +53,15 @@ let rec star ?(acc=[]) p = parser
 let flag = parser
     [< ' Ident ("public"|"private"|"noconv"|"flags" as s) >] -> s
 
+let protect = parser
+    [< ' Ident "protect" ; ' Ident m >] -> Some m
+  | [<>] -> None
+
+let may o f = 
+  match o with
+  | Some v -> f v
+  | None -> ()
+
 open Printf
 
 let hashes = Hashtbl.create 57
@@ -62,7 +71,7 @@ let package = ref ""
 let pkgprefix = ref ""
 
 let declaration ~hc ~cc = parser
-    [< ' Kwd "type"; flags = star flag;
+    [< ' Kwd "type"; flags = star flag; guard = protect;
        ' Ident mlname; name = may_string; ' Kwd "="; prefix = may_string;
        ' Kwd "["; _ = may_bar; tags = ident_list; ' Kwd "]";
        suffix = may_string >] ->
@@ -120,11 +129,14 @@ let declaration ~hc ~cc = parser
       if !static && not (List.mem "public" flags) || List.mem "private" flags
       then "static " else "" in
     oc "%slookup_info ml_table_%s[] = {\n" static name;
+    may guard
+      (fun m -> oc "#ifdef %s\n" m) ;
     oc "  { 0, %d },\n" (List.length tags);
     List.iter tags ~f:
       begin fun (tag,trans) ->
 	oc "  { MLTAG_%s, %s },\n" tag (ctag tag trans)
       end;
+    may guard (fun m -> oc "#else\n  {0, 0 }\n#endif /* %s */\n" m) ;
     oc "};\n\n";
     (* Output macros to headers *)
     if not !first then oh "\n";

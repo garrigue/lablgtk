@@ -163,6 +163,7 @@ ML_1 (gtk_combo_disable_activate, GtkCombo_val, Unit)
 Make_Extractor (gtk_combo, GtkCombo_val, entry, Val_GtkWidget)
 Make_Extractor (gtk_combo, GtkCombo_val, list, Val_GtkWidget)
 
+#ifdef HASGTK24
 /* gtkcombobox.h */
 #define GtkComboBox_val(val) check_cast(GTK_COMBO_BOX,val)
 ML_0 (gtk_combo_box_new_text, Val_GtkWidget_sink)
@@ -182,3 +183,12 @@ ml_gtk_combo_box_get_active_iter(value combo)
   return Val_GtkTreeIter(ret ? &it : NULL);
 }
 ML_2(gtk_combo_box_set_active_iter, GtkComboBox_val, GtkTreeIter_val, Unit)
+
+#else
+Unsupported_24(gtk_combo_box_new_text)
+Unsupported_24(gtk_combo_box_append_text)
+Unsupported_24(gtk_combo_box_insert_text)
+Unsupported_24(gtk_combo_box_prepend_text)
+Unsupported_24(gtk_combo_box_get_active_iter)
+Unsupported_24(gtk_combo_box_set_active_iter)
+#endif /* HASGTK24 */
