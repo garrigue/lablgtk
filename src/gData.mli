@@ -35,7 +35,12 @@ class adjustment : Gtk.adjustment obj ->
       ?page_incr:float -> ?page_size:float -> unit -> unit
   end
 
-(** @gtkdoc gtk GtkAdjustment *)
+(** @gtkdoc gtk GtkAdjustment 
+    @param lower default value is [0.]
+    @param upper default value is [100.]
+    @param step_incr default value is [1.]
+    @param page_incr default value is [10.]
+    @param page_size default value is [10.] *)
 val adjustment :
   ?value:float ->
   ?lower:float ->
