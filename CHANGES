@@ -2,6 +2,8 @@ $Id$
 
 2004.08.24 [Olivier]
   * add GWindow.message_dialog#set_markup (2.4)
+  * add override of default signal handlers
+    (GtkSignal.override_class_closure, GtkSignal.chain_from_overridden) 
 
 2004.08.23 [Olivier]
   * wrap some 2.4 additions in GdkPixbuf (from_file_at_size,

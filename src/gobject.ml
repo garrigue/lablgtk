@@ -68,10 +68,8 @@ module Type = struct
       = "ml_Fundamental_type_val"
   external interface_prerequisites : g_type -> g_type list
       = "ml_g_type_interface_prerequisites" (** @since GTK 2.2 *)
-  external register_static : g_type -> string -> g_type
+  external register_static : parent:g_type -> name:string -> g_type
       = "ml_g_type_register_static"
-  let register_static ~parent ~name =
-    register_static parent name
   external g_caml_get_type : unit -> g_type = "ml_g_caml_get_type"
   let caml = g_caml_get_type ()
 end
