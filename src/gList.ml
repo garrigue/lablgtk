@@ -157,7 +157,7 @@ class ['a] clist obj = object (self)
     CList.Signals.emit_scroll obj ~sgn:CList.Signals.scroll_horizontal
 end
 
-let clist ?(columns=1) ?titles ?hadjustment ?vadjustment
+let clist_poly ?(columns=1) ?titles ?hadjustment ?vadjustment
     ?shadow_type ?button_actions ?selection_mode
     ?reorderable ?use_drag_icons ?row_height
     ?titles_show ?titles_active ?auto_sort ?sort_column ?sort_type
@@ -174,3 +174,5 @@ let clist ?(columns=1) ?titles ?hadjustment ?vadjustment
   CList.set_sort w ?auto:auto_sort ?column:sort_column ?dir:sort_type ();
   Container.set w ?border_width ?width ?height;
   pack_return (new clist w) ~packing ~show
+
+let clist = clist_poly
