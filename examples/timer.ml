@@ -42,7 +42,7 @@ class timer ?packing ?show () =
           ~destroy:(fun pm -> Gdk.Pixmap.destroy pm#pixmap)
           ~create:
           (fun () ->
-            context#set_font_by_name ("sans " ^ string_of_int (size/5));
+            context#set_font_by_name ("sans " ^ string_of_int (size*2/11));
             GDraw.pixmap ~width ~height ~window:da ())
       in
       pixmap <- Some dr;
