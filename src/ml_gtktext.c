@@ -19,9 +19,16 @@
 #include "gtk_tags.h"
 #include "gdk_tags.h"
 
-#define GtkTextMark_val(val) check_cast(GTK_TEXT_MARK,val)
+#define GtkTextMark_val(val) ((GtkTextMark*)Pointer_val(val))
+
+Make_Val_final_pointer(GtkTextMark,g_object_ref,g_object_unref,500)
+#define Val_GtkTextMark_new Val_GtkTextMark
+
+     /*#define GtkTextMark_val(val) check_cast(GTK_TEXT_MARK,val)
 #define Val_GtkTextMark(val) (Val_GObject((GObject*)val))
 #define Val_GtkTextMark_new(val) (Val_GObject_new((GObject*)val))
+     */
+
 value Val_GtkTextMark_func(gpointer val){
   return(Val_GtkTextMark(val));
 }
