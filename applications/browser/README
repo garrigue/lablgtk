@@ -1,10 +1,10 @@
-	Browser: the beginning of a port of the LablBrowser
+	Browser: the beginning of a port of the OCamlBrowser
 
 Installation:
 
-* make a link from a directory where the O'Labl distribution is
-  compiled to olabl-src
-	ln -s /path/to/olabl/ocaml-2.02 olabl-src
+* make a link from a directory where the O'Caml distribution is
+  compiled to ocaml-src
+	ln -s /path/to/ocaml-3.00 ocaml-src
   (actually only the directory parsing needs to be compiled)
 
 * just type "make"
