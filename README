@@ -63,7 +63,7 @@ How to link them:
 How to use the threaded toplevel:
 
 	% lablgtk -thread           (or ./lablgtktop_t before installing)
-	        Objective Caml version 3.01
+	        Objective Caml version 3.04
 	
 	# let w = GWindow.window ~show:true ();;
 
