@@ -1,5 +1,6 @@
 /* $Id$ */
 
+#include <string.h>
 #include <locale.h>
 #ifdef _WIN32
 #include "win32.h"
@@ -24,6 +25,8 @@ CAMLprim value ml_glib_init(value unit)
 {
   ml_register_exn_map (G_CONVERT_ERROR,
 		       "g_convert_error");
+  ml_register_exn_map (G_MARKUP_ERROR,
+		       "g_markup_error");
   return Val_unit;
 }
 
@@ -147,7 +150,6 @@ static void ml_raise_gerror_exn(GError *err, value *exn)
   Field (b, 1) = Val_int(err->code);
   Field (b, 2) = msg;
   g_error_free (err);
-  local_roots = caml__frame; /* gcc moans with CAMLreturn */
   mlraise(b);
 }
 
@@ -372,38 +374,50 @@ GSList *GSList_val (value list, gpointer (*func)(value))
 
 /* Character Set Conversion */
 
+static value
+caml_copy_string_len_and_free (char *str, size_t len)
+{
+  value v;
+  g_assert (str != NULL);
+  v = alloc_string (len);
+  memcpy (String_val(v), str, len);
+  g_free (str);
+  return v;
+}
+
 CAMLprim value ml_g_convert(value str, value to, value from)
 {
-  gsize br=0,bw=0;
+  gsize bw=0;
   gchar* c_res;
   GError *error=NULL;
   c_res = g_convert(String_val(str),string_length(str),
                     String_val(to),String_val(from),
-                    &br,&bw,&error);
+                    NULL,&bw,&error);
   if (error != NULL) ml_raise_gerror(error);
-  return Val_string(c_res);
+  return caml_copy_string_len_and_free (c_res, bw);
 }
 
 CAMLprim value ml_g_convert_with_fallback(value fallback, value to, value from, value str)
 {
-  gsize br=0,bw=0;
+  gsize bw=0;
   gchar* c_res;
   GError *error=NULL;
   c_res = g_convert_with_fallback(String_val(str),string_length(str),
-				  String_val(to),String_val(from),Option_val(fallback ,String_val,NULL),
-		      &br,&bw,&error);
+				  String_val(to),String_val(from),
+				  Option_val(fallback ,String_val,NULL),
+				  NULL,&bw,&error);
   if (error != NULL) ml_raise_gerror(error);
-  return Val_string(c_res);
+  return caml_copy_string_len_and_free (c_res, bw);
 }
 
 #define Make_conversion(cname) \
 CAMLprim value ml_##cname(value str) { \
-  gsize br=0,bw=0; \
+  gsize bw=0; \
   gchar* c_res; \
   GError *error=NULL; \
-  c_res = cname(String_val(str),string_length(str),&br,&bw,&error); \
+  c_res = cname(String_val(str),string_length(str),NULL,&bw,&error); \
   if (error != NULL) ml_raise_gerror(error); \
-  return Val_string(c_res); \
+  return caml_copy_string_len_and_free (c_res, bw); \
 }
 
 Make_conversion(g_locale_to_utf8)
@@ -416,7 +430,7 @@ CAMLprim value ml_g_get_charset()
   CAMLparam0();
   CAMLlocal1(couple);
   gboolean r;
-  G_CONST_RETURN char *c="";
+  G_CONST_RETURN char *c;
   r = g_get_charset(&c);
   couple = alloc_tuple(2);
   Store_field(couple,0,Val_bool(r));
@@ -426,8 +440,7 @@ CAMLprim value ml_g_get_charset()
 
 CAMLprim value ml_g_utf8_validate(value s)
 {
-  const gchar *c=NULL;
-  return Val_bool(g_utf8_validate(SizedString_val(s),&c));
+  return Val_bool(g_utf8_validate(SizedString_val(s),NULL));
 }
 
 

@@ -8,7 +8,6 @@ let () = Gc.set {(Gc.get()) with Gc.max_overhead = 1000000}
 
 module Main = struct
   external init : string array -> string array = "ml_gtk_init"
-  (* external exit : int -> unit = "ml_gtk_exit" *)
   (* external set_locale : unit -> string = "ml_gtk_set_locale" *)
   external disable_setlocale : unit -> unit = "ml_gtk_disable_setlocale"
   (* external main : unit -> unit = "ml_gtk_main" *)

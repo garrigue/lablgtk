@@ -246,8 +246,9 @@ class ui_manager :
   object
     val obj : 'a Gtk.obj
     method add_tearoffs : bool
-    method add_ui_from_file : string -> ui_id
-    method add_ui_from_string : string -> ui_id
+    method add_ui_from_file : string -> ui_id   (** @raise Glib.Markup.Error if the XML is invalid *)
+    method add_ui_from_string : string -> ui_id (** @raise Glib.Markup.Error if the XML is invalid 
+						    @raise Glib.GError if an error occurs while reading the file *)
     method connect : ui_manager_signals
     method ensure_update : unit -> unit
     method get_accel_group : Gtk.accel_group
