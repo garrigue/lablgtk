@@ -22,6 +22,17 @@ class ['a] history () = object
     List.nth history ((l + count - 1) mod l)
 end
 
+let set_size_chars (view : #GObj.widget) ~font:desc ~width ~height =
+  let metrics =
+    Pango.Context.get_metrics view#misc#pango_context desc
+      (Pango.Language.from_string "C") in
+  let width =
+    width * Pango.Metrics.get_approximate_digit_width metrics / Pango.scale
+  and height =
+    height * (Pango.Metrics.get_ascent metrics +
+              Pango.Metrics.get_descent metrics) / Pango.scale in
+  view#misc#set_size_request ~width ~height
+
 (* The shell class. Now encapsulated *)
 
 let protect f x = try f x with _ -> ()
@@ -124,7 +135,9 @@ object (self)
     end
   initializer
     Lexical.init_tags buffer;
-    view#misc#modify_font (Pango.Font.from_string "monospace");
+    let desc = Pango.Font.from_string "monospace 11" in
+    view#misc#modify_font desc;
+    set_size_chars view ~font:desc ~width:80 ~height:25;
     view#event#connect#key_press ~callback:
       begin fun ev ->
 	if GdkEvent.Key.keyval ev = _Return && GdkEvent.Key.state ev = []
@@ -209,7 +222,7 @@ let f ~prog ~title =
   let args = Array.of_list (progargs @ load_path) in
   let current_dir = ref (Unix.getcwd ()) in
 
-  let tl = GWindow.window ~title ~width:500 ~height:300 () in
+  let tl = GWindow.window ~title () in
   let vbox = GPack.vbox ~packing:tl#add () in
   let menus = GMenu.menu_bar ~packing:vbox#pack () in
   let f = new GMenu.factory menus in

@@ -4,6 +4,7 @@ open Gobject
 
 type colormap
 type visual
+type screen = [`gdkscreen] obj
 type region
 type gc
 type window = [`drawable|`gdkwindow] obj
@@ -100,8 +101,10 @@ module Property :
 
 module Screen :
   sig
-    val width : unit -> int
-    val height : unit -> int
+    val default : unit -> screen
+    val width : ?screen:screen -> unit -> int
+    val height : ?screen:screen -> unit -> int
+    val get_pango_context : ?screen:screen -> unit -> Pango.context
   end
 
 module Visual :

@@ -7,11 +7,11 @@
 #include <caml/memory.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
-#include "ml_pango.h"
 
 #include "wrappers.h"
 #include "ml_glib.h"
 #include "ml_gobject.h"
+#include "ml_pango.h"
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gobject_tags.h"
@@ -280,6 +280,8 @@ ML_3 (gtk_widget_modify_bg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_text, GtkWidget_val, State_type_val, GdkColor_val,Unit)
 ML_3 (gtk_widget_modify_base, GtkWidget_val, State_type_val, GdkColor_val,Unit)
 ML_2 (gtk_widget_modify_font, GtkWidget_val, PangoFontDescription_val, Unit)
+ML_1 (gtk_widget_get_pango_context, GtkWidget_val, Val_PangoContext)
+ML_1 (gtk_widget_create_pango_context, GtkWidget_val, Val_PangoContext_new)
 ML_6 (gtk_widget_add_accelerator, GtkWidget_val, Signal_name_val,
       GtkAccelGroup_val, Char_val, OptFlags_GdkModifier_val,
       OptFlags_Accel_flag_val, Unit)

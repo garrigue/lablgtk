@@ -19,15 +19,9 @@ type pango_stretch = "PANGO_STRETCH_"
 `EXTRA_EXPANDED | 
 `ULTRA_EXPANDED ]
 
-type pango_scale = "PANGO_SCALE_"
-[`XX_SMALL |
-`X_SMALL |
-`SMALL |
-`MEDIUM |
-`LARGE |
-`X_LARGE |
-`XX_LARGE |
-]
+type noconv pango_scale = "PANGO_SCALE_"
+  [ `XX_SMALL | `X_SMALL | `SMALL | `MEDIUM 
+  | `LARGE | `X_LARGE | `XX_LARGE | `CUSTOM ]
 
 type pango_underline = "PANGO_UNDERLINE_"
-[ `NONE | `SINGLE | `DOUBLE | `LOW ]
+  [ `NONE | `SINGLE | `DOUBLE | `LOW ]

@@ -1,5 +1,8 @@
 $Id$
 
+2003.02.20
+ * additions to Pango
+
 2003.02.19
  * GdkDrawable is also a GObject
  * split GText.iter/nocopy_iter (Benjamin)

@@ -17,6 +17,7 @@
 #include "ml_gpointer.h"
 #include "ml_glib.h"
 #include "ml_gobject.h"
+#include "ml_pango.h"
 #include "ml_gdk.h"
 #include "gdk_tags.h"
 
@@ -47,8 +48,11 @@ Make_test(GdkWindowState_val)
 ML_0 (gdk_colormap_get_system, Val_GdkColormap)
 
 /* Screen geometry */
-ML_0 (gdk_screen_width, Val_int)
-ML_0 (gdk_screen_height, Val_int)
+
+ML_1 (gdk_screen_get_width, GdkScreen_val, Val_int)
+ML_1 (gdk_screen_get_height, GdkScreen_val, Val_int)
+ML_0 (gdk_screen_get_default, Val_GdkScreen)
+ML_1 (gdk_pango_context_get_for_screen, GdkScreen_val, Val_PangoContext_new)
 
 /* Visual */
 CAMLprim value ml_gdk_visual_get_best (value depth, value type)
