@@ -146,7 +146,7 @@ module CList = struct
   external set_pixtext :
       [>`clist] obj -> int -> int ->
       string -> int -> Gdk.pixmap -> Gdk.bitmap Gpointer.optboxed -> unit
-      = "ml_gtk_clist_set_pixtext"
+      = "ml_gtk_clist_set_pixtext_bc" "ml_gtk_clist_set_pixtext"
   let set_pixtext w row col ~spacing ~pixmap ?mask text =
     set_pixtext w row col text spacing pixmap (Gpointer.optboxed mask)
   external set_foreground : [>`clist] obj -> row:int -> Gdk.Color.t -> unit
