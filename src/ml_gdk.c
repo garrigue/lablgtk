@@ -141,3 +141,13 @@ value ml_gdk_pixmap_colormap_create_from_xpm_d
 
     return ret;
 }
+
+/* Font */
+
+Make_Val_final_pointer (GdkFont, gdk_font_ref, gdk_font_unref)
+ML_1 (gdk_font_load, String_val, Val_GdkFont)
+ML_1 (gdk_fontset_load, String_val, Val_GdkFont)
+ML_2 (gdk_string_width, GdkFont_val, String_val, Val_int)
+ML_2 (gdk_char_width, GdkFont_val, Char_val, Val_int)
+ML_2 (gdk_string_measure, GdkFont_val, String_val, Val_int)
+ML_2 (gdk_char_measure, GdkFont_val, Char_val, Val_int)

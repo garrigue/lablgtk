@@ -5,6 +5,7 @@ type visual
 type window
 type pixmap
 type bitmap
+type font
 
 exception Error of string
 let _ = Callback.register_exception "gdkerror" (Error"")
@@ -73,4 +74,13 @@ module Bitmap = struct
   external create_from_data :
       window -> string -> width:int -> height:int -> bitmap
       = "ml_gdk_bitmap_create_from_data"
+end
+
+module Font = struct
+  external load : string -> font = "ml_gdk_font_load"
+  external load_fontset : string -> font = "ml_gdk_fontset_load"
+  external string_width : font -> string -> int = "ml_gdk_string_width"
+  external char_width : font -> char -> int = "ml_gdk_char_width"
+  external string_measure : font -> string -> int = "ml_gdk_string_measure"
+  external char_measure : font -> char -> int = "ml_gdk_char_measure"
 end

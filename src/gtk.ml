@@ -96,6 +96,7 @@ end
 
 module Widget = struct
   type t = [widget] obj
+  external coerce : [> widget] obj -> t = "%identity"
   external destroy : [> widget] obj -> unit = "ml_gtk_widget_destroy"
   external unparent : [> widget] obj -> unit = "ml_gtk_widget_unparent"
   external show : [> widget] obj -> unit = "ml_gtk_widget_show"
@@ -323,9 +324,10 @@ module ToggleButton = struct
       = "ml_gtk_toggle_button_set_state"
   let set button ?:mode ?:state =
     may fun:(set_mode button) mode;
-    may fun:(set_mode button) state;
+    may fun:(set_state button) state;
     ()
   external toggled : [> toggle] obj -> unit = "ml_gtk_toggle_button_toggled"
+  external active : [> toggle] obj -> bool = "ml_GtkToggleButton_active"
 end
 
 module RadioButton = struct
@@ -353,14 +355,14 @@ module Table = struct
       = "ml_gtk_table_new"
   let create r c ?:homogeneous [< false >] = create r c :homogeneous
   external attach :
-      [> table] obj -> [> widget obj] -> left:int -> right:int ->
+      [> table] obj -> [> widget] obj -> left:int -> right:int ->
       top:int -> bottom:int -> xoptions:attach list ->
       yoptions:attach list -> xpadding:int -> ypadding:int -> unit
       = "ml_gtk_table_attach_bc" "ml_gtk_table_attach"
   type dirs = [x y both none]
   let has_x = function `x|`both -> true | `y|`none -> false
   let has_y = function `y|`both -> true | `x|`none -> false
-  let attach t w :left :top ?:right [< left+1 >] ?:bottom [< right+1 >]
+  let attach t w :left :top ?:right [< left+1 >] ?:bottom [< top+1 >]
       ?:expand [< `both >] ?:fill [< `both >]
       ?:shrink [< `none >] ?:xpadding [< 0 >] ?:ypadding [< 0 >] =
     let xoptions = if has_x shrink then [`SHRINK] else [] in
@@ -373,13 +375,91 @@ module Table = struct
       :xpadding :ypadding
 end
 
-module Misc = struct
-  type t = [widget misc] obj
-  external set_alignment : [> misc] obj -> x:float -> y:float -> unit
-      = "ml_gtk_misc_set_alignment"
-  external set_padding : [> misc] obj -> x:int -> y:int -> unit
-      = "ml_gtk_misc_set_padding"
+module Editable = struct
+  type t = [widget editable] obj
+  external select_region : [> editable] obj -> start:int -> end:int -> unit
+      = "ml_gtk_editable_select_region"
+  external insert_text : [> editable] obj -> string -> pos:int -> int
+      = "ml_gtk_editable_select_region"
+  external delete_text : [> editable] obj -> start:int -> end:int -> unit
+      = "ml_gtk_editable_delete_text"
+  external get_chars : [> editable] obj -> start:int -> end:int -> string
+      = "ml_gtk_editable_get_chars"
+  external cut_clipboard : [> editable] obj -> time:int -> unit
+      = "ml_gtk_editable_cut_clipboard"
+  external copy_clipboard : [> editable] obj -> time:int -> unit
+      = "ml_gtk_editable_copy_clipboard"
+  external paste_clipboard : [> editable] obj -> time:int -> unit
+      = "ml_gtk_editable_paste_clipboard"
+  external claim_selection :
+      [> editable] obj -> claim:bool -> time:int -> unit
+      = "ml_gtk_editable_claim_selection"
+  external delete_selection : [> editable] obj -> unit
+      = "ml_gtk_editable_delete_selection"
+  external changed : [> editable] obj -> unit
+      = "ml_gtk_editable_changed"
 end
+
+module Entry = struct
+  type t = [widget editable entry] obj
+  external create : unit -> t = "ml_gtk_entry_new"
+  external create_with_max_length : int -> t
+      = "ml_gtk_entry_new_with_max_length"
+  external set_text : [> entry] obj -> string -> unit
+      = "ml_gtk_entry_set_text"
+  external append_text : [> entry] obj -> string -> unit
+      = "ml_gtk_entry_append_text"
+  external prepend_text : [> entry] obj -> string -> unit
+      = "ml_gtk_entry_prepend_text"
+  external set_position : [> entry] obj -> int -> unit
+      = "ml_gtk_entry_set_position"
+  external get_text : [> entry] obj -> string = "ml_gtk_entry_get_text"
+  external set_visibility : [> entry] obj -> bool -> unit
+      = "ml_gtk_entry_set_visibility"
+  external set_editable : [> entry] obj -> bool -> unit
+      = "ml_gtk_entry_set_editable"
+  external set_max_length : [> entry] obj -> int -> unit
+      = "ml_gtk_entry_set_max_length"
+  let set w ?:text ?:position ?:visibility ?:editable ?:max_length =
+    let may_set f = may fun:(f w) in
+    may_set set_text text;
+    may_set set_position position;
+    may_set set_visibility visibility;
+    may_set set_editable editable;
+    may_set set_max_length max_length;
+    ()
+  external text_length : [> entry] obj -> int
+      = "ml_GtkEntry_text_length"
+end
+
+module Text = struct
+  type t = [widget editable text] obj
+  external create :
+      ?hadj:[> adjustment] obj -> ?vadj:[> adjustment] obj -> ?unit -> t
+      = "ml_gtk_text_new"
+  external set_editable : [> text] obj -> bool -> unit
+      = "ml_gtk_text_set_editable"
+  external set_word_wrap : [> text] obj -> bool -> unit
+      = "ml_gtk_text_set_word_wrap"
+  external set_adjustments :
+      [> text] obj -> [> adjustment] obj -> [> adjustment] obj -> unit
+      = "ml_gtk_text_set_adjustments"
+  external set_point : [> text] obj -> int -> unit
+      = "ml_gtk_text_set_point"
+  external get_point : [> text] obj -> int = "ml_gtk_text_get_point"
+  external get_lenth : [> text] obj -> int = "ml_gtk_text_get_length"
+  external freeze : [> text] obj -> unit = "ml_gtk_text_freeze"
+  external thaw : [> text] obj -> unit = "ml_gtk_text_thaw"
+  external insert :
+      [> text] obj -> ?font:Gdk.font -> ?foreground:Gdk.Color.t ->
+      ?background:Gdk.Color.t -> string -> unit
+      = "ml_gtk_text_insert"
+end
+
+module Misc = struct type t = [widget misc] obj external set_alignment
+  : [> misc] obj -> x:float -> y:float -> unit =
+  "ml_gtk_misc_set_alignment" external set_padding : [> misc] obj ->
+  x:int -> y:int -> unit = "ml_gtk_misc_set_padding" end
 
 module Label = struct
   type t = [widget misc label] obj
@@ -387,11 +467,11 @@ module Label = struct
   external set : [> label] obj -> string -> unit = "ml_gtk_label_set"
   external set_justify : [> label] obj -> justification -> unit
       = "ml_gtk_label_set_justify"
-  let set w ?:label ?:justify =
-    may fun:(set w) label;
+  let set w ?:text ?:justify =
+    may fun:(set w) text;
     may fun:(set_justify w) justify;
     ()
-  external label : [> label] obj -> string = "ml_GtkLabel_label"
+  external text : [> label] obj -> string = "ml_GtkLabel_label"
 end
 
 module Pixmap = struct
@@ -500,22 +580,33 @@ module Argv = struct
 end
 
 module Signal = struct
-  type cb_id
+  type id
   type ('a,'b) t = { name: string; marshaller: 'b -> Argv.t -> unit }
   external connect :
-      'a obj -> name:string -> cb:(Argv.t -> unit) -> after:bool -> cb_id
+      'a obj -> name:string -> cb:(Argv.t -> unit) -> after:bool -> id
       = "ml_gtk_signal_connect"
   let connect : 'a obj -> sig:('a, _) t -> _ =
     fun obj sig:signal :cb ?:after [< false >] ->
       connect obj name:signal.name cb:(signal.marshaller cb) :after
-  external disconnect : 'a obj -> cb_id -> unit
+  external disconnect : 'a obj -> id -> unit
       = "ml_gtk_signal_disconnect"
   let marshal_unit f _ = f ()
   let marshal_event f argv = Argv.set_result_bool argv (f ())
-  let clicked : ([> button],_) t =
-    { name = "clicked"; marshaller = marshal_unit }
   let destroy : ([> widget],_) t =
     { name = "destroy"; marshaller = marshal_unit }
+  let clicked : ([> button],_) t =
+    { name = "clicked"; marshaller = marshal_unit }
+  let toggled : ([> toggle],_) t =
+    { name = "toggled"; marshaller = marshal_unit }
+  let activate : ([> editable],_) t =
+    { name = "activate"; marshaller = marshal_unit }
   let delete_event : ([> widget],_) t =
     { name = "delete_event"; marshaller = marshal_event }
+end
+
+module Timeout = struct
+  type id
+  external add : int -> cb:(Argv.t -> unit) -> id = "ml_gtk_timeout_add"
+  let add inter :cb = add inter cb:(fun arg -> Argv.set_result_bool arg (cb ()))
+  external remove : id -> unit = "ml_gtk_timeout_remove"
 end

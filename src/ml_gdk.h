@@ -11,3 +11,6 @@ extern value Val_GdkPixmap (GdkPixmap *);
 
 #define GdkBitmap_val(val) ((GdkBitmap*)Pointer_val(val))
 extern value Val_GdkBitmap (GdkBitmap *);
+
+#define GdkFont_val(val) ((GdkFont*)Pointer_val(val))
+extern value Val_GdkFont (GdkFont *);

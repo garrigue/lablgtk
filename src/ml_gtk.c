@@ -24,6 +24,13 @@ void ml_raise_gtk (const char *errmsg)
 
 value ml_get_null (value unit) { return 0L; }
 
+value copy_string_and_free (char *str)
+{
+    value res = copy_string (str);
+    g_free (str);
+    return res;
+}
+
 /* conversion functions */
 
 #include "gtk_tags.c"
@@ -307,6 +314,7 @@ ML_1 (gtk_toggle_button_new_with_label, String_val, Val_GtkWidget)
 ML_2 (gtk_toggle_button_set_mode, GtkToggleButton_val, Bool_val, Unit)
 ML_2 (gtk_toggle_button_set_state, GtkToggleButton_val, Bool_val, Unit)
 ML_1 (gtk_toggle_button_toggled, GtkToggleButton_val, Unit)
+Make_Extractor (GtkToggleButton, GtkToggleButton_val, active, Val_bool)
 
 /* gtkcheckbutton.h */
 
@@ -330,6 +338,74 @@ ML_10 (gtk_table_attach, GtkTable_val, GtkWidget_val,
        Int_val, Int_val, Int_val, Int_val,
        Flags_Attach_val, Flags_Attach_val, Int_val, Int_val, Unit)
 ML_bc10 (ml_gtk_table_attach)
+
+/* gtkeditable.h */
+
+#define GtkEditable_val(val) GTK_EDITABLE(Pointer_val(val))
+ML_3 (gtk_editable_select_region, GtkEditable_val, Int_val, Int_val, Unit)
+value ml_gtk_editable_insert_text (value w, value s, value pos)
+{
+    int position = Int_val(pos);
+    gtk_editable_insert_text (GtkEditable_val(w), String_val(s),
+			      string_length(s), &position);
+    return Val_int(position);
+}
+ML_3 (gtk_editable_delete_text, GtkEditable_val, Int_val, Int_val, Unit)
+ML_3 (gtk_editable_get_chars, GtkEditable_val, Int_val, Int_val,
+      copy_string_and_free)
+ML_2 (gtk_editable_cut_clipboard, GtkEditable_val, Int_val, Unit)
+ML_2 (gtk_editable_copy_clipboard, GtkEditable_val, Int_val, Unit)
+ML_2 (gtk_editable_paste_clipboard, GtkEditable_val, Int_val, Unit)
+ML_3 (gtk_editable_claim_selection, GtkEditable_val, Bool_val, Int_val, Unit)
+ML_1 (gtk_editable_delete_selection, GtkEditable_val, Unit)
+ML_1 (gtk_editable_changed, GtkEditable_val, Unit)
+
+/* gtkentry.h */
+
+#define GtkEntry_val(val) GTK_ENTRY(Pointer_val(val))
+ML_0 (gtk_entry_new, Val_GtkWidget)
+ML_1 (gtk_entry_new_with_max_length, Int_val, Val_GtkWidget)
+ML_2 (gtk_entry_set_text, GtkEntry_val, String_val, Unit)
+ML_2 (gtk_entry_append_text, GtkEntry_val, String_val, Unit)
+ML_2 (gtk_entry_prepend_text, GtkEntry_val, String_val, Unit)
+ML_2 (gtk_entry_set_position, GtkEntry_val, Int_val, Unit)
+ML_1 (gtk_entry_get_text, GtkEntry_val, copy_string)
+ML_3 (gtk_entry_select_region, GtkEntry_val, Int_val, Int_val, Unit)
+ML_2 (gtk_entry_set_visibility, GtkEntry_val, Bool_val, Unit)
+ML_2 (gtk_entry_set_editable, GtkEntry_val, Bool_val, Unit)
+ML_2 (gtk_entry_set_max_length, GtkEntry_val, Bool_val, Unit)
+Make_Extractor (GtkEntry, GtkEntry_val, text_length, Val_int)
+
+/* gtktext.h */
+
+#define GtkText_val(val) GTK_TEXT(Pointer_val(val))
+value ml_gtk_text_new (value hadj, value vadj)
+{
+    return Val_GtkWidget
+	(gtk_text_new (Option_val(hadj,GtkAdjustment_val,NULL),
+		       Option_val(vadj,GtkAdjustment_val,NULL)));
+}
+ML_2 (gtk_text_set_editable, GtkText_val, Bool_val, Unit)
+ML_2 (gtk_text_set_word_wrap, GtkText_val, Bool_val, Unit)
+ML_3 (gtk_text_set_adjustments, GtkText_val, GtkAdjustment_val,
+      GtkAdjustment_val, Unit)
+ML_2 (gtk_text_set_point, GtkText_val, Int_val, Unit)
+ML_1 (gtk_text_get_point, GtkText_val, Val_int)
+ML_1 (gtk_text_get_length, GtkText_val, Val_int)
+ML_1 (gtk_text_freeze, GtkText_val, Unit)
+ML_1 (gtk_text_thaw, GtkText_val, Unit)
+value ml_gtk_text_insert (value text, value font, value fore, value back,
+			  value str)
+{
+    gtk_text_insert (GtkText_val(text),
+		     Option_val(font,GdkFont_val,NULL),
+		     Option_val(fore,(GdkColor *),NULL),
+		     Option_val(back,(GdkColor *),NULL),
+		     String_val(str), string_length(str));
+    return Val_unit;
+}
+ML_2 (gtk_text_forward_delete, GtkText_val, Int_val, Val_int)
+ML_2 (gtk_text_backward_delete, GtkText_val, Int_val, Val_int)
 
 /* gtkmisc.h */
 
@@ -404,7 +480,7 @@ value ml_gtk_get_version (value unit)
     return ret;
 }
 
-/* gtksignal.h */
+/* Marshalling */
 
 void ml_gtk_callback_marshal (GtkObject *object, gpointer data,
 			       guint nargs, GtkArg *args)
@@ -587,6 +663,8 @@ void ml_gtk_callback_destroy (gpointer data)
     stat_free (data);
 }
 
+/* gtksignal.h */
+
 value ml_gtk_signal_connect (value object, value name, value clos, value after)
 {
     value *clos_p = stat_alloc (sizeof(value));
@@ -599,3 +677,16 @@ value ml_gtk_signal_connect (value object, value name, value clos, value after)
 }
 
 ML_2 (gtk_signal_disconnect, GtkObject_val, Int_val, Unit)
+
+/* gtkmain.h (again) */
+
+value ml_gtk_timeout_add (value interval, value clos)
+{
+    value *clos_p = stat_alloc (sizeof(value));
+    *clos_p = clos;
+    register_global_root (clos_p);
+    return Val_int (gtk_timeout_add_interp
+		    (Int_val(interval), ml_gtk_callback_marshal, clos_p,
+		     ml_gtk_callback_destroy));
+}
+ML_1 (gtk_timeout_remove, Int_val, Unit)
