@@ -9,12 +9,12 @@ open GtkBase
 
 (* GObject *)
 
-class ['a] gobject_signals ?(after=false) obj = object
+class ['a] gobject_signals obj = object
   val obj : 'a obj = obj
-  val after = after
+  val after = false
   method after = {< after = true >}
   method private connect : 'b. ('a,'b) GtkSignal.t -> callback:'b -> _ =
-    fun sgn -> GtkSignal.connect obj ~sgn ~after
+    fun sgn ~callback -> GtkSignal.connect obj ~sgn ~after ~callback
 end
 
 class gobject_ops obj = object
@@ -45,8 +45,8 @@ class gtkobj obj = object
   method get_oid = get_oid obj
 end
 
-class gtkobj_signals_impl ?after obj = object (self)
-  inherit ['a] gobject_signals ?after obj
+class gtkobj_signals_impl obj = object (self)
+  inherit ['a] gobject_signals obj
   method destroy = self#connect Object.S.destroy
 end
 
@@ -58,32 +58,36 @@ class type gtkobj_signals =
 
 (* Widget *)
 
-class event_signals ?after obj = object (self)
-  inherit ['a] gobject_signals ?after (obj :> Gtk.widget obj)
-  method any = self#connect Widget.Signals.Event.any
-  method after_any = self#connect Widget.S.event_after
-  method button_press = self#connect Widget.Signals.Event.button_press
-  method button_release = self#connect Widget.Signals.Event.button_release
-  method configure = self#connect Widget.Signals.Event.configure
-  method delete = self#connect Widget.Signals.Event.delete
-  method destroy = self#connect Widget.Signals.Event.destroy
-  method enter_notify = self#connect Widget.Signals.Event.enter_notify
-  method expose = self#connect Widget.Signals.Event.expose
-  method focus_in = self#connect Widget.Signals.Event.focus_in
-  method focus_out = self#connect Widget.Signals.Event.focus_out
-  method key_press = self#connect Widget.Signals.Event.key_press
-  method key_release = self#connect Widget.Signals.Event.key_release
-  method leave_notify = self#connect Widget.Signals.Event.leave_notify
-  method map = self#connect Widget.Signals.Event.map
-  method motion_notify = self#connect Widget.Signals.Event.motion_notify
-  method property_notify = self#connect Widget.Signals.Event.property_notify
-  method proximity_in = self#connect Widget.Signals.Event.proximity_in
-  method proximity_out = self#connect Widget.Signals.Event.proximity_out
-  method selection_clear = self#connect Widget.Signals.Event.selection_clear
-  method selection_notify = self#connect Widget.Signals.Event.selection_notify
-  method selection_request =
-    self#connect Widget.Signals.Event.selection_request
-  method unmap = self#connect Widget.Signals.Event.unmap
+module Widget = GtkBase.Widget
+module Event = Widget.Signals.Event
+module Signals = Widget.S
+module P = Widget.P
+
+class event_signals obj = object (self)
+  inherit ['a] gobject_signals (obj :> Gtk.widget obj)
+  method any = self#connect Event.any
+  method after_any = self#connect Signals.event_after
+  method button_press = self#connect Event.button_press
+  method button_release = self#connect Event.button_release
+  method configure = self#connect Event.configure
+  method delete = self#connect Event.delete
+  method destroy = self#connect Event.destroy
+  method enter_notify = self#connect Event.enter_notify
+  method expose = self#connect Event.expose
+  method focus_in = self#connect Event.focus_in
+  method focus_out = self#connect Event.focus_out
+  method key_press = self#connect Event.key_press
+  method key_release = self#connect Event.key_release
+  method leave_notify = self#connect Event.leave_notify
+  method map = self#connect Event.map
+  method motion_notify = self#connect Event.motion_notify
+  method property_notify = self#connect Event.property_notify
+  method proximity_in = self#connect Event.proximity_in
+  method proximity_out = self#connect Event.proximity_out
+  method selection_clear = self#connect Event.selection_clear
+  method selection_notify = self#connect Event.selection_notify
+  method selection_request = self#connect Event.selection_request
+  method unmap = self#connect Event.unmap
 end
 
 class event_ops obj = object
@@ -141,28 +145,26 @@ class selection_context sel = object
     Selection.set sel ~typ ~format ~data:(Some data)
 end
 
-open Widget
-
 class drag_signals obj = object (self)
   inherit ['a] gobject_signals obj
   method private connect_drag : 'b. ('a, Gdk.drag_context -> 'b) GtkSignal.t ->
     callback:(drag_context -> 'b) -> _ =
       fun sgn ~callback ->
         self#connect sgn (fun context -> callback (new drag_context context))
-  method beginning = self#connect_drag Widget.S.drag_begin
-  method ending = self#connect_drag Widget.S.drag_end
-  method data_delete = self#connect_drag Widget.S.drag_data_delete
-  method leave = self#connect_drag Widget.S.drag_leave
-  method motion = self#connect_drag Widget.S.drag_motion
-  method drop = self#connect_drag Widget.S.drag_drop
+  method beginning = self#connect_drag Signals.drag_begin
+  method ending = self#connect_drag Signals.drag_end
+  method data_delete = self#connect_drag Signals.drag_data_delete
+  method leave = self#connect_drag Signals.drag_leave
+  method motion = self#connect_drag Signals.drag_motion
+  method drop = self#connect_drag Signals.drag_drop
   method data_get ~callback =
-    self#connect Widget.S.drag_data_get ~callback:
+    self#connect Signals.drag_data_get ~callback:
       begin fun context seldata ~info ~time ->
         callback (new drag_context context) (new selection_context seldata)
           ~info ~time
       end
   method data_received ~callback =
-    self#connect Widget.S.drag_data_received
+    self#connect Signals.drag_data_received
       ~callback:(fun context ~x ~y data -> callback (new drag_context context)
 	       ~x ~y (new selection_data data))
 
@@ -199,32 +201,32 @@ and drag_context context = object
     DnD.set_icon_pixmap context ~colormap pix#pixmap ?mask:pix#mask
 end
 
-and misc_signals ?after obj = object (self)
-  inherit gtkobj_signals_impl ?after obj
-  method show = self#connect S.show
-  method hide = self#connect S.hide
-  method map = self#connect S.map
-  method unmap = self#connect S.unmap
-  method realize = self#connect S.realize
-  method unrealize = self#connect S.unrealize
-  method state_changed = self#connect S.state_changed
-  method size_allocate = self#connect S.size_allocate
+and misc_signals obj = object (self)
+  inherit gtkobj_signals_impl obj
+  method show = self#connect Signals.show
+  method hide = self#connect Signals.hide
+  method map = self#connect Signals.map
+  method unmap = self#connect Signals.unmap
+  method realize = self#connect Signals.realize
+  method unrealize = self#connect Signals.unrealize
+  method state_changed = self#connect Signals.state_changed
+  method size_allocate = self#connect Signals.size_allocate
   method parent_set ~callback =
-    self#connect S.parent_set ~callback:
+    self#connect Signals.parent_set ~callback:
       begin function
 	  None   -> callback None
 	| Some w -> callback (Some (new widget (unsafe_cast w)))
       end
   method style_set ~callback =
-    self#connect S.style_set ~callback:
+    self#connect Signals.style_set ~callback:
       (fun opt -> callback (may opt ~f:(new style)))
   method selection_get ~callback =
-    self#connect S.selection_get ~callback:
+    self#connect Signals.selection_get ~callback:
       begin fun seldata ~info ~time ->
         callback (new selection_context seldata) ~info ~time
       end
   method selection_received ~callback =
-    self#connect S.selection_received
+    self#connect Signals.selection_received
       ~callback:(fun data -> callback (new selection_data data)) 
 end
 
@@ -232,30 +234,30 @@ and misc_ops obj = object (self)
   inherit gobject_ops obj
   method get_flag = Object.get_flag obj
   method connect = new misc_signals obj
-  method show () = show obj
-  method unparent () = unparent obj
-  method show_all () = show_all obj
-  method hide () = hide obj
-  method hide_all () = hide_all obj
-  method map () = map obj
-  method unmap () = unmap obj
-  method realize () = realize obj
-  method unrealize () = unrealize obj
-  method draw = draw obj
-  method activate () = activate obj
-  method reparent (w : widget) =  reparent obj w#as_widget
+  method show () = Widget.show obj
+  method unparent () = Widget.unparent obj
+  method show_all () = Widget.show_all obj
+  method hide () = Widget.hide obj
+  method hide_all () = Widget.hide_all obj
+  method map () = Widget.map obj
+  method unmap () = Widget.unmap obj
+  method realize () = Widget.realize obj
+  method unrealize () = Widget.unrealize obj
+  method draw = Widget.draw obj
+  method activate () = Widget.activate obj
+  method reparent (w : widget) =  Widget.reparent obj w#as_widget
   (* method popup = popup obj *)
-  method intersect = intersect obj
+  method intersect = Widget.intersect obj
   method grab_focus () = set P.has_focus obj true
   method grab_default () = set P.has_default obj true
-  method is_ancestor (w : widget) = is_ancestor obj w#as_widget
+  method is_ancestor (w : widget) = Widget.is_ancestor obj w#as_widget
   method add_accelerator ~sgn:sg ~group ?modi ?flags key =
-    add_accelerator obj ~sgn:sg group ~key ?modi ?flags
+    Widget.add_accelerator obj ~sgn:sg group ~key ?modi ?flags
   method remove_accelerator ~group ?modi key =
-    remove_accelerator obj group ~key ?modi
+    Widget.remove_accelerator obj group ~key ?modi
   (* method lock_accelerators () = lock_accelerators obj *)
   method set_name = set P.name obj
-  method set_state = set_state obj
+  method set_state = Widget.set_state obj
   method set_sensitive = set P.sensitive obj
   method set_can_default = set P.can_default obj
   method set_can_focus = set P.can_focus obj
@@ -272,38 +274,39 @@ and misc_ops obj = object (self)
         (fun h -> h * GPango.to_pixels (metrics#ascent+metrics#descent)) in
     self#set_size_request ?width ?height ()
   method set_style (style : style) = set P.style obj style#as_style
-  method modify_fg = iter_setcol modify_fg obj
-  method modify_bg = iter_setcol modify_bg obj
-  method modify_text = iter_setcol modify_text obj
-  method modify_base = iter_setcol modify_base obj
-  method modify_font = modify_font obj
+  method modify_fg = iter_setcol Widget.modify_fg obj
+  method modify_bg = iter_setcol Widget.modify_bg obj
+  method modify_text = iter_setcol Widget.modify_text obj
+  method modify_base = iter_setcol Widget.modify_base obj
+  method modify_font = Widget.modify_font obj
   method modify_font_by_name s =
-    modify_font obj (Pango.Font.from_string s)
+    Widget.modify_font obj (Pango.Font.from_string s)
   method create_pango_context =
-    new GPango.context_rw (create_pango_context obj)
+    new GPango.context_rw (Widget.create_pango_context obj)
   (* get functions *)
   method name = get P.name obj
   method toplevel =
-    try new widget (unsafe_cast (get_toplevel obj))
+    try new widget (unsafe_cast (Widget.get_toplevel obj))
     with Gpointer.Null -> failwith "GObj.misc_ops#toplevel"
-  method window = window obj
-  method colormap = get_colormap obj
-  method visual = get_visual obj
-  method visual_depth = Gdk.Visual.depth (get_visual obj)
-  method pointer = get_pointer obj
+  method window = Widget.window obj
+  method colormap = Widget.get_colormap obj
+  method visual = Widget.get_visual obj
+  method visual_depth = Gdk.Visual.depth (Widget.get_visual obj)
+  method pointer = Widget.get_pointer obj
   method style = new style (get P.style obj)
   method visible = self#get_flag `VISIBLE
   method parent =
     may_map (fun w -> new widget (unsafe_cast w)) (get P.parent obj)
-  method allocation = allocation obj
-  method pango_context = new GPango.context (get_pango_context obj)
+  method allocation = Widget.allocation obj
+  method pango_context = new GPango.context (Widget.get_pango_context obj)
   (* icon *)
   method render_icon ?detail ~size id =
-    render_icon obj (GtkStock.convert_id id) size detail
+    Widget.render_icon obj (GtkStock.convert_id id) size detail
   (* selection *)
   method convert_selection ~target ?(time=Int32.zero) sel =
     Selection.convert obj ~sel ~target:(Gdk.Atom.intern target) ~time
-  method grab_selection ?(time=Int32.zero) sel = Selection.owner_set obj ~sel ~time
+  method grab_selection ?(time=Int32.zero) sel =
+    Selection.owner_set obj ~sel ~time
   method add_selection_target ~target ?(info=0) sel =
     Selection.add_target obj ~sel ~target:(Gdk.Atom.intern target) ~info
 end

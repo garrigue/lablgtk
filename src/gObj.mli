@@ -20,7 +20,7 @@ class gobject_ops : 'a obj ->
     method thaw_notify : unit -> unit
   end
 
-class ['a] gobject_signals : ?after:bool -> 'a obj ->
+class ['a] gobject_signals : 'a obj ->
   object ('b)
     val obj : 'a obj
     val after : bool
@@ -43,7 +43,7 @@ class gtkobj : ([> `gtk] as 'a) obj ->
     method get_oid : int
   end
 
-class gtkobj_signals_impl : ?after:bool -> ([>`gtk] as 'a) obj ->
+class gtkobj_signals_impl : ([>`gtk] as 'a) obj ->
   object ('b)
     inherit ['a] gobject_signals
     method destroy : callback:(unit -> unit) -> GtkSignal.id
@@ -57,7 +57,7 @@ class type gtkobj_signals =
 
 (** {3 GtkWidget} *)
 
-class event_signals : ?after:bool -> [> widget] obj ->
+class event_signals : [> widget] obj ->
   object ('a)
     method after : 'a
     method any :
@@ -251,7 +251,7 @@ and widget : ([> Gtk.widget] as 'a) obj ->
   end
 
 (** @gtkdoc gtk GtkWidget *)
-and misc_signals : ?after:bool -> Gtk.widget obj ->
+and misc_signals : Gtk.widget obj ->
   object ('b)
     inherit gtkobj_signals 
     method hide : callback:(unit -> unit) -> GtkSignal.id

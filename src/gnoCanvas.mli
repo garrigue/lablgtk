@@ -81,7 +81,7 @@ type item_event = [
   | `FOCUS_CHANGE of GdkEvent.Focus.t ]
 
 class item_signals :
-  ?after:bool -> 'b Gtk.obj ->
+  'b Gtk.obj ->
   object
     constraint 'b = [> GnomeCanvas.item]
     inherit GObj.gtkobj_signals

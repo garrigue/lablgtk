@@ -13,8 +13,8 @@ let param = Gobject.param
 
 class scrolled_window obj = object
   inherit [Gtk.scrolled_window] bin_impl obj
-  method connect = new container_signals_impl obj
   inherit scrolled_window_props
+  method connect = new container_signals_impl obj
   method add_with_viewport w =
     ScrolledWindow.add_with_viewport obj (as_widget w)
 end
