@@ -41,9 +41,11 @@ class Fixed : Container {
   method get_has_window : "bool"
 }
 
-class Paned hv : Container {
+class Paned hv wrap : Container {
   "position"             gint                 : Read / Write
-  "position-set"         gboolean             : Read / Write
+  "position-set"         gboolean             : Read / Write / NoWrap
+  "max-position"         gint                 : Read
+  "min-position"         gint                 : Read
   method add1 : "[>`widget] obj -> unit"
   method add2 : "[>`widget] obj -> unit"
   method pack1 : "[>`widget] obj -> resize:bool -> shrink:bool -> unit"

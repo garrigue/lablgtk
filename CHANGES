@@ -1,5 +1,8 @@
 $Id$
 
+2004.11.15 [Olivier]
+  * add max-position and min-position in GPack.paned (2.4)
+
 2004.11.10 [Olivier]
   * add GPack.paned#position
   * allow multiple conditions per watch in Glib.Io.add_watch
