@@ -1,5 +1,10 @@
 $Id$
 
+2003.04.02 [Jacques]
+ * finish? GtkTreeView
+
+In lablgtk2-20030326:
+
 2003.03.20 [Olivier]
  * add stocks and mnemonics for buttons
  * add icon factories

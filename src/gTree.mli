@@ -250,15 +250,31 @@ class view : ([> tree_view] as 'a) obj ->
     val obj : 'a obj
     method connect : view_signals
     method append_column : view_column -> int
+    method collapse_all : unit -> unit
+    method collapse_row : Gtk.tree_path -> unit
     method enable_search : bool
+    method expand_all : unit -> unit
+    method expand_row : ?all:bool -> Gtk.tree_path -> unit
     method expander_column : view_column
+    method get_column : int -> view_column
     method hadjustment : GData.adjustment
     method headers_visible : bool
+    method insert_column : view_column -> int -> int
     method model : model
+    method move_column : view_column -> after:view_column -> int
+    method remove_column : view_column -> int
     method reorderable : bool
+    method row_activated : Gtk.tree_path -> view_column -> unit
+    method row_expanded : Gtk.tree_path -> bool
     method rules_hint : bool
+    method scroll_to_cell :
+      ?align:float * float -> Gtk.tree_path -> view_column -> unit
+    method scroll_to_point : int -> int -> unit
     method search_column : int
     method selection : selection
+    method set_cursor :
+      ?cell:[> `cellrenderer] Gtk.obj ->
+      ?edit:bool -> Gtk.tree_path -> view_column -> unit
     method set_enable_search : bool -> unit
     method set_expander_column : view_column option -> unit
     method set_hadjustment : GData.adjustment option -> unit

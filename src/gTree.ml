@@ -229,6 +229,8 @@ let view_column ?title ?renderer () =
     end;
   w
 
+let as_column (col : view_column) = col#as_column
+
 class selection_signals (obj : tree_selection) = object
   inherit gobject_signals obj
   method changed =
@@ -301,14 +303,12 @@ open Gobject.Property
 class view obj = object
   inherit GContainer.container obj
   method connect = new view_signals obj
-  method append_column (col : view_column) =
-    TreeView.append_column obj col#as_column
   method selection = new selection (TreeView.get_selection obj)
   method enable_search = get obj enable_search
   method set_enable_search = set obj enable_search
   method expander_column = new view_column (get_some obj expander_column)
   method set_expander_column c =
-    set obj expander_column (may_map (fun (x:view_column) -> x#as_column) c)
+    set obj expander_column (may_map as_column c)
   method hadjustment = new GData.adjustment (get_some obj hadjustment)
   method set_hadjustment a= set obj hadjustment (may_map GData.as_adjustment a)
   method set_headers_clickable = set obj headers_clickable
@@ -324,6 +324,28 @@ class view obj = object
   method set_search_column = set obj search_column
   method vadjustment = new GData.adjustment (get_some obj vadjustment)
   method set_vadjustment a= set obj vadjustment (may_map GData.as_adjustment a)
+  method append_column col = TreeView.append_column obj (as_column col)
+  method remove_column col = TreeView.remove_column obj (as_column col)
+  method insert_column col = TreeView.insert_column obj (as_column col)
+  method get_column n = new view_column (TreeView.get_column obj n)
+  method move_column col ~after =
+    TreeView.move_column_after obj (as_column col) (as_column after)
+  method scroll_to_point = TreeView.scroll_to_point obj
+  method scroll_to_cell ?align path col =
+    TreeView.scroll_to_cell obj ?align path (as_column col)
+  method row_activated path col =
+    TreeView.row_activated obj path (as_column col)
+  method expand_all () = TreeView.expand_all obj
+  method collapse_all () = TreeView.collapse_all obj
+  method expand_row ?(all=false) = TreeView.expand_row obj ~all
+  method collapse_row = TreeView.collapse_row obj
+  method row_expanded = TreeView.row_expanded obj
+  method set_cursor : 'a. ?cell:([> `cellrenderer ] as 'a) Gtk.obj -> _ =
+    fun ?cell ?(edit=false) row col ->
+      match cell with
+        None -> TreeView.set_cursor obj ~edit row (as_column col)
+      | Some cell ->
+          TreeView.set_cursor_on_cell obj ~edit row (as_column col) cell
 end
 let view ?model ?border_width ?width ?height ?packing ?show () =
   let model = may_map ~f:(fun (model : #model) -> model#as_model) model in

@@ -320,10 +320,54 @@ module TreeView = struct
   let create ?model () =
     match model with None -> create ()
     | Some model -> create_with_model model
-  external append_column : [>`treeview] obj -> [>`treeviewcolumn] obj -> int
-    = "ml_gtk_tree_view_append_column"
   external get_selection : [>`treeview] obj -> tree_selection
     = "ml_gtk_tree_view_get_selection"
+  external columns_autosize : [>`treeview] obj -> unit
+    = "ml_gtk_tree_view_columns_autosize"
+  external append_column : [>`treeview] obj -> [>`treeviewcolumn] obj -> int
+    = "ml_gtk_tree_view_append_column"
+  external remove_column : [>`treeview] obj -> [>`treeviewcolumn] obj -> int
+    = "ml_gtk_tree_view_remove_column"
+  external insert_column :
+    [>`treeview] obj -> [>`treeviewcolumn] obj -> int -> int
+    = "ml_gtk_tree_view_insert_column"
+  external get_column : [>`treeview] obj -> int -> tree_view_column obj
+    = "ml_gtk_tree_view_get_column"
+  external move_column_after :
+    [>`treeview] obj -> [>`treeviewcolumn] obj -> [>`treeviewcolumn] obj -> int
+    = "ml_gtk_tree_view_move_column_after"
+  external scroll_to_point : [>`treeview] obj -> int -> int -> unit
+    = "ml_gtk_tree_view_scroll_to_point"
+  external scroll_to_cell :
+    [>`treeview] obj -> tree_path -> [>`treeviewcolumn] obj ->
+    ?align:(float * float) -> unit
+    = "ml_gtk_tree_view_scroll_to_cell"
+  let scroll_to_cell v ?align = scroll_to_cell v ?align
+  external row_activated :
+    [>`treeview] obj -> tree_path -> [>`treeviewcolumn] obj -> unit
+    = "ml_gtk_tree_view_row_activated"
+  external expand_all : [>`treeview] obj -> unit
+    = "ml_gtk_tree_view_expand_all"
+  external collapse_all : [>`treeview] obj -> unit
+    = "ml_gtk_tree_view_collapse_all"
+  external expand_row :
+    [>`treeview] obj -> tree_path -> all:bool -> unit
+    = "ml_gtk_tree_view_expand_row"
+  external collapse_row : [>`treeview] obj -> tree_path -> unit
+    = "ml_gtk_tree_view_collapse_row"
+  external row_expanded : [>`treeview] obj -> tree_path -> bool
+    = "ml_gtk_tree_view_row_expanded"
+  external set_cursor :
+    [>`treeview] obj ->
+    tree_path -> [>`treeviewcolumn] obj -> edit:bool -> unit
+    = "ml_gtk_tree_view_set_cursor"
+  external set_cursor_on_cell :
+    [>`treeview] obj -> tree_path ->
+    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> edit:bool -> unit
+    = "ml_gtk_tree_view_set_cursor_on_cell"
+  external get_cursor :
+    [>`treeview] obj -> tree_path option * tree_view_column option
+    = "ml_gtk_tree_view_get_cursor"
   module Properties = struct
     open Gobject
     open Gobject.Data
