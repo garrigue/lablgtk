@@ -69,6 +69,7 @@ let start () =
   reset ();
   Thread.create main ()
 
+(* The code below would do nothing...
 let _ =
   let mutex = Mutex.create () in
   let depth = ref 0 in
@@ -76,3 +77,4 @@ let _ =
     (fun () -> if !depth = 0 then Mutex.lock mutex; incr depth);
   GtkSignal.exit_callback :=
     (fun () -> decr depth; if !depth = 0 then Mutex.unlock mutex)
+*)
