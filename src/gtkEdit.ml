@@ -41,11 +41,30 @@ module Editable = struct
   external has_selection : [>`editable] obj -> bool
       = "ml_gtk_editable_has_selection"
   module Signals = struct
+    open GtkArgv
     open GtkSignal
     let activate : ([>`editable],_) t =
       { name = "activate"; marshaller = marshal_unit }
     let changed : ([>`editable],_) t =
       { name = "changed"; marshaller = marshal_unit }
+    let marshal_insert f argv =
+      (* These two accesses are highly specification-dependent *)
+      let s =
+        match get_pointer argv pos:0 with
+          Some ptr -> substring_of_pointer ptr pos:0 len:(get_int argv pos:1)
+        | None -> assert false
+      and pos =
+        match get_pointer argv pos:2 with
+          Some ptr -> int_of_pointer ptr
+        | None -> assert false
+      in
+      f s :pos
+    let insert_text : ([>`editable],_) t =
+      { name = "insert_text"; marshaller = marshal_insert }
+    let marshal_delete f argv =
+      f start:(get_int argv pos:0) end:(get_int argv pos:1)
+    let delete_text : ([>`editable],_) t =
+      { name = "delete_text"; marshaller = marshal_delete }
   end
 end
 

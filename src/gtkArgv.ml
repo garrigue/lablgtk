@@ -56,3 +56,8 @@ let set_result_float arg = set_float (result arg)
 let set_result_string arg = set_string (result arg)
 let set_result_pointer arg = set_pointer (result arg)
 let set_result_object arg = set_object (result arg)
+
+external substring_of_pointer : pointer -> pos:int -> len:int -> string
+    = "ml_substring_of_pointer"
+external int_of_pointer : pointer -> int
+    = "ml_int_of_pointer"

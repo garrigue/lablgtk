@@ -10,6 +10,10 @@ class editable_signals : 'a obj ->
     val obj : 'a obj
     method activate : callback:(unit -> unit) -> GtkSignal.id
     method changed : callback:(unit -> unit) -> GtkSignal.id
+    method delete_text :
+      callback:(start:int -> end:int -> unit) -> GtkSignal.id
+    method insert_text :
+      callback:(string -> pos:int -> unit) -> GtkSignal.id
   end
 
 class editable : 'a obj ->
