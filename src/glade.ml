@@ -10,13 +10,13 @@ external init : unit -> unit = "ml_glade_init"
 (* external gnome_init : unit -> unit = "ml_glade_gnome_init" *)
 external create : file:string -> root:string -> glade_xml obj
     = "ml_glade_xml_new"
-external signal_autoconnect :
+external _signal_autoconnect :
     [> `glade_xml] obj ->
     (string * unit obj * string * unit obj option * bool -> unit) -> unit
     = "ml_glade_xml_signal_autoconnect_full"
 
 let signal_autoconnect self ~f =
-  signal_autoconnect self
+  _signal_autoconnect self
     (fun (handler, obj, signal, target, after) ->
       f ~handler ~signal ~after ?target obj)
 
@@ -61,39 +61,43 @@ let _ = List.iter ~f:(fun (name,h) -> add_handler ~name h)
 
 open Printf
 
-let get_handler ?target handler =
-  match Hashtbl.find known_handlers handler with
+let check_handler ?target ?(name="<unknown>") handler =
+  match handler with
     `Simple f ->
       if target <> None then
-        eprintf "Glade.ml: %s does not take an object argument.\n" handler;
+        eprintf "Glade.ml: %s does not take an object argument.\n" name;
       fun _ -> f ()
   | `Object (cls, f) ->
       begin match target with
         None ->
-          eprintf "Glade.ml: %s requires an object argument.\n" handler;
+          eprintf "Glade.ml: %s requires an object argument.\n" name;
           raise Not_found
       | Some obj ->
           if GtkBase.Object.is_a obj cls then
             fun _ -> f obj
           else begin
-            eprintf "Glade.ml: %s expects a %s argument.\n" handler cls;
+            eprintf "Glade.ml: %s expects a %s argument.\n" name cls;
             raise Not_found
           end
       end
   | `Custom f ->
       if target <> None then
-        eprintf "Glade.ml: %s does not take an object argument.\n" handler;
+        eprintf "Glade.ml: %s does not take an object argument.\n" name;
       fun argv -> f argv (GtkArgv.get_args argv)
 
-let bind_handlers xml =
+let bind_handlers ?(extra=[]) xml =
   signal_autoconnect xml ~f:
-    begin fun ~handler ~signal ~after ?target obj ->
+    begin fun ~handler:name ~signal ~after ?target obj ->
       try
-        let callback = get_handler ?target handler in
+        let handler =
+          try List.assoc name extra
+          with Not_found -> Hashtbl.find known_handlers name
+        in
+        let callback = check_handler ?target ~name handler in
         ignore (GtkSignal.connect_by_name obj ~name:signal ~after ~callback)
       with Not_found ->
-        if String.length handler < 3
-        || String.sub handler ~pos:0 ~len:3 <> "on_"
-        then eprintf "Glade.ml: no handler for %s.\n" handler
+        if String.length name < 3
+        || String.sub name ~pos:0 ~len:3 <> "on_"
+        then eprintf "Glade.ml: no handler for %s.\n" name
     end;
   flush stderr

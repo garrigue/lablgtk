@@ -53,9 +53,11 @@ Upgrading from lablgtk-1.00:
     #grab#connect. See lower for a description of the new widget
     structure.
   * some defaults changed. In particular GPack.box#pack have now all
-    its parameter defaulting to false rather than true. See lower for
+    its parameters defaulting to false rather than true. See lower for
     the new default policy. Beware that this does not cause type
     errors, just changes in the aspect.
+  * coerce functions disappeared from Gtk*.ml. You can now coerce with
+    (w :> Gtk.mywidget Gtk.obj), thanks to variance annotations.
 
 How to run the examples:
   In the examples directory just type:
@@ -121,7 +123,7 @@ Structure of the G[A-Z]* modules:
   use width subtyping (i.e. #super is not unifiable with all the
   subclasses of super). Still, it works for some classes, like
   #widget and #container, and allows subtyping without coercion towards
-  these classes (cf. #container in pousse.ml for instance).
+  these classes (cf. #container in examples/pousse.ml for instance).
 
   Practically, each widget class is composed of:
   * a coerce method, returning the object coerced to the type widget.
@@ -178,6 +180,17 @@ Note about unit as method argument:
   methods having noticeable side-effects should take arguments, and
   unit if they have no argument.
 
+ML-side signals:
+
+  The GUtil module provides two kinds of utilities: a memo table, to be
+  able to dynamically cast widgets to their original class, and more
+  interesting ML-side signals.
+  With ML-side signals, you can combine LablGTK widgets into your own
+  components, and add signals to them. Later you can connect to these
+  signals, just like GTK signals. This proved very efficient to
+  develop complex applications, abstracting the plumbing between
+  various components. Explanations are provided in GUtil.mli.
+
 Memory management:
 
   Important efforts have been dedicated to cooperate with Gtk's
@@ -194,11 +207,19 @@ Memory management:
   its last container is destroyed. For this reason you need only
   destroy toplevel widgets.
 
-GL extension
+Glade support (preliminary):
+
+  New in this version, there is some support for Glade generated XML
+  UI description files, using libglade. You can read in a file, access
+  to widgets, and define callbacks. A tool for extracting widget
+  definitions from a glade description is in project, but nothing done
+  yet. See examples/glade_demo.ml for details.
+
+GL extension:
 
   You can use lablgtk in combination with LablGL
 
-  * get and install lablGL 0.94 from
+  * get and install lablGL 0.95 from
     http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
   * get and install gtkglarea-1.2.x.tar.gz from
     http://www.student.oulu.fi/~jlof/gtkglarea/index.html
