@@ -360,8 +360,6 @@ module Widget = struct
       = "ml_gtk_widget_draw_focus"
   external draw_default : [> widget] obj -> unit
       = "ml_gtk_widget_draw_default"
-  external draw_children : [> widget] obj -> unit
-      = "ml_gtk_widget_draw_children"
   external event : [> widget] obj -> 'a Gdk.event -> unit
       = "ml_gtk_widget_event"
   external activate : [> widget] obj -> unit
@@ -484,6 +482,8 @@ module Container = struct
     if Object.is_a w "GtkContainer" then Obj.magic w
     else invalid_arg "Gtk.Container.cast"
   external coerce : [> container] obj -> t obj = "%identity"
+  external draw_children : [> container] obj -> unit
+      = "ml_gtk_widget_draw_children"
   external border_width : [> container] obj -> int -> unit
       = "ml_gtk_container_border_width"
   external add : [> container] obj -> [> widget] obj -> unit

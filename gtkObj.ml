@@ -43,6 +43,7 @@ class widget_misc obj = object
   method unmap () = Widget.unmap obj
   method realize () = Widget.realize obj
   method unrealize () = Widget.realize obj
+  method draw = Widget.draw obj
   method event : 'a. 'a Gdk.event -> unit = Widget.event obj
   method activate () = Widget.activate obj
   method reparent : 'a. (#framed as 'a) -> unit =
