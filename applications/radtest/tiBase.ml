@@ -124,7 +124,8 @@ class window_and_tree ~name =
 
     inherit window_and_tree0
 
-(* the params of the window class; because the class clist needs a param *)
+(* the params of the window class; because the class clist needs a param
+   I suppose there will be no more than 26 clists in a single window    *)
     val param_list = Array.create 26 false
 
     method add_param =

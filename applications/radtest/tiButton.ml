@@ -100,11 +100,10 @@ end
 
 let new_titoggle_button ~name ?(listprop = []) =
   let b = GButton.toggle_button ~label:name () in
-(*
-  b#event#connect#enter_notify
-    ~callback:(fun _ -> b#misc#stop_emit ~name:"enter_notify_event"; true);
-  b#event#connect#leave_notify
-    ~callback:(fun _ -> b#misc#stop_emit ~name:"leave_notify_event"; true);
+(*  b#connect#event#enter_notify
+    ~callback:(fun _ -> GtkSignal.stop_emit ());
+  b#connect#event#leave_notify
+    ~callback:(fun _ -> GtkSignal.stop_emit ());
 *)
   new titoggle_button ~name ~widget:b
 
