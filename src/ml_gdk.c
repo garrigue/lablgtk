@@ -56,3 +56,19 @@ Make_Extractor (GdkColor,(GdkColor*),red,Val_int)
 Make_Extractor (GdkColor,(GdkColor*),green,Val_int)
 Make_Extractor (GdkColor,(GdkColor*),blue,Val_int)
 Make_Extractor (GdkColor,(GdkColor*),pixel,Val_int)
+
+value ml_GdkRectangle (value x, value y, value width, value height)
+{
+    GdkRectangle *rectangle =
+        (GdkRectangle*) alloc (Wosizeof(GdkRectangle), Abstract_tag);
+    rectangle->x = Int_val(x);
+    rectangle->y = Int_val(y);
+    rectangle->width = Int_val(width);
+    rectangle->height = Int_val(height);
+    return (value)rectangle;
+}
+
+Make_Extractor (GdkRectangle,(GdkRectangle*),x,Val_int)
+Make_Extractor (GdkRectangle,(GdkRectangle*),y,Val_int)
+Make_Extractor (GdkRectangle,(GdkRectangle*),width,Val_int)
+Make_Extractor (GdkRectangle,(GdkRectangle*),height,Val_int)
