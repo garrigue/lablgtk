@@ -199,7 +199,7 @@ class ['a] factory
       item
     method add_separator () = menu_item ~packing:menu_shell#append ()
     method add_submenu ?key label =
-      let item = menu_item ~label () in
+      let item = menu_item ~use_mnemonic:true ~label () in
       self#bind item ?key;
       menu ~packing:item#set_submenu ();
     method add_tearoff () = tearoff_item ~packing:menu_shell#append ()
