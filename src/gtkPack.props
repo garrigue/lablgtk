@@ -62,6 +62,10 @@ class Layout set : Container {
   method thaw
 }
 
+conversions {
+  Pointer
+}
+
 class Notebook set wrap : Container {
   "enable-popup"         gboolean             : Read / Write
   "homogeneous"(homogeneous_tabs) gboolean    : Read / Write
@@ -88,7 +92,7 @@ class Notebook set wrap : Container {
   method get_menu_label : "[>`widget] obj -> widget obj"
   method set_menu_label : "[>`widget] obj -> [>`widget] obj -> unit"
   method reorder_child : "[>`widget] obj -> int -> unit"
-  signal switch_page : GObject gint
+  signal switch_page : Pointer gint
   (* omit others *)
 }
 
