@@ -308,6 +308,7 @@ let xpm_window () =
 let main () =
   xpm_window ();
   main_window#show ();
+  main_window#connect#destroy callback:GMain.Main.quit;
 
   emit_item#connect#activate callback:(fun () -> !main_project#emit ());
   exit_item#connect#activate callback:GMain.Main.quit;

@@ -63,7 +63,9 @@ let policy_type_values = ["ALWAYS", `ALWAYS; "AUTOMATIC", `AUTOMATIC ]
 let change_value_in_prop :value_string = function
   | Int rval  -> rval#set value:(int_of_string value_string) :value_string
   | Float rval ->  rval#set value:(float_of_string value_string) :value_string
-  | String rval -> rval#set value:value_string :value_string
+  | String rval ->
+      rval#set value:value_string
+	value_string:("\"" ^ String.escaped value_string ^ "\"")
   | Bool rval ->  rval#set :value_string
 	value:(List.assoc value_string in:bool_values)
   | Shadow rval -> rval#set :value_string
@@ -132,7 +134,7 @@ class prop_string :callback ?:packing :value = object(self)
   initializer
     self#connect#activate callback:
       (fun _ -> let text = self#text in
-        callback value:text value_string:text);
+        callback value:text value_string:("\"" ^ String.escaped text ^ "\""));
     ()
 end
 

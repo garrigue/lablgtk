@@ -83,9 +83,9 @@ lablgtk: liblablgtk.a lablgtk.cma
 	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" \
 		$(GLLINK) lablgtk.cma
 
-lablgtkrun: liblablgtk.a
-	$(LINKER) -o $@ -make-runtime \
-		-cclib "-L. -llablgtk $(LDFLAGS)" $(GLLINK)
+lablgtkrun: liblablgtk.a lablgtk.cma
+	$(LINKER) -o $@ -make-runtime $(GLLINK) lablgtk.cma \
+		-cclib "-L. -llablgtk $(LDFLAGS)"
 
 lablgtkopt: liblablgtk.a lablgtk.cmxa
 

@@ -70,10 +70,7 @@ class tree_item_wrapper obj =
   [tree_wrapper'] pre_tree_item_wrapper wrapper:(new tree_wrapper')
     (obj : tree_item obj)
 
-class tree_wrapper obj = object
-  inherit [tree_item_wrapper] pre_tree_wrapper (Tree.coerce obj)
-  method private wrap w = new tree_item_wrapper (TreeItem.cast w)
-end
+class tree_wrapper obj = tree_wrapper' (Tree.coerce obj)
 
 class tree_signals obj =
   [tree_item_wrapper] pre_tree_signals ?obj

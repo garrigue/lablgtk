@@ -402,7 +402,7 @@ object(self)
     Format.fprintf c#formatter "@ @[<hv 2>let %s =@ @[<hov 2>new %s"
       name self#class_name;
     List.iter self#get_mandatory_props fun:(fun name ->
-      Format.fprintf c#formatter "@ %s:\"%s\"" name
+      Format.fprintf c#formatter "@ %s:%s" name
 	(get_value_string (List.assoc name in:proplist)));
     let packing = self#get_packing packing in
     if packing <> "" then Format.fprintf c#formatter "@ %s" packing;
@@ -412,12 +412,15 @@ object(self)
 (* this one emits the properties which do not have their
    default value; used by emit_init_code *)
   method private emit_prop_code c =
-    List.iter (self#emit_clean_proplist proplist)
-    fun:(fun (name, prop) ->
-      match prop_modified prop with
-      |	None -> ()
-      |	Some (codename, vs) ->
-	  Format.fprintf c#formatter "@ %s:%s" codename vs);
+    let mandatory = self#get_mandatory_props in
+    List.iter (self#emit_clean_proplist proplist) fun:
+      begin  fun (name, prop) ->
+	if List.mem name in:mandatory then () else
+	match prop_modified prop with
+	| None -> ()
+	| Some (codename, vs) ->
+	    Format.fprintf c#formatter "@ %s:%s" codename vs
+      end;
     Format.fprintf c#formatter " in"
 
 (* this one emits the method returning this widget *)
@@ -437,7 +440,7 @@ object(self)
       (fun (name, prop) ->
 	match prop_modified prop with
 	| None -> ()
-	| Some (_, s) -> Format.fprintf c#formatter "@\n\"%s\"=%s" name s);
+	| Some (_, s) -> Format.fprintf c#formatter "@\n%s=%s" name s);
     self#forall callback:(fun w -> w#save c);
     self#save_end c
 
@@ -742,7 +745,7 @@ object(self)
 
   method private save_start : Oformat.c -> unit = fun c ->
     Format.fprintf c#formatter "@[<0>@\n@[<2><window name=%s>" name;
-    Format.fprintf c#formatter "@\n\"title\"=%s"
+    Format.fprintf c#formatter "@\ntitle=\"%s\""
       (get_string_prop "title" in:proplist)
 
   method private save_end : Oformat.c -> unit = fun c ->
@@ -769,7 +772,7 @@ object(self)
     window#set_title name;
     proplist <-	proplist @
       ["title", String
-	 (new rval init:name inits:name codename:"title"
+	 (new rval init:name inits:("\""^name^"\"") codename:"title"
 	    undo_fun:(fun vs -> add_undo (Property (name, "title", vs)))
 	    setfun:window#set_title);
        "allow_shrink", Bool
@@ -987,7 +990,7 @@ class tibutton widget:(button : #button) :name :parent_tree :pos :parent_window 
 
   method private save_start : Oformat.c -> unit = fun c ->
     Format.fprintf c#formatter "@\n@[<2><%s name=%s>" classe name;
-    Format.fprintf c#formatter "@\n\"label\"=%s"
+    Format.fprintf c#formatter "@\nlabel=\"%s\""
       (get_string_prop "label" in:proplist)
 
 (*  method emit_init_code c :packing =
@@ -1002,7 +1005,8 @@ class tibutton widget:(button : #button) :name :parent_tree :pos :parent_window 
 	Int (new rval init:0 inits:"0" codename:"border_width"
            undo_fun:(fun vs -> add_undo (Property (name, "border width", vs)))
 	       setfun:(fun v -> button#set_border_width v));
-      "label",   String (new rval init:name inits:name codename:"label"
+      "label",   String (new rval init:name inits:("\"" ^ name ^ "\"")
+			   codename:"label"
            undo_fun:(fun vs -> add_undo (Property (name, "label", vs)))
              setfun:(fun v -> button#remove (List.hd button#children);
 	       button#add (new label text:v xalign:0.5 yalign:0.5)))
@@ -1035,7 +1039,7 @@ class ticheck_button widget:(button : check_button) :name :parent_tree :pos :par
 
   method private save_start : Oformat.c -> unit = fun c ->
     Format.fprintf c#formatter "@\n@[<2><%s name=%s>" classe name;
-    Format.fprintf c#formatter "@\n\"label\"=%s"
+    Format.fprintf c#formatter "@\nlabel=\"%s\""
       (get_string_prop "label" in:proplist)
 
 (*  method emit_init_code c :packing =
@@ -1051,7 +1055,8 @@ class ticheck_button widget:(button : check_button) :name :parent_tree :pos :par
 	Int (new rval init:0 inits:"0" codename:"border_width"
            undo_fun:(fun vs -> add_undo (Property (name, "border width", vs)))
 	       setfun:(fun v -> button#set_border_width v));
-      "label",   String (new rval init:name inits:name codename:"label"
+      "label",   String (new rval init:name inits:("\"" ^ name ^ "\"")
+			   codename:"label"
            undo_fun:(fun vs -> add_undo (Property (name, "label", vs)))
              setfun:(fun v -> button#remove (List.hd button#children);
 	       button#add (new label text:v xalign:0.5 yalign:0.5)))
@@ -1079,7 +1084,7 @@ class titoggle_button widget:(button : toggle_button) :name :parent_tree :pos :p
 
   method private save_start : Oformat.c -> unit = fun c ->
     Format.fprintf c#formatter "@\n@[<2><%s name=%s>" classe name;
-    Format.fprintf c#formatter "@\n\"label\"=%s"
+    Format.fprintf c#formatter "@\nlabel=\"%s\""
       (get_string_prop "label" in:proplist)
 
 (*  method emit_init_code c :packing =
@@ -1095,7 +1100,8 @@ class titoggle_button widget:(button : toggle_button) :name :parent_tree :pos :p
 	Int (new rval init:0 inits:"0" codename:"border_width"
            undo_fun:(fun vs -> add_undo (Property (name, "border width", vs)))
 	       setfun:(fun v -> button#set_border_width v));
-      "label",   String (new rval init:name inits:name codename:"label"
+      "label",   String (new rval init:name inits:("\"" ^ name ^ "\"")
+			   codename:"label"
            undo_fun:(fun vs -> add_undo (Property (name, "label", vs)))
              setfun:(fun v -> button#remove (List.hd button#children);
 	       button#add (new label text:v xalign:0.5 yalign:0.5)))
@@ -1123,14 +1129,14 @@ object(self)
   method private get_mandatory_props = [ "text" ]
 
   method private save_clean_proplist =
-    List.remove_assoc "label" in:widget#save_clean_proplist
+    List.remove_assoc "text" in:widget#save_clean_proplist
 
   method private emit_clean_proplist plist =
-    List.remove_assoc "label" in:(widget#emit_clean_proplist plist)
+    List.remove_assoc "text" in:(widget#emit_clean_proplist plist)
 
   method private save_start : Oformat.c -> unit = fun c ->
     Format.fprintf c#formatter "@\n@[<2><%s name=%s>" classe name;
-    Format.fprintf c#formatter "@\n\"text\"=%s"
+    Format.fprintf c#formatter "@\ntext=\"%s\""
       (get_string_prop "text" in:proplist)
 
 (*  method emit_init_code (c : Oformat.c) :packing =
@@ -1143,7 +1149,7 @@ object(self)
   initializer
     proplist <-  proplist @
       ["text", String
-	 (new rval init:name inits:name codename:"text"
+	 (new rval init:name inits:("\"" ^ name ^ "\"") codename:"text"
             undo_fun:(fun vs -> add_undo (Property (name, "text", vs)))
             setfun:labelw#set_text);
        "line_wrap", Bool
@@ -1166,7 +1172,7 @@ class tiframe widget:(frame : frame) :name :parent_tree :pos :parent_window =
     frame#set_label name;
     proplist <- proplist @
       ["label", String
-	 (new rval init:name inits:name codename:"label"
+	 (new rval init:name inits:("\"" ^ name ^ "\"") codename:"label"
             undo_fun:(fun vs -> add_undo (Property (name, "label", vs)))
 	    setfun:frame#set_label);
        "label xalign", Float
