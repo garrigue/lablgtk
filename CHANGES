@@ -1,5 +1,9 @@
 $Id$
 
+2003.05.01 [Maxence]
+ * srcdoc target added to generate HTML doc in src/doc/index.html
+   (I did not test on Windows)
+
 2003.04.22 [Jacques]
  * GtkThread.thread_main automatically switches to gui thread.
 

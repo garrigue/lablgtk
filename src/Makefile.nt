@@ -144,6 +144,10 @@ varcc: varcc.cmo
 clean:
 	rm -f *.cm* *.obj *.lib *_tags.[ch] $(TARGETS) varcc.ml
 
+srcdoc: $(ALLOBJS)
+	mkdir -p doc
+	$(OCAMLDOC) -html -t "Lablgtk2" -d doc -I . `ls $(ALLOBJS:.cmo=.mli) 2> /dev/null`
+
 $(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h ml_pango.h ml_gobject.h ml_glib.h wrappers.h
 ml_glib.obj: glib_tags.h ml_glib.h wrappers.h
 ml_gobject.obj: gobject_tags.h wrappers.h
