@@ -42,8 +42,8 @@ let enums = [
   ];
   "Gdk", "GdkEnums",
   [ "ExtensionMode"; "WindowTypeHint";
-    (* for canvas
-    "CapStyle"; "JoinStyle"; "LineStyle" *)];
+    (* for canvas *)
+    "CapStyle"; "JoinStyle"; "LineStyle"];
   "Pango", "PangoEnums",
   [ "Stretch"; "Style"; "Underline"; "Variant"; ]
 ]
@@ -53,14 +53,14 @@ let flags = [
 ]
 
 let pointers = [
-  "GdkColor", "Gdk.color";
-  "GdkFont", "Gdk.font";
-  "PangoFontDescription", "Pango.font_description";
+  "Gdk", ["Color"; "Font"; ];
+  "Pango", ["FontDescription";];
+  "GnomeCanvas", ["PathDef"; "Points";];
 ]
 
 let classes = [
   "Gdk", [ "Image"; "Drawable"; "Pixmap"; "Bitmap"; "Screen"; ];
-  "Gtk", [ "Style"; "TreeStore"; ]
+  "Gtk", [ "Style"; "TreeStore"; "Widget"; ]
 ]
 
 let specials = [
@@ -90,19 +90,21 @@ let add_unsafe = add_pointer "unsafe_pointer"
 let () =
   List.iter ~f:(fun t -> Hashtbl.add conversions ("g"^t) t)
     [ "boolean"; "char"; "uchar"; "int"; "uint"; "long"; "ulong";
-      "int64"; "uint64"; "float"; "double" ];
+      "int32"; "uint32"; "int64"; "uint64"; "float"; "double" ];
   List.iter ~f:(fun (gtype,conv) -> Hashtbl.add conversions gtype conv)
     [ "gchararray", "string";
       "gchararray_opt", "string_option";
       "GtkStock", "GtkStock.conv";
       "ArtWindRule", "conv_art_wind_rule";
+      "ArtVPathDash", "conv_art_vpath_dash";
     ];
   List.iter (enums @ flags) ~f:(fun (pre, _, l) ->
     List.iter l ~f:
       begin fun name ->
         Hashtbl.add conversions (pre ^ name) ("Conv." ^camlize name)
       end);
-  List.iter pointers ~f:(fun (gtk,mltype) -> add_unsafe gtk mltype);
+  List.iter pointers ~f:(fun (pre, l) ->
+    List.iter l ~f:(fun name -> add_unsafe (pre^name) (pre^"."^camlize name)));
   List.iter all_classes ~f:(fun (gtk,name) -> add_object gtk name)
 
 open Genlex
@@ -194,7 +196,7 @@ let process_file f =
   let decls = List.rev !decls in
   List.iter decls ~f:
     (fun (name, gtk_name, _, _) ->
-      add_object gtk_name (baseM ^ "." ^ camlize name ^ " obj"));
+      add_object gtk_name (!prefix ^ "." ^ camlize name ^ " obj"));
   (* Output modules *)
   let oc = open_out (base ^ "Props.ml") in
   let ppf = Format.formatter_of_out_channel oc in
@@ -226,8 +228,8 @@ let process_file f =
            end)
       end in
   (* Redefining saves space in bytecode! *)
-  out "@ let may_cons = Property.may_cons";
-  out "@ let may_cons_opt = Property.may_cons_opt@ ";
+  out "let may_cons = Property.may_cons\n";
+  out "let may_cons_opt = Property.may_cons_opt\n@.";
   let may_cons_props props =
     if props <> [] then begin
       out "@ @[<hv2>let pl = ";
@@ -247,7 +249,7 @@ let process_file f =
     begin fun (name, gtk_name, attrs, props) ->
       out "@[<hv2>module %s = struct" (camlizeM name);
       out "@ @[<hv2>let cast w : %s.%s obj =@ try_cast w \"%s%s\"@]"
-        baseM (camlize name) baseM name;
+        !prefix (camlize name) !prefix name;
       if props <> [] then begin
         out "@ @[<hv2>module P = struct";
         let tag = String.lowercase name in
@@ -267,16 +269,16 @@ let process_file f =
         List.iter cprops ~f:(fun (_,name,_,_) -> out " ?%s" name);
         if List.mem "hv" attrs then begin
           out " (dir : Gtk.Tags.orientation) pl";
-          out " : %s.%s obj =" baseM (camlize name);
+          out " : %s.%s obj =" !prefix (camlize name);
           may_cons_props cprops;
           out "@ @[<hov2>Object.make";
           out "@ (if dir = `HORIZONTAL then \"%sH%s\" else \"%sV%s\")@  pl"
-            baseM name baseM name;
+            !prefix name !prefix name;
           out "@]@]";
         end else begin
-          out " pl : %s.%s obj =" baseM (camlize name);
+          out " pl : %s.%s obj =" !prefix (camlize name);
           may_cons_props cprops;
-          out "@ Object.make \"%s%s\" pl@]" baseM name;
+          out "@ Object.make \"%s%s\" pl@]" !prefix name;
         end
       end;
       let set_props =

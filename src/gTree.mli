@@ -80,7 +80,7 @@ class column_list :
   object
     method add : 'a data_conv -> 'a column
     method id : int
-    method kinds : data_kind list
+    method kinds : fundamental_type list
     method lock : unit -> unit
   end
 
@@ -334,6 +334,81 @@ val view :
   ?border_width:int -> ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> view
 
-val cell_renderer_pixbuf : unit -> cell_renderer_pixbuf obj
-val cell_renderer_text : unit -> cell_renderer_text obj
-val cell_renderer_toggle : unit -> cell_renderer_toggle obj
+type cell_properties =
+  [ `CELL_BACKGROUND of string
+  | `CELL_BACKGROUND_GDK of Gdk.color
+  | `CELL_BACKGROUND_SET of bool
+  | `HEIGHT of int
+  | `IS_EXPANDED of bool
+  | `IS_EXPANDER of bool
+  | `MODE of Tags.cell_renderer_mode
+  | `VISIBLE of bool
+  | `WIDTH of int
+  | `XALIGN of float
+  | `XPAD of int
+  | `YALIGN of float
+  | `YPAD of int ]
+type cell_properties_pixbuf =
+  [ cell_properties
+  | `PIXBUF of GdkPixbuf.pixbuf
+  | `PIXBUF_EXPANDER_CLOSED of GdkPixbuf.pixbuf
+  | `PIXBUF_EXPANDER_OPEN of GdkPixbuf.pixbuf
+  | `STOCK_DETAIL of string
+  | `STOCK_ID of string
+  | `STOCK_SIZE of Tags.icon_size ] 
+type cell_properties_text =
+  [ cell_properties
+  | `BACKGROUND of string
+  | `BACKGROUND_GDK of Gdk.color
+  | `BACKGROUND_SET of bool
+  | `EDITABLE of bool
+  | `EDITABLE_SET of bool
+  | `FAMILY of string
+  | `FAMILY_SET of bool
+  | `FONT of string
+  | `FONT_DESC of Pango.font_description
+  | `FOREGROUND of string
+  | `FOREGROUND_GDK of Gdk.color
+  | `FOREGROUND_SET of bool
+  | `MARKUP of string
+  | `RISE of int
+  | `RISE_SET of bool
+  | `SCALE of float
+  | `SCALE_SET of bool
+  | `SIZE of int
+  | `SIZE_POINTS of float
+  | `SIZE_SET of bool
+  | `STRETCH of Pango.Tags.stretch
+  | `STRETCH_SET of bool
+  | `STRIKETHROUGH of bool
+  | `STRIKETHROUGH_SET of bool
+  | `STYLE of Pango.Tags.style
+  | `STYLE_SET of bool
+  | `TEXT of string
+  | `UNDERLINE of Pango.Tags.underline
+  | `UNDERLINE_SET of bool
+  | `VARIANT of Pango.Tags.variant
+  | `VARIANT_SET of bool
+  | `WEIGHT of int
+  | `WEIGHT_SET of bool ]
+type cell_properties_toggle =
+  [ cell_properties
+  | `ACTIVATABLE of bool
+  | `ACTIVE of bool
+  | `INCONSISTENT of bool
+  | `RADIO of bool ]
+
+val cell_renderer_pixbuf :
+    cell_properties_pixbuf list -> cell_renderer_pixbuf obj
+val cell_renderer_text :
+    cell_properties_text list -> cell_renderer_text obj
+val cell_renderer_toggle :
+    cell_properties_toggle list -> cell_renderer_toggle obj
+
+val set_cell_properties : [> cell_renderer] obj -> cell_properties list -> unit
+val set_pixbuf_properties :
+    cell_renderer_pixbuf obj -> cell_properties_pixbuf list -> unit
+val set_text_properties :
+    cell_renderer_text obj -> cell_properties_text list -> unit
+val set_toggle_properties :
+    cell_renderer_toggle obj -> cell_properties_toggle list -> unit

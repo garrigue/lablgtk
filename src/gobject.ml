@@ -22,7 +22,7 @@ type data_get = [ basic | `NONE | `OBJECT of unit obj option ]
 type 'a data_set =
  [ basic | `OBJECT of 'a obj option | `INT32 of int32 | `LONG of nativeint ]
 
-type data_kind =
+type base_data =
   [ `BOOLEAN
   | `CHAR
   | `UCHAR
@@ -41,13 +41,16 @@ type data_kind =
   | `BOXED
   | `OBJECT ]
 
+type data_kind = [ `INT32 | `UINT32 | base_data ]
+type data_conv_get = [ `INT32 of int32 | data_get ]
+
 type 'a data_conv =
     { kind: data_kind;
-      proj: (data_get -> 'a);
+      proj: (data_conv_get -> 'a);
       inj: ('a -> unit data_set) }
 
 type fundamental_type =
-  [ `INVALID | `NONE | `INTERFACE | `PARAM | data_kind ]
+  [ `INVALID | `NONE | `INTERFACE | `PARAM | base_data ]
 
 module Type = struct
   external init : unit -> unit = "ml_g_type_init"
@@ -89,6 +92,7 @@ module Value = struct
   external set : g_value -> 'a data_set -> unit = "ml_g_value_set_variant"
   external get_pointer : g_value -> Gpointer.boxed = "ml_g_value_get_pointer"
   external get_nativeint : g_value -> nativeint = "ml_g_value_get_nativeint"
+  external get_int32 : g_value -> int32 = "ml_g_value_get_int32"
 end
 
 module Closure = struct
@@ -114,7 +118,7 @@ module Closure = struct
 
   let get_pointer arg ~pos = Value.get_pointer (nth arg ~pos)
   let get_nativeint arg ~pos = Value.get_nativeint (nth arg ~pos)
-  let get_int32 arg ~pos = Nativeint.to_int32 (get_nativeint arg ~pos)
+  let get_int32 arg ~pos = Value.get_int32 (nth arg ~pos)
 end
 
 let objtype_from_name ~caller name =
@@ -162,6 +166,11 @@ module Data = struct
   let uint = {int with kind = `UINT}
   let long = {int with kind = `LONG}
   let ulong = {int with kind = `ULONG}
+  let int32 =
+    { kind = `INT32;
+      proj = (function `INT32 c -> c | _ -> failwith "Gobject.get_int32");
+      inj = (fun c -> `INT32 c) }
+  let uint32 = {int32 with kind = `UINT32}
   let flags tbl =
     { kind = `FLAGS;
       proj = (function `INT c -> Gpointer.decode_flags tbl c
@@ -220,12 +229,17 @@ module Data = struct
              | _ -> failwith "Gobject.get_object");
       inj = (fun c -> `OBJECT (Some (unsafe_cast c))) }
 
-  let of_value kind v =
-    kind.proj (Value.get v)
-  let to_value kind x =
+  let of_value conv v =
+    conv.proj (Value.get v :> data_conv_get)
+  let to_fundamental = function
+    | `INT32 -> `INT
+    | `UINT32 -> `UINT
+    | #base_data as x -> x
+  let get_fundamental conv = to_fundamental conv.kind
+  let to_value conv x =
     let v =
-      Value.create (Type.of_fundamental (kind.kind :> fundamental_type)) in
-    Value.set v (kind.inj x);
+      Value.create (Type.of_fundamental (get_fundamental conv)) in
+    Value.set v (conv.inj x);
   v
 end
 
@@ -270,7 +284,19 @@ module Property = struct
   let set (obj : 'a obj) (prop : ('a,_) property) x =
     set_dyn obj prop.name (prop.conv.inj x)
   let get (obj : 'a obj) (prop : ('a,_) property) =
-    prop.conv.proj (get_dyn obj prop.name)
+    let v =
+      match prop.conv.kind with
+      | `INT32 | `UINT32 ->
+          (* special case to get all 32 bits *)
+          let t = get_property_type obj prop.name in
+          let v = Value.create t in
+          get_property obj prop.name v;
+          `INT32 (Value.get_int32 v)
+      | _ ->
+          (get_dyn obj prop.name :> data_conv_get)
+    in
+    prop.conv.proj v
+
   let get_some obj prop =
     match get obj prop with Some x -> x
     | None -> failwith ("Gobject.Property.get_some: " ^ prop.name)
@@ -286,7 +312,7 @@ module Property = struct
             ("exception while looking for " ^ tp obj ^ "->" ^ prop.name);
           raise exn
     in
-    try ignore (prop.conv.proj data) with
+    try ignore (get obj prop) with
       Failure s ->
         failwith (s ^ " cannot handle " ^ tp obj ^ "->" ^ prop.name)
     | exn ->

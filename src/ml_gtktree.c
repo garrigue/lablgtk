@@ -30,6 +30,9 @@ CAMLprim value ml_gtktree_init(value unit)
         gtk_tree_view_get_type() +
         gtk_tree_view_column_get_type() +
         gtk_tree_store_get_type() +
+        gtk_cell_renderer_pixbuf_get_type() +
+        gtk_cell_renderer_text_get_type() +
+        gtk_cell_renderer_toggle_get_type () +
         gtk_list_store_get_type();
     return Val_GType(t);
 }

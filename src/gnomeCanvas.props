@@ -15,7 +15,7 @@ class Item : GtkObject {
 
 class Shape : Item {
   "cap-style"            GdkCapStyle          : Read / Write
-  "dash"                 gpointer             : Read / Write
+  "dash"                 ArtVPathDash         : Read / Write
   "fill-color"           gchararray           : Write
   "fill-color-gdk"       GdkColor             : Read / Write
   "fill-color-rgba"      guint32              : Read / Write
@@ -55,7 +55,7 @@ class Group : Item {
 }
 
 class Clipgroup : Group {
-  "path"                 gpointer             : Read / Write
+  "path"                 GnomeCanvasPathDef   : Read / Write
   "wind"                 ArtWindRule          : Read / Write
 }
 

@@ -365,6 +365,21 @@ CAMLprim value ml_g_value_get_nativeint(value arg) {
     return Val_unit;
 }
 
+CAMLprim value ml_g_value_get_int32(value arg) {
+    GValue *val = GValue_val(arg);
+    switch(G_TYPE_FUNDAMENTAL(G_VALUE_TYPE(val))) {
+    case G_TYPE_INT:
+    case G_TYPE_UINT:
+        return copy_int32 (DATA.v_int);
+    case G_TYPE_ENUM:
+    case G_TYPE_FLAGS:
+        return copy_int32 (DATA.v_long);
+    default:
+        invalid_argument ("Gobject.get_int32");
+    }
+    return Val_unit;
+}
+
 CAMLprim value ml_g_value_get_pointer (value arg)
 {
     gpointer p = NULL;

@@ -345,7 +345,7 @@ ML_2 (gdk_string_height, GdkFont_val, String_val, Val_int)
 ML_2 (gdk_char_height, GdkFont_val, (gchar)Long_val, Val_int)
 ML_2 (gdk_string_measure, GdkFont_val, String_val, Val_int)
 ML_2 (gdk_char_measure, GdkFont_val, (char)Long_val, Val_int)
-Make_Extractor (GdkFont, GdkFont_val, type, Val_gdkFontType)
+Make_Extractor (GdkFont, GdkFont_val, type, Val_font_type)
 Make_Extractor (GdkFont, GdkFont_val, ascent, Val_int)
 Make_Extractor (GdkFont, GdkFont_val, descent, Val_int)
 
@@ -473,7 +473,7 @@ CAMLprim value ml_gdk_region_destroy (value val)
 }
 ML_0 (gdk_region_new, Val_GdkRegion)
 ML_2 (gdk_region_polygon, Insert(PointArray_val(arg1)) PointArrayLen_val,
-      GdkFillRule_val, Val_GdkRegion)
+      Fill_rule_val, Val_GdkRegion)
 ML_1 (gdk_region_copy, GdkRegion_val, Val_GdkRegion)
 ML_2 (gdk_region_intersect, GdkRegion_val, GdkRegion_val, Unit)
 ML_2 (gdk_region_union, GdkRegion_val, GdkRegion_val, Unit)
@@ -485,7 +485,7 @@ ML_3 (gdk_region_shrink, GdkRegion_val, Int_val, Int_val, Unit)
 ML_1 (gdk_region_empty, GdkRegion_val, Val_bool)
 ML_2 (gdk_region_equal, GdkRegion_val, GdkRegion_val, Val_bool)
 ML_3 (gdk_region_point_in, GdkRegion_val, Int_val, Int_val, Val_bool)
-ML_2 (gdk_region_rect_in, GdkRegion_val, GdkRectangle_val, Val_gdkOverlapType)
+ML_2 (gdk_region_rect_in, GdkRegion_val, GdkRectangle_val, Val_overlap_type)
 ML_2 (gdk_region_get_clipbox, GdkRegion_val, GdkRectangle_val, Unit)
 
 
@@ -495,8 +495,8 @@ ML_1 (gdk_gc_new, GdkDrawable_val, Val_GdkGC_no_ref)
 ML_2 (gdk_gc_set_foreground, GdkGC_val, GdkColor_val, Unit)
 ML_2 (gdk_gc_set_background, GdkGC_val, GdkColor_val, Unit)
 ML_2 (gdk_gc_set_font, GdkGC_val, GdkFont_val, Unit)
-ML_2 (gdk_gc_set_function, GdkGC_val, GdkFunction_val, Unit)
-ML_2 (gdk_gc_set_fill, GdkGC_val, GdkFill_val, Unit)
+ML_2 (gdk_gc_set_function, GdkGC_val, Function_type_val, Unit)
+ML_2 (gdk_gc_set_fill, GdkGC_val, Fill_val, Unit)
 ML_2 (gdk_gc_set_tile, GdkGC_val, GdkPixmap_val, Unit)
 ML_2 (gdk_gc_set_stipple, GdkGC_val, GdkPixmap_val, Unit)
 ML_3 (gdk_gc_set_ts_origin, GdkGC_val, Int_val, Int_val, Unit)
@@ -504,10 +504,10 @@ ML_3 (gdk_gc_set_clip_origin, GdkGC_val, Int_val, Int_val, Unit)
 ML_2 (gdk_gc_set_clip_mask, GdkGC_val, GdkBitmap_val, Unit)
 ML_2 (gdk_gc_set_clip_rectangle, GdkGC_val, GdkRectangle_val, Unit)
 ML_2 (gdk_gc_set_clip_region, GdkGC_val, GdkRegion_val, Unit)
-ML_2 (gdk_gc_set_subwindow, GdkGC_val, GdkSubwindowMode_val, Unit)
+ML_2 (gdk_gc_set_subwindow, GdkGC_val, Subwindow_mode_val, Unit)
 ML_2 (gdk_gc_set_exposures, GdkGC_val, Bool_val, Unit)
-ML_5 (gdk_gc_set_line_attributes, GdkGC_val, Int_val, GdkLineStyle_val,
-      GdkCapStyle_val, GdkJoinStyle_val, Unit)
+ML_5 (gdk_gc_set_line_attributes, GdkGC_val, Int_val, Line_style_val,
+      Cap_style_val, Join_style_val, Unit)
 
 CAMLprim value ml_gdk_gc_set_dashes(value gc, value offset, value dashes)
 {
@@ -550,8 +550,8 @@ CAMLprim value ml_gdk_gc_get_values (value gc)
         tmp = ml_some(Val_GdkFont(values.font));
         Store_field(ret, 2, tmp);
     }
-    Field(ret,3) = Val_gdkFunction(values.function);
-    Field(ret,4) = Val_gdkFill(values.fill);
+    Field(ret,3) = Val_function_type(values.function);
+    Field(ret,4) = Val_fill(values.fill);
     if (values.tile) {
         tmp = ml_some(Val_GdkPixmap(values.tile));
         Store_field(ret, 5, tmp);
@@ -564,16 +564,16 @@ CAMLprim value ml_gdk_gc_get_values (value gc)
         tmp = ml_some(Val_GdkPixmap(values.clip_mask));
         Store_field(ret, 7, tmp);
     }
-    Field(ret,8) = Val_gdkSubwindowMode(values.subwindow_mode);
+    Field(ret,8) = Val_subwindow_mode(values.subwindow_mode);
     Field(ret,9) = Val_int(values.ts_x_origin);
     Field(ret,10) = Val_int(values.ts_y_origin);
     Field(ret,11) = Val_int(values.clip_x_origin);
     Field(ret,12) = Val_int(values.clip_y_origin);
     Field(ret,13) = Val_bool(values.graphics_exposures);
     Field(ret,14) = Val_int(values.line_width);
-    Field(ret,15) = Val_gdkLineStyle(values.line_style);
-    Field(ret,16) = Val_gdkCapStyle(values.cap_style);
-    Field(ret,17) = Val_gdkJoinStyle(values.join_style);
+    Field(ret,15) = Val_line_style(values.line_style);
+    Field(ret,16) = Val_cap_style(values.cap_style);
+    Field(ret,17) = Val_join_style(values.join_style);
     CAMLreturn(ret);
 }
 
@@ -668,7 +668,7 @@ ML_1 (gdk_event_copy, GdkEvent_val, Val_GdkEvent)
 #ifdef HASGTK22
 CAMLprim value ml_gdk_event_new (value event_type)
 {
-    GdkEvent *event = gdk_event_new(GdkEventType_val(event_type));
+    GdkEvent *event = gdk_event_new(Event_type_val(event_type));
     event->any.send_event = TRUE;
     return Val_GdkEvent(event);
 }
@@ -687,10 +687,10 @@ ML_1 (gdk_event_get_time, GdkEvent_val, copy_int32)
 
 #define GdkEvent_arg(type) (GdkEvent##type*)GdkEvent_val
 
-Make_Extractor (GdkEventAny, GdkEvent_arg(Any), type, Val_gdkEventType)
+Make_Extractor (GdkEventAny, GdkEvent_arg(Any), type, Val_event_type)
 Make_Extractor (GdkEventAny, GdkEvent_arg(Any), window, Val_GdkWindow)
 Make_Extractor (GdkEventAny, GdkEvent_arg(Any), send_event, Val_bool)
-Make_Setter (gdk_event_set, GdkEvent_arg(Any), GdkEventType_val, type)
+Make_Setter (gdk_event_set, GdkEvent_arg(Any), Event_type_val, type)
 Make_Setter (gdk_event_set, GdkEvent_arg(Any), GdkWindow_val, window)
 
 Make_Extractor (GdkEventExpose, GdkEvent_arg(Expose), area, Val_copy)

@@ -91,7 +91,7 @@ class column_list = object (self)
   method add : 'a. 'a data_conv -> 'a column = fun conv ->
     if locked then failwith "GTree.column_list#add";
     let n = index in
-    kinds <- conv.kind :: kinds;
+    kinds <- Data.get_fundamental conv :: kinds;
     index <- index + 1;
     {index = n; conv = conv; creator = Oo.id self}
   method id = Oo.id self
@@ -163,7 +163,7 @@ end
 let tree_store (cols : column_list) =
   cols#lock ();
   let types =
-    List.map Type.of_fundamental (cols#kinds :> fundamental_type list) in
+    List.map Type.of_fundamental cols#kinds in
   let store = TreeStore.create (Array.of_list types) in
   Hashtbl.add model_ids(Gobject.get_oid store) cols#id;
   new tree_store store
@@ -349,6 +349,92 @@ let view ?model ?hadjustment ?vadjustment =
   TreeView.make_params [] ?model ?hadjustment ?vadjustment ~cont:(
   GContainer.pack_container ~create:(fun p -> new view (TreeView.create p)))
 
-let cell_renderer_pixbuf = CellRendererPixbuf.create
-let cell_renderer_text = CellRendererText.create
-let cell_renderer_toggle = CellRendererToggle.create
+type cell_properties =
+  [ `CELL_BACKGROUND of string
+  | `CELL_BACKGROUND_GDK of Gdk.color
+  | `CELL_BACKGROUND_SET of bool
+  | `HEIGHT of int
+  | `IS_EXPANDED of bool
+  | `IS_EXPANDER of bool
+  | `MODE of Tags.cell_renderer_mode
+  | `VISIBLE of bool
+  | `WIDTH of int
+  | `XALIGN of float
+  | `XPAD of int
+  | `YALIGN of float
+  | `YPAD of int ]
+type cell_properties_pixbuf_only =
+  [ `PIXBUF of GdkPixbuf.pixbuf
+  | `PIXBUF_EXPANDER_CLOSED of GdkPixbuf.pixbuf
+  | `PIXBUF_EXPANDER_OPEN of GdkPixbuf.pixbuf
+  | `STOCK_DETAIL of string
+  | `STOCK_ID of string
+  | `STOCK_SIZE of Gtk.Tags.icon_size ] 
+type cell_properties_pixbuf = [ cell_properties | cell_properties_pixbuf_only ]
+type cell_properties_text_only =
+  [ `BACKGROUND of string
+  | `BACKGROUND_GDK of Gdk.color
+  | `BACKGROUND_SET of bool
+  | `EDITABLE of bool
+  | `EDITABLE_SET of bool
+  | `FAMILY of string
+  | `FAMILY_SET of bool
+  | `FONT of string
+  | `FONT_DESC of Pango.font_description
+  | `FOREGROUND of string
+  | `FOREGROUND_GDK of Gdk.color
+  | `FOREGROUND_SET of bool
+  | `MARKUP of string
+  | `RISE of int
+  | `RISE_SET of bool
+  | `SCALE of float
+  | `SCALE_SET of bool
+  | `SIZE of int
+  | `SIZE_POINTS of float
+  | `SIZE_SET of bool
+  | `STRETCH of PangoEnums.stretch
+  | `STRETCH_SET of bool
+  | `STRIKETHROUGH of bool
+  | `STRIKETHROUGH_SET of bool
+  | `STYLE of PangoEnums.style
+  | `STYLE_SET of bool
+  | `TEXT of string
+  | `UNDERLINE of PangoEnums.underline
+  | `UNDERLINE_SET of bool
+  | `VARIANT of PangoEnums.variant
+  | `VARIANT_SET of bool
+  | `WEIGHT of int
+  | `WEIGHT_SET of bool ]
+type cell_properties_text = [ cell_properties | cell_properties_text_only ]
+type cell_properties_toggle_only =
+  [ `ACTIVATABLE of bool
+  | `ACTIVE of bool
+  | `INCONSISTENT of bool
+  | `RADIO of bool ]
+type cell_properties_toggle = [ cell_properties | cell_properties_toggle_only ]
+
+let cell_renderer_pixbuf_param' = function
+  | #cell_properties_pixbuf_only as x -> cell_renderer_pixbuf_param x
+  | #cell_properties as x -> cell_renderer_param x
+let cell_renderer_text_param' = function
+  | #cell_properties as x -> cell_renderer_param x
+  | #cell_properties_text_only as x -> cell_renderer_text_param x
+let cell_renderer_toggle_param' = function
+  | #cell_properties_toggle_only as x -> cell_renderer_toggle_param x
+  | #cell_properties as x -> cell_renderer_param x
+
+let cell_renderer_pixbuf l =
+  CellRendererPixbuf.create (List.map cell_renderer_pixbuf_param' l)
+let cell_renderer_text l =
+  CellRendererText.create (List.map cell_renderer_text_param' l)
+let cell_renderer_toggle l =
+  CellRendererToggle.create (List.map cell_renderer_toggle_param' l)
+
+let set_cell_properties o l =
+  Gobject.set_params o (List.map cell_renderer_param l)
+let set_pixbuf_properties o l =
+  Gobject.set_params o (List.map cell_renderer_pixbuf_param' l)
+let set_text_properties o l =
+  Gobject.set_params o (List.map cell_renderer_text_param' l)
+let set_toggle_properties o l =
+  Gobject.set_params o (List.map cell_renderer_toggle_param' l)
