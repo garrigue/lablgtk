@@ -21,7 +21,6 @@ COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -labels -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 
 TOPLEVEL = ocamlmktop $(MLFLAGS)
-RANLIB = ranlib
 
 include config.make
 
@@ -103,7 +102,7 @@ lablgtkrun: liblablgtk.a lablgtk.cma
 	$(LINKER) -o $@ -make-runtime unix.cma str.cma $(GLLINK) \
 		-ccopt -L. lablgtk.cma
 
-lablgtkopt: liblablgtk.a lablgtk.cmxa
+lablgtkopt: liblablgtk.a lablgtk.cmxa gtkInit.cmx
 
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
@@ -113,7 +112,8 @@ install:
 	cp liblablgtk.a $(LIBDIR) || cp liblablgtk.a $(INSTALLDIR)
 	cp lablgtktop  lablgtktop_t $(INSTALLDIR)
 	cp lablgtk lablgtkrun $(BINDIR)
-	if test -f lablgtk.cmxa; then cp lablgtk.cmxa lablgtk.a $(INSTALLDIR); fi
+	if test -f lablgtk.cmxa; \
+	   then cp lablgtk.cmxa lablgtk.a gtkInit.cmx gtkInit.o $(INSTALLDIR); fi
 
 liblablgtk.a: $(COBJS)
 	ar rc $@ $(COBJS)
@@ -163,6 +163,8 @@ config.make:
 	  sed -e 's/-l/-cclib &/g' -e 's/-[LWr][^ ]*/-ccopt &/g' >> config.make
 	echo USE_GL=$(USE_GL) >> config.make
 	echo USE_CC=$(USE_CC) >> config.make
+	(which ranlib > /dev/null 2>&1 && echo RANLIB=ranlib >> config.make) \
+	  || echo RANLIB=: >> config.make
 
 ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gdk.o: gdk_tags.c gdk_tags.h ml_gdk.h wrappers.h

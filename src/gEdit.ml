@@ -106,7 +106,7 @@ let combo ?popdown_strings ?use_arrows
   Container.set w ?border_width ?width ?height;
   pack_return (new combo w) ~packing ~show
 
-class text obj = object
+class text obj = object (self)
   inherit editable (obj : Gtk.text obj) as super
   method get_chars ~start ~stop:e =
     if start < 0 || e > Text.get_length obj || e < start then
@@ -126,9 +126,10 @@ class text obj = object
   method freeze () = Text.freeze obj
   method thaw () = Text.thaw obj
   method insert ?font ?foreground ?background text =
+    let colormap = try Some self#misc#colormap with _ -> None in
     Text.insert obj text ?font
-      ?foreground:(may_map foreground ~f:GDraw.color)
-      ?background:(may_map background ~f:GDraw.color)
+      ?foreground:(may_map foreground ~f:(GDraw.color ?colormap))
+      ?background:(may_map background ~f:(GDraw.color ?colormap))
 end
 
 let text ?hadjustment ?vadjustment ?editable

@@ -148,6 +148,10 @@ module Widget = struct
       = "ml_gtk_widget_set_default_colormap"
   external set_default_visual : Gdk.visual -> unit
       = "ml_gtk_widget_set_default_visual"
+  external get_default_colormap : unit -> Gdk.colormap
+      = "ml_gtk_widget_get_default_colormap"
+  external get_default_visual : unit -> Gdk.visual
+      = "ml_gtk_widget_get_default_visual"
   external push_colormap : Gdk.colormap -> unit
       = "ml_gtk_widget_push_colormap"
   external push_visual : Gdk.visual -> unit

@@ -8,8 +8,10 @@ type color =
   | `BLACK
   | `NAME of string
   | `RGB of int * int * int]
-val color : color -> Color.t
-class ['a] drawable : 'a Gdk.drawable ->
+
+val color : ?colormap:colormap -> color -> Color.t
+
+class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
   object
     val gc : gc
     val w : 'a Gdk.drawable
@@ -19,6 +21,7 @@ class ['a] drawable : 'a Gdk.drawable ->
       width:int ->
       height:int ->
       ?filled:bool -> ?start:float -> ?angle:float -> unit -> unit
+    method color : color -> Color.t
     method gc_values : GC.values
     method image :
       width:int ->
@@ -39,7 +42,8 @@ class ['a] drawable : 'a Gdk.drawable ->
     method string : string -> font:font -> x:int -> y:int -> unit
   end
 
-class pixmap : ?mask:bitmap -> [ `pixmap] Gdk.drawable ->
+class pixmap :
+  ?colormap:colormap -> ?mask:bitmap -> [ `pixmap] Gdk.drawable ->
   object
     inherit [[`pixmap]] drawable
     val bitmap : [ `bitmap] drawable option

@@ -11,15 +11,19 @@ type color = [
   | `RGB of int * int * int
 ]
 
-let color : color -> Color.t = function
-    `COLOR col -> col
-  | `WHITE|`BLACK|`NAME _|`RGB _ as def -> Color.alloc def
+let color ?(colormap = GtkBase.Widget.get_default_colormap ()) (c : color) =
+  match c with
+  | `COLOR col -> col
+  | `WHITE|`BLACK|`NAME _|`RGB _ as def -> Color.alloc ~colormap def
 
-class ['a] drawable w = object
+class ['a] drawable ?(colormap = GtkBase.Widget.get_default_colormap ()) w =
+object (self)
+  val colormap = colormap
   val gc = GC.create w
   val w : 'a Gdk.drawable = w
-  method set_foreground col = GC.set_foreground gc (color col)
-  method set_background col = GC.set_background gc (color col)
+  method color = color ~colormap
+  method set_foreground col = GC.set_foreground gc (self#color col)
+  method set_background col = GC.set_background gc (self#color col)
   method gc_values = GC.get_values gc
   method set_line_attributes ?width ?style ?cap ?join () =
     let v = GC.get_values gc in
@@ -38,9 +42,9 @@ class ['a] drawable w = object
     Draw.image w gc ~image ~width ~height ~xsrc ~ysrc ~xdest ~ydest
 end
 
-class pixmap ?mask pm = object
-  inherit [[`pixmap]] drawable pm as pixmap
-  val bitmap = may_map mask ~f:(new drawable)
+class pixmap ?colormap ?mask pm = object
+  inherit [[`pixmap]] drawable ?colormap pm as pixmap
+  val bitmap = may_map mask ~f:(fun x -> new drawable x)
   val mask : Gdk.bitmap option = mask
   method pixmap = w
   method mask = mask
@@ -94,9 +98,11 @@ end
 let pixmap ~(window : < misc : #widget_draw; .. >)
     ~width ~height ?(mask=false) () =
   window#misc#realize ();
-  let depth = window#misc#visual_depth and window = window#misc#window in
+  let depth = window#misc#visual_depth
+  and window = window#misc#window
+  and colormap = window#misc#colormap in
   let pm =
-    new pixmap (Pixmap.create window ~width ~height ~depth)
+    new pixmap (Pixmap.create window ~width ~height ~depth) ~colormap
       ?mask:(if mask then Some(Bitmap.create window ~width ~height)
                      else None)
   in
@@ -111,15 +117,15 @@ let pixmap ~(window : < misc : #widget_draw; .. >)
 let pixmap_from_xpm ~window ~file ?colormap ?transparent () =
   let pm, mask =
     try Pixmap.create_from_xpm window ~file ?colormap
-	?transparent:(may_map transparent ~f:color)
+	?transparent:(may_map transparent ~f:(fun c -> color c))
     with Null_pointer -> invalid_arg "GdkObj.pixmap_from_xpm" in
-  new pixmap pm ~mask
+  new pixmap pm ?colormap ~mask
 
 let pixmap_from_xpm_d ~window ~data ?colormap ?transparent () =
   let pm, mask =
     Pixmap.create_from_xpm_d window ~data ?colormap
-      ?transparent:(may_map transparent ~f:color) in
-  new pixmap pm ~mask
+      ?transparent:(may_map transparent ~f:(fun c -> color c)) in
+  new pixmap pm ?colormap ~mask
 
 class drag_context context = object
   val context = context
