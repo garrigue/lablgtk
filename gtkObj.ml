@@ -45,9 +45,9 @@ end
 
 class ['a] widget_signals obj = object
   val obj : 'a obj = obj
-  method destroy = Signal.connect obj sig:Object.Sig.destroy
-  method draw = Signal.connect obj sig:Widget.Sig.draw
-  method show = Signal.connect obj sig:Widget.Sig.show
+  method destroy = Widget.Connect.destroy obj
+  method draw = Widget.Connect.draw obj
+  method show = Widget.Connect.show obj
   method event = new event_signal obj
 end
 
@@ -78,8 +78,8 @@ end
 
 class ['a] container_signals obj = object
   inherit ['a] widget_signals obj
-  method add = Signal.connect obj sig:Container.Sig.add
-  method remove = Signal.connect obj sig:Container.Sig.remove
+  method add = Container.Connect.add obj
+  method remove = Container.Connect.remove obj
 end
 
 class ['a] box_skel obj = object
@@ -114,7 +114,7 @@ let new_window dir = new window (Window.create dir)
 
 class ['a] button_signals obj = object
   inherit ['a] widget_signals obj
-  method clicked = Signal.connect obj sig:Button.Sig.clicked
+  method clicked = Button.Connect.clicked obj
 end
 
 class ['a] button_skel obj = object
@@ -153,8 +153,8 @@ end
 
 class ['a] editable_signals obj = object
   inherit ['a] widget_signals obj
-  method activate = Signal.connect obj sig:Editable.Sig.activate
-  method changed = Signal.connect obj sig:Editable.Sig.changed
+  method activate = Editable.Connect.activate obj
+  method changed = Editable.Connect.changed obj
 end
 
 class entry obj = object

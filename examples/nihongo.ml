@@ -15,18 +15,20 @@ let font = Gdk.Font.load_fontset
      -misc-fixed-medium-r-normal--14-*-jisx0201.1976-0"
 
 let _ =
-  Signal.connect window sig:Object.Sig.destroy cb:Main.quit;
-  Container.add window box;
-  Container.add box text;
+  Window.Connect.destroy window cb:Main.quit;
+  Window.add window box;
+  Box.add box text;
   Widget.realize text;
   Text.insert text "こんにちは" :font;
-  Text.set_editable text true;
+  Text.set text editable:true;
   let button = Button.create label:"終了" in
   let style = Widget.get_style button in
   Style.set style :font;
-  Container.add box button;
-  Signal.connect button sig:Button.Sig.clicked cb:Main.quit
+  Box.add box button;
+  Button.Connect.clicked button cb:Main.quit;
+  let l = Label.create "これにも影響する" in
+  Box.add box l
 
 let _ =
-  Widget.show_all window;
+  Window.show_all window;
   Main.main ()
