@@ -329,14 +329,12 @@ ML_1 (gtk_drag_highlight, GtkWidget_val, Unit)
 ML_1 (gtk_drag_unhighlight, GtkWidget_val, Unit)
 ML_4 (gtk_drag_set_icon_widget, GdkDragContext_val, GtkWidget_val,
       Int_val, Int_val, Unit)
-ML_6 (gtk_drag_set_icon_pixmap, GdkDragContext_val,
-      Option_val(arg2, GdkColormap_val, NULL) Ignore,
+ML_6 (gtk_drag_set_icon_pixmap, GdkDragContext_val, GdkColormap_val,
       GdkPixmap_val, Option_val(arg4, GdkBitmap_val, NULL) Ignore,
       Int_val, Int_val, Unit)
 ML_bc6 (ml_gtk_drag_set_icon_pixmap)
 ML_1 (gtk_drag_set_icon_default, GdkDragContext_val, Unit)
-ML_5 (gtk_drag_set_default_icon,
-      Option_val(arg1, GdkColormap_val, NULL) Ignore,
+ML_5 (gtk_drag_set_default_icon, GdkColormap_val,
       GdkPixmap_val, Option_val(arg3, GdkBitmap_val, NULL) Ignore,
       Int_val, Int_val, Unit)
 value ml_gtk_drag_source_set (value w, value m, value t, value a)
@@ -359,8 +357,7 @@ value ml_gtk_drag_source_set (value w, value m, value t, value a)
 		       targets, n_targets, Flags_GdkDragAction_val(a));
   CAMLreturn Val_unit;
 }
-ML_4 (gtk_drag_source_set_icon, GtkWidget_val,
-      Option_val(arg2, GdkColormap_val, NULL) Ignore,
+ML_4 (gtk_drag_source_set_icon, GtkWidget_val, GdkColormap_val,
       GdkPixmap_val, Option_val(arg4, GdkBitmap_val, NULL) Ignore, Unit)
 ML_1 (gtk_drag_source_unset, GtkWidget_val, Unit)
 

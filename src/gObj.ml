@@ -125,8 +125,9 @@ class widget_drag obj = object
   method unhighlight () = DnD.unhighlight obj
   method source_set ?mod:m :targets =
     DnD.source_set obj ?mod:m targets:(Array.of_list targets)
-  method source_set_icon ?:colormap (pix : GdkObj.pixmap) =
-    DnD.source_set_icon obj ?:colormap pix#pixmap ?mask:pix#mask
+  method source_set_icon ?:colormap [< Gdk.Color.get_system_colormap () >]
+      (pix : GdkObj.pixmap) =
+    DnD.source_set_icon obj :colormap pix#pixmap ?mask:pix#mask
   method source_unset () = DnD.source_unset obj
 end
 
@@ -140,8 +141,9 @@ and drag_context context = object
     new widget_wrapper (Object.unsafe_cast (DnD.get_source_widget context))
   method set_icon_widget : 'a . (#is_widget as 'a) -> _ = fun w ->
     DnD.set_icon_widget context (w#as_widget)
-  method set_icon_pixmap ?:colormap (pix : GdkObj.pixmap) =
-    DnD.set_icon_pixmap context ?:colormap pix#pixmap ?mask:pix#mask
+  method set_icon_pixmap ?:colormap [< Gdk.Color.get_system_colormap () >]
+      (pix : GdkObj.pixmap) =
+    DnD.set_icon_pixmap context :colormap pix#pixmap ?mask:pix#mask
 end
 
 and drag_signals obj = object
