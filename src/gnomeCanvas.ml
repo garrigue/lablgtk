@@ -32,22 +32,37 @@ external world_to_window : [> canvas] Gobject.obj -> wox:float -> woy:float -> f
 end
 
 module Types : sig
-  type 'a t constraint 'a = [> `gtk|`canvasitem]
-  val group : [`gtk|`canvasitem|`canvasgroup] t
-  val rect  : [`gtk|`canvasitem|`canvasshape|`canvasRE|`canvasrect] t
-  val ellipse  : [`gtk|`canvasitem|`canvasshape|`canvasRE|`canvasellipse] t
+  type ('a, 'b) t constraint 'a = [> `gtk|`canvasitem]
+
+  type group_p = [`x of float| `y of float]
+  type shape_p = [`fill_color of string| `outline_color of string| `width_units of float]
+  type re_p = [shape_p|`x1 of float| `y1 of float| `x2 of float| `y2 of float]
+  type text_p = [`x of float| `y of float| `text of string| `font of string|
+                 `size of int| `fill_color of string]
+
+  val group : ([item|`canvasgroup], group_p) t
+  val rect : ([item|`canvasshape|`canvasRE|`canvasrect], re_p) t
+  val ellipse : ([item|`canvasshape|`canvasRE|`canvasellipse], re_p) t
+  val text : ([item|`canvastext], text_p) t
 end = 
   struct
-  type 'a t = Gobject.g_type constraint 'a = [> `gtk|`canvasitem]
-  let group = Gobject.Type.from_name "GnomeCanvasGroup"
-  let rect  = Gobject.Type.from_name "GnomeCanvasRect"
-  let ellipse = Gobject.Type.from_name "GnomeCanvasEllipse"
+  type ('a, 'b) t = Gobject.g_type constraint 'a = [> `gtk|`canvasitem]
+  type group_p = [`x of float| `y of float]
+  type shape_p = [`fill_color of string| `outline_color of string| `width_units of float]
+  type re_p = [shape_p|`x1 of float| `y1 of float| `x2 of float| `y2 of float]
+  type text_p = [`x of float| `y of float| `text of string| `font of string|
+                 `size of int| `fill_color of string]
+  let canvas_types = register_types ()
+  let group = canvas_types.(4)
+  let rect = canvas_types.(11)
+  let ellipse = canvas_types.(3)
+  let text = canvas_types.(14)
   end
 
 (* GnomeCanvasItem *)
 module Item =
   struct
-external new_item : [> group] Gobject.obj -> 'a Types.t -> 'a Gobject.obj = "ml_gnome_canvas_item_new"
+external new_item : [> group] Gobject.obj -> ('a, 'b) Types.t -> 'a Gobject.obj = "ml_gnome_canvas_item_new"
 external parent : [> item] Gobject.obj -> group Gobject.obj = "ml_gnome_canvas_item_parent"
 external set : [> item] Gobject.obj -> (string * Gobject.g_value) list -> unit = "ml_gnome_canvas_item_set"
 external move : [> item] Gobject.obj -> x:float -> y:float -> unit = "ml_gnome_canvas_item_move"
@@ -65,7 +80,7 @@ external get_bounds : [> item] Gobject.obj -> float array = "ml_gnome_canvas_ite
 module Signals = struct
   open GtkSignal
   let marshal f _ = function
-    | `POINTER (Some p) :: _ -> f ((GdkEvent.unsafe_copy p) : Gdk.Tags.event_type Gdk.event)
+    | `POINTER (Some p) :: _ -> f (Obj.magic p : GdkEvent.any) (* ((GdkEvent.unsafe_copy p) : GdkEvent.any) *)
     | _ -> invalid_arg "GnomeCanvas.Item.Signals.marshal"
   let event =
     { name = "event" ; classe = `canvasitem; marshaller = marshal; }

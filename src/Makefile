@@ -78,7 +78,7 @@ endif
 ifdef USE_GNOMECANVAS
 MLLIBS += lablgnomecanvas.cma
 CLIBS += liblablgnomecanvas.a
-GNOMECANVASMLOBJS = gnomeCanvas.cmo # gCanvas.cmo
+GNOMECANVASMLOBJS = gnomeCanvas.cmo gnoCanvas.cmo
 GNOMECANVASCOBJS = ml_gnomecanvas.o
 endif
 
