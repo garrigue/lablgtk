@@ -93,5 +93,6 @@ object (self)
 end
 
 let _ =
+  Main.init ();
   new editor_window show:true;
   Main.main ()

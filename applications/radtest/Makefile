@@ -58,12 +58,12 @@ MLSRC = paste_parser.ml paste_lexer.ml wpaste_parser.ml wpaste_lexer.ml \
 radtest: $(MLOBJS)  libtree2.a gtree2.cma
 	$(LINKER) -o $@ -custom -cclib "-L../.. -L. \
 	-llablgtk -ltree2 $(GTKLIBS)" \
-	stdclass.cma lablgtk.cma gtree2.cma $(MLOBJS)
+	stdclass.cma lablgtk.cma gtkInit.cmo gtree2.cma $(MLOBJS)
 
 radtestopt: $(MLOBJS:.cmo=.cmx) libtree2.a gtree2.cmxa
 	$(LINKOPT) -o $@ -cclib "-L../.. -L. \
 	-llablgtk -ltree2 $(GTKLIBS)" \
-	stdclass.cmxa lablgtk.cmxa gtree2.cmxa $(MLOBJS:.cmo=.cmx)
+	stdclass.cmxa lablgtk.cmxa gtkInit.cmx gtree2.cmxa $(MLOBJS:.cmo=.cmx)
 
 %.mli %.ml: %.mly
 	olablyacc $<

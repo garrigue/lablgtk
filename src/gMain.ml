@@ -6,9 +6,11 @@ open GObj
 
 module Main : sig
   val locale : string
+  val init : unit -> unit
   val main : unit -> unit
   val quit : unit -> unit
   val version : int * int * int
+  val flush : unit -> unit
 end = Main
 
 module Grab = struct

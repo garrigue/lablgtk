@@ -1,5 +1,16 @@
 $Id$
 
+1999.10.21
+  * added a UI for unison
+    (ask bcpierce@saul.cis.upenn.edu about how to get unison)
+
+1999.10.20
+  * corrected CList signals
+  * moved initialization out of the library, in gtkInit.cmo
+
+1999.10.15
+  * release lablGTK beta1
+
 1999.10.13
   * improved gtkThread.ml (no timer)
   * modify Sys.argv in place (gtkMain.ml)
