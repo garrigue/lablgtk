@@ -162,10 +162,10 @@ AC_SUBST(ODOC_DEF)
 # Check for which kind of threads is used
 THREADS_LIB="no"
 AC_MSG_CHECKING(for ocaml threads)
-if test -r $OCAMLLIB/threads/stdlib.cma; then
-  THREADS_LIB="byte"
-elif test -r $OCAMLLIB/threads/threads.cma; then
+if test -r $OCAMLLIB/threads/threads.cma; then
   THREADS_LIB="system"
+elif test -r $OCAMLLIB/vmthreads/stdlib.cma; then
+  THREADS_LIB="byte"
 fi
 AC_MSG_RESULT($THREADS_LIB)
 # Check for dll support

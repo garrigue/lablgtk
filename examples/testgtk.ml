@@ -1083,7 +1083,7 @@ let create_main_window () =
 
   let box1 = GPack.vbox ~packing: window#add () in
 
-  GMisc.label ~text: "Gtk+ v1.2" ~packing:box1#pack ();
+  GMisc.label ~text: "Gtk+ v2.x" ~packing:box1#pack ();
 
   let scrolled_window = GBin.scrolled_window ~border_width: 10
       ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC
