@@ -361,7 +361,7 @@ class pixmap obj = object
   method mask = Pixmap.mask obj
 end
 
-let new_pixmap pix :mask = new pixmap (Pixmap.create pix :mask)
+let new_pixmap pix ?:mask = new pixmap (Pixmap.create pix ?:mask)
 
 class progress_bar obj = object
   inherit [ProgressBar.t] widget_skel obj

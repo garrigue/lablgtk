@@ -92,7 +92,7 @@ module GC = struct
   type gdkLineStyle = [ SOLID ON_OFF_DASH DOUBLE_DASH ]
   type gdkCapStyle = [ NOT_LAST BUTT ROUND PROJECTING ]
   type gdkJoinStyle = [ MITER ROUND BEVEL ]
-  external create : window -> gc = "ml_gdk_gc_new"
+  external create : 'a drawable -> gc = "ml_gdk_gc_new"
   external set_foreground : gc -> Color.t -> unit = "ml_gdk_gc_set_foreground"
   external set_background : gc -> Color.t -> unit = "ml_gdk_gc_set_background"
   external set_font : gc -> font -> unit = "ml_gdk_gc_set_font"
@@ -135,6 +135,8 @@ module Pixmap = struct
 end
 
 module Bitmap = struct
+  let create : window -> width:int -> height:int -> bitmap =
+    Obj.magic (Pixmap.create depth:1)
   external create_from_data :
       window -> string -> width:int -> height:int -> bitmap
       = "ml_gdk_bitmap_create_from_data"

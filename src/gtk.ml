@@ -245,6 +245,7 @@ module Style = struct
   let get_bg st ?:state [< `NORMAL >] = get_bg st :state
   let set_bg st ?:state [< `NORMAL >] :color = set_bg st :state :color
   external get_colormap : t -> Gdk.colormap = "ml_gtk_style_get_colormap"
+  external get_depth : t -> int = "ml_gtk_style_get_depth"
   external get_font : t -> Gdk.font = "ml_gtk_style_get_font"
   external set_font : t -> Gdk.font -> unit = "ml_gtk_style_set_font"
   let set st ?:background ?:font =
@@ -1936,7 +1937,7 @@ module Pixmap = struct
   let cast w : t obj =
     if Object.is_a w "GtkPixmap" then Obj.magic w
     else invalid_arg "Gtk.Pixmap.cast"
-  external create : Gdk.pixmap -> mask:Gdk.bitmap -> t obj
+  external create : Gdk.pixmap -> ?mask:Gdk.bitmap -> t obj
       = "ml_gtk_pixmap_new"
   external set :
       [> pixmap] obj -> ?pixmap:Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
