@@ -10,7 +10,7 @@ let w = Widget.window top
 let gc = GC.create w
 
 let _ =
-  Signal.connect top sig:Object.Sig.destroy cb:Main.quit;
+  Window.Connect.destroy top cb:Main.quit;
   Signal.connect top sig:Signal.Event.expose cb:
     begin fun _ ->
       Draw.polygon w gc filled:true

@@ -11,9 +11,9 @@ let eq_float x y = abs_float (x -. y) < 1e-13
 
 let _ =
   let top = Window.create `TOPLEVEL in
-  Signal.connect top sig:Object.Sig.destroy cb:Main.quit;
+  Window.Connect.destroy top cb:Main.quit;
   let hbox = Box.create `VERTICAL in
-  Container.add top hbox;
+  Window.add top hbox;
   let entry = Entry.create () in
   Entry.set entry max_length:20;
   let tips = Tooltips.create () in
@@ -23,12 +23,12 @@ let _ =
   Box.pack hbox entry;
   Box.pack hbox result;
 
-  Signal.connect entry sig:Editable.Sig.activate cb:
+  Editable.Connect.activate entry cb:
     begin fun () ->
       let x = try float_of_string (Entry.get_text entry) with _ -> 0.0 in
       Entry.set entry text:(string_of_float (cos x));
       let res = fix fun:cos eq:eq_float x in
       Entry.set result text:(string_of_float res)
     end;
-  Widget.show_all top;
+  Window.show_all top;
   Main.main ()
