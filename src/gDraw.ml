@@ -42,7 +42,10 @@ object (self)
   method set_background col = GC.set_background gc (self#color col)
   method size = Window.get_size w
   method gc_values = GC.get_values gc
-  method set_clip_region region = GC.set_clip_region gc region
+  method set_clip_region = GC.set_clip_region gc
+  method set_clip_origin = GC.set_clip_origin gc
+  method set_clip_mask = GC.set_clip_mask gc
+  method set_clip_rectangle = GC.set_clip_rectangle gc
   method set_line_attributes ?width ?style ?cap ?join () =
     let v = GC.get_values gc in
     GC.set_line_attributes gc
