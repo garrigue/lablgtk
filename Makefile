@@ -13,14 +13,16 @@ CAMLMKTOP = ocamlmktop
 CAMLMKLIB = ocamlmklib
 CAMLP4O = camlp4o
 # Default installation directories
-BINDIR = `$(GETLIBDIR) | sed -e 's|/lib/[^/]*$$|/bin|' -e 's|/lib$$|/bin|'`
-INSTALLDIR = $(LIBDIR)/lablgtk2
-DLLDIR = $(LIBDIR)/stublibs
+BINDIR = $$\(DESTDIR\)`$(GETLIBDIR) \
+	| sed -e 's|/lib/[^/]*$$|/bin|' -e 's|/lib$$|/bin|'`
+INSTALLDIR = $$\(DESTDIR\)$(LIBDIR)/lablgtk2
+DLLDIR = $$\(DESTDIR\)$(LIBDIR)/stublibs
 
 # Autoconf
 GETLIBDIR = ocamlc -where
 LIBDIR = `$(GETLIBDIR)`
-RANLIB = `which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'`
+RANLIB = `which ranlib 2>/dev/null \
+	| sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'`
 
 PKG_CONFIG = pkg-config
 GTKPKG = gtk+-2.0
