@@ -309,7 +309,7 @@ fi
 
 
 FORCE_PANEL=no
-AC_ARG_WITH(gnomeui,
+AC_ARG_WITH(panel,
         [  --without-panel     override autodetected libpanelapplet support],
 	USE_PANEL=$withval ; FORCE_PANEL=yes,
 	USE_PANEL=yes)
