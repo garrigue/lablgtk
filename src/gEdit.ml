@@ -127,8 +127,8 @@ class text obj = object
   method thaw () = Text.thaw obj
   method insert ?font ?foreground ?background text =
     Text.insert obj text ?font
-      ?foreground:(may_map foreground ~f:GdkObj.color)
-      ?background:(may_map background ~f:GdkObj.color)
+      ?foreground:(may_map foreground ~f:GDraw.color)
+      ?background:(may_map background ~f:GDraw.color)
 end
 
 let text ?hadjustment ?vadjustment ?editable

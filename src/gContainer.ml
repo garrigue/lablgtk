@@ -25,7 +25,7 @@ class container obj = object (self)
   method add w =
     (* Hack to avoid creating a bin class *)
     if GtkBase.Object.is_a obj "GtkBin" && Container.children obj <> [] then
-      raise (Gtk.Error "GConatiner.container#add: already full");
+      raise (Gtk.Error "GContainer.container#add: already full");
     Container.add obj (as_widget w)
   method remove w = Container.remove obj (as_widget w)
   method children = List.map ~f:(new widget) (Container.children obj)

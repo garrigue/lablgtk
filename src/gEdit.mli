@@ -123,7 +123,7 @@ class text : Gtk.text obj ->
     method hadjustment : GData.adjustment
     method insert :
       ?font:Gdk.font ->
-      ?foreground:GdkObj.color -> ?background:GdkObj.color -> string -> unit
+      ?foreground:GDraw.color -> ?background:GDraw.color -> string -> unit
     method length : int
     method point : int
     method set_hadjustment : GData.adjustment -> unit

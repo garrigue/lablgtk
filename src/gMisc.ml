@@ -205,3 +205,20 @@ let color_selection ?border_width ?width ?height ?packing ?show () =
   let w = ColorSelection.create () in
   Container.set w ?border_width ?width ?height;
   pack_return (new color_selection w) ~packing ~show
+
+class pixmap obj = object
+  inherit misc (obj : Gtk.pixmap obj)
+  method connect = new widget_signals obj
+  method set_pixmap (pm : GDraw.pixmap) =
+    Pixmap.set obj ~pixmap:pm#pixmap ?mask:pm#mask
+  method pixmap =
+    new GDraw.pixmap (Pixmap.pixmap obj)
+      ?mask:(try Some(Pixmap.mask obj) with Null_pointer -> None)
+end
+
+let pixmap (pm : #GDraw.pixmap) ?xalign ?yalign ?xpad ?ypad
+    ?(width = -2) ?(height = -2) ?packing ?show () =
+  let w = Pixmap.create pm#pixmap ?mask:pm#mask in
+  Misc.set w ?xalign ?yalign ?xpad ?ypad;
+  if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height;
+  pack_return (new pixmap w) ~packing ~show

@@ -75,7 +75,7 @@ class style : Gtk.style ->
     method copy : 'a
     method font : Gdk.font
     method set_background : Gdk.window -> Tags.state_type -> unit
-    method set_bg : (Tags.state_type * GdkObj.color) list -> unit
+    method set_bg : (Tags.state_type * GDraw.color) list -> unit
     method set_font : Gdk.font -> unit
   end
 
@@ -103,7 +103,7 @@ class widget_drag : [>`widget] obj ->
     method source_set :
       ?modi:Gdk.Tags.modifier list ->
       ?actions:Gdk.Tags.drag_action list -> target_entry list -> unit
-    method source_set_icon : ?colormap:Gdk.colormap -> GdkObj.pixmap -> unit
+    method source_set_icon : ?colormap:Gdk.colormap -> GDraw.pixmap -> unit
     method source_unset : unit -> unit
     method unhighlight : unit -> unit
   end
@@ -206,7 +206,7 @@ and drag_context :
     method finish : success:bool -> del:bool -> time:int -> unit
     method source_widget : widget 
     method set_icon_pixmap :
-      ?colormap:Gdk.colormap -> GdkObj.pixmap -> hot_x:int -> hot_y:int -> unit
+      ?colormap:Gdk.colormap -> GDraw.pixmap -> hot_x:int -> hot_y:int -> unit
     method set_icon_widget : widget -> hot_x:int -> hot_y:int -> unit
     method status : ?time:int -> Gdk.Tags.drag_action list -> unit
     method suggested_action : Gdk.Tags.drag_action

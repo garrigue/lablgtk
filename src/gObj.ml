@@ -87,7 +87,7 @@ class style st = object
   method font = Style.get_font style
   method set_bg =
     List.iter ~f:
-      (fun (state,c) -> Style.set_bg style ~state ~color:(GdkObj.color c))
+      (fun (state,c) -> Style.set_bg style ~state ~color:(GDraw.color c))
   method set_font = Style.set_font style
   method set_background = Style.set_background style
 end
@@ -115,13 +115,13 @@ class widget_drag obj = object
   method source_set ?modi:m ?(actions=[]) targets =
     DnD.source_set obj ?modi:m ~actions ~targets:(Array.of_list targets)
   method source_set_icon ?(colormap = Gdk.Color.get_system_colormap ())
-      (pix : GdkObj.pixmap) =
+      (pix : GDraw.pixmap) =
     DnD.source_set_icon obj ~colormap pix#pixmap ?mask:pix#mask
   method source_unset () = DnD.source_unset obj
 end
 
 and drag_context context = object
-  inherit GdkObj.drag_context context
+  inherit GDraw.drag_context context
   method context = context
   method finish = DnD.finish context
   method source_widget =
@@ -129,7 +129,7 @@ and drag_context context = object
   method set_icon_widget (w : widget) =
     DnD.set_icon_widget context (w#as_widget)
   method set_icon_pixmap ?(colormap = Gdk.Color.get_system_colormap ())
-      (pix : GdkObj.pixmap) =
+      (pix : GDraw.pixmap) =
     DnD.set_icon_pixmap context ~colormap pix#pixmap ?mask:pix#mask
 end
 
