@@ -102,6 +102,21 @@ ML_1 (g_main_is_running, GMainLoop_val, Val_bool)
 ML_1 (g_main_quit, GMainLoop_val, Unit)
 ML_1 (g_main_destroy, GMainLoop_val, Unit)
 
+gboolean ml_g_source_func (gpointer data)
+{
+    return Bool_val (callback (*(value*)data, Val_unit));
+}
+
+value ml_g_timeout_add (value interval, value clos)
+{
+    value *clos_p = ml_global_root_new (clos);
+    return Val_int
+        (g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, Long_val(interval),
+                             ml_g_source_func, clos_p,
+                             ml_global_root_destroy));
+}
+
+ML_1 (g_source_remove, Int_val, Unit)
 
 /* GIOChannel */
 

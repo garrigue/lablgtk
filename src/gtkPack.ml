@@ -299,10 +299,9 @@ module Notebook = struct
     may_set set_tab_border tab_border;
     may_set set_popup popup
   module Signals = struct
-    open GtkArgv
     open GtkSignal
     let marshal_page f argv = function
-      |	_ :: INT page :: _ -> f page
+      |	_ :: `INT page :: _ -> f page
       |	_ -> invalid_arg "GtkPack.Notebook.Signals.marshal_page"
     let switch_page =
       { name = "switch_page"; classe = `notebook; marshaller = marshal_page }

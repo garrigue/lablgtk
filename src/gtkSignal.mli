@@ -1,11 +1,11 @@
 (* $Id$ *)
 
-open Gtk
+open Gobject
 
 type id
 type ('a,'b) t =
  { name: string; classe: 'a;
-   marshaller: ('b -> GtkArgv.t -> GtkArgv.data list -> unit) }
+   marshaller: ('b -> Closure.argv -> data_get list -> unit) }
 
 val stop_emit : unit -> unit
     (* Call [stop_emit ()] in a callback to prohibit further handling
@@ -18,25 +18,27 @@ val connect :
     (* You may use [stop_emit] inside the callback *)
 
 external connect_by_name :
-  'a obj -> name:string -> callback:(GtkArgv.t -> unit) -> after:bool -> id
-  = "ml_gtk_signal_connect"
+  'a obj -> name:string -> callback:g_closure -> after:bool -> id
+  = "ml_g_signal_connect_closure"
 external disconnect : 'a obj -> id -> unit
-  = "ml_gtk_signal_disconnect"
+  = "ml_g_signal_handler_disconnect"
 external emit_stop_by_name : 'a obj -> name:string -> unit
-  = "ml_gtk_signal_emit_stop_by_name"
+  = "ml_g_signal_stop_emission_by_name"
     (* Unsafe: use [stop_emit] instead. *)
 external handler_block : 'a obj -> id -> unit
-  = "ml_gtk_signal_handler_block"
+  = "ml_g_signal_handler_block"
 external handler_unblock : 'a obj -> id -> unit
-  = "ml_gtk_signal_handler_unblock"
+  = "ml_g_signal_handler_unblock"
 
 (* Some marshaller functions, to build signals *)
-val marshal_unit : (unit -> unit) -> GtkArgv.t -> GtkArgv.data list -> unit
-val marshal_int : (int -> unit) -> GtkArgv.t -> GtkArgv.data list -> unit
+val marshal_unit : (unit -> unit) -> Closure.argv -> data_get list -> unit
+val marshal_int : (int -> unit) -> Closure.argv -> data_get list -> unit
 
 (* Emitter functions *)
 val emit :
-  'a obj -> sgn:('a, 'b) t -> emitter:('a obj -> name:string -> 'b) -> 'b
+  'a Gobject.obj -> sgn:('a, 'b) t ->
+  emitter:(cont:('c Gobject.data_set array -> 'd) -> 'b) ->
+  conv:(Gobject.g_value -> 'd) -> 'b
 val emit_unit : 'a obj -> sgn:('a, unit -> unit) t -> unit
 val emit_int : 'a obj -> sgn:('a, int -> unit) t -> int -> unit
 

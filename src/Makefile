@@ -97,7 +97,7 @@ COBJS = ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o \
 	wrappers.o $(GTKOBJS)
 MLOBJS = gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
 	gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
-	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
+	gtk.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo
@@ -115,7 +115,7 @@ lablgtktop: $(MLLIBS) $(INITOBJS)
 	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
 
 lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
-	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
+	$(TOPLEVEL) $(THFLAGS) -custom -o $@ $(THLINK) $(MLLINK) \
 	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
 lablgtk2: Makefile $(CONFIG) lablgtk.in

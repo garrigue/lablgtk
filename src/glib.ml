@@ -18,6 +18,13 @@ module Main = struct
   external destroy : t -> unit = "ml_g_main_destroy"
 end
 
+module Timeout = struct
+  type id
+  external add : ms:int -> callback:(unit -> bool) -> id
+    = "ml_g_timeout_add"
+  external remove : id -> unit = "ml_g_source_remove"
+end
+
 module Io = struct
   type channel
   type condition = [ `IN | `OUT | `PRI | `ERR | `HUP | `NVAL ]

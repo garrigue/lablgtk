@@ -2,6 +2,7 @@
 
 open StdLabels
 open Gaux
+open Gobject
 open Gtk
 open Tags
 open GtkBase
@@ -35,23 +36,22 @@ module Editable = struct
   external get_editable : [>`editable] obj -> bool
       = "ml_gtk_editable_get_editable"
   module Signals = struct
-    open GtkArgv
     open GtkSignal
     let activate =
       { name = "activate"; classe = `editable; marshaller = marshal_unit }
     let changed =
       { name = "changed"; classe = `editable; marshaller = marshal_unit }
     let marshal_insert f argv = function
-      | STRING _ :: INT len :: POINTER(Some pos) :: _ ->
+      | `STRING _ :: `INT len :: `POINTER(Some pos) :: _ ->
           (* XXX These two accesses are implementation-dependent *)
-          let s = Gpointer.peek_string (get_pointer argv ~pos:0) ~len
+          let s = Gpointer.peek_string (Closure.get_pointer argv ~pos:0) ~len
           and pos = Gpointer.peek_int pos in
           f s ~pos
       | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_insert"
     let insert_text =
       { name = "insert_text"; classe = `editable; marshaller = marshal_insert }
     let marshal_delete f _ = function
-      | INT start :: INT stop :: _ ->
+      | `INT start :: `INT stop :: _ ->
           f ~start ~stop
       | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_delete"
     let delete_text =

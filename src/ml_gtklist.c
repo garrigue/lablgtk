@@ -166,3 +166,5 @@ ML_2 (gtk_clist_set_sort_column, GtkCList_val, Int_val, Unit)
 ML_2 (gtk_clist_set_sort_type, GtkCList_val, Sort_type_val, Unit)
 ML_1 (gtk_clist_sort, GtkCList_val, Unit)
 ML_2 (gtk_clist_set_auto_sort, GtkCList_val, Bool_val, Unit)
+
+ML_1 (Scroll_type_val, , Val_long)
