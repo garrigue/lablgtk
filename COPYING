@@ -24,8 +24,10 @@ per request basis.
 
 Authors:
 	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>
-	Hubert Fauque  <hubert.fauque@wanadoo.fr>
-	Jun Furuse     <Jun.Furuse@inria.fr>
-	Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
+	Benjamin Monate  <monate@lix.polytechnique.fr>
+        Olivier Andrieu  <oandrieu@nerim.net>
+	Jun Furuse       <Jun.Furuse@inria.fr>
+	Hubert Fauque    <hubert.fauque@wanadoo.fr>
+	Koji Kagawa      <kagawa@eng.kagawa-u.ac.jp>
 
 $Id$
