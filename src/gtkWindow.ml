@@ -6,9 +6,7 @@ open Tags
 open GtkBase
 
 module Window = struct
-  let cast w : window obj =
-    if Object.is_a w "GtkWindow" then Obj.magic w
-    else invalid_arg "Gtk.Window.cast"
+  let cast w : window obj = Object.try_cast w "GtkWindow"
   external coerce : [>`window] obj -> window obj = "%identity"
   external create : window_type -> window obj = "ml_gtk_window_new"
   external set_title : [>`window] obj -> string -> unit
@@ -85,9 +83,7 @@ module Window = struct
 end
 
 module Dialog = struct
-  let cast w : dialog obj =
-    if Object.is_a w "GtkDialog" then Obj.magic w
-    else invalid_arg "Gtk.Dialog.cast"
+  let cast w : dialog obj = Object.try_cast w "GtkDialog"
   external coerce : [>`dialog] obj -> dialog obj = "%identity"
   external create : unit -> dialog obj = "ml_gtk_dialog_new"
   external action_area : [>`dialog] obj -> box obj
@@ -97,9 +93,7 @@ module Dialog = struct
 end
 
 module InputDialog = struct
-  let cast w : input_dialog obj =
-    if Object.is_a w "GtkInputDialog" then Obj.magic w
-    else invalid_arg "Gtk.InputDialog.cast"
+  let cast w : input_dialog obj = Object.try_cast w "GtkInputDialog"
   external create : unit -> input_dialog obj = "ml_gtk_input_dialog_new"
   module Signals = struct
     open GtkSignal
@@ -111,9 +105,7 @@ module InputDialog = struct
 end
 
 module FileSelection = struct
-  let cast w : file_selection obj =
-    if Object.is_a w "GtkFileSelection" then Obj.magic w
-    else invalid_arg "Gtk.FileSelection.cast"
+  let cast w : file_selection obj = Object.try_cast w "GtkFileSelection"
   external create : string -> file_selection obj = "ml_gtk_file_selection_new"
   external set_filename : [>`filesel] obj -> string -> unit
       = "ml_gtk_file_selection_set_filename"
@@ -150,8 +142,7 @@ module FontSelectionDialog = struct
 	in loop 0 l;
 	Obj.magic (arr : string array)
   let cast w : font_selection_dialog obj =
-    if Object.is_a w "GtkFontSelectionDialog" then Obj.magic w
-    else invalid_arg "Gtk.FontSelectionDialog.cast"
+    Object.try_cast w "GtkFontSelectionDialog"
   external create : ?title:string -> unit -> font_selection_dialog obj
       = "ml_gtk_font_selection_dialog_new"
   external get_font : [>`fontseldialog] obj -> Gdk.font

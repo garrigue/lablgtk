@@ -3,7 +3,7 @@
 
 
 Needed:
-	olabl-2.02 Summer edition (olabl-2.02-summer.tar.gz)
+	ocaml-3.00
 	gtk-1.2.x
 	gmake (there is no standard for conditionals)
 
@@ -40,21 +40,19 @@ Contents:
 		browser		the begin of a port of LablBrowser
 				(by Jacques Garrigue)
 
-	lablgl.patch	patch for lablgl-0.92
-
 How to run the examples:
 
-	./lablgtk examples/???.ml
+	./lablgtk -modern examples/???.ml
 
   some examples (e.g. buttons.ml) may need to be run from the examples
   directory
 
-	../lablgtk -I .. ???.ml
+	../lablgtk -modern -I .. ???.ml
 
 How to use the threaded toplevel:
 
-	% ./lablgtk_t
-	        Objective Caml version 2.02 with Kyoto extensions (99/08/05)
+	% ./lablgtk_t -modern
+	        Objective Caml version 2.99 (99/11/23)
 	
 	# let id = GtkThread.start ();;
 	val id : Thread.t = <abstr>
@@ -98,12 +96,14 @@ Structure of the G[A-Z]* modules:
 
   While subtyping follows the Gtk widget hierarchy, you cannot always
   use width subtyping (i.e. #super is not unifiable with all the
-  subclasses of super). Still, it works for the gtkobj, widget and
+  subclasses of super). Still, it works for the gtkobj and
   container classes, and allows subtyping without coercion towards
   these classes (cf. #container in pousse.ml for instance).
+  You must coerce to widget with the #coerce method.
 
   Practically, each widget class is composed of:
-  * an as_widget method, returning the Gtk widget used for packing, etc...
+  * a coerce method, returning the object coerced to the widget type.
+  * an as_widget method, returning the raw Gtk widget used for packing, etc...
   * a misc sub-object, giving access to miscellanous functionality of
     the basic gtkwidget class.
   * a grab sub-object, containing drag and drop signals.
@@ -112,7 +112,7 @@ Structure of the G[A-Z]* modules:
   * connect#event and connect#grab sub-objects, for event and grab
     signals.
 
-  You create a widget by [new <widget name> options ...].
+  You create a widget by [<Module>.<widget name> options ... ()].
   Many optional arguments are admitted. The two last of them, packing:
   and show:, allow you respectively to call a function on your newly
   created widget, and to decide wether to show it immediately or not.
@@ -147,7 +147,7 @@ GL extension
 
   You can use lablgtk in combination with LablGL
 
-  * apply lablgl.patch to lablgl-0.92, compile and install
+  * compile and install lablGL/ocaml3
   * get and install gtkglarea-1.2.x.tar.gz from
     http://www.student.oulu.fi/~jlof/gtkglarea/index.html
   * reconfigure: "make configure USE_GL=1"

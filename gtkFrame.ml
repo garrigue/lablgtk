@@ -6,9 +6,7 @@ open Tags
 open GtkBase
 
 module Alignment = struct
-  let cast w : alignment obj =
-    if Object.is_a w "GtkAlignment" then Obj.magic w
-    else invalid_arg "Gtk.Alignment.cast"
+  let cast w : alignment obj = Object.try_cast w "GtkAlignment"
   external create :
       x:clampf -> y:clampf -> xscale:clampf -> yscale:clampf -> alignment obj
       = "ml_gtk_alignment_new"
@@ -21,16 +19,12 @@ module Alignment = struct
 end
 
 module EventBox = struct
-  let cast w : event_box obj =
-    if Object.is_a w "GtkEventBox" then Obj.magic w
-    else invalid_arg "Gtk.EventBox.cast"
+  let cast w : event_box obj = Object.try_cast w "GtkEventBox"
   external create : unit -> event_box obj = "ml_gtk_event_box_new"
 end
 
 module Frame = struct
-  let cast w : frame obj =
-    if Object.is_a w "GtkFrame" then Obj.magic w
-    else invalid_arg "Gtk.Frame.cast"
+  let cast w : frame obj = Object.try_cast w "GtkFrame"
   external coerce : [>`frame] obj -> frame obj = "%identity"
   external create : optstring -> frame obj = "ml_gtk_frame_new"
   let create ?:label () = create (optstring label)
@@ -56,9 +50,7 @@ module Frame = struct
 end
 
 module AspectFrame = struct
-  let cast w : aspect_frame obj =
-    if Object.is_a w "GtkAspectFrame" then Obj.magic w
-    else invalid_arg "Gtk.AspectFrame.cast"
+  let cast w : aspect_frame obj = Object.try_cast w "GtkAspectFrame"
   external create :
       label:optstring -> xalign:clampf ->
       yalign:clampf -> ratio:float -> obey_child:bool -> aspect_frame obj
@@ -88,9 +80,7 @@ module AspectFrame = struct
 end
 
 module HandleBox = struct
-  let cast w : handle_box obj =
-    if Object.is_a w "GtkHandleBox" then Obj.magic w
-    else invalid_arg "Gtk.HandleBox.cast"
+  let cast w : handle_box obj = Object.try_cast w "GtkHandleBox"
   external create : unit -> handle_box obj = "ml_gtk_handle_box_new"
   external set_shadow_type : [>`handlebox] obj -> shadow_type -> unit =
    "ml_gtk_handle_box_set_shadow_type"
@@ -108,9 +98,7 @@ module HandleBox = struct
 end
 
 module Viewport = struct
-  let cast w : viewport obj =
-    if Object.is_a w "GtkViewport" then Obj.magic w
-    else invalid_arg "Gtk.Viewport.cast"
+  let cast w : viewport obj = Object.try_cast w "GtkViewport"
   external create :
       [>`adjustment] optobj -> [>`adjustment] optobj -> viewport obj
       = "ml_gtk_viewport_new"
@@ -133,9 +121,7 @@ module Viewport = struct
 end
 
 module ScrolledWindow = struct
-  let cast w : scrolled_window obj =
-    if Object.is_a w "GtkScrolledWindow" then Obj.magic w
-    else invalid_arg "Gtk.ScrolledWindow.cast"
+  let cast w : scrolled_window obj = Object.try_cast w "GtkScrolledWindow"
   external create :
       [>`adjustment] optobj -> [>`adjustment] optobj -> scrolled_window obj
       = "ml_gtk_scrolled_window_new"

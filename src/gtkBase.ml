@@ -21,6 +21,9 @@ module Object = struct
     Type.is_a (get_type obj) (Type.from_name name)
   external destroy : 'a obj -> unit = "ml_gtk_object_destroy"
   external unsafe_cast : 'a obj -> 'b obj = "%identity"
+  let try_cast w name =
+    if is_a w name then unsafe_cast w
+    else raise (Cannot_cast name)
   let get_id (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
   module Signals = struct
     open GtkSignal
@@ -30,9 +33,7 @@ module Object = struct
 end
 
 module Widget = struct
-  let cast w : widget obj =
-    if Object.is_a w "GtkWidget" then Obj.magic w
-    else invalid_arg "Gtk.Widget.cast"
+  let cast w : widget obj = Object.try_cast w "GtkWidget"
   external coerce : [>`widget] obj -> widget obj = "%identity"
   external unparent : [>`widget] obj -> unit = "ml_gtk_widget_unparent"
   external show : [>`widget] obj -> unit = "ml_gtk_widget_show"
@@ -303,9 +304,7 @@ module Widget = struct
 end
 
 module Container = struct
-  let cast w : container obj =
-    if Object.is_a w "GtkContainer" then Obj.magic w
-    else invalid_arg "Gtk.Container.cast"
+  let cast w : container obj = Object.try_cast w "GtkContainer"
   external coerce : [>`container] obj -> container obj = "%identity"
   external set_border_width : [>`container] obj -> int -> unit
       = "ml_gtk_container_set_border_width"
@@ -355,9 +354,7 @@ module Container = struct
 end
 
 module Item = struct
-  let cast w : item obj =
-    if Object.is_a w "GtkItem" then Obj.magic w
-    else invalid_arg "Gtk.Item.cast"
+  let cast w : item obj = Object.try_cast w "GtkItem"
   external coerce : [>`item] obj -> item obj = "%identity"
   external select : [>`item] obj -> unit = "ml_gtk_item_select"
   external deselect : [>`item] obj -> unit = "ml_gtk_item_deselect"

@@ -6,17 +6,13 @@ open Tags
 open GtkBase
 
 module GammaCurve = struct
-  let cast w : gamma_curve obj =
-    if Object.is_a w "GtkGammaCurve" then Obj.magic w
-    else invalid_arg "Gtk.GammaCurve.cast"
+  let cast w : gamma_curve obj = Object.try_cast w "GtkGammaCurve"
   external create : unit -> gamma_curve obj = "ml_gtk_gamma_curve_new"
   external get_gamma : [>`gamma] obj -> float = "ml_gtk_gamma_curve_get_gamma"
 end
 
 module ColorSelection = struct
-  let cast w : color_selection obj =
-    if Object.is_a w "GtkColorSelection" then Obj.magic w
-    else invalid_arg "Gtk.ColorSelection.cast"
+  let cast w : color_selection obj = Object.try_cast w "GtkColorSelection"
   external create : unit -> color_selection obj = "ml_gtk_color_selection_new"
   external create_dialog : string -> color_selection_dialog obj
       = "ml_gtk_color_selection_dialog_new"
@@ -50,9 +46,7 @@ module ColorSelection = struct
 end
 
 module Statusbar = struct
-  let cast w : statusbar obj =
-    if Object.is_a w "GtkStatusbar" then Obj.magic w
-    else invalid_arg "Gtk.Statusbar.cast"
+  let cast w : statusbar obj = Object.try_cast w "GtkStatusbar"
   external create : unit -> statusbar obj = "ml_gtk_statusbar_new"
   external get_context : [>`statusbar] obj -> string -> statusbar_context
       = "ml_gtk_statusbar_get_context_id"
@@ -77,9 +71,7 @@ module Statusbar = struct
 end
 
 module Notebook = struct
-  let cast w : notebook obj =
-    if Object.is_a w "GtkNotebook" then Obj.magic w
-    else invalid_arg "Gtk.Notebook.cast"
+  let cast w : notebook obj = Object.try_cast w "GtkNotebook"
   external create : unit -> notebook obj = "ml_gtk_notebook_new"
   external insert_page :
       [>`notebook] obj -> [>`widget] obj -> tab_label:[>`widget] optobj ->
@@ -152,9 +144,7 @@ module Notebook = struct
 end
 
 module Calendar = struct
-  let cast w : calendar obj =
-    if Object.is_a w "GtkCalendar" then Obj.magic w
-    else invalid_arg "Gtk.Calendar.cast"
+  let cast w : calendar obj = Object.try_cast w "GtkCalendar"
   external create : unit -> calendar obj = "ml_gtk_calendar_new"
   external select_month : [>`calendar] obj -> month:int -> year:int -> unit
       = "ml_gtk_calendar_select_month"
@@ -195,9 +185,7 @@ module Calendar = struct
 end
 
 module DrawingArea = struct
-  let cast w : drawing_area obj =
-    if Object.is_a w "GtkDrawingArea" then Obj.magic w
-    else invalid_arg "Gtk.DrawingArea.cast"
+  let cast w : drawing_area obj = Object.try_cast w "GtkDrawingArea"
   external create : unit -> drawing_area obj = "ml_gtk_drawing_area_new"
   external size : [>`drawing] obj -> width:int -> height:int -> unit
       = "ml_gtk_drawing_area_size"
@@ -206,9 +194,7 @@ end
 (* Does not seem very useful ...
 module Curve = struct
   type t = [widget drawing curve] obj
-  let cast w : t =
-    if Object.is_a w "GtkCurve" then Obj.magic w
-    else invalid_arg "Gtk.Curve.cast"
+  let cast w : t = Object.try_cast w "GtkCurve"
   external create : unit -> t = "ml_gtk_curve_new"
   external reset : [>`curve] obj -> unit = "ml_gtk_curve_reset"
   external set_gamma : [>`curve] obj -> float -> unit
@@ -221,9 +207,7 @@ end
 *)
 
 module Misc = struct
-  let cast w : misc obj =
-    if Object.is_a w "GtkMisc" then Obj.magic w
-    else invalid_arg "Gtk.Misc.cast"
+  let cast w : misc obj = Object.try_cast w "GtkMisc"
   external coerce : [>`misc] obj -> misc obj = "%identity"
   external set_alignment : [>`misc] obj -> x:float -> y:float -> unit
       = "ml_gtk_misc_set_alignment"
@@ -248,9 +232,7 @@ module Misc = struct
 end
 
 module Arrow = struct
-  let cast w : arrow obj =
-    if Object.is_a w "GtkArrow" then Obj.magic w
-    else invalid_arg "Gtk.Arrow.cast"
+  let cast w : arrow obj = Object.try_cast w "GtkArrow"
   external create : type:arrow_type -> shadow:shadow_type -> arrow obj
       = "ml_gtk_arrow_new"
   external set : [>`arrow] obj -> type:arrow_type -> shadow:shadow_type -> unit
@@ -258,9 +240,7 @@ module Arrow = struct
 end
 
 module Image = struct
-  let cast w : image obj =
-    if Object.is_a w "GtkImage" then Obj.magic w
-    else invalid_arg "Gtk.Image.cast"
+  let cast w : image obj = Object.try_cast w "GtkImage"
   external create : Gdk.image -> ?mask:Gdk.bitmap -> image obj
       = "ml_gtk_image_new"
   let create ?:mask img = create img ?:mask
@@ -269,9 +249,7 @@ module Image = struct
 end
 
 module Label = struct
-  let cast w : label obj =
-    if Object.is_a w "GtkLabel" then Obj.magic w
-    else invalid_arg "Gtk.Label.cast"
+  let cast w : label obj = Object.try_cast w "GtkLabel"
   external coerce : [>`label] obj -> label obj = "%identity"
   external create : string -> label obj = "ml_gtk_label_new"
   external set_text : [>`label] obj -> string -> unit = "ml_gtk_label_set_text"
@@ -290,9 +268,7 @@ module Label = struct
 end
 
 module TipsQuery = struct
-  let cast w : tips_query obj =
-    if Object.is_a w "GtkTipsQuery" then Obj.magic w
-    else invalid_arg "Gtk.TipsQuery.cast"
+  let cast w : tips_query obj = Object.try_cast w "GtkTipsQuery"
   external create : unit -> tips_query obj = "ml_gtk_tips_query_new"
   external start : [>`tipsquery] obj -> unit = "ml_gtk_tips_query_start_query"
   external stop : [>`tipsquery] obj -> unit = "ml_gtk_tips_query_stop_query"
@@ -354,9 +330,7 @@ module TipsQuery = struct
 end
 
 module Pixmap = struct
-  let cast w : pixmap obj =
-    if Object.is_a w "GtkPixmap" then Obj.magic w
-    else invalid_arg "Gtk.Pixmap.cast"
+  let cast w : pixmap obj = Object.try_cast w "GtkPixmap"
   external create : Gdk.pixmap -> ?mask:Gdk.bitmap -> pixmap obj
       = "ml_gtk_pixmap_new"
   let create ?:mask img = create img ?:mask
@@ -368,9 +342,7 @@ module Pixmap = struct
 end
 
 module Separator = struct
-  let cast w : separator obj =
-    if Object.is_a w "GtkSeparator" then Obj.magic w
-    else invalid_arg "Gtk.Separator.cast"
+  let cast w : separator obj = Object.try_cast w "GtkSeparator"
   external hseparator_new : unit -> separator obj = "ml_gtk_hseparator_new"
   external vseparator_new : unit -> separator obj = "ml_gtk_vseparator_new"
   let create (dir : Tags.orientation) =

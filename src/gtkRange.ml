@@ -6,9 +6,7 @@ open Tags
 open GtkBase
 
 module Progress = struct
-  let cast w : progress obj =
-    if Object.is_a w "GtkProgress" then Obj.magic w
-    else invalid_arg "Gtk.Progress.cast"
+  let cast w : progress obj = Object.try_cast w "GtkProgress"
   external set_show_text : [>`progress] obj -> bool -> unit
       = "ml_gtk_progress_set_show_text"
   external set_text_alignment :
@@ -47,9 +45,7 @@ module Progress = struct
 end
 
 module ProgressBar = struct
-  let cast w : progress_bar obj =
-    if Object.is_a w "GtkProgressBar" then Obj.magic w
-    else invalid_arg "Gtk.ProgressBar.cast"
+  let cast w : progress_bar obj = Object.try_cast w "GtkProgressBar"
   external create : unit -> progress_bar obj = "ml_gtk_progress_bar_new"
   external create_with_adjustment : [>`adjustment] obj -> progress_bar obj
       = "ml_gtk_progress_bar_new_with_adjustment"
@@ -74,9 +70,7 @@ module ProgressBar = struct
 end
 
 module Range = struct
-  let cast w : range obj =
-    if Object.is_a w "GtkRange" then Obj.magic w
-    else invalid_arg "Gtk.Range.cast"
+  let cast w : range obj = Object.try_cast w "GtkRange"
   external coerce : [>`range] obj -> range obj = "%identity"
   external get_adjustment : [>`range] obj -> adjustment obj
       = "ml_gtk_range_get_adjustment"
@@ -90,9 +84,7 @@ module Range = struct
 end
 
 module Scale = struct
-  let cast w : scale obj =
-    if Object.is_a w "GtkScale" then Obj.magic w
-    else invalid_arg "Gtk.Scale.cast"
+  let cast w : scale obj = Object.try_cast w "GtkScale"
   external hscale_new : [>`adjustment] optobj -> scale obj
       = "ml_gtk_hscale_new"
   external vscale_new : [>`adjustment] optobj -> scale obj
@@ -117,9 +109,7 @@ module Scale = struct
 end
 
 module Scrollbar = struct
-  let cast w : scrollbar obj =
-    if Object.is_a w "GtkScrollbar" then Obj.magic w
-    else invalid_arg "Gtk.Scrollbar.cast"
+  let cast w : scrollbar obj = Object.try_cast w "GtkScrollbar"
   external hscrollbar_new : [>`adjustment] optobj -> scrollbar obj
       = "ml_gtk_hscrollbar_new"
   external vscrollbar_new : [>`adjustment] optobj -> scrollbar obj
@@ -130,9 +120,7 @@ module Scrollbar = struct
 end
 
 module Ruler = struct
-  let cast w : ruler obj =
-    if Object.is_a w "GtkRuler" then Obj.magic w
-    else invalid_arg "Gtk.Ruler.cast"
+  let cast w : ruler obj = Object.try_cast w "GtkRuler"
   external hruler_new : unit -> ruler obj = "ml_gtk_hruler_new"
   external vruler_new : unit -> ruler obj = "ml_gtk_vruler_new"
   let create (dir : orientation) =

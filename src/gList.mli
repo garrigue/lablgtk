@@ -67,7 +67,7 @@ class ['a] clist : Gtk.clist obj ->
     method cell_type : int -> int -> Tags.cell_type
     method clear : unit -> unit
     method column_title : int -> string
-    method column_widget : int -> widget_full
+    method column_widget : int -> widget
     method columns : int
     method columns_autosize : unit -> unit
     method connect : clist_signals

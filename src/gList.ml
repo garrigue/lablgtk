@@ -66,7 +66,7 @@ class ['a] clist obj = object (self)
   method thaw () = CList.thaw obj
   method column_title = CList.get_column_title obj
   method column_widget col =
-    new widget_full (CList.get_column_widget obj col)
+    new widget (CList.get_column_widget obj col)
   method columns_autosize () = CList.columns_autosize obj
   method optimal_column_width = CList.optimal_column_width obj
   method moveto ?:row_align{=0.} ?:col_align{=0.} row col =
