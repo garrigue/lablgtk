@@ -80,14 +80,17 @@ class item_signals :
     method event : callback:(item_event -> bool) -> GtkSignal.id
   end
 
-class ['a] item : 'b Gtk.obj ->
+class base_item : ([> GnomeCanvas.item] as 'b) Gtk.obj ->
   object
-    constraint 'a = [< items_properties]
-    constraint 'b = [> GnomeCanvas.item]
     inherit GObj.gtkobj
     val obj : 'b Gtk.obj
+
+    method parent : group
+    method reparent : group -> unit
+
     method as_item : GnomeCanvas.item Gtk.obj
     method connect : item_signals
+
     method get_bounds : float array
     method grab : Gdk.Tags.event_mask list -> Gdk.cursor -> int32 -> unit
     method grab_focus : unit -> unit
@@ -98,46 +101,34 @@ class ['a] item : 'b Gtk.obj ->
     method lower : int -> unit
     method lower_to_bottom : unit -> unit
     method move : x:float -> y:float -> unit
-    method parent : GnomeCanvas.group Gobject.obj
-    method canvas : GnomeCanvas.canvas Gobject.obj
+    method canvas : canvas
     method xform : [`IDENTITY|`TRANSL of float array|`AFFINE of float array]
     method affine_relative : float array -> unit
     method affine_absolute : float array -> unit
     method raise : int -> unit
     method raise_to_top : unit -> unit
-    method reparent : GnomeCanvas.group Gobject.obj -> unit
-    method set : 'a list -> unit
     method show : unit -> unit
     method ungrab : int32 -> unit
     method w2i : x:float -> y:float -> float * float
   end
 
-class group : GnomeCanvas.group Gtk.obj ->
-  object
-    inherit [GnomeCanvas.group_p] item
+and group : GnomeCanvas.group Gtk.obj ->
+  object 
+    inherit base_item
     val obj : GnomeCanvas.group Gtk.obj
     method as_group : GnomeCanvas.group Gtk.obj
-    method get_items : GnomeCanvas.item Gobject.obj list
+    method get_items : base_item list
+    method set : GnomeCanvas.group_p list -> unit
   end
 
-class rich_text : GnomeCanvas.rich_text Gtk.obj ->
-  object
-    inherit [GnomeCanvas.rich_text_p] item
-    val obj : GnomeCanvas.rich_text Gtk.obj
-    method copy_clipboard : unit -> unit
-    method cut_clipboard : unit -> unit
-    method paste_clipboard : unit -> unit
-    method get_buffer : GText.buffer
-  end
-
-class canvas : GnomeCanvas.canvas Gtk.obj ->
+and canvas : GnomeCanvas.canvas Gtk.obj ->
   object
     inherit GPack.layout
     val obj : GnomeCanvas.canvas Gtk.obj
     method aa : bool
     method c2w : cx:float -> cy:float -> float * float
     method get_center_scroll_region : bool
-    method get_item_at : x:float -> y:float -> GnomeCanvas.item Gobject.obj
+    method get_item_at : x:float -> y:float -> base_item (** @raise Not_found . *)
     method get_scroll_offsets : int * int
     method get_scroll_region : float array
     method root : group
@@ -154,6 +145,13 @@ class canvas : GnomeCanvas.canvas Gtk.obj ->
     method world_to_window : wox:float -> woy:float -> float * float
   end
 
+class ['p] item : [> GnomeCanvas.item] Gtk.obj -> 
+  object
+    inherit base_item
+    constraint 'p = [< items_properties]
+    method set : 'p list -> unit
+  end
+
 val canvas :
   ?aa:bool ->
   ?border_width:int ->
@@ -163,10 +161,10 @@ val canvas :
   ?show:bool ->
   unit -> canvas 
 
+val group : ?x:float -> ?y:float -> #group -> group
+
 val wrap_item : 
   [> GnomeCanvas.item] Gtk.obj -> ('a, 'p) GnomeCanvas.Types.t -> 'p item
-
-val group : ?x:float -> ?y:float -> #group -> group
 
 type rect = GnomeCanvas.re_p item
 val rect :
@@ -227,6 +225,16 @@ val widget :
   ?props:GnomeCanvas.widget_p list ->
   #group -> widget
 
+class rich_text : GnomeCanvas.rich_text Gtk.obj ->
+  object
+    inherit [GnomeCanvas.rich_text_p] item
+    val obj : GnomeCanvas.rich_text Gtk.obj
+    method copy_clipboard : unit -> unit
+    method cut_clipboard : unit -> unit
+    method paste_clipboard : unit -> unit
+    method get_buffer : GText.buffer
+  end
+
 val rich_text :
   ?x:float -> ?y:float ->
   ?text:string ->
@@ -234,4 +242,3 @@ val rich_text :
   ?props:GnomeCanvas.rich_text_p list ->
   #group -> rich_text
 
-val parent : 'a #item -> group
