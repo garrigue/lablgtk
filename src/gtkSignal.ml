@@ -26,7 +26,7 @@ let pop_callback (State old) =
   !exit_callback ();
   res
 
-external connect :
+external connect_by_name :
   'a obj -> name:string -> callback:(GtkArgv.t -> unit) -> after:bool -> id
   = "ml_gtk_signal_connect"
 external emit_stop_by_name : 'a obj -> name:string -> unit
@@ -41,7 +41,7 @@ let connect  ~(sgn : ('a, _) t) ~callback ?(after=false) (obj : 'a obj) =
     if pop_callback old then emit_stop_by_name obj ~name:sgn.name;
     Gaux.may ~f:raise exn
   in
-  connect obj ~name:sgn.name ~callback ~after
+  connect_by_name obj ~name:sgn.name ~callback ~after
 external disconnect : 'a obj -> id -> unit
   = "ml_gtk_signal_disconnect"
 external handler_block : 'a obj -> id -> unit

@@ -56,5 +56,8 @@ value ml_glade_xml_signal_autoconnect_full (value self, value clos)
 }
 
 ML_2 (glade_xml_get_widget, GladeXML_val, String_val, Val_GtkWidget)
+ML_2 (glade_xml_get_widget_by_long_name, GladeXML_val, String_val,
+      Val_GtkWidget)
 ML_1 (glade_get_widget_name, GtkWidget_val, Val_string)
+ML_1 (glade_get_widget_long_name, GtkWidget_val, Val_string)
 ML_1 (glade_get_widget_tree, GtkWidget_val, Val_GtkAny)
