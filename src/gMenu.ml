@@ -161,9 +161,9 @@ let menu_bar ?:border_width ?:width ?:height ?:packing ?:show () =
 (* Menu Factory *)
 
 class ['a] factory
-    ?:accel_group{= AccelGroup.create ()}
-    ?:accel_mod{= [`CONTROL]}
-    ?:accel_flags{= [`VISIBLE]} (menu_shell : 'a) =
+    ?:accel_group[=AccelGroup.create ()]
+    ?:accel_mod[=[`CONTROL]]
+    ?:accel_flags[=[`VISIBLE]] (menu_shell : 'a) =
   object (self)
     val menu_shell : #menu_shell = menu_shell
     val group = accel_group

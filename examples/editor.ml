@@ -26,10 +26,10 @@ class editor ?:packing ?:show () = object (self)
       filename <- Some name;
       text#freeze ();
       text#delete_text start:0 end:text#length;
-      let buffer = String.create len:1024 and len = ref 0 in
-      while len := input ic :buffer pos:0 len:1024; !len > 0 do
-	if !len = 1024 then text#insert buffer
-	else text#insert (String.sub buffer pos:0 len:!len)
+      let buf = String.create len:1024 and len = ref 0 in
+      while len := input ic :buf pos:0 len:1024; !len > 0 do
+	if !len = 1024 then text#insert buf
+	else text#insert (String.sub buf pos:0 len:!len)
       done;
       text#set_point 0;
       text#thaw ();

@@ -44,7 +44,7 @@ class entry obj = object
   method text_length = Entry.text_length obj
 end
 
-let set_editable ?:editable ?:width{= -2} ?:height{= -2} w =
+let set_editable ?:editable ?:width[= -2] ?:height[= -2] w =
   may editable fun:(Editable.set_editable w);
   if width <> -2 || height <> -2 then Widget.set_usize w :width :height
 

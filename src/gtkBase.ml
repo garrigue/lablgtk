@@ -314,7 +314,7 @@ module Container = struct
       = "ml_gtk_container_add"
   external remove : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_remove"
-  let set ?:border_width ?:width{= -2} ?:height{= -2} w =
+  let set ?:border_width ?:width[= -2] ?:height[= -2] w =
     may border_width fun:(set_border_width w);
     if width <> -2 || height <> -2 then
       Widget.set_usize w ?:width ?:height

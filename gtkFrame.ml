@@ -10,7 +10,7 @@ module Alignment = struct
   external create :
       x:clampf -> y:clampf -> xscale:clampf -> yscale:clampf -> alignment obj
       = "ml_gtk_alignment_new"
-  let create ?:x{=0.5} ?:y{=0.5} ?:xscale{=1.0} ?:yscale{=1.0} () =
+  let create ?:x[=0.5] ?:y[=0.5] ?:xscale[=1.0] ?:yscale[=1.0] () =
     create :x :y :xscale :yscale
   external set :
       [>`alignment] obj ->
@@ -55,8 +55,8 @@ module AspectFrame = struct
       label:optstring -> xalign:clampf ->
       yalign:clampf -> ratio:float -> obey_child:bool -> aspect_frame obj
       = "ml_gtk_aspect_frame_new"
-  let create ?:label ?:xalign{=0.5} ?:yalign{=0.5}
-      ?:ratio{=1.0} ?:obey_child{=true} () =
+  let create ?:label ?:xalign[=0.5] ?:yalign[=0.5]
+      ?:ratio[=1.0] ?:obey_child[=true] () =
     create label:(optstring label) :xalign :yalign :ratio :obey_child
   external set :
       [>`aspect] obj ->

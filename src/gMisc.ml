@@ -6,7 +6,7 @@ open GtkBase
 open GtkMisc
 open GObj
 
-let separator dir ?:width{= -2} ?:height{= -2} ?:packing ?:show () =
+let separator dir ?:width[= -2] ?:height[= -2] ?:packing ?:show () =
   let w = Separator.create dir in
   if width <> -2 || height <> -2 then Widget.set_usize w :width :height;
   pack_return (new widget_full w) :packing :show
@@ -18,7 +18,7 @@ class statusbar_context obj ctx = object (self)
   method push text = Statusbar.push obj context :text
   method pop () = Statusbar.pop obj context
   method remove = Statusbar.remove obj context
-  method flash ?:delay{=1000} text =
+  method flash ?:delay[=1000] text =
     let msg = self#push text in
     GtkMain.Timeout.add delay callback:(fun () -> self#remove msg; false);
     ()
@@ -69,7 +69,7 @@ class calendar obj = object
   method thaw () = Calendar.thaw obj
 end
 
-let calendar ?:options ?:width{= -2} ?:height{= -2} ?:packing ?:show () =
+let calendar ?:options ?:width[= -2] ?:height[= -2] ?:packing ?:show () =
   let w = Calendar.create () in
   if width <> -2 || height <> -2 then Widget.set_usize w :width :height;
   may options fun:(Calendar.display_options w);
@@ -81,7 +81,7 @@ class drawing_area obj = object
   method set_size = DrawingArea.size obj
 end
 
-let drawing_area ?:width{= 0} ?:height{= 0} ?:packing ?:show () =
+let drawing_area ?:width[= 0] ?:height[= 0] ?:packing ?:show () =
   let w = DrawingArea.create () in
   if width <> 0 || height <> 0 then DrawingArea.size w :width :height;
   pack_return (new drawing_area w) :packing :show
@@ -106,7 +106,7 @@ class label obj = object
   method connect = new widget_signals obj
 end
 
-let label ?:text{=""} ?:justify ?:line_wrap ?:pattern
+let label ?:text[=""] ?:justify ?:line_wrap ?:pattern
     ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height ?:packing ?:show () =
   let w = Label.create text in
   Label.set w ?:justify ?:line_wrap ?:pattern;

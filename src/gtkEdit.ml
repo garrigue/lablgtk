@@ -83,7 +83,7 @@ module SpinButton = struct
   external create :
       [>`adjustment] optobj -> rate:float -> digits:int -> spin_button obj
       = "ml_gtk_spin_button_new"
-  let create ?:adjustment ?:rate{=0.5} ?:digits{=0} () =
+  let create ?:adjustment ?:rate[=0.5] ?:digits[=0] () =
     create (optboxed adjustment) :rate :digits
   external configure :
     [>`spinbutton] obj -> adjustment:[>`adjustment] obj ->

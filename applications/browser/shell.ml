@@ -31,7 +31,8 @@ class shell :prog :args :env ?:packing ?:show () =
   let _ = List.iter fun:Unix.set_nonblock [out1;in1;err1] in
 object (self)
   val textw = GEdit.text editable:true ?:packing ?:show ()
-  val pid = Unix.create_process_env :prog :args :env in:in2 out:out2 err:err2
+  val pid = Unix.create_process_env
+      name:prog :args :env stdin:in2 stdout:out2 stderr:err2
   val out = Unix.out_channel_of_descr out1
   val h = new history ()
   val mutable alive = true
@@ -47,7 +48,7 @@ object (self)
       List.iter fun:(protect Unix.close) [in1; err1; in2; out2; err2];
       try
 	Unix.kill :pid signal:Sys.sigkill;
-	Unix.waitpid pid flags:[]; ()
+	Unix.waitpid pid mode:[]; ()
       with _ -> ()
     end
   method interrupt () =
@@ -62,11 +63,11 @@ object (self)
     with Sys_error _ -> ()
   method private read :fd :len =
     try
-      let buffer = String.create :len in
-      let len = Unix.read fd :buffer pos:0 :len in
+      let buf = String.create :len in
+      let len = Unix.read fd :buf pos:0 :len in
       if len > 0 then begin
 	textw#set_position textw#length;
-	self#insert (String.sub buffer pos:0 :len);
+	self#insert (String.sub buf pos:0 :len);
 	input_start <- textw#position;
       end;
       len
@@ -81,10 +82,10 @@ object (self)
       end;
       self#insert lex:true (if dir = `previous then h#previous else h#next);
     end
-  method private lex ?:start{= Text.line_start textw}
-      ?end:e{= Text.line_end textw} () =
+  method private lex ?:start[=Text.line_start textw]
+      ?end:e[=Text.line_end textw] () =
     if start < e then Lexical.tag textw :start end:e
-  method insert ?:lex{=false} text =
+  method insert ?:lex[=false] text =
     let start = Text.line_start textw in
     textw#insert text;
     if lex then self#lex :start ()
@@ -153,7 +154,7 @@ let get_all () =
   all
 
 let may_exec prog =
-  try Unix.access file:prog perm:[Unix.X_OK]; true
+  try Unix.access name:prog perm:[Unix.X_OK]; true
   with Unix.Unix_error _ -> false
 
 let f :prog :title =
@@ -178,7 +179,7 @@ let f :prog :title =
   let reg = Str.regexp "TERM=" in
   let env = Array.map (Unix.environment ()) fun:
       begin fun s ->
- 	if Str.string_match reg s pos:0 then "TERM=dumb" else s
+ 	if Str.string_match pat:reg s pos:0 then "TERM=dumb" else s
       end in
   let load_path =
     List.flatten (List.map !Config.load_path fun:(fun dir -> ["-I"; dir])) in

@@ -36,9 +36,9 @@ class window obj = object
   method connect = new container_signals obj
 end
 
-let window ?type:t{=`TOPLEVEL} ?:title ?:wm_name ?:wm_class ?:position
+let window ?type:t[=`TOPLEVEL] ?:title ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
-    ?:border_width ?:width ?:height ?:packing ?:show{=false} () =
+    ?:border_width ?:width ?:height ?:packing ?:show[=false] () =
   let w = Window.create t in
   Window.set w ?:title ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
@@ -54,7 +54,7 @@ end
 
 let dialog ?:title ?:wm_name ?:wm_class ?:position ?:allow_shrink
     ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y ?:border_width ?:width ?:height
-    ?:packing ?:show{=false} () =
+    ?:packing ?:show[=false] () =
   let w = Dialog.create () in
   Window.set w ?:title ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
@@ -74,10 +74,10 @@ class color_selection_dialog obj = object
     new GMisc.color_selection (ColorSelection.colorsel obj)
 end
 
-let color_selection_dialog ?:title{="Pick a color"}
+let color_selection_dialog ?:title[="Pick a color"]
     ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
-    ?:border_width ?:width ?:height ?:packing ?:show{=false} () =
+    ?:border_width ?:width ?:height ?:packing ?:show[=false] () =
   let w = ColorSelection.create_dialog title in
   Window.set w ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
@@ -96,11 +96,11 @@ class file_selection obj = object
   method help_button = new GButton.button (FileSelection.get_help_button obj)
 end
 
-let file_selection ?:title{="Choose a file"} ?:filename
-    ?:fileop_buttons{=false}
+let file_selection ?:title[="Choose a file"] ?:filename
+    ?:fileop_buttons[=false]
     ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
-    ?:border_width ?:width ?:height ?:packing ?:show{=false} () =
+    ?:border_width ?:width ?:height ?:packing ?:show[=false] () =
   let w = FileSelection.create title in
   FileSelection.set w ?:filename :fileop_buttons;
   Window.set w ?:wm_name ?:wm_class ?:position
@@ -126,7 +126,7 @@ end
 
 let font_selection_dialog ?:title ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
-    ?:border_width ?:width ?:height ?:packing ?:show{=false} () =
+    ?:border_width ?:width ?:height ?:packing ?:show[=false] () =
   let w = FontSelectionDialog.create ?:title () in
   Window.set w ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
