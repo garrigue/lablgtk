@@ -1,5 +1,5 @@
 /* $Id$ */
-
+#include <stdio.h>
 #include <glib.h>
 #include <glib-object.h>
 #include <caml/mlvalues.h>

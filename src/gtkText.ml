@@ -40,68 +40,68 @@ module Tag = struct
   external event : texttag obj -> 'a obj ->  'b Gdk.event -> textiter -> bool
     = "ml_gtk_text_tag_event"
   type property = 
-    [ | `NAME of string
-    | `BACKGROUND of string
-    | `FOREGROUND of string 
-    | `BACKGROUND_GDK of GDraw.color
-    | `FOREGROUND_GDK of  GDraw.color
-    | `BACKGROUND_STIPPLE of Gdk.pixmap
-    | `FOREGROUND_STIPPLE of Gdk.pixmap
-    | `FONT of string
-    | `FONT_DESC of Pango.Font.description
-    | `FAMILY of string
-	(*    | `STYLE of Pango.style 
-	      | `VARIANT of Pango.variant *)
-    | `WEIGHT of int
-	(*    | `STRETCH of Pango.stretch *)
-    | `SIZE of int
-    | `SIZE_POINTS of float
-    | `SCALE of float
-    | `PIXELS_ABOVE_LINES of int
-    | `PIXELS_BELOW_LINES of int
-    | `PIXELS_INSIDE_WRAP of int
-    | `EDITABLE of bool
-    | `WRAP_MODE of Gtk.Tags.wrap_mode
-    | `JUSTIFICATION of Gtk.Tags.justification
-    | `DIRECTION of Gtk.Tags.text_direction
-    | `LEFT_MARGIN of int
-    | `INDENT of int
-    | `STRIKETHROUGH of bool
-    | `RIGHT_MARGIN of int
-	(*    | `UNDERLINE of Pango.underline *)
-    | `RISE of int
-    | `BACKGROUND_FULL_HEIGHT of bool
-    | `LANGUAGE of string
-	(*    | `TABS of Pango.TabArray.t *)
-    | `INVISIBLE of bool
-    | `BACKGROUND_SET of bool
-    | `FOREGROUND_SET of bool
-    | `BACKGROUND_STIPPLE_SET of bool
-    | `FOREGROUND_STIPPLE_SET of bool
-    | `FAMILY_SET of bool
-    | `STYLE_SET of bool
-    | `VARIANT_SET of bool 
-    | `WEIGHT_SET of bool
-    | `STRETCH_SET of bool
-    | `SIZE_SET of bool             
-    | `SCALE_SET of bool            
-    | `PIXELS_ABOVE_LINES_SET of bool 
-    | `PIXELS_BELOW_LINES_SET of bool 
-    | `PIXELS_INSIDE_WRAP_SET of bool 
-    | `EDITABLE_SET of bool         
-    | `WRAP_MODE_SET of bool        
-    | `JUSTIFICATION_SET of bool    
-    | `LEFT_MARGIN_SET of bool      
-    | `INDENT_SET of bool
-    | `STRIKETHROUGH_SET of bool    
-    | `RIGHT_MARGIN_SET of bool     
-    | `UNDERLINE_SET of bool        
-    | `RISE_SET of bool             
-    | `BACKGROUND_FULL_HEIGHT_SET of bool 
-    | `LANGUAGE_SET of bool         
-    | `TABS_SET of bool             
-    | `INVISIBLE_SET of bool
-    ]
+      [ | `NAME of string
+      | `BACKGROUND of string
+      | `FOREGROUND of string 
+      | `BACKGROUND_GDK of GDraw.color
+      | `FOREGROUND_GDK of  GDraw.color
+      | `BACKGROUND_STIPPLE of Gdk.pixmap
+      | `FOREGROUND_STIPPLE of Gdk.pixmap
+      | `FONT of string
+      | `FONT_DESC of Pango.Font.description
+      | `FAMILY of string
+	  (*    | `STYLE of Pango.style 
+		| `VARIANT of Pango.variant *)
+      | `WEIGHT of int
+	  (*    | `STRETCH of Pango.stretch *)
+      | `SIZE of int
+      | `SIZE_POINTS of float
+      | `SCALE of float
+      | `PIXELS_ABOVE_LINES of int
+      | `PIXELS_BELOW_LINES of int
+      | `PIXELS_INSIDE_WRAP of int
+      | `EDITABLE of bool
+      | `WRAP_MODE of Gtk.Tags.wrap_mode
+      | `JUSTIFICATION of Gtk.Tags.justification
+      | `DIRECTION of Gtk.Tags.text_direction
+      | `LEFT_MARGIN of int
+      | `INDENT of int
+      | `STRIKETHROUGH of bool
+      | `RIGHT_MARGIN of int
+	  (*    | `UNDERLINE of Pango.underline *)
+      | `RISE of int
+      | `BACKGROUND_FULL_HEIGHT of bool
+      | `LANGUAGE of string
+	  (*    | `TABS of Pango.TabArray.t *)
+      | `INVISIBLE of bool
+      | `BACKGROUND_SET of bool
+      | `FOREGROUND_SET of bool
+      | `BACKGROUND_STIPPLE_SET of bool
+      | `FOREGROUND_STIPPLE_SET of bool
+      | `FAMILY_SET of bool
+      | `STYLE_SET of bool
+      | `VARIANT_SET of bool 
+      | `WEIGHT_SET of bool
+      | `STRETCH_SET of bool
+      | `SIZE_SET of bool             
+      | `SCALE_SET of bool            
+      | `PIXELS_ABOVE_LINES_SET of bool 
+      | `PIXELS_BELOW_LINES_SET of bool 
+      | `PIXELS_INSIDE_WRAP_SET of bool 
+      | `EDITABLE_SET of bool         
+      | `WRAP_MODE_SET of bool        
+      | `JUSTIFICATION_SET of bool    
+      | `LEFT_MARGIN_SET of bool      
+      | `INDENT_SET of bool
+      | `STRIKETHROUGH_SET of bool    
+      | `RIGHT_MARGIN_SET of bool     
+      | `UNDERLINE_SET of bool        
+      | `RISE_SET of bool             
+      | `BACKGROUND_FULL_HEIGHT_SET of bool 
+      | `LANGUAGE_SET of bool         
+      | `TABS_SET of bool             
+      | `INVISIBLE_SET of bool
+      ]
   let property_to_string (p:property) = match p with
     | `NAME _ -> "name"
     | `BACKGROUND _ -> "background"
@@ -170,8 +170,8 @@ module Tag = struct
     | `LANGUAGE s -> 
 	let gtyp = Gobject.Type.of_fundamental `STRING in 
 	let v = Gobject.Value.create gtyp in 
-	  Gobject.Value.set v (`STRING (Some s)); 
-	  Gobject.set_property o (property_to_string p) v 
+	Gobject.Value.set v (`STRING (Some s)); 
+	Gobject.set_property o (property_to_string p) v 
     | `EDITABLE b | `STRIKETHROUGH b | `BACKGROUND_FULL_HEIGHT b 
     | `INVISIBLE b | `BACKGROUND_SET b | `FOREGROUND_SET b 
     | `BACKGROUND_STIPPLE_SET b | `FOREGROUND_STIPPLE_SET b 
@@ -185,41 +185,43 @@ module Tag = struct
     | `TABS_SET b | `INVISIBLE_SET b -> 
 	let gtyp = Gobject.Type.of_fundamental `BOOLEAN in 
 	let v = Gobject.Value.create gtyp in 
-	  Gobject.Value.set v (`BOOL b); 
-	  Gobject.set_property o (property_to_string p) v 
-	    
+	Gobject.Value.set v (`BOOL b);
+	Gobject.set_property o (property_to_string p) v 
+	  
     | `RISE b | `RIGHT_MARGIN b | `INDENT b | `LEFT_MARGIN b 
     | `PIXELS_INSIDE_WRAP b 
     | `PIXELS_BELOW_LINES b | `PIXELS_ABOVE_LINES b 
     | `SIZE b | `WEIGHT b ->
 	let gtyp = Gobject.Type.of_fundamental `INT in 
 	let v = Gobject.Value.create gtyp in 
-	  Gobject.Value.set v (`INT b); 
-	  Gobject.set_property o (property_to_string p) v 
+	Gobject.Value.set v (`INT b); 
+	Gobject.set_property o (property_to_string p) v 
     | `SIZE_POINTS b | `SCALE b   -> 
 	let gtyp = Gobject.Type.of_fundamental `FLOAT in 
 	let v = Gobject.Value.create gtyp in 
-	  Gobject.Value.set v (`FLOAT b); 
-	  Gobject.set_property o (property_to_string p) v 
+	Gobject.Value.set v (`FLOAT b); 
+	Gobject.set_property o (property_to_string p) v 
     | `FOREGROUND_STIPPLE b | `BACKGROUND_STIPPLE b -> assert false
     | `FOREGROUND_GDK b | `BACKGROUND_GDK b  -> assert false
     | `WRAP_MODE b  -> assert false;
 	let gtyp = Gobject.Type.from_name "GtkWrapMode" in 
 	let v = Gobject.Value.create gtyp in 
-	  Gobject.Value.set 
-	    v 
-	    (`INT (Obj.magic b)); (* some lookup is needed to translate...*) 
-	  Gobject.set_property o (property_to_string p) v 
+	Gobject.Value.set 
+	  v 
+	  (`INT (Obj.magic b)); (* some lookup is needed to translate...*) 
+	Gobject.set_property o (property_to_string p) v 
 
     | `DIRECTION b  -> assert false
     | `JUSTIFICATION b -> assert false
     | `FONT_DESC f ->
 	let gtyp = Gobject.Type.from_name "PangoFontDescription" in 
 	let v = Gobject.Value.create gtyp in 
-	  Gobject.Value.set 
-	    v 
-	    (`POINTER (Some (Obj.magic f))); 
-	  Gobject.set_property o (property_to_string p) v 
+	Gobject.Value.set 
+	  v 
+	  (`POINTER (Some (Obj.magic (Pango.Font.copy f))));
+	(* Copying the font is COMPULSARY. 
+	   Otherwise it's freed by the value itself...*)
+	Gobject.set_property o (property_to_string p) v
   module Signals = struct
     open GtkSignal
     let marshal_event f _ = function
