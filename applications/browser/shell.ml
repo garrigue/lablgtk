@@ -23,9 +23,10 @@ class ['a] history () = object
 end
 
 let set_size_chars (view : #GObj.widget) ~width ~height =
-  let metrics = view#misc#pango_context#get_metrics () in
+  let metrics = view#misc#pango_context#get_metrics ~lang:"C" () in
   let width = GPango.to_pixels (width * metrics#approx_digit_width)
   and height = GPango.to_pixels (height * (metrics#ascent+metrics#descent)) in
+  (* Printf.eprintf "width=%d, height=%d\n" width height; flush stderr; *)
   view#misc#set_size_request ~width ~height
 
 (* The shell class. Now encapsulated *)
