@@ -273,7 +273,7 @@ Make_Extractor (GdkEventButton, GdkEvent_val(Button), y_root, copy_double)
 Make_Extractor (GdkEventKey, GdkEvent_val(Key), time, Val_int)
 Make_Extractor (GdkEventKey, GdkEvent_val(Key), state, Val_int)
 Make_Extractor (GdkEventKey, GdkEvent_val(Key), keyval, Val_int)
-Make_Extractor (GdkEventKey, GdkEvent_val(Key), string, copy_string)
+Make_Extractor (GdkEventKey, GdkEvent_val(Key), string, Val_string)
 
 Make_Extractor (GdkEventCrossing, GdkEvent_val(Crossing), subwindow,
 		Val_GdkWindow)

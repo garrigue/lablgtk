@@ -45,3 +45,99 @@ class liste ?:selection_mode ?:border_width ?:width ?:height ?:packing ?:show =
     inherit liste_wrapper w
     initializer pack_return :packing ?:show (self :> liste_wrapper)
   end
+
+(* Cell lists *)
+
+class clist_signals obj ?:after = object
+  inherit container_signals obj ?:after
+  method click_column =
+    GtkSignal.connect sig:CList.Signals.click_column obj ?:after
+  method select_row =
+    GtkSignal.connect sig:CList.Signals.select_row obj ?:after
+  method unselect_row =
+    GtkSignal.connect sig:CList.Signals.unselect_row obj ?:after
+end
+
+class clist_wrapper obj = object (self)
+  inherit widget (obj : clist obj)
+  method connect = new clist_signals ?obj
+  method rows = CList.get_rows obj
+  method columns = CList.get_columns obj
+  method hadjustment = new GData.adjustment_wrapper (CList.get_hadjustment obj)
+  method vadjustment = new GData.adjustment_wrapper (CList.get_vadjustment obj)
+  method set_button_actions = CList.set_button_actions obj
+  method freeze () = CList.freeze obj
+  method thaw () = CList.thaw obj
+  method column_title = CList.get_column_title obj
+  method column_widget col =
+    new widget_wrapper (CList.get_column_widget obj col)
+  method columns_autosize () = CList.columns_autosize obj
+  method optimal_column_width = CList.optimal_column_width obj
+  method moveto row col ?:row_align [< 0. >] ?:col_align [< 0. >] =
+    CList.moveto obj row col :row_align :col_align
+  method row_is_visible = CList.row_is_visible obj
+  method cell_type = CList.get_cell_type obj
+  method cell_text = CList.get_text obj
+  method cell_pixmap row col =
+    let pm, mask = CList.get_pixmap obj row col in
+    new GdkObj.pixmap pm ?:mask
+  method row_selectable = CList.get_selectable obj
+  method set_shift = CList.set_shift obj
+  method insert :row texts =
+    let texts = List.map texts fun:(fun x -> Some x) in
+    CList.insert obj row :texts
+  method append = self#insert row:self#rows
+  method prepend = self#insert row:0
+  method remove = CList.remove obj
+  method select = CList.select obj
+  method unselect = CList.unselect obj
+  method clear () = CList.clear obj
+  method get_row_column = CList.get_row_column obj
+  method select_all () = CList.select_all obj
+  method unselect_all () = CList.unselect_all obj
+  method swap_rows = CList.swap_rows obj
+  method row_move = CList.row_move obj
+  method set_clist ?:hadjustment ?:vadjustment =
+    CList.set ?obj
+      ?hadjustment:(may_map hadjustment fun:GData.adjustment_obj)
+      ?vadjustment:(may_map vadjustment fun:GData.adjustment_obj)
+  method set_titles = CList.set_titles ?obj
+  method set_sort = CList.set_sort ?obj
+  method set_column : 'b. int -> ?widget:(#is_widget as 'b) -> _ =
+    fun col ?:widget ->
+      CList.set_column ?obj ?col ?widget:(may_map widget fun:(#as_widget))
+  method set_row = CList.set_row ?obj
+  method set_cell :
+      'c. int -> int -> ?text:string -> ?pixmap:(#GdkObj.pixmap as 'c) -> _ =
+    fun row col ?:text ?:pixmap ?:spacing [< 0 >] ->
+      match text, pixmap with
+	_, None -> CList.set_text obj row col ?:text
+      | None, Some pm ->
+	  CList.set_pixmap obj row col pixmap:pm#pixmap ?mask:pm#mask
+      |	Some text, Some pm ->
+	  CList.set_pixtext obj row col
+	    :text :spacing pixmap:pm#pixmap ?mask:pm#mask
+  method set_size ?:border = Container.set ?obj ?border_width:border
+end
+
+class clist ?:columns [< 1 >] ?:titles ?:hadjustment ?:vadjustment
+    ?:shadow_type ?:reorderable ?:use_drag_icons ?:row_height
+    ?:titles_show ?:titles_active ?:sort_column ?:sort_type
+    ?:border_width ?:width ?:height ?:packing ?:show =
+  let w =
+    match titles with None -> CList.create cols:columns
+    | Some titles -> CList.create_with_titles (Array.of_list titles)
+  in
+  let () =
+    CList.set w 
+      ?hadjustment:(may_map hadjustment fun:GData.adjustment_obj)
+      ?vadjustment:(may_map vadjustment fun:GData.adjustment_obj)
+      ?:shadow_type ?:reorderable ?:use_drag_icons ?:row_height;
+    CList.set_titles w ?show:titles_show ?active:titles_active;
+    CList.set_sort w ?column:sort_column ?type:sort_type;
+    Container.set w ?:border_width ?:width ?:height
+  in
+  object (self)
+    inherit clist_wrapper w
+    initializer pack_return :packing ?:show (self :> clist_wrapper)
+  end

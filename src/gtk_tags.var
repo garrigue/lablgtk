@@ -121,3 +121,6 @@ type side_type = "GTK_SIDE_"
 
 type anchor_type = "GTK_ANCHOR_"
     [ CENTER N NW NE S SW SE W E ]
+
+type button_action = "GTK_BUTTON_"
+    [ SELECTS DRAGS EXPANDS ]

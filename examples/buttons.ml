@@ -11,11 +11,10 @@ class xpm_label_box parent:(parent : #GContainer.container)
 
     val pixmapwid =
       parent#misc#realize ();
-      let pixmap, mask =
-	Gdk.Pixmap.create_from_xpm (parent#misc#window)
-	  transparent:(parent#misc#style#bg `NORMAL) :file
+      let pixmap =
+	new GdkObj.pixmap_from_xpm :file window:(parent#misc#window)
       in
-      new GPix.pixmap pixmap :mask
+      new GPix.pixmap pixmap
 
     val label = new GMisc.label :text
 
@@ -32,7 +31,7 @@ let main () =
   let button = new GButton.button packing:window#add in
   button#connect#clicked
     callback:(fun () -> prerr_endline "Hello again - cool button was pressed");
-  new xpm_label_box parent:button file:"info.xpm" text:"cool button";
+  new xpm_label_box parent:button file:"test.xpm" text:"cool button";
   window#show ();
   Main.main ()
 
