@@ -45,6 +45,7 @@ class tiwidget_signals ~signals =
 
 class virtual tiwidget0 = object
   method virtual widget : GObj.widget
+  method virtual connect_event : GObj.event_signals
   method virtual parent : tiwidget0 option
   method virtual set_parent : tiwidget0 -> unit
   method virtual base : GObj.widget
@@ -243,6 +244,9 @@ object(self)
       let ev = GBin.event_box () in ev#add widget#coerce; Some ev
     else None
 
+(* used only for windows delete_event *)
+  method connect_event = failwith "tiwidget::connect_event"
+
   val widget = widget#coerce
   method widget = widget
 
@@ -256,7 +260,7 @@ object(self)
 
   method base =
     match evbox with
-    | None -> widget
+    | None -> widget#coerce
     | Some ev -> ev#coerce
 
 (* this is the name used in new_tiwidget for the creation

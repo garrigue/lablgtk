@@ -11,7 +11,7 @@ open GWindow
 open Common
 open Utils
 
-external id : 'a -> 'a = "%identity"
+(* external id : 'a -> 'a = "%identity" *)
 
 class virtual vprop ~name ~init ~set =
   object (self)

@@ -81,6 +81,6 @@ clean:
 	rm -f *.cm* *.o *.a radtest *_parser.ml *_parser.mli *_lexer.ml
 
 .depend: $(MLSRC)
-	ocamldep *.ml *.mli > .depend
+	ocamldep $(MLSRC) > .depend
 
 include .depend

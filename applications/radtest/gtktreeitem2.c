@@ -244,9 +244,11 @@ gtk_tree_item2_init (GtkTreeItem2 *tree_item)
   gtk_signal_connect(GTK_OBJECT(eventbox), "realize",
 		     (GtkSignalFunc)gtk_tree_item2_subtree_button_changed_state, 
 		     (gpointer)NULL);
+/* HF inutile
   gtk_signal_connect(GTK_OBJECT(eventbox), "button_press_event",
 		     (GtkSignalFunc)gtk_tree_item2_subtree_button_click,
 		     (gpointer)NULL);
+*/
   gtk_object_set_user_data(GTK_OBJECT(eventbox), tree_item);
   tree_item->pixmaps_box = eventbox;
 
@@ -735,7 +737,7 @@ static gint
 gtk_tree_item2_button_press (GtkWidget      *widget,
 			    GdkEventButton *event)
 {
-
+/* HF
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (GTK_IS_TREE_ITEM2 (widget), FALSE);
   g_return_val_if_fail (event != NULL, FALSE);
@@ -746,6 +748,8 @@ gtk_tree_item2_button_press (GtkWidget      *widget,
       gtk_widget_grab_focus (widget);
 
   return FALSE;
+
+*/
 }
 
 static gint

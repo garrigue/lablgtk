@@ -62,8 +62,10 @@ class project () =
       let tiwin = wt#tiwin and tw=wt#tree_window in
       let project_tree_item = wt#project_tree_item in
       project_tree#append project_tree_item;
+      let show = ref true in
       project_tree_item#connect#event#button_press ~callback:
-	(fun ev -> match GdkEvent.get_type ev with
+	(fun ev ->
+	match GdkEvent.get_type ev with
 	| `BUTTON_PRESS ->
 	    if GdkEvent.Button.button ev = 1 then begin
 	      self#change_selected wt
@@ -87,10 +89,28 @@ class project () =
 	    end;
 	    project_tree_item#connect#stop_emit ~name:"button_press_event";
 	    true
+	| `TWO_BUTTON_PRESS ->
+	    if GdkEvent.Button.button ev = 1 then begin
+	      if !show then begin
+		show := false;
+		tiwin#widget#misc#hide ();
+		tw#misc#hide ()
+	      end
+	      else begin
+		show := true;
+		tiwin#widget#misc#show ();
+		tw#misc#show ()
+	      end
+	    end;
+	    true
 	| _ -> false);
+      tiwin#connect_event#delete ~callback:
+	(fun _ -> show := false; tiwin#widget#misc#hide (); true);
+      tw#connect#event#delete ~callback:
+	(fun _ -> show := false; tw#misc#hide (); true);
       window_list <- wt :: window_list;
       add_undo (Remove_window name);
-      main_window#misc#set_can_focus false; 
+      main_window#misc#set_can_focus false;
       main_window#misc#grab_focus ()
 
       
@@ -299,10 +319,9 @@ let xpm_window () =
 
 
 let main () =
-  GtkBase.Rc.add_default_file "gtkrc";
   let _ = GMain.Main.init () in
   let prop_win = Propwin.init () in
-  let xpm_win = xpm_window () in
+  let palette = xpm_window () in
   main_window#misc#set_uposition ~x:10 ~y:10;
   main_window#show ();
   main_window#connect#destroy ~callback:GMain.Main.quit;
@@ -312,10 +331,11 @@ let main () =
   let accel_group  = f#accel_group in
   main_window#add_accel_group accel_group;
   prop_win#add_accel_group accel_group;
-  xpm_win#add_accel_group accel_group;
+  palette#add_accel_group accel_group;
 
   let file_menu    = new GMenu.factory (f#add_submenu "File") ~accel_group
   and edit_menu    = new GMenu.factory (f#add_submenu "Edit") ~accel_group
+  and view_menu    = new GMenu.factory (f#add_submenu "View") ~accel_group
   and project_menu = new GMenu.factory (f#add_submenu "Project") ~accel_group
   in
 
@@ -341,6 +361,27 @@ let main () =
   can_paste := paste_item#misc#set_sensitive;
   !can_copy false; !can_paste false;
   edit_menu#add_item "Undo" ~key:_Z ~callback:undo;
+
+  let palette_visible = ref true in
+  view_menu#add_item "Palette"
+    ~callback:(fun () ->
+      if !palette_visible then begin
+	palette#misc#hide ();
+	palette_visible := false
+      end else begin
+	palette#misc#show ();
+	palette_visible := true
+      end);
+  let prop_win_visible = ref true in
+  view_menu#add_item "Properties window"
+    ~callback:(fun () ->
+      if !prop_win_visible then begin
+	prop_win#misc#hide ();
+	prop_win_visible := false
+      end else begin
+	prop_win#misc#show ();
+	prop_win_visible := true
+      end);
 
   GMain.Main.main ()
 
