@@ -109,6 +109,7 @@ class image obj = object
   method set_pixmap ?mask image = Image.set_pixmap obj image ?mask
   method set_file image = Image.set_file obj image
   method set_pixbuf image = Image.set_pixbuf obj image
+  method set_stock = Image.set_stock obj
 end
 
 let image ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
