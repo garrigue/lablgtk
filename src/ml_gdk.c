@@ -324,8 +324,105 @@ Make_Extractor (GdkFont, GdkFont_val, descent, Val_int)
 
 /* Properties */
 
-ML_2 (gdk_atom_intern, String_val, Int_val, Val_int)
-ML_1 (gdk_atom_name, Int_val, Val_string)
+ML_2 (gdk_atom_intern, String_val, Int_val, Val_GdkAtom)
+ML_1 (gdk_atom_name, GdkAtom_val, Val_string)
+
+value ml_gdk_property_change (value window, value property, value type,
+                              value mode, value xdata)
+{
+    int format = Xdata_val (Field(xdata,0));
+    value data = Field(xdata,1);
+    int nelems = (format == 8 ? string_length (data) : Wosize_val(data));
+    guchar *sdata;
+    int i;
+    switch (format) {
+    case 16:
+        sdata = calloc(nelems, sizeof(short)); 
+        for (i=0; i<nelems; i++)
+            ((gushort*)sdata)[i] = Int_val(Field(data,i));
+        break;
+    case 32:
+        sdata = calloc(nelems, sizeof(long));
+        for (i=0; i<nelems; i++)
+            ((gulong*)sdata)[i] = Int32_val(Field(data,i)); 
+        break;
+    default:
+        sdata = (guchar*)data;
+    }
+    gdk_property_change (GdkWindow_val(window), GdkAtom_val(property),
+                         GdkAtom_val(type), format, Property_mode_val(mode),
+                         sdata, nelems);
+    if (format != 8) free(sdata);
+    return Val_unit;
+}
+
+/* copy X11 property data */
+value copy_xdata (gint format, guchar *xdata, gulong nitems)
+{
+    CAMLparam0();
+    CAMLlocal2(ret, data);
+    int i, tag;
+    switch (format) {
+    case 8:
+        data = alloc_string (nitems);
+        memcpy (String_val(data), xdata, sizeof(char) * nitems);
+        tag = MLTAG_BYTES;
+        break;
+    case 16:
+        data = alloc (nitems,0);
+        for (i = 0; i < nitems; i++)
+            Field(data,i) = Val_int(((short*)xdata)[i]);
+        tag = MLTAG_SHORTS;
+        break;
+    case 32:
+        data = alloc (nitems,0);
+        for (i = 0; i < nitems; i++)
+            Store_field(data, i, copy_int32 (((long*)xdata)[i]));
+        tag = MLTAG_INT32S;
+        break;
+    default:
+        tag = MLTAG_NONE;
+    }
+    if (tag != MLTAG_NONE) {
+        ret = alloc_small (2,0);
+        Field(ret,0) = tag;
+        Field(ret,1) = data;
+    }
+    else ret = tag;
+    CAMLreturn(ret);
+}
+
+value ml_gdk_property_get (value window, value property, value type,
+                           value length, value pdelete)
+{
+    GdkAtom atype;
+    int aformat, alength;
+    guchar *data;
+    int nitems;
+    int ok = gdk_property_get (GdkWindow_val(window), GdkAtom_val(property),
+                               AnyPropertyType, 0,
+                               Long_val(length), Bool_val(pdelete),
+                               &atype, &aformat, &alength, &data);
+
+    if (ok) {
+        CAMLparam0();
+        CAMLlocal3(mltype, mldata, pair);
+        switch (aformat) {
+        case 16: nitems = alength / sizeof(short); break;
+        case 32: nitems = alength / sizeof(long); break;
+        default: nitems = alength;
+        }
+        mldata = copy_xdata (aformat, data, nitems);
+        mltype = Val_GdkAtom (atype);
+        pair = alloc_small(2,0);
+        Field(pair,0) = mltype;
+        Field(pair,1) = mldata;
+        CAMLreturn(ml_some (pair));
+    }
+    return Val_unit;
+}
+
+ML_2 (gdk_property_delete, GdkWindow_val, GdkAtom_val, Unit)
 
 /* Region */
 
@@ -620,43 +717,13 @@ Make_Extractor (GdkEventClient, GdkEvent_arg(Client), window, Val_GdkWindow)
 Make_Extractor (GdkEventClient, GdkEvent_arg(Client), message_type, Val_int)
 value ml_GdkEventClient_data (GdkEventClient *ev)
 {
-    CAMLparam0();
-    CAMLlocal2(ret, data);
-    int i, tag;
+    int nitems = 0;
     switch (ev->data_format) {
-    case 8:
-        data = alloc_string (20);
-        memcpy (String_val(data), ev->data.b, sizeof(ev->data.b));
-        tag = MLTAG_BYTES;
-        break;
-    case 16:
-        data = alloc_small (10,0);
-        for (i = 0; i < 10; i++)
-            Field(data,i) = Val_int(ev->data.s[i]);
-        tag = MLTAG_SHORTS;
-        break;
-    case 32:
-        data = alloc (5,0);
-        for (i = 0; i < 5; i++)
-            Store_field(data, i, copy_int32 (ev->data.l[i]));
-        tag = MLTAG_INT32S;
-        break;
-    case 64:
-        data = alloc (5,0);
-        for (i = 0; i < 5; i++)
-            Store_field(data, i, copy_int64 (ev->data.l[i]));
-        tag = MLTAG_INT64S;
-        break;
-    default:
-        tag = MLTAG_NONE;
+    case 8:  nitems = 20; break;
+    case 16: nitems = 10; break;
+    case 32: nitems = 5;  break;
     }
-    if (tag != MLTAG_NONE) {
-        ret = alloc_small (2,0);
-        Field(ret,0) = tag;
-        Field(ret,1) = data;
-    }
-    else ret = tag;
-    CAMLreturn(ret);
+    return copy_xdata (ev->data_format, ev->data.b, nitems);
 }
 
 /* DnD */

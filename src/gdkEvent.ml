@@ -169,13 +169,7 @@ module Client = struct
     match get_type ev with
       `CLIENT_EVENT -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Client.cast"
-  type xdata =
-    [ `BYTES of string
-    | `SHORTS of int array
-    | `INT32S of int32 array
-    | `INT64S of int64 array
-    | `NONE ]
   external window : t -> window = "ml_GdkEventClient_window"
   external message_type : t -> atom = "ml_GdkEventClient_message_type"
-  external data : t -> xdata = "ml_GdkEventClient_data"
+  external data : t -> xdata_ret = "ml_GdkEventClient_data"
 end

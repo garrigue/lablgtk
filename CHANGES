@@ -1,5 +1,8 @@
 $Id$
 
+2002.10.31
+  * add gdk_property_*
+
 2002.10.26
   * fix GdkPixbuf.create_pixmap
   * add GdkEventClient (requested by Didier le Botlan)
