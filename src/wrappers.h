@@ -13,6 +13,7 @@ void ml_raise_null_pointer (void) Noreturn;
 value Val_pointer (void *);
 value copy_string_check (const char*);
 value copy_string_or_null (const char *);
+value copy_string_g_free (char *);
 
 value *ml_global_root_new (value v);
 void ml_global_root_destroy (void *data);

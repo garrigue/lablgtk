@@ -72,7 +72,7 @@ val render_to_drawable_alpha :
   ?x_dither:int ->
   ?y_dither:int -> ?src_x:int -> ?src_y:int -> pixbuf -> unit
 
-val create_pixmap : ?threshold:int -> pixbuf -> Gdk.pixmap * Gdk.bitmap
+val create_pixmap : ?threshold:int -> pixbuf -> Gdk.pixmap * Gdk.bitmap option
 
 (* Transform *)
 

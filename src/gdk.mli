@@ -52,10 +52,18 @@ module Tags : sig
   type drag_action = [ `DEFAULT|`COPY|`MOVE|`LINK|`PRIVATE|`ASK ]
   type rgb_dither = [ `NONE|`NORMAL|`MAX]
   type selection = [ `PRIMARY | `SECONDARY ]
+  type property_state = [ `NEW_VALUE | `DELETE ]
+  type property_mode = [ `REPLACE | `PREPEND | `APPEND ]
+  type xdata =
+    [ `BYTES of string
+    | `SHORTS of int array
+    | `INT32S of int32 array ]
+  type xdata_ret = [ xdata | `NONE ]
 end
 
 module Convert :
   sig
+    val test_modifier : Tags.modifier -> int -> bool
     val modifier : int -> Tags.modifier list
   end
 
@@ -63,6 +71,17 @@ module Atom :
   sig
     val intern :  ?dont_create:bool -> string -> atom
     external name : atom -> string = "ml_gdk_atom_name"
+  end
+
+module Property :
+  sig
+    val change :
+      window:window -> typ:atom ->
+      ?mode:Tags.property_mode -> atom -> Tags.xdata -> unit
+    val get :
+      window:window -> ?max_length:int ->
+      ?delete:bool -> atom -> (atom * Tags.xdata) option
+    val delete : window:window -> atom -> unit
   end
 
 module Screen :

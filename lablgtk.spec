@@ -1,6 +1,6 @@
 %define	name	 lablgtk
-%define ver      20020702
-%define rel      1
+%define ver      1.2.5
+%define rel      2
 %define prefix   /usr/local/
 %define sysconfdir /etc/
 %define exec_prefix /usr/local/bin/
@@ -46,7 +46,7 @@ rm -rf $RPM_BUILD_ROOT;
 
 %build
 
-make configure USE_GL=1 #USE_GNOME=1 USE_GLADE=1
+make configure #USE_GL=1 #USE_GNOME=1 USE_GLADE=1
 if [ "$SMP" != "" ]; then
   (make "MAKE=make -k -j $SMP"; exit 0)
   make 
@@ -59,6 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{prefix}/lablgtk-examples
 cp -av examples/* $RPM_BUILD_ROOT%{prefix}/lablgtk-examples
 mkdir -p $RPM_BUILD_ROOT%{bindir}
+mkdir -p $RPM_BUILD_ROOT%{libdir}/stublibs
 make \
 	prefix=$RPM_BUILD_ROOT%{prefix} \
 	sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} \
@@ -69,6 +70,7 @@ make \
 	LIBDIR=$RPM_BUILD_ROOT%{libdir} \
 	INSTALLDIR=$RPM_BUILD_ROOT%{libdir}/lablgtk \
 	BINDIR=$RPM_BUILD_ROOT%{bindir} \
+	DLLDIR=$RPM_BUILD_ROOT%{libdir}/stublibs \
 	install
 
 
@@ -85,6 +87,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS README COPYING ChangeLog INSTALL
 %{bindir}/*
 %{libdir}/*
+#%{libdir}/lablgtk/*
+#%{libdir}/stublibs/*
 
 %files lablgtk_examples
 %defattr(-,root,root,0755)
@@ -92,5 +96,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 12 2002 Colin Bennett <cbennett@radsoft.com>
+- Fixed so DLLs are put in the right place
 * Thu Apr 22 2002 Ben Martin
 - Created 

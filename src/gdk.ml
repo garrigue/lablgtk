@@ -72,6 +72,17 @@ module Tags = struct
     [ `NONE|`NORMAL|`MAX]
 
   type selection = [ `PRIMARY | `SECONDARY ]
+
+  type property_state = [ `NEW_VALUE | `DELETE ]
+
+  type property_mode = [ `REPLACE | `PREPEND | `APPEND ]
+
+  type xdata =
+    [ `BYTES of string
+    | `SHORTS of int array
+    | `INT32S of int32 array ]
+
+  type xdata_ret = [ xdata | `NONE ]
 end
 open Tags
 
@@ -88,6 +99,23 @@ module Atom = struct
   external intern : string -> bool -> atom = "ml_gdk_atom_intern"
   let intern ?(dont_create=false) name = intern name dont_create
   external name : atom -> string = "ml_gdk_atom_name"
+end
+
+module Property = struct
+  external change :
+      window ->
+      property:atom -> typ:atom -> mode:property_mode -> xdata -> unit
+      = "ml_gdk_property_change"
+  let change ~window ~typ ?(mode=`REPLACE) property data =
+    change window ~property ~typ ~mode data
+  external get :
+      window -> property:atom ->
+      max_length:int -> delete:bool -> (atom * xdata) option
+      = "ml_gdk_property_get"
+  let get ~window ?(max_length=65000) ?(delete=false) property =
+    get window ~property ~max_length ~delete
+  external delete : window:window -> atom -> unit
+      = "ml_gdk_property_delete"
 end
 
 module Screen = struct
