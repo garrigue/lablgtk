@@ -251,6 +251,9 @@ varcc: varcc.cmo
 	$(LINKER) -o $@ $<
 	rm -f *_tags.h *_tags.c
 
+propcc: propcc.cmo
+	$(LINKER) -o $@ $<
+
 check_externals: check_externals.cmo
 	$(LINKER) -o $@ $<
 

@@ -121,7 +121,7 @@ let declaration ~hc ~cc = parser
   | [< >] -> raise End_of_file
 
 
-let process ic ~hc ~cc =  
+let process ic ~hc ~cc ~mlc =  
   all_convs := [];
   let chars = Stream.of_channel ic in
   let s = lexer chars in
@@ -131,8 +131,22 @@ let process ic ~hc ~cc =
     if !all_convs <> [] then begin
       let oc x = fprintf cc x in
       oc "static lookup_info *ml_lookup_tables[] = {\n";
-      List.iter (List.rev !all_convs) ~f:(fun s -> oc "  ml_table_%s,\n" s);
-      oc "};\n"
+      let convs = List.rev !all_convs in
+      List.iter convs ~f:(fun s -> oc "  ml_table_%s,\n" s);
+      oc "};\n";
+      match mlc with None -> ()
+      | Some mlc ->
+          let out fmt = Printf.fprintf mlc fmt in
+          out "open Gpointer\n";
+          out "open Gtk.Tags\n\n";
+          out "external _get_tables : unit ->\n";
+          out "    %s variant_table\n" (List.hd convs);
+          List.iter (List.tl convs) ~f:
+            (fun s -> out "  * %s variant_table\n" s);
+          out "  = \"ml_gtk_get_tables\"\n\n";
+          out "let %s" (List.hd convs);
+          List.iter (List.tl convs) ~f:(fun s -> out "\n  , %s" s);
+          out " = _get_tables ()\n"
     end
   | Stream.Error err ->
       failwith
@@ -143,10 +157,13 @@ let main () =
   let inputs = ref [] in
   let header = ref "" in
   let code = ref "" in
+  let mlwrappers = ref "" in
   Arg.parse
     [ "-h", Arg.String ((:=) header), "file to output macros (file.h)";
       "-c", Arg.String ((:=) code),
       "file to output conversion tables (file.c)";
+      "-ml", Arg.String ((:=) mlwrappers),
+      "file to put ml wrappers in (no default)";
       "-static", Arg.Set static, "do not export conversion tables" ]
     (fun s -> inputs := s :: !inputs)
     "usage: varcc [options] file.var";
@@ -163,15 +180,17 @@ let main () =
       if !code = "" then code := rad ^ ".c"
   end;
   let hc = open_out !header and cc = open_out !code in
+  let mlc = if !mlwrappers <> "" then Some (open_out !mlwrappers) else None in
   let chars = Stream.of_channel stdin in
-  if inputs = [] then process stdin ~hc ~cc else begin
+  if inputs = [] then process stdin ~hc ~cc ~mlc else begin
     List.iter inputs ~f:
       begin fun file ->
         let ic = open_in file in
-        try process ic ~hc ~cc; close_in ic
+        try process ic ~hc ~cc ~mlc; close_in ic
         with exn -> close_in ic; prerr_endline ("Error in " ^ file); raise exn
       end
   end;
-  close_out hc; close_out cc
+  close_out hc; close_out cc;
+  match mlc with None -> () | Some c -> close_out c
 
 let _ = Printexc.print main ()
