@@ -29,6 +29,31 @@ ML_1(pango_font_description_copy, PangoFontDescription_val,
      Val_PangoFontDescription_new)
 ML_1(pango_font_description_to_string, PangoFontDescription_val,
      copy_string_g_free)
+ML_2(pango_font_description_set_family, PangoFontDescription_val,
+     String_val, Unit)
+ML_1(pango_font_description_get_family, PangoFontDescription_val,
+     Val_string)
+ML_2(pango_font_description_set_style, PangoFontDescription_val,
+     Pango_style_val, Unit)
+ML_1(pango_font_description_get_style, PangoFontDescription_val,
+     Val_pango_style)
+ML_2(pango_font_description_set_variant, PangoFontDescription_val,
+     Pango_variant_val, Unit)
+ML_1(pango_font_description_get_variant, PangoFontDescription_val,
+     Val_pango_variant)
+ML_2(pango_font_description_set_weight, PangoFontDescription_val,
+     Int_val, Unit)
+ML_1(pango_font_description_get_weight, PangoFontDescription_val,
+     Val_int)
+ML_2(pango_font_description_set_stretch, PangoFontDescription_val,
+     Pango_stretch_val, Unit)
+ML_1(pango_font_description_get_stretch, PangoFontDescription_val,
+     Val_pango_stretch)
+ML_2(pango_font_description_set_size, PangoFontDescription_val,
+     Int_val, Unit)
+ML_1(pango_font_description_get_size, PangoFontDescription_val,
+     Val_int)
+
 
 /* PangoFontMetrics */
 
