@@ -221,17 +221,8 @@ CAMLprim value ml_gnome_canvas_item_affine_absolute(value i, value a)
   return Val_unit;
 }
 
-CAMLprim value ml_gnome_canvas_item_set(value i, value key_v_list)
+CAMLprim value ml_gnome_canvas_item_set(value i)
 {
-  GnomeCanvasItem *item = GnomeCanvasItem_val(i);
-  value l = key_v_list;
-  while(Is_block(l)) {
-    value cell = Field(l, 0);
-    const char *key   = String_val(Field(cell, 0));
-    const GValue *arg = GValue_val(Field(cell, 1));
-    g_object_set_property(G_OBJECT(item), key, arg);
-    l = Field(l, 1);
-  }
   gnome_canvas_item_set(GnomeCanvasItem_val(i), NULL);
   return Val_unit;
 }
@@ -322,20 +313,17 @@ CAMLprim value ml_gnome_canvas_convert_tags(value tag)
   return Val_int(ml_lookup_to_c( tables[ Tag_val(tag) ], Field(tag, 0)));
 }
 
+Make_Val_final_pointer(GnomeCanvasPoints, Ignore, gnome_canvas_points_unref, 5)
+
 CAMLprim value ml_gnome_canvas_convert_points(value arr)
 {
   int len = Wosize_val(arr) / Double_wosize;
   GnomeCanvasPoints *p;
-  GValue *v;
   if(len % 2)
-    invalid_argument("odd number of coords");
+    invalid_argument("GnomeCanvas.convert_points: odd number of coords");
   p = gnome_canvas_points_new(len / 2);
   memcpy(p->coords, (double *)arr, Wosize_val(arr) * sizeof (value));
-  v = g_malloc(sizeof *v);
-  v->g_type = 0;
-  g_value_init(v, GNOME_TYPE_CANVAS_POINTS);
-  g_value_set_boxed_take_ownership(v, p);
-  return Val_GValue_new(v);
+  return Val_GnomeCanvasPoints(p);
 }
 
 static void artvpathdash_free(ArtVpathDash *d) 

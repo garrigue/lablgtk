@@ -56,9 +56,9 @@ module Tag = struct
       | `FONT_DESC of Pango.font_description
       | `FAMILY of string
       | `STYLE of Pango.Tags.style 
-      | `VARIANT of Pango.Tags.variant 
+      (* | `VARIANT of Pango.Tags.variant *)
       | `WEIGHT of Pango.Tags.weight
-      | `STRETCH of Pango.Tags.stretch
+      (* | `STRETCH of Pango.Tags.stretch *)
       | `SIZE of int
       | `SIZE_POINTS of float
       | `SCALE of Pango.Tags.scale
@@ -172,13 +172,12 @@ module Tag = struct
 
   external wrap_mode : Gtk.Tags.wrap_mode -> int = "ml_Wrap_mode_val"
 
-  let set_property o (p:property) = match p with 
+  let set_property o (p:property) =
+    let data = match p with 
     | `NAME s | `BACKGROUND s | `FOREGROUND s | `FONT s | `FAMILY s 
     | `LANGUAGE s -> 
-	let gtyp = Gobject.Type.of_fundamental `STRING in 
-	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`STRING (Some s)); 
-	Gobject.set_property o (property_to_string p) v 
+	`STRING (Some s)
+
     | `EDITABLE b | `STRIKETHROUGH b | `BACKGROUND_FULL_HEIGHT b 
     | `INVISIBLE b | `BACKGROUND_SET b | `FOREGROUND_SET b 
     | `BACKGROUND_STIPPLE_SET b | `FOREGROUND_STIPPLE_SET b 
@@ -190,83 +189,44 @@ module Tag = struct
     | `STRIKETHROUGH_SET b | `RIGHT_MARGIN_SET b | `UNDERLINE_SET b 
     | `RISE_SET b | `BACKGROUND_FULL_HEIGHT_SET b | `LANGUAGE_SET b 
     | `TABS_SET b | `INVISIBLE_SET b -> 
-	let gtyp = Gobject.Type.of_fundamental `BOOLEAN in 
-	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`BOOL b);
-	Gobject.set_property o (property_to_string p) v 
-	  
+	`BOOL b
+
     | `RISE b | `RIGHT_MARGIN b | `INDENT b | `LEFT_MARGIN b 
     | `PIXELS_INSIDE_WRAP b 
     | `PIXELS_BELOW_LINES b | `PIXELS_ABOVE_LINES b 
     | `SIZE b ->
-	let gtyp = Gobject.Type.of_fundamental `INT in 
-	let v = Gobject.Value.create gtyp in
-	Gobject.Value.set v (`INT b);
-	Gobject.set_property o (property_to_string p) v 
-    | `WEIGHT b ->
-	let gtyp = Gobject.Type.of_fundamental `INT in 
-	let v = Gobject.Value.create gtyp in 
-	let b' = Pango.Tags.weight_to_int b in
-	Gobject.Value.set v (`INT b'); 
-	Gobject.set_property o (property_to_string p) v 
-    | `SIZE_POINTS b ->
-	let gtyp = Gobject.Type.of_fundamental `FLOAT in 
-	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`FLOAT b); 
-	Gobject.set_property o (property_to_string p) v 
-    | `SCALE b  -> 
-	let gtyp = Gobject.Type.of_fundamental `FLOAT in 
-	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`FLOAT (Pango.Tags.scale_to_float b)); 
-	Gobject.set_property o (property_to_string p) v 
+	`INT b
+
+    | `WEIGHT b -> `INT (Pango.Tags.weight_to_int b)
+
+    | `SIZE_POINTS b -> `FLOAT b
+
+    | `SCALE b  ->  `FLOAT (Pango.Tags.scale_to_float b) 
+
     | `FOREGROUND_STIPPLE b | `BACKGROUND_STIPPLE b -> 
-	let gtyp = Gobject.Type.from_name "GdkPixmap" in 
-	let v = Gobject.Value.create gtyp in
-	Gobject.Value.set v (`OBJECT (Some b)); 
-	Gobject.set_property o (property_to_string p) v 
+        `OBJECT (Some b)
+
     | `FOREGROUND_GDK b | `BACKGROUND_GDK b  ->
-        let gtyp = Gobject.Type.from_name "GdkColor" in
-	let v = Gobject.Value.create gtyp in
-	Gobject.Value.set v (`POINTER (Some (Obj.magic b))); 
-	Gobject.set_property o (property_to_string p) v 
-    | `WRAP_MODE b ->
-	let gtyp = Gobject.Type.from_name "GtkWrapMode" in 
-	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`INT (wrap_mode b));
-	Gobject.set_property o (property_to_string p) v 
-    | `STYLE b  -> 
-	let gtyp = Gobject.Type.from_name "PangoStyle" in 
-	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`INT (Pango.Tags.style_to_int b));
-	Gobject.set_property o (property_to_string p) v 
-    | `UNDERLINE u -> 
-	let gtyp = Gobject.Type.from_name "PangoUnderline" in 
-	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`INT (Pango.Tags.underline_to_int u));
-	Gobject.set_property o (property_to_string p) v 
+ 	`POINTER (Some (Obj.magic (b : Gdk.Color.t)))
 
-    | `STRETCH _ | `VARIANT _ -> assert false
-    | `DIRECTION b  -> 
-	let gtyp = Gobject.Type.from_name "GtkTextDirection" in 
-	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`INT (Pango.Tags.text_direction_to_int b));
-	Gobject.set_property o (property_to_string p) v 
+    | `WRAP_MODE b -> `INT (wrap_mode b)
 
-    | `JUSTIFICATION b ->
-	let gtyp = Gobject.Type.from_name "GtkJustification" in 
-	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`INT (Pango.Tags.justification_to_int b));
-	Gobject.set_property o (property_to_string p) v 
+    | `STYLE b  -> `INT (Pango.Tags.style_to_int b)
+
+    | `UNDERLINE u -> `INT (Pango.Tags.underline_to_int u)
+
+    (* | `STRETCH _ | `VARIANT _ -> assert false *)
+
+    | `DIRECTION b  -> `INT (Pango.Tags.text_direction_to_int b)
+
+    | `JUSTIFICATION b -> `INT (Pango.Tags.justification_to_int b)
 
     | `FONT_DESC f ->
-	let gtyp = Gobject.Type.from_name "PangoFontDescription" in 
-	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set 
-	  v 
-	  (`POINTER (Some (Obj.magic (Pango.Font.copy f))));
-	(* Copying the font is COMPULSORY. 
-	   Otherwise it's freed by the value itself...*)
-	Gobject.set_property o (property_to_string p) v
+        `POINTER (Some (Obj.magic (f : Pango.font_description)))
+        (* Copy is handled by the marshalling code *)
+    in
+    Gobject.Property.set o (property_to_string p) data
+
   module Signals = struct
     open GtkSignal
     let marshal_event f _ = function

@@ -21,11 +21,19 @@ Make_Val_final_pointer_ext (GObject, _new, G_OBJECT, g_object_unref, 20)
 ML_1 (G_TYPE_FROM_INSTANCE, GObject_val, Val_int)
 ML_1 (g_object_ref, GObject_val, Unit)
 ML_1 (g_object_unref, GObject_val, Unit)
+
 ML_1 (g_object_freeze_notify, GObject_val, Unit)
 ML_1 (g_object_thaw_notify, GObject_val, Unit)
-
+ML_2 (g_object_notify, GObject_val, String_val, Unit)
 ML_3 (g_object_set_property, GObject_val, String_val, GValue_val, Unit)
 ML_3 (g_object_get_property, GObject_val, String_val, GValue_val, Unit)
+CAMLprim value ml_g_object_get_property_type (value obj, value prop)
+{
+    GParamSpec *pspec =
+        g_object_class_find_property (G_OBJECT_GET_CLASS(GObject_val(obj)),
+                                      String_val(prop));
+    return Val_GType(pspec->value_type);
+}
 
 
 /* gtype.h */
@@ -94,24 +102,27 @@ value ml_g_value_new(value gtype)
 value ml_g_value_release(value val)
 {
     if (Tag_val(val) == Custom_tag) ml_final_GValue_new(val);
-    GValue_val(val) = NULL;
+    Pointer_val(val) = NULL;
     return Val_unit;
 }
 
-GValue* GValue_check(value val)
+GValue* GValue_val(value val)
 {
-    GValue *v = GValue_val(val);
-    if (v == NULL) invalid_argument("GValue_check");
-    return v;
+    void *v = Pointer_val(val);
+    if (v == NULL) invalid_argument("GValue_val");
+    return (GValue*)v;
 }
 
-ML_1 (G_VALUE_TYPE, GValue_check, Val_GType)
-ML_2 (g_value_copy, GValue_check, GValue_check, Unit)
-ML_1 (g_value_reset, GValue_check, Unit)
+ML_1 (G_VALUE_TYPE, GValue_val, Val_GType)
+ML_2 (g_value_copy, GValue_val, GValue_val, Unit)
+ML_1 (g_value_reset, GValue_val, Unit)
+ML_2 (g_value_type_compatible, GType_val, GType_val, Val_bool)
+ML_2 (g_value_type_transformable, GType_val, GType_val, Val_bool)
+ML_2 (g_value_transform, GValue_val, GValue_val, Val_bool)
 
 CAMLprim value ml_g_value_shift (value args, value index)
 {
-    return Val_GValue (&GValue_check(args)[Int_val(index)]);
+    return Val_GValue (&GValue_val(args)[Int_val(index)]);
 }
 
 #define DATA  (val->data[0])
@@ -120,7 +131,7 @@ CAMLprim value ml_g_value_get (value arg)
 {
     CAMLparam0();
     CAMLlocal1(tmp);
-    GValue *val = GValue_check(arg);
+    GValue *val = GValue_val(arg);
     value ret = MLTAG_NONE;
     GType type = G_VALUE_TYPE(val);
     int tag;
@@ -205,7 +216,7 @@ void g_value_set_variant (GValue *val, value arg2)
         return;
     case G_TYPE_INT:
     case G_TYPE_UINT:
-        if (tag == MLTAG_INT)
+        if (tag == MLTAG_INT || tag == MLTAG_BOOL)
             DATA.v_int = Int_val(data);
         else if (tag == MLTAG_INT32)
             DATA.v_int = Int32_val(data);
@@ -240,6 +251,9 @@ void g_value_set_variant (GValue *val, value arg2)
         g_value_set_object(val, Option_val(data,GObject_val,NULL));
         return;
     case G_TYPE_BOXED:
+        if (tag != MLTAG_POINTER) break;
+        g_value_set_boxed(val, Option_val(data,MLPointer_val,NULL));
+        return;
     case G_TYPE_POINTER:
         if (tag != MLTAG_POINTER && tag != MLTAG_OBJECT) break;
         DATA.v_pointer = Option_val(data,MLPointer_val,NULL);
@@ -259,14 +273,15 @@ void g_value_set_variant (GValue *val, value arg2)
     default:
         failwith ("Gobject.Value.set : cannot set this value");
     }
+    /* fprintf(stderr,"value has type %s\n", g_type_name(type)); */
     failwith ("GObject.Value.set : argument type mismatch");
     return;
 }
 
-ML_2 (g_value_set_variant, GValue_check, , Unit)
+ML_2 (g_value_set_variant, GValue_val, , Unit)
 
 CAMLprim value ml_g_value_get_nativeint(value arg) {
-    GValue *val = GValue_check(arg);
+    GValue *val = GValue_val(arg);
     switch(G_TYPE_FUNDAMENTAL(G_VALUE_TYPE(val))) {
     case G_TYPE_INT:
     case G_TYPE_UINT:
@@ -285,7 +300,7 @@ CAMLprim value ml_g_value_get_nativeint(value arg) {
 CAMLprim value ml_g_value_get_pointer (value arg)
 {
     gpointer p = NULL;
-    GValue *val = GValue_check(arg);
+    GValue *val = GValue_val(arg);
     switch(G_TYPE_FUNDAMENTAL(G_VALUE_TYPE(val))) {
     case G_TYPE_STRING:
     case G_TYPE_OBJECT:
@@ -301,18 +316,18 @@ CAMLprim value ml_g_value_get_pointer (value arg)
 #undef DATA
 
 /*
-ML_2 (g_value_set_boolean, GValue_check, Int_val, Unit)
-ML_1 (g_value_get_boolean, GValue_check, Val_bool)
-ML_2 (g_value_set_char, GValue_check, Char_val, Unit)
-ML_1 (g_value_get_char, GValue_check, Val_char)
-ML_2 (g_value_set_int, GValue_check, Int_val, Unit)
-ML_1 (g_value_get_int, GValue_check, Val_int)
-ML_2 (g_value_set_long, GValue_check, Nativeint_val, Unit)
-ML_1 (g_value_get_long, GValue_check, copy_nativeint)
-ML_2 (g_value_set_int64, GValue_check, Int64_val, Unit)
-ML_1 (g_value_get_int64, GValue_check, copy_int64)
-ML_2 (g_value_set_float, GValue_check, Float_val, Unit)
-ML_1 (g_value_get_float, GValue_check, copy_double)
+ML_2 (g_value_set_boolean, GValue_val, Int_val, Unit)
+ML_1 (g_value_get_boolean, GValue_val, Val_bool)
+ML_2 (g_value_set_char, GValue_val, Char_val, Unit)
+ML_1 (g_value_get_char, GValue_val, Val_char)
+ML_2 (g_value_set_int, GValue_val, Int_val, Unit)
+ML_1 (g_value_get_int, GValue_val, Val_int)
+ML_2 (g_value_set_long, GValue_val, Nativeint_val, Unit)
+ML_1 (g_value_get_long, GValue_val, copy_nativeint)
+ML_2 (g_value_set_int64, GValue_val, Int64_val, Unit)
+ML_1 (g_value_get_int64, GValue_val, copy_int64)
+ML_2 (g_value_set_float, GValue_val, Float_val, Unit)
+ML_1 (g_value_get_float, GValue_val, copy_double)
 */
 
 /* gsignal.h */

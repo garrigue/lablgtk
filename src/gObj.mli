@@ -27,7 +27,8 @@ class gtkobj_misc : 'a obj ->
     method disconnect : GtkSignal.id -> unit
     method handler_block : GtkSignal.id -> unit
     method handler_unblock : GtkSignal.id -> unit
-    method set_property : string -> Gobject.g_value -> unit
+    method set_property : 'a. string -> 'a Gobject.data_set -> unit
+    method get_property : string -> Gobject.data_get
     method freeze_notify : unit -> unit
     method thaw_notify : unit -> unit
   end

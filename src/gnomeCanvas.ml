@@ -202,7 +202,8 @@ external canvas : [> item] Gobject.obj -> canvas Gobject.obj = "ml_gnome_canvas_
 external xform :  [> item] Gobject.obj -> [`IDENTITY|`TRANSL of float array|`AFFINE of float array] = "ml_gnome_canvas_item_xform"
 external affine_relative : [> item] Gobject.obj -> float array -> unit = "ml_gnome_canvas_item_affine_relative"
 external affine_absolute : [> item] Gobject.obj -> float array -> unit = "ml_gnome_canvas_item_affine_absolute"
-external set : [> item] Gobject.obj -> (string * Gobject.g_value) list -> unit = "ml_gnome_canvas_item_set"
+external set : [> item] Gobject.obj -> unit = "ml_gnome_canvas_item_set"
+  (* Must call [set] after using [Gobject.Property.set] *)
 external move : [> item] Gobject.obj -> x:float -> y:float -> unit = "ml_gnome_canvas_item_move"
 external raise : [> item] Gobject.obj -> int -> unit = "ml_gnome_canvas_item_raise"
 external lower : [> item] Gobject.obj -> int -> unit = "ml_gnome_canvas_item_lower"
@@ -251,5 +252,5 @@ type tags =
   | JUSTIFICATION of Gtk.Tags.justification
   | LINESTYLE of Gdk.GC.gdkLineStyle
 external convert_tags : tags -> int = "ml_gnome_canvas_convert_tags"
-external convert_points : float array -> Gobject.g_value = "ml_gnome_canvas_convert_points"
+external convert_points : float array -> Gpointer.boxed = "ml_gnome_canvas_convert_points"
 external convert_dash : float -> float array -> Gpointer.boxed = "ml_gnome_canvas_convert_dash"
