@@ -1,9 +1,16 @@
 @echo off
-rem start lablgtk2
+rem launcher for lablgtk2
+
+set gtklibs=lablgtk.cma
 
 if "%1" == "-thread" goto thread
-ocaml -w s -I +lablgtk2 lablgtk.cma gtkInit.cmo %1 %2 %3 %4 %5 %6 %7 %8 %9
-goto done
+set initobjs=gtkInit.cmo
+goto next
+
 :thread
-ocaml -w s -I +threads unix.cma threads.cma -I +lablgtk2 lablgtk.cma gtkThread.cmo gtkInit.cmo gtkThInit.cmo %2 %3 %4 %5 %6 %7 %8 %9
-:done
+shift
+set initobjs=-I +threads unix.cma threads.cma gtkThread.cmo gtkInit.cmo gtkThInit.cmo
+
+:next
+echo on
+ocaml -w s -I +lablgtk2 %gtklibs% %initobjs% %1 %2 %3 %4 %5 %6 %7 %8 %9

@@ -1,19 +1,27 @@
-CAMLC=ocamlc
-CAMLOPT=ocamlopt
+CAMLC=ocamlc.opt
+CAMLOPT=ocamlopt.opt
 OCAMLDOC=ocamldoc
 CAMLMKTOP=ocamlmktop
 CAMLMKLIB=ocamlmklib
+OCAMLLEX=ocamllex
 CAMLP4O=camlp4o
+XO=
 USE_GL=
 USE_GNOME=
-USE_GLADE=1
+USE_GLADE=
 USE_RSVG=
 USE_GNOMECANVAS=
 USE_CC=
 DEBUG=
 CC=
 RANLIB=
-LIBDIR=c:/Program Files/Objective Caml/lib
+XA=.lib
+XB=.bat
+XE=.exe
+XO=.obj
+XS=.dll
+TOOLCHAIN=msvc
+LIBDIR=$(CAMLC) -where
 THREADS_LIB=system
 HAS_DLL_SUPPORT=yes
 
@@ -26,8 +34,7 @@ MANDIR=$(LIBDIR)/../man
 INSTALLDIR=$(LIBDIR)/lablgtk2
 DLLDIR=$(LIBDIR)/stublibs
 
-GTKROOT=c:/GTK
+#GTKROOT=c:/GTK
+GTKROOT=c:/Home/garrigue/gtk2
 GTKCFLAGS=-I$(GTKROOT)/include/glib-2.0 -I$(GTKROOT)/lib/glib-2.0/include -I$(GTKROOT)/include/gtk-2.0/ -I$(GTKROOT)/lib/gtk-2.0/include -I$(GTKROOT)/include/pango-1.0 -I$(GTKROOT)/include/atk-1.0 -I$(GTKROOT)/include 
-GTKLIBS=/link /libpath:$(GTKROOT)/lib glade-2.0.lib gtk-win32-2.0.lib gdk_pixbuf-2.0.lib gdk-win32-2.0.lib  pango-1.0.lib atk-1.0.lib glib-2.0.lib gobject-2.0.lib #gthread-2.0.lib
-
-OCAMLLEX=ocamllex
+GTKLIBS=/link /libpath:$(GTKROOT)/lib gtk-win32-2.0.lib gdk_pixbuf-2.0.lib gdk-win32-2.0.lib  pango-1.0.lib atk-1.0.lib glib-2.0.lib gobject-2.0.lib #gthread-2.0.lib
