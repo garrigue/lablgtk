@@ -27,6 +27,18 @@ value alloc_memblock_indirected (asize_t size)
     return ret;
 }
 
+value ml_stable_copy (value v)
+{
+    CAMLparam1(v);
+    mlsize_t i, wosize = Wosize_val(v);
+    int tag = Tag_val(v);
+    value ret;
+    if (tag < No_scan_tag) invalid_argument("ml_stable_copy");
+    ret = alloc_shr (wosize, tag);
+    for (i=0; i < wosize; i++) Field(ret,i) = Field(v,i);
+    CAMLreturn(ret);
+}
+
 value ml_some (value v)
 {
      CAMLparam1(v);
