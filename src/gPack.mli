@@ -13,6 +13,7 @@ class box_skel :
       #is_widget ->
       ?from:Tags.pack_type ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> unit
+    method reorder_child : #GObj.is_widget -> pos:int -> unit
     method set_child_packing :
       #is_widget ->
       ?expand:bool ->

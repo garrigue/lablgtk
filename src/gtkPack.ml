@@ -22,6 +22,8 @@ module Box = struct
       ?:expand [< true >] ?:fill [< true >] ?:padding [< 0 >] =
     (match dir with `START -> pack_start | `END -> pack_end)
       box child :expand :fill :padding
+  external reorder_child : [> box] obj -> [> widget] obj -> pos:int -> unit
+      = "ml_gtk_box_reorder_child"
   external set_homogeneous : [> box] obj -> bool -> unit
       = "ml_gtk_box_set_homogeneous"
   external set_spacing : [> box] obj -> int -> unit

@@ -250,6 +250,54 @@ gtk_tree2_insert (GtkTree2   *tree,
     }
 }
 
+/* moves the pos child up in the tree */
+void
+gtk_tree2_item_up (GtkTree2   *tree,
+		 gint       position)
+{
+  gint nchildren, i;
+  GList *children, *tmp;
+  
+  g_return_if_fail (tree != NULL);
+  g_return_if_fail (GTK_IS_TREE2 (tree));
+  
+  children = (tree->children);
+  nchildren = g_list_length (tree->children);
+  
+  if ((position < 1) || (position >= nchildren))
+    return;
+  
+  for (i=1; i < position; i++)
+    children = (children->next);
+
+  tmp = children->next;
+  if (position == 1)
+    {
+      tree->children = children->next;
+      children->next->prev = NULL;
+    }
+  else
+    {
+      children->prev->next = children->next;
+      children->next->prev = children->prev;
+    }
+  children->next = tmp->next;
+  children->prev = tmp;
+  if (tmp->next)
+      tmp->next->prev = children;
+  tmp->next = children;
+  
+  if (GTK_WIDGET_VISIBLE (tree))
+    {
+/*      if (GTK_WIDGET_VISIBLE (GTK_WIDGET(children->data)))
+	gtk_widget_queue_resize (GTK_WIDGET(children->data));
+      if (GTK_WIDGET_VISIBLE (GTK_WIDGET(tmp->data)))
+	gtk_widget_queue_resize (GTK_WIDGET(tmp->data));
+*/
+      gtk_widget_queue_resize (GTK_WIDGET(tree));
+    }
+}
+
 static void
 gtk_tree2_add (GtkContainer *container,
 	      GtkWidget    *child)
@@ -884,6 +932,87 @@ gtk_tree2_select_child (GtkTree2   *tree,
   g_return_if_fail (GTK_IS_TREE_ITEM2 (tree_item));
   
   gtk_signal_emit (GTK_OBJECT (tree), tree_signals[SELECT_CHILD], tree_item);
+}
+
+void
+gtk_tree2_select_next_child (GtkTree2   *tree,
+		       GtkWidget *tree_item, gboolean descend)
+{
+  GList *children;
+
+  g_return_if_fail (tree != NULL);
+  g_return_if_fail (GTK_IS_TREE2 (tree));
+  g_return_if_fail (tree_item != NULL);
+  g_return_if_fail (GTK_IS_TREE_ITEM2 (tree_item));
+  
+  if (descend && GTK_TREE2(GTK_TREE_ITEM2(tree_item)->subtree)->children)
+    {
+      gtk_signal_emit (GTK_OBJECT (GTK_TREE_ITEM2(tree_item)->subtree), tree_signals[SELECT_CHILD], GTK_TREE2(GTK_TREE_ITEM2(tree_item)->subtree)->children->data);
+      return;
+    }
+
+  children = tree->children;
+  while (children)
+    {
+      if (tree_item == GTK_WIDGET (children->data)) 
+	break;
+      
+      children = children->next;
+    }
+  if (!children) return;
+  
+  if (children->next)
+    gtk_signal_emit (GTK_OBJECT (tree), tree_signals[SELECT_CHILD], children->next->data);
+  else if (tree != tree->root_tree)
+    {
+      children = GTK_TREE2(GTK_WIDGET(tree)->parent)->children;
+	gtk_tree2_select_next_child (GTK_TREE2(GTK_WIDGET(tree)->parent), tree->tree_owner, FALSE);
+    }
+
+}
+
+/* we know that tree is not the roor_tree and that
+   tree_items always have subtrees */
+void
+gtk_tree2_select_prev_child (GtkTree2   *tree,
+		       GtkWidget *tree_item)
+{
+  GList *children;
+  GtkTreeItem2 *tree_item2;
+
+  g_return_if_fail (tree != NULL);
+  g_return_if_fail (GTK_IS_TREE2 (tree));
+  g_return_if_fail (tree_item != NULL);
+  g_return_if_fail (GTK_IS_TREE_ITEM2 (tree_item));
+  
+
+  children = tree->children;
+  while (children)
+    {
+      if (tree_item == GTK_WIDGET (children->data)) 
+	break;
+      
+      children = children->next;
+    }
+  if (!children) return;
+  
+  if (children = children->prev)
+    {
+      tree_item2 = GTK_TREE_ITEM2(children->data);
+      while (GTK_TREE2(tree_item2->subtree)->children)
+	{
+	  children = GTK_TREE2(tree_item2->subtree)->children;
+	  while (children->next)
+	    children = children->next;
+	  tree_item2 = GTK_TREE_ITEM2(children->data);
+	}
+    gtk_signal_emit (GTK_OBJECT (GTK_WIDGET(tree_item2)->parent), tree_signals[SELECT_CHILD], tree_item2);
+    }
+  else
+    {
+      gtk_signal_emit (GTK_OBJECT (GTK_WIDGET(tree)->parent), tree_signals[SELECT_CHILD], tree->tree_owner);
+    }
+
 }
 
 void

@@ -122,6 +122,8 @@ void       gtk_tree2_set_view_lines     (GtkTree2          *tree,
  */
 void       gtk_tree2_remove_item        (GtkTree2          *tree,
 				        GtkWidget        *child);
+void       gtk_tree2_item_up             (GtkTree2   *tree,
+		                         gint       position);
 
 
 #ifdef __cplusplus

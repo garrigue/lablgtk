@@ -56,9 +56,18 @@ module Tree2 = struct
       = "ml_gtk_tree2_select_item"
   external unselect_item : [> tree] obj -> pos:int -> unit
       = "ml_gtk_tree2_unselect_item"
+  external select_child : [> tree] obj -> [> widget] obj -> unit
+      = "ml_gtk_tree2_select_child"
+  external unselect_child : [> tree] obj ->  [> widget] obj -> unit
+      = "ml_gtk_tree2_unselect_child"
   external child_position : [> tree] obj -> [> treeitem] obj -> int
       = "ml_gtk_tree2_child_position"
-
+  external item_up : [> tree] obj -> pos:int -> unit
+      = "ml_gtk_tree2_item_up"
+  external select_next_child : [> tree] obj -> [> treeitem] obj -> bool -> unit
+      = "ml_gtk_tree2_select_next_child"
+  external select_prev_child : [> tree] obj -> [> treeitem] obj -> unit
+      = "ml_gtk_tree2_select_prev_child"
 (*  external set_selection_mode : [> tree] obj -> selection_mode -> unit
       = "ml_gtk_tree2_set_selection_mode"
   external set_view_mode : [> tree] obj -> [LINE ITEM] -> unit

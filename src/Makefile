@@ -68,7 +68,7 @@ endif
 # Targets
 COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o $(GLCOBJS)
 OLDMLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gtkObj.cmo gtkExt.cmo
-MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo \
+MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkTree.cmo gtkList.cmo \

@@ -10,6 +10,7 @@ type bitmap = [bitmap] drawable
 type font
 type image
 type atom = int
+type keysym = int
 type 'a event
 type drag_context
 

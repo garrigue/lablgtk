@@ -89,7 +89,7 @@ module Key = struct
     | _ -> invalid_arg "GdkEvent.Key.cast"
   external time : t -> int = "ml_GdkEventKey_time"
   external state : t -> int = "ml_GdkEventKey_state"
-  external keyval : t -> int = "ml_GdkEventKey_keyval"
+  external keyval : t -> keysym = "ml_GdkEventKey_keyval"
   external string : t -> string = "ml_GdkEventKey_string"
 end
 

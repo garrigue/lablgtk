@@ -56,7 +56,9 @@ and tree2 :
     method connect : ?after:bool -> tree2_signals
     method insert : Gtk.tree_item #GObj.is_item -> pos:int -> unit
     method remove_items : tree_item2 list -> unit
+    method select_child : Gtk.tree_item #GObj.is_item -> unit
     method select_item : pos:int -> unit
+    method unselect_child : Gtk.tree_item #GObj.is_item -> unit
     method unselect_item : pos:int -> unit
     method selection : tree_item2 list
     method children2 : tree_item2 list
@@ -64,6 +66,9 @@ and tree2 :
     method set_view_lines : bool -> unit
 (*    method set_view_mode : [ITEM LINE] -> unit *)
     method private wrap : Gtk.widget obj -> tree_item2
+    method item_up : pos:int -> unit
+    method select_next_child : Gtk.tree_item #GObj.is_item -> bool -> unit
+    method select_prev_child : Gtk.tree_item #GObj.is_item -> unit
   end
 
 class tree_item2_wrapper : Gtk.tree_item obj -> tree_item2
