@@ -14,9 +14,9 @@ COMPILER = $(CAMLC) $(MLFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
-LIBRARIAN = ocamlmklib -verbose
-TOPLEVEL = ocamlmktop $(MLFLAGS)
-CAMLP4 = camlp4o pr_o.cmo
+LIBRARIAN = $(CAMLMKLIB) -verbose
+TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
+CAMLP4 = $(CAMLP4O) pr_o.cmo
 CONFIG = ../config.make
 
 # protect against missing definitions
@@ -47,7 +47,7 @@ THLINK = unix.cma threads.cma
 ifdef USE_CC
 CCOMPILER = $(CC) -c -I$(LIBDIR) $(CFLAGS)
 else
-CCOMPILER = ocamlc -c -ccopt "$(CFLAGS)"
+CCOMPILER = $(CAMLC) -c -ccopt "$(CFLAGS)"
 endif
 
 ifdef USE_GL
@@ -211,7 +211,7 @@ varcc: varcc.cmo
 	rm -f *_tags.h *_tags.c
 
 clean:
-	rm -f *.cm* *.o *.a *_tags.[ch] $(TARGETS)
+	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml
 
 $(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_glib.o: glib_tags.h ml_glib.h wrappers.h
