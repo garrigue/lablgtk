@@ -1,4 +1,5 @@
 {
+open StdLabels
 open Load_parser
 } 
 

@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open Parser
 
 type tags = [`none|`control|`define|`structure|`char|`infix|`label|`uident]
