@@ -15,6 +15,10 @@ How to compile:
 		USE_CC=1	to use $(CC) rather than gcc
 		USE_GL=1	to compile with OpenGL support (see lower)
 		USE_GNOME=1	to compile GtkXmHTML support (requires gnome)
+                USE_GLADE=1     to compile libglade support (preliminary)
+        The following variables will also be remembered if passed as options
+                CAMLC CAMLOPT CC BINDIR INSTALLDIR
+        or you may directly edit config.make.
 
 	Then just type "make" to build the library and toplevels.
 

@@ -11,8 +11,8 @@ INSTALLDIR = $(LIBDIR)/lablgtk
 # Autoconf
 GETLIBDIR = ocamlc -v | grep "^Standard" | sed 's/^.*: *//'
 LIBDIR = `$(GETLIBDIR)`
-GETBINDIR = $(GETLIBDIR) | sed -e 's|/lib/[^/]*$$|/bin|' -e 's|/lib$$|/bin|'
-GETRANLIB = which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'
+BINDIR = `$(GETLIBDIR) | sed -e 's|/lib/[^/]*$$|/bin|' -e 's|/lib$$|/bin|'`
+RANLIB = `which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'`
 
 GTK_CONFIG = gtk-config
 GNOME_CONFIG = gnome-config
@@ -35,7 +35,7 @@ GTKCFLAGS = `$(GTK_CONFIG) --cflags`
 endif
 endif
 
-GTKGETLIBS = $(GTK_CONFIG) --libs
+GTKLIBS = `$(GTK_CONFIG) --libs`
 
 configure: .depend config.make
 
@@ -51,12 +51,12 @@ config.make:
 	@echo USE_CC=$(USE_CC) >> config.make
 	@echo DEBUG=$(DEBUG) >> config.make
 	@echo CC=$(CC) >> config.make
-	@echo RANLIB=`$(GETRANLIB)` >> config.make
+	@echo RANLIB=$(RANLIB) >> config.make
 	@echo LIBDIR=$(LIBDIR) >> config.make
-	@echo BINDIR=`$(GETBINDIR)` >> config.make
+	@echo BINDIR=$(BINDIR) >> config.make
 	@echo INSTALLDIR=$(INSTALLDIR) >> config.make
 	@echo GTKCFLAGS=$(GTKCFLAGS) >> config.make
-	@echo GTKLIBS=`$(GTKGETLIBS)` | \
+	@echo GTKLIBS=$(GTKLIBS) | \
 	  sed -e 's/-l/-cclib &/g' -e 's/-[LRWr][^ ]*/-ccopt &/g' \
 	  >> config.make
 	@echo GNOMELIBS=$(GNOMELIBS) | \
