@@ -17,6 +17,7 @@ class ['a] drawing w = object
   val gc = GC.create w
   val w : 'a drawable = w
   method set = gc_set ?gc
+  method set_line_attributes = GC.set_line_attributes gc
   method point = Draw.point w gc
   method line = Draw.line w gc
   method rectangle = Draw.rectangle w gc

@@ -107,6 +107,7 @@ end
 class widget_misc obj = object
   val obj = Widget.coerce obj
   method show () = Widget.show obj
+  method unparent () = Widget.unparent obj
   method show_all () = Widget.show_all obj
   method hide () = Widget.hide obj
   method hide_all () = Widget.hide_all obj
@@ -142,9 +143,11 @@ class widget_misc obj = object
   method pointer = Widget.get_pointer obj
   method style = new style (Widget.get_style obj)
   method visible = Widget.visible obj
+  method has_focus = Widget.has_focus obj
   method parent =
     try new widget_wrapper (Object.unsafe_cast (Widget.parent obj))
     with Null_pointer -> raise Not_found
+  method set_app_paintable = Widget.set_app_paintable obj
   method allocation = Widget.allocation obj
 end
 

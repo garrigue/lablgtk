@@ -7,7 +7,7 @@ opt: lablgtkopt
 
 configure:
 	@rm -f config.make .depend
-	@$(MAKE) nothing > /dev/null 2> /dev/null
+	@$(MAKE) -s nothing 2> /dev/null
 
 nothing:
 

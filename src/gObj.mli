@@ -108,6 +108,7 @@ class widget_misc :
     method event : 'a. 'a Gdk.event -> bool
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
+    method has_focus : bool
     method hide : unit -> unit
     method hide_all : unit -> unit
     method intersect : Gdk.Rectangle.t -> Gdk.Rectangle.t option
@@ -131,11 +132,13 @@ class widget_misc :
       ?can_default:bool ->
       ?can_focus:bool ->
       ?x:int -> ?y:int -> ?width:int -> ?height:int -> unit
+    method set_app_paintable : bool -> unit
     method show : unit -> unit
     method show_all : unit -> unit
     method style : style
     method toplevel : widget_wrapper
     method unmap : unit -> unit
+    method unparent : unit -> unit
     method unrealize : unit -> unit
     method visible : bool
     method visual : Gdk.visual

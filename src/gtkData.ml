@@ -55,6 +55,10 @@ module Style = struct
       = "ml_gtk_style_get_bg"
   external set_bg : style -> state:state_type -> color:Gdk.Color.t -> unit
       = "ml_gtk_style_set_bg"
+  external get_dark_gc : style -> state:state_type -> Gdk.gc
+      = "ml_gtk_style_get_dark_gc"
+  external get_light_gc : style -> state:state_type -> Gdk.gc
+      = "ml_gtk_style_get_light_gc"
   external get_colormap : style -> Gdk.colormap = "ml_gtk_style_get_colormap"
   external get_font : style -> Gdk.font = "ml_gtk_style_get_font"
   external set_font : style -> Gdk.font -> unit = "ml_gtk_style_set_font"
