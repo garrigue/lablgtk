@@ -66,8 +66,8 @@ let classes = ref [
   "GtkHBox", ("GtkPack.Box", "GPack.box");
   "GtkVBox", ("GtkPack.Box", "GPack.box");
   "GtkBBox", ("GtkPack.BBox", "GPack.button_box");
-  "GtkHBBox", ("GtkPack.BBox", "GPack.button_box");
-  "GtkVBBox", ("GtkPack.BBox", "GPack.button_box");
+  "GtkHButtonBox", ("GtkPack.BBox", "GPack.button_box");
+  "GtkVButtonBox", ("GtkPack.BBox", "GPack.button_box");
   "GtkFixed", ("GtkPack.Fixed", "GPack.fixed");
   "GtkLayout", ("GtkPack.Layout", "GPack.layout");
 (*  "GtkPacker", ("GtkPack.Packer", "GPack.packer"); *)
@@ -98,7 +98,7 @@ let classes = ref [
   "GtkTree", ("GtkTree.Tree", "GTree.tree");
   "GtkCTree", ("GtkBase.Container", "GContainer.container");
   "GtkWindow", ("GtkWindow.Window", "GWindow.window");
-  "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog");
+  "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog_any");
   "GtkInputDialog", ("GtkWindow.Dialog", "GWindow.dialog");
   "GtkFileSelection", ("GtkWindow.FileSelection", "GWindow.file_selection");
   "GtkFontSelectionDialog", ("GtkWindow.FontSelectionDialog",
