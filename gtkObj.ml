@@ -160,7 +160,11 @@ class frame obj = object
   method set = Frame.set ?obj
 end
 
-let new_frame ?:label ?opt = new frame (Frame.create ?:label ?opt)
+class frame_create ?:label ?opt = frame (Frame.create ?:label ?opt) 
+
+let new_frame ?opt ?:label ?:packing [< null_cont >] =
+  let w = new frame_create ?:label ?opt in
+  Frame.setter ?w#raw ?label:None ?cont:(fun _ -> packing w; w)
 
 class aspect_frame obj = object
   inherit [AspectFrame.t] container_skel obj

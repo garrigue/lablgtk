@@ -246,10 +246,12 @@ module Style = struct
   external get_depth : t -> int = "ml_gtk_style_get_depth"
   external get_font : t -> Gdk.font = "ml_gtk_style_get_font"
   external set_font : t -> Gdk.font -> unit = "ml_gtk_style_set_font"
-  let set st ?:background ?:font =
+  let setter st :cont ?:background ?:font =
     let may_set f = may fun:(f st) in
     may_set set_background background;
-    may_set set_font font
+    may_set set_font font;
+    cont st
+  let set = setter cont:null_cont
 end
 
 module Object = struct
@@ -326,10 +328,12 @@ module Tooltips = struct
       [> tooltips] obj ->
       ?foreground:Gdk.Color.t -> ?background:Gdk.Color.t -> unit
       = "ml_gtk_tooltips_set_colors"
-  let set tt ?:delay ?:foreground ?:background =
+  let setter tt :cont ?:delay ?:foreground ?:background =
     may fun:(set_delay tt) delay;
     if foreground <> None || background <> None then
-      set_colors tt ?:foreground ?:background
+      set_colors tt ?:foreground ?:background;
+    cont tt
+  let set = setter cont:null_cont
 end
 
 module Widget = struct
@@ -428,7 +432,7 @@ module Widget = struct
     remove_accelerator w t sgn.Signal.name
   external window : [> widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
-  let set w ?:name ?:state ?:sensitive ?:can_default ?:can_focus
+  let setter w :cont ?:name ?:state ?:sensitive ?:can_default ?:can_focus
       ?:x [< -2 >] ?:y [< -2 >] ?:width [< -1 >] ?:height [< -1 >] ?:style =
     let may_set f arg = may fun:(f w) arg in
     may_set set_name name;
@@ -438,7 +442,9 @@ module Widget = struct
     may_set set_can_focus can_focus;
     may_set set_style style;
     if x > -2 || y > -2 then set_uposition w :x :y;
-    if width > -1 || height > -1 then set_usize w :width :height
+    if width > -1 || height > -1 then set_usize w :width :height;
+    cont w
+  let set = setter cont:null_cont
   module Signals = struct
     open Signal
     let marshal f argv = f (cast (Argv.get_object argv pos:0))
@@ -493,12 +499,14 @@ module Container = struct
       = "ml_gtk_container_unblock_resize"
   external need_resize : [> container] obj -> bool
       = "ml_gtk_container_need_resize"
-  let set w ?border_width:border ?:width [< -1 >] ?:height [< -1 >]
+  let setter w :cont ?border_width:border ?:width [< -1 >] ?:height [< -1 >]
       ?enable_resize:enable ?block_resize:block =
     may border fun:(border_width w);
     if width > -1 || height > -1 then Widget.set_usize w :width :height;
     may enable fun:(fun b -> (if b then enable_resize else disable_resize) w);
-    may block  fun:(fun b -> (if b then block_resize else unblock_resize) w)
+    may block  fun:(fun b -> (if b then block_resize else unblock_resize) w);
+    cont w
+  let set = setter cont:null_cont
   external foreach : [> container] obj -> fun:(Widget.t obj-> unit) -> unit
       = "ml_gtk_container_foreach"
   let children w =
@@ -549,10 +557,11 @@ module Alignment = struct
       [> alignment] obj ->
       ?x:clampf -> ?y:clampf -> ?xscale:clampf -> ?yscale:clampf -> unit
       = "ml_gtk_alignment_set"
-  let set w ?:x ?:y ?:xscale ?:yscale =
+  let setter w :cont ?:x ?:y ?:xscale ?:yscale =
     if x <> None || y <> None || xscale <> None || yscale <> None then
       set w ?:x ?:y ?:xscale ?:yscale;
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
 end
 
 module EventBox = struct
@@ -580,14 +589,15 @@ module Frame = struct
       = "ml_gtk_frame_get_label_xalign"
   external get_label_yalign : [> frame] obj -> float
       = "ml_gtk_frame_get_label_yalign"
-  let set w ?:label ?:label_xalign ?:label_yalign ?:shadow_type =
+  let setter w :cont ?:label ?:label_xalign ?:label_yalign ?:shadow_type =
     may label fun:(set_label w);
     if label_xalign <> None || label_yalign <> None then
       set_label_align w
 	x:(may_default get_label_xalign w for:label_xalign)
 	y:(may_default get_label_yalign w for:label_yalign);
     may shadow_type fun:(set_shadow_type w);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
 end
 
 module AspectFrame = struct
@@ -614,13 +624,14 @@ module AspectFrame = struct
       = "ml_gtk_aspect_frame_get_ratio"
   external get_obey_child : [> aspect] obj -> bool
       = "ml_gtk_aspect_frame_get_obey_child"
-  let set w ?:xalign ?:yalign ?:ratio ?:obey_child =
+  let setter w :cont ?:xalign ?:yalign ?:ratio ?:obey_child =
     if xalign <> None || yalign <> None || ratio <> None || obey_child <> None
     then set w xalign:(may_default get_xalign w for:xalign)
 	yalign:(may_default get_yalign w for:yalign)
 	ratio:(may_default get_ratio w for:ratio)
 	obey_child:(may_default get_obey_child w for:obey_child);
-    Frame.set ?w
+    cont w
+  let set = setter ?cont:Frame.set
 end
 
 module HandleBox = struct
@@ -691,10 +702,11 @@ module MenuItem = struct
       = "ml_gtk_menu_item_accelerator_size"
   external accelerator_text : [> menuitem] obj -> string -> unit
       = "ml_gtk_menu_item_accelerator_size"
-  let set w ?:submenu ?accelerator_text:text =
+  let setter w :cont ?:submenu ?accelerator_text:text =
     may submenu fun:(set_submenu w);
     may text fun:(accelerator_text w);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
   external configure :
       [> menuitem] obj -> show_toggle:bool -> show_indicator:bool -> unit
       = "ml_gtk_menu_item_configure"
@@ -725,10 +737,11 @@ module CheckMenuItem = struct
       = "ml_gtk_check_menu_item_set_state"
   external set_show_toggle : [> checkmenuitem] obj -> bool -> unit
       = "ml_gtk_check_menu_item_set_show_toggle"
-  let set w ?:state ?:show_toggle =
+  let setter w :cont ?:state ?:show_toggle =
     may state fun:(set_state w);
     may show_toggle fun:(set_show_toggle w);
-    MenuItem.set ?w
+    cont w
+  let set = setter ?cont:MenuItem.set
   external toggled : [> checkmenuitem] obj -> unit
       = "ml_gtk_check_menu_item_toggled"
   module Signals = struct
@@ -755,9 +768,10 @@ module RadioMenuItem = struct
       = "ml_gtk_radio_menu_item_group"
   external set_group : [> radiomenuitem] obj -> group -> unit
       = "ml_gtk_radio_menu_item_set_group"
-  let set w ?:group =
+  let setter w :cont ?:group =
     may group fun:(set_group w);
-    CheckMenuItem.set ?w
+    cont w
+  let set = setter ?cont:CheckMenuItem.set
 end
 
 module TreeItem = struct
@@ -773,9 +787,10 @@ module TreeItem = struct
     | Some label -> create_with_label label
   external set_subtree : [> treeitem] obj -> [> widget] obj -> unit
       = "ml_gtk_tree_item_set_subtree"
-  let set w ?:subtree =
+  let setter w :cont ?:subtree =
     may subtree fun:(set_subtree w);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
   external remove_subtree : [> treeitem] obj -> unit
       = "ml_gtk_tree_item_remove_subtree"
   external expand : [> treeitem] obj -> unit
@@ -810,11 +825,12 @@ module Viewport = struct
       = "ml_gtk_viewport_set_vadjustment"
   external set_shadow_type : [> viewport] obj -> shadow -> unit
       = "ml_gtk_viewport_set_shadow_type"
-  let set w ?:hadjustment ?:vadjustment ?:shadow_type =
+  let setter w :cont ?:hadjustment ?:vadjustment ?:shadow_type =
     may hadjustment fun:(set_hadjustment w);
     may vadjustment fun:(set_vadjustment w);
     may shadow_type fun:(set_shadow_type w);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
 end
 
 module Window = struct
@@ -847,7 +863,7 @@ module Window = struct
       = "ml_gtk_window_get_allow_grow"
   external get_auto_shrink : [> window] obj -> bool
       = "ml_gtk_window_get_auto_shrink"
-  let set w ?:title ?:wmclass_name ?:wmclass_class
+  let setter w :cont ?:title ?:wmclass_name ?:wmclass_class
       ?:allow_shrink ?:allow_grow ?:auto_shrink =
     may title fun:(set_title w);
     if wmclass_name <> None || wmclass_class <> None then
@@ -858,7 +874,8 @@ module Window = struct
 	allow_shrink:(may_default get_allow_shrink w for:allow_shrink)
 	allow_grow:(may_default get_allow_grow w for:allow_grow)
 	auto_shrink:(may_default get_auto_shrink w for:auto_shrink);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
   external add_accelerator_table : [> window] obj -> AcceleratorTable.t -> unit
       = "ml_gtk_window_add_accelerator_table"
   external remove_accelerator_table :
@@ -891,11 +908,12 @@ module FileSelection = struct
       = "ml_gtk_file_selection_show_fileop_buttons"
   external hide_fileop_buttons : [> filesel] obj -> unit
       = "ml_gtk_file_selection_hide_fileop_buttons"
-  let set w ?:filename ?:fileop_buttons =
+  let setter w :cont ?:filename ?:fileop_buttons =
     may filename fun:(set_filename w);
     may fileop_buttons fun:
       (fun b -> (if b then show_fileop_buttons else hide_fileop_buttons) w);
-    Window.set ?w
+    cont w
+  let set = setter ?cont:Window.set
 end
 
 module Box = struct
@@ -920,10 +938,11 @@ module Box = struct
       = "ml_gtk_box_set_homogeneous"
   external set_spacing : [> box] obj -> int -> unit
       = "ml_gtk_box_set_spacing"
-  let set w ?:homogeneous ?:spacing =
+  let setter w :cont ?:homogeneous ?:spacing =
     may homogeneous fun:(set_homogeneous w);
     may spacing fun:(set_spacing w);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
   type packing =
       { expand: bool; fill: bool; padding: int; pack_type: pack_type }
   external query_child_packing : [> box] obj -> [> widget] obj -> packing
@@ -954,10 +973,11 @@ module ColorSelection = struct
       = "ml_gtk_color_selection_set_update_policy"
   external set_opacity : [> colorsel] obj -> bool -> unit
       = "ml_gtk_color_selection_set_opacity"
-  let set w ?:update_policy ?:opacity =
+  let setter w :cont ?:update_policy ?:opacity =
     may update_policy fun:(set_update_policy w);
     may opacity fun:(set_opacity w);
-    Box.set ?w
+    cont w
+  let set = setter ?cont:Box.set
   external set_color :
       [> colorsel] obj ->
       red:float -> green:float -> blue:float -> ?opacity:float -> unit
@@ -1026,7 +1046,7 @@ module BBox = struct
       = "ml_gtk_button_box_set_child_ipadding"
   external set_layout : [> bbox] obj -> bbox_style -> unit
       = "ml_gtk_button_box_set_layout"
-  let set w ?:spacing ?:child_width ?:child_height ?:child_ipadx
+  let setter w :cont ?:spacing ?:child_width ?:child_height ?:child_ipadx
       ?:child_ipady ?:layout =
     may spacing fun:(set_spacing w);
     if child_width <> None || child_height <> None then
@@ -1036,7 +1056,8 @@ module BBox = struct
       set_child_ipadding w
 	x:(may_default get_child_ipadx w for:child_ipadx)
 	y:(may_default get_child_ipady w for:child_ipady);
-    Box.set ?w
+    cont w
+  let set = setter ?cont:Box.set
   external set_child_size_default : width:int -> height:int -> unit
       = "ml_gtk_button_box_set_child_size_default"
   external set_child_ipadding_default : x:int -> y:int -> unit
@@ -1100,10 +1121,11 @@ module ToggleButton = struct
       = "ml_gtk_toggle_button_set_mode"
   external set_state : [> toggle] obj -> bool -> unit
       = "ml_gtk_toggle_button_set_state"
-  let set button ?:draw_indicator ?:state =
-    may fun:(set_mode button) draw_indicator;
-    may fun:(set_state button) state;
-    Container.set ?button
+  let setter w :cont ?:draw_indicator ?:state =
+    may fun:(set_mode w) draw_indicator;
+    may fun:(set_state w) state;
+    cont w
+  let set = setter ?cont:Container.set
   external active : [> toggle] obj -> bool = "ml_GtkToggleButton_active"
   external toggled : [> toggle] obj -> unit = "ml_gtk_toggle_button_toggled"
   module Signals = struct
@@ -1126,9 +1148,10 @@ module RadioButton = struct
   external group : [> radio] obj -> group = "ml_gtk_radio_button_group"
   external set_group : [> radio] obj -> group -> unit
       = "ml_gtk_radio_button_set_group"
-  let set w ?:group =
+  let setter w :cont ?:group =
     may group fun:(set_group w);
-    ToggleButton.set ?w
+    cont w
+  let set = setter ?cont:ToggleButton.set
   let create ?:group [< empty >] ?:label ?(_ : unit option) =
     match label with None -> create group
     | Some label -> create_with_label group label
@@ -1146,10 +1169,11 @@ module CList = struct
       = "ml_gtk_clist_set_border"
   external set_selection_mode : [> clist] obj -> selection -> unit
       = "ml_gtk_clist_set_selection_mode"
-  let set w ?:border ?:selection_mode =
+  let setter w :cont ?:border ?:selection_mode =
     may border fun:(set_border w);
     may selection_mode fun:(set_selection_mode w);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
   external set_policy :
       [> clist] obj -> vertical:policy -> horizontal:policy -> unit
       = "ml_gtk_clist_set_policy"
@@ -1280,9 +1304,10 @@ module GtkList = struct
       = "ml_gtk_list_child_position"
   external set_selection_mode : [> list] obj -> selection -> unit
       = "ml_gtk_list_set_selection_mode"
-  let set w ?:selection_mode =
+  let setter w :cont ?:selection_mode =
     may selection_mode fun:(set_selection_mode w);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
   module Signals = struct
     open Signal
     let selection_changed : ([> list],_) t =
@@ -1335,10 +1360,11 @@ module Menu = struct
   external get_attach_widget : [> menu] obj -> Widget.t obj
       = "ml_gtk_menu_get_attach_widget"
   external detach : [> menu] obj -> unit = "ml_gtk_menu_detach"
-  let set w ?:active ?:accelerator_table =
+  let setter w :cont ?:active ?:accelerator_table =
     may active fun:(set_active w);
     may accelerator_table fun:(set_accelerator_table w);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
 end
 
 module OptionMenu = struct
@@ -1355,10 +1381,11 @@ module OptionMenu = struct
       = "ml_gtk_option_menu_remove_menu"
   external set_history : [> optionmenu] obj -> int -> unit
       = "ml_gtk_option_menu_set_history"
-  let set w ?:menu ?:history =
+  let setter w :cont ?:menu ?:history =
     may menu fun:(set_menu w);
     may history fun:(set_history w);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
 end
 
 module MenuBar = struct
@@ -1400,7 +1427,7 @@ module Notebook = struct
       = "ml_gtk_notebook_popup_enable"
   external popup_disable : [> notebook] obj -> unit
       = "ml_gtk_notebook_popup_disable"
-  let set w ?:page ?:tab_pos ?:show_tabs ?:show_border ?:scrollable
+  let setter w :cont ?:page ?:tab_pos ?:show_tabs ?:show_border ?:scrollable
       ?:tab_border ?:popup =
     let may_set f = may fun:(f w) in
     may_set set_page page;
@@ -1410,7 +1437,8 @@ module Notebook = struct
     may_set set_scrollable scrollable;
     may_set set_tab_border tab_border;
     may popup fun:(fun b -> (if b then popup_enable else popup_disable) w);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
   module Signals = struct
     open Signal
     let switch_page : ([> notebook],_) t =
@@ -1435,10 +1463,11 @@ module Paned = struct
       = "ml_gtk_paned_handle_size"
   external gutter_size : [> paned] obj -> int -> unit
       = "ml_gtk_paned_gutter_size"
-  let set w ?handle_size:handle ?gutter_size:gutter =
+  let setter w :cont ?handle_size:handle ?gutter_size:gutter =
     may fun:(handle_size w) handle;
     may fun:(gutter_size w) gutter;
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
   external hpaned_new : unit -> t obj = "ml_gtk_hpaned_new"
   external vpaned_new : unit -> t obj = "ml_gtk_vpaned_new"
   let create (dir : orientation) =
@@ -1465,12 +1494,13 @@ module ScrolledWindow = struct
       = "ml_gtk_scrolled_window_get_hscrollbar_policy"
   external get_vscrollbar_policy : [> scrolled] obj -> policy
       = "ml_gtk_scrolled_window_get_vscrollbar_policy"
-  let set w ?:hscrollbar_policy ?:vscrollbar_policy =
+  let setter w :cont ?:hscrollbar_policy ?:vscrollbar_policy =
     if hscrollbar_policy <> None || vscrollbar_policy <> None then
       set_policy w
 	horizontal:(may_default get_hscrollbar_policy w for:hscrollbar_policy)
 	vertical:(may_default get_vscrollbar_policy w for:vscrollbar_policy);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
 end
 
 module Table = struct
@@ -1511,11 +1541,12 @@ module Table = struct
       = "ml_gtk_table_set_col_spacings"
   external set_homogeneous : [> table] obj -> bool -> unit
       = "ml_gtk_table_set_homogeneous"
-  let set w ?:row_spacings ?:col_spacings ?:homogeneous =
+  let setter w :cont ?:row_spacings ?:col_spacings ?:homogeneous =
     may row_spacings fun:(set_row_spacings w);
     may col_spacings fun:(set_col_spacings w);
     may homogeneous fun:(set_homogeneous w);
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
 end
 
 module Toolbar = struct
@@ -1574,12 +1605,13 @@ module Tree = struct
       = "ml_gtk_tree_set_view_mode"
   external set_view_lines : [> tree] obj -> bool -> unit
       = "ml_gtk_tree_set_view_lines"
-  let set w ?:selection_mode ?:view_mode ?:view_lines =
+  let setter w :cont ?:selection_mode ?:view_mode ?:view_lines =
     let may_set f = may fun:(f w) in
     may_set set_selection_mode selection_mode;
     may_set set_view_mode view_mode;
     may_set set_view_lines view_lines;
-    Container.set ?w
+    cont w
+  let set = setter ?cont:Container.set
   module Signals = struct
     open Signal
     let widget_entered : ([> tree],_) t =
@@ -1681,13 +1713,15 @@ module Entry = struct
       = "ml_gtk_entry_set_editable"
   external set_max_length : [> entry] obj -> int -> unit
       = "ml_gtk_entry_set_max_length"
-  let set w ?:text ?:position ?:visibility ?:editable ?:max_length =
+  let setter w :cont ?:text ?:position ?:visibility ?:editable ?:max_length =
     let may_set f = may fun:(f w) in
     may_set set_text text;
     may_set set_position position;
     may_set set_visibility visibility;
     may_set set_editable editable;
-    may_set set_max_length max_length
+    may_set set_max_length max_length;
+    cont w
+  let set = setter ?cont:null_cont
   external text_length : [> entry] obj -> int
       = "ml_GtkEntry_text_length"
 end
@@ -1720,7 +1754,8 @@ module SpinButton = struct
       = "ml_gtk_spin_button_spin"
   external set_wrap : [> spinbutton] obj -> bool -> unit
       = "ml_gtk_spin_button_set_wrap"
-  let set w ?:adjustment ?:digits ?:value ?:update_policy ?:numeric ?:wrap =
+  let setter w :cont ?:adjustment ?:digits ?:value ?:update_policy
+      ?:numeric ?:wrap =
     let may_set f = may fun:(f w) in
     may_set set_adjustment adjustment;
     may_set set_digits digits;
@@ -1728,7 +1763,8 @@ module SpinButton = struct
     may_set set_update_policy update_policy;
     may_set set_numeric numeric;
     may_set set_wrap wrap;
-    Entry.set ?w
+    cont w
+  let set = setter ?cont:Entry.set
 end
 
 module Text = struct
@@ -1757,10 +1793,12 @@ module Text = struct
       [> text] obj -> ?font:Gdk.font -> ?foreground:Gdk.Color.t ->
       ?background:Gdk.Color.t -> string -> unit
       = "ml_gtk_text_insert"
-  let set w ?:editable ?:word_wrap ?:point =
+  let setter w :cont ?:editable ?:word_wrap ?:point =
     may editable fun:(set_editable w);
     may word_wrap fun:(set_word_wrap w);
-    may point fun:(set_point w)
+    may point fun:(set_point w);
+    cont w
+  let set = setter ?cont:null_cont
 end
 
 module Combo = struct
@@ -1791,13 +1829,14 @@ module Combo = struct
 	Widget.show li;
 	Container.add (list combo) li
       end
-  let set w ?:popdown_strings ?:use_arrows ?:use_arrows_always
+  let setter w :cont ?:popdown_strings ?:use_arrows ?:use_arrows_always
       ?:case_sensitive =
     may popdown_strings fun:(set_popdown_strings w);
     may use_arrows fun:(set_use_arrows w);
     may use_arrows_always fun:(set_use_arrows_always w);
     may case_sensitive fun:(set_case_sensitive w);
-    BBox.set ?w
+    cont w
+  let set = setter ?cont:Box.set
   external disable_activate : [> combo] obj -> unit
       = "ml_gtk_combo_disable_activate"
 end
@@ -1852,13 +1891,15 @@ module Misc = struct
   external get_yalign : [> misc] obj -> float = "ml_gtk_misc_get_yalign"
   external get_xpad : [> misc] obj -> int = "ml_gtk_misc_get_xpad"
   external get_ypad : [> misc] obj -> int = "ml_gtk_misc_get_ypad"
-  let set w ?:xalign ?:yalign ?:xpad ?:ypad =
+  let setter w :cont ?:xalign ?:yalign ?:xpad ?:ypad =
     if xalign <> None || yalign <> None then
       set_alignment w x:(may_default get_xalign w for:xalign)
 	y:(may_default get_yalign w for:yalign);
     if xpad <> None || ypad <> None then
       set_padding w x:(may_default get_xpad w for:xpad)
-	y:(may_default get_ypad w for:ypad)
+	y:(may_default get_ypad w for:ypad);
+    cont w
+  let set = setter ?cont:null_cont
 end
 
 module Arrow = struct
@@ -1891,10 +1932,11 @@ module Label = struct
   external set : [> label] obj -> string -> unit = "ml_gtk_label_set"
   external set_justify : [> label] obj -> justification -> unit
       = "ml_gtk_label_set_justify"
-  let set w ?:label ?:justify =
+  let setter w :cont ?:label ?:justify =
     may fun:(set w) label;
     may fun:(set_justify w) justify;
-    Misc.set ?w
+    cont w
+  let set = setter ?cont:Misc.set
   external get_label : [> label] obj -> string = "ml_GtkLabel_label"
 end
 
@@ -1921,14 +1963,15 @@ module TipsQuery = struct
       = "ml_gtk_tips_query_get_label_no_tip"
   external get_emit_always : [> tipsquery] obj -> bool
       = "ml_gtk_tips_query_get_emit_always"
-  let set w ?:caller ?:emit_always ?:label_inactive ?:label_no_tip =
+  let setter w :cont ?:caller ?:emit_always ?:label_inactive ?:label_no_tip =
     may caller fun:(set_caller w);
     may emit_always fun:(set_emit_always w);
     if label_inactive <> None || label_no_tip <> None then
       set_labels w
 	inactive:(may_default get_label_inactive w for:label_inactive)
 	no_tip:(may_default get_label_no_tip w for:label_no_tip);
-    Misc.set ?w
+    cont w
+  let set = setter ?cont:Misc.set
   module Signals = struct
     open Signal
     let start_query : ([> tipsquery],_) t =
@@ -1953,10 +1996,11 @@ module Pixmap = struct
   external set :
       [> pixmap] obj -> ?pixmap:Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
       = "ml_gtk_pixmap_set"
-  let set w ?:pixmap ?:mask =
+  let setter w :cont ?:pixmap ?:mask =
     if pixmap <> None || mask <> None then
       set w ?:pixmap ?:mask;
-    Misc.set ?w
+    cont w
+  let set = setter ?cont:Misc.set
   external pixmap : [> pixmap] obj -> Gdk.pixmap = "ml_GtkPixmap_pixmap"
   external mask : [> pixmap] obj -> Gdk.bitmap = "ml_GtkPixmap_mask"
 end
@@ -1985,9 +2029,11 @@ module Range = struct
       = "ml_gtk_range_set_adjustment"
   external set_update_policy : [> range] obj -> update -> unit
       = "ml_gtk_range_set_update_policy"
-  let set w ?:adjustment ?:update_policy =
+  let setter w :cont ?:adjustment ?:update_policy =
     may adjustment fun:(set_adjustment w);
-    may update_policy fun:(set_update_policy w)
+    may update_policy fun:(set_update_policy w);
+    cont w
+  let set = setter ?cont:null_cont
 end
 
 module Scale = struct
@@ -2010,11 +2056,12 @@ module Scale = struct
       = "ml_gtk_scale_value_width"
   external draw_value : [> scale] obj -> unit
       = "ml_gtk_scale_draw_value"
-  let set w ?:digits ?:draw_value ?:value_pos =
+  let setter w :cont ?:digits ?:draw_value ?:value_pos =
     may digits fun:(set_digits w);
     may draw_value fun:(set_draw_value w);
     may value_pos fun:(set_value_pos w);
-    Range.set ?w
+    cont w
+  let set = setter ?cont:Range.set
 end
 
 module Scrollbar = struct
@@ -2050,14 +2097,16 @@ module Ruler = struct
   external get_upper : [> ruler] obj -> float = "ml_gtk_ruler_get_upper"
   external get_position : [> ruler] obj -> float = "ml_gtk_ruler_get_position"
   external get_max_size : [> ruler] obj -> float = "ml_gtk_ruler_get_max_size"
-  let set w ?:metric ?:lower ?:upper ?:position ?:max_size =
+  let setter w :cont ?:metric ?:lower ?:upper ?:position ?:max_size =
     may metric fun:(set_metric w);
     if lower <> None || upper <> None || position <> None || max_size <> None
     then
       set_range w lower:(may_default get_lower w for:lower)
 	upper:(may_default get_upper w for:upper)
 	position:(may_default get_position w for:position)
-	max_size:(may_default get_max_size w for:max_size)
+	max_size:(may_default get_max_size w for:max_size);
+    cont w
+  let set = setter ?cont:null_cont
 end
 
 module Separator = struct

@@ -95,9 +95,7 @@ let count_cells () =
 
 let table = new_table columns:8 rows:8
 let vbox = new_box `VERTICAL
-let frame' = new_frame ()
 let hbox = new_box `HORIZONTAL
-let frame = new_frame ()
 let label = new_label label:""
 
 let update_label () =
@@ -154,13 +152,11 @@ let _ =
   window#connect#destroy callback:Main.quit;
   window#set title:"pousse";
   window#add vbox;
-  vbox#add frame';
-  frame'#add table;
-  frame'#set shadow_type:`IN;
+  let frame = new_frame shadow_type:`IN packing:vbox#add in
+  frame#add table;
   vbox#add hbox;
   hbox#add bar;
-  hbox#pack frame expand:false;
-  frame#set shadow_type:`IN;
+  let frame = new_frame shadow_type:`IN packing:(hbox#pack expand:false) in
   frame#add label;
   label#set justify:`LEFT xpad:5 xalign:0.0;
   for i = 0 to 7 do for j = 0 to 7 do
