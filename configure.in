@@ -370,16 +370,16 @@ AC_OUTPUT(config.make)
 chmod a-w config.make
 
 AC_DEFUN(CONF_SUMMARY, [
-echo -ne "\t$1\t"
-if test "$USE_$2"
+echo -n "	$1	"
+if test -n "$USE_$2"
 then echo "yes"
-else if test "$FORCE_$2" == "yes"
+else if test "$FORCE_$2" = "yes"
      then echo "disabled"
      else echo "not found"
      fi
 fi])
 
-echo -e "\nLablGTK configuration:"
+echo ; echo "LablGTK configuration:"
 CONF_SUMMARY(GtkGLArea, GL)
 CONF_SUMMARY(libglade, GLADE)
 CONF_SUMMARY(librsvg , RSVG)
@@ -387,9 +387,6 @@ CONF_SUMMARY(libgnomecanvas, GNOMECANVAS)
 CONF_SUMMARY(libgnomeui, GNOMEUI)
 CONF_SUMMARY(libpanelapplet, PANEL)
 echo
-echo -ne  "\tdebug   \t"
-if test "$DEBUG" ; then echo "yes" ; else echo "no" ; fi
-echo -e  "\tC compiler\t$CC"
-
-
-
+echo -n  "	debug   	"
+if test -n "$DEBUG" ; then echo "yes" ; else echo "no" ; fi
+echo -e  "	C compiler	$CC"
