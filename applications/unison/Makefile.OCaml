@@ -76,10 +76,8 @@ ifeq ($(UISTYLE),gtk)
 LABLGTKDIR=../../..
 
 include $(LABLGTKDIR)/config.make
-WITH_TK= -I $(LABLGTKDIR) lablgtk.cma \
-	-cclib $(LABLGTKDIR)/liblablgtk$(LIB_EXT) -cclib "$(GTKLIBS)"
-WITH_TK_OPT= -I $(LABLGTKDIR) lablgtk.cmxa \
-	-cclib $(LABLGTKDIR)/liblablgtk$(LIB_EXT) -cclib "$(GTKLIBS)"
+WITH_TK= -I $(LABLGTKDIR) -ccopt -L$(LABLGTKDIR) lablgtk.cma
+WITH_TK_OPT= -I $(LABLGTKDIR) -ccopt -L$(LABLGTKDIR) lablgtk.cmxa
 endif
 
 ifeq ($(UISTYLE),tk)
