@@ -1,5 +1,10 @@
 $Id$
 
+2004.03.05 [Olivier]
+  * gtk_dialog->action_area is a GtkHButtonBox
+  * add gtk_button_box_{set,get}_child_secondary (2.4)
+  * misc. additions and cleanups in GPack.box and GPack.button_box
+
 In lablgtk2-20040304:
 
 2004.03.04 [Jacques]

@@ -92,6 +92,8 @@ ML_3 (gtk_button_box_set_child_size, GtkButtonBox_val,
       Int_val, Int_val, Unit)
 ML_3 (gtk_button_box_set_child_ipadding, GtkButtonBox_val,
       Int_val, Int_val, Unit)
+ML_2 (gtk_button_box_get_child_secondary, GtkButtonBox_val, GtkWidget_val, Val_bool)
+ML_3 (gtk_button_box_set_child_secondary, GtkButtonBox_val, GtkWidget_val, Bool_val, Unit)
 
 /* gtkfixed.h */
 

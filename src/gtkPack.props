@@ -30,6 +30,8 @@ class Box hv set : Container {
 
 class ButtonBox hv : Box {
   "layout-style"         GtkButtonBoxStyle    : Read / Write
+  method get_child_secondary : "[>`widget] obj -> bool"
+  method set_child_secondary : "[>`widget] obj -> bool -> unit"
 }
 
 class Fixed : Container {

@@ -69,7 +69,7 @@ end
 
 module Dialog = struct
   include Dialog
-  external action_area : [>`dialog] obj -> box obj
+  external action_area : [>`dialog] obj -> button_box obj
       = "ml_GtkDialog_action_area"
   external vbox : [>`dialog] obj -> box obj
       = "ml_GtkDialog_vbox"
