@@ -1,5 +1,8 @@
 $Id$
 
+2003.01.22
+  * GtkThread.main switches GtkMain.Main.main to call GtkThread.thread_main
+
 2003.01.10
   * added GList.clist#get_row_state and GWindow.file_selection#file_list
     (by Francois Pessaux)
