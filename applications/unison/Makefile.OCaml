@@ -245,7 +245,7 @@ else
 
   uigtk.cmo : uigtk.ml
 	@echo "$(OCAMLC): $< $(ZFLAGS) --->  $@"
-	$(OCAMLC) -modern -w s -I ../../.. -c $(CWD)/$<
+	$(OCAMLC) -modern -w s -I $(LABLGTKDIR) -c $(CWD)/$<
 
   $(NAME)$(EXEC_EXT): $(OBJS)
 	@echo Linking $@
