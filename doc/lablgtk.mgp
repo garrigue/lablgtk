@@ -43,9 +43,10 @@ garrigue@kurims.kyoto-u.ac.jp
 2
 Synopsis
 
-	Why GTK+?
+	Objective Label introduction
 %size 2
 
+	Why GTK+?
 	GTK+/LablGTK structure
 %size 2
 
@@ -65,6 +66,112 @@ Synopsis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 3
+Objective Label
+
+	Based on Objective Caml
+		ML syntax and type inference
+		Class-based object system
+
+	Several extensions
+		Labeled and optional parameters
+		Polymorphic variants
+		Polymorphic methods
+
+	Tools
+		Type-based browser
+		GUI and 3D graphics
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+4
+Labels and optionals
+
+%font "code", size 4, prefix "    ", fore "yellow"
+let rec map fun:f = function
+    [] -> []
+  | x :: l -> f x :: map fun:f l
+%fore "lightpink"
+val map : fun:('a -> 'b) -> 'a list -> 'b list
+
+%pause, fore "yellow", font "code"
+let f = map [1;2;3]
+%fore "lightpink"
+val f : fun:(int -> 'a) -> 'a list
+%fore "yellow"
+f fun:(fun x -> 2*x)
+%fore "lightpink"
+- : int list = [2; 3; 4]
+
+%pause, fore "yellow", font "code"
+let f x ?incr:y [< 1 >] = x + y
+%fore "lightpink"
+val f : int -> ?incr:int -> int
+%fore "yellow"
+f 1
+%fore "lightpink"
+- : int = 2
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+5
+Polymorphic variants
+
+
+%font "code", size 4, prefix "    ", fore "yellow"
+[`on; `off]
+%fore "lightpink"
+- : [> off on] list = [`on; `off]
+
+%pause, fore "yellow", font "code"
+`number 1;;
+%fore "lightpink"
+- : [> number(int)] = `number 1
+
+%pause, fore "yellow", font "code"
+let f = function `on -> 1 | `off -> 0 | `number n -> n
+%fore "lightpink"
+val f : [< number(int) off on] -> int
+
+%pause, fore "yellow", font "code"
+type t = [on off number(int)]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+6
+Polymorphic methods
+
+Not allowed in Objective Caml
+%size 2
+
+%font "code", size 4, prefix "    ", fore "yellow"
+class c = object method m x = x end
+%fore "red"
+Some type variables are unbound in this type:
+  class c : object method m : 'a -> 'a end
+The method m has type 'a -> 'a where 'a is unbound
+
+%pause, font "sans", size 5, prefix " ", fore "white"
+Need explicit annotation in O'Labl
+%size 2
+
+%font "code", size 4, prefix "    ", fore "yellow"
+class c = object
+    method m : 'a. 'a -> 'a = fun x -> x
+end
+%fore "lightpink"
+class c : object method m : 'a -> 'a end
+%fore "yellow"
+let o = new c
+%fore "lightpink"
+val o : c = <obj>
+%fore "yellow"
+o#m 1, o#m true
+%fore "lightpink"
+- : int * bool = 1, true
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%page
+7
 Why GTK+ ?
 
 Why use the GIMP Tool Kit?
@@ -84,7 +191,7 @@ Drawbacks
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-4
+8
 GTK+ Structure
 
 Class hierarchy based on GtkObject
@@ -113,7 +220,7 @@ Signal-based callback mechanism
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-5
+9
 LablGTK structure
 
 Typed at all levels
@@ -132,7 +239,7 @@ Typed at all levels
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-6
+10
 Low Level Interface
 
 Goals
@@ -148,7 +255,7 @@ Goals
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-7
+11
 Low level encoding (I)
 
 
@@ -167,7 +274,7 @@ GtkObject
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-8
+12
 Variants as set constraints
 
 
@@ -183,7 +290,7 @@ Polymorphic variants introduce constraints
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-9
+13
 Encoding hierarchies
 
 Define an abstract type
@@ -207,7 +314,7 @@ Define an abstract type
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-10
+14
 Low level encoding (II)
 
 Example: buttons' hierarchy
@@ -229,7 +336,7 @@ val set_group : [> radiobutton] obj -> group -> unit
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-11
+15
 Alternate encoding
 
 Use only standard ML features
@@ -252,7 +359,7 @@ val clicked : 'a button container widget obj -> unit
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-12
+16
 Low level encoding (III)
 
 Use of labeled parameters
@@ -276,7 +383,7 @@ val button_clicked : ([> button], unit -> unit) signal
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-13
+17
 High-Level Interface
 
 Problems with GTK+
@@ -295,14 +402,14 @@ Problems with GTK+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-14
+18
 High-level classes
 
 %font "code", size 4, prefix "  ", fore "yellow"
 class button :
 %fore "lightgreen"
   ?label:string ->
-%fore "lightblue"
+%fore "lightpink"
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
@@ -315,7 +422,7 @@ class button :
     method destroy : unit -> unit
     method as_widget : Gtk.widget obj
     method misc : GObj.widget_misc
-%fore "lightblue"
+%fore "lightpink"
     method add : #is_widget -> unit
     method set_border_width : int -> unit
 %fore "lightgreen"
@@ -327,7 +434,7 @@ class button :
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-15
+19
 High-level features
 
 	Objective Caml classes
@@ -349,7 +456,7 @@ High-level features
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-16
+20
 Polymorphic methods (I)
 
 	Instance of first-class polymorphism
@@ -367,7 +474,7 @@ Polymorphic methods (I)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-17
+21
 First class polymorphism
 
 %prefix "            "
@@ -381,7 +488,7 @@ where θ instantiates free variables, and ρ1,ρ2 rename free 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-18
+22
 Polymorphic methods (II)
 
 Definitions
@@ -408,7 +515,7 @@ fun cont -> cont#add widget
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-19
+23
 Programming example
 
 Hello World
@@ -432,7 +539,7 @@ let _ =
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
-20
+24
 Conclusion
 
 	Results
