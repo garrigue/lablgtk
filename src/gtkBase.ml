@@ -140,28 +140,22 @@ module Widget = struct
       = "ml_gtk_widget_set_app_paintable"
   external allocation : [>`widget] obj -> rectangle
       = "ml_gtk_widget_allocation"
-(*
-  let set_position ?:x{= -2} ?:y{= -2} w =
-    set_uposition w :x :y
-  let set_size ?:width{= -2} ?:height{= -2} w =
-    set_usize w :width :height
-*)
-(*
-  let setter w :cont ?:name ?:state ?:sensitive ?:extension_events
-      ?:can_default ?:can_focus ?:x ?:y ?:width ?:height ?:style =
-    let may_set f arg = may fun:(f w) arg in
-    may_set set_name name;
-    may_set set_state state;
-    may_set set_sensitive sensitive;
-    may_set set_extension_events extension_events;
-    may_set set_can_default can_default;
-    may_set set_can_focus can_focus;
-    may_set set_style style;
-    set_position w ?:x ?:y;
-    set_size w ?:height ?:width;
-    cont w
-  let set = setter cont:null_cont
-*)
+  external set_colormap : [>`widget] obj -> Gdk.colormap -> unit
+      = "ml_gtk_widget_set_colormap"
+  external set_visual : [>`widget] obj -> Gdk.visual -> unit
+      = "ml_gtk_widget_set_visual"
+  external set_default_colormap : Gdk.colormap -> unit
+      = "ml_gtk_widget_set_default_colormap"
+  external set_default_visual : Gdk.visual -> unit
+      = "ml_gtk_widget_set_default_visual"
+  external push_colormap : Gdk.colormap -> unit
+      = "ml_gtk_widget_push_colormap"
+  external push_visual : Gdk.visual -> unit
+      = "ml_gtk_widget_push_visual"
+  external pop_colormap : unit -> unit
+      = "ml_gtk_widget_pop_colormap"
+  external pop_visual : unit -> unit
+      = "ml_gtk_widget_pop_visual"
   module Signals = struct
     open GtkSignal
     let marshal f argv =
