@@ -3,7 +3,13 @@
 open Misc
 open Gdk
 
-type color = [`COLOR Color.t|`WHITE|`BLACK|`NAME string|`RGB (int*int*int)]
+type color = [
+  | `COLOR of Color.t
+  | `WHITE
+  | `BLACK
+  | `NAME of string
+  | `RGB of int * int * int
+]
 
 let color : color -> Color.t = function
     `COLOR col -> col

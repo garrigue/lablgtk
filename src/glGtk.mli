@@ -5,20 +5,20 @@ open GObj
 
 type visual_options = [
     `USE_GL
-  | `BUFFER_SIZE int
-  | `LEVEL int
+  | `BUFFER_SIZE of int
+  | `LEVEL of int
   | `RGBA
   | `DOUBLEBUFFER
   | `STEREO
-  | `AUX_BUFFERS int
-  | `RED_SIZE int
-  | `GREEN_SIZE int
-  | `BLUE_SIZE int
-  | `ALPHA_SIZE int
-  | `DEPTH_SIZE int
-  | `STENCIL_SIZE int
-  | `ACCUM_GREEN_SIZE int
-  | `ACCUM_ALPHA_SIZE int
+  | `AUX_BUFFERS of int
+  | `RED_SIZE of int
+  | `GREEN_SIZE of int
+  | `BLUE_SIZE of int
+  | `ALPHA_SIZE of int
+  | `DEPTH_SIZE of int
+  | `STENCIL_SIZE of int
+  | `ACCUM_GREEN_SIZE of int
+  | `ACCUM_ALPHA_SIZE of int
 ]
 type gl_area = [`widget|`drawing|`glarea]
 

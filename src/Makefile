@@ -15,9 +15,9 @@ nothing:
 
 CAMLC = ocamlc
 CAMLOPT = ocamlopt
-COMPILER = $(CAMLC) $(MLFLAGS) -w s -modern -c
+COMPILER = $(CAMLC) $(MLFLAGS) -w s -labels -c
 LINKER = $(CAMLC) $(MLFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -modern -c
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -labels -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 
 TOPLEVEL = ocamlmktop $(MLFLAGS)

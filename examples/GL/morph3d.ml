@@ -183,7 +183,7 @@ let materialYellow  =   0.7, 0.7, 0.0, 1.0
 let materialMagenta =   0.6, 0.2, 0.5, 1.0
 let materialWhite   =   0.7, 0.7, 0.7, 1.0
 let materialGray    =   0.2, 0.2, 0.2, 1.0
-let all_gray = Array.create len:20 materialGray
+let all_gray = Array.create 20 materialGray
 
 let vertex :xf :yf :zf :ampvr2 =
   let xa = xf +. 0.01 and yb = yf +. 0.01 in
@@ -244,12 +244,12 @@ let pentagon :edge :amp :divisions :z =
   let zf = edge *. z
   and ampvr2 = amp /. sqr(edge *. cossec36_2) in
   let x =
-    Array.init len:6
-      fun:(fun fi -> -. cos (float fi *. 2. *. pi /. 5. +. pi /. 10.)
+    Array.init 6
+      f:(fun fi -> -. cos (float fi *. 2. *. pi /. 5. +. pi /. 10.)
 	             /. divi *. cossec36_2 *. edge)
   and y =
-    Array.init len:6
-      fun:(fun fi -> sin (float fi *. 2. *. pi /. 5. +. pi /. 10.)
+    Array.init 6
+      f:(fun fi -> sin (float fi *. 2. *. pi /. 5. +. pi /. 10.)
 	             /. divi *. cossec36_2 *. edge)
   in
   for ri = 1 to divisions do
@@ -329,7 +329,7 @@ let draw_octa :amp :divisions :color =
   GlMat.rotate angle:(-180.0 +. octaangle) x:1.0 ();
   call_list list color.(1);
   GlMat.pop();
-  List.iter [2, sqrt3 /. 2.0; 3, -.sqrt3 /. 2.0] fun:do_list;
+  List.iter [2, sqrt3 /. 2.0; 3, -.sqrt3 /. 2.0] f:do_list;
   GlMat.rotate angle:180.0 x:1.0 ();
   GlLight.material face:`both (`diffuse color.(4));
   GlList.call list;
@@ -339,7 +339,7 @@ let draw_octa :amp :divisions :color =
   GlLight.material face:`both (`diffuse color.(5));
   GlList.call list;
   GlMat.pop();
-  List.iter [6, sqrt3 /. 2.0; 7, -.sqrt3 /. 2.0] fun:do_list;
+  List.iter [6, sqrt3 /. 2.0; 7, -.sqrt3 /. 2.0] f:do_list;
 
   GlList.delete list
 
@@ -359,7 +359,7 @@ let draw_dodeca :amp :divisions :color =
   GlMat.push ();
   call_list list color.(0);
   GlMat.rotate angle:180.0 z:1.0 ();
-  List.iter fun:do_list
+  List.iter f:do_list
     [ 1, -.dodecaangle, 1.0, 0.0;
       2, -.dodecaangle, cos72, sin72;
       3, -.dodecaangle, cos72, -.sin72;
@@ -369,7 +369,7 @@ let draw_dodeca :amp :divisions :color =
   GlMat.rotate angle:180.0 x:1.0 ();
   call_list list color.(6);
   GlMat.rotate angle:180.0 z:1.0 ();
-  List.iter fun:do_list
+  List.iter f:do_list
     [ 7, -.dodecaangle, 1.0, 0.0;
       8, -.dodecaangle, cos72, sin72;
       9, -.dodecaangle, cos72, -.sin72;
@@ -545,7 +545,7 @@ end
 open GMain
 
 let main () =
-  List.iter fun:print_string
+  List.iter f:print_string
     [ "Morph 3D - Shows morphing platonic polyhedra\n";
       "Author: Marcelo Fernandes Vianna (vianna@cat.cbpf.br)\n";
       "Ported to LablGL by Jacques Garrigue\n\n";
@@ -579,13 +579,13 @@ let main () =
       GlClear.clear [`color;`depth];
       Gl.flush();
 
-      List.iter fun:(GlLight.light num:0)
+      List.iter f:(GlLight.light num:0)
 	[`ambient ambient; `diffuse diffuse; `position position0];
-      List.iter fun:(GlLight.light num:1)
+      List.iter f:(GlLight.light num:1)
 	[`ambient ambient; `diffuse diffuse; `position position1];
       GlLight.light_model (`ambient lmodel_ambient);
       GlLight.light_model (`two_side lmodel_twoside);
-      List.iter fun:Gl.enable
+      List.iter f:Gl.enable
 	[`lighting;`light0;`light1;`depth_test;`normalize];
 
       GlLight.material face:`both (`shininess front_shininess);
