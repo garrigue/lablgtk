@@ -53,7 +53,7 @@ module Value = struct
   let create ty = let v = create_empty () in init v ty; v
       (* create and initialize a g_value *)
   external release : g_value -> unit = "ml_g_value_release"
-      (* invalidate a g_value, releasing the data if owned by ML *)
+      (* invalidate a g_value, releasing resources *)
   external get_type : g_value -> g_type = "ml_G_VALUE_TYPE"
   external copy : g_value -> g_value -> unit = "ml_g_value_copy"
   external reset : g_value -> unit = "ml_g_value_reset"
@@ -178,6 +178,12 @@ module Data = struct
     { kind = `POINTER;
       proj = (function `POINTER c -> c | _ -> failwith "Gobject.get_pointer");
       inj = (fun c -> `POINTER c) }
+  let magic : 'a option -> 'b option = Obj.magic
+  let unsafe_pointer =
+    { kind = `POINTER;
+      proj = (function `POINTER c -> magic c
+             | _ -> failwith "Gobject.get_pointer");
+      inj = (fun c -> `POINTER (magic c)) }
   let boxed = {pointer with kind = `BOXED}
   let gobject =
     { kind = `OBJECT;
@@ -205,8 +211,9 @@ module Property = struct
   external get_property : 'a obj -> string -> g_value -> unit
     = "ml_g_object_get_property"
   external get_property_type : 'a obj -> string -> g_type
-    = "ml_g_object_get_property_type"
-  (* Converted to C to avoid too many calls
+    = "ml_my_g_object_get_property_type"
+  (* get_property_type may raise Not_found *)
+  (* Converted the following to C to avoid too many calls
   let set_dyn obj prop data =
     let t = get_property_type obj prop in
     let v = Value.create t in
@@ -229,6 +236,21 @@ module Property = struct
   let get_some obj prop =
     match get obj prop with Some x -> x
     | None -> failwith ("Gobject.Property.get_some: " ^ prop.name)
+
+  let check obj prop =
+    let tp obj = Type.name (get_type obj) in
+    let data =
+      try get_dyn obj prop.name
+      with
+        Not_found -> failwith (tp obj ^ " has no property " ^ prop.name)
+      | exn ->
+          prerr_endline
+            ("exception while looking for " ^ tp obj ^ "->" ^ prop.name);
+          raise exn
+    in
+    try ignore (prop.conv.Data.proj data)
+    with Failure s ->
+      failwith (s ^ " cannot handle " ^ tp obj ^ "->" ^ prop.name)
 end
 
 (*
