@@ -30,25 +30,25 @@ end
 open Arg
 type raw_obj
 type t = { referent: raw_obj; nargs: int; args: Arg.t }
-let nth arg :pos =
+let nth arg ~pos =
   if pos < 0 || pos >= arg.nargs then invalid_arg "GtkArg.Vect.nth";
-  shift arg.args :pos
+  shift arg.args ~pos
 let result arg =
   if arg.nargs < 0 then invalid_arg "GtkArgv.result";
-  shift arg.args pos:arg.nargs
+  shift arg.args ~pos:arg.nargs
 external wrap_object : raw_obj -> unit obj = "Val_GtkObject"
 let referent arg =
   if arg.referent == Obj.magic (-1) then invalid_arg "GtkArgv.referent";
   wrap_object arg.referent
 let get_result_type arg = get_type (result arg)
-let get_type arg :pos = get_type (nth arg :pos)
-let get_char arg :pos = get_char (nth arg :pos)
-let get_bool arg :pos = get_bool (nth arg :pos)
-let get_int arg :pos = get_int (nth arg :pos)
-let get_float arg :pos = get_float (nth arg :pos)
-let get_string arg :pos = get_string (nth arg :pos)
-let get_pointer arg :pos = get_pointer (nth arg :pos)
-let get_object arg :pos = get_object (nth arg :pos)
+let get_type arg ~pos = get_type (nth arg ~pos)
+let get_char arg ~pos = get_char (nth arg ~pos)
+let get_bool arg ~pos = get_bool (nth arg ~pos)
+let get_int arg ~pos = get_int (nth arg ~pos)
+let get_float arg ~pos = get_float (nth arg ~pos)
+let get_string arg ~pos = get_string (nth arg ~pos)
+let get_pointer arg ~pos = get_pointer (nth arg ~pos)
+let get_object arg ~pos = get_object (nth arg ~pos)
 let set_result_char arg = set_char (result arg)
 let set_result_bool arg = set_bool (result arg)
 let set_result_int arg = set_int (result arg)

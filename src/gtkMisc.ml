@@ -20,9 +20,9 @@ module ColorSelection = struct
       = "ml_gtk_color_selection_set_update_policy"
   external set_opacity : [>`colorsel] obj -> bool -> unit
       = "ml_gtk_color_selection_set_opacity"
-  let set ?:update_policy ?:opacity w =
-    may update_policy fun:(set_update_policy w);
-    may opacity fun:(set_opacity w)
+  let set ?update_policy ?opacity w =
+    may update_policy ~f:(set_update_policy w);
+    may opacity ~f:(set_opacity w)
   external set_color :
       [>`colorsel] obj ->
       red:float -> green:float -> blue:float -> ?opacity:float -> unit
@@ -63,8 +63,8 @@ module Statusbar = struct
     open GtkSignal
     let text_pushed : ([>`statusbar],_) t =
       let marshal f argv =
-	f (Obj.magic (GtkArgv.get_int argv pos:0) : statusbar_context)
-	  (GtkArgv.get_string argv pos:1)
+	f (Obj.magic (GtkArgv.get_int argv ~pos:0) : statusbar_context)
+	  (GtkArgv.get_string argv ~pos:1)
       in
       { name = "text_pushed"; marshaller = marshal }
   end
@@ -124,9 +124,9 @@ module Notebook = struct
   let set_popup w = function
       true -> popup_enable w
     | false -> popup_disable w
-  let set ?:page ?:tab_pos ?:show_tabs ?:homogeneous_tabs
-      ?:show_border ?:scrollable ?:tab_border ?:popup w =
-    let may_set f = may fun:(f w) in
+  let set ?page ?tab_pos ?show_tabs ?homogeneous_tabs
+      ?show_border ?scrollable ?tab_border ?popup w =
+    let may_set f = may ~f:(f w) in
     may_set set_page page;
     may_set set_tab_pos tab_pos;
     may_set set_show_tabs show_tabs;
@@ -138,7 +138,7 @@ module Notebook = struct
   module Signals = struct
     open GtkSignal
     let switch_page : ([>`notebook],_) t =
-      let marshal f argv = f (GtkArgv.get_int argv pos:1) in
+      let marshal f argv = f (GtkArgv.get_int argv ~pos:1) in
       { name = "switch_page"; marshaller = marshal }
   end
 end
@@ -217,25 +217,25 @@ module Misc = struct
   external get_yalign : [>`misc] obj -> float = "ml_gtk_misc_get_yalign"
   external get_xpad : [>`misc] obj -> int = "ml_gtk_misc_get_xpad"
   external get_ypad : [>`misc] obj -> int = "ml_gtk_misc_get_ypad"
-  let set_alignment w ?:x ?:y () =
-    set_alignment w x:(may_default get_xalign w for:x)
-      y:(may_default get_yalign w for:y)
-  let set_padding w ?:x ?:y () =
-    set_padding w x:(may_default get_xpad w for:x)
-      y:(may_default get_ypad w for:y)
-  let set ?:xalign ?:yalign ?:xpad ?:ypad ?(:width = -2) ?(:height = -2) w =
+  let set_alignment w ?x ?y () =
+    set_alignment w ~x:(may_default get_xalign w ~opt:x)
+      ~y:(may_default get_yalign w ~opt:y)
+  let set_padding w ?x ?y () =
+    set_padding w ~x:(may_default get_xpad w ~opt:x)
+      ~y:(may_default get_ypad w ~opt:y)
+  let set ?xalign ?yalign ?xpad ?ypad ?(width = -2) ?(height = -2) w =
     if xalign <> None || yalign <> None then
       set_alignment w ?x:xalign ?y:yalign ();
     if xpad <> None || ypad <> None then
       set_padding w ?x:xpad ?y:ypad ();
-    if width <> -2 || height <> -2 then Widget.set_usize w :width :height
+    if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height
 end
 
 module Arrow = struct
   let cast w : arrow obj = Object.try_cast w "GtkArrow"
-  external create : type:arrow_type -> shadow:shadow_type -> arrow obj
+  external create : kind:arrow_type -> shadow:shadow_type -> arrow obj
       = "ml_gtk_arrow_new"
-  external set : [>`arrow] obj -> type:arrow_type -> shadow:shadow_type -> unit
+  external set : [>`arrow] obj -> kind:arrow_type -> shadow:shadow_type -> unit
       = "ml_gtk_arrow_set"
 end
 
@@ -243,7 +243,7 @@ module Image = struct
   let cast w : image obj = Object.try_cast w "GtkImage"
   external create : Gdk.image -> ?mask:Gdk.bitmap -> image obj
       = "ml_gtk_image_new"
-  let create ?:mask img = create img ?:mask
+  let create ?mask img = create img ?mask
   external set : [>`image] obj -> Gdk.image -> ?mask:Gdk.bitmap -> unit
       = "ml_gtk_image_set"
 end
@@ -259,11 +259,11 @@ module Label = struct
       = "ml_gtk_label_set_pattern"
   external set_line_wrap : [>`label] obj -> bool -> unit
       = "ml_gtk_label_set_line_wrap"
-  let set ?:text ?:justify ?:line_wrap ?:pattern w =
-    may fun:(set_text w) text;
-    may fun:(set_justify w) justify;
-    may fun:(set_line_wrap w) line_wrap;
-    may fun:(set_pattern w) pattern
+  let set ?text ?justify ?line_wrap ?pattern w =
+    may ~f:(set_text w) text;
+    may ~f:(set_justify w) justify;
+    may ~f:(set_line_wrap w) line_wrap;
+    may ~f:(set_pattern w) pattern
   external get_text : [>`label] obj -> string = "ml_gtk_label_get_label"
 end
 
@@ -287,13 +287,13 @@ module TipsQuery = struct
       = "ml_gtk_tips_query_get_label_no_tip"
   external get_emit_always : [>`tipsquery] obj -> bool
       = "ml_gtk_tips_query_get_emit_always"
-  let set_labels ?:inactive ?:no_tip w =
+  let set_labels ?inactive ?no_tip w =
     set_labels w
-      inactive:(may_default get_label_inactive w for:inactive)
-      no_tip:(may_default get_label_no_tip w for:no_tip)
-  let set ?:caller ?:emit_always ?:label_inactive ?:label_no_tip w =
-    may caller fun:(set_caller w);
-    may emit_always fun:(set_emit_always w);
+      ~inactive:(may_default get_label_inactive w ~opt:inactive)
+      ~no_tip:(may_default get_label_no_tip w ~opt:no_tip)
+  let set ?caller ?emit_always ?label_inactive ?label_no_tip w =
+    may caller ~f:(set_caller w);
+    may emit_always ~f:(set_emit_always w);
     if label_inactive <> None || label_no_tip <> None then
       set_labels w ?inactive:label_inactive ?no_tip:label_no_tip
   module Signals = struct
@@ -305,25 +305,25 @@ module TipsQuery = struct
     let widget_entered :
 	([>`tipsquery],
 	 widget obj option ->
-	 text:string option -> private:string option -> unit) t =
+	 text:string option -> privat:string option -> unit) t =
       let marshal f argv =
-	f (may_map fun:Widget.cast (GtkArgv.get_object argv pos:0))
-	  text:(GtkArgv.get_string argv pos:1)
-	  private:(GtkArgv.get_string argv pos:2)
+	f (may_map ~f:Widget.cast (GtkArgv.get_object argv ~pos:0))
+	  ~text:(GtkArgv.get_string argv ~pos:1)
+	  ~privat:(GtkArgv.get_string argv ~pos:2)
       in
       { name = "widget_entered"; marshaller = marshal }
     let widget_selected :
 	([>`tipsquery],
 	 widget obj option ->
 	 text:string option ->
-	 private:string option -> GdkEvent.Button.t option -> bool) t =
+	 privat:string option -> GdkEvent.Button.t option -> bool) t =
       let marshal f argv =
 	let stop = 
-	  f (may_map fun:Widget.cast (GtkArgv.get_object argv pos:0))
-	    text:(GtkArgv.get_string argv pos:1)
-	    private:(GtkArgv.get_string argv pos:2)
-	    (may_map fun:GdkEvent.unsafe_copy
-	       (GtkArgv.get_pointer argv pos:3)) in
+	  f (may_map ~f:Widget.cast (GtkArgv.get_object argv ~pos:0))
+	    ~text:(GtkArgv.get_string argv ~pos:1)
+	    ~privat:(GtkArgv.get_string argv ~pos:2)
+	    (may_map ~f:GdkEvent.unsafe_copy
+	       (GtkArgv.get_pointer argv ~pos:3)) in
 	GtkArgv.set_result_bool argv stop in
       { name = "widget_selected"; marshaller = marshal }
   end
@@ -333,7 +333,7 @@ module Pixmap = struct
   let cast w : pixmap obj = Object.try_cast w "GtkPixmap"
   external create : Gdk.pixmap -> ?mask:Gdk.bitmap -> pixmap obj
       = "ml_gtk_pixmap_new"
-  let create ?:mask img = create img ?:mask
+  let create ?mask img = create img ?mask
   external set :
       [>`pixmap] obj -> ?pixmap:Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
       = "ml_gtk_pixmap_set"

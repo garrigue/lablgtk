@@ -3,7 +3,8 @@ config.make
 var2conv
 var2def
 lablgtk
-lablgtk_t
+lablgtktop
+lablgtktop_t
 lablgtkrun
 *_tags.c
 *_tags.h

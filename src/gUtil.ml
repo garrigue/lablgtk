@@ -4,11 +4,11 @@ open GObj
 
 class ['a] memo () = object
   constraint 'a = #widget
-  val tbl = Hashtbl.create size:7
+  val tbl = Hashtbl.create 7
   method add (obj : 'a) =
-    Hashtbl.add tbl key:obj#get_id data:obj
-  method find (obj : widget) = Hashtbl.find tbl key:obj#get_id
-  method remove (obj : widget) = Hashtbl.remove tbl key:obj#get_id
+    Hashtbl.add tbl ~key:obj#get_id ~data:obj
+  method find (obj : widget) = Hashtbl.find tbl obj#get_id
+  method remove (obj : widget) = Hashtbl.remove tbl obj#get_id
 end
 
 let signal_id = ref 0
@@ -22,7 +22,7 @@ class type disconnector = object
 end
 
 let disconnectors : (int, disconnector list) Hashtbl.t =
-  Hashtbl.create size:7
+  Hashtbl.create 7
 
 class ['a] signal obj = object (self)
   val mutable callbacks : (GtkSignal.id * ('a -> unit)) list = []
@@ -31,27 +31,27 @@ class ['a] signal obj = object (self)
     registered <- true;
     let key = GtkBase.Object.get_id obj in
     try
-      let l = Hashtbl.find disconnectors :key in
-      Hashtbl.remove disconnectors :key;
-      Hashtbl.add disconnectors :key data:((self :> disconnector)::l)
+      let l = Hashtbl.find disconnectors key in
+      Hashtbl.remove disconnectors key;
+      Hashtbl.add disconnectors ~key ~data:((self :> disconnector)::l)
     with Not_found ->
-      GtkSignal.connect obj sig:GtkBase.Object.Signals.destroy callback:
+      GtkSignal.connect obj ~sgn:GtkBase.Object.Signals.destroy ~callback:
 	begin fun () ->
-	  List.iter (Hashtbl.find disconnectors :key) fun:(fun d -> d#reset());
-	  Hashtbl.remove disconnectors :key
+	  List.iter (Hashtbl.find disconnectors key) ~f:(fun d -> d#reset());
+	  Hashtbl.remove disconnectors key
 	end;
-      Hashtbl.add disconnectors :key data:[(self :> disconnector)]
-  method connect :callback :after =
+      Hashtbl.add disconnectors ~key ~data:[(self :> disconnector)]
+  method connect ~callback ~after =
     if not registered then self#register ();
     let id = next_callback_id () in
     callbacks <-
       if after then callbacks @ [id,callback] else (id,callback)::callbacks;
     id
   method call arg =
-    List.iter callbacks fun:(fun (_,f) -> f arg)
+    List.iter callbacks ~f:(fun (_,f) -> f arg)
   method disconnect key =
-    List.mem_assoc :key callbacks &&
-    (callbacks <- List.remove_assoc :key callbacks; true)
+    List.mem_assoc key callbacks &&
+    (callbacks <- List.remove_assoc key callbacks; true)
   method reset () = callbacks <- []
 end
 
@@ -59,8 +59,8 @@ class has_ml_signals obj = object
   method disconnect id =
     let key = GtkBase.Object.get_id obj in
     try
-      let l = Hashtbl.find disconnectors :key in
-      if List.exists l pred:(fun d -> d#disconnect id) then ()
+      let l = Hashtbl.find disconnectors key in
+      if List.exists l ~f:(fun d -> d#disconnect id) then ()
       else raise Not_found
     with Not_found ->
       GtkSignal.disconnect obj id

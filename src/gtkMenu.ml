@@ -12,7 +12,7 @@ module MenuItem = struct
       = "ml_gtk_menu_item_new_with_label"
   external tearoff_create : unit -> menu_item obj
       = "ml_gtk_tearoff_menu_item_new"
-  let create ?:label () =
+  let create ?label () =
     match label with None -> create ()
     | Some label -> create_with_label label
   external set_submenu : [>`menuitem] obj -> [>`menu] obj -> unit
@@ -41,7 +41,7 @@ module CheckMenuItem = struct
   external create : unit -> check_menu_item obj = "ml_gtk_check_menu_item_new"
   external create_with_label : string -> check_menu_item obj
       = "ml_gtk_check_menu_item_new_with_label"
-  let create ?:label () =
+  let create ?label () =
     match label with None -> create ()
     | Some label -> create_with_label label
   external set_active : [>`checkmenuitem] obj -> bool -> unit
@@ -50,9 +50,9 @@ module CheckMenuItem = struct
       = "ml_gtk_check_menu_item_get_active"
   external set_show_toggle : [>`checkmenuitem] obj -> bool -> unit
       = "ml_gtk_check_menu_item_set_show_toggle"
-  let set ?:active ?:show_toggle w =
-    may active fun:(set_active w);
-    may show_toggle fun:(set_show_toggle w)
+  let set ?active ?show_toggle w =
+    may active ~f:(set_active w);
+    may show_toggle ~f:(set_show_toggle w)
   external toggled : [>`checkmenuitem] obj -> unit
       = "ml_gtk_check_menu_item_toggled"
   module Signals = struct
@@ -69,7 +69,7 @@ module RadioMenuItem = struct
   external create_with_label :
       radio_menu_item group -> string -> radio_menu_item obj
       = "ml_gtk_radio_menu_item_new_with_label"
-  let create ?(:group = None) ?:label () =
+  let create ?(group = None) ?label () =
     match label with None -> create group
     | Some label -> create_with_label group label
   external set_group : [>`radiomenuitem] obj -> radio_menu_item group -> unit
@@ -87,9 +87,9 @@ module OptionMenu = struct
       = "ml_gtk_option_menu_remove_menu"
   external set_history : [>`optionmenu] obj -> int -> unit
       = "ml_gtk_option_menu_set_history"
-  let set ?:menu ?:history w =
-    may menu fun:(set_menu w);
-    may history fun:(set_history w)
+  let set ?menu ?history w =
+    may menu ~f:(set_menu w);
+    may history ~f:(set_history w)
 end
 
 module MenuShell = struct
@@ -117,7 +117,7 @@ module Menu = struct
       [>`menu] obj -> [>`menushell] optobj ->
       [>`menuitem] optobj -> button:int -> time:int -> unit
       = "ml_gtk_menu_popup"
-  let popup ?:parent_menu ?:parent_item w =
+  let popup ?parent_menu ?parent_item w =
     popup w (optboxed parent_menu) (optboxed parent_item)
   external popdown : [>`menu] obj -> unit = "ml_gtk_menu_popdown"
   external get_active : [>`menu] obj -> widget obj= "ml_gtk_menu_get_active"
@@ -133,9 +133,9 @@ module Menu = struct
   external get_attach_widget : [>`menu] obj -> widget obj
       = "ml_gtk_menu_get_attach_widget"
   external detach : [>`menu] obj -> unit = "ml_gtk_menu_detach"
-  let set ?:active ?:accel_group w =
-    may active fun:(set_active w);
-    may accel_group fun:(set_accel_group w)
+  let set ?active ?accel_group w =
+    may active ~f:(set_active w);
+    may accel_group ~f:(set_accel_group w)
 end
 
 module MenuBar = struct

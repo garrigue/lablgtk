@@ -3,7 +3,6 @@
 
 open Misc
 open Gtk
-open GdkObj
 open GObj
 open GMain
 
@@ -271,17 +270,18 @@ let trashcan_open_xpm = [|
 "                                                                ";
 "                                                                "  |]
 
-let window = GWindow.window title:"DnD Test" ()
+let window = GWindow.window ~title:"DnD Test" ()
 let _ = window#misc#realize ()
 
 let drag_icon =
-  pixmap_from_xpm_d data:drag_icon_xpm window:window#misc#window ()
+  GDraw.pixmap_from_xpm_d ~data:drag_icon_xpm ~window:window#misc#window ()
 
 let trashcan_open =
-  pixmap_from_xpm_d data:trashcan_open_xpm window:window#misc#window ()
+  GDraw.pixmap_from_xpm_d ~data:trashcan_open_xpm ~window:window#misc#window ()
 
 let trashcan_closed =
-  pixmap_from_xpm_d data:trashcan_closed_xpm window:window#misc#window ()
+  GDraw.pixmap_from_xpm_d ~data:trashcan_closed_xpm
+    ~window:window#misc#window ()
 
 let targets = [
   { target = "STRING"; flags = []; info = 0};
@@ -294,31 +294,31 @@ class drag_handler = object
   method private beginning (_ : drag_context) = ()
   method private data_delete (_ : drag_context) = ()
   method private data_get (_ : drag_context) (_ : selection_data)
-      info:(_ : int) time:(_ : int) = ()
-  method private data_received (_ : drag_context) x:(_ : int) y:(_ : int)
-      (_ : selection_data) info:(_ : int) time:(_ : int) = ()
-  method private drop (_ : drag_context) x:(_ : int) y:(_ : int)
-      time:(_ : int) = false
+      ~info:(_ : int) ~time:(_ : int) = ()
+  method private data_received (_ : drag_context) ~x:(_ : int) ~y:(_ : int)
+      (_ : selection_data) ~info:(_ : int) ~time:(_ : int) = ()
+  method private drop (_ : drag_context) ~x:(_ : int) ~y:(_ : int)
+      ~time:(_ : int) = false
   method private ending (_ : drag_context) = ()
-  method private leave (_ : drag_context) time:(_ : int) = ()
-  method private motion (_ : drag_context) x:(_ : int) y:(_ : int)
-      time:(_ : int) = false
+  method private leave (_ : drag_context) ~time:(_ : int) = ()
+  method private motion (_ : drag_context) ~x:(_ : int) ~y:(_ : int)
+      ~time:(_ : int) = false
 end
 
 
-class target_drag ?:packing ?:show () =
-  let pixmap = GPix.pixmap trashcan_closed ?:packing ?:show () in
+class target_drag ?packing ?show () =
+  let pixmap = GMisc.pixmap trashcan_closed ?packing ?show () in
 object (self)
   inherit widget pixmap#as_widget
   inherit drag_handler
   val mutable have_drag = false
 
-  method leave _ :time =
+  method leave _ ~time =
     print_endline "leave"; flush stdout;
     have_drag <- false;
     pixmap#set_pixmap trashcan_closed
 
-  method motion context :x :y :time =
+  method motion context ~x ~y ~time =
     if not have_drag then begin
       have_drag <- true;
       pixmap#set_pixmap trashcan_open
@@ -329,77 +329,77 @@ object (self)
       with Null_pointer -> "unknown"
     in
     Printf.printf "motion, source %s\n" source_typename; flush stdout;
-    context#status [context#suggested_action] :time;
+    context#status [context#suggested_action] ~time;
     true
 
-  method drop context :x :y :time =
+  method drop context ~x ~y ~time =
     prerr_endline "drop"; flush stdout;
     have_drag <- false;
     pixmap#set_pixmap trashcan_closed;
     match context#targets with
     | [] -> false
-    | d :: _ -> pixmap#drag#get_data d :context :time; true
+    | d :: _ -> pixmap#drag#get_data d ~context ~time; true
 
-  method data_received context :x :y data :info :time =
+  method data_received context ~x ~y data ~info ~time =
     if data#format = 8 then begin
       Printf.printf "Received \"%s\" in trashcan\n" data#data;
       flush stdout;
-      context#finish success:true del:false :time
+      context#finish ~success:true ~del:false ~time
     end
-    else context#finish success:false del:false :time
+    else context#finish ~success:false ~del:false ~time
 
   initializer
-    pixmap#drag#dest_set targets actions:[`COPY;`MOVE];
-    pixmap#connect#drag#leave callback:self#leave;
-    pixmap#connect#drag#motion callback:self#motion;
-    pixmap#connect#drag#drop callback:self#drop;
-    pixmap#connect#drag#data_received callback:self#data_received;
+    pixmap#drag#dest_set targets ~actions:[`COPY;`MOVE];
+    pixmap#connect#drag#leave ~callback:self#leave;
+    pixmap#connect#drag#motion ~callback:self#motion;
+    pixmap#connect#drag#drop ~callback:self#drop;
+    pixmap#connect#drag#data_received ~callback:self#data_received;
     ()
 end
 
-class label_drag ?:packing ?:show () =
-  let label = GMisc.label text:"Drop Here\n" ?:packing ?:show () in
+class label_drag ?packing ?show () =
+  let label = GMisc.label ~text:"Drop Here\n" ?packing ?show () in
 object (self)
   inherit widget label#as_widget
   inherit drag_handler
-  method data_received context :x :y data :info :time =
+  method data_received context ~x ~y data ~info ~time =
     if data#format = 8 then  begin
       Printf.printf "Received \"%s\" in label\n" data#data;
       flush stdout;
-      context#finish success:true del:false :time
+      context#finish ~success:true ~del:false ~time
     end
-    else context#finish success:false del:false :time
+    else context#finish ~success:false ~del:false ~time
 
   initializer
-    label#drag#dest_set targets actions:[`COPY; `MOVE ];
-    label#connect#drag#data_received callback:self#data_received;
+    label#drag#dest_set targets ~actions:[`COPY; `MOVE ];
+    label#connect#drag#data_received ~callback:self#data_received;
     ()
 end
 
-class source_drag ?:packing ?:show () =
-  let button = GButton.button label:"Drag Here\n" ?:packing ?:show () in
+class source_drag ?packing ?show () =
+  let button = GButton.button ~label:"Drag Here\n" ?packing ?show () in
 object (self)
   inherit widget button#as_widget
   inherit drag_handler
-  method data_get _ data :info :time =
+  method data_get _ data ~info ~time =
     if info = 1 then begin
       print_endline "I was dropped on the rootwin"; flush stdout
     end
     else if info = 2 then
-      data#set type:data#target format:8
-	data:"file:///home/otaylor/images/weave.png"
+      data#set ~typ:data#target ~format:8
+	~data:"file:///home/otaylor/images/weave.png"
     else
-      data#set type:data#target format:8 data:"I'm Data!"
+      data#set ~typ:data#target ~format:8 ~data:"I'm Data!"
 
   method data_delete _ =
     print_endline "Delete the data!"; flush stdout
 
   initializer
     button#drag#source_set targets
-      mod:[`BUTTON1; `BUTTON3 ] actions:[`COPY; `MOVE ];
+      ~modi:[`BUTTON1; `BUTTON3 ] ~actions:[`COPY; `MOVE ];
     button#drag#source_set_icon drag_icon;
-    button#connect#drag#data_get callback:self#data_get;
-    button#connect#drag#data_delete callback:self#data_delete;
+    button#connect#drag#data_get ~callback:self#data_get;
+    button#connect#drag#data_delete ~callback:self#data_delete;
     ()
 end
 
@@ -414,20 +414,20 @@ class popup () = object (self)
   method timer = popup_timer
   method remove_timer () =
     may popup_timer
-      fun:(fun pdt -> Timeout.remove pdt; popup_timer <- None)
-  method add_timer time :callback =
-    popup_timer <- Some (Timeout.add time :callback)
+      ~f:(fun pdt -> Timeout.remove pdt; popup_timer <- None)
+  method add_timer time ~callback =
+    popup_timer <- Some (Timeout.add ~ms:time ~callback)
 
   method popdown () =
     popdown_timer <- None;
-    may popup_window fun:(fun w -> w#misc#hide ());
+    may popup_window ~f:(fun w -> w#misc#hide ());
     popped_up <- false;
     false
 
-  method motion (_ : drag_context) :x :y :time =
+  method motion (_ : drag_context) ~x ~y ~time =
     if not in_popup then begin
       in_popup <- true;
-      may popdown_timer fun:
+      may popdown_timer ~f:
 	begin fun pdt ->
 	  print_endline "removed popdown"; flush stdout;
 	  Timeout.remove pdt;
@@ -436,72 +436,72 @@ class popup () = object (self)
     end;
     true
 
-  method leave (_ : drag_context) :time =
+  method leave (_ : drag_context) ~time =
     if in_popup then begin
       in_popup <- false;
       if popdown_timer = None then begin
 	print_endline "added popdown"; flush stdout;
-	popdown_timer <- Some (Timeout.add 500 callback:self#popdown)
+	popdown_timer <- Some (Timeout.add ~ms:500 ~callback:self#popdown)
       end
     end
 
   method popup () =
     if not popped_up then begin
       if popup_window = None then begin
-	let w = GWindow.window type:`POPUP position:`MOUSE () in
+	let w = GWindow.window ~kind:`POPUP ~position:`MOUSE () in
 	popup_window <- Some w;
-	let table = GPack.table rows:3 columns:3 packing:w#add () in
+	let table = GPack.table ~rows:3 ~columns:3 ~packing:w#add () in
 	for i = 0 to 2 do
 	  for j = 0 to 2 do
 	    let button =
-	      GButton.button label:(string_of_int i ^ "," ^ string_of_int j)
-		packing:(table#attach left:i top:j) ()
+	      GButton.button ~label:(string_of_int i ^ "," ^ string_of_int j)
+		~packing:(table#attach ~left:i ~top:j) ()
 	    in
-	    button#drag#dest_set targets actions:[`COPY; `MOVE ];
-	    button#connect#drag#motion callback:self#motion;
-	    button#connect#drag#leave callback:self#leave;
+	    button#drag#dest_set targets ~actions:[`COPY; `MOVE ];
+	    button#connect#drag#motion ~callback:self#motion;
+	    button#connect#drag#leave ~callback:self#leave;
 	  done
 	done
       end;
-      may popup_window fun:(fun w -> w#show ());
+      may popup_window ~f:(fun w -> w#show ());
       popped_up <- true
     end;
-    popdown_timer <- Some (Timeout.add 500 callback:self#popdown);
+    popdown_timer <- Some (Timeout.add ~ms:500 ~callback:self#popdown);
     print_endline "added popdown"; flush stdout;
     self#remove_timer ();
     false
 end
 
-class popsite ?:packing ?:show () =
-  let label = GMisc.label text:"Popup\n" ?:packing ?:show ()
+class popsite ?packing ?show () =
+  let label = GMisc.label ~text:"Popup\n" ?packing ?show ()
   and popup = new popup () in
 object (self)
   inherit widget label#as_widget
   inherit drag_handler
-  method motion _ :x :y :time =
+  method motion _ ~x ~y ~time =
     if popup#timer = None then begin
       print_endline "added popdown"; flush stdout;
-      popup#add_timer 500 callback:popup#popup
+      popup#add_timer 500 ~callback:popup#popup
     end;
     true
 
-  method leave _ :time =
+  method leave _ ~time =
     popup#remove_timer ()
 
   initializer
-    label#drag#dest_set targets actions:[`COPY; `MOVE ];
-    label#connect#drag#motion callback:self#motion;
-    label#connect#drag#leave callback:self#leave;
+    label#drag#dest_set targets ~actions:[`COPY; `MOVE ];
+    label#connect#drag#motion ~callback:self#motion;
+    label#connect#drag#leave ~callback:self#leave;
     ()
 end
 
 let main () =
-  window#connect#destroy callback: Main.quit;
-  let table = GPack.table rows:2 columns:2 packing:window#add () in
-  new label_drag packing:(table#attach left:0 top:0) ();
-  new target_drag packing:(table#attach left:1 top:0) ();
-  new source_drag packing:(table#attach left:0 top:1) ();
-  new popsite packing:(table#attach left:1 top:1) ();
+  window#connect#destroy ~callback: Main.quit;
+  let table = GPack.table ~rows:2 ~columns:2 ~packing:window#add () in
+  new label_drag ~packing:(table#attach ~left:0 ~top:0) ();
+  new target_drag ~packing:(table#attach ~left:1 ~top:0) ();
+  new source_drag ~packing:(table#attach ~left:0 ~top:1) ();
+  new popsite ~packing:(table#attach ~left:1 ~top:1) ();
 
   window#show ();
   Main.main ()

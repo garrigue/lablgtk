@@ -33,20 +33,20 @@ class progress_bar obj = object
   method set_orientation = ProgressBar.set_orientation obj
 end
 
-let progress_bar ?:adjustment ?:bar_style ?:discrete_blocks
-    ?:activity_step ?:activity_blocks ?:value ?:percentage ?:activity_mode
-    ?:show_text ?:format_string ?:text_xalign ?:text_yalign
-    ?:packing ?:show () =
+let progress_bar ?adjustment ?bar_style ?discrete_blocks
+    ?activity_step ?activity_blocks ?value ?percentage ?activity_mode
+    ?show_text ?format_string ?text_xalign ?text_yalign
+    ?packing ?show () =
   let w =
     match adjustment with None -> ProgressBar.create ()
     | Some adj ->
 	ProgressBar.create_with_adjustment (GData.as_adjustment adj)
   in
-  ProgressBar.set w ?:bar_style ?:discrete_blocks
-    ?:activity_step ?:activity_blocks;
-  Progress.set w ?:value ?:percentage ?:activity_mode
-    ?:show_text ?:format_string ?:text_xalign ?:text_yalign;
-  pack_return (new progress_bar w) :packing :show
+  ProgressBar.set w ?bar_style ?discrete_blocks
+    ?activity_step ?activity_blocks;
+  Progress.set w ?value ?percentage ?activity_mode
+    ?show_text ?format_string ?text_xalign ?text_yalign;
+  pack_return (new progress_bar w) ~packing ~show
 
 class range obj = object
   inherit widget_full obj
@@ -63,21 +63,21 @@ class scale obj = object
   method set_value_pos = Scale.set_value_pos obj
 end
 
-let scale dir ?:adjustment ?:digits ?:draw_value ?:value_pos
-    ?:packing ?:show () =
+let scale dir ?adjustment ?digits ?draw_value ?value_pos
+    ?packing ?show () =
   let w =
-    Scale.create dir ?adjustment:(may_map fun:GData.as_adjustment adjustment)
+    Scale.create dir ?adjustment:(may_map ~f:GData.as_adjustment adjustment)
   in
-  let () = Scale.set w ?:digits ?:draw_value ?:value_pos in
-  pack_return (new scale w) :packing :show
+  let () = Scale.set w ?digits ?draw_value ?value_pos in
+  pack_return (new scale w) ~packing ~show
 
 class scrollbar obj = object
   inherit range (obj : Gtk.scrollbar obj)
   method add_events = Widget.add_events obj
 end
 
-let scrollbar dir ?:adjustment ?:update_policy ?:packing ?:show () =
+let scrollbar dir ?adjustment ?update_policy ?packing ?show () =
   let w = Scrollbar.create dir
-      ?adjustment:(may_map fun:GData.as_adjustment adjustment) in
-  let () = may update_policy fun:(Range.set_update_policy w) in
-  pack_return (new scrollbar w) :packing :show
+      ?adjustment:(may_map ~f:GData.as_adjustment adjustment) in
+  let () = may update_policy ~f:(Range.set_update_policy w) in
+  pack_return (new scrollbar w) ~packing ~show

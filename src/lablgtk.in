@@ -1,0 +1,24 @@
+#!/bin/sh
+
+thread="no"
+
+case $1 in
+-help)
+    echo "Usage: lablgtk [-thread] <options> [script-file]"
+    echo "  -thread  use the threaded version of the toplevel"
+    ;;
+-thread)
+    thread=yes
+    shift
+    ;;
+esac
+
+if test $thread = yes; then
+    toplevel="@INSTALLDIR@/lablgtktop_t -I @LIBDIR@/threads"
+else
+    toplevel=@INSTALLDIR@/lablgtktop
+fi
+
+exec $toplevel -w s \
+               -I @LABLGLDIR@ \
+               -I @INSTALLDIR@ $*

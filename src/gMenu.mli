@@ -29,7 +29,7 @@ class menu_item_skel :
     method activate : unit -> unit
     method add_accelerator :
       group:accel_group ->
-      ?mod:Gdk.Tags.modifier list ->
+      ?modi:Gdk.Tags.modifier list ->
       ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
     method as_item : Gtk.menu_item obj
     method configure : show_toggle:bool -> show_indicator:bool -> unit
@@ -164,7 +164,7 @@ val option_menu :
 
 class ['a] factory :
   ?accel_group:accel_group ->
-  ?accel_mod:Gdk.Tags.modifier list ->
+  ?accel_modi:Gdk.Tags.modifier list ->
   ?accel_flags:Tags.accel_flag list ->
   'a ->
   object

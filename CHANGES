@@ -1,5 +1,15 @@
 $Id$
 
+2000.4.24
+  * merge in changes for ocaml 3.00: label and syntax changes, autolink
+  * added better visual and colormap handling to Gdk
+  * GdkObj renamed to GDraw, GtkPixmap moved to GMisc
+  * Initialize Gtk in gtkInit.cmo/cmx, start a thread in gtkInitThread.cmo.
+    These are only included in toplevels, link them explicitely or call
+    GMain.Main.init and GtkThread.start otherwise.
+  * install to caml standard library
+  * many other forgotten changes...
+
 2000.3.02
   * move locale setting inside GtkMain.init, since it requires an
     X display

@@ -38,14 +38,14 @@ let declaration = parser
       if trans <> "" then trans else
       let tag =
 	if tag.[0] = '_' then
-	  String.sub tag pos:1 len:(String.length tag -1)
+	  String.sub tag ~pos:1 ~len:(String.length tag -1)
 	else tag
       in
       match
 	if prefix = "" then None, ""
 	else
 	  Some (prefix.[String.length prefix - 1]), 
-	  String.sub prefix pos:0 len:(String.length prefix - 1)
+	  String.sub prefix ~pos:0 ~len:(String.length prefix - 1)
       with
 	Some '#', prefix ->
 	  prefix ^ String.uncapitalize tag ^ suffix
@@ -58,12 +58,12 @@ let declaration = parser
     in
     let tags =
       Sort.list tags
-	order:(fun (tag1,_) (tag2,_) -> hash_variant tag1 < hash_variant tag2)
+	~order:(fun (tag1,_) (tag2,_) -> hash_variant tag1 < hash_variant tag2)
     in
     printf "/* %s : conversion table */\n" name;
     printf "lookup_info ml_table_%s[] = {\n" name;
     printf "  { 0, %d },\n" (List.length tags);
-    List.iter tags fun:
+    List.iter tags ~f:
       begin fun (tag,trans) ->
 	printf "  { MLTAG_%s, %s },\n" tag (ctag tag trans)
       end;

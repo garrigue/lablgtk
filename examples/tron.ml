@@ -2,7 +2,6 @@
 
 (* Tron? Game *)
 open GMain
-open GdkObj
 
 let m_pi = acos (-1.)
 let clRed   = `NAME "red"  (* `BLACK *)
@@ -15,7 +14,7 @@ let main () =
 (* Game State *)
   let gameSize = 64 in
   let gameState =
-    Array.create_matrix dimx:(gameSize+2) dimy:(gameSize+2) 0 in
+    Array.create_matrix ~dimx:(gameSize+2) ~dimy:(gameSize+2) 0 in
   let gameInit _ = 
     for i=1 to gameSize do
       for j=1 to gameSize do
@@ -38,14 +37,14 @@ let main () =
   let keyMapR = [|(-1, 0); (0, 1); (0, -1); (1, 0)|] in
 
 (* User Interface *)
-  let window = GWindow.window border_width:10 title:"tron(?)" () in
+  let window = GWindow.window ~border_width:10 ~title:"tron(?)" () in
   window#connect#event#delete
-     callback:(fun _ -> prerr_endline "Delete event occured"; false);
-  window#connect#destroy callback:Main.quit;
-  let vbx = GPack.vbox packing:window#add () in
-  let area = GMisc.drawing_area width:((gameSize+2)*4) height:((gameSize+2)*4)
-      packing:vbx#add () in
-  let drawing = area#misc#realize (); new drawing (area#misc#window) in
+     ~callback:(fun _ -> prerr_endline "Delete event occured"; false);
+  window#connect#destroy ~callback:Main.quit;
+  let vbx = GPack.vbox ~packing:window#add () in
+  let area = GMisc.drawing_area ~width:((gameSize+2)*4) ~height:((gameSize+2)*4)
+      ~packing:vbx#add () in
+  let drawing = area#misc#realize (); new GDraw.drawable (area#misc#window) in
   let style = area#misc#style#copy in
   style#set_bg [`NORMAL,`WHITE];
   area#misc#set_style style;
@@ -55,70 +54,70 @@ let main () =
       for j=0 to gameSize+1 do
         if gameState.(i).(j) = 1 then begin
           drawing#set_foreground clRed;
-          drawing#rectangle filled:true x:(i*4) y:(j*4) width:4 height:4 ()
+          drawing#rectangle ~filled:true ~x:(i*4) ~y:(j*4) ~width:4 ~height:4 ()
         end
         else if gameState.(i).(j) = 2 then begin
           drawing#set_foreground clBlue;
-          drawing#rectangle filled:true x:(i*4) y:(j*4) width:4 height:4 ()
+          drawing#rectangle ~filled:true ~x:(i*4) ~y:(j*4) ~width:4 ~height:4 ()
         end
         else if gameState.(i).(j) = 3 then begin
           drawing#set_foreground clBlack;
-          drawing#rectangle filled:true x:(i*4) y:(j*4) width:4 height:4 ()
+          drawing#rectangle ~filled:true ~x:(i*4) ~y:(j*4) ~width:4 ~height:4 ()
         end 
       done
     done;
     false
   in
-  area#connect#event#expose callback:area_expose;
-  let control = GPack.table rows:3 columns:7 packing:vbx#add () in
+  area#connect#event#expose ~callback:area_expose;
+  let control = GPack.table ~rows:3 ~columns:7 ~packing:vbx#add () in
 
   let abuttonClicked num (lbl : GMisc.label) _ = begin
     let dialog =
-      GWindow.window type:`DIALOG border_width:10 title:"Key remap" () in
-    let dvbx = GPack.box `VERTICAL packing:dialog#add () in
-    let entry  = GEdit.entry max_length:1 packing: dvbx#pack () in
-    let txt = String.make len:1 keys.[num] in
+      GWindow.window ~kind:`DIALOG ~border_width:10 ~title:"Key remap" () in
+    let dvbx = GPack.box `VERTICAL ~packing:dialog#add () in
+    let entry  = GEdit.entry ~max_length:1 ~packing: dvbx#pack () in
+    let txt = String.make 1 keys.[num] in
     entry#set_text txt;
-    let dquit = GButton.button label:"OK" packing: dvbx#pack () in 
-    dquit#connect#clicked callback:
+    let dquit = GButton.button ~label:"OK" ~packing: dvbx#pack () in 
+    dquit#connect#clicked ~callback:
       begin fun _ ->
 	let chr = entry#text.[0] in
-        let txt2 = String.make len:1 chr in
+        let txt2 = String.make 1 chr in
         lbl#set_text txt2;
         keys.[num]<-chr; 
         dialog#destroy ()
       end;
     dialog#show ()
   end in
-  let new_my_button label:label left:left top:top =
-      let str = String.make len:1 keys.[label] in
-      let btn = GButton.button packing:(control#attach left:left top:top) () in
-      let lbl = GMisc.label text:str packing:(btn#add) () in
-      btn#connect#clicked callback:(abuttonClicked label lbl);
+  let new_my_button ~label:label ~left:left ~top:top =
+      let str = String.make 1 keys.[label] in
+      let btn = GButton.button ~packing:(control#attach ~left:left ~top:top) () in
+      let lbl = GMisc.label ~text:str ~packing:(btn#add) () in
+      btn#connect#clicked ~callback:(abuttonClicked label lbl);
       btn
   in
-  new_my_button label:0 left:1 top:2;
-  new_my_button label:1 left:2 top:1;
-  new_my_button label:2 left:2 top:3;
-  new_my_button label:3 left:3 top:2;
-  new_my_button label:4 left:5 top:2;
-  new_my_button label:5 left:6 top:3;
-  new_my_button label:6 left:6 top:1;
-  new_my_button label:7 left:7 top:2;
+  new_my_button ~label:0 ~left:1 ~top:2;
+  new_my_button ~label:1 ~left:2 ~top:1;
+  new_my_button ~label:2 ~left:2 ~top:3;
+  new_my_button ~label:3 ~left:3 ~top:2;
+  new_my_button ~label:4 ~left:5 ~top:2;
+  new_my_button ~label:5 ~left:6 ~top:3;
+  new_my_button ~label:6 ~left:6 ~top:1;
+  new_my_button ~label:7 ~left:7 ~top:2;
   let quit =
-    GButton.button label:"Quit" packing:(control#attach left:4 top:2) () in
-  quit#connect#clicked callback:window#destroy;
-  let message = GMisc.label text:"tron(?) game" packing:vbx#add () in
+    GButton.button ~label:"Quit" ~packing:(control#attach ~left:4 ~top:2) () in
+  quit#connect#clicked ~callback:window#destroy;
+  let message = GMisc.label ~text:"tron(?) game" ~packing:vbx#add () in
 
   let game_step () =
         let lx = lpos.x in let ly = lpos.y in
         gameState.(lx).(ly) <- 1;
         drawing#set_foreground clRed;
-        drawing#rectangle filled:true x:(lx*4) y:(ly*4) width:4 height:4 ();
+        drawing#rectangle ~filled:true ~x:(lx*4) ~y:(ly*4) ~width:4 ~height:4 ();
         let rx = rpos.x in let ry = rpos.y in
         gameState.(rx).(ry) <- 2;
         drawing#set_foreground clBlue;
-        drawing#rectangle filled:true x:(rx*4) y:(ry*4) width:4 height:4 ()
+        drawing#rectangle ~filled:true ~x:(rx*4) ~y:(ry*4) ~width:4 ~height:4 ()
   in
   game_step ();
   let keyDown ev = begin
@@ -138,7 +137,7 @@ let main () =
        end
     done;       
     false end in
-  window#connect#event#key_press callback:keyDown;
+  window#connect#event#key_press ~callback:keyDown;
   let safe_check _ = 
     if lpos.x == rpos.x && lpos.y == rpos.y then
       3
@@ -149,7 +148,7 @@ let main () =
       (* player 2 *)
       (if gameState.(rpos.x).(rpos.y) != 0  then 1 else 0)
       in
-  let timerID = ref (* dummy *) (Timeout.add 100 callback:(fun _ -> true)) in
+  let timerID = ref (* dummy *) (Timeout.add ~ms:100 ~callback:(fun _ -> true)) in
   let timerTimer _ = begin
      lpos.x <- lpos.x+lspeed.x;
      lpos.y <- lpos.y+lspeed.y;
@@ -170,7 +169,7 @@ let main () =
 (*    message#set_label (string_of_int (!count)); *)
     if (!count==0) then begin
       Timeout.remove (!timerID);
-      timerID := Timeout.add 100 callback:timerTimer
+      timerID := Timeout.add ~ms:100 ~callback:timerTimer
     end
     else begin
       count := !count-1;
@@ -185,15 +184,15 @@ let main () =
     rpos.x <- gameSize-3; rpos.y <- gameSize-3;
     rspeed.x <- 0; rspeed.y <- -1;
     drawing#set_foreground `WHITE;
-    drawing#rectangle filled:true x:0 y:0
-      width:((gameSize+2)*4) height:((gameSize+2)*4) ();
+    drawing#rectangle ~filled:true ~x:0 ~y:0
+      ~width:((gameSize+2)*4) ~height:((gameSize+2)*4) ();
     area_expose();
     count := 3;
-    timerID := Timeout.add 300 callback:timerTimer2;
+    timerID := Timeout.add ~ms:300 ~callback:timerTimer2;
   in
   let restart =
-    GButton.button label: "Restart" packing:(control#attach left:4 top:3) () in
-  restart#connect#clicked callback:restartClicked;
+    GButton.button ~label: "Restart" ~packing:(control#attach ~left:4 ~top:3) () in
+  restart#connect#clicked ~callback:restartClicked;
   restartClicked ();
 
   window#show ();

@@ -56,5 +56,5 @@ end
 class ['a] client oc = object
   inherit ['a] threaded ()
   val oc = oc
-  method private dispatch = output_value to:oc
+  method private dispatch = output_value oc
 end

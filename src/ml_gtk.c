@@ -315,6 +315,16 @@ Make_Extractor (gtk_allocation, GtkAllocation_val, height, Val_int)
 
 ML_2 (gtk_widget_set_app_paintable, GtkWidget_val, Bool_val, Unit)
 
+ML_2 (gtk_widget_set_visual, GtkWidget_val, GdkVisual_val, Unit)
+ML_2 (gtk_widget_set_colormap, GtkWidget_val, GdkColormap_val, Unit)
+ML_1 (gtk_widget_set_default_visual, GdkVisual_val, Unit)
+ML_1 (gtk_widget_set_default_colormap, GdkColormap_val, Unit)
+ML_0 (gtk_widget_get_default_visual, Val_GdkVisual)
+ML_0 (gtk_widget_get_default_colormap, Val_GdkColormap)
+ML_1 (gtk_widget_push_visual, GdkVisual_val, Unit)
+ML_1 (gtk_widget_push_colormap, GdkColormap_val, Unit)
+ML_0 (gtk_widget_pop_visual, Unit)
+ML_0 (gtk_widget_pop_colormap, Unit)
 
 /* gtkdnd.h */
 

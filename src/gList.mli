@@ -27,7 +27,7 @@ class liste : Gtk.liste obj ->
     inherit [list_item] item_container
     val obj : Gtk.liste obj
     method child_position : list_item -> int
-    method clear_items : start:int -> end:int -> unit
+    method clear_items : start:int -> stop:int -> unit
     method insert : list_item -> pos:int -> unit
     method select_item : pos:int -> unit
     method unselect_item : pos:int -> unit
@@ -62,7 +62,7 @@ class ['a] clist : Gtk.clist obj ->
     val obj : Gtk.clist obj
     method add_events : Gdk.Tags.event_mask list -> unit
     method append : string list -> int
-    method cell_pixmap : int -> int -> GdkObj.pixmap
+    method cell_pixmap : int -> int -> GDraw.pixmap
     method cell_text : int -> int -> string
     method cell_type : int -> int -> Tags.cell_type
     method clear : unit -> unit
@@ -83,7 +83,7 @@ class ['a] clist : Gtk.clist obj ->
     method prepend : string list -> int
     method remove : row:int -> unit
     method row_is_visible : int -> Tags.visibility
-    method row_move : int -> to:int -> unit
+    method row_move : int -> dst:int -> unit
     method row_selectable : row:int -> bool
     method rows : int
     method select : int -> int -> unit
@@ -92,7 +92,7 @@ class ['a] clist : Gtk.clist obj ->
     method set_button_actions : int -> Tags.button_action list -> unit
     method set_cell :
       ?text:string ->
-      ?pixmap:GdkObj.pixmap -> ?spacing:int -> int -> int -> unit
+      ?pixmap:GDraw.pixmap -> ?spacing:int -> int -> int -> unit
     method set_column :
       ?widget:widget ->
       ?title:string ->
@@ -113,7 +113,7 @@ class ['a] clist : Gtk.clist obj ->
     method set_shadow_type : Tags.shadow_type -> unit
     method set_shift : int -> int -> vertical:int -> horizontal:int -> unit
     method set_sort :
-      ?auto:bool -> ?column:int -> ?type:Tags.sort_type -> unit -> unit
+      ?auto:bool -> ?column:int -> ?dir:Tags.sort_type -> unit -> unit
     method set_titles_active : bool -> unit
     method set_titles_show : bool -> unit
     method set_use_drag_icons : bool -> unit

@@ -33,13 +33,13 @@ module Progress = struct
       = "ml_gtk_progress_get_current_text"
   external get_adjustment : [>`progress] obj -> adjustment obj
       = "ml_gtk_progress_get_adjustment"
-  let set ?:value ?:percentage ?:activity_mode
-      ?:show_text ?:format_string ?:text_xalign ?:text_yalign w =
-    may value fun:(set_value w);
-    may percentage fun:(set_percentage w);
-    may activity_mode fun:(set_activity_mode w);
-    may show_text fun:(set_show_text w);
-    may format_string fun:(set_format_string w);
+  let set ?value ?percentage ?activity_mode
+      ?show_text ?format_string ?text_xalign ?text_yalign w =
+    may value ~f:(set_value w);
+    may percentage ~f:(set_percentage w);
+    may activity_mode ~f:(set_activity_mode w);
+    may show_text ~f:(set_show_text w);
+    may format_string ~f:(set_format_string w);
     if text_xalign <> None || text_yalign <> None then
       set_text_alignment w ?x:text_xalign ?y:text_yalign ()
 end
@@ -61,8 +61,8 @@ module ProgressBar = struct
   external set_orientation :
       [>`progressbar] obj -> Tags.progress_bar_orientation -> unit
       = "ml_gtk_progress_bar_set_orientation"
-  let set ?:bar_style ?:discrete_blocks ?:activity_step ?:activity_blocks w =
-    let may_set f opt = may opt fun:(f w) in
+  let set ?bar_style ?discrete_blocks ?activity_step ?activity_blocks w =
+    let may_set f opt = may opt ~f:(f w) in
     may_set set_bar_style bar_style;
     may_set set_discrete_blocks discrete_blocks;
     may_set set_activity_step activity_step;
@@ -78,9 +78,9 @@ module Range = struct
       = "ml_gtk_range_set_adjustment"
   external set_update_policy : [>`range] obj -> update_type -> unit
       = "ml_gtk_range_set_update_policy"
-  let set ?:adjustment ?:update_policy w =
-    may adjustment fun:(set_adjustment w);
-    may update_policy fun:(set_update_policy w)
+  let set ?adjustment ?update_policy w =
+    may adjustment ~f:(set_adjustment w);
+    may update_policy ~f:(set_update_policy w)
 end
 
 module Scale = struct
@@ -89,7 +89,7 @@ module Scale = struct
       = "ml_gtk_hscale_new"
   external vscale_new : [>`adjustment] optobj -> scale obj
       = "ml_gtk_vscale_new"
-  let create ?:adjustment (dir : orientation) =
+  let create ?adjustment (dir : orientation) =
     let create = if dir = `HORIZONTAL then hscale_new else vscale_new  in
     create (optboxed adjustment)
   external set_digits : [>`scale] obj -> int -> unit
@@ -102,10 +102,10 @@ module Scale = struct
       = "ml_gtk_scale_get_value_width"
   external draw_value : [>`scale] obj -> unit
       = "ml_gtk_scale_draw_value"
-  let set ?:digits ?:draw_value ?:value_pos w =
-    may digits fun:(set_digits w);
-    may draw_value fun:(set_draw_value w);
-    may value_pos fun:(set_value_pos w)
+  let set ?digits ?draw_value ?value_pos w =
+    may digits ~f:(set_digits w);
+    may draw_value ~f:(set_draw_value w);
+    may value_pos ~f:(set_value_pos w)
 end
 
 module Scrollbar = struct
@@ -114,7 +114,7 @@ module Scrollbar = struct
       = "ml_gtk_hscrollbar_new"
   external vscrollbar_new : [>`adjustment] optobj -> scrollbar obj
       = "ml_gtk_vscrollbar_new"
-  let create ?:adjustment (dir : orientation) =
+  let create ?adjustment (dir : orientation) =
     let create = if dir = `HORIZONTAL then hscrollbar_new else vscrollbar_new
     in create (optboxed adjustment)
 end
@@ -135,13 +135,13 @@ module Ruler = struct
   external get_upper : [>`ruler] obj -> float = "ml_gtk_ruler_get_upper"
   external get_position : [>`ruler] obj -> float = "ml_gtk_ruler_get_position"
   external get_max_size : [>`ruler] obj -> float = "ml_gtk_ruler_get_max_size"
-  let set_range ?:lower ?:upper ?:position ?:max_size w =
-    set_range w lower:(may_default get_lower w for:lower)
-      upper:(may_default get_upper w for:upper)
-      position:(may_default get_position w for:position)
-      max_size:(may_default get_max_size w for:max_size)
-  let set ?:metric ?:lower ?:upper ?:position ?:max_size w =
-    may metric fun:(set_metric w);
+  let set_range ?lower ?upper ?position ?max_size w =
+    set_range w ~lower:(may_default get_lower w ~opt:lower)
+      ~upper:(may_default get_upper w ~opt:upper)
+      ~position:(may_default get_position w ~opt:position)
+      ~max_size:(may_default get_max_size w ~opt:max_size)
+  let set ?metric ?lower ?upper ?position ?max_size w =
+    may metric ~f:(set_metric w);
     if lower <> None || upper <> None || position <> None || max_size <> None
-    then set_range w ?:lower ?:upper ?:position ?:max_size
+    then set_range w ?lower ?upper ?position ?max_size
 end
