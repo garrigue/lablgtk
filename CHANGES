@@ -1,5 +1,8 @@
 $Id$
 
+2003.03.16 [Olivier]
+ * GnomeCanvas: avoid duplicate properties type declaration
+
 2003.03.15
  * changes in Gobject.Property and Gobject.Value.set
    (use set_boxed in ml_gobject.c for automatic copying)
