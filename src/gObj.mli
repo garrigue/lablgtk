@@ -26,6 +26,7 @@ class gtkobj :
     method destroy : unit -> unit
     method disconnect : GtkSignal.id -> unit
     method get_type : gtk_type
+    method get_id : int
     method stop_emit : string -> unit
   end
 
@@ -35,14 +36,6 @@ class gtkobj_signals :
     val obj : 'a obj
     val after : bool option
     method destroy : callback:(unit -> unit) -> GtkSignal.id
-  end
-
-class gtkobj_wrapper :
-  'a obj ->
-  object
-    inherit gtkobj
-    val obj : 'a obj
-    method connect : ?after:bool -> gtkobj_signals
   end
 
 (* Widget *)
@@ -164,3 +157,6 @@ and widget_wrapper :
     val obj : 'a obj
     method connect : ?after:bool -> widget_signals
   end
+
+val pack_return : 'a -> packing:('a -> unit) option -> unit
+    (* To use in initializers to provide a ?packing: option *)

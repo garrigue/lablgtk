@@ -26,6 +26,7 @@ class gtkobj obj = object
   method destroy () = Object.destroy obj
   method disconnect = GtkSignal.disconnect obj
   method get_type = Object.get_type obj
+  method get_id = Object.get_id obj
   method stop_emit name = GtkSignal.emit_stop_by_name obj :name
 end
 
@@ -33,11 +34,6 @@ class gtkobj_signals obj ?:after = object
   val obj = obj
   val after : bool option = after
   method destroy = GtkSignal.connect sig:Object.Signals.destroy obj ?:after
-end
-
-class gtkobj_wrapper obj = object
-  inherit gtkobj obj
-  method connect = new gtkobj_signals ?obj
 end
 
 (* Widget *)
@@ -150,3 +146,6 @@ and widget_wrapper obj = object
   inherit widget obj
   method connect = new widget_signals ?obj
 end
+
+let pack_return self :packing =
+  may packing fun:(fun f -> (f self : unit))

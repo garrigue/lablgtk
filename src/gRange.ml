@@ -3,7 +3,6 @@
 open Misc
 open Gtk
 open GtkRange
-open GUtil
 open GObj
 
 class progress_bar_wrapper obj = object

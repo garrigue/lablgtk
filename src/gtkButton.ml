@@ -140,7 +140,10 @@ module Toolbar = struct
     "ml_gtk_toolbar_set_button_relief"
   external get_button_relief : [> toolbar] obj -> relief_type =
     "ml_gtk_toolbar_get_button_relief"
-  let setter w :cont ?:space_size ?:space_style ?:tooltips ?:button_relief =
+  let setter w :cont ?:orientation ?:style ?:space_size
+      ?:space_style ?:tooltips ?:button_relief =
+    may orientation fun:(set_orientation w);
+    may style fun:(set_style w);
     may space_size fun:(set_space_size w);
     may space_style fun:(set_space_style w);
     may tooltips fun:(set_tooltips w);

@@ -4,7 +4,6 @@ open Misc
 open Gtk
 open GtkBase
 open GtkButton
-open GUtil
 open GObj
 open GContainer
 
@@ -147,5 +146,5 @@ class toolbar ?:orientation [< `HORIZONTAL >] ?:style
   in
   object (self)
     inherit toolbar_wrapper w
-    initializer GUtil.pack_return :packing (self :> toolbar_wrapper)
+    initializer pack_return :packing (self :> toolbar_wrapper)
   end

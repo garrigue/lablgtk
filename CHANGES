@@ -1,5 +1,11 @@
 $Id$
 
+1999.6.9
+  * added GtkBase.Object.get_id and GObj.gtkobj#get_id to get an
+    unique identifier to gtk objects. Nice for hash-tables, etc...
+  * GUtil.memo is such an hash-table, allowing you to recover an
+    object's wrapper.
+
 1999.6.8
   * updated olabl.patch
 

@@ -64,10 +64,10 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkTree.cmo gtkList.cmo \
 	gtkFrame.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
-	gdkObj.cmo gUtil.cmo \
+	gdkObj.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
 	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gFrame.cmo \
-	gEdit.cmo gPix.cmo gRange.cmo
+	gEdit.cmo gPix.cmo gRange.cmo gUtil.cmo
 THOBJS = gtkThread.cmo threadObj.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma

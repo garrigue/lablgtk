@@ -7,7 +7,6 @@ open GtkBase
 open GtkMenu
 open GObj
 open GContainer
-open GUtil
 
 (* Menu items *)
 
