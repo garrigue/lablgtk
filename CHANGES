@@ -1,5 +1,8 @@
 $Id$
 
+2003.04.11 [Jun]
+ * add GtkWindow.Window.resize and its C interface 
+
 2003.04.08 [Jacques]
  * lots of change in GtkTree*, add examples/tree_store.ml
 

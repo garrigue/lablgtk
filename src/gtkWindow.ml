@@ -45,6 +45,9 @@ module Window = struct
   external set_default_size :
       [>`window] obj -> width:int -> height:int -> unit
       = "ml_gtk_window_set_default_size"
+  external resize :
+      [>`window] obj -> width:int -> height:int -> unit
+      = "ml_gtk_window_resize"
   external set_position : [>`window] obj -> window_position -> unit
       = "ml_gtk_window_set_position"
   external set_transient_for : [>`window] obj ->[>`window] obj -> unit

@@ -594,6 +594,7 @@ Make_Extractor (gtk_window_get, GtkWindow_val, allow_shrink, Val_bool)
 Make_Extractor (gtk_window_get, GtkWindow_val, allow_grow, Val_bool)
 ML_2 (gtk_window_set_modal, GtkWindow_val, Bool_val, Unit)
 ML_3 (gtk_window_set_default_size, GtkWindow_val, Int_val, Int_val, Unit)
+ML_3 (gtk_window_resize, GtkWindow_val, Int_val, Int_val, Unit)
 ML_1 (gtk_window_present, GtkWindow_val, Unit)
 
 /* gtkcolorsel.h */
