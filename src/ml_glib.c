@@ -56,9 +56,9 @@ GSList *GSList_val (value list, gpointer (*func)(value))
 
 static value ml_warning_handler = 0L;
 
-static void ml_warning_wrapper (char *msg)
+static void ml_warning_wrapper (const gchar *msg)
 {
-    value arg = copy_string (msg);
+    value arg = copy_string ((char*)msg);
     callback (ml_warning_handler, arg);
 }
     
@@ -73,9 +73,9 @@ value ml_g_set_warning_handler (value clos)
 
 static value ml_print_handler = 0L;
 
-static void ml_print_wrapper (char *msg)
+static void ml_print_wrapper (const gchar *msg)
 {
-    value arg = copy_string (msg);
+    value arg = copy_string ((char*)msg);
     callback (ml_print_handler, arg);
 }
     
@@ -89,3 +89,9 @@ value ml_g_set_print_handler (value clos)
 }
 
 value ml_get_null (value unit) { return 0L; }
+
+ML_1 (g_main_new, Bool_val, (value))
+ML_1 (g_main_iteration, Bool_val, Unit)
+ML_1 (g_main_is_running, (GMainLoop*), Val_bool)
+ML_1 (g_main_quit, (GMainLoop*), Unit)
+ML_1 (g_main_destroy, (GMainLoop*), Unit)
