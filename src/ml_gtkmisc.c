@@ -42,7 +42,7 @@ ML_1 (gtk_calendar_clear_marks, GtkCalendar_val, Unit)
 Make_Flags_val (Calendar_display_options_val)
 ML_2 (gtk_calendar_display_options, GtkCalendar_val,
       Flags_Calendar_display_options_val, Unit)
-value ml_gtk_calendar_get_date (value w)
+CAMLprim value ml_gtk_calendar_get_date (value w)
 {
     guint year, month, day;
     value ret;
@@ -106,7 +106,7 @@ ML_1 (gtk_tips_query_stop_query, GtkTipsQuery_val, Unit)
 ML_2 (gtk_tips_query_set_caller, GtkTipsQuery_val, GtkWidget_val, Unit)
 ML_3 (gtk_tips_query_set_labels, GtkTipsQuery_val,
       String_val, String_val, Unit)
-value ml_gtk_tips_query_set_emit_always (value w, value arg)
+CAMLprim value ml_gtk_tips_query_set_emit_always (value w, value arg)
 {
     GtkTipsQuery_val(w)->emit_always = Bool_val(arg);
     return Val_unit;
@@ -124,7 +124,7 @@ Make_Extractor (gtk_tips_query_get, GtkTipsQuery_val, label_no_tip,
 ML_2 (gtk_pixmap_new, GdkPixmap_val,
       Option_val (arg2, GdkBitmap_val, NULL) Ignore,
       Val_GtkWidget_sink)
-value ml_gtk_pixmap_set (value val, value pixmap, value mask)
+CAMLprim value ml_gtk_pixmap_set (value val, value pixmap, value mask)
 {
     GtkPixmap *w = GtkPixmap_val(val);
     gtk_pixmap_set (w, Option_val(pixmap,GdkPixmap_val,w->pixmap),
@@ -152,7 +152,8 @@ ML_1 (gtk_preview_set_gamma, Float_val, Unit)
 ML_2 (gtk_preview_set_dither, GtkPreview_val, GdkRgbDither_val, Unit)
 
 #define ROWBUF_SIZE 3072     
-value ml_gtk_preview_draw_row (value val, value data, value x, value y)
+CAMLprim value ml_gtk_preview_draw_row (value val, value data,
+                                        value x, value y)
 {
     GtkPreview *w = GtkPreview_val(val);
     gint length = Wosize_val(data);

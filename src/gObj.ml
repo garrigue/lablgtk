@@ -86,28 +86,51 @@ class event_ops obj = object
   method set_extensions = Widget.set_extension_events obj
 end
 
+let iter_setcol set style =
+  List.iter ~f:(fun (state, color) -> set style state (GDraw.color color))
+
 class style st = object
   val style = st
   method as_style = style
   method copy = {< style = Style.copy style >}
-  method bg state = Style.get_bg style ~state
   method colormap = Style.get_colormap style
   method font = Style.get_font style
-  method set_bg =
-    List.iter ~f:
-      (fun (state,c) -> Style.set_bg style ~state ~color:(GDraw.color c))
+  method bg = Style.get_bg style
+  method set_bg = iter_setcol Style.set_bg style
+  method fg = Style.get_fg style
+  method set_fg = iter_setcol Style.set_fg style
+  method light = Style.get_light style
+  method set_light = iter_setcol Style.set_light style
+  method dark = Style.get_dark style
+  method set_dark = iter_setcol Style.set_dark style
+  method mid = Style.get_mid style
+  method set_mid = iter_setcol Style.set_mid style
+  method base = Style.get_base style
+  method set_base = iter_setcol Style.set_base style
+  method text = Style.get_text style
+  method set_text = iter_setcol Style.set_text style
   method set_font = Style.set_font style
-  method set_background = Style.set_background style
 end
 
-class selection_data (sel : Selection.t) = object
+class selection_input (sel : Gtk.selection_data) = object
   val sel = sel
   method selection = Selection.selection sel
-  method target = Selection.target sel
-  method seltype = Selection.seltype sel
-  method format = Selection.format sel
+  method target = Gdk.Atom.name (Selection.target sel)
+end
+
+class selection_data sel = object
+  inherit selection_input sel
+  method typ = Gdk.Atom.name (Selection.seltype sel)
   method data = Selection.get_data sel
-  method set = Selection.set sel
+  method format = Selection.format sel
+end
+
+class selection_context sel = object
+  inherit selection_input sel
+  method return ?typ ?(format=8) data =
+    let typ =
+      match typ with Some t -> Gdk.Atom.intern t | _ -> Selection.target sel in
+    Selection.set sel ~typ ~format ~data:(Some data)
 end
 
 class drag_signals ?(after=false) obj = object
@@ -115,29 +138,31 @@ class drag_signals ?(after=false) obj = object
   val after = after
   method after = {< after = true >}
   method beginning ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_begin ~after obj
+    GtkSignal.connect ~sgn:DnD.Signals.drag_begin ~after obj
       ~callback:(fun context -> callback (new drag_context context))
   method ending ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_end ~after obj
+    GtkSignal.connect ~sgn:DnD.Signals.drag_end ~after obj
       ~callback:(fun context -> callback (new drag_context context))
   method data_delete ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_data_delete ~after obj
+    GtkSignal.connect ~sgn:DnD.Signals.drag_data_delete ~after obj
       ~callback:(fun context -> callback (new drag_context context))
   method leave ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_leave ~after obj
+    GtkSignal.connect ~sgn:DnD.Signals.drag_leave ~after obj
       ~callback:(fun context -> callback (new drag_context context))
   method motion ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_motion ~after obj
+    GtkSignal.connect ~sgn:DnD.Signals.drag_motion ~after obj
       ~callback:(fun context -> callback (new drag_context context))
   method drop ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_drop ~after obj
+    GtkSignal.connect ~sgn:DnD.Signals.drag_drop ~after obj
       ~callback:(fun context -> callback (new drag_context context))
   method data_get ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_data_get ~after obj
-      ~callback:(fun context data -> callback (new drag_context context)
-	       (new selection_data data))
+    GtkSignal.connect ~sgn:DnD.Signals.drag_data_get ~after obj ~callback:
+      begin fun context seldata ~info ~time ->
+        callback (new drag_context context) (new selection_context seldata)
+          ~info ~time
+      end
   method data_received ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_data_received ~after obj
+    GtkSignal.connect ~sgn:DnD.Signals.drag_data_received ~after obj
       ~callback:(fun context ~x ~y data -> callback (new drag_context context)
 	       ~x ~y (new selection_data data))
 
@@ -149,9 +174,8 @@ and drag_ops obj = object
   method dest_set ?(flags=[`ALL]) ?(actions=[]) targets =
     DnD.dest_set obj ~flags ~actions ~targets:(Array.of_list targets)
   method dest_unset () = DnD.dest_unset obj
-  method get_data ?(time=0) ~context:(context : drag_context) target =
-    DnD.get_data obj (context : < context : Gdk.drag_context; .. >)#context
-      ~target ~time
+  method get_data ~target ?(time=0) (context : drag_context) =
+    DnD.get_data obj context#context ~target:(Gdk.Atom.intern target) ~time
   method highlight () = DnD.highlight obj
   method unhighlight () = DnD.unhighlight obj
   method source_set ?modi:m ?(actions=[]) targets =
@@ -203,6 +227,15 @@ and misc_signals ?after obj = object
   method style_set ~callback =
     GtkSignal.connect obj ~sgn:Widget.Signals.style_set ~after ~callback:
       (fun opt -> callback (may opt ~f:(new style)))
+  method selection_get ~callback =
+    GtkSignal.connect obj ~sgn:Selection.Signals.selection_get ~after
+      ~callback:
+      begin fun seldata ~info ~time ->
+        callback (new selection_context seldata) ~info ~time
+      end
+  method selection_received ~callback =
+    GtkSignal.connect obj ~sgn:Selection.Signals.selection_received ~after
+      ~callback:(fun data -> callback (new selection_data data)) 
 end
 
 and misc_ops obj = object
@@ -242,8 +275,8 @@ and misc_ops obj = object
   (* get functions *)
   method name = Widget.get_name obj
   method toplevel =
-    try Some (new widget (Object.unsafe_cast (Widget.get_toplevel obj)))
-    with Gpointer.Null -> None
+    try new widget (Object.unsafe_cast (Widget.get_toplevel obj))
+    with Gpointer.Null -> failwith "GObj.misc_ops#toplevel"
   method window = Widget.window obj
   method colormap = Widget.get_colormap obj
   method visual = Widget.get_visual obj
@@ -257,6 +290,11 @@ and misc_ops obj = object
     with Gpointer.Null -> None
   method set_app_paintable = Widget.set_app_paintable obj
   method allocation = Widget.allocation obj
+  method convert_selection ~target ?(time=0) sel =
+    Selection.convert obj ~sel ~target:(Gdk.Atom.intern target) ~time
+  method grab_selection ?(time=0) sel = Selection.owner_set obj ~sel ~time
+  method add_selection_target ~target ?(info=0) sel =
+    Selection.add_target obj ~sel ~target:(Gdk.Atom.intern target) ~info
 end
 
 and widget obj = object (self)

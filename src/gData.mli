@@ -6,7 +6,7 @@ class data_signals :
   'a obj ->
   object
     inherit GObj.gtkobj_signals
-    constraint 'a = [>`data]
+    constraint 'a = [> data]
     val obj : 'a obj
     method disconnect_data : callback:(unit -> unit) -> GtkSignal.id
   end
@@ -15,7 +15,7 @@ class adjustment_signals :
   'a obj ->
   object
     inherit data_signals
-    constraint 'a = [>`adjustment|`data]
+    constraint 'a = [> adjustment]
     val obj : 'a obj
     method changed : callback:(unit -> unit) -> GtkSignal.id
     method value_changed : callback:(unit -> unit) -> GtkSignal.id

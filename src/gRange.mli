@@ -6,7 +6,7 @@ open GObj
 class progress : 'a obj ->
   object
     inherit widget_full
-    constraint 'a = [>`progress|`widget]
+    constraint 'a = [> Gtk.progress]
     val obj : 'a obj
     method adjustment : GData.adjustment
     method configure : current:float -> min:float -> max:float -> unit
@@ -51,7 +51,7 @@ val progress_bar :
 class range : 'a obj ->
   object
     inherit widget_full
-    constraint 'a = [>`range|`widget]
+    constraint 'a = [> Gtk.range]
     val obj : 'a obj
     method adjustment : GData.adjustment
     method set_adjustment : GData.adjustment -> unit
@@ -87,7 +87,7 @@ val scrollbar :
   ?packing:(widget -> unit) -> ?show:bool -> unit -> scrollbar
 
 class ruler :
-  ([> `ruler | `widget] as 'a) Gtk.obj ->
+  ([> Gtk.ruler] as 'a) Gtk.obj ->
   object
     inherit widget_full
     val obj : 'a Gtk.obj

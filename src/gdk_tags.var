@@ -94,6 +94,9 @@ type gdkDragAction = "GDK_ACTION_"
 type gdkRgbDither = "GDK_RGB_DITHER_"
   [ `NONE | `NORMAL | `MAX ]
 
+type gdkSelection = "GDK_SELECTION_"
+  [ `PRIMARY | `SECONDARY ]
+
 type gdkCursorType = "GDK_" [
   | `X_CURSOR
   | `ARROW

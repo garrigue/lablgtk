@@ -4,7 +4,7 @@ open Gtk
 
 type id
 type ('a,'b) t =
- { name: string;
+ { name: string; classe: 'a;
    marshaller: ('b -> GtkArgv.t -> GtkArgv.data list -> unit) }
 
 val stop_emit : unit -> unit

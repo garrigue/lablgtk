@@ -180,8 +180,16 @@ module Paned = struct
       = "ml_gtk_paned_add1"
   external add2 : [>`paned] obj -> [>`widget] obj -> unit
       = "ml_gtk_paned_add2"
+  external pack1 :
+      [>`paned] obj -> [>`widget] obj -> resize:bool -> shrink:bool -> unit
+      = "ml_gtk_paned_pack1"
+  external pack2 :
+      [>`paned] obj -> [>`widget] obj -> resize:bool -> shrink:bool -> unit
+      = "ml_gtk_paned_pack2"
   external set_handle_size : [>`paned] obj -> int -> unit
       = "ml_gtk_paned_set_handle_size"
+  external set_position : [>`paned] obj -> int -> unit
+      = "ml_gtk_paned_set_position"
   let set ?handle_size w =
     may ~f:(set_handle_size w) handle_size
   external child1 : [>`paned] obj -> widget obj = "ml_gtk_paned_child1"
@@ -306,7 +314,7 @@ module Notebook = struct
     let marshal_page f argv = function
       |	_ :: INT page :: _ -> f page
       |	_ -> invalid_arg "GtkPack.Notebook.Signals.marshal_page"
-    let switch_page : ([>`notebook],_) t =
-      { name = "switch_page"; marshaller = marshal_page }
+    let switch_page =
+      { name = "switch_page"; classe = `notebook; marshaller = marshal_page }
   end
 end

@@ -8,7 +8,7 @@ class box_skel :
   'a obj ->
   object
     inherit container
-    constraint 'a = [>`box|`container|`widget]
+    constraint 'a = [> box]
     val obj : 'a obj
     method pack :
       ?from:Tags.pack_type ->
@@ -24,7 +24,7 @@ class box :
   'a obj ->
   object
     inherit box_skel
-    constraint 'a = [>`box|`container|`widget]
+    constraint 'a = [> Gtk.box]
     val obj : 'a obj
     method connect : GContainer.container_signals
   end
@@ -158,12 +158,12 @@ val layout :
 class notebook_signals : 'a obj ->
   object
     inherit container_signals
-    constraint 'a = [>`notebook|`container|`widget]
+    constraint 'a = [> Gtk.notebook]
     val obj : 'a obj
     method switch_page : callback:(int -> unit) -> GtkSignal.id
   end
 
-class notebook : ([> `widget | `container | `notebook] as 'a) obj ->
+class notebook : ([> Gtk.notebook] as 'a) obj ->
   object
     inherit container
     val obj : 'a obj
@@ -247,13 +247,16 @@ class paned :
   object
     inherit container_full
     val obj : Gtk.paned obj
+    method event : event_ops
     method add1 : widget -> unit
     method add2 : widget -> unit
-    method event : event_ops
+    method pack1 : ?resize:bool -> ?shrink:bool -> widget -> unit
+    method pack2 : ?resize:bool -> ?shrink:bool -> widget -> unit
     method child1 : widget
     method child2 : widget
     method handle_size : int
     method set_handle_size : int -> unit
+    method set_position : int -> unit
   end
 val paned :
   Tags.orientation ->

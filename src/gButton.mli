@@ -7,15 +7,17 @@ open GContainer
 class button_skel : 'a obj ->
   object
     inherit container
-    constraint 'a = [>`widget|`button|`container]
+    constraint 'a = [> button]
     val obj : 'a obj
     method clicked : unit -> unit
+    method set_relief : Tags.relief_style -> unit
+    method relief : Tags.relief_style
     method grab_default : unit -> unit
   end
 class button_signals : 'b obj ->
   object ('a)
     inherit container_signals
-    constraint 'b = [>`button|`container|`widget]
+    constraint 'b = [> button]
     val obj : 'b obj
     method clicked : callback:(unit -> unit) -> GtkSignal.id
     method enter : callback:(unit -> unit) -> GtkSignal.id
@@ -41,7 +43,7 @@ val button :
 class toggle_button_signals : 'b obj ->
   object ('a)
     inherit button_signals
-    constraint 'b = [>`toggle|`button|`container|`widget]
+    constraint 'b = [> toggle_button]
     val obj : 'b obj
     method toggled : callback:(unit -> unit) -> GtkSignal.id
   end
@@ -50,7 +52,7 @@ class toggle_button :
   'a obj ->
   object
     inherit button_skel
-    constraint 'a = [>`toggle|`button|`container|`widget]
+    constraint 'a = [> Gtk.toggle_button]
     val obj : 'a obj
     method active : bool
     method connect : toggle_button_signals

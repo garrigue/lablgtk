@@ -58,12 +58,19 @@ module Tags : sig
     | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 ]
   type drag_action = [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
   type rgb_dither = [ `NONE | `NORMAL | `MAX]
+  type selection = [ `PRIMARY | `SECONDARY ]
 end
 
 module Convert :
   sig
     val modifier : int -> Tags.modifier list
     val window_state : int -> Tags.window_state list
+  end
+
+module Atom :
+  sig
+    val intern :  ?dont_create:bool -> string -> atom
+    external name : atom -> string = "ml_gdk_atom_name"
   end
 
 module Screen :
@@ -151,6 +158,7 @@ module Window :
     val clear : window -> unit
     val get_xwindow : 'a drawable -> xid
     val set_back_pixmap : window -> background_pixmap -> unit
+    val set_cursor : window -> cursor -> unit
   end
 
 module PointArray :
@@ -303,6 +311,10 @@ module Rgb :
     val init : unit -> unit
     val get_visual : unit -> visual
     val get_cmap : unit -> colormap
+    val draw_image :
+      'a drawable -> gc -> width:int -> height:int -> ?x:int -> ?y:int ->
+      ?dither:Tags.rgb_dither -> ?row_stride:int -> Gpointer.region -> unit
+    (* [row_stride] defaults to [width*3] *)
   end
 
 module DnD :

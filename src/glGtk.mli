@@ -20,9 +20,9 @@ type visual_options = [
   | `ACCUM_GREEN_SIZE of int
   | `ACCUM_ALPHA_SIZE of int
 ]
-type gl_area = [`widget|`drawing|`glarea]
+type gl_area = [Gtk.widget|`drawing|`glarea]
 
-module Raw :
+module GtkRaw :
   sig
     external create :
       visual_options list -> share:[>`glarea] optobj -> gl_area obj
@@ -36,7 +36,7 @@ module Raw :
 class area_signals : 'a obj ->
   object
     inherit widget_signals
-    constraint 'a = [>`glarea|`widget]
+    constraint 'a = [> gl_area]
     val obj : 'a obj
     method display : callback:(unit -> unit) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id
@@ -61,3 +61,5 @@ val area :
   ?share:area ->
   ?width:int ->
   ?height:int -> ?packing:(widget -> unit) -> ?show:bool -> unit -> area
+
+val region_of_raw : 'a Raw.t -> Gpointer.region
