@@ -13,17 +13,20 @@ LINKER = olablc $(MLFLAGS)
 TOPLEVEL = olablmktop $(MLFLAGS)
 RANLIB = ranlib
 
-CFLAGS = $(GTKCFLAGS)
+CFLAGS = $(GTKCFLAGS) #-DGTK_NO_CHECK_CASTS
 LDFLAGS = $(GTKLIBS)
 
 THFLAGS = -thread
 THLIBS = unix.cma threads.cma
 THLDFLAGS = -lthreads -lunix
 
+#CCOMPILER = cc -c -I/usr/local/lib/olabl $(CFLAGS)
+CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
+
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
 .c.o:
-	$(COMPILER) -ccopt "$(CFLAGS)" $<
+	$(CCOMPILER) $<
 .ml.cmo:
 	$(COMPILER) $<
 .mli.cmi:

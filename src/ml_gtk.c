@@ -731,6 +731,46 @@ ML_1 (gtk_menu_detach, GtkMenu_val, Unit)
 #define GtkMenuBar_val(val) GTK_MENU_BAR(Pointer_val(val))
 ML_0 (gtk_menu_bar_new, Val_GtkWidget)
 
+/* gtknotebook.h */
+
+#define GtkNotebook_val(val) GTK_NOTEBOOK(Pointer_val(val))
+ML_0 (gtk_notebook_new, Val_GtkWidget)
+ML_5 (gtk_notebook_insert_page_menu, GtkNotebook_val, GtkWidget_val,
+      GtkWidget_val, Option_val(arg4,GtkWidget_val,NULL) Ignore,
+      Option_val(arg5,Int_val,-1) Ignore, Unit)
+ML_2 (gtk_notebook_remove_page, GtkNotebook_val, Int_val, Unit)
+ML_1 (gtk_notebook_current_page, GtkNotebook_val, Val_int)
+ML_2 (gtk_notebook_set_page, GtkNotebook_val, Int_val, Unit)
+ML_2 (gtk_notebook_set_tab_pos, GtkNotebook_val, Position_val, Unit)
+ML_2 (gtk_notebook_set_show_tabs, GtkNotebook_val, Bool_val, Unit)
+ML_2 (gtk_notebook_set_show_border, GtkNotebook_val, Bool_val, Unit)
+ML_2 (gtk_notebook_set_scrollable, GtkNotebook_val, Bool_val, Unit)
+ML_2 (gtk_notebook_set_tab_border, GtkNotebook_val, Int_val, Unit)
+ML_1 (gtk_notebook_popup_enable, GtkNotebook_val, Unit)
+ML_1 (gtk_notebook_popup_disable, GtkNotebook_val, Unit)
+
+/* gtkpaned.h */
+
+#define GtkPaned_val(val) GTK_PANED(Pointer_val(val))
+ML_0 (gtk_hpaned_new, Val_GtkWidget)
+ML_0 (gtk_vpaned_new, Val_GtkWidget)
+ML_2 (gtk_paned_add1, GtkPaned_val, GtkWidget_val, Unit)
+ML_2 (gtk_paned_add2, GtkPaned_val, GtkWidget_val, Unit)
+ML_2 (gtk_paned_handle_size, GtkPaned_val, Int_val, Unit)
+ML_2 (gtk_paned_gutter_size, GtkPaned_val, Int_val, Unit)
+
+/* gtkscrolledwindow.h */
+
+#define GtkScrolledWindow_val(val) GTK_SCROLLED_WINDOW(Pointer_val(val))
+ML_2 (gtk_scrolled_window_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
+      Option_val(arg2,GtkAdjustment_val,NULL) Ignore, Val_GtkWidget)
+ML_1 (gtk_scrolled_window_get_hadjustment, GtkScrolledWindow_val,
+      Val_GtkWidget)
+ML_1 (gtk_scrolled_window_get_vadjustment, GtkScrolledWindow_val,
+      Val_GtkWidget)
+ML_3 (gtk_scrolled_window_set_policy, GtkScrolledWindow_val,
+      Policy_val, Policy_val, Unit)
+
 /* gtktable.h */
 
 #define GtkTable_val(val) GTK_TABLE(Pointer_val(val))
@@ -739,6 +779,11 @@ ML_10 (gtk_table_attach, GtkTable_val, GtkWidget_val,
        Int_val, Int_val, Int_val, Int_val,
        Flags_Attach_val, Flags_Attach_val, Int_val, Int_val, Unit)
 ML_bc10 (ml_gtk_table_attach)
+
+/* gtktoolbar.h */
+
+#define GtkToolbar_val(val) GTK_TOOLBAR(Pointer_val(val))
+ML_2 (gtk_toolbar_new, Orientation_val, Toolbar_style_val, Val_GtkWidget)
 
 /* gtkeditable.h */
 
