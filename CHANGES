@@ -1,5 +1,9 @@
 $Id$
 
+2004.02.15 [Olivier]
+  * change type of gdk_drag_status: argument is drag_action option
+    instead of drag_action list
+
 2004.01.27 [Jacques]
   * add GWindow.dialog_any (for glade)
   * restructure dialog code
