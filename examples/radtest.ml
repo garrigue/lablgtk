@@ -240,7 +240,7 @@ object(self)
       show:true ?:packing
   initializer
     self#connect#activate callback:
-      (fun _ -> callback (int_of_float self#get_value_as_int));
+      (fun _ -> callback self#value_as_int);
     ()
 end
 
@@ -341,7 +341,7 @@ let property_window_add  =
     rwidget_list := rw :: !rwidget_list;
     let nplist = List.map fun:(fun w -> (w#name, w#proplist)) !rwidget_list in
     rname_prop_list := nplist;
-    cb#set_popdown_strings (List.map fun:fst nplist);
+    cb#set_combo popdown_strings:(List.map fun:fst nplist);
     cb#entry#set_text rw#name
   in add
 
