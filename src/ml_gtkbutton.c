@@ -25,7 +25,12 @@ CAMLprim value ml_gtkbutton_init(value unit)
         gtk_check_button_get_type() +
         gtk_toggle_button_get_type() +
         gtk_radio_button_get_type() +
-        gtk_toolbar_get_type();
+        gtk_toolbar_get_type() +
+#ifdef HASGTK24
+        gtk_color_button_get_type() +
+        gtk_font_button_get_type() +
+#endif
+        0;
     return Val_GType(t);
 }
 /* gtkbutton.h */

@@ -36,6 +36,24 @@ class RadioButton : ToggleButton {
   "group"                GtkRadioButton_opt   : Write
 }
 
+class ColorButton wrap : Button {
+  "alpha"                guint                : Read / Write
+  "color"                GdkColor             : Read / Write / Set
+  "title"                gchararray           : Read / Write / Set
+  "use-alpha"            gboolean             : Read / Write
+  signal color_set
+}
+
+class FontButton wrap : Button {
+  "font-name"            gchararray           : Read / Write / Set
+  "show-size"            gboolean             : Read / Write
+  "show-style"           gboolean             : Read / Write
+  "title"                gchararray           : Read / Write / Set
+  "use-font"             gboolean             : Read / Write
+  "use-size"             gboolean             : Read / Write
+  signal font_set
+}
+
 class Toolbar set : Container {
   "orientation"          GtkOrientation       : Read / Write
   "toolbar-style"        GtkToolbarStyle      : Read / Write

@@ -68,3 +68,7 @@ module Toolbar = struct
     may style ~f:(set P.toolbar_style w);
     may tooltips ~f:(set_tooltips w)
 end
+
+module ColorButton = ColorButton
+
+module FontButton = FontButton

@@ -1,5 +1,8 @@
 $Id$
 
+2004.01.21 [Olivier]
+  * GtkColorButton and GtkFontButton (2.4)
+
 2004.01.15 [Olivier]
   * add gtk_tree_view_column_set_cell_data_func
   * log error messages if ml_gtktree callbacks raise exceptions

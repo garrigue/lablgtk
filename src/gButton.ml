@@ -71,6 +71,38 @@ let radio_button ?group =
   ToggleButton.make_params ~cont:(
   pack_return (fun p -> new radio_button (RadioButton.create ?group p))))
 
+class color_button_signals obj = object (self)
+  inherit button_signals obj
+  method color_set = self#connect ColorButton.S.color_set
+end
+
+class color_button obj = object
+  inherit button_skel obj
+  inherit color_button_props
+  method private obj = obj
+  method connect = new color_button_signals obj
+end
+
+let color_button =
+  ColorButton.make_params [] ~cont:(
+  pack_return (fun pl -> new color_button (ColorButton.create pl)))
+
+class font_button_signals obj = object (self)
+  inherit button_signals obj
+  method font_set = self#connect FontButton.S.font_set
+end
+
+class font_button obj = object
+  inherit button_skel obj
+  inherit font_button_props
+  method private obj = obj
+  method connect = new font_button_signals obj
+end
+
+let font_button =
+  FontButton.make_params [] ~cont:(
+  pack_return (fun pl -> new font_button (FontButton.create pl)))
+
 class toolbar obj = object
   inherit container_full (obj : Gtk.toolbar obj)
   method insert_widget ?tooltip ?tooltip_private ?pos w =
