@@ -1,5 +1,8 @@
 $Id$
 
+2000.11.29
+  * remove unison port, since unison already works with this snapshot
+
 2000.11.16
   * internal change: switch from var2def/var2conv to varcc,
     and split ml_gtk.c in smaller files
