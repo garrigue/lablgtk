@@ -217,12 +217,36 @@ By the way, I had problems with "light" textiters for the same reason.
 Now the above code is OK, but replacing [full_major] by [compact] it will fail,
 as will do most code... Disabling compaction is essential.
 
+[Benjamin] StableString_val cannot be used safely in argument position. In fact it can be
+  used only if it is the first argument. This is probably a gcc 2.95.4 Linux bug with internal alloca 
+  impl.
+  ALL occurences of StableString_val as non first arg must be tracked and expansed.
+
 */
 
-ML_3 (gtk_text_buffer_insert, GtkTextBuffer_val,
-      GtkTextIter_val, SizedStableString_val, Unit)
-ML_2 (gtk_text_buffer_insert_at_cursor, GtkTextBuffer_val,
-      SizedStableString_val, Unit)
+/*
+  ML_3(gtk_text_buffer_insert, GtkTextBuffer_val,
+  GtkTextIter_val, SizedStableString_val, Unit)
+*/
+value ml_gtk_text_buffer_insert(value v1,value v2,value v3)
+{
+  void *v = StableString_val(v3);
+  gtk_text_buffer_insert(GtkTextBuffer_val(v1),GtkTextIter_val(v2),v,string_length(v3));
+  return Val_unit;
+}
+
+
+value ml_gtk_text_buffer_insert_at_cursor(value v1,value v3)
+{
+  void *v = StableString_val(v3);
+  gtk_text_buffer_insert_at_cursor(GtkTextBuffer_val(v1),v,string_length(v3));
+  return Val_unit;
+}
+
+/*
+  ML_2(gtk_text_buffer_insert_at_cursor, GtkTextBuffer_val,
+  SizedStableString_val, Unit)
+*/
 
 ML_4 (gtk_text_buffer_insert_interactive,GtkTextBuffer_val,
       GtkTextIter_val, SizedStableString_val, Bool_val, Val_bool)

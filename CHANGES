@@ -3,6 +3,7 @@ $Id$
 2003.02.25 [Benjamin]
  * GMenu new methods
  * Support for mnemonic in labels.
+ * First patch to correct alloca problem in insert_text*
 
 2003.02.25
  * copy_block_indirected allocates in old generation
