@@ -1,27 +1,21 @@
 (* $Id$ *)
 
-(* ¤³¤ì¤ò¼Â¹Ô¤¹¤ëÁ°¤ËLC_ALL=ja_JP.EUC¤Ê¤É¤È»ØÄê¤·¤Ê¤±¤ì¤Ğ¤Ê¤é¤Ê¤¤ *)
-(* GTK_SETLOCALE¤â¥»¥Ã¥È¤·¤Ê¤¤¤Èlocale¤¬Ìµ»ë¤µ¤ì¤Ş¤¹ *)
+(* ã“ã‚Œã‚’å®Ÿè¡Œã™ã‚‹å‰ã«LC_ALL=ja_JP.EUCãªã©ã¨æŒ‡å®šã—ãªã‘ã‚Œã°ãªã‚‰ãªã„ *)
 
 open GMain
 
 let window = GWindow.window ()
 let box = GPack.vbox ~packing: window#add ()
-let text = GEdit.text ~editable: true ~packing: box#add ()
-let font = Gdk.Font.load_fontset
-    "-*-fixed-medium-r-normal--24-*-c-120-iso8859-1, \
-     -*-fixed-medium-r-normal--24-*-jisx0208.1983-0, \
-     -*-fixed-medium-r-normal--24-*-jisx0201.1976-0"
-let button = GButton.button ~label: "½ªÎ»" ~packing: box#add ()
-let label = GMisc.label ~text:"¤³¤ì¤Ë¤Ï±Æ¶Á¤·¤Ê¤¤" ~packing: box#add ()
+let text = GText.view ~packing: box#add ()
+let button = GButton.button ~label: "çµ‚äº†" ~packing: box#add ()
+let label = GMisc.label ~text:"ã“ã‚Œã«ã¯å½±éŸ¿ã—ãªã„" ~packing: box#add ()
 
 let _ =
   window#connect#destroy ~callback:Main.quit;
-  text#misc#realize ();
-  text#insert "¤³¤ó¤Ë¤Á¤Ï" ~font;
+  text#buffer#insert "ã“ã‚“ã«ã¡ã¯";
+  text#misc#set_size_chars ~width:20 ~height:5 ();
   let style = button#misc#style#copy in
   button#misc#set_style style;
-  style#set_font font;
   style#set_bg [`NORMAL,`NAME "green"; `PRELIGHT,`NAME "red"];
   button#connect#clicked ~callback:Main.quit
 
