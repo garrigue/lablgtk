@@ -297,7 +297,7 @@ static gboolean gtk_tree_selection_func(GtkTreeSelection *s, GtkTreeModel *m,
 					gpointer clos_p)
 {
   value vp = Val_GtkTreePath_copy(p);
-  value ret = callback2(*(value*)clos_p, vp, Val_bool(cs));
+  value ret = callback2_exn(*(value*)clos_p, vp, Val_bool(cs));
   if (Is_exception_result(ret)) {
     CAML_EXN_LOG("gtk_tree_selection_func");
     return TRUE;
@@ -319,7 +319,7 @@ static void gtk_tree_selection_foreach_func(GtkTreeModel      *model,
 					    gpointer           data)
 { 
   value p = Val_GtkTreePath_copy(path);
-  value ret = callback(*(value*)data, p);
+  value ret = callback_exn(*(value*)data, p);
   if (Is_exception_result(ret)) 
     CAML_EXN_LOG("gtk_tree_selection_foreach_func");
 }
