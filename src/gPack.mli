@@ -34,6 +34,20 @@ class box :
     method connect : ?after:bool -> container_signals
   end
 class box_wrapper : ([> box] obj) -> box
+class vbox :
+  ?homogeneous:bool ->
+  ?spacing:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(box -> unit) -> ?show:bool -> box
+class hbox :
+  ?homogeneous:bool ->
+  ?spacing:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(box -> unit) -> ?show:bool -> box
 
 class button_box :
   Tags.orientation ->

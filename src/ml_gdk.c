@@ -124,6 +124,33 @@ value ml_GdkRootParent (value unit)
   return Val_GdkWindow( GDK_ROOT_PARENT () );
 }
 
+ML_1 (gdk_window_get_parent, GdkWindow_val, Val_GdkWindow)
+value ml_gdk_window_get_position (value window)
+{
+  int x, y;
+  value ret;
+
+  gdk_window_get_position (GdkWindow_val(window), &x, &y);
+  
+  ret = alloc_tuple (2);
+  Field(ret,0) = Val_int(x);
+  Field(ret,1) = Val_int(y);
+  return ret;
+}
+
+value ml_gdk_window_get_size (value window)
+{
+  int x, y;
+  value ret;
+
+  gdk_window_get_size (GdkWindow_val(window), &x, &y);
+  
+  ret = alloc_tuple (2);
+  Field(ret,0) = Val_int(x);
+  Field(ret,1) = Val_int(y);
+  return ret;
+}
+
 /* Pixmap */
 
 Make_Val_final_pointer (GdkPixmap, , gdk_pixmap_ref, gdk_pixmap_unref)
@@ -339,3 +366,20 @@ Make_Extractor (GdkEventProximity, GdkEvent_val(Proximity), time, Val_int)
 Make_Extractor (GdkEventProximity, GdkEvent_val(Proximity), source,
 		Val_gdkInputSource)
 Make_Extractor (GdkEventProximity, GdkEvent_val(Proximity), deviceid, Val_int)
+
+/* DnD */
+Make_Val_final_pointer (GdkDragContext, , gdk_drag_context_ref, gdk_drag_context_unref)
+Make_Flags_val (GdkDragAction_val)
+ML_3 (gdk_drag_status, GdkDragContext_val, Flags_GdkDragAction_val, Int_val, Unit)
+Make_Extractor (GdkDragContext, GdkDragContext_val, suggested_action, Val_gdkDragAction)
+value val_int(gpointer i)
+{
+  return Val_int (GPOINTER_TO_INT(i));
+}
+value ml_GdkDragContext_targets (value c)
+{
+  GList *t;
+
+  t = (GdkDragContext_val(c))->targets;
+  return Val_GList (t, val_int);
+}
