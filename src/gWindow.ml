@@ -204,11 +204,10 @@ end
 let message_dialog ?(message="") ?(use_markup=false) ~message_type ~buttons =
   make_dialog [] ~create:(fun pl ->
     let w = 
-      if use_markup 
-      then MessageDialog.create ~message_type ~buttons:(fst buttons) () 
-      else MessageDialog.create ~message_type ~buttons:(fst buttons) ~message () in
+      let message = if use_markup then "" else message in
+      MessageDialog.create ~message_type ~buttons:(fst buttons) ~message () in 
     Gobject.set_params w pl;
-    if use_markup then MessageDialog.set_markup message ;
+    if use_markup then MessageDialog.set_markup w message ;
     new message_dialog ~buttons w)
 
 
