@@ -50,7 +50,7 @@ diff -rc unison-2.6.11/uicommon.ml unison-2.6.11-strict/uicommon.ml
         match getFirstRoot() with
 diff -rc unison-2.6.11/uigtk.ml unison-2.6.11-strict/uigtk.ml
 *** unison-2.6.11/uigtk.ml	Mon Jan  1 02:17:19 2001
---- unison-2.6.11-strict/uigtk.ml	Tue May  8 11:57:20 2001
+--- unison-2.6.11-strict/uigtk.ml	Thu May 10 09:37:26 2001
 ***************
 *** 1,5 ****
 --- 1,6 ----
@@ -146,6 +146,33 @@ diff -rc unison-2.6.11/uigtk.ml unison-2.6.11-strict/uigtk.ml
   
     ignore (lst#event#connect#button_press ~callback:(fun ev ->
       match GdkEvent.get_type ev with
+***************
+*** 1548,1559 ****
+  (**********************************************************************)
+  and start0 () = begin
+    Uicommon.uiInit2
+!     fatalError
+!     tryAgainOrQuit
+!     displayWaitMessage
+!     getProfile 
+!     getFirstRoot 
+!     getSecondRoot;
+    (match !waitWindow with
+      None -> () |
+      Some w -> waitWindow := None; w#destroy());
+--- 1550,1561 ----
+  (**********************************************************************)
+  and start0 () = begin
+    Uicommon.uiInit2
+!     ~reportError:fatalError
+!     ~tryAgainOrQuit
+!     ~displayWaitMessage
+!     ~getProfile 
+!     ~getFirstRoot 
+!     ~getSecondRoot;
+    (match !waitWindow with
+      None -> () |
+      Some w -> waitWindow := None; w#destroy());
 ***************
 *** 1565,1571 ****
       (* Initialize the GTK library *)
