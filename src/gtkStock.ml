@@ -151,8 +151,10 @@ let make_icon_source ?filename ?pixbuf ?direction ?state ?size () =
     Icon_source.set_size s p) size ;
   s
 
-let make_icon_set sources = 
-  let s = Icon_set.new_icon_set () in
+let make_icon_set ?pixbuf sources =
+  let s = match pixbuf with
+  | None -> Icon_set.new_icon_set () 
+  | Some pb -> Icon_set.new_from_pixbuf pb in
   List.iter (Icon_set.add_source s) sources ;
   s
 
