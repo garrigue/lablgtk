@@ -26,18 +26,18 @@ class gtkobj_misc obj = object
   method thaw_notify () = thaw_notify obj
 end
 
-class gtkobj_signals obj = object
+class gtkobj_signals ?(after=false) obj = object
   val obj = obj
-  val after = false
+  val after = after
   method after = {< after = true >}
   method destroy = GtkSignal.connect ~sgn:Object.Signals.destroy obj
 end
 
 (* Widget *)
 
-class event_signals obj = object
+class event_signals ?(after=false) obj = object
   val obj = (obj :> Gtk.widget obj)
-  val after = false
+  val after = after
   method after = {< after = true >}
   method any = GtkSignal.connect ~sgn:Widget.Signals.Event.any ~after obj
   method button_press =
@@ -203,8 +203,8 @@ and drag_context context = object
     DnD.set_icon_pixmap context ~colormap pix#pixmap ?mask:pix#mask
 end
 
-and misc_signals obj = object
-  inherit gtkobj_signals obj
+and misc_signals ?after obj = object
+  inherit gtkobj_signals ?after obj
   method show = GtkSignal.connect ~sgn:Widget.Signals.show ~after obj
   method hide = GtkSignal.connect ~sgn:Widget.Signals.hide ~after obj
   method map = GtkSignal.connect ~sgn:Widget.Signals.map ~after obj

@@ -53,7 +53,7 @@ let solid_cone ~radius ~height =
 let solid_sphere ~radius =
   GluQuadric.sphere ~radius ~slices:32 ~stacks:32 ()
 
-let display () =
+let display area =
   GlClear.clear [`color; `depth];
 
   GlMat.push ();
@@ -77,7 +77,8 @@ let display () =
   GlMat.pop ();
 
   GlMat.pop ();
-  Gl.flush ()
+  Gl.flush ();
+  area#swap_buffers ()
 
 let my_reshape ~width:w ~height:h =
   GlDraw.viewport ~x:0 ~y:0 ~w ~h;
@@ -101,11 +102,11 @@ open GMain
 let main () =
   let w = GWindow.window ~title:"Scene" () in
   w#connect#destroy ~callback:(fun () -> Main.quit (); exit 0);
-  let area = GlGtk.area [`RGBA;`DEPTH_SIZE 1]
+  let area = GlGtk.area [`RGBA;`DEPTH_SIZE 1;`DOUBLEBUFFER]
       ~width:500 ~height:500 ~packing:w#add () in
   area#connect#realize ~callback:myinit;
   area#connect#reshape ~callback:my_reshape;
-  area#connect#display ~callback:display;
+  area#connect#display ~callback:(fun () -> display area);
   area#event#add [`BUTTON_PRESS];
   area#event#connect#button_press ~callback:
     begin fun ev ->

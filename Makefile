@@ -22,29 +22,16 @@ GETLIBDIR = ocamlc -where
 LIBDIR = `$(GETLIBDIR)`
 RANLIB = `which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'`
 
-GTK_CONFIG = pkg-config gtk+-2.0
-GNOME_CONFIG = gnome-config
-GLADE_CONFIG = libglade-config
+PKG_CONFIG = pkg-config
+GTKPKG = gtk+-2.0
+GTKLIBS = `$(PKG_CONFIG) $(GTKPKG) --libs`
 
-ifdef USE_GNOME
-ifdef USE_GLADE
-GTKCFLAGS = `$(GLADE_CONFIG) --cflags gnome`
-GLADELIBS = `$(GLADE_CONFIG) --libs gnome`
-else
-GTKCFLAGS = `$(GNOME_CONFIG) --cflags gnome`
-endif
-GNOMELIBS = `$(GNOME_CONFIG) --libs gtkxmhtml`
-else
-ifdef USE_GLADE
-GTKCFLAGS = `$(GLADE_CONFIG) --cflags gtk`
-GLADELIBS = `$(GLADE_CONFIG) --libs gtk`
-else
-GTKCFLAGS = `$(GTK_CONFIG) --cflags` 
-endif
+ifdef USE_GL
+GTKGLPKG = gtkgl-2.0
+GTKGLLIBS = `$(PKG_CONFIG) $(GTKGLPKG) --libs`
 endif
 
-GTKLIBS = `$(GTK_CONFIG) --libs`
-GLLIBS = -lGLU -lGL
+GTKCFLAGS = `$(PKG_CONFIG) $(GTKPKG) $(GTKGLPKG) --cflags`
 
 all: config.make
 	cd src && $(MAKE) $@
@@ -86,7 +73,5 @@ configure:
 	@echo DLLDIR=$(DLLDIR) >> config.make
 	@echo GTKCFLAGS=$(GTKCFLAGS) >> config.make
 	@echo GTKLIBS=$(GTKLIBS) >> config.make
-	@echo GLLIBS=$(GLLIBS) >> config.make
-	@echo GNOMELIBS=$(GNOMELIBS) $(GDKPIXBUFLIBS) >> config.make
-	@echo GLADELIBS=$(GLADELIBS) >> config.make
+	@echo GTKGLLIBS=$(GTKGLLIBS) >> config.make
 	@cat config.make

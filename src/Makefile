@@ -56,7 +56,6 @@ MLFLAGS += -I $(LABLGLDIR)
 MLLINK += lablgl.cma
 MLLIBS += lablgtkgl.cma
 CLIBS += liblablgtkgl.a
-GLLINK = -llablgtkgl -lgtkgl
 GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.o
 endif
@@ -176,8 +175,8 @@ lablgtk.cmxa: liblablgtk2.a $(MLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
 
 liblablgtkgl.a: $(GLCOBJS)
-	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLCOBJS) \
-	    $(GLLIBS) $(GTKLIBS)
+	$(LIBRARIAN) -o lablgtkgl $(GLCOBJS) \
+	    $(GTKGLLIBS)
 lablgtkgl.cma: liblablgtkgl.a $(GLMLOBJS)
 	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS) \
 	    $(GLLIBS) $(GTKLIBS)
