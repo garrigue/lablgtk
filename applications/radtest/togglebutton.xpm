@@ -1,0 +1,33 @@
+/* XPM */
+static char *togglebutton_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 6 1",
+"  c Gray0",
+". c #7b7b7b",
+"X c #d6d6d6",
+"o c #b3cece",
+"O c Gray100",
+"+ c None",
+/* pixels */
+"+++++++++++++++++++++",
+"+++++++++++++++++++++",
+"+++++++++++++++++++++",
+"+..................O+",
+"+.                 O+",
+"+. XXXXXXXXXXXXXXXXO+",
+"+. XXXXXXXXXXXXXXXXO+",
+"+. XXX   XXX XXX XXO+",
+"+. XX XXX XX  XX XXO+",
+"+. XX XXX XX  XX XXO+",
+"+. XX XXX XX X X XXO+",
+"+. XX XXX XX XX  XXO+",
+"+. XX XXX XX XX  XXO+",
+"+. XXX   XXX XXX XXO+",
+"+. XXXXXXXXXXXXXXXXO+",
+"+. XXXXXXXXXXXXXXXXO+",
+"+. XXXXXXXXXXXXXXXXO+",
+"+OOOOOOOOOOOOOOOOOOO+",
+"+++++++++++++++++++++",
+"+++++++++++++++++++++",
+"+++++++++++++++++++++"
+};

@@ -34,6 +34,8 @@ class virtual rwidget :classe :widget ?:root [<false>]
     val mutable parent : 's option = None
     val mutable proplist : (string * property) list = []
 
+(* pack_type et int servent dans le cas des boites
+   (pas int pour l'instant) *)
     val mutable children : ('s * pack_type * int) list = []
 
     method name = name
@@ -61,6 +63,7 @@ class virtual rwidget :classe :widget ?:root [<false>]
     method parent = match parent with
     | None -> failwith "parent not defined"
     | Some c -> c
+(*  method destroy = widget#destroy a revoir *)
 
     method pack : 's -> ?from:pack_type -> unit = failwith (name ^ "::pack")
     method add        : 's -> unit = failwith (name ^ "::add")
@@ -363,6 +366,33 @@ end
 let new_rframe :name = new rframe widget:(new frame) :name
 
 
+class rscrolled_window widget:(scrolled_window : scrolled_window)
+    :name :setname = object(self)
+  inherit rcontainer classe:"scrolled_window" :name :setname widget:scrolled_window as rwidget
+
+  method add rw =
+    scrolled_window#add_with_viewport (rw#base);
+    children <- [ rw, `START, 0 ]
+
+  method private emit_start_code c =
+    Format.fprintf c#formatter
+      "let %s = new scrolled_window hpolicy:`%s vpolicy:`%s in@\n"
+      name
+      (get_enum_prop "hscrollbar policy" in:proplist)
+      (get_enum_prop "vscrollbar policy" in:proplist)
+         
+  initializer
+    proplist <-  proplist @ [
+          "hscrollbar policy", Policy (new rval init:`ALWAYS inits:"ALWAYS"
+	     setfun:(fun v -> scrolled_window#set_scrolled hpolicy:v));
+          "vscrollbar policy", Policy (new rval init:`ALWAYS inits:"ALWAYS"
+	     setfun:(fun v -> scrolled_window#set_scrolled vpolicy:v));
+    ]
+end
+
+let new_rscrolled_window :name = new rscrolled_window widget:(new scrolled_window) :name
+
+
 let new_class_list = [
   "window", new_rwindow;
   "hbox",   new_rhbox;
@@ -371,7 +401,8 @@ let new_class_list = [
   "check_button", new_rcheck_button;
   "toggle_button", new_rtoggle_button;
   "label",  new_rlabel;
-  "frame",  new_rframe
+  "frame",  new_rframe;
+  "scrolled_window", new_rscrolled_window
 ]
 
 let new_rwidget :classe = List.assoc classe in:new_class_list

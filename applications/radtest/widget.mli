@@ -1,3 +1,5 @@
+val list_remove : pred:('a -> bool) -> 'a list -> 'a list
+val list_split : pred:('a -> bool) -> 'a list -> 'a list * 'a list
 class virtual rwidget :
   classe:string ->
   widget:< as_widget : Gtk.widget Gtk.obj;
@@ -15,6 +17,24 @@ class virtual rwidget :
                  ?flags:Gtk.Tags.accel_flag list -> unit;
                allocation : Gtk.rectangle;
                colormap : Gdk.colormap;
+               drag :
+                 < dest_set :
+                     Gtk.Tags.dest_defaults list ->
+                     Gtk.target_entry array ->
+                     int -> Gdk.Tags.drag_action list -> unit;
+                   dest_unset : unit -> unit;
+                   get_data :
+                     Gdk.drag_context -> target:Gdk.atom -> time:int -> unit;
+                   highlight : unit -> unit;
+                   source_set :
+                     ?mod:Gdk.Tags.modifier list ->
+                     Gtk.target_entry array ->
+                     int -> Gdk.Tags.drag_action list -> unit;
+                   source_set_icon :
+                     colormap:Gdk.colormap -> GdkObj.pixmap -> unit;
+                   source_unset : unit -> unit;
+                   unhighlight : unit -> unit;
+                   .. >;
                draw : Gdk.Rectangle.t -> unit;
                event : 'c. 'c Gdk.event -> bool;
                grab_default : unit -> unit;
@@ -32,6 +52,37 @@ class virtual rwidget :
                    connect :
                      ?after:bool ->
                      < destroy : callback:(unit -> unit) -> GtkSignal.id;
+                       drag :
+                         < beginning :
+                             callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                           data_delete :
+                             callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                           data_get :
+                             callback:(GObj.drag_context ->
+                                       GObj.selection_data ->
+                                       int -> int -> unit) ->
+                             GtkSignal.id;
+                           data_received :
+                             callback:(GObj.drag_context ->
+                                       int ->
+                                       int ->
+                                       GObj.selection_data ->
+                                       int -> int -> unit) ->
+                             GtkSignal.id;
+                           drop :
+                             callback:(GObj.drag_context ->
+                                       int -> int -> int -> bool) ->
+                             GtkSignal.id;
+                           ending :
+                             callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                           leave :
+                             callback:(GObj.drag_context -> int -> unit) ->
+                             GtkSignal.id;
+                           motion :
+                             callback:(GObj.drag_context ->
+                                       int -> int -> int -> bool) ->
+                             GtkSignal.id;
+                           .. >;
                        event :
                          < any :
                              callback:(Gdk.Tags.event_type Gdk.event -> bool) ->
@@ -147,6 +198,37 @@ class virtual rwidget :
                    connect :
                      ?after:bool ->
                      < destroy : callback:(unit -> unit) -> GtkSignal.id;
+                       drag :
+                         < beginning :
+                             callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                           data_delete :
+                             callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                           data_get :
+                             callback:(GObj.drag_context ->
+                                       GObj.selection_data ->
+                                       int -> int -> unit) ->
+                             GtkSignal.id;
+                           data_received :
+                             callback:(GObj.drag_context ->
+                                       int ->
+                                       int ->
+                                       GObj.selection_data ->
+                                       int -> int -> unit) ->
+                             GtkSignal.id;
+                           drop :
+                             callback:(GObj.drag_context ->
+                                       int -> int -> int -> bool) ->
+                             GtkSignal.id;
+                           ending :
+                             callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                           leave :
+                             callback:(GObj.drag_context -> int -> unit) ->
+                             GtkSignal.id;
+                           motion :
+                             callback:(GObj.drag_context ->
+                                       int -> int -> int -> bool) ->
+                             GtkSignal.id;
+                           .. >;
                        event :
                          < any :
                              callback:(Gdk.Tags.event_type Gdk.event -> bool) ->
@@ -507,6 +589,36 @@ class rframe :
     method widget : GObj.widget
   end
 val new_rframe : name:string -> setname:(string -> unit) -> rframe
+class rscrolled_window :
+  widget:GFrame.scrolled_window ->
+  name:string ->
+  setname:(string -> unit) ->
+  object ('a)
+    val mutable children : ('a * Gtk.Tags.pack_type * int) list
+    val classe : string
+    val evbox : GFrame.event_box option
+    val mutable name : string
+    val mutable parent : 'a option
+    val mutable proplist : (string * Property.property) list
+    val widget : GObj.widget
+    method add : 'a -> unit
+    method base : GObj.widget
+    method change_name_in_proplist : string -> string -> unit
+    method classe : string
+    method emit_code : Oformat.c -> unit
+    method private emit_end_code : Oformat.c -> unit
+    method private emit_start_code : Oformat.c -> unit
+    method name : string
+    method pack : 'a -> ?from:Gtk.Tags.pack_type -> unit
+    method parent : 'a
+    method proplist : (string * Property.property) list
+    method remove : 'a -> unit
+    method set_name : string -> unit
+    method set_parent : 'a -> unit
+    method widget : GObj.widget
+  end
+val new_rscrolled_window :
+  name:string -> setname:(string -> unit) -> rscrolled_window
 val new_class_list :
   (string * (name:string -> setname:(string -> unit) -> rwindow)) list
 val new_rwidget :
