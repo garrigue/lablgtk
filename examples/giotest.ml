@@ -16,5 +16,6 @@ let () =
       text#insert (String.sub buf ~pos:0 ~len);
       true
     end;
+  w#connect#destroy quit;
   w#show ();
   main ()
