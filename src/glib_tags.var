@@ -7,3 +7,6 @@ type log_level = "G_LOG_LEVEL_"
 
 type io_condition = "G_IO_"
    [ `IN | `OUT | `PRI | `ERR | `HUP | `NVAL ]
+
+type locale_category = "LC_"
+    [ `ALL | `COLLATE | `CTYPE | `MESSAGES | `MONETARY | `NUMERIC | `TIME ]
