@@ -53,7 +53,7 @@ val liste :
 class clist_signals : 'a obj ->
   object
     inherit container_signals
-    constraint 'a = [>`clist|`container|`widget]
+    constraint 'a = [> clist]
     val obj : 'a obj
     method click_column : callback:(int -> unit) -> GtkSignal.id
     method select_row :

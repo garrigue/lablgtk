@@ -81,6 +81,8 @@ module Tags = struct
 
   type rgb_dither = 
     [ `NONE | `NORMAL | `MAX]
+
+  type selection = [ `PRIMARY | `SECONDARY ]
 end
 open Tags
 
@@ -96,6 +98,12 @@ module Convert = struct
   let window_state i =
     List.filter [ `WITHDRAWN; `ICONIFIED; `MAXIMIZED; `STICKY ]
       ~f:(fun m -> test_window_state m i)
+end
+
+module Atom = struct
+  external intern : string -> bool -> atom = "ml_gdk_atom_intern"
+  let intern ?(dont_create=false) name = intern name dont_create
+  external name : atom -> string = "ml_gdk_atom_name"
 end
 
 module Screen = struct
@@ -202,6 +210,8 @@ module Window = struct
   external root_parent : unit -> window = "ml_GDK_ROOT_PARENT"
   external set_back_pixmap : window -> pixmap -> int -> unit = 
     "ml_gdk_window_set_back_pixmap"
+  external set_cursor : window -> cursor -> unit = 
+    "ml_gdk_window_set_cursor"
   external clear : window -> unit = "ml_gdk_window_clear"
   external get_xwindow : 'a drawable -> xid = "ml_GDK_WINDOW_XWINDOW"
 
@@ -467,6 +477,16 @@ module Rgb = struct
   external init : unit -> unit = "ml_gdk_rgb_init"
   external get_visual : unit -> visual = "ml_gdk_rgb_get_visual"
   external get_cmap : unit -> colormap = "ml_gdk_rgb_get_cmap"
+  external draw_image_ :
+    'a drawable -> gc -> x:int -> y:int -> width:int -> height:int ->
+    dither:rgb_dither -> buf:Gpointer.region -> row_stride:int -> unit
+    = "ml_gdk_draw_rgb_image_bc" "ml_gdk_draw_rgb_image"
+  let draw_image w gc ~width ~height ?(x=0) ?(y=0) ?(dither=`NORMAL)
+    ?(row_stride=width*3) buf =
+    if height <= 0 || width <= 0 || row_stride < width * 3
+    || Gpointer.length buf < row_stride * (height - 1) + width
+    then invalid_arg "Gdk.Rgb.draw_image";
+    draw_image_ w gc ~x ~y ~width ~height ~dither ~buf ~row_stride
 end
 
 module DnD = struct

@@ -26,7 +26,7 @@ ML_5 (gtk_box_pack_end, GtkBox_val, GtkWidget_val, Bool_val, Bool_val,
 ML_2 (gtk_box_set_homogeneous, GtkBox_val, Bool_val, Unit)
 ML_2 (gtk_box_set_spacing, GtkBox_val, Int_val, Unit)
 ML_3 (gtk_box_reorder_child, GtkBox_val, GtkWidget_val, Int_val, Unit)
-value ml_gtk_box_query_child_packing (value box, value child)
+CAMLprim value ml_gtk_box_query_child_packing (value box, value child)
 {
     int expand, fill;
     unsigned int padding;
@@ -41,7 +41,7 @@ value ml_gtk_box_query_child_packing (value box, value child)
     Field(ret,3) = Val_pack_type(pack_type);
     return ret;
 }
-value ml_gtk_box_set_child_packing (value vbox, value vchild, value vexpand,
+CAMLprim value ml_gtk_box_set_child_packing (value vbox, value vchild, value vexpand,
 				    value vfill, value vpadding, value vpack)
 {
     GtkBox *box = GtkBox_val(vbox);
@@ -180,9 +180,9 @@ ML_bc10 (ml_gtk_packer_set_child_packing)
 ML_3 (gtk_packer_reorder_child, GtkPacker_val, GtkWidget_val,
       Int_val, Unit)
 ML_2 (gtk_packer_set_spacing, GtkPacker_val, Int_val, Unit)
-value ml_gtk_packer_set_defaults (value w, value border_width,
-				  value pad_x, value pad_y,
-				  value i_pad_x, value i_pad_y)
+CAMLprim value ml_gtk_packer_set_defaults (value w, value border_width,
+                                           value pad_x, value pad_y,
+                                           value i_pad_x, value i_pad_y)
 {
     GtkPacker *p = GtkPacker_val(w);
     if (Is_block(border_width))
@@ -206,8 +206,11 @@ ML_0 (gtk_hpaned_new, Val_GtkWidget_sink)
 ML_0 (gtk_vpaned_new, Val_GtkWidget_sink)
 ML_2 (gtk_paned_add1, GtkPaned_val, GtkWidget_val, Unit)
 ML_2 (gtk_paned_add2, GtkPaned_val, GtkWidget_val, Unit)
-ML_2 (gtk_paned_set_handle_size, GtkPaned_val, (gint16)Int_val, Unit)
-/* ML_2 (gtk_paned_set_gutter_size, GtkPaned_val, (gint16)Int_val, Unit) */
+ML_2 (gtk_paned_set_handle_size, GtkPaned_val, (guint16)Int_val, Unit)
+/* ML_2 (gtk_paned_set_gutter_size, GtkPaned_val, (guint16)Int_val, Unit) */
+ML_2 (gtk_paned_set_position, GtkPaned_val, Int_val, Unit)
+ML_4 (gtk_paned_pack1, GtkPaned_val, GtkWidget_val, Int_val, Int_val, Unit)
+ML_4 (gtk_paned_pack2, GtkPaned_val, GtkWidget_val, Int_val, Int_val, Unit)
 Make_Extractor (gtk_paned, GtkPaned_val, child1, Val_GtkWidget)
 Make_Extractor (gtk_paned, GtkPaned_val, child2, Val_GtkWidget)
 Make_Extractor (gtk_paned, GtkPaned_val, handle_size, Val_int)

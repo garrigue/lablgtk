@@ -7,7 +7,7 @@ open GContainer
 class menu_shell_signals : 'b obj ->
   object ('a)
     inherit container_signals
-    constraint 'b = [>`menushell|`container|`widget]
+    constraint 'b = [> menu_shell]
     val obj : 'b obj
     method deactivate : callback:(unit -> unit) -> GtkSignal.id
   end
@@ -15,7 +15,7 @@ class menu_shell_signals : 'b obj ->
 class menu_item_signals : 'b obj ->
   object ('a)
     inherit item_signals
-    constraint 'b = [>`menuitem|`container|`item|`widget]
+    constraint 'b = [> menu_item]
     val obj : 'b obj
     method activate : callback:(unit -> unit) -> GtkSignal.id
   end
@@ -24,7 +24,7 @@ class menu_item_skel :
   'a obj ->
   object
     inherit container
-    constraint 'a = [>`widget|`container|`bin|`item|`menuitem]
+    constraint 'a = [> Gtk.menu_item]
     val obj : 'a obj
     method activate : unit -> unit
     method add_accelerator :
@@ -40,7 +40,7 @@ class menu_item_skel :
 and menu_item : 'a obj ->
   object
     inherit menu_item_skel
-    constraint 'a = [>`widget|`container|`bin|`item|`menuitem]
+    constraint 'a = [> Gtk.menu_item]
     val obj : 'a obj
     method event : event_ops
     method connect : menu_item_signals
@@ -83,7 +83,7 @@ val tearoff_item :
 class check_menu_item_signals : 'a obj ->
   object
     inherit menu_item_signals
-    constraint 'a = [>`checkmenuitem|`container|`item|`menuitem|`widget]
+    constraint 'a = [> check_menu_item]
     val obj : 'a obj
     method toggled : callback:(unit -> unit) -> GtkSignal.id
   end
@@ -91,7 +91,7 @@ class check_menu_item_signals : 'a obj ->
 class check_menu_item : 'a obj ->
   object
     inherit menu_item_skel
-    constraint 'a = [>`widget|`container|`bin|`item|`menuitem|`checkmenuitem]
+    constraint 'a = [> Gtk.check_menu_item]
     val obj : 'a obj
     method active : bool
     method event : event_ops
@@ -129,7 +129,7 @@ val radio_menu_item :
 class menu_shell : 'a obj ->
   object
     inherit [menu_item] item_container
-    constraint 'a = [>`widget|`container|`menushell]
+    constraint 'a = [> Gtk.menu_shell]
     val obj : 'a obj
     method event : event_ops
     method deactivate : unit -> unit
@@ -147,7 +147,7 @@ val menu_bar :
 class option_menu : 'a obj ->
   object
     inherit GButton.button_skel
-    constraint 'a = [>`optionmenu|`button|`container|`widget]
+    constraint 'a = [> Gtk.option_menu]
     val obj : 'a obj
     method event : event_ops
     method connect : GButton.button_signals

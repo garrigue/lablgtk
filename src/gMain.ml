@@ -13,7 +13,11 @@ module Grab = struct
   let get_current () = new widget (get_current ())
 end
 
+module Rc = Rc
+
 module Timeout = Timeout
+
+module Io = Glib.Io
 
 open Main
 let main = main

@@ -37,7 +37,7 @@ val statusbar :
 class calendar_signals : 'a obj ->
   object
     inherit widget_signals
-    constraint 'a = [>`calendar|`widget]
+    constraint 'a = [> calendar]
     val obj : 'a obj
     method day_selected : callback:(unit -> unit) -> GtkSignal.id
     method day_selected_double_click :
@@ -86,7 +86,7 @@ val drawing_area :
 class misc : 'a obj ->
   object
     inherit widget
-    constraint 'a = [>`misc|`widget]
+    constraint 'a = [> Gtk.misc]
     val obj : 'a obj
     method set_alignment : ?x:float -> ?y:float -> unit -> unit
     method set_padding : ?x:int -> ?y:int -> unit -> unit
@@ -95,7 +95,7 @@ class misc : 'a obj ->
 class arrow : 'a obj ->
   object
     inherit misc
-    constraint 'a = [>`arrow|`misc|`widget]
+    constraint 'a = [> Gtk.arrow]
     val obj : 'a obj
     method set_arrow : Tags.arrow_type -> shadow:Tags.shadow_type -> unit
   end
@@ -114,7 +114,7 @@ val arrow :
 class image : 'a obj ->
   object
     inherit misc
-    constraint 'a = [>`image|`misc|`widget]
+    constraint 'a = [> Gtk.image]
     val obj : 'a obj
     method set_image : ?mask:Gdk.bitmap -> Gdk.image -> unit
   end
@@ -133,7 +133,7 @@ val image :
 class label_skel : 'a obj ->
   object
     inherit misc
-    constraint 'a = [>`label|`misc|`widget]
+    constraint 'a = [> Gtk.label]
     val obj : 'a obj
     method set_justify : Tags.justification -> unit
     method set_line_wrap : bool -> unit
@@ -165,7 +165,7 @@ val label_cast : < as_widget : 'a obj ; .. > -> label
 class tips_query_signals : 'a obj ->
   object
     inherit widget_signals
-    constraint 'a = [>`tipsquery|`widget]
+    constraint 'a = [> Gtk.tips_query]
     val obj : 'a obj
     method widget_entered :
       callback:(widget option ->

@@ -65,7 +65,7 @@ let nth arg ~pos =
 let result arg =
   if arg.nargs < 0 then invalid_arg "GtkArgv.result";
   shift arg.args ~pos:arg.nargs
-external wrap_object : raw_obj -> unit obj = "Val_GtkObject"
+external wrap_object : raw_obj -> unit obj = "ml_Val_GtkObject"
 let referent arg =
   if arg.referent == Obj.magic (-1) then invalid_arg "GtkArgv.referent";
   wrap_object arg.referent

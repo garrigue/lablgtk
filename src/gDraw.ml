@@ -61,6 +61,7 @@ object (self)
   method string s = Draw.string w gc s
   method put_image ~x ~y = Draw.image w gc ~xdest:x ~ydest:y
   method put_pixmap ~x ~y = Draw.pixmap w gc ~xdest:x ~ydest:y
+  method put_rgb_data = Rgb.draw_image w gc
   method points = Draw.points w gc
   method lines = Draw.lines w gc
   method segments = Draw.segments w gc
@@ -180,5 +181,5 @@ class drag_context context = object
   val context = context
   method status ?(time=0) act = DnD.drag_status context act ~time
   method suggested_action = DnD.drag_context_suggested_action context
-  method targets = DnD.drag_context_targets context
+  method targets = List.map Gdk.Atom.name (DnD.drag_context_targets context)
 end

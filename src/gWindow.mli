@@ -7,7 +7,7 @@ class ['a] window_skel : 'b obj ->
   object
     inherit GContainer.container
     constraint 'a = 'a #window_skel
-    constraint 'b = [>`widget|`container|`bin|`window]
+    constraint 'b = [> window]
     val obj : 'b obj
     method activate_default : unit -> unit
     method activate_focus : unit -> unit
@@ -48,6 +48,9 @@ val window :
   ?y:int ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> window
+
+val toplevel : #widget -> window option
+(** return the toplevel window of this widget, if existing *)
 
 class dialog : Gtk.dialog obj ->
   object

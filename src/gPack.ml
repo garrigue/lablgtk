@@ -8,7 +8,7 @@ open GObj
 open GContainer
 
 class box_skel obj = object
-  inherit container obj
+  inherit container (obj : [> box] obj)
   method pack ?from:f ?expand ?fill ?padding w =
     Box.pack obj (as_widget w) ?from:f ?expand ?fill ?padding
   method set_homogeneous = Box.set_homogeneous obj
@@ -150,7 +150,16 @@ class paned obj = object
   method add2 w =
     try ignore(Paned.child2 obj); raise(Error "GPack.paned#add2: already full")
     with _ -> Paned.add2 obj (as_widget w)
+  method pack1 ?(resize=false) ?(shrink=false) w =
+    try ignore(Paned.child1 obj);
+      raise(Error "GPack.paned#pack1: already full")
+    with _ -> Paned.pack1 obj (as_widget w) ~resize ~shrink
+  method pack2 ?(resize=false) ?(shrink=false) w =
+    try ignore(Paned.child2 obj);
+      raise(Error "GPack.paned#pack2: already full")
+    with _ -> Paned.pack2 obj (as_widget w) ~resize ~shrink
   method set_handle_size = Paned.set_handle_size obj
+  method set_position = Paned.set_position obj
   method child1 = new widget (Paned.child1 obj)
   method child2 = new widget (Paned.child2 obj)
   method handle_size = Paned.handle_size obj

@@ -14,10 +14,16 @@ COMPILER = $(CAMLC) $(MLFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
-LIBRARIAN = ocamlmklib
-TOPLEVEL = ocamlmktop $(MLFLAGS)
-CAMLP4 = camlp4o pr_o.cmo
+LIBRARIAN = $(CAMLMKLIB) -verbose
+TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
+CAMLP4 = $(CAMLP4O) pr_o.cmo
 CONFIG = ../config.make
+
+# protect against missing definitions
+BINDIR = ""
+LIBDIR = ""
+INSTALLDIR = $(LIBDIR)/lablgtk
+DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
 
@@ -41,7 +47,7 @@ THLINK = unix.cma threads.cma
 ifdef USE_CC
 CCOMPILER = $(CC) -c -I$(LIBDIR) $(CFLAGS)
 else
-CCOMPILER = ocamlc -c -ccopt "$(CFLAGS)"
+CCOMPILER = $(CAMLC) -c -ccopt "$(CFLAGS)"
 endif
 
 ifdef USE_GL
@@ -57,8 +63,8 @@ endif
 ifdef USE_GNOME
 MLLIBS += lablgnome.cma
 CLIBS += liblablgnome.a
-GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo
-GNOMECOBJS = ml_gtkxmhtml.o
+GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo gdkPixbuf.cmo
+GNOMECOBJS = ml_gtkxmhtml.o ml_gdkpixbuf.o
 endif
 
 ifdef USE_GLADE
@@ -86,18 +92,17 @@ endif
 
 # Targets
 GTKOBJS = ml_gtk.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o ml_gtklist.o \
-	ml_gtkmenu.o ml_gtkmisc.o ml_gtknew.o ml_gtkpack.o ml_gtkrange.o \
-	ml_gtktree.o
-COBJS = ml_gdk.o ml_glib.o ml_gobject.o wrappers.o $(GTKOBJS)
+	ml_gtkmenu.o ml_gtkmisc.o ml_gtknew.o ml_gtkpack.o ml_gtkrange.o
+COBJS = ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o wrappers.o $(GTKOBJS)
 MLOBJS = gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
 	gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
-	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkTree.cmo gtkList.cmo \
+	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
 	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
-	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gBin.cmo \
+	gMenu.cmo gMisc.cmo gWindow.cmo.cmo gList.cmo gBin.cmo \
 	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
@@ -106,12 +111,10 @@ ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
 lablgtktop: $(MLLIBS) $(INITOBJS)
-	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS) \
-	   -dllpath $(INSTALLDIR) -dllpath $(LABLGLDIR)
+	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
 
 lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
-	   -dllpath $(INSTALLDIR) -dllpath $(LABLGLDIR) \
 	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
 lablgtk: Makefile $(CONFIG) lablgtk.in
@@ -134,52 +137,67 @@ testcc: lablgladecc lablgtktop
 
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
-	if test `grep -s -c '^$(INSTALLDIR)$$' $(LIBDIR)/ld.conf` = 0; then \
-	    echo $(INSTALLDIR) >> $(LIBDIR)/ld.conf; \
-	fi
 	cp $(ALLOBJS:.cmo=.cmi) $(THOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp -p *.mli $(INSTALLDIR)
 	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(INSTALLDIR)
 	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
 	cp $(CLIBS) $(INSTALLDIR)
-	cp lablgtktop lablgtktop_t varcc $(INSTALLDIR)
+	cd $(INSTALLDIR) && $(RANLIB) $(CLIBS)
+	cp lablgtktop varcc $(INSTALLDIR)
+	if test -f lablgtktop_t; then cp lablgtktop_t $(INSTALLDIR); fi
 	cp -p *.h $(INSTALLDIR)
-	cp lablgtk $(BINDIR)
-	if test -f dlllablgtk.so; then cp $(CLIBS:lib%.a=dll%.so) $(INSTALLDIR); fi
-	if test -f lablgladecc; then cp lablgladecc $(BINDIR); fi
 	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
+	if test -f dlllablgtk.so; then \
+	   cp $(CLIBS:lib%.a=dll%.so) $(DLLDIR) || \
+	   echo "Couldn't install dlls in default location"; \
+	fi
+	cp lablgtk $(BINDIR)
+	if test -f lablgladecc; then cp lablgladecc $(BINDIR); fi
 
 installopt:
 	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.a) $(INSTALLDIR)
+	cd $(INSTALLDIR) && $(RANLIB) $(MLLIBS:.cma=.a)
 	cp $(ALLOBJS:.cmo=.cmx) $(INSTALLDIR)
 	cp $(INITOBJS:.cmo=.o) $(INSTALLDIR)
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=.o) $(INSTALLDIR); fi
 
-lablgtk.cma: $(MLOBJS) $(COBJS)
-	$(LIBRARIAN) -o lablgtk $(MLOBJS) $(COBJS) $(GTKLIBS)
-lablgtk.cmxa: lablgtk.cma $(MLOBJS:.cmo=.cmx)
+liblablgtk.a: $(COBJS)
+	$(LIBRARIAN) -o lablgtk $(COBJS) $(GTKLIBS)
+lablgtk.cma: liblablgtk.a $(MLOBJS)
+	$(LIBRARIAN) -o lablgtk $(MLOBJS) $(GTKLIBS)
+lablgtk.cmxa: liblablgtk.a $(MLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtk $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
 
-lablgtkgl.cma: $(GLMLOBJS) $(GLCOBJS)
-	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS) $(GLCOBJS) \
+liblablgtkgl.a: $(GLCOBJS)
+	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLCOBJS) \
 	    $(GLLIBS) $(GTKLIBS)
-lablgtkgl.cmxa: lablgtkgl.cma $(GLMLOBJS:.cmo=.cmx)
+lablgtkgl.cma: liblablgtkgl.a $(GLMLOBJS)
+	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS) \
+	    $(GLLIBS) $(GTKLIBS)
+lablgtkgl.cmxa: liblablgtkgl.a $(GLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS:.cmo=.cmx) \
 	    $(GLLIBS) $(GTKLIBS)
 
-lablgnome.cma: $(GNOMEMLOBJS) $(GNOMECOBJS)
-	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMECOBJS) $(GNOMELIBS)
-lablgnome.cmxa: lablgnome.cma $(GNOMEMLOBJS:.cmo=.cmx)
+liblablgnome.a: $(GNOMECOBJS)
+	$(LIBRARIAN) -o lablgnome $(GNOMECOBJS) $(GNOMELIBS)
+lablgnome.cma: liblablgnome.a $(GNOMEMLOBJS)
+	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMELIBS)
+lablgnome.cmxa: liblablgnome.a $(GNOMEMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) $(GNOMELIBS)
 
-lablglade.cma: $(GLADEMLOBJS) $(GLADECOBJS)
-	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS) $(GLADECOBJS) $(GLADELIBS)
-lablglade.cmxa: lablglade.cma $(GLADEMLOBJS:.cmo=.cmx)
+liblablglade.a: $(GLADECOBJS)
+	$(LIBRARIAN) -o lablglade $(GLADECOBJS) $(GLADELIBS)
+lablglade.cma: liblablglade.a $(GLADEMLOBJS)
+	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS) $(GLADELIBS)
+lablglade.cmxa: liblablglade.a $(GLADEMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
+
+gtkThread.cmi: gtkThread.mli
+	$(COMPILER) $(THFLAGS) gtkThread.mli
 
 gtkThread.cmx: gtkThread.ml
 	if test -f $(LIBDIR)/libthreadsnat.a; then \
@@ -193,13 +211,15 @@ varcc: varcc.cmo
 	rm -f *_tags.h *_tags.c
 
 clean:
-	rm -f *.cm* *.o *.a *_tags.[ch] $(TARGETS)
+	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml
 
-$(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
-ml_glib.o: ml_glib.h
+$(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h ml_gobject.h ml_glib.h wrappers.h
+ml_glib.o: glib_tags.h ml_glib.h wrappers.h
 ml_gobject.o: gobject_tags.h wrappers.h
-ml_gdk.o: gdk_tags.h ml_gdk.h wrappers.h
+ml_gdk.o: gdk_tags.h ml_gdk.h ml_gpointer.h wrappers.h
 ml_gtkgl.o: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gtkxmhtml.o: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gpointer.o: ml_gpointer.h
+ml_gdkpixbuf.o: gdkpixbuf_tags.h ml_gdk.h wrappers.h ml_gpointer.h
 
 include .depend

@@ -1,5 +1,8 @@
 /* $Id$ */
 
+#define GdkAtom_val(val) ((GdkAtom)Pointer_val(val))
+#define Val_GdkAtom Val_pointer
+
 #define GdkColormap_val(val) ((GdkColormap*)Pointer_val(val))
 extern value Val_GdkColormap (GdkColormap *);
 

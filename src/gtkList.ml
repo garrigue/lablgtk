@@ -43,12 +43,14 @@ module Liste = struct
       = "ml_gtk_list_set_selection_mode"
   module Signals = struct
     open GtkSignal
-    let selection_changed : ([>`list],_) t =
-      { name = "selection_changed"; marshaller = marshal_unit }
-    let select_child : ([>`list],_) t =
-      { name = "select_child"; marshaller = Widget.Signals.marshal }
-    let unselect_child : ([>`list],_) t =
-      { name = "unselect_child"; marshaller = Widget.Signals.marshal }
+    let selection_changed =
+      { name = "selection_changed"; classe = `list; marshaller = marshal_unit }
+    let select_child =
+      { name = "select_child"; classe = `list;
+        marshaller = Widget.Signals.marshal }
+    let unselect_child =
+      { name = "unselect_child"; classe = `list;
+        marshaller = Widget.Signals.marshal }
   end
 end
 
@@ -272,21 +274,23 @@ module CList = struct
           in
           f ~row ~column ~event
       | _ -> invalid_arg "GtkList.CList.Signals.marshal_select"
-    let select_row : ([>`clist],_) t =
-      { name = "select_row"; marshaller = marshal_select }
-    let unselect_row : ([>`clist],_) t =
-      { name = "unselect_row"; marshaller = marshal_select }
-    let click_column : ([>`clist],_) t =
-      { name = "click_column"; marshaller = marshal_int }
+    let select_row =
+      { name = "select_row"; classe = `clist; marshaller = marshal_select }
+    let unselect_row =
+      { name = "unselect_row"; classe = `clist; marshaller = marshal_select }
+    let click_column =
+      { name = "click_column"; classe = `clist; marshaller = marshal_int }
     external val_scroll_type : int -> scroll_type = "ml_Val_scroll_type"
     let marshal_scroll f argv = function
       | INT st :: FLOAT (pos : clampf) :: _ ->
           f (val_scroll_type st) ~pos
       | _ -> invalid_arg "GtkList.CList.Signals.marshal_scroll"
-    let scroll_horizontal : ([>`clist],_) t =
-      { name = "scroll_horizontal"; marshaller = marshal_scroll }
-    let scroll_vertical : ([>`clist],_) t =
-      { name = "scroll_vertical"; marshaller = marshal_scroll }
+    let scroll_horizontal =
+      { name = "scroll_horizontal"; classe = `clist;
+        marshaller = marshal_scroll }
+    let scroll_vertical =
+      { name = "scroll_vertical"; classe = `clist;
+        marshaller = marshal_scroll }
     external emit_scroll :
         'a obj -> name:string -> Tags.scroll_type -> pos:clampf -> unit
         = "ml_gtk_signal_emit_scroll"

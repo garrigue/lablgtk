@@ -130,7 +130,7 @@ let menu ?border_width ?packing ?show () =
   let w = Menu.create () in
   may border_width ~f:(Container.set_border_width w);
   let self = new menu w in
-  may packing ~f:(fun f -> (f (self :> menu) : unit));
+  may packing ~f:(fun f -> (f self : unit));
   if show <> Some false then self#misc#show ();
   self
 
@@ -182,12 +182,12 @@ class ['a] factory
       item
     method add_check_item ?active ?key ?callback label =
       let item = check_menu_item ~label ?active () in
-      self#bind (item :> menu_item) ?key
+      self#bind (item : check_menu_item :> menu_item) ?key
 	?callback:(may_map callback ~f:(fun f () -> f item#active));
       item
     method add_radio_item ?group ?active ?key ?callback label =
       let item = radio_menu_item ~label ?group ?active () in
-      self#bind (item :> menu_item) ?key
+      self#bind (item : radio_menu_item :> menu_item) ?key
 	?callback:(may_map callback ~f:(fun f () -> f item#active));
       item
     method add_separator () = menu_item ~packing:menu_shell#append ()

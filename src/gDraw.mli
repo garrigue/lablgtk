@@ -42,6 +42,10 @@ class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
     method put_pixmap :
       x:int -> y:int ->
       ?xsrc:int -> ?ysrc:int -> ?width:int -> ?height:int -> pixmap -> unit
+    method put_rgb_data :
+      width:int -> height:int ->
+      ?x:int -> ?y:int -> ?dither:Gdk.Tags.rgb_dither ->
+      ?row_stride:int -> Gpointer.region -> unit
     method rectangle :
       x:int ->
       y:int -> width:int -> height:int -> ?filled:bool -> unit -> unit
@@ -113,5 +117,5 @@ class drag_context : Gdk.drag_context ->
     val context : Gdk.drag_context
     method status : ?time:int -> Tags.drag_action list -> unit
     method suggested_action : Tags.drag_action
-    method targets : atom list
+    method targets : string list
   end

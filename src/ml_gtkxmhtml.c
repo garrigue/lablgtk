@@ -52,7 +52,7 @@ ML_4 (gtk_xmhtml_set_plc_intervals, GtkXmHTML_val, Int_val, Int_val, Int_val,
       Unit)
 /* ML_2 (gtk_xmhtml_set_def_body_image_url, GtkXmHTML_val, String_val, Unit) */
 ML_2 (gtk_xmhtml_set_anchor_buttons, GtkXmHTML_val, Bool_val, Unit)
-value ml_gtk_xmhtml_set_anchor_cursor(value html, value cursor)
+CAMLprim value ml_gtk_xmhtml_set_anchor_cursor(value html, value cursor)
 {
      gtk_xmhtml_set_anchor_cursor
           (GtkXmHTML_val(html), Option_val(cursor, GdkCursor_val, NULL),

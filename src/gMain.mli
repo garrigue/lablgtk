@@ -22,8 +22,20 @@ module Grab : sig
   val get_current : unit -> GObj.widget
 end
 
+module Rc : sig
+  val add_default_file : string -> unit
+end
+
 module Timeout : sig
   type id = GtkMain.Timeout.id
   val add : ms:int -> callback:(unit -> bool) -> id
   val remove : id -> unit
+end
+
+module Io : sig
+  type channel = Glib.Io.channel
+  type condition = [ `IN | `OUT | `PRI | `ERR | `HUP | `NVAL ]
+  val channel_of_descr : Unix.file_descr -> channel (* Unix only *)
+  val add_watch :
+    cond:condition -> callback:(unit -> bool) -> ?prio:int -> channel -> unit
 end

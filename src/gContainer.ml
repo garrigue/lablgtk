@@ -69,7 +69,7 @@ class virtual ['a] item_container obj = object (self)
 end
 
 class item_signals obj = object
-  inherit container_signals obj
+  inherit container_signals (obj : [> Gtk.item] obj)
   method select = GtkSignal.connect ~sgn:Item.Signals.select obj ~after
   method deselect = GtkSignal.connect ~sgn:Item.Signals.deselect obj ~after
   method toggle = GtkSignal.connect ~sgn:Item.Signals.toggle obj ~after

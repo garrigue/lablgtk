@@ -3,8 +3,8 @@
 #define GtkObject_val(obj) ((GtkObject*)Field(obj,1))
 value Val_GtkObject (GtkObject *w);
 value Val_GtkObject_sink (GtkObject *w);
-#define GtkAccelGroup_val(val) ((GtkAccelGroup*)Pointer_val(val))
-value Val_GtkAccelGroup (GtkAccelGroup *);
+#define GtkAccelGroup_val(val) ((GtkAccelGroup*)GObject_val(val))
+#define Val_GtkAccelGroup_new(val) (Val_GObject_new(&val->parent))
 #define GtkStyle_val(val) ((GtkStyle*)Pointer_val(val))
 value Val_GtkStyle (GtkStyle *);
 

@@ -138,7 +138,7 @@ let label ?(text="") ?justify ?line_wrap ?pattern
 let label_cast w = new label (Label.cast w#as_widget)
 
 class tips_query_signals obj = object
-  inherit widget_signals obj
+  inherit widget_signals (obj : [> Gtk.tips_query] obj)
   method widget_entered ~callback = 
     GtkSignal.connect ~sgn:TipsQuery.Signals.widget_entered obj ~after
       ~callback:(function None -> callback None
