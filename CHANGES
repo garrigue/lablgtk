@@ -4,6 +4,10 @@ $Id$
   * replicated Main, Timeout and Grab to GtkObj (no need to open Gtk anymore)
   * moved some non standard classes to GtkExt
 
+ 1998.12.8
+  * added the first application, xxaplay, Playstation audio track 
+    player for linux. (How architecture specific!) (Furuse)
+
 1998.12.8
   * more widgets in GtkObj
   * refined memory management
