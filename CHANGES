@@ -1,5 +1,8 @@
 $Id$
 
+1998.12.2
+  * added GdkObj for high level drawing primitives
+
 1998.11.30
   * removed cast checking for NULL valued widgets (ml_gtk.[ch])
   * module Arg is renamed as GtkArg because of the name corrision with

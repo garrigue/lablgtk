@@ -65,10 +65,8 @@ static void ml_warning_wrapper (char *msg)
 value ml_g_set_warning_handler (value clos)
 {
     value old_handler = ml_warning_handler ? ml_warning_handler : clos;
-    if (!ml_warning_handler) {
-	register_global_root (&ml_warning_handler);
-	g_set_warning_handler (ml_warning_wrapper);
-    }
+    if (!ml_warning_handler) register_global_root (&ml_warning_handler);
+    g_set_warning_handler (ml_warning_wrapper);
     ml_warning_handler = clos;
     return old_handler;
 }
@@ -84,10 +82,8 @@ static void ml_print_wrapper (char *msg)
 value ml_g_set_print_handler (value clos)
 {
     value old_handler = ml_print_handler ? ml_print_handler : clos;
-    if (!ml_print_handler) {
-	register_global_root (&ml_print_handler);
-	g_set_print_handler (ml_print_wrapper);
-    }
+    if (!ml_print_handler) register_global_root (&ml_print_handler);
+    g_set_print_handler (ml_print_wrapper);
     ml_print_handler = clos;
     return old_handler;
 }
