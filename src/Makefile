@@ -81,6 +81,13 @@ GNOMECANVASMLOBJS = gnomeCanvas.cmo gnoCanvas.cmo
 GNOMECANVASCOBJS = ml_gnomecanvas.o
 endif
 
+ifdef USE_GNOMEUI
+MLLIBS += lablgnomeui.cma
+CLIBS += liblablgnomeui.a
+GNOMEUIMLOBJS = gnomeDruid.cmo gnoDruid.cmo
+GNOMEUICOBJS = ml_gnomedruid.o
+endif
+
 ifdef USE_RSVG
 MLLIBS += lablrsvg.cma
 CLIBS += liblablrsvg.a
@@ -133,7 +140,7 @@ THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
 ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
-	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(INITOBJS)
+	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
 depend: $(ENUMOBJS:.cmo=.ml)
@@ -253,6 +260,15 @@ lablgnomecanvas.cmxa: liblablgnomecanvas.a $(GNOMECANVASMLOBJS:.cmo=.cmx)
 	    $(GNOMECANVASMLOBJS:.cmo=.cmx) $(GNOMECANVASLIBS)
 # gnoCanvas.cmo: COMPILER+= -i
 
+liblablgnomeui.a: $(GNOMEUICOBJS)
+	$(LIBRARIAN) -o lablgnomeui $(GNOMEUICOBJS) $(GNOMEUILIBS)
+lablgnomeui.cma: liblablgnomeui.a $(GNOMEUIMLOBJS)
+	$(LIBRARIAN) -o lablgnomeui $(GNOMEUIMLOBJS) $(GNOMEUILIBS)
+lablgnomeui.cmxa: liblablgnomeui.a $(GNOMEUIMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgnomeui \
+	    $(GNOMEUIMLOBJS:.cmo=.cmx) $(GNOMEUILIBS)
+# gnoDruid.cmo: COMPILER+= -i
+
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
@@ -292,6 +308,7 @@ srcdoc: $(ALLOBJS)
 
 $(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
 	    ml_gobject.h ml_glib.h wrappers.h
+$(GNOMEUICOBJS) : gnomeui_tags.h
 ml_glib.o: glib_tags.h ml_glib.h wrappers.h
 ml_gobject.o: gobject_tags.h wrappers.h
 ml_gdk.o: gdk_tags.h ml_gdk.h ml_gpointer.h ml_pango.h wrappers.h
@@ -303,6 +320,7 @@ ml_gdkpixbuf.o: gdkpixbuf_tags.h ml_gdk.h gdk_tags.h wrappers.h ml_gpointer.h
 ml_pango.o: pango_tags.h ml_pango.h
 ml_rsvg.o: ml_gobject.h ml_gdkpixbuf.h wrappers.h
 ml_gnomecanvas.o: ml_gtk.h ml_gobject.h wrappers.h
+ml_gnomedruid.o: ml_gtk.h ml_gobject.h wrappers.h
 varcc.cmo: varcc.ml4
 
 include .depend

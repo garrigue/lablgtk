@@ -8,6 +8,15 @@ type alpha_mode = [ `BILEVEL | `FULL]
 type interpolation = [ `BILINEAR | `HYPER | `NEAREST | `TILES]
 type uint8 = int
 
+type gdkpixbuferror =
+  | ERROR_CORRUPT_IMAGE
+  | ERROR_INSUFFICIENT_MEMORY
+  | ERROR_BAD_OPTION
+  | ERROR_UNKNOWN_TYPE
+  | ERROR_UNSUPPORTED_OPERATION
+  | ERROR_FAILED
+exception GdkPixbufError of gdkpixbuferror * string
+
 (* Creation *)
 
 val create :
@@ -16,6 +25,8 @@ val create :
 
 val cast : 'a Gobject.obj -> pixbuf
 external copy : pixbuf -> pixbuf = "ml_gdk_pixbuf_copy"
+external subpixbuf : pixbuf -> src_x:int -> src_y:int -> width:int -> height:int -> pixbuf 
+  = "ml_gdk_pixbuf_new_subpixbuf"
 external from_file : string -> pixbuf = "ml_gdk_pixbuf_new_from_file"
 external from_xpm_data : string array -> pixbuf
   = "ml_gdk_pixbuf_new_from_xpm_data"
@@ -41,7 +52,7 @@ external get_height : pixbuf -> int = "ml_gdk_pixbuf_get_height"
 external get_rowstride : pixbuf -> int = "ml_gdk_pixbuf_get_rowstride"
 val get_pixels : pixbuf -> Gpointer.region
 
-(* Renderring *)
+(* Rendering *)
 
 val render_alpha :
   Gdk.bitmap ->
@@ -79,6 +90,10 @@ val create_pixmap : ?threshold:int -> pixbuf -> Gdk.pixmap * Gdk.bitmap option
 
 val add_alpha : ?transparent:int * int * int -> pixbuf -> pixbuf
 
+val fill : pixbuf -> int32 -> unit
+
+val saturate_and_pixelate : dest:pixbuf -> saturation:float -> pixelate:bool -> pixbuf -> unit
+
 val copy_area :
   dest:pixbuf ->
   ?dest_x:int ->
@@ -105,3 +120,8 @@ val composite :
   ?ofs_x:float ->
   ?ofs_y:float ->
   ?scale_x:float -> ?scale_y:float -> ?interp:interpolation -> pixbuf -> unit
+
+(* Saving *)
+
+external save : filename:string -> typ:string -> ?options:(string * string) list -> pixbuf -> unit
+    = "ml_gdk_pixbuf_save"

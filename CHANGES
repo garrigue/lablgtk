@@ -1,5 +1,11 @@
 $Id$
 
+2003.08.05 [Olivier]
+  * Added some libgnomeui bindings (Druids)
+  * some new things in Gdkpixbuf :
+      save, fill, subpixbuf, saturate_and_pixelate
+      gdkpixbuf-specific errors
+
 2003.07.18 [Benjamin]
   * New Glib.Unichar module 
 
