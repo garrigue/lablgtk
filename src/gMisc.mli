@@ -32,13 +32,16 @@ class statusbar_context :
     @gtkdoc gtk GtkStatusbar *)
 class statusbar : Gtk.statusbar obj ->
   object
-    inherit GContainer.container_full
+    inherit GPack.box
     val obj : Gtk.statusbar obj
     method new_context : name:string -> statusbar_context
+    method has_resize_grip : bool
+    method set_has_resize_grip : bool -> unit
   end
 
 (** @gtkdoc gtk GtkStatusbar *)
 val statusbar :
+  ?has_resize_grip:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

@@ -52,6 +52,8 @@ ML_2 (gtk_statusbar_get_context_id, GtkStatusbar_val, String_val, Val_int)
 ML_3 (gtk_statusbar_push, GtkStatusbar_val, Int_val, String_val, Val_int)
 ML_2 (gtk_statusbar_pop, GtkStatusbar_val, Int_val, Unit)
 ML_3 (gtk_statusbar_remove, GtkStatusbar_val, Int_val, Int_val, Unit)
+ML_1 (gtk_statusbar_get_has_resize_grip, GtkStatusbar_val, Val_bool)
+ML_2 (gtk_statusbar_set_has_resize_grip, GtkStatusbar_val, Bool_val, Unit)
 
 /* gtkcalendar.h */
 
