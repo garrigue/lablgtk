@@ -1,5 +1,8 @@
 $Id$
 
+2005.03.20 [Jacques]
+  * add Gobject.Data.wrap to create new conversions
+
 2005.03.07 [Olivier]
   * add GEdit.entry#xalign property (2.4)
   * make configure fail if GTK+ cannot be found
