@@ -80,6 +80,7 @@ ML_bc6 (ml_gtk_draw_vline)
 Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_val,  bg, Val_copy)
 Make_Array_Setter (gtk_style_set, GtkStyle_val, State_val, *GdkColor_val, bg)
 Make_Extractor (gtk_style_get, GtkStyle_val, colormap, Val_GdkColormap)
+Make_Extractor (gtk_style_get, GtkStyle_val, depth, Val_int)
 Make_Extractor (gtk_style_get, GtkStyle_val, font, Val_GdkFont)
 Make_Setter (gtk_style_set, GtkStyle_val, GdkFont_val, font)
 
@@ -1003,7 +1004,9 @@ Make_Extractor (gtk_tips_query_get, GtkTipsQuery_val, label_no_tip,
 /* gtkpixmap.h */
 
 #define GtkPixmap_val(val) check_cast(GTK_PIXMAP,val)
-ML_2 (gtk_pixmap_new, GdkPixmap_val, GdkBitmap_val, Val_GtkWidget)
+ML_2 (gtk_pixmap_new, GdkPixmap_val,
+      Option_val (arg2, GdkBitmap_val, NULL) Ignore,
+      Val_GtkWidget)
 value ml_gtk_pixmap_set (value val, value pixmap, value mask)
 {
     GtkPixmap *w = GtkPixmap_val(val);
