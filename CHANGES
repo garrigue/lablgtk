@@ -1,5 +1,10 @@
 $Id$
 
+2002.05.28
+  * move GtkData.Selection to GtkBase.Selection
+  * add actual selection handling
+  * add Gdk.Atom
+
 2002.04.30
   * added button#set_relief, paned#pack1/pack2/set_position,
     Gdk.Window.set_cursor (required by malc)

@@ -70,6 +70,8 @@ module Tags = struct
 
   type rgb_dither = 
     [ `NONE|`NORMAL|`MAX]
+
+  type selection = [ `PRIMARY | `SECONDARY ]
 end
 open Tags
 
@@ -80,6 +82,12 @@ module Convert = struct
     List.filter [`SHIFT;`LOCK;`CONTROL;`MOD1;`MOD2;`MOD3;`MOD4;`MOD5;
 		 `BUTTON1;`BUTTON2;`BUTTON3;`BUTTON4;`BUTTON5]
       ~f:(fun m -> test_modifier m i)
+end
+
+module Atom = struct
+  external intern : string -> bool -> atom = "ml_gdk_atom_intern"
+  let intern ?(dont_create=false) name = intern name dont_create
+  external name : atom -> string = "ml_gdk_atom_name"
 end
 
 module Screen = struct

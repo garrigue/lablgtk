@@ -51,11 +51,18 @@ module Tags : sig
      |`BUTTON2|`BUTTON3|`BUTTON4|`BUTTON5 ]
   type drag_action = [ `DEFAULT|`COPY|`MOVE|`LINK|`PRIVATE|`ASK ]
   type rgb_dither = [ `NONE|`NORMAL|`MAX]
+  type selection = [ `PRIMARY | `SECONDARY ]
 end
 
 module Convert :
   sig
     val modifier : int -> Tags.modifier list
+  end
+
+module Atom :
+  sig
+    val intern :  ?dont_create:bool -> string -> atom
+    external name : atom -> string = "ml_gdk_atom_name"
   end
 
 module Screen :

@@ -92,15 +92,14 @@ class style : Gtk.style ->
   end
 
 class selection_data :
-  GtkData.Selection.t ->
+  Gtk.selection_data ->
   object
-    val sel : GtkData.Selection.t
+    val sel : Gtk.selection_data
     method data : string	(* May raise Null_pointer *)
     method format : int
-    method selection : Gdk.atom
-    method seltype : Gdk.atom
-    method target : Gdk.atom
-    method set : typ:Gdk.atom -> format:int -> ?data:string -> unit
+    method selection : Gdk.Tags.selection
+    method seltype : string
+    method target : string
   end
 
 class drag_ops : Gtk.widget obj ->
@@ -110,7 +109,7 @@ class drag_ops : Gtk.widget obj ->
       ?flags:Tags.dest_defaults list ->
       ?actions:Gdk.Tags.drag_action list -> target_entry list -> unit
     method dest_unset : unit -> unit
-    method get_data : ?time:int -> context:drag_context -> Gdk.atom ->unit
+    method get_data : target:string -> ?time:int -> drag_context ->unit
     method highlight : unit -> unit
     method source_set :
       ?modi:Gdk.Tags.modifier list ->
@@ -129,12 +128,17 @@ and misc_ops : Gtk.widget obj ->
       sgn:(Gtk.widget, unit -> unit) GtkSignal.t ->
       group:accel_group -> ?modi:Gdk.Tags.modifier list ->
       ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
+    method add_selection_target :
+      target:string -> ?info:int -> Gdk.Tags.selection -> unit
     method allocation : rectangle
     method colormap : Gdk.colormap
     method connect : misc_signals
+    method convert_selection :
+      target:string -> ?time:int -> Gdk.Tags.selection -> bool
     method draw : Gdk.Rectangle.t option -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
+    method grab_selection : ?time:int -> Gdk.Tags.selection -> bool
     method has_focus : bool
     method hide : unit -> unit
     method hide_all : unit -> unit
@@ -195,6 +199,13 @@ and misc_signals :
     method map : callback:(unit -> unit) -> GtkSignal.id
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id
+    method selection_get : callback:
+      (info:int -> time:int ->
+       return:(?seltype:string -> ?format:int -> string -> unit) ->
+       unit) ->
+      GtkSignal.id
+    method selection_received :
+      callback:(selection_data -> time:int -> unit) -> GtkSignal.id
     method show : callback:(unit -> unit) -> GtkSignal.id
     method size_allocate : callback:(Gtk.rectangle -> unit) -> GtkSignal.id
     method state_changed :
