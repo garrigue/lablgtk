@@ -101,6 +101,7 @@ class file_selection : Gtk.file_selection obj ->
     inherit [window] window_skel
     val obj : Gtk.file_selection obj
     method cancel_button : GButton.button
+    method complete : filter:string -> unit
     method connect : GContainer.container_signals
     method get_filename : string
     method help_button : GButton.button

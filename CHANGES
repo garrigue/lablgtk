@@ -1,5 +1,8 @@
 $Id$
 
+2000.12.20
+  * add Filesection.complete (Sven Luther's patch)
+
 2000.12.07
   * merge wakita's patch for gdk_draw_pixmap
     rename GDraw.drawable#image/pixmap to #put_image/put_pixma
