@@ -4,7 +4,54 @@ header {
 open Gobject
 open Data
 open GtkProps
-let art_wind_rule = enum GnomeCanvasEnums.art_wind_rule
+
+type canvas = [Gtk.layout|`canvas]
+type item   = [`gtk|`canvasitem]
+type group  = [item|`canvasgroup]
+type clipgroup = [group|`canvasclipgroup]
+type shape  = [item|`canvasshape]
+type r_e    = [shape|`canvasre]
+type rect   = [r_e|`canvasrectangle]
+type ellipse = [r_e|`canvasellipse]
+type bpath  = [shape|`canvasbpath]
+type polygon = [shape|`canvaspolygon]
+type text   = [item|`canvastext]
+type line   = [item|`canvasline]
+type pixbuf = [item|`canvaspixbuf]
+type widget = [item|`canvaswidget]
+type rich_text = [item|`canvasrichtext]
+
+type item_event =
+  [ `BUTTON_PRESS | `TWO_BUTTON_PRESS | `THREE_BUTTON_PRESS | `BUTTON_RELEASE
+  | `MOTION_NOTIFY | `KEY_PRESS | `KEY_RELEASE | `ENTER_NOTIFY | `LEAVE_NOTIFY 
+  | `FOCUS_CHANGE ] Gdk.event
+
+type path_def
+
+module Private = struct
+external convert_points : float array -> Gpointer.boxed
+  = "ml_gnome_canvas_convert_points"
+external convert_dash : float -> float array -> Gpointer.boxed
+  = "ml_gnome_canvas_convert_dash"
+external get_points : Gpointer.boxed -> float array
+  = "ml_gnome_canvas_get_points"
+external get_dash : Gpointer.boxed -> float * float array
+  = "ml_gnome_canvas_get_dash"
+external duplicate_path : path_def -> path_def
+  = "ml_gnome_canvas_path_def_duplicate"
+open Gaux
+open Gobject
+let points =
+  { kind = `BOXED; inj = (fun x -> `POINTER (may_map convert_points x));
+    proj = (fun x -> may_map get_points (Data.boxed.proj x)) }
+let art_vpath_dash =
+  { kind = `POINTER;
+    inj = (fun x -> `POINTER (may_map (fun (x,y) -> convert_dash x y) x));
+    proj = (fun x -> may_map get_dash (Data.pointer.proj x)) }
+let path_def =
+  { kind = `POINTER; inj = Data.unsafe_boxed_option.inj; proj =
+    (fun x -> may_map duplicate_path (Data.unsafe_boxed_option.proj x)) }
+end
 }
 
 use "Gtk"
@@ -12,7 +59,7 @@ tagprefix "canvas"
 
 conversions {
   GtkStock "GtkStock.conv"
-  ArtWindRule
+  ArtWindRule "GnomeCanvasEnums.art_wind_rule_conv"
   ArtVpathDash "GnomeCanvas.Conv.art_vpath_dash"
 }
 conversions "GnomeCanvas" "GnomeCanvas.Conv" { Points PathDef }
