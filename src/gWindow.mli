@@ -353,6 +353,7 @@ class socket : Gtk.socket obj ->
     val obj : Gtk.socket obj
     method connect : socket_signals
     method steal : Gdk.xid -> unit
+    (** @deprecated "inherently unreliable" *)
     method xwindow : Gdk.xid
   end
 

@@ -11,7 +11,8 @@ open GContainer
 
 (** {3 Obsolete GtkTree/GtkTreeItem framework} *)
 
-(** @gtkdoc gtk GtkTreeItem *)
+(** @gtkdoc gtk GtkTreeItem
+    @deprecated use {!GTree.view} instead *)
 class tree_item_signals : tree_item obj ->
   object
     inherit GContainer.item_signals
@@ -19,7 +20,8 @@ class tree_item_signals : tree_item obj ->
     method expand : callback:(unit -> unit) -> GtkSignal.id
   end
 
-(** @gtkdoc gtk GtkTreeItem *)
+(** @gtkdoc gtk GtkTreeItem
+    @deprecated use {!GTree.view} instead *)
 class tree_item : Gtk.tree_item obj ->
   object
     inherit GContainer.container
@@ -34,7 +36,8 @@ class tree_item : Gtk.tree_item obj ->
     method subtree : tree option
   end
 
-(** @gtkdoc gtk GtkTree *)
+(** @gtkdoc gtk GtkTree 
+    @deprecated use {!GTree.view} instead *)
 and tree_signals : Gtk.tree obj ->
   object
     inherit GContainer.container_signals
@@ -44,7 +47,8 @@ and tree_signals : Gtk.tree obj ->
     method unselect_child : callback:(tree_item -> unit) -> GtkSignal.id
   end
 
-(** @gtkdoc gtk GtkTree *)
+(** @gtkdoc gtk GtkTree 
+    @deprecated use {!GTree.view} instead *)
 and tree : Gtk.tree obj ->
   object
     inherit [tree_item] GContainer.item_container
@@ -65,12 +69,14 @@ and tree : Gtk.tree obj ->
     method private wrap : Gtk.widget obj -> tree_item
   end
 
-(** @gtkdoc gtk GtkTreeItem *)
+(** @gtkdoc gtk GtkTreeItem
+    @deprecated use {!GTree.view} instead *)
 val tree_item :
   ?label:string ->
   ?packing:(tree_item -> unit) -> ?show:bool -> unit -> tree_item
 
-(** @gtkdoc gtk GtkTree *)
+(** @gtkdoc gtk GtkTree 
+    @deprecated use {!GTree.view} instead *)
 val tree :
   ?selection_mode:Tags.selection_mode ->
   ?view_mode:[`LINE|`ITEM] ->
