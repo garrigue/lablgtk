@@ -20,7 +20,7 @@ include $(CONFIG)
 
 TARGETS = varcc lablgtktop lablgtktop_t lablgtk2 lablgladecc
 
-all:: $(OCAMLBEST)
+all: byte
 
 byte: $(TARGETS)
 opt:  $(TARGETS) lablgtkopt
@@ -74,7 +74,6 @@ MLLIBS += lablglade.cma
 CLIBS += liblablglade2.a
 GLADEMLOBJS = glade.cmo
 GLADECOBJS = ml_glade.o
-all:: lablgladecc
 endif
 
 ifdef USE_GNOMECANVAS
