@@ -266,6 +266,9 @@ ML_2 (gdk_string_height, GdkFont_val, String_val, Val_int)
 ML_2 (gdk_char_height, GdkFont_val, (gchar)Long_val, Val_int)
 ML_2 (gdk_string_measure, GdkFont_val, String_val, Val_int)
 ML_2 (gdk_char_measure, GdkFont_val, (char)Long_val, Val_int)
+Make_Extractor (GdkFont, GdkFont_val, type, Val_gdkFontType)
+Make_Extractor (GdkFont, GdkFont_val, ascent, Val_int)
+Make_Extractor (GdkFont, GdkFont_val, descent, Val_int)
 
 /* GC */
 

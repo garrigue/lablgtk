@@ -71,6 +71,9 @@ type gdkVisualType = "GDK_VISUAL_"
   [ `STATIC_GRAY | `GRAYSCALE | `STATIC_COLOR | `PSEUDO_COLOR
   | `TRUE_COLOR | `DIRECT_COLOR ]
 
+type gdkFontType = "GDK_FONT_"
+  [ `FONT | `FONTSET ]
+
 type gdkDragAction = "GDK_ACTION_"
   [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
 

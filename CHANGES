@@ -5,6 +5,7 @@ $Id$
   * change set_usize/set_uposition into set_geometry
   * return an option rather than raise an exception for null pointers
   * map empty strings to NULL when meaningful
+  * Gdk.Font.get_type/ascent/descent
 
 2000.6.14
   * add GDraw.optcolor for functions with a default (Jerome suggested)
