@@ -29,7 +29,7 @@ ML_0 (glade_init, Unit)
 #define glade_xml_new_from_memory glade_xml_new_from_buffer
 #endif
 
-value ml_glade_xml_new (value file, value data, value root, value domain)
+CAMLprim value ml_glade_xml_new (value file, value data, value root, value domain)
 {
     GladeXML *ret;
     if (Is_block(data))
@@ -71,7 +71,7 @@ void ml_glade_callback_marshal (const gchar *handler_name,
     CAMLreturn0;
 }
 
-value ml_glade_xml_signal_autoconnect_full (value self, value clos)
+CAMLprim value ml_glade_xml_signal_autoconnect_full (value self, value clos)
 {
     value *clos_p = ml_global_root_new (clos);
     glade_xml_signal_autoconnect_full (GladeXML_val(self),
@@ -80,7 +80,7 @@ value ml_glade_xml_signal_autoconnect_full (value self, value clos)
     return Val_unit;
 }
 
-value ml_glade_xml_signal_connect_full (value self, value name, value clos)
+CAMLprim value ml_glade_xml_signal_connect_full (value self, value name, value clos)
 {
     value *clos_p = ml_global_root_new (clos);
     glade_xml_signal_connect_full (GladeXML_val(self),
