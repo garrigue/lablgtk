@@ -97,6 +97,7 @@ class clist_wrapper obj = object (self)
   method unselect_all () = CList.unselect_all obj
   method swap_rows = CList.swap_rows obj
   method row_move = CList.row_move obj
+  method sort () = CList.sort obj
   method set_clist ?:hadjustment ?:vadjustment =
     CList.set ?obj
       ?hadjustment:(may_map hadjustment fun:GData.adjustment_obj)
@@ -122,7 +123,7 @@ end
 
 class clist ?:columns [< 1 >] ?:titles ?:hadjustment ?:vadjustment
     ?:shadow_type ?:reorderable ?:use_drag_icons ?:row_height
-    ?:titles_show ?:titles_active ?:sort_column ?:sort_type
+    ?:titles_show ?:titles_active ?:auto_sort ?:sort_column ?:sort_type
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w =
     match titles with None -> CList.create cols:columns
@@ -134,7 +135,7 @@ class clist ?:columns [< 1 >] ?:titles ?:hadjustment ?:vadjustment
       ?vadjustment:(may_map vadjustment fun:GData.adjustment_obj)
       ?:shadow_type ?:reorderable ?:use_drag_icons ?:row_height;
     CList.set_titles w ?show:titles_show ?active:titles_active;
-    CList.set_sort w ?column:sort_column ?type:sort_type;
+    CList.set_sort w ?auto:auto_sort ?column:sort_column ?type:sort_type;
     Container.set w ?:border_width ?:width ?:height
   in
   object (self)

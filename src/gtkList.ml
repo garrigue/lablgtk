@@ -195,6 +195,10 @@ module CList = struct
       = "ml_gtk_clist_set_sort_column"
   external set_sort_type : [> clist] obj -> sort_type -> unit
       = "ml_gtk_clist_set_sort_type"
+  external sort : [> clist] obj -> unit
+      = "ml_gtk_clist_sort"
+  external set_auto_sort : [> clist] obj -> bool -> unit
+      = "ml_gtk_clist_set_auto_sort"
   let set w ?:hadjustment ?:vadjustment ?:shadow_type ?:selection_mode
       ?:reorderable ?:use_drag_icons ?:row_height =
     let may_set f param = may param fun:(f w) in
@@ -212,7 +216,8 @@ module CList = struct
     may active fun:
       (fun active ->
 	if active then column_titles_active w else column_titles_passive w)
-  let set_sort w ?:column ?type:sort_type =
+  let set_sort w ?:auto ?:column ?type:sort_type =
+    may auto fun:(set_auto_sort w);
     may column fun:(set_sort_column w);
     may sort_type fun:(set_sort_type w)
   let set_column w col ?:widget ?:title ?:title_active ?:justification

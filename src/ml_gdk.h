@@ -34,3 +34,5 @@ extern value Val_GdkGC (GdkGC *);
 #define Val_GdkVisual(visual) ((value) visual)
 
 extern long OptFlags_GdkModifier_val (value);
+extern long Flags_Event_mask_val (value);
+extern long Extension_events_val (value);

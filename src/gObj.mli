@@ -105,6 +105,7 @@ class widget_misc :
     method colormap : Gdk.colormap
     method draw : Gdk.Rectangle.t -> unit
     method event : 'a Gdk.event -> bool
+    method add_events : Gdk.Tags.event_mask list -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
     method hide : unit -> unit
@@ -126,6 +127,8 @@ class widget_misc :
       ?name:string ->
       ?state:Tags.state_type ->
       ?sensitive:bool ->
+      ?events:Gdk.Tags.event_mask list ->
+      ?extension_events:Gdk.Tags.extension_events ->
       ?can_default:bool ->
       ?can_focus:bool ->
       ?x:int -> ?y:int -> ?width:int -> ?height:int -> unit

@@ -22,6 +22,7 @@ void ml_raise_gdk (const char *errmsg)
 #include "gdk_tags.c"
 
 Make_OptFlags_val (GdkModifier_val)
+Make_Flags_val (Event_mask_val)
 
 /* Colormap */
 

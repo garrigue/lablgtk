@@ -26,7 +26,7 @@ class container obj = object
     fun w -> Container.add obj w#as_widget
   method remove : 'b. (#is_widget as 'b) -> unit =
     fun w -> Container.remove obj w#as_widget
-  method children = List.map fun:(new widget) (Container.children obj)
+  method children = List.map fun:(new widget_wrapper) (Container.children obj)
   method set_size ?:border = Container.set ?obj ?border_width:border
   method focus = new focus obj
 end
