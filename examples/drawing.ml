@@ -2,9 +2,10 @@
 
 open GMain
 
-let window = GWindow.window ~show:true ()
+let window = GWindow.window ()
+let area = GMisc.drawing_area ~packing:window#add ()
 
-let w = window#misc#window
+let w = area#misc#realize (); area#misc#window
 let drawing = new GDraw.drawable w
 
 let redraw _ =
@@ -15,6 +16,6 @@ let redraw _ =
 
 let _ =
   window#connect#destroy ~callback:Main.quit;
-  window#event#connect#after#configure ~callback:redraw;
-  window#event#connect#after#expose ~callback:redraw;
+  area#event#connect#expose ~callback:redraw;
+  window#show ();
   Main.main ()
