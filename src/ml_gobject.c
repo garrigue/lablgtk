@@ -52,23 +52,8 @@ ML_1 (g_type_from_name, String_val, Val_GType)
 ML_1 (g_type_parent, GType_val, Val_GType)
 ML_1 (g_type_depth, GType_val, Val_int)
 ML_2 (g_type_is_a, GType_val, GType_val, Val_bool)
-/* ML_1 (G_TYPE_FUNDAMENTAL, GType_val, Val_fundamental_type) */
-CAMLprim value ml_G_TYPE_FUNDAMENTAL(value ty)
-{
-  GType fund = G_TYPE_FUNDAMENTAL(GType_val(ty));
-  if (fund == G_TYPE_BOXED) {
-    value r = alloc_tuple(2);
-    Field(r,0) = MLTAG_BOXED;
-    Field(r,1) = Val_GType(ty);
-    return r;
-  }
-  return Val_fundamental_type(fund);
-}
-CAMLprim value ml_Fundamental_type_val(value fund)
-{
-  return (Is_block(fund) ? Field(fund,1)
-          : Val_GType(Fundamental_type_val(fund)));
-}
+ML_1 (G_TYPE_FUNDAMENTAL, GType_val, Val_fundamental_type)
+ML_1 (Fundamental_type_val, (value), Val_GType)
 
 #ifdef HASGTK22
 CAMLprim value  ml_g_type_interface_prerequisites(value type)
