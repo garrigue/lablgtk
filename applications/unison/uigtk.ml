@@ -1,6 +1,4 @@
-(* $I1: Unison file synchronizer: src/uitk.ml $ *)
-(* $I2: Last modified by bcpierce on Tue, 31 Aug 1999 11:42:29 -0400 $ *)
-(* $I3: Copyright 1999 $ *)
+(* $Id$ *)
 
 open Util
 open Os
@@ -522,213 +520,120 @@ let start () =
   (**********************************************************************)
   (* The ignore dialog                                                  *)
   (**********************************************************************)
-(*
+
   let ignoreDialog() =
     begin
-      let t = Toplevel.create toplevelWindow [] in
-      Wm.title_set t "Ignore";
-      Wm.iconname_set t "Ignore";
-      let f1 = Frame.create t [] in
-      let f2 = Frame.create t [] in
-      let f3 = Frame.create t [] in
-      pack [f1] [Side Side_Top; Fill Fill_Both; Expand true];
-      pack [f2] [Side Side_Top; Fill Fill_X];
-      pack [f3] [Side Side_Top; Fill Fill_X];
-      let regExpWindow = Frame.create f1 [] in
-      pack [regExpWindow] [Side Side_Left; Fill Fill_Both; Expand true];
-      let regExpWindowText = Text.create regExpWindow
-          [ TextHeight 6;
-            Font fontMonospaceMedium;
-            Wrap(WrapNone);     (* Don't wrap text *)
-            SetGrid true;       (* Resizing will be in units of characters *)
-            Cursor(XCursor ""); (* Use the default (arrow) cursor *)
-            Foreground colorUsual;
-            Background colorBackground;
-          ] in
-      pack [regExpWindowText]
-        [Side Side_Left;Expand true;Fill Fill_Both];
-      let regExpWindowScrollbar = Scrollbar.create regExpWindow
-          [ScrollCommand (Text.yview regExpWindowText)] in
-      Text.configure regExpWindowText
-        [YScrollCommand(Scrollbar.set regExpWindowScrollbar)];
-      pack [regExpWindowScrollbar]
-        [Side Side_Right; Fill Fill_Y];
+      let t = new GWindow.dialog title: "Ignore" wm_name: "Ignore" in
+      let hbox = new GPack.hbox packing:t#vbox#add in
+      let sb = new GRange.scrollbar `VERTICAL
+	  packing:(hbox#pack from:`END expand:false) in
+      let regExpWindow =
+	new GList.clist columns:1 titles_show:false packing:hbox#add
+	  vadjustment:sb#adjustment width:400 height:150 in
+
       (* Local copy of the regular expressions; the global copy will
          not be changed until the Apply button is pressed *)
-      let theRegexps = ref(Ignore.extern()) in
-      let numRegexps = ref(List.length !theRegexps) in
-      let currentRegexp = (* A number from 0 to numRegexps-1 *)
-        ref(if !numRegexps>0 then Some 0 else None) in
+      let theRegexps = Ignore.extern () in
+      List.iter theRegexps fun:(fun r -> ignore (regExpWindow#append [r]));
       let maybeGettingBigger = ref false in
       let maybeGettingSmaller = ref false in
-      let deselect i =
-        Text.tag_configure regExpWindowText (tag i)
-          [ Foreground colorUsual;
-            Background colorBackground;
-          ] in
-      let select i =
-        begin
-          (try deselect(derefSome currentRegexp) with DerefSome -> ());
-          Text.tag_configure regExpWindowText (tag i)
-            [ Foreground colorForegroundHighlight;
-              Background colorBackgroundHighlight;
-            ];
-          currentRegexp := Some i;
-          Text.see regExpWindowText (TextIndex(TagFirst(tag i),[]));
-        end in
-      let next() =
-        begin
-          try
-            let x = derefSome currentRegexp + 1 in
-            if !numRegexps>x then select x
-          with DerefSome ->
-            if !numRegexps>0 then begin
-              currentRegexp := Some 0;
-              select 0
-            end
-        end in
-      let prev() =
-        begin
-          try
-            let x = derefSome currentRegexp - 1 in
-            if x>=0 & !numRegexps>x then select x
-          with DerefSome ->
-            if !numRegexps>0 then begin
-              currentRegexp := Some(!numRegexps-1);
-              select(!numRegexps-1)
-            end
-        end in
-      Tk.bind t [([],KeyPressDetail "Up")]
-        (BindSet([],(fun _ -> prev())));
-      Tk.bind t [([],KeyPressDetail "Down")]
-        (BindSet([],(fun _ -> next())));
-
-      (* Display the regexps *)
-      let displayRegexps() =
-        begin
-          Text.configure regExpWindowText [State Normal];
-          Text.tag_delete regExpWindowText
-            (Text.tag_allnames regExpWindowText);
-          Text.delete regExpWindowText
-            (TextIndex(LineChar(1,0),[]))
-            (TextIndex(End,[]));
-          let theList = !theRegexps in
-          let theArray = Array.of_list theList in
-          for i = 0 to !numRegexps - 1 do
-            Text.insert regExpWindowText (TextIndex(End,[]))
-              (theArray.(i)^ "\n") [tag i];
-            Text.tag_bind regExpWindowText (tag i) [([],ButtonPressDetail 1)]
-              (BindSet([], (fun _ -> select i)));
-          done;
-          Text.configure regExpWindowText [State Disabled];
-          try
-            select(derefSome currentRegexp)
-          with DerefSome -> ();
-        end in
-      displayRegexps();
+      let selectedRow = ref None in
+      regExpWindow#connect#select_row callback:
+	begin fun :row :column :event ->
+	  selectedRow := Some row
+	end;
+      regExpWindow#connect#unselect_row callback:
+	begin fun :row :column :event ->
+	  selectedRow := None
+	end;
 
       (* Configure the add frame *)
-      let label1 = Label.create f2 [Text "Regular expression:"] in
-      let var1 = Textvariable.create() in
-      let entry1 = Entry.create f2 [TextVariable var1] in
-      let addButton = Button.create f2
-          [ Relief Raised;
-            Text "Add";
-            Command(fun () ->
-              let theRegExp = Textvariable.get var1 in
-              if theRegExp<>"" then begin
-                Textvariable.set var1 "";
-                theRegexps := theRegExp::(!theRegexps);
-                numRegexps := !numRegexps + 1;
-                currentRegexp := None;
-                maybeGettingSmaller := true;
-                displayRegexps();
-              end)] in
-      pack [label1;entry1;addButton]
-        [Side Side_Left;PadX(Pixels 4);PadY(Pixels 4)];
-      Focus.set entry1;
+      let hbox = new GPack.hbox spacing:4 packing:(t#vbox#pack expand:false) in
+      new GMisc.label text: "Regular expression:"
+	packing:(hbox#pack expand:false padding:2);
+      let entry = new GEdit.entry packing:hbox#add in
+      let add () =
+        let theRegExp = entry#text in
+        if theRegExp<>"" then begin
+	  entry#set_text "";
+	  regExpWindow#unselect_all ();
+	  regExpWindow#append [theRegExp];
+          maybeGettingSmaller := true
+	end
+      in
+      let addButton = new GButton.button label:"Add"
+	  packing:(hbox#pack expand:false) in
+      addButton#connect#clicked callback:add;
+      entry#connect#activate callback:add;
+      entry#misc#grab_focus ();
+
       (* Configure the delete button *)
-      let deleteButton = Button.create f3
-          [ Relief Raised;
-            Text "Delete";
-            Command(fun () ->
-              try
-                let x = derefSome currentRegexp in
-                (* After a deletion, updates must be detected again *)
-                maybeGettingBigger := true;
-                (* Delete xth regexp *)
-                let rec loop l i =
-                  match l with
-                    [] -> []
-                  | hd::tl ->
-                      if i<=0 then tl
-                      else hd::(loop tl (i-1)) in
-                theRegexps := loop (!theRegexps) x;
-                numRegexps := !numRegexps - 1;
-                if !numRegexps<=0 then
-                  (numRegexps := 0; currentRegexp := None)
-                else if x >= !numRegexps
-                    then currentRegexp := Some(!numRegexps-1);
-                (* Make the text editable *)
-                Text.configure regExpWindowText [State Normal];
-                (* Delete line x *)
-                Text.delete regExpWindowText
-                  (TextIndex(TagFirst(tag x),[]))
-                  (TextIndex(TagLast(tag x),[]));
-                (* Adjust tags *)
-                for y = x to !numRegexps-1 do
-                  Text.tag_add regExpWindowText (tag y)
-                    (TextIndex(TagFirst(tag(y+1)),[]))
-                    (TextIndex(TagLast(tag(y+1)),[]));
-                  Text.tag_delete regExpWindowText [tag(y+1)];
-                done;
-                (* Disable editing *)
-                Text.configure regExpWindowText [State Disabled];
-                (* Adjust highlight *)
-                select (derefSome currentRegexp);
-              with DerefSome
-              | Failure "nth" -> ())
-          ] in
-      pack [deleteButton] [Side Side_Left;PadX(Pixels 8);PadY(Pixels 4)];
+      let delete () =
+        try
+          let x = derefSome selectedRow in
+          (* After a deletion, updates must be detected again *)
+          maybeGettingBigger := true;
+          (* Delete xth regexp *)
+	  regExpWindow#unselect_all ();
+	  regExpWindow#remove x
+        with DerefSome -> ()
+      in
+      let deleteButton = new GButton.button label:"Delete"
+	  packing:(hbox#pack expand:false) in
+      deleteButton#connect#clicked callback:delete;
+
+      regExpWindow#connect#event#key_press after:true callback:
+	begin fun ev ->
+	  let key = GdkEvent.Key.keyval ev in
+	  if key = _Up || key = _Down || key = _Prior || key = _Next ||
+	  key = _Page_Up || key = _Page_Down then begin
+	    regExpWindow#select (regExpWindow#focus_row) 0;
+	    true
+	  end else if key = _Delete then begin
+	    delete (); true
+	  end else
+	    false
+	end;
 
       (* A function to refresh the state and ignore list *)
       let refresh() =
-        begin
-          Ignore.intern(!theRegexps);
-          if !maybeGettingBigger || !maybeGettingSmaller then
-            (Ignore.save(); Globals.propagatePrefs());
-          if !maybeGettingBigger then detectUpdatesAndReconcile false
-          else if !maybeGettingSmaller then begin
-            try
-              let theSIArray = derefSome theState in
-              let theSIList = Array.to_list theSIArray in
-              let theSIList = filterIgnoreStateItems theSIList in
-              let theSIArray = Array.of_list theSIList in
-              theState := Some theSIArray;
-              displayMain()
-            with DerefSome -> ()
-          end;
-          maybeGettingBigger := false;
-          maybeGettingSmaller := false;
-        end in
+	let theRegexps = ref [] in
+	for i = regExpWindow#rows - 1 downto 0 do
+	  theRegexps := regExpWindow#cell_text i 0 :: !theRegexps
+	done;
+        Ignore.intern(!theRegexps);
+        if !maybeGettingBigger || !maybeGettingSmaller then begin
+          Ignore.save();
+	  Globals.propagatePrefs()
+	end;
+        if !maybeGettingBigger then detectUpdatesAndReconcile false
+        else if !maybeGettingSmaller then begin
+          try
+            let theSIArray = derefSome theState in
+            let theSIList = Array.to_list theSIArray in
+            let theSIList = filterIgnoreStateItems theSIList in
+            let theSIArray = Array.of_list theSIList in
+            theState := Some theSIArray;
+            displayMain()
+          with DerefSome -> ()
+        end;
+        maybeGettingBigger := false;
+        maybeGettingSmaller := false;
+      in
 
       (* Install the main buttons *)
-      let applyButton = Button.create f3
-          [ Relief Raised;
-            Text "Apply";
-            Command refresh ] in
-      let cancelButton = Button.create f3
-          [ Relief Raised;
-            Text "Cancel";
-            Command(fun () -> Tk.destroy t) ] in
-      let okButton = Button.create f3
-          [ Relief Raised;
-            Text "OK";
-            Command(fun () -> refresh(); Tk.destroy t) ] in
-      pack [applyButton;cancelButton;okButton]
-        [Side Side_Left;PadX(Pixels 4)];
-  end in
-*)
+      let applyButton =
+	new GButton.button label:"Apply" packing:t#action_area#add in
+      applyButton#connect#clicked callback:refresh;
+      let cancelButton =
+	new GButton.button label:"Cancel" packing:t#action_area#add in
+      cancelButton#connect#clicked callback:t#destroy;
+      let okButton =
+	new GButton.button label:"OK" packing:t#action_area#add in
+      okButton#connect#clicked callback:(fun () -> refresh(); t#destroy ());
+      t#show ()
+    end in
+
   (**********************************************************************)
   (*                         SAFE EXIT FUNCTION                         *)
   (**********************************************************************)
@@ -805,12 +710,10 @@ let start () =
   ignoreMenu#add_item label:"Ignore files with this name" key:_N
     callback:(fun () -> getLock (fun () -> addRegExpByPath extRegExp));
 
-(*
   ignoreMenu#add_item label:"Edit ignore patterns" callback:
     begin fun () ->
       getLock (fun () -> try ignoreDialog() with DerefSome -> ())
     end;
-*)
  
   (**********************************************************************)
   (* Add an Edit command to the Preferences menu                        *)
