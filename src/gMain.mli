@@ -33,9 +33,12 @@ module Timeout : sig
 end
 
 module Io : sig
+  type event_source
   type channel = Glib.Io.channel
   type condition = [ `IN | `OUT | `PRI | `ERR | `HUP | `NVAL ]
   val channel_of_descr : Unix.file_descr -> channel (* Unix only *)
+  val remove_source : event_source -> bool
   val add_watch :
-    cond:condition -> callback:(unit -> bool) -> ?prio:int -> channel -> unit
+    cond:condition -> callback:(unit -> bool) -> ?prio:int -> channel -> event_source
+	
 end

@@ -68,10 +68,6 @@ module Window = struct
   external remove_accel_group :
       [>`window] obj -> accel_group -> unit
       = "ml_gtk_window_remove_accel_group"
-  external activate_focus : [>`window] obj -> unit
-      = "ml_gtk_window_activate_focus"
-  external activate_default : [>`window] obj -> unit
-      = "ml_gtk_window_activate_default"
   module Signals = struct
     open GtkSignal
     let move_resize =
@@ -126,6 +122,8 @@ module FileSelection = struct
       = "ml_gtk_file_selection_get_help_button"
   external get_file_list : [>`filesel] obj -> clist obj
       = "ml_gtk_file_selection_get_file_list"
+  external get_dir_list : [>`filesel] obj -> clist obj
+      = "ml_gtk_file_selection_get_dir_list"
   let set_fileop_buttons w = function
       true -> show_fileop_buttons w
     | false -> hide_fileop_buttons w

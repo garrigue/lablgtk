@@ -103,8 +103,8 @@ external _render_to_drawable_alpha :
   dest_x:int -> dest_y:int -> width:int -> height:int ->
   alpha:alpha_mode -> threshold:int ->
   dither:Tags.rgb_dither -> x_dither:int -> y_dither:int -> unit
-  = "ml_gdk_pixbuf_render_to_drawable_bc"
-    "ml_gdk_pixbuf_render_to_drawable"
+  = "ml_gdk_pixbuf_render_to_drawable_alpha_bc"
+    "ml_gdk_pixbuf_render_to_drawable_alpha"
 let render_to_drawable_alpha dw ?(dest_x=0) ?(dest_y=0) ?width ?height
     ?(alpha=`FULL) ?(threshold=128)
     ?(dither=`NONE) ?(x_dither=0) ?(y_dither=0) ?(src_x=0) ?(src_y=0) src =
@@ -168,7 +168,7 @@ external _composite :
   src:pixbuf -> dest:pixbuf -> dest_x:int -> dest_y:int -> width:int ->
   height:int -> ofs_x:float -> ofs_y:float -> scale_x:float ->
   scale_y:float -> interp:interpolation -> alpha:int -> unit
-  = "ml_gdk_pixbuf_scale_bc" "ml_gdk_pixbuf_scale"
+  = "ml_gdk_pixbuf_composite_bc" "ml_gdk_pixbuf_composite"
 let composite ~dest ~alpha ?(dest_x=0) ?(dest_y=0) ?width ?height
     ?(ofs_x=0.) ?(ofs_y=0.) ?scale_x ?scale_y ?(interp=`NEAREST) src =
   let width, scale_x =

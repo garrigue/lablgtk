@@ -121,6 +121,8 @@ end
 module Screen = struct
   external width : unit -> int = "ml_gdk_screen_width"
   external height : unit -> int = "ml_gdk_screen_height"
+  external width_mm : unit -> int = "ml_gdk_screen_width_mm"
+  external height_mm : unit -> int = "ml_gdk_screen_height_mm"
 end
 
 module Visual = struct
@@ -480,7 +482,9 @@ module Draw = struct
   let lines w gc l = f_pointarray (lines w gc) l
   external segments : 'a drawable -> gc -> SegmentArray.t -> unit
       = "ml_gdk_draw_segments"
-  let segments w gc l = f_segmentarray (segments w gc) l
+  let segments w gc = function
+    | [] -> ()
+    | l -> f_segmentarray (segments w gc) l
 end
 
 module Rgb = struct
@@ -658,4 +662,13 @@ module Cursor = struct
     fg:Color.t -> bg:Color.t -> x:int -> y:int -> cursor
     = "ml_gdk_cursor_new_from_pixmap_bc" "ml_gdk_cursor_new_from_pixmap"
   external destroy : cursor -> unit = "ml_gdk_cursor_destroy"
+end
+
+module Input = struct
+  type callback_id
+  type condition = [`READ|`WRITE|`EXCEPTION] 
+  external add : Unix.file_descr -> cond: condition -> callback: (unit -> unit) -> callback_id = 
+    "ml_gdk_input_add"
+  external remove : callback_id -> unit
+      = "ml_gdk_input_remove"
 end

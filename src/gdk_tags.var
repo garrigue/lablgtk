@@ -176,3 +176,6 @@ type gdkCursorType = "GDK_" [
   | `WATCH
   | `XTERM
   ]
+
+type input_condition = "GDK_INPUT_"
+  [ `READ | `WRITE | `EXCEPTION ]

@@ -72,6 +72,7 @@ MLLIBS += lablglade.cma
 CLIBS += liblablglade.a
 GLADEMLOBJS = glade.cmo
 GLADECOBJS = ml_glade.o
+TARGETS += lablgladecc
 all:: lablgladecc
 endif
 
@@ -148,6 +149,7 @@ install:
 	cp -p *.h $(INSTALLDIR)
 	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
 	if test -f dlllablgtk.so; then \
+	   if test -d $(DLLDIR); then : ; else mkdir -p $(DLLDIR); fi; \
 	   cp $(CLIBS:lib%.a=dll%.so) $(DLLDIR) || \
 	   echo "Couldn't install dlls in default location"; \
 	fi
@@ -204,7 +206,7 @@ gtkThread.cmx: gtkThread.ml
 	   $(COMPOPT) $(THFLAGS) gtkThread.ml; fi
 
 xml_lexer.ml: xml_lexer.mll
-	ocamllex xml_lexer.mll
+	$(CAMLLEX) xml_lexer.mll
 
 varcc: varcc.cmo
 	$(LINKER) -o $@ $<

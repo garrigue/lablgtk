@@ -14,6 +14,22 @@ class editable_signals obj = object
     GtkSignal.connect ~sgn:Editable.Signals.insert_text obj ~after
   method delete_text =
     GtkSignal.connect ~sgn:Editable.Signals.delete_text obj ~after
+  method copy_clipboard = 
+    GtkSignal.connect ~sgn:Editable.Signals.copy_clipboard obj ~after
+  method cut_clipboard = 
+    GtkSignal.connect ~sgn:Editable.Signals.cut_clipboard obj ~after
+  method paste_clipboard = 
+    GtkSignal.connect ~sgn:Editable.Signals.paste_clipboard obj ~after
+  method move_cursor = 
+    GtkSignal.connect ~sgn:Editable.Signals.move_cursor obj ~after
+  method move_page = 
+    GtkSignal.connect ~sgn:Editable.Signals.move_page obj ~after
+  method move_word = 
+    GtkSignal.connect ~sgn:Editable.Signals.move_word obj ~after
+  method move_to_row = 
+    GtkSignal.connect ~sgn:Editable.Signals.move_to_row obj ~after
+  method move_to_column = 
+    GtkSignal.connect ~sgn:Editable.Signals.move_to_column obj ~after
 end
 
 class editable obj = object
@@ -34,6 +50,11 @@ class editable obj = object
     if Editable.has_selection obj then
       Some (Editable.selection_start_pos obj, Editable.selection_end_pos obj)
     else None
+  method move_cursor = Editable.emit_move_cursor obj
+  method move_page = Editable.emit_move_page obj
+  method move_word = Editable.emit_move_word obj
+  method move_to_row = Editable.emit_move_to_row obj
+  method move_to_column = Editable.emit_move_to_column obj
 end
 
 class entry obj = object
@@ -134,6 +155,8 @@ class text obj = object (self)
     Text.insert obj text ?font
       ?foreground:(may_map foreground ~f:(GDraw.color ?colormap))
       ?background:(may_map background ~f:(GDraw.color ?colormap))
+  method forward_delete  = Text.forward_delete  obj
+  method backward_delete = Text.backward_delete obj
 end
 
 let text ?hadjustment ?vadjustment ?editable

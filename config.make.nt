@@ -1,9 +1,18 @@
-CAMLC=ocamlc
-CAMLOPT=ocamlopt
-#LIBDIR=c:/Program Files/Objective Caml/lib
-LIBDIR=c:/Home/garrigue/ocaml/lib
+CAMLC=ocamlc.opt
+CAMLOPT=ocamlopt.opt
+CAMLDEP=ocamldep
+CAMLMKTOP=ocamlmktop
+CAMLP4O=camlp4o
+CAMLRUN=ocamlrun
+CAMLLEX=ocamllex
+
+LIBDIR=`$(CAMLC) -where`
 GTKROOT=c:/Home/garrigue/gtk+
-GTKCFLAGS=-I$(GTKROOT)/include -I$(GTKROOT)/include/glib-2.0 -I$(GTKROOT)/lib/glib-2.0/include -I$(GTKROOT)/lib/gtk+/include
-GTKLIBS=/link /libpath:$(GTKROOT)/lib gtk.lib gdk.lib glib-2.0.lib #gthread-2.0.lib
+#GTKROOT=c:/GTK
+GTKCFLAGS=-I$(GTKROOT)/include -I$(GTKROOT)/include/glib-2.0 -I$(GTKROOT)/lib/glib-2.0/include -I$(GTKROOT)/lib/gtk+/include -Ic:/libglade
+GLADELIBS=
+# GLADELIBS= /libpath:c:/libglade libglade.lib
+GTKLIBS=/link $(GLADELIBS) /libpath:$(GTKROOT)/lib gtk.lib gdk.lib glib-2.0.lib
 USE_GL=0
 USE_CC=0
+USE_GLADE=0

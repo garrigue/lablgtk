@@ -490,7 +490,7 @@ class view area = object (self)
     | "4" -> obj <- 4
     | "5" -> obj <- 5
     | "\r" -> smooth <- not smooth
-    | "\027" -> Gaux.may area#misc#toplevel ~f:(fun w -> w#destroy ()); exit 0
+    | "\027" -> area#misc#toplevel#destroy (); exit 0
     | _ -> ()
     end;
     self#pinit
@@ -606,4 +606,4 @@ let main () =
   window#show ();
   Main.main ()
 
-let _ = main ()
+let () = if not !Sys.interactive then Printexc.print main ()

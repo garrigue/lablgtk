@@ -207,6 +207,8 @@ module CList = struct
       = "ml_gtk_clist_sort"
   external set_auto_sort : [>`clist] obj -> bool -> unit
       = "ml_gtk_clist_set_auto_sort"
+  external selection : [>`clist] obj -> int list
+      = "ml_gtk_clist_selection"
   let set_titles_show w = function
       true -> column_titles_show w
     | false -> column_titles_hide w
