@@ -6,8 +6,9 @@
 #include <caml/mlvalues.h>
 #include <caml/fail.h>
 
-value copy_memblock (void *src, asize_t size);
+value copy_memblock_indirected (void *src, asize_t size);
 void ml_raise_null_pointer (void) Noreturn;
+value Val_pointer (void *);
 
 /* Wrapper generators */
 
@@ -106,7 +107,6 @@ value cname##_bc (value *argv, int argn) \
 /* result conversion */
 #define Unit(x) ((x), Val_unit)
 #define Val_char Val_int
-#define Val_any(any) ((value) any)
 
 /* parameter conversion */
 #define Bool_ptr(x) ((long) x - 1)
@@ -136,8 +136,8 @@ value Val_##type##ext (type *p) \
 
 #define Pointer_val(val) (void *)Field(val,1)
 
-#define Mark_ptr(ptr) ((value)ptr|1)
-#define Unmark_val(val) ((void*)(val & (value)-1))
+#define Val_addr(ptr) (1+(value)ptr)
+#define Addr_val(val) ((void*)(val-1))
 
 #define Wosizeof(x) ((sizeof(x)-1)/sizeof(value)+1)
 
@@ -172,6 +172,6 @@ long OptFlags_##conv (value list) \
   while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
   return flags; }
 
-#define Val_copy(val) copy_memblock (&val, sizeof(val))
+#define Val_copy(val) copy_memblock_indirected (&val, sizeof(val))
 
 #endif /* _wrappers_ */

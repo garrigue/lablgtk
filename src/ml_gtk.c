@@ -127,11 +127,10 @@ value ml_gtk_object_type (value val)
 {
     return Val_int (GtkObject_val(val)->klass->type);
 }
-value ml_gtk_class_type (GtkObjectClass *cl)
-{
-    return Val_int (cl->type);
-}
+
 ML_1 (gtk_object_destroy, GtkObject_val, Unit)
+
+Make_Extractor (gtk_class,(GtkObjectClass *),type,Val_int)
 
 /* gtkdata.h */
 
@@ -198,7 +197,7 @@ ML_1 (gtk_widget_realize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unrealize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_draw, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_resize, GtkWidget_val, Unit)
-ML_2 (gtk_widget_draw, GtkWidget_val, (GdkRectangle*), Unit)
+ML_2 (gtk_widget_draw, GtkWidget_val, GdkRectangle_val, Unit)
 ML_1 (gtk_widget_draw_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_draw_default, GtkWidget_val, Unit)
 /* ML_1 (gtk_widget_draw_children, GtkWidget_val, Unit) */
@@ -206,11 +205,14 @@ ML_2 (gtk_widget_event, GtkWidget_val, GdkEvent_val( ), Val_bool)
 ML_1 (gtk_widget_activate, GtkWidget_val, Val_bool)
 ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit)
 ML_3 (gtk_widget_popup, GtkWidget_val, Int_val, Int_val, Unit)
-value ml_gtk_widget_intersect (value w, GdkRectangle *area)
+value ml_gtk_widget_intersect (value w, value area)
 {
     value ret = Val_unit;
-    value inter = alloc (Wosizeof(GdkRectangle), Abstract_tag);
-    if (gtk_widget_intersect (GtkWidget_val(w), area, (GdkRectangle*)inter)) {
+    value inter = alloc (Wosizeof(GdkRectangle)+2, Abstract_tag);
+    Field(inter,1) = (value) &Field(inter,2);
+    if (gtk_widget_intersect (GtkWidget_val(w), GdkRectangle_val(area),
+			      GdkRectangle_val(inter)))
+    {
 	Begin_root(inter);
 	ret = alloc_tuple(1);
 	Field(ret,0) = inter;
@@ -389,12 +391,15 @@ Make_Extractor (gtk_check_menu_item_get, GtkCheckMenuItem_val,
 
 /* gtkradiomenuitem.h */
 
+#define Group_val(val) ((GSList*)Addr_val(val))
+#define Val_group Val_addr
+
 #define GtkRadioMenuItem_val(val) check_cast(GTK_RADIO_MENU_ITEM,val)
-ML_1 (gtk_radio_menu_item_new, (GSList *), Val_GtkWidget_sink)
-ML_2 (gtk_radio_menu_item_new_with_label, (GSList *),
+ML_1 (gtk_radio_menu_item_new, Group_val, Val_GtkWidget_sink)
+ML_2 (gtk_radio_menu_item_new_with_label, Group_val,
       String_val, Val_GtkWidget_sink)
-ML_1 (gtk_radio_menu_item_group, GtkRadioMenuItem_val, Val_any)
-ML_2 (gtk_radio_menu_item_set_group, GtkRadioMenuItem_val, (GSList *), Unit)
+ML_1 (gtk_radio_menu_item_group, GtkRadioMenuItem_val, Val_group)
+ML_2 (gtk_radio_menu_item_set_group, GtkRadioMenuItem_val, Group_val, Unit)
 
 /* gtktreeitem.h */
 
@@ -675,10 +680,11 @@ ML_1 (gtk_check_button_new_with_label, String_val, Val_GtkWidget_sink)
 /* gtkradiobutton.h */
 
 #define GtkRadioButton_val(val) check_cast(GTK_RADIO_BUTTON,val)
-ML_1 (gtk_radio_button_new, (GSList*), Val_GtkWidget_sink)
-ML_2 (gtk_radio_button_new_with_label, (GSList*), String_val, Val_GtkWidget_sink)
-ML_1 (gtk_radio_button_group, GtkRadioButton_val, (value))
-ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, (GSList*), Unit)
+ML_1 (gtk_radio_button_new, Group_val, Val_GtkWidget_sink)
+ML_2 (gtk_radio_button_new_with_label, Group_val, String_val,
+      Val_GtkWidget_sink)
+ML_1 (gtk_radio_button_group, GtkRadioButton_val, Val_group)
+ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, Group_val, Unit)
 
 /* gtkclist.h */
 
@@ -1053,8 +1059,12 @@ ML_1 (gtk_spin_button_update, GtkSpinButton_val, Unit)
 ML_2 (gtk_text_new, GtkAdjustment_val, GtkAdjustment_val, Val_GtkWidget_sink)
 ML_2 (gtk_text_set_editable, GtkText_val, Bool_val, Unit)
 ML_2 (gtk_text_set_word_wrap, GtkText_val, Bool_val, Unit)
-ML_3 (gtk_text_set_adjustments, GtkText_val, GtkAdjustment_val,
-      GtkAdjustment_val, Unit)
+ML_3 (gtk_text_set_adjustments, GtkText_val,
+      Option_val(arg2,GtkAdjustment_val,GtkText_val(arg1)->hadj) Ignore,
+      Option_val(arg3,GtkAdjustment_val,GtkText_val(arg1)->vadj) Ignore,
+      Unit)
+Make_Extractor (gtk_text_get, GtkText_val, hadj, Val_GtkWidget)
+Make_Extractor (gtk_text_get, GtkText_val, vadj, Val_GtkWidget)
 ML_2 (gtk_text_set_point, GtkText_val, Int_val, Unit)
 ML_1 (gtk_text_get_point, GtkText_val, Val_int)
 ML_1 (gtk_text_get_length, GtkText_val, Val_int)
@@ -1342,11 +1352,9 @@ value ml_gtk_arg_get_pointer (GtkArg *arg)
 {
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
     case GTK_TYPE_BOXED:
-	if (!GTK_VALUE_BOXED(*arg)) ml_raise_null_pointer();
-	return (value) GTK_VALUE_BOXED(*arg);
+	return Val_pointer(GTK_VALUE_BOXED(*arg));
     case GTK_TYPE_POINTER:
-	if (!GTK_VALUE_POINTER(*arg)) ml_raise_null_pointer();
-	return (value) GTK_VALUE_POINTER(*arg);
+	return Val_pointer(GTK_VALUE_POINTER(*arg));
     default:
 	ml_raise_gtk ("argument type mismatch");
     }
@@ -1420,9 +1428,9 @@ value ml_gtk_arg_set_pointer (GtkArg *arg, value val)
 {
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
     case GTK_TYPE_BOXED:
-	*GTK_RETLOC_BOXED(*arg) = (gpointer) val; break;
+	*GTK_RETLOC_BOXED(*arg) = Pointer_val(val); break;
     case GTK_TYPE_POINTER:
-	*GTK_RETLOC_POINTER(*arg) = (gpointer) val; break;
+	*GTK_RETLOC_POINTER(*arg) = Pointer_val(val); break;
     default:
 	ml_raise_gtk ("argument type mismatch");
     }
@@ -1504,8 +1512,8 @@ value ml_gtk_type_new (value type)
 struct widget_info {
   guint size;
   guint class_size;
-  guint (*get_type_func)(void)
-       }
+  guint (*get_type_func)(void);
+}
 widget_info_array[] = {
   { sizeof(GtkObject), sizeof(GtkObjectClass), gtk_object_get_type },
   { sizeof(GtkWidget), sizeof(GtkWidgetClass), gtk_widget_get_type },

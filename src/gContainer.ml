@@ -12,11 +12,11 @@ class focus obj = object
   method set : 'a. ?(#is_widget as 'a) -> unit = fun ?child ->
     let child = may_map child fun:(#as_widget) in
     Container.set_focus_child obj (optboxed child)
-  method set_hadjustment ?(adj : adjustment option) =
-    let adj = may_map adj fun:(#as_adjustment) in
+  method set_hadjustment ?adj =
+    let adj = may_map adj fun:adjustment_obj in
     Container.set_focus_hadjustment obj (optboxed adj)
-  method set_vadjustment ?(adj : adjustment option) =
-    let adj = may_map adj fun:(#as_adjustment) in
+  method set_vadjustment ?adj =
+    let adj = may_map adj fun:adjustment_obj in
     Container.set_focus_vadjustment obj (optboxed adj)
 end
 

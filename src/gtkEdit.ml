@@ -143,11 +143,14 @@ module Text = struct
       = "ml_gtk_text_set_editable"
   external set_word_wrap : [> text] obj -> bool -> unit
       = "ml_gtk_text_set_word_wrap"
-  external set_adjustments :
-      [> text] obj -> [> adjustment] optobj -> [> adjustment] optobj -> unit
+  external set_adjustment :
+      [> text] obj -> ?horizontal:[> adjustment] obj ->
+      ?vertical:[> adjustment] obj -> unit
       = "ml_gtk_text_set_adjustments"
-  let set_adjustment w ?:horizontal ?:vertical =
-    set_adjustments w (optboxed horizontal) (optboxed vertical)
+  external get_hadjustment : [> text] obj -> adjustment obj
+      = "ml_gtk_text_get_hadj"
+  external get_vadjustment : [> text] obj -> adjustment obj
+      = "ml_gtk_text_get_vadj"
   external set_point : [> text] obj -> int -> unit
       = "ml_gtk_text_set_point"
   external get_point : [> text] obj -> int = "ml_gtk_text_get_point"

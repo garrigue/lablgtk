@@ -24,7 +24,7 @@ class range :
 
 class scrollbar :
   Tags.orientation ->
-  ?adjustment:[> adjustment] obj ->
+  ?adjustment:GData.adjustment ->
   ?update_policy:Tags.update_type ->
   ?packing:(scrollbar -> unit) -> ?show:bool ->
   object

@@ -69,13 +69,13 @@ module RadioMenuItem = struct
   let cast w : radio_menu_item obj =
     if Object.is_a w "GtkRadioMenuItem" then Obj.magic w
     else invalid_arg "Gtk.RadioMenuItem.cast"
-  external create : group optpointer -> radio_menu_item obj
+  external create : group optaddr -> radio_menu_item obj
       = "ml_gtk_radio_menu_item_new"
   external create_with_label :
-      group optpointer -> string -> radio_menu_item obj
+      group optaddr -> string -> radio_menu_item obj
       = "ml_gtk_radio_menu_item_new_with_label"
   let create ?:group ?:label ?(_ : unit option) =
-    let group = optpointer group in
+    let group = optaddr group in
     match label with None -> create group
     | Some label -> create_with_label group label
   external group : [> radiomenuitem] obj -> group

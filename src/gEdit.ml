@@ -57,14 +57,14 @@ class spin_button_wrapper myobj = object
   method spin = SpinButton.spin obj
   method update = SpinButton.update obj
   method set ?:adjustment =
-    SpinButton.setter ?obj ?cont:null_cont ?adjustment:
-      (may_map adjustment fun:(fun (a : GData.adjustment) -> a#as_adjustment))
+    SpinButton.setter ?obj ?cont:null_cont
+      ?adjustment:(may_map adjustment fun:GData.adjustment_obj)
 end
 
 class spin_button :rate :digits ?:adjustment ?:value ?:update_policy
     ?:numeric ?:wrap ?:shadow_type ?:snap_to_ticks ?:packing ?:show =
   let w = SpinButton.create :rate :digits ?adjustment:
-      (may_map adjustment fun:(fun (a : GData.adjustment) -> a#as_adjustment))
+      (may_map adjustment fun:GData.adjustment_obj)
   in
   let () =
     SpinButton.setter w cont:null_cont ?:value ?:update_policy
@@ -107,10 +107,10 @@ class text_wrapper obj = object
   method set_word_wrap = Text.set_word_wrap obj
   method set_adjustment ?:horizontal ?:vertical =
     Text.set_adjustment obj
-      ?horizontal:(may_map horizontal
-		     fun:(fun (x : GData.adjustment) -> x#as_adjustment))
-      ?vertical:(may_map vertical
-		     fun:(fun (x : GData.adjustment) -> x#as_adjustment))
+      ?horizontal:(may_map horizontal fun:GData.adjustment_obj)
+      ?vertical:(may_map vertical fun:GData.adjustment_obj)
+  method hadjustment = new GData.adjustment_wrapper (Text.get_hadjustment obj)
+  method vadjustment = new GData.adjustment_wrapper (Text.get_vadjustment obj)
   method point = Text.get_point obj
   method length = Text.get_length obj
   method freeze () = Text.freeze obj
@@ -120,7 +120,9 @@ end
 
 class text ?:hadjustment ?:vadjustment ?:editable
     ?:word_wrap ?:point ?:packing ?:show =
-  let w = Text.create ?:hadjustment ?:vadjustment ?None in
+  let w = Text.create ?None
+      ?hadjustment:(may_map hadjustment fun:GData.adjustment_obj)
+      ?vadjustment:(may_map vadjustment fun:GData.adjustment_obj) in
   let () = Text.setter w cont:null_cont ?:editable ?:word_wrap ?:point in
   object (self)
     inherit text_wrapper w

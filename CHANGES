@@ -1,5 +1,10 @@
 $Id$
 
+1999.6.10
+  * suppressed almost all raw pointers from the code. Pointers are now
+    either boxed (second field of an abstract block) or marked (lowest
+    bit set to 1).
+
 1999.6.9
   * added GtkBase.Object.get_id and GObj.gtkobj#get_id to get an
     unique identifier to gtk objects. Nice for hash-tables, etc...

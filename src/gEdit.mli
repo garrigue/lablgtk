@@ -102,8 +102,8 @@ class combo :
 class combo_wrapper : Gtk.combo obj -> combo
 
 class text :
-  ?hadjustment:[> adjustment] obj ->
-  ?vadjustment:[> adjustment] obj ->
+  ?hadjustment:GData.adjustment ->
+  ?vadjustment:GData.adjustment ->
   ?editable:bool ->
   ?word_wrap:bool ->
   ?point:int ->
@@ -119,6 +119,8 @@ class text :
     method point : int
     method set_adjustment :
       ?horizontal:GData.adjustment -> ?vertical:GData.adjustment -> unit
+    method hadjustment : GData.adjustment
+    method vadjustment : GData.adjustment
     method set_editable : bool -> unit
     method set_point : int -> unit
     method set_word_wrap : bool -> unit
