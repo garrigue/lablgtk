@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+(** [libgnomecanvas] bindings *)
+
 type items_properties = [ 
   | `NO_WIDGET
   | `NO_FILL_COLOR
@@ -8,54 +10,61 @@ type items_properties = [
   | `NO_TEXT
   | `NO_BPATH
   | `NO_PIXBUF
-  | `SIZE_PIXELS of bool
-  | `WIDGET of GObj.widget
-  | `PIXBUF of GdkPixbuf.pixbuf
-  | `WIDTH of float
-  | `HEIGHT of float
-  | `BPATH of GnomeCanvas.PathDef.t
-  | `DASH of float * float array
   | `ANCHOR of Gtk.Tags.anchor_type
-  | `JUSTIFICATION of Gtk.Tags.justification
-  | `CAP_STYLE of Gdk.GC.gdkCapStyle
-  | `JOIN_STYLE of Gdk.GC.gdkJoinStyle
-  | `LINE_STYLE of Gdk.GC.gdkLineStyle
-  | `SMOOTH of bool
-  | `FIRST_ARROWHEAD of bool
-  | `LAST_ARROWHEAD of bool
   | `ARROW_SHAPE_A of float
   | `ARROW_SHAPE_B of float
   | `ARROW_SHAPE_C of float
-  | `POINTS of float array
+  | `BPATH of GnomeCanvas.PathDef.t
+  | `CAP_STYLE of Gdk.GC.gdkCapStyle
+  | `CLIP of bool
+  | `CLIP_HEIGHT of float
+  | `CLIP_WIDTH of float
+  | `CURSOR_BLINK of bool
+  | `CURSOR_VISIBLE of bool
+  | `DASH of float * float array
+  | `EDITABLE of bool
+  | `FAMILY of string
   | `FILL_COLOR of string
   | `FILL_COLOR_RGBA of int32
   | `FILL_STIPPLE of Gdk.bitmap
+  | `FIRST_ARROWHEAD of bool
   | `FONT of string
+  | `GROW_HEIGHT of bool
+  | `HEIGHT of float
+  | `JOIN_STYLE of Gdk.GC.gdkJoinStyle
+  | `JUSTIFICATION of Gtk.Tags.justification
+  | `LAST_ARROWHEAD of bool
+  | `LEFT_MARGIN of int
+  | `LINE_STYLE of Gdk.GC.gdkLineStyle
+  | `MARKUP of string
   | `OUTLINE_COLOR of string
   | `OUTLINE_COLOR_RGBA of int32
   | `OUTLINE_STIPPLE of Gdk.bitmap
-  | `SIZE of int
-  | `TEXT of string
-  | `EDITABLE of bool
-  | `VISIBLE of bool
-  | `CURSOR_VISIBLE of bool
-  | `CURSOR_BLINK of bool
-  | `GROW_HEIGHT of bool
-  | `LEFT_MARGIN of int
+  | `PIXBUF of GdkPixbuf.pixbuf
+  | `POINTS of float array
   | `RIGHT_MARGIN of int
-  | `CLIP of bool
-  | `CLIP_WIDTH of float
-  | `CLIP_HEIGHT of float
-  | `X_OFFSET of float
-  | `Y_OFFSET of float
-  | `WIDTH_UNITS of float
+  | `RISE of int
+  | `SCALE of float
+  | `SIZE of int
+  | `SIZE_PIXELS of bool
+  | `SIZE_POINTS of float
+  | `SMOOTH of bool
+  | `TEXT of string
+  | `VISIBLE of bool
+  | `WEIGHT of int
+  | `WIDGET of GObj.widget
+  | `WIDTH of float
   | `WIDTH_PIXELS of int
+  | `WIDTH_UNITS of float
   | `X of float
   | `X1 of float
   | `X2 of float
+  | `X_OFFSET of float
   | `Y of float
   | `Y1 of float
-  | `Y2 of float] 
+  | `Y2 of float
+  | `Y_OFFSET of float
+] 
       
 val propertize : [< items_properties] -> string * unit Gobject.data_set
 
@@ -80,6 +89,7 @@ class item_signals :
     method event : callback:(item_event -> bool) -> GtkSignal.id
   end
 
+(** @gtkdoc libgnomecanvas GnomeCanvasItem *)
 class base_item : ([> GnomeCanvas.item] as 'b) Gtk.obj ->
   object
     inherit GObj.gtkobj
@@ -112,6 +122,7 @@ class base_item : ([> GnomeCanvas.item] as 'b) Gtk.obj ->
     method w2i : x:float -> y:float -> float * float
   end
 
+(** @gtkdoc libgnomecanvas GnomeCanvasGroup *)
 and group : GnomeCanvas.group Gtk.obj ->
   object 
     inherit base_item
@@ -121,6 +132,7 @@ and group : GnomeCanvas.group Gtk.obj ->
     method set : GnomeCanvas.group_p list -> unit
   end
 
+(** @gtkdoc libgnomecanvas GnomeCanvas *)
 and canvas : GnomeCanvas.canvas Gtk.obj ->
   object
     inherit GPack.layout
@@ -145,6 +157,7 @@ and canvas : GnomeCanvas.canvas Gtk.obj ->
     method world_to_window : wox:float -> woy:float -> float * float
   end
 
+(** @gtkdoc libgnomecanvas GnomeCanvasItem *)
 class ['p] item : [> GnomeCanvas.item] Gtk.obj -> 
   object
     inherit base_item
@@ -152,6 +165,7 @@ class ['p] item : [> GnomeCanvas.item] Gtk.obj ->
     method set : 'p list -> unit
   end
 
+(** @gtkdoc libgnomecanvas GnomeCanvas *)
 val canvas :
   ?aa:bool ->
   ?border_width:int ->
@@ -161,12 +175,15 @@ val canvas :
   ?show:bool ->
   unit -> canvas 
 
+(** @gtkdoc libgnomecanvas GnomeCanvasGroup *)
 val group : ?x:float -> ?y:float -> #group -> group
 
 val wrap_item : 
   [> GnomeCanvas.item] Gtk.obj -> ('a, 'p) GnomeCanvas.Types.t -> 'p item
 
 type rect = GnomeCanvas.re_p item
+
+(** @gtkdoc libgnomecanvas GnomeCanvasRect *)
 val rect :
   ?x1:float -> ?y1:float -> 
   ?x2:float -> ?y2:float -> 
@@ -175,6 +192,8 @@ val rect :
   #group -> rect
 
 type ellipse = GnomeCanvas.re_p item
+
+(** @gtkdoc libgnomecanvas GnomeCanvasEllipse *)
 val ellipse :
   ?x1:float -> ?y1:float -> 
   ?x2:float -> ?y2:float -> 
@@ -182,7 +201,16 @@ val ellipse :
   ?props:GnomeCanvas.re_p list ->
   #group -> ellipse
 
-type text = GnomeCanvas.text_p item
+(** @gtkdoc libgnomecanvas GnomeCanvasText *)
+class text : GnomeCanvas.text Gtk.obj ->
+  object
+    inherit [GnomeCanvas.text_p] item
+    val obj : GnomeCanvas.text Gtk.obj
+    method text_height : float
+    method text_width : float
+  end
+
+(** @gtkdoc libgnomecanvas GnomeCanvasText *)
 val text :
   ?x:float -> ?y:float -> ?text:string ->
   ?font:string -> ?size:int -> ?anchor:Gtk.Tags.anchor_type ->
@@ -190,6 +218,8 @@ val text :
   #group -> text
 
 type line = GnomeCanvas.line_p item
+
+(** @gtkdoc libgnomecanvas GnomeCanvasLine *)
 val line :
   ?points:float array ->
   ?fill_color:string ->
@@ -197,6 +227,8 @@ val line :
   #group -> line
 
 type bpath = GnomeCanvas.bpath_p item
+
+(** @gtkdoc libgnomecanvas GnomeCanvasBpath *)
 val bpath :
   ?bpath:GnomeCanvas.PathDef.t ->
   ?fill_color:string ->
@@ -204,6 +236,8 @@ val bpath :
   #group -> bpath
 
 type pixbuf = GnomeCanvas.pixbuf_p item
+
+(** @gtkdoc libgnomecanvas GnomeCanvasPixbuf *)
 val pixbuf :
   ?x:float -> ?y:float -> ?pixbuf:GdkPixbuf.pixbuf ->
   ?width:float -> ?height:float ->
@@ -211,6 +245,8 @@ val pixbuf :
   #group -> pixbuf
 
 type polygon = GnomeCanvas.polygon_p item
+
+(** @gtkdoc libgnomecanvas GnomeCanvasPolygon *)
 val polygon :
   ?points:float array ->
   ?fill_color:string ->
@@ -218,6 +254,8 @@ val polygon :
   #group -> polygon
 
 type widget = GnomeCanvas.widget_p item
+
+(** @gtkdoc libgnomecanvas GnomeCanvasWidget *)
 val widget :
   ?widget:< coerce: GObj.widget; .. > ->
   ?x:float -> ?y:float -> 
@@ -225,6 +263,7 @@ val widget :
   ?props:GnomeCanvas.widget_p list ->
   #group -> widget
 
+(** @gtkdoc libgnomecanvas GnomeCanvasRichtext *)
 class rich_text : GnomeCanvas.rich_text Gtk.obj ->
   object
     inherit [GnomeCanvas.rich_text_p] item
@@ -235,10 +274,10 @@ class rich_text : GnomeCanvas.rich_text Gtk.obj ->
     method get_buffer : GText.buffer
   end
 
+(** @gtkdoc libgnomecanvas GnomeCanvasRichtext *)
 val rich_text :
   ?x:float -> ?y:float ->
   ?text:string ->
   ?width:float -> ?height:float ->
   ?props:GnomeCanvas.rich_text_p list ->
   #group -> rich_text
-

@@ -10,109 +10,118 @@ type items_properties = [
   | `NO_TEXT
   | `NO_BPATH
   | `NO_PIXBUF
-  | `SIZE_PIXELS of bool
-  | `WIDGET of GObj.widget
-  | `PIXBUF of GdkPixbuf.pixbuf
-  | `WIDTH of float
-  | `HEIGHT of float
-  | `BPATH of PathDef.t
-  | `DASH of float * float array
   | `ANCHOR of Gtk.Tags.anchor_type
-  | `JUSTIFICATION of Gtk.Tags.justification
-  | `CAP_STYLE of Gdk.GC.gdkCapStyle
-  | `JOIN_STYLE of Gdk.GC.gdkJoinStyle
-  | `LINE_STYLE of Gdk.GC.gdkLineStyle
-  | `SMOOTH of bool
-  | `FIRST_ARROWHEAD of bool
-  | `LAST_ARROWHEAD of bool
   | `ARROW_SHAPE_A of float
   | `ARROW_SHAPE_B of float
   | `ARROW_SHAPE_C of float
-  | `POINTS of float array
+  | `BPATH of PathDef.t
+  | `CAP_STYLE of Gdk.GC.gdkCapStyle
+  | `CLIP of bool
+  | `CLIP_HEIGHT of float
+  | `CLIP_WIDTH of float
+  | `CURSOR_BLINK of bool
+  | `CURSOR_VISIBLE of bool
+  | `DASH of float * float array
+  | `EDITABLE of bool
+  | `FAMILY of string
   | `FILL_COLOR of string
   | `FILL_COLOR_RGBA of int32
   | `FILL_STIPPLE of Gdk.bitmap
+  | `FIRST_ARROWHEAD of bool
   | `FONT of string
+  | `GROW_HEIGHT of bool
+  | `HEIGHT of float
+  | `JOIN_STYLE of Gdk.GC.gdkJoinStyle
+  | `JUSTIFICATION of Gtk.Tags.justification
+  | `LAST_ARROWHEAD of bool
+  | `LEFT_MARGIN of int
+  | `LINE_STYLE of Gdk.GC.gdkLineStyle
+  | `MARKUP of string
   | `OUTLINE_COLOR of string
   | `OUTLINE_COLOR_RGBA of int32
   | `OUTLINE_STIPPLE of Gdk.bitmap
-  | `SIZE of int
-  | `TEXT of string
-  | `EDITABLE of bool
-  | `VISIBLE of bool
-  | `CURSOR_VISIBLE of bool
-  | `CURSOR_BLINK of bool
-  | `GROW_HEIGHT of bool
-  | `LEFT_MARGIN of int
+  | `PIXBUF of GdkPixbuf.pixbuf
+  | `POINTS of float array
   | `RIGHT_MARGIN of int
-  | `CLIP of bool
-  | `CLIP_WIDTH of float
-  | `CLIP_HEIGHT of float
-  | `X_OFFSET of float
-  | `Y_OFFSET of float
-  | `WIDTH_UNITS of float
+  | `RISE of int
+  | `SCALE of float
+  | `SIZE of int
+  | `SIZE_PIXELS of bool
+  | `SIZE_POINTS of float
+  | `SMOOTH of bool
+  | `TEXT of string
+  | `VISIBLE of bool
+  | `WEIGHT of int
+  | `WIDGET of GObj.widget
+  | `WIDTH of float
   | `WIDTH_PIXELS of int
+  | `WIDTH_UNITS of float
   | `X of float
   | `X1 of float
   | `X2 of float
+  | `X_OFFSET of float
   | `Y of float
   | `Y1 of float
-  | `Y2 of float] 
+  | `Y2 of float
+  | `Y_OFFSET of float
+] 
 
 let encode tbl v = `INT (Gpointer.encode_variant tbl v)
 let propertize = function
-  | `X v -> "x", `FLOAT v
-  | `Y v -> "y", `FLOAT v
-  | `X1 v -> "x1", `FLOAT v
-  | `Y1 v -> "y1", `FLOAT v
-  | `X2 v -> "x2", `FLOAT v
-  | `Y2 v -> "y2", `FLOAT v
-  | `OUTLINE_COLOR c -> "outline_color", `STRING (Some c)
-  | `OUTLINE_COLOR_RGBA c -> "outline_color_rgba", `INT32 c
-  | `OUTLINE_STIPPLE (d : Gdk.bitmap) ->
-      "outline_stipple", `OBJECT (Some (Gobject.coerce d))
-  | `FILL_COLOR c -> "fill_color", `STRING (Some c)
-  | `FILL_COLOR_RGBA c -> "fill_color_rgba", `INT32 c
-  | `FILL_STIPPLE (d : Gdk.bitmap) ->
-      "fill_stipple", `OBJECT (Some (Gobject.coerce d))
-  | `WIDTH_UNITS v -> "width_units", `FLOAT v
-  | `WIDTH_PIXELS v -> "width_pixels", `INT v
-  | `TEXT t -> "text", `STRING (Some t)
-  | `FONT t -> "font", `STRING (Some t)
-  | `SIZE i -> "size", `INT i
-  | `EDITABLE b -> "editable", `BOOL b
-  | `VISIBLE b -> "visible", `BOOL b
-  | `CURSOR_VISIBLE b -> "cursor_visible", `BOOL b
-  | `CURSOR_BLINK b -> "cursor_blink", `BOOL b
-  | `GROW_HEIGHT b -> "grow_height", `BOOL b
-  | `LEFT_MARGIN i -> "left_margin", `INT i
-  | `RIGHT_MARGIN i -> "right_margin", `INT i
-  | `CLIP b -> "clip", `BOOL b
-  | `CLIP_WIDTH v -> "clip_width", `FLOAT v
-  | `CLIP_HEIGHT v -> "clip_height", `FLOAT v
-  | `X_OFFSET v -> "x_offset", `FLOAT v
-  | `Y_OFFSET v -> "y_offset", `FLOAT v
-  | `POINTS p -> "points", `POINTER (Some (Conv.convert_points p))
+  | `ANCHOR a -> "anchor", encode GtkEnums.anchor_type a
   | `ARROW_SHAPE_A v -> "arrow_shape_a", `FLOAT v
   | `ARROW_SHAPE_B v -> "arrow_shape_b", `FLOAT v
   | `ARROW_SHAPE_C v -> "arrow_shape_c", `FLOAT v
-  | `FIRST_ARROWHEAD b -> "first_arrowhead", `BOOL b
-  | `LAST_ARROWHEAD  b -> "last_arrowhead", `BOOL b
-  | `ANCHOR a -> "anchor", encode GtkEnums.anchor_type a
-  | `JUSTIFICATION j -> "justification", encode GtkEnums.justification j
-  | `CAP_STYLE c -> "cap_style", encode GdkEnums.cap_style c
-  | `JOIN_STYLE c -> "join_style", encode GdkEnums.join_style c
-  | `LINE_STYLE c -> "line_style", encode GdkEnums.line_style c
   | `BPATH p -> "bpath" , `POINTER (Some p)
+  | `CAP_STYLE c -> "cap_style", encode GdkEnums.cap_style c
+  | `CLIP b -> "clip", `BOOL b
+  | `CLIP_HEIGHT v -> "clip_height", `FLOAT v
+  | `CLIP_WIDTH v -> "clip_width", `FLOAT v
+  | `CURSOR_BLINK b -> "cursor_blink", `BOOL b
+  | `CURSOR_VISIBLE b -> "cursor_visible", `BOOL b
   | `DASH (off, d) -> "dash", `POINTER (Some (Conv.convert_dash off d))
-  | `SMOOTH b -> "smooth", `BOOL b
-  | `PIXBUF (p : GdkPixbuf.pixbuf) ->
-      "pixbuf", `OBJECT (Some (Gobject.coerce p))
-  | `WIDTH v -> "width", `FLOAT v
+  | `EDITABLE b -> "editable", `BOOL b
+  | `FAMILY s -> "family", `STRING (Some s)
+  | `FILL_COLOR c -> "fill_color", `STRING (Some c)
+  | `FILL_COLOR_RGBA c -> "fill_color_rgba", `INT32 c
+  | `FILL_STIPPLE (d : Gdk.bitmap) -> "fill_stipple", `OBJECT (Some (Gobject.coerce d))
+  | `FIRST_ARROWHEAD b -> "first_arrowhead", `BOOL b
+  | `FONT t -> "font", `STRING (Some t)
+  | `GROW_HEIGHT b -> "grow_height", `BOOL b
   | `HEIGHT v -> "height", `FLOAT v
+  | `JOIN_STYLE c -> "join_style", encode GdkEnums.join_style c
+  | `JUSTIFICATION j -> "justification", encode GtkEnums.justification j
+  | `LAST_ARROWHEAD  b -> "last_arrowhead", `BOOL b
+  | `LEFT_MARGIN i -> "left_margin", `INT i
+  | `LINE_STYLE c -> "line_style", encode GdkEnums.line_style c
+  | `OUTLINE_COLOR c -> "outline_color", `STRING (Some c)
+  | `OUTLINE_COLOR_RGBA c -> "outline_color_rgba", `INT32 c
+  | `OUTLINE_STIPPLE (d : Gdk.bitmap) -> "outline_stipple", `OBJECT (Some (Gobject.coerce d))
+  | `MARKUP s -> "markup", `STRING (Some s)
+  | `PIXBUF (p : GdkPixbuf.pixbuf) -> "pixbuf", `OBJECT (Some (Gobject.coerce p))
+  | `POINTS p -> "points", `POINTER (Some (Conv.convert_points p))
+  | `RIGHT_MARGIN i -> "right_margin", `INT i
+  | `RISE i -> "rise", `INT i
+  | `SCALE f -> "scale", `FLOAT f
+  | `SIZE i -> "size", `INT i
   | `SIZE_PIXELS b -> "size_pixels", `BOOL b
-  | `WIDGET (w : GObj.widget) ->
-      "widget", `OBJECT (Some (Gobject.coerce w#as_widget))
+  | `SIZE_POINTS f -> "size-points", `FLOAT f
+  | `SMOOTH b -> "smooth", `BOOL b
+  | `TEXT t -> "text", `STRING (Some t)
+  | `VISIBLE b -> "visible", `BOOL b
+  | `WEIGHT i -> "weight", `INT i
+  | `WIDGET (w : GObj.widget) -> "widget", `OBJECT (Some (Gobject.coerce w#as_widget))
+  | `WIDTH v -> "width", `FLOAT v
+  | `WIDTH_PIXELS v -> "width_pixels", `INT v
+  | `WIDTH_UNITS v -> "width_units", `FLOAT v
+  | `X v -> "x", `FLOAT v
+  | `X1 v -> "x1", `FLOAT v
+  | `X2 v -> "x2", `FLOAT v
+  | `X_OFFSET v -> "x_offset", `FLOAT v
+  | `Y v -> "y", `FLOAT v
+  | `Y1 v -> "y1", `FLOAT v
+  | `Y2 v -> "y2", `FLOAT v
+  | `Y_OFFSET v -> "y_offset", `FLOAT v
   | `NO_FILL_COLOR -> "fill_color", `STRING None
   | `NO_OUTLINE_COLOR -> "outline_color", `STRING None
   | `NO_FONT -> "font", `STRING None
@@ -356,7 +365,13 @@ let ellipse ?x1 ?y1 ?x2 ?y2 ?fill_color ?(props=[]) p =
       ] in
   construct_item Types.ellipse ~props p
 
-type text = GnomeCanvas.text_p item
+class text txt_obj = object
+  inherit [GnomeCanvas.text_p] item (txt_obj : GnomeCanvas.text Gtk.obj)
+  method text_height =
+    Gobject.Property.get txt_obj GnomeCanvas.Text.text_height
+  method text_width =
+    Gobject.Property.get txt_obj GnomeCanvas.Text.text_width
+end
 let text ?x ?y ?text ?font ?size ?anchor ?(props=[]) p =
   let props = unoption_list ~rest:props
       [ ( match x with None -> None | Some v -> Some (`X v) ) ;
@@ -366,7 +381,10 @@ let text ?x ?y ?text ?font ?size ?anchor ?(props=[]) p =
 	( match size with None -> None | Some v -> Some (`SIZE v) ) ;
 	( match anchor with None -> None | Some v -> Some (`ANCHOR v) ) ; 
       ] in
-  construct_item Types.text ~props p
+  let i = Item.new_item p#as_group Types.text in
+  let o = new text i in
+  if props <> [] then o#set props ;
+  o
 
 type line = GnomeCanvas.line_p item
 let line ?points ?fill_color ?(props=[]) p = 

@@ -75,12 +75,14 @@ type shape_p = [`FILL_COLOR of string| `OUTLINE_COLOR of string
 type re_p = [shape_p| `X1 of float| `Y1 of float| `X2 of float| `Y2 of float]
 type text_p = [`X of float| `Y of float| `TEXT of string| `FONT of string
               | `NO_TEXT| `NO_FONT| `NO_FILL_COLOR
-              | `SIZE of int| `FILL_COLOR of string
+              | `SIZE of int| `SIZE_POINTS of float| `FILL_COLOR of string
               | `FILL_COLOR_RGBA of int32 | `FILL_STIPPLE of Gdk.bitmap
 	      | `CLIP of bool| `CLIP_WIDTH of float| `CLIP_HEIGHT of float
 	      | `X_OFFSET of float| `Y_OFFSET of float
 	      | `JUSTIFICATION of Gtk.Tags.justification
-	      | `ANCHOR of Gtk.Tags.anchor_type]
+	      | `ANCHOR of Gtk.Tags.anchor_type| `FAMILY of string
+	      | `MARKUP of string | `RISE of int | `SCALE of float
+	      | `WEIGHT of int]
 type line_p = [`ARROW_SHAPE_A of float| `ARROW_SHAPE_B of float| `ARROW_SHAPE_C of float
               | `FILL_COLOR of string| `NO_FILL_COLOR
 	      | `WIDTH_UNITS of float| `WIDTH_PIXELS of int
@@ -200,6 +202,12 @@ end
 module Group = 
   struct
 external get_items : [> group] Gobject.obj -> item Gobject.obj list  = "ml_gnome_canvas_group_get_items"
+end
+
+module Text =
+  struct
+    let text_width = { Gobject.name = "text-width"; Gobject.conv = Gobject.Data.double }
+    let text_height = { Gobject.name = "text-height"; Gobject.conv = Gobject.Data.double }
 end
 
 (* GnomeCanvasRichText *)
