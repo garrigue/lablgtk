@@ -100,7 +100,7 @@ endif
 .ml.cmx:
 	$(COMPOPT) $<
 .ml4.cmo:
-	$(CAMLC) -pp "$(CAMLP4O) -impl" -impl $<
+	$(CAMLC) -c -pp "$(CAMLP4O) -impl" -impl $<
 #.ml4.ml:
 #	$(CAMLP4) -impl $< -o $@
 
@@ -303,5 +303,6 @@ ml_gdkpixbuf.o: gdkpixbuf_tags.h ml_gdk.h gdk_tags.h wrappers.h ml_gpointer.h
 ml_pango.o: pango_tags.h ml_pango.h
 ml_rsvg.o: ml_gobject.h ml_gdkpixbuf.h wrappers.h
 ml_gnomecanvas.o: ml_gtk.h ml_gobject.h wrappers.h
+varcc.cmo: varcc.ml4
 
 include .depend
