@@ -26,3 +26,5 @@ extern value Val_GdkFont (GdkFont *);
 extern value Val_GdkGC (GdkGC *);
 
 #define GdkEvent_val(type) (GdkEvent##type *)Pointer_val
+
+extern long Flags_GdkModifier_val (value);

@@ -39,7 +39,7 @@ CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
 	./var2conv < $< > $@
 
 # Targets
-COBJS = ml_gtk.o ml_gdk.o ml_glib.o
+COBJS = ml_gtk.o ml_gdk.o ml_glib.o ml_gtkcaller.o
 MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
@@ -76,7 +76,7 @@ config.make:
 	echo GTKCFLAGS=`gtk-config --cflags` > config.make
 	echo GTKLIBS=`gtk-config --libs` >> config.make
 
-ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h ml_gtkcaller.h
 ml_gdk.o: gdk_tags.c gdk_tags.h ml_gdk.h wrappers.h
 
 include .depend
