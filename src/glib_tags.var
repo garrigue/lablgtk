@@ -1,0 +1,4 @@
+(* $Id$ *)
+
+type io_condition = "G_IO_"
+   [ `IN | `OUT | `PRI | `ERR | `HUP | `NVAL ]
