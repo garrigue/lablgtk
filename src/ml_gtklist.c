@@ -166,3 +166,20 @@ ML_2 (gtk_clist_set_sort_column, GtkCList_val, Int_val, Unit)
 ML_2 (gtk_clist_set_sort_type, GtkCList_val, Sort_type_val, Unit)
 ML_1 (gtk_clist_sort, GtkCList_val, Unit)
 ML_2 (gtk_clist_set_auto_sort, GtkCList_val, Bool_val, Unit)
+
+CAMLprim value ml_gtk_clist_get_row_state (value clist, value y)
+{
+    GtkCListRow *row;
+    GList *list;
+    gint row_num;
+
+    list = GtkCList_val(clist)->row_list;
+
+    for (row_num=0; row_num < Int_val(y) ; row_num++) {
+      if (list == NULL) invalid_argument ("Gtk.Clist.get_row_state");
+      list = list->next;
+    }
+
+    row = list->data;
+    return (Val_state_type (row->state));
+}

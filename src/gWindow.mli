@@ -109,6 +109,7 @@ class file_selection : Gtk.file_selection obj ->
     method get_filename : string
     method help_button : GButton.button
     method ok_button : GButton.button
+    method file_list : string GList.clist
     method set_filename : string -> unit
     method set_fileop_buttons : bool -> unit
   end
