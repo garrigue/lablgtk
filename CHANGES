@@ -2,6 +2,7 @@ $Id$
 
 2004.11.10 [Olivier]
   * add GPack.paned#position
+  * allow multiple conditions per watch in Glib.Io.add_watch
 
 2004.10.24 [Olivier]
   * add a .mli for GnoDruid, reorganize gnoDruid.ml a bit

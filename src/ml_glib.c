@@ -276,8 +276,9 @@ CAMLprim value ml_g_io_channel_unix_new(value wh)
 static gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c,
                                       gpointer data)
 {
-    value res, *clos_p = data;
-    res = callback_exn (*clos_p, Val_unit);
+    value res, cond, *clos_p = data;
+    cond = ml_lookup_flags_getter (ml_table_io_condition, c);
+    res = callback_exn (*clos_p, cond);
     if (Is_exception_result (res))
       {
 	CAML_EXN_LOG("GIOChannel watch");
@@ -286,12 +287,14 @@ static gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c,
     return Bool_val(res);
 }
 
+static Make_Flags_val(Io_condition_val)
+
 CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
 {
     return Val_long (
       g_io_add_watch_full(GIOChannel_val(io),
                           Option_val(prio,Int_val,G_PRIORITY_DEFAULT),
-                          Io_condition_val(cond),
+                          Flags_Io_condition_val(cond),
                           ml_g_io_channel_watch,
                           ml_global_root_new(clos),
                           ml_global_root_destroy) );

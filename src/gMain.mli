@@ -56,7 +56,7 @@ module Io : sig
   type id
   val channel_of_descr : Unix.file_descr -> channel
   val add_watch :
-    cond:condition -> callback:(unit -> bool) -> ?prio:int -> channel -> id
+    cond:condition list -> callback:(condition list -> bool) -> ?prio:int -> channel -> id
   val remove : id -> unit
   val read : channel -> buf:string -> pos:int -> len:int -> int
 end
