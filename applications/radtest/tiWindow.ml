@@ -84,11 +84,11 @@ object(self)
     proplist <-	proplist @
       [ "title",
 	new prop_string ~name:"title" ~init:name ~set:(ftrue window#set_title);
-	"allow_shrink",	new prop_bool ~name:"allow_shrink" ~init:"true"
+	"allow_shrink",	new prop_bool ~name:"allow_shrink" ~init:"false"
 	                  ~set:(ftrue window#set_allow_shrink);
 	"allow_grow", new prop_bool ~name:"allow_grow" ~init:"true"
 	                ~set:(ftrue window#set_allow_grow);
-	"auto_shrink", new prop_bool ~name:"auto_shrink" ~init:"true"
+	"auto_shrink", new prop_bool ~name:"auto_shrink" ~init:"false"
 	                 ~set:(ftrue window#set_auto_shrink);
 	"x position", new prop_int ~name:"x" ~init:"-2"
 	  ~set:(fun x -> window#misc#set_uposition ~x ~y:(-2); true);

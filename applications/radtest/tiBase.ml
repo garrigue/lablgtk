@@ -10,7 +10,7 @@ open Property
 
 (* possible children; used to make the menus *)
 let widget_add_list =
-  [ "vbox"; "hbox"; "vbutton_box"; "hbutton_box";
+  [ "vbox"; "hbox"; "vbutton_box"; "hbutton_box"; "fixed";
     "frame"; "aspect_frame"; "handle_box"; "event_box";
     "hseparator"; "vseparator"; "statusbar"; "label"; "notebook";
     "button";
@@ -283,11 +283,17 @@ object(self)
   method private get_mandatory_props = []
 
   method add_to_proplist plist = proplist <- proplist @ plist
+
 (* for children of a box *)
   method change_name_in_proplist : string -> string -> unit =
     fun _ _ -> ()
   method set_property name value_string =
     (List.assoc name proplist)#set value_string
+
+  method private get_property name =
+    (List.assoc name proplist)#get
+
+
 (* the proplist with some items removed e.g. the expand... in a box
    used for saving and emitting code *)
   method private emit_clean_proplist plist =
