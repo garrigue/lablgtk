@@ -120,11 +120,11 @@ liblablgtk.a: $(COBJS)
 	$(RANLIB) $@
 
 lablgtk.cma: $(MLOBJS)
-	$(LINKER) -a -o $@ $(MLOBJS) \
+	$(LINKER) -a -custom -o $@ $(MLOBJS) \
 	  -cclib -llablgtk $(GTKLIBS)
 
 lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
-	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \
+	$(LINKOPT) -a -custom -o $@ $(MLOBJS:.cmo=.cmx) \
 	  -cclib -llablgtk $(GTKLIBS)
 
 gtkThread.cmo: gtkThread.ml
