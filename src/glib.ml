@@ -51,7 +51,7 @@ module Io = struct
     = "ml_g_io_channel_unix_new"
   external remove : id -> unit = "ml_g_source_remove"
   external add_watch :
-    cond:condition -> callback:(unit -> bool) -> ?prio:int -> channel -> id
+    cond:condition list -> callback:(condition list -> bool) -> ?prio:int -> channel -> id
     = "ml_g_io_add_watch"
   external read : channel -> buf:string -> pos:int -> len:int -> int
     = "ml_g_io_channel_read"
