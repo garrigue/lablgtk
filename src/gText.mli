@@ -215,7 +215,7 @@ object
   method get_mark : mark -> textmark obj
   method get_modified : bool
   method get_oid : int
-  method get_selection_bounds : textiter * textiter
+  method get_selection_bounds : iter * iter
   method get_start_iter : iter
   method get_tag_table : texttagtable obj
   method get_text :
@@ -225,15 +225,13 @@ object
     ?iter:iter -> ?tag_names:string list -> ?tags:tag list 
     -> string -> unit
   method insert_interactive :
-    ?iter:textiter -> ?default_editable:bool -> string -> bool
+    ?iter:iter -> ?default_editable:bool -> string -> bool
   method insert_pixbuf : iter:iter -> pixbuf:GdkPixbuf.pixbuf -> unit
   method insert_range :
-    iter:textiter ->
-    start:textiter -> stop:textiter -> unit -> unit
+    iter:iter -> start:iter -> stop:iter -> unit
   method insert_range_interactive :
-    iter:textiter ->
-    start:textiter ->
-    stop:textiter -> ?default_editable:bool -> unit -> bool
+    iter:iter -> start:iter -> stop:iter ->
+    ?default_editable:bool -> unit -> bool
   method move_mark : mark -> where:iter -> unit
   method paste_clipboard : 
     ?iter:iter -> ?default_editable:bool -> Gtk.clipboard -> unit
