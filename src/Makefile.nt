@@ -16,9 +16,9 @@ LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 MKLIB = lib /nologo /debugtype:CV /out:
-MKDLL = link /nologo /dll `ocamlc -where`/ocamlrun.lib /out:
+MKDLL = link /nologo /dll "`ocamlc -where`/ocamlrun.lib" /out:
 TOPLEVEL = ocamlmktop $(MLFLAGS)
-CAMLP4 = camlp4o pr_o.cmo
+CAMLP4 = camlp4o -I "$(LIBDIR)/camlp4" pr_o.cmo
 CONFIG = ../config.make.nt
 DLLDIR = $(LIBDIR)/stublibs
 
@@ -38,7 +38,7 @@ THFLAGS = -thread
 THLINK = unix.cma threads.cma
 
 ifeq ($(USE_GL), 1)
-MLFLAGS += -I $(LABLGLDIR)
+MLFLAGS += -I "$(LABLGLDIR)"
 MLLINK += lablgl.cma
 MLLIBS += lablgtkgl.cma
 CLIBS += liblablgtkgl.lib
@@ -95,21 +95,21 @@ lablgtkopt: $(CLIBS) $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \
 	$(THOBJS:.cmo=.cmx)
 
 install:
-	@if test -d $(INSTALLDIR); then :; else mkdir -p $(INSTALLDIR); fi
-	@if test -d $(BINDIR); then :; else mkdir -p $(BINDIR); fi
-	cp lablgtk.bat $(BINDIR)
-	cp $(ALLOBJS:.cmo=.cmi) $(INSTALLDIR)
-	cp *.mli $(INSTALLDIR)
-	cp $(ALLOBJS:.cmo=.ml) $(INSTALLDIR)
-	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
-	cp $(CLIBS) $(INSTALLDIR)
-	cp $(CLIBS:lib%.lib=dll%.dll) $(DLLDIR)
-	cp varcc *.h $(INSTALLDIR)
+	@if test -d "$(INSTALLDIR)"; then :; else mkdir -p "$(INSTALLDIR)"; fi
+	@if test -d "$(BINDIR)"; then :; else mkdir -p "$(BINDIR)"; fi
+	cp lablgtk.bat "$(BINDIR)"
+	cp $(ALLOBJS:.cmo=.cmi) "$(INSTALLDIR)"
+	cp *.mli "$(INSTALLDIR)"
+	cp $(ALLOBJS:.cmo=.ml) "$(INSTALLDIR)"
+	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) "$(INSTALLDIR)"
+	cp $(CLIBS) "$(INSTALLDIR)"
+	cp $(CLIBS:lib%.lib=dll%.dll) "$(DLLDIR)"
+	cp varcc *.h "$(INSTALLDIR)"
 	if test -f lablgtk.cmxa; then \
 	   cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.lib) \
-	      $(INITOBJS:.cmo=.cmx) $(INITOBJS:.cmo=.obj) $(INSTALLDIR); fi
+	      $(INITOBJS:.cmo=.cmx) $(INITOBJS:.cmo=.obj) "$(INSTALLDIR)"; fi
 	if test -f gtkThread.cmx; then \
-	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=.obj) $(INSTALLDIR); fi
+	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=.obj) "$(INSTALLDIR)"; fi
 
 liblablgtk.lib: $(COBJS)
 	$(MKLIB)$@ $(COBJS)
