@@ -297,6 +297,13 @@ ML_2 (gtk_text_buffer_delete_mark_by_name, GtkTextBuffer_val,
 ML_2 (gtk_text_buffer_place_cursor, GtkTextBuffer_val, 
       GtkTextIter_val, Unit)
 
+#ifdef HASGTK24
+ML_3 (gtk_text_buffer_select_range, GtkTextBuffer_val, 
+      GtkTextIter_val, GtkTextIter_val, Unit)
+#else
+Unsupported_24(gtk_text_buffer_select_range)
+#endif
+
 ML_4 (gtk_text_buffer_apply_tag, GtkTextBuffer_val, 
       GtkTextTag_val, GtkTextIter_val, GtkTextIter_val, Unit)
 

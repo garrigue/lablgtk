@@ -441,6 +441,8 @@ class buffer obj = object(self)
   method delete_mark mark = Buffer.delete_mark obj (self#get_mark mark)
   method place_cursor ~where = 
     Buffer.place_cursor obj (as_iter where)
+  method select_range ins bound = 
+    Buffer.select_range obj (as_iter ins) (as_iter bound)
   method apply_tag (tag : tag) ~start ~stop = 
     Buffer.apply_tag obj tag#as_tag (as_iter start) (as_iter stop)
   method remove_tag (tag : tag) ~start ~stop = 

@@ -77,6 +77,8 @@ module Buffer = struct
     = "ml_gtk_text_buffer_get_selection_bound"
   external place_cursor : text_buffer -> text_iter -> unit 
     = "ml_gtk_text_buffer_place_cursor"
+  external select_range : text_buffer -> text_iter -> text_iter -> unit 
+    = "ml_gtk_text_buffer_select_range"
   external apply_tag : text_buffer -> text_tag -> text_iter -> text_iter 
     -> unit = "ml_gtk_text_buffer_apply_tag"
   external remove_tag : text_buffer -> text_tag -> text_iter -> text_iter 

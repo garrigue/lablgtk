@@ -1,5 +1,8 @@
 $Id$
 
+2004.09.15 [Olivier]
+  * add GText.buffer#select_range
+
 2004.09.14 [Olivier]
   * add a few unicode-related functions 
 
