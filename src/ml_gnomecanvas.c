@@ -303,7 +303,8 @@ CAMLprim value ml_gnome_canvas_group_get_items(value cg)
 
 CAMLprim value ml_gnome_canvas_convert_tags(value tag)
 {
-  lookup_info *tables[] = { ml_table_anchor_type, ml_table_gdkCapStyle };
+  lookup_info *tables[] = { ml_table_anchor_type, ml_table_gdkCapStyle, 
+			    ml_table_gdkJoinStyle, ml_table_justification };
   return Val_int(ml_lookup_to_c( tables[ Tag_val(tag) ], Field(tag, 0)));
 }
 
