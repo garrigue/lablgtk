@@ -65,19 +65,69 @@ CAMLprim value ml_gtk_tree_remove_items (value tree, value items)
 /* "Lighter" version: allocate in the ocaml heap */
 #define GtkTreeIter_val(val) ((GtkTreeIter*)MLPointer_val(val))
 #define Val_GtkTreeIter(it) (copy_memblock_indirected(it,sizeof(GtkTreeIter)))
-#define alloc_GtkTreeIter (alloc_memblock_indirected(sizeof(GtkTreeIter)))
-
-CAMLprim value ml_alloc_GtkTreeIter(value v)
-{ return alloc_GtkTreeIter; }
+CAMLprim value ml_gtk_tree_iter_copy (value it) {
+  /* Only valid if in old generation and compaction off */
+  return Val_GtkTreeIter(GtkTreeIter_val(it));
+}
+CAMLprim value ml_alloc_GtkTreeIter(value v) {
+  return alloc_memblock_indirected(sizeof(GtkTreeIter));
+}
 
 #define GtkTreeModel_val(val) check_cast(GTK_TREE_MODEL,val)
-ML_4 (gtk_tree_model_get_value, GtkTreeModel_val, GtkTreeIter_val, Int_val,
-      GValue_val, Unit)
 
 Make_Val_final_pointer (GtkTreePath, Ignore, gtk_tree_path_free, 1)
 #define Val_GtkTreePath_copy(p) (Val_GtkTreePath(gtk_tree_path_copy(p)))
 #define GtkTreePath_val(val) ((GtkTreePath*)Pointer_val(val))
+
+Make_Val_final_pointer (GtkTreeRowReference, Ignore,
+                        gtk_tree_row_reference_free, 5)
+#define GtkTreeRowReference_val(val) ((GtkTreeRowReference*)Pointer_val(val))
+
+/* TreePath */
+ML_0 (gtk_tree_path_new, Val_GtkTreePath)
+ML_1 (gtk_tree_path_to_string, GtkTreePath_val, copy_string_g_free)
+ML_2 (gtk_tree_path_append_index, GtkTreePath_val, Int_val, Unit)
+ML_2 (gtk_tree_path_prepend_index, GtkTreePath_val, Int_val, Unit)
+ML_1 (gtk_tree_path_get_depth, GtkTreePath_val, Val_int)
+CAMLprim value ml_gtk_tree_path_get_indices(value p)
+{
+  gint *indices = gtk_tree_path_get_indices(GtkTreePath_val(p));
+  gint i, depth = gtk_tree_path_get_depth(GtkTreePath_val(p));
+  value ret = alloc_tuple(depth);
+  for (i = 0; i < depth; i++) Field(ret,i) = Val_int(indices[i]);
+  return ret;
+} 
 ML_1 (gtk_tree_path_copy, GtkTreePath_val, Val_GtkTreePath)
+ML_1 (gtk_tree_path_next, GtkTreePath_val, Unit)
+ML_1 (gtk_tree_path_prev, GtkTreePath_val, Unit)
+ML_1 (gtk_tree_path_up, GtkTreePath_val, Val_bool)
+ML_1 (gtk_tree_path_down, GtkTreePath_val, Unit)
+ML_2 (gtk_tree_path_is_ancestor, GtkTreePath_val, GtkTreePath_val, Val_bool)
+
+/* RowReference */
+ML_2 (gtk_tree_row_reference_new, GtkTreeModel_val, GtkTreePath_val,
+      Val_GtkTreeRowReference)
+ML_1 (gtk_tree_row_reference_valid, GtkTreeRowReference_val, Val_bool)
+ML_1 (gtk_tree_row_reference_get_path, GtkTreeRowReference_val,
+      Val_GtkTreePath) /* already copied! */
+
+/* TreeModel */
+ML_1 (gtk_tree_model_get_n_columns, GtkTreeModel_val, Val_int)
+ML_2 (gtk_tree_model_get_column_type, GtkTreeModel_val, Int_val, Val_GType)
+ML_3 (gtk_tree_model_get_iter, GtkTreeModel_val, GtkTreeIter_val,
+      GtkTreePath_val, Val_bool)
+ML_2 (gtk_tree_model_get_path, GtkTreeModel_val, GtkTreeIter_val,
+      Val_GtkTreePath)
+ML_4 (gtk_tree_model_get_value, GtkTreeModel_val, GtkTreeIter_val, Int_val,
+      GValue_val, Unit)
+ML_2 (gtk_tree_model_iter_next, GtkTreeModel_val, GtkTreeIter_val,
+      Val_bool)
+ML_3 (gtk_tree_model_iter_children, GtkTreeModel_val, GtkTreeIter_val,
+      GtkTreeIter_val, Val_bool)
+ML_2 (gtk_tree_model_iter_n_children, GtkTreeModel_val, GtkTreeIter_val,
+      Val_int)
+ML_3 (gtk_tree_model_iter_parent, GtkTreeModel_val, GtkTreeIter_val,
+      GtkTreeIter_val, Val_bool)
 
 /* gtktreestore.h */
 

@@ -73,12 +73,108 @@ module Tree = struct
   end
 end
 
+module TreePath = struct
+  external create_ : unit -> tree_path = "ml_gtk_tree_path_new"
+  external to_string : tree_path -> string = "ml_gtk_tree_path_to_string"
+  external append_index : tree_path -> int -> unit
+    = "ml_gtk_tree_path_append_index"
+  let create l =
+    let p = create_ () in List.iter (append_index p) l; p
+  external prepend_index : tree_path -> int -> unit
+    = "ml_gtk_tree_path_prepend_index"
+  external get_depth : tree_path -> int
+    = "ml_gtk_tree_path_get_depth"
+  external get_indices : tree_path -> int array
+    = "ml_gtk_tree_path_get_indices"
+  external copy : tree_path -> tree_path = "ml_gtk_tree_path_copy"
+  external next : tree_path -> unit = "ml_gtk_tree_path_next"
+  external prev : tree_path -> unit = "ml_gtk_tree_path_prev"
+  external up : tree_path -> bool = "ml_gtk_tree_path_up"
+  external down : tree_path -> unit = "ml_gtk_tree_path_down"
+  external is_ancestor : tree_path -> tree_path -> bool
+    = "ml_gtk_tree_path_is_ancestor"
+end
+
+module RowReference = struct
+  external create : tree_model obj -> tree_path -> row_reference
+    = "ml_gtk_tree_row_reference_new"
+  external get_path : row_reference -> tree_path
+    = "ml_gtk_tree_row_reference_get_path"
+  external valid : row_reference -> bool
+    = "ml_gtk_tree_row_reference_valid"
+end
+
 module TreeModel = struct
   let cast w : tree_model obj = Object.try_cast w "GtkTreeModel"
+  external get_n_columns : [>`treemodel] obj -> int
+    = "ml_gtk_tree_model_get_n_columns"
+  external get_column_type : [>`treemodel] obj -> int -> Gobject.g_type
+    = "ml_gtk_tree_model_get_column_type"
+  external alloc_iter : unit -> tree_iter = "ml_alloc_GtkTreeIter"
+  external copy_iter : tree_iter -> tree_iter = "ml_gtk_tree_iter_copy"
+  external get_iter : [>`treemodel] obj -> tree_iter -> tree_path -> bool
+    = "ml_gtk_tree_model_get_iter"
+  let get_iter m p =
+    let i = alloc_iter () in
+    if get_iter m i p then i else failwith "GtkTree.TreeModel.get_iter"
+  external get_path : [>`treemodel] obj -> tree_iter -> tree_path
+    = "ml_gtk_tree_model_get_path"
   external get_value :
     [>`treemodel] obj -> row:tree_iter -> column:int -> Gobject.g_value -> unit
     = "ml_gtk_tree_model_get_value"
-  external alloc_iter : unit -> tree_iter = "ml_alloc_GtkTreeIter"
+  external iter_next : [>`treemodel] obj -> tree_iter -> bool
+    = "ml_gtk_tree_model_iter_next"
+  external iter_children :
+    [>`treemodel] obj -> tree_iter -> parent:tree_iter -> bool
+    = "ml_gtk_tree_model_iter_children"
+  let iter_children m parent =
+    let i = alloc_iter () in
+    if iter_children m i ~parent then i
+    else failwith "GtkTree.TreeModel.iter_children"
+  external iter_n_children : [>`treemodel] obj -> tree_iter -> int
+    = "ml_gtk_tree_model_iter_n_children"
+  let iter_nth_child m p n =
+    if n < 0 || n >= iter_n_children m p then
+      failwith "GtkTree.TreeModel.iter_nth_child";
+    let it = iter_children m p in
+    for i = 1 to n do iter_next m it done;
+    it
+  external iter_parent :
+    [>`treemodel] obj -> tree_iter -> child:tree_iter -> bool
+    = "ml_gtk_tree_model_iter_children"
+  let iter_parent m child =
+    let i = alloc_iter () in
+    if iter_parent m i ~child then i
+    else failwith "GtkTree.TreeModel.iter_parent"
+  module Signals = struct
+    open GtkSignal
+    external extract_iter : Gpointer.boxed -> tree_iter
+      = "ml_gtk_tree_iter_copy"
+    external extract_path : Gpointer.boxed -> tree_path
+      = "ml_gtk_tree_path_copy"
+    let marshal_path_iter f _ = function
+      | `POINTER(Some p) :: `POINTER(Some i) :: _ ->
+          f (extract_path p) (extract_iter i)
+      |	_ -> invalid_arg "GtkTree.TreeModel.Signals.marshal_path_iter"
+    let marshal_path f _ = function
+      | `POINTER(Some p) :: _ -> f (extract_path p)
+      |	_ -> invalid_arg "GtkTree.TreeModel.Signals.marshal_path"
+    let row_changed =
+      { name = "row-changed"; classe = `treemodel;
+        marshaller = marshal_path_iter }
+    let row_inserted =
+      { name = "row-inserted"; classe = `treemodel;
+        marshaller = marshal_path_iter }
+    let row_has_child_toggled =
+      { name = "row-has-child-toggled"; classe = `treemodel;
+        marshaller = marshal_path_iter }
+    let row_deleted =
+      { name = "row-deleted"; classe = `treemodel;
+        marshaller = marshal_path }
+    let rows_reordered =
+      { name = "rows-reordered"; classe = `treemodel;
+        marshaller = marshal_path_iter }
+  end
 end
 
 module TreeStore = struct
