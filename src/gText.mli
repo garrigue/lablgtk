@@ -63,7 +63,8 @@ object
   method backward_chars : int -> bool
   method backward_cursor_position : unit -> bool
   method backward_cursor_positions : int -> bool
-  method backward_find_char : ?limit:iter -> (char -> bool) -> bool
+  method backward_find_char :
+    ?limit:iter -> (Glib.Utf8.unichar -> bool) -> bool
   method backward_line : unit -> bool
   method backward_lines : int -> bool
   method backward_sentence_start : unit -> bool
@@ -84,7 +85,8 @@ object
   method forward_chars : int -> bool
   method forward_cursor_position : unit -> bool
   method forward_cursor_positions : int -> bool
-  method forward_find_char : ?limit:iter -> (char -> bool) -> bool
+  method forward_find_char :
+    ?limit:iter -> (Glib.Utf8.unichar -> bool) -> bool
   method forward_line : unit -> bool
   method forward_lines : int -> bool
   method forward_sentence_end : unit -> bool
@@ -221,8 +223,8 @@ object
   method get_char_count : int
   method get_end_iter : iter
   method get_insert : mark
-  method get_iter_at : ?line_number:int -> ?char_offset:int -> unit -> iter
-  method get_iter_at_line_index : ?line_number:int -> int -> iter
+  method get_iter_at_char : ?line:int -> int -> iter
+  method get_iter_at_byte : ?line:int -> int -> iter
   method get_iter_at_mark : mark -> iter
   method get_line_count : int
   method get_mark : name:string -> mark
