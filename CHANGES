@@ -1,5 +1,13 @@
 $Id$
 
+2001.03.13
+  * support GTK 1.2.3
+
+2001.03.12
+  * released 1.2.0
+  * merged in variance annotations
+  * added gears example by Eric Cooper
+
 2001.02.27
   * add extractors to Gdk.Image
   * slight API change in GDraw.drawing#put_{image,pixmap}

@@ -8,6 +8,10 @@
 #include <caml/callback.h>
 #include <caml/fail.h>
 
+#if (GTK_MAJOR_VERSION <= 1) && (GTK_MINOR_VERSION <= 2) && (GTK_MICRO_VERSION <= 3)
+#define GTK_WIN_POS_CENTER_ALWAYS 0
+#endif
+
 #include "wrappers.h"
 #include "ml_glib.h"
 #include "ml_gdk.h"
