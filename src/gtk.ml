@@ -213,6 +213,12 @@ module Style = struct
   external get_bg : t -> state:state -> Gdk.Color.t = "ml_gtk_style_get_bg"
   let get_bg st ?:state [< `NORMAL >] = get_bg st :state
   external get_colormap : t -> Gdk.colormap = "ml_gtk_style_get_colormap"
+  external get_font : t -> Gdk.font = "ml_gtk_style_get_font"
+  external set_font : t -> Gdk.font -> unit = "ml_gtk_style_set_font"
+  let set st ?:background ?:font =
+    let may_set f = may fun:(f st) in
+    may_set set_background background;
+    may_set set_font font
 end
 
 module Object = struct
