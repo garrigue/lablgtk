@@ -27,7 +27,7 @@ Make_Flags_val (GdkModifier_val)
 
 /* Colormap */
 
-Make_Val_final_pointer (GdkColormap, gdk_colormap_ref, gdk_colormap_unref)
+Make_Val_final_pointer (GdkColormap, , gdk_colormap_ref, gdk_colormap_unref)
 ML_0 (gdk_colormap_get_system, Val_GdkColormap)
 
 /* Color */
@@ -91,12 +91,14 @@ Make_Extractor (GdkRectangle,(GdkRectangle*),height,Val_int)
 
 /* Window */
 
-Make_Val_final_pointer (GdkWindow, gdk_window_ref, gdk_window_unref)
+Make_Val_final_pointer (GdkWindow, , gdk_window_ref, gdk_window_unref)
 
 /* Pixmap */
 
-Make_Val_final_pointer (GdkPixmap, gdk_pixmap_ref, gdk_pixmap_unref)
-Make_Val_final_pointer (GdkBitmap, gdk_bitmap_ref, gdk_bitmap_unref)
+Make_Val_final_pointer (GdkPixmap, , gdk_pixmap_ref, gdk_pixmap_unref)
+Make_Val_final_pointer (GdkBitmap, , gdk_bitmap_ref, gdk_bitmap_unref)
+Make_Val_final_pointer (GdkPixmap, _no_ref, Ignore, gdk_pixmap_unref)
+Make_Val_final_pointer (GdkBitmap, _no_ref, Ignore, gdk_bitmap_unref)
 ML_4 (gdk_pixmap_new, GdkWindow_val, Int_val, Int_val, Int_val,
       Val_GdkPixmap_no_ref)
 ML_4 (gdk_bitmap_create_from_data, GdkWindow_val,
@@ -153,7 +155,8 @@ value ml_gdk_pixmap_colormap_create_from_xpm_d
 
 /* Font */
 
-Make_Val_final_pointer (GdkFont, gdk_font_ref, gdk_font_unref)
+Make_Val_final_pointer (GdkFont, , gdk_font_ref, gdk_font_unref)
+Make_Val_final_pointer (GdkFont, _no_ref, Ignore, gdk_font_unref)
 ML_1 (gdk_font_load, String_val, Val_GdkFont_no_ref)
 ML_1 (gdk_fontset_load, String_val, Val_GdkFont_no_ref)
 ML_2 (gdk_string_width, GdkFont_val, String_val, Val_int)
@@ -163,7 +166,8 @@ ML_2 (gdk_char_measure, GdkFont_val, Char_val, Val_int)
 
 /* GC */
 
-Make_Val_final_pointer (GdkGC, gdk_gc_ref, gdk_gc_unref)
+Make_Val_final_pointer (GdkGC, , gdk_gc_ref, gdk_gc_unref)
+Make_Val_final_pointer (GdkGC, _no_ref, Ignore, gdk_gc_unref)
 ML_1 (gdk_gc_new, GdkWindow_val, Val_GdkGC_no_ref)
 ML_2 (gdk_gc_set_foreground, GdkGC_val, GdkColor_val, Unit)
 ML_2 (gdk_gc_set_background, GdkGC_val, GdkColor_val, Unit)
@@ -218,8 +222,8 @@ ML_bc6 (ml_gdk_draw_string)
 
 /* Events */
 
-Make_Val_final_pointer (GdkEvent, , gdk_event_free)
-ML_1 (gdk_event_copy, (GdkEvent*), Val_GdkEvent_no_ref)
+Make_Val_final_pointer (GdkEvent, , Ignore, gdk_event_free)
+ML_1 (gdk_event_copy, (GdkEvent*), Val_GdkEvent)
 
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), type, Val_gdkEventType)
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), window, Val_GdkWindow)
