@@ -11,6 +11,10 @@ void ml_raise_null_pointer (void) Noreturn;
 value Val_pointer (void *);
 value copy_string_check (const char*);
 
+typedef struct { value key; int data; } lookup_info;
+value ml_lookup_from_c (lookup_info *table, int data);
+int ml_lookup_to_c (lookup_info *table, value key);
+
 /* Wrapper generators */
 
 #define ML_0(cname, conv) \
@@ -160,15 +164,15 @@ value ml_##name##_##field (value val, value index, value new) \
 
 /* ML value is [flag list] */
 #define Make_Flags_val(conv) \
-long Flags_##conv (value list) \
-{ long flags = 0L; \
+int Flags_##conv (value list) \
+{ int flags = 0L; \
   while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
   return flags; }
 
 /* ML value is [flag list option] */
 #define Make_OptFlags_val(conv) \
-long OptFlags_##conv (value list) \
-{ long flags = 0L; \
+int OptFlags_##conv (value list) \
+{ int flags = 0L; \
   if Is_block(list) list = Field(list,0); \
   while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
   return flags; }

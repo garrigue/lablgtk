@@ -56,24 +56,22 @@ let declaration = parser
     and cname =
       String.capitalize name
     in
-    printf "/* %s : ML to C */\n" name;
-    printf "long %s_val (value tag) {\n" cname;
-    printf "  switch (tag) {\n";
+    let tags =
+      Sort.list tags
+	order:(fun (tag1,_) (tag2,_) -> hash_variant tag1 < hash_variant tag2)
+    in
+    printf "/* %s : conversion table */\n" name;
+    printf "lookup_info ml_table_%s[] = {\n" name;
+    printf "  { 0, %d },\n" (List.length tags);
     List.iter tags fun:
-      (fun (tag,trans) ->
-	printf "  case MLTAG_%s: return %s;\n" tag (ctag tag trans));
-    printf "  }\n";
-    printf "  ml_raise_gtk(\"%s_val : unknown tag\");\n" cname;
-    printf "}\n\n";
-    printf "/* %s : C to ML */\n" name;
-    printf "value Val_%s (long tag) {\n" name;
-    printf "  switch (tag) {\n";
-    List.iter tags fun:
-      (fun (tag, trans) ->
-	printf "  case %s: return MLTAG_%s;\n" (ctag tag trans) tag);
-    printf "  }\n";
-    printf "  %s(\"Val_%s : unknown tag\");\n" !exn_name name;
-    printf "}\n\n"
+      begin fun (tag,trans) ->
+	printf "  { MLTAG_%s, %s },\n" tag (ctag tag trans)
+      end;
+    printf "};\n\n";
+    printf "#define Val_%s(data) ml_lookup_from_c (ml_table_%s, data)\n"
+      name name;
+    printf "#define %s_val(key) ml_lookup_to_c (ml_table_%s, key)\n\n"
+      cname name;
   | [< 'Kwd"exception"; 'Ident name >] ->
       exn_name := name
   | [< >] -> raise End_of_file
