@@ -26,7 +26,7 @@ let main () =
   window#connect#destroy cb:Main.quit;
   window#border_width 10;
 
-  let table = new_table 3 2 in
+  let table = new_table rows:3 columns:2 in
   window#add table;
   
   let label = new_label "Progress Bar Example" in

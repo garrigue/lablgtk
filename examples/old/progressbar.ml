@@ -23,7 +23,7 @@ let main () =
   Window.Connect.destroy window cb:Main.quit;
   Window.set window border_width: 10;
 
-  let table = Table.create 3 2 in
+  let table = Table.create rows:3 columns:2 in
   Window.add window table;
   
   let label = Label.create "Progress Bar Example" in
@@ -35,11 +35,11 @@ let main () =
   let bar = new bar pbar in
   let ptimer = Timeout.add 100 cb:(fun () -> bar#progress) in
 
-  let button = Button.create_with_label "Reset" in
+  let button = Button.create label:"Reset" in
   Button.Connect.clicked button cb:(fun () -> bar#progress_r);
   Table.attach table button left:0 top:2 expand:`none fill:`x shrink:`both;
 
-  let button = Button.create_with_label "Cancel" in
+  let button = Button.create label:"Cancel" in
   Button.Connect.clicked button cb:Main.quit;
   Table.attach table button left:1 top:2 expand:`none fill:`x shrink:`both;
 

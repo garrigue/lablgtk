@@ -1815,7 +1815,7 @@ module Table = struct
     else invalid_arg "Gtk.Table.cast"
   external create : int -> int -> homogeneous:bool -> t obj
       = "ml_gtk_table_new"
-  let create r c ?:homogeneous [< false >] = create r c :homogeneous
+  let create rows:r columns:c ?:homogeneous [< false >] = create r c :homogeneous
   external attach :
       [> table] obj -> [> widget] obj -> left:int -> right:int ->
       top:int -> bottom:int -> xoptions:attach list ->
