@@ -89,3 +89,8 @@ class prop_adjustment :
 class prop_clist_titles :
   name:string -> init:string ->
     set:(string list -> bool) -> prop
+
+class prop_file :
+  name:string -> init:string -> set:(string -> bool) -> prop
+
+
