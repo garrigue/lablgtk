@@ -309,8 +309,7 @@ let target_drag_motion (pixmap : pixmap) (context : drag_context) :x :y :time =
   end;
   let source_typename =
     try
-      let source_widget =  context#get_source_widget in
-      GtkBase.Type.name source_widget#get_type
+      GtkBase.Type.name context#source_widget#get_type
     with Null_pointer -> "unknown"
   in
   Printf.printf "motion, source %s\n" source_typename; flush stdout;
