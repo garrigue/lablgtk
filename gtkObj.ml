@@ -174,16 +174,39 @@ let new_aspect_frame :label ?:xalign ?:yalign ?:ratio ?:obey =
 class ['a] box_skel obj = object
   inherit ['a] container_skel obj
   method pack : 'b . (#widgeter as 'b) -> _ = fun w ->  Box.pack ?obj ?w#widget
-  method set = Box.set ?obj
 end
 
 class box obj = object
   inherit [Box.t] box_skel obj
   method connect = new container_signals obj
+  method set = Box.set ?obj
 end
 
 let new_box dir ?:homogeneous ?:spacing =
   new box (Box.create dir ?:homogeneous ?:spacing)
+
+class statusbar_context obj ctx = object (self)
+  val obj : Statusbar.t obj = obj
+  val context : Statusbar.context = ctx
+  method context = context
+  method push text = Statusbar.push obj context :text
+  method pop () = Statusbar.pop obj context
+  method remove = Statusbar.remove obj context
+  method flash text ?:delay [< 1000 >] =
+    let msg = self#push text in
+    Timeout.add delay callback:(fun () -> self#remove msg; false);
+    ()
+end
+
+class statusbar obj = object
+  inherit [Statusbar.t] box_skel obj
+  method connect = new container_signals obj
+  method set = Box.set ?obj
+  method new_context :name =
+    new statusbar_context obj (Statusbar.get_context obj name)
+end
+
+let new_statusbar () = new statusbar (Statusbar.create ())
 
 class ['a] window_skel obj = object
   inherit ['a] container_skel obj
