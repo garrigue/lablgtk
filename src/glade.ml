@@ -36,31 +36,27 @@ let signal_connect self ~handler ~f =
 
 external get_widget : [> `glade_xml] obj -> name:string -> widget obj
     = "ml_glade_xml_get_widget"
-external get_widget_by_long_name :
-    [> `glade_xml] obj -> name:string -> widget obj
-    = "ml_glade_xml_get_widget_by_long_name"
 external get_widget_name : [> `widget] obj -> string
     = "ml_glade_get_widget_name"
-external get_widget_long_name : [> `widget] obj -> string
-    = "ml_glade_get_widget_long_name"
 external get_widget_tree : [> `widget] obj -> glade_xml obj
     = "ml_glade_get_widget_tree"
 
 (* Signal handlers *)
+open Gobject
 
 type handler =
   [ `Simple of (unit -> unit)
   | `Object of string * (unit obj -> unit)
-  | `Custom of (GtkArgv.t -> GtkArgv.data list -> unit) ]
+  | `Custom of (Closure.argv -> data_get list -> unit) ]
 
 let ($) f g x = g (f x)
-let gtk_bool b argv _ = GtkArgv.set_result argv (`BOOL b)
+let gtk_bool b argv _ = Closure.set_result argv (`BOOL b)
 let known_handlers : (string, handler) Hashtbl.t = Hashtbl.create 7
 let add_handler ~name handler =
   Hashtbl.add known_handlers name handler
 open GtkBase
 let _ = List.iter ~f:(fun (name,h) -> add_handler ~name h)
-    [ "gtk_widget_destroy", `Object ("GtkObject", Object.destroy);
+    [ "gtk_widget_destroy",`Object ("GtkObject", Object.cast $ Object.destroy);
       "gtk_main_quit", `Simple GtkMain.Main.quit;
       "gtk_widget_show", `Object ("GtkWidget", Widget.cast $ Widget.show);
       "gtk_widget_hide", `Object ("GtkWidget", Widget.cast $ Widget.hide);
@@ -85,7 +81,7 @@ let check_handler ?target ?(name="<unknown>") handler =
           eprintf "Glade-warning: %s requires an object argument.\n" name;
           raise Not_found
       | Some obj ->
-          if GtkBase.Object.is_a obj cls then
+          if Gobject.is_a obj cls then
             fun _ -> f obj
           else begin
             eprintf "Glade-warning: %s expects a %s argument.\n" name cls;
@@ -95,7 +91,7 @@ let check_handler ?target ?(name="<unknown>") handler =
   | `Custom f ->
       if target <> None then
         eprintf "Glade-warning: %s does not take an object argument.\n" name;
-      fun argv -> f argv (GtkArgv.get_args argv)
+      fun argv -> f argv (Closure.get_args argv)
 
 let bind_handlers ?(extra=[]) ?(warn=false) xml =
   signal_autoconnect xml ~f:
@@ -106,7 +102,8 @@ let bind_handlers ?(extra=[]) ?(warn=false) xml =
           with Not_found -> Hashtbl.find known_handlers name
         in
         let callback = check_handler ?target ~name handler in
-        ignore (GtkSignal.connect_by_name obj ~name:signal ~after ~callback)
+        ignore (GtkSignal.connect_by_name obj ~name:signal ~after
+		  ~callback:(Closure.create callback))
       with Not_found ->
         if warn then eprintf "Glade.bind_handlers: no handler for %s\n" name
     end;
@@ -118,7 +115,8 @@ let bind_handler ~name ~handler ?(warn=true) xml =
     begin fun ~signal ~after ?target obj ->
       warn := false;
       let callback = check_handler ?target ~name handler in
-      ignore (GtkSignal.connect_by_name obj ~name:signal ~after ~callback)
+      ignore (GtkSignal.connect_by_name obj ~name:signal ~after
+		~callback:(Closure.create callback))
     end;
   if !warn then begin
     eprintf "Glade-warning: handler %s is not used\n" name;
@@ -147,7 +145,8 @@ let trace_handlers oc xml =
             handler signal (get_widget_name (GtkBase.Widget.cast obj));
         flush oc
       in
-      ignore (GtkSignal.connect_by_name obj ~name:signal ~after ~callback)
+      ignore (GtkSignal.connect_by_name obj ~name:signal ~after
+		~callback:(Closure.create callback))
     end
       
 (* class skeleton, for use in generated wrappers *)

@@ -14,14 +14,13 @@ class editor () =
       fs#cancel_button#connect#clicked ~callback:fs#destroy;
       fs#ok_button#connect#clicked ~callback:
         begin fun () ->
-          self#text1#delete_text ~start:0 ~stop:self#text1#length;
+          self#textview1#get_buffer#set_text "";
           fs#destroy ()
         end;
       fs#show ()
 
     initializer
-      self#bind ~name:"on_open1_activate" ~callback:self#open_file;
-      self#text1#set_editable true
+      self#bind ~name:"on_open1_activate" ~callback:self#open_file
   end
 
 let main () =
