@@ -222,6 +222,17 @@ let list_store (cols : column_list) =
   Hashtbl.add model_ids (Gobject.get_oid store) cols#id;
   new list_store store
 
+let store_of_list conv data =
+  let cols = new column_list in
+  let column = cols#add conv in
+  let store = list_store cols in
+  List.iter
+    (fun d ->
+      let row = store#append () in
+      store#set ~row ~column d)
+    data ;
+  store, column
+
 class model_sort (obj : Gtk.tree_model_sort) = object
   inherit tree_sortable obj
   method model = new model (Gobject.get GtkTree.TreeModelSort.P.model obj)

@@ -143,9 +143,10 @@ class model : ([> `treemodel] as 'a) obj ->
     method get_iter_first : tree_iter option
     method iter_next : tree_iter -> bool
     method iter_has_child : tree_iter -> bool
-    method iter_n_children : tree_iter -> int
-    method iter_children : ?nth:int -> tree_iter -> tree_iter
-    method iter_parent : tree_iter -> tree_iter
+    method iter_n_children : tree_iter option -> int
+    method iter_children : ?nth:int -> tree_iter option -> tree_iter 
+      (** @raise Invalid_argument if arguments do not designate a valid node *)
+    method iter_parent : tree_iter -> tree_iter option
     method foreach : (tree_path -> tree_iter -> bool) -> unit
     method row_changed : tree_path -> tree_iter -> unit
   end
@@ -216,6 +217,9 @@ class list_store : Gtk.list_store ->
 
 (** @gtkdoc gtk GtkListStore *)
 val list_store : column_list -> list_store
+
+(** Convenience function to map a caml list into a {!GTree.list_store} with a single column *)
+val store_of_list : 'a Gobject.data_conv -> 'a list -> list_store * 'a column
 
 (** @gtkdoc gtk GtkTreeModelSort *)
 class model_sort : Gtk.tree_model_sort ->
