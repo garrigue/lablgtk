@@ -1,5 +1,8 @@
 $Id$
 
+1999.6.18
+  * added GL extension
+
 1999.6.15
   * grouped set methods into set_<keyword>
   * added width and height option to all classes
