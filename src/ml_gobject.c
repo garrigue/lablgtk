@@ -27,13 +27,14 @@ ML_1 (g_object_thaw_notify, GObject_val, Unit)
 ML_2 (g_object_notify, GObject_val, String_val, Unit)
 ML_3 (g_object_set_property, GObject_val, String_val, GValue_val, Unit)
 ML_3 (g_object_get_property, GObject_val, String_val, GValue_val, Unit)
-CAMLprim value ml_g_object_get_property_type (value obj, value prop)
+GType my_g_object_get_property_type(GObject *obj, const char *prop)
 {
     GParamSpec *pspec =
-        g_object_class_find_property (G_OBJECT_GET_CLASS(GObject_val(obj)),
-                                      String_val(prop));
-    return Val_GType(pspec->value_type);
+        g_object_class_find_property (G_OBJECT_GET_CLASS(obj), prop);
+    if (pspec == NULL) raise_not_found();
+    return pspec->value_type;
 }
+ML_2 (my_g_object_get_property_type, GObject_val, String_val, Val_GType)
 
 
 /* gtype.h */
@@ -82,9 +83,9 @@ static void marshal (GClosure *closure, GValue *ret,
     value vargs = alloc(3,0);
 
     CAMLparam1 (vargs);
-    Store_field(vargs, 0, (ret ? Val_GValue(ret) : alloc(2,0)));
+    Store_field(vargs, 0, (ret ? Val_GValue_wrap(ret) : alloc(2,0)));
     Store_field(vargs, 1, Val_int(nargs));
-    Store_field(vargs, 2, Val_GValue((GValue*)args));
+    Store_field(vargs, 2, Val_GValue_wrap((GValue*)args));
 
     callback ((value)closure->data, vargs);
 
@@ -102,27 +103,43 @@ CAMLprim value ml_g_closure_new (value clos)
 
 /* gvalue.h / gparamspec.h */
 
-#define g_value_unset_and_free(gv) g_value_unset(gv); g_free(gv)
-Make_Val_final_pointer_ext(GValue, _new, Ignore, g_value_unset_and_free, 20)
-
-CAMLprim value ml_g_value_new(value v)
+static void ml_final_GValue (value val)
 {
-    GValue *gvalue = g_malloc(sizeof(GValue));
-    if (gvalue==NULL) raise_out_of_memory ();
-    gvalue->g_type = 0;
-    return Val_GValue_new(gvalue);
+    GValue *gv = GValueptr_val(val);
+    if (gv != NULL && gv->g_type != 0) g_value_unset(gv);
+}
+
+static struct custom_operations ml_custom_GValue =
+{ "GValue/2.0/", ml_final_GValue, custom_compare_default, custom_hash_default,
+  custom_serialize_default, custom_deserialize_default };
+
+CAMLprim value ml_g_value_new(void)
+{
+    value ret = alloc_custom(&ml_custom_GValue, sizeof(value)+sizeof(GValue),
+                             20, 1000);
+    /* create an MLPointer */
+    Field(ret,1) = 2;
+    ((GValue*)&Field(ret,2))->g_type = 0;
+    return ret;
+}
+
+value Val_GValue_copy(GValue *gv)
+{
+    value ret = ml_g_value_new();
+    *((GValue*)&Field(ret,2)) = *gv;
+    return ret;
 }
 
 CAMLprim value ml_g_value_release(value val)
 {
-    if (Tag_val(val) == Custom_tag) ml_final_GValue_new(val);
+    ml_final_GValue (val);
     Pointer_val(val) = NULL;
     return Val_unit;
 }
 
 GValue* GValue_val(value val)
 {
-    void *v = Pointer_val(val);
+    void *v = MLPointer_val(val);
     if (v == NULL) invalid_argument("GValue_val");
     return (GValue*)v;
 }
@@ -137,7 +154,7 @@ ML_2 (g_value_transform, GValue_val, GValue_val, Val_bool)
 
 CAMLprim value ml_g_value_shift (value args, value index)
 {
-    return Val_GValue (&GValue_val(args)[Int_val(index)]);
+    return Val_GValue_wrap (&GValue_val(args)[Int_val(index)]);
 }
 
 #define DATA  (val->data[0])
@@ -338,11 +355,10 @@ CAMLprim value ml_g_value_get_pointer (value arg)
 CAMLprim value ml_g_object_get_property_dyn (value vobj, value prop)
 {
   GObject *obj = GObject_val(vobj);
-  GParamSpec *pspec =
-    g_object_class_find_property (G_OBJECT_GET_CLASS(obj), String_val(prop));
+  GType tp = my_g_object_get_property_type(obj, String_val(prop));
   GValue val = {0};
   value ret;
-  g_value_init (&val, pspec->value_type);
+  g_value_init (&val, tp);
   g_object_get_property (obj, String_val(prop), &val);
   ret = g_value_get_variant (&val);
   g_value_unset (&val);
@@ -352,10 +368,9 @@ CAMLprim value ml_g_object_get_property_dyn (value vobj, value prop)
 CAMLprim value ml_g_object_set_property_dyn (value vobj, value prop, value arg)
 {
   GObject *obj = GObject_val(vobj);
-  GParamSpec *pspec =
-    g_object_class_find_property (G_OBJECT_GET_CLASS(obj), String_val(prop));
+  GType tp = my_g_object_get_property_type(obj, String_val(prop));
   GValue val = {0};
-  g_value_init (&val, pspec->value_type);
+  g_value_init (&val, tp);
   g_value_set_variant (&val, arg);
   g_object_set_property (obj, String_val(prop), &val);
   g_value_unset (&val);
@@ -392,8 +407,10 @@ CAMLprim value ml_g_signal_emit_by_name (value obj, value sig, value params)
     if (Wosize_val(params) != query.n_params)
         failwith("GtkSignal.emit_by_name : bad parameters number");
     return_type = query.return_type & ~G_SIGNAL_TYPE_STATIC_SCOPE;
-    if (return_type != G_TYPE_NONE)
-        ret = ml_g_value_new (Val_GType (return_type));
+    if (return_type != G_TYPE_NONE) {
+        ret = ml_g_value_new();
+        g_value_init (GValue_val(ret), return_type);
+    }
     for (i = 0; i < query.n_params; i++) {
         g_value_init (&iparams[i+1],
                       query.param_types[i] & ~G_SIGNAL_TYPE_STATIC_SCOPE);
@@ -403,5 +420,6 @@ CAMLprim value ml_g_signal_emit_by_name (value obj, value sig, value params)
     for (i = 0; i < query.n_params + 1; i++)
         g_value_unset (iparams + i);
     free (iparams);
+    if (!ret) ret = Val_unit;
     CAMLreturn(ret);
 }

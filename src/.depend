@@ -36,7 +36,7 @@ gMisc.cmo: gContainer.cmi gDraw.cmi gObj.cmi gPack.cmi gaux.cmo glib.cmi \
 gMisc.cmx: gContainer.cmx gDraw.cmx gObj.cmx gPack.cmx gaux.cmx glib.cmx \
     gpointer.cmx gtk.cmx gtkBase.cmx gtkMisc.cmx gtkSignal.cmx gtkStock.cmx \
     gMisc.cmi 
-gObj.cmo: gDraw.cmi gPango.cmo gaux.cmo gdk.cmi gobject.cmo gpointer.cmi \
+gObj.cmo: gDraw.cmi gPango.cmo gaux.cmo gdk.cmi gobject.cmi gpointer.cmi \
     gtk.cmo gtkBase.cmo gtkData.cmo gtkSignal.cmi gtkStock.cmo pango.cmo \
     gObj.cmi 
 gObj.cmx: gDraw.cmx gPango.cmx gaux.cmx gdk.cmx gobject.cmx gpointer.cmx \
@@ -52,7 +52,7 @@ gRange.cmo: gData.cmi gObj.cmi gaux.cmo gtk.cmo gtkBase.cmo gtkRange.cmo \
     gRange.cmi 
 gRange.cmx: gData.cmx gObj.cmx gaux.cmx gtk.cmx gtkBase.cmx gtkRange.cmx \
     gRange.cmi 
-gText.cmo: gObj.cmi gaux.cmo gdkEvent.cmo gdkPixbuf.cmi glib.cmi gobject.cmo \
+gText.cmo: gObj.cmi gaux.cmo gdkEvent.cmo gdkPixbuf.cmi glib.cmi gobject.cmi \
     gtk.cmo gtkBase.cmo gtkSignal.cmi gtkText.cmo pango.cmo gText.cmi 
 gText.cmx: gObj.cmx gaux.cmx gdkEvent.cmx gdkPixbuf.cmx glib.cmx gobject.cmx \
     gtk.cmx gtkBase.cmx gtkSignal.cmx gtkText.cmx pango.cmx gText.cmi 
@@ -62,53 +62,53 @@ gToolbox.cmo: gBin.cmi gButton.cmi gEdit.cmi gMain.cmi gMenu.cmi gMisc.cmi \
 gToolbox.cmx: gBin.cmx gButton.cmx gEdit.cmx gMain.cmx gMenu.cmx gMisc.cmx \
     gObj.cmx gPack.cmx gText.cmx gTree.cmx gWindow.cmx gdkEvent.cmx \
     gdkKeysyms.cmx gToolbox.cmi 
-gTree.cmo: gContainer.cmi gData.cmi gObj.cmi gaux.cmo gobject.cmo \
+gTree.cmo: gContainer.cmi gData.cmi gObj.cmi gaux.cmo gobject.cmi \
     gpointer.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi gtkTree.cmo gTree.cmi 
 gTree.cmx: gContainer.cmx gData.cmx gObj.cmx gaux.cmx gobject.cmx \
     gpointer.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx gtkTree.cmx gTree.cmi 
 gUtil.cmo: gObj.cmi gtkSignal.cmi gUtil.cmi 
 gUtil.cmx: gObj.cmx gtkSignal.cmx gUtil.cmi 
 gWindow.cmo: gButton.cmi gContainer.cmi gList.cmi gMisc.cmi gObj.cmi \
-    gPack.cmi gaux.cmo gobject.cmo gtk.cmo gtkBase.cmo gtkMisc.cmo \
+    gPack.cmi gaux.cmo gobject.cmi gtk.cmo gtkBase.cmo gtkMisc.cmo \
     gtkSignal.cmi gtkStock.cmo gtkWindow.cmo gWindow.cmi 
 gWindow.cmx: gButton.cmx gContainer.cmx gList.cmx gMisc.cmx gObj.cmx \
     gPack.cmx gaux.cmx gobject.cmx gtk.cmx gtkBase.cmx gtkMisc.cmx \
     gtkSignal.cmx gtkStock.cmx gtkWindow.cmx gWindow.cmi 
-gdk.cmo: gaux.cmo gobject.cmo gpointer.cmi pango.cmo gdk.cmi 
+gdk.cmo: gaux.cmo gobject.cmi gpointer.cmi pango.cmo gdk.cmi 
 gdk.cmx: gaux.cmx gobject.cmx gpointer.cmx pango.cmx gdk.cmi 
 gdkEvent.cmo: gaux.cmo gdk.cmi gpointer.cmi 
 gdkEvent.cmx: gaux.cmx gdk.cmx gpointer.cmx 
 gdkKeysyms.cmo: gdk.cmi 
 gdkKeysyms.cmx: gdk.cmx 
-gdkPixbuf.cmo: gaux.cmo gdk.cmi gobject.cmo gpointer.cmi gdkPixbuf.cmi 
+gdkPixbuf.cmo: gaux.cmo gdk.cmi gobject.cmi gpointer.cmi gdkPixbuf.cmi 
 gdkPixbuf.cmx: gaux.cmx gdk.cmx gobject.cmx gpointer.cmx gdkPixbuf.cmi 
 glGtk.cmo: gObj.cmi gaux.cmo gdkEvent.cmo gpointer.cmi gtk.cmo gtkBase.cmo \
     gtkMisc.cmo glGtk.cmi 
 glGtk.cmx: gObj.cmx gaux.cmx gdkEvent.cmx gpointer.cmx gtk.cmx gtkBase.cmx \
     gtkMisc.cmx glGtk.cmi 
-glade.cmo: gobject.cmo gtk.cmo gtkBase.cmo gtkMain.cmo gtkSignal.cmi \
+glade.cmo: gobject.cmi gtk.cmo gtkBase.cmo gtkMain.cmo gtkSignal.cmi \
     gtkWindow.cmo glade.cmi 
 glade.cmx: gobject.cmx gtk.cmx gtkBase.cmx gtkMain.cmx gtkSignal.cmx \
     gtkWindow.cmx glade.cmi 
 glib.cmo: glib.cmi 
 glib.cmx: glib.cmi 
 gnoCanvas.cmo: gObj.cmi gPack.cmi gText.cmi gdk.cmi gdkEvent.cmo \
-    gdkPixbuf.cmi gnomeCanvas.cmo gobject.cmo gpointer.cmi gtk.cmo \
+    gdkPixbuf.cmi gnomeCanvas.cmo gobject.cmi gpointer.cmi gtk.cmo \
     gtkBase.cmo gtkSignal.cmi gnoCanvas.cmi 
 gnoCanvas.cmx: gObj.cmx gPack.cmx gText.cmx gdk.cmx gdkEvent.cmx \
     gdkPixbuf.cmx gnomeCanvas.cmx gobject.cmx gpointer.cmx gtk.cmx \
     gtkBase.cmx gtkSignal.cmx gnoCanvas.cmi 
-gnomeCanvas.cmo: gObj.cmi gdk.cmi gdkPixbuf.cmi gobject.cmo gpointer.cmi \
+gnomeCanvas.cmo: gObj.cmi gdk.cmi gdkPixbuf.cmi gobject.cmi gpointer.cmi \
     gtk.cmo gtkBase.cmo gtkSignal.cmi 
 gnomeCanvas.cmx: gObj.cmx gdk.cmx gdkPixbuf.cmx gobject.cmx gpointer.cmx \
     gtk.cmx gtkBase.cmx gtkSignal.cmx 
-gobject.cmo: gaux.cmo gpointer.cmi 
-gobject.cmx: gaux.cmx gpointer.cmx 
+gobject.cmo: gaux.cmo gpointer.cmi gobject.cmi 
+gobject.cmx: gaux.cmx gpointer.cmx gobject.cmi 
 gpointer.cmo: gpointer.cmi 
 gpointer.cmx: gpointer.cmi 
-gtk.cmo: gobject.cmo gpointer.cmi 
+gtk.cmo: gobject.cmi gpointer.cmi 
 gtk.cmx: gobject.cmx gpointer.cmx 
-gtkBase.cmo: gaux.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi gobject.cmo \
+gtkBase.cmo: gaux.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi gobject.cmi \
     gpointer.cmi gtk.cmo gtkSignal.cmi pango.cmo 
 gtkBase.cmx: gaux.cmx gdk.cmx gdkEvent.cmx gdkPixbuf.cmx gobject.cmx \
     gpointer.cmx gtk.cmx gtkSignal.cmx pango.cmx 
@@ -118,9 +118,9 @@ gtkButton.cmo: gaux.cmo gpointer.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi \
     gtkStock.cmo 
 gtkButton.cmx: gaux.cmx gpointer.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx \
     gtkStock.cmx 
-gtkData.cmo: gaux.cmo gdk.cmi gobject.cmo gtk.cmo gtkSignal.cmi 
+gtkData.cmo: gaux.cmo gdk.cmi gobject.cmi gtk.cmo gtkSignal.cmi 
 gtkData.cmx: gaux.cmx gdk.cmx gobject.cmx gtk.cmx gtkSignal.cmx 
-gtkEdit.cmo: gaux.cmo gobject.cmo gpointer.cmi gtk.cmo gtkBase.cmo \
+gtkEdit.cmo: gaux.cmo gobject.cmi gpointer.cmi gtk.cmo gtkBase.cmo \
     gtkList.cmo gtkSignal.cmi 
 gtkEdit.cmx: gaux.cmx gobject.cmx gpointer.cmx gtk.cmx gtkBase.cmx \
     gtkList.cmx gtkSignal.cmx 
@@ -136,7 +136,7 @@ gtkMenu.cmo: gaux.cmo gpointer.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi \
     gtkStock.cmo 
 gtkMenu.cmx: gaux.cmx gpointer.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx \
     gtkStock.cmx 
-gtkMisc.cmo: gaux.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi gobject.cmo \
+gtkMisc.cmo: gaux.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi gobject.cmi \
     gpointer.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi gtkStock.cmo 
 gtkMisc.cmx: gaux.cmx gdk.cmx gdkEvent.cmx gdkPixbuf.cmx gobject.cmx \
     gpointer.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx gtkStock.cmx 
@@ -146,11 +146,11 @@ gtkPack.cmo: gaux.cmo gtk.cmo gtkBase.cmo gtkSignal.cmi
 gtkPack.cmx: gaux.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx 
 gtkRange.cmo: gaux.cmo gpointer.cmi gtk.cmo gtkBase.cmo 
 gtkRange.cmx: gaux.cmx gpointer.cmx gtk.cmx gtkBase.cmx 
-gtkSignal.cmo: gaux.cmo gobject.cmo gtkSignal.cmi 
+gtkSignal.cmo: gaux.cmo gobject.cmi gtkSignal.cmi 
 gtkSignal.cmx: gaux.cmx gobject.cmx gtkSignal.cmi 
-gtkStock.cmo: gaux.cmo gdk.cmi gdkPixbuf.cmi gobject.cmo gtk.cmo 
+gtkStock.cmo: gaux.cmo gdk.cmi gdkPixbuf.cmi gobject.cmi gtk.cmo 
 gtkStock.cmx: gaux.cmx gdk.cmx gdkPixbuf.cmx gobject.cmx gtk.cmx 
-gtkText.cmo: gaux.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi glib.cmi gobject.cmo \
+gtkText.cmo: gaux.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi glib.cmi gobject.cmi \
     gpointer.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi pango.cmo 
 gtkText.cmx: gaux.cmx gdk.cmx gdkEvent.cmx gdkPixbuf.cmx glib.cmx gobject.cmx \
     gpointer.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx pango.cmx 
@@ -158,25 +158,27 @@ gtkThInit.cmo: gtkThread.cmi
 gtkThInit.cmx: gtkThread.cmx 
 gtkThread.cmo: glib.cmi gtkMain.cmo gtkSignal.cmi gtkThread.cmi 
 gtkThread.cmx: glib.cmx gtkMain.cmx gtkSignal.cmx gtkThread.cmi 
-gtkTree.cmo: gaux.cmo gobject.cmo gpointer.cmi gtk.cmo gtkBase.cmo \
+gtkTree.cmo: gaux.cmo gdk.cmi gobject.cmi gpointer.cmi gtk.cmo gtkBase.cmo \
     gtkSignal.cmi 
-gtkTree.cmx: gaux.cmx gobject.cmx gpointer.cmx gtk.cmx gtkBase.cmx \
+gtkTree.cmx: gaux.cmx gdk.cmx gobject.cmx gpointer.cmx gtk.cmx gtkBase.cmx \
     gtkSignal.cmx 
-gtkWindow.cmo: gaux.cmo gdk.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi 
-gtkWindow.cmx: gaux.cmx gdk.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx 
+gtkWindow.cmo: gaux.cmo gdk.cmi gobject.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi 
+gtkWindow.cmx: gaux.cmx gdk.cmx gobject.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx 
 gtkXmHTML.cmo: gdk.cmi gtk.cmo 
 gtkXmHTML.cmx: gdk.cmx gtk.cmx 
 lablgladecc.cmo: xml_lexer.cmi 
-lablgladecc.cmx: xml_lexer.cmi 
-pango.cmo: gobject.cmo gpointer.cmi gtk.cmo 
-pango.cmx: gobject.cmx gpointer.cmx gtk.cmx 
+lablgladecc.cmx: xml_lexer.cmx 
+pango.cmo: gaux.cmo gobject.cmi gpointer.cmi gtk.cmo 
+pango.cmx: gaux.cmx gobject.cmx gpointer.cmx gtk.cmx 
 rsvg.cmo: gdkPixbuf.cmi rsvg.cmi 
 rsvg.cmx: gdkPixbuf.cmx rsvg.cmi 
+xml_lexer.cmo: xml_lexer.cmi 
+xml_lexer.cmx: xml_lexer.cmi 
 gBin.cmi: gContainer.cmi gData.cmi gObj.cmi gdk.cmi gtk.cmo gtkSignal.cmi 
 gButton.cmi: gContainer.cmi gObj.cmi gtk.cmo gtkSignal.cmi gtkStock.cmo 
 gContainer.cmi: gData.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
 gData.cmi: gObj.cmi gtk.cmo gtkSignal.cmi 
-gDraw.cmi: gdk.cmi gobject.cmo gpointer.cmi gtk.cmo 
+gDraw.cmi: gdk.cmi gobject.cmi gpointer.cmi gtk.cmo 
 gEdit.cmi: gData.cmi gList.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
 gList.cmi: gContainer.cmi gData.cmi gDraw.cmi gObj.cmi gdkEvent.cmo gtk.cmo \
     gtkSignal.cmi 
@@ -185,24 +187,25 @@ gMenu.cmi: gButton.cmi gContainer.cmi gObj.cmi gdk.cmi gtk.cmo gtkSignal.cmi \
     gtkStock.cmo 
 gMisc.cmi: gContainer.cmi gDraw.cmi gObj.cmi gPack.cmi gdk.cmi gdkEvent.cmo \
     gdkPixbuf.cmi gtk.cmo gtkSignal.cmi gtkStock.cmo 
-gObj.cmi: gDraw.cmi gPango.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi gobject.cmo \
+gObj.cmi: gDraw.cmi gPango.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi gobject.cmi \
     gtk.cmo gtkSignal.cmi gtkStock.cmo pango.cmo 
 gPack.cmi: gContainer.cmi gData.cmi gObj.cmi gtk.cmo gtkPack.cmo \
     gtkSignal.cmi 
 gRange.cmi: gData.cmi gObj.cmi gtk.cmo 
-gText.cmi: gObj.cmi gdk.cmi gdkEvent.cmo gdkPixbuf.cmi glib.cmi gobject.cmo \
+gText.cmi: gObj.cmi gdk.cmi gdkEvent.cmo gdkPixbuf.cmi glib.cmi gobject.cmi \
     gtk.cmo gtkSignal.cmi gtkText.cmo 
 gToolbox.cmi: gList.cmi gMenu.cmi gObj.cmi gText.cmi gTree.cmi gtk.cmo 
-gTree.cmi: gContainer.cmi gData.cmi gObj.cmi gobject.cmo gtk.cmo \
+gTree.cmi: gContainer.cmi gData.cmi gObj.cmi gobject.cmi gtk.cmo \
     gtkSignal.cmi 
 gUtil.cmi: gObj.cmi gtk.cmo gtkSignal.cmi 
 gWindow.cmi: gButton.cmi gContainer.cmi gList.cmi gMisc.cmi gObj.cmi \
-    gPack.cmi gdk.cmi gobject.cmo gtk.cmo gtkSignal.cmi gtkStock.cmo 
-gdk.cmi: gobject.cmo gpointer.cmi pango.cmo 
-gdkPixbuf.cmi: gdk.cmi gobject.cmo gpointer.cmi 
+    gPack.cmi gdk.cmi gtk.cmo gtkSignal.cmi gtkStock.cmo 
+gdk.cmi: gobject.cmi gpointer.cmi pango.cmo 
+gdkPixbuf.cmi: gdk.cmi gobject.cmi gpointer.cmi 
 glGtk.cmi: gObj.cmi gpointer.cmi gtk.cmo gtkSignal.cmi 
-glade.cmi: gobject.cmo gtk.cmo 
+glade.cmi: gobject.cmi gtk.cmo 
 gnoCanvas.cmi: gObj.cmi gPack.cmi gText.cmi gdk.cmi gdkEvent.cmo \
-    gdkPixbuf.cmi gnomeCanvas.cmo gobject.cmo gtk.cmo gtkSignal.cmi 
-gtkSignal.cmi: gobject.cmo 
+    gdkPixbuf.cmi gnomeCanvas.cmo gobject.cmi gtk.cmo gtkSignal.cmi 
+gobject.cmi: gpointer.cmi 
+gtkSignal.cmi: gobject.cmi 
 rsvg.cmi: gdkPixbuf.cmi 

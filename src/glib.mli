@@ -6,6 +6,7 @@ type unichar = int
 type unistring = unichar array
 
 exception GError of string
+exception Critical of string * string
 
 module Main : sig
   type t
@@ -60,8 +61,9 @@ module Message : sig
   type log_handler
   val set_log_handler :
     domain:string ->
-    levels:log_level list -> (level:int -> string -> unit) -> unit
+    levels:log_level list -> (level:int -> string -> unit) -> log_handler
   val remove_log_handler : log_handler -> unit
+  val handle_criticals : domain:string -> unit
 end
 
 (*

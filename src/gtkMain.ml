@@ -76,6 +76,7 @@ module Message = struct
       (fun ~level msg ->
         let crit = level land (Glib.Message.log_level `CRITICAL) <> 0 in
         if crit || is_critical_warning msg then
-          raise (Gtk.Critical msg)
-        else prerr_endline ("Gtk-WARNING **: " ^ msg))
+          raise (Glib.Critical ("Gtk", msg))
+        else prerr_endline ("Gtk-WARNING **: " ^ msg));
+    ()
 end

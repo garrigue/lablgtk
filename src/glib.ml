@@ -7,6 +7,7 @@ type unistring = unichar array
 
 exception GError of string
 let () = Callback.register_exception "gerror" (GError "")
+exception Critical of string * string
 
 module Main = struct
   type t
@@ -58,7 +59,7 @@ module Message = struct
 
   type log_handler
   external set_log_handler :
-    domain:string -> levels:int -> (level:int -> string -> unit) -> unit
+    domain:string -> levels:int -> (level:int -> string -> unit) -> log_handler
     = "ml_g_log_set_handler"
   let set_log_handler ~domain ~levels f =
     let levels = List.fold_left levels ~init:0
@@ -67,6 +68,13 @@ module Message = struct
 
   external remove_log_handler : log_handler -> unit
     = "ml_g_log_remove_handler"
+
+  let handle_criticals ~domain =
+    set_log_handler ~domain ~levels:[`CRITICAL]
+      (fun ~level s -> raise (Critical (domain, s)));
+    ()
+
+  let () = handle_criticals "GLib"; handle_criticals "GLib-GObject"
 end
 
 (*    

@@ -1,5 +1,8 @@
 $Id$
 
+2003.06.10 [Jacques]
+  * changes in object properties (gobject.ml, gtkTree.ml)
+
 2003.06.06 [Jacques]
   * new #misc#get_flag to get misc widget info
   * font_desc handling in Pango

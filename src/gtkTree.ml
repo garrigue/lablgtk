@@ -365,6 +365,14 @@ module TreeViewColumn = struct
     let widget = {name="widget"; classe=classe;
                   conv=(gobject : widget obj option conv)}
     let width = {name="width"; classe=classe; conv=int}
+    let check () =
+      let w = create () in
+      let c p = Gobject.Property.check w p in
+      c alignment; c clickable; c fixed_width; c max_width;
+      c min_width; c reorderable; c resizable; c sizing;
+      c sort_indicator; c sort_order; c title; c visible;
+      c widget; c width;
+      Object.destroy w
   end
   module Signals = struct
     open GtkSignal
@@ -460,6 +468,14 @@ module TreeView = struct
     let search_column = {name="search_column"; classe=`treeview; conv=int}
     let vadjustment : (_,adjustment obj option) property =
       {name="vadjustment"; classe=`treeview; conv=gobject}
+    let check () =
+      let w = create () in
+      let c p = Gobject.Property.check w p in
+      c enable_search; c expander_column; c hadjustment;
+      Gobject.Property.set w headers_clickable false;
+      c headers_visible; c model; c reorderable;
+      c rules_hint; c search_column; c vadjustment;
+      Object.destroy w
   end
   module Signals = struct
     open GtkSignal
@@ -558,12 +574,13 @@ module CellRenderer = struct
     open Gobject.Data
     let cell_background =
       {name="cell_background"; classe=classe; conv=string}
-    (* let cell_background_gdk =
-      {name="cell_background_gdk"; classe=classe; conv=GdkColor} *)
+    let cell_background_gdk : (_, Gdk.Color.t option) property =
+      {name="cell_background_gdk"; classe=classe; conv=unsafe_pointer}
     let cell_background_set =
       {name="cell_background_set"; classe=classe; conv=boolean}
     let height = {name="height"; classe=classe; conv=int}
-    let is_expanded = {name="is_expanded"; classe=classe; conv=boolean}
+    (* is_expanded and is_expander cannot be read because of bug (2.2.1) *)
+    let is_expanded = {name="is-expanded"; classe=classe; conv=boolean}
     let is_expander = {name="is_expander"; classe=classe; conv=boolean}
     let mode = {name="mode"; classe=classe; conv=Tables.conv_renderer_mode}
     let visible = {name="visible"; classe=classe; conv=boolean}
@@ -572,6 +589,12 @@ module CellRenderer = struct
     let xpad = {name="xpad"; classe=classe; conv=uint}
     let yalign = {name="yalign"; classe=classe; conv=float}
     let ypad = {name="ypad"; classe=classe; conv=uint}
+    let check w =
+      let c p = Gobject.Property.check w p in
+      let s p = Gobject.Property.set w p in
+      s cell_background "blue"; c cell_background_gdk; c cell_background_set;
+      c height; s is_expanded false; s is_expander false; c mode; c visible;
+      c width; c xalign; c xpad; c yalign; c ypad
   end
 end
 
@@ -597,6 +620,13 @@ module CellRendererText = struct
     let edited = { name = "edited"; classe = `cellrenderertext;
                    marshaller = marshal_edited }
   end
+  module Properties = struct
+    let check () =
+      let w = create () in
+      CellRenderer.Properties.check w;
+      Object.destroy w
+  end
+      
 (*
   let classe = `cellrenderertext
   open Gobject
