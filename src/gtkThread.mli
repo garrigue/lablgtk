@@ -19,3 +19,6 @@ val start : unit -> Thread.t
 val async : ('a -> unit) -> 'a -> unit
 (** Add a synchronous job (to do in the main loop) *)
 val sync : ('a -> 'b) -> 'a -> 'b
+(** Whether it is safe to call GTK functions directly from
+    the current thread *)
+val gui_safe : unit -> bool
