@@ -1117,6 +1117,12 @@ ML_1 (gtk_editable_paste_clipboard, GtkEditable_val, Unit)
 ML_3 (gtk_editable_claim_selection, GtkEditable_val, Bool_val, Int_val, Unit)
 ML_1 (gtk_editable_delete_selection, GtkEditable_val, Unit)
 ML_1 (gtk_editable_changed, GtkEditable_val, Unit)
+ML_2 (gtk_editable_set_position, GtkEditable_val, Int_val, Unit)
+ML_1 (gtk_editable_get_position, GtkEditable_val, Val_int)
+ML_2 (gtk_editable_set_editable, GtkEditable_val, Bool_val, Unit)
+Make_Extractor (gtk_editable, GtkEditable_val, selection_start_pos, Val_int)
+Make_Extractor (gtk_editable, GtkEditable_val, selection_end_pos, Val_int)
+Make_Extractor (gtk_editable, GtkEditable_val, has_selection, Val_bool)
 
 /* gtkentry.h */
 
@@ -1126,11 +1132,9 @@ ML_1 (gtk_entry_new_with_max_length, Int_val, Val_GtkWidget_sink)
 ML_2 (gtk_entry_set_text, GtkEntry_val, String_val, Unit)
 ML_2 (gtk_entry_append_text, GtkEntry_val, String_val, Unit)
 ML_2 (gtk_entry_prepend_text, GtkEntry_val, String_val, Unit)
-ML_2 (gtk_entry_set_position, GtkEntry_val, Int_val, Unit)
 ML_1 (gtk_entry_get_text, GtkEntry_val, Val_string)
 ML_3 (gtk_entry_select_region, GtkEntry_val, Int_val, Int_val, Unit)
 ML_2 (gtk_entry_set_visibility, GtkEntry_val, Bool_val, Unit)
-ML_2 (gtk_entry_set_editable, GtkEntry_val, Bool_val, Unit)
 ML_2 (gtk_entry_set_max_length, GtkEntry_val, Bool_val, Unit)
 Make_Extractor (GtkEntry, GtkEntry_val, text_length, Val_int)
 
@@ -1162,7 +1166,6 @@ ML_1 (gtk_spin_button_update, GtkSpinButton_val, Unit)
 
 #define GtkText_val(val) check_cast(GTK_TEXT,val)
 ML_2 (gtk_text_new, GtkAdjustment_val, GtkAdjustment_val, Val_GtkWidget_sink)
-ML_2 (gtk_text_set_editable, GtkText_val, Bool_val, Unit)
 ML_2 (gtk_text_set_word_wrap, GtkText_val, Bool_val, Unit)
 ML_3 (gtk_text_set_adjustments, GtkText_val,
       Option_val(arg2,GtkAdjustment_val,GtkText_val(arg1)->hadj) Ignore,

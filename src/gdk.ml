@@ -215,9 +215,16 @@ end
 module Event = struct
   external unsafe_copy : pointer -> #event_type event
       = "ml_gdk_event_copy"
+  external copy : (#event_type as 'a) event -> 'a event
+      = "ml_gdk_event_copy"
   external get_type : 'a event -> 'a = "ml_GdkEventAny_type"
   external get_window : 'a event -> window = "ml_GdkEventAny_window"
   external get_send_event : 'a event -> bool = "ml_GdkEventAny_send_event"
+
+  external create : (#event_type as 'a) -> 'a event
+      = "ml_gdk_event_new"
+  external set_window : 'a event -> window -> unit
+      = "ml_gdk_event_set_window"
 
   module Expose = struct
     type t = [ EXPOSE ] event
@@ -257,9 +264,9 @@ module Event = struct
   end
 
   module Button = struct
-    type t =
+    type types =
 	[ BUTTON_PRESS TWO_BUTTON_PRESS THREE_BUTTON_PRESS BUTTON_RELEASE ]
-	  event
+    type t = types event
     let cast (ev : event_type event) : t =
       match get_type ev with
 	`BUTTON_PRESS|`TWO_BUTTON_PRESS|`THREE_BUTTON_PRESS|`BUTTON_RELEASE
@@ -277,6 +284,10 @@ module Event = struct
     external deviceid : t -> int = "ml_GdkEventButton_deviceid"
     external x_root : t -> float = "ml_GdkEventButton_x_root"
     external y_root : t -> float = "ml_GdkEventButton_y_root"
+    external set_type : t -> #types -> unit
+      = "ml_gdk_event_set_type"
+    external set_button : t -> int -> unit
+      = "ml_gdk_event_button_set_button"
   end
 
   module Key = struct

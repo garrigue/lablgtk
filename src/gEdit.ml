@@ -22,13 +22,20 @@ class editable obj = object
   method cut_clipboard () = Editable.cut_clipboard obj
   method copy_clipboard () = Editable.copy_clipboard obj
   method paste_clipboard () = Editable.paste_clipboard obj
+  method delete_selection () = Editable.delete_selection obj
+  method set_position = Editable.set_position obj
+  method position = Editable.get_position obj
+  method set_editable = Editable.set_editable obj
+  method selection =
+    if Editable.has_selection obj then
+      Some (Editable.selection_start_pos obj, Editable.selection_end_pos obj)
+    else None
 end
 
 class pre_entry_wrapper obj = object
   inherit editable obj
   method add_events = Widget.add_events obj
   method set_text = Entry.set_text obj
-  method set_position = Entry.set_position obj
   method append_text = Entry.append_text obj
   method prepend_text = Entry.prepend_text obj
   method set_entry = Entry.setter ?obj ?cont:null_cont ?text:None
@@ -42,7 +49,8 @@ class entry ?:max_length ?:text ?:visibility ?:editable
     ?:width ?:height ?:packing ?:show =
   let w = Entry.create ?:max_length ?None in
   let () =
-    Entry.setter w cont:null_cont ?:text ?:visibility ?:editable;
+    Entry.setter w cont:null_cont ?:text ?:visibility;
+    may editable fun:(Editable.set_editable w);
     Widget.set_size w ?:width ?:height
   in
   object (self)
@@ -124,7 +132,8 @@ class text ?:hadjustment ?:vadjustment ?:editable
       ?hadjustment:(GData.adjustment_option hadjustment)
       ?vadjustment:(GData.adjustment_option vadjustment) in
   let () =
-    Text.setter w cont:null_cont ?:editable ?:word_wrap;
+    Text.setter w cont:null_cont ?:word_wrap;
+    may editable fun:(Editable.set_editable w);
     Widget.set_size w ?:width ?:height
   in
   object (self)
