@@ -1,3 +1,6 @@
+(* $Id$ *)
+
+open GdkKeysyms
 open Gtk
 open GdkObj
 open GObj
@@ -9,7 +12,6 @@ open GFrame
 open GPix
 
 open GTree2
-open Property
 open Utils
 open Treew
 
@@ -18,29 +20,9 @@ let main_project_modify = ref false
 let main_window  = new window width:200 height:200
 let main_vbox    = new vbox packing:main_window#add
 let main_menu    = new menu_bar packing:(main_vbox#pack expand:false)
-let file_item    = new menu_item label:"File" packing:main_menu#append
-let project_item = new menu_item label:"Project" packing:main_menu#append
-let edit_item    = new menu_item label:"Edit" packing:main_menu#append
-let file_menu    = new menu packing:file_item#set_submenu
-let project_menu = new menu packing:project_item#set_submenu
-let edit_menu    = new menu packing:edit_item#set_submenu
-let emit_item    = new menu_item label:"Emit code" packing:file_menu#append
-let exit_item    = new menu_item label:"Exit" packing:file_menu#append
-let new_item     = new menu_item label:"New" packing:project_menu#append
-let open_item    = new menu_item label:"Open" packing:project_menu#append
-let save_item    = new menu_item label:"Save" packing:project_menu#append
-let save_as_item = new menu_item label:"Save as" packing:project_menu#append
-let test_item    = new menu_item label:"Test" packing:project_menu#append
-let copy_item    = new menu_item label:"Copy" packing:edit_menu#append
-let cut_item     = new menu_item label:"Cut" packing:edit_menu#append
-let paste_item   = new menu_item label:"Paste" packing:edit_menu#append
-let accel = GtkData.AccelGroup.create ()
 
-let _ =
-  GtkData.AccelGroup.attach accel (main_window #as_widget);
-  project_menu#set_accel_group accel;
-  test_item#add_accelerator accel key:GdkKeysyms._Z mod:[`CONTROL]
-    flags:[`VISIBLE]
+let can_copy = ref (fun _ -> assert false)
+let can_paste = ref (fun _ -> assert false)
 
 class project () =
   let project_box = new vbox packing:main_vbox#pack in
@@ -56,20 +38,17 @@ class project () =
       |	None ->
 	  selected <- Some sel;
 	  sel#project_tree_item#misc#set_state `SELECTED;
-	  copy_item#misc#set_sensitive true;
-	  cut_item#misc#set_sensitive true
+	  !can_copy true
       |	Some old_sel ->
 	  if sel = old_sel then begin
 	    selected <- None;
 	    sel#project_tree_item#misc#set_state `NORMAL;
-	    copy_item#misc#set_sensitive false;
-	    cut_item#misc#set_sensitive false
+	    !can_copy false
 	  end else begin
 	    old_sel#project_tree_item#misc#set_state `NORMAL;
 	    selected <- Some sel;
 	    sel#project_tree_item#misc#set_state `SELECTED;
-	    copy_item#misc#set_sensitive true;
-	    cut_item#misc#set_sensitive true
+	    !can_copy true
 	  end
 
     val mutable filename = ""
@@ -166,15 +145,15 @@ class project () =
       if filename = "" then self#save_as ()
       else begin
 	let outch = open_out file:(dirname ^ filename ^ ".rad") in
-	let c = Oformat.of_channel outch in
-	List.iter window_list fun:(fun wt -> wt#tiwin#save c);
+	let f = Format.formatter_of_out_channel outch in
+	List.iter window_list fun:(fun wt -> wt#tiwin#save f);
 	close_out outch;
 	main_project_modify := false
       end
 
     method copy_wt (wt : window_and_tree) =
       wt#tiwin#copy ();
-      paste_item#misc#set_sensitive true
+      !can_paste true
 
     method cut_wt (wt : window_and_tree) =
       self#copy_wt wt;
@@ -197,15 +176,15 @@ class project () =
 
     method emit () =
       let outc = open_out file:(dirname ^ filename ^ ".ml") in
-      let c = Oformat.of_channel outc in
-      List.iter window_list fun:(fun wt -> wt#emit c);
-      Format.fprintf c#formatter "let main () =@\n";
+      let f = Format.formatter_of_out_channel outc in
+      List.iter window_list fun:(fun wt -> wt#emit f);
+      Format.fprintf f "let main () =@\n";
 (* this is just for demo *)
       List.iter window_list
 	fun:(fun wt -> let name = wt#tiwin#name in
-	Format.fprintf c#formatter "  let %s = new %s in %s#show ();@\n"
+	Format.fprintf f "  let %s = new %s in %s#show ();@\n"
 	  name name name);
-      Format.fprintf c#formatter
+      Format.fprintf f
 	"  GMain.Main.main ()@\n@\nlet _ = main ()@\n";
       close_out outc
 
@@ -237,9 +216,8 @@ let interpret_undo = function
   | Remove child_name ->
       let child  = widget_map#find key:child_name in
       child#remove_me ()
-  | Property (tiwidget_name, property, value_string) ->
-      let tiwidget  = widget_map#find key:tiwidget_name in
-      tiwidget#set_property property value_string
+  | Property (property, value_string) ->
+      property#set value_string
   | Add_window node -> !main_project#add_window_by_node node
   | Remove_window name -> !main_project#delete_window_by_name :name
 
@@ -262,9 +240,10 @@ let targets = [  { target = "STRING"; flags = []; info = 0}  ]
 let xpm_window () =
   let source_drag_data_get classe _ (data : selection_data) :info :time =
     data#set type:data#target format:0 data:classe in
-  let window = new window show:true title:"icons" in
+  let window = new window title:"icons" in
+  window#misc#realize ();
   let vbox = new vbox packing:window#add in
-  let table = new table rows:1 columns:5 packing:vbox#pack in
+  let table = new table rows:1 columns:5 border_width:20  packing:vbox#pack in
   let add_xpm :file :left :top =
     let gdk_pix = new pixmap_from_xpm :file window:window#misc#window in
     let ev = new event_box in
@@ -280,7 +259,8 @@ let xpm_window () =
 	| _ -> false) in
   add_xpm file:"window.xpm"       left:0 top:0;
   new separator `HORIZONTAL packing:vbox#pack;
-  let table = new table rows:5 columns:5 packing:vbox#pack in
+  let table = new table rows:3 columns:4 packing:vbox#pack
+      row_spacings:20 col_spacings:20 border_width:20 in
   let add_xpm :file :left :top :classe =
     let gdk_pix = new pixmap_from_xpm :file window:window#misc#window in
     let ev = new event_box in
@@ -301,32 +281,53 @@ let xpm_window () =
   add_xpm file:"hseparator.xpm"     left:0 top:2 classe:"hseparator";
   add_xpm file:"vseparator.xpm"     left:1 top:2 classe:"vseparator";
   add_xpm file:"label.xpm"          left:2 top:2 classe:"label";
-  add_xpm file:"entry.xpm"          left:3 top:2 classe:"entry"
+  add_xpm file:"entry.xpm"          left:3 top:2 classe:"entry";
+
+  window#show ();
+  window
 
 
 let main () =
-  xpm_window ();
+  let prop_win = Propwin.init () in
+  let xpm_win = xpm_window () in
   main_window#show ();
   main_window#connect#destroy callback:GMain.Main.quit;
 
-  emit_item#connect#activate callback:(fun () -> !main_project#emit ());
-  exit_item#connect#activate callback:GMain.Main.quit;
-  new_item#connect#activate callback:
-    begin fun () ->
-      !main_project#delete ();
-      main_project := new project ()
-    end;
-  cut_item#connect#activate callback:(fun () -> !main_project#cut ());
-  copy_item#connect#activate callback:(fun () -> !main_project#copy ());
-  paste_item#connect#activate callback:(fun () -> !main_project#paste ());
-  open_item#connect#activate callback:load;
-  save_item#connect#activate callback:(fun () -> !main_project#save ());
-  save_as_item#connect#activate callback:(fun () -> !main_project#save_as ());
-  copy_item#misc#set_sensitive false;
-  cut_item#misc#set_sensitive false;
-  paste_item#misc#set_sensitive false;
+  let mp = main_project in
+  let f = new factory main_menu in
+  let accel_group  = f#accel_group in
+  main_window#add_accel_group accel_group;
+  prop_win#add_accel_group accel_group;
+  xpm_win#add_accel_group accel_group;
 
-  test_item#connect#activate callback:undo;
+  let file_menu    = new factory (f#add_submenu label:"File") :accel_group
+  and edit_menu    = new factory (f#add_submenu label:"Edit") :accel_group
+  and project_menu = new factory (f#add_submenu label:"Project") :accel_group
+  in
+
+  file_menu#add_item label:"Emit code" callback:(fun () -> !mp#emit ());
+  file_menu#add_separator ();
+  file_menu#add_item label:"Quit" key:_Q callback:GMain.Main.quit;
+
+  project_menu#add_item label:"New" key:_N
+    callback:(fun () -> !mp#delete (); mp := new project ());
+  project_menu#add_item label:"Open..." key:_O callback:load;
+  project_menu#add_item label:"Save" key:_S callback:(fun () -> !mp#save ());
+  project_menu#add_item label:"Save as..." callback:(fun () -> !mp#save_as ());
+
+  let copy_item =
+    edit_menu#add_item label:"Copy" key:_C callback:(fun () -> !mp#copy ())
+  and cut_item =
+    edit_menu#add_item label:"Cut" key:_X callback:(fun () -> !mp#cut ())
+  and paste_item =
+    edit_menu#add_item label:"Paste" key:_V callback:(fun () -> !mp#paste ())
+  in
+  can_copy :=
+    (fun b -> copy_item#misc#set_sensitive b; cut_item#misc#set_sensitive b);
+  can_paste := paste_item#misc#set_sensitive;
+  !can_copy false; !can_paste false;
+  edit_menu#add_item label:"Undo" key:_Z callback:undo;
+
   GMain.Main.main ()
 
 let _ = main ()

@@ -7,6 +7,7 @@
 #include <caml/fail.h>
 
 value copy_memblock_indirected (void *src, asize_t size);
+value ml_some (value);
 void ml_raise_null_pointer (void) Noreturn;
 value Val_pointer (void *);
 value copy_string_check (const char*);
@@ -14,8 +15,6 @@ value copy_string_check (const char*);
 typedef struct { value key; int data; } lookup_info;
 value ml_lookup_from_c (lookup_info *table, int data);
 int ml_lookup_to_c (lookup_info *table, value key);
-
-value ml_option (value);
 
 /* Wrapper generators */
 
@@ -195,6 +194,7 @@ int OptFlags_##conv (value list) \
 
 #define Val_copy(val) copy_memblock_indirected (&val, sizeof(val))
 #define Val_string copy_string_check
+#define Val_option(v,f) (v ? ml_some(f(v)) : Val_unit)
 
 #define Check_null(v) (v ? v : (ml_raise_null_pointer (), v))
 

@@ -241,7 +241,7 @@ value ml_gtk_widget_intersect (value w, value area)
 {
     GdkRectangle inter;
     if (gtk_widget_intersect(GtkWidget_val(w), GdkRectangle_val(area), &inter))
-	return ml_option (Val_copy (inter));
+	return ml_some (Val_copy (inter));
     return Val_unit;
 }
 /* ML_1 (gtk_widget_basic, GtkWidget_val, Val_bool) */
@@ -918,16 +918,16 @@ ML_5 (gtk_clist_set_pixmap, GtkCList_val, Int_val, Int_val, GdkPixmap_val,
       GdkBitmap_val, Unit)
 value ml_gtk_clist_get_pixmap (value clist, value row, value column)
 {
+    CAMLparam3 (clist,row,column);
     GdkPixmap *pixmap;
     GdkBitmap *bitmap;
-    value ret, vpixmap = Val_unit, vbitmap = Val_unit;
-    CAMLparam2 (vpixmap,vbitmap);
+    CAMLlocal3 (ret,vpixmap,vbitmap);
 
     if (!gtk_clist_get_pixmap (GtkCList_val(clist), Int_val(row),
 			       Int_val(column), &pixmap, &bitmap))
 	invalid_argument ("Gtk.Clist.get_pixmap");
-    vpixmap = Val_GdkPixmap(pixmap);
-    if (bitmap) vbitmap = ml_option (Val_GdkBitmap (bitmap));
+    vpixmap = Val_GdkPixmap (pixmap);
+    vbitmap = Val_option (bitmap, Val_GdkBitmap);
     ret = alloc_tuple (2);
     Field(ret,0) = vpixmap;
     Field(ret,1) = vbitmap;
@@ -1631,29 +1631,36 @@ value ml_gtk_arg_get_float (GtkArg *arg)
 
 value ml_gtk_arg_get_string (GtkArg *arg)
 {
+    char *p;
     if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_STRING)
 	ml_raise_gtk ("argument type mismatch");
-    return Val_string (GTK_VALUE_STRING(*arg));
+    p = GTK_VALUE_STRING(*arg);
+    return Val_option (p, copy_string);
 }
 
 value ml_gtk_arg_get_pointer (GtkArg *arg)
 {
+    gpointer p;
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
     case GTK_TYPE_BOXED:
-	return Val_pointer(GTK_VALUE_BOXED(*arg));
+	p = GTK_VALUE_BOXED(*arg);
+	break;
     case GTK_TYPE_POINTER:
-	return Val_pointer(GTK_VALUE_POINTER(*arg));
+	p = GTK_VALUE_POINTER(*arg);
+	break;
     default:
 	ml_raise_gtk ("argument type mismatch");
     }
+    return Val_option (p, Val_pointer);
 }
 
 value ml_gtk_arg_get_object (GtkArg *arg)
 {
+    GtkObject *p;
     if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_OBJECT)
 	ml_raise_gtk ("argument type mismatch");
-    /* Val_GtkObject checks for null pointer */
-    return Val_GtkObject (GTK_VALUE_OBJECT(*arg));
+    p = GTK_VALUE_OBJECT(*arg);
+    return Val_option (p, Val_GtkObject);
 }
 
 value ml_gtk_arg_set_char (GtkArg *arg, value val)

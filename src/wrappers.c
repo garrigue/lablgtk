@@ -19,6 +19,14 @@ value copy_memblock_indirected (void *src, asize_t size)
     return ret;
 }
 
+value ml_some (value v)
+{
+     CAMLparam1(v);
+     value ret = alloc_tuple(1);
+     Field(ret,0) = v;
+     CAMLreturn ret;
+}
+
 void ml_raise_null_pointer ()
 {
   static value * exn = NULL;
@@ -60,14 +68,4 @@ int ml_lookup_to_c (lookup_info *table, value key)
     }
     if (table[first].key == key) return table[first].data;
     invalid_argument ("ml_lookup_to_c");
-}
-
-value ml_option (value val)
-{
-    value ret;
-    CAMLparam1(val);
-
-    ret = alloc_tuple(1);
-    Field(ret,0) = val;
-    CAMLreturn ret;
 }

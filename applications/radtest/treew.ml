@@ -14,8 +14,8 @@ open GEdit
 open GTree2
 
 open Utils
+open Common
 open Property
-
 
 (* possible children; used to make the menus *)
 let widget_add_list =
@@ -55,8 +55,8 @@ class virtual tiwidget0 = object
   method virtual tree : GTree2.tree2
   method virtual children : (tiwidget0 * Gtk.Tags.pack_type) list
   method virtual name : string
-  method virtual proplist : (string * Property.prop) list
-  method virtual add_to_proplist : (string * Property.prop) list -> unit
+  method virtual proplist : (string * prop) list
+  method virtual add_to_proplist : (string * prop) list -> unit
   method virtual change_name_in_proplist : string -> string -> unit
   method virtual set_property : string -> string -> unit
   method virtual forall :  callback:(tiwidget0 -> unit) -> unit
@@ -66,10 +66,10 @@ class virtual tiwidget0 = object
   method virtual add_children_wo_undo : yywidget_tree -> ?pos:int -> string
   method virtual remove_me  : unit -> unit
   method virtual remove_me_without_undo  : unit -> unit
-  method virtual emit_code : Oformat.c -> unit
-  method virtual emit_init_code : Oformat.c -> packing:string -> unit
-  method virtual emit_method_code : Oformat.c -> unit
-  method virtual save : Oformat.c -> unit
+  method virtual emit_code : Format.formatter -> unit
+  method virtual emit_init_code : Format.formatter -> packing:string -> unit
+  method virtual emit_method_code : Format.formatter -> unit
+  method virtual save : Format.formatter -> unit
   method virtual copy : unit -> unit
   method virtual connect : tiwidget_signals
   method virtual disconnect : GtkSignal.id -> bool
@@ -144,7 +144,7 @@ class window_and_tree :name =
 	  selected <- Some sel;
 	  sel#tree_item#misc#set_state `SELECTED;
 	  sel#base#misc#set_state `SELECTED;
-	  prop_show sel
+	  Propwin.show sel
       |	Some old_sel ->
 	  if sel = old_sel then begin
 	    selected <- None;
@@ -156,7 +156,7 @@ class window_and_tree :name =
 	    selected <- Some sel;
 	    sel#tree_item#misc#set_state `SELECTED;
 	    sel#base#misc#set_state `SELECTED;
-	    prop_show sel
+	    Propwin.show sel
 	  end
 
 (* the tiwidget tiw is being removed; if it was selected,
@@ -181,7 +181,7 @@ class window_and_tree :name =
       tiwin#connect#name_changed callback:
 	  (fun n -> label#set_text n; tree_window#set_title (n ^ "-Tree"));
 
-      prop_show tiwin;
+      Propwin.show tiwin;
 
       tree_window#connect#event#key_press callback:
 	begin fun ev ->
@@ -332,7 +332,7 @@ object(self)
 	tip#remove (self : #tiwidget0 :> tiwidget0);
 	name_list := list_remove !name_list pred:(fun n -> n=name);
 	widget_map#remove key:name;
-	prop_remove name
+	Propwin.remove name
 
 (* used for undo in add_child_tiw *)
   method private remove_child_by_name name () =
@@ -352,7 +352,7 @@ object(self)
   method private add_child_tiw child :affich ?:pos [< -1 >] =
     child#set_parent (self : #tiwidget0 :> tiwidget0);
     self#add child :pos;
-    if affich then prop_show child (* else prop_add child *)
+    if affich then Propwin.show child (* else Propwin.add child *)
 
 (* adds a child without showing immediatly his properties;
    used by load,  paste and undo via add_children.
@@ -398,56 +398,58 @@ object(self)
     else ("packing:(" ^ packing ^ efp ^ ")")
 
 (* this one emits the declaration code of the widget *)
-  method emit_init_code c :packing =
-    Format.fprintf c#formatter "@ @[<hv 2>let %s =@ @[<hov 2>new %s"
+  method emit_init_code formatter :packing =
+    Format.fprintf formatter "@ @[<hv 2>let %s =@ @[<hov 2>new %s"
       name self#class_name;
     List.iter self#get_mandatory_props fun:
       begin fun name ->
-	Format.fprintf c#formatter "@ %s:%s" name
+	Format.fprintf formatter "@ %s:%s" name
 	  (List.assoc name in:proplist)#code
       end;
     let packing = self#get_packing packing in
-    if packing <> "" then Format.fprintf c#formatter "@ %s" packing;
-    self#emit_prop_code c;
-    Format.fprintf c#formatter "@]@]"
+    if packing <> "" then Format.fprintf formatter "@ %s" packing;
+    self#emit_prop_code formatter;
+    Format.fprintf formatter "@]@]"
 
 (* this one emits the properties which do not have their
    default value; used by emit_init_code *)
-  method private emit_prop_code c =
+  method private emit_prop_code formatter =
     let mandatory = self#get_mandatory_props in
     List.iter (self#emit_clean_proplist proplist) fun:
       begin  fun (name, prop) ->
 	if List.mem name in:mandatory then () else
 	if prop#modified then
-	  Format.fprintf c#formatter "@ %s:%s" prop#name prop#code
+	  Format.fprintf formatter "@ %s:%s" prop#name prop#code
       end;
-    Format.fprintf c#formatter " in"
+    Format.fprintf formatter " in"
 
 (* this one emits the method returning this widget *)
-  method emit_method_code c =
-    Format.fprintf c#formatter "@ method %s = %s" name name;
+  method emit_method_code formatter =
+    Format.fprintf formatter "@ method %s = %s" name name;
 
 (* for saving the project to a file. Used also by copy and cut *)
-  method private save_start : Oformat.c -> unit = fun c ->
-    Format.fprintf c#formatter "@\n@[<2><%s name=%s>" classe name
+  method private save_start formatter =
+    Format.fprintf formatter "@\n@[<2><%s name=%s>" classe name
 
-  method private save_end : Oformat.c -> unit = fun c ->
-    Format.fprintf c#formatter "@]@\n</%s>" classe
+  method private save_end formatter =
+    Format.fprintf formatter "@]@\n</%s>" classe
 
-  method save c =
-    self#save_start c;
+  method save formatter =
+    self#save_start formatter;
     List.iter self#save_clean_proplist fun:
       (fun (name, prop) ->
 	if prop#modified then
-	  Format.fprintf c#formatter "@\n%s=%s" name prop#code);
-    self#forall callback:(fun w -> w#save c);
-    self#save_end c
+	  Format.fprintf formatter "@\n%s=%s" name prop#code);
+    self#forall callback:(fun w -> w#save formatter);
+    self#save_end formatter
 
 
   method private save_to_string string_ref =
-    let to_sel = to_string string_ref in
-    self#save to_sel;
-    to_sel#flush
+    let b = Buffer.create len:80 in
+    let f = Format.formatter_of_buffer b in
+    self#save f;
+    Format.pp_print_flush f ();
+    string_ref := Buffer.contents b
 
   method private copy_to_sel selection = self#save_to_string selection
 
@@ -511,7 +513,7 @@ object(self)
       label#set_text new_name;
       let old_name = name in
       name <- new_name;
-      prop_change_name old_name new_name;
+      Propwin.change_name old_name new_name;
       name_list :=
 	new_name :: (list_remove !name_list pred:(fun n -> n=old_name));
       begin match self#parent with
@@ -584,11 +586,12 @@ object(self)
     tree_item#expand ();
 
     proplist <-  proplist @
-      [  "name", new prop_string name:"name" init:name set:self#set_new_name; 
+      [  "name",
+	 new prop_string name:"name" init:name set:self#set_new_name; 
          "width", new prop_int name:"width" init:"-2"
-	                   set:(fun v -> widget#misc#set_size width:v);
+	             set:(fun v -> widget#misc#set_size width:v);
          "height", new prop_int name:"height" init:"-2"
-	                    set:(fun v -> widget#misc#set_size height:v) ];
+	             set:(fun v -> widget#misc#set_size height:v) ];
 
     self#add_signal name_changed;
 
@@ -675,8 +678,8 @@ object(self)
 
   initializer
     proplist <-  proplist @
-      [ "border width",
-	new prop_int name:"border_width" init:"0" set:container#set_border_width ];
+      [ "border width",	new prop_int name:"border_width" init:"0"
+	                  set:container#set_border_width ];
 
     tree_item#drag#dest_set actions:[`COPY]
       targets:[ { target = "STRING"; flags = []; info = 0} ];
@@ -718,32 +721,32 @@ object(self)
     parent_window#remove_sel (self : #tiwidget0 :> tiwidget0);
     name_list := list_remove !name_list pred:(fun n -> n=name);
     widget_map#remove key:name;
-    prop_remove name;
+    Propwin.remove name;
     widget#destroy ()
 
   method private get_packing packing = ""
 
-  method emit_code c =
-    Format.fprintf c#formatter "(* Code for %s *)@\n@\n@[<hv 2>class %s ="
+  method emit_code f =
+    Format.fprintf f "(* Code for %s *)@\n@\n@[<hv 2>class %s ="
       name name;
-    self#emit_init_code c packing:"";
+    self#emit_init_code f packing:"";
 (*    Format.fprintf c#formatter "  let %s = new %s title:%s"
       name self#class_name (get_string_prop "title" in:proplist);
     self#emit_prop_code c;
 *)
-    Format.fprintf c#formatter "@]@\n@[<hv 2>object (self)";
-    self#emit_method_code c;
-    Format.fprintf c#formatter "@ method show () = %s#show ()" name;
-    Format.fprintf c#formatter
+    Format.fprintf f "@]@\n@[<hv 2>object (self)";
+    self#emit_method_code f;
+    Format.fprintf f "@ method show () = %s#show ()" name;
+    Format.fprintf f
       "@ @[<v 2>initializer@ (* signal handlers here *)@ ()@]@]@ end@\n@\n"
 
-  method private save_start : Oformat.c -> unit = fun c ->
-    Format.fprintf c#formatter "@[<0>@\n@[<2><window name=%s>" name;
-    Format.fprintf c#formatter "@\ntitle=\"%s\""
+  method private save_start formatter =
+    Format.fprintf formatter "@[<0>@\n@[<2><window name=%s>" name;
+    Format.fprintf formatter "@\ntitle=\"%s\""
       (List.assoc "title" in:proplist)#get
 
-  method private save_end : Oformat.c -> unit = fun c ->
-    Format.fprintf c#formatter "@]@\n</window>@\n@]"
+  method private save_end formatter =
+    Format.fprintf formatter "@]@\n</window>@\n@]"
 
   method private menu :time =
     let menu = new menu and menu_add = new menu in
@@ -765,13 +768,14 @@ object(self)
   initializer
     window#set_title name;
     proplist <-	proplist @
-      [ "title", new prop_string name:"title" init:name set:window#set_title;
-	"allow_shrink",
-	new prop_bool name:"allow_shrink" init:"true" set:window#set_allow_shrink;
-	"allow_grow",
-	new prop_bool name:"allow_grow" init:"true"set:window#set_allow_grow;
-	"auto_shrink",
-	new prop_bool name:"auto_shrink" init:"true" set:window#set_auto_shrink;
+      [ "title",
+	new prop_string name:"title" init:name set:window#set_title;
+	"allow_shrink",	new prop_bool name:"allow_shrink" init:"true"
+	                  set:window#set_allow_shrink;
+	"allow_grow", new prop_bool name:"allow_grow" init:"true"
+	                set:window#set_allow_grow;
+	"auto_shrink", new prop_bool name:"auto_shrink" init:"true"
+	                 set:window#set_auto_shrink;
 	"x position", new prop_int name:"x" init:"-2"
 	                       set:(fun x -> window#misc#set_position :x);
 	"y position", new prop_int name:"y" init:"-2"
@@ -822,7 +826,7 @@ object(self)
 	(fun acc:pl propname ->
 	  change_property_name (oldn ^ propname) (newn ^ propname) pl)
 	[ "::expand"; "::fill"; "::padding" ];
-    prop_update (self : #tiwidget0 :> tiwidget0)
+    Propwin.update (self : #tiwidget0 :> tiwidget0)
 
   method child_up child =
     let pos = list_pos child in:(List.map fun:fst children) in
@@ -854,22 +858,22 @@ object(self)
       new prop_bool name:"expand" init:"true" set:
 	begin fun v ->
 	  box#set_child_packing (child#base) expand:v;
-	  prop_update child;
-	  prop_update (self : #tiwidget0 :> tiwidget0)
+	  Propwin.update child;
+	  Propwin.update (self : #tiwidget0 :> tiwidget0)
 	end
     and fill =
       new prop_bool name:"fill" init:"true" set:
 	begin fun v ->
 	  box#set_child_packing (child#base) fill:v;
-	  prop_update child;
-	  prop_update (self : #tiwidget0 :> tiwidget0)
+	  Propwin.update child;
+	  Propwin.update (self : #tiwidget0 :> tiwidget0)
 	end
     and padding =
       new prop_int name:"fill" init:"0" set:
 	begin fun v ->
 	  box#set_child_packing (child#base) padding:v;
-	  prop_update child;
-	  prop_update (self : #tiwidget0 :> tiwidget0)
+	  Propwin.update child;
+	  Propwin.update (self : #tiwidget0 :> tiwidget0)
 	end
     in
     proplist <-  proplist @ 
@@ -878,7 +882,7 @@ object(self)
         (n ^ "::padding"), padding ];
     child#add_to_proplist
       [ "expand", expand; "fill", fill; "padding", padding ];
-    prop_update (self : #tiwidget0 :> tiwidget0)
+    Propwin.update (self : #tiwidget0 :> tiwidget0)
          
 
   method remove child =
@@ -889,7 +893,7 @@ object(self)
 	fun:(fun :acc n -> List.remove_assoc n in:acc)
 	acc:proplist
 	[ (n ^ "::expand"); (n ^ "::fill"); (n ^ "::padding") ];
-    prop_update (self : #tiwidget0 :> tiwidget0)
+    Propwin.update (self : #tiwidget0 :> tiwidget0)
 (*
   method emit_init_code c :packing =
     Format.fprintf c#formatter "  let %s = new %s %s"
@@ -912,9 +916,10 @@ object(self)
 *)    
   initializer
     proplist <-  proplist @
-      [ "homogeneous",
-	new prop_bool name:"homogeneous" init:"false" set:box#set_homogeneous;
-       "spacing", new prop_int name:"spacing" init:"0" set:box#set_spacing ]
+      [ "homogeneous", new prop_bool name:"homogeneous" init:"false"
+	                 set:box#set_homogeneous;
+	"spacing", new prop_int name:"spacing" init:"0"
+	                 set:box#set_spacing ]
 end
 
 class tihbox = tibox dir:`HORIZONTAL
@@ -970,9 +975,9 @@ class tibutton widget:(button : #button) :name :parent_tree :pos :parent_window 
     List.remove_assoc "label" in:(widget#emit_clean_proplist plist)
 
 
-  method private save_start : Oformat.c -> unit = fun c ->
-    Format.fprintf c#formatter "@\n@[<2><%s name=%s>" classe name;
-    Format.fprintf c#formatter "@\nlabel=\"%s\""
+  method private save_start formatter =
+    Format.fprintf formatter "@\n@[<2><%s name=%s>" classe name;
+    Format.fprintf formatter "@\nlabel=\"%s\""
       (List.assoc "label" in:proplist)#get
 
 (*  method emit_init_code c :packing =
@@ -983,8 +988,8 @@ class tibutton widget:(button : #button) :name :parent_tree :pos :parent_window 
 *)
   initializer
     proplist <-  proplist @
-      [ "border width",
-	new prop_int name:"border_width" init:"0" set:button#set_border_width;
+      [ "border width",	new prop_int name:"border_width" init:"0"
+	                  set:button#set_border_width;
 	"label",
 	new prop_string name:"label" init:name set:
 	  begin fun v ->
@@ -1017,9 +1022,9 @@ class ticheck_button widget:(button : check_button) :name :parent_tree :pos :par
   method private emit_clean_proplist plist =
     List.remove_assoc "label" in:(widget#emit_clean_proplist plist)
 
-  method private save_start : Oformat.c -> unit = fun c ->
-    Format.fprintf c#formatter "@\n@[<2><%s name=%s>" classe name;
-    Format.fprintf c#formatter "@\nlabel=\"%s\""
+  method private save_start formatter =
+    Format.fprintf formatter "@\n@[<2><%s name=%s>" classe name;
+    Format.fprintf formatter "@\nlabel=\"%s\""
       (List.assoc "label" in:proplist)#get
 
 (*  method emit_init_code c :packing =
@@ -1031,8 +1036,8 @@ class ticheck_button widget:(button : check_button) :name :parent_tree :pos :par
 
   initializer
     proplist <-  proplist @
-      [ "border width",
-	new prop_int name:"border_width" init:"0" set:button#set_border_width;
+      [ "border width",	new prop_int name:"border_width" init:"0"
+	                 set:button#set_border_width;
 	"label",
 	new prop_string name:"label" init:name set:
 	  begin fun v ->
@@ -1060,9 +1065,9 @@ class titoggle_button widget:(button : toggle_button) :name :parent_tree :pos :p
   method private emit_clean_proplist plist =
     List.remove_assoc "label" in:(widget#emit_clean_proplist plist)
 
-  method private save_start : Oformat.c -> unit = fun c ->
-    Format.fprintf c#formatter "@\n@[<2><%s name=%s>" classe name;
-    Format.fprintf c#formatter "@\nlabel=\"%s\""
+  method private save_start formatter =
+    Format.fprintf formatter "@\n@[<2><%s name=%s>" classe name;
+    Format.fprintf formatter "@\nlabel=\"%s\""
       (List.assoc "label" in:proplist)#get
 
 (*  method emit_init_code c :packing =
@@ -1074,8 +1079,8 @@ class titoggle_button widget:(button : toggle_button) :name :parent_tree :pos :p
 
   initializer
     proplist <-  proplist @
-      [ "border width",
-	new prop_int name:"border_width" init:"0" set:button#set_border_width;
+      [ "border width",	new prop_int name:"border_width" init:"0"
+	                  set:button#set_border_width;
 	"label",
 	new prop_string name:"label" init:name set:
 	  begin fun v ->
@@ -1110,9 +1115,9 @@ object(self)
   method private emit_clean_proplist plist =
     List.remove_assoc "text" in:(widget#emit_clean_proplist plist)
 
-  method private save_start : Oformat.c -> unit = fun c ->
-    Format.fprintf c#formatter "@\n@[<2><%s name=%s>" classe name;
-    Format.fprintf c#formatter "@\ntext=\"%s\""
+  method private save_start formatter =
+    Format.fprintf formatter "@\n@[<2><%s name=%s>" classe name;
+    Format.fprintf formatter "@\ntext=\"%s\""
       (List.assoc "text" in:proplist)#get
 
 (*  method emit_init_code (c : Oformat.c) :packing =
@@ -1126,8 +1131,8 @@ object(self)
     proplist <-  proplist @
       [ "text",
 	new prop_string name:"text" init:name set:labelw#set_text;
-	"line_wrap",
-	new prop_bool name:"line_wrap" init:"true" set:labelw#set_line_wrap ]
+	"line_wrap", new prop_bool name:"line_wrap" init:"true"
+	               set:labelw#set_line_wrap ]
 end
 
 let new_tilabel :name = new tilabel widget:(new label text:name) :name
@@ -1148,8 +1153,8 @@ class tiframe widget:(frame : frame) :name :parent_tree :pos :parent_window =
        "label xalign",
 	new prop_float name:"label_xalign" init:"0.0" min:0. max:1.
             set:(fun x -> frame#set_label_align :x);
-       "shadow",
-	new prop_shadow name:"shadow" init:"ETCHED_IN" set:frame#set_shadow_type ]
+       "shadow", new prop_shadow name:"shadow" init:"ETCHED_IN"
+	           set:frame#set_shadow_type ]
 end
 
 let new_tiframe :name = new tiframe widget:(new frame) :name

@@ -1,8 +1,12 @@
+(* $Id$ *)
+
 open GObj
 open GWindow
 open GPack
 open GMisc
 open GButton
+
+open Common
 
 external test_modifier : Gdk.Tags.modifier -> int -> bool
     = "ml_test_GdkModifier_val"
@@ -16,14 +20,6 @@ external test_modifier : Gdk.Tags.modifier -> int -> bool
 type yywidget = string * string * (string * string) list
 type yywidget_tree = Node of yywidget * yywidget_tree list
 
-
-(**************  formatter to string **************)
-let to_string sref =
-  let b = Buffer.create len:80 in
-  new Oformat.c
-    (Format.make_formatter
-       out:(fun :buffer -> Buffer.add_substring b buffer)
-       flush:(fun () -> sref := Buffer.contents b))
 
 (*********** some utility functions **************)
 let rec list_remove pred:f = function
@@ -197,7 +193,7 @@ end
 type undo_action =
   | Add of string * yywidget_tree * int
   | Remove of string
-  | Property of string * string * string
+  | Property of prop * string
   | Add_window of yywidget_tree
   | Remove_window of string
 

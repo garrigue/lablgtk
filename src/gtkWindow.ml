@@ -80,7 +80,7 @@ module Window = struct
     let move_resize : ([> window],_) t =
       { name = "move_resize"; marshaller = marshal_unit }
     let set_focus : ([> window],_) t =
-      { name = "set_focus"; marshaller = Widget.Signals.marshal }
+      { name = "set_focus"; marshaller = Widget.Signals.marshal_opt }
   end
 end
 
