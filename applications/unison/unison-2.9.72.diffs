@@ -1,6 +1,5 @@
-diff -rc unison-2.9.50.orig/src/uigtk2.ml unison-2.9.50/src/uigtk2.ml
-*** unison-2.9.50.orig/src/uigtk2.ml	Wed Aug 27 18:00:37 2003
---- unison-2.9.50/src/uigtk2.ml	Thu Aug 28 17:58:27 2003
+*** unison-2.9.72.orig/src/uigtk2.ml	Mon Jan 12 19:00:36 2004
+--- unison-2.9.72/src/uigtk2.ml	Tue Jan 13 15:50:20 2004
 ***************
 *** 62,85 ****
    Font preferences
@@ -37,6 +36,23 @@ diff -rc unison-2.9.50.orig/src/uigtk2.ml unison-2.9.50/src/uigtk2.ml
   (*********************************************************************
     UI state variables
    *********************************************************************)
+***************
+*** 97,103 ****
+  
+  let grabFocus t =
+    match !currentWindow with
+!     Some w -> t#set_transient_for w;
+                w#misc#set_sensitive false
+    | None   -> ()
+  
+--- 82,88 ----
+  
+  let grabFocus t =
+    match !currentWindow with
+!     Some w -> t#set_transient_for w#as_window;
+                w#misc#set_sensitive false
+    | None   -> ()
+  
 ***************
 *** 130,150 ****
                          USEFUL LOW-LEVEL WIDGETS
@@ -139,6 +155,23 @@ diff -rc unison-2.9.50.orig/src/uigtk2.ml unison-2.9.50/src/uigtk2.ml
                  sel#destroy ();
                  callback name));
     sel#show ();
+***************
+*** 957,963 ****
+    fillLst "default";
+    select_row !selRow;
+    lst#misc#grab_focus ();
+!   currentWindow := Some (t :> GWindow.window);
+    ignore (t#connect#destroy ~callback:GMain.Main.quit);
+    t#show ();
+    GMain.Main.main ();
+--- 953,959 ----
+    fillLst "default";
+    select_row !selRow;
+    lst#misc#grab_focus ();
+!   currentWindow := Some (t :> GWindow.window_skel);
+    ignore (t#connect#destroy ~callback:GMain.Main.quit);
+    t#show ();
+    GMain.Main.main ();
 ***************
 *** 980,990 ****
     let optionmenu =
@@ -253,4 +286,21 @@ diff -rc unison-2.9.50.orig/src/uigtk2.ml unison-2.9.50/src/uigtk2.ml
 !     GMisc.statusbar ~width:50 ~packing:(statusHBox#pack ~expand:false) () in
     let globalProgressContext = globalProgressBar#new_context ~name:"prog" in
     ignore (globalProgressContext#push "");
+  
+***************
+*** 2102,2108 ****
+    ignore (toplevelWindow#event#connect#delete ~callback:
+              (fun _ -> safeExit (); true));
+    toplevelWindow#show ();
+!   currentWindow := Some toplevelWindow;
+    detectCmd ()
+  
+  
+--- 2089,2095 ----
+    ignore (toplevelWindow#event#connect#delete ~callback:
+              (fun _ -> safeExit (); true));
+    toplevelWindow#show ();
+!   currentWindow := Some (toplevelWindow :> GWindow.window_skel);
+    detectCmd ()
+  
   
