@@ -10,9 +10,16 @@ module Button = struct
   external create : unit -> button obj = "ml_gtk_button_new"
   external create_with_label : string -> button obj
       = "ml_gtk_button_new_with_label"
-  let create ?label () =
-    match label with None -> create ()
-    | Some x -> create_with_label x
+  external create_with_mnemonic : string -> button obj
+      = "ml_gtk_button_new_with_mnemonic"
+  external create_from_stock : string -> button obj
+      = "ml_gtk_button_new_from_stock"
+  let create ?label ?mnemonic ?stock () =
+    match label, mnemonic, stock with 
+      None, None, None -> create ()
+    | _, _, Some x -> create_from_stock (GtkStock.convert_id x)
+    | _, Some x, _ -> create_with_mnemonic x
+    | Some x, _, _ -> create_with_label x
   external pressed : [>`button] obj -> unit = "ml_gtk_button_pressed"
   external released : [>`button] obj -> unit = "ml_gtk_button_released"
   external clicked : [>`button] obj -> unit = "ml_gtk_button_clicked"
@@ -47,16 +54,24 @@ module ToggleButton = struct
       = "ml_gtk_toggle_button_new"
   external toggle_button_create_with_label : string -> toggle_button obj
       = "ml_gtk_toggle_button_new_with_label"
+  external toggle_button_create_with_mnemonic : string -> toggle_button obj
+      = "ml_gtk_toggle_button_new_with_mnemonic"
   external check_button_create : unit -> toggle_button obj
       = "ml_gtk_check_button_new"
   external check_button_create_with_label : string -> toggle_button obj
       = "ml_gtk_check_button_new_with_label"
-  let create_toggle ?label () =
-    match label with None -> toggle_button_create ()
-    | Some label -> toggle_button_create_with_label label
-  let create_check ?label () =
-    match label with None -> check_button_create ()
-    | Some label -> check_button_create_with_label label
+  external check_button_create_with_mnemonic : string -> toggle_button obj
+      = "ml_gtk_check_button_new_with_mnemonic"
+  let create_toggle ?label ?mnemonic () =
+    match label, mnemonic with 
+      None, None -> toggle_button_create ()
+    | _, Some m -> toggle_button_create_with_mnemonic m
+    | Some label, _ -> toggle_button_create_with_label label
+  let create_check ?label ?mnemonic () =
+    match label, mnemonic with 
+      None, None -> check_button_create ()
+    | _, Some m -> check_button_create_with_mnemonic m
+    | Some label, _ -> check_button_create_with_label label
   external set_mode : [>`toggle] obj -> bool -> unit
       = "ml_gtk_toggle_button_set_mode"
   external set_active : [>`toggle] obj -> bool -> unit
@@ -81,11 +96,14 @@ module RadioButton = struct
       = "ml_gtk_radio_button_new"
   external create_with_label : radio_button group -> string -> radio_button obj
       = "ml_gtk_radio_button_new_with_label"
+  external create_with_mnemonic : radio_button group -> string -> radio_button obj
+      = "ml_gtk_radio_button_new_with_mnemonic"
   external set_group : [>`radio] obj -> radio_button group -> unit
       = "ml_gtk_radio_button_set_group"
-  let create ?(group = None) ?label () =
-    match label with None -> create group
-    | Some label -> create_with_label group label
+  let create ?(group = None) ?label ?mnemonic () =
+    match label, mnemonic with None, None -> create group
+    | _, Some m -> create_with_mnemonic group m
+    | Some label, _ -> create_with_label group label
 end
 
 module Toolbar = struct

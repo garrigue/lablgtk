@@ -14,6 +14,7 @@
 #include "ml_pango.h"
 #include "ml_gdk.h"
 #include "ml_gtk.h"
+#include "ml_gdkpixbuf.h"
 #include "gobject_tags.h"
 #include "gdk_tags.h"
 #include "gtk_tags.h"
@@ -330,6 +331,8 @@ ML_1 (gtk_widget_push_visual, GdkVisual_val, Unit)
 ML_1 (gtk_widget_push_colormap, GdkColormap_val, Unit)
 ML_0 (gtk_widget_pop_visual, Unit)
 ML_0 (gtk_widget_pop_colormap, Unit)
+
+ML_4 (gtk_widget_render_icon, GtkWidget_val, String_val, Icon_size_val, String_option_val, Val_GdkPixbuf)
 
 /* gtkdnd.h */
 

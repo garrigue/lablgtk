@@ -175,7 +175,7 @@ module Image = struct
       = "ml_gtk_image_set_from_file"
   external set_pixbuf : [>`image] obj -> GdkPixbuf.pixbuf -> unit
       = "ml_gtk_image_set_from_pixbuf"
-  external set_stock : [>`image] obj -> string -> size:int -> unit
+  external set_stock : [>`image] obj -> string -> size:Gtk.Tags.icon_size -> unit
       = "ml_gtk_image_set_from_stock"
   let from_image ?mask img =
     let w = create () in set_image w img ?mask; w
@@ -186,7 +186,7 @@ module Image = struct
   let from_pixbuf s =
     let w = create () in set_pixbuf w s; w
   let from_stock s ~size =
-    let w = create () in set_stock w s ~size; w
+    let w = create () in set_stock w (GtkStock.convert_id s) ~size; w
 end
 
 module Label = struct

@@ -20,6 +20,8 @@
 #define GtkButton_val(val) check_cast(GTK_BUTTON,val)
 ML_0 (gtk_button_new, Val_GtkWidget_sink)
 ML_1 (gtk_button_new_with_label, String_val, Val_GtkWidget_sink)
+ML_1 (gtk_button_new_with_mnemonic, String_val, Val_GtkWidget_sink)
+ML_1 (gtk_button_new_from_stock, String_val, Val_GtkWidget_sink)
 ML_1 (gtk_button_pressed, GtkButton_val, Unit)
 ML_1 (gtk_button_released, GtkButton_val, Unit)
 ML_1 (gtk_button_clicked, GtkButton_val, Unit)
@@ -35,6 +37,7 @@ ML_1 (gtk_button_get_label, GtkButton_val, Val_optstring)
 #define GtkToggleButton_val(val) check_cast(GTK_TOGGLE_BUTTON,val)
 ML_0 (gtk_toggle_button_new, Val_GtkWidget_sink)
 ML_1 (gtk_toggle_button_new_with_label, String_val, Val_GtkWidget_sink)
+ML_1 (gtk_toggle_button_new_with_mnemonic, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_toggle_button_set_mode, GtkToggleButton_val, Bool_val, Unit)
 ML_2 (gtk_toggle_button_set_active, GtkToggleButton_val, Bool_val, Unit)
 ML_1 (gtk_toggle_button_toggled, GtkToggleButton_val, Unit)
@@ -45,6 +48,7 @@ Make_Extractor (gtk_toggle_button_get, GtkToggleButton_val, active, Val_bool)
 #define GtkCheckButton_val(val) check_cast(GTK_CHECK_BUTTON,val)
 ML_0 (gtk_check_button_new, Val_GtkWidget_sink)
 ML_1 (gtk_check_button_new_with_label, String_val, Val_GtkWidget_sink)
+ML_1 (gtk_check_button_new_with_mnemonic, String_val, Val_GtkWidget_sink)
 
 /* gtkradiobutton.h */
 
@@ -57,6 +61,8 @@ static GSList* button_group_val(value val)
 ML_1 (gtk_radio_button_new, button_group_val,
       Val_GtkWidget_sink)
 ML_2 (gtk_radio_button_new_with_label, button_group_val,
+      String_val, Val_GtkWidget_sink)
+ML_2 (gtk_radio_button_new_with_mnemonic, button_group_val,
       String_val, Val_GtkWidget_sink)
 ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, button_group_val, Unit)
 
