@@ -2,10 +2,10 @@ Index: utils/config.mlp
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/utils/config.mlp,v
 retrieving revision 1.16
-retrieving revision 1.24
-diff -c -r1.16 -r1.24
+retrieving revision 1.25
+diff -c -r1.16 -r1.25
 *** config.mlp	1999/03/08 08:34:21	1.16
---- config.mlp	1999/06/02 15:49:59	1.24
+--- config.mlp	1999/06/08 07:49:46	1.25
 ***************
 *** 11,17 ****
   
@@ -19,7 +19,7 @@ diff -c -r1.16 -r1.24
   
   (* $Id$ *)
   
-! let version = "2.02 with Kyoto extensions (99/06/03)"
+! let version = "2.02 with Kyoto extensions (99/06/08)"
   
   let standard_library =
     try
@@ -124,13 +124,30 @@ Index: typing/ctype.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/ctype.ml,v
 retrieving revision 1.51
-retrieving revision 1.61
-diff -c -r1.51 -r1.61
+retrieving revision 1.63
+diff -c -r1.51 -r1.63
 *** ctype.ml	1999/03/08 07:49:10	1.51
---- ctype.ml	1999/06/02 15:50:00	1.61
+--- ctype.ml	1999/06/08 07:49:46	1.63
+***************
+*** 166,171 ****
+--- 166,179 ----
+      let hash (t, t') = t.id + 93 * t'.id
+   end)
+  
++ (* A module for hash-tables indexed on types *)
++ 
++ module HType = Hashtbl.Make (struct
++   type t = type_expr
++   let equal = (==)
++   let hash t = t.id
++ end)
++ 
+                    (**********************************************)
+                    (*  Miscellaneous operations on object types  *)
+                    (**********************************************)
 ***************
 *** 248,253 ****
---- 248,259 ----
+--- 256,267 ----
       Tobject (fi, _) -> find fi
     | _               -> assert false
   
@@ -156,7 +173,7 @@ diff -c -r1.51 -r1.61
   	      raise (Unify [(ty, newvar2 level)])
           | _                              -> ()
           end;
---- 540,551 ----
+--- 548,559 ----
             (* +++ Levels should be restored... *)
             raise (Unify [(ty, newvar2 level)])
           end
@@ -170,10 +187,95 @@ diff -c -r1.51 -r1.61
           | _                              -> ()
           end;
 ***************
-*** 715,720 ****
---- 722,734 ----
-  let delayed_copy = ref []
-      (* copying to do later *)
+*** 654,691 ****
+  let abbreviations = ref (ref Mnil)
+    (* Abbreviation memorized. *)
+  
+- let occur_poly env ty =
+-   let paths = ref [] in
+-   let rec occur_rec ty = 
+-     let ty = repr ty in
+-     if ty.level >= lowest_level then begin
+-       ty.level <- pivot_level - ty.level;
+-       match ty.desc with
+- 	Tunivar ->
+- 	  raise Exit
+-       |	Tconstr (p, tl, _) ->
+- 	  List.iter occur_rec tl;
+- 	  if not (List.mem p !paths) then begin
+- 	    paths := p :: !paths;
+- 	    try
+- 	      let td = Env.find_type p env in
+- 	      match td.type_manifest with None -> ()
+- 	      | Some t ->
+- 		  try occur_rec t; unmark_type t
+- 		  with Exit -> unmark_type t; raise Exit
+- 	    with Not_found -> ()
+- 	  end
+-       |	_ -> iter_type_expr occur_rec ty
+-     end
+-   in
+-   try occur_rec ty; unmark_type ty; false
+-   with Exit -> unmark_type ty; true
+- 
+  let all_univars ty =
+    let free_uni = ref [] and bound_uni = ref [] in
+    let rec occur_rec bound ty =
+      let ty = repr ty in
+!     if ty.level >= lowest_level then begin
+        ty.level <- pivot_level - ty.level;
+        match ty.desc with
+  	Tunivar ->
+--- 669,679 ----
+  let abbreviations = ref (ref Mnil)
+    (* Abbreviation memorized. *)
+  
+  let all_univars ty =
+    let free_uni = ref [] and bound_uni = ref [] in
+    let rec occur_rec bound ty =
+      let ty = repr ty in
+!     if ty.level = generic_level then begin
+        ty.level <- pivot_level - ty.level;
+        match ty.desc with
+  	Tunivar ->
+***************
+*** 712,743 ****
+    match l1 with [] -> invalid_arg "Ctype.diff_list"
+    | a :: l1 -> a :: diff_list l1 l2
+  
+- let delayed_copy = ref []
+-     (* copying to do later *)
+  let to_unmark = ref []
+  
+  (*
+     copy0 works in two modes:
+  
+     1. If share = false then sharing is only kept for variables and cycles.
+        Variables are not marked, so this is legal to call free_univars.
+-       When a subterm can be unified with sharing, a continuation is
+-       stored in delayed_copy for later execution in mode 2.
+  
+     2. If share = true then all sharing is kept. Variables are marked.
+  *)
+  
+! let rec copy0 env share bound visited ty =
+    let ty = repr ty in
+    if ty.level <> generic_level then
+      ty
+-   else if not share & not (occur_poly env ty) then 
+-     let t = newvar () in
+-     to_unmark := t :: !to_unmark;
+-     delayed_copy :=
+-       lazy (t.desc <- Tlink (copy0 env true [] visited ty))
+-       :: !delayed_copy;
+-     t
+    else try
+      if share & ty.desc <> Tunivar then raise Not_found;
+      let t, bound_t = List.assq ty visited in
+--- 700,727 ----
+    match l1 with [] -> invalid_arg "Ctype.diff_list"
+    | a :: l1 -> a :: diff_list l1 l2
+  
   let to_unmark = ref []
 + let kind_variables = ref []
 +     (* Only used inside class definitions *)
@@ -185,6 +287,37 @@ diff -c -r1.51 -r1.61
   
   (*
      copy0 works in two modes:
+  
+     1. If share = false then sharing is only kept for variables and cycles.
+        Variables are not marked, so this is legal to call free_univars.
+  
+     2. If share = true then all sharing is kept. Variables are marked.
+  *)
+  
+! let rec copy0 share bound visited ty =
+    let ty = repr ty in
+    if ty.level <> generic_level then
+      ty
+    else try
+      if share & ty.desc <> Tunivar then raise Not_found;
+      let t, bound_t = List.assq ty visited in
+***************
+*** 756,762 ****
+  	  (ty,(t,bound)) :: visited
+        |	_ -> visited
+      in
+!     let copy = copy0 env share bound visited in
+      let desc = ty.desc in
+      if share or desc = Tvar or desc = Tunivar then begin
+        save_desc ty desc;
+--- 740,746 ----
+  	  (ty,(t,bound)) :: visited
+        |	_ -> visited
+      in
+!     let copy = copy0 share bound visited in
+      let desc = ty.desc in
+      if share or desc = Tvar or desc = Tunivar then begin
+        save_desc ty desc;
 ***************
 *** 818,825 ****
             begin match field_kind_repr kind with
@@ -195,7 +328,7 @@ diff -c -r1.51 -r1.61
             | Fabsent ->
                 assert false
             end
---- 832,848 ----
+--- 802,818 ----
             begin match field_kind_repr kind with
               Fpresent ->
                 Tfield (label, Fpresent, copy t1, copy t2)
@@ -214,6 +347,116 @@ diff -c -r1.51 -r1.61
                 assert false
             end
 ***************
+*** 838,858 ****
+  	  let bound = tl @ bound in
+  	  let visited =
+  	    List.map2 (fun ty t -> ty,(t,bound)) tl tl' @ visited in
+! 	  Tpoly (copy0 env share bound visited t1, tl')
+        |	Tunivar ->
+  	  Tunivar
+        end;
+      t
+    end
+  
+! let copy = copy0 Env.empty true [] []
+! let copy_sep env = copy0 env false [] []
+  
+! let prepare_copy () =
+!   delayed_copy := []; to_unmark := []
+  
+  let finish_copy () =
+-   List.iter Lazy.force !delayed_copy;
+    cleanup_types ();
+    List.iter unmark_type !to_unmark
+  
+--- 831,850 ----
+  	  let bound = tl @ bound in
+  	  let visited =
+  	    List.map2 (fun ty t -> ty,(t,bound)) tl tl' @ visited in
+! 	  Tpoly (copy0 share bound visited t1, tl')
+        |	Tunivar ->
+  	  Tunivar
+        end;
+      t
+    end
+  
+! let copy = copy0 true [] []
+! let copy_sep = copy0 false [] []
+  
+! let prepare_copy env =
+!   to_unmark := []
+  
+  let finish_copy () =
+    cleanup_types ();
+    List.iter unmark_type !to_unmark
+  
+***************
+*** 867,880 ****
+  let instance_poly env univars sch =
+    let vars = List.map (fun _ -> newvar ()) univars in
+    let pairs = List.map2 (fun u v -> repr u, (v, [])) univars vars in
+!   prepare_copy ();
+!   let ty = copy0 env false [] pairs sch in
+    finish_copy ();
+    vars, ty
+  
+  let instance_sep env sch =
+!   prepare_copy ();
+!   let ty = copy0 env false [] [] sch in
+    finish_copy ();
+    ty
+  
+--- 859,872 ----
+  let instance_poly env univars sch =
+    let vars = List.map (fun _ -> newvar ()) univars in
+    let pairs = List.map2 (fun u v -> repr u, (v, [])) univars vars in
+!   prepare_copy env;
+!   let ty = copy0 false [] pairs sch in
+    finish_copy ();
+    vars, ty
+  
+  let instance_sep env sch =
+!   prepare_copy env;
+!   let ty = copy_sep sch in
+    finish_copy ();
+    ty
+  
+***************
+*** 885,900 ****
+    tyl
+  
+  let instance_constructor env cstr =
+!   prepare_copy ();
+!   let ty_res = (copy_sep env) cstr.cstr_res in
+!   let ty_args = List.map (copy_sep env) cstr.cstr_args in
+    finish_copy ();
+    (ty_args, ty_res)
+  
+  let instance_label env lbl =
+!   prepare_copy ();
+!   let ty_res = copy_sep env lbl.lbl_res in
+!   let ty_arg = copy_sep env lbl.lbl_arg in
+    finish_copy ();
+    (ty_arg, ty_res)
+  
+--- 877,892 ----
+    tyl
+  
+  let instance_constructor env cstr =
+!   prepare_copy env;
+!   let ty_res = copy_sep cstr.cstr_res in
+!   let ty_args = List.map copy_sep cstr.cstr_args in
+    finish_copy ();
+    (ty_args, ty_res)
+  
+  let instance_label env lbl =
+!   prepare_copy env;
+!   let ty_res = copy_sep lbl.lbl_res in
+!   let ty_arg = copy_sep lbl.lbl_arg in
+    finish_copy ();
+    (ty_arg, ty_res)
+  
+***************
 *** 1094,1100 ****
   let rec full_expand env ty =
     let ty = repr (expand_head env ty) in
@@ -222,7 +465,7 @@ diff -c -r1.51 -r1.61
         newty2 ty.level (Tobject (fi, ref None))
     | Tvariant var when var.var_name <> None & is_variable var.var_ext ->
         newty2 ty.level
---- 1117,1123 ----
+--- 1086,1092 ----
   let rec full_expand env ty =
     let ty = repr (expand_head env ty) in
     match ty.desc with
@@ -262,7 +505,7 @@ diff -c -r1.51 -r1.61
          [] [] ty);
     visited := []
   
---- 1151,1181 ----
+--- 1120,1150 ----
   (* The marks are already used by [expand_abbrev]... *)
   let visited = ref []
   
@@ -308,7 +551,7 @@ diff -c -r1.51 -r1.61
       end
     in
     try
---- 1399,1405 ----
+--- 1368,1374 ----
       if ty.level >= lowest_level then begin
         if ty == t0 then raise Occur;
         ty.level <- pivot_level - ty.level;
@@ -328,7 +571,7 @@ diff -c -r1.51 -r1.61
     in
     if !strict then join ();
   
---- 1535,1546 ----
+--- 1504,1515 ----
     let d1 = t1'.desc and d2 = t2'.desc in
   
     let create_recursion = (t2 != t2') && (deep_occur t1' t2) in
@@ -353,7 +596,7 @@ diff -c -r1.51 -r1.61
   	let prepare vari =
   	  let ext = repr vari.var_ext in
   	  let dext' = ext.desc in
---- 1566,1575 ----
+--- 1535,1544 ----
   	let var = common_variant var1 var2 in
   	if (repr var1.var_ext).desc = Tunivar then
   	  unify env var1.var_ext var2.var_ext;
@@ -376,7 +619,7 @@ diff -c -r1.51 -r1.61
   	  raise (Unify trace)
   	end
       | (Tarrow (p, t1, u1), Tarrow (q, t2, u2))
---- 1602,1610 ----
+--- 1571,1579 ----
   		try unify_option env (List.assoc lab var2.var_max) ot
   		with Not_found -> ()
   	      end)
@@ -388,7 +631,7 @@ diff -c -r1.51 -r1.61
       | (Tarrow (p, t1, u1), Tarrow (q, t2, u2))
 ***************
 *** 1711,1716 ****
---- 1731,1737 ----
+--- 1700,1706 ----
   and unify_kind k1 k2 =
     let k1 = field_kind_repr k1 in
     let k2 = field_kind_repr k2 in
@@ -406,7 +649,7 @@ diff -c -r1.51 -r1.61
   let free_unify env ty1 ty2 =
     strict := !Clflags.nolabels; univar_pairs := [];
     unify env ty1 ty2
---- 1750,1772 ----
+--- 1719,1741 ----
     with Unify trace ->
       raise (Unify (expand_trace env trace))
   
@@ -452,7 +695,7 @@ diff -c -r1.51 -r1.61
   
   (* Unify [t] and ['a -> 'b]. Return ['a] and ['b]. *)
   let rec filter_arrow env p t =
---- 1782,1790 ----
+--- 1751,1759 ----
   (**** Special cases of unification ****)
   
   (* Unify with a variable *)
@@ -464,7 +707,7 @@ diff -c -r1.51 -r1.61
   let rec filter_arrow env p t =
 ***************
 *** 1999,2004 ****
---- 2024,2030 ----
+--- 1993,1999 ----
   and moregen_kind k1 k2 =
     let k1 = field_kind_repr k1 in
     let k2 = field_kind_repr k2 in
@@ -472,6 +715,23 @@ diff -c -r1.51 -r1.61
     match k1, k2 with
       (Fvar r, (Fvar _ | Fpresent))  -> r := Some k2
     | (Fpresent, Fpresent)           -> ()
+***************
+*** 2449,2462 ****
+                                (*  Subtyping  *)
+                                (***************)
+  
+- (* A module for hash-tables indexed on types *)
+- 
+- module HType = Hashtbl.Make (struct
+-   type t = type_expr
+-   let equal = (==)
+-   let hash t = t.id
+- end)
+- 
+  (**** Build a subtype of a given type. ****)
+  
+  let subtypes = ref (HType.create 1)
+--- 2444,2449 ----
 ***************
 *** 2599,2605 ****
   	  then
@@ -481,7 +741,7 @@ diff -c -r1.51 -r1.61
   		  match rem with
   		    (c1, ot1)::rem when c1 = c2 ->
   		      begin match ot1,ot2 with
---- 2625,2631 ----
+--- 2586,2592 ----
   	  then
   	    let (_,cstrs) =
   	      List.fold_left
@@ -491,7 +751,7 @@ diff -c -r1.51 -r1.61
   		      begin match ot1,ot2 with
 ***************
 *** 2639,2644 ****
---- 2665,2672 ----
+--- 2626,2633 ----
           subtype_rec env ((u1, u2)::trace) u1 u2 cstrs
       | (Ttuple tl1, Ttuple tl2) ->
           subtype_list env trace tl1 tl2 cstrs
@@ -510,7 +770,7 @@ diff -c -r1.51 -r1.61
       | (Tconstr _, Tconstr _) ->
           [(trace, t1, t2, !univar_pairs)]
       | (Tconstr(p1, tl1, abbrev1), _) when generic_abbrev env p1 ->
---- 2686,2691 ----
+--- 2647,2652 ----
 ***************
 *** 2701,2709 ****
     let (fields1, rest1) = flatten_fields ty1 in
@@ -522,7 +782,7 @@ diff -c -r1.51 -r1.61
     begin match rest2.desc with
       Tnil   -> []
     | _      ->
---- 2727,2737 ----
+--- 2688,2698 ----
     let (fields1, rest1) = flatten_fields ty1 in
     let (fields2, rest2) = flatten_fields ty2 in
     let (pairs, miss1, miss2) = associate_fields fields1 fields2 in
