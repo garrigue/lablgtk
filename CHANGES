@@ -1,5 +1,8 @@
 $Id$
 
+2001.12.12
+  * add GToolbox utility module (contributed by Maxence Guesdon)
+
 2001.12.10
   * add Adjustment.set_bounds (Alan Schmitt)
 
