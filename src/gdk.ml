@@ -106,7 +106,7 @@ module Image = struct
   external create_bitmap : visual: visual -> data: string -> 
     width: int -> height: int -> image 
       = "ml_gdk_image_new_bitmap"
-  external create : image_type: image_type -> visual: visual -> 
+  external create : kind: image_type -> visual: visual -> 
     width: int -> height: int -> image
       = "ml_gdk_image_new"
   external get :
