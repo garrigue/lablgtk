@@ -61,19 +61,19 @@ Make_Flags_val (Font_type_val)
 
 /* gtkobject.h */
 
-Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref)
+Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref, 0)
 
 #define gtk_object_ref_and_sink(w) (gtk_object_ref(w), gtk_object_sink(w))
 Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
-                           gtk_object_unref)
+                           gtk_object_unref, 20)
 
 /* gtkaccelgroup.h */
 
 #define GtkAccelGroup_val(val) ((GtkAccelGroup*)Pointer_val(val))
 Make_Val_final_pointer (GtkAccelGroup, gtk_accel_group_ref,
-			gtk_accel_group_unref)
+			gtk_accel_group_unref, 0)
 Make_Val_final_pointer_ext (GtkAccelGroup, _no_ref, Ignore,
-                            gtk_accel_group_unref)
+                            gtk_accel_group_unref, 20)
 Make_OptFlags_val (Accel_flag_val)
 
 #define Signal_name_val(val) String_val(Field(val,0))
@@ -104,8 +104,8 @@ ML_1 (gtk_accelerator_set_default_mod_mask, OptFlags_GdkModifier_val, Unit)
 /* gtkstyle.h */
 
 #define GtkStyle_val(val) ((GtkStyle*)Pointer_val(val))
-Make_Val_final_pointer (GtkStyle, gtk_style_ref, gtk_style_unref)
-Make_Val_final_pointer_ext (GtkStyle, _no_ref, Ignore, gtk_style_unref)
+Make_Val_final_pointer (GtkStyle, gtk_style_ref, gtk_style_unref, 0)
+Make_Val_final_pointer_ext (GtkStyle, _no_ref, Ignore, gtk_style_unref, 20)
 ML_0 (gtk_style_new, Val_GtkStyle_no_ref)
 ML_1 (gtk_style_copy, GtkStyle_val, Val_GtkStyle_no_ref)
 ML_2 (gtk_style_attach, GtkStyle_val, GdkWindow_val, Val_GtkStyle)
@@ -575,7 +575,8 @@ static void window_unref (GtkObject *w)
 	gtk_object_unref (w);
     gtk_object_unref (w);
 }
-Make_Val_final_pointer_ext (GtkObject, _window, gtk_object_ref, window_unref)
+Make_Val_final_pointer_ext (GtkObject, _window, gtk_object_ref, window_unref,
+                            20)
 #define Val_GtkWidget_window(w) Val_GtkObject_window((GtkObject*)w)
 
 #define GtkDialog_val(val) check_cast(GTK_DIALOG,val)
