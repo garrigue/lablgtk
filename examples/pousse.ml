@@ -87,12 +87,12 @@ let _ =
 class cell ?:packing = object (self)
   inherit GButton.button ?:packing
   val mutable color : color = `none
-  val pm = pixdraw#new_pixmap
+  val pm = new GPix.pixmap pixdraw
   method color = color
   method set_color col =
     if col <> color then begin
       color <- col;
-      GPix.set_pixmap pm
+      pm#set_pixmap
 	(match col with `none -> pixdraw
 	| `black -> pixdraw1
 	| `white -> pixdraw2)

@@ -9,53 +9,33 @@ open GObj
 class pixmap_wrapper obj = object
   inherit GMisc.misc (obj : pixmap obj)
   method connect = new widget_signals ?obj
-  method set = Pixmap.setter ?obj ?cont:null_cont
-  method pixmap = Pixmap.pixmap obj
-  method mask = Pixmap.mask obj
+  method set_pixmap : 'a. (#GdkObj.pixmap as 'a) -> unit = fun pm ->
+    Pixmap.set obj pixmap:pm#pixmap ?mask:pm#mask
+  method pixmap =
+    new GdkObj.pixmap (Pixmap.pixmap obj)
+      ?mask:(try Some(Pixmap.mask obj) with Null_pointer -> None)
 end
 
-class pixmap pix ?:mask ?:xalign ?:yalign ?:xpad ?:ypad ?:packing ?:show =
-  let w = Pixmap.create pix ?:mask in
+class pixmap (pm : #GdkObj.pixmap)
+    ?:xalign ?:yalign ?:xpad ?:ypad ?:packing ?:show =
+  let w = Pixmap.create pm#pixmap ?mask:pm#mask in
   let () = Misc.setter w cont:null_cont ?:xalign ?:yalign ?:xpad ?:ypad in
   object (self)
     inherit pixmap_wrapper w
     initializer pack_return :packing ?:show (self :> pixmap_wrapper)
   end
 
-open GdkObj
-
 class pixdraw parent:(w : #GObj.widget) :width :height =
   let depth = w#misc#realize (); w#misc#visual_depth in
   let window = w#misc#window in
-  object (self)
-    inherit [[pixmap]] drawing
-	(Gdk.Pixmap.create window :width :height :depth) as pixmap
-    val mask = new drawing (Gdk.Bitmap.create window :width :height)
-    method mask = mask
-    method point :x :y =
-      pixmap#point :x :y;
-      mask#point :x :y
-    method line :x :y :x :y =
-      pixmap#line :x :y :x :y;
-      mask#line :x :y :x :y
-    method rectangle :x :y :width :height ?:filled =
-      pixmap#rectangle :x :y :width :height ?:filled;
-      mask#rectangle :x :y :width :height ?:filled
-    method arc :x :y :width :height ?:filled ?:start ?:angle =
-      pixmap#arc :x :y :width :height ?:filled ?:start ?:angle;
-      mask#arc :x :y :width :height ?:filled ?:start ?:angle;
-    method polygon l ?:filled =
-      pixmap#polygon l ?:filled;
-      mask#polygon l ?:filled
-    method string s :font :x :y =
-      pixmap#string s :font :x :y;
-      mask#string s :font :x :y
+  object
+    inherit GdkObj.pixmap (Gdk.Pixmap.create window :width :height :depth)
+	mask:(Gdk.Bitmap.create window :width :height)
     initializer
-      mask#set foreground:`BLACK;
-      mask#rectangle x:0 y:0 :width :height filled:true;
-      mask#set foreground:`WHITE
-    method new_pixmap = new pixmap self#raw mask:mask#raw
+      may bitmap fun:
+	begin fun mask ->
+	  mask#set foreground:`BLACK;
+	  mask#rectangle x:0 y:0 :width :height filled:true;
+	  mask#set foreground:`WHITE
+	end
   end
-
-let set_pixmap (pm : #pixmap) (px : #pixdraw) =
-   pm#set pixmap:px#raw mask:px#mask#raw

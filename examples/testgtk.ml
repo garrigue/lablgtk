@@ -446,16 +446,13 @@ let create_scrolled_windows =
 
 (* Toolbar *)
 
-let pixmap_new filename window background =
-  let pixmap,mask =
-    try Gdk.Pixmap.create_from_xpm window file:filename
-    with _ -> failwith "Pixmap creation failed"
-  in
-  new GPix.pixmap pixmap :mask
-
 let make_toolbar (toolbar : toolbar) (window : window) =
-  let icon () = (pixmap_new "test.xpm" (window #misc#window)
-		(window#misc#style#bg `NORMAL)) in
+  let icon =
+    let info =
+      new GdkObj.pixmap_from_xpm file:"test.xpm" window:window#misc#window in
+    fun () -> new GPix.pixmap info
+  in
+
   toolbar #insert_button text:"Horizontal"
     tooltip:"Horizontal toolbar layout"
     tooltip_private:"Toolbar/Horizontal"

@@ -9,6 +9,7 @@
 value copy_memblock_indirected (void *src, asize_t size);
 void ml_raise_null_pointer (void) Noreturn;
 value Val_pointer (void *);
+value copy_string_check (const char*);
 
 /* Wrapper generators */
 
@@ -173,5 +174,6 @@ long OptFlags_##conv (value list) \
   return flags; }
 
 #define Val_copy(val) copy_memblock_indirected (&val, sizeof(val))
+#define Val_string copy_string_check
 
 #endif /* _wrappers_ */

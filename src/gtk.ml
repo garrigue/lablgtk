@@ -48,6 +48,8 @@ module Tags = struct
   type side_type = [ TOP BOTTOM LEFT RIGHT ]
   type anchor_type = [ CENTER N NW NE S SW SE W E ]
   type update_policy = [ ALWAYS IF_VALID SNAP_TO_TICKS ]
+  type cell_type = [ EMPTY TEXT PIXMAP PIXTEXT WIDGET ]
+  type button_action = [ SELECTS DRAGS EXPANDS ]
 end
 open Tags
 

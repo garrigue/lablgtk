@@ -1,5 +1,9 @@
 $Id$
 
+1999.6.11
+  * added CList widget in GList module, and examples/clist.ml
+  * improved pixmap abstraction in GdkObj / GPix
+
 1999.6.10
   * suppressed almost all raw pointers from the code. Pointers are now
     either boxed (second field of an abstract block) or marked (lowest
