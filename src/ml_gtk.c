@@ -1649,8 +1649,7 @@ value ml_gtk_arg_get (GtkArg *arg)
     CAMLparam0();
     CAMLlocal2(ret,tmp);
     GtkFundamentalType type = GTK_FUNDAMENTAL_TYPE(arg->type);
-    int tag = -1;
-    ret = Val_unit;
+    int tag;
 
     switch (type) {
     case GTK_TYPE_CHAR:
@@ -1687,8 +1686,10 @@ value ml_gtk_arg_get (GtkArg *arg)
     case GTK_TYPE_POINTER:
         tag = 6;
         tmp = Val_option (GTK_VALUE_POINTER(*arg), Val_pointer); break;
+    default:
+        tag = -1; ret = Val_unit;
     }
-    if (tag >= 0) {
+    if (tag != -1) {
         ret = alloc(1,tag);
         Field(ret,0) = tmp;
     }
