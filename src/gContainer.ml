@@ -2,6 +2,7 @@
 
 open Misc
 open Gtk
+open GtkBase
 open GObj
 open GData
 
@@ -33,10 +34,10 @@ end
 class container_signals obj ?:after = object
   inherit widget_signals obj ?:after
   method add :callback =
-    Signal.connect sig:Container.Signals.add obj ?:after
+    GtkSignal.connect sig:Container.Signals.add obj ?:after
       callback:(fun w -> callback (new widget_wrapper w))
   method remove :callback =
-    Signal.connect sig:Container.Signals.remove obj ?:after
+    GtkSignal.connect sig:Container.Signals.remove obj ?:after
       callback:(fun w -> callback (new widget_wrapper w))
 end
 
@@ -51,7 +52,7 @@ class virtual ['a,'b] item_container obj = object (self)
     fun w -> Container.add obj w#as_item
   method remove : 'c. ('a #is_item as 'c) -> _ =
     fun w -> Container.remove obj w#as_item
-  method private virtual wrap : Widget.t obj -> 'b
+  method private virtual wrap : Gtk.widget obj -> 'b
   method children : 'b list =
     List.map fun:self#wrap (Container.children obj)
   method set_size ?:border = Container.set ?obj ?border_width:border
@@ -65,7 +66,7 @@ end
 
 class item_signals obj ?:after = object
   inherit container_signals obj ?:after
-  method select = Signal.connect sig:Item.Signals.select obj ?:after
-  method deselect = Signal.connect sig:Item.Signals.deselect obj ?:after
-  method toggle = Signal.connect sig:Item.Signals.toggle obj ?:after
+  method select = GtkSignal.connect sig:Item.Signals.select obj ?:after
+  method deselect = GtkSignal.connect sig:Item.Signals.deselect obj ?:after
+  method toggle = GtkSignal.connect sig:Item.Signals.toggle obj ?:after
 end

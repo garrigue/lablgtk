@@ -21,8 +21,8 @@ let _ =
   text#misc#realize ();
   text#insert "こんにちは" :font;
   let style = button#misc#style in
-  Gtk.Style.set style :font;
-  Gtk.Style.set_bg style color:(Gdk.Color.alloc (`NAME "green"));
+  GtkData.Style.set style :font;
+  GtkData.Style.set_bg style color:(Gdk.Color.alloc (`NAME "green"));
   button#connect#clicked callback:Main.quit
 
 let _ =

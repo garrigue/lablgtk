@@ -2,23 +2,24 @@
 
 open Misc
 open Gtk
+open GtkData
 open GObj
 
 class data_signals obj ?:after = object
   inherit gtkobj_signals obj ?:after
-  method disconnect = Signal.connect sig:Data.Signals.disconnect obj ?:after
+  method disconnect = GtkSignal.connect sig:Data.Signals.disconnect obj ?:after
 end
 
 class adjustment_signals obj ?:after = object
   inherit data_signals obj ?:after
-  method changed = Signal.connect sig:Adjustment.Signals.changed obj ?:after
+  method changed = GtkSignal.connect sig:Adjustment.Signals.changed obj ?:after
   method value_changed =
-    Signal.connect sig:Adjustment.Signals.value_changed obj ?:after
+    GtkSignal.connect sig:Adjustment.Signals.value_changed obj ?:after
 end
 
 class adjustment_wrapper obj = object
   inherit gtkobj obj
-  method as_adjustment : Adjustment.t obj = obj
+  method as_adjustment : Gtk.adjustment obj = obj
   method connect = new adjustment_signals ?obj
   method set_value = Adjustment.set_value obj
   method clamp_page = Adjustment.clamp_page obj
@@ -31,7 +32,7 @@ class adjustment :value :lower :upper :step_incr :page_incr :page_size =
   adjustment_wrapper w
 
 class tooltips_wrapper obj = object
-  inherit gtkobj (Tooltips.coerce obj)
+  inherit gtkobj (obj : tooltips obj)
   method connect = new data_signals ?obj
   method enable () = Tooltips.enable obj
   method disable () = Tooltips.disable obj

@@ -9,8 +9,8 @@ class window_skel :
     val obj : 'a obj
     method activate_default : unit -> unit
     method activate_focus : unit -> unit
-    method add_accel_group : AccelGroup.t -> unit
-    method as_window : Window.t obj
+    method add_accel_group : accel_group -> unit
+    method as_window : window obj
     method set_default_size : width:int -> height:int -> unit
     method set_modal : bool -> unit
     method set_policy :
@@ -39,7 +39,7 @@ class window :
   ?packing:(window -> unit) ->
   object
     inherit window_skel
-    val obj : Window.t obj
+    val obj : Gtk.window obj
     method connect : ?after:bool -> GContainer.container_signals
   end
 class window_wrapper : ([> window]) obj -> window
@@ -61,7 +61,7 @@ class dialog :
   ?packing:(dialog -> unit) ->
   object
     inherit window
-    val obj : Dialog.t obj
+    val obj : Gtk.dialog obj
     method action_area : GPack.box
     method vbox : GPack.box
   end
@@ -84,14 +84,14 @@ class color_selection_dialog :
   ?packing:(color_selection_dialog -> unit) ->
   object
     inherit window
-    val obj : ColorSelection.dialog obj
+    val obj : Gtk.color_selection_dialog obj
     method cancel_button : GButton.button
     method colorsel : GMisc.color_selection
     method help_button : GButton.button
     method ok_button : GButton.button
   end
 class color_selection_dialog_wrapper :
-  ColorSelection.dialog obj -> color_selection_dialog
+  Gtk.color_selection_dialog obj -> color_selection_dialog
 
 class file_selection :
   title:string ->
@@ -112,7 +112,7 @@ class file_selection :
   ?packing:(file_selection -> unit) ->
   object
     inherit window
-    val obj : FileSelection.t obj
+    val obj : Gtk.file_selection obj
     method cancel_button : GButton.button
     method get_filename : string
     method help_button : GButton.button
@@ -121,4 +121,4 @@ class file_selection :
     method set_filename : string -> unit
     method show_fileop_buttons : unit -> unit
   end
-class file_selection_wrapper : FileSelection.t obj -> file_selection
+class file_selection_wrapper : Gtk.file_selection obj -> file_selection

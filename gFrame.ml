@@ -2,12 +2,14 @@
 
 open Misc
 open Gtk
+open GtkBase
+open GtkFrame
 open GObj
 open GContainer
 open GUtil
 
 class scrolled_window_wrapper obj = object
-  inherit container_wrapper (obj : ScrolledWindow.t obj)
+  inherit container_wrapper (obj : scrolled_window obj)
   method hadjustment =
     new GData.adjustment_wrapper (ScrolledWindow.get_hadjustment obj)
   method vadjustment =
@@ -43,13 +45,13 @@ class event_box ?:border_width ?:width ?:height ?:packing =
 class handle_box_signals obj ?:after = object
   inherit container_signals obj ?:after
   method child_attached =
-    Signal.connect sig:HandleBox.Signals.child_attached obj ?:after
+    GtkSignal.connect sig:HandleBox.Signals.child_attached obj ?:after
   method child_detached =
-    Signal.connect sig:HandleBox.Signals.child_detached obj ?:after
+    GtkSignal.connect sig:HandleBox.Signals.child_detached obj ?:after
 end
 
 class handle_box_wrapper obj = object
-  inherit container (obj : HandleBox.t obj)
+  inherit container (obj : handle_box obj)
   method set_shadow_type     = HandleBox.set_shadow_type     obj
   method set_handle_position = HandleBox.set_handle_position obj
   method set_snap_edge       = HandleBox.set_snap_edge       obj
@@ -90,7 +92,7 @@ class frame ?:label ?:label_xalign ?:label_yalign ?:shadow_type
   end
 
 class aspect_frame_wrapper obj = object
-  inherit frame_skel (obj : AspectFrame.t obj)
+  inherit frame_skel (obj : Gtk.aspect_frame obj)
   method connect = new container_signals ?obj
   method set_aspect = AspectFrame.setter ?obj ?cont:null_cont
 end

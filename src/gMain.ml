@@ -1,6 +1,7 @@
 (* $Id$ *)
 
 open Gtk
+open GtkMain
 open GObj
 
 module Main : sig

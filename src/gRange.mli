@@ -6,11 +6,11 @@ class progress_bar :
   ?packing:(progress_bar -> unit) ->
   object
     inherit GObj.widget_wrapper
-    val obj : ProgressBar.t obj
+    val obj : Gtk.progress_bar obj
     method percentage : float
     method update : float -> unit
   end
-class progress_bar_wrapper : ProgressBar.t obj -> progress_bar
+class progress_bar_wrapper : Gtk.progress_bar obj -> progress_bar
 
 class range :
   'a[> range widget] obj ->
@@ -29,6 +29,6 @@ class scrollbar :
   ?packing:(scrollbar -> unit) ->
   object
     inherit range
-    val obj : Scrollbar.t obj
+    val obj : Gtk.scrollbar obj
   end
-class scrollbar_wrapper : Scrollbar.t obj -> scrollbar
+class scrollbar_wrapper : Gtk.scrollbar obj -> scrollbar

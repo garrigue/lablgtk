@@ -8,8 +8,8 @@ class editable_signals :
   object
     inherit GObj.widget_signals
     val obj : 'a obj
-    method activate : callback:(unit -> unit) -> Signal.id
-    method changed : callback:(unit -> unit) -> Signal.id
+    method activate : callback:(unit -> unit) -> GtkSignal.id
+    method changed : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class editable :
@@ -36,7 +36,7 @@ class entry :
   ?packing:(entry -> unit) ->
   object
     inherit editable
-    val obj : Entry.t obj
+    val obj : Gtk.entry obj
     method append_text : string -> unit
     method prepend_text : string -> unit
     method set_editable : bool -> unit
@@ -54,7 +54,7 @@ class spin_button :
   digits:int ->
   ?adjustment:GData.adjustment ->
   ?value:float ->
-  ?update_policy:SpinButton.update_policy ->
+  ?update_policy:Tags.update_policy ->
   ?numeric:bool ->
   ?wrap:bool ->
   ?shadow_type:Tags.shadow_type ->
@@ -62,7 +62,7 @@ class spin_button :
   ?packing:(spin_button -> unit) ->
   object
     inherit entry
-    val obj : SpinButton.t obj
+    val obj : Gtk.spin_button obj
     method get_adjustment : GData.adjustment
     method get_value : float
     method get_value_as_int : float
@@ -72,12 +72,12 @@ class spin_button :
       ?adjustment:GData.adjustment ->
       ?digits:int ->
       ?value:float ->
-      ?update_policy:Gtk.SpinButton.update_policy ->
+      ?update_policy:Tags.update_policy ->
       ?numeric:bool ->
       ?wrap:bool ->
-      ?shadow_type:Gtk.Tags.shadow_type -> ?snap_to_ticks:bool -> unit
+      ?shadow_type:Tags.shadow_type -> ?snap_to_ticks:bool -> unit
   end
-class spin_button_wrapper : SpinButton.t obj -> spin_button
+class spin_button_wrapper : Gtk.spin_button obj -> spin_button
 
 class combo :
   ?popdown_strings:string list ->
@@ -90,7 +90,7 @@ class combo :
   ?packing:(combo -> unit) ->
   object
     inherit GPack.box
-    val obj : Combo.t obj
+    val obj : Gtk.combo obj
     method disable_activate : unit -> unit
     method entry : entry
     method set_case_sensitive : bool -> unit
@@ -99,7 +99,7 @@ class combo :
     method set_use_arrows_always : bool -> unit
     method set_value_in_list : bool -> ok_if_empty:bool -> unit
   end
-class combo_wrapper : Combo.t obj -> combo
+class combo_wrapper : Gtk.combo obj -> combo
 
 class text :
   ?hadjustment:[> adjustment] obj ->
@@ -110,7 +110,7 @@ class text :
   ?packing:(text -> unit) ->
   object
     inherit editable
-    val obj : Text.t obj
+    val obj : Gtk.text obj
     method freeze : unit -> unit
     method insert :
       ?font:Gdk.font ->
@@ -124,4 +124,4 @@ class text :
     method set_word_wrap : bool -> unit
     method thaw : unit -> unit
   end
-class text_wrapper : Text.t obj -> text
+class text_wrapper : Gtk.text obj -> text

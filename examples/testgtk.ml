@@ -270,7 +270,7 @@ let rw = ref None in
 	window #connect#destroy callback:(fun _ -> rw := None);
 	window #connect#event#delete callback:(fun _ -> true);
 
-	let accel_group = Gtk.AccelGroup.create () in
+	let accel_group = GtkData.AccelGroup.create () in
 	window #add_accel_group accel_group  ;
 
 	let box1 = new box `VERTICAL packing:window#add in
@@ -481,7 +481,7 @@ let pixmap_new filename window background =
 
 let make_toolbar (toolbar : toolbar) (window : window) =
   let icon () = (pixmap_new "test.xpm" (window #misc#window)
-		(Gtk.Style.get_bg (window #misc#style))) in
+		(GtkData.Style.get_bg (window #misc#style))) in
   toolbar #insert_button text:"Horizontal"
     tooltip:"Horizontal toolbar layout"
     tooltip_private:"Toolbar/Horizontal"
@@ -592,8 +592,8 @@ let create_toolbar =
 (* Handlebox *)
 
 let handle_box_child_signal action (hb : handle_box) child =
-  Printf.printf "%s: child <%s> %s\n" (Gtk.Type.name hb#get_type)
-    (Gtk.Type.name (Gtk.Object.get_type child)) action
+  Printf.printf "%s: child <%s> %s\n" (GtkBase.Type.name hb#get_type)
+    (GtkBase.Type.name (GtkBase.Object.get_type child)) action
 
 let create_handle_box =
   let rw = ref None in
@@ -919,7 +919,7 @@ let tips_query_widget_selected (w : #widget option) _ tp _ =
   | Some w -> 
     Printf.printf "Help \"%s\" requested for <%s>\n"
 	(match tp with None -> "None" | Some t -> t)
-	(Gtk.Type.name (w #get_type)));
+	(GtkBase.Type.name (w #get_type)));
    true
 
 
@@ -1054,7 +1054,7 @@ let create_labels =
 
 
 let set_parent child old_parent =
-  let name (w : #widget) = Gtk.Type.name (w #get_type) in
+  let name (w : #widget) = GtkBase.Type.name (w #get_type) in
   let name_opt = function
     | None -> "(NULL)"
     | Some w -> name w in

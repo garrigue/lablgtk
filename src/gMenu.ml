@@ -2,15 +2,14 @@
 
 open Misc
 open Gtk
+open GtkData
+open GtkBase
+open GtkMenu
 open GObj
 open GContainer
 open GUtil
 
 (* Menu items *)
-
-class type is_menu = object
-  method as_menu : Menu.t obj
-end
 
 class menu_item_skel obj = object
   inherit container obj
@@ -27,7 +26,7 @@ end
 
 class menu_item_signals obj ?:after = object
   inherit item_signals obj ?:after
-  method activate = Signal.connect sig:MenuItem.Signals.activate obj ?:after
+  method activate = GtkSignal.connect sig:MenuItem.Signals.activate obj ?:after
 end
 
 class menu_item_wrapper obj = object
@@ -53,7 +52,7 @@ class tearoff_item ?:border_width ?:width ?:height ?:packing =
 
 class check_menu_item_signals obj ?:after = object
   inherit menu_item_signals obj ?:after
-  method toggled = Signal.connect sig:CheckMenuItem.Signals.toggled obj ?:after
+  method toggled = GtkSignal.connect sig:CheckMenuItem.Signals.toggled obj ?:after
 end
 
 class check_menu_item_skel obj = object
@@ -80,15 +79,11 @@ class check_menu_item ?:label
     initializer pack_return :packing (self :> check_menu_item_wrapper)
   end
 
-class radio_menu_item_skel obj = object
-  inherit check_menu_item_skel obj
+class radio_menu_item_wrapper obj = object
+  inherit check_menu_item_skel (obj : radio_menu_item obj)
+  method connect = new check_menu_item_signals ?obj
   method group = RadioMenuItem.group obj
   method set_group = RadioMenuItem.set_group obj
-end
-
-class radio_menu_item_wrapper obj = object
-  inherit radio_menu_item_skel (RadioMenuItem.coerce obj)
-  method connect = new check_menu_item_signals ?obj
 end
 
 class radio_menu_item ?:group ?:label
@@ -107,13 +102,13 @@ class radio_menu_item ?:group ?:label
 class menu_shell_signals obj ?:after = object
   inherit container_signals obj ?:after
   method deactivate =
-    Signal.connect sig:MenuShell.Signals.deactivate obj ?:after
+    GtkSignal.connect sig:MenuShell.Signals.deactivate obj ?:after
 end
 
 class menu_shell obj = object
-  inherit [MenuItem.t,menu_item] item_container obj
+  inherit [Gtk.menu_item,menu_item] item_container obj
   method private wrap w = new menu_item_wrapper (MenuItem.cast w)
-  method insert : 'a. (MenuItem.t #is_item as 'a) -> _ =
+  method insert : 'a. (Gtk.menu_item #is_item as 'a) -> _ =
     fun w -> MenuShell.insert obj w#as_item
   method deactivate () = MenuShell.deactivate obj
   method connect = new menu_shell_signals ?obj
@@ -122,10 +117,10 @@ end
 (* Menu *)
 
 class menu_wrapper obj = object
-  inherit menu_shell (Menu.coerce obj)
+  inherit menu_shell (obj : Gtk.menu obj)
   method popup = Menu.popup obj
   method popdown () = Menu.popdown obj
-  method as_menu : Menu.t obj = obj
+  method as_menu : Gtk.menu obj = obj
   method set_accel_group = Menu.set_accel_group obj
 end
 
@@ -140,7 +135,7 @@ class menu ?:border_width ?:packing =
 (* Option Menu (GtkButton?) *)
 
 class option_menu_wrapper obj = object
-  inherit GButton.button_skel (OptionMenu.coerce obj)
+  inherit GButton.button_skel (obj : Gtk.option_menu obj)
   method connect = new GButton.button_signals ?obj
   method set_menu (menu : menu) = OptionMenu.set_menu obj menu#as_menu
   method get_menu = new menu_wrapper (OptionMenu.get_menu obj)
@@ -169,7 +164,7 @@ class menu_bar ?:border_width ?:width ?:height ?:packing =
 (* Menu Factory *)
 
 class ['a] factory (menu : 'a)
-    ?:accel_group [< Gtk.AccelGroup.create () >]
+    ?:accel_group [< AccelGroup.create () >]
     ?:accel_mod [< [`CONTROL] >]
     ?:accel_flags [< [`VISIBLE] >] =
   object (self)

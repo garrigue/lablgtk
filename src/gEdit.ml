@@ -2,13 +2,15 @@
 
 open Misc
 open Gtk
+open GtkBase
+open GtkEdit
 open GUtil
 open GObj
 
 class editable_signals obj ?:after = object
   inherit widget_signals obj ?:after
-  method activate = Signal.connect sig:Editable.Signals.activate obj ?:after
-  method changed = Signal.connect sig:Editable.Signals.changed obj ?:after
+  method activate = GtkSignal.connect sig:Editable.Signals.activate obj ?:after
+  method changed = GtkSignal.connect sig:Editable.Signals.changed obj ?:after
 end
 
 class editable obj = object
@@ -47,7 +49,7 @@ class entry ?:max_length ?:text ?:position ?:visibility ?:editable ?:packing =
 
 class spin_button_wrapper myobj = object
   inherit entry_wrapper myobj
-  val obj : SpinButton.t obj = myobj
+  val obj : Gtk.spin_button obj = myobj
   method get_adjustment =
     new GData.adjustment_wrapper (SpinButton.get_adjustment obj)
   method get_value = SpinButton.get_value obj
@@ -74,7 +76,7 @@ class spin_button :rate :digits ?:adjustment ?:value ?:update_policy
   end
 
 class combo_wrapper obj = object
-  inherit GPack.box_skel (obj : Combo.t obj)
+  inherit GPack.box_skel (obj : Gtk.combo obj)
   method connect = new GContainer.container_signals ?obj
   method entry = new entry_wrapper (Combo.entry obj)
   method set_value_in_list = Combo.set_value_in_list obj
@@ -99,7 +101,7 @@ class combo ?:popdown_strings ?:use_arrows ?:use_arrows_always
   end
 
 class text_wrapper obj = object
-  inherit editable (obj : Text.t obj)
+  inherit editable (obj : Gtk.text obj)
   method set_editable = Text.set_editable obj
   method set_point = Text.set_point obj
   method set_word_wrap = Text.set_word_wrap obj

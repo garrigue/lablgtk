@@ -13,11 +13,11 @@ class menu_item_skel :
     val obj : 'a obj
     method activate : unit -> unit
     method add_accelerator :
-      AccelGroup.t ->
+      accel_group ->
       key:char ->
       ?mod:Gdk.Tags.modifier list ->
-      ?flags:AccelGroup.accel_flag list -> unit
-    method as_item : MenuItem.t obj
+      ?flags:Tags.accel_flag list -> unit
+    method as_item : menu_item obj
     method configure : show_toggle:bool -> show_indicator:bool -> unit
     method remove_submenu : unit -> unit
     method right_justify : unit -> unit
@@ -29,7 +29,7 @@ class menu_item_signals :
   object
     inherit item_signals
     val obj : 'a obj
-    method activate : callback:(unit -> unit) -> Signal.id
+    method activate : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class menu_item :
@@ -40,7 +40,7 @@ class menu_item :
   ?packing:(menu_item -> unit) ->
   object
     inherit menu_item_skel
-    val obj : MenuItem.t obj
+    val obj : Gtk.menu_item obj
     method connect : ?after:bool -> menu_item_signals
   end
 
@@ -57,7 +57,7 @@ class check_menu_item_signals :
   object
     inherit menu_item_signals
     val obj : 'a obj
-    method toggled : callback:(unit -> unit) -> Signal.id
+    method toggled : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class check_menu_item_skel :
@@ -81,23 +81,14 @@ class check_menu_item :
   ?packing:(check_menu_item -> unit) ->
   object
     inherit check_menu_item_skel
-    val obj : CheckMenuItem.t obj
+    val obj : Gtk.check_menu_item obj
     method connect : ?after:bool -> check_menu_item_signals
   end
 
 class check_menu_item_wrapper : ([> checkmenuitem] obj) -> check_menu_item
 
-class radio_menu_item_skel :
-  'a[> checkmenuitem container menuitem radiomenuitem widget] obj ->
-  object
-    inherit check_menu_item_skel
-    val obj : 'a Gtk.obj
-    method group : RadioMenuItem.group
-    method set_group : RadioMenuItem.group -> unit
-  end
-
 class radio_menu_item :
-  ?group:RadioMenuItem.group ->
+  ?group:group ->
   ?label:string ->
   ?active:bool ->
   ?show_toggle:bool ->
@@ -106,11 +97,13 @@ class radio_menu_item :
   ?height:int ->
   ?packing:(radio_menu_item -> unit) ->
   object
-    inherit radio_menu_item_skel
-    val obj : RadioMenuItem.t obj
+    inherit check_menu_item_skel
+    val obj : Gtk.radio_menu_item obj
     method connect : ?after:bool -> check_menu_item_signals
+    method group : group
+    method set_group : group -> unit
   end
-class radio_menu_item_wrapper : ([> radiomenuitem] obj) -> radio_menu_item
+class radio_menu_item_wrapper : Gtk.radio_menu_item obj -> radio_menu_item
 
 (* Menus and menubars *)
 
@@ -119,18 +112,18 @@ class menu_shell_signals :
   object
     inherit container_signals
     val obj : 'a obj
-    method deactivate : callback:(unit -> unit) -> Signal.id
+    method deactivate : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class menu_shell :
   'a[> container menushell widget] obj ->
   object
-    inherit [MenuItem.t,menu_item] item_container
+    inherit [Gtk.menu_item,menu_item] item_container
     val obj : 'a obj
     method connect : ?after:bool -> menu_shell_signals
     method deactivate : unit -> unit
-    method insert : MenuItem.t #is_item -> pos:int -> unit
-    method private wrap : Widget.t obj -> menu_item
+    method insert : Gtk.menu_item #is_item -> pos:int -> unit
+    method private wrap : Gtk.widget obj -> menu_item
   end
 
 class menu :
@@ -138,14 +131,13 @@ class menu :
   ?packing:(menu -> unit) ->
   object
     inherit menu_shell
-    val obj : Menu.t obj
-    method as_menu : Menu.t obj
+    val obj : Gtk.menu obj
+    method as_menu : Gtk.menu obj
     method popdown : unit -> unit
     method popup : button:int -> time:int -> unit
-    method set_accel_group : AccelGroup.t -> unit
+    method set_accel_group : Gtk.accel_group -> unit
   end
-
-class menu_wrapper : ([> menu] obj) -> menu
+class menu_wrapper : Gtk.menu obj -> menu
 
 class option_menu :
   ?border_width:int ->
@@ -154,14 +146,13 @@ class option_menu :
   ?packing:(option_menu -> unit) ->
   object
     inherit GButton.button
-    val obj : OptionMenu.t obj
+    val obj : Gtk.option_menu obj
     method get_menu : menu
     method remove_menu : unit -> unit
     method set_history : int -> unit
     method set_menu : menu -> unit
   end
-
-class option_menu_wrapper : ([> optionmenu] obj) -> option_menu
+class option_menu_wrapper : Gtk.option_menu obj -> option_menu
 
 class menu_bar :
   ?border_width:int ->
@@ -170,19 +161,19 @@ class menu_bar :
   ?packing:(menu_bar -> unit) ->
   object
     inherit menu_shell
-    val obj : MenuBar.t obj
+    val obj : Gtk.menu_bar obj
   end
 
 (* Normaly you need only create a menu and use the factory *)
 
 class ['a] factory :
   'a ->
-  ?accel_group:AccelGroup.t ->
+  ?accel_group:accel_group ->
   ?accel_mod:Gdk.Tags.modifier list ->
-  ?accel_flags:AccelGroup.accel_flag list ->
+  ?accel_flags:Tags.accel_flag list ->
   object
     constraint 'a = #menu_shell
-    method accel_group : AccelGroup.t
+    method accel_group : accel_group
     method add_check_item :
       label:string ->
       ?active:bool -> ?key:char -> ?callback:(bool -> unit) -> check_menu_item
@@ -191,7 +182,7 @@ class ['a] factory :
       ?key:char -> ?callback:(unit -> unit) -> ?submenu:menu -> menu_item
     method add_radio_item :
       label:string ->
-      ?group:RadioMenuItem.group ->
+      ?group:group ->
       ?active:bool -> ?key:char -> ?callback:(bool -> unit) -> radio_menu_item
     method add_separator : unit -> menu_item
     method add_submenu : label:string -> ?key:char -> menu

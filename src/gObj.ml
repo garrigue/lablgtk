@@ -2,36 +2,37 @@
 
 open Misc
 open Gtk
+open GtkBase
 
 (* Class declarations *)
 
-class type is_widget = object method as_widget : Widget.t obj end
+class type is_widget = object method as_widget : widget obj end
 
 class type ['a] is_item = object
   constraint 'a = [> item]
   method as_item : 'a obj
 end
 
-class type is_menu = object method as_menu : Menu.t obj end
+class type is_menu = object method as_menu : menu obj end
 
-class type is_tree = object method as_tree : Tree.t obj end
+class type is_tree = object method as_tree : tree obj end
 
-class type is_window = object method as_window : Window.t obj end
+class type is_window = object method as_window : window obj end
 
 (* Object *)
 
 class gtkobj obj = object
   val obj = obj
   method destroy () = Object.destroy obj
-  method disconnect = Signal.disconnect obj
+  method disconnect = GtkSignal.disconnect obj
   method get_type = Object.get_type obj
-  method stop_emit name = Signal.emit_stop_by_name obj :name
+  method stop_emit name = GtkSignal.emit_stop_by_name obj :name
 end
 
 class gtkobj_signals obj ?:after = object
   val obj = obj
   val after : bool option = after
-  method destroy = Signal.connect sig:Object.Signals.destroy obj ?:after
+  method destroy = GtkSignal.connect sig:Object.Signals.destroy obj ?:after
 end
 
 class gtkobj_wrapper obj = object
@@ -44,39 +45,47 @@ end
 class event_signals obj ?:after = object
   val obj = Widget.coerce obj
   val after = after
-  method any = Signal.connect sig:Event.Signals.any obj ?:after
+  method any = GtkSignal.connect sig:Widget.Signals.Event.any obj ?:after
   method button_press =
-    Signal.connect sig:Event.Signals.button_press obj ?:after
+    GtkSignal.connect sig:Widget.Signals.Event.button_press obj ?:after
   method button_release =
-    Signal.connect sig:Event.Signals.button_release obj ?:after
-  method configure = Signal.connect sig:Event.Signals.configure obj ?:after
-  method delete = Signal.connect sig:Event.Signals.delete obj ?:after
-  method destroy = Signal.connect sig:Event.Signals.destroy obj ?:after
+    GtkSignal.connect sig:Widget.Signals.Event.button_release obj ?:after
+  method configure =
+    GtkSignal.connect sig:Widget.Signals.Event.configure obj ?:after
+  method delete =
+    GtkSignal.connect sig:Widget.Signals.Event.delete obj ?:after
+  method destroy =
+    GtkSignal.connect sig:Widget.Signals.Event.destroy obj ?:after
   method enter_notify =
-    Signal.connect sig:Event.Signals.enter_notify obj ?:after
-  method expose = Signal.connect sig:Event.Signals.expose obj ?:after
-  method focus_in = Signal.connect sig:Event.Signals.focus_in obj ?:after
-  method focus_out = Signal.connect sig:Event.Signals.focus_out obj ?:after
-  method key_press = Signal.connect sig:Event.Signals.key_press obj ?:after
-  method key_release = Signal.connect sig:Event.Signals.key_release obj ?:after
+    GtkSignal.connect sig:Widget.Signals.Event.enter_notify obj ?:after
+  method expose =
+    GtkSignal.connect sig:Widget.Signals.Event.expose obj ?:after
+  method focus_in =
+    GtkSignal.connect sig:Widget.Signals.Event.focus_in obj ?:after
+  method focus_out =
+    GtkSignal.connect sig:Widget.Signals.Event.focus_out obj ?:after
+  method key_press =
+    GtkSignal.connect sig:Widget.Signals.Event.key_press obj ?:after
+  method key_release =
+    GtkSignal.connect sig:Widget.Signals.Event.key_release obj ?:after
   method leave_notify =
-    Signal.connect sig:Event.Signals.leave_notify obj ?:after
-  method map = Signal.connect sig:Event.Signals.map obj ?:after
+    GtkSignal.connect sig:Widget.Signals.Event.leave_notify obj ?:after
+  method map = GtkSignal.connect sig:Widget.Signals.Event.map obj ?:after
   method motion_notify =
-    Signal.connect sig:Event.Signals.motion_notify obj ?:after
+    GtkSignal.connect sig:Widget.Signals.Event.motion_notify obj ?:after
   method property_notify =
-    Signal.connect sig:Event.Signals.property_notify obj ?:after
+    GtkSignal.connect sig:Widget.Signals.Event.property_notify obj ?:after
   method proximity_in =
-    Signal.connect sig:Event.Signals.proximity_in obj ?:after
+    GtkSignal.connect sig:Widget.Signals.Event.proximity_in obj ?:after
   method proximity_out =
-    Signal.connect sig:Event.Signals.proximity_out obj ?:after
+    GtkSignal.connect sig:Widget.Signals.Event.proximity_out obj ?:after
   method selection_clear =
-    Signal.connect sig:Event.Signals.selection_clear obj ?:after
+    GtkSignal.connect sig:Widget.Signals.Event.selection_clear obj ?:after
   method selection_notify =
-    Signal.connect sig:Event.Signals.selection_notify obj ?:after
+    GtkSignal.connect sig:Widget.Signals.Event.selection_notify obj ?:after
   method selection_request =
-    Signal.connect sig:Event.Signals.selection_request obj ?:after
-  method unmap = Signal.connect sig:Event.Signals.unmap obj ?:after
+    GtkSignal.connect sig:Widget.Signals.Event.selection_request obj ?:after
+  method unmap = GtkSignal.connect sig:Widget.Signals.Event.unmap obj ?:after
 end
 
 class widget_misc obj = object
@@ -126,11 +135,11 @@ end
 
 and widget_signals obj ?:after = object
   inherit gtkobj_signals obj ?:after
-  method show = Signal.connect sig:Widget.Signals.show obj ?:after
-  method draw = Signal.connect sig:Widget.Signals.draw obj ?:after
+  method show = GtkSignal.connect sig:Widget.Signals.show obj ?:after
+  method draw = GtkSignal.connect sig:Widget.Signals.draw obj ?:after
   method event = new event_signals obj ?:after
   method parent_set :callback =
-    Signal.connect obj sig:Widget.Signals.parent_set ?:after callback:
+    GtkSignal.connect obj sig:Widget.Signals.parent_set ?:after callback:
       begin function
 	  None   -> callback None
 	| Some w -> callback (Some (new widget_wrapper (Object.unsafe_cast w)))
