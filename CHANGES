@@ -1,5 +1,10 @@
 $Id$
 
+2002.10.30 [Jacques]
+  * add GWindow.file_selection#dir_list  (Francois Pessaux)
+  * move GBin.socket to GWindow.socket (this wasn't a bin)
+  * add GWindow.plug_signals
+
 2003.10.28 [Olivier]
   * make Panel.applet inherit GContainer.bin; 
     remove the unit arg for getters

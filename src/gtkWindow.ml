@@ -107,6 +107,8 @@ module FileSelection = struct
       = "ml_gtk_file_selection_get_help_button"
   external get_file_list : [>`fileselection] obj -> clist obj
       = "ml_gtk_file_selection_get_file_list"
+  external get_dir_list : [>`fileselection] obj -> clist obj
+      = "ml_gtk_file_selection_get_dir_list"
   external get_selections : [>`fileselection] obj -> string list
       = "ml_gtk_file_selection_get_selections"
 end
@@ -136,6 +138,8 @@ module FontSelectionDialog = struct
 end
 
 module Plug = struct
-  let cast w : plug obj = Object.try_cast w "GtkPlug"
+  include Plug
   external create : Gdk.xid -> plug obj = "ml_gtk_plug_new"
 end
+
+module Socket = Socket

@@ -226,30 +226,3 @@ val alignment :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> alignment
 val alignment_cast : #widget -> alignment
-
-(** {3 GtkSocket} *)
-
-(** @gtkdoc gtk GtkSocket *)
-class socket_signals : ([>Gtk.socket] as 'a) obj ->
-  object
-    inherit GContainer.container_signals
-    val obj : 'a obj
-    method plug_added : callback:(unit -> unit) -> GtkSignal.id
-    method plug_removed : callback:(unit -> unit) -> GtkSignal.id
-  end
-
-(** Container for widgets from other processes
-   @gtkdoc gtk GtkSocket *)
-class socket : Gtk.socket obj ->
-  object
-    inherit GContainer.container
-    val obj : Gtk.socket obj
-    method connect : socket_signals
-    method steal : Gdk.xid -> unit
-    method xwindow : Gdk.xid
-  end
-
-(** @gtkdoc gtk GtkSocket *)
-val socket :
-  ?border_width:int -> ?width:int -> ?height:int ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> socket

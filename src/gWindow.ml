@@ -16,8 +16,7 @@ let get = Gobject.Property.get
 
 module P = Window.P
 
-class ['a] window_skel obj = object (self)
-  constraint 'a = _ #window_skel
+class window_skel obj = object (self)
   inherit ['b] bin_impl obj
   inherit window_props
   method event = new GObj.event_ops obj
@@ -37,7 +36,7 @@ class ['a] window_skel obj = object (self)
     Window.set_geometry_hints obj ?min_size ?max_size ?base_size ?aspect
       ?resize_inc ?win_gravity ?pos ?user_pos ?user_size (as_widget w)
   method set_gravity = Window.set_gravity obj
-  method set_transient_for (w : 'a) =
+  method set_transient_for (w : window) =
     Window.set_transient_for obj w#as_window
   method set_wm_name name = Window.set_wmclass obj ~name
   method set_wm_class cls = Window.set_wmclass obj ~clas:cls
@@ -47,8 +46,8 @@ class ['a] window_skel obj = object (self)
   method deiconify () = Window.deiconify obj
 end
 
-class window obj = object
-  inherit [window] window_skel (obj : Gtk.window obj)
+and window obj = object
+  inherit window_skel (obj : [> Gtk.window] obj)
   method connect = new container_signals_impl obj
   method maximize () = Window.maximize obj
   method unmaximize () = Window.unmaximize obj
@@ -61,7 +60,7 @@ end
 let make_window ~create =
   Window.make_params ~cont:(fun pl ?wm_name ?wm_class ->
     Container.make_params pl ~cont:(fun pl ?(show=false) () ->
-      let (w : _ #window_skel) = create pl in
+      let (w : #window_skel) = create pl in
       may w#set_wm_name wm_name;
       may w#set_wm_class wm_class;
       if show then w#show ();
@@ -96,7 +95,7 @@ let rnone = Dialog.std_response `NONE
 let rdelete = Dialog.std_response `DELETE_EVENT
 
 class ['a] dialog_skel obj = object (self)
-  inherit [window] window_skel obj
+  inherit window_skel obj
   inherit dialog_props
   val tbl : (int * 'a) list ref = 
     ref [rdelete, `DELETE_EVENT]
@@ -203,8 +202,10 @@ class file_selection obj = object
   method cancel_button =
     new GButton.button (FileSelection.get_cancel_button obj)
   method help_button = new GButton.button (FileSelection.get_help_button obj)
-  method file_list =
-    ((new GList.clist (FileSelection.get_file_list obj)) : string GList.clist)
+  method file_list : string GList.clist =
+    new GList.clist (FileSelection.get_file_list obj)
+  method dir_list : string GList.clist =
+    new GList.clist (FileSelection.get_dir_list obj)
   initializer
     tbl := [ Buttons.rok, `OK ; 
 	     Buttons.rcancel, `CANCEL ;
@@ -243,7 +244,15 @@ let font_selection_dialog ?title =
 
 (** Plug **)
 
-class plug (obj : Gtk.plug obj) = window (obj :> Gtk.window obj)
+class plug_signals obj = object
+  inherit container_signals_impl (obj : [> plug] obj)
+  inherit plug_sigs
+end
+
+class plug (obj : Gtk.plug obj) = object
+  inherit window_skel obj
+  method connect = new plug_signals obj
+end
 
 let plug ~window:xid =
   Container.make_params [] ~cont:(fun pl ?(show=false) () ->
@@ -251,3 +260,22 @@ let plug ~window:xid =
     Gobject.set_params w pl;
     if show then Widget.show w;
     new plug w)
+
+(** Socket **)
+
+class socket_signals obj = object
+  inherit container_signals_impl (obj : [> socket] obj)
+  inherit socket_sigs
+end
+
+class socket obj = object (self)
+  inherit container (obj : Gtk.socket obj)
+  method connect = new socket_signals obj
+  method steal = Socket.steal obj
+  method xwindow =
+    self#misc#realize ();
+    Gdk.Window.get_xwindow self#misc#window
+end
+
+let socket =
+  pack_container [] ~create:(fun pl -> new socket (Socket.create pl))
