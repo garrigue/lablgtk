@@ -129,6 +129,7 @@ let tag (tw : GEdit.text) ?:start [< 0 >] ?end:pend [< tw#length >] =
     colorize tag:`none start:!last end:(pend-start);
     tw#thaw ();
     tw#set_position position;
+    tw#set_point position;
     match exn with
       End_of_file | Lexer.Error _ -> ()
     | _ -> raise exn

@@ -243,7 +243,7 @@ let f :prog :title =
   h#add_item label:"Previous" key:_P callback:(fun () -> sh#history `previous);
   h#add_item label:"Next" key:_N callback:(fun () -> sh#history `next);
   let s = new GMenu.factory signal_menu :accel_group in
-  s#add_item label:"Interrupt" key:_C callback:sh#interrupt;
+  s#add_item label:"Interrupt" key:_G callback:sh#interrupt;
   s#add_item label:"Kill" callback:sh#kill;
   shells := (title, sh) :: !shells;
   tl#add_accel_group accel_group;
