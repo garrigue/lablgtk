@@ -116,6 +116,7 @@ class entry : ([> Gtk.entry] as 'a) obj ->
     method set_text : string -> unit
     method set_visibility : bool -> unit
     method set_width_chars : int -> unit
+    method set_xalign : float -> unit
     method activates_default : bool
     method editable : bool
     method has_frame : bool
@@ -123,6 +124,7 @@ class entry : ([> Gtk.entry] as 'a) obj ->
     method max_length : int
     method visibility : bool
     method width_chars : int
+    method xalign : float
 
     method set_completion : entry_completion -> unit (** @since GTK 2.4 *)
     method get_completion : entry_completion option  (** @since GTK 2.4 *)
@@ -137,6 +139,7 @@ val entry :
   ?editable:bool ->
   ?has_frame:bool ->
   ?width_chars:int ->
+  ?xalign:float ->
   ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> entry
 
