@@ -55,25 +55,8 @@ CAMLprim value ml_panel_applet_get_background(value app)
   CAMLreturn(v);
 }
 
-
-CAMLprim value ml_panel_applet_get_flags(value app)
-{
-  CAMLparam0();
-  CAMLlocal2(v, c);
-  lookup_info *table = ml_table_panel_flags;
-  PanelAppletFlags f = panel_applet_get_flags(Panel_applet_val(app));
-  guint i;
-
-  v = Val_emptylist;
-  for(i=table[0].data; i > 0; i--)
-    if(table[i].data & f) {
-      c = alloc_small(2, 0);
-      Field(c, 0) = table[i].key ;
-      Field(c, 1) = v;
-      v = c;
-    }
-  CAMLreturn(v);
-}
+#define Val_Panel_flags(f) ml_lookup_flags_getter(ml_table_panel_flags,f)
+ML_1 (panel_applet_get_flags, Panel_applet_val, Val_Panel_flags)
 
 Make_Flags_val(Panel_flags_val)
 ML_2(panel_applet_set_flags, Panel_applet_val, Flags_Panel_flags_val, Unit)

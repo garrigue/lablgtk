@@ -96,5 +96,21 @@ int ml_lookup_to_c (lookup_info *table, value key)
     invalid_argument ("ml_lookup_to_c");
 }
 
+value ml_lookup_flags_getter (lookup_info *table, int data)
+{
+  CAMLparam0();
+  CAMLlocal2(cell, l);
+  int i;
+  l = Val_emptylist;
+  for (i = table[0].data; i > 0; i--)
+    if ((table[i].data & data) == table[i].data) {
+      cell = alloc_small(2, Tag_cons);
+      Field(cell, 0) = table[i].key;
+      Field(cell, 1) = l;
+      l = cell;
+    }
+  CAMLreturn(l);
+}
+
 ML_2 (ml_lookup_from_c, (lookup_info*), Int_val, 0+)
 ML_2 (ml_lookup_to_c, (lookup_info*), 0+, Val_int)

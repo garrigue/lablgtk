@@ -33,7 +33,6 @@ void ml_raise_gtk (const char *errmsg)
 
 static Make_Flags_val (Dest_defaults_val)
 static Make_Flags_val (Target_flags_val)
-static Make_Flags_val (GdkModifier_val)
 
 value Val_GtkWidget_func(gpointer w)
 {
@@ -68,7 +67,7 @@ ML_1 (gtk_object_ref_and_sink, GtkObject_val, Unit)
 
 /* gtkaccelgroup.h */
 
-Make_OptFlags_val (Accel_flag_val)
+static Make_OptFlags_val (Accel_flag_val)
 
 #define Signal_name_val(val) String_val(Field(val,0))
 
@@ -85,23 +84,7 @@ ML_3 (gtk_accel_groups_activate, GObject_val, Int_val,
       OptFlags_GdkModifier_val, Val_bool)
 ML_2 (gtk_accelerator_valid, Int_val, OptFlags_GdkModifier_val, Val_bool)
 ML_1 (gtk_accelerator_set_default_mod_mask, OptFlags_GdkModifier_val, Unit)
-static value Val_GdkModifier_flags(GdkModifierType mod)
-{
-  CAMLparam0();
-  CAMLlocal2(l, cell);
-  l = cell = Val_emptylist;
-  lookup_info *tab = ml_table_gdkModifier;
-  int i, nb = tab[0].data;
-  for (i=nb; i>0; i--) {
-    if (tab[i].data & mod) {
-      cell = alloc_small(2, Tag_cons);
-      Field(cell, 0) = tab[i].key;
-      Field(cell, 1) = l;
-      l = cell;
-    }
-  }
-  CAMLreturn(l);
-}
+#define Val_GdkModifier_flags(v) ml_lookup_flags_getter(ml_table_gdkModifier,v)
 CAMLprim value ml_gtk_accelerator_parse(value acc)
 {
   CAMLparam0();

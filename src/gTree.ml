@@ -119,6 +119,7 @@ class model obj = object (self)
   method as_model = (obj :> tree_model)
   method coerce = (self :> model)
   method misc = new gobject_ops obj
+  method flags = TreeModel.get_flags obj
   method n_columns = TreeModel.get_n_columns obj
   method get_column_type = TreeModel.get_column_type obj
   method get_iter = TreeModel.get_iter obj
@@ -131,9 +132,13 @@ class model obj = object (self)
       let v = Value.create_empty () in
       TreeModel.get_value obj ~row ~column:column.index v;
       Data.of_value column.conv v
+  method get_iter_first = TreeModel.get_iter_first obj
   method iter_next = TreeModel.iter_next obj
-  method iter_children ?(nth=0) p = TreeModel.iter_nth_child obj p nth
+  method iter_has_child = TreeModel.iter_has_child obj
+  method iter_n_children = TreeModel.iter_n_children obj
+  method iter_children = TreeModel.iter_children obj
   method iter_parent = TreeModel.iter_parent obj
+  method foreach = TreeModel.foreach obj
 end
 
 class tree_sortable_signals obj = object
@@ -228,8 +233,15 @@ class model_sort (obj : Gtk.tree_model_sort) = object
 end
 
 let model_sort model =
-  new model_sort
-    (GtkTreeProps.TreeModelSort.create ~model:model#as_model [])
+  let child_model = model#as_model in
+  let child_oid = Gobject.get_oid child_model in
+  let o = GtkTree.TreeModelSort.create ~model:child_model [] in
+  begin try 
+    let child_id = Hashtbl.find model_ids child_oid in
+    Hashtbl.add model_ids (Gobject.get_oid o) child_id
+  with Not_found -> ()
+  end ; 
+  new model_sort o
 
 class model_filter (obj : Gtk.tree_model_filter) = object
   inherit model obj
@@ -249,8 +261,15 @@ class model_filter (obj : Gtk.tree_model_filter) = object
 end
 
 let model_filter ?virtual_root model =
-  new model_filter
-    (GtkTree.TreeModelFilter.create ~child_model:model#as_model ?virtual_root [])
+  let child_model = model#as_model in
+  let child_oid = Gobject.get_oid child_model in
+  let o = GtkTree.TreeModelFilter.create ~child_model ?virtual_root [] in
+  begin try 
+    let child_id = Hashtbl.find model_ids child_oid in
+    Hashtbl.add model_ids (Gobject.get_oid o) child_id
+  with Not_found -> ()
+  end ; 
+  new model_filter o
 
 module Path = TreePath
 

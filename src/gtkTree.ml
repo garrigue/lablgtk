@@ -90,6 +90,8 @@ end
 
 module TreeModel = struct
   let cast w : tree_model obj = Object.try_cast w "GtkTreeModel"
+  external get_flags : [>`treemodel] obj -> GtkEnums.tree_model_flags list
+    = "ml_gtk_tree_model_get_flags"
   external get_n_columns : [>`treemodel] obj -> int
     = "ml_gtk_tree_model_get_n_columns"
   external get_column_type : [>`treemodel] obj -> int -> Gobject.g_type
@@ -106,23 +108,23 @@ module TreeModel = struct
   external get_value :
     [>`treemodel] obj -> row:tree_iter -> column:int -> Gobject.g_value -> unit
     = "ml_gtk_tree_model_get_value"
+  external _get_iter_first : [>`treemodel] obj -> tree_iter -> bool
+    = "ml_gtk_tree_model_get_iter_first"
+  let get_iter_first m =
+    let i = alloc_iter () in
+    if _get_iter_first m i then Some i else None
   external iter_next : [>`treemodel] obj -> tree_iter -> bool
     = "ml_gtk_tree_model_iter_next"
-  external iter_children :
-    [>`treemodel] obj -> tree_iter -> parent:tree_iter -> bool
-    = "ml_gtk_tree_model_iter_children"
-  let iter_children m parent =
-    let i = alloc_iter () in
-    if iter_children m i ~parent then i
-    else failwith "GtkTree.TreeModel.iter_children"
+  external iter_has_child : [>`treemodel] obj -> tree_iter -> bool
+    = "ml_gtk_tree_model_iter_has_child"
   external iter_n_children : [>`treemodel] obj -> tree_iter -> int
     = "ml_gtk_tree_model_iter_n_children"
-  let iter_nth_child m p n =
-    if n < 0 || n >= iter_n_children m p then
-      failwith "GtkTree.TreeModel.iter_nth_child";
-    let it = iter_children m p in
-    for i = 1 to n do iter_next m it done;
-    it
+  external iter_nth_child : [>`treemodel] obj -> tree_iter -> parent:tree_iter -> int -> bool
+    = "ml_gtk_tree_model_iter_nth_child"
+  let iter_children m ?(nth=0) p =
+    let i = alloc_iter () in
+    if iter_nth_child m i p nth then i
+    else failwith "GtkTree.TreeModel.iter_children"
   external iter_parent :
     [>`treemodel] obj -> tree_iter -> child:tree_iter -> bool
     = "ml_gtk_tree_model_iter_parent"
@@ -130,6 +132,8 @@ module TreeModel = struct
     let i = alloc_iter () in
     if iter_parent m i ~child then i
     else failwith "GtkTree.TreeModel.iter_parent"
+  external foreach : [>`treemodel] obj -> (tree_path -> tree_iter -> bool) -> unit
+    = "ml_gtk_tree_model_foreach"
 end
 
 module TreeStore = struct

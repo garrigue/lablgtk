@@ -1,5 +1,12 @@
 $Id$
 
+2004.01.08 [Olivier]
+  * GtkTreeModel{Sort,Filter} fixes
+  * added some missing GtkTreeModel methods
+    (get_iter_first, iter_has_child, iter_n_children, flags, foreach)
+  * in wrappers, added a function for converting a C flags value into
+    a variant list (the reverse of the Make_Flags_val macro)
+
 2004.01.04 [Olivier]
   * support for GtkEntryCompletion (2.4)
 
