@@ -33,12 +33,12 @@ value copy_string_and_free (char *str)
 
 #include "gtk_tags.c"
 
-ML_1 (Val_direction, Int_val, )
+ML_1 (Val_direction_type, Int_val, )
 ML_1 (Val_orientation, Int_val, )
 ML_1 (Val_toolbar_style, Int_val, )
-ML_1 (Val_state, Int_val, )
+ML_1 (Val_state_type, Int_val, )
 
-Make_Flags_val (Attach_val)
+Make_Flags_val (Attach_options_val)
 
 /* gtkobject.h */
 
@@ -51,26 +51,39 @@ Make_Val_final_pointer(GtkObject, _sink , gtk_object_ref_and_sink,
 #define Val_GtkAny(w) Val_GtkObject((GtkObject*)w)
 #define Val_GtkAny_sink(w) Val_GtkObject_sink((GtkObject*)w)
 
-/* gtkaccelerator.h */
+/* gtkaccelgroup.h */
 
-#define GtkAcceleratorTable_val(val) ((GtkAcceleratorTable*)Pointer_val(val))
-Make_Val_final_pointer (GtkAcceleratorTable, , gtk_accelerator_table_ref,
-			gtk_accelerator_table_unref)
-Make_Val_final_pointer (GtkAcceleratorTable, _no_ref, Ignore,
-			gtk_accelerator_table_unref)
+#define GtkAccelGroup_val(val) ((GtkAccelGroup*)Pointer_val(val))
+Make_Val_final_pointer (GtkAccelGroup, , gtk_accel_group_ref,
+			gtk_accel_group_unref)
+Make_Val_final_pointer (GtkAccelGroup, _no_ref, Ignore,
+			gtk_accel_group_unref)
+Make_OptFlags_val (Accel_flag_val)
 
-ML_0 (gtk_accelerator_table_new, Val_GtkAcceleratorTable_no_ref)
-ML_4 (gtk_accelerator_table_find, GtkObject_val, String_val,
-      Char_val, Flags_GdkModifier_val, Val_GtkAcceleratorTable)
-ML_5 (gtk_accelerator_table_install, GtkAcceleratorTable_val,
-      GtkObject_val, String_val, Char_val, Flags_GdkModifier_val, Unit)
-ML_3 (gtk_accelerator_table_remove, GtkAcceleratorTable_val,
-      GtkObject_val, String_val, Unit)
-ML_3 (gtk_accelerator_table_check, GtkAcceleratorTable_val,
-      Char_val, Flags_GdkModifier_val, Val_bool)
-ML_1 (gtk_accelerator_tables_delete, GtkObject_val, Unit)
-ML_2 (gtk_accelerator_table_set_mod_mask, GtkAcceleratorTable_val,
-      Flags_GdkModifier_val, Unit)
+#define Signal_name_val(val) String_val(Field(val,0))
+
+ML_0 (gtk_accel_group_new, Val_GtkAccelGroup_no_ref)
+ML_0 (gtk_accel_group_get_default, Val_GtkAccelGroup)
+ML_3 (gtk_accel_group_activate, GtkAccelGroup_val, Int_val,
+      OptFlags_GdkModifier_val, Val_bool)
+ML_3 (gtk_accel_groups_activate, GtkObject_val, Int_val,
+      OptFlags_GdkModifier_val, Val_bool)
+ML_2 (gtk_accel_group_attach, GtkAccelGroup_val, GtkObject_val, Unit)
+ML_2 (gtk_accel_group_detach, GtkAccelGroup_val, GtkObject_val, Unit)
+ML_1 (gtk_accel_group_lock, GtkAccelGroup_val, Unit)
+ML_1 (gtk_accel_group_unlock, GtkAccelGroup_val, Unit)
+ML_3 (gtk_accel_group_lock_entry, GtkAccelGroup_val, Int_val,
+      OptFlags_GdkModifier_val, Unit)
+ML_3 (gtk_accel_group_unlock_entry, GtkAccelGroup_val, Int_val,
+      OptFlags_GdkModifier_val, Unit)
+ML_6 (gtk_accel_group_add, GtkAccelGroup_val, Int_val,
+      OptFlags_GdkModifier_val, OptFlags_Accel_flag_val,
+      GtkObject_val, Signal_name_val, Unit)
+ML_bc6 (ml_gtk_accel_group_add)
+ML_4 (gtk_accel_group_remove, GtkAccelGroup_val, Int_val,
+      OptFlags_GdkModifier_val, GtkObject_val, Unit)
+ML_2 (gtk_accelerator_valid, Int_val, OptFlags_GdkModifier_val, Val_bool)
+ML_1 (gtk_accelerator_set_default_mod_mask, OptFlags_GdkModifier_val, Unit)
 
 /* gtkstyle.h */
 
@@ -81,15 +94,15 @@ ML_0 (gtk_style_new, Val_GtkStyle_no_ref)
 ML_1 (gtk_style_copy, GtkStyle_val, Val_GtkStyle_no_ref)
 ML_2 (gtk_style_attach, GtkStyle_val, GdkWindow_val, Val_GtkStyle)
 ML_1 (gtk_style_detach, GtkStyle_val, Unit)
-ML_3 (gtk_style_set_background, GtkStyle_val, GdkWindow_val, State_val, Unit)
-ML_6 (gtk_draw_hline, GtkStyle_val, GdkWindow_val, State_val,
+ML_3 (gtk_style_set_background, GtkStyle_val, GdkWindow_val, State_type_val, Unit)
+ML_6 (gtk_draw_hline, GtkStyle_val, GdkWindow_val, State_type_val,
       Int_val, Int_val, Int_val, Unit)
 ML_bc6 (ml_gtk_draw_hline)
-ML_6 (gtk_draw_vline, GtkStyle_val, GdkWindow_val, State_val,
+ML_6 (gtk_draw_vline, GtkStyle_val, GdkWindow_val, State_type_val,
       Int_val, Int_val, Int_val, Unit)
 ML_bc6 (ml_gtk_draw_vline)
-Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_val,  bg, Val_copy)
-Make_Array_Setter (gtk_style_set, GtkStyle_val, State_val, *GdkColor_val, bg)
+Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,  bg, Val_copy)
+Make_Array_Setter (gtk_style_set, GtkStyle_val, State_type_val, *GdkColor_val, bg)
 Make_Extractor (gtk_style_get, GtkStyle_val, colormap, Val_GdkColormap)
 Make_Extractor (gtk_style_get, GtkStyle_val, depth, Val_int)
 Make_Extractor (gtk_style_get, GtkStyle_val, font, Val_GdkFont)
@@ -189,7 +202,7 @@ ML_1 (gtk_widget_queue_resize, GtkWidget_val, Unit)
 ML_2 (gtk_widget_draw, GtkWidget_val, (GdkRectangle*), Unit)
 ML_1 (gtk_widget_draw_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_draw_default, GtkWidget_val, Unit)
-ML_1 (gtk_widget_draw_children, GtkWidget_val, Unit)
+/* ML_1 (gtk_widget_draw_children, GtkWidget_val, Unit) */
 ML_2 (gtk_widget_event, GtkWidget_val, GdkEvent_val( ), Unit)
 ML_1 (gtk_widget_activate, GtkWidget_val, Unit)
 ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit)
@@ -206,12 +219,12 @@ value ml_gtk_widget_intersect (value w, GdkRectangle *area)
     }
     return ret;
 }
-ML_1 (gtk_widget_basic, GtkWidget_val, Val_bool)
+/* ML_1 (gtk_widget_basic, GtkWidget_val, Val_bool) */
 ML_1 (gtk_widget_grab_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_grab_default, GtkWidget_val, Unit)
 ML_2 (gtk_widget_set_name, GtkWidget_val, String_val, Unit)
 ML_1 (gtk_widget_get_name, GtkWidget_val, copy_string)
-ML_2 (gtk_widget_set_state, GtkWidget_val, State_val, Unit)
+ML_2 (gtk_widget_set_state, GtkWidget_val, State_type_val, Unit)
 ML_2 (gtk_widget_set_sensitive, GtkWidget_val, Bool_val, Unit)
 ML_3 (gtk_widget_set_uposition, GtkWidget_val, Int_val, Int_val, Unit)
 ML_3 (gtk_widget_set_usize, GtkWidget_val, Int_val, Int_val, Unit)
@@ -229,17 +242,22 @@ value ml_gtk_widget_get_pointer (value w)
     return ret;
 }
 ML_2 (gtk_widget_is_ancestor, GtkWidget_val, GtkWidget_val, Val_bool)
-ML_2 (gtk_widget_is_child, GtkWidget_val, GtkWidget_val, Val_bool)
+/* ML_2 (gtk_widget_is_child, GtkWidget_val, GtkWidget_val, Val_bool) */
 ML_2 (gtk_widget_set_style, GtkWidget_val, GtkStyle_val, Unit)
 ML_1 (gtk_widget_set_rc_style, GtkWidget_val, Unit)
 ML_1 (gtk_widget_ensure_style, GtkWidget_val, Unit)
 ML_1 (gtk_widget_get_style, GtkWidget_val, Val_GtkStyle)
 ML_1 (gtk_widget_restore_default_style, GtkWidget_val, Unit)
 
-ML_5 (gtk_widget_install_accelerator, GtkWidget_val, GtkAcceleratorTable_val,
-      String_val, Char_val, Flags_GdkModifier_val, Unit)
-ML_3 (gtk_widget_remove_accelerator, GtkWidget_val, GtkAcceleratorTable_val,
-      String_val, Unit)
+ML_6 (gtk_widget_add_accelerator, GtkWidget_val, Signal_name_val,
+      GtkAccelGroup_val, Char_val, OptFlags_GdkModifier_val,
+      OptFlags_Accel_flag_val, Unit)
+ML_bc6 (ml_gtk_widget_add_accelerator)
+ML_4 (gtk_widget_remove_accelerator, GtkWidget_val, GtkAccelGroup_val,
+      Char_val, OptFlags_GdkModifier_val, Unit)
+ML_1 (gtk_widget_lock_accelerators, GtkWidget_val, Unit)
+ML_1 (gtk_widget_unlock_accelerators, GtkWidget_val, Unit)
+ML_1 (gtk_widget_accelerators_locked, GtkWidget_val, Val_bool)
 
 Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
 
@@ -249,11 +267,6 @@ Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
 ML_2 (gtk_container_border_width, GtkContainer_val, Int_val, Unit)
 ML_2 (gtk_container_add, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_remove, GtkContainer_val, GtkWidget_val, Unit)
-ML_1 (gtk_container_disable_resize, GtkContainer_val, Unit)
-ML_1 (gtk_container_enable_resize, GtkContainer_val, Unit)
-ML_1 (gtk_container_block_resize, GtkContainer_val, Unit)
-ML_1 (gtk_container_unblock_resize, GtkContainer_val, Unit)
-ML_1 (gtk_container_need_resize, GtkContainer_val, Val_bool)
 static void ml_gtk_simple_callback (GtkWidget *w, gpointer data)
 {
     value val, clos = (value)data;
@@ -272,7 +285,7 @@ value ml_gtk_container_foreach (value w, value clos)
 }
 ML_1 (gtk_container_register_toplevel, GtkContainer_val, Unit)
 ML_1 (gtk_container_unregister_toplevel, GtkContainer_val, Unit)
-ML_2 (gtk_container_focus, GtkContainer_val, Direction_val, Val_bool)
+ML_2 (gtk_container_focus, GtkContainer_val, Direction_type_val, Val_bool)
 ML_2 (gtk_container_set_focus_child, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_set_focus_vadjustment, GtkContainer_val,
       GtkAdjustment_val, Unit)
@@ -308,7 +321,7 @@ ML_0 (gtk_event_box_new, Val_GtkWidget_sink)
 ML_1 (gtk_frame_new, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_frame_set_label, GtkFrame_val, String_val, Unit)
 ML_3 (gtk_frame_set_label_align, GtkFrame_val, Float_val, Float_val, Unit)
-ML_2 (gtk_frame_set_shadow_type, GtkFrame_val, Shadow_val, Unit)
+ML_2 (gtk_frame_set_shadow_type, GtkFrame_val, Shadow_type_val, Unit)
 Make_Extractor (gtk_frame_get, GtkFrame_val, label_xalign, copy_double)
 Make_Extractor (gtk_frame_get, GtkFrame_val, label_yalign, copy_double)
 
@@ -349,8 +362,6 @@ ML_2 (gtk_menu_item_set_submenu, GtkMenuItem_val, GtkWidget_val, Unit)
 ML_1 (gtk_menu_item_remove_submenu, GtkMenuItem_val, Unit)
 ML_2 (gtk_menu_item_set_placement, GtkMenuItem_val,
       Submenu_placement_val, Unit)
-ML_1 (gtk_menu_item_accelerator_size, GtkMenuItem_val, Unit)
-ML_2 (gtk_menu_item_accelerator_text, GtkMenuItem_val, String_val, Unit)
 ML_3 (gtk_menu_item_configure, GtkMenuItem_val, Bool_val, Bool_val, Unit)
 ML_1 (gtk_menu_item_activate, GtkMenuItem_val, Unit)
 ML_1 (gtk_menu_item_right_justify, GtkMenuItem_val, Unit)
@@ -395,7 +406,7 @@ ML_1 (gtk_viewport_get_hadjustment, GtkViewport_val, Val_GtkWidget_sink)
 ML_1 (gtk_viewport_get_vadjustment, GtkViewport_val, Val_GtkWidget)
 ML_2 (gtk_viewport_set_hadjustment, GtkViewport_val, GtkAdjustment_val, Unit)
 ML_2 (gtk_viewport_set_vadjustment, GtkViewport_val, GtkAdjustment_val, Unit)
-ML_2 (gtk_viewport_set_shadow_type, GtkViewport_val, Shadow_val, Unit)
+ML_2 (gtk_viewport_set_shadow_type, GtkViewport_val, Shadow_type_val, Unit)
 
 /* gtkdialog.h */
 
@@ -437,10 +448,10 @@ ML_4 (gtk_window_set_policy, GtkWindow_val, Bool_val, Bool_val, Bool_val, Unit)
 Make_Extractor (gtk_window_get, GtkWindow_val, allow_shrink, Val_bool)
 Make_Extractor (gtk_window_get, GtkWindow_val, allow_grow, Val_bool)
 Make_Extractor (gtk_window_get, GtkWindow_val, auto_shrink, Val_bool)
-ML_2 (gtk_window_add_accelerator_table, GtkWindow_val,
-      GtkAcceleratorTable_val, Unit)
-ML_2 (gtk_window_remove_accelerator_table, GtkWindow_val,
-      GtkAcceleratorTable_val, Unit)
+ML_2 (gtk_window_add_accel_group, GtkWindow_val,
+      GtkAccelGroup_val, Unit)
+ML_2 (gtk_window_remove_accel_group, GtkWindow_val,
+      GtkAccelGroup_val, Unit)
 ML_2 (gtk_window_position, GtkWindow_val,
       Window_position_val, Unit)
 ML_1 (gtk_window_activate_focus, GtkWindow_val, Val_bool)
@@ -451,7 +462,7 @@ ML_1 (gtk_window_activate_default, GtkWindow_val, Val_bool)
 #define GtkColorSelection_val(val) check_cast(GTK_COLOR_SELECTION,val)
 ML_0 (gtk_color_selection_new, Val_GtkWidget_sink)
 ML_2 (gtk_color_selection_set_update_policy, GtkColorSelection_val,
-      Update_val, Unit)
+      Update_type_val, Unit)
 ML_2 (gtk_color_selection_set_opacity, GtkColorSelection_val,
       Bool_val, Unit)
 enum
@@ -545,13 +556,13 @@ Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_min_height,
 Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_ipad_x, Val_int)
 Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_ipad_y, Val_int)
 Make_Extractor (gtk_button_box_get, GtkButtonBox_val, layout_style,
-		Val_bbox_style)
+		Val_button_box_style)
 ML_2 (gtk_button_box_set_spacing, GtkButtonBox_val, Int_val, Unit)
 ML_3 (gtk_button_box_set_child_size, GtkButtonBox_val,
       Int_val, Int_val, Unit)
 ML_3 (gtk_button_box_set_child_ipadding, GtkButtonBox_val,
       Int_val, Int_val, Unit)
-ML_2 (gtk_button_box_set_layout, GtkButtonBox_val, Bbox_style_val, Unit)
+ML_2 (gtk_button_box_set_layout, GtkButtonBox_val, Button_box_style_val, Unit)
 ML_2 (gtk_button_box_set_child_size_default, Int_val, Int_val, Unit)
 ML_2 (gtk_button_box_set_child_ipadding_default, Int_val, Int_val, Unit)
 
@@ -577,7 +588,7 @@ ML_2 (gtk_list_unselect_item, GtkList_val, Int_val, Unit)
 ML_2 (gtk_list_select_child, GtkList_val, GtkWidget_val, Unit)
 ML_2 (gtk_list_unselect_child, GtkList_val, GtkWidget_val, Unit)
 ML_2 (gtk_list_child_position, GtkList_val, GtkWidget_val, Val_int)
-ML_2 (gtk_list_set_selection_mode, GtkList_val, Selection_val, Unit)
+ML_2 (gtk_list_set_selection_mode, GtkList_val, Selection_mode_val, Unit)
 
 /* gtkcombo.h */
 
@@ -657,9 +668,7 @@ ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, (GSList*), Unit)
 ML_1 (gtk_clist_new, Int_val, Val_GtkWidget_sink)
 ML_1 (gtk_clist_new_with_titles, Insert(Wosize_val(arg1)) (char **),
       Val_GtkWidget_sink)
-ML_2 (gtk_clist_set_border, GtkClist_val, Shadow_val, Unit)
-ML_2 (gtk_clist_set_selection_mode, GtkClist_val, Selection_val, Unit)
-ML_3 (gtk_clist_set_policy, GtkClist_val, Policy_val, Policy_val, Unit)
+ML_2 (gtk_clist_set_selection_mode, GtkClist_val, Selection_mode_val, Unit)
 ML_1 (gtk_clist_freeze, GtkClist_val, Unit)
 ML_1 (gtk_clist_thaw, GtkClist_val, Unit)
 ML_1 (gtk_clist_column_titles_show, GtkClist_val, Unit)
@@ -779,8 +788,8 @@ ML_5 (gtk_menu_popup, GtkMenu_val, GtkWidget_val, GtkWidget_val,
 ML_1 (gtk_menu_popdown, GtkMenu_val, Unit)
 ML_1 (gtk_menu_get_active, GtkMenu_val, Val_GtkWidget)
 ML_2 (gtk_menu_set_active, GtkMenu_val, Int_val, Unit)
-ML_2 (gtk_menu_set_accelerator_table, GtkMenu_val,
-      GtkAcceleratorTable_val, Unit)
+ML_2 (gtk_menu_set_accel_group, GtkMenu_val, GtkAccelGroup_val, Unit)
+ML_1 (gtk_menu_get_accel_group, GtkMenu_val, Val_GtkAccelGroup)
 value ml_gtk_menu_attach_to_widget (value menu, value widget)
 {
     gtk_menu_attach_to_widget (GtkMenu_val(menu), GtkWidget_val(widget), NULL);
@@ -832,11 +841,11 @@ ML_1 (gtk_scrolled_window_get_hadjustment, GtkScrolledWindow_val,
 ML_1 (gtk_scrolled_window_get_vadjustment, GtkScrolledWindow_val,
       Val_GtkWidget)
 ML_3 (gtk_scrolled_window_set_policy, GtkScrolledWindow_val,
-      Policy_val, Policy_val, Unit)
+      Policy_type_val, Policy_type_val, Unit)
 Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
-		hscrollbar_policy, Val_policy)
+		hscrollbar_policy, Val_policy_type)
 Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
-		vscrollbar_policy, Val_policy)
+		vscrollbar_policy, Val_policy_type)
 
 /* gtktable.h */
 
@@ -844,7 +853,8 @@ Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
 ML_3 (gtk_table_new, Int_val, Int_val, Int_val, Val_GtkWidget_sink)
 ML_10 (gtk_table_attach, GtkTable_val, GtkWidget_val,
        Int_val, Int_val, Int_val, Int_val,
-       Flags_Attach_val, Flags_Attach_val, Int_val, Int_val, Unit)
+       Flags_Attach_options_val, Flags_Attach_options_val,
+       Int_val, Int_val, Unit)
 ML_bc10 (ml_gtk_table_attach)
 ML_3 (gtk_table_set_row_spacing, GtkTable_val, Int_val, Int_val, Unit)
 ML_3 (gtk_table_set_col_spacing, GtkTable_val, Int_val, Int_val, Unit)
@@ -874,7 +884,7 @@ ML_3 (gtk_tree_clear_items, GtkTree_val, Int_val, Int_val, Unit)
 ML_2 (gtk_tree_select_item, GtkTree_val, Int_val, Unit)
 ML_2 (gtk_tree_unselect_item, GtkTree_val, Int_val, Unit)
 ML_2 (gtk_tree_child_position, GtkTree_val, GtkWidget_val, Val_int)
-ML_2 (gtk_tree_set_selection_mode, GtkTree_val, Selection_val, Unit)
+ML_2 (gtk_tree_set_selection_mode, GtkTree_val, Selection_mode_val, Unit)
 ML_2 (gtk_tree_set_view_mode, GtkTree_val, Tree_view_mode_val, Unit)
 ML_2 (gtk_tree_set_view_lines, GtkTree_val, Bool_val, Unit)
 
@@ -898,9 +908,9 @@ value ml_gtk_editable_insert_text (value w, value s, value pos)
 ML_3 (gtk_editable_delete_text, GtkEditable_val, Int_val, Int_val, Unit)
 ML_3 (gtk_editable_get_chars, GtkEditable_val, Int_val, Int_val,
       copy_string_and_free)
-ML_2 (gtk_editable_cut_clipboard, GtkEditable_val, Int_val, Unit)
-ML_2 (gtk_editable_copy_clipboard, GtkEditable_val, Int_val, Unit)
-ML_2 (gtk_editable_paste_clipboard, GtkEditable_val, Int_val, Unit)
+ML_1 (gtk_editable_cut_clipboard, GtkEditable_val, Unit)
+ML_1 (gtk_editable_copy_clipboard, GtkEditable_val, Unit)
+ML_1 (gtk_editable_paste_clipboard, GtkEditable_val, Unit)
 ML_3 (gtk_editable_claim_selection, GtkEditable_val, Bool_val, Int_val, Unit)
 ML_1 (gtk_editable_delete_selection, GtkEditable_val, Unit)
 ML_1 (gtk_editable_changed, GtkEditable_val, Unit)
@@ -935,7 +945,7 @@ ML_2 (gtk_spin_button_set_value, GtkSpinButton_val, Float_val, Unit)
 ML_2 (gtk_spin_button_set_update_policy, GtkSpinButton_val,
       Spin_button_update_policy_val, Unit)
 ML_2 (gtk_spin_button_set_numeric, GtkSpinButton_val, Bool_val, Unit)
-ML_3 (gtk_spin_button_spin, GtkSpinButton_val, Arrow_val, Float_val, Unit)
+ML_3 (gtk_spin_button_spin, GtkSpinButton_val, Arrow_type_val, Float_val, Unit)
 ML_2 (gtk_spin_button_set_wrap, GtkSpinButton_val, Bool_val, Unit)
 
 /* gtktext.h */
@@ -977,8 +987,8 @@ Make_Extractor (gtk_misc_get, GtkMisc_val, ypad, Val_int)
 /* gtkarrow.h */
 
 #define GtkArrow_val(val) check_cast(GTK_ARROW,val)
-ML_2 (gtk_arrow_new, Arrow_val, Shadow_val, Val_GtkWidget_sink)
-ML_3 (gtk_arrow_set, GtkArrow_val, Arrow_val, Shadow_val, Unit)
+ML_2 (gtk_arrow_new, Arrow_type_val, Shadow_type_val, Val_GtkWidget_sink)
+ML_3 (gtk_arrow_set, GtkArrow_val, Arrow_type_val, Shadow_type_val, Unit)
 
 /* gtkimage.h */
 
@@ -1043,19 +1053,38 @@ ML_9 (gtk_preview_put, GtkPreview_val, GdkWindow_val, GdkGC_val,
 ML_bc9 (ml_gtk_preview_put)
 */
 
+/* gtkprogress.h */
+
+#define GtkProgress_val(val) check_cast(GTK_PROGRESS,val)
+ML_2 (gtk_progress_set_show_text, GtkProgress_val, Bool_val, Unit)
+ML_3 (gtk_progress_set_text_alignment, GtkProgress_val,
+      Option_val(arg2,Float_val,(GtkProgress_val(arg1))->x_align) Ignore,
+      Option_val(arg3,Float_val,(GtkProgress_val(arg1))->y_align) Ignore, Unit)
+ML_2 (gtk_progress_set_format_string, GtkProgress_val, String_val, Unit)
+ML_2 (gtk_progress_set_adjustment, GtkProgress_val, GtkAdjustment_val, Unit)
+ML_4 (gtk_progress_configure, GtkProgress_val,
+      Float_val, Float_val, Float_val, Unit)
+ML_2 (gtk_progress_set_percentage, GtkProgress_val, Float_val, Unit)
+ML_2 (gtk_progress_set_value, GtkProgress_val, Float_val, Unit)
+ML_1 (gtk_progress_get_value, GtkProgress_val, copy_double)
+ML_1 (gtk_progress_get_current_percentage, GtkProgress_val, copy_double)
+ML_2 (gtk_progress_set_activity_mode, GtkProgress_val, Bool_val, Unit)
+ML_1 (gtk_progress_get_current_text, GtkProgress_val, copy_string)
+Make_Extractor (gtk_progress_get, GtkProgress_val, adjustment,
+		Val_GtkAny)
+
 /* gtkprogressbar.h */
 
 #define GtkProgressBar_val(val) check_cast(GTK_PROGRESS_BAR,val)
 ML_0 (gtk_progress_bar_new, Val_GtkWidget_sink)
 ML_2 (gtk_progress_bar_update, GtkProgressBar_val, Float_val, Unit)
-Make_Extractor (GtkProgressBar, GtkProgressBar_val, percentage, copy_double)
 
 /* gtkrange.h */
 
 #define GtkRange_val(val) check_cast(GTK_RANGE,val)
 ML_1 (gtk_range_get_adjustment, GtkRange_val, Val_GtkAny)
 ML_2 (gtk_range_set_adjustment, GtkRange_val, GtkAdjustment_val, Unit)
-ML_2 (gtk_range_set_update_policy, GtkRange_val, Update_val, Unit)
+ML_2 (gtk_range_set_update_policy, GtkRange_val, Update_type_val, Unit)
 
 /* gtkscale.h */
 
@@ -1076,7 +1105,7 @@ ML_1 (gtk_vscrollbar_new, GtkAdjustment_val, Val_GtkWidget_sink)
 /* gtkruler.h */
 
 #define GtkRuler_val(val) check_cast(GTK_RULER,val)
-ML_2 (gtk_ruler_set_metric, GtkRuler_val, Metric_val, Unit)
+ML_2 (gtk_ruler_set_metric, GtkRuler_val, Metric_type_val, Unit)
 ML_5 (gtk_ruler_set_range, GtkRuler_val, Float_val,
       Float_val, Float_val, Float_val, Unit)
 Make_Extractor (gtk_ruler_get, GtkRuler_val, lower, copy_double)
@@ -1316,10 +1345,10 @@ value ml_gtk_signal_connect (value object, value name, value clos, value after)
     value *clos_p = stat_alloc (sizeof(value));
     *clos_p = clos;
     register_global_root (clos_p);
-    return Val_int (gtk_signal_connect_interp
-		    (GtkObject_val(object), String_val(name),
+    return Val_int (gtk_signal_connect_full
+		    (GtkObject_val(object), String_val(name), NULL,
 		     ml_gtk_callback_marshal, clos_p,
-		     ml_gtk_callback_destroy, Bool_val(after)));
+		     ml_gtk_callback_destroy, FALSE, Bool_val(after)));
 }
 
 ML_2 (gtk_signal_disconnect, GtkObject_val, Int_val, Unit)
@@ -1332,8 +1361,8 @@ value ml_gtk_timeout_add (value interval, value clos)
     value *clos_p = stat_alloc (sizeof(value));
     *clos_p = clos;
     register_global_root (clos_p);
-    return Val_int (gtk_timeout_add_interp
-		    (Int_val(interval), ml_gtk_callback_marshal, clos_p,
+    return Val_int (gtk_timeout_add_full
+		    (Int_val(interval), NULL, ml_gtk_callback_marshal, clos_p,
 		     ml_gtk_callback_destroy));
 }
 ML_1 (gtk_timeout_remove, Int_val, Unit)

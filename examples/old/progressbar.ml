@@ -6,7 +6,7 @@ class bar bar = object
   val bar : ProgressBar.t obj= bar
   val mutable pstat = true
   method progress =
-    let pvalue = ProgressBar.percent bar in
+    let pvalue = Progress.get_percentage bar in
     let pvalue =
       if pvalue >= 1.0 || not pstat then (pstat <- true; 0.0)
       else pvalue +. 0.01

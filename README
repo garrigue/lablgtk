@@ -3,8 +3,8 @@
 
 
 Needed:
-	olabl-2.01
-	gtk-1.0.x
+	olabl-2.02
+	gtk-1.2.x
 	gmake (there is no standard for conditionals)
 
 How to compile:
@@ -15,10 +15,12 @@ How to compile:
 	On FreeBSD, you need to link with libxpg4.so for Japanese
 	output.
 
-	For comfortable use with LablBrowser you must apply the two
-	patches and reinstall olabl and lablbrowser.
+	If you intend to use threads, apply threads.patch to the olabl
+	distribution.
 
 Contents:
+
+	threads.patch	patch for olabl-2.02
 
 	gdk.ml		low-level interface to the General Drawing Kit
 	gtk.ml		low-level interface to the GIMP Tool Kit
@@ -42,7 +44,7 @@ How to run the examples:
 How to use the threaded toplevel:
 
 	% ./lablgtk_t
-	        Objective Caml version 2.00 with Kyoto labels and variants
+	        Objective Caml version 2.02 with Kyoto labels and variants
 	
 	# let id = GtkThread.start ();;
 	val id : Thread.t = <abstr>

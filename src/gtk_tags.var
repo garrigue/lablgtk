@@ -2,38 +2,65 @@
 
 exception ml_raise_gtk
 
-type state = "GTK_STATE_"
-    [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
+type arrow_type = "GTK_ARROW_"
+    [ UP DOWN LEFT RIGHT ]
 
-type window_type = "GTK_WINDOW_"
-    [ TOPLEVEL DIALOG POPUP ]
+type attach_options = "GTK_"
+    [ EXPAND SHRINK FILL ]
 
-type direction = "GTK_DIR_"
+type button_box_style = "GTK_BUTTONBOX_"
+    [ DEFAULT_STYLE SPREAD EDGE START END ]
+
+type direction_type = "GTK_DIR_"
     [ TAB_FORWARD TAB_BACKWARD UP DOWN LEFT RIGHT ]
 
-type shadow = "GTK_SHADOW_"
-    [ NONE IN OUT ETCHED_IN ETCHED_OUT ]
+type justification = "GTK_JUSTIFY_"
+    [ LEFT RIGHT CENTER FILL ]
 
-type arrow = "GTK_ARROW_"
-    [ UP DOWN LEFT RIGHT ]
+type match_type = "GTK_MATCH_"
+    [ ALL ALL_TAIL HEAD TAIL EXACT LAST ]
+
+type metric_type = "GTK_"
+    [ PIXELS INCHES CENTIMETERS ]
+
+type orientation = "GTK_ORIENTATION_"
+    [ HORIZONTAL VERTICAL ]
+
+type corner_type = "GTK_CORNER_"
+    [ TOP_LEFT BOTTOM_LEFT TOP_RIGHT BOTTOM_RIGHT ]
 
 type pack_type = "GTK_PACK_"
     [ START END ]
 
-type policy = "GTK_POLICY_"
+type path_type = "GTK_PATH_"
+    [ WIDGET WIDGET_CLASS CLASS ]
+
+type policy_type = "GTK_POLICY_"
     [ ALWAYS AUTOMATIC ]
 
-type update = "GTK_UPDATE_"
-    [ CONTINUOUS DISCONTINUOUS DELAYED ]
+type position = "GTK_POS_"
+    [ LEFT RIGHT TOP BOTTOM ]
 
-type attach = "GTK_"
-    [ EXPAND SHRINK FILL ]
+type preview_type = "GTK_PREVIEW_"
+    [ COLOR GRAYSCALE ]
 
-type signal_run = "GTK_RUN_"
-    [ FIRST LAST BOTH MASK NO_RECURSE ]
+type relief_type = "GTK_RELIEF_"
+    [ NORMAL HALF NONE ]
 
-type window_position = "GTK_WIN_POS_"
-    [ NONE CENTER MOUSE ]
+type signal_run_type = "GTK_RUN_"
+    [ FIRST LAST BOTH NO_RECURSE ACTION NO_HOOKS ]
+
+type scroll_type = "GTK_SCROLL_"
+    [ NONE STEP_FORWARD STEP_BACKWARD PAGE_BACKWARD PAGE_FORWARD JUMP ]
+
+type selection_mode = "GTK_SELECTION_"
+    [ SINGLE BROWSE MULTIPLE EXTENDED ]
+
+type shadow_type = "GTK_SHADOW_"
+    [ NONE IN OUT ETCHED_IN ETCHED_OUT ]
+
+type state_type = "GTK_STATE_"
+    [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
 
 type submenu_direction = "GTK_DIRECTION_"
     [ LEFT RIGHT ]
@@ -41,47 +68,32 @@ type submenu_direction = "GTK_DIRECTION_"
 type submenu_placement = "GTK_"
     [ TOP_BOTTOM LEFT_RIGHT ]
 
-type menu_factory = "GTK_MENU_FACTORY_"
-    [ MENU MENU_BAR OPTION_MENU ]
-
-type metric = "GTK_"
-    [ PIXELS INCHES CENTIMETERS ]
-
-type scroll = "GTK_SCROLL_"
-    [ NONE STEP_FORWARD STEP_BACKWARD PAGE_BACKWARD PAGE_FORWARD JUMP ]
-
-type through = "GTK_TROUGH_"
-    [ NONE START END JUMP ]
-
-type position = "GTK_POS_"
-    [ LEFT RIGHT TOP BOTTOM ]
-
-type preview = "GTK_PREVIEW_"
-    [ COLOR GRAYSCALE ]
-
-type justification = "GTK_JUSTIFY_"
-    [ LEFT RIGHT CENTER FILL ]
-
-type selection = "GTK_SELECTION_"
-    [ SINGLE BROWSE MULTIPLE EXTENDED ]
-
-
-type orientation = "GTK_ORIENTATION_"
-    [ HORIZONTAL VERTICAL ]
-
 type toolbar_style = "GTK_TOOLBAR_"
     [ ICONS TEXT BOTH ]
 
+type trough_type = "GTK_TROUGH_"
+    [ NONE START END JUMP ]
+
+type update_type = "GTK_UPDATE_"
+    [ CONTINUOUS DISCONTINUOUS DELAYED ]
+
 type visibility = "GTK_VISIBILITY_"
     [ NONE PARTIAL FULL ]
+
+type window_position = "GTK_WIN_POS_"
+    [ NONE CENTER MOUSE ]
+
+type window_type = "GTK_WINDOW_"
+    [ TOPLEVEL DIALOG POPUP ]
+
+type sort_type = "GTK_SORT_"
+    [ ASCENDING DESCENDING ]
+
 
 type fundamental_type = "GTK_TYPE_"
     [ INVALID NONE CHAR BOOL INT UINT LONG ULONG FLOAT DOUBLE
       STRING ENUM FLAGS BOXED FOREIGN CALLBACK ARGS POINTER
       SIGNAL C_CALLBACK OBJECT ]
-
-type bbox_style = "GTK_BUTTONBOX_"
-    [ DEFAULT_STYLE SPREAD EDGE START END ]
 
 type cell_type = "GTK_CELL_"
     [ EMPTY TEXT PIXMAP PIXTEXT WIDGET ]
@@ -93,4 +105,7 @@ type tree_view_mode = "GTK_TREE_VIEW_"
     [ LINE ITEM ]
 
 type spin_button_update_policy = "GTK_UPDATE_"
-    [ ALWAYS IF_VALID SNAP_TO_TICKS ]
+    [ ALWAYS IF_VALID ]
+
+type accel_flag = "GTK_ACCEL_"
+    [ VISIBLE SIGNAL_VISIBLE LOCKED ]

@@ -11,7 +11,7 @@ let drawing = new drawing w
 
 let _ =
   window#connect#destroy callback:Main.quit;
-  window#connect#event#expose callback:
+  window#connect#event#expose after:true callback:
     begin fun _ ->
       drawing#polygon filled:true
 	[ 10,100; 35,35; 100,10; 165,35; 190,100;

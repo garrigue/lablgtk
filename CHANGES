@@ -1,5 +1,9 @@
 $Id$
 
+1999.5.25
+  * upgraded to gtk+-1.2.3 (all examples work)
+  * added a patch to use toplevel threads in olabl-2.02
+
 1998.12.13
   * upgraded to olabl-2.01
 

@@ -1,0 +1,180 @@
+Index: otherlibs/threads/Makefile
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/otherlibs/threads/Makefile,v
+retrieving revision 1.7
+retrieving revision 1.7.2.1
+diff -c -r1.7 -r1.7.2.1
+*** Makefile	1998/08/20 10:12:19	1.7
+--- Makefile	1999/05/25 06:54:10	1.7.2.1
+***************
+*** 16,22 ****
+    $(LIB)/filename.cmo $(LIB)/marshal.cmo $(LIB)/obj.cmo \
+    $(LIB)/lexing.cmo $(LIB)/parsing.cmo \
+    $(LIB)/set.cmo $(LIB)/map.cmo $(LIB)/stack.cmo $(LIB)/queue.cmo \
+!   $(LIB)/stream.cmo $(LIB)/printf.cmo $(LIB)/format.cmo $(LIB)/arg.cmo \
+    $(LIB)/printexc.cmo $(LIB)/gc.cmo $(LIB)/digest.cmo $(LIB)/random.cmo \
+    $(LIB)/oo.cmo $(LIB)/genlex.cmo $(LIB)/callback.cmo $(LIB)/weak.cmo \
+    $(LIB)/lazy.cmo 
+--- 16,23 ----
+    $(LIB)/filename.cmo $(LIB)/marshal.cmo $(LIB)/obj.cmo \
+    $(LIB)/lexing.cmo $(LIB)/parsing.cmo \
+    $(LIB)/set.cmo $(LIB)/map.cmo $(LIB)/stack.cmo $(LIB)/queue.cmo \
+!   $(LIB)/stream.cmo $(LIB)/buffer.cmo $(LIB)/printf.cmo $(LIB)/format.cmo \
+!   $(LIB)/arg.cmo \
+    $(LIB)/printexc.cmo $(LIB)/gc.cmo $(LIB)/digest.cmo $(LIB)/random.cmo \
+    $(LIB)/oo.cmo $(LIB)/genlex.cmo $(LIB)/callback.cmo $(LIB)/weak.cmo \
+    $(LIB)/lazy.cmo 
+Index: otherlibs/threads/pervasives.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/otherlibs/threads/pervasives.ml,v
+retrieving revision 1.1.1.7
+retrieving revision 1.1.1.7.2.1
+diff -c -r1.1.1.7 -r1.1.1.7.2.1
+*** pervasives.ml	1999/03/08 05:41:42	1.1.1.7
+--- pervasives.ml	1999/05/25 06:54:10	1.1.1.7.2.1
+***************
+*** 222,232 ****
+  external flush_partial : out_channel -> bool = "caml_flush_partial"
+  
+  let rec flush oc =
+!   let success =
+!     try
+!       flush_partial oc
+!     with Sys_blocked_io ->
+!       wait_outchan oc (-1); false in
+    if success then () else flush oc
+  
+  external unsafe_output_partial : out_channel -> string -> int -> int -> int
+--- 222,229 ----
+  external flush_partial : out_channel -> bool = "caml_flush_partial"
+  
+  let rec flush oc =
+!   wait_outchan oc (-1);
+!   let success = try flush_partial oc with Sys_blocked_io -> false in
+    if success then () else flush oc
+  
+  external unsafe_output_partial : out_channel -> string -> int -> int -> int
+***************
+*** 234,244 ****
+  
+  let rec unsafe_output oc buf pos len =
+    if len > 0 then begin
+!     let written =
+!       try
+!         unsafe_output_partial oc buf pos len
+!       with Sys_blocked_io ->
+!         wait_outchan oc len; 0 in
+      unsafe_output oc buf (pos + written) (len - written)
+    end
+  
+--- 231,239 ----
+  
+  let rec unsafe_output oc buf pos len =
+    if len > 0 then begin
+!     wait_outchan oc len;
+!     let written = 
+!       try unsafe_output_partial oc buf pos len with Sys_blocked_io -> 0 in
+      unsafe_output oc buf (pos + written) (len - written)
+    end
+  
+***************
+*** 247,256 ****
+  external output_byte_blocking : out_channel -> int -> unit = "caml_output_char"
+  
+  let rec output_char oc c =
+!   try
+!     output_char_blocking oc c
+!   with Sys_blocked_io ->
+!     wait_outchan oc 1; output_char oc c
+  
+  let output_string oc s =
+    unsafe_output oc s 0 (string_length s)
+--- 242,249 ----
+  external output_byte_blocking : out_channel -> int -> unit = "caml_output_char"
+  
+  let rec output_char oc c =
+!   wait_outchan oc 1;
+!   try output_char_blocking oc c with Sys_blocked_io -> output_char oc c
+  
+  let output_string oc s =
+    unsafe_output oc s 0 (string_length s)
+***************
+*** 261,270 ****
+    else unsafe_output oc s ofs len
+  
+  let rec output_byte oc b =
+!   try
+!     output_byte_blocking oc b
+!   with Sys_blocked_io ->
+!     wait_outchan oc 1; output_byte oc b
+  
+  let output_binary_int oc n =
+    output_byte oc (n asr 24);
+--- 254,261 ----
+    else unsafe_output oc s ofs len
+  
+  let rec output_byte oc b =
+!   wait_outchan oc 1;
+!   try output_byte_blocking oc b with Sys_blocked_io -> output_byte oc b
+  
+  let output_binary_int oc n =
+    output_byte oc (n asr 24);
+***************
+*** 304,322 ****
+  external input_byte_blocking : in_channel -> int = "caml_input_char"
+  
+  let rec input_char ic =
+!   try
+!     input_char_blocking ic
+!   with Sys_blocked_io ->
+!     wait_inchan ic; input_char ic
+  
+  external unsafe_input_blocking : in_channel -> string -> int -> int -> int
+                                 = "caml_input"
+  
+  let rec unsafe_input ic s ofs len =
+!   try
+!     unsafe_input_blocking ic s ofs len
+!   with Sys_blocked_io ->
+!     wait_inchan ic; unsafe_input ic s ofs len
+  
+  let input ic s ofs len =
+    if ofs < 0 or ofs + len > string_length s
+--- 295,310 ----
+  external input_byte_blocking : in_channel -> int = "caml_input_char"
+  
+  let rec input_char ic =
+!   wait_inchan ic;
+!   try input_char_blocking ic with Sys_blocked_io -> input_char ic
+  
+  external unsafe_input_blocking : in_channel -> string -> int -> int -> int
+                                 = "caml_input"
+  
+  let rec unsafe_input ic s ofs len =
+!   wait_inchan ic;
+!   try unsafe_input_blocking ic s ofs len
+!   with Sys_blocked_io -> unsafe_input ic s ofs len
+  
+  let input ic s ofs len =
+    if ofs < 0 or ofs + len > string_length s
+***************
+*** 356,365 ****
+    do_input (string_create 128) 0
+  
+  let rec input_byte ic =
+!   try
+!     input_byte_blocking ic
+!   with Sys_blocked_io ->
+!     wait_inchan ic; input_byte ic
+  
+  let input_binary_int ic =
+    let b1 = input_byte ic in
+--- 344,351 ----
+    do_input (string_create 128) 0
+  
+  let rec input_byte ic =
+!   wait_inchan ic;
+!   try input_byte_blocking ic with Sys_blocked_io -> input_byte ic
+  
+  let input_binary_int ic =
+    let b1 = input_byte ic in
