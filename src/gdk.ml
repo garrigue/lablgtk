@@ -33,3 +33,13 @@ module Color = struct
   external green : color -> int = "ml_GdkColor_blue"
   external pixel : color -> pixel = "ml_GdkColor_pixel"
 end
+
+module Rectangle = struct
+  type t
+  external create : x:int -> y:int -> width:int -> height:int -> t
+      = "ml_GdkRectangle"
+  external x : t -> int = "ml_GdkRectangle_x"
+  external y : t -> int = "ml_GdkRectangle_y"
+  external width : t -> int = "ml_GdkRectangle_width"
+  external height : t -> int = "ml_GdkRectangle_height"
+end
