@@ -51,7 +51,7 @@ type handler =
 
 let ($) f g x = g (f x)
 let gtk_bool b argv _ = Closure.set_result argv (`BOOL b)
-let known_handlers : (string, handler) Hashtbl.t = Hashtbl.create 7
+let known_handlers : (string, handler) Hashtbl.t = Hashtbl.create 11
 let add_handler ~name handler =
   Hashtbl.add known_handlers name handler
 open GtkBase

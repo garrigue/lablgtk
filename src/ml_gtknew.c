@@ -38,6 +38,7 @@ struct widget_info {
   guint class_size;
   guint (*get_type_func)(void);
 }
+
 widget_info_array[] = {
   { sizeof(GtkObject), sizeof(GtkObjectClass), gtk_object_get_type },
   { sizeof(GtkWidget), sizeof(GtkWidgetClass), gtk_widget_get_type },
