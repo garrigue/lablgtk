@@ -432,23 +432,22 @@ class popup () = object (self)
   method motion (_ : drag_context) :x :y :time =
     if not in_popup then begin
       in_popup <- true;
-      match popdown_timer with
-      | Some pdt ->
+      may popdown_timer fun:
+	begin fun pdt ->
 	  print_endline "removed popdown"; flush stdout;
 	  Timeout.remove pdt;
 	  popdown_timer <- None
-      | None -> ()
+	end
     end;
     true
 
   method leave (_ : drag_context) :time =
     if in_popup then begin
       in_popup <- false;
-      match popdown_timer with
-      | None ->
-	  print_endline "added popdown"; flush stdout;
-	  popdown_timer <- Some (Timeout.add 500 callback:self#popdown)
-      | Some _ -> ()
+      if popdown_timer = None then begin
+	print_endline "added popdown"; flush stdout;
+	popdown_timer <- Some (Timeout.add 500 callback:self#popdown)
+      end
     end
 
   method popup () =
