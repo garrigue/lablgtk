@@ -50,10 +50,10 @@ xxaplay.cmx: xxaplay.ml
 	$(LABLOPT) $(COMPFLAGS) -c $<
 
 clean:
-	rm -f core *.o *.cm* */*.cm* *~ xxaplay
+	rm -f core *.o *.cm* *~ xxaplay
 
 depend:
-	$(CAMLDEP) $(INCS) *.ml *.mli */*.ml */*.mli > .depend
+	$(CAMLDEP) $(INCS) *.ml *.mli > .depend
 
 .SUFFIXES :
 .SUFFIXES : .mli .ml .cmi .cmo .cmx .mlp .c .o

@@ -34,6 +34,7 @@ val guess_interleave : Unix.file_descr -> int -> int
 
 val is_xa_file : Unix.file_descr -> int -> bool
 val list_xa_files_of_disk : Unix.file_descr -> directory_record list
+val read_cdrom_info : Unix.file_descr -> string * string
 
 type track = {
     tstart : int;
