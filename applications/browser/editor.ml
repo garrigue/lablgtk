@@ -60,9 +60,8 @@ class editor ?packing ?show () = object (self)
         and stop = start#forward_to_line_end in
         Lexical.tag view#buffer ~start ~stop
       end;
-    let font = Pango.Font.from_string "monospace 11" in
-    view#misc#modify_font font;
-    Shell.set_size_chars view ~font ~width:80 ~height:25;
+    view#misc#modify_font_by_name "monospace 11";
+    Shell.set_size_chars view ~width:80 ~height:25;
     ()
 end
 
@@ -114,7 +113,7 @@ object (self)
     factory#add_item "Lex" ~key:_L
       ~callback:(fun () -> Lexical.tag editor#buffer);
     window#add_accel_group accel_group;
-    if show then self#show ()
+    if show then self#show ();
 end
 
 let _ =
