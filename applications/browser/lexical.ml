@@ -2,7 +2,7 @@
 
 open Parser
 
-type tags = [none control define structure char infix label uident]
+type tags = [`none|`control|`define|`structure|`char|`infix|`label|`uident]
 
 let colors : (tags * GdkObj.color) list Lazy.t =
   lazy
@@ -16,7 +16,8 @@ let colors : (tags * GdkObj.color) list Lazy.t =
 	 `uident, "midnightblue";
          `none, "black" ])
 
-let tag (tw : GEdit.text) ?:start [< 0 >] ?end:pend [< tw#length >] =
+let tag ?:start{=0} ?end:pend (tw : GEdit.text) =
+  let pend = Misc.default tw#length pend in
   let colors = Lazy.force colors in
   tw#freeze ();
   let position = tw#position
@@ -25,7 +26,7 @@ let tag (tw : GEdit.text) ?:start [< 0 >] ?end:pend [< tw#length >] =
     if pend > pstart then begin
       tw#delete_text start:(start+pstart) end:(start+pend);
       tw#set_point (start+pstart);
-      tw#insert foreground:(List.assoc tag in:colors)
+      tw#insert foreground:(List.assoc key:tag colors)
 	(String.sub text pos:pstart len:(pend-pstart));
     end
   and next_lf = ref (-1) in
@@ -108,10 +109,11 @@ let tag (tw : GEdit.text) ?:start [< 0 >] ?end:pend [< tw#length >] =
       | INFIXOP3 _
       | INFIXOP4 _
       | PREFIXOP _
-      |	QUESTION3
+      |	QUESTION2
       | SHARP
       	  -> `infix
       | LABEL _
+      | LABELID _
       | QUESTION
       	  -> `label
       | UIDENT _ -> `uident

@@ -325,7 +325,7 @@ object (self)
     end;
     let source_typename =
       try
-	GtkBase.Type.name context#source_widget#get_type
+	context#source_widget#get_type
       with Null_pointer -> "unknown"
     in
     Printf.printf "motion, source %s\n" source_typename; flush stdout;

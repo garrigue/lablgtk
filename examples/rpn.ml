@@ -67,7 +67,7 @@ let main () =
   (* Period *)
   let periodClicked _ = 
      let txt = entry#text in
-     if (String.contains txt elt:'.') then begin
+     if (String.contains txt char:'.') then begin
       	Printf.printf "\a";
         flush stdout;
      end

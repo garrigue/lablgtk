@@ -25,9 +25,9 @@ let rec list_remove pred:f = function
 
 (* cut the list at the element elt; elt stays in tail;
    hd stays in reverse order *)
-let cut_list :elt l =
+let cut_list :item l =
   let rec aux h t = match t with
-  | hd :: tl -> if hd = elt then h, t
+  | hd :: tl -> if hd = item then h, t
 	else aux (hd :: h) tl
   | [] -> failwith "cut_list"
   in aux [] l
@@ -38,10 +38,10 @@ let rec list_split pred:f = function
   | hd :: tl -> let g, d = list_split pred:f tl in
     if f hd then (hd :: g, d) else (g, hd :: d)
 
-let list_pos :elt l =
+let list_pos :item l =
   let rec aux pos = function
     | [] -> raise Not_found
-    | hd :: tl -> if hd = elt then pos else aux (pos+1) tl
+    | hd :: tl -> if hd = item then pos else aux (pos+1) tl
   in aux 0 l
 
 (* moves the pos element up; pos is >= 1;
@@ -57,12 +57,12 @@ let rec list_reorder_down :pos =
   list_reorder_up pos:(pos+1)
 
 
-let rec list_insert :elt l :pos =
-  if pos=0 then elt :: l
+let rec list_insert :item l :pos =
+  if pos=0 then item :: l
   else
     match l with
     | [] ->  failwith "list_insert"
-    | hd :: tl -> hd :: (list_insert :elt tl pos:(pos-1))
+    | hd :: tl -> hd :: (list_insert :item tl pos:(pos-1))
 
 
 let rec change_property_name oldname newname = function
@@ -90,7 +90,7 @@ let split name =
     (String.sub name pos:0 len:(!i+1)),
     int_of_string (String.sub name pos:(!i+1) len:(l- !i-1))
 
-let test_unique name = not (List.mem elt:name !name_list)
+let test_unique name = not (List.mem item:name !name_list)
 
 let make_new_name ?:index{= 1} base =
   let index = ref index in
@@ -141,7 +141,7 @@ let split_filename filename :ext =
     if (l > lext) && (String.sub filename pos:(l - lext) len:lext = ext)
     then (String.sub filename pos:0 len:(l-lext)), l-lext
     else filename, l in
-  let i = 1 + (String.rindex filename elt:'/') in
+  let i = 1 + (String.rindex filename char:'/') in
   String.sub filename pos:0 len:i,
   String.sub filename pos:i len:(l-i)
 

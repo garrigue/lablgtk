@@ -335,7 +335,7 @@ value ml_gtk_drag_dest_set (value w, value f, value t, value a)
   }
   gtk_drag_dest_set (GtkWidget_val(w), Flags_Dest_defaults_val(f),
 		     targets, n_targets, Flags_GdkDragAction_val(a));
-  CAMLreturn Val_unit;
+  CAMLreturn(Val_unit);
 }
 ML_1 (gtk_drag_dest_unset, GtkWidget_val, Unit)
 ML_4 (gtk_drag_finish, GdkDragContext_val, Bool_val, Bool_val, Int_val, Unit)
@@ -371,7 +371,7 @@ value ml_gtk_drag_source_set (value w, value m, value t, value a)
   }
   gtk_drag_source_set (GtkWidget_val(w), OptFlags_GdkModifier_val(m),
 		       targets, n_targets, Flags_GdkDragAction_val(a));
-  CAMLreturn Val_unit;
+  CAMLreturn(Val_unit);
 }
 ML_4 (gtk_drag_source_set_icon, GtkWidget_val, GdkColormap_val,
       GdkPixmap_val, Option_val(arg4, GdkBitmap_val, NULL) Ignore, Unit)
@@ -419,7 +419,7 @@ value ml_gtk_container_foreach (value w, value clos)
     CAMLparam1(clos);
     gtk_container_foreach (GtkContainer_val(w), ml_gtk_simple_callback,
 			   &clos);
-    CAMLreturn Val_unit;
+    CAMLreturn(Val_unit);
 }
 ML_1 (gtk_container_register_toplevel, GtkContainer_val, Unit)
 ML_1 (gtk_container_unregister_toplevel, GtkContainer_val, Unit)
@@ -933,7 +933,7 @@ value ml_gtk_clist_get_pixmap (value clist, value row, value column)
     Field(ret,0) = vpixmap;
     Field(ret,1) = vbitmap;
 
-    CAMLreturn ret;
+    CAMLreturn(ret);
 }
 ML_7 (gtk_clist_set_pixtext, GtkCList_val, Int_val, Int_val, String_val,
       Int_val, GdkPixmap_val, GdkBitmap_val, Unit)
@@ -1538,7 +1538,7 @@ value ml_gtk_init (value argv)
     gtk_init (&argc, (char ***)&copy);
     ret = (argc ? alloc (argc, 0) : Atom(0));
     for (i = 0; i < argc; i++) initialize(&Field(ret,i), Field(copy,i));
-    CAMLreturn ret;
+    CAMLreturn(ret);
 }
 ML_1 (gtk_exit, Int_val, Unit)
 ML_0 (gtk_set_locale, Val_string)
@@ -1573,7 +1573,7 @@ void ml_gtk_callback_marshal (GtkObject *object, gpointer data,
 
     Field(vargs,0) = Val_int(-1);
     Field(vargs,1) = Val_int(-1);
-    CAMLreturn;
+    CAMLreturn0;
 }
 
 value ml_gtk_arg_shift (GtkArg *args, value index)

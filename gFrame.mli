@@ -45,10 +45,8 @@ class handle_box_signals : 'a obj ->
     inherit container_signals
     constraint 'a = [>`handlebox|`container|`widget]
     val obj : 'a obj
-    method child_attached :
-      callback:(Gtk.widget obj -> unit) -> GtkSignal.id
-    method child_detached :
-      callback:(Gtk.widget obj -> unit) -> GtkSignal.id
+    method child_attached : callback:(widget -> unit) -> GtkSignal.id
+    method child_detached : callback:(widget -> unit) -> GtkSignal.id
   end
 
 class handle_box : Gtk.handle_box obj ->
