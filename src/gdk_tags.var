@@ -1,7 +1,5 @@
 (* $Id$ *)
 
-exception ml_raise_gdk
-
 type gdkEventType = "GDK_"
   [ `NOTHING | `DELETE | `DESTROY | `EXPOSE | `MOTION_NOTIFY | `BUTTON_PRESS
   | `TWO_BUTTON_PRESS "GDK_2BUTTON_PRESS"
@@ -26,7 +24,7 @@ type event_mask = "GDK_"
   | `PROXIMITY_IN | `PROXIMITY_OUT | `SUBSTRUCTURE
   | `ALL_EVENTS ] "_MASK"
 
-type public extension_events = "GDK_EXTENSION_EVENTS_"
+type extension_events = "GDK_EXTENSION_EVENTS_"
   [ `NONE | `ALL | `CURSOR ]
 
 type gdkVisibilityState = "GDK_VISIBILITY_"

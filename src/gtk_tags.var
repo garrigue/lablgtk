@@ -1,7 +1,5 @@
 (* $Id$ *)
 
-exception ml_raise_gtk
-
 type arrow_type = "GTK_ARROW_"
   [ `UP | `DOWN | `LEFT | `RIGHT ]
 
