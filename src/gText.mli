@@ -2,19 +2,7 @@
 
 open Gtk
 
-class mark :
-  textmark obj ->
-object
-  val obj : textmark obj
-  method as_mark : textmark obj
-  method get_buffer : textbuffer obj option
-  method get_deleted : bool
-  method get_left_gravity : bool
-  method get_name : string option
-  method get_oid : int
-  method get_visible : bool
-  method set_visible : bool -> unit
-end
+type mark = [`INSERT | `SEL_BOUND | `NAME of string | `MARK of textmark obj]
 
 class child_anchor :
   textchildanchor obj ->
@@ -63,8 +51,7 @@ object
   method backward_chars : int -> bool
   method backward_cursor_position : unit -> bool
   method backward_cursor_positions : int -> bool
-  method backward_find_char :
-    ?limit:iter -> (Glib.Utf8.unichar -> bool) -> bool
+  method backward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
   method backward_line : unit -> bool
   method backward_lines : int -> bool
   method backward_sentence_start : unit -> bool
@@ -85,8 +72,7 @@ object
   method forward_chars : int -> bool
   method forward_cursor_position : unit -> bool
   method forward_cursor_positions : int -> bool
-  method forward_find_char :
-    ?limit:iter -> (Glib.Utf8.unichar -> bool) -> bool
+  method forward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
   method forward_line : unit -> bool
   method forward_lines : int -> bool
   method forward_sentence_end : unit -> bool
@@ -184,8 +170,8 @@ object ('a)
   method insert_pixbuf :
     callback:(iter -> GdkPixbuf.pixbuf -> unit) -> GtkSignal.id
   method insert_text : callback:(iter -> string -> unit) -> GtkSignal.id
-  method mark_deleted : callback:(mark -> unit) -> GtkSignal.id
-  method mark_set : callback:(iter -> mark -> unit) -> GtkSignal.id
+  method mark_deleted : callback:(textmark obj -> unit) -> GtkSignal.id
+  method mark_set : callback:(iter -> textmark obj -> unit) -> GtkSignal.id
   method modified_changed : callback:(unit -> unit) -> GtkSignal.id
   method remove_tag :
     callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
@@ -206,41 +192,37 @@ object
   method copy_clipboard : Gtk.clipboard -> unit
   method create_child_anchor : iter -> child_anchor
   method insert_child_anchor : iter -> child_anchor -> unit
-  method create_mark : ?name:string -> ?left_gravity:bool -> iter -> mark
+  method create_mark :
+    ?name:string -> ?left_gravity:bool -> iter -> textmark obj
   method create_tag :
-    ?name:string -> ?properties:GtkText.Tag.property list -> unit -> tag
+    ?name:string -> GtkText.Tag.property list -> tag
   method cut_clipboard : ?default_editable:bool -> Gtk.clipboard -> unit
   method delete : start:iter -> stop:iter -> unit
   method delete_interactive :
     start:iter ->
     stop:iter -> ?default_editable:bool -> unit -> bool
   method delete_mark : mark -> unit
-  method delete_mark_by_name : string -> unit
   method delete_selection :
     ?interactive:bool -> ?default_editable:bool -> unit -> unit
   method end_user_action : unit -> unit
   method get_bounds : iter * iter
   method get_char_count : int
   method get_end_iter : iter
-  method get_insert : mark
   method get_iter_at_char : ?line:int -> int -> iter
   method get_iter_at_byte : ?line:int -> int -> iter
   method get_iter_at_mark : mark -> iter
   method get_line_count : int
-  method get_mark : name:string -> mark
+  method get_mark : mark -> textmark obj
   method get_modified : bool
   method get_oid : int
-  method get_selection_bound : mark
   method get_selection_bounds : textiter * textiter
-  method get_slice :
-    ?include_hidden_chars:bool -> start:iter -> stop:iter -> unit -> string
   method get_start_iter : iter
   method get_tag_table : texttagtable obj
   method get_text :
-    ?include_hidden_chars:bool ->
-    ?start:iter -> ?stop:iter -> unit -> string
+    ?start:iter -> ?stop:iter -> ?slice:bool ->
+    ?include_hidden:bool -> unit -> string
   method insert :
-    ?iter:iter -> ?tags_names:string list -> ?tags:tag list 
+    ?iter:iter -> ?tag_names:string list -> ?tags:tag list 
     -> string -> unit
   method insert_interactive :
     ?iter:textiter -> ?default_editable:bool -> string -> bool
@@ -253,7 +235,6 @@ object
     start:textiter ->
     stop:textiter -> ?default_editable:bool -> unit -> bool
   method move_mark : mark -> where:iter -> unit
-  method move_mark_by_name : string -> where:iter -> unit
   method paste_clipboard : 
     ?iter:iter -> ?default_editable:bool -> Gtk.clipboard -> unit
   method place_cursor : where:iter -> unit

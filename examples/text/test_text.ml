@@ -122,8 +122,8 @@ let t_8 () =
   tb#set_text "Un nouveau texte";
   let start = tb#get_start_iter in
   let stop = tb#get_end_iter in
-  let tt = tb#create_tag () ~properties:
-      [`BACKGROUND "red"; `FOREGROUND "blue"; `EDITABLE false] in
+  let tt =
+    tb#create_tag [`BACKGROUND "red"; `FOREGROUND "blue"; `EDITABLE false] in
 
   Printf.printf "Je vois :\"%s\"\n"
     (tb#get_text ~include_hidden_chars:true ~start ~stop ());

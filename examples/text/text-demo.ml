@@ -1,59 +1,42 @@
 let create_tags (buffer:GText.buffer) =
   buffer#create_tag ~name:"heading" 
-    ~properties:[`WEIGHT `BOLD;
-		 `SIZE (15*Pango.scale)] 
-    ();
-  buffer#create_tag ~name:"italic" ~properties:[`STYLE `ITALIC] ();
-  buffer#create_tag ~name:"bold" ~properties:[`WEIGHT `BOLD] ();  
-  buffer#create_tag ~name:"big" ~properties:[`SIZE 20] ();
-  buffer#create_tag ~name:"xx-small" ~properties:[`SCALE `XX_SMALL] ();
-  buffer#create_tag ~name:"x-large" ~properties:[`SCALE `X_LARGE] ();
-  buffer#create_tag ~name:"monospace" ~properties:[`FAMILY "monospace"] ();
-  buffer#create_tag ~name:"blue_foreground" ~properties:[`FOREGROUND "blue"] ();
-  buffer#create_tag ~name:"red_background" ~properties:[`BACKGROUND "red"] ();
+    [`WEIGHT `BOLD; `SIZE (15*Pango.scale)];
+  buffer#create_tag ~name:"italic" [`STYLE `ITALIC];
+  buffer#create_tag ~name:"bold" [`WEIGHT `BOLD];  
+  buffer#create_tag ~name:"big" [`SIZE 20];
+  buffer#create_tag ~name:"xx-small" [`SCALE `XX_SMALL];
+  buffer#create_tag ~name:"x-large" [`SCALE `X_LARGE];
+  buffer#create_tag ~name:"monospace" [`FAMILY "monospace"];
+  buffer#create_tag ~name:"blue_foreground" [`FOREGROUND "blue"];
+  buffer#create_tag ~name:"red_background" [`BACKGROUND "red"];
 
   let stipple = Gdk.Bitmap.create_from_data 2 2 "\002\001" in
-  buffer#create_tag ~name:"background_stipple" 
-    ~properties:[`BACKGROUND_STIPPLE stipple] ();
-  buffer#create_tag ~name:"foreground_stipple" 
-    ~properties:[`FOREGROUND_STIPPLE stipple] ();
-  buffer#create_tag ~name:"big_gap_before_line" 
-    ~properties:[`PIXELS_ABOVE_LINES 30] ();
-  buffer#create_tag ~name:"big_gap_after_line" 
-    ~properties:[`PIXELS_BELOW_LINES 30] ();
-  buffer#create_tag ~name:"double_spaced_line" 
-    ~properties:[`PIXELS_INSIDE_WRAP 10] ();
-  buffer#create_tag ~name:"not_editable" 
-    ~properties:[`EDITABLE false] ();
-  buffer#create_tag ~name:"word_wrap" 
-    ~properties:[`WRAP_MODE `WORD] ();
-  buffer#create_tag ~name:"char_wrap" 
-    ~properties:[`WRAP_MODE `CHAR] ();
-  buffer#create_tag ~name:"no_wrap" 
-    ~properties:[`WRAP_MODE `NONE] ();
-  buffer#create_tag ~name:"center" ~properties:[`JUSTIFICATION `CENTER] ();
-  buffer#create_tag ~name:"right_justify" ~properties:[`JUSTIFICATION `RIGHT]
-    ();
-  buffer#create_tag ~name:"wide_margins" ~properties:[`LEFT_MARGIN  50;
-						      `RIGHT_MARGIN 50] ();
-  buffer#create_tag ~name:"strikethrough" ~properties:[`STRIKETHROUGH true] 
-    ();
-  buffer#create_tag ~name:"underline" ~properties:[`UNDERLINE `SINGLE] ();
-  buffer#create_tag ~name:"double_underline" ~properties:[`UNDERLINE `DOUBLE]
-    ();
-  buffer#create_tag ~name:"superscript" 
-    ~properties:[`RISE (10*Pango.scale) ;
-		 `SIZE (8*Pango.scale)] ();
+  buffer#create_tag ~name:"background_stipple" [`BACKGROUND_STIPPLE stipple];
+  buffer#create_tag ~name:"foreground_stipple" [`FOREGROUND_STIPPLE stipple];
+  buffer#create_tag ~name:"big_gap_before_line" [`PIXELS_ABOVE_LINES 30];
+  buffer#create_tag ~name:"big_gap_after_line" [`PIXELS_BELOW_LINES 30];
+  buffer#create_tag ~name:"double_spaced_line" [`PIXELS_INSIDE_WRAP 10];
+  buffer#create_tag ~name:"not_editable" [`EDITABLE false];
+  buffer#create_tag ~name:"word_wrap" [`WRAP_MODE `WORD];
+  buffer#create_tag ~name:"char_wrap" [`WRAP_MODE `CHAR];
+  buffer#create_tag ~name:"no_wrap" [`WRAP_MODE `NONE];
+  buffer#create_tag ~name:"center" [`JUSTIFICATION `CENTER];
+  buffer#create_tag ~name:"right_justify" [`JUSTIFICATION `RIGHT];
+  buffer#create_tag ~name:"wide_margins" [`LEFT_MARGIN  50; `RIGHT_MARGIN 50];
+  buffer#create_tag ~name:"strikethrough" [`STRIKETHROUGH true];
+  buffer#create_tag ~name:"underline" [`UNDERLINE `SINGLE];
+  buffer#create_tag ~name:"double_underline" [`UNDERLINE `DOUBLE];
+  buffer#create_tag ~name:"superscript"
+    [`RISE (10*Pango.scale); `SIZE (8*Pango.scale)];
   
-  buffer#create_tag ~name:"subscript" 
-    ~properties:[`RISE (-10*Pango.scale); `SIZE (8*Pango.scale)] ();
+  buffer#create_tag ~name:"subscript"
+    [`RISE (-10*Pango.scale); `SIZE (8*Pango.scale)];
   buffer#create_tag ~name:"rtl_quote" 
-    ~properties:[`WRAP_MODE `WORD;
-		 `DIRECTION `RTL;
-		 `INDENT 30;
-		 `LEFT_MARGIN 20;
-		 `RIGHT_MARGIN 20] 
-    ();
+    [`WRAP_MODE `WORD;
+     `DIRECTION `RTL;
+     `INDENT 30;
+     `LEFT_MARGIN 20;
+     `RIGHT_MARGIN 20];
   ()
 
 let insert_text (buffer:GText.buffer) =  
@@ -61,99 +44,99 @@ let insert_text (buffer:GText.buffer) =
   let scaled = GdkPixbuf.create ~has_alpha:true ~width:32 ~height:32 () in
   GdkPixbuf.scale ~dest:scaled ~width:32 ~height:32 ~interp:`BILINEAR pixbuf;
   let pixbuf = scaled in
-  let iter = buffer#get_iter_at ~char_offset:0 () in
+  let iter = buffer#get_iter_at_char 0 in
   buffer#insert ~iter "The text widget can display text with all kinds of nifty attributes. It also supports multiple views of the same buffer; this demo is showing the same buffer in two places.\n\n";
-  buffer#insert ~iter ~tags_names:["heading"] "Font styles. ";
+  buffer#insert ~iter ~tag_names:["heading"] "Font styles. ";
   buffer#insert ~iter "For example, you can have ";
-  buffer#insert ~iter ~tags_names:["italic"] "italic";
+  buffer#insert ~iter ~tag_names:["italic"] "italic";
   buffer#insert ~iter ", ";
-  buffer#insert ~iter ~tags_names:["bold"] "bold";
+  buffer#insert ~iter ~tag_names:["bold"] "bold";
   buffer#insert ~iter ", or ";
-  buffer#insert ~iter ~tags_names:["monospace"] 
+  buffer#insert ~iter ~tag_names:["monospace"] 
     "monospace(typewriter)";
   buffer#insert ~iter ", or ";
-  buffer#insert ~iter ~tags_names:["big"] "big";
+  buffer#insert ~iter ~tag_names:["big"] "big";
   buffer#insert ~iter " text. ";
   buffer#insert ~iter "It's best not to hardcode specific text sizes; you can use relative sizes as with CSS, such as ";
-  buffer#insert ~iter ~tags_names:["xx-small"] "xx-small";
+  buffer#insert ~iter ~tag_names:["xx-small"] "xx-small";
   buffer#insert ~iter ", or ";
-  buffer#insert ~iter ~tags_names:["x-large"] "x-large";
+  buffer#insert ~iter ~tag_names:["x-large"] "x-large";
   buffer#insert ~iter " to ensure that your program properly adapts if the user changes the default font size.\n\n";
-  buffer#insert ~iter ~tags_names:["heading"] "Colors. ";
+  buffer#insert ~iter ~tag_names:["heading"] "Colors. ";
   buffer#insert ~iter "Colors such as ";
-  buffer#insert ~iter ~tags_names:["blue_foreground"] "a blue foreground";
+  buffer#insert ~iter ~tag_names:["blue_foreground"] "a blue foreground";
   buffer#insert ~iter ", or ";
-  buffer#insert ~iter ~tags_names:["red_background"] "a red background";
+  buffer#insert ~iter ~tag_names:["red_background"] "a red background";
   buffer#insert ~iter ", or even ";
-  buffer#insert ~iter ~tags_names:["red_background";"background_stipple"] 
+  buffer#insert ~iter ~tag_names:["red_background";"background_stipple"] 
     "a stippled red background";
   buffer#insert ~iter " or ";
-  buffer#insert ~iter ~tags_names:["blue_foreground";
+  buffer#insert ~iter ~tag_names:["blue_foreground";
 				   "red_background";
 				   "foreground_stipple"] 
     "a stippled blue foreground on solid red background";
   buffer#insert ~iter " (select that to read it) can be used.\n\n";
-  buffer#insert ~iter  ~tags_names:["heading"] 
+  buffer#insert ~iter  ~tag_names:["heading"] 
     "Underline, strikethrough, and rise. ";
-  buffer#insert ~iter  ~tags_names:["strikethrough"] 
+  buffer#insert ~iter  ~tag_names:["strikethrough"] 
     "Strikethrough";
   buffer#insert ~iter ", ";
-  buffer#insert ~iter  ~tags_names:["underline"] 
+  buffer#insert ~iter  ~tag_names:["underline"] 
     "underline";
   buffer#insert ~iter ", ";
-  buffer#insert ~iter  ~tags_names:["double_underline"] 
+  buffer#insert ~iter  ~tag_names:["double_underline"] 
     "double underline";
   buffer#insert ~iter ", ";
-  buffer#insert ~iter  ~tags_names:["superscript"] 
+  buffer#insert ~iter  ~tag_names:["superscript"] 
     "superscript";
   buffer#insert ~iter ", ";
-  buffer#insert ~iter  ~tags_names:["subscript"] 
+  buffer#insert ~iter  ~tag_names:["subscript"] 
     "subscript";
   buffer#insert ~iter " are all supported.\n\n";
-  buffer#insert ~iter  ~tags_names:["heading"] 
+  buffer#insert ~iter  ~tag_names:["heading"] 
     "Images";
   buffer#insert ~iter "The buffer can have images in it: ";
   buffer#insert_pixbuf ~iter ~pixbuf;
   buffer#insert_pixbuf ~iter ~pixbuf;
   buffer#insert_pixbuf ~iter ~pixbuf;
   buffer#insert ~iter " for example.\n\n";
-  buffer#insert ~iter  ~tags_names:["heading"] 
+  buffer#insert ~iter  ~tag_names:["heading"] 
     "Spacing";
   buffer#insert ~iter
     "You can adjust the amount of space before each line.\n";
-  buffer#insert ~iter  ~tags_names:["big_gap_before_line";"wide_margins"] 
+  buffer#insert ~iter  ~tag_names:["big_gap_before_line";"wide_margins"] 
     "This line has a whole lot of space before it.\n";
-  buffer#insert ~iter  ~tags_names:["big_gap_after_line";"wide_margins"] 
+  buffer#insert ~iter  ~tag_names:["big_gap_after_line";"wide_margins"] 
     "You can also adjust the amount of space after each line; this line has a whole lot of space after it.\n";
-  buffer#insert ~iter  ~tags_names:["double_spaced_line";"wide_margins"] 
+  buffer#insert ~iter  ~tag_names:["double_spaced_line";"wide_margins"] 
     "You can also adjust the amount of space between wrapped lines; this line has extra space between each wrapped line in the same paragraph. To show off wrapping, some filler text: the quick brown fox jumped over the lazy dog. Blah blah blah blah blah blah blah blah blah.\n";
   buffer#insert ~iter
     "Also note that those lines have extra-wide margins.\n\n";
-  buffer#insert ~iter  ~tags_names:["heading"] 
+  buffer#insert ~iter  ~tag_names:["heading"] 
     "Editability";
-  buffer#insert ~iter ~tags_names:["not_editable"] 
+  buffer#insert ~iter ~tag_names:["not_editable"] 
     "This line is 'locked down' and can't be edited by the user - just try it! You can't delete this line.\n\n";
-   buffer#insert ~iter  ~tags_names:["heading"] 
+   buffer#insert ~iter  ~tag_names:["heading"] 
     "Wrapping";
-  buffer#insert ~iter ~tags_names:["char_wrap"] 
+  buffer#insert ~iter ~tag_names:["char_wrap"] 
     "This line has character-based wrapping, and can wrap between any two character glyphs. Let's make this a long paragraph to demonstrate: blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah\n\n" ;
-  buffer#insert ~iter ~tags_names:["no_wrap"] 
+  buffer#insert ~iter ~tag_names:["no_wrap"] 
     "This line has all wrapping turned off, so it makes the horizontal scrollbar appear.\n\n\n";
-   buffer#insert ~iter  ~tags_names:["heading"] 
+   buffer#insert ~iter  ~tag_names:["heading"] 
     "Justification";
-  buffer#insert ~iter ~tags_names:["center"] 
+  buffer#insert ~iter ~tag_names:["center"] 
     "\nThis line has center justification.\n";
-  buffer#insert ~iter ~tags_names:["right_justify"] 
+  buffer#insert ~iter ~tag_names:["right_justify"] 
     "\nThis line has right justification.\n";
-  buffer#insert ~iter ~tags_names:["wide_margins"] 
+  buffer#insert ~iter ~tag_names:["wide_margins"] 
     "\nThis line has big wide margins. Text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text.\n";
-   buffer#insert ~iter  ~tags_names:["heading"] 
+   buffer#insert ~iter  ~tag_names:["heading"] 
     "Internationalization";
    buffer#insert ~iter
     "You can put all sorts of Unicode text in the buffer.\n\nGerman (Deutsch Süd) Grüß Gott\nGreek (Ελληνικά) Γειά σας\nHebrew	שלום\nJapanese (日本語)\n\nThe widget properly handles bidirectional text, word wrapping, DOS/UNIX/Unicode paragraph separators, grapheme boundaries, and so on using the Pango internationalization framework.\n";  
    buffer#insert ~iter
     "Here's a word-wrapped quote in a right-to-left language:\n";
-   buffer#insert ~iter ~tags_names:["rtl_quote"]
+   buffer#insert ~iter ~tag_names:["rtl_quote"]
     "وقد بدأ ثلاث من أكثر المؤسسات تقدما في شبكة اكسيون برامجها كمنظمات لا تسعى للربح، ثم تحولت في السنوات الخمس الماضية إلى مؤسسات مالية منظمة، وباتت جزءا من النظام المالي في بلدانها، ولكنها تتخصص في خدمة قطاع المشروعات الصغيرة. وأحد أكثر هذه المؤسسات نجاحا هو »بانكوسول« في بوليفيا.\n\n";
    buffer#insert ~iter
        "You can put widgets in the buffer: Here's a button: ";

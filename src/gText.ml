@@ -7,18 +7,13 @@ open GtkBase
 open GtkText
 open GObj
 
-class mark obj =
-object
-  val obj = obj
-  method get_oid = Gobject.get_oid obj
-  method as_mark = obj
-  method set_visible b = Mark.set_visible obj b
-  method get_visible = Mark.get_visible obj
-  method get_deleted = Mark.get_deleted obj
-  method get_name = Mark.get_name obj
-  method get_buffer = Mark.get_buffer obj
-  method get_left_gravity = Mark.get_left_gravity obj
-end
+type mark_name = [`INSERT | `SEL_BOUND | `NAME of string]
+let mark_name = function
+    `INSERT -> "insert"
+  | `SEL_BOUND -> "selection_bound"
+  | `NAME s -> s
+
+type mark = [mark_name | `MARK of textmark obj]
 
 class child_anchor obj =
 object
@@ -230,12 +225,11 @@ class buffer_signals obj = object
   method insert_text ~callback = 
     GtkSignal.connect ~sgn:Buffer.Signals.insert_text ~after obj
       ~callback:(fun iter -> callback (new iter iter))
-  method mark_deleted ~callback =
+  method mark_deleted =
     GtkSignal.connect ~sgn:Buffer.Signals.mark_deleted ~after obj
-      ~callback:(fun mark -> callback (new mark mark))
   method mark_set ~callback = 
     GtkSignal.connect ~sgn:Buffer.Signals.mark_set ~after obj
-      ~callback:(fun it mark -> callback (new iter it) (new mark mark))
+      ~callback:(fun it -> callback (new iter it))
   method modified_changed = 
     GtkSignal.connect ~sgn:Buffer.Signals.modified_changed ~after obj
   method remove_tag ~callback = 
@@ -256,11 +250,11 @@ class buffer obj = object(self)
   method get_tag_table =  Buffer.get_tag_table obj
   method insert
     ?iter 
-    ?(tags_names=([]:string list))
-    ?(tags=([]:tag list)) 
+    ?(tag_names : string list = [])
+    ?(tags : tag list = []) 
     text
     =  
-    match tags,tags_names with
+    match tags,tag_names with
       | [],[] -> 
 	  begin match iter with
 	  | None      -> Buffer.insert_at_cursor obj text
@@ -270,19 +264,19 @@ class buffer obj = object(self)
           begin match iter with
 	  | None -> 
 	      let insert_iter () =
-                self#get_iter_at_mark (self#get_insert) in
+                self#get_iter_at_mark `INSERT in
 	      let start_offset = (insert_iter ())#get_offset in
 	      Buffer.insert_at_cursor obj text;
 	      let start = self#get_iter_at_char start_offset in
 	      List.iter tags ~f:(self#apply_tag ~start ~stop:(insert_iter ()));
-	      List.iter tags_names 
+	      List.iter tag_names 
 		~f:(self#apply_tag_by_name ~start ~stop:(insert_iter ())) 
 	  | Some iter -> 
 	      let start_offset = iter#get_offset in
 	      Buffer.insert obj (as_textiter iter) text;
 	      let start = self#get_iter_at_char start_offset in
 	      List.iter tags ~f:(self#apply_tag ~start ~stop:iter);
-	      List.iter tags_names 
+	      List.iter tag_names 
 		~f:(self#apply_tag_by_name ~start ~stop:iter)
 	end
   method insert_interactive ?iter ?(default_editable = true) text = 
@@ -304,34 +298,30 @@ class buffer obj = object(self)
       (as_textiter stop) default_editable
   method set_text text = 
     Buffer.set_text obj text
-  method get_text ?(include_hidden_chars=false) ?start ?stop () =
+  method get_text ?start ?stop ?(slice=false) ?(include_hidden=false) () =
     let start,stop = 
       match start,stop with 
 	| None,None -> Buffer.get_bounds obj
-	| Some start,None -> as_textiter start, self#get_start_iter#as_textiter
-	| None,Some stop -> self#get_end_iter#as_textiter, as_textiter stop
+	| Some start,None -> as_textiter start, Buffer.get_start_iter obj
+	| None,Some stop -> Buffer.get_end_iter obj, as_textiter stop
 	| Some start,Some stop -> as_textiter start, as_textiter stop
     in
-    Buffer.get_text obj start stop include_hidden_chars 
-  method get_slice ?(include_hidden_chars=false) ~start ~stop () =
-    Buffer.get_slice obj
-      (as_textiter start) (as_textiter stop) include_hidden_chars 
+    (if slice then Buffer.get_slice else Buffer.get_text)
+      obj start stop include_hidden
   method insert_pixbuf ~iter ~pixbuf = 
     Buffer.insert_pixbuf obj (as_textiter iter) pixbuf
   method create_mark ?name ?(left_gravity=true) iter = 
-    new mark (Buffer.create_mark obj name (as_textiter iter) left_gravity)
-  method get_mark ~name =
-    new mark (match Buffer.get_mark obj name with 
-             | None -> raise (No_such_mark name)
-	     | Some m -> m)
-  method move_mark (mark:mark) ~where =
-    Buffer.move_mark obj mark#as_mark (as_textiter where)
-  method move_mark_by_name name ~where =
-    Buffer.move_mark_by_name obj name (as_textiter where)
-  method delete_mark (mark:mark) = Buffer.delete_mark obj mark#as_mark
-  method delete_mark_by_name name = Buffer.delete_mark_by_name obj name
-  method get_insert = new mark (Buffer.get_insert obj)
-  method get_selection_bound = new mark (Buffer.get_selection_bound obj)
+    Buffer.create_mark obj name (as_textiter iter) left_gravity
+  method get_mark : mark -> _ = function
+      `MARK mark -> mark
+    | #mark_name as  mark ->
+        let name = mark_name mark in
+        match Buffer.get_mark obj name with 
+        | None -> raise (No_such_mark name)
+	| Some m -> m
+  method move_mark mark ~where =
+    Buffer.move_mark obj (self#get_mark mark) (as_textiter where)
+  method delete_mark mark = Buffer.delete_mark obj (self#get_mark mark)
   method place_cursor ~where = 
     Buffer.place_cursor obj (as_textiter where)
   method apply_tag (tag : tag) ~start ~stop = 
@@ -344,7 +334,7 @@ class buffer obj = object(self)
     Buffer.remove_tag_by_name obj name (as_textiter start) (as_textiter stop)
   method remove_all_tags ~start ~stop =
     Buffer.remove_all_tags obj (as_textiter start) (as_textiter stop)
-  method create_tag ?name ?(properties: Tag.property list = []) () =
+  method create_tag ?name (properties: Tag.property list) =
     let t = new tag (Buffer.create_tag_0 obj name) in
     if properties <> [] then t#set_properties properties;
     t
@@ -354,10 +344,9 @@ class buffer obj = object(self)
     | None  , v -> new iter (Buffer.get_iter_at_offset obj v)
     | Some l, c -> new iter (Buffer.get_iter_at_line_offset obj l c)
   method get_iter_at_byte ?(line=0) index =
-    new iter
-      (Buffer.get_iter_at_line_index  obj line index)
-  method get_iter_at_mark (mark:mark) = 
-    new iter (Buffer.get_iter_at_mark obj mark#as_mark)
+    new iter (Buffer.get_iter_at_line_index  obj line index)
+  method get_iter_at_mark mark = 
+    new iter (Buffer.get_iter_at_mark obj (self#get_mark mark))
   method get_start_iter = new iter (Buffer.get_start_iter obj)
   method get_end_iter = new iter (Buffer.get_end_iter obj)
   method get_bounds = 
@@ -424,7 +413,7 @@ class view_signals obj = object
      GtkSignal.connect ~sgn:View.Signals.toggle_overwrite ~after obj
 end
 
-class view obj = object
+class view obj = object (self)
   inherit widget (obj : Gtk.textview obj)
   method event = new GObj.event_ops obj
   method connect = new view_signals obj
@@ -433,16 +422,17 @@ class view obj = object
   method get_buffer = new buffer (View.get_buffer obj)
   method scroll_to_mark 
     ?(within_margin=0.) ?(use_align=false)  
-    ?(xalign=0.) ?(yalign=0.) (mark:mark) =  
-    View.scroll_to_mark obj mark#as_mark within_margin use_align xalign yalign
+    ?(xalign=0.) ?(yalign=0.) mark =  
+    View.scroll_to_mark obj (self#get_buffer#get_mark mark)
+      within_margin use_align xalign yalign
   method scroll_to_iter  ?(within_margin=0.) ?(use_align=false)
       ?(xalign=0.) ?(yalign=0.) iter =
     View.scroll_to_iter obj (as_textiter iter) within_margin
       use_align xalign yalign
-  method scroll_mark_onscreen (mark:mark) =  
-    View.scroll_mark_onscreen obj mark#as_mark
-  method move_mark_onscreen (mark:mark) =  
-    View.move_mark_onscreen obj mark#as_mark
+  method scroll_mark_onscreen mark =  
+    View.scroll_mark_onscreen obj (self#get_buffer#get_mark mark)
+  method move_mark_onscreen mark =  
+    View.move_mark_onscreen obj (self#get_buffer#get_mark mark)
   method place_cursor_onscreen () =  
     View.place_cursor_onscreen obj
   method get_visible_rect =  View.get_visible_rect obj

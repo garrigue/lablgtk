@@ -2,6 +2,9 @@
 
 open StdLabels
 
+type unichar = int
+type unistring = unichar array
+
 exception GError of string
 let () = Callback.register_exception "gerror" (GError "")
 
@@ -94,9 +97,6 @@ module Convert = struct
 end
 
 module Utf8 = struct
-  type unichar = int
-  type unistring = unichar array
-
   external validate : string -> bool = "ml_g_utf8_validate"
   external length : string -> int = "ml_g_utf8_strlen"
   external to_lower : unichar -> unichar = "ml_g_unichar_tolower"
@@ -192,4 +192,7 @@ module Utf8 = struct
       us.(i) <- to_unichar s ~pos
     done;
     us
+
+  let first_char s =
+    to_unichar s ~pos:(ref 0)
 end
