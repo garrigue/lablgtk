@@ -63,6 +63,7 @@ end
 
 module Convert :
   sig
+    val test_modifier : Tags.modifier -> int -> bool
     val modifier : int -> Tags.modifier list
   end
 

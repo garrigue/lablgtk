@@ -32,6 +32,8 @@ void ml_raise_gdk (const char *errmsg)
 Make_OptFlags_val (GdkModifier_val)
 Make_Flags_val (Event_mask_val)
 
+#include <stdio.h>
+
 #define Make_test(conv) \
 CAMLprim value ml_test_##conv (value mask, value test) \
 { return Val_bool (conv(mask) & Int_val(test)); }
