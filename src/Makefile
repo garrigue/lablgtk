@@ -129,10 +129,12 @@ byte: $(TARGETS)
 opt:  $(TARGETS) lablgtkopt
 
 # Files
-GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkbin$(XO) ml_gtkbutton$(XO) \
-	ml_gtkedit$(XO) ml_gtklist$(XO) ml_gtkmenu$(XO) ml_gtkmisc$(XO) \
-	ml_gtkpack$(XO) ml_gtkrange$(XO) ml_gtktext$(XO) ml_gtktree$(XO) \
-	ml_gtkstock$(XO) ml_gtkfile$(XO) ml_gtkaction$(XO) ml_gtkbroken$(XO)
+GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkaction$(XO) \
+	ml_gtkbin$(XO) ml_gtkbroken$(XO) ml_gtkbutton$(XO) \
+	ml_gtkedit$(XO) ml_gtkfile$(XO) ml_gtklist$(XO) \
+	ml_gtkmenu$(XO) ml_gtkmisc$(XO) \
+	ml_gtkpack$(XO) ml_gtkrange$(XO) ml_gtkstock$(XO) \
+	ml_gtktext$(XO) ml_gtktree$(XO)
 COBJS = ml_gdkpixbuf$(XO) ml_gdk$(XO) ml_glib$(XO) ml_gobject$(XO) \
 	ml_gpointer$(XO) ml_gvaluecaml$(XO) wrappers$(XO) $(GTKOBJS)
 GTKPROPS = gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
