@@ -1,5 +1,9 @@
 $Id$
 
+2000.11.16
+  * internal change: switch from var2def/var2conv to varcc,
+    and split ml_gtk.c in smaller files
+
 2000.8.29
   * bugs in color selection reported by Nicolas George
   * changed the license

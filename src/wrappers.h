@@ -13,6 +13,9 @@ value Val_pointer (void *);
 value copy_string_check (const char*);
 value copy_string_or_null (const char *);
 
+value *ml_global_root_new (value v);
+void ml_global_root_destroy (void *data);
+
 typedef struct { value key; int data; } lookup_info;
 value ml_lookup_from_c (lookup_info *table, int data);
 int ml_lookup_to_c (lookup_info *table, value key);

@@ -85,7 +85,7 @@ GdkImage *GdkImage_val(value val)
 value ml_gdk_image_destroy (value val)
 {
     if (Field(val,1)) gdk_image_destroy((GdkImage*)(Field(val,1)));
-    Field(val,1) = NULL;
+    Field(val,1) = 0;
     return Val_unit;
 }
 ML_4 (gdk_image_new_bitmap, GdkVisual_val, String_val, Int_val, Int_val,
@@ -285,7 +285,7 @@ GdkRegion *GdkRegion_val(value val)
 value ml_gdk_region_destroy (value val)
 {
     if (Field(val,1)) gdk_region_destroy((GdkRegion*)(Field(val,1)));
-    Field(val,1) = NULL;
+    Field(val,1) = 0;
     return Val_unit;
 }
 ML_0 (gdk_region_new, Val_GdkRegion)

@@ -54,6 +54,20 @@ value copy_string_or_null (const char*str)
     return copy_string (str ? (char*) str : "");
 }
 
+value *ml_global_root_new (value v)
+{
+    value *p = stat_alloc(sizeof(value));
+    *p = v;
+    register_global_root (p);
+    return p;
+}
+
+void ml_global_root_destroy (void *data)
+{
+    remove_global_root ((value *)data);
+    stat_free (data);
+}
+
 value ml_lookup_from_c (lookup_info *table, int data)
 {
     int i;
