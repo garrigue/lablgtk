@@ -82,3 +82,6 @@ type fundamental_type = "GTK_TYPE_"
 
 type bbox_style = "GTK_BUTTONBOX_"
     [ DEFAULT_STYLE SPREAD EDGE START END ]
+
+type cell_type = "GTK_CELL_"
+    [ EMPTY TEXT PIXMAP PIXTEXT WIDGET ]
