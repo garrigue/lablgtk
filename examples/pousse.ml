@@ -53,6 +53,7 @@ let rec string :x :y :dx :dy :color l =
   else []
 
 let action x y :color =
+  let color = (color : [white black] :> [white black none]) in
   if cells.(x).(y)#color <> `none then false else
   let swaps =
     List.fold_left [-1,-1; -1,0; -1,1; 0,-1; 0,1; 1,-1; 1,0; 1,1]
@@ -89,7 +90,6 @@ let _ =
 	    match !current_color with
 	      `white -> turn#pop (); turn#push "Player is black"; `black
 	    | `black -> turn#pop (); turn#push "Player is white"; `white
-	    | `none -> `none
 	else
 	  messages#flash "You cannot play there"
       end;
