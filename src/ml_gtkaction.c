@@ -86,9 +86,18 @@ ML_3 (gtk_ui_manager_insert_action_group, GtkUIManager_val, GtkActionGroup_val, 
 ML_2 (gtk_ui_manager_remove_action_group, GtkUIManager_val, GtkActionGroup_val, Unit)
 ML_1 (gtk_ui_manager_get_action_groups, GtkUIManager_val, gobject_list_of_GList)
 ML_1 (gtk_ui_manager_get_accel_group, GtkUIManager_val, Val_GtkAccelGroup)
-#define not_found_or_obj(o) (o ? Val_GAnyObject(o) : (raise_not_found(), Val_unit))
-ML_2 (gtk_ui_manager_get_widget, GtkUIManager_val, String_val, not_found_or_obj)
-ML_2 (gtk_ui_manager_get_action, GtkUIManager_val, String_val, not_found_or_obj)
+CAMLprim value ml_gtk_ui_manager_get_widget (value m, value n)
+{
+  GtkWidget *w = gtk_ui_manager_get_widget (GtkUIManager_val(m), String_val(n));
+  if (w == NULL) raise_not_found();
+  return Val_GAnyObject(w);
+}
+CAMLprim value ml_gtk_ui_manager_get_action (value m, value n)
+{
+  GtkAction *a = gtk_ui_manager_get_action (GtkUIManager_val(m), String_val(n));
+  if (a == NULL) raise_not_found();
+  return Val_GAnyObject(a);
+}
 CAMLprim value ml_gtk_ui_manager_add_ui_from_string(value uim, value s)
 {
   GError *error = NULL;
