@@ -13,7 +13,7 @@ LINKOPT = $(CAMLOPT) $(MLFLAGS)
 TOPLEVEL = olablmktop $(MLFLAGS)
 RANLIB = ranlib
 
-include config.make
+include ../../config.make
 
 MLFLAGS = -I ../..
 
@@ -29,8 +29,6 @@ endif
 THFLAGS = -thread
 THLIBS = unix.cma threads.cma
 THLDFLAGS = -lthreads -lunix
-
-GTKLIBS = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
 
 ifdef USE_CC
 CCOMPILER = $(CC) -c -I$(LABLLIB) $(CFLAGS)
@@ -70,9 +68,5 @@ clean:
 
 .depend:
 	olabldep *.ml *.mli > .depend
-
-config.make:
-	echo GTKCFLAGS=`gtk-config --cflags` >> config.make
-	echo GTKLIBS=`gtk-config --libs` >> config.make
 
 include .depend
