@@ -112,9 +112,38 @@ let bind_handlers ?(extra=[]) xml =
     end;
   flush stderr
 
-let bind_handler ~name ~handler xml =
+let bind_handler ~name ~handler ?(warn=true) xml =
+  let warn = ref warn in
   signal_connect xml ~handler:name ~f:
     begin fun ~signal ~after ?target obj ->
+      warn := false;
       let callback = check_handler ?target ~name handler in
       ignore (GtkSignal.connect_by_name obj ~name:signal ~after ~callback)
-    end
+    end;
+  if !warn then begin
+    Printf.eprintf "Glade.bind: handler %s is not used\n" name;
+    flush stderr
+  end
+
+(* To list bindings *)
+let ($) f g x = g (f x)
+let show_option sh = function None -> "None" | Some x -> "Some " ^ sh x
+let print_binding oc ~handler ~signal ~after ?target obj =
+  Printf.fprintf oc "object=%s, signal=%s, handler=%s, target=%s\n"
+   (get_widget_name (GtkBase.Widget.cast obj)) signal handler
+   (show_option (GtkBase.Widget.cast $ get_widget_name) target)
+let print_bindings oc xml =
+  signal_autoconnect xml ~f:(print_binding oc); flush oc
+
+(* class skeleton, for use in generated wrappers *)
+
+class xml ~file ~root ?(autoconnect = true) () =
+  let () = init () in
+  let xml = create ~file ~root in
+  let () = if autoconnect then bind_handlers xml in
+  object (self)
+    val xml = xml
+    method xml = xml
+    method bind ~name ~callback =
+      bind_handler ~name ~handler:(`Simple callback) ~warn:true xml
+  end

@@ -49,5 +49,19 @@ val bind_handlers :
        specific to this widget. *)
 
 val bind_handler :
-  name:string -> handler:handler -> [> `glade_xml] Gtk.obj -> unit
-    (* Bind an individual handler *)
+  name:string -> handler:handler ->
+  ?warn:bool -> [> `glade_xml] Gtk.obj -> unit
+    (* Bind an individual handler. Warn if unused. *)
+
+val print_bindings : out_channel -> [> `glade_xml] Gtk.obj -> unit
+    (* List all the bindings in a xml widget *)
+
+(* Class skeleton, for use in generated wrappers *)
+
+class xml : file:string -> root:string -> ?autoconnect:bool -> unit ->
+  object
+    val xml : glade_xml Gtk.obj
+    method xml : glade_xml Gtk.obj
+    method bind : name:string -> callback:(unit -> unit) -> unit
+  end
+  (* wrap a glade_xml widget, and run signal_autoconnect (default) *)
