@@ -97,7 +97,7 @@ and entity = parse
   | identchar + ";"
       { let s = lexeme lexbuf in
         let s = String.sub s ~pos:0 ~len:(String.length s - 1) in
-        try List.assoc (String.lowercase s) ~map:entities
+        try List.assoc (String.lowercase s) entities
         with Not_found ->
           "&" ^ String.lowercase s ^ ";" }
   | _

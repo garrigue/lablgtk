@@ -35,7 +35,7 @@ class ['a] signal () = object (self)
     ()
   method disconnect key =
     List.mem_assoc key ~map:callbacks &&
-    (callbacks <- List.remove_assoc key ~map:callbacks; true)
+    (callbacks <- List.remove_assoc key callbacks; true)
 end
 
 class virtual ml_signals disconnectors =

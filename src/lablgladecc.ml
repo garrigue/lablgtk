@@ -153,7 +153,7 @@ let rec flatten_tree w =
 
 let output_widget w =
   try
-    let (modul, clas) = List.assoc w.wclass ~map:!classes in
+    let (modul, clas) = List.assoc w.wclass !classes in
     w.wrapped <- true;
     if clas = "GList.clist" then
       Printf.printf "    method %s : int %s = new %s\n" w.wname clas clas
@@ -193,7 +193,7 @@ let parse_body ~file lexbuf =
   | Tag("widget", _, false) ->
       let wtree = parse_widget lexbuf in
       let rec output_roots wtree =
-        if List.mem wtree.wname !roots then output_wrapper ~file wtree;
+        if List.mem wtree.wname ~set:!roots then output_wrapper ~file wtree;
         List.iter ~f:output_roots wtree.wchildren
       in
       if !roots = [] then output_wrapper ~file wtree

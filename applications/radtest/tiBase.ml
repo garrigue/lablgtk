@@ -317,18 +317,18 @@ object(self)
   method change_name_in_proplist : string -> string -> unit =
     fun _ _ -> ()
   method set_property name value_string = try
-    (List.assoc name ~map:proplist)#set value_string
+    (List.assoc name proplist)#set value_string
   with Not_found -> Printf.printf "Property not_found %s, %s\n" name value_string;
     flush stdout
 
   method private get_property name =
-    (List.assoc name ~map:proplist)#get
+    (List.assoc name proplist)#get
 
 
 (* the proplist with some items removed e.g. the expand... in a box
    used for saving and emitting code *)
   method private emit_clean_proplist =
-    List.fold_left ~f:(fun l p -> List.remove_assoc p ~map:l)
+    List.fold_left ~f:(fun l p -> List.remove_assoc p l)
       ~init:proplist
       ([ "name"; "expand"; "fill"; "padding" ] @ self#get_mandatory_props)
 (*  method private emit_clean_proplist plist =
@@ -338,7 +338,7 @@ object(self)
 *)
 
   method private save_clean_proplist =
-    List.fold_left ~f:(fun l p -> List.remove_assoc p ~map:l)
+    List.fold_left ~f:(fun l p -> List.remove_assoc p l)
       ~init:proplist ("name" :: self#get_mandatory_props)
 (*  method private save_clean_proplist =
     List.remove_assoc "name" proplist *)
@@ -428,7 +428,7 @@ object(self)
    of a box child *)
   method private get_packing packing =
     let aux name =
-      let prop  = List.assoc name ~map:proplist in
+      let prop  = List.assoc name proplist in
       if prop#modified then " ~" ^ name ^ ":" ^ prop#code else ""
     in
     let efp = try
@@ -444,7 +444,7 @@ object(self)
     List.iter self#get_mandatory_props
       ~f:begin fun name ->
 	Format.fprintf formatter "@ ~%s:%s" name
-	  (List.assoc name ~map:proplist)#code
+	  (List.assoc name proplist)#code
       end;
     let packing = self#get_packing packing in
     if packing <> "" then Format.fprintf formatter "@ %s" packing;
@@ -474,7 +474,7 @@ object(self)
     Format.fprintf formatter "@\n@[<2><%s name=%s>" classe name;
     List.iter
       ~f:(fun p -> Format.fprintf formatter 
-	  "@\n%s=\"%s\"" p (List.assoc p ~map:proplist)#get)
+	  "@\n%s=\"%s\"" p (List.assoc p proplist)#get)
       self#get_mandatory_props
       
 

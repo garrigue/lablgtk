@@ -102,7 +102,7 @@ let bind_handlers ?(extra=[]) ?(warn=false) xml =
     begin fun ~handler:name ~signal ~after ?target obj ->
       try
         let handler =
-          try List.assoc name ~map:extra
+          try List.assoc name extra
           with Not_found -> Hashtbl.find known_handlers name
         in
         let callback = check_handler ?target ~name handler in

@@ -1118,14 +1118,14 @@ let to_modifiers s = (* [GDK_CONTROL_MASK | GDK_SHIFT_MASK | GDK_MOD1_MASK] *)
 	  (fun acc s -> 
 	     match s with
 	     | "|" -> acc
-	     | _ -> (String.sub s ~pos:4 ~len:(String.length s - 9) )::acc)
+	     | _ -> (StringLabels.sub s ~pos:4 ~len:(String.length s - 9) )::acc)
 	  []
 	  l
     | None -> []
 
 let to_key s = (* [GDK_*] *)
   let s = out_some s in
-    String.sub s ~pos:3 ~len:(String.length s - 3) 
+    StringLabels.sub s ~pos:3 ~len:(String.length s - 3) 
 
 let to_extension_event s = (* remove [GTK_EXTENSION_EVENT_] *) 
   match s with 
@@ -1986,7 +1986,7 @@ let emit_optional_string_list label_to_emit arg =
 
 let emit_optional_string_complex before arg after =
   match arg with 
-    | None ->   before ^ " \"/usr/share/pixmaps/yes.xpm\"" ^ 
+    | None ->   before ^ " \"/usr/X11R6/share/gnome/pixmaps/yes.xpm\"" ^ 
 	after ^ "\n" 
     | Some v -> before ^ " \"" ^ 
 	(Filename.concat !pixmaps_directory  v) ^ 
