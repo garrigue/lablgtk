@@ -3,11 +3,9 @@
 open Gtk
 open GObj
 
-class editable_signals : 'a obj ->
+class editable_signals : [> editable] obj ->
   object
     inherit widget_signals
-    constraint 'a = [> editable]
-    val obj : 'a obj
     method changed : callback:(unit -> unit) -> GtkSignal.id
     method delete_text :
       callback:(start:int -> stop:int -> unit) -> GtkSignal.id
@@ -33,10 +31,9 @@ class editable : 'a obj ->
     method set_position : int -> unit
   end
 
-class entry_signals : ([> Gtk.entry] as 'a) obj ->
+class entry_signals : [> Gtk.entry] obj ->
   object
     inherit editable_signals
-    val obj : 'a obj
     method activate : callback:(unit -> unit) -> GtkSignal.id
   end
 

@@ -26,15 +26,15 @@ let list_item ?label ?packing ?(show=true) () =
   if show then item#misc#show ();
   item
 
-class liste_signals obj = object
-  inherit container_signals (obj : Gtk.liste obj)
-  method selection_changed =
-    GtkSignal.connect obj ~sgn:Liste.Signals.selection_changed ~after
+class liste_signals obj = object (self)
+  inherit widget_signals_impl (obj : Gtk.liste obj)
+  inherit container_sigs
+  method selection_changed = self#connect Liste.S.selection_changed
   method select_child ~callback =
-    GtkSignal.connect obj ~sgn:Liste.Signals.select_child ~after
+    self#connect Liste.S.select_child
       ~callback:(fun w -> callback (new list_item (ListItem.cast w))) 
   method unselect_child ~callback =
-    GtkSignal.connect obj ~sgn:Liste.Signals.unselect_child ~after
+    self#connect Liste.S.unselect_child
       ~callback:(fun w -> callback (new list_item (ListItem.cast w))) 
 end
 
@@ -58,17 +58,9 @@ let liste =
 (* Cell lists *)
 
 class clist_signals obj = object
-  inherit container_signals obj
-  method click_column =
-    GtkSignal.connect ~sgn:CList.Signals.click_column obj ~after
-  method select_row =
-    GtkSignal.connect ~sgn:CList.Signals.select_row obj ~after
-  method unselect_row =
-    GtkSignal.connect ~sgn:CList.Signals.unselect_row obj ~after
-  method scroll_vertical =
-    GtkSignal.connect ~sgn:CList.Signals.scroll_vertical obj ~after
-  method scroll_horizontal =
-    GtkSignal.connect ~sgn:CList.Signals.scroll_horizontal obj ~after
+  inherit widget_signals_impl (obj : [> Gtk.clist] obj)
+  inherit container_sigs
+  inherit clist_sigs
 end
 
 class ['a] clist obj = object (self)

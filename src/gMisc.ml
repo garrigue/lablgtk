@@ -36,21 +36,8 @@ let statusbar =
     (fun p -> new statusbar (Statusbar.create p))
 
 class calendar_signals obj = object
-  inherit widget_signals obj
-  method month_changed =
-    GtkSignal.connect obj ~sgn:Calendar.S.month_changed ~after
-  method day_selected =
-    GtkSignal.connect obj ~sgn:Calendar.S.day_selected ~after
-  method day_selected_double_click =
-    GtkSignal.connect obj ~sgn:Calendar.S.day_selected_double_click ~after
-  method prev_month =
-    GtkSignal.connect obj ~sgn:Calendar.S.prev_month ~after
-  method next_month =
-    GtkSignal.connect obj ~sgn:Calendar.S.next_month ~after
-  method prev_year =
-    GtkSignal.connect obj ~sgn:Calendar.S.prev_year ~after
-  method next_year =
-    GtkSignal.connect obj ~sgn:Calendar.S.next_year ~after
+  inherit widget_signals_impl obj
+  inherit calendar_sigs
 end
 
 class calendar obj = object
@@ -139,13 +126,8 @@ let label =
 let label_cast w = new label (Label.cast w#as_widget)
 
 class tips_query_signals obj = object
-  inherit widget_signals (obj : Gtk.tips_query obj)
-  method widget_entered ~callback = 
-    GtkSignal.connect ~sgn:TipsQuery.S.widget_entered obj ~after ~callback:
-      (fun w text privat -> callback (may_map (new widget) w) ~text ~privat)
-  method widget_selected ~callback = 
-    GtkSignal.connect ~sgn:TipsQuery.S.widget_selected obj ~after ~callback:
-      (fun w text privat -> callback (may_map (new widget) w) ~text ~privat)
+  inherit widget_signals_impl (obj : Gtk.tips_query obj)
+  inherit tips_query_sigs
 end
 
 class tips_query obj = object

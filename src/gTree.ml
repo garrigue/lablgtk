@@ -13,9 +13,10 @@ open GContainer
 (* Obsolete GtkTree/GtkTreeItem framework *)
 
 class tree_item_signals obj = object
-  inherit item_signals obj
-  method expand = GtkSignal.connect obj ~sgn:TreeItem.Signals.expand ~after
-  method collapse = GtkSignal.connect obj ~sgn:TreeItem.Signals.collapse ~after
+  inherit widget_signals_impl (obj : tree_item obj)
+  inherit container_sigs
+  inherit item_sigs
+  inherit tree_item_sigs
 end
 
 class tree_item obj = object
@@ -31,15 +32,15 @@ class tree_item obj = object
     try Some(new tree (TreeItem.subtree obj)) with Gpointer.Null -> None
 end
 
-and tree_signals obj = object
-  inherit container_signals obj
-  method selection_changed =
-    GtkSignal.connect obj ~sgn:Tree.Signals.selection_changed ~after
+and tree_signals obj = object (self)
+  inherit widget_signals_impl obj
+  inherit container_sigs
+  method selection_changed = self#connect Tree.S.selection_changed
   method select_child ~callback =
-    GtkSignal.connect obj ~sgn:Tree.Signals.select_child ~after
+    self#connect Tree.S.select_child
       ~callback:(fun w -> callback (new tree_item (TreeItem.cast w))) 
   method unselect_child ~callback =
-    GtkSignal.connect obj ~sgn:Tree.Signals.unselect_child ~after
+    self#connect Tree.S.unselect_child
       ~callback:(fun w -> callback (new tree_item (TreeItem.cast w))) 
 end
 
@@ -99,17 +100,8 @@ class column_list = object (self)
 end
 
 class model_signals obj = object
-  inherit gobject_signals obj
-  method row_changed =
-    GtkSignal.connect obj ~sgn:TreeModel.Signals.row_changed ~after
-  method row_inserted =
-    GtkSignal.connect obj ~sgn:TreeModel.Signals.row_inserted ~after
-  method row_has_child_toggled =
-    GtkSignal.connect obj ~sgn:TreeModel.Signals.row_has_child_toggled ~after
-  method row_deleted =
-    GtkSignal.connect obj ~sgn:TreeModel.Signals.row_deleted ~after
-  method rows_reordered =
-    GtkSignal.connect obj ~sgn:TreeModel.Signals.rows_reordered ~after
+  inherit ['a] gobject_signals obj
+  inherit tree_model_sigs
 end
 
 let model_ids = Hashtbl.create 7
@@ -206,10 +198,10 @@ let checked = cols#add boolean;;
 let store = new GTree.tree_store cols;;
 *)
 
-class view_column_signals obj = object
-  inherit gtkobj_signals obj
-  method clicked =
-    GtkSignal.connect obj ~sgn:TreeViewColumn.Signals.clicked ~after
+class view_column_signals obj = object (self)
+  inherit ['a] gobject_signals obj
+  method destroy = self#connect Object.S.destroy
+  method clicked = self#connect TreeViewColumn.S.clicked
 end
 
 module P = TreeViewColumn.P
@@ -239,10 +231,9 @@ let view_column ?title ?renderer () =
 
 let as_column (col : view_column) = col#as_column
 
-class selection_signals (obj : tree_selection) = object
-  inherit gobject_signals obj
-  method changed =
-    GtkSignal.connect obj ~sgn:TreeSelection.Signals.changed ~after
+class selection_signals (obj : tree_selection) = object (self)
+  inherit ['a] gobject_signals obj
+  method changed = self#connect TreeSelection.S.changed
 end
 
 class selection obj = object
@@ -266,44 +257,14 @@ class selection obj = object
   method unselect_range = TreeSelection.unselect_range obj
 end
 
-class view_signals obj = object
-  inherit GContainer.container_signals obj
-  method set_scroll_adjustments ~callback =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.set_scroll_adjustments ~after
-      ~callback:(fun h v -> callback (may_map (new GData.adjustment) h)
-                                     (may_map (new GData.adjustment) v))
+class view_signals obj = object (self)
+  inherit widget_signals_impl obj
+  inherit container_sigs
+  inherit tree_view_sigs
   method row_activated ~callback =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.row_activated ~after
+    self#connect TreeView.S.row_activated
       ~callback:(fun it vc -> callback it (new view_column vc))
-  method test_expand_row =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.test_expand_row ~after
-  method test_collapse_row =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.test_collapse_row ~after
-  method row_expanded =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.row_expanded ~after
-  method row_collapsed =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.row_collapsed ~after
-  method columns_changed =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.columns_changed ~after
-  method cursor_changed =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.cursor_changed ~after
-  method move_cursor =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.move_cursor ~after
-  method select_all =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.select_all ~after
-  method unselect_all =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.unselect_all ~after
-  method select_cursor_row =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.select_cursor_row ~after
-  method toggle_cursor_row =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.toggle_cursor_row ~after
-  method expand_collapse_cursor_row =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.expand_collapse_cursor_row
-      ~after
-  method select_cursor_parent =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.select_cursor_parent ~after
-  method start_interactive_search =
-    GtkSignal.connect obj ~sgn:TreeView.Signals.start_interactive_search ~after
+
 end
 
 open TreeView.P

@@ -35,14 +35,10 @@ end
 let event_box =
   pack_container [] ~create:(fun pl -> new event_box (EventBox.create pl))
 
-class handle_box_signals obj = object
-  inherit container_signals (obj : [> handle_box] obj)
-  method child_attached ~callback =
-    GtkSignal.connect ~sgn:HandleBox.S.child_attached obj ~after
-      ~callback:(fun obj -> callback (new widget obj))
-  method child_detached ~callback =
-    GtkSignal.connect ~sgn:HandleBox.S.child_detached obj ~after
-      ~callback:(fun obj -> callback (new widget obj))
+class handle_box_signals (obj : [> handle_box] obj) = object
+  inherit widget_signals_impl obj
+  inherit container_sigs
+  inherit handle_box_sigs
 end
 
 class handle_box obj = object
@@ -107,11 +103,9 @@ let alignment =
 let alignment_cast w = new alignment (Alignment.cast w#as_widget)
 
 class socket_signals obj = object
-  inherit container_signals (obj : [> socket] obj)
-  method plug_added =
-    GtkSignal.connect ~sgn:Socket.S.plug_added obj ~after
-  method plug_removed =
-    GtkSignal.connect ~sgn:Socket.S.plug_removed obj ~after
+  inherit widget_signals_impl (obj : [> socket] obj)
+  inherit container_sigs
+  inherit socket_sigs
 end
 
 class socket obj = object (self)

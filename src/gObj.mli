@@ -18,11 +18,12 @@ class gobject_ops : 'a obj ->
     method thaw_notify : unit -> unit
   end
 
-class gobject_signals : ?after:bool -> 'a ->
+class ['a] gobject_signals : ?after:bool -> 'a obj ->
   object ('b)
-    val obj : 'a
+    val obj : 'a obj
     val after : bool
     method after : 'b
+    method private connect : ('a,'c) GtkSignal.t -> callback:'c -> GtkSignal.id
   end
 
 (* GtkObject *)
@@ -39,17 +40,15 @@ class gtkobj : ([> `gtk] as 'a) obj ->
     method get_oid : int
   end
 
-class gtkobj_signals : ?after:bool -> ([>`gtk] as 'a) obj ->
+class gtkobj_signals : [>`gtk] obj ->
   object ('b)
-    inherit gobject_signals
-    val obj : 'a obj
+    method after : 'b
     method destroy : callback:(unit -> unit) -> GtkSignal.id
   end
 
 (* Widget *)
 
-class event_signals :
-  ?after:bool -> [> widget] obj ->
+class event_signals : ?after:bool -> [> widget] obj ->
   object ('a)
     method after : 'a
     method any :
@@ -233,12 +232,9 @@ and widget : ([> Gtk.widget] as 'a) obj ->
     method misc : misc_ops
   end
 
-and misc_signals :
-  ?after:bool -> Gtk.widget obj ->
+and misc_signals : ?after:bool -> Gtk.widget obj ->
   object ('b)
     inherit gtkobj_signals 
-    val obj : Gtk.widget obj
-    method after : 'b
     method hide : callback:(unit -> unit) -> GtkSignal.id
     method map : callback:(unit -> unit) -> GtkSignal.id
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id
@@ -298,17 +294,18 @@ and drag_signals :
       GtkSignal.id
   end
 
-class widget_signals : 'a obj ->
-  object
-    inherit gtkobj_signals
-    constraint 'a = [> Gtk.widget]
-    val obj : 'a obj
-  end
-
 class ['a] widget_impl : ([> Gtk.widget] as 'a) obj ->
   object
     inherit widget
     inherit ['a] objvar
+  end
+
+class widget_signals : [> `gtk] obj -> gtkobj_signals
+
+class widget_signals_impl : ([> Gtk.widget] as 'a) obj ->
+  object
+    inherit ['a] gobject_signals
+    inherit gtkobj_signals
   end
 
 class widget_full : ([> Gtk.widget] as 'a) obj ->

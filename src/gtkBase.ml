@@ -14,7 +14,7 @@ module Object = struct
   let get_flag obj wf =
     (get_flags obj) land (Gpointer.encode_variant GtkEnums.widget_flags wf)
       <> 0
-  module Signals = struct
+  module S = struct
     open GtkSignal
     let destroy =
       { name = "destroy"; classe = `gtk; marshaller = marshal_unit }

@@ -55,6 +55,9 @@ class clist_signals : 'a obj ->
     constraint 'a = [> clist]
     val obj : 'a obj
     method click_column : callback:(int -> unit) -> GtkSignal.id
+    method resize_column : callback:(int -> int -> unit) -> GtkSignal.id
+    method select_all : callback:(unit -> unit) -> GtkSignal.id
+    method unselect_all : callback:(unit -> unit) -> GtkSignal.id
     method select_row :
       callback:(row:int ->
                 column:int -> event:GdkEvent.Button.t option -> unit) ->

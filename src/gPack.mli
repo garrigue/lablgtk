@@ -162,11 +162,9 @@ val layout :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> layout
 
-class notebook_signals : 'a obj ->
+class notebook_signals : [> Gtk.notebook] obj ->
   object
     inherit container_signals
-    constraint 'a = [> Gtk.notebook]
-    val obj : 'a obj
     method change_current_page : callback:(int -> unit) -> GtkSignal.id
   end
 

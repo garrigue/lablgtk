@@ -5,6 +5,7 @@ open Gobject
 open Gtk
 open GtkBase
 open GtkButton
+open OGtkProps
 open GObj
 open GContainer
 
@@ -19,12 +20,9 @@ class button_skel obj = object (self)
 end
 
 class button_signals obj = object
-  inherit container_signals obj
-  method clicked = GtkSignal.connect ~sgn:Button.Signals.clicked ~after obj
-  method pressed = GtkSignal.connect ~sgn:Button.Signals.pressed ~after obj
-  method released = GtkSignal.connect ~sgn:Button.Signals.released ~after obj
-  method enter = GtkSignal.connect ~sgn:Button.Signals.enter ~after obj
-  method leave = GtkSignal.connect ~sgn:Button.Signals.leave ~after obj
+  inherit widget_signals_impl obj
+  inherit container_sigs
+  inherit button_sigs
 end
 
 class button obj = object

@@ -4,19 +4,15 @@ open Gtk
 open GObj
 open GContainer
 
-class menu_shell_signals : 'b obj ->
-  object ('a)
+class menu_shell_signals : [> menu_shell] obj ->
+  object
     inherit container_signals
-    constraint 'b = [> menu_shell]
-    val obj : 'b obj
     method deactivate : callback:(unit -> unit) -> GtkSignal.id
   end
 
-class menu_item_signals : 'b obj ->
-  object ('a)
+class menu_item_signals : [> menu_item] obj ->
+  object
     inherit item_signals
-    constraint 'b = [> menu_item]
-    val obj : 'b obj
     method activate : callback:(unit -> unit) -> GtkSignal.id
   end
 
@@ -104,11 +100,9 @@ val image_menu_item :
   ?right_justified:bool ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> image_menu_item
 
-class check_menu_item_signals : 'a obj ->
+class check_menu_item_signals : [> check_menu_item] obj ->
   object
     inherit menu_item_signals
-    constraint 'a = [> check_menu_item]
-    val obj : 'a obj
     method toggled : callback:(unit -> unit) -> GtkSignal.id
   end
 

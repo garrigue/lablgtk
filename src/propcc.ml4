@@ -37,6 +37,14 @@ let arity s =
   if !parens <> 0 then failwith ("bad type : " ^ s);
   !arity
 
+let rec min_labelled = function
+  | [] -> []
+  | a :: l ->
+      let l = min_labelled l in
+      if l = [] && a = "" then [] else a::l
+
+
+(* The real data *)
 let conversions = Hashtbl.create 17
 
 let enums = [
@@ -142,29 +150,43 @@ let attributes =
   ["Read";"Write";"Construct";"ConstructOnly";"NoSet";"Set";
    "NoWrap";"Wrap";"NoGet";"VSet";"NoVSet"]
 
-let return_type types = parser
-    [< ' Kwd"->"; ' Ident ret >] -> `Types (types, ret)
-  | [< >] -> `Types (types, "")
+let label_type2 id = parser
+  | [< ' Kwd":"; ' Ident ty >] -> (id,ty)
+  | [< >] -> ("",id)
+let label_type = parser
+    [< ' Ident id ; lty = label_type2 id >] -> lty
+
+type marshal =
+    Function of string | Types of (string list * string list * string)
+
+let return_type (l,types) = parser
+    [< ' Kwd"->"; ' Ident ret >] -> Types (l, types, ret)
+  | [< >] -> Types (l, types, "")
 
 let marshaller = parser
-  | [< ' String s >] -> `Function s
-  | [< ' Kwd":"; types = star ident; s >] -> return_type types s
-  | [< >] -> `Types ([], "")
+  | [< ' String s >] -> Function s
+  | [< ' Kwd":"; types = star label_type; s >] ->
+      return_type (List.split types) s
+  | [< >] -> Types ([], [], "")
 
 let may_type = parser
   | [< ' Kwd":"; ' String s >] -> s
   | [< >] -> "unit"
 
+let simple_attr = parser [< ' Kwd"/"; ' Ident s >] -> s
+
 let field = parser
     [< ' String name; mlname = may_name name; ' Ident gtype; ' Kwd":";
        ' Ident attr0; attrs = star ~acc:[attr0] next_attr >] ->
-         if List.exists attrs ~f:(fun x -> not (List.mem x attributes))
-         then raise (Stream.Error "bad attribute");
+         if not (List.for_all attrs ~f:(List.mem ~set:attributes)) then
+           raise (Stream.Error "bad attribute");
          `Prop (name, mlname, gtype, attrs)
   | [< ' Kwd"method"; ' Ident name; ty = may_type >] ->
       `Method (name, ty)
-  | [< ' Kwd"signal"; ' Ident name; m = marshaller >] ->
-      `Signal (name, m)
+  | [< ' Kwd"signal"; ' Ident name; m = marshaller; l = star simple_attr >] ->
+      if not (List.for_all l ~f:(List.mem ~set:["Wrap";"NoWrap"])) then
+        raise (Stream.Error "bad attribute");
+      `Signal (name, m, l)
 
 let split_fields l =
   List.fold_right l ~init:([],[],[]) ~f:
@@ -198,9 +220,10 @@ let tagprefix = ref ""
 let use = ref ""
 let decls = ref []
 let headers = ref []
+let oheaders = ref []
 let checks = ref false
-let class_qualifiers = ["abstract";"hv";"set";"wrap";"wrapset";"vset";"tag"]
-
+let class_qualifiers =
+  ["abstract";"hv";"set";"wrap";"wrapset";"vset";"tag";"wrapsig"]
 
 let process_phrase ~chars = parser
     [< ' Ident"class"; ' Ident name; gtk_name = may_string (!prefix ^ name);
@@ -214,6 +237,9 @@ let process_phrase ~chars = parser
   | [< ' Ident"header"; ' Kwd"{" >] ->
       let h = verbatim (Buffer.create 1000) chars in
       headers := !headers @ [h]
+  | [< ' Ident"oheader"; ' Kwd"{" >] ->
+      let h = verbatim (Buffer.create 1000) chars in
+      oheaders := !oheaders @ [h]
   | [< ' Ident"prefix"; ' String id >] ->
       prefix := id
   | [< ' Ident"tagprefix"; ' String id >] ->
@@ -241,7 +267,7 @@ let process_file f =
   let baseM = String.capitalize base in
   prefix := baseM;
   (* Input *)
-  headers := [];
+  headers := []; oheaders := [];
   let ic = open_in f in
   let chars = Stream.of_channel ic in
   let s = lexer chars in
@@ -286,8 +312,8 @@ let process_file f =
          meths,
          List.filter sigs ~f:
            begin function
-           | _, `Function _ -> true
-           | _, `Types(l, ret) ->
+           | _, Function _, _ -> true
+           | _, Types(_, l, ret), _ ->
                List.for_all (if ret = "" then l else ret::l) ~f:
                  (fun ty ->
                    if Hashtbl.mem conversions ty then true else
@@ -338,6 +364,26 @@ let process_file f =
       out " in@]"
     end
   in
+  let omarshaller ~gtk_class ~name ppf (l,tyl,ret) =
+    let out fmt = Format.fprintf ppf fmt in
+    out "fun f ->@ @[<hov2>marshal%d" (List.length l);
+    if ret <> "" then
+      out "_ret@ ~ret:%s" (Hashtbl.find conversions ret);
+    List.iter tyl ~f:(fun ty -> out "@ %s" ty);
+    out "@ \"%s::%s\"" gtk_class name;
+    if List.for_all l ~f:((=) "") then out " f" else begin
+      let l = min_labelled l in
+      out "@ @[<hov2>(fun ";
+      for i = 1 to List.length l do out "x%d " i done;
+      out "->@ f";
+      let i = ref 0 in
+      List.iter l ~f:
+        (fun p ->
+          incr i; if p="" then out "@ x%d" !i else out "@ ~%s:x%d" p !i);
+      out ")@]";
+    end;
+    out "@]"
+  in
   List.iter decls ~f:
     begin fun (name, gtk_class, attrs, props, meths, sigs) ->
       out "@[<hv2>module %s = struct" (camlizeM name);
@@ -363,22 +409,18 @@ let process_file f =
       if sigs <> [] then begin
         out "@ @[<hv2>module S = struct@ open GtkSignal";
         List.iter sigs ~f:
-          begin fun (name,marshaller) ->
+          begin fun (name,marshaller,_) ->
             out "@ @[<hv2>let %s =" (camlize name);
-            out "@ @[<hv1>{name=\"%s\"; classe=`%s; marshaller=@;<0>"
+            out "@ @[<hov1>{name=\"%s\";@ classe=`%s;@ marshaller="
               name tag;
             begin match marshaller with
-            | `Function s -> out "%s" s
-            | `Types ([], "") -> out "marshal_unit" 
-            | `Types ([], ret) ->
+            | Function s -> out "%s" s
+            | Types ([], [], "") -> out "marshal_unit" 
+            | Types ([], [], ret) ->
                 out "marshal0_ret ~ret:%s" (Hashtbl.find conversions ret)
-            | `Types (l, ret) ->
-                out "(fun f -> @[<hov2>marshal%d" (List.length l);
-                if ret <> "" then
-                  out "_ret@ ~ret:%s" (Hashtbl.find conversions ret);
-                List.iter l ~f:
-                  (fun ty -> out "@ %s" (Hashtbl.find conversions ty));
-                out "@ \"%s::%s\" f@])" gtk_class name;
+            | Types (l, tyl, ret) ->
+                omarshaller ~gtk_class ~name ppf
+                  (l, List.map (Hashtbl.find conversions) tyl, ret)
             end;
             out "}@]@]";
           end;
@@ -445,7 +487,7 @@ let process_file f =
         List.iter props ~f:
           (fun (name,_,gtype,attrs) ->
             if List.mem "Read" attrs then out "c P.%s;@ " (camlize name));
-        List.iter sigs ~f:(fun (name,_) -> out "s %s;@ " name);
+        List.iter sigs ~f:(fun (name,_,_) -> out "s %s;@ " name);
         out "()@]";
       end;
       out "@]@.end\n@."
@@ -455,9 +497,8 @@ let process_file f =
   let oc = open_out ("o" ^ baseM ^ "Props.ml") in
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
-  out "@[<hv>open Gobject@ open GtkProps@ ";
-  (* Redefining saves space in bytecode! *)
-  out "@ let set = set@ let get = get@ let param = param@ ";
+  List.iter !oheaders ~f:(fun s -> out "%s@." s);
+  out "@[<hv>";
   let oprop ~name ~gtype ppf pname =
     try
       let conv = List.assoc gtype specials in
@@ -508,6 +549,35 @@ let process_file f =
             (String.uppercase mlname) (oprop ~name ~gtype) pname);
         out "@]@ ";
       end;
+      let wsig = List.mem_assoc "wrapsig" attrs in
+      let wsigs =
+        List.filter sigs ~f:
+          (fun (_,_,attrs) ->
+            List.mem "Wrap" attrs || wsig && not (List.mem "NoWrap" attrs))
+      in
+      if wsigs <> [] then begin
+        out "@ @[<hv2>class virtual %s_sigs = object (self)" (camlize name);
+        out "@ @[<hv2>method private virtual connect :";
+        out "@ 'b. ('a,'b) GtkSignal.t -> callback:'b -> GtkSignal.id@]";
+        List.iter wsigs ~f:
+          begin fun (sname, types,_) ->
+            match types with Types(l, tyl,ret)
+              when List.exists tyl ~f:(List.mem_assoc ~map:specials) ->
+                let convs =
+                  List.map tyl ~f:
+                    (fun ty -> try List.assoc ty specials
+                      with Not_found -> Hashtbl.find conversions ty)
+                in
+                out "@ @[<hov2>method %s =@ self#connect" sname;
+                out "@ @[<hov1>{%s.S.%s with@ marshaller = %a}@]@]"
+                  (camlizeM name) sname
+                  (omarshaller ~gtk_class ~name:sname) (l, convs,ret)
+            | _ ->
+                out "@ @[<hv2>method %s =@ self#connect %s.S.%s@]"
+                  sname (camlizeM name) sname
+          end;
+        out "@]@ end@ "
+      end
     end;
   out "@.";
   close_out oc
