@@ -1,5 +1,10 @@
 $Id$
 
+
+2003.07.02 [Jacques]
+  * fix configure (split PKG_CHECK_MODULES for GTK and GTKALL)
+  * fix name of gtk_gl_area_swap_buffers
+
 2003.06.24 [Benjamin]
   * Fix deps in Makefile
   * Fix generation of an incorrect lablgtk2 when debug is enabled
