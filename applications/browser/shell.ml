@@ -124,6 +124,7 @@ object (self)
     end
   initializer
     Lexical.init_tags buffer;
+    view#misc#modify_font (Pango.Font.from_string "monospace");
     view#event#connect#key_press ~callback:
       begin fun ev ->
 	if GdkEvent.Key.keyval ev = _Return && GdkEvent.Key.state ev = []
@@ -134,7 +135,7 @@ object (self)
     buffer#connect#after#insert_text ~callback:
       begin fun it s ->
         let start = it#copy#backward_chars (String.length s) in
-        self#lex ~start:start#backward_line ~stop:it#copy#forward_line;
+        self#lex ~start:start#backward_line ~stop:it#copy#forward_to_line_end;
         view#scroll_mark_onscreen `INSERT
       end;
     buffer#connect#after#delete_range ~callback:

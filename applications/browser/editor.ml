@@ -19,6 +19,7 @@ class editor ?packing ?show () = object (self)
       let s = Glib.Convert.locale_to_utf8 (Buffer.contents b) in
       let n_buff = GText.buffer ~text:s () in
       Lexical.init_tags n_buff;
+      Lexical.tag n_buff;
       view#set_buffer n_buff;
       filename <- Some name;
       n_buff#place_cursor n_buff#start_iter
@@ -46,7 +47,21 @@ class editor ?packing ?show () = object (self)
     with _ -> prerr_endline "Save failed"
 
   initializer
-    Lexical.init_tags view#buffer
+    Lexical.init_tags view#buffer;
+    view#buffer#connect#after#insert_text ~callback:
+      begin fun it s ->
+        let start = it#copy#backward_chars (String.length s) in
+        Lexical.tag view#buffer
+          ~start:start#backward_line ~stop:it#copy#forward_to_line_end;
+      end;
+    view#buffer#connect#after#delete_range ~callback:
+      begin fun ~start ~stop ->
+        let start = start#copy#backward_line
+        and stop = start#copy#forward_to_line_end in
+        Lexical.tag view#buffer ~start ~stop
+      end;
+    view#misc#modify_font (Pango.Font.from_string "monospace");
+    ()
 end
 
 open GdkKeysyms
