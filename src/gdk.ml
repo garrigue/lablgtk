@@ -139,15 +139,24 @@ module Property = struct
 end
 
 module Screen = struct
-  external default : unit -> screen = "ml_gdk_screen_get_default"
-  external width : screen -> int = "ml_gdk_screen_get_width"
-  let width ?(screen = default ()) () = width screen
-  external height : screen -> int = "ml_gdk_screen_get_height"
-  let height ?(screen = default ()) () = height screen
-  external get_pango_context : screen -> Pango.context =
+  external get_width : screen -> int = "ml_gdk_screen_get_width"
+  external width : unit -> int = "ml_gdk_screen_width"
+  let width ?screen () =
+    match screen with None -> width () | Some s -> get_width s
+  external get_height : screen -> int = "ml_gdk_screen_get_height"
+  external height : unit -> int = "ml_gdk_screen_height"
+  let height ?screen () =
+    match screen with None -> height () | Some s -> get_height s
+  external get_pango_context_for : screen -> Pango.context =
     "ml_gdk_pango_context_get_for_screen"
-  let get_pango_context ?(screen = default ()) () =
-    get_pango_context screen
+  external get_pango_context : unit -> Pango.context =
+    "ml_gdk_pango_context_get"
+  let get_pango_context ?screen () =
+    match screen with None -> get_pango_context ()
+    | Some s -> get_pango_context_for s
+
+  (* Only with Gtk-2.2 *)
+  external default : unit -> screen = "ml_gdk_screen_get_default"
 end
 
 module Visual = struct
