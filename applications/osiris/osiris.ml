@@ -55,16 +55,6 @@ type event = (unit -> unit) -> unit
 type event_bool = (unit -> bool) -> unit
 type event_key = (int -> unit) -> unit
 
-class type font =
-  object
-    method face : string -> unit
-    method size : int -> unit
-    method bold : bool -> unit
-    method italic : bool -> unit
-    method underline : bool -> unit
-    (* color : GDI low-level *)
-  end
-
 class type mouse_events =
   object
     method on_click : event
@@ -84,6 +74,27 @@ class type key_events =
   object    
     method on_key_down : event_key
     method on_key_up : event_key
+  end
+
+class font w =
+  object (self)
+    val desc =
+      Pango.Context.get_font_description
+	(GtkBase.Widget.get_pango_context w)
+    method private update =
+      GtkBase.Widget.modify_font w desc
+    method face s =
+      Pango.Font.set_family desc s; self#update
+    method size n =
+      Pango.Font.set_size desc n; self#update
+    method bold b =
+      Pango.Font.set_weight desc (if b then `BOLD else `NORMAL);
+      self#update
+    method italic b =
+      Pango.Font.set_style desc (if b then `ITALIC else `NORMAL);
+      self#update
+    (* underline : not on GTK *)
+    (* color : GDI low-level *)
   end
 
 class type virtual component =
@@ -106,7 +117,6 @@ class type virtual component =
     method get_height : int
     method align : align -> unit
     method get_align : align
-    method pos : int -> int -> int -> int -> unit
     method virtual update : unit
     method component : component
     method destroy : unit
@@ -127,29 +137,12 @@ and
     method container : container
   end
 
-class menu menu =
+class type menu =
   object
-    method handle : menuhandle = menu
-    method destroy = GtkBase.Object.destroy menu
+    method handle : menuhandle
+    method destroy : unit
+    method popup : unit
   end
-
-(*
-class type menuitem =
-  object
-    method caption : string -> unit
-    method get_caption : string
-    method parent : menu
-    method enable : bool -> unit
-    method is_enabled : bool
-    method check : bool -> unit
-    method is_checked : bool
-    method break : bool -> unit
-    method is_break : bool
-    method submenu : menu option -> unit
-    method get_submenu : menu option    
-    method on_click : event
-  end
-*)
 
 class type window =
   object
@@ -170,13 +163,6 @@ class type window =
     method on_destroy : event
     method on_resize : event
     method on_move : event
-  end
-
-class type popupmenu =
-  object
-    inherit menu
-    method popup : window -> int -> int -> unit
-    method menu : menu
   end
 
 class type panel =
@@ -372,9 +358,11 @@ let event_false _ = false
 open StdLabels
 open GtkBase
 open GtkButton
+open GtkData
 open GtkMain
 open GtkMenu
 open GtkMisc
+open GtkPack
 open GtkWindow
 
 type button_id = [`APPLY|`CANCEL|`CLOSE|`HELP|`NO|`OK|`YES]
@@ -506,7 +494,7 @@ class menuitem parent item =
           break <- false;
           let menu =
             try Menu.cast sub#handle
-            with _ -> failwith "Cannot add a menu bar as submenu"
+            with _ -> failwith "Cannot add a window menu as submenu"
           in
           MenuItem.set_submenu item menu;
           submenu <- Some sub
@@ -522,20 +510,121 @@ let new_menuitem (menu : menu) =
   Widget.show item;
   new menuitem menu item
 
+let current_button_event = ref None
+
+class imenu menu =
+  object
+    method handle : menuhandle = menu
+    method destroy = GtkBase.Object.destroy menu
+    method popup =
+      let menu =
+	try Menu.cast menu
+        with _ -> failwith "Cannot popup a window menu"
+      and (button, time) =
+	match !current_button_event with
+	  Some ev -> GdkEvent.Button.button ev, GdkEvent.Button.time ev
+	| None -> 0, Int32.zero
+      in Menu.popup menu ~button ~time
+  end
+
 let new_menu () =
   let m = Menu.create () in
   Widget.show m;
-  new menu (m :> menuhandle)
+  new imenu (m :> menuhandle)
 
-class icomponent ?parent w =
-  object
+class virtual icomponent ?parent w =
+  object (self)
     val w = w
-    method handle = (w :> Gtk.widget Gobject.obj)
     val parent = (parent : #container option :> container option)
+    val mutable caption = ""
+    val mutable align = AlNone
+    val mutable destroyed = false
+    val mutable custom = fun () -> ()
+    val mutable x = 0
+    val mutable y = 0
+    method handle = (w :> Gtk.widget Gobject.obj)
     method parent = parent
     method visible b =
       if b then Widget.show w else Widget.hide w
     method is_visible = Object.get_flag w `VISIBLE
     method enable = Widget.set_sensitive w
     method is_enabled = Object.get_flag w `SENSITIVE
-end
+    method caption c = caption <- c
+    method get_caption = caption
+    method x x0 = x <- x0
+    method y y0 = y <- y0
+    method get_x = x
+    method get_y = y
+    method width width = Widget.set_usize w ~width ~height:(-2)
+    method height height = Widget.set_usize w ~width:(-2) ~height
+    method get_width = (Widget.allocation w).Gtk.width
+    method get_height = (Widget.allocation w).Gtk.height
+    method align al =
+      align <- al;
+      match parent with None -> ()
+      | Some ct -> ct#update
+    method get_align = align
+    method virtual update : unit
+    method component = (self :> component)
+    method destroy = Object.destroy w
+    method is_destroyed = destroyed
+    initializer
+      ignore (GtkSignal.connect w ~sgn:Object.Signals.destroy
+		~callback:(fun () -> destroyed <- true))
+    method font = new font w
+    method focus = Widget.grab_focus w
+    method set_custom f = custom <- f
+    method call_custom = custom ()
+  end
+
+class icontainer ?parent w =
+  object
+    inherit icomponent ?parent w
+    val mutable space = 0
+    val mutable span = 0
+    val mutable children = []
+    val mutable boxes = []
+    method space n = space <- n
+    method span n = span <- n
+    method update =
+      List.iter boxes ~f:
+	begin fun b ->
+	  List.iter (Container.children b) ~f:(Container.remove b);
+	  Object.destroy b
+	end;
+      let fixed = Fixed.create () in
+      boxes <- [(fixed :> Gtk.container Gobject.obj)];
+      let rec align box horiz = function
+	  [] -> ()
+	| (al, comp) :: rem ->
+	    let box', horiz' =
+	      if horiz && (al = AlTop || al = AlBottom) then
+		Box.create `VERTICAL ~spacing:space (), false
+	      else if (al = AlLeft || al = AlRight) then
+		Box.create `HORIZONTAL ~spacing:space (), true
+	      else box, horiz
+	    in
+	    if Gobject.get_oid box <> Gobject.get_oid box' then begin
+	      boxes <- (box' :> Gtk.container Gobject.obj) :: boxes;
+	      Widget.show box';
+	      Box.pack box box';
+	    end;
+	    let w = comp#handle in
+	    begin match al with
+	      AlClient -> Container.add box' w
+	    | AlCenter -> Box.pack box' w ~fill:true
+	    | AlTop | AlLeft -> Box.pack box' w
+	    | AlBottom | AlRight -> Box.pack box' w ~from:`END
+	    | AlNone -> Fixed.put fixed w ~x:comp#get_x ~y:comp#get_y
+	    end;
+	    align box' horiz' rem
+      in
+      let hbox = Box.create `HORIZONTAL () in
+      Container.set_border_width hbox space;
+      Widget.show hbox;
+      Container.add w hbox;
+      let vbox = Box.create `VERTICAL () in
+      Widget.show vbox;
+      Container.add hbox vbox;
+      align vbox false children
+  end
