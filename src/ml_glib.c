@@ -246,16 +246,119 @@ CAMLprim value ml_g_convert(value str, value len, value to, value from)
   CAMLparam4(str,len,to,from);
   CAMLlocal1(res);
   gsize br,bw;
+  gchar* c_res;
   GError *error=NULL;
   br=0;
   bw=0;
-  res = Val_string(g_convert(String_val(str),Int_val(len),
+  c_res = g_convert(String_val(str),Int_val(len),
 			     String_val(to),String_val(from),
-			     &br,&bw,&error));
+			     &br,&bw,&error);
   if (error != NULL)
     {
       ml_raise_gerror(error);
     };
-
+  res = Val_string(c_res);
   CAMLreturn(res);
+}
+
+CAMLprim value ml_g_locale_to_utf8(value str, value len)
+{
+  CAMLparam2(str,len);
+  CAMLlocal1(res);
+  gsize br,bw;
+  gchar* c_res;
+  GError *error=NULL;
+  br=0;
+  bw=0;
+  c_res = g_locale_to_utf8(String_val(str),Int_val(len),
+			   &br,&bw,&error);
+  if (error != NULL)
+    {
+      ml_raise_gerror(error);
+    };
+  res = Val_string(c_res);
+  CAMLreturn(res);
+}
+
+
+CAMLprim value ml_g_filename_to_utf8(value str, value len)
+{
+  CAMLparam2(str,len);
+  CAMLlocal1(res);
+  gsize br,bw;
+  gchar* c_res;
+  GError *error=NULL;
+  br=0;
+  bw=0;
+  c_res = g_filename_to_utf8(String_val(str),Int_val(len),
+			   &br,&bw,&error);
+  if (error != NULL)
+    {
+      ml_raise_gerror(error);
+    };
+  res = Val_string(c_res);
+  CAMLreturn(res);
+}
+
+
+
+CAMLprim value ml_g_locale_from_utf8(value str, value len)
+{
+  CAMLparam2(str,len);
+  CAMLlocal1(res);
+  gsize br,bw;
+  gchar* c_res;
+  GError *error=NULL;
+  br=0;
+  bw=0;
+  c_res = g_locale_from_utf8(String_val(str),Int_val(len),
+			   &br,&bw,&error);
+  if (error != NULL)
+    {
+      ml_raise_gerror(error);
+    };
+  res = Val_string(c_res);
+  CAMLreturn(res);
+}
+
+
+CAMLprim value ml_g_filename_from_utf8(value str, value len)
+{
+  CAMLparam2(str,len);
+  CAMLlocal1(res);
+  gsize br,bw;
+  gchar* c_res;
+  GError *error=NULL;
+  br=0;
+  bw=0;
+  c_res = g_filename_from_utf8(String_val(str),Int_val(len),
+			   &br,&bw,&error);
+  if (error != NULL)
+    {
+      ml_raise_gerror(error);
+    };
+  res = Val_string(c_res);
+  CAMLreturn(res);
+}
+
+CAMLprim value ml_g_get_charset()
+{
+  CAMLparam0();
+  CAMLlocal1(couple);
+  gboolean r;
+  G_CONST_RETURN char *c="";
+  r = g_get_charset(&c);
+  couple = alloc_tuple(2);
+  Store_field(couple,0,Val_bool(r));
+  Store_field(couple,1,Val_string(c));
+  CAMLreturn(couple);
+}
+
+CAMLprim value ml_utf8_validate(value s)
+{
+  CAMLparam1(s);
+  CAMLlocal1(b);
+  const gchar *c=NULL;
+  b = Val_bool(g_utf8_validate(String_val(s),-1,&c));
+  CAMLreturn(b);
 }

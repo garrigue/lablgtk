@@ -18,10 +18,13 @@ module Main = struct
     in
     let argv =
       try
-	init Sys.argv 
+	init Sys.argv
       with
-      |	Error _ -> raise (Error "Gtk.Main.init: initialization failed")
+      |	Error err -> raise (Error ("GtkMain.init: initialization failed\n"
+				   ^err^"\n"))
     in
+    Glib.Message.set_log_handler ~domain:"Gtk" ~levels:[`WARNING;`CRITICAL]
+      (fun ~level s -> raise (Gtk.Error s));
     Array.blit ~src:argv ~dst:Sys.argv ~len:(Array.length argv)
       ~src_pos:0 ~dst_pos:0;
     Obj.truncate (Obj.repr Sys.argv) (Array.length argv);
@@ -50,6 +53,4 @@ end
 
 let _ =
   Glib.Message.set_print_handler (fun msg -> print_string msg)
-let _ =
-  Glib.Message.set_log_handler ~domain:"Gtk" ~levels:[`WARNING;`CRITICAL]
-    (fun ~level s -> raise (Gtk.Error s))
+
