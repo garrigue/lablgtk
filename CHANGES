@@ -1,5 +1,8 @@
 $Id$
 
+2001.11.22
+  * add parameters to handle_box and color_selection (Maxence Guesdon)
+
 2001.11.01
   * adapt to ocaml 3.03a+2 dlls.
 

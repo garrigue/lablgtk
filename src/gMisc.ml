@@ -177,8 +177,10 @@ class color_selection obj = object
   method get_color = ColorSelection.get_color obj
 end
 
-let color_selection ?border_width ?width ?height ?packing ?show () =
+let color_selection ?update_policy ?opacity
+    ?border_width ?width ?height ?packing ?show () =
   let w = ColorSelection.create () in
+  ColorSelection.set w ?update_policy ?opacity;
   Container.set w ?border_width ?width ?height;
   pack_return (new color_selection w) ~packing ~show
 

@@ -60,6 +60,9 @@ class handle_box : Gtk.handle_box obj ->
     method set_snap_edge : Tags.position -> unit
   end
 val handle_box :
+  ?handle_position:Tags.position ->
+  ?snap_edge:Tags.position ->
+  ?shadow_type:Tags.shadow_type ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
