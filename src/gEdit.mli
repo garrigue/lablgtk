@@ -3,6 +3,11 @@
 open Gtk
 open GObj
 
+(** Editable Widgets *)
+
+(** {3 GtkEditable} *)
+
+(** @gtkdoc gtk GtkEditable *)
 class editable_signals : [> editable] obj ->
   object
     inherit GObj.widget_signals
@@ -13,6 +18,8 @@ class editable_signals : [> editable] obj ->
       callback:(string -> pos:int ref -> unit) -> GtkSignal.id
   end
 
+(** Interface for text-editing widgets
+   @gtkdoc gtk GtkEditable *)
 class editable : 'a obj ->
   object
     inherit GObj.widget
@@ -31,6 +38,9 @@ class editable : 'a obj ->
     method set_position : int -> unit
   end
 
+(** {3 GtkEntry} *)
+
+(** @gtkdoc gtk GtkEntry *)
 class entry_signals : [> Gtk.entry] obj ->
   object
     inherit editable_signals
@@ -48,6 +58,8 @@ class entry_signals : [> Gtk.entry] obj ->
     method toggle_overwrite : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** A single line text entry field
+   @gtkdoc gtk GtkEntry *)
 class entry : ([> Gtk.entry] as 'a) obj ->
   object
     inherit editable
@@ -75,6 +87,8 @@ class entry : ([> Gtk.entry] as 'a) obj ->
     method visibility : bool
     method width_chars : int
   end
+
+(** @gtkdoc gtk GtkEntry *)
 val entry :
   ?text:string ->
   ?visibility:bool ->
@@ -86,6 +100,9 @@ val entry :
   ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> entry
 
+(** {4 GtkSpinButton} *)
+
+(** @gtkdoc gtk GtkSpinButton *)
 class spin_button_signals : [> Gtk.spin_button] obj ->
   object
     inherit entry_signals
@@ -96,6 +113,8 @@ class spin_button_signals : [> Gtk.spin_button] obj ->
     method value_changed : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** Retrieve an integer or floating-point number from the user
+   @gtkdoc gtk GtkSpinButton *)
 class spin_button : Gtk.spin_button obj ->
   object
     inherit GObj.widget
@@ -122,6 +141,8 @@ class spin_button : Gtk.spin_button obj ->
     method value : float
     method wrap : bool
   end
+
+(** @gtkdoc gtk GtkSpinButton *)
 val spin_button :
   ?adjustment:GData.adjustment ->
   ?rate:float ->
@@ -134,6 +155,10 @@ val spin_button :
   ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> spin_button
 
+(** {3 GtkCombo} *)
+
+(** A text entry field with a dropdown list
+   @gtkdoc gtk GtkCombo *)
 class combo : Gtk.combo obj ->
   object
     inherit GObj.widget
@@ -152,6 +177,8 @@ class combo : Gtk.combo obj ->
     method enable_arrow_keys : bool
     method value_in_list : bool
   end
+
+(** @gtkdoc gtk GtkCombo *)
 val combo :
   ?popdown_strings:string list ->
   ?allow_empty:bool ->

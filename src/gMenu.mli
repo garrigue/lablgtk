@@ -4,18 +4,23 @@ open Gtk
 open GObj
 open GContainer
 
+(** Menus *)
+
+(** @gtkdoc gtk GtkMenuShell *)
 class menu_shell_signals : [> menu_shell] obj ->
   object
     inherit GContainer.container_signals
     method deactivate : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** @gtkdoc gtk GtkMenuItem *)
 class menu_item_signals : [> menu_item] obj ->
   object
     inherit GContainer.item_signals
     method activate : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** @gtkdoc gtk GtkMenuItem *)
 class menu_item_skel :
   'a obj ->
   object
@@ -37,6 +42,9 @@ class menu_item_skel :
     method get_submenu : GObj.widget option
 
   end
+
+(** The widget used for item in menus
+   @gtkdoc gtk GtkMenuItem *)
 and menu_item : 'a obj ->
   object
     inherit menu_item_skel
@@ -45,6 +53,9 @@ and menu_item : 'a obj ->
     method event : event_ops
     method connect : menu_item_signals
   end
+
+(** A drop down menu widget
+   @gtkdoc gtk GtkMenu *)
 and menu : Gtk.menu obj ->
   object
     inherit [menu_item] GContainer.item_container
@@ -67,20 +78,28 @@ and menu : Gtk.menu obj ->
     method private wrap : Gtk.widget obj -> menu_item
   end
 
+(** @gtkdoc gtk GtkMenu *)
 val menu :
   ?accel_path:string ->
   ?border_width:int -> ?packing:(menu -> unit) -> ?show:bool -> unit -> menu
+
+(** @gtkdoc gtk GtkMenuItem *)
 val menu_item :
   ?use_mnemonic:bool ->
   ?label:string ->
   ?right_justified:bool ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
+
+(** @gtkdoc gtk GtkTearoffMenuItem *)
 val tearoff_item :
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
+
+(** @gtkdoc gtk GtkSeparatorMenuItem *)
 val separator_item :
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
 
-
+(** A menu item with an icon
+   @gtkdoc gtk GtkImageMenuItem *)
 class image_menu_item : 'a obj ->
 object
   inherit menu_item_skel
@@ -92,6 +111,7 @@ object
   method set_image : widget -> unit
 end
 
+(** @gtkdoc gtk GtkImageMenuItem *)
 val image_menu_item :
   ?image:#widget ->
   ?label:string ->
@@ -100,12 +120,15 @@ val image_menu_item :
   ?right_justified:bool ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> image_menu_item
 
+(** @gtkdoc gtk GtkCheckMenuItem *)
 class check_menu_item_signals : [> check_menu_item] obj ->
   object
     inherit menu_item_signals
     method toggled : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** A menu item with a check box
+   @gtkdoc gtk GtkCheckMenuItem *)
 class check_menu_item : 'a obj ->
   object
     inherit menu_item_skel
@@ -120,6 +143,8 @@ class check_menu_item : 'a obj ->
     method set_show_toggle : bool -> unit
     method toggled : unit -> unit
   end
+
+(** @gtkdoc gtk GtkCheckMenuItem *)
 val check_menu_item :
   ?label:string ->
   ?use_mnemonic:bool ->
@@ -128,6 +153,8 @@ val check_menu_item :
   ?right_justified:bool ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> check_menu_item
 
+(** A choice from multiple check menu items
+   @gtkdoc gtk GtkRadioMenuItem *)
 class radio_menu_item : Gtk.radio_menu_item obj ->
   object
     inherit check_menu_item
@@ -135,6 +162,8 @@ class radio_menu_item : Gtk.radio_menu_item obj ->
     method group : Gtk.radio_menu_item group
     method set_group : Gtk.radio_menu_item group -> unit
   end
+
+(** @gtkdoc gtk GtkRadioMenuItem *)
 val radio_menu_item :
   ?group:Gtk.radio_menu_item group ->
   ?label:string ->
@@ -144,6 +173,7 @@ val radio_menu_item :
   ?right_justified:bool ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> radio_menu_item
 
+(** @gtkdoc gtk GtkMenuShell *)
 class menu_shell : 'a obj ->
   object
     inherit [menu_item] GContainer.item_container
@@ -156,12 +186,15 @@ class menu_shell : 'a obj ->
     method private wrap : Gtk.widget obj -> menu_item
   end
 
+(** @gtkdoc gtk GtkMenuBar *)
 val menu_bar :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> menu_shell
 
+(** A widget used to choose from a list of valid choices
+   @gtkdoc gtk GtkOptionMenu *)
 class option_menu : 'a obj ->
   object
     inherit GButton.button_skel
@@ -174,6 +207,8 @@ class option_menu : 'a obj ->
     method set_history : int -> unit
     method set_menu : menu -> unit
   end
+
+(** @gtkdoc gtk GtkOptionMenu *)
 val option_menu :
   ?menu:#menu ->
   ?border_width:int ->
@@ -181,6 +216,9 @@ val option_menu :
   ?height:int ->
   ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> option_menu
 
+
+(** A factory for menus
+   @gtkdoc gtk GtkItemFactory *)
 class ['a] factory :
   ?accel_group:accel_group ->
   ?accel_path:string -> 

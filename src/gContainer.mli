@@ -3,6 +3,8 @@
 open Gtk
 open GObj
 
+(** Widgets which contain other widgets *)
+
 class focus :
   'a obj ->
   object
@@ -14,6 +16,10 @@ class focus :
     method set_vadjustment : GData.adjustment option -> unit
   end
 
+(** {3 GtkContainer} *)
+
+(** Base class for widgets which contain other widgets
+   @gtkdoc gtk GtkContainer *)
 class container : ([> Gtk.container] as 'a) obj ->
   object
     inherit GObj.widget
@@ -28,12 +34,14 @@ class container : ([> Gtk.container] as 'a) obj ->
     method resize_mode : Tags.resize_mode
   end
 
+(** @gtkdoc gtk GtkContainer *)
 class ['a] container_impl :([> Gtk.container] as 'a) obj ->
   object
     inherit container
     inherit ['a] GObj.objvar
   end
 
+(** @gtkdoc gtk GtkContainer *)
 class type container_signals =
   object
     inherit GObj.widget_signals
@@ -41,12 +49,14 @@ class type container_signals =
     method remove : callback:(widget -> unit) -> GtkSignal.id
   end
 
+(** @gtkdoc gtk GtkContainer *)
 class container_signals_impl : ([> Gtk.container] as 'a) obj ->
   object
     inherit ['a] GObj.gobject_signals
     inherit container_signals
   end
 
+(** @gtkdoc gtk GtkContainer *)
 class container_full : ([> Gtk.container] as 'a) obj ->
   object
     inherit container
@@ -54,17 +64,20 @@ class container_full : ([> Gtk.container] as 'a) obj ->
     method connect : container_signals
   end
 
+(** @raise Gtk.Cannot_cast "GtkContainer" *)
 val cast_container : widget -> container_full
-(* may raise [Gtk.Cannot_cast "GtkContainer"] *)
 
+(** @gtkdoc gtk GtkContainer *)
 val pack_container :
   create:([> Gtk.container] Gobject.param list -> (#GObj.widget as 'a)) ->
   [> Gtk.container] Gobject.param list ->
   ?border_width:int ->
   ?width:int ->
   ?height:int -> ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> 'a
-  (* utility function *)
 
+(** {3 GtkItem} *)
+
+(** @gtkdoc gtk GtkContainer *)
 class virtual ['a] item_container : ([> Gtk.container] as 'c) obj ->
   object
     constraint 'a = < as_item : [>`widget] obj; .. >
@@ -84,6 +97,7 @@ class virtual ['a] item_container : ([> Gtk.container] as 'c) obj ->
     method private virtual wrap : Gtk.widget obj -> 'a
   end
 
+(** @gtkdoc gtk GtkItem *)
 class item_signals : [> Gtk.item] obj ->
   object
     inherit container_signals

@@ -2,7 +2,9 @@
 
 open Gtk
 
-(* GObject *)
+(** Base classes for objects an dwidgets *)
+
+(** {3 GObject} *)
 
 class gobject_ops : 'a obj ->
   object
@@ -26,7 +28,7 @@ class ['a] gobject_signals : ?after:bool -> 'a obj ->
     method private connect : ('a,'c) GtkSignal.t -> callback:'c -> GtkSignal.id
   end
 
-(* GtkObject *)
+(** {3 GtkObject} *)
 
 class type ['a] objvar = object
   val obj : 'a obj
@@ -52,7 +54,7 @@ class type gtkobj_signals =
     method destroy : callback:(unit -> unit) -> GtkSignal.id
   end
 
-(* Widget *)
+(** {3 GtkWidget} *)
 
 class event_signals : ?after:bool -> [> widget] obj ->
   object ('a)
@@ -100,6 +102,7 @@ class event_ops : [> widget] obj ->
     method set_extensions : Gdk.Tags.extension_mode -> unit
   end
 
+(** @gtkdoc gtk GtkStyle *)
 class style : Gtk.style ->
   object ('a)
     val style : Gtk.style
@@ -124,6 +127,7 @@ class style : Gtk.style ->
     method text : Gtk.Tags.state_type -> Gdk.color
   end
 
+(** @gtkdoc gtk gtk-Selections *)
 class selection_data :
   Gtk.selection_data ->
   object
@@ -135,6 +139,7 @@ class selection_data :
     method target : string
   end
 
+(** @gtkdoc gtk gtk-Selections *)
 class selection_context :
   Gtk.selection_data ->
   object
@@ -144,6 +149,7 @@ class selection_context :
     method return : ?typ:string -> ?format:int -> string -> unit
   end
 
+(** @gtkdoc gtk gtk-Drag-and-Drop *)
 class drag_ops : Gtk.widget obj ->
   object
     method connect : drag_signals
@@ -161,6 +167,7 @@ class drag_ops : Gtk.widget obj ->
     method unhighlight : unit -> unit
   end
 
+(** @gtkdoc gtk GtkWidget *)
 and misc_ops : Gtk.widget obj ->
   object
     inherit gobject_ops
@@ -227,6 +234,7 @@ and misc_ops : Gtk.widget obj ->
     method window : Gdk.window
   end
 
+(** @gtkdoc gtk GtkWidget *)
 and widget : ([> Gtk.widget] as 'a) obj ->
   object
     inherit gtkobj
@@ -237,6 +245,7 @@ and widget : ([> Gtk.widget] as 'a) obj ->
     method misc : misc_ops
   end
 
+(** @gtkdoc gtk GtkWidget *)
 and misc_signals : ?after:bool -> Gtk.widget obj ->
   object ('b)
     inherit gtkobj_signals 
@@ -258,6 +267,7 @@ and misc_signals : ?after:bool -> Gtk.widget obj ->
     method unmap : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** @gtkdoc gtk gtk-Drag-and-Drop *)
 and drag_context :
   Gdk.drag_context ->
   object
@@ -273,6 +283,7 @@ and drag_context :
     method targets : string list
   end
 
+(** @gtkdoc gtk gtk-Drag-and-Drop *)
 and drag_signals :
   Gtk.widget obj ->
   object ('a)
@@ -300,20 +311,24 @@ and drag_signals :
       GtkSignal.id
   end
 
+(** @gtkdoc gtk GtkWidget *)
 class ['a] widget_impl : ([> Gtk.widget] as 'a) obj ->
   object
     inherit widget
     inherit ['a] objvar
   end
 
+(** @gtkdoc gtk GtkWidget *)
 class type widget_signals = gtkobj_signals
 
+(** @gtkdoc gtk GtkWidget *)
 class widget_signals_impl : ([> Gtk.widget] as 'a) obj ->
   object
     inherit ['a] gobject_signals
     inherit widget_signals
   end
 
+(** @gtkdoc gtk GtkWidget *)
 class widget_full : ([> Gtk.widget] as 'a) obj ->
   object
     inherit widget
@@ -321,6 +336,7 @@ class widget_full : ([> Gtk.widget] as 'a) obj ->
     method connect : widget_signals
   end
 
+(** @gtkdoc gtk GtkWidget *)
 val as_widget : widget -> Gtk.widget obj
 
 val pack_return :

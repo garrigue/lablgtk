@@ -4,9 +4,16 @@ open Gtk
 open GObj
 open GContainer
 
+(** Miscellaneous widgets *)
+
+(** @gtkdoc gtk GtkSeparator
+   @gtkdoc gtk GtkHSeparator
+   @gtkdoc gtk GtkVSeparator *)
 val separator :
   Tags.orientation ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> widget_full
+
+(** {3 Statusbar} *)
 
 class statusbar_context :
   Gtk.statusbar obj -> Gtk.statusbar_context ->
@@ -20,18 +27,25 @@ class statusbar_context :
     method remove : statusbar_message -> unit
   end
 
+(** Report messages of minor importance to the user
+   @gtkdoc gtk GtkStatusbar *)
 class statusbar : Gtk.statusbar obj ->
   object
     inherit GContainer.container_full
     val obj : Gtk.statusbar obj
     method new_context : name:string -> statusbar_context
   end
+
+(** @gtkdoc gtk GtkStatusbar *)
 val statusbar :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> statusbar
 
+(** {3 Calendar} *)
+
+(** @gtkdoc gtk GtkCalendar *)
 class calendar_signals : 'a obj ->
   object
     inherit GObj.widget_signals
@@ -47,6 +61,8 @@ class calendar_signals : 'a obj ->
     method prev_year : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** Display a calendar and/or allow the user to select a date
+   @gtkdoc gtk GtkCalendar *)
 class calendar : Gtk.calendar obj ->
   object
     inherit GObj.widget
@@ -63,10 +79,16 @@ class calendar : Gtk.calendar obj ->
     method thaw : unit -> unit
     method unmark_day : int -> unit
   end
+
+(** @gtkdoc gtk GtkCalendar *)
 val calendar :
   ?options:Tags.calendar_display_options list ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> calendar
 
+(** {3 Drawing Area} *)
+
+(** A widget for custom user interface elements
+   @gtkdoc gtk GtkDrawingArea *)
 class drawing_area : Gtk.drawing_area obj ->
   object
     inherit GObj.widget_full
@@ -74,11 +96,17 @@ class drawing_area : Gtk.drawing_area obj ->
     method event : event_ops
     method set_size : width:int -> height:int -> unit
   end
+
+(** @gtkdoc gtk GtkDrawingArea *)
 val drawing_area :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> drawing_area
 
+(** {3 Misc. Widgets} *)
+
+(** A base class for widgets with alignments and padding
+   @gtkdoc gtk GtkMisc *)
 class misc : ([> Gtk.misc] as 'a) obj ->
   object
     inherit GObj.widget
@@ -93,6 +121,8 @@ class misc : ([> Gtk.misc] as 'a) obj ->
     method ypad : int
   end
 
+(** Produces an arrow pointing in one of the four cardinal directions
+   @gtkdoc gtk GtkArrow *)
 class arrow : ([> Gtk.arrow] as 'a) obj ->
   object
     inherit misc
@@ -103,6 +133,7 @@ class arrow : ([> Gtk.arrow] as 'a) obj ->
     method shadow : Tags.shadow_type
   end
 
+(** @gtkdoc gtk GtkArrow *)
 val arrow :
   ?kind:Tags.arrow_type ->
   ?shadow:Tags.shadow_type ->
@@ -117,6 +148,8 @@ val arrow :
 type image_type = 
   [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION ]
 
+(** A widget displaying an image
+   @gtkdoc gtk GtkImage *)
 class image : 'a obj ->
   object
     inherit misc
@@ -140,6 +173,7 @@ class image : 'a obj ->
     method icon_size : Tags.icon_size
   end
 
+(** @gtkdoc gtk GtkImage *)
 val image :
   ?file:string ->
   ?image:Gdk.image ->
@@ -168,6 +202,9 @@ val pixmap :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> image
 
+(** {4 Labels} *)
+
+(** @gtkdoc gtk GtkLabel *)
 class label_skel : 'a obj ->
   object
     inherit misc
@@ -199,12 +236,16 @@ class label_skel : 'a obj ->
     method use_underline : bool
   end
 
+(** A widget that displays a small to medium amount of text
+   @gtkdoc gtk GtkLabel *)
 class label : Gtk.label obj ->
   object
     inherit label_skel
     val obj : Gtk.label obj
     method connect : widget_signals
   end
+
+(** @gtkdoc gtk GtkLabel *)
 val label :
   ?text:string ->
   ?markup:string ->     (* overrides ~text if present *)
@@ -223,6 +264,10 @@ val label :
   ?packing:(widget -> unit) -> ?show:bool -> unit -> label
 val label_cast : < as_widget : 'a obj ; .. > -> label
 
+(** {4 Tips query} *)
+
+(** @gtkdoc gtk GtkTipsQuery 
+   @deprecated . *)
 class tips_query_signals : Gtk.tips_query obj ->
   object
     inherit GObj.widget_signals
@@ -237,6 +282,9 @@ class tips_query_signals : Gtk.tips_query obj ->
       GtkSignal.id
   end
 
+(** Displays help about widgets in the user interface
+   @gtkdoc gtk GtkTipsQuery
+   @deprecated . *)
 class tips_query : Gtk.tips_query obj ->
   object
     inherit label_skel
@@ -253,6 +301,9 @@ class tips_query : Gtk.tips_query obj ->
     method label_inactive : string
     method label_no_tip : string
   end
+
+(** @gtkdoc gtk GtkTipsQuery
+   @deprecated . *)
 val tips_query :
   ?caller:#widget ->
   ?emit_always:bool ->
@@ -266,6 +317,10 @@ val tips_query :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> tips_query
 
+(** {3 Color and font selection} *)
+
+(** A widget used to select a color
+   @gtkdoc gtk GtkColorSelection *)
 class color_selection : Gtk.color_selection obj ->
   object
     inherit GObj.widget_full
@@ -280,6 +335,8 @@ class color_selection : Gtk.color_selection obj ->
     method has_opacity_control : bool
     method has_palette : bool
   end
+
+(** @gtkdoc gtk GtkColorSelection *)
 val color_selection :
   ?alpha:int ->
   ?color:Gdk.color ->
@@ -290,6 +347,8 @@ val color_selection :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> color_selection
 
+(** A widget for selecting fonts.
+   @gtkdoc gtk GtkFontSelection *)
 class font_selection : Gtk.font_selection obj ->
   object
     inherit GObj.widget_full
@@ -301,6 +360,8 @@ class font_selection : Gtk.font_selection obj ->
     method set_font_name : string -> unit
     method set_preview_text : string -> unit
   end
+
+(** @gtkdoc gtk GtkFontSelection *)
 val font_selection :
   ?font_name:string ->
   ?preview_text:string ->

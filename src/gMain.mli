@@ -1,25 +1,30 @@
 (* $Id$ *)
 
+(** Library initialization, main event loop, and events *)
+
+(** @gtkdoc gtk gtk-General *)
 module Main : sig
   val init : ?setlocale:bool -> unit -> string
-    (* [init] also sets the locale and returns its name.
+    (** [init] also sets the locale and returns its name.
        Either set [~setlocale] to [false] or GTK_SETLOCALE to "0"
        if you don't want to the locale to be set *)
   val main : unit -> unit
-    (* [main] runs the main loop, until [quit] is called. *)
-    (* Do not use in multi-threaded programs. *)
+    (** [main] runs the main loop, until [quit] is called.
+       {e Do not use in multi-threaded programs.} *)
   val quit : unit -> unit
-    (* quit the main loop *)
+    (** quit the main loop *)
   val version : int * int * int
-    (* [major, minor, micro] *)
+    (** [major, minor, micro] *)
 end
 
-(* Direct access to functions of [GMain.Main] *)
+(** Direct access to functions of [GMain.Main] *)
+
 val init : ?setlocale:bool -> unit -> string
 val main : unit -> unit
 val quit : unit -> unit
 
-(* Global structures *)
+(** Global structures *)
+
 val selection : GData.clipboard
 val clipboard : GData.clipboard
 

@@ -2,6 +2,11 @@
 
 open Gdk
 
+(** Offscreen drawables *)
+
+(** {3 Colors} *)
+
+(** @gtkdoc gdk gdk-Colormaps-and-Colors *)
 type color =
   [ `COLOR of Gdk.color
   | `WHITE
@@ -21,6 +26,10 @@ type optcolor =
 
 val optcolor : ?colormap:colormap -> optcolor -> Gdk.color option
 
+(** {3 GdkDrawable} *)
+
+(** Functions for drawing points, lines, arcs, and text
+   @gtkdoc gdk gdk-Drawing-Primitives *)
 class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
   object
     val gc : gc
@@ -67,6 +76,10 @@ class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
     method segments : ((int * int) * (int * int)) list -> unit
   end
 
+(** {3 GdkPixmap} *)
+
+(** Offscreen drawables
+   @gtkdoc gdk gdk-Bitmaps-and-Pixmaps *)
 class pixmap :
   ?colormap:colormap -> ?mask:bitmap -> Gdk.pixmap ->
   object
@@ -86,6 +99,7 @@ class type misc_ops =
     method window : window
   end
 
+(** @gtkdoc gdk gdk-Bitmaps-and-Pixmaps *)
 val pixmap :
   width:int -> height:int -> ?mask:bool ->
   ?window:< misc : #misc_ops; .. > -> ?colormap:colormap ->
@@ -99,6 +113,9 @@ val pixmap_from_xpm_d :
   ?window:< misc : #misc_ops; .. > ->
   ?colormap:colormap -> ?transparent:color -> unit -> pixmap
 
+(** {3 GdkDragContext} *)
+
+(** @gtkdoc gdk gdk-Drag-and-Drop *)
 class drag_context : Gdk.drag_context ->
   object
     val context : Gdk.drag_context

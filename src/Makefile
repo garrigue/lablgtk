@@ -320,6 +320,46 @@ clean:
 	  *Enums.ml *Props.ml
 	rm -f \#*\# *~
 
+
+DOCFILES =  gaux.ml gpointer.mli glib.mli gobject.mli \
+        gdk.mli gdkEvent.ml gdkPixbuf.mli \
+        gtk.ml pango.ml gtkSignal.mli gtkObject.ml \
+        $(GTKPROPS:%.props=%Props.ml) \
+        gtkStock.ml gtkData.ml gtkBase.ml gtkPack.ml gtkButton.ml \
+        gtkMenu.ml gtkMisc.ml gtkWindow.ml gtkList.ml \
+        gtkEdit.ml gtkRange.ml gtkText.ml gtkTree.ml \
+        gtkMain.ml \
+        gPango.ml gDraw.mli \
+        gObj.mli gMain.mli gData.mli gContainer.mli gBin.mli gPack.mli gButton.mli \
+        gText.mli \
+        gMenu.mli gMisc.mli gTree.mli gList.mli gWindow.mli \
+        gEdit.mli gRange.mli gUtil.mli gToolbox.mli
+ifdef USE_GLADE
+DOCFILES += glade.mli xml_lexer.mli
+endif
+ifdef USE_GL
+DOCFILES += glGtk.mli
+endif
+ifdef USE_RSVG
+DOCFILES += rsvg.mli
+endif
+ifdef USE_GNOMECANVAS
+DOCFILES += gnomeCanvas.ml gnoCanvas.mli
+endif
+ifdef USE_PANEL
+DOCFILES += panel.mli
+endif
+
+OCAMLDOC = ocamldoc
+lablgtk.odoc : $(DOCFILES) $(ALLOBJS)
+	$(OCAMLDOC) -dump $@ -v  -I $(LABLGLDIR) $(DOCFILES)
+gtkdoc.cmo : gtkdoc.ml
+	$(OCAMLC) -I +ocamldoc -c $<
+doc : lablgtk.odoc gtkdoc.cmo
+	$(OCAMLDOC) -g ./gtkdoc.cmo -v -t LablGTK -d ../doc/html -load $<
+doc_texi : lablgtk.odoc
+	$(OCAMLDOC) -texi -v -t LablGTK -o ../doc/lablgtk2.texi -load $<
+
 srcdoc: $(ALLOBJS)
 	mkdir -p doc
 	$(OCAMLDOC) -html -t "Lablgtk2" -d doc -I . `ls $(ALLOBJS:.cmo=.mli) 2> /dev/null`
