@@ -325,7 +325,7 @@ Make_Extractor (GdkFont, GdkFont_val, descent, Val_int)
 /* Properties */
 
 ML_2 (gdk_atom_intern, String_val, Int_val, Val_GdkAtom)
-ML_1 (gdk_atom_name, GdkAtom_val, Val_string)
+ML_1 (gdk_atom_name, GdkAtom_val, copy_string_g_free)
 
 value ml_gdk_property_change (value window, value property, value type,
                               value mode, value xdata)
@@ -413,6 +413,7 @@ value ml_gdk_property_get (value window, value property,
         default: nitems = alength;
         }
         mldata = copy_xdata (aformat, data, nitems);
+        g_free(data);
         mltype = Val_GdkAtom (atype);
         pair = alloc_small(2,0);
         Field(pair,0) = mltype;
