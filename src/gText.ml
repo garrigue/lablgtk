@@ -24,12 +24,81 @@ object
   method get_deleted () = Child_Anchor.get_deleted obj
 end
 
-let child_anchor = new child_anchor(Child_Anchor.create ())
+let child_anchor () = new child_anchor(Child_Anchor.create ())
 
 class iter it =
 object
-  val iterator = (it: textiter)
-  method iterator = it
+  val it = (it: textiter)
+  method as_textiter = it
+  method get_buffer () = GtkText.Iter.get_buffer it
+  method get_offset () = GtkText.Iter.get_offset it
+  method get_line () = GtkText.Iter.get_line it
+  method get_line_offset () = GtkText.Iter.get_line_offset it
+  method get_line_index () = GtkText.Iter.get_line_index it
+  method get_visible_line_index () = GtkText.Iter.get_visible_line_index it
+  method get_visible_line_offset () = GtkText.Iter.get_visible_line_offset it
+  method get_char () = GtkText.Iter.get_char it
+  method get_slice ~stop = GtkText.Iter.get_slice it stop
+  method get_text ~stop = GtkText.Iter.get_text it stop
+  method get_visible_slice ~stop = GtkText.Iter.get_visible_slice it stop
+  method get_visible_text  ~stop = GtkText.Iter.get_visible_text it stop
+  method get_pixbuf () = GtkText.Iter.get_pixbuf it
+  method get_marks () = GtkText.Iter.get_marks it
+  method get_toggled_tags  = GtkText.Iter.get_toggled_tags it
+  method get_child_anchor  = GtkText.Iter.get_child_anchor it
+  method begins_tag  = GtkText.Iter.begins_tag it
+  method ends_tag  = GtkText.Iter.ends_tag it
+  method toggles_tag  = GtkText.Iter.toggles_tag it
+  method has_tag  = GtkText.Iter.has_tag it
+  method get_tags () = GtkText.Iter.get_tags it
+  method editable  = GtkText.Iter.editable it
+  method can_insert  = GtkText.Iter.can_insert it
+  method starts_word () = GtkText.Iter.starts_word it
+  method ends_word () = GtkText.Iter.ends_word it
+  method inside_word () = GtkText.Iter.inside_word it
+  method starts_line () = GtkText.Iter.starts_line it
+  method ends_line () = GtkText.Iter.ends_line it
+  method starts_sentence () = GtkText.Iter.starts_sentence it
+  method ends_sentence () = GtkText.Iter.ends_sentence it
+  method inside_sentence () = GtkText.Iter.inside_sentence it
+  method is_cursor_position () = GtkText.Iter.is_cursor_position it
+  method get_chars_in_line () = GtkText.Iter.get_chars_in_line it
+  method get_bytes_in_line () = GtkText.Iter.get_bytes_in_line it
+  method is_end () = GtkText.Iter.is_end it
+  method is_start () = GtkText.Iter.is_start it
+  method forward_char () = GtkText.Iter.forward_char it
+  method backward_char () = GtkText.Iter.backward_char it
+  method forward_chars = GtkText.Iter.forward_chars it
+  method backward_chars  = GtkText.Iter.backward_chars it
+  method forward_line () = GtkText.Iter.forward_line it
+  method backward_line () = GtkText.Iter.backward_line it
+  method forward_lines  = GtkText.Iter.forward_lines it
+  method backward_lines  = GtkText.Iter.backward_lines it
+  method forward_word_end () = GtkText.Iter.forward_word_end it
+  method forward_word_ends  = GtkText.Iter.forward_word_ends it
+  method backward_word_start () = GtkText.Iter.backward_word_start it
+  method backward_word_starts  = GtkText.Iter.backward_word_starts it
+  method forward_cursor_position () = GtkText.Iter.forward_cursor_position it
+  method backward_cursor_position () = GtkText.Iter.backward_cursor_position it
+  method forward_cursor_positions  = GtkText.Iter.forward_cursor_positions it
+  method backward_cursor_positions  = GtkText.Iter.backward_cursor_positions it
+  method forward_sentence_end () = GtkText.Iter.forward_sentence_end it
+  method backward_sentence_start () = GtkText.Iter.backward_sentence_start it
+  method forward_sentence_ends  = GtkText.Iter.forward_sentence_ends it
+  method backward_sentence_starts  = GtkText.Iter.backward_sentence_starts it
+  method set_offset  = GtkText.Iter.set_offset it
+  method set_line  = GtkText.Iter.set_line it
+  method set_line_offset  = GtkText.Iter.set_line_offset it
+  method set_line_index  = GtkText.Iter.set_line_index it
+  method set_visible_line_index  = GtkText.Iter.set_visible_line_index it
+  method set_visible_line_offset  = GtkText.Iter.set_visible_line_offset it
+  method forward_to_end () = GtkText.Iter.forward_to_end it
+  method forward_to_line_end () = GtkText.Iter.forward_to_line_end it
+  method forward_to_tag_toggle  = GtkText.Iter.forward_to_tag_toggle it
+  method backward_to_tag_toggle  = GtkText.Iter.backward_to_tag_toggle it
+  method equal  = GtkText.Iter.equal it
+  method compare  = GtkText.Iter.compare it
+  method in_range ~start ~stop  = GtkText.Iter.in_range it start stop
 end
 
 class tag obj =
@@ -221,6 +290,34 @@ class view obj = object
     GtkText.View.set_cursor_visible obj b
   method get_cursor_visible () =
     GtkText.View.get_cursor_visible obj
+  method get_pixels_above_lines () = 
+    GtkText.View.get_pixels_above_lines obj 
+  method set_pixels_above_lines n = 
+    GtkText.View.set_pixels_above_lines obj n
+  method get_pixels_below_lines () = 
+    GtkText.View.get_pixels_below_lines obj 
+  method set_pixels_below_lines n = 
+    GtkText.View.set_pixels_below_lines obj n
+  method get_pixels_inside_wrap () = 
+    GtkText.View.get_pixels_inside_wrap obj 
+  method set_pixels_inside_wrap n = 
+    GtkText.View.set_pixels_inside_wrap obj n
+  method get_justification () = 
+    GtkText.View.get_justification obj 
+  method set_justification j = 
+    GtkText.View.set_justification obj j
+  method get_left_margin () = 
+    GtkText.View.get_left_margin obj 
+  method set_left_margin n = 
+    GtkText.View.set_left_margin obj n
+  method get_right_margin () = 
+    GtkText.View.get_right_margin obj 
+  method set_right_margin n = 
+    GtkText.View.set_right_margin obj n
+  method get_indent () = 
+    GtkText.View.get_indent obj 
+  method set_indent n = 
+    GtkText.View.set_indent obj n
 
 end
 
@@ -231,3 +328,4 @@ let view ?(buffer:buffer option) ?packing ?show () =
       | Some b -> View.create_with_buffer b#as_buffer
     in
     pack_return (new view w) ~packing ~show
+
