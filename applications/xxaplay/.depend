@@ -1,4 +1,0 @@
-xafile.cmo: xafile.cmi 
-xafile.cmx: xafile.cmi 
-xxaplay.cmo: dsp.cmo wav.cmo xaadpcm.cmo xafile.cmi 
-xxaplay.cmx: dsp.cmx wav.cmx xaadpcm.cmx xafile.cmx 
