@@ -154,6 +154,7 @@ module Window :
     external clear : window -> unit = "ml_gdk_window_clear"
     external get_xwindow : 'a drawable -> xid = "ml_GDK_WINDOW_XWINDOW"
     val set_back_pixmap : window -> background_pixmap -> unit
+    val set_cursor : window -> cursor -> unit
   end
 
 module PointArray :

@@ -189,6 +189,8 @@ module Window = struct
   external root_parent : unit -> window = "ml_GDK_ROOT_PARENT"
   external set_back_pixmap : window -> pixmap -> int -> unit = 
     "ml_gdk_window_set_back_pixmap"
+  external set_cursor : window -> cursor -> unit = 
+    "ml_gdk_window_set_cursor"
   external clear : window -> unit = "ml_gdk_window_clear"
   external get_xwindow : 'a drawable -> xid = "ml_GDK_WINDOW_XWINDOW"
 

@@ -247,13 +247,16 @@ class paned :
   object
     inherit container_full
     val obj : Gtk.paned obj
+    method event : event_ops
     method add1 : widget -> unit
     method add2 : widget -> unit
-    method event : event_ops
+    method pack1 : ?resize:bool -> ?shrink:bool -> widget -> unit
+    method pack2 : ?resize:bool -> ?shrink:bool -> widget -> unit
     method child1 : widget
     method child2 : widget
     method handle_size : int
     method set_handle_size : int -> unit
+    method set_position : int -> unit
   end
 val paned :
   Tags.orientation ->

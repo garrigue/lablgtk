@@ -180,8 +180,16 @@ module Paned = struct
       = "ml_gtk_paned_add1"
   external add2 : [>`paned] obj -> [>`widget] obj -> unit
       = "ml_gtk_paned_add2"
+  external pack1 :
+      [>`paned] obj -> [>`widget] obj -> resize:bool -> shrink:bool -> unit
+      = "ml_gtk_paned_pack1"
+  external pack2 :
+      [>`paned] obj -> [>`widget] obj -> resize:bool -> shrink:bool -> unit
+      = "ml_gtk_paned_pack2"
   external set_handle_size : [>`paned] obj -> int -> unit
       = "ml_gtk_paned_set_handle_size"
+  external set_position : [>`paned] obj -> int -> unit
+      = "ml_gtk_paned_set_position"
   let set ?handle_size w =
     may ~f:(set_handle_size w) handle_size
   external child1 : [>`paned] obj -> widget obj = "ml_gtk_paned_child1"
