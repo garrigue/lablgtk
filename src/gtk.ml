@@ -491,8 +491,10 @@ module Container = struct
       = "ml_gtk_container_unblock_resize"
   external need_resize : [> container] obj -> bool
       = "ml_gtk_container_need_resize"
-  let set w ?border_width:border ?enable_resize:enable ?block_resize:block =
+  let set w ?border_width:border ?:width [< -1 >] ?:height [< -1 >]
+      ?enable_resize:enable ?block_resize:block =
     may border fun:(border_width w);
+    if width > -1 || height > -1 then Widget.set_usize w :width :height;
     may enable fun:(fun b -> (if b then enable_resize else disable_resize) w);
     may block  fun:(fun b -> (if b then block_resize else unblock_resize) w)
   external foreach : [> container] obj -> fun:(Widget.t obj-> unit) -> unit
@@ -1457,6 +1459,16 @@ module ScrolledWindow = struct
   external set_policy :
       [> scrolled] obj -> horizontal:policy -> vertical:policy -> unit
       = "ml_gtk_scrolled_window_set_policy"
+  external get_hscrollbar_policy : [> scrolled] obj -> policy
+      = "ml_gtk_scrolled_window_get_hscrollbar_policy"
+  external get_vscrollbar_policy : [> scrolled] obj -> policy
+      = "ml_gtk_scrolled_window_get_vscrollbar_policy"
+  let set w ?:hscrollbar_policy ?:vscrollbar_policy =
+    if hscrollbar_policy <> None || vscrollbar_policy <> None then
+      set_policy w
+	horizontal:(may_default get_hscrollbar_policy w for:hscrollbar_policy)
+	vertical:(may_default get_vscrollbar_policy w for:vscrollbar_policy);
+    Container.set ?w
 end
 
 module Table = struct

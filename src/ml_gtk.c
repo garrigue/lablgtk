@@ -813,6 +813,10 @@ ML_1 (gtk_scrolled_window_get_vadjustment, GtkScrolledWindow_val,
       Val_GtkWidget)
 ML_3 (gtk_scrolled_window_set_policy, GtkScrolledWindow_val,
       Policy_val, Policy_val, Unit)
+Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
+		hscrollbar_policy, Val_policy)
+Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
+		vscrollbar_policy, Val_policy)
 
 /* gtktable.h */
 

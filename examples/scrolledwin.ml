@@ -6,12 +6,10 @@ open GtkObj
 let main () =
   let window = new_dialog () in
   window#connect#destroy callback:Main.quit;
-  window#set title: "dialog" border_width: 10;
-  window#widget_ops#set width: 300 height: 300;
+  window#set title: "dialog" border_width: 10 width: 300 height: 300;
 
   let scrolled_window = new_scrolled_window () in
-  scrolled_window#set border_width: 10;
-  scrolled_window#set_policy horizontal: `AUTOMATIC vertical: `ALWAYS;
+  scrolled_window#set border_width: 10 hscrollbar_policy: `AUTOMATIC;
   window#vbox#pack scrolled_window;
   scrolled_window#show ();
 
@@ -33,9 +31,9 @@ let main () =
   let button = new_button label: "close" in
   button#connect#clicked callback: Main.quit;
   (* GTK_WIDGET_SET_FLAGS(button, GTK_CAN_DEFAULT) is as follows *)
-  button#widget_ops#set can_default:true;
+  button#set can_default:true;
   window#action_area#pack button;
-  button#widget_ops#grab_default ();
+  button#grab_default ();
   button#show ();
   window#show ();
   Main.main ()

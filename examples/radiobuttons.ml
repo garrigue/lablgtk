@@ -36,8 +36,8 @@ let main () =
   let button = new_button label: "close" in
   button#connect#clicked callback:Main.quit;
   box3#pack button;
-  button#widget_ops#set can_default:true;
-  button#widget_ops#grab_default ();
+  button#set can_default:true;
+  button#grab_default ();
 
   window#show_all ();
 
