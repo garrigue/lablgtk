@@ -100,7 +100,7 @@ class ['a] dialog_signals :
     method response : callback:('a -> unit) -> GtkSignal.id
     method close : callback:(unit -> unit) -> GtkSignal.id
   end
-class ['a] dialog : ([>Gtk.dialog] as 'b) obj ->
+class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
   object
     constraint 'a = [> `DELETE_EVENT | `NONE]
     inherit [window] window_skel
@@ -109,14 +109,18 @@ class ['a] dialog : ([>Gtk.dialog] as 'b) obj ->
     method connect : 'a dialog_signals
     method event : event_ops
     method vbox : GPack.box
-    method add_button : string -> 'a -> unit
-    method add_button_stock : GtkStock.id -> 'a -> unit
     method response : 'a -> unit
     method set_response_sensitive : 'a -> bool -> unit
     method set_default_response : 'a -> unit
     method has_separator : bool
     method set_has_separator : bool -> unit
     method run : unit -> 'a
+  end
+class ['a] dialog : [>Gtk.dialog] obj ->
+  object
+    inherit ['a] dialog_skel
+    method add_button : string -> 'a -> unit
+    method add_button_stock : GtkStock.id -> 'a -> unit
   end
 val dialog :
   ?no_separator:bool ->
@@ -143,11 +147,14 @@ val ok : [>`OK] buttons
 val close : [>`CLOSE] buttons
 val yes_no : [>`YES|`NO] buttons
 val ok_cancel : [>`OK|`CANCEL] buttons
+type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT | `NONE]
+type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT | `NONE]
+type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT | `NONE]
 end
 class type ['a] message_dialog =
   object
-    inherit ['a] dialog
-    val obj : [>Gtk.message_dialog] obj
+    inherit ['a] dialog_skel
+    val obj : [> Gtk.message_dialog] obj
     method message_type : Tags.message_type
     method set_message_type : Tags.message_type -> unit
   end
@@ -171,10 +178,9 @@ val message_dialog :
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> 'a message_dialog
 
-class ['a] color_selection_dialog : Gtk.color_selection_dialog obj ->
+class color_selection_dialog : Gtk.color_selection_dialog obj ->
   object
-    constraint 'a = [> `OK | `CANCEL | `HELP]
-    inherit ['a] dialog
+    inherit [Buttons.color_selection] dialog_skel
     val obj : Gtk.color_selection_dialog obj
     method cancel_button : GButton.button
     method colorsel : GMisc.color_selection
@@ -195,12 +201,11 @@ val color_selection_dialog :
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a color_selection_dialog
+  ?width:int -> ?height:int -> ?show:bool -> unit -> color_selection_dialog
 
-class ['a] file_selection : Gtk.file_selection obj ->
+class file_selection : Gtk.file_selection obj ->
   object
-    constraint 'a = [> `OK | `CANCEL | `HELP]
-    inherit ['a] dialog
+    inherit [Buttons.file_selection] dialog_skel
     val obj : Gtk.file_selection obj
     method cancel_button : GButton.button
     method complete : filter:string -> unit
@@ -233,12 +238,11 @@ val file_selection :
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a file_selection
+  ?width:int -> ?height:int -> ?show:bool -> unit -> file_selection
 
-class ['a] font_selection_dialog : Gtk.font_selection_dialog obj ->
+class font_selection_dialog : Gtk.font_selection_dialog obj ->
   object
-    constraint 'a = [> `OK | `CANCEL | `APPLY]
-    inherit ['a] dialog
+    inherit [Buttons.font_selection] dialog_skel
     val obj : Gtk.font_selection_dialog obj
     method apply_button : GButton.button
     method cancel_button : GButton.button
@@ -260,7 +264,7 @@ val font_selection_dialog :
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a font_selection_dialog
+  ?width:int -> ?height:int -> ?show:bool -> unit -> font_selection_dialog
 
 class plug : Gtk.plug obj -> window
 
