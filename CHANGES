@@ -1,5 +1,8 @@
 $Id$
 
+2003.02.26 [Benjamin]
+ * Use mnemonics by default in factories
+
 2003.02.25 [Benjamin]
  * GMenu new methods
  * Support for mnemonic in labels.
