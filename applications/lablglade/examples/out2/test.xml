@@ -26,94 +26,41 @@
   <auto_shrink>False</auto_shrink>
 
   <widget>
-    <class>GtkVBox</class>
-    <name>vbox1</name>
-    <homogeneous>False</homogeneous>
-    <spacing>0</spacing>
+    <class>GtkFixed</class>
+    <name>fixed1</name>
 
     <widget>
-      <class>GtkHBox</class>
-      <name>hbox1</name>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-      <homogeneous>False</homogeneous>
-      <spacing>0</spacing>
+      <class>GtkButton</class>
+      <name>button1</name>
+      <x>24</x>
+      <y>8</y>
+      <width>47</width>
+      <height>22</height>
+      <can_focus>True</can_focus>
+      <label>button1</label>
+    </widget>
 
-      <widget>
-	<class>GtkFixed</class>
-	<name>fixed1</name>
-	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label1</name>
-	  <x>0</x>
-	  <y>8</y>
-	  <width>34</width>
-	  <height>16</height>
-	  <label>Hello!</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkEntry</class>
-	  <name>entry1</name>
-	  <x>72</x>
-	  <y>8</y>
-	  <width>72</width>
-	  <height>24</height>
-	  <can_focus>True</can_focus>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>0</text_max_length>
-	  <text>100</text>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>button1</name>
-	  <x>72</x>
-	  <y>56</y>
-	  <width>47</width>
-	  <height>22</height>
-	  <can_focus>True</can_focus>
-	  <label>OK</label>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkText</class>
-	<name>text1</name>
-	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
-	</child>
-	<can_focus>True</can_focus>
-	<editable>False</editable>
-	<text></text>
-      </widget>
+    <widget>
+      <class>GtkEntry</class>
+      <name>entry1</name>
+      <x>24</x>
+      <y>40</y>
+      <width>158</width>
+      <height>22</height>
+      <can_focus>True</can_focus>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>0</text_max_length>
+      <text></text>
     </widget>
 
     <widget>
       <class>GtkDrawingArea</class>
       <name>drawingarea1</name>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
+      <x>16</x>
+      <y>80</y>
+      <width>368</width>
+      <height>200</height>
     </widget>
   </widget>
 </widget>

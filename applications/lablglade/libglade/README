@@ -3,4 +3,5 @@ glade_project_window.{c,h}:
 	Now, GladeProjectWindow is a widget.
 
 source.c:
+	Entirely rewritten. 
 	Some stub functions to call ML functions. 
