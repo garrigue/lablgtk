@@ -93,22 +93,12 @@ val scale :
 (** @gtkdoc gtk GtkScrollbar
    @gtkdoc gtk GtkHScrollbar
    @gtkdoc gtk GtkVScrollbar *)
-class scrollbar : Gtk.scrollbar obj ->
-  object
-    inherit range
-    val obj : Gtk.scrollbar obj
-    method event : event_ops
-  end
-
-(** @gtkdoc gtk GtkScrollbar
-   @gtkdoc gtk GtkHScrollbar
-   @gtkdoc gtk GtkVScrollbar *)
 val scrollbar :
   Tags.orientation ->
   ?adjustment:GData.adjustment ->
   ?inverted:bool ->
   ?update_policy:Tags.update_type ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> scrollbar
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> range
 
 (** {3 GtkRuler} *)
 
@@ -120,6 +110,7 @@ class ruler :
   object
     inherit GObj.widget_full
     val obj : 'a Gtk.obj
+    method event : GObj.event_ops
     method set_metric : Tags.metric_type -> unit
     method set_lower : float -> unit
     method set_max_size : float -> unit

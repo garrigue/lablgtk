@@ -4,4 +4,4 @@ config.status
 config.log
 configure
 aclocal.m4
-doc/html
+autom4te.cache

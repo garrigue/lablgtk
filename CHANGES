@@ -1,6 +1,12 @@
 $Id$
 
-2002.10.30 [Jacques]
+2003.11.30 [Olivier]
+  * remove event method from GButton.button_skel, GPack.notebook,
+      GPack.paned, GRange.scrollbar
+  * removed GRange.scrollbar
+  * added event method in GTree.view, GRange.ruler
+
+2003.10.30 [Jacques]
   * add GWindow.file_selection#dir_list  (Francois Pessaux)
   * move GBin.socket to GWindow.socket (this wasn't a bin)
   * add GWindow.plug_signals

@@ -207,7 +207,6 @@ class notebook : Gtk.notebook obj ->
   object
     inherit GContainer.container
     val obj : Gtk.notebook obj
-    method event : event_ops
     method append_page :
       ?tab_label:widget -> ?menu_label:widget -> widget -> unit
     method connect : notebook_signals
@@ -268,7 +267,6 @@ class paned :
   object
     inherit GContainer.container_full
     val obj : Gtk.paned obj
-    method event : event_ops
     method add1 : widget -> unit
     method add2 : widget -> unit
     method pack1 : ?resize:bool -> ?shrink:bool -> widget -> unit

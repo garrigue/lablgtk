@@ -20,7 +20,6 @@ class button_skel : 'a obj ->
     method set_label : string -> unit
     method label : string
     method grab_default : unit -> unit
-    method event : event_ops
   end
 
 (** @gtkdoc gtk GtkButton *)

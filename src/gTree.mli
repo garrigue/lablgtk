@@ -347,6 +347,7 @@ class view : tree_view obj ->
     method collapse_all : unit -> unit
     method collapse_row : tree_path -> unit
     method enable_search : bool
+    method event : GObj.event_ops
     method expand_all : unit -> unit
     method expand_row : ?all:bool -> tree_path -> unit
     method expander_column : view_column option
