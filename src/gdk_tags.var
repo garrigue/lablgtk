@@ -50,7 +50,7 @@ type setting_action "gdkSettingAction" = "GDK_SETTING_ACTION_"
   [ `NEW | `CHANGED | `DELETED ]
 
 type window_state "gdkWindowState" = "GDK_WINDOW_STATE_"
-  [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY ]
+  [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY | `FULLSCREEN ]
 
 type fill_rule = "GDK_"
   [ `EVEN_ODD_RULE | `WINDING_RULE ]

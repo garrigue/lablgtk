@@ -1,6 +1,9 @@
 $Id$
 
-In lablgtk2-20050217:
+In lablgtk2-20050218:
+2005.02.18 [Jacques]
+  * add GObj.event_signals#scroll and other missing wevents (Hendrik Tews)
+
 2005.02.17 [Jacques]
   * allow using vmthreads
 
