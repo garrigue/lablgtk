@@ -101,11 +101,11 @@ MLOBJS = gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
 	gtk.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
-	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo
-#	gDraw.cmo \
-#	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
-#	gMenu.cmo gMisc.cmo gWindow.cmo.cmo gList.cmo gBin.cmo \
-#	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
+	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo \
+	gDraw.cmo \
+	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
+	gMenu.cmo gMisc.cmo gWindow.cmo gList.cmo gBin.cmo \
+	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo

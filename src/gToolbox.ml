@@ -139,6 +139,7 @@ let input_string ~title ?ok ?cancel ?(text="") message =
     ~get_text:(fun () -> we_chaine#text) ~bind_ok:true
     ~title ?ok ?cancel message
 
+(*
 let input_text ~title ?ok ?cancel ?(text="") message =
   let wt_chaine = GEdit.text ~editable: true () in
   if text <> "" then begin
@@ -148,7 +149,7 @@ let input_text ~title ?ok ?cancel ?(text="") message =
   input_widget ~widget:wt_chaine#coerce ~event:wt_chaine#event
     ~get_text:(fun () -> wt_chaine#get_chars ~start:0 ~stop:wt_chaine#length)
     ~bind_ok:false ~title ?ok ?cancel message
-
+*)
 
 (**This variable contains the last directory where the user selected a file.*)
 let last_dir = ref ""
@@ -179,8 +180,10 @@ let select_file ~title ?(dir = last_dir) ?(filename="") () =
   GMain.Main.main ();
   !file
 
+
 type 'a tree = [`L of 'a | `N of 'a * 'a tree list]
 
+(*
 class ['a] tree_selection ~tree ~label ~info ?(width=300) ?(height=400)
     ?packing ?show () =
   let main_box = GPack.vbox ?packing ?show () in
@@ -257,7 +260,7 @@ let tree_selection_dialog ~tree ~label ~info ~title
   window#show ();
   GMain.Main.main () ;
   ts#selection
-
+*)
 
 (** Misc *)
 

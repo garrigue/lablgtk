@@ -27,7 +27,7 @@ module Rc : sig
 end
 
 module Timeout : sig
-  type id = GtkMain.Timeout.id
+  type id = Glib.Timeout.id
   val add : ms:int -> callback:(unit -> bool) -> id
   val remove : id -> unit
 end

@@ -67,7 +67,6 @@ class spin_button : Gtk.spin_button obj ->
     method set_adjustment : GData.adjustment -> unit
     method set_digits : int -> unit
     method set_numeric : bool -> unit
-    method set_shadow_type : Tags.shadow_type -> unit
     method set_snap_to_ticks : bool -> unit
     method set_update_policy : [`ALWAYS|`IF_VALID] -> unit
     method set_value : float -> unit
@@ -85,7 +84,6 @@ val spin_button :
   ?update_policy:[`ALWAYS|`IF_VALID] ->
   ?numeric:bool ->
   ?wrap:bool ->
-  ?shadow_type:Tags.shadow_type ->
   ?snap_to_ticks:bool ->
   ?width:int ->
   ?height:int ->
@@ -116,6 +114,7 @@ val combo :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> combo
 
+(*
 class text : Gtk.text obj ->
   object
     inherit editable
@@ -144,3 +143,4 @@ val text :
   ?line_wrap:bool ->
   ?width:int ->
   ?height:int -> ?packing:(widget -> unit) -> ?show:bool -> unit -> text
+*)

@@ -54,7 +54,7 @@ end
 
 let tooltips ?delay () =
   let tt = Tooltips.create () in
-  Tooltips.set tt ?delay;
+  may delay ~f:(Tooltips.set_delay tt);
   new tooltips tt
 
 

@@ -40,9 +40,9 @@ class ['a] pre_menu_item_skel obj = object
   method as_item = (obj :> Gtk.menu_item obj)
   method set_submenu (w : 'a pre_menu) = MenuItem.set_submenu obj w#as_menu
   method remove_submenu () = MenuItem.remove_submenu obj
-  method configure = MenuItem.configure obj
+  (* method configure = MenuItem.configure obj *)
   method activate () = MenuItem.activate obj
-  method right_justify () = MenuItem.right_justify obj
+  method set_right_justified = MenuItem.set_right_justified obj
   method add_accelerator ~group ?modi:m ?flags key=
     Widget.add_accelerator obj ~sgn:MenuItem.Signals.activate group ?flags
       ?modi:m ~key

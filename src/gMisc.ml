@@ -20,7 +20,7 @@ class statusbar_context obj ctx = object (self)
   method remove = Statusbar.remove obj context
   method flash ?(delay=1000) text =
     let msg = self#push text in
-    GtkMain.Timeout.add ~ms:delay ~callback:(fun () -> self#remove msg; false);
+    Glib.Timeout.add ~ms:delay ~callback:(fun () -> self#remove msg; false);
     ()
 end
 
@@ -105,12 +105,14 @@ let arrow ~kind ~shadow
 
 class image obj = object
   inherit misc obj
-  method set_image ?mask image = Image.set obj image ?mask
+  method set_image ?mask image = Image.set_image obj image ?mask
+  method set_pixmap ?mask image = Image.set_pixmap obj image ?mask
+  method set_file image = Image.set_file obj image
+  method set_pixbuf image = Image.set_pixbuf obj image
 end
 
-let image image ?mask
-    ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
-  let w = Image.create image ?mask in
+let image ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
+  let w = Image.create () in
   Misc.set w ?xalign ?yalign ?xpad ?ypad ?width ?height;
   pack_return (new image w) ~packing ~show
 
@@ -171,16 +173,15 @@ let tips_query ?caller ?emit_always ?label_inactive ?label_no_tip
 class color_selection obj = object
   inherit GObj.widget_full (obj : Gtk.color_selection obj)
   method set_update_policy = ColorSelection.set_update_policy obj
-  method set_opacity = ColorSelection.set_opacity obj
   method set_color ~red ~green ~blue ?opacity () =
     ColorSelection.set_color obj ~red ~green ~blue ?opacity
   method get_color = ColorSelection.get_color obj
 end
 
-let color_selection ?update_policy ?opacity
+let color_selection ?update_policy
     ?border_width ?width ?height ?packing ?show () =
   let w = ColorSelection.create () in
-  ColorSelection.set w ?update_policy ?opacity;
+  may update_policy ~f:(ColorSelection.set_update_policy w);
   Container.set w ?border_width ?width ?height;
   pack_return (new color_selection w) ~packing ~show
 
@@ -210,7 +211,6 @@ class font_selection obj = object
   method set_font_name = FontSelection.set_font_name obj
   method preview_text = FontSelection.get_preview_text obj
   method set_preview_text = FontSelection.set_preview_text obj
-  method set_filter = FontSelection.set_filter obj
 end
 
 let font_selection ?border_width ?width ?height ?packing ?show () =

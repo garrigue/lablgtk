@@ -2,6 +2,7 @@
 
 open StdLabels
 open Gaux
+open Gobject
 open Gtk
 open GtkData
 open GtkBase
@@ -11,12 +12,12 @@ open GtkBase
 class gtkobj obj = object
   val obj = obj
   method destroy () = Object.destroy obj
-  method get_id = Object.get_id obj
+  method get_id = get_id obj
 end
 
 class gtkobj_misc obj = object
   val obj = obj
-  method get_type = Type.name (Object.get_type obj)
+  method get_type = Type.name (get_type obj)
   method disconnect = GtkSignal.disconnect obj
   method handler_block = GtkSignal.handler_block obj
   method handler_unblock = GtkSignal.handler_unblock obj
@@ -94,7 +95,7 @@ class style st = object
   method as_style = style
   method copy = {< style = Style.copy style >}
   method colormap = Style.get_colormap style
-  method font = Style.get_font style
+  (* method font = Style.get_font style *)
   method bg = Style.get_bg style
   method set_bg = iter_setcol Style.set_bg style
   method fg = Style.get_fg style
@@ -109,7 +110,7 @@ class style st = object
   method set_base = iter_setcol Style.set_base style
   method text = Style.get_text style
   method set_text = iter_setcol Style.set_text style
-  method set_font = Style.set_font style
+  (* method set_font = Style.set_font style *)
 end
 
 class selection_input (sel : Gtk.selection_data) = object
@@ -191,7 +192,7 @@ and drag_context context = object
   method context = context
   method finish = DnD.finish context
   method source_widget =
-    new widget (Object.unsafe_cast (DnD.get_source_widget context))
+    new widget (unsafe_cast (DnD.get_source_widget context))
   method set_icon_widget (w : widget) =
     DnD.set_icon_widget context (w#as_widget)
   method set_icon_pixmap ?(colormap = Gdk.Color.get_system_colormap ())
@@ -222,7 +223,7 @@ and misc_signals ?after obj = object
     GtkSignal.connect obj ~sgn:Widget.Signals.parent_set ~after ~callback:
       begin function
 	  None   -> callback None
-	| Some w -> callback (Some (new widget (Object.unsafe_cast w)))
+	| Some w -> callback (Some (new widget (unsafe_cast w)))
       end
   method style_set ~callback =
     GtkSignal.connect obj ~sgn:Widget.Signals.style_set ~after ~callback:
@@ -253,7 +254,7 @@ and misc_ops obj = object
   method draw = Widget.draw obj
   method activate () = Widget.activate obj
   method reparent (w : widget) =  Widget.reparent obj w#as_widget
-  method popup = Widget.popup obj
+  (* method popup = Widget.popup obj *)
   method intersect = Widget.intersect obj
   method grab_focus () = Widget.grab_focus obj
   method grab_default () = Widget.grab_default obj
@@ -262,7 +263,7 @@ and misc_ops obj = object
     Widget.add_accelerator obj ~sgn:sg group ~key ?modi ?flags
   method remove_accelerator ~group ?modi key =
     Widget.remove_accelerator obj group ~key ?modi
-  method lock_accelerators () = Widget.lock_accelerators obj
+  (* method lock_accelerators () = Widget.lock_accelerators obj *)
   method set_name = Widget.set_name obj
   method set_state = Widget.set_state obj
   method set_sensitive = Widget.set_sensitive obj
@@ -275,7 +276,7 @@ and misc_ops obj = object
   (* get functions *)
   method name = Widget.get_name obj
   method toplevel =
-    try new widget (Object.unsafe_cast (Widget.get_toplevel obj))
+    try new widget (unsafe_cast (Widget.get_toplevel obj))
     with Gpointer.Null -> failwith "GObj.misc_ops#toplevel"
   method window = Widget.window obj
   method colormap = Widget.get_colormap obj
@@ -286,7 +287,7 @@ and misc_ops obj = object
   method visible = Widget.visible obj
   method has_focus = Widget.has_focus obj
   method parent =
-    try Some (new widget (Object.unsafe_cast (Widget.parent obj)))
+    try Some (new widget (unsafe_cast (Widget.parent obj)))
     with Gpointer.Null -> None
   method set_app_paintable = Widget.set_app_paintable obj
   method allocation = Widget.allocation obj
@@ -301,7 +302,7 @@ and widget obj = object (self)
   inherit gtkobj obj
   method as_widget = (obj :> Gtk.widget obj)
   method misc = new misc_ops (obj :> Gtk.widget obj)
-  method drag = new drag_ops (Object.unsafe_cast obj : Gtk.widget obj)
+  method drag = new drag_ops (unsafe_cast obj : Gtk.widget obj)
   method coerce = (self :> widget)
 end
 
