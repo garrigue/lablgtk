@@ -16,11 +16,7 @@ let hash_variant s =
 
 open Genlex
 
-let lexer = make_lexer ["type"; "exception"; "public"; "="; "["; "]"]
-
-let may_public = parser
-    [< ' Kwd "public" >] -> true
-  | [< >] -> false
+let lexer = make_lexer ["type"; "="; "["; "]"]
 
 let main () =
   let s = lexer (Stream.of_channel stdin) in
@@ -40,8 +36,7 @@ let main () =
 	  print_int hash;
 	  print_string ")\n"
 	end
-    | [< ' Kwd "type"; _ = may_public; ' Ident _; ' Kwd "=" >] -> ()
-    | [< ' Kwd "exception"; ' Ident _ >] -> ()
+    | [< ' Kwd "type"; ' Ident _; ' Kwd "=" >] -> ()
     | [< ' (String _ | Kwd("["|"]")) >] -> ()
     | [< >] -> raise End_of_file
   done with End_of_file -> ()

@@ -13,7 +13,6 @@ type atom = int
 type keysym = int
 type 'a event
 type drag_context
-type cursor
 
 exception Error of string
 
@@ -320,91 +319,3 @@ module X :
     val flush : unit -> unit (* also in GtkMain *)
     val beep : unit -> unit
   end
-
-module Cursor : sig
-  type cursor_type = [
-    | `X_CURSOR
-    | `ARROW
-    | `BASED_ARROW_DOWN
-    | `BASED_ARROW_UP
-    | `BOAT
-    | `BOGOSITY
-    | `BOTTOM_LEFT_CORNER
-    | `BOTTOM_RIGHT_CORNER
-    | `BOTTOM_SIDE
-    | `BOTTOM_TEE
-    | `BOX_SPIRAL
-    | `CENTER_PTR
-    | `CIRCLE
-    | `CLOCK
-    | `COFFEE_MUG
-    | `CROSS
-    | `CROSS_REVERSE
-    | `CROSSHAIR
-    | `DIAMOND_CROSS
-    | `DOT
-    | `DOTBOX
-    | `DOUBLE_ARROW
-    | `DRAFT_LARGE
-    | `DRAFT_SMALL
-    | `DRAPED_BOX
-    | `EXCHANGE
-    | `FLEUR
-    | `GOBBLER
-    | `GUMBY
-    | `HAND1
-    | `HAND2
-    | `HEART
-    | `ICON
-    | `IRON_CROSS
-    | `LEFT_PTR
-    | `LEFT_SIDE
-    | `LEFT_TEE
-    | `LEFTBUTTON
-    | `LL_ANGLE
-    | `LR_ANGLE
-    | `MAN
-    | `MIDDLEBUTTON
-    | `MOUSE
-    | `PENCIL
-    | `PIRATE
-    | `PLUS
-    | `QUESTION_ARROW
-    | `RIGHT_PTR
-    | `RIGHT_SIDE
-    | `RIGHT_TEE
-    | `RIGHTBUTTON
-    | `RTL_LOGO
-    | `SAILBOAT
-    | `SB_DOWN_ARROW
-    | `SB_H_DOUBLE_ARROW
-    | `SB_LEFT_ARROW
-    | `SB_RIGHT_ARROW
-    | `SB_UP_ARROW
-    | `SB_V_DOUBLE_ARROW
-    | `SHUTTLE
-    | `SIZING
-    | `SPIDER
-    | `SPRAYCAN
-    | `STAR
-    | `TARGET
-    | `TCROSS
-    | `TOP_LEFT_ARROW
-    | `TOP_LEFT_CORNER
-    | `TOP_RIGHT_CORNER
-    | `TOP_SIDE
-    | `TOP_TEE
-    | `TREK
-    | `UL_ANGLE
-    | `UMBRELLA
-    | `UR_ANGLE
-    | `WATCH
-    | `XTERM
-  ]
-  external create : cursor_type -> cursor = "ml_gdk_cursor_new"
-  external create_from_pixmap :
-    pixmap -> mask:bitmap ->
-    fg:Color.t -> bg:Color.t -> x:int -> y:int -> cursor
-    = "ml_gdk_cursor_new_from_pixmap_bc" "ml_gdk_cursor_new_from_pixmap"
-  external destroy : cursor -> unit = "ml_gdk_cursor_destroy"
-end
