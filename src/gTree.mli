@@ -165,8 +165,8 @@ class tree_sortable : ([> `treesortable|`treemodel] as 'a) obj ->
     method sort_column_changed : unit -> unit
     method get_sort_column_id : (int * Gtk.Tags.sort_type) option
     method set_sort_column_id : int -> Gtk.Tags.sort_type -> unit
-    method set_sort_func  : int -> (tree_sortable -> Gtk.tree_iter -> Gtk.tree_iter -> int) -> unit
-    method set_default_sort_func : (tree_sortable -> Gtk.tree_iter -> Gtk.tree_iter -> int) -> unit
+    method set_sort_func  : int -> (model -> Gtk.tree_iter -> Gtk.tree_iter -> int) -> unit
+    method set_default_sort_func : (model -> Gtk.tree_iter -> Gtk.tree_iter -> int) -> unit
     method has_default_sort_func : bool
   end
 
@@ -373,6 +373,8 @@ class view_column : tree_view_column obj ->
     method visible : bool
     method widget : widget option
     method width : int
+    method set_cell_data_func   : #cell_renderer -> (model -> Gtk.tree_iter -> unit) -> unit
+    method unset_cell_data_func : #cell_renderer -> unit
   end
 
 (** @gtkdoc gtk GtkTreeViewColumn *)

@@ -1,5 +1,11 @@
 $Id$
 
+2004.01.15 [Olivier]
+  * add gtk_tree_view_column_set_cell_data_func
+  * log error messages if ml_gtktree callbacks raise exceptions
+  * fix the types of some callbacks in GtkTreeSortable 
+    and GtkTreeModelFilter
+
 2004.01.13 [Jacques]
   * revert to GWindow.window_skel/window
   * prepare snapshot
