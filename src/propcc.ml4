@@ -37,9 +37,13 @@ let enums = [
     "SpinButtonUpdatePolicy"; "UpdateType"; "ProgressBarStyle";
     "ProgressBarOrientation"; "CellRendererMode";
     "TreeViewColumnSizing"; "SortType"; "TextDirection";
+    (* for canvas *)
+    "AnchorType"; "DirectionType"; 
   ];
   "Gdk", "GdkEnums",
-  [ "ExtensionMode"; "WindowTypeHint" ];
+  [ "ExtensionMode"; "WindowTypeHint";
+    (* for canvas
+    "CapStyle"; "JoinStyle"; "LineStyle" *)];
   "Pango", "PangoEnums",
   [ "Stretch"; "Style"; "Underline"; "Variant"; ]
 ]
@@ -55,7 +59,7 @@ let pointers = [
 ]
 
 let classes = [
-  "Gdk", [ "Image"; "Pixmap"; "Bitmap"; "Screen"; ];
+  "Gdk", [ "Image"; "Drawable"; "Pixmap"; "Bitmap"; "Screen"; ];
   "Gtk", [ "Style"; "TreeStore"; ]
 ]
 
@@ -91,6 +95,7 @@ let () =
     [ "gchararray", "string";
       "gchararray_opt", "string_option";
       "GtkStock", "GtkStock.conv";
+      "ArtWindRule", "conv_art_wind_rule";
     ];
   List.iter (enums @ flags) ~f:(fun (pre, _, l) ->
     List.iter l ~f:
@@ -141,6 +146,7 @@ let rec verbatim buf = parser
   | [< 'c ; s >] -> Buffer.add_char buf c; verbatim buf s
 
 let prefix = ref ""
+let use = ref ""
 let decls = ref []
 let headers = ref []
 let checks = ref false
@@ -157,6 +163,10 @@ let process_phrase ~chars = parser
   | [< ' Ident"header"; ' Kwd"{" >] ->
       let h = verbatim (Buffer.create 1000) chars in
       headers := !headers @ [h]
+  | [< ' Ident"prefix"; ' Ident id >] ->
+      prefix := id
+  | [< ' Ident"use"; ' Ident id >] ->
+      use := id
   | [< >] ->
       raise End_of_file
 
@@ -190,7 +200,7 @@ let process_file f =
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
   List.iter !headers ~f:(fun s -> out "%s\n" s);
-  if enums <> [] then begin
+  if enums <> [] && !use = "" then begin
     out "@[<hv2>module Conv = struct";
     List.iter ["enum", enums; "flags", flags] ~f:
       begin fun (conv,defs) ->

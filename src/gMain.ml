@@ -24,3 +24,6 @@ module Io = Glib.Io
 open Main
 let main = main
 let quit = quit
+
+let selection = GData.clipboard Gdk.Atom.primary
+let clipboard = GData.clipboard Gdk.Atom.clipboard

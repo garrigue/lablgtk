@@ -1,0 +1,176 @@
+(* $Id$ *)
+
+header {
+open Gobject
+open Data
+open GtkProps
+}
+
+use Gtk
+prefix GnomeCanvas
+
+class Item : GtkObject {
+  "parent"               GnomeCanvasItem      : Read / Write
+}
+
+class Shape : Item {
+  "cap-style"            GdkCapStyle          : Read / Write
+  "dash"                 gpointer             : Read / Write
+  "fill-color"           gchararray           : Write
+  "fill-color-gdk"       GdkColor             : Read / Write
+  "fill-color-rgba"      guint32              : Read / Write
+  "fill-stipple"         GdkDrawable          : Read / Write
+  "join-style"           GdkJoinStyle         : Read / Write
+  "miterlimit"           gdouble              : Read / Write
+  "outline-color"        gchararray           : Write
+  "outline-color-gdk"    GdkColor             : Read / Write
+  "outline-color-rgba"   guint32              : Read / Write
+  "outline-stipple"      GdkDrawable          : Read / Write
+  "width-pixels"         guint                : Read / Write
+  "width-units"          gdouble              : Write
+  "wind"                 ArtWindRule          : Read / Write
+}
+
+class Bpath : Shape {
+  "bpath"                GnomeCanvasPathDef   : Read / Write
+}
+
+class RE : Shape {
+  "x1"                   gdouble              : Read / Write
+  "x2"                   gdouble              : Read / Write
+  "y1"                   gdouble              : Read / Write
+  "y2"                   gdouble              : Read / Write
+}
+
+class Ellipse : RE {}
+class Rect : RE {}
+
+class Polygon : Shape {
+  "points"               GnomeCanvasPoints    : Read / Write
+}
+
+class Group : Item {
+  "x"                    gdouble              : Read / Write
+  "y"                    gdouble              : Read / Write
+}
+
+class Clipgroup : Group {
+  "path"                 gpointer             : Read / Write
+  "wind"                 ArtWindRule          : Read / Write
+}
+
+class Line : Item {
+  "arrow-shape-a"        gdouble              : Read / Write
+  "arrow-shape-b"        gdouble              : Read / Write
+  "arrow-shape-c"        gdouble              : Read / Write
+  "cap-style"            GdkCapStyle          : Read / Write
+  "fill-color"           gchararray           : Read / Write
+  "fill-color-gdk"       GdkColor             : Read / Write
+  "fill-color-rgba"      guint32              : Read / Write
+  "fill-stipple"         GdkDrawable          : Read / Write
+  "first-arrowhead"      gboolean             : Read / Write
+  "join-style"           GdkJoinStyle         : Read / Write
+  "last-arrowhead"       gboolean             : Read / Write
+  "line-style"           GdkLineStyle         : Read / Write
+  "points"               GnomeCanvasPoints    : Read / Write
+  "smooth"               gboolean             : Read / Write
+  "spline-steps"         guint                : Read / Write
+  "width-pixels"         guint                : Read / Write
+  "width-units"          gdouble              : Read / Write
+}
+
+class Pixbuf : Item {
+  "anchor"               GtkAnchorType        : Read / Write
+  "height"               gdouble              : Read / Write
+  "height-in-pixels"     gboolean             : Read / Write
+  "height-set"           gboolean             : Read / Write
+  "pixbuf"               GdkPixbuf            : Read / Write
+  "width"                gdouble              : Read / Write
+  "width-in-pixels"      gboolean             : Read / Write
+  "width-set"            gboolean             : Read / Write
+  "x"                    gdouble              : Read / Write
+  "x-in-pixels"          gboolean             : Read / Write
+  "y"                    gdouble              : Read / Write
+  "y-in-pixels"          gboolean             : Read / Write
+}
+
+class RichText : Item {
+  "anchor"               GtkAnchorType        : Read / Write
+  "cursor-blink"         gboolean             : Read / Write
+  "cursor-visible"       gboolean             : Read / Write
+  "direction"            GtkDirectionType     : Read / Write
+  "editable"             gboolean             : Read / Write
+  "grow-height"          gboolean             : Read / Write
+  "height"               gdouble              : Read / Write
+  "indent"               gint                 : Read / Write
+  "justification"        GtkJustification     : Read / Write
+  "left-margin"          gint                 : Read / Write
+  "pixels-above-lines"   gint                 : Read / Write
+  "pixels-below-lines"   gint                 : Read / Write
+  "pixels-inside-wrap"   gint                 : Read / Write
+  "right-margin"         gint                 : Read / Write
+  "text"                 gchararray           : Read / Write
+  "visible"              gboolean             : Read / Write
+  "width"                gdouble              : Read / Write
+  "wrap-mode"            GtkWrapMode          : Read / Write
+  "x"                    gdouble              : Read / Write
+  "y"                    gdouble              : Read / Write
+}
+
+class Text : Item {
+  "anchor"               GtkAnchorType        : Read / Write
+  "attributes"           PangoAttrList        : Read / Write
+  "clip"                 gboolean             : Read / Write
+  "clip-height"          gdouble              : Read / Write
+  "clip-width"           gdouble              : Read / Write
+  "family"               gchararray           : Read / Write
+  "family-set"           gboolean             : Read / Write
+  "fill-color"           gchararray           : Read / Write
+  "fill-color-gdk"       GdkColor             : Read / Write
+  "fill-color-rgba"      guint32              : Read / Write
+  "fill-stipple"         GdkDrawable          : Read / Write
+  "font"                 gchararray           : Read / Write
+  "font-desc"            PangoFontDescription : Read / Write
+  "justification"        GtkJustification     : Read / Write
+  "markup"               gchararray           : Write
+  "rise"                 gint                 : Read / Write
+  "rise-set"             gboolean             : Read / Write
+  "scale"                gdouble              : Read / Write
+  "scale-set"            gboolean             : Read / Write
+  "size"                 gint                 : Read / Write
+  "size-points"          gdouble              : Read / Write
+  "size-set"             gboolean             : Read / Write
+  "stretch"              PangoStretch         : Read / Write
+  "stretch-set"          gboolean             : Read / Write
+  "strikethrough"        gboolean             : Read / Write
+  "strikethrough-set"    gboolean             : Read / Write
+  "style"                PangoStyle           : Read / Write
+  "style-set"            gboolean             : Read / Write
+  "text"                 gchararray           : Read / Write
+  "text-height"          gdouble              : Read / Write
+  "text-width"           gdouble              : Read / Write
+  "underline"            PangoUnderline       : Read / Write
+  "underline-set"        gboolean             : Read / Write
+  "variant"              PangoVariant         : Read / Write
+  "variant-set"          gboolean             : Read / Write
+  "weight"               gint                 : Read / Write
+  "weight-set"           gboolean             : Read / Write
+  "x"                    gdouble              : Read / Write
+  "x-offset"             gdouble              : Read / Write
+  "y"                    gdouble              : Read / Write
+  "y-offset"             gdouble              : Read / Write
+}
+
+class Widget : Item {
+  "anchor"               GtkAnchorType        : Read / Write
+  "height"               gdouble              : Read / Write
+  "size-pixels"          gboolean             : Read / Write
+  "widget"               GtkWidget            : Read / Write
+  "width"                gdouble              : Read / Write
+  "x"                    gdouble              : Read / Write
+  "y"                    gdouble              : Read / Write
+}
+
+class Canvas "GnomeCanvas" : Layout {
+  "aa"                   gboolean             : Read / Write / Construct Only
+}

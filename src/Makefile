@@ -123,7 +123,7 @@ MLOBJS =  gaux.cmo gpointer.cmo gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
 	gtkMain.cmo \
 	gPango.cmo gDraw.cmo \
-	gObj.cmo gMain.cmo gData.cmo oGtkProps.cmo gContainer.cmo \
+	gObj.cmo gData.cmo gMain.cmo oGtkProps.cmo gContainer.cmo \
 	gPack.cmo gButton.cmo gText.cmo \
 	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gWindow.cmo gBin.cmo \
 	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo

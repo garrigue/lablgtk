@@ -46,3 +46,6 @@ module Io : sig
   val add_watch :
     cond:condition -> callback:(unit -> bool) -> ?prio:int -> channel -> unit
 end
+
+val selection : GData.clipboard
+val clipboard : GData.clipboard
