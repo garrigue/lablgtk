@@ -141,7 +141,7 @@ install:
 	cp lablgtktop lablgtktop_t varcc $(INSTALLDIR)
 	cp -p *.h $(INSTALLDIR)
 	cp lablgtk $(BINDIR)
-	if test -f liblablgtk.so; then cp $(CLIBS:.a=.so) $(INSTALLDIR); fi
+	if test -f dlllablgtk.so; then cp $(CLIBS:lib%.a=dll%.so) $(INSTALLDIR); fi
 	if test -f lablgladecc; then cp lablgladecc $(BINDIR); fi
 	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
 
@@ -155,7 +155,7 @@ installopt:
 lablgtk.cma: $(MLOBJS) $(COBJS)
 	$(LIBRARIAN) -o lablgtk $(MLOBJS) $(COBJS) $(GTKLIBS)
 lablgtk.cmxa: lablgtk.cma $(MLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtk $(MLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtk $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
 
 lablgtkgl.cma: $(GLMLOBJS) $(GLCOBJS)
 	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS) $(GLCOBJS) \
@@ -166,12 +166,12 @@ lablgtkgl.cmxa: lablgtkgl.cma $(GLMLOBJS:.cmo=.cmx)
 lablgnome.cma: $(GNOMEMLOBJS) $(GNOMECOBJS)
 	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMECOBJS) $(GNOMELIBS)
 lablgnome.cmxa: lablgnome.cma $(GNOMEMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) $(GNOMELIBS)
 
 lablglade.cma: $(GLADEMLOBJS) $(GLADECOBJS)
 	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS) $(GLADECOBJS) $(GLADELIBS)
 lablglade.cmxa: lablglade.cma $(GLADEMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
