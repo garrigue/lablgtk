@@ -66,7 +66,7 @@ let check_button ?:label ?:active ?:draw_indicator
 class radio_button obj = object
   inherit toggle_button (obj : Gtk.radio_button obj)
   method set_group = RadioButton.set_group obj
-  method group = RadioButton.group obj
+  method group = Some obj
 end
 
 let radio_button ?:group ?:label ?:active ?:draw_indicator

@@ -95,8 +95,8 @@ let check_menu_item ?:label ?:active ?:show_toggle
   pack_item (new check_menu_item w) ?:packing ?:show
 
 class radio_menu_item obj = object
-  inherit check_menu_item obj
-  method group = RadioMenuItem.group obj
+  inherit check_menu_item (obj : Gtk.radio_menu_item obj)
+  method group = Some obj
   method set_group = RadioMenuItem.set_group obj
 end
 

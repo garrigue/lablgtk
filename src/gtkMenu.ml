@@ -62,18 +62,15 @@ end
 
 module RadioMenuItem = struct
   let cast w : radio_menu_item obj = Object.try_cast w "GtkRadioMenuItem"
-  external create : group optaddr -> radio_menu_item obj
+  external create : radio_menu_item group -> radio_menu_item obj
       = "ml_gtk_radio_menu_item_new"
   external create_with_label :
-      group optaddr -> string -> radio_menu_item obj
+      radio_menu_item group -> string -> radio_menu_item obj
       = "ml_gtk_radio_menu_item_new_with_label"
-  let create ?:group ?:label () =
-    let group = optaddr group in
+  let create ?(:group = None) ?:label () =
     match label with None -> create group
     | Some label -> create_with_label group label
-  external group : [>`radiomenuitem] obj -> group
-      = "ml_gtk_radio_menu_item_group"
-  external set_group : [>`radiomenuitem] obj -> group -> unit
+  external set_group : [>`radiomenuitem] obj -> radio_menu_item group -> unit
       = "ml_gtk_radio_menu_item_set_group"
 end
 

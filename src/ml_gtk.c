@@ -523,15 +523,17 @@ Make_Extractor (gtk_check_menu_item_get, GtkCheckMenuItem_val,
 
 /* gtkradiomenuitem.h */
 
-#define Group_val(val) ((GSList*)Addr_val(val))
-#define Val_group Val_addr
-
 #define GtkRadioMenuItem_val(val) check_cast(GTK_RADIO_MENU_ITEM,val)
-ML_1 (gtk_radio_menu_item_new, Group_val, Val_GtkWidget_sink)
-ML_2 (gtk_radio_menu_item_new_with_label, Group_val,
+static GSList* item_group_val(value val)
+{
+    return (val == Val_unit ? NULL :
+            gtk_radio_menu_item_group(GtkRadioMenuItem_val(Field(val,0))));
+}
+ML_1 (gtk_radio_menu_item_new, item_group_val, Val_GtkWidget_sink)
+ML_2 (gtk_radio_menu_item_new_with_label, item_group_val,
       String_val, Val_GtkWidget_sink)
-ML_1 (gtk_radio_menu_item_group, GtkRadioMenuItem_val, Val_group)
-ML_2 (gtk_radio_menu_item_set_group, GtkRadioMenuItem_val, Group_val, Unit)
+ML_2 (gtk_radio_menu_item_set_group, GtkRadioMenuItem_val,
+      item_group_val, Unit)
 
 /* gtktreeitem.h */
 
@@ -854,11 +856,16 @@ ML_1 (gtk_check_button_new_with_label, String_val, Val_GtkWidget_sink)
 /* gtkradiobutton.h */
 
 #define GtkRadioButton_val(val) check_cast(GTK_RADIO_BUTTON,val)
-ML_1 (gtk_radio_button_new, Group_val, Val_GtkWidget_sink)
-ML_2 (gtk_radio_button_new_with_label, Group_val, String_val,
+static GSList* button_group_val(value val)
+{
+    return (val == Val_unit ? NULL :
+            gtk_radio_button_group(GtkRadioButton_val(Field(val,0))));
+}
+ML_1 (gtk_radio_button_new, button_group_val,
       Val_GtkWidget_sink)
-ML_1 (gtk_radio_button_group, GtkRadioButton_val, Val_group)
-ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, Group_val, Unit)
+ML_2 (gtk_radio_button_new_with_label, button_group_val,
+      String_val, Val_GtkWidget_sink)
+ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, button_group_val, Unit)
 
 /* gtkclist.h */
 

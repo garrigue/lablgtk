@@ -109,17 +109,15 @@ val check_menu_item :
   ?height:int ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> check_menu_item
 
-class radio_menu_item : 'a obj ->
+class radio_menu_item : Gtk.radio_menu_item obj ->
   object
     inherit check_menu_item
-    constraint 'a =
-      [>`radiomenuitem|`checkmenuitem|`container|`item|`menuitem|`widget]
-    val obj : 'a obj
-    method group : group
-    method set_group : group -> unit
+    val obj : Gtk.radio_menu_item obj
+    method group : Gtk.radio_menu_item group
+    method set_group : Gtk.radio_menu_item group -> unit
   end
 val radio_menu_item :
-  ?group:group ->
+  ?group:Gtk.radio_menu_item group ->
   ?label:string ->
   ?active:bool ->
   ?show_toggle:bool ->
@@ -185,7 +183,7 @@ class ['a] factory :
       ?callback:(unit -> unit) ->
       ?submenu:menu -> string -> menu_item
     method add_radio_item :
-      ?group:group ->
+      ?group:Gtk.radio_menu_item group ->
       ?active:bool ->
       ?key:Gdk.keysym ->
       ?callback:(bool -> unit) -> string -> radio_menu_item
