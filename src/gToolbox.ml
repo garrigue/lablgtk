@@ -47,7 +47,7 @@ let mCancel = "Cancel"
 let question_box ~title  ~buttons ?(default=1) ?icon message =
   let button_nb = ref 0 in
   let window = GWindow.dialog ~modal:true ~title () in
-  let hbox = GPack.hbox ~packing:window#vbox#add () in
+  let hbox = GPack.hbox ~border_width:10 ~packing:window#vbox#add () in
   let bbox = window#action_area in
   begin match icon with
     None -> ()
@@ -66,7 +66,7 @@ let question_box ~title  ~buttons ?(default=1) ?icon message =
         b#connect#clicked ~callback:
           (fun () -> button_nb := n; window#destroy ());
         (* If it's the first button then give it the focus *)
-        if n = default then b#misc#grab_default () else ();
+        if n = default then b#grab_default () else ();
 
         iter_buttons (n+1) q
   in
@@ -99,10 +99,10 @@ let input_widget ~widget ~event ~get_text
   in
 
   vbox_saisie#pack widget ~padding: 3;
-  widget#misc#grab_focus ();
 
   let wb_ok = GButton.button ~label: ok
       ~packing: (hbox_boutons#pack ~expand: true ~padding: 3) () in
+  wb_ok#grab_default ();
   let wb_cancel = GButton.button ~label: cancel
       ~packing: (hbox_boutons#pack ~expand: true ~padding: 3) () in
   let f_ok () =
@@ -125,6 +125,7 @@ let input_widget ~widget ~event ~get_text
       true
     end;
 
+  widget#misc#grab_focus ();
   window#show ();
   GMain.Main.main ();
 
@@ -166,11 +167,11 @@ let select_file ~title ?(dir = last_dir) ?(filename="") () =
     end
   in
   fs#connect#destroy ~callback: GMain.Main.quit;
-  let file = ref "" in 
+  let file = ref None in 
   fs#ok_button#connect#clicked ~callback:
     begin fun () ->
-      file := fs#get_filename; 
-      dir := Filename.dirname !file;
+      file := Some fs#get_filename; 
+      dir := Filename.dirname fs#get_filename;
       fs#destroy ()
     end;
   fs # cancel_button # connect#clicked ~callback:fs#destroy;
@@ -178,28 +179,67 @@ let select_file ~title ?(dir = last_dir) ?(filename="") () =
   GMain.Main.main ();
   !file
 
+type 'a tree = [`L of 'a | `N of 'a * 'a tree list]
 
-type 'a tree = {
-    t_data : 'a ;
-    t_children : 'a tree list
-  }
-
-let tree_selection ~title ~label ~info ?(ok=mOk) ?(cancel=mCancel) tree =
-
-  let selection = ref (None : 'a option) in
-
-  let window = GWindow.dialog ~modal:true ~title () in
-  let main_box = window#vbox in
-  
+class ['a] tree_selection ~tree ~label ~info ?(width=300) ?(height=400)
+    ?packing ?show () =
+  let main_box = GPack.vbox ?packing ?show () in
   (* The scroll window used for the tree of the versions *)
   let wscroll_tree = GBin.scrolled_window ~packing: main_box#add () in
   (* The tree containing the versions *)
-  let wtree = GTree.tree ~packing: wscroll_tree#add_with_viewport () in
-
+  let wtree = GTree.tree ~width ~height
+      ~packing:wscroll_tree#add_with_viewport () in
   (* the text widget used to display information on the selected node. *)
-  let wtext = GEdit.text ~editable: false ~packing: main_box#pack
-      ()
-  in
+  let wtext = GEdit.text ~editable: false ~packing: main_box#pack () in
+  (* build the tree *)
+  object
+    inherit GObj.widget main_box#as_widget
+    val mutable selection = None
+    method selection = selection
+    method clear_selection () = selection <- None
+    method wtree = wtree
+    method wtext = wtext
+
+    initializer
+      let rec insert_node wt (t : 'a tree) =
+        let data, children =
+          match t with `L d -> d, [] | `N(d,c) -> d, c in
+        let item = GTree.tree_item ~label: (label data) () in
+        wt#insert item ~pos: 0;
+        item#connect#select ~callback:
+          begin fun () -> 
+	    selection <- Some data;
+	    wtext#delete_text ~start:0 ~stop:wtext#length;
+            wtext#insert (info data);
+	    ()
+          end;
+        item#connect#deselect ~callback:
+          begin fun () ->
+	    selection <- None;
+	    wtext#delete_text ~start:0 ~stop:wtext#length
+          end;
+        match children with
+          [] ->
+            (* nothing more to do *)
+            ()
+        | l ->
+            (* create a subtree and expand it *)
+            let newtree = GTree.tree () in
+            item#set_subtree newtree;
+            item#expand ();
+            (* insert the children *)
+            List.iter (insert_node newtree) (List.rev children)
+      in
+      insert_node wtree tree
+  end
+
+let tree_selection_dialog ~tree ~label ~info ~title
+    ?(ok=mOk) ?(cancel=mCancel) ?(width=300) ?(height=400)
+    ?(tree_width=width) ?(tree_height=height) ?show () =
+  let window = GWindow.dialog ~modal:true ~title ~width ~height ?show () in
+  (* the tree selection box *)
+  let ts = new tree_selection ~tree ~label ~info
+      ~width:tree_width ~height:tree_height ~packing:window#vbox#add () in
 
   (* the box containing the ok and cancel buttons *)
   let hbox = window#action_area in
@@ -212,43 +252,12 @@ let tree_selection ~title ~label ~info ?(ok=mOk) ?(cancel=mCancel) tree =
   in
   bOk#connect#clicked ~callback:window#destroy;
   bCancel#connect#clicked
-    ~callback:(fun _ -> selection := None ; window#destroy ());
+    ~callback:(fun _ -> ts#clear_selection () ; window#destroy ());
   window#connect#destroy ~callback: GMain.Main.quit;
-
-  let rec insert_node wt t =
-    let item = GTree.tree_item ~label: (label t.t_data) () in
-    wt#insert item ~pos: 0;
-    item#connect#select ~callback:
-      begin fun () -> 
-	selection := Some t.t_data;
-	wtext#delete_text ~start:0 ~stop:wtext#length;
-        wtext#insert_text (info t.t_data) ~pos:0;
-	()
-      end;
-    item#connect#deselect ~callback:
-      begin fun () ->
-	selection := None;
-	wtext#delete_text ~start:0 ~stop:wtext#length
-      end;
-    match t.t_children with
-      [] ->
-          (* nothing more to do *)
-        ()
-    | l ->
-          (* create a subtree and expand it *)
-        let newtree = GTree.tree () in
-        item#set_subtree newtree ;
-        item#expand () ;
-        (* insert the children *)
-        List.iter (insert_node newtree) (List.rev t.t_children)
-  in
-  insert_node wtree tree ;
-
-  wscroll_tree#misc#set_geometry ~width:250 ~height: 200 ();
-  window#misc#set_geometry ~width: 300 ~height: 400 ();
-  window # show ();
+  window#show ();
   GMain.Main.main () ;
-  !selection
+  ts#selection
+
 
 (** Misc *)
 
@@ -265,8 +274,8 @@ let autosize_clist wlist =
   in
   let titles = iter [] 0 in
   (* insert a row with the titles *)
-  ignore (wlist#insert ~row:0 titles) ;
+  wlist#insert ~row:0 titles;
   (* use to clist columns_autosize method *)
-  ignore (wlist#columns_autosize ()) ;
+  wlist#columns_autosize ();
   (* remove the inserted row *)
   ignore (wlist#remove ~row: 0)
