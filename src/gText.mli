@@ -44,27 +44,31 @@ type contents =
   | `CHILD of child_anchor
   | `UNKNOWN ]
 
+(* Movement functions return self for ease-of-use, but beware of aliasing.
+   By default behaviour is _not_ functional. You must use [#copy] to
+   create a new iterator *)
+
 class iter :
   textiter ->
-object
+object ('self)
   val it : textiter
   method as_textiter : textiter
   method copy : iter
-  method backward_char : unit -> bool
-  method backward_chars : int -> bool
-  method backward_cursor_position : unit -> bool
-  method backward_cursor_positions : int -> bool
+  method backward_char : 'self
+  method backward_chars : int -> 'self
+  method backward_cursor_position : 'self
+  method backward_cursor_positions : int -> 'self
   method backward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
-  method backward_line : unit -> bool
-  method backward_lines : int -> bool
-  method backward_search : flag:Gtk.Tags.text_search_flag ->
+  method backward_line : 'self
+  method backward_lines : int -> 'self
+  method backward_search : ?flags:Gtk.Tags.text_search_flag list ->
     ?limit:iter -> string -> (iter * iter) option
-  method backward_sentence_start : unit -> bool
-  method backward_sentence_starts : int -> bool
-  method backward_to_tag_toggle : ?tag:tag -> unit -> bool
-  method backward_word_start : unit -> bool
-  method backward_word_starts : int -> bool
-  method begins_tag : ?tag:tag -> unit -> bool
+  method backward_sentence_start : 'self
+  method backward_sentence_starts : int -> 'self
+  method backward_to_tag_toggle : tag option -> 'self
+  method backward_word_start : 'self
+  method backward_word_starts : int -> 'self
+  method begins_tag : tag option -> bool
   method buffer : textbuffer
   method bytes_in_line : int
   method can_insert : default:bool -> bool
@@ -75,25 +79,25 @@ object
   method editable : default:bool -> bool
   method ends_line : bool
   method ends_sentence : bool
-  method ends_tag : ?tag:tag -> unit -> bool
+  method ends_tag : tag option -> bool
   method ends_word : bool
   method equal : iter -> bool
-  method forward_char : unit -> bool
-  method forward_chars : int -> bool
-  method forward_cursor_position : unit -> bool
-  method forward_cursor_positions : int -> bool
+  method forward_char : 'self
+  method forward_chars : int -> 'self
+  method forward_cursor_position : 'self
+  method forward_cursor_positions : int -> 'self
   method forward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
-  method forward_line : unit -> bool
-  method forward_lines : int -> bool
-  method forward_search : flag:Gtk.Tags.text_search_flag ->
+  method forward_line : 'self
+  method forward_lines : int -> 'self
+  method forward_search : ?flags:Gtk.Tags.text_search_flag list ->
     ?limit:iter -> string -> (iter * iter) option
-  method forward_sentence_end : unit -> bool
-  method forward_sentence_ends : int -> bool
-  method forward_to_end : unit -> unit
-  method forward_to_line_end : unit -> bool
-  method forward_to_tag_toggle : ?tag:tag -> unit -> bool
-  method forward_word_end : unit -> bool
-  method forward_word_ends : int -> bool
+  method forward_sentence_end : 'self
+  method forward_sentence_ends : int -> 'self
+  method forward_to_end : 'self
+  method forward_to_line_end : 'self
+  method forward_to_tag_toggle : tag option -> 'self
+  method forward_word_end : 'self
+  method forward_word_ends : int -> 'self
   method get_slice : stop:iter -> string
   method get_text : stop:iter -> string
   method get_toggled_tags : bool -> tag list
@@ -121,7 +125,7 @@ object
   method starts_sentence : bool
   method starts_word : bool
   method tags : tag list
-  method toggles_tag : ?tag:tag -> unit -> bool
+  method toggles_tag : tag option -> bool
   method visible_line_index : int
   method visible_line_offset : int
 end
@@ -146,7 +150,7 @@ object
   method get_oid : int
   method lookup : string -> texttag option
   method remove : texttag -> unit
-  method size : unit -> int
+  method size : int
 end
 val tagtable : unit -> tagtable
 
@@ -176,6 +180,11 @@ end
 
 exception No_such_mark of string
 
+type position =
+    [ `OFFSET of int | `LINE of int
+    | `LINECHAR of int * int | `LINEBYTE of int * int
+    | `START | `END | `ITER of iter | mark ]
+
 class buffer : textbuffer ->
 object
   val obj : textbuffer
@@ -203,6 +212,7 @@ object
     ?interactive:bool -> ?default_editable:bool -> unit -> bool
   method end_iter : iter
   method end_user_action : unit -> unit
+  method get_iter : position -> iter
   method get_iter_at_char : ?line:int -> int -> iter
   method get_iter_at_byte : line:int -> int -> iter
   method get_iter_at_mark : mark -> iter

@@ -41,9 +41,12 @@ object (self)
   val h = new history ()
   val mutable alive = true
   val mutable reading = false
-  val mutable input_start = 0
-  method private position = buffer#get_iter_at_mark `INSERT
-  method private input_start = buffer#get_iter_at_char input_start
+  val input_start =
+    `MARK (buffer#create_mark ~left_gravity:true buffer#start_iter)
+  method private position = buffer#get_iter `INSERT
+  method private input_start = buffer#get_iter (input_start :> GText.position)
+  method private set_input_start () =
+    buffer#move_mark input_start self#position
   method textview = view
   method alive = alive
   method kill () =
@@ -74,18 +77,17 @@ object (self)
       if len > 0 then begin
 	buffer#place_cursor buffer#end_iter;
 	self#insert (String.sub buf ~pos:0 ~len);
-	input_start <- self#position#offset;
+	self#set_input_start ();
       end;
       len
     with Unix.Unix_error _ -> 0
   method history (dir : [`next|`previous]) =
     if not h#empty then begin
       if reading then begin
-	buffer#delete ~start:(self#input_start)
-          ~stop:(self#position);
+	buffer#delete ~start:(self#input_start) ~stop:(self#position);
       end else begin
 	reading <- true;
-	input_start <- self#position#offset
+	self#set_input_start ();
       end;
       self#insert (if dir = `previous then h#previous else h#next);
     end
@@ -96,22 +98,29 @@ object (self)
   method private keypress c =
     if not reading & c > " " then begin
       reading <- true;
-      input_start <- self#position#offset
+      self#set_input_start ();
     end
   method private return () =
-    if reading then reading <- false
-    else input_start <- self#position#offset;
-    let stop = self#position in
-    stop#forward_to_line_end ();
+    if reading then reading <- false else begin
+      let rec search (it : GText.iter) =
+        match it#backward_search "# " with None -> it
+        | Some (it1, it2) ->
+            if it1#starts_line then it2
+            else search it1
+      in
+      buffer#move_mark input_start (search self#position)
+    end;
+    let stop = self#position#forward_to_line_end in
     buffer#place_cursor stop;
     let s = buffer#get_text ~start:(self#input_start) ~stop () in
+    buffer#place_cursor buffer#end_iter;
     h#add s;
     self#send s;
     self#send "\n"
   method private paste () =
     if not reading then begin
       reading <- true;
-      input_start <- self#position#offset;
+      self#set_input_start ();
     end
   initializer
     Lexical.init_tags buffer;
@@ -124,18 +133,14 @@ object (self)
       end;
     buffer#connect#after#insert_text ~callback:
       begin fun it s ->
-        let start = it#copy and stop = it#copy in
-        start#backward_chars (String.length s);
-        start#backward_line ();
-        stop#forward_line ();
-        self#lex ~start ~stop;
+        let start = it#copy#backward_chars (String.length s) in
+        self#lex ~start:start#backward_line ~stop:it#copy#forward_line;
         view#scroll_mark_onscreen `INSERT
       end;
     buffer#connect#after#delete_range ~callback:
       begin fun ~start ~stop ->
-        let start = start#copy and stop = stop#copy in
-        start#backward_line ();
-        stop#forward_to_line_end ();
+        let start = start#copy#backward_line
+        and stop = start#copy#forward_to_line_end in
         self#lex ~start ~stop
       end;
     view#event#connect#button_press ~callback:

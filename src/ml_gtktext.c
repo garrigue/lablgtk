@@ -916,6 +916,7 @@ ML_3 (gtk_text_iter_in_range, GtkTextIter_val, GtkTextIter_val,
       GtkTextIter_val, Val_int)
 ML_2 (gtk_text_iter_order, GtkTextIter_val, GtkTextIter_val, Unit)
 
+Make_OptFlags_val(Text_search_flag_val)
 
 #define Make_search(dir) \
 CAMLprim value ml_gtk_text_iter_##dir##_search (value ti_start, \
@@ -930,7 +931,7 @@ CAMLprim value ml_gtk_text_iter_##dir##_search (value ti_start, \
   ti2=gtk_text_iter_copy(GtkTextIter_val(ti_start));\
   b=gtk_text_iter_##dir##_search(GtkTextIter_val(ti_start),\
 				 String_val(str),\
-				 Text_search_flag_val(flag),\
+				 OptFlags_Text_search_flag_val(flag),\
 				 ti1,\
 				 ti2,\
 				 Option_val(ti_lim,GtkTextIter_val,NULL));\
