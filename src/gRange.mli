@@ -3,49 +3,29 @@
 open Gtk
 open GObj
 
-class progress : 'a obj ->
-  object
-    inherit widget_full
-    constraint 'a = [> Gtk.progress]
-    val obj : 'a obj
-    method adjustment : GData.adjustment
-    method configure : current:float -> min:float -> max:float -> unit
-    method current_text : string
-    method percentage : float
-    method set_activity_mode : bool -> unit
-    method set_adjustment : GData.adjustment -> unit
-    method set_format_string : string -> unit
-    method set_percentage : float -> unit
-    method set_show_text : bool -> unit
-    method set_text_alignment : ?x:float -> ?y:float -> unit -> unit
-    method set_value : float -> unit
-    method value : float
-  end
-
 class progress_bar : Gtk.progress_bar obj ->
-  object
-    inherit progress
-    val obj : Gtk.progress_bar obj
-    method event : event_ops
-    method set_activity_blocks : int -> unit
-    method set_activity_step : int -> unit
-    method set_bar_style : [`CONTINUOUS|`DISCRETE] -> unit
-    method set_discrete_blocks : int -> unit
-    method set_orientation : Tags.progress_bar_orientation -> unit
-  end
+object
+  inherit widget_full
+  constraint 'a = Gtk.progress_bar
+  val obj : 'a obj
+method event : GObj.event_ops
+  method pulse : unit -> unit
+  method set_text : string -> unit
+  method set_fraction : float -> unit
+  method set_pulse_step : float -> unit
+  method set_orientation : Tags.progress_bar_orientation -> unit
+  method get_text : string
+  method get_fraction : float
+  method get_pulse_step : float
+  method get_orientation : Tags.progress_bar_orientation
+
+end
+
 val progress_bar :
-  ?adjustment:GData.adjustment ->
-  ?bar_style:[`CONTINUOUS|`DISCRETE] ->
-  ?discrete_blocks:int ->
-  ?activity_step:int ->
-  ?activity_blocks:int ->
-  ?value:float ->
-  ?percentage:float ->
-  ?activity_mode:bool ->
-  ?show_text:bool ->
-  ?format_string:string ->
-  ?text_xalign:float ->
-  ?text_yalign:float ->
+  ?text:string -> 
+  ?fraction:float ->
+  ?pulse_step:float ->
+  ?orientation:Tags.progress_bar_orientation ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> progress_bar
 
 class range : 'a obj ->

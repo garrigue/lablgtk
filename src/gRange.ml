@@ -6,46 +6,25 @@ open GtkBase
 open GtkRange
 open GObj
 
-class progress obj = object
-  inherit widget_full obj
-  method set_adjustment adj =
-    Progress.set_adjustment obj (GData.as_adjustment adj)
-  method set_show_text = Progress.set_show_text obj
-  method set_format_string = Progress.set_format_string obj
-  method set_text_alignment = Progress.set_text_alignment obj
-  method set_activity_mode = Progress.set_activity_mode obj
-  method set_value = Progress.set_value obj
-  method set_percentage = Progress.set_percentage obj
-  method configure = Progress.configure obj
-  method value = Progress.get_value obj
-  method percentage = Progress.get_percentage obj
-  method current_text = Progress.get_current_text obj
-  method adjustment = new GData.adjustment (Progress.get_adjustment obj)
-end
-
 class progress_bar obj = object
-  inherit progress (obj : Gtk.progress_bar obj)
+  inherit widget_full (obj : Gtk.progress_bar obj)
   method event = new GObj.event_ops obj
-  method set_bar_style = ProgressBar.set_bar_style obj
-  method set_discrete_blocks = ProgressBar.set_discrete_blocks obj
-  method set_activity_step = ProgressBar.set_activity_step obj
-  method set_activity_blocks = ProgressBar.set_activity_blocks obj
+
+  method pulse () = ProgressBar.pulse obj
+  method set_text = ProgressBar.set_text obj
+  method set_fraction = ProgressBar.set_fraction obj
+  method set_pulse_step = ProgressBar.set_pulse_step obj
   method set_orientation = ProgressBar.set_orientation obj
+  method get_text = ProgressBar.get_text obj
+  method get_fraction = ProgressBar.get_fraction obj
+  method get_pulse_step = ProgressBar.get_pulse_step obj
+  method get_orientation = ProgressBar.get_orientation obj
+
 end
 
-let progress_bar ?adjustment ?bar_style ?discrete_blocks
-    ?activity_step ?activity_blocks ?value ?percentage ?activity_mode
-    ?show_text ?format_string ?text_xalign ?text_yalign
-    ?packing ?show () =
-  let w =
-    match adjustment with None -> ProgressBar.create ()
-    | Some adj ->
-	ProgressBar.create_with_adjustment (GData.as_adjustment adj)
-  in
-  ProgressBar.set w ?bar_style ?discrete_blocks
-    ?activity_step ?activity_blocks;
-  Progress.set w ?value ?percentage ?activity_mode
-    ?show_text ?format_string ?text_xalign ?text_yalign;
+let progress_bar ?text ?fraction ?pulse_step ?orientation ?packing ?show () =
+  let w = ProgressBar.create () in
+  ProgressBar.set w ?text ?fraction ?pulse_step ?orientation;
   pack_return (new progress_bar w) ~packing ~show
 
 class range obj = object
