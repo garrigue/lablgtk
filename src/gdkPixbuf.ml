@@ -101,7 +101,7 @@ let render_alpha bm ?(dest_x=0) ?(dest_y=0) ?width ?height ?(threshold=128)
   _render_alpha ~src bm ~src_x ~src_y ~dest_x ~dest_y ~width ~height ~threshold
 
 external _draw_pixbuf :
-  [>`drawable] obj -> gc -> src:pixbuf -> src_x:int -> src_y:int ->
+  src:pixbuf -> [>`drawable] obj -> gc -> src_x:int -> src_y:int ->
   dest_x:int -> dest_y:int -> width:int -> height:int ->
   dither:Tags.rgb_dither -> x_dither:int -> y_dither:int -> unit
   = "ml_gdk_pixbuf_render_to_drawable_bc"

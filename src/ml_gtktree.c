@@ -482,7 +482,11 @@ CAMLprim value ml_gtk_tree_model_sort_convert_iter_to_child_iter(value m, value 
   return Val_GtkTreeIter(&dst_it);
 }
 ML_1 (gtk_tree_model_sort_reset_default_sort_func, GtkTreeModelSort_val, Unit)
+#ifdef HASGTK22
 ML_2 (gtk_tree_model_sort_iter_is_valid, GtkTreeModelSort_val, GtkTreeIter_val, Val_bool)
+#else
+Unsupported(gtk_tree_model_sort_iter_is_valid)
+#endif
 
 /* TreeSortable */
 #define GtkTreeSortable_val(val) check_cast(GTK_TREE_SORTABLE,val)

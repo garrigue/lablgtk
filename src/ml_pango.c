@@ -16,6 +16,10 @@
 #include "ml_pango.h"
 #include "pango_tags.h"
 #include "gtk_tags.h"
+
+#ifndef HASGTK22
+#define PANGO_WRAP_WORD_CHAR -1
+#endif
 #include "pango_tags.c"
 
 
