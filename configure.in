@@ -47,7 +47,8 @@ echo "ocaml version is $OCAMLVERSION"
 LIBDIR=`$CAMLC -where`
 echo "ocaml library path is $LIBDIR"
 
-AC_ARG_WITH(libdir,--with-libdir=/path: install libs in /path/lablgtk2 and /path/stublibs,
+AC_ARG_WITH(libdir,
+	[  --with-libdir=/path     install libs in /path/lablgtk2 and /path/stublibs],
 	LIBDIR=$withval
 	echo "Install dirs are : $LIBDIR/lablgtk2 and $LIBDIR/stublibs"
 	echo "	Compile with 
@@ -147,6 +148,13 @@ if test "$CAMLP4O" = no ; then
 fi
 
 AC_PROG_RANLIB
+# get the C compiler used by ocamlc
+if test -z "$CC" ; then
+  touch ac_ocaml_tmp.c
+  CC=$(ocamlc -verbose -c ac_ocaml_tmp.c 2>&1 | sed ['s/^+ \([^ ]*\) .*$/\1/'])
+  rm -f ac_ocaml_tmp.c ac_ocaml_tmp.o
+  echo [OCaml uses $CC to compile C files]
+fi
 AC_PROG_CC
 
 # platform
@@ -173,7 +181,8 @@ GTKPKG=gtk+-2.0
 GTKLIBS=`$PKG_CONFIG $GTKPKG --libs`
 
 FORCE_GL=no
-AC_ARG_WITH(gl, --with-gl --without-gl: override autodetected GtkGLArea support. Requires LablGL,
+AC_ARG_WITH(gl, 
+        [  --without-gl            override autodetected GtkGLArea support. Requires LablGL],
 	USE_GL=$withval; FORCE_GL=yes;,
 	USE_GL=yes)
 
@@ -199,7 +208,8 @@ else
 fi
 
 FORCE_GLADE=no
-AC_ARG_WITH(glade,--with-glade --without-glade: override autodetected libglade support,
+AC_ARG_WITH(glade, 
+        [  --without-glade         override autodetected libglade support],
 	USE_GLADE=$withval; FORCE_GLADE=yes;,
 	USE_GLADE=yes)
 
@@ -225,7 +235,7 @@ else
 fi
 
 FORCE_RSVG=no
-AC_ARG_WITH(rsvg,--with-rsvg --without-rsvg: override autodetected librsvg support.,
+AC_ARG_WITH(rsvg, [  --without-rsvg          override autodetected librsvg support],
 	USE_RSVG=$withval; FORCE_RSVG=yes;,
 	USE_RSVG=yes)
 
@@ -252,7 +262,8 @@ fi
 
 
 FORCE_GNOMECANVAS=no
-AC_ARG_WITH(gnomecanvas,--with-gnomecanvas --without-gnomecanvas: override autodetected libgnomecanvas support.,
+AC_ARG_WITH(gnomecanvas,
+        [  --without-gnomecanvas   override autodetected libgnomecanvas support],
 	USE_GNOMECANVAS=$withval ; FORCE_GNOMECANVAS=yes,
 	USE_GNOMECANVAS=yes)
 
@@ -279,7 +290,8 @@ fi
 
 GTKCFLAGS=`$PKG_CONFIG $GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG --cflags`
 
-AC_ARG_ENABLE(debug,--enable-debug: enable debug mode,
+AC_ARG_ENABLE(debug,
+        [  --enable-debug          enable debug mode],
 	echo "Debug mode enabled" ; DEBUG=1,
 	DEBUG=)
 
@@ -305,10 +317,6 @@ AC_SUBST(USE_RSVG)
 AC_SUBST(USE_GNOMECANVAS)
 AC_SUBST(USE_CC)
 AC_SUBST(DEBUG)
-AC_SUBST(CC)
-AC_SUBST(RANLIB)
-AC_SUBST(LIBDIR)
-AC_SUBST(BINDIR)
 AC_SUBST(GTKCFLAGS)
 AC_SUBST(GTKLIBS)
 AC_SUBST(GTKGLLIBS)
