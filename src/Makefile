@@ -110,7 +110,7 @@ install:
 	cp *.mli $(INSTALLDIR)
 	cp $(ALLOBJS:.cmo=.ml) $(INSTALLDIR)
 	cp lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
-	cp liblablgtk.a $(LIBDIR) || cp liblablgtk.a $(INSTALLDIR)
+	cp liblablgtk.a $(INSTALLDIR)
 	cp lablgtktop  lablgtktop_t $(INSTALLDIR)
 	cp lablgtk lablgtkrun $(BINDIR)
 	if test -f lablgtk.cmxa; \

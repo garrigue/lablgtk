@@ -41,23 +41,28 @@ Contents:
                                 see the README for details.
 
 How to run the examples:
+  In the examples directory just type:
+	lablgtk -labels examples/???.ml
 
-	./lablgtk -labels -w s examples/???.ml
+  Before installing lablgtk you have to be more explicit:
+	../lablgtktop -labels -w s -I .. ???.ml
 
-  some examples (e.g. buttons.ml) may need to be run from the examples
-  directory
-
-	../lablgtk -labels -w s -I .. ???.ml
+How to link them:
+  lablgtktop contains an extra module GtkInit, whose only contents is:
+        let locale = GtkMain.Main.init ()
+  You must either add this line, or add this module to your link,
+  before calling any Gtk function.
+  ocamlc -I CAMLLIB/lablgtk -labels -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
 
 How to use the threaded toplevel:
 
-	% ./lablgtk_t -labels
-	        Objective Caml version 2.99+6 (2000/02/25)
+	% lablgtk -thread           (or lablgtktop_t before installing)
+	        Objective Caml version 3.00
 	
-	# let id = GtkThread.start ();;
-	val id : Thread.t = <abstr>
+	# let w = GWindow.window ~show:true ();;
 
-  The GTK main loop is now running in a separate thread. Any command
+  You should at once see a window appear.
+  The GTK main loop is running in a separate thread. Any command
   is immediately reflected by the system.
   Beware that you cannot switch threads within a callback, that is the
   only thread related command you may use in a callback is
@@ -76,6 +81,7 @@ Structure of the G[A-Z]* modules:
   These modules provide classes to wrap the raw function calls.
   Here are the widget classes contained in each module:
 
+  GDraw         Gdk pixmaps, etc...
   GObj		gtkobj, widget, style
   GData		data, adjustment, tooltips
   GContainer	container, item_container
@@ -91,7 +97,6 @@ Structure of the G[A-Z]* modules:
   GFrame	scrolled_window, event_box, handle_box, frame,
 		aspect_frame, viewport
   GEdit		editable, entry, spin_button, combo, text
-  GPix		pixmap
   GRange	progress, progress_bar, range, scale, scrollbar
 
   While subtyping follows the Gtk widget hierarchy, you cannot always
@@ -154,6 +159,28 @@ GL extension
   You can then use the widget GlGtk.gl_area as an OpenGL window.
   Some examples are in examples/GL, but basically any LablGL example
   can be easily ported.
+
+Windows port
+
+  A Win32 port is provided. In order to compile it, you will need to
+  get and unpack glib-dev-????.zip and gtk+-dev-????.zip from
+        http://www.gimp.org/~tml/gimp/win32/
+  Do not forget to get also extralibs-dev-????.zip, since you will
+  need some of the DLLs.
+
+  Edit config.make.nt, then, using Visual C++,
+        nmake -f Makefile.nt
+        nmake -f Makefile.nt opt        (if you have an MS Assembler)
+  Then install with
+        nmake -f Makefile.nt install
+
+  Since the link is dynamic you will also need to have in your path:
+  gnu-intl.dll (extralibs), glib-1.3.dll, module-1.3.dll and
+  gthread-1.3.dll (glib), gdk-1.3.dll and gtk-1.3.dll (gtk+).
+
+  I checked with the 2000-02-02 version of these libraries.
+  Currently threads do not seem to work, but otherwise everything
+  seems OK.
 
 Authors:
 	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>
