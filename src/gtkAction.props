@@ -79,8 +79,8 @@ class UIManager type "Gtk.ui_manager obj" wrap wrapsig gobject {
   method get_action : "string -> Gtk.action obj"
   method add_ui_from_string : "string -> int"
   method add_ui_from_file: "string -> int"
-  (* method new_merge_id : "int" *)
-  (* method add_ui *)
+  method new_merge_id : "int"
+  method add_ui : "int -> path:string -> name:string -> action:string option -> GtkEnums.ui_manager_item_type -> top:bool -> unit"
   method remove_ui : "int -> unit"
   method ensure_update 
 }

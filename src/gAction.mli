@@ -241,6 +241,8 @@ class ui_manager_signals :
 
 type ui_id
 
+val invalid_id : ui_id
+
 (** @since GTK 2.4
     @gtkdoc gtk GtkUIManager *)
 class ui_manager :
@@ -248,18 +250,20 @@ class ui_manager :
   object
     val obj : 'a Gtk.obj
     method add_tearoffs : bool
-    method add_ui_from_file : string -> ui_id   (** @raise Glib.Markup.Error if the XML is invalid *)
-    method add_ui_from_string : string -> ui_id (** @raise Glib.Markup.Error if the XML is invalid 
-						    @raise Glib.GError if an error occurs while reading the file *)
+    method add_ui_from_file : string -> ui_id   (** @raise Glib.Markup.Error if the XML is invalid
+                                                    @raise Glib.GError if an error occurs while reading the file *)
+    method add_ui_from_string : string -> ui_id (** @raise Glib.Markup.Error if the XML is invalid *) 
+						    
     method connect : ui_manager_signals
     method ensure_update : unit -> unit
     method get_accel_group : Gtk.accel_group
-    method get_action : string -> action
+    method get_action : string -> action      (** @raise Not_found if no widget exist at the given path *)
     method get_action_groups : action_group list
-    method get_widget : string -> GObj.widget
+    method get_widget : string -> GObj.widget (** @raise Not_found if no widget exist at the given path *)
     method get_toplevels : GtkEnums.ui_manager_item_type list -> GObj.widget list
     method insert_action_group : action_group -> int -> unit
-    (* method new_merge_id : ui_id *)
+    method new_merge_id : unit -> ui_id
+    method add_ui : ui_id -> path:string -> name:string -> action:string option -> GtkEnums.ui_manager_item_type -> top:bool -> unit
     method remove_action_group : action_group -> unit
     method remove_ui : ui_id -> unit
     method set_add_tearoffs : bool -> unit
