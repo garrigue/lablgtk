@@ -37,7 +37,11 @@ let rec build_menu menu ~(entries : menu_entry list) =
 let popup_menu ~entries =
   let menu = GMenu.menu () in
   build_menu menu ~entries;
-  fun ~x ~y -> if entries = [] then () else menu#popup x y
+  fun ~button ~time -> 
+    if entries = [] then 
+      () 
+    else 
+      menu#popup ~button ~time
 
 (** Dialogs *)
 
@@ -181,13 +185,13 @@ let select_file ~title ?(dir = last_dir) ?(filename="") () =
 
 type 'a tree = [`L of 'a | `N of 'a * 'a tree list]
 
-class ['a] tree_selection ~tree ~label ~info ?(width=300) ?(height=400)
+class ['a] tree_selection ~tree ~label ~info 
     ?packing ?show () =
   let main_box = GPack.vbox ?packing ?show () in
   (* The scroll window used for the tree of the versions *)
   let wscroll_tree = GBin.scrolled_window ~packing: main_box#add () in
   (* The tree containing the versions *)
-  let wtree = GTree.tree ~width ~height
+  let wtree = GTree.tree
       ~packing:wscroll_tree#add_with_viewport () in
   (* the text widget used to display information on the selected node. *)
   let wtext = GEdit.text ~editable: false ~packing: main_box#pack () in
@@ -235,11 +239,12 @@ class ['a] tree_selection ~tree ~label ~info ?(width=300) ?(height=400)
 
 let tree_selection_dialog ~tree ~label ~info ~title
     ?(ok=mOk) ?(cancel=mCancel) ?(width=300) ?(height=400)
-    ?(tree_width=width) ?(tree_height=height) ?show () =
+    ?show () =
   let window = GWindow.dialog ~modal:true ~title ~width ~height ?show () in
   (* the tree selection box *)
   let ts = new tree_selection ~tree ~label ~info
-      ~width:tree_width ~height:tree_height ~packing:window#vbox#add () in
+      ~packing:window#vbox#add () 
+  in
 
   (* the box containing the ok and cancel buttons *)
   let hbox = window#action_area in

@@ -17,7 +17,7 @@ val build_menu : GMenu.menu -> entries: menu_entry list -> unit
 
 (** Popup a menu created from the given list of 
    labels and functions. *)
-val popup_menu : entries: menu_entry list -> x: int -> y: int -> unit
+val popup_menu : entries: menu_entry list -> button: int -> time: int -> unit
 
 (** {2 Parametrized dialog windows} *)
 
@@ -98,7 +98,6 @@ class ['a] tree_selection :
   tree:'a tree ->
   label:('a -> string) ->
   info:('a -> string) ->
-  ?width:int -> ?height:int ->
   ?packing:(GObj.widget -> unit) -> ?show:bool -> unit ->
   object
     inherit GObj.widget
@@ -125,7 +124,7 @@ val tree_selection_dialog :
   title:string ->
   ?ok:string -> ?cancel:string ->
   ?width:int -> ?height:int ->
-  ?tree_width:int -> ?tree_height:int -> ?show:bool -> unit -> 'a option
+  ?show:bool -> unit -> 'a option
 
 (** {2 Miscellaneous functions} *)
 
