@@ -1,5 +1,15 @@
 $Id$
 
+In lablgtk2-alpha:
+
+2002.12.26
+  * lots of changes to adapt to gtk2
+  * callback handling and property support completely rewritten
+  * many API changes
+  * new text widget interfaced by Benjamin Monate
+  * Gtk2 automatically calls setlocale in gtk_init, but we
+    revert LC_NUMERIC to C immediately after
+
 2002.08.19
   * add GWindow.toplevel (Tim Freeman report)
 

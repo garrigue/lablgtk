@@ -14,7 +14,7 @@
 #include "glib_tags.c"
 
 /* Not from glib! */
-ML_2(setlocale, Locale_category_val, Optstring_val, Val_optstring)
+ML_2(setlocale, Locale_category_val, String_option_val, Val_optstring)
 
 /* Utility functions */
 value copy_string_and_free (char *str)
