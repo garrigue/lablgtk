@@ -88,12 +88,23 @@ value ml_gtk_tree2_children (value tree)
 
 
 #define GtkToolbar_val(val) check_cast(GTK_TOOLBAR,val)
+/* sets the text of the label of a button; creates the label
+   if necessary */
 value ml_gtk_toolbar2_set_text (value toolbar, value text, value pos)
 {
   GtkToolbar *t = GtkToolbar_val(toolbar);
-  gpointer ch = g_list_nth_data (t->children, Int_val(pos));
-  gtk_label_set_text (GTK_LABEL(((GtkToolbarChild *)ch)->label),
-		      String_val(text));
+  GtkToolbarChild *ch = (GtkToolbarChild *)g_list_nth_data (t->children, Int_val(pos));
+  GtkWidget *label = ch->label;
+
+  if (label)
+    gtk_label_set_text (GTK_LABEL(label), String_val(text));
+  else {
+    label = ch->label = gtk_label_new (String_val(text));
+    gtk_box_pack_end (GTK_BOX (GTK_BIN(ch->widget)->child), label, FALSE, FALSE, 0);
+    if (t->style != GTK_TOOLBAR_ICONS)
+      gtk_widget_show (label);
+  }
+
   return Val_unit;
 }
 
