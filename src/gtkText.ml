@@ -271,8 +271,9 @@ module Tag = struct
     open GtkSignal
     let marshal_event f _ = function
       |`OBJECT(Some p)::`POINTER(Some ev)::`POINTER(Some ti)::_ ->
-	  f ~origin:p (GdkEvent.unsafe_copy ev : GdkEvent.any)
-	    (!textiter_of_pointer ti)
+	 f ~origin:p 
+	  (GdkEvent.unsafe_copy ev : GdkEvent.any)
+	  (!textiter_of_pointer ti)
       | _ -> invalid_arg "GtkText.Tag.Signals.marshal_event"
 	  
     let event = 
