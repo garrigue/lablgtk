@@ -15,7 +15,7 @@ RANLIB = ranlib
 include ../../config.make
 
 MLFLAGS = -I ../../src -I ocaml-src/utils -I ocaml-src/parsing \
-	-I ocaml-src/typing
+	-I ocaml-src/typing -I ocaml-src/toplevel
 ifdef DEBUG
 MLFLAGS += -custom -g -ccopt -g #-cclib -lcamlrund
 endif
