@@ -336,8 +336,7 @@ gtkThread.cmi: gtkThread.mli
 	$(COMPILER) $(THFLAGS) gtkThread.mli
 
 gtkThread.cmx: gtkThread.ml
-	if test -f "$(LIBDIR)/libthreadsnat$(XA)"; then \
-	   $(COMPOPT) $(THFLAGS) gtkThread.ml; fi
+	$(COMPOPT) $(THFLAGS) gtkThread.ml
 
 xml_lexer.ml: xml_lexer.mll
 	$(CAMLLEX) xml_lexer.mll
