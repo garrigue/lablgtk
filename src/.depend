@@ -12,10 +12,10 @@ gContainer.cmo: gData.cmi gObj.cmi gaux.cmo gobject.cmi gpointer.cmi gtk.cmo \
     gtkBase.cmo gtkSignal.cmi gContainer.cmi 
 gContainer.cmx: gData.cmx gObj.cmx gaux.cmx gobject.cmx gpointer.cmx gtk.cmx \
     gtkBase.cmx gtkSignal.cmx gContainer.cmi 
-gData.cmo: gObj.cmi gaux.cmo gobject.cmi gpointer.cmi gtk.cmo gtkData.cmo \
-    gtkSignal.cmi gData.cmi 
-gData.cmx: gObj.cmx gaux.cmx gobject.cmx gpointer.cmx gtk.cmx gtkData.cmx \
-    gtkSignal.cmx gData.cmi 
+gData.cmo: gObj.cmi gaux.cmo gdk.cmi gobject.cmi gpointer.cmi gtk.cmo \
+    gtkBase.cmo gtkData.cmo gtkSignal.cmi gData.cmi 
+gData.cmx: gObj.cmx gaux.cmx gdk.cmx gobject.cmx gpointer.cmx gtk.cmx \
+    gtkBase.cmx gtkData.cmx gtkSignal.cmx gData.cmi 
 gDraw.cmo: gaux.cmo gdk.cmi gobject.cmi gpointer.cmi gtk.cmo gtkBase.cmo \
     gDraw.cmi 
 gDraw.cmx: gaux.cmx gdk.cmx gobject.cmx gpointer.cmx gtk.cmx gtkBase.cmx \
@@ -27,9 +27,11 @@ gEdit.cmx: gContainer.cmx gData.cmx gList.cmx gObj.cmx gaux.cmx gtk.cmx \
 gHtml.cmo: gObj.cmi gaux.cmo gtk.cmo gtkBase.cmo gtkXmHTML.cmo 
 gHtml.cmx: gObj.cmx gaux.cmx gtk.cmx gtkBase.cmx gtkXmHTML.cmx 
 gList.cmo: gContainer.cmi gData.cmi gDraw.cmi gObj.cmi gaux.cmo gobject.cmi \
-    gpointer.cmi gtk.cmo gtkBase.cmo gtkList.cmo gtkSignal.cmi gList.cmi 
+    gpointer.cmi gtk.cmo gtkBase.cmo gtkList.cmo gtkSignal.cmi oGtkProps.cmo \
+    gList.cmi 
 gList.cmx: gContainer.cmx gData.cmx gDraw.cmx gObj.cmx gaux.cmx gobject.cmx \
-    gpointer.cmx gtk.cmx gtkBase.cmx gtkList.cmx gtkSignal.cmx gList.cmi 
+    gpointer.cmx gtk.cmx gtkBase.cmx gtkList.cmx gtkSignal.cmx oGtkProps.cmx \
+    gList.cmi 
 gMain.cmo: gObj.cmi glib.cmi gtk.cmo gtkMain.cmo gMain.cmi 
 gMain.cmx: gObj.cmx glib.cmx gtk.cmx gtkMain.cmx gMain.cmi 
 gMenu.cmo: gButton.cmi gContainer.cmi gObj.cmi gaux.cmo gobject.cmi gtk.cmo \
@@ -58,12 +60,12 @@ gRange.cmo: gData.cmi gObj.cmi gaux.cmo gtk.cmo gtkBase.cmo gtkRange.cmo \
     oGtkProps.cmo gRange.cmi 
 gRange.cmx: gData.cmx gObj.cmx gaux.cmx gtk.cmx gtkBase.cmx gtkRange.cmx \
     oGtkProps.cmx gRange.cmi 
-gText.cmo: gContainer.cmi gObj.cmi gaux.cmo gdkEvent.cmo gdkPixbuf.cmi \
-    glib.cmi gobject.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi gtkText.cmo \
-    pango.cmo gText.cmi 
-gText.cmx: gContainer.cmx gObj.cmx gaux.cmx gdkEvent.cmx gdkPixbuf.cmx \
-    glib.cmx gobject.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx gtkText.cmx \
-    pango.cmx gText.cmi 
+gText.cmo: gContainer.cmi gObj.cmi gaux.cmo gdk.cmi gdkEvent.cmo \
+    gdkPixbuf.cmi glib.cmi gobject.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi \
+    gtkText.cmo oGtkProps.cmo pango.cmo gText.cmi 
+gText.cmx: gContainer.cmx gObj.cmx gaux.cmx gdk.cmx gdkEvent.cmx \
+    gdkPixbuf.cmx glib.cmx gobject.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx \
+    gtkText.cmx oGtkProps.cmx pango.cmx gText.cmi 
 gToolbox.cmo: gBin.cmi gButton.cmi gEdit.cmi gMain.cmi gMenu.cmi gMisc.cmi \
     gObj.cmi gPack.cmi gText.cmi gTree.cmi gWindow.cmi gdkEvent.cmo \
     gdkKeysyms.cmo gToolbox.cmi 
@@ -215,7 +217,7 @@ xml_lexer.cmx: xml_lexer.cmi
 gBin.cmi: gContainer.cmi gData.cmi gObj.cmi gdk.cmi gtk.cmo gtkSignal.cmi 
 gButton.cmi: gContainer.cmi gObj.cmi gtk.cmo gtkSignal.cmi gtkStock.cmo 
 gContainer.cmi: gData.cmi gObj.cmi gobject.cmi gtk.cmo gtkSignal.cmi 
-gData.cmi: gObj.cmi gobject.cmi gtk.cmo gtkSignal.cmi 
+gData.cmi: gObj.cmi gdk.cmi gobject.cmi gtk.cmo gtkSignal.cmi 
 gDraw.cmi: gdk.cmi gobject.cmi gpointer.cmi gtk.cmo 
 gEdit.cmi: gData.cmi gList.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
 gList.cmi: gContainer.cmi gData.cmi gDraw.cmi gObj.cmi gdkEvent.cmo gtk.cmo \
@@ -231,7 +233,7 @@ gPack.cmi: gContainer.cmi gData.cmi gObj.cmi gtk.cmo gtkEnums.cmo gtkPack.cmo \
     gtkSignal.cmi 
 gRange.cmi: gData.cmi gObj.cmi gtk.cmo 
 gText.cmi: gObj.cmi gdk.cmi gdkEvent.cmo gdkPixbuf.cmi glib.cmi gobject.cmi \
-    gtk.cmo gtkSignal.cmi gtkText.cmo 
+    gtk.cmo gtkSignal.cmi pango.cmo 
 gToolbox.cmi: gList.cmi gMenu.cmi gObj.cmi gText.cmi gTree.cmi gtk.cmo 
 gTree.cmi: gContainer.cmi gData.cmi gObj.cmi gobject.cmi gtk.cmo \
     gtkSignal.cmi 
