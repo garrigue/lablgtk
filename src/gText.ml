@@ -58,6 +58,7 @@ class iter it =
 object
   val it = (it: textiter)
   method as_textiter = it
+  method copy = new iter (Iter.copy it)
   method get_buffer = Iter.get_buffer it
   method get_offset = Iter.get_offset it
   method get_line = Iter.get_line it

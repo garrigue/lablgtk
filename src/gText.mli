@@ -63,6 +63,7 @@ class iter :
   object
     val it : textiter
     method as_textiter : textiter
+    method copy : iter
     method backward_char : unit -> bool
     method backward_chars : int -> bool
     method backward_cursor_position : unit -> bool
