@@ -28,13 +28,21 @@ let save_as_item = new menu_item label:"Save as" packing:project_menu#append
 ;;
 
 exit_item#connect#activate callback:GMain.Main.quit
+;;
+
+let main_project_modify = ref false
+;;
+
 
 class project () =
   let project_box = new vbox packing:main_vbox#pack in
   let project_tree = new tree2 packing:project_box#pack in
   object(self)
     val mutable window_list = []
+
     val mutable filename = ""
+    method set_filename f = 
+      filename <- f
 
     method add_window_by_name :name =
       self#add_window (new_window :name)
@@ -69,9 +77,9 @@ class project () =
       tiw#tiw#widget#destroy ();
       project_tree#remove ti;
 (* l'enlever aussi de la fenetre property *)
-      let rec rem (t : #tiwidget) =
+(*      let rec rem (t : #tiwidget) =
 	t#forall callback:rem; property_remove t in
-      rem tiw#tiw;
+      rem tiw#tiw; *)
       window_list <- List.remove_assoc name in:window_list
       
     method delete () =
@@ -86,24 +94,26 @@ class project () =
 	callback:(fun () -> filename <- file_selection#get_filename;
 	  res := true;
 	  file_selection#destroy ());
+      file_selection#cancel_button#connect#clicked
+	callback:file_selection#destroy;
       file_selection#connect#destroy callback:GMain.Main.quit;
       GMain.Main.main ();
       !res
 
     method save_as () = if self#get_filename () then self#save ()
+
     method save () =
       if filename = "" then self#save_as ()
       else begin
 	let outch = open_out file:filename in
 	let c = Oformat.of_channel outch in
 	List.iter window_list fun:(fun (_, (_, t, _, _)) -> t#tiw#save c);
-	close_out outch
+	close_out outch;
+	main_project_modify := false
       end
   end
 ;;
 
-let main_project_modify = ref false
-;;
 
 let main_project = ref (new project ())
 ;;
@@ -126,19 +136,19 @@ let load () =
   file_selection#ok_button#connect#clicked
     callback:(fun () -> filename := file_selection#get_filename;
       file_selection#destroy ());
+  file_selection#cancel_button#connect#clicked
+    callback:file_selection#destroy;
   file_selection#connect#destroy callback:GMain.Main.quit;
   GMain.Main.main ();
   if !filename <> "" then begin
-    let inch = open_in_bin file:!filename in
+    let inch = open_in file:!filename in
     let lexbuf = Lexing.from_channel inch in
-    let project = Load_parser.project Load_lexer.token lexbuf in
+    let project_list = Load_parser.project Load_lexer.token lexbuf in
     close_in inch;
     !main_project#delete ();
     main_project := new project ();
-(*    Printf.printf "length: %d\n" (List.length project);
-    flush stdout;
-*)
-    List.iter project fun:!main_project#add_window
+    List.iter project_list fun:!main_project#add_window;
+    !main_project#set_filename !filename
   end
 ;;
 
@@ -197,8 +207,8 @@ main_window#show ()
 ;;
 
 open_item#connect#activate callback:load;
-save_item#connect#activate callback:!main_project#save;
-save_as_item#connect#activate callback:!main_project#save_as;
+save_item#connect#activate callback:(fun () -> !main_project#save ());
+save_as_item#connect#activate callback:(fun () -> !main_project#save_as ())
 ;;
 
 GMain.Main.main ()

@@ -7,7 +7,7 @@ open GMisc
 open GWindow
 
 
-class ['a] rval :init ?inits:inits [< "" >] :setfun ?:value_list [< [] >] = object(self)
+class ['a] rval :init :inits :setfun ?:value_list [< [] >] = object(self)
   val mutable value : 'a = init
   val mutable value_string : string = inits
   val value_list : (string * 'a) list = value_list
@@ -21,6 +21,7 @@ class ['a] rval :init ?inits:inits [< "" >] :setfun ?:value_list [< [] >] = obje
       value_string <- vs;
       setfun v
     end
+  method modified = if value <> init then Some value_string else None
 end
 
 
@@ -31,6 +32,14 @@ type property =
   | Bool of bool rval
   | Shadow of Gtk.Tags.shadow_type rval
   | Policy of Gtk.Tags.policy_type rval
+
+let prop_modified = function
+  | Int r -> r#modified
+  | Float r -> r#modified
+  | String r -> r#modified
+  | Bool r -> r#modified
+  | Shadow r -> r#modified
+  | Policy r -> r#modified
 
 let bool_values = ["true", true; "false", false]
 
@@ -54,7 +63,7 @@ let rec set_property_in_list name value_string = function
   | (n, p) :: tl ->
       if name = n then change_value_in_prop p :value_string
       else  (set_property_in_list name value_string tl)
-  | [] -> failwith "set_property_in_list: property not found"
+  | [] -> failwith ("set_property_in_list: property not found " ^ name)
 
 
 
@@ -70,10 +79,12 @@ let get_float_prop name in:l =
   | Float rval -> rval#value
   | _ -> failwith "bug get_float_prop"
 
+(*
 let get_bool_prop name in:l =
   match List.assoc name in:l with
   | Bool rval -> rval#value
   | _ -> failwith "bug get_bool_prop"
+*)
 
 let get_string_prop name in:l =
   match List.assoc name in:l with
@@ -88,11 +99,13 @@ let get_enum_prop name in:l =
   | _ -> failwith "bug get_enum_prop"
 
 
+(*
 let string_of_int_prop name in:l =
   string_of_int (get_int_prop name in:l)
 
 let string_of_float_prop name in:l =
   string_of_float (get_float_prop name in:l)
+*)
 
 class type rwidget_base = object
   method name : string
@@ -107,8 +120,8 @@ class prop_enumtype l :callback ?:packing :value = object(self)
   val revl = List.map fun:(fun (a,b) -> (b,a)) l
   initializer
     self#entry#connect#changed callback:
-      (fun _ ->
-	callback value:(List.assoc self#entry#text in:l) value_string:self#entry#text);
+      (fun _ -> let text = self#entry#text in
+	callback value:(List.assoc text in:l) value_string:text);
     self#entry#set_editable false;
     self#entry#set_text (List.assoc value in:revl)
 end
@@ -121,7 +134,9 @@ class prop_policy = prop_enumtype policy_type_values
 class prop_string :callback ?:packing :value = object(self)
   inherit entry text:value ?:packing show:true
   initializer
-    self#connect#activate callback:(fun _ -> callback value:self#text value_string:"");
+    self#connect#activate callback:
+      (fun _ -> let text = self#text in
+        callback value:text value_string:text);
     ()
 end
 
@@ -134,7 +149,8 @@ object(self)
       show:true ?:packing
   initializer
     self#connect#activate callback:
-      (fun _ -> callback value:self#value_as_int value_string:"");
+      (fun _ -> let value = self#value_as_int in
+        callback :value value_string:(string_of_int value));
     ()
 end
 
@@ -147,7 +163,8 @@ object(self)
       show:true ?:packing
   initializer
     self#connect#activate callback:
-      (fun _ -> callback value:self#value value_string:"");
+      (fun _ -> let value = self#value in
+	callback :value value_string:(string_of_float value));
     ()
 end
 
@@ -191,8 +208,8 @@ let plist_affich list =
     end;
     hbox
   in let vbox = new vbox in
-  List.iter fun:(fun (n, p) -> vbox#pack (une_prop_affich (n,p));
-	new separator `HORIZONTAL show:true packing:vbox#pack; ()) list;
+  List.iter fun:(fun (n, p) -> vbox#pack (une_prop_affich (n,p)) expand:false;
+	new separator `HORIZONTAL show:true packing:(vbox#pack expand:false); ()) list;
   vbox
 ;;
 
@@ -200,19 +217,34 @@ let plist_affich list =
 
 let propwin = new window show:true title:"properties"
 let vbox = new vbox packing:propwin#add
+
+(*
 let hbox = new hbox packing:(vbox#pack padding:5);;
+
 
 new separator `HORIZONTAL packing:vbox#pack show:true;
 new separator `HORIZONTAL packing:vbox#pack show:true;;
 
-let cb = new combo popdown_strings:[] use_arrows_always:true
+ let cb = new combo popdown_strings:[] use_arrows_always:true
     packing:(hbox#pack expand:true fill:false);;
 cb#entry#set_editable false;;
+*)
 
 let vbox2 = plist_affich [];;
 vbox#pack vbox2;;
 let vboxref = ref vbox2
+
+let prop_affich (w : #rwidget_base) =
+  let vb = plist_affich w#proplist in
+  vbox#remove !vboxref;
+  vbox#pack vb;
+  vboxref := vb
+
+
+(*  
 let last_sel = ref (None : rwidget_base option)
+
+
 let rwidget_list = ref ([] : rwidget_base list)
 let rname_prop_list = ref ([] : (string * (string * property) list) list);;
     
@@ -228,7 +260,8 @@ propwin#connect#event#focus_in callback:
     |	None -> ()
     |	Some sl -> sl#base#misc#set state:`SELECTED end;
       true);
-  
+
+
 cb#entry#connect#changed callback:
     (fun _ ->
       let text = cb#entry#text in
@@ -255,6 +288,7 @@ cb#entry#connect#changed callback:
 	vboxref := vb;
       end  );;
 
+
 let property_add rw =
     rwidget_list := (rw :> rwidget_base) :: !rwidget_list;
     let nplist = List.map !rwidget_list fun:(fun w -> (w#name, w#proplist)) in
@@ -280,6 +314,9 @@ let property_update name =
   cb#entry#set_text name
 
 let test_unique name = not (List.mem_assoc name in:!rname_prop_list)
+
+*)
+
 
 
 
