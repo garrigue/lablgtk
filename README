@@ -288,6 +288,9 @@ Windows port
   libiconv-*.zip, libintl-*.zip, glib-*.zip and gtk+-1.3.0-*.zip from
         http://www.gimp.org/~tml/gimp/win32/
   Do not forget to get all the -dev- packages.
+  The file include/gdk/win32/gdkwin32-private.h seems to be missing
+  from the above distribution, so I included it in this
+  package. Please copy it to its right location.
 
   Edit config.make.nt, then, using Visual C++ with cygwin tools,
         cd src
