@@ -84,6 +84,7 @@ module Dialog = struct
   external run : [>`dialog] obj -> int
       = "ml_gtk_dialog_run"
   let std_response = Gpointer.encode_variant GtkEnums.response
+  let decode_response = Gpointer.decode_variant GtkEnums.response
 end
 
 module MessageDialog = struct

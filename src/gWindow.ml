@@ -78,11 +78,11 @@ let toplevel (w : #widget) =
 
 (** Dialog **)
 
-class ['a] dialog_signals (obj : [>Gtk.dialog] obj) tbl = object (self)
+class ['a] dialog_signals (obj : [>Gtk.dialog] obj) ~decode = object (self)
   inherit container_signals_impl obj
   method response ~(callback : 'a -> unit) = 
     self#connect Dialog.S.response
-      ~callback:(fun i -> callback (List.assoc i !tbl))
+      ~callback:(fun i -> callback (decode i))
   method close = self#connect Dialog.S.close
 end
 
@@ -91,42 +91,59 @@ let rec list_rassoc k = function
   | _ :: l -> list_rassoc k l
   | [] -> raise Not_found
 
-let rnone = Dialog.std_response `NONE
-let rdelete = Dialog.std_response `DELETE_EVENT
+let resp = Dialog.std_response
+let rnone = resp `NONE
+and rreject = resp `REJECT
+and raccept = resp `ACCEPT
+and rdelete = resp `DELETE_EVENT
+and rok = resp `OK
+and rcancel = resp `CANCEL
+and rclose = resp `CLOSE
+and ryes = resp `YES
+and rno = resp `NO
+and rapply = resp `APPLY
+and rhelp = resp `HELP
 
-class ['a] dialog_skel obj = object (self)
+class virtual ['a] dialog_base obj = object (self)
   inherit window_skel obj
   inherit dialog_props
-  val tbl : (int * 'a) list ref = 
-    ref [rdelete, `DELETE_EVENT]
-  val mutable id = 0
   method action_area = new GPack.box (Dialog.action_area obj)
   method vbox = new GPack.box (Dialog.vbox obj)
-  method response v = Dialog.response obj (list_rassoc v !tbl)
+  method private virtual encode : 'a -> int
+  method private virtual decode : int -> 'a
+  method response v = Dialog.response obj (self#encode v)
   method set_response_sensitive v s =
-    Dialog.set_response_sensitive obj (list_rassoc v !tbl) s
+    Dialog.set_response_sensitive obj (self#encode v) s
   method set_default_response v = 
-    Dialog.set_default_response obj (list_rassoc v !tbl)
+    Dialog.set_default_response obj (self#encode v)
   method run () = 
     let resp = Dialog.run obj in
     if resp = rnone
     then failwith "dialog destroyed"
-    else List.assoc resp !tbl
+    else self#decode resp
 end
 
-class ['a] dialog obj = object (self)
+class ['a] dialog_skel obj = object
+  inherit ['a] dialog_base obj
+  val mutable tbl = [rdelete, `DELETE_EVENT]
+  val mutable id = 0
+  method private encode (v : 'a) = list_rassoc v tbl
+  method private decode r = List.assoc r tbl
+end
+
+class ['a] dialog_ext obj = object (self)
   inherit ['a] dialog_skel obj
   method add_button text (v : 'a) =
-    tbl := (id, v) :: !tbl ;
+    tbl <- (id, v) :: tbl ;
     Dialog.add_button obj text id ;
     id <- succ id
-  method add_button_stock s_id (v : 'a) =
+  method add_button_stock s_id v =
     self#add_button (GtkStock.convert_id s_id) v
 end
 
-class ['a] dialog_full obj = object
-  inherit ['a] dialog obj
-  method connect : 'a dialog_signals = new dialog_signals obj tbl
+class ['a] dialog obj = object (self)
+  inherit ['a] dialog_ext obj
+  method connect : 'a dialog_signals = new dialog_signals obj (self#decode)
 end
 
 let make_dialog pl ?parent ?destroy_with_parent ~create =
@@ -142,32 +159,45 @@ let dialog ?(no_separator=false) =
       if no_separator 
       then (Gobject.param Dialog.P.has_separator false) :: pl
       else pl in
-    new dialog_full (Dialog.create pl))
+    new dialog (Dialog.create pl))
+
+type any_response = [GtkEnums.response | `OTHER of int]
+
+class dialog_any obj = object (self)
+  inherit [any_response] dialog_base obj
+  method private encode = function
+      `OTHER n -> n
+    | #GtkEnums.response as v -> Dialog.std_response v
+  method private decode r =      
+    try (Dialog.decode_response r : GtkEnums.response :> [>GtkEnums.response])
+    with Invalid_argument _ -> `OTHER r
+  method connect : any_response dialog_signals =
+    new dialog_signals obj self#decode
+  method add_button text v =
+    Dialog.add_button obj text (self#encode v)
+  method add_button_stock s_id v =
+    self#add_button (GtkStock.convert_id s_id) v
+end
 
 (** MessageDialog **)
 
 type 'a buttons = Gtk.Tags.buttons * (int * 'a) list
 module Buttons = struct
-let rok = Dialog.std_response `OK
-and rclose = Dialog.std_response `CLOSE
-and ryes = Dialog.std_response `YES
-and rno = Dialog.std_response `NO
-and rcancel = Dialog.std_response `CANCEL
-let ok = `OK, [ rok, `OK ]
-let close = `CLOSE, [ rclose, `CLOSE ]
-let yes_no = `YES_NO, [ ryes, `YES ; rno, `NO ]
-let ok_cancel = `OK_CANCEL, [ rok, `OK; rcancel, `CANCEL ]
-type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
-type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
-type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT]
+  let ok = `OK, [ rok, `OK ]
+  let close = `CLOSE, [ rclose, `CLOSE ]
+  let yes_no = `YES_NO, [ ryes, `YES ; rno, `NO ]
+  let ok_cancel = `OK_CANCEL, [ rok, `OK; rcancel, `CANCEL ]
+  type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
+  type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
+  type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT]
 end
 
-class ['a] message_dialog obj ~(buttons : 'a buttons) = object
+class ['a] message_dialog obj ~(buttons : 'a buttons) = object (self)
   inherit ['a] dialog_skel obj
   inherit message_dialog_props
-  method connect : 'a dialog_signals = new dialog_signals obj tbl
+  method connect : 'a dialog_signals = new dialog_signals obj self#decode
   initializer
-    tbl := snd buttons @ !tbl
+    tbl <- snd buttons @ tbl
 end
 
 let message_dialog ?(message="") ~message_type ~buttons =
@@ -180,9 +210,9 @@ let message_dialog ?(message="") ~message_type ~buttons =
 
 (** ColorSelectionDialog **)
 
-class color_selection_dialog obj = object
+class color_selection_dialog obj = object (self)
   inherit [Buttons.color_selection] dialog_skel (obj : Gtk.color_selection_dialog obj)
-  method connect : 'a dialog_signals = new dialog_signals obj tbl
+  method connect : 'a dialog_signals = new dialog_signals obj self#decode
   method ok_button =
     new GButton.button (ColorSelectionDialog.ok_button obj)
   method cancel_button =
@@ -192,9 +222,7 @@ class color_selection_dialog obj = object
   method colorsel =
     new GMisc.color_selection (ColorSelectionDialog.colorsel obj)
   initializer
-    tbl := [ Buttons.rok, `OK ; 
-	     Buttons.rcancel, `CANCEL ;
-	     Dialog.std_response `HELP, `HELP ] @ !tbl
+    tbl <- [ rok, `OK ; rcancel, `CANCEL ; rhelp, `HELP ] @ tbl
 end
 
 let color_selection_dialog ?(title="Pick a color") =
@@ -203,10 +231,10 @@ let color_selection_dialog ?(title="Pick a color") =
 
 
 (** FileSelection **)
-class file_selection obj = object
+class file_selection obj = object (self)
   inherit [Buttons.file_selection] dialog_skel (obj : Gtk.file_selection obj)
   inherit file_selection_props
-  method connect : 'a dialog_signals = new dialog_signals obj tbl
+  method connect : 'a dialog_signals = new dialog_signals obj self#decode
   method complete = FileSelection.complete obj
   method get_selections = FileSelection.get_selections obj
   method ok_button = new GButton.button (FileSelection.get_ok_button obj)
@@ -218,9 +246,7 @@ class file_selection obj = object
   method dir_list : string GList.clist =
     new GList.clist (FileSelection.get_dir_list obj)
   initializer
-    tbl := [ Buttons.rok, `OK ; 
-	     Buttons.rcancel, `CANCEL ;
-	     Dialog.std_response `HELP, `HELP ] @ !tbl
+    tbl <- [ rok, `OK ; rcancel, `CANCEL ; rhelp, `HELP ] @ tbl
 end
 
 let file_selection ?(title="Choose a file") ?(show_fileops=false) =
@@ -233,9 +259,9 @@ let file_selection ?(title="Choose a file") ?(show_fileops=false) =
 
 (** FontSelectionDialog **)
 
-class font_selection_dialog obj = object
+class font_selection_dialog obj = object (self)
   inherit [Buttons.font_selection] dialog_skel (obj : Gtk.font_selection_dialog obj)
-  method connect : 'a dialog_signals = new dialog_signals obj tbl
+  method connect : 'a dialog_signals = new dialog_signals obj self#decode
   method selection =
     new GMisc.font_selection (FontSelectionDialog.font_selection obj)
   method ok_button =  new GButton.button (FontSelectionDialog.ok_button obj)
@@ -244,9 +270,7 @@ class font_selection_dialog obj = object
   method cancel_button =
     new GButton.button (FontSelectionDialog.cancel_button obj)
   initializer
-    tbl := [ Buttons.rok, `OK ; 
-	     Buttons.rcancel, `CANCEL ;
-	     Dialog.std_response `APPLY, `APPLY ] @ !tbl
+    tbl <- [ rok, `OK ; rcancel, `CANCEL ; rapply, `APPLY ] @ tbl
 end
 
 let font_selection_dialog ?title =
@@ -293,16 +317,16 @@ let socket =
   pack_container [] ~create:(fun pl -> new socket (Socket.create pl))
 
 (** FileChooser *)
-class ['a] file_chooser_dialog_signals obj tbl = object
-  inherit ['a] dialog_signals obj tbl
+class ['a] file_chooser_dialog_signals obj ~decode = object
+  inherit ['a] dialog_signals obj ~decode
   inherit OgtkFileProps.file_chooser_sigs
 end
 
-class ['a] file_chooser_dialog _obj = object
-  inherit ['a] dialog _obj
+class ['a] file_chooser_dialog _obj = object (self)
+  inherit ['a] dialog_ext _obj
   inherit GFile.chooser_impl _obj
   method connect : 'a file_chooser_dialog_signals = 
-    new file_chooser_dialog_signals obj tbl
+    new file_chooser_dialog_signals obj self#decode
 end
 
 let file_chooser_dialog ~action =

@@ -110,7 +110,7 @@ val toplevel : #widget -> window option
 
 (** @gtkdoc gtk GtkDialog *)
 class ['a] dialog_signals :
-  ([> Gtk.dialog] as 'b) obj -> (int * 'a) list ref ->
+  ([> Gtk.dialog] as 'b) obj -> decode:(int -> 'a) ->
   object
     inherit GContainer.container_signals
     val obj : 'b obj
@@ -133,11 +133,13 @@ class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
     method has_separator : bool
     method set_has_separator : bool -> unit
     method run : unit -> 'a
+    method private encode : 'a -> int
+    method private decode : int -> 'a
   end
 
 (** Create popup windows
    @gtkdoc gtk GtkDialog *)
-class ['a] dialog : [> Gtk.dialog] obj ->
+class ['a] dialog_ext : [> Gtk.dialog] obj ->
   object
     inherit ['a] dialog_skel
     method add_button : string -> 'a -> unit
@@ -146,9 +148,9 @@ class ['a] dialog : [> Gtk.dialog] obj ->
 
 (** Create popup windows
    @gtkdoc gtk GtkDialog *)
-class ['a] dialog_full : [> Gtk.dialog] obj ->
+class ['a] dialog : [> Gtk.dialog] obj ->
   object
-    inherit ['a] dialog
+    inherit ['a] dialog_ext
     method connect : 'a dialog_signals
   end
 
@@ -169,7 +171,13 @@ val dialog :
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a dialog_full
+  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a dialog
+
+
+(** Variation for safe typing *)
+type any_response = [GtkEnums.response | `OTHER of int]
+class dialog_any : [> Gtk.dialog] obj -> [any_response] dialog
+
 
 (** {3 GtkMessageDialog} *)
 
@@ -221,7 +229,7 @@ val message_dialog :
 (** @since GTK 2.4
     @gtkdoc gtk GtkFileChooserDialog *)
 class ['a] file_chooser_dialog_signals :
- ([> Gtk.file_chooser|Gtk.dialog] as 'b) Gtk.obj -> (int * 'a) list ref ->
+ ([> Gtk.file_chooser|Gtk.dialog] as 'b) Gtk.obj -> decode:(int -> 'a) ->
    object
      inherit ['a] dialog_signals
      inherit GFile.chooser_signals
@@ -233,7 +241,7 @@ class ['a] file_chooser_dialog_signals :
 class ['a] file_chooser_dialog :
  ([> Gtk.file_chooser|Gtk.dialog] as 'b) Gtk.obj -> 
  object
-   inherit ['a] dialog
+   inherit ['a] dialog_ext
    inherit GFile.chooser
    val obj : 'b Gtk.obj
    method connect : 'a file_chooser_dialog_signals
