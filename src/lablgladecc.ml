@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+open StdLabels
+
 (* One can roughly get defined classes by: *)
 (* grep Object.try_cast *.ml | sed 's/gtk\([^.]*\)[^"]*"Gtk\([^"]*\)".*/  "Gtk\2", ("Gtk\1.\2", "G\1.\2");/' *)
 (* But you also need to do some post-editing. Do not forget H and V classes *)
@@ -151,7 +153,7 @@ let rec flatten_tree w =
 
 let output_widget w =
   try
-    let (modul, clas) = List.assoc w.wclass !classes in
+    let (modul, clas) = List.assoc w.wclass ~map:!classes in
     w.wrapped <- true;
     if clas = "GList.clist" then
       Printf.printf "    method %s : int %s = new %s\n" w.wname clas clas
@@ -211,8 +213,8 @@ let process ?(file="<stdin>") chan =
       let b = Buffer.create 1024 in
       let buf = String.create 1024 in
       while
-        let len = input chan ~buf ~pos:0 ~len:1024 in
-        Buffer.add_substring b buf ~pos:0 ~len;
+        let len = input chan buf 0 1024 in
+        Buffer.add_substring b buf 0 len;
         len > 0
       do () done;
       let data = Buffer.contents b in
@@ -243,14 +245,14 @@ let output_test () =
 
 let main () =
   let files = ref [] and test = ref false in
-  Arg.parse ~errmsg:"lablgladecc [<options>] [<file.glade>]"
-    ~keywords:
+  Arg.parse
     [ "-test", Arg.Set test, " check lablgladecc (takes no input)";
       "-embed", Arg.Set embed, " embed input file into generated program";
       "-trace", Arg.Set trace, " trace calls to handlers";
       "-root", Arg.String (fun s -> roots := s :: !roots),
       "<widget>  generate only a wrapper for <widget> and its children" ]
-    ~others:(fun s -> files := s :: !files);
+    (fun s -> files := s :: !files)
+    "lablgladecc [<options>] [<file.glade>]";
   if !test then
     output_test ()
   else if !files = [] then
