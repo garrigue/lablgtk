@@ -1,5 +1,8 @@
 $Id$
 
+2002.06.18
+  * add Gdk.Rgb.draw_image
+
 2002.05.30
   * change typing of GtkSignal.t
 
