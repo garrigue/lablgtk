@@ -1,17 +1,12 @@
 ===============================================================================
 GtkTextIter:
-Il manque :
-1) Fonction avec TextAttributes
-	gtk_text_iter_get_attributes
-2) Fonction avec Pango
-	gtk_text_iter_get_language
+Il manque : gtk_text_iter_get_attributes
 ===============================================================================
 GtkTextMark : FINI
 ===============================================================================
 GtkTextBuffer: FINI
 ===============================================================================
-GtkTextTag:
-Il manque les PangoTabs.
+GtkTextTag: Il manque les PangoTabs.
 ===============================================================================
 GtkTextTagTable: FINI
 ===============================================================================

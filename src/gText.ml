@@ -158,6 +158,7 @@ object (self)
   method is_cursor_position = Iter.is_cursor_position it
   method chars_in_line = Iter.get_chars_in_line it
   method bytes_in_line = Iter.get_bytes_in_line it
+  method language = Iter.get_language it
   method is_end = Iter.is_end it
   method is_start = Iter.is_start it
 

@@ -152,6 +152,7 @@ object ('self)
   method is_cursor_position : bool
   method is_end : bool
   method is_start : bool
+  method language : Pango.language
   method line : int
   method line_index : int
   method line_offset : int
