@@ -3,6 +3,7 @@ $Id$
 2004.11.24 [Olivier]
   * add GMisc.statusbar#has_resize_grip and #set_has_resize_grip
     GMisc.statusbar now inherits from GPack.box
+  * add GtkIconView (2.6)
 
 2004.11.22 [Olivier]
   * add GtkCellRendererCombo (2.6)

@@ -265,6 +265,8 @@ module Data = struct
              | `OBJECT None -> raise Gpointer.Null
              | _ -> failwith "Gobject.get_object");
       inj = (fun c -> `OBJECT (Some (unsafe_cast c))) }
+  let gobject_by_name name =
+    { gobject with kind = `OTHER (Type.from_name name) }
   let caml =
     { kind = `OTHER Type.caml;
       proj = (function `CAML v -> Obj.obj v

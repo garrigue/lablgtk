@@ -246,6 +246,9 @@ type radio_action = [toggle_action|`radioaction]
 type action_group = [`actiongroup]
 type ui_manager = [`uimanager]
 
+(* New widgets in 2.6 *)
+type icon_view = [container|`iconview]
+
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj
   (* constraint 'a = [> `gtk] *)

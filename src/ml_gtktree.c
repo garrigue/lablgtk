@@ -36,6 +36,7 @@ CAMLprim value ml_gtktree_init(value unit)
 #ifdef HASGTK26
         + gtk_cell_renderer_progress_get_type()
         + gtk_cell_renderer_combo_get_type()
+        + gtk_icon_view_get_type()
 #endif
         ;
     return Val_GType(t);
@@ -643,3 +644,62 @@ Unsupported_24 (gtk_tree_model_filter_convert_path_to_child_path)
 Unsupported_24 (gtk_tree_model_filter_convert_iter_to_child_iter)
 
 #endif /* HASGTK24 */
+
+/* GtkIconView */
+#ifdef HASGTK26
+#define GtkIconView_val(val) check_cast(GTK_ICON_VIEW,val)
+#define Val_option_GtkTreePath(v) Val_option(v,Val_GtkTreePath)
+ML_3 (gtk_icon_view_get_path_at_pos, GtkIconView_val, Int_val, Int_val, Val_option_GtkTreePath)
+static void ml_iconview_foreach (GtkIconView *icon_view, GtkTreePath *path, gpointer data)
+{
+  value *cb = data;
+  value p;
+  p = Val_GtkTreePath_copy(path);
+  callback_exn(*cb, p);
+}
+CAMLprim value ml_gtk_icon_view_selected_foreach (value i, value cb)
+{
+  CAMLparam2(i, cb);
+  gtk_icon_view_selected_foreach (GtkIconView_val(i), ml_iconview_foreach, &cb);
+  CAMLreturn(Val_unit);
+}
+ML_2 (gtk_icon_view_select_path, GtkIconView_val, GtkTreePath_val, Unit)
+ML_2 (gtk_icon_view_unselect_path, GtkIconView_val, GtkTreePath_val, Unit)
+ML_2 (gtk_icon_view_path_is_selected, GtkIconView_val, GtkTreePath_val, Val_bool)
+CAMLprim value ml_gtk_icon_view_get_selected_items (value i)
+{
+  CAMLparam1(i);
+  CAMLlocal3(path, cell, list);
+  GList *l, *head;
+  head = gtk_icon_view_get_selected_items (GtkIconView_val(i));
+  l = g_list_last (head);
+  list = Val_emptylist;
+  while (l) {
+    GtkTreePath *p = l->data;
+    path = Val_GtkTreePath(p);
+    cell = alloc_small(2, Tag_cons);
+    Field(cell, 0) = path;
+    Field(cell, 1) = list;
+    list = cell;
+    l=l->prev;
+  }
+  g_list_free(head);
+  CAMLreturn(list);
+}
+ML_1 (gtk_icon_view_select_all, GtkIconView_val, Unit)
+ML_1 (gtk_icon_view_unselect_all, GtkIconView_val, Unit)
+ML_2 (gtk_icon_view_item_activated, GtkIconView_val, GtkTreePath_val, Unit)
+
+#else
+
+Unsupported_26(gtk_icon_view_get_path_at_pos)
+Unsupported_26(gtk_icon_view_selected_foreach)
+Unsupported_26(gtk_icon_view_select_path)
+Unsupported_26(gtk_icon_view_unselect_path)
+Unsupported_26(gtk_icon_view_path_is_selected)
+Unsupported_26(gtk_icon_view_get_selected_items)
+Unsupported_26(gtk_icon_view_select_all)
+Unsupported_26(gtk_icon_view_unselect_all)
+Unsupported_26(gtk_icon_view_item_activated)
+
+#endif /* HASGTK26 */
