@@ -580,7 +580,7 @@ CAMLprim value ml_gdk_gc_get_values (value gc)
 
 CAMLprim value ml_point_array_new (value len)
 {
-    value ret
+  value ret;
     if(Int_val(len) <= 0)
       invalid_argument("PointArray.new");
     ret = alloc (1 + Wosize_asize(Int_val(len)*sizeof(GdkPoint)),
