@@ -20,6 +20,7 @@ module Object = struct
   let is_a obj name =
     Type.is_a (get_type obj) (Type.from_name name)
   external destroy : 'a obj -> unit = "ml_gtk_object_destroy"
+  external coerce : 'a obj -> unit obj = "%identity"
   external unsafe_cast : 'a obj -> 'b obj = "%identity"
   let try_cast w name =
     if is_a w name then unsafe_cast w

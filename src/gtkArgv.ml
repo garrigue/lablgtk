@@ -13,7 +13,7 @@ type data =
   | OBJECT of unit obj option
   | POINTER of Gpointer.boxed option
 
-type result =
+type 'a result =
   [ `NONE
   | `CHAR of char | `BOOL of bool | `INT of int
   | `UINT of int32 | `LONG of nativeint | `ULONG of nativeint
@@ -21,14 +21,14 @@ type result =
   | `STRING of string option | `ENUM of int | `FLAGS of int32
   | `BOXED of Gpointer.boxed option
   | `POINTER of Gpointer.boxed option
-  | `OBJECT of unit obj option ]
+  | `OBJECT of 'a obj option ]
 
 module Arg = struct
   type t
   external shift : t -> pos:int -> t = "ml_gtk_arg_shift"
   external get_type : t -> gtk_type = "ml_gtk_arg_get_type"
   external get : t -> data = "ml_gtk_arg_get"
-  external set_retloc : t -> result -> unit = "ml_gtk_arg_set_retloc"
+  external set_retloc : t -> 'a result -> unit = "ml_gtk_arg_set_retloc"
   external get_pointer : t -> Gpointer.boxed = "ml_gtk_arg_get_pointer"
   external get_nativeint : t -> nativeint = "ml_gtk_arg_get_nativeint"
 
