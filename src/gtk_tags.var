@@ -13,7 +13,7 @@ type shadow = "GTK_SHADOW_"
 type arrow = "GTK_ARROW_"
     [ UP DOWN LEFT RIGHT ]
 
-type pack = "GTK_PACK_"
+type pack_type = "GTK_PACK_"
     [ START END ]
 
 type policy = "GTK_POLICY_"

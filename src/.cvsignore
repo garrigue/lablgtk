@@ -2,6 +2,7 @@
 config.make
 var2conv
 var2def
+lablgtk
 *_tags.c
 *_tags.h
 

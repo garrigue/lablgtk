@@ -1,5 +1,10 @@
 (* $Id$ *)
 
+open Misc
+
+exception Error of string
+let _ = Callback.register_exception "gdkerror" (Error"")
+
 type 'a obj
 
 module Tags = struct
@@ -8,7 +13,7 @@ module Tags = struct
   type direction = [ TAB_FORWARD TAB_BACKWARD UP DOWN LEFT RIGHT ]
   type shadow = [ NONE IN OUT ETCHED_IN ETCHED_OUT ]
   type arrow = [ UP DOWN LEFT RIGHT ]
-  type pack = [ START END ]
+  type pack_type = [ START END ]
   type policy = [ ALWAYS AUTOMATIC ]
   type update = [ CONTINUOUS DISCONTINUOUS DELAYED ]
   type attach = [ EXPAND SHRINK FILL ]
@@ -31,6 +36,11 @@ module Tags = struct
 end
 open Tags
 
+module AcceleratorTable = struct
+  type t
+  external create : unit -> t = "ml_gtk_accelerator_table_new"
+end
+
 module Type = struct
   type t
   type klass
@@ -46,8 +56,23 @@ module Object = struct
   external get_type : 'a obj -> Type.t = "ml_gtk_object_type"
 end
 
+module Adjustment = struct
+  type t = [ajustment] obj
+  external create :
+      value:float -> lower:float -> upper:float ->
+      step_incr:float -> page_incr:float -> page_size:float -> t
+      = "ml_gtk_adjustment_new_bc" "ml_gtk_adjustment_new"
+  external set_value : [> adjustment] obj -> float -> unit
+      = "ml_gtk_adjustment_set_value"
+  external clamp_page :
+      [> adjustment] obj -> lower:float -> upper:float -> unit
+      = "ml_gtk_adjustment_clamp_page"
+end
+
 module Widget = struct
   type t = [widget] obj
+  external destroy : [> widget] obj -> unit = "ml_gtk_widget_destroy"
+  external unparent : [> widget] obj -> unit = "ml_gtk_widget_unparent"
   external show : [> widget] obj -> unit = "ml_gtk_widget_show"
   external show_now : [> widget] obj -> unit = "ml_gtk_widget_show_now"
   external show_all : [> widget] obj -> unit = "ml_gtk_widget_show_all"
@@ -132,4 +157,128 @@ module Container = struct
       = "ml_gtk_container_need_resize"
   external foreach : [> container] obj -> fun:(Widget.t -> unit) -> unit
       = "ml_gtk_container_foreach"
+  let children w =
+    let l = ref [] in
+    foreach w fun:(push on:l);
+    List.rev !l
+  external focus : [> container] obj -> direction -> bool
+      = "ml_gtk_container_focus"
+  external set_focus_child : [> container] obj -> [> widget] obj -> unit
+      = "ml_gtk_container_set_focus_child"
+  external set_focus_vadjustment :
+      [> container] obj -> [> adjustment] obj -> bool
+      = "ml_gtk_container_set_focus_vadjustment"
+  external set_focus_hadjustment :
+      [> container] obj -> [> adjustment] obj -> bool
+      = "ml_gtk_container_set_focus_hadjustment"
+  let set_focus w ?:child ?:vadjustment ?:hadjustment =
+    may child fun:(set_focus_child w);
+    may vadjustment fun:(set_focus_vadjustment w);
+    may hadjustment fun:(set_focus_hadjustment w);
+    ()
+end
+
+module Window = struct
+  type t = [widget container bin window] obj
+  external create : window_type -> t = "ml_gtk_window_new"
+  external set_title : [> window] obj -> string -> unit
+      = "ml_gtk_window_set_title"
+  external set_wmclass : [> window] obj -> name:string -> class:string -> unit
+      = "ml_gtk_window_set_title"
+  external set_focus : [> window] obj -> [> widget] obj -> unit
+      = "ml_gtk_window_set_focus"
+  external set_default : [> window] obj -> [> widget] obj -> unit
+      = "ml_gtk_window_set_default"
+  external set_policy :
+      [> window] obj ->
+      allow_shrink:bool -> allow_grow:bool -> auto_shrink:bool -> unit
+      = "ml_gtk_window_set_policy"
+  external add_accelerator_table : [> window] obj -> AcceleratorTable.t -> unit
+      = "ml_gtk_window_add_accelerator_table"
+  external remove_accelerator_table :
+      [> window] obj -> AcceleratorTable.t -> unit
+      = "ml_gtk_window_remove_accelerator_table"
+  external activate_focus : [> window] obj -> unit
+      = "ml_gtk_window_activate_focus"
+  external activate_default : [> window] obj -> unit
+      = "ml_gtk_window_activate_default"
+end
+
+module Box = struct
+  type t = [widget container box] obj
+  external pack_start :
+      [> box] obj -> [> widget] obj ->
+      expand:bool -> fill:bool -> padding:int -> unit
+      = "ml_gtk_box_pack_start"
+  external pack_end :
+      [> box] obj -> [> widget] obj ->
+      expand:bool -> fill:bool -> padding:int -> unit
+      = "ml_gtk_box_pack_end"
+  let pack box child ?from:dir [< (`START : pack_type) >]
+      ?:expand [< true >] ?:fill [< true >] ?:padding [< 0 >] =
+    (match dir with `START -> pack_start | `END -> pack_end)
+      box child :expand :fill :padding
+  external set_homogeneous : [> box] obj -> bool -> unit
+      = "ml_gtk_box_set_homogeneous"
+  external set_spacing : [> box] obj -> int -> unit
+      = "ml_gtk_box_set_spacing"
+  type packing =
+      { expand: bool; fill: bool; padding: int; pack_type: pack_type }
+  external query_child_packing : [> box] obj -> [> widget] obj -> packing
+      = "ml_gtk_box_query_child_packing"
+  external set_child_packing :
+      [> box] obj -> [> widget] obj ->
+      ?expand:bool -> ?fill:bool -> ?padding:int -> ?from:pack_type -> unit
+      = "ml_gtk_box_set_child_packing_bc" "ml_gtk_box_set_child_packing"
+end
+
+module Button = struct
+  type t = [widget container button] obj
+  external create : unit -> t = "ml_gtk_button_new"
+  external create_with_label : string -> t = "ml_gtk_button_new_with_label"
+  external pressed : [> button] obj -> unit = "ml_gtk_button_pressed"
+  external released : [> button] obj -> unit = "ml_gtk_button_released"
+  external clicked : [> button] obj -> unit = "ml_gtk_button_clicked"
+  external enter : [> button] obj -> unit = "ml_gtk_button_enter"
+  external leave : [> button] obj -> unit = "ml_gtk_button_leave"
+end
+
+module Main = struct
+  external init : string array -> string array = "ml_gtk_init"
+  external exit : int -> unit = "ml_gtk_exit"
+  external set_locale : unit -> string = "ml_gtk_set_locale"
+  external main : unit -> unit = "ml_gtk_main"
+  external quit : unit -> unit = "ml_gtk_main_quit"
+  external grab_add : [> widget] obj -> unit = "ml_gtk_grab_add"
+  external grab_remove : [> widget] obj -> unit = "ml_gtk_grab_remove"
+  external grab_get_current : unit -> Widget.t = "ml_gtk_grab_get_current"
+  external get_version : unit -> int * int * int = "ml_gtk_get_version"
+end
+
+module Arg = struct
+  type pointer
+  type t =
+      Invalid
+    | Unit
+    | Char of char
+    | Bool of bool
+    | Int of int
+    | Float of float
+    | String of string
+    | Enum of int
+    | Flags of int
+    | Boxed of pointer
+    | Pointer of pointer
+    | Object of unit obj
+end
+
+module Signal = struct
+  type cb_id
+  external connect :
+      'a obj -> name:string -> cb:(Arg.t list -> Arg.t) -> after:bool -> cb_id
+      = "ml_gtk_signal_connect"
+  let connect obj :name :cb ?:after [< false >] =
+    connect obj :name :cb :after
+  external disconnect : 'a obj -> cb_id -> unit
+      = "ml_gtk_signal_disconnect"
 end

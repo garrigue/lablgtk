@@ -99,6 +99,10 @@ value cname##_bc (value *argv, int argn) \
 /* parameter conversion */
 #define Bool_ptr(x) ((long) x - 1)
 #define Char_val Int_val
+#define Float_val(x) ((float)Double_val(x))
+
+#define Option_val(val,unwrap,default) \
+((long)val-1 ? unwrap(Field(val,0)) : default)
 
 /* Utility */
 
