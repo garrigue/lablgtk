@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <glib.h>
 #include <gtk/gtk.h>
 
 #include <caml/mlvalues.h>
@@ -919,7 +920,7 @@ static gboolean ml_gtk_text_char_predicate(gunichar ch, gpointer user_data)
   value res, *clos = user_data;
   res = callback_exn (*clos, Val_int(ch));
   if (Is_exception_result (res)) {
-    CAML_EXN_LOG (G_STRFUNC);
+    CAML_EXN_LOG ("ml_gtk_text_char_predicate");
     return FALSE;
   }
   return Bool_val(res);

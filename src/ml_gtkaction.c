@@ -161,6 +161,7 @@ Unsupported_24(gtk_ui_manager_add_ui_from_file)
 Unsupported_24(gtk_ui_manager_remove_ui)
 Unsupported_24(gtk_ui_manager_ensure_update)
 Unsupported_24(gtk_ui_manager_add_ui)
+Unsupported_24(gtk_ui_manager_add_ui_bc)
 Unsupported_24(gtk_ui_manager_new_merge_id)
 Unsupported_24(gtk_ui_manager_new_merge_id_bc)
 
