@@ -1,6 +1,7 @@
 config.make
 config.cache
- config.status
+config.status
+config.log
 configure
 aclocal.m4
 doc/html

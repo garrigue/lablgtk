@@ -22,7 +22,7 @@ let popup_callback vrb =
       ~buttons:GWindow.Buttons.close
       ~title:"About LablGTK"
       ~show:true () in
-  d#connect#response (function `CLOSE | `DELETE_EVENT | `NONE -> d#destroy ()) ;
+  d#connect#response (function `CLOSE | `DELETE_EVENT -> d#destroy ()) ;
   ()
   
 (** A (regular) callback activated on GtkButton::clicked *)
@@ -33,7 +33,7 @@ let popup_dialog () =
       ~buttons:GWindow.Buttons.close
       ~title:"applet in caml"
       ~show:true () in
-  d#connect#response (function `CLOSE | `DELETE_EVENT | `NONE -> d#destroy ()) ;
+  d#connect#response (function `CLOSE | `DELETE_EVENT -> d#destroy ()) ;
   ()
 
 (** A trick so that a 3rd mouse button click on our button widget
@@ -94,7 +94,7 @@ let fill_applet (applet : Panel.applet) =
   applet#setup_menu 
     ~xml:xml_descr
     [ "Verb_LablGTK", popup_callback ;
-      "Verb_background", (fun _ -> background_info (applet#get_background ())) ] ;
+      "Verb_background", (fun _ -> background_info applet#get_background) ] ;
   
   applet#misc#show () ;
 
