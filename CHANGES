@@ -5,6 +5,7 @@ $Id$
   * module Arg is renamed as GtkArg because of the name corrision with
 	the module Arg in the standard library
   * Makefile : native code compilation added
+  (Furuse)
  
 1998.11.29
   * renamed widget_ops sub-object to misc
