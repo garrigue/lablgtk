@@ -784,6 +784,39 @@ ML_bc10 (ml_gtk_table_attach)
 
 #define GtkToolbar_val(val) GTK_TOOLBAR(Pointer_val(val))
 ML_2 (gtk_toolbar_new, Orientation_val, Toolbar_style_val, Val_GtkWidget)
+ML_2 (gtk_toolbar_insert_space, GtkToolbar_val,
+      Option_val (arg2, Int_val, -1) Ignore, Unit)
+ML_7 (gtk_toolbar_insert_element, GtkToolbar_val,
+      Option_val (arg1, Toolbar_child_val, GTK_TOOLBAR_CHILD_BUTTON) Ignore,
+      Insert(NULL) String_option_val, String_option_val, String_option_val,
+      Option_val (arg6, GtkWidget_val, NULL) Ignore,
+      Insert(NULL) Insert(NULL) Option_val(arg7, Int_val, -1) Ignore,
+      Val_GtkWidget)
+ML_bc7 (ml_gtk_toolbar_insert_element)
+ML_5 (gtk_toolbar_insert_widget, GtkToolbar_val, GtkWidget_val,
+      String_option_val, String_option_val,
+      Option_val (arg5, Int_val, -1) Ignore, Unit)
+
+/* gtktree.h */
+
+#define GtkTree_val(val) GTK_TREE(Pointer_val(val))
+ML_0 (gtk_tree_new, Val_GtkWidget)
+ML_3 (gtk_tree_insert, GtkTree_val, GtkWidget_val,
+      Option_val (arg3, Int_val, -1) Ignore, Unit)
+ML_3 (gtk_tree_clear_items, GtkTree_val, Int_val, Int_val, Unit)
+ML_2 (gtk_tree_select_item, GtkTree_val, Int_val, Unit)
+ML_2 (gtk_tree_unselect_item, GtkTree_val, Int_val, Unit)
+ML_2 (gtk_tree_child_position, GtkTree_val, GtkWidget_val, Val_int)
+ML_2 (gtk_tree_set_selection_mode, GtkTree_val, Selection_val, Unit)
+ML_2 (gtk_tree_set_view_mode, GtkTree_val, Tree_view_mode_val, Unit)
+ML_2 (gtk_tree_set_view_lines, GtkTree_val, Bool_val, Unit)
+
+/* gtkdrawingarea.h */
+/*
+#define GtkDrawingArea_val(val) GTK_DRAWING_AREA(Pointer_val(val))
+ML_0 (gtk_drawing_area_new, Val_GtkWidget)
+ML_3 (gtk_drawing_area_size, GtkTree_val, Int_val, Int_val, Unit)
+*/
 
 /* gtkeditable.h */
 
