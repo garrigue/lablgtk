@@ -67,3 +67,12 @@ class Viewport set wrap : Bin {
   "shadow-type"          GtkShadowType        : Read / Write
   signal set_scroll_adjustments : GtkAdjustment_opt GtkAdjustment_opt
 }
+
+class Expander set wrap wrapsig : Bin {
+  "expanded"             gboolean             : Read / Write / Construct
+  "label"                gchararray           : Read / Write / Construct
+  "label-widget"         GtkWidget            : Read / Write / NoSet
+  "spacing"              gint                 : Read / Write
+  "use-underline"        gboolean             : Read / Write / Construct
+  signal activate
+}

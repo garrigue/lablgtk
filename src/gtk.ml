@@ -98,6 +98,8 @@ module Tags = struct
     | `NO_REPARENT | `APP_PAINTABLE | `RECEIVES_DEFAULT | `DOUBLE_BUFFERED ]
   type size_group_mode =
     [ `NONE | `HORIZONTAL | `VERTICAL | `BOTH ]
+  type file_chooser_action =
+    [ `OPEN | `SAVE ]
 end
 open Tags
 
@@ -220,5 +222,15 @@ type icon_factory = [`iconfactory] obj
 
 type size_group = [`sizegroup] obj
 
+(* New widgets in 2.4 *)
+type cell_layout = [`celllayout]
+type combo_box = [bin|`combobox|cell_layout]
+type combo_box_entry = [combo_box|`comboboxentry]
+type expander = [bin|`expander]
+type file_filter = [`gtk|`filefilter]
+type file_chooser = [ `filechooser]
+
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj
+  (* constraint 'a = [> `gtk] *)
+  (* *Props modules break this *)

@@ -78,10 +78,10 @@ class window_full : ([> Gtk.window] as 'a) obj ->
     inherit window
     val obj : 'a obj
     method connect : GContainer.container_signals
-    method fullscreen : unit -> unit
+    method fullscreen : unit -> unit (** @since GTK 2.2 *)
     method maximize : unit -> unit
     method stick : unit -> unit
-    method unfullscreen : unit -> unit
+    method unfullscreen : unit -> unit (** @since GTK 2.2 *)
     method unmaximize : unit -> unit
     method unstick : unit -> unit
   end
@@ -125,7 +125,6 @@ class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
     inherit window
     val obj : 'b obj
     method action_area : GPack.box
-    method connect : 'a dialog_signals
     method event : event_ops
     method vbox : GPack.box
     method response : 'a -> unit
@@ -138,11 +137,19 @@ class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
 
 (** Create popup windows
    @gtkdoc gtk GtkDialog *)
-class ['a] dialog : [>Gtk.dialog] obj ->
+class ['a] dialog : [> Gtk.dialog] obj ->
   object
     inherit ['a] dialog_skel
     method add_button : string -> 'a -> unit
     method add_button_stock : GtkStock.id -> 'a -> unit
+  end
+
+(** Create popup windows
+   @gtkdoc gtk GtkDialog *)
+class ['a] dialog_full : [> Gtk.dialog] obj ->
+  object
+    inherit ['a] dialog
+    method connect : 'a dialog_signals
   end
 
 (** @gtkdoc gtk GtkDialog *)
@@ -162,19 +169,19 @@ val dialog :
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a dialog
+  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a dialog_full
 
 (** {3 GtkMessageDialog} *)
 
 type 'a buttons
 module Buttons : sig
-val ok : [>`OK] buttons
-val close : [>`CLOSE] buttons
-val yes_no : [>`YES|`NO] buttons
-val ok_cancel : [>`OK|`CANCEL] buttons
-type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
-type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
-type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT]
+  val ok : [>`OK] buttons
+  val close : [>`CLOSE] buttons
+  val yes_no : [>`YES|`NO] buttons
+  val ok_cancel : [>`OK|`CANCEL] buttons
+  type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
+  type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
+  type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT]
 end
 
 (** Convenient message window
@@ -183,6 +190,7 @@ class type ['a] message_dialog =
   object
     inherit ['a] dialog_skel
     val obj : [> Gtk.message_dialog] obj
+    method connect : 'a dialog_signals
     method message_type : Tags.message_type
     method set_message_type : Tags.message_type -> unit
   end
@@ -208,6 +216,51 @@ val message_dialog :
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> 'a message_dialog
 
+(** {3 File Chooser Dialog} *)
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkFileChooserDialog *)
+class ['a] file_chooser_dialog_signals :
+ ([> Gtk.file_chooser|Gtk.dialog] as 'b) Gtk.obj -> (int * 'a) list ref ->
+   object
+     inherit ['a] dialog_signals
+     inherit GFile.chooser_signals
+     val obj : 'b Gtk.obj
+   end
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkFileChooserDialog *)
+class ['a] file_chooser_dialog :
+ ([> Gtk.file_chooser|Gtk.dialog] as 'b) Gtk.obj -> 
+ object
+   inherit ['a] dialog
+   inherit GFile.chooser
+   val obj : 'b Gtk.obj
+   method connect : 'a file_chooser_dialog_signals
+ end
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkFileChooserDialog *)
+val file_chooser_dialog :
+  action:Gtk.Tags.file_chooser_action ->
+  ?parent:#window ->
+  ?destroy_with_parent:bool ->
+  ?title:string ->
+  ?allow_grow:bool ->
+  ?allow_shrink:bool ->
+  ?icon:GdkPixbuf.pixbuf ->
+  ?modal:bool ->
+  ?resizable:bool ->
+  ?screen:Gdk.screen ->
+  ?type_hint:Gdk.Tags.window_type_hint ->
+  ?position:Tags.window_position ->
+  ?wm_name:string ->
+  ?wm_class:string ->
+  ?border_width:int ->
+  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a file_chooser_dialog
+  
+
+
 (** {3 Selection Dialogs} *)
 
 (** @gtkdoc gtk GtkColorSelectionDialog *)
@@ -215,6 +268,7 @@ class color_selection_dialog : Gtk.color_selection_dialog obj ->
   object
     inherit [Buttons.color_selection] dialog_skel
     val obj : Gtk.color_selection_dialog obj
+    method connect : Buttons.color_selection dialog_signals
     method cancel_button : GButton.button
     method colorsel : GMisc.color_selection
     method help_button : GButton.button
@@ -244,6 +298,7 @@ class file_selection : Gtk.file_selection obj ->
   object
     inherit [Buttons.file_selection] dialog_skel
     val obj : Gtk.file_selection obj
+    method connect : Buttons.file_selection dialog_signals
     method cancel_button : GButton.button
     method complete : filter:string -> unit
     method filename : string
@@ -285,6 +340,7 @@ class font_selection_dialog : Gtk.font_selection_dialog obj ->
   object
     inherit [Buttons.font_selection] dialog_skel
     val obj : Gtk.font_selection_dialog obj
+    method connect : Buttons.font_selection dialog_signals
     method apply_button : GButton.button
     method cancel_button : GButton.button
     method selection : GMisc.font_selection

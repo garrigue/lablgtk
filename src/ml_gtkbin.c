@@ -31,6 +31,9 @@ CAMLprim value ml_gtkbin_init(value unit)
 #ifndef _WIN32
         + gtk_socket_get_type()
 #endif
+#ifdef HASGTK24
+        + gtk_expander_get_type()
+#endif
 ;
     return Val_GType(t);
 }

@@ -65,7 +65,7 @@ module Type = struct
   external of_fundamental : fundamental_type -> g_type
       = "ml_Fundamental_type_val"
   external interface_prerequisites : g_type -> g_type list
-      = "ml_g_type_interface_prerequisites"
+      = "ml_g_type_interface_prerequisites" (** @since GTK 2.2 *)
   external register_static : g_type -> string -> g_type
       = "ml_g_type_register_static"
   let register_static ~parent ~name =

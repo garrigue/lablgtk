@@ -3213,8 +3213,8 @@ echo "${ECHO_T}$LABLGLDIR" >&6
 echo "$as_me: error: gtkgl enforced but lablGL not found" >&2;}
    { (exit 1); exit 1; }; }
 	else
-	  echo "$as_me:$LINENO: result: not found" >&5
-echo "${ECHO_T}not found" >&6
+	  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
       	  USE_GL=no
           unset LABLGLDIR
 	fi

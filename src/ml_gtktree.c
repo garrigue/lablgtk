@@ -421,3 +421,19 @@ CAMLprim value ml_gtk_tree_view_get_path_at_pos(value treeview,
   }
   return Val_unit;
 }
+
+/* GtkCellLayout */
+#ifdef HASGTK24
+#define GtkCellLayout_val(val) check_cast(GTK_CELL_LAYOUT,val)
+ML_3 (gtk_cell_layout_pack_start, GtkCellLayout_val, GtkCellRenderer_val, Bool_val, Unit)
+ML_3 (gtk_cell_layout_pack_end,   GtkCellLayout_val, GtkCellRenderer_val, Bool_val, Unit)
+ML_1 (gtk_cell_layout_clear, GtkCellLayout_val, Unit)
+ML_4 (gtk_cell_layout_add_attribute, GtkCellLayout_val, GtkCellRenderer_val, String_val, Int_val, Unit)
+ML_2 (gtk_cell_layout_clear_attributes, GtkCellLayout_val, GtkCellRenderer_val, Unit)
+#else
+Unsupported_24(gtk_cell_layout_pack_start)
+Unsupported_24(gtk_cell_layout_pack_end)
+Unsupported_24(gtk_cell_layout_clear)
+Unsupported_24(gtk_cell_layout_add_attribute)
+Unsupported_24(gtk_cell_layout_clear_attributes)
+#endif

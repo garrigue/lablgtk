@@ -102,7 +102,6 @@ class ['a] dialog_skel obj = object (self)
   val mutable id = 0
   method action_area = new GPack.box (Dialog.action_area obj)
   method vbox = new GPack.box (Dialog.vbox obj)
-  method connect : 'a dialog_signals = new dialog_signals obj tbl
   method response v = Dialog.response obj (list_rassoc v !tbl)
   method set_response_sensitive v s =
     Dialog.set_response_sensitive obj (list_rassoc v !tbl) s
@@ -125,6 +124,11 @@ class ['a] dialog obj = object (self)
     self#add_button (GtkStock.convert_id s_id) v
 end
 
+class ['a] dialog_full obj = object
+  inherit ['a] dialog obj
+  method connect : 'a dialog_signals = new dialog_signals obj tbl
+end
+
 let make_dialog pl ?parent ?destroy_with_parent ~create =
   make_window ~create:(fun pl ->
     let d = create pl in
@@ -138,7 +142,7 @@ let dialog ?(no_separator=false) =
       if no_separator 
       then (Gobject.param Dialog.P.has_separator false) :: pl
       else pl in
-    new dialog (Dialog.create pl))
+    new dialog_full (Dialog.create pl))
 
 (** MessageDialog **)
 
@@ -161,6 +165,7 @@ end
 class ['a] message_dialog obj ~(buttons : 'a buttons) = object
   inherit ['a] dialog_skel obj
   inherit message_dialog_props
+  method connect : 'a dialog_signals = new dialog_signals obj tbl
   initializer
     tbl := snd buttons @ !tbl
 end
@@ -177,6 +182,7 @@ let message_dialog ?(message="") ~message_type ~buttons =
 
 class color_selection_dialog obj = object
   inherit [Buttons.color_selection] dialog_skel (obj : Gtk.color_selection_dialog obj)
+  method connect : 'a dialog_signals = new dialog_signals obj tbl
   method ok_button =
     new GButton.button (ColorSelectionDialog.ok_button obj)
   method cancel_button =
@@ -200,6 +206,7 @@ let color_selection_dialog ?(title="Pick a color") =
 class file_selection obj = object
   inherit [Buttons.file_selection] dialog_skel (obj : Gtk.file_selection obj)
   inherit file_selection_props
+  method connect : 'a dialog_signals = new dialog_signals obj tbl
   method complete = FileSelection.complete obj
   method get_selections = FileSelection.get_selections obj
   method ok_button = new GButton.button (FileSelection.get_ok_button obj)
@@ -228,6 +235,7 @@ let file_selection ?(title="Choose a file") ?(show_fileops=false) =
 
 class font_selection_dialog obj = object
   inherit [Buttons.font_selection] dialog_skel (obj : Gtk.font_selection_dialog obj)
+  method connect : 'a dialog_signals = new dialog_signals obj tbl
   method selection =
     new GMisc.font_selection (FontSelectionDialog.font_selection obj)
   method ok_button =  new GButton.button (FontSelectionDialog.ok_button obj)
@@ -283,3 +291,22 @@ end
 
 let socket =
   pack_container [] ~create:(fun pl -> new socket (Socket.create pl))
+
+(** FileChooser *)
+class ['a] file_chooser_dialog_signals obj tbl = object
+  inherit ['a] dialog_signals obj tbl
+  inherit OgtkFileProps.file_chooser_sigs
+end
+
+class ['a] file_chooser_dialog _obj = object
+  inherit ['a] dialog _obj
+  inherit GFile.chooser_impl _obj
+  method connect : 'a file_chooser_dialog_signals = 
+    new file_chooser_dialog_signals obj tbl
+end
+
+let file_chooser_dialog ~action =
+  make_dialog [] ~create:(fun pl ->
+    let w = GtkFile.FileChooser.dialog_create pl in
+    Gobject.set GtkFile.FileChooser.P.action w action ;
+    new file_chooser_dialog w)

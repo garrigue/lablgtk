@@ -187,3 +187,95 @@ val combo :
   ?value_in_list:bool ->
   ?border_width:int -> ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> combo
+
+(** {3 GtkComboBox} *)
+
+(** @since GTK 2.4 
+    @gtkdoc gtk GtkComboBox *)
+class combo_box_signals : [> Gtk.combo_box] Gtk.obj ->
+  object
+    inherit GContainer.container_signals
+    method changed : callback:(unit -> unit) -> GtkSignal.id
+  end
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkComboBox *)
+class combo_box :
+  ([> Gtk.combo_box] as 'a) Gtk.obj ->
+  object
+    inherit GContainer.bin
+    inherit GTree.cell_layout
+    val obj : 'a Gtk.obj
+    method active : int
+    method active_iter : Gtk.tree_iter
+    method connect : combo_box_signals
+    method model : GTree.model
+    method set_active : int -> unit
+    method set_active_iter : Gtk.tree_iter -> unit				   
+    method set_column_span_column : int GTree.column -> unit
+    method set_row_span_column : int GTree.column -> unit
+    method set_wrap_width : int -> unit
+    method wrap_width : int
+  end
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkComboBox *)
+val combo_box :
+  model:#GTree.model ->
+  ?wrap_width:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) ->
+  ?show:bool ->
+  unit -> combo_box
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkComboBox *)
+class combo_box_text : 
+  ([> Gtk.combo_box|`comboboxtext] as 'a) Gtk.obj ->
+    object
+      inherit combo_box
+      val obj : 'a Gtk.obj
+      val column : string GTree.column
+      method column : string GTree.column
+      method append_text : string -> unit
+      method insert_text : int -> string -> unit
+      method prepend_text : string -> unit
+    end
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkComboBox *)
+val combo_box_text :
+  ?wrap_width:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) ->
+  ?show:bool ->
+  unit -> combo_box_text
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkComboBoxEntry *)
+class combo_box_entry : 
+  ([> Gtk.combo_box_entry] as 'a) Gtk.obj ->
+    object
+      inherit combo_box
+      val obj : 'a Gtk.obj
+      val text_column : string GTree.column
+      method text_column : string GTree.column
+      method entry : entry
+    end
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkComboBoxEntry *)
+val combo_box_entry :
+  model:#GTree.model ->
+  text_column:string GTree.column ->
+  ?wrap_width:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) ->
+  ?show:bool ->
+  unit -> combo_box_entry

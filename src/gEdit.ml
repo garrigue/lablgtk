@@ -91,6 +91,79 @@ let combo ?popdown_strings =
     may (Combo.set_popdown_strings w) popdown_strings;
     new combo w))
 
+class combo_box_signals obj = object
+  inherit GContainer.container_signals_impl (obj :> Gtk.combo_box Gtk.obj)
+  inherit OgtkEditProps.combo_box_sigs
+end
+
+class combo_box _obj = object
+  inherit [[> Gtk.combo_box]] GContainer.bin_impl _obj
+  inherit OgtkEditProps.combo_box_props
+  inherit GTree.cell_layout _obj
+  method connect = new combo_box_signals obj
+  method model =
+    new GTree.model (Gobject.get GtkEditProps.ComboBox.P.model obj)
+  method set_row_span_column (col : int GTree.column) =
+    Gobject.set GtkEdit.ComboBox.P.row_span_column obj col.GTree.index
+  method set_column_span_column (col : int GTree.column) =
+    Gobject.set GtkEdit.ComboBox.P.column_span_column obj col.GTree.index
+  method active_iter =
+    GtkEdit.ComboBox.get_active_iter obj
+  method set_active_iter =
+    GtkEdit.ComboBox.set_active_iter obj
+end
+
+let combo_box ~model =
+  GtkEdit.ComboBox.make_params [] ~cont:(
+  GContainer.pack_container ~create:(fun pl ->
+    let w = GtkEdit.ComboBox.create ~model:model#as_model pl in
+    new combo_box w))
+  
+class combo_box_text _obj = object
+  inherit combo_box _obj
+  val column =
+    let model_id = 
+      Gobject.get_oid (Gobject.get GtkEdit.ComboBox.P.model _obj) in
+    let col_list = new GTree.column_list in
+    Hashtbl.add GTree.model_ids model_id col_list#id ;
+    { GTree.index = 0 ; GTree.conv = Gobject.Data.string ; 
+      GTree.creator = col_list#id }
+  method column = column
+  method append_text = GtkEdit.ComboBox.append_text obj
+  method insert_text = GtkEdit.ComboBox.insert_text obj
+  method prepend_text = GtkEdit.ComboBox.prepend_text obj
+end
+
+(* convenience functions for simple text-only comboboxes *)
+let combo_box_text =
+  GtkEdit.ComboBox.make_params [] ~cont:(
+  GContainer.pack_container ~create:(fun pl ->
+    let w = GtkEdit.ComboBox.new_text () in
+    Gobject.set_params w pl ;
+    new combo_box_text w))
+
+class combo_box_entry _obj = object (self)
+  inherit combo_box _obj
+  val text_column =
+    let model_id = 
+      Gobject.get_oid (Gobject.get GtkEdit.ComboBox.P.model _obj) in
+    let col_list_id = Hashtbl.find GTree.model_ids model_id in
+    { GTree.index = Gobject.get GtkEdit.ComboBoxEntry.P.text_column _obj ;
+      GTree.conv  = Gobject.Data.string ; 
+      GTree.creator = col_list_id }
+  method text_column = text_column
+  method entry = new entry (GtkEdit.Entry.cast self#child#as_widget)
+end
+
+let combo_box_entry ~model ~text_column =
+  GtkEdit.ComboBox.make_params 
+    [ Gobject.param GtkEdit.ComboBox.P.model model#as_model ;
+      Gobject.param GtkEdit.ComboBoxEntry.P.text_column text_column.GTree.index ]
+    ~cont:(
+  GContainer.pack_container ~create:(fun pl ->
+    new combo_box_entry (GtkEdit.ComboBoxEntry.create pl)))
+
+
 (*
 class text obj = object (self)
   inherit editable (obj : Gtk.text obj) as super

@@ -101,3 +101,19 @@ let alignment =
   pack_container ~create:(fun pl -> new alignment (Alignment.create pl)))
   
 let alignment_cast w = new alignment (Alignment.cast w#as_widget)
+
+class expander_signals obj = object
+  inherit GContainer.container_signals_impl (obj : [> Gtk.expander] Gtk.obj)
+  inherit OgtkBinProps.expander_sigs
+end
+
+class expander obj = object
+  inherit [[> Gtk.expander]] GContainer.bin_impl obj
+  inherit OgtkBinProps.expander_props
+  method connect = new expander_signals obj
+end
+
+let expander =
+  GtkBin.Expander.make_params [] ~cont:(
+  GContainer.pack_container ~create:(fun pl ->
+    new expander (GtkBin.Expander.create pl)))

@@ -22,7 +22,13 @@ CAMLprim value ml_gtkedit_init(value unit)
     /* Since these are declared const, must force gcc to call them! */
     GType t =
         gtk_spin_button_get_type() +
-        gtk_combo_get_type();
+        gtk_combo_get_type() +
+#ifdef HASGTK24
+        gtk_combo_box_get_type() +
+        gtk_combo_box_entry_get_type();
+#else
+        0;
+#endif
     return Val_GType(t);
 }
 
@@ -156,3 +162,23 @@ ML_3 (gtk_combo_set_item_string, GtkCombo_val, GtkItem_val, String_val, Unit)
 ML_1 (gtk_combo_disable_activate, GtkCombo_val, Unit)
 Make_Extractor (gtk_combo, GtkCombo_val, entry, Val_GtkWidget)
 Make_Extractor (gtk_combo, GtkCombo_val, list, Val_GtkWidget)
+
+/* gtkcombobox.h */
+#define GtkComboBox_val(val) check_cast(GTK_COMBO_BOX,val)
+ML_0 (gtk_combo_box_new_text, Val_GtkWidget_sink)
+ML_2 (gtk_combo_box_append_text, GtkComboBox_val, String_val, Unit)
+ML_3 (gtk_combo_box_insert_text, GtkComboBox_val, Int_val, String_val, Unit)
+ML_2 (gtk_combo_box_prepend_text, GtkComboBox_val, String_val, Unit)
+
+/* taken from ml_gtktree.c, this should go in a .h */
+#define GtkTreeIter_val(val) ((GtkTreeIter*)MLPointer_val(val))
+#define Val_GtkTreeIter(it) (copy_memblock_indirected(it,sizeof(GtkTreeIter)))
+CAMLprim value 
+ml_gtk_combo_box_get_active_iter(value combo)
+{
+  GtkTreeIter it;
+  gboolean ret;
+  ret = gtk_combo_box_get_active_iter(GtkComboBox_val(combo), &it);
+  return Val_GtkTreeIter(ret ? &it : NULL);
+}
+ML_2(gtk_combo_box_set_active_iter, GtkComboBox_val, GtkTreeIter_val, Unit)
