@@ -67,6 +67,7 @@ class event_signals : [> widget] obj ->
     method button_press : callback:(GdkEvent.Button.t -> bool) -> GtkSignal.id
     method button_release :
 	callback:(GdkEvent.Button.t -> bool) -> GtkSignal.id
+    method client : callback:(GdkEvent.Client.t -> bool) -> GtkSignal.id
     method configure : callback:(GdkEvent.Configure.t -> bool) -> GtkSignal.id
     method delete : callback:([`DELETE] Gdk.event -> bool) -> GtkSignal.id
     method destroy : callback:([`DESTROY] Gdk.event -> bool) -> GtkSignal.id
@@ -88,6 +89,8 @@ class event_signals : [> widget] obj ->
 	callback:(GdkEvent.Proximity.t -> bool) -> GtkSignal.id
     method proximity_out :
 	callback:(GdkEvent.Proximity.t -> bool) -> GtkSignal.id
+    method scroll :
+	callback:(GdkEvent.Scroll.t -> bool) -> GtkSignal.id
     method selection_clear :
 	callback:(GdkEvent.Selection.t -> bool) -> GtkSignal.id
     method selection_notify :
@@ -95,6 +98,10 @@ class event_signals : [> widget] obj ->
     method selection_request :
 	callback:(GdkEvent.Selection.t -> bool) -> GtkSignal.id
     method unmap : callback:([`UNMAP] Gdk.event -> bool) -> GtkSignal.id
+    method visibility_notify :
+	callback:(GdkEvent.Visibility.t -> bool) -> GtkSignal.id
+    method window_state :
+	callback:(GdkEvent.WindowState.t -> bool) -> GtkSignal.id
   end
 
 class event_ops : [> widget] obj ->

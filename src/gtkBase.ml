@@ -207,6 +207,8 @@ module Widget = struct
       let property_notify : ([>`widget], GdkEvent.Property.t -> bool) t =
 	{ name = "property_notify_event"; classe = `widget;
           marshaller = marshal }
+      let scroll : ([>`widget], GdkEvent.Scroll.t -> bool) t =
+	{ name = "scroll_event"; classe = `widget; marshaller = marshal }
       let selection_clear : ([>`widget], GdkEvent.Selection.t -> bool) t =
 	{ name = "selection_clear_event"; classe = `widget;
           marshaller = marshal }
@@ -221,6 +223,15 @@ module Widget = struct
           marshaller = marshal }
       let proximity_out : ([>`widget], GdkEvent.Proximity.t -> bool) t =
 	{ name = "proximity_out_event"; classe = `widget;
+          marshaller = marshal }
+      let client : ([>`widget], GdkEvent.Client.t -> bool) t =
+	{ name = "client_event"; classe = `widget;
+          marshaller = marshal }
+      let visibility_notify : ([>`widget], GdkEvent.Visibility.t -> bool) t =
+	{ name = "visibility_notify_event"; classe = `widget;
+          marshaller = marshal }
+      let window_state : ([>`widget], GdkEvent.WindowState.t -> bool) t =
+	{ name = "window_state_event"; classe = `widget;
           marshaller = marshal }
     end
   end

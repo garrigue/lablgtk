@@ -69,6 +69,7 @@ class event_signals obj = object (self)
   method after_any = self#connect Signals.event_after
   method button_press = self#connect Event.button_press
   method button_release = self#connect Event.button_release
+  method client = self#connect Event.client
   method configure = self#connect Event.configure
   method delete = self#connect Event.delete
   method destroy = self#connect Event.destroy
@@ -84,10 +85,13 @@ class event_signals obj = object (self)
   method property_notify = self#connect Event.property_notify
   method proximity_in = self#connect Event.proximity_in
   method proximity_out = self#connect Event.proximity_out
+  method scroll = self#connect Event.scroll
   method selection_clear = self#connect Event.selection_clear
   method selection_notify = self#connect Event.selection_notify
   method selection_request = self#connect Event.selection_request
   method unmap = self#connect Event.unmap
+  method visibility_notify = self#connect Event.visibility_notify
+  method window_state = self#connect Event.window_state
 end
 
 class event_ops obj = object
