@@ -28,10 +28,55 @@ Index: parsing/parser.mly
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/parsing/parser.mly,v
 retrieving revision 1.19
-retrieving revision 1.20
-diff -c -r1.19 -r1.20
+retrieving revision 1.21
+diff -c -r1.19 -r1.21
 *** parser.mly	1998/09/02 07:02:14	1.19
---- parser.mly	1998/11/24 11:54:33	1.20
+--- parser.mly	1998/12/07 09:53:05	1.21
+***************
+*** 580,601 ****
+  class_type:
+      class_signature
+        { $1 }
+!   | simple_core_type2 MINUSGREATER class_type
+!       { mkcty(Pcty_fun("", $1, $3)) }
+!   | core_type_tuple2 MINUSGREATER class_type
+!       { mkcty(Pcty_fun("", mktyp(Ptyp_tuple(List.rev $1)), $3)) }
+!   | LABEL simple_core_type MINUSGREATER class_type
+!       { mkcty(Pcty_fun($1, $2, $4)) }
+!   | LABEL core_type_tuple MINUSGREATER class_type
+!       { mkcty(Pcty_fun($1, mktyp(Ptyp_tuple(List.rev $2)), $4)) }
+!   | optional simple_core_type MINUSGREATER class_type
+!       { mkcty(Pcty_fun($1, mktyp(Ptyp_constr(Lident "option", [$2])), $4)) }
+!   | optional core_type_tuple MINUSGREATER class_type
+!       { mkcty(Pcty_fun($1,
+! 		       mktyp(Ptyp_constr(Lident "option",
+! 					 [mktyp(Ptyp_tuple(List.rev $2))])),
+! 		       $4)) }
+  ;
+  class_signature:
+      LBRACKET core_type_comma_list RBRACKET clty_longident
+        { mkcty(Pcty_constr ($4, $2)) }
+--- 580,599 ----
+  class_type:
+      class_signature
+        { $1 }
+!   | class_type_arg MINUSGREATER class_type
+!       { mkcty(Pcty_fun(fst $1, snd $1, $3)) }
+  ;
++ class_type_arg:
++     simple_core_type2		{ "", $1 }
++   | core_type_tuple2		{ "", mktyp(Ptyp_tuple(List.rev $1)) }
++   | LABEL simple_core_type	{ $1, $2 }
++   | LABEL core_type_tuple	{ $1, mktyp(Ptyp_tuple(List.rev $2)) }
++   | optional simple_core_type
++       { $1, mktyp(Ptyp_constr(Lident "option", [$2])) }
++   | optional core_type_tuple
++       { $1,
++ 	mktyp(Ptyp_constr(Lident "option", [mktyp(Ptyp_tuple(List.rev $2))])) }
++ ;
+  class_signature:
+      LBRACKET core_type_comma_list RBRACKET clty_longident
+        { mkcty(Pcty_constr ($4, $2)) }
 ***************
 *** 1174,1189 ****
   ;
@@ -50,7 +95,7 @@ diff -c -r1.19 -r1.20
       QUOTE ident
         { mktyp(Ptyp_var $2) }
     | QUOTE ident core_variant
---- 1174,1188 ----
+--- 1172,1186 ----
   ;
   
   simple_core_type:
@@ -76,7 +121,7 @@ diff -c -r1.19 -r1.20
     | LPAREN core_type_comma_list RPAREN type_longident
         %prec prec_constr_appl
         { mktyp(Ptyp_constr($4, List.rev $2)) }
---- 1191,1196 ----
+--- 1189,1194 ----
 ***************
 *** 1205,1216 ****
         { mktyp(Ptyp_object []) }
@@ -91,7 +136,7 @@ diff -c -r1.19 -r1.20
   ;
   
   variant_min:
---- 1202,1218 ----
+--- 1200,1216 ----
         { mktyp(Ptyp_object []) }
     | SHARP class_longident variant_min
         { mktyp(Ptyp_class($2, [], $3)) }
@@ -140,10 +185,10 @@ Index: typing/printtyp.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/printtyp.ml,v
 retrieving revision 1.27
-retrieving revision 1.29
-diff -c -r1.27 -r1.29
+retrieving revision 1.30
+diff -c -r1.27 -r1.30
 *** printtyp.ml	1998/09/01 09:30:21	1.27
---- printtyp.ml	1998/11/30 09:09:16	1.29
+--- printtyp.ml	1998/12/07 09:53:05	1.30
 ***************
 *** 189,196 ****
   
@@ -154,15 +199,13 @@ diff -c -r1.27 -r1.29
   
   let rec print_sep_list pr sep = function
       [] -> ()
---- 189,202 ----
+--- 189,200 ----
   
   let delayed = ref []
   
 + let in_class_func = ref false
-+ let enter_class_func () =
-+   let old = !in_class_func in in_class_func :=true; old
-+ let leave_class_func old =
-+   in_class_func := old
++ let enter_class_func () = in_class_func := true
++ let leave_class_func () = in_class_func := false
 + 
   let reset () =
 !   reset_names (); reset_loop_marks (); delayed := []; in_class_func := false
@@ -170,22 +213,78 @@ diff -c -r1.27 -r1.29
   let rec print_sep_list pr sep = function
       [] -> ()
 ***************
-*** 269,274 ****
---- 275,281 ----
-  	end;
-  	close_box()
-      | Tvariant var ->
-+ 	if !in_class_func then print_char '(';
+*** 219,225 ****
+        end
+      then print_string "'_"
+      else print_string "'";
+!     print_string (name_of_type ty')
+    with Not_found ->
+      let alias =
+        List.memq ty' !aliased &
+--- 223,230 ----
+        end
+      then print_string "'_"
+      else print_string "'";
+!     print_string (name_of_type ty');
+!     in_class_func := false
+    with Not_found ->
+      let alias =
+        List.memq ty' !aliased &
+***************
+*** 229,234 ****
+--- 234,240 ----
+  	  then print_string "'"
+  	  else print_string "'_";
+  	  print_string(name_of_type ty');
++ 	  in_class_func := false;
+  	  false
+        |	Tunivar -> false
+        |	_ -> true
+***************
+*** 239,244 ****
+--- 245,251 ----
+        else open_box 0
+      end;
+      let prio = if alias then 0 else prio0 in
++     if prio < 2 then in_class_func := false;
+      begin match ty.desc with
+        Tvar ->
+          if (not sch) or ty.level = generic_level
+***************
+*** 272,279 ****
         	let static = static_variant var
    	and alias = List.memq ty' !aliased in
   	if not alias & sch & ty'.level <> generic_level & ty'.desc = Tvar
+! 	then print_string "'_";
+! 	open_box 1; print_string "[";
+  	if static then
+  	  vartyplist sch var.var_max
+  	else begin
+--- 279,288 ----
+        	let static = static_variant var
+   	and alias = List.memq ty' !aliased in
+  	if not alias & sch & ty'.level <> generic_level & ty'.desc = Tvar
+! 	then (in_class_func := false; print_string "'_");
+! 	let was_class_func = !in_class_func in
+! 	print_string (if was_class_func then "([" else "[");
+! 	open_box 0;
+  	if static then
+  	  vartyplist sch var.var_max
+  	else begin
 ***************
-*** 297,302 ****
---- 304,310 ----
+*** 296,302 ****
+  	      with Not_found -> fatal_error "Printtyp.typexp"
   	    end
   	end;
-  	print_string "]";
-+ 	if !in_class_func then print_char ')';
+! 	print_string "]";
+  	close_box()
+      | Tarrow(p, ty1, ty2) ->
+          if prio >= 2 then begin open_box 1; print_string "(" end
+--- 305,311 ----
+  	      with Not_found -> fatal_error "Printtyp.typexp"
+  	    end
+  	end;
+! 	print_string (if was_class_func then "])" else "]");
   	close_box()
       | Tarrow(p, ty1, ty2) ->
           if prio >= 2 then begin open_box 1; print_string "(" end
@@ -198,7 +297,7 @@ diff -c -r1.27 -r1.29
   	  if sch & ty'.level <> generic_level & ty'.desc = Tvar
   	  then print_string "'_"
   	  else print_string "'";
---- 363,369 ----
+--- 364,370 ----
       if alias then begin
         print_string " as ";
         begin match ty.desc with
@@ -215,7 +314,7 @@ diff -c -r1.27 -r1.29
       close_box ()
     end
   
---- 614,620 ----
+--- 615,621 ----
       print_string lab;
       print_string " :";
       print_space ();
@@ -232,7 +331,7 @@ diff -c -r1.27 -r1.29
         | _               -> assert false
         end;
         Vars.iter (fun _ (_, ty) -> mark_loops ty) sign.cty_vars
---- 631,643 ----
+--- 632,644 ----
         let rowvar = referent_type sty in
         visited_objects := rowvar :: !visited_objects;
         begin match sty.desc with
@@ -248,18 +347,33 @@ diff -c -r1.27 -r1.29
         Vars.iter (fun _ (_, ty) -> mark_loops ty) sign.cty_vars
 ***************
 *** 679,690 ****
---- 693,706 ----
         close_box()
     | Tcty_fun (l, ty, cty) ->
         open_box 0;
-+       let old = enter_class_func () in
-        if l <> "" then print_string (if l = "?" then "?" else l^":");
+!       if l <> "" then print_string (if l = "?" then "?" else l^":");
         begin match (repr ty).desc with
         	Tconstr(c, [ty], _) when is_opt l & c = Predef.path_option ->
-  	  typexp sch 0 ty
-        | _ -> typexp sch 0 ty
+! 	  typexp sch 0 ty
+!       | _ -> typexp sch 0 ty
         end;
-+       leave_class_func old;
+        print_string " ->";
+        print_space ();
+        perform_class_type sch p params cty;
+--- 694,710 ----
+        close_box()
+    | Tcty_fun (l, ty, cty) ->
+        open_box 0;
+!       enter_class_func ();
+!       if l <> "" then begin
+! 	leave_class_func ();
+! 	print_string (if l = "?" then "?" else l^":")
+!       end;
+        begin match (repr ty).desc with
+        	Tconstr(c, [ty], _) when is_opt l & c = Predef.path_option ->
+! 	  typexp sch 2 ty
+!       | _ -> typexp sch 2 ty
+        end;
++       leave_class_func ();
         print_string " ->";
         print_space ();
         perform_class_type sch p params cty;

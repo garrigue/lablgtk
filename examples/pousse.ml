@@ -118,7 +118,7 @@ module RealBoard = Board (
 open RealBoard
 
 class game :frame :label statusbar:(bar : #statusbar) =
-let frame : _ #container_skel = frame in object (self)
+let frame : #container = frame in object (self)
   val cells =
     Array.init len:size
       fun:(fun _ -> Array.init len:size fun:(fun _ -> new cell ()))
@@ -148,7 +148,7 @@ let frame : _ #container_skel = frame in object (self)
 
   method update_label () =
     let w, b = count_cells cells in
-    label#set label:(Printf.sprintf "White: %d Black: %d" w b)
+    label#set_label (Printf.sprintf "White: %d Black: %d" w b)
 
   method play x y =
     if action cells :x :y color:current_color then begin
@@ -164,9 +164,9 @@ let frame : _ #container_skel = frame in object (self)
   initializer
     for i = 0 to size-1 do for j = 0 to size-1 do
       let cell = cells.(i).(j) in
-      cell#connect#event#enter_notify
+      cell#connect_event#enter_notify
 	callback:(fun _ -> cell#misc#grab_focus (); false);
-      cell#connect#clicked callback:(fun () -> self#play i j);
+      cell#connect_clicked callback:(fun () -> self#play i j);
       table#attach left:i top:j cell
     done done;
     List.iter fun:(fun (x,y,col) -> cells.(x).(y)#set_color col)
@@ -192,6 +192,6 @@ let game = new game :frame :label statusbar:bar
 (* Start *)
 
 let _ =
-  window#connect#destroy callback:Main.quit;
+  window#connect_destroy callback:Main.quit;
   window#show_all ();
   Main.main ()

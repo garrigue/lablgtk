@@ -3,40 +3,14 @@
 open Misc
 open Gtk
 
-class ['a] gtkobj_skel obj = object
-  val obj : 'a obj = obj
-  method raw = obj
+class gtkobj obj = object
+  val obj = obj
   method destroy () = Object.destroy obj
   method disconnect = Signal.disconnect obj
+  method connect_destroy = Signal.connect sig:Object.Signals.destroy obj
 end
 
-class ['a] gtkobj_signals obj = object
-  val obj : 'a obj = obj
-  method destroy = Signal.connect sig:Object.Signals.destroy obj
-end
-
-class gtkobj obj = object
-  inherit [unit] gtkobj_skel obj
-  method connect = new gtkobj_signals obj
-end
-
-class type widgeter = object
-  method widget : [widget] obj
-end
-
-let widgeter w = (w : #widgeter :> widgeter)
-
-class tooltips obj = object
-  inherit [Tooltips.t] gtkobj_skel obj
-  method enable () = Tooltips.enable obj
-  method disable () = Tooltips.disable obj
-  method set_tip : 'b . (#widgeter as 'b) -> _ =
-    fun w -> Tooltips.set_tip ?obj ?w#widget
-  method set = Tooltips.set ?obj
-  method connect = new gtkobj_signals obj
-end
-
-let new_tooltips () = new tooltips (Tooltips.create ())
+class type framed = object method frame : Widget.t obj end
 
 class widget_misc obj = object
   val obj = Widget.coerce obj
@@ -51,17 +25,17 @@ class widget_misc obj = object
   method unrealize () = Widget.realize obj
   method event : 'a. 'a Gdk.event -> unit = Widget.event obj
   method activate () = Widget.activate obj
-  method reparent : 'a. (#widgeter as 'a) -> unit =
-    fun w -> Widget.reparent obj w#widget
+  method reparent : 'a. (#framed as 'a) -> unit =
+    fun w -> Widget.reparent obj w#frame
   method popup = Widget.popup obj
   method intersect = Widget.intersect obj
   method basic = Widget.basic obj
   method grab_focus () = Widget.grab_focus obj
   method grab_default () = Widget.grab_default obj
-  method is_ancestor : 'a. (#widgeter as 'a) -> bool =
-    fun w -> Widget.is_ancestor obj w#widget
-  method is_child : 'a. (#widgeter as 'a) -> bool =
-    fun w -> Widget.is_child obj w#widget
+  method is_ancestor : 'a. (#framed as 'a) -> bool =
+    fun w -> Widget.is_ancestor obj w#frame
+  method is_child : 'a. (#framed as 'a) -> bool =
+    fun w -> Widget.is_child obj w#frame
   method install_accelerator : 'a. _ -> sig:('a[> widget],_) Signal.t -> _ =
     Widget.install_accelerator obj
   method remove_accelerator : 'a. _ -> sig:('a[> widget],_) Signal.t -> _ =
@@ -75,13 +49,6 @@ class widget_misc obj = object
   method visual = Widget.get_visual obj
   method pointer = Widget.get_pointer obj
   method style = Widget.get_style obj
-end
-
-class ['a] widget_skel obj = object
-  inherit ['a] gtkobj_skel obj
-  method widget = Widget.coerce obj
-  method misc = new widget_misc obj
-  method show () = Widget.show obj
 end
 
 class event_signal obj = object
@@ -112,68 +79,65 @@ class event_signal obj = object
   method unmap = Signal.connect sig:Event.Signals.unmap obj
 end
 
-class ['a] widget_signals obj = object
-  inherit ['a] gtkobj_signals obj
-  method draw = Signal.connect sig:Widget.Signals.draw obj
-  method show = Signal.connect sig:Widget.Signals.show obj
-  method event = new event_signal obj
-end
-
 class widget obj = object
-  inherit [Widget.t] widget_skel obj
-  method connect = new widget_signals obj
+  inherit gtkobj obj
+  method frame = Widget.coerce obj
+  method misc = new widget_misc obj
+  method show () = Widget.show obj
+  method connect_show = Signal.connect sig:Widget.Signals.show obj
+  method connect_event = new event_signal obj
 end
 
-class ['a] container_skel obj = object
-  inherit ['a] widget_skel obj
-  method add : 'b . (#widgeter as 'b) -> unit =
-    fun w -> Container.add obj w#widget
-  method remove : 'b. (#widgeter as 'b) -> unit =
-    fun w -> Container.remove obj w#widget
-  method foreach fun:f = Container.foreach obj fun:(fun x -> f (new widget x))
-  method children = List.map fun:(new widget) (Container.children obj)
+class tooltips obj = object
+  inherit gtkobj obj
+  method enable () = Tooltips.enable obj
+  method disable () = Tooltips.disable obj
+  method set_tip : 'b . (#framed as 'b) -> _ =
+    fun w -> Tooltips.set_tip ?obj ?w#frame
+  method set = Tooltips.set ?obj
 end
 
-class ['a] container_signals obj = object
-  inherit ['a] widget_signals obj
-  method add = Signal.connect sig:Container.Signals.add obj
-  method remove = Signal.connect sig:Container.Signals.remove obj
-end
+let new_tooltips () = new tooltips (Tooltips.create ())
 
 class container obj = object
-  inherit [Container.t] container_skel obj
-  method connect = new container_signals obj
-  method set = Container.set ?obj
+  inherit widget obj
+  method add : 'b . (#framed as 'b) -> unit =
+    fun w -> Container.add obj w#frame
+  method remove : 'b. (#framed as 'b) -> unit =
+    fun w -> Container.remove obj w#frame
+  method foreach fun:f = Container.foreach obj fun:(fun x -> f (new widget x))
+  method children = List.map fun:(new widget) (Container.children obj)
+  method connect_add = Signal.connect sig:Container.Signals.add obj
+  method connect_remove = Signal.connect sig:Container.Signals.remove obj
+  method set_size = Container.set ?obj
 end
 
-class event_box obj = object
-  inherit [EventBox.t] container_skel obj
-  method connect = new container_signals obj
-  method set = Container.set ?obj
-end
+class event_box = container
 
 let new_event_box () = new event_box (EventBox.create ())
 
 class frame obj = object
-  inherit [Frame.t] container_skel obj
-  method connect = new container_signals obj
-  method set = Frame.set ?obj
+  inherit container obj
+  method set_label ?label ?:xalign ?:yalign =
+    Frame.setter obj ?:label ?label_xalign:xalign ?label_yalign:yalign
+      cont:null_cont
+  method set_shadow_type = Frame.set_shadow_type obj
 end
 
 class frame_create ?:label ?opt = frame (Frame.create ?:label ?opt) 
 
-let pack_return w _ ?:packing =
-  match packing with Some f -> f w; w | None -> w
+let pack_return wrapper w ?:packing =
+  let w = wrapper w in
+  may packing fun:(fun f -> f w);
+  w
 
 let new_frame ?opt ?:label =
-  let w = new frame (Frame.create ?:label ?opt) in
-  Frame.setter ?w#raw ?label:None
-    ?cont:(Container.setter ?cont:(pack_return w))
+  Frame.setter ?(Frame.create ?:label ?opt) ?label:None
+    ?cont:(Container.setter ?cont:(pack_return (new frame)))
 
 class aspect_frame obj = object
-  inherit [AspectFrame.t] container_skel obj
-  method connect = new container_signals obj
-  method set = AspectFrame.set ?obj
+  inherit frame obj
+  method set_aspect = AspectFrame.setter ?obj ?cont:null_cont
 end
 
 class aspect_frame_create ?:label ?:xalign ?:yalign ?:ratio ?:obey_child ?opt =
@@ -182,26 +146,21 @@ class aspect_frame_create ?:label ?:xalign ?:yalign ?:ratio ?:obey_child ?opt =
 
 let new_aspect_frame ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child =
   let w =
-    new aspect_frame
-      (AspectFrame.create ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child)
-  in
-  Frame.setter ?w#raw ?label:None
-    ?cont:(Container.setter ?cont:(pack_return w))
-
-class ['a] box_skel obj = object
-  inherit ['a] container_skel obj
-  method pack : 'b . (#widgeter as 'b) -> _ = fun w ->  Box.pack ?obj ?w#widget
-end
+    AspectFrame.create ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child in
+  Frame.setter ?w ?label:None
+    ?cont:(Container.setter ?cont:(pack_return (new aspect_frame)))
 
 class box obj = object
-  inherit [Box.t] box_skel obj
-  method connect = new container_signals obj
-  method set = Box.set ?obj
+  inherit container obj
+  method pack : 'b . (#framed as 'b) -> _ = fun w ->  Box.pack ?obj ?w#frame
+  method set_packing = Box.setter ?obj ?cont:null_cont
+  method set_child_packing : 'b . (#framed as 'b) -> _ =
+    fun w -> Box.set_child_packing ?obj ?w#frame
 end
 
 let new_box dir ?:homogeneous ?:spacing =
-  let w = new box (Box.create dir ?:homogeneous ?:spacing) in
-  Container.setter ?w#raw ?cont:(pack_return w)
+  let w = Box.create dir ?:homogeneous ?:spacing in
+  Container.setter ?w ?cont:(pack_return (new box))
 
 class statusbar_context obj ctx = object (self)
   val obj : Statusbar.t obj = obj
@@ -217,142 +176,113 @@ class statusbar_context obj ctx = object (self)
 end
 
 class statusbar obj = object
-  inherit [Statusbar.t] box_skel obj
-  method connect = new container_signals obj
-  method set = Box.set ?obj
+  inherit container obj
   method new_context :name =
     new statusbar_context obj (Statusbar.get_context obj name)
 end
 
 let new_statusbar ?(_ : unit option) =
-  let w = new statusbar (Statusbar.create ()) in
-  Container.setter ?w#raw ?cont:(pack_return w)
+  let w = Statusbar.create () in
+  Container.setter ?w ?cont:(pack_return (new statusbar))
 
-class ['a] window_skel obj = object
-  inherit ['a] container_skel obj
+class window obj = object
+  inherit container obj
   method show_all () = Widget.show_all obj
   method activate_focus () = Window.activate_focus obj
   method activate_default () = Window.activate_default obj
-end
-
-class window obj = object
-  inherit [Window.t] window_skel obj
-  method connect = new container_signals obj
-  method set = Window.set ?obj
+  method set_wm ?:title ?:name ?class:c =
+    Window.setter obj cont:null_cont
+      ?:title ?wmclass_name:name ?wmclass_class:c
+  method set_policy ?:allow_shrink ?:allow_grow ?:auto_shrink =
+    Window.setter obj cont:null_cont ?:allow_shrink ?:allow_grow ?:auto_shrink
 end
 
 let new_window dir =
-  let w = new window (Window.create dir) in
-  Window.setter ?w#raw ?cont:(Container.setter ?cont:(kill w))
+  Window.setter ?(Window.create dir)
+    ?cont:(Container.setter ?cont:(new window))
 
-class ['a] dialog_skel obj = object
-  inherit ['a] window_skel obj
+class dialog obj = object
+  inherit window obj
   method action_area = new box (Dialog.action_area obj)
   method vbox = new box (Dialog.vbox obj)
 end
 
-class dialog obj = object
-  inherit [Dialog.t] dialog_skel obj
-  method connect = new container_signals obj
-  method set = Window.set ?obj
-end
-
 let new_dialog ?(_ : unit option) =
-  let w = new dialog (Dialog.create ()) in
-  Window.setter ?w#raw ?cont:(Container.setter ?cont:(kill w))
+  Window.setter ?(Dialog.create ())
+    ?cont:(Container.setter ?cont:(new dialog))
 
-class ['a] button_signals obj = object
-  inherit ['a] widget_signals obj
-  method clicked = Signal.connect sig:Button.Signals.clicked obj
-  method pressed = Signal.connect sig:Button.Signals.pressed obj
-  method released = Signal.connect sig:Button.Signals.released obj
-  method enter = Signal.connect sig:Button.Signals.enter obj
-  method leave = Signal.connect sig:Button.Signals.leave obj
-end
-
-class ['a] button_skel obj = object
-  inherit ['a] container_skel obj
+class button obj = object (self)
+  inherit container obj
   method clicked = Button.clicked obj
-end
-
-class button obj = object
-  inherit [Button.t] button_skel obj
-  method connect = new button_signals obj
-  method set ?:can_default =
-    may can_default fun:(Widget.set_can_default obj);
-    Container.set ?obj
-  method grab_default () = Widget.grab_default obj
+  method connect_clicked = Signal.connect sig:Button.Signals.clicked obj
+  method connect_pressed = Signal.connect sig:Button.Signals.pressed obj
+  method connect_released = Signal.connect sig:Button.Signals.released obj
+  method connect_enter = Signal.connect sig:Button.Signals.enter obj
+  method connect_leave = Signal.connect sig:Button.Signals.leave obj
+  method grab_default () =
+    Widget.set_can_default (self#frame) true;
+    Widget.grab_default (self#frame)
 end
 
 class button_create ?:label ?opt = button (Button.create ?:label ?opt)
 
 let new_button ?opt ?:label =
-  let w = new button (Button.create ?:label ?opt) in
-  Container.setter ?w#raw ?cont:(pack_return w)
-
-class ['a] toggle_button_skel obj = object
-  inherit ['a] button_skel obj
-  method active = ToggleButton.active obj
-end
-
-class ['a] toggle_button_signals obj = object
-  inherit ['a] button_signals obj
-  method toggled = Signal.connect sig:ToggleButton.Signals.toggled obj
-end
+  Container.setter ?(Button.create ?:label ?opt)
+    ?cont:(pack_return (new button))
 
 class toggle_button obj = object
-  inherit [ToggleButton.t] toggle_button_skel obj
-  method connect = new toggle_button_signals obj
-  method set = ToggleButton.set ?obj
+  inherit button obj
+  method active = ToggleButton.active obj
+  method connect_toggled = Signal.connect sig:ToggleButton.Signals.toggled obj
+  method set_state = ToggleButton.set_state obj
+  method draw_indicator = ToggleButton.set_mode obj
 end
 
 let new_toggle_button ?opt ?:label =
-  let w = new toggle_button (ToggleButton.create_toggle ?:label ?opt) in
-  ToggleButton.setter ?w#raw ?cont:(Container.setter ?cont:(pack_return w))
+  ToggleButton.setter ?(ToggleButton.create_toggle ?:label ?opt)
+    ?cont:(Container.setter ?cont:(pack_return (new toggle_button)))
 
 let new_check_button ?opt ?:label =
-  let w = new toggle_button (ToggleButton.create_check ?:label ?opt) in
-  ToggleButton.setter ?w#raw ?cont:(Container.setter ?cont:(pack_return w))
+  ToggleButton.setter ?(ToggleButton.create_check ?:label ?opt)
+    ?cont:(Container.setter ?cont:(pack_return (new toggle_button)))
 
 class radio_button obj = object
-  inherit [RadioButton.t] toggle_button_skel obj
-  method connect = new toggle_button_signals obj
-  method set = RadioButton.set ?obj
+  inherit toggle_button obj
+  method set_group = RadioButton.set ?obj
   method group = RadioButton.group obj
 end
   
 let new_radio_button ?opt ?:group ?:label =
-  let w = new radio_button (RadioButton.create ?:group ?:label ?opt) in
-  RadioButton.setter ?w#raw
-    ?cont:(ToggleButton.setter ?cont:(Container.setter ?cont:(pack_return w)))
+  RadioButton.setter ?(RadioButton.create ?:group ?:label ?opt)
+    ?cont:(ToggleButton.setter
+	     ?cont:(Container.setter ?cont:(pack_return (new radio_button))))
 
 class scrolled_window obj = object
-  inherit [ScrolledWindow.t] container_skel obj
-  method connect = new container_signals obj
+  inherit container obj
   method hadjustment = ScrolledWindow.get_hadjustment obj
   method vadjustment = ScrolledWindow.get_vadjustment obj
-  method set = ScrolledWindow.set ?obj
+  method set_policy ?:horizontal ?:vertical =
+    ScrolledWindow.setter obj cont:null_cont
+      ?hscrollbar_policy:horizontal ?vscrollbar_policy:vertical
 end
 
 let new_scrolled_window () =
-  let w = new scrolled_window (ScrolledWindow.create ()) in
-  ScrolledWindow.setter ?w#raw ?cont:(Container.setter ?cont:(pack_return w))
+  ScrolledWindow.setter ?(ScrolledWindow.create ())
+    ?cont:(Container.setter ?cont:(pack_return (new scrolled_window)))
 
 class table obj = object
-  inherit [Table.t] container_skel obj
-  method connect = new widget_signals obj
-  method attach : 'a. (#widgeter as 'a) -> _ =
-    fun w -> Table.attach obj w#widget
-  method set = Table.set ?obj
+  inherit container obj
+  method attach : 'a. (#framed as 'a) -> _ =
+    fun w -> Table.attach obj w#frame
+  method set_packing = Table.setter ?obj ?cont:null_cont
 end
 
 let new_table :rows :columns ?:homogeneous =
-  let w = new table (Table.create :rows :columns ?:homogeneous) in
-  Table.setter ?w#raw ?homogeneous:None
-    ?cont:(Container.setter ?cont:(pack_return w))
+  Table.setter ?(Table.create :rows :columns ?:homogeneous) ?homogeneous:None
+    ?cont:(Container.setter ?cont:(pack_return (new table)))
 
-class ['a] editable_skel obj = object
-  inherit ['a] widget_skel obj
+class editable obj = object
+  inherit widget obj
   method select_region = Editable.select_region obj
   method insert_text = Editable.insert_text obj
   method delete_text = Editable.delete_text obj
@@ -360,33 +290,32 @@ class ['a] editable_skel obj = object
   method cut_clipboard = Editable.cut_clipboard obj
   method copy_clipboard = Editable.copy_clipboard obj
   method paste_clipboard = Editable.paste_clipboard obj
-end
-
-class ['a] editable_signals obj = object
-  inherit ['a] widget_signals obj
-  method activate = Signal.connect sig:Editable.Signals.activate obj
-  method changed = Signal.connect sig:Editable.Signals.changed obj
+  method connect_activate = Signal.connect sig:Editable.Signals.activate obj
+  method connect_changed = Signal.connect sig:Editable.Signals.changed obj
 end
 
 class entry obj = object
-  inherit [Entry.t] editable_skel obj
-  method connect = new editable_signals obj
+  inherit editable obj
   method set_text = Entry.set_text obj
   method append_text = Entry.append_text obj
   method prepend_text = Entry.prepend_text obj
-  method set = Entry.set ?obj
+  method set_position = Entry.set_position obj
+  method set_visibility = Entry.set_visibility obj
+  method set_editable = Entry.set_editable obj
+  method set_max_length = Entry.set_max_length obj
   method text = Entry.get_text obj
   method text_length = Entry.text_length obj
 end
 
 let new_entry ?:max_length ?unit =
-  let w = new entry (Entry.create ?:max_length ?unit) in
-  Entry.setter ?w#raw ?max_length:None ?cont:(pack_return w)
+  Entry.setter ?(Entry.create ?:max_length ?unit) ?max_length:None
+    ?cont:(pack_return (new entry))
 
 class text obj = object
-  inherit [Text.t] editable_skel obj
-  method connect = new editable_signals obj
-  method set = Text.set ?obj
+  inherit editable obj
+  method set_editable = Text.set_editable obj
+  method set_point = Text.set_point obj
+  method set_word_wrap = Text.set_word_wrap obj
   method point = Text.get_point obj
   method length = Text.get_length obj
   method freeze = Text.freeze obj
@@ -395,51 +324,46 @@ class text obj = object
 end
 
 let new_text ?opt ?:hadjustment ?:vadjustment =
-  let w = new text (Text.create ?:hadjustment ?:vadjustment ?opt) in
-  Text.setter ?w#raw ?point:None ?cont:(pack_return w)
+  Text.setter ?(Text.create ?:hadjustment ?:vadjustment ?opt) ?point:None
+    ?cont:(pack_return (new text))
 
-class ['a] misc obj = object
-  inherit ['a] widget_skel obj
+class misc obj = object
+  inherit widget obj
   method set_alignment = Misc.set_alignment obj
   method set_padding = Misc.set_padding obj
 end
 
 class label obj = object
-  inherit [Label.t] misc obj
-  method connect = new widget_signals obj
-  method set = Label.set ?obj
+  inherit misc obj
+  method set_label = Label.set_label obj
+  method set_justify = Label.set_justify obj
   method label = Label.get_label obj
 end
 
 let new_label ?:label [< "" >] =
-  let w = new label (Label.create label) in
-  Label.setter ?w#raw ?label:None
-    ?cont:(Misc.setter ?cont:(pack_return w))
+  Label.setter ?(Label.create label) ?label:None
+    ?cont:(Misc.setter ?cont:(pack_return (new label)))
 
 class pixmap obj = object
-  inherit [Pixmap.t] misc obj
-  method connect = new widget_signals obj
-  method set = Pixmap.set ?obj
+  inherit misc obj
+  method set = Pixmap.setter ?obj ?cont:null_cont
   method pixmap = Pixmap.pixmap obj
   method mask = Pixmap.mask obj
 end
 
 let new_pixmap pix ?:mask =
-  let w = new pixmap (Pixmap.create pix ?:mask) in
-  Misc.setter ?w#raw ?cont:(pack_return w)
+  Misc.setter ?(Pixmap.create pix ?:mask) ?cont:(pack_return (new pixmap))
 
 class progress_bar obj = object
-  inherit [ProgressBar.t] widget_skel obj
-  method connect = new widget_signals obj
+  inherit widget obj
   method update percent = ProgressBar.update obj :percent
   method percent = ProgressBar.percent obj
 end
 
-let new_progress_bar () = new progress_bar (ProgressBar.create ())
+let new_progress_bar ?(_ : unit option) =
+  pack_return ?(new progress_bar) ?(ProgressBar.create ())
 
-class separator obj = object
-  inherit [Separator.t] widget_skel obj
-  method connect = new widget_signals obj
-end
+class separator = widget
 
-let new_separator dir = new separator (Separator.create dir)
+let new_separator dir =
+  pack_return ?(new separator) ?(Separator.create dir)

@@ -4,38 +4,28 @@ open Gtk
 open GtkObj
 
 let main () =
-  let window = new_dialog () in
-  window#connect#destroy callback:Main.quit;
-  window#set title: "dialog" border_width: 10 width: 300 height: 300;
+  let window = new_dialog ()
+      title: "dialog" border_width: 10 width: 300 height: 300 in
+  window#connect_destroy callback:Main.quit;
 
-  let scrolled_window = new_scrolled_window () in
-  scrolled_window#set border_width: 10 hscrollbar_policy: `AUTOMATIC;
-  window#vbox#pack scrolled_window;
-  scrolled_window#show ();
+  let scrolled_window = new_scrolled_window ()
+      border_width: 10 hscrollbar_policy: `AUTOMATIC packing: window#vbox#pack
+  in
 
-  let table = new_table rows:10 columns:10 in
-  table#set row_spacings: 10 col_spacings: 10;
-
-  scrolled_window#add table;
-  table#show ();
+  let table = new_table rows:10 columns:10
+      row_spacings: 10 col_spacings: 10 packing: scrolled_window#add in
 
   for i = 0 to 9 do
     for j = 0 to 9 do
       let label = Printf.sprintf "button (%d,%d)\n" i j in
-      let button = new_toggle_button :label in
-      table#attach button left: i top: j;
-      button#show ()
+      new_toggle_button :label packing:(table#attach left: i top: j)
     done
   done;
 
-  let button = new_button label: "close" in
-  button#connect#clicked callback: Main.quit;
-  (* GTK_WIDGET_SET_FLAGS(button, GTK_CAN_DEFAULT) is as follows *)
-  button#set can_default:true;
-  window#action_area#pack button;
+  let button = new_button label: "close" packing: window#action_area#pack in
+  button#connect_clicked callback: Main.quit;
   button#grab_default ();
-  button#show ();
-  window#show ();
+  window#show_all ();
   Main.main ()
 
 let _ = main ()

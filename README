@@ -15,6 +15,9 @@ How to compile:
 	On FreeBSD, you need to link with libxpg4.so for Japanese
 	output.
 
+	For comfortable use with LablBrowser you must apply the two
+	patches and reinstall olabl and lablbrowser.
+
 Contents:
 
 	gdk.ml		low-level interface to the General Drawing Kit
@@ -65,36 +68,20 @@ Structure of the (raw) Gtk module:
 
 Structure of the GtkObj module:
 
-  Up to 3 classes and two functions are defined for each widget:
-  * a skeleton class mywidget_skel providing widget-specific methods
-    (except the set function, which cannot be inherited)
-  * a connection class mywidget_signals allowing to connect signals
-  * a "set" function, to set all parameters available
-  For all these, inheritance follows the widget hierarchy
-  * the real class, which has basically the following definition
-	class mywidget obj = object
-	  inherit [MyWidget.t] mywidget_skel obj
-	  method connect = new mywidget_signals obj
-	  method set = MyWidget.set ?obj
-	end
-  * a constructor function, new_mywidget.
-
-  This means that contrary to mywidget_skel and mywidget_signals,
-  mywidget is not a subtype of its superclasses. However you can
-  coerce any widget to the widgeter class.
+  The structure has been greatly simplified.
+  You can now freely inherit and subtype between widget classes.
 
   Practically, each widget class is composed of:
-  * a raw method, returning the raw Gtk.obj handle
-  * a widget method, returing the same handle coerced to [widget] Gtk.obj.
-    this is needed for technical reasons
+  * a frame method, returning the Gtk widget used for packing, etc...
+    Usually this is the widget itself.
   * a misc sub-object, giving access to miscellanous functionality of
     the basic gtkwidget class
-  * a connect sub-object, allowing one to connect all available signals
-  * a connect#event sub-object, for event signals
-  * various methods inherited from the widget_skel object, itself
-    inheriting from superclasses
-  * a set method
-  * possibly some widget specific methods, not inherit by subclasses
+  * many connect_??? methods, allowing one to connect all available signals
+  * a connect_event sub-object, for event signals
+
+  Use the new_??? functions to create widgets. They admit many
+  optional arguments. The last of them, packing:, allows you to call a
+  function on your newly created widget.
 
 Note about unit as method argument:
 

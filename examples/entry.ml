@@ -8,46 +8,39 @@ let enter_callback (entry : entry) =
   printf "Entry contents: %s\n" entry#text;
   flush stdout
 
-let entry_toggle_editable (button : toggle_button) (entry : entry) =
-  entry#set editable:button#active
+let entry_toggle_editable (button : #toggle_button) (entry : #entry) =
+  entry#set_editable button#active
 
-let entry_toggle_visibility (button : toggle_button) (entry : entry) =
-  entry#set visibility:button#active
+let entry_toggle_visibility (button : #toggle_button) (entry : #entry) =
+  entry#set_visibility button#active
 
 let main () =
 
-  let window = new_window `TOPLEVEL in
-  window#set title:"GTK Entry" width:200 height:100;
-  window#connect#destroy callback:Main.quit;
+  let window =
+    new_window `TOPLEVEL title: "GTK Entry" width: 200 height: 100 in
+  window#connect_destroy callback:Main.quit;
 
-  let vbox = new_box `VERTICAL in
-  window#add vbox;
+  let vbox = new_box `VERTICAL packing: window#add in
 
-  let entry = new_entry max_length: 50 in
-  entry#connect#activate callback:(fun () -> enter_callback entry);
+  let entry = new_entry max_length: 50 packing: vbox#add in
+  entry#connect_activate callback:(fun () -> enter_callback entry);
   entry#set_text "Hello";
   entry#append_text " world";
   entry#select_region start:0 end:entry#text_length;
-  vbox#pack entry;
 
-  let hbox = new_box `HORIZONTAL in
-  vbox#add hbox;
+  let hbox = new_box `HORIZONTAL packing: vbox#add in
 
-  let check = new_check_button label:"Editable" in
-  hbox#pack check;
-  check#connect#toggled callback:(fun () -> entry_toggle_editable check entry);
-  check#set state:true;
+  let check =
+    new_check_button label: "Editable" state: true packing: hbox#pack in
+  check#connect_toggled callback:(fun () -> entry_toggle_editable check entry);
 
-  let check = new_check_button label:"Visible" in
-  hbox#pack check;
-  check#connect#toggled
+  let check =
+    new_check_button label: "Visible" state: true packing: hbox#pack in
+  check#connect_toggled
     callback:(fun () -> entry_toggle_visibility check entry);
-  check#set state:true;
 
-  let button = new_button label:"Close" in
-  button#connect#clicked callback:Main.quit;
-  vbox#pack button;
-  button#set can_default:true;
+  let button = new_button label: "Close" packing: vbox#pack in
+  button#connect_clicked callback:Main.quit;
   button#grab_default ();
 
   window#show_all ();
