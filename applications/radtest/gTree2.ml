@@ -48,6 +48,10 @@ class virtual ['a] pre_tree2_wrapper obj = object (self)
   method clear_items = Tree2.clear_items obj
   method select_item = Tree2.select_item obj
   method unselect_item = Tree2.unselect_item obj
+  method select_child : 'b. (tree_item #is_item as 'b) -> _ =
+    fun w -> Tree2.select_child obj w#as_item
+  method unselect_child : 'b. (tree_item #is_item as 'b) -> _ =
+    fun w -> Tree2.unselect_child obj w#as_item
   method child_position : 'b. (tree_item #is_item as 'b) -> _ =
     fun w -> Tree2.child_position obj w#as_item
   method remove_items (items : 'a list) =
@@ -61,6 +65,11 @@ class virtual ['a] pre_tree2_wrapper obj = object (self)
     List.map fun:(fun w -> self#wrap (Widget.coerce w)) (Tree2.selection obj)
   method children2 =
     List.map fun:(fun w -> self#wrap (Widget.coerce w)) (Tree2.children obj)
+  method item_up = Tree2.item_up obj
+  method select_next_child : 'b. (tree_item #is_item as 'b) -> _ =
+    fun w -> Tree2.select_next_child obj w#as_item
+  method select_prev_child : 'b. (tree_item #is_item as 'b) -> _ =
+    fun w -> Tree2.select_prev_child obj w#as_item
 end
 
 class tree2_wrapper' obj = object

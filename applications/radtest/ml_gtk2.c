@@ -60,6 +60,8 @@ ML_3 (gtk_tree2_insert, GtkTree2_val, GtkWidget_val, Int_val, Unit)
 ML_3 (gtk_tree2_clear_items, GtkTree2_val, Int_val, Int_val, Unit)
 ML_2 (gtk_tree2_select_item, GtkTree2_val, Int_val, Unit)
 ML_2 (gtk_tree2_unselect_item, GtkTree2_val, Int_val, Unit)
+ML_2 (gtk_tree2_select_child, GtkTree2_val, GtkWidget_val, Unit)
+ML_2 (gtk_tree2_unselect_child, GtkTree2_val, GtkWidget_val, Unit)
 ML_2 (gtk_tree2_child_position, GtkTree2_val, GtkWidget_val, Val_int)
 
 /*
@@ -68,7 +70,9 @@ ML_2 (gtk_tree2_set_view_mode, GtkTree2_val, Tree_view_mode_val, Unit)
 */
 
 ML_2 (gtk_tree2_set_view_lines, GtkTree2_val, Bool_val, Unit)
-
+ML_2 (gtk_tree2_item_up, GtkTree2_val, Int_val, Unit)
+ML_3 (gtk_tree2_select_next_child, GtkTree2_val, GtkTreeItem2_val, Bool_val, Unit)
+ML_2 (gtk_tree2_select_prev_child, GtkTree2_val, GtkTreeItem2_val, Unit)
 static value val_gtkany (gpointer p) { return Val_GtkAny(p); }
 value ml_gtk_tree2_selection (value tree)
 {

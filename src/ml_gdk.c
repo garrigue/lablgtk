@@ -25,6 +25,12 @@ void ml_raise_gdk (const char *errmsg)
 Make_OptFlags_val (GdkModifier_val)
 Make_Flags_val (Event_mask_val)
 
+#define Make_test(conv) \
+value ml_test_##conv (value mask, value test) \
+{ return Val_bool (conv(mask) & Int_val(test)); }
+
+Make_test(GdkModifier_val)
+
 /* Colormap */
 
 Make_Val_final_pointer (GdkColormap, , gdk_colormap_ref, gdk_colormap_unref)

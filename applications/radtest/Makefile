@@ -49,7 +49,7 @@ endif
 	$(COMPOPT) $<
 
 # Targets
-MLOBJS = xpm_window.cmo property.cmo widget.cmo treew.cmo
+MLOBJS = xpm_window.cmo property.cmo treew.cmo
 
 radtest: $(MLOBJS)  libtree2.a gtree2.cma
 	$(LINKER) -o radtest -custom -cclib "-L../.. -L. \

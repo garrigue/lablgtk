@@ -14,6 +14,8 @@ class box_skel obj = object
   method set_packing = Box.setter ?obj ?cont:null_cont
   method set_child_packing : 'b . (#is_widget as 'b) -> _ =
     fun w -> Box.set_child_packing ?obj ?w#as_widget
+  method reorder_child : 'a. (#is_widget as 'a) -> _ =
+    fun w -> Box.reorder_child obj w#as_widget
 end
 
 class box_wrapper obj = object

@@ -7,7 +7,7 @@ open GPix
 open GFrame
 
 
-let targets = [ { target = "STRING"; flags = []; info = 0} ]
+let targets = [  { target = "STRING"; flags = []; info = 0}  ]
 
 
 let xpm_window () =

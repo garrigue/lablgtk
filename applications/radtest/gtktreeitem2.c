@@ -850,7 +850,7 @@ gtk_real_tree_item2_toggle (GtkItem *item)
     return;
 
   if (GTK_WIDGET (item)->parent && GTK_IS_TREE2 (GTK_WIDGET (item)->parent))
-    gtk_tree_select_child (GTK_TREE2 (GTK_WIDGET (item)->parent),
+    gtk_tree2_select_child (GTK_TREE2 (GTK_WIDGET (item)->parent),
 			   GTK_WIDGET (item));
   else
     {
@@ -1002,7 +1002,7 @@ gtk_tree_item2_remove_subtree (GtkTreeItem2* item)
       /* The following call will remove the children and call
        * gtk_tree_item2_remove_subtree() again. So we are done.
        */
-      gtk_tree_remove_items (GTK_TREE2 (item->subtree), 
+      gtk_tree2_remove_items (GTK_TREE2 (item->subtree), 
 			     GTK_TREE2 (item->subtree)->children);
       return;
     }
