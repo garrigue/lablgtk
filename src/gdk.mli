@@ -338,6 +338,11 @@ module Rgb :
     external init : unit -> unit = "ml_gdk_rgb_init"
     external get_visual : unit -> visual = "ml_gdk_rgb_get_visual"
     external get_cmap : unit -> colormap = "ml_gdk_rgb_get_cmap"
+    type buffer =
+      (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
+    val draw_image :
+      'a drawable -> gc -> width:int -> height:int -> ?x:int -> ?y:int ->
+      ?dither:Tags.rgb_dither -> ?row_stride:int -> buffer -> unit
   end
 
 module DnD :

@@ -11,6 +11,7 @@
 #include <caml/alloc.h>
 #include <caml/memory.h>
 #include <caml/callback.h>
+#include <caml/bigarray.h>
 
 #include "wrappers.h"
 #include "ml_glib.h"
@@ -509,6 +510,13 @@ ML_3 (gdk_draw_lines, GdkDrawable_val, GdkGC_val,
 ML_0 (gdk_rgb_init, Unit)
 ML_0 (gdk_rgb_get_visual, Val_GdkVisual)
 ML_0 (gdk_rgb_get_cmap, Val_GdkColormap)
+ML_9 (gdk_draw_rgb_image, GdkDrawable_val, GdkGC_val, Int_val, Int_val,
+      Int_val, Int_val, GdkRgbDither_val,
+      ((Bigarray_val(arg8)->dim[0] < Int_val(arg6)*Int_val(arg9) ?
+        invalid_argument("Gdk.Rgb.draw_image") : 0),
+       (guchar*)Data_bigarray_val(arg8)) Ignore,
+      Int_val, Unit)
+ML_bc9 (ml_gdk_draw_rgb_image)
 
 /* Events */
 
