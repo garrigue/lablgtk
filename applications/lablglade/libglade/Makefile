@@ -1,13 +1,10 @@
-GLADETOPDIR = /usr/local/src/glade-0.4.1
 GLADEDIR = $(GLADETOPDIR)/glade
 LABLGTKDIR = ../../..
-CAMLINCLUDE = /usr/local/lib/ocaml
 
-INCLUDES = -I$(GLADETOPDIR)/intl -I$(CAMLINCLUDE) -I$(LABLGTKDIR) 
-DEFS = -DHAVE_CONFIG_H -I. -I$(GLADEDIR) -I$(GLADETOPDIR)
+INCLUDES = -I$(GLADETOPDIR)/intl -I$(LABLLIB) -I$(LABLGTKDIR) 
+DEFS = -DHAVE_CONFIG_H -I. -I$(GLADEDIR) -I$(GLADETOPDIR) $(GTKCFLAGS)
 CPPFLAGS = 
 LDFLAGS = 
-CC = gcc
 RANLIB = ranlib
 VERSION = 0.4.1
 
@@ -21,7 +18,6 @@ glade_AOBJECTS =  debug.o editor.o gbwidget.o glade.o glade_clipboard.o \
 	palette.o property.o save.o source.o source_os2.o styles.o \
 	tree.o utils.o
 
-CFLAGS = -g -O2 -I/usr/X11R6/include -I/usr/local/lib/glib/include -I/usr/local/include -Wall
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 
 all: libglade.a
