@@ -57,7 +57,7 @@ OCAMLLIBDIR:=$(subst
 
 ifeq ($(UISTYLE),gtk)
 
-LABLGTKDIR=/home/garrigue/Projects/lablgtk
+LABLGTKDIR=../../..
 
 include $(LABLGTKDIR)/config.make
 WITH_TK= -I $(LABLGTKDIR) lablgtk.cma \
