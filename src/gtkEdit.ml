@@ -44,7 +44,7 @@ module Editable = struct
     let marshal_insert f argv = function
       | `STRING _ :: `INT len :: `POINTER(Some pos) :: _ ->
           (* XXX These two accesses are implementation-dependent *)
-          let s = Gpointer.peek_string (Closure.get_pointer argv ~pos:0) ~len
+          let s = Gpointer.peek_string (Closure.get_pointer argv ~pos:1) ~len
           and pos = Gpointer.peek_int pos in
           f s ~pos
       | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_insert"

@@ -37,7 +37,8 @@ let connect  ~(sgn : ('a, _) t) ~callback ?(after=false) (obj : 'a obj) =
     let old = push_callback () in
     let exn =
       try 
-        let args = (Closure.get_args argv) in
+        (* Omit the referent object from the argument list *)
+        let args = List.tl (Closure.get_args argv) in
         sgn.marshaller callback argv args;
         None
       with exn -> Some exn
