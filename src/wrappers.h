@@ -145,9 +145,18 @@ value ml_##name##_##field (value val, value index) \
 value ml_##name##_##field (value val, value index, value new) \
 { (conv1(val))->field[conv2(index)] = conv3(new); return Val_unit; }
 
+/* ML value is [flag list] */
 #define Make_Flags_val(conv) \
 long Flags_##conv (value list) \
 { long flags = 0L; \
+  while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
+  return flags; }
+
+/* ML value is [flag list option] */
+#define Make_OptFlags_val(conv) \
+long OptFlags_##conv (value list) \
+{ long flags = 0L; \
+  if Is_block(list) list = Field(list,0); \
   while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
   return flags; }
 

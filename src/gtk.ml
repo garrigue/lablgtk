@@ -12,31 +12,36 @@ type clampf = float
 type 'a optobj = 'a obj optboxed
 
 module Tags = struct
-  type state = [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
-  type window_type = [ TOPLEVEL DIALOG POPUP ]
-  type direction = [ TAB_FORWARD TAB_BACKWARD UP DOWN LEFT RIGHT ]
-  type shadow = [ NONE IN OUT ETCHED_IN ETCHED_OUT ]
-  type arrow = [ UP DOWN LEFT RIGHT ]
+  type arrow_type = [ UP DOWN LEFT RIGHT ]
+  type attach_options = [ EXPAND SHRINK FILL ]
+  type button_box_style = [ DEFAULT_STYLE SPREAD EDGE START END ]
+  type direction_type = [ TAB_FORWARD TAB_BACKWARD UP DOWN LEFT RIGHT ]
+  type justification = [ LEFT RIGHT CENTER FILL ]
+  type match_type = [ ALL ALL_TAIL HEAD TAIL EXACT LAST ]
+  type metric_type = [ PIXELS INCHES CENTIMETERS ]
+  type orientation = [ HORIZONTAL VERTICAL ]
+  type corner_type = [ TOP_LEFT BOTTOM_LEFT TOP_RIGHT BOTTOM_RIGHT ]
   type pack_type = [ START END ]
-  type policy = [ ALWAYS AUTOMATIC ]
-  type update = [ CONTINUOUS DISCONTINUOUS DELAYED ]
-  type attach = [ EXPAND SHRINK FILL ]
-  type signal_run = [ FIRST LAST BOTH MASK NO_RECURSE ]
-  type window_position = [ NONE CENTER MOUSE ]
+  type path_type = [ WIDGET WIDGET_CLASS CLASS ]
+  type policy_type = [ ALWAYS AUTOMATIC ]
+  type position = [ LEFT RIGHT TOP BOTTOM ]
+  type preview_type = [ COLOR GRAYSCALE ]
+  type relief_type = [ NORMAL HALF NONE ]
+  type signal_run_type = [ FIRST LAST BOTH NO_RECURSE ACTION NO_HOOKS ]
+  type scroll_type =
+      [ NONE STEP_FORWARD STEP_BACKWARD PAGE_BACKWARD PAGE_FORWARD JUMP ]
+  type selection_mode = [ SINGLE BROWSE MULTIPLE EXTENDED ]
+  type shadow_type = [ NONE IN OUT ETCHED_IN ETCHED_OUT ]
+  type state_type = [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
   type submenu_direction = [ LEFT RIGHT ]
   type submenu_placement = [ TOP_BOTTOM LEFT_RIGHT ]
-  type menu_factory = [ MENU MENU_BAR OPTION_MENU ]
-  type metric = [ PIXELS INCHES CENTIMETERS ]
-  type scroll =
-      [ NONE STEP_FORWARD STEP_BACKWARD PAGE_BACKWARD PAGE_FORWARD JUMP ]
-  type through = [ NONE START END JUMP ]
-  type position = [ LEFT RIGHT TOP BOTTOM ]
-  type preview = [ COLOR GRAYSCALE ]
-  type justification = [ LEFT RIGHT CENTER FILL ]
-  type selection = [ SINGLE BROWSE MULTIPLE EXTENDED ]
-  type orientation = [ HORIZONTAL VERTICAL ]
   type toolbar_style = [ ICONS TEXT BOTH ]
+  type trough_type = [ NONE START END JUMP ]
+  type update_type = [ CONTINUOUS DISCONTINUOUS DELAYED ]
   type visibility = [ NONE PARTIAL FULL ]
+  type window_position = [ NONE CENTER MOUSE ]
+  type window_type = [ TOPLEVEL DIALOG POPUP ]
+  type sort_type = [ ASCENDING DESCENDING ]
   type fundamental_type =
     [ INVALID NONE CHAR BOOL INT UINT LONG ULONG FLOAT DOUBLE
       STRING ENUM FLAGS BOXED FOREIGN CALLBACK ARGS POINTER
@@ -192,31 +197,39 @@ module Timeout = struct
   external remove : id -> unit = "ml_gtk_timeout_remove"
 end
 
-module AcceleratorTable = struct
+module AccelGroup = struct
   type t
-  external create : unit -> t = "ml_gtk_accelerator_table_new"
-  external find :
-      'a obj -> string -> key:char -> mod:Gdk.Tags.modifier list -> t
-      = "ml_gtk_accelerator_table_find"
-  external install :
-      t -> 'a obj -> string -> key:char -> mod:Gdk.Tags.modifier list -> unit
-      = "ml_gtk_accelerator_table_install"
-  external remove : t -> 'a obj -> string -> unit
-      = "ml_gtk_accelerator_table_remove"
-  external check : t -> key:char -> mod:Gdk.Tags.modifier list -> bool
-      = "ml_gtk_accelerator_table_check"
-  external delete_tables : 'a obj -> unit = "ml_gtk_accelerator_tables_delete"
-  external set_mod_mask : t -> Gdk.Tags.modifier list -> unit
-      = "ml_gtk_accelerator_table_set_mod_mask"
-  let find (obj : 'a obj)
-      sig:(sgn : ('a,unit->unit) Signal.t) :key ?mod:m [< [] >] =
-    find obj sgn.Signal.name :key mod:m
-  let install t (obj : 'a obj)
-      sig:(sgn : ('a,unit->unit) Signal.t) :key ?mod:m [< [] >] =
-    install t obj sgn.Signal.name :key mod:m
-  let remove t (obj : 'a obj) sig:(sgn : ('a,unit->unit) Signal.t) =
-    remove t obj sgn.Signal.name
-  let check t :key ?mod:m [< [] >] = check t :key mod:m
+  type accel_flag = [ VISIBLE SIGNAL_VISIBLE LOCKED ]
+  external create : unit -> t = "ml_gtk_accel_group_new"
+  external activate :
+      t -> key:char -> ?mod:Gdk.Tags.modifier list -> bool
+      = "ml_gtk_accel_group_activate"
+  external groups_activate :
+      'a obj -> key:char -> ?mod:Gdk.Tags.modifier list -> bool
+      = "ml_gtk_accel_groups_activate"
+  external attach : t -> 'a obj -> unit
+      = "ml_gtk_accel_group_attach"
+  external detach : t -> 'a obj -> unit
+      = "ml_gtk_accel_group_detach"
+  external lock : t -> unit
+      = "ml_gtk_accel_group_lock"
+  external unlock : t -> unit
+      = "ml_gtk_accel_group_unlock"
+  external lock_entry :
+      t -> key:char -> ?mod:Gdk.Tags.modifier list -> bool
+      = "ml_gtk_accel_group_lock_entry"
+  external add :
+      t -> key:char -> ?mod:Gdk.Tags.modifier list ->
+      ?flags:accel_flag list ->
+      call:'a obj -> sig:('a,unit->unit) Signal.t -> unit
+      = "ml_gtk_accel_group_add_bc" "ml_gtk_accel_group_add"
+  external remove :
+      t -> key:char -> ?mod:Gdk.Tags.modifier list -> call:'a obj -> unit
+      = "ml_gtk_accel_group_remove"
+  external valid :  key:char -> ?mod:Gdk.Tags.modifier list -> bool
+      = "ml_gtk_accelerator_valid"
+  external set_default_mod_mask : Gdk.Tags.modifier list option -> unit
+      = "ml_gtk_accelerator_set_default_mod_mask"
 end
 
 module Style = struct
@@ -225,16 +238,16 @@ module Style = struct
   external copy : t -> t = "ml_gtk_style_copy"
   external attach : t -> Gdk.window -> t = "ml_gtk_style_attach"
   external detach : t -> unit = "ml_gtk_style_detach"
-  external set_background : t -> Gdk.window -> state -> unit
+  external set_background : t -> Gdk.window -> state_type -> unit
       = "ml_gtk_style_set_background"
   external draw_hline :
-      t -> Gdk.window -> state -> x:int -> x:int -> y:int -> unit
+      t -> Gdk.window -> state_type -> x:int -> x:int -> y:int -> unit
       = "ml_gtk_draw_hline"
   external draw_vline :
-      t -> Gdk.window -> state -> y:int -> y:int -> c:int -> unit
+      t -> Gdk.window -> state_type -> y:int -> y:int -> c:int -> unit
       = "ml_gtk_draw_vline"
-  external get_bg : t -> state:state -> Gdk.Color.t = "ml_gtk_style_get_bg"
-  external set_bg : t -> state:state -> color:Gdk.Color.t -> unit
+  external get_bg : t -> state:state_type -> Gdk.Color.t = "ml_gtk_style_get_bg"
+  external set_bg : t -> state:state_type -> color:Gdk.Color.t -> unit
       = "ml_gtk_style_set_bg"
   let get_bg st ?:state [< `NORMAL >] = get_bg st :state
   let set_bg st ?:state [< `NORMAL >] :color = set_bg st :state :color
@@ -367,8 +380,10 @@ module Widget = struct
   external intersect :
       [> widget] obj -> Gdk.Rectangle.t -> Gdk.Rectangle.t option
       = "ml_gtk_widget_intersect"
+(*
   external basic : [> widget] obj -> bool
       = "ml_gtk_widget_basic"
+*)
   external set_can_default : [> widget] obj -> bool -> unit
       = "ml_gtk_widget_set_can_default"
   external set_can_focus : [> widget] obj -> bool -> unit
@@ -381,7 +396,7 @@ module Widget = struct
       = "ml_gtk_widget_set_name"
   external get_name : [> widget] obj -> string
       = "ml_gtk_widget_get_name"
-  external set_state : [> widget] obj -> state -> unit
+  external set_state : [> widget] obj -> state_type -> unit
       = "ml_gtk_widget_set_state"
   external set_sensitive : [> widget] obj -> bool -> unit
       = "ml_gtk_widget_set_sensitive"
@@ -401,8 +416,10 @@ module Widget = struct
       = "ml_gtk_widget_get_pointer"
   external is_ancestor : [> widget] obj -> [> widget] obj -> bool
       = "ml_gtk_widget_is_ancestor"
+(*
   external is_child : [> widget] obj -> [> widget] obj -> bool
       = "ml_gtk_widget_is_ancestor"
+*)
   external set_style : [> widget] obj -> Style.t -> unit
       = "ml_gtk_widget_set_style"
   external set_rc_style : [> widget] obj -> unit
@@ -413,18 +430,21 @@ module Widget = struct
       = "ml_gtk_widget_get_style"
   external restore_default_style : [> widget] obj -> unit
       = "ml_gtk_widget_restore_default_style"
-  external install_accelerator :
-      [> widget] obj -> AcceleratorTable.t ->
-      string -> key:char -> mod:Gdk.Tags.modifier list -> unit
-      = "ml_gtk_widget_install_accelerator"
+  external add_accelerator :
+      'a[> widget] obj -> sig:('a,unit->unit) Signal.t ->
+      AccelGroup.t -> key:char -> ?mod:Gdk.Tags.modifier list ->
+      ?flags:AccelGroup.accel_flag list -> unit
+      = "ml_gtk_widget_add_accelerator_bc" "ml_gtk_widget_add_accelerator"
   external remove_accelerator :
-      [> widget] obj -> AcceleratorTable.t -> string -> unit
+      [> widget] obj -> AccelGroup.t ->
+      key:char -> ?mod:Gdk.Tags.modifier list -> unit
       = "ml_gtk_widget_remove_accelerator"
-  let install_accelerator w t sig:(sgn : ([> widget],unit->unit) Signal.t)
-      :key ?mod:mods [< [] >] =
-    install_accelerator w t sgn.Signal.name :key mod:mods
-  let remove_accelerator w t sig:(sgn : ([> widget],unit->unit) Signal.t) =
-    remove_accelerator w t sgn.Signal.name
+  external lock_accelerators : [> widget] obj -> unit
+      = "ml_gtk_widget_lock_accelerators"
+  external unlock_accelerators : [> widget] obj -> unit
+      = "ml_gtk_widget_unlock_accelerators"
+  external accelerators_locked : [> widget] obj -> bool
+      = "ml_gtk_widget_accelerators_locked"
   external window : [> widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
   let setter w :cont ?:name ?:state ?:sensitive ?:can_default ?:can_focus
@@ -463,7 +483,7 @@ module Widget = struct
       { name = "draw_focus"; marshaller = marshal_unit }
     let draw_default : ([> widget],_) t =
       { name = "draw_default"; marshaller = marshal_unit }
-    external val_state : int -> state = "ml_Val_state"
+    external val_state : int -> state_type = "ml_Val_state_type"
     let state_changed : ([> widget],_) t =
       let marshal f argv = f (val_state (Argv.get_int argv pos:0)) in
       { name = "state_changed"; marshaller = marshal }
@@ -478,24 +498,16 @@ module Container = struct
     if Object.is_a w "GtkContainer" then Obj.magic w
     else invalid_arg "Gtk.Container.cast"
   external coerce : [> container] obj -> t obj = "%identity"
+(*
   external draw_children : [> container] obj -> unit
       = "ml_gtk_widget_draw_children"
+*)
   external border_width : [> container] obj -> int -> unit
       = "ml_gtk_container_border_width"
   external add : [> container] obj -> [> widget] obj -> unit
       = "ml_gtk_container_add"
   external remove : [> container] obj -> [> widget] obj -> unit
       = "ml_gtk_container_remove"
-  external disable_resize : [> container] obj -> unit
-      = "ml_gtk_container_disable_resize"
-  external enable_resize : [> container] obj -> unit
-      = "ml_gtk_container_enable_resize"
-  external block_resize : [> container] obj -> unit
-      = "ml_gtk_container_block_resize"
-  external unblock_resize : [> container] obj -> unit
-      = "ml_gtk_container_unblock_resize"
-  external need_resize : [> container] obj -> bool
-      = "ml_gtk_container_need_resize"
   let setter w :cont ?border_width:border ?:width [< -1 >] ?:height [< -1 >] =
     may border fun:(border_width w);
     if width > -1 || height > -1 then Widget.set_usize w :width :height;
@@ -507,7 +519,7 @@ module Container = struct
     let l = ref [] in
     foreach w fun:(push on:l);
     List.rev !l
-  external focus : [> container] obj -> direction -> bool
+  external focus : [> container] obj -> direction_type -> bool
       = "ml_gtk_container_focus"
   (* Called by Widget.grab_focus *)
   external set_focus_child : [> container] obj -> [> widget] obj -> unit
@@ -527,7 +539,7 @@ module Container = struct
     let need_resize : ([> container],_) t =
       let marshal f argv = Argv.set_result_bool argv (f ()) in
       { name = "need_resize"; marshaller = marshal }
-    external val_direction : int -> direction = "ml_Val_direction"
+    external val_direction : int -> direction_type = "ml_Val_direction_type"
     let focus : ([> container],_) t =
       let marshal f argv =
 	let dir = val_direction (Argv.get_int argv pos:0) in
@@ -578,7 +590,7 @@ module Frame = struct
       = "ml_gtk_frame_set_label"
   external set_label_align : [> frame] obj -> x:clampf -> y:clampf -> unit
       = "ml_gtk_frame_set_label"
-  external set_shadow_type : [> frame] obj -> shadow -> unit
+  external set_shadow_type : [> frame] obj -> shadow_type -> unit
       = "ml_gtk_frame_set_shadow_type"
   external get_label_xalign : [> frame] obj -> float
       = "ml_gtk_frame_get_label_xalign"
@@ -693,10 +705,6 @@ module MenuItem = struct
       = "ml_gtk_menu_item_set_submenu"
   external remove_submenu : [> menuitem] obj -> unit
       = "ml_gtk_menu_item_remove_submenu"
-  external accelerator_size : [> menuitem] obj -> unit
-      = "ml_gtk_menu_item_accelerator_size"
-  external accelerator_text : [> menuitem] obj -> string -> unit
-      = "ml_gtk_menu_item_accelerator_size"
   external configure :
       [> menuitem] obj -> show_toggle:bool -> show_indicator:bool -> unit
       = "ml_gtk_menu_item_configure"
@@ -815,7 +823,7 @@ module Viewport = struct
       = "ml_gtk_viewport_set_hadjustment"
   external set_vadjustment : [> viewport] obj -> [> adjustment] obj -> unit
       = "ml_gtk_viewport_set_vadjustment"
-  external set_shadow_type : [> viewport] obj -> shadow -> unit
+  external set_shadow_type : [> viewport] obj -> shadow_type -> unit
       = "ml_gtk_viewport_set_shadow_type"
   let setter w :cont ?:hadjustment ?:vadjustment ?:shadow_type =
     may hadjustment fun:(set_hadjustment w);
@@ -868,11 +876,11 @@ module Window = struct
 	auto_shrink:(may_default get_auto_shrink w for:auto_shrink);
     cont w
   let set = setter ?cont:Container.set
-  external add_accelerator_table : [> window] obj -> AcceleratorTable.t -> unit
-      = "ml_gtk_window_add_accelerator_table"
-  external remove_accelerator_table :
-      [> window] obj -> AcceleratorTable.t -> unit
-      = "ml_gtk_window_remove_accelerator_table"
+  external add_accel_group : [> window] obj -> AccelGroup.t -> unit
+      = "ml_gtk_window_add_accel_group"
+  external remove_accel_group :
+      [> window] obj -> AccelGroup.t -> unit
+      = "ml_gtk_window_remove_accel_group"
   external activate_focus : [> window] obj -> unit
       = "ml_gtk_window_activate_focus"
   external activate_default : [> window] obj -> unit
@@ -939,7 +947,7 @@ module ColorSelection = struct
   external create : unit -> t obj = "ml_gtk_color_selection_new"
   external create_dialog : string -> dialog obj
       = "ml_gtk_color_selection_dialog_new"
-  external set_update_policy : [> colorsel] obj -> update -> unit
+  external set_update_policy : [> colorsel] obj -> update_type -> unit
       = "ml_gtk_color_selection_set_update_policy"
   external set_opacity : [> colorsel] obj -> bool -> unit
       = "ml_gtk_color_selection_set_opacity"
@@ -1163,18 +1171,12 @@ module CList = struct
   external create : cols:int -> t obj = "ml_gtk_clist_new"
   external create_with_titles : string array -> t obj
       = "ml_gtk_clist_new_with_titles"
-  external set_border : [> clist] obj -> shadow -> unit
-      = "ml_gtk_clist_set_border"
-  external set_selection_mode : [> clist] obj -> selection -> unit
+  external set_selection_mode : [> clist] obj -> selection_mode -> unit
       = "ml_gtk_clist_set_selection_mode"
-  let setter w :cont ?:border ?:selection_mode =
-    may border fun:(set_border w);
+  let setter w :cont ?:selection_mode =
     may selection_mode fun:(set_selection_mode w);
     cont w
   let set = setter ?cont:Container.set
-  external set_policy :
-      [> clist] obj -> vertical:policy -> horizontal:policy -> unit
-      = "ml_gtk_clist_set_policy"
   external freeze : [> clist] obj -> unit = "ml_gtk_clist_freeze"
   external thaw : [> clist] obj -> unit = "ml_gtk_clist_thaw"
   external column_titles_show : [> clist] obj -> unit
@@ -1300,7 +1302,7 @@ module GtkList = struct
       = "ml_gtk_list_unselect_child"
   external child_position : [> list] obj -> [> widget] obj -> int
       = "ml_gtk_list_child_position"
-  external set_selection_mode : [> list] obj -> selection -> unit
+  external set_selection_mode : [> list] obj -> selection_mode -> unit
       = "ml_gtk_list_set_selection_mode"
   let setter w :cont ?:selection_mode =
     may selection_mode fun:(set_selection_mode w);
@@ -1353,16 +1355,18 @@ module Menu = struct
   external popdown : [> menu] obj -> unit = "ml_gtk_menu_popdown"
   external get_active : [> menu] obj -> Widget.t obj= "ml_gtk_menu_get_active"
   external set_active : [> menu] obj -> int -> unit = "ml_gtk_menu_set_active"
-  external set_accelerator_table : [> menu] obj -> AcceleratorTable.t -> unit
-      = "ml_gtk_menu_set_accelerator_table"
+  external set_accel_group : [> menu] obj -> AccelGroup.t -> unit
+      = "ml_gtk_menu_set_accel_group"
+  external get_accel_group : [> menu] obj -> AccelGroup.t
+      = "ml_gtk_menu_get_accel_group"
   external attach_to_widget : [> menu] obj -> [> widget] obj -> unit
       = "ml_gtk_menu_attach_to_widget"
   external get_attach_widget : [> menu] obj -> Widget.t obj
       = "ml_gtk_menu_get_attach_widget"
   external detach : [> menu] obj -> unit = "ml_gtk_menu_detach"
-  let setter w :cont ?:active ?:accelerator_table =
+  let setter w :cont ?:active ?:accel_group =
     may active fun:(set_active w);
-    may accelerator_table fun:(set_accelerator_table w);
+    may accel_group fun:(set_accel_group w);
     cont w
   let set = setter ?cont:Container.set
 end
@@ -1488,11 +1492,11 @@ module ScrolledWindow = struct
   external get_vadjustment : [> scrolled] obj -> Adjustment.t obj
       = "ml_gtk_scrolled_window_get_vadjustment"
   external set_policy :
-      [> scrolled] obj -> horizontal:policy -> vertical:policy -> unit
+      [> scrolled] obj -> horizontal:policy_type -> vertical:policy_type -> unit
       = "ml_gtk_scrolled_window_set_policy"
-  external get_hscrollbar_policy : [> scrolled] obj -> policy
+  external get_hscrollbar_policy : [> scrolled] obj -> policy_type
       = "ml_gtk_scrolled_window_get_hscrollbar_policy"
-  external get_vscrollbar_policy : [> scrolled] obj -> policy
+  external get_vscrollbar_policy : [> scrolled] obj -> policy_type
       = "ml_gtk_scrolled_window_get_vscrollbar_policy"
   let setter w :cont ?:hscrollbar_policy ?:vscrollbar_policy =
     if hscrollbar_policy <> None || vscrollbar_policy <> None then
@@ -1514,8 +1518,8 @@ module Table = struct
     create r c :homogeneous
   external attach :
       [> table] obj -> [> widget] obj -> left:int -> right:int ->
-      top:int -> bottom:int -> xoptions:attach list ->
-      yoptions:attach list -> xpadding:int -> ypadding:int -> unit
+      top:int -> bottom:int -> xoptions:attach_options list ->
+      yoptions:attach_options list -> xpadding:int -> ypadding:int -> unit
       = "ml_gtk_table_attach_bc" "ml_gtk_table_attach"
   type dirs = [X Y BOTH NONE]
   let has_x : dirs -> bool = function `X|`BOTH -> true | `Y|`NONE -> false
@@ -1608,7 +1612,7 @@ module Tree = struct
       = "ml_gtk_tree_unselect_item"
   external child_position : [> tree] obj -> [> widget] obj -> unit
       = "ml_gtk_tree_child_position"
-  external set_selection_mode : [> tree] obj -> selection -> unit
+  external set_selection_mode : [> tree] obj -> selection_mode -> unit
       = "ml_gtk_tree_set_selection_mode"
   external set_view_mode : [> tree] obj -> [LINE ITEM] -> unit
       = "ml_gtk_tree_set_view_mode"
@@ -1674,11 +1678,11 @@ module Editable = struct
       = "ml_gtk_editable_delete_text"
   external get_chars : [> editable] obj -> start:int -> end:int -> string
       = "ml_gtk_editable_get_chars"
-  external cut_clipboard : [> editable] obj -> time:int -> unit
+  external cut_clipboard : [> editable] obj -> unit
       = "ml_gtk_editable_cut_clipboard"
-  external copy_clipboard : [> editable] obj -> time:int -> unit
+  external copy_clipboard : [> editable] obj -> unit
       = "ml_gtk_editable_copy_clipboard"
-  external paste_clipboard : [> editable] obj -> time:int -> unit
+  external paste_clipboard : [> editable] obj -> unit
       = "ml_gtk_editable_paste_clipboard"
   external claim_selection :
       [> editable] obj -> claim:bool -> time:int -> unit
@@ -1919,8 +1923,9 @@ module Arrow = struct
   let cast w : t obj =
     if Object.is_a w "GtkArrow" then Obj.magic w
     else invalid_arg "Gtk.Arrow.cast"
-  external create : type:arrow -> :shadow -> t obj = "ml_gtk_arrow_new"
-  external set : [> arrow] obj -> type:arrow -> :shadow -> unit
+  external create : type:arrow_type -> shadow:shadow_type -> t obj
+      = "ml_gtk_arrow_new"
+  external set : [> arrow] obj -> type:arrow_type -> shadow:shadow_type -> unit
       = "ml_gtk_arrow_set"
 end
 
@@ -2017,16 +2022,47 @@ module Pixmap = struct
   external mask : [> pixmap] obj -> Gdk.bitmap = "ml_GtkPixmap_mask"
 end
 
+module Progress = struct
+  type t = [widget progress]
+  let cast w : t obj =
+    if Object.is_a w "GtkProgress" then Obj.magic w
+    else invalid_arg "Gtk.Progress.cast"
+  external set_show_text : [> progress] obj -> bool -> unit
+      = "ml_gtk_progress_set_show_text"
+  external set_text_alignment :
+      [> progress] obj -> ?x:float -> ?y:float -> unit
+      = "ml_gtk_progress_set_show_text"
+  external set_format_string : [> progress] obj -> string -> unit
+      = "ml_gtk_progress_set_format_string"
+  external set_adjustment : [> progress] obj -> [> adjustment] obj -> unit
+      = "ml_gtk_progress_set_adjustment"
+  external configure :
+      [> progress] obj -> current:float -> min:float -> max:float -> unit
+      = "ml_gtk_progress_configure"
+  external set_percentage : [> progress] obj -> float -> unit
+      = "ml_gtk_progress_set_percentage"
+  external set_value : [> progress] obj -> float -> unit
+      = "ml_gtk_progress_set_value"
+  external get_value : [> progress] obj -> float
+      = "ml_gtk_progress_get_value"
+  external get_percentage : [> progress] obj -> float
+      = "ml_gtk_progress_get_current_percentage"
+  external set_activity_mode : [> progress] obj -> bool -> unit
+      = "ml_gtk_progress_set_activity_mode"
+  external get_current_text : [> progress] obj -> string
+      = "ml_gtk_progress_get_current_text"
+  external get_adjustment : [> progress] obj -> Adjustment.t obj
+      = "ml_gtk_progress_get_adjustment"
+end
+
 module ProgressBar = struct
-  type t = [widget progressbar]
+  type t = [widget progress progressbar]
   let cast w : t obj =
     if Object.is_a w "GtkProgressBar" then Obj.magic w
     else invalid_arg "Gtk.ProgressBar.cast"
   external create : unit -> t obj = "ml_gtk_progress_bar_new"
   external update : [> progressbar] obj -> percent:float -> unit
       = "ml_gtk_progress_bar_update"
-  external percent : [> progressbar] obj -> float
-      = "ml_GtkProgressBar_percentage"
 end
 
 module Range = struct
@@ -2039,7 +2075,7 @@ module Range = struct
       = "ml_gtk_range_get_adjustment"
   external set_adjustment : [> range] obj -> [> adjustment] obj -> unit
       = "ml_gtk_range_set_adjustment"
-  external set_update_policy : [> range] obj -> update -> unit
+  external set_update_policy : [> range] obj -> update_type -> unit
       = "ml_gtk_range_set_update_policy"
   let setter w :cont ?:adjustment ?:update_policy =
     may adjustment fun:(set_adjustment w);
@@ -2099,7 +2135,7 @@ module Ruler = struct
   external vruler_new : unit -> t obj = "ml_gtk_vruler_new"
   let create (dir : orientation) =
     if dir = `HORIZONTAL then hruler_new () else vruler_new ()
-  external set_metric : [> ruler] obj -> metric -> unit
+  external set_metric : [> ruler] obj -> metric_type -> unit
       = "ml_gtk_ruler_set_metric"
   external set_range :
       [> ruler] obj ->
@@ -2139,9 +2175,10 @@ module Main = struct
   (* external main : unit -> unit = "ml_gtk_main" *)
   let locale = set_locale ()
   let argv = init Sys.argv
-  external iteration_do : bool -> bool = "ml_gtk_main_iteration_do"
-  let main () = while not (iteration_do true) do () done
-  external quit : unit -> unit = "ml_gtk_main_quit"
+  open Glib
+  let loop = Main.create true
+  let main () = while Main.is_running loop do Main.iteration true done
+  let quit () = Main.quit loop
   external get_version : unit -> int * int * int = "ml_gtk_get_version"
   let version = get_version ()
 end
