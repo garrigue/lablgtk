@@ -1,4 +1,9 @@
 (* $Id$ *)
 
+type log_level = "G_LOG_LEVEL_"
+   [ `ERROR | `CRITICAL | `WARNING | `MESSAGE | `INFO | `DEBUG
+   | `FLAG_RECURSION "G_LOG_FLAG_RECURSION"
+   | `FLAG_FATAL "G_LOG_FLAG_FATAL" ]
+
 type io_condition = "G_IO_"
    [ `IN | `OUT | `PRI | `ERR | `HUP | `NVAL ]

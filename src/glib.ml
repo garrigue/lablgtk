@@ -1,9 +1,6 @@
 (* $Id$ *)
 
-type print_func = string -> unit
-
-external set_print_handler : (string -> unit) -> print_func
-    = "ml_g_set_print_handler"
+open StdLabels
 
 exception GError of string
 let () = Callback.register_exception "gerror" (GError "")
@@ -35,6 +32,29 @@ module Io = struct
     = "ml_g_io_add_watch"
 end
 
+module Message = struct
+  type print_func = string -> unit
+  external set_print_handler : (string -> unit) -> print_func
+    = "ml_g_set_print_handler"
+
+  type log_level =
+    [ `ERROR | `CRITICAL | `WARNING | `MESSAGE | `INFO | `DEBUG
+    | `FLAG_RECURSION | `FLAG_FATAL ]
+  external log_level : log_level -> int = "ml_Log_level_val"
+
+  type log_handler
+  external set_log_handler :
+      ?domain:string -> levels:int -> (level:int -> string -> unit) -> unit
+    = "ml_g_log_set_handler"
+  let set_log_handler ?domain ~levels f =
+    let levels = List.fold_left levels ~init:0
+        ~f:(fun acc lev -> acc lor (log_level lev)) in
+    set_log_handler ?domain ~levels f
+
+  external remove_log_handler : log_handler -> unit
+    = "ml_g_log_remove_handler"
+end
+    
 (*
 module Thread = struct
   external init : unit -> unit = "ml_g_thread_init"

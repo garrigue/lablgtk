@@ -48,4 +48,8 @@ module Rc = struct
   external add_default_file : string -> unit = "ml_gtk_rc_add_default_file"
 end
 
-let _ = Glib.set_print_handler (fun msg -> print_string msg)
+let _ =
+  Glib.Message.set_print_handler (fun msg -> print_string msg)
+let _ =
+  Glib.Message.set_log_handler ~domain:"Gtk" ~levels:[`WARNING;`CRITICAL]
+    (fun ~level s -> raise (Gtk.Error s))
