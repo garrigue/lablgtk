@@ -37,10 +37,8 @@ Contents:
 	applications/*	application using the library
 		radtest		a very experimental RAD for lablgtk
 				(by Hubert Fauque)
-		lablglade	another experimental RAD, based on glade
-				(by Koji Kagawa)
-		xxaplay		CD-XA audio track player, for Linux only
-				(by Jun Furuse)
+		browser		the begin of a port of LablBrowser
+				(by Jacques Garrigue)
 
 	lablgl.patch	patch for lablgl-0.92
 
