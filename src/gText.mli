@@ -1,13 +1,14 @@
 (* $Id$ *)
 
 open Gtk
+open GObj
 
-type mark = [`INSERT | `SEL_BOUND | `NAME of string | `MARK of textmark]
+type mark = [`INSERT | `SEL_BOUND | `NAME of string | `MARK of text_mark]
 
-class child_anchor : textchildanchor ->
+class child_anchor : text_child_anchor ->
 object
-  val obj : textchildanchor
-  method as_childanchor : textchildanchor
+  val obj : text_child_anchor
+  method as_childanchor : text_child_anchor
   method deleted : bool
   method get_oid : int
   method widgets : widget list
@@ -20,16 +21,16 @@ object ('a)
   val obj : 'b obj
   method after : 'a
   method event :
-    callback:(origin:unit Gobject.obj -> GdkEvent.any -> textiter -> unit) ->
+    callback:(origin:unit Gobject.obj -> GdkEvent.any -> text_iter -> unit) ->
     GtkSignal.id
 end
 
-class tag : texttag ->
+class tag : text_tag ->
 object
-  val obj : texttag
-  method as_tag : texttag
+  val obj : text_tag
+  method as_tag : text_tag
   method connect : tag_signals
-  method event : 'a obj -> GdkEvent.any -> textiter -> bool
+  method event : 'a obj -> GdkEvent.any -> text_iter -> bool
   method get_oid : int
   method priority : int
   method set_priority : int -> unit
@@ -50,10 +51,9 @@ type contents =
    If you need to move some iter in an imperative way use [#nocopy#...].
 *)
 
-class nocopy_iter : 
-  textiter -> 
+class nocopy_iter :  text_iter -> 
 object
-  val it : Gtk.textiter
+  val it : Gtk.text_iter
   method backward_char : bool
   method backward_chars : int -> bool
   method backward_cursor_position : bool
@@ -88,12 +88,11 @@ object
   method set_visible_line_offset : int -> unit
 end 
 
-and iter :
-  textiter ->
+and iter : text_iter ->
 object ('self)
-  val it : textiter
+  val it : text_iter
   val nocopy : nocopy_iter
-  method as_textiter : textiter
+  method as_iter : text_iter
   method copy : iter
   method nocopy : nocopy_iter
   method backward_char : iter
@@ -111,7 +110,7 @@ object ('self)
   method backward_word_start : iter
   method backward_word_starts : int -> iter
   method begins_tag : tag option -> bool
-  method buffer : textbuffer
+  method buffer : text_buffer
   method bytes_in_line : int
   method can_insert : default:bool -> bool
   method char : Glib.unichar
@@ -156,7 +155,7 @@ object ('self)
   method line : int
   method line_index : int
   method line_offset : int
-  method marks : textmark list
+  method marks : text_mark list
   method offset : int
   method set_line : int -> iter
   method set_line_index : int -> iter
@@ -173,27 +172,27 @@ object ('self)
   method visible_line_offset : int
 end
 
-val as_textiter : iter -> textiter
+val as_iter : iter -> text_iter
 
 class tagtable_signals : ([> `texttagtable] as 'b) obj ->
 object ('a)
   val after : bool
   val obj : 'b obj
   method after : 'a
-  method tag_added : callback:(texttag -> unit) -> GtkSignal.id
-  method tag_changed : callback:(texttag -> bool -> unit) -> GtkSignal.id
-  method tag_removed : callback:(texttag -> unit) -> GtkSignal.id
+  method tag_added : callback:(text_tag -> unit) -> GtkSignal.id
+  method tag_changed : callback:(text_tag -> bool -> unit) -> GtkSignal.id
+  method tag_removed : callback:(text_tag -> unit) -> GtkSignal.id
 end
 
-class tagtable : texttagtable ->
+class tagtable : text_tag_table ->
 object
-  val obj : texttagtable
-  method add : texttag -> unit
-  method as_tagtable : texttagtable
+  val obj : text_tag_table
+  method add : text_tag -> unit
+  method as_tagtable : text_tag_table
   method connect : tagtable_signals
   method get_oid : int
-  method lookup : string -> texttag option
-  method remove : texttag -> unit
+  method lookup : string -> text_tag option
+  method remove : text_tag -> unit
   method size : int
 end
 val tagtable : unit -> tagtable
@@ -211,12 +210,12 @@ object ('a)
     callback:(start:iter -> stop:iter -> unit) -> GtkSignal.id
   method end_user_action : callback:(unit -> unit) -> GtkSignal.id
   method insert_child_anchor :
-    callback:(iter -> textchildanchor -> unit) -> GtkSignal.id
+    callback:(iter -> text_child_anchor -> unit) -> GtkSignal.id
   method insert_pixbuf :
     callback:(iter -> GdkPixbuf.pixbuf -> unit) -> GtkSignal.id
   method insert_text : callback:(iter -> string -> unit) -> GtkSignal.id
-  method mark_deleted : callback:(textmark -> unit) -> GtkSignal.id
-  method mark_set : callback:(iter -> textmark -> unit) -> GtkSignal.id
+  method mark_deleted : callback:(text_mark -> unit) -> GtkSignal.id
+  method mark_set : callback:(iter -> text_mark -> unit) -> GtkSignal.id
   method modified_changed : callback:(unit -> unit) -> GtkSignal.id
   method remove_tag :
     callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
@@ -229,13 +228,13 @@ type position =
     | `LINECHAR of int * int | `LINEBYTE of int * int
     | `START | `END | `ITER of iter | mark ]
 
-class buffer : textbuffer ->
+class buffer : text_buffer ->
 object
-  val obj : textbuffer
+  val obj : text_buffer
   method add_selection_clipboard : Gtk.clipboard -> unit
   method apply_tag : tag -> start:iter -> stop:iter -> unit
   method apply_tag_by_name : string -> start:iter -> stop:iter -> unit
-  method as_buffer : textbuffer
+  method as_buffer : text_buffer
   method begin_user_action : unit -> unit
   method bounds : iter * iter
   method char_count : int
@@ -243,7 +242,7 @@ object
   method copy_clipboard : Gtk.clipboard -> unit
   method create_child_anchor : iter -> child_anchor
   method create_mark :
-    ?name:string -> ?left_gravity:bool -> iter -> textmark
+    ?name:string -> ?left_gravity:bool -> iter -> text_mark
   method create_tag :
     ?name:string -> GtkText.Tag.property list -> tag
   method cut_clipboard : ?default_editable:bool -> Gtk.clipboard -> unit
@@ -260,7 +259,7 @@ object
   method get_iter_at_char : ?line:int -> int -> iter
   method get_iter_at_byte : line:int -> int -> iter
   method get_iter_at_mark : mark -> iter
-  method get_mark : mark -> textmark
+  method get_mark : mark -> text_mark
   method get_oid : int
   method get_text :
     ?start:iter -> ?stop:iter -> ?slice:bool -> ?visible:bool -> unit -> string
@@ -290,11 +289,11 @@ object
   method set_modified : bool -> unit
   method set_text : string -> unit
   method start_iter : iter
-  method tag_table : texttagtable
+  method tag_table : text_tag_table
 end
 val buffer : ?tagtable:tagtable -> ?text:string -> unit -> buffer
 
-class view_signals : ([> Gtk.textview] as 'b) obj ->
+class view_signals : ([> Gtk.text_view] as 'b) obj ->
 object ('a)
   val after : bool
   val obj : 'b obj
@@ -319,25 +318,22 @@ object ('a)
   method toggle_overwrite : callback:(unit -> unit) -> GtkSignal.id
 end
 
-class view : textview obj ->
+class view : text_view obj ->
 object
-  val obj : textview obj
+  inherit widget
+  val obj : text_view obj
   method add_child_at_anchor : GObj.widget -> child_anchor -> unit
   method add_child_in_window :
     child:GObj.widget ->
     which_window:Tags.text_window_type -> x:int -> y:int -> unit
-  method as_view : textview obj
-  method as_widget : widget obj
+  method as_view : text_view obj
   method backward_display_line : iter -> bool
   method backward_display_line_start : iter -> bool
   method buffer : buffer
   method buffer_to_window_coords :
     tag:Tags.text_window_type -> x:int -> y:int -> int * int
-  method coerce : GObj.widget
   method connect : view_signals
   method cursor_visible : bool
-  method destroy : unit -> unit
-  method drag : GObj.drag_ops
   method editable : bool
   method event : GObj.event_ops
   method forward_display_line : iter -> bool
@@ -347,7 +343,6 @@ object
   method get_iter_location : iter -> Gdk.Rectangle.t
   method get_line_at_y : int -> iter * int
   method get_line_yrange : iter -> int * int
-  method get_oid : int
   method get_window : Tags.text_window_type -> Gdk.window option
   method get_window_type : Gdk.window -> Tags.text_window_type
   method indent : int
@@ -393,5 +388,9 @@ val view :
   ?buffer:buffer ->
   ?editable:bool ->
   ?cursor_visible:bool ->
-  ?wrap_mode:Gtk.Tags.wrap_mode ->
+  ?justification:Tags.justification ->
+  ?wrap_mode:Tags.wrap_mode ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
   ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> view

@@ -1,6 +1,19 @@
 (* $Id$ *)
 
-class Widget noset {
+header {
+open Gobject
+open Data
+module Object = struct
+  let cast w : [`gtk] obj = try_cast w "GtkObject"
+  external _ref_and_sink : [>`gtk] obj -> unit
+    = "ml_gtk_object_ref_and_sink"
+  let make ~classe params =
+    let obj = make ~classe params in _ref_and_sink obj;
+    obj
+end
+}
+
+class Widget abstract : Object {
   "app-paintable"        gboolean             : Read / Write
   "can-default"          gboolean             : Read / Write
   "can-focus"            gboolean             : Read / Write
@@ -20,67 +33,69 @@ class Widget noset {
   "width-request"        gint                 : Read / Write
 }
 
-class Misc {
+class Misc abstract set wrap : Widget {
   "xalign"               gfloat               : Read / Write
-  "xpad"                 gint                 : Read / Write
   "yalign"               gfloat               : Read / Write
+  "xpad"                 gint                 : Read / Write
   "ypad"                 gint                 : Read / Write
 }
 
-class Label {
-  "attributes"           PangoAttrList        : Read / Write
-  "cursor-position"      gint                 : Read
+class Label set wrap : Misc {
+  "label"(text)          gchararray           : Read / Write
   "justify"              GtkJustification     : Read / Write
-  "label"                gchararray           : Read / Write
+  "wrap"(line_wrap)      gboolean             : Read / Write
+  "use-markup"           gboolean             : Read / Write
+  "use-underline"        gboolean             : Read / Write
   "mnemonic-keyval"      guint                : Read
   "mnemonic-widget"      GtkWidget_opt        : Read / Write
   "pattern"              gchararray           : Write
   "selectable"           gboolean             : Read / Write
+  "attributes"           PangoAttrList        : Read / Write
+  "cursor-position"      gint                 : Read
   "selection-bound"      gint                 : Read
-  "use-markup"           gboolean             : Read / Write
-  "use-underline"        gboolean             : Read / Write
-  "wrap"                 gboolean             : Read / Write
 }
 
-class TipsQuery {
-  "caller"               GtkWidget            : Read / Write
+class TipsQuery set wrap : Label {
+  "caller"               GtkWidget_opt        : Read / Write
   "emit-always"          gboolean             : Read / Write
   "label-inactive"       gchararray           : Read / Write
   "label-no-tip"         gchararray           : Read / Write
 }
 
-class Arrow {
-  "arrow-type"           GtkArrowType         : Read / Write
-  "shadow-type"          GtkShadowType        : Read / Write
+class Arrow set wrap : Misc {
+  "arrow-type"(kind)     GtkArrowType         : Read / Write
+  "shadow-type"(shadow)  GtkShadowType        : Read / Write
 }
 
-class Image {
+class Image set wrap : Misc {
   "file"                 gchararray           : Write
-  "icon-set"             GtkIconSet           : Read / Write
-  "icon-size"            gint                 : Read / Write
   "image"                GdkImage             : Read / Write
-  "mask"                 GdkPixmap            : Read / Write
   "pixbuf"               GdkPixbuf            : Read / Write
   "pixbuf-animation"     GdkPixbufAnimation   : Read / Write
-  "pixmap"               GdkPixmap            : Read / Write
-  "stock"                gchararray           : Read / Write
+  "pixmap"               GdkPixmap            : Read / Write / NoWrap
+  "mask"                 GdkBitmap_opt        : Read / Write
+  "stock"                GtkStock             : Read / Write
+  "icon-set"             GtkIconSet           : Read / Write
+  "icon-size"            GtkIconSize          : Read / Write
   "storage-type"         GtkImageType         : Read
 }
 
-class Container {
+class Container abstract : Widget {
   "border-width"         guint                : Read / Write
   "child"                GtkWidget            : Write
   "resize-mode"          GtkResizeMode        : Read / Write
 }
 
-class Alignment {
+class Bin abstract : Container {}
+
+class Alignment set wrap : Bin {
   "xalign"               gfloat               : Read / Write
-  "xscale"               gfloat               : Read / Write
   "yalign"               gfloat               : Read / Write
+  "xscale"               gfloat               : Read / Write
   "yscale"               gfloat               : Read / Write
 }
 
-class Frame {
+class Frame set wrap : Bin {
   "label"                gchararray_opt       : Read / Write
   "label-widget"         GtkWidget_opt        : Read / Write / NoSet
   "label-xalign"         gfloat               : Read / Write
@@ -88,70 +103,425 @@ class Frame {
   "shadow-type"          GtkShadowType        : Read / Write
 }
 
-class AspectFrame {
+class AspectFrame set wrap : Frame {
   "obey-child"           gboolean             : Read / Write
   "ratio"                gfloat               : Read / Write
   "xalign"               gfloat               : Read / Write
   "yalign"               gfloat               : Read / Write
 }
 
-class Button {
+class Button set : Bin {
   "label"                gchararray           : Read / Write / Construct
-  "relief"               GtkReliefStyle       : Read / Write
   "use-stock"            gboolean             : Read / Write / Construct
   "use-underline"        gboolean             : Read / Write / Construct
+  "relief"               GtkReliefStyle       : Read / Write
 }
 
-class ToggleButton {
+class ToggleButton set : Button {
   "active"               gboolean             : Read / Write
   "draw-indicator"       gboolean             : Read / Write
-  "inconsistent"         gboolean             : Read / Write
+  "inconsistent"         gboolean             : Read / Write / NoSet
 }
 
-class CheckButton {}
+(* class CheckButton {} *)
 
-class RadioButton {
-  "group"                GtkRadioButton       : Write
+class RadioButton : ToggleButton {
+  "group"                GtkRadioButton_opt   : Write
 }
 
-class OptionMenu {
+class OptionMenu : Button {
   "menu"                 GtkMenu              : Read / Write
 }
 
-class Item {}
+class Item abstract : Bin {}
 
-class CheckMenuItem {
+class MenuItem : Item {}
+
+class CheckMenuItem : MenuItem {
   "active"               gboolean             : Read / Write
   "inconsistent"         gboolean             : Read / Write
 }
 
-class RadioMenuItem {}
+class RadioMenuItem abstract : CheckMenuItem {}
 
-class ImageMenuItem {
+class ImageMenuItem : MenuItem {
   "image"                GtkWidget            : Read / Write
 }
 
+(*
 class SeparatorMenuItem {}
 class TearoffMenuItem {}
-class ListItem {}
-class TreeItem {}
+*)
+class ListItem : Item {}
+class TreeItem : Item {}
 
-class Window {
+class Window set wrap : Bin {
+  "title"                gchararray           : Read / Write
   "allow-grow"           gboolean             : Read / Write
   "allow-shrink"         gboolean             : Read / Write
-  "default-height"       gint                 : Read / Write
-  "default-width"        gint                 : Read / Write
-  "destroy-with-parent"  gboolean             : Read / Write
+  "default-height"       gint                 : Read / Write / NoSet
+  "default-width"        gint                 : Read / Write / NoSet
+  "destroy-with-parent"  gboolean             : Read / Write / NoSet
   "has-toplevel-focus"   gboolean             : Read
   "icon"                 GdkPixbuf_opt        : Read / Write
   "is-active"            gboolean             : Read
   "modal"                gboolean             : Read / Write
   "resizable"            gboolean             : Read / Write
   "screen"               GdkScreen            : Read / Write
-  "skip-pager-hint"      gboolean             : Read / Write
-  "skip-taskbar-hint"    gboolean             : Read / Write
-  "title"                gchararray           : Read / Write
+  "skip-pager-hint"      gboolean             : Read / Write / NoSet
+  "skip-taskbar-hint"    gboolean             : Read / Write / NoSet
   "type"                 GtkWindowType        : Read / Write / Construct Only
   "type-hint"            GdkWindowTypeHint    : Read / Write
-  "window-position"      GtkWindowPosition    : Read / Write
+  "window-position"(position) GtkWindowPosition    : Read / Write
+}
+
+class Dialog wrap : Window {
+  "has-separator"        gboolean             : Read / Write
+}
+
+class FileSelection abstract set wrap : Dialog {
+  "filename"             gchararray           : Read / Write
+  "select-multiple"      gboolean             : Read / Write
+  "show-fileops"         gboolean             : Read / Write
+}
+
+class ColorSelectionDialog : Dialog {}
+class FontSelectionDialog : Dialog {}
+class InputDialog : Dialog {}
+
+class MessageDialog abstract wrap : Dialog {
+  "buttons"              GtkButtonsType       : Write / Construct Only
+  "message-type"         GtkMessageType       : Read / Write / Construct
+}
+
+class Plug abstract : Bin {}
+class EventBox : Bin {}
+
+class HandleBox set wrap : Bin {
+  "handle-position"      GtkPositionType      : Read / Write
+  "snap-edge"            GtkPositionType      : Read / Write
+  "shadow_type"          GtkShadowType        : Read / Write
+  "snap-edge-set"        gboolean             : Read / Write / NoSet / NoWrap
+}
+
+class ScrolledWindow set wrap : Bin {
+  "hadjustment"          GtkAdjustment        : Read / Write / Construct
+  "vadjustment"          GtkAdjustment        : Read / Write / Construct
+  "hscrollbar-policy"(hpolicy)    GtkPolicyType        : Read / Write
+  "vscrollbar-policy"(vpolicy)    GtkPolicyType        : Read / Write
+  "window-placement"(placement)     GtkCornerType        : Read / Write
+  "shadow-type"          GtkShadowType        : Read / Write
+}
+
+class Viewport set wrap : Bin {
+  "hadjustment"          GtkAdjustment        : Read / Write
+  "vadjustment"          GtkAdjustment        : Read / Write
+  "shadow-type"          GtkShadowType        : Read / Write
+}
+
+class Box hv set : Container {
+  "homogeneous"          gboolean             : Read / Write
+  "spacing"              gint                 : Read / Write
+}
+
+class ButtonBox hv : Box {
+  "layout-style"         GtkButtonBoxStyle    : Read / Write
+}
+
+class ColorSelection set wrap : Box {
+  "current-alpha"(alpha) guint                : Read / Write
+  "current-color"(color) GdkColor             : Read / Write
+  "has-opacity-control"  gboolean             : Read / Write
+  "has-palette"          gboolean             : Read / Write
+}
+
+class FontSelection set wrap : Box {
+  "font"                 GdkFont_opt          : Read
+  "font-name"            gchararray           : Read / Write
+  "preview-text"         gchararray           : Read / Write
+}
+
+class GammaCurve : Box {}
+
+class Combo set wrap : Box {
+  "allow-empty"          gboolean             : Read / Write
+  "case-sensitive"       gboolean             : Read / Write
+  "enable-arrow-keys"    gboolean             : Read / Write
+  "enable-arrows-always" gboolean             : Read / Write / NoSet / NoWrap
+  "value-in-list"        gboolean             : Read / Write
+}
+
+class Statusbar : Box {}
+
+class Clist "GtkCList" set wrap abstract : Container {
+  "n-columns"            guint                : Read / Write / Construct Only
+  "sort-type"            GtkSortType          : Read / Write
+  "reorderable"          gboolean             : Read / Write
+  "row-height"           guint                : Read / Write
+  "selection-mode"       GtkSelectionMode     : Read / Write
+  "shadow-type"          GtkShadowType        : Read / Write
+  "titles-active"        gboolean             : Read / Write
+  "use-drag-icons"       gboolean             : Read / Write
+}
+
+class Fixed : Container {}
+
+class Paned hv : Container {
+  "position"             gint                 : Read / Write
+  "position-set"         gboolean             : Read / Write
+}
+
+class Layout set : Container {
+  "hadjustment"          GtkAdjustment        : Read / Write
+  "height"               guint                : Read / Write
+  "vadjustment"          GtkAdjustment        : Read / Write
+  "width"                guint                : Read / Write
+}
+
+class List set wrap : Container {
+  "selection-mode"       GtkSelectionMode     : Read / Write
+}
+
+class MenuShell abstract : Container {}
+class MenuBar : MenuShell {}
+class Menu : MenuShell {
+  "tearoff-title"        gchararray           : Read / Write
+}
+
+class Notebook set wrap : Container {
+  "enable-popup"         gboolean             : Read / Write
+  "homogeneous"(homogeneous_tabs) gboolean    : Read / Write
+  "page"                 gint                 : Read / Write / NoSet / NoWrap
+  "scrollable"           gboolean             : Read / Write
+  "show-border"          gboolean             : Read / Write
+  "show-tabs"            gboolean             : Read / Write
+  "tab-border"           guint                : Write
+  "tab-hborder"          guint                : Read / Write / NoSet
+  "tab-pos"              GtkPositionType      : Read / Write
+  "tab-vborder"          guint                : Read / Write / NoSet
+}
+
+class Socket : Container {}
+
+class Table set wrap :Container {
+  "n-columns"(columns)   guint                : Read / Write
+  "n-rows"(rows)         guint                : Read / Write
+  "homogeneous"          gboolean             : Read / Write
+  "row-spacing"(row_spacings) guint           : Read / Write
+  "column-spacing"(col_spacings) guint        : Read / Write
+}
+
+class TextView : Container {
+  "editable"             gboolean             : Read / Write / Set
+  "cursor-visible"       gboolean             : Read / Write / Set
+  "indent"               gint                 : Read / Write
+  "justification"        GtkJustification     : Read / Write / Set
+  "left-margin"          gint                 : Read / Write
+  "pixels-above-lines"   gint                 : Read / Write
+  "pixels-below-lines"   gint                 : Read / Write
+  "pixels-inside-wrap"   gint                 : Read / Write
+  "right-margin"         gint                 : Read / Write
+  "tabs"                 PangoTabArray        : Read / Write
+  "wrap-mode"            GtkWrapMode          : Read / Write / Set
+}
+
+class Toolbar set : Container {
+  "orientation"          GtkOrientation       : Read / Write
+  "toolbar-style"        GtkToolbarStyle      : Read / Write
+}
+
+class Tree : Container {}
+
+class TreeView set wrap : Container {
+  "model"                GtkTreeModel_opt     : Read / Write / NoWrap
+  "hadjustment"          GtkAdjustment        : Read / Write
+  "vadjustment"          GtkAdjustment        : Read / Write
+  "enable-search"        gboolean             : Read / Write
+  "expander-column"      GtkTreeViewColumn_opt: Read / Write / NoSet / NoWrap
+  "headers-clickable"    gboolean             : Write
+  "headers-visible"      gboolean             : Read / Write
+  "reorderable"          gboolean             : Read / Write
+  "rules-hint"           gboolean             : Read / Write
+  "search-column"        gint                 : Read / Write
+}
+
+class Calendar : Widget {}
+class DrawingArea : Widget {}
+
+(*
+class Curve {
+  "curve-type"           GtkCurveType         : Read / Write
+  "max-x"                gfloat               : Read / Write
+  "max-y"                gfloat               : Read / Write
+  "min-x"                gfloat               : Read / Write
+  "min-y"                gfloat               : Read / Write
+}
+*)
+
+class Editable abstract : Widget {} (* actually an interface *)
+
+class Entry set wrap : Editable {
+  "text"                 gchararray           : Read / Write
+  "visibility"           gboolean             : Read / Write
+  "max-length"           gint                 : Read / Write
+  "activates-default"    gboolean             : Read / Write
+  "cursor-position"      gint                 : Read / NoWrap
+  "editable"             gboolean             : Read / Write
+  "has-frame"            gboolean             : Read / Write
+  "invisible-char"       guint                : Read / Write / NoSet
+  "scroll-offset"        gint                 : Read
+  "selection-bound"      gint                 : Read / NoWrap
+  "width-chars"          gint                 : Read / Write
+}
+
+class SpinButton set wrap : Entry {
+  "adjustment"           GtkAdjustment        : Read / Write
+  "climb-rate"(rate)     gdouble              : Read / Write
+  "digits"               guint                : Read / Write
+  "numeric"              gboolean             : Read / Write
+  "snap-to-ticks"        gboolean             : Read / Write
+  "update-policy"        GtkSpinButtonUpdatePolicy : Read / Write
+  "value"                gdouble              : Read / Write
+  "wrap"                 gboolean             : Read / Write
+}
+
+class Ruler hv set wrap : Widget {
+  "lower"                gdouble              : Read / Write
+  "upper"                gdouble              : Read / Write
+  "max-size"             gdouble              : Read / Write
+  "position"             gdouble              : Read / Write
+}
+
+class Range abstract set wrap : Widget {
+  "adjustment"           GtkAdjustment        : Read / Write / Construct
+  "inverted"             gboolean             : Read / Write
+  "update-policy"        GtkUpdateType        : Read / Write
+}
+
+class Scale hv set wrap : Range {
+  "digits"               gint                 : Read / Write
+  "draw-value"           gboolean             : Read / Write
+  "value-pos"            GtkPositionType      : Read / Write
+}
+
+class Scrollbar hv : Range {}
+
+class Separator hv : Widget {}
+
+class Invisible : Widget {
+  "screen"               GdkScreen            : Read / Write
+}
+
+class Preview wrap : Widget {
+  "expand"               gboolean             : Read / Write
+}
+
+(* deprecated
+class Progress abstract : Widget {
+  "activity-mode"        gboolean             : Read / Write
+  "show-text"            gboolean             : Read / Write
+  "text-xalign"          gfloat               : Read / Write / NoSet
+  "text-yalign"          gfloat               : Read / Write / NoSet
+} *)
+
+class ProgressBar : Widget {
+  "adjustment"           GtkAdjustment        : Read / Write / Wrap
+  "orientation"          GtkProgressBarOrientation : Read / Write / Set / Wrap
+  "activity-blocks"      guint                : Read / Write 
+  "activity-step"        guint                : Read / Write
+  "bar-style"            GtkProgressBarStyle  : Read / Write
+  "discrete-blocks"      guint                : Read / Write
+  "fraction"             gdouble              : Read / Write / Wrap
+  "pulse-step"           gdouble              : Read / Write / Set / Wrap
+  "text"                 gchararray           : Read / Write / Wrap
+}
+
+class Adjustment : Object {}
+
+class CellRenderer : Object {
+  "cell-background"      gchararray           : Write
+  "cell-background-gdk"  GdkColor             : Read / Write
+  "cell-background-set"  gboolean             : Read / Write
+  "height"               gint                 : Read / Write
+  "is-expanded"          gboolean             : Read / Write
+  "is-expander"          gboolean             : Read / Write
+  "mode"                 GtkCellRendererMode  : Read / Write
+  "visible"              gboolean             : Read / Write
+  "width"                gint                 : Read / Write
+  "xalign"               gfloat               : Read / Write
+  "xpad"                 guint                : Read / Write
+  "yalign"               gfloat               : Read / Write
+  "ypad"                 guint                : Read / Write
+}
+
+class CellRendererPixbuf : CellRenderer {
+  "pixbuf"               GdkPixbuf            : Read / Write
+  "pixbuf-expander-closed" GdkPixbuf            : Read / Write
+  "pixbuf-expander-open" GdkPixbuf            : Read / Write
+  "stock-detail"         gchararray           : Read / Write
+  "stock-id"             gchararray           : Read / Write
+  "stock-size"           GtkIconSize          : Read / Write
+}
+
+class CellRendererText : CellRenderer {
+  "attributes"           PangoAttrList        : Read / Write
+  "background"           gchararray           : Write
+  "background-gdk"       GdkColor             : Read / Write
+  "background-set"       gboolean             : Read / Write
+  "editable"             gboolean             : Read / Write
+  "editable-set"         gboolean             : Read / Write
+  "family"               gchararray           : Read / Write
+  "family-set"           gboolean             : Read / Write
+  "font"                 gchararray           : Read / Write
+  "font-desc"            PangoFontDescription : Read / Write
+  "foreground"           gchararray           : Write
+  "foreground-gdk"       GdkColor             : Read / Write
+  "foreground-set"       gboolean             : Read / Write
+  "markup"               gchararray           : Write
+  "rise"                 gint                 : Read / Write
+  "rise-set"             gboolean             : Read / Write
+  "scale"                gdouble              : Read / Write
+  "scale-set"            gboolean             : Read / Write
+  "size"                 gint                 : Read / Write
+  "size-points"          gdouble              : Read / Write
+  "size-set"             gboolean             : Read / Write
+  "stretch"              PangoStretch         : Read / Write
+  "stretch-set"          gboolean             : Read / Write
+  "strikethrough"        gboolean             : Read / Write
+  "strikethrough-set"    gboolean             : Read / Write
+  "style"                PangoStyle           : Read / Write
+  "style-set"            gboolean             : Read / Write
+  "text"                 gchararray           : Read / Write
+  "underline"            PangoUnderline       : Read / Write
+  "underline-set"        gboolean             : Read / Write
+  "variant"              PangoVariant         : Read / Write
+  "variant-set"          gboolean             : Read / Write
+  "weight"               gint                 : Read / Write
+  "weight-set"           gboolean             : Read / Write
+}
+
+class CellRendererToggle : CellRenderer {
+  "activatable"          gboolean             : Read / Write
+  "active"               gboolean             : Read / Write
+  "inconsistent"         gboolean             : Read / Write
+  "radio"                gboolean             : Read / Write
+}
+
+class Tooltips : Object {}
+
+class TreeViewColumn wrap : Object {
+  "alignment"            gfloat               : Read / Write
+  "clickable"            gboolean             : Read / Write
+  "fixed-width"          gint                 : Read / Write
+  "max-width"            gint                 : Read / Write
+  "min-width"            gint                 : Read / Write
+  "reorderable"          gboolean             : Read / Write
+  "resizable"            gboolean             : Read / Write
+  "sizing"               GtkTreeViewColumnSizing : Read / Write
+  "sort-indicator"       gboolean             : Read / Write
+  "sort-order"           GtkSortType          : Read / Write
+  "title"                gchararray           : Read / Write 
+  "visible"              gboolean             : Read / Write
+  "widget"               GtkWidget_opt        : Read / Write
+  "width"                gint                 : Read
 }

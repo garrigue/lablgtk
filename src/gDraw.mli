@@ -3,23 +3,23 @@
 open Gdk
 
 type color =
-  [ `COLOR of Color.t
+  [ `COLOR of Gdk.color
   | `WHITE
   | `BLACK
   | `NAME of string
   | `RGB of int * int * int]
 
-val color : ?colormap:colormap -> color -> Color.t
+val color : ?colormap:colormap -> color -> Gdk.color
 
 type optcolor =
-  [ `COLOR of Color.t
+  [ `COLOR of Gdk.color
   | `WHITE
   | `BLACK
   | `NAME of string
   | `RGB of int * int * int
   | `DEFAULT ]
 
-val optcolor : ?colormap:colormap -> optcolor -> Color.t option
+val optcolor : ?colormap:colormap -> optcolor -> Gdk.color option
 
 class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
   object
@@ -31,7 +31,7 @@ class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
       width:int ->
       height:int ->
       ?filled:bool -> ?start:float -> ?angle:float -> unit -> unit
-    method color : color -> Color.t
+    method color : color -> Gdk.color
     method depth : int
     method gc_values : GC.values
     method line : x:int -> y:int -> x:int -> y:int -> unit

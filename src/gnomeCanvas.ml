@@ -194,20 +194,10 @@ module RichText =
 external cut_clipboard : [> richtext] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_cut_clipboard"
 external copy_clipboard : [> richtext] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_copy_clipboard"
 external paste_clipboard : [> richtext] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_paste_clipboard"
-external get_buffer : [> richtext] Gobject.obj -> Gtk.textbuffer = "ml_gnome_canvas_rich_text_get_buffer"
+external get_buffer : [> richtext] Gobject.obj -> Gtk.text_buffer = "ml_gnome_canvas_rich_text_get_buffer"
 end
 
 (* Conversion  functions for properties *)
-open Gpointer
-external get_tables : unit ->
-  Gtk.Tags.anchor_type variant_table
-  * Gdk.GC.gdkCapStyle variant_table
-  * Gdk.GC.gdkJoinStyle variant_table
-  * Gtk.Tags.justification variant_table
-  * Gdk.GC.gdkLineStyle variant_table
-  = "ml_gnome_canvas_get_tables"
-let anchor_type, gdkCapStyle, gdkJoinStyle, justification, gdkLineStyle =
-  get_tables ()
 external convert_points : float array -> Gpointer.boxed
   = "ml_gnome_canvas_convert_points"
 external convert_dash : float -> float array -> Gpointer.boxed

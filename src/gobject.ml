@@ -196,8 +196,13 @@ module Data = struct
     { kind = `POINTER;
       proj = (function `POINTER c -> c | _ -> failwith "Gobject.get_pointer");
       inj = (fun c -> `POINTER c) }
-  let magic : 'a option -> 'b option = Obj.magic
   let unsafe_pointer =
+    { kind = `POINTER;
+      proj = (function `POINTER (Some c) -> Obj.magic c
+             | _ -> failwith "Gobject.get_pointer");
+      inj = (fun c -> `POINTER (Some (Obj.magic c))) }
+  let magic : 'a option -> 'b option = Obj.magic
+  let unsafe_pointer_option =
     { kind = `POINTER;
       proj = (function `POINTER c -> magic c
              | _ -> failwith "Gobject.get_pointer");
@@ -264,8 +269,6 @@ module Property = struct
     = "ml_g_object_get_property_dyn"
   let set (obj : 'a obj) (prop : ('a,_) property) x =
     set_dyn obj prop.name (prop.conv.inj x)
-  let set_params obj params =
-    List.iter params ~f:(fun (prop,arg) -> set_dyn obj prop arg)
   let get (obj : 'a obj) (prop : ('a,_) property) =
     prop.conv.proj (get_dyn obj prop.name)
   let get_some obj prop =
@@ -295,3 +298,8 @@ module Property = struct
   let may_cons_opt prop x l =
     match x with Some _ -> param prop x :: l | None -> l
 end
+
+let set o p x = Property.set p o x
+let get o p = Property.get p o
+let set_params obj params =
+  List.iter params ~f:(fun (prop,arg) -> Property.set_dyn obj prop arg)

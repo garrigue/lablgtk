@@ -15,6 +15,22 @@
 #include "ml_gtk.h"
 #include "gtk_tags.h"
 
+/* Init all */
+
+CAMLprim value ml_gtkmenu_init(value unit)
+{
+    /* Since these are declared const, must force gcc to call them! */
+    GType t =
+        gtk_menu_item_get_type() +
+        gtk_image_menu_item_get_type() +
+        gtk_check_menu_item_get_type() +
+        gtk_radio_menu_item_get_type() +
+        gtk_option_menu_get_type() +
+        gtk_menu_bar_get_type() +
+        gtk_menu_get_type();
+    return Val_GType(t);
+}
+
 /* gtkmenuitem.h */
 
 #define GtkMenuItem_val(val) check_cast(GTK_MENU_ITEM,val)
@@ -98,9 +114,11 @@ ML_2 (gtk_radio_menu_item_set_group, GtkRadioMenuItem_val,
 /* gtkoptionmenu.h */
 
 #define GtkOptionMenu_val(val) check_cast(GTK_OPTION_MENU,val)
+/*
 ML_0 (gtk_option_menu_new, Val_GtkWidget_sink)
 ML_1 (gtk_option_menu_get_menu, GtkOptionMenu_val, Val_GtkWidget_sink)
 ML_2 (gtk_option_menu_set_menu, GtkOptionMenu_val, GtkWidget_val, Unit)
+*/
 ML_1 (gtk_option_menu_remove_menu, GtkOptionMenu_val, Unit)
 ML_2 (gtk_option_menu_set_history, GtkOptionMenu_val, Int_val, Unit)
 
@@ -133,6 +151,7 @@ ML_1 (gtk_menu_get_attach_widget, GtkMenu_val, Val_GtkWidget)
 ML_1 (gtk_menu_detach, GtkMenu_val, Unit)
 
 /* gtkmenubar.h */
-
+/*
 #define GtkMenuBar_val(val) check_cast(GTK_MENU_BAR,val)
 ML_0 (gtk_menu_bar_new, Val_GtkWidget_sink)
+*/

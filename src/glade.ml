@@ -61,7 +61,8 @@ let _ = List.iter ~f:(fun (name,h) -> add_handler ~name h)
       "gtk_widget_show", `Object ("GtkWidget", Widget.cast $ Widget.show);
       "gtk_widget_hide", `Object ("GtkWidget", Widget.cast $ Widget.hide);
       "gtk_widget_grab_focus",
-      `Object ("GtkWidget", Widget.cast $ Widget.grab_focus);
+      `Object ("GtkWidget",
+               Widget.cast $ fun w -> set Widget.P.has_focus w true);
       "gtk_window_activate_default",
       `Object ("GtkWindow", fun w -> ignore (GtkWindow.Window.activate_default
                                                (GtkWindow.Window.cast w)));

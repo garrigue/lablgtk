@@ -1,10 +1,11 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gdk
 
 type color = [
-  | `COLOR of Color.t
+  | `COLOR of Gdk.color
   | `WHITE
   | `BLACK
   | `NAME of string
@@ -18,8 +19,14 @@ let color ?(colormap = default_colormap ()) (c : color) =
   | `COLOR col -> col
   | #Gdk.Color.spec as def -> Color.alloc ~colormap def
 
+let conv_color : color data_conv =
+  { kind = `POINTER;
+    proj = (function `POINTER (Some c) -> `COLOR (Obj.magic c)
+           | _ -> failwith "GDraw.get_color");
+    inj = (fun c -> `POINTER (Some (Obj.magic (color c : Gdk.color)))) }
+
 type optcolor = [
-  | `COLOR of Color.t
+  | `COLOR of Gdk.color
   | `WHITE
   | `BLACK
   | `NAME of string
@@ -32,8 +39,14 @@ let optcolor ?colormap (c : optcolor) =
   | `DEFAULT -> None
   | #color as c -> Some (color ?colormap c)
 
-class drawable ?(colormap = default_colormap ()) w =
-object (self)
+let conv_optcolor : optcolor data_conv =
+  { kind = `POINTER;
+    proj = (function `POINTER (Some c) -> `COLOR (Obj.magic c)
+           | `POINTER None -> `DEFAULT
+           | _ -> failwith "GDraw.get_color");
+    inj = (fun c -> `POINTER (Obj.magic (optcolor c : Gdk.color option))) }
+
+class drawable ?(colormap = default_colormap ()) w = object (self)
   val colormap = colormap
   val gc = GC.create w
   val w = w

@@ -37,9 +37,7 @@ val button :
   ?label:string ->
   ?use_mnemonic:bool ->
   ?stock:GtkStock.id ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
+  ?relief:Tags.relief_style ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> button
 
 class toggle_button_signals : 'b obj ->
@@ -64,20 +62,18 @@ class toggle_button :
 val toggle_button :
   ?label:string ->
   ?use_mnemonic:bool ->
+  ?stock:GtkStock.id ->
+  ?relief:Tags.relief_style ->
   ?active:bool ->
   ?draw_indicator:bool ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> toggle_button
 val check_button :
   ?label:string ->
   ?use_mnemonic:bool ->
+  ?stock:GtkStock.id ->
+  ?relief:Tags.relief_style ->
   ?active:bool ->
   ?draw_indicator:bool ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> toggle_button
 
 class radio_button :
@@ -92,11 +88,10 @@ val radio_button :
   ?group:Gtk.radio_button group ->
   ?label:string ->
   ?use_mnemonic:bool ->
+  ?stock:GtkStock.id ->
+  ?relief:Tags.relief_style ->
   ?active:bool ->
   ?draw_indicator:bool ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> radio_button
 
 class toolbar :

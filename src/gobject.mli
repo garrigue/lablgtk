@@ -74,12 +74,16 @@ val try_cast : 'a obj -> string -> 'b obj
 val coerce : 'a -> [ `base ] obj
 val get_oid : 'a obj -> int
 
-type 'a param
+type +'a param
 val dyn_param : string -> 'a data_set -> 'b param
 val param : ('a,'b) property -> 'b -> 'a param
 
 val make : classe:string -> 'a param list -> 'a obj
     (* This type is NOT safe *)
+
+val set : ('a, 'b) property -> 'a obj -> 'b -> unit
+val get : ('a, 'b) property -> 'a obj -> 'b
+val set_params : 'a obj -> 'a param list -> unit
 
 module Type :
   sig
@@ -151,7 +155,8 @@ module Data :
     val string : string data_conv
     val string_option : string option data_conv
     val pointer : Gpointer.boxed option data_conv
-    val unsafe_pointer : 'a option data_conv
+    val unsafe_pointer : 'a data_conv
+    val unsafe_pointer_option : 'a option data_conv
     val boxed : Gpointer.boxed option data_conv
     val gobject : 'a obj data_conv
     val gobject_option : 'a obj option data_conv
@@ -170,7 +175,6 @@ module Property :
     val set_dyn : 'a obj -> string -> 'b data_set -> unit
     val get_dyn : 'a obj -> string -> data_get
     val set : 'a obj -> ('a, 'b) property -> 'b -> unit
-    val set_params : 'a obj -> 'a param list -> unit
     val get : 'a obj -> ('a, 'b) property -> 'b
     val get_some : 'a obj -> ('a, 'b option) property -> 'b
     val check : 'a obj -> ('a, 'b) property -> unit

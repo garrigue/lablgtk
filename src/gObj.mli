@@ -27,6 +27,11 @@ class gobject_signals : ?after:bool -> 'a ->
 
 (* GtkObject *)
 
+class type ['a] objvar = object
+  val obj : 'a obj
+  method private obj : 'a obj
+end
+
 class gtkobj : ([> `gtk] as 'a) obj ->
   object
     val obj : 'a obj
@@ -94,15 +99,15 @@ class style : Gtk.style ->
   object ('a)
     val style : Gtk.style
     method as_style : Gtk.style
-    method base : Gtk.Tags.state_type -> Gdk.Color.t
-    method bg : Gtk.Tags.state_type -> Gdk.Color.t
+    method base : Gtk.Tags.state_type -> Gdk.color
+    method bg : Gtk.Tags.state_type -> Gdk.color
     method colormap : Gdk.colormap
     method copy : 'a
-    method dark : Gtk.Tags.state_type -> Gdk.Color.t
-    method fg : Gtk.Tags.state_type -> Gdk.Color.t
+    method dark : Gtk.Tags.state_type -> Gdk.color
+    method fg : Gtk.Tags.state_type -> Gdk.color
     method font : Gdk.font
-    method light : Gtk.Tags.state_type -> Gdk.Color.t
-    method mid : Gtk.Tags.state_type -> Gdk.Color.t
+    method light : Gtk.Tags.state_type -> Gdk.color
+    method mid : Gtk.Tags.state_type -> Gdk.color
     method set_bg : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method set_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method set_dark : (Gtk.Tags.state_type * GDraw.color) list -> unit
@@ -111,7 +116,7 @@ class style : Gtk.style ->
     method set_light : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method set_mid : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method set_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
-    method text : Gtk.Tags.state_type -> Gdk.Color.t
+    method text : Gtk.Tags.state_type -> Gdk.color
   end
 
 class selection_data :
@@ -201,7 +206,6 @@ and misc_ops : Gtk.widget obj ->
     method set_size_chars :
       ?desc:Pango.font_description ->
       ?lang:string -> ?width:int -> ?height:int -> unit -> unit
-    method set_size_request : width:int -> height:int -> unit
     method set_state : Tags.state_type -> unit
     method set_style : style -> unit
     method set_geometry :
@@ -219,8 +223,7 @@ and misc_ops : Gtk.widget obj ->
     method window : Gdk.window
   end
 
-and widget :
-  ([> Gtk.widget] as 'a) obj ->
+and widget : ([> Gtk.widget] as 'a) obj ->
   object
     inherit gtkobj
     val obj : 'a obj
@@ -302,10 +305,15 @@ class widget_signals : 'a obj ->
     val obj : 'a obj
   end
 
-class widget_full : 'a obj ->
+class ['a] widget_impl : ([> Gtk.widget] as 'a) obj ->
   object
     inherit widget
-    constraint 'a = [> Gtk.widget]
+    inherit ['a] objvar
+  end
+
+class widget_full : ([> Gtk.widget] as 'a) obj ->
+  object
+    inherit widget
     val obj : 'a obj
     method connect : widget_signals
   end
@@ -316,3 +324,6 @@ val pack_return :
     (#widget as 'a) ->
     packing:(widget -> unit) option -> show:bool option -> 'a
     (* To use in initializers to provide a ?packing: option *)
+
+val conv_widget : widget Gobject.data_conv
+val conv_widget_option : widget option Gobject.data_conv

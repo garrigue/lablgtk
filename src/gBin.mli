@@ -9,15 +9,18 @@ class scrolled_window : Gtk.scrolled_window obj ->
     inherit container_full
     val obj : Gtk.scrolled_window obj
     method add_with_viewport : widget -> unit
-    method hadjustment : GData.adjustment
     method set_hadjustment : GData.adjustment -> unit
     method set_hpolicy : Tags.policy_type -> unit
     method set_placement : Tags.corner_type -> unit
     method set_shadow_type : Tags.shadow_type -> unit
     method set_vadjustment : GData.adjustment -> unit
     method set_vpolicy : Tags.policy_type -> unit
+    method hadjustment : GData.adjustment
     method shadow_type : Gtk.Tags.shadow_type
+    method hpolicy : Tags.policy_type
+    method placement : Tags.corner_type
     method vadjustment : GData.adjustment
+    method vpolicy : Tags.policy_type
   end
 val scrolled_window :
   ?hadjustment:GData.adjustment ->
@@ -38,6 +41,9 @@ class event_box : Gtk.event_box obj ->
     method event : event_ops
   end
 val event_box :
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> event_box
 
 class handle_box_signals : 'a obj ->
@@ -58,6 +64,9 @@ class handle_box : Gtk.handle_box obj ->
     method set_handle_position : Tags.position -> unit
     method set_shadow_type : Tags.shadow_type -> unit
     method set_snap_edge : Tags.position -> unit
+    method handle_position : Tags.position
+    method shadow_type : Tags.shadow_type
+    method snap_edge : Tags.position
   end
 val handle_box :
   ?handle_position:Tags.position ->
@@ -78,6 +87,11 @@ class frame_skel : 'a obj ->
     method set_label_xalign : float -> unit
     method set_label_yalign : float -> unit
     method set_shadow_type : Tags.shadow_type -> unit
+    method label : string option
+    method label_widget : GObj.widget option
+    method label_xalign : float
+    method label_yalign : float
+    method shadow_type : Tags.shadow_type
   end
 class frame : Gtk.frame obj ->
   object
@@ -99,16 +113,21 @@ class aspect_frame : Gtk.aspect_frame obj ->
   object
     inherit frame
     val obj : Gtk.aspect_frame obj
-    method set_alignment : ?x:clampf -> ?y:clampf -> unit -> unit
     method set_obey_child : bool -> unit
-    method set_ratio : clampf -> unit
+    method set_ratio : float -> unit
+    method set_xalign : float -> unit
+    method set_yalign : float -> unit
+    method obey_child : bool
+    method ratio : float
+    method xalign : float
+    method yalign : float
   end
 val aspect_frame :
-  ?label:string ->
+  ?obey_child:bool ->
+  ?ratio:float ->
   ?xalign:clampf ->
   ?yalign:clampf ->
-  ?ratio:float ->
-  ?obey_child:bool ->
+  ?label:string ->
   ?label_xalign:clampf ->
   ?label_yalign:clampf ->
   ?shadow_type:Tags.shadow_type ->
@@ -122,10 +141,11 @@ class viewport : Gtk.viewport obj ->
     inherit container_full
     val obj : Gtk.viewport obj
     method event : event_ops
-    method hadjustment : GData.adjustment
     method set_hadjustment : GData.adjustment -> unit
-    method set_shadow_type : Gtk.Tags.shadow_type -> unit
+    method set_shadow_type : Tags.shadow_type -> unit
     method set_vadjustment : GData.adjustment -> unit
+    method hadjustment : GData.adjustment
+    method shadow_type : Tags.shadow_type
     method vadjustment : GData.adjustment
   end
 val viewport :
@@ -141,24 +161,39 @@ class alignment : Gtk.alignment obj ->
   object
     inherit container_full
     val obj : Gtk.alignment obj
-    method set_alignment : ?x:Gtk.clampf -> ?y:Gtk.clampf -> unit -> unit
-    method set_scale : ?x:Gtk.clampf -> ?y:Gtk.clampf -> unit -> unit
+    method set_xalign : Gtk.clampf -> unit
+    method set_yalign : Gtk.clampf -> unit
+    method set_xscale : Gtk.clampf -> unit
+    method set_yscale : Gtk.clampf -> unit
+    method xalign : Gtk.clampf
+    method yalign : Gtk.clampf
+    method xscale : Gtk.clampf
+    method yscale : Gtk.clampf
   end
 val alignment :
-  ?x:Gtk.clampf ->
-  ?y:Gtk.clampf ->
+  ?xalign:Gtk.clampf ->
+  ?yalign:Gtk.clampf ->
   ?xscale:Gtk.clampf ->
   ?yscale:Gtk.clampf ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> alignment
-val alignment_cast : < as_widget : 'a obj; .. > -> alignment
+val alignment_cast : #widget -> alignment
+
+class socket_signals : ([>Gtk.socket] as 'a) obj ->
+  object
+    inherit container_signals
+    val obj : 'a obj
+    method plug_added : callback:(unit -> unit) -> GtkSignal.id
+    method plug_removed : callback:(unit -> unit) -> GtkSignal.id
+  end
 
 class socket : Gtk.socket obj ->
   object
-    inherit container_full
+    inherit container
     val obj : Gtk.socket obj
+    method connect : socket_signals
     method steal : Gdk.xid -> unit
     method xwindow : Gdk.xid
   end

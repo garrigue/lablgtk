@@ -61,9 +61,6 @@ and tree : Gtk.tree obj ->
 
 val tree_item :
   ?label:string ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(tree_item -> unit) -> ?show:bool -> unit -> tree_item
 
 val tree :
@@ -201,25 +198,42 @@ class view_column : tree_view_column obj ->
   object
     inherit gtkobj
     val obj : tree_view_column obj
-    method as_column : tree_view_column obj
+    method as_column : Gtk.tree_view_column Gtk.obj
+    method misc : GObj.gobject_ops
+    method add_attribute :
+      [> `cellrenderer ] obj -> string -> 'a column -> unit
+    method alignment : float
+    method clickable : bool
     method connect : view_column_signals
-    method misc : gobject_ops
-    method add_attribute : [>`cellrenderer] obj -> string -> 'a column -> unit
+    method fixed_width : int
+    method max_width : int
+    method min_width : int
     method pack :
-      ?expand:bool -> ?from:[ `END | `START] -> [>`cellrenderer] obj -> unit
-    method set_sort_column_id : int -> unit
+      ?expand:bool ->
+      ?from:[ `END | `START ] -> [> `cellrenderer ] obj -> unit
+    method reorderable : bool
+    method resizable : bool
     method set_alignment : float -> unit
     method set_clickable : bool -> unit
     method set_fixed_width : int -> unit
     method set_max_width : int -> unit
+    method set_min_width : int -> unit
     method set_reorderable : bool -> unit
-    method set_sizing : Gtk.Tags.tree_view_column_sizing -> unit
+    method set_resizable : bool -> unit
+    method set_sizing : Tags.tree_view_column_sizing -> unit
+    method set_sort_column_id : int -> unit
     method set_sort_indicator : bool -> unit
+    method set_sort_order : Tags.sort_type -> unit
     method set_title : string -> unit
     method set_visible : bool -> unit
-    method set_widget : Gtk.widget Gobject.obj option -> unit
-    method set_width : int -> unit
-    method set_sort_order : Gtk.Tags.sort_type -> unit
+    method set_widget : widget option -> unit
+    method sizing : Tags.tree_view_column_sizing
+    method sort_indicator : bool
+    method sort_order : Tags.sort_type
+    method title : string
+    method visible : bool
+    method widget : widget option
+    method width : int
   end
 val view_column :
   ?title:string ->
@@ -258,10 +272,10 @@ class view_signals : ([> tree_view] as 'b) obj ->
     method unselect_all : callback:(unit -> bool) -> GtkSignal.id
   end
 
-class view : ([> tree_view] as 'a) obj ->
+class view : tree_view obj ->
   object
     inherit GContainer.container
-    val obj : 'a obj
+    val obj : tree_view obj
     method connect : view_signals
     method append_column : view_column -> int
     method collapse_all : unit -> unit
@@ -269,14 +283,14 @@ class view : ([> tree_view] as 'a) obj ->
     method enable_search : bool
     method expand_all : unit -> unit
     method expand_row : ?all:bool -> Gtk.tree_path -> unit
-    method expander_column : view_column
+    method expander_column : view_column option
     method get_column : int -> view_column
 
     method get_cursor :
         unit -> Gtk.tree_path option * Gtk.tree_view_column option
     method get_path_at_pos :
         x:int -> y:int ->
-        (Gtk.tree_path * Gtk.tree_view_column Gtk.obj * (int * int)) option
+        (Gtk.tree_path * Gtk.tree_view_column Gtk.obj * int * int) option
     method hadjustment : GData.adjustment
     method headers_visible : bool
     method insert_column : view_column -> int -> int
@@ -297,18 +311,26 @@ class view : ([> tree_view] as 'a) obj ->
       ?edit:bool -> Gtk.tree_path -> view_column -> unit
     method set_enable_search : bool -> unit
     method set_expander_column : view_column option -> unit
-    method set_hadjustment : GData.adjustment option -> unit
+    method set_hadjustment : GData.adjustment -> unit
     method set_headers_clickable : bool -> unit
     method set_headers_visible : bool -> unit
     method set_model : model option -> unit
     method set_reorderable : bool -> unit
     method set_rules_hint : bool -> unit
     method set_search_column : int -> unit
-    method set_vadjustment : GData.adjustment option -> unit
+    method set_vadjustment : GData.adjustment -> unit
     method vadjustment : GData.adjustment
   end
 val view :
   ?model:#model ->
+  ?hadjustment:GData.adjustment ->
+  ?vadjustment:GData.adjustment ->
+  ?enable_search:bool ->
+  ?headers_clickable:bool ->
+  ?headers_visible:bool ->
+  ?reorderable:bool ->
+  ?rules_hint:bool ->
+  ?search_column:int ->
   ?border_width:int -> ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> view
 

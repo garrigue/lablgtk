@@ -15,10 +15,7 @@ let create_canvas_features window =
   GMisc.label 
     ~text:"Reparent test:  click on the items to switch them between parents" 
     ~packing:vbox#add () ;
-  let align = GBin.alignment 
-      ~x:0.5 ~y:0.5 
-      ~xscale:0. ~yscale:0. 
-      ~packing:vbox#add () in
+  let align = GBin.alignment ~packing:vbox#add () in
   let frame = GBin.frame ~shadow_type:`IN ~packing:align#add () in
 
   let canvas = GnoCanvas.canvas ~width:400 ~height:200 ~packing:frame#add () in

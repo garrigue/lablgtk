@@ -78,19 +78,10 @@ val menu_item :
   ?use_mnemonic:bool ->
   ?label:string ->
   ?right_justified:bool ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
 val tearoff_item :
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
 val separator_item :
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
 
 
@@ -101,19 +92,16 @@ object
   val obj : 'a obj
   method event : event_ops
   method connect : menu_item_signals
-  method image : Gtk.widget
-  method set_image : Gtk.widget -> unit
+  method image : widget
+  method set_image : widget -> unit
 end
 
 val image_menu_item :
-  ?image:Gtk.widget ->
+  ?image:#widget ->
   ?label:string ->
-  ?stock:GtkStock.id ->
   ?use_mnemonic:bool ->
+  ?stock:GtkStock.id ->
   ?right_justified:bool ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> image_menu_item
 
 class check_menu_item_signals : 'a obj ->
@@ -143,9 +131,6 @@ val check_menu_item :
   ?active:bool ->
   ?show_toggle:bool ->
   ?right_justified:bool ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> check_menu_item
 
 class radio_menu_item : Gtk.radio_menu_item obj ->
@@ -162,9 +147,6 @@ val radio_menu_item :
   ?active:bool ->
   ?show_toggle:bool ->
   ?right_justified:bool ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> radio_menu_item
 
 class menu_shell : 'a obj ->
@@ -198,6 +180,7 @@ class option_menu : 'a obj ->
     method set_menu : menu -> unit
   end
 val option_menu :
+  ?menu:#menu ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
@@ -225,7 +208,7 @@ class ['a] factory :
       ?callback:(unit -> unit) ->
       ?submenu:menu -> string -> menu_item
     method add_image_item :
-      ?image:Gtk.widget ->
+      ?image:widget ->
       ?key:Gdk.keysym ->
       ?callback:(unit -> unit) ->
       ?stock:GtkStock.id -> ?label:string -> unit -> image_menu_item

@@ -40,6 +40,21 @@ value Val_GtkWidget_func(gpointer w)
   return (Val_GtkWidget((GtkWidget*)w));
 }
 
+/* Init windows */
+
+CAMLprim value ml_gtkwindow_init(value unit)
+{
+    /* Since these are declared const, must force gcc to call them! */
+    GType t =
+        gtk_message_dialog_get_type() +
+        gtk_input_dialog_get_type() +
+        gtk_color_selection_dialog_get_type() +
+        gtk_file_selection_get_type() +
+        gtk_font_selection_dialog_get_type() +
+        gtk_plug_get_type();
+    return Val_GType(t);
+}
+
 /* gtkobject.h */
 
 #define gtk_object_ref_and_sink(w) (gtk_object_ref(w), gtk_object_sink(w))
@@ -192,26 +207,6 @@ ML_3 (gtk_tooltips_set_colors, GtkTooltips_val,
 
 /* gtkwidget.h */
 
-CAMLprim value ml_gtk_widget_set_can_default (value val, value bool)
-{
-    GtkWidget *w = GtkWidget_val(val);
-    guint32 saved_flags = GTK_WIDGET_FLAGS(w);
-    if (Bool_val(bool)) GTK_WIDGET_SET_FLAGS(w, GTK_CAN_DEFAULT);
-    else GTK_WIDGET_UNSET_FLAGS(w, GTK_CAN_DEFAULT);
-    if (saved_flags != GTK_WIDGET_FLAGS(w))
-	gtk_widget_queue_resize (w);
-    return Val_unit;
-}
-CAMLprim value ml_gtk_widget_set_can_focus (value val, value bool)
-{
-    GtkWidget *w = GtkWidget_val(val);
-    guint32 saved_flags = GTK_WIDGET_FLAGS(w);
-    if (Bool_val(bool)) GTK_WIDGET_SET_FLAGS(w, GTK_CAN_FOCUS);
-    else GTK_WIDGET_UNSET_FLAGS(w, GTK_CAN_FOCUS);
-    if (saved_flags != GTK_WIDGET_FLAGS(w))
-	gtk_widget_queue_resize (w);
-    return Val_unit;
-}
 ML_1 (gtk_widget_unparent, GtkWidget_val, Unit)
 ML_1 (gtk_widget_show, GtkWidget_val, Unit)
 ML_1 (gtk_widget_show_now, GtkWidget_val, Unit)
@@ -242,20 +237,23 @@ CAMLprim value ml_gtk_widget_intersect (value w, value area)
 	return ml_some (Val_copy (inter));
     return Val_unit;
 }
-/* ML_1 (gtk_widget_basic, GtkWidget_val, Val_bool) */
+/* properties
 ML_1 (gtk_widget_grab_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_grab_default, GtkWidget_val, Unit)
 ML_2 (gtk_widget_set_name, GtkWidget_val, String_val, Unit)
 ML_1 (gtk_widget_get_name, GtkWidget_val, Val_string)
-ML_2 (gtk_widget_set_state, GtkWidget_val, State_type_val, Unit)
 ML_2 (gtk_widget_set_sensitive, GtkWidget_val, Bool_val, Unit)
-ML_3 (gtk_widget_set_uposition, GtkWidget_val, Int_val, Int_val, Unit)
-ML_3 (gtk_widget_set_usize, GtkWidget_val, Int_val, Int_val, Unit)
-ML_3 (gtk_widget_set_size_request, GtkWidget_val, Int_val, Int_val, Unit)
-ML_2 (gtk_widget_add_events, GtkWidget_val, Flags_Event_mask_val, Unit)
 ML_2 (gtk_widget_set_events, GtkWidget_val, Flags_Event_mask_val, Unit)
 ML_2 (gtk_widget_set_extension_events, GtkWidget_val, Extension_mode_val,
       Unit)
+ML_2 (gtk_widget_set_style, GtkWidget_val, GtkStyle_val, Unit)
+ML_1 (gtk_widget_get_style, GtkWidget_val, Val_GtkStyle)
+ML_3 (gtk_widget_set_usize, GtkWidget_val, Int_val, Int_val, Unit)
+ML_3 (gtk_widget_set_size_request, GtkWidget_val, Int_val, Int_val, Unit)
+*/
+ML_2 (gtk_widget_set_state, GtkWidget_val, State_type_val, Unit)
+ML_3 (gtk_widget_set_uposition, GtkWidget_val, Int_val, Int_val, Unit)
+ML_2 (gtk_widget_add_events, GtkWidget_val, Flags_Event_mask_val, Unit)
 ML_1 (gtk_widget_get_toplevel, GtkWidget_val, Val_GtkWidget)
 ML_2 (gtk_widget_get_ancestor, GtkWidget_val, Int_val, Val_GtkWidget)
 ML_1 (gtk_widget_get_colormap, GtkWidget_val, Val_GdkColormap)
@@ -271,11 +269,8 @@ CAMLprim value ml_gtk_widget_get_pointer (value w)
     return ret;
 }
 ML_2 (gtk_widget_is_ancestor, GtkWidget_val, GtkWidget_val, Val_bool)
-/* ML_2 (gtk_widget_is_child, GtkWidget_val, GtkWidget_val, Val_bool) */
-ML_2 (gtk_widget_set_style, GtkWidget_val, GtkStyle_val, Unit)
 
 ML_1 (gtk_widget_ensure_style, GtkWidget_val, Unit)
-ML_1 (gtk_widget_get_style, GtkWidget_val, Val_GtkStyle)
 ML_3 (gtk_widget_modify_fg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_bg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_text, GtkWidget_val, State_type_val, GdkColor_val,Unit)
@@ -491,12 +486,14 @@ static void clipboard_clear_func (GtkClipboard *clipboard, gpointer data)
 /* gtkcontainer.h */
 
 #define GtkContainer_val(val) check_cast(GTK_CONTAINER,val)
+/* properties
 ML_2 (gtk_container_set_border_width, GtkContainer_val, Int_val, Unit)
 ML_1 (gtk_container_get_border_width, GtkContainer_val, Val_int)
-ML_2 (gtk_container_add, GtkContainer_val, GtkWidget_val, Unit)
-ML_2 (gtk_container_remove, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_set_resize_mode, GtkContainer_val, Resize_mode_val, Unit)
 ML_1 (gtk_container_get_resize_mode, GtkContainer_val, Val_resize_mode)
+*/
+ML_2 (gtk_container_add, GtkContainer_val, GtkWidget_val, Unit)
+ML_2 (gtk_container_remove, GtkContainer_val, GtkWidget_val, Unit)
 ML_1 (gtk_container_check_resize, GtkContainer_val, Unit)
 static void ml_gtk_simple_callback (GtkWidget *w, gpointer data)
 {
@@ -517,6 +514,12 @@ ML_2 (gtk_container_set_focus_vadjustment, GtkContainer_val,
 ML_2 (gtk_container_set_focus_hadjustment, GtkContainer_val,
       GtkAdjustment_val, Unit)
 
+/* gtkitem.h */
+
+ML_1 (gtk_item_select, GtkItem_val, Unit)
+ML_1 (gtk_item_deselect, GtkItem_val, Unit)
+ML_1 (gtk_item_toggle, GtkItem_val, Unit)
+
 /* gtkdialog.h */
 
 static void window_unref (GtkObject *w)
@@ -534,7 +537,7 @@ Make_Val_final_pointer_ext (GtkObject, _window, gtk_object_ref, window_unref,
 #define Val_GtkWidget_window(w) Val_GtkObject_window(GTK_OBJECT(w))
 
 #define GtkDialog_val(val) check_cast(GTK_DIALOG,val)
-ML_0 (gtk_dialog_new, Val_GtkWidget_window)
+/* ML_0 (gtk_dialog_new, Val_GtkWidget_window) */
 Make_Extractor (GtkDialog, GtkDialog_val, action_area, Val_GtkWidget)
 Make_Extractor (GtkDialog, GtkDialog_val, vbox, Val_GtkWidget)
 ML_2 (gtk_dialog_response, GtkDialog_val, Int_val, Unit)
@@ -546,20 +549,22 @@ ML_1 (gtk_dialog_run, GtkDialog_val, Val_int)
 
 /* gtkinputdialog.h */
 
-ML_0 (gtk_input_dialog_new, Val_GtkWidget_window)
+/* ML_0 (gtk_input_dialog_new, Val_GtkWidget_window) */
 
 /* gtkfileselection.h */
 
 #define GtkFileSelection_val(val) check_cast(GTK_FILE_SELECTION,val)
 ML_1 (gtk_file_selection_new, String_val, Val_GtkWidget_window)
+ML_2 (gtk_file_selection_complete, GtkFileSelection_val, String_val, Unit)
+/* properties
 ML_2 (gtk_file_selection_set_filename, GtkFileSelection_val, String_val, Unit)
 ML_1 (gtk_file_selection_get_filename, GtkFileSelection_val, Val_string)
-ML_2 (gtk_file_selection_complete, GtkFileSelection_val, String_val, Unit)
 ML_1 (gtk_file_selection_show_fileop_buttons, GtkFileSelection_val, Unit)
 ML_1 (gtk_file_selection_hide_fileop_buttons, GtkFileSelection_val, Unit)
 ML_2 (gtk_file_selection_set_select_multiple, GtkFileSelection_val, Bool_val,
       Unit)
 ML_1 (gtk_file_selection_get_select_multiple, GtkFileSelection_val, Val_bool)
+*/
 CAMLprim value ml_gtk_file_selection_get_selections (value sel)
 {
   gchar** selections =
@@ -591,7 +596,7 @@ Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, file_list,
 
 #define GtkWindow_val(val) check_cast(GTK_WINDOW,val)
 ML_1 (gtk_window_new, Window_type_val, Val_GtkWidget_window)
-ML_2 (gtk_window_set_title, GtkWindow_val, String_val, Unit)
+/* ML_2 (gtk_window_set_title, GtkWindow_val, String_val, Unit) */
 ML_3 (gtk_window_set_wmclass, GtkWindow_val, String_val, String_val, Unit)
 Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_name, Val_optstring)
 Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_class, Val_optstring)
@@ -687,21 +692,19 @@ ML_1 (gtk_window_get_role, GtkWindow_val, Val_optstring)
 
 /* gtkmessagedialog.h */
 ML_4 (gtk_message_dialog_new, Option_val(arg1,GtkWindow_val,NULL) Ignore,
-      Insert(0) Message_type_val, Buttons_val,
+      Insert(0) Message_type_val, Buttons_type_val,
       Insert(String_val(arg4)[0] != 0 ? "%s" : NULL) String_val,
       Val_GtkWidget_window)
 
 /* gtkcolorsel.h */
 
+/* useless
 #define GtkColorSelection_val(val) check_cast(GTK_COLOR_SELECTION,val)
-#define GtkColorSelectionDialog_val(val) check_cast(GTK_COLOR_SELECTION_DIALOG,val)
 ML_0 (gtk_color_selection_new, Val_GtkWidget_sink)
 ML_2 (gtk_color_selection_set_update_policy, GtkColorSelection_val,
       Update_type_val, Unit)
-/*
 ML_2 (gtk_color_selection_set_opacity, GtkColorSelection_val,
       Bool_val, Unit)
-*/
 CAMLprim value ml_gtk_color_selection_set_color
          (value w, value red, value green, value blue, value opacity)
 {
@@ -727,6 +730,8 @@ CAMLprim value ml_gtk_color_selection_get_color (value w)
     return ret;
 }
 ML_1 (gtk_color_selection_dialog_new, String_val, Val_GtkWidget_window)
+*/
+#define GtkColorSelectionDialog_val(val) check_cast(GTK_COLOR_SELECTION_DIALOG,val)
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, ok_button, Val_GtkWidget)
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, cancel_button, Val_GtkWidget)
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, help_button, Val_GtkWidget)
@@ -734,6 +739,7 @@ Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, colorse
 
 /* gtkfontsel.h */
 
+/*
 #define GtkFontSelection_val(val) \
    check_cast(GTK_FONT_SELECTION,val)
 ML_0 (gtk_font_selection_new, Val_GtkWidget_sink)
@@ -743,22 +749,21 @@ ML_1 (gtk_font_selection_get_font_name, GtkFontSelection_val,
       copy_string_check)
 ML_2 (gtk_font_selection_set_font_name, GtkFontSelection_val,
       String_val, Val_bool)
-/*
 ML_9 (gtk_font_selection_set_filter, GtkFontSelection_val,
       Font_filter_type_val, Flags_Font_type_val,
       (gchar**), (gchar**), (gchar**),
       (gchar**), (gchar**), (gchar**), Unit)
 ML_bc9 (ml_gtk_font_selection_set_filter)
-*/
 ML_1 (gtk_font_selection_get_preview_text, GtkFontSelection_val,
       copy_string)
 ML_2 (gtk_font_selection_set_preview_text, GtkFontSelection_val,
       String_val, Unit)
+*/
 
 #define GtkFontSelectionDialog_val(val) \
    check_cast(GTK_FONT_SELECTION_DIALOG,val)
-ML_1 (gtk_font_selection_dialog_new, String_option_val, Val_GtkWidget_window)
 /*
+ML_1 (gtk_font_selection_dialog_new, String_option_val, Val_GtkWidget_window)
 ML_1 (gtk_font_selection_dialog_get_font, GtkFontSelectionDialog_val,
       Val_GdkFont)
 ML_1 (gtk_font_selection_dialog_get_font_name, GtkFontSelectionDialog_val,
@@ -790,25 +795,6 @@ Unsupported(gtk_plug_new)
 #else
 ML_1 (gtk_plug_new, XID_val, Val_GtkWidget_window)
 #endif
-
-/* gtkctree.h */
-#define GtkCTree_val(val) check_cast(GTK_CTREE,val)
-/* Beware: this definition axpects arg1 to be a GtkCTree */
-/*
-#define GtkCTreeNode_val(val) \
-     (gtk_ctree_find(GtkCTree_val(arg1),NULL,(GtkCTreeNode*)(val-1)) \
-     ? (GtkCTreeNode*)(val-1) : (ml_raise_gtk ("Bad GtkCTreeNode"), NULL))
-#define Val_GtkCTreeNode Val_addr
-ML_2 (gtk_ctree_new, Int_val, Int_val, Val_GtkWidget_sink)
-ML_3 (gtk_ctree_new_with_titles, Int_val, Int_val, (char **),
-      Val_GtkWidget_sink)
-ML_11 (gtk_ctree_insert_node, GtkCTree_val, GtkCTreeNode_val,
-       GtkCTreeNode_val, (char**), Int_val, GdkPixmap_val, GdkBitmap_val,
-       GdkPixmap_val, GdkBitmap_val, Bool_val, Bool_val,
-       Val_GtkCTreeNode)
-ML_2 (gtk_ctree_remove_node, GtkCTree_val, GtkCTreeNode_val, Unit)
-ML_2 (gtk_ctree_is_viewable, GtkCTree_val, GtkCTreeNode_val, Val_bool)
-*/
 
 /* gtkmain.h */
 

@@ -15,6 +15,22 @@
 #include "ml_gtk.h"
 #include "gtk_tags.h"
 
+/* Init all */
+
+CAMLprim value ml_gtkrange_init(value unit)
+{
+    /* Since these are declared const, must force gcc to call them! */
+    GType t =
+        gtk_progress_bar_get_type() +
+        gtk_hscale_get_type() +
+        gtk_vscale_get_type() +
+        gtk_hscrollbar_get_type() +
+        gtk_vscrollbar_get_type() +
+        gtk_hruler_get_type() +
+        gtk_vruler_get_type();
+    return Val_GType(t);
+}
+
 /* gtkprogress.h */
 /*
 #define GtkProgress_val(val) check_cast(GTK_PROGRESS,val)
@@ -71,17 +87,17 @@ ML_2 (gtk_range_set_adjustment, GtkRange_val, GtkAdjustment_val, Unit)
 ML_2 (gtk_range_set_update_policy, GtkRange_val, Update_type_val, Unit)
 
 /* gtkscale.h */
-
+/*
 #define GtkScale_val(val) check_cast(GTK_SCALE,val)
 ML_2 (gtk_scale_set_digits, GtkScale_val, Int_val, Unit)
 ML_2 (gtk_scale_set_draw_value, GtkScale_val, Bool_val, Unit)
-ML_2 (gtk_scale_set_value_pos, GtkScale_val, Position_val, Unit)
+ML_2 (gtk_scale_set_value_pos, GtkScale_val, Position_type_val, Unit)
 ML_1 (gtk_scale_get_digits, GtkScale_val, Val_int)
 ML_1 (gtk_scale_get_draw_value, GtkScale_val, Val_bool)
 ML_1 (gtk_scale_get_value_pos, GtkScale_val, Val_position)
 ML_1 (gtk_hscale_new, GtkAdjustment_val, Val_GtkWidget_sink)
 ML_1 (gtk_vscale_new, GtkAdjustment_val, Val_GtkWidget_sink)
-
+*/
 /* gtkscrollbar.h */
 
 ML_1 (gtk_hscrollbar_new, GtkAdjustment_val, Val_GtkWidget_sink)

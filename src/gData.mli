@@ -38,6 +38,8 @@ val adjustment :
   ?page_incr:float -> ?page_size:float -> unit -> adjustment
 
 val as_adjustment : adjustment -> Gtk.adjustment obj
+val conv_adjustment : adjustment Gobject.data_conv
+val conv_adjustment_option : adjustment option Gobject.data_conv
 
 class tooltips :
   Gtk.tooltips obj ->

@@ -46,7 +46,7 @@ let setup_text root =
 
 let create_canvas_rich_text window =
   let vbox = GPack.vbox ~spacing:4 ~border_width:4 ~packing:window#add () in
-  let align = GBin.alignment ~x:0.5 ~y:0.5 ~xscale:0. ~yscale:0. ~packing:vbox#pack () in
+  let align = GBin.alignment ~packing:vbox#pack () in
   let frame = GBin.frame ~shadow_type:`IN ~packing:align#add () in
   let canvas = GnoCanvas.canvas ~width:600 ~height:450 ~packing:frame#add () in
   setup_text canvas#root

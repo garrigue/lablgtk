@@ -1,5 +1,9 @@
 $Id$
 
+2003.06.18 [Jacques]
+  * Massive change: generate properties automatically.
+    Probable incompatibilities: inform immediately.
+
 2003.06.17 [Benjamin]
   * Fix Gtk 2.0 compatibility
 

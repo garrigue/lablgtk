@@ -17,9 +17,6 @@ class list_item : Gtk.list_item obj ->
   end
 val list_item :
   ?label:string ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(list_item -> unit) -> ?show:bool -> unit -> list_item
 
 class liste_signals : Gtk.liste obj ->
@@ -42,6 +39,8 @@ class liste : Gtk.liste obj ->
     method select_item : pos:int -> unit
     method unselect_item : pos:int -> unit
     method private wrap : Gtk.widget obj -> list_item
+    method set_selection_mode : Tags.selection_mode -> unit
+    method selection_mode : Tags.selection_mode
   end
 val liste :
   ?selection_mode:Tags.selection_mode ->
@@ -149,40 +148,40 @@ class ['a] clist : Gtk.clist obj ->
   end
 val clist :
   ?columns:int ->
-  ?titles:string list ->
   ?hadjustment:GData.adjustment ->
   ?vadjustment:GData.adjustment ->
-  ?shadow_type:Tags.shadow_type ->
+  ?titles:string list ->
   ?button_actions:(int * Tags.button_action list) list ->
-  ?selection_mode:Tags.selection_mode ->
-  ?reorderable:bool ->
-  ?use_drag_icons:bool ->
-  ?row_height:int ->
   ?titles_show:bool ->
-  ?titles_active:bool ->
   ?auto_sort:bool ->
   ?sort_column:int ->
   ?sort_type:Tags.sort_type ->
+  ?reorderable:bool ->
+  ?row_height:int ->
+  ?selection_mode:Tags.selection_mode ->
+  ?shadow_type:Tags.shadow_type ->
+  ?titles_active:bool ->
+  ?use_drag_icons:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> string clist
 val clist_poly :
   ?columns:int ->
-  ?titles:string list ->
   ?hadjustment:GData.adjustment ->
   ?vadjustment:GData.adjustment ->
-  ?shadow_type:Tags.shadow_type ->
+  ?titles:string list ->
   ?button_actions:(int * Tags.button_action list) list ->
-  ?selection_mode:Tags.selection_mode ->
-  ?reorderable:bool ->
-  ?use_drag_icons:bool ->
-  ?row_height:int ->
   ?titles_show:bool ->
-  ?titles_active:bool ->
   ?auto_sort:bool ->
   ?sort_column:int ->
   ?sort_type:Tags.sort_type ->
+  ?reorderable:bool ->
+  ?row_height:int ->
+  ?selection_mode:Tags.selection_mode ->
+  ?shadow_type:Tags.shadow_type ->
+  ?titles_active:bool ->
+  ?use_drag_icons:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

@@ -23,6 +23,17 @@
 #include "gtk_tags.h"
 #include "gdk_tags.h"
 
+/* Init all */
+
+CAMLprim value ml_gtktext_init(value unit)
+{
+    /* Since these are declared const, must force gcc to call them! */
+    GType t =
+        gtk_text_view_get_type() +
+        gtk_text_buffer_get_type();
+    return Val_GType(t);
+}
+
 #define GtkTextMark_val(val) check_cast(GTK_TEXT_MARK,val)
 #define Val_GtkTextMark(val) (Val_GObject((GObject*)val))
 #define Val_GtkTextMark_new(val) (Val_GObject_new((GObject*)val))

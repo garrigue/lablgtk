@@ -74,7 +74,7 @@ type path_type = "GTK_PATH_"
 type policy_type = "GTK_POLICY_"
   [ `ALWAYS | `AUTOMATIC | `NEVER ]
 
-type position = "GTK_POS_"
+type position_type = "GTK_POS_"
   [ `LEFT | `RIGHT | `TOP | `BOTTOM ]
 
 type preview_type = "GTK_PREVIEW_"
@@ -189,7 +189,7 @@ type cell_renderer_mode = "GTK_CELL_RENDERER_MODE_"
 type message_type = "GTK_MESSAGE_"
   [ `INFO | `WARNING | `QUESTION | `ERROR ]
 
-type buttons = "GTK_BUTTONS_"
+type buttons_type = "GTK_BUTTONS_"
   [ `NONE | `OK | `CLOSE
   | `CANCEL | `YES_NO | `OK_CANCEL ]
 

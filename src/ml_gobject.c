@@ -387,27 +387,31 @@ CAMLprim value ml_g_object_new (value type, value params)
 {
     int i, n;
     value cell = params;
-    GParameter *params_copy, *param;
+    GParameter *params_copy = NULL, *param;
     GObjectClass *class = g_type_class_ref(GType_val(type));
     GParamSpec *pspec;
     GObject *ret;
 
     for (n = 0; cell != Val_unit; cell = Field(cell,1)) n++;
-    params_copy = (GParameter*)calloc(n, sizeof(GParameter));
-    param = params_copy;
-    for (cell = params; cell != Val_unit; cell = Field(cell,1)) {
+    if (n > 0) {
+      params_copy = (GParameter*)calloc(n, sizeof(GParameter));
+      param = params_copy;
+      for (cell = params; cell != Val_unit; cell = Field(cell,1)) {
         param->name = String_val(Field(Field(cell,0),0));
         pspec = g_object_class_find_property (class, param->name);
         if (!pspec) failwith ("Gobject.create");
         g_value_init (&param->value, pspec->value_type);
         g_value_set_variant (&param->value, Field(Field(cell,0),1));
         param++;
+      }
     }
 
     ret = g_object_newv (GType_val(type), n, params_copy);
 
-    for (i=0; i<n; i++) g_value_unset(&params_copy[i].value);
-    free(params_copy);
+    if (n > 0) {
+      for (i=0; i<n; i++) g_value_unset(&params_copy[i].value);
+      free(params_copy);
+    }
     g_type_class_unref(class);
     return Val_GObject_new(ret);
 }

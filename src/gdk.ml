@@ -4,6 +4,7 @@ open StdLabels
 open Gaux
 open Gobject
 
+type color
 type colormap
 type visual
 type screen = [`gdkscreen] obj
@@ -209,13 +210,11 @@ module Image = struct
 end
 
 module Color = struct
-  type t
-
-  external color_white : colormap -> t = "ml_gdk_color_white"
-  external color_black : colormap -> t = "ml_gdk_color_black"
-  external color_parse : string -> t = "ml_gdk_color_parse"
-  external color_alloc : colormap -> t -> bool = "ml_gdk_color_alloc"
-  external color_create : red:int -> green:int -> blue:int -> t
+  external color_white : colormap -> color = "ml_gdk_color_white"
+  external color_black : colormap -> color = "ml_gdk_color_black"
+  external color_parse : string -> color = "ml_gdk_color_parse"
+  external color_alloc : colormap -> color -> bool = "ml_gdk_color_alloc"
+  external color_create : red:int -> green:int -> blue:int -> color
       = "ml_GdkColor"
 
   external get_system_colormap : unit -> colormap
@@ -238,10 +237,10 @@ module Color = struct
     | `RGB (red,green,blue) ->
 	color_alloc ~colormap (color_create ~red ~green ~blue)
 
-  external red : t -> int = "ml_GdkColor_red"
-  external blue : t -> int = "ml_GdkColor_blue"
-  external green : t -> int = "ml_GdkColor_green"
-  external pixel : t -> int = "ml_GdkColor_pixel"
+  external red : color -> int = "ml_GdkColor_red"
+  external blue : color -> int = "ml_GdkColor_blue"
+  external green : color -> int = "ml_GdkColor_green"
+  external pixel : color -> int = "ml_GdkColor_pixel"
 end
 
 module Rectangle = struct
@@ -362,8 +361,8 @@ module GC = struct
   type gdkCapStyle = [ `NOT_LAST|`BUTT|`ROUND|`PROJECTING ]
   type gdkJoinStyle = [ `MITER|`ROUND|`BEVEL ]
   external create : [>`drawable] obj -> gc = "ml_gdk_gc_new"
-  external set_foreground : gc -> Color.t -> unit = "ml_gdk_gc_set_foreground"
-  external set_background : gc -> Color.t -> unit = "ml_gdk_gc_set_background"
+  external set_foreground : gc -> color -> unit = "ml_gdk_gc_set_foreground"
+  external set_background : gc -> color -> unit = "ml_gdk_gc_set_background"
   external set_font : gc -> font -> unit = "ml_gdk_gc_set_font"
   external set_function : gc -> gdkFunction -> unit = "ml_gdk_gc_set_function"
   external set_fill : gc -> gdkFill -> unit = "ml_gdk_gc_set_fill"
@@ -388,8 +387,8 @@ module GC = struct
     "ml_gdk_gc_set_dashes"
   external copy : dst:gc -> gc -> unit = "ml_gdk_gc_copy"
   type values = {
-      foreground : Color.t;
-      background : Color.t;
+      foreground : color;
+      background : color;
       font : font option;
       fonction : gdkFunction;
       fill : gdkFill;
@@ -421,17 +420,17 @@ module Pixmap = struct
     with _ -> failwith "Gdk.Pixmap.create"
   external create_from_data :
       window optboxed -> string -> width:int -> height:int -> depth:int ->
-      fg:Color.t -> bg:Color.t -> pixmap
+      fg:color -> bg:color -> pixmap
       = "ml_gdk_pixmap_create_from_data_bc" "ml_gdk_pixmap_create_from_data"
   let create_from_data ?window ~width ~height ?(depth = -1) ~fg ~bg data =
     try create_from_data (optboxed window) data ~width ~height ~depth ~fg ~bg
     with _ -> failwith "Gdk.Pixmap.create_from_data"
   external create_from_xpm :
-      ?window:window -> ?colormap:colormap -> ?transparent:Color.t ->
+      ?window:window -> ?colormap:colormap -> ?transparent:color ->
       file:string -> unit -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm"
   external create_from_xpm_d :
-      ?window:window -> ?colormap:colormap -> ?transparent:Color.t ->
+      ?window:window -> ?colormap:colormap -> ?transparent:color ->
       data:string array -> unit -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm_d"
 end
@@ -725,7 +724,7 @@ module Cursor = struct
   external create : cursor_type -> cursor = "ml_gdk_cursor_new"
   external create_from_pixmap :
     pixmap -> mask:bitmap ->
-    fg:Color.t -> bg:Color.t -> x:int -> y:int -> cursor
+    fg:color -> bg:color -> x:int -> y:int -> cursor
     = "ml_gdk_cursor_new_from_pixmap_bc" "ml_gdk_cursor_new_from_pixmap"
   external destroy : cursor -> unit = "ml_gdk_cursor_destroy"
 end

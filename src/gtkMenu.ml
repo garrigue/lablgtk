@@ -1,12 +1,16 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gtk
+open GtkProps
 open GtkBase
 
+external _gtkmenu_init : unit -> unit = "ml_gtkmenu_init"
+let () = _gtkmenu_init ()
+
 module MenuItem = struct
-  let cast w : menu_item obj = Object.try_cast w "GtkMenuItem"
-  external create : unit -> menu_item obj = "ml_gtk_menu_item_new"
+  include MenuItem
   external create_with_label : string -> menu_item obj
       = "ml_gtk_menu_item_new_with_label"
   external create_with_mnemonic : string -> menu_item obj
@@ -16,7 +20,7 @@ module MenuItem = struct
   external tearoff_create : unit -> menu_item obj
       = "ml_gtk_tearoff_menu_item_new"
   let create ?(use_mnemonic=false) ?label () =
-    match label with None -> create ()
+    match label with None -> create []
     | Some label -> if use_mnemonic then 
 	create_with_mnemonic label else create_with_label label
   external set_submenu : [>`menuitem] obj -> [>`menu] obj -> unit
@@ -57,8 +61,7 @@ module MenuItem = struct
 end
 
 module ImageMenuItem = struct
-  let cast w : menu_item obj = Object.try_cast w "GtkImageMenuItem"
-  external create : unit -> image_menu_item obj = "ml_gtk_image_menu_item_new"
+  include ImageMenuItem
   external create_with_label : string -> image_menu_item obj
       = "ml_gtk_image_menu_item_new_with_label"
   external create_with_mnemonic : string -> image_menu_item obj
@@ -71,37 +74,25 @@ module ImageMenuItem = struct
     match stock with 
     | None -> 
 	begin match label with
-	| None -> create ()
+	| None -> create []
 	| Some l -> 
 	    if use_mnemonic then create_with_mnemonic l 
 	    else create_with_label l 
 	end
     | Some s -> create_from_stock ?accel_group s
-  external set_image : image_menu_item obj -> widget -> unit = "ml_gtk_image_menu_item_set_image"
-  external get_image : image_menu_item obj -> widget = "ml_gtk_image_menu_item_get_image"
-
 end
 
 module CheckMenuItem = struct
-  let cast w : check_menu_item obj = Object.try_cast w "GtkCheckMenuItem"
-  external create : unit -> check_menu_item obj = "ml_gtk_check_menu_item_new"
+  include CheckMenuItem
   external create_with_label : string -> check_menu_item obj
       = "ml_gtk_check_menu_item_new_with_label"
   let create ?label () =
-    match label with None -> create ()
+    match label with None -> create []
     | Some label -> create_with_label label
-  external set_active : [>`checkmenuitem] obj -> bool -> unit
-      = "ml_gtk_check_menu_item_set_active"
-  external get_active : [>`checkmenuitem] obj -> bool
-      = "ml_gtk_check_menu_item_get_active"
-  external set_inconsistent : [>`checkmenuitem] obj -> bool -> unit
-      = "ml_gtk_check_menu_item_set_inconsistent"
-  external get_inconsistent : [>`checkmenuitem] obj -> bool
-      = "ml_gtk_check_menu_item_get_inconsistent"
   external set_show_toggle : [>`checkmenuitem] obj -> bool -> unit
       = "ml_gtk_check_menu_item_set_show_toggle"
   let set ?active ?show_toggle ?right_justified w =
-    may active ~f:(set_active w);
+    may active ~f:(set P.active w);
     may show_toggle ~f:(set_show_toggle w);
     may right_justified ~f:(MenuItem.set_right_justified w)
   external toggled : [>`checkmenuitem] obj -> unit
@@ -114,7 +105,7 @@ module CheckMenuItem = struct
 end
 
 module RadioMenuItem = struct
-  let cast w : radio_menu_item obj = Object.try_cast w "GtkRadioMenuItem"
+  include RadioMenuItem
   external create : radio_menu_item group -> radio_menu_item obj
       = "ml_gtk_radio_menu_item_new"
   external create_with_label :
@@ -133,23 +124,15 @@ module RadioMenuItem = struct
 end
 
 module OptionMenu = struct
-  let cast w : option_menu obj = Object.try_cast w "GtkOptionMenu"
-  external create : unit -> option_menu obj = "ml_gtk_option_menu_new"
-  external get_menu : [>`optionmenu] obj -> menu obj
-      = "ml_gtk_option_menu_get_menu"
-  external set_menu : [>`optionmenu] obj -> [>`menu] obj -> unit
-      = "ml_gtk_option_menu_set_menu"
+  include OptionMenu
   external remove_menu : [>`optionmenu] obj -> unit
       = "ml_gtk_option_menu_remove_menu"
   external set_history : [>`optionmenu] obj -> int -> unit
       = "ml_gtk_option_menu_set_history"
-  let set ?menu ?history w =
-    may menu ~f:(set_menu w);
-    may history ~f:(set_history w)
 end
 
 module MenuShell = struct
-  let cast w : menu_shell obj = Object.try_cast w "GtkMenuShell"
+  include MenuShell
   external append : [>`menushell] obj -> [>`widget] obj -> unit
       = "ml_gtk_menu_shell_append"
   external prepend : [>`menushell] obj -> [>`widget] obj -> unit
@@ -166,8 +149,7 @@ module MenuShell = struct
 end
 
 module Menu = struct
-  let cast w : menu obj = Object.try_cast w "GtkMenu"
-  external create : unit -> menu obj = "ml_gtk_menu_new"
+  include Menu
   external popup :
       [>`menu] obj -> [>`menushell] optobj ->
       [>`menuitem] optobj -> button:int -> time:int32 -> unit
@@ -193,7 +175,4 @@ module Menu = struct
     may accel_group ~f:(set_accel_group w)
 end
 
-module MenuBar = struct
-  let cast w : menu_bar obj = Object.try_cast w "GtkMenuBar"
-  external create : unit -> menu_bar obj = "ml_gtk_menu_bar_new"
-end
+module MenuBar = MenuBar

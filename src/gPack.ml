@@ -1,18 +1,22 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gtk
 open GtkBase
 open GtkPack
+open OGtkProps
 open GObj
 open GContainer
 
+module P = Box.P
+
 class box_skel obj = object
-  inherit container (obj : [> box] obj)
+  inherit [[> Gtk.box]] container_impl obj
   method pack ?from:f ?expand ?fill ?padding w =
     Box.pack obj (as_widget w) ?from:f ?expand ?fill ?padding
-  method set_homogeneous = Box.set_homogeneous obj
-  method set_spacing = Box.set_spacing obj
+  method set_homogeneous = set P.homogeneous obj
+  method set_spacing = set P.spacing obj
   method set_child_packing ?from:f ?expand ?fill ?padding w =
     Box.set_child_packing obj (as_widget w) ?from:f ?expand ?fill ?padding
   method reorder_child w = Box.reorder_child obj (as_widget w)
@@ -23,52 +27,49 @@ class box obj = object
   method connect = new container_signals obj
 end
   
-let box dir ?homogeneous ?spacing ?border_width ?width ?height
-    ?packing ?show () =
-  let w = Box.create dir ?homogeneous ?spacing () in
-  Container.set w ?border_width ?width ?height;
-  pack_return (new box w) ~packing ~show
+let box dir =
+  Box.make_params [] ~cont:(
+  pack_container ~create:(fun p -> new box (Box.create dir p)))
 
 let vbox = box `VERTICAL
 let hbox = box `HORIZONTAL
 
 class button_box obj = object
-  inherit box_skel (obj : Gtk.button_box obj)
+  inherit box_skel obj
   method connect = new container_signals obj
-  method set_layout  = BBox.set_layout  obj
+  method set_layout  = set BBox.P.layout_style  obj
+  method layout  = get BBox.P.layout_style  obj
   (* method set_spacing = BBox.set_spacing obj *)
   method set_child_size = BBox.set_child_size obj
   method set_child_ipadding = BBox.set_child_ipadding obj
 end
 
 let button_box dir ?spacing ?child_width ?child_height ?child_ipadx
-    ?child_ipady ?layout ?border_width ?width ?height ?packing ?show ()=
-  let w = BBox.create dir in
-  BBox.set w ?child_width ?child_height ?child_ipadx
-    ?child_ipady ?layout;
-  may spacing ~f:(Box.set_spacing w);
-  Container.set w ?border_width ?width ?height;
-  pack_return (new button_box w) ~packing ~show
+    ?child_ipady ?layout =
+  pack_container [] ~create:(fun p ->
+    let p =
+      Property.may_cons Box.P.spacing spacing (
+      Property.may_cons BBox.P.layout_style layout p) in
+    let w = BBox.create dir p in
+    BBox.set w ?child_width ?child_height ?child_ipadx
+      ?child_ipady ?layout;
+    new button_box w)
 
 class table obj = object
   inherit container_full (obj : Gtk.table obj)
+  method private obj = obj
+  inherit table_props
   method attach ~left ~top ?right ?bottom ?expand ?fill ?shrink
       ?xpadding ?ypadding w =
     Table.attach obj (as_widget w) ~left ~top ?right ?bottom ?expand
       ?fill ?shrink ?xpadding ?ypadding
   method set_row_spacing = Table.set_row_spacing obj
   method set_col_spacing = Table.set_col_spacing obj
-  method set_row_spacings = Table.set_row_spacings obj
-  method set_col_spacings = Table.set_col_spacings obj
-  method set_homogeneous = Table.set_homogeneous obj
 end
 
-let table ~rows ~columns ?homogeneous ?row_spacings ?col_spacings
-    ?border_width ?width ?height ?packing ?show () =
-  let w = Table.create ~rows ~columns ?homogeneous () in
-  Table.set w ?row_spacings ?col_spacings;
-  Container.set w ?border_width ?width ?height;
-  pack_return (new table w) ~packing ~show
+let table =
+  Table.make_params [] ~cont:(
+  pack_container ~create:(fun p -> new table (Table.create p)))
 
 class fixed obj = object
   inherit container_full (obj : Gtk.fixed obj)
@@ -79,11 +80,11 @@ class fixed obj = object
   method has_window = Fixed.get_has_window obj
 end
 
-let fixed ?has_window ?border_width ?width ?height ?packing ?show () =
-  let w = Fixed.create () in
-  may has_window ~f:(Fixed.set_has_window w);
-  Container.set w ?border_width ?width ?height;
-  pack_return (new fixed w) ~packing ~show
+let fixed ?has_window =
+  pack_container [] ~create:(fun p ->
+    let w = new fixed (Fixed.create p) in
+    may has_window ~f:w#set_has_window;
+    w)
 
 class layout obj = object
   inherit container_full obj
@@ -91,28 +92,25 @@ class layout obj = object
   method put w = Layout.put obj (as_widget w)
   method move w = Layout.move obj (as_widget w)
   method set_hadjustment adj =
-    Layout.set_hadjustment obj (GData.as_adjustment adj)
+    set Layout.P.hadjustment obj (GData.as_adjustment adj)
   method set_vadjustment adj =
-    Layout.set_vadjustment obj (GData.as_adjustment adj)
-  method set_width width = Layout.set_size obj ~width
-  method set_height height = Layout.set_size obj ~height
-  method hadjustment = new GData.adjustment (Layout.get_hadjustment obj)
-  method vadjustment = new GData.adjustment (Layout.get_vadjustment obj)
+    set Layout.P.vadjustment obj (GData.as_adjustment adj)
+  method set_width = set Layout.P.width obj
+  method set_height = set Layout.P.height obj
+  method hadjustment = new GData.adjustment (get Layout.P.hadjustment obj)
+  method vadjustment = new GData.adjustment (get Layout.P.vadjustment obj)
   method freeze () = Layout.freeze obj
   method thaw () = Layout.thaw obj
-  method width = Layout.get_width obj
-  method height = Layout.get_height obj
+  method width = get Layout.P.width obj
+  method height = get Layout.P.height obj
 end
 
-let layout ?hadjustment ?vadjustment ?layout_width ?layout_height
-    ?border_width ?width ?height ?packing ?show () =
-  let w = Layout.create
-      (Gpointer.optboxed (may_map ~f:GData.as_adjustment hadjustment))
-      (Gpointer.optboxed (may_map ~f:GData.as_adjustment vadjustment)) in
-  if layout_width <> None || layout_height <> None then
-    Layout.set_size w ?width:layout_width ?height:layout_height;
-  Container.set w ?border_width ?width ?height;
-  pack_return (new layout w) ~packing ~show
+let layout ?hadjustment ?vadjustment ?layout_width ?layout_height =
+  Layout.make_params []
+    ?hadjustment:(may_map GData.as_adjustment hadjustment)
+    ?vadjustment:(may_map GData.as_adjustment hadjustment)
+    ?width:layout_width ?height:layout_height ~cont:(
+  pack_container ~create:(fun p -> new layout (Layout.create p)))
 
 (*
 class packer obj = object
@@ -164,16 +162,14 @@ class paned obj = object
       raise(Error "GPack.paned#pack2: already full")
     with _ -> Paned.pack2 obj (as_widget w) ~resize ~shrink
   (* method set_handle_size = Paned.set_handle_size obj *)
-  method set_position = Paned.set_position obj
+  method set_position = set Paned.P.position obj
   method child1 = new widget (Paned.child1 obj)
   method child2 = new widget (Paned.child2 obj)
   (* method handle_size = Paned.handle_size obj *)
 end
 
-let paned dir ?border_width ?width ?height ?packing ?show () =
-  let w = Paned.create dir in
-  Container.set w ?border_width ?width ?height;
-  pack_return (new paned w) ~packing ~show
+let paned dir =
+  pack_container [] ~create:(fun p -> new paned (Paned.create dir p))
 
 class notebook_signals obj = object
   inherit GContainer.container_signals obj
@@ -182,7 +178,8 @@ class notebook_signals obj = object
 end
 
 class notebook obj = object (self)
-  inherit GContainer.container obj
+  inherit [Gtk.notebook] GContainer.container_impl obj
+  inherit notebook_props
   method event = new GObj.event_ops obj
   method connect = new notebook_signals obj
   method insert_page ?tab_label ?menu_label ~pos child =
@@ -192,17 +189,10 @@ class notebook obj = object (self)
   method append_page = self#insert_page ~pos:(-1)
   method prepend_page = self#insert_page ~pos:0
   method remove_page = Notebook.remove_page obj
-  method current_page = Notebook.get_current_page obj
-  method goto_page = Notebook.set_page obj
+  method current_page = get Notebook.P.page obj
   method previous_page () = Notebook.prev_page obj
+  method goto_page = set Notebook.P.page obj
   method next_page () = Notebook.next_page obj
-  method set_tab_pos = Notebook.set_tab_pos obj
-  method set_show_tabs = Notebook.set_show_tabs obj
-  method set_homogeneous_tabs = Notebook.set_homogeneous_tabs obj
-  method set_show_border = Notebook.set_show_border obj
-  method set_scrollable = Notebook.set_scrollable obj
-  method set_tab_border = Notebook.set_tab_border obj
-  method set_popup = Notebook.set_popup obj
   method page_num w = Notebook.page_num obj (as_widget w)
   method get_nth_page n = new widget (Notebook.get_nth_page obj n)
   method get_tab_label w =
@@ -217,11 +207,6 @@ class notebook obj = object (self)
       ~f:(fun lbl -> Notebook.set_menu_label obj child (as_widget lbl))
 end
 
-let notebook ?tab_pos ?tab_border ?show_tabs ?homogeneous_tabs
-    ?show_border ?scrollable ?popup
-    ?border_width ?width ?height ?packing ?show () =
-  let w = Notebook.create () in
-  Notebook.set w ?tab_pos ?tab_border ?show_tabs
-    ?homogeneous_tabs ?show_border ?scrollable ?popup;
-  Container.set w ?border_width ?width ?height;
-  pack_return (new notebook w) ~packing ~show
+let notebook =
+  Notebook.make_params [] ~cont:(
+  pack_container ~create:(fun p -> new notebook (Notebook.create p)))
