@@ -815,7 +815,8 @@ Make_Extractor (GdkEventWindowState, GdkEvent_arg(WindowState),
 
 /* DnD */
 Make_Flags_val (GdkDragAction_val)
-ML_3 (gdk_drag_status, GdkDragContext_val, Flags_GdkDragAction_val, copy_int32, Unit)
+#define GdkDragAction_optval(v) Option_val(v,GdkDragAction_val,0)
+ML_3 (gdk_drag_status, GdkDragContext_val, GdkDragAction_optval, copy_int32, Unit)
 Make_Extractor (GdkDragContext, GdkDragContext_val, suggested_action, Val_gdkDragAction)
 value val_int(gpointer i)
 {
