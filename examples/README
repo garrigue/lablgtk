@@ -5,6 +5,7 @@ any modification.
 
 * calendar.ml
 * clist.ml
+* counter.ml
 * drawing.ml
 * entry.ml
 * events.ml
