@@ -150,9 +150,10 @@ ML_2 (gtk_tree_model_get_iter_first, GtkTreeModel_val, GtkTreeIter_val, Val_bool
 ML_2 (gtk_tree_model_iter_next, GtkTreeModel_val, GtkTreeIter_val,
       Val_bool)
 ML_2 (gtk_tree_model_iter_has_child, GtkTreeModel_val, GtkTreeIter_val, Val_bool)
-ML_2 (gtk_tree_model_iter_n_children, GtkTreeModel_val, GtkTreeIter_val,
+#define GtkTreeIterOption(v) Option_val(v,GtkTreeIter_val,NULL)
+ML_2 (gtk_tree_model_iter_n_children, GtkTreeModel_val, GtkTreeIterOption,
       Val_int)
-ML_4 (gtk_tree_model_iter_nth_child, GtkTreeModel_val, GtkTreeIter_val, 
+ML_4 (gtk_tree_model_iter_nth_child, GtkTreeModel_val, GtkTreeIterOption, 
       GtkTreeIter_val, Int_val, Val_bool)
 ML_3 (gtk_tree_model_iter_parent, GtkTreeModel_val, GtkTreeIter_val,
       GtkTreeIter_val, Val_bool)

@@ -117,21 +117,20 @@ module TreeModel = struct
     = "ml_gtk_tree_model_iter_next"
   external iter_has_child : [>`treemodel] obj -> tree_iter -> bool
     = "ml_gtk_tree_model_iter_has_child"
-  external iter_n_children : [>`treemodel] obj -> tree_iter -> int
+  external iter_n_children : [>`treemodel] obj -> tree_iter option -> int
     = "ml_gtk_tree_model_iter_n_children"
-  external iter_nth_child : [>`treemodel] obj -> tree_iter -> parent:tree_iter -> int -> bool
+  external iter_nth_child : [>`treemodel] obj -> tree_iter -> parent:tree_iter option -> int -> bool
     = "ml_gtk_tree_model_iter_nth_child"
   let iter_children m ?(nth=0) p =
     let i = alloc_iter () in
     if iter_nth_child m i p nth then i
-    else failwith "GtkTree.TreeModel.iter_children"
+    else invalid_arg "GtkTree.TreeModel.iter_children"
   external iter_parent :
     [>`treemodel] obj -> tree_iter -> child:tree_iter -> bool
     = "ml_gtk_tree_model_iter_parent"
   let iter_parent m child =
     let i = alloc_iter () in
-    if iter_parent m i ~child then i
-    else failwith "GtkTree.TreeModel.iter_parent"
+    if iter_parent m i ~child then Some i else None
   external foreach : [>`treemodel] obj -> (tree_path -> tree_iter -> bool) -> unit
     = "ml_gtk_tree_model_foreach"
   external row_changed : [>`treemodel] obj -> tree_path -> tree_iter -> unit
