@@ -60,7 +60,7 @@ class dialog :
   ?height:int ->
   ?packing:(dialog -> unit) ->
   object
-    inherit window_wrapper
+    inherit window
     val obj : Dialog.t obj
     method action_area : GPack.box
     method vbox : GPack.box
@@ -83,7 +83,7 @@ class color_selection_dialog :
   ?height:int ->
   ?packing:(color_selection_dialog -> unit) ->
   object
-    inherit window_wrapper
+    inherit window
     val obj : ColorSelection.dialog obj
     method cancel_button : GButton.button
     method colorsel : GMisc.color_selection
@@ -111,7 +111,7 @@ class file_selection :
   ?height:int ->
   ?packing:(file_selection -> unit) ->
   object
-    inherit window_wrapper
+    inherit window
     val obj : FileSelection.t obj
     method cancel_button : GButton.button
     method get_filename : string

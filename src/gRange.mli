@@ -17,7 +17,7 @@ class range :
   object
     inherit GObj.widget_wrapper
     val obj : 'a obj
-    method adjustment : GData.adjustment_wrapper
+    method adjustment : GData.adjustment
     method set_adjustment : GData.adjustment -> unit
     method set_update_policy : Tags.update_type -> unit
   end

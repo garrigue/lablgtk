@@ -112,20 +112,20 @@ class toolbar :
       ?text:string ->
       ?tooltip:string ->
       ?tooltip_private:string ->
-      ?pos:int -> ?callback:(unit -> unit) -> button_wrapper
+      ?pos:int -> ?callback:(unit -> unit) -> button
     method insert_radio_button :
       ?icon:#GObj.is_widget ->
       ?text:string ->
       ?tooltip:string ->
       ?tooltip_private:string ->
-      ?pos:int -> ?callback:(unit -> unit) -> radio_button_wrapper
+      ?pos:int -> ?callback:(unit -> unit) -> radio_button
     method insert_space : ?pos:int -> unit
     method insert_toggle_button :
       ?icon:#GObj.is_widget ->
       ?text:string ->
       ?tooltip:string ->
       ?tooltip_private:string ->
-      ?pos:int -> ?callback:(unit -> unit) -> toggle_button_wrapper
+      ?pos:int -> ?callback:(unit -> unit) -> toggle_button
     method insert_widget :
       #GObj.is_widget ->
       ?tooltip:string -> ?tooltip_private:string -> ?pos:int -> unit

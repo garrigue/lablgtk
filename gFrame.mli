@@ -13,11 +13,11 @@ class scrolled_window :
     inherit GContainer.container_wrapper
     val obj : ScrolledWindow.t obj
     method add_with_viewport : #GObj.is_widget -> unit
-    method hadjustment : GData.adjustment_wrapper
+    method hadjustment : GData.adjustment
     method set_policy :
       ?hscrollbar:Tags.policy_type ->
       ?vscrollbar:Tags.policy_type -> unit
-    method vadjustment : GData.adjustment_wrapper
+    method vadjustment : GData.adjustment
   end
 
 class event_box :
