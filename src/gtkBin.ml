@@ -149,14 +149,19 @@ module ScrolledWindow = struct
       = "ml_gtk_scrolled_window_get_vscrollbar_policy"
   external set_placement : [>`scrolled] obj -> corner_type -> unit
       = "ml_gtk_scrolled_window_set_placement"
+  external set_shadow_type : [>`scrolled] obj -> shadow_type -> unit
+      = "ml_gtk_scrolled_window_set_shadow_type"
+  external get_shadow_type : [>`scrolled] obj -> shadow_type
+      = "ml_gtk_scrolled_window_get_shadow_type"
   let set_policy' ?hpolicy ?vpolicy w =
     set_policy w
       (may_default get_hscrollbar_policy w ~opt:hpolicy)
       (may_default get_vscrollbar_policy w ~opt:vpolicy)
-  let set ?hpolicy ?vpolicy ?placement w =
+  let set ?hpolicy ?vpolicy ?placement ?shadow_type w =
     if hpolicy <> None || vpolicy <> None then
       set_policy' w ?hpolicy ?vpolicy;
-    may placement ~f:(set_placement w)
+    may placement ~f:(set_placement w);
+    may shadow_type ~f:(set_shadow_type w)
 end
 
 module Socket = struct

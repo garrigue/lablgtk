@@ -13,8 +13,10 @@ class scrolled_window : Gtk.scrolled_window obj ->
     method set_hadjustment : GData.adjustment -> unit
     method set_hpolicy : Tags.policy_type -> unit
     method set_placement : Tags.corner_type -> unit
+    method set_shadow_type : Tags.shadow_type -> unit
     method set_vadjustment : GData.adjustment -> unit
     method set_vpolicy : Tags.policy_type -> unit
+    method shadow_type : Gtk.Tags.shadow_type
     method vadjustment : GData.adjustment
   end
 val scrolled_window :
@@ -23,6 +25,7 @@ val scrolled_window :
   ?hpolicy:Tags.policy_type ->
   ?vpolicy:Tags.policy_type ->
   ?placement:Tags.corner_type ->
+  ?shadow_type:Gtk.Tags.shadow_type ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

@@ -45,8 +45,11 @@ module Type = struct
 end
 
 module Value = struct
-  external create : g_type -> g_value = "ml_g_value_new"
+  external create_empty : unit -> g_value = "ml_g_value_new"
       (* create a g_value owned by ML *)
+  external init : g_value -> g_type -> unit = "ml_g_value_init"
+  let create ty = let v = create_empty () in init v ty; v
+      (* create and initialize a g_value *)
   external release : g_value -> unit = "ml_g_value_release"
       (* invalidate a g_value, releasing the data if owned by ML *)
   external get_type : g_value -> g_type = "ml_G_VALUE_TYPE"
@@ -139,8 +142,12 @@ module Data = struct
   let uint = {int with kind = `UINT}
   let long = {int with kind = `LONG}
   let ulong = {int with kind = `ULONG}
-  let enum = {int with kind = `ENUM}
   let flags = {int with kind = `FLAGS}
+  let enum tbl =
+    { kind = `ENUM;
+      proj = (function `INT c -> Gpointer.decode_variant tbl c
+             | _ -> failwith "Gobject.get_enum");
+      inj = (fun c -> `INT (Gpointer.encode_variant tbl c)) }
   let int64 =
     { kind = `INT64;
       proj = (function `INT64 c -> c | _ -> failwith "Gobject.get_int64");
@@ -208,3 +215,8 @@ module Property = struct
     match get obj prop with Some x -> x
     | None -> failwith ("Gobject.Property.get_some: " ^ prop.name)
 end
+
+(*
+   To produce properties from Gtk documentation:
+   sed -e 's/"\([^"]*\)" *[A-z]\([^ ]*\).*/let \1 = {name="\1"; classe=classe; conv=\2}/'    "
+*)

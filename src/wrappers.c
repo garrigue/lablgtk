@@ -95,3 +95,6 @@ int ml_lookup_to_c (lookup_info *table, value key)
     if (table[first].key == key) return table[first].data;
     invalid_argument ("ml_lookup_to_c");
 }
+
+ML_2 (ml_lookup_from_c, (lookup_info*), Int_val, 0+)
+ML_2 (ml_lookup_to_c, (lookup_info*), 0+, Val_int)

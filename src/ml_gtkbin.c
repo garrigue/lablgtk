@@ -103,6 +103,10 @@ ML_1 (gtk_scrolled_window_get_vadjustment, GtkScrolledWindow_val,
       Val_GtkWidget)
 ML_3 (gtk_scrolled_window_set_policy, GtkScrolledWindow_val,
       Policy_type_val, Policy_type_val, Unit)
+ML_2 (gtk_scrolled_window_set_shadow_type, GtkScrolledWindow_val,
+      Shadow_type_val, Unit)
+ML_1 (gtk_scrolled_window_get_shadow_type, GtkScrolledWindow_val,
+      Val_shadow_type)
 Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
 		hscrollbar_policy, Val_policy_type)
 Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,

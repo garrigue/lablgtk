@@ -21,6 +21,11 @@ type 'a optboxed
 val optboxed : 'a option -> 'a optboxed
 val may_box : f:('a -> 'b) -> 'a option -> 'b optboxed
 
+(** Variant tables *)
+type 'a variant_table constraint 'a = [> ]
+val decode_variant : 'a variant_table -> int -> 'a
+val encode_variant : 'a variant_table -> 'a -> int
+
 (** Null pointer exception *)
 exception Null
 

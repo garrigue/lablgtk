@@ -20,17 +20,19 @@ class scrolled_window obj = object
   method set_hpolicy hpolicy = ScrolledWindow.set_policy' obj ~hpolicy
   method set_vpolicy vpolicy = ScrolledWindow.set_policy' obj ~vpolicy
   method set_placement = ScrolledWindow.set_placement obj
+  method set_shadow_type = ScrolledWindow.set_shadow_type obj
+  method shadow_type = ScrolledWindow.get_shadow_type obj
   method add_with_viewport w =
     ScrolledWindow.add_with_viewport obj (as_widget w)
 end
 
 let scrolled_window ?hadjustment ?vadjustment ?hpolicy ?vpolicy
-    ?placement ?border_width ?width ?height ?packing ?show () =
+    ?placement ?shadow_type ?border_width ?width ?height ?packing ?show () =
   let w =
     ScrolledWindow.create ()
       ?hadjustment:(may_map ~f:GData.as_adjustment hadjustment)
       ?vadjustment:(may_map ~f:GData.as_adjustment vadjustment) in
-  ScrolledWindow.set w ?hpolicy ?vpolicy ?placement;
+  ScrolledWindow.set w ?hpolicy ?vpolicy ?placement ?shadow_type;
   Container.set w ?border_width ?width ?height;
   pack_return (new scrolled_window w) ~packing ~show
 
