@@ -1,10 +1,8 @@
 
 let pad = 4
 
-let item_callback it (p1, p2) ev =
-  match GdkEvent.get_type ev with
-  | `BUTTON_PRESS when 
-      GdkEvent.Button.button (GdkEvent.Button.cast ev) = 1 ->
+let item_callback it (p1, p2) = function
+  | `BUTTON_PRESS ev when GdkEvent.Button.button ev = 1 ->
         if (GnoCanvas.parent it)#get_oid = p1#get_oid
 	then it#reparent p2#as_group
 	else it#reparent p1#as_group ;

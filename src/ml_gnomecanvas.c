@@ -4,6 +4,7 @@
 
 #include <gtk/gtk.h>
 #include <libgnomecanvas/libgnomecanvas.h>
+#include <libart_lgpl/libart.h>
 
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -43,7 +44,6 @@ static inline value copy_double_array(double *a, size_t len)
 /* Types stuff */
 CAMLprim value ml_gnome_canvas_register_types(value unit)
 {
-  GType tid[15];
   value v = alloc_small(15, 0);
   Field(v,  0) = Val_GType(GNOME_TYPE_CANVAS);
   Field(v,  1) = Val_GType(GNOME_TYPE_CANVAS_BPATH);
@@ -60,7 +60,7 @@ CAMLprim value ml_gnome_canvas_register_types(value unit)
   Field(v, 12) = Val_GType(GNOME_TYPE_CANVAS_RICH_TEXT);
   Field(v, 13) = Val_GType(GNOME_TYPE_CANVAS_SHAPE);
   Field(v, 14) = Val_GType(GNOME_TYPE_CANVAS_TEXT);
-  /* GNOME_TYPE_CANVAS_CLIPGROUP; */
+  /* Field(v, 15) = Val_GType(GNOME_TYPE_CANVAS_CLIPGROUP); */
   return v;
 }
 
@@ -237,8 +237,6 @@ CAMLprim value ml_gnome_canvas_item_set(value i, value key_v_list)
 }
 
 ML_3 (gnome_canvas_item_move, GnomeCanvasItem_val, Double_val, Double_val, Unit)
-/* gnome_canvas_item_affine_relative */
-/* gnome_canvas_item_affine_absolute */
 ML_2 (gnome_canvas_item_raise, GnomeCanvasItem_val, Int_val, Unit)
 ML_2 (gnome_canvas_item_lower, GnomeCanvasItem_val, Int_val, Unit)
 ML_1 (gnome_canvas_item_raise_to_top, GnomeCanvasItem_val, Unit)
@@ -264,8 +262,23 @@ CAMLprim value ml_gnome_canvas_item_i2w(value i, value x, value y)
   gnome_canvas_item_i2w(GnomeCanvasItem_val(i), &ox, &oy);
   return copy_two_doubles(ox, oy);
 }
-/* gnome_canvas_item_i2w_affine */
-/* gnome_canvas_item_i2c_affine */
+
+CAMLprim value ml_gnome_canvas_item_i2w_affine(value i)
+{
+  GnomeCanvasItem *item = GnomeCanvasItem_val(i);
+  value v = alloc_small(6 * Double_wosize, Double_array_tag);
+  gnome_canvas_item_i2w_affine(item, (double *)v);
+  return v;
+}
+
+CAMLprim value ml_gnome_canvas_item_i2c_affine(value i)
+{
+  GnomeCanvasItem *item = GnomeCanvasItem_val(i);
+  value v = alloc_small(6 * Double_wosize, Double_array_tag);
+  gnome_canvas_item_i2c_affine(item, (double *)v);
+  return v;
+}
+
 ML_2 (gnome_canvas_item_reparent, GnomeCanvasItem_val, GnomeCanvasGroup_val, Unit)
 ML_1 (gnome_canvas_item_grab_focus, GnomeCanvasItem_val, Unit)
 
@@ -304,7 +317,8 @@ CAMLprim value ml_gnome_canvas_group_get_items(value cg)
 CAMLprim value ml_gnome_canvas_convert_tags(value tag)
 {
   lookup_info *tables[] = { ml_table_anchor_type, ml_table_gdkCapStyle, 
-			    ml_table_gdkJoinStyle, ml_table_justification };
+			    ml_table_gdkJoinStyle, ml_table_justification,
+			    ml_table_gdkLineStyle };
   return Val_int(ml_lookup_to_c( tables[ Tag_val(tag) ], Field(tag, 0)));
 }
 
@@ -324,6 +338,23 @@ CAMLprim value ml_gnome_canvas_convert_points(value arr)
   return Val_GValue_new(v);
 }
 
+static void artvpathdash_free(ArtVpathDash *d) 
+{
+  g_free(d->dash);
+  g_free(d);
+}
+Make_Val_final_pointer(ArtVpathDash, Ignore, artvpathdash_free, 10)
+CAMLprim value ml_gnome_canvas_convert_dash(value off, value dash)
+{
+  ArtVpathDash *d;
+  int len = Wosize_val(dash) / Double_wosize;
+  d = g_malloc(sizeof *d);
+  d->offset = Double_val(off);
+  d->n_dash = len;
+  d->dash = g_malloc(d->n_dash * sizeof *d->dash);
+  memcpy(d->dash, (double *)dash, Wosize_val(dash) * sizeof (value));
+  return Val_ArtVpathDash(d);
+}
 
 
 /* gome-canvas-path-def.h */

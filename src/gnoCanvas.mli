@@ -12,10 +12,12 @@ type items_properties = [
   | `WIDTH of float
   | `HEIGHT of float
   | `BPATH of GnomeCanvas.PathDef.t
+  | `DASH of float * float array
   | `ANCHOR of Gtk.Tags.anchor_type
   | `JUSTIFICATION of Gtk.Tags.justification
   | `CAP_STYLE of Gdk.GC.gdkCapStyle
   | `JOIN_STYLE of Gdk.GC.gdkJoinStyle
+  | `LINE_STYLE of Gdk.GC.gdkLineStyle
   | `SMOOTH of bool
   | `FIRST_ARROWHEAD of bool
   | `LAST_ARROWHEAD of bool
@@ -28,6 +30,8 @@ type items_properties = [
   | `FILL_STIPPLE of Gdk.bitmap
   | `FONT of string
   | `OUTLINE_COLOR of string
+  | `OUTLINE_COLOR_RGBA of int32
+  | `OUTLINE_STIPPLE of Gdk.bitmap
   | `SIZE of int
   | `TEXT of string
   | `EDITABLE of bool
@@ -52,13 +56,25 @@ type items_properties = [
       
 val propertize : [< items_properties] -> string * Gobject.g_value
 
+type item_event = [
+  | `BUTTON_PRESS of GdkEvent.Button.t
+  | `TWO_BUTTON_PRESS of GdkEvent.Button.t
+  | `THREE_BUTTON_PRESS of GdkEvent.Button.t
+  | `BUTTON_RELEASE of GdkEvent.Button.t
+  | `MOTION_NOTIFY of GdkEvent.Motion.t
+  | `KEY_PRESS of GdkEvent.Key.t
+  | `KEY_RELEASE of GdkEvent.Key.t
+  | `ENTER_NOTIFY of GdkEvent.Crossing.t
+  | `LEAVE_NOTIFY of GdkEvent.Crossing.t
+  | `FOCUS_CHANGE of GdkEvent.Focus.t ]
+
 class item_signals :
   ?after:bool -> 'b Gtk.obj ->
   object
     constraint 'b = [> GnomeCanvas.item]
     inherit GObj.gtkobj_signals
     val obj : 'b Gtk.obj
-    method event : callback:(GdkEvent.any -> bool) -> GtkSignal.id
+    method event : callback:(item_event -> bool) -> GtkSignal.id
   end
 
 class ['a] item : 'b Gtk.obj ->
@@ -73,7 +89,9 @@ class ['a] item : 'b Gtk.obj ->
     method grab : Gdk.Tags.event_mask list -> Gdk.cursor -> int32 -> unit
     method grab_focus : unit -> unit
     method hide : unit -> unit
+    method i2c_affine : float array
     method i2w : x:float -> y:float -> float * float
+    method i2w_affine : float array
     method lower : int -> unit
     method lower_to_bottom : unit -> unit
     method move : x:float -> y:float -> unit
@@ -150,11 +168,17 @@ val group : ?x:float -> ?y:float -> #group -> group
 
 type rect = GnomeCanvas.Types.re_p item
 val rect :
+  ?x1:float -> ?y1:float -> 
+  ?x2:float -> ?y2:float -> 
+  ?fill_color:string ->
   ?props:GnomeCanvas.Types.re_p list ->
   #group -> rect
 
 type ellipse = GnomeCanvas.Types.re_p item
 val ellipse :
+  ?x1:float -> ?y1:float -> 
+  ?x2:float -> ?y2:float -> 
+  ?fill_color:string ->
   ?props:GnomeCanvas.Types.re_p list ->
   #group -> ellipse
 
@@ -167,6 +191,8 @@ val text :
 
 type line = GnomeCanvas.Types.line_p item
 val line :
+  ?points:float array ->
+  ?fill_color:string ->
   ?props:GnomeCanvas.Types.line_p list ->
   #group -> line
 
@@ -187,6 +213,7 @@ val pixbuf :
 type polygon = GnomeCanvas.Types.polygon_p item
 val polygon :
   ?points:float array ->
+  ?fill_color:string ->
   ?props:GnomeCanvas.Types.polygon_p list ->
   #group -> polygon
 

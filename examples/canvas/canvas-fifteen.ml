@@ -25,14 +25,14 @@ let move config num dpos =
     
 
 let item_event config num ev =
-  begin match GdkEvent.get_type ev with
-  | `ENTER_NOTIFY ->
+  begin match ev with
+  | `ENTER_NOTIFY _ ->
       let (_, text) = config.board.(num) in
       text#set [ `FILL_COLOR "white" ]
-  | `LEAVE_NOTIFY ->
+  | `LEAVE_NOTIFY _ ->
       let (_, text) = config.board.(num) in
       text#set [ `FILL_COLOR "black" ]
-  | `BUTTON_PRESS ->
+  | `BUTTON_PRESS _ ->
       let pos = config.pos.(num) in
       if List.mem (config.hole - pos) [ -1; 1; 4; -4; ]
       then
