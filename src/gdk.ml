@@ -223,11 +223,11 @@ module Pixmap = struct
       = "ml_gdk_pixmap_create_from_data_bc" "ml_gk_pixmap_create_from_data"
   external create_from_xpm :
       window -> ?colormap:colormap -> ?transparent:Color.t ->
-      string -> pixmap * bitmap
+      file:string -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm"
   external create_from_xpm_d :
       window -> ?colormap:colormap -> ?transparent:Color.t ->
-      string array -> pixmap * bitmap
+      data:string array -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm_d"
 end
 
