@@ -14,10 +14,6 @@
 
 (* $Id$ *)
 
-open StdLabels
-
-let exclude x l = List.filter l ~f:((<>) x)
-
-let rec flat_map ~f = function
-    [] -> []
-  | x :: l -> f x @ flat_map ~f l
+val fast : f:('a -> 'b) -> 'a -> 'b
+(* "fast" memoizer: uses a List.assq like function      *)
+(* Good for a smallish number of keys, phisically equal *)

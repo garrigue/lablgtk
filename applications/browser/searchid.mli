@@ -14,10 +14,32 @@
 
 (* $Id$ *)
 
-open StdLabels
+val start_env : Env.t ref
+val module_list : string list ref
+val longident_of_path :  Path.t ->Longident.t
 
-let exclude x l = List.filter l ~f:((<>) x)
+type pkind =
+    Pvalue
+  | Ptype
+  | Plabel
+  | Pconstructor
+  | Pmodule
+  | Pmodtype
+  | Pclass
+  | Pcltype
 
-let rec flat_map ~f = function
-    [] -> []
-  | x :: l -> f x @ flat_map ~f l
+val string_of_kind :  pkind -> string
+
+exception Error of int * int
+
+val search_string_type :
+      string -> mode:[`Exact|`Included] -> (Longident.t * pkind) list
+val search_pattern_symbol : string -> (Longident.t * pkind) list
+val search_string_symbol : string -> (Longident.t * pkind) list
+
+val search_structure :
+    Parsetree.structure ->
+    name:string -> kind:pkind -> prefix:string list -> int
+val search_signature :
+    Parsetree.signature ->
+    name:string -> kind:pkind -> prefix:string list -> int
