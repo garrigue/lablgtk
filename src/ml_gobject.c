@@ -36,7 +36,7 @@ ML_1 (g_type_parent, GType_val, Val_GType)
 ML_1 (g_type_depth, GType_val, Val_int)
 ML_2 (g_type_is_a, GType_val, GType_val, Val_bool)
 ML_1 (G_TYPE_FUNDAMENTAL, GType_val, Val_fundamental_type)
-ML_1 (Fundamental_type_val, GType_val, )
+ML_1 (Fundamental_type_val,,Val_GType)
 
 /* gclosure.h */
 
@@ -88,9 +88,12 @@ void ml_g_value_free(value val)
 
 value ml_g_value_new(value gtype)
 {
-    GValue *gvalue = stat_alloc(sizeof(gvalue));
+    GValue *gvalue = calloc(1,sizeof(GValue));
     value v = alloc_final(2, ml_g_value_free, 2, 100);
+
+    if (gvalue==NULL) raise_out_of_memory ();
     g_value_init(gvalue, GType_val(gtype));
+    Field(v,1)=(value)gvalue;
     return v;
 }
 

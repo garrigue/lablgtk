@@ -36,6 +36,9 @@ CAMLprim value ml_##cname (value arg1, value arg2) \
 #define ML_2_name(mlname, cname, conv1, conv2, conv) \
 CAMLprim value mlname (value arg1, value arg2) \
 { return conv (cname (conv1(arg1), conv2(arg2))); }
+#define ML_2_opt(cname, conv1, conv2, conv) \
+CAMLprim value ml_##cname (value arg1, value arg2) \
+{ return(Val_option(cname (conv1(arg1), conv2(arg2)),conv));}
 #define ML_3(cname, conv1, conv2, conv3, conv) \
 CAMLprim value ml_##cname (value arg1, value arg2, value arg3) \
 { return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3))); }

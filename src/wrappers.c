@@ -79,7 +79,6 @@ value ml_lookup_from_c (lookup_info *table, int data)
 int ml_lookup_to_c (lookup_info *table, value key)
 {
     int first = 1, last = table[0].data, current;
-
     while (first < last) {
 	current = (first+last)/2;
 	if (table[current].key >= key) last = current;

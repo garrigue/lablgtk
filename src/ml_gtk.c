@@ -281,6 +281,7 @@ CAMLprim value ml_gtk_widget_get_pointer (value w)
 ML_2 (gtk_widget_is_ancestor, GtkWidget_val, GtkWidget_val, Val_bool)
 /* ML_2 (gtk_widget_is_child, GtkWidget_val, GtkWidget_val, Val_bool) */
 ML_2 (gtk_widget_set_style, GtkWidget_val, GtkStyle_val, Unit)
+
 ML_1 (gtk_widget_ensure_style, GtkWidget_val, Unit)
 ML_1 (gtk_widget_get_style, GtkWidget_val, Val_GtkStyle)
 ML_3 (gtk_widget_modify_fg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
