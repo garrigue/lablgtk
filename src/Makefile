@@ -267,6 +267,19 @@ lablgtkgl.cmxa: liblablgtkgl2$(XA) $(GLMLOBJS:.cmo=.cmx)
 #lablgnome.cmxa: liblablgnome$(XA) $(GNOMEMLOBJS:.cmo=.cmx)
 #	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) $(GNOMELIBS)
 
+ifeq ($(TOOLCHAIN),msvc)
+liblablglade2$(XA): $(GLADECOBJS)
+	$(MKLIB)$@ $(GLADECOBJS)
+dlllablglade2.dll: $(GLADECOBJS:$(XO)=.d$(XO))
+	$(MKDLL)$@ $(GLADECOBJS:$(XO)=.d$(XO)) dlllablgtk2.lib $(GLADELIBS) $(GTKLIBS) $(OCAMLDLL)
+lablglade.cma: liblablglade2$(XA) dlllablglade2.dll $(GLADEMLOBJS) $(CONFIG)
+	$(LINKER) -a -o $@ $(GLADEMLOBJS) \
+	  -cclib -llablglade2 -dllib -llablglade2 \
+	  -cclib "$(GLADELIBS)"
+lablglade.cmxa: liblablglade2$(XA) $(GLADEMLOBJS:.cmo=.cmx) $(CONFIG)
+	$(LINKOPT) -a -o $@  $(GLADEMLOBJS:.cmo=.cmx) -cclib -llablglade2 \
+	  -cclib "$(GLADELIBS)"
+else
 liblablglade2$(XA): $(GLADECOBJS)
 	$(LIBRARIAN) -o lablglade2 $(GLADECOBJS) $(GLADELIBS)
 lablglade.cma: liblablglade2$(XA) $(GLADEMLOBJS)
@@ -274,6 +287,7 @@ lablglade.cma: liblablglade2$(XA) $(GLADEMLOBJS)
 lablglade.cmxa: liblablglade2$(XA) $(GLADEMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablglade -oc lablglade2 \
 	    $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
+endif
 
 liblablrsvg$(XA): $(RSVGCOBJS)
 	$(LIBRARIAN) -o lablrsvg $(RSVGCOBJS) $(RSVGLIBS)
