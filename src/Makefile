@@ -21,15 +21,21 @@ RANLIB = ranlib
 
 include config.make
 
-CFLAGS = -g $(GTKCFLAGS) #-DGTK_NO_CHECK_CASTS
+ifdef DEBUG
+CFLAGS = -g $(GTKCFLAGS)
+LDFLAGS = $(GTKLIBS) -lcamlrund
+MLFLAGS = -g
+else
+CFLAGS = -DGTK_NO_CHECK_CASTS $(GTKCFLAGS)
 LDFLAGS = $(GTKLIBS)
+endif
 
 THFLAGS = -thread
 THLIBS = unix.cma threads.cma
 THLDFLAGS = -lthreads -lunix
 
 ifdef USE_CC
-CCOMPILER = $(CC) -c -I/usr/local/lib/olabl -DGTK_NO_CHECK_CASTS $(CFLAGS)
+CCOMPILER = $(CC) -c -I/usr/local/lib/olabl $(CFLAGS)
 else
 CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
 endif
@@ -80,10 +86,10 @@ lablgtk_t: liblablgtk.a lablgtk.cma gtkThread.cmo
 		$(THLIBS) lablgtk.cma gtkThread.cmo
 
 var2conv: var2conv.cmo
-	olablc -o $@ var2conv.cmo
+	$(LINKER) -o $@ var2conv.cmo
 
 var2def: var2def.cmo
-	olablc -o $@ var2def.cmo
+	$(LINKER) -o $@ var2def.cmo
 
 clean:
 	rm -f *.cm* *.o *.a *_tags.[ch] var2conv var2def lablgtk
