@@ -40,7 +40,7 @@ class editor ?packing ?show () = object (self)
       let n_buff = GText.buffer ~text:s () in
       text#set_buffer n_buff;
       filename <- Some name;
-      n_buff#place_cursor n_buff#get_start_iter
+      n_buff#place_cursor n_buff#start_iter
     with _ -> prerr_endline "Load failed"
 
   method open_file () = file_dialog ~title:"Open" ~callback:self#load_file ()
@@ -57,7 +57,7 @@ class editor ?packing ?show () = object (self)
   method output ~file =
     try
       if Sys.file_exists file then Sys.rename file (file ^ "~");
-      let s = text#get_buffer#get_text () in
+      let s = text#buffer#get_text () in
       let oc = open_out file in
       output_string oc (Glib.Convert.locale_from_utf8 s);
       close_out oc;

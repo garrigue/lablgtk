@@ -22,7 +22,7 @@ let _ =
 	let x,y = Gdk.Window.get_pointer_location win in
 	let b_x,b_y = text#window_to_buffer_coords ~tag:`WIDGET ~x ~y in
 	let clicked_pos = text#get_iter_at_location ~x:b_x ~y:b_y in
-	Printf.printf "Position is %d.\n" clicked_pos#get_offset;
+	Printf.printf "Position is %d.\n" clicked_pos#offset;
 	flush stdout;
 	true;
       end

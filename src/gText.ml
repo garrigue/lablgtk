@@ -41,7 +41,7 @@ object (self)
   method get_oid = Gobject.get_oid obj
   method as_tag = obj
   method connect = new tag_signals obj
-  method priority () = Tag.get_priority obj
+  method priority = Tag.get_priority obj
   method set_priority p = Tag.set_priority obj p
   (* [BM] my very first polymorphic method in OCaml...*)
   method event : 'a. 'a Gtk.obj -> GdkEvent.any -> Gtk.textiter -> bool = 
@@ -53,6 +53,12 @@ object (self)
 end
 
 let tag s = new tag(Tag.create s)
+
+type contents =
+    [ `CHAR of Glib.unichar
+    | `PIXBUF of GdkPixbuf.pixbuf
+    | `CHILD of child_anchor
+    | `UNKNOWN ]
 
 class iter it =
 object
@@ -67,21 +73,23 @@ object
   method visible_line_index = Iter.get_visible_line_index it
   method visible_line_offset = Iter.get_visible_line_offset it
   method char = Iter.get_char it
+  method contents : contents =
+    let c = Iter.get_char it in
+    if c <> 0xfffc then `CHAR c else
+    match Iter.get_pixbuf it with
+      Some p -> `PIXBUF p
+    | None -> match Iter.get_child_anchor it with
+        Some c -> `CHILD (new child_anchor c)
+      | None -> `UNKNOWN
   method get_slice ~(stop:iter) = Iter.get_slice it stop#as_textiter
   method get_text ~(stop:iter) = Iter.get_text it stop#as_textiter
   method get_visible_slice ~(stop:iter) = 
     Iter.get_visible_slice it stop#as_textiter
   method get_visible_text ~(stop:iter) = 
     Iter.get_visible_text it stop#as_textiter
-  method pixbuf = Iter.get_pixbuf it
   method marks = Iter.get_marks it
   method get_toggled_tags b = List.map (fun x -> new tag x) 
 			      (Iter.get_toggled_tags it b)
-  method child_anchor  = 
-    match (Iter.get_child_anchor it)
-    with 
-      |None -> None
-      |Some c -> Some (new child_anchor c)
   method begins_tag ?(tag:tag option) () = 
     Iter.begins_tag it (match tag with | None -> None 
 			  | Some t -> Some t#as_tag)
@@ -299,7 +307,7 @@ class buffer obj = object(self)
       (as_textiter stop) default_editable
   method set_text text = 
     Buffer.set_text obj text
-  method get_text ?start ?stop ?(slice=false) ?(include_hidden=false) () =
+  method get_text ?start ?stop ?(slice=false) ?(visible=false) () =
     let start,stop = 
       match start,stop with 
 	| None,None -> Buffer.get_bounds obj
@@ -308,7 +316,7 @@ class buffer obj = object(self)
 	| Some start,Some stop -> as_textiter start, as_textiter stop
     in
     (if slice then Buffer.get_slice else Buffer.get_text)
-      obj start stop include_hidden
+      obj start stop (not visible)
   method insert_pixbuf ~iter ~pixbuf = 
     Buffer.insert_pixbuf obj (as_textiter iter) pixbuf
   method create_mark ?name ?(left_gravity=true) iter = 
@@ -344,7 +352,7 @@ class buffer obj = object(self)
     | Some v, 0   -> new iter (Buffer.get_iter_at_line obj v)
     | None  , v -> new iter (Buffer.get_iter_at_offset obj v)
     | Some l, c -> new iter (Buffer.get_iter_at_line_offset obj l c)
-  method get_iter_at_byte ?(line=0) index =
+  method get_iter_at_byte ~line index =
     new iter (Buffer.get_iter_at_line_index  obj line index)
   method get_iter_at_mark mark = 
     new iter (Buffer.get_iter_at_mark obj (self#get_mark mark))

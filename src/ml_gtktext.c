@@ -765,8 +765,7 @@ ML_1 (gtk_text_iter_get_line_index, GtkTextIter_val, Val_int)
 ML_1 (gtk_text_iter_get_visible_line_index, GtkTextIter_val, Val_int)
 ML_1 (gtk_text_iter_get_visible_line_offset, GtkTextIter_val, Val_int)
 
-     //[BM] CHECK THIS WITH CHAR <-> GUNICHAR
-ML_1 (gtk_text_iter_get_char, GtkTextIter_val, Val_char)
+ML_1 (gtk_text_iter_get_char, GtkTextIter_val, Val_int)
 
 ML_2 (gtk_text_iter_get_slice, GtkTextIter_val, GtkTextIter_val,
       copy_string_g_free)
@@ -777,7 +776,12 @@ ML_2 (gtk_text_iter_get_visible_slice, GtkTextIter_val,
       GtkTextIter_val, copy_string_g_free)
 ML_2 (gtk_text_iter_get_visible_text, GtkTextIter_val,
       GtkTextIter_val, copy_string_g_free)
-ML_1 (gtk_text_iter_get_pixbuf, GtkTextIter_val, Val_GdkPixbuf)
+
+value ml_gtk_text_iter_get_pixbuf(value ti)
+{
+  GdkPixbuf *ret = gtk_text_iter_get_pixbuf(GtkTextIter_val(ti));
+  return Val_option(ret,Val_GdkPixbuf);
+}
 
 value ml_gtk_text_iter_get_marks(value ti)
 {
@@ -792,11 +796,11 @@ value ml_gtk_text_iter_get_toggled_tags(value ti, value b)
                Val_GtkTextMark_func);
 }
 
-
 value ml_gtk_text_iter_get_child_anchor(value ti)
 {
-  return Val_option(gtk_text_iter_get_child_anchor(GtkTextIter_val(ti)),
-                    Val_GtkTextChildAnchor);
+  GtkTextChildAnchor *ret =
+    gtk_text_iter_get_child_anchor(GtkTextIter_val(ti));
+  return Val_option(ret,Val_GtkTextChildAnchor);
 }
 
 ML_2 (gtk_text_iter_begins_tag,GtkTextIter_val,
@@ -816,7 +820,7 @@ value ml_gtk_text_iter_get_tags(value ti){
   CAMLreturn(Val_GSList(gtk_text_iter_get_tags
 			(GtkTextIter_val(ti)),
 			Val_GtkTextMark_func));
-    }
+}
 
 ML_2 (gtk_text_iter_editable,GtkTextIter_val,
       Bool_val, Val_bool)
