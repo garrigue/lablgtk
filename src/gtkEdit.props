@@ -41,6 +41,8 @@ class Entry set wrap wrapsig : Editable {
   method append_text : "string -> unit"
   method prepend_text : "string -> unit"
   method text_length : "int"
+  method get_completion : "Gtk.entry_completion option"
+  method set_completion : "Gtk.entry_completion -> unit"
   signal activate
   signal copy_clipboard
   signal cut_clipboard
@@ -90,4 +92,18 @@ class ComboBox set wrap wrapsig : Bin {
 
 class ComboBoxEntry set : ComboBox {
   "text-column"          gint                 : Read / Write / Construct Only / NoSet
+}
+
+class EntryCompletion set gobject {
+  "minimum-key-length"   gint                 : Read / Write
+  "model"                GtkTreeModel         : Read / Write
+  signal action_activated "marshal_int"
+  signal match_selected   "(marshal2_ret ~ret:boolean gobject unsafe_pointer \"GtkEntryCompletion::match-selected\" : (Gtk.tree_model -> Gtk.tree_iter -> bool) marshaller)"
+  method get_entry : "Gtk.entry obj option"
+  method complete
+  method insert_action_text : "int -> string -> unit"
+  method insert_action_markup : "int -> string -> unit"
+  method delete_action : "int -> unit"
+  method set_text_column : "int -> unit"
+  method set_match_func : "(string -> Gtk.tree_iter -> bool) -> unit"
 }

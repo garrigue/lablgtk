@@ -120,3 +120,5 @@ module ComboBox = struct
 end
 
 module ComboBoxEntry = GtkEditProps.ComboBoxEntry
+
+module EntryCompletion = GtkEditProps.EntryCompletion

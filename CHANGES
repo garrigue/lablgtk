@@ -1,5 +1,8 @@
 $Id$
 
+2004.01.04 [Olivier]
+  * support for GtkEntryCompletion (2.4)
+
 2003.12.21 [Olivier]
   * add event-after signal for widgets
 

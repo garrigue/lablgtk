@@ -38,7 +38,44 @@ class editable : 'a obj ->
     method set_position : int -> unit
   end
 
-(** {3 GtkEntry} *)
+(** {3 GtkEntry & GtkEntryCompletion} *)
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkEntryCompletion *)
+class entry_completion_signals :
+  [> `entrycompletion ] Gtk.obj ->
+  object ('a)
+    method after : 'a
+    method action_activated : callback:(int -> unit) -> GtkSignal.id
+    method match_selected :
+      callback:(GTree.model -> Gtk.tree_iter -> bool) -> GtkSignal.id
+  end
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkEntryCompletion *)
+class entry_completion :
+  ([> `entrycompletion|`celllayout] as 'a) Gtk.obj ->
+  object
+    inherit GTree.cell_layout
+    val obj : 'a Gtk.obj
+    method as_entry_completion : Gtk.entry_completion
+    method misc : GObj.gobject_ops
+    method connect : entry_completion_signals
+
+    method minimum_key_length : int
+    method set_minimum_key_length : int -> unit
+    method model : GTree.model
+    method set_model : GTree.model -> unit
+
+    method get_entry : GObj.widget option
+    method complete : unit -> unit
+    method insert_action_text : int -> string -> unit
+    method insert_action_markup : int -> string -> unit
+    method delete_action : int -> unit
+
+    method set_match_func : (string -> Gtk.tree_iter -> bool) -> unit
+    method set_text_column : string GTree.column -> unit
+  end
 
 (** @gtkdoc gtk GtkEntry *)
 class entry_signals : [> Gtk.entry] obj ->
@@ -86,6 +123,9 @@ class entry : ([> Gtk.entry] as 'a) obj ->
     method max_length : int
     method visibility : bool
     method width_chars : int
+
+    method set_completion : entry_completion -> unit (** @since GTK 2.4 *)
+    method get_completion : entry_completion option  (** @since GTK 2.4 *)
   end
 
 (** @gtkdoc gtk GtkEntry *)
@@ -99,6 +139,13 @@ val entry :
   ?width_chars:int ->
   ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> entry
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkEntryCompletion *)
+val entry_completion :
+  ?model:#GTree.model ->
+  ?minimum_key_length:int ->
+  ?entry:entry -> unit -> entry_completion
 
 (** {4 GtkSpinButton} *)
 
