@@ -1082,12 +1082,12 @@ ML_0 (gtk_vseparator_new, Val_GtkWidget)
 value ml_gtk_init (value argv)
 {
     int argc = Wosize_val(argv);
-    value copy = alloc_shr (argc, Abstract_tag);
+    value copy = (argc ? alloc_shr (argc, Abstract_tag) : Atom(0));
     value ret;
     int i;
     for (i = 0; i < argc; i++) Field(copy,i) = Field(argv,i);
     gtk_init (&argc, (char ***)&copy);
-    ret = alloc_shr (argc, 0);
+    ret = (argc ? alloc_shr (argc, 0) : Atom(0));
     Begin_root (ret);
     for (i = 0; i < argc; i++) initialize(&Field(ret,i), Field(copy,i));
     End_roots ();
