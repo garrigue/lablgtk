@@ -381,10 +381,10 @@ Index: typing/typeclass.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/typeclass.ml,v
 retrieving revision 1.25
-retrieving revision 1.26
-diff -c -r1.25 -r1.26
+retrieving revision 1.27
+diff -c -r1.25 -r1.27
 *** typeclass.ml	1998/09/02 07:02:15	1.25
---- typeclass.ml	1998/11/30 09:09:17	1.26
+--- typeclass.ml	1998/12/07 11:00:46	1.27
 ***************
 *** 251,256 ****
 --- 251,270 ----
@@ -433,14 +433,61 @@ diff -c -r1.25 -r1.26
         (val_sig, Concr.add lab concr_meths)
   
     | Pctf_cstr (sty, sty', loc) ->
+***************
+*** 569,580 ****
+--- 583,600 ----
+         cl_loc = scl.pcl_loc;
+         cl_type = Tcty_signature ty}
+    | Pcl_fun (l, spat, None, scl') ->
++       Ctype.raise_nongen_level ();
++       Ctype.begin_def ();
+        let (pat, pv, val_env, met_env) =
+          Typecore.type_class_arg_pattern val_env met_env spat
+        in
+        if Ctype.is_opt l then unify_pat val_env pat
+  	  (Ctype.newty
+  	     (Tconstr(Predef.path_option,[Ctype.newvar()],ref Mnil)));
++       Ctype.end_def ();
++       iter_pattern
++ 	(fun {pat_type=ty} -> Ctype.make_nongen ty; Ctype.generalize ty)
++ 	pat;
+        let pv =
+          List.map
+            (function (id, id', ty) ->
+***************
+*** 590,601 ****
+                 exp_loc = Location.none;
+                 exp_type = Ctype.none;
+                 exp_env = Env.empty }];
+-       Ctype.raise_nongen_level ();
+        let cl = class_expr val_env met_env scl' in
+        Ctype.end_def ();
+        {cl_desc = Tclass_fun (pat, pv, cl);
+         cl_loc = scl.pcl_loc;
+!        cl_type = Tcty_fun (l, pat.pat_type, cl.cl_type)}
+    | Pcl_fun (l, spat, Some e, scl') ->
+        let pos = spat.ppat_loc.Location.loc_start in
+        let loc = {Location.loc_start = pos; Location.loc_end = pos} in
+--- 610,620 ----
+                 exp_loc = Location.none;
+                 exp_type = Ctype.none;
+                 exp_env = Env.empty }];
+        let cl = class_expr val_env met_env scl' in
+        Ctype.end_def ();
+        {cl_desc = Tclass_fun (pat, pv, cl);
+         cl_loc = scl.pcl_loc;
+!        cl_type = Tcty_fun (l, Ctype.instance pat.pat_type, cl.cl_type)}
+    | Pcl_fun (l, spat, Some e, scl') ->
+        let pos = spat.ppat_loc.Location.loc_start in
+        let loc = {Location.loc_start = pos; Location.loc_end = pos} in
 Index: typing/typecore.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/typecore.ml,v
 retrieving revision 1.28
-retrieving revision 1.30
-diff -c -r1.28 -r1.30
+retrieving revision 1.31
+diff -c -r1.28 -r1.31
 *** typecore.ml	1998/09/02 07:02:17	1.28
---- typecore.ml	1998/11/30 01:32:47	1.30
+--- typecore.ml	1998/12/07 11:00:47	1.31
 ***************
 *** 866,872 ****
           exp_env = env }
@@ -471,6 +518,37 @@ diff -c -r1.28 -r1.30
         | _ ->
   	  assert false
 ***************
+*** 1269,1274 ****
+--- 1272,1278 ----
+  
+  and type_let env rec_flag spat_sexp_list =
+    begin_def();
++   begin_def();
+    let (pat_list, new_env) =
+      type_pattern_list env (List.map (fun (spat, sexp) -> spat) spat_sexp_list)
+    in
+***************
+*** 1279,1284 ****
+--- 1283,1300 ----
+  	pat_list spat_sexp_list;
+        new_env
+    in
++   end_def();
++   List.iter
++     (fun pat ->
++       iter_pattern
++ 	(fun pat -> make_nongen pat.pat_type; generalize pat.pat_type)
++ 	pat)
++     pat_list;
++   let pat_list =
++     List.map
++       (fun pat -> {pat with pat_type = instance pat.pat_type})
++       pat_list
++   in
+    let exp_list =
+      List.map2
+        (fun (spat, sexp) pat -> type_expect exp_env sexp pat.pat_type)
+***************
 *** 1358,1371 ****
           (function () ->
              print_string "but is here used with type")
@@ -486,7 +564,7 @@ diff -c -r1.28 -r1.30
   	print_string (string_of_llist provided)
         end
     | Label_multiply_defined lid ->
---- 1361,1384 ----
+--- 1374,1397 ----
           (function () ->
              print_string "but is here used with type")
     | Apply_non_function (expected, provided) ->
@@ -511,6 +589,24 @@ diff -c -r1.28 -r1.30
   	print_string (string_of_llist provided)
         end
     | Label_multiply_defined lid ->
+Index: typing/typecore.mli
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/typecore.mli,v
+retrieving revision 1.9
+retrieving revision 1.10
+diff -c -r1.9 -r1.10
+*** typecore.mli	1998/09/01 09:30:24	1.9
+--- typecore.mli	1998/12/07 11:00:48	1.10
+***************
+*** 51,56 ****
+--- 51,57 ----
+  	Env.t -> Typedtree.expression -> type_expr -> unit
+  val unify_pat:
+  	Env.t -> Typedtree.pattern -> type_expr -> unit
++ val iter_pattern: (Typedtree.pattern -> unit) -> Typedtree.pattern -> unit
+  
+  type error =
+      Unbound_value of Longident.t
 Index: typing/typetexp.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/typetexp.ml,v

@@ -6,7 +6,7 @@ open GtkObj
 let main () =
   let window = new_dialog ()
       title: "dialog" border_width: 10 width: 300 height: 300 in
-  window#connect_destroy callback:Main.quit;
+  window#connect#destroy callback:Main.quit;
 
   let scrolled_window = new_scrolled_window ()
       border_width: 10 hscrollbar_policy: `AUTOMATIC packing: window#vbox#pack
@@ -23,7 +23,7 @@ let main () =
   done;
 
   let button = new_button label: "close" packing: window#action_area#pack in
-  button#connect_clicked callback: Main.quit;
+  button#connect#clicked callback: Main.quit;
   button#grab_default ();
   window#show_all ();
   Main.main ()

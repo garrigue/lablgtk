@@ -23,7 +23,7 @@ end
 let main () =
 
   let window = new_window `TOPLEVEL border_width: 10 in
-  window#connect_destroy callback:Main.quit;
+  window#connect#destroy callback:Main.quit;
 
   let table = new_table rows:3 columns:2 packing: window#add in
   
@@ -37,11 +37,11 @@ let main () =
   let ptimer = Timeout.add 100 callback:bar#progress in
 
   let button = new_button label:"Reset" in
-  button#connect_clicked callback:bar#reset;
+  button#connect#clicked callback:bar#reset;
   table#attach button left:0 top:2 expand:`none fill:`x shrink:`both;
 
   let button = new_button label:"Cancel" in
-  button#connect_clicked callback:Main.quit;
+  button#connect#clicked callback:Main.quit;
   table#attach button left:1 top:2 expand:`none fill:`x shrink:`both;
 
   window#show_all ();
