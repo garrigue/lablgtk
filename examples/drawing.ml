@@ -1,7 +1,5 @@
 (* $Id$ *)
 
-open Gdk
-open Gtk
 open GtkObj
 open GdkObj
 

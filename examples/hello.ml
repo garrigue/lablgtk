@@ -1,6 +1,5 @@
 (* $Id$ *)
 
-open Gtk
 open GtkObj
 
 let window = new_window `TOPLEVEL border_width: 10

@@ -1,6 +1,5 @@
 (* $Id$ *)
 
-open Gtk
 open GtkObj
 
 let main () =

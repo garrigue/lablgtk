@@ -1,19 +1,18 @@
 (* $Id$ *)
 
-open Gtk
 open GtkObj
 
 class xpm_label_box parent:(parent : #widget) :file :label =
   let _ = 
     if not (Sys.file_exists file) then failwith (file ^ " does not exist") in
   object
-    inherit box (Box.create `HORIZONTAL) as box
+    inherit box_create `HORIZONTAL as box
 
     val pixmapwid =
       parent#misc#realize ();
       let pixmap, mask =
 	Gdk.Pixmap.create_from_xpm (parent#misc#window)
-	  transparent:(Style.get_bg parent#misc#style) :file
+	  transparent:(Gtk.Style.get_bg parent#misc#style) :file
       in
       new_pixmap pixmap :mask
 

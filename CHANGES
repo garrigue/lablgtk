@@ -1,5 +1,9 @@
 $Id$
 
+1998.12.9
+  * replicated Main, Timeout and Grab to GtkObj (no need to open Gtk anymore)
+  * moved some non standard classes to GtkExt
+
 1998.12.8
   * more widgets in GtkObj
   * refined memory management

@@ -4,7 +4,6 @@
 
 (* cut-and-paste も対応していますが、editはうまくいきません *)
 
-open Gtk
 open GtkObj
 
 let window = new_window `TOPLEVEL
@@ -22,8 +21,8 @@ let _ =
   text#misc#realize ();
   text#insert "こんにちは" :font;
   let style = button#misc#style in
-  Style.set style :font;
-  Style.set_bg style color:(Gdk.Color.alloc (`NAME "green"));
+  Gtk.Style.set style :font;
+  Gtk.Style.set_bg style color:(Gdk.Color.alloc (`NAME "green"));
   button#connect#clicked callback:Main.quit
 
 let _ =

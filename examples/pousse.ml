@@ -1,8 +1,7 @@
 (* $Id$ *)
 
-open Gtk
 open GtkObj
-open GdkObj
+open GtkExt
 
 (* The game logic *)
 
