@@ -78,4 +78,46 @@ module Conversion = struct
 	 | Some i -> i)
  	 to_codeset from_codeset
 	 	
+  external locale_from_utf8_ : string -> int -> string
+    = "ml_g_locale_from_utf8"
+
+  let locale_from_utf8 ?length text = 
+    match length with
+      | Some l -> locale_from_utf8_ text l
+      | None ->  locale_from_utf8_ text (String.length text)
+
+  external locale_to_utf8_ : string -> int -> string
+   = "ml_g_locale_to_utf8"
+
+  let locale_to_utf8 ?length text = 
+    match length with
+      | Some l -> locale_to_utf8_ text l
+      | None ->  locale_to_utf8_ text (String.length text)
+
+	 	
+  external filename_from_utf8_ : string -> int -> string
+   = "ml_g_filename_from_utf8"
+
+  let filename_from_utf8 ?length text = 
+    match length with
+      | Some l -> filename_from_utf8_ text l
+      | None ->  filename_from_utf8_ text (String.length text)
+
+  external filename_to_utf8_ : string -> int -> string
+   = "ml_g_filename_to_utf8"
+
+  let filename_to_utf8 ?length text = 
+    match length with
+      | Some l -> filename_to_utf8_ text l
+      | None ->  filename_to_utf8_ text (String.length text)
+	  
+(* [get_charset ()] returns the pair [u,s] where [u] is true if the
+   current charset is UTF-8 encoded and [s] is the charset name.
+*)
+  external get_charset : unit -> bool*string = "ml_g_get_charset"
+
+(*  
+    external filename_from_uri : string -> string option * string = "ml_g_filename_from_uri"
+    external filename_to_uri : string -> string option * string  = "ml_g_filename_to_uri"
+*)
 end

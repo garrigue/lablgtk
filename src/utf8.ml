@@ -1,7 +1,7 @@
 
 let char n = String.make 1 (Char.chr n)
 
-let utf8 n =
+let from_unicode_index n =
   if 0 <= n && n <= 0x7f then
     char n
   else if 0 <= n && n <= 0x7ff then
@@ -30,3 +30,4 @@ let utf8 n =
     char (0x80 + (n lsr 6) land 0b111111) ^
     char (0x80 + n land 0b111111)
 
+external validate : string -> bool = "ml_utf8_validate"

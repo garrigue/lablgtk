@@ -5,4 +5,7 @@
   http://www.unicode.org for charmaps.
   Does not check that the given index is a valid unicode index. 
 *)
-val utf8 : int -> string
+val from_unicode_index : int -> string
+
+
+val validate : string -> bool
