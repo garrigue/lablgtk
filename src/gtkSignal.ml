@@ -53,6 +53,9 @@ let marshal_unit f _ _ = f ()
 let marshal_int f _ = function
   | GtkArgv.INT n :: _ -> f n
   | _ -> invalid_arg "GtkSignal.marshal_int"
+let marshal_int2 f _ = function
+  | GtkArgv.INT n :: GtkArgv.INT m ::_ -> f n m
+  | _ -> invalid_arg "GtkSignal.marshal_int2"
 
 let emit (obj : 'a obj) ~(sgn : ('a, 'b) t)
     ~(emitter : 'a obj -> name:string -> 'b) =
@@ -63,3 +66,6 @@ let emit_unit obj ~sgn = emit obj ~emitter:emit_none ~sgn ()
 external emit_int : 'a obj -> name:string -> int -> unit
     = "ml_gtk_signal_emit_int"
 let emit_int = emit ~emitter:emit_int
+external emit_int2 : 'a obj -> name:string -> int -> int -> unit
+    = "ml_gtk_signal_emit_int2"
+let emit_int2 = emit ~emitter:emit_int2

@@ -183,3 +183,12 @@ CAMLprim value ml_gtk_clist_get_row_state (value clist, value y)
     row = list->data;
     return (Val_state_type (row->state));
 }
+
+static value val_int(gpointer i)
+{
+  return Val_int (GPOINTER_TO_INT(i));
+}
+CAMLprim value ml_gtk_clist_selection (value clist)
+{
+  return( Val_GList(GtkCList_val(clist)->selection, val_int) );
+}

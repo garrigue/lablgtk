@@ -870,6 +870,8 @@ ML_2_name (ml_gtk_signal_emit_none, gtk_signal_emit_by_name,
            GtkObject_val, String_val, Unit)
 ML_3_name (ml_gtk_signal_emit_int, gtk_signal_emit_by_name,
            GtkObject_val, String_val, Int_val, Unit)
+ML_4_name (ml_gtk_signal_emit_int2, gtk_signal_emit_by_name,
+           GtkObject_val, String_val, Int_val, Int_val, Unit)
 ML_4_name (ml_gtk_signal_emit_scroll, gtk_signal_emit_by_name,
            GtkObject_val, String_val, Scroll_type_val, Double_val, Unit)
 

@@ -33,12 +33,15 @@ external handler_unblock : 'a obj -> id -> unit
 (* Some marshaller functions, to build signals *)
 val marshal_unit : (unit -> unit) -> GtkArgv.t -> GtkArgv.data list -> unit
 val marshal_int : (int -> unit) -> GtkArgv.t -> GtkArgv.data list -> unit
+val marshal_int2 : 
+    (int -> int -> unit) -> GtkArgv.t -> GtkArgv.data list -> unit
 
 (* Emitter functions *)
 val emit :
   'a obj -> sgn:('a, 'b) t -> emitter:('a obj -> name:string -> 'b) -> 'b
 val emit_unit : 'a obj -> sgn:('a, unit -> unit) t -> unit
 val emit_int : 'a obj -> sgn:('a, int -> unit) t -> int -> unit
+val emit_int2 : 'a obj -> sgn:('a, int -> int -> unit) t -> int -> int -> unit
 
 (* Internal functions. *)
 val enter_callback : (unit -> unit) ref
