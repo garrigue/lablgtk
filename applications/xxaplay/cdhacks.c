@@ -9,6 +9,19 @@
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 
+#ifndef CD_MSF_OFFSET
+#  define CD_MSF_OFFSET CD_BLOCK_OFFSET
+#endif
+
+value *cd_error = NULL;
+
+value cd_init(v)
+     value v;
+{
+  if( cd_error == NULL)
+    cd_error = caml_named_value("cd_error");
+}
+
 value read_raw_frame(vfd, vlba)
      value vfd;
      value vlba;
@@ -28,7 +41,7 @@ value read_raw_frame(vfd, vlba)
   msf->cdmsf_frame0 = (lba + CD_MSF_OFFSET) % CD_FRAMES;
   rc = ioctl(Int_val(vfd), CDROMREADRAW, buf);
   if (-1 == rc) {
-    fprintf(stderr, "error");
+    raise_with_string("read error");
   }
   ret = alloc_string( CD_FRAMESIZE_RAW );
   bcopy( buf, String_val(ret), CD_FRAMESIZE_RAW );

@@ -142,18 +142,18 @@ class player :fd :start :length :interleave :report :finish =
   val mutable current_sector = start
   val mutable job = None
 
-  method go_next_sector =
+  method next =
     current_sector <- current_sector + interleave;
     current <- current + 1;
     report false current
 
-  method go_sector x =
+  method jump x =
     self#init;
     current_sector <- start + x  * interleave;
     current <- x;
     report true current
 
-  method send_sector =
+  method send =
     let s = read_raw_frame fd current_sector in
     let track = track_info s in
     if track = -1 then begin (* end *)
@@ -163,7 +163,7 @@ class player :fd :start :length :interleave :report :finish =
     end else begin
       dsp#write (Xaadpcm.decodeSector s);
       report false current;
-      self#go_next_sector
+      self#next
     end
 
   method init = Xaadpcm.init_decoder ()
@@ -174,20 +174,24 @@ class player :fd :start :length :interleave :report :finish =
     if job = None then
       job <- Some (Timeout.add 10 callback: (fun () -> 
 	let _,fdok,_ = Unix.select read:[] write:[fd] exn:[] timeout:(-1.0) in
-	if fdok <> [] then self#send_sector; 
+	if fdok <> [] then self#send; 
 	true))
 
   method pause =
-    prerr_endline "pause";
-    report true current;
     match job with
-      Some j -> Timeout.remove j; job <- None
+      Some j -> 
+	prerr_endline "pause";
+	report true current;
+	Timeout.remove j; job <- None
     | None -> ()
 
   method stop =
-    prerr_endline "stop";
-    self#pause;
-    self#go_sector 0
+    match job with
+      Some j -> 
+	self#pause;
+	prerr_endline "stop";
+	self#jump 0
+    | None -> ()
 
   method destroy =
     prerr_endline "destroy";
@@ -195,32 +199,6 @@ class player :fd :start :length :interleave :report :finish =
     dsp#flush;
     dsp#close
 end
-
-let read_cdrom_info fd =
-  let get_string s =
-    let s =
-      try
-	let x = String.index s char: '\000' in
-	String.sub s pos:0 len:x
-      with
-	Not_found -> s
-    in
-    (* remove spaces at the end *)
-    if s = "" then s else begin
-      let last = ref (String.length s - 1) in
-      try
-	while !last >= 0 do
-	  match s.[!last] with
-	    ' ' -> decr last 
-	  | _ -> raise Exit
-	done; ""
-      with
-	Exit -> String.sub s pos:0 len:(!last + 1)
-    end
-  in
-  let pvd = Xafile.read_primary_volume_descriptor fd in
-  get_string pvd.application_id,
-  get_string pvd.volume_id
 
 let main () =
   let device = ref "/dev/cdrom" in
@@ -256,7 +234,7 @@ let main () =
   Box.pack vbox tracktitle padding: 1;
 
   let trackselecter = Box.hbox_new homogeneous: false spacing: 0 in
-  Box.pack vbox trackselecter padding: 1;
+  Box.pack vbox trackselecter expand: false fill: false padding: 1;
   
   let timebar = Box.vbox_new homogeneous: false spacing: 2 in
   Box.pack vbox timebar padding: 1;
@@ -311,49 +289,15 @@ let main () =
   
   let current_track = ref 0 in
 
-  let trackbox = ref None in
-  let check_cdrom () =
-    current_track := 0;
-    player_send (fun x -> x#stop);
-    prerr_endline "checking cd";
-    let app, volume = read_cdrom_info fd in
-    if volume <> "" then set_cd_title volume
-    else set_cd_title "Unknown CD";
-    let tracks =
-      try
-	read_track_conf app volume
-      with
-	NoConf ->
-	  create_track_conf fd app volume;
-	  read_track_conf app volume
-    in
-    begin match !trackbox with
-      Some t -> Object.destroy t
-    | None -> ()
-    end;
-    let num_tracks = List.length tracks in
-    if num_tracks <> 0 then begin
-      let table = Table.create rows: 5 
-	  columns: (num_tracks / 5 + (if num_tracks mod 5 <> 0 then 1 else 0))
-      in
-      for i = 0 to num_tracks - 1 do
-	let button = Button.create label: (sprintf "%d" (i + 1)) in
-	Table.attach table button left: (i mod 5) top: (i / 5);
-	Widget.show button
-      done;
-      Box.pack trackselecter table padding: 1;
-      Widget.show table;
-      trackbox := Some table
-    end else trackbox := None;
-    tracks
-  in
+  let finish = ref (fun () -> ()) in
+  let tracks = ref [] in
 
-  let tracks = ref (check_cdrom ()) in
+  let trackbox = ref None in
 
   let prepare_track finish onplay x =
     try
       let name, track = List.nth !tracks pos: x in
-      Label.set tracktitle label: name;
+      Label.set tracktitle label: (sprintf "%d: %s" (x+1) name);
   
       recreate_time_scale track.tlength;
   
@@ -373,7 +317,7 @@ let main () =
       Signal.connect sig:Adjustment.Signals.value_changed (!scale)#adjustment
   	callback: (fun _ -> 
   	  let v = (!scale)#set_time in
-  	  player_send (fun x -> x#go_sector v) );
+  	  player_send (fun x -> x#jump v) );
       Signal.connect sig:Adjustment.Signals.changed (!scale)#adjustment
   	callback: (fun _ -> (!scale)#set_time; ());
       if onplay then player#play;
@@ -383,7 +327,48 @@ let main () =
 	Label.set tracktitle label: "No XA" 
   in
 
-  let finish = ref (fun () -> ()) in
+  let check_cdrom () =
+    current_track := 0;
+    player_send (fun x -> x#stop);
+    prerr_endline "checking cd";
+    let app, volume = read_cdrom_info fd in
+    if volume <> "" then set_cd_title volume
+    else set_cd_title "Unknown CD";
+    let app = "PLAYSTATION" in
+    let tracks =
+      try
+	read_track_conf app volume
+      with
+	NoConf ->
+	  create_track_conf fd app volume;
+	  read_track_conf app volume
+    in
+    begin match !trackbox with
+      Some t -> Object.destroy t
+    | None -> ()
+    end;
+    let num_tracks = List.length tracks in
+    if num_tracks <> 0 then begin
+      let table = Table.create rows: 5 
+	  columns: (num_tracks / 5 + (if num_tracks mod 5 <> 0 then 1 else 0))
+      in
+      for i = 0 to num_tracks - 1 do
+	let button = Button.create label: (sprintf "%d" (i + 1)) in
+	Signal.connect sig:Button.Signals.clicked button callback:(fun () ->
+	  current_track := i;
+	  player_send (fun x -> x#destroy);
+	  prepare_track !finish true i);
+	Table.attach table button left: (i mod 5) top: (i / 5);
+	Widget.show button
+      done;
+      Box.pack trackselecter table expand: true fill: false padding: 1;
+      Widget.show table;
+      trackbox := Some table
+    end else trackbox := None;
+    tracks
+  in
+
+  tracks := check_cdrom ();
 
   let next_track onplay =
     if !current_track <> List.length !tracks - 1 then begin

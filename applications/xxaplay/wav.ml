@@ -1,4 +1,5 @@
 open Unix
+(* open ThreadUnix *)
 
 (* wave file *)
 
@@ -39,13 +40,13 @@ let write_header fd header =
   write fd "WAVE" 0 4;
 
   write fd "fmt " 0 4;
-  write_dword 16; (* header why not 16 ? *)
+  write_dword 16;
   write_word header.formatTag;
   write_word header.nChannels;
   write_dword header.nSamplesPerSec;
   write_dword header.nAvgBytesPerSec;
   write_word header.nBlockAlign;
-  write_word header.nBitsPerSample; (* hack *) 
+  write_word header.nBitsPerSample;
   
   write fd "data" 0 4;
   write_dword header.totalSize
