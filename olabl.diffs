@@ -185,88 +185,78 @@ Index: typing/printtyp.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/printtyp.ml,v
 retrieving revision 1.27
-retrieving revision 1.30
-diff -c -r1.27 -r1.30
+retrieving revision 1.31
+diff -c -r1.27 -r1.31
 *** printtyp.ml	1998/09/01 09:30:21	1.27
---- printtyp.ml	1998/12/07 09:53:05	1.30
+--- printtyp.ml	1998/12/08 02:49:32	1.31
 ***************
-*** 189,196 ****
-  
-  let delayed = ref []
-  
-  let reset () =
-!   reset_names (); reset_loop_marks (); delayed := []
-  
-  let rec print_sep_list pr sep = function
-      [] -> ()
---- 189,200 ----
-  
-  let delayed = ref []
-  
-+ let in_class_func = ref false
-+ let enter_class_func () = in_class_func := true
-+ let leave_class_func () = in_class_func := false
-+ 
-  let reset () =
-!   reset_names (); reset_loop_marks (); delayed := []; in_class_func := false
-  
-  let rec print_sep_list pr sep = function
-      [] -> ()
-***************
-*** 219,225 ****
-        end
-      then print_string "'_"
-      else print_string "'";
-!     print_string (name_of_type ty')
-    with Not_found ->
+*** 224,236 ****
       let alias =
         List.memq ty' !aliased &
---- 223,230 ----
-        end
-      then print_string "'_"
-      else print_string "'";
-!     print_string (name_of_type ty');
-!     in_class_func := false
-    with Not_found ->
-      let alias =
-        List.memq ty' !aliased &
-***************
-*** 229,234 ****
---- 234,240 ----
-  	  then print_string "'"
-  	  else print_string "'_";
-  	  print_string(name_of_type ty');
-+ 	  in_class_func := false;
-  	  false
-        |	Tunivar -> false
+        match ty.desc with
+! 	Tvariant ({var_name = None} as var) ->
+! 	  if (not sch) or ty'.level = generic_level or ty'.desc <> Tvar
+! 	  then print_string "'"
+! 	  else print_string "'_";
+! 	  print_string(name_of_type ty');
+! 	  false
+!       |	Tunivar -> false
         |	_ -> true
+      in
+      if alias then begin
+--- 224,230 ----
+      let alias =
+        List.memq ty' !aliased &
+        match ty.desc with
+! 	Tvariant {var_name = None} | Tunivar -> false
+        |	_ -> true
+      in
+      if alias then begin
 ***************
-*** 239,244 ****
+*** 251,257 ****
+  	begin match tyl with
+  	  [] -> ()
+  	| [ty1] ->
+! 	    typexp sch 2 ty1; print_space()
+  	| tyl ->
+  	    open_hovbox 1; print_string "("; typlist sch 0 "," tyl;
+  	    print_string ")"; close_box(); print_space()
 --- 245,251 ----
-        else open_box 0
-      end;
-      let prio = if alias then 0 else prio0 in
-+     if prio < 2 then in_class_func := false;
-      begin match ty.desc with
-        Tvar ->
-          if (not sch) or ty.level = generic_level
+  	begin match tyl with
+  	  [] -> ()
+  	| [ty1] ->
+! 	    typexp sch (max 3 prio) ty1; print_space()
+  	| tyl ->
+  	    open_hovbox 1; print_string "("; typlist sch 0 "," tyl;
+  	    print_string ")"; close_box(); print_space()
 ***************
-*** 272,279 ****
+*** 270,279 ****
+  	close_box()
+      | Tvariant var ->
         	let static = static_variant var
-   	and alias = List.memq ty' !aliased in
-  	if not alias & sch & ty'.level <> generic_level & ty'.desc = Tvar
+!  	and alias = List.memq ty' !aliased in
+! 	if not alias & sch & ty'.level <> generic_level & ty'.desc = Tvar
 ! 	then print_string "'_";
 ! 	open_box 1; print_string "[";
   	if static then
   	  vartyplist sch var.var_max
   	else begin
---- 279,288 ----
+--- 264,282 ----
+  	close_box()
+      | Tvariant var ->
         	let static = static_variant var
-   	and alias = List.memq ty' !aliased in
-  	if not alias & sch & ty'.level <> generic_level & ty'.desc = Tvar
-! 	then (in_class_func := false; print_string "'_");
-! 	let was_class_func = !in_class_func in
-! 	print_string (if was_class_func then "([" else "[");
+!  	and alias = List.memq ty' !aliased
+! 	and nongen = sch & ty'.level <> generic_level & ty'.desc = Tvar in
+! 	let prio =
+! 	  if alias then begin
+! 	    print_string (if nongen then "'_" else "'");
+! 	    print_string (name_of_type ty');
+! 	    0
+! 	  end else if nongen then begin
+! 	    print_string "'_"; 0
+! 	  end else prio
+! 	in
+! 	print_string (if prio >= 4 then "([" else "[");
 ! 	open_box 0;
   	if static then
   	  vartyplist sch var.var_max
@@ -280,14 +270,48 @@ diff -c -r1.27 -r1.30
   	close_box()
       | Tarrow(p, ty1, ty2) ->
           if prio >= 2 then begin open_box 1; print_string "(" end
---- 305,311 ----
+--- 299,305 ----
   	      with Not_found -> fatal_error "Printtyp.typexp"
   	    end
   	end;
-! 	print_string (if was_class_func then "])" else "]");
+! 	print_string (if prio >= 4 then "])" else "]");
   	close_box()
       | Tarrow(p, ty1, ty2) ->
           if prio >= 2 then begin open_box 1; print_string "(" end
+***************
+*** 322,328 ****
+          begin match tyl with
+            [] -> ()
+          | [ty1] ->
+!             typexp sch 3 ty1; print_space()
+          | tyl ->
+              open_box 1; print_string "("; typlist sch 0 "," tyl;
+              print_string ")"; close_box(); print_space()
+--- 325,331 ----
+          begin match tyl with
+            [] -> ()
+          | [ty1] ->
+!             typexp sch (max 3 prio) ty1; print_space()
+          | tyl ->
+              open_box 1; print_string "("; typlist sch 0 "," tyl;
+              print_string ")"; close_box(); print_space()
+***************
+*** 330,336 ****
+          path p;
+          close_box()
+      | Tobject (fi, nm) ->
+!         typobject sch ty fi nm
+  (*
+  | Tfield _ -> typobject sch ty ty (ref None)
+  | Tnil -> typobject sch ty ty (ref None)
+--- 333,339 ----
+          path p;
+          close_box()
+      | Tobject (fi, nm) ->
+!         typobject sch prio ty fi nm
+  (*
+  | Tfield _ -> typobject sch ty ty (ref None)
+  | Tnil -> typobject sch ty ty (ref None)
 ***************
 *** 355,361 ****
       if alias then begin
@@ -297,7 +321,7 @@ diff -c -r1.27 -r1.30
   	  if sch & ty'.level <> generic_level & ty'.desc = Tvar
   	  then print_string "'_"
   	  else print_string "'";
---- 364,370 ----
+--- 358,364 ----
       if alias then begin
         print_string " as ";
         begin match ty.desc with
@@ -305,6 +329,40 @@ diff -c -r1.27 -r1.30
   	  if sch & ty'.level <> generic_level & ty'.desc = Tvar
   	  then print_string "'_"
   	  else print_string "'";
+***************
+*** 385,391 ****
+    print_sep_list (typexp sch prio)
+      (fun () -> print_string sep; print_space ())
+  
+! and typobject sch ty fi nm =
+    begin match !nm with
+      None ->
+        open_hvbox 2;
+--- 388,394 ----
+    print_sep_list (typexp sch prio)
+      (fun () -> print_string sep; print_space ())
+  
+! and typobject sch prio ty fi nm =
+    begin match !nm with
+      None ->
+        open_hvbox 2;
+***************
+*** 410,416 ****
+        begin match tyl with
+          [] -> ()
+        | [ty1] ->
+!           typexp sch 3 ty1; print_space()
+        | tyl ->
+            open_box 1; print_string "("; typlist sch 0 "," tyl;
+            print_string ")"; close_box(); print_space()
+--- 413,419 ----
+        begin match tyl with
+          [] -> ()
+        | [ty1] ->
+!           typexp sch (max 3 prio) ty1; print_space()
+        | tyl ->
+            open_box 1; print_string "("; typlist sch 0 "," tyl;
+            print_string ")"; close_box(); print_space()
 ***************
 *** 606,612 ****
       print_string lab;
@@ -314,7 +372,7 @@ diff -c -r1.27 -r1.30
       close_box ()
     end
   
---- 615,621 ----
+--- 609,615 ----
       print_string lab;
       print_string " :";
       print_space ();
@@ -331,7 +389,7 @@ diff -c -r1.27 -r1.30
         | _               -> assert false
         end;
         Vars.iter (fun _ (_, ty) -> mark_loops ty) sign.cty_vars
---- 632,644 ----
+--- 626,638 ----
         let rowvar = referent_type sty in
         visited_objects := rowvar :: !visited_objects;
         begin match sty.desc with
@@ -346,11 +404,8 @@ diff -c -r1.27 -r1.30
         end;
         Vars.iter (fun _ (_, ty) -> mark_loops ty) sign.cty_vars
 ***************
-*** 679,690 ****
-        close_box()
-    | Tcty_fun (l, ty, cty) ->
-        open_box 0;
-!       if l <> "" then print_string (if l = "?" then "?" else l^":");
+*** 682,689 ****
+        if l <> "" then print_string (if l = "?" then "?" else l^":");
         begin match (repr ty).desc with
         	Tconstr(c, [ty], _) when is_opt l & c = Predef.path_option ->
 ! 	  typexp sch 0 ty
@@ -358,25 +413,15 @@ diff -c -r1.27 -r1.30
         end;
         print_string " ->";
         print_space ();
-        perform_class_type sch p params cty;
---- 694,710 ----
-        close_box()
-    | Tcty_fun (l, ty, cty) ->
-        open_box 0;
-!       enter_class_func ();
-!       if l <> "" then begin
-! 	leave_class_func ();
-! 	print_string (if l = "?" then "?" else l^":")
-!       end;
+--- 691,698 ----
+        if l <> "" then print_string (if l = "?" then "?" else l^":");
         begin match (repr ty).desc with
         	Tconstr(c, [ty], _) when is_opt l & c = Predef.path_option ->
-! 	  typexp sch 2 ty
-!       | _ -> typexp sch 2 ty
+! 	  typexp sch (if l = "" then 4 else 2) ty
+!       | _ -> typexp sch (if l = "" then 4 else 2) ty
         end;
-+       leave_class_func ();
         print_string " ->";
         print_space ();
-        perform_class_type sch p params cty;
 Index: typing/typeclass.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/typeclass.ml,v
