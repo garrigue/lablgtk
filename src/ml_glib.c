@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include <locale.h>
+#include "win32.h"
 #include <glib.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>

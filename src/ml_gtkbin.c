@@ -113,7 +113,11 @@ ML_2 (gtk_scrolled_window_add_with_viewport, GtkScrolledWindow_val,
       GtkWidget_val, Unit)
 
 /* gtksocket.h */
-
+#ifdef _WIN32
+Unsupported(gtk_socket_new)
+Unsupported(gtk_socket_steal)
+#else
 #define GtkSocket_val(val) check_cast(GTK_SOCKET,val)
 ML_0 (gtk_socket_new, Val_GtkWidget_sink)
 ML_2 (gtk_socket_steal, GtkSocket_val, XID_val, Unit)
+#endif

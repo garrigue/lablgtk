@@ -690,8 +690,11 @@ Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
 		cancel_button, Val_GtkWidget)
 
 /* gtkplug.h */
-
+#ifdef _WIN32
+Unsupported(gtk_plug_new)
+#else
 ML_1 (gtk_plug_new, XID_val, Val_GtkWidget_window)
+#endif
 
 /* gtkctree.h */
 #define GtkCTree_val(val) check_cast(GTK_CTREE,val)
