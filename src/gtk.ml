@@ -230,6 +230,12 @@ type expander = [bin|`expander]
 type file_filter = [`gtk|`filefilter]
 type file_chooser = [ `filechooser]
 
+type action = [`action]
+type toggle_action = [action|`toggleaction]
+type radio_action = [toggle_action|`radioaction]
+type action_group = [`actiongroup]
+type ui_manager = [`uimanager]
+
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj
   (* constraint 'a = [> `gtk] *)
