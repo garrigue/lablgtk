@@ -33,13 +33,17 @@ class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
       ?filled:bool -> ?start:float -> ?angle:float -> unit -> unit
     method color : color -> Color.t
     method gc_values : GC.values
-    method image :
-      width:int ->
-      height:int ->
-      ?xsrc:int -> ?ysrc:int -> ?xdest:int -> ?ydest:int -> image -> unit
     method line : x:int -> y:int -> x:int -> y:int -> unit
     method point : x:int -> y:int -> unit
     method polygon : ?filled:bool -> (int * int) list -> unit
+    method put_image :
+      width:int ->
+      height:int ->
+      ?xsrc:int -> ?ysrc:int -> ?xdest:int -> ?ydest:int -> image -> unit
+    method put_pixmap :
+      width:int ->
+      height:int ->
+      ?xsrc:int -> ?ysrc:int -> ?xdest:int -> ?ydest:int -> pixmap -> unit
     method rectangle :
       x:int ->
       y:int -> width:int -> height:int -> ?filled:bool -> unit -> unit

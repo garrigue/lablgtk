@@ -55,8 +55,12 @@ object (self)
   method arc = Draw.arc w gc
   method polygon ?filled l = Draw.polygon w gc ?filled l
   method string s = Draw.string w gc ~string:s
-  method image ~width ~height ?(xsrc=0) ?(ysrc=0) ?(xdest=0) ?(ydest=0) image =
+  method put_image ~width ~height ?(xsrc=0) ?(ysrc=0) ?(xdest=0) ?(ydest=0)
+      image =
     Draw.image w gc ~image ~width ~height ~xsrc ~ysrc ~xdest ~ydest
+  method put_pixmap ~width ~height ?(xsrc=0) ?(ysrc=0) ?(xdest=0) ?(ydest=0)
+      pixmap =
+    Draw.pixmap w gc ~pixmap ~width ~height ~xsrc ~ysrc ~xdest ~ydest
 end
 
 class pixmap ?colormap ?mask pm = object
@@ -141,7 +145,7 @@ let pixmap_from_xpm ~window ~file ?colormap ?transparent () =
     with Gpointer.Null -> failwith "GDraw.pixmap_from_xpm : no window" in
   let pm, mask =
     try Pixmap.create_from_xpm window ~file ?colormap
-	?transparent:(may_map transparent ~f:(fun c -> color c))
+	?transparent:(may_map transparent ~f:(fun c -> color c)) ()
     with Gpointer.Null -> invalid_arg ("GDraw.pixmap_from_xpm : " ^ file) in
   new pixmap pm ?colormap ~mask
 
@@ -152,7 +156,7 @@ let pixmap_from_xpm_d ~window ~data ?colormap ?transparent () =
     with Gpointer.Null -> failwith "GDraw.pixmap_from_xpm_d : no window" in
   let pm, mask =
     Pixmap.create_from_xpm_d window ~data ?colormap
-      ?transparent:(may_map transparent ~f:(fun c -> color c)) in
+      ?transparent:(may_map transparent ~f:(fun c -> color c)) () in
   new pixmap pm ?colormap ~mask
 
 class drag_context context = object

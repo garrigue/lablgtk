@@ -300,11 +300,11 @@ module Pixmap = struct
       = "ml_gdk_pixmap_create_from_data_bc" "ml_gk_pixmap_create_from_data"
   external create_from_xpm :
       window -> ?colormap:colormap -> ?transparent:Color.t ->
-      file:string -> pixmap * bitmap
+      file:string -> unit -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm"
   external create_from_xpm_d :
       window -> ?colormap:colormap -> ?transparent:Color.t ->
-      data:string array -> pixmap * bitmap
+      data:string array -> unit -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm_d"
 end
 
@@ -365,6 +365,16 @@ module Draw = struct
     xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
     width: int -> height: int -> unit
       = "ml_gdk_draw_image_bc" "ml_gdk_draw_image"
+(*
+  external bitmap : 'a drawable -> gc -> bitmap: bitmap -> 
+    xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
+    width: int -> height: int -> unit
+      = "ml_gdk_draw_bitmap_bc" "ml_gdk_draw_bitmap"
+*)
+  external pixmap : 'a drawable -> gc -> pixmap: pixmap -> 
+    xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
+    width: int -> height: int -> unit
+      = "ml_gdk_draw_pixmap_bc" "ml_gdk_draw_pixmap"
 end
 
 module Rgb = struct

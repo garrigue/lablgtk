@@ -1,5 +1,9 @@
 $Id$
 
+2000.12.07
+  * merge wakita's patch for gdk_draw_pixmap
+    rename GDraw.drawable#image/pixmap to #put_image/put_pixma
+
 2000.11.29
   * remove unison port, since unison already works with this snapshot
 

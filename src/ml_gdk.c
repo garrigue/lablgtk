@@ -402,6 +402,12 @@ ML_4 (gdk_draw_polygon, GdkDrawable_val, GdkGC_val, Bool_val,
 ML_6 (gdk_draw_string, GdkDrawable_val, GdkFont_val, GdkGC_val, Int_val, Int_val, String_val, Unit)
 ML_bc6 (ml_gdk_draw_string)
 
+/*
+ML_9 (gdk_draw_bitmap, GdkDrawable_val, GdkGC_val, GdkBitmap_val, Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
+ML_bc9 (ml_gdk_draw_bitmap)
+*/
+ML_9 (gdk_draw_pixmap, GdkDrawable_val, GdkGC_val, GdkPixmap_val, Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
+ML_bc9 (ml_gdk_draw_pixmap)
 ML_9 (gdk_draw_image, GdkDrawable_val, GdkGC_val, GdkImage_val, Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
 ML_bc9 (ml_gdk_draw_image)
 
