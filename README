@@ -30,7 +30,7 @@ How to compile:
 	Then just type "make" to build the library and toplevels.
 
         If you are using the windows precompiled version, you must
-        first obtain gtk-dlls-20020703.zip from the above location,
+        first obtain gtk-win32-dlls.zip from the above location,
         and then copy bin\lablgtk.bat, lib\stublibs\dlllablgtk.dll and
         lib\lablgtk to their respective locations in the OCaml
         distribution.
@@ -82,11 +82,14 @@ How to use the threaded toplevel:
   You should at once see a window appear.
   The GTK main loop is running in a separate thread. Any command
   is immediately reflected by the system.
-  Beware that you cannot switch threads within a callback, that is the
-  only thread related command you may use in a callback is
-  Thread.create. On the other hand, all newly created threads will be
-  run directly by the caml main loop, so they can use all thread
-  operations.
+  Beware that with bytecode threads, you cannot switch threads within
+  a callback. That is the only thread related command you may use in a
+  callback is Thread.create. Calling blocking operations may cause
+  deadlocks. On the other hand, all newly created threads will be run
+  directly by the caml main loop, so they can use all thread
+  operations. There is no such problem for posix and win32 threads,
+  but win32 threads have problems of their own. See the windows port
+  section lower.
 
 Locale or not locale ?
   Until version 1.2.0, lablgtk called setlocale automatically on
@@ -314,9 +317,24 @@ Windows port
   libgmodule-2.0-0.dll (glib), libgdk-0.dll and libgtk-0.dll (gtk+).
 
   I checked with the 2002-07-03 version of these libraries.
-  Currently threads in the toplevel do not seem to work, but otherwise
-  everything seems OK. In particular, you can run all examples, and build
+  Everything seems OK. In particular, you can run all examples, and build
   applications/unison as usual.
+  However, if you want to use threads, you must be aware of windows
+  specific restrictions; see for instance:
+     http://groups.yahoo.com/group/gimpwin-dev/message/1828
+  I.e. all GTK related calls must occur in the same thread, the one
+  that runs the main loop. If you want to call them from other threads
+  you need to do some forwarding. Fortunately, with a functional
+  language this is easy. Two functions,
+    val async : ('a -> unit) -> 'a -> unit
+    val sync : ('a -> 'b) -> 'a -> 'b
+  are available in the GtkThread module to help you. They will forward
+  your call to the main thread (between handling two GUI events). This
+  can be either asynchronous or synchronous. In the synchronous case,
+  beware of deadlocks (the trivial case, when you are calling from the
+  same thread, is properly avoided). Note also that since callbacks
+  are always called from the main loop thread, you can freely use GTK
+  in them.
 
 Authors:
 	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>
