@@ -21,6 +21,19 @@ classes {
 }
 
 class Editable abstract wrapsig : Widget { (* actually an interface *)
+  method select_region : "start:int -> stop:int -> unit"
+  method get_selection_bounds : "(int * int) option"
+  method insert_text : "string -> pos:int -> int"
+  method delete_text : "start:int -> stop:int -> unit"
+  method get_chars : "start:int -> stop:int -> string"
+  method cut_clipboard
+  method copy_clipboard
+  method paste_clipboard
+  method delete_selection
+  method get_position : "int"
+  method set_position : "int -> unit"
+  method get_editable : "bool"
+  method set_editable : "bool -> unit"
   signal changed
   signal delete_text : start:int stop:int
   signal insert_text "(fun f -> !Internal.marshal_insert f)"
@@ -32,7 +45,7 @@ class Entry set wrap wrapsig : Editable {
   "max-length"           gint                 : Read / Write
   "activates-default"    gboolean             : Read / Write
   "cursor-position"      gint                 : Read / NoWrap
-  "editable"             gboolean             : Read / Write
+  "editable"             gboolean             : Read / Write / NoWrap
   "has-frame"            gboolean             : Read / Write
   "invisible-char"       guint                : Read / Write / NoSet
   "scroll-offset"        gint                 : Read

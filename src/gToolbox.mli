@@ -107,7 +107,7 @@ class ['a] tree_selection :
     method clear_selection : unit -> unit
     method selection : 'a option
     method wview : GText.view
-    method wtree : GTree.tree
+    method wtree : GBroken.tree
   end
 
 (** A function to make the user select a node in a tree.

@@ -69,10 +69,8 @@ ML_1 (gtk_editable_paste_clipboard, GtkEditable_val, Unit)
 ML_1 (gtk_editable_delete_selection, GtkEditable_val, Unit)
 ML_2 (gtk_editable_set_position, GtkEditable_val, Int_val, Unit)
 ML_1 (gtk_editable_get_position, GtkEditable_val, Val_int)
-/*
 ML_2 (gtk_editable_set_editable, GtkEditable_val, Bool_val, Unit)
 ML_1 (gtk_editable_get_editable, GtkEditable_val, Val_bool)
-*/
 
 /* gtkentry.h */
 

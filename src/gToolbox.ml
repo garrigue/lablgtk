@@ -201,7 +201,7 @@ class ['a] tree_selection ~tree ~label ~info ?packing ?show () =
   (* The scroll window used for the tree of the versions *)
   let wscroll_tree = GBin.scrolled_window ~packing: main_box#add () in
   (* The tree containing the versions *)
-  let wtree = GTree.tree
+  let wtree = GBroken.tree
       ~packing:wscroll_tree#add_with_viewport () in
   (* the text widget used to display information on the selected node. *)
   let wview = GText.view ~editable: false ~packing: main_box#pack () in
@@ -218,7 +218,7 @@ class ['a] tree_selection ~tree ~label ~info ?packing ?show () =
       let rec insert_node wt (t : 'a tree) =
         let data, children =
           match t with `L d -> d, [] | `N(d,c) -> d, c in
-        let item = GTree.tree_item ~label: (label data) () in
+        let item = GBroken.tree_item ~label: (label data) () in
         wt#insert item ~pos: 0;
         item#connect#select ~callback:
           begin fun () -> 
@@ -238,7 +238,7 @@ class ['a] tree_selection ~tree ~label ~info ?packing ?show () =
             ()
         | l ->
             (* create a subtree and expand it *)
-            let newtree = GTree.tree () in
+            let newtree = GBroken.tree () in
             item#set_subtree newtree;
             item#expand ();
             (* insert the children *)

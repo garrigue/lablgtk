@@ -29,7 +29,7 @@ CAMLprim value ml_gtkaction_init(value unit)
   return Val_GType(t);
 }
 
-#ifdef HAS_GTK24
+#ifdef HASGTK24
 
 #define gobject_list_of_GSList(l) Val_GSList(l, (value_in) Val_GObject)
 #define gobject_list_of_GList(l)  Val_GList (l, (value_in) Val_GObject)

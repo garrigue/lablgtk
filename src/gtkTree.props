@@ -19,21 +19,6 @@ classes {
   GtkTreeModel "Gtk.tree_model obj"
 }
 
-class TreeItem wrapsig : Item {
-  method set_subtree : "[>`widget] obj -> unit"
-  method remove_subtree
-  method collapse
-  method expand
-  signal collapse
-  signal expand
-}
-
-class Tree : Container {
-  signal select_child : GtkWidget
-  signal selection_changed
-  signal unselect_child : GtkWidget
-}
-
 class TreeView set wrap wrapsig : Container {
   "enable-search"        gboolean             : Read / Write
   "expander-column"      GtkTreeViewColumn_opt: Read / Write / NoSet / NoWrap

@@ -574,7 +574,7 @@ let create_handle_box =
 
 class tree_and_buttons () =
 object
-  val tree = GTree.tree ()
+  val tree = GBroken.tree ()
   val add_button = GButton.button ~label: "Add Item" ()
   val remove_button = GButton.button ~label:"Remove Item(s)" ()
   val subtree_button = GButton.button ~label:"Remove Subtree" ()
@@ -597,11 +597,11 @@ let cb_add_new_item (treeb : tree_and_buttons) _ =
     | selected_item :: _ ->
        match selected_item#subtree with Some t -> t
        | None ->
-	   let t = GTree.tree () in
+	   let t = GBroken.tree () in
 	   selected_item#set_subtree t;
 	   t
   in
-  let item_new = GTree.tree_item ~packing:(subtree#insert ~pos:0)
+  let item_new = GBroken.tree_item ~packing:(subtree#insert ~pos:0)
       ~label:("item add " ^ string_of_int treeb # nb_item_add) () in
   treeb #incr_nb_item_add
 
@@ -633,13 +633,14 @@ let cb_tree_changed (treeb : tree_and_buttons) _ =
   end
   
   
-let rec create_subtree (item : GTree.tree_item) level nb_item_max
+let rec create_subtree (item : GBroken.tree_item) level nb_item_max
     recursion_level_max =
   if level = recursion_level_max then ()
   else begin
-    let item_subtree = GTree.tree () in
+    let item_subtree = GBroken.tree () in
     for nb_item = 1 to nb_item_max do
-      let item_new = GTree.tree_item ~packing:(item_subtree#insert ~pos:0) ()in
+      let item_new =
+        GBroken.tree_item ~packing:(item_subtree#insert ~pos:0) () in
       let ali =
         GBin.alignment ~xalign:0. ~xscale:0. ~packing:item_new#add () in
       let label = GMisc.label ~packing:ali#add
@@ -677,12 +678,13 @@ let create_tree_sample selection_mode draw_line view_line no_root_item
 
   if no_root_item then
     for nb_item = 1 to nb_item_max do
-      let item_new = GTree.tree_item ~label:("item0-" ^ string_of_int nb_item)
+      let item_new =
+        GBroken.tree_item ~label:("item0-" ^ string_of_int nb_item)
 	  ~packing:(root_tree#insert ~pos:0) () in
       create_subtree item_new 1 nb_item_max recursion_level_max;
     done
   else begin
-    let root_item = GTree.tree_item ~label:"root item"
+    let root_item = GBroken.tree_item ~label:"root item"
 	~packing:(root_tree #insert ~pos:0) () in
     create_subtree root_item 0 nb_item_max recursion_level_max
   end;
