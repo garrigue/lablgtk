@@ -298,22 +298,116 @@ module Buffer = struct
     = "ml_gtk_text_buffer_end_user_action"
   module Signals = struct
   open GtkSignal
-  let begin_user_action = 
-    { name = "begin_user_action"; 
-      classe = `textbuffer;
-      marshaller = marshal_unit }
-  let changed = 
-    { name = "changed"; 
-      classe = `textbuffer;
-      marshaller = marshal_unit }
-  let end_user_action = 
-    { name = "end_user_action"; 
-      classe = `textbuffer;
-      marshaller = marshal_unit }
-  let modified_changed = 
-    { name = "modified-changed"; 
-      classe = `textbuffer;
-      marshaller = marshal_unit }
+
+  let marshal_what f _ = function 
+    | `OBJECT _ :: _  -> invalid_arg "GtkText.Buffer.Signals.marshal 0"
+    | `BOOL _ ::_ -> invalid_arg "GtkText.Buffer.Signals.marshal 1"  
+    | `CHAR _::_       -> invalid_arg "GtkText.Buffer.Signals.marshal 2"
+    | `FLOAT _::_      -> invalid_arg "GtkText.Buffer.Signals.marshal 3"
+    | `INT _::_      -> invalid_arg "GtkText.Buffer.Signals.marshal 9"
+    | `INT64 _::_      -> invalid_arg "GtkText.Buffer.Signals.marshal 4"
+    | `NONE::_      -> invalid_arg "GtkText.Buffer.Signals.marshal 5"
+    | `POINTER _::_       -> invalid_arg "GtkText.Buffer.Signals.marshal 6"
+    | `STRING _::_      -> invalid_arg "GtkText.Buffer.Signals.marshal 7"
+    | [] -> invalid_arg "GtkText.Buffer.Signals.marshal_apply_tag 8"
+
+  let marshal_apply_tag f _ = function 
+    |`OBJECT(Some p)::`POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
+       f (Obj.magic p:texttag) ~start:(Obj.magic ti1:textiter) 
+	~stop:(Obj.magic ti2:textiter)
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_apply_tag"
+
+  let marshal_delete_range f _ = function 
+    | `POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
+       f ~start:(Obj.magic ti1:textiter) 
+	~stop:(Obj.magic ti2:textiter)
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_delete_range"
+  let marshal_insert_child_anchor f _ = function 
+    | `POINTER(Some ti)::`POINTER(Some tca)::_ ->
+       f (Obj.magic ti:textiter) 
+	(Obj.magic tca:textchildanchor)
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_insert_child_anchor"
+
+
+  let marshal_insert_pixbuf f _ = function 
+    | `POINTER(Some ti)::`POINTER(Some pb)::_ ->
+       f (Obj.magic ti:textiter) (Obj.magic pb:GdkPixbuf.pixbuf)
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_insert_pixbuf"
+
+  let marshal_insert_text f _ = function 
+    | `POINTER(Some ti)::`STRING(Some s)::`INT i::_  ->
+       f (Obj.magic ti:textiter) s i
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_insert_text"
+
+  let marshal_textmark f _ = function 
+    | `OBJECT(Some tm)::_ -> 
+	f (Obj.magic tm:textmark)
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_textmark"
+
+  let marshal_mark_set f _ = function 
+    | `POINTER(Some ti)::`OBJECT(Some tm)::_ -> 
+	f (Obj.magic ti:textiter) (Obj.magic tm:textmark) 
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_mark_set"
+  
+  let marshal_remove_tag f _ = function 
+    |`OBJECT(Some p)::`POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
+       f (Obj.magic p:texttag) ~start:(Obj.magic ti1:textiter) ~stop:(Obj.magic ti2:textiter)
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_remove_tag"
+
+  let apply_tag = 
+      {
+	name = "apply_tag";
+	classe = `textbuffer;
+	marshaller = marshal_apply_tag
+      }
+    let begin_user_action = 
+      { name = "begin_user_action"; 
+	classe = `textbuffer;
+	marshaller = marshal_unit }
+    let changed = 
+      { name = "changed"; 
+	classe = `textbuffer;
+	marshaller = marshal_unit }
+    let delete_range =
+      { name = "delete-range";
+	classe = `textbuffer;
+	marshaller = marshal_delete_range }
+    let end_user_action = 
+      { name = "end_user_action"; 
+	classe = `textbuffer;
+	marshaller = marshal_unit }
+    let insert_child_anchor =
+      { name = "insert-child-anchor";
+	classe = `textbuffer;
+	marshaller = marshal_insert_child_anchor}
+    let insert_pixbuf =
+      {name = "insert-pixbuf";
+       classe = `textbuffer;
+       marshaller = marshal_insert_pixbuf
+      }
+    let insert_text =
+      {name = "insert-text";
+       classe = `textbuffer;
+       marshaller = marshal_insert_text
+      }
+    let mark_deleted =
+      {name = "mark-deleted";
+       classe = `textbuffer;
+       marshaller = marshal_textmark
+      }
+    let mark_set = 
+      {name = "mark-set";
+       classe = `textbuffer;
+       marshaller = marshal_mark_set
+      }
+    let modified_changed = 
+      { name = "modified-changed"; 
+	classe = `textbuffer;
+	marshaller = marshal_unit }
+    let remove_tag = 
+      { name = "remove-tag"; 
+	classe = `textbuffer;
+	marshaller = marshal_remove_tag }
 end    
 end
 

@@ -127,12 +127,26 @@ let tagtable () =
 
 class buffer_signals obj = object
   inherit gtkobj_signals obj
+  method apply_tag = 
+     GtkSignal.connect ~sgn:GtkText.Buffer.Signals.apply_tag ~after obj
   method begin_user_action = 
      GtkSignal.connect ~sgn:GtkText.Buffer.Signals.begin_user_action ~after obj
   method changed = 
      GtkSignal.connect ~sgn:GtkText.Buffer.Signals.changed ~after obj
+  method delete_range = 
+     GtkSignal.connect ~sgn:GtkText.Buffer.Signals.delete_range ~after obj
   method end_user_action = 
      GtkSignal.connect ~sgn:GtkText.Buffer.Signals.end_user_action ~after obj
+  method insert_child_anchor = 
+     GtkSignal.connect ~sgn:GtkText.Buffer.Signals.insert_child_anchor ~after obj
+  method insert_pixbuf = 
+     GtkSignal.connect ~sgn:GtkText.Buffer.Signals.insert_pixbuf ~after obj
+  method insert_text = 
+     GtkSignal.connect ~sgn:GtkText.Buffer.Signals.insert_text ~after obj
+  method mark_deleted = 
+     GtkSignal.connect ~sgn:GtkText.Buffer.Signals.mark_deleted ~after obj
+  method mark_set = 
+     GtkSignal.connect ~sgn:GtkText.Buffer.Signals.mark_set ~after obj
   method modified_changed = 
      GtkSignal.connect ~sgn:GtkText.Buffer.Signals.modified_changed ~after obj
 end
