@@ -25,7 +25,7 @@ window_list :                    { [] }
 
 window : window_start property_list children WINDOW_END 
   { 
-    Node (("window", $1, $2), $3)
+    Node (("window", $1, List.rev $2), $3)
   } 
 ;
 
@@ -40,7 +40,7 @@ widget : widget_start property_list children WIDGET_END
   { 
     let classe, name = $1 in
     if classe <> $4 then raise Parsing.Parse_error;
-    Node ((classe, name, $2), $3)
+    Node ((classe, name, List.rev $2), $3)
   } 
 ;
 

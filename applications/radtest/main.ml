@@ -1,3 +1,5 @@
+(* $Id$ *)
+
 open GdkKeysyms
 open Gtk
 open GObj
@@ -9,14 +11,14 @@ let main_project_modify = ref false
 
 let main_window  = GWindow.window ~title:"ZOOM" ()
 let main_vbox    = GPack.vbox ~packing:main_window#add ()
-let main_menu    = GMenu.menu_bar ~packing:main_vbox#pack ()
+let main_menu    = GMenu.menu_bar ~packing:(main_vbox#pack ~expand:false) ()
 
 let can_copy = ref (fun _ -> assert false)
 let can_paste = ref (fun _ -> assert false)
 
 class project () =
-  let project_box = GPack.vbox ~packing:main_vbox#add () in
-  let project_tree = GTree2.tree ~packing:project_box#add () in
+  let project_box = GPack.vbox ~packing:main_vbox#pack () in
+  let project_tree = GTree2.tree ~packing:project_box#pack () in
   object(self)
     val mutable window_list = []
 
@@ -48,6 +50,9 @@ class project () =
       let dir, file = split_filename f ~ext:".rad" in
       filename <- file;
       dirname <- dir
+
+    method get_filename () =
+      get_filename ~callback:self#set_filename ~dir:dirname ()
 
     method dirname = dirname
 
@@ -144,9 +149,6 @@ class project () =
       main_vbox#remove project_box#coerce;
 (* remove after test *)
       if !name_list <> [] then failwith "name_list not empty"
-
-    method get_filename () =
-      get_filename ~callback:self#set_filename ~dir:dirname ()
 
     method save_as () = if self#get_filename () then self#save ()
 
@@ -256,12 +258,11 @@ let xpm_window () =
   window#misc#set_uposition ~x:250 ~y:10;
   let vbox = GPack.vbox ~packing:window#add () in
   let table = GPack.table ~rows:1 ~columns:5 ~border_width:20
-      ~packing:vbox#add () in
+      ~packing:vbox#pack () in
   let tooltips = GData.tooltips () in
   let add_xpm ~file ~left ~top ~tip =
     let gdk_pix = GDraw.pixmap_from_xpm ~file ~window () in
-    let ev = GBin.event_box
-        ~packing:(table#attach ~left ~top ~expand:`BOTH) () in
+    let ev = GBin.event_box ~packing:(table#attach ~left ~top) () in
     let pix = GMisc.pixmap gdk_pix ~packing:ev#add () in
     ev#connect#event#button_press ~callback:
       (fun ev -> match GdkEvent.get_type ev with
@@ -274,13 +275,12 @@ let xpm_window () =
     tooltips#set_tip ev#coerce ~text:tip
   in
   add_xpm ~file:"window.xpm" ~left:0 ~top:0 ~tip:"window";
-  GMisc.separator `HORIZONTAL ~packing:vbox#add ();
-  let table = GPack.table ~rows:6 ~columns:6 ~packing:vbox#add
+  GMisc.separator `HORIZONTAL ~packing:vbox#pack ();
+  let table = GPack.table ~rows:6 ~columns:6 ~packing:vbox#pack
       ~row_spacings:20 ~col_spacings:20 ~border_width:20 () in
   let add_xpm file ~left ~top ~classe =
     let gdk_pix = GDraw.pixmap_from_xpm ~file ~window () in
-    let ev = GBin.event_box
-        ~packing:(table#attach ~left ~top ~expand:`BOTH) () in
+    let ev = GBin.event_box ~packing:(table#attach ~left ~top) () in
     let pix = GMisc.pixmap gdk_pix ~packing:ev#add () in
     ev#drag#source_set ~modi:[`BUTTON1] targets ~actions:[`COPY];
     ev#drag#source_set_icon ~colormap:window#misc#style#colormap 
@@ -307,6 +307,7 @@ let xpm_window () =
   add_xpm "viewport.xpm"       ~left:5 ~top:2 ~classe:"viewport";
   add_xpm "hseparator.xpm"     ~left:0 ~top:3 ~classe:"hseparator";
   add_xpm "vseparator.xpm"     ~left:1 ~top:3 ~classe:"vseparator";
+  add_xpm "clist.xpm"          ~left:2 ~top:3 ~classe:"clist";
   add_xpm "label.xpm"          ~left:0 ~top:4 ~classe:"label";
   add_xpm "statusbar.xpm"      ~left:1 ~top:4 ~classe:"statusbar";
   add_xpm "notebook.xpm"       ~left:2 ~top:4 ~classe:"notebook";
@@ -340,8 +341,6 @@ let main () =
   and project_menu = new GMenu.factory (f#add_submenu "Project") ~accel_group
   in
 
-  file_menu#add_item "Emit code" ~callback:(fun () -> !mp#emit ());
-  file_menu#add_separator ();
   file_menu#add_item "Quit" ~key:_Q ~callback:GMain.Main.quit;
 
   project_menu#add_item "New" ~key:_N
@@ -349,6 +348,8 @@ let main () =
   project_menu#add_item "Open..." ~key:_O ~callback:load;
   project_menu#add_item "Save" ~key:_S ~callback:(fun () -> !mp#save ());
   project_menu#add_item "Save as..." ~callback:(fun () -> !mp#save_as ());
+  project_menu#add_separator ();
+  project_menu#add_item "Emit code" ~callback:(fun () -> !mp#emit ());
 
   let copy_item =
     edit_menu#add_item "Copy" ~key:_C ~callback:(fun () -> !mp#copy ())

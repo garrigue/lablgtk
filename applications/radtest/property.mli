@@ -16,6 +16,7 @@ class virtual vprop :
     method name : string
     method private virtual parse : string -> 'a
     method virtual range : range
+    method save_code : string
     method set : string -> unit
   end
 
@@ -84,3 +85,7 @@ class prop_enum_dyn :
 class prop_adjustment :
   name:string -> init:string ->
     set:(float * float * float * float * float -> bool) -> prop
+
+class prop_clist_titles :
+  name:string -> init:string ->
+    set:(string list -> bool) -> prop

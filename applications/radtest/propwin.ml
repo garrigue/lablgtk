@@ -1,3 +1,4 @@
+(* $Id$ *)
 
 open GObj
 
@@ -52,18 +53,64 @@ let prop_widget (prop : prop) =
       let l1 = GMisc.label ~text:"lower" ~packing:hb1#pack () in
       let e1 = entry_float ~packing:hb1#pack
 	  ~init:(float_of_string prop#get) ~set:prop#set in
-  *)    
-      
+*)    
+  | CList_titles ->
+      let wpop = GWindow.window ~title:"titles of the columns" () in
+      let vb = GPack.vbox ~packing:wpop#add () in
+      let titles = split_string prop#get ~sep:' ' in
+      let n = List.length titles in
+      let rtitles = ref titles in
+      let rget = ref [] and rset = ref [] in
+      for i = 1 to n do
+	match !rtitles with
+	| hd::tl ->
+	    let hb = GPack.hbox ~packing:vb#pack () in
+	    let _ = GMisc.label ~text:("column" ^ (string_of_int i))
+		~packing:hb#pack () in
+	    let e = GEdit.entry ~text:hd ~packing:hb#pack () in
+	    rtitles := tl;
+	    rget := (fun () -> e#text) :: !rget;
+	    rset := e#set_text :: !rset;
+	| _ -> failwith "CList_titles: this cannot happen!!"
+      done;
+      rtitles := titles;
+      rget := List.rev !rget;
+      rset := List.rev !rset;
+      let hb = GPack.hbox ~packing:vb#pack () in
+      let ok = GButton.button ~label:"OK" ~packing:hb#pack () in
+      let cancel = GButton.button ~label:"Cancel" ~packing:hb#pack () in
+      ok#connect#pressed
+	~callback:(fun () ->
+	  let tit = List.map ~f:(fun f -> f ()) !rget in
+	  prop#set (String.concat ~sep:" " tit);
+	  rtitles := tit;
+	  wpop#misc#hide ());
+      cancel#connect#pressed
+	~callback:(fun () ->
+	  wpop#misc#hide ();
+	  List.iter2 ~f:(fun f v -> f v) !rset !rtitles);
+      let e = GEdit.entry ~text:"double click here" ~editable:false () in
+      e#connect#event#button_press ~callback:
+	(fun ev -> match GdkEvent.get_type ev with
+	| `TWO_BUTTON_PRESS ->
+	    if GdkEvent.Button.button ev = 1 then begin
+	      wpop#misc#show ();
+	      e#connect#stop_emit ~name:"button_press_event";
+	      true
+	    end
+	    else false
+	| _ -> false);
+      e#coerce
 
 let prop_box list =
   let vbox = GPack.vbox () in
   List.iter list ~f:
     begin fun (name, prop) ->
       let hbox =
-	GPack.hbox ~homogeneous:true ~packing:vbox#pack () in
-      GMisc.label ~text:name ~packing:hbox#add ();
-      hbox#add (prop_widget prop);
-      GMisc.separator `HORIZONTAL ~packing:vbox#pack ();
+	GPack.hbox ~homogeneous:true ~packing:(vbox#pack ~expand:false) () in
+      GMisc.label ~text:name ~packing:hbox#pack ();
+      hbox#pack ~fill:true (prop_widget prop);
+      GMisc.separator `HORIZONTAL ~packing:(vbox#pack ~expand:false) ();
       ()
     end;
   vbox
@@ -119,8 +166,8 @@ let change_name oldname newname =
   Hashtbl.add widget_pool ~key:newname ~data:vb
 *)
 
-let update ?(show=false) (w : #tiwidget_base) =
+let update (w : #tiwidget_base) show_modif =
   let vb = prop_box w#proplist in
   Hashtbl.remove widget_pool w#name;
   Hashtbl.add widget_pool ~key:w#name ~data:vb;
-  if show && !shown_widget = w#name then show_prop_box vb
+  if show_modif && !shown_widget = w#name then show_prop_box vb

@@ -2045,3 +2045,4 @@ value ml_gtk_signal_new (value name, value run_type, value classe,
   *(((int *)classe)+offset) = 0;
 }
 
+ML_1 (gtk_rc_add_default_file, String_val, Unit)
