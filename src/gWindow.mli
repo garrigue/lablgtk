@@ -17,6 +17,7 @@ class ['a] window_skel : 'b obj ->
     method set_allow_grow : bool -> unit
     method set_allow_shrink : bool -> unit
     method set_default_size : width:int -> height:int -> unit
+    method resize : width:int -> height:int -> unit
     method set_modal : bool -> unit
     method set_position : Tags.window_position -> unit
     method set_resize_mode : Tags.resize_mode -> unit

@@ -18,6 +18,7 @@ class ['a] window_skel obj = object
   method add_accel_group = Window.add_accel_group obj
   method set_modal = Window.set_modal obj
   method set_default_size = Window.set_default_size obj
+  method resize = Window.resize obj
   method set_position = Window.set_position obj
   method set_resize_mode = Container.set_resize_mode obj
   method set_transient_for (w : 'a) =
