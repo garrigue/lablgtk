@@ -187,14 +187,18 @@ let bug () =
   for i = 0 to 100 do 
     Printf.printf "Number %d, \"%s\"\n" i s;
     flush stdout;
-    b#insert ~text:s ()
+    b#insert s)
   done
 ;;
 
-   The GC seems to free/move the string to early...
+   The GC seems to free/move the string too early...
 
    An explicite allocation of the string seems to fix it.
    Jacques : any idea of what is happening ?
+
+Update: This has probably something to do with garbage at the end of the caml 
+string.
+
 */
 
 /* ML_3 (gtk_text_buffer_insert, GtkTextBuffer_val, */
@@ -230,9 +234,6 @@ CAMLprim value ml_gtk_text_buffer_insert_at_cursor (value tb,value st)
 				   c,
 				   l);
   g_free(c);
-
-
-
   CAMLreturn(0);
 }
 
