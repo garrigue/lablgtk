@@ -420,6 +420,7 @@ let question_cancel_box message =
 
 let file_dialog ~title ?default () =
   let sel = FileSelection.create title in
+  FileSelection.hide_fileop_buttons sel;
   Gaux.may default ~f:(FileSelection.set_filename sel);
   Window.set_modal sel true;
   let name = ref None in
@@ -441,3 +442,11 @@ let open_file _ =
 
 let create_file ~default ~exts =
   file_dialog ~title:"Osiris Create Dialog" ~default ()
+
+let select_directory ~title =
+  file_dialog ~title ()
+
+let mouse_pos () =
+  Gdk.Window.get_pointer_location (Gdk.Window.root_parent ())
+
+let exit_application = Main.quit
