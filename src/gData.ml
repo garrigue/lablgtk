@@ -1,6 +1,7 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gtk
 open GtkData
 open GObj
@@ -34,6 +35,20 @@ let adjustment ?(value=0.) ?(lower=0.) ?(upper=100.)
   new adjustment w
 
 let as_adjustment (adj : adjustment) = adj#as_adjustment
+
+let wrap_adjustment w = new adjustment (unsafe_cast w)
+let unwrap_adjustment w = unsafe_cast w#as_adjustment
+let conv_adjustment_option =
+  { kind = `OBJECT;
+    proj = (function `OBJECT c -> may_map ~f:wrap_adjustment c
+           | _ -> failwith "GObj.get_object");
+    inj = (fun c -> `OBJECT (may_map ~f:unwrap_adjustment c)) }
+let conv_adjustment =
+  { kind = `OBJECT;
+    proj = (function `OBJECT (Some c) -> wrap_adjustment c
+           | `OBJECT None -> raise Gpointer.Null
+           | _ -> failwith "GObj.get_object");
+    inj = (fun c -> `OBJECT (Some (unwrap_adjustment c))) }
 
 class tooltips obj = object
   inherit gtkobj (obj : Gtk.tooltips obj)

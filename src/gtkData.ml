@@ -54,33 +54,33 @@ module Style = struct
   external draw_vline :
       style -> Gdk.window -> state_type -> y:int -> y:int -> x:int -> unit
       = "ml_gtk_draw_vline_bc" "ml_gtk_draw_vline"
-  external get_bg : style -> state_type -> Gdk.Color.t
+  external get_bg : style -> state_type -> Gdk.color
       = "ml_gtk_style_get_bg"
-  external set_bg : style -> state_type -> Gdk.Color.t -> unit
+  external set_bg : style -> state_type -> Gdk.color -> unit
       = "ml_gtk_style_set_bg"
-  external get_fg : style -> state_type -> Gdk.Color.t
+  external get_fg : style -> state_type -> Gdk.color
       = "ml_gtk_style_get_fg"
-  external set_fg : style -> state_type -> Gdk.Color.t -> unit
+  external set_fg : style -> state_type -> Gdk.color -> unit
       = "ml_gtk_style_set_fg"
-  external get_light : style -> state_type -> Gdk.Color.t
+  external get_light : style -> state_type -> Gdk.color
       = "ml_gtk_style_get_light"
-  external set_light : style -> state_type -> Gdk.Color.t -> unit
+  external set_light : style -> state_type -> Gdk.color -> unit
       = "ml_gtk_style_set_light"
-  external get_dark : style -> state_type -> Gdk.Color.t
+  external get_dark : style -> state_type -> Gdk.color
       = "ml_gtk_style_get_dark"
-  external set_dark : style -> state_type -> Gdk.Color.t -> unit
+  external set_dark : style -> state_type -> Gdk.color -> unit
       = "ml_gtk_style_set_dark"
-  external get_mid : style -> state_type -> Gdk.Color.t
+  external get_mid : style -> state_type -> Gdk.color
       = "ml_gtk_style_get_mid"
-  external set_mid : style -> state_type -> Gdk.Color.t -> unit
+  external set_mid : style -> state_type -> Gdk.color -> unit
       = "ml_gtk_style_set_mid"
-  external get_base : style -> state_type -> Gdk.Color.t
+  external get_base : style -> state_type -> Gdk.color
       = "ml_gtk_style_get_base"
-  external set_base : style -> state_type -> Gdk.Color.t -> unit
+  external set_base : style -> state_type -> Gdk.color -> unit
       = "ml_gtk_style_set_base"
-  external get_text : style -> state_type -> Gdk.Color.t
+  external get_text : style -> state_type -> Gdk.color
       = "ml_gtk_style_get_text"
-  external set_text : style -> state_type -> Gdk.Color.t -> unit
+  external set_text : style -> state_type -> Gdk.color -> unit
       = "ml_gtk_style_set_text"
   external get_colormap : style -> Gdk.colormap = "ml_gtk_style_get_colormap"
   external get_font : style -> Gdk.font = "ml_gtk_style_get_font"

@@ -19,12 +19,19 @@
 #include "ml_gtk.h"
 #include "gtk_tags.h"
 
-CAMLprim value ml_gtk_tree_get_tables ()
+/* Init all */
+
+CAMLprim value ml_gtktree_init(value unit)
 {
-  static lookup_info *ret[3] = { ml_table_tree_view_column_sizing,
-                                 ml_table_sort_type,
-                                 ml_table_cell_renderer_mode };
-  return (value)ret;
+    /* Since these are declared const, must force gcc to call them! */
+    GType t =
+        gtk_tree_item_get_type() +
+        gtk_tree_get_type() +
+        gtk_tree_view_get_type() +
+        gtk_tree_view_column_get_type() +
+        gtk_tree_store_get_type() +
+        gtk_list_store_get_type();
+    return Val_GType(t);
 }
 
 #define Tree_view_mode_val(val) \
@@ -384,33 +391,30 @@ CAMLprim value ml_gtk_tree_view_get_cursor (value arg)
   CAMLreturn(ret);
 }
 
-CAMLprim value ml_gtk_tree_view_get_path_at_pos(value treeview, value path, value column, value x, value y)
+CAMLprim value ml_gtk_tree_view_get_path_at_pos(value treeview,
+                                                value x, value y)
 {
   gint cell_x;
   gint cell_y;
   GtkTreePath *gpath;
   GtkTreeViewColumn *gcolumn;
 
-  gpath = GtkTreePath_val(path);
-  gcolumn = GtkTreeViewColumn_val(column);
-
   if (gtk_tree_view_get_path_at_pos( GtkTreeView_val(treeview), 
 				     Int_val(x), 
 				     Int_val(y), 
 				     &gpath,
 				     &gcolumn,
-				     &cell_x, &cell_y)){
-    /* return Some */
+				     &cell_x, &cell_y))
+  { /* return Some */
     CAMLparam0 ();
     CAMLlocal1(tup);
 
-    tup = alloc_small(2,0);
-    Store_field(tup,0,Val_int(cell_x));
-    Store_field(tup,1,Val_int(cell_y));
+    tup = alloc_tuple(4);
+    Store_field(tup,0,Val_GtkTreePath(gpath));
+    Store_field(tup,1,Val_GtkAny(gcolumn));
+    Store_field(tup,2,Val_int(cell_x));
+    Store_field(tup,3,Val_int(cell_y));
     CAMLreturn(ml_some (tup));
-    
-  } else {
-    /* return None */
-    return Val_unit;
   }
+  return Val_unit;
 }

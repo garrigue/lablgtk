@@ -15,6 +15,17 @@
 #include "ml_gtk.h"
 #include "gtk_tags.h"
 
+/* Init all */
+
+CAMLprim value ml_gtkedit_init(value unit)
+{
+    /* Since these are declared const, must force gcc to call them! */
+    GType t =
+        gtk_spin_button_get_type() +
+        gtk_combo_get_type();
+    return Val_GType(t);
+}
+
 /* gtkeditable.h */
 
 #define GtkEditable_val(val) check_cast(GTK_EDITABLE,val)
@@ -51,26 +62,31 @@ ML_1 (gtk_editable_paste_clipboard, GtkEditable_val, Unit)
 ML_1 (gtk_editable_delete_selection, GtkEditable_val, Unit)
 ML_2 (gtk_editable_set_position, GtkEditable_val, Int_val, Unit)
 ML_1 (gtk_editable_get_position, GtkEditable_val, Val_int)
+/*
 ML_2 (gtk_editable_set_editable, GtkEditable_val, Bool_val, Unit)
 ML_1 (gtk_editable_get_editable, GtkEditable_val, Val_bool)
+*/
 
 /* gtkentry.h */
 
 #define GtkEntry_val(val) check_cast(GTK_ENTRY,val)
+ML_2 (gtk_entry_append_text, GtkEntry_val, String_val, Unit)
+ML_2 (gtk_entry_prepend_text, GtkEntry_val, String_val, Unit)
+Make_Extractor (GtkEntry, GtkEntry_val, text_length, Val_int)
+/*
 ML_0 (gtk_entry_new, Val_GtkWidget_sink)
 ML_1 (gtk_entry_new_with_max_length, (gint16)Long_val, Val_GtkWidget_sink)
 ML_2 (gtk_entry_set_text, GtkEntry_val, String_val, Unit)
-ML_2 (gtk_entry_append_text, GtkEntry_val, String_val, Unit)
-ML_2 (gtk_entry_prepend_text, GtkEntry_val, String_val, Unit)
 ML_1 (gtk_entry_get_text, GtkEntry_val, Val_string)
 ML_3 (gtk_entry_select_region, GtkEntry_val, Int_val, Int_val, Unit)
 ML_2 (gtk_entry_set_visibility, GtkEntry_val, Bool_val, Unit)
 ML_2 (gtk_entry_set_max_length, GtkEntry_val, (gint16)Long_val, Unit)
-Make_Extractor (GtkEntry, GtkEntry_val, text_length, Val_int)
+*/
 
 /* gtkspinbutton.h */
 
 #define GtkSpinButton_val(val) check_cast(GTK_SPIN_BUTTON,val)
+/*
 ML_3 (gtk_spin_button_new, GtkAdjustment_val,
       Float_val, Int_val, Val_GtkWidget_sink)
 ML_2 (gtk_spin_button_set_adjustment, GtkSpinButton_val, GtkAdjustment_val,
@@ -82,13 +98,14 @@ ML_2 (gtk_spin_button_set_value, GtkSpinButton_val, Float_val, Unit)
 ML_2 (gtk_spin_button_set_update_policy, GtkSpinButton_val,
       Spin_button_update_policy_val, Unit)
 ML_2 (gtk_spin_button_set_numeric, GtkSpinButton_val, Bool_val, Unit)
-ML_2 (gtk_spin_button_spin, GtkSpinButton_val,
-      Insert (Is_long(arg2) ? Spin_type_val(arg2) : GTK_SPIN_USER_DEFINED)
-      (Is_long(arg2) ? 0.0 : Float_val(Field(arg2,1))) Ignore, Unit)
 ML_2 (gtk_spin_button_set_wrap, GtkSpinButton_val, Bool_val, Unit)
 ML_2 (gtk_spin_button_set_snap_to_ticks, GtkSpinButton_val, Bool_val, Unit)
 ML_4 (gtk_spin_button_configure, GtkSpinButton_val, GtkAdjustment_val,
       Float_val, Int_val, Unit)
+*/
+ML_2 (gtk_spin_button_spin, GtkSpinButton_val,
+      Insert (Is_long(arg2) ? Spin_type_val(arg2) : GTK_SPIN_USER_DEFINED)
+      (Is_long(arg2) ? 0.0 : Float_val(Field(arg2,1))) Ignore, Unit)
 ML_1 (gtk_spin_button_update, GtkSpinButton_val, Unit)
 
 /* gtktext.h */
@@ -125,6 +142,7 @@ ML_2 (gtk_text_backward_delete, GtkText_val, Int_val, Val_int)
 /* gtkcombo.h */
 
 #define GtkCombo_val(val) check_cast(GTK_COMBO,val)
+/*
 ML_0 (gtk_combo_new, Val_GtkWidget_sink)
 ML_3 (gtk_combo_set_value_in_list, GtkCombo_val,
       Option_val(arg2, Bool_val, GtkCombo_val(arg1)->value_in_list) Ignore,
@@ -133,6 +151,7 @@ ML_3 (gtk_combo_set_value_in_list, GtkCombo_val,
 ML_2 (gtk_combo_set_use_arrows, GtkCombo_val, Bool_val, Unit)
 ML_2 (gtk_combo_set_use_arrows_always, GtkCombo_val, Bool_val, Unit)
 ML_2 (gtk_combo_set_case_sensitive, GtkCombo_val, Bool_val, Unit)
+*/
 ML_3 (gtk_combo_set_item_string, GtkCombo_val, GtkItem_val, String_val, Unit)
 ML_1 (gtk_combo_disable_activate, GtkCombo_val, Unit)
 Make_Extractor (gtk_combo, GtkCombo_val, entry, Val_GtkWidget)

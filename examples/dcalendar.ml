@@ -171,9 +171,7 @@ let create_GUI () =
 
   let date_view = GMisc.label ~justify: `CENTER ~packing () in
 
-  let text = GText.view ~packing () in
-  text#set_editable true;
-  text#misc#set_size_request ~width:70 ~height:50;
+  let text = GText.view ~editable:true ~width:70 ~height:50 ~packing () in
 
   (* Controls part *)
 

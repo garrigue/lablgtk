@@ -4,11 +4,9 @@ open Gtk
 open GObj
 open GContainer
 
-class box_skel :
-  'a obj ->
+class box_skel : ([> box] as 'a) obj ->
   object
     inherit container
-    constraint 'a = [> box]
     val obj : 'a obj
     method pack :
       ?from:Tags.pack_type ->
@@ -20,11 +18,9 @@ class box_skel :
     method set_homogeneous : bool -> unit
     method set_spacing : int -> unit
   end
-class box :
-  'a obj ->
+class box : ([> Gtk.box] as 'a) obj ->
   object
     inherit box_skel
-    constraint 'a = [> Gtk.box]
     val obj : 'a obj
     method connect : GContainer.container_signals
   end
@@ -49,11 +45,10 @@ val hbox :
   ?width:int ->
   ?height:int -> ?packing:(widget -> unit) -> ?show:bool -> unit -> box
 
-class button_box :
-  Gtk.button_box obj ->
+class button_box : ([> Gtk.button_box] as 'a) obj ->
   object
     inherit container_full
-    val obj : Gtk.button_box obj
+    val obj : 'a obj
     method pack :
       ?from:Tags.pack_type ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> widget -> unit
@@ -65,6 +60,7 @@ class button_box :
     method set_child_size : ?width:int -> ?height:int -> unit -> unit
     method set_homogeneous : bool -> unit
     method set_layout : GtkPack.BBox.bbox_style -> unit
+    method layout : GtkPack.BBox.bbox_style
     method set_spacing : int -> unit
   end
 val button_box :
@@ -94,15 +90,22 @@ class table :
       ?fill:Tags.expand_type ->
       ?shrink:Tags.expand_type ->
       ?xpadding:int -> ?ypadding:int -> widget -> unit
+    method col_spacings : int
+    method columns : int
+    method homogeneous : bool
+    method row_spacings : int
+    method rows : int
     method set_col_spacing : int -> int -> unit
     method set_col_spacings : int -> unit
+    method set_columns : int -> unit
     method set_homogeneous : bool -> unit
     method set_row_spacing : int -> int -> unit
     method set_row_spacings : int -> unit
+    method set_rows : int -> unit
   end
 val table :
-  rows:int ->
-  columns:int ->
+  ?columns:int ->
+  ?rows:int ->
   ?homogeneous:bool ->
   ?row_spacings:int ->
   ?col_spacings:int ->
@@ -167,10 +170,10 @@ class notebook_signals : 'a obj ->
     method switch_page : callback:(int -> unit) -> GtkSignal.id
   end
 
-class notebook : ([> Gtk.notebook] as 'a) obj ->
+class notebook : Gtk.notebook obj ->
   object
     inherit container
-    val obj : 'a obj
+    val obj : Gtk.notebook obj
     method event : event_ops
     method append_page :
       ?tab_label:widget -> ?menu_label:widget -> widget -> unit
@@ -188,24 +191,34 @@ class notebook : ([> Gtk.notebook] as 'a) obj ->
       ?tab_label:widget -> ?menu_label:widget -> widget -> unit
     method previous_page : unit -> unit
     method remove_page : int -> unit
+    method set_enable_popup : bool -> unit
     method set_homogeneous_tabs : bool -> unit
     method set_page :
       ?tab_label:widget -> ?menu_label:widget -> widget -> unit
-    method set_popup : bool -> unit
     method set_scrollable : bool -> unit
     method set_show_border : bool -> unit
     method set_show_tabs : bool -> unit
     method set_tab_border : int -> unit
+    method set_tab_hborder : int -> unit
+    method set_tab_vborder : int -> unit
     method set_tab_pos : Tags.position -> unit
+    method enable_popup : bool
+    method homogeneous_tabs : bool
+    method scrollable : bool
+    method show_border : bool
+    method show_tabs : bool
+    method tab_hborder : int
+    method tab_pos : GtkEnums.position_type
+    method tab_vborder : int
   end
 val notebook :
-  ?tab_pos:Tags.position ->
-  ?tab_border:int ->
-  ?show_tabs:bool ->
+  ?enable_popup:bool ->
   ?homogeneous_tabs:bool ->
-  ?show_border:bool ->
   ?scrollable:bool ->
-  ?popup:bool ->
+  ?show_border:bool ->
+  ?show_tabs:bool ->
+  ?tab_border:int ->
+  ?tab_pos:Tags.position ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

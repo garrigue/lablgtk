@@ -183,8 +183,8 @@ let select_file ~title ?(dir = last_dir) ?(filename="") () =
   let file = ref None in 
   fs#ok_button#connect#clicked ~callback:
     begin fun () ->
-      file := Some fs#get_filename; 
-      dir := Filename.dirname fs#get_filename;
+      file := Some fs#filename; 
+      dir := Filename.dirname fs#filename;
       fs#destroy ()
     end;
   fs # cancel_button # connect#clicked ~callback:fs#destroy;

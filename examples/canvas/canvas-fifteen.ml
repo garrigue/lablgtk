@@ -77,10 +77,7 @@ let scramble config () =
 
 let create_canvas_fifteen window = 
   let vbox = GPack.vbox ~border_width:4 ~packing:window#add () in
-  let align = GBin.alignment
-      ~x:0.5 ~y:0.5 
-      ~xscale:0. ~yscale:0. 
-      ~packing:vbox#add () in
+  let align = GBin.alignment ~packing:vbox#add () in
   let frame = GBin.frame ~shadow_type:`IN ~packing:align#add () in
   let dim = piece_size * 4 + 1 in
   let canvas = GnoCanvas.canvas

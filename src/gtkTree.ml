@@ -3,15 +3,18 @@
 open Gaux
 open Gtk
 open Tags
+open GtkProps
 open GtkBase
 
+external _gtktree_init : unit -> unit = "ml_gtktree_init"
+let () = _gtktree_init ()
+
 module TreeItem = struct
-  let cast w : tree_item obj = Object.try_cast w "GtkTreeItem"
-  external create : unit -> tree_item obj = "ml_gtk_tree_item_new"
+  include TreeItem
   external create_with_label : string -> tree_item obj
       = "ml_gtk_tree_item_new_with_label"
   let create ?label () =
-    match label with None -> create ()
+    match label with None -> create []
     | Some label -> create_with_label label
   external set_subtree : [>`treeitem] obj -> [>`widget] obj -> unit
       = "ml_gtk_tree_item_set_subtree"
@@ -33,8 +36,7 @@ module TreeItem = struct
 end
 
 module Tree = struct
-  let cast w : tree obj = Object.try_cast w "GtkTree"
-  external create : unit -> tree obj = "ml_gtk_tree_new"
+  include Tree
   external insert : [>`tree] obj -> [>`treeitem] obj -> pos:int -> unit
       = "ml_gtk_tree_insert"
   external remove_items : [>`tree] obj -> [>`treeitem] obj list -> unit
@@ -315,9 +317,7 @@ module TreeSelection = struct
 end
 
 module TreeViewColumn = struct
-  let cast w : tree_view_column obj = Object.try_cast w "GtkTreeViewColumn"
-  external create : unit -> tree_view_column obj
-    = "ml_gtk_tree_view_column_new"
+  include TreeViewColumn
   external pack_start :
     [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> bool -> unit
     = "ml_gtk_tree_view_column_pack_start"
@@ -332,51 +332,15 @@ module TreeViewColumn = struct
     = "ml_gtk_tree_view_column_add_attribute"
   external set_sort_column_id : [>`treeviewcolumn] obj -> int -> unit	
     = "ml_gtk_tree_view_column_set_sort_column_id"      
-  let classe = `treeviewcolumn
-  module Prop = struct
-    open Gobject
-    open Gobject.Data
-    let alignment = {name="alignment"; classe=classe; conv=float}
-    let clickable = {name="clickable"; classe=classe; conv=boolean}
-    let fixed_width = {name="fixed_width"; classe=classe; conv=int}
-    let max_width = {name="max_width"; classe=classe; conv=int}
-    let min_width = {name="min_width"; classe=classe; conv=int}
-    let reorderable = {name="reorderable"; classe=classe; conv=boolean}
-    let resizable = {name="resizable"; classe=classe; conv=boolean}
-    let conv_sizing = enum GtkEnums.tree_view_column_sizing
-    let sizing = {name="sizing"; classe=classe; conv=conv_sizing}
-    let sort_indicator = {name="sort_indicator"; classe=classe; conv=boolean}
-    let conv_sort = enum GtkEnums.sort_type
-    let sort_order = {name="sort_order"; classe=classe; conv=conv_sort}
-    let title = {name="title"; classe=classe; conv=string}
-    let visible = {name="visible"; classe=classe; conv=boolean}
-    let widget = {name="widget"; classe=classe;
-                  conv=(gobject_option : widget obj option data_conv)}
-    let width = {name="width"; classe=classe; conv=int}
-    let check () =
-      let w = create () in
-      let c p = Gobject.Property.check w p in
-      c alignment; c clickable; c fixed_width; c max_width;
-      c min_width; c reorderable; c resizable; c sizing;
-      c sort_indicator; c sort_order; c title; c visible;
-      c widget; c width;
-      Object.destroy w
-  end
   module Signals = struct
     open GtkSignal
-    let clicked = { name = "clicked"; classe = classe;
+    let clicked = { name = "clicked"; classe = `treeviewcolumn;
                     marshaller = marshal_unit }
   end
 end
 
 module TreeView = struct
-  let cast w : tree_view obj = Object.try_cast w "GtkTreeView"
-  external create : unit -> tree_view obj = "ml_gtk_tree_view_new"
-  external create_with_model : tree_model obj -> tree_view obj
-    = "ml_gtk_tree_view_new_with_model"
-  let create ?model () =
-    match model with None -> create ()
-    | Some model -> create_with_model model
+  include TreeView
   external get_selection : [>`treeview] obj -> tree_selection
     = "ml_gtk_tree_view_get_selection"
   external columns_autosize : [>`treeview] obj -> unit
@@ -425,46 +389,11 @@ module TreeView = struct
   external get_cursor :
     [>`treeview] obj -> tree_path option * tree_view_column option
     = "ml_gtk_tree_view_get_cursor"
-  external get_path_at_pos_ :
-    [>`treeview] obj -> tree_path -> [>`treeviewcolumn] obj -> int -> int ->
-      (int * int) option
+  external get_path_at_pos :
+    [>`treeview] obj -> x:int -> y:int ->
+    (tree_path * tree_view_column obj * int * int) option
     = "ml_gtk_tree_view_get_path_at_pos"
-  let get_path_at_pos treeview ~x ~y =
-    let path = TreePath.create_ () 
-    and column = TreeViewColumn.create ()
-    in
-    match get_path_at_pos_ treeview path column x y with
-    | Some xy -> Some (path, column, xy)
-    | None -> None
 
-  module Prop = struct
-    open Gobject
-    open Gobject.Data
-    let enable_search = {name="enable_search"; classe=`treeview; conv=boolean}
-    let expander_column : (_,tree_view_column obj option) property =
-      {name="expander_column"; classe=`treeview; conv=gobject_option}
-    let hadjustment : (_,adjustment obj option) property =
-      {name="hadjustment"; classe=`treeview; conv=gobject_option}
-    let headers_clickable =
-      {name="headers_clickable"; classe=`treeview; conv=boolean}
-    let headers_visible =
-      {name="headers_visible"; classe=`treeview; conv=boolean}
-    let model : (_,tree_model obj option) property =
-      {name="model"; classe=`treeview; conv=gobject_option}
-    let reorderable = {name="reorderable"; classe=`treeview; conv=boolean}
-    let rules_hint = {name="rules_hint"; classe=`treeview; conv=boolean}
-    let search_column = {name="search_column"; classe=`treeview; conv=int}
-    let vadjustment : (_,adjustment obj option) property =
-      {name="vadjustment"; classe=`treeview; conv=gobject_option}
-    let check () =
-      let w = create () in
-      let c p = Gobject.Property.check w p in
-      c enable_search; c expander_column; c hadjustment;
-      Gobject.Property.set w headers_clickable false;
-      c headers_visible; c model; c reorderable;
-      c rules_hint; c search_column; c vadjustment;
-      Object.destroy w
-  end
   module Signals = struct
     open GtkSignal
     let return = Gobject.Closure.set_result
@@ -561,7 +490,7 @@ module CellRenderer = struct
     open Gobject.Data
     let cell_background =
       {name="cell_background"; classe=classe; conv=string}
-    let cell_background_gdk : (_, Gdk.Color.t option) property =
+    let cell_background_gdk : (_, Gdk.color option) property =
       {name="cell_background_gdk"; classe=classe; conv=unsafe_pointer}
     let cell_background_set =
       {name="cell_background_set"; classe=classe; conv=boolean}

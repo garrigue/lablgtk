@@ -1,3 +1,7 @@
+(* $Id$ *)
+
+open Gobject
+
 type gtk_stock_id = [ `DIALOG_INFO | `DIALOG_WARNING
   | `DIALOG_ERROR | `DIALOG_QUESTION | `DND | `DND_MULTIPLE
   | `ADD | `APPLY | `BOLD | `CANCEL | `CDROM | `CLEAR 
@@ -19,80 +23,92 @@ type gtk_stock_id = [ `DIALOG_INFO | `DIALOG_WARNING
 type id = [gtk_stock_id | `STOCK of string]
 
 (* awk '/^#define GTK_STOCK_/ { sub(/GTK_STOCK_/, "", $2) ; print "| `" $2, "->", $3 }' ~/garnome/include/gtk-2.0/gtk/gtkstock.h *)
+
+let id_table = Hashtbl.create 37
 let convert_id : id -> string = function
   | `STOCK s -> s
-  | `DIALOG_INFO -> "gtk-dialog-info"
-  | `DIALOG_WARNING -> "gtk-dialog-warning"
-  | `DIALOG_ERROR -> "gtk-dialog-error"
-  | `DIALOG_QUESTION -> "gtk-dialog-question"
-  | `DND -> "gtk-dnd"
-  | `DND_MULTIPLE -> "gtk-dnd-multiple"
-  | `ADD -> "gtk-add"
-  | `APPLY -> "gtk-apply"
-  | `BOLD -> "gtk-bold"
-  | `CANCEL -> "gtk-cancel"
-  | `CDROM -> "gtk-cdrom"
-  | `CLEAR -> "gtk-clear"
-  | `CLOSE -> "gtk-close"
-  | `COLOR_PICKER -> "gtk-color-picker"
-  | `CONVERT -> "gtk-convert"
-  | `COPY -> "gtk-copy"
-  | `CUT -> "gtk-cut"
-  | `DELETE -> "gtk-delete"
-  | `EXECUTE -> "gtk-execute"
-  | `FIND -> "gtk-find"
-  | `FIND_AND_REPLACE -> "gtk-find-and-replace"
-  | `FLOPPY -> "gtk-floppy"
-  | `GOTO_BOTTOM -> "gtk-goto-bottom"
-  | `GOTO_FIRST -> "gtk-goto-first"
-  | `GOTO_LAST -> "gtk-goto-last"
-  | `GOTO_TOP -> "gtk-goto-top"
-  | `GO_BACK -> "gtk-go-back"
-  | `GO_DOWN -> "gtk-go-down"
-  | `GO_FORWARD -> "gtk-go-forward"
-  | `GO_UP -> "gtk-go-up"
-  | `HELP -> "gtk-help"
-  | `HOME -> "gtk-home"
-  | `INDEX -> "gtk-index"
-  | `ITALIC -> "gtk-italic"
-  | `JUMP_TO -> "gtk-jump-to"
-  | `JUSTIFY_CENTER -> "gtk-justify-center"
-  | `JUSTIFY_FILL -> "gtk-justify-fill"
-  | `JUSTIFY_LEFT -> "gtk-justify-left"
-  | `JUSTIFY_RIGHT -> "gtk-justify-right"
-  | `MISSING_IMAGE -> "gtk-missing-image"
-  | `NEW -> "gtk-new"
-  | `NO -> "gtk-no"
-  | `OK -> "gtk-ok"
-  | `OPEN -> "gtk-open"
-  | `PASTE -> "gtk-paste"
-  | `PREFERENCES -> "gtk-preferences"
-  | `PRINT -> "gtk-print"
-  | `PRINT_PREVIEW -> "gtk-print-preview"
-  | `PROPERTIES -> "gtk-properties"
-  | `QUIT -> "gtk-quit"
-  | `REDO -> "gtk-redo"
-  | `REFRESH -> "gtk-refresh"
-  | `REMOVE -> "gtk-remove"
-  | `REVERT_TO_SAVED -> "gtk-revert-to-saved"
-  | `SAVE -> "gtk-save"
-  | `SAVE_AS -> "gtk-save-as"
-  | `SELECT_COLOR -> "gtk-select-color"
-  | `SELECT_FONT -> "gtk-select-font"
-  | `SORT_ASCENDING -> "gtk-sort-ascending"
-  | `SORT_DESCENDING -> "gtk-sort-descending"
-  | `SPELL_CHECK -> "gtk-spell-check"
-  | `STOP -> "gtk-stop"
-  | `STRIKETHROUGH -> "gtk-strikethrough"
-  | `UNDELETE -> "gtk-undelete"
-  | `UNDERLINE -> "gtk-underline"
-  | `UNDO -> "gtk-undo"
-  | `YES -> "gtk-yes"
-  | `ZOOM_100 -> "gtk-zoom-100"
-  | `ZOOM_FIT -> "gtk-zoom-fit"
-  | `ZOOM_IN -> "gtk-zoom-in"
-  | `ZOOM_OUT -> "gtk-zoom-out"
+  | id -> Hashtbl.find id_table id
 
+let conv =
+  { kind = `STRING;
+    proj = (function `STRING (Some s) -> `STOCK s
+           | _ -> failwith "GtkStock.get_id");
+    inj = (fun id -> `STRING (Some (convert_id id))) }
+
+
+let () =
+  List.iter (fun (k,d) -> Hashtbl.add id_table k d)
+    [ `DIALOG_INFO, "gtk-dialog-info";
+      `DIALOG_WARNING, "gtk-dialog-warning";
+      `DIALOG_ERROR, "gtk-dialog-error";
+      `DIALOG_QUESTION, "gtk-dialog-question";
+      `DND, "gtk-dnd";
+      `DND_MULTIPLE, "gtk-dnd-multiple";
+      `ADD, "gtk-add";
+      `APPLY, "gtk-apply";
+      `BOLD, "gtk-bold";
+      `CANCEL, "gtk-cancel";
+      `CDROM, "gtk-cdrom";
+      `CLEAR, "gtk-clear";
+      `CLOSE, "gtk-close";
+      `COLOR_PICKER, "gtk-color-picker";
+      `CONVERT, "gtk-convert";
+      `COPY, "gtk-copy";
+      `CUT, "gtk-cut";
+      `DELETE, "gtk-delete";
+      `EXECUTE, "gtk-execute";
+      `FIND, "gtk-find";
+      `FIND_AND_REPLACE, "gtk-find-and-replace";
+      `FLOPPY, "gtk-floppy";
+      `GOTO_BOTTOM, "gtk-goto-bottom";
+      `GOTO_FIRST, "gtk-goto-first";
+      `GOTO_LAST, "gtk-goto-last";
+      `GOTO_TOP, "gtk-goto-top";
+      `GO_BACK, "gtk-go-back";
+      `GO_DOWN, "gtk-go-down";
+      `GO_FORWARD, "gtk-go-forward";
+      `GO_UP, "gtk-go-up";
+      `HELP, "gtk-help";
+      `HOME, "gtk-home";
+      `INDEX, "gtk-index";
+      `ITALIC, "gtk-italic";
+      `JUMP_TO, "gtk-jump-to";
+      `JUSTIFY_CENTER, "gtk-justify-center";
+      `JUSTIFY_FILL, "gtk-justify-fill";
+      `JUSTIFY_LEFT, "gtk-justify-left";
+      `JUSTIFY_RIGHT, "gtk-justify-right";
+      `MISSING_IMAGE, "gtk-missing-image";
+      `NEW, "gtk-new";
+      `NO, "gtk-no";
+      `OK, "gtk-ok";
+      `OPEN, "gtk-open";
+      `PASTE, "gtk-paste";
+      `PREFERENCES, "gtk-preferences";
+      `PRINT, "gtk-print";
+      `PRINT_PREVIEW, "gtk-print-preview";
+      `PROPERTIES, "gtk-properties";
+      `QUIT, "gtk-quit";
+      `REDO, "gtk-redo";
+      `REFRESH, "gtk-refresh";
+      `REMOVE, "gtk-remove";
+      `REVERT_TO_SAVED, "gtk-revert-to-saved";
+      `SAVE, "gtk-save";
+      `SAVE_AS, "gtk-save-as";
+      `SELECT_COLOR, "gtk-select-color";
+      `SELECT_FONT, "gtk-select-font";
+      `SORT_ASCENDING, "gtk-sort-ascending";
+      `SORT_DESCENDING, "gtk-sort-descending";
+      `SPELL_CHECK, "gtk-spell-check";
+      `STOP, "gtk-stop";
+      `STRIKETHROUGH, "gtk-strikethrough";
+      `UNDELETE, "gtk-undelete";
+      `UNDERLINE, "gtk-underline";
+      `UNDO, "gtk-undo";
+      `YES, "gtk-yes";
+      `ZOOM_100, "gtk-zoom-100";
+      `ZOOM_FIT, "gtk-zoom-fit";
+      `ZOOM_IN, "gtk-zoom-in";
+      `ZOOM_OUT, "gtk-zoom-out" ]
 
 type icon_source
 module Icon_source = struct

@@ -6,8 +6,6 @@ open GContainer
 
 val separator :
   Tags.orientation ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> widget_full
 
 class statusbar_context :
@@ -67,8 +65,6 @@ class calendar : Gtk.calendar obj ->
   end
 val calendar :
   ?options:Tags.calendar_display_options list ->
-  ?width:int ->
-  ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> calendar
 
 class drawing_area : Gtk.drawing_area obj ->
@@ -83,26 +79,33 @@ val drawing_area :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> drawing_area
 
-class misc : 'a obj ->
+class misc : ([> Gtk.misc] as 'a) obj ->
   object
     inherit widget
-    constraint 'a = [> Gtk.misc]
     val obj : 'a obj
-    method set_alignment : ?x:float -> ?y:float -> unit -> unit
-    method set_padding : ?x:int -> ?y:int -> unit -> unit
+    method set_xalign : float -> unit
+    method set_yalign : float -> unit
+    method set_xpad : int -> unit
+    method set_ypad : int -> unit
+    method xalign : float
+    method yalign : float
+    method xpad : int
+    method ypad : int
   end
 
-class arrow : 'a obj ->
+class arrow : ([> Gtk.arrow] as 'a) obj ->
   object
     inherit misc
-    constraint 'a = [> Gtk.arrow]
     val obj : 'a obj
-    method set_arrow : Tags.arrow_type -> shadow:Tags.shadow_type -> unit
+    method set_kind : Tags.arrow_type -> unit
+    method set_shadow : Tags.shadow_type -> unit
+    method kind : Tags.arrow_type
+    method shadow : Tags.shadow_type
   end
 
 val arrow :
-  kind:Tags.arrow_type ->
-  shadow:Tags.shadow_type ->
+  ?kind:Tags.arrow_type ->
+  ?shadow:Tags.shadow_type ->
   ?xalign:float ->
   ?yalign:float ->
   ?xpad:int ->
@@ -111,19 +114,49 @@ val arrow :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> arrow
 
+type image_type = 
+  [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION ]
+
 class image : 'a obj ->
   object
     inherit misc
     constraint 'a = [> Gtk.image]
     val obj : 'a obj
-    method set_image : ?mask:Gdk.bitmap -> Gdk.image -> unit
-    method set_pixmap : ?mask:Gdk.bitmap -> Gdk.pixmap -> unit
+    method storage_type : image_type
+    method set_image : Gdk.image -> unit
+    method set_pixmap : GDraw.pixmap -> unit
+    method set_mask : Gdk.bitmap option -> unit
     method set_file : string -> unit
     method set_pixbuf : GdkPixbuf.pixbuf -> unit
-    method set_stock : GtkStock.id -> size:Gtk.Tags.icon_size -> unit
+    method set_stock : GtkStock.id -> unit
+    method set_icon_size : Tags.icon_size -> unit
+    method image : Gdk.image
+    method pixmap : GDraw.pixmap
+    method mask : Gdk.bitmap option
+    method pixbuf : GdkPixbuf.pixbuf
+    method stock : GtkStock.id
+    method icon_size : Tags.icon_size
   end
 
 val image :
+  ?file:string ->
+  ?image:Gdk.image ->
+  ?pixbuf:GdkPixbuf.pixbuf ->
+  ?pixmap:Gdk.pixmap ->
+  ?mask:Gdk.bitmap ->
+  ?stock:GtkStock.id ->
+  ?icon_size:Tags.icon_size ->
+  ?xalign:float ->
+  ?yalign:float ->
+  ?xpad:int ->
+  ?ypad:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> image
+
+(* Use an image as a pixmap... *)
+val pixmap :
+  #GDraw.pixmap ->
   ?xalign:float ->
   ?yalign:float ->
   ?xpad:int ->
@@ -137,14 +170,28 @@ class label_skel : 'a obj ->
     inherit misc
     constraint 'a = [> Gtk.label]
     val obj : 'a obj
+    method cursor_position : int
+    method selection_bound : int
     method set_justify : Tags.justification -> unit
     method set_line_wrap : bool -> unit
+    method set_mnemonic_widget : widget option -> unit
     method set_pattern : string -> unit
+    method set_selectable : bool -> unit
     method set_text : string -> unit
-    method set_markup : string -> unit
-    method set_markup_with_mnemonic : string -> unit
+    method set_use_markup : bool -> unit
+    method set_use_underline : bool -> unit
+    method set_xalign : float -> unit
+    method set_xpad : int -> unit
+    method set_yalign : float -> unit
+    method set_ypad : int -> unit
+    method justify : Tags.justification
+    method line_wrap : bool
+    method mnemonic_keyval : int
+    method mnemonic_widget : widget option
+    method selectable : bool
     method text : string
-    method label : string
+    method use_markup : bool
+    method use_underline : bool
   end
 
 class label : Gtk.label obj ->
@@ -157,7 +204,11 @@ val label :
   ?text:string ->
   ?justify:Tags.justification ->
   ?line_wrap:bool ->
+  ?use_markup:bool ->
+  ?use_underline:bool ->
+  ?mnemonic_widget:Gtk.widget obj ->
   ?pattern:string ->
+  ?selectable:bool ->
   ?xalign:float ->
   ?yalign:float ->
   ?xpad:int ->
@@ -167,11 +218,10 @@ val label :
   ?packing:(widget -> unit) -> ?show:bool -> unit -> label
 val label_cast : < as_widget : 'a obj ; .. > -> label
 
-class tips_query_signals : 'a obj ->
+class tips_query_signals : Gtk.tips_query obj ->
   object
     inherit widget_signals
-    constraint 'a = [> Gtk.tips_query]
-    val obj : 'a obj
+    val obj : Gtk.tips_query obj
     method widget_entered :
       callback:(widget option ->
                 text:string option -> privat:string option -> unit) ->
@@ -187,12 +237,16 @@ class tips_query : Gtk.tips_query obj ->
     inherit label_skel
     val obj : Gtk.tips_query obj
     method connect : tips_query_signals
-    method set_caller : widget -> unit
+    method start : unit -> unit
+    method stop : unit -> unit
+    method set_caller : widget option -> unit
     method set_emit_always : bool -> unit
     method set_label_inactive : string -> unit
     method set_label_no_tip : string -> unit
-    method start : unit -> unit
-    method stop : unit -> unit
+    method caller : widget option
+    method emit_always : bool
+    method label_inactive : string
+    method label_no_tip : string
   end
 val tips_query :
   ?caller:#widget ->
@@ -207,35 +261,25 @@ val tips_query :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> tips_query
 
-class pixmap : Gtk.pixmap Gtk.obj ->
-  object
-    inherit misc
-    val obj : Gtk.pixmap Gtk.obj
-    method connect : GObj.widget_signals
-    method pixmap : GDraw.pixmap
-    method set_pixmap : GDraw.pixmap -> unit
-  end
-val pixmap :
-  #GDraw.pixmap ->
-  ?xalign:float ->
-  ?yalign:float ->
-  ?xpad:int ->
-  ?ypad:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> pixmap
-
 class color_selection : Gtk.color_selection obj ->
   object
     inherit widget_full
     val obj : Gtk.color_selection obj
-    method get_color : Gtk.color
-    method set_color :
-      red:float -> green:float -> blue:float -> ?opacity:float -> unit -> unit
-    method set_update_policy : Tags.update_type -> unit
+    method alpha : int
+    method color : Gdk.color
+    method set_alpha : int -> unit
+    method set_border_width : int -> unit
+    method set_color : Gdk.color -> unit
+    method set_has_opacity_control : bool -> unit
+    method set_has_palette : bool -> unit
+    method has_opacity_control : bool
+    method has_palette : bool
   end
 val color_selection :
-  ?update_policy:Tags.update_type ->
+  ?alpha:int ->
+  ?color:Gdk.color ->
+  ?has_opacity_control:bool ->
+  ?has_palette:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
@@ -246,40 +290,17 @@ class font_selection : Gtk.font_selection obj ->
     inherit widget_full
     val obj : Gtk.font_selection obj
     method event : event_ops
-    method notebook : GPack.notebook
     method font : Gdk.font option
-    method font_name : string option
+    method font_name : string
     method preview_text : string
+    method set_border_width : int -> unit
     method set_font_name : string -> unit
     method set_preview_text : string -> unit
   end
 val font_selection :
+  ?font_name:string ->
+  ?preview_text:string ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> font_selection
-
-
-class preview :
-  Gtk.preview Gtk.obj ->
-  object
-    inherit widget_full
-    val obj : Gtk.preview Gtk.obj
-    method draw_row : data:int array -> x:int -> y:int -> unit
-    method event : GObj.event_ops
-    method put :
-      ?xsrc:int ->
-      ?ysrc:int ->
-      ?xdest:int ->
-      ?ydest:int -> ?width:int -> ?height:int -> Gdk.window -> Gdk.gc -> unit
-    method set_dither : Gdk.Tags.rgb_dither -> unit
-    method set_expand : bool -> unit
-    method size : width:int -> height:int -> unit
-  end
-val preview :
-  ?kind:Gtk.Tags.preview_type ->
-  ?dither:Gdk.Tags.rgb_dither ->
-  ?expand:bool ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> preview

@@ -8,8 +8,7 @@ let _ =
   let window = GWindow.window () in
   window#connect#destroy ~callback:Main.quit;
 
-  let text = GText.view ~packing:window#add () in
-  text#misc#set_size_request 200 100;
+  let text = GText.view ~width:200 ~height:100 ~packing:window#add () in
   text#event#connect#button_press ~callback:
     begin fun ev ->
       GdkEvent.Button.button ev = 3 &&

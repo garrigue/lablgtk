@@ -17,6 +17,18 @@
 
 static Make_Flags_val (Button_action_val)
 
+/* Init all */
+
+CAMLprim value ml_gtklist_init(value unit)
+{
+    /* Since these are declared const, must force gcc to call them! */
+    GType t =
+        gtk_list_item_get_type() +
+        gtk_list_get_type() +
+        gtk_clist_get_type();
+    return Val_GType(t);
+}
+
 /* gtklistitem.h */
 
 ML_0 (gtk_list_item_new, Val_GtkWidget_sink)

@@ -4,15 +4,12 @@ open Gaux
 open Gobject
 open Gtk
 open Tags
+open GtkProps
 
 module Object = struct
+  include Object
   let try_cast = Gobject.try_cast
   external destroy : [>`gtk] obj -> unit = "ml_gtk_object_destroy"
-  let cast w : [`gtk] obj = try_cast w "GtkObject"
-  external _ref_and_sink : [>`gtk] obj -> unit = "ml_gtk_object_ref_and_sink"
-  let make ~classe params =
-    let obj = Gobject.make ~classe params in _ref_and_sink obj;
-    obj
   external get_flags : [>`gtk] obj -> int = "ml_GTK_OBJECT_FLAGS"
   let get_flag obj wf =
     (get_flags obj) land (Gpointer.encode_variant GtkEnums.widget_flags wf)
@@ -25,7 +22,14 @@ module Object = struct
 end
 
 module Widget = struct
-  let cast w : widget obj = Object.try_cast w "GtkWidget"
+  include Widget
+
+  let size_params ~cont pl ?width ?height =
+    let may_cons = Property.may_cons in
+    cont (
+    may_cons P.width_request width (
+    may_cons P.height_request height pl))
+
   external unparent : [>`widget] obj -> unit = "ml_gtk_widget_unparent"
   external show : [>`widget] obj -> unit = "ml_gtk_widget_show"
   external show_now : [>`widget] obj -> unit = "ml_gtk_widget_show_now"
@@ -59,35 +63,12 @@ module Widget = struct
   external intersect :
       [>`widget] obj -> Gdk.Rectangle.t -> Gdk.Rectangle.t option
       = "ml_gtk_widget_intersect"
-  external set_can_default : [>`widget] obj -> bool -> unit
-      = "ml_gtk_widget_set_can_default"
-  external set_can_focus : [>`widget] obj -> bool -> unit
-      = "ml_gtk_widget_set_can_focus"
-  external grab_focus : [>`widget] obj -> unit
-      = "ml_gtk_widget_grab_focus"
-  external grab_default : [>`widget] obj -> unit
-      = "ml_gtk_widget_grab_default"
-  external set_name : [>`widget] obj -> string -> unit
-      = "ml_gtk_widget_set_name"
-  external get_name : [>`widget] obj -> string
-      = "ml_gtk_widget_get_name"
   external set_state : [>`widget] obj -> state_type -> unit
       = "ml_gtk_widget_set_state"
-  external set_sensitive : [>`widget] obj -> bool -> unit
-      = "ml_gtk_widget_set_sensitive"
   external set_uposition : [>`widget] obj -> x:int -> y:int -> unit
       = "ml_gtk_widget_set_uposition"
-  external set_usize : [>`widget] obj -> width:int -> height:int -> unit
-      = "ml_gtk_widget_set_usize"
-  external set_size_request : [>`widget] obj -> width:int -> height:int -> unit
-      = "ml_gtk_widget_set_size_request"
   external add_events : [>`widget] obj -> Gdk.Tags.event_mask list -> unit
       = "ml_gtk_widget_add_events"
-  external set_events : [>`widget] obj -> Gdk.Tags.event_mask list -> unit
-      = "ml_gtk_widget_set_events"
-  external set_extension_events :
-      [>`widget] obj -> Gdk.Tags.extension_mode -> unit
-      = "ml_gtk_widget_set_extension_events"
   external get_toplevel : [>`widget] obj -> widget obj
       = "ml_gtk_widget_get_toplevel"
   external get_ancestor : [>`widget] obj -> g_type -> widget obj
@@ -100,19 +81,15 @@ module Widget = struct
       = "ml_gtk_widget_get_pointer"
   external is_ancestor : [>`widget] obj -> [>`widget] obj -> bool
       = "ml_gtk_widget_is_ancestor"
-  external set_style : [>`widget] obj -> style -> unit
-      = "ml_gtk_widget_set_style"
   external ensure_style : [>`widget] obj -> unit
       = "ml_gtk_widget_ensure_style"
-  external get_style : [>`widget] obj -> style
-      = "ml_gtk_widget_get_style"
-  external modify_fg : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+  external modify_fg : [>`widget] obj -> state_type -> Gdk.color -> unit
       = "ml_gtk_widget_modify_fg"
-  external modify_bg : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+  external modify_bg : [>`widget] obj -> state_type -> Gdk.color -> unit
       = "ml_gtk_widget_modify_bg"
-  external modify_text : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+  external modify_text : [>`widget] obj -> state_type -> Gdk.color -> unit
       = "ml_gtk_widget_modify_text"
-  external modify_base : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+  external modify_base : [>`widget] obj -> state_type -> Gdk.color -> unit
       = "ml_gtk_widget_modify_base"
   external modify_font : [>`widget] obj -> Pango.font_description -> unit
       = "ml_gtk_widget_modify_font"
@@ -147,10 +124,6 @@ module Widget = struct
 *)
   external window : [>`widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
-  external parent : [>`widget] obj -> widget obj
-      = "ml_gtk_widget_parent"
-  external set_app_paintable : [>`widget] obj -> bool -> unit
-      = "ml_gtk_widget_set_app_paintable"
   external allocation : [>`widget] obj -> rectangle
       = "ml_gtk_widget_allocation"
   external set_colormap : [>`widget] obj -> Gdk.colormap -> unit
@@ -284,16 +257,7 @@ module Widget = struct
 end
 
 module Container = struct
-  let cast w : container obj = Object.try_cast w "GtkContainer"
-  external coerce : [>`container] obj -> container obj = "%identity"
-  external set_border_width : [>`container] obj -> int -> unit
-      = "ml_gtk_container_set_border_width"
-  external set_resize_mode : [>`container] obj -> resize_mode -> unit
-      = "ml_gtk_container_set_resize_mode"
-  external get_border_width : [>`container] obj -> int
-      = "ml_gtk_container_get_border_width"
-  external get_resize_mode : [>`container] obj -> resize_mode
-      = "ml_gtk_container_get_resize_mode"
+  include Container
   external check_resize : [>`container] obj -> unit
       = "ml_gtk_container_check_resize"
   external add : [>`container] obj -> [>`widget] obj -> unit
@@ -301,12 +265,9 @@ module Container = struct
   external remove : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_remove"
 
-  let setter ~cont ?border_width ?(width = -2) ?(height = -2) =
-    cont (fun w ->
-      may border_width ~f:(set_border_width w);
-      if width <> -2 || height <> -2 then Widget.set_usize w ?width ?height)
-  let set ?border_width =
-    setter ?border_width ~cont:(fun f w -> f w)
+  let make_params ~cont pl ?border_width =
+    Widget.size_params pl ~cont:(fun p ->
+      cont (Property.may_cons P.border_width border_width p))
 
   external foreach : [>`container] obj -> f:(widget obj-> unit) -> unit
       = "ml_gtk_container_foreach"

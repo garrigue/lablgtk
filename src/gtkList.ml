@@ -4,21 +4,23 @@ open StdLabels
 open Gaux
 open Gtk
 open Tags
+open GtkProps
 open GtkBase
 
+external _gtklist_init : unit -> unit = "ml_gtklist_init"
+let () = _gtklist_init ()
+
 module ListItem = struct
-  let cast w : list_item obj = Object.try_cast w "GtkListItem"
-  external create : unit -> list_item obj = "ml_gtk_list_item_new"
+  include ListItem
   external create_with_label : string -> list_item obj
       = "ml_gtk_list_item_new_with_label"
   let create ?label () =
-    match label with None -> create ()
+    match label with None -> create []
     | Some label -> create_with_label label
 end
 
 module Liste = struct
-  let cast w : liste obj = Object.try_cast w "GtkList"
-  external create : unit -> liste obj = "ml_gtk_list_new"
+  include Liste
   external insert_item :
       [>`list] obj -> [>`listitem] obj -> pos:int -> unit
       = "ml_gtk_list_insert_item"
@@ -39,8 +41,6 @@ module Liste = struct
       = "ml_gtk_list_unselect_child"
   external child_position : [>`list] obj -> [>`listitem] obj -> int
       = "ml_gtk_list_child_position"
-  external set_selection_mode : [>`list] obj -> selection_mode -> unit
-      = "ml_gtk_list_set_selection_mode"
   module Signals = struct
     open GtkSignal
     let selection_changed =
@@ -55,7 +55,7 @@ module Liste = struct
 end
 
 module CList = struct
-  let cast w : clist obj = Object.try_cast w "GtkCList"
+  include Clist
   external create : cols:int -> clist obj = "ml_gtk_clist_new"
   external create_with_titles : string array -> clist obj
       = "ml_gtk_clist_new_with_titles"
@@ -149,10 +149,10 @@ module CList = struct
       string -> int -> Gdk.pixmap -> Gdk.bitmap Gpointer.optboxed -> unit
       = "ml_gtk_clist_set_pixtext_bc" "ml_gtk_clist_set_pixtext"
   external set_foreground :
-      [>`clist] obj -> row:int -> Gdk.Color.t Gpointer.optboxed -> unit
+      [>`clist] obj -> row:int -> Gdk.color Gpointer.optboxed -> unit
       = "ml_gtk_clist_set_foreground"
   external set_background :
-      [>`clist] obj -> row:int -> Gdk.Color.t Gpointer.optboxed -> unit
+      [>`clist] obj -> row:int -> Gdk.color Gpointer.optboxed -> unit
       = "ml_gtk_clist_set_background"
   external get_cell_style : [>`clist] obj -> int -> int -> Gtk.style
       = "ml_gtk_clist_get_cell_style"
@@ -213,20 +213,14 @@ module CList = struct
   let set_titles_active w = function
       true -> column_titles_active w
     | false -> column_titles_passive w
-  let set ?hadjustment ?vadjustment ?shadow_type
-      ?(button_actions=[]) ?selection_mode ?reorderable
-      ?use_drag_icons ?row_height ?titles_show ?titles_active w =
-    let may_set f param = may param ~f:(f w) in
-    may_set set_hadjustment hadjustment;
-    may_set set_vadjustment vadjustment;
-    may_set set_shadow_type shadow_type;
-    List.iter button_actions ~f:(fun (n,act) -> set_button_actions w n act);
-    may_set set_selection_mode selection_mode;
-    may_set set_reorderable reorderable;
-    may_set set_use_drag_icons use_drag_icons;
-    may_set set_row_height row_height;
-    may_set set_titles_show titles_show;
-    may_set set_titles_active titles_active
+  let setter ~cont ?hadjustment ?vadjustment ?(button_actions=[])
+      ?titles_show =
+    cont (fun w ->
+      let may_set f param = may param ~f:(f w) in
+      may_set set_hadjustment hadjustment;
+      may_set set_vadjustment vadjustment;
+      List.iter button_actions ~f:(fun (n,act) -> set_button_actions w n act);
+      may_set set_titles_show titles_show)
   let set_sort w ?auto ?column ?dir:sort_type () =
     may auto ~f:(set_auto_sort w);
     may column ~f:(set_sort_column w);

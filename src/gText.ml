@@ -13,18 +13,18 @@ let mark_name = function
   | `SEL_BOUND -> "selection_bound"
   | `NAME s -> s
 
-type mark = [mark_name | `MARK of textmark]
+type mark = [mark_name | `MARK of text_mark]
 
 class child_anchor obj =
 object
   val obj = obj
   method get_oid = Gobject.get_oid obj
   method as_childanchor = obj
-  method widgets = Child_Anchor.get_widgets obj
-  method deleted = Child_Anchor.get_deleted obj
+  method widgets = List.map (new widget) (ChildAnchor.get_widgets obj)
+  method deleted = ChildAnchor.get_deleted obj
 end
 
-let child_anchor () = new child_anchor (Child_Anchor.create ())
+let child_anchor () = new child_anchor (ChildAnchor.create ())
 
 
 class tag_signals obj = object
@@ -44,7 +44,7 @@ object (self)
   method priority = Tag.get_priority obj
   method set_priority p = Tag.set_priority obj p
   (* [BM] my very first polymorphic method in OCaml...*)
-  method event : 'a. 'a Gtk.obj -> GdkEvent.any -> Gtk.textiter -> bool = 
+  method event : 'a. 'a Gtk.obj -> GdkEvent.any -> Gtk.text_iter -> bool = 
     Tag.event obj 
   method set_property p = 
     Tag.set_property obj p
@@ -62,7 +62,7 @@ type contents =
 
 class nocopy_iter it =
 object(self)
-  val it = (it:textiter)
+  val it = (it:text_iter)
   method forward_char = Iter.forward_char it
   method backward_char = Iter.backward_char it
   method forward_chars n = Iter.forward_chars it n
@@ -96,17 +96,17 @@ object(self)
   method set_visible_line_index = Iter.set_visible_line_index it
   method set_visible_line_offset = Iter.set_visible_line_offset it
   method forward_find_char ?(limit : iter option) f = 
-    Iter.forward_find_char it f (may_map limit ~f:(fun t -> t#as_textiter))
+    Iter.forward_find_char it f (may_map limit ~f:(fun t -> t#as_iter))
   method backward_find_char ?(limit : iter option) f = 
-    Iter.backward_find_char it f (may_map limit ~f:(fun t -> t#as_textiter))
+    Iter.backward_find_char it f (may_map limit ~f:(fun t -> t#as_iter))
 end
 
 and iter it =
 object (self)
   val nocopy = new nocopy_iter it
-  val it = (it: textiter)
+  val it = (it: text_iter)
   method nocopy = nocopy 
-  method as_textiter = it
+  method as_iter = it
   method copy = new iter (Iter.copy it)
 
   method buffer = Iter.get_buffer it
@@ -126,12 +126,12 @@ object (self)
     | None -> match Iter.get_child_anchor it with
         Some c -> `CHILD (new child_anchor c)
       | None -> `UNKNOWN
-  method get_slice ~(stop:iter) = Iter.get_slice it stop#as_textiter
-  method get_text ~(stop:iter) = Iter.get_text it stop#as_textiter
+  method get_slice ~(stop:iter) = Iter.get_slice it stop#as_iter
+  method get_text ~(stop:iter) = Iter.get_text it stop#as_iter
   method get_visible_slice ~(stop:iter) = 
-    Iter.get_visible_slice it stop#as_textiter
+    Iter.get_visible_slice it stop#as_iter
   method get_visible_text ~(stop:iter) = 
-    Iter.get_visible_text it stop#as_textiter
+    Iter.get_visible_text it stop#as_iter
 
   method marks = Iter.get_marks it
   method get_toggled_tags b = List.map (fun x -> new tag x) 
@@ -211,18 +211,18 @@ object (self)
   method backward_to_tag_toggle (tag : tag option) = 
     let s = self#copy in s#nocopy#backward_to_tag_toggle tag; s
 
-  method equal (a:iter) = Iter.equal it a#as_textiter
-  method compare (a:iter) = Iter.compare it a#as_textiter
+  method equal (a:iter) = Iter.equal it a#as_iter
+  method compare (a:iter) = Iter.compare it a#as_iter
   method in_range ~(start:iter) ~(stop:iter)  = 
-    Iter.in_range it start#as_textiter stop#as_textiter
+    Iter.in_range it start#as_iter stop#as_iter
 
  method forward_search ?flags ?(limit:iter option) s =
     may_map (Iter.forward_search it s ?flags
-               (may_map limit ~f:(fun t -> t#as_textiter)))
+               (may_map limit ~f:(fun t -> t#as_iter)))
       ~f:(fun (s,t) -> new iter s, new iter t)
   method backward_search ?flags ?(limit : iter option) s =
     may_map (Iter.backward_search it s ?flags
-               (may_map limit ~f:(fun t -> t#as_textiter)))
+               (may_map limit ~f:(fun t -> t#as_iter)))
       ~f:(fun (s,t) -> new iter s, new iter t)
 
   method forward_find_char ?limit f = 
@@ -232,7 +232,7 @@ object (self)
 end
 
 (* let iter i = new iter (Iter.copy i) *)
-let as_textiter (it : iter) = it#as_textiter
+let as_iter (it : iter) = it#as_iter
 
 class tagtable_signals obj = object
   val obj = obj
@@ -327,7 +327,7 @@ class buffer obj = object(self)
       | [],[] -> 
 	  begin match iter with
 	  | None      -> Buffer.insert_at_cursor obj text
-	  | Some iter -> Buffer.insert obj (as_textiter iter) text
+	  | Some iter -> Buffer.insert obj (as_iter iter) text
 	  end
       | _ ->
           begin match iter with
@@ -342,7 +342,7 @@ class buffer obj = object(self)
 		~f:(self#apply_tag_by_name ~start ~stop:(insert_iter ())) 
 	  | Some iter -> 
 	      let start_offset = iter#offset in
-	      Buffer.insert obj (as_textiter iter) text;
+	      Buffer.insert obj (as_iter iter) text;
 	      let start = self#get_iter_at_char start_offset in
 	      List.iter tags ~f:(self#apply_tag ~start ~stop:iter);
 	      List.iter tag_names 
@@ -353,35 +353,35 @@ class buffer obj = object(self)
     | None -> 
 	Buffer.insert_interactive_at_cursor obj text default_editable
     | Some iter -> 
-	Buffer.insert_interactive obj (as_textiter iter) text default_editable
+	Buffer.insert_interactive obj (as_iter iter) text default_editable
   method insert_range ~iter ~start ~stop = 
     Buffer.insert_range obj
-      (as_textiter iter) (as_textiter start) (as_textiter stop)
+      (as_iter iter) (as_iter start) (as_iter stop)
   method insert_range_interactive ~iter ~start ~stop
       ?(default_editable = true) () = 
-    Buffer.insert_range_interactive obj (as_textiter iter) (as_textiter start)
-      (as_textiter stop)  default_editable
-  method delete ~start ~stop = Buffer.delete obj (as_textiter start) 
-				 (as_textiter stop)
+    Buffer.insert_range_interactive obj (as_iter iter) (as_iter start)
+      (as_iter stop)  default_editable
+  method delete ~start ~stop = Buffer.delete obj (as_iter start) 
+				 (as_iter stop)
   method delete_interactive ~start ~stop ?(default_editable = true) () = 
-    Buffer.delete_interactive obj (as_textiter start) 
-      (as_textiter stop) default_editable
+    Buffer.delete_interactive obj (as_iter start) 
+      (as_iter stop) default_editable
   method set_text text = 
     Buffer.set_text obj text
   method get_text ?start ?stop ?(slice=false) ?(visible=false) () =
     let start,stop = 
       match start,stop with 
 	| None,None -> Buffer.get_bounds obj
-	| Some start,None -> as_textiter start, Buffer.get_start_iter obj
-	| None,Some stop -> Buffer.get_end_iter obj, as_textiter stop
-	| Some start,Some stop -> as_textiter start, as_textiter stop
+	| Some start,None -> as_iter start, Buffer.get_start_iter obj
+	| None,Some stop -> Buffer.get_end_iter obj, as_iter stop
+	| Some start,Some stop -> as_iter start, as_iter stop
     in
     (if slice then Buffer.get_slice else Buffer.get_text)
       obj start stop (not visible)
   method insert_pixbuf ~iter ~pixbuf = 
-    Buffer.insert_pixbuf obj (as_textiter iter) pixbuf
+    Buffer.insert_pixbuf obj (as_iter iter) pixbuf
   method create_mark ?name ?(left_gravity=true) iter = 
-    Buffer.create_mark obj name (as_textiter iter) left_gravity
+    Buffer.create_mark obj name (as_iter iter) left_gravity
   method get_mark : mark -> _ = function
       `MARK mark -> mark
     | #mark_name as  mark ->
@@ -390,20 +390,20 @@ class buffer obj = object(self)
         | None -> raise (No_such_mark name)
 	| Some m -> m
   method move_mark mark ~where =
-    Buffer.move_mark obj (self#get_mark mark) (as_textiter where)
+    Buffer.move_mark obj (self#get_mark mark) (as_iter where)
   method delete_mark mark = Buffer.delete_mark obj (self#get_mark mark)
   method place_cursor ~where = 
-    Buffer.place_cursor obj (as_textiter where)
+    Buffer.place_cursor obj (as_iter where)
   method apply_tag (tag : tag) ~start ~stop = 
-    Buffer.apply_tag obj tag#as_tag (as_textiter start) (as_textiter stop)
+    Buffer.apply_tag obj tag#as_tag (as_iter start) (as_iter stop)
   method remove_tag (tag : tag) ~start ~stop = 
-    Buffer.remove_tag obj tag#as_tag (as_textiter start) (as_textiter stop)
+    Buffer.remove_tag obj tag#as_tag (as_iter start) (as_iter stop)
   method apply_tag_by_name name ~start ~stop = 
-    Buffer.apply_tag_by_name obj name (as_textiter start) (as_textiter stop)
+    Buffer.apply_tag_by_name obj name (as_iter start) (as_iter stop)
   method remove_tag_by_name name ~start ~stop = 
-    Buffer.remove_tag_by_name obj name (as_textiter start) (as_textiter stop)
+    Buffer.remove_tag_by_name obj name (as_iter start) (as_iter stop)
   method remove_all_tags ~start ~stop =
-    Buffer.remove_all_tags obj (as_textiter start) (as_textiter stop)
+    Buffer.remove_all_tags obj (as_iter start) (as_iter stop)
   method create_tag ?name (properties: Tag.property list) =
     let t = new tag (Buffer.create_tag_0 obj name) in
     if properties <> [] then t#set_properties properties;
@@ -417,7 +417,7 @@ class buffer obj = object(self)
       | `LINE n -> Buffer.get_iter_at_line obj n
       | `LINECHAR (l,c) -> Buffer.get_iter_at_line_offset obj l c
       | `LINEBYTE (l,c) -> Buffer.get_iter_at_line_index  obj l c
-      | `ITER it -> it#as_textiter
+      | `ITER it -> it#as_iter
       | #mark as mark ->
           Buffer.get_iter_at_mark obj (self#get_mark mark)
     in new iter it
@@ -446,13 +446,13 @@ class buffer obj = object(self)
   method begin_user_action () = Buffer.begin_user_action obj
   method end_user_action () = Buffer.end_user_action obj
   method create_child_anchor (iter:iter) = 
-    new child_anchor (Buffer.create_child_anchor obj iter#as_textiter)
+    new child_anchor (Buffer.create_child_anchor obj iter#as_iter)
   method insert_child_anchor (iter:iter) (child_anchor:child_anchor) = 
-    Buffer.insert_child_anchor obj iter#as_textiter child_anchor#as_childanchor
+    Buffer.insert_child_anchor obj iter#as_iter child_anchor#as_childanchor
   method paste_clipboard ?(iter:iter option) ?(default_editable=true)
     clipboard = 
     Buffer.paste_clipboard obj clipboard 
-      (match iter with None -> None | Some i -> Some i#as_textiter)
+      (match iter with None -> None | Some i -> Some i#as_iter)
       default_editable
   method copy_clipboard = Buffer.copy_clipboard obj
   method cut_clipboard ?(default_editable=true) clipboard = 
@@ -471,7 +471,7 @@ let buffer ?(tagtable:tagtable option) ?text () =
  
 
 class view_signals obj = object
-  inherit gtkobj_signals (obj : [> Gtk.textview] obj)
+  inherit gtkobj_signals (obj : [> Gtk.text_view] obj)
   method copy_clipboard = 
      GtkSignal.connect ~sgn:View.Signals.copy_clipboard ~after obj
   method cut_clipboard = 
@@ -499,7 +499,7 @@ class view_signals obj = object
 end
 
 class view obj = object (self)
-  inherit widget (obj : Gtk.textview obj)
+  inherit widget (obj : Gtk.text_view obj)
   method event = new GObj.event_ops obj
   method connect = new view_signals obj
   method as_view = obj
@@ -512,7 +512,7 @@ class view obj = object (self)
       within_margin use_align xalign yalign
   method scroll_to_iter  ?(within_margin=0.) ?(use_align=false)
       ?(xalign=0.) ?(yalign=0.) iter =
-    View.scroll_to_iter obj (as_textiter iter) within_margin
+    View.scroll_to_iter obj (as_iter iter) within_margin
       use_align xalign yalign
   method scroll_mark_onscreen mark =  
     View.scroll_mark_onscreen obj (self#buffer#get_mark mark)
@@ -521,10 +521,10 @@ class view obj = object (self)
   method place_cursor_onscreen () =  
     View.place_cursor_onscreen obj
   method visible_rect =  View.get_visible_rect obj
-  method get_iter_location iter = View.get_iter_location obj (as_textiter iter)
+  method get_iter_location iter = View.get_iter_location obj (as_iter iter)
   method get_line_at_y y =
     let it, n = View.get_line_at_y obj y in (new iter it, n)
-  method get_line_yrange iter = View.get_line_yrange obj (as_textiter iter)
+  method get_line_yrange iter = View.get_line_yrange obj (as_iter iter)
   method get_iter_at_location ~x ~y =
     new iter (View.get_iter_at_location obj x y)
   method buffer_to_window_coords ~tag ~x ~y =
@@ -540,17 +540,17 @@ class view obj = object (self)
   method get_border_window_size typ = 
     View.get_border_window_size obj typ
   method forward_display_line iter =
-    View.forward_display_line obj (as_textiter iter)
+    View.forward_display_line obj (as_iter iter)
   method backward_display_line iter =
-    View.backward_display_line obj (as_textiter iter)
+    View.backward_display_line obj (as_iter iter)
   method forward_display_line_end iter =
-    View.forward_display_line_end obj (as_textiter iter)
+    View.forward_display_line_end obj (as_iter iter)
   method backward_display_line_start iter =
-    View.backward_display_line_start obj (as_textiter iter)
+    View.backward_display_line_start obj (as_iter iter)
   method starts_display_line iter =
-    View.starts_display_line obj (as_textiter iter)
+    View.starts_display_line obj (as_iter iter)
   method move_visually iter count =
-    View.move_visually obj (as_textiter iter) count
+    View.move_visually obj (as_iter iter) count
   method add_child_at_anchor (w : widget) (anchor : child_anchor) =
     View.add_child_at_anchor obj w#as_widget anchor#as_childanchor
   method add_child_in_window ~(child : widget) ~which_window ~x ~y =
@@ -580,12 +580,12 @@ class view obj = object (self)
 end
 
 
-let view ?(buffer:buffer option) ?editable ?cursor_visible ?wrap_mode
-    ?packing ?show () = 
+let view ?buffer =
+  View.make_params [] ~cont:(
+  GContainer.pack_container ~create:(fun pl ->
     let w = match buffer with 
-      | None -> View.create ()
+      | None -> View.create []
       | Some b -> View.create_with_buffer b#as_buffer
     in
-    View.set w ?editable ?cursor_visible ?wrap_mode;
-    pack_return (new view w) ~packing ~show
+    Gobject.set_params w pl; new view w))
 

@@ -638,7 +638,8 @@ let rec create_subtree (item : GTree.tree_item) level nb_item_max
     let item_subtree = GTree.tree () in
     for nb_item = 1 to nb_item_max do
       let item_new = GTree.tree_item ~packing:(item_subtree#insert ~pos:0) ()in
-      let ali = GBin.alignment ~x:0. ~xscale:0. ~packing:item_new#add () in
+      let ali =
+        GBin.alignment ~xalign:0. ~xscale:0. ~packing:item_new#add () in
       let label = GMisc.label ~packing:ali#add
           ~text:("item" ^ string_of_int level ^ "-" ^ string_of_int nb_item) ()
       in
@@ -877,7 +878,7 @@ let create_tooltips =
 	tooltips #set_tip button#coerce ~text:"Start the Tooltips Inspector"
 	  ~privat:"ContextHelp/buttons/?";
 
-	tips_query #set_caller button#coerce;
+	tips_query #set_caller (Some button#coerce);
 	tips_query #connect#widget_entered
 	  ~callback:(tips_query_widget_entered toggle tips_query);
 	tips_query #connect#widget_selected ~callback:tips_query_widget_selected;

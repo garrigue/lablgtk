@@ -1,3 +1,4 @@
+(* $Id$ *)
 
 type config = {
     mutable width   : int ;
@@ -237,10 +238,7 @@ let create_canvas_arrowhead window =
 	   to change the shape of the line and its arrowhead.  You can see the\n\
            arrows at their normal scale on the right hand side of the window."
     ~packing:vbox#add () ;
-  let align = GBin.alignment
-      ~x:0.5 ~y:0.5 
-      ~xscale:0. ~yscale:0. 
-      ~packing:vbox#add () in
+  let align = GBin.alignment ~packing:vbox#add () in
   let frame = GBin.frame ~shadow_type:`IN ~packing:align#add () in
 
   let canvas = GnoCanvas.canvas ~width:500 ~height:350 ~packing:frame#add () in

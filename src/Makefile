@@ -114,17 +114,17 @@ GTKOBJS =  ml_gtk.o ml_pango.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o \
 	ml_gtktext.o ml_gtktree.o ml_gtkstock.o
 COBJS = ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o \
 	wrappers.o $(GTKOBJS)
-ENUMOBJS = gdkEnums.cmo gtkEnums.cmo
-MLOBJS =  gaux.cmo gpointer.cmo $(ENUMOBJS) glib.cmo gobject.cmo \
+MLOBJS =  gaux.cmo gpointer.cmo gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo \
+	glib.cmo gobject.cmo \
 	gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
-	gtk.cmo pango.cmo gtkSignal.cmo gtkProps.cmo \
-	gtkData.cmo gtkStock.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
+	gtk.cmo pango.cmo gtkSignal.cmo gtkStock.cmo gtkProps.cmo \
+	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
 	gtkMain.cmo \
 	gPango.cmo gDraw.cmo \
-	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
-	gText.cmo \
+	gObj.cmo gMain.cmo gData.cmo oGtkProps.cmo gContainer.cmo \
+	gPack.cmo gButton.cmo gText.cmo \
 	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gWindow.cmo gBin.cmo \
 	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
 THOBJS = gtkThread.cmo
@@ -261,7 +261,7 @@ propcc: propcc.cmo
 	$(LINKER) -o $@ $<
 
 gtkProps.ml: gtk.props propcc
-	./propcc -checks gtk.props > $@
+	./propcc gtk.props # -checks
 
 check_externals: check_externals.cmo
 	$(LINKER) -o $@ $<

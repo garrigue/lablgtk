@@ -14,17 +14,21 @@ class focus :
     method set_vadjustment : GData.adjustment option -> unit
   end
 
-class container :
-  'a obj ->
+class container : ([> Gtk.container] as 'a) obj ->
   object
     inherit widget
-    constraint 'a = [> Gtk.container]
     val obj : 'a obj
     method add : widget -> unit
     method children : widget list
     method remove : widget -> unit
     method focus : focus
     method set_border_width : int -> unit
+  end
+
+class ['a] container_impl :([> Gtk.container] as 'a) obj ->
+  object
+    inherit container
+    inherit ['a] objvar
   end
 
 class container_signals :
@@ -37,17 +41,23 @@ class container_signals :
     method remove : callback:(widget -> unit) -> GtkSignal.id
   end
 
-class container_full :
-  'a obj ->
+class container_full : ([> Gtk.container] as 'a) obj ->
   object
     inherit container
-    constraint 'a = [> Gtk.container]
     val obj : 'a obj
     method connect : container_signals
   end
 
 val cast_container : widget -> container_full
 (* may raise [Gtk.Cannot_cast "GtkContainer"] *)
+
+val pack_container :
+  create:([> Gtk.container] Gobject.param list -> (#GObj.widget as 'a)) ->
+  [> Gtk.container] Gobject.param list ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int -> ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> 'a
+  (* utility function *)
 
 class virtual ['a] item_container :
   'c obj ->

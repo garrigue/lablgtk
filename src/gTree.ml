@@ -2,9 +2,11 @@
 
 open StdLabels
 open Gaux
+open Gobject
 open Gtk
 open GtkBase
 open GtkTree
+open OGtkProps
 open GObj
 open GContainer
 
@@ -63,20 +65,18 @@ and tree obj = object (self)
     new tree_item (TreeItem.cast w)
 end
 
-let tree_item ?label ?border_width ?width ?height ?packing ?show () =
+let tree_item ?label ?packing ?show () =
   let w = TreeItem.create ?label () in
-  Container.set w ?border_width ?width ?height;
   let self = new tree_item w in
   may packing ~f:(fun f -> (f self : unit));
   if show <> Some false then self#misc#show ();
   self
 
-let tree ?selection_mode ?view_mode ?view_lines
-    ?border_width ?width ?height ?packing ?show () =
-  let w = Tree.create () in
-  Tree.set w ?selection_mode ?view_mode ?view_lines;
-  Container.set w ?border_width ?width ?height;
-  pack_return (new tree w) ~packing ~show
+let tree ?selection_mode ?view_mode ?view_lines =
+  GContainer.pack_container [] ~create:(fun p ->
+    let w = Tree.create p in
+    Tree.set w ?selection_mode ?view_mode ?view_lines;
+    new tree w)
 
 (* New GtkTreeView/Model framework *)
 
@@ -206,17 +206,17 @@ let checked = cols#add boolean;;
 let store = new GTree.tree_store cols;;
 *)
 
-let set_prop = Gobject.Property.set
-module TVCProps = TreeViewColumn.Prop
-
 class view_column_signals obj = object
   inherit gtkobj_signals obj
   method clicked =
     GtkSignal.connect obj ~sgn:TreeViewColumn.Signals.clicked ~after
 end
 
+module P = TreeViewColumn.P
 class view_column (obj : tree_view_column obj) = object
   inherit GObj.gtkobj obj
+  method private obj = obj
+  inherit tree_view_column_props
   method as_column = obj
   method misc = new gobject_ops obj
   method connect = new view_column_signals obj
@@ -226,22 +226,9 @@ class view_column (obj : tree_view_column obj) = object
     'a 'b. ([>`cellrenderer] as 'a) obj -> string -> 'b column -> unit
     = fun crr attr col -> TreeViewColumn.add_attribute obj crr attr col.index
   method set_sort_column_id = TreeViewColumn.set_sort_column_id obj
-
-  method set_alignment = set_prop obj TVCProps.alignment
-  method set_clickable = set_prop obj TVCProps.clickable
-  method set_fixed_width = set_prop obj TVCProps.fixed_width
-  method set_max_width = set_prop obj TVCProps.max_width
-  method set_reorderable = set_prop obj TVCProps.reorderable
-  method set_sizing = set_prop obj TVCProps.sizing
-  method set_sort_indicator = set_prop obj TVCProps.sort_indicator
-  method set_title = set_prop obj TVCProps.title
-  method set_visible = set_prop obj TVCProps.visible
-  method set_widget = set_prop obj TVCProps.widget
-  method set_width = set_prop obj TVCProps.width
-  method set_sort_order = set_prop obj TVCProps.sort_order
 end
 let view_column ?title ?renderer () =
-  let w = new view_column (TreeViewColumn.create ()) in
+  let w = new view_column (TreeViewColumn.create []) in
   may title ~f:w#set_title;
   may renderer ~f:
     begin fun (crr, l) ->
@@ -319,32 +306,17 @@ class view_signals obj = object
     GtkSignal.connect obj ~sgn:TreeView.Signals.start_interactive_search ~after
 end
 
-open TreeView.Prop
-open Gobject.Property
+open TreeView.P
 class view obj = object
-  inherit GContainer.container obj
+  inherit [Gtk.tree_view] GContainer.container_impl obj
+  inherit tree_view_props
   method connect = new view_signals obj
   method selection = new selection (TreeView.get_selection obj)
-  method enable_search = get obj enable_search
-  method set_enable_search = set obj enable_search
-  method expander_column = new view_column (get_some obj expander_column)
+  method expander_column = may_map (new view_column) (get expander_column obj)
   method set_expander_column c =
-    set obj expander_column (may_map as_column c)
-  method hadjustment = new GData.adjustment (get_some obj hadjustment)
-  method set_hadjustment a= set obj hadjustment (may_map GData.as_adjustment a)
-  method set_headers_clickable = set obj headers_clickable
-  method headers_visible = get obj headers_visible
-  method set_headers_visible = set obj headers_visible
-  method model = new model (get_some obj model)
-  method set_model m = set obj model (may_map (fun (m:model) -> m#as_model) m)
-  method reorderable = get obj reorderable
-  method set_reorderable = set obj reorderable
-  method rules_hint = get obj rules_hint
-  method set_rules_hint = set obj rules_hint
-  method search_column = get obj search_column
-  method set_search_column = set obj search_column
-  method vadjustment = new GData.adjustment (get_some obj vadjustment)
-  method set_vadjustment a= set obj vadjustment (may_map GData.as_adjustment a)
+    set expander_column obj (may_map as_column c)
+  method model = new model (Property.get_some obj model)
+  method set_model m = set model obj (may_map (fun (m:model) -> m#as_model) m)
   method append_column col = TreeView.append_column obj (as_column col)
   method remove_column col = TreeView.remove_column obj (as_column col)
   method insert_column col = TreeView.insert_column obj (as_column col)
@@ -368,13 +340,14 @@ class view obj = object
       | Some cell ->
           TreeView.set_cursor_on_cell obj ~edit row (as_column col) cell
   method get_cursor () = TreeView.get_cursor obj
-  method get_path_at_pos ~x ~y = TreeView.get_path_at_pos obj ~x ~y
+  method get_path_at_pos = TreeView.get_path_at_pos obj
 end
-let view ?model ?border_width ?width ?height ?packing ?show () =
-  let model = may_map ~f:(fun (model : #model) -> model#as_model) model in
-  let w = TreeView.create ?model () in
-  Container.set w ?border_width ?width ?height;
-  pack_return (new view w) ~packing ~show
+let view ?model ?hadjustment ?vadjustment =
+  let model = may_map (fun m -> m#as_model) model in
+  let hadjustment = may_map GData.as_adjustment hadjustment in
+  let vadjustment = may_map GData.as_adjustment vadjustment in
+  TreeView.make_params [] ?model ?hadjustment ?vadjustment ~cont:(
+  GContainer.pack_container ~create:(fun p -> new view (TreeView.create p)))
 
 let cell_renderer_pixbuf = CellRendererPixbuf.create
 let cell_renderer_text = CellRendererText.create

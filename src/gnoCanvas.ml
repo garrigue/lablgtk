@@ -98,11 +98,11 @@ let propertize = function
   | `ARROW_SHAPE_C v -> "arrow_shape_c", `FLOAT v
   | `FIRST_ARROWHEAD b -> "first_arrowhead", `BOOL b
   | `LAST_ARROWHEAD  b -> "last_arrowhead", `BOOL b
-  | `ANCHOR a -> "anchor", encode anchor_type a
-  | `JUSTIFICATION j -> "justification", encode justification j
-  | `CAP_STYLE c -> "cap_style", encode gdkCapStyle c
-  | `JOIN_STYLE c -> "join_style", encode gdkJoinStyle c
-  | `LINE_STYLE c -> "line_style", encode gdkLineStyle c
+  | `ANCHOR a -> "anchor", encode GtkEnums.anchor_type a
+  | `JUSTIFICATION j -> "justification", encode GtkEnums.justification j
+  | `CAP_STYLE c -> "cap_style", encode GdkEnums.gdkCapStyle c
+  | `JOIN_STYLE c -> "join_style", encode GdkEnums.gdkJoinStyle c
+  | `LINE_STYLE c -> "line_style", encode GdkEnums.gdkLineStyle c
   | `BPATH p -> "bpath" , `POINTER (Some p)
   | `DASH (off, d) -> "dash", `POINTER (Some (convert_dash off d))
   | `SMOOTH b -> "smooth", `BOOL b
@@ -234,12 +234,12 @@ class canvas obj = object
   method world_to_window   = Canvas.world_to_window obj
 end
 
-let canvas ?(aa=false) ?border_width ?width ?height ?packing ?show () =
-  let w = if aa
-  then Canvas.new_canvas_aa ()
-  else Canvas.new_canvas () in
-  GtkBase.Container.set w ?border_width ?width ?height ;
-  GObj.pack_return (new canvas w) ~packing ~show
+let canvas ?(aa=false) =
+  GContainer.pack_container [] ~create:(fun pl ->
+    let w =
+      if aa then Canvas.new_canvas_aa () else Canvas.new_canvas () in
+    Gobject.set_params w pl;
+    new canvas w)
 
 let wrap_item o (typ : (_, 'p) Types.t) =
   if not (Types.is_a o typ)

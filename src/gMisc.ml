@@ -1,14 +1,15 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gtk
 open GtkBase
 open GtkMisc
+open OGtkProps
 open GObj
 
-let separator dir ?(width = -1) ?(height = -1) ?packing ?show () =
-  let w = Separator.create dir in
-  if width <> -1 || height <> -1 then Widget.set_size_request w ~width ~height;
+let separator dir ?packing ?show () =
+  let w = Separator.create dir [] in
   pack_return (new widget_full w) ~packing ~show
 
 class statusbar_context obj ctx = object (self)
@@ -30,10 +31,9 @@ class statusbar obj = object
     new statusbar_context obj (Statusbar.get_context obj name)
 end
 
-let statusbar ?border_width ?width ?height ?packing ?show () =
-  let w = Statusbar.create () in
-  Container.set w ?border_width ?width ?height;
-  pack_return (new statusbar w) ~packing ~show
+let statusbar =
+  GContainer.pack_container [] ~create:
+    (fun p -> new statusbar (Statusbar.create p))
 
 class calendar_signals obj = object
   inherit widget_signals obj
@@ -69,9 +69,8 @@ class calendar obj = object
   method thaw () = Calendar.thaw obj
 end
 
-let calendar ?options ?(width = -2) ?(height = -2) ?packing ?show () =
+let calendar ?options ?packing ?show () =
   let w = Calendar.create () in
-  if width <> -2 || height <> -2 then Widget.set_size_request w ~width ~height;
   may options ~f:(Calendar.display_options w);
   pack_return (new calendar w) ~packing ~show
 
@@ -87,46 +86,45 @@ let drawing_area ?(width=0) ?(height=0) ?packing ?show () =
   pack_return (new drawing_area w) ~packing ~show
 
 class misc obj = object
-  inherit widget obj
-  method set_alignment = Misc.set_alignment obj
-  method set_padding = Misc.set_padding obj
+  inherit ['a] widget_impl obj
+  inherit misc_props
 end
 
 class arrow obj = object
   inherit misc obj
-  method set_arrow kind ~shadow = Arrow.set obj ~kind ~shadow
+  inherit arrow_props
 end
 
-let arrow ~kind ~shadow
-    ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
-  let w = Arrow.create ~kind ~shadow in
-  Misc.set w ?xalign ?yalign ?xpad ?ypad ?width ?height;
-  pack_return (new arrow w) ~packing ~show
+let arrow =
+  Arrow.make_params [] ~cont:(
+  Misc.all_params ~cont:(fun p ?packing ?show () ->
+    pack_return (new arrow (Arrow.create p)) ~packing ~show))
 
-class image obj = object
+class image obj = object (self)
   inherit misc obj
-  method set_image ?mask image = Image.set_image obj image ?mask
-  method set_pixmap ?mask image = Image.set_pixmap obj image ?mask
-  method set_file image = Image.set_file obj image
-  method set_pixbuf image = Image.set_pixbuf obj image
-  method set_stock s_id = Image.set_stock obj (GtkStock.convert_id s_id)
+  inherit image_props
+  method pixmap = new GDraw.pixmap (get Image.P.pixmap obj) ?mask:self#mask
+  method set_pixmap (p : GDraw.pixmap) =
+    set Image.P.pixmap obj p#pixmap;
+    self#set_mask p#mask
 end
 
-let image ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
-  let w = Image.create () in
-  Misc.set w ?xalign ?yalign ?xpad ?ypad ?width ?height;
-  pack_return (new image w) ~packing ~show
+type image_type = 
+  [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION ]
+
+let image =
+  Image.make_params [] ~cont:(
+  Misc.all_params ~cont:(fun p ?packing ?show () ->
+    pack_return (new image (Image.create p)) ~packing ~show))
+
+let pixmap pm =
+  let pl = [param Image.P.pixmap pm#pixmap; param Image.P.mask pm#mask] in
+  Misc.all_params pl ~cont:(fun pl ?packing ?show () ->
+    pack_return (new image (Image.create pl)) ~packing ~show)
 
 class label_skel obj = object
   inherit misc obj
-  method set_text = Label.set_text obj
-  method set_markup = Label.set_markup obj
-  method set_markup_with_mnemonic = Label.set_markup_with_mnemonic obj
-  method set_justify = Label.set_justify obj
-  method set_pattern = Label.set_pattern obj
-  method set_line_wrap = Label.set_line_wrap obj
-  method text = Label.get_text obj
-  method label = Label.get_label obj
+  inherit label_props
 end
 
 class label obj = object
@@ -134,17 +132,15 @@ class label obj = object
   method connect = new widget_signals obj
 end
 
-let label ?(text="") ?justify ?line_wrap ?pattern
-    ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
-  let w = Label.create text in
-  Label.set w ?justify ?line_wrap ?pattern;
-  Misc.set w ?xalign ?yalign ?xpad ?ypad ?width ?height;
-  pack_return (new label w) ~packing ~show
+let label =
+  Label.make_params [] ~cont:(
+  Misc.all_params ~cont:(fun p ?packing ?show () ->
+    pack_return (new label (Label.create p)) ~packing ~show))
 
 let label_cast w = new label (Label.cast w#as_widget)
 
 class tips_query_signals obj = object
-  inherit widget_signals (obj : [> Gtk.tips_query] obj)
+  inherit widget_signals (obj : Gtk.tips_query obj)
   method widget_entered ~callback = 
     GtkSignal.connect ~sgn:TipsQuery.Signals.widget_entered obj ~after
       ~callback:(function None -> callback None
@@ -156,86 +152,40 @@ class tips_query_signals obj = object
 end
 
 class tips_query obj = object
-  inherit label_skel (obj : Gtk.tips_query obj)
+  inherit label_skel obj
   method start () = TipsQuery.start obj
   method stop () = TipsQuery.stop obj
-  method set_caller (w : widget) = TipsQuery.set_caller obj w#as_widget
-  method set_emit_always = TipsQuery.set_emit_always obj
-  method set_label_inactive inactive = TipsQuery.set_labels obj ~inactive
-  method set_label_no_tip no_tip = TipsQuery.set_labels obj ~no_tip
+  inherit tips_query_props
   method connect = new tips_query_signals obj
 end
 
-let tips_query ?caller ?emit_always ?label_inactive ?label_no_tip
-    ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
-  let w = TipsQuery.create () in
-  let caller = may_map caller ~f:(fun (w : #widget) -> w#as_widget) in
-  TipsQuery.set w ?caller ?emit_always ?label_inactive ?label_no_tip;
-  Misc.set w ?xalign ?yalign ?xpad ?ypad ?width ?height;
-  pack_return (new tips_query w) ~packing ~show
+let tips_query ?caller =
+  let caller = may_map (fun w -> w#as_widget) caller in
+  TipsQuery.make_params [] ?caller ~cont:(
+  Misc.all_params ~cont:(fun p ?packing ?show () ->
+    pack_return (new tips_query (TipsQuery.create p)) ~packing ~show))
 
 class color_selection obj = object
-  inherit GObj.widget_full (obj : Gtk.color_selection obj)
-  method set_update_policy = ColorSelection.set_update_policy obj
-  method set_color ~red ~green ~blue ?opacity () =
-    ColorSelection.set_color obj ~red ~green ~blue ?opacity
-  method get_color = ColorSelection.get_color obj
+  inherit [Gtk.color_selection] GObj.widget_impl obj
+  method connect = new GObj.widget_signals obj
+  method set_border_width = set Container.P.border_width obj
+  inherit color_selection_props
 end
 
-let color_selection ?update_policy
-    ?border_width ?width ?height ?packing ?show () =
-  let w = ColorSelection.create () in
-  may update_policy ~f:(ColorSelection.set_update_policy w);
-  Container.set w ?border_width ?width ?height;
-  pack_return (new color_selection w) ~packing ~show
-
-class pixmap obj = object
-  inherit misc (obj : Gtk.pixmap obj)
-  method connect = new widget_signals obj
-  method set_pixmap (pm : GDraw.pixmap) =
-    Pixmap.set obj ~pixmap:pm#pixmap ?mask:pm#mask
-  method pixmap =
-    new GDraw.pixmap (Pixmap.pixmap obj)
-      ?mask:(try Some(Pixmap.mask obj) with Gpointer.Null -> None)
-end
-
-let pixmap (pm : #GDraw.pixmap) ?xalign ?yalign ?xpad ?ypad
-    ?(width = -1) ?(height = -1) ?packing ?show () =
-  let w = Pixmap.create pm#pixmap ?mask:pm#mask in
-  Misc.set w ?xalign ?yalign ?xpad ?ypad;
-  if width <> -1 || height <> -1 then Widget.set_size_request w ~width ~height;
-  pack_return (new pixmap w) ~packing ~show
+let color_selection =
+  ColorSelection.make_params [] ~cont:(
+  GContainer.pack_container ~create:
+    (fun p -> new color_selection (ColorSelection.create p)))
 
 class font_selection obj = object
-  inherit widget_full (obj : Gtk.font_selection obj)
-  method notebook = new GPack.notebook obj
+  inherit [Gtk.font_selection] widget_impl obj
+  inherit font_selection_props
   method event = new event_ops obj
-  method font = FontSelection.get_font obj
-  method font_name = FontSelection.get_font_name obj
-  method set_font_name = FontSelection.set_font_name obj
-  method preview_text = FontSelection.get_preview_text obj
-  method set_preview_text = FontSelection.set_preview_text obj
+  method connect = new GObj.widget_signals obj
+  method set_border_width = set Container.P.border_width obj
 end
 
-let font_selection ?border_width ?width ?height ?packing ?show () =
-  let w = FontSelection.create () in
-  Container.set w ?border_width ?width ?height;
-  pack_return (new font_selection w) ~packing ~show
-
-class preview obj = object
-  inherit widget_full (obj : Gtk.preview obj)
-  method event = new event_ops obj
-  method put = Preview.put obj
-  method draw_row = Preview.draw_row obj
-  method size = Preview.set_size obj
-  method set_expand = Preview.set_expand obj
-  method set_dither = Preview.set_dither obj
-end
-
-let preview ?(kind=`COLOR) ?(dither=`NORMAL) ?(expand=false)
-    ?(width=0) ?(height=0) ?packing ?show () =
-  let w = Preview.create kind in
-  Preview.set_size w ~width ~height;
-  Preview.set_dither w dither;
-  Preview.set_expand w expand;
-  pack_return (new preview w) ~packing ~show
+let font_selection =
+  FontSelection.make_params [] ~cont:(
+  GContainer.pack_container ~create:
+    (fun p -> new font_selection (FontSelection.create p)))

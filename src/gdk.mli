@@ -2,6 +2,7 @@
 
 open Gobject
 
+type color
 type colormap
 type visual
 type screen = [`gdkscreen] obj
@@ -156,18 +157,17 @@ module Color :
     val get_colormap : ?privat:bool -> visual -> colormap
     val get_visual : colormap -> visual
 
-    type t
     type spec = [
       | `BLACK
       | `NAME of string
       | `RGB of int * int * int
       | `WHITE
     ]
-    val alloc : colormap:colormap -> spec -> t
-    val red : t -> int
-    val blue : t -> int
-    val green : t -> int
-    val pixel : t -> int
+    val alloc : colormap:colormap -> spec -> color
+    val red : color -> int
+    val blue : color -> int
+    val green : color -> int
+    val pixel : color -> int
   end
 
 module Rectangle :
@@ -244,8 +244,8 @@ module GC :
     type gdkCapStyle = [ `NOT_LAST|`BUTT|`ROUND|`PROJECTING ]
     type gdkJoinStyle = [ `MITER|`ROUND|`BEVEL ]
     val create : [>`drawable] obj -> gc
-    val set_foreground : gc -> Color.t -> unit
-    val set_background : gc -> Color.t -> unit
+    val set_foreground : gc -> color -> unit
+    val set_background : gc -> color -> unit
     val set_font : gc -> font -> unit
     val set_function : gc -> gdkFunction -> unit
     val set_fill : gc -> gdkFill -> unit
@@ -265,8 +265,8 @@ module GC :
     val set_dashes : gc -> offset:int -> int list -> unit
     val copy : dst:gc -> gc -> unit
     type values = {
-        foreground : Color.t;
-        background : Color.t;
+        foreground : color;
+        background : color;
         font : font option;
         fonction : gdkFunction;
         fill : gdkFill;
@@ -294,12 +294,12 @@ module Pixmap :
       ?window:window -> width:int -> height:int -> ?depth:int -> unit -> pixmap
     val create_from_data :
       ?window:window -> width:int -> height:int ->
-      ?depth:int -> fg:Color.t -> bg:Color.t -> string -> pixmap
+      ?depth:int -> fg:color -> bg:color -> string -> pixmap
     val create_from_xpm :
-      ?window:window -> ?colormap:colormap -> ?transparent:Color.t ->
+      ?window:window -> ?colormap:colormap -> ?transparent:color ->
       file:string -> unit -> pixmap * bitmap
     val create_from_xpm_d :
-      ?window:window -> ?colormap:colormap -> ?transparent:Color.t ->
+      ?window:window -> ?colormap:colormap -> ?transparent:color ->
       data:string array -> unit -> pixmap * bitmap
   end
 
@@ -478,6 +478,6 @@ module Cursor : sig
   val create : cursor_type -> cursor
   val create_from_pixmap :
     pixmap -> mask:bitmap ->
-    fg:Color.t -> bg:Color.t -> x:int -> y:int -> cursor
+    fg:color -> bg:color -> x:int -> y:int -> cursor
   val destroy : cursor -> unit
 end

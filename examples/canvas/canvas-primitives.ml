@@ -382,7 +382,7 @@ let create_canvas_primitives window ~aa =
     ~packing:vbox#pack () ;
   let hbox = GPack.hbox ~spacing:4 ~packing:vbox#pack () in
   GtkBase.Widget.push_colormap (Gdk.Rgb.get_cmap ()) ;
-  let canvas = GnoCanvas.canvas ~aa () in
+  let canvas = GnoCanvas.canvas ~aa ~width:600 ~height:450 () in
   canvas#set_center_scroll_region false ;
   let root = canvas#root in
   setup_div root ;
@@ -408,7 +408,6 @@ let create_canvas_primitives window ~aa =
   table#attach ~left:0 ~right:1 ~top:0 ~bottom:1
     ~expand:`BOTH ~fill:`BOTH ~shrink:`BOTH ~xpadding:0 ~ypadding:0
     frame#coerce ;
-  canvas#misc#set_size_request ~width:600 ~height:450 ;
   canvas#set_scroll_region 0. 0. 600. 450. ;
   frame#add canvas#coerce ;
   canvas#event#connect#after#key_press (key_press canvas) ;
