@@ -115,7 +115,7 @@ external add_source : icon_set -> icon_source -> unit = "ml_gtk_icon_set_add_sou
 external get_sizes : icon_set -> Gtk.Tags.icon_size list = "ml_gtk_icon_set_get_sizes"
 end
 
-type icon_factory
+type icon_factory = [`iconfactory] Gobject.obj
 module Icon_factory = struct
 external new_factory : unit -> icon_factory = "ml_gtk_icon_factory_new"
 external add : icon_factory -> string -> icon_set -> unit = "ml_gtk_icon_factory_add"
@@ -125,7 +125,7 @@ external remove_default : icon_factory -> unit = "ml_gtk_icon_factory_remove_def
 external lookup_default : string -> icon_set = "ml_gtk_icon_factory_lookup_default"
 end
 
-let make_source ?filename ?pixbuf ?direction ?state ?size () =
+let make_icon_source ?filename ?pixbuf ?direction ?state ?size () =
   let s = Icon_source.new_icon_source () in
   Gaux.may (Icon_source.set_filename s) filename ;
   Gaux.may (Icon_source.set_pixbuf s) pixbuf ;
@@ -137,24 +137,17 @@ let make_source ?filename ?pixbuf ?direction ?state ?size () =
     Icon_source.set_size s p) size ;
   s
 
-let make_set sources = 
+let make_icon_set sources = 
   let s = Icon_set.new_icon_set () in
   List.iter (Icon_set.add_source s) sources ;
   s
 
-class factory f = object
-  val f = f
-  method add s_id s = Icon_factory.add f (convert_id s_id) s
-  method lookup = Icon_factory.lookup f
-  method add_default () = Icon_factory.add_default f
-  method remove_default () = Icon_factory.remove_default f
-end
-let factory ?(default = true) ?icons () =
+let make_icon_factory ?(default = true) ?icons () =
   let f = Icon_factory.new_factory () in
-  let o = new factory f in
-  Gaux.may (List.iter (fun (n, i) -> o#add n i)) icons ;
-  if true then o#add_default () ;
-  o
+  Gaux.may icons 
+    ~f:(List.iter (fun (n, i) -> Icon_factory.add f (convert_id n) i)) ;
+  if true then Icon_factory.add_default f ;
+  f
 
 type item = {
     stock_id : string ;
