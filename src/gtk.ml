@@ -5,8 +5,6 @@ open Misc
 exception Error of string
 let _ = Callback.register_exception "gtkerror" (Error"")
 exception Warning of string
-let _ = Glib.set_warning_handler (fun msg -> raise (Warning msg))
-let _ = Glib.set_print_handler (fun msg -> print_string msg; flush stdout)
 
 type 'a obj
 type clampf = float
@@ -2075,3 +2073,6 @@ module Grab = struct
   external remove : [> widget] obj -> unit = "ml_gtk_grab_remove"
   external get_current : unit -> Widget.t obj= "ml_gtk_grab_get_current"
 end
+
+let _ = Glib.set_warning_handler (fun msg -> raise (Warning msg))
+let _ = Glib.set_print_handler (fun msg -> print_string msg)

@@ -1,46 +1,31 @@
 (* $Id$ *)
 
 open Gtk
-open Gdk
 open GtkObj
+open GdkObj
 
 let window = new_window `TOPLEVEL
-let w = window#misc#realize (); window#misc#window
 
-let pixmap =
-  Pixmap.create w width:50 height:50 depth:(Style.get_depth window#misc#style)
-let pixmap2 =
-  Pixmap.create w width:50 height:50 depth:(Style.get_depth window#misc#style)
-let bitmap =
-  Bitmap.create w width:50 height:50
-
-let gc = GC.create pixmap
-let gc' = GC.create bitmap
+let pixdraw = new pixdraw parent:window width:50 height:50
+let pixdraw2 = new pixdraw parent:window width:50 height:50
 
 let _ =
-  GC.set_foreground gc (Color.alloc `Black);
-  Draw.arc pixmap gc x:5 y:5 width:40 height:40 filled:true;
-  GC.set_foreground gc (Color.alloc `White);
-  Draw.arc pixmap2 gc x:5 y:5 width:40 height:40 filled:true;
-  GC.set_foreground gc (Color.alloc `Black);
-  Draw.arc pixmap2 gc x:5 y:5 width:40 height:40;
-  GC.set_foreground gc' (Color.alloc `Black);
-  Draw.rectangle bitmap gc' x:0 y:0 width:50 height:50 filled:true;
-  GC.set_foreground gc' (Color.alloc `White);
-  Draw.arc bitmap gc' x:5 y:5 width:40 height:40 filled:true;
-  Draw.arc bitmap gc' x:5 y:5 width:40 height:40
-
-let pm = new_pixmap pixmap2 mask:bitmap
+  pixdraw#set foreground:`Black;
+  pixdraw#arc x:5 y:5 width:40 height:40 filled:true;
+  pixdraw2#set foreground:`White;
+  pixdraw2#arc x:5 y:5 width:40 height:40 filled:true;
+  pixdraw2#set foreground:`Black;
+  pixdraw2#arc x:5 y:5 width:40 height:40
 
 let table = new_table columns:5 rows:5
 
 class toggle () = object (self)
   inherit button (Button.create ())
-  val pm = new_pixmap pixmap mask:bitmap
+  val pm = new_pixdraw pixdraw
   val mutable toggle = false
   method swap () =
     toggle <- not toggle;
-    pm#set pixmap:(if toggle then pixmap2 else pixmap)
+    set_pixdraw pm (if toggle then pixdraw2 else pixdraw)
   initializer
     self#add pm;
     self#connect#clicked callback:self#swap;
