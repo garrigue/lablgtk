@@ -10,7 +10,7 @@ oheader{
 open GtkButtonProps
 }
 
-class Button set wrapsig : Bin {
+class Button set wrap wrapsig : Bin {
   "label"                gchararray           : Read / Write / Construct
   "use-stock"            gboolean             : Read / Write / Construct
   "use-underline"        gboolean             : Read / Write / Construct
