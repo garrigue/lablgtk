@@ -32,7 +32,7 @@ class Action type "Gtk.action obj" wrap wrapsig gobject {
   method connect_accelerator
   method disconnect_accelerator
   method set_accel_path : "string -> unit"
-  (* method set_accel_group : "Gtk.accel_group -> unit" *)
+  method set_accel_group : "Gtk.accel_group -> unit"
 
   method block_activate_from : "Gtk.widget Gtk.obj -> unit"
   method unblock_activate_from : "Gtk.widget Gtk.obj -> unit"
@@ -98,6 +98,6 @@ class ActionGroup type "Gtk.action_group obj" wrap wrapsig gobject {
   method get_action : "string -> Gtk.action obj"
   method list_actions : "Gtk.action obj list"
   method add_action : "Gtk.action obj -> unit"
-  method add_action_with_accel : "Gtk.action obj -> string -> unit"
+  method add_action_with_accel : "Gtk.action obj -> string option -> unit"
   method remove_action : "Gtk.action obj -> unit"
 }
