@@ -77,17 +77,12 @@ class widget_misc obj = object
     fun w -> Widget.reparent obj w#as_widget
   method popup = Widget.popup obj
   method intersect = Widget.intersect obj
-  method basic = Widget.basic obj
   method grab_focus () = Widget.grab_focus obj
   method grab_default () = Widget.grab_default obj
   method is_ancestor : 'a. (#is_widget as 'a) -> bool =
     fun w -> Widget.is_ancestor obj w#as_widget
-  method is_child : 'a. (#is_widget as 'a) -> bool =
-    fun w -> Widget.is_child obj w#as_widget
-  method install_accelerator : 'a. _ -> sig:('a[> widget],_) Signal.t -> _ =
-    Widget.install_accelerator obj
-  method remove_accelerator : 'a. _ -> sig:('a[> widget],_) Signal.t -> _ =
-    Widget.remove_accelerator obj
+  method add_accelerator = Widget.add_accelerator obj
+  method remove_accelerator = Widget.remove_accelerator obj
   method set = Widget.set ?obj
   (* get functions *)
   method name = Widget.get_name obj
@@ -244,8 +239,8 @@ class menu_item_skel obj = object
   method configure = MenuItem.configure obj
   method activate () = MenuItem.activate obj
   method right_justify () = MenuItem.right_justify obj
-  method install_accelerator =
-    Widget.install_accelerator obj sig:MenuItem.Signals.activate
+  method add_accelerator =
+    Widget.add_accelerator obj sig:MenuItem.Signals.activate
 end
 
 class menu_item_signals obj = object
@@ -359,7 +354,7 @@ class window obj = object
   method show_all () = Widget.show_all obj
   method activate_focus () = Window.activate_focus obj
   method activate_default () = Window.activate_default obj
-  method add_accelerator_table = Window.add_accelerator_table obj
+  method add_accel_group = Window.add_accel_group obj
   method set_wm ?:title ?:name ?class:c =
     Window.setter obj cont:null_cont
       ?:title ?wmclass_name:name ?wmclass_class:c
@@ -564,9 +559,9 @@ class editable obj = object
   method insert_text = Editable.insert_text obj
   method delete_text = Editable.delete_text obj
   method get_chars = Editable.get_chars obj
-  method cut_clipboard () = Editable.cut_clipboard obj time:0
-  method copy_clipboard () = Editable.copy_clipboard obj time:0
-  method paste_clipboard () = Editable.paste_clipboard obj time:0
+  method cut_clipboard () = Editable.cut_clipboard obj
+  method copy_clipboard () = Editable.copy_clipboard obj
+  method paste_clipboard () = Editable.paste_clipboard obj
 end
 
 class entry obj = object
@@ -654,7 +649,7 @@ let new_pixmap pix ?:mask =
 class progress_bar obj = object
   inherit widget_full obj
   method update percent = ProgressBar.update obj :percent
-  method percent = ProgressBar.percent obj
+  method percentage = Progress.get_percentage obj
 end
 
 let new_progress_bar ?(_ : unit option) =
@@ -683,7 +678,6 @@ let new_separator dir =
 module Main : sig
   val locale : string
   val argv : string array
-  val iteration_do : bool -> bool
   val main : unit -> unit
   val quit : unit -> unit
   val version : int * int * int
