@@ -354,7 +354,7 @@ let rec view_signature ?title ?path ?(env = !start_env) ?(detach=false) sign =
     with Not_found ->
       let tw, finish = Jg_message.formatted ~title ~maxheight:15 () in
       Gaux.may (GWindow.toplevel tw)
-        ~f:(fun w -> top_widgets := w :: !top_widgets);
+        ~f:(fun w -> top_widgets := (w :> GWindow.window) :: !top_widgets);
       tw, finish
   in
   Format.set_max_boxes 100;
@@ -655,6 +655,23 @@ let rec search_pos_structure ~pos str =
   | Tstr_include (m, _) -> search_pos_module_expr m ~pos
   end
 
+and search_pos_class_structure ~pos cls =
+  List.iter cls.cl_field ~f:
+    begin function
+        Cf_inher (cl, _, _) ->
+          search_pos_class_expr cl ~pos
+      | Cf_val (_, _, exp) -> search_pos_expr exp ~pos
+      | Cf_meth (_, exp) -> search_pos_expr exp ~pos
+      | Cf_let (_, pel, iel) ->
+          List.iter pel ~f:
+            begin fun (pat, exp) ->
+              search_pos_pat pat ~pos ~env:exp.exp_env;
+              search_pos_expr exp ~pos
+            end;
+          List.iter iel ~f:(fun (_,exp) -> search_pos_expr exp ~pos)
+      | Cf_init exp -> search_pos_expr exp ~pos
+    end
+
 and search_pos_class_expr ~pos cl =
   if in_loc cl.cl_loc ~pos then begin
     begin match cl.cl_desc with
@@ -662,21 +679,7 @@ and search_pos_class_expr ~pos cl =
         add_found_str (`Class (path, cl.cl_type))
           ~env:!start_env ~loc:cl.cl_loc
     | Tclass_structure cls ->
-        List.iter cls.cl_field ~f:
-          begin function
-              Cf_inher (cl, _, _) ->
-                search_pos_class_expr cl ~pos
-            | Cf_val (_, _, exp) -> search_pos_expr exp ~pos
-            | Cf_meth (_, exp) -> search_pos_expr exp ~pos
-            | Cf_let (_, pel, iel) ->
-                List.iter pel ~f:
-                  begin fun (pat, exp) ->
-                    search_pos_pat pat ~pos ~env:exp.exp_env;
-                    search_pos_expr exp ~pos
-                  end;
-                List.iter iel ~f:(fun (_,exp) -> search_pos_expr exp ~pos)
-            | Cf_init exp -> search_pos_expr exp ~pos
-          end
+        search_pos_class_structure ~pos cls
     | Tclass_fun (pat, iel, cl, _) ->
         search_pos_pat pat ~pos ~env:pat.pat_env;
         List.iter iel ~f:(fun (_,exp) -> search_pos_expr exp ~pos);
