@@ -82,7 +82,9 @@ endif
 	./varcc $<
 
 # Targets
-COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o
+GTKOBJS = ml_gtk.o ml_gtkbutton.o ml_gtkedit.o ml_gtklist.o \
+	ml_gtkpack.o ml_gtkmenu.o ml_gtknew.o ml_gtkrange.o ml_gtktree.o
+COBJS = ml_gdk.o ml_glib.o wrappers.o $(GTKOBJS)
 MLOBJS = gaux.cmo gpointer.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
@@ -175,7 +177,7 @@ varcc: varcc.cmo
 clean:
 	rm -f *.cm* *.o *.a *_tags.[ch] $(TARGETS)
 
-ml_gtk.o: gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
+$(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gdk.o: gdk_tags.h ml_gdk.h wrappers.h
 ml_gtkgl.o: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gtkxmhtml.o: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h

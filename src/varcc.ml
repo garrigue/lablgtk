@@ -16,7 +16,7 @@ let hash_variant s =
 
 open Genlex
 
-let lexer = make_lexer ["type"; "="; "["; "]"; "`"; "|"]
+let lexer = make_lexer ["type"; "public"; "="; "["; "]"; "`"; "|"]
 
 let may_string = parser
     [< ' String s >] -> s
@@ -31,9 +31,11 @@ let rec ident_list = parser
       (x, trans) :: ident_list s
   | [< >] -> []
 
+let static = ref false
 let may_public = parser
     [< ' Kwd "public" >] -> true
-  | [< >] -> false
+  | [< ' Kwd "private" >] -> false
+  | [< >] -> not !static
 
 open Printf
 
@@ -89,7 +91,8 @@ let declaration ~hc ~cc = parser
     in
     (* Output table to code file *)
     oc "/* %s : conversion table */\n" name;
-    oc "lookup_info ml_table_%s[] = {\n" name;
+    let static = if not public then "static " else "" in
+    oc "%slookup_info ml_table_%s[] = {\n" static name;
     oc "  { 0, %d },\n" (List.length tags);
     List.iter tags ~f:
       begin fun (tag,trans) ->
@@ -98,6 +101,7 @@ let declaration ~hc ~cc = parser
     oc "};\n\n";
     (* Output macros to headers *)
     if not !first then oh "\n";
+    if public then oh "extern lookup_info ml_table_%s[];\n" name;
     oh "#define Val_%s(data) ml_lookup_from_c (ml_table_%s, data)\n"
       name name;
     oh "#define %s_val(key) ml_lookup_to_c (ml_table_%s, key)\n\n"
@@ -120,11 +124,12 @@ let main () =
   let inputs = ref [] in
   let header = ref "" in
   let code = ref "" in
-  Arg.parse ~others:(fun s -> inputs := s :: !inputs) ~keywords:
-    [ "-h", Arg.String ((:=) header), "file to output macros to (file.h)";
+  Arg.parse ~errmsg:"usage: varcc [options] file.var" ~keywords:
+    [ "-h", Arg.String ((:=) header), "file to output macros (file.h)";
       "-c", Arg.String ((:=) code),
-      "file to output conversion tables to (file.c)" ]
-    ~errmsg:"usage: varcc [options] file.var";
+      "file to output conversion tables (file.c)";
+      "-static", Arg.Set static, "do not export conversion tables" ]
+    ~others:(fun s -> inputs := s :: !inputs);
   let inputs = List.rev !inputs in
   begin match inputs with
   | [] ->
