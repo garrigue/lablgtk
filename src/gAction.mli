@@ -11,8 +11,6 @@ class action_signals :
     val after : bool
     method after : < after : 'a; .. > as 'a
     method activate : callback:(unit -> unit) -> GtkSignal.id
-    method connect_proxy : callback:(GObj.widget -> unit) -> GtkSignal.id
-    method disconnect_proxy : callback:(GObj.widget -> unit) -> GtkSignal.id
   end
 
 (** @since GTK 2.4
@@ -21,31 +19,45 @@ class action_skel :
   ([> Gtk.action ] as 'a) Gobject.obj ->
   object
     val obj : 'a Gobject.obj
-    method activate : unit -> unit
     method as_action : Gtk.action Gobject.obj
-    method connect_accelerator : unit -> unit
-    method connect_proxy : GObj.widget -> unit
-    method disconnect_accelerator : unit -> unit
-    method disconnect_proxy : GObj.widget -> unit
-    method get_proxies : GObj.widget list
+
+    (** Properties *)
+
     method hide_if_empty : bool
+    method set_hide_if_empty : bool -> unit
     method is_important : bool
+    method set_is_important : bool -> unit
     method label : string
+    method set_label : string -> unit
     method name : string
     method sensitive : bool
-    method set_hide_if_empty : bool -> unit
-    method set_is_important : bool -> unit
-    method set_label : string -> unit
     method set_sensitive : bool -> unit
-    method set_short_label : string -> unit
-    method set_stock_id : GtkStock.id -> unit
-    method set_tooltip : string -> unit
-    method set_visible : bool -> unit
-    method set_accel_path : string -> unit
     method short_label : string
+    method set_short_label : string -> unit
     method stock_id : GtkStock.id
+    method set_stock_id : GtkStock.id -> unit
     method tooltip : string
+    method set_tooltip : string -> unit
     method visible : bool
+    method set_visible : bool -> unit
+    method visible_horizontal : bool
+    method set_visible_horizontal : bool -> unit
+    method visible_vertical : bool
+    method set_visible_vertical : bool -> unit
+
+    (** Other methods *)
+
+    method is_sensitive : bool
+    method is_visible : bool
+    method activate : unit -> unit
+    method connect_proxy : GObj.widget -> unit
+    method disconnect_proxy : GObj.widget -> unit
+    method get_proxies : GObj.widget list
+    method connect_accelerator : unit -> unit
+    method disconnect_accelerator : unit -> unit
+    method set_accel_path : string -> unit
+    method block_activate_from   : GObj.widget -> unit
+    method unblock_activate_from : GObj.widget -> unit
   end
 
 (** @since GTK 2.4
@@ -128,9 +140,23 @@ class radio_action :
 
 (** @since GTK 2.4
     @gtkdoc gtk GtkRadioAction *)
-val radio_action : name:string -> value:int -> unit -> radio_action
+val radio_action : ?group:radio_action -> name:string -> value:int -> unit -> radio_action
 
 (** {3 GtkActionGroup} *)
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkActionGroup *)
+class action_group_signals :
+  ([> Gtk.action_group ] as 'b) Gobject.obj ->
+  object ('a)
+    val after : bool
+    val obj : 'b Gobject.obj
+    method after : 'a
+    method connect_proxy : callback:(action -> GObj.widget -> unit) -> GtkSignal.id
+    method disconnect_proxy : callback:(action -> GObj.widget -> unit) -> GtkSignal.id
+    method post_activate : callback:(action -> unit) -> GtkSignal.id
+    method pre_activate : callback:(action -> unit) -> GtkSignal.id
+  end
 
 (** @since GTK 2.4
     @gtkdoc gtk GtkActionGroup *)
@@ -138,12 +164,17 @@ class action_group :
   ([> Gtk.action_group ] as 'a) Gobject.obj ->
   object
     val obj : 'a Gobject.obj
-    method add_action : #action_skel -> unit
     method as_group : Gtk.action_group Gobject.obj
+    method connect : action_group_signals
+    method sensitive : bool
+    method set_sensitive : bool -> unit
+    method visible : bool
+    method set_visible : bool -> unit
+    method add_action : ?accel:string -> #action_skel -> unit
+    method remove_action : #action_skel -> unit
     method get_action : string -> action
     method list_actions : action list
     method name : string
-    method remove_action : #action_skel -> unit
   end
 
 (** @since GTK 2.4
@@ -197,9 +228,13 @@ class ui_manager_signals :
   object ('a)
     val after : bool
     val obj : 'b Gtk.obj
+    method after : 'a
     method actions_changed : callback:(unit -> unit) -> GtkSignal.id
     method add_widget : callback:(GObj.widget -> unit) -> GtkSignal.id
-    method after : 'a
+    method connect_proxy : callback:(action -> GObj.widget -> unit) -> GtkSignal.id
+    method disconnect_proxy : callback:(action -> GObj.widget -> unit) -> GtkSignal.id
+    method post_activate : callback:(action -> unit) -> GtkSignal.id
+    method pre_activate : callback:(action -> unit) -> GtkSignal.id
   end
 
 type ui_id
@@ -219,6 +254,7 @@ class ui_manager :
     method get_action : string -> action
     method get_action_groups : action_group list
     method get_widget : string -> GObj.widget
+    method get_toplevels : GtkEnums.ui_manager_item_type list -> GObj.widget list
     method insert_action_group : action_group -> int -> unit
     (* method new_merge_id : ui_id *)
     method remove_action_group : action_group -> unit
