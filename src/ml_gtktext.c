@@ -346,12 +346,12 @@ ML_2_name (ml_gtk_text_buffer_create_tag_0,gtk_text_buffer_create_tag,
 	   Split(Option_val(arg2,String_val,NULL),
 		 Id,
 		 NULL Ignore),
-	   Val_GtkTextTag_new )
+	   Val_GtkTextTag)
 
 CAMLprim value  ml_gtk_text_buffer_create_tag_1
 (value arg1, value arg2, value arg3) 
 { return
-    (Val_GtkTextTag_new
+    (Val_GtkTextTag
      (gtk_text_buffer_create_tag
       (GtkTextBuffer_val(arg1),Option_val(arg2,String_val,NULL),
        String_val(arg3),NULL)));};
@@ -359,7 +359,7 @@ CAMLprim value  ml_gtk_text_buffer_create_tag_1
 CAMLprim value  ml_gtk_text_buffer_create_tag_2
 (value arg1, value arg2, value arg3, value arg4) 
 { return
-    (Val_GtkTextTag_new
+    (Val_GtkTextTag
      (gtk_text_buffer_create_tag
       (GtkTextBuffer_val(arg1),Option_val(arg2,String_val,NULL),
        String_val(arg3),String_val(arg4),NULL)));};
