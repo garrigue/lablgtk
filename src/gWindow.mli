@@ -8,12 +8,11 @@ open GObj
 (** {3 GtkWindow} *)
 
 (** @gtkdoc gtk GtkWindow *)
-class ['a] window_skel : 'b obj ->
+class window_skel : 'a obj ->
   object
     inherit GContainer.bin
-    constraint 'a = 'a #window_skel
-    constraint 'b = [> window]
-    val obj : 'b obj
+    constraint 'a = [> Gtk.window]
+    val obj : 'a obj
     method activate_default : unit -> bool
     method activate_focus : unit -> bool
     method add_accel_group : accel_group -> unit
@@ -49,7 +48,7 @@ class ['a] window_skel : 'b obj ->
     method set_skip_pager_hint : bool -> unit
     method set_skip_taskbar_hint : bool -> unit
     method set_title : string -> unit
-    method set_transient_for : 'a -> unit
+    method set_transient_for : window -> unit
     method set_type_hint : Gdk.Tags.window_type_hint -> unit
     method set_wm_class : string -> unit
     method set_wm_name : string -> unit
@@ -74,10 +73,10 @@ class ['a] window_skel : 'b obj ->
 
 (** Toplevel widget which can contain other widgets
    @gtkdoc gtk GtkWindow *)
-class window : Gtk.window obj ->
+and window : ([> Gtk.window] as 'a) obj ->
   object
-    inherit [window] window_skel
-    val obj : Gtk.window obj
+    inherit window_skel
+    val obj : 'a obj
     method connect : GContainer.container_signals
     method fullscreen : unit -> unit
     method maximize : unit -> unit
@@ -123,7 +122,7 @@ class ['a] dialog_signals :
 class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
   object
     constraint 'a = [> `DELETE_EVENT]
-    inherit [window] window_skel
+    inherit window_skel
     val obj : 'b obj
     method action_area : GPack.box
     method connect : 'a dialog_signals
@@ -252,6 +251,7 @@ class file_selection : Gtk.file_selection obj ->
     method help_button : GButton.button
     method ok_button : GButton.button
     method file_list : string GList.clist
+    method dir_list : string GList.clist	
     method select_multiple : bool
     method show_fileops : bool
     method set_filename : string -> unit
@@ -311,12 +311,52 @@ val font_selection_dialog :
 
 (** {3 GtkPlug} *)
 
+(** @gtkdoc gtk GtkPlug *)
+class plug_signals : ([> Gtk.plug] as 'a) obj ->
+  object
+    inherit GContainer.container_signals
+    val obj : 'a obj
+    method embedded : callback:(unit -> unit) -> GtkSignal.id
+  end
+
 (** Toplevel for embedding into other processes 
    @gtkdoc gtk GtkPlug *)
-class plug : Gtk.plug obj -> window
+class plug : Gtk.plug obj ->
+  object
+    inherit window_skel
+    val obj : Gtk.plug obj
+    method connect : plug_signals
+  end
 
 (** @gtkdoc gtk GtkPlug *)
 val plug :
   window:Gdk.xid ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> plug
+
+(** {3 GtkSocket} *)
+
+(** @gtkdoc gtk GtkSocket *)
+class socket_signals : ([>Gtk.socket] as 'a) obj ->
+  object
+    inherit GContainer.container_signals
+    val obj : 'a obj
+    method plug_added : callback:(unit -> unit) -> GtkSignal.id
+    method plug_removed : callback:(unit -> unit) -> GtkSignal.id
+  end
+
+(** Container for widgets from other processes
+   @gtkdoc gtk GtkSocket *)
+class socket : Gtk.socket obj ->
+  object
+    inherit GContainer.container
+    val obj : Gtk.socket obj
+    method connect : socket_signals
+    method steal : Gdk.xid -> unit
+    method xwindow : Gdk.xid
+  end
+
+(** @gtkdoc gtk GtkSocket *)
+val socket :
+  ?border_width:int -> ?width:int -> ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> socket

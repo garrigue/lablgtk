@@ -23,6 +23,4 @@ module Viewport = Viewport
 
 module ScrolledWindow = ScrolledWindow
 
-module Socket = Socket
-
 (* module Invisible = Invisible *)

@@ -67,9 +67,3 @@ class Viewport set wrap : Bin {
   "shadow-type"          GtkShadowType        : Read / Write
   signal set_scroll_adjustments : GtkAdjustment_opt GtkAdjustment_opt
 }
-
-class Socket wrapsig : Container {
-  method steal : "Gdk.xid -> unit"
-  signal plug_added
-  signal plug_removed
-}

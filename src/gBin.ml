@@ -101,20 +101,3 @@ let alignment =
   pack_container ~create:(fun pl -> new alignment (Alignment.create pl)))
   
 let alignment_cast w = new alignment (Alignment.cast w#as_widget)
-
-class socket_signals obj = object
-  inherit container_signals_impl (obj : [> socket] obj)
-  inherit socket_sigs
-end
-
-class socket obj = object (self)
-  inherit container (obj : Gtk.socket obj)
-  method connect = new socket_signals obj
-  method steal = Socket.steal obj
-  method xwindow =
-    self#misc#realize ();
-    Gdk.Window.get_xwindow self#misc#window
-end
-
-let socket =
-  pack_container [] ~create:(fun pl -> new socket (Socket.create pl))
