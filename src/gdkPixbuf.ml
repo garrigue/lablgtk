@@ -8,7 +8,6 @@ type pixbuf = [`pixbuf] obj
 type colorspace = [ `RGB ]
 type alpha_mode = [ `BILEVEL | `FULL ]
 type interpolation = [ `NEAREST | `TILES | `BILINEAR | `HYPER ]
-type uint8 = int
 
 type gdkpixbuferror =
   | ERROR_CORRUPT_IMAGE
@@ -56,6 +55,8 @@ external copy : pixbuf -> pixbuf = "ml_gdk_pixbuf_copy"
 external subpixbuf : pixbuf -> src_x:int -> src_y:int -> width:int -> height:int -> pixbuf 
   = "ml_gdk_pixbuf_new_subpixbuf"
 external from_file : string -> pixbuf = "ml_gdk_pixbuf_new_from_file"
+external from_file_at_size : string -> width:int -> height:int -> pixbuf 
+  = "ml_gdk_pixbuf_new_from_file_at_size"
 external from_xpm_data : string array -> pixbuf
   = "ml_gdk_pixbuf_new_from_xpm_data"
 
@@ -210,3 +211,10 @@ let composite ~dest ~alpha ?(dest_x=0) ?(dest_y=0) ?width ?height
 
 external save : filename:string -> typ:string -> ?options:(string * string) list -> pixbuf -> unit
     = "ml_gdk_pixbuf_save"
+
+external save_to_callback : 
+  pixbuf -> typ:string -> ?options:(string * string) list -> 
+  (string -> unit) -> unit = "ml_gdk_pixbuf_save_to_callback"
+
+let save_to_buffer pb ~typ ?options buffer =
+  save_to_callback pb ~typ ?options (Buffer.add_string buffer)

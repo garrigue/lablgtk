@@ -1,5 +1,10 @@
 $Id$
 
+2004.08.23 [Olivier]
+  * wrap some 2.4 additions in GdkPixbuf (from_file_at_size,
+    save_to_buffer). Add some Ocamldoc comments.
+  * add 2.4 stock items in GtkStock
+
 2004.08.20 [Jacques]
   * fix GdkPixbuf.render_to_drawable
   * support gtk-2.0.1
