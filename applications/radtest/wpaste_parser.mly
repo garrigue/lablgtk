@@ -2,24 +2,18 @@
 open Utils
 %}
 
-%token EOF NAME EQUAL SUP WINDOW_START WINDOW_END
+%token NAME EQUAL SUP WINDOW_START WINDOW_END
 %token <string> WIDGET_START WIDGET_END IDENT
 
 %type <string> window_start
 %type <string * string> property widget_start
 %type <(string * string) list> property_list
-%type <yywidget_tree> widget window
-%type <Utils.yywidget_tree list> children window_list project
+%type <Utils.yywidget_tree> widget window
+%type <Utils.yywidget_tree list> children
 
-%start project
+%start window
 
 %%
-
-project : window_list EOF        { List.rev $1 }
-
-window_list :                    { [] }
-            | window_list window { $2 :: $1 }
-; 
 
 window : window_start property_list children WINDOW_END 
   { 

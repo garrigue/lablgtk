@@ -6,40 +6,52 @@ open GPack
 open GMisc
 open GWindow
 
+open Utils
 
-class ['a] rval :init :inits :setfun ?:value_list [< [] >] = object(self)
+class ['a] rval :init :inits :undo_fun :setfun ?:value_list [< [] >] :codename = object
   val mutable value : 'a = init
   val mutable value_string : string = inits
   val value_list : (string * 'a) list = value_list
+(*  method codename = (codename : string)   the string used in the init code *)
+  val codename : string = codename
   method value = value
   method value_list = value_list
   method value_string = value_string
-  method set =
-    fun value:v value_string:vs -> 
+  method set = fun value:v value_string:vs -> 
     if value <> v then begin
+      undo_fun value_string;
       value <- v; 
       value_string <- vs;
       setfun v
     end
-  method modified = if value <> init then Some value_string else None
+  method modified =
+    if value <> init then Some (codename, value_string) else None
 end
 
 
 type property =
-  | Int of int rval
-  | Float of float rval
+  | Int    of int rval
+  | Float  of float rval
   | String of string rval
-  | Bool of bool rval
+  | Bool   of bool rval
   | Shadow of Gtk.Tags.shadow_type rval
   | Policy of Gtk.Tags.policy_type rval
 
 let prop_modified = function
-  | Int r -> r#modified
-  | Float r -> r#modified
+  | Int    r -> r#modified
+  | Float  r -> r#modified
   | String r -> r#modified
-  | Bool r -> r#modified
+  | Bool   r -> r#modified
   | Shadow r -> r#modified
   | Policy r -> r#modified
+
+let get_value_string = function
+  | Int    r -> r#value_string
+  | Float  r -> r#value_string
+  | String r -> r#value_string
+  | Bool   r -> r#value_string
+  | Shadow r -> r#value_string
+  | Policy r -> r#value_string
 
 let bool_values = ["true", true; "false", false]
 
@@ -64,6 +76,7 @@ let rec set_property_in_list name value_string = function
       if name = n then change_value_in_prop p :value_string
       else  (set_property_in_list name value_string tl)
   | [] -> failwith ("set_property_in_list: property not found " ^ name)
+
 
 
 (* these functions return a string except int and float *)
@@ -93,7 +106,7 @@ let get_enum_prop name in:l =
 class type tiwidget_base = object
   method name : string
   method proplist : (string * property) list
-  method base : widget
+(*  method base : widget *)
 end
 
 class prop_enumtype l :callback ?:packing :value = object(self)
@@ -154,40 +167,41 @@ end
 let plist_affich list =
   let une_prop_affich prop = 
     let hbox = new hbox homogeneous:true in
-    begin match prop with
-    | name, Bool prop -> new label text:name
-	  packing:(hbox#pack fill:true);
-	new prop_bool callback:prop#set packing:(hbox#pack fill:true)
-	  value:prop#value;
-	()
-    | name, Int prop -> new label text:name
-	  packing:(hbox#pack fill:true);
-	new spin_int lower:(-2.) upper:5000. callback:prop#set
-	  packing:(hbox#pack fill:true) value:prop#value;
-	()
-    | name, Float prop -> new label text:name
-	  packing:(hbox#pack fill:true);
-	let mini = List.assoc "min" in:prop#value_list
-	and maxi = List.assoc "max" in:prop#value_list in
-	new spin_float lower:mini upper:maxi
-	  step_incr:((maxi-.mini)/.100.) callback:prop#set
-	  packing:(hbox#pack fill:true) value:prop#value;
-	()
-    | name, String prop -> new label text:name
-	  packing:(hbox#pack fill:true);
-	new prop_string  callback:prop#set
-	  packing:(hbox#pack fill:true) value:prop#value;
-	()
-    | name, Shadow prop -> new label text:name
-	  packing:(hbox#pack fill:true);
-	new prop_shadow  callback:prop#set
-	  packing:(hbox#pack fill:true) value:prop#value;
-	()
-    | name, Policy prop -> new label text:name
-	  packing:(hbox#pack fill:true);
-	new prop_policy  callback:prop#set
-	  packing:(hbox#pack fill:true) value:prop#value;
-	()
+    begin
+      match prop with
+      | name, Bool prop -> new label text:name
+	    packing:(hbox#pack fill:true);
+	  new prop_bool callback:prop#set packing:(hbox#pack fill:true)
+	    value:prop#value;
+	  ()
+      | name, Int prop -> new label text:name
+	    packing:(hbox#pack fill:true);
+	  new spin_int lower:(-2.) upper:5000. callback:prop#set
+	    packing:(hbox#pack fill:true) value:prop#value;
+	  ()
+      | name, Float prop -> new label text:name
+	    packing:(hbox#pack fill:true);
+	  let mini = List.assoc "min" in:prop#value_list
+	  and maxi = List.assoc "max" in:prop#value_list in
+	  new spin_float lower:mini upper:maxi
+	    step_incr:((maxi-.mini)/.100.) callback:prop#set
+	    packing:(hbox#pack fill:true) value:prop#value;
+	  ()
+      | name, String prop -> new label text:name
+	    packing:(hbox#pack fill:true);
+	  new prop_string  callback:prop#set
+	    packing:(hbox#pack fill:true) value:prop#value;
+	  ()
+      | name, Shadow prop -> new label text:name
+	    packing:(hbox#pack fill:true);
+	  new prop_shadow  callback:prop#set
+	    packing:(hbox#pack fill:true) value:prop#value;
+	  ()
+      | name, Policy prop -> new label text:name
+	    packing:(hbox#pack fill:true);
+	  new prop_policy  callback:prop#set
+	    packing:(hbox#pack fill:true) value:prop#value;
+	  ()
     end;
     hbox
   in let vbox = new vbox in
@@ -208,22 +222,26 @@ let vbox = new vbox packing:propwin#add
 let vbox2 = plist_affich [];;
 vbox#pack vbox2;;
 let vboxref = ref vbox2
+let affiched = ref ""
 
-
-module SMap = Map.Make (struct type t = string let compare = compare end)
+let affich_vb vb =
+  vbox#remove !vboxref;
+  vbox#pack vb;
+  vboxref := vb
 
 let prop_affich_pool = ref SMap.empty
 
 let prop_affich (w : #tiwidget_base) =
+  let name = w#name in
   let vb = try
-    SMap.find key:w#name !prop_affich_pool
+    SMap.find key:name !prop_affich_pool
   with Not_found ->
     let vb = plist_affich w#proplist in
-    prop_affich_pool := SMap.add key:w#name data:vb !prop_affich_pool;
+    prop_affich_pool := SMap.add key:name data:vb !prop_affich_pool;
     vb in
-  vbox#remove !vboxref;
-  vbox#pack vb;
-  vboxref := vb
+  affich_vb vb;
+  affiched := name
+
 
 let prop_add (w : #tiwidget_base) =
   let vb = plist_affich w#proplist in
@@ -231,7 +249,10 @@ let prop_add (w : #tiwidget_base) =
 
 
 let prop_remove name =
-  prop_affich_pool := SMap.remove key:name !prop_affich_pool
+  prop_affich_pool := SMap.remove key:name !prop_affich_pool;
+  if !affiched = name then begin
+    affich_vb (plist_affich [])
+  end
 
 let prop_change_name oldname newname =
   let vb = SMap.find key:oldname !prop_affich_pool in
@@ -239,8 +260,10 @@ let prop_change_name oldname newname =
       (SMap.remove key:oldname !prop_affich_pool)
 
 let prop_update (w : #tiwidget_base) =
-  prop_affich_pool := SMap.add key:w#name data:(plist_affich w#proplist)
-      (SMap.remove key:w#name !prop_affich_pool)
+  let vb = plist_affich w#proplist in
+  prop_affich_pool := SMap.add key:w#name data:vb
+      (SMap.remove key:w#name !prop_affich_pool);
+  if !affiched = w#name then affich_vb vb
 
 
 

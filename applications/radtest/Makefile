@@ -50,6 +50,7 @@ endif
 
 # Targets
 MLOBJS = utils.ml property.cmo paste_parser.cmo paste_lexer.cmo \
+  wpaste_parser.cmo wpaste_lexer.cmo \
  treew.cmo load_parser.cmo load_lexer.cmo main.cmo
 
 radtest: $(MLOBJS)  libtree2.a gtree2.cma
@@ -73,6 +74,12 @@ paste_parser.mli paste_parser.ml: paste_parser.mly
 
 paste_lexer.ml: paste_lexer.mll
 	olabllex paste_lexer.mll
+
+wpaste_parser.mli wpaste_parser.ml: wpaste_parser.mly
+	olablyacc wpaste_parser.mly
+
+wpaste_lexer.ml: wpaste_lexer.mll
+	olabllex wpaste_lexer.mll
 
 libtree2.a: gtktree2.o gtktreeitem2.o ml_gtk2.o
 	ar rc $@ gtktree2.o gtktreeitem2.o ml_gtk2.o
