@@ -45,8 +45,9 @@ fi
 # we extract Ocaml version number and library path
 OCAMLVERSION=`$CAMLC -version`
 echo "ocaml version is $OCAMLVERSION"
-LIBDIR=`$CAMLC -where`
-echo "ocaml library path is $LIBDIR"
+OCAMLLIB=`$CAMLC -where`
+echo "ocaml library path is $OCAMLLIB"
+LIBDIR=$OCAMLLIB
 
 AC_ARG_WITH(libdir,
 	[  --with-libdir=/path     install libs in /path/lablgtk2 and /path/stublibs],
@@ -151,17 +152,17 @@ fi
 # Check for which kind of threads is used
 THREADS_LIB="no"
 AC_MSG_CHECKING(for ocaml threads)
-if test -r `ocamlc -where`/threads/stdlib.cma; then
+if test -r $OCAMLLIB/threads/stdlib.cma; then
   THREADS_LIB="byte"
-elif test -r `ocamlc -where`/threads/threads.cma; then
+elif test -r $OCAMLLIB/threads/threads.cma; then
   THREADS_LIB="system"
 fi
 AC_MSG_RESULT($THREADS_LIB)
 # Check for dll support
 HAS_DLL_SUPPORT="no"
 AC_MSG_CHECKING(for ocaml dll support)
-if test -r `ocamlc -where`/stublibs/dllunix.so ||
-   test -r `ocamlc -where`/stublibs/dllunix.dll
+if test -r $OCAMLLIB/stublibs/dllunix.so ||
+   test -r $OCAMLLIB/stublibs/dllunix.dll
 then HAS_DLL_SUPPORT="yes"
 fi
 AC_MSG_RESULT($HAS_DLL_SUPPORT)
@@ -169,18 +170,16 @@ AC_MSG_RESULT($HAS_DLL_SUPPORT)
 AC_PROG_RANLIB
 # get the C compiler used by ocamlc
 if test -z "$CC" ; then
-  touch ac_ocaml_tmp.c
-  CC=$(ocamlc -verbose -c ac_ocaml_tmp.c 2>&1 | sed ['s/^+ \([^ ]*\) .*$/\1/'])
-  rm -f ac_ocaml_tmp.c ac_ocaml_tmp.o
+  touch conftest.c
+  CC=$($CAMLC -verbose -c conftest.c 2>&1 | sed ['s/^+ \([^ ]*\) .*$/\1/'])
   echo [OCaml uses $CC to compile C files]
 fi
 AC_PROG_CC
 
 # platform
 AC_MSG_CHECKING(platform)
-echo "print_endline Sys.os_type ;;" > ac_ocaml_tmp.ml
-ac_ocaml_platform=$(ocaml ac_ocaml_tmp.ml)
-rm -f ac_ocaml_tmp.ml
+echo "print_endline Sys.os_type ;;" > conftest.ml
+ac_ocaml_platform=$(ocaml conftest.ml)
 AC_MSG_RESULT($ac_ocaml_platform)
 if test $ac_ocaml_platform = Win32 ; then
     OCAMLWIN32=yes
@@ -202,7 +201,26 @@ AC_ARG_WITH(gl,
         [  --without-gl            override autodetected GtkGLArea support. Requires LablGL],
 	USE_GL=$withval; FORCE_GL=yes;,
 	USE_GL=yes)
+AC_ARG_WITH(lablGL-dir,[  --with-lablGL-dir=DIR	  specify location of lablGL],
+        LABLGLDIR="$withval")
 
+if test $USE_GL = yes ; then
+      AC_MSG_CHECKING(lablGL directory)
+      cat > conftest.ml << EOF
+      open Raw
+EOF
+      if $CAMLC -c -I "${LABLGLDIR:=+lablGL}" conftest.ml > /dev/null 2>&1 ; then
+        AC_MSG_RESULT($LABLGLDIR)
+      else
+        if test $FORCE_GL = yes ; then
+	  AC_MSG_ERROR(gtkgl enforced but lablGL not found)
+	else
+	  AC_MSG_RESULT(no)
+      	  USE_GL=no
+          unset LABLGLDIR
+	fi
+      fi
+fi
 if test $USE_GL = yes ; then
 	PKG_CHECK_MODULES(GTKGL,gtkgl-2.0,,
 	if test $FORCE_GL = yes ; then
@@ -355,6 +373,7 @@ AC_SUBST(OCAMLDOC)
 AC_SUBST(CAMLMKTOP)
 AC_SUBST(CAMLMKLIB)
 AC_SUBST(CAMLP4O)
+AC_SUBST(LABLGLDIR)
 AC_SUBST(USE_GL)
 AC_SUBST(USE_GNOME)
 AC_SUBST(USE_GLADE)
