@@ -450,7 +450,7 @@ class ColorSelection set wrap : Box {
 }
 
 class FontSelection set wrap : Box {
-  "font"                 GdkFont_opt          : Read
+  (* bug in Gtk: "font"                 GdkFont_opt          : Read *)
   "font-name"            gchararray           : Read / Write
   "preview-text"         gchararray           : Read / Write
 }

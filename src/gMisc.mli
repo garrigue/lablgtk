@@ -295,7 +295,6 @@ class font_selection : Gtk.font_selection obj ->
     inherit widget_full
     val obj : Gtk.font_selection obj
     method event : event_ops
-    method font : Gdk.font option
     method font_name : string
     method preview_text : string
     method set_border_width : int -> unit
