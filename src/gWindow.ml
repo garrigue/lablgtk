@@ -16,7 +16,7 @@ let get = Gobject.Property.get
 
 module P = Window.P
 
-class window obj = object (self)
+class window_skel obj = object (self)
   inherit ['b] bin_impl obj
   inherit window_props
   method event = new GObj.event_ops obj
@@ -36,8 +36,8 @@ class window obj = object (self)
     Window.set_geometry_hints obj ?min_size ?max_size ?base_size ?aspect
       ?resize_inc ?win_gravity ?pos ?user_pos ?user_size (as_widget w)
   method set_gravity = Window.set_gravity obj
-  method set_transient_for (w : window) =
-    Window.set_transient_for obj w#as_window
+  method set_transient_for : Gtk.window obj -> unit =
+    Window.set_transient_for obj
   method set_wm_name name = Window.set_wmclass obj ~name
   method set_wm_class cls = Window.set_wmclass obj ~clas:cls
   method show () = Widget.show obj
@@ -46,8 +46,8 @@ class window obj = object (self)
   method deiconify () = Window.deiconify obj
 end
 
-class window_full obj = object
-  inherit window (obj : [> Gtk.window] obj)
+class window obj = object
+  inherit window_skel (obj : [> Gtk.window] obj)
   method connect = new container_signals_impl obj
   method maximize () = Window.maximize obj
   method unmaximize () = Window.unmaximize obj
@@ -60,17 +60,17 @@ end
 let make_window ~create =
   Window.make_params ~cont:(fun pl ?wm_name ?wm_class ->
     Container.make_params pl ~cont:(fun pl ?(show=false) () ->
-      let (w : #window) = create pl in
+      let (w : #window_skel) = create pl in
       may w#set_wm_name wm_name;
       may w#set_wm_class wm_class;
       if show then w#show ();
       w))
 
 let window ?kind =
-  make_window [] ~create:(fun pl -> new window_full (Window.create ?kind pl))
+  make_window [] ~create:(fun pl -> new window (Window.create ?kind pl))
 
 let cast_window (w : #widget) =
-  new window_full (Window.cast w#as_widget)
+  new window (Window.cast w#as_widget)
 
 let toplevel (w : #widget) =
   try Some (cast_window w#misc#toplevel) with Gobject.Cannot_cast _ -> None
@@ -95,7 +95,7 @@ let rnone = Dialog.std_response `NONE
 let rdelete = Dialog.std_response `DELETE_EVENT
 
 class ['a] dialog_skel obj = object (self)
-  inherit window obj
+  inherit window_skel obj
   inherit dialog_props
   val tbl : (int * 'a) list ref = 
     ref [rdelete, `DELETE_EVENT]
@@ -132,7 +132,7 @@ end
 let make_dialog pl ?parent ?destroy_with_parent ~create =
   make_window ~create:(fun pl ->
     let d = create pl in
-    may (fun p -> d#set_transient_for (p : #window :> window)) parent ;
+    may (fun p -> d#set_transient_for p#as_window) parent ;
     may d#set_destroy_with_parent destroy_with_parent ;
     d) pl
 
@@ -262,7 +262,7 @@ class plug_signals obj = object
 end
 
 class plug (obj : Gtk.plug obj) = object
-  inherit window obj
+  inherit window_skel obj
   method connect = new plug_signals obj
 end
 

@@ -8,7 +8,7 @@ open GObj
 (** {3 GtkWindow} *)
 
 (** @gtkdoc gtk GtkWindow *)
-class window : 'a obj ->
+class window_skel : 'a obj ->
   object
     inherit GContainer.bin
     constraint 'a = [> Gtk.window]
@@ -48,7 +48,7 @@ class window : 'a obj ->
     method set_skip_pager_hint : bool -> unit
     method set_skip_taskbar_hint : bool -> unit
     method set_title : string -> unit
-    method set_transient_for : window -> unit
+    method set_transient_for : Gtk.window obj -> unit
     method set_type_hint : Gdk.Tags.window_type_hint -> unit
     method set_wm_class : string -> unit
     method set_wm_name : string -> unit
@@ -73,9 +73,9 @@ class window : 'a obj ->
 
 (** Toplevel widget which can contain other widgets
    @gtkdoc gtk GtkWindow *)
-class window_full : ([> Gtk.window] as 'a) obj ->
+class window : ([> Gtk.window] as 'a) obj ->
   object
-    inherit window
+    inherit window_skel
     val obj : 'a obj
     method connect : GContainer.container_signals
     method fullscreen : unit -> unit (** @since GTK 2.2 *)
@@ -101,9 +101,9 @@ val window :
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> window_full
+  ?width:int -> ?height:int -> ?show:bool -> unit -> window
 
-val toplevel : #widget -> window_full option
+val toplevel : #widget -> window option
 (** return the toplevel window of this widget, if existing *)
 
 (** {3 GtkDialog} *)
@@ -122,7 +122,7 @@ class ['a] dialog_signals :
 class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
   object
     constraint 'a = [> `DELETE_EVENT]
-    inherit window
+    inherit window_skel
     val obj : 'b obj
     method action_area : GPack.box
     method event : event_ops
@@ -155,7 +155,7 @@ class ['a] dialog_full : [> Gtk.dialog] obj ->
 (** @gtkdoc gtk GtkDialog *)
 val dialog :
   ?no_separator:bool ->
-  ?parent:#window ->
+  ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->
   ?allow_grow:bool ->
@@ -200,7 +200,7 @@ val message_dialog :
   ?message:string ->
   message_type:Tags.message_type ->
   buttons:'a buttons ->
-  ?parent:#window ->
+  ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->
   ?allow_grow:bool ->
@@ -243,7 +243,7 @@ class ['a] file_chooser_dialog :
     @gtkdoc gtk GtkFileChooserDialog *)
 val file_chooser_dialog :
   action:Gtk.Tags.file_chooser_action ->
-  ?parent:#window ->
+  ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->
   ?allow_grow:bool ->
@@ -278,7 +278,7 @@ class color_selection_dialog : Gtk.color_selection_dialog obj ->
 (** @gtkdoc gtk GtkColorSelectionDialog *)
 val color_selection_dialog :
   ?title:string ->
-  ?parent:#window ->
+  ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
@@ -320,7 +320,7 @@ val file_selection :
   ?show_fileops:bool ->
   ?filename:string ->
   ?select_multiple:bool ->
-  ?parent:#window ->
+  ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
@@ -350,7 +350,7 @@ class font_selection_dialog : Gtk.font_selection_dialog obj ->
 (** @gtkdoc gtk GtkFontSelectionDialog*)
 val font_selection_dialog :
   ?title:string ->
-  ?parent:#window ->
+  ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
@@ -379,7 +379,7 @@ class plug_signals : ([> Gtk.plug] as 'a) obj ->
    @gtkdoc gtk GtkPlug *)
 class plug : Gtk.plug obj ->
   object
-    inherit window
+    inherit window_skel
     val obj : Gtk.plug obj
     method connect : plug_signals
   end

@@ -1,5 +1,9 @@
 $Id$
 
+2004.01.13 [Jacques]
+  * revert to GWindow.window_skel/window
+  * prepare snapshot
+
 2004.01.08 [Olivier]
   * GtkTreeModel{Sort,Filter} fixes
   * added some missing GtkTreeModel methods
