@@ -56,6 +56,7 @@ class action_skel :
     method connect_accelerator : unit -> unit
     method disconnect_accelerator : unit -> unit
     method set_accel_path : string -> unit
+    method set_accel_group : Gtk.accel_group -> unit
     method block_activate_from   : GObj.widget -> unit
     method unblock_activate_from : GObj.widget -> unit
   end
@@ -170,7 +171,8 @@ class action_group :
     method set_sensitive : bool -> unit
     method visible : bool
     method set_visible : bool -> unit
-    method add_action : ?accel:string -> #action_skel -> unit
+    method add_action : #action_skel -> unit
+    method add_action_with_accel : ?accel:string -> #action_skel -> unit
     method remove_action : #action_skel -> unit
     method get_action : string -> action
     method list_actions : action list

@@ -25,7 +25,7 @@ class action_skel obj = object
   method connect_accelerator () = Action.connect_accelerator obj
   method disconnect_accelerator () = Action.disconnect_accelerator obj
   method set_accel_path = Action.set_accel_path obj
-  (* method set_accel_group = Action.set_accel_group obj *)
+  method set_accel_group = Action.set_accel_group obj
   method block_activate_from (w : GObj.widget) = Action.block_activate_from obj w#as_widget
   method unblock_activate_from (w : GObj.widget) = Action.unblock_activate_from obj w#as_widget
 end
@@ -115,10 +115,10 @@ class action_group obj = object
   method connect = new action_group_signals obj
   method get_action n = new action (ActionGroup.get_action obj n)
   method list_actions = List.map (new action) (ActionGroup.list_actions obj)
-  method add_action : 'a. ?accel:string -> (#action_skel as 'a) -> unit = 
-    fun ?accel a -> match accel with
-    | None -> ActionGroup.add_action obj a#as_action
-    | Some acc -> ActionGroup.add_action_with_accel obj a#as_action acc
+  method add_action : 'a. (#action_skel as 'a) -> unit = 
+    fun a -> ActionGroup.add_action obj a#as_action
+  method add_action_with_accel : 'a. ?accel:string -> (#action_skel as 'a) -> unit = 
+    fun ?accel a -> ActionGroup.add_action_with_accel obj a#as_action accel
   method remove_action : 'a. (#action_skel as 'a) -> unit = 
     fun a -> ActionGroup.remove_action obj a#as_action
 end
@@ -133,13 +133,7 @@ let add_single_action ret a ?stock ?label ?accel ?tooltip
   Gaux.may a#set_label label ;
   Gaux.may a#set_tooltip tooltip ;
   Gaux.may a#set_stock_id stock ;
-  let accel_path = String.concat "/" [ "<Actions>" ; group#name ; a#name ] in
-  Gaux.may (fun acc ->
-    let key, modi = GtkData.AccelGroup.parse acc in
-    GtkData.AccelMap.add_entry ~key ~modi accel_path)
-    accel ;
-  a#set_accel_path accel_path ;
-  group#add_action a ;
+  group#add_action_with_accel ?accel a ;
   ret a
 
 let add_action name ?callback =

@@ -1,5 +1,11 @@
 $Id$
 
+2004.09.03 [Olivier]
+  * in GAction.action_group, do not merge #add_action and
+    #add_action_with_accel in a single method because they have
+    different behaviour. Fixes a bug where stock items accelerators
+    were not connected.
+
 2004.08.27 [Olivier]
   * add GTree.cell_layout#reorder and GTree.cell_layout#set_cell_data_func
   * add a couple of utility functions in Glib
