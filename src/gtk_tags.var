@@ -211,7 +211,7 @@ type size_group_mode = "GTK_SIZE_GROUP_"
   [ `NONE | `HORIZONTAL | `VERTICAL | `BOTH ]
 
 type protect HASGTK24 file_chooser_action = "GTK_FILE_CHOOSER_ACTION_"
-  [ `OPEN | `SAVE ]
+  [ `OPEN | `SAVE | `SELECT_FOLDER | `CREATE_FOLDER ]
 
 type tree_model_flags = "GTK_TREE_MODEL_"
   [ `ITERS_PERSIST | `LIST_ONLY ]

@@ -329,8 +329,11 @@ class ['a] file_chooser_dialog obj = object (self)
     new file_chooser_dialog_signals obj self#decode
 end
 
-let file_chooser_dialog ~action =
-  make_dialog [] ~create:(fun pl ->
-    let w = GtkFile.FileChooser.dialog_create pl in
-    Gobject.set GtkFile.FileChooser.P.action w action ;
-    new file_chooser_dialog w)
+let file_chooser_dialog ~action ?backend =
+  make_dialog 
+    (Gobject.Property.may_cons 
+       GtkFile.FileChooser.P.file_system_backend backend
+       [ Gobject.param GtkFile.FileChooser.P.action action ])
+    ~create:(fun pl ->
+      let w = GtkFile.FileChooser.dialog_create pl in
+      new file_chooser_dialog w)
