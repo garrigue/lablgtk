@@ -45,6 +45,24 @@ module AcceleratorTable = struct
   external create : unit -> t = "ml_gtk_accelerator_table_new"
 end
 
+module Style = struct
+  type t
+  external create : unit -> t = "ml_gtk_style_new"
+  external copy : t -> t = "ml_gtk_style_copy"
+  external attach : t -> Gdk.window -> t = "ml_gtk_style_attach"
+  external detach : t -> unit = "ml_gtk_style_detach"
+  external set_background : t -> Gdk.window -> state -> unit
+      = "ml_gtk_style_set_background"
+  external draw_hline :
+      t -> Gdk.window -> state -> x:int -> x:int -> y:int -> unit
+      = "ml_gtk_draw_hline"
+  external draw_vline :
+      t -> Gdk.window -> state -> y:int -> y:int -> c:int -> unit
+      = "ml_gtk_draw_vline"
+  external bg : t -> state:state -> Gdk.Color.t = "ml_GtkStyle_bg"
+  let bg st ?:state [< `NORMAL >] = bg st :state
+end
+
 module Type = struct
   type t
   type klass
@@ -140,6 +158,18 @@ module Widget = struct
       = "ml_gtk_widget_is_ancestor"
   external is_child : [> widget] obj -> [> widget] obj -> bool
       = "ml_gtk_widget_is_ancestor"
+  external set_style : [> widget] obj -> Style.t -> unit
+      = "ml_gtk_widget_set_style"
+  external set_rc_style : [> widget] obj -> unit
+      = "ml_gtk_widget_set_rc_style"
+  external ensure_style : [> widget] obj -> unit
+      = "ml_gtk_widget_ensure_style"
+  external get_style : [> widget] obj -> Style.t
+      = "ml_gtk_widget_get_style"
+  external restore_default_style : [> widget] obj -> unit
+      = "ml_gtk_widget_restore_default_style"
+  external window : [> widget] obj -> Gdk.window
+      = "ml_GtkWidget_window"
 end
 
 module Container = struct
@@ -235,6 +265,13 @@ module Box = struct
       [> box] obj -> [> widget] obj ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> ?from:pack_type -> unit
       = "ml_gtk_box_set_child_packing_bc" "ml_gtk_box_set_child_packing"
+  external hbox_new : homogeneous:bool -> spacing:int -> t
+      = "ml_gtk_hbox_new"
+  external vbox_new : homogeneous:bool -> spacing:int -> t
+      = "ml_gtk_vbox_new"
+  let create (dir : orientation) ?:homogeneous [< false >] ?:spacing [< 0 >] =
+    (match dir with `HORIZONTAL -> hbox_new | `VERTICAL -> vbox_new)
+      :homogeneous :spacing
 end
 
 module Button = struct
@@ -246,6 +283,83 @@ module Button = struct
   external clicked : [> button] obj -> unit = "ml_gtk_button_clicked"
   external enter : [> button] obj -> unit = "ml_gtk_button_enter"
   external leave : [> button] obj -> unit = "ml_gtk_button_leave"
+end
+
+module ToggleButton = struct
+  type t = [widget container button toggle] obj
+  external toggle_button_create : unit -> t = "ml_gtk_toggle_button_new"
+  external toggle_button_create_with_label : string -> t
+      = "ml_gtk_toggle_button_new_with_label"
+  external check_button_create : unit -> t = "ml_gtk_check_button_new"
+  external check_button_create_with_label : string -> t
+      = "ml_gtk_check_button_new_with_label"
+  let create (kind : [toggle check]) ?:label =
+    match label with None ->
+      if kind = `toggle then toggle_button_create ()
+      else check_button_create ()
+    | Some label ->
+      if kind = `toggle then toggle_button_create_with_label label
+      else check_button_create_with_label label
+  external set_mode : [> toggle] obj -> bool -> unit
+      = "ml_gtk_toggle_button_set_mode"
+  external set_state : [> toggle] obj -> bool -> unit
+      = "ml_gtk_toggle_button_set_state"
+  let set button ?:mode ?:state =
+    may fun:(set_mode button) mode;
+    may fun:(set_mode button) state;
+    ()
+  external toggled : [> toggle] obj -> unit = "ml_gtk_toggle_button_toggled"
+end
+
+module RadioButton = struct
+  type t = [widget container button toggle radio] obj
+  type group
+  external get_empty : unit -> group = "ml_get_null"
+  let empty = get_empty ()
+  external create : group -> t = "ml_gtk_radio_button_new"
+  external create_with_label : group -> string -> t
+      = "ml_gtk_radio_button_new_with_label"
+  external group : [> radio] obj -> group = "ml_gtk_radio_button_group"
+  external set_group : [> radio] obj -> group -> unit
+      = "ml_gtk_radio_button_set_group"
+  let create (grp : [none group(_) widget(_)]) ?:label  =
+    let group =
+      match grp with `none -> empty | `group g -> g | `widget w -> group w
+    in
+    match label with None -> create group
+    | Some label -> create_with_label group label
+end
+
+module Misc = struct
+  type t = [widget misc] obj
+  external set_alignment : [> misc] obj -> x:float -> y:float -> unit
+      = "ml_gtk_misc_set_alignment"
+  external set_padding : [> misc] obj -> x:int -> y:int -> unit
+      = "ml_gtk_misc_set_padding"
+end
+
+module Label = struct
+  type t = [widget misc label] obj
+  external create : string -> t = "ml_gtk_label_new"
+  external set : [> label] obj -> string -> unit = "ml_gtk_label_set"
+  external set_justify : [> label] obj -> justification -> unit
+      = "ml_gtk_label_set_justify"
+  let set w ?:label ?:justify =
+    may fun:(set w) label;
+    may fun:(set_justify w) justify;
+    ()
+  external label : [> label] obj -> string = "ml_GtkLabel_label"
+end
+
+module Pixmap = struct
+  type t = [widget misc pixmap] obj
+  external create : Gdk.pixmap -> mask:Gdk.bitmap -> t
+      = "ml_gtk_pixmap_new"
+  external set :
+      [> pixmap] obj -> ?pixmap:Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
+      = "ml_gtk_pixmap_set"
+  external pixmap : [> pixmap] obj -> Gdk.pixmap = "ml_GtkPixmap_pixmap"
+  external mask : [> pixmap] obj -> Gdk.bitmap = "ml_GtkPixmap_mask"
 end
 
 module Main = struct

@@ -2,6 +2,9 @@
 
 type colormap
 type visual
+type window
+type pixmap
+type bitmap
 
 exception Error of string
 let _ = Callback.register_exception "gdkerror" (Error"")
@@ -47,4 +50,27 @@ end
 
 module Event = struct
   type t
+end
+
+module Pixmap = struct
+  external create : window -> width:int -> height:int -> depth:int -> pixmap
+      = "ml_gdk_pixmap_new"
+  external create_from_data :
+      window -> string -> width:int -> height:int -> depth:int ->
+      fg:Color.t -> bg:Color.t -> pixmap
+      = "ml_gdk_pixmap_create_from_data_bc" "ml_gk_pixmap_create_from_data"
+  external create_from_xpm :
+      window -> ?:colormap -> ?transparent:Color.t ->
+      file:string -> pixmap * bitmap
+      = "ml_gdk_pixmap_colormap_create_from_xpm"
+  external create_from_xpm_d :
+      window -> ?:colormap -> ?transparent:Color.t ->
+      data:string array -> pixmap * bitmap
+      = "ml_gdk_pixmap_colormap_create_from_xpm_d"
+end
+
+module Bitmap = struct
+  external create_from_data :
+      window -> string -> width:int -> height:int -> bitmap
+      = "ml_gdk_bitmap_create_from_data"
 end
