@@ -77,15 +77,16 @@ val pack_container :
 
 (** {3 GtkBin} *)
 
-(** @gtkdoc gtk GtkContainer *)
+(** @gtkdoc gtk GtkBin *)
 class bin : ([> Gtk.bin] as 'a) obj ->
   object
     inherit container
     val obj : 'a obj
     method child : widget
+    (** @raise Gpointer.Null if the widget has no child. *)
   end
 
-(** @gtkdoc gtk GtkContainer *)
+(** @gtkdoc gtk GtkBin *)
 class ['a] bin_impl :([> Gtk.bin] as 'a) obj ->
   object
     inherit bin
