@@ -64,7 +64,8 @@ COBJS = ml_glade.o
 MLOBJS =gladeProject.cmo \
 	gladeProjectView.cmo gProjectView.cmo \
 	gladeProjectWindow.cmo gProjectWindow.cmo \
-	gladeMisc.cmo gladeGbWidget.cmo gladeCallBack.cmo 
+	gladeMisc.cmo gladeGbWidget.cmo \
+	gladeProperty.cmo lglEditor.cmo gladeCallBack.cmo
 
 lablglade: $(LABLGTKDIR)/liblablgtk.a $(LABLGTKDIR)/lablgtk.cma liblablglade.a lablglade.cma libglade/libglade.a
 	$(TOPLEVEL) -o $@ -custom -cclib "-L$(GLADEDIR)/gbwidgets -Llibglade -L$(LABLGTKDIR) -L. -llablglade -llablgtk -lglade -lgbwidgets $(LDFLAGS)" $(LABLGTKDIR)/lablgtk.cma lablglade.cma
