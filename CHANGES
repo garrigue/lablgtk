@@ -1,6 +1,7 @@
 $Id$
 
 1998.12.8
+  * more widgets in GtkObj
   * refined memory management
   * all variants in upper case
 

@@ -699,8 +699,7 @@ module MenuItem = struct
       = "ml_gtk_menu_item_accelerator_size"
   external accelerator_text : [> menuitem] obj -> string -> unit
       = "ml_gtk_menu_item_accelerator_size"
-  let setter w :cont ?:submenu ?accelerator_text:text =
-    may submenu fun:(set_submenu w);
+  let setter w :cont ?accelerator:text =
     may text fun:(accelerator_text w);
     cont w
   let set = setter ?cont:Container.set
@@ -889,28 +888,6 @@ module Window = struct
     let set_focus : ([> window],_) t =
       { name = "set_focus"; marshaller = Widget.Signals.marshal }
   end
-end
-
-module FileSelection = struct
-  type t = [widget container bin window filesel]
-  let cast w : t obj =
-    if Object.is_a w "GtkFileSelection" then Obj.magic w
-    else invalid_arg "Gtk.FileSelection.cast"
-  external create : string -> t obj = "ml_gtk_file_selection_new"
-  external set_filename : [> filesel] obj -> string -> unit
-      = "ml_gtk_file_selection_set_filename"
-  external get_filename : [> filesel] obj -> string
-      = "ml_gtk_file_selection_get_filename"
-  external show_fileop_buttons : [> filesel] obj -> unit
-      = "ml_gtk_file_selection_show_fileop_buttons"
-  external hide_fileop_buttons : [> filesel] obj -> unit
-      = "ml_gtk_file_selection_hide_fileop_buttons"
-  let setter w :cont ?:filename ?:fileop_buttons =
-    may filename fun:(set_filename w);
-    may fileop_buttons fun:
-      (fun b -> (if b then show_fileop_buttons else hide_fileop_buttons) w);
-    cont w
-  let set = setter ?cont:Window.set
 end
 
 module Box = struct
@@ -1154,6 +1131,34 @@ module RadioButton = struct
     | Some label -> create_with_label group label
 end
 
+module FileSelection = struct
+  type t = [widget container bin window filesel]
+  let cast w : t obj =
+    if Object.is_a w "GtkFileSelection" then Obj.magic w
+    else invalid_arg "Gtk.FileSelection.cast"
+  external create : string -> t obj = "ml_gtk_file_selection_new"
+  external set_filename : [> filesel] obj -> string -> unit
+      = "ml_gtk_file_selection_set_filename"
+  external get_filename : [> filesel] obj -> string
+      = "ml_gtk_file_selection_get_filename"
+  external show_fileop_buttons : [> filesel] obj -> unit
+      = "ml_gtk_file_selection_show_fileop_buttons"
+  external hide_fileop_buttons : [> filesel] obj -> unit
+      = "ml_gtk_file_selection_hide_fileop_buttons"
+  external get_ok_button : [> filesel] obj -> Button.t obj
+      = "ml_gtk_file_selection_get_ok_button"
+  external get_cancel_button : [> filesel] obj -> Button.t obj
+      = "ml_gtk_file_selection_get_cancel_button"
+  external get_help_button : [> filesel] obj -> Button.t obj
+      = "ml_gtk_file_selection_get_help_button"
+  let setter w :cont ?:filename ?:fileop_buttons =
+    may filename fun:(set_filename w);
+    may fileop_buttons fun:
+      (fun b -> (if b then show_fileop_buttons else hide_fileop_buttons) w);
+    cont w
+  let set = setter ?cont:Window.set
+end
+
 module CList = struct
   type t = [widget container clist]
   let cast w : t obj =
@@ -1345,12 +1350,12 @@ module Menu = struct
   external create : unit -> t obj = "ml_gtk_menu_new"
   external popup :
       [> menu] obj -> ?parent_menu:[> menushell] obj ->
-      ?parent_item:[> menuitem] obj -> button:int -> activate_time:int -> unit
+      ?parent_item:[> menuitem] obj -> button:int -> time:int -> unit
       = "ml_gtk_menu_popup"
   external popdown : [> menu] obj -> unit = "ml_gtk_menu_popdown"
   external get_active : [> menu] obj -> Widget.t obj= "ml_gtk_menu_get_active"
   external set_active : [> menu] obj -> int -> unit = "ml_gtk_menu_set_active"
-  external set_accelerator_table : [> menu] obj -> [> accelerator] obj -> unit
+  external set_accelerator_table : [> menu] obj -> AcceleratorTable.t -> unit
       = "ml_gtk_menu_set_accelerator_table"
   external attach_to_widget : [> menu] obj -> [> widget] obj -> unit
       = "ml_gtk_menu_attach_to_widget"

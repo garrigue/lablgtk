@@ -148,7 +148,7 @@ let frame : #container = frame in object (self)
 
   method update_label () =
     let w, b = count_cells cells in
-    label#set_label (Printf.sprintf "White: %d Black: %d" w b)
+    label#set_label (Printf.sprintf "White: %d Black: %d " w b)
 
   method play x y =
     if action cells :x :y color:current_color then begin
@@ -179,7 +179,7 @@ end
 
 let vbox = new_box `VERTICAL packing:window#add
 let frame = new_frame shadow_type:`IN packing:vbox#add
-let hbox = new_box `HORIZONTAL packing:vbox#add
+let hbox = new_box `HORIZONTAL packing:(vbox#pack expand:false)
 
 let bar = new_statusbar packing:hbox#add
 
