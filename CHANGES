@@ -1,5 +1,9 @@
 $Id$
 
+2000.5.23
+  * add GMisc.notebook#get_{tab,menu}_label. Rename nth_page to get_nth_page.
+  * modified ML signals in GUtil, to allow signals without widget.
+
 2000.5.22
   * Incompatible!: Change default for ~expand in Box.pack,
     Pack.build_options, Table.build_options. Now defaults to false/`NONE.
