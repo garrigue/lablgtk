@@ -103,6 +103,8 @@ module Widget = struct
       = "ml_gtk_widget_modify_text"
   external modify_base : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
       = "ml_gtk_widget_modify_base"
+  external modify_font : [>`widget] obj -> Pango.Font.description -> unit
+      = "ml_gtk_widget_modify_font"
   external add_accelerator :
       ([>`widget] as 'a) obj -> sgn:('a,unit->unit) GtkSignal.t ->
       accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list ->

@@ -1,0 +1,8 @@
+FAQ :
+Q1) How to copy a gtktextiter?
+A1) To copy [iter] use 
+    [let new_iter = GtkText.Iter.copy iter] or 
+    [let new_iter = GText.iter iter].
+    Thereafter one can use methods with side effects of [new_iter] without
+    affecting [iter]. 
+    Do not use [let new_iter = new GText.iter iter]: it does not copy [iter].

@@ -172,6 +172,7 @@ module Window :
     val get_parent : window -> window
     val get_size : 'a drawable -> int * int
     val get_position : 'a drawable -> int * int
+    val get_pointer_location : 'a drawable -> int * int
     val root_parent : unit -> window
     val clear : window -> unit
     val get_xwindow : 'a drawable -> xid

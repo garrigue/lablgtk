@@ -71,6 +71,14 @@ value Val_GtkTextIter(GtkTextIter* it){
   return(Val_GtkTextIter_mine(gtk_text_iter_copy(it))); 
 }
 
+CAMLprim value ml_gtk_text_iter_copy (value tm)
+{
+  CAMLparam1(tm);
+  CAMLlocal1(res);
+  res = Val_GtkTextIter(GtkTextIter_val(tm));
+  CAMLreturn(res);
+}
+
 
 #define GtkTextView_val(val) check_cast(GTK_TEXT_VIEW,val)
 

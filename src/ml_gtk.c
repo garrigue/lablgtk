@@ -7,6 +7,7 @@
 #include <caml/memory.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
+#include "ml_pango.h"
 
 #if (GTK_MAJOR_VERSION <= 1) && (GTK_MINOR_VERSION <= 2) && (GTK_MICRO_VERSION <= 3)
 #define GTK_WIN_POS_CENTER_ALWAYS 0
@@ -293,7 +294,7 @@ ML_3 (gtk_widget_modify_fg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_bg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_text, GtkWidget_val, State_type_val, GdkColor_val,Unit)
 ML_3 (gtk_widget_modify_base, GtkWidget_val, State_type_val, GdkColor_val,Unit)
-
+ML_2 (gtk_widget_modify_font, GtkWidget_val, PangoFontDescription_val, Unit)
 ML_6 (gtk_widget_add_accelerator, GtkWidget_val, Signal_name_val,
       GtkAccelGroup_val, Char_val, OptFlags_GdkModifier_val,
       OptFlags_Accel_flag_val, Unit)

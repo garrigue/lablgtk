@@ -26,6 +26,31 @@ end
 
 let child_anchor () = new child_anchor(Child_Anchor.create ())
 
+
+class tag_signals obj = object
+  inherit GObj.gtkobj_signals obj
+  method event = 
+    GtkSignal.connect ~sgn:GtkText.Tag.Signals.event ~after obj
+end
+
+class tag obj =
+object (self)
+  inherit gtkobj (obj :Gtk.texttag obj)
+  method as_tag = obj
+  method connect = new tag_signals obj
+  method get_priority () = Tag.get_priority obj
+  method set_priority p = Tag.set_priority obj p
+  (* [BM] my very first polymorphic method in OCaml...*)
+  method event : 'a. 'a Gtk.obj -> GdkEvent.any -> Gtk.textiter -> bool = 
+    Tag.event obj 
+  method set_property p = 
+    Tag.set_property obj p
+  method set_properties l = 
+    List.iter self#set_property l
+end
+
+let tag s = new tag(Tag.create s)
+
 class iter it =
 object
   val it = (it: textiter)
@@ -46,11 +71,12 @@ object
   method get_marks () = GtkText.Iter.get_marks it
   method get_toggled_tags  = GtkText.Iter.get_toggled_tags it
   method get_child_anchor  = GtkText.Iter.get_child_anchor it
-  method begins_tag  = GtkText.Iter.begins_tag it
-  method ends_tag  = GtkText.Iter.ends_tag it
-  method toggles_tag  = GtkText.Iter.toggles_tag it
-  method has_tag  = GtkText.Iter.has_tag it
-  method get_tags () = GtkText.Iter.get_tags it
+  method begins_tag t = GtkText.Iter.begins_tag it t
+  method ends_tag t = GtkText.Iter.ends_tag it t
+  method toggles_tag t = GtkText.Iter.toggles_tag it t
+  method has_tag t = GtkText.Iter.has_tag it t
+  method get_tags () = List.map (fun t -> new tag t) 
+			 (GtkText.Iter.get_tags it)
   method editable  = GtkText.Iter.editable it
   method can_insert  = GtkText.Iter.can_insert it
   method starts_word () = GtkText.Iter.starts_word it
@@ -101,29 +127,7 @@ object
   method in_range ~start ~stop  = GtkText.Iter.in_range it start stop
 end
 
-class tag_signals obj = object
-  inherit gtkobj_signals obj
-  method event = 
-    GtkSignal.connect ~sgn:GtkText.Tag.Signals.event ~after obj
-end
-
-class tag obj =
-object (self)
-  inherit gtkobj (obj :Gtk.texttag obj)
-  method as_tag = obj
-  method connect = new tag_signals obj
-  method get_priority () = Tag.get_priority obj
-  method set_priority p = Tag.set_priority obj p
-  (* [BM] my very first polymorphic method in OCaml...*)
-  method event : 'a. 'a Gtk.obj -> 'a Gdk.event -> Gtk.textiter -> bool = 
-    Tag.event obj 
-  method set_property p = 
-    Tag.set_property obj p
-  method set_properties l = 
-    List.iter self#set_property l
-end
-
-let tag s = new tag(Tag.create s)
+let iter i = new iter (GtkText.Iter.copy i)
 
 
 class tagtable_signals obj = object
@@ -186,13 +190,44 @@ class buffer obj = object(self)
   method get_line_count = GtkText.Buffer.get_line_count obj
   method get_char_count = GtkText.Buffer.get_char_count obj
   method get_tag_table =  GtkText.Buffer.get_tag_table obj
-  method insert ~text ?iter ?(length = (-1)) () = 
-    match iter with
-      | None -> 
-	  GtkText.Buffer.insert_at_cursor obj text length
-      | Some iter -> 
-	  GtkText.Buffer.insert obj iter text length
-  method insert_interactive ~text ?iter ?(length = -1) ?(default_editable = true) () = 
+  method insert ~text ?iter ?(length = (-1)) ?(tags=([]:tag list)) () =  
+    match tags with
+      | [] -> 
+	  begin
+	    match iter with
+	      | None -> 
+		  GtkText.Buffer.insert_at_cursor obj text length
+	      | Some iter -> 
+		  GtkText.Buffer.insert obj iter#as_textiter text length
+	  end
+      | _ -> begin match iter with
+	  | None -> 
+	      let iter = self#get_iter_at_mark 
+			   ~mark:(self#get_mark ~name:"insert")
+	      in 
+	      let start_offset = iter#get_offset () in
+		GtkText.Buffer.insert_at_cursor obj text length;
+		let start = self#get_iter_at ~char_offset:start_offset () in
+		  List.iter
+		    (fun t -> self#apply_tag 
+		       ~tag:t 
+		       ~start
+		       ~stop:iter) 
+		    tags
+	  | Some iter -> 
+	      let start_offset = iter#get_offset () in
+		GtkText.Buffer.insert obj iter#as_textiter text length;
+		let start = self#get_iter_at ~char_offset:start_offset () in
+		  List.iter 
+		    (fun t -> 
+		       self#apply_tag 
+		       ~tag:t 
+		       ~start
+		       ~stop:iter)
+		    tags
+	end
+  method insert_interactive 
+    ~text ?iter ?(length = -1) ?(default_editable = true) () = 
     match iter with
       | None -> 
 	  GtkText.Buffer.insert_interactive_at_cursor obj text length default_editable
@@ -211,16 +246,20 @@ class buffer obj = object(self)
     let start,stop = 
       match start,stop with 
 	| None,None -> self#get_bounds ()
-	| Some start,None -> start,self#get_start_iter ()
-	| None,Some stop -> self#get_end_iter (),stop
+	| Some start,None -> start,(self#get_start_iter ())#as_textiter
+	| None,Some stop -> (self#get_end_iter ())#as_textiter,stop
 	| Some start,Some stop -> start,stop
     in
       GtkText.Buffer.get_text obj start stop include_hidden_chars 
-  method get_slice ?(include_hidden_chars=false) ~start ~stop () =
-    GtkText.Buffer.get_slice obj start stop include_hidden_chars 
-  method insert_pixbuf ~iter ~pixbuf = GtkText.Buffer.insert_pixbuf obj iter pixbuf
-  method create_mark ?name ~iter ?(left_gravity=true) () = 
-    new mark (GtkText.Buffer.create_mark obj name iter left_gravity)
+  method get_slice ?(include_hidden_chars=false) 
+    ~(start:iter) ~(stop:iter) () =
+    GtkText.Buffer.get_slice obj 
+      start#as_textiter stop#as_textiter include_hidden_chars 
+  method insert_pixbuf ~(iter:iter) ~pixbuf = 
+    GtkText.Buffer.insert_pixbuf obj iter#as_textiter pixbuf
+  method create_mark ?name ~(iter:iter) ?(left_gravity=true) () = 
+    new mark 
+      (GtkText.Buffer.create_mark obj name iter#as_textiter left_gravity)
   method get_mark ~name = new mark (GtkText.Buffer.get_mark obj name)
   method move_mark ~(mark:mark) ~where = GtkText.Buffer.move_mark obj mark#as_mark where
   method move_mark_by_name ~name ~where = GtkText.Buffer.move_mark_by_name obj name where
@@ -229,15 +268,20 @@ class buffer obj = object(self)
   method get_mark ~name = new mark (GtkText.Buffer.get_mark obj name)
   method get_insert () = new mark (GtkText.Buffer.get_insert obj)
   method get_selection_bound () = new mark (GtkText.Buffer.get_selection_bound obj)
-  method place_cursor ~where = GtkText.Buffer.place_cursor obj where
-  method apply_tag ~(tag:tag) ~start ~stop = GtkText.Buffer.apply_tag obj tag#as_tag start stop
-  method remove_tag ~(tag:tag) ~start ~stop = GtkText.Buffer.remove_tag obj tag#as_tag start stop
-  method apply_tag_by_name ~name ~start ~stop = 
-    GtkText.Buffer.apply_tag_by_name obj name start stop
-  method remove_tag_by_name ~name ~start ~stop = 
-    GtkText.Buffer.remove_tag_by_name obj name start stop
-  method remove_all_tags ~start ~stop =
-    GtkText.Buffer.remove_all_tags obj start stop
+  method place_cursor ~(where:iter) = 
+    GtkText.Buffer.place_cursor obj where#as_textiter
+  method apply_tag ~(tag:tag) ~start ~stop = 
+    GtkText.Buffer.apply_tag obj tag#as_tag start#as_textiter stop#as_textiter
+  method remove_tag ~(tag:tag) ~(start:iter) ~(stop:iter) = 
+    GtkText.Buffer.remove_tag obj tag#as_tag start#as_textiter stop#as_textiter
+  method apply_tag_by_name ~name ~(start:iter) ~(stop:iter) = 
+    GtkText.Buffer.apply_tag_by_name obj name 
+      start#as_textiter stop#as_textiter
+  method remove_tag_by_name ~name ~(start:iter) ~(stop:iter) = 
+    GtkText.Buffer.remove_tag_by_name obj name 
+      start#as_textiter stop#as_textiter
+  method remove_all_tags ~(start:iter) ~(stop:iter) =
+    GtkText.Buffer.remove_all_tags obj start#as_textiter stop#as_textiter
   method create_tag ?name ~(properties: GtkText.Tag.property list) () =
     let t =  new tag (GtkText.Buffer.create_tag_0 obj name) in
       t#set_properties properties;
@@ -245,15 +289,16 @@ class buffer obj = object(self)
   method get_iter_at ?line_number ?char_offset () =
     match line_number,char_offset with
       | None,None -> raise (Invalid_argument
-	  "?line_number and/or ?char_offset missing for get_iter_at")
-      | Some v,None -> GtkText.Buffer.get_iter_at_line obj v
-      | None, Some v -> GtkText.Buffer.get_iter_at_offset obj v
-      | Some l, Some c -> GtkText.Buffer.get_iter_at_line_offset obj l c
+			      "?line_number and/or ?char_offset missing for get_iter_at")
+      | Some v,None -> iter (GtkText.Buffer.get_iter_at_line obj v)
+      | None, Some v -> iter (GtkText.Buffer.get_iter_at_offset obj v)
+      | Some l, Some c -> iter (GtkText.Buffer.get_iter_at_line_offset obj l c)
   method get_iter_at_line_index ~line_number ~line_index = 
-    GtkText.Buffer.get_iter_at_line_index  obj line_number line_index
-  method get_iter_at_mark ~(mark:mark) = GtkText.Buffer.get_iter_at_mark obj mark#as_mark
-  method get_start_iter () = GtkText.Buffer.get_start_iter obj
-  method get_end_iter () = GtkText.Buffer.get_end_iter obj
+    iter (GtkText.Buffer.get_iter_at_line_index  obj line_number line_index)
+  method get_iter_at_mark ~(mark:mark) = 
+    iter (GtkText.Buffer.get_iter_at_mark obj mark#as_mark)
+  method get_start_iter () = iter (GtkText.Buffer.get_start_iter obj)
+  method get_end_iter () = iter (GtkText.Buffer.get_end_iter obj)
   method get_bounds () = GtkText.Buffer.get_bounds obj
   method get_modified () = GtkText.Buffer.get_modified  obj
   method set_modified ~setting = GtkText.Buffer.set_modified  obj setting
@@ -329,7 +374,7 @@ class view obj = object
   method get_line_yrange iter = 
     GtkText.View.get_line_yrange obj iter
   method get_iter_at_location ~x ~y =
-    GtkText.View.get_iter_at_location obj x y
+    iter (GtkText.View.get_iter_at_location obj x y)
   method buffer_to_window_coords ~tag ~x ~y =
     GtkText.View.buffer_to_window_coords obj tag x y
   method window_to_buffer_coords  ~tag ~x ~y =

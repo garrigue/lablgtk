@@ -92,14 +92,15 @@ endif
 	$(CAMLP4) -impl $< -o $@
 
 # Targets
-GTKOBJS = ml_gtk.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o ml_gtklist.o \
+GTKOBJS =  ml_gtk.o ml_pango.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o \
+	ml_gtklist.o \
 	ml_gtkmenu.o ml_gtkmisc.o ml_gtkpack.o ml_gtkrange.o ml_gtktree.o \
 	ml_gtktext.o
 COBJS = ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o \
 	wrappers.o $(GTKOBJS)
-MLOBJS = gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
+MLOBJS =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
 	gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
-	gtk.cmo gtkSignal.cmo \
+	gtk.cmo pango.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkTree.cmo gtkMain.cmo \
@@ -218,7 +219,7 @@ varcc: varcc.cmo
 clean:
 	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml
 
-$(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h ml_gobject.h ml_glib.h wrappers.h
+$(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h ml_pango.h ml_gobject.h ml_glib.h wrappers.h
 ml_glib.o: glib_tags.h ml_glib.h wrappers.h
 ml_gobject.o: gobject_tags.h wrappers.h
 ml_gdk.o: gdk_tags.h ml_gdk.h ml_gpointer.h wrappers.h
@@ -226,5 +227,6 @@ ml_gtkgl.o: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gtkxmhtml.o: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gpointer.o: ml_gpointer.h
 ml_gdkpixbuf.o: gdkpixbuf_tags.h ml_gdk.h gdk_tags.h wrappers.h ml_gpointer.h
+ml_pango.o: ml_pango.h
 
 include .depend

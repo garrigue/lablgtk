@@ -36,7 +36,7 @@ module Tag = struct
   external get_priority : texttag obj -> int = "ml_gtk_text_tag_get_priority"
   external set_priority : texttag obj -> int -> unit 
     = "ml_gtk_text_tag_set_priority"
-  external event : texttag obj -> 'a obj ->  'a Gdk.event -> textiter -> bool
+  external event : texttag obj -> 'a obj ->  'b Gdk.event -> textiter -> bool
     = "ml_gtk_text_tag_event"
   type property = 
     | Name of string
@@ -210,10 +210,10 @@ module Tag = struct
     open GtkSignal
     let marshal_event f _ = function 
       |`OBJECT(Some p)::`POINTER(Some ev)::`POINTER(Some ti)::_ ->
-	 f (* Don't know how to cast those safely...
-	      (Obj.magic p: 'a obj) (Obj.magic ev: 'a Gdk.event) 
+	 f (* Don't know how to cast this safely...
+	      (Obj.magic p: 'a obj)
 	   *)
-	  (Obj.magic ti:textiter)
+	  (Obj.magic ti:textiter) (Obj.magic ev: GdkEvent.any) 
       | _ -> invalid_arg "GtkText.Tag.Signals.marshal_event"
 	  
     let event = 
@@ -290,9 +290,9 @@ module Buffer = struct
   external insert_range_interactive : textbuffer obj -> textiter -> textiter
     -> textiter -> bool -> bool = "ml_gtk_text_buffer_insert_range_interactive"
   external delete : textbuffer obj -> textiter -> textiter -> unit
-    = "ml_gtk_text_buffer_insert_range_interactive"
+    = "ml_gtk_text_buffer_delete"
   external delete_interactive : textbuffer obj -> textiter -> textiter 
-    -> bool -> bool = "ml_gtk_text_buffer_insert_range_interactive"
+    -> bool -> bool = "ml_gtk_text_buffer_delete_interactive"
   external set_text : textbuffer obj -> string -> int 
     -> unit = "ml_gtk_text_buffer_set_text"
   external get_text : textbuffer obj -> textiter -> textiter -> 
@@ -688,6 +688,7 @@ module View = struct
 end
 
 module Iter = struct
+  external copy : textiter -> textiter = "ml_gtk_text_iter_copy"
   external get_buffer : textiter -> textbuffer obj = "ml_gtk_text_iter_get_buffer"
   external get_offset : textiter -> int = "ml_gtk_text_iter_get_offset"
   external get_line : textiter -> int = "ml_gtk_text_iter_get_line"
@@ -709,7 +710,7 @@ module Iter = struct
   external ends_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_ends_tag"
   external toggles_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_toggles_tag"
   external has_tag : textiter -> texttag obj -> bool = "ml_gtk_text_iter_has_tag"
-  external get_tags : textiter -> textmark obj list = "ml_gtk_text_iter_get_tags"
+  external get_tags : textiter -> texttag obj list = "ml_gtk_text_iter_get_tags"
   external editable : textiter -> bool -> bool = "ml_gtk_text_iter_editable"
   external can_insert : textiter -> bool -> bool = "ml_gtk_text_iter_can_insert"
   external starts_word : textiter -> bool = "ml_gtk_text_iter_starts_word"
@@ -769,5 +770,4 @@ module Iter = struct
   external : textview obj -> =
 	   "ml_gtk_text_view_"
 *)
-
 end

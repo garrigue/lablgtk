@@ -164,6 +164,7 @@ and misc_ops : Gtk.widget obj ->
     method modify_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method modify_font : Pango.Font.description -> unit
     method name : string
     method parent : widget option
     method pointer : int * int
