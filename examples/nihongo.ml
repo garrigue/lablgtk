@@ -24,6 +24,7 @@ let _ =
   let button = Button.create label:"終了" in
   let style = Widget.get_style button in
   Style.set style :font;
+  Style.set_bg style color:(Gdk.Color.alloc (`Name "green"));
   Box.add box button;
   Button.Connect.clicked button cb:Main.quit;
   let l = Label.create "これにも影響する" in

@@ -265,7 +265,10 @@ module Style = struct
       t -> Gdk.window -> state -> y:int -> y:int -> c:int -> unit
       = "ml_gtk_draw_vline"
   external get_bg : t -> state:state -> Gdk.Color.t = "ml_gtk_style_get_bg"
+  external set_bg : t -> state:state -> color:Gdk.Color.t -> unit
+      = "ml_gtk_style_set_bg"
   let get_bg st ?:state [< `NORMAL >] = get_bg st :state
+  let set_bg st ?:state [< `NORMAL >] :color = set_bg st :state :color
   external get_colormap : t -> Gdk.colormap = "ml_gtk_style_get_colormap"
   external get_font : t -> Gdk.font = "ml_gtk_style_get_font"
   external set_font : t -> Gdk.font -> unit = "ml_gtk_style_set_font"
