@@ -542,6 +542,12 @@ Make_Val_final_pointer_ext (GtkObject, _window, gtk_object_ref, window_unref,
 ML_0 (gtk_dialog_new, Val_GtkWidget_window)
 Make_Extractor (GtkDialog, GtkDialog_val, action_area, Val_GtkWidget)
 Make_Extractor (GtkDialog, GtkDialog_val, vbox, Val_GtkWidget)
+ML_2 (gtk_dialog_response, GtkDialog_val, Int_val, Unit)
+ML_3 (gtk_dialog_add_button, GtkDialog_val, String_val, Int_val, Unit)
+ML_3 (gtk_dialog_set_response_sensitive, GtkDialog_val, Int_val, Bool_val, Unit)
+ML_2 (gtk_dialog_set_default_response, GtkDialog_val, Int_val, Unit)
+ML_1 (gtk_dialog_run, GtkDialog_val, Val_int)
+     /* gtk_dialog_add_action_widget */
 
 /* gtkinputdialog.h */
 
@@ -590,12 +596,16 @@ ML_3 (gtk_window_set_policy, GtkWindow_val, Bool_val,
       Insert(Bool_val(arg3)) Bool_val, Unit)
 ML_2 (gtk_window_set_transient_for, GtkWindow_val, GtkWindow_val, Unit)
 ML_1 (gtk_window_get_transient_for, GtkWindow_val, Val_GtkWidget)
+ML_2 (gtk_window_set_destroy_with_parent, GtkWindow_val, Bool_val, Unit)
 Make_Extractor (gtk_window_get, GtkWindow_val, allow_shrink, Val_bool)
 Make_Extractor (gtk_window_get, GtkWindow_val, allow_grow, Val_bool)
 ML_2 (gtk_window_set_modal, GtkWindow_val, Bool_val, Unit)
 ML_3 (gtk_window_set_default_size, GtkWindow_val, Int_val, Int_val, Unit)
 ML_3 (gtk_window_resize, GtkWindow_val, Int_val, Int_val, Unit)
 ML_1 (gtk_window_present, GtkWindow_val, Unit)
+
+/* gtkmessagedialog.h */
+ML_4 (gtk_message_dialog_new, GtkWindow_val, Insert(0) Message_type_val, Buttons_val, String_val, Val_GtkWidget_window)
 
 /* gtkcolorsel.h */
 

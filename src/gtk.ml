@@ -82,6 +82,8 @@ module Tags = struct
   type text_search_flag = [ `VISIBLE_ONLY | `TEXT_ONLY ]
   type tree_view_column_sizing = [ `GROW_ONLY | `AUTOSIZE | `FIXED ]
   type cell_renderer_mode = [ `INERT | `ACTIVATABLE | `EDITABLE ]
+  type message_type = [ `INFO | `WARNING | `QUESTION | `ERROR ]
+  type buttons = [ `NONE | `OK | `CLOSE | `CANCEL | `YES_NO | `OK_CANCEL ]
 end
 open Tags
 

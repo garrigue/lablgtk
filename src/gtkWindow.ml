@@ -54,6 +54,8 @@ module Window = struct
       = "ml_gtk_window_set_transient_for"
   external get_transient_for : [>`window] obj -> window obj
       = "ml_gtk_window_get_transient_for"
+  external set_destroy_with_parent : [>`window] obj -> bool -> unit
+      = "ml_gtk_window_set_destroy_with_parent"
 
   let set_wmclass ?name ?clas:wm_class w =
     set_wmclass w ~name:(may_default get_wmclass_name w ~opt:name)
@@ -62,8 +64,8 @@ module Window = struct
     set_policy w
       ~allow_shrink:(may_default get_allow_shrink w ~opt:allow_shrink)
       ~allow_grow:(may_default get_allow_grow w ~opt:allow_grow)
-  let set ?title ?wm_name ?wm_class ?role ?position ?allow_shrink ?allow_grow
-      ?auto_shrink ?modal ?(x = -2) ?(y = -2) w =
+  let set ?title ?wm_name ?wm_class ?role ?position 
+      ?allow_shrink ?allow_grow ?auto_shrink ?modal ?(x = -2) ?(y = -2) w =
     may title ~f:(set_title w);
     if wm_name <> None || wm_class <> None then
       set_wmclass w ?name:wm_name ?clas:wm_class;
@@ -101,6 +103,23 @@ module Dialog = struct
       = "ml_GtkDialog_action_area"
   external vbox : [>`dialog] obj -> box obj
       = "ml_GtkDialog_vbox"
+  external add_button : [>`dialog] obj -> string -> int -> unit 
+      = "ml_gtk_dialog_add_button"
+  external response : [>`dialog] obj -> int -> unit
+      = "ml_gtk_dialog_response"
+  external set_response_sensitive : [>`dialog] obj -> int -> bool -> unit
+      = "ml_gtk_dialog_set_response_sensitive"
+  external set_default_response : [>`dialog] obj -> int -> unit
+      = "ml_gtk_dialog_set_default_response"
+  external run : [>`dialog] obj -> int
+      = "ml_gtk_dialog_run"
+  module Signals = struct
+    open GtkSignal
+    let response =
+      { name = "response"; classe = `dialog; marshaller = marshal_int }
+  end
+  external create_message : [>`window] obj -> Gtk.Tags.message_type -> Gtk.Tags.buttons -> string -> dialog obj
+      = "ml_gtk_message_dialog_new"
 end
 
 module InputDialog = struct

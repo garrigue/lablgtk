@@ -52,16 +52,35 @@ val window :
 val toplevel : #widget -> window option
 (** return the toplevel window of this widget, if existing *)
 
-class dialog : Gtk.dialog obj ->
+class ['a] dialog_signals : Gtk.dialog obj -> (int * 'a) list ref ->
   object
+    inherit GContainer.container_signals
+    val obj : Gtk.dialog obj
+    method response : callback:('a -> unit) -> GtkSignal.id
+  end
+class ['a] dialog : Gtk.dialog obj ->
+  object
+    constraint 'a = [> `DELETE_EVENT | `NONE]
     inherit [window] window_skel
     val obj : Gtk.dialog obj
     method action_area : GPack.box
-    method connect : GContainer.container_signals
+    method connect : 'a dialog_signals
     method event : event_ops
     method vbox : GPack.box
+    method add_button : string -> 'a -> unit
+    method add_button_stock : GtkStock.id -> 'a -> unit
+    method response : 'a -> unit
+    method set_response_sensitive : 'a -> bool -> unit
+    method set_default_response : 'a -> unit
+    val separator_property : (Gtk.dialog, bool) Gobject.property
+    method get_has_separator : bool
+    method set_has_separator : bool -> unit
+    method run : unit -> 'a
   end
 val dialog :
+  ?parent:#window ->
+  ?destroy_with_parent:bool ->
+  ?no_separator:bool ->
   ?title:string ->
   ?wm_name:string ->
   ?wm_class:string ->
@@ -72,7 +91,34 @@ val dialog :
   ?x:int ->
   ?y:int ->
   ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> dialog
+  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a dialog
+
+type 'a buttons
+module Buttons : sig
+val none : [>`NONE] buttons
+val ok : [>`OK] buttons
+val close : [>`CLOSE] buttons
+val yes_no : [>`YES|`NO] buttons
+val ok_cancel : [>`OK|`CANCEL] buttons
+end
+val message_dialog :
+  message:string ->
+  message_type:Gtk.Tags.message_type ->
+  buttons:'a buttons ->
+  parent:#window ->
+  ?destroy_with_parent:bool ->
+  ?no_separator:bool ->
+  ?title:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
+  ?position:Tags.window_position ->
+  ?allow_shrink:bool ->
+  ?allow_grow:bool ->
+  ?modal:bool ->
+  ?x:int ->
+  ?y:int ->
+  ?border_width:int ->
+  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a dialog
 
 class color_selection_dialog : Gtk.color_selection_dialog obj ->
   object
