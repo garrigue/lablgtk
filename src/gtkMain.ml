@@ -31,8 +31,8 @@ module Main = struct
     let loop = (Main.create true) in
     loops := loop :: !loops;
     while Main.is_running loop do Main.iteration true done;
-    loops := List.tl !loops
-  and quit () = Main.quit (List.hd !loops)
+    if !loops <> [] then loops := List.tl !loops
+  and quit () = if !loops <> [] then Main.quit (List.hd !loops)
   external get_version : unit -> int * int * int = "ml_gtk_get_version"
   let version = get_version ()
 
