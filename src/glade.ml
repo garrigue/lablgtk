@@ -152,14 +152,15 @@ let trace_handlers oc xml =
       
 (* class skeleton, for use in generated wrappers *)
 
-class xml ?file ?data ?root ?domain ?trace ?(autoconnect = true) () =
-  let () = init () in
-  let xml = create ?file ?data ?root ?domain () in
-  let () = match trace with Some oc -> trace_handlers oc xml | None -> () in
-  let () = if autoconnect then bind_handlers xml in
+let create ?file ?data ?root ?domain () =
+  init (); create ?file ?data ?root ?domain ()
+
+class xml ?trace ?(autoconnect = true) (xmldata : glade_xml Gtk.obj) =
+  let () = match trace with Some oc -> trace_handlers oc xmldata | None -> () in
+  let () = if autoconnect then bind_handlers xmldata in
   object (self)
-    val xml = xml
-    method xml = xml
+    val xml = xmldata
+    method xml = xmldata
     method bind ~name ~callback =
-      bind_handler ~name ~handler:(`Simple callback) ~warn:true xml
+      bind_handler ~name ~handler:(`Simple callback) ~warn:true xmldata
   end

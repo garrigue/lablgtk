@@ -2,6 +2,11 @@
 
 open StdLabels
 
+let debug = ref false
+let hide_default_names = ref false
+
+let warning s = prerr_string "Warning: "; prerr_endline s
+
 (* One can roughly get defined classes by: *)
 (* grep Object.try_cast *.ml | sed 's/gtk\([^.]*\)[^"]*"Gtk\([^"]*\)".*/  "Gtk\2", ("Gtk\1.\2", "G\1.\2");/' *)
 (* But you also need to do some post-editing. Do not forget H and V classes *)
@@ -22,6 +27,7 @@ let classes = ref [
   "GtkInvisible", ("GtkBase.Container", "GContainer.container");
   "GtkButton", ("GtkButton.Button", "GButton.button");
   "GtkToggleButton", ("GtkButton.ToggleButton", "GButton.toggle_button");
+  "GtkCheckButton", ("GtkButton.ToggleButton", "GButton.toggle_button");
   "GtkRadioButton", ("GtkButton.RadioButton", "GButton.radio_button");
   "GtkToolbar", ("GtkButton.Toolbar", "GButton.toolbar");
   "GtkEditable", ("GtkEdit.Editable", "GEdit.editable");
@@ -82,11 +88,12 @@ let classes = ref [
 (*   "GtkTextChildAnchor", ("GtkText.ChildAnchor", "GText.child_anchor");*)
   "GtkTextView", ("GtkText.View", "GText.view");
   "GtkTreeItem", ("GtkTree.TreeItem", "GTree.tree_item");
+  "GtkTreeView", ("GtkTree.TreeView", "GTree.view");
   "GtkTree", ("GtkTree.Tree", "GTree.tree");
   "GtkCTree", ("GtkBase.Container", "GContainer.container");
   "GtkWindow", ("GtkWindow.Window", "GWindow.window");
-(* "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog"); 
-  "GtkInputDialog", ("GtkWindow.Dialog", "GWindow.dialog"); *)
+  "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog");
+  "GtkInputDialog", ("GtkWindow.Dialog", "GWindow.dialog");
   "GtkFileSelection", ("GtkWindow.FileSelection", "GWindow.file_selection");
   "GtkFontSelectionDialog", ("GtkWindow.FontSelectionDialog",
                              "GWindow.font_selection_dialog");
@@ -121,9 +128,45 @@ let parse_field lexbuf ~tag =
 type wtree = {
     wclass: string;
     wname: string;
+    wcamlname : string;
     wchildren: wtree list;
     mutable wrapped: bool;
   }
+
+exception Unsupported
+
+(* map arbitrary strings to caml identifiers. Clashes may occur! *) 
+
+let camlize s = match s with 
+  | "" -> "_"
+  |  s -> let s = String.uncapitalize s in
+     for i = 0 to String.length s - 1 do 
+       match s.[i] with
+       | 'a'..'z'| 'A'..'Z' | '0'..'9' -> ()
+       | _ -> s.[i] <- '_'
+     done;
+     s
+
+(* this name is a default one created by glade? *)
+let is_default_name s =
+  let l = String.length s in
+  let rec search p =
+    if p < 0 then raise Not_found
+    else
+      match s.[p] with
+      |	'0'..'9' -> search (p-1)
+      |	_ -> p+1
+  in
+  try
+    let pos = search (l-1) in
+    pos > 0 && pos <> l
+  with
+  | _ -> false
+
+let is_top_widget wtree w =
+  match wtree.wchildren with
+  | [w'] -> w.wcamlname = w'.wcamlname
+  | _ -> false
 
 let rec parse_widget ~wclass ~wname lexbuf =
   let widgets = ref [] in
@@ -143,38 +186,38 @@ let rec parse_widget ~wclass ~wname lexbuf =
   | Endtag _ | EOF ->
       failwith "bad XML syntax"
   do () done;
-  { wclass = wclass; wname = wname;
+  { wclass = wclass; wname = wname; wcamlname = camlize wname;
     wchildren = List.rev !widgets; wrapped = false }
 
 let rec flatten_tree w =
   let children = List.map ~f:flatten_tree w.wchildren in
   w :: List.flatten children
 
-(* map arbitrary strings to caml identifiers. Clashes may occur! *) 
-
-let camlize s = match s with 
-  | "" -> "_"
-  |  s -> let s = String.uncapitalize s in
-     for i = 0 to String.length s - 1 do 
-       match s.[i] with
-       | 'a'..'z'| 'A'..'Z' | '0'..'9' -> ()
-       | _ -> s.[i] <- '_'
-     done;
-     s
-
-
 let output_widget w =
   try
     let (modul, clas) = List.assoc w.wclass !classes in
     w.wrapped <- true;
-    if clas = "GList.clist" then
-      Printf.printf "    method %s : int %s = new %s\n" 
-	(camlize w.wname) clas clas
-    else Printf.printf "    method %s = new %s\n" 
-      (camlize w.wname) clas;
-    Printf.printf "      (%s.cast (Glade.get_widget xml ~name:\"%s\"))\n"
-      modul w.wname;
-  with Not_found -> ()
+    
+    begin match clas with
+    | "GList.clist" ->
+  	Printf.printf "    val %s : int %s =\n" w.wcamlname clas
+    | "GWindow.dialog" ->
+  	Printf.printf "    val %s : [`NONE | `DELETE_EVENT | `ID of int] %s =\n" w.wcamlname clas
+    | _ ->
+        Printf.printf "    val %s =\n" w.wcamlname
+    end;
+  
+    if !debug then 
+      Printf.printf "      prerr_endline \"creating %s:%s\";\n" w.wclass w.wcamlname;
+    Printf.printf "      try\n";
+    Printf.printf "        new %s\n" clas;
+    Printf.printf "          (%s.cast (Glade.get_widget xmldata ~name:\"%s\"))\n" modul w.wname;
+    Printf.printf "      with\n";
+    Printf.printf "      | Gpointer.Null -> failwith \"%s:%s is not accessible.\"\n" w.wclass w.wcamlname;
+    Printf.printf "    method %s = %s\n" w.wcamlname w.wcamlname
+  with Not_found -> 
+    warning (Printf.sprintf "Widget %s::%s is not supported" w.wname w.wclass)
+;;
 
 let roots = ref []
 let embed = ref false
@@ -182,22 +225,39 @@ let trace = ref false
 
 let output_wrapper ~file wtree =
   Printf.printf "class %s %s?domain ?autoconnect(*=true*) () =\n"
-    (camlize wtree.wname)
+    wtree.wcamlname
     (if !embed then "" else
     if file = "<stdin>" then "~file " else "?(file=\"" ^ file ^ "\") ");
+  Printf.printf "  let xmldata = Glade.create %s ~root:\"%s\" ?domain () in\n" 
+    (if !embed then "~data " else "~file ")
+    wtree.wname;
   print_string "  object (self)\n";
   Printf.printf
-    "    inherit Glade.xml %s ~root:\"%s\" ?domain %s?autoconnect ()\n"
-    (if !embed then "~data" else "~file")
-    wtree.wname
+    "    inherit Glade.xml %s?autoconnect xmldata\n"
     (if !trace then "~trace:stderr " else "");
-  let widgets = flatten_tree wtree in
-  List.iter widgets ~f:output_widget;
+  let widgets = {wtree with wcamlname= "toplevel"} :: flatten_tree wtree in
+  
+  let is_hidden w = 
+    !hide_default_names && not (is_top_widget wtree w) &&
+    (is_default_name w.wname || w.wcamlname = "_") 
+  in
+    
+  List.iter (List.filter (fun w -> not (is_hidden w)) widgets) 
+    ~f:output_widget;
+
+  (* reparent method *)
+  begin match wtree.wchildren with
+  | [w] ->
+      Printf.printf "    method reparent parent =\n";
+      Printf.printf "      %s#misc#reparent parent;\n" w.wcamlname;
+      Printf.printf "      toplevel#destroy ()\n";
+  | _ -> ()
+  end;
+
   Printf.printf "    method check_widgets () =\n";
   List.iter widgets ~f:
     (fun w ->
-      if w.wrapped then Printf.printf "      ignore self#%s;\n" 
-	(camlize w.wname));
+      if w.wrapped then Printf.printf "      ignore self#%s;\n" w.wcamlname);
   Printf.printf "  end\n"
 
 let parse_body ~file lexbuf =
@@ -206,8 +266,11 @@ let parse_body ~file lexbuf =
       if not closed then while token lexbuf <> Endtag "project" do () done;
       true
   | Tag("widget", attrs, false) ->
-      let wtree = parse_widget ~wclass:(List.assoc "class" attrs)
-	  ~wname:(List.assoc "id" attrs) lexbuf in
+      let wtree = 
+	try parse_widget ~wclass:(List.assoc "class" attrs)
+	  ~wname:(List.assoc "id" attrs) lexbuf 
+	with Unsupported -> failwith "empty toplevel?"
+      in
       let rec output_roots wtree =
         if List.mem wtree.wname ~set:!roots then output_wrapper ~file wtree;
         List.iter ~f:output_roots wtree.wchildren
@@ -254,7 +317,8 @@ let output_test () =
   List.iter !classes ~f:
     begin fun (clas, _) ->
       output_widget
-        {wname = "a"^clas; wclass = clas; wchildren = []; wrapped = true}
+        {wname = "a"^clas; wcamlname = camlize ("a"^clas);
+	 wclass = clas; wchildren = []; wrapped = true}
     end;
   print_string "  end\n\n";
   print_string "let _ = print_endline \"lablgladecc test finished\"\n"
@@ -265,6 +329,9 @@ let main () =
     [ "-test", Arg.Set test, " check lablgladecc (takes no input)";
       "-embed", Arg.Set embed, " embed input file into generated program";
       "-trace", Arg.Set trace, " trace calls to handlers";
+      "-debug", Arg.Set debug, " add debug code";
+      "-hide-default", Arg.Set hide_default_names, 
+        " hide widgets with default names like 'label23'";
       "-root", Arg.String (fun s -> roots := s :: !roots),
       "<widget>  generate only a wrapper for <widget> and its children" ]
     (fun s -> files := s :: !files)
