@@ -109,8 +109,10 @@ module Image :
 module Color :
   sig
     external get_system_colormap : unit -> colormap
-	= "ml_gdk_colormap_get_system"
+      = "ml_gdk_colormap_get_system"
     val get_colormap : ?privat:bool -> visual -> colormap
+    external get_visual : colormap -> visual
+      = "ml_gdk_colormap_get_visual"
 
     type t
     type spec = [
@@ -142,6 +144,7 @@ module Window :
     type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP of pixmap ]
     external visual_depth : visual -> int = "ml_gdk_visual_get_depth"
     external get_visual : window -> visual = "ml_gdk_window_get_visual"
+    external get_colormap : window -> colormap = "ml_gdk_window_get_colormap"
     external get_parent : window -> window = "ml_gdk_window_get_parent"
     external get_size : 'a drawable -> int * int = "ml_gdk_window_get_size"
     external get_position : 'a drawable -> int * int
@@ -252,33 +255,26 @@ module GC :
 
 module Pixmap :
   sig
-    external create :
-      window -> width:int -> height:int -> depth:int -> pixmap
-      = "ml_gdk_pixmap_new"
-    external create_from_data :
-      window ->
-      string ->
-      width:int ->
-      height:int -> depth:int -> fg:Color.t -> bg:Color.t -> pixmap
-      = "ml_gdk_pixmap_create_from_data_bc" "ml_gdk_pixmap_create_from_data"
+    val create :
+      ?window:window -> width:int -> height:int -> ?depth:int -> unit -> pixmap
+    val create_from_data :
+      ?window:window -> width:int -> height:int ->
+      ?depth:int -> fg:Color.t -> bg:Color.t -> string -> pixmap
     external create_from_xpm :
-      window ->
-      ?colormap:colormap ->
-      ?transparent:Color.t -> file:string -> unit -> pixmap * bitmap
+      ?window:window -> ?colormap:colormap -> ?transparent:Color.t ->
+      file:string -> unit -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm"
     external create_from_xpm_d :
-      window ->
-      ?colormap:colormap ->
-      ?transparent:Color.t -> data:string array -> unit -> pixmap * bitmap
+      ?window:window -> ?colormap:colormap -> ?transparent:Color.t ->
+      data:string array -> unit -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm_d"
   end
 
 module Bitmap :
   sig
-    val create : window -> width:int -> height:int -> bitmap
-    external create_from_data :
-      window -> string -> width:int -> height:int -> bitmap
-      = "ml_gdk_bitmap_create_from_data"
+    val create : ?window:window -> width:int -> height:int -> unit -> bitmap
+    val create_from_data :
+      ?window:window -> width:int -> height:int -> string -> bitmap
   end
 
 module Font :

@@ -127,6 +127,7 @@ Make_Extractor(gdk_image, GdkImage_val, mem, Val_pointer)
 /* Color */
 
 ML_2 (gdk_colormap_new, GdkVisual_val, Bool_val, Val_GdkColormap)
+ML_1 (gdk_colormap_get_visual, GdkColormap_val, Val_GdkVisual)
 
 value ml_gdk_color_white (value cmap)
 {
@@ -189,6 +190,7 @@ Make_Extractor (GdkRectangle, GdkRectangle_val, height, Val_int)
 Make_Val_final_pointer (GdkWindow, gdk_window_ref, gdk_window_unref, 0)
 Make_Extractor (gdk_visual_get, GdkVisual_val, depth, Val_int)
 ML_1 (gdk_window_get_visual, GdkWindow_val, Val_GdkVisual)
+ML_1 (gdk_window_get_colormap, GdkWindow_val, Val_GdkColormap)
 ML_3 (gdk_window_set_back_pixmap, GdkWindow_val, GdkPixmap_val, Int_val, Unit)
 ML_1 (gdk_window_clear, GdkWindow_val, Unit)
 ML_0 (GDK_ROOT_PARENT, Val_GdkWindow)
@@ -247,14 +249,17 @@ value ml_gdk_pixmap_colormap_create_from_xpm
 	(value window, value colormap, value transparent, char *filename)
 {
     CAMLparam0();
-    GdkBitmap *mask;
+    GdkPixmap *pixmap;
+    GdkBitmap *mask = NULL;
     CAMLlocal2(vpixmap, vmask);
     value ret;
 
-    vpixmap = Val_GdkPixmap_no_ref
-	(gdk_pixmap_colormap_create_from_xpm
-	 (GdkWindow_val(window), Option_val(colormap,GdkColormap_val,NULL),
-	  &mask, Option_val(transparent,GdkColor_val,NULL), filename));
+    pixmap = gdk_pixmap_colormap_create_from_xpm
+        (Option_val(window,GdkWindow_val,NULL),
+         Option_val(colormap,GdkColormap_val,NULL),
+         &mask, Option_val(transparent,GdkColor_val,NULL), filename);
+    if (!pixmap) ml_raise_gdk ("Gdk.Pixmap.create_from_xpm_file");
+    vpixmap = Val_GdkPixmap_no_ref(pixmap);
     vmask = Val_GdkBitmap_no_ref (mask);
 
     ret = alloc_small (2,0);
@@ -267,14 +272,17 @@ value ml_gdk_pixmap_colormap_create_from_xpm_d
 	(value window, value colormap, value transparent, char **data)
 {
     CAMLparam0();
-    GdkBitmap *mask;
+    GdkPixmap *pixmap;
+    GdkBitmap *mask = NULL;
     CAMLlocal2(vpixmap, vmask);
     value ret;
 
-    vpixmap = Val_GdkPixmap_no_ref
-	(gdk_pixmap_colormap_create_from_xpm_d
-	 (GdkWindow_val(window), Option_val(colormap,GdkColormap_val,NULL),
-	  &mask, Option_val(transparent,GdkColor_val,NULL), data));
+    pixmap = gdk_pixmap_colormap_create_from_xpm_d
+        (Option_val(window,GdkWindow_val,NULL),
+         Option_val(colormap,GdkColormap_val,NULL),
+         &mask, Option_val(transparent,GdkColor_val,NULL), data);
+    if (!pixmap) ml_raise_gdk ("Gdk.Pixmap.create_from_xpm_data");
+    vpixmap = Val_GdkPixmap_no_ref (pixmap);
     vmask = Val_GdkBitmap_no_ref (mask);
 
     ret = alloc_small (2, 0);

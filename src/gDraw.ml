@@ -137,42 +137,53 @@ class type misc_ops = object
   method window : window
 end
 
-let pixmap ~(window : < misc : #misc_ops; .. >)
+let pixmap ?(window : < misc : #misc_ops; .. > option) ?colormap
     ~width ~height ?(mask=false) () =
-  window#misc#realize ();
-  let window =
-    try window#misc#window
-    with Gpointer.Null -> failwith "GDraw.pixmap : no window"
-  and depth = window#misc#visual_depth
-  and colormap = window#misc#colormap in
+  let window, depth, colormap =
+    match window with
+      Some w ->
+        begin try
+          w#misc#realize ();
+          Some w#misc#window, w#misc#visual_depth,
+          match colormap with Some c -> c | None -> w#misc#colormap
+        with Gpointer.Null -> failwith "GDraw.pixmap : window"
+        end
+    | None ->
+        let colormap =
+          match colormap with Some c -> c | None -> default_colormap () in
+        None, (Gdk.Visual.depth (Gdk.Color.get_visual colormap)), colormap
+  in
   let mask =
     if not mask then None else
-    let bm = Bitmap.create window ~width ~height in
+    let bm = Bitmap.create ?window ~width ~height () in
     let mask = new drawable bm in
     mask#set_foreground `BLACK;
     mask#rectangle ~x:0 ~y:0 ~width ~height ~filled:true ();
     Some bm
   in
-  new pixmap (Pixmap.create window ~width ~height ~depth) ~colormap ?mask
+  new pixmap (Pixmap.create ?window ~width ~height ~depth ()) ~colormap ?mask
 
-let pixmap_from_xpm ~window ~file ?colormap ?transparent () =
-  window#misc#realize ();
+let pixmap_from_xpm ~file ?window ?colormap ?transparent () =
   let window =
-    try window#misc#window
-    with Gpointer.Null -> failwith "GDraw.pixmap_from_xpm : no window" in
+    try may_map window ~f:(fun w -> w#misc#realize (); w#misc#window)
+    with Gpointer.Null -> invalid_arg "GDraw.pixmap_from_xpm : window"
+  in
+  let colormap =
+    if colormap <> None || window <> None then colormap
+    else Some (default_colormap ())
+  in
   let pm, mask =
-    try Pixmap.create_from_xpm window ~file ?colormap
+    try Pixmap.create_from_xpm  ~file ?window ?colormap
 	?transparent:(may_map transparent ~f:(fun c -> color c)) ()
-    with Gpointer.Null -> invalid_arg ("GDraw.pixmap_from_xpm : " ^ file) in
+    with _ -> invalid_arg ("GDraw.pixmap_from_xpm : " ^ file) in
   new pixmap pm ?colormap ~mask
 
-let pixmap_from_xpm_d ~window ~data ?colormap ?transparent () =
-  window#misc#realize ();
+let pixmap_from_xpm_d ~data ?window ?colormap ?transparent () =
   let window =
-    try window#misc#window
+    try may_map window ~f:(fun w -> w#misc#realize (); w#misc#window)
     with Gpointer.Null -> failwith "GDraw.pixmap_from_xpm_d : no window" in
   let pm, mask =
-    Pixmap.create_from_xpm_d window ~data ?colormap
+    Pixmap.create_from_xpm_d ~data ?colormap ?window
       ?transparent:(may_map transparent ~f:(fun c -> color c)) () in
   new pixmap pm ?colormap ~mask
 
