@@ -95,6 +95,19 @@ ML_4(gtk_text_tag_event, GtkTextTag_val, GObject_val, GdkEvent_val,
 /* gtktexttagtable */
 
 ML_0(gtk_text_tag_table_new, Val_GtkTextTagTable_new)
+ML_2(gtk_text_tag_table_add, GtkTextTagTable_val, GtkTextTag_val,Unit)
+ML_2(gtk_text_tag_table_remove, GtkTextTagTable_val, GtkTextTag_val,Unit)
+
+CAMLprim value ml_gtk_text_tag_table_lookup (value tv, value s)
+{
+  CAMLparam2(tv,s);
+  CAMLlocal1(res);
+  GtkTextTag* tmp;
+  tmp = gtk_text_tag_table_lookup(GtkTextTagTable_val(tv), String_val(s));
+  res = Val_option(tmp,Val_GtkTextTag);
+  CAMLreturn(res);
+}
+
 ML_1(gtk_text_tag_table_get_size, GtkTextTagTable_val, Int_val)
 
 /* gtktextbuffer */

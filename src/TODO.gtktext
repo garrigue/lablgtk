@@ -1,0 +1,75 @@
+======================================================================================
+GtkTextIter:  
+	manquent : 
+		gtk_text_iter_get_language 
+		fonctions de recherches =
+	gboolean    (*GtkTextCharPredicate)         (gunichar ch, 
+	                                    gpointer user_data);
+	gboolean    gtk_text_iter_forward_find_char (GtkTextIter *iter,
+     	                                        GtkTextCharPredicate pred,
+        	                                     gpointer user_data,
+                	                             const GtkTextIter *limit);
+	gboolean    gtk_text_iter_backward_find_char
+        	                                    (GtkTextIter *iter,
+                	                             GtkTextCharPredicate pred,
+                        	                     gpointer user_data,
+                                	             const GtkTextIter *limit);
+	enum        GtkTextSearchFlags;
+	gboolean    gtk_text_iter_forward_search    (const GtkTextIter *iter,
+        	                                     const gchar *str,
+                	                             GtkTextSearchFlags flags,
+                        	                     GtkTextIter *match_start,
+                                	             GtkTextIter *match_end,
+                                        	     const GtkTextIter *limit);
+	gboolean    gtk_text_iter_backward_search   (const GtkTextIter *iter,
+        	                                     const gchar *str,
+                	                             GtkTextSearchFlags flags,
+                        	                     GtkTextIter *match_start,
+                                	             GtkTextIter *match_end,
+                                        	     const GtkTextIter *limit);	
+	 + TESTER  le tout...
+=====================================================================================
+GtkTextMark : FINI
+=====================================================================================
+GtkTextBuffer:
+Manquent les fonctions liées aux Clipboards :
+gboolean    gtk_text_buffer_delete_selection
+                                            (GtkTextBuffer *buffer,
+                                             gboolean interactive,
+                                             gboolean default_editable);
+void        gtk_text_buffer_paste_clipboard (GtkTextBuffer *buffer,
+                                             GtkClipboard *clipboard,
+                                             GtkTextIter *override_location,
+                                             gboolean default_editable);
+void        gtk_text_buffer_copy_clipboard  (GtkTextBuffer *buffer,
+                                             GtkClipboard *clipboard);
+void        gtk_text_buffer_cut_clipboard   (GtkTextBuffer *buffer,
+                                             GtkClipboard *clipboard,
+                                             gboolean default_editable);
+gboolean    gtk_text_buffer_get_selection_bounds
+                                            (GtkTextBuffer *buffer,
+                                             GtkTextIter *start,
+                                             GtkTextIter *end);
+void        gtk_text_buffer_add_selection_clipboard
+                                            (GtkTextBuffer *buffer,
+                                             GtkClipboard *clipboard);
+void        gtk_text_buffer_remove_selection_clipboard
+                                            (GtkTextBuffer *buffer,
+                                             GtkClipboard *clipboard);
+
+=====================================================================================
+GtkTextTag: 
+
+Les TextAttributes  sont cachés. Il faut utiliser les "properties".
+
+Il faut compléter le module GtkText.Tag pour supporter toutes les propriétés possibles
+et enlever les "assert false".
+Il faut ajouter le support de Pango avant.
+
+Signal "event" : il faut caster les arguments 'a obj et 'a event correctement. 
+	Je ne sais pas le faire sans laisser aparaître les g_type et g_values
+	 directement. Faut-il supprimer ce signal ?
+=====================================================================================
+GtkTextView
+TODO is TODO :-)
+=====================================================================================

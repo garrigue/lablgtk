@@ -4,6 +4,20 @@ open Gtk
 open Tags
 open GtkBase
 
+(* This function helps one to guess the type of the arguments of signals *)
+
+let marshal_what f _ = function 
+  | `OBJECT _ :: _  -> invalid_arg "OBJECT"
+  | `BOOL _ ::_ -> invalid_arg "BOOL"  
+  | `CHAR _::_       -> invalid_arg "CHAR"
+  | `FLOAT _::_      -> invalid_arg "FLOAT"
+  | `INT _::_      -> invalid_arg "INT"
+  | `INT64 _::_      -> invalid_arg "INT64"
+  | `NONE::_      -> invalid_arg "NONE"
+  | `POINTER _::_       -> invalid_arg "POINTER"
+  | `STRING _::_      -> invalid_arg "STRING"
+  | [] -> invalid_arg "NO ARGUMENTS"
+
 module Mark = struct
   let cast w : textmark obj = Object.try_cast w "GtkTextMark"
   external set_visible : textmark obj -> bool -> unit 
@@ -23,7 +37,7 @@ module Tag = struct
   external get_priority : texttag obj -> int = "ml_gtk_text_tag_get_priority"
   external set_priority : texttag obj -> int -> unit 
     = "ml_gtk_text_tag_set_priority"
-  external event : texttag obj -> 'a obj -> 'a Gdk.event -> textiter -> bool
+  external event : texttag obj -> 'a obj ->  'a Gdk.event -> textiter -> bool
     = "ml_gtk_text_tag_event"
   type property = 
     | Name of string
@@ -193,7 +207,23 @@ module Tag = struct
     | Wrap_mode b  -> assert false
     | Direction b  -> assert false
     | Justification b -> assert false
-
+  module Signals = struct
+    open GtkSignal
+    let marshal_event f _ = function 
+      |`OBJECT(Some p)::`POINTER(Some ev)::`POINTER(Some ti)::_ ->
+	 f (* Don't know how to cast those safely...
+	      (Obj.magic p: 'a obj) (Obj.magic ev: 'a Gdk.event) 
+	   *)
+	  (Obj.magic ti:textiter)
+      | _ -> invalid_arg "GtkText.Tag.Signals.marshal_event"
+	  
+    let event = 
+      {
+	name = "event";
+	classe = `texttag;
+	marshaller = marshal_event
+      }
+  end
 end
 
 module TagTable = struct
@@ -299,18 +329,6 @@ module Buffer = struct
   module Signals = struct
   open GtkSignal
 
-  let marshal_what f _ = function 
-    | `OBJECT _ :: _  -> invalid_arg "GtkText.Buffer.Signals.marshal 0"
-    | `BOOL _ ::_ -> invalid_arg "GtkText.Buffer.Signals.marshal 1"  
-    | `CHAR _::_       -> invalid_arg "GtkText.Buffer.Signals.marshal 2"
-    | `FLOAT _::_      -> invalid_arg "GtkText.Buffer.Signals.marshal 3"
-    | `INT _::_      -> invalid_arg "GtkText.Buffer.Signals.marshal 9"
-    | `INT64 _::_      -> invalid_arg "GtkText.Buffer.Signals.marshal 4"
-    | `NONE::_      -> invalid_arg "GtkText.Buffer.Signals.marshal 5"
-    | `POINTER _::_       -> invalid_arg "GtkText.Buffer.Signals.marshal 6"
-    | `STRING _::_      -> invalid_arg "GtkText.Buffer.Signals.marshal 7"
-    | [] -> invalid_arg "GtkText.Buffer.Signals.marshal_apply_tag 8"
-
   let marshal_apply_tag f _ = function 
     |`OBJECT(Some p)::`POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
        f (Obj.magic p:texttag) ~start:(Obj.magic ti1:textiter) 
@@ -351,7 +369,9 @@ module Buffer = struct
   
   let marshal_remove_tag f _ = function 
     |`OBJECT(Some p)::`POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
-       f (Obj.magic p:texttag) ~start:(Obj.magic ti1:textiter) ~stop:(Obj.magic ti2:textiter)
+       f (Obj.magic p:texttag) 
+	~start:(Obj.magic ti1:textiter) 
+	~stop:(Obj.magic ti2:textiter)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_remove_tag"
 
   let apply_tag = 
