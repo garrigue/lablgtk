@@ -184,6 +184,7 @@ type tree_view = [container|`treeview]
 type tree_view_column = [`gtk|`treeviewcolumn]
 type tree_model = [`treemodel]
 type tree_store = [`treestore|`treemodel] obj
+type list_store = [`liststore|`treemodel] obj
 type tree_iter
 type cell_renderer = [`gtk|`cellrenderer]
 type cell_renderer_text = [cell_renderer|`cell_renderer_text]

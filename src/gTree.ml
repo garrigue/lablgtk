@@ -194,11 +194,12 @@ class model obj ~id = object (self)
       Data.of_value column.conv v
 end
 
-class store obj ~id = object
+class tree_store obj ~id = object
   inherit model obj ~id
   method set : 'a. row:tree_iter -> column:'a column -> 'a -> unit =
     fun ~row ~column data ->
-      if column.creator <> id then invalid_arg "GTree.store#set: bad column";
+      if column.creator <> id then
+        invalid_arg "GTree.tree_store#set: bad column";
       TreeStore.set_value obj ~row ~column:column.index
         (Data.to_value column.conv data)
   method remove = TreeStore.remove obj
@@ -216,12 +217,40 @@ class store obj ~id = object
   method move_after = TreeStore.move_after obj
 end
 
-let store (cols : column_list) =
+let tree_store (cols : column_list) =
   cols#lock ();
   let types =
     List.map Gobject.Type.of_fundamental
       (cols#kinds :> Gobject.Tags.fundamental_type list) in
-  new store (TreeStore.create (Array.of_list types)) ~id:cols#id
+  new tree_store (TreeStore.create (Array.of_list types)) ~id:cols#id
+
+class list_store obj ~id = object
+  inherit model obj ~id
+  method set : 'a. row:tree_iter -> column:'a column -> 'a -> unit =
+    fun ~row ~column data ->
+      if column.creator <> id then
+        invalid_arg "GTree.list_store#set: bad column";
+      ListStore.set_value obj ~row ~column:column.index
+        (Data.to_value column.conv data)
+  method remove = ListStore.remove obj
+  method insert = ListStore.insert obj
+  method insert_before = ListStore.insert_before obj
+  method insert_after = ListStore.insert_after obj
+  method append = ListStore.append obj
+  method prepend = ListStore.prepend obj
+  method clear () = ListStore.clear obj
+  method iter_is_valid = ListStore.iter_is_valid obj
+  method swap = ListStore.swap obj
+  method move_before = ListStore.move_before obj
+  method move_after = ListStore.move_after obj
+end
+
+let list_store (cols : column_list) =
+  cols#lock ();
+  let types =
+    List.map Gobject.Type.of_fundamental
+      (cols#kinds :> Gobject.Tags.fundamental_type list) in
+  new list_store (ListStore.create (Array.of_list types)) ~id:cols#id
 
 (*
 open GTree.Data;;
@@ -229,7 +258,7 @@ let cols = new GTree.column_list ;;
 let title = cols#add string;;
 let author = cols#add string;;
 let checked = cols#add boolean;;
-let store = new GTree.store cols;;
+let store = new GTree.tree_store cols;;
 *)
 
 class view_column (obj : tree_view_column obj) = object
