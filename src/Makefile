@@ -76,6 +76,7 @@ all:: lablgladecc
 endif
 
 ifdef USE_GNOMECANVAS
+POST_MLLIBS += lablgnomecanvas.cma
 MLLIBS += lablgnomecanvas.cma
 CLIBS += liblablgnomecanvas.a
 GNOMECANVASMLOBJS = gnomeCanvas.cmo gnoCanvas.cmo
@@ -130,11 +131,11 @@ ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) $(GN
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
 lablgtktop: $(MLLIBS) $(INITOBJS)
-	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
+	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(filter-out $(POST_MLLIBS),$(MLLIBS)) $(INITOBJS) $(filter $(POST_MLLIBS),$(MLLIBS))
 
 lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
-	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
+	   -I . $(filter-out $(POST_MLLIBS),$(MLLIBS)) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(filter $(POST_MLLIBS),$(MLLIBS))
 
 lablgtk2: Makefile $(CONFIG) lablgtk.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
@@ -228,7 +229,7 @@ lablgnomecanvas.cma: liblablgnomecanvas.a $(GNOMECANVASMLOBJS)
 lablgnomecanvas.cmxa: liblablgnomecanvas.a $(GNOMECANVASMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgnomecanvas \
 	    $(GNOMECANVASMLOBJS:.cmo=.cmx) $(GNOMECANVASLIBS)
-gCanvas.cmo: COMPILER+= -i
+# gnoCanvas.cmo: COMPILER+= -i
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
