@@ -35,7 +35,8 @@ MLLINK = unix.cma str.cma
 
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
-MLLINK += -cclib -lcamlrund
+MLLINK = -custom
+#MLLINK += -cclib -lcamlrund
 MLFLAGS = -g
 else
 CFLAGS = -O -DGTK_NO_CHECK_CASTS -DGTK_DISABLE_COMPAT_H $(GTKCFLAGS)
@@ -115,7 +116,7 @@ lablgtktop: $(MLLIBS) $(INITOBJS)
 	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
 
 lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
-	$(TOPLEVEL) $(THFLAGS) -custom -o $@ $(THLINK) $(MLLINK) \
+	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
 	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
 lablgtk2: Makefile $(CONFIG) lablgtk.in

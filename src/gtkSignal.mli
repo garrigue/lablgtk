@@ -6,6 +6,8 @@ type id
 type ('a,'b) t =
  { name: string; classe: 'a;
    marshaller: ('b -> Closure.argv -> data_get list -> unit) }
+    (* When writing marshallers, beware that the list omits the 0th
+       argument of argv, which is the referent object *)
 
 val stop_emit : unit -> unit
     (* Call [stop_emit ()] in a callback to prohibit further handling

@@ -88,10 +88,10 @@ gtkButton.cmo: gaux.cmo gpointer.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi
 gtkButton.cmx: gaux.cmx gpointer.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx 
 gtkData.cmo: gaux.cmo gdk.cmi gtk.cmo gtkSignal.cmi 
 gtkData.cmx: gaux.cmx gdk.cmx gtk.cmx gtkSignal.cmx 
-gtkEdit.cmo: gaux.cmo gpointer.cmi gtk.cmo gtkBase.cmo gtkList.cmo \
-    gtkSignal.cmi 
-gtkEdit.cmx: gaux.cmx gpointer.cmx gtk.cmx gtkBase.cmx gtkList.cmx \
-    gtkSignal.cmx 
+gtkEdit.cmo: gaux.cmo gobject.cmo gpointer.cmi gtk.cmo gtkBase.cmo \
+    gtkList.cmo gtkSignal.cmi 
+gtkEdit.cmx: gaux.cmx gobject.cmx gpointer.cmx gtk.cmx gtkBase.cmx \
+    gtkList.cmx gtkSignal.cmx 
 gtkInit.cmo: gtkMain.cmo 
 gtkInit.cmx: gtkMain.cmx 
 gtkList.cmo: gaux.cmo gdk.cmi gdkEvent.cmo gpointer.cmi gtk.cmo gtkBase.cmo \
@@ -124,6 +124,8 @@ gtkXmHTML.cmo: gdk.cmi gtk.cmo
 gtkXmHTML.cmx: gdk.cmx gtk.cmx 
 lablgladecc.cmo: xml_lexer.cmi 
 lablgladecc.cmx: xml_lexer.cmi 
+test.cmo: gtkBase.cmo gtkButton.cmo gtkMain.cmo gtkSignal.cmi gtkWindow.cmo 
+test.cmx: gtkBase.cmx gtkButton.cmx gtkMain.cmx gtkSignal.cmx gtkWindow.cmx 
 gBin.cmi: gContainer.cmi gData.cmi gObj.cmi gdk.cmi gtk.cmo gtkSignal.cmi 
 gButton.cmi: gContainer.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
 gContainer.cmi: gData.cmi gObj.cmi gtk.cmo gtkSignal.cmi 

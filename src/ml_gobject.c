@@ -58,7 +58,7 @@ static void marshal (GClosure *closure, GValue *ret,
     value vargs = alloc(3,0);
 
     CAMLparam1 (vargs);
-    Store_field(vargs, 0, Val_GValue(ret));
+    Store_field(vargs, 0, (ret ? Val_GValue(ret) : alloc(2,0)));
     Store_field(vargs, 1, Val_int(nargs));
     Store_field(vargs, 2, Val_GValue((GValue*)args));
 
@@ -335,7 +335,7 @@ value ml_g_signal_emit_by_name (value obj, value sig, value params)
     GValue *iparams =
         (GValue*)stat_alloc(sizeof(GValue) * (1 + Wosize_val(params)));
     GQuark detail = 0;
-    GType itype = G_TYPE_FROM_INSTANCE (instance);
+    GType itype = G_TYPE_FROM_INSTANCE (instance), return_type;
     guint signal_id;
     int i;
     GSignalQuery query;
@@ -347,10 +347,12 @@ value ml_g_signal_emit_by_name (value obj, value sig, value params)
     g_signal_query (signal_id, &query);
     if (Wosize_val(params) != query.n_params)
         failwith("GtkSignal.emit_by_name : bad parameters number");
-    ret = ml_g_value_new
-        (Val_GType (query.return_type & ~G_SIGNAL_TYPE_STATIC_SCOPE));
+    return_type = query.return_type & ~G_SIGNAL_TYPE_STATIC_SCOPE;
+    if (return_type != G_TYPE_NONE)
+        ret = ml_g_value_new (Val_GType (return_type));
     for (i = 0; i < Wosize_val(params); i++) {
-        g_value_init (&iparams[i+1], query.param_types[i]);
+        g_value_init (&iparams[i+1],
+                      query.param_types[i] & ~G_SIGNAL_TYPE_STATIC_SCOPE);
         g_value_set_variant (&iparams[i+1], Field(params,i));
     }
     g_signal_emitv (iparams, signal_id, detail, GValue_val(ret));
