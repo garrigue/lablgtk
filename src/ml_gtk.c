@@ -42,6 +42,7 @@ Make_Flags_val (Attach_options_val)
 Make_Flags_val (Button_action_val)
 Make_Flags_val (Dest_defaults_val)
 Make_Flags_val (Target_flags_val)
+Make_Flags_val (Font_type_val)
 
 /* gtkobject.h */
 
@@ -650,6 +651,32 @@ Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, cancel_
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, help_button, Val_GtkWidget)
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, colorsel, Val_GtkWidget)
 
+/* gtkfontsel.h */
+
+#define GtkFontSelectionDialog_val(val) \
+   check_cast(GTK_FONT_SELECTION_DIALOG,val)
+ML_1 (gtk_font_selection_dialog_new, String_option_val, Val_GtkWidget_window)
+ML_1 (gtk_font_selection_dialog_get_font, GtkFontSelectionDialog_val,
+      Val_GdkFont)
+ML_1 (gtk_font_selection_dialog_get_font_name, GtkFontSelectionDialog_val,
+      copy_string_check)
+ML_2 (gtk_font_selection_dialog_set_font_name, GtkFontSelectionDialog_val,
+      String_val, Val_bool)
+ML_9 (gtk_font_selection_dialog_set_filter, GtkFontSelectionDialog_val,
+      Font_filter_type_val, Flags_Font_type_val,
+      (gchar**), (gchar**), (gchar**),
+      (gchar**), (gchar**), (gchar**), Unit)
+ML_bc9 (ml_gtk_font_selection_dialog_set_filter)
+ML_1 (gtk_font_selection_dialog_get_preview_text, GtkFontSelectionDialog_val,
+      copy_string)
+ML_2 (gtk_font_selection_dialog_set_preview_text, GtkFontSelectionDialog_val,
+      String_val, Unit)
+Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
+		ok_button, Val_GtkWidget)
+Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
+		apply_button, Val_GtkWidget)
+Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
+		cancel_button, Val_GtkWidget)
 
 /* gtkbox.h */
 

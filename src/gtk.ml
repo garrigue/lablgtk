@@ -62,6 +62,9 @@ module Tags = struct
     [ LEFT_TO_RIGHT RIGHT_TO_LEFT BOTTOM_TO_TOP TOP_TO_BOTTOM ]
   type dest_defaults = [ MOTION HIGHLIGHT DROP ALL ]
   type target_flags = [ SAME_APP SAME_WIDGET ]
+  type font_metric_type = [ PIXELS POINTS ]
+  type font_type = [ BITMAP SCALABLE SCALABLE_BITMAP ALL ]
+  type font_filter_type = [ BASE USER ]
 end
 open Tags
 
@@ -103,6 +106,7 @@ type color_selection_dialog = [widget container window colorseldialog]
 type dialog = [widget container bin window dialog]
 type input_dialog = [widget container bin window dialog inputdialog]
 type file_selection = [widget container bin window filesel]
+type font_selection_dialog = [widget container bin window fontseldialog]
 type box = [widget container box]
 type button_box = [widget container box bbox]
 type gamma_curve = [widget container bbox gamma]

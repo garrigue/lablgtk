@@ -141,3 +141,27 @@ type dest_defaults = "GTK_DEST_DEFAULT_"
 
 type target_flags = "GTK_TARGET_"
     [ SAME_APP SAME_WIDGET ]
+
+type font_metric_type = "GTK_FONT_METRIC_"
+    [ PIXELS POINTS ]
+
+type font_type = "GTK_FONT_"
+    [ BITMAP SCALABLE SCALABLE_BITMAP ALL ]
+
+type font_filter_type = "GTK_FONT_FILTER_"
+    [ BASE USER ]
+
+(*
+type tree_pos = "GTK_CTREE_POS_"
+    [ BEFORE AS_CHILD AFTER ]
+
+type tree_line_style = "GTK_CTREE_LINES_"
+    [ NONE SOLID DOTTED TABBED ]
+
+type tree_expander_style = "GTK_CTREE_EXPANDER_"
+    [ NONE SQUARE TRIANGLE CIRCULAR ]
+
+type tree_expansion_type = "GTK_CTREE_EXPANSION_"
+    [ EXPAND EXPAND_RECURSIVE COLLAPSE COLLAPSE_RECURSIVE
+      TOGGLE TOGGLE_RECURSIVE ]
+*)
