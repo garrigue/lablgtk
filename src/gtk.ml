@@ -499,12 +499,9 @@ module Container = struct
       = "ml_gtk_container_unblock_resize"
   external need_resize : [> container] obj -> bool
       = "ml_gtk_container_need_resize"
-  let setter w :cont ?border_width:border ?:width [< -1 >] ?:height [< -1 >]
-      ?enable_resize:enable ?block_resize:block =
+  let setter w :cont ?border_width:border ?:width [< -1 >] ?:height [< -1 >] =
     may border fun:(border_width w);
     if width > -1 || height > -1 then Widget.set_usize w :width :height;
-    may enable fun:(fun b -> (if b then enable_resize else disable_resize) w);
-    may block  fun:(fun b -> (if b then block_resize else unblock_resize) w);
     cont w
   let set = setter cont:null_cont
   external foreach : [> container] obj -> fun:(Widget.t obj-> unit) -> unit
@@ -607,11 +604,11 @@ module AspectFrame = struct
     else invalid_arg "Gtk.AspectFrame.cast"
   external create :
       ?label:string ->
-      xalign:clampf -> yalign:clampf -> ratio:float -> obey:bool -> t obj
+      xalign:clampf -> yalign:clampf -> ratio:float -> obey_child:bool -> t obj
       = "ml_gtk_aspect_frame_new"
   let create ?:label ?:xalign [< 0.5 >] ?:yalign [< 0.5 >]
-      ?:ratio [< 1.0 >] ?:obey [< true >] ?(_ : unit option) =
-    create ?:label :xalign :yalign :ratio :obey
+      ?:ratio [< 1.0 >] ?:obey_child [< true >] ?(_ : unit option) =
+    create ?:label :xalign :yalign :ratio :obey_child
   external set :
       [> aspect] obj ->
       xalign:clampf -> yalign:clampf -> ratio:float -> obey_child:bool -> unit
