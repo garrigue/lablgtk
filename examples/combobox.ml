@@ -72,7 +72,17 @@ let setup_combobox_entry packing =
   combo#entry#connect#changed 
     (fun () -> match combo#entry#text with "" -> () | s -> prerr_endline s) ;
   ()
-  
+
+let setup_combobox_entry_text packing =
+  let tmp = GBin.frame ~label:"GtkComboBoxEntry (text-only)" ~packing () in
+  let box = GPack.vbox ~border_width:5 ~packing:tmp#add () in
+  let (combo, _) = 
+    GEdit.combo_box_entry_text ~packing:box#pack 
+      ~strings:[ "Paris" ; "Grenoble" ; "Toulouse" ] () in
+  combo#entry#connect#changed 
+    (fun () -> match combo#entry#text with "" -> () | s -> prerr_endline s) ;
+  ()
+
 
 let main () =
   let window = GWindow.window ~border_width:5 () in
@@ -83,6 +93,7 @@ let main () =
   setup_combobox_demo_grid mainbox#pack ;
   setup_combobox_text mainbox#pack ;
   setup_combobox_entry mainbox#pack ;
+  setup_combobox_entry_text mainbox#pack ;
   
   window#show () ;
   GMain.main ()
