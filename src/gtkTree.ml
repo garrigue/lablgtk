@@ -320,6 +320,10 @@ module CellRendererText = CellRendererText
 
 module CellRendererToggle = CellRendererToggle
 
+module CellRendererProgress = CellRendererProgress
+
+module CellRendererCombo = CellRendererCombo
+
 module CellLayout = struct
   include GtkTreeProps.CellLayout
   let pack layout 

@@ -446,6 +446,15 @@ type cell_properties_toggle_only =
   | `INCONSISTENT of bool
   | `RADIO of bool ]
 type cell_properties_toggle = [ cell_properties | cell_properties_toggle_only ]
+type cell_properties_progress_only =
+  [ `VALUE of int
+  | `TEXT of string option ]
+type cell_properties_progress = [ cell_properties | cell_properties_progress_only ]
+type cell_properties_combo_only =
+  [ `MODEL of model option
+  | `TEXT_COLUMN of string column
+  | `HAS_ENTRY of bool ]
+type cell_properties_combo = [ cell_properties_text | cell_properties_combo_only ]
 
 let cell_renderer_pixbuf_param' = function
   | #cell_properties_pixbuf_only as x -> cell_renderer_pixbuf_param x
@@ -458,6 +467,15 @@ let cell_renderer_text_param' = function
 let cell_renderer_toggle_param' = function
   | #cell_properties_toggle_only as x -> cell_renderer_toggle_param x
   | #cell_properties as x -> cell_renderer_param x
+let cell_renderer_progress_param' = function
+  | #cell_properties_progress_only as x -> cell_renderer_progress_param x
+  | #cell_properties as x -> cell_renderer_param x
+let cell_renderer_combo_param' = function
+  | `MODEL None -> Gobject.param CellRendererCombo.P.model None
+  | `MODEL (Some m : model option) -> Gobject.param CellRendererCombo.P.model (Some m#as_model)
+  | `TEXT_COLUMN c -> Gobject.param CellRendererCombo.P.text_column c.index
+  | `HAS_ENTRY b -> Gobject.param CellRendererCombo.P.has_entry b
+  | #cell_properties_text as x -> cell_renderer_text_param' x
 
 class type ['a, 'b] cell_renderer_skel =
   object
@@ -504,6 +522,22 @@ class cell_renderer_toggle obj = object
   method connect = new cell_renderer_toggle_signals obj
 end
 
+class cell_renderer_progress obj = object
+  inherit [Gtk.cell_renderer_progress,cell_properties_progress]
+      cell_renderer_impl obj
+  method private param = cell_renderer_progress_param'
+  method connect = new gtkobj_signals_impl obj
+end
+
+class cell_renderer_combo obj = object
+  inherit [Gtk.cell_renderer_combo,cell_properties_combo]
+      cell_renderer_impl obj
+  method private param = cell_renderer_combo_param'
+  method set_fixed_height_from_font =
+    CellRendererText.set_fixed_height_from_font obj
+  method connect = new cell_renderer_text_signals (obj :> Gtk.cell_renderer_text Gtk.obj)
+end
+
 let cell_renderer_pixbuf l =
   new cell_renderer_pixbuf
     (CellRendererPixbuf.create (List.map cell_renderer_pixbuf_param' l))
@@ -513,3 +547,9 @@ let cell_renderer_text l =
 let cell_renderer_toggle l =
   new cell_renderer_toggle
     (CellRendererToggle.create (List.map cell_renderer_toggle_param' l))
+let cell_renderer_progress l =
+  new cell_renderer_progress
+    (CellRendererProgress.create (List.map cell_renderer_progress_param' l))
+let cell_renderer_combo l =
+  new cell_renderer_combo
+    (CellRendererCombo.create (List.map cell_renderer_combo_param' l))
