@@ -457,6 +457,16 @@ let new_file_selection :title =
     ?cont:(Window.setter
 	     ?cont:(Container.setter ?cont:(new file_selection)))
 
+class fixed obj = object
+  inherit container obj
+  method connect = new container_signals obj
+  method put : 'a. (#has_frame as 'a) -> _ = fun w -> Fixed.put obj w#frame
+  method move : 'a. (#has_frame as 'a) -> _ = fun w -> Fixed.move obj w#frame
+end
+
+let new_fixed  ?(_ : unit option) =
+  Container.setter ?(Fixed.create ()) ?cont:(pack_return (new fixed))
+
 class menu_shell_signals obj = object
   inherit container_signals obj
   method deactivate = Signal.connect sig:MenuShell.Signals.deactivate obj
