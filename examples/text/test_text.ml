@@ -137,9 +137,9 @@ let t_9 () =
     tb#set_text "Un nouveau texte";
     let start = tb#get_start_iter in
     let stop = tb#get_end_iter in
-      tb#insert ~text:"1en plus1" ~iter:start ();
-      tb#insert ~text:"2en plus2" ~iter:start ();
-      tb#insert ~text:"3en plus3" ~iter:tb#get_end_iter ();
+      tb#insert ~iter:start "1en plus1";
+      tb#insert ~iter:start "2en plus2" ;
+      tb#insert ~iter:tb#get_end_iter "3en plus3";
       let start = tb#get_start_iter in
       let stop = tb#get_end_iter in
 	Printf.printf "Je vois :\"%s\"\n"
@@ -155,9 +155,9 @@ let t_10 () =
     tb#set_text "Un nouveau texte";    
     let start = tb#get_start_iter in
     let stop = tb#get_end_iter in
-      tb#insert ~text:"1en plus1" ~iter:start ();
-      tb#insert ~text:"2en plus2" ~iter:start ();
-      tb#insert ~text:"3en plus3" ~iter:tb#get_end_iter ();
+      tb#insert ~iter:start "1en plus1";
+      tb#insert ~iter:start "2en plus2";
+      tb#insert ~iter:tb#get_end_iter "3en plus3";
       let _ = tb#connect#begin_user_action 
 		~callback:(fun () ->   
 			     let start = tb#get_start_iter in
@@ -173,7 +173,6 @@ let t_10 () =
 	tb#end_user_action ();
 	tb#begin_user_action ();
 	tb#end_user_action ();
-	
 	w#show ();;
 
     

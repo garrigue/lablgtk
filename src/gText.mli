@@ -238,11 +238,10 @@ object
     ?include_hidden_chars:bool ->
     ?start:iter -> ?stop:iter -> unit -> string
   method insert :
-    text:string -> ?iter:iter -> ?tags_names:string list -> ?tags:tag list 
-    -> unit -> unit
+    ?iter:iter -> ?tags_names:string list -> ?tags:tag list 
+    -> string -> unit
   method insert_interactive :
-    text:string ->
-    ?iter:textiter -> ?default_editable:bool -> unit -> bool
+    ?iter:textiter -> ?default_editable:bool -> string -> bool
   method insert_pixbuf : iter:iter -> pixbuf:GdkPixbuf.pixbuf -> unit
   method insert_range :
     iter:textiter ->
