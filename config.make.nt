@@ -34,7 +34,7 @@ MANDIR=$(LIBDIR)/../man
 INSTALLDIR=$(LIBDIR)/lablgtk2
 DLLDIR=$(LIBDIR)/stublibs
 
-# if using ocaml >= 3.08, add a -DOCAML_308 (for camlp4)
+# if using ocaml >= 3.08, add a -D OCAML_308 (for camlp4)
 ODOC_DEF=
 
 #GTKROOT=c:/GTK
