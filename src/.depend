@@ -24,8 +24,8 @@ gList.cmo: gContainer.cmi gData.cmi gDraw.cmi gObj.cmi gaux.cmo gpointer.cmi \
     gtk.cmo gtkBase.cmo gtkList.cmo gtkSignal.cmi gList.cmi 
 gList.cmx: gContainer.cmx gData.cmx gDraw.cmx gObj.cmx gaux.cmx gpointer.cmx \
     gtk.cmx gtkBase.cmx gtkList.cmx gtkSignal.cmx gList.cmi 
-gMain.cmo: gObj.cmi gtk.cmo gtkMain.cmo gMain.cmi 
-gMain.cmx: gObj.cmx gtk.cmx gtkMain.cmx gMain.cmi 
+gMain.cmo: gObj.cmi glib.cmo gtk.cmo gtkMain.cmo gMain.cmi 
+gMain.cmx: gObj.cmx glib.cmx gtk.cmx gtkMain.cmx gMain.cmi 
 gMenu.cmo: gButton.cmi gContainer.cmi gObj.cmi gaux.cmo gtk.cmo gtkBase.cmo \
     gtkData.cmo gtkMenu.cmo gtkSignal.cmi gMenu.cmi 
 gMenu.cmx: gButton.cmx gContainer.cmx gObj.cmx gaux.cmx gtk.cmx gtkBase.cmx \
@@ -120,10 +120,10 @@ gtkRange.cmo: gaux.cmo gpointer.cmi gtk.cmo gtkBase.cmo
 gtkRange.cmx: gaux.cmx gpointer.cmx gtk.cmx gtkBase.cmx 
 gtkSignal.cmo: gaux.cmo gtk.cmo gtkArgv.cmo gtkSignal.cmi 
 gtkSignal.cmx: gaux.cmx gtk.cmx gtkArgv.cmx gtkSignal.cmi 
-gtkThInit.cmo: gtkThread.cmo 
+gtkThInit.cmo: gtkThread.cmi 
 gtkThInit.cmx: gtkThread.cmx 
-gtkThread.cmo: glib.cmo gtkMain.cmo gtkSignal.cmi 
-gtkThread.cmx: glib.cmx gtkMain.cmx gtkSignal.cmx 
+gtkThread.cmo: glib.cmo gtkMain.cmo gtkSignal.cmi gtkThread.cmi 
+gtkThread.cmx: glib.cmx gtkMain.cmx gtkSignal.cmx gtkThread.cmi 
 gtkTree.cmo: gaux.cmo gtk.cmo gtkBase.cmo gtkSignal.cmi 
 gtkTree.cmx: gaux.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx 
 gtkWindow.cmo: gaux.cmo gdk.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi 
@@ -131,9 +131,7 @@ gtkWindow.cmx: gaux.cmx gdk.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx
 gtkXmHTML.cmo: gdk.cmi gtk.cmo 
 gtkXmHTML.cmx: gdk.cmx gtk.cmx 
 lablgladecc.cmo: xml_lexer.cmi 
-lablgladecc.cmx: xml_lexer.cmx 
-xml_lexer.cmo: xml_lexer.cmi 
-xml_lexer.cmx: xml_lexer.cmi 
+lablgladecc.cmx: xml_lexer.cmi 
 gBin.cmi: gContainer.cmi gData.cmi gObj.cmi gdk.cmi gtk.cmo gtkSignal.cmi 
 gButton.cmi: gContainer.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
 gContainer.cmi: gData.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
@@ -143,7 +141,7 @@ gEdit.cmi: gData.cmi gDraw.cmi gList.cmi gObj.cmi gdk.cmi gtk.cmo \
     gtkSignal.cmi 
 gList.cmi: gContainer.cmi gData.cmi gDraw.cmi gObj.cmi gdkEvent.cmo gtk.cmo \
     gtkSignal.cmi 
-gMain.cmi: gObj.cmi gtkMain.cmo 
+gMain.cmi: gObj.cmi glib.cmo gtkMain.cmo 
 gMenu.cmi: gButton.cmi gContainer.cmi gObj.cmi gdk.cmi gtk.cmo gtkSignal.cmi 
 gMisc.cmi: gContainer.cmi gDraw.cmi gObj.cmi gPack.cmi gdk.cmi gdkEvent.cmo \
     gtk.cmo gtkSignal.cmi 
