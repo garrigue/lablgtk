@@ -67,6 +67,15 @@ module Tags = struct
 end
 open Tags
 
+module Convert = struct
+  external test_modifier : modifier -> int -> bool
+      = "ml_test_GdkModifier_val"
+  let modifier i =
+    List.filter [`SHIFT;`LOCK;`CONTROL;`MOD1;`MOD2;`MOD3;`MOD4;`MOD5;
+		 `BUTTON1;`BUTTON2;`BUTTON3;`BUTTON4;`BUTTON5]
+      pred:(fun m -> test_modifier m i)
+end
+
 module Screen = struct
   external width : unit -> int = "ml_gdk_screen_width"
   external height : unit -> int = "ml_gdk_screen_height"

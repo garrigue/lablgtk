@@ -26,21 +26,19 @@ let tag (tw : GEdit.text) ?:start [< 0 >] ?end:pend [< tw#length >] =
       tw#delete_text start:(start+pstart) end:(start+pend);
       tw#set_point (start+pstart);
       tw#insert foreground:(List.assoc tag in:colors)
-	(String.sub text pos:pstart len:(pend-pstart))
+	(String.sub text pos:pstart len:(pend-pstart));
     end
   and next_lf = ref (-1) in
-  let colorize start:pstart end:pend :tag =
-    if pend - pstart > 0 then begin
-      let rstart = ref pstart in
-      try while true do
-	if !next_lf < !rstart then
-	  next_lf := String.index_from text char:'\n' pos:!rstart;
-	if !next_lf > pend then raise Not_found;
-	replace start:!rstart end:!next_lf :tag;
-	rstart := !next_lf + 1
-      done with Not_found ->
-	replace start:!rstart end:pend :tag
-    end
+  let colorize start:rstart end:rend :tag =
+    let rstart = ref rstart in
+    while !rstart < rend do
+      if !next_lf < !rstart then begin
+	try next_lf := String.index_from text char:'\n' pos:!rstart
+	with Not_found -> next_lf := pend-start
+      end;
+      replace start:!rstart end:(min !next_lf rend) :tag;
+      rstart := !next_lf + 1
+    done
   in
   let buffer = Lexing.from_string text
   and last = ref 0
@@ -128,7 +126,7 @@ let tag (tw : GEdit.text) ?:start [< 0 >] ?end:pend [< tw#length >] =
     end
     done
   with exn ->
-    colorize tag:`none start:!last end:pend;
+    colorize tag:`none start:!last end:(pend-start);
     tw#thaw ();
     tw#set_position position;
     match exn with

@@ -43,6 +43,11 @@ module Tags :
     type drag_action = [ASK COPY DEFAULT LINK MOVE PRIVATE]
   end
 
+module Convert :
+  sig
+    val modifier : int -> Tags.modifier list
+  end
+
 module Screen :
   sig
     external width : unit -> int = "ml_gdk_screen_width"
