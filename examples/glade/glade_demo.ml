@@ -2,7 +2,7 @@
 
 (* An experiment on using libglade in lablgtk *)
 
-(* labgladecc project1.glade > project1.ml *)
+(* labgladecc2 project1.glade > project1.ml *)
 #use "project1.ml";;
 
 class editor () =
@@ -14,7 +14,7 @@ class editor () =
       fs#cancel_button#connect#clicked ~callback:fs#destroy;
       fs#ok_button#connect#clicked ~callback:
         begin fun () ->
-          self#textview1#get_buffer#set_text "";
+          self#textview1#buffer#set_text "";
           fs#destroy ()
         end;
       fs#show ()
@@ -27,6 +27,7 @@ let main () =
   let editor = new editor () in
   (* show bindings *)
   Glade.print_bindings stdout editor#xml;
-  GtkMain.Main.main ()
+  editor#window1#connect#destroy ~callback:GMain.quit;
+  GMain.main ()
 
 let _ = main ()

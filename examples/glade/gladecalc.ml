@@ -2,7 +2,7 @@
 
 open StdLabels
 
-(* lablgladecc project2.glade > project2.ml *)
+(* lablgladecc2 project2.glade > project2.ml *)
 #use "project2.ml";;
 
 let w1 = new window1 ()
