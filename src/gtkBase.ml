@@ -131,8 +131,12 @@ module Widget = struct
       = "ml_GtkWidget_window"
   external visible : [> widget] obj -> bool
       = "ml_GTK_WIDGET_VISIBLE"
+  external has_focus : [> widget] obj -> bool
+      = "ml_GTK_WIDGET_HAS_FOCUS"
   external parent : [> widget] obj -> widget obj
       = "ml_gtk_widget_parent"
+  external set_app_paintable : [> widget] obj -> bool -> unit
+      = "ml_gtk_widget_set_app_paintable"
   external allocation : [> widget] obj -> rectangle
       = "ml_gtk_widget_allocation"
   let set_position w ?:x [< -2 >] ?:y [< -2 >] =

@@ -108,6 +108,8 @@ Make_Extractor (gtk_style_get, GtkStyle_val, colormap, Val_GdkColormap)
 Make_Extractor (gtk_style_get, GtkStyle_val, depth, Val_int)
 Make_Extractor (gtk_style_get, GtkStyle_val, font, Val_GdkFont)
 Make_Setter (gtk_style_set, GtkStyle_val, GdkFont_val, font)
+Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,  dark_gc, Val_GdkGC)
+Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,  light_gc, Val_GdkGC)
 
 /* gtktypeutils.h */
 
@@ -270,6 +272,7 @@ ML_1 (gtk_widget_unlock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_accelerators_locked, GtkWidget_val, Val_bool)
 
 ML_1 (GTK_WIDGET_VISIBLE, GtkWidget_val, Val_bool)
+ML_1 (GTK_WIDGET_HAS_FOCUS, GtkWidget_val, Val_bool)
 
 Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
 Make_Extractor (gtk_widget, GtkWidget_val, parent, Val_GtkWidget)
@@ -291,6 +294,7 @@ Make_Extractor (gtk_allocation, GtkAllocation_val, width, Val_int)
 Make_Extractor (gtk_allocation, GtkAllocation_val, height, Val_int)
 */
 
+ML_2 (gtk_widget_set_app_paintable, GtkWidget_val, Bool_val, Unit)
 /* gtkcontainer.h */
 
 #define GtkContainer_val(val) check_cast(GTK_CONTAINER,val)

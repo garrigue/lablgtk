@@ -43,7 +43,7 @@ module Frame = struct
   external set_label : [> frame] obj -> string -> unit
       = "ml_gtk_frame_set_label"
   external set_label_align : [> frame] obj -> x:clampf -> y:clampf -> unit
-      = "ml_gtk_frame_set_label"
+      = "ml_gtk_frame_set_label_align"
   external set_shadow_type : [> frame] obj -> shadow_type -> unit
       = "ml_gtk_frame_set_shadow_type"
   external get_label_xalign : [> frame] obj -> float
