@@ -5,8 +5,10 @@
 #define ML_0(cname, conv) \
 value ml_##cname (value unit) { return conv (cname ()); }
 #define ML_1(cname, conv1, conv) \
+value ml_##cname (value arg1) { return conv (cname (conv1 (arg1))); }
+#define ML_1_post(cname, conv1, conv, post) \
 value ml_##cname (value arg1) \
-{ return conv (cname (conv1(arg1))); }
+{ value ret = conv (cname (conv1(arg1))); post; return ret; }
 #define ML_2(cname, conv1, conv2, conv) \
 value ml_##cname (value arg1, value arg2) \
 { return conv (cname (conv1(arg1), conv2(arg2))); }

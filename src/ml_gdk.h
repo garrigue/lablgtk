@@ -6,6 +6,8 @@ extern value Val_GdkColormap (GdkColormap *);
 #define GdkColor_val(val) ((GdkColor *) val)
 #define Val_GdkColor Val_any
 
+#define GdkDrawable_val(val) ((GdkDrawable*)Pointer_val(val))
+
 #define GdkWindow_val(val) ((GdkWindow*)Pointer_val(val))
 extern value Val_GdkWindow (GdkWindow *);
 

@@ -161,6 +161,55 @@ ML_2 (gdk_char_measure, GdkFont_val, Char_val, Val_int)
 /* GC */
 
 Make_Val_final_pointer (GdkGC, gdk_gc_ref, gdk_gc_unref)
+ML_1_post (gdk_gc_new, GdkWindow_val, Val_GdkGC, gdk_gc_unref(GdkGC_val(ret)))
+ML_2 (gdk_gc_set_foreground, GdkGC_val, GdkColor_val, Unit)
+ML_2 (gdk_gc_set_background, GdkGC_val, GdkColor_val, Unit)
+ML_2 (gdk_gc_set_font, GdkGC_val, GdkFont_val, Unit)
+ML_2 (gdk_gc_set_function, GdkGC_val, GdkFunction_val, Unit)
+ML_2 (gdk_gc_set_fill, GdkGC_val, GdkFill_val, Unit)
+ML_2 (gdk_gc_set_tile, GdkGC_val, GdkPixmap_val, Unit)
+ML_2 (gdk_gc_set_stipple, GdkGC_val, GdkPixmap_val, Unit)
+ML_3 (gdk_gc_set_ts_origin, GdkGC_val, Int_val, Int_val, Unit)
+ML_3 (gdk_gc_set_clip_origin, GdkGC_val, Int_val, Int_val, Unit)
+ML_2 (gdk_gc_set_clip_mask, GdkGC_val, GdkBitmap_val, Unit)
+ML_2 (gdk_gc_set_clip_rectangle, GdkGC_val, (GdkRectangle*), Unit)
+ML_2 (gdk_gc_set_clip_region, GdkGC_val, (GdkRegion*), Unit)
+ML_2 (gdk_gc_set_subwindow, GdkGC_val, GdkSubwindowMode_val, Unit)
+ML_2 (gdk_gc_set_exposures, GdkGC_val, Bool_val, Unit)
+ML_5 (gdk_gc_set_line_attributes, GdkGC_val, Int_val, GdkLineStyle_val,
+      GdkCapStyle_val, GdkJoinStyle_val, Unit)
+ML_2 (gdk_gc_copy, GdkGC_val, GdkGC_val, Unit)
+
+/* Draw */
+
+#define PointArray_val(val) ((GdkPoint*)&Field(val,1))
+#define PointArrayLen_val(val) Int_val(Field(val,0))
+value ml_point_array_new (value len)
+{
+    value ret = alloc_shr (1+Int_val(len)*Wosizeof(GdkPoint), Abstract_tag);
+    Field(ret,0) = len;
+    return ret;
+}
+value ml_point_array_set (value arr, value pos, value x, value y)
+{
+    GdkPoint *pt = PointArray_val(arr) + Int_val(pos);
+    pt->x = Int_val(x);
+    pt->y = Int_val(y);
+    return Val_unit;
+}
+
+ML_4 (gdk_draw_point, GdkDrawable_val, GdkGC_val, Int_val, Int_val, Unit)
+ML_6 (gdk_draw_line, GdkDrawable_val, GdkGC_val, Int_val, Int_val,
+      Int_val, Int_val, Unit)
+ML_bc6 (ml_gdk_draw_line)
+ML_7 (gdk_draw_rectangle, GdkDrawable_val, GdkGC_val, Bool_val,
+      Int_val, Int_val, Int_val, Int_val, Unit)
+ML_bc7 (ml_gdk_draw_rectangle)
+ML_9 (gdk_draw_arc, GdkDrawable_val, GdkGC_val, Bool_val, Int_val, Int_val,
+      Int_val, Int_val, Int_val, Int_val, Unit)
+ML_bc9 (ml_gdk_draw_arc)
+ML_4 (gdk_draw_polygon, GdkDrawable_val, GdkGC_val, Bool_val,
+      Insert(PointArray_val(arg4)) PointArrayLen_val, Unit)
 
 /* Events */
 

@@ -4,9 +4,11 @@ open Misc
 
 type colormap
 type visual
-type window
-type pixmap
-type bitmap
+type gc
+type 'a drawable
+type window = [window] drawable
+type pixmap = [pixmap] drawable
+type bitmap = [bitmap] drawable
 type font
 type image
 type atom = int
@@ -77,6 +79,38 @@ module Rectangle = struct
   external height : t -> int = "ml_GdkRectangle_height"
 end
 
+module GC = struct
+  type gdkFunction = [ COPY INVERT XOR ]
+  type gdkFill = [ SOLID TILED STIPPLED OPAQUE_STIPPLED ]
+  type gdkSubwindowMode = [ CLIP_BY_CHILDREN INCLUDE_INFERIORS ]
+  type gdkLineStyle = [ SOLID ON_OFF_DASH DOUBLE_DASH ]
+  type gdkCapStyle = [ NOT_LAST BUTT ROUND PROJECTING ]
+  type gdkJoinStyle = [ MITER ROUND BEVEL ]
+  external create : window -> gc = "ml_gdk_gc_new"
+  external set_foreground : gc -> Color.t -> unit = "ml_gdk_gc_set_foreground"
+  external set_background : gc -> Color.t -> unit = "ml_gdk_gc_set_background"
+  external set_font : gc -> font -> unit = "ml_gdk_gc_set_font"
+  external set_function : gc -> gdkFunction -> unit = "ml_gdk_gc_set_function"
+  external set_fill : gc -> gdkFill -> unit = "ml_gdk_gc_set_fill"
+  external set_tile : gc -> pixmap -> unit = "ml_gdk_gc_set_tile"
+  external set_stipple : gc -> pixmap -> unit = "ml_gdk_gc_set_stipple"
+  external set_ts_origin : gc -> x:int -> y:int -> unit
+      = "ml_gdk_gc_set_ts_origin"
+  external set_clip_origin : gc -> x:int -> y:int -> unit
+      = "ml_gdk_gc_set_clip_origin"
+  external set_clip_mask : gc -> bitmap -> unit = "ml_gdk_gc_set_clip_mask"
+  external set_clip_rectangle : gc -> Rectangle.t -> unit
+      = "ml_gdk_gc_set_clip_rectangle"
+  external set_subwindow : gc -> gdkSubwindowMode -> unit
+      = "ml_gdk_gc_set_subwindow"
+  external set_exposures : gc -> bool -> unit = "ml_gdk_gc_set_exposures"
+  external set_line_attributes :
+      gc -> width:int -> style:gdkLineStyle -> cap:gdkCapStyle ->
+      join:gdkJoinStyle -> unit
+      = "ml_gdk_gc_set_line_attributes"
+  external copy : to:gc -> gc -> unit = "ml_gdk_gc_copy"
+end
+
 module Pixmap = struct
   external create : window -> width:int -> height:int -> depth:int -> pixmap
       = "ml_gdk_pixmap_new"
@@ -107,6 +141,42 @@ module Font = struct
   external char_width : font -> char -> int = "ml_gdk_char_width"
   external string_measure : font -> string -> int = "ml_gdk_string_measure"
   external char_measure : font -> char -> int = "ml_gdk_char_measure"
+end
+
+module PointArray = struct
+  type t = { len: int}
+  external create : len:int -> t = "ml_point_array_new"
+  external set : t -> pos:int -> x:int -> y:int -> unit = "ml_point_array_set"
+  let set arr :pos =
+    if pos < 0 || pos >= arr.len then invalid_arg "PointArray.set";
+    set arr :pos
+end
+
+module Draw = struct
+  external point : 'a drawable -> gc -> x:int -> y:int -> unit
+      = "ml_gdk_draw_point"
+  external line : 'a drawable -> gc -> x:int -> y:int -> x:int -> y:int -> unit
+      = "ml_gdk_draw_line_bc" "ml_gdk_draw_line"
+  external rectangle :
+      'a drawable -> gc ->
+      filled:bool -> x:int -> y:int -> width:int -> height:int -> unit
+      = "ml_gdk_draw_rectangle_bc" "ml_gdk_draw_rectangle"
+  let rectangle w gc ?:filled [< false >] = rectangle w gc :filled
+  external arc :
+      'a drawable -> gc -> filled:bool -> x:int -> y:int ->
+      width:int -> height:int -> start:int -> end:int -> unit
+      = "ml_gdk_draw_arc_bc" "ml_gdk_draw_arc"
+  let arc w gc :x :y :width :height ?:filled [< false >] ?:start [< 0 >]
+      ?end:_end [< 360 >] =
+    arc w gc :x :y :width :height :filled :start end:_end
+  external polygon : 'a drawable -> gc -> filled:bool -> PointArray.t -> unit
+      = "ml_gdk_draw_polygon"
+  let polygon w gc l ?:filled [< false >] =
+    let len = List.length l in
+    let arr = PointArray.create :len in
+    List.fold_left l acc:0
+      fun:(fun (x,y) acc:pos -> PointArray.set arr :pos :x :y; pos+1);
+    polygon w gc :filled arr
 end
 
 module Event = struct

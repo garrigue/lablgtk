@@ -22,3 +22,21 @@ type gdkInputSource = "GDK_SOURCE_"
 
 type gdkNotifyType = "GDK_NOTIFY_"
     [ ANCESTOR VIRTUAL INFERIOR NONLINEAR NONLINEAR_VIRTUAL UNKNOWN ] 
+
+type gdkFunction = "GDK_"
+    [ COPY INVERT XOR ]
+
+type gdkFill = "GDK_"
+    [ SOLID TILED STIPPLED OPAQUE_STIPPLED ]
+
+type gdkSubwindowMode = "GDK_"
+    [ CLIP_BY_CHILDREN INCLUDE_INFERIORS ]
+
+type gdkLineStyle = "GDK_LINE_"
+    [ SOLID ON_OFF_DASH DOUBLE_DASH ]
+
+type gdkCapStyle = "GDK_CAP_"
+    [ NOT_LAST BUTT ROUND PROJECTING ]
+
+type gdkJoinStyle = "GDK_JOIN_"
+    [ MITER ROUND BEVEL ]

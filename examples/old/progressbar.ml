@@ -20,8 +20,7 @@ end
 let main () =
 
   let window = Window.create `TOPLEVEL in
-  Signal.connect window sig:Signal.delete_event
-    cb:(fun _ -> Main.quit (); true);
+  Signal.connect window sig:Signal.delete_event cb:(fun _ -> Main.quit ());
   Container.border_width window 10;
 
   let table = Table.create 3 2 in

@@ -1,6 +1,11 @@
 (* $Id$ *)
 
 let push x on:l = l := x :: !l
+(*
+let pop l =
+  match !l with [] -> invalid_arg "Misc.pop"
+  | a :: l' ->  l := l'; a
+*)
 
 let may fun:f x =
   match x with None -> ()
