@@ -91,15 +91,17 @@ ML_bc13(ml_gdk_pixbuf_render_to_drawable_alpha)
 value ml_gdk_pixbuf_render_pixmap_and_mask (value pixbuf, value thr)
 {
     CAMLparam0();
-    CAMLlocal1(ret);
-    value tmp;
+    CAMLlocal2(vpm,vmask);
+    value ret;
     GdkPixmap *pm;
     GdkBitmap *mask;
     gdk_pixbuf_render_pixmap_and_mask(GdkPixbuf_val(pixbuf), &pm, &mask,
 				      Int_val(thr));
+    vpm = Val_GdkPixmap(pm);
+    vmask = Val_GdkBitmap(mask);
     ret = alloc(2,0);
-    tmp = Val_GdkPixmap(pm); Field(ret,0) = tmp;
-    tmp = Val_GdkBitmap(mask); Field(ret,1) = tmp;
+    Field(ret,0) = vpm;
+    Field(ret,1) = vmask;
     return ret;
 }
 
