@@ -196,4 +196,6 @@ int OptFlags_##conv (value list) \
 #define Val_copy(val) copy_memblock_indirected (&val, sizeof(val))
 #define Val_string copy_string_check
 
+#define Check_null(v) (v ? v : (ml_raise_null_pointer (), v))
+
 #endif /* _wrappers_ */

@@ -152,3 +152,33 @@ class clist ?:columns [< 1 >] ?:titles ?:hadjustment ?:vadjustment
     inherit clist_wrapper w
     initializer pack_return :packing ?:show (self :> clist_wrapper)
   end
+
+class ['a] clist_data_wrapper obj = object
+  inherit clist_wrapper obj
+  method set_row_data n :data =
+    CList.set_row_data obj n (Obj.repr (data : 'a))
+  method get_row_data n : 'a = Obj.obj (CList.get_row_data obj n)
+end
+
+class ['a] clist_data ?:columns [< 1 >] ?:titles ?:hadjustment ?:vadjustment
+    ?:shadow_type ?:button_actions ?:selection_mode
+    ?:reorderable ?:use_drag_icons ?:row_height
+    ?:titles_show ?:titles_active ?:auto_sort ?:sort_column ?:sort_type
+    ?:border_width ?:width ?:height ?:packing ?:show =
+  let w =
+    match titles with None -> CList.create cols:columns
+    | Some titles -> CList.create_with_titles (Array.of_list titles)
+  in
+  let () =
+    CList.set w 
+      ?hadjustment:(GData.adjustment_option hadjustment)
+      ?vadjustment:(GData.adjustment_option vadjustment)
+      ?:shadow_type ?:button_actions ?:selection_mode ?:reorderable
+      ?:use_drag_icons ?:row_height ?:titles_show ?:titles_active;
+    CList.set_sort w ?auto:auto_sort ?column:sort_column ?type:sort_type;
+    Container.set w ?:border_width ?:width ?:height
+  in
+  object (self)
+    inherit ['a] clist_data_wrapper w
+    initializer pack_return :packing ?:show (self :> clist_wrapper)
+  end

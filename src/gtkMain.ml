@@ -19,7 +19,10 @@ module Main = struct
   external set_locale : unit -> string = "ml_gtk_set_locale"
   (* external main : unit -> unit = "ml_gtk_main" *)
   let locale = set_locale ()
-  let argv = init Sys.argv
+  let () =
+    let argv = init Sys.argv in
+    Array.blit argv to:Sys.argv len:(Array.length argv) pos:0 to_pos:0;
+    Obj.truncate (Obj.repr Sys.argv) (Array.length argv)
   open Glib
   let loops = ref [] 
   let main () =

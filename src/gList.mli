@@ -140,3 +140,31 @@ class clist :
   end
 
 class clist_wrapper : Gtk.clist obj -> clist
+
+class ['a] clist_data :
+  ?columns:int ->
+  ?titles:string list ->
+  ?hadjustment:GData.adjustment ->
+  ?vadjustment:GData.adjustment ->
+  ?shadow_type:Gtk.Tags.shadow_type ->
+  ?button_actions:(int * Tags.button_action list) list ->
+  ?selection_mode:Tags.selection_mode ->
+  ?reorderable:bool ->
+  ?use_drag_icons:bool ->
+  ?row_height:int ->
+  ?titles_show:bool ->
+  ?titles_active:bool ->
+  ?auto_sort:bool ->
+  ?sort_column:int ->
+  ?sort_type:Gtk.Tags.sort_type ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(clist -> unit) -> ?show:bool ->
+  object
+    inherit clist
+    method set_row_data : int -> data:'a -> unit
+    method get_row_data : int -> 'a
+  end
+
+class ['a] clist_data_wrapper : Gtk.clist obj -> ['a] clist_data

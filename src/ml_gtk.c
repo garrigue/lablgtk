@@ -29,6 +29,20 @@ value copy_string_and_free (char *str)
     return res;
 }
 
+value *ml_gtk_root_new (value v)
+{
+    value *p = stat_alloc(sizeof(value));
+    *p = v;
+    register_global_root (p);
+    return p;
+}
+
+void ml_gtk_root_destroy (gpointer data)
+{
+    remove_global_root ((value *)data);
+    stat_free (data);
+}
+
 /* conversion functions */
 
 #include "gtk_tags.c"
@@ -930,6 +944,14 @@ ML_5 (gtk_clist_set_shift, GtkCList_val, Int_val, Int_val, Int_val, Int_val,
 ML_2 (gtk_clist_append, GtkCList_val, (char **), Val_int)
 ML_3 (gtk_clist_insert, GtkCList_val, Int_val, (char **), Unit)
 ML_2 (gtk_clist_remove, GtkCList_val, Int_val, Unit)
+value ml_gtk_clist_set_row_data (value w, value row, value data)
+{
+     value *data_p = ml_gtk_root_new (data);
+     gtk_clist_set_row_data_full (GtkCList_val(w), Int_val(row),
+				  data_p, ml_gtk_root_destroy);
+     return Val_unit;
+}
+ML_2 (gtk_clist_get_row_data, GtkCList_val, Int_val, *(value*)Check_null)
 ML_3 (gtk_clist_select_row, GtkCList_val, Int_val, Int_val, Unit)
 ML_3 (gtk_clist_unselect_row, GtkCList_val, Int_val, Int_val, Unit)
 ML_1 (gtk_clist_clear, GtkCList_val, Unit)
@@ -1709,23 +1731,15 @@ value ml_gtk_arg_set_object (GtkArg *arg, value val)
     return Val_unit;
 }
 
-void ml_gtk_callback_destroy (gpointer data)
-{
-    remove_global_root ((value *)data);
-    stat_free (data);
-}
-
 /* gtksignal.h */
 
 value ml_gtk_signal_connect (value object, value name, value clos, value after)
 {
-    value *clos_p = stat_alloc (sizeof(value));
-    *clos_p = clos;
-    register_global_root (clos_p);
+    value *clos_p = ml_gtk_root_new (clos);
     return Val_int (gtk_signal_connect_full
 		    (GtkObject_val(object), String_val(name), NULL,
 		     ml_gtk_callback_marshal, clos_p,
-		     ml_gtk_callback_destroy, FALSE, Bool_val(after)));
+		     ml_gtk_root_destroy, FALSE, Bool_val(after)));
 }
 
 ML_2 (gtk_signal_disconnect, GtkObject_val, Int_val, Unit)
@@ -1738,12 +1752,10 @@ ML_2 (gtk_signal_handler_unblock, GtkObject_val, Int_val, Unit)
 
 value ml_gtk_timeout_add (value interval, value clos)
 {
-    value *clos_p = stat_alloc (sizeof(value));
-    *clos_p = clos;
-    register_global_root (clos_p);
+    value *clos_p = ml_gtk_root_new (clos);
     return Val_int (gtk_timeout_add_full
 		    (Int_val(interval), NULL, ml_gtk_callback_marshal, clos_p,
-		     ml_gtk_callback_destroy));
+		     ml_gtk_root_destroy));
 }
 ML_1 (gtk_timeout_remove, Int_val, Unit)
 

@@ -6,7 +6,6 @@ open GObj
 
 module Main : sig
   val locale : string
-  val argv : string array
   val main : unit -> unit
   val quit : unit -> unit
   val version : int * int * int
