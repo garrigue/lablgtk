@@ -136,12 +136,12 @@ object (self)
     buffer#connect#after#insert_text ~callback:
       begin fun it s ->
         let start = it#backward_chars (String.length s) in
-        self#lex ~start:start#backward_line ~stop:it#forward_to_line_end;
+        self#lex ~start:(start#set_line_index 0) ~stop:it#forward_to_line_end;
         view#scroll_mark_onscreen `INSERT
       end;
     buffer#connect#after#delete_range ~callback:
       begin fun ~start ~stop ->
-        let start = start#backward_line
+        let start = start#set_line_index 0
         and stop = start#forward_to_line_end in
         self#lex ~start ~stop
       end;

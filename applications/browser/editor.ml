@@ -52,11 +52,11 @@ class editor ?packing ?show () = object (self)
       begin fun it s ->
         let start = it#backward_chars (String.length s) in
         Lexical.tag view#buffer
-          ~start:start#backward_line ~stop:it#forward_to_line_end;
+          ~start:(start#set_line_index 0) ~stop:it#forward_to_line_end;
       end;
     view#buffer#connect#after#delete_range ~callback:
       begin fun ~start ~stop ->
-        let start = start#backward_line
+        let start = start#set_line_index 0
         and stop = start#forward_to_line_end in
         Lexical.tag view#buffer ~start ~stop
       end;
