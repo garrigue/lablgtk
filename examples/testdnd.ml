@@ -403,7 +403,7 @@ end
 
 class popup () = object (self)
   inherit drag_handler
-  val mutable popup_window = (None : GWindow.window option)
+  val mutable popup_window = (None : #GWindow.window option)
   val mutable popped_up = false
   val mutable in_popup = false
   val mutable popdown_timer = None

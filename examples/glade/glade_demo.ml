@@ -7,7 +7,7 @@
 
 class editor () =
   object (self)
-    inherit window1  ()
+    inherit window1 ()
 
     method open_file () =
       let fs = GWindow.file_selection ~title:"Open file" ~modal:true () in
