@@ -309,6 +309,8 @@ module Container = struct
   external coerce : [>`container] obj -> container obj = "%identity"
   external set_border_width : [>`container] obj -> int -> unit
       = "ml_gtk_container_set_border_width"
+  external set_resize_mode : [>`container] obj -> resize_mode -> unit
+      = "ml_gtk_container_set_resize_mode"
   external add : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_add"
   external remove : [>`container] obj -> [>`widget] obj -> unit

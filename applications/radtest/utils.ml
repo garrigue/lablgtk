@@ -1,10 +1,7 @@
 (* $Id$ *)
 
 open GObj
-open GWindow
-open GPack
-open GMisc
-open GButton
+open GMain
 
 open Common
 
@@ -42,10 +39,10 @@ let rec list_split pred:f = function
   | hd :: tl -> let g, d = list_split pred:f tl in
     if f hd then (hd :: g, d) else (g, hd :: d)
 
-let list_pos ch in:l =
+let list_pos :elt l =
   let rec aux pos = function
     | [] -> raise Not_found
-    | hd :: tl -> if hd = ch then pos else aux (pos+1) tl
+    | hd :: tl -> if hd = elt then pos else aux (pos+1) tl
   in aux 0 l
 
 (* moves the pos element up; pos is >= 1;
@@ -61,12 +58,12 @@ let rec list_reorder_down :pos =
   list_reorder_up pos:(pos+1)
 
 
-let rec list_insert elt in:l :pos =
+let rec list_insert :elt l :pos =
   if pos=0 then elt :: l
   else
     match l with
     | [] ->  failwith "list_insert"
-    | hd :: tl -> hd :: (list_insert elt in:tl pos:(pos-1))
+    | hd :: tl -> hd :: (list_insert :elt tl pos:(pos-1))
 
 
 let rec change_property_name oldname newname = function
@@ -94,9 +91,9 @@ let split name =
     (String.sub name pos:0 len:(!i+1)),
     int_of_string (String.sub name pos:(!i+1) len:(l- !i-1))
 
-let test_unique name = not (List.mem name in: !name_list)
+let test_unique name = not (List.mem elt:name !name_list)
 
-let make_new_name base ?:index [< 1 >] =
+let make_new_name ?:index{= 1} base =
   let index = ref index in
   let name = ref (base ^ (string_of_int !index)) in
   while not (test_unique !name) do
@@ -109,23 +106,22 @@ let change_name name =
   let base, index = split name in make_new_name base :index
 
 let message s =
-  let w = new window show:true modal:true in
-  let v = new vbox packing:w#add in
-  let l = new label text:s
-      packing:v#add in
-  let b = new button label:"OK" packing:v#add in
+  let w = GWindow.window show:true modal:true () in
+  let v = GPack.vbox packing:w#add () in
+  let l = GMisc.label text:s packing:v#add () in
+  let b = GButton. button label:"OK" packing:v#add () in
   b#connect#clicked callback:w#destroy;
-  w#connect#destroy callback:GMain.Main.quit;
-  GMain.Main.main ()
+  w#connect#destroy callback:Main.quit;
+  Main.main ()
 
 let message_name () = message "name already in use\npick a new name"
 
 
 (*************** file selection *****************)
 
-let get_filename set_fun:set_filename ?:dir [< "" >] =
+let get_filename callback:set_filename ?:dir{=""} () =
   let res = ref false in
-  let file_selection = new file_selection modal:true in
+  let file_selection = GWindow.file_selection modal:true () in
   if dir <> "" then file_selection#set_filename dir;
   file_selection#show ();
   file_selection#ok_button#connect#clicked
@@ -134,8 +130,8 @@ let get_filename set_fun:set_filename ?:dir [< "" >] =
       file_selection#destroy ());
   file_selection#cancel_button#connect#clicked
     callback:file_selection#destroy;
-  file_selection#connect#destroy callback:GMain.Main.quit;
-  GMain.Main.main ();
+  file_selection#connect#destroy callback:Main.quit;
+  Main.main ();
   !res
 
 (* returns the directory and the file name (without the extension) *)
@@ -146,7 +142,7 @@ let split_filename filename :ext =
     if (l > lext) && (String.sub filename pos:(l - lext) len:lext = ext)
     then (String.sub filename pos:0 len:(l-lext)), l-lext
     else filename, l in
-  let i = 1 + (String.rindex filename char:'/') in
+  let i = 1 + (String.rindex filename elt:'/') in
   String.sub filename pos:0 len:i,
   String.sub filename pos:i len:(l-i)
 
@@ -159,7 +155,7 @@ let next_callback_id () : GtkSignal.id =
 
 class ['a] signal = object
   val mutable callbacks : (GtkSignal.id * ('a -> unit)) list = []
-  method connect :callback ?:after [< false >] =
+  method connect :callback :after =
     let id = next_callback_id () in
     callbacks <-
       if after then callbacks @ [id,callback] else (id,callback)::callbacks;
@@ -167,8 +163,8 @@ class ['a] signal = object
   method call arg =
     List.iter callbacks fun:(fun (_,f) -> f arg)
   method disconnect id =
-    List.mem_assoc id in:callbacks &&
-    (callbacks <- List.remove_assoc id in:callbacks; true)
+    List.mem_assoc key:id callbacks &&
+    (callbacks <- List.remove_assoc key:id callbacks; true)
   method reset () = callbacks <- []
 end
 
@@ -180,8 +176,8 @@ class type disconnector =
 
 class has_ml_signals = object
   val mutable disconnectors = []
-  method private add_signal : 'a. 'a signal -> unit =
-    fun sgn -> disconnectors <- (sgn :> disconnector) :: disconnectors
+  method private add_signal (sgn : 'a signal) =
+    disconnectors <- (sgn :> disconnector) :: disconnectors
 
   method disconnect id =
     List.exists disconnectors pred:(fun d -> d#disconnect id)

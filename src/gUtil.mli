@@ -10,20 +10,20 @@ open GObj
 
 class ['a] memo : unit ->
   object
-    constraint 'a = #gtkobj
+    constraint 'a = #widget
     val tbl : (int, 'a) Hashtbl.t
     method add : 'a -> unit
-    method find : #gtkobj -> 'a
-    method remove : #gtkobj -> unit
+    method find : widget -> 'a
+    method remove : widget -> unit
   end
 
 (* To add ML signals to an object:
 
-   class mywidget_signals obj :mysignal1 :mysignal2 ?:after = object
-     inherit somewidget_signals obj ?:after
+   class mywidget_signals obj :mysignal1 :mysignal2 = object
+     inherit somewidget_signals obj
      inherit has_ml_signals obj
-     method mysignal1 = mysignal1#connect ?:after
-     method mysignal2 = mysignal2#connect ?:after
+     method mysignal1 = mysignal1#connect :after
+     method mysignal2 = mysignal2#connect :after
    end
 
    class mywidget obj = object (self)
@@ -44,7 +44,7 @@ val next_callback_id : unit -> GtkSignal.id
 class ['a] signal : 'b Gtk.obj ->
   object
     method call : 'a -> unit
-    method connect : callback:('a -> unit) -> ?after:bool -> GtkSignal.id
+    method connect : callback:('a -> unit) -> after:bool -> GtkSignal.id
     method disconnect : GtkSignal.id -> bool
     method reset : unit -> unit
   end

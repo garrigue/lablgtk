@@ -69,7 +69,7 @@ let handle_box ?:border_width ?:width ?:height ?:packing ?:show () =
 class frame_skel obj = object
   inherit container obj
   method set_label = Frame.set_label obj
-  method set_label_align = Frame.set_label_align' obj
+  method set_label_align ?:x ?:y () = Frame.set_label_align' obj ?:x ?:y
   method set_shadow_type = Frame.set_shadow_type obj
 end
 

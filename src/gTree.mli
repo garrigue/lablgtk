@@ -86,7 +86,7 @@ val tree_item :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> tree_item
+  ?packing:(tree_item -> unit) -> ?show:bool -> unit -> tree_item
 
 val tree :
   ?selection_mode:Gtk.Tags.selection_mode ->

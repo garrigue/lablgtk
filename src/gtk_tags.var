@@ -44,8 +44,11 @@ type position = "GTK_POS_"
 type preview_type = "GTK_PREVIEW_"
     [ COLOR GRAYSCALE ]
 
-type relief_type = "GTK_RELIEF_"
+type relief_style = "GTK_RELIEF_"
     [ NORMAL HALF NONE ]
+
+type resize_mode = "GTK_RESIZE_"
+    [ PARENT QUEUE IMMEDIATE ]
 
 type signal_run_type = "GTK_RUN_"
     [ FIRST LAST BOTH NO_RECURSE ACTION NO_HOOKS ]

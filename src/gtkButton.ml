@@ -132,9 +132,9 @@ module Toolbar = struct
     "ml_gtk_toolbar_set_space_style"
   external set_tooltips : [>`toolbar] obj -> bool -> unit =
     "ml_gtk_toolbar_set_tooltips"
-  external set_button_relief : [>`toolbar] obj -> relief_type -> unit =
+  external set_button_relief : [>`toolbar] obj -> relief_style -> unit =
     "ml_gtk_toolbar_set_button_relief"
-  external get_button_relief : [>`toolbar] obj -> relief_type =
+  external get_button_relief : [>`toolbar] obj -> relief_style =
     "ml_gtk_toolbar_get_button_relief"
   let set ?:orientation ?:style ?:space_size
       ?:space_style ?:tooltips ?:button_relief w =

@@ -29,19 +29,19 @@ class planet area = object (self)
 
     GlDraw.color (1.0, 1.0, 1.0);
     GlMat.push();
-    GlMat.rotate angle:eye x:1.;
+    GlMat.rotate eye x:1.;
 (*	draw sun	*)
     GlLight.material face:`front (`specular (1.0,1.0,0.0,1.0));
     GlLight.material face:`front (`shininess 5.0);
-    GluQuadric.sphere radius:1.0 slices:32 stacks:32;
+    GluQuadric.sphere radius:1.0 slices:32 stacks:32 ();
 (*	draw smaller planet	*)
-    GlMat.rotate angle:year y:1.0;
-    GlMat.translate x:3.0;
-    GlMat.rotate angle:day y:1.0;
+    GlMat.rotate year y:1.0;
+    GlMat.translate x:3.0 ();
+    GlMat.rotate day y:1.0;
     GlDraw.color (0.0, 1.0, 1.0);
     GlDraw.shade_model `flat;
     GlLight.material face:`front(`shininess 128.0);
-    GluQuadric.sphere radius:0.2 slices:10 stacks:10;
+    GluQuadric.sphere radius:0.2 slices:10 stacks:10 ();
     GlDraw.shade_model `smooth;
     GlMat.pop ();
     Gl.flush ();
@@ -70,7 +70,7 @@ let my_reshape width:w height:h =
   GluMat.perspective fovy:60.0 aspect:(float w /. float h) z:(1.0,20.0);
   GlMat.mode `modelview;
   GlMat.load_identity();
-  GlMat.translate z:(-5.0)
+  GlMat.translate z:(-5.0) ()
 
 (*  Main Loop
  *  Open window with initial window size, title bar, 
@@ -80,18 +80,19 @@ open GMain
 open GdkKeysyms
 
 let main () =
-  let w = new GWindow.window title:"Planet" in
+  let w = GWindow.window title:"Planet" () in
   w#connect#destroy callback:(fun () -> Main.quit (); exit 0);
-  let hb = new GPack.hbox packing:w#add in
-  let area = new GlGtk.area [`DOUBLEBUFFER;`RGBA;`DEPTH_SIZE 1]
-      width:700 height:500 packing:hb#add in
+  w#set_resize_mode `IMMEDIATE;
+  let hb = GPack.hbox packing:w#add () in
+  let area = GlGtk.area [`DOUBLEBUFFER;`RGBA;`DEPTH_SIZE 1]
+      width:700 height:500 packing:hb#add () in
   area#add_events [`KEY_PRESS];
 
   let planet = new planet area in
-  let adjustment = new GData.adjustment value:0. lower:(-90.) upper:90.
-      step_incr:1. page_incr:5. page_size:5. in
-  let scale = new GRange.scale `VERTICAL :adjustment draw_value:false
-      packing:(hb#pack expand:false) in
+  let adjustment = GData.adjustment value:0. lower:(-90.) upper:90.
+      step_incr:1. page_incr:5. page_size:5. () in
+  let scale = GRange.scale `VERTICAL :adjustment draw_value:false
+      packing:(hb#pack expand:false) () in
   adjustment#connect#value_changed
     callback:(fun () -> planet#eye adjustment#value);
   w#connect#event#key_press callback:
@@ -108,7 +109,7 @@ let main () =
   
   Timeout.add 20 callback:
     begin fun () ->
-      planet#tick (Unix.gettimeofday()); planet#display (); true
+      planet#tick (Sys.time ()); planet#display (); true
     end;
   area#connect#display callback:planet#display;
   area#connect#reshape callback:my_reshape;

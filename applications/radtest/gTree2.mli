@@ -1,81 +1,98 @@
 (* $Id$ *)
 
 open Gtk
+open GObj
+open GContainer
 
-class tree_item2_signals :
-  'a[> container item treeitem widget] obj ->
+class tree_item_signals : 'a Gtk.obj ->
   object
-    inherit GContainer.item_signals
-    val obj : 'a obj
-    method collapse : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
-    method expand : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    inherit item_signals
+    constraint 'a = [>`treeitem|`container|`item|`widget]
+    val obj : 'a Gtk.obj
+    method collapse : callback:(unit -> unit) -> GtkSignal.id
+    method expand : callback:(unit -> unit) -> GtkSignal.id
   end
 
-class tree_item2 :
+class tree_item : Gtk.tree_item Gtk.obj ->
+  object
+    val obj : Gtk.tree_item Gtk.obj
+    method add : GObj.widget -> unit
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method as_item : Gtk.tree_item Gtk.obj
+    method as_widget : Gtk.widget Gtk.obj
+    method children : GObj.widget_full list
+    method coerce : GObj.widget
+    method collapse : unit -> unit
+    method connect : tree_item_signals
+    method destroy : unit -> unit
+    method drag : GObj.widget_drag
+    method expand : unit -> unit
+    method focus : GContainer.focus
+    method get_id : int
+    method get_type : Gtk.gtk_type
+    method misc : GObj.widget_misc
+    method remove : GObj.widget -> unit
+    method remove_subtree : unit -> unit
+    method set_border_width : int -> unit
+    method set_subtree : tree -> unit
+    method subtree : tree
+  end
+
+and tree_signals : 'a Gtk.obj ->
+  object
+    inherit container_signals
+    constraint 'a = [>`tree|`container|`widget]
+    val obj : 'a Gtk.obj
+    method select_child : callback:(tree_item -> unit) -> GtkSignal.id
+    method selection_changed : callback:(unit -> unit) -> GtkSignal.id
+    method unselect_child : callback:(tree_item -> unit) -> GtkSignal.id
+  end
+
+and tree : Gtk.tree Gtk.obj ->
+  object
+    val obj : Gtk.tree Gtk.obj
+    method add : tree_item -> unit
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method append : tree_item -> unit
+    method as_tree : Gtk.tree Gtk.obj
+    method as_widget : Gtk.widget Gtk.obj
+    method child_position : tree_item -> int
+    method children : tree_item list
+    method clear_items : start:int -> end:int -> unit
+    method coerce : GObj.widget
+    method connect : tree_signals
+    method destroy : unit -> unit
+    method drag : GObj.widget_drag
+    method focus : GContainer.focus
+    method get_id : int
+    method get_type : Gtk.gtk_type
+    method insert : tree_item -> pos:int -> unit
+    method item_up : pos:int -> unit
+    method misc : GObj.widget_misc
+    method prepend : tree_item -> unit
+    method remove : tree_item -> unit
+    method remove_items : tree_item list -> unit
+    method select_item : pos:int -> unit
+    method selection : tree_item list
+    method set_border_width : int -> unit
+    method set_selection_mode : Gtk.Tags.selection_mode -> unit
+    method set_view_lines : bool -> unit
+    method set_view_mode : [`LINE|`ITEM] -> unit
+    method unselect_item : pos:int -> unit
+    method private wrap : Gtk.widget Gtk.obj -> tree_item
+  end
+
+val tree_item :
   ?label:string ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(tree_item2 -> unit) -> ?show:bool ->
-  object
-    inherit GContainer.container
-    val obj : Gtk.tree_item obj
-    method add_events : Gdk.Tags.event_mask list -> unit
-    method as_item : Gtk.tree_item obj
-    method collapse : unit -> unit
-    method connect : tree_item2_signals
-    method expand : unit -> unit
-    method remove_subtree : unit -> unit
-    method set_subtree : #GObj.is_tree -> unit
-    method subtree : tree2
-  end
+  ?packing:(tree_item -> unit) -> ?show:bool -> unit -> tree_item
 
-and tree2_signals :
-  'a[> container tree widget] obj ->
-  object
-    inherit GContainer.container_signals
-    val obj : 'a obj
-    method selection_changed :
-	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
-    method select_child :
-	callback:(tree_item2 -> unit) -> ?after:bool -> GtkSignal.id
-    method unselect_child :
-	callback:(tree_item2 -> unit) -> ?after:bool -> GtkSignal.id
-  end
-
-and tree2 :
-  ?selection_mode:Tags.selection_mode ->
-  ?view_mode:[ITEM LINE] ->
+val tree :
+  ?selection_mode:Gtk.Tags.selection_mode ->
+  ?view_mode:[`LINE|`ITEM] ->
   ?view_lines:bool ->
   ?border_width:int ->
   ?width:int ->
-  ?height:int ->
-  ?packing:(tree2 -> unit) -> ?show:bool ->
-  object
-    inherit [Gtk.tree_item, tree_item2] GContainer.item_container
-    val obj : Gtk.tree obj
-    method add_events : Gdk.Tags.event_mask list -> unit
-    method as_tree : Gtk.tree obj
-    method child_position : Gtk.tree_item #GObj.is_item -> int
-    method clear_items : start:int -> end:int -> unit
-    method connect : tree2_signals
-    method insert : Gtk.tree_item #GObj.is_item -> pos:int -> unit
-    method remove_items : tree_item2 list -> unit
-    method select_child : Gtk.tree_item #GObj.is_item -> unit
-    method select_item : pos:int -> unit
-    method unselect_child : Gtk.tree_item #GObj.is_item -> unit
-    method unselect_item : pos:int -> unit
-    method selection : tree_item2 list
-    method children2 : tree_item2 list
-    method set_selection_mode : Gtk.Tags.selection_mode -> unit
-    method set_view_lines : bool -> unit
-    method set_view_mode : [ITEM LINE] -> unit
-    method private wrap : Gtk.widget obj -> tree_item2
-    method item_up : pos:int -> unit
-    method select_next_child : Gtk.tree_item #GObj.is_item -> bool -> unit
-    method select_prev_child : Gtk.tree_item #GObj.is_item -> unit
-  end
-
-class tree_item2_wrapper : Gtk.tree_item obj -> tree_item2
-
-class tree2_wrapper : ([> tree] obj) -> tree2
+  ?height:int -> ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> tree

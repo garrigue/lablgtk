@@ -73,7 +73,10 @@ class tree_signals obj =
 let tree_item ?:label ?:border_width ?:width ?:height ?:packing ?:show () =
   let w = TreeItem.create ?:label () in
   Container.set w ?:border_width ?:width ?:height;
-  pack_return (new tree_item w) :packing :show
+  let self = new tree_item w in
+  may packing fun:(fun f -> (f self : unit));
+  if show <> Some false then self#misc#show ();
+  self
 
 let tree ?:selection_mode ?:view_mode ?:view_lines
     ?:border_width ?:width ?:height ?:packing ?:show () =
