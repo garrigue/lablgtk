@@ -131,6 +131,9 @@ value ml_gtk_object_type (value val)
 }
 
 ML_1 (gtk_object_destroy, GtkObject_val, Unit)
+ML_1 (gtk_object_ref, GtkObject_val, Unit)
+ML_1 (gtk_object_unref, GtkObject_val, Unit)
+ML_1 (gtk_object_sink, GtkObject_val, Unit)
 
 Make_Extractor (gtk_class,(GtkObjectClass *),type,Val_int)
 
@@ -431,19 +434,29 @@ ML_2 (gtk_viewport_set_shadow_type, GtkViewport_val, Shadow_type_val, Unit)
 
 /* gtkdialog.h */
 
+static void window_unref (GtkObject *w)
+{
+    /* If the window is still not visible, then unreference it.
+       This should be enough to destroy it. */
+    if (!GTK_WIDGET_VISIBLE(GTK_WIDGET(w))) gtk_object_unref (w);
+    gtk_object_unref (w);
+}
+Make_Val_final_pointer (GtkObject, _window, gtk_object_ref, window_unref)
+#define Val_GtkWidget_window(w) Val_GtkObject_window((GtkObject*)w)
+
 #define GtkDialog_val(val) check_cast(GTK_DIALOG,val)
-ML_0 (gtk_dialog_new, Val_GtkWidget)
+ML_0 (gtk_dialog_new, Val_GtkWidget_window)
 Make_Extractor (GtkDialog, GtkDialog_val, action_area, Val_GtkWidget)
 Make_Extractor (GtkDialog, GtkDialog_val, vbox, Val_GtkWidget)
 
 /* gtkinputdialog.h */
 
-ML_0 (gtk_input_dialog_new, Val_GtkWidget)
+ML_0 (gtk_input_dialog_new, Val_GtkWidget_window)
 
 /* gtkfileselection.h */
 
 #define GtkFileSelection_val(val) check_cast(GTK_FILE_SELECTION,val)
-ML_1 (gtk_file_selection_new, String_val, Val_GtkWidget)
+ML_1 (gtk_file_selection_new, String_val, Val_GtkWidget_window)
 ML_2 (gtk_file_selection_set_filename, GtkFileSelection_val, String_val, Unit)
 ML_1 (gtk_file_selection_get_filename, GtkFileSelection_val, Val_string)
 ML_1 (gtk_file_selection_show_fileop_buttons, GtkFileSelection_val, Unit)
@@ -458,7 +471,7 @@ Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, help_button,
 /* gtkwindow.h */
 
 #define GtkWindow_val(val) check_cast(GTK_WINDOW,val)
-ML_1 (gtk_window_new, Window_type_val, Val_GtkWidget)
+ML_1 (gtk_window_new, Window_type_val, Val_GtkWidget_window)
 ML_2 (gtk_window_set_title, GtkWindow_val, String_val, Unit)
 ML_3 (gtk_window_set_wmclass, GtkWindow_val, String_val, String_val, Unit)
 Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_name, Val_string)
@@ -524,7 +537,7 @@ value ml_gtk_color_selection_get_color (value w)
     Store_double_field (ret, 3, color[COLOR_OPACITY]);
     return ret;
 }
-ML_1 (gtk_color_selection_dialog_new, String_val, Val_GtkWidget)
+ML_1 (gtk_color_selection_dialog_new, String_val, Val_GtkWidget_window)
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, ok_button, Val_GtkWidget)
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, cancel_button, Val_GtkWidget)
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, help_button, Val_GtkWidget)
