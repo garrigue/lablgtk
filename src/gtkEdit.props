@@ -97,8 +97,8 @@ class ComboBoxEntry set : ComboBox {
 class EntryCompletion set gobject {
   "minimum-key-length"   gint                 : Read / Write
   "model"                GtkTreeModel         : Read / Write
-  signal action_activated "marshal_int"
-  signal match_selected   "(marshal2_ret ~ret:boolean gobject unsafe_pointer \"GtkEntryCompletion::match-selected\" : (Gtk.tree_model -> Gtk.tree_iter -> bool) marshaller)"
+  signal action_activated : gint
+  signal match_selected   : GtkTreeModel GtkTreeIter -> gboolean
   method get_entry : "Gtk.entry obj option"
   method complete
   method insert_action_text : "int -> string -> unit"
