@@ -1,5 +1,8 @@
 $Id$
 
+2004.10.28 [Olivier]
+  * add GtkCellRendererCombo (2.6)
+
 2004.10.24 [Olivier]
   * add a .mli for GnoDruid, reorganize gnoDruid.ml a bit
   * add the single-paragraph-mode property in GtkCellRendererText

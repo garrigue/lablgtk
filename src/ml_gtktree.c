@@ -35,6 +35,7 @@ CAMLprim value ml_gtktree_init(value unit)
 #endif
 #ifdef HASGTK26
         + gtk_cell_renderer_progress_get_type()
+        + gtk_cell_renderer_combo_get_type()
 #endif
         ;
     return Val_GType(t);
