@@ -193,6 +193,9 @@ class file_selection obj = object
   method get_filename = FileSelection.get_filename obj
   method complete = FileSelection.complete obj
   method set_fileop_buttons = FileSelection.set_fileop_buttons obj
+  method set_select_multiple = FileSelection.set_select_multiple obj
+  method select_multiple = FileSelection.get_select_multiple obj
+  method get_selections = FileSelection.get_selections obj
   method ok_button = new GButton.button (FileSelection.get_ok_button obj)
   method cancel_button =
     new GButton.button (FileSelection.get_cancel_button obj)
@@ -202,12 +205,12 @@ class file_selection obj = object
 end
 
 let file_selection ?(title="Choose a file") ?filename
-    ?(fileop_buttons=false)
+    ?(fileop_buttons=false) ?select_multiple
     ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = FileSelection.create title in
-  FileSelection.set w ?filename ~fileop_buttons;
+  FileSelection.set w ?filename ~fileop_buttons ?select_multiple;
   Window.set w ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;

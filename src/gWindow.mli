@@ -151,16 +151,20 @@ class file_selection : Gtk.file_selection obj ->
     method complete : filter:string -> unit
     method connect : GContainer.container_signals
     method get_filename : string
+    method get_selections : string list
     method help_button : GButton.button
     method ok_button : GButton.button
     method file_list : string GList.clist
+    method select_multiple : bool
     method set_filename : string -> unit
     method set_fileop_buttons : bool -> unit
+    method set_select_multiple : bool -> unit
   end
 val file_selection :
   ?title:string ->
   ?filename:string ->
   ?fileop_buttons:bool ->
+  ?select_multiple:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
   ?position:Tags.window_position ->

@@ -569,6 +569,27 @@ ML_1 (gtk_file_selection_get_filename, GtkFileSelection_val, Val_string)
 ML_2 (gtk_file_selection_complete, GtkFileSelection_val, String_val, Unit)
 ML_1 (gtk_file_selection_show_fileop_buttons, GtkFileSelection_val, Unit)
 ML_1 (gtk_file_selection_hide_fileop_buttons, GtkFileSelection_val, Unit)
+ML_2 (gtk_file_selection_set_select_multiple, GtkFileSelection_val, Bool_val,
+      Unit)
+ML_1 (gtk_file_selection_get_select_multiple, GtkFileSelection_val, Val_bool)
+CAMLprim value ml_gtk_file_selection_get_selections (value sel)
+{
+  gchar** selections =
+    gtk_file_selection_get_selections(GtkFileSelection_val(sel));
+  gchar** orig = selections;
+  CAMLparam0();
+  CAMLlocal3(ret,prev,next);
+  for (prev = (value)((&ret)-1); *selections != NULL; selections++) {
+    next = alloc(2,0);
+    Store_field(prev, 1, next);
+    Store_field(next, 0, Val_string(*selections));
+    prev = next;
+  }
+  Field(prev,1) = Val_unit;
+  g_strfreev(orig);
+  CAMLreturn(ret);
+}
+    
 Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, ok_button,
 		Val_GtkWidget)
 Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, cancel_button,
