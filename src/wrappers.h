@@ -6,6 +6,7 @@
 #include <caml/misc.h>
 #include <caml/mlvalues.h>
 #include <caml/fail.h>
+#include <caml/custom.h>
 
 value copy_memblock_indirected (void *src, asize_t size);
 value alloc_memblock_indirected (asize_t size);
@@ -197,20 +198,28 @@ CAMLprim value cname##_bc (value *argv, int argn) \
  else { int i; ret = alloc_shr(l,0); \
    for(i=0;i<l;i++) initialize (&Field(ret,i), conv(src[i])); }
 
+#define Make_pointer_final(type, final) \
+
 #define Make_Val_final_pointer(type, init, final, adv) \
 static void ml_final_##type (value val) \
 { if (Field(val,1)) final ((type*)Field(val,1)); } \
+static struct custom_operations ml_custom_##type = \
+{ #type"/2.0/", ml_final_##type, custom_compare_default, \
+  custom_hash_default, custom_serialize_default, custom_deserialize_default };\
 value Val_##type (type *p) \
 { value ret; if (!p) ml_raise_null_pointer(); \
-  ret = alloc_final (2, ml_final_##type, adv, 1000); \
+  ret = alloc_custom (&ml_custom_##type, sizeof(value), adv, 1000); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
 #define Make_Val_final_pointer_ext(type, ext, init, final, adv) \
 static void ml_final_##type##ext (value val) \
 { if (Field(val,1)) final ((type*)Field(val,1)); } \
+static struct custom_operations ml_custom_##type##ext = \
+{ #type#ext"/2.0/", ml_final_##type##ext, custom_compare_default, \
+  custom_hash_default, custom_serialize_default, custom_deserialize_default };\
 value Val_##type##ext (type *p) \
 { value ret; if (!p) ml_raise_null_pointer(); \
-  ret = alloc_final (2, ml_final_##type##ext, adv, 1000); \
+  ret = alloc_custom (&ml_custom_##type##ext, sizeof(value), adv, 1000); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
 #define Pointer_val(val) ((void*)Field(val,1))
