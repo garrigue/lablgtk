@@ -10,61 +10,29 @@
 #include "ml_gobject.h"
 #include "ml_gvaluecaml.h"
 
-static void
-value_init_caml (GValue *value)
+static gpointer caml_boxed_copy (gpointer boxed)
 {
-  /* GValue is already zeroed-out */
-  /* value->data[0].v_long = 0; */
-  register_global_root(&value->data[0].v_long);
+  value *val = boxed;
+  return ml_global_root_new (*val);
 }
 
-static void
-value_free_caml (GValue *value)
-{
-  remove_global_root(&value->data[0].v_long);
-}
-
-static void
-value_copy_caml (const GValue *src_value,
-		 GValue       *dest_value)
-{
-  dest_value->data[0].v_long = src_value->data[0].v_long;
-}
-
-GType
-g_caml_get_type()
+GType g_caml_get_type()
 {
   static GType type;
-  if (type == G_TYPE_INVALID) {
-    const GTypeValueTable value_table = {
-      /* .value_init = */ 	value_init_caml,
-      /* .value_free = */ 	value_free_caml,		
-      /* .value_copy = */ 	value_copy_caml, 
-      /* .value_peek_pointer = */ NULL,
-      /* .collect_format = */ 	NULL,
-      /* .collect_value = */ 	NULL,
-      /* .lcopy_format = */ 	NULL,
-      /* .lcopy_value = */ 	NULL
-    };
-    const GTypeInfo info = {
-      /* .class_size = */ 	0,    
-      /* .base_init = */ 	NULL, 
-      /* .base_finalize = */ 	NULL, 
-      /* .class_init = */ 	NULL, 
-      /* .class_finalize = */ 	NULL, 
-      /* .class_data = */ 	NULL, 
-      /* .instance_size = */ 	0,    
-      /* .n_preallocs = */ 	0,    
-      /* .instance_init = */ 	NULL, 
-      /* .value_table = */ 	&value_table 
-    };
-    type = g_type_register_static(G_TYPE_POINTER, "Caml",
-				  &info, G_TYPE_FLAG_ABSTRACT);
-  }
+  if (type == G_TYPE_INVALID)
+    type = g_boxed_type_register_static ("Caml",
+					 caml_boxed_copy,
+					 ml_global_root_destroy);
   return type;
 }
 
 CAMLprim value ml_g_caml_get_type(value unit)
 {
   return Val_GType(G_TYPE_CAML);
+}
+
+void g_value_store_caml_value (GValue *val, value arg)
+{
+  g_return_if_fail (G_VALUE_HOLDS(val, G_TYPE_CAML));
+  g_value_set_boxed (val, &arg);
 }
