@@ -149,7 +149,7 @@ let main argv =
         try
           let ali = GBin.alignment_cast (cl#column_widget acc) in
           let lbl = GMisc.label_cast (List.hd ali#children) in
-          lbl#set_alignment ~x:0. ()
+          lbl#set_xalign 0.
         with _ ->
           prerr_endline ("No column widget for field " ^ f)
       end;

@@ -176,6 +176,7 @@ class label_skel : 'a obj ->
     method cursor_position : int
     method selection_bound : int
     method set_justify : Tags.justification -> unit
+    method set_label : string -> unit
     method set_line_wrap : bool -> unit
     method set_mnemonic_widget : widget option -> unit
     method set_pattern : string -> unit
@@ -188,6 +189,7 @@ class label_skel : 'a obj ->
     method set_yalign : float -> unit
     method set_ypad : int -> unit
     method justify : Tags.justification
+    method label : string
     method line_wrap : bool
     method mnemonic_keyval : int
     method mnemonic_widget : widget option
@@ -204,7 +206,7 @@ class label : Gtk.label obj ->
     method connect : widget_signals
   end
 val label :
-  ?text:string ->
+  ?label:string ->
   ?justify:Tags.justification ->
   ?line_wrap:bool ->
   ?use_markup:bool ->

@@ -108,9 +108,11 @@ let pixmap pm =
   Misc.all_params pl ~cont:(fun pl ?packing ?show () ->
     pack_return (new image (Image.create pl)) ~packing ~show)
 
-class label_skel obj = object
+class label_skel obj = object(self)
   inherit misc obj
   inherit label_props
+  method text = GtkProps.Label.get_text self#obj
+  method set_text = GtkProps.Label.set_text self#obj
 end
 
 class label obj = object

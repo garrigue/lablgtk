@@ -92,7 +92,7 @@ let main () =
   let new_my_button ~label:label ~left:left ~top:top =
       let str = String.make 1 keys.[label] in
       let btn = GButton.button ~packing:(attach ~left:left ~top:top) () in
-      let lbl = GMisc.label ~text:str ~packing:(btn#add) () in
+      let lbl = GMisc.label ~label:str ~packing:(btn#add) () in
       btn#connect#clicked ~callback:(abuttonClicked label lbl);
       btn
   in
@@ -107,7 +107,7 @@ let main () =
   let quit =
     GButton.button ~label:"Quit" ~packing:(attach ~left:4 ~top:2) () in
   quit#connect#clicked ~callback:window#destroy;
-  let message = GMisc.label ~text:"tron(?) game" ~packing:vbx#pack () in
+  let message = GMisc.label ~label:"tron(?) game" ~packing:vbx#pack () in
 
   let game_step () =
         let lx = lpos.x in let ly = lpos.y in

@@ -9,8 +9,8 @@ let dnd_source_window () =
   in   
   let evb = GBin.event_box ~border_width:0 ~packing:vbx#add () in
   let frm = GBin.frame ~shadow_type:`OUT ~packing:evb#add () in
-  let lbl = GMisc.label ~text:"hello" ~packing:frm#add () in
-  let lbl2 = GMisc.label ~text:"drag from here!" ~packing:vbx#add () in
+  let lbl = GMisc.label ~label:"hello" ~packing:frm#add () in
+  let lbl2 = GMisc.label ~label:"drag from here!" ~packing:vbx#add () in
   let targets = [ { target = "STRING"; flags = []; info = 0} ] in
   begin
     window#show ();
@@ -133,7 +133,7 @@ class fix_editor ~width ~height ~packing =
 
     method new_child ~name ~x ~y ~width ~height ~callback =
       let evb = GBin.event_box ~border_width:0 ~packing:fix#add () in
-      let lbl = GMisc.label ~text:name ~width ~height ~packing:evb#add () in
+      let lbl = GMisc.label ~label:name ~width ~height ~packing:evb#add () in
       evb#misc#realize ();
       fix#move evb#coerce ~x ~y;
       self#connect_signals ~ebox:evb ~widget:lbl#coerce ~callback;

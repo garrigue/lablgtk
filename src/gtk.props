@@ -143,7 +143,7 @@ class Misc abstract set wrap : Widget {
 }
 
 class Label set wrap : Misc {
-  "label"(text)          gchararray           : Read / Write
+  "label"	         gchararray           : Read / Write
   "justify"              GtkJustification     : Read / Write
   "wrap"(line_wrap)      gboolean             : Read / Write
   "use-markup"           gboolean             : Read / Write
@@ -155,6 +155,8 @@ class Label set wrap : Misc {
   "attributes"           PangoAttrList        : Read / Write
   "cursor-position"      gint                 : Read
   "selection-bound"      gint                 : Read
+  method get_text : "string"
+  method set_text : "string -> unit"
   signal copy_clipboard
   signal move_cursor : GtkMovementStep gint gboolean
   signal populate_popup : GtkMenu

@@ -6,7 +6,7 @@ let make_arrow_label combo ~label ~string =
   let item = GList.list_item () in (* no packing here, it blocks GTK *)
   let hbox = GPack.hbox ~spacing:3 ~packing:item#add () in
   GMisc.arrow ~kind:`RIGHT ~shadow:`OUT ~packing:hbox#pack ();
-  GMisc.label ~text:label ~packing:hbox#pack ();
+  GMisc.label ~label ~packing:hbox#pack ();
   combo#set_item_string item string;
   combo#list#add item;
   item
