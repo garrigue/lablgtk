@@ -86,6 +86,40 @@ void ml_raise_gerror(GError *err)
   raise_with_string (*exn, err->message);
 }
 
+void ml_g_log_func(const gchar *log_domain,
+                   GLogLevelFlags log_level,
+                   const gchar *message,
+                   gpointer data)
+{
+    value *clos_p = (value*)data;
+    callback2(*clos_p, Val_int(log_level), Val_string(message));
+}
+
+ML_1 (Log_level_val, , Val_int)
+
+value ml_g_log_set_handler (value domain, value levels, value clos)
+{
+    value *clos_p = ml_global_root_new (clos);
+    int id = g_log_set_handler (String_option_val(domain), Int_val(levels),
+                                ml_g_log_func, clos_p);
+    CAMLparam1(domain);
+    value ret = alloc_small(3,0);
+    Field(ret,0) = domain;
+    Field(ret,1) = Int_val(id);
+    Field(ret,2) = (value)clos_p;
+    CAMLreturn(ret);
+}
+
+value ml_g_log_remove_handler (value hnd)
+{
+    if (Field(hnd,2) != NULL) {
+        g_log_remove_handler (String_val(Field(hnd,0)), Int_val(Field(hnd,1)));
+        ml_global_root_destroy ((value*)Field(hnd,2));
+        Field(hnd,2) = NULL;
+    }
+    return Val_unit;
+}
+
 /* Main loop handling */
 
 /* for 1.3 compatibility */
