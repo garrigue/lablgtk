@@ -136,7 +136,7 @@ class tips_query_signals :
     method widget_selected :
       callback:(GObj.widget_wrapper option ->
                 text:string option ->
-		private:string option -> GdkEvent.Button.t -> bool) ->
+		private:string option -> GdkEvent.Button.t option -> bool) ->
       ?after:bool -> GtkSignal.id
   end
 

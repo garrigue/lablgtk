@@ -250,11 +250,9 @@ module CList = struct
   module Signals = struct
     open GtkSignal
     let marshal_select f argv =
-      let event =
-	try
+      let event : GdkEvent.Button.t option =
 	  let p = GtkArgv.get_pointer argv pos:2 in
-	  Some (GdkEvent.unsafe_copy p : GdkEvent.Button.t)
-	with Null_pointer -> None
+	  may_map fun:GdkEvent.unsafe_copy p
       in
       f row:(GtkArgv.get_int argv pos:0)
 	column:(GtkArgv.get_int argv pos:1) :event

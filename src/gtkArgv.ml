@@ -12,10 +12,9 @@ module Arg = struct
   external get_bool : t -> bool = "ml_gtk_arg_get_bool"
   external get_int : t -> int = "ml_gtk_arg_get_int"
   external get_float : t -> float = "ml_gtk_arg_get_float"
-  (* These 3 may raise [Null_pointer] *)
-  external get_string : t -> string = "ml_gtk_arg_get_string"
-  external get_pointer : t -> pointer = "ml_gtk_arg_get_pointer"
-  external get_object : t -> unit obj = "ml_gtk_arg_get_object"
+  external get_string : t -> string option = "ml_gtk_arg_get_string"
+  external get_pointer : t -> pointer option = "ml_gtk_arg_get_pointer"
+  external get_object : t -> unit obj option = "ml_gtk_arg_get_object"
   (* Safely set a result
      Beware: this is not the opposite of get, arguments and results
      are two different ways to use GtkArg. *)
@@ -35,11 +34,11 @@ let nth arg :pos =
   if pos < 0 || pos >= arg.nargs then invalid_arg "GtkArg.Vect.nth";
   shift arg.args :pos
 let result arg =
-  if arg.nargs < 0 then invalid_arg "GtkArg.Vect.result";
+  if arg.nargs < 0 then invalid_arg "GtkArgv.result";
   shift arg.args pos:arg.nargs
 external wrap_object : raw_obj -> unit obj = "Val_GtkObject"
 let referent arg =
-  if arg.referent == Obj.magic (-1) then invalid_arg "GtkArg.Vect.referent";
+  if arg.referent == Obj.magic (-1) then invalid_arg "GtkArgv.referent";
   wrap_object arg.referent
 let get_result_type arg = get_type (result arg)
 let get_type arg :pos = get_type (nth arg :pos)

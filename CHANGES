@@ -1,5 +1,8 @@
 $Id$
 
+1999.10.29
+  * changed GtkArgv.get_{string,pointer,object} to return option types
+
 1999.10.27
   * added radtest/CHANGES for cooperative editing on radtest
 

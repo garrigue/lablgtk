@@ -329,28 +329,23 @@ module TipsQuery = struct
 	 widget obj option ->
 	 text:string option -> private:string option -> unit) t =
       let marshal f argv =
-	f (try Some (Widget.cast (GtkArgv.get_object argv pos:0))
-	   with Null_pointer -> None)
-	  text:(try Some(GtkArgv.get_string argv pos:1)
-	        with Null_pointer -> None)
-	  private:(try Some(GtkArgv.get_string argv pos:2)
-	           with Null_pointer -> None)
+	f (may_map fun:Widget.cast (GtkArgv.get_object argv pos:0))
+	  text:(GtkArgv.get_string argv pos:1)
+	  private:(GtkArgv.get_string argv pos:2)
       in
       { name = "widget_entered"; marshaller = marshal }
     let widget_selected :
 	([> tipsquery],
 	 widget obj option ->
 	 text:string option ->
-	 private:string option -> GdkEvent.Button.t -> bool) t =
+	 private:string option -> GdkEvent.Button.t option -> bool) t =
       let marshal f argv =
 	let stop = 
-	  f (try Some (Widget.cast (GtkArgv.get_object argv pos:0))
-	     with Null_pointer -> None)
-	    text:(try Some(GtkArgv.get_string argv pos:1)
-	          with Null_pointer -> None)
-	    private:(try Some(GtkArgv.get_string argv pos:2)
-	             with Null_pointer -> None)
-	    (GdkEvent.unsafe_copy (GtkArgv.get_pointer argv pos:3)) in
+	  f (may_map fun:Widget.cast (GtkArgv.get_object argv pos:0))
+	    text:(GtkArgv.get_string argv pos:1)
+	    private:(GtkArgv.get_string argv pos:2)
+	    (may_map fun:GdkEvent.unsafe_copy
+	       (GtkArgv.get_pointer argv pos:3)) in
 	GtkArgv.set_result_bool argv stop in
       { name = "widget_selected"; marshaller = marshal }
   end

@@ -49,7 +49,7 @@ endif
 	$(COMPOPT) $<
 
 # Targets
-MLOBJS = utils.cmo property.cmo paste_parser.cmo paste_lexer.cmo \
+MLOBJS = utils.cmo property.cmo propwin.cmo paste_parser.cmo paste_lexer.cmo \
 	wpaste_parser.cmo wpaste_lexer.cmo \
 	treew.cmo load_parser.cmo load_lexer.cmo main.cmo
 MLSRC = paste_parser.ml paste_lexer.ml wpaste_parser.ml wpaste_lexer.ml \

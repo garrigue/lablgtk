@@ -161,22 +161,29 @@ module Widget = struct
 *)
   module Signals = struct
     open GtkSignal
-    let marshal f argv = f (cast (GtkArgv.get_object argv pos:0))
-    let marshal_opt f argv = f (try Some(cast (GtkArgv.get_object argv pos:0))
-	                        with Null_pointer -> None)
+    let marshal f argv =
+      match GtkArgv.get_object argv pos:0 with
+	Some p -> f (cast p)
+      |	None -> invalid_arg "GtkBase.Widget.Signals.marshal"
+    let marshal_opt f argv =
+      f (may_map fun:cast (GtkArgv.get_object argv pos:0))
     let marshal_drag1 f argv =
-      let p = GtkArgv.get_pointer argv pos:0 in
-      f (Obj.magic p : Gdk.drag_context)
+      match GtkArgv.get_pointer argv pos:0 with
+	Some p -> f (Obj.magic p : Gdk.drag_context)
+      |	None -> invalid_arg "GtkBase.Widget.Signals.marshal_drag1"
     let marshal_drag2 f argv =
-      let p = GtkArgv.get_pointer argv pos:0 in
-      f (Obj.magic p : Gdk.drag_context) time:(GtkArgv.get_int argv pos:1)
+      match GtkArgv.get_pointer argv pos:0 with
+	Some p ->
+	  f (Obj.magic p : Gdk.drag_context) time:(GtkArgv.get_int argv pos:1)
+      |	None -> invalid_arg "GtkBase.Widget.Signals.marshal_drag2"
     let marshal_drag3 f argv =
-      let p = GtkArgv.get_pointer argv pos:0 in
-      let res =
-	f (Obj.magic p : Gdk.drag_context) x:(GtkArgv.get_int argv pos:1)
-	  y:(GtkArgv.get_int argv pos:2) time:(GtkArgv.get_int argv pos:3) in
-      GtkArgv.set_result_bool argv res
-
+      match GtkArgv.get_pointer argv pos:0 with
+	Some p ->
+	  let res =
+	    f (Obj.magic p : Gdk.drag_context) x:(GtkArgv.get_int argv pos:1)
+	      y:(GtkArgv.get_int argv pos:2) time:(GtkArgv.get_int argv pos:3)
+	  in GtkArgv.set_result_bool argv res
+      |	None -> invalid_arg "GtkBase.Widget.Signals.marshal_drag3"
     let show : ([> widget],_) t =
       { name = "show"; marshaller = marshal_unit }
     let hide : ([> widget],_) t =
@@ -189,8 +196,9 @@ module Widget = struct
       { name = "realize"; marshaller = marshal_unit }
     let draw : ([> widget],_) t =
       let marshal f argv =
-	let p = GtkArgv.get_pointer argv pos:0 in
-	f (Obj.magic p : Gdk.Rectangle.t)
+	match GtkArgv.get_pointer argv pos:0 with
+	  Some p -> f (Obj.magic p : Gdk.Rectangle.t)
+	| None -> invalid_arg "GtkBase.Widget.Signals.marshal_draw"
       in { name = "draw"; marshaller = marshal }
     let draw_focus : ([> widget],_) t =
       { name = "draw_focus"; marshaller = marshal_unit }
@@ -215,26 +223,33 @@ module Widget = struct
     let drag_drop : ([> widget],_) t =
       { name = "drag_drop"; marshaller = marshal_drag3 }
     let drag_data_get : ([> widget],_) t =
-      let marshal f argv = 
-	let p = GtkArgv.get_pointer argv pos:0
-	and q = GtkArgv.get_pointer argv pos:1 in
-	f (Obj.magic p : Gdk.drag_context) (Obj.magic q : GtkData.Selection.t) 
-	  info:(GtkArgv.get_int argv pos:2) time:(GtkArgv.get_int argv pos:3)
+      let marshal f argv =
+	match GtkArgv.get_pointer argv pos:0, GtkArgv.get_pointer argv pos:1
+	with Some p, Some q ->
+	  f (Obj.magic p : Gdk.drag_context)
+	    (Obj.magic q : GtkData.Selection.t) 
+	    info:(GtkArgv.get_int argv pos:2)
+	    time:(GtkArgv.get_int argv pos:3)
+	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_get"
       in
       { name = "drag_data_get"; marshaller = marshal }
     let drag_data_received : ([> widget],_) t =
       let marshal f argv = 
-	let p = GtkArgv.get_pointer argv pos:0
-	and q = GtkArgv.get_pointer argv pos:3 in
-	f (Obj.magic p : Gdk.drag_context) x:(GtkArgv.get_int argv pos:1)
-	  y:(GtkArgv.get_int argv pos:2) (Obj.magic q : GtkData.Selection.t)
-	  info:(GtkArgv.get_int argv pos:4) time:(GtkArgv.get_int argv pos:5)
+	match GtkArgv.get_pointer argv pos:0, GtkArgv.get_pointer argv pos:3
+	with Some p, Some q ->
+	  f (Obj.magic p : Gdk.drag_context) x:(GtkArgv.get_int argv pos:1)
+	    y:(GtkArgv.get_int argv pos:2) (Obj.magic q : GtkData.Selection.t)
+	    info:(GtkArgv.get_int argv pos:4) time:(GtkArgv.get_int argv pos:5)
+	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_received"
       in
       { name = "drag_data_received"; marshaller = marshal }
 
     module Event = struct
       let marshal f argv =
-	let p = GtkArgv.get_pointer argv pos:0 in
+	let p =
+	  match GtkArgv.get_pointer argv pos:0 with Some p -> p
+	  | None -> invalid_arg "GtkBase.Widget.Event.marshal"
+	in
 	let ev = GdkEvent.unsafe_copy p in
 	GtkArgv.set_result_bool argv (f ev)
       let any : ([> widget], Gdk.Tags.event_type Gdk.event -> bool) t =
