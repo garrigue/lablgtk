@@ -42,16 +42,16 @@ Contents:
 
 How to run the examples:
 
-	./lablgtk -modern -w s examples/???.ml
+	./lablgtk -labels -w s examples/???.ml
 
   some examples (e.g. buttons.ml) may need to be run from the examples
   directory
 
-	../lablgtk -modern -w s -I .. ???.ml
+	../lablgtk -labels -w s -I .. ???.ml
 
 How to use the threaded toplevel:
 
-	% ./lablgtk_t -modern
+	% ./lablgtk_t -labels
 	        Objective Caml version 2.99+6 (2000/02/25)
 	
 	# let id = GtkThread.start ();;
