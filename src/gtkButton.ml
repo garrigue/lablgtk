@@ -71,15 +71,13 @@ end
 
 module RadioButton = struct
   let cast w : radio_button obj = Object.try_cast w "GtkRadioButton"
-  external create : group optaddr -> radio_button obj
+  external create : radio_button group -> radio_button obj
       = "ml_gtk_radio_button_new"
-  external create_with_label : group optaddr -> string -> radio_button obj
+  external create_with_label : radio_button group -> string -> radio_button obj
       = "ml_gtk_radio_button_new_with_label"
-  external group : [>`radio] obj -> group = "ml_gtk_radio_button_group"
-  external set_group : [>`radio] obj -> group -> unit
+  external set_group : [>`radio] obj -> radio_button group -> unit
       = "ml_gtk_radio_button_set_group"
-  let create ?:group ?:label () =
-    let group = optaddr group in
+  let create ?(:group = None) ?:label () =
     match label with None -> create group
     | Some label -> create_with_label group label
 end

@@ -83,11 +83,11 @@ class radio_button :
   object
     inherit toggle_button
     val obj : Gtk.radio_button obj
-    method group : group
-    method set_group : group -> unit
+    method group : Gtk.radio_button group
+    method set_group : Gtk.radio_button group -> unit
   end
 val radio_button :
-  ?group:group ->
+  ?group:Gtk.radio_button group ->
   ?label:string ->
   ?active:bool ->
   ?draw_indicator:bool ->

@@ -76,7 +76,7 @@ type gtk_class
 type accel_group
 
 type style
-type group
+type 'a group = 'a obj option
 
 type statusbar_message
 type statusbar_context
