@@ -7,11 +7,6 @@ let may ov f =
   | None -> ()
   | Some v -> f v
 
-let may_str os def = 
-  match os with
-  | "" -> def
-  | s -> s
-
 class gtkdoc =
   object (self)
     inherit Odoc_html.html
@@ -19,17 +14,20 @@ class gtkdoc =
     method prepare_header module_list =
       let f ?(nav=None) ?(comments=[]) t = 
 	let b = Buffer.create 1024 in
-	let link l t =
-	  Printf.bprintf b "<link rel=\"%s\" href=\"%s\">\n"
-	    l (fst (Odoc_html.Naming.html_files t)) in
+	let link l dest =
+	  Printf.bprintf b "<link rel=\"%s\" href=\"%s\">\n" l dest in
+	let link_file l dest =
+	  link l (fst (Odoc_html.Naming.html_files dest)) in
 	Buffer.add_string b "<head>\n" ;
         Buffer.add_string b style ;
 	link "Start" index ;
 	may nav
 	  (fun (pre_opt, post_opt, name) ->
-	    may pre_opt  (link "previous") ;
-	    may post_opt (link "next") ;
-            link "Up" (may_str (Odoc_info.Name.father name) index)
+	    may pre_opt  (link_file "previous") ;
+	    may post_opt (link_file "next") ;
+	    match Odoc_info.Name.father name with
+	    | "" -> link "Up" index
+	    | s  -> link_file "Up" s
 	  ) ;
 	Printf.bprintf b "<title>%s</title>\n</head>\n" t ;
 	Buffer.contents b
