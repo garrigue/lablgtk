@@ -368,7 +368,7 @@ object
     ?iter:iter -> ?default_editable:bool -> GData.clipboard -> unit
   (** @param default_editable default value is [true] *)
   method place_cursor : where:iter -> unit
-  method select_range : iter -> iter -> unit
+  method select_range : iter -> iter -> unit (** @since GTK 2.4 *)
   method remove_all_tags : start:iter -> stop:iter -> unit
   method remove_selection_clipboard : GData.clipboard -> unit
   method remove_tag : tag -> start:iter -> stop:iter -> unit
