@@ -18,10 +18,12 @@ class ['a] drawing w = object
   val w : 'a drawable = w
   method raw = w
   method set = gc_set ?gc
+  method point = Draw.point w gc
+  method line = Draw.line w gc
+  method rectangle = Draw.rectangle w gc
   method arc = Draw.arc w gc
-  method rectangle :x :y :width :height ?:filled =
-    Draw.rectangle w gc :x :y :width :height ?:filled
   method polygon = Draw.polygon w gc
+  method string s = Draw.string w gc string:s
 end
 
 class pixdraw parent:(w : _ #GtkObj.widget_skel) :width :height =
@@ -32,15 +34,24 @@ class pixdraw parent:(w : _ #GtkObj.widget_skel) :width :height =
 	(Pixmap.create window :width :height :depth) as pixmap
     val mask = new drawing (Bitmap.create window :width :height)
     method mask = mask
-    method arc :x :y :width :height ?:filled ?:start ?:angle =
-      pixmap#arc :x :y :width :height ?:filled ?:start ?:angle;
-      mask#arc :x :y :width :height ?:filled ?:start ?:angle;
+    method point :x :y =
+      pixmap#point :x :y;
+      mask#point :x :y
+    method line :x :y :x :y =
+      pixmap#line :x :y :x :y;
+      mask#line :x :y :x :y
     method rectangle :x :y :width :height ?:filled =
       pixmap#rectangle :x :y :width :height ?:filled;
       mask#rectangle :x :y :width :height ?:filled
+    method arc :x :y :width :height ?:filled ?:start ?:angle =
+      pixmap#arc :x :y :width :height ?:filled ?:start ?:angle;
+      mask#arc :x :y :width :height ?:filled ?:start ?:angle;
     method polygon l ?:filled =
       pixmap#polygon l ?:filled;
       mask#polygon l ?:filled
+    method string s :font :x :y =
+      pixmap#string s :font :x :y;
+      mask#string s :font :x :y
     initializer
       mask#set foreground:`Black;
       mask#rectangle x:0 y:0 :width :height filled:true;
