@@ -10,6 +10,16 @@ type alpha_mode = [ `BILEVEL | `FULL ]
 type interpolation = [ `NEAREST | `TILES | `BILINEAR | `HYPER ]
 type uint8 = int
 
+type gdkpixbuferror =
+  | ERROR_CORRUPT_IMAGE
+  | ERROR_INSUFFICIENT_MEMORY
+  | ERROR_BAD_OPTION
+  | ERROR_UNKNOWN_TYPE
+  | ERROR_UNSUPPORTED_OPERATION
+  | ERROR_FAILED
+exception GdkPixbufError of gdkpixbuferror * string
+let () = Callback.register_exception "gdk_pixbuf_error" (GdkPixbufError (ERROR_CORRUPT_IMAGE, ""))
+
 (* Accessors *)
 
 external get_n_channels : pixbuf -> int = "ml_gdk_pixbuf_get_n_channels"
@@ -42,6 +52,8 @@ let create ~width ~height ?(bits=8) ?(colorspace=`RGB) ?(has_alpha=false) () =
 let cast o : pixbuf = Gobject.try_cast o "GdkPixbuf"
 
 external copy : pixbuf -> pixbuf = "ml_gdk_pixbuf_copy" 
+external subpixbuf : pixbuf -> src_x:int -> src_y:int -> width:int -> height:int -> pixbuf 
+  = "ml_gdk_pixbuf_new_subpixbuf"
 external from_file : string -> pixbuf = "ml_gdk_pixbuf_new_from_file"
 external from_xpm_data : string array -> pixbuf
   = "ml_gdk_pixbuf_new_from_xpm_data"
@@ -128,6 +140,12 @@ let add_alpha ?transparent pb =
   match transparent with None -> _add_alpha pb ~subst:false ~r:0 ~g:0 ~b:0
   | Some (r, g, b) -> _add_alpha pb ~subst:true ~r ~g ~b
 
+external fill : pixbuf -> int32 -> unit = "ml_gdk_pixbuf_fill"
+external _saturate_and_pixelate : pixbuf -> dest:pixbuf -> saturation:float -> pixelate:bool -> unit
+    = "ml_gdk_pixbuf_saturate_and_pixelate"
+let saturate_and_pixelate ~dest ~saturation ~pixelate src =
+  _saturate_and_pixelate src ~dest ~saturation ~pixelate
+
 external _copy_area :
   src:pixbuf -> src_x:int -> src_y:int -> width:int -> height:int ->
   dest:pixbuf -> dest_x:int -> dest_y:int -> unit
@@ -183,3 +201,8 @@ let composite ~dest ~alpha ?(dest_x=0) ?(dest_y=0) ?width ?height
   in
   _composite ~src ~dest ~dest_x ~dest_y ~width ~height ~ofs_x ~ofs_y ~scale_x
     ~scale_y ~interp ~alpha
+
+(* Saving *)
+
+external save : filename:string -> typ:string -> ?options:(string * string) list -> pixbuf -> unit
+    = "ml_gdk_pixbuf_save"

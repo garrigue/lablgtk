@@ -285,7 +285,29 @@ else
     USE_GNOMECANVAS=
 fi
 
-PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG)
+FORCE_GNOMEUI=no
+AC_ARG_WITH(gnomeui,
+        [  --without-gnomeui   override autodetected libgnomeui support],
+	USE_GNOMEUI=$withval ; FORCE_GNOMEUI=yes,
+	USE_GNOMEUI=yes)
+
+if test $USE_GNOMEUI = yes ; then
+    PKG_CHECK_MODULES(GNOMEUI,libgnomeui-2.0,,
+	if test $FORCE_GNOMEUI = yes ; then
+	AC_MSG_ERROR(libgnomeui enforced but support not found)
+	else
+	AC_MSG_RESULT(no)
+	USE_GNOMEUI=no
+	fi)
+fi
+if test $USE_GNOMEUI = yes ; then
+    USE_GNOMEUI=1
+    GNOMEUIPKG=libgnomeui-2.0
+else
+    USE_GNOMEUI=
+fi
+
+PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG)
 
 AC_ARG_ENABLE(debug,
         [  --enable-debug          enable debug mode],
@@ -315,14 +337,9 @@ AC_SUBST(USE_GNOME)
 AC_SUBST(USE_GLADE)
 AC_SUBST(USE_RSVG)
 AC_SUBST(USE_GNOMECANVAS)
+AC_SUBST(USE_GNOMEUI)
 AC_SUBST(USE_CC)
-AC_SUBST(DEBUG)
-AC_SUBST(GTKALL_CFLAGS)
-AC_SUBST(GTK_LIBS)
-AC_SUBST(GTKGL_LIBS)
-AC_SUBST(GLADE_LIBS)
-AC_SUBST(RSVG_LIBS)
-AC_SUBST(GNOMECANVAS_LIBS)
+AC_SUBST(DEBUG)			  
 
 # Finally create the config.make from config.make.in
 AC_OUTPUT(config.make)

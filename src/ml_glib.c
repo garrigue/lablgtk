@@ -88,9 +88,12 @@ CAMLprim value ml_g_set_print_handler (value clos)
 void ml_raise_gerror(GError *err)
 {
   static value * exn = NULL;
+  value msg;
   if (exn == NULL)
       exn = caml_named_value ("gerror");
-  raise_with_string (*exn, err->message);
+  msg = copy_string(err->message);
+  g_error_free(err);
+  raise_with_arg (*exn, msg);
 }
 
 void ml_g_log_func(const gchar *log_domain,
