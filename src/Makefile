@@ -57,8 +57,8 @@ endif
 ifdef USE_GNOME
 MLLIBS += lablgnome.cma
 CLIBS += liblablgnome.a
-GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo
-GNOMECOBJS = ml_gtkxmhtml.o
+GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo gdkPixbuf.cmo
+GNOMECOBJS = ml_gtkxmhtml.o ml_gdkpixbuf.o
 endif
 
 ifdef USE_GLADE
@@ -208,5 +208,6 @@ ml_gdk.o: gdk_tags.h ml_gdk.h ml_gpointer.h wrappers.h
 ml_gtkgl.o: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gtkxmhtml.o: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gpointer.o: ml_gpointer.h
+ml_gdkpixbuf.o: gdkpixbuf_tags.h ml_gdk.h wrappers.h ml_gpointer.h
 
 include .depend

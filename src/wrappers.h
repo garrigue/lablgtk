@@ -109,6 +109,15 @@ value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
 		      conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8), \
 		      conv9(arg9), conv10(arg10), conv11(arg11), \
 		      conv12(arg12))); }
+#define ML_13(cname, conv1, conv2, conv3, conv4, conv5, conv6, conv7, conv8, \
+	      conv9, conv10, conv11, conv12, conv13, conv) \
+value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
+		  value arg6, value arg7, value arg8, value arg9, value arg10,\
+		  value arg11, value arg12, value arg13) \
+{ return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
+		      conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8), \
+		      conv9(arg9), conv10(arg10), conv11(arg11), \
+		      conv12(arg12), conv13(arg13))); }
 
 /* Use with care: needs the argument index */
 #define Ignore(x)
@@ -145,6 +154,10 @@ value cname##_bc (value *argv, int argn) \
 value cname##_bc (value *argv, int argn) \
 { return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5],argv[6], \
 	       argv[7],argv[8],argv[9],argv[10],argv[11]); }
+#define ML_bc13(cname) \
+value cname##_bc (value *argv, int argn) \
+{ return cname(argv[0],argv[1],argv[2],argv[3],argv[4],argv[5],argv[6], \
+	       argv[7],argv[8],argv[9],argv[10],argv[11],argv[12]); }
 
 /* result conversion */
 #define Unit(x) ((x), Val_unit)

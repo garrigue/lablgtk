@@ -1,5 +1,8 @@
 $Id$
 
+2002.07.01
+  * add GdkPixbuf support
+
 2002.06.20
   * add all color settings in GtkData.Style/GObj.style
     (requested by N. Raynaud)

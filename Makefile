@@ -16,6 +16,7 @@ RANLIB = `which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/
 GTK_CONFIG = gtk-config
 GNOME_CONFIG = gnome-config
 GLADE_CONFIG = libglade-config
+GDK_PIXBUF_CONFIG = gdk-pixbuf-config
 
 ifdef USE_GNOME
 ifdef USE_GLADE
@@ -24,7 +25,7 @@ GLADELIBS = `$(GLADE_CONFIG) --libs gnome`
 else
 GTKCFLAGS = `$(GNOME_CONFIG) --cflags gnome`
 endif
-GNOMELIBS = `$(GNOME_CONFIG) --libs gtkxmhtml`
+GNOMELIBS = `$(GNOME_CONFIG) --libs gtkxmhtml` `$(GDK_PIXBUF_CONFIG) --libs`
 else
 ifdef USE_GLADE
 GTKCFLAGS = `$(GLADE_CONFIG) --cflags gtk`
