@@ -40,7 +40,11 @@ else
 CFLAGS = -O -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS $(GTKCFLAGS)
 endif
 
+ifeq ($(THREADS_LIB),system)
 THFLAGS = -thread
+else
+THFLAGS = -vmthread
+endif
 THLINK = unix.cma threads.cma
 
 ifdef USE_CC
