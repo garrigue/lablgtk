@@ -102,6 +102,12 @@ RSVGCOBJS = ml_rsvg$(XO)
 $(RSVGCOBJS) : CFLAGS+=$(HAVE_SVGZ)
 endif
 
+ifdef USE_GTKSPELL
+MLLIBS += lablgtkspell.cma
+CLIBS += liblablgtkspell$(XA)
+GTKSPELLMLOBJS = gtkSpell.cmo
+GTKSPELLCOBJS = ml_gtkspell$(XO)
+endif
 
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c $(XO) .d$(XO) .var .h .opt .def .ml4
@@ -163,7 +169,7 @@ THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
 ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
-	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) \
+	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) $(GTKSPELLMLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
@@ -333,6 +339,14 @@ lablpanel.cmxa: liblablpanel$(XA) $(PANELMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablpanel \
 	    $(PANELMLOBJS:.cmo=.cmx) $(PANELLIBS)
 
+liblablgtkspell$(XA): $(GTKSPELLCOBJS)
+	$(LIBRARIAN) -o lablgtkspell $(GTKSPELLCOBJS) $(GTKSPELLLIBS)
+lablgtkspell.cma: liblablgtkspell$(XA) $(GTKSPELLMLOBJS)
+	$(LIBRARIAN) -o lablgtkspell $(GTKSPELLMLOBJS) $(GTKSPELLLIBS)
+lablgtkspell.cmxa: liblablgtkspell$(XA) $(GTKSPELLMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtkspell \
+	    $(GTKSPELLMLOBJS:.cmo=.cmx) $(GTKSPELLLIBS)
+
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
@@ -395,6 +409,9 @@ DOCFILES += gnomeDruid.ml gnoDruid.mli
 endif
 ifdef USE_PANEL
 DOCFILES += panel.mli
+endif
+ifdef USE_GTKSPELL
+DOCFILES += gtkSpell.mli
 endif
 
 OCAMLDOC = ocamldoc
