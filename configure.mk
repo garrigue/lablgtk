@@ -38,6 +38,7 @@ config.make:
 	@echo CC=$(CC) >> config.make
 	@echo RANLIB=`$(GETRANLIB)` >> config.make
 	@echo LIBDIR=$(LIBDIR) >> config.make
+	@echo BINDIR=`$(GETBINDIR)` >> config.make
 	@echo INSTALLDIR=$(INSTALLDIR) >> config.make
 	@echo GTKCFLAGS=`$(GTKGETCFLAGS)` >> config.make
 	@echo GTKLIBS=`$(GTKGETLIBS)` | \
