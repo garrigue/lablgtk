@@ -164,7 +164,7 @@ let insert_text (buffer:GText.buffer) =
 
 let rec find_anchor (iter : GText.iter) =
   if iter#is_end then false else
-  match iter#forward_char#contents with
+  match iter#nocopy#forward_char ; iter#contents with
     `CHILD _ -> true
   | _ -> find_anchor iter
 

@@ -60,13 +60,46 @@ type contents =
     | `CHILD of child_anchor
     | `UNKNOWN ]
 
+class nocopy_iter it =
+object(self)
+  val it = (it:textiter)
+  method forward_char = Iter.forward_char it
+  method backward_char = Iter.backward_char it
+  method forward_chars n = Iter.forward_chars it n
+  method backward_chars n = Iter.backward_chars it n
+  method forward_line = Iter.forward_line it
+  method backward_line = Iter.backward_line it
+  method forward_lines n = Iter.forward_lines it n
+  method backward_lines n = Iter.backward_lines it n
+  method forward_word_end = Iter.forward_word_end it
+  method forward_word_ends n = Iter.forward_word_ends it n
+  method backward_word_start = Iter.backward_word_start it
+  method backward_word_starts n = Iter.backward_word_starts it n
+  method forward_cursor_position = Iter.forward_cursor_position it
+  method backward_cursor_position = Iter.backward_cursor_position it
+  method forward_cursor_positions n = Iter.forward_cursor_positions it n
+  method backward_cursor_positions n = Iter.backward_cursor_positions it n
+  method forward_sentence_end = Iter.forward_sentence_end it
+  method backward_sentence_start = Iter.backward_sentence_start it
+  method forward_sentence_ends n = Iter.forward_sentence_ends it n
+  method backward_sentence_starts n = Iter.backward_sentence_starts it n
+  method forward_to_end = Iter.forward_to_end it
+  method forward_to_line_end = Iter.forward_to_line_end it
+  method forward_to_tag_toggle (tag : tag option) = 
+    Iter.forward_to_tag_toggle it (may_map tag ~f:(fun t -> t#as_tag))
+  method backward_to_tag_toggle (tag : tag option) = 
+    Iter.backward_to_tag_toggle it (may_map tag ~f:(fun t -> t#as_tag))
+end
+
 class iter it =
 object (self)
+  val nocopy = new nocopy_iter it
   val it = (it: textiter)
+  method nocopy = nocopy 
   method as_textiter = it
   method copy = new iter (Iter.copy it)
-  method buffer = Iter.get_buffer it
 
+  method buffer = Iter.get_buffer it
   method offset = Iter.get_offset it
   method line = Iter.get_line it
   method line_offset = Iter.get_line_offset it
@@ -118,27 +151,26 @@ object (self)
   method is_end = Iter.is_end it
   method is_start = Iter.is_start it
 
-  method forward_char = Iter.forward_char it; self
-  method backward_char = Iter.backward_char it; self
-  method forward_chars n = Iter.forward_chars it n; self
-  method backward_chars n = Iter.backward_chars it n; self
-  method forward_line = Iter.forward_line it; self
-  method backward_line = Iter.backward_line it; self
-  method forward_lines n = Iter.forward_lines it n; self
-  method backward_lines n = Iter.backward_lines it n; self
-  method forward_word_end = Iter.forward_word_end it; self
-  method forward_word_ends n = Iter.forward_word_ends it n; self
-  method backward_word_start = Iter.backward_word_start it; self
-  method backward_word_starts n = Iter.backward_word_starts it n; self
-  method forward_cursor_position = Iter.forward_cursor_position it; self
-  method backward_cursor_position = Iter.backward_cursor_position it; self
-  method forward_cursor_positions n = Iter.forward_cursor_positions it n; self
-  method backward_cursor_positions n =
-    Iter.backward_cursor_positions it n; self
-  method forward_sentence_end = Iter.forward_sentence_end it; self
-  method backward_sentence_start = Iter.backward_sentence_start it; self
-  method forward_sentence_ends n = Iter.forward_sentence_ends it n; self
-  method backward_sentence_starts n = Iter.backward_sentence_starts it n; self
+  method forward_char = let s = self#copy in ignore s#nocopy#forward_char; s
+  method backward_char = let s = self#copy in ignore (s#nocopy#backward_char); s
+  method forward_chars n = let s = self#copy in ignore (s#nocopy#forward_chars n); s
+  method backward_chars n = let s = self#copy in ignore (s#nocopy#backward_chars n); s
+  method forward_line = let s = self#copy in ignore (s#nocopy#forward_line ); s
+  method backward_line = let s = self#copy in ignore (s#nocopy#backward_line ); s
+  method forward_lines n = let s = self#copy in ignore (s#nocopy#forward_lines  n); s
+  method backward_lines n = let s = self#copy in ignore (s#nocopy#backward_lines  n); s
+  method forward_word_end = let s = self#copy in ignore (s#nocopy#forward_word_end ); s
+  method forward_word_ends n = let s = self#copy in ignore (s#nocopy#forward_word_ends  n); s
+  method backward_word_start = let s = self#copy in ignore (s#nocopy#backward_word_start ); s
+  method backward_word_starts n = let s = self#copy in ignore (s#nocopy#backward_word_starts  n); s
+  method forward_cursor_position = let s = self#copy in ignore (s#nocopy#forward_cursor_position ); s
+  method backward_cursor_position = let s = self#copy in ignore (s#nocopy#backward_cursor_position ); s
+  method forward_cursor_positions n = let s = self#copy in ignore (s#nocopy#forward_cursor_positions  n); s
+  method backward_cursor_positions n = let s = self#copy in ignore (s#nocopy#backward_cursor_positions  n); s
+  method forward_sentence_end = let s = self#copy in ignore (s#nocopy#forward_sentence_end ); s
+  method backward_sentence_start = let s = self#copy in ignore (s#nocopy#backward_sentence_start ); s
+  method forward_sentence_ends n = let s = self#copy in ignore (s#nocopy#forward_sentence_ends  n); s
+  method backward_sentence_starts n = let s = self#copy in ignore (s#nocopy#backward_sentence_starts  n); s
 
   method set_offset = Iter.set_offset it
   method set_line = Iter.set_line it
@@ -147,19 +179,19 @@ object (self)
   method set_visible_line_index = Iter.set_visible_line_index it
   method set_visible_line_offset = Iter.set_visible_line_offset it
 
-  method forward_to_end = Iter.forward_to_end it; self
-  method forward_to_line_end = Iter.forward_to_line_end it; self
+  method forward_to_end = let s = self#copy in ignore (s#nocopy#forward_to_end ); s
+  method forward_to_line_end = let s = self#copy in ignore (s#nocopy#forward_to_line_end ); s
   method forward_to_tag_toggle (tag : tag option) = 
-    Iter.forward_to_tag_toggle it (may_map tag ~f:(fun t -> t#as_tag)); self
+    let s = self#copy in ignore (s#nocopy#forward_to_tag_toggle tag); s
   method backward_to_tag_toggle (tag : tag option) = 
-    Iter.backward_to_tag_toggle it (may_map tag ~f:(fun t -> t#as_tag)); self
+    let s = self#copy in ignore (s#nocopy#backward_to_tag_toggle tag); s
 
   method equal (a:iter) = Iter.equal it a#as_textiter
   method compare (a:iter) = Iter.compare it a#as_textiter
   method in_range ~(start:iter) ~(stop:iter)  = 
     Iter.in_range it start#as_textiter stop#as_textiter
 
-  method forward_search ?flags ?(limit : iter option) s =
+ method forward_search ?flags ?(limit:iter option) s =
     may_map (Iter.forward_search it s ?flags
                (may_map limit ~f:(fun t -> t#as_textiter)))
       ~f:(fun (s,t) -> new iter s, new iter t)
@@ -167,6 +199,7 @@ object (self)
     may_map (Iter.backward_search it s ?flags
                (may_map limit ~f:(fun t -> t#as_textiter)))
       ~f:(fun (s,t) -> new iter s, new iter t)
+
   method forward_find_char ?(limit : iter option) f = 
     Iter.forward_find_char it f (may_map limit ~f:(fun t -> t#as_textiter))
   method backward_find_char ?(limit : iter option) f = 

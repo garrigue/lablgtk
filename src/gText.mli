@@ -44,30 +44,64 @@ type contents =
   | `CHILD of child_anchor
   | `UNKNOWN ]
 
-(* Movement functions return self for ease-of-use, but beware of aliasing.
-   By default behaviour is _not_ functional. You must use [#copy] to
-   create a new iterator *)
+(* 
+   Movement functions returning an iter are truly functional i.e. the returned iter shares nothing 
+   with the originale one.
+   If you need to move some iter in an imperative way use [#nocopy#...].
+*)
+
+class nocopy_iter : 
+  textiter -> 
+object
+  val it : Gtk.textiter
+  method backward_char : bool
+  method backward_chars : int -> bool
+  method backward_cursor_position : bool
+  method backward_cursor_positions : int -> bool
+  method backward_line : bool
+  method backward_lines : int -> bool
+  method backward_sentence_start : bool
+  method backward_sentence_starts : int -> bool
+  method backward_to_tag_toggle : tag option -> bool
+  method backward_word_start : bool
+  method backward_word_starts : int -> bool
+  method forward_char : bool
+  method forward_chars : int -> bool
+  method forward_cursor_position : bool
+  method forward_cursor_positions : int -> bool
+  method forward_line : bool
+  method forward_lines : int -> bool
+  method forward_sentence_end : bool
+  method forward_sentence_ends : int -> bool
+  method forward_to_end : unit
+  method forward_to_tag_toggle : tag option -> bool
+  method forward_word_end : bool
+  method forward_word_ends : int -> bool
+  method forward_to_line_end : bool
+end 
 
 class iter :
   textiter ->
 object ('self)
   val it : textiter
+  val nocopy : nocopy_iter
   method as_textiter : textiter
   method copy : iter
-  method backward_char : 'self
-  method backward_chars : int -> 'self
-  method backward_cursor_position : 'self
-  method backward_cursor_positions : int -> 'self
+  method nocopy : nocopy_iter
+  method backward_char : iter
+  method backward_chars : int -> iter
+  method backward_cursor_position : iter
+  method backward_cursor_positions : int -> iter
   method backward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
-  method backward_line : 'self
-  method backward_lines : int -> 'self
+  method backward_line : iter
+  method backward_lines : int -> iter
   method backward_search : ?flags:Gtk.Tags.text_search_flag list ->
     ?limit:iter -> string -> (iter * iter) option
-  method backward_sentence_start : 'self
-  method backward_sentence_starts : int -> 'self
-  method backward_to_tag_toggle : tag option -> 'self
-  method backward_word_start : 'self
-  method backward_word_starts : int -> 'self
+  method backward_sentence_start : iter
+  method backward_sentence_starts : int -> iter
+  method backward_to_tag_toggle : tag option -> iter
+  method backward_word_start : iter
+  method backward_word_starts : int -> iter
   method begins_tag : tag option -> bool
   method buffer : textbuffer
   method bytes_in_line : int
@@ -82,22 +116,22 @@ object ('self)
   method ends_tag : tag option -> bool
   method ends_word : bool
   method equal : iter -> bool
-  method forward_char : 'self
-  method forward_chars : int -> 'self
-  method forward_cursor_position : 'self
-  method forward_cursor_positions : int -> 'self
+  method forward_char : iter
+  method forward_chars : int -> iter
+  method forward_cursor_position : iter
+  method forward_cursor_positions : int -> iter
   method forward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
-  method forward_line : 'self
-  method forward_lines : int -> 'self
+  method forward_line : iter
+  method forward_lines : int -> iter
   method forward_search : ?flags:Gtk.Tags.text_search_flag list ->
     ?limit:iter -> string -> (iter * iter) option
-  method forward_sentence_end : 'self
-  method forward_sentence_ends : int -> 'self
-  method forward_to_end : 'self
-  method forward_to_line_end : 'self
-  method forward_to_tag_toggle : tag option -> 'self
-  method forward_word_end : 'self
-  method forward_word_ends : int -> 'self
+  method forward_sentence_end : iter
+  method forward_sentence_ends : int -> iter
+  method forward_to_end : iter
+  method forward_to_line_end : iter
+  method forward_to_tag_toggle : tag option -> iter
+  method forward_word_end : iter
+  method forward_word_ends : int -> iter
   method get_slice : stop:iter -> string
   method get_text : stop:iter -> string
   method get_toggled_tags : bool -> tag list
@@ -129,6 +163,7 @@ object ('self)
   method visible_line_index : int
   method visible_line_offset : int
 end
+
 val as_textiter : iter -> textiter
 
 class tagtable_signals : ([> `texttagtable] as 'b) obj ->
