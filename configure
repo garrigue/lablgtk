@@ -806,6 +806,7 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-libdir=/path     install libs in /path/lablgtk2 and /path/stublibs
+  --with-threads=(yes|system|vm|no)  which threads to use
   --without-gl            override autodetected GtkGLArea support. Requires LablGL
   --without-glade         override autodetected libglade support
   --without-rsvg          override autodetected librsvg support
@@ -1838,16 +1839,32 @@ fi
 
 
 # Check for which kind of threads is used
-THREADS_LIB="no"
 echo "$as_me:$LINENO: checking for ocaml threads" >&5
 echo $ECHO_N "checking for ocaml threads... $ECHO_C" >&6
-if test -r $OCAMLLIB/threads/threads.cma; then
+
+# Check whether --with-threads or --without-threads was given.
+if test "${with_threads+set}" = set; then
+  withval="$with_threads"
+  THREADS_LIB="$withval"
+else
+  THREADS_LIB="yes"
+fi;
+if (test "$THREADS_LIB" = yes || test "$THREADS_LIB" = system) && \
+   test -r $OCAMLLIB/threads/threads.cma; then
   THREADS_LIB="system"
-elif test -r $OCAMLLIB/vmthreads/stdlib.cma; then
-  THREADS_LIB="byte"
+elif (test "$THREADS_LIB" = yes || test "$THREADS_LIB" = vm) && \
+   test -r $OCAMLLIB/vmthreads/stdlib.cma; then
+  THREADS_LIB="vm"
+elif test "$THREADS_LIB" = yes || test "$THREADS_LIB" = no; then
+  THREADS_LIB="no"
+else
+  echo; { { echo "$as_me:$LINENO: error: Cannot use $THREADS_LIB threads" >&5
+echo "$as_me: error: Cannot use $THREADS_LIB threads" >&2;}
+   { (exit 1); exit 1; }; }
 fi
-echo "$as_me:$LINENO: result: $THREADS_LIB" >&5
-echo "${ECHO_T}$THREADS_LIB" >&6
+echo "$as_me:$LINENO: result: use $THREADS_LIB threads" >&5
+echo "${ECHO_T}use $THREADS_LIB threads" >&6
+
 # Check for dll support
 HAS_DLL_SUPPORT="no"
 echo "$as_me:$LINENO: checking for ocaml dll support" >&5
@@ -5294,6 +5311,7 @@ chmod a-w config.make
 
 
 echo ; echo "LablGTK configuration:"
+echo "	threads		$THREADS_LIB"
 
 echo -n "	GtkGLArea	"
 if test -n "$USE_GTKGL"

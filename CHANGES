@@ -1,5 +1,8 @@
 $Id$
 
+2005.02.17 [Jacques]
+  * allow using vmthreads
+
 2005.02.07 [Olivier]
   * GTree.Path.is_prev now returns bool (T. Kurt Bond)
 

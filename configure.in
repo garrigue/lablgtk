@@ -160,14 +160,24 @@ fi
 AC_SUBST(ODOC_DEF)
 
 # Check for which kind of threads is used
-THREADS_LIB="no"
 AC_MSG_CHECKING(for ocaml threads)
-if test -r $OCAMLLIB/threads/threads.cma; then
+AC_ARG_WITH(threads,
+        [  --with-threads=(yes|system|vm|no)  which threads to use ],
+        THREADS_LIB="$withval",
+        THREADS_LIB="yes")
+if (test "$THREADS_LIB" = yes || test "$THREADS_LIB" = system) && \
+   test -r $OCAMLLIB/threads/threads.cma; then
   THREADS_LIB="system"
-elif test -r $OCAMLLIB/vmthreads/stdlib.cma; then
-  THREADS_LIB="byte"
+elif (test "$THREADS_LIB" = yes || test "$THREADS_LIB" = vm) && \
+   test -r $OCAMLLIB/vmthreads/stdlib.cma; then
+  THREADS_LIB="vm"
+elif test "$THREADS_LIB" = yes || test "$THREADS_LIB" = no; then
+  THREADS_LIB="no"
+else
+  echo; AC_MSG_ERROR(Cannot use $THREADS_LIB threads)
 fi
-AC_MSG_RESULT($THREADS_LIB)
+AC_MSG_RESULT(use $THREADS_LIB threads)
+
 # Check for dll support
 HAS_DLL_SUPPORT="no"
 AC_MSG_CHECKING(for ocaml dll support)
@@ -327,6 +337,7 @@ else if test "$FORCE_$2" = "yes"
 fi])
 
 echo ; echo "LablGTK configuration:"
+echo "	threads		$THREADS_LIB"
 CONF_SUMMARY(GtkGLArea, GTKGL)
 CONF_SUMMARY(libglade, GLADE)
 CONF_SUMMARY(librsvg , RSVG)
