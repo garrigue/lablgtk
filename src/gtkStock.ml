@@ -3,27 +3,88 @@
 open Gobject
 open Gtk
 
-type gtk_stock_id = [ `DIALOG_INFO | `DIALOG_WARNING
-  | `DIALOG_ERROR | `DIALOG_QUESTION | `DND | `DND_MULTIPLE
-  | `ADD | `APPLY | `BOLD | `CANCEL | `CDROM | `CLEAR 
-  | `CLOSE | `COLOR_PICKER | `CONVERT | `COPY | `CUT 
-  | `DELETE | `EXECUTE | `FIND | `FIND_AND_REPLACE 
-  | `FLOPPY | `GOTO_BOTTOM | `GOTO_FIRST | `GOTO_LAST 
-  | `GOTO_TOP | `GO_BACK | `GO_DOWN | `GO_FORWARD
-  | `GO_UP | `HELP | `HOME | `INDEX | `ITALIC
-  | `JUMP_TO | `JUSTIFY_CENTER | `JUSTIFY_FILL
-  | `JUSTIFY_LEFT | `JUSTIFY_RIGHT | `MISSING_IMAGE
-  | `NEW | `NO | `OK | `OPEN | `PASTE | `PREFERENCES
-  | `PRINT | `PRINT_PREVIEW | `PROPERTIES | `QUIT
-  | `REDO | `REFRESH | `REMOVE | `REVERT_TO_SAVED
-  | `SAVE | `SAVE_AS | `SELECT_COLOR | `SELECT_FONT
-  | `SORT_ASCENDING | `SORT_DESCENDING | `SPELL_CHECK
-  | `STOP | `STRIKETHROUGH | `UNDELETE | `UNDERLINE | `UNDO
-  | `YES | `ZOOM_100 | `ZOOM_FIT | `ZOOM_IN  | `ZOOM_OUT]
+(** Stock Items: prebuilt common menu/toolbar items and corresponding icons *)
+
+type gtk_stock_id = [
+  | `DIALOG_AUTHENTICATION	(** since GTK 2.4 *)
+  | `DIALOG_INFO 
+  | `DIALOG_WARNING 
+  | `DIALOG_ERROR 
+  | `DIALOG_QUESTION 
+  | `DND 
+  | `DND_MULTIPLE 
+  | `ADD 
+  | `APPLY 
+  | `BOLD 
+  | `CANCEL 
+  | `CDROM 
+  | `CLEAR 
+  | `CLOSE 
+  | `COLOR_PICKER 		(** since GTK 2.2 *)
+  | `CONVERT 
+  | `COPY 
+  | `CUT 
+  | `DELETE 
+  | `EXECUTE 
+  | `FIND 
+  | `FIND_AND_REPLACE 
+  | `FLOPPY 
+  | `GOTO_BOTTOM 
+  | `GOTO_FIRST 
+  | `GOTO_LAST 
+  | `GOTO_TOP 
+  | `GO_BACK 
+  | `GO_DOWN 
+  | `GO_FORWARD 
+  | `GO_UP 
+  | `HARDDISK 			(** since GTK 2.4 *)
+  | `HELP 
+  | `HOME 
+  | `INDEX 
+  | `INDENT 			(** since GTK 2.4 *)
+  | `UNINDENT 			(** since GTK 2.4 *)
+  | `ITALIC 
+  | `JUMP_TO 
+  | `JUSTIFY_CENTER 
+  | `JUSTIFY_FILL 
+  | `JUSTIFY_LEFT 
+  | `JUSTIFY_RIGHT 
+  | `MISSING_IMAGE 
+  | `NETWORK 			(** since GTK 2.4 *)
+  | `NEW 
+  | `NO 
+  | `OK 
+  | `OPEN 
+  | `PASTE 
+  | `PREFERENCES 
+  | `PRINT 
+  | `PRINT_PREVIEW 
+  | `PROPERTIES 
+  | `QUIT 
+  | `REDO 
+  | `REFRESH 
+  | `REMOVE 
+  | `REVERT_TO_SAVED 
+  | `SAVE 
+  | `SAVE_AS 
+  | `SELECT_COLOR 
+  | `SELECT_FONT 
+  | `SORT_ASCENDING 
+  | `SORT_DESCENDING 
+  | `SPELL_CHECK 
+  | `STOP 
+  | `STRIKETHROUGH 
+  | `UNDELETE 
+  | `UNDERLINE 
+  | `UNDO 
+  | `YES 
+  | `ZOOM_100 
+  | `ZOOM_FIT 
+  | `ZOOM_IN 
+  | `ZOOM_OUT 
+]
 
 type id = [gtk_stock_id | `STOCK of string]
-
-(* awk '/^#define GTK_STOCK_/ { sub(/GTK_STOCK_/, "", $2) ; print "| `" $2, "->", $3 }' ~/garnome/include/gtk-2.0/gtk/gtkstock.h *)
 
 let id_table = Hashtbl.create 37
 let convert_id : id -> string = function
@@ -37,9 +98,13 @@ let conv =
     inj = (fun id -> `STRING (Some (convert_id id))) }
 
 
+(* awk '/^#define GTK_STOCK_/ { sub(/GTK_STOCK_/, "", $2) ; print "`" $2 ", " $3 ";"}' /mnt/garnome/root-cvs/include/gtk-2.0/gtk/gtkstock.h *)
+
 let () =
   List.iter (fun (k,d) -> Hashtbl.add id_table k d)
-    [ `DIALOG_INFO, "gtk-dialog-info";
+    [ 
+      `DIALOG_AUTHENTICATION, "gtk-dialog-authentication";
+      `DIALOG_INFO, "gtk-dialog-info";
       `DIALOG_WARNING, "gtk-dialog-warning";
       `DIALOG_ERROR, "gtk-dialog-error";
       `DIALOG_QUESTION, "gtk-dialog-question";
@@ -69,9 +134,12 @@ let () =
       `GO_DOWN, "gtk-go-down";
       `GO_FORWARD, "gtk-go-forward";
       `GO_UP, "gtk-go-up";
+      `HARDDISK, "gtk-harddisk";
       `HELP, "gtk-help";
       `HOME, "gtk-home";
       `INDEX, "gtk-index";
+      `INDENT, "gtk-indent";
+      `UNINDENT, "gtk-unindent";
       `ITALIC, "gtk-italic";
       `JUMP_TO, "gtk-jump-to";
       `JUSTIFY_CENTER, "gtk-justify-center";
@@ -79,6 +147,7 @@ let () =
       `JUSTIFY_LEFT, "gtk-justify-left";
       `JUSTIFY_RIGHT, "gtk-justify-right";
       `MISSING_IMAGE, "gtk-missing-image";
+      `NETWORK, "gtk-network";
       `NEW, "gtk-new";
       `NO, "gtk-no";
       `OK, "gtk-ok";
@@ -109,7 +178,8 @@ let () =
       `ZOOM_100, "gtk-zoom-100";
       `ZOOM_FIT, "gtk-zoom-fit";
       `ZOOM_IN, "gtk-zoom-in";
-      `ZOOM_OUT, "gtk-zoom-out" ]
+      `ZOOM_OUT, "gtk-zoom-out";
+    ]
 
 module Icon_source = struct
 external new_icon_source : unit -> icon_source = "ml_gtk_icon_source_new"

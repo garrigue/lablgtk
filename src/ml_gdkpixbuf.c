@@ -54,11 +54,24 @@ CAMLprim value ml_gdk_pixbuf_new_from_file(value f)
     GError *err = NULL;
     GdkPixbuf *res = gdk_pixbuf_new_from_file(String_val(f), &err);
     if (err) ml_raise_gerror(err);
-    return Val_GdkPixbuf(res);
+    return Val_GdkPixbuf_new(res);
 }
+#ifndef DISABLE_GTK24
+CAMLprim value ml_gdk_pixbuf_new_from_file_at_size(value f, value w, value h)
+{
+    GError *err = NULL;
+    GdkPixbuf *res = gdk_pixbuf_new_from_file_at_size(String_val(f), 
+						      Int_val(w), Int_val(h), 
+						      &err);
+    if (err) ml_raise_gerror(err);
+    return Val_GdkPixbuf_new(res);
+}
+#else
+Unsupported_24 (gdk_pixbuf_new_from_file_at_size)
+#endif
 ML_1(gdk_pixbuf_new_from_xpm_data, (const char**), Val_GdkPixbuf_new)
 
-void ml_gdk_pixbuf_destroy_notify (guchar *pixels, gpointer data)
+static void ml_gdk_pixbuf_destroy_notify (guchar *pixels, gpointer data)
 {
     ml_global_root_destroy(data);
 }
@@ -155,28 +168,86 @@ static int list_length(value l)
   return i;
 }
 
+static void
+convert_gdk_pixbuf_options (value options, char ***opt_k, char ***opt_v, gboolean copy)
+{
+  if (Is_block(options))
+    {
+      value cell = Field(options, 0);
+      unsigned int i, len = list_length(cell);
+      *opt_k = stat_alloc(sizeof (char *) * (len + 1));
+      *opt_v = stat_alloc(sizeof (char *) * (len + 1));
+      for (i=0; i<len; i++)
+	{
+	  char *s;
+	  value pair = Field(cell, 0);
+	  s = String_val(Field(pair, 0));
+	  *opt_k[i] = copy ? g_strdup (s) : s;
+	  s = String_val(Field(pair, 1));
+	  *opt_v[i] = copy ? g_strdup (s) : s;
+	  cell = Field(cell, 1);
+	}
+      *opt_k[len] = NULL;
+      *opt_v[len] = NULL;
+    }
+  else
+    {
+      *opt_k = NULL;
+      *opt_v = NULL;
+    }
+}
+
 CAMLprim value ml_gdk_pixbuf_save(value fname, value type, value options, value pixbuf)
 {
   GError *err = NULL;
-  char **opt_k = NULL;
-  char **opt_v = NULL;
-  if(Is_block(options)){
-    value cell = Field(options, 0);
-    int i;
-    int len = list_length(cell);
-    opt_k = stat_alloc(sizeof (char *) * (len + 1));
-    opt_v = stat_alloc(sizeof (char *) * (len + 1));
-    for(i=0; i<len; i++) {
-      opt_k[i] = String_val(Field(Field(cell, 0), 0));
-      opt_v[i] = String_val(Field(Field(cell, 0), 1));
-      cell = Field(cell, 1);
-    }
-    opt_k[len] = NULL;
-    opt_v[len] = NULL;
-  }
+  char **opt_k;
+  char **opt_v;
+  convert_gdk_pixbuf_options (options, &opt_k, &opt_v, FALSE);
   gdk_pixbuf_savev(GdkPixbuf_val(pixbuf), String_val(fname), String_val(type), opt_k, opt_v, &err);
-  if(err) ml_raise_gerror(err);
   stat_free(opt_k);
   stat_free(opt_v);
+  if(err) ml_raise_gerror(err);
   return Val_unit;
 }
+
+#ifndef DISABLE_GTK24
+static gboolean
+ml_gdkpixbuf_savefunc (const gchar *buf, gsize count, GError **error, gpointer data)
+{
+  value *cb = data;
+  value res, s;
+  s = alloc_string (count);
+  memcpy (String_val(s), buf, count);
+  res = callback_exn (*cb, s);
+  if (Is_exception_result (res))
+    {
+      g_set_error (error, GDK_PIXBUF_ERROR, GDK_PIXBUF_ERROR_FAILED,
+		   "%s", format_caml_exception(Extract_exception(res)));
+      return FALSE;
+    }
+  else
+    return TRUE;
+}
+
+CAMLprim value
+ml_gdk_pixbuf_save_to_callback (value pixbuf, value type, value options, value cb)
+{
+  CAMLparam4(pixbuf, type, options, cb);
+  GError *err = NULL;
+  char **opt_k;
+  char **opt_v;
+  convert_gdk_pixbuf_options (options, &opt_k, &opt_v, TRUE);
+  gdk_pixbuf_save_to_callbackv (GdkPixbuf_val(pixbuf),
+				ml_gdkpixbuf_savefunc, &cb, 
+				String_val(type),
+				opt_k, opt_v,
+				&err);
+  g_strfreev (opt_k);
+  g_strfreev (opt_v);
+  if(err) ml_raise_gerror(err);
+  CAMLreturn(Val_unit);
+}
+
+#else
+Unsupported_24(gdk_pixbuf_save_to_callback)
+#endif
