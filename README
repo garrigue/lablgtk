@@ -151,7 +151,8 @@ GL extension
 
   You can use lablgtk in combination with LablGL
 
-  * compile and install lablGL/ocaml3
+  * get and install lablGL 0.94 from
+    http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
   * get and install gtkglarea-1.2.x.tar.gz from
     http://www.student.oulu.fi/~jlof/gtkglarea/index.html
   * reconfigure: "make configure USE_GL=1"
