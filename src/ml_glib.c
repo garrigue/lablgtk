@@ -5,6 +5,7 @@
 #include "win32.h"
 #endif
 #include <glib.h>
+#include <gtk/gtk.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
@@ -202,11 +203,11 @@ CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
 }
 
 /* Thread initialization ? */
-/*
+
 ML_1(g_thread_init, NULL Ignore, Unit)
 ML_0(gdk_threads_enter, Unit)
 ML_0(gdk_threads_leave, Unit)
-*/
+
 
 /* This is not used, but could be someday... */
 

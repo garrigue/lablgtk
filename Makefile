@@ -25,7 +25,7 @@ RANLIB = `which ranlib 2>/dev/null \
 	| sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'`
 
 PKG_CONFIG = pkg-config
-GTKPKG = gtk+-2.0
+GTKPKG = gtk+-2.0 gthread-2.0
 GTKLIBS = `$(PKG_CONFIG) $(GTKPKG) --libs`
 
 ifdef USE_GL
