@@ -299,14 +299,14 @@ CAMLprim value ml_gnome_canvas_convert_points(value arr)
   if(len % 2)
     invalid_argument("GnomeCanvas.convert_points: odd number of coords");
   p = gnome_canvas_points_new(len / 2);
-  memcpy(p->coords, (double *)arr, Wosize_val(arr) * sizeof (value));
+  memcpy(p->coords, Bp_val(arr), Bosize_val(arr));
   return Val_gboxed_new(gnome_canvas_points_get_type(), p);
 }
 CAMLprim value ml_gnome_canvas_get_points(value arg)
 {
   GnomeCanvasPoints *p = Pointer_val(arg);
   value ret = alloc(p->num_points * 2 * Double_wosize, Double_array_tag);
-  memcpy(p->coords, (double*)ret, p->num_points * 2 * sizeof(double));
+  memcpy(Bp_val(ret), p->coords, p->num_points * 2 * sizeof(double));
   return ret;
 }
 

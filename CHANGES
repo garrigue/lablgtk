@@ -1,5 +1,9 @@
 $Id$
 
+2004.06.02 [Olivier]
+  * add some properties for the GnomeCanvasText item, introduce a
+    GnoCanvas.text class with getters for text height and width
+
 2004.06.01 [Olivier]
   * export a couple of properties in GButton.button_skel
 
