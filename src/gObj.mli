@@ -147,7 +147,7 @@ and widget_misc :
       ?mod:Gdk.Tags.modifier list -> ?flags:Tags.accel_flag list -> unit
     method allocation : rectangle
     method colormap : Gdk.colormap
-    method draw : Gdk.Rectangle.t -> unit
+    method draw : Gdk.Rectangle.t option -> unit
     method event : 'a. 'a Gdk.event -> bool
     method grab_default : unit -> unit
     method grab_focus : unit -> unit

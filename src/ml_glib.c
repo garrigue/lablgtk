@@ -132,7 +132,7 @@ value ml_get_null (value unit) { return 0L; }
 
 #define GMainLoop_val(val) ((GMainLoop*)Addr_val(val))
 ML_1 (g_main_new, Bool_val, Val_addr)
-ML_1 (g_main_iteration, Bool_val, Unit)
+ML_1 (g_main_iteration, Bool_val, Val_bool)
 ML_0 (g_main_pending, Val_bool)
 ML_1 (g_main_is_running, GMainLoop_val, Val_bool)
 ML_1 (g_main_quit, GMainLoop_val, Unit)

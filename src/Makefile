@@ -79,9 +79,9 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gEdit.cmo gPix.cmo gRange.cmo gUtil.cmo $(GLMLOBJS)
 THOBJS = gtkThread.cmo threadObj.cmo
 
-lablgtk: liblablgtk.a lablgtk.cma
+lablgtk: liblablgtk.a lablgtk.cma gtkInit.cmo
 	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" \
-		$(GLLINK) lablgtk.cma
+		$(GLLINK) lablgtk.cma gtkInit.cmo
 
 lablgtkrun: liblablgtk.a lablgtk.cma
 	$(LINKER) -o $@ -make-runtime $(GLLINK) lablgtk.cma \
@@ -111,10 +111,10 @@ gtkThread.cmx: gtkThread.ml
 threadObj.cmx: threadObj.ml
 	$(COMPOPT) $(THFLAGS) threadObj.ml
 
-lablgtk_t: liblablgtk.a lablgtk.cma $(THOBJS)
+lablgtk_t: liblablgtk.a lablgtk.cma $(THOBJS) gtkInit.cmo
 	$(TOPLEVEL) $(THFLAGS) -o $@ -custom \
 		-cclib "-L. -llablgtk $(LDFLAGS) $(THLDFLAGS)" \
-		$(GLLINK) $(THLIBS) lablgtk.cma $(THOBJS)
+		$(GLLINK) $(THLIBS) lablgtk.cma $(THOBJS) gtkInit.cmo
 
 var2conv: var2conv.cmo
 	$(LINKER) -o $@ var2conv.cmo

@@ -228,7 +228,8 @@ ML_1 (gtk_widget_realize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unrealize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_draw, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_resize, GtkWidget_val, Unit)
-ML_2 (gtk_widget_draw, GtkWidget_val, GdkRectangle_val, Unit)
+ML_2 (gtk_widget_draw, GtkWidget_val,
+      Option_val(arg2,GdkRectangle_val,NULL) Ignore, Unit)
 ML_1 (gtk_widget_draw_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_draw_default, GtkWidget_val, Unit)
 /* ML_1 (gtk_widget_draw_children, GtkWidget_val, Unit) */

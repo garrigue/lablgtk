@@ -45,10 +45,12 @@ class clist_signals :
     val obj : 'a obj
     method click_column : callback:(int -> unit) -> ?after:bool -> GtkSignal.id
     method select_row :
-      callback:(row:int -> column:int -> event:GdkEvent.Button.t -> unit) ->
+      callback:(row:int ->
+	        column:int -> event:GdkEvent.Button.t option -> unit) ->
       ?after:bool -> GtkSignal.id
      method unselect_row :
-      callback:(row:int -> column:int -> event:GdkEvent.Button.t -> unit) ->
+      callback:(row:int ->
+	        column:int -> event:GdkEvent.Button.t option -> unit) ->
       ?after:bool -> GtkSignal.id
    end
 

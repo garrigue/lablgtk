@@ -10,9 +10,12 @@ let main () =
   let vbox =
     new GPack.box `VERTICAL border_width:5 packing:window#add in
 
+  let hbox = new GPack.box `HORIZONTAL packing:vbox#add in
+  let sb = new GRange.scrollbar `VERTICAL
+      packing:(hbox#pack from:`END expand:false) in
   let clist =
     new GList.clist titles:["Ingredients";"Amount"] shadow_type:`OUT
-      packing:vbox#add in
+      packing:hbox#add vadjustment:sb#adjustment in
   clist#connect#select_row callback:
     begin fun :row :column :event ->
       let text = clist#cell_text row column in
