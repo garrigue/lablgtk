@@ -161,7 +161,7 @@ CAMLprim value ml_gtk_text_tag_table_lookup (value tv, value s)
   CAMLreturn(res);
 }
 
-ML_1(gtk_text_tag_table_get_size, GtkTextTagTable_val, Int_val)
+ML_1(gtk_text_tag_table_get_size, GtkTextTagTable_val, Val_int)
 
 static void tag_foreach_func (GtkTextTag* t, gpointer user_data)
 {
@@ -667,7 +667,7 @@ CAMLprim value ml_gtk_text_child_anchor_get_widgets (value tca) {
      Val_GtkWidget_func);
 }
 
-ML_1(gtk_text_child_anchor_get_deleted,GtkTextChildAnchor_val,Bool_val)
+ML_1(gtk_text_child_anchor_get_deleted,GtkTextChildAnchor_val,Val_bool)
 
 ML_5(gtk_text_view_add_child_in_window,GtkTextView_val,
      GtkWidget_val,Text_window_type_val,Int_val,Int_val,

@@ -168,13 +168,14 @@ ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) $(GTKSPELLMLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
+PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
 
 # Targets
 byte: $(TARGETS) $(INITOBJS)
 opt:  $(TARGETS) lablgtkopt
 
-depend: $(ENUMOBJS:.cmo=.ml) $(GTKPROPS:%.props=%Props.ml) $(GTKPROPS:%.props=o%Props.ml)
-	ocamldep $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) *.mli > .depend
+depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml)
+	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) *.mli > .depend
 
 ifeq ($(THREADS_LIB),no)
 lablgtktop$(XE): $(MLLIBS)

@@ -39,7 +39,7 @@ class area_signals obj =
 object (connect)
   inherit GObj.widget_signals_impl (obj : [> gl_area] obj)
   method display ~callback =
-    (new GObj.event_signals ~after obj)#expose ~callback:
+    (new GObj.event_signals obj)#after#expose ~callback:
       begin fun ev ->
 	if GdkEvent.Expose.count ev = 0 then
 	  if GtkRaw.make_current obj then callback ()
@@ -47,7 +47,7 @@ object (connect)
 	true
       end
   method reshape ~callback =
-    (new GObj.event_signals ~after obj)#configure ~callback:
+    (new GObj.event_signals obj)#after#configure ~callback:
       begin fun ev ->
 	if GtkRaw.make_current obj then begin
 	  callback ~width:(GdkEvent.Configure.width ev)
@@ -57,7 +57,7 @@ object (connect)
 	true
       end
   method realize ~callback =
-    (new GObj.misc_signals ~after (obj :> Gtk.widget obj))#realize ~callback:
+    (new GObj.misc_signals (obj :> Gtk.widget obj))#after#realize ~callback:
       begin fun ev ->
 	if GtkRaw.make_current obj then callback ()
 	else prerr_endline "GlGtk-WARNING **: could not make current"

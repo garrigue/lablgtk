@@ -341,7 +341,7 @@ ML_4 (gtk_widget_render_icon, GtkWidget_val, String_val, Icon_size_val, String_o
 
 CAMLprim value ml_gtk_drag_dest_set (value w, value f, value t, value a)
 {
-  GtkTargetEntry *targets = (GtkTargetEntry *)Val_unit;
+  GtkTargetEntry *targets = (GtkTargetEntry *)NULL;
   int n_targets, i;
   
   CAMLparam4 (w,f,t,a);
