@@ -158,6 +158,10 @@ ML_2 (gdk_char_width, GdkFont_val, Char_val, Val_int)
 ML_2 (gdk_string_measure, GdkFont_val, String_val, Val_int)
 ML_2 (gdk_char_measure, GdkFont_val, Char_val, Val_int)
 
+/* GC */
+
+Make_Val_final_pointer (GdkGC, gdk_gc_ref, gdk_gc_unref)
+
 /* Events */
 
 Make_Val_final_pointer (GdkEvent, , gdk_event_free)
