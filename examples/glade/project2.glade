@@ -21,7 +21,7 @@
     <handler>gtk_main_quit</handler>
     <last_modification_time>Fri, 18 May 2001 09:08:31 GMT</last_modification_time>
   </signal>
-  <title>window1</title>
+  <title>Calculator</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
