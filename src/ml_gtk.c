@@ -253,7 +253,7 @@ ML_2 (gtk_container_set_focus_hadjustment, GtkContainer_val,
 #define GtkAlignment_val(val) GTK_ALIGNMENT(Pointer_val(val))
 ML_4 (gtk_alignment_new, Float_val, Float_val, Float_val, Float_val,
       Val_GtkWidget)
-value ml_gtk_aligment_set (value val, value x, value y,
+value ml_gtk_alignment_set (value val, value x, value y,
 			   value xscale, value yscale)
 {
     GtkAlignment *alignment = GtkAlignment_val(val);
@@ -275,7 +275,7 @@ ML_0 (gtk_event_box_new, Val_GtkWidget)
 ML_1 (gtk_frame_new, String_val, Val_GtkWidget)
 ML_2 (gtk_frame_set_label, GtkFrame_val, String_val, Unit)
 ML_3 (gtk_frame_set_label_align, GtkFrame_val, Float_val, Float_val, Unit)
-ML_3 (gtk_frame_set_shadow_type, GtkFrame_val, Shadow_val, Unit)
+ML_2 (gtk_frame_set_shadow_type, GtkFrame_val, Shadow_val, Unit)
 
 /* gtkaspectframe.h */
 
