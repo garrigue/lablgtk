@@ -31,49 +31,58 @@ class ['a] signal :
     method connect : after:bool -> callback:('a -> unit) -> GtkSignal.id
     method disconnect : GtkSignal.id -> bool
   end
-class ml_signals :
+
+class virtual ml_signals :
   object ('a)
     val after : bool
     method after : 'a
-    method disconnect : GtkSignal.id -> unit
-    method private disconnectors : (GtkSignal.id -> bool) list
   end
-class add_ml_signals :
-  'a Gtk.obj ->
+
+class virtual ml_disconnect :
   object
     method disconnect : GtkSignal.id -> unit
-    method private disconnectors : (GtkSignal.id -> bool) list
+    method private virtual disconnectors : (GtkSignal.id -> bool) list
+  end
+class virtual add_ml_disconnect :
+  object
+    method disconnect : GtkSignal.id -> unit
+    method private virtual disconnectors : (GtkSignal.id -> bool) list
+    method virtual misc : GObj.widget_misc
   end
 
 (* To add ML signals to a LablGTK object:
 
    class mywidget_signals obj ~mysignal1 ~mysignal2 = object
      inherit somewidget_signals obj
-     inherit add_ml_signals obj as super
      method mysignal1 = mysignal1#connect ~after
      method mysignal2 = mysignal2#connect ~after
-     method disconnectors =
-       [mysignal1#disconnect; mysignal2#disconnect] @ super#disconnectors
    end
 
    class mywidget obj = object (self)
      inherit somewidget obj
+     inherit add_ml_disconnect
      val mysignal1 = new signal obj
      val mysignal2 = new signal obj
+     method private disconnectors =
+       [mysignal1#disconnect; mysignal2#disconnect]
      method connect = new mywidget_signals obj ~mysignal1 ~mysignal2
      method call1 = mysignal1#call
      method call2 = mysignal2#call
    end
 
    You can also add ML signals to an arbitrary object; just inherit
-   from ml_signals in place of widget_signals+add_ml_signals.
+   from ml_signals in place of widget_signals, and replace add_ml_disconnect
+   by ml_disconnect.
 
    class mysignals ~mysignal1 ~mysignal2 = object
-     inherit ml_signals as super
+     inherit ml_signals
      method mysignal1 = mysignal1#connect ~after
      method mysignal2 = mysignal2#connect ~after
-     method disconnectors =
-       [mysignal1#disconnect; mysignal2#disconnect] @ super#disconnectors
+   end
+   class myobject = object (self)
+     ...
+     inherit ml_disconnect
+     method private disconnectors = ...
    end
 *)
 
@@ -89,8 +98,6 @@ class ['a] variable_signals :
     method after : 'b
     method accessed : callback:(unit -> unit) -> GtkSignal.id
     method changed : callback:('a -> unit) -> GtkSignal.id
-    method disconnect : GtkSignal.id -> unit
-    method private disconnectors : (GtkSignal.id -> bool) list
   end
 
 class ['a] variable : 'a ->
@@ -99,7 +106,8 @@ class ['a] variable : 'a ->
     val changed : 'a signal
     val mutable x : 'a
     method connect : 'a variable_signals
+    method disconnect : GtkSignal.id -> unit
+    method private disconnectors : (GtkSignal.id -> bool) list
     method get : 'a
     method set : 'a -> unit
   end
-
