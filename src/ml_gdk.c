@@ -221,7 +221,7 @@ CAMLprim value ml_GDK_WINDOW_XWINDOW(value v)
 } 
 
 #else
-ML_1 (GDK_WINDOW_XWINDOW, GdkWindow_val, Val_XID)
+ML_1 (GDK_WINDOW_XWINDOW, GdkDrawable_val, Val_XID)
 #endif
 CAMLprim value ml_gdk_window_get_position (value window)
 {
@@ -473,7 +473,7 @@ ML_2 (gdk_region_get_clipbox, GdkRegion_val, GdkRectangle_val, Unit)
 
 /* GC */
 
-ML_1 (gdk_gc_new, GdkWindow_val, Val_GdkGC_no_ref)
+ML_1 (gdk_gc_new, GdkDrawable_val, Val_GdkGC_no_ref)
 ML_2 (gdk_gc_set_foreground, GdkGC_val, GdkColor_val, Unit)
 ML_2 (gdk_gc_set_background, GdkGC_val, GdkColor_val, Unit)
 ML_2 (gdk_gc_set_font, GdkGC_val, GdkFont_val, Unit)

@@ -7,6 +7,7 @@ type font = [`pangofont] obj
 type font_description
 type font_metrics
 type language
+type units = int
 
 module Tags = struct
   type style =
@@ -52,13 +53,13 @@ module Font = struct
   external get_metrics : font -> language -> font_metrics =
     "ml_pango_font_get_metrics"
 
-  external get_ascent : font_metrics -> int =
+  external get_ascent : font_metrics -> units =
     "ml_pango_font_metrics_get_ascent"
-  external get_descent : font_metrics -> int =
+  external get_descent : font_metrics -> units =
     "ml_pango_font_metrics_get_descent"
-  external get_approximate_char_width : font_metrics -> int =
+  external get_approximate_char_width : font_metrics -> units =
     "ml_pango_font_metrics_get_approximate_char_width"
-  external get_approximate_digit_width : font_metrics -> int =
+  external get_approximate_digit_width : font_metrics -> units =
     "ml_pango_font_metrics_get_approximate_digit_width"
 end
 

@@ -187,6 +187,9 @@ and misc_ops : Gtk.widget obj ->
     method set_can_focus : bool -> unit
     method set_name : string -> unit
     method set_sensitive : bool -> unit
+    method set_size_chars :
+      ?desc:Pango.font_description ->
+      ?lang:string -> ?width:int -> ?height:int -> unit -> unit
     method set_size_request : width:int -> height:int -> unit
     method set_state : Tags.state_type -> unit
     method set_style : style -> unit
