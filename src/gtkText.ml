@@ -53,15 +53,15 @@ module Tag = struct
       | `BACKGROUND_STIPPLE of Gdk.bitmap
       | `FOREGROUND_STIPPLE of Gdk.bitmap
       | `FONT of string
-      | `FONT_DESC of Pango.Font.description
+      | `FONT_DESC of Pango.font_description
       | `FAMILY of string
-      | `STYLE of Pango.Font.style 
-      | `VARIANT of Pango.Font.variant 
-      | `WEIGHT of Pango.Font.weight
-      | `STRETCH of Pango.Font.stretch
+      | `STYLE of Pango.Tags.style 
+      | `VARIANT of Pango.Tags.variant 
+      | `WEIGHT of Pango.Tags.weight
+      | `STRETCH of Pango.Tags.stretch
       | `SIZE of int
       | `SIZE_POINTS of float
-      | `SCALE of Pango.Font.scale
+      | `SCALE of Pango.Tags.scale
       | `PIXELS_ABOVE_LINES of int
       | `PIXELS_BELOW_LINES of int
       | `PIXELS_INSIDE_WRAP of int
@@ -73,7 +73,7 @@ module Tag = struct
       | `INDENT of int
       | `STRIKETHROUGH of bool
       | `RIGHT_MARGIN of int
-      | `UNDERLINE of Pango.Font.underline
+      | `UNDERLINE of Pango.Tags.underline
       | `RISE of int
       | `BACKGROUND_FULL_HEIGHT of bool
       | `LANGUAGE of string
@@ -206,7 +206,7 @@ module Tag = struct
     | `WEIGHT b ->
 	let gtyp = Gobject.Type.of_fundamental `INT in 
 	let v = Gobject.Value.create gtyp in 
-	let b' = Pango.Font.weight_to_int b in
+	let b' = Pango.Tags.weight_to_int b in
 	Gobject.Value.set v (`INT b'); 
 	Gobject.set_property o (property_to_string p) v 
     | `SIZE_POINTS b ->
@@ -217,7 +217,7 @@ module Tag = struct
     | `SCALE b  -> 
 	let gtyp = Gobject.Type.of_fundamental `FLOAT in 
 	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`FLOAT (Pango.Font.scale_to_float b)); 
+	Gobject.Value.set v (`FLOAT (Pango.Tags.scale_to_float b)); 
 	Gobject.set_property o (property_to_string p) v 
     | `FOREGROUND_STIPPLE b | `BACKGROUND_STIPPLE b -> 
 	let gtyp = Gobject.Type.from_name "GdkPixmap" in 
@@ -237,25 +237,25 @@ module Tag = struct
     | `STYLE b  -> 
 	let gtyp = Gobject.Type.from_name "PangoStyle" in 
 	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`INT (Pango.Font.style_to_int b));
+	Gobject.Value.set v (`INT (Pango.Tags.style_to_int b));
 	Gobject.set_property o (property_to_string p) v 
     | `UNDERLINE u -> 
 	let gtyp = Gobject.Type.from_name "PangoUnderline" in 
 	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`INT (Pango.Font.underline_to_int u));
+	Gobject.Value.set v (`INT (Pango.Tags.underline_to_int u));
 	Gobject.set_property o (property_to_string p) v 
 
     | `STRETCH _ | `VARIANT _ -> assert false
     | `DIRECTION b  -> 
 	let gtyp = Gobject.Type.from_name "GtkTextDirection" in 
 	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`INT (Pango.Font.text_direction_to_int b));
+	Gobject.Value.set v (`INT (Pango.Tags.text_direction_to_int b));
 	Gobject.set_property o (property_to_string p) v 
 
     | `JUSTIFICATION b ->
 	let gtyp = Gobject.Type.from_name "GtkJustification" in 
 	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`INT (Pango.Font.justification_to_int b));
+	Gobject.Value.set v (`INT (Pango.Tags.justification_to_int b));
 	Gobject.set_property o (property_to_string p) v 
 
     | `FONT_DESC f ->

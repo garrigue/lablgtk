@@ -66,8 +66,8 @@ gWindow.cmo: gButton.cmi gContainer.cmi gList.cmi gMisc.cmi gObj.cmi \
 gWindow.cmx: gButton.cmx gContainer.cmx gList.cmx gMisc.cmx gObj.cmx \
     gPack.cmx gaux.cmx gobject.cmx gtk.cmx gtkBase.cmx gtkMisc.cmx \
     gtkWindow.cmx gWindow.cmi 
-gdk.cmo: gaux.cmo gobject.cmo gpointer.cmi gdk.cmi 
-gdk.cmx: gaux.cmx gobject.cmx gpointer.cmx gdk.cmi 
+gdk.cmo: gaux.cmo gobject.cmo gpointer.cmi pango.cmo gdk.cmi 
+gdk.cmx: gaux.cmx gobject.cmx gpointer.cmx pango.cmx gdk.cmi 
 gdkEvent.cmo: gaux.cmo gdk.cmi gpointer.cmi 
 gdkEvent.cmx: gaux.cmx gdk.cmx gpointer.cmx 
 gdkKeysyms.cmo: gdk.cmi 
@@ -142,8 +142,8 @@ gtkXmHTML.cmo: gdk.cmi gtk.cmo
 gtkXmHTML.cmx: gdk.cmx gtk.cmx 
 lablgladecc.cmo: xml_lexer.cmi 
 lablgladecc.cmx: xml_lexer.cmx 
-pango.cmo: gtk.cmo 
-pango.cmx: gtk.cmx 
+pango.cmo: gobject.cmo gpointer.cmi gtk.cmo 
+pango.cmx: gobject.cmx gpointer.cmx gtk.cmx 
 rsvg.cmo: gdkPixbuf.cmi rsvg.cmi 
 rsvg.cmx: gdkPixbuf.cmx rsvg.cmi 
 xml_lexer.cmo: xml_lexer.cmi 
@@ -152,7 +152,7 @@ gBin.cmi: gContainer.cmi gData.cmi gObj.cmi gdk.cmi gtk.cmo gtkSignal.cmi
 gButton.cmi: gContainer.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
 gContainer.cmi: gData.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
 gData.cmi: gObj.cmi gtk.cmo gtkSignal.cmi 
-gDraw.cmi: gdk.cmi gpointer.cmi gtk.cmo 
+gDraw.cmi: gdk.cmi gobject.cmo gpointer.cmi gtk.cmo 
 gEdit.cmi: gData.cmi gList.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
 gList.cmi: gContainer.cmi gData.cmi gDraw.cmi gObj.cmi gdkEvent.cmo gtk.cmo \
     gtkSignal.cmi 
@@ -173,7 +173,7 @@ gTree.cmi: gContainer.cmi gObj.cmi gobject.cmo gpointer.cmi gtk.cmo \
 gUtil.cmi: gObj.cmi gtk.cmo gtkSignal.cmi 
 gWindow.cmi: gButton.cmi gContainer.cmi gList.cmi gMisc.cmi gObj.cmi \
     gPack.cmi gdk.cmi gtk.cmo 
-gdk.cmi: gobject.cmo gpointer.cmi 
+gdk.cmi: gobject.cmo gpointer.cmi pango.cmo 
 gdkPixbuf.cmi: gdk.cmi gobject.cmo gpointer.cmi 
 glGtk.cmi: gObj.cmi gpointer.cmi gtk.cmo gtkSignal.cmi 
 glade.cmi: gobject.cmo gtk.cmo 

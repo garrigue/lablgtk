@@ -274,6 +274,7 @@ and misc_ops obj = object
   method modify_text = iter_setcol Widget.modify_text obj
   method modify_base = iter_setcol Widget.modify_base obj
   method modify_font = Widget.modify_font obj
+  method create_pango_context () = Widget.create_pango_context obj
   (* get functions *)
   method name = Widget.get_name obj
   method toplevel =
@@ -292,6 +293,8 @@ and misc_ops obj = object
     with Gpointer.Null -> None
   method set_app_paintable = Widget.set_app_paintable obj
   method allocation = Widget.allocation obj
+  method pango_context = Widget.get_pango_context obj
+  (* selection *)
   method convert_selection ~target ?(time=Int32.zero) sel =
     Selection.convert obj ~sel ~target:(Gdk.Atom.intern target) ~time
   method grab_selection ?(time=Int32.zero) sel = Selection.owner_set obj ~sel ~time

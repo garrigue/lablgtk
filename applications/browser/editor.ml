@@ -23,7 +23,7 @@ class editor ?packing ?show () = object (self)
       view#set_buffer n_buff;
       filename <- Some name;
       n_buff#place_cursor n_buff#start_iter
-    with _ -> prerr_endline "Load failed"
+    with exn -> prerr_endline ("Load failed: " ^ Printexc.to_string exn)
 
   method open_file () = File.dialog ~title:"Open" ~callback:self#load_file ()
 
@@ -60,15 +60,16 @@ class editor ?packing ?show () = object (self)
         and stop = start#forward_to_line_end in
         Lexical.tag view#buffer ~start ~stop
       end;
-    view#misc#modify_font (Pango.Font.from_string "monospace");
+    let font = Pango.Font.from_string "monospace 11" in
+    view#misc#modify_font font;
+    Shell.set_size_chars view ~font ~width:80 ~height:25;
     ()
 end
 
 open GdkKeysyms
 
 class editor_window ?(show=false) () =
-  let window = GWindow.window ~width:500 ~height:300
-      ~title:"Program Editor" () in
+  let window = GWindow.window ~title:"Program Editor" () in
   let vbox = GPack.vbox ~packing:window#add () in
 
   let menubar = GMenu.menu_bar ~packing:vbox#pack () in

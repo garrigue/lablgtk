@@ -6,6 +6,7 @@ open Gobject
 
 type colormap
 type visual
+type screen = [`gdkscreen] obj
 type region
 type gc
 type window = [`drawable|`gdkwindow] obj
@@ -138,8 +139,15 @@ module Property = struct
 end
 
 module Screen = struct
-  external width : unit -> int = "ml_gdk_screen_width"
-  external height : unit -> int = "ml_gdk_screen_height"
+  external default : unit -> screen = "ml_gdk_screen_get_default"
+  external width : screen -> int = "ml_gdk_screen_get_width"
+  let width ?(screen = default ()) () = width screen
+  external height : screen -> int = "ml_gdk_screen_get_height"
+  let height ?(screen = default ()) () = height screen
+  external get_pango_context : screen -> Pango.context =
+    "ml_gdk_pango_context_get_for_screen"
+  let get_pango_context ?(screen = default ()) () =
+    get_pango_context screen
 end
 
 module Visual = struct

@@ -156,8 +156,8 @@ and misc_ops : Gtk.widget obj ->
     method allocation : rectangle
     method colormap : Gdk.colormap
     method connect : misc_signals
-    method convert_selection :
-      target:string -> ?time:int32 -> Gdk.atom -> bool
+    method convert_selection : target:string -> ?time:int32 -> Gdk.atom -> bool
+    method create_pango_context : unit -> Pango.context
     method draw : Gdk.Rectangle.t option -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
@@ -172,9 +172,10 @@ and misc_ops : Gtk.widget obj ->
     method modify_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
-    method modify_font : Pango.Font.description -> unit
+    method modify_font : Pango.font_description -> unit
     method name : string
     method parent : widget option
+    method pango_context : Pango.context
     method pointer : int * int
     method realize : unit -> unit
     method remove_accelerator :
