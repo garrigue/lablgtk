@@ -21,6 +21,14 @@ ML_0 (glade_init, Unit)
 
 #define GladeXML_val(val) (check_cast(GLADE_XML,val))
 
+/* glade_xml_new_with_domain and glade_xml_new_from_memory are deprecated */
+#ifndef glade_xml_new_with_domain
+#define glade_xml_new_with_domain glade_xml_new
+#endif
+#ifndef glade_xml_new_from_memory
+#define glade_xml_new_from_memory glade_xml_new_from_buffer
+#endif
+
 value ml_glade_xml_new (value file, value data, value root, value domain)
 {
     GladeXML *ret;
