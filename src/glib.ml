@@ -13,6 +13,10 @@ module Main = struct
   external is_running : t -> bool = "ml_g_main_is_running"
   external quit : t -> unit = "ml_g_main_quit"
   external destroy : t -> unit = "ml_g_main_destroy"
+  type locale_category =
+    [ `ALL | `COLLATE | `CTYPE | `MESSAGES | `MONETARY | `NUMERIC | `TIME ]
+  external setlocale : locale_category -> string -> string 
+    = "ml_setlocale"
 end
 
 module Timeout = struct

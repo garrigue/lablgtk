@@ -679,6 +679,7 @@ CAMLprim value ml_gtk_init (value argv)
 }
 ML_1 (gtk_exit, Int_val, Unit)
 ML_0 (gtk_set_locale, Val_string)
+ML_0 (gtk_disable_setlocale, Unit)
 ML_0 (gtk_main, Unit)
 ML_1 (gtk_main_iteration_do, Bool_val, Val_bool)
 ML_0 (gtk_main_quit, Unit)

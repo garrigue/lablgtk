@@ -12,6 +12,9 @@ module Main : sig
   val is_running : t -> bool
   val quit : t -> unit
   val destroy : t -> unit
+  type locale_category =
+    [ `ALL | `COLLATE | `CTYPE | `MESSAGES | `MONETARY | `NUMERIC | `TIME ]
+  val setlocale : locale_category -> string -> string 
 end
 
 module Timeout : sig

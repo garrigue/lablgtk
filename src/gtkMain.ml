@@ -12,12 +12,13 @@ module Main = struct
   external init : string array -> string array = "ml_gtk_init"
   (* external exit : int -> unit = "ml_gtk_exit" *)
   external set_locale : unit -> string = "ml_gtk_set_locale"
+  external disable_setlocale : unit -> unit = "ml_gtk_disable_setlocale"
   (* external main : unit -> unit = "ml_gtk_main" *)
-  let init ?(setlocale=false) () =
+  let init ?(setlocale=true) () =
     let locale =
       if try Sys.getenv "GTK_SETLOCALE" <> "0" with Not_found -> setlocale
       then set_locale ()
-      else ""
+      else (disable_setlocale (); "")
     in
     let argv =
       try
@@ -25,6 +26,7 @@ module Main = struct
       with Error err ->
         raise (Error ("GtkMain.init: initialization failed\n" ^ err))
     in
+    Glib.Main.setlocale `NUMERIC "C";
     let is_critical s =
       List.exists !critical_warnings ~f:
         (fun w ->
