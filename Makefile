@@ -22,7 +22,7 @@ ifdef USE_GLADE
 GTKCFLAGS = `$(GLADE_CONFIG) --cflags gnome`
 GLADELIBS = `$(GLADE_CONFIG) --libs gnome`
 else
-GTKCFLAGS = `$(GTK_CONFIG) --cflags`" -I"`gnome-config --includedir`
+GTKCFLAGS = `$(GNOME_CONFIG) --cflags gnome`
 endif
 GNOMELIBS = `$(GNOME_CONFIG) --libs gtkxmhtml`
 else
