@@ -290,6 +290,9 @@ class box obj = object
     fun w -> Box.set_child_packing ?obj ?w#frame
 end
 
+class box_create dir ?:homogeneous ?:spacing =
+  box (Box.create dir ?:homogeneous ?:spacing)
+
 let new_box dir ?:homogeneous ?:spacing =
   let w = Box.create dir ?:homogeneous ?:spacing in
   Container.setter ?w ?cont:(pack_return (new box))
@@ -453,38 +456,6 @@ end
 let new_menu ?(_ : unit option) =
   Container.setter ?(Menu.create ()) ?cont:(pack_return (new menu))
 
-class ['a] menu_factory (menu : 'a)
-    ?:table [< AcceleratorTable.create () >] ?mod:m [< [`CONTROL] >] =
-  object (self)
-    val menu : #menu_shell = menu
-    val table = table
-    val m = m
-    method menu = menu
-    method table = table
-    method private bind (item : menu_item) ?:key ?:callback =
-      menu#append item;
-      may key fun:(fun key -> item#install_accelerator table :key mod:m);
-      may callback fun:(fun callback -> item#connect#activate :callback)
-    method add_item :label ?:key ?:callback ?:submenu =
-      let item = new_menu_item :label in
-      self#bind item ?:key ?:callback;
-      may (submenu : menu option) fun:item#set_submenu;
-      item
-    method add_check_item :label ?:state ?:key ?:callback =
-      let item = new_check_menu_item :label ?:state in
-      self#bind (item :> menu_item) ?:key ?:callback;
-      item
-    method add_radio_item :label ?:group ?:state ?:key ?:callback =
-      let item = new_radio_menu_item :label ?:group ?:state in
-      self#bind (item :> menu_item) ?:key ?:callback;
-      item
-    method add_separator () = new_menu_item packing:menu#append
-    method add_submenu :label ?:key =
-      let item = new_menu_item :label in
-      self#bind item ?:key;
-      new_menu packing:item#set_submenu
-end
-
 class option_menu obj = object
   inherit button obj
   method set_menu (menu : menu) = OptionMenu.set_menu obj menu#menu
@@ -633,3 +604,25 @@ class separator = widget_full
 
 let new_separator dir =
   pack_return ?(new separator) ?(Separator.create dir)
+
+module Main : sig
+  val locale : string
+  val argv : string array
+  val iteration_do : bool -> bool
+  val main : unit -> unit
+  val quit : unit -> unit
+  val version : int * int * int
+end = Main
+
+module Grab = struct
+  open Grab
+  let add (w : #framed) = add w#frame
+  let remove (w : #framed) = remove w#frame
+  let get_current () = new widget_full (get_current ())
+end
+
+module Timeout : sig
+  type id
+  val add : int -> callback:(unit -> bool) -> id
+  val remove : id -> unit
+end = Timeout

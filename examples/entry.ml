@@ -1,6 +1,5 @@
 (* $Id$ *)
 
-open Gtk
 open GtkObj
 open Printf
 
@@ -40,7 +39,7 @@ let main () =
     callback:(fun () -> entry_toggle_visibility check entry);
 
   let button = new_button label: "Close" packing: vbox#pack in
-  button#connect#clicked callback:Main.quit;
+  button#connect#clicked callback:window#destroy;
   button#grab_default ();
 
   window#show_all ();

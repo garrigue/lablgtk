@@ -1,6 +1,5 @@
 (* $Id$ *)
 
-open Gtk
 open GtkObj
 
 let file_dialog :title :callback ?:filename =
@@ -13,7 +12,7 @@ let file_dialog :title :callback ?:filename =
       callback name
     end;
   sel#show ();
-  Grab.add sel#frame
+  Grab.add sel
 
 class editor () = object (self)
   val text = new_text editable:true
@@ -60,7 +59,7 @@ let menubar = new_menu_bar packing:(vbox#pack expand:false)
 let file_item = new_menu_item label:"File" packing:menubar#append
 let file_menu = new_menu packing:file_item#set_submenu
 
-let factory = new menu_factory file_menu
+let factory = new GtkExt.menu_factory file_menu
 
 let _ =
   window#connect#destroy callback:Main.quit;

@@ -1,8 +1,5 @@
 (* $Id$ *)
 
-#load "gtkObj.cmo"
-
-open Gtk
 open GtkObj
 
 class bar bar = object
