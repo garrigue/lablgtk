@@ -125,9 +125,11 @@ class CellRendererToggle vset : CellRenderer {
 class CellLayout abstract : Object {
   method pack_start : "Gtk.cell_renderer Gtk.obj -> expand:bool -> unit"
   method pack_end   : "Gtk.cell_renderer Gtk.obj -> expand:bool -> unit"
+  method reorder    : "Gtk.cell_renderer Gtk.obj -> int -> unit"
   method clear
   method add_attribute : "Gtk.cell_renderer Gtk.obj -> string -> int -> unit"
   method clear_attributes : "Gtk.cell_renderer Gtk.obj -> unit"
+  method set_cell_data_func : "Gtk.cell_renderer Gtk.obj -> ([`treemodel] obj -> tree_iter -> unit) option -> unit"
 }
 
 class TreeViewColumn wrap : Object {

@@ -251,9 +251,12 @@ class cell_layout : ([> Gtk.cell_layout] as 'a) Gtk.obj ->
       ?from:Tags.pack_type -> #cell_renderer -> unit
    (** @param expand default value is [false]
        @param from default value is [`START] *)
+    method reorder : #cell_renderer -> int -> unit
     method clear : unit -> unit
     method add_attribute : #cell_renderer -> string -> 'b column -> unit
     method clear_attributes : #cell_renderer -> unit
+    method set_cell_data_func   : #cell_renderer -> (model -> Gtk.tree_iter -> unit) -> unit
+    method unset_cell_data_func : #cell_renderer -> unit
   end
 
 (** @gtkdoc gtk GtkTreeViewColumn *)
@@ -302,8 +305,6 @@ class view_column : tree_view_column obj ->
     method visible : bool
     method widget : widget option
     method width : int
-    method set_cell_data_func   : #cell_renderer -> (model -> Gtk.tree_iter -> unit) -> unit
-    method unset_cell_data_func : #cell_renderer -> unit
   end
 
 (** @gtkdoc gtk GtkTreeViewColumn *)

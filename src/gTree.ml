@@ -234,11 +234,22 @@ class cell_layout obj = object
   method pack :
     'a. ?expand:bool -> ?from:Tags.pack_type -> (#cell_renderer as 'a) -> unit =
       fun ?expand ?from crr -> GtkTree.CellLayout.pack obj ?expand ?from crr#as_renderer
+  method reorder : 
+    'a. (#cell_renderer as 'a) -> int -> unit = 
+       fun crr pos -> GtkTree.CellLayout.reorder obj crr#as_renderer pos
   method clear () = GtkTree.CellLayout.clear obj
   method add_attribute :
     'a 'b. (#cell_renderer as 'a) -> string -> 'b column -> unit =
       fun crr attr col ->
         GtkTree.CellLayout.add_attribute obj crr#as_renderer attr col.index
+  method set_cell_data_func :
+    'a. (#cell_renderer as 'a) -> (model -> Gtk.tree_iter -> unit) -> unit =
+    fun crr cb -> 
+      GtkTree.CellLayout.set_cell_data_func obj crr#as_renderer
+	(Some (fun m i -> cb (new model m) i))
+  method unset_cell_data_func : 'a. (#cell_renderer as 'a) -> unit = 
+    fun crr ->
+      GtkTree.CellLayout.set_cell_data_func obj crr#as_renderer None
   method clear_attributes :
     'a. (#cell_renderer as 'a) -> unit = 
       fun crr -> GtkTree.CellLayout.clear_attributes obj crr#as_renderer
@@ -261,6 +272,9 @@ class view_column (_obj : tree_view_column obj) = object
   (* in GTK 2.4 this will be in GtkCellLayout interface *)
   (* inherit cell_layout _obj *)
   method clear () = TreeViewColumn.clear obj
+  method reorder :
+    'a. (#cell_renderer as 'a) -> int -> unit = 
+      fun crr pos -> GtkTree.CellLayout.reorder obj crr#as_renderer pos
   method pack : 'a. ?expand:_ -> ?from:_ -> (#cell_renderer as 'a)-> _ =
     fun ?expand ?from  r -> TreeViewColumn.pack obj ?expand ?from r#as_renderer
   method add_attribute :
