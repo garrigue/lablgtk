@@ -7,6 +7,7 @@ type pixmap
 type bitmap
 type font
 type atom = int
+type 'a event
 
 exception Error of string
 let _ = Callback.register_exception "gdkerror" (Error"")
@@ -106,27 +107,35 @@ module Font = struct
 end
 
 module Event = struct
-  type t
-  external copy : t -> t = "ml_gdk_event_copy"
-  external free : t -> unit = "ml_gdk_event_free"
-  external get_type : t -> event_type = "ml_GdkEventAny_type"
-  external get_window : t -> window = "ml_GdkEventAny_window"
-  external get_send_event : t -> bool = "ml_GdkEventAny_send_event"
+  external unsafe_copy : Glib.pointer -> #event_type event
+      = "ml_gdk_event_copy"
+  external get_type : 'a event -> 'a = "ml_GdkEventAny_type"
+  external get_window : 'a event -> window = "ml_GdkEventAny_window"
+  external get_send_event : 'a event -> bool = "ml_GdkEventAny_send_event"
 
   module Expose = struct
-    type t
+    type t = [ EXPOSE ] event
+    let cast (ev : event_type event) : t =
+      match get_type ev with `EXPOSE -> Obj.magic ev
+      |	_ -> invalid_arg "Gdk.Event.Expose.cast"
     external area : t -> Rectangle.t = "ml_GdkEventExpose_area"
     external count : t -> int = "ml_GdkEventExpose_count"
   end
 
   module Visibility = struct
-    type t
+    type t = [ VISIBILITY_NOTIFY ] event
+    let cast (ev :  event_type event) : t =
+      match get_type ev with `VISIBILITY_NOTIFY -> Obj.magic ev
+      |	_ -> invalid_arg "Gdk.Event.Visibility.cast"
     external visibility : t -> visibility_state
 	= "ml_GdkEventVisibility_state"
   end
 
   module Motion = struct
-    type t
+    type t = [ MOTION_NOTIFY ] event
+    let cast (ev : event_type event) : t =
+      match get_type ev with `MOTION_NOTIFY -> Obj.magic ev
+      |	_ -> invalid_arg "Gdk.Event.Motion.cast"
     external time : t -> int = "ml_GdkEventMotion_time"
     external x : t -> float = "ml_GdkEventMotion_x"
     external y : t -> float = "ml_GdkEventMotion_y"
@@ -142,7 +151,14 @@ module Event = struct
   end
 
   module Button = struct
-    type t
+    type t =
+	[ BUTTON_PRESS TWO_BUTTON_PRESS THREE_BUTTON_PRESS BUTTON_RELEASE ]
+	  event
+    let cast (ev : event_type event) : t =
+      match get_type ev with
+	`BUTTON_PRESS|`TWO_BUTTON_PRESS|`THREE_BUTTON_PRESS|`BUTTON_RELEASE
+	-> Obj.magic ev
+      |	_ -> invalid_arg "Gdk.Event.Button.cast"
     external time : t -> int = "ml_GdkEventButton_time"
     external x : t -> float = "ml_GdkEventButton_x"
     external y : t -> float = "ml_GdkEventButton_y"
@@ -158,7 +174,10 @@ module Event = struct
   end
 
   module Key = struct
-    type t
+    type t = [ KEY_PRESS KEY_RELEASE ] event
+    let cast (ev : event_type event) : t =
+      match get_type ev with `KEY_PRESS|`KEY_RELEASE -> Obj.magic ev
+      |	_ -> invalid_arg "Gdk.Event.Key.cast"
     external time : t -> int = "ml_GdkEventKey_time"
     external state : t -> int = "ml_GdkEventKey_state"
     external keyval : t -> int = "ml_GdkEventKey_keyval"
@@ -166,18 +185,27 @@ module Event = struct
   end
 
   module Crossing = struct
-    type t
+    type t = [ ENTER_NOTIFY LEAVE_NOTIFY ] event
+    let cast (ev : event_type event) : t =
+      match get_type ev with `ENTER_NOTIFY|`LEAVE_NOTIFY -> Obj.magic ev
+      |	_ -> invalid_arg "Gdk.Event.Crossing.cast"
     external subwindow : t -> window = "ml_GdkEventCrossing_subwindow"
     external detail : t -> notify_type = "ml_GdkEventCrossing_detail"
   end
 
   module Focus = struct
-    type t
+    type t = [ FOCUS_CHANGE ] event
+    let cast (ev : event_type event) : t =
+      match get_type ev with `FOCUS_CHANGE -> Obj.magic ev
+      |	_ -> invalid_arg "Gdk.Event.Focus.cast"
     external focus_in : t -> bool = "ml_GdkEventFocus_in"
   end
 
   module Configure = struct
-    type t
+    type t = [ CONFIGURE ] event
+    let cast (ev : event_type event) : t =
+      match get_type ev with `CONFIGURE -> Obj.magic ev
+      |	_ -> invalid_arg "Gdk.Event.Configure.cast"
     external x : t -> int = "ml_GdkEventConfigure_x"
     external y : t -> int = "ml_GdkEventConfigure_y"
     external width : t -> int = "ml_GdkEventConfigure_width"
@@ -185,14 +213,21 @@ module Event = struct
   end
 
   module Property = struct
-    type t
+    type t = [ PROPERTY_NOTIFY ] event
+    let cast (ev : event_type event) : t =
+      match get_type ev with `PROPERTY_NOTIFY -> Obj.magic ev
+      |	_ -> invalid_arg "Gdk.Event.Property.cast"
     external atom : t -> atom = "ml_GdkEventProperty_atom"
     external time : t -> int = "ml_GdkEventProperty_time"
     external state : t -> int = "ml_GdkEventProperty_state"
   end
 
   module Selection = struct
-    type t
+    type t = [ SELECTION_CLEAR SELECTION_REQUEST SELECTION_NOTIFY ] event
+    let cast (ev : event_type event) : t =
+      match get_type ev with
+	`SELECTION_CLEAR|`SELECTION_REQUEST|`SELECTION_NOTIFY -> Obj.magic ev
+      |	_ -> invalid_arg "Gdk.Event.Selection.cast"
     external selection : t -> atom = "ml_GdkEventSelection_selection"
     external target : t -> atom = "ml_GdkEventSelection_target"
     external property : t -> atom = "ml_GdkEventSelection_property"
@@ -201,7 +236,10 @@ module Event = struct
   end
 
   module Proximity = struct
-    type t
+    type t = [ PROXIMITY_IN PROXIMITY_OUT ] event
+    let cast (ev : event_type event) : t =
+      match get_type ev with `PROXIMITY_IN|`PROXIMITY_OUT -> Obj.magic ev
+      |	_ -> invalid_arg "Gdk.Event.Proximity.cast"
     external time : t -> int = "ml_GdkEventProximity_time"
     external source : t -> input_source = "ml_GdkEventProximity_source"
     external deviceid : t -> int = "ml_GdkEventProximity_deviceid"

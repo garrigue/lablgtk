@@ -3,7 +3,7 @@
 open Misc
 
 exception Error of string
-let _ = Callback.register_exception "gdkerror" (Error"")
+let _ = Callback.register_exception "gtkerror" (Error"")
 exception Warning of string
 let _ = Glib.set_warning_handler (fun msg -> raise (Warning msg))
 
@@ -141,7 +141,7 @@ module Widget = struct
       = "ml_gtk_widget_draw_default"
   external draw_children : [> widget] obj -> unit
       = "ml_gtk_widget_draw_children"
-  external event : [> widget] obj -> Gdk.Event.t -> unit
+  external event : [> widget] obj -> 'a Gdk.event -> unit
       = "ml_gtk_widget_event"
   external activate : [> widget] obj -> unit
       = "ml_gtk_widget_activate"
@@ -973,7 +973,6 @@ end
 
 module Arg = struct
   type t
-  type pointer
   external shift : t -> pos:int -> t = "ml_gtk_arg_shift"
   external get_type : t -> Type.t = "ml_gtk_arg_get_type"
   (* Safely get an argument *)
@@ -982,7 +981,7 @@ module Arg = struct
   external get_int : t -> int = "ml_gtk_arg_get_int"
   external get_float : t -> float = "ml_gtk_arg_get_float"
   external get_string : t -> string = "ml_gtk_arg_get_string"
-  external get_pointer : t -> pointer = "ml_gtk_arg_get_pointer"
+  external get_pointer : t -> Glib.pointer = "ml_gtk_arg_get_pointer"
   external get_object : t -> unit obj = "ml_gtk_arg_get_object"
   (* Safely set a result
      Beware: this is not the opposite of get, arguments and results
@@ -992,7 +991,7 @@ module Arg = struct
   external set_int : t -> int -> unit = "ml_gtk_arg_set_int"
   external set_float : t -> float -> unit = "ml_gtk_arg_set_float"
   external set_string : t -> string -> unit = "ml_gtk_arg_set_string"
-  external set_pointer : t -> pointer -> unit = "ml_gtk_arg_set_pointer"
+  external set_pointer : t -> Glib.pointer -> unit = "ml_gtk_arg_set_pointer"
   external set_object : t -> unit obj -> unit = "ml_gtk_arg_set_object"
 end
 
@@ -1001,7 +1000,7 @@ module Argv = struct
   type raw_obj
   type t = { referent: raw_obj; nargs: int; args: Arg.t }
   let nth arg :pos =
-    if pos < 0 || pos > arg.nargs then invalid_arg "Argv.nth";
+    if pos < 0 || pos >= arg.nargs then invalid_arg "Argv.nth";
     shift arg.args :pos
   let result arg =
     if arg.nargs < 0 then invalid_arg "Argv.result";
@@ -1040,7 +1039,10 @@ module Signal = struct
   external disconnect : 'a obj -> id -> unit
       = "ml_gtk_signal_disconnect"
   let marshal_unit f _ = f ()
-  let marshal_event f argv = Argv.set_result_bool argv (f ())
+  let marshal_event f argv =
+    let p = Argv.get_pointer argv pos:0 in
+    let ev = Gdk.Event.unsafe_copy p in
+    Argv.set_result_bool argv (f ev)
   let destroy : ([> widget],_) t =
     { name = "destroy"; marshaller = marshal_unit }
   let clicked : ([> button],_) t =
@@ -1049,8 +1051,50 @@ module Signal = struct
     { name = "toggled"; marshaller = marshal_unit }
   let activate : ([> editable],_) t =
     { name = "activate"; marshaller = marshal_unit }
-  let delete_event : ([> widget],_) t =
+  let event : ([> widget], Gdk.Tags.event_type Gdk.event -> bool) t =
     { name = "delete_event"; marshaller = marshal_event }
+  let button_press_event : ([> widget], Gdk.Event.Button.t -> bool) t =
+    { name = "button_press_event"; marshaller = marshal_event }
+  let button_release_event : ([> widget], Gdk.Event.Button.t -> bool) t =
+    { name = "button_release_event"; marshaller = marshal_event }
+  let motion_notify_event : ([> widget], Gdk.Event.Motion.t -> bool) t =
+    { name = "motion_notify_event"; marshaller = marshal_event }
+  let delete_event : ([> widget], [DELETE] Gdk.event -> bool) t =
+    { name = "delete_event"; marshaller = marshal_event }
+  let destroy_event : ([> widget], [DESTROY] Gdk.event -> bool) t =
+    { name = "destroy_event"; marshaller = marshal_event }
+  let expose_event : ([> widget], Gdk.Event.Expose.t -> bool) t =
+    { name = "expose_event"; marshaller = marshal_event }
+  let key_press_event : ([> widget], Gdk.Event.Key.t -> bool) t =
+    { name = "key_press_event"; marshaller = marshal_event }
+  let key_release_event : ([> widget], Gdk.Event.Key.t -> bool) t =
+    { name = "key_release_event"; marshaller = marshal_event }
+  let enter_notify_event : ([> widget], Gdk.Event.Crossing.t -> bool) t =
+    { name = "enter_notify_event"; marshaller = marshal_event }
+  let leave_notify_event : ([> widget], Gdk.Event.Crossing.t -> bool) t =
+    { name = "leave_notify_event"; marshaller = marshal_event }
+  let configure_event : ([> widget], Gdk.Event.Configure.t -> bool) t =
+    { name = "configure_event"; marshaller = marshal_event }
+  let focus_in_event : ([> widget], Gdk.Event.Focus.t -> bool) t =
+    { name = "focus_in_event"; marshaller = marshal_event }
+  let focus_out_event : ([> widget], Gdk.Event.Focus.t -> bool) t =
+    { name = "focus_out_event"; marshaller = marshal_event }
+  let map_event : ([> widget], [MAP] Gdk.event -> bool) t =
+    { name = "map_event"; marshaller = marshal_event }
+  let unmap_event : ([> widget], [UNMAP] Gdk.event -> bool) t =
+    { name = "unmap_event"; marshaller = marshal_event }
+  let property_notify_event : ([> widget], Gdk.Event.Property.t -> bool) t =
+    { name = "property_notify_event"; marshaller = marshal_event }
+  let selection_clear_event : ([> widget], Gdk.Event.Selection.t -> bool) t =
+    { name = "selection_clear_event"; marshaller = marshal_event }
+  let selection_request_event : ([> widget], Gdk.Event.Selection.t -> bool) t =
+    { name = "selection_request_event"; marshaller = marshal_event }
+  let selection_notify_event : ([> widget], Gdk.Event.Selection.t -> bool) t =
+    { name = "selection_notify_event"; marshaller = marshal_event }
+  let proximity_in_event : ([> widget], Gdk.Event.Proximity.t -> bool) t =
+    { name = "proximity_in_event"; marshaller = marshal_event }
+  let proximity_in_event : ([> widget], Gdk.Event.Proximity.t -> bool) t =
+    { name = "proximity_in_event"; marshaller = marshal_event }
 end
 
 module Timeout = struct
