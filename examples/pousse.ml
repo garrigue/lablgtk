@@ -24,6 +24,8 @@ let _ =
   Draw.arc pixmap2 gc x:5 y:5 width:40 height:40 filled:true;
   GC.set_foreground gc (Color.alloc `Black);
   Draw.arc pixmap2 gc x:5 y:5 width:40 height:40;
+  GC.set_foreground gc' (Color.alloc `Black);
+  Draw.rectangle bitmap gc' x:0 y:0 width:50 height:50 filled:true;
   GC.set_foreground gc' (Color.alloc `White);
   Draw.arc bitmap gc' x:5 y:5 width:40 height:40 filled:true;
   Draw.arc bitmap gc' x:5 y:5 width:40 height:40
