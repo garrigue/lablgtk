@@ -16,6 +16,8 @@ module Private : Uicommon.UI = struct
 open GMain
 open GdkKeysyms
 
+let debugprogress = Trace.debug "progress"
+
 (**********************************************************************)
 (* UI preferences                                                     *)
 (**********************************************************************)
@@ -73,20 +75,22 @@ let getLock f =
 
 class scrolled_text ?editable ?word_wrap ?width ?height ?packing ?show
     () =
-  let hbox = GPack.hbox ?width ?height ?packing ~show:false () in
-  let scrollbar = GRange.scrollbar `VERTICAL
-      ~packing:(hbox#pack ~from:`END) () in
-  let text = GEdit.text ~vadjustment:scrollbar#adjustment
-      ?editable ?word_wrap ~packing:hbox#add () in
+  let sw =
+    GFrame.scrolled_window ?width ?height ?packing ~show:false
+      ~hpolicy:`NEVER ~vpolicy:`AUTOMATIC ()
+  in
+  let text = GEdit.text ?editable ?word_wrap ~packing:sw#add () in
   object
-    inherit GObj.widget_full hbox#as_widget
-    method scrollbar = scrollbar
+    inherit GObj.widget_full sw#as_widget
     method text = text
     method insert ?(font=fontMonospaceMedium) s =
-      text#insert ~font:(Lazy.force font) s
-    method show () = hbox#misc#show ()
+      text#freeze ();
+      text#delete_text ~start:0 ~stop:text#length;
+      text#insert ~font:(Lazy.force font) s;
+      text#thaw ()
+    method show () = sw#misc#show ()
     initializer
-      if show <> Some false then hbox#misc#show ()
+      if show <> Some false then sw#misc#show ()
   end
 
 let gtk_sync () = while Glib.Main.iteration false do () done
@@ -359,6 +363,50 @@ let editProfile prof =
   Main.main ()
 
 (**********************************************************************)
+(*                        Documentation window                        *)
+(**********************************************************************)
+let documentation sect =
+  let title = "Documentation" in
+  let t = GWindow.dialog ~title ~wm_name:title () in
+  let t_dismiss =
+    GButton.button ~label:"dismiss" ~packing:t#action_area#add () in
+  t_dismiss#grab_default ();
+  let dismiss () = t#destroy () in
+  ignore (t_dismiss#connect#clicked ~callback:dismiss);
+  ignore (t#connect#event#delete ~callback:(fun _ -> dismiss (); true));
+
+  let (name, docstr) = List.assoc sect Strings.docs in
+  let hb = GPack.hbox ~packing:(t#vbox#pack ~expand:false ~padding:2) () in
+  let optionmenu =
+    GMenu.option_menu ~packing:(hb#pack ~fill:false) () in
+
+  let charW = Gdk.Font.char_width (Lazy.force fontMonospaceMedium) 'M' in
+  let charH = 16 in
+  let t_text =
+    new scrolled_text ~editable:false
+      ~width:(charW * 80) ~height:(charH * 20) ~packing:t#vbox#add ()
+  in
+  t_text#insert docstr;
+
+  let sect_idx = ref 0 in
+  let idx = ref 0 in
+  let menu = GMenu.menu () in
+  let addDocSection (shortname, (name, docstr)) =
+    if shortname <> "" && name <> "" then begin
+      if shortname = sect then sect_idx := !idx;
+      incr idx;
+      let item = GMenu.menu_item ~label:name ~packing:menu#append () in
+      ignore
+        (item#connect#activate ~callback:(fun () -> t_text#insert docstr))
+    end
+  in
+  Safelist.iter addDocSection Strings.docs;
+  optionmenu#set_menu menu;
+  optionmenu#set_history !sect_idx;
+
+  t#show ()
+
+(**********************************************************************)
 (* The profile selection dialog                                       *)
 (**********************************************************************)
 let profileSelect cont =
@@ -382,7 +430,7 @@ let profileSelect cont =
   let selection = ref None in
   
   (* Build the dialog *)
-  let t = GWindow.dialog ~title:"Profiles" ~wm_name:"Profiles" ~modal:true () in
+  let t = GWindow.dialog ~title:"Profiles" ~wm_name:"Profiles" () in
   
   let okCommand() =
     match !selection with
@@ -446,7 +494,9 @@ let profileSelect cont =
     GEdit.entry ~packing:(tbl#attach ~left:1 ~top:1) ~editable:false () in
   root1#misc#set_can_focus false;
   root2#misc#set_can_focus false;
-  let hb = GPack.hbox ~border_width:2 ~spacing:2 ~packing:vb#add () in
+  let hb =
+    GPack.hbox ~border_width:2 ~spacing:2 ~packing:(vb#pack ~expand:false) ()
+  in
   let nw =
     GButton.button ~label:"Create new profile"
       ~packing:hb#pack () in
@@ -502,6 +552,10 @@ let profileSelect cont =
   let sd =
     GButton.button ~label:"Set default" (*~packing:(hb#pack ~expand:false)*) ()
   in
+  let hlp =
+    GButton.button ~label:"Help"
+      ~packing:(hb#pack ~expand:false ~from:`END) () in
+  ignore (hlp#connect#clicked ~callback:(fun () -> documentation "tutorial"));
 
   ignore (lst#connect#unselect_row ~callback:(fun _ _ _ ->
     root1#set_text ""; root2#set_text "";
@@ -570,6 +624,7 @@ let fatalError =
   messageBox ~title:"Fatal Error" ~label:"Exit" ~modal:true
     ~action:(fun t () -> exit 1)
 
+
 (**********************************************************************)
 (*                      Toplevel window                               *)
 (**********************************************************************)
@@ -635,7 +690,8 @@ let createToplevelWindow () =
             (Gdk.Font.string_width font "skipped")
   in
   mainWindow#set_column ~justification:`CENTER 1;
-  mainWindow#set_column ~auto_resize:false ~width:status_width 3;
+  mainWindow#set_column
+    ~justification:`CENTER ~auto_resize:false ~width:status_width 3;
 
   (**********************************************************************)
   (* Create the details window                                          *)
@@ -645,8 +701,12 @@ let createToplevelWindow () =
   let charH = if Sys.os_type = "Win32" then 20 else 16 in
 
   let detailsWindow =
+    let sw =
+      GFrame.scrolled_window ~packing:(toplevelVBox#pack ~expand:false)
+        ~hpolicy:`AUTOMATIC ~vpolicy:`AUTOMATIC ()
+    in
     GEdit.text ~editable:false ~height:(3 * charH) ~width: (96 * charW)
-      ~line_wrap:false ~packing:toplevelVBox#pack () in
+      ~line_wrap:false ~packing:sw#add () in
   detailsWindow#misc#set_can_focus false;
   let style = detailsWindow#misc#style#copy in
   style#set_font (Lazy.force fontMonospaceMedium);
@@ -761,47 +821,56 @@ let createToplevelWindow () =
     let oldPath = if i = 0 then emptypath else !theState.(i-1).ri.path in
     let status =
       match !theState.(i).whatHappened with
-        None -> "        "
+        None -> "      "
       | Some conf ->
           match !theState.(i).ri.replicas with
-            Different(_,_,{contents=Conflict}) ->
-              "skipped"
+            Different(_,_,{contents=Conflict}) | Problem _ ->
+              "      "
           | _ ->
               match conf with
-                Succeeded _ -> "done   "
-              | Failed _    -> "failed "
+                Succeeded _ -> "done  "
+              | Failed _    -> "failed"
     in
     let s = reconItem2string oldPath !theState.(i).ri status in
     (* FIX: This is ugly *)
     (String.sub s ~pos:0 ~len:8,
      String.sub s ~pos:9 ~len:5,
      String.sub s ~pos:15 ~len:8,
-     String.sub s ~pos:24 ~len:8,
-     String.sub s ~pos:33 ~len:(String.length s - 33))
+     String.sub s ~pos:25 ~len:6,
+     String.sub s ~pos:32 ~len:(String.length s - 32))
   in
 
   let rightArrow =
-    lazy (GDraw.pixmap_from_xpm_d
-            ~window:toplevelWindow ~data:Pixmaps.copyAB ()) in
-  let rightArrowBlack =
-    lazy (GDraw.pixmap_from_xpm_d
-            ~window:toplevelWindow ~data:Pixmaps.copyABblack ()) in
+    GDraw.pixmap_from_xpm_d ~window:toplevelWindow ~data:Pixmaps.copyAB () in
   let leftArrow =
-    lazy (GDraw.pixmap_from_xpm_d
-            ~window:toplevelWindow ~data:Pixmaps.copyBA ()) in
+    GDraw.pixmap_from_xpm_d ~window:toplevelWindow ~data:Pixmaps.copyBA () in
+  let rightArrowBlack =
+    GDraw.pixmap_from_xpm_d
+      ~window:toplevelWindow ~data:Pixmaps.copyABblack () in
   let leftArrowBlack =
-    lazy (GDraw.pixmap_from_xpm_d
-            ~window:toplevelWindow ~data:Pixmaps.copyBAblack ()) in
+    GDraw.pixmap_from_xpm_d
+      ~window:toplevelWindow ~data:Pixmaps.copyBAblack () in
   let ignoreAct =
-    lazy (GDraw.pixmap_from_xpm_d
-            ~window:toplevelWindow ~data:Pixmaps.ignore ()) in
+    GDraw.pixmap_from_xpm_d ~window:toplevelWindow ~data:Pixmaps.ignore () in
+  let doneIcon = 
+    GDraw.pixmap_from_xpm_d ~window:toplevelWindow ~data:Pixmaps.success () in
+  let failedIcon = 
+    GDraw.pixmap_from_xpm_d ~window:toplevelWindow ~data:Pixmaps.failure () in
 
   let displayArrow i action =
     match action with
-      "<-?->" -> mainWindow#set_cell ~pixmap:(Lazy.force ignoreAct) i 1
-    | "---->" -> mainWindow#set_cell ~pixmap:(Lazy.force rightArrow) i 1
-    | "<----" -> mainWindow#set_cell ~pixmap:(Lazy.force leftArrow) i 1
-    | _       -> assert false
+      "<-?->" -> mainWindow#set_cell ~pixmap:ignoreAct i 1
+    | "---->" -> mainWindow#set_cell ~pixmap:rightArrow i 1
+    | "<----" -> mainWindow#set_cell ~pixmap:leftArrow i 1
+    | "error" -> mainWindow#set_cell ~pixmap:failedIcon i 1
+    |    _    -> assert false
+  in
+
+  let displayStatusIcon i status =
+    match status with
+    | "failed" -> mainWindow#set_cell ~pixmap:failedIcon i 3
+    | "done  " -> mainWindow#set_cell ~pixmap:doneIcon i 3
+    | _        -> mainWindow#set_cell ~text:status i 3
   in
 
   let displayMain() =
@@ -824,7 +893,7 @@ let createToplevelWindow () =
     mainWindow#set_cell ~text:r1     i 0;
     displayArrow i action;
     mainWindow#set_cell ~text:r2     i 2;
-    mainWindow#set_cell ~text:status i 3;
+    displayStatusIcon i status;
     mainWindow#set_cell ~text:path   i 4;
     if status = " failed " then mainWindow#set_row ~foreground:(`NAME"red") i;
     mainWindow#thaw ();
@@ -839,11 +908,15 @@ let createToplevelWindow () =
     let newstatus =
       if b=0 || len = 0 then "working "
       else if len = 0 then sprintf "%8d" b 
-      else sprintf "  %3d%%  "
-                   (int_of_float ((float b) *. 100.0 /. (float len))) in
-      Threads.do_on_main_thread (fun () ->
-        mainWindow#set_cell ~text:newstatus i 3;
-        gtk_sync ())
+      else
+        let percentage = (int_of_float ((float b) *. 100.0 /. (float len))) in
+        if percentage > 100 then
+          debugprogress (fun() -> errmsg "Progress amount miscalculated for %s\n"
+                                    (path2string (!theState.(i).ri.path)));
+        sprintf "  %3d%%  " (max 100 percentage) in
+    Threads.do_on_main_thread (fun () ->
+      mainWindow#set_cell ~text:newstatus i 3;
+      gtk_sync ())
   in
 
   (* Install showProgress so that we get called back by low-level
@@ -1032,7 +1105,7 @@ let createToplevelWindow () =
   let addDocSection (shortname, (name, docstr)) =
     if shortname <> "" && name <> "" then
       ignore (helpMenu#add_item
-		~callback:(fun () -> messageBox ~title:name docstr)
+		~callback:(fun () -> documentation shortname)
                 name)
   in
   Safelist.iter addDocSection Strings.docs;
@@ -1190,13 +1263,13 @@ let createToplevelWindow () =
   actionBar#insert_space ();
   grAdd grAction
     (actionBar#insert_button
-       ~icon:((GMisc.pixmap (Lazy.force leftArrowBlack) ())#coerce)
+       ~icon:((GMisc.pixmap leftArrowBlack ())#coerce)
        ~callback:leftAction ());
   actionBar#insert_space ();
   grAdd grAction
     (actionBar#insert_button
-       ~icon:((GMisc.pixmap (Lazy.force rightArrowBlack) ())#coerce)
-       ~callback:leftAction ());
+       ~icon:((GMisc.pixmap rightArrowBlack ())#coerce)
+       ~callback:rightAction ());
   actionBar#insert_space ();
   grAdd grAction
     (actionBar#insert_button ~text:"Skip" ~callback:questionAction ());
