@@ -252,8 +252,8 @@ let undo () =
 let targets = [  { target = "STRING"; flags = []; info = 0}  ]
 
 let xpm_window () =
-  let source_drag_data_get classe _ (data : selection_data) ~info ~time =
-    data#set ~typ:data#target ~format:0 ~data:classe in
+  let source_drag_data_get classe _ (data : selection_context) ~info ~time =
+    data#return ~typ:data#target classe in
   let window = GWindow.window ~title:"icons" ~x:250 ~y:10 () in
   window#misc#realize ();
   let vbox = GPack.vbox ~packing:window#add () in
