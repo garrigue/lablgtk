@@ -420,13 +420,13 @@ module Truecolor = struct
     match Visual.get_type visual with
       `TRUE_COLOR | `DIRECT_COLOR ->
 	let shift_prec = shift_prec visual in
-	Format.eprintf "red : %d %d, "
+        (* Format.eprintf "red : %d %d, "
 	  shift_prec.red_shift shift_prec.red_prec;
 	Format.eprintf "green : %d %d, "
 	  shift_prec.green_shift shift_prec.green_prec;
 	Format.eprintf "blue : %d %d"
 	  shift_prec.blue_shift shift_prec.blue_prec;
-	Format.pp_print_newline Format.err_formatter ();
+	Format.pp_print_newline Format.err_formatter (); *)
 	let red_lsr = 16 - shift_prec.red_prec
 	and green_lsr = 16 - shift_prec.green_prec
 	and blue_lsr = 16 - shift_prec.blue_prec in
