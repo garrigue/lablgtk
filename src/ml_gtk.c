@@ -159,6 +159,21 @@ Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, step_increment,
 Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, page_increment,
 		copy_double)
 Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, page_size, copy_double)
+value ml_gtk_adjustment_set(value lower, value upper,
+                            value step_increment, value page_increment,
+                            value page_size, value adjustment)
+{
+    GtkAdjustment *adj = GtkAdjustment_val(adjustment);
+#define Update_field(name) adj->name = Option_val(name,Double_val,adj->name)
+    Update_field(lower);
+    Update_field(upper);
+    Update_field(step_increment);
+    Update_field(page_increment);
+    Update_field(page_size);
+#undef Update_field
+    return Val_unit;
+}
+ML_bc6(ml_gtk_adjustment_set)
 
 /* gtktooltips.h */
 

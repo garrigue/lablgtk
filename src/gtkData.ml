@@ -100,6 +100,9 @@ module Adjustment = struct
       = "ml_gtk_adjustment_get_page_increment"
   external get_page_size : [>`adjustment] obj -> float
       = "ml_gtk_adjustment_get_page_size"
+  external set : ?lower:float -> ?upper:float -> ?step_incr:float ->
+      ?page_incr:float -> ?page_size:float -> [>`adjustment] obj -> unit
+      =  "ml_gtk_adjustment_set_bc" "ml_gtk_adjustment_set"
   module Signals = struct
     open GtkSignal
     let changed : ([>`adjustment],_) t =
@@ -107,6 +110,10 @@ module Adjustment = struct
     let value_changed : ([>`adjustment],_) t =
       { name = "value_changed"; marshaller = marshal_unit }
   end
+  let set_bounds adj ?lower ?upper ?step_incr ?page_incr ?page_size () =
+    set adj ?lower ?upper ?step_incr ?page_incr ?page_size;
+    GtkSignal.emit_unit adj ~sgn:Signals.changed;
+    set_value adj (get_value adj)
 end
 
 module Tooltips = struct

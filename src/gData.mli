@@ -35,6 +35,9 @@ class adjustment : Gtk.adjustment obj ->
     method step_increment : float
     method page_increment : float
     method page_size : float
+    method set_bounds :
+      ?lower:float -> ?upper:float -> ?step_incr:float ->
+      ?page_incr:float -> ?page_size:float -> unit -> unit
   end
 val adjustment :
   ?value:float ->
