@@ -28,3 +28,9 @@ let optpointer : 'a option -> 'a optpointer =
     | Some x -> Obj.magic x
 
 type pointer
+
+let null_cont _ = ()
+
+let identity x = x
+
+let kill x y = x
