@@ -147,7 +147,8 @@ CAMLprim value ml_gtk_tree_store_newv(value arr)
   int n_columns = Wosize_val(arr);
   int i;
   GType *types = (GType*)
-    alloc (Wosize_asize(n_columns * sizeof(GType)), Abstract_tag);
+    (n_columns ? alloc (Wosize_asize(n_columns * sizeof(GType)), Abstract_tag)
+     : 0);
   for (i=0; i<n_columns; i++)
     types[i] = GType_val(Field(arr,i));
   CAMLreturn (Val_GObject_new(&gtk_tree_store_newv(n_columns, types)->parent));
@@ -201,7 +202,8 @@ CAMLprim value ml_gtk_list_store_newv(value arr)
   int n_columns = Wosize_val(arr);
   int i;
   GType *types = (GType*)
-    alloc (Wosize_asize(n_columns * sizeof(GType)), Abstract_tag);
+    (n_columns ? alloc (Wosize_asize(n_columns * sizeof(GType)), Abstract_tag)
+     : 0);
   for (i=0; i<n_columns; i++)
     types[i] = GType_val(Field(arr,i));
   CAMLreturn (Val_GObject_new(&gtk_list_store_newv(n_columns, types)->parent));
