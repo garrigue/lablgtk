@@ -7,8 +7,8 @@
 
 (* $Id$ *)
 
-type handle = [`gtk|`widget] Gobject.obj
-type menuhandle = [`gtk|`widget|`container|`menushell|`menu] Gobject.obj
+type handle = Gtk.widget Gobject.obj
+type menuhandle = Gtk.menu_shell Gobject.obj
 type richcolor
 type hres
 type hresources
