@@ -12,7 +12,7 @@ let get_files_in_directory dir =
     with
       _ -> closedir dirh; [] 
   in
-    Sort.list order:(<) (get_them ())
+    Sort.list ~order:(<) (get_them ())
   with Unix_error _ -> []
 
 let is_directory name =
@@ -20,12 +20,12 @@ let is_directory name =
     (stat name).st_kind = S_DIR
   with _ -> false
 
-let get_directories_in_files :path =
-  List.filter pred:(fun x -> is_directory  (path ^ "/" ^ x))
+let get_directories_in_files ~path =
+  List.filter ~pred:(fun x -> is_directory  (path ^ "/" ^ x))
 
 (************************************************** Subshell call *)
-let subshell :cmd =
-  let rc = open_process_in :cmd in
+let subshell ~cmd =
+  let rc = open_process_in ~cmd in
   let rec it () =
     try 
       let x = input_line rc in x :: it ()

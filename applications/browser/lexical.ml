@@ -4,9 +4,9 @@ open Parser
 
 type tags = [`none|`control|`define|`structure|`char|`infix|`label|`uident]
 
-let colors : (tags * GdkObj.color) list Lazy.t =
+let colors : (tags * GDraw.color) list Lazy.t =
   lazy
-    (List.map fun:(fun (tag,col) -> tag, `COLOR (Gdk.Color.alloc (`NAME col)))
+    (List.map ~f:(fun (tag,col) -> tag, `COLOR (GDraw.color (`NAME col)))
        [ `control, "blue";
 	 `define, "forestgreen";
 	 `structure, "purple";
@@ -16,38 +16,41 @@ let colors : (tags * GdkObj.color) list Lazy.t =
 	 `uident, "midnightblue";
          `none, "black" ])
 
-let tag ?(:start=0) ?end:pend (tw : GEdit.text) =
+let tag ?(start=0) ?stop:pend (tw : GEdit.text) =
   let pend = Misc.default tw#length pend in
   let colors = Lazy.force colors in
   tw#freeze ();
   let position = tw#position
-  and text = tw#get_chars :start end:pend in
-  let replace start:pstart end:pend :tag =
+  and text = tw#get_chars ~start ~stop:pend in
+  let replace ~start:pstart ~stop:pend ~tag =
     if pend > pstart then begin
-      tw#delete_text start:(start+pstart) end:(start+pend);
+      tw#delete_text ~start:(start+pstart) ~stop:(start+pend);
       tw#set_point (start+pstart);
-      tw#insert foreground:(List.assoc key:tag colors)
-	(String.sub text pos:pstart len:(pend-pstart));
+      tw#insert ~foreground:(List.assoc tag colors)
+	(String.sub text ~pos:pstart ~len:(pend-pstart));
     end
   and next_lf = ref (-1) in
-  let colorize start:rstart end:rend :tag =
+  let colorize ~start:rstart ~stop:rend ~tag =
     let rstart = ref rstart in
     while !rstart < rend do
       if !next_lf < !rstart then begin
-	try next_lf := String.index_from text char:'\n' pos:!rstart
+	try next_lf := String.index_from text !rstart '\n'
 	with Not_found -> next_lf := pend-start
       end;
-      replace start:!rstart end:(min !next_lf rend) :tag;
+      replace ~start:!rstart ~stop:(min !next_lf rend) ~tag;
       rstart := !next_lf + 1
     done
   in
   let buffer = Lexing.from_string text
-  and last = ref 0
-  in
+  and last = ref (EOF, 0, 0)
+  and last_pos = ref 0 in
   try
     while true do
+    let token = Lexer.token buffer
+    and start = Lexing.lexeme_start buffer
+    and stop = Lexing.lexeme_end buffer in
     let tag =
-      match Lexer.token buffer with
+      match token with
         AMPERAMPER
       | AMPERSAND
       | BARBAR
@@ -56,7 +59,7 @@ let tag ?(:start=0) ?end:pend (tw : GEdit.text) =
       | ELSE
       | FOR
       | IF
-      |	LAZY
+      | LAZY
       | MATCH
       | OR
       | THEN
@@ -78,7 +81,7 @@ let tag ?(:start=0) ?end:pend (tw : GEdit.text) =
       | FUNCTOR
       | IN
       | INHERIT
-      |	INITIALIZER
+      | INITIALIZER
       | LET
       | METHOD
       | MODULE
@@ -91,44 +94,59 @@ let tag ?(:start=0) ?end:pend (tw : GEdit.text) =
       | TYPE
       | VAL
       | VIRTUAL
-      	  -> `define
+          -> `define
       | BEGIN
       | END
       | INCLUDE
-      |	OBJECT
+      | OBJECT
       | OPEN
       | SIG
       | STRUCT
           -> `structure
       | CHAR _
       | STRING _
-      	  -> `char
+          -> `char
       | BACKQUOTE
       | INFIXOP1 _
       | INFIXOP2 _
       | INFIXOP3 _
       | INFIXOP4 _
       | PREFIXOP _
-      |	QUESTION2
+      | QUESTION2
       | SHARP
-      	  -> `infix
+          -> `infix
       | LABEL _
-      | LABELID _
+      | OPTLABEL _
       | QUESTION
-      	  -> `label
+      | TILDE
+          -> `label
       | UIDENT _ -> `uident
+      | LIDENT _ ->
+          begin match !last with
+            (QUESTION | TILDE), _, _ -> `label
+          | _ -> `none
+          end
+      | COLON ->
+          begin match !last with
+            LIDENT _, lstart, lstop when lstop = start ->
+              colorize ~tag:`none ~start:!last_pos ~stop:lstart;
+              colorize ~tag:`label ~start:lstart ~stop;
+              last_pos := stop;
+              `none
+          | _ -> `none
+          end
       | EOF -> raise End_of_file
       | _ -> `none
     in
     if tag <> `none then begin
-      colorize tag:`none start:!last end:(Lexing.lexeme_start buffer);
-      colorize :tag start:(Lexing.lexeme_start buffer)
-	end:(Lexing.lexeme_end buffer);
-      last := Lexing.lexeme_end buffer
-    end
+      colorize ~tag:`none ~start:!last_pos ~stop:start;
+      colorize ~tag ~start ~stop;
+      last_pos := stop
+    end;
+    last := (token, start, stop)
     done
   with exn ->
-    colorize tag:`none start:!last end:(pend-start);
+    colorize ~tag:`none ~start:!last_pos ~stop:(pend-start);
     tw#thaw ();
     tw#set_position position;
     tw#set_point position;
