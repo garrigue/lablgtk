@@ -115,7 +115,7 @@ class toolbar obj = object
   method button_relief = Toolbar.get_button_relief obj
 end
 
-let toolbar ?:orientation{=`HORIZONTAL} ?:style
+let toolbar ?:orientation[=`HORIZONTAL] ?:style
     ?:space_size ?:space_style ?:tooltips ?:button_relief
     ?:border_width ?:width ?:height ?:packing ?:show () =
   let w = Toolbar.create orientation ?:style () in

@@ -75,7 +75,7 @@ class area obj = object
       raise (Gl.GLerror "make_current")
 end
 
-let area options ?:share ?:width{=0} ?:height{=0} ?:packing ?:show () =
+let area options ?:share ?:width[=0] ?:height[=0] ?:packing ?:show () =
   let share =
     match share with Some (x : area) -> Some x#as_area | None -> None in
   let w = Raw.create options share:(optboxed share) in

@@ -8,7 +8,7 @@ open Gdk
 let buf = String.create len: (256*256*3)
 let ic = open_in_bin "image256x256.rgb"
 let _ = 
-  input ic buffer:buf pos:0 len:(256*256*3);
+  input ic buf:buf pos:0 len:(256*256*3);
   close_in ic
 
 let rgb_at x y =

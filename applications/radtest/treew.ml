@@ -181,7 +181,7 @@ class window_and_tree :name =
 	    match selected with
 	    | None -> ()
 	    | Some t -> 
-		if List.mem item:`CONTROL state then t#up ()
+		if List.mem key:`CONTROL state then t#up ()
 		else try
 		  self#change_selected t#prev
 		with Not_found -> ()
@@ -190,7 +190,7 @@ class window_and_tree :name =
 	    match selected with
 	    | None -> ()
 	    | Some t -> 
-		if List.mem item:`CONTROL state then t#down ()
+		if List.mem key:`CONTROL state then t#down ()
 		else try
 		  self#change_selected t#next
 		with Not_found -> ()
@@ -224,7 +224,7 @@ class window_and_tree :name =
 *)
 
 class virtual tiwidget :name parent_tree:(parent_tree : GTree2.tree) :pos
-    :classe :widget ?:root{=false} (parent_window : window_and_tree0) =
+    :classe :widget ?:root[=false] (parent_window : window_and_tree0) =
 object(self)
 
   inherit tiwidget0
@@ -303,7 +303,7 @@ object(self)
   method remove_me () =
     let sref = ref "" in
     self#save_to_string sref;
-    let pos = list_pos item:(self : #tiwidget0 :> tiwidget0)
+    let pos = list_pos key:(self : #tiwidget0 :> tiwidget0)
 	(List.map self#sure_parent#children fun:fst) in
     let lexbuf = Lexing.from_string !sref in
     let node = Paste_parser.widget Paste_lexer.token lexbuf in
@@ -339,7 +339,7 @@ object(self)
     self#add_child_tiw child affich:true;
     add_undo (Remove name)
 
-  method private add_child_tiw :affich ?:pos{= -1} child =
+  method private add_child_tiw :affich ?:pos[= -1] child =
     child#set_parent (self : #tiwidget0 :> tiwidget0);
     self#add child :pos;
     if affich then Propwin.show child (* else Propwin.add child *)
@@ -356,11 +356,11 @@ object(self)
 
 
 (* adds the subtree saved in the Node *)
-  method add_children ?:pos{= -1} node =
+  method add_children ?:pos[= -1] node =
     let child_name = self#add_children_wo_undo node :pos in
     add_undo (Remove child_name)
 
-  method private add_children_wo_undo ?:pos{= -1} (Node (child, children)) =
+  method private add_children_wo_undo ?:pos[= -1] (Node (child, children)) =
     let classe, name, property_list = child in
     let rname = change_name name in
     let tc = self#add_child_with_name classe rname :pos in
@@ -406,7 +406,7 @@ object(self)
     let mandatory = self#get_mandatory_props in
     List.iter (self#emit_clean_proplist proplist) fun:
       begin  fun (name, prop) ->
-	if List.mem item:name mandatory then () else
+	if List.mem key:name mandatory then () else
 	if prop#modified then
 	  Format.fprintf formatter "@ %s:%s" prop#name prop#code
       end
@@ -536,7 +536,7 @@ object(self)
     end
 
   method next_child child =
-    let _, tl = cut_list item:child (List.map fun:fst children) in
+    let _, tl = cut_list key:child (List.map fun:fst children) in
     match tl with
     | ch :: next :: _ -> next
     | ch :: [] -> begin
@@ -557,7 +557,7 @@ object(self)
     match parent with
     | None -> raise Not_found
     | Some p ->
-	let hd, _ = cut_list item:(self : #tiwidget0 :> tiwidget0)
+	let hd, _ = cut_list key:(self : #tiwidget0 :> tiwidget0)
 	    (List.map fun:fst p#children) in
 	match hd with
 	| [] -> p
@@ -603,7 +603,7 @@ end
    not for buttons (can't have children) *)
 
 class virtual ticontainer :widget :name
-    ?:root{= false} :classe :parent_tree :pos parent_window =
+    ?:root[= false] :classe :parent_tree :pos parent_window =
 object(self)
 
   val container = (widget : #container :> container)
@@ -788,20 +788,20 @@ object(self)
 (* removes the ::expand ::fill ::padding in the proplist of a box
    assumes that these are the only properties with a :: in the name *)
   method private save_clean_proplist =
-    snd (list_split container#save_clean_proplist
-	   pred:(fun (n,p) ->
-	     try
-	       let i = String.index n char:':' in
-	       i < (String.length n) && n.[i+1]=':'
-	     with Not_found -> false))
+    List.filter container#save_clean_proplist
+      pred:(fun (n,p) ->
+	try
+	  let i = String.index n char:':' in
+	  i = String.length n || n.[i+1] <> ':'
+	with Not_found -> true)
 
   method private emit_clean_proplist pl =
-    snd (list_split (container#emit_clean_proplist pl)
-	   pred:(fun (n,p) ->
-	     try
-	       let i = String.index n char:':' in
-	       i < (String.length n) && n.[i+1]=':'
-	     with Not_found -> false))
+    List.filter (container#emit_clean_proplist pl)
+      pred:(fun (n,p) ->
+	try
+	  let i = String.index n char:':' in
+	  i = String.length n || n.[i+1] <> ':'
+	with Not_found -> true)
 
   method change_name_in_proplist oldn newn =
     proplist <- List.fold_left acc:proplist fun:
@@ -811,7 +811,7 @@ object(self)
     Propwin.update (self : #tiwidget0 :> tiwidget0)
 
   method child_up child =
-    let pos = list_pos item:child (List.map fun:fst children) in
+    let pos = list_pos key:child (List.map fun:fst children) in
     if pos > 0 then begin
       box#reorder_child child#base pos:(pos-1);
       children <- list_reorder_up children :pos;
@@ -819,7 +819,7 @@ object(self)
     end
 	    
   method child_down child =
-    let pos = list_pos item:child (List.map fun:fst children) in
+    let pos = list_pos key:child (List.map fun:fst children) in
     if pos < (List.length children - 1) then begin
       box#reorder_child child#base pos:(pos+1);
       children <- list_reorder_down children :pos;
@@ -832,7 +832,7 @@ object(self)
       children <-  children @ [(child, `START)]
     end
     else begin
-      children <- list_insert item:(child, `START) children :pos;
+      children <- list_insert key:(child, `START) children :pos;
       box#reorder_child child#base :pos
     end;
     let n = child#name in
@@ -1177,4 +1177,4 @@ let new_class_list = [
 
 let _ =
   new_tiwidget :=
-    (fun :classe ?:pos{= -1} -> (List.assoc key:classe new_class_list) :pos)
+    (fun :classe ?:pos[= -1] -> (List.assoc key:classe new_class_list) :pos)

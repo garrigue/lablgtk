@@ -55,7 +55,7 @@ module Window = struct
       allow_grow:(may_default get_allow_grow w for:allow_grow)
       auto_shrink:(may_default get_auto_shrink w for:auto_shrink)
   let set ?:title ?:wm_name ?:wm_class ?:position ?:allow_shrink ?:allow_grow
-      ?:auto_shrink ?:modal ?:x{= -2} ?:y{= -2} w =
+      ?:auto_shrink ?:modal ?:x[= -2] ?:y[= -2] w =
     may title fun:(set_title w);
     if wm_name <> None || wm_class <> None then
       set_wmclass w ?name:wm_name ?class:wm_class;
@@ -161,7 +161,7 @@ module FontSelectionDialog = struct
     null_terminated -> null_terminated -> null_terminated -> unit
     = "ml_gtk_font_selection_dialog_set_filter_bc"
       "ml_gtk_font_selection_dialog_set_filter"
-  let set_filter w ?type:tl{=[`ALL]} ?:foundry
+  let set_filter w ?type:tl[=[`ALL]] ?:foundry
       ?:weight ?:slant ?:setwidth ?:spacing ?:charset filter =
     set_filter w filter tl (null_terminated foundry)
       (null_terminated weight) (null_terminated slant)

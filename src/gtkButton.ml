@@ -88,17 +88,17 @@ module Toolbar = struct
   let cast w : toolbar obj = Object.try_cast w "GtkToolbar"
   external create : orientation -> style:toolbar_style -> toolbar obj
       = "ml_gtk_toolbar_new"
-  let create dir ?:style{=`BOTH} () = create dir :style
+  let create dir ?:style[=`BOTH] () = create dir :style
   external insert_space : [>`toolbar] obj -> pos:int -> unit
       = "ml_gtk_toolbar_insert_space"
-  let insert_space w ?:pos{= -1} () = insert_space w :pos
+  let insert_space w ?:pos[= -1] () = insert_space w :pos
   external insert_button :
       [>`toolbar] obj -> type:[`BUTTON|`TOGGLEBUTTON|`RADIOBUTTON] ->
       text:optstring -> tooltip:optstring -> tooltip_private:optstring ->
       icon:[>`widget] optobj -> pos:int -> button obj
       = "ml_gtk_toolbar_insert_element_bc" "ml_gtk_toolbar_insert_element"
-  let insert_button w ?type:t{=`BUTTON} ?:text ?:tooltip ?:tooltip_private
-      ?:icon ?:pos{= -1} ?:callback () =
+  let insert_button w ?type:t[=`BUTTON] ?:text ?:tooltip ?:tooltip_private
+      ?:icon ?:pos[= -1] ?:callback () =
     let b =insert_button w type:t text:(optstring text)
 	tooltip:(optstring tooltip)
 	tooltip_private:(optstring tooltip_private) icon:(optboxed icon)
@@ -111,7 +111,7 @@ module Toolbar = struct
       [>`toolbar] obj -> [>`widget] obj ->
       tooltip:optstring -> tooltip_private:optstring -> pos:int -> unit
       = "ml_gtk_toolbar_insert_widget"
-  let insert_widget w ?:tooltip ?:tooltip_private ?:pos{= -1} w' =
+  let insert_widget w ?:tooltip ?:tooltip_private ?:pos[= -1] w' =
     insert_widget w w' tooltip:(optstring tooltip)
       tooltip_private:(optstring tooltip_private) :pos
   external set_orientation : [>`toolbar] obj -> orientation -> unit =

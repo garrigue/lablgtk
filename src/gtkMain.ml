@@ -21,7 +21,8 @@ module Main = struct
   let locale = set_locale ()
   let init () =
     let argv = init Sys.argv in
-    Array.blit argv to:Sys.argv len:(Array.length argv) pos:0 to_pos:0;
+    Array.blit src:argv dst:Sys.argv len:(Array.length argv)
+      src_pos:0 dst_pos:0;
     Obj.truncate (Obj.repr Sys.argv) len:(Array.length argv)
   open Glib
   let loops = ref [] 
