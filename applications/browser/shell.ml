@@ -80,26 +80,28 @@ object (self)
 	reading <- true;
 	input_start <- textw#position
       end;
-      self#insert lex:true (if dir = `previous then h#previous else h#next);
+      self#insert (if dir = `previous then h#previous else h#next);
     end
-  method private lex ?(:start = Text.line_start textw)
-      ?(end: e = Text.line_end textw) () =
-    if start < e then Lexical.tag textw :start end:e
-  method insert ?(:lex=false) text =
+  val mutable lexing = false
+  method private lex :start end:e =
+    if not lexing && start < e then begin
+      lexing <- true;
+      Lexical.tag textw :start end:e;
+      lexing <- false
+    end
+  method insert ?(:lex=true) text =
     let start = Text.line_start textw in
     textw#insert text;
-    if lex then self#lex :start ()
+    if lex then self#lex :start end:(Text.line_end textw)
   method private keypress c =
     if not reading & c > " " then begin
       reading <- true;
       input_start <- textw#position
     end
-  method private keyrelease c =
-    if c <> "" then self#lex ()
   method private return () =
     if reading then reading <- false
-    else input_start <- Text.line_start textw;
-    self#lex start:(Text.line_start textw pos:input_start) ();
+    else input_start <- textw#position;
+    textw#set_position (Text.line_end textw);
     let s = textw#get_chars start:input_start end:textw#position in
     h#add s;
     self#send s;
@@ -115,12 +117,20 @@ object (self)
 	if GdkEvent.Key.keyval ev = _Return && GdkEvent.Key.state ev = []
 	then self#return ()
 	else self#keypress (GdkEvent.Key.string ev);
-	false
+        false
       end;
-    (*
-    textw#connect#event#key_press after:true
-      callback:(fun ev -> self#keyrelease (GdkEvent.Key.string ev); false);
-    *)
+    textw#connect#after#insert_text callback:
+      begin fun s :pos ->
+        if not lexing then
+          self#lex start:(Text.line_start textw pos:(pos - String.length s))
+            end:(Text.line_end textw :pos)
+      end;
+    textw#connect#after#delete_text callback:
+      begin fun start:pos :end ->
+        if not lexing then
+          self#lex start:(Text.line_start textw :pos)
+            end:(Text.line_end textw :pos)
+      end;
     textw#connect#event#button_press callback:
       begin fun ev ->
 	if GdkEvent.Button.button ev = 2 then self#paste ();
@@ -210,7 +220,7 @@ let f :prog :title =
 	  current_dir := Filename.dirname name;
 	  if Filename.check_suffix name suff:".ml" then
 	    let cmd = "#use \"" ^ name ^ "\";;\n" in
-	    sh#insert cmd lex:true;
+	    sh#insert cmd;
 	    sh#send cmd
 	end
     end;
@@ -223,7 +233,7 @@ let f :prog :title =
 	    Filename.check_suffix name suff:".cma"
 	  then
 	    let cmd = Printf.sprintf "#load \"%s\";;\n" name in
-	    sh#insert cmd lex:true;
+	    sh#insert cmd;
 	    sh#send cmd
 	end
     end;

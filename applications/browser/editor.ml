@@ -94,5 +94,8 @@ end
 
 let _ =
   Main.init ();
-  new editor_window show:true ();
+  if Array.length Sys.argv >= 2 && Sys.argv.(1) = "-shell" then
+    Shell.f prog:"ocaml" title:"Objective Caml Shell"
+  else
+    ignore (new editor_window show:true ());
   Main.main ()
