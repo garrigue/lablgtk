@@ -41,7 +41,6 @@ MLFLAGS = -g
 else
 CFLAGS = -O -DG_DISABLE_CAST_CHECKS $(GTKCFLAGS)
 endif
-CFLAGS += $(shell if [ $(HASGTK22) == 1 ]; then echo -DHASGTK22 ; else echo -UHASGTK22 ; fi)
 
 THFLAGS = -thread
 THLINK = unix.cma threads.cma

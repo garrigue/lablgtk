@@ -25,3 +25,8 @@ value Val_GtkWidget_func(gpointer w);
 #define GtkItem_val(val) check_cast(GTK_ITEM,val)
 
 #define GtkClipboard_val(val) ((GtkClipboard*)Pointer_val(val))
+
+/* Compatibility */
+#if GTK_CHECK_VERSION(2,2,0) && !defined(DISABLE_GTK22)
+#define HASGTK22
+#endif
