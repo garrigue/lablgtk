@@ -20,10 +20,10 @@ class adjustment_signals :
   end
 
 class adjustment :
-  value:float ->
-  lower:float ->
-  upper:float ->
-  step_incr:float -> page_incr:float -> page_size:float ->
+  ?value:float ->
+  ?lower:float ->
+  ?upper:float ->
+  ?step_incr:float -> ?page_incr:float -> ?page_size:float ->
   object
     inherit GObj.gtkobj
     val obj : Gtk.adjustment obj

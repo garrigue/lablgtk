@@ -240,7 +240,7 @@ let create_menu depth tearoff =
       if ((depth mod 2) <> 0) then
 	menuitem #set_show_toggle true;
       menu #append menuitem;
-      if i = 3 then menuitem #misc#set sensitive:false;
+      if i = 3 then menuitem #misc#set_sensitive false;
       if depth > 1 then
 	menuitem #set_submenu (aux (depth-1) true)
     done;
@@ -457,13 +457,13 @@ let make_toolbar (toolbar : toolbar) (window : window) =
     tooltip:"Horizontal toolbar layout"
     tooltip_private:"Toolbar/Horizontal"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar orientation: `HORIZONTAL);
+    callback:(fun _ -> toolbar #set_orientation `HORIZONTAL);
   
   toolbar #insert_button text:"Vertical"
     tooltip:"Vertical toolbar layout"
     tooltip_private:"Toolbar/Vertical"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar orientation: `VERTICAL);
+    callback:(fun _ -> toolbar #set_orientation `VERTICAL);
   
   toolbar #insert_space;
   
@@ -471,19 +471,19 @@ let make_toolbar (toolbar : toolbar) (window : window) =
     tooltip: "Only show toolbar icons"
     tooltip_private:"Toolbar/IconsOnly"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar style: `ICONS);
+    callback:(fun _ -> toolbar #set_style `ICONS);
   
   toolbar #insert_button text:"Text"
     tooltip: "Only show toolbar text"
     tooltip_private:"Toolbar/TextOnly"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar style: `TEXT);
+    callback:(fun _ -> toolbar #set_style `TEXT);
   
   toolbar #insert_button text:"Both"
     tooltip: "Show toolbar icons and text"
     tooltip_private:"Toolbar/Both"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar style: `BOTH);
+    callback:(fun _ -> toolbar #set_style `BOTH);
   
   toolbar #insert_space;
   
@@ -495,49 +495,49 @@ let make_toolbar (toolbar : toolbar) (window : window) =
     tooltip:"Use small spaces"
     tooltip_private:"Toolbar/Small"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar space_size: 5);
+    callback:(fun _ -> toolbar #set_space_size 5);
   
   toolbar #insert_button text:"Big"
     tooltip:"Use big spaces"
     tooltip_private:"Toolbar/Big"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar space_size: 10);
+    callback:(fun _ -> toolbar #set_space_size 10);
   
   toolbar #insert_space;
   
   toolbar #insert_button text:"Enable"
     tooltip:"Enable tooltips"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar tooltips: true);
+    callback:(fun _ -> toolbar #set_tooltips true);
   
   toolbar #insert_button text:"Disable"
     tooltip:"Disable tooltips"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar tooltips: false);
+    callback:(fun _ -> toolbar #set_tooltips false);
   
   toolbar #insert_space;
   
   toolbar #insert_button text:"Borders"
     tooltip:"Show borders"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar button_relief: `NORMAL);
+    callback:(fun _ -> toolbar #set_button_relief `NORMAL);
   
   toolbar #insert_button text:"Borderless"
     tooltip:"Hide borders"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar button_relief: `NONE);
+    callback:(fun _ -> toolbar #set_button_relief `NONE);
   
   toolbar #insert_space;
   
   toolbar #insert_button text:"Empty"
     tooltip:"Empty spaces"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar space_style: `EMPTY);
+    callback:(fun _ -> toolbar #set_space_style `EMPTY);
   
   toolbar #insert_button text:"Lines"
     tooltip:"Lines in spaces"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_toolbar space_style: `LINE)
+    callback:(fun _ -> toolbar #set_space_style `LINE)
  
 let create_toolbar =
   let rw = ref None in
@@ -596,7 +596,7 @@ let create_handle_box =
 
 	let toolbar = new toolbar in
 	make_toolbar toolbar window;
-	toolbar #set_toolbar button_relief: `NORMAL;
+	toolbar #set_button_relief `NORMAL;
 	handle_box #add toolbar;
 
 	let handle_box = new handle_box
@@ -675,12 +675,12 @@ let cb_tree_changed (treeb : tree_and_buttons) _ =
   let tree = treeb#tree in
   let nb_selected = List.length (tree#selection) in
   if nb_selected = 0 then begin
-    treeb # remove_button #misc#set sensitive:false;
-    treeb # subtree_button #misc#set sensitive: false;
+    treeb # remove_button #misc#set_sensitive false;
+    treeb # subtree_button #misc#set_sensitive false;
   end else begin
-    treeb # remove_button #misc#set sensitive: true;
-    treeb # subtree_button #misc#set sensitive:(nb_selected = 1);
-    treeb # add_button #misc#set sensitive: (nb_selected = 1);
+    treeb # remove_button #misc#set_sensitive true;
+    treeb # subtree_button #misc#set_sensitive (nb_selected = 1);
+    treeb # add_button #misc#set_sensitive (nb_selected = 1);
   end
   
   
@@ -733,17 +733,17 @@ let create_tree_sample selection_mode draw_line view_line no_root_item nb_item_m
       packing:(box1#pack expand:false fill:false) in
 
   let button = root_treeb #add_button in
-  button #misc#set sensitive: false;
+  button #misc#set_sensitive false;
   button #connect#clicked callback:(cb_add_new_item root_treeb);
   box2 #pack button;
 
   let button = root_treeb #remove_button in
-  button #misc#set sensitive: false;
+  button #misc#set_sensitive false;
   button #connect#clicked callback:(cb_remove_item root_treeb);
   box2 #pack button;
 
   let button = root_treeb #subtree_button in
-  button #misc#set sensitive: false;
+  button #misc#set_sensitive false;
   button #connect#clicked callback:(cb_remove_subtree root_treeb);
   box2 #pack button;
 
@@ -858,15 +858,15 @@ let create_tree_mode_window =
 
 (* Tooltips *)
 
-let tips_query_widget_entered (toggle : toggle_button) (tq : tips_query) _ tt _  =
+let tips_query_widget_entered (toggle : toggle_button) (tq : tips_query) _ :text private:_  =
 if toggle #active then begin
   tq #set_text
-    (match tt with
+    (match text with
     | None -> "There is no tip!" | Some _ -> "There is a tip!");
   tq #stop_emit "widget_entered"
 end
 
-let tips_query_widget_selected (w : #widget option) _ tp _ =
+let tips_query_widget_selected (w : #widget option) :text private:tp _ =
   (match w with
   | None -> ()
   | Some w -> 

@@ -89,9 +89,9 @@ class style : Gtk.style ->
     method colormap : Gdk.colormap
     method copy : 'a
     method font : Gdk.font
-    method set :
-      ?bg:(Tags.state_type * GdkObj.color) list ->
-      ?background:Gdk.window -> ?font:Gdk.font -> unit
+    method set_background : Gdk.window -> Tags.state_type -> unit
+    method set_bg : (Tags.state_type * GdkObj.color) list -> unit
+    method set_font : Gdk.font -> unit
   end
 
 class selection_data :
@@ -157,16 +157,16 @@ and widget_misc :
     method remove_accelerator :
       accel_group -> key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list -> unit
     method reparent : #is_widget -> unit
-    method set :
-      ?style:style ->
-      ?name:string ->
-      ?state:Tags.state_type ->
-      ?sensitive:bool ->
-      ?extension_events:Gdk.Tags.extension_events ->
-      ?can_default:bool ->
-      ?can_focus:bool ->
-      ?x:int -> ?y:int -> ?width:int -> ?height:int -> unit
     method set_app_paintable : bool -> unit
+    method set_can_default : bool -> unit
+    method set_can_focus : bool -> unit
+    method set_extension_events : Gdk.Tags.extension_events -> unit
+    method set_name : string -> unit
+    method set_position : ?x:int -> ?y:int -> unit
+    method set_sensitive : bool -> unit
+    method set_size : ?width:int -> ?height:int -> unit
+    method set_state : Tags.state_type -> unit
+    method set_style : style -> unit
     method show : unit -> unit
     method show_all : unit -> unit
     method style : style

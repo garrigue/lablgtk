@@ -44,9 +44,6 @@ module Liste = struct
       = "ml_gtk_list_child_position"
   external set_selection_mode : [> list] obj -> selection_mode -> unit
       = "ml_gtk_list_set_selection_mode"
-  let setter w :cont ?:selection_mode =
-    may selection_mode fun:(set_selection_mode w);
-    cont w
   module Signals = struct
     open GtkSignal
     let selection_changed : ([> list],_) t =
@@ -199,8 +196,15 @@ module CList = struct
       = "ml_gtk_clist_sort"
   external set_auto_sort : [> clist] obj -> bool -> unit
       = "ml_gtk_clist_set_auto_sort"
+  let set_titles_show w = function
+      true -> column_titles_show w
+    | false -> column_titles_hide w
+  let set_titles_active w = function
+      true -> column_titles_active w
+    | false -> column_titles_passive w
   let set w ?:hadjustment ?:vadjustment ?:shadow_type ?:button_actions [< [] >]
-      ?:selection_mode ?:reorderable ?:use_drag_icons ?:row_height =
+      ?:selection_mode ?:reorderable ?:use_drag_icons ?:row_height
+      ?:titles_show ?:titles_active =
     let may_set f param = may param fun:(f w) in
     may_set set_hadjustment hadjustment;
     may_set set_vadjustment vadjustment;
@@ -209,14 +213,9 @@ module CList = struct
     may_set set_selection_mode selection_mode;
     may_set set_reorderable reorderable;
     may_set set_use_drag_icons use_drag_icons;
-    may_set set_row_height row_height
-  let set_titles w ?:show ?:active =
-    may show fun:
-      (fun show ->
-	if show then column_titles_show w else column_titles_hide w);
-    may active fun:
-      (fun active ->
-	if active then column_titles_active w else column_titles_passive w)
+    may_set set_row_height row_height;
+    may_set set_titles_show titles_show;
+    may_set set_titles_active titles_active
   let set_sort w ?:auto ?:column ?type:sort_type =
     may auto fun:(set_auto_sort w);
     may column fun:(set_sort_column w);

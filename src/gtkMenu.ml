@@ -52,10 +52,9 @@ module CheckMenuItem = struct
       = "ml_gtk_check_menu_item_get_active"
   external set_show_toggle : [> checkmenuitem] obj -> bool -> unit
       = "ml_gtk_check_menu_item_set_show_toggle"
-  let setter w :cont ?:active ?:show_toggle =
+  let set w ?:active ?:show_toggle =
     may active fun:(set_active w);
-    may show_toggle fun:(set_show_toggle w);
-    cont w
+    may show_toggle fun:(set_show_toggle w)
   external toggled : [> checkmenuitem] obj -> unit
       = "ml_gtk_check_menu_item_toggled"
   module Signals = struct
@@ -82,9 +81,6 @@ module RadioMenuItem = struct
       = "ml_gtk_radio_menu_item_group"
   external set_group : [> radiomenuitem] obj -> group -> unit
       = "ml_gtk_radio_menu_item_set_group"
-  let setter w :cont ?:group =
-    may group fun:(set_group w);
-    cont w
 end
 
 module OptionMenu = struct
@@ -100,10 +96,9 @@ module OptionMenu = struct
       = "ml_gtk_option_menu_remove_menu"
   external set_history : [> optionmenu] obj -> int -> unit
       = "ml_gtk_option_menu_set_history"
-  let setter w :cont ?:menu ?:history =
+  let set w ?:menu ?:history =
     may menu fun:(set_menu w);
-    may history fun:(set_history w);
-    cont w
+    may history fun:(set_history w)
 end
 
 module MenuShell = struct
@@ -149,10 +144,9 @@ module Menu = struct
   external get_attach_widget : [> menu] obj -> widget obj
       = "ml_gtk_menu_get_attach_widget"
   external detach : [> menu] obj -> unit = "ml_gtk_menu_detach"
-  let setter w :cont ?:active ?:accel_group =
+  let set w ?:active ?:accel_group =
     may active fun:(set_active w);
-    may accel_group fun:(set_accel_group w);
-    cont w
+    may accel_group fun:(set_accel_group w)
 end
 
 module MenuBar = struct

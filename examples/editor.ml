@@ -88,7 +88,7 @@ let _ =
   factory#add_item label:"Paste" key:_V callback:editor#text#paste_clipboard;
   factory#add_separator ();
   factory#add_check_item label:"Word wrap" active:false
-    callback:(fun word_wrap -> editor#text#set_text :word_wrap);
+    callback:editor#text#set_word_wrap;
   factory#add_check_item label:"Read only" active:false
     callback:(fun b -> editor#text#set_editable (not b));
   window#add_accel_group accel_group;
@@ -99,6 +99,6 @@ let _ =
       if button = 3 then begin
 	file_menu#popup :button time:(GdkEvent.Button.time ev); true
       end else false);
-  editor#text#set_text vadjustment:scrollbar#adjustment;
+  editor#text#set_vadjustment scrollbar#adjustment;
   window#show ();
   Main.main ()

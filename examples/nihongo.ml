@@ -21,8 +21,9 @@ let _ =
   text#misc#realize ();
   text#insert "こんにちは" :font;
   let style = button#misc#style#copy in
-  button#misc#set :style;
-  style#set :font bg:[`NORMAL,`NAME "green"; `PRELIGHT,`NAME "red"];
+  button#misc#set_style style;
+  style#set_font font;
+  style#set_bg [`NORMAL,`NAME "green"; `PRELIGHT,`NAME "red"];
   button#connect#clicked callback:Main.quit
 
 let _ =

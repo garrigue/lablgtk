@@ -20,11 +20,12 @@ class window_skel obj = object
   method set_position = Window.set_position obj
   method set_transient_for : 'a . (#is_window as 'a) -> unit
       = fun w -> Window.set_transient_for obj (w #as_window)
-  method set_wm ?:title ?:name ?class:c =
-    Window.setter obj cont:null_cont
-      ?:title ?wm_name:name ?wm_class:c
-  method set_policy ?:allow_shrink ?:allow_grow ?:auto_shrink =
-    Window.setter obj cont:null_cont ?:allow_shrink ?:allow_grow ?:auto_shrink
+  method set_title = Window.set_title obj
+  method set_wm_name name = Window.set_wmclass obj :name
+  method set_wm_class cls = Window.set_wmclass obj class:cls
+  method set_allow_shrink allow_shrink = Window.set_policy obj :allow_shrink
+  method set_allow_grow allow_grow = Window.set_policy obj :allow_grow
+  method set_auto_shrink auto_shrink = Window.set_policy obj :auto_shrink
 end
 
 class window_wrapper obj = object
@@ -37,8 +38,8 @@ class window ?type:t [< `TOPLEVEL >] ?:title ?:wm_name ?:wm_class ?:position
     ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
   let w = Window.create t in
   let () =
-    Window.setter w ?:title ?:wm_name ?:wm_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
+    Window.set w ?:title ?:wm_name ?:wm_class ?:position
+      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
     Container.set w ?:border_width ?:width ?:height
   in
   object (self)
@@ -58,8 +59,8 @@ class dialog ?:title ?:wm_name ?:wm_class ?:position ?:allow_shrink
     ?:packing ?:show [< false >] =
   let w = Dialog.create () in
   let () =
-    Window.setter w ?:title ?:wm_name ?:wm_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
+    Window.set w ?:title ?:wm_name ?:wm_class ?:position
+      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
     Container.set w ?:border_width ?:width ?:height
   in
   object (self)
@@ -86,8 +87,8 @@ class color_selection_dialog ?:title [< "Pick a color" >]
     ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
   let w = ColorSelection.create_dialog title in
   let () =
-    Window.setter w ?title:None ?:wm_name ?:wm_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
+    Window.set w ?title:None ?:wm_name ?:wm_class ?:position
+      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
     Container.set w ?:border_width ?:width ?:height
   in
   object (self)
@@ -101,8 +102,7 @@ class file_selection_wrapper obj = object
   method connect = new GContainer.container_signals ?obj
   method set_filename = FileSelection.set_filename obj
   method get_filename = FileSelection.get_filename obj
-  method show_fileop_buttons () = FileSelection.show_fileop_buttons obj
-  method hide_fileop_buttons () = FileSelection.hide_fileop_buttons obj
+  method set_fileop_buttons = FileSelection.set_fileop_buttons obj
   method ok_button =
     new GButton.button_wrapper (FileSelection.get_ok_button obj)
   method cancel_button =
@@ -118,9 +118,9 @@ class file_selection ?:title [< "Choose a file" >] ?:filename
     ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
   let w = FileSelection.create title in
   let () =
-    FileSelection.setter w cont:null_cont ?:filename :fileop_buttons;
-    Window.setter w ?title:None ?:wm_name ?:wm_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
+    FileSelection.set w ?:filename :fileop_buttons;
+    Window.set w ?title:None ?:wm_name ?:wm_class ?:position
+      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
     Container.set w ?:border_width ?:width ?:height
   in
   object (self)

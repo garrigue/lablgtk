@@ -14,11 +14,14 @@ class window_skel :
     method as_window : window obj
     method set_default_size : width:int -> height:int -> unit
     method set_modal : bool -> unit
-    method set_policy :
-      ?allow_shrink:bool -> ?allow_grow:bool -> ?auto_shrink:bool -> unit
+    method set_allow_shrink : bool -> unit
+    method set_allow_grow : bool -> unit
+    method set_auto_shrink : bool -> unit
     method set_position : Tags.window_position -> unit
     method set_transient_for : #GObj.is_window -> unit
-    method set_wm : ?title:string -> ?name:string -> ?class:string -> unit
+    method set_title : string -> unit
+    method set_wm_name : string -> unit
+    method set_wm_class : string -> unit
   end
 
 class window :
@@ -116,9 +119,8 @@ class file_selection :
     method cancel_button : GButton.button
     method get_filename : string
     method help_button : GButton.button
-    method hide_fileop_buttons : unit -> unit
     method ok_button : GButton.button
     method set_filename : string -> unit
-    method show_fileop_buttons : unit -> unit
+    method set_fileop_buttons : bool -> unit
   end
 class file_selection_wrapper : Gtk.file_selection obj -> file_selection

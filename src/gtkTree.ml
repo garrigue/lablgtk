@@ -17,9 +17,6 @@ module TreeItem = struct
     | Some label -> create_with_label label
   external set_subtree : [> treeitem] obj -> [> widget] obj -> unit
       = "ml_gtk_tree_item_set_subtree"
-  let setter w :cont ?:subtree =
-    may subtree fun:(set_subtree w);
-    cont w
   external remove_subtree : [> treeitem] obj -> unit
       = "ml_gtk_tree_item_remove_subtree"
   external expand : [> treeitem] obj -> unit
@@ -66,12 +63,11 @@ module Tree = struct
       = "ml_gtk_tree_set_view_lines"
   external selection : [> tree] obj -> tree_item obj list =
     "ml_gtk_tree_selection"
-  let setter w :cont ?:selection_mode ?:view_mode ?:view_lines =
+  let set w ?:selection_mode ?:view_mode ?:view_lines =
     let may_set f = may fun:(f w) in
     may_set set_selection_mode selection_mode;
     may_set set_view_mode view_mode;
-    may_set set_view_lines view_lines;
-    cont w
+    may_set set_view_lines view_lines
   module Signals = struct
     open GtkSignal
     let selection_changed : ([> tree],_) t =

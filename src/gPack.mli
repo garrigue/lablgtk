@@ -18,7 +18,8 @@ class box_skel :
       #is_widget ->
       ?expand:bool ->
       ?fill:bool -> ?padding:int -> ?from:Tags.pack_type -> unit
-    method set_packing : ?homogeneous:bool -> ?spacing:int -> unit
+    method set_homogeneous : bool -> unit
+    method set_spacing : int -> unit
   end
 
 class box :
@@ -70,9 +71,9 @@ class button_box :
       #is_widget ->
       ?expand:bool ->
       ?fill:bool -> ?padding:int -> ?from:Tags.pack_type -> unit
-    method set_child_size : width:int -> height:int -> unit
+    method set_child_size : ?width:int -> ?height:int -> unit
+    method set_child_ipadding : ?x:int -> ?y:int -> unit
     method set_layout : Tags.button_box_style -> unit
-    method set_spacing : int -> unit
   end
 class button_box_wrapper : ([> bbox] obj) -> button_box
 
@@ -98,8 +99,11 @@ class table :
       ?expand:Tags.expand_type ->
       ?fill:Tags.expand_type ->
       ?shrink:Tags.expand_type -> ?xpadding:int -> ?ypadding:int -> unit
-    method set_packing :
-      ?row_spacings:int -> ?col_spacings:int -> ?homogeneous:bool -> unit
+    method set_row_spacing : int -> int -> unit
+    method set_col_spacing : int -> int -> unit
+    method set_row_spacings : int -> unit
+    method set_col_spacings : int -> unit
+    method set_homogeneous : bool -> unit
   end
 class table_wrapper : Gtk.table obj -> table
 
@@ -135,9 +139,9 @@ class layout :
     method height : int
     method move : #GObj.is_widget -> x:int -> y:int -> unit
     method put : #GObj.is_widget -> x:int -> y:int -> unit
-    method set_layout :
-      ?hadjustment:GData.adjustment ->
-      ?vadjustment:GData.adjustment -> ?width:int -> ?height:int -> unit
+    method set_hadjustment : GData.adjustment -> unit
+    method set_vadjustment : GData.adjustment -> unit
+    method set_size : ?width:int -> ?height:int -> unit
     method thaw : unit -> unit
     method vadjustment : GData.adjustment
     method width : int
@@ -190,6 +194,7 @@ class paned :
     method add1 : #GObj.is_widget -> unit
     method add2 : #GObj.is_widget -> unit
     method add_events : Gdk.Tags.event_mask list -> unit
-    method set_size : ?handle:int -> ?gutter:int -> unit
+    method set_handle_size : int -> unit
+    method set_gutter_size : int -> unit
   end
 class paned_wrapper : Gtk.paned obj -> paned

@@ -4,7 +4,7 @@ open GMain
 
 let main () =
   let window = new GWindow.window in
-  window#misc#set name:"Test input";
+  window#misc#set_name "Test input";
   window#connect#destroy callback:Main.quit;
 
   let vbox = new GPack.box `VERTICAL packing:window#add in
@@ -26,7 +26,8 @@ let main () =
   drawing_area#add_events
     [`EXPOSURE;`LEAVE_NOTIFY;`BUTTON_PRESS;
      `POINTER_MOTION;`POINTER_MOTION_HINT;`PROXIMITY_OUT];
-  drawing_area#misc#set extension_events:`ALL can_focus:true;
+  drawing_area#misc#set_extension_events `ALL;
+  drawing_area#misc#set_can_focus true;
   drawing_area#misc#grab_focus ();
 
   let button =

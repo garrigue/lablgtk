@@ -2,6 +2,7 @@
 
 open Misc
 open Gtk
+open GtkBase
 open GtkData
 open GtkMisc
 open GObj
@@ -20,7 +21,8 @@ class pixmap (pm : #GdkObj.pixmap)
     ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height ?:packing ?:show =
   let w = Pixmap.create pm#pixmap ?mask:pm#mask in
   let () =
-    Misc.set w ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height
+    Misc.set w ?:xalign ?:yalign ?:xpad ?:ypad;
+    if width <> None || height <> None then Widget.set_size w ?:width ?:height
   in
   object (self)
     inherit pixmap_wrapper w

@@ -91,7 +91,7 @@ class tree ?:selection_mode ?:view_mode ?:view_lines
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Tree.create () in
   let () =
-    Tree.setter w cont:null_cont ?:selection_mode ?:view_mode ?:view_lines;
+    Tree.set w ?:selection_mode ?:view_mode ?:view_lines;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit tree_wrapper w

@@ -15,7 +15,6 @@ open Treew
 
 
 let main_project_modify = ref false
-;;
 
 let main_window  = new window width:200 height:200
 let main_vbox    = new vbox packing:main_window#add
@@ -37,13 +36,12 @@ let copy_item    = new menu_item label:"Copy" packing:edit_menu#append
 let cut_item     = new menu_item label:"Cut" packing:edit_menu#append
 let paste_item   = new menu_item label:"Paste" packing:edit_menu#append
 let accel = GtkData.AccelGroup.create ()
-;;
 
-GtkData.AccelGroup.attach accel (main_window #as_widget);
-project_menu#set_accel_group accel;
-test_item#add_accelerator accel key:GdkKeysyms._Z mod:[`CONTROL]
+let _ =
+  GtkData.AccelGroup.attach accel (main_window #as_widget);
+  project_menu#set_accel_group accel;
+  test_item#add_accelerator accel key:GdkKeysyms._Z mod:[`CONTROL]
     flags:[`VISIBLE]
-;;
 
 class project () =
   let project_box = new vbox packing:main_vbox#pack in
@@ -58,21 +56,21 @@ class project () =
       match selected with
       |	None ->
 	  selected <- Some sel;
-	  sel#project_tree_item#misc#set state:`SELECTED;
-	  copy_item#misc#set sensitive:true;
-	  cut_item#misc#set sensitive:true
+	  sel#project_tree_item#misc#set_state `SELECTED;
+	  copy_item#misc#set_sensitive true;
+	  cut_item#misc#set_sensitive true
       |	Some old_sel ->
 	  if sel = old_sel then begin
 	    selected <- None;
-	    sel#project_tree_item#misc#set state:`NORMAL;
-	    copy_item#misc#set sensitive:false;
-	    cut_item#misc#set sensitive:false
+	    sel#project_tree_item#misc#set_state `NORMAL;
+	    copy_item#misc#set_sensitive false;
+	    cut_item#misc#set_sensitive false
 	  end else begin
-	    old_sel#project_tree_item#misc#set state:`NORMAL;
+	    old_sel#project_tree_item#misc#set_state `NORMAL;
 	    selected <- Some sel;
-	    sel#project_tree_item#misc#set state:`SELECTED;
-	    copy_item#misc#set sensitive:true;
-	    cut_item#misc#set sensitive:true
+	    sel#project_tree_item#misc#set_state `SELECTED;
+	    copy_item#misc#set_sensitive true;
+	    cut_item#misc#set_sensitive true
 	  end
 
     val mutable filename = ""
@@ -122,7 +120,7 @@ class project () =
 	| _ -> false);
       window_list <- wt :: window_list;
       add_undo (Remove_window name);
-      main_window#misc#set can_focus:false; 
+      main_window#misc#set_can_focus false; 
       main_window#misc#grab_focus ()
 
       
@@ -177,7 +175,7 @@ class project () =
 
     method copy_wt (wt : window_and_tree) =
       wt#tiwin#copy ();
-      paste_item#misc#set sensitive:true
+      paste_item#misc#set_sensitive true
 
     method cut_wt (wt : window_and_tree) =
       self#copy_wt wt;
@@ -213,11 +211,9 @@ class project () =
       close_out outc
 
   end
-;;
 
 
 let main_project = ref (new project ())
-;;
 
 let load () =
   let filename = ref "" in
@@ -233,7 +229,6 @@ let load () =
       fun:(fun node -> !main_project#add_window_by_node node);
     !main_project#set_filename !filename
   end
-;;
 
 
 let interpret_undo = function
@@ -249,8 +244,6 @@ let interpret_undo = function
   | Add_window node -> !main_project#add_window_by_node node
   | Remove_window name -> !main_project#delete_window_by_name :name
 
-
-
 let undo () =
   if !last_action_was_undo then begin
     match !next_undo_info with
@@ -265,10 +258,7 @@ let undo () =
   last_action_was_undo := true
 
 
-
-
 let targets = [  { target = "STRING"; flags = []; info = 0}  ]
-
 
 let xpm_window () =
   let source_drag_data_get classe _ (data : selection_data) :info :time =
@@ -313,32 +303,30 @@ let xpm_window () =
   add_xpm file:"vseparator.xpm"     left:1 top:2 classe:"vseparator";
   add_xpm file:"label.xpm"          left:2 top:2 classe:"label";
   add_xpm file:"entry.xpm"          left:3 top:2 classe:"entry"
-;;
-
-xpm_window ()
-;;
 
 
-main_window#show ()
-;;
+let main () =
+  xpm_window ();
+  main_window#show ();
 
-
-emit_item#connect#activate callback:(fun () -> !main_project#emit ());
-exit_item#connect#activate callback:GMain.Main.quit;
-new_item#connect#activate callback:
-    (fun () ->
+  emit_item#connect#activate callback:(fun () -> !main_project#emit ());
+  exit_item#connect#activate callback:GMain.Main.quit;
+  new_item#connect#activate callback:
+    begin fun () ->
       !main_project#delete ();
-      main_project := new project ());
-cut_item#connect#activate callback:(fun () -> !main_project#cut ());
-copy_item#connect#activate callback:(fun () -> !main_project#copy ());
-paste_item#connect#activate callback:(fun () -> !main_project#paste ());
-open_item#connect#activate callback:load;
-save_item#connect#activate callback:(fun () -> !main_project#save ());
-save_as_item#connect#activate callback:(fun () -> !main_project#save_as ());
-copy_item#misc#set sensitive:false;
-cut_item#misc#set sensitive:false;
-paste_item#misc#set sensitive:false
-;;
+      main_project := new project ()
+    end;
+  cut_item#connect#activate callback:(fun () -> !main_project#cut ());
+  copy_item#connect#activate callback:(fun () -> !main_project#copy ());
+  paste_item#connect#activate callback:(fun () -> !main_project#paste ());
+  open_item#connect#activate callback:load;
+  save_item#connect#activate callback:(fun () -> !main_project#save ());
+  save_as_item#connect#activate callback:(fun () -> !main_project#save_as ());
+  copy_item#misc#set_sensitive false;
+  cut_item#misc#set_sensitive false;
+  paste_item#misc#set_sensitive false;
 
-test_item#connect#activate callback:undo;;
-GMain.Main.main ()
+  test_item#connect#activate callback:undo;
+  GMain.Main.main ()
+
+let _ = main ()

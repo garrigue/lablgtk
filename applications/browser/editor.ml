@@ -66,24 +66,26 @@ let hbox = new GPack.box `HORIZONTAL packing:vbox#add
 let scrollbar =
   new GRange.scrollbar `VERTICAL packing:(hbox#pack from:`END expand:false)
 
+open GdkKeysyms
+
 let _ =
   window#connect#destroy callback:Main.quit;
   let factory = new GMenu.factory file_menu :accel_group in
-  factory#add_item label:"Open..." key:'O' callback:editor#open_file;
-  factory#add_item label:"Save..." key:'S' callback:editor#save_file;
+  factory#add_item label:"Open..." key:_O callback:editor#open_file;
+  factory#add_item label:"Save..." key:_S callback:editor#save_file;
   factory#add_separator ();
-  factory#add_item label:"Quit" key:'Q' callback:window#destroy;
+  factory#add_item label:"Quit" key:_Q callback:window#destroy;
   let factory = new GMenu.factory edit_menu :accel_group in
-  factory#add_item label:"Copy" key:'C' callback:editor#text#copy_clipboard;
-  factory#add_item label:"Cut" key:'X' callback:editor#text#cut_clipboard;
-  factory#add_item label:"Paste" key:'V' callback:editor#text#paste_clipboard;
+  factory#add_item label:"Copy" key:_C callback:editor#text#copy_clipboard;
+  factory#add_item label:"Cut" key:_X callback:editor#text#cut_clipboard;
+  factory#add_item label:"Paste" key:_V callback:editor#text#paste_clipboard;
   factory#add_separator ();
   factory#add_check_item label:"Word wrap" active:false
-    callback:(fun word_wrap -> editor#text#set_text :word_wrap);
+    callback:editor#text#set_word_wrap;
   factory#add_check_item label:"Read only" active:false
     callback:(fun b -> editor#text#set_editable (not b));
   let factory = new GMenu.factory comp_menu :accel_group in
-  factory#add_item label:"Lex" key:'L'
+  factory#add_item label:"Lex" key:_L
     callback:(fun () -> Lexical.tag editor#text);
   window#add_accel_group accel_group;
   hbox#add editor#text;
@@ -93,6 +95,6 @@ let _ =
       if button = 3 then begin
 	file_menu#popup :button time:(GdkEvent.Button.time ev); true
       end else false);
-  editor#text#set_text vadjustment:scrollbar#adjustment;
+  editor#text#set_vadjustment scrollbar#adjustment;
   window#show ();
   Main.main ()

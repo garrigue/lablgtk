@@ -61,6 +61,7 @@ end
 
 class clist_wrapper obj = object (self)
   inherit widget (obj : clist obj)
+  method set_border_width = Container.set_border_width obj
   method add_events = Widget.add_events obj
   method connect = new clist_signals ?obj
   method rows = CList.get_rows obj
@@ -100,11 +101,18 @@ class clist_wrapper obj = object (self)
   method swap_rows = CList.swap_rows obj
   method row_move = CList.row_move obj
   method sort () = CList.sort obj
-  method set_clist ?:hadjustment ?:vadjustment =
-    CList.set ?obj
-      ?hadjustment:(GData.adjustment_option hadjustment)
-      ?vadjustment:(GData.adjustment_option vadjustment)
-  method set_titles = CList.set_titles ?obj
+  method set_hadjustment (adj : GData.adjustment) =
+    CList.set_hadjustment obj adj#as_adjustment
+  method set_vadjustment (adj : GData.adjustment) =
+    CList.set_vadjustment obj adj#as_adjustment
+  method set_shadow_type = CList.set_shadow_type obj
+  method set_button_actions = CList.set_button_actions obj
+  method set_selection_mode = CList.set_selection_mode obj
+  method set_reorderable = CList.set_reorderable obj
+  method set_use_drag_icons = CList.set_use_drag_icons obj
+  method set_row_height = CList.set_row_height obj
+  method set_titles_show = CList.set_titles_show obj
+  method set_titles_active = CList.set_titles_active obj
   method set_sort = CList.set_sort ?obj
   method set_column : 'b. int -> ?widget:(#is_widget as 'b) -> _ =
     fun col ?:widget ->
@@ -120,7 +128,6 @@ class clist_wrapper obj = object (self)
       |	Some text, Some pm ->
 	  CList.set_pixtext obj row col
 	    :text :spacing pixmap:pm#pixmap ?mask:pm#mask
-  method set_size ?:border = Container.set ?obj ?border_width:border
 end
 
 class clist ?:columns [< 1 >] ?:titles ?:hadjustment ?:vadjustment
@@ -137,8 +144,7 @@ class clist ?:columns [< 1 >] ?:titles ?:hadjustment ?:vadjustment
       ?hadjustment:(GData.adjustment_option hadjustment)
       ?vadjustment:(GData.adjustment_option vadjustment)
       ?:shadow_type ?:button_actions ?:selection_mode ?:reorderable
-      ?:use_drag_icons ?:row_height;
-    CList.set_titles w ?show:titles_show ?active:titles_active;
+      ?:use_drag_icons ?:row_height ?:titles_show ?:titles_active;
     CList.set_sort w ?auto:auto_sort ?column:sort_column ?type:sort_type;
     Container.set w ?:border_width ?:width ?:height
   in

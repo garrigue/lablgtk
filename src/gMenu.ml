@@ -73,7 +73,7 @@ class check_menu_item ?:label
     ?:active ?:show_toggle ?:border_width ?:width ?:height ?:packing ?:show =
   let w = CheckMenuItem.create ?None ?:label in
   let () =
-    CheckMenuItem.setter w cont:ignore ?:active ?:show_toggle;
+    CheckMenuItem.set w ?:active ?:show_toggle;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit check_menu_item_wrapper w
@@ -92,7 +92,7 @@ class radio_menu_item ?:group ?:label
     ?:active ?:show_toggle ?:border_width ?:width ?:height ?:packing ?:show =
   let w = RadioMenuItem.create ?None ?:group ?:label in
   let () =
-    CheckMenuItem.setter w cont:ignore ?:active ?:show_toggle;
+    CheckMenuItem.set w ?:active ?:show_toggle;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit radio_menu_item_wrapper w
@@ -129,7 +129,7 @@ end
 
 class menu ?:border_width ?:packing ?:show =
   let w = Menu.create () in
-  let () = Container.setter w cont:null_cont ?:border_width in
+  let () = may border_width fun:(Container.set_border_width w) in
   object (self)
     inherit menu_wrapper w
     initializer pack_return :packing ?:show (self :> menu_wrapper)

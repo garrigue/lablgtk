@@ -101,17 +101,11 @@ class clist :
     method rows : int
     method select : int -> int -> unit
     method select_all : unit -> unit
+    method set_border_width : int -> unit
     method set_button_actions : int -> Tags.button_action list -> unit
     method set_cell :
       int ->
       int -> ?text:string -> ?pixmap:#GdkObj.pixmap -> ?spacing:int -> unit
-    method set_clist :
-      ?hadjustment:GData.adjustment ->
-      ?vadjustment:GData.adjustment ->
-      ?shadow_type:Tags.shadow_type ->
-      ?button_actions:(int * Tags.button_action list) list ->
-      ?selection_mode:Tags.selection_mode ->
-      ?reorderable:bool -> ?use_drag_icons:bool -> ?row_height:int -> unit
     method set_column :
       int ->
       ?widget:#GObj.is_widget ->
@@ -122,14 +116,21 @@ class clist :
       ?resizeable:bool ->
       ?auto_resize:bool ->
       ?width:int -> ?min_width:int -> ?max_width:int -> unit
+    method set_hadjustment : GData.adjustment -> unit
+    method set_reorderable : bool -> unit
     method set_row :
       int ->
       ?foreground:Gdk.Color.t ->
       ?background:Gdk.Color.t -> ?selectable:bool -> unit
+    method set_row_height : int -> unit
+    method set_selection_mode : Tags.selection_mode -> unit
+    method set_shadow_type : Tags.shadow_type -> unit
     method set_shift : int -> int -> vertical:int -> horizontal:int -> unit
-    method set_size : ?border:int -> ?width:int -> ?height:int -> unit
     method set_sort : ?auto:bool -> ?column:int -> ?type:Tags.sort_type -> unit
-    method set_titles : ?show:bool -> ?active:bool -> unit
+    method set_titles_show : bool -> unit
+    method set_titles_active : bool -> unit
+    method set_use_drag_icons : bool -> unit
+    method set_vadjustment : GData.adjustment -> unit
     method sort : unit -> unit
     method swap_rows : int -> int -> unit
     method thaw : unit -> unit

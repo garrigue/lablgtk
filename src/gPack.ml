@@ -11,7 +11,8 @@ class box_skel obj = object
   inherit container obj
   method pack : 'b . (#is_widget as 'b) -> _ =
     fun w ->  Box.pack ?obj ?w#as_widget
-  method set_packing = Box.setter ?obj ?cont:null_cont
+  method set_homogeneous = Box.set_homogeneous obj
+  method set_spacing = Box.set_spacing obj
   method set_child_packing : 'b . (#is_widget as 'b) -> _ =
     fun w -> Box.set_child_packing ?obj ?w#as_widget
   method reorder_child : 'a. (#is_widget as 'a) -> _ =
@@ -41,14 +42,15 @@ class button_box_wrapper obj = object
   method connect = new container_signals ?obj
   method set_layout  = BBox.set_layout  obj
   method set_spacing = BBox.set_spacing obj
-  method set_child_size = BBox.set_child_size obj
+  method set_child_size = BBox.set_child_size ?obj
+  method set_child_ipadding = BBox.set_child_ipadding ?obj
 end
 
 class button_box dir ?:spacing ?:child_width ?:child_height ?:child_ipadx
     ?:child_ipady ?:layout ?:border_width ?:width ?:height ?:packing ?:show =
   let w = BBox.create dir in
   let () =
-    BBox.setter w cont:null_cont ?:spacing ?:child_width ?:child_height
+    BBox.set w ?:spacing ?:child_width ?:child_height
       ?:child_ipadx ?:child_ipady ?:layout;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
@@ -60,14 +62,18 @@ class table_wrapper obj = object
   inherit container_wrapper (obj : Gtk.table obj)
   method attach : 'a. (#is_widget as 'a) -> _ =
     fun w -> Table.attach obj w#as_widget
-  method set_packing = Table.setter ?obj ?cont:null_cont
+  method set_row_spacing = Table.set_row_spacing obj
+  method set_col_spacing = Table.set_col_spacing obj
+  method set_row_spacings = Table.set_row_spacings obj
+  method set_col_spacings = Table.set_col_spacings obj
+  method set_homogeneous = Table.set_homogeneous obj
 end
 
 class table :rows :columns ?:homogeneous ?:row_spacings ?:col_spacings
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Table.create :rows :columns ?:homogeneous in
   let () =
-    Table.setter w cont:null_cont ?:row_spacings ?:col_spacings;
+    Table.set w ?:row_spacings ?:col_spacings;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit table_wrapper w
@@ -98,10 +104,11 @@ class layout_wrapper obj = object
     fun w -> Layout.put obj w#as_widget
   method move : 'a. (#is_widget as 'a) -> _ =
     fun w -> Layout.move obj w#as_widget
-  method set_layout ?:hadjustment ?:vadjustment =
-    may (GData.adjustment_option hadjustment) fun:(Layout.set_hadjustment obj);
-    may (GData.adjustment_option vadjustment) fun:(Layout.set_vadjustment obj);
-    Layout.set ?obj
+  method set_hadjustment (adj : GData.adjustment) =
+    Layout.set_hadjustment obj adj#as_adjustment
+  method set_vadjustment (adj : GData.adjustment) =
+    Layout.set_vadjustment obj adj#as_adjustment
+  method set_size = Layout.set_size ?obj
   method hadjustment =
     new GData.adjustment_wrapper (Layout.get_hadjustment obj)
   method vadjustment =
@@ -118,7 +125,8 @@ class layout ?:hadjustment ?:vadjustment ?:layout_width ?:layout_height
       (optboxed (GData.adjustment_option hadjustment))
       (optboxed (GData.adjustment_option vadjustment)) in
   let () =
-    Layout.set w ?width:layout_width ?height:layout_height;
+    if layout_width <> None || layout_height <> None then
+      Layout.set_size w ?width:layout_width ?height:layout_height;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit layout_wrapper w
@@ -163,15 +171,15 @@ class paned_wrapper obj = object
     fun w -> Paned.add1 obj w#as_widget
   method add2 : 'a. (#is_widget as 'a) -> _ =
     fun w -> Paned.add2 obj w#as_widget
-  method set_size ?:handle ?:gutter =
-    Paned.setter obj cont:null_cont ?handle_size:handle ?gutter_size:gutter
+  method set_handle_size = Paned.set_handle_size obj
+  method set_gutter_size = Paned.set_gutter_size obj
 end
 
 class paned dir ?:handle_size ?:gutter_size ?:border_width
     ?:width ?:height ?:packing ?:show =
   let w = Paned.create dir in
   let () =
-    Paned.setter w cont:null_cont ?:handle_size ?:gutter_size;
+    Paned.set w ?:handle_size ?:gutter_size;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit paned_wrapper w

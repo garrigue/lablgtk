@@ -48,22 +48,24 @@ module Window = struct
   external set_transient_for : [> window] obj ->[> window] obj -> unit
       = "ml_gtk_window_set_transient_for"
 
-  let setter w :cont ?:title ?:wm_name ?:wm_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal
-      ?:x [< -2 >] ?:y [< -2 >] =
+  let set_wmclass w ?:name ?class:wm_class =
+    set_wmclass w name:(may_default get_wmclass_name w for:name)
+      class:(may_default get_wmclass_class w for:wm_class)
+  let set_policy w ?:allow_shrink ?:allow_grow ?:auto_shrink =
+    set_policy w
+      allow_shrink:(may_default get_allow_shrink w for:allow_shrink)
+      allow_grow:(may_default get_allow_grow w for:allow_grow)
+      auto_shrink:(may_default get_auto_shrink w for:auto_shrink)
+  let set w ?:title ?:wm_name ?:wm_class ?:position
+      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y =
     may title fun:(set_title w);
     if wm_name <> None || wm_class <> None then
-      set_wmclass w name:(may_default get_wmclass_name w for:wm_name)
-	class:(may_default get_wmclass_class w for:wm_class);
+      set_wmclass w ?name:wm_name ?class:wm_class;
     may position fun:(set_position w);
     if allow_shrink <> None || allow_grow <> None || auto_shrink <> None then
-      set_policy w
-	allow_shrink:(may_default get_allow_shrink w for:allow_shrink)
-	allow_grow:(may_default get_allow_grow w for:allow_grow)
-	auto_shrink:(may_default get_auto_shrink w for:auto_shrink);
+      set_policy w ?:allow_shrink ?:allow_grow ?:auto_shrink;
     may fun:(set_modal w) modal;
-    if x > -2 || y > -2 then Widget.set_uposition w :x :y;
-    cont w
+    if x <> None || y <> None then Widget.set_position w ?:x ?:y
   external add_accel_group : [> window] obj -> accel_group -> unit
       = "ml_gtk_window_add_accel_group"
   external remove_accel_group :
@@ -127,9 +129,10 @@ module FileSelection = struct
       = "ml_gtk_file_selection_get_cancel_button"
   external get_help_button : [> filesel] obj -> button obj
       = "ml_gtk_file_selection_get_help_button"
-  let setter w :cont ?:filename ?:fileop_buttons =
+  let set_fileop_buttons w = function
+      true -> show_fileop_buttons w
+    | false -> hide_fileop_buttons w
+  let set w ?:filename ?:fileop_buttons =
     may filename fun:(set_filename w);
-    may fileop_buttons fun:
-      (fun b -> (if b then show_fileop_buttons else hide_fileop_buttons) w);
-    cont w
+    may fileop_buttons fun:(set_fileop_buttons w)
 end

@@ -73,12 +73,11 @@ module Entry = struct
       = "ml_gtk_entry_set_visibility"
   external set_max_length : [> entry] obj -> int -> unit
       = "ml_gtk_entry_set_max_length"
-  let setter w :cont ?:text ?:visibility ?:max_length =
+  let set w ?:text ?:visibility ?:max_length =
     let may_set f = may fun:(f w) in
     may_set set_text text;
     may_set set_visibility visibility;
-    may_set set_max_length max_length;
-    cont w
+    may_set set_max_length max_length
   external text_length : [> entry] obj -> int
       = "ml_GtkEntry_text_length"
 end
@@ -121,7 +120,7 @@ module SpinButton = struct
       = "ml_gtk_spin_button_set_snap_to_ticks"
   external update : [> spinbutton] obj -> unit
       = "ml_gtk_spin_button_update"
-  let setter w :cont ?:adjustment ?:digits ?:value ?:update_policy
+  let set w ?:adjustment ?:digits ?:value ?:update_policy
       ?:numeric ?:wrap ?:shadow_type ?:snap_to_ticks =
     let may_set f = may fun:(f w) in
     may_set set_adjustment adjustment;
@@ -131,8 +130,7 @@ module SpinButton = struct
     may_set set_numeric numeric;
     may_set set_wrap wrap;
     may_set set_shadow_type shadow_type;
-    may_set set_snap_to_ticks snap_to_ticks;
-    cont w
+    may_set set_snap_to_ticks snap_to_ticks
 end
 
 module Text = struct
@@ -163,11 +161,10 @@ module Text = struct
       [> text] obj -> ?font:Gdk.font -> ?foreground:Gdk.Color.t ->
       ?background:Gdk.Color.t -> string -> unit
       = "ml_gtk_text_insert"
-  let setter w :cont ?:hadjustment ?:vadjustment ?:word_wrap =
+  let set w ?:hadjustment ?:vadjustment ?:word_wrap =
     if hadjustment <> None || vadjustment <> None then
       set_adjustment w ?horizontal: hadjustment ?vertical: vadjustment;
-    may word_wrap fun:(set_word_wrap w);
-    cont w
+    may word_wrap fun:(set_word_wrap w)
 end
 
 module Combo = struct
@@ -196,15 +193,22 @@ module Combo = struct
 	Widget.show li;
 	Container.add (list combo) li
       end
-  let setter w :cont ?:popdown_strings ?:use_arrows ?:use_arrows_always
+  let set_use_arrows' w (mode : [NEVER DEFAULT ALWAYS]) =
+    let def,always =
+      match mode with
+	`NEVER -> false, false
+      |	`DEFAULT -> true, false
+      |	`ALWAYS -> true, true
+    in
+    set_use_arrows w def;
+    set_use_arrows_always w always
+  let set w ?:popdown_strings ?:use_arrows
       ?:case_sensitive ?:value_in_list ?:ok_if_empty =
     may popdown_strings fun:(set_popdown_strings w);
-    may use_arrows fun:(set_use_arrows w);
-    may use_arrows_always fun:(set_use_arrows_always w);
+    may use_arrows fun:(set_use_arrows' w);
     may case_sensitive fun:(set_case_sensitive w);
     if value_in_list <> None || ok_if_empty <> None then
-      set_value_in_list w ?value_in_list ?:ok_if_empty;
-    cont w
+      set_value_in_list w ?value_in_list ?:ok_if_empty
   external disable_activate : [> combo] obj -> unit
       = "ml_gtk_combo_disable_activate"
 end

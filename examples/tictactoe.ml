@@ -86,7 +86,7 @@ object(self)
 	table #attach buttons.(i).(j) left:i top:j;
 	buttons_handlers.(i).(j) <-
 	  buttons.(i).(j) #connect#toggled callback:self#toggle;
-	buttons.(i).(j) #misc#set width:20 height:20;
+	buttons.(i).(j) #misc#set_size width:20 height:20;
       done
     done
 end

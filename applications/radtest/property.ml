@@ -111,7 +111,7 @@ end
 
 class prop_enumtype l :callback ?:packing :value = object(self)
   inherit combo popdown_strings:(List.map fun:fst l) show:true
-      ?:packing use_arrows_always:true
+      ?:packing use_arrows:`ALWAYS
 
   val revl = List.map fun:(fun (a,b) -> (b,a)) l
   initializer

@@ -140,9 +140,10 @@ module Widget = struct
   external allocation : [> widget] obj -> rectangle
       = "ml_gtk_widget_allocation"
   let set_position w ?:x [< -2 >] ?:y [< -2 >] =
-    if x > -2 || y > -2 then set_uposition w :x :y
+    set_uposition w :x :y
   let set_size w ?:width [< -2 >] ?:height [< -2 >] =
-    if width > -2 || height > -2 then set_usize w :width :height
+    set_usize w :width :height
+(*
   let setter w :cont ?:name ?:state ?:sensitive ?:extension_events
       ?:can_default ?:can_focus ?:x ?:y ?:width ?:height ?:style =
     let may_set f arg = may fun:(f w) arg in
@@ -157,6 +158,7 @@ module Widget = struct
     set_size w ?:height ?:width;
     cont w
   let set = setter cont:null_cont
+*)
   module Signals = struct
     open GtkSignal
     let marshal f argv = f (cast (GtkArgv.get_object argv pos:0))
@@ -294,10 +296,10 @@ module Container = struct
       = "ml_gtk_container_add"
   external remove : [> container] obj -> [> widget] obj -> unit
       = "ml_gtk_container_remove"
-  let setter w :cont ?:border_width =
+  let set w ?:border_width ?:width ?:height =
     may border_width fun:(set_border_width w);
-    cont w
-  let set = setter ?cont:Widget.set_size
+    if width <> None || height <> None then
+      Widget.set_size w ?:width ?:height
   external foreach : [> container] obj -> fun:(widget obj-> unit) -> unit
       = "ml_gtk_container_foreach"
   let children w =

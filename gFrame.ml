@@ -13,12 +13,13 @@ class scrolled_window_wrapper obj = object
     new GData.adjustment_wrapper (ScrolledWindow.get_hadjustment obj)
   method vadjustment =
     new GData.adjustment_wrapper (ScrolledWindow.get_vadjustment obj)
-  method set_scrolled ?:hadjustment ?:vadjustment =
-    may fun:(ScrolledWindow.set_hadjustment obj)
-      (GData.adjustment_option hadjustment);
-    may fun:(ScrolledWindow.set_vadjustment obj)
-      (GData.adjustment_option vadjustment);
-    ScrolledWindow.set ?obj
+  method set_hadjustment (adj : GData.adjustment) =
+    ScrolledWindow.set_hadjustment obj adj#as_adjustment
+  method set_vadjustment (adj : GData.adjustment) =
+    ScrolledWindow.set_vadjustment obj adj#as_adjustment
+  method set_hpolicy hpolicy = ScrolledWindow.set_policy' obj :hpolicy
+  method set_vpolicy vpolicy = ScrolledWindow.set_policy' obj :vpolicy
+  method set_placement = ScrolledWindow.set_placement obj
   method add_with_viewport : 'a. (#is_widget as 'a) -> _ =
     fun w -> ScrolledWindow.add_with_viewport obj w#as_widget
 end
@@ -78,9 +79,8 @@ class handle_box ?:border_width ?:width ?:height ?:packing ?:show =
 
 class frame_skel obj = object
   inherit container obj
-  method set_label ?label ?:xalign ?:yalign =
-    Frame.setter obj ?:label ?label_xalign:xalign ?label_yalign:yalign
-      cont:null_cont
+  method set_label = Frame.set_label obj
+  method set_label_align = Frame.set_label_align' ?obj
   method set_shadow_type = Frame.set_shadow_type obj
 end
 
@@ -93,7 +93,7 @@ class frame ?:label ?:label_xalign ?:label_yalign ?:shadow_type
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Frame.create ?:label ?None in
   let () =
-    Frame.setter w cont:null_cont ?:label_xalign ?:label_yalign ?:shadow_type;
+    Frame.set w ?:label_xalign ?:label_yalign ?:shadow_type;
     Container.set w ?:border_width ?:width ?:height
   in
   object (self)
@@ -104,7 +104,9 @@ class frame ?:label ?:label_xalign ?:label_yalign ?:shadow_type
 class aspect_frame_wrapper obj = object
   inherit frame_skel (obj : Gtk.aspect_frame obj)
   method connect = new container_signals ?obj
-  method set_aspect = AspectFrame.setter ?obj ?cont:null_cont
+  method set_alignment ?:x ?:y = AspectFrame.set obj ?xalign:x ?yalign:y
+  method set_ratio ratio = AspectFrame.set obj :ratio
+  method set_obey_child obey_child = AspectFrame.set obj :obey_child
 end
 
 class aspect_frame ?:label ?:xalign ?:yalign ?:ratio ?:obey_child
@@ -113,7 +115,7 @@ class aspect_frame ?:label ?:xalign ?:yalign ?:ratio ?:obey_child
   let w =
     AspectFrame.create ?:label ?:xalign ?:yalign ?:ratio ?:obey_child ?None in
   let () =
-    Frame.setter w cont:null_cont ?:label_xalign ?:label_yalign ?:shadow_type;
+    Frame.set w ?:label_xalign ?:label_yalign ?:shadow_type;
     Container.set w ?:border_width ?:width ?:height
   in
   object (self)
@@ -123,12 +125,11 @@ class aspect_frame ?:label ?:xalign ?:yalign ?:ratio ?:obey_child
 
 class viewport_wrapper obj = object
   inherit container_wrapper (obj : viewport obj)
-  method set_viewport ?:hadjustment ?:vadjustment ?:shadow_type =
-    may (GData.adjustment_option hadjustment)
-      fun:(Viewport.set_hadjustment obj);
-    may (GData.adjustment_option vadjustment)
-      fun:(Viewport.set_vadjustment obj);
-    may shadow_type fun:(Viewport.set_shadow_type obj)
+  method set_hadjustment (adj : GData.adjustment) =
+    Viewport.set_hadjustment obj adj#as_adjustment
+  method set_vadjustment (adj : GData.adjustment) =
+    Viewport.set_vadjustment obj adj#as_adjustment
+  method set_shadow_type = Viewport.set_shadow_type obj
   method hadjustment =
     new GData.adjustment_wrapper (Viewport.get_hadjustment obj)
   method vadjustment =

@@ -19,11 +19,6 @@ module Alignment = struct
       [> alignment] obj ->
       ?x:clampf -> ?y:clampf -> ?xscale:clampf -> ?yscale:clampf -> unit
       = "ml_gtk_alignment_set"
-  let setter w :cont ?:x ?:y ?:xscale ?:yscale =
-    if x <> None || y <> None || xscale <> None || yscale <> None then
-      set w ?:x ?:y ?:xscale ?:yscale;
-    cont w
-  let set = setter ?cont:Container.set
 end
 
 module EventBox = struct
@@ -50,15 +45,15 @@ module Frame = struct
       = "ml_gtk_frame_get_label_xalign"
   external get_label_yalign : [> frame] obj -> float
       = "ml_gtk_frame_get_label_yalign"
-  let setter w :cont ?:label ?:label_xalign ?:label_yalign ?:shadow_type =
+  let set_label_align' w ?:x ?:y =
+    set_label_align w
+      x:(may_default get_label_xalign w for:x)
+      y:(may_default get_label_yalign w for:y)
+  let set w ?:label ?:label_xalign ?:label_yalign ?:shadow_type =
     may label fun:(set_label w);
     if label_xalign <> None || label_yalign <> None then
-      set_label_align w
-	x:(may_default get_label_xalign w for:label_xalign)
-	y:(may_default get_label_yalign w for:label_yalign);
-    may shadow_type fun:(set_shadow_type w);
-    cont w
-  let set = setter ?cont:Container.set
+      set_label_align' w ?x:label_xalign ?y:label_yalign;
+    may shadow_type fun:(set_shadow_type w)
 end
 
 module AspectFrame = struct
@@ -84,14 +79,12 @@ module AspectFrame = struct
       = "ml_gtk_aspect_frame_get_ratio"
   external get_obey_child : [> aspect] obj -> bool
       = "ml_gtk_aspect_frame_get_obey_child"
-  let setter w :cont ?:xalign ?:yalign ?:ratio ?:obey_child =
-    if xalign <> None || yalign <> None || ratio <> None || obey_child <> None
-    then set w xalign:(may_default get_xalign w for:xalign)
-	yalign:(may_default get_yalign w for:yalign)
-	ratio:(may_default get_ratio w for:ratio)
-	obey_child:(may_default get_obey_child w for:obey_child);
-    cont w
-  let set = setter ?cont:Frame.set
+  let set w ?:xalign ?:yalign ?:ratio ?:obey_child =
+    set w
+      xalign:(may_default get_xalign w for:xalign)
+      yalign:(may_default get_yalign w for:yalign)
+      ratio:(may_default get_ratio w for:ratio)
+      obey_child:(may_default get_obey_child w for:obey_child)
 end
 
 module HandleBox = struct
@@ -133,11 +126,10 @@ module Viewport = struct
       = "ml_gtk_viewport_set_vadjustment"
   external set_shadow_type : [> viewport] obj -> shadow_type -> unit
       = "ml_gtk_viewport_set_shadow_type"
-  let setter w :cont ?:hadjustment ?:vadjustment ?:shadow_type =
+  let set w ?:hadjustment ?:vadjustment ?:shadow_type =
     may hadjustment fun:(set_hadjustment w);
     may vadjustment fun:(set_vadjustment w);
-    may shadow_type fun:(set_shadow_type w);
-    cont w
+    may shadow_type fun:(set_shadow_type w)
 end
 
 module ScrolledWindow = struct
@@ -167,10 +159,12 @@ module ScrolledWindow = struct
       = "ml_gtk_scrolled_window_get_vscrollbar_policy"
   external set_placement : [> scrolled] obj -> corner_type -> unit
       = "ml_gtk_scrolled_window_set_placement"
+  let set_policy' w ?:hpolicy ?:vpolicy =
+    set_policy w
+      (may_default get_hscrollbar_policy w for:hpolicy)
+      (may_default get_vscrollbar_policy w for:vpolicy)
   let set w ?:hpolicy ?:vpolicy ?:placement =
     if hpolicy <> None || vpolicy <> None then
-      set_policy w
-	(may_default get_hscrollbar_policy w for:hpolicy)
-	(may_default get_vscrollbar_policy w for:vpolicy);
+      set_policy' w ?:hpolicy ?:vpolicy;
     may placement fun:(set_placement w)
 end
