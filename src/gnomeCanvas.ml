@@ -198,12 +198,17 @@ external get_buffer : [> richtext] Gobject.obj -> Gtk.textbuffer = "ml_gnome_can
 end
 
 (* Conversion  functions for properties *)
-type tags =
-  | ANCHOR of Gtk.Tags.anchor_type
-  | CAPSTYLE of Gdk.GC.gdkCapStyle
-  | JOINSTYLE of Gdk.GC.gdkJoinStyle
-  | JUSTIFICATION of Gtk.Tags.justification
-  | LINESTYLE of Gdk.GC.gdkLineStyle
-external convert_tags : tags -> int = "ml_gnome_canvas_convert_tags"
-external convert_points : float array -> Gpointer.boxed = "ml_gnome_canvas_convert_points"
-external convert_dash : float -> float array -> Gpointer.boxed = "ml_gnome_canvas_convert_dash"
+open Gpointer
+external get_tables : unit ->
+  Gtk.Tags.anchor_type variant_table
+  * Gdk.GC.gdkCapStyle variant_table
+  * Gdk.GC.gdkJoinStyle variant_table
+  * Gtk.Tags.justification variant_table
+  * Gdk.GC.gdkLineStyle variant_table
+  = "ml_gnome_canvas_get_tables"
+let anchor_type, gdkCapStyle, gdkJoinStyle, justification, gdkLineStyle =
+  get_tables ()
+external convert_points : float array -> Gpointer.boxed
+  = "ml_gnome_canvas_convert_points"
+external convert_dash : float -> float array -> Gpointer.boxed
+  = "ml_gnome_canvas_convert_dash"

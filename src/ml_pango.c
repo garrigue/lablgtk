@@ -57,13 +57,19 @@ CAMLprim value ml_PANGO_SCALE ()
   return(Val_int(PANGO_SCALE));
 }
 
-ML_1 (Pango_style_val, 0+, Val_int)
-ML_1 (Pango_underline_val, 0+, Val_int)
-ML_1 (Justification_val, 0+, Val_int)
-ML_1 (Text_direction_val, 0+, Val_int)
+CAMLprim value ml_pango_get_tables ()
+{
+  static lookup_info *ret[6] = { ml_table_pango_style,
+                                 ml_table_pango_variant,
+                                 ml_table_pango_stretch,
+                                 ml_table_pango_underline,
+                                 ml_table_justification,
+                                 ml_table_text_direction };
+  return (value)ret;
+}
+
+
 ML_1 (Pango_weight_val, 0+, Val_int)
-ML_1 (Pango_variant_val, 0+, Val_int)
-ML_1 (Pango_stretch_val, 0+, Val_int)
 
 /* This one uses the generated MLTAG but not the conversion functions because
    we have defined float values */

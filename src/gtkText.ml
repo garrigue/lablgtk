@@ -173,6 +173,7 @@ module Tag = struct
   external wrap_mode : Gtk.Tags.wrap_mode -> int = "ml_Wrap_mode_val"
 
   let set_property o (p:property) =
+    let encode tbl v = `INT (Gpointer.encode_variant tbl v) in
     let data = match p with 
     | `NAME s | `BACKGROUND s | `FOREGROUND s | `FONT s | `FAMILY s 
     | `LANGUAGE s -> 
@@ -211,17 +212,17 @@ module Tag = struct
 
     | `WRAP_MODE b -> `INT (wrap_mode b)
 
-    | `STYLE b  -> `INT (Pango.Tags.style_to_int b)
+    | `STYLE b  -> encode Pango.Tags.style b
 
-    | `UNDERLINE u -> `INT (Pango.Tags.underline_to_int u)
+    | `UNDERLINE u -> encode Pango.Tags.underline u
 
-    | `STRETCH s ->  `INT (Pango.Tags.stretch_to_int s)
+    | `STRETCH s ->  encode Pango.Tags.stretch s
     
-    | `VARIANT s ->  `INT (Pango.Tags.variant_to_int s)
+    | `VARIANT s ->  encode Pango.Tags.variant s
 
-    | `DIRECTION b  -> `INT (Pango.Tags.text_direction_to_int b)
+    | `DIRECTION b  -> encode Pango.Tags.text_direction b
 
-    | `JUSTIFICATION b -> `INT (Pango.Tags.justification_to_int b)
+    | `JUSTIFICATION b -> encode Pango.Tags.justification b
 
     | `FONT_DESC f ->
         `POINTER (Some (Obj.magic (f : Pango.font_description)))
