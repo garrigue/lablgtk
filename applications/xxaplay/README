@@ -1,4 +1,4 @@
-This is a CD-XA audio track player for Linux.
+This is a CD-XA audio track (= Playstation audio) player for Linux.
 
 No manual.
 
@@ -9,5 +9,8 @@ Requirements
 	* Fast CDROM drive
 
 	* Kernel support for reading CDROM raw sector (size = 2358 bytes)
-		Kernel 2.0.x does not support it.
-		Use one of the latest kernels 2.1.x.
+	     Linux
+		For IDE drives, Kernel 2.0.36 supports it.
+		For SCSI, I do not know, but try 2.1.x.
+	     Others
+		Not tested (The code is linux dependent.)
