@@ -169,12 +169,19 @@ module FileSelection = struct
       = "ml_gtk_file_selection_get_help_button"
   external get_file_list : [>`filesel] obj -> clist obj
       = "ml_gtk_file_selection_get_file_list"
+  external set_select_multiple : [>`filesel] obj -> bool -> unit
+      = "ml_gtk_file_selection_set_select_multiple"
+  external get_select_multiple : [>`filesel] obj -> bool
+      = "ml_gtk_file_selection_get_select_multiple"
+  external get_selections : [>`filesel] obj -> string list
+      = "ml_gtk_file_selection_get_select_multiple"
   let set_fileop_buttons w = function
       true -> show_fileop_buttons w
     | false -> hide_fileop_buttons w
-  let set ?filename ?fileop_buttons w =
+  let set ?filename ?fileop_buttons ?select_multiple w =
     may filename ~f:(set_filename w);
-    may fileop_buttons ~f:(set_fileop_buttons w)
+    may fileop_buttons ~f:(set_fileop_buttons w);
+    may select_multiple ~f:(set_select_multiple w)
 end
 
 module FontSelectionDialog = struct

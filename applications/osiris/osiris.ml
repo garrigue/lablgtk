@@ -367,26 +367,77 @@ let no_event_2 _ _ = ()
 let event_true _ = true
 let event_false _ = false
 
+open StdLabels
+open GtkBase
+open GtkButton
+open GtkMain
+open GtkMisc
+open GtkWindow
+
+type button_id = [`APPLY|`CANCEL|`CLOSE|`HELP|`NO|`OK|`YES]
+
+let make_dialog ~title ~message ~buttons ?(no_delete=false) () = 
+  let dia = Dialog.create () in
+  Window.set_title dia title;
+  let label = Label.create message in
+  Label.set_line_wrap label true;
+  Misc.set_padding label ~x:10 ~y:10 ();
+  Container.add (Dialog.vbox dia) label;
+  Widget.show label;
+  List.iter buttons ~f:
+    (fun (#button_id as id) ->
+      Dialog.add_button dia
+        (GtkStock.convert_id id) (Dialog.std_response id));
+  begin match buttons with
+    (#button_id as id) :: _ ->
+      Dialog.set_default_response dia (Dialog.std_response id)
+  | _ -> ()
+  end;
+  let rec check resp =
+    if no_delete && resp = Dialog.std_response `DELETE_EVENT
+    then check (Dialog.run dia)
+    else resp
+  in
+  let r = check (Dialog.run dia) in
+  Object.destroy dia;
+  r
+
 let message_box message =
-  let msg =
-    GtkWindow.Dialog.create_message ~message ~message_type:`INFO
-      ~buttons:`CLOSE  () in
-  ignore (GtkWindow.Dialog.run msg)
+  ignore (make_dialog ~title:"Message:" ~message ~buttons:[`OK] ())
 
 let question_box message =
-  let msg =
-    GtkWindow.Dialog.create_message ~message ~message_type:`INFO
-      ~buttons:`YES_NO  () in
-  GtkWindow.Dialog.run msg = GtkWindow.Dialog.std_button `YES
+  let r =
+    make_dialog ~title:"Message:" ~message ~buttons:[`YES;`NO]
+      ~no_delete:true () in
+  r = Dialog.std_response `YES
 
 let question_cancel_box message =
-  let msg =
-    GtkWindow.Dialog.create_message ~message ~message_type:`INFO
-      ~buttons:`YES_NO  () in
-  GtkWindow.Dialog.add_button msg "Cancel"
-    (GtkWindow.Dialog.std_button `CANCEL);
-  let r = GtkWindow.Dialog.run msg in
-  if r = GtkWindow.Dialog.std_button `YES then QR_YES else
-  if r = GtkWindow.Dialog.std_button `NO then QR_NO else
+  let r =
+    make_dialog ~title:"Message:" ~message ~buttons:[`YES;`NO;`CANCEL] () in
+  if r = GtkWindow.Dialog.std_response `YES then QR_YES else
+  if r = GtkWindow.Dialog.std_response `NO then QR_NO else
   QR_CANCEL
 
+let file_dialog ~title ?default () =
+  let sel = FileSelection.create title in
+  Gaux.may default ~f:(FileSelection.set_filename sel);
+  Window.set_modal sel true;
+  let name = ref None in
+  GtkSignal.connect sel ~sgn:Object.Signals.destroy ~callback:Main.quit;
+  GtkSignal.connect (FileSelection.get_cancel_button sel)
+    ~sgn:Button.Signals.clicked
+    ~callback:(fun () -> Object.destroy sel);
+  GtkSignal.connect (FileSelection.get_ok_button sel)
+    ~sgn:Button.Signals.clicked
+    ~callback:
+    (fun () ->
+      name := Some (FileSelection.get_filename sel); Object.destroy sel);
+  Widget.show sel;
+  Main.main ();
+  !name
+
+let open_file _ =
+  file_dialog ~title:"Osiris Open Dialog" ()
+
+let create_file ~default ~exts =
+  file_dialog ~title:"Osiris Create Dialog" ~default ()
