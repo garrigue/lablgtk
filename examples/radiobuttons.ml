@@ -6,14 +6,13 @@ let main () =
 
   let window = Window.create `TOPLEVEL in
   Window.Connect.destroy window cb:Main.quit;
-  Window.set_title window "radio buttons";
-  Window.border_width window 0;
+  Window.set window title: "radio buttons" border_width: 0;
 
   let box1 = Box.create `VERTICAL in
   Box.add window box1;
 
   let box2 = Box.create `VERTICAL spacing:10 in
-  Box.border_width box2 10;
+  Box.set box2 border_width: 10;
   Box.pack box1 box2;
 
   let button1 = RadioButton.create `none label:"button1" in
@@ -30,7 +29,7 @@ let main () =
   Box.pack box1 separator expand:false;
   
   let box3 = Box.create `VERTICAL spacing:10 in
-  Box.border_width box3 10;
+  Box.set box3 border_width: 10;
   Box.pack box1 box3 expand:false;
 
   let button = Button.create_with_label "close" in

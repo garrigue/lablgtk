@@ -38,9 +38,9 @@ end
 
 class event_signal obj = object
   val obj = Widget.coerce obj
-  method any = Signal.connect obj sig:Signal.Event.any
-  method delete = Signal.connect obj sig:Signal.Event.delete
-  method expose = Signal.connect obj sig:Signal.Event.expose
+  method any = Event.Connect.any obj
+  method delete = Event.Connect.delete obj
+  method expose = Event.Connect.expose obj
 end
 
 class ['a] widget_signals obj = object
@@ -180,7 +180,7 @@ class label obj = object
   inherit [Label.t] misc obj
   method connect = new widget_signals obj
   method set = Label.set ?obj
-  method text = Label.text obj
+  method label = Label.get_label obj
 end
 
 let new_label text = new label (Label.create text)
