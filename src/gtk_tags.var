@@ -36,7 +36,7 @@ type path_type = "GTK_PATH_"
   [ `WIDGET | `WIDGET_CLASS | `CLASS ]
 
 type policy_type = "GTK_POLICY_"
-  [ `ALWAYS | `AUTOMATIC ]
+  [ `ALWAYS | `AUTOMATIC | `NEVER ]
 
 type position = "GTK_POS_"
   [ `LEFT | `RIGHT | `TOP | `BOTTOM ]
