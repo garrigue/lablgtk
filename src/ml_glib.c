@@ -160,7 +160,8 @@ ML_0(gdk_threads_leave, Unit)
 */
 
 /* This is not used, but could be someday... */
-/*
+
+/* The day has come .... */
 CAMLprim value Val_GSList (GSList *list, value (*func)(gpointer))
 {
     value new_cell, result, last_cell, cell;
@@ -203,4 +204,4 @@ GSList *GSList_val (value list, gpointer (*func)(value))
     End_roots ();
     return res;
 }
-*/
+

@@ -170,3 +170,8 @@ type spin_button_update_policy = "GTK_UPDATE_"
 
 type noconv tree_view_mode = "GTK_TREE_VIEW_"
   [ `LINE | `ITEM ]
+
+type text_window_type = "GTK_TEXT_WINDOW_"
+  [ `PRIVATE | `WIDGET | `TEXT | `LEFT 
+  | `RIGHT | `TOP | `BOTTOM ]
+

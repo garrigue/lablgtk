@@ -166,6 +166,13 @@ type scrollbar = [widget|`range|`scrollbar]
 type ruler = [widget|`ruler]
 type separator = [widget|`separator]
 type preview = [widget|`preview]
+type textview = [container|`textview]
+type textbuffer = [`base|`textbuffer]
+type texttagtable = [`base|`texttagtable]
+type texttag = [`base|`texttag]
+type textmark = [`base | `textmark ]
+
+type textiter
 
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj

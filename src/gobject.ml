@@ -96,3 +96,6 @@ let get_id (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
 
 external freeze_notify : 'a obj -> unit = "ml_g_object_freeze_notify"
 external thaw_notify : 'a obj -> unit = "ml_g_object_thaw_notify"
+
+external set_property : 'a obj -> string -> g_value -> unit 
+  = "ml_g_object_set_property"
