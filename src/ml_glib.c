@@ -8,6 +8,9 @@
 
 #include "wrappers.h"
 #include "ml_glib.h"
+#include "glib_tags.h"
+
+#include "glib_tags.c"
 
 /* Utility functions */
 value copy_string_and_free (char *str)
@@ -107,7 +110,39 @@ ML_1 (g_main_quit, GMainLoop_val, Unit)
 ML_1 (g_main_destroy, GMainLoop_val, Unit)
 
 
+/* GIOChannel */
 
+Make_Val_final_pointer (GIOChannel, g_io_channel_ref, g_io_channel_unref, 0)
+Make_Val_final_pointer_ext (GIOChannel, _noref, Ignore, g_io_channel_unref, 20)
+#define GIOChannel_val(val) ((GIOChannel*)Pointer_val(val))
+
+#ifndef _WIN32
+ML_1 (g_io_channel_unix_new, Int_val, Val_GIOChannel_noref)
+#else
+value ml_g_io_channel_unix_new(value v)
+{  invalid_argument("Glib.channel_unix_new: not implemented"); }
+#endif
+
+gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c, gpointer data)
+{
+    value *clos_p = (value*)data;
+    return Val_int(callback(*clos_p, Val_unit));
+}
+void ml_g_destroy_notify(gpointer data)
+{
+    ml_global_root_destroy(data);
+}
+
+value ml_g_io_add_watch(value cond, value clos, value prio, value io)
+{
+    g_io_add_watch_full(GIOChannel_val(io),
+                        Option_val(prio,Int_val,0),
+                        Io_condition_val(cond),
+                        ml_g_io_channel_watch,
+                        ml_global_root_new(clos),
+                        ml_g_destroy_notify);
+    return Val_unit;
+}
 
 /* This is not used, but could be someday... */
 /*

@@ -21,7 +21,7 @@
 
 /* Reference counting */
 Make_Val_final_pointer (GdkPixbuf, gdk_pixbuf_ref, gdk_pixbuf_unref, 0)
-Make_Val_final_pointer_ext (GdkPixbuf, _noref, Ignore, gdk_pixbuf_unref, 0)
+Make_Val_final_pointer_ext (GdkPixbuf, _noref, Ignore, gdk_pixbuf_unref, 20)
 
 /* GdkPixbuf accessors */
 ML_1(gdk_pixbuf_get_n_channels, GdkPixbuf_val, Val_int)

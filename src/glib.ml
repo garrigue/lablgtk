@@ -19,3 +19,13 @@ module Main = struct
   external quit : t -> unit = "ml_g_main_quit"
   external destroy : t -> unit = "ml_g_main_destroy"
 end
+
+module Io = struct
+  type channel
+  type condition = [ `IN | `OUT | `PRI | `ERR | `HUP | `NVAL ]
+  external channel_of_descr : Unix.file_descr -> channel
+    = "ml_g_io_channel_unix_new"   (* Unix only *)
+  external add_watch :
+    cond:condition -> callback:(unit -> bool) -> ?prio:int -> channel -> unit
+    = "ml_g_io_add_watch"
+end

@@ -17,6 +17,8 @@ module Rc = Rc
 
 module Timeout = Timeout
 
+module Io = Glib.Io
+
 open Main
 let main = main
 let quit = quit
