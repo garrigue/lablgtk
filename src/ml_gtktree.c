@@ -81,7 +81,7 @@ CAMLprim value ml_gtk_tree_path_get_indices(value p)
 } 
 ML_1 (gtk_tree_path_copy, GtkTreePath_val, Val_GtkTreePath)
 ML_1 (gtk_tree_path_next, GtkTreePath_val, Unit)
-ML_1 (gtk_tree_path_prev, GtkTreePath_val, Unit)
+ML_1 (gtk_tree_path_prev, GtkTreePath_val, Val_bool)
 ML_1 (gtk_tree_path_up, GtkTreePath_val, Val_bool)
 ML_1 (gtk_tree_path_down, GtkTreePath_val, Unit)
 ML_2 (gtk_tree_path_is_ancestor, GtkTreePath_val, GtkTreePath_val, Val_bool)

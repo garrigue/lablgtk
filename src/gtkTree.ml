@@ -26,7 +26,7 @@ module TreePath = struct
     = "ml_gtk_tree_path_get_indices"
   external copy : tree_path -> tree_path = "ml_gtk_tree_path_copy"
   external next : tree_path -> unit = "ml_gtk_tree_path_next"
-  external prev : tree_path -> unit = "ml_gtk_tree_path_prev"
+  external prev : tree_path -> bool = "ml_gtk_tree_path_prev"
   external up : tree_path -> bool = "ml_gtk_tree_path_up"
   external down : tree_path -> unit = "ml_gtk_tree_path_down"
   external is_ancestor : tree_path -> tree_path -> bool
