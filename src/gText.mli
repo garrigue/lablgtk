@@ -98,6 +98,7 @@ object
   method set_priority : int -> unit
   method set_properties : tag_property list -> unit
   method set_property : tag_property -> unit
+  method get_property : ([`texttag],'a) Gobject.property -> 'a
 end
 val tag : string -> tag
 

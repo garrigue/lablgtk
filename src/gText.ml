@@ -123,6 +123,8 @@ object (self)
     Gobject.set_params obj [text_tag_param p]
   method set_properties l = 
     Gobject.set_params obj (List.map text_tag_param l)
+  method get_property : 'a. (_,'a) Gobject.property -> 'a =
+    Gobject.Property.get obj
 end
 
 let tag s = new tag(Tag.create s)

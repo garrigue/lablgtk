@@ -41,7 +41,7 @@ module Mark = struct
 end
 
 module Tag = struct
-  let cast w : text_tag = Object.try_cast w "GtkTextTag"
+  include TextTag
   external create : string -> text_tag = "ml_gtk_text_tag_new"
   external get_priority : text_tag -> int = "ml_gtk_text_tag_get_priority"
   external set_priority : text_tag -> int -> unit 
