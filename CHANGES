@@ -1,5 +1,8 @@
 $Id$
 
+2002.01.25
+  * correct ml_gtk_spin_button_set_update_policy
+
 2001.12.12
   * add GToolbox utility module (contributed by Maxence Guesdon)
 

@@ -67,7 +67,7 @@ ML_2 (gtk_spin_button_set_digits, GtkSpinButton_val, Int_val, Unit)
 ML_1 (gtk_spin_button_get_value_as_float, GtkSpinButton_val, copy_double)
 ML_2 (gtk_spin_button_set_value, GtkSpinButton_val, Float_val, Unit)
 ML_2 (gtk_spin_button_set_update_policy, GtkSpinButton_val,
-      Update_type_val, Unit)
+      Spin_button_update_policy_val, Unit)
 ML_2 (gtk_spin_button_set_numeric, GtkSpinButton_val, Bool_val, Unit)
 ML_2 (gtk_spin_button_spin, GtkSpinButton_val,
       Insert (Is_long(arg2) ? Spin_type_val(arg2) : GTK_SPIN_USER_DEFINED)
