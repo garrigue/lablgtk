@@ -96,6 +96,14 @@ Structure of the GtkObj module:
   * a set method
   * possibly some widget specific methods, not inherit by subclasses
 
+Note about unit as method argument:
+
+  O'Caml introduces no distinction between methods having side-effects
+  and methods simply returning a value. In practice, this is
+  confusing, and awkward when used as callbacks. For this reason all
+  methods having noticeable side-effects should take arguments, and
+  unit if they have no argument.
+
 Memory management:
 
   Important efforts have been dedicated to cooperate with Gtk's
