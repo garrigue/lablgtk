@@ -43,6 +43,151 @@ module Tags = struct
 end
 open Tags
 
+module Type = struct
+  type t
+  type klass
+  external name : t -> string = "ml_gtk_type_name"
+  external from_name : string -> t = "ml_gtk_type_from_name"
+  external parent : t -> t = "ml_gtk_type_parent"
+  external get_class : t -> klass = "ml_gtk_type_class"
+  external parent_class : t -> klass = "ml_gtk_type_parent_class"
+  external is_a : t -> t -> bool = "ml_gtk_type_is_a"
+  external fundamental : t -> fundamental_type = "ml_gtk_type_fundamental"
+end
+
+module Arg = struct
+  type t
+  external shift : t -> pos:int -> t = "ml_gtk_arg_shift"
+  external get_type : t -> Type.t = "ml_gtk_arg_get_type"
+  (* Safely get an argument *)
+  external get_char : t -> char = "ml_gtk_arg_get_char"
+  external get_bool : t -> bool = "ml_gtk_arg_get_bool"
+  external get_int : t -> int = "ml_gtk_arg_get_int"
+  external get_float : t -> float = "ml_gtk_arg_get_float"
+  external get_string : t -> string = "ml_gtk_arg_get_string"
+  external get_pointer : t -> Glib.pointer = "ml_gtk_arg_get_pointer"
+  external get_object : t -> unit obj = "ml_gtk_arg_get_object"
+  (* Safely set a result
+     Beware: this is not the opposite of get, arguments and results
+     are two different ways to use GtkArg. *)
+  external set_char : t -> char -> unit = "ml_gtk_arg_set_char"
+  external set_bool : t -> bool -> unit = "ml_gtk_arg_set_bool"
+  external set_int : t -> int -> unit = "ml_gtk_arg_set_int"
+  external set_float : t -> float -> unit = "ml_gtk_arg_set_float"
+  external set_string : t -> string -> unit = "ml_gtk_arg_set_string"
+  external set_pointer : t -> Glib.pointer -> unit = "ml_gtk_arg_set_pointer"
+  external set_object : t -> unit obj -> unit = "ml_gtk_arg_set_object"
+end
+
+module Argv = struct
+  open Arg
+  type raw_obj
+  type t = { referent: raw_obj; nargs: int; args: Arg.t }
+  let nth arg :pos =
+    if pos < 0 || pos >= arg.nargs then invalid_arg "Argv.nth";
+    shift arg.args :pos
+  let result arg =
+    if arg.nargs < 0 then invalid_arg "Argv.result";
+    shift arg.args pos:arg.nargs
+  external wrap_object : raw_obj -> unit obj = "Val_GtkObject"
+  let referent arg =
+    if arg.referent == Obj.magic (-1) then invalid_arg "Argv.referent";
+    wrap_object arg.referent
+  let get_result_type arg = get_type (result arg)
+  let get_type arg :pos = get_type (nth arg :pos)
+  let get_char arg :pos = get_char (nth arg :pos)
+  let get_bool arg :pos = get_bool (nth arg :pos)
+  let get_int arg :pos = get_int (nth arg :pos)
+  let get_float arg :pos = get_float (nth arg :pos)
+  let get_string arg :pos = get_string (nth arg :pos)
+  let get_pointer arg :pos = get_pointer (nth arg :pos)
+  let get_object arg :pos = get_object (nth arg :pos)
+  let set_result_char arg = set_char (result arg)
+  let set_result_bool arg = set_bool (result arg)
+  let set_result_int arg = set_int (result arg)
+  let set_result_float arg = set_float (result arg)
+  let set_result_string arg = set_string (result arg)
+  let set_result_pointer arg = set_pointer (result arg)
+  let set_result_object arg = set_object (result arg)
+end
+
+module Signal = struct
+  type id
+  type ('a,'b) t = { name: string; marshaller: 'b -> Argv.t -> unit }
+  external connect :
+      'a obj -> name:string -> cb:(Argv.t -> unit) -> after:bool -> id
+      = "ml_gtk_signal_connect"
+  let connect : 'a obj -> sig:('a, _) t -> _ =
+    fun obj sig:signal :cb ?:after [< false >] ->
+      connect obj name:signal.name cb:(signal.marshaller cb) :after
+  external disconnect : 'a obj -> id -> unit
+      = "ml_gtk_signal_disconnect"
+  let marshal_unit f _ = f ()
+  let marshal_event f argv =
+    let p = Argv.get_pointer argv pos:0 in
+    let ev = Gdk.Event.unsafe_copy p in
+    Argv.set_result_bool argv (f ev)
+  let destroy : ([> widget],_) t =
+    { name = "destroy"; marshaller = marshal_unit }
+  let clicked : ([> button],_) t =
+    { name = "clicked"; marshaller = marshal_unit }
+  let toggled : ([> toggle],_) t =
+    { name = "toggled"; marshaller = marshal_unit }
+  let activate : ([> editable],_) t =
+    { name = "activate"; marshaller = marshal_unit }
+  let event : ([> widget], Gdk.Tags.event_type Gdk.event -> bool) t =
+    { name = "delete_event"; marshaller = marshal_event }
+  let button_press_event : ([> widget], Gdk.Event.Button.t -> bool) t =
+    { name = "button_press_event"; marshaller = marshal_event }
+  let button_release_event : ([> widget], Gdk.Event.Button.t -> bool) t =
+    { name = "button_release_event"; marshaller = marshal_event }
+  let motion_notify_event : ([> widget], Gdk.Event.Motion.t -> bool) t =
+    { name = "motion_notify_event"; marshaller = marshal_event }
+  let delete_event : ([> widget], [DELETE] Gdk.event -> bool) t =
+    { name = "delete_event"; marshaller = marshal_event }
+  let destroy_event : ([> widget], [DESTROY] Gdk.event -> bool) t =
+    { name = "destroy_event"; marshaller = marshal_event }
+  let expose_event : ([> widget], Gdk.Event.Expose.t -> bool) t =
+    { name = "expose_event"; marshaller = marshal_event }
+  let key_press_event : ([> widget], Gdk.Event.Key.t -> bool) t =
+    { name = "key_press_event"; marshaller = marshal_event }
+  let key_release_event : ([> widget], Gdk.Event.Key.t -> bool) t =
+    { name = "key_release_event"; marshaller = marshal_event }
+  let enter_notify_event : ([> widget], Gdk.Event.Crossing.t -> bool) t =
+    { name = "enter_notify_event"; marshaller = marshal_event }
+  let leave_notify_event : ([> widget], Gdk.Event.Crossing.t -> bool) t =
+    { name = "leave_notify_event"; marshaller = marshal_event }
+  let configure_event : ([> widget], Gdk.Event.Configure.t -> bool) t =
+    { name = "configure_event"; marshaller = marshal_event }
+  let focus_in_event : ([> widget], Gdk.Event.Focus.t -> bool) t =
+    { name = "focus_in_event"; marshaller = marshal_event }
+  let focus_out_event : ([> widget], Gdk.Event.Focus.t -> bool) t =
+    { name = "focus_out_event"; marshaller = marshal_event }
+  let map_event : ([> widget], [MAP] Gdk.event -> bool) t =
+    { name = "map_event"; marshaller = marshal_event }
+  let unmap_event : ([> widget], [UNMAP] Gdk.event -> bool) t =
+    { name = "unmap_event"; marshaller = marshal_event }
+  let property_notify_event : ([> widget], Gdk.Event.Property.t -> bool) t =
+    { name = "property_notify_event"; marshaller = marshal_event }
+  let selection_clear_event : ([> widget], Gdk.Event.Selection.t -> bool) t =
+    { name = "selection_clear_event"; marshaller = marshal_event }
+  let selection_request_event : ([> widget], Gdk.Event.Selection.t -> bool) t =
+    { name = "selection_request_event"; marshaller = marshal_event }
+  let selection_notify_event : ([> widget], Gdk.Event.Selection.t -> bool) t =
+    { name = "selection_notify_event"; marshaller = marshal_event }
+  let proximity_in_event : ([> widget], Gdk.Event.Proximity.t -> bool) t =
+    { name = "proximity_in_event"; marshaller = marshal_event }
+  let proximity_in_event : ([> widget], Gdk.Event.Proximity.t -> bool) t =
+    { name = "proximity_in_event"; marshaller = marshal_event }
+end
+
+module Timeout = struct
+  type id
+  external add : int -> cb:(Argv.t -> unit) -> id = "ml_gtk_timeout_add"
+  let add inter :cb = add inter cb:(fun arg -> Argv.set_result_bool arg (cb ()))
+  external remove : id -> unit = "ml_gtk_timeout_remove"
+end
+
 module AcceleratorTable = struct
   type t
   external create : unit -> t = "ml_gtk_accelerator_table_new"
@@ -64,18 +209,6 @@ module Style = struct
       = "ml_gtk_draw_vline"
   external bg : t -> state:state -> Gdk.Color.t = "ml_GtkStyle_bg"
   let bg st ?:state [< `NORMAL >] = bg st :state
-end
-
-module Type = struct
-  type t
-  type klass
-  external name : t -> string = "ml_gtk_type_name"
-  external from_name : string -> t = "ml_gtk_type_from_name"
-  external parent : t -> t = "ml_gtk_type_parent"
-  external get_class : t -> klass = "ml_gtk_type_class"
-  external parent_class : t -> klass = "ml_gtk_type_parent_class"
-  external is_a : t -> t -> bool = "ml_gtk_type_is_a"
-  external fundamental : t -> fundamental_type = "ml_gtk_type_fundamental"
 end
 
 module Object = struct
@@ -250,8 +383,7 @@ module Container = struct
   let set_focus w ?:child ?:vadjustment ?:hadjustment =
     may child fun:(set_focus_child w);
     may vadjustment fun:(set_focus_vadjustment w);
-    may hadjustment fun:(set_focus_hadjustment w);
-    ()
+    may hadjustment fun:(set_focus_hadjustment w)
 end
 
 module Alignment = struct
@@ -564,8 +696,7 @@ module ToggleButton = struct
       = "ml_gtk_toggle_button_set_state"
   let set button ?:mode ?:state =
     may fun:(set_mode button) mode;
-    may fun:(set_state button) state;
-    ()
+    may fun:(set_state button) state
   external toggled : [> toggle] obj -> unit = "ml_gtk_toggle_button_toggled"
   external active : [> toggle] obj -> bool = "ml_GtkToggleButton_active"
 end
@@ -746,6 +877,81 @@ module MenuBar = struct
   external create : unit -> t = "ml_gtk_menu_bar_new"
 end
 
+module Notebook = struct
+  type t = [widget container notebook] obj
+  external create : unit -> t = "ml_gtk_notebook_new"
+  external insert_page :
+      [> notebook] obj -> [> widget] obj -> tab:[> widget] obj ->
+      ?menu:[> widget] obj -> ?pos:int -> unit
+      = "ml_gtk_notebook_insert_page_menu"
+      (* default is append to end *)
+  external remove_page : [> notebook] obj -> int -> unit
+      = "ml_gtk_notebook_remove_page"
+  external current_page : [> notebook] obj -> int
+      = "ml_gtk_notebook_current_page"
+  external set_page : [> notebook] obj -> int -> unit
+      = "ml_gtk_notebook_set_page"
+  external set_tab_pos : [> notebook] obj -> position -> unit
+      = "ml_gtk_notebook_set_tab_pos"
+  external set_show_tabs : [> notebook] obj -> bool -> unit
+      = "ml_gtk_notebook_set_show_tabs"
+  external set_show_border : [> notebook] obj -> bool -> unit
+      = "ml_gtk_notebook_set_show_border"
+  external set_scrollable : [> notebook] obj -> bool -> unit
+      = "ml_gtk_notebook_set_scrollable"
+  external set_tab_border : [> notebook] obj -> int -> unit
+      = "ml_gtk_notebook_set_tab_border"
+  external popup_enable : [> notebook] obj -> unit
+      = "ml_gtk_notebook_popup_enable"
+  external popup_disable : [> notebook] obj -> unit
+      = "ml_gtk_notebook_popup_disable"
+  let set w ?:page ?:tab_pos ?:show_tabs ?:show_border ?:scrollable
+      ?:tab_border ?:popup =
+    let may_set f = may fun:(f w) in
+    may_set set_page page;
+    may_set set_tab_pos tab_pos;
+    may_set set_show_tabs show_tabs;
+    may_set set_show_border show_border;
+    may_set set_scrollable scrollable;
+    may_set set_tab_border tab_border;
+    may fun:(fun b -> if b then popup_enable w else popup_disable w) popup
+end
+
+module Paned = struct
+  type t = [widget container paned] obj
+  external add1 : [> paned] obj -> [> widget] obj -> unit
+      = "ml_gtk_paned_add1"
+  external add2 : [> paned] obj -> [> widget] obj -> unit
+      = "ml_gtk_paned_add2"
+  let add w ?:fst ?:snd =
+    may fun:(add1 w) fst;
+    may fun:(add2 w) snd
+  external handle_size : [> paned] obj -> int -> unit
+      = "ml_gtk_paned_handle_size"
+  external gutter_size : [> paned] obj -> int -> unit
+      = "ml_gtk_paned_gutter_size"
+  let set_size w ?:handle ?:gutter =
+    may fun:(handle_size w) handle;
+    may fun:(gutter_size w) gutter
+  external hpaned_new : unit -> t = "ml_gtk_hpaned_new"
+  external vpaned_new : unit -> t = "ml_gtk_vpaned_new"
+  let create (dir : orientation) =
+    if dir = `HORIZONTAL then hpaned_new () else vpaned_new ()
+end
+
+module ScrolledWindow = struct
+  type t = [widget container scrolled] obj
+  external create :
+      ?hadj:[> adjustment] obj -> ?vadj:[> adjustment] obj -> ?unit -> t
+      = "ml_gtk_scrolled_window_new"
+  external get_hadjustment : [> scrolled] obj -> Adjustment.t
+      = "ml_gtk_scrolled_window_get_hadjustment"
+  external get_vadjustment : [> scrolled] obj -> Adjustment.t
+      = "ml_gtk_scrolled_window_get_vadjustment"
+  external set_policy : [> scrolled] obj -> horiz:policy -> vert:policy -> unit
+      = "ml_gtk_scrolled_window_set_policy"
+end
+
 module Table = struct
   type t = [widget container table] obj
   external create : int -> int -> homogeneous:bool -> t
@@ -770,6 +976,12 @@ module Table = struct
     let yoptions = if has_y expand then `EXPAND::yoptions else yoptions in
     attach t w :left :top :right :bottom :xoptions :yoptions
       :xpadding :ypadding
+end
+
+module Toolbar = struct
+  type t = [widget container toolbar]
+  external create : orientation -> style:toolbar_style -> t
+      = "ml_gtk_toolbar_new"
 end
 
 module Editable = struct
@@ -823,8 +1035,7 @@ module Entry = struct
     may_set set_position position;
     may_set set_visibility visibility;
     may_set set_editable editable;
-    may_set set_max_length max_length;
-    ()
+    may_set set_max_length max_length
   external text_length : [> entry] obj -> int
       = "ml_GtkEntry_text_length"
 end
@@ -918,8 +1129,7 @@ module Label = struct
       = "ml_gtk_label_set_justify"
   let set w ?:text ?:justify =
     may fun:(set w) text;
-    may fun:(set_justify w) justify;
-    ()
+    may fun:(set_justify w) justify
   external text : [> label] obj -> string = "ml_GtkLabel_label"
 end
 
@@ -969,137 +1179,4 @@ module Grab = struct
   external add : [> widget] obj -> unit = "ml_gtk_grab_add"
   external remove : [> widget] obj -> unit = "ml_gtk_grab_remove"
   external get_current : unit -> Widget.t = "ml_gtk_grab_get_current"
-end
-
-module Arg = struct
-  type t
-  external shift : t -> pos:int -> t = "ml_gtk_arg_shift"
-  external get_type : t -> Type.t = "ml_gtk_arg_get_type"
-  (* Safely get an argument *)
-  external get_char : t -> char = "ml_gtk_arg_get_char"
-  external get_bool : t -> bool = "ml_gtk_arg_get_bool"
-  external get_int : t -> int = "ml_gtk_arg_get_int"
-  external get_float : t -> float = "ml_gtk_arg_get_float"
-  external get_string : t -> string = "ml_gtk_arg_get_string"
-  external get_pointer : t -> Glib.pointer = "ml_gtk_arg_get_pointer"
-  external get_object : t -> unit obj = "ml_gtk_arg_get_object"
-  (* Safely set a result
-     Beware: this is not the opposite of get, arguments and results
-     are two different ways to use GtkArg. *)
-  external set_char : t -> char -> unit = "ml_gtk_arg_set_char"
-  external set_bool : t -> bool -> unit = "ml_gtk_arg_set_bool"
-  external set_int : t -> int -> unit = "ml_gtk_arg_set_int"
-  external set_float : t -> float -> unit = "ml_gtk_arg_set_float"
-  external set_string : t -> string -> unit = "ml_gtk_arg_set_string"
-  external set_pointer : t -> Glib.pointer -> unit = "ml_gtk_arg_set_pointer"
-  external set_object : t -> unit obj -> unit = "ml_gtk_arg_set_object"
-end
-
-module Argv = struct
-  open Arg
-  type raw_obj
-  type t = { referent: raw_obj; nargs: int; args: Arg.t }
-  let nth arg :pos =
-    if pos < 0 || pos >= arg.nargs then invalid_arg "Argv.nth";
-    shift arg.args :pos
-  let result arg =
-    if arg.nargs < 0 then invalid_arg "Argv.result";
-    shift arg.args pos:arg.nargs
-  external wrap_object : raw_obj -> unit obj = "Val_GtkObject"
-  let referent arg =
-    if arg.referent == Obj.magic (-1) then invalid_arg "Argv.referent";
-    wrap_object arg.referent
-  let get_result_type arg = get_type (result arg)
-  let get_type arg :pos = get_type (nth arg :pos)
-  let get_char arg :pos = get_char (nth arg :pos)
-  let get_bool arg :pos = get_bool (nth arg :pos)
-  let get_int arg :pos = get_int (nth arg :pos)
-  let get_float arg :pos = get_float (nth arg :pos)
-  let get_string arg :pos = get_string (nth arg :pos)
-  let get_pointer arg :pos = get_pointer (nth arg :pos)
-  let get_object arg :pos = get_object (nth arg :pos)
-  let set_result_char arg = set_char (result arg)
-  let set_result_bool arg = set_bool (result arg)
-  let set_result_int arg = set_int (result arg)
-  let set_result_float arg = set_float (result arg)
-  let set_result_string arg = set_string (result arg)
-  let set_result_pointer arg = set_pointer (result arg)
-  let set_result_object arg = set_object (result arg)
-end
-
-module Signal = struct
-  type id
-  type ('a,'b) t = { name: string; marshaller: 'b -> Argv.t -> unit }
-  external connect :
-      'a obj -> name:string -> cb:(Argv.t -> unit) -> after:bool -> id
-      = "ml_gtk_signal_connect"
-  let connect : 'a obj -> sig:('a, _) t -> _ =
-    fun obj sig:signal :cb ?:after [< false >] ->
-      connect obj name:signal.name cb:(signal.marshaller cb) :after
-  external disconnect : 'a obj -> id -> unit
-      = "ml_gtk_signal_disconnect"
-  let marshal_unit f _ = f ()
-  let marshal_event f argv =
-    let p = Argv.get_pointer argv pos:0 in
-    let ev = Gdk.Event.unsafe_copy p in
-    Argv.set_result_bool argv (f ev)
-  let destroy : ([> widget],_) t =
-    { name = "destroy"; marshaller = marshal_unit }
-  let clicked : ([> button],_) t =
-    { name = "clicked"; marshaller = marshal_unit }
-  let toggled : ([> toggle],_) t =
-    { name = "toggled"; marshaller = marshal_unit }
-  let activate : ([> editable],_) t =
-    { name = "activate"; marshaller = marshal_unit }
-  let event : ([> widget], Gdk.Tags.event_type Gdk.event -> bool) t =
-    { name = "delete_event"; marshaller = marshal_event }
-  let button_press_event : ([> widget], Gdk.Event.Button.t -> bool) t =
-    { name = "button_press_event"; marshaller = marshal_event }
-  let button_release_event : ([> widget], Gdk.Event.Button.t -> bool) t =
-    { name = "button_release_event"; marshaller = marshal_event }
-  let motion_notify_event : ([> widget], Gdk.Event.Motion.t -> bool) t =
-    { name = "motion_notify_event"; marshaller = marshal_event }
-  let delete_event : ([> widget], [DELETE] Gdk.event -> bool) t =
-    { name = "delete_event"; marshaller = marshal_event }
-  let destroy_event : ([> widget], [DESTROY] Gdk.event -> bool) t =
-    { name = "destroy_event"; marshaller = marshal_event }
-  let expose_event : ([> widget], Gdk.Event.Expose.t -> bool) t =
-    { name = "expose_event"; marshaller = marshal_event }
-  let key_press_event : ([> widget], Gdk.Event.Key.t -> bool) t =
-    { name = "key_press_event"; marshaller = marshal_event }
-  let key_release_event : ([> widget], Gdk.Event.Key.t -> bool) t =
-    { name = "key_release_event"; marshaller = marshal_event }
-  let enter_notify_event : ([> widget], Gdk.Event.Crossing.t -> bool) t =
-    { name = "enter_notify_event"; marshaller = marshal_event }
-  let leave_notify_event : ([> widget], Gdk.Event.Crossing.t -> bool) t =
-    { name = "leave_notify_event"; marshaller = marshal_event }
-  let configure_event : ([> widget], Gdk.Event.Configure.t -> bool) t =
-    { name = "configure_event"; marshaller = marshal_event }
-  let focus_in_event : ([> widget], Gdk.Event.Focus.t -> bool) t =
-    { name = "focus_in_event"; marshaller = marshal_event }
-  let focus_out_event : ([> widget], Gdk.Event.Focus.t -> bool) t =
-    { name = "focus_out_event"; marshaller = marshal_event }
-  let map_event : ([> widget], [MAP] Gdk.event -> bool) t =
-    { name = "map_event"; marshaller = marshal_event }
-  let unmap_event : ([> widget], [UNMAP] Gdk.event -> bool) t =
-    { name = "unmap_event"; marshaller = marshal_event }
-  let property_notify_event : ([> widget], Gdk.Event.Property.t -> bool) t =
-    { name = "property_notify_event"; marshaller = marshal_event }
-  let selection_clear_event : ([> widget], Gdk.Event.Selection.t -> bool) t =
-    { name = "selection_clear_event"; marshaller = marshal_event }
-  let selection_request_event : ([> widget], Gdk.Event.Selection.t -> bool) t =
-    { name = "selection_request_event"; marshaller = marshal_event }
-  let selection_notify_event : ([> widget], Gdk.Event.Selection.t -> bool) t =
-    { name = "selection_notify_event"; marshaller = marshal_event }
-  let proximity_in_event : ([> widget], Gdk.Event.Proximity.t -> bool) t =
-    { name = "proximity_in_event"; marshaller = marshal_event }
-  let proximity_in_event : ([> widget], Gdk.Event.Proximity.t -> bool) t =
-    { name = "proximity_in_event"; marshaller = marshal_event }
-end
-
-module Timeout = struct
-  type id
-  external add : int -> cb:(Argv.t -> unit) -> id = "ml_gtk_timeout_add"
-  let add inter :cb = add inter cb:(fun arg -> Argv.set_result_bool arg (cb ()))
-  external remove : id -> unit = "ml_gtk_timeout_remove"
 end
