@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open Gaux
 open Gtk
 open GObj
@@ -552,7 +553,7 @@ object(self)
   method private set_new_name new_name =
     if test_unique new_name then begin
       Hashtbl.remove widget_map name;
-      Hashtbl.add widget_map ~key:new_name
+      Hashtbl.add' widget_map ~key:new_name
 	~data:(self : #tiwidget0 :> tiwidget0);
       if (classe = "radio_button") then begin
 	radio_button_pool := new_name ::
@@ -634,7 +635,7 @@ object(self)
 	| h :: _ -> h#last
 
   initializer
-    Hashtbl.add widget_map ~key:name ~data:(self : #tiwidget0 :> tiwidget0);
+    Hashtbl.add' widget_map ~key:name ~data:(self : #tiwidget0 :> tiwidget0);
     name_list := name :: !name_list;
     parent_tree#insert tree_item ~pos;
     tree_item#set_subtree stree;

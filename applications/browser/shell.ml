@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+open StdLabels
+module Unix = UnixLabels
 open GdkKeysyms
 open Printf
 
@@ -169,11 +171,11 @@ let may_exec prog =
 
 let f ~prog ~title =
   let progargs =
-    List.filter ~f:((<>) "") (Str.split ~sep:(Str.regexp " ") prog) in
+    List.filter ~f:((<>) "") (Str.split (Str.regexp " ") prog) in
   if progargs = [] then () else
   let prog = List.hd progargs in
   let path = try Sys.getenv "PATH" with Not_found -> "/bin:/usr/bin" in
-  let exec_path = Str.split ~sep:(Str.regexp":") path in
+  let exec_path = Str.split (Str.regexp":") path in
   let prog =
     if not (Filename.is_implicit prog) then
       if may_exec prog then prog else ""
@@ -189,7 +191,7 @@ let f ~prog ~title =
   let reg = Str.regexp "TERM=" in
   let env = Array.map (Unix.environment ()) ~f:
       begin fun s ->
- 	if Str.string_match ~pat:reg s ~pos:0 then "TERM=dumb" else s
+ 	if Str.string_match reg s 0 then "TERM=dumb" else s
       end in
   let load_path =
     List.flatten (List.map !Config.load_path ~f:(fun dir -> ["-I"; dir])) in
