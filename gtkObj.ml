@@ -162,9 +162,13 @@ end
 
 class frame_create ?:label ?opt = frame (Frame.create ?:label ?opt) 
 
-let new_frame ?opt ?:label ?:packing [< null_cont >] =
-  let w = new frame_create ?:label ?opt in
-  Frame.setter ?w#raw ?label:None ?cont:(fun _ -> packing w; w)
+let pack_return w _ ?:packing =
+  match packing with Some f -> f w; w | None -> w
+
+let new_frame ?opt ?:label =
+  let w = new frame (Frame.create ?:label ?opt) in
+  Frame.setter ?w#raw ?label:None
+    ?cont:(Container.setter ?cont:(pack_return w))
 
 class aspect_frame obj = object
   inherit [AspectFrame.t] container_skel obj
@@ -172,9 +176,17 @@ class aspect_frame obj = object
   method set = AspectFrame.set ?obj
 end
 
-let new_aspect_frame ?:label ?:xalign ?:yalign ?:ratio ?:obey ?opt =
-  new aspect_frame
-    (AspectFrame.create ?:label ?:xalign ?:yalign ?:ratio ?:obey ?opt)
+class aspect_frame_create ?:label ?:xalign ?:yalign ?:ratio ?:obey_child ?opt =
+  aspect_frame
+    (AspectFrame.create ?:label ?:xalign ?:yalign ?:ratio ?:obey_child ?opt)
+
+let new_aspect_frame ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child =
+  let w =
+    new aspect_frame
+      (AspectFrame.create ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child)
+  in
+  Frame.setter ?w#raw ?label:None
+    ?cont:(Container.setter ?cont:(pack_return w))
 
 class ['a] box_skel obj = object
   inherit ['a] container_skel obj
@@ -188,7 +200,8 @@ class box obj = object
 end
 
 let new_box dir ?:homogeneous ?:spacing =
-  new box (Box.create dir ?:homogeneous ?:spacing)
+  let w = new box (Box.create dir ?:homogeneous ?:spacing) in
+  Container.setter ?w#raw ?cont:(pack_return w)
 
 class statusbar_context obj ctx = object (self)
   val obj : Statusbar.t obj = obj
@@ -211,7 +224,9 @@ class statusbar obj = object
     new statusbar_context obj (Statusbar.get_context obj name)
 end
 
-let new_statusbar () = new statusbar (Statusbar.create ())
+let new_statusbar ?(_ : unit option) =
+  let w = new statusbar (Statusbar.create ()) in
+  Container.setter ?w#raw ?cont:(pack_return w)
 
 class ['a] window_skel obj = object
   inherit ['a] container_skel obj
@@ -226,7 +241,9 @@ class window obj = object
   method set = Window.set ?obj
 end
 
-let new_window dir = new window (Window.create dir)
+let new_window dir =
+  let w = new window (Window.create dir) in
+  Window.setter ?w#raw ?cont:(Container.setter ?cont:(kill w))
 
 class ['a] dialog_skel obj = object
   inherit ['a] window_skel obj
@@ -240,7 +257,9 @@ class dialog obj = object
   method set = Window.set ?obj
 end
 
-let new_dialog () = new dialog (Dialog.create ())
+let new_dialog ?(_ : unit option) =
+  let w = new dialog (Dialog.create ()) in
+  Window.setter ?w#raw ?cont:(Container.setter ?cont:(kill w))
 
 class ['a] button_signals obj = object
   inherit ['a] widget_signals obj
@@ -256,7 +275,6 @@ class ['a] button_skel obj = object
   method clicked = Button.clicked obj
 end
 
-
 class button obj = object
   inherit [Button.t] button_skel obj
   method connect = new button_signals obj
@@ -266,7 +284,11 @@ class button obj = object
   method grab_default () = Widget.grab_default obj
 end
 
-let new_button ?:label ?x = new button (Button.create ?:label ?x)
+class button_create ?:label ?opt = button (Button.create ?:label ?opt)
+
+let new_button ?opt ?:label =
+  let w = new button (Button.create ?:label ?opt) in
+  Container.setter ?w#raw ?cont:(pack_return w)
 
 class ['a] toggle_button_skel obj = object
   inherit ['a] button_skel obj
@@ -284,11 +306,13 @@ class toggle_button obj = object
   method set = ToggleButton.set ?obj
 end
 
-let new_toggle_button ?:label ?opt =
-  new toggle_button (ToggleButton.create_toggle ?:label ?opt)
+let new_toggle_button ?opt ?:label =
+  let w = new toggle_button (ToggleButton.create_toggle ?:label ?opt) in
+  ToggleButton.setter ?w#raw ?cont:(Container.setter ?cont:(pack_return w))
 
-let new_check_button ?:label ?opt =
-  new toggle_button (ToggleButton.create_check ?:label ?opt)
+let new_check_button ?opt ?:label =
+  let w = new toggle_button (ToggleButton.create_check ?:label ?opt) in
+  ToggleButton.setter ?w#raw ?cont:(Container.setter ?cont:(pack_return w))
 
 class radio_button obj = object
   inherit [RadioButton.t] toggle_button_skel obj
@@ -297,8 +321,10 @@ class radio_button obj = object
   method group = RadioButton.group obj
 end
   
-let new_radio_button ?:group ?:label ?opt =
-  new radio_button (RadioButton.create ?:group ?:label ?opt)
+let new_radio_button ?opt ?:group ?:label =
+  let w = new radio_button (RadioButton.create ?:group ?:label ?opt) in
+  RadioButton.setter ?w#raw
+    ?cont:(ToggleButton.setter ?cont:(Container.setter ?cont:(pack_return w)))
 
 class scrolled_window obj = object
   inherit [ScrolledWindow.t] container_skel obj
@@ -308,7 +334,9 @@ class scrolled_window obj = object
   method set = ScrolledWindow.set ?obj
 end
 
-let new_scrolled_window () = new scrolled_window (ScrolledWindow.create ())
+let new_scrolled_window () =
+  let w = new scrolled_window (ScrolledWindow.create ()) in
+  ScrolledWindow.setter ?w#raw ?cont:(Container.setter ?cont:(pack_return w))
 
 class table obj = object
   inherit [Table.t] container_skel obj
@@ -319,7 +347,9 @@ class table obj = object
 end
 
 let new_table :rows :columns ?:homogeneous =
-  new table (Table.create :rows :columns ?:homogeneous)
+  let w = new table (Table.create :rows :columns ?:homogeneous) in
+  Table.setter ?w#raw ?homogeneous:None
+    ?cont:(Container.setter ?cont:(pack_return w))
 
 class ['a] editable_skel obj = object
   inherit ['a] widget_skel obj
@@ -350,7 +380,8 @@ class entry obj = object
 end
 
 let new_entry ?:max_length ?unit =
-  new entry (Entry.create ?:max_length ?unit)
+  let w = new entry (Entry.create ?:max_length ?unit) in
+  Entry.setter ?w#raw ?max_length:None ?cont:(pack_return w)
 
 class text obj = object
   inherit [Text.t] editable_skel obj
@@ -363,8 +394,9 @@ class text obj = object
   method insert = Text.insert ?obj
 end
 
-let new_text ?:hadjustment ?:vadjustment ?opt =
-  new text (Text.create ?:hadjustment ?:vadjustment ?opt)
+let new_text ?opt ?:hadjustment ?:vadjustment =
+  let w = new text (Text.create ?:hadjustment ?:vadjustment ?opt) in
+  Text.setter ?w#raw ?point:None ?cont:(pack_return w)
 
 class ['a] misc obj = object
   inherit ['a] widget_skel obj
@@ -379,7 +411,10 @@ class label obj = object
   method label = Label.get_label obj
 end
 
-let new_label :label = new label (Label.create label)
+let new_label ?:label [< "" >] =
+  let w = new label (Label.create label) in
+  Label.setter ?w#raw ?label:None
+    ?cont:(Misc.setter ?cont:(pack_return w))
 
 class pixmap obj = object
   inherit [Pixmap.t] misc obj
@@ -389,7 +424,9 @@ class pixmap obj = object
   method mask = Pixmap.mask obj
 end
 
-let new_pixmap pix ?:mask = new pixmap (Pixmap.create pix ?:mask)
+let new_pixmap pix ?:mask =
+  let w = new pixmap (Pixmap.create pix ?:mask) in
+  Misc.setter ?w#raw ?cont:(pack_return w)
 
 class progress_bar obj = object
   inherit [ProgressBar.t] widget_skel obj
