@@ -180,5 +180,5 @@ class drag_context context = object
   val context = context
   method status ?(time=0) act = DnD.drag_status context act ~time
   method suggested_action = DnD.drag_context_suggested_action context
-  method targets = DnD.drag_context_targets context
+  method targets = List.map Gdk.Atom.name (DnD.drag_context_targets context)
 end

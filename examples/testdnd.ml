@@ -292,7 +292,7 @@ let targets = [
 class drag_handler = object
   method private beginning (_ : drag_context) = ()
   method private data_delete (_ : drag_context) = ()
-  method private data_get (_ : drag_context) (_ : selection_data)
+  method private data_get (_ : drag_context) (_ : selection_context)
       ~info:(_ : int) ~time:(_ : int) = ()
   method private data_received (_ : drag_context) ~x:(_ : int) ~y:(_ : int)
       (_ : selection_data) ~info:(_ : int) ~time:(_ : int) = ()
@@ -337,7 +337,7 @@ object (self)
     pixmap#set_pixmap trashcan_closed;
     match context#targets with
     | [] -> false
-    | d :: _ -> pixmap#drag#get_data d ~context ~time; true
+    | d :: _ -> pixmap#drag#get_data ~target:d ~time context; true
 
   method data_received context ~x ~y data ~info ~time =
     if data#format = 8 then begin
@@ -380,15 +380,14 @@ class source_drag ?packing ?show () =
 object (self)
   inherit widget button#as_widget
   inherit drag_handler
-  method data_get _ data ~info ~time =
+  method data_get _ sel ~info ~time =
     if info = 1 then begin
       print_endline "I was dropped on the rootwin"; flush stdout
     end
     else if info = 2 then
-      data#set ~typ:data#target ~format:8
-	~data:"file:///home/otaylor/images/weave.png"
+      sel#return "file:///home/otaylor/images/weave.png"
     else
-      data#set ~typ:data#target ~format:8 ~data:"I'm Data!"
+      sel#return "I'm Data!"
 
   method data_delete _ =
     print_endline "Delete the data!"; flush stdout
