@@ -259,6 +259,8 @@ and misc_ops obj = object (self)
   method set_sensitive = set P.sensitive obj
   method set_can_default = set P.can_default obj
   method set_can_focus = set P.can_focus obj
+  method set_app_paintable = set P.app_paintable obj
+  method set_double_buffered = Widget.set_double_buffered obj
   method set_size_request =
     Widget.size_params [] ~cont:(fun p () -> set_params obj p)
   method set_size_chars ?desc ?lang ?width ?height () =
@@ -293,7 +295,6 @@ and misc_ops obj = object (self)
   method visible = self#get_flag `VISIBLE
   method parent =
     may_map (fun w -> new widget (unsafe_cast w)) (get P.parent obj)
-  method set_app_paintable = set P.app_paintable obj
   method allocation = allocation obj
   method pango_context = new GPango.context (get_pango_context obj)
   (* icon *)

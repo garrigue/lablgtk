@@ -111,6 +111,8 @@ class Widget abstract : Object {
   signal proximity_in_event : GdkEventProximity -> bool
   signal proximity_out_event : GdkEventProximity -> bool
   *)
+  (* methods *)
+  method set_double_buffered : "bool -> unit"
 }
 
 class Container abstract : Widget {

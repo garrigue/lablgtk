@@ -322,16 +322,8 @@ static value Val_GtkAllocation (GtkAllocation allocation)
 }
 Make_Extractor (gtk_widget, GtkWidget_val, allocation, Val_GtkAllocation)
 ML_1(Val_GtkAllocation, *(GtkAllocation*)Pointer_val, (value))
-/*
-#define GtkAllocation_val(val) ((GtkAllocation*)Pointer_val(val))
-Make_Extractor (gtk_allocation, GtkAllocation_val, x, Val_int)
-Make_Extractor (gtk_allocation, GtkAllocation_val, y, Val_int)
-Make_Extractor (gtk_allocation, GtkAllocation_val, width, Val_int)
-Make_Extractor (gtk_allocation, GtkAllocation_val, height, Val_int)
-*/
 
-ML_2 (gtk_widget_set_app_paintable, GtkWidget_val, Bool_val, Unit)
-
+ML_2 (gtk_widget_set_double_buffered, GtkWidget_val, Bool_val, Unit)
 ML_2 (gtk_widget_set_visual, GtkWidget_val, GdkVisual_val, Unit)
 ML_2 (gtk_widget_set_colormap, GtkWidget_val, GdkColormap_val, Unit)
 ML_1 (gtk_widget_set_default_visual, GdkVisual_val, Unit)
