@@ -2199,6 +2199,7 @@ module Combo = struct
     may case_sensitive fun:(set_case_sensitive w);
     set ?w
   external entry : [> combo] obj -> Entry.t obj= "ml_gtk_combo_entry"
+  let get_text w = Entry.get_text (entry w)
   external list : [> combo] obj -> GtkList.t obj= "ml_gtk_combo_list"
   let set_popdown_strings combo strings =
     GtkList.clear_items (list combo) start:0 end:(-1);
@@ -2210,7 +2211,15 @@ module Combo = struct
       end
   external disable_activate : [> combo] obj -> unit
       = "ml_gtk_combo_disable_activate"
-  module Connect = Connect
+  module Connect = struct
+    open Connect
+    let destroy = destroy
+    let add = add
+    let remove = remove
+    let need_resize = need_resize
+    let focus = focus
+    let activate w = Entry.Connect.activate (entry w)
+  end
 end
 
 module Statusbar = struct
