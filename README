@@ -95,10 +95,9 @@ Structure of the G[A-Z]* modules:
 
   While subtyping follows the Gtk widget hierarchy, you cannot always
   use width subtyping (i.e. #super is not unifiable with all the
-  subclasses of super). Still, it works for the gtkobj and
+  subclasses of super). Still, it works for the gtkobj, widget and
   container classes, and allows subtyping without coercion towards
   these classes (cf. #container in pousse.ml for instance).
-  You must coerce to widget with the #coerce method.
 
   Practically, each widget class is composed of:
   * a coerce method, returning the object coerced to the type widget.
