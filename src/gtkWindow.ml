@@ -111,6 +111,8 @@ module FileSelection = struct
       = "ml_gtk_file_selection_set_filename"
   external get_filename : [>`filesel] obj -> string
       = "ml_gtk_file_selection_get_filename"
+  external complete : [>`filesel] obj -> filter:string -> unit
+      = "ml_gtk_file_selection_complete"
   external show_fileop_buttons : [>`filesel] obj -> unit
       = "ml_gtk_file_selection_show_fileop_buttons"
   external hide_fileop_buttons : [>`filesel] obj -> unit

@@ -92,6 +92,7 @@ class file_selection obj = object
   method connect = new container_signals obj
   method set_filename = FileSelection.set_filename obj
   method get_filename = FileSelection.get_filename obj
+  method complete = FileSelection.complete obj
   method set_fileop_buttons = FileSelection.set_fileop_buttons obj
   method ok_button = new GButton.button (FileSelection.get_ok_button obj)
   method cancel_button =

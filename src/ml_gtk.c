@@ -445,6 +445,7 @@ ML_0 (gtk_input_dialog_new, Val_GtkWidget_window)
 ML_1 (gtk_file_selection_new, String_val, Val_GtkWidget_window)
 ML_2 (gtk_file_selection_set_filename, GtkFileSelection_val, String_val, Unit)
 ML_1 (gtk_file_selection_get_filename, GtkFileSelection_val, Val_string)
+ML_2 (gtk_file_selection_complete, GtkFileSelection_val, String_val, Unit)
 ML_1 (gtk_file_selection_show_fileop_buttons, GtkFileSelection_val, Unit)
 ML_1 (gtk_file_selection_hide_fileop_buttons, GtkFileSelection_val, Unit)
 Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, ok_button,
