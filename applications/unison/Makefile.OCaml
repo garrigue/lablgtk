@@ -8,7 +8,7 @@
 NAME=unison
 
 # $Format: "VERSION=$ProjectVersion$"$
-VERSION=1.169
+VERSION=1.180
 
 ########################################################################
 # Try to automatically guess OS -- WIN32, SUNOS, or LINUX.
@@ -169,7 +169,7 @@ endif
 # Object code files for the native-code version (the names of the
 # corresponding bytecode files are generated automatically if needed)
 OBJS_NATIVE0 = \
-	strings.cmx util.cmx arg.cmx prefs.cmx pred.cmx \
+	strings.cmx util.cmx rx.cmx arg.cmx prefs.cmx pred.cmx \
         os.cmx trace.cmx uri.cmx common.cmx remote.cmx \
 	globals.cmx files.cmx update.cmx recon.cmx transport.cmx \
 	uicommon.cmx uitext.cmx $(UIOBJS) \

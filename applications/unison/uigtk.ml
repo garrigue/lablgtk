@@ -53,30 +53,6 @@ let current = ref None
 let busy = ref false
 
 (**********************************************************************)
-(* Useful regular expressions                                         *)
-(**********************************************************************)
-
-let pathRegExp path = Str.quote (path2string path)
-
-let nameRegExp path =
-  try
-    let name = List.hd (List.rev path) in
-    let theString = name2string name in
-    "\\(.*/\\|\\)" ^ (Str.quote theString)
-  with Failure "hd" -> raise(Failure "nameRegExp")
-
-let extRegExp path =
-  try
-    let name = List.hd (List.rev path) in
-    let theString = name2string name in
-    let pos = String.index theString char:'.' in
-    let ext = String.sub theString pos:(pos + 1)
-        len:(String.length theString - pos -1) in
-    ".*\\." ^ (Str.quote ext)
-  with Failure "hd"
-  | Not_found -> raise(Failure "extRegExp")
-
-(**********************************************************************)
 (* Some widgets							      *)
 (**********************************************************************)
 
@@ -126,8 +102,8 @@ let profileSelect toplevelWindow =
   then true (* First use, just return and build a default profile *)
   else (* > first use, look for existing profiles *)
     let profiles =
-      List.map
-        fun:(fun f -> Filename.chop_suffix f suff:".prf")
+      mapList
+        (fun f -> Filename.chop_suffix f suff:".prf")
         (Files.ls dirString "*.prf") in
     match profiles with
       [] -> true (* No profiles; return and build a default profile *)
@@ -140,6 +116,15 @@ let profileSelect toplevelWindow =
           then "default":: List.filter pred:(fun f -> f<>"default") profiles
           else profiles in
         let var1 = ref (List.hd profiles) in
+
+        let roots_of_profile f =
+          try
+            let filename = fspath2string (Os.fileInUnisonDir (f^".prf")) in
+            List.map fun:(fun (n,v) -> v)
+              (List.filter pred:(fun (n,v) -> n="root")
+                 (Prefs.scanPreferencesFile filename))
+          with _ -> []
+        in
 
         (* This ref will be set to true if the user picks a profile.
            If the user cancels by hitting the cancel button or closing
@@ -159,8 +144,16 @@ let profileSelect toplevelWindow =
 
         let buttons =
           List.map profiles fun:
-            (fun profile ->
-              GButton.radio_button label:profile packing:vb#add ()) in
+            begin fun profile ->
+              let b = GButton.radio_button label:profile packing:vb#add () in
+              List.iter (roots_of_profile profile) fun:
+                begin fun s ->
+                  ignore (GMisc.label text:("          Root: "^s)
+                            packing:vb#add ())
+                end;
+              b
+            end
+        in
 
         let f1 = GPack.hbox packing:vb#add () in
         let newValue = "//NEWPROFILE//" in
@@ -298,12 +291,12 @@ let rootSelect toplevelWindow =
       let localState() =
         varLocalRemote := `Local;
         hostE#set_editable false;
-        b#misc#set_state `NORMAL
+        b#misc#set_sensitive true
       in
       let remoteState() =
         varLocalRemote := `Remote;
         hostE#set_editable true;
-        b#misc#set_state `INSENSITIVE
+        b#misc#set_sensitive false
       in
       localB#connect#clicked callback:localState;
       remoteB#connect#clicked callback:remoteState;
@@ -538,8 +531,8 @@ let start _ =
 	end;
         let details =
           match a.(row).whatHappened with
-            None -> details2string a.(row).ri
-          | Some(Succeeded(_)) -> details2string a.(row).ri
+            None -> details2string a.(row).ri "  "
+          | Some(Succeeded(_)) -> details2string a.(row).ri "  "
           | Some(Failed(s)) -> s in
         displayDetails (path2string a.(row).ri.path) details
       with DerefSome -> ()
@@ -678,9 +671,10 @@ let start _ =
                   let before = List.filter pred:keep beforeIndex in
                   let after = List.filter pred:keep afterIndex in
                   if keep atIndex then
-                    (before@[atIndex]@after,Some(List.length before))
+                    (appendLists before (atIndex::after),
+                     Some(List.length before))
                   else if List.length after > 0 then
-                    (before@after,Some(List.length before))
+                    (appendLists before after,Some(List.length before))
                   else if List.length before > 0 then
                     (before,Some(List.length before - 1))
                   else ([],None)
@@ -718,14 +712,15 @@ let start _ =
         let theLength = List.length reconItemList in
         if theLength = 0 then begin
           Trace.status "Everything is up to date";
-          theState := None end
-        else begin
+          theState := None
+        end else begin
           Trace.status ("Check and/or adjust selected actions; "
                         ^ "then press Proceed");
-          theState :=
-	    Some(Array.of_list
-                   (List.map reconItemList
-                      fun:(fun ri -> { ri = ri; whatHappened = None })))
+          theState := Some(Array.of_list
+                             (mapList
+                                (fun ri -> { ri = ri;
+                                             whatHappened = None })
+                                reconItemList));
 	end;
         displayMain()
       end
@@ -908,12 +903,7 @@ let start _ =
   (**********************************************************************)
   let addRegExp theRegExp =
     begin
-      let theRegExps = theRegExp::(Pred.extern Globals.ignore) in
-      Pred.intern Globals.ignore theRegExps;
-      Globals.savePrefs();
-      (* Make sure the server has the same ignored paths (in case, for
-         example, we do a "rescan") *)
-      Globals.propagatePrefs();
+      addIgnorePattern theRegExp;
       ignoreAndRedisplay()
     end in
   
@@ -929,14 +919,14 @@ let start _ =
     | Failure "nameRegExp"
     | Failure "extRegExp" -> () in
 
-  ignoreMenu#add_item "Ignore this file" key:_i
-    callback:(fun () -> getLock (fun () -> addRegExpByPath pathRegExp));
+  ignoreMenu#add_item "Ignore this file permanently" key:_i
+    callback:(fun () -> getLock (fun () -> addRegExpByPath ignorePath));
 
   ignoreMenu#add_item "Ignore files with this extension" key:_E
-    callback:(fun () -> getLock (fun () -> addRegExpByPath extRegExp));
+    callback:(fun () -> getLock (fun () -> addRegExpByPath ignoreExt));
 
   ignoreMenu#add_item "Ignore files with this name" key:_N
-    callback:(fun () -> getLock (fun () -> addRegExpByPath extRegExp));
+    callback:(fun () -> getLock (fun () -> addRegExpByPath ignoreName));
 
 (* This is currently broken
   ignoreMenu#add_item "Edit ignore patterns" callback:
@@ -978,13 +968,12 @@ let start _ =
 
       let stateItemList = Array.to_list theSIArray in
       let rIConfList =
-        List.map stateItemList fun:
-          begin fun sI ->
+        mapList
+          (fun sI ->
             match sI.whatHappened with
               None -> assert false
-            | Some conf -> (sI.ri, conf)
-	  end
-      in
+            | Some conf -> (sI.ri, conf))
+          stateItemList in
       let pathList = Recon.selectPath rIConfList in
       let lastResult = Update.markUpdated pathList in
       Trace.showTimer t;
