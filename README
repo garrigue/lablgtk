@@ -355,7 +355,7 @@ Windows port
 	% lablgtk -thread
 	        Objective Caml version 3.06
 
-        # open GtkThread ();;	
+        # open GtkThread;;	
 	# let w = sync (GWindow.window ~show:true) ();;
         # let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
         # b#connect#clicked (fun () -> prerr_endline "Hello");;
