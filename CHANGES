@@ -1,4 +1,6 @@
 $Id$
+2003.08.28 [Benjamin]
+  * mnemonic support for all kind of menus. Defaults to true in factory.
 
 2003.08.18 [Olivier]
   * wrap GtkNotebook::switch_page instead of change_current_page

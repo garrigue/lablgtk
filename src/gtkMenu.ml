@@ -51,9 +51,13 @@ module CheckMenuItem = struct
   include CheckMenuItem
   external create_with_label : string -> check_menu_item obj
       = "ml_gtk_check_menu_item_new_with_label"
-  let create ?label () =
+  external create_with_mnemonic : string -> check_menu_item obj
+      = "ml_gtk_check_menu_item_new_with_mnemonic"
+  let create ?(use_mnemonic=false) ?label () =
     match label with None -> create []
-    | Some label -> create_with_label label
+    | Some label -> if use_mnemonic then 
+	create_with_mnemonic label
+      else create_with_label label
   let set ?active ?show_toggle ?right_justified w =
     may active ~f:(set P.active w);
     may show_toggle ~f:(set_show_toggle w);

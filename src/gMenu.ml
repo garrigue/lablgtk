@@ -117,9 +117,9 @@ class check_menu_item obj = object
   method event = new GObj.event_ops obj
 end
 
-let check_menu_item ?label ?active ?show_toggle ?right_justified
+let check_menu_item ?label ?use_mnemonic ?active ?show_toggle ?right_justified
     ?packing ?show () =
-  let w = CheckMenuItem.create ?label () in
+  let w = CheckMenuItem.create ?use_mnemonic ?label () in
   CheckMenuItem.set w ?active ?show_toggle ?right_justified;
   pack_item (new check_menu_item w) ?packing ?show
 
@@ -251,12 +251,12 @@ class ['a] factory
 	  with Not_found -> item
 
     method add_check_item ?active ?key ?callback label =
-      let item = check_menu_item ~label ?active () in
+      let item = check_menu_item ~label ~use_mnemonic:true ?active () in
       self#bind (item : check_menu_item :> menu_item) ?key
 	?callback:(may_map callback ~f:(fun f () -> f item#active)) label;
       item
     method add_radio_item ?group ?active ?key ?callback label =
-      let item = radio_menu_item ~label ?group ?active () in
+      let item = radio_menu_item ~label ~use_mnemonic:true ?group ?active () in
       self#bind (item : radio_menu_item :> menu_item) ?key
 	?callback:(may_map callback ~f:(fun f () -> f item#active))
 	label;
