@@ -1,0 +1,165 @@
+diff -rc unison-2.6.11/safelist.mli unison-2.6.11-strict/safelist.mli
+*** unison-2.6.11/safelist.mli	Mon Jan  1 02:17:19 2001
+--- unison-2.6.11-strict/safelist.mli	Tue May  8 11:51:04 2001
+***************
+*** 32,38 ****
+  val fold_left : ('a -> 'b -> 'a) -> 'a -> 'b list -> 'a
+  val map2 : ('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list
+  val iter2 : ('a -> 'b -> unit) -> 'a list -> 'b list -> unit
+! val stable_sort : cmp:('a -> 'a -> int) -> 'a list -> 'a list
+  
+  (* Other useful list-processing functions *)
+  val filterMap : ('a -> 'b option) -> 'a list -> 'b list
+--- 32,38 ----
+  val fold_left : ('a -> 'b -> 'a) -> 'a -> 'b list -> 'a
+  val map2 : ('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list
+  val iter2 : ('a -> 'b -> unit) -> 'a list -> 'b list -> unit
+! val stable_sort : ('a -> 'a -> int) -> 'a list -> 'a list
+  
+  (* Other useful list-processing functions *)
+  val filterMap : ('a -> 'b option) -> 'a list -> 'b list
+diff -rc unison-2.6.11/uicommon.ml unison-2.6.11-strict/uicommon.ml
+*** unison-2.6.11/uicommon.ml	Mon Jan  1 02:17:19 2001
+--- unison-2.6.11-strict/uicommon.ml	Tue May  8 11:52:08 2001
+***************
+*** 460,471 ****
+  
+  (* Let's try this again ... *)
+  let uiInit2
+!     (reportError : string -> unit)
+!     (tryAgainOrQuit : string -> bool)
+!     (displayWaitMessage : unit -> unit)
+!     (getProfile : unit -> string option)
+!     (getFirstRoot : unit -> string option)
+!     (getSecondRoot : unit -> string option) =
+    let rec getRoots() =
+      let rec g1() =
+        match getFirstRoot() with
+--- 460,471 ----
+  
+  (* Let's try this again ... *)
+  let uiInit2
+!     ~(reportError : string -> unit)
+!     ~(tryAgainOrQuit : string -> bool)
+!     ~(displayWaitMessage : unit -> unit)
+!     ~(getProfile : unit -> string option)
+!     ~(getFirstRoot : unit -> string option)
+!     ~(getSecondRoot : unit -> string option) =
+    let rec getRoots() =
+      let rec g1() =
+        match getFirstRoot() with
+diff -rc unison-2.6.11/uigtk.ml unison-2.6.11-strict/uigtk.ml
+*** unison-2.6.11/uigtk.ml	Mon Jan  1 02:17:19 2001
+--- unison-2.6.11-strict/uigtk.ml	Tue May  8 11:57:20 2001
+***************
+*** 1,5 ****
+--- 1,6 ----
+  (* $Id: uigtk.ml 1.37.1.23 Sun, 31 Dec 2000 11:47:15 -0500 vouillon $ *)
+  
++ module String = StringLabels
+  open Common
+  
+  (**********************************************************************)
+***************
+*** 179,185 ****
+  (* warnBox: Display a warning message in a window and wait for the    *)
+  (* user to hit "OK" or "Exit".                                        *)
+  (**********************************************************************)
+! let warnBox ~title ~message =
+    if Prefs.read Uicommon.batch then begin
+      (* In batch mode, just pop up a window and go ahead *)
+      let t = GWindow.dialog ~title ~wm_name:title ~position:`CENTER () in
+--- 180,186 ----
+  (* warnBox: Display a warning message in a window and wait for the    *)
+  (* user to hit "OK" or "Exit".                                        *)
+  (**********************************************************************)
+! let warnBox ~title message =
+    if Prefs.read Uicommon.batch then begin
+      (* In batch mode, just pop up a window and go ahead *)
+      let t = GWindow.dialog ~title ~wm_name:title ~position:`CENTER () in
+***************
+*** 219,225 ****
+  ;;
+  
+  (* Working on new startup sequence... *)
+! let fatalError ~message =
+    Trace.log (message ^ "\n");
+    oneBox ~title:(Printf.sprintf "%s: Fatal error"
+                     (String.capitalize Util.myName))
+--- 220,226 ----
+  ;;
+  
+  (* Working on new startup sequence... *)
+! let fatalError message =
+    Trace.log (message ^ "\n");
+    oneBox ~title:(Printf.sprintf "%s: Fatal error"
+                     (String.capitalize Util.myName))
+***************
+*** 235,241 ****
+    waitWindow := Some w;
+    ignore (w#event#connect#delete ~callback:(fun _ -> exit 0));
+    ()
+! let tryAgainOrQuit ~message =
+    twoBox ~title:"Error" ~message ~alabel:"Try again" ~blabel:"Quit";;
+  let getFirstRoot() =
+    let t = GWindow.dialog ~title:"Root selection" ~wm_name:"Root selection"
+--- 236,242 ----
+    waitWindow := Some w;
+    ignore (w#event#connect#delete ~callback:(fun _ -> exit 0));
+    ()
+! let tryAgainOrQuit message =
+    twoBox ~title:"Error" ~message ~alabel:"Try again" ~blabel:"Quit";;
+  let getFirstRoot() =
+    let t = GWindow.dialog ~title:"Root selection" ~wm_name:"Root selection"
+***************
+*** 574,580 ****
+      GMain.Main.main ();
+      releaseFocus ()));
+  
+!   ignore (lst#connect#unselect_row ~callback:(fun _ _ _ ->
+      root1#set_text ""; root2#set_text "";
+      result := None;
+      tbl#misc#set_sensitive false;
+--- 575,581 ----
+      GMain.Main.main ();
+      releaseFocus ()));
+  
+!   ignore (lst#connect#unselect_row ~callback:(fun ~row ~column ~event ->
+      root1#set_text ""; root2#set_text "";
+      result := None;
+      tbl#misc#set_sensitive false;
+***************
+*** 595,601 ****
+        okButton#misc#set_sensitive true
+      with Gpointer.Null -> ()) in
+  
+!   ignore (lst#connect#select_row ~callback:(fun i _ _ -> select_row i));
+  
+    ignore (lst#event#connect#button_press ~callback:(fun ev ->
+      match GdkEvent.get_type ev with
+--- 596,603 ----
+        okButton#misc#set_sensitive true
+      with Gpointer.Null -> ()) in
+  
+!   ignore (lst#connect#select_row
+!             ~callback:(fun ~row ~column ~event -> select_row row));
+  
+    ignore (lst#event#connect#button_press ~callback:(fun ev ->
+      match GdkEvent.get_type ev with
+***************
+*** 1565,1571 ****
+      (* Initialize the GTK library *)
+      ignore (GMain.Main.init ());
+  
+!     Util.warnPrinter := Some (warnBox "Warning");
+      (* Ask the Remote module to call us back at regular intervals during
+         long network operations. *)
+      Threads.tickProc := Some gtk_sync;
+--- 1567,1573 ----
+      (* Initialize the GTK library *)
+      ignore (GMain.Main.init ());
+  
+!     Util.warnPrinter := Some (warnBox ~title:"Warning");
+      (* Ask the Remote module to call us back at regular intervals during
+         long network operations. *)
+      Threads.tickProc := Some gtk_sync;
