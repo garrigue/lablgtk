@@ -195,6 +195,8 @@ fi
 GTKPKG=gtk+-2.0 
 AM_PATH_GTK_2_0()
 
+PKG_CHECK_MODULES(GTK,$GTKPKG)
+
 FORCE_GL=no
 AC_ARG_WITH(gl, 
         [  --without-gl            override autodetected GtkGLArea support. Requires LablGL],
@@ -282,8 +284,6 @@ if test $USE_GNOMECANVAS = yes ; then
 else
     USE_GNOMECANVAS=
 fi
-
-PKG_CHECK_MODULES(GTK,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG)
 
 AC_ARG_ENABLE(debug,
         [  --enable-debug          enable debug mode],
