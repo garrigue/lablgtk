@@ -15,6 +15,17 @@ let file_dialog ~title ~callback ?filename () =
     end;
   sel#show ()
 
+let input_channel b ic =
+  let buf = String.create 1024 and len = ref 0 in
+  while len := input ic buf 0 1024; !len > 0 do
+    Buffer.add_substring b buf 0 !len
+  done
+
+let with_file name ~f =
+  let ic = open_in name in
+  try f ic; close_in ic with exn -> close_in ic; raise exn
+
+
 class editor ?packing ?show () = object (self)
   val text = GText.view ?packing ?show ()
   val mutable filename = None
@@ -23,21 +34,14 @@ class editor ?packing ?show () = object (self)
 
   method load_file name =
     try
-      let ic = open_in name in
+      let b = Buffer.create 1024 in
+      with_file name ~f:(input_channel b);
+      let s = Glib.Convert.locale_to_utf8 (Buffer.contents b) in
+      let n_buff = GText.buffer ~text:s () in
+      text#set_buffer n_buff;
       filename <- Some name;
-	let n_buff = GText.buffer () in
-	  text#set_buffer n_buff;
-	  let buf = String.create 1024 and len = ref 0 in
-	    while len := input ic buf 0 1024; !len > 0 do
-	if !len = 1024 then n_buff#insert ~text:buf ()
-	else n_buff#insert ~text:(String.sub buf ~pos:0 ~len:!len) ()
-      done;
-	    let i = n_buff#get_start_iter () in
-	    let m = n_buff#create_mark ~name:"begin" ~iter:i () in
-	      text#scroll_to_mark m;
-	      assert ("begin" = (match m#get_name () with None -> "NO NAME" | Some s  -> s));
-	      close_in ic
-    with _ -> ()
+      n_buff#place_cursor n_buff#get_start_iter
+    with _ -> prerr_endline "Load failed"
 
   method open_file () = file_dialog ~title:"Open" ~callback:self#load_file ()
 
@@ -53,8 +57,9 @@ class editor ?packing ?show () = object (self)
   method output ~file =
     try
       if Sys.file_exists file then Sys.rename file (file ^ "~");
+      let s = text#get_buffer#get_text () in
       let oc = open_out file in
-      output_string oc ((text#get_buffer ())#get_text ());
+      output_string oc (Glib.Convert.locale_from_utf8 s);
       close_out oc;
       filename <- Some file
     with _ -> prerr_endline "Save failed"
@@ -84,15 +89,18 @@ let _ =
   factory#add_separator ();
   factory#add_item "Quit" ~key:_Q ~callback:window#destroy;
   let factory = new GMenu.factory edit_menu ~accel_group in
- factory#add_item "Copy" ~key:_C
-   ~callback:(fun () -> GtkSignal.emit_unit editor#text#as_view GtkText.View.Signals.copy_clipboard);
- factory#add_item "Cut" ~key:_X
-  ~callback:(fun () -> GtkSignal.emit_unit editor#text#as_view GtkText.View.Signals.cut_clipboard);
- factory#add_item "Paste" ~key:_V
-  ~callback:(fun () -> GtkSignal.emit_unit editor#text#as_view GtkText.View.Signals.paste_clipboard);
- factory#add_separator ();
-  factory#add_check_item "Word wrap" ~active:false
-    ~callback:(fun b -> editor#text#set_wrap_mode (if b then `WORD else `NONE));
+  factory#add_item "Copy" ~key:_C ~callback:
+    (fun () -> GtkSignal.emit_unit
+        editor#text#as_view GtkText.View.Signals.copy_clipboard);
+  factory#add_item "Cut" ~key:_X ~callback:
+    (fun () -> GtkSignal.emit_unit
+        editor#text#as_view GtkText.View.Signals.cut_clipboard);
+  factory#add_item "Paste" ~key:_V ~callback:
+    (fun () -> GtkSignal.emit_unit
+        editor#text#as_view GtkText.View.Signals.paste_clipboard);
+  factory#add_separator ();
+  factory#add_check_item "Word wrap" ~active:false ~callback:
+    (fun b -> editor#text#set_wrap_mode (if b then `WORD else `NONE));
   factory#add_check_item "Read only" ~active:false
     ~callback:(fun b -> editor#text#set_editable (not b));
   window#add_accel_group accel_group;
