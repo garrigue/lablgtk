@@ -1,5 +1,8 @@
 $Id$
 
+2004.06.01 [Olivier]
+  * export a couple of properties in GButton.button_skel
+
 2004.05.09 [Olivier]
   * extended toolbar API (2.4)
   * update GtkAction* widgets to the final API

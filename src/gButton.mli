@@ -19,6 +19,10 @@ class button_skel : 'a obj ->
     method relief : Tags.relief_style
     method set_label : string -> unit
     method label : string
+    method set_use_stock : bool -> unit
+    method use_stock : bool
+    method set_use_underline : bool -> unit
+    method use_underline : bool
     method grab_default : unit -> unit
     method event : event_ops
   end
