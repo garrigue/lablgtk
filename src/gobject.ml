@@ -342,7 +342,7 @@ module Property = struct
 
   let check obj prop =
     let tp obj = Type.name (get_object_type obj) in
-    let data =
+    let _data =
       try get_dyn obj prop.name
       with
         Not_found -> failwith (tp obj ^ " has no property " ^ prop.name)
