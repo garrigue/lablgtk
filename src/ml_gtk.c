@@ -730,40 +730,6 @@ Unsupported_24(gtk_message_dialog_set_markup)
 #endif
 
 /* gtkcolorsel.h */
-
-/* useless
-#define GtkColorSelection_val(val) check_cast(GTK_COLOR_SELECTION,val)
-ML_0 (gtk_color_selection_new, Val_GtkWidget_sink)
-ML_2 (gtk_color_selection_set_update_policy, GtkColorSelection_val,
-      Update_type_val, Unit)
-ML_2 (gtk_color_selection_set_opacity, GtkColorSelection_val,
-      Bool_val, Unit)
-CAMLprim value ml_gtk_color_selection_set_color
-         (value w, value red, value green, value blue, value opacity)
-{
-    double color[4];
-    color[0] = Double_val(red);
-    color[1] = Double_val(green);
-    color[2] = Double_val(blue);
-    color[3] = Option_val(opacity,Double_val,0.0);
-    gtk_color_selection_set_color (GtkColorSelection_val(w), color);
-    return Val_unit;
-}
-CAMLprim value ml_gtk_color_selection_get_color (value w)
-{
-    value ret;
-    double color[4];
-    color[3] = 0.0;
-    gtk_color_selection_get_color (GtkColorSelection_val(w), color);
-    ret = alloc (4*Double_wosize, Double_array_tag);
-    Store_double_field (ret, 0, color[0]);
-    Store_double_field (ret, 1, color[1]);
-    Store_double_field (ret, 2, color[2]);
-    Store_double_field (ret, 3, color[3]);
-    return ret;
-}
-ML_1 (gtk_color_selection_dialog_new, String_val, Val_GtkWidget_window)
-*/
 #define GtkColorSelectionDialog_val(val) check_cast(GTK_COLOR_SELECTION_DIALOG,val)
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, ok_button, Val_GtkWidget)
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, cancel_button, Val_GtkWidget)
@@ -771,48 +737,8 @@ Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, help_bu
 Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, colorsel, Val_GtkWidget)
 
 /* gtkfontsel.h */
-
-/*
-#define GtkFontSelection_val(val) \
-   check_cast(GTK_FONT_SELECTION,val)
-ML_0 (gtk_font_selection_new, Val_GtkWidget_sink)
-ML_1 (gtk_font_selection_get_font, GtkFontSelection_val,
-      Val_GdkFont)
-ML_1 (gtk_font_selection_get_font_name, GtkFontSelection_val,
-      copy_string_check)
-ML_2 (gtk_font_selection_set_font_name, GtkFontSelection_val,
-      String_val, Val_bool)
-ML_9 (gtk_font_selection_set_filter, GtkFontSelection_val,
-      Font_filter_type_val, Flags_Font_type_val,
-      (gchar**), (gchar**), (gchar**),
-      (gchar**), (gchar**), (gchar**), Unit)
-ML_bc9 (ml_gtk_font_selection_set_filter)
-ML_1 (gtk_font_selection_get_preview_text, GtkFontSelection_val,
-      copy_string)
-ML_2 (gtk_font_selection_set_preview_text, GtkFontSelection_val,
-      String_val, Unit)
-*/
-
 #define GtkFontSelectionDialog_val(val) \
    check_cast(GTK_FONT_SELECTION_DIALOG,val)
-/*
-ML_1 (gtk_font_selection_dialog_new, String_option_val, Val_GtkWidget_window)
-ML_1 (gtk_font_selection_dialog_get_font, GtkFontSelectionDialog_val,
-      Val_GdkFont)
-ML_1 (gtk_font_selection_dialog_get_font_name, GtkFontSelectionDialog_val,
-      copy_string_check)
-ML_2 (gtk_font_selection_dialog_set_font_name, GtkFontSelectionDialog_val,
-      String_val, Val_bool)
-ML_9 (gtk_font_selection_dialog_set_filter, GtkFontSelectionDialog_val,
-      Font_filter_type_val, Flags_Font_type_val,
-      (gchar**), (gchar**), (gchar**),
-      (gchar**), (gchar**), (gchar**), Unit)
-ML_bc9 (ml_gtk_font_selection_dialog_set_filter)
-ML_1 (gtk_font_selection_dialog_get_preview_text, GtkFontSelectionDialog_val,
-      copy_string)
-ML_2 (gtk_font_selection_dialog_set_preview_text, GtkFontSelectionDialog_val,
-      String_val, Unit)
-*/
 Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
                 fontsel, Val_GtkWidget)
 Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
