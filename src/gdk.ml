@@ -61,6 +61,49 @@ module Tags = struct
 end
 open Tags
 
+module Screen = struct
+  external width : unit -> int = "ml_gdk_screen_width"
+  external height : unit -> int = "ml_gdk_screen_height"
+end
+
+module Visual = struct
+  type visual_type =
+    [ STATIC_GRAY GRAYSCALE STATIC_COLOR PSEUDO_COLOR TRUE_COLOR DIRECT_COLOR ]
+
+  external get_type : visual -> visual_type = "ml_GdkVisual_type"
+  external depth : visual -> int = "ml_GdkVisual_depth"
+  external red_mask : visual -> int = "ml_GdkVisual_red_mask"
+  external red_shift : visual -> int = "ml_GdkVisual_red_shift"
+  external red_prec : visual -> int = "ml_GdkVisual_red_prec"
+  external green_mask : visual -> int = "ml_GdkVisual_green_mask"
+  external green_shift : visual -> int = "ml_GdkVisual_green_shift"
+  external green_prec : visual -> int = "ml_GdkVisual_green_prec"
+  external blue_mask : visual -> int = "ml_GdkVisual_blue_mask"
+  external blue_shift : visual -> int = "ml_GdkVisual_blue_shift"
+  external blue_prec : visual -> int = "ml_GdkVisual_blue_prec"
+end
+
+module Image = struct
+  type image_type =
+    [ NORMAL SHARED FASTEST ] 
+
+  external create_bitmap : visual: visual -> data: string -> 
+    width: int -> height: int -> image 
+      = "ml_gdk_image_new_bitmap"
+  external create : image_type: image_type -> visual: visual -> 
+    width: int -> height: int -> image
+      = "ml_gdk_image_new"
+  external get : 'a drawable -> x: int -> y: int -> width: int -> height: int -> 
+    image
+      = "ml_gdk_image_get"
+  external put_pixel : image -> x: int -> y: int -> pixel: int -> unit
+    = "ml_gdk_image_put_pixel"
+  external get_pixel : image -> x: int -> y: int -> int
+    = "ml_gdk_image_get_pixel"
+  external destroy : image -> unit
+    = "ml_gdk_image_destroy"
+end
+
 module Color = struct
   type t
 
@@ -103,8 +146,21 @@ module Rectangle = struct
 end
 
 module Window = struct
+  type backgroundPixmap = [ NONE PARENT_RELATIVE PIXMAP(pixmap) ]
   external visual_depth : visual -> int = "ml_gdk_visual_get_depth"
   external get_visual : window -> visual = "ml_gdk_window_get_visual"
+  external root_parent : unit -> window = "ml_GdkRootParent"
+  external set_back_pixmap : window -> pixmap -> int -> unit = 
+    "ml_gdk_window_set_back_pixmap"
+  external clear : window -> unit = "ml_gdk_window_clear"
+
+  let set_back_pixmap w pixmap: pix = 
+    let null_pixmap = (Obj.magic null : pixmap) in
+    match pix with
+      `NONE -> set_back_pixmap w null_pixmap 0
+    | `PARENT_RELATVIE -> set_back_pixmap w null_pixmap 1
+    | `PIXMAP(pixmap) -> set_back_pixmap w pixmap 0 
+       (* anything OK, Maybe... *) 
 end
 
 module GC = struct
@@ -213,4 +269,8 @@ module Draw = struct
   external string : 'a drawable -> font: font -> gc -> x: int -> y: int -> 
     string: string -> unit
       = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"	
+  external image : 'a drawable -> gc -> image: image -> 
+    xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
+    width: int -> height: int -> unit
+      = "ml_gdk_draw_image_bc" "ml_gdk_draw_image"
 end

@@ -24,6 +24,7 @@ class ['a] drawing w = object
   method arc = Draw.arc w gc
   method polygon = Draw.polygon w gc
   method string s = Draw.string w gc string:s
+  method image = Draw.image w gc 
 end
 
 class pixmap pm ?:mask = object

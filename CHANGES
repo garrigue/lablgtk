@@ -1,6 +1,11 @@
 $Id$
 
 1999.7.1
+  * added some gdk functions related window and ximage
+  * also added applications/lv, "labl image viewer" with
+    the camlimage library.
+
+1999.7.1
   * added applications/lablglade (Koji)
 
 1999.6.28

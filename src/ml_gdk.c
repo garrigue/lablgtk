@@ -2,6 +2,7 @@
 
 #include <strings.h>
 #include <gdk/gdk.h>
+#include <gdk/gdkx.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
@@ -28,6 +29,30 @@ Make_Flags_val (Event_mask_val)
 
 Make_Val_final_pointer (GdkColormap, , gdk_colormap_ref, gdk_colormap_unref)
 ML_0 (gdk_colormap_get_system, Val_GdkColormap)
+
+/* Screen geometry */
+ML_0 (gdk_screen_width, Val_int)
+ML_0 (gdk_screen_height, Val_int)
+
+/* Visual */
+Make_Extractor (GdkVisual,GdkVisual_val,type,Val_gdkVisualType)
+Make_Extractor (GdkVisual,GdkVisual_val,depth,Val_int)
+Make_Extractor (GdkVisual,GdkVisual_val,red_mask,Val_int)
+Make_Extractor (GdkVisual,GdkVisual_val,red_shift,Val_int)
+Make_Extractor (GdkVisual,GdkVisual_val,red_prec,Val_int)
+Make_Extractor (GdkVisual,GdkVisual_val,green_mask,Val_int)
+Make_Extractor (GdkVisual,GdkVisual_val,green_shift,Val_int)
+Make_Extractor (GdkVisual,GdkVisual_val,green_prec,Val_int)
+Make_Extractor (GdkVisual,GdkVisual_val,blue_mask,Val_int)
+Make_Extractor (GdkVisual,GdkVisual_val,blue_shift,Val_int)
+Make_Extractor (GdkVisual,GdkVisual_val,blue_prec,Val_int)
+
+ML_4 (gdk_image_new_bitmap, GdkVisual_val, String_val, Int_val, Int_val, Val_GdkImage)
+ML_4 (gdk_image_new, GdkImageType_val, GdkVisual_val, Int_val, Int_val, Val_GdkImage)
+ML_5 (gdk_image_get, GdkWindow_val, Int_val, Int_val, Int_val, Int_val, Val_GdkImage)
+ML_4 (gdk_image_put_pixel, GdkImage_val, Int_val, Int_val, Int_val, Unit)
+ML_3 (gdk_image_get_pixel, GdkImage_val, Int_val, Int_val, Val_int)
+ML_1 (gdk_image_destroy, GdkImage_val, Unit)
 
 /* Color */
 
@@ -92,6 +117,12 @@ Make_Extractor (GdkRectangle, GdkRectangle_val, height, Val_int)
 Make_Val_final_pointer (GdkWindow, , gdk_window_ref, gdk_window_unref)
 Make_Extractor (gdk_visual_get, GdkVisual_val, depth, Val_int)
 ML_1 (gdk_window_get_visual, GdkWindow_val, Val_GdkVisual)
+ML_3 (gdk_window_set_back_pixmap, GdkWindow_val, GdkPixmap_val, Int_val, Unit)
+ML_1 (gdk_window_clear, GdkWindow_val, Unit)
+value ml_GdkRootParent (value unit)
+{
+  return Val_GdkWindow( GDK_ROOT_PARENT () );
+}
 
 /* Pixmap */
 
@@ -219,6 +250,9 @@ ML_4 (gdk_draw_polygon, GdkDrawable_val, GdkGC_val, Bool_val,
       Insert(PointArray_val(arg4)) PointArrayLen_val, Unit)
 ML_6 (gdk_draw_string, GdkDrawable_val, GdkFont_val, GdkGC_val, Int_val, Int_val, String_val, Unit)
 ML_bc6 (ml_gdk_draw_string)
+
+ML_9 (gdk_draw_image, GdkDrawable_val, GdkGC_val, GdkImage_val, Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
+ML_bc9 (ml_gdk_draw_image)
 
 /* Events */
 
