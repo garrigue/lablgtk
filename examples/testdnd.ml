@@ -312,7 +312,7 @@ let target_drag_motion (pixmap : pixmap) (context : drag_context) x y time =
     with Null_pointer -> "unknown"
   in
   Printf.printf "motion, source %s\n" source_typename; flush stdout;
-  context#status [context#suggested_action] time;
+  context#status [context#suggested_action] :time;
   true
 
 let target_drag_drop (pixmap : pixmap) (context : drag_context) x y time =
@@ -324,7 +324,7 @@ let target_drag_drop (pixmap : pixmap) (context : drag_context) x y time =
   | d :: _ -> pixmap#misc#drag#get_data context#context target:d :time; true
 
 let target_drag_data_received _ (context : drag_context) _ _ (data : selection_data) _ time =
-  if (data#length >= 0) && (data#format = 8) then begin
+  if data#format = 8 then begin
     Printf.printf "Received \"%s\" in trashcan\n" data#data;
     flush stdout;
     context#finish success:true del:false :time
@@ -332,7 +332,7 @@ let target_drag_data_received _ (context : drag_context) _ _ (data : selection_d
   else context#finish success:false del:false :time
 
 let label_drag_data_received _ (context : drag_context) _ _ (data : selection_data) _ time =
-    if (data#length >= 0) && (data#format = 8) then  begin
+    if data#format = 8 then  begin
     Printf.printf "Received \"%s\" in label\n" data#data;
     flush stdout;
     context#finish success:true del:false :time
@@ -345,9 +345,9 @@ let source_drag_data_get _ (data : selection_data) info _ =
     flush stdout
   end
   else if info = 2 then
-    data#set type:data#target format:8 "file:///home/otaylor/images/weave.png" length:37
+    data#set type:data#target format:8 data:"file:///home/otaylor/images/weave.png"
   else
-    data#set type:data#target format:8 "I'm Data!" length:9
+    data#set type:data#target format:8 data:"I'm Data!"
 
 let source_drag_data_delete _ =
   Printf.printf "Delete the data!\n"; flush stdout
