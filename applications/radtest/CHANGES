@@ -1,0 +1,6 @@
+$Id$
+
+1999.10.27
+  * simplified property.ml, and corrected treew.ml accordingly.
+    undo is temporarily disabled.
+    (Jacques)
