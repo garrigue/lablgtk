@@ -1,5 +1,8 @@
 $Id$
 
+2004.04.04 [Olivier]
+  * re-implement Gobject.Data.caml (correctly this time)
+
 2004.03.26 [Olivier]
   * Add a common supertype for canvas items: GnoCanvas.base_item.
   * Improve the signatures of canvas, group and item classes in

@@ -241,78 +241,78 @@ value g_value_get_variant (GValue *val)
     CAMLlocal1(tmp);
     value ret = MLTAG_NONE;
     GType type;
-    int tag;
+    int tag = -1;
 
     if (! G_IS_VALUE(val))
       invalid_argument("Gobject.Value.get");
 
     type = G_VALUE_TYPE(val);
 
-    if (type == G_TYPE_CAML) {
-        tmp = DATA.v_long;
-	if (tmp == 0)
-	  CAMLreturn(ret);
-        tag = MLTAG_CAML;
-    }
-    else
-      switch (G_TYPE_FUNDAMENTAL(type)) {
-        /* This is such a pain that we access the data directly :-( */
-        /* We do like in gvaluetypes.c */
-      case G_TYPE_CHAR:
-      case G_TYPE_UCHAR:
-        tag = MLTAG_CHAR;
-        tmp = Val_int(DATA.v_int);
-        break;
-      case G_TYPE_BOOLEAN:
-        tag = MLTAG_BOOL;
-        tmp = Val_bool(DATA.v_int);
-        break;
-      case G_TYPE_INT:
-      case G_TYPE_UINT:
-        tag = MLTAG_INT;
-        tmp = Val_int (DATA.v_int);
-        break;
-      case G_TYPE_LONG:
-      case G_TYPE_ULONG:
-      case G_TYPE_ENUM:
-      case G_TYPE_FLAGS:
-        tag = MLTAG_INT;
-        tmp = Val_long (DATA.v_long);
-        break;
-      case G_TYPE_FLOAT:
-        tag = MLTAG_FLOAT;
-        tmp = copy_double ((double)DATA.v_float);
-        break;
-      case G_TYPE_DOUBLE:
-        tag = MLTAG_FLOAT;
-        tmp = copy_double (DATA.v_double);
-        break;
-      case G_TYPE_STRING:
-        tag = MLTAG_STRING;
-        tmp = Val_option (DATA.v_pointer, copy_string);
-        break;
-      case G_TYPE_INTERFACE: /* assume interfaces are for objects */
-      case G_TYPE_OBJECT:
-        tag = MLTAG_OBJECT;
-        tmp = Val_option ((GObject*)DATA.v_pointer, Val_GObject);
-        break;
-      case G_TYPE_BOXED:
-        tag = MLTAG_POINTER;
-        tmp = (DATA.v_pointer == NULL ? Val_unit
-               : ml_some(Val_gboxed(type, DATA.v_pointer)));
-        break;
-      case G_TYPE_POINTER:
-	  tag = MLTAG_POINTER;
-        tmp = Val_option (DATA.v_pointer, Val_pointer);
-        break;
-      case G_TYPE_INT64:
-      case G_TYPE_UINT64:
-        tag = MLTAG_INT64;
-        tmp = copy_int64 (DATA.v_int64);
-        break;
-      default:
-	tag = -1;
+    switch (G_TYPE_FUNDAMENTAL(type)) {
+      /* This is such a pain that we access the data directly :-( */
+      /* We do like in gvaluetypes.c */
+    case G_TYPE_CHAR:
+    case G_TYPE_UCHAR:
+      tag = MLTAG_CHAR;
+      tmp = Val_int(DATA.v_int);
+      break;
+    case G_TYPE_BOOLEAN:
+      tag = MLTAG_BOOL;
+      tmp = Val_bool(DATA.v_int);
+      break;
+    case G_TYPE_INT:
+    case G_TYPE_UINT:
+      tag = MLTAG_INT;
+      tmp = Val_int (DATA.v_int);
+      break;
+    case G_TYPE_LONG:
+    case G_TYPE_ULONG:
+    case G_TYPE_ENUM:
+    case G_TYPE_FLAGS:
+      tag = MLTAG_INT;
+      tmp = Val_long (DATA.v_long);
+      break;
+    case G_TYPE_FLOAT:
+      tag = MLTAG_FLOAT;
+      tmp = copy_double ((double)DATA.v_float);
+      break;
+    case G_TYPE_DOUBLE:
+      tag = MLTAG_FLOAT;
+      tmp = copy_double (DATA.v_double);
+      break;
+    case G_TYPE_STRING:
+      tag = MLTAG_STRING;
+      tmp = Val_option (DATA.v_pointer, copy_string);
+      break;
+    case G_TYPE_INTERFACE: /* assume interfaces are for objects */
+    case G_TYPE_OBJECT:
+      tag = MLTAG_OBJECT;
+      tmp = Val_option ((GObject*)DATA.v_pointer, Val_GObject);
+      break;
+    case G_TYPE_BOXED:
+      if (type == G_TYPE_CAML) {
+	value *data = g_value_get_boxed (val);
+	if (data != NULL) {
+	  tag = MLTAG_CAML;
+	  tmp = *data;
+	}
       }
+      else {
+	tag = MLTAG_POINTER;
+	tmp = (DATA.v_pointer == NULL ? Val_unit
+	       : ml_some(Val_gboxed(type, DATA.v_pointer)));
+      }
+      break;
+    case G_TYPE_POINTER:
+      tag = MLTAG_POINTER;
+      tmp = Val_option (DATA.v_pointer, Val_pointer);
+      break;
+    case G_TYPE_INT64:
+    case G_TYPE_UINT64:
+      tag = MLTAG_INT64;
+      tmp = copy_int64 (DATA.v_int64);
+      break;
+    }
     if (tag != -1) {
         ret = alloc_small(2,0);
         Field(ret,0) = tag;
@@ -377,19 +377,16 @@ void g_value_set_variant (GValue *val, value arg)
         g_value_set_object(val, Option_val(data,GObject_val,NULL));
         return;
     case G_TYPE_BOXED:
-        if (tag != MLTAG_POINTER) break;
-        g_value_set_boxed(val, Option_val(data,MLPointer_val,NULL));
+        if (tag == MLTAG_CAML && type == G_TYPE_CAML)
+	  g_value_store_caml_value (val, data);
+	else if (tag == MLTAG_POINTER)
+	  g_value_set_boxed(val, Option_val(data,MLPointer_val,NULL));
+	else break;
         return;
     case G_TYPE_POINTER:
-      switch (tag) {
-        case MLTAG_CAML:
-	  DATA.v_long = data; return;
-        case MLTAG_POINTER:
-        case MLTAG_OBJECT:
-          DATA.v_pointer = Option_val(data,MLPointer_val,NULL);
-          return;
-      };
-      break;
+        if (tag != MLTAG_POINTER && tag != MLTAG_OBJECT) break;
+        DATA.v_pointer = Option_val(data,MLPointer_val,NULL);
+        return;
     case G_TYPE_INT64:
     case G_TYPE_UINT64:
         if (tag == MLTAG_INT64)
