@@ -42,16 +42,21 @@ module Tags = struct
 
   type wrap_mode = [ `WORD | `CHAR | `WORD_CHAR ]
 
+  type ellipsize_mode = [ `NONE | `START | `MIDDLE | `END ]
+
   open Gpointer
-  external get_tables :
-    unit -> style variant_table *
-        weight_internal variant_table *
-        variant variant_table *
-        stretch variant_table *
-        underline variant_table
+  external _get_tables : unit ->
+      style variant_table
+    * weight_internal variant_table
+    * variant variant_table
+    * stretch variant_table
+    * underline variant_table
+    * wrap_mode variant_table
+    * ellipsize_mode variant_table
     = "ml_pango_get_tables"
-  let style, weight, variant, stretch, underline =
-    get_tables ()
+
+  let style, weight, variant, stretch, underline, wrap_mode,
+    ellipsize_mode = _get_tables ()
 
   let weight_to_int (w : weight) =
     match w with 
@@ -179,4 +184,8 @@ module Layout = struct
     = "ml_pango_layout_index_to_pos"
   external xy_to_index : layout -> x:int -> y:int -> int * int * bool
     = "ml_pango_layout_xy_to_index"
+  external set_ellipsize : layout -> ellipsize_mode -> unit
+    = "ml_pango_layout_set_ellipsize"
+  external get_ellipsize : layout -> ellipsize_mode
+    = "ml_pango_layout_get_ellipsize"
 end

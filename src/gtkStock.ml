@@ -16,6 +16,7 @@ type gtk_stock_id = [
   | `DIALOG_QUESTION 
   | `DND 
   | `DND_MULTIPLE 
+  | `ABOUT 			(** since GTK 2.6 *)
   | `ADD 
   | `APPLY 
   | `BOLD 
@@ -25,10 +26,15 @@ type gtk_stock_id = [
   | `CLOSE 
   | `COLOR_PICKER 		(** since GTK 2.2 *)
   | `CONVERT 
+  | `CONNECT 			(** since GTK 2.6 *)
   | `COPY 
   | `CUT 
   | `DELETE 
+  | `DIRECTORY 			(** since GTK 2.6 *)
+  | `DISCONNECT 		(** since GTK 2.6 *)
+  | `EDIT 			(** since GTK 2.6 *)
   | `EXECUTE 
+  | `FILE 			(** since GTK 2.6 *)
   | `FIND 
   | `FIND_AND_REPLACE 
   | `FLOPPY 
@@ -53,6 +59,14 @@ type gtk_stock_id = [
   | `JUSTIFY_LEFT 
   | `JUSTIFY_RIGHT 
   | `MISSING_IMAGE 
+  | `MEDIA_FORWARD 		(** since GTK 2.6 *)
+  | `MEDIA_NEXT 		(** since GTK 2.6 *)
+  | `MEDIA_PAUSE 		(** since GTK 2.6 *)
+  | `MEDIA_PLAY 		(** since GTK 2.6 *)
+  | `MEDIA_PREVIOUS 		(** since GTK 2.6 *)
+  | `MEDIA_RECORD 		(** since GTK 2.6 *)
+  | `MEDIA_REWIND 		(** since GTK 2.6 *)
+  | `MEDIA_STOP 		(** since GTK 2.6 *)
   | `NETWORK 			(** since GTK 2.4 *)
   | `NEW 
   | `NO 
@@ -113,6 +127,7 @@ let () =
       `DIALOG_QUESTION, "gtk-dialog-question";
       `DND, "gtk-dnd";
       `DND_MULTIPLE, "gtk-dnd-multiple";
+      `ABOUT, "gtk-about";
       `ADD, "gtk-add";
       `APPLY, "gtk-apply";
       `BOLD, "gtk-bold";
@@ -122,10 +137,15 @@ let () =
       `CLOSE, "gtk-close";
       `COLOR_PICKER, "gtk-color-picker";
       `CONVERT, "gtk-convert";
+      `CONNECT, "gtk-connect";
       `COPY, "gtk-copy";
       `CUT, "gtk-cut";
       `DELETE, "gtk-delete";
+      `DIRECTORY, "gtk-directory";
+      `DISCONNECT, "gtk-disconnect";
+      `EDIT, "gtk-edit";
       `EXECUTE, "gtk-execute";
+      `FILE, "gtk-file";
       `FIND, "gtk-find";
       `FIND_AND_REPLACE, "gtk-find-and-replace";
       `FLOPPY, "gtk-floppy";
@@ -150,6 +170,14 @@ let () =
       `JUSTIFY_LEFT, "gtk-justify-left";
       `JUSTIFY_RIGHT, "gtk-justify-right";
       `MISSING_IMAGE, "gtk-missing-image";
+      `MEDIA_FORWARD, "gtk-media-forward";
+      `MEDIA_NEXT, "gtk-media-next";
+      `MEDIA_PAUSE, "gtk-media-pause";
+      `MEDIA_PLAY, "gtk-media-play";
+      `MEDIA_PREVIOUS, "gtk-media-previous";
+      `MEDIA_RECORD, "gtk-media-record";
+      `MEDIA_REWIND, "gtk-media-rewind";
+      `MEDIA_STOP, "gtk-media-stop";
       `NETWORK, "gtk-network";
       `NEW, "gtk-new";
       `NO, "gtk-no";
