@@ -55,10 +55,6 @@ class tooltips :
     method disable : unit -> unit
     method enable : unit -> unit
     method set_delay : int -> unit
-    method set_foreground : GDraw.color -> unit
-    method set_background : GDraw.color -> unit
     method set_tip : ?text:string -> ?privat:string -> GObj.widget -> unit
   end
-val tooltips :
-  ?delay:int ->
-  ?foreground:GDraw.color -> ?background:GDraw.color -> unit -> tooltips
+val tooltips : ?delay:int -> unit -> tooltips

@@ -49,17 +49,11 @@ class tooltips obj = object
   method set_tip ?text ?privat w =
     Tooltips.set_tip obj (as_widget w) ?text ?privat
   method set_delay = Tooltips.set_delay obj
-  method set_foreground col =
-    Tooltips.set_colors obj ~foreground:(GDraw.color col) ()
-  method set_background col =
-    Tooltips.set_colors obj ~background:(GDraw.color col) ()
 end
 
-let tooltips ?delay ?foreground ?background () =
+let tooltips ?delay () =
   let tt = Tooltips.create () in
-  Tooltips.set tt ?delay
-    ?foreground:(may_map foreground ~f:(fun c -> GDraw.color c))
-    ?background:(may_map background ~f:(fun c -> GDraw.color c));
+  Tooltips.set tt ?delay;
   new tooltips tt
 
 

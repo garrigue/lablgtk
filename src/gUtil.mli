@@ -27,6 +27,7 @@ class ['a] signal :
   unit ->
   object
     val mutable callbacks : (GtkSignal.id * ('a -> unit)) list
+    method callbacks : (GtkSignal.id * ('a -> unit)) list
     method call : 'a -> unit
     method connect : after:bool -> callback:('a -> unit) -> GtkSignal.id
     method disconnect : GtkSignal.id -> bool
@@ -77,16 +78,19 @@ class virtual add_ml_signals :
 *)
 
 (* The variable class provides an easy way to propagate state modifications.
-   A new variable is created by [new variable init]. [changed] and
-   [accessed] are called respectively when [set] and [get] are used.
+   A new variable is created by [new variable init]. The [#set] method just
+   calls the [set] signal, which by default only calls [real_set].
+   [real_set] sets the variable and calls [changed] when needed.
+   Deep equality is used to compare values, but check is only done if
+   there are callbacks for [changed].
 *)
 
 class ['a] variable_signals :
-  changed:'a signal -> accessed:unit signal ->
+  set:'a signal -> changed:'a signal ->
   object ('b)
     val after : bool
     method after : 'b
-    method accessed : callback:(unit -> unit) -> GtkSignal.id
+    method set : callback:('a -> unit) -> GtkSignal.id
     method changed : callback:('a -> unit) -> GtkSignal.id
     method disconnect : GtkSignal.id -> unit
     val mutable disconnectors : (GtkSignal.id -> bool) list
@@ -94,11 +98,12 @@ class ['a] variable_signals :
 
 class ['a] variable : 'a ->
   object
-    val accessed : unit signal
+    val set : 'a signal
     val changed : 'a signal
     val mutable x : 'a
     method connect : 'a variable_signals
     method get : 'a
     method set : 'a -> unit
+    method private equal : 'a -> 'a -> bool
+    method private real_set : 'a -> unit
   end
-
