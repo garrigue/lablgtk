@@ -169,16 +169,16 @@ else
     EXE=
 fi
 
-# GTK 2 configuration
+# GTK 2 auto configuration
 
-AC_CHECK_PROG(PKG_CONFIG,pkg-config,pkg-config,no)
-if test "$PKG_CONFIG" = no ; then
-	AC_MSG_ERROR(Cannot find pkg-config.Please install Gtk devel. files.)
-fi
+# Useless now.
+#AC_CHECK_PROG(PKG_CONFIG,pkg-config,pkg-config,no)
+#if test "$PKG_CONFIG" = no ; then
+#	AC_MSG_ERROR(Cannot find pkg-config.Please install Gtk devel. files.)
+#fi
 
 GTKPKG=gtk+-2.0 
-
-GTKLIBS=`$PKG_CONFIG $GTKPKG --libs`
+AM_PATH_GTK_2_0()
 
 FORCE_GL=no
 AC_ARG_WITH(gl, 
@@ -187,22 +187,16 @@ AC_ARG_WITH(gl,
 	USE_GL=yes)
 
 if test $USE_GL = yes ; then
-    AC_MSG_CHECKING(for gtkgl-2.0)
-    if $PKG_CONFIG --exists gtkgl-2.0 ; then 
-	AC_MSG_RESULT(ok)
-    else
-	AC_MSG_RESULT(no)
+	PKG_CHECK_MODULES(GTKGL,gtkgl-2.0,,
 	if test $FORCE_GL = yes ; then
-	AC_MSG_ERROR(gtkgl 2 support not found)
+	AC_MSG_ERROR(gtkgl enforced but support not found)
 	else
 	USE_GL=no
-	fi
-    fi
+	fi)
 fi
 if test $USE_GL = yes ; then
     USE_GL=1
     GTKGLPKG=gtkgl-2.0
-    GTKGLLIBS=`$PKG_CONFIG $GTKGLPKG --libs`
 else
     USE_GL=
 fi
@@ -214,22 +208,16 @@ AC_ARG_WITH(glade,
 	USE_GLADE=yes)
 
 if test $USE_GLADE = yes ; then
-    AC_MSG_CHECKING(for libglade-2.0)
-    if $PKG_CONFIG --exists libglade-2.0 ; then 
-	AC_MSG_RESULT(ok)
-    else
-	AC_MSG_RESULT(no)
+	PKG_CHECK_MODULES(GLADE,libglade-2.0,,
 	if test $FORCE_GLADE = yes ; then
-	AC_MSG_ERROR(libglade 2 support not found)
+	AC_MSG_ERROR(libglade enforced but no support found)
 	else
 	USE_GLADE=no
-	fi
-    fi
+	fi)
 fi
 if test $USE_GLADE = yes ; then
     USE_GLADE=1
     GLADEPKG=libglade-2.0
-    GLADELIBS=`$PKG_CONFIG $GLADEPKG --libs`
 else
     USE_GLADE=
 fi
@@ -240,22 +228,16 @@ AC_ARG_WITH(rsvg, [  --without-rsvg          override autodetected librsvg suppo
 	USE_RSVG=yes)
 
 if test $USE_RSVG = yes ; then
-    AC_MSG_CHECKING(for librsvg-2.0)
-    if $PKG_CONFIG --exists librsvg-2.0 ; then 	
-	AC_MSG_RESULT(ok)
-    else
-	AC_MSG_RESULT(no)
+    	PKG_CHECK_MODULES(RSVG,librsvg-2.0,,
 	if test $FORCE_RSVG = yes ; then
-	AC_MSG_ERROR(librsvg support not found)
+	AC_MSG_ERROR(librsvg enforced but support not found)
 	else
 	USE_RSVG=no
-	fi
-    fi
+	fi)
 fi
 if test $USE_RSVG = yes ; then
     USE_RSVG=1
     RSVGPKG=librsvg-2.0
-    RSVGLIBS=`$PKG_CONFIG $RSVGPKG --libs`
 else
     USE_RSVG=
 fi
@@ -268,27 +250,21 @@ AC_ARG_WITH(gnomecanvas,
 	USE_GNOMECANVAS=yes)
 
 if test $USE_GNOMECANVAS = yes ; then
-    AC_MSG_CHECKING(for libgnomecanvas-2.0)
-    if $PKG_CONFIG --exists libgnomecanvas-2.0 ; then 
-	AC_MSG_RESULT(ok)
-    else
-	AC_MSG_RESULT(no)
+    PKG_CHECK_MODULES(GNOMECANVAS,libgnomecanvas-2.0,,
 	if test $FORCE_GNOMECANVAS = yes ; then
-	AC_MSG_ERROR(libgnomecanvas support not found)
+	AC_MSG_ERROR(libgnomecanvas enforced but support not found)
 	else
 	USE_GNOMECANVAS=no
-	fi
-    fi
+	fi)
 fi
 if test $USE_GNOMECANVAS = yes ; then
     USE_GNOMECANVAS=1
     GNOMECANVASPKG=libgnomecanvas-2.0
-    GNOMECANVASLIBS=`$PKG_CONFIG $GNOMECANVASPKG --libs`
 else
     USE_GNOMECANVAS=
 fi
 
-GTKCFLAGS=`$PKG_CONFIG $GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG --cflags`
+PKG_CHECK_MODULES(GTK,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG)
 
 AC_ARG_ENABLE(debug,
         [  --enable-debug          enable debug mode],
@@ -318,12 +294,12 @@ AC_SUBST(USE_RSVG)
 AC_SUBST(USE_GNOMECANVAS)
 AC_SUBST(USE_CC)
 AC_SUBST(DEBUG)
-AC_SUBST(GTKCFLAGS)
-AC_SUBST(GTKLIBS)
-AC_SUBST(GTKGLLIBS)
-AC_SUBST(GLADELIBS)
-AC_SUBST(RSVGLIBS)
-AC_SUBST(GNOMECANVASLIBS)
+AC_SUBST(GTK_CFLAGS)
+AC_SUBST(GTK_LIBS)
+AC_SUBST(GTKGL_LIBS)
+AC_SUBST(GLADE_LIBS)
+AC_SUBST(RSVG_LIBS)
+AC_SUBST(GNOMECANVAS_LIBS)
 
 # Finally create the config.make from config.make.in
 AC_OUTPUT(config.make)

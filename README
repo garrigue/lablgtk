@@ -36,7 +36,7 @@ How to compile:
 
 	You should normally not need to modify Makefiles.
 	
-	In case you are using the CVS version first type "autoconf".
+	In case you are using the CVS version first type "aclocal && autoconf".
 	
 	Type "./configure && make && make install" to compile 
 	with all supported options enabled (libgl, libglade, libgnomecanvas, 
