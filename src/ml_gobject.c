@@ -66,8 +66,8 @@ CAMLprim value ml_G_TYPE_FUNDAMENTAL(value ty)
 }
 CAMLprim value ml_Fundamental_type_val(value fund)
 {
-  return Val_GType(Is_block(fund) ? Field(fund,1)
-                   : Fundamental_type_val(fund));
+  return (Is_block(fund) ? Field(fund,1)
+          : Val_GType(Fundamental_type_val(fund)));
 }
 
 #ifdef HASGTK22
