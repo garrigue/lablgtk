@@ -106,7 +106,7 @@ lablgtktop: $(MLLIBS) $(INITOBJS)
 	   -dllpath $(INSTALLDIR) -dllpath $(LABLGLDIR)
 
 lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
-	$(TOPLEVEL) $(THFLAGS) -custom -o $@ $(THLINK) $(MLLINK) \
+	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
 	   -dllpath $(INSTALLDIR) -dllpath $(LABLGLDIR) \
 	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
