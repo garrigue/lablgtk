@@ -121,6 +121,12 @@ let propertize = function
   | `NO_PIXBUF -> "pixbuf", `OBJECT None
   | `NO_WIDGET -> "widget", `OBJECT None
 
+let set_properties obj p =
+  List.iter
+    (fun p -> let p, d = propertize p in Gobject.Property.set_dyn obj p d)
+    p;
+  Item.set obj
+
 type item_event = [
   | `BUTTON_PRESS of GdkEvent.Button.t
   | `TWO_BUTTON_PRESS of GdkEvent.Button.t
@@ -162,18 +168,82 @@ class item_signals ?after obj = object (self)
     self#connect Item.Signals.event ~callback:(event_proxy callback)
 end
 
-class ['p] item obj = object
+class type base_item_t =
+  object
+    inherit GObj.gtkobj
+    val obj : 'a Gtk.obj
+    constraint 'a = [> GnomeCanvas.item]
+
+    method parent : group_t
+    method reparent : group_t -> unit
+
+    method as_item : GnomeCanvas.item Gtk.obj
+    method connect : item_signals
+
+    method get_bounds : float array
+    method grab : Gdk.Tags.event_mask list -> Gdk.cursor -> int32 -> unit
+    method grab_focus : unit -> unit
+    method hide : unit -> unit
+    method i2c_affine : float array
+    method i2w : x:float -> y:float -> float * float
+    method i2w_affine : float array
+    method lower : int -> unit
+    method lower_to_bottom : unit -> unit
+    method move : x:float -> y:float -> unit
+    method canvas : canvas_t
+    method xform : [`IDENTITY|`TRANSL of float array|`AFFINE of float array]
+    method affine_relative : float array -> unit
+    method affine_absolute : float array -> unit
+    method raise : int -> unit
+    method raise_to_top : unit -> unit
+    method show : unit -> unit
+    method ungrab : int32 -> unit
+    method w2i : x:float -> y:float -> float * float
+  end
+
+and group_t =
+  object 
+    inherit base_item_t
+    val obj : GnomeCanvas.group Gtk.obj
+    method as_group : GnomeCanvas.group Gtk.obj
+    method get_items : base_item_t list
+    method set : GnomeCanvas.group_p list -> unit
+  end
+
+and canvas_t =
+  object
+    inherit GPack.layout
+    val obj : GnomeCanvas.canvas Gtk.obj
+    method aa : bool
+    method c2w : cx:float -> cy:float -> float * float
+    method get_center_scroll_region : bool
+    method get_item_at : x:float -> y:float -> base_item_t
+    method get_scroll_offsets : int * int
+    method get_scroll_region : float array
+    method root : group_t
+    method scroll_to : x:int -> y:int -> unit
+    method set_center_scroll_region : bool -> unit
+    method set_pixels_per_unit : float -> unit
+    method set_scroll_region :
+      x1:float -> y1:float -> x2:float -> y2:float -> unit
+    method update_now : unit -> unit
+    method w2c : wx:float -> wy:float -> int * int
+    method w2c_affine : float array
+    method w2c_d : wx:float -> wy:float -> float * float
+    method window_to_world : winx:float -> winy:float -> float * float
+    method world_to_window : wox:float -> woy:float -> float * float
+  end
+
+let new_group : ('a Gtk.obj -> group_t) ref = ref (fun _ -> assert false)
+let new_base_item : ('a Gtk.obj -> base_item_t) ref = ref (fun _ -> assert false)
+
+class base_item obj = object
   inherit GObj.gtkobj obj
-  constraint 'p = [< items_properties]
-  method connect = new item_signals (obj :> GnomeCanvas.item Gtk.obj)
-  method set (p : 'p list) =
-    List.iter
-      (fun p -> let p, d = propertize p in Gobject.Property.set_dyn obj p d)
-      p;
-    Item.set obj
   method as_item = (obj :> GnomeCanvas.item Gtk.obj)
-  method canvas = Item.canvas obj
-  method parent = Item.parent obj
+  method connect = new item_signals (obj :> GnomeCanvas.item Gtk.obj)
+  method parent = !new_group (Item.parent obj)
+  method reparent grp = Item.reparent obj (grp : group_t)#as_group
+  method canvas = new canvas (Item.canvas obj)
   method xform = Item.xform obj
   method affine_relative = Item.affine_relative obj
   method affine_absolute = Item.affine_absolute obj
@@ -190,30 +260,14 @@ class ['p] item obj = object
   method i2w = Item.i2w obj
   method i2w_affine = Item.i2w_affine obj
   method i2c_affine = Item.i2c_affine obj
-  method reparent grp = Item.reparent obj grp
   method grab_focus () = Item.grab_focus obj
   method get_bounds = Item.get_bounds obj
 end
 
-class group grp_obj = object
-  inherit [GnomeCanvas.group_p] item grp_obj
-  method as_group = (grp_obj : GnomeCanvas.group Gtk.obj)
-  method get_items =
-    Group.get_items grp_obj
-end
-
-class rich_text rchtxt_obj = object
-  inherit [GnomeCanvas.rich_text_p] item (rchtxt_obj : GnomeCanvas.rich_text Gtk.obj)
-  method cut_clipboard () = RichText.cut_clipboard obj
-  method copy_clipboard () = RichText.copy_clipboard obj
-  method paste_clipboard () = RichText.paste_clipboard obj
-  method get_buffer = new GText.buffer (RichText.get_buffer obj)
-end
-
-class canvas obj = object
+and canvas obj = object
   inherit GPack.layout (obj : GnomeCanvas.canvas Gtk.obj)
   val aa = { Gobject.name = "aa"; Gobject.conv = Gobject.Data.boolean }
-  method root = new group (Canvas.root obj)
+  method root = !new_group (Canvas.root obj)
   method aa = Gobject.get aa obj
   method set_scroll_region = Canvas.set_scroll_region obj
   method get_scroll_region = Canvas.get_scroll_region obj
@@ -223,7 +277,7 @@ class canvas obj = object
   method scroll_to = Canvas.scroll_to obj
   method get_scroll_offsets = Canvas.get_scroll_offsets obj
   method update_now () = Canvas.update_now obj
-  method get_item_at ~x ~y = Canvas.get_item_at obj ~x ~y
+  method get_item_at ~x ~y = !new_base_item (Canvas.get_item_at obj ~x ~y)
   method w2c_affine = Canvas.w2c_affine obj
   method w2c = Canvas.w2c obj
   method w2c_d = Canvas.w2c_d obj
@@ -231,6 +285,23 @@ class canvas obj = object
   method window_to_world = Canvas.window_to_world obj
   method world_to_window   = Canvas.world_to_window obj
 end
+
+let () = new_base_item := new base_item
+
+class group grp_obj = object
+  inherit base_item (grp_obj : GnomeCanvas.group Gtk.obj)
+  method as_group = grp_obj 
+  method get_items = List.map (new base_item) (Group.get_items grp_obj)
+  method set (p : GnomeCanvas.group_p list) = set_properties grp_obj p
+end
+
+let () = new_group := new group
+
+class ['p] item obj = 
+  object
+    inherit base_item obj
+    method set (p : 'p list) = set_properties obj p
+  end
 
 let canvas ?(aa=false) =
   GContainer.pack_container [] ~create:(fun pl ->
@@ -252,9 +323,7 @@ let construct_item (typ : (_, 'p) Types.t) ~props parent =
   o
 
 let unoption_list ~rest l =
-  List.rev_append
-    (List.fold_left (fun acc -> function Some v -> v :: acc | None -> acc) [] l)
-    rest
+  List.fold_right (fun o acc -> match o with Some v -> v :: acc | None -> acc) l rest
 
 let group ?x ?y parent =
   let i = Item.new_item parent#as_group Types.group in
@@ -352,6 +421,14 @@ let widget ?widget ?x ?y ?width ?height ?(props=[]) p =
 	w ] in
   construct_item Types.widget ~props p
 
+class rich_text rchtxt_obj = object
+  inherit [GnomeCanvas.rich_text_p] item (rchtxt_obj : GnomeCanvas.rich_text Gtk.obj)
+  method cut_clipboard () = RichText.cut_clipboard obj
+  method copy_clipboard () = RichText.copy_clipboard obj
+  method paste_clipboard () = RichText.paste_clipboard obj
+  method get_buffer = new GText.buffer (RichText.get_buffer obj)
+end
+
 let rich_text ?x ?y ?text ?width ?height ?(props=[]) p =
   let props = unoption_list ~rest:props
       [ ( match x with None -> None | Some v -> Some (`X v) ) ;
@@ -364,6 +441,3 @@ let rich_text ?x ?y ?text ?width ?height ?(props=[]) p =
   let o = new rich_text i in
   if props <> [] then o#set props ;
   o
-
-let parent i =
-  new group (i#parent)

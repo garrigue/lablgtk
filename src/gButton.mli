@@ -120,7 +120,7 @@ val radio_button :
   ?draw_indicator:bool ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> radio_button
 
-(** {3 GtkColorButton & GtkFontButton} *)
+(** {4 GtkColorButton & GtkFontButton} *)
 
 (** @gtkdoc gtk GtkColorButton
     @since GTK 2.4 *)

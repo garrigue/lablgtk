@@ -64,7 +64,7 @@ let item_event_button_press config ev =
   | 1 ->
       let x = GdkEvent.Button.x ev in
       let y = GdkEvent.Button.y ev in
-      let (p_x, p_y) = (GnoCanvas.parent config.item)#w2i x y in
+      let (p_x, p_y) = config.item#parent#w2i x y in
       config.x <- p_x ;
       config.y <- p_y ;
       config.dragging <- true
@@ -83,7 +83,7 @@ let item_event_motion config ev =
   then
     let x = GdkEvent.Motion.x ev in
     let y = GdkEvent.Motion.y ev in
-    let (p_x, p_y) = (GnoCanvas.parent config.item)#w2i x y in
+    let (p_x, p_y) = config.item#parent#w2i x y in
     let aff = affine_invert 
       ( match config.item#xform with 
         | `AFFINE a -> a 
@@ -160,7 +160,7 @@ let setup_rectangles root =
        ~props:( [ `X1 90.; `Y1 40.; `X2 180.; `Y2 100.;
 		  `OUTLINE_COLOR "black" ;
 		  `WIDTH_UNITS 4. ] @
-		if (new GnoCanvas.canvas root#canvas)#aa   (* glurg ! c'est moche *)
+		if root#canvas#aa
 		then [ `FILL_COLOR_RGBA (Int32.of_int 0x3cb37180) ]
 		else [ `FILL_COLOR "mediumseagreen" ;
 		       `FILL_STIPPLE (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
@@ -189,7 +189,7 @@ let setup_ellipses root =
        ~props:( [ `X1 210.; `Y1 80.; `X2 280.; `Y2 140.;
 		  `OUTLINE_COLOR "black" ;
 		  `WIDTH_PIXELS 0 ] @
-		if (new GnoCanvas.canvas root#canvas)#aa   (* glurg ! c'est moche *)
+		if root#canvas#aa
 		then [ `FILL_COLOR_RGBA (Int32.of_int 0x5f9ea080) ]
 		else [ `FILL_COLOR "cadetblue" ;
 		       `FILL_STIPPLE (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
@@ -207,7 +207,7 @@ let setup_texts root =
   GnoCanvas.text (make_anchor root ~x:420. ~y:20.)
     ~props:([ `TEXT "Anchor NW" ;`ANCHOR `NW ; 
 	      `X 0. ; `Y 0. ; `FONT "Sans Bold 24" ; ] @
-	    if (new GnoCanvas.canvas root#canvas)#aa   (* glurg ! c'est moche *)
+	    if root#canvas#aa
 	    then [ `FILL_COLOR_RGBA (Int32.of_int 0x0000ff80) ]
 	    else [ `FILL_COLOR "blue" ;
 		       `FILL_STIPPLE (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
@@ -285,7 +285,7 @@ let make_hilbert root =
     (GnoCanvas.line root
        ~props:( [ `POINTS points ; `WIDTH_UNITS 4. ;
 		  `CAP_STYLE `PROJECTING ; `JOIN_STYLE `MITER ] @
-		if (new GnoCanvas.canvas root#canvas)#aa   (* glurg ! c'est moche *)
+		if root#canvas#aa
 		then [ `FILL_COLOR_RGBA 0xff000080l ]
 		else [ `FILL_COLOR "red" ;
 		       `FILL_STIPPLE (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
@@ -331,7 +331,7 @@ let setup_polygons root =
   setup_item
     (GnoCanvas.polygon ~points root
        ~props:( (`OUTLINE_COLOR "black") ::
-		if (new GnoCanvas.canvas root#canvas)#aa
+		if root#canvas#aa
 		then [ `FILL_COLOR_RGBA (Int32.of_int 0x0000ff80) ]
 		else [ `FILL_COLOR "blue" ; 
 		       `FILL_STIPPLE (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001") ] )) ;

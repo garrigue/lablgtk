@@ -3,9 +3,9 @@ let pad = 4
 
 let item_callback it (p1, p2) = function
   | `BUTTON_PRESS ev when GdkEvent.Button.button ev = 1 ->
-        if (GnoCanvas.parent it)#get_oid = p1#get_oid
-	then it#reparent p2#as_group
-	else it#reparent p1#as_group ;
+        if it#parent#get_oid = p1#get_oid
+	then it#reparent p2
+	else it#reparent p1 ;
 	true
   | _ -> false
 
