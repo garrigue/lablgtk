@@ -220,7 +220,6 @@ and misc_signals :
     inherit gtkobj_signals 
     val obj : Gtk.widget obj
     method after : 'b
-    method draw : callback:(Gtk.rectangle -> unit) -> GtkSignal.id
     method hide : callback:(unit -> unit) -> GtkSignal.id
     method map : callback:(unit -> unit) -> GtkSignal.id
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id

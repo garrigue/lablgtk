@@ -94,6 +94,10 @@ module Fixed = struct
       = "ml_gtk_fixed_put"
   external move : [>`fixed] obj -> [>`widget] obj -> x:int -> y:int -> unit
       = "ml_gtk_fixed_move"
+  external set_has_window : [>`fixed] obj -> bool -> unit
+      = "ml_gtk_fixed_set_has_window"
+  external get_has_window : [>`fixed] obj -> bool
+      = "ml_gtk_fixed_get_has_window"
 end
 
 module Layout = struct

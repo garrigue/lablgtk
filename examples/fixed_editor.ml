@@ -110,7 +110,7 @@ let to_grid2 g (x, y) = (to_grid g x, to_grid g y)
 
 class fix_editor ~width ~height ~packing =
   let info = new drag_info in
-  let fix = GPack.fixed ~width ~height ~packing () in
+  let fix = GPack.fixed ~has_window:true ~width ~height ~packing () in
   let _ = fix#misc#realize () in
   let fix_window = fix#misc#window in
   let fix_drawing = new GDraw.drawable fix_window in
@@ -127,7 +127,7 @@ class fix_editor ~width ~height ~packing =
 	pix#rectangle ~filled:true ~x:0 ~y:0 ~width:g ~height:g ();
 	pix#set_foreground `BLACK;
       	pix#point ~x:0 ~y:0;
-      	Gdk.Window.set_back_pixmap (fix#misc#window) (`PIXMAP pix#pixmap)
+      	Gdk.Window.set_back_pixmap fix_window (`PIXMAP pix#pixmap)
       end;
       grid <- g
 

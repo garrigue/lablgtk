@@ -75,10 +75,13 @@ class fixed obj = object
   method event = new GObj.event_ops obj
   method put w = Fixed.put obj (as_widget w)
   method move w = Fixed.move obj (as_widget w)
+  method set_has_window = Fixed.set_has_window obj
+  method has_window = Fixed.get_has_window obj
 end
 
-let fixed ?border_width ?width ?height ?packing ?show () =
+let fixed ?has_window ?border_width ?width ?height ?packing ?show () =
   let w = Fixed.create () in
+  may has_window ~f:(Fixed.set_has_window w);
   Container.set w ?border_width ?width ?height;
   pack_return (new fixed w) ~packing ~show
 

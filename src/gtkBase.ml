@@ -184,16 +184,6 @@ module Widget = struct
       { name = "unmap"; classe = `widget; marshaller = marshal_unit }
     let realize =
       { name = "realize"; classe = `widget; marshaller = marshal_unit }
-    let draw =
-      let marshal f _ = function
-	| `POINTER(Some p) :: _ -> f (Obj.magic p : Gdk.Rectangle.t)
-	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_draw"
-      in { name = "draw"; classe = `widget; marshaller = marshal }
-    let draw_focus =
-      { name = "draw_focus"; classe = `widget; marshaller = marshal_unit }
-    let draw_default =
-      { name = "draw_default"; classe = `widget;
-        marshaller = marshal_unit }
     external val_state : int -> state_type = "ml_Val_state_type"
     let state_changed =
       let marshal f = marshal_int (fun x -> f (val_state x)) in

@@ -42,6 +42,7 @@ module Expose = struct
     match get_type ev with `EXPOSE -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Expose.cast"
   external area : t -> Rectangle.t = "ml_GdkEventExpose_area"
+  external region : t -> region = "ml_GdkEventExpose_region"
   external count : t -> int = "ml_GdkEventExpose_count"
 end
 
