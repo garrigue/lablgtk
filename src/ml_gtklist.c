@@ -152,10 +152,10 @@ value ml_gtk_clist_get_selection_info (value clist, value x, value y)
     value ret;
     if (!gtk_clist_get_selection_info (GtkCList_val(clist), Int_val(x),
 			     Int_val(y), &row, &column))
-	invalid_argument ("Gtk.Clist.get_selection_info");
+	invalid_argument ("Gtk.Clist.get_row_column");
     ret = alloc_small (2,0);
-    Field(ret,0) = row;
-    Field(ret,1) = column;
+    Field(ret,0) = Val_int(row);
+    Field(ret,1) = Val_int(column);
     return ret;
 }
 ML_1 (gtk_clist_select_all, GtkCList_val, Unit)
