@@ -64,6 +64,12 @@ module Message : sig
   val remove_log_handler : log_handler -> unit
 end
 
+module Thread : sig
+  val init : unit -> unit (* Call only once! *)
+  val enter : unit -> unit
+  val leave : unit -> unit
+end
+
 module Convert :  sig
   val convert :
     string -> to_codeset:string -> from_codeset:string -> string
