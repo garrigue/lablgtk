@@ -14,7 +14,7 @@ let _ =
       begin
 	let pos = text#position in
 	GdkEvent.Button.set_button ev 1;
-	text#event#send (GdkEvent.coerce ev);
+	text#event#send (ev :> GdkEvent.any);
 	Printf.printf "Position is %d.\n" text#position;
 	flush stdout;
 	text#set_position pos;

@@ -24,7 +24,7 @@ class menu_item_skel :
   'a obj ->
   object
     inherit container
-    constraint 'a = [>`widget|`container|`menuitem]
+    constraint 'a = [>`widget|`container|`bin|`item|`menuitem]
     val obj : 'a obj
     method activate : unit -> unit
     method add_accelerator :
@@ -40,7 +40,7 @@ class menu_item_skel :
 and menu_item : 'a obj ->
   object
     inherit menu_item_skel
-    constraint 'a = [>`widget|`container|`item|`menuitem]
+    constraint 'a = [>`widget|`container|`bin|`item|`menuitem]
     val obj : 'a obj
     method event : event_ops
     method connect : menu_item_signals
@@ -91,7 +91,7 @@ class check_menu_item_signals : 'a obj ->
 class check_menu_item : 'a obj ->
   object
     inherit menu_item_skel
-    constraint 'a = [>`widget|`checkmenuitem|`container|`item|`menuitem]
+    constraint 'a = [>`widget|`container|`bin|`item|`menuitem|`checkmenuitem]
     val obj : 'a obj
     method active : bool
     method event : event_ops

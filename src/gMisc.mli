@@ -142,7 +142,7 @@ class label_skel : 'a obj ->
     method text : string
   end
 
-class label : [>`label] obj ->
+class label : Gtk.label obj ->
   object
     inherit label_skel
     val obj : Gtk.label obj

@@ -57,8 +57,7 @@ object (connect)
 	true
       end
   method realize ~callback =
-    let connect = new GObj.misc_signals ~after (GtkBase.Widget.coerce obj) in
-    connect#realize ~callback:
+    (new GObj.misc_signals ~after (obj :> Gtk.widget obj))#realize ~callback:
       begin fun ev ->
 	if Raw.make_current obj then callback ()
 	else prerr_endline "GlGtk-WARNING **: could not make current"

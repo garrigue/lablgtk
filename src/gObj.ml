@@ -31,7 +31,7 @@ end
 (* Widget *)
 
 class event_signals ?(after=false) obj = object
-  val obj = Widget.coerce obj
+  val obj = (obj :> Gtk.widget obj)
   val after = after
   method after = {< after = true >}
   method any = GtkSignal.connect ~sgn:Widget.Signals.Event.any ~after obj
@@ -78,7 +78,7 @@ class event_signals ?(after=false) obj = object
 end
 
 class event_ops obj = object
-  val obj = Widget.coerce obj
+  val obj = (obj :> Gtk.widget obj)
   method add = Widget.add_events obj
   method connect = new event_signals obj
   method send : Gdk.Tags.event_type Gdk.event -> bool = Widget.event obj
@@ -110,7 +110,7 @@ class selection_data (sel : Selection.t) = object
 end
 
 class drag_signals ?(after=false) obj = object
-  val obj =  Widget.coerce obj
+  val obj =  obj
   val after = after
   method after = {< after = true >}
   method beginning ~callback =
@@ -143,7 +143,7 @@ class drag_signals ?(after=false) obj = object
 end
 
 and drag_ops obj = object
-  val obj = Widget.coerce obj
+  val obj = obj
   method connect = new drag_signals obj
   method dest_set ?(flags=[`ALL]) ?(actions=[]) targets =
     DnD.dest_set obj ~flags ~actions ~targets:(Array.of_list targets)
@@ -205,7 +205,7 @@ and misc_signals ?after obj = object
 end
 
 and misc_ops obj = object
-  inherit gtkobj_misc (Widget.coerce obj)
+  inherit gtkobj_misc obj
   method connect = new misc_signals obj
   method show () = Widget.show obj
   method unparent () = Widget.unparent obj
@@ -260,9 +260,9 @@ end
 
 and widget obj = object (self)
   inherit gtkobj obj
-  method as_widget = Widget.coerce obj
-  method misc = new misc_ops obj
-  method drag = new drag_ops (Object.unsafe_cast obj)
+  method as_widget = (obj :> Gtk.widget obj)
+  method misc = new misc_ops (obj :> Gtk.widget obj)
+  method drag = new drag_ops (Object.unsafe_cast obj : Gtk.widget obj)
   method coerce =
     (self :> < destroy : _; get_id : _; as_widget : _; misc : _;
                drag : _; coerce : _ >)

@@ -12,7 +12,7 @@ class ['a] window_skel obj = object
   constraint 'a = _ #window_skel
   inherit container obj
   method event = new GObj.event_ops obj
-  method as_window = Window.coerce obj
+  method as_window = (obj :> Gtk.window obj)
   method activate_focus () = Window.activate_focus obj
   method activate_default () = Window.activate_default obj
   method add_accel_group = Window.add_accel_group obj
@@ -32,7 +32,7 @@ class ['a] window_skel obj = object
 end
 
 class window obj = object
-  inherit [window] window_skel (Window.coerce obj)
+  inherit [window] window_skel (obj : Gtk.window obj)
   method connect = new container_signals obj
 end
 
@@ -47,7 +47,7 @@ let window ?kind:(t=`TOPLEVEL) ?title ?wm_name ?wm_class ?position
   new window w
 
 class dialog obj = object
-  inherit [window] window_skel (Dialog.coerce obj)
+  inherit [window] window_skel (obj : Gtk.dialog obj)
   method connect = new container_signals obj
   method action_area = new GPack.box (Dialog.action_area obj)
   method vbox = new GPack.box (Dialog.vbox obj)
@@ -143,7 +143,7 @@ let font_selection_dialog ?title ?wm_name ?wm_class ?position
   if show then Widget.show w;
   new font_selection_dialog w
 
-class plug (obj : Gtk.plug obj) = window obj
+class plug (obj : Gtk.plug obj) = window (obj :> Gtk.window obj)
 
 let plug ~window:xid ?border_width ?width ?height ?(show=false) () =
   let w = Plug.create xid in
