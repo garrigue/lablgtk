@@ -1,5 +1,17 @@
 $Id$
 
+2003.07.09 [Jun Furuse]
+  Improvements of lablgladecc:
+  * Internal widgets are now also accessible by instance variables.
+    The user can use simply widget names inside sub-class definitions,
+    instead writing self#widget_name.
+  * A flag -hide-default hides all the widget with default names 
+    come from glade, like label123.
+  * Added check_all function to the output so that one can check 
+    all the widgets really exist.
+  * reparent method is added to facilitate to embed one glade toplevel
+    widget into a container.
+
 2003.07.09 [Jacques]
   * ?width and ?height in GWindow back to setting size_request
     (default size did not work properly)
