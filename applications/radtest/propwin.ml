@@ -63,7 +63,7 @@ let vbox =
 
 let init () = vbox#get
 
-let widget_pool = Hashtbl.create 7
+let widget_pool = Hashtbl.create size:7
 
 let boxref = ref None
 let shown_widget = ref ""

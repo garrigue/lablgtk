@@ -19,7 +19,7 @@ let schedule =
     s
   with Sys_error msg ->
     prerr_endline msg; flush stderr;
-    Hashtbl.create 13;;
+    Hashtbl.create size:13;;
 
     (* Saves the schedule data when the application terminates *)
 at_exit (fun () ->

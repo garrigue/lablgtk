@@ -93,7 +93,7 @@ let new_tiwidget :
   ref (fun :classe ?:pos :name :parent_tree  _ -> failwith "new_tiwidget")
 
 
-let widget_map = Hashtbl.create 17
+let widget_map = Hashtbl.create size:17
 
 (************* window creation class *************)
 (* an instance of this class is created for each window opened
@@ -433,7 +433,7 @@ object(self)
 
 
   method private save_to_string string_ref =
-    let b = Buffer.create 80 in
+    let b = Buffer.create size:80 in
     let f = Format.formatter_of_buffer b in
     self#save f;
     Format.pp_print_flush f ();

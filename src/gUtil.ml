@@ -4,7 +4,7 @@ open GObj
 
 class ['a] memo () = object
   constraint 'a = #widget
-  val tbl = Hashtbl.create 7
+  val tbl = Hashtbl.create size:7
   method add (obj : 'a) =
     Hashtbl.add tbl key:obj#get_id data:obj
   method find (obj : widget) = Hashtbl.find tbl key:obj#get_id
@@ -22,7 +22,7 @@ class type disconnector = object
 end
 
 let disconnectors : (int, disconnector list) Hashtbl.t =
-  Hashtbl.create 7
+  Hashtbl.create size:7
 
 class ['a] signal obj = object (self)
   val mutable callbacks : (GtkSignal.id * ('a -> unit)) list = []

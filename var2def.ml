@@ -20,7 +20,7 @@ let lexer = make_lexer ["type"; "="; "["; "]"]
 
 let main () =
   let s = lexer (Stream.of_channel stdin) in
-  let tags = Hashtbl.create 57 in
+  let tags = Hashtbl.create size:57 in
   try while true do match s with parser
       [< ' Ident tag >] ->
 	let hash = hash_variant tag in
