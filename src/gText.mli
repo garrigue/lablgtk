@@ -63,6 +63,7 @@ object
   method backward_chars : int -> bool
   method backward_cursor_position : unit -> bool
   method backward_cursor_positions : int -> bool
+  method backward_find_char : ?limit:iter -> (char -> bool) -> bool
   method backward_line : unit -> bool
   method backward_lines : int -> bool
   method backward_sentence_start : unit -> bool
@@ -83,6 +84,7 @@ object
   method forward_chars : int -> bool
   method forward_cursor_position : unit -> bool
   method forward_cursor_positions : int -> bool
+  method forward_find_char : ?limit:iter -> (char -> bool) -> bool
   method forward_line : unit -> bool
   method forward_lines : int -> bool
   method forward_sentence_end : unit -> bool
@@ -129,9 +131,9 @@ object
   method starts_word : bool
   method toggles_tag : texttag obj option -> bool
   method forward_search : flag:Gtk.Tags.text_search_flag ->
-    ?limit:Gtk.textiter -> string -> (iter * iter) option
+    ?limit:iter -> string -> (iter * iter) option
   method backward_search : flag:Gtk.Tags.text_search_flag ->
-    ?limit:Gtk.textiter -> string -> (iter * iter) option
+    ?limit:iter -> string -> (iter * iter) option
 end
 val as_textiter : iter -> textiter
 

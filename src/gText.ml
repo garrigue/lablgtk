@@ -140,16 +140,25 @@ object
   method compare (a:iter) = Iter.compare it a#as_textiter
   method in_range ~(start:iter) ~(stop:iter)  = 
     Iter.in_range it start#as_textiter stop#as_textiter
-  method forward_search ~flag ?limit s =
-    let r = Iter.forward_search it s flag limit in
+  method forward_search ~flag ?(limit:iter option) s =
+    let r = Iter.forward_search it s flag (match limit with None -> None 
+					     | Some i -> Some i#as_textiter ) 
+    in
     match r with 
 	Some(s,t) -> Some((new iter s),(new iter t))
       | _ -> None
-  method backward_search ~flag ?limit s =
-    let r = Iter.backward_search it s flag limit in
+  method backward_search ~flag ?(limit:iter option) s =
+    let r = Iter.backward_search it s flag (match limit with None -> None 
+				   | Some i -> Some i#as_textiter ) in
     match r with 
 	Some(s,t) -> Some((new iter s),(new iter t))
       | _ -> None
+  method forward_find_char ?(limit:iter option) f = 
+    Iter.forward_find_char it f (match limit with None -> None 
+				   | Some i -> Some i#as_textiter )
+  method backward_find_char ?(limit:iter option) f = 
+    Iter.backward_find_char it f  (match limit with None -> None 
+				     | Some i -> Some i#as_textiter )
 end
 
 (* let iter i = new iter (Iter.copy i) *)

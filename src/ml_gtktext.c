@@ -9,6 +9,7 @@
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/custom.h>
+#include <caml/callback.h>
 
 #include "wrappers.h"
 #include "ml_glib.h"
@@ -147,6 +148,19 @@ CAMLprim value ml_gtk_text_tag_table_lookup (value tv, value s)
 }
 
 ML_1(gtk_text_tag_table_get_size, GtkTextTagTable_val, Int_val)
+
+CAMLprim value ml_gtk_text_tag_table_foreach(value t,value fun)
+{
+  /* Non ANSI C */
+  void call_fun(GtkTextTag* t,gpointer user_data)
+    {
+      callback(fun,Val_GtkTextTag(t));
+      return;
+    }
+    gtk_text_tag_table_foreach(GtkTextTagTable_val(t), call_fun, NULL);
+    return(Val_unit);
+
+}
 
 /* gtktextbuffer */
 
@@ -835,4 +849,34 @@ CAMLprim value ml_gtk_text_iter_##dir##_search (value ti_start, \
 Make_search(forward);
 Make_search(backward);
 
+
+
+CAMLprim value ml_gtk_text_iter_forward_find_char(value i,value fun,value ito)
+{
+  /* Non ANSI C */
+  gboolean call_fun(gunichar ch,gpointer user_data)
+    {
+      return(Bool_val(callback(fun,Val_char(ch))));
+    }
+  return
+    Val_bool
+    (gtk_text_iter_forward_find_char(GtkTextIter_val(i),
+				    call_fun,
+				    NULL,
+				    Option_val(ito,GtkTextIter_val,NULL)));
+}
      
+CAMLprim value ml_gtk_text_iter_backward_find_char(value i,value fun,value ito)
+{
+  /* Non ANSI C */
+  gboolean call_fun(gunichar ch,gpointer user_data)
+    {
+      return(Bool_val(callback(fun,Val_char(ch))));
+    }
+  return
+    Val_bool
+    (gtk_text_iter_backward_find_char(GtkTextIter_val(i),
+				      call_fun,
+				      NULL,
+				      Option_val(ito,GtkTextIter_val,NULL)));
+}
