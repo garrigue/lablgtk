@@ -7,8 +7,8 @@
 
 (* $Id$ *)
 
-type handle = [`widget] Gobject.obj
-type menuhandle = [`gtk|`widget|`container|`menu_shell] Gobject.obj
+type handle = [`gtk|`widget] Gobject.obj
+type menuhandle = [`gtk|`widget|`container|`menushell|`menu] Gobject.obj
 type richcolor
 type hres
 type hresources
@@ -370,6 +370,7 @@ val exit_application : unit -> unit
 
 val new_menuitem : menu -> menuitem
 val new_menu : unit -> menu
+(*
 val new_popupmenu : unit -> popupmenu
 
 val new_window : unit -> window
@@ -387,5 +388,5 @@ val new_treeview : container -> treeview
 
 val new_litems : genlist -> 'a litems
 val new_resources : width:int -> height:int -> resources
-
+*)
 (*****************************************************************************)
