@@ -209,3 +209,8 @@ class font_selection obj = object
   method set_preview_text = FontSelection.set_preview_text obj
   method set_filter = FontSelection.set_filter obj
 end
+
+let font_selection ?border_width ?width ?height ?packing ?show () =
+  let w = FontSelection.create () in
+  Container.set w ?border_width ?width ?height;
+  pack_return (new font_selection w) ~packing ~show
