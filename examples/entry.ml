@@ -19,7 +19,7 @@ let main () =
   Widget.set window width:200 height:100;
   Window.set_title window "GTK Entry";
   Signal.connect window sig:Signal.delete_event
-    cb:(fun () -> Main.quit (); true);
+    cb:(fun _ -> Main.quit (); true);
 
   let vbox = Box.create `VERTICAL in
   Container.add window vbox;

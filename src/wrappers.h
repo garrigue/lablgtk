@@ -118,7 +118,8 @@ value cname##_bc (value *argv, int argn) \
 static void ml_final_##type (value val) \
 { final ((type*)Field(val,1)); } \
 inline value Val_##type (type *p) \
-{ value ret = alloc_final (2, ml_final_##type, 1, 50); \
+{ value ret; if (!p) invalid_argument ("Val_"#type" : null pointer"); \
+  ret = alloc_final (2, ml_final_##type, 1, 50); \
   initialize (&Field(ret,1), (value) p); init (p); return ret; }
 
 #define Pointer_val(val) Field(val,1)
@@ -134,3 +135,8 @@ long Flags_##conv (value list) \
 { long flags = 0L; \
   while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
   return flags; }
+
+#define Make_Copy(name, type) \
+value copy_##name (type *arg) \
+{ value ret = alloc_shr (Wosizeof(type), Abstract_tag); \
+  memcpy ((void*)ret, (void*)arg, sizeof(type)); return ret; }

@@ -11,7 +11,7 @@ let eq_float x y = abs_float (x -. y) < 1e-13
 
 let _ =
   let top = Window.create `TOPLEVEL in
-  Signal.connect top sig:Signal.delete_event cb:(fun () -> Main.quit (); true);
+  Signal.connect top sig:Signal.delete_event cb:(fun _ -> Main.quit (); true);
   let hbox = Box.create `VERTICAL in
   Container.add top hbox;
   let entry = Entry.create () in

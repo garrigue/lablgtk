@@ -162,7 +162,7 @@ ML_2 (gtk_widget_draw, GtkWidget_val, (GdkRectangle*), Unit)
 ML_1 (gtk_widget_draw_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_draw_default, GtkWidget_val, Unit)
 ML_1 (gtk_widget_draw_children, GtkWidget_val, Unit)
-ML_2 (gtk_widget_event, GtkWidget_val, (GdkEvent*), Unit)
+ML_2 (gtk_widget_event, GtkWidget_val, GdkEvent_val( ), Unit)
 ML_1 (gtk_widget_activate, GtkWidget_val, Unit)
 ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit)
 ML_3 (gtk_widget_popup, GtkWidget_val, Int_val, Int_val, Unit)
@@ -899,7 +899,7 @@ void ml_gtk_callback_marshal (GtkObject *object, gpointer data,
 
 value ml_gtk_arg_shift (GtkArg *args, value index)
 {
-    return (value) (args+Int_val(index));
+    return (value) (&args[Int_val(index)]);
 }
 
 value ml_gtk_arg_get_type (GtkArg *arg)
@@ -909,21 +909,21 @@ value ml_gtk_arg_get_type (GtkArg *arg)
 
 value ml_gtk_arg_get_char (GtkArg *arg)
 {
-    if (arg->type != GTK_TYPE_CHAR)
+    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_CHAR)
 	ml_raise_gtk ("argument type mismatch");
     return Val_char (GTK_VALUE_CHAR(*arg));
 }
 
 value ml_gtk_arg_get_bool (GtkArg *arg)
 {
-    if (arg->type != GTK_TYPE_BOOL)
+    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_BOOL)
 	ml_raise_gtk ("argument type mismatch");
     return Val_bool (GTK_VALUE_BOOL(*arg));
 }
 
 value ml_gtk_arg_get_int (GtkArg *arg)
 {
-    switch (arg->type) {
+    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
     case GTK_TYPE_INT:
     case GTK_TYPE_UINT:
 	return Val_int (GTK_VALUE_INT(*arg));
@@ -941,7 +941,7 @@ value ml_gtk_arg_get_int (GtkArg *arg)
 
 value ml_gtk_arg_get_float (GtkArg *arg)
 {
-    switch (arg->type) {
+    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
     case GTK_TYPE_FLOAT:
 	return copy_double ((double)GTK_VALUE_FLOAT(*arg));
     case GTK_TYPE_DOUBLE:
@@ -953,14 +953,14 @@ value ml_gtk_arg_get_float (GtkArg *arg)
 
 value ml_gtk_arg_get_string (GtkArg *arg)
 {
-    if (arg->type != GTK_TYPE_STRING)
+    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_STRING)
 	ml_raise_gtk ("argument type mismatch");
     return copy_string (GTK_VALUE_STRING(*arg));
 }
 
 value ml_gtk_arg_get_pointer (GtkArg *arg)
 {
-    switch (arg->type) {
+    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
     case GTK_TYPE_BOXED:
 	return (value) GTK_VALUE_BOXED(*arg);
     case GTK_TYPE_POINTER:
@@ -979,7 +979,7 @@ value ml_gtk_arg_get_object (GtkArg *arg)
 
 value ml_gtk_arg_set_char (GtkArg *arg, value val)
 {
-    if (arg->type != GTK_TYPE_CHAR)
+    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_CHAR)
 	ml_raise_gtk ("argument type mismatch");
     *GTK_RETLOC_CHAR(*arg) = Char_val(val);
     return Val_unit;
@@ -987,7 +987,7 @@ value ml_gtk_arg_set_char (GtkArg *arg, value val)
 
 value ml_gtk_arg_set_bool (GtkArg *arg, value val)
 {
-    if (arg->type != GTK_TYPE_BOOL)
+    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_BOOL)
 	ml_raise_gtk ("argument type mismatch");
     *GTK_RETLOC_BOOL(*arg) = Bool_val(val);
     return Val_unit;
@@ -995,7 +995,7 @@ value ml_gtk_arg_set_bool (GtkArg *arg, value val)
 
 value ml_gtk_arg_set_int (GtkArg *arg, value val)
 {
-    switch (arg->type) {
+    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
     case GTK_TYPE_INT:
     case GTK_TYPE_UINT:
 	*GTK_RETLOC_INT(*arg) = Int_val(val); break;
@@ -1014,7 +1014,7 @@ value ml_gtk_arg_set_int (GtkArg *arg, value val)
 
 value ml_gtk_arg_set_float (GtkArg *arg, value val)
 {
-    switch (arg->type) {
+    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
     case GTK_TYPE_FLOAT:
 	*GTK_RETLOC_FLOAT(*arg) = (float) Double_val(val); break;
     case GTK_TYPE_DOUBLE:
@@ -1027,7 +1027,7 @@ value ml_gtk_arg_set_float (GtkArg *arg, value val)
 
 value ml_gtk_arg_set_string (GtkArg *arg, value val)
 {
-    if (arg->type != GTK_TYPE_STRING)
+    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_STRING)
 	ml_raise_gtk ("argument type mismatch");
     *GTK_RETLOC_STRING(*arg) = String_val(val);
     return Val_unit;
@@ -1035,7 +1035,7 @@ value ml_gtk_arg_set_string (GtkArg *arg, value val)
 
 value ml_gtk_arg_set_pointer (GtkArg *arg, value val)
 {
-    switch (arg->type) {
+    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
     case GTK_TYPE_BOXED:
 	*GTK_RETLOC_BOXED(*arg) = (gpointer) val; break;
     case GTK_TYPE_POINTER:
