@@ -419,10 +419,37 @@ CAMLprim value ml_##cname(value str) { \
   return caml_copy_string_len_and_free (c_res, bw); \
 }
 
-Make_conversion(g_locale_to_utf8)
+/* Make_conversion(g_locale_to_utf8) */
 Make_conversion(g_filename_to_utf8)
-Make_conversion(g_locale_from_utf8)
+/* Make_conversion(g_locale_from_utf8) */
 Make_conversion(g_filename_from_utf8)
+
+CAMLprim value ml_g_filename_from_uri (value uri)
+{
+  GError *err = NULL;
+  gchar *hostname, *result;
+  result = g_filename_from_uri (String_val(uri), &hostname, &err);
+  if (err != NULL) ml_raise_gerror(err);
+  {
+    CAMLparam0();
+    CAMLlocal3(v_h, v_f, v_p);
+    v_h = Val_option(hostname, copy_string_g_free);
+    v_f = copy_string_g_free (result);
+    v_p = alloc_small(2, 0);
+    Field(v_p, 0) = v_h;
+    Field(v_p, 1) = v_f;
+    CAMLreturn(v_p);
+  }
+}
+
+CAMLprim value ml_g_filename_to_uri (value hostname, value uri)
+{
+  GError *err = NULL;
+  gchar *result;
+  result = g_filename_to_uri (String_val(uri), String_option_val(hostname), &err);
+  if (err != NULL) ml_raise_gerror(err);
+  return copy_string_g_free(result);
+}
 
 CAMLprim value ml_g_get_charset()
 {
@@ -451,6 +478,16 @@ ML_1 (g_unichar_digit_value, Int_val, Val_int)
 ML_1 (g_unichar_xdigit_value, Int_val, Val_int)
 
 ML_1 (g_utf8_strlen, SizedString_val, Val_int)
+ML_2 (g_utf8_normalize, SizedString_val, Normalize_mode_val, copy_string_g_free)
+ML_1 (g_utf8_casefold, SizedString_val, copy_string_g_free)
+ML_2 (g_utf8_collate, String_val, String_val, Val_int)
+ML_1 (g_utf8_collate_key, SizedString_val, copy_string_g_free)
+ML_1 (g_utf8_strup, SizedString_val, copy_string_g_free)
+ML_1 (g_utf8_strdown, SizedString_val, copy_string_g_free)
+CAMLprim value ml_g_utf8_offset_to_pointer (value s, value pos, value off)
+{
+  return Val_long (g_utf8_offset_to_pointer (String_val(s) + Long_val(pos), Long_val(off)) - String_val(s));
+}
 
 #define UNI_BOOL(f) ML_1(g_unichar_##f, Int_val, Val_bool)
 UNI_BOOL(validate)

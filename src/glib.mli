@@ -112,11 +112,26 @@ module Convert :  sig
   (** All internal strings are encoded in utf8: you should use
      the following conversion functions *)
 
-  val locale_from_utf8 : string -> string (** @raise Error . *)
+  val locale_from_utf8 : string -> string 
+    (** Converts the input string from [UTF-8] to the encoding of the current locale.
+        @raise Error if the conversion fails
+        If the locale's encoding is [UTF-8], the string is simply validated and returned unmodified.
+        @raise Error if the string is not a valid [UTF-8] string *)
+
   val locale_to_utf8 : string -> string (** @raise Error . *)
+    (** Converts the input string from the encoding of the current locale to [UTF-8].
+        @raise Error if the conversion fails
+        If the locale's encoding is [UTF-8], the string is simply validated and returned unmodified.
+        @raise Error if the string is not a valid [UTF-8] string *)
+
   val filename_from_utf8 : string -> string (** @raise Error . *)
   val filename_to_utf8 : string -> string (** @raise Error . *)
-  val get_charset : unit -> bool * string (** @raise Error . *)
+  val filename_from_uri : string -> string option * string (** @raise Error . *)
+  val filename_to_uri : ?hostname:string -> string -> string (** @raise Error . *)
+
+  val get_charset : unit -> bool * string
+    (** Obtains the character set for the current locale.
+        @return the pair [u,s] where [u] is true if the character set is [UTF-8] and [s] is the character set name *)
 end
 
 (** Unicode Manipulation
@@ -164,6 +179,18 @@ module Utf8 : sig
   val to_unichar : string -> pos:int ref -> unichar
   val to_unistring : string -> unistring
   val first_char : string -> unichar
+
+  val offset_to_pos : string -> pos:int -> off:int -> int
+
+  type normalize_mode = [ `DEFAULT | `DEFAULT_COMPOSE | `ALL | `ALL_COMPOSE ]
+  val normalize : string -> normalize_mode -> string
+
+  val uppercase : string -> string
+  val lowercase : string -> string
+
+  val casefold : string -> string
+  val collate : string -> string -> int
+  val collate_key : string -> string
 end
 
 (** @gtkdoc glib glib-Simple-XML-Subset-Parser *)

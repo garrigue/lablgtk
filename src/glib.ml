@@ -107,25 +107,40 @@ module Convert = struct
   external convert_with_fallback :
     ?fallback:string -> to_codeset:string -> from_codeset:string -> string -> string
     = "ml_g_convert_with_fallback"
-  external locale_from_utf8 : string -> string
-    = "ml_g_locale_from_utf8"
-  external locale_to_utf8 : string -> string
-    = "ml_g_locale_to_utf8"
+
+(* [get_charset ()] returns the pair [u,s] where [u] is true if the
+   current charset is UTF-8 encoded and [s] is the charset name. *)
+  external get_charset : unit -> bool * string = "ml_g_get_charset"
+
+  external utf8_validate : string -> bool = "ml_g_utf8_validate"
+
+  let locale_from_utf8 s =
+    match get_charset () with
+    | (true, _) -> 
+	if utf8_validate s 
+	then s 
+	else raise (Error (ILLEGAL_SEQUENCE, "Invalid byte sequence in conversion input"))
+    | (false, to_codeset) ->
+	convert s ~to_codeset ~from_codeset:"UTF-8"
+
+  let locale_to_utf8 s =
+    match get_charset () with
+    | (true, _) -> 
+	if utf8_validate s 
+	then s 
+	else raise (Error (ILLEGAL_SEQUENCE, "Invalid byte sequence in conversion input"))
+    | (false, from_codeset) ->
+	convert s ~to_codeset:"UTF-8" ~from_codeset
+
   external filename_from_utf8 : string -> string
     = "ml_g_filename_from_utf8"
   external filename_to_utf8 : string -> string
     = "ml_g_filename_to_utf8"
 	  
-(* [get_charset ()] returns the pair [u,s] where [u] is true if the
-   current charset is UTF-8 encoded and [s] is the charset name. *)
-  external get_charset : unit -> bool * string = "ml_g_get_charset"
-
-(*  
-  external filename_from_uri : string -> string option * string 
+  external filename_from_uri : string -> string option * string
     = "ml_g_filename_from_uri"
-  external filename_to_uri : string -> string option * string 
+  external filename_to_uri : ?hostname:string -> string -> string
     = "ml_g_filename_to_uri"
-*)
 end
 
 module Unichar = struct
@@ -151,7 +166,6 @@ module Unichar = struct
   external istitle : unichar -> bool = "ml_g_unichar_istitle"
   external isdefined : unichar -> bool = "ml_g_unichar_isdefined"
   external iswide : unichar -> bool = "ml_g_unichar_iswide"
-
 end
 
 module Utf8 = struct
@@ -219,6 +233,18 @@ module Utf8 = struct
 
   let first_char s =
     to_unichar s ~pos:(ref 0)
+
+  external offset_to_pos : string -> pos:int -> off:int -> int = "ml_g_utf8_offset_to_pointer" "noalloc"
+
+  external uppercase : string -> string = "ml_g_utf8_strup"
+  external lowercase : string -> string = "ml_g_utf8_strdown"
+
+  type normalize_mode = [ `DEFAULT | `DEFAULT_COMPOSE | `ALL | `ALL_COMPOSE ]
+  external normalize : string -> normalize_mode -> string = "ml_g_utf8_normalize"
+
+  external casefold : string -> string = "ml_g_utf8_casefold"
+  external collate : string -> string -> int = "ml_g_utf8_collate"
+  external collate_key : string -> string = "ml_g_utf8_collate_key"
 end
 
 module Markup = struct
