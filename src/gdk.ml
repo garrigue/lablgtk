@@ -181,6 +181,9 @@ module Draw = struct
     List.fold_left l acc:0
       fun:(fun (x,y) acc:pos -> PointArray.set arr :pos :x :y; pos+1);
     polygon w gc :filled arr
+  external string : 'a drawable -> font: font -> gc -> x: int -> y: int -> 
+    string: string -> unit
+      = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"	
 end
 
 module Event = struct
