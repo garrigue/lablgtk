@@ -325,7 +325,7 @@ class view_column (_obj : tree_view_column obj) = object
         TreeViewColumn.add_attribute obj crr#as_renderer attr col.index
   method clear_attributes : 
       'a. (#cell_renderer as 'a) -> unit = 
-      fun crr -> GtkTree.CellLayout.clear_attributes obj crr#as_renderer
+      fun crr -> TreeViewColumn.clear_attributes obj crr#as_renderer
 
   method set_sort_column_id = TreeViewColumn.set_sort_column_id obj
   method get_sort_column_id = TreeViewColumn.get_sort_column_id obj
