@@ -40,7 +40,7 @@ let main () =
   let hbox = GPack.hbox ~spacing:10 ~packing:w#add () in
   let pm = GDraw.pixmap_from_xpm_d ~data:openfile ~window:w () in
   GMisc.pixmap pm ~packing:hbox#add ();
-  GMisc.label ~text:"Embedded xpm" ~packing:hbox#add ();
+  GMisc.label ~label:"Embedded xpm" ~packing:hbox#add ();
   w#show ();
   w#connect#destroy ~callback:Main.quit;
   Main.main ()

@@ -9,7 +9,7 @@ let main () =
 
   let table = GPack.table ~rows:3 ~columns:2 ~packing: window#add () in
   
-  GMisc.label ~text:"Progress Bar Example" ()
+  GMisc.label ~label:"Progress Bar Example" ()
     ~packing:(table#attach ~left:0 ~right:2 ~top:0 ~expand:`X ~shrink:`BOTH);
   
   let pbar =

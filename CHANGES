@@ -1,5 +1,11 @@
 $Id$
 
+2003.07.07 [Benjamin]
+  * Fixed confusion between text/label in a Label. Now GMisc.label expects 
+    ~label instead of ~text. This is consistant with the semantic of text and 
+    label properties (label may contain pango makups/text never do)
+
+
 In lablgtk2-20030707
 
 2003.07.05 [Jacques]

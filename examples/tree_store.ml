@@ -169,7 +169,7 @@ let do_tree_store () =
   let window = GWindow.window ~title:"Card planning sheet" () in
   window#connect#destroy ~callback:GMain.quit;
   let vbox = GPack.vbox ~border_width:8 ~spacing:8 ~packing:window#add () in
-  GMisc.label ~text:"Jonathan's Holiday Card Planning Sheet"
+  GMisc.label ~label:"Jonathan's Holiday Card Planning Sheet"
     ~packing:vbox#pack ();
   let sw = GBin.scrolled_window ~shadow_type:`ETCHED_IN ~hpolicy:`AUTOMATIC
       ~vpolicy:`AUTOMATIC ~packing:vbox#add () in
