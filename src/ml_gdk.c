@@ -385,7 +385,8 @@ CAMLprim value copy_xdata (gint format, guchar *xdata, gulong nitems)
 {
     CAMLparam0();
     CAMLlocal2(ret, data);
-    int i, tag;
+    long tag;
+    unsigned int i;
     switch (format) {
     case 8:
         data = alloc_string (nitems);
