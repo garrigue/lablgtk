@@ -1,7 +1,9 @@
 # $Id$
 # Makefile for lablgtk.
 
-all: var2conv var2def lablgtk
+TARGETS = var2conv var2def lablgtk lablgtk_t lablgtkrun
+
+all: $(TARGETS)
 
 opt: lablgtkopt
 
@@ -125,7 +127,7 @@ var2def: var2def.cmo
 	rm -f *_tags.h
 
 clean:
-	rm -f *.cm* *.o *.a *_tags.[ch] var2conv var2def lablgtk lablgtk_t
+	rm -f *.cm* *.o *.a *_tags.[ch] $(TARGETS)
 
 .depend:
 	ocamldep *.ml *.mli > .depend
