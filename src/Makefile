@@ -102,7 +102,7 @@ ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
 lablgtktop: $(MLLIBS) $(INITOBJS)
-	$(TOPLEVEL) -custom -o $@ $(MLLINK) -ccopt -L. $(MLLIBS) $(INITOBJS) \
+	$(TOPLEVEL) -o $@ $(MLLINK) -ccopt -L. $(MLLIBS) $(INITOBJS) \
 	   -dllpath $(INSTALLDIR) -dllpath $(LIBDIR)/lablGL
 
 lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
@@ -155,9 +155,7 @@ lablgtk.cmxa: lablgtk.cma $(MLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtk $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
 
 lablgtkgl.cma: $(GLMLOBJS) $(GLCOBJS)
-	$(LIBRARIAN) -o lablgtkgl -L. -llablgtk \
-		-L`ocamlc -where`/lablGL -llablgl \
-		-lgtkgl $(GTKLIBS) $(GLMLOBJS) $(GLCOBJS)
+	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GTKLIBS) $(GLMLOBJS) $(GLCOBJS)
 lablgtkgl.cmxa: lablgtkgl.cma $(GLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GTKLIBS) \
 		$(GLMLOBJS:.cmo=.cmx)

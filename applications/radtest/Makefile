@@ -55,11 +55,11 @@ MLSRC = common.mli utils.ml property.mli property.ml propwin.mli \
 
 radtest: $(MLOBJS)  libgtk2.a gtk2.cma
 	$(LINKER) -custom -o $@ lablgtk.cma gtkInit.cmo -I . gtk2.cma \
-	    $(MLOBJS)
+	    $(MLOBJS) -ccopt "$(GTKLIBS:-ccopt=)"
 
 radtestopt: $(MLOBJS:.cmo=.cmx) libgtk2.a gtk2.cmxa
 	$(LINKOPT) -o $@ lablgtk.cmxa gtkInit.cmx -I . gtk2.cmxa \
-	    $(MLOBJS:.cmo=.cmx)
+	    $(MLOBJS:.cmo=.cmx) -ccopt "$(GTKLIBS)"
 
 %.mli %.ml: %.mly
 	ocamlyacc $<
