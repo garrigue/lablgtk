@@ -15,7 +15,7 @@ let mem_string :char s =
     false
   with Exit -> true
 
-let rec until :chars ?(:buf = Buffer.create 80) s =
+let rec until :chars ?(:buf = Buffer.create size:80) s =
   match Stream.peek s with
     Some c ->
       if mem_string char:c chars then Buffer.contents buf else begin
