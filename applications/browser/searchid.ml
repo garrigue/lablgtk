@@ -289,12 +289,12 @@ let search_string_type text ~mode =
       try Typemod.transl_signature env sexp
       with Env.Error err -> []
       | Typemod.Error (l,_) ->
-          let start_c = l.loc_start.Lexing.pos_cnum in
-          let end_c = l.loc_end.Lexing.pos_cnum in
+          let start_c = l.loc_start in
+          let end_c = l.loc_end in
           raise (Error (start_c - 8, end_c - 8))
       | Typetexp.Error (l,_) ->
-          let start_c = l.loc_start.Lexing.pos_cnum in
-          let end_c = l.loc_end.Lexing.pos_cnum in
+          let start_c = l.loc_start in
+          let end_c = l.loc_end in
           raise (Error (start_c - 8, end_c - 8))
     in match sign with
         [Tsig_value (_, vd)] ->
@@ -302,16 +302,14 @@ let search_string_type text ~mode =
       | _ -> []
   with
     Syntaxerr.Error(Syntaxerr.Unclosed(l,_,_,_)) ->
-      let start_c = l.loc_start.Lexing.pos_cnum in
-      let end_c = l.loc_end.Lexing.pos_cnum in
+      let start_c = l.loc_start in
+      let end_c = l.loc_end in
       raise (Error (start_c - 8, end_c - 8))
   | Syntaxerr.Error(Syntaxerr.Other l) ->
-      let start_c = l.loc_start.Lexing.pos_cnum in
-      let end_c = l.loc_end.Lexing.pos_cnum in
+      let start_c = l.loc_start in
+      let end_c = l.loc_end in
       raise (Error (start_c - 8, end_c - 8))
-  | Lexer.Error (_, l) ->
-      let start_c = l.loc_start.Lexing.pos_cnum in
-      let end_c = l.loc_end.Lexing.pos_cnum in
+  | Lexer.Error (_, start_c, end_c) ->
       raise (Error (start_c - 8, end_c - 8))
       
 let longident_of_string text =
@@ -432,7 +430,7 @@ let search_structure str ~name ~kind ~prefix =
             begin fun acc item ->
               match item.pstr_desc with
                 Pstr_module (s, mexp) when s = modu ->
-                  loc := mexp.pmod_loc.loc_start.Lexing.pos_cnum;
+                  loc := mexp.pmod_loc.loc_start;
                   begin match mexp.pmod_desc with
                     Pmod_structure str -> str
                   | _ -> []
@@ -448,14 +446,14 @@ let search_structure str ~name ~kind ~prefix =
           List.iter l ~f:
             begin fun (pat,_) ->
               if List.mem name (bound_variables pat)
-              then loc := pat.ppat_loc.loc_start.Lexing.pos_cnum
+              then loc := pat.ppat_loc.loc_start
             end;
           false
       | Pstr_primitive (s, _) when kind = Pvalue -> name = s
       | Pstr_type l when kind = Ptype ->
           List.iter l ~f:
             begin fun (s, td) ->
-              if s = name then loc := td.ptype_loc.loc_start.Lexing.pos_cnum
+              if s = name then loc := td.ptype_loc.loc_start
             end;
           false
       | Pstr_exception (s, _) when kind = Pconstructor -> name = s
@@ -465,18 +463,18 @@ let search_structure str ~name ~kind ~prefix =
           List.iter l ~f:
             begin fun c ->
               if c.pci_name = name
-              then loc := c.pci_loc.loc_start.Lexing.pos_cnum
+              then loc := c.pci_loc.loc_start
             end;
           false
       | Pstr_class_type l when kind = Pcltype || kind = Ptype ->
           List.iter l ~f:
             begin fun c ->
               if c.pci_name = name
-              then loc := c.pci_loc.loc_start.Lexing.pos_cnum
+              then loc := c.pci_loc.loc_start
             end;
           false
       | _ -> false
-      then loc := item.pstr_loc.loc_start.Lexing.pos_cnum
+      then loc := item.pstr_loc.loc_start
     end;
   !loc
 
@@ -490,7 +488,7 @@ let search_signature sign ~name ~kind ~prefix =
             begin fun acc item ->
               match item.psig_desc with
                 Psig_module (s, mtyp) when s = modu ->
-                  loc := mtyp.pmty_loc.loc_start.Lexing.pos_cnum;
+                  loc := mtyp.pmty_loc.loc_start;
                   begin match mtyp.pmty_desc with
                     Pmty_signature sign -> sign
                   | _ -> []
@@ -506,7 +504,7 @@ let search_signature sign ~name ~kind ~prefix =
       | Psig_type l when kind = Ptype ->
           List.iter l ~f:
             begin fun (s, td) ->
-              if s = name then loc := td.ptype_loc.loc_start.Lexing.pos_cnum
+              if s = name then loc := td.ptype_loc.loc_start
             end;
           false
       | Psig_exception (s, _) when kind = Pconstructor -> name = s
@@ -516,17 +514,17 @@ let search_signature sign ~name ~kind ~prefix =
           List.iter l ~f:
             begin fun c ->
               if c.pci_name = name
-              then loc := c.pci_loc.loc_start.Lexing.pos_cnum
+              then loc := c.pci_loc.loc_start
             end;
           false
       | Psig_class_type l when kind = Ptype || kind = Pcltype ->
           List.iter l ~f:
             begin fun c ->
               if c.pci_name = name
-              then loc := c.pci_loc.loc_start.Lexing.pos_cnum
+              then loc := c.pci_loc.loc_start
             end;
           false
       | _ -> false
-      then loc := item.psig_loc.loc_start.Lexing.pos_cnum
+      then loc := item.psig_loc.loc_start
     end;
   !loc
