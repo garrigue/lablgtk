@@ -13,7 +13,7 @@ val print_widget : Format.formatter -> #widget -> unit
 
 class ['a] memo : unit ->
   object
-    constraint 'a = #widget
+    constraint 'a = <get_oid: int>
     val tbl : (int, 'a) Hashtbl.t
     method add : 'a -> unit
     method find : widget -> 'a
