@@ -102,7 +102,6 @@ class ['a] clist : Gtk.clist obj ->
       ?resizeable:bool ->
       ?auto_resize:bool ->
       ?width:int -> ?min_width:int -> ?max_width:int -> int -> unit
-    method set_column_title : int -> string -> unit
     method set_hadjustment : GData.adjustment -> unit
     method set_reorderable : bool -> unit
     method set_row :
