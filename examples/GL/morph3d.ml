@@ -566,28 +566,31 @@ let main () =
   let area = new GlGtk.area width:640 height:480
       [`DEPTH_SIZE 1;`RGBA;`DOUBLEBUFFER] packing:window#add in
 
-  GlClear.depth 1.0;
-  GlClear.color (0.0, 0.0, 0.0);
-  GlDraw.color (1.0, 1.0, 1.0);
+  area#connect#realize callback:
+    begin fun () ->
+      GlClear.depth 1.0;
+      GlClear.color (0.0, 0.0, 0.0);
+      GlDraw.color (1.0, 1.0, 1.0);
 
-  GlClear.clear [`color;`depth];
-  Gl.flush();
+      GlClear.clear [`color;`depth];
+      Gl.flush();
 
-  List.iter fun:(GlLight.light num:0)
-    [`ambient ambient; `diffuse diffuse; `position position0];
-  List.iter fun:(GlLight.light num:1)
-    [`ambient ambient; `diffuse diffuse; `position position1];
-  GlLight.light_model (`ambient lmodel_ambient);
-  GlLight.light_model (`two_side lmodel_twoside);
-  List.iter fun:Gl.enable
-    [`lighting;`light0;`light1;`depth_test;`normalize];
+      List.iter fun:(GlLight.light num:0)
+	[`ambient ambient; `diffuse diffuse; `position position0];
+      List.iter fun:(GlLight.light num:1)
+	[`ambient ambient; `diffuse diffuse; `position position1];
+      GlLight.light_model (`ambient lmodel_ambient);
+      GlLight.light_model (`two_side lmodel_twoside);
+      List.iter fun:Gl.enable
+	[`lighting;`light0;`light1;`depth_test;`normalize];
 
-  GlLight.material face:`both (`shininess front_shininess);
-  GlLight.material face:`both (`specular front_specular);
+      GlLight.material face:`both (`shininess front_shininess);
+      GlLight.material face:`both (`specular front_specular);
 
-  GlMisc.hint `fog `fastest;
-  GlMisc.hint `perspective_correction `fastest;
-  GlMisc.hint `polygon_smooth `fastest;
+      GlMisc.hint `fog `fastest;
+      GlMisc.hint `perspective_correction `fastest;
+      GlMisc.hint `polygon_smooth `fastest
+    end;
 
   let view = new view area in
   view#pinit;

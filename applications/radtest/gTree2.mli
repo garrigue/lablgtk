@@ -3,12 +3,12 @@
 open Gtk
 
 class tree_item2_signals :
-  'a[> container item treeitem widget] obj -> ?after:bool ->
+  'a[> container item treeitem widget] obj ->
   object
     inherit GContainer.item_signals
     val obj : 'a obj
-    method collapse : callback:(unit -> unit) -> GtkSignal.id
-    method expand : callback:(unit -> unit) -> GtkSignal.id
+    method collapse : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method expand : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class tree_item2 :
@@ -23,7 +23,7 @@ class tree_item2 :
     method add_events : Gdk.Tags.event_mask list -> unit
     method as_item : Gtk.tree_item obj
     method collapse : unit -> unit
-    method connect : ?after:bool -> tree_item2_signals
+    method connect : tree_item2_signals
     method expand : unit -> unit
     method remove_subtree : unit -> unit
     method set_subtree : #GObj.is_tree -> unit
@@ -31,13 +31,16 @@ class tree_item2 :
   end
 
 and tree2_signals :
-  'a[> container tree widget] obj -> ?after:bool ->
+  'a[> container tree widget] obj ->
   object
     inherit GContainer.container_signals
     val obj : 'a obj
-    method selection_changed : callback:(unit -> unit) -> GtkSignal.id
-    method select_child : callback:(tree_item2 -> unit) -> GtkSignal.id
-    method unselect_child : callback:(tree_item2 -> unit) -> GtkSignal.id
+    method selection_changed :
+	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method select_child :
+	callback:(tree_item2 -> unit) -> ?after:bool -> GtkSignal.id
+    method unselect_child :
+	callback:(tree_item2 -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 and tree2 :
@@ -55,7 +58,7 @@ and tree2 :
     method as_tree : Gtk.tree obj
     method child_position : Gtk.tree_item #GObj.is_item -> int
     method clear_items : start:int -> end:int -> unit
-    method connect : ?after:bool -> tree2_signals
+    method connect : tree2_signals
     method insert : Gtk.tree_item #GObj.is_item -> pos:int -> unit
     method remove_items : tree_item2 list -> unit
     method select_child : Gtk.tree_item #GObj.is_item -> unit

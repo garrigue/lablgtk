@@ -205,7 +205,7 @@ class window_and_tree :name =
 		  self#change_selected t#next
 		with Not_found -> ()
 	  end;
-	  tree_window#stop_emit "key_press_event";
+	  tree_window#connect#stop_emit name:"key_press_event";
 	  true
 	end;
       ()
@@ -606,7 +606,7 @@ object(self)
 	    then self#menu time:(GdkEvent.Button.time ev)
 	    else self#restricted_menu time:(GdkEvent.Button.time ev);
 	  end;
-	  tree_item#stop_emit "button_press_event";
+	  tree_item#connect#stop_emit name:"button_press_event";
 	  true
       | _ -> false);
     ()
@@ -1009,13 +1009,13 @@ class tibutton widget:(button : #button) :name :parent_tree :pos :parent_window 
     ]
 end
 
-let new_tibutton :name = new tibutton
-    widget:(let b = new button label:name in
-    b#connect#event#enter_notify
-      callback:(fun _ -> b#stop_emit "enter_notify_event"; true);
-    b#connect#event#leave_notify
-      callback:(fun _ -> b#stop_emit "leave_notify_event"; true); b)
-    :name
+let new_tibutton :name =
+  let b = new button label:name in
+  b#connect#event#enter_notify
+    callback:(fun _ -> b#connect#stop_emit name:"enter_notify_event"; true);
+  b#connect#event#leave_notify
+    callback:(fun _ -> b#connect#stop_emit name:"leave_notify_event"; true);
+  new tibutton widget:b :name
 
 
 class ticheck_button widget:(button : check_button) :name :parent_tree :pos :parent_window = object(self)
@@ -1102,19 +1102,21 @@ class titoggle_button widget:(button : toggle_button) :name :parent_tree :pos :p
     ]
 end
 
-let new_titoggle_button :name = new titoggle_button :name
-    widget:(let b = new toggle_button label:name in
-    b#connect#event#enter_notify
-      callback:(fun _ -> b#stop_emit "enter_notify_event"; true);
+let new_titoggle_button :name =
+  let b = new toggle_button label:name in
+  b#connect#event#enter_notify
+    callback:(fun _ -> b#connect#stop_emit name:"enter_notify_event"; true);
     b#connect#event#leave_notify
-      callback:(fun _ -> b#stop_emit "leave_notify_event"; true); b)
+      callback:(fun _ -> b#connect#stop_emit name:"leave_notify_event"; true);
+  new titoggle_button :name widget:b
 
 
 
 class tilabel widget:(labelw : label) :name :parent_tree :pos :parent_window =
 object(self)
 
-  inherit tiwidget :name classe:"label" widget:(labelw :> widget) :parent_tree :pos :parent_window as widget
+  inherit tiwidget :name classe:"label" widget:(labelw :> widget)
+      :parent_tree :pos :parent_window as widget
 
   method private class_name = "GMisc.label"
 

@@ -3,10 +3,10 @@
 #define GdkColormap_val(val) ((GdkColormap*)Pointer_val(val))
 extern value Val_GdkColormap (GdkColormap *);
 
-#define GdkColor_val(val) ((GdkColor*)Pointer_val(val))
+#define GdkColor_val(val) ((GdkColor*)MLPointer_val(val))
 #define Val_GdkColor Val_pointer
 
-#define GdkRectangle_val(val) ((GdkRectangle*)Pointer_val(val))
+#define GdkRectangle_val(val) ((GdkRectangle*)MLPointer_val(val))
 #define Val_GdkRectangle Val_pointer
 
 #define GdkDrawable_val(val) ((GdkDrawable*)Pointer_val(val))
@@ -20,8 +20,8 @@ extern value Val_GdkPixmap (GdkPixmap *);
 #define GdkBitmap_val(val) ((GdkBitmap*)Pointer_val(val))
 extern value Val_GdkBitmap (GdkBitmap *);
 
-#define GdkImage_val(val) ((GdkImage*) val)
-#define Val_GdkImage(image) ((value) image)
+#define GdkImage_val(val) ((GdkImage*)Pointer_val(val))
+#define Val_GdkImage(image) (Val_pointer(image))
 
 #define GdkFont_val(val) ((GdkFont*)Pointer_val(val))
 extern value Val_GdkFont (GdkFont *);
@@ -29,7 +29,7 @@ extern value Val_GdkFont (GdkFont *);
 #define GdkGC_val(val) ((GdkGC*)Pointer_val(val))
 extern value Val_GdkGC (GdkGC *);
 
-#define GdkEvent_val(type) (GdkEvent##type *)Pointer_val
+#define GdkEvent_val(type) (GdkEvent##type *)MLPointer_val
 
 #define GdkVisual_val(val) ((GdkVisual*) val)
 #define Val_GdkVisual(visual) ((value) visual)

@@ -139,7 +139,8 @@ value Val_##type##ext (type *p) \
   ret = alloc_final (2, ml_final_##type##ext, 1, 200); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
-#define Pointer_val(val) (Field(val,1) == 2 ? &Field(val,2) : (void*)Field(val,1))
+#define Pointer_val(val) ((void*)Field(val,1))
+#define MLPointer_val(val) (Field(val,1) == 2 ? &Field(val,2) : (void*)Field(val,1))
 
 #define Val_addr(ptr) (1+(value)ptr)
 #define Addr_val(val) ((void*)(val-1))
