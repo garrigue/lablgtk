@@ -335,7 +335,7 @@ value ml_gtk_drag_dest_set (value w, value f, value t, value a)
   }
   gtk_drag_dest_set (GtkWidget_val(w), Flags_Dest_defaults_val(f),
 		     targets, n_targets, Flags_GdkDragAction_val(a));
-  CAMLreturn Val_unit;
+  CAMLreturn(Val_unit);
 }
 ML_1 (gtk_drag_dest_unset, GtkWidget_val, Unit)
 ML_4 (gtk_drag_finish, GdkDragContext_val, Bool_val, Bool_val, Int_val, Unit)
@@ -371,7 +371,7 @@ value ml_gtk_drag_source_set (value w, value m, value t, value a)
   }
   gtk_drag_source_set (GtkWidget_val(w), OptFlags_GdkModifier_val(m),
 		       targets, n_targets, Flags_GdkDragAction_val(a));
-  CAMLreturn Val_unit;
+  CAMLreturn(Val_unit);
 }
 ML_4 (gtk_drag_source_set_icon, GtkWidget_val, GdkColormap_val,
       GdkPixmap_val, Option_val(arg4, GdkBitmap_val, NULL) Ignore, Unit)
@@ -405,6 +405,7 @@ ML_4 (gtk_selection_data_set, GtkSelectionData_val, Int_val, Int_val,
 
 #define GtkContainer_val(val) check_cast(GTK_CONTAINER,val)
 ML_2 (gtk_container_set_border_width, GtkContainer_val, Int_val, Unit)
+ML_2 (gtk_container_set_resize_mode, GtkContainer_val, Resize_mode_val, Unit)
 ML_2 (gtk_container_add, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_remove, GtkContainer_val, GtkWidget_val, Unit)
 static void ml_gtk_simple_callback (GtkWidget *w, gpointer data)
@@ -418,7 +419,7 @@ value ml_gtk_container_foreach (value w, value clos)
     CAMLparam1(clos);
     gtk_container_foreach (GtkContainer_val(w), ml_gtk_simple_callback,
 			   &clos);
-    CAMLreturn Val_unit;
+    CAMLreturn(Val_unit);
 }
 ML_1 (gtk_container_register_toplevel, GtkContainer_val, Unit)
 ML_1 (gtk_container_unregister_toplevel, GtkContainer_val, Unit)
@@ -522,15 +523,17 @@ Make_Extractor (gtk_check_menu_item_get, GtkCheckMenuItem_val,
 
 /* gtkradiomenuitem.h */
 
-#define Group_val(val) ((GSList*)Addr_val(val))
-#define Val_group Val_addr
-
 #define GtkRadioMenuItem_val(val) check_cast(GTK_RADIO_MENU_ITEM,val)
-ML_1 (gtk_radio_menu_item_new, Group_val, Val_GtkWidget_sink)
-ML_2 (gtk_radio_menu_item_new_with_label, Group_val,
+static GSList* item_group_val(value val)
+{
+    return (val == Val_unit ? NULL :
+            gtk_radio_menu_item_group(GtkRadioMenuItem_val(Field(val,0))));
+}
+ML_1 (gtk_radio_menu_item_new, item_group_val, Val_GtkWidget_sink)
+ML_2 (gtk_radio_menu_item_new_with_label, item_group_val,
       String_val, Val_GtkWidget_sink)
-ML_1 (gtk_radio_menu_item_group, GtkRadioMenuItem_val, Val_group)
-ML_2 (gtk_radio_menu_item_set_group, GtkRadioMenuItem_val, Group_val, Unit)
+ML_2 (gtk_radio_menu_item_set_group, GtkRadioMenuItem_val,
+      item_group_val, Unit)
 
 /* gtktreeitem.h */
 
@@ -853,11 +856,16 @@ ML_1 (gtk_check_button_new_with_label, String_val, Val_GtkWidget_sink)
 /* gtkradiobutton.h */
 
 #define GtkRadioButton_val(val) check_cast(GTK_RADIO_BUTTON,val)
-ML_1 (gtk_radio_button_new, Group_val, Val_GtkWidget_sink)
-ML_2 (gtk_radio_button_new_with_label, Group_val, String_val,
+static GSList* button_group_val(value val)
+{
+    return (val == Val_unit ? NULL :
+            gtk_radio_button_group(GtkRadioButton_val(Field(val,0))));
+}
+ML_1 (gtk_radio_button_new, button_group_val,
       Val_GtkWidget_sink)
-ML_1 (gtk_radio_button_group, GtkRadioButton_val, Val_group)
-ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, Group_val, Unit)
+ML_2 (gtk_radio_button_new_with_label, button_group_val,
+      String_val, Val_GtkWidget_sink)
+ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, button_group_val, Unit)
 
 /* gtkclist.h */
 
@@ -932,7 +940,7 @@ value ml_gtk_clist_get_pixmap (value clist, value row, value column)
     Field(ret,0) = vpixmap;
     Field(ret,1) = vbitmap;
 
-    CAMLreturn ret;
+    CAMLreturn(ret);
 }
 ML_7 (gtk_clist_set_pixtext, GtkCList_val, Int_val, Int_val, String_val,
       Int_val, GdkPixmap_val, GdkBitmap_val, Unit)
@@ -979,9 +987,9 @@ ML_1 (gtk_clist_sort, GtkCList_val, Unit)
 ML_2 (gtk_clist_set_auto_sort, GtkCList_val, Bool_val, Unit)
 
 /* gtkctree.h */
-
 #define GtkCTree_val(val) check_cast(GTK_CTREE,val)
 /* Beware: this definition axpects arg1 to be a GtkCTree */
+/*
 #define GtkCTreeNode_val(val) \
      (gtk_ctree_find(GtkCTree_val(arg1),NULL,(GtkCTreeNode*)(val-1)) \
      ? (GtkCTreeNode*)(val-1) : (ml_raise_gtk ("Bad GtkCTreeNode"), NULL))
@@ -995,7 +1003,7 @@ ML_11 (gtk_ctree_insert_node, GtkCTree_val, GtkCTreeNode_val,
        Val_GtkCTreeNode)
 ML_2 (gtk_ctree_remove_node, GtkCTree_val, GtkCTreeNode_val, Unit)
 ML_2 (gtk_ctree_is_viewable, GtkCTree_val, GtkCTreeNode_val, Val_bool)
-
+*/
 
 /* gtkfixed.h */
 
@@ -1208,8 +1216,8 @@ ML_2 (gtk_toolbar_set_style, GtkToolbar_val, Toolbar_style_val, Unit)
 ML_2 (gtk_toolbar_set_space_size, GtkToolbar_val, Int_val, Unit)
 ML_2 (gtk_toolbar_set_space_style, GtkToolbar_val, Toolbar_space_style_val, Unit)
 ML_2 (gtk_toolbar_set_tooltips, GtkToolbar_val, Bool_val, Unit)
-ML_2 (gtk_toolbar_set_button_relief, GtkToolbar_val, Relief_type_val, Unit)
-ML_1 (gtk_toolbar_get_button_relief, GtkToolbar_val, Val_relief_type)
+ML_2 (gtk_toolbar_set_button_relief, GtkToolbar_val, Relief_style_val, Unit)
+ML_1 (gtk_toolbar_get_button_relief, GtkToolbar_val, Val_relief_style)
 
 /* gtktree.h */
 
@@ -1537,7 +1545,7 @@ value ml_gtk_init (value argv)
     gtk_init (&argc, (char ***)&copy);
     ret = (argc ? alloc (argc, 0) : Atom(0));
     for (i = 0; i < argc; i++) initialize(&Field(ret,i), Field(copy,i));
-    CAMLreturn ret;
+    CAMLreturn(ret);
 }
 ML_1 (gtk_exit, Int_val, Unit)
 ML_0 (gtk_set_locale, Val_string)
@@ -1572,7 +1580,7 @@ void ml_gtk_callback_marshal (GtkObject *object, gpointer data,
 
     Field(vargs,0) = Val_int(-1);
     Field(vargs,1) = Val_int(-1);
-    CAMLreturn;
+    CAMLreturn0;
 }
 
 value ml_gtk_arg_shift (GtkArg *args, value index)
@@ -1642,6 +1650,9 @@ value ml_gtk_arg_get_pointer (GtkArg *arg)
 {
     gpointer p;
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
+    case GTK_TYPE_STRING:
+        p = GTK_VALUE_STRING(*arg);
+        break;
     case GTK_TYPE_BOXED:
 	p = GTK_VALUE_BOXED(*arg);
 	break;
@@ -1661,6 +1672,19 @@ value ml_gtk_arg_get_object (GtkArg *arg)
 	ml_raise_gtk ("argument type mismatch");
     p = GTK_VALUE_OBJECT(*arg);
     return Val_option (p, Val_GtkObject);
+}
+
+value ml_substring_of_pointer (value ptr, value pos, value len)
+{
+    value ret = alloc_string(Int_val(len));
+    memcpy ((char*)ret, ((char*)Pointer_val(ptr)) + Int_val(pos),
+            Int_val(len));
+    return ret;
+}
+
+value ml_int_of_pointer (value ptr)
+{
+    return Val_int(*(int*)Pointer_val(ptr));
 }
 
 value ml_gtk_arg_set_char (GtkArg *arg, value val)

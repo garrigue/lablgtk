@@ -4,191 +4,193 @@ open Gtk
 open GObj
 open GContainer
 
-(* Menu items *)
+class menu_shell_signals : 'b obj ->
+  object ('a)
+    inherit container_signals
+    constraint 'b = [>`menushell|`container|`widget]
+    val obj : 'b obj
+    method deactivate : callback:(unit -> unit) -> GtkSignal.id
+  end
+
+class menu_item_signals : 'b obj ->
+  object ('a)
+    inherit item_signals
+    constraint 'b = [>`menuitem|`container|`item|`widget]
+    val obj : 'b obj
+    method activate : callback:(unit -> unit) -> GtkSignal.id
+  end
 
 class menu_item_skel :
-  'a[> container menuitem widget] obj ->
+  'a obj ->
   object
     inherit container
+    constraint 'a = [>`widget|`container|`menuitem]
     val obj : 'a obj
     method activate : unit -> unit
     method add_accelerator :
-      accel_group ->
-      key:Gdk.keysym ->
+      group:accel_group ->
       ?mod:Gdk.Tags.modifier list ->
-      ?flags:Tags.accel_flag list -> unit
-    method as_item : menu_item obj
+      ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
+    method as_item : Gtk.menu_item obj
     method configure : show_toggle:bool -> show_indicator:bool -> unit
     method remove_submenu : unit -> unit
     method right_justify : unit -> unit
-    method set_submenu : #is_menu -> unit
+    method set_submenu : menu -> unit
   end
-
-class menu_item_signals :
-  'a[> container item menuitem widget] obj ->
+and menu_item : 'a obj ->
   object
-    inherit item_signals
+    inherit menu_item_skel
+    constraint 'a = [>`widget|`container|`item|`menuitem]
     val obj : 'a obj
-    method activate : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method connect : menu_item_signals
+  end
+and menu : Gtk.menu obj ->
+  object
+    inherit [menu_item] item_container
+    val obj : Gtk.menu obj
+    method add : menu_item -> unit
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method append : menu_item -> unit
+    method as_menu : Gtk.menu obj
+    method children : menu_item list
+    method connect : menu_shell_signals
+    method deactivate : unit -> unit
+    method insert : menu_item -> pos:int -> unit
+    method popdown : unit -> unit
+    method popup : button:int -> time:int -> unit
+    method prepend : menu_item -> unit
+    method remove : menu_item -> unit
+    method set_accel_group : accel_group -> unit
+    method set_border_width : int -> unit
+    method private wrap : Gtk.widget obj -> menu_item
   end
 
-class menu_item :
+val menu :
+  ?border_width:int -> ?packing:(menu -> unit) -> ?show:bool -> unit -> menu
+val menu_item :
   ?label:string ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(menu_item -> unit) -> ?show:bool ->
-  object
-    inherit menu_item_skel
-    val obj : Gtk.menu_item obj
-    method connect : menu_item_signals
-    method add_events : Gdk.Tags.event_mask list -> unit
-  end
-
-class menu_item_wrapper : ([> menuitem] obj) -> menu_item
-
-class tearoff_item :
+  ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
+val tearoff_item :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(menu_item -> unit) -> ?show:bool -> menu_item
+  ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
 
-class check_menu_item_signals :
-  'a[> checkmenuitem container item menuitem widget] obj ->
+class check_menu_item_signals : 'a obj ->
   object
     inherit menu_item_signals
+    constraint 'a = [>`checkmenuitem|`container|`item|`menuitem|`widget]
     val obj : 'a obj
-    method toggled : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method toggled : callback:(unit -> unit) -> GtkSignal.id
   end
 
-class check_menu_item_skel :
-  'a[> checkmenuitem container menuitem widget] obj ->
+class check_menu_item : 'a obj ->
   object
     inherit menu_item_skel
+    constraint 'a = [>`widget|`checkmenuitem|`container|`item|`menuitem]
     val obj : 'a obj
     method active : bool
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method connect : check_menu_item_signals
     method set_active : bool -> unit
     method set_show_toggle : bool -> unit
     method toggled : unit -> unit
   end
-     
-class check_menu_item :
+val check_menu_item :
   ?label:string ->
   ?active:bool ->
   ?show_toggle:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(check_menu_item -> unit) -> ?show:bool ->
-  object
-    inherit check_menu_item_skel
-    val obj : Gtk.check_menu_item obj
-    method connect : check_menu_item_signals
-    method add_events : Gdk.Tags.event_mask list -> unit
-  end
+  ?packing:(menu_item -> unit) -> ?show:bool -> unit -> check_menu_item
 
-class check_menu_item_wrapper : ([> checkmenuitem] obj) -> check_menu_item
-
-class radio_menu_item :
-  ?group:group ->
-  ?label:string ->
-  ?active:bool ->
-  ?show_toggle:bool ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(radio_menu_item -> unit) -> ?show:bool ->
+class radio_menu_item : Gtk.radio_menu_item obj ->
   object
-    inherit check_menu_item_skel
+    inherit check_menu_item
     val obj : Gtk.radio_menu_item obj
-    method connect : check_menu_item_signals
-    method add_events : Gdk.Tags.event_mask list -> unit
-    method group : group
-    method set_group : group -> unit
+    method group : Gtk.radio_menu_item group
+    method set_group : Gtk.radio_menu_item group -> unit
   end
-class radio_menu_item_wrapper : Gtk.radio_menu_item obj -> radio_menu_item
+val radio_menu_item :
+  ?group:Gtk.radio_menu_item group ->
+  ?label:string ->
+  ?active:bool ->
+  ?show_toggle:bool ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(menu_item -> unit) -> ?show:bool -> unit -> radio_menu_item
 
-(* Menus and menubars *)
-
-class menu_shell_signals :
-  'a[> container menushell widget] obj ->
+class menu_shell : 'a obj ->
   object
-    inherit container_signals
+    inherit [menu_item] item_container
+    constraint 'a = [>`widget|`container|`menushell]
     val obj : 'a obj
-    method deactivate : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
-  end
-
-class menu_shell :
-  'a[> container menushell widget] obj ->
-  object
-    inherit [Gtk.menu_item,menu_item] item_container
-    val obj : 'a obj
-    method connect : menu_shell_signals
     method add_events : Gdk.Tags.event_mask list -> unit
     method deactivate : unit -> unit
-    method insert : Gtk.menu_item #is_item -> pos:int -> unit
+    method connect : menu_shell_signals
+    method insert : menu_item -> pos:int -> unit
     method private wrap : Gtk.widget obj -> menu_item
   end
 
-class menu :
-  ?border_width:int ->
-  ?packing:(menu -> unit) -> ?show:bool ->
-  object
-    inherit menu_shell
-    val obj : Gtk.menu obj
-    method as_menu : Gtk.menu obj
-    method popdown : unit -> unit
-    method popup : button:int -> time:int -> unit
-    method set_accel_group : Gtk.accel_group -> unit
-  end
-class menu_wrapper : Gtk.menu obj -> menu
-
-class option_menu :
+val menu_bar :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(option_menu -> unit) -> ?show:bool ->
+  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> menu_shell
+
+class option_menu : 'a obj ->
   object
-    inherit GButton.button
-    val obj : Gtk.option_menu obj
+    inherit GButton.button_skel
+    constraint 'a = [>`optionmenu|`button|`container|`widget]
+    val obj : 'a obj
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method connect : GButton.button_signals
     method get_menu : menu
     method remove_menu : unit -> unit
     method set_history : int -> unit
     method set_menu : menu -> unit
   end
-class option_menu_wrapper : Gtk.option_menu obj -> option_menu
-
-class menu_bar :
+val option_menu :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(menu_bar -> unit) -> ?show:bool ->
-  object
-    inherit menu_shell
-    val obj : Gtk.menu_bar obj
-  end
-
-(* Normaly you need only create a menu and use the factory *)
+  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> option_menu
 
 class ['a] factory :
-  'a ->
   ?accel_group:accel_group ->
   ?accel_mod:Gdk.Tags.modifier list ->
   ?accel_flags:Tags.accel_flag list ->
+  'a ->
   object
     constraint 'a = #menu_shell
+    val flags : Tags.accel_flag list
+    val group : accel_group
+    val m : Gdk.Tags.modifier list
+    val menu_shell : 'a
     method accel_group : accel_group
     method add_check_item :
-      label:string -> ?active:bool ->
-      ?key:Gdk.keysym -> ?callback:(bool -> unit) -> check_menu_item
+      ?active:bool ->
+      ?key:Gdk.keysym ->
+      ?callback:(bool -> unit) -> string -> check_menu_item
     method add_item :
-      label:string ->
-      ?key:Gdk.keysym -> ?callback:(unit -> unit) -> ?submenu:menu -> menu_item
+      ?key:Gdk.keysym ->
+      ?callback:(unit -> unit) ->
+      ?submenu:menu -> string -> menu_item
     method add_radio_item :
-      label:string -> ?group:group -> ?active:bool ->
-      ?key:Gdk.keysym -> ?callback:(bool -> unit) -> radio_menu_item
+      ?group:Gtk.radio_menu_item group ->
+      ?active:bool ->
+      ?key:Gdk.keysym ->
+      ?callback:(bool -> unit) -> string -> radio_menu_item
     method add_separator : unit -> menu_item
-    method add_submenu : label:string -> ?key:Gdk.keysym -> menu
+    method add_submenu : ?key:Gdk.keysym -> string -> menu
     method add_tearoff : unit -> menu_item
+    method private bind :
+      ?key:Gdk.keysym -> ?callback:(unit -> unit) -> menu_item -> unit
     method menu : 'a
   end

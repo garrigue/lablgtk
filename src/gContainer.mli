@@ -4,72 +4,76 @@ open Gtk
 open GObj
 
 class focus :
-  'a[> container] obj ->
+  'a obj ->
   object
+    constraint 'a = [>`container]
     val obj : 'a obj
     method circulate : Tags.direction_type -> bool
-    method set : ?#is_widget -> unit
-    method set_hadjustment : ?GData.adjustment -> unit
-    method set_vadjustment : ?GData.adjustment -> unit
+    method set : widget option -> unit
+    method set_hadjustment : GData.adjustment option -> unit
+    method set_vadjustment : GData.adjustment option -> unit
   end
 
 class container :
-  'a[> container widget] obj ->
+  'a obj ->
   object
     inherit widget
+    constraint 'a = [>`container|`widget]
     val obj : 'a obj
-    method add : #is_widget -> unit
-    method children : widget_wrapper list
-    method remove : #is_widget -> unit
+    method add : widget -> unit
+    method children : widget list
+    method remove : widget -> unit
     method focus : focus
     method set_border_width : int -> unit
   end
 
 class container_signals :
-  'a[> container widget] obj ->
+  'a obj ->
   object
     inherit widget_signals
+    constraint 'a = [>`container|`widget]
     val obj : 'a obj
-    method add :
-	callback:(widget_wrapper -> unit) -> ?after:bool -> GtkSignal.id
-    method parent_set :
-	callback:(widget_wrapper option -> unit) ->
-	?after:bool -> GtkSignal.id
-    method remove :
-	callback:(widget_wrapper -> unit) -> ?after:bool -> GtkSignal.id
+    method add : callback:(widget -> unit) -> GtkSignal.id
+    method remove : callback:(widget -> unit) -> GtkSignal.id
   end
 
-class container_wrapper :
-  'a[> container widget] obj ->
+class container_full :
+  'a obj ->
   object
     inherit container
+    constraint 'a = [>`container|`widget]
     val obj : 'a obj
     method connect : container_signals
   end
 
-class virtual ['a, 'b] item_container :
-  'c[> container widget] obj ->
+val cast_container : widget -> container_full
+(* may raise [Gtk.Cannot_cast "GtkContainer"] *)
+
+class virtual ['a] item_container :
+  'c obj ->
   object
-    constraint 'a = [> item widget]
+    constraint 'a = < as_item : [>`widget] obj; .. >
+    constraint 'c = [>`container|`widget]
     inherit widget
     val obj : 'c obj
-    method add : 'a #is_item -> unit
-    method append : 'a #is_item -> unit
-    method children : 'b list
-    method virtual insert : 'a #is_item -> pos:int -> unit
-    method prepend : 'a #is_item -> unit
-    method remove : 'a #is_item -> unit
+    method add : 'a -> unit
+    method append : 'a -> unit
+    method children : 'a list
+    method virtual insert : 'a -> pos:int -> unit
+    method prepend : 'a -> unit
+    method remove : 'a -> unit
     method focus : focus
     method set_border_width : int -> unit
-    method private virtual wrap : Gtk.widget obj -> 'b
+    method private virtual wrap : Gtk.widget obj -> 'a
   end
 
 class item_signals :
-  'a[> container item widget] obj ->
+  'a obj ->
   object
     inherit container_signals
+    constraint 'a = [>`container|`item|`widget]
     val obj : 'a obj
-    method deselect : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
-    method select : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
-    method toggle : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method deselect : callback:(unit -> unit) -> GtkSignal.id
+    method select : callback:(unit -> unit) -> GtkSignal.id
+    method toggle : callback:(unit -> unit) -> GtkSignal.id
   end

@@ -31,7 +31,7 @@ external object_class_add_signals : t -> int array -> int -> unit
     = "ml_gtk_object_class_add_signals"
 external type_unique : string -> parent:object_type -> nsignals:int -> int
     = "ml_gtk_type_unique"
-external type_new : int -> [> widget] obj
+external type_new : int -> unit obj
     = "ml_gtk_type_new"
 
 open GtkSignal
@@ -41,7 +41,7 @@ let make_new_widget name :parent :signal_array =
   let get_type () =
     let new_type = lazy (type_unique name :parent :nsignals) in
     Lazy.force new_type in
-  let signal_num_array = Array.create len:nsignals fill:0 in
+  let signal_num_array = Array.create len:nsignals 0 in
   let class_init_func classe =
     for i = 0 to nsignals-1 do
       signal_num_array.(i) <- signal_new signal_array.(i).name 1 classe parent i

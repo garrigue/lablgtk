@@ -2,10 +2,10 @@
 
 (* A simple calculator ported from LablTk to LablGtk *)
 
-let mem_string c in:s =
+let mem_string :char s =
   try
     for i = 0 to String.length s -1 do
-      if s.[i] = c then raise Exit
+      if s.[i] = char then raise Exit
     done; false
   with Exit -> true
 
@@ -35,16 +35,16 @@ class virtual calc = object (calc)
 	if displaying then
 	  (calc#set "0."; displaying <- false)
 	else
-	  if not (mem_string '.' in:(calc#get)) then calc#insert s
+	  if not (mem_string char:'.' calc#get) then calc#insert s
     | '+'|'-'|'*'|'/' as c ->
 	displaying <- true;
 	begin match op with
 	  None ->
 	    x <- calc#get_float;
-	    op <- Some (List.assoc c in:ops)
+	    op <- Some (List.assoc key:c ops)
 	| Some f ->
 	    x <- f x (calc#get_float);
-	    op <- Some (List.assoc c in:ops);
+	    op <- Some (List.assoc key:c ops);
 	    calc#set (string_of_float x)
 	end
     | '='|'\n'|'\r' ->
@@ -72,18 +72,18 @@ let m =
 
 open GMain
 
-class calculator ?:packing ?:show =
-  let table = new GPack.table rows:5 columns:4 homogeneous:true show:false in
+class calculator ?:packing ?:show () =
+  let table = GPack.table rows:5 columns:4 homogeneous:true show:false () in
   object (calc)
     inherit calc
 
     val label =
-      let frame = new GFrame.frame shadow_type:`IN
+      let frame = GFrame.frame shadow_type:`IN ()
 	packing:(table#attach left:0 top:0 right:4) in
-      let evbox = new GFrame.event_box packing:frame#add in
+      let evbox = GFrame.event_box packing:frame#add () in
       evbox#misc#set_style evbox#misc#style#copy;
       evbox#misc#style#set_bg [`NORMAL,`WHITE];
-      new GMisc.label justify:`RIGHT xalign:0.95 packing:evbox#add
+      GMisc.label justify:`RIGHT xalign:0.95 packing:evbox#add ()
     val table = table
 
     method set = label#set_text
@@ -93,18 +93,18 @@ class calculator ?:packing ?:show =
     initializer
       for i = 0 to 3 do for j = 0 to 3 do
 	let button =
-	  new GButton.button label:("  " ^ m.(i).(j) ^ "  ")
-	    packing:(table#attach top:(i+1) left:j) in
+	  GButton.button label:("  " ^ m.(i).(j) ^ "  ")
+	    packing:(table#attach top:(i+1) left:j) () in
 	button#connect#clicked callback:(fun () -> calc#command m.(i).(j));
       done done;
-      GObj.pack_return table :packing ?:show
+      ignore (GObj.pack_return table :packing :show)
   end
 
 (* Finally start everything *)
 
-let w = new GWindow.window auto_shrink:true
+let w = GWindow.window auto_shrink:true ()
 
-let applet = new calculator packing: w#add
+let applet = new calculator packing: w#add ()
 
 let _ =
   w#connect#destroy callback: Main.quit;

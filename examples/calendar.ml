@@ -3,10 +3,10 @@
 open GMain
 
 let main () =
-  let window = new GWindow.window in
+  let window = GWindow.window () in
   window#connect#destroy callback:Main.quit;
 
-  let calendar = new GMisc.calendar packing:window#add in
+  let calendar = GMisc.calendar packing:window#add () in
   calendar#connect#day_selected callback:
     begin fun () ->
       let (year,month,day) = calendar#date in

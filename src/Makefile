@@ -1,7 +1,9 @@
 # $Id$
 # Makefile for lablgtk.
 
-all: var2conv var2def lablgtk
+TARGETS = var2conv var2def lablgtk lablgtk_t lablgtkrun
+
+all: $(TARGETS)
 
 opt: lablgtkopt
 
@@ -11,14 +13,14 @@ configure:
 
 nothing:
 
-CAMLC = olablc
-CAMLOPT = olablopt
-COMPILER = $(CAMLC) $(MLFLAGS) -c
+CAMLC = ocamlc
+CAMLOPT = ocamlopt
+COMPILER = $(CAMLC) $(MLFLAGS) -w s -modern -c
 LINKER = $(CAMLC) $(MLFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -c
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -modern -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 
-TOPLEVEL = olablmktop $(MLFLAGS)
+TOPLEVEL = ocamlmktop $(MLFLAGS)
 RANLIB = ranlib
 
 include config.make
@@ -39,7 +41,7 @@ THLDFLAGS = -lthreads -lunix
 ifdef USE_CC
 CCOMPILER = $(CC) -c -I$(LABLLIB) $(CFLAGS)
 else
-CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
+CCOMPILER = ocamlc -c -ccopt "$(CFLAGS)"
 endif
 
 ifdef USE_GL
@@ -125,13 +127,13 @@ var2def: var2def.cmo
 	rm -f *_tags.h
 
 clean:
-	rm -f *.cm* *.o *.a *_tags.[ch] var2conv var2def lablgtk lablgtk_t
+	rm -f *.cm* *.o *.a *_tags.[ch] $(TARGETS)
 
 .depend:
-	olabldep *.ml *.mli > .depend
+	ocamldep *.ml *.mli > .depend
 
 config.make:
-	olablc -v | grep "^Standard" | sed "s/.*: */LABLLIB=/" > config.make
+	ocamlc -v | grep "^Standard" | sed "s/.*: */LABLLIB=/" > config.make
 	echo GTKCFLAGS=`gtk-config --cflags` >> config.make
 	echo GTKLIBS=`gtk-config --libs` >> config.make
 	echo MESA=$(MESA) >> config.make

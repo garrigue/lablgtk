@@ -39,7 +39,7 @@ class prop_enum :values :name :init :set =
   object (self)
     inherit vprop :name :init :set
     method private parse s =
-      try List.assoc s in:values
+      try List.assoc key:s values
       with Not_found -> invalid_prop "enum" name s
     method range = Enum (List.map fun:fst values)
   end
@@ -79,7 +79,8 @@ class prop_float :name :init :min :max :set : prop =
     method private parse s =
       try float_of_string s with _ -> invalid_prop "float" name s
     method code =
-      if String.contains s '.' || String.contains s 'e' then s else s ^ ".0"
+      if String.contains s char:'.' || String.contains s char:'e' then s
+      else s ^ ".0"
     method range = Float(min,max)
   end
 

@@ -4,6 +4,7 @@ open Misc
 open Gdk
 open Tags
 
+external coerce : 'a event -> event_type event = "%identity"
 external unsafe_copy : pointer -> #event_type event
     = "ml_gdk_event_copy"
 external copy : (#event_type as 'a) event -> 'a event
@@ -18,7 +19,7 @@ external set_window : 'a event -> window -> unit
     = "ml_gdk_event_set_window"
 
 module Expose = struct
-  type t = [ EXPOSE ] event
+  type t = [ `EXPOSE ] event
   let cast (ev : event_type event) : t =
     match get_type ev with `EXPOSE -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Expose.cast"
@@ -27,7 +28,7 @@ module Expose = struct
 end
 
 module Visibility = struct
-  type t = [ VISIBILITY_NOTIFY ] event
+  type t = [ `VISIBILITY_NOTIFY ] event
   let cast (ev :  event_type event) : t =
     match get_type ev with `VISIBILITY_NOTIFY -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Visibility.cast"
@@ -36,7 +37,7 @@ module Visibility = struct
 end
 
 module Motion = struct
-  type t = [ MOTION_NOTIFY ] event
+  type t = [ `MOTION_NOTIFY ] event
   let cast (ev : event_type event) : t =
     match get_type ev with `MOTION_NOTIFY -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Motion.cast"
@@ -56,7 +57,7 @@ end
 
 module Button = struct
   type types =
-      [ BUTTON_PRESS TWO_BUTTON_PRESS THREE_BUTTON_PRESS BUTTON_RELEASE ]
+      [ `BUTTON_PRESS|`TWO_BUTTON_PRESS|`THREE_BUTTON_PRESS|`BUTTON_RELEASE ]
   type t = types event
   let cast (ev : event_type event) : t =
     match get_type ev with
@@ -82,7 +83,7 @@ module Button = struct
 end
 
 module Key = struct
-  type t = [ KEY_PRESS KEY_RELEASE ] event
+  type t = [ `KEY_PRESS|`KEY_RELEASE ] event
   let cast (ev : event_type event) : t =
     match get_type ev with
       `KEY_PRESS|`KEY_RELEASE -> Obj.magic ev
@@ -95,7 +96,7 @@ module Key = struct
 end
 
 module Crossing = struct
-  type t = [ ENTER_NOTIFY LEAVE_NOTIFY ] event
+  type t = [ `ENTER_NOTIFY|`LEAVE_NOTIFY ] event
   let cast (ev : event_type event) : t =
     match get_type ev with
       `ENTER_NOTIFY|`LEAVE_NOTIFY -> Obj.magic ev
@@ -105,7 +106,7 @@ module Crossing = struct
 end
 
 module Focus = struct
-  type t = [ FOCUS_CHANGE ] event
+  type t = [ `FOCUS_CHANGE ] event
   let cast (ev : event_type event) : t =
     match get_type ev with `FOCUS_CHANGE -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Focus.cast"
@@ -113,7 +114,7 @@ module Focus = struct
 end
 
 module Configure = struct
-  type t = [ CONFIGURE ] event
+  type t = [ `CONFIGURE ] event
   let cast (ev : event_type event) : t =
     match get_type ev with `CONFIGURE -> Obj.magic ev
     |	_ -> invalid_arg "GdkEvent.Configure.cast"
@@ -124,7 +125,7 @@ module Configure = struct
 end
 
 module Property = struct
-  type t = [ PROPERTY_NOTIFY ] event
+  type t = [ `PROPERTY_NOTIFY ] event
   let cast (ev : event_type event) : t =
     match get_type ev with `PROPERTY_NOTIFY -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Property.cast"
@@ -134,7 +135,7 @@ module Property = struct
 end
 
 module Selection = struct
-  type t = [ SELECTION_CLEAR SELECTION_REQUEST SELECTION_NOTIFY ] event
+  type t = [ `SELECTION_CLEAR|`SELECTION_REQUEST|`SELECTION_NOTIFY ] event
   let cast (ev : event_type event) : t =
     match get_type ev with
       `SELECTION_CLEAR|`SELECTION_REQUEST|`SELECTION_NOTIFY -> Obj.magic ev
@@ -147,7 +148,7 @@ module Selection = struct
 end
 
 module Proximity = struct
-  type t = [ PROXIMITY_IN PROXIMITY_OUT ] event
+  type t = [ `PROXIMITY_IN|`PROXIMITY_OUT ] event
   let cast (ev : event_type event) : t =
     match get_type ev with
       `PROXIMITY_IN|`PROXIMITY_OUT -> Obj.magic ev

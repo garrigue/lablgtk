@@ -4,14 +4,14 @@ open GdkObj
 open GMain
 
 (* let id = Thread.create GtkThread.main () *)
-let window = new GWindow.window show:true
+let window = GWindow.window show:true ()
 
 let w = window#misc#window
 let drawing = new drawing w
 
 let _ =
   window#connect#destroy callback:Main.quit;
-  window#connect#event#expose after:true callback:
+  window#connect#after#event#expose callback:
     begin fun _ ->
       drawing#polygon filled:true
 	[ 10,100; 35,35; 100,10; 165,35; 190,100;

@@ -8,7 +8,8 @@ open GtkMisc
 open GObj
 open GContainer
 
-class window_skel obj = object
+class ['a] window_skel obj = object
+  constraint 'a = _ #window_skel
   inherit container obj
   method add_events = Widget.add_events obj
   method as_window = Window.coerce obj
@@ -18,8 +19,9 @@ class window_skel obj = object
   method set_modal = Window.set_modal obj
   method set_default_size = Window.set_default_size obj
   method set_position = Window.set_position obj
-  method set_transient_for : 'a . (#is_window as 'a) -> unit
-      = fun w -> Window.set_transient_for obj (w #as_window)
+  method set_resize_mode = Container.set_resize_mode obj
+  method set_transient_for (w : 'a) =
+    Window.set_transient_for obj w#as_window
   method set_title = Window.set_title obj
   method set_wm_name name = Window.set_wmclass obj :name
   method set_wm_class cls = Window.set_wmclass obj class:cls
@@ -29,135 +31,104 @@ class window_skel obj = object
   method show () = Widget.show obj
 end
 
-class window_wrapper obj = object
-  inherit window_skel (Window.coerce obj)
-  method connect = new container_signals ?obj
+class window obj = object
+  inherit [window] window_skel (Window.coerce obj)
+  method connect = new container_signals obj
 end
 
-class window ?type:t [< `TOPLEVEL >] ?:title ?:wm_name ?:wm_class ?:position
+let window ?(type:t=`TOPLEVEL) ?:title ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
-    ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
+    ?:border_width ?:width ?:height ?:packing ?(:show=false) () =
   let w = Window.create t in
-  let () =
-    Window.set w ?:title ?:wm_name ?:wm_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
-    Container.set w ?:border_width ?:width ?:height
-  in
-  object (self)
-    inherit window_wrapper w
-    initializer pack_return :packing :show (self :> window_wrapper)
-  end
+  Window.set w ?:title ?:wm_name ?:wm_class ?:position
+    ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new window w) :packing show:(Some show)
 
-class dialog_wrapper obj = object
-  inherit window_skel (Dialog.coerce obj)
-  method connect = new GContainer.container_signals ?obj
-  method action_area = new GPack.box_wrapper (Dialog.action_area obj)
-  method vbox = new GPack.box_wrapper (Dialog.vbox obj)
+class dialog obj = object
+  inherit [window] window_skel (Dialog.coerce obj)
+  method connect = new container_signals obj
+  method action_area = new GPack.box (Dialog.action_area obj)
+  method vbox = new GPack.box (Dialog.vbox obj)
 end
 
-class dialog ?:title ?:wm_name ?:wm_class ?:position ?:allow_shrink
+let dialog ?:title ?:wm_name ?:wm_class ?:position ?:allow_shrink
     ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y ?:border_width ?:width ?:height
-    ?:packing ?:show [< false >] =
+    ?:packing ?(:show=false) () =
   let w = Dialog.create () in
-  let () =
-    Window.set w ?:title ?:wm_name ?:wm_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
-    Container.set w ?:border_width ?:width ?:height
-  in
-  object (self)
-    inherit dialog_wrapper w
-    initializer pack_return :packing :show (self :> dialog_wrapper)
-  end
+  Window.set w ?:title ?:wm_name ?:wm_class ?:position
+    ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new dialog w) :packing show:(Some show)
 
-class color_selection_dialog_wrapper obj = object
-  inherit window_skel (obj : Gtk.color_selection_dialog obj)
-  method connect = new GContainer.container_signals ?obj
+class color_selection_dialog obj = object
+  inherit [window] window_skel (obj : Gtk.color_selection_dialog obj)
+  method connect = new container_signals obj
   method ok_button =
-    new GButton.button_wrapper (ColorSelection.ok_button obj)
+    new GButton.button (ColorSelection.ok_button obj)
   method cancel_button =
-    new GButton.button_wrapper (ColorSelection.cancel_button obj)
+    new GButton.button (ColorSelection.cancel_button obj)
   method help_button =
-    new GButton.button_wrapper (ColorSelection.help_button obj)
+    new GButton.button (ColorSelection.help_button obj)
   method colorsel =
-    new GMisc.color_selection_wrapper (ColorSelection.colorsel obj)
+    new GMisc.color_selection (ColorSelection.colorsel obj)
 end
 
-class color_selection_dialog ?:title [< "Pick a color" >]
+let color_selection_dialog ?(:title="Pick a color")
     ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
-    ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
+    ?:border_width ?:width ?:height ?:packing ?(:show=false) () =
   let w = ColorSelection.create_dialog title in
-  let () =
-    Window.set w ?title:None ?:wm_name ?:wm_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
-    Container.set w ?:border_width ?:width ?:height
-  in
-  object (self)
-    inherit color_selection_dialog_wrapper w
-    initializer
-      pack_return :packing :show (self :> color_selection_dialog_wrapper)
-  end
+  Window.set w ?:wm_name ?:wm_class ?:position
+    ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new color_selection_dialog w) :packing show:(Some show)
 
-class file_selection_wrapper obj = object
-  inherit window_skel (obj : Gtk.file_selection obj)
-  method connect = new GContainer.container_signals ?obj
+class file_selection obj = object
+  inherit [window] window_skel (obj : Gtk.file_selection obj)
+  method connect = new container_signals obj
   method set_filename = FileSelection.set_filename obj
   method get_filename = FileSelection.get_filename obj
   method set_fileop_buttons = FileSelection.set_fileop_buttons obj
-  method ok_button =
-    new GButton.button_wrapper (FileSelection.get_ok_button obj)
+  method ok_button = new GButton.button (FileSelection.get_ok_button obj)
   method cancel_button =
-    new GButton.button_wrapper (FileSelection.get_cancel_button obj)
-  method help_button =
-    new GButton.button_wrapper (FileSelection.get_help_button obj)
+    new GButton.button (FileSelection.get_cancel_button obj)
+  method help_button = new GButton.button (FileSelection.get_help_button obj)
 end
 
-class file_selection ?:title [< "Choose a file" >] ?:filename
-    ?:fileop_buttons [< false >]
+let file_selection ?(:title="Choose a file") ?:filename
+    ?(:fileop_buttons=false)
     ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
-    ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
+    ?:border_width ?:width ?:height ?:packing ?(:show=false) () =
   let w = FileSelection.create title in
-  let () =
-    FileSelection.set w ?:filename :fileop_buttons;
-    Window.set w ?title:None ?:wm_name ?:wm_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
-    Container.set w ?:border_width ?:width ?:height
-  in
-  object (self)
-    inherit file_selection_wrapper w
-    initializer pack_return :packing :show (self :> file_selection_wrapper)
-  end
+  FileSelection.set w ?:filename :fileop_buttons;
+  Window.set w ?:wm_name ?:wm_class ?:position
+    ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new file_selection w) :packing show:(Some show)
 
-class font_selection_dialog_wrapper obj = object
-  inherit window_skel (obj : Gtk.font_selection_dialog obj)
-  method connect = new GContainer.container_signals ?obj
+class font_selection_dialog obj = object
+  inherit [window] window_skel (obj : Gtk.font_selection_dialog obj)
+  method connect = new container_signals obj
   method font = FontSelectionDialog.get_font obj
   method font_name = FontSelectionDialog.get_font_name obj
   method set_font_name = FontSelectionDialog.set_font_name obj
   method preview_text = FontSelectionDialog.get_preview_text obj
   method set_preview_text = FontSelectionDialog.set_preview_text obj
   method set_filter = FontSelectionDialog.set_filter obj
-  method ok_button =
-    new GButton.button_wrapper (FontSelectionDialog.ok_button obj)
+  method ok_button =  new GButton.button (FontSelectionDialog.ok_button obj)
   method apply_button =
-    new GButton.button_wrapper (FontSelectionDialog.apply_button obj)
+    new GButton.button (FontSelectionDialog.apply_button obj)
   method cancel_button =
-    new GButton.button_wrapper (FontSelectionDialog.cancel_button obj)
+    new GButton.button (FontSelectionDialog.cancel_button obj)
 end
 
-class font_selection_dialog ?:title 
-    ?:wm_name ?:wm_class ?:position
+let font_selection_dialog ?:title ?:wm_name ?:wm_class ?:position
     ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
-    ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
-  let w = FontSelectionDialog.create ?:title in
-  let () =
-    Window.set w ?title:None ?:wm_name ?:wm_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
-    Container.set w ?:border_width ?:width ?:height
-  in
-  object (self)
-    inherit font_selection_dialog_wrapper w
-    initializer pack_return :packing :show
-	(self :> font_selection_dialog_wrapper)
-  end
+    ?:border_width ?:width ?:height ?:packing ?(:show=false) () =
+  let w = FontSelectionDialog.create ?:title () in
+  Window.set w ?:wm_name ?:wm_class ?:position
+    ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new font_selection_dialog w) :packing show:(Some show)
