@@ -115,7 +115,7 @@ end
 
 class selection_context sel = object
   inherit selection_input sel
-  method return ?typ ?(format=0) data =
+  method return ?typ ?(format=8) data =
     let typ =
       match typ with Some t -> Gdk.Atom.intern t | _ -> Selection.target sel in
     Selection.set sel ~typ ~format ~data:(Some data)
