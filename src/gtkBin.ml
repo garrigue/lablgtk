@@ -28,6 +28,8 @@ end
 
 module Frame = struct
   let cast w : frame obj = Object.try_cast w "GtkFrame"
+  let create params : frame obj = Object.make "GtkFrame" params
+    
   module Prop = struct
     open Gobject
     open Data
@@ -56,8 +58,6 @@ module Frame = struct
     may_cons Prop.shadow_type shadow_type (
     if label <> None then [Gobject.param Prop.label label] else []))))
 
-  let create params : frame obj = Gobject.make "GtkFrame" params
-    
   let setter ~cont =
     make_params ~cont:(fun params ->
       cont (fun w -> Gobject.Property.set_params w params))
