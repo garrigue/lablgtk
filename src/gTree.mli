@@ -139,10 +139,10 @@ object
   method get : row:tree_iter -> column:'b column -> 'b
 end
 
-class store : tree_store -> id:int ->
+class tree_store : Gtk.tree_store -> id:int ->
   object
     inherit model
-    val obj : tree_store
+    val obj : Gtk.tree_store
     method as_model : tree_model obj
     method append : ?parent:tree_iter -> unit -> tree_iter
     method clear : unit -> unit
@@ -159,8 +159,27 @@ class store : tree_store -> id:int ->
     method set : row:tree_iter -> column:'a column -> 'a -> unit
     method swap : tree_iter -> tree_iter -> bool
   end
+val tree_store : column_list -> tree_store
 
-val store : column_list -> store
+class list_store : Gtk.list_store -> id:int ->
+  object
+    inherit model
+    val obj : Gtk.list_store
+    method as_model : tree_model obj
+    method append : unit -> tree_iter
+    method clear : unit -> unit
+    method insert : int -> tree_iter
+    method insert_after : tree_iter -> tree_iter
+    method insert_before : tree_iter -> tree_iter
+    method iter_is_valid : tree_iter -> bool
+    method move_after : iter:tree_iter -> pos:tree_iter -> bool
+    method move_before : iter:tree_iter -> pos:tree_iter -> bool
+    method prepend : unit -> tree_iter
+    method remove : tree_iter -> bool
+    method set : row:tree_iter -> column:'a column -> 'a -> unit
+    method swap : tree_iter -> tree_iter -> bool
+  end
+val list_store : column_list -> list_store
 
 class view_column : tree_view_column obj ->
   object

@@ -117,6 +117,42 @@ ML_3 (gtk_tree_store_move_before, GtkTreeStore_val, GtkTreeIter_val,
 ML_3 (gtk_tree_store_move_after, GtkTreeStore_val, GtkTreeIter_val,
       GtkTreeIter_val, Unit)
 
+/* GtkListStore */
+
+#define GtkListStore_val(val) check_cast(GTK_LIST_STORE,val)
+CAMLprim value ml_gtk_list_store_newv(value arr)
+{
+  CAMLparam1(arr);
+  int n_columns = Wosize_val(arr);
+  int i;
+  GType *types = (GType*)
+    alloc (Wosize_asize(n_columns * sizeof(GType)), Abstract_tag);
+  for (i=0; i<n_columns; i++)
+    types[i] = GType_val(Field(arr,i));
+  CAMLreturn (Val_GObject_new(&gtk_list_store_newv(n_columns, types)->parent));
+}
+
+ML_4 (gtk_list_store_set_value, GtkListStore_val, GtkTreeIter_val,
+      Int_val, GValue_val, Unit)
+ML_2 (gtk_list_store_remove, GtkListStore_val, GtkTreeIter_val, Val_bool)
+ML_3 (gtk_list_store_insert, GtkListStore_val, GtkTreeIter_val, Int_val, Unit)
+ML_3 (gtk_list_store_insert_before, GtkListStore_val, GtkTreeIter_val,
+      GtkTreeIter_val, Unit)
+ML_3 (gtk_list_store_insert_after, GtkListStore_val, GtkTreeIter_val,
+      GtkTreeIter_val, Unit)
+ML_2 (gtk_list_store_append, GtkListStore_val, GtkTreeIter_val,
+      Unit)
+ML_2 (gtk_list_store_prepend, GtkListStore_val, GtkTreeIter_val, Unit)
+ML_1 (gtk_list_store_clear, GtkListStore_val, Unit)
+ML_2 (gtk_list_store_iter_is_valid, GtkListStore_val, GtkTreeIter_val,
+      Val_bool)
+ML_3 (gtk_list_store_swap, GtkListStore_val, GtkTreeIter_val,
+      GtkTreeIter_val, Unit)
+ML_3 (gtk_list_store_move_before, GtkListStore_val, GtkTreeIter_val,
+      GtkTreeIter_val, Unit)
+ML_3 (gtk_list_store_move_after, GtkListStore_val, GtkTreeIter_val,
+      GtkTreeIter_val, Unit)
+
 /* GtkCellRenderer{Text,...} */
 
 #define GtkCellRenderer_val(val) check_cast(GTK_CELL_RENDERER,val)

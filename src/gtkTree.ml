@@ -131,6 +131,48 @@ module TreeStore = struct
     = "ml_gtk_tree_store_move_after"
 end
 
+module ListStore = struct
+  open TreeModel
+  let cast w : list_store = Object.try_cast w "GtkListStore"
+  external create : Gobject.g_type array -> list_store
+    = "ml_gtk_list_store_newv"
+  external set_value :
+    list_store -> row:tree_iter -> column:int -> Gobject.g_value -> unit
+    = "ml_gtk_list_store_set_value"
+  external remove : list_store -> tree_iter -> bool
+    = "ml_gtk_list_store_remove"
+  external insert : list_store -> iter:tree_iter -> int -> unit
+    = "ml_gtk_list_store_insert"
+  let insert st pos =
+    let iter = alloc_iter () in insert st ~iter pos; iter
+  external insert_before : list_store -> iter:tree_iter -> tree_iter -> unit
+    = "ml_gtk_list_store_insert_before"
+  let insert_before st pos =
+    let iter = alloc_iter () in insert_before st ~iter pos; iter
+  external insert_after : list_store -> iter:tree_iter -> tree_iter -> unit
+    = "ml_gtk_list_store_insert_after"
+  let insert_after st pos =
+    let iter = alloc_iter () in insert_after st ~iter pos; iter
+  external append : list_store -> iter:tree_iter -> unit
+    = "ml_gtk_list_store_append"
+  let append st () =
+    let iter = alloc_iter () in append st ~iter; iter
+  external prepend : list_store -> iter:tree_iter -> unit
+    = "ml_gtk_list_store_prepend"
+  let prepend st () =
+    let iter = alloc_iter () in prepend st ~iter; iter
+  external clear : list_store -> unit
+    = "ml_gtk_list_store_clear"
+  external iter_is_valid : list_store -> tree_iter -> bool
+    = "ml_gtk_list_store_iter_is_valid"
+  external swap : list_store -> tree_iter -> tree_iter -> bool
+    = "ml_gtk_list_store_swap"
+  external move_before : list_store -> iter:tree_iter -> pos:tree_iter -> bool
+    = "ml_gtk_list_store_move_before"
+  external move_after : list_store -> iter:tree_iter -> pos:tree_iter -> bool
+    = "ml_gtk_list_store_move_after"
+end
+
 module TreeView = struct
   let cast w : tree_view obj= Object.try_cast w "GtkTreeView"
   external create : unit -> tree_view obj = "ml_gtk_tree_view_new"
