@@ -2,7 +2,7 @@ $Id$
 
 1999.10.28
   * re-objectified property.ml
-  * split it into common.mli/propery.ml/propwin.ml
+  * split it into common.mli/property.ml/propwin.ml
   * undo is back
   * restructure menu code in main.ml
 

@@ -3,7 +3,7 @@
 
 
 Needed:
-	ocaml-3.00
+	ocaml-2.99 or more
 	gtk-1.2.x
 	gmake (there is no standard for conditionals)
 
@@ -16,8 +16,7 @@ How to compile:
 		USE_GL=1	to compile with OpenGL support (see lower)
 		MESA=Mesa	to link with Mesa libs rather than OpenGL
 
-	Then just type "make" to build the library and toplevel.
-	Also type "make lablgtk_t" to make the threaded toplevel.
+	Then just type "make" to build the library and toplevels.
 
 	On FreeBSD, you need to link with libxpg4.so for Japanese
 	output.
@@ -34,25 +33,25 @@ Contents:
 	lablgtk_t	threaded toplevel
 
 	examples/*.ml	various examples
-	applications/*	application using the library
+	applications/*	applications using the library
 		radtest		a very experimental RAD for lablgtk
 				(by Hubert Fauque)
-		browser		the begin of a port of LablBrowser
+		browser		the begin of a port of OCamlBrowser
 				(by Jacques Garrigue)
 
 How to run the examples:
 
-	./lablgtk -modern examples/???.ml
+	./lablgtk -modern -w s examples/???.ml
 
   some examples (e.g. buttons.ml) may need to be run from the examples
   directory
 
-	../lablgtk -modern -I .. ???.ml
+	../lablgtk -modern -w s -I .. ???.ml
 
 How to use the threaded toplevel:
 
 	% ./lablgtk_t -modern
-	        Objective Caml version 2.99 (99/11/23)
+	        Objective Caml version 2.99 (99/12/08)
 	
 	# let id = GtkThread.start ();;
 	val id : Thread.t = <abstr>
@@ -102,22 +101,22 @@ Structure of the G[A-Z]* modules:
   You must coerce to widget with the #coerce method.
 
   Practically, each widget class is composed of:
-  * a coerce method, returning the object coerced to the widget type.
+  * a coerce method, returning the object coerced to the type widget.
   * an as_widget method, returning the raw Gtk widget used for packing, etc...
   * a misc sub-object, giving access to miscellanous functionality of
     the basic gtkwidget class.
-  * a grab sub-object, containing drag and drop signals.
+  * a grab sub-object, containing drag and drop functions.
   * a connect sub-object, allowing one to connect all available
-    signals (this is what prevents width subtyping in subcases.)
+    signals (this is what prevents width subtyping in subclasses.)
   * connect#event and connect#grab sub-objects, for event and grab
     signals.
 
   You create a widget by [<Module>.<widget name> options ... ()].
-  Many optional arguments are admitted. The two last of them, packing:
+  Many optional arguments are admitted. The last two of them, packing:
   and show:, allow you respectively to call a function on your newly
   created widget, and to decide wether to show it immediately or not.
-  By default all widgets except toplevel windows are shown
-  immediately.
+  By default all widgets except toplevel windows (GWindow module) are
+  shown immediately.
 
 Note about unit as method argument:
 
@@ -140,7 +139,7 @@ Memory management:
   interactive, we cannot just destroy them when they are no longer
   referenced. They have to be explicitely destroyed. If a widget was
   added to a container widget, it will automatically be destroyed when
-  its last container is destroyed. For this reason you should only
+  its last container is destroyed. For this reason you need only
   destroy toplevel widgets.
 
 GL extension
