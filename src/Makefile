@@ -12,10 +12,15 @@ COMPILER = olablc $(MLFLAGS) -c
 LINKER = olablc $(MLFLAGS)
 TOPLEVEL = olablmktop $(MLFLAGS)
 RANLIB = ranlib
+
+CFLAGS = $(GTKCFLAGS)
+ifdef THREADS
 MLFLAGS = -thread
 MLLIBS = unix.cma threads.cma
-CFLAGS = $(GTKCFLAGS)
 LDFLAGS = $(GTKLIBS) -lthreads -lunix
+else
+LDFLAGS = $(GTKLIBS)
+endif
 
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
