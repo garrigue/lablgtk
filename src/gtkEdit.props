@@ -84,8 +84,8 @@ class ComboBox set wrap wrapsig : Bin {
   "row-span-column"      gint                 : Read / Write / NoSet / NoWrap
   "wrap-width"           gint                 : Read / Write
   signal changed
-  method get_active_iter : "Gtk.tree_iter"
-  method set_active_iter : "Gtk.tree_iter -> unit"
+  method get_active_iter : "Gtk.tree_iter option"
+  method set_active_iter : "Gtk.tree_iter option -> unit"
 }
 
 class ComboBoxEntry set : ComboBox {

@@ -119,7 +119,6 @@ class model obj = object (self)
   method as_model = (obj :> tree_model)
   method coerce = (self :> model)
   method misc = new gobject_ops obj
-  method connect = new model_signals obj
   method n_columns = TreeModel.get_n_columns obj
   method get_column_type = TreeModel.get_column_type obj
   method get_iter = TreeModel.get_iter obj
@@ -137,8 +136,28 @@ class model obj = object (self)
   method iter_parent = TreeModel.iter_parent obj
 end
 
-class tree_store obj = object
+class tree_sortable_signals obj = object
+  inherit model_signals obj
+  inherit tree_sortable_sigs
+end
+
+class tree_sortable obj = object
   inherit model obj
+  method connect = new tree_sortable_signals obj
+  method sort_column_changed () = GtkTree.TreeSortable.sort_column_changed obj
+  method get_sort_column_id = GtkTree.TreeSortable.get_sort_column_id obj
+  method set_sort_column_id = GtkTree.TreeSortable.set_sort_column_id obj
+  method set_sort_func id cmp = 
+    GtkTree.TreeSortable.set_sort_func obj id
+      (fun m it_a it_b -> cmp (new tree_sortable m) it_a it_b)
+  method set_default_sort_func cmp = 
+    GtkTree.TreeSortable.set_default_sort_func obj
+      (fun m it_a it_b -> cmp (new tree_sortable m) it_a it_b)
+  method has_default_sort_func = GtkTree.TreeSortable.has_default_sort_func obj
+end
+
+class tree_store obj = object
+  inherit tree_sortable obj
   method set : 'a. row:tree_iter -> column:'a column -> 'a -> unit =
     fun ~row ~column data ->
       if column.creator <> id then
@@ -169,7 +188,7 @@ let tree_store (cols : column_list) =
   new tree_store store
 
 class list_store obj = object
-  inherit model obj
+  inherit tree_sortable obj
   method set : 'a. row:tree_iter -> column:'a column -> 'a -> unit =
     fun ~row ~column data ->
       if column.creator <> id then
@@ -197,6 +216,42 @@ let list_store (cols : column_list) =
   Hashtbl.add model_ids (Gobject.get_oid store) cols#id;
   new list_store store
 
+class model_sort (obj : Gtk.tree_model_sort) = object
+  inherit tree_sortable obj
+  method model = new model (Gobject.get GtkTree.TreeModelSort.P.model obj)
+  method convert_child_path_to_path = GtkTree.TreeModelSort.convert_child_path_to_path obj
+  method convert_child_iter_to_iter = GtkTree.TreeModelSort.convert_child_iter_to_iter obj
+  method convert_path_to_child_path = GtkTree.TreeModelSort.convert_path_to_child_path obj
+  method convert_iter_to_child_iter = GtkTree.TreeModelSort.convert_iter_to_child_iter obj
+  method reset_default_sort_func () = GtkTree.TreeModelSort.reset_default_sort_func obj
+  method iter_is_valid = GtkTree.TreeModelSort.iter_is_valid obj
+end
+
+let model_sort model =
+  new model_sort
+    (GtkTreeProps.TreeModelSort.create ~model:model#as_model [])
+
+class model_filter (obj : Gtk.tree_model_filter) = object
+  inherit model obj
+  method connect = new model_signals obj
+  method child_model  = new model (Gobject.get GtkTree.TreeModelFilter.P.child_model obj)
+  method virtual_root = Gobject.get GtkTree.TreeModelFilter.P.virtual_root obj
+  method set_visible_func f =
+    GtkTree.TreeModelFilter.set_visible_func obj
+      (fun o it -> f (new model obj) it)
+  method set_visible_column (c : bool column) = 
+    GtkTree.TreeModelFilter.set_visible_column obj c.index
+  method convert_child_path_to_path = GtkTree.TreeModelFilter.convert_child_path_to_path obj
+  method convert_child_iter_to_iter = GtkTree.TreeModelFilter.convert_child_iter_to_iter obj
+  method convert_path_to_child_path = GtkTree.TreeModelFilter.convert_path_to_child_path obj
+  method convert_iter_to_child_iter = GtkTree.TreeModelFilter.convert_iter_to_child_iter obj
+  method refilter () = GtkTree.TreeModelFilter.refilter obj
+end
+
+let model_filter ?virtual_root model =
+  new model_filter
+    (GtkTree.TreeModelFilter.create ~child_model:model#as_model ?virtual_root [])
+
 module Path = TreePath
 
 (*
@@ -212,26 +267,49 @@ class type cell_renderer = object
   method as_renderer : Gtk.cell_renderer obj
 end
 
+class cell_layout obj = object
+  method pack :
+    'a. ?expand:bool -> ?from:Tags.pack_type -> (#cell_renderer as 'a) -> unit =
+      fun ?expand ?from crr -> GtkTree.CellLayout.pack obj ?expand ?from crr#as_renderer
+  method clear () = GtkTree.CellLayout.clear obj
+  method add_attribute :
+    'a 'b. (#cell_renderer as 'a) -> string -> 'b column -> unit =
+      fun crr attr col ->
+        GtkTree.CellLayout.add_attribute obj crr#as_renderer attr col.index
+  method clear_attributes :
+    'a. (#cell_renderer as 'a) -> unit = 
+      fun crr -> GtkTree.CellLayout.clear_attributes obj crr#as_renderer
+end
+
 class view_column_signals obj = object (self)
   inherit gtkobj_signals_impl obj
   method clicked = self#connect TreeViewColumn.S.clicked
 end
 
 module P = TreeViewColumn.P
-class view_column (obj : tree_view_column obj) = object
-  inherit GObj.gtkobj obj
-  method private obj = obj
+class view_column (_obj : tree_view_column obj) = object
+  inherit GObj.gtkobj _obj
+  method private obj = _obj
   inherit tree_view_column_props
   method as_column = obj
   method misc = new gobject_ops obj
   method connect = new view_column_signals obj
+
+  (* in GTK 2.4 this will be in GtkCellLayout interface *)
+  (* inherit cell_layout _obj *)
+  method clear () = TreeViewColumn.clear obj
   method pack : 'a. ?expand:_ -> ?from:_ -> (#cell_renderer as 'a)-> _ =
     fun ?expand ?from  r -> TreeViewColumn.pack obj ?expand ?from r#as_renderer
   method add_attribute :
     'a 'b. (#cell_renderer as 'a) -> string -> 'b column -> unit =
       fun crr attr col ->
         TreeViewColumn.add_attribute obj crr#as_renderer attr col.index
+  method clear_attributes : 
+      'a. (#cell_renderer as 'a) -> unit = 
+      fun crr -> GtkTree.CellLayout.clear_attributes obj crr#as_renderer
+
   method set_sort_column_id = TreeViewColumn.set_sort_column_id obj
+  method get_sort_column_id = TreeViewColumn.get_sort_column_id obj
 end
 let view_column ?title ?renderer () =
   let w = new view_column (TreeViewColumn.create []) in
@@ -447,18 +525,3 @@ let cell_renderer_text l =
 let cell_renderer_toggle l =
   new cell_renderer_toggle
     (CellRendererToggle.create (List.map cell_renderer_toggle_param' l))
-
-class cell_layout obj = object
-  val obj = obj
-  method pack :
-    'a. ?from:Tags.pack_type -> ?expand:bool -> (#cell_renderer as 'a) -> unit =
-      fun ?from ?expand crr -> GtkTree.CellLayout.pack obj ?from ?expand crr#as_renderer
-  method clear () = GtkTree.CellLayout.clear obj
-  method add_attribute :
-    'a 'b. (#cell_renderer as 'a) -> string -> 'b column -> unit =
-      fun crr attr col ->
-        GtkTree.CellLayout.add_attribute obj crr#as_renderer attr col.index
-  method clear_attributes :
-    'a. (#cell_renderer as 'a) -> unit = 
-      fun crr -> GtkTree.CellLayout.clear_attributes obj crr#as_renderer
-end

@@ -203,11 +203,14 @@ type text_child_anchor = [`textchildanchor] obj
 type text_iter
 
 type tree_view = [container|`treeview]
-type tree_view_column = [`gtk|`treeviewcolumn]
+type tree_view_column = [`gtk|`celllayout|`treeviewcolumn]
 type tree_selection = [`treeselection] obj
 type tree_model = [`treemodel] obj
-type tree_store = [`treestore|`treemodel] obj
-type list_store = [`liststore|`treemodel] obj
+type tree_sortable = [`treemodel|`tree_sortable] obj
+type tree_model_sort = [`treemodelsort|`treesortable|`treemodel] obj
+type tree_model_filter = [`treemodelfilter|`treemodel] obj
+type tree_store = [`treestore|`treesortable|`treemodel] obj
+type list_store = [`liststore|`treesortable|`treemodel] obj
 type tree_iter
 type tree_path
 type row_reference
