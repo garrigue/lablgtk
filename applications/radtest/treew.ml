@@ -385,6 +385,8 @@ object(self)
       let old_name = name in
       name <- new_name;
       prop_change_name old_name new_name;
+      name_list :=
+	new_name :: (list_remove !name_list pred:(fun n -> n=old_name));
       begin match self#parent with
       | None -> ()
       | Some p -> p#change_name_in_proplist old_name new_name
@@ -600,8 +602,10 @@ object(self)
 	in mi#connect#activate callback:(self#add_child n); ())
       widget_add_list;      
     let mi_add = new menu_item packing:menu#append label:("add to " ^ name)
+    and mi_paste = new menu_item packing:menu#append label:"Paste"
     in
     mi_add#set_submenu menu_add;
+    mi_paste#connect#activate callback:self#paste;
     menu#popup button:3 :time
 
   method private restricted_menu :time = ()

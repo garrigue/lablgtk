@@ -213,11 +213,6 @@ main_window#show ()
 ;;
 
 
-let print_names () =
-  List.iter !name_list fun:(fun n -> Printf.printf "%s\n" n);
-  flush stdout in
-test_item#connect#activate callback:print_names;
-
 open_item#connect#activate callback:load;
 save_item#connect#activate callback:(fun () -> !main_project#save ());
 save_as_item#connect#activate callback:(fun () -> !main_project#save_as ())
