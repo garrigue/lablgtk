@@ -502,8 +502,9 @@ module Draw = struct
   external polygon :
     [>`drawable] obj -> gc -> filled:bool -> PointArray.t -> unit
     = "ml_gdk_draw_polygon"
-  let polygon w gc ?(filled=false) l =
-    f_pointarray (polygon w gc ~filled) l
+  let polygon w gc ?(filled=false) = function
+    | [] -> ()
+    | l -> f_pointarray (polygon w gc ~filled) l
   external string :
     [>`drawable] obj -> font: font -> gc -> x: int -> y: int -> string -> unit
     = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"	
@@ -536,7 +537,9 @@ module Draw = struct
   let lines w gc l = f_pointarray (lines w gc) l
   external segments : [>`drawable] obj -> gc -> SegmentArray.t -> unit
       = "ml_gdk_draw_segments"
-  let segments w gc l = f_segmentarray (segments w gc) l
+  let segments w gc = function
+    | [] -> ()
+    | l -> f_segmentarray (segments w gc) l
 end
 
 module Rgb = struct
