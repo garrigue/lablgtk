@@ -101,10 +101,11 @@ module Property :
 
 module Screen :
   sig
-    val default : unit -> screen
     val width : ?screen:screen -> unit -> int
     val height : ?screen:screen -> unit -> int
     val get_pango_context : ?screen:screen -> unit -> Pango.context
+    (* Screens are only supported with Gtk+-2.2 *)
+    val default : unit -> screen
   end
 
 module Visual :

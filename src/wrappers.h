@@ -27,9 +27,8 @@ int ml_lookup_to_c (lookup_info *table, value key);
 /* Wrapper generators */
 
 #define Unsupported(cname) \
- CAMLprim value ml_##cname () { \
-          failwith("Unsupported feature in Gtk 2.x < 2.2");\
-          return Val_unit;}
+CAMLprim value ml_##cname () \
+{ failwith(#cname " unsupported in Gtk 2.x < 2.2"); return Val_unit; }
 
 #define ML_0(cname, conv) \
 CAMLprim value ml_##cname (value unit) { return conv (cname ()); }

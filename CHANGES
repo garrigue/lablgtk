@@ -2,10 +2,10 @@ $Id$
 
 2003.02.24
  * replace alloc_final by alloc_custom (wrapper.h)
+ * better gtk-2.0 support (ml_gdk.c)
 
 2003.02.21
  * Support for GTK 2.0 and librsvg 2.0 compilation (O. Andrieu) [Benjamin]
- 
 
 In lablgtk2-20030221:
 
