@@ -76,6 +76,7 @@ CAMLprim value ml_g_type_register_static(value parent_type,value type_name)
   g_type_query(GType_val(parent_type),&query);
   printf("Parent_name: %s\nClass_size: %d\nInstance Size: %d\n",
 	  query.type_name,query.class_size,query.instance_size);
+  {
   const GTypeInfo info =
     { query.class_size,
       NULL, /* base_init */
@@ -92,6 +93,7 @@ CAMLprim value ml_g_type_register_static(value parent_type,value type_name)
 			    String_val(type_name),
 			    &info,
 			    0));
+  }
   CAMLreturn(res);
 }
 /* gclosure.h */
