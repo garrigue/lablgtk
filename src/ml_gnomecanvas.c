@@ -1,5 +1,7 @@
 /* $Id$ */
 
+#include <string.h>
+
 #include <gtk/gtk.h>
 #include <libgnomecanvas/libgnomecanvas.h>
 
@@ -11,6 +13,7 @@
 
 #include "wrappers.h"
 #include "ml_gobject.h"
+#include "ml_gdk.h"
 #include "ml_gtk.h"
 
 static inline value copy_two_doubles(double a, double b)
@@ -196,8 +199,9 @@ ML_1 (gnome_canvas_item_raise_to_top, GnomeCanvasItem_val, Unit)
 ML_1 (gnome_canvas_item_lower_to_bottom, GnomeCanvasItem_val, Unit)
 ML_1 (gnome_canvas_item_show, GnomeCanvasItem_val, Unit)
 ML_1 (gnome_canvas_item_hide, GnomeCanvasItem_val, Unit)
-/* gnome_canvas_item_grab */
-/* gnome_canvas_item_ungrab */
+
+ML_4 (gnome_canvas_item_grab, GnomeCanvasItem_val, Flags_Event_mask_val, GdkCursor_val, Int32_val, Unit)
+ML_2 (gnome_canvas_item_ungrab, GnomeCanvasItem_val, Int32_val, Unit)
 
 CAMLprim value ml_gnome_canvas_item_w2i(value i, value x, value y)
 {
@@ -244,4 +248,30 @@ CAMLprim value ml_gnome_canvas_group_get_items(value cg)
     item_list = item_list->prev;
   }
   CAMLreturn(v);
+}
+
+
+/* Converion functions for properties */
+#include "gtk_tags.h"
+
+CAMLprim value ml_gnome_canvas_convert_tags(value tag)
+{
+  lookup_info *tables[] = { ml_table_anchor_type };
+  return Val_int(ml_lookup_to_c( tables[ Tag_val(tag) ], Field(tag, 0)));
+}
+
+CAMLprim value ml_gnome_canvas_convert_points(value arr)
+{
+  int len = Wosize_val(arr) / Double_wosize;
+  GnomeCanvasPoints *p;
+  GValue *v;
+  if(len % 2)
+    invalid_argument("odd number of coords");
+  p = gnome_canvas_points_new(len / 2);
+  memcpy(p->coords, (double *)arr, Wosize_val(arr) * sizeof (value));
+  v = g_malloc(sizeof *v);
+  v->g_type = 0;
+  g_value_init(v, GNOME_TYPE_CANVAS_POINTS);
+  g_value_set_boxed_take_ownership(v, p);
+  return Val_GValue_new(v);
 }

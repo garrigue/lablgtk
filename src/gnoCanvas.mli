@@ -1,10 +1,19 @@
 type items_properties = [ 
+  | `parent of GnomeCanvas.item Gtk.obj
+  | `anchor of Gtk.Tags.anchor_type
+  | `first_arrowhead of bool
+  | `last_arrowhead of bool
+  | `arrow_shape_a of float
+  | `arrow_shape_b of float
+  | `arrow_shape_c of float
+  | `points of float array
   | `fill_color of string
   | `font of string
   | `outline_color of string
   | `size of int
   | `text of string
   | `width_units of float
+  | `width_pixels of int
   | `x of float
   | `x1 of float
   | `x2 of float
@@ -14,6 +23,15 @@ type items_properties = [
       
 val propertize : [< items_properties] -> string * Gobject.g_value
 
+class item_signals :
+  ?after:bool -> 'b Gtk.obj ->
+  object
+    constraint 'b = [> GnomeCanvas.item]
+    inherit GObj.gtkobj_signals
+    val obj : 'b Gtk.obj
+    method event : callback:(GdkEvent.any -> unit) -> GtkSignal.id
+  end
+
 class ['a] item : 'b Gtk.obj ->
   object
     constraint 'a = [< items_properties]
@@ -21,7 +39,9 @@ class ['a] item : 'b Gtk.obj ->
     inherit GObj.gtkobj
     val obj : 'b Gtk.obj
     method as_item : GnomeCanvas.item Gtk.obj
+    method connect : item_signals
     method get_bounds : float array
+    method grab : Gdk.Tags.event_mask list -> Gdk.cursor -> int32 -> unit
     method grab_focus : unit
     method hide : unit
     method i2w : x:float -> y:float -> float * float
@@ -32,9 +52,10 @@ class ['a] item : 'b Gtk.obj ->
     method raise_item : int -> unit
     method raise_to_top : unit
     method reparent : GnomeCanvas.group Gobject.obj -> unit
-    method set : (string * Gobject.g_value) list -> unit
-    method set_prop : 'a list -> unit
+    method set_raw : (string * Gobject.g_value) list -> unit
+    method set : 'a list -> unit
     method show : unit
+    method ungrab : int32 -> unit
     method w2i : x:float -> y:float -> float * float
   end
 
@@ -44,17 +65,6 @@ class group : GnomeCanvas.group Gtk.obj ->
     val obj : GnomeCanvas.group Gtk.obj
     method as_group : GnomeCanvas.group Gtk.obj
     method get_items : GnomeCanvas.item Gobject.obj list
-  end
-
-class item_signals :
-  ?after:bool -> 'b Gtk.obj ->
-  object ('a)
-    constraint 'b = [> GnomeCanvas.item]
-    val after : bool
-    val obj : 'b Gtk.obj
-    method after : 'a
-    method destroy : callback:(unit -> unit) -> GtkSignal.id
-    method event : callback:(GdkEvent.any -> unit) -> GtkSignal.id
   end
 
 class canvas : GnomeCanvas.canvas Gtk.obj ->
@@ -91,10 +101,6 @@ val canvas :
   unit -> canvas 
 
 val item :
-  ([> GnomeCanvas.item] as 'a, [< items_properties] as 'b) GnomeCanvas.Types.t ->
-  ?props:'b list -> #group -> 'a Gobject.obj
-
-val item_o :
   ([> GnomeCanvas.item], [< items_properties] as 'a) GnomeCanvas.Types.t ->
   ?props:'a list -> #group -> 'a item
 
@@ -102,14 +108,25 @@ val group :
   ?props:GnomeCanvas.Types.group_p list ->
   #group -> group
 
+
+type rect = GnomeCanvas.Types.re_p item
 val rect :
   ?props:GnomeCanvas.Types.re_p list ->
-  #group -> GnomeCanvas.Types.re_p item
+  #group -> rect
+
+type ellipse = GnomeCanvas.Types.re_p item
 val ellipse :
   ?props:GnomeCanvas.Types.re_p list ->
-  #group -> GnomeCanvas.Types.re_p item
+  #group -> ellipse
+
+type text = GnomeCanvas.Types.text_p item
 val text :
   ?props:GnomeCanvas.Types.text_p list ->
-  #group -> GnomeCanvas.Types.text_p item
+  #group -> text
+
+type line = GnomeCanvas.Types.line_p item
+val line :
+  ?props:GnomeCanvas.Types.line_p list ->
+  #group -> line
 
 val parent : 'a #item -> [< items_properties] item
