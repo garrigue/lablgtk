@@ -26,8 +26,7 @@ class ['a] window_skel obj = object
   method set_title = Window.set_title obj
   method set_wm_name name = Window.set_wmclass obj ~name
   method set_wm_class cls = Window.set_wmclass obj ~clas:cls
-  method set_allow_shrink allow_shrink = Window.set_policy obj ~allow_shrink
-  method set_allow_grow allow_grow = Window.set_policy obj ~allow_grow
+  method set_resizable = Window.set_resizable obj
   method show () = Widget.show obj
   method present () = Window.present obj
 end
@@ -38,11 +37,10 @@ class window obj = object
 end
 
 let window ?kind:(t=`TOPLEVEL) ?title ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?modal ?x ?y
+    ?resizable ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = Window.create t in
-  Window.set w ?title ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?modal ?x ?y;
+  Window.set w ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new window w
@@ -99,23 +97,19 @@ class ['a] dialog obj = object
     List.assoc resp !tbl
 end
 
-let dialog ?title ?wm_name ?wm_class ?position ?allow_shrink
-    ?allow_grow ?modal ?x ?y ?border_width ?width ?height
-    ?(show=false) () =
+let dialog ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y
+    ?border_width ?width ?height ?(show=false) () =
   let w = Dialog.create () in
-  Window.set w ?title ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?modal ?x ?y;
+  Window.set w ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new dialog w
 
 let dialog ?parent ?destroy_with_parent ?(no_separator=false) ?title 
-    ?wm_name ?wm_class ?position ?allow_shrink
-    ?allow_grow ?modal ?x ?y ?border_width ?width ?height
-    ?(show=false) () =
+    ?wm_name ?wm_class ?position ?resizable ?modal
+    ?x ?y ?border_width ?width ?height ?(show=false) () =
   let w = Dialog.create () in
-  Window.set w ?title ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?modal ?x ?y ;
+  Window.set w ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y ;
   Gaux.may (fun p -> Window.set_transient_for w p#as_window) parent ;
   Gaux.may ~f:(Window.set_destroy_with_parent w) destroy_with_parent ;
   Container.set w ?border_width ?width ?height;
@@ -146,14 +140,12 @@ end
 
 let message_dialog ?(message="") ~message_type ~buttons ?parent 
     ?destroy_with_parent ?(no_separator=false) 
-    ?title ?wm_name ?wm_class ?position ?allow_shrink
-    ?allow_grow ?modal ?x ?y ?border_width ?width ?height
-    ?(show=false) () =
+    ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y
+    ?border_width ?width ?height ?(show=false) () =
   let parent = match parent with None -> None | Some x -> Some x#as_window in
   let w = Dialog.create_message ?parent
       ~message_type ~buttons:(fst buttons) ~message () in
-  Window.set w ?title ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?modal ?x ?y ;
+  Window.set w ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y ;
   Gaux.may ~f:(Window.set_destroy_with_parent w) destroy_with_parent ;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
@@ -176,12 +168,10 @@ class color_selection_dialog obj = object
 end
 
 let color_selection_dialog ?(title="Pick a color")
-    ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?modal ?x ?y
+    ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = ColorSelection.create_dialog title in
-  Window.set w ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?modal ?x ?y;
+  Window.set w ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new color_selection_dialog w
@@ -206,13 +196,11 @@ end
 
 let file_selection ?(title="Choose a file") ?filename
     ?(fileop_buttons=false) ?select_multiple
-    ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?modal ?x ?y
+    ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = FileSelection.create title in
   FileSelection.set w ?filename ~fileop_buttons ?select_multiple;
-  Window.set w ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?modal ?x ?y;
+  Window.set w ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new file_selection w
@@ -238,12 +226,10 @@ class font_selection_dialog obj = object
     new GButton.button (FontSelectionDialog.cancel_button obj)
 end
 
-let font_selection_dialog ?title ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?modal ?x ?y
-    ?border_width ?width ?height ?(show=false) () =
+let font_selection_dialog ?title ?wm_name ?wm_class ?position ?resizable
+    ?modal ?x ?y ?border_width ?width ?height ?(show=false) () =
   let w = FontSelectionDialog.create ?title () in
-  Window.set w ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?modal ?x ?y;
+  Window.set w ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new font_selection_dialog w

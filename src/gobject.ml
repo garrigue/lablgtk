@@ -62,7 +62,7 @@ module Value = struct
   external type_transformable : g_type -> g_type -> bool
       = "ml_g_value_type_transformable"
   external transform : g_value -> g_value -> bool = "ml_g_value_transform"
-  external get : g_value -> data_get = "ml_g_value_get"
+  external get : g_value -> data_get = "ml_g_value_get_variant"
   external set : g_value -> 'a data_set -> unit = "ml_g_value_set_variant"
   external get_pointer : g_value -> Gpointer.boxed = "ml_g_value_get_pointer"
   external get_nativeint : g_value -> nativeint = "ml_g_value_get_nativeint"
@@ -206,6 +206,7 @@ module Property = struct
     = "ml_g_object_get_property"
   external get_property_type : 'a obj -> string -> g_type
     = "ml_g_object_get_property_type"
+  (* Converted to C to avoid too many calls
   let set_dyn obj prop data =
     let t = get_property_type obj prop in
     let v = Value.create t in
@@ -216,6 +217,11 @@ module Property = struct
     let v = Value.create t in
     get_property obj prop v;
     Value.get v
+  *)
+  external set_dyn : 'a obj -> string -> 'b data_set -> unit
+    = "ml_g_object_set_property_dyn"
+  external get_dyn : 'a obj -> string -> data_get
+    = "ml_g_object_get_property_dyn"
   let set (obj : 'a obj) (prop : ('a,_) property) x =
     set_dyn obj prop.name (prop.conv.Data.inj x)
   let get (obj : 'a obj) (prop : ('a,_) property) =

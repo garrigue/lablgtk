@@ -94,6 +94,12 @@ module Tags = struct
     | `SENSITIVE | `PARENT_SENSITIVE | `CAN_FOCUS | `HAS_FOCUS
     | `CAN_DEFAULT | `HAS_DEFAULT | `HAS_GRAB | `RC_STYLE | `COMPOSITE_CHILD
     | `NO_REPARENT | `APP_PAINTABLE | `RECEIVES_DEFAULT | `DOUBLE_BUFFERED ]
+  type gravity =
+    [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `CENTER | `EAST
+    | `SOUTH_WEST | `SOUTH | `SOUTH_EAST | `STATIC ]
+  type window_type_hint =
+    [ `NORMAL | `DIALOG | `MENU | `TOOLBAR | `SPLASHSCREEN | `UTILITY
+    | `DOCK | `DESKTOP ]
 end
 open Tags
 

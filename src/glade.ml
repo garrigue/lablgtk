@@ -63,8 +63,8 @@ let _ = List.iter ~f:(fun (name,h) -> add_handler ~name h)
       "gtk_widget_grab_focus",
       `Object ("GtkWidget", Widget.cast $ Widget.grab_focus);
       "gtk_window_activate_default",
-      `Object ("GtkWindow",
-              GtkWindow.Window.cast $ GtkWindow.Window.activate_default);
+      `Object ("GtkWindow", fun w -> ignore (GtkWindow.Window.activate_default
+                                               (GtkWindow.Window.cast w)));
       "gtk_true", `Custom (gtk_bool true);
       "gtk_false", `Custom (gtk_bool false);
     ]

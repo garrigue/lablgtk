@@ -142,11 +142,10 @@ CAMLprim value ml_g_value_shift (value args, value index)
 
 #define DATA  (val->data[0])
 
-CAMLprim value ml_g_value_get (value arg)
+value g_value_get_variant (GValue *val)
 {
     CAMLparam0();
     CAMLlocal1(tmp);
-    GValue *val = GValue_val(arg);
     value ret = MLTAG_NONE;
     GType type = G_VALUE_TYPE(val);
     int tag;
@@ -215,10 +214,12 @@ CAMLprim value ml_g_value_get (value arg)
     CAMLreturn(ret);
 }
 
-void g_value_set_variant (GValue *val, value arg2)
+ML_1 (g_value_get_variant, GValue_val, ID)
+
+void g_value_set_variant (GValue *val, value arg)
 {
-    value tag = Field(arg2,0);
-    value data = Field(arg2,1);
+    value tag = Field(arg,0);
+    value data = Field(arg,1);
     GType type = G_VALUE_TYPE(val);
     switch (G_TYPE_FUNDAMENTAL(type)) {
     case G_TYPE_CHAR:
@@ -332,20 +333,34 @@ CAMLprim value ml_g_value_get_pointer (value arg)
 
 #undef DATA
 
-/*
-ML_2 (g_value_set_boolean, GValue_val, Int_val, Unit)
-ML_1 (g_value_get_boolean, GValue_val, Val_bool)
-ML_2 (g_value_set_char, GValue_val, Char_val, Unit)
-ML_1 (g_value_get_char, GValue_val, Val_char)
-ML_2 (g_value_set_int, GValue_val, Int_val, Unit)
-ML_1 (g_value_get_int, GValue_val, Val_int)
-ML_2 (g_value_set_long, GValue_val, Nativeint_val, Unit)
-ML_1 (g_value_get_long, GValue_val, copy_nativeint)
-ML_2 (g_value_set_int64, GValue_val, Int64_val, Unit)
-ML_1 (g_value_get_int64, GValue_val, copy_int64)
-ML_2 (g_value_set_float, GValue_val, Float_val, Unit)
-ML_1 (g_value_get_float, GValue_val, copy_double)
-*/
+/* gobject.h / properties */
+
+CAMLprim value ml_g_object_get_property_dyn (value vobj, value prop)
+{
+  GObject *obj = GObject_val(vobj);
+  GParamSpec *pspec =
+    g_object_class_find_property (G_OBJECT_GET_CLASS(obj), String_val(prop));
+  GValue val = {0};
+  value ret;
+  g_value_init (&val, pspec->value_type);
+  g_object_get_property (obj, String_val(prop), &val);
+  ret = g_value_get_variant (&val);
+  g_value_unset (&val);
+  return ret;
+}
+
+CAMLprim value ml_g_object_set_property_dyn (value vobj, value prop, value arg)
+{
+  GObject *obj = GObject_val(vobj);
+  GParamSpec *pspec =
+    g_object_class_find_property (G_OBJECT_GET_CLASS(obj), String_val(prop));
+  GValue val = {0};
+  g_value_init (&val, pspec->value_type);
+  g_value_set_variant (&val, arg);
+  g_object_set_property (obj, String_val(prop), &val);
+  g_value_unset (&val);
+  return Val_unit;
+}
 
 /* gsignal.h */
 

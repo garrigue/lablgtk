@@ -9,17 +9,16 @@ class ['a] window_skel : 'b obj ->
     constraint 'a = 'a #window_skel
     constraint 'b = [> window]
     val obj : 'b obj
-    method activate_default : unit -> unit
-    method activate_focus : unit -> unit
+    method activate_default : unit -> bool
+    method activate_focus : unit -> bool
     method add_accel_group : accel_group -> unit
     method event : event_ops
     method as_window : Gtk.window obj
-    method set_allow_grow : bool -> unit
-    method set_allow_shrink : bool -> unit
     method set_default_size : width:int -> height:int -> unit
     method resize : width:int -> height:int -> unit
     method set_modal : bool -> unit
     method set_position : Tags.window_position -> unit
+    method set_resizable : bool -> unit
     method set_resize_mode : Tags.resize_mode -> unit
     method set_title : string -> unit
     method set_transient_for : 'a -> unit
@@ -41,8 +40,7 @@ val window :
   ?wm_name:string ->
   ?wm_class:string ->
   ?position:Tags.window_position ->
-  ?allow_shrink:bool ->
-  ?allow_grow:bool ->
+  ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->
   ?y:int ->
@@ -85,8 +83,7 @@ val dialog :
   ?wm_name:string ->
   ?wm_class:string ->
   ?position:Tags.window_position ->
-  ?allow_shrink:bool ->
-  ?allow_grow:bool ->
+  ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->
   ?y:int ->
@@ -112,8 +109,7 @@ val message_dialog :
   ?wm_name:string ->
   ?wm_class:string ->
   ?position:Tags.window_position ->
-  ?allow_shrink:bool ->
-  ?allow_grow:bool ->
+  ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->
   ?y:int ->
@@ -135,8 +131,7 @@ val color_selection_dialog :
   ?wm_name:string ->
   ?wm_class:string ->
   ?position:Tags.window_position ->
-  ?allow_shrink:bool ->
-  ?allow_grow:bool ->
+  ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->
   ?y:int ->
@@ -168,8 +163,7 @@ val file_selection :
   ?wm_name:string ->
   ?wm_class:string ->
   ?position:Tags.window_position ->
-  ?allow_shrink:bool ->
-  ?allow_grow:bool ->
+  ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->
   ?y:int ->
@@ -191,8 +185,7 @@ val font_selection_dialog :
   ?wm_name:string ->
   ?wm_class:string ->
   ?position:Tags.window_position ->
-  ?allow_shrink:bool ->
-  ?allow_grow:bool ->
+  ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->
   ?y:int ->

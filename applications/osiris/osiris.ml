@@ -628,3 +628,125 @@ class icontainer ?parent w =
       Container.add hbox vbox;
       align vbox false children
   end
+
+let press_events = ref []
+
+let do_action o x =
+  match o with
+    None -> false
+  | Some f -> f x; true
+
+class imouse_events w : mouse_events =
+  object (self)
+    val mutable on_click = None
+    val on_dblclick = Array.create 3 None
+    val on_down = Array.create 3 None
+    val on_up = Array.create 3 None
+    val mutable on_mousemove = None
+    val mutable button_press_installed = false
+    val mutable button_release_installed = false
+    val mutable mousemove_installed = false
+    method private button_event ev =
+      let b = GdkEvent.Button.button ev - 1 in
+      if b < 0 || b > 2 then false else
+      let action =
+        match GdkEvent.get_type ev with
+          `BUTTON_PRESS -> on_down.(b)
+        | `TWO_BUTTON_PRESS -> on_dblclick.(b)
+        | `THREE_BUTTON_PRESS -> None
+        | `BUTTON_RELEASE ->
+            if b <> 0 then on_up.(b) else
+            match on_up.(b), on_click with
+            | Some f1, Some f2 -> f1 (); on_click
+            | None, a -> a
+            | a, None -> a
+      in
+      do_action a ()
+          
+    method private install_button_press =
+      if not button_press_installed then begin
+        GtkSignal.connect w ~sgn:Widget.Signals.Event.button_press
+          ~callback:self#button_event;
+        button_press_installed <- true;
+      end
+    method private install_button_release =
+      if not button_release_installed then begin
+        button_press_installed <- true;
+        ignore (GtkSignal.connect w ~sgn:Widget.Signals.Event.button_release
+                  ~callback:self#button_event)
+      end
+
+    method on_mousemove f =
+      if not mousemove_installed then begin
+        GtkSignal.connect w ~sgn:Widget.Signals.Event.motion_notify ~callback:
+          begin fun ev ->
+            match on_mousemove with
+              None -> false
+            | Some f ->
+                f (truncate (GdkEvent.Motion.x ev))
+                  (truncate (GdkEvent.Motion.y ev));
+                true
+          end;
+        mousemove_installed <- true;
+      end;
+      on_mousemove <- Some f
+
+    method on_click f =
+      self#install_button_release;
+      on_click <- Some f
+    method private on_up n f =
+      self#install_button_release;
+      on_up.(n) <- Some f
+    method on_lup = self#on_up 0
+    method on_mup = self#on_up 1
+    method on_rup = self#on_up 2
+    method private on_down n f =
+      self#install_button_press;
+      on_down.(n) <- Some f
+    method on_ldown = self#on_down 0
+    method on_mdown = self#on_down 1
+    method on_rdown = self#on_down 2
+    method private on_dblclick0 n f =
+      self#install_button_press;
+      on_dblclick.(n) <- Some f
+    method on_dblclick = self#on_dblclick0 0
+    method on_mdblclick = self#on_dblclick0 1
+    method on_rdblclick = self#on_dblclick0 2
+  end
+
+class ikey_events w : key_events =
+  object
+    val mutable on_key_down = None
+    val mutable on_key_up = None
+    val mutable key_down_installed = false
+    val mutable key_up_installed = false
+    method on_key_down f =
+      if not key_down_installed then begin
+        GtkSignal.connect w ~sgn:Widget.Signals.Event.key_press ~callback:
+          begin fun ev ->
+            do_action on_key_down (GdkEvent.Key.keyval ev)
+          end;
+        key_down_installed <- true;
+      end;
+      on_key_down <- Some f
+    method on_key_release f =
+      if not key_up_installed then begin
+        GtkSignal.connect w ~sgn:Widget.Signals.Event.key_release ~callback:
+          begin fun ev ->
+            do_action on_key_up (GdkEvent.Key.keyval ev)
+          end;
+        key_up_installed <- true;
+      end;
+      on_on_key_up <- Some f
+  end
+
+class iwindow w =
+  object
+    inherit icontainer w
+    inherit imouse_events w
+    inherit ikey_events w
+
+    method process = Glib.Main.iteration
+    method close = Object.destroy w
+    method window_state = function
+        Maximize ->

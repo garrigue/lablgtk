@@ -18,24 +18,15 @@ module Window = struct
       = "ml_gtk_window_get_wmclass_name"
   external get_wmclass_class : [>`window] obj -> string
       = "ml_gtk_window_get_wmclass_class"
-  external set_role : [>`window] obj -> string -> unit
-      = "ml_gtk_window_set_role"
-  external get_role : [>`window] obj -> string
-      = "ml_gtk_window_get_role"
-  (* set_focus/default are called by Widget.grab_focus/default *)
-  external set_focus : [>`window] obj -> [>`widget] obj -> unit
-      = "ml_gtk_window_set_focus"
-  external get_focus : [>`window] obj -> widget obj
-      = "ml_gtk_window_get_focus"
-  external set_default : [>`window] obj -> [>`widget] obj -> unit
-      = "ml_gtk_window_set_default"
-  external set_policy :
-      [>`window] obj -> allow_shrink:bool -> allow_grow:bool -> unit
-      = "ml_gtk_window_set_policy"
-  external get_allow_shrink : [>`window] obj -> bool
-      = "ml_gtk_window_get_allow_shrink"
-  external get_allow_grow : [>`window] obj -> bool
-      = "ml_gtk_window_get_allow_grow"
+  external set_resizable : [>`window] obj -> bool -> unit
+      = "ml_gtk_window_set_resizable"
+  external get_resizable : [>`window] obj -> bool -> unit
+      = "ml_gtk_window_get_resizable"
+  external add_accel_group : [>`window] obj -> accel_group -> unit
+      = "ml_gtk_window_add_accel_group"
+  external remove_accel_group :
+      [>`window] obj -> accel_group -> unit
+      = "ml_gtk_window_remove_accel_group"
   external activate_focus : [>`window] obj -> bool
       = "ml_gtk_window_activate_focus"
   external activate_default : [>`window] obj -> bool
@@ -45,9 +36,18 @@ module Window = struct
   external set_default_size :
       [>`window] obj -> width:int -> height:int -> unit
       = "ml_gtk_window_set_default_size"
-  external resize :
-      [>`window] obj -> width:int -> height:int -> unit
-      = "ml_gtk_window_resize"
+  external set_geometry_hints :
+      [>`window] obj -> ?pos: bool -> ?min_size: int * int ->
+      ?max_size: int * int -> ?base_size: int * int ->
+      ?aspect: float * float -> ?resize_inc: int * int ->
+      ?win_gravity: gravity -> ?user_pos: bool ->
+      ?user_size: bool -> [>`widget] obj -> unit
+      = "ml_gtk_window_set_geometry_hints_bc"
+        "ml_gtk_window_set_geometry_hints"
+  external set_gravity : [>`window] obj -> gravity -> unit
+      = "ml_gtk_window_set_gravity"
+  external get_gravity : [>`window] obj -> gravity
+      = "ml_gtk_window_get_gravity"
   external set_position : [>`window] obj -> window_position -> unit
       = "ml_gtk_window_set_position"
   external set_transient_for : [>`window] obj ->[>`window] obj -> unit
@@ -56,40 +56,66 @@ module Window = struct
       = "ml_gtk_window_get_transient_for"
   external set_destroy_with_parent : [>`window] obj -> bool -> unit
       = "ml_gtk_window_set_destroy_with_parent"
+  external set_screen : [>`window] obj -> Gdk.screen -> unit
+      = "ml_gtk_window_set_screen"
+  external get_screen : [>`window] obj -> Gdk.screen
+      = "ml_gtk_window_get_screen"
+  external list_toplevels : unit -> window obj list
+      = "ml_gtk_window_list_toplevels"
+  external add_mnemonic :
+      [>`window] obj -> Gdk.keysym -> [>`widget] obj -> unit
+      = "ml_gtk_window_add_mnemonic"
+  external remove_mnemonic :
+      [>`window] obj -> Gdk.keysym -> [>`widget] obj -> unit
+      = "ml_gtk_window_remove_mnemonic"
+  external activate_mnemonic :
+      [>`window] obj -> ?modi: Gdk.Tags.modifier list -> Gdk.keysym -> unit
+      = "ml_gtk_window_mnemonic_activate"
+  external get_focus : [>`window] obj -> widget obj
+      = "ml_gtk_window_get_focus"
+  (* set_focus/default are called by Widget.grab_focus/default *)
+  external set_focus : [>`window] obj -> [>`widget] obj -> unit
+      = "ml_gtk_window_set_focus"
+  external set_default : [>`window] obj -> [>`widget] obj -> unit
+      = "ml_gtk_window_set_default"
+  external present :  [>`window] obj -> unit
+      = "ml_gtk_window_present"
+  external resize :
+      [>`window] obj -> width:int -> height:int -> unit
+      = "ml_gtk_window_resize"
+  external set_role : [>`window] obj -> string -> unit
+      = "ml_gtk_window_set_role"
+  external get_role : [>`window] obj -> string
+      = "ml_gtk_window_get_role"
 
   let set_wmclass ?name ?clas:wm_class w =
     set_wmclass w ~name:(may_default get_wmclass_name w ~opt:name)
       ~clas:(may_default get_wmclass_class w ~opt:wm_class)
-  let set_policy ?allow_shrink ?allow_grow w =
-    set_policy w
-      ~allow_shrink:(may_default get_allow_shrink w ~opt:allow_shrink)
-      ~allow_grow:(may_default get_allow_grow w ~opt:allow_grow)
-  let set ?title ?wm_name ?wm_class ?role ?position 
-      ?allow_shrink ?allow_grow ?auto_shrink ?modal ?(x = -2) ?(y = -2) w =
+  let set ?title ?wm_name ?wm_class ?role ?position ?resizable
+      ?modal ?(x = -2) ?(y = -2) w =
     may title ~f:(set_title w);
     if wm_name <> None || wm_class <> None then
       set_wmclass w ?name:wm_name ?clas:wm_class;
     may role ~f:(set_role w);
     may position ~f:(set_position w);
-    if allow_shrink <> None || allow_grow <> None then
-      set_policy w ?allow_shrink ?allow_grow;
+    may resizable ~f:(set_resizable w);
     may ~f:(set_modal w) modal;
     if x <> -2 || y <> -2 then Widget.set_uposition w ~x ~y
-  external add_accel_group : [>`window] obj -> accel_group -> unit
-      = "ml_gtk_window_add_accel_group"
-  external remove_accel_group :
-      [>`window] obj -> accel_group -> unit
-      = "ml_gtk_window_remove_accel_group"
-  external activate_focus : [>`window] obj -> unit
-      = "ml_gtk_window_activate_focus"
-  external activate_default : [>`window] obj -> unit
-      = "ml_gtk_window_activate_default"
-  external present :  [>`window] obj -> unit
-      = "ml_gtk_window_present"
+
   module Signals = struct
     open GtkSignal
-    let move_resize =
-      { name = "move_resize"; classe = `window; marshaller = marshal_unit }
+    let activate_default =
+      { name = "activate_default"; classe = `window; marshaller =marshal_unit }
+    let activate_focus =
+      { name = "activate_focus"; classe = `window; marshaller = marshal_unit }
+    let keys_changed =
+      { name = "keys_changed"; classe = `window; marshaller = marshal_unit }
+    external val_direction : int -> direction_type = "ml_Val_direction_type"
+    let move_focus =
+      let marshal f argv = function
+        | `INT dir :: _ -> f (val_direction dir)
+        | _ -> invalid_arg "GtkWindow.Window.Signals.marshal_focus"
+      in { name = "move_focus"; classe = `window; marshaller = marshal }
     let set_focus =
       { name = "set_focus"; classe = `window;
         marshaller = Widget.Signals.marshal_opt }
@@ -129,8 +155,7 @@ module Dialog = struct
   module Properties = struct
     open Gobject
     let has_separator = 
-      { name = "has_separator" ; classe = `dialog ;
-        conv = Gobject.Data.boolean }
+      { name = "has_separator" ; classe = `dialog ; conv = Data.boolean }
   end
 end
 
