@@ -1,61 +1,59 @@
 (* $Id$ *)
 
 open Gtk
+open GObj
+open GContainer
 
-class scrolled_window :
+class scrolled_window : Gtk.scrolled_window obj ->
+  object
+    inherit container_full
+    val obj : Gtk.scrolled_window obj
+    method add_with_viewport : widget -> unit
+    method hadjustment : GData.adjustment
+    method set_hadjustment : GData.adjustment -> unit
+    method set_hpolicy : Tags.policy_type -> unit
+    method set_placement : Tags.corner_type -> unit
+    method set_vadjustment : GData.adjustment -> unit
+    method set_vpolicy : Tags.policy_type -> unit
+    method vadjustment : GData.adjustment
+  end
+val scrolled_window :
   ?hadjustment:GData.adjustment ->
   ?vadjustment:GData.adjustment ->
-  ?hpolicy:Gtk.Tags.policy_type ->
-  ?vpolicy:Gtk.Tags.policy_type ->
-  ?placement:Gtk.Tags.corner_type ->
+  ?hpolicy:Tags.policy_type ->
+  ?vpolicy:Tags.policy_type ->
+  ?placement:Tags.corner_type ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(scrolled_window -> unit) -> ?show:bool ->
-  object
-    inherit GContainer.container_wrapper
-    val obj : Gtk.scrolled_window Gtk.obj
-    method add_with_viewport : #GObj.is_widget -> unit
-    method hadjustment : GData.adjustment_wrapper
-    method set_hadjustment : GData.adjustment -> unit
-    method set_vadjustment : GData.adjustment -> unit
-    method set_hpolicy : Gtk.Tags.policy_type -> unit
-    method set_vpolicy : Gtk.Tags.policy_type -> unit
-    method set_placement : Gtk.Tags.corner_type -> unit
-    method vadjustment : GData.adjustment_wrapper
-  end
-class scrolled_window_wrapper : Gtk.scrolled_window obj -> scrolled_window
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> scrolled_window
 
-class event_box :
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(event_box -> unit) -> ?show:bool ->
+class event_box : Gtk.event_box obj ->
   object
-    inherit GContainer.container_wrapper
+    inherit container_full
     val obj : Gtk.event_box obj
     method add_events : Gdk.Tags.event_mask list -> unit
   end
-class event_box_wrapper : Gtk.event_box obj -> event_box
-
-class handle_box_signals :
-  'a[> container handlebox widget] obj ->
-  object
-    inherit GContainer.container_signals
-    val obj : 'a obj
-    method child_attached :
-      callback:(Gtk.widget obj -> unit) -> ?after:bool -> GtkSignal.id
-    method child_detached :
-      callback:(Gtk.widget obj -> unit) -> ?after:bool -> GtkSignal.id
-  end
-
-class handle_box :
+val event_box :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(handle_box -> unit) -> ?show:bool ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> event_box
+
+class handle_box_signals : 'a obj ->
   object
-    inherit GContainer.container
+    inherit container_signals
+    constraint 'a = [>`handlebox|`container|`widget]
+    val obj : 'a obj
+    method child_attached :
+      callback:(Gtk.widget obj -> unit) -> GtkSignal.id
+    method child_detached :
+      callback:(Gtk.widget obj -> unit) -> GtkSignal.id
+  end
+
+class handle_box : Gtk.handle_box obj ->
+  object
+    inherit container
     val obj : Gtk.handle_box obj
     method add_events : Gdk.Tags.event_mask list -> unit
     method connect : handle_box_signals
@@ -63,19 +61,28 @@ class handle_box :
     method set_shadow_type : Tags.shadow_type -> unit
     method set_snap_edge : Tags.position -> unit
   end
-class handle_box_wrapper : Gtk.handle_box obj -> handle_box
+val handle_box :
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> handle_box
 
-class frame_skel :
-  'a[> container frame widget] obj ->
+class frame_skel : 'a obj ->
   object
-    inherit GContainer.container
+    inherit container
+    constraint 'a = [>`frame|`container|`widget]
     val obj : 'a obj
     method set_label : string -> unit
-    method set_label_align : ?x:clampf -> ?y:clampf -> unit
+    method set_label_align : unit
     method set_shadow_type : Tags.shadow_type -> unit
   end
-
-class frame :
+class frame : [>`frame] obj ->
+  object
+    inherit frame_skel
+    val obj : Gtk.frame obj
+    method connect : GContainer.container_signals
+  end
+val frame :
   ?label:string ->
   ?label_xalign:clampf ->
   ?label_yalign:clampf ->
@@ -83,15 +90,17 @@ class frame :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(frame -> unit) -> ?show:bool ->
-  object
-    inherit frame_skel
-    val obj : Gtk.frame obj
-    method connect : GContainer.container_signals
-  end
-class frame_wrapper : ([> frame]) obj -> frame
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> frame
 
-class aspect_frame :
+class aspect_frame : Gtk.aspect_frame obj ->
+  object
+    inherit frame
+    val obj : Gtk.aspect_frame obj
+    method set_alignment : ?x:clampf -> ?y:clampf -> unit -> unit
+    method set_obey_child : bool -> unit
+    method set_ratio : clampf -> unit
+  end
+val aspect_frame :
   ?label:string ->
   ?xalign:clampf ->
   ?yalign:clampf ->
@@ -103,32 +112,23 @@ class aspect_frame :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(aspect_frame -> unit) -> ?show:bool ->
-  object
-    inherit frame_skel
-    val obj : Gtk.aspect_frame obj
-    method connect : GContainer.container_signals
-    method set_alignment : ?x:clampf -> ?y:clampf -> unit
-    method set_ratio : clampf -> unit
-    method set_obey_child : bool -> unit
-  end
-class aspect_frame_wrapper : Gtk.aspect_frame obj -> aspect_frame
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> aspect_frame
 
-class viewport :
+class viewport : Gtk.viewport obj ->
+  object
+    inherit container_full
+    val obj : Gtk.viewport obj
+    method hadjustment : GData.adjustment
+    method set_hadjustment : GData.adjustment -> unit
+    method set_shadow_type : Gtk.Tags.shadow_type -> unit
+    method set_vadjustment : GData.adjustment -> unit
+    method vadjustment : GData.adjustment
+  end
+val viewport :
   ?hadjustment:GData.adjustment ->
   ?vadjustment:GData.adjustment ->
   ?shadow_type:Tags.shadow_type ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(viewport -> unit) -> ?show:bool ->
-  object
-    inherit GContainer.container_wrapper
-    val obj : Gtk.viewport obj
-    method hadjustment : GData.adjustment
-    method set_hadjustment : GData.adjustment -> unit
-    method set_vadjustment : GData.adjustment -> unit
-    method set_shadow_type : Tags.shadow_type -> unit
-    method vadjustment : GData.adjustment
-  end
-class viewport_wrapper : Gtk.viewport obj -> viewport
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> viewport

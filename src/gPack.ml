@@ -9,14 +9,13 @@ open GContainer
 
 class box_skel obj = object
   inherit container obj
-  method pack ?from:f ?:expand ?:fill ?:padding (w : widget) =
-    Box.pack obj w#as_widget ?from:f ?:expand ?:fill ?:padding
+  method pack ?from:f ?:expand ?:fill ?:padding w =
+    Box.pack obj (as_widget w) ?from:f ?:expand ?:fill ?:padding
   method set_homogeneous = Box.set_homogeneous obj
   method set_spacing = Box.set_spacing obj
-  method set_child_packing ?from:f ?:expand ?:fill ?:padding (w : widget) =
-    Box.set_child_packing obj w#as_widget ?from:f ?:expand ?:fill ?:padding
-  method reorder_child (w : widget) =
-    Box.reorder_child obj w#as_widget
+  method set_child_packing ?from:f ?:expand ?:fill ?:padding w =
+    Box.set_child_packing obj (as_widget w) ?from:f ?:expand ?:fill ?:padding
+  method reorder_child w = Box.reorder_child obj (as_widget w)
 end
 
 class box obj = object
@@ -53,8 +52,8 @@ let button_box dir ?:spacing ?:child_width ?:child_height ?:child_ipadx
 class table obj = object
   inherit container_full (obj : Gtk.table obj)
   method attach :left :top ?:right ?:bottom ?:expand ?:fill ?:shrink
-      ?:xpadding ?:ypadding (w : widget) =
-    Table.attach obj w#as_widget :left :top ?:right ?:bottom ?:expand
+      ?:xpadding ?:ypadding w =
+    Table.attach obj (as_widget w) :left :top ?:right ?:bottom ?:expand
       ?:fill ?:shrink ?:xpadding ?:ypadding
   method set_row_spacing = Table.set_row_spacing obj
   method set_col_spacing = Table.set_col_spacing obj
@@ -73,8 +72,8 @@ let table :rows :columns ?:homogeneous ?:row_spacings ?:col_spacings
 class fixed obj = object
   inherit container_full (obj : Gtk.fixed obj)
   method add_events = Widget.add_events obj
-  method put (w : widget) = Fixed.put obj w#as_widget
-  method move (w : widget) = Fixed.move obj w#as_widget
+  method put w = Fixed.put obj (as_widget w)
+  method move w = Fixed.move obj (as_widget w)
 end
 
 let fixed ?:border_width ?:width ?:height ?:packing ?:show () =
@@ -85,12 +84,12 @@ let fixed ?:border_width ?:width ?:height ?:packing ?:show () =
 class layout obj = object
   inherit container_full (obj : Gtk.layout obj)
   method add_events = Widget.add_events obj
-  method put (w : widget) = Layout.put obj w#as_widget
-  method move (w : widget) = Layout.move obj w#as_widget
-  method set_hadjustment (adj : GData.adjustment) =
-    Layout.set_hadjustment obj adj#as_adjustment
-  method set_vadjustment (adj : GData.adjustment) =
-    Layout.set_vadjustment obj adj#as_adjustment
+  method put w = Layout.put obj (as_widget w)
+  method move w = Layout.move obj (as_widget w)
+  method set_hadjustment adj =
+    Layout.set_hadjustment obj (GData.as_adjustment adj)
+  method set_vadjustment adj =
+    Layout.set_vadjustment obj (GData.as_adjustment adj)
   method set_width width = Layout.set_size obj :width
   method set_height height = Layout.set_size obj :height
   method hadjustment = new GData.adjustment (Layout.get_hadjustment obj)
@@ -104,8 +103,8 @@ end
 let layout ?:hadjustment ?:vadjustment ?:layout_width ?:layout_height
     ?:border_width ?:width ?:height ?:packing ?:show () =
   let w = Layout.create
-      (optboxed (GData.adjustment_option hadjustment))
-      (optboxed (GData.adjustment_option vadjustment)) in
+      (optboxed (may_map fun:GData.as_adjustment hadjustment))
+      (optboxed (may_map fun:GData.as_adjustment vadjustment)) in
   if layout_width <> None || layout_height <> None then
     Layout.set_size w ?width:layout_width ?height:layout_height;
   Container.set w ?:border_width ?:width ?:height;
@@ -115,19 +114,19 @@ let layout ?:hadjustment ?:vadjustment ?:layout_width ?:layout_height
 class packer obj = object
   inherit container_full (obj : Gtk.packer obj)
   method pack  ?:side ?:anchor ?:expand ?:fill
-      ?:border_width ?:pad_x ?:pad_y ?:i_pad_x ?:i_pad_y (w : widget) =
+      ?:border_width ?:pad_x ?:pad_y ?:i_pad_x ?:i_pad_y w =
     let options = Packer.build_options ?:expand ?:fill () in
     if border_width == None && pad_x == None && pad_y == None &&
       i_pad_x == None && i_pad_y == None
-      then Packer.add_defaults obj w#as_widget ?:side ?:anchor :options
-      else Packer.add obj w#as_widget ?:side ?:anchor :options
+      then Packer.add_defaults obj (as_widget w) ?:side ?:anchor :options
+      else Packer.add obj (as_widget w) ?:side ?:anchor :options
 	  ?:border_width ?:pad_x ?:pad_y ?:i_pad_x ?:i_pad_y
   method set_child_packing ?:side ?:anchor ?:expand ?:fill
-      ?:border_width ?:pad_x ?:pad_y ?:i_pad_x ?:i_pad_y (w : widget) =
-    Packer.set_child_packing obj w#as_widget ?:side ?:anchor
+      ?:border_width ?:pad_x ?:pad_y ?:i_pad_x ?:i_pad_y w =
+    Packer.set_child_packing obj (as_widget w) ?:side ?:anchor
       ?options:(Some (Packer.build_options ?:expand ?:fill ()))
       ?:border_width ?:pad_x ?:pad_y ?:i_pad_x ?:i_pad_y
-  method reorder_child (w : widget) = Packer.reorder_child obj w#as_widget
+  method reorder_child w = Packer.reorder_child obj (as_widget w)
   method set_spacing = Packer.set_spacing obj
   method set_defaults = Packer.set_defaults obj
 end
@@ -141,8 +140,8 @@ let packer ?:spacing ?:border_width ?:width ?:height ?:packing ?:show () =
 class paned obj = object
   inherit container_full (obj : Gtk.paned obj)
   method add_events = Widget.add_events obj
-  method add1 (w : widget) = Paned.add1 obj w#as_widget
-  method add2 (w : widget) = Paned.add2 obj w#as_widget
+  method add1 w = Paned.add1 obj (as_widget w)
+  method add2 w = Paned.add2 obj (as_widget w)
   method set_handle_size = Paned.set_handle_size obj
   method set_gutter_size = Paned.set_gutter_size obj
 end

@@ -38,8 +38,7 @@ let adjustment ?:value{=0.} ?:lower{=0.} ?:upper{=100.}
     Adjustment.create :value :lower :upper :step_incr :page_incr :page_size in
   new adjustment w
 
-let adjustment_option = function None -> None
-  | Some (adj : adjustment) -> Some adj#as_adjustment
+let as_adjustment (adj : adjustment) = adj#as_adjustment
 
 class tooltips obj = object
   inherit gtkobj (obj : Gtk.tooltips obj)
@@ -47,8 +46,8 @@ class tooltips obj = object
   method connect = new data_signals obj
   method enable () = Tooltips.enable obj
   method disable () = Tooltips.disable obj
-  method set_tip ?:text ?:private (w : widget) =
-    Tooltips.set_tip obj w#as_widget ?:text ?:private
+  method set_tip ?:text ?:private w =
+    Tooltips.set_tip obj (as_widget w) ?:text ?:private
   method set_delay = Tooltips.set_delay obj
   method set_foreground col =
     Tooltips.set_colors obj foreground:(GdkObj.color col) ()

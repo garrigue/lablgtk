@@ -76,25 +76,21 @@ let radio_button ?:group ?:label ?:active ?:draw_indicator
   Container.set w ?:border_width ?:width ?:height;
   pack_return (new radio_button w) :packing :show
 
-let may_as_widget = function
-    None -> None
-  | Some (w : widget) -> Some w#as_widget
-
 class toolbar obj = object
   inherit container_full (obj : Gtk.toolbar obj)
-  method insert_widget ?:tooltip ?:tooltip_private ?:pos (w : widget) =
-    Toolbar.insert_widget obj w#as_widget ?:tooltip ?:tooltip_private ?:pos
+  method insert_widget ?:tooltip ?:tooltip_private ?:pos w =
+    Toolbar.insert_widget obj (as_widget w) ?:tooltip ?:tooltip_private ?:pos
 
   method insert_button ?:text ?:tooltip ?:tooltip_private ?:icon
       ?:pos ?:callback () =
-    let icon = may_as_widget icon in
+    let icon = may_map icon fun:as_widget in
     new button
       (Toolbar.insert_button obj type:`BUTTON ?:icon ?:text
 	 ?:tooltip ?:tooltip_private ?:pos ?:callback ())
 
   method insert_toggle_button ?:text ?:tooltip ?:tooltip_private ?:icon
       ?:pos ?:callback () =
-    let icon = may_as_widget icon in
+    let icon = may_map icon fun:as_widget in
     new toggle_button
       (ToggleButton.cast
 	 (Toolbar.insert_button obj type:`TOGGLEBUTTON ?:icon ?:text
@@ -102,7 +98,7 @@ class toolbar obj = object
 
   method insert_radio_button ?:text ?:tooltip ?:tooltip_private ?:icon
       ?:pos ?:callback () =
-    let icon = may_as_widget icon in
+    let icon = may_map icon fun:as_widget in
     new radio_button
       (RadioButton.cast
 	 (Toolbar.insert_button obj type:`RADIOBUTTON ?:icon ?:text

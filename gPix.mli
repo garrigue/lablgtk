@@ -1,25 +1,25 @@
 (* $Id$ *)
 
 open Gtk
+open GObj
 
-class pixmap :
+class pixmap : Gtk.pixmap Gtk.obj ->
+  object
+    inherit GMisc.misc
+    val obj : Gtk.pixmap Gtk.obj
+    method connect : GObj.widget_signals
+    method pixmap : GdkObj.pixmap
+    method set_pixmap : GdkObj.pixmap -> unit
+  end
+val pixmap :
   #GdkObj.pixmap ->
   ?xalign:float ->
   ?yalign:float ->
   ?xpad:int ->
   ?ypad:int ->
-  ?width:int -> ?height:int ->
-  ?packing:(pixmap -> unit) -> ?show:bool ->
-  object
-    inherit GMisc.misc
-    val obj : Gtk.pixmap obj
-    method connect : GObj.widget_signals
-    method pixmap : GdkObj.pixmap
-    method set_pixmap : #GdkObj.pixmap -> unit
-  end
-class pixmap_wrapper : Gtk.pixmap obj -> pixmap
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> pixmap
 
 class pixdraw :
-  parent:#GObj.widget ->
-  width:int ->
-  height:int -> GdkObj.pixmap
+  parent:#GObj.widget -> width:int -> height:int -> GdkObj.pixmap

@@ -241,6 +241,8 @@ and drag_signals :
       GtkSignal.id
   end
 
+val as_widget : widget -> Gtk.widget obj
+
 val pack_return :
     (#widget as 'a) ->
     packing:(widget -> unit) option -> show:bool option -> 'a
