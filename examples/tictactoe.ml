@@ -1,3 +1,5 @@
+(* $Id$ *)
+
 open Gtk.New
 
 (* pour definir un nouveau widget, il faut faire
@@ -25,11 +27,10 @@ let _,tictactoe_new,_ = make_new_widget "Tictactoe" parent:VBOX
     signal_array:Tictactoe.tictactoe_sig
 
 
-
-open GtkObj
+open GMain
 
 class tictactoe_signals obj = object
-  inherit container_signals obj
+  inherit GCont.container_signals obj
   method tictactoe = Gtk.Signal.connect sig:Tictactoe.tictactoe obj
 end
 
@@ -38,11 +39,11 @@ exception Trouve
 class tictactoe =
   let obj = tictactoe_new () in
 object(self)
-  inherit box_skel obj
+  inherit GPack.box_skel obj
   val buttons = Array.create_matrix cols:3 rows:3
-      fill:(new_toggle_button ())
+      fill:(new GButton.toggle_button)
   val buttons_handlers = Array.create_matrix cols:3 rows:3 fill:(Obj.magic 0)
-  val label = new_label text:"Go on!"
+  val label = new GMisc.label text:"Go on!"
   method clear () =
     for i = 0 to 2 do
       for j = 0 to 2 do
@@ -73,14 +74,14 @@ object(self)
     with Trouve -> label#set_text "Win!!"; self#emit_tictactoe ()
 	
   initializer
-    let table = new_table rows:3 columns:3 homogeneous:true in
+    let table = new GPack.table rows:3 columns:3 homogeneous:true in
     self#pack label;
     self#pack table;
     table #show ();
     label #show ();
     for i = 0 to 2 do
       for j = 0 to 2 do
-	buttons.(i).(j) <- new_toggle_button ();
+	buttons.(i).(j) <- new GButton.toggle_button;
 	table #attach buttons.(i).(j) left:i top:j;
 	buttons_handlers.(i).(j) <-
 	  buttons.(i).(j) #connect#toggled callback:self#toggle;
@@ -95,7 +96,7 @@ let win (ttt : tictactoe)  _ =
   ttt #clear ()
 
 let essai () =
-  let window = new_window `TOPLEVEL title:"Tictactoe" border_width:10 in
+  let window = new GWin.window `TOPLEVEL title:"Tictactoe" border_width:10 in
   window #connect#destroy callback:Main.quit;
   let ttt = new tictactoe in
   window#add ttt;

@@ -26,7 +26,8 @@ let main () =
       group:button1#group label:"button3" packing: box2#pack in
   button3#connect#clicked callback:(fun () -> prerr_endline "button3");
 
-  let separator = new GMisc.hseparator packing:(box1#pack expand:false) in
+  let separator =
+    new GMisc.separator `HORIZONTAL packing:(box1#pack expand:false) in
 
   let box3 = new box `VERTICAL
       spacing: 10 border_width: 10 packing:(box1#pack expand:false) in
