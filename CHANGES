@@ -1,5 +1,10 @@
 $Id$
 
+2003.12.13 [Olivier]
+  * More GTK 2.4 support:
+    Action-based menus and toolbars
+  * added GtkData.AccelGroup.parse
+
 2003.12.10 [Olivier]
   * support for GTK 2.4 widgets: 
     GtkComboBox, GtkExpander, GtkFileChooser
