@@ -13,4 +13,5 @@ value Val_GSList (GSList *list, value_in);
 value Val_GSList_free (GSList *list, value_in);
 GSList *GSList_val (value list, value_out);
 
+void ml_register_exn_map (GQuark domain, char *caml_name);
 void ml_raise_gerror(GError *) Noreturn;

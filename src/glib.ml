@@ -6,7 +6,8 @@ type unichar = int
 type unistring = unichar array
 
 exception GError of string
-let () = Callback.register_exception "gerror" (GError "")
+external _init : unit -> unit = "ml_glib_init"
+let () =  _init () ; Callback.register_exception "gerror" (GError "")
 exception Critical of string * string
 
 module Main = struct
@@ -87,6 +88,15 @@ end
 *)
 
 module Convert = struct
+  type error = 
+    | NO_CONVERSION
+    | ILLEGAL_SEQUENCE
+    | FAILED
+    | PARTIAL_INPUT
+    | BAD_URI
+    | NOT_ABSOLUTE_PATH
+  exception Error of error * string
+  let () = Callback.register_exception "g_convert_error" (Error (NO_CONVERSION, ""))
   external convert :
     string -> to_codeset:string -> from_codeset:string -> string
     = "ml_g_convert"

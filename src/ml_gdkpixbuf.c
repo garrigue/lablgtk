@@ -20,30 +20,11 @@
 
 #include "gdkpixbuf_tags.c"
 
-static void ml_raise_gdkpixbuf_error(GError *) Noreturn;
-static void ml_raise_gdkpixbuf_error(GError *err)
+CAMLprim value ml_gdkpixbuf_init(value unit)
 {
-  static value *exn = NULL;
-  if(err->domain == GDK_PIXBUF_ERROR) {
-    value b = 0, msg = 0;
-    Begin_roots2(b, msg);
-      if(exn == NULL)
-	exn = caml_named_value("gdk_pixbuf_error");
-      if(exn == NULL)
-	ml_raise_gerror(err);
-      msg = copy_string(err->message);
-      /* is this the right way to raise exceptions with multiple arguments ? */
-      b = alloc_small(3, 0);
-      Field(b, 0) = *exn;
-      Field(b, 1) = Val_int(err->code);
-      Field(b, 2) = msg;
-      g_error_free(err);
-    End_roots();
-    mlraise(b);
-  }
-  ml_raise_gerror(err);
+  ml_register_exn_map (GDK_PIXBUF_ERROR, "gdk_pixbuf_error");
+  return Val_unit;
 }
-
 
 /* Reference counting (use GObject) */
 #define Val_GdkPixbuf_noref(val) (Val_GObject_new((GObject*)(val)))
@@ -75,7 +56,7 @@ CAMLprim value ml_gdk_pixbuf_new_from_file(value f)
 {
     GError *err = NULL;
     GdkPixbuf *res = gdk_pixbuf_new_from_file(String_val(f), &err);
-    if (err) ml_raise_gdkpixbuf_error(err);
+    if (err) ml_raise_gerror(err);
     return Val_GdkPixbuf(res);
 }
 ML_1(gdk_pixbuf_new_from_xpm_data, (const char**), Val_GdkPixbuf_noref)
@@ -195,7 +176,7 @@ CAMLprim value ml_gdk_pixbuf_save(value fname, value type, value options, value 
     opt_v[len] = NULL;
   }
   gdk_pixbuf_savev(GdkPixbuf_val(pixbuf), String_val(fname), String_val(type), opt_k, opt_v, &err);
-  if(err) ml_raise_gdkpixbuf_error(err);
+  if(err) ml_raise_gerror(err);
   stat_free(opt_k);
   stat_free(opt_v);
   return Val_unit;

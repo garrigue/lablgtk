@@ -1,5 +1,11 @@
 $Id$
 
+2004.03.23 [Olivier]
+  * generic handling of GError on the C side
+  * added exception Glib.Convert.Error
+
+In lablgtk2-20040319:
+
 2004.03.18 [Jacques]
   * move GTree.tree to GBroken.tree (really broken in 2.4?)
   * add GBroken.text

@@ -88,19 +88,28 @@ end
 (** Character Set Conversion 
    @gtkdoc glib glib-Character-Set-Conversion *)
 module Convert :  sig
+  type error = 
+    | NO_CONVERSION (** Conversion between the requested character sets is not supported *)
+    | ILLEGAL_SEQUENCE (** Invalid byte sequence in conversion input *)
+    | FAILED (** Conversion failed for some reason *)
+    | PARTIAL_INPUT (** Partial character sequence at end of input *)
+    | BAD_URI (** URI is invalid *)
+    | NOT_ABSOLUTE_PATH (** Pathname is not an absolute path *)
+  exception Error of error * string
+
   val convert :
-    string -> to_codeset:string -> from_codeset:string -> string
+    string -> to_codeset:string -> from_codeset:string -> string (** @raise Error . *)
   val convert_with_fallback :
-    ?fallback:string -> to_codeset:string -> from_codeset:string -> string -> string
+    ?fallback:string -> to_codeset:string -> from_codeset:string -> string -> string (** @raise Error . *)
 
   (** All internal strings are encoded in utf8: you should use
      the following conversion functions *)
 
-  val locale_from_utf8 : string -> string
-  val locale_to_utf8 : string -> string
-  val filename_from_utf8 : string -> string
-  val filename_to_utf8 : string -> string
-  val get_charset : unit -> bool * string
+  val locale_from_utf8 : string -> string (** @raise Error . *)
+  val locale_to_utf8 : string -> string (** @raise Error . *)
+  val filename_from_utf8 : string -> string (** @raise Error . *)
+  val filename_to_utf8 : string -> string (** @raise Error . *)
+  val get_charset : unit -> bool * string (** @raise Error . *)
 end
 
 (** Unicode Manipulation
