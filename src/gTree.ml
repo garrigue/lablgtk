@@ -41,7 +41,7 @@ end
 and tree obj = object (self)
   inherit [tree_item] item_container obj
   method event = new GObj.event_ops obj
-  method as_tree = Tree.coerce obj
+  method as_tree = (obj :> Gtk.tree obj)
   method insert w ~pos = Tree.insert obj w#as_item ~pos
   method connect = new tree_signals obj
   method clear_items = Tree.clear_items obj
@@ -55,7 +55,7 @@ and tree obj = object (self)
   method set_view_mode = Tree.set_view_mode obj
   method set_view_lines = Tree.set_view_lines obj
   method selection =
-    List.map ~f:(fun w -> self#wrap (Widget.coerce w)) (Tree.selection obj)
+    List.map ~f:(fun w -> self#wrap (w :> Gtk.widget obj)) (Tree.selection obj)
   method private wrap w =
     new tree_item (TreeItem.cast w)
 end

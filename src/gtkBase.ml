@@ -20,7 +20,6 @@ module Object = struct
   let is_a obj name =
     Type.is_a (get_type obj) (Type.from_name name)
   external destroy : 'a obj -> unit = "ml_gtk_object_destroy"
-  external coerce : 'a obj -> unit obj = "%identity"
   external unsafe_cast : 'a obj -> 'b obj = "%identity"
   let try_cast w name =
     if is_a w name then unsafe_cast w
@@ -35,7 +34,6 @@ end
 
 module Widget = struct
   let cast w : widget obj = Object.try_cast w "GtkWidget"
-  external coerce : [>`widget] obj -> widget obj = "%identity"
   external unparent : [>`widget] obj -> unit = "ml_gtk_widget_unparent"
   external show : [>`widget] obj -> unit = "ml_gtk_widget_show"
   external show_now : [>`widget] obj -> unit = "ml_gtk_widget_show_now"
@@ -353,7 +351,6 @@ end
 
 module Item = struct
   let cast w : item obj = Object.try_cast w "GtkItem"
-  external coerce : [>`item] obj -> item obj = "%identity"
   external select : [>`item] obj -> unit = "ml_gtk_item_select"
   external deselect : [>`item] obj -> unit = "ml_gtk_item_deselect"
   external toggle : [>`item] obj -> unit = "ml_gtk_item_toggle"

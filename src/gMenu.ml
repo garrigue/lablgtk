@@ -37,7 +37,7 @@ end
 
 class ['a] pre_menu_item_skel obj = object
   inherit container obj
-  method as_item = MenuItem.coerce obj
+  method as_item = (obj :> Gtk.menu_item obj)
   method set_submenu (w : 'a pre_menu) = MenuItem.set_submenu obj w#as_menu
   method remove_submenu () = MenuItem.remove_submenu obj
   method configure = MenuItem.configure obj

@@ -32,7 +32,7 @@ class gtkobj_misc : 'a obj ->
 (* Widget *)
 
 class event_signals :
-  ?after:bool -> [>`widget] obj ->
+  ?after:bool -> Gtk.widget obj ->
   object ('a)
     method after : 'a
     method any :
@@ -74,7 +74,7 @@ class event_ops : [>`widget] obj ->
   object
     method add : Gdk.Tags.event_mask list -> unit
     method connect : event_signals
-    method send : Gdk.Tags.event_type Gdk.event -> bool
+    method send : GdkEvent.any -> bool
     method set_extensions : Gdk.Tags.extension_events -> unit
   end
 
@@ -103,7 +103,7 @@ class selection_data :
     method set : typ:Gdk.atom -> format:int -> ?data:string -> unit
   end
 
-class drag_ops : [>`widget] obj ->
+class drag_ops : Gtk.widget obj ->
   object
     method connect : drag_signals
     method dest_set :
@@ -120,8 +120,7 @@ class drag_ops : [>`widget] obj ->
     method unhighlight : unit -> unit
   end
 
-and misc_ops :
-  [>`widget] obj ->
+and misc_ops : Gtk.widget obj ->
   object
     inherit gtkobj_misc
     val obj : Gtk.widget obj

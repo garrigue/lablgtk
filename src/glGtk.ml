@@ -57,7 +57,7 @@ object (connect)
 	true
       end
   method realize ~callback =
-    let connect = new GObj.misc_signals ~after (GtkBase.Widget.coerce obj) in
+    let connect = new GObj.misc_signals ~after (obj :> Gtk.widget obj) in
     connect#realize ~callback:
       begin fun ev ->
 	if Raw.make_current obj then callback ()

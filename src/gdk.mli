@@ -4,7 +4,7 @@ type colormap
 type visual
 type region
 type gc
-type 'a drawable
+type 'a drawable as 'a
 type window = [`window] drawable
 type pixmap = [`pixmap] drawable
 type bitmap = [`bitmap] drawable
@@ -12,7 +12,7 @@ type font
 type image
 type atom = int
 type keysym = int
-type 'a event
+type 'a event as 'a
 type drag_context
 type cursor
 type xid = int32

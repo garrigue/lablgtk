@@ -7,7 +7,6 @@ open GtkBase
 
 module Window = struct
   let cast w : window obj = Object.try_cast w "GtkWindow"
-  external coerce : [>`window] obj -> window obj = "%identity"
   external create : window_type -> window obj = "ml_gtk_window_new"
   external set_title : [>`window] obj -> string -> unit
       = "ml_gtk_window_set_title"
@@ -84,7 +83,6 @@ end
 
 module Dialog = struct
   let cast w : dialog obj = Object.try_cast w "GtkDialog"
-  external coerce : [>`dialog] obj -> dialog obj = "%identity"
   external create : unit -> dialog obj = "ml_gtk_dialog_new"
   external action_area : [>`dialog] obj -> box obj
       = "ml_GtkDialog_action_area"

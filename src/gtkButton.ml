@@ -7,7 +7,6 @@ open GtkBase
 
 module Button = struct
   let cast w : button obj = Object.try_cast w "GtkButton"
-  external coerce : [>`button] obj -> button obj = "%identity"
   external create : unit -> button obj = "ml_gtk_button_new"
   external create_with_label : string -> button obj
       = "ml_gtk_button_new_with_label"
@@ -36,7 +35,6 @@ end
 
 module ToggleButton = struct
   let cast w : toggle_button obj = Object.try_cast w "GtkToggleButton"
-  external coerce : [>`toggle] obj -> toggle_button obj = "%identity"
   external toggle_button_create : unit -> toggle_button obj
       = "ml_gtk_toggle_button_new"
   external toggle_button_create_with_label : string -> toggle_button obj

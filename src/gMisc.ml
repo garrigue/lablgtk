@@ -124,7 +124,7 @@ class label_skel obj = object
 end
 
 class label obj = object
-  inherit label_skel (Label.coerce obj)
+  inherit label_skel (obj : Gtk.label obj)
   method connect = new widget_signals obj
 end
 

@@ -4,7 +4,6 @@ open Gaux
 open Gdk
 open Tags
 
-external coerce : 'a event -> event_type event = "%identity"
 external unsafe_copy : Gpointer.boxed -> #event_type event
     = "ml_gdk_event_copy"
 external copy : (#event_type as 'a) event -> 'a event
@@ -18,9 +17,15 @@ external create : (#event_type as 'a) -> 'a event
 external set_window : 'a event -> window -> unit
     = "ml_gdk_event_set_window"
 
+type any = event_type event
+let cast (ev : any) ~(kind : (#event_type as 'a) list )
+    : 'a event =
+  if List.mem (Obj.magic (get_type ev) : #event_type) kind then Obj.magic ev
+  else invalid_arg "GdkEvent.cast"
+
 module Expose = struct
   type t = [ `EXPOSE ] event
-  let cast (ev : event_type event) : t =
+  let cast (ev : any) : t =
     match get_type ev with `EXPOSE -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Expose.cast"
   external area : t -> Rectangle.t = "ml_GdkEventExpose_area"
@@ -29,7 +34,7 @@ end
 
 module Visibility = struct
   type t = [ `VISIBILITY_NOTIFY ] event
-  let cast (ev :  event_type event) : t =
+  let cast (ev :  any) : t =
     match get_type ev with `VISIBILITY_NOTIFY -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Visibility.cast"
   external visibility : t -> visibility_state
@@ -38,7 +43,7 @@ end
 
 module Motion = struct
   type t = [ `MOTION_NOTIFY ] event
-  let cast (ev : event_type event) : t =
+  let cast (ev : any) : t =
     match get_type ev with `MOTION_NOTIFY -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Motion.cast"
   external time : t -> int = "ml_GdkEventMotion_time"
@@ -59,7 +64,7 @@ module Button = struct
   type types =
       [ `BUTTON_PRESS|`TWO_BUTTON_PRESS|`THREE_BUTTON_PRESS|`BUTTON_RELEASE ]
   type t = types event
-  let cast (ev : event_type event) : t =
+  let cast (ev : any) : t =
     match get_type ev with
       `BUTTON_PRESS|`TWO_BUTTON_PRESS|`THREE_BUTTON_PRESS|`BUTTON_RELEASE
       -> Obj.magic ev
@@ -84,7 +89,7 @@ end
 
 module Key = struct
   type t = [ `KEY_PRESS|`KEY_RELEASE ] event
-  let cast (ev : event_type event) : t =
+  let cast (ev : any) : t =
     match get_type ev with
       `KEY_PRESS|`KEY_RELEASE -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Key.cast"
@@ -97,7 +102,7 @@ end
 
 module Crossing = struct
   type t = [ `ENTER_NOTIFY|`LEAVE_NOTIFY ] event
-  let cast (ev : event_type event) : t =
+  let cast (ev : any) : t =
     match get_type ev with
       `ENTER_NOTIFY|`LEAVE_NOTIFY -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Crossing.cast"
@@ -107,7 +112,7 @@ end
 
 module Focus = struct
   type t = [ `FOCUS_CHANGE ] event
-  let cast (ev : event_type event) : t =
+  let cast (ev : any) : t =
     match get_type ev with `FOCUS_CHANGE -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Focus.cast"
   external focus_in : t -> bool = "ml_GdkEventFocus_in"
@@ -115,7 +120,7 @@ end
 
 module Configure = struct
   type t = [ `CONFIGURE ] event
-  let cast (ev : event_type event) : t =
+  let cast (ev : any) : t =
     match get_type ev with `CONFIGURE -> Obj.magic ev
     |	_ -> invalid_arg "GdkEvent.Configure.cast"
   external x : t -> int = "ml_GdkEventConfigure_x"
@@ -126,7 +131,7 @@ end
 
 module Property = struct
   type t = [ `PROPERTY_NOTIFY ] event
-  let cast (ev : event_type event) : t =
+  let cast (ev : any) : t =
     match get_type ev with `PROPERTY_NOTIFY -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Property.cast"
   external atom : t -> atom = "ml_GdkEventProperty_atom"
@@ -136,7 +141,7 @@ end
 
 module Selection = struct
   type t = [ `SELECTION_CLEAR|`SELECTION_REQUEST|`SELECTION_NOTIFY ] event
-  let cast (ev : event_type event) : t =
+  let cast (ev : any) : t =
     match get_type ev with
       `SELECTION_CLEAR|`SELECTION_REQUEST|`SELECTION_NOTIFY -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Selection.cast"
@@ -149,7 +154,7 @@ end
 
 module Proximity = struct
   type t = [ `PROXIMITY_IN|`PROXIMITY_OUT ] event
-  let cast (ev : event_type event) : t =
+  let cast (ev : any) : t =
     match get_type ev with
       `PROXIMITY_IN|`PROXIMITY_OUT -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Proximity.cast"
