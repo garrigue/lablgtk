@@ -26,9 +26,6 @@ CAMLprim value ml_gdkpixbuf_init(value unit)
   return Val_unit;
 }
 
-/* Reference counting (use GObject) */
-#define Val_GdkPixbuf_noref(val) (Val_GObject_new((GObject*)(val)))
-
 /* GdkPixbuf accessors */
 ML_1(gdk_pixbuf_get_n_channels, GdkPixbuf_val, Val_int)
 ML_1(gdk_pixbuf_get_has_alpha, GdkPixbuf_val, Val_bool)
@@ -50,8 +47,8 @@ CAMLprim value ml_gdk_pixbuf_get_pixels (value pixbuf)
 /* Creation */
 
 ML_5(gdk_pixbuf_new, GDK_COLORSPACE_RGB Ignore, Int_val, Int_val,
-     Int_val, Int_val, Val_GdkPixbuf_noref)
-ML_1(gdk_pixbuf_copy, GdkPixbuf_val, Val_GdkPixbuf_noref)
+     Int_val, Int_val, Val_GdkPixbuf_new)
+ML_1(gdk_pixbuf_copy, GdkPixbuf_val, Val_GdkPixbuf_new)
 CAMLprim value ml_gdk_pixbuf_new_from_file(value f)
 {
     GError *err = NULL;
@@ -59,7 +56,7 @@ CAMLprim value ml_gdk_pixbuf_new_from_file(value f)
     if (err) ml_raise_gerror(err);
     return Val_GdkPixbuf(res);
 }
-ML_1(gdk_pixbuf_new_from_xpm_data, (const char**), Val_GdkPixbuf_noref)
+ML_1(gdk_pixbuf_new_from_xpm_data, (const char**), Val_GdkPixbuf_new)
 
 void ml_gdk_pixbuf_destroy_notify (guchar *pixels, gpointer data)
 {
@@ -74,13 +71,13 @@ CAMLprim value ml_gdk_pixbuf_new_from_data(value data, value has_alpha,
 				 Int_val(has_alpha), Int_val(bits),
 				 Int_val(w), Int_val(h), Int_val(rs),
 				 ml_gdk_pixbuf_destroy_notify, root);
-    return Val_GdkPixbuf_noref(pixbuf);
+    return Val_GdkPixbuf_new(pixbuf);
 }
 ML_bc6(ml_gdk_pixbuf_new_from_data)
 
 /* Adding an alpha channel */
 ML_5(gdk_pixbuf_add_alpha, GdkPixbuf_val, Int_val, Int_val, Int_val, Int_val,
-     Val_GdkPixbuf_noref)
+     Val_GdkPixbuf_new)
 
 /* Fill a pixbuf */
 ML_2(gdk_pixbuf_fill, GdkPixbuf_val, Int32_val, Unit)
@@ -94,7 +91,7 @@ ML_8(gdk_pixbuf_copy_area, GdkPixbuf_val, Int_val, Int_val, Int_val, Int_val,
 ML_bc8(ml_gdk_pixbuf_copy_area)
 
 /* Create a sub-region */
-ML_5(gdk_pixbuf_new_subpixbuf, GdkPixbuf_val, Int_val, Int_val, Int_val, Int_val, Val_GdkPixbuf_noref)
+ML_5(gdk_pixbuf_new_subpixbuf, GdkPixbuf_val, Int_val, Int_val, Int_val, Int_val, Val_GdkPixbuf_new)
 
 /* Rendering to a drawable */
 ML_9(gdk_pixbuf_render_threshold_alpha, GdkPixbuf_val, GdkBitmap_val,
