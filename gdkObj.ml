@@ -34,7 +34,8 @@ class ['a] drawing w = object
   method arc = Draw.arc w gc
   method polygon ?filled l = Draw.polygon w gc ?filled l
   method string s = Draw.string w gc ~string:s
-  method image image = Draw.image w gc ~image
+  method image ~width ~height ?(xsrc=0) ?(ysrc=0) ?(xdest=0) ?(ydest=0) image =
+    Draw.image w gc ~image ~width ~height ~xsrc ~ysrc ~xdest ~ydest
 end
 
 class pixmap ?mask pm = object
