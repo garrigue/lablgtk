@@ -31,7 +31,7 @@ let main () =
 	    (fun _ -> 
 	       for i=start to stop do 
 		 let c = Printf.sprintf "%d:%s:\n" i (Glib.Utf8.from_unichar i) in
-		 b#insert ~text:(c) ()
+		 b#insert c
 	       done;false));
   w#show ();;
 

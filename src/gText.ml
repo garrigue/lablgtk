@@ -254,11 +254,11 @@ class buffer obj = object(self)
   method get_line_count = Buffer.get_line_count obj
   method get_char_count = Buffer.get_char_count obj
   method get_tag_table =  Buffer.get_tag_table obj
-  method insert ~text 
+  method insert
     ?iter 
     ?(tags_names=([]:string list))
     ?(tags=([]:tag list)) 
-    () 
+    text
     =  
     match tags,tags_names with
       | [],[] -> 
@@ -285,7 +285,7 @@ class buffer obj = object(self)
 	      List.iter tags_names 
 		~f:(self#apply_tag_by_name ~start ~stop:iter)
 	end
-  method insert_interactive ~text ?iter ?(default_editable = true) () = 
+  method insert_interactive ?iter ?(default_editable = true) text = 
     match iter with
       | None -> 
 	  Buffer.insert_interactive_at_cursor obj text default_editable
