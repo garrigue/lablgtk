@@ -730,7 +730,7 @@ Unsupported_24(gtk_message_dialog_set_markup)
 #endif
 
 /* gtkaboutdialog.h */
-#ifndef DISABLE_GTK26
+#ifdef HASGTK26
 static void
 ml_activate_link_func (GtkAboutDialog *about, const gchar *link, gpointer data)
 {
