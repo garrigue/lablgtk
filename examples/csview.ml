@@ -1,7 +1,9 @@
 (* $Id$ *)
 
 (* Compile with
-   ocamlc -pp camlp4o -I +lablgtk lablgtk.cma csview.ml -o csview
+     ocamlc -pp camlp4o -I +lablgtk lablgtk.cma csview.ml -o csview
+   or run with
+     lablgtk2 camlp4.cma csview.ml <file.csv>
 *)
 
 open StdLabels
@@ -70,11 +72,9 @@ let lf = parser [< ''\n'|'\r'; _ = ignores ~chars:"\n\r"; _ = ignores >] -> ()
 
 let parse_all = parse_list ~item:parse_one ~sep:lf
 
-let read_file file =
-  let ic = open_in file in
+let read_file ic =
   let s = Stream.of_channel ic in
   let data = parse_all s in
-  close_in ic;
   match data with
     ("i"::fields) :: ("T"::titles) :: data ->
       {fields=fields; titles=titles; data=List.map ~f:List.tl data}
@@ -119,45 +119,90 @@ let field_widths =
     "ATTM", 0;
   ]
 
-let main argv =
-  if Array.length argv <> 2 then begin
-    prerr_endline "Usage: csview <csv file>";
-    exit 2
-  end;
+let rec genlist ~start ~stop =
+  if start >= stop then [] else (start,-1) :: genlist ~start:(start+1) ~stop
+
+let rec star p = parser
+    [< l = plus p >] -> l
+  | [< >] -> []
+and plus p = parser
+    [< e = p; l = star p >] -> e :: l
+
+let parse_int s =
+  let l =
+    plus (parser [< ''0'..'9' as n >] -> Char.code n - Char.code '0') s in
+  List.fold_left l ~init:0 ~f:(fun acc n -> acc * 10 + n)
+
+let parse_range ~start = parser
+  | [< ''-'; stop = parse_int >] ->
+      genlist ~start ~stop
+  | [< '':'; width = parse_int >] ->
+      [start,width]
+  | [< >] ->
+      [start,-1]
+
+let rec parse_fields = parser
+    [< n = parse_int; s >] ->
+      let l = parse_range ~start:(n-1) s in
+      l @ parse_fields s
+  | [< '','|' '; s >] -> parse_fields s
+  | [< >] -> []
+
+let main () =
+  let file = ref "" and fields = ref "" in
+  Arg.parse ["-fields", Arg.Set_string fields, "fields to display"]
+    ((:=) file) "Usage: csview <csv file>";
+  let fields = parse_fields (Stream.of_string !fields) in
   let locale = Main.init ~setlocale:true () in
-  let data = read_file argv.(1) in
+  let ic = if !file = "" then stdin else open_in !file in
+  let data = read_file ic in
+  if !file <> "" then close_in ic;
   let w = GWindow.window () in
-  w#misc#realize ();
-  let style = w#misc#style in
-  let font = Gdk.Font.load_fontset 
-	       "-schumacher-clean-medium-r-normal--13-*-*-*-c-60-*,-mnkaname-fixed-*--12-*" in
-  let w0 = Gdk.Font.char_width font '0' in
-  style#set_font font;
   w#connect#destroy ~callback:Main.quit;
-  let sw = GBin.scrolled_window ~width:600 ~height:300 ~packing:w#add () in
+  let vbox = GPack.vbox ~packing:w#add () in
+  let mbar = new GMenu.factory (GMenu.menu_bar ~packing:vbox#pack ()) in
+  let columns = new GMenu.factory (mbar#add_submenu "Columns") in
+  let sw = GBin.scrolled_window ~hpolicy:`AUTOMATIC ~vpolicy:`AUTOMATIC
+      ~width:600 ~height:300 ~packing:vbox#add () in
   let cl = GList.clist ~titles:data.titles ~packing:sw#add () in
-  List.fold_left data.fields ~init:0 ~f:
-    begin fun acc f ->
-      let width = try List.assoc f field_widths with Not_found -> -1 in
-      if width = 0 then
-        cl#set_column ~visibility:false acc
-      else begin
-        if width > 0 then cl#set_column ~width:(width * w0) acc
-        else cl#set_column ~auto_resize:true acc;
-        if f = "NAPR" || f = "TIM1" || f = "CLAS" then
-          cl#set_sort ~auto:true ~column:acc ();
-        try
-          let ali = GBin.alignment_cast (cl#column_widget acc) in
-          let lbl = GMisc.label_cast (List.hd ali#children) in
-          lbl#set_xalign 0.
-        with _ ->
-          prerr_endline ("No column widget for field " ^ f)
-      end;
-      succ acc
+  let metrics = cl#misc#pango_context#get_metrics () in
+  let w0 = GPango.to_pixels metrics#approx_digit_width in
+  let items = Array.create (List.length data.titles) None in
+  cl#connect#click_column ~callback:
+    begin fun n ->
+      match items.(n) with None -> ()
+      | Some it -> it#set_active false
+    end;
+  let width ~col ~f =
+    let w =
+      try List.assoc col fields with Not_found -> -1 in
+    if w <> -1 then w else
+    try List.assoc f field_widths with Not_found -> -1
+  in
+  List.fold_left2 data.titles data.fields ~init:0 ~f:
+    begin fun col title f ->
+      let width = width ~col ~f in
+      let active = (fields = [] && width <> 0) || List.mem_assoc col fields in
+      items.(col) <- Some
+          (columns#add_check_item title ~active
+             ~callback:(fun b -> cl#set_column col ~visibility:b));
+      if not active then
+        cl#set_column ~visibility:false col
+      else if f = "NAPR" || f = "TIM1" || f = "CLAS" then
+        cl#set_sort ~auto:true ~column:col ();
+      succ col
     end;
   List.iter data.data
     ~f:(fun l -> if List.length l > 1 then ignore (cl#append l));
+  cl#columns_autosize ();
+  List.fold_left data.fields ~init:0 ~f:
+    begin fun col f ->
+      let width = width ~col ~f in
+      if width > 0 then cl#set_column ~width:(width * w0) col;
+      succ col
+    end;
   w#show ();
   Main.main ()
 
-let _ = main Sys.argv
+let () =
+  if not !Sys.interactive then main ()
