@@ -32,12 +32,13 @@ module Timeout = struct
   type id
   external add : ?prio:int -> ms:int -> callback:(unit -> bool) -> id
     = "ml_g_timeout_add"
+  let add = add ?prio:None
   external remove : id -> unit = "ml_g_source_remove"
 end
 
 module Idle = struct
   type id
-  external add : ?prio:int -> callback:(unit -> bool) -> id
+  external add : ?prio:int -> (unit -> bool) -> id
     = "ml_g_idle_add"
   external remove : id -> unit = "ml_g_source_remove"
 end

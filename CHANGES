@@ -1,5 +1,9 @@
 $Id$
 
+2004.10.05 [Jacques]
+  * revise Timeout.add and Idle.add for compatibility
+    (optional arguments must be followed by a non-labeled argument)
+
 2004.10.02 [Jacques]
   * 2.2 compatibility fixes (G_STRFUNC only defined in 2.4)
 
