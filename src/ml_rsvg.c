@@ -63,5 +63,11 @@ CAMLprim value ml_rsvg_handle_write(value h, value s, value off, value len)
 
 ML_1(rsvg_handle_get_pixbuf, RsvgHandle_val, Val_GdkPixbuf)
 
+#if (LIBRSVG_MAJOR_VERSION == 2) && (LIBRSVG_MINOR_VERSION >= 2)
 ML_2(rsvg_handle_set_dpi, RsvgHandle_val, Double_val, Unit)
 ML_1(rsvg_set_default_dpi, Double_val, Unit)
+#else
+Unsupported(rsvg_handle_set_dpi)
+Unsupported(rsvg_set_default_dpi)
+#endif
+

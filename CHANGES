@@ -1,5 +1,10 @@
 $Id$
 
+
+2003.02.21
+ * Support for GTK 2.0 and librsvg 2.0 compilation (O. Andrieu) [Benjamin]
+ 
+
 In lablgtk2-20030221:
 
 2003.02.21

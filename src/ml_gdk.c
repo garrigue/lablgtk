@@ -48,11 +48,17 @@ Make_test(GdkWindowState_val)
 ML_0 (gdk_colormap_get_system, Val_GdkColormap)
 
 /* Screen geometry */
-
+#ifdef HASGTK22
 ML_1 (gdk_screen_get_width, GdkScreen_val, Val_int)
 ML_1 (gdk_screen_get_height, GdkScreen_val, Val_int)
 ML_0 (gdk_screen_get_default, Val_GdkScreen)
 ML_1 (gdk_pango_context_get_for_screen, GdkScreen_val, Val_PangoContext_new)
+#else
+Unsupported (gdk_screen_get_width)
+Unsupported (gdk_screen_get_height)
+Unsupported (gdk_screen_get_default)
+Unsupported (gdk_pango_context_get_for_screen)
+#endif
 
 /* Visual */
 CAMLprim value ml_gdk_visual_get_best (value depth, value type)
