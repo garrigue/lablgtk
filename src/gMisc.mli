@@ -182,7 +182,7 @@ class tips_query : Gtk.tips_query obj ->
     inherit label_skel
     val obj : Gtk.tips_query obj
     method connect : tips_query_signals
-    method set_caller : widget -> unit
+    method set_caller : #widget -> unit
     method set_emit_always : bool -> unit
     method set_label_inactive : string -> unit
     method set_label_no_tip : string -> unit

@@ -15,7 +15,8 @@ class box_skel obj = object
   method set_spacing = Box.set_spacing obj
   method set_child_packing ?from:f ?expand ?fill ?padding w =
     Box.set_child_packing obj (as_widget w) ?from:f ?expand ?fill ?padding
-  method reorder_child w = Box.reorder_child obj (as_widget w)
+  method reorder_child : 'a. (#widget as 'a) -> _ = fun w ->
+    Box.reorder_child obj w#as_widget
 end
 
 class box obj = object
@@ -72,8 +73,10 @@ let table ~rows ~columns ?homogeneous ?row_spacings ?col_spacings
 class fixed obj = object
   inherit container_full (obj : Gtk.fixed obj)
   method event = new GObj.event_ops obj
-  method put w = Fixed.put obj (as_widget w)
-  method move w = Fixed.move obj (as_widget w)
+  method put : 'a. (#widget as 'a) -> _ = fun w ->
+    Fixed.put obj w#as_widget
+  method move: 'a. (#widget as 'a) -> _ = fun w ->
+    Fixed.move obj w#as_widget
 end
 
 let fixed ?border_width ?width ?height ?packing ?show () =
@@ -84,8 +87,10 @@ let fixed ?border_width ?width ?height ?packing ?show () =
 class layout obj = object
   inherit container_full (obj : Gtk.layout obj)
   method event = new GObj.event_ops obj
-  method put w = Layout.put obj (as_widget w)
-  method move w = Layout.move obj (as_widget w)
+  method put : 'a. (#widget as 'a) -> _ = fun w ->
+    Layout.put obj w#as_widget
+  method move : 'a. (#widget as 'a) -> _ = fun w ->
+    Layout.move obj w#as_widget
   method set_hadjustment adj =
     Layout.set_hadjustment obj (GData.as_adjustment adj)
   method set_vadjustment adj =
@@ -126,7 +131,8 @@ class packer obj = object
     Packer.set_child_packing obj (as_widget w) ?side ?anchor
       ~options:(Packer.build_options ?expand ?fill ())
       ?border_width ?pad_x ?pad_y ?i_pad_x ?i_pad_y
-  method reorder_child w = Packer.reorder_child obj (as_widget w)
+  method reorder_child : 'a. (#widget as 'a) -> _ = fun w ->
+    Packer.reorder_child obj w#as_widget
   method set_spacing = Packer.set_spacing obj
   method set_defaults = Packer.set_defaults obj
 end
@@ -140,16 +146,16 @@ let packer ?spacing ?border_width ?width ?height ?packing ?show () =
 class paned obj = object
   inherit container_full (obj : Gtk.paned obj)
   method event = new GObj.event_ops obj
-  method add w =
+  method add : 'a. (#widget as 'a) -> unit = fun w ->
     if List.length (Container.children obj) = 2 then
       raise(Error "Gpack.paned#add: already full");
-    Container.add obj (as_widget w)
-  method add1 w =
+    Container.add obj (as_widget w#coerce)
+  method add1 : 'a. (#widget as 'a) -> _ = fun w ->
     try ignore(Paned.child1 obj); raise(Error "GPack.paned#add1: already full")
-    with _ -> Paned.add1 obj (as_widget w)
-  method add2 w =
+    with _ -> Paned.add1 obj w#as_widget
+  method add2 : 'a. (#widget as 'a) -> _ = fun w ->
     try ignore(Paned.child2 obj); raise(Error "GPack.paned#add2: already full")
-    with _ -> Paned.add2 obj (as_widget w)
+    with _ -> Paned.add2 obj w#as_widget
   method set_handle_size = Paned.set_handle_size obj
   method child1 = new widget (Paned.child1 obj)
   method child2 = new widget (Paned.child2 obj)
@@ -190,12 +196,13 @@ class notebook obj = object (self)
   method set_scrollable = Notebook.set_scrollable obj
   method set_tab_border = Notebook.set_tab_border obj
   method set_popup = Notebook.set_popup obj
-  method page_num w = Notebook.page_num obj (as_widget w)
+  method page_num : 'a. (#widget as 'a) -> _ = fun w ->
+    Notebook.page_num obj w#as_widget
   method get_nth_page n = new widget (Notebook.get_nth_page obj n)
-  method get_tab_label w =
-    new widget (Notebook.get_tab_label obj (as_widget w))
-  method get_menu_label w =
-    new widget (Notebook.get_tab_label obj (as_widget w))
+  method get_tab_label : 'a. (#widget as 'a) -> _ = fun w ->
+    new widget (Notebook.get_tab_label obj w#as_widget)
+  method get_menu_label : 'a. (#widget as 'a) -> _ = fun w ->
+    new widget (Notebook.get_tab_label obj w#as_widget)
   method set_page ?tab_label ?menu_label page =
     let child = as_widget page in
     may tab_label

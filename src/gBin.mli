@@ -8,7 +8,7 @@ class scrolled_window : Gtk.scrolled_window obj ->
   object
     inherit container_full
     val obj : Gtk.scrolled_window obj
-    method add_with_viewport : widget -> unit
+    method add_with_viewport : #widget -> unit
     method hadjustment : GData.adjustment
     method set_hadjustment : GData.adjustment -> unit
     method set_hpolicy : Tags.policy_type -> unit

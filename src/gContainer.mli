@@ -20,9 +20,9 @@ class container :
     inherit widget
     constraint 'a = [>`container|`widget]
     val obj : 'a obj
-    method add : widget -> unit
+    method add : #widget -> unit
     method children : widget list
-    method remove : widget -> unit
+    method remove : #widget -> unit
     method focus : focus
     method set_border_width : int -> unit
   end

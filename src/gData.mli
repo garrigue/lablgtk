@@ -58,6 +58,6 @@ class tooltips :
     method disable : unit -> unit
     method enable : unit -> unit
     method set_delay : int -> unit
-    method set_tip : ?text:string -> ?privat:string -> GObj.widget -> unit
+    method set_tip : ?text:string -> ?privat:string -> #GObj.widget -> unit
   end
 val tooltips : ?delay:int -> unit -> tooltips
