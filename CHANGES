@@ -3,6 +3,7 @@ $Id$
 1999.6.15
   * grouped set methods into set_<keyword>
   * added width and height option to all classes
+  * windows not shown are automatically destroyed by the GC
 
 1999.6.14
   * added GPack.layout, GPack.packer, GPack.paned, GMisc.notebook,
