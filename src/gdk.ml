@@ -258,13 +258,13 @@ module Region = struct
   external copy : region -> region
       = "ml_gdk_region_copy"
   external intersect : region -> region -> region
-      = "ml_gdk_regions_intersect"
+      = "ml_gdk_region_intersect"
   external union : region -> region -> region 
-      = "ml_gdk_regions_union"
+      = "ml_gdk_region_union"
   external subtract : region -> region -> region 
-      = "ml_gdk_regions_subtract"
+      = "ml_gdk_region_subtract"
   external xor : region -> region -> region 
-      = "ml_gdk_regions_xor"
+      = "ml_gdk_region_xor"
   external union_with_rect : region -> Rectangle.t -> region
       = "ml_gdk_region_union_with_rect"
   let intersect r1 r2 = let r3 = copy r1 in intersect r3 r2; r3

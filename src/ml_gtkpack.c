@@ -25,6 +25,7 @@ ML_5 (gtk_box_pack_end, GtkBox_val, GtkWidget_val, Bool_val, Bool_val,
       Int_val, Unit)
 ML_2 (gtk_box_set_homogeneous, GtkBox_val, Bool_val, Unit)
 ML_2 (gtk_box_set_spacing, GtkBox_val, Int_val, Unit)
+ML_1 (gtk_box_get_spacing, GtkBox_val, Val_int)
 ML_3 (gtk_box_reorder_child, GtkBox_val, GtkWidget_val, Int_val, Unit)
 CAMLprim value ml_gtk_box_query_child_packing (value box, value child)
 {
@@ -65,7 +66,6 @@ ML_2 (gtk_vbox_new, Bool_val, Int_val, Val_GtkWidget_sink)
 /* gtkbbox.h */
     
 #define GtkButtonBox_val(val) check_cast(GTK_BUTTON_BOX,val)
-Make_Extractor (gtk_button_box_get, GtkButtonBox_val, spacing, Val_int)
 Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_min_width, Val_int)
 Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_min_height,
 		Val_int)
@@ -73,14 +73,11 @@ Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_ipad_x, Val_int)
 Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_ipad_y, Val_int)
 Make_Extractor (gtk_button_box_get, GtkButtonBox_val, layout_style,
 		Val_button_box_style)
-ML_2 (gtk_button_box_set_spacing, GtkButtonBox_val, Int_val, Unit)
 ML_3 (gtk_button_box_set_child_size, GtkButtonBox_val,
       Int_val, Int_val, Unit)
 ML_3 (gtk_button_box_set_child_ipadding, GtkButtonBox_val,
       Int_val, Int_val, Unit)
 ML_2 (gtk_button_box_set_layout, GtkButtonBox_val, Button_box_style_val, Unit)
-ML_2 (gtk_button_box_set_child_size_default, Int_val, Int_val, Unit)
-ML_2 (gtk_button_box_set_child_ipadding_default, Int_val, Int_val, Unit)
 
 ML_0 (gtk_hbutton_box_new, Val_GtkWidget_sink)
 ML_0 (gtk_vbutton_box_new, Val_GtkWidget_sink)
@@ -146,7 +143,7 @@ ML_3 (gtk_notebook_reorder_child, GtkNotebook_val, GtkWidget_val,
 
 
 /* gtkpacker.h */
-
+/*
 Make_OptFlags_val(Packer_options_val)
 
 #define GtkPacker_val(val) check_cast(GTK_PACKER,val)
@@ -198,6 +195,7 @@ CAMLprim value ml_gtk_packer_set_defaults (value w, value border_width,
     return Val_unit;
 }
 ML_bc6 (ml_gtk_packer_set_defaults)
+*/
 
 /* gtkpaned.h */
 
@@ -206,15 +204,11 @@ ML_0 (gtk_hpaned_new, Val_GtkWidget_sink)
 ML_0 (gtk_vpaned_new, Val_GtkWidget_sink)
 ML_2 (gtk_paned_add1, GtkPaned_val, GtkWidget_val, Unit)
 ML_2 (gtk_paned_add2, GtkPaned_val, GtkWidget_val, Unit)
-ML_2 (gtk_paned_set_handle_size, GtkPaned_val, (guint16)Int_val, Unit)
-/* ML_2 (gtk_paned_set_gutter_size, GtkPaned_val, (guint16)Int_val, Unit) */
 ML_2 (gtk_paned_set_position, GtkPaned_val, Int_val, Unit)
 ML_4 (gtk_paned_pack1, GtkPaned_val, GtkWidget_val, Int_val, Int_val, Unit)
 ML_4 (gtk_paned_pack2, GtkPaned_val, GtkWidget_val, Int_val, Int_val, Unit)
 Make_Extractor (gtk_paned, GtkPaned_val, child1, Val_GtkWidget)
 Make_Extractor (gtk_paned, GtkPaned_val, child2, Val_GtkWidget)
-Make_Extractor (gtk_paned, GtkPaned_val, handle_size, Val_int)
-/* Make_Extractor (gtk_paned, GtkPaned_val, gutter_size, Val_int) */
 
 /* gtktable.h */
 

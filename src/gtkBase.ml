@@ -1,10 +1,12 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gtk
 open Tags
 
 module Object = struct
+  let try_cast = Gobject.try_cast
   external destroy : 'a obj -> unit = "ml_gtk_object_destroy"
   module Signals = struct
     open GtkSignal
@@ -29,18 +31,22 @@ module Widget = struct
   external queue_resize : [>`widget] obj -> unit = "ml_gtk_widget_queue_resize"
   external draw : [>`widget] obj -> Gdk.Rectangle.t option -> unit
       = "ml_gtk_widget_draw"
+(*
   external draw_focus : [>`widget] obj -> unit
       = "ml_gtk_widget_draw_focus"
   external draw_default : [>`widget] obj -> unit
       = "ml_gtk_widget_draw_default"
+*)
   external event : [>`widget] obj -> 'a Gdk.event -> bool
       = "ml_gtk_widget_event"
   external activate : [>`widget] obj -> bool
       = "ml_gtk_widget_activate"
   external reparent : [>`widget] obj -> [>`widget] obj -> unit
       = "ml_gtk_widget_reparent"
+(*
   external popup : [>`widget] obj -> x:int -> y:int -> unit
       = "ml_gtk_widget_popup"
+*)
   external intersect :
       [>`widget] obj -> Gdk.Rectangle.t -> Gdk.Rectangle.t option
       = "ml_gtk_widget_intersect"
@@ -73,7 +79,7 @@ module Widget = struct
       = "ml_gtk_widget_set_extension_events"
   external get_toplevel : [>`widget] obj -> widget obj
       = "ml_gtk_widget_get_toplevel"
-  external get_ancestor : [>`widget] obj -> gtk_type -> widget obj
+  external get_ancestor : [>`widget] obj -> g_type -> widget obj
       = "ml_gtk_widget_get_ancestor"
   external get_colormap : [>`widget] obj -> Gdk.colormap
       = "ml_gtk_widget_get_colormap"
@@ -102,12 +108,14 @@ module Widget = struct
       [>`widget] obj -> accel_group ->
       key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> unit
       = "ml_gtk_widget_remove_accelerator"
+(*
   external lock_accelerators : [>`widget] obj -> unit
       = "ml_gtk_widget_lock_accelerators"
   external unlock_accelerators : [>`widget] obj -> unit
       = "ml_gtk_widget_unlock_accelerators"
   external accelerators_locked : [>`widget] obj -> bool
       = "ml_gtk_widget_accelerators_locked"
+*)
   external window : [>`widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
   external visible : [>`widget] obj -> bool
@@ -286,8 +294,10 @@ module Container = struct
     let l = ref [] in
     foreach w ~f:(fun c -> l := c :: !l);
     List.rev !l
+(*
   external focus : [>`container] obj -> direction_type -> bool
       = "ml_gtk_container_focus"
+*)
   (* Called by Widget.grab_focus *)
   external set_focus_child : [>`container] obj -> [>`widget] optobj -> unit
       = "ml_gtk_container_set_focus_child"

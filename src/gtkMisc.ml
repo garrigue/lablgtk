@@ -18,11 +18,6 @@ module ColorSelection = struct
       = "ml_gtk_color_selection_dialog_new"
   external set_update_policy : [>`colorsel] obj -> update_type -> unit
       = "ml_gtk_color_selection_set_update_policy"
-  external set_opacity : [>`colorsel] obj -> bool -> unit
-      = "ml_gtk_color_selection_set_opacity"
-  let set ?update_policy ?opacity w =
-    may update_policy ~f:(set_update_policy w);
-    may opacity ~f:(set_opacity w)
   external set_color :
       [>`colorsel] obj ->
       red:float -> green:float -> blue:float -> ?opacity:float -> unit
@@ -168,11 +163,28 @@ end
 
 module Image = struct
   let cast w : image obj = Object.try_cast w "GtkImage"
-  external create : Gdk.image -> ?mask:Gdk.bitmap -> image obj
+  external create : unit -> image obj
       = "ml_gtk_image_new"
-  let create ?mask img = create img ?mask
-  external set : [>`image] obj -> Gdk.image -> ?mask:Gdk.bitmap -> unit
-      = "ml_gtk_image_set"
+  external set_image : [>`image] obj -> Gdk.image -> ?mask:Gdk.bitmap -> unit
+      = "ml_gtk_image_set_from_image"
+  external set_pixmap : [>`image] obj -> Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
+      = "ml_gtk_image_set_from_pixmap"
+  external set_file : [>`image] obj -> string -> unit
+      = "ml_gtk_image_set_from_file"
+  external set_pixbuf : [>`image] obj -> GdkPixbuf.pixbuf -> unit
+      = "ml_gtk_image_set_from_pixbuf"
+  external set_stock : [>`image] obj -> string -> size:int -> unit
+      = "ml_gtk_image_set_from_stock"
+  let from_image ?mask img =
+    let w = create () in set_image w img ?mask; w
+  let from_pixmap ?mask img =
+    let w = create () in set_pixmap w img ?mask; w
+  let from_file s =
+    let w = create () in set_file w s; w
+  let from_pixbuf s =
+    let w = create () in set_pixbuf w s; w
+  let from_stock s ~size =
+    let w = create () in set_stock w s ~size; w
 end
 
 module Label = struct
@@ -302,18 +314,6 @@ module FontSelection = struct
     try Some (get_font_name w) with Gpointer.Null -> None
   external set_font_name : [>`fontsel] obj -> string -> unit
       = "ml_gtk_font_selection_set_font_name"
-  external set_filter :
-    [>`fontsel] obj -> font_filter_type -> font_type list ->
-    null_terminated -> null_terminated -> null_terminated ->
-    null_terminated -> null_terminated -> null_terminated -> unit
-    = "ml_gtk_font_selection_set_filter_bc"
-      "ml_gtk_font_selection_set_filter"
-  let set_filter w ?kind:(tl=[`ALL]) ?foundry
-      ?weight ?slant ?setwidth ?spacing ?charset filter =
-    set_filter w filter tl (null_terminated foundry)
-      (null_terminated weight) (null_terminated slant)
-      (null_terminated setwidth) (null_terminated spacing)
-      (null_terminated charset)
   external get_preview_text : [>`fontsel] obj -> string
       = "ml_gtk_font_selection_get_preview_text"
   external set_preview_text : [>`fontsel] obj -> string -> unit

@@ -1,6 +1,7 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gtk
 
 type data =
@@ -26,7 +27,7 @@ type 'a result =
 module Arg = struct
   type t
   external shift : t -> pos:int -> t = "ml_gtk_arg_shift"
-  external get_type : t -> gtk_type = "ml_gtk_arg_get_type"
+  external get_type : t -> g_type = "ml_gtk_arg_get_type"
   external get : t -> data = "ml_gtk_arg_get"
   external set_retloc : t -> 'a result -> unit = "ml_gtk_arg_set_retloc"
   external get_pointer : t -> Gpointer.boxed = "ml_gtk_arg_get_pointer"

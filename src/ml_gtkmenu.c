@@ -10,6 +10,7 @@
 
 #include "wrappers.h"
 #include "ml_glib.h"
+#include "ml_gobject.h"
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
@@ -22,11 +23,14 @@ ML_0 (gtk_tearoff_menu_item_new, Val_GtkWidget_sink)
 ML_1 (gtk_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_menu_item_set_submenu, GtkMenuItem_val, GtkWidget_val, Unit)
 ML_1 (gtk_menu_item_remove_submenu, GtkMenuItem_val, Unit)
+/*
 ML_2 (gtk_menu_item_set_placement, GtkMenuItem_val,
       Submenu_placement_val, Unit)
 ML_3 (gtk_menu_item_configure, GtkMenuItem_val, Bool_val, Bool_val, Unit)
+*/
 ML_1 (gtk_menu_item_activate, GtkMenuItem_val, Unit)
-ML_1 (gtk_menu_item_right_justify, GtkMenuItem_val, Unit)
+ML_2 (gtk_menu_item_set_right_justified, GtkMenuItem_val, Bool_val, Unit)
+ML_1 (gtk_menu_item_get_right_justified, GtkMenuItem_val, Val_bool)
 
 /* gtkcheckmenuitem.h */
 
@@ -82,7 +86,6 @@ ML_1 (gtk_menu_get_active, GtkMenu_val, Val_GtkWidget)
 ML_2 (gtk_menu_set_active, GtkMenu_val, Int_val, Unit)
 ML_2 (gtk_menu_set_accel_group, GtkMenu_val, GtkAccelGroup_val, Unit)
 ML_1 (gtk_menu_get_accel_group, GtkMenu_val, Val_GtkAccelGroup)
-ML_1 (gtk_menu_ensure_uline_accel_group, GtkMenu_val, Val_GtkAccelGroup)
 CAMLprim value ml_gtk_menu_attach_to_widget (value menu, value widget)
 {
     gtk_menu_attach_to_widget (GtkMenu_val(menu), GtkWidget_val(widget), NULL);

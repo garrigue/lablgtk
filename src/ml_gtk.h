@@ -4,6 +4,7 @@
 value Val_GtkObject (GtkObject *w);
 value Val_GtkObject_sink (GtkObject *w);
 #define GtkAccelGroup_val(val) ((GtkAccelGroup*)GObject_val(val))
+#define Val_GtkAccelGroup(val) (Val_GObject(&val->parent))
 #define Val_GtkAccelGroup_new(val) (Val_GObject_new(&val->parent))
 #define GtkStyle_val(val) ((GtkStyle*)Pointer_val(val))
 value Val_GtkStyle (GtkStyle *);

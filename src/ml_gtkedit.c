@@ -18,6 +18,22 @@
 
 #define GtkEditable_val(val) check_cast(GTK_EDITABLE,val)
 ML_3 (gtk_editable_select_region, GtkEditable_val, Int_val, Int_val, Unit)
+CAMLprim value ml_gtk_editable_get_selection_bounds(value w)
+{
+    int start, end;
+    CAMLparam1(w);
+    CAMLlocal1(tmp);
+    value res = Val_unit;
+
+    if (gtk_editable_get_selection_bounds(GtkEditable_val(w), &start, &end)) {
+        tmp = alloc_small(2,0);
+        Field(tmp,0) = Val_int(start);
+        Field(tmp,1) = Val_int(end);
+        res = alloc_small(1,0);
+        Field(res,0) = tmp;
+    }
+    CAMLreturn(res);
+}
 CAMLprim value ml_gtk_editable_insert_text (value w, value s, value pos)
 {
     int position = Int_val(pos);
@@ -31,15 +47,11 @@ ML_3 (gtk_editable_get_chars, GtkEditable_val, Int_val, Int_val,
 ML_1 (gtk_editable_cut_clipboard, GtkEditable_val, Unit)
 ML_1 (gtk_editable_copy_clipboard, GtkEditable_val, Unit)
 ML_1 (gtk_editable_paste_clipboard, GtkEditable_val, Unit)
-ML_3 (gtk_editable_claim_selection, GtkEditable_val, Bool_val, Int_val, Unit)
 ML_1 (gtk_editable_delete_selection, GtkEditable_val, Unit)
-ML_1 (gtk_editable_changed, GtkEditable_val, Unit)
 ML_2 (gtk_editable_set_position, GtkEditable_val, Int_val, Unit)
 ML_1 (gtk_editable_get_position, GtkEditable_val, Val_int)
 ML_2 (gtk_editable_set_editable, GtkEditable_val, Bool_val, Unit)
-Make_Extractor (gtk_editable, GtkEditable_val, selection_start_pos, Val_int)
-Make_Extractor (gtk_editable, GtkEditable_val, selection_end_pos, Val_int)
-Make_Extractor (gtk_editable, GtkEditable_val, has_selection, Val_bool)
+ML_1 (gtk_editable_get_editable, GtkEditable_val, Val_bool)
 
 /* gtkentry.h */
 
@@ -73,14 +85,13 @@ ML_2 (gtk_spin_button_spin, GtkSpinButton_val,
       Insert (Is_long(arg2) ? Spin_type_val(arg2) : GTK_SPIN_USER_DEFINED)
       (Is_long(arg2) ? 0.0 : Float_val(Field(arg2,1))) Ignore, Unit)
 ML_2 (gtk_spin_button_set_wrap, GtkSpinButton_val, Bool_val, Unit)
-ML_2 (gtk_spin_button_set_shadow_type, GtkSpinButton_val, Shadow_type_val, Unit)
 ML_2 (gtk_spin_button_set_snap_to_ticks, GtkSpinButton_val, Bool_val, Unit)
 ML_4 (gtk_spin_button_configure, GtkSpinButton_val, GtkAdjustment_val,
       Float_val, Int_val, Unit)
 ML_1 (gtk_spin_button_update, GtkSpinButton_val, Unit)
 
 /* gtktext.h */
-
+/*
 #define GtkText_val(val) check_cast(GTK_TEXT,val)
 ML_2 (gtk_text_new, GtkAdjustment_val, GtkAdjustment_val, Val_GtkWidget_sink)
 ML_2 (gtk_text_set_word_wrap, GtkText_val, Bool_val, Unit)
@@ -108,6 +119,7 @@ CAMLprim value ml_gtk_text_insert (value text, value font, value fore,
 }
 ML_2 (gtk_text_forward_delete, GtkText_val, Int_val, Val_int)
 ML_2 (gtk_text_backward_delete, GtkText_val, Int_val, Val_int)
+*/
 
 /* gtkcombo.h */
 

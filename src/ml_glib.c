@@ -76,6 +76,16 @@ CAMLprim value ml_g_set_print_handler (value clos)
     return old_handler;
 }
 
+/* Error handling */
+
+void ml_raise_gerror(GError *err)
+{
+  static value * exn = NULL;
+  if (exn == NULL)
+      exn = caml_named_value ("gerror");
+  raise_with_string (*exn, err->message);
+}
+
 /* Main loop handling */
 
 /* for 1.3 compatibility */

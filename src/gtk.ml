@@ -1,9 +1,9 @@
 (* $Id$ *)
 
+open Gobject
+
 exception Error of string
-exception Warning of string
-exception Cannot_cast of string * string
-type -'a obj
+
 type 'a optobj = 'a obj Gpointer.optboxed
 type clampf = float
 
@@ -166,3 +166,6 @@ type scrollbar = [widget|`range|`scrollbar]
 type ruler = [widget|`ruler]
 type separator = [widget|`separator]
 type preview = [widget|`preview]
+
+(* re-export Gobject.obj *)
+type 'a obj = 'a Gobject.obj

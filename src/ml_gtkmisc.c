@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include <gtk/gtk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
@@ -11,6 +12,7 @@
 #include "wrappers.h"
 #include "ml_glib.h"
 #include "ml_gdk.h"
+#include "ml_gdkpixbuf.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
 #include "gdk_tags.h"
@@ -82,10 +84,14 @@ ML_3 (gtk_arrow_set, GtkArrow_val, Arrow_type_val, Shadow_type_val, Unit)
 /* gtkimage.h */
 
 #define GtkImage_val(val) check_cast(GTK_IMAGE,val)
-ML_2 (gtk_image_new, GdkImage_val,
-      Option_val (arg2, GdkBitmap_val, NULL) Ignore, Val_GtkWidget_sink)
-ML_3 (gtk_image_set, GtkImage_val, GdkImage_val,
+ML_0 (gtk_image_new, Val_GtkWidget_sink)
+ML_3 (gtk_image_set_from_image, GtkImage_val, GdkImage_val,
       Option_val (arg2, GdkBitmap_val, NULL) Ignore, Unit)
+ML_3 (gtk_image_set_from_pixmap, GtkImage_val, GdkPixmap_val,
+      Option_val (arg2, GdkBitmap_val, NULL) Ignore, Unit)
+ML_2 (gtk_image_set_from_file, GtkImage_val, String_val, Unit)
+ML_2 (gtk_image_set_from_pixbuf, GtkImage_val, GdkPixbuf_val, Unit)
+ML_3 (gtk_image_set_from_stock, GtkImage_val, String_val, Int_val, Unit)
 
 /* gtklabel.h */
 
