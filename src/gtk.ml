@@ -714,7 +714,7 @@ module Text = struct
   external set_point : [> text] obj -> int -> unit
       = "ml_gtk_text_set_point"
   external get_point : [> text] obj -> int = "ml_gtk_text_get_point"
-  external get_lenth : [> text] obj -> int = "ml_gtk_text_get_length"
+  external get_length : [> text] obj -> int = "ml_gtk_text_get_length"
   external freeze : [> text] obj -> unit = "ml_gtk_text_freeze"
   external thaw : [> text] obj -> unit = "ml_gtk_text_thaw"
   external insert :
