@@ -196,15 +196,19 @@ class ['a] message_dialog obj ~(buttons : 'a buttons) = object (self)
   inherit ['a] dialog_skel obj
   inherit message_dialog_props
   method connect : 'a dialog_signals = new dialog_signals obj self#decode
+  method set_markup = MessageDialog.set_markup obj
   initializer
     tbl <- snd buttons @ tbl
 end
 
-let message_dialog ?(message="") ~message_type ~buttons =
+let message_dialog ?(message="") ?(use_markup=false) ~message_type ~buttons =
   make_dialog [] ~create:(fun pl ->
-    let w = MessageDialog.create 
-	~message_type ~buttons:(fst buttons) ~message () in
+    let w = 
+      if use_markup 
+      then MessageDialog.create ~message_type ~buttons:(fst buttons) () 
+      else MessageDialog.create ~message_type ~buttons:(fst buttons) ~message () in
     Gobject.set_params w pl;
+    if use_markup then MessageDialog.set_markup message ;
     new message_dialog ~buttons w)
 
 

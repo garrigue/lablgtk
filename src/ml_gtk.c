@@ -717,10 +717,17 @@ ML_2 (gtk_window_set_role, GtkWindow_val, String_val, Unit)
 ML_1 (gtk_window_get_role, GtkWindow_val, Val_optstring)
 
 /* gtkmessagedialog.h */
+#define GtkMessageDialog_val(v) check_cast(GTK_MESSAGE_DIALOG,v)
+
 ML_4 (gtk_message_dialog_new, Option_val(arg1,GtkWindow_val,NULL) Ignore,
       Insert(0) Message_type_val, Buttons_type_val,
       Insert(String_val(arg4)[0] != 0 ? "%s" : NULL) String_val,
       Val_GtkWidget_window)
+#ifdef HASGTK24
+ML_2 (gtk_message_dialog_set_markup, GtkMessageDialog_val, String_val, Unit)
+#else
+Unsupported_24(gtk_message_dialog_set_markup)
+#endif
 
 /* gtkcolorsel.h */
 
