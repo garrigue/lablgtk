@@ -179,3 +179,18 @@ module Markup : sig
 
   val escape_text : string -> string
 end
+
+(** {3 Miscellaneous Utility Functions} *)
+
+external get_prgname : unit -> string = "ml_g_get_prgname"
+external set_prgname : string -> unit = "ml_g_set_prgname"
+external get_application_name : unit -> string = "ml_g_get_application_name" (** @since GTK 2.2 *)
+external set_application_name : string -> unit = "ml_g_set_application_name"
+
+external get_user_name : unit -> string = "ml_g_get_user_name"
+external get_real_name : unit -> string = "ml_g_get_real_name"
+
+external get_home_dir : unit -> string option = "ml_g_get_home_dir"
+external get_tmp_dir  : unit -> string = "ml_g_get_tmp_dir"
+
+external find_program_in_path : string -> string = "ml_g_find_program_in_path" (** @raise Not_found if the program is not found in the path or is not executable *)

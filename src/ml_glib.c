@@ -471,3 +471,30 @@ UNI_BOOL(iswide)
 #undef UNI_BOOL
 
 ML_1 (g_markup_escape_text, SizedString_val, copy_string_g_free)
+
+ML_0 (g_get_prgname, copy_string_or_null)
+ML_1 (g_set_prgname, String_val, Unit)
+#ifndef DISABLE_GTK22
+ML_0 (g_get_application_name, copy_string_or_null)
+#else
+Unsupported(g_get_application_name)
+#endif
+ML_1 (g_set_application_name, String_val, Unit)
+
+ML_0 (g_get_user_name, copy_string)
+ML_0 (g_get_real_name, copy_string)
+CAMLprim value ml_g_get_home_dir (value unit)
+{
+  const char *s = g_get_home_dir();
+  return s ? ml_some (copy_string (s)) : Val_unit;
+}
+ML_0 (g_get_tmp_dir, copy_string)
+CAMLprim value ml_g_find_program_in_path (value p)
+{
+  value v;
+  char *s = g_find_program_in_path (String_val(p));
+  if (s == NULL) raise_not_found();
+  v = copy_string(s);
+  g_free(s);
+  return v;
+}
