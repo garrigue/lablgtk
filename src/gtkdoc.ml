@@ -56,11 +56,6 @@ class gtkdoc =
       super#html_of_attribute b a
 
     method html_of_method b m =
-      if m.met_value.val_name = "GPack.box_skel.pack"
-      then begin
-	Printf.eprintf "method %s: %d params\n%!"
-	  m.met_value.val_name (List.length m.met_value.val_parameters)
-      end ;
       m.met_value.val_code <- None ;
       super#html_of_method b m 
 
