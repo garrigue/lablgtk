@@ -1,6 +1,9 @@
 $Id$
 
-In lablgtk2-20040715 (2.4.0):
+In lablgtk2-20040716 (2.4.0):
+
+2004.07.16 [Jacques]
+  * add GLib.Io.remove and Glib.Io.read, works under windows too
 
 2004.07.09 [Olivier]
   * Rewrite Xml_lexer so that it is more conformant.

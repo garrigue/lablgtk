@@ -35,6 +35,15 @@ value copy_string_g_free (char *str)
     return res;
 }
 
+void ml_raise_glib (const char *errmsg) Noreturn;
+void ml_raise_glib (const char *errmsg)
+{
+  static value * exn = NULL;
+  if (exn == NULL)
+      exn = caml_named_value ("gerror");
+  raise_with_string (*exn, (char*)errmsg);
+}
+
 value Val_GList (GList *list, value (*func)(gpointer))
 {
   CAMLparam0 ();
@@ -253,11 +262,17 @@ CAMLprim value ml_g_io_channel_unix_new(value v)
 {  invalid_argument("Glib.channel_unix_new: not implemented"); return 1; }
 #endif
 
-static gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c, gpointer data)
+static gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c,
+                                      gpointer data)
 {
     value *clos_p = (value*)data;
     return Bool_val(callback(*clos_p, Val_unit));
 }
+void ml_g_destroy_notify(gpointer data)
+{
+    ml_global_root_destroy(data);
+}
+
 CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
 {
     g_io_add_watch_full(GIOChannel_val(io),
@@ -267,6 +282,32 @@ CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
                         ml_global_root_new(clos),
                         ml_global_root_destroy);
     return Val_unit;
+    return Val_int ( g_io_add_watch_full(GIOChannel_val(io),
+					 Option_val(prio,Int_val,0),
+					 Io_condition_val(cond),
+					 ml_g_io_channel_watch,
+					 ml_global_root_new(clos),
+					 ml_g_destroy_notify) );
+}
+
+CAMLprim value ml_g_io_channel_read(value io, value str, value offset,
+                                    value count)
+{
+  gsize read;
+  switch (g_io_channel_read(GIOChannel_val(io), 
+			    String_val(str) + Int_val(offset),
+			    Int_val(count),
+			    &read)) {
+  case G_IO_ERROR_NONE:
+    return Val_int( read );
+  case G_IO_ERROR_INVAL:
+    ml_raise_glib("g_io_channel_read: G_IO_ERROR_INVAL");
+  case G_IO_ERROR_AGAIN:
+  default:
+    ml_raise_glib("g_io_channel_read: G_IO_ERROR_AGAIN");
+  }
+  /* no one reaches here... */
+  return Val_unit;
 }
 
 /* Thread initialization ? */
