@@ -420,19 +420,17 @@ value copy_xdata (gint format, guchar *xdata, gulong nitems)
 value ml_gdk_property_get (value window, value property,
                            value length, value pdelete)
 {
+#if defined(_WIN32) || defined(__CYGWIN__)
+  return Val_unit; /* not supported */
+#else
     GdkAtom atype;
     int aformat, alength;
     guchar *data;
     int nitems;
-    int ok = 
-#if defined(_WIN32) || defined(__CYGWIN__)
-      FALSE;
-#else
-gdk_property_get (GdkWindow_val(window), GdkAtom_val(property),
+    int ok = gdk_property_get (GdkWindow_val(window), GdkAtom_val(property),
                                AnyPropertyType, 0,
                                Long_val(length), Bool_val(pdelete),
                                &atype, &aformat, &alength, &data);
-#endif
     if (ok) {
         CAMLparam0();
         CAMLlocal3(mltype, mldata, pair);
@@ -449,6 +447,7 @@ gdk_property_get (GdkWindow_val(window), GdkAtom_val(property),
         CAMLreturn(ml_some (pair));
     }
     return Val_unit;
+#endif
 }
 
 ML_2 (gdk_property_delete, GdkWindow_val, GdkAtom_val, Unit)
