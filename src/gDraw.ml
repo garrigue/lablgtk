@@ -32,11 +32,11 @@ let optcolor ?colormap (c : optcolor) =
   | `DEFAULT -> None
   | #color as c -> Some (color ?colormap c)
 
-class ['a] drawable ?(colormap = default_colormap ()) w =
+class drawable ?(colormap = default_colormap ()) w =
 object (self)
   val colormap = colormap
   val gc = GC.create w
-  val w : 'a Gdk.drawable = w
+  val w = w
   method color = color ~colormap
   method set_foreground col = GC.set_foreground gc (self#color col)
   method set_background col = GC.set_background gc (self#color col)
@@ -68,7 +68,7 @@ object (self)
 end
 
 class pixmap ?colormap ?mask pm = object
-  inherit [[`pixmap]] drawable ?colormap pm as pixmap
+  inherit drawable ?colormap pm as pixmap
   val bitmap = may_map mask ~f:
       begin fun x ->
         let mask = new drawable x in
@@ -76,7 +76,7 @@ class pixmap ?colormap ?mask pm = object
         mask
       end
   val mask : Gdk.bitmap option = mask
-  method pixmap = w
+  method pixmap : Gdk.pixmap = w
   method mask = mask
   method set_line_attributes ?width ?style ?cap ?join () =
     pixmap#set_line_attributes ?width ?style ?cap ?join ();

@@ -1,13 +1,14 @@
 (* $Id$ *)
 
+open Gobject
+
 type colormap
 type visual
 type region
 type gc
-type +'a drawable
-type window = [`window] drawable
-type pixmap = [`pixmap] drawable
-type bitmap = [`bitmap] drawable
+type window = [`drawable|`gdkwindow] obj
+type pixmap = [`drawable|`gdkpixmap] obj
+type bitmap = [`drawable|`gdkpixmap|`gdkbitmap] obj
 type font
 type image
 type atom
@@ -129,7 +130,7 @@ module Image :
       kind:image_type ->
       visual:visual -> width:int -> height:int -> image
     val get :
-      'a drawable -> x:int -> y:int -> width:int -> height:int -> image
+      [>`drawable] obj -> x:int -> y:int -> width:int -> height:int -> image
     val put_pixel : image -> x:int -> y:int -> pixel:int -> unit
     val get_pixel : image -> x:int -> y:int -> int
     val destroy : image -> unit
@@ -176,12 +177,12 @@ module Window :
     val get_visual : window -> visual
     val get_colormap : window -> colormap
     val get_parent : window -> window
-    val get_size : 'a drawable -> int * int
-    val get_position : 'a drawable -> int * int
+    val get_size : [>`drawable] obj -> int * int
+    val get_position : [>`drawable] obj -> int * int
     val get_pointer_location : window -> int * int
     val root_parent : unit -> window
     val clear : window -> unit
-    val get_xwindow : 'a drawable -> xid
+    val get_xwindow : [>`drawable] obj -> xid
     val set_back_pixmap : window -> background_pixmap -> unit
     val set_cursor : window -> cursor -> unit
   end
@@ -222,7 +223,7 @@ module GC :
     type gdkLineStyle = [ `SOLID|`ON_OFF_DASH|`DOUBLE_DASH ]
     type gdkCapStyle = [ `NOT_LAST|`BUTT|`ROUND|`PROJECTING ]
     type gdkJoinStyle = [ `MITER|`ROUND|`BEVEL ]
-    val create : 'a drawable -> gc
+    val create : [>`drawable] obj -> gc
     val set_foreground : gc -> Color.t -> unit
     val set_background : gc -> Color.t -> unit
     val set_font : gc -> font -> unit
@@ -305,30 +306,31 @@ module Font :
 
 module Draw :
   sig
-    val point : 'a drawable -> gc -> x:int -> y:int -> unit
+    val point : [>`drawable] obj -> gc -> x:int -> y:int -> unit
     val line :
-      'a drawable -> gc -> x:int -> y:int -> x:int -> y:int -> unit
+      [>`drawable] obj -> gc -> x:int -> y:int -> x:int -> y:int -> unit
     val rectangle :
-      'a drawable -> gc ->
+      [>`drawable] obj -> gc ->
       x:int -> y:int -> width:int -> height:int -> ?filled:bool -> unit -> unit
     val arc :
-      'a drawable -> gc ->
+      [>`drawable] obj -> gc ->
       x:int -> y:int -> width:int -> height:int ->
       ?filled:bool -> ?start:float -> ?angle:float -> unit -> unit
     val polygon :
-      'a drawable -> gc -> ?filled:bool ->(int * int) list -> unit
+      [>`drawable] obj -> gc -> ?filled:bool ->(int * int) list -> unit
     val string :
-      'a drawable ->
+      [>`drawable] obj ->
       font:font -> gc -> x:int -> y:int -> string -> unit
     val image :
-      'a drawable -> gc -> ?xsrc:int -> ?ysrc:int ->
+      [>`drawable] obj -> gc -> ?xsrc:int -> ?ysrc:int ->
       ?xdest:int -> ?ydest:int -> ?width:int -> ?height:int -> image -> unit
     val pixmap :
-      'a drawable -> gc -> ?xsrc:int -> ?ysrc:int ->
+      [>`drawable] obj -> gc -> ?xsrc:int -> ?ysrc:int ->
       ?xdest:int -> ?ydest:int -> ?width:int -> ?height:int -> pixmap -> unit
-    val points : 'a drawable -> gc -> (int * int) list -> unit
-    val lines : 'a drawable -> gc -> (int * int) list -> unit
-    val segments : 'a drawable -> gc -> ((int * int) * (int * int)) list -> unit
+    val points : [>`drawable] obj -> gc -> (int * int) list -> unit
+    val lines : [>`drawable] obj -> gc -> (int * int) list -> unit
+    val segments :
+      [>`drawable] obj -> gc -> ((int * int) * (int * int)) list -> unit
   end
 
 module Rgb :
@@ -337,7 +339,7 @@ module Rgb :
     val get_visual : unit -> visual
     val get_cmap : unit -> colormap
     val draw_image :
-      'a drawable -> gc -> width:int -> height:int -> ?x:int -> ?y:int ->
+      [>`drawable] obj -> gc -> width:int -> height:int -> ?x:int -> ?y:int ->
       ?dither:Tags.rgb_dither -> ?row_stride:int -> Gpointer.region -> unit
     (* [row_stride] defaults to [width*3] *)
   end

@@ -126,10 +126,10 @@ gtkRange.cmo: gaux.cmo gpointer.cmi gtk.cmo gtkBase.cmo
 gtkRange.cmx: gaux.cmx gpointer.cmx gtk.cmx gtkBase.cmx 
 gtkSignal.cmo: gaux.cmo gobject.cmo gtkSignal.cmi 
 gtkSignal.cmx: gaux.cmx gobject.cmx gtkSignal.cmi 
-gtkText.cmo: gDraw.cmi gaux.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi glib.cmi \
-    gobject.cmo gpointer.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi pango.cmo 
-gtkText.cmx: gDraw.cmx gaux.cmx gdk.cmx gdkEvent.cmx gdkPixbuf.cmx glib.cmx \
-    gobject.cmx gpointer.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx pango.cmx 
+gtkText.cmo: gaux.cmo gdk.cmi gdkEvent.cmo gdkPixbuf.cmi glib.cmi gobject.cmo \
+    gpointer.cmi gtk.cmo gtkBase.cmo gtkSignal.cmi pango.cmo 
+gtkText.cmx: gaux.cmx gdk.cmx gdkEvent.cmx gdkPixbuf.cmx glib.cmx gobject.cmx \
+    gpointer.cmx gtk.cmx gtkBase.cmx gtkSignal.cmx pango.cmx 
 gtkThInit.cmo: gtkThread.cmi 
 gtkThInit.cmx: gtkThread.cmx 
 gtkThread.cmo: glib.cmi gtkMain.cmo gtkSignal.cmi gtkThread.cmi 

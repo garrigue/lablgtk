@@ -248,7 +248,7 @@ void g_value_set_variant (GValue *val, value arg2)
     case G_TYPE_BOXED:
     case G_TYPE_POINTER:
         if (tag != MLTAG_POINTER && tag != MLTAG_OBJECT) break;
-        DATA.v_pointer = Option_val(data,Pointer_val,NULL);
+        DATA.v_pointer = Option_val(data,MLPointer_val,NULL);
         return;
     case G_TYPE_INT64:
     case G_TYPE_UINT64:

@@ -21,10 +21,10 @@ type optcolor =
 
 val optcolor : ?colormap:colormap -> optcolor -> Color.t option
 
-class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
+class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
   object
     val gc : gc
-    val w : 'a Gdk.drawable
+    val w : 'a
     method arc :
       x:int ->
       y:int ->
@@ -67,10 +67,11 @@ class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
   end
 
 class pixmap :
-  ?colormap:colormap -> ?mask:bitmap -> [ `pixmap] Gdk.drawable ->
+  ?colormap:colormap -> ?mask:bitmap -> Gdk.pixmap ->
   object
-    inherit [[`pixmap]] drawable
-    val bitmap : [ `bitmap] drawable option
+    inherit drawable
+    val w : Gdk.pixmap
+    val bitmap : drawable option
     val mask : bitmap option
     method mask : bitmap option
     method pixmap : Gdk.pixmap

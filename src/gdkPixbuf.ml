@@ -4,7 +4,7 @@ open Gaux
 open Gobject
 open Gdk
 
-type pixbuf = [`base|`pixbuf] obj
+type pixbuf = [`pixbuf] obj
 type colorspace = [ `RGB ]
 type alpha_mode = [ `BILEVEL | `FULL ]
 type interpolation = [ `NEAREST | `TILES | `BILINEAR | `HYPER ]
@@ -59,7 +59,7 @@ let from_data ~width ~height ?(bits=8) ?rowstride ?(has_alpha=false) data =
   _from_data data ~has_alpha ~bits ~width ~height ~rowstride
 
 external _get_from_drawable :
-  pixbuf -> 'a drawable -> colormap -> src_x:int -> src_y:int ->
+  pixbuf -> [>`drawable] obj -> colormap -> src_x:int -> src_y:int ->
   dest_x:int -> dest_y:int -> width:int -> height:int -> unit
   = "ml_gdk_pixbuf_get_from_drawable_bc" "ml_gdk_pixbuf_get_from_drawable"
 let get_from_drawable ~dest ?(dest_x=0) ?(dest_y=0) ?width ?height
@@ -88,7 +88,7 @@ let render_alpha bm ?(dest_x=0) ?(dest_y=0) ?width ?height ?(threshold=128)
   _render_alpha ~src bm ~src_x ~src_y ~dest_x ~dest_y ~width ~height ~threshold
 
 external _render_to_drawable :
-  src:pixbuf -> 'a drawable -> gc -> src_x:int -> src_y:int ->
+  src:pixbuf -> [>`drawable] obj -> gc -> src_x:int -> src_y:int ->
   dest_x:int -> dest_y:int -> width:int -> height:int ->
   dither:Tags.rgb_dither -> x_dither:int -> y_dither:int -> unit
   = "ml_gdk_pixbuf_render_to_drawable_bc"
@@ -102,7 +102,7 @@ let render_to_drawable dw ?(gc=Gdk.GC.create dw) ?(dest_x=0) ?(dest_y=0)
     ~dither ~x_dither ~y_dither
 
 external _render_to_drawable_alpha :
-  src:pixbuf -> 'a drawable -> src_x:int -> src_y:int ->
+  src:pixbuf -> [>`drawable] obj -> src_x:int -> src_y:int ->
   dest_x:int -> dest_y:int -> width:int -> height:int ->
   alpha:alpha_mode -> threshold:int ->
   dither:Tags.rgb_dither -> x_dither:int -> y_dither:int -> unit

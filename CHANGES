@@ -1,5 +1,8 @@
 $Id$
 
+2003.02.19
+ * GdkDrawable is also a GObject
+
 2003.02.14
  * Added librsvg support (contributed by Olivier Andrieu)
  * Ported applications/browser
