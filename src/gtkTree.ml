@@ -482,50 +482,12 @@ module TreeView = struct
   end
 end
 
-module CellRenderer = struct
-  let cast w : cell_renderer obj = Object.try_cast w "GtkCellRenderer"
-  let classe = `cellrenderer
-  module Prop = struct
-    open Gobject
-    open Gobject.Data
-    let cell_background =
-      {name="cell_background"; classe=classe; conv=string}
-    let cell_background_gdk : (_, Gdk.color option) property =
-      {name="cell_background_gdk"; classe=classe; conv=unsafe_pointer}
-    let cell_background_set =
-      {name="cell_background_set"; classe=classe; conv=boolean}
-    let height = {name="height"; classe=classe; conv=int}
-    (* is_expanded and is_expander cannot be read because of bug (2.2.1) *)
-    let is_expanded = {name="is-expanded"; classe=classe; conv=boolean}
-    let is_expander = {name="is_expander"; classe=classe; conv=boolean}
-    let conv_mode = enum GtkEnums.cell_renderer_mode
-    let mode = {name="mode"; classe=classe; conv=conv_mode}
-    let visible = {name="visible"; classe=classe; conv=boolean}
-    let width = {name="width"; classe=classe; conv=int}
-    let xalign = {name="xalign"; classe=classe; conv=float}
-    let xpad = {name="xpad"; classe=classe; conv=uint}
-    let yalign = {name="yalign"; classe=classe; conv=float}
-    let ypad = {name="ypad"; classe=classe; conv=uint}
-    let check w =
-      let c p = Gobject.Property.check w p in
-      let s p = Gobject.Property.set w p in
-      s cell_background "blue"; c cell_background_gdk; c cell_background_set;
-      c height; s is_expanded false; s is_expander false; c mode; c visible;
-      c width; c xalign; c xpad; c yalign; c ypad
-  end
-end
+module CellRenderer = CellRenderer
 
-module CellRendererPixbuf = struct
-  let cast w : cell_renderer_pixbuf obj =
-    Object.try_cast w "GtkCellRendererPixbuf"
-  external create : unit -> cell_renderer_pixbuf obj
-    = "ml_gtk_cell_renderer_pixbuf_new"
-end
+module CellRendererPixbuf = CellRendererPixbuf
 
 module CellRendererText = struct
-  let cast w : cell_renderer_text obj = Object.try_cast w "GtkCellRendererText"
-  external create : unit -> cell_renderer_text obj
-    = "ml_gtk_cell_renderer_text_new"
+  include CellRendererText
   external set_fixed_height_from_font : cell_renderer_text obj -> int -> unit
     = "ml_gtk_cell_renderer_text_set_fixed_height_from_font"
   module Signals = struct
@@ -537,76 +499,17 @@ module CellRendererText = struct
     let edited = { name = "edited"; classe = `cellrenderertext;
                    marshaller = marshal_edited }
   end
-  module Prop = struct
-    let check () =
-      let w = create () in
-      CellRenderer.Prop.check w;
-      Object.destroy w
-  end
-      
-(*
-  let classe = `cellrenderertext
-  open Gobject
-  open Gobject.Data
-  let attributes = {name="attributes"; classe=classe; conv=PangoAttrList}
-  let background = {name="background"; classe=classe; conv=string}
-  let background_gdk = {name="background_gdk"; classe=classe; conv=dkColor}
-  let background_set = {name="background_set"; classe=classe; conv=boolean}
-  let editable = {name="editable"; classe=classe; conv=boolean}
-  let editable_set = {name="editable_set"; classe=classe; conv=boolean}
-  let family = {name="family"; classe=classe; conv=chararray}
-  let family_set = {name="family_set"; classe=classe; conv=boolean}
-  let font = {name="font"; classe=classe; conv=chararray}
-  let font_desc = {name="font_desc"; classe=classe; conv=angoFontDescription}
-  let foreground = {name="foreground"; classe=classe; conv=chararray}
-  let foreground_gdk = {name="foreground_gdk"; classe=classe; conv=dkColor}
-  let foreground_set = {name="foreground_set"; classe=classe; conv=boolean}
-  let markup = {name="markup"; classe=classe; conv=chararray}
-  let rise = {name="rise"; classe=classe; conv=int}
-  let rise_set = {name="rise_set"; classe=classe; conv=boolean}
-  let scale = {name="scale"; classe=classe; conv=double}
-  let scale_set = {name="scale_set"; classe=classe; conv=boolean}
-  let size = {name="size"; classe=classe; conv=int}
-  let size_points = {name="size_points"; classe=classe; conv=double}
-  let size_set = {name="size_set"; classe=classe; conv=boolean}
-  let stretch = {name="stretch"; classe=classe; conv=angoStretch}
-  let stretch_set = {name="stretch_set"; classe=classe; conv=boolean}
-  let strikethrough = {name="strikethrough"; classe=classe; conv=boolean}
-  let strikethrough_set =
-    {name="strikethrough_set"; classe=classe; conv=boolean}
-  let style = {name="style"; classe=classe; conv=angoStyle}
-  let style_set = {name="style_set"; classe=classe; conv=boolean}
-  let text = {name="text"; classe=classe; conv=chararray}
-  let underline = {name="underline"; classe=classe; conv=angoUnderline}
-  let underline_set = {name="underline_set"; classe=classe; conv=boolean}
-  let variant = {name="variant"; classe=classe; conv=angoVariant}
-  let variant_set = {name="variant_set"; classe=classe; conv=boolean}
-  let weight = {name="weight"; classe=classe; conv=int}
-  let weight_set = {name="weight_set"; classe=classe; conv=boolean}
-*)
 end
 
 module CellRendererToggle = struct
-  let cast w : cell_renderer_toggle obj =
-    Object.try_cast w "GtkCellRendererToggle"
-  external create : unit -> cell_renderer_toggle obj
-    = "ml_gtk_cell_renderer_toggle_new"
-  let classe = `cellrenderertoggle
+  include CellRendererToggle
   module Signals = struct
     open GtkSignal
     let marshal_toggled f _ = function
         `STRING(Some path) :: _ ->
           f (TreePath.from_string path)
       | _ -> failwith "GtkTree.CellRendererToggle.Signals.marshal_toggled"
-    let toggled = { name = "toggled"; classe = classe;
+    let toggled = { name = "toggled"; classe = `cellrenderertoggle;
                     marshaller = marshal_toggled }
   end
-(*
-  open Gobject
-  open Gobject.Data
-  let activatable = {name="activatable"; classe=classe; conv=boolean}
-  let active = {name="active"; classe=classe; conv=boolean}
-  let inconsistent = {name="inconsistent"; classe=classe; conv=boolean}
-  let radio = {name="radio"; classe=classe; conv=boolean}
-*)
 end

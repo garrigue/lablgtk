@@ -100,9 +100,9 @@ let propertize = function
   | `LAST_ARROWHEAD  b -> "last_arrowhead", `BOOL b
   | `ANCHOR a -> "anchor", encode GtkEnums.anchor_type a
   | `JUSTIFICATION j -> "justification", encode GtkEnums.justification j
-  | `CAP_STYLE c -> "cap_style", encode GdkEnums.gdkCapStyle c
-  | `JOIN_STYLE c -> "join_style", encode GdkEnums.gdkJoinStyle c
-  | `LINE_STYLE c -> "line_style", encode GdkEnums.gdkLineStyle c
+  | `CAP_STYLE c -> "cap_style", encode GdkEnums.cap_style c
+  | `JOIN_STYLE c -> "join_style", encode GdkEnums.join_style c
+  | `LINE_STYLE c -> "line_style", encode GdkEnums.line_style c
   | `BPATH p -> "bpath" , `POINTER (Some p)
   | `DASH (off, d) -> "dash", `POINTER (Some (convert_dash off d))
   | `SMOOTH b -> "smooth", `BOOL b

@@ -18,52 +18,35 @@ type data_get = [ basic | `NONE | `OBJECT of unit obj option ]
 type 'a data_set =
   [ basic | `OBJECT of 'a obj option | `INT32 of int32 | `LONG of nativeint ]
 
-type data_kind =
+type base_data =
   [ `BOOLEAN
-  | `BOXED
   | `CHAR
-  | `DOUBLE
+  | `UCHAR
+  | `INT
+  | `UINT
+  | `LONG
+  | `ULONG
+  | `INT64
+  | `UINT64
   | `ENUM
   | `FLAGS
   | `FLOAT
-  | `INT
-  | `INT64
-  | `LONG
-  | `OBJECT
-  | `POINTER
+  | `DOUBLE
   | `STRING
-  | `UCHAR
-  | `UINT
-  | `UINT64
-  | `ULONG ]
+  | `POINTER
+  | `BOXED
+  | `OBJECT ]
 
-type fundamental_type =
-  [ `BOOLEAN
-  | `BOXED
-  | `CHAR
-  | `DOUBLE
-  | `ENUM
-  | `FLAGS
-  | `FLOAT
-  | `INT
-  | `INT64
-  | `INTERFACE
-  | `INVALID
-  | `LONG
-  | `NONE
-  | `OBJECT
-  | `PARAM
-  | `POINTER
-  | `STRING
-  | `UCHAR
-  | `UINT
-  | `UINT64
-  | `ULONG ]
+type data_kind = [ `INT32 | `UINT32 | base_data ]
+type data_conv_get = [ `INT32 of int32 | data_get ]
 
 type 'a data_conv =
-    { kind : data_kind; proj : data_get -> 'a; inj : 'a -> unit data_set }
+    { kind : data_kind; proj : data_conv_get -> 'a; inj : 'a -> unit data_set }
 
 type ('a, 'b) property = { name : string; classe : 'a; conv : 'b data_conv }
+
+type fundamental_type =
+  [ `INVALID | `NONE | `INTERFACE | `PARAM | base_data ]
 
 exception Cannot_cast of string * string
 
@@ -118,6 +101,7 @@ module Value :
     val set : g_value -> 'a data_set -> unit
     val get_pointer : g_value -> Gpointer.boxed
     val get_nativeint : g_value -> nativeint
+    val get_int32 : g_value -> int32
   end
 
 module Closure :
@@ -162,6 +146,7 @@ module Data :
     val gobject_option : 'a obj option data_conv
     val of_value : 'a data_conv -> g_value -> 'a
     val to_value : 'a data_conv -> 'a -> g_value
+    val get_fundamental : 'a data_conv -> fundamental_type
   end
 
 module Property :

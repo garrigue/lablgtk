@@ -291,17 +291,6 @@ CAMLprim value ml_gnome_canvas_group_get_items(value cg)
 
 
 /* Converion functions for properties */
-#include "gtk_tags.h"
-#include "gdk_tags.h"
-
-CAMLprim value ml_gnome_canvas_get_tables()
-{
-  static lookup_info *tables[5] =
-       { ml_table_anchor_type, ml_table_gdkCapStyle, 
-         ml_table_gdkJoinStyle, ml_table_justification,
-         ml_table_gdkLineStyle };
-  return (value)tables;
-}
 
 Make_Val_final_pointer(GnomeCanvasPoints, Ignore, gnome_canvas_points_unref, 5)
 

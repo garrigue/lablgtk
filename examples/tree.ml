@@ -28,13 +28,13 @@ let main () =
   window#connect#destroy ~callback:GMain.quit;
   let view = GTree.view ~model ~packing:window#add () in
   let col = GTree.view_column ~title:"Title" ()
-      ~renderer:(GTree.cell_renderer_text(), ["text",title]) in
+      ~renderer:(GTree.cell_renderer_text[], ["text",title]) in
   view#append_column col;
   let col = GTree.view_column ~title:"Author" ()
-      ~renderer:(GTree.cell_renderer_text(), ["text",author]) in
+      ~renderer:(GTree.cell_renderer_text[], ["text",author]) in
   view#append_column col;
   let col = GTree.view_column ~title:"Checked-out" ()
-      ~renderer:(GTree.cell_renderer_text(), ["text",checked]) in
+      ~renderer:(GTree.cell_renderer_text[], ["text",checked]) in
   view#append_column col;
   view#selection#connect#after#changed ~callback:
     begin fun () ->

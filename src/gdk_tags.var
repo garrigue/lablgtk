@@ -2,7 +2,7 @@
 
 package "gdk"
 
-type event_type "gdkEventType" = "GDK_"
+type event_type = "GDK_"
   [ `NOTHING | `DELETE | `DESTROY | `EXPOSE | `MOTION_NOTIFY
   | `BUTTON_PRESS | `TWO_BUTTON_PRESS "GDK_2BUTTON_PRESS"
   | `THREE_BUTTON_PRESS "GDK_3BUTTON_PRESS" | `BUTTON_RELEASE
@@ -52,28 +52,28 @@ type setting_action "gdkSettingAction" = "GDK_SETTING_ACTION_"
 type window_state "gdkWindowState" = "GDK_WINDOW_STATE_"
   [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY ]
 
-type gdkFillRule = "GDK_"
+type fill_rule = "GDK_"
   [ `EVEN_ODD_RULE | `WINDING_RULE ]
 
-type gdkOverlapType = "GDK_OVERLAP_RECTANGLE_"
+type overlap_type = "GDK_OVERLAP_RECTANGLE_"
   [ `IN | `OUT | `PART ]
 
-type gdkFunction = "GDK_"
+type function_type = "GDK_"
   [ `COPY | `INVERT | `XOR ]
 
-type gdkFill = "GDK_"
+type fill = "GDK_"
   [ `SOLID | `TILED | `STIPPLED | `OPAQUE_STIPPLED ]
 
-type gdkSubwindowMode = "GDK_"
+type subwindow_mode = "GDK_"
   [ `CLIP_BY_CHILDREN | `INCLUDE_INFERIORS ]
 
-type gdkLineStyle = "GDK_LINE_"
+type line_style = "GDK_LINE_"
   [ `SOLID | `ON_OFF_DASH | `DOUBLE_DASH ]
 
-type gdkCapStyle = "GDK_CAP_"
+type cap_style = "GDK_CAP_"
   [ `NOT_LAST | `BUTT | `ROUND | `PROJECTING ]
 
-type gdkJoinStyle = "GDK_JOIN_"
+type join_style = "GDK_JOIN_"
   [ `MITER | `ROUND | `BEVEL ]
 
 type modifier "gdkModifier" = "GDK_"
@@ -87,7 +87,7 @@ type visual_type "gdkVisualType" = "GDK_VISUAL_"
   [ `STATIC_GRAY | `GRAYSCALE | `STATIC_COLOR | `PSEUDO_COLOR
   | `TRUE_COLOR | `DIRECT_COLOR ]
 
-type gdkFontType = "GDK_FONT_"
+type font_type = "GDK_FONT_"
   [ `FONT | `FONTSET ]
 
 type drag_action "gdkDragAction" = "GDK_ACTION_"

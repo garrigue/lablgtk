@@ -2,6 +2,8 @@ $Id$
 
 2003.06.19 [Jacques]
   * Add GData.clipboard.
+  * Properties for GtkCellRenderer.
+  * Towards canvas properties.
 
 2003.06.18 [Jacques]
   * Massive change: generate properties automatically.

@@ -438,7 +438,7 @@ class ProgressBar : Widget {
 
 class Adjustment : Object {}
 
-class CellRenderer : Object {
+class CellRenderer vset : Object {
   "cell-background"      gchararray           : Write
   "cell-background-gdk"  GdkColor             : Read / Write
   "cell-background-set"  gboolean             : Read / Write
@@ -454,16 +454,16 @@ class CellRenderer : Object {
   "ypad"                 guint                : Read / Write
 }
 
-class CellRendererPixbuf : CellRenderer {
+class CellRendererPixbuf vset : CellRenderer {
   "pixbuf"               GdkPixbuf            : Read / Write
-  "pixbuf-expander-closed" GdkPixbuf            : Read / Write
+  "pixbuf-expander-closed" GdkPixbuf          : Read / Write
   "pixbuf-expander-open" GdkPixbuf            : Read / Write
   "stock-detail"         gchararray           : Read / Write
   "stock-id"             gchararray           : Read / Write
   "stock-size"           GtkIconSize          : Read / Write
 }
 
-class CellRendererText : CellRenderer {
+class CellRendererText vset : CellRenderer {
   "attributes"           PangoAttrList        : Read / Write
   "background"           gchararray           : Write
   "background-gdk"       GdkColor             : Read / Write
@@ -500,7 +500,7 @@ class CellRendererText : CellRenderer {
   "weight-set"           gboolean             : Read / Write
 }
 
-class CellRendererToggle : CellRenderer {
+class CellRendererToggle vset : CellRenderer {
   "activatable"          gboolean             : Read / Write
   "active"               gboolean             : Read / Write
   "inconsistent"         gboolean             : Read / Write
