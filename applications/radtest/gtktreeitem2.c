@@ -111,7 +111,7 @@ gtk_tree_item2_get_type (void)
     {
       static const GtkTypeInfo tree_item_info =
       {
-	"GtkTreeItem2",
+	"GtkTreeItem",
 	sizeof (GtkTreeItem2),
 	sizeof (GtkTreeItem2Class),
 	(GtkClassInitFunc) gtk_tree_item2_class_init,

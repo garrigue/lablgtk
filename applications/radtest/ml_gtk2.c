@@ -16,29 +16,17 @@
 #include "gtktree2.h"
 #include "gtktreeitem2.h"
 
+#include <stdio.h>
 
-/* conversion functions */
+value Val_GtkObject_sink (GtkObject *);
 
-lookup_info ml_table_selection_mode[4];
-
-#define Selection_mode_val(key) ml_lookup_to_c (ml_table_selection_mode, key)
-lookup_info ml_table_tree_view_mode[2];
-#define Tree_view_mode_val(key) ml_lookup_to_c (ml_table_tree_view_mode, key)
-
-/* gtkobject.h */
-/*
-Make_Val_final_pointer(GtkObject, , gtk_object_ref, gtk_object_unref)
-
-#define gtk_object_ref_and_sink(w) (gtk_object_ref(w), gtk_object_sink(w))
-Make_Val_final_pointer(GtkObject, _sink , gtk_object_ref_and_sink,
-		       gtk_object_unref)
-*/
 #define Val_GtkAny(w) Val_GtkObject((GtkObject*)w)
 #define Val_GtkAny_sink(w) Val_GtkObject_sink((GtkObject*)w)
 
 #define GtkWidget_val(val) check_cast(GTK_WIDGET,val)
 
 /* gtkwidget.h */
+
 
 #define Val_GtkWidget Val_GtkAny
 #define Val_GtkWidget_sink Val_GtkAny_sink
@@ -67,15 +55,16 @@ ML_2 (gtk_tree2_select_child, GtkTree2_val, GtkWidget_val, Unit)
 ML_2 (gtk_tree2_unselect_child, GtkTree2_val, GtkWidget_val, Unit)
 ML_2 (gtk_tree2_child_position, GtkTree2_val, GtkWidget_val, Val_int)
 
-
+/*
 ML_2 (gtk_tree2_set_selection_mode, GtkTree2_val, Selection_mode_val, Unit)
 ML_2 (gtk_tree2_set_view_mode, GtkTree2_val, Tree_view_mode_val, Unit)
-
+*/
 
 ML_2 (gtk_tree2_set_view_lines, GtkTree2_val, Bool_val, Unit)
 ML_2 (gtk_tree2_item_up, GtkTree2_val, Int_val, Unit)
-ML_3 (gtk_tree2_select_next_child, GtkTree2_val, GtkTreeItem2_val, Bool_val, Unit)
-ML_2 (gtk_tree2_select_prev_child, GtkTree2_val, GtkTreeItem2_val, Unit)
+ML_3 (gtk_tree2_select_next_child, GtkTree2_val, GtkWidget_val, Bool_val, Unit)
+ML_2 (gtk_tree2_select_prev_child, GtkTree2_val, GtkWidget_val, Unit)
+
 static value val_gtkany (gpointer p) { return Val_GtkAny(p); }
 value ml_gtk_tree2_selection (value tree)
 {
@@ -96,3 +85,29 @@ value ml_gtk_tree2_children (value tree)
   return Val_GList(children, val_gtkany);
 }
 
+
+
+#define GtkToolbar_val(val) check_cast(GTK_TOOLBAR,val)
+value ml_gtk_toolbar2_set_text (value toolbar, value text, value pos)
+{
+  GtkToolbar *t = GtkToolbar_val(toolbar);
+  gpointer ch = g_list_nth_data (t->children, Int_val(pos));
+  gtk_label_set_text (GTK_LABEL(((GtkToolbarChild *)ch)->label),
+		      String_val(text));
+  return Val_unit;
+}
+
+value ml_gtk_toolbar2_set_icon (value toolbar, value icon, value pos)
+{
+  GtkToolbar *t = GtkToolbar_val(toolbar);
+  GtkToolbarChild * ch =
+    (GtkToolbarChild *)g_list_nth_data (t->children, Int_val(pos));
+  GtkWidget *vbox = GTK_BIN(ch->widget)->child;
+  gtk_container_remove (GTK_CONTAINER(vbox), ch->icon);
+  ch->icon = GtkWidget_val(icon);
+  gtk_box_pack_end (GTK_BOX (vbox), ch->icon, FALSE, FALSE, 0);
+  if (t->style != GTK_TOOLBAR_TEXT)
+    gtk_widget_show (ch->icon);
+  
+  return Val_unit;
+}

@@ -58,18 +58,22 @@ module Tree = struct
       = "ml_gtk_tree2_unselect_item"
   external child_position : [>`tree] obj -> [>`treeitem] obj -> int
       = "ml_gtk_tree2_child_position"
-  external set_selection_mode : [>`tree] obj -> selection_mode -> unit
+(*  external set_selection_mode : [>`tree] obj -> selection_mode -> unit
       = "ml_gtk_tree2_set_selection_mode"
   external set_view_mode : [>`tree] obj -> [`LINE|`ITEM] -> unit
       = "ml_gtk_tree2_set_view_mode"
+*)
   external set_view_lines : [>`tree] obj -> bool -> unit
       = "ml_gtk_tree2_set_view_lines"
   external selection : [>`tree] obj -> tree_item obj list =
     "ml_gtk_tree2_selection"
+  external item_up : [>`tree] obj -> int -> unit =
+    "ml_gtk_tree2_item_up"
+
   let set ?selection_mode ?view_mode ?view_lines w =
     let may_set f = may ~f:(f w) in
-    may_set set_selection_mode selection_mode;
-    may_set set_view_mode view_mode;
+(*    may_set set_selection_mode selection_mode;
+    may_set set_view_mode view_mode; *)
     may_set set_view_lines view_lines
   module Signals = struct
     open GtkSignal

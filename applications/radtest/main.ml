@@ -5,7 +5,7 @@ open Gtk
 open GObj
 
 open Utils
-open Treew
+open TiBase
 
 let main_project_modify = ref false
 
@@ -162,7 +162,7 @@ class project () =
 
     method paste () =
       let lexbuf = Lexing.from_string !window_selection in
-      let node = Wpaste_parser.window Wpaste_lexer.token lexbuf in
+      let node = Load_parser.window Load_lexer.token lexbuf in
       self#add_window_by_node node
 
     method emit () =
@@ -238,7 +238,8 @@ let xpm_window () =
   let vbox = GPack.vbox ~packing:window#add () in
   let table = GPack.table ~rows:1 ~columns:5 ~border_width:20
       ~packing:vbox#pack () in
-  let add_xpm ~file ~left ~top =
+  let tooltips = GData.tooltips () in
+  let add_xpm ~file ~left ~top ~tip =
     let gdk_pix = GDraw.pixmap_from_xpm ~file ~window () in
     let ev = GBin.event_box ~packing:(table#attach ~left ~top) () in
     let pix = GMisc.pixmap gdk_pix ~packing:ev#add () in
@@ -249,37 +250,53 @@ let xpm_window () =
 	      !main_project#add_window ~name:(make_new_name "window") ()
 	    end;
 	    true
-	| _ -> false) in
-  add_xpm ~file:"window.xpm" ~left:0 ~top:0;
+	| _ -> false);
+    tooltips#set_tip ev#coerce ~text:tip
+  in
+  add_xpm ~file:"window.xpm" ~left:0 ~top:0 ~tip:"window";
   GMisc.separator `HORIZONTAL ~packing:vbox#pack ();
-  let table = GPack.table ~rows:3 ~columns:4 ~packing:vbox#pack
+  let table = GPack.table ~rows:5 ~columns:6 ~packing:vbox#pack
       ~row_spacings:20 ~col_spacings:20 ~border_width:20 () in
-  let add_xpm ~file ~left ~top ~classe =
+  let add_xpm file ~left ~top ~classe =
     let gdk_pix = GDraw.pixmap_from_xpm ~file ~window () in
     let ev = GBin.event_box ~packing:(table#attach ~left ~top) () in
     let pix = GMisc.pixmap gdk_pix ~packing:ev#add () in
     ev#drag#source_set ~modi:[`BUTTON1] targets ~actions:[`COPY];
     ev#drag#source_set_icon ~colormap:window#misc#style#colormap 
       gdk_pix; 
-    ev#connect#drag#data_get ~callback:(source_drag_data_get classe) in
+    ev#connect#drag#data_get ~callback:(source_drag_data_get classe);
+    tooltips#set_tip ev#coerce ~text:classe
+  in
   
-  add_xpm ~file:"button.xpm"         ~left:0 ~top:0 ~classe:"button";
-  add_xpm ~file:"togglebutton.xpm"   ~left:1 ~top:0 ~classe:"toggle_button";
-  add_xpm ~file:"checkbutton.xpm"    ~left:2 ~top:0 ~classe:"check_button";
-  add_xpm ~file:"hbox.xpm"           ~left:0 ~top:1 ~classe:"hbox";
-  add_xpm ~file:"vbox.xpm"           ~left:1 ~top:1 ~classe:"vbox";
-  add_xpm ~file:"frame.xpm"          ~left:2 ~top:1 ~classe:"frame";
-  add_xpm ~file:"scrolledwindow.xpm" ~left:3 ~top:1 ~classe:"scrolled_window";
-  add_xpm ~file:"hseparator.xpm"     ~left:0 ~top:2 ~classe:"hseparator";
-  add_xpm ~file:"vseparator.xpm"     ~left:1 ~top:2 ~classe:"vseparator";
-  add_xpm ~file:"label.xpm"          ~left:2 ~top:2 ~classe:"label";
-  add_xpm ~file:"entry.xpm"          ~left:3 ~top:2 ~classe:"entry";
+  add_xpm "button.xpm"         ~left:0 ~top:0 ~classe:"button";
+  add_xpm "togglebutton.xpm"   ~left:1 ~top:0 ~classe:"toggle_button";
+  add_xpm "checkbutton.xpm"    ~left:2 ~top:0 ~classe:"check_button";
+  add_xpm "radiobutton.xpm"    ~left:3 ~top:0 ~classe:"radio_button";
+  add_xpm "toolbar.xpm"        ~left:4 ~top:0 ~classe:"toolbar";
+  add_xpm "hbox.xpm"           ~left:0 ~top:1 ~classe:"hbox";
+  add_xpm "vbox.xpm"           ~left:1 ~top:1 ~classe:"vbox";
+  add_xpm "frame.xpm"          ~left:0 ~top:2 ~classe:"frame";
+  add_xpm "aspectframe.xpm"   ~left:1 ~top:2 ~classe:"aspect_frame";
+  add_xpm "scrolledwindow.xpm" ~left:2 ~top:2 ~classe:"scrolled_window";
+  add_xpm "eventbox.xpm"      ~left:3 ~top:2 ~classe:"event_box";
+  add_xpm "handlebox.xpm"     ~left:4 ~top:2 ~classe:"handle_box";
+  add_xpm "viewport.xpm"       ~left:5 ~top:2 ~classe:"viewport";
+  add_xpm "hseparator.xpm"     ~left:0 ~top:3 ~classe:"hseparator";
+  add_xpm "vseparator.xpm"     ~left:1 ~top:3 ~classe:"vseparator";
+  add_xpm "label.xpm"          ~left:0 ~top:4 ~classe:"label";
+  add_xpm "statusbar.xpm"      ~left:1 ~top:4 ~classe:"statusbar";
+  add_xpm "notebook.xpm"       ~left:2 ~top:4 ~classe:"notebook";
+  add_xpm "entry.xpm"          ~left:3 ~top:4 ~classe:"entry";
+  add_xpm "spinbutton.xpm"    ~left:4 ~top:4 ~classe:"spin_button";
+  add_xpm "combo.xpm"          ~left:5 ~top:4 ~classe:"combo";
 
   window#show ();
   window
 
 
 let main () =
+  GtkBase.Rc.add_default_file "gtkrc";
+  let _ = GMain.Main.init () in
   let prop_win = Propwin.init () in
   let xpm_win = xpm_window () in
   main_window#show ();

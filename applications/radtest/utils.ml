@@ -109,6 +109,21 @@ let message s =
 
 let message_name () = message "name already in use\npick a new name"
 
+(* better: use a spin button *)
+let get_a_number s default=
+  let res = ref default in
+  let w = GWindow.window ~show:true ~modal:true () in
+  let v = GPack.vbox ~packing:w#add () in
+  let l = GMisc.label ~text:s ~packing:v#add () in
+  let e = GEdit.entry ~text:(string_of_int default) ~packing:v#add () in
+  let b = GButton. button ~label:"OK" ~packing:v#add () in
+  b#connect#clicked ~callback:(fun () ->
+    begin try res := int_of_string e#text with Failure _ -> () end;
+    w#destroy ());
+  w#connect#destroy ~callback:GMain.Main.quit;
+  GMain.Main.main ();
+  !res
+
 
 (*************** file selection *****************)
 
@@ -193,3 +208,41 @@ let last_action_was_undo = ref false
 let add_undo f =
   undo_info := f :: !undo_info;
   last_action_was_undo := false
+
+
+(**********************************************************)
+let ftrue f = fun x -> f x; true
+
+
+(**********************************************************)
+
+let toolbar_child_prop kind =
+  let rt = ref "" and rtt = ref "" and rptt = ref "" and ok = ref false in
+  let w  = GWindow.window ~modal:true () in
+  let v  = GPack.vbox ~packing:w#add () in
+  let h1 = GPack.hbox ~packing:v#pack () in
+  let h2 = GPack.hbox ~packing:v#pack () in
+  let h3 = GPack.hbox ~packing:v#pack () in
+  let h4 = GPack.hbox ~packing:v#pack () in
+  let l1 = GMisc.label ~text:"text" ~packing:h1#pack () in
+  let e1 = GEdit.entry ~packing:h1#pack () in
+  let l2 = GMisc.label ~text:"tooltip_text" ~packing:h2#pack () in
+  let e2 = GEdit.entry ~packing:h2#pack () in
+  let l3 = GMisc.label ~text:"private_text" ~packing:h3#pack () in
+  let e3 = GEdit.entry ~packing:h3#pack () in
+  let b1 = GButton.button ~label:"OK" ~packing:h4#pack () in
+  let b2 = GButton.button ~label:"Cancel" ~packing:h4#pack () in
+  w#show ();
+  b1#connect#clicked
+    ~callback:(fun () -> rt := e1#text; rtt := e2#text;
+      rptt := e3#text; ok := true;
+      w#destroy ());
+  b2#connect#clicked ~callback:w#destroy;
+  w#connect#destroy ~callback:GMain.Main.quit;
+  GMain.Main.main ();
+  !ok, !rt, !rtt, !rptt
+
+
+
+
+
