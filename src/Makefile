@@ -29,16 +29,20 @@ include config.make
 INSTALLDIR = $(LIBDIR)/lablgtk
 LABLGLDIR = $(LIBDIR)/lablGL
 
+MLLIBS = lablgtk.cma
+CLIBS = liblablgtk.a
+MLLINK = unix.cma str.cma
+
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
-DBLINK = -cclib -lcamlrund
+MLLINK += -cclib -lcamlrund
 MLFLAGS = -g
 else
 CFLAGS = -O -DGTK_NO_CHECK_CASTS -DGTK_DISABLE_COMPAT_H $(GTKCFLAGS)
 endif
 
 THFLAGS = -thread
-THLIBS = unix.cma threads.cma
+THLINK = unix.cma threads.cma
 
 ifdef USE_CC
 CCOMPILER = $(CC) -c -I$(LIBDIR) $(CFLAGS)
@@ -48,12 +52,18 @@ endif
 
 ifdef USE_GL
 MLFLAGS += -I $(LABLGLDIR)
-GLLINK = -I $(LABLGLDIR) lablgl.cma -cclib -lgtkgl
+MLLINK += lablgl.cma
+MLLIBS += lablgtkgl.cma
+CLIBS += liblablgtkgl.a
+GLLINK = -cclib -llablgtkgl -cclib -lgtkgl
 GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.o
+
 endif
 
 ifdef USE_GNOME
+MLLIBS += lablgnome.cma
+CLIBS += liblablgnome.a
 GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo
 GNOMECOBJS = ml_gtkxmhtml.o
 endif
@@ -74,7 +84,7 @@ endif
 	./var2conv < $< > $@
 
 # Targets
-COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o $(GLCOBJS) $(GNOMECOBJS)
+COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o
 MLOBJS = gaux.cmo gpointer.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
@@ -83,19 +93,19 @@ MLOBJS = gaux.cmo gpointer.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
 	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gBin.cmo \
-	gEdit.cmo gRange.cmo gUtil.cmo $(GLMLOBJS) $(GNOMEMLOBJS)
+	gEdit.cmo gRange.cmo gUtil.cmo
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
-ALLOBJS = $(MLOBJS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
+ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(THOBJS) \
+	$(INITOBJS) $(THINITOBJS)
 
-lablgtktop: liblablgtk.a lablgtk.cma $(INITOBJS)
-	$(TOPLEVEL) -custom -o $@ unix.cma str.cma $(GLLINK) \
-		-ccopt -L. lablgtk.cma $(INITOBJS)
+lablgtktop: $(CLIBS) $(MLLIBS) $(INITOBJS)
+	$(TOPLEVEL) -o $@ $(MLLINK) -ccopt -L. $(MLLIBS) $(INITOBJS)
 
-lablgtktop_t: liblablgtk.a lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS)
-	$(TOPLEVEL) -custom $(THFLAGS) -o $@ $(THLIBS) str.cma $(GLLINK) \
-	   -ccopt -L. lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS)
+lablgtktop_t: $(CLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
+	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
+	   -ccopt -L. $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
 lablgtk: Makefile config.make lablgtk.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
@@ -104,37 +114,54 @@ lablgtk: Makefile config.make lablgtk.in
 	    < lablgtk.in > $@
 	chmod 755 $@
 
-lablgtkrun: liblablgtk.a lablgtk.cma
-	$(LINKER) -o $@ -make-runtime unix.cma str.cma $(GLLINK) \
-		-ccopt -L. lablgtk.cma
+lablgtkrun: $(CLIBS) $(MLLIBS)
+	$(LINKER) -o $@ -make-runtime $(MLLINK) -ccopt -L. $(MLLIBS)
 
-lablgtkopt: liblablgtk.a lablgtk.cmxa gtkInit.cmx gtkThread.cmx
+lablgtkopt: $(CLIBS) $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \
+	$(THOBJS:.cmo=.cmx)
 
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(ALLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp *.mli $(INSTALLDIR)
 	cp $(ALLOBJS:.cmo=.ml) $(INSTALLDIR)
-	cp lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
-	cp liblablgtk.a $(INSTALLDIR)
+	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
+	cp $(CLIBS) $(INSTALLDIR)
 	cp lablgtktop  lablgtktop_t $(INSTALLDIR)
 	cp lablgtk lablgtkrun $(BINDIR)
 	if test -f lablgtk.cmxa; then \
-	   cp lablgtk.cmxa lablgtk.a gtkInit.cmx gtkInit.o $(INSTALLDIR); fi
+	   cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.a) \
+	      $(INITOBJS:.cmo=.cmx) $(INITOBJS:.cmo=.o) $(INSTALLDIR); fi
 	if test -f gtkThread.cmx; then \
-	   cp gtkThread.cmx gtkThread.o $(INSTALLDIR); fi
+	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=.o) $(INSTALLDIR); fi
 
 liblablgtk.a: $(COBJS)
 	ar rc $@ $(COBJS)
 	$(RANLIB) $@
-
 lablgtk.cma: $(MLOBJS)
 	$(LINKER) -a -custom -o $@ $(MLOBJS) \
 	  -cclib -llablgtk $(GTKLIBS)
-
 lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \
 	  -cclib -llablgtk $(GTKLIBS)
+
+liblablgtkgl.a: $(GLCOBJS)
+	ar rc $@ $(GLCOBJS)
+	$(RANLIB) $@
+lablgtkgl.cma: $(GLMLOBJS)
+	$(LINKER) -a -custom -o $@ $(GLLINK) $(GLMLOBJS)
+lablgtkgl.cmxa: $(GLMLOBJS:.cmo=.cmx)
+	$(LINKOPT) -a -o $@ $(GLLINK) $(GLMLOBJS:.cmo=.cmx)
+
+liblablgnome.a: $(GNOMECOBJS)
+	ar rc $@ $(GNOMECOBJS)
+	$(RANLIB) $@
+lablgnome.cma: $(GNOMEMLOBJS)
+	$(LINKER) -a -custom -o $@ $(GNOMEMLOBJS) \
+	  -cclib -llablgnome $(GNOMELIBS)
+lablgnome.cmxa: $(GNOMEMLOBJS:.cmo=.cmx)
+	$(LINKOPT) -a -o $@ $(GNOMEMLOBJS:.cmo=.cmx) \
+	  -cclib -llablgnome $(GNOMELIBS)
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
