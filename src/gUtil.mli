@@ -19,20 +19,18 @@ class ['a] memo : unit ->
 
 (* To add ML signals to an object:
 
-   class mywidget_signals obj ?:after :signals =
-     let mysignal1, mysignal2 : t1 signal * t2 signal = signals in
-     object
-       inherit somewidget obj ?:after
-       method mysignal1 = mysignal1#connect ?:after
-       method mysignal2 = mysignal2#connect ?:after
-     end
+   class mywidget_signals obj :mysignal1 :mysignal2 ?:after = object
+     inherit somewidget_signals obj ?:after
+     method mysignal1 = mysignal1#connect ?:after
+     method mysignal2 = mysignal2#connect ?:after
+   end
 
    class mywidget obj = object (self)
      inherit somewidget obj
      inherit has_ml_signals obj
      val mysignal1 = new signal
      val mysignal2 = new signal
-     method connect = new mywidget_signals ?obj
+     method connect = new mywidget_signals ?obj ?:mysignal1 ?:mysignal2
      method call1 = mysignal1#call
      method call2 = mysignal2#call
      initializer
@@ -53,11 +51,7 @@ class ['a] signal :
     method disconnect : GtkSignal.id -> bool
     method reset : unit -> unit
   end
-class type disconnector =
-  object
-    method disconnect : GtkSignal.id -> bool
-    method reset : unit -> unit
-  end
+
 class has_ml_signals : 'a Gtk.obj ->
   object
     method private add_signal : 'b signal -> unit
