@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open Gaux
 open Gobject
 
 type context = [`pangocontext] obj
@@ -54,12 +55,46 @@ module Tags = struct
 end
 
 module Font = struct
+  open Tags
   external from_string : string -> font_description = 
     "ml_pango_font_description_from_string"
   external to_string : font_description -> string = 
     "ml_pango_font_description_to_string"
   external copy : font_description -> font_description = 
     "ml_pango_font_description_copy"
+  external set_family : font_description -> string -> unit =
+    "ml_pango_font_description_set_family"
+  external get_family : font_description -> string =
+    "ml_pango_font_description_get_family"
+  external set_style : font_description -> style -> unit =
+    "ml_pango_font_description_set_style"
+  external get_style : font_description -> style =
+    "ml_pango_font_description_get_style"
+  external set_variant : font_description -> variant -> unit =
+    "ml_pango_font_description_set_variant"
+  external get_variant : font_description -> variant =
+    "ml_pango_font_description_get_variant"
+  external set_weight : font_description -> int -> unit =
+    "ml_pango_font_description_set_weight"
+  let set_weight fd w = set_weight fd (weight_to_int w)
+  external get_weight : font_description -> int =
+    "ml_pango_font_description_get_weight"
+  external set_stretch : font_description -> stretch -> unit =
+    "ml_pango_font_description_set_stretch"
+  external get_stretch : font_description -> stretch =
+    "ml_pango_font_description_get_stretch"
+  external set_size : font_description -> int -> unit =
+    "ml_pango_font_description_set_size"
+  external get_size : font_description -> int =
+    "ml_pango_font_description_get_size"
+  let modify fd ?family ?style ?variant ?weight ?stretch ?size () =
+    let may_set set_x x = may x ~f:(set_x fd) in
+    may_set set_family family;
+    may_set set_style style;
+    may_set set_stretch stretch;
+    may_set set_variant variant;
+    may_set set_weight weight;
+    may_set set_size size
 
   external get_metrics : font -> language -> font_metrics =
     "ml_pango_font_get_metrics"

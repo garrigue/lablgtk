@@ -1,5 +1,9 @@
 $Id$
 
+2003.06.06 [Jacques]
+  * new #misc#get_flag to get misc widget info
+  * font_desc handling in Pango
+
 2003.06.04 [Jacques]
   * GtkDialog cleanup
   * add applications/osiris (just started)
