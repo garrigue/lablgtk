@@ -1,5 +1,8 @@
 $Id$
 
+2002.07.04
+  * add rpm spec (Ben Martin)
+
 2002.07.01
   * add GdkPixbuf support
 
