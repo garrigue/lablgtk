@@ -281,16 +281,17 @@ class buffer obj = object(self)
 	end
   method insert_interactive ?iter ?(default_editable = true) text = 
     match iter with
-      | None -> 
-	  Buffer.insert_interactive_at_cursor obj text default_editable
-      | Some iter -> 
-	  Buffer.insert_interactive obj iter text default_editable
-  method insert_range ~iter ~start ~stop () = 
-    Buffer.insert_range obj iter start stop
+    | None -> 
+	Buffer.insert_interactive_at_cursor obj text default_editable
+    | Some iter -> 
+	Buffer.insert_interactive obj (as_textiter iter) text default_editable
+  method insert_range ~iter ~start ~stop = 
+    Buffer.insert_range obj
+      (as_textiter iter) (as_textiter start) (as_textiter stop)
   method insert_range_interactive ~iter ~start ~stop
       ?(default_editable = true) () = 
-    Buffer.insert_range_interactive obj iter start stop
-      default_editable
+    Buffer.insert_range_interactive obj (as_textiter iter) (as_textiter start)
+      (as_textiter stop)  default_editable
   method delete ~start ~stop = Buffer.delete obj (as_textiter start) 
 				 (as_textiter stop)
   method delete_interactive ~start ~stop ?(default_editable = true) () = 
@@ -357,7 +358,9 @@ class buffer obj = object(self)
   method set_modified setting = Buffer.set_modified  obj setting
   method delete_selection ?(interactive=true) ?(default_editable=true) () = 
     Buffer.delete_selection obj interactive default_editable
-  method get_selection_bounds = Buffer.get_selection_bounds obj
+  method get_selection_bounds =
+    let start, stop = Buffer.get_selection_bounds obj in
+    (new iter start, new iter stop)
   method begin_user_action () = Buffer.begin_user_action obj
   method end_user_action () = Buffer.end_user_action obj
   method create_child_anchor (iter:iter) = 

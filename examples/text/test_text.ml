@@ -97,14 +97,14 @@ let t_8 () =
   let _ = tb#connect#apply_tag 
 	    ~callback:(fun tag ~start ~stop ->   
 			 Printf.printf "Apply_tag has :\"%s\"\n"
- 			 (tb#get_text ~include_hidden_chars:true ~start ~stop ());
+ 			 (tb#get_text ~include_hidden:true ~start ~stop ());
 			 flush stdout
 		      ) 
   in
   let _ = tb#connect#delete_range 
 	    ~callback:(fun ~start ~stop ->   
 			 Printf.printf "delete_range_tag has :\"%s\"\n"
- 			 (tb#get_text ~include_hidden_chars:true ~start ~stop ());
+ 			 (tb#get_text ~include_hidden:true ~start ~stop ());
 			 flush stdout
 		      ) 
   in
@@ -126,7 +126,7 @@ let t_8 () =
     tb#create_tag [`BACKGROUND "red"; `FOREGROUND "blue"; `EDITABLE false] in
 
   Printf.printf "Je vois :\"%s\"\n"
-    (tb#get_text ~include_hidden_chars:true ~start ~stop ());
+    (tb#get_text ~include_hidden:true ~start ~stop ());
   flush stdout;
   w#show ();;
 
@@ -143,7 +143,7 @@ let t_9 () =
       let start = tb#get_start_iter in
       let stop = tb#get_end_iter in
 	Printf.printf "Je vois :\"%s\"\n"
- 	  (tb#get_text ~include_hidden_chars:true ~start ~stop ());
+ 	  (tb#get_text ~include_hidden:true ~start ~stop ());
 	flush stdout;
 	w#show ();;
 
@@ -163,7 +163,7 @@ let t_10 () =
 			     let start = tb#get_start_iter in
 			     let stop = tb#get_end_iter in
 			       Printf.printf "Dans cette action je vois :\"%s\"\n"
- 				 (tb#get_text ~include_hidden_chars:true ~start ~stop ());
+ 				 (tb#get_text ~include_hidden:true ~start ~stop ());
 			  flush stdout) in 
 	tb#begin_user_action ();
 	tb#end_user_action ();
