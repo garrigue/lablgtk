@@ -1,8 +1,5 @@
 (* $Id$ *)
 
-open GtkObj
-open GtkExt
-
 (* The game logic *)
 
 type color = [none white black]
@@ -65,15 +62,17 @@ end
 
 (* GUI *)
 
+open GMain
+
 (* Toplevel window *)
 
-let window = new_window `TOPLEVEL title:"pousse"
+let window = new GWin.window `TOPLEVEL title:"pousse"
 
 (* Create pixmaps *)
 
-let pixdraw = new pixdraw parent:window width:40 height:40
-let pixdraw1 = new pixdraw parent:window width:40 height:40
-let pixdraw2 = new pixdraw parent:window width:40 height:40
+let pixdraw = new GPix.pixdraw parent:window width:40 height:40
+let pixdraw1 = new GPix.pixdraw parent:window width:40 height:40
+let pixdraw2 = new GPix.pixdraw parent:window width:40 height:40
 
 let _ =
   pixdraw1#set foreground:`BLACK;
@@ -85,15 +84,15 @@ let _ =
 
 (* The cell class: a button with a pixmap on it *)
 
-class cell () = object (self)
-  inherit button_create ()
+class cell ?:packing = object (self)
+  inherit GButton.button ?:packing
   val mutable color : color = `none
-  val pm = new_pixdraw pixdraw
+  val pm = GPix.new_pixdraw pixdraw
   method color = color
   method set_color col =
     if col <> color then begin
       color <- col;
-      set_pixdraw pm
+      GPix.set_pixdraw pm
 	(match col with `none -> pixdraw
 	| `black -> pixdraw1
 	| `white -> pixdraw2)
@@ -116,14 +115,14 @@ module RealBoard = Board (
 
 open RealBoard
 
-class game frame:(frame : #container) label:(label : #label)
-    statusbar:(bar : #statusbar) =
+class game frame:(frame : #GCont.container) label:(label : #GMisc.label)
+    statusbar:(bar : #GMisc.statusbar) =
 object (self)
   val cells =
     Array.init len:size
-      fun:(fun _ -> Array.init len:size fun:(fun _ -> new cell ()))
-  val table = new_table columns:size rows:size packing:frame#add
-  val label : #label = label
+      fun:(fun _ -> Array.init len:size fun:(fun _ -> new cell))
+  val table = new GPack.table columns:size rows:size packing:frame#add
+  val label = label
   val turn = bar#new_context name:"turn"
   val messages = bar#new_context name:"messages"
   val mutable current_color = `black
@@ -177,14 +176,14 @@ end
 
 (* Graphical elements *)
 
-let vbox = new_box `VERTICAL packing:window#add
-let frame = new_frame shadow_type:`IN packing:vbox#add
-let hbox = new_box `HORIZONTAL packing:(vbox#pack expand:false)
+let vbox = new GPack.box `VERTICAL packing:window#add
+let frame = new GWin.frame shadow_type:`IN packing:vbox#add
+let hbox = new GPack.box `HORIZONTAL packing:(vbox#pack expand:false)
 
-let bar = new_statusbar packing:hbox#add
+let bar = new GMisc.statusbar packing:hbox#add
 
-let frame2 = new_frame shadow_type:`IN packing:(hbox#pack expand:false)
-let label = new_label justify:`LEFT xpad:5 xalign:0.0 packing:frame2#add
+let frame2 = new GWin.frame shadow_type:`IN packing:(hbox#pack expand:false)
+let label = new GMisc.label justify:`LEFT xpad:5 xalign:0.0 packing:frame2#add
 
 let game = new game :frame :label statusbar:bar
 

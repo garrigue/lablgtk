@@ -57,17 +57,15 @@ endif
 
 # Targets
 COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o
-MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gtkObj.cmo gtkExt.cmo
-NEWMLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gUtil.cmo \
-	gObj.cmo gData.cmo gCont.cmo gBox.cmo gMenu.cmo gWin.cmo gTree.cmo
+OLDMLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gtkObj.cmo gtkExt.cmo
+MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gUtil.cmo \
+	gObj.cmo gMain.cmo gData.cmo gCont.cmo gPack.cmo gButton.cmo \
+	gMenu.cmo gWin.cmo gTree.cmo gMisc.cmo gDialog.cmo gList.cmo \
+	gEdit.cmo gPix.cmo gRange.cmo
 THOBJS = gtkThread.cmo threadObj.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
 	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" lablgtk.cma
-
-lablgtk2: liblablgtk.a lablgtk2.cma
-	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" \
-		lablgtk2.cma
 
 lablgtkopt: liblablgtk.a lablgtk.cmxa
 
@@ -77,9 +75,6 @@ liblablgtk.a: $(COBJS)
 
 lablgtk.cma: $(MLOBJS)
 	$(LINKER) -a -o $@ $(MLOBJS)
-
-lablgtk2.cma: $(NEWMLOBJS)
-	$(LINKER) -a -o $@ $(NEWMLOBJS)
 
 lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx)

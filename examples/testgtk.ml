@@ -1,13 +1,25 @@
-open GtkObj
+(* $Id$ *)
+
+open GMain
+open GData
+open GObj
+open GWin
+open GPack
+open GButton
+open GDialog
+open GMisc
+open GMenu
+open GEdit
+open GTree
 
 let create_bbox direction title spacing child_w child_h layout =
-  let frame = new_frame label: title in
-  let bbox = new_bbox direction border_width: 5 packing: frame#add 
+  let frame = new frame label: title in
+  let bbox = new button_box direction border_width: 5 packing: frame#add 
       layout: layout child_height: child_h child_width: child_w
       spacing: spacing in
-  new_button label: "OK"     packing: bbox#add;
-  new_button label: "Cancel" packing: bbox#add;
-  new_button label: "Help"   packing: bbox#add;
+  new button label: "OK"     packing: bbox#add;
+  new button label: "Cancel" packing: bbox#add;
+  new button label: "Help"   packing: bbox#add;
   frame
 
 let create_button_box =
@@ -15,27 +27,27 @@ let create_button_box =
   let aux () =
     match !rw with
     | None ->
-	let window = new_window `TOPLEVEL title: "Button Boxes"
+	let window = new window `TOPLEVEL title: "Button Boxes"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
 
-	let main_vbox = new_box `VERTICAL packing: (window#add) in
+	let main_vbox = new box `VERTICAL packing: (window#add) in
 
-	let frame_horz = new_frame label: "Horizontal Button Boxes"
+	let frame_horz = new frame label: "Horizontal Button Boxes"
 	    packing: (main_vbox#pack padding: 10) in
 	
-	let vbox = new_box `VERTICAL border_width: 10 packing: frame_horz#add in
+	let vbox = new box `VERTICAL border_width: 10 packing: frame_horz#add in
 	
 	vbox#pack (create_bbox `HORIZONTAL "Spread" 40 85 20 `SPREAD);
 	vbox#pack (create_bbox `HORIZONTAL "Edge"   40 85 20 `EDGE)  padding: 5;
 	vbox#pack (create_bbox `HORIZONTAL "Start"  40 85 20 `START) padding: 5;
 	vbox#pack (create_bbox `HORIZONTAL "End"    40 85 20 `END)   padding: 5;
 
-	let frame_vert = new_frame label: "Vertical Button Boxes"
+	let frame_vert = new frame label: "Vertical Button Boxes"
 	    packing: (main_vbox#pack padding: 10) in
 	
-	let hbox = new_box `HORIZONTAL border_width: 10
+	let hbox = new box `HORIZONTAL border_width: 10
 	    packing: frame_vert#add in
 	hbox#pack (create_bbox `VERTICAL "Spread" 30 85 20 `SPREAD);
 	hbox#pack (create_bbox `VERTICAL "Edge"   30 85 20 `EDGE)  padding: 5;
@@ -58,22 +70,22 @@ let create_buttons =
   let aux () =
     match !rw with
     | None ->
-	let window = new_window `TOPLEVEL title: "GtkButton"
+	let window = new window `TOPLEVEL title: "GtkButton"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
 
-	let box1 = new_box `VERTICAL packing:window#add in
+	let box1 = new box `VERTICAL packing:window#add in
 	box1 #show ();
 	
-	let table = new_table rows:3 columns:3 homogeneous:false 
+	let table = new table rows:3 columns:3 homogeneous:false 
 	    row_spacings:3 col_spacings:3 border_width:10
 	    packing:box1#pack in
 	table #show ();
 
-	let button = Array.create len:9 fill:(new_button label:"button1") in
+	let button = Array.create len:9 fill:(new button label:"button1") in
 	for i = 2 to 9 do
-	  button.(i-1) <- new_button label:("button" ^ (string_of_int i));
+	  button.(i-1) <- new button label:("button" ^ (string_of_int i));
 	  button.(i-1) #show ()
 	done;
 	button.(0) #show ();
@@ -94,15 +106,15 @@ let create_buttons =
 	table #attach button.(8) left:0 right:1 top:1 bottom:2
 	  xpadding:0 ypadding:0;
 
-	let separator = new_separator `HORIZONTAL in
+	let separator = new separator `HORIZONTAL in
 	box1 #pack separator expand: false;
 	separator #show ();
 	
-	let box2 = new_box `VERTICAL spacing: 10 border_width: 10 in
+	let box2 = new box `VERTICAL spacing: 10 border_width: 10 in
 	box1 #pack box2 expand: false;
 	box2 #show ();
 
-	let button = new_button label: "close" packing:box2#pack in
+	let button = new button label: "close" packing:box2#pack in
 	button #connect#clicked callback: window#destroy;
 	button #grab_default ();
 	button #show ();
@@ -118,26 +130,26 @@ let create_check_buttons =
   let aux () =
     match !rw with
     | None ->
-	let window = new_window `TOPLEVEL title: "GtkCheckButton"
+	let window = new window `TOPLEVEL title: "GtkCheckButton"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
 
-	let box1 = new_box `VERTICAL packing:window#add in
-	let box2 = new_box `VERTICAL spacing: 10 border_width: 10
+	let box1 = new box `VERTICAL packing:window#add in
+	let box2 = new box `VERTICAL spacing: 10 border_width: 10
 	    packing:(box1#pack expand:false) in
 	
 	for i = 1 to 3 do
-	  new_check_button label:("button" ^ (string_of_int i))
+	  new check_button label:("button" ^ (string_of_int i))
 	    packing:box2#pack;
 	done;
 
-	new_separator `HORIZONTAL packing:(box1#pack expand:false);
+	new separator `HORIZONTAL packing:(box1#pack expand:false);
 	
-	let box2 = new_box `VERTICAL spacing:10 border_width:10
+	let box2 = new box `VERTICAL spacing:10 border_width:10
 	    packing:(box1#pack expand:false) in
 
-	let button = new_button label: "close" packing:box2#pack in
+	let button = new button label: "close" packing:box2#pack in
 	button #connect#clicked callback: window#destroy;
 	button #grab_default ();
 	window #show_all ()
@@ -151,30 +163,30 @@ let create_radio_buttons =
   let aux () =
     match !rw with
     | None ->
-	let window = new_window `TOPLEVEL title: "radio buttons"
+	let window = new window `TOPLEVEL title: "radio buttons"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
 
-	let box1 = new_box `VERTICAL packing:window#add in
+	let box1 = new box `VERTICAL packing:window#add in
 	
-	let box2 = new_box `VERTICAL spacing:10 border_width:10 
+	let box2 = new box `VERTICAL spacing:10 border_width:10 
 	    packing: (box1#pack expand:false) in
 	
-	let button = new_radio_button label:"button1" packing:box2#pack in
+	let button = new radio_button label:"button1" packing:box2#pack in
 
-	let button = new_radio_button label:"button2" group:button#group
+	let button = new radio_button label:"button2" group:button#group
 	    packing: box2 #pack active:true in
 	
-	let button = new_radio_button label:"button3" group:button#group
+	let button = new radio_button label:"button3" group:button#group
 	    packing: box2#pack in
 
-	new_separator `HORIZONTAL packing:(box1#pack expand:false);
+	new separator `HORIZONTAL packing:(box1#pack expand:false);
 	
-	let box2 = new_box `VERTICAL spacing:10 border_width:10
+	let box2 = new box `VERTICAL spacing:10 border_width:10
 	    packing: (box1#pack expand:false) in
 
-	let button = new_button label:"close" packing:box2#pack in
+	let button = new button label:"close" packing:box2#pack in
 	button #connect#clicked callback: window #destroy;
 	button #grab_default ();
 	window #show_all ()
@@ -188,28 +200,28 @@ let create_toggle_buttons =
   let aux () =
     match !rw with
     | None ->
-	let window = new_window `TOPLEVEL title: "GtkToggleButton"
+	let window = new window `TOPLEVEL title: "GtkToggleButton"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
 
-	let box1 = new_box `VERTICAL packing:window#add in
+	let box1 = new box `VERTICAL packing:window#add in
 	
-	let box2 = new_box `VERTICAL spacing:10 border_width:10
+	let box2 = new box `VERTICAL spacing:10 border_width:10
 	packing:(box1#pack expand:false) in
 	
 	for i = 1 to 3 do
-	  new_toggle_button label:("button" ^ (string_of_int i))
+	  new toggle_button label:("button" ^ (string_of_int i))
 	    packing:box2#pack
 	done;
 
-	let separator = new_separator `HORIZONTAL in
+	let separator = new separator `HORIZONTAL in
 	box1 #pack separator expand: false;
 	
-	let box2 = new_box `VERTICAL spacing: 10 border_width: 10 in
+	let box2 = new box `VERTICAL spacing: 10 border_width: 10 in
 	box1 #pack box2 expand: false;
 
-	let button = new_button label: "close" in
+	let button = new button label: "close" in
 	button #connect#clicked callback: window#destroy;
 	box2 #pack button;
 	button #grab_default ();
@@ -223,14 +235,14 @@ in aux
 
 let create_menu depth tearoff =
   let rec aux depth tearoff =
-    let menu = new_menu () and group = ref None in
+    let menu = new menu and group = ref None in
     if tearoff then begin
-      let menuitem = new_tearoff_menu_item () in
+      let menuitem = new tearoff_item in
       menu #append menuitem;
       menuitem #show ()
     end;
     for i = 0 to 4 do
-      let menuitem = new_radio_menu_item ?group:!group
+      let menuitem = new radio_menu_item ?group:!group
 	  label:("item " ^ (string_of_int depth) ^ " - " ^
 		 (string_of_int (i+1))) in
       group := Some (menuitem #group);
@@ -252,7 +264,7 @@ let rw = ref None in
   let aux () =
     match !rw with
     | None ->
-	let window = new_window `TOPLEVEL title: "menus"
+	let window = new window `TOPLEVEL title: "menus"
 	    border_width: 0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
@@ -261,65 +273,65 @@ let rw = ref None in
 	let accel_group = Gtk.AccelGroup.create () in
 	window #add_accel_group accel_group  ;
 
-	let box1 = new_box `VERTICAL packing:window#add in
+	let box1 = new box `VERTICAL packing:window#add in
 	box1 #show ();
 
-	let menubar = new_menu_bar () packing:(box1#pack expand:false) in
+	let menubar = new menu_bar packing:(box1#pack expand:false) in
 	menubar #show ();
 
-	let menuitem = new_menu_item label:"test\nline2" in
+	let menuitem = new menu_item label:"test\nline2" in
 	menuitem #set_submenu (create_menu 2 true);
 	menubar #append menuitem;
 	menuitem #show ();
 
-	let menuitem = new_menu_item label:"foo" in
+	let menuitem = new menu_item label:"foo" in
 	menuitem #set_submenu (create_menu 3 true);
 	menubar #append menuitem;
 	menuitem #show ();
 
-	let menuitem = new_menu_item label:"bar" in
+	let menuitem = new menu_item label:"bar" in
 	menuitem #set_submenu (create_menu 4 true);
 	menuitem #right_justify ();
 	menubar #append menuitem;
 	menuitem #show ();
 
-	let box2 = new_box `VERTICAL spacing:10 packing:box1#pack
+	let box2 = new box `VERTICAL spacing:10 packing:box1#pack
 	    border_width:10 in
 	box2 #show ();
 
 	let menu = create_menu 1 false in
 	menu #set_accel_group accel_group;
 
-	let menuitem = new_check_menu_item label:"Accelerate Me" in
+	let menuitem = new check_menu_item label:"Accelerate Me" in
 	menu #append menuitem;
 	menuitem #show ();
 	menuitem #add_accelerator accel_group key:'M'
 	  flags:[`VISIBLE; `SIGNAL_VISIBLE];
 
-	let menuitem = new_check_menu_item label:"Accelerator Locked" in
+	let menuitem = new check_menu_item label:"Accelerator Locked" in
 	menu #append menuitem;
 	menuitem #show ();
 	menuitem #add_accelerator accel_group key:'L'
 	  flags:[`VISIBLE; `LOCKED];
 
-	let menuitem = new_check_menu_item label:"Accelerators Frozen" in
+	let menuitem = new check_menu_item label:"Accelerators Frozen" in
 	menu #append menuitem;
 	menuitem #show ();
 	menuitem #add_accelerator accel_group key:'F'
 	  flags:[`VISIBLE];
 	menuitem #misc#lock_accelerators ();
 
-	let optionmenu = new_option_menu () packing:box2#pack in
+	let optionmenu = new option_menu packing:box2#pack in
 	optionmenu #set_menu menu;
 	optionmenu #set_history 3;
 	optionmenu #show ();
 
-	(new_separator `HORIZONTAL packing:(box1#pack expand:false))#show ();
+	(new separator `HORIZONTAL packing:(box1#pack expand:false))#show ();
 
-	let box2 = new_box `VERTICAL spacing:10 border_width:10
+	let box2 = new box `VERTICAL spacing:10 border_width:10
 	    packing:(box1#pack expand:false) in
 
-	let button = new_button label: "close" packing:box2#pack in
+	let button = new button label: "close" packing:box2#pack in
 	button #connect#clicked callback: window#destroy;
 	button #grab_default ();
 	button #show ();
@@ -336,7 +348,7 @@ let cmw_destroy_cb _ =
   Main.quit ()
 
 let cmw_color parent _ =
-  let csd = new_color_selection_dialog
+  let csd = new color_selection_dialog
       title:"This is a modal color selection dialog" in
   csd #set_modal true;
   csd # set_transient_for parent;
@@ -347,7 +359,7 @@ let cmw_color parent _ =
   Main.main ()
 
 let cmw_file parent _ =
-  let fs = new_file_selection title:"This is a modal file selection dialog" in
+  let fs = new file_selection title:"This is a modal file selection dialog" in
   fs #set_modal true;
   fs # set_transient_for parent;
   fs # connect#destroy callback:cmw_destroy_cb;
@@ -357,18 +369,18 @@ let cmw_file parent _ =
   Main.main ()
 
 let create_modal_window () =
-  let window = new_window `TOPLEVEL modal:true title:"This window is modal" in
-  let box1 = new_box `VERTICAL spacing:5 border_width:3 packing:window#add in
-  let frame1 = new_frame () label:"Standard dialogs in modal form"
+  let window = new window `TOPLEVEL modal:true title:"This window is modal" in
+  let box1 = new box `VERTICAL spacing:5 border_width:3 packing:window#add in
+  let frame1 = new frame label:"Standard dialogs in modal form"
       packing:(box1#pack padding:4) in
-  let box2 = new_box `VERTICAL homogeneous:true spacing:5 packing:frame1#add in
-  let btnColor = new_button () label:"Color" 
+  let box2 = new box `VERTICAL homogeneous:true spacing:5 packing:frame1#add in
+  let btnColor = new button label:"Color" 
       packing:(box2#pack expand:false fill:false padding:4)
-  and btnFile = new_button () label:"File selection" 
+  and btnFile = new button label:"File selection" 
       packing:(box2#pack expand:false fill:false padding:4)
-  and btnClose = new_button () label:"Close" 
+  and btnClose = new button label:"Close" 
       packing:(box2#pack expand:false fill:false padding:4) in
-  new_separator `HORIZONTAL packing:(box1#pack expand:false fill:false padding:4);
+  new separator `HORIZONTAL packing:(box1#pack expand:false fill:false padding:4);
   
   btnClose #connect#clicked callback:(fun _ -> window #destroy ());
   window #connect#destroy callback:cmw_destroy_cb;
@@ -385,9 +397,9 @@ let scrolled_windows_remove, scrolled_windows_clean =
     match !parent with
     | None ->
 	parent :=
-	  begin try Some(new widget_full (scrollwin #misc#parent))
+	  begin try Some scrollwin#misc#parent
 	  with Not_found -> None end;
-	let f = new_window `TOPLEVEL title:"new parent" in
+	let f = new window `TOPLEVEL title:"new parent" in
 	float_parent := Some f;
 	f #set_default_size width:200 height:200;
 	scrollwin #misc#reparent f;
@@ -414,40 +426,40 @@ let create_scrolled_windows =
   let aux () =
     match !rw with
     | None ->
-	let window = new_dialog () title:"dialog" border_width:0 in
+	let window = new dialog title:"dialog" border_width:0 in
 	rw := Some window;
 	window #connect#destroy callback:(fun  _ -> rw := None);
 	window #connect#destroy callback:scrolled_windows_clean;
 
-	let scrolled_window = new_scrolled_window () border_width:10
+	let scrolled_window = new scrolled_window border_width:10
 	    hscrollbar_policy: `AUTOMATIC
 	    vscrollbar_policy:`AUTOMATIC
 	    packing: window#vbox#pack in
 	scrolled_window #show ();
 
-	let table = new_table rows:20 columns:20 row_spacings:10
+	let table = new table rows:20 columns:20 row_spacings:10
 	    col_spacings:10 in
 	scrolled_window #add_with_viewport table;
-	table #set_focus_hadjustment (scrolled_window # hadjustment);
-	table #set_focus_vadjustment (scrolled_window # vadjustment);
+	table #set_focus hadjustment:(scrolled_window # hadjustment)
+	  vadjustment:(scrolled_window # vadjustment);
 	table #show ();
 
 	for i = 0 to 19 do
 	  for j=0 to 19 do
-	    let button = new_toggle_button label:("button (" ^
+	    let button = new toggle_button label:("button (" ^
 	       (string_of_int i) ^ "," ^ (string_of_int j) ^ ")\n") in
 	    table #attach button left:i top:j;
 	    button #show ()
 	  done
 	done;
 
-	let button = new_button label:"close" in
+	let button = new button label:"close" in
 	button #connect#clicked callback:(window #destroy);
 	window #action_area #pack button;
 	button #grab_default ();
 	button #show ();
 
-	let button = new_button label:"remove" in
+	let button = new button label:"remove" in
 	button #connect#clicked
 	  callback:(scrolled_windows_remove scrolled_window);
 	window #action_area # pack button;
@@ -465,7 +477,7 @@ let create_scrolled_windows =
 
 let pixmap_new filename window background =
   let pixmap,mask = Gdk.Pixmap.create_from_xpm window file:filename in
-  new_pixmap pixmap :mask
+  new GPix.pixmap pixmap :mask
 
 let make_toolbar (toolbar : toolbar) (window : window) =
   let icon () = (pixmap_new "test.xpm" (window #misc#window)
@@ -504,7 +516,7 @@ let make_toolbar (toolbar : toolbar) (window : window) =
   
   toolbar #insert_space;
   
-  toolbar #insert_widget (new_entry ())
+  toolbar #insert_widget (new entry)
     tooltip:"This is an unusable GtkEntry"
     tooltip_private: "Hey don't click me!!!";
   
@@ -561,14 +573,14 @@ let create_toolbar =
   let aux () =
     match !rw with
     | None ->
-	let window = new_window `TOPLEVEL title: "Toolbar test"
+	let window = new window `TOPLEVEL title: "Toolbar test"
 	    border_width: 0 allow_shrink: false allow_grow: true
 	    auto_shrink: true in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
 	window #misc #realize ();
 	
-	let toolbar = new_toolbar `HORIZONTAL packing: window#add in
+	let toolbar = new toolbar packing: window#add in
 	make_toolbar toolbar window;
 	
 	window #show_all ()
@@ -588,48 +600,48 @@ let create_handle_box =
   let aux () =
     match !rw with
     | None ->
-	let window = new_window `TOPLEVEL title: "Handle box test"
+	let window = new window `TOPLEVEL title: "Handle box test"
 	    border_width: 20 allow_shrink: false allow_grow: true
 	    auto_shrink: true in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
 	window #misc #realize ();
 
-	let vbox = new_box `VERTICAL packing:window#add in
+	let vbox = new box `VERTICAL packing:window#add in
 
-	let label = new_label text:"Above" packing:vbox#pack in
-	new_separator `HORIZONTAL packing:vbox#pack;
+	let label = new label text:"Above" packing:vbox#pack in
+	new separator `HORIZONTAL packing:vbox#pack;
 
-	let hbox = new_box `HORIZONTAL spacing:10 packing:vbox#pack in
-	new_separator `HORIZONTAL packing:vbox#pack;
+	let hbox = new box `HORIZONTAL spacing:10 packing:vbox#pack in
+	new separator `HORIZONTAL packing:vbox#pack;
 
-	let label = new_label text:"Below" packing:vbox#pack in
-	let handle_box = new_handle_box ()
+	let label = new label text:"Below" packing:vbox#pack in
+	let handle_box = new handle_box
 	    packing:(hbox#pack expand:false fill:false) in
 	handle_box #connect#child_attached
 	  callback:(handle_box_child_signal "attached" handle_box);
 	handle_box #connect#child_detached
 	  callback:(handle_box_child_signal "detached" handle_box);
 
-	let toolbar = new_toolbar `HORIZONTAL in
+	let toolbar = new toolbar in
 	make_toolbar toolbar window;
 	toolbar #set_button_relief `NORMAL;
 	handle_box #add toolbar;
 
-	let handle_box = new_handle_box ()
+	let handle_box = new handle_box
 	    packing:(hbox#pack expand:false fill:false) in
 	handle_box #connect#child_attached
 	  callback:(handle_box_child_signal "attached" handle_box);
 	handle_box #connect#child_detached
 	  callback:(handle_box_child_signal "detached" handle_box);
 
-	let handle_box2 = new_handle_box () packing:handle_box#add in
+	let handle_box2 = new handle_box packing:handle_box#add in
 	handle_box2 #connect#child_attached
 	  callback:(handle_box_child_signal "attached" handle_box);
 	handle_box2 #connect#child_detached
 	  callback:(handle_box_child_signal "detached" handle_box);
 
-	new_label text:"Fooo!" packing:handle_box2#add;
+	new label text:"Fooo!" packing:handle_box2#add;
 	window #show_all ()
 	  
     | Some window -> window #destroy ()
@@ -641,10 +653,10 @@ let create_handle_box =
 
 class tree_and_buttons =
 object
-  val tree = new_tree ()
-  val add_button = new_button label: "Add Item"
-  val remove_button = new_button label:"Remove Item(s)"
-  val subtree_button = new_button label:"Remove Subtree"
+  val tree = new tree
+  val add_button = new button label: "Add Item"
+  val remove_button = new button label:"Remove Item(s)"
+  val subtree_button = new button label:"Remove Subtree"
   val mutable nb_item_add = 0
 
   method tree = tree
@@ -662,13 +674,13 @@ let cb_add_new_item (treeb : tree_and_buttons) _ =
   let subtree = match treeb#tree#selection with
   | []  -> treeb#tree
   | selected_item :: _ ->
-      try new tree selected_item#subtree
+      try selected_item#subtree
       with Not_found ->
-	let t = new_tree () in
+	let t = new tree in
 	(selected_item : tree_item) #set_subtree t;
 	t
   in
-  let item_new = new_tree_item label:
+  let item_new = new tree_item label:
       ("item add " ^ (string_of_int treeb # nb_item_add)) in
   subtree #insert item_new pos:0;
   item_new #show ();
@@ -705,9 +717,9 @@ let cb_tree_changed (treeb : tree_and_buttons) _ =
 let rec create_subtree (item : tree_item) level nb_item_max recursion_level_max =
   if level = recursion_level_max then ()
   else begin
-    let item_subtree = new_tree () in
+    let item_subtree = new tree in
     for nb_item = 1 to nb_item_max do
-      let item_new = new_tree_item label:
+      let item_new = new tree_item label:
 	  ("item" ^ (string_of_int level) ^ "-" ^ (string_of_int nb_item)) in
       item_subtree #insert item_new pos:0;
       create_subtree item_new (level + 1) nb_item_max recursion_level_max;
@@ -719,12 +731,12 @@ let rec create_subtree (item : tree_item) level nb_item_max recursion_level_max 
 
 let create_tree_sample selection_mode draw_line view_line no_root_item nb_item_max
     recursion_level_max =
-  let window = new_window `TOPLEVEL title:"Tree Sample" in
-  let box1 = new_box `VERTICAL packing:window#add in
+  let window = new window `TOPLEVEL title:"Tree Sample" in
+  let box1 = new box `VERTICAL packing:window#add in
   box1 #show ();
-  let box2 = new_box `VERTICAL packing:box1#pack border_width:5 in
+  let box2 = new box `VERTICAL packing:box1#pack border_width:5 in
   box2 #show ();
-  let scrolled_win = new_scrolled_window () packing:box2#pack
+  let scrolled_win = new scrolled_window packing:box2#pack
       hscrollbar_policy: `AUTOMATIC vscrollbar_policy:`AUTOMATIC
       width:200 height:200 in
   scrolled_win #show ();
@@ -741,20 +753,20 @@ let create_tree_sample selection_mode draw_line view_line no_root_item nb_item_m
 
   if no_root_item then
     for nb_item = 1 to nb_item_max do
-      let item_new = new_tree_item
+      let item_new = new tree_item
 	  label:("item0-" ^ (string_of_int nb_item)) in
       root_tree #insert item_new pos:0;
       create_subtree item_new 1 nb_item_max recursion_level_max;
       item_new #show ()
     done
   else begin
-    let root_item = new_tree_item label:"root item" in
+    let root_item = new tree_item label:"root item" in
     root_tree #insert root_item pos:0;
     root_item #show ();
     create_subtree root_item 0 nb_item_max recursion_level_max
   end;
 
-  let box2 = new_box `VERTICAL border_width:5
+  let box2 = new box `VERTICAL border_width:5
       packing:(box1#pack expand:false fill:false) in
   box2 #show ();
 
@@ -776,10 +788,10 @@ let create_tree_sample selection_mode draw_line view_line no_root_item nb_item_m
   box2 #pack button;
   button #show ();
 
-  (new_separator `HORIZONTAL
+  (new separator `HORIZONTAL
      packing:(box1#pack expand:false fill:false)) #show ();
 
-  let button = new_button label:"Close" packing:box2#pack in
+  let button = new button label:"Close" packing:box2#pack in
   button #connect#clicked callback:window#destroy;
   button #show ();
 
@@ -791,20 +803,20 @@ let create_tree_mode_window =
   let aux () =
     let default_number_of_item = 3.0 in
     let default_recursion_level = 3.0 in
-    let single_button = new_radio_button label:"SINGLE" in
-    let browse_button = new_radio_button
+    let single_button = new radio_button label:"SINGLE" in
+    let browse_button = new radio_button
 	group:single_button#group label:"BROWSE" in
-    let multiple_button = new_radio_button
+    let multiple_button = new radio_button
 	group:browse_button#group label:"MULTIPLE" in
-    let draw_line_button = new_check_button label:"Draw line" in
-    let view_line_button = new_check_button label:"View line mode" in
-    let no_root_item_button = new_check_button label:"Without Root item" in
-    let nb_item_spinner = new_spin_button
-	adjustment:(new_adjustment value:default_number_of_item
+    let draw_line_button = new check_button label:"Draw line" in
+    let view_line_button = new check_button label:"View line mode" in
+    let no_root_item_button = new check_button label:"Without Root item" in
+    let nb_item_spinner = new spin_button
+	adjustment:(new adjustment value:default_number_of_item
 	   lower:1.0 upper:255.0 step_incr:1.0 page_incr:5.0
 	   page_size:0.0) rate:0. digits:0 in
-    let recursion_spinner = new_spin_button
-	adjustment:(new_adjustment value:default_recursion_level
+    let recursion_spinner = new spin_button
+	adjustment:(new adjustment value:default_recursion_level
 	   lower:0.0 upper:255.0 step_incr:1.0 page_incr:5.0
 	   page_size:0.0) rate:0. digits:0 in
     let cb_create_tree _ =
@@ -823,29 +835,29 @@ let create_tree_mode_window =
     in
     match !rw with
     | None ->
-	let window = new_window `TOPLEVEL title:"Set Tree Parameters" in
+	let window = new window `TOPLEVEL title:"Set Tree Parameters" in
 	rw := Some window;
 	window #connect#destroy callback:(fun _ -> rw := None);
 
-	let box1 = new_box `VERTICAL packing:(window#add) in
+	let box1 = new box `VERTICAL packing:(window#add) in
 
-	let box2 = new_box `VERTICAL spacing:5 packing:(box1#pack)
+	let box2 = new box `VERTICAL spacing:5 packing:(box1#pack)
 	    border_width:5 in
 
-	let box3 = new_box `HORIZONTAL spacing:5 packing:(box2#pack) in
+	let box3 = new box `HORIZONTAL spacing:5 packing:(box2#pack) in
 
-	let frame = new_frame label:"Selection Mode" packing:(box3#pack) in
+	let frame = new frame label:"Selection Mode" packing:(box3#pack) in
 	
-	let box4 = new_box `VERTICAL packing:(frame#add)
+	let box4 = new box `VERTICAL packing:(frame#add)
 	    border_width:5 in
 
 	box4 #pack single_button;
 	box4 #pack browse_button;
 	box4 #pack multiple_button;
 
-	let frame = new_frame label:"Options" packing:(box3#pack) in
+	let frame = new frame label:"Options" packing:(box3#pack) in
 	
-	let box4 = new_box `VERTICAL packing:(frame#add)
+	let box4 = new box `VERTICAL packing:(frame#add)
 	    border_width:5 in
 	box4 #pack draw_line_button;
 	draw_line_button #set_active true;
@@ -855,33 +867,33 @@ let create_tree_mode_window =
 	
 	box4 #pack no_root_item_button;
 
-	let frame = new_frame label:"Size Parameters" packing:(box2#pack) in
+	let frame = new frame label:"Size Parameters" packing:(box2#pack) in
 
-	let box4 = new_box `HORIZONTAL spacing:5 packing:(frame#add)
+	let box4 = new box `HORIZONTAL spacing:5 packing:(frame#add)
 	    border_width:5 in
 
-	let box5 = new_box `HORIZONTAL spacing:5 packing:(box4#pack) in
-	let label = new_label text:"Number of items : "
+	let box5 = new box `HORIZONTAL spacing:5 packing:(box4#pack) in
+	let label = new label text:"Number of items : "
 	  packing:(box5#pack expand:false) in
 	label #set_alignment x:0. y:0.5;
 	box5 #pack nb_item_spinner expand:false;
 	
-	let label = new_label text:"Depth : "
+	let label = new label text:"Depth : "
 	  packing:(box5#pack expand:false) in
 	label #set_alignment x:0. y:0.5;
 	box5 #pack recursion_spinner expand:false;
 	
-	new_separator `HORIZONTAL
+	new separator `HORIZONTAL
 	  packing:(box1#pack expand:false fill:false);
 
-	let box2 = new_box `HORIZONTAL homogeneous:true spacing:10
+	let box2 = new box `HORIZONTAL homogeneous:true spacing:10
 	    packing:(box1#pack expand:false fill:false)
 	    border_width:5 in
 
-	let button = new_button label:"Create Tree" packing:(box2#pack) in
+	let button = new button label:"Create Tree" packing:(box2#pack) in
 	button #connect#clicked callback:cb_create_tree;
 
-	let button = new_button label: "close" packing:(box2#pack) in
+	let button = new button label: "close" packing:(box2#pack) in
 	button #connect#clicked callback: window#destroy;
 	button #grab_default ();
 	window #show_all ()
@@ -898,10 +910,10 @@ if toggle #active then begin
   tq #set_text
     (match tt with
     | None -> "There is no tip!" | Some _ -> "There is a tip!");
-  tq #connect#emit_stop_by_name name:"widget_entered"
+  tq #stop_emit "widget_entered"
 end
 
-let tips_query_widget_selected (w : widget option) _ tp _ =
+let tips_query_widget_selected (w : #widget option) _ tp _ =
   (match w with
   | None -> ()
   | Some w -> 
@@ -917,39 +929,39 @@ let create_tooltips =
      match !rw with
     | None ->
 
-	let window = new_window `TOPLEVEL title:"Tooltips"
+	let window = new window `TOPLEVEL title:"Tooltips"
 	    border_width:0 allow_shrink:false allow_grow:false
 	    auto_shrink:true in
 	rw := Some window;
-	let tooltips = new_tooltips () in
+	let tooltips = new tooltips in
 	window #connect#destroy 
 	  callback:(fun _ -> tooltips #destroy ();  rw := None);
 
-	let box1 = new_box `VERTICAL packing:window#add in
+	let box1 = new box `VERTICAL packing:window#add in
 
-	let box2 = new_box `VERTICAL spacing:10 border_width:10
+	let box2 = new box `VERTICAL spacing:10 border_width:10
 	    packing:box1#pack in
 
-	let button = new_toggle_button label:"button1" packing:box2#pack in
+	let button = new toggle_button label:"button1" packing:box2#pack in
 
 	tooltips #set_tip button text:"This is button1"
 	  private:"ContextHelp/buttons/1";
 	
-	let button = new_toggle_button label:"button2" packing:box2#pack in
+	let button = new toggle_button label:"button2" packing:box2#pack in
 
 	tooltips #set_tip button 
 	  text:"This is button 2. This is also a really long tooltip which probably won't fit on a single line and will therefore need to be wrapped. Hopefully the wrapping will work correctly."
 	  private:"ContextHelp/buttons/2_long";
 
-	let toggle = new_toggle_button label:"Override TipsQuery Label" 
+	let toggle = new toggle_button label:"Override TipsQuery Label" 
 	    packing:box2#pack in
 	tooltips #set_tip toggle text:"Toggle TipsQuery view."
 	  private:"Hi msw! ;)";
 
-	let box3 = new_box `VERTICAL spacing:5 border_width:5 in
+	let box3 = new box `VERTICAL spacing:5 border_width:5 in
 
-	let tips_query = new_tips_query () in
-	let button = new_button label:"[?]" 
+	let tips_query = new tips_query in
+	let button = new button label:"[?]" 
 	packing:(box3 #pack expand:false fill:false) in
 
 	button #connect#clicked callback:(tips_query #start);
@@ -963,17 +975,17 @@ let create_tooltips =
 	  callback:(tips_query_widget_entered toggle tips_query);
 	tips_query #connect#widget_selected callback:tips_query_widget_selected;
 
-	let frame = new_frame label:"Tooltips Inspector"
+	let frame = new frame label:"Tooltips Inspector"
 	    border_width:0 packing:(box2#pack padding:10) 
 	    label_xalign:0.5 label_yalign:0.0 in
 	frame #add box3;
 
-	new_separator `HORIZONTAL packing:(box1#pack expand:false);
+	new separator `HORIZONTAL packing:(box1#pack expand:false);
 
-	let box2 = new_box `VERTICAL spacing: 10 border_width: 10 in
+	let box2 = new box `VERTICAL spacing: 10 border_width: 10 in
 	box1 #pack box2 expand: false;
 
-	let button = new_button label: "close" packing:box2#pack in
+	let button = new button label: "close" packing:box2#pack in
 	button #connect#clicked callback: window#destroy;
 	button #grab_default ();
 	tooltips #set_tip button text:"Push this button to close window"
@@ -992,43 +1004,43 @@ let create_labels =
      match !rw with
     | None ->
 
-	let window = new_window `TOPLEVEL title:"Labels"
+	let window = new window `TOPLEVEL title:"Labels"
 	    border_width:5 in
 	rw := Some window;
 	window #connect#destroy 
 	  callback:(fun _ -> rw := None);
 
-	let hbox = new_box `HORIZONTAL spacing:5 packing:window#add in
-	let vbox = new_box `VERTICAL spacing:5 packing:hbox#pack in
+	let hbox = new box `HORIZONTAL spacing:5 packing:window#add in
+	let vbox = new box `VERTICAL spacing:5 packing:hbox#pack in
 
-	let frame = new_frame label:"Normal Label"
+	let frame = new frame label:"Normal Label"
 	    packing:(vbox#pack expand:false fill:false) in
-	new_label text:"This is a normal label" packing:frame#add;
+	new label text:"This is a normal label" packing:frame#add;
 
-	let frame = new_frame label:"Multi_line Label"
+	let frame = new frame label:"Multi_line Label"
 	    packing:(vbox#pack expand:false fill:false) in
-	new_label packing:frame#add
+	new label packing:frame#add
 	  text:"This is a multi-line label.\nSecond line\nThird line";
 
-	let frame = new_frame label:"Left Justified Label"
+	let frame = new frame label:"Left Justified Label"
 	    packing:(vbox#pack expand:false fill:false) in
-	new_label packing:frame#add justify:`LEFT
+	new label packing:frame#add justify:`LEFT
 	  text:"This is a left justified\nmulti_line label\nThird line";
 
-	let frame = new_frame label:"Right Justified Label"
+	let frame = new frame label:"Right Justified Label"
 	    packing:(vbox#pack expand:false fill:false) in
-	new_label packing:frame#add justify:`RIGHT
+	new label packing:frame#add justify:`RIGHT
 	  text:"This is a right justified\nmulti_line label\nThird line";
 
-	let vbox = new_box `VERTICAL spacing:5 packing:hbox#pack in
+	let vbox = new box `VERTICAL spacing:5 packing:hbox#pack in
 
-	let frame = new_frame label:"Line wrapped Label"
+	let frame = new frame label:"Line wrapped Label"
 	    packing:(vbox#pack expand:false fill:false) in
-	new_label text:"This is an example of a line-wrapped label.  It should not be taking up the entire             width allocated to it, but automatically wraps the words to fit.  The time has come, for all good men, to come to the aid of their party.  The sixth sheik's six sheep's sick.\n     It supports multiple paragraphs correctly, and  correctly   adds many          extra  spaces. " packing:frame#add line_wrap:true;
+	new label text:"This is an example of a line-wrapped label.  It should not be taking up the entire             width allocated to it, but automatically wraps the words to fit.  The time has come, for all good men, to come to the aid of their party.  The sixth sheik's six sheep's sick.\n     It supports multiple paragraphs correctly, and  correctly   adds many          extra  spaces. " packing:frame#add line_wrap:true;
 
-	let frame = new_frame label:"Underlined Label"
+	let frame = new frame label:"Underlined Label"
 	    packing:(vbox#pack expand:false fill:false) in
-	new_label text:"This label is underlined!\nThis one is underlined in a quite a funky fashion" packing:frame#add
+	new label text:"This label is underlined!\nThis one is underlined in a quite a funky fashion" packing:frame#add
 	  justify:`LEFT pattern:"_________________________ _ _________ _ _____ _ __ __  ___ ____ _____";
 
 
@@ -1049,7 +1061,7 @@ let set_parent child old_parent =
   Printf.printf
     "set parent for \"%s\": new parent: \"%s\", old parent: \"%s\"\n" 
     (name child)
-    (try name (new widget_full child #misc#parent)
+    (try name child#misc#parent
      with Not_found -> "(NULL)")
     (name_opt old_parent)
 
@@ -1064,39 +1076,39 @@ let create_reparent =
      match !rw with
     | None ->
 
-	let window = new_window `TOPLEVEL title:"Reparent"
+	let window = new window `TOPLEVEL title:"Reparent"
 	    border_width:5 in
 	rw := Some window;
 	window #connect#destroy 
 	  callback:(fun _ -> rw := None);
 
-	let vbox = new_box `VERTICAL packing:window#add in
-	let hbox = new_box `HORIZONTAL spacing:5 packing:vbox#pack
+	let vbox = new box `VERTICAL packing:window#add in
+	let hbox = new box `HORIZONTAL spacing:5 packing:vbox#pack
 	    border_width:10 in
 
-	let frame = new_frame label:"Frame1"  packing:hbox#pack in
-	let vbox2 = new_box `VERTICAL spacing:5 packing:frame#add
+	let frame = new frame label:"Frame1"  packing:hbox#pack in
+	let vbox2 = new box `VERTICAL spacing:5 packing:frame#add
 	    border_width:5 in
-	let label = new_label text:"Hello world"
+	let label = new label text:"Hello world"
 	    packing:(vbox2#pack expand:false) in
 	label #connect#parent_set callback:(set_parent label);
-	let button = new_button label:"switch"
+	let button = new button label:"switch"
 	    packing:(vbox2#pack expand:false) in
 	button #connect#clicked callback:(reparent_label label vbox2);
 
-	let frame = new_frame label:"Frame2"  packing:hbox#pack in
-	let vbox2 = new_box `VERTICAL spacing:5 packing:frame#add
+	let frame = new frame label:"Frame2"  packing:hbox#pack in
+	let vbox2 = new box `VERTICAL spacing:5 packing:frame#add
 	    border_width:5 in
-	let button = new_button label:"switch"
+	let button = new button label:"switch"
 	    packing:(vbox2#pack expand:false) in
 	button #connect#clicked callback:(reparent_label label vbox2);
 
-	new_separator `HORIZONTAL packing:(vbox#pack expand:false);
+	new separator `HORIZONTAL packing:(vbox#pack expand:false);
 
-	let vbox = new_box `VERTICAL spacing:10 border_width:10
+	let vbox = new box `VERTICAL spacing:10 border_width:10
 	    packing:(vbox#pack expand:false) in
 
-	let button = new_button label: "close" packing:vbox#pack in
+	let button = new button label: "close" packing:vbox#pack in
 	button #connect#clicked callback: window#destroy;
 	button #grab_default ();
 
@@ -1159,41 +1171,41 @@ let create_main_window () =
     "WM hints", None
   ] in
 
-  let window = new_window `TOPLEVEL title:"main window" allow_shrink:false
+  let window = new window `TOPLEVEL title:"main window" allow_shrink:false
       allow_grow:false auto_shrink:false width:200 height:400 x:20 y:20 in
 
   window #connect#destroy callback: Main.quit;
 
-  let box1 = new_box `VERTICAL packing: window#add in
+  let box1 = new box `VERTICAL packing: window#add in
 
-  new_label text: "Gtk+ v1.2"
+  new label text: "Gtk+ v1.2"
     packing:(box1#pack expand:false fill:false);
 
-  let scrolled_window = new_scrolled_window () border_width: 10
+  let scrolled_window = new scrolled_window border_width: 10
       hscrollbar_policy: `AUTOMATIC vscrollbar_policy: `AUTOMATIC
       packing:box1#pack in
 
-  let box2 = new_box `VERTICAL border_width: 10 in
+  let box2 = new box `VERTICAL border_width: 10 in
   scrolled_window #add_with_viewport box2;
-  box2 #set_focus_vadjustment (scrolled_window #vadjustment);
+  box2 #set_focus vadjustment:(scrolled_window #vadjustment);
 
   let rec aux = function
     | [] -> ()
     | (_,     None) :: tl -> aux tl
     | (label, Some func) :: tl ->
-	let button = new_button label: label in
+	let button = new button label: label in
 	button #connect#clicked callback: func;
 	box2 #pack expand: true fill: true padding: 0 button;
 	aux tl
   in aux buttons;
 
-  let separator = new_separator `HORIZONTAL in
+  let separator = new separator `HORIZONTAL in
   box1 #pack separator expand: false;
 
-  let box2 = new_box `VERTICAL spacing: 10 border_width: 10 in
+  let box2 = new box `VERTICAL spacing: 10 border_width: 10 in
   box1 #pack box2 expand: false;
 
-  let button = new_button label: "close"  packing:box2#pack in
+  let button = new button label: "close"  packing:box2#pack in
   button #connect#clicked callback: window#destroy;
   button #grab_default ();
 

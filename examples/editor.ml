@@ -1,9 +1,10 @@
 (* $Id$ *)
 
-open GtkObj
+open GMain
 
 let file_dialog :title :callback ?:filename =
-  let sel = new_file_selection :title fileop_buttons:false ?:filename in
+  let sel =
+    new GDialog.file_selection :title fileop_buttons:false ?:filename in
   sel#cancel_button#connect#clicked callback:sel#destroy;
   sel#ok_button#connect#clicked callback:
     begin fun () ->
@@ -15,7 +16,7 @@ let file_dialog :title :callback ?:filename =
   Grab.add sel
 
 class editor () = object (self)
-  val text = new_text editable:true
+  val text = new GEdit.text editable:true
   val mutable filename = None
 
   method text = text
@@ -52,27 +53,27 @@ end
 
 let editor = new editor ()
 
-let window = new_window `TOPLEVEL width:500 height:300 title:"editor"
-let vbox = new_box `VERTICAL packing:window#add
+let window = new GWin.window `TOPLEVEL width:500 height:300 title:"editor"
+let vbox = new GPack.box `VERTICAL packing:window#add
 
-let menubar = new_menu_bar packing:(vbox#pack expand:false)
-let factory = new GtkExt.menu_factory menubar
+let menubar = new GMenu.menu_bar packing:(vbox#pack expand:false)
+let factory = new GMenu.factory menubar
 let accel_group = factory#accel_group
 let file_menu = factory#add_submenu label:"File"
 let edit_menu = factory#add_submenu label:"Edit"
 
-let hbox = new_box `HORIZONTAL packing:vbox#add
-let scrollbar = new_scrollbar `VERTICAL
-    packing:(hbox#pack from:`END expand:false)
+let hbox = new GPack.box `HORIZONTAL packing:vbox#add
+let scrollbar =
+  new GRange.scrollbar `VERTICAL packing:(hbox#pack from:`END expand:false)
 
 let _ =
   window#connect#destroy callback:Main.quit;
-  let factory = new GtkExt.menu_factory file_menu :accel_group in
+  let factory = new GMenu.factory file_menu :accel_group in
   factory#add_item label:"Open..." key:'O' callback:editor#open_file;
   factory#add_item label:"Save..." key:'S' callback:editor#save_file;
   factory#add_separator ();
   factory#add_item label:"Quit" key:'Q' callback:window#destroy;
-  let factory = new GtkExt.menu_factory edit_menu :accel_group in
+  let factory = new GMenu.factory edit_menu :accel_group in
   factory#add_item label:"Copy" key:'C' callback:editor#text#copy_clipboard;
   factory#add_item label:"Cut" key:'X' callback:editor#text#cut_clipboard;
   factory#add_item label:"Paste" key:'V' callback:editor#text#paste_clipboard;

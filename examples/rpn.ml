@@ -1,28 +1,30 @@
 (* reverse polish calculator *)
-open GtkObj
-open GdkObj  
+
+open GMain
 
 let wow _ = prerr_endline "Wow!"; ()
 let main () =
   let stack = Stack.create () in	
 
   (* toplevel window *)
-  let window = new_window `TOPLEVEL border_width: 10 title:"Reverse Polish Calculator" in
+  let window =
+    new GWin.window `TOPLEVEL border_width: 10
+      title:"Reverse Polish Calculator" in
   window#connect#event#delete
      callback:(fun _ -> prerr_endline "Delete event occured"; false);
   window#connect#destroy callback:Main.quit;
 
 
   (* vbox *)
-  let vbx = new_box `VERTICAL packing:window#add in
+  let vbx = new GPack.box `VERTICAL packing:window#add in
 
   (* entry *)
-  let entry = new_entry max_length: 20 packing: vbx#add in
+  let entry = new GEdit.entry max_length: 20 packing: vbx#add in
   entry#set_text "0";
   entry#set_editable false;
 
   (* BackSpace, Clear, All Clear, Quit *) 
-  let table0 = new_table rows:1 columns:4 packing:vbx#add in
+  let table0 = new GPack.table rows:1 columns:4 packing:vbx#add in
   let bs_clicked _ = begin
     let txt = entry#text in
     let len = String.length txt in 
@@ -38,14 +40,14 @@ let main () =
     match labels 
     with  [] -> ()
         | (lbl, cb) :: t  ->
-    let button = new_button label:lbl
-      	       	 packing:(table0#attach left:n top:1) in
+    let button =
+      new GButton.button label:lbl packing:(table0#attach left:n top:1) in
     button#connect#clicked callback:cb;
     loop0 t (n+1) in
   loop0 labels0 1;
 
   (* Numerals *)
-  let table1 = new_table rows:4 columns:5 packing:vbx#add in
+  let table1 = new GPack.table rows:4 columns:5 packing:vbx#add in
   let labels1 = ["7"; "8"; "9"; "4"; "5"; "6"; "1"; "2"; "3"; "0"] in
   let numClicked n _ =
      let txt = entry#text in
@@ -58,7 +60,7 @@ let main () =
   	match labels
 	with [] -> ()
 	   | lbl :: lbls ->
-        let button = new_button label:(" "^lbl^" ")
+        let button = new GButton.button label:(" "^lbl^" ")
 		     packing:(table1#attach left:(n mod 3) top:(n/3)) in
         button#connect#clicked callback:(numClicked lbl);
         loop1 lbls (n+1) in
@@ -73,7 +75,7 @@ let main () =
      end
      else
        entry#append_text "." in
-  (new_button label:" . " packing:(table1#attach left:1 top:3))
+  (new GButton.button label:" . " packing:(table1#attach left:1 top:3))
       #connect#clicked callback:periodClicked;
 
   (* Enter (Push) *)
@@ -83,7 +85,7 @@ let main () =
        Stack.push n on:stack;
        entry#set_text "0"
      end in
-  (new_button label:"Ent"  packing:(table1#attach left:2 top:3))
+  (new GButton.button label:"Ent"  packing:(table1#attach left:2 top:3))
      #connect#clicked callback:enterClicked;
 
   (* Operators *)
@@ -110,7 +112,7 @@ let main () =
     match labels
     with [] -> ()
        | (lbl, cb) :: t ->
-    let button = new_button label:lbl
+    let button = new GButton.button label:lbl
                  packing:(table1#attach left:(3 + n/4) top: (n mod 4)) in
     button#connect#clicked callback:cb;
     loop2 t (n+1) in

@@ -6,7 +6,7 @@ open GCont
 
 (* Menu items *)
 
-class item_skel :
+class menu_item_skel :
   'a[> container menuitem widget] obj ->
   object
     inherit container
@@ -24,7 +24,7 @@ class item_skel :
     method set_submenu : #is_menu -> unit
   end
 
-class item_signals :
+class menu_item_signals :
   'a[> container item menuitem widget] obj -> ?after:bool ->
   object
     inherit GCont.item_signals
@@ -32,38 +32,38 @@ class item_signals :
     method activate : callback:(unit -> unit) -> Signal.id
   end
 
-class item :
+class menu_item :
   ?label:string ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(item -> unit) ->
+  ?packing:(menu_item -> unit) ->
   object
-    inherit item_skel
+    inherit menu_item_skel
     val obj : MenuItem.t obj
-    method connect : ?after:bool -> item_signals
+    method connect : ?after:bool -> menu_item_signals
   end
 
-class item_wrapper : ([> menuitem] obj) -> item
+class menu_item_wrapper : ([> menuitem] obj) -> menu_item
 
 class tearoff_item :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(item -> unit) -> item
+  ?packing:(menu_item -> unit) -> menu_item
 
-class check_item_signals :
+class check_menu_item_signals :
   'a[> checkmenuitem container item menuitem widget] obj -> ?after:bool ->
   object
-    inherit item_signals
+    inherit menu_item_signals
     val obj : 'a obj
     method toggled : callback:(unit -> unit) -> Signal.id
   end
 
-class check_item_skel :
+class check_menu_item_skel :
   'a[> checkmenuitem container menuitem widget] obj ->
   object
-    inherit item_skel
+    inherit menu_item_skel
     val obj : 'a obj
     method active : bool
     method set_active : bool -> unit
@@ -71,32 +71,32 @@ class check_item_skel :
     method toggled : unit -> unit
   end
      
-class check_item :
+class check_menu_item :
   ?label:string ->
   ?active:bool ->
   ?show_toggle:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(check_item -> unit) ->
+  ?packing:(check_menu_item -> unit) ->
   object
-    inherit check_item_skel
+    inherit check_menu_item_skel
     val obj : CheckMenuItem.t obj
-    method connect : ?after:bool -> check_item_signals
+    method connect : ?after:bool -> check_menu_item_signals
   end
 
-class check_item_wrapper : ([> checkmenuitem] obj) -> check_item
+class check_menu_item_wrapper : ([> checkmenuitem] obj) -> check_menu_item
 
-class radio_item_skel :
+class radio_menu_item_skel :
   'a[> checkmenuitem container menuitem radiomenuitem widget] obj ->
   object
-    inherit check_item_skel
+    inherit check_menu_item_skel
     val obj : 'a Gtk.obj
     method group : RadioMenuItem.group
     method set_group : RadioMenuItem.group -> unit
   end
 
-class radio_item :
+class radio_menu_item :
   ?group:RadioMenuItem.group ->
   ?label:string ->
   ?active:bool ->
@@ -104,13 +104,13 @@ class radio_item :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(radio_item -> unit) ->
+  ?packing:(radio_menu_item -> unit) ->
   object
-    inherit radio_item_skel
+    inherit radio_menu_item_skel
     val obj : RadioMenuItem.t obj
-    method connect : ?after:bool -> check_item_signals
+    method connect : ?after:bool -> check_menu_item_signals
   end
-class radio_item_wrapper : ([> radiomenuitem] obj) -> radio_item
+class radio_menu_item_wrapper : ([> radiomenuitem] obj) -> radio_menu_item
 
 (* Menus and menubars *)
 
@@ -125,12 +125,12 @@ class menu_shell_signals :
 class menu_shell :
   'a[> container menushell widget] obj ->
   object
-    inherit [MenuItem.t,item] item_container
+    inherit [MenuItem.t,menu_item] item_container
     val obj : 'a obj
     method connect : ?after:bool -> menu_shell_signals
     method deactivate : unit -> unit
     method insert : MenuItem.t #is_item -> pos:int -> unit
-    method private wrap : Widget.t obj -> item
+    method private wrap : Widget.t obj -> menu_item
   end
 
 class menu :
@@ -147,14 +147,13 @@ class menu :
 
 class menu_wrapper : ([> menu] obj) -> menu
 
-(*
 class option_menu :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(option_menu -> unit) ->
   object
-    inherit button
+    inherit GButton.button
     val obj : OptionMenu.t obj
     method get_menu : menu
     method remove_menu : unit -> unit
@@ -163,7 +162,6 @@ class option_menu :
   end
 
 class option_menu_wrapper : ([> optionmenu] obj) -> option_menu
-*)
 
 class menu_bar :
   ?border_width:int ->
@@ -187,15 +185,16 @@ class ['a] factory :
     method accel_group : AccelGroup.t
     method add_check_item :
       label:string ->
-      ?active:bool -> ?key:char -> ?callback:(bool -> unit) -> check_item
+      ?active:bool -> ?key:char -> ?callback:(bool -> unit) -> check_menu_item
     method add_item :
       label:string ->
-      ?key:char -> ?callback:(unit -> unit) -> ?submenu:menu -> item
+      ?key:char -> ?callback:(unit -> unit) -> ?submenu:menu -> menu_item
     method add_radio_item :
       label:string ->
       ?group:RadioMenuItem.group ->
-      ?active:bool -> ?key:char -> ?callback:(bool -> unit) -> radio_item
-    method add_separator : unit -> item
+      ?active:bool -> ?key:char -> ?callback:(bool -> unit) -> radio_menu_item
+    method add_separator : unit -> menu_item
     method add_submenu : label:string -> ?key:char -> menu
+    method add_tearoff : unit -> menu_item
     method menu : 'a
   end

@@ -1,10 +1,10 @@
 (* $Id$ *)
 
-open GtkObj
+open GMain
 
-let window = new_window `TOPLEVEL border_width: 10
+let window = new GWin.window `TOPLEVEL border_width: 10
 
-let button = new_button label:"Hello World" packing: window#add
+let button = new GButton.button label:"Hello World" packing: window#add
 
 let main () =
   window#connect#event#delete 
