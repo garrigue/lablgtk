@@ -1,4 +1,3 @@
-(* $Id$ *)
 
 open GObj
 
@@ -244,5 +243,91 @@ let toolbar_child_prop kind =
 
 
 
+(**********************************************************)
+
+let get5floats_from_string s =
+  try
+    let n1 = String.index s ' ' in
+    let f1 = float_of_string (String.sub s ~pos:0 ~len:(n1-1)) in
+    let n2 = String.index_from s (n1+1) ' ' in
+    let f2 = float_of_string (String.sub s ~pos:(n1+1) ~len:(n2-1)) in
+    let n3 = String.index_from s (n2+1) ' ' in
+    let f3 = float_of_string (String.sub s ~pos:(n2+1) ~len:(n3-1)) in
+    let n4 = String.index_from s (n3+1) ' ' in
+    let f4 = float_of_string (String.sub s ~pos:(n3+1) ~len:(n4-1)) in
+    let f5 = float_of_string (String.sub s ~pos:(n4+1) ~len:
+				((String.length s) -1)) in
+    f1, f2, f3, f4, f5
+  with _ -> failwith "get5floats_of_string"
 
 
+
+(**********************************************************)
+
+exception Float_of_string
+let my_float_of_string s =
+  let l = String.length s in
+  if l=0 then raise Float_of_string;
+  let sign, d = match s.[0] with
+  | '+' ->  1, 1
+  | '-' -> -1, 1
+  | _   ->  1, 0 in
+  let m, p =
+    let p = 
+      try
+	String.index s '.'
+      with Not_found -> l in
+    if p=d then 0, p
+    else
+      try int_of_string (String.sub s ~pos:d ~len:(p-d)), p
+      with Failure "int_of_string" -> raise Float_of_string
+  in
+  if p=l then float_of_int m
+  else begin
+    let f = ref 0. and r = ref 0.1 in
+    for i = p+1 to l-1 do
+      let k = (int_of_char s.[i]) - 48 in
+      if k > 9 || k < 0 then raise Float_of_string;
+      f := !f +. (float_of_int k) *. !r;
+      r := !r *. 0.1
+    done;
+    !f +. (float_of_int m)
+  end
+
+    
+  
+
+class entry_float obj ~init = let rv = ref init in
+object
+  inherit GEdit.entry obj as entry
+  method value =
+    try 
+      let v = my_float_of_string entry#text in
+      rv := v;
+      v
+    with Float_of_string ->
+      let pop = GWindow.window ~title:"error" ~modal:true () in
+      let vb = GPack.vbox ~packing:pop#add () in
+      let l = GMisc.label ~text:"value must be a float" ~packing:vb#pack () in
+      let b = GButton.button ~label:"OK" ~packing:vb#pack () in
+      b#connect#clicked ~callback:pop#destroy;
+      pop#connect#event#delete ~callback:(fun _ -> pop#destroy (); true);
+      pop#connect#destroy ~callback:GtkMain.Main.quit;
+      pop#show ();
+      GtkMain.Main.main ();
+      entry#set_text (string_of_float !rv);
+      !rv
+end
+
+
+let set_editable ?editable ?(width = -2) ?(height = -2) w =
+  Misc.may editable ~f:(GtkEdit.Editable.set_editable w);
+  if width <> -2 || height <> -2 then GtkBase.Widget.set_usize w ~width ~height
+
+
+let entry_float ~init ?max_length ?visibility ?editable
+    ?width ?height ?packing ?show () = 
+  let w = GtkEdit.Entry.create ?max_length () in
+  GtkEdit.Entry.set w ~text:(string_of_float init) ?visibility;
+  set_editable w ?editable ?width ?height;
+  pack_return (new entry_float w ~init) ~packing ~show

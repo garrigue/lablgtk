@@ -31,11 +31,11 @@ class prop_string :
 
 class prop_bool :
   name:string -> init:string -> set:(bool -> bool) -> prop
-
+(*
 class prop_variant :
   values:(string * 'a) list ->
   name:string -> init:string -> set:('a -> bool) -> prop
-
+*)
 class prop_shadow :
   name:string -> init:string -> set:(shadow_type -> bool) -> prop
 
@@ -73,7 +73,14 @@ class prop_button_box_style :
   name:string ->
   init:string -> set:(Gtk.Tags.button_box_style -> bool) -> prop
 
+class prop_update_type :
+  name:string ->
+  init:string -> set:(Gtk.Tags.update_type -> bool) -> prop
+
 class prop_enum_dyn :
   values:(unit -> string list) -> name:string ->
   init:string -> set:(unit -> bool) -> prop
 
+class prop_adjustment :
+  name:string -> init:string ->
+    set:(float * float * float * float * float -> bool) -> prop

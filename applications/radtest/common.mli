@@ -5,6 +5,8 @@ type range =
   | Int
   | Float of float * float
   | Enum of string list
+  | Enum_string of string list
+  | Adjust
 
 class type prop =
   object

@@ -16,6 +16,7 @@ let new_class_list = [
   "statusbar",       TiMisc.new_tistatusbar;
   "label",           TiMisc.new_tilabel;
   "notebook",        TiMisc.new_tinotebook;
+  "color_selection", TiMisc.new_ticolor_selection;
   "frame",           TiBin.new_tiframe;
   "aspect_frame",    TiBin.new_tiaspect_frame;
   "handle_box",      TiBin.new_handle_box;

@@ -1,8 +1,8 @@
-(* $Id$ *)
 
 open GObj
 
 open Common
+open Utils
 
 class type tiwidget_base = object
   method name : string
@@ -31,7 +31,7 @@ let prop_widget (prop : prop) =
 	~callback:(fun () -> prop#set (string_of_int w#value_as_int));
       w#coerce
   | Float (lower, upper) ->
-      let adjustment =
+(*      let adjustment =
 	GData.adjustment ~value:(float_of_string prop#get)
 	  ~lower ~upper ~step_incr:((upper-.lower)/.100.)
 	  ~page_incr:((upper-.lower)/.10.) ~page_size:0. ()
@@ -40,6 +40,20 @@ let prop_widget (prop : prop) =
       w#connect#activate
 	~callback:(fun () -> prop#set (string_of_float w#value));
       w#coerce
+*)
+      let w = entry_float ~init:(float_of_string prop#get) () in
+      w#connect#activate
+	~callback:(fun () -> prop#set (string_of_float w#value));
+      w#coerce
+(*  | Adjust ->
+      let wpop = GWindow.window ~title:"Adjustment values" () in
+      let vb = GPack.vbox ~packing:wpop#add()  in
+      let hb1 = GPack.hbox ~packing:vb#pack () in
+      let l1 = GMisc.label ~text:"lower" ~packing:hb1#pack () in
+      let e1 = entry_float ~packing:hb1#pack
+	  ~init:(float_of_string prop#get) ~set:prop#set in
+  *)    
+      
 
 let prop_box list =
   let vbox = GPack.vbox () in

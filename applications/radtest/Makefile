@@ -80,7 +80,7 @@ gtk2.cmxa: gtkTree2.cmx gTree2.cmx gToolbar2.cmx libgtk2.a
 clean:
 	rm -f *.cm* *.o *.a radtest *_parser.ml *_parser.mli *_lexer.ml
 
-.depend: $(MLSRC)
-	ocamldep $(MLSRC) > .depend
+.depend: $(MLSRC) load_parser.ml load_lexer.ml
+	ocamldep $(MLSRC) load_parser.ml* load_lexer.ml* > .depend
 
 include .depend

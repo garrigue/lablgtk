@@ -185,3 +185,26 @@ let new_tinotebook ~name = new tinotebook ~widget:(GMisc.notebook ()) ~name
 
 
 
+class ticolor_selection ~(widget : GMisc.color_selection) ~name ~parent_tree ~pos
+    ?(insert_evbox=true) parent_window =
+object(self)
+  val color_selection = widget
+  inherit tiwidget ~name ~widget ~insert_evbox
+      ~parent_tree ~pos parent_window as widget
+
+  method private class_name = "GMisc.color_selection"
+
+  initializer
+    classe <- "color_selection";
+    proplist <-  proplist @
+      [ "use_opacity",
+	new prop_bool ~name:"use_opacity" ~init:"false"
+	  ~set:(ftrue color_selection#set_opacity);
+	"update_policy",
+	new prop_update_type ~name:"update_policy" ~init:"CONTINUOUS"
+	  ~set:(ftrue color_selection#set_update_policy)
+      ]
+end
+
+let new_ticolor_selection ~name = new ticolor_selection
+    ~widget:(GMisc.color_selection ()) ~name
