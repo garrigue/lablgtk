@@ -13,6 +13,8 @@ LINKOPT = $(CAMLOPT) $(MLFLAGS)
 TOPLEVEL = olablmktop $(MLFLAGS)
 RANLIB = ranlib
 
+include ../../config.make
+
 MLFLAGS = -I ../..
 
 ifdef DEBUG
@@ -27,8 +29,6 @@ endif
 THFLAGS = -thread
 THLIBS = unix.cma threads.cma
 THLDFLAGS = -lthreads -lunix
-
-GTKLIBS = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
 
 ifdef USE_CC
 CCOMPILER = $(CC) -c -I$(LABLLIB) $(CFLAGS)

@@ -210,16 +210,15 @@ class rbox dir:(dir : orientation) widget:(box : box) :name :setname =
 
       let startl, endl =
 	list_split pred:(fun (_, dir, _) -> dir=`START) children in
-      List.iter
+      List.iter	(List.rev startl)
 	fun:(fun (rw, _, _) -> rw#emit_code c;
 	  Format.fprintf c#formatter
 	    "%s#pack %s expand:%s fill:%s padding:%d;@\n"
 	    name rw#name
 	    (get_enum_prop (rw#name ^ "::expand") in:proplist)
 	    (get_enum_prop (rw#name ^ "::fill") in:proplist)
-	    (get_int_prop (rw#name ^ "::padding") in:proplist))
-	(List.rev startl);
-      List.iter
+	    (get_int_prop (rw#name ^ "::padding") in:proplist));
+      List.iter	(List.rev endl)
 	fun:(fun (rw, _, _) -> rw#emit_code c;
 	  Format.fprintf c#formatter
 	    "%s#pack from: `END %s expand:%s fill:%s padding:%d;@\n"
@@ -227,7 +226,6 @@ class rbox dir:(dir : orientation) widget:(box : box) :name :setname =
 	    (get_enum_prop (rw#name ^ "::expand") in:proplist)
 	    (get_enum_prop (rw#name ^ "::fill") in:proplist)
 	    (get_int_prop (rw#name ^ "::padding") in:proplist))
-	(List.rev endl);
 		    
          
   initializer
