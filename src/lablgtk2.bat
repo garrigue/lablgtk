@@ -12,5 +12,4 @@ shift
 set initobjs=-I +threads unix.cma threads.cma gtkThread.cmo gtkInit.cmo gtkThInit.cmo
 
 :next
-echo on
 ocaml -w s -I +lablgtk2 %gtklibs% %initobjs% %1 %2 %3 %4 %5 %6 %7 %8 %9
