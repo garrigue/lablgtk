@@ -311,7 +311,7 @@ class Table set wrap :Container {
   "column-spacing"(col_spacings) guint        : Read / Write
 }
 
-class TextView : Container {
+class TextView wrap : Container {
   "editable"             gboolean             : Read / Write / Set
   "cursor-visible"       gboolean             : Read / Write / Set
   "indent"               gint                 : Read / Write
@@ -524,4 +524,68 @@ class TreeViewColumn wrap : Object {
   "visible"              gboolean             : Read / Write
   "widget"               GtkWidget_opt        : Read / Write
   "width"                gint                 : Read
+}
+
+class TextTag abstract vset : GObject {
+  "background"           gchararray           : Write
+  "background-full-height" gboolean             : Read / Write
+  "background-full-height-set" gboolean             : Read / Write
+  "background-gdk"       GdkColor             : Read / Write
+  "background-set"       gboolean             : Read / Write
+  "background-stipple"   GdkPixmap            : Read / Write
+  "background-stipple-set" gboolean             : Read / Write
+  "direction"            GtkTextDirection     : Read / Write
+  "editable"             gboolean             : Read / Write
+  "editable-set"         gboolean             : Read / Write
+  "family"               gchararray           : Read / Write
+  "family-set"           gboolean             : Read / Write
+  "font"                 gchararray           : Read / Write
+  "font-desc"            PangoFontDescription : Read / Write
+  "foreground"           gchararray           : Write
+  "foreground-gdk"       GdkColor             : Read / Write
+  "foreground-set"       gboolean             : Read / Write
+  "foreground-stipple"   GdkPixmap            : Read / Write
+  "foreground-stipple-set" gboolean             : Read / Write
+  "indent"               gint                 : Read / Write
+  "indent-set"           gboolean             : Read / Write
+  "invisible"            gboolean             : Read / Write
+  "invisible-set"        gboolean             : Read / Write
+  "justification"        GtkJustification     : Read / Write
+  "justification-set"    gboolean             : Read / Write
+  "language"             gchararray           : Read / Write
+  "language-set"         gboolean             : Read / Write
+  "left-margin"          gint                 : Read / Write
+  "left-margin-set"      gboolean             : Read / Write
+  "name"                 gchararray           : Read / Write / Construct Only
+  "pixels-above-lines"   gint                 : Read / Write
+  "pixels-above-lines-set" gboolean             : Read / Write
+  "pixels-below-lines"   gint                 : Read / Write
+  "pixels-below-lines-set" gboolean             : Read / Write
+  "pixels-inside-wrap"   gint                 : Read / Write
+  "pixels-inside-wrap-set" gboolean             : Read / Write
+  "right-margin"         gint                 : Read / Write
+  "right-margin-set"     gboolean             : Read / Write
+  "rise"                 gint                 : Read / Write
+  "rise-set"             gboolean             : Read / Write
+  "scale"                gdouble              : Read / Write
+  "scale-set"            gboolean             : Read / Write
+  "size"                 gint                 : Read / Write
+  "size-points"          gdouble              : Read / Write
+  "size-set"             gboolean             : Read / Write
+  "stretch"              PangoStretch         : Read / Write
+  "stretch-set"          gboolean             : Read / Write
+  "strikethrough"        gboolean             : Read / Write
+  "strikethrough-set"    gboolean             : Read / Write
+  "style"                PangoStyle           : Read / Write
+  "style-set"            gboolean             : Read / Write
+  "tabs"                 PangoTabArray        : Read / Write
+  "tabs-set"             gboolean             : Read / Write
+  "underline"            PangoUnderline       : Read / Write
+  "underline-set"        gboolean             : Read / Write
+  "variant"              PangoVariant         : Read / Write
+  "variant-set"          gboolean             : Read / Write
+  "weight"               gint                 : Read / Write
+  "weight-set"           gboolean             : Read / Write
+  "wrap-mode"            GtkWrapMode          : Read / Write
+  "wrap-mode-set"        gboolean             : Read / Write
 }

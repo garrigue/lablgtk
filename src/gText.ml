@@ -5,6 +5,7 @@ open Gaux
 open Gtk
 open GtkBase
 open GtkText
+open OGtkProps
 open GObj
 
 type mark_name = [`INSERT | `SEL_BOUND | `NAME of string]
@@ -35,6 +36,72 @@ class tag_signals obj = object
     GtkSignal.connect ~sgn:Tag.Signals.event ~after obj
 end
 
+type tag_property0 = [
+  | `BACKGROUND of string
+  | `BACKGROUND_FULL_HEIGHT of bool
+  | `BACKGROUND_FULL_HEIGHT_SET of bool
+  | `BACKGROUND_GDK of Gdk.color
+  | `BACKGROUND_SET of bool
+  | `BACKGROUND_STIPPLE of Gdk.pixmap
+  | `BACKGROUND_STIPPLE_SET of bool
+  | `EDITABLE of bool
+  | `EDITABLE_SET of bool
+  | `FAMILY of string
+  | `FAMILY_SET of bool
+  | `FONT of string
+  | `FONT_DESC of Pango.font_description
+  | `FOREGROUND of string
+  | `FOREGROUND_GDK of Gdk.color
+  | `FOREGROUND_SET of bool
+  | `FOREGROUND_STIPPLE of Gdk.pixmap
+  | `FOREGROUND_STIPPLE_SET of bool
+  | `INDENT of int
+  | `INDENT_SET of bool
+  | `INVISIBLE of bool
+  | `INVISIBLE_SET of bool
+  | `JUSTIFICATION of Tags.justification
+  | `JUSTIFICATION_SET of bool
+  | `LANGUAGE of string
+  | `LANGUAGE_SET of bool
+  | `LEFT_MARGIN of int
+  | `LEFT_MARGIN_SET of bool
+  | `PIXELS_ABOVE_LINES of int
+  | `PIXELS_ABOVE_LINES_SET of bool
+  | `PIXELS_BELOW_LINES of int
+  | `PIXELS_BELOW_LINES_SET of bool
+  | `PIXELS_INSIDE_WRAP of int
+  | `PIXELS_INSIDE_WRAP_SET of bool
+  | `RIGHT_MARGIN of int
+  | `RIGHT_MARGIN_SET of bool
+  | `RISE of int
+  | `RISE_SET of bool
+  | `SCALE of float
+  | `SCALE_SET of bool
+  | `SIZE of int
+  | `SIZE_POINTS of float
+  | `SIZE_SET of bool
+  | `STRETCH of Pango.Tags.stretch
+  | `STRETCH_SET of bool
+  | `STRIKETHROUGH of bool
+  | `STRIKETHROUGH_SET of bool
+  | `STYLE of Pango.Tags.style
+  | `STYLE_SET of bool
+  | `TABS_SET of bool
+  | `UNDERLINE of Pango.Tags.underline
+  | `UNDERLINE_SET of bool
+  | `VARIANT of Pango.Tags.variant
+  | `VARIANT_SET of bool
+  | `WEIGHT_SET of bool
+  | `WRAP_MODE of Tags.wrap_mode
+  | `WRAP_MODE_SET of bool
+]
+
+type tag_property = [ `WEIGHT of Pango.Tags.weight | tag_property0 ]
+
+let text_tag_param : tag_property -> _ = function
+    `WEIGHT w -> text_tag_param (`WEIGHT (Pango.Tags.weight_to_int w))
+  | #tag_property0 as x -> text_tag_param x
+
 class tag obj =
 object (self)
   val obj = obj
@@ -47,9 +114,9 @@ object (self)
   method event : 'a. 'a Gtk.obj -> GdkEvent.any -> Gtk.text_iter -> bool = 
     Tag.event obj 
   method set_property p = 
-    Tag.set_property obj p
+    Gobject.set_params obj [text_tag_param p]
   method set_properties l = 
-    List.iter self#set_property l
+    Gobject.set_params obj (List.map text_tag_param l)
 end
 
 let tag s = new tag(Tag.create s)
@@ -404,7 +471,7 @@ class buffer obj = object(self)
     Buffer.remove_tag_by_name obj name (as_iter start) (as_iter stop)
   method remove_all_tags ~start ~stop =
     Buffer.remove_all_tags obj (as_iter start) (as_iter stop)
-  method create_tag ?name (properties: Tag.property list) =
+  method create_tag ?name properties =
     let t = new tag (Buffer.create_tag_0 obj name) in
     if properties <> [] then t#set_properties properties;
     t
@@ -499,7 +566,8 @@ class view_signals obj = object
 end
 
 class view obj = object (self)
-  inherit widget (obj : Gtk.text_view obj)
+  inherit [Gtk.text_view] widget_impl obj
+  inherit text_view_props
   method event = new GObj.event_ops obj
   method connect = new view_signals obj
   method as_view = obj
@@ -557,26 +625,6 @@ class view obj = object (self)
     View.add_child_in_window obj child#as_widget which_window x y
   method move_child ~(child : widget) ~x ~y =
     View.move_child obj child#as_widget x y
-  method set_wrap_mode wr = View.set_wrap_mode obj wr
-  method wrap_mode = View.get_wrap_mode obj
-  method set_editable b = View.set_editable obj b
-  method editable = View.get_editable obj
-  method set_cursor_visible b = View.set_cursor_visible obj b
-  method cursor_visible = View.get_cursor_visible obj
-  method pixels_above_lines = View.get_pixels_above_lines obj 
-  method set_pixels_above_lines n = View.set_pixels_above_lines obj n
-  method pixels_below_lines = View.get_pixels_below_lines obj 
-  method set_pixels_below_lines n = View.set_pixels_below_lines obj n
-  method pixels_inside_wrap = View.get_pixels_inside_wrap obj 
-  method set_pixels_inside_wrap n = View.set_pixels_inside_wrap obj n
-  method justification = View.get_justification obj 
-  method set_justification j = View.set_justification obj j
-  method left_margin = View.get_left_margin obj 
-  method set_left_margin n = View.set_left_margin obj n
-  method right_margin = View.get_right_margin obj 
-  method set_right_margin n = View.set_right_margin obj n
-  method indent = View.get_indent obj 
-  method set_indent n = View.set_indent obj n
 end
 
 
