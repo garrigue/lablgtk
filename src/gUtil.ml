@@ -30,28 +30,26 @@ class ['a] signal () = object (self)
     (callbacks <- List.remove_assoc key callbacks; true)
 end
 
-class ml_signals =
+class virtual ml_signals disconnectors =
   object (self)
     val after = false
     method after = {< after = true >}
-    method private disconnectors : (GtkSignal.id -> bool) list = []
+    val mutable disconnectors : (GtkSignal.id -> bool) list = disconnectors
     method disconnect key =
-      ignore (List.exists self#disconnectors ~f:(fun f -> f key))
+      ignore (List.exists disconnectors ~f:(fun f -> f key))
   end
 
-class add_ml_signals obj =
+class virtual add_ml_signals obj disconnectors =
   object (self)
-    method private disconnectors : (GtkSignal.id -> bool) list = []
+    val mutable disconnectors : (GtkSignal.id -> bool) list = disconnectors
     method disconnect key =
-      if List.exists self#disconnectors ~f:(fun f -> f key) then ()
+      if List.exists disconnectors ~f:(fun f -> f key) then ()
       else GtkSignal.disconnect obj key
   end
 
 class ['a] variable_signals ~(changed : 'a signal)~(accessed : unit signal) =
   object
-    inherit ml_signals as super
-    method private disconnectors =
-      [changed#disconnect; accessed#disconnect] @ super#disconnectors
+    inherit ml_signals [changed#disconnect; accessed#disconnect]
     method changed = changed#connect ~after
     method accessed = accessed#connect ~after
   end

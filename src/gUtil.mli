@@ -31,29 +31,27 @@ class ['a] signal :
     method connect : after:bool -> callback:('a -> unit) -> GtkSignal.id
     method disconnect : GtkSignal.id -> bool
   end
-class ml_signals :
+class virtual ml_signals : (GtkSignal.id -> bool) list ->
   object ('a)
     val after : bool
     method after : 'a
     method disconnect : GtkSignal.id -> unit
-    method private disconnectors : (GtkSignal.id -> bool) list
+    val mutable disconnectors : (GtkSignal.id -> bool) list
   end
-class add_ml_signals :
-  'a Gtk.obj ->
+class virtual add_ml_signals :
+  'a Gtk.obj -> (GtkSignal.id -> bool) list ->
   object
     method disconnect : GtkSignal.id -> unit
-    method private disconnectors : (GtkSignal.id -> bool) list
+    val mutable disconnectors : (GtkSignal.id -> bool) list
   end
 
 (* To add ML signals to a LablGTK object:
 
    class mywidget_signals obj ~mysignal1 ~mysignal2 = object
      inherit somewidget_signals obj
-     inherit add_ml_signals obj as super
+     inherit add_ml_signals obj [mysignal1#disconnect; mysignal2#disconnect]
      method mysignal1 = mysignal1#connect ~after
      method mysignal2 = mysignal2#connect ~after
-     method disconnectors =
-       [mysignal1#disconnect; mysignal2#disconnect] @ super#disconnectors
    end
 
    class mywidget obj = object (self)
@@ -69,11 +67,9 @@ class add_ml_signals :
    from ml_signals in place of widget_signals+add_ml_signals.
 
    class mysignals ~mysignal1 ~mysignal2 = object
-     inherit ml_signals as super
+     inherit ml_signals [mysignal1#disconnect; mysignal2#disconnect]
      method mysignal1 = mysignal1#connect ~after
      method mysignal2 = mysignal2#connect ~after
-     method disconnectors =
-       [mysignal1#disconnect; mysignal2#disconnect] @ super#disconnectors
    end
 *)
 
@@ -90,7 +86,7 @@ class ['a] variable_signals :
     method accessed : callback:(unit -> unit) -> GtkSignal.id
     method changed : callback:('a -> unit) -> GtkSignal.id
     method disconnect : GtkSignal.id -> unit
-    method private disconnectors : (GtkSignal.id -> bool) list
+    val mutable disconnectors : (GtkSignal.id -> bool) list
   end
 
 class ['a] variable : 'a ->
