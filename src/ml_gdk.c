@@ -190,7 +190,17 @@ ML_2 (gdk_window_set_cursor, GdkWindow_val, GdkCursor_val, Unit)
 ML_1 (gdk_window_clear, GdkWindow_val, Unit)
 ML_0 (GDK_ROOT_PARENT, Val_GdkWindow)
 ML_1 (gdk_window_get_parent, GdkWindow_val, Val_GdkWindow)
+
+#if defined(_WIN32) || defined(__CYGWIN__)
+CAMLprim value ml_GDK_WINDOW_XWINDOW(value v)
+{
+ ml_raise_gdk ("Not available for Win32");
+ return Val_unit;
+} 
+
+#else
 ML_1 (GDK_WINDOW_XWINDOW, GdkWindow_val, Val_XID)
+#endif
 CAMLprim value ml_gdk_window_get_position (value window)
 {
   int x, y;
@@ -388,11 +398,15 @@ value ml_gdk_property_get (value window, value property,
     int aformat, alength;
     guchar *data;
     int nitems;
-    int ok = gdk_property_get (GdkWindow_val(window), GdkAtom_val(property),
+    int ok = 
+#if defined(_WIN32) || defined(__CYGWIN__)
+      FALSE;
+#else
+gdk_property_get (GdkWindow_val(window), GdkAtom_val(property),
                                AnyPropertyType, 0,
                                Long_val(length), Bool_val(pdelete),
                                &atype, &aformat, &alength, &data);
-
+#endif
     if (ok) {
         CAMLparam0();
         CAMLlocal3(mltype, mldata, pair);
