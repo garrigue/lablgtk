@@ -1,5 +1,8 @@
 $Id$
 
+2004.06.15 [Olivier]
+  * fix the ocamldoc generator for ocaml 3.08
+
 2004.06.10 [Olivier]
   * add #event method for GtkComboBox (and descendants), and
     GtkFileChooserWidget 
