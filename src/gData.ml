@@ -47,8 +47,9 @@ class tooltips obj = object
   method connect = new data_signals obj
   method enable () = Tooltips.enable obj
   method disable () = Tooltips.disable obj
-  method set_tip ?text ?privat w =
-    Tooltips.set_tip obj (as_widget w) ?text ?privat
+  method set_tip : 'a. ?text:_ -> ?privat:_ -> (#widget as 'a) -> unit =
+    fun ?text ?privat w ->
+      Tooltips.set_tip obj w#as_widget ?text ?privat
   method set_delay = Tooltips.set_delay obj
 end
 

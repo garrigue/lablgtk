@@ -153,7 +153,8 @@ class tips_query obj = object
   inherit label_skel (obj : Gtk.tips_query obj)
   method start () = TipsQuery.start obj
   method stop () = TipsQuery.stop obj
-  method set_caller (w : widget) = TipsQuery.set_caller obj w#as_widget
+  method set_caller : 'a. (#widget as 'a) -> unit = fun w ->
+    TipsQuery.set_caller obj w#as_widget
   method set_emit_always = TipsQuery.set_emit_always obj
   method set_label_inactive inactive = TipsQuery.set_labels obj ~inactive
   method set_label_no_tip no_tip = TipsQuery.set_labels obj ~no_tip

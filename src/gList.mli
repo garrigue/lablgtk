@@ -113,7 +113,7 @@ class ['a] clist : Gtk.clist obj ->
       ?pixmap:GDraw.pixmap ->
       ?spacing:int -> ?style:style -> int -> int -> unit
     method set_column :
-      ?widget:widget ->
+      ?widget:#widget ->
       ?title:string ->
       ?title_active:bool ->
       ?justification:Tags.justification ->

@@ -20,8 +20,8 @@ class scrolled_window obj = object
   method set_hpolicy hpolicy = ScrolledWindow.set_policy' obj ~hpolicy
   method set_vpolicy vpolicy = ScrolledWindow.set_policy' obj ~vpolicy
   method set_placement = ScrolledWindow.set_placement obj
-  method add_with_viewport w =
-    ScrolledWindow.add_with_viewport obj (as_widget w)
+  method add_with_viewport : 'a. (#widget as 'a) -> unit = fun w ->
+    ScrolledWindow.add_with_viewport obj w#as_widget
 end
 
 let scrolled_window ?hadjustment ?vadjustment ?hpolicy ?vpolicy

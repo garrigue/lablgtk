@@ -134,8 +134,8 @@ class ['a] clist obj = object (self)
   method set_titles_show = CList.set_titles_show obj
   method set_titles_active = CList.set_titles_active obj
   method set_sort = CList.set_sort obj
-  method set_column ?widget =
-    CList.set_column obj ?widget:(may_map widget ~f:as_widget)
+  method set_column : 'a. ?widget:(#widget as 'a) -> _ = fun ?widget ->
+    CList.set_column obj ?widget:(may_map widget ~f:(fun w -> w#as_widget))
   method set_row ?foreground ?background ?selectable ?style =
     let color = may_map ~f:(fun c -> Gpointer.optboxed (GDraw.optcolor c))
     and style = may_map ~f:(fun (st : style) -> st#as_style) style in

@@ -13,7 +13,7 @@ class box_skel :
     method pack :
       ?from:Tags.pack_type ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> widget -> unit
-    method reorder_child : widget -> pos:int -> unit
+    method reorder_child : #widget -> pos:int -> unit
     method set_child_packing :
       ?from:Tags.pack_type ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> widget -> unit
@@ -57,7 +57,7 @@ class button_box :
     method pack :
       ?from:Tags.pack_type ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> widget -> unit
-    method reorder_child : widget -> pos:int -> unit
+    method reorder_child : #widget -> pos:int -> unit
     method set_child_ipadding : ?x:int -> ?y:int -> unit -> unit
     method set_child_packing :
       ?from:Tags.pack_type ->
@@ -117,8 +117,8 @@ class fixed :
     inherit container_full
     val obj : Gtk.fixed obj
     method event : event_ops
-    method move : widget -> x:int -> y:int -> unit
-    method put : widget -> x:int -> y:int -> unit
+    method move : #widget -> x:int -> y:int -> unit
+    method put : #widget -> x:int -> y:int -> unit
   end
 val fixed :
   ?border_width:int ->
@@ -135,8 +135,8 @@ class layout :
     method freeze : unit -> unit
     method hadjustment : GData.adjustment
     method height : int
-    method move : widget -> x:int -> y:int -> unit
-    method put : widget -> x:int -> y:int -> unit
+    method move : #widget -> x:int -> y:int -> unit
+    method put : #widget -> x:int -> y:int -> unit
     method set_hadjustment : GData.adjustment -> unit
     method set_height : int -> unit
     method set_vadjustment : GData.adjustment -> unit
@@ -172,14 +172,14 @@ class notebook : ([> `widget | `container | `notebook] as 'a) obj ->
       ?tab_label:widget -> ?menu_label:widget -> widget -> unit
     method connect : notebook_signals
     method current_page : int
-    method get_menu_label : widget -> widget
+    method get_menu_label : #widget -> widget
     method get_nth_page : int -> widget
-    method get_tab_label : widget -> widget
+    method get_tab_label : #widget -> widget
     method goto_page : int -> unit
     method insert_page :
       ?tab_label:widget -> ?menu_label:widget -> pos:int -> widget -> unit
     method next_page : unit -> unit
-    method page_num : widget -> int
+    method page_num : #widget -> int
     method prepend_page :
       ?tab_label:widget -> ?menu_label:widget -> widget -> unit
     method previous_page : unit -> unit
@@ -220,7 +220,7 @@ class packer :
       ?border_width:int ->
       ?pad_x:int ->
       ?pad_y:int -> ?i_pad_x:int -> ?i_pad_y:int -> widget -> unit
-    method reorder_child : widget -> pos:int -> unit
+    method reorder_child : #widget -> pos:int -> unit
     method set_child_packing :
       ?side:Tags.side_type ->
       ?anchor:Tags.anchor_type ->
@@ -247,8 +247,8 @@ class paned :
   object
     inherit container_full
     val obj : Gtk.paned obj
-    method add1 : widget -> unit
-    method add2 : widget -> unit
+    method add1 : #widget -> unit
+    method add2 : #widget -> unit
     method event : event_ops
     method child1 : widget
     method child2 : widget
