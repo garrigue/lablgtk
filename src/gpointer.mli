@@ -14,6 +14,9 @@ val optstring : string option -> optstring
 (** Boxed pointers *)
 type boxed
 val boxed_null : boxed
+val peek_string : ?pos:int -> ?len:int -> boxed -> string
+val peek_int : boxed -> int
+
 type 'a optboxed
 val optboxed : 'a option -> 'a optboxed
 val may_box : f:('a -> 'b) -> 'a option -> 'b optboxed

@@ -8,3 +8,7 @@ type fundamental_type = "G_TYPE_"
   | `FLOAT  | `DOUBLE
   | `STRING | `POINTER  | `BOXED  | `PARAM
   | `OBJECT ]
+
+type noconv data =
+  [ `NONE | `CHAR | `BOOL | `INT | `FLOAT | `STRING
+  | `OBJECT | `POINTER | `INT64 | `INT32 | `LONG ]
