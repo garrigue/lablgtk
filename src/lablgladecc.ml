@@ -1,6 +1,7 @@
 (* $Id$ *)
 
 open StdLabels
+open Printf
 
 let debug = ref false
 let hide_default_names = ref false
@@ -23,7 +24,7 @@ let classes = ref [
   "GtkHandleBox", ("GtkBin.HandleBox", "GBin.handle_box");
   "GtkViewport", ("GtkBin.Viewport", "GBin.viewport");
   "GtkScrolledWindow", ("GtkBin.ScrolledWindow", "GBin.scrolled_window");
-  "GtkSocket", ("GtkBin.Socket", "GBin.socket");
+  "GtkSocket", ("GtkWindow.Socket", "GWindow.socket");
   "GtkInvisible", ("GtkBase.Container", "GContainer.container");
   "GtkButton", ("GtkButton.Button", "GButton.button");
   "GtkToggleButton", ("GtkButton.ToggleButton", "GButton.toggle_button");
@@ -38,8 +39,11 @@ let classes = ref [
   "GtkList", ("GtkList.Liste", "GList.liste");
   "GtkCList", ("GtkList.CList", "GList.clist");
   "GtkMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
+  "GtkSeparatorMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
+  "GtkTearoffMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
   "GtkCheckMenuItem", ("GtkMenu.CheckMenuItem", "GMenu.check_menu_item");
   "GtkRadioMenuItem", ("GtkMenu.RadioMenuItem", "GMenu.radio_menu_item");
+  "GtkImageMenuItem", ("GtkMenu.ImageMenuItem", "GMenu.image_menu_item");
   "GtkOptionMenu", ("GtkMenu.OptionMenu", "GMenu.option_menu");
   "GtkMenuShell", ("GtkMenu.MenuShell", "GMenu.menu_shell");
   "GtkMenu", ("GtkMenu.Menu", "GMenu.menu");
@@ -75,9 +79,9 @@ let classes = ref [
   "GtkScale", ("GtkRange.Scale", "GRange.scale");
   "GtkHScale", ("GtkRange.Scale", "GRange.scale");
   "GtkVScale", ("GtkRange.Scale", "GRange.scale");
-  "GtkScrollbar", ("GtkRange.Scrollbar", "GRange.scrollbar");
-  "GtkHScrollbar", ("GtkRange.Scrollbar", "GRange.scrollbar");
-  "GtkVScrollbar", ("GtkRange.Scrollbar", "GRange.scrollbar");
+  "GtkScrollbar", ("GtkRange.Scrollbar", "GRange.range");
+  "GtkHScrollbar", ("GtkRange.Scrollbar", "GRange.range");
+  "GtkVScrollbar", ("GtkRange.Scrollbar", "GRange.range");
   "GtkRuler", ("GtkRange.Ruler", "GRange.ruler");
   "GtkHRuler", ("GtkRange.Ruler", "GRange.ruler");
   "GtkVRuler", ("GtkRange.Ruler", "GRange.ruler");
@@ -91,7 +95,7 @@ let classes = ref [
   "GtkTreeView", ("GtkTree.TreeView", "GTree.view");
   "GtkTree", ("GtkTree.Tree", "GTree.tree");
   "GtkCTree", ("GtkBase.Container", "GContainer.container");
-  "GtkWindow", ("GtkWindow.Window", "GWindow.window");
+  "GtkWindow", ("GtkWindow.Window", "GWindow.window_full");
   "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog");
   "GtkInputDialog", ("GtkWindow.Dialog", "GWindow.dialog");
   "GtkFileSelection", ("GtkWindow.FileSelection", "GWindow.file_selection");
@@ -200,23 +204,22 @@ let output_widget w =
     
     begin match clas with
     | "GList.clist" ->
-  	Printf.printf "    val %s : int %s =\n" w.wcamlname clas
+  	printf "    val %s : int %s =\n" w.wcamlname clas
     | "GWindow.dialog" ->
-  	Printf.printf "    val %s : [`NONE | `DELETE_EVENT | `ID of int] %s =\n" w.wcamlname clas
+  	printf "    val %s : [`NONE | `DELETE_EVENT | `ID of int] %s =\n"
+          w.wcamlname clas
     | _ ->
-        Printf.printf "    val %s =\n" w.wcamlname
+        printf "    val %s =\n" w.wcamlname
     end;
   
     if !debug then 
-      Printf.printf "      prerr_endline \"creating %s:%s\";\n" w.wclass w.wcamlname;
-    Printf.printf "      try\n";
-    Printf.printf "        new %s\n" clas;
-    Printf.printf "          (%s.cast (Glade.get_widget xmldata ~name:\"%s\"))\n" modul w.wname;
-    Printf.printf "      with\n";
-    Printf.printf "      | Gpointer.Null -> failwith \"%s:%s is not accessible.\"\n" w.wclass w.wcamlname;
-    Printf.printf "    method %s = %s\n" w.wcamlname w.wcamlname
+      printf "      prerr_endline \"creating %s:%s\";\n" w.wclass w.wcamlname;
+    printf "      new %s (%s.cast\n" clas modul;
+    printf "        (%s ~name:\"%s\" ~info:\"%s\" xmldata))\n"
+      "Glade.get_widget_msg" w.wname w.wclass;
+    printf "    method %s = %s\n" w.wcamlname w.wcamlname
   with Not_found -> 
-    warning (Printf.sprintf "Widget %s::%s is not supported" w.wname w.wclass)
+    warning (sprintf "Widget %s::%s is not supported" w.wname w.wclass)
 ;;
 
 let roots = ref []
@@ -225,16 +228,16 @@ let trace = ref false
 let output_classes = ref []
 
 let output_wrapper ~file wtree =
-  Printf.printf "class %s %s?domain ?autoconnect(*=true*) () =\n"
+  printf "class %s %s?domain ?autoconnect(*=true*) () =\n"
     wtree.wcamlname
     (if !embed then "" else
     if file = "<stdin>" then "~file " else "?(file=\"" ^ file ^ "\") ");
   output_classes := wtree.wcamlname :: !output_classes;
-  Printf.printf "  let xmldata = Glade.create %s ~root:\"%s\" ?domain () in\n" 
+  printf "  let xmldata = Glade.create %s ~root:\"%s\" ?domain () in\n" 
     (if !embed then "~data " else "~file ")
     wtree.wname;
   print_string "  object (self)\n";
-  Printf.printf
+  printf
     "    inherit Glade.xml %s?autoconnect xmldata\n"
     (if !trace then "~trace:stderr " else "");
   let widgets = {wtree with wcamlname= "toplevel"} :: flatten_tree wtree in
@@ -251,27 +254,29 @@ let output_wrapper ~file wtree =
   (* reparent method *)
   begin match wtree.wchildren with
   | [w] ->
-      Printf.printf "    method reparent parent =\n";
-      Printf.printf "      %s#misc#reparent parent;\n" w.wcamlname;
-      Printf.printf "      toplevel#destroy ()\n";
+      printf "    method reparent parent =\n";
+      printf "      %s#misc#reparent parent;\n" w.wcamlname;
+      printf "      toplevel#destroy ()\n";
   | _ -> ()
   end;
-
-  Printf.printf "    method check_widgets () =\n";
+  
+  printf "    method check_widgets () = ()\n";
+  (* useless, since they are already built anyway
   List.iter widgets ~f:
     (fun w ->
-      if w.wrapped then Printf.printf "      ignore self#%s;\n" w.wcamlname);
-  Printf.printf "  end\n"
+      if w.wrapped then printf "      ignore self#%s;\n" w.wcamlname);
+  *)
+  printf "  end\n"
 
 let output_check_all () =
-  Printf.printf "\nlet check_all ?(show=false) () =\n";
-  Printf.printf "  GMain.Main.init ();\n";
+  printf "\nlet check_all ?(show=false) () =\n";
+  printf "  ignore (GMain.Main.init ());\n";
   List.iter (fun cl ->   
-    Printf.printf "  let %s = new %s () in\n" cl cl;
-    Printf.printf "  if show then %s#toplevel#show ();\n" cl;
-    Printf.printf "  %s#check_widgets ();\n" cl) !output_classes;
-  Printf.printf "  if show then GMain.Main.main ()\n";
-  Printf.printf ";;\n";
+    printf "  let %s = new %s () in\n" cl cl;
+    printf "  if show then %s#toplevel#show ();\n" cl;
+    printf "  %s#check_widgets ();\n" cl) !output_classes;
+  printf "  if show then GMain.Main.main ()\n";
+  printf ";;\n";
 ;;
  
 let parse_body ~file lexbuf =
@@ -316,13 +321,13 @@ let process ?(file="<stdin>") chan =
   in
   try
     parse_header lexbuf;
-    Printf.printf "(* Automatically generated from %s by lablgladecc *)\n\n"
+    printf "(* Automatically generated from %s by lablgladecc *)\n\n"
       file;
-    if !embed then Printf.printf "let data = \"%s\"\n\n" (String.escaped data);
+    if !embed then printf "let data = \"%s\"\n\n" (String.escaped data);
     parse_body ~file lexbuf;
     output_check_all ()
   with Failure s ->
-    Printf.eprintf "lablgladecc: in %s, before char %d, %s\n"
+    eprintf "lablgladecc: in %s, before char %d, %s\n"
       file (Lexing.lexeme_start lexbuf) s
 
 let output_test () =

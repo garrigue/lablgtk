@@ -41,6 +41,12 @@ external get_widget_name : [> `widget] obj -> string
 external get_widget_tree : [> `widget] obj -> glade_xml obj
     = "ml_glade_get_widget_tree"
 
+let get_widget_msg ~name ?info xml =
+  try get_widget ~name xml
+  with Gpointer.Null ->
+    let name = match info with None -> name | Some s -> s^":"^name in
+    failwith ("Glade error: " ^ name ^ " is not accessible.")
+
 (* Signal handlers *)
 open Gobject
 
