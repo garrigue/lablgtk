@@ -128,8 +128,8 @@ gtkThread.cmo: gtkThread.ml
 gtkThread.cmx: gtkThread.ml
 	$(COMPOPT) $(THFLAGS) gtkThread.ml
 
-varcc: varcc.cmo
-	$(LINKER) -o $@ varcc.cmo
+varcc: varcc.ml
+	$(LINKER) -pp camlp4o -o $@ varcc.ml
 	rm -f *_tags.h *_tags.c
 
 clean:
