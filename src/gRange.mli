@@ -29,7 +29,9 @@ class progress_bar : Gtk.progress_bar obj ->
   end
 
 (** @gtkdoc gtk GtkProgress
-   @gtkdoc gtk GtkProgressBar *)
+    @gtkdoc gtk GtkProgressBar
+    @param orientation default value is [`LEFT_TO_RIGHT]
+    @param pulse_step default value is [0.1] *)
 val progress_bar :
   ?orientation:Tags.progress_bar_orientation ->
   ?pulse_step:float ->
@@ -79,8 +81,13 @@ class scale : Gtk.scale obj ->
   end
 
 (** @gtkdoc gtk GtkScale
-   @gtkdoc gtk GtkHScale
-   @gtkdoc gtk GtkVScale *)
+    @gtkdoc gtk GtkHScale
+    @gtkdoc gtk GtkVScale 
+    @param digits default value is [1]
+    @param draw_value default value is [false]
+    @param value_pos default value is [`LEFT]
+    @param inverted default value is [false]
+    @param update_policy default value is [`CONTINUOUS] *)
 val scale :
   Tags.orientation ->
   ?adjustment:GData.adjustment ->
@@ -92,8 +99,10 @@ val scale :
   ?packing:(widget -> unit) -> ?show:bool -> unit -> scale
 
 (** @gtkdoc gtk GtkScrollbar
-   @gtkdoc gtk GtkHScrollbar
-   @gtkdoc gtk GtkVScrollbar *)
+    @gtkdoc gtk GtkHScrollbar
+    @gtkdoc gtk GtkVScrollbar
+    @param inverted default value is [false]
+    @param update_policy default value is [`CONTINUOUS] *)
 val scrollbar :
   Tags.orientation ->
   ?adjustment:GData.adjustment ->
@@ -104,8 +113,8 @@ val scrollbar :
 (** {3 GtkRuler} *)
 
 (** @gtkdoc gtk GtkRuler
-   @gtkdoc gtk GtkHRuler
-   @gtkdoc gtk GtkVRuler *)
+    @gtkdoc gtk GtkHRuler
+    @gtkdoc gtk GtkVRuler *)
 class ruler :
   ([> Gtk.ruler] as 'a) Gtk.obj ->
   object
@@ -125,8 +134,9 @@ class ruler :
   end
 
 (** @gtkdoc gtk GtkRuler
-   @gtkdoc gtk GtkHRuler
-   @gtkdoc gtk GtkVRuler *)
+    @gtkdoc gtk GtkHRuler
+    @gtkdoc gtk GtkVRuler
+    @param metric default value is [`PIXELS] *)
 val ruler :
   Tags.orientation ->
   ?metric:Tags.metric_type ->

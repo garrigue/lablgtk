@@ -249,6 +249,8 @@ class cell_layout : ([> Gtk.cell_layout] as 'a) Gtk.obj ->
     method pack :
       ?expand:bool -> 
       ?from:Tags.pack_type -> #cell_renderer -> unit
+   (** @param expand default value is [false]
+       @param from default value is [`START] *)
     method clear : unit -> unit
     method add_attribute : #cell_renderer -> string -> 'b column -> unit
     method clear_attributes : #cell_renderer -> unit
@@ -357,6 +359,7 @@ class view : tree_view obj ->
     method event : GObj.event_ops
     method expand_all : unit -> unit
     method expand_row : ?all:bool -> tree_path -> unit
+    (** @param all default value is [false] *)
     method expander_column : view_column option
     method fixed_height_mode : bool
     method get_column : int -> view_column
@@ -381,6 +384,7 @@ class view : tree_view obj ->
     method set_cursor :
       ?cell:#cell_renderer ->
       ?edit:bool -> tree_path -> view_column -> unit (** @since GTK 2.2 *)
+    (** @param edit default value is [false] *)
     method set_enable_search : bool -> unit
     method set_expander_column : view_column option -> unit
     method set_fixed_height_mode : bool -> unit
@@ -409,6 +413,12 @@ val view :
   ?search_column:int ->
   ?border_width:int -> ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> view
+(** @param enable_search default value is [true]
+    @param fixed_height_mode default value is [false]
+    @param headers_clickable default value is [false]
+    @param headers_visible default value is [true]
+    @param reorderable default value is [false]
+    @param rules_hint default value is [false] *)
 
 (** {4 Cell Renderers} *)
 

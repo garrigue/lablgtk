@@ -102,6 +102,13 @@ val window :
   ?wm_class:string ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> window
+(** @param kind default value is [`TOPLEVEL]
+    @param allow_grow default value is [true]
+    @param allow_shrink default value is [false]
+    @param modal default value is [false]
+    @param resizable default value is [true]
+    @param type_hint default value is [`NORMAL]
+    @param position default value is [`NONE] *)
 
 val toplevel : #widget -> window option
 (** return the toplevel window of this widget, if existing *)
@@ -172,7 +179,8 @@ val dialog :
   ?wm_class:string ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> 'a dialog
-
+(** @param no_separator default value is [false]
+    @param destroy_with_parent default value is [false] *)
 
 (** Variation for safe typing *)
 type any_response = [GtkEnums.response | `OTHER of int]

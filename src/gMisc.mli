@@ -7,8 +7,8 @@ open GContainer
 (** Miscellaneous widgets *)
 
 (** @gtkdoc gtk GtkSeparator
-   @gtkdoc gtk GtkHSeparator
-   @gtkdoc gtk GtkVSeparator *)
+    @gtkdoc gtk GtkHSeparator
+    @gtkdoc gtk GtkVSeparator *)
 val separator :
   Tags.orientation ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> widget_full
@@ -22,13 +22,14 @@ class statusbar_context :
     val obj : Gtk.statusbar obj
     method context : Gtk.statusbar_context
     method flash : ?delay:int -> string -> unit
+    (** @param delay default value is [1000] ms *)
     method pop : unit -> unit
     method push : string -> statusbar_message
     method remove : statusbar_message -> unit
   end
 
 (** Report messages of minor importance to the user
-   @gtkdoc gtk GtkStatusbar *)
+    @gtkdoc gtk GtkStatusbar *)
 class statusbar : Gtk.statusbar obj ->
   object
     inherit GContainer.container_full
@@ -62,7 +63,7 @@ class calendar_signals : 'a obj ->
   end
 
 (** Display a calendar and/or allow the user to select a date
-   @gtkdoc gtk GtkCalendar *)
+    @gtkdoc gtk GtkCalendar *)
 class calendar : Gtk.calendar obj ->
   object
     inherit GObj.widget
@@ -88,7 +89,7 @@ val calendar :
 (** {3 Drawing Area} *)
 
 (** A widget for custom user interface elements
-   @gtkdoc gtk GtkDrawingArea *)
+    @gtkdoc gtk GtkDrawingArea *)
 class drawing_area : Gtk.drawing_area obj ->
   object
     inherit GObj.widget_full
@@ -106,7 +107,7 @@ val drawing_area :
 (** {3 Misc. Widgets} *)
 
 (** A base class for widgets with alignments and padding
-   @gtkdoc gtk GtkMisc *)
+    @gtkdoc gtk GtkMisc *)
 class misc : ([> Gtk.misc] as 'a) obj ->
   object
     inherit GObj.widget
@@ -122,7 +123,7 @@ class misc : ([> Gtk.misc] as 'a) obj ->
   end
 
 (** Produces an arrow pointing in one of the four cardinal directions
-   @gtkdoc gtk GtkArrow *)
+    @gtkdoc gtk GtkArrow *)
 class arrow : ([> Gtk.arrow] as 'a) obj ->
   object
     inherit misc
@@ -133,7 +134,9 @@ class arrow : ([> Gtk.arrow] as 'a) obj ->
     method shadow : Tags.shadow_type
   end
 
-(** @gtkdoc gtk GtkArrow *)
+(** @gtkdoc gtk GtkArrow
+    @param kind default value is [`RIGHT]
+    @param shadow default value is [`OUT] *)
 val arrow :
   ?kind:Tags.arrow_type ->
   ?shadow:Tags.shadow_type ->
@@ -149,7 +152,7 @@ type image_type =
   [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION ]
 
 (** A widget displaying an image
-   @gtkdoc gtk GtkImage *)
+    @gtkdoc gtk GtkImage *)
 class image : 'a obj ->
   object
     inherit misc
@@ -245,7 +248,12 @@ class label : Gtk.label obj ->
     method connect : widget_signals
   end
 
-(** @gtkdoc gtk GtkLabel *)
+(** @gtkdoc gtk GtkLabel
+    @param markup overrides [text] if both are present
+    @param use_underline default value is [false]
+    @param justify default value is [`LEFT]
+    @param selectable default value is [false]
+    @param line_wrap default values is [false] *)
 val label :
   ?text:string ->
   ?markup:string ->     (* overrides ~text if present *)
@@ -267,7 +275,7 @@ val label_cast : < as_widget : 'a obj ; .. > -> label
 (** {4 Tips query} *)
 
 (** @gtkdoc gtk GtkTipsQuery 
-   @deprecated . *)
+    @deprecated . *)
 class tips_query_signals : Gtk.tips_query obj ->
   object
     inherit GObj.widget_signals
@@ -283,8 +291,8 @@ class tips_query_signals : Gtk.tips_query obj ->
   end
 
 (** Displays help about widgets in the user interface
-   @gtkdoc gtk GtkTipsQuery
-   @deprecated . *)
+    @gtkdoc gtk GtkTipsQuery
+    @deprecated . *)
 class tips_query : Gtk.tips_query obj ->
   object
     inherit label_skel
@@ -303,7 +311,7 @@ class tips_query : Gtk.tips_query obj ->
   end
 
 (** @gtkdoc gtk GtkTipsQuery
-   @deprecated . *)
+    @deprecated . *)
 val tips_query :
   ?caller:#widget ->
   ?emit_always:bool ->
@@ -320,7 +328,7 @@ val tips_query :
 (** {3 Color and font selection} *)
 
 (** A widget used to select a color
-   @gtkdoc gtk GtkColorSelection *)
+    @gtkdoc gtk GtkColorSelection *)
 class color_selection : Gtk.color_selection obj ->
   object
     inherit GObj.widget_full
@@ -348,7 +356,7 @@ val color_selection :
   ?packing:(widget -> unit) -> ?show:bool -> unit -> color_selection
 
 (** A widget for selecting fonts.
-   @gtkdoc gtk GtkFontSelection *)
+    @gtkdoc gtk GtkFontSelection *)
 class font_selection : Gtk.font_selection obj ->
   object
     inherit GObj.widget_full

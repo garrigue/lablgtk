@@ -1,5 +1,8 @@
 $Id$
 
+2004.07.05 [Olivier]
+  * add ocamldoc comments for some optional parameters.
+
 2004.06.28 [Olivier]
   * support SVGZ files in Rsvg, fix for render_from_file on Win32, fix
     memory leak.

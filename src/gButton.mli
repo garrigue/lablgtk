@@ -278,7 +278,9 @@ class toolbar :
     method get_item_index : #tool_item_o -> int (** @since GTK 2.4 *)
     method get_n_items : int (** @since GTK 2.4 *)
     method get_nth_item : int -> [`toolitem ] Gtk.obj (** @since GTK 2.4 *)
-    method insert : ?pos:int -> #tool_item_o -> unit (** @since GTK 2.4 *)
+    method insert : ?pos:int -> #tool_item_o -> unit 
+    (** @since GTK 2.4 
+        @param pos default value is [-1] i.e. end of the toolbar *)
   end
 
 (** @gtkdoc gtk GtkToolbar *)

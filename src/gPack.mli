@@ -16,6 +16,9 @@ class box_skel : ([> box] as 'a) obj ->
     method pack :
       ?from:Tags.pack_type ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> widget -> unit
+   (** @param from default value is [`START]
+       @param expand default vaue is [false]
+       @param fill default value is [true], ignored if [expand] is [false] *)
     method reorder_child : widget -> pos:int -> unit
     method set_child_packing :
       ?from:Tags.pack_type ->
@@ -101,6 +104,13 @@ class table :
       ?fill:Tags.expand_type ->
       ?shrink:Tags.expand_type ->
       ?xpadding:int -> ?ypadding:int -> widget -> unit
+    (** @param left column number to attach the left side of the widget to
+        @param top  row number to attach the top of the widget to
+        @param right default value is [left+1]
+        @param bottom default value is [top+1]
+        @param expand default value is [`NONE]
+        @param fill default value is [`BOTH]
+        @param shrink default value is [`NONE] *)
     method col_spacings : int
     method columns : int
     method homogeneous : bool
@@ -267,7 +277,11 @@ class paned :
     method add1 : widget -> unit
     method add2 : widget -> unit
     method pack1 : ?resize:bool -> ?shrink:bool -> widget -> unit
+    (** @param resize default value is [false]
+        @param shrink default value is [false] *)
     method pack2 : ?resize:bool -> ?shrink:bool -> widget -> unit
+    (** @param resize default value is [false]
+        @param shrink default value is [false] *)
     method child1 : widget
     method child2 : widget
     method set_position : int -> unit
