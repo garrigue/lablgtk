@@ -87,6 +87,9 @@ type gdkRgbDither = "GDK_RGB_DITHER_"
 type gdkSelection = "GDK_SELECTION_"
   [ `PRIMARY | `SECONDARY ]
 
+type private xdata =
+  [ `BYTES "8" | `SHORTS "16" | `INT32S "32" | `INT64S "64" | `NONE "0" ]
+
 type gdkCursorType = "GDK_" [
   | `NUM_GLYPHS
   | `X_CURSOR

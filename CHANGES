@@ -1,5 +1,9 @@
 $Id$
 
+2002.10.26
+  * fix GdkPixbuf.create_pixmap
+  * add GdkEventClient (requested by Didier le Botlan)
+
 2002.08.26
   * add Gdk.Window.get_pointer_location (Tim Freeman)
 

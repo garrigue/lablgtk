@@ -162,3 +162,20 @@ module Proximity = struct
   external source : t -> input_source = "ml_GdkEventProximity_source"
   external deviceid : t -> int = "ml_GdkEventProximity_deviceid"
 end
+
+module Client = struct
+  type t = [ `CLIENT_EVENT ] event
+  let cast (ev : any) : t =
+    match get_type ev with
+      `CLIENT_EVENT -> Obj.magic ev
+    | _ -> invalid_arg "GdkEvent.Client.cast"
+  type xdata =
+    [ `BYTES of string
+    | `SHORTS of int array
+    | `INT32S of int32 array
+    | `INT64S of int64 array
+    | `NONE ]
+  external window : t -> window = "ml_GdkEventClient_window"
+  external message_type : t -> atom = "ml_GdkEventClient_message_type"
+  external data : t -> xdata = "ml_GdkEventClient_data"
+end
