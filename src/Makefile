@@ -129,7 +129,7 @@ MLOBJS4 = gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
 	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
 MLOBJS =  $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) gtkProps.cmo \
 	$(MLOBJS3) oGtkProps.cmo $(MLOBJS4)
-MLXOBJS = $(MLOBJS1) $(MLOBJS2) $(MLOBJS3) $(MLOBJS4)
+MLXOBJS = $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(MLOBJS3) $(MLOBJS4)
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
