@@ -47,7 +47,7 @@ class ticlist ~(widget : 'a GList.clist) ~name ~parent_tree ~pos
 	  ~set:(fun v ->
 	    let v = Array.of_list v in
 	    for i = 0 to Array.length v - 1 do
-	      clist#set_column_title i v.(i)
+	      clist#set_column i ~title:v.(i)
 	    done;
 	    true)
       ]
