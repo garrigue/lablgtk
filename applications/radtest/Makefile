@@ -49,7 +49,7 @@ endif
 	$(COMPOPT) $<
 
 # Targets
-MLOBJS = property.cmo treew.cmo load_parser.cmo \
+MLOBJS = utils.ml property.cmo treew.cmo load_parser.cmo \
   load_lexer.cmo main.cmo
 
 radtest: $(MLOBJS)  libtree2.a gtree2.cma

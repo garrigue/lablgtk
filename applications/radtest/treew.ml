@@ -13,98 +13,10 @@ open GEdit
 
 open GTree2
 
+open Utils
 open Property
 
-
-external test_modifier : Gdk.Tags.modifier -> int -> bool
-    = "ml_test_GdkModifier_val"
-
-
-
-(*********** some utility functions **************)
-let rec list_remove pred:f = function
-  | [] -> []
-  | hd :: tl -> if f hd then tl else hd :: (list_remove pred:f tl)
-
-let rec list_split pred:f = function
-  | [] -> [], []
-  | hd :: tl -> let g, d = list_split pred:f tl in
-    if f hd then (hd :: g, d) else (g, hd :: d)
-
-let list_pos ch in:l =
-  let rec aux pos = function
-    | [] -> raise Not_found
-    | hd :: tl -> if hd = ch then pos else aux (pos+1) tl
-  in aux 0 l
-
-(* moves the pos element up; pos is >= 1;
-   the first element is numbered 0 *)
-let rec list_reorder_up :pos = function
-    | hd1 :: hd2 :: tl when pos = 1 -> hd2 :: hd1 :: tl
-    | hd :: tl when pos > 1 -> hd :: (list_reorder_up pos:(pos-1) tl)
-    | _ -> failwith "list_reorder"
-
-(* moves the pos element down; pos is < length of l - 1;
-   the first element is numbered 0 *)
-let rec list_reorder_down :pos = 
-  list_reorder_up pos:(pos+1)
-
-let rec change_property_name oldname newname = function
-  | (n, p) :: tl when oldname = n -> (newname, p) :: tl
-  | (n, p) :: tl -> (n, p) :: change_property_name oldname newname tl
-  | [] -> failwith "change_property_name: name not found"
-
-(********************* memo ***************************)
-
-class ['a, 'd] memo () = object
-  constraint 'a = #gtkobj
-  val tbl = Hashtbl.create size:7
-  method add (obj : 'a) data:(data : 'd) =
-    Hashtbl.add tbl key:obj#get_id :data
-  method find : 'b. (#gtkobj as 'b) -> 'd =
-    fun obj -> Hashtbl.find tbl key:obj#get_id
-  method remove : 'c. (#gtkobj as 'c) -> unit =
-    fun obj -> Hashtbl.remove tbl key:obj#get_id
-end
-
 let memo = new memo ()
-
-
-
-let signal_id = ref 0
-
-let next_callback_id () : GtkSignal.id =
-  decr signal_id; Obj.magic (!signal_id : int)
-
-class ['a] signal = object
-  val mutable callbacks : (GtkSignal.id * ('a -> unit)) list = []
-  method connect :callback ?:after [< false >] =
-    let id = next_callback_id () in
-    callbacks <-
-      if after then callbacks @ [id,callback] else (id,callback)::callbacks;
-    id
-  method call arg =
-    List.iter callbacks fun:(fun (_,f) -> f arg)
-  method disconnect id =
-    List.mem_assoc id in:callbacks &&
-    (callbacks <- List.remove_assoc id in:callbacks; true)
-  method reset () = callbacks <- []
-end
-
-class type disconnector =
-  object
-    method disconnect : GtkSignal.id -> bool
-    method reset : unit -> unit
-  end
-
-class has_ml_signals = object
-  val mutable disconnectors = []
-  method private add_signal : 'a. 'a signal -> unit =
-    fun sgn -> disconnectors <- (sgn :> disconnector) :: disconnectors
-
-  method disconnect id =
-    List.exists disconnectors pred:(fun d -> d#disconnect id)
-end
 
 class tiwidget_signals :signals =
   let name_changed : string signal = signals in
@@ -187,8 +99,8 @@ object(self : 'stype)
 (* for children of a box *)
   method change_name_in_proplist : string -> string -> unit =
     fun _ _ -> ()
-  method set_property name values =
-    set_property_in_list name values proplist
+  method set_property name value_string =
+    set_property_in_list name value_string proplist
 
 (*
   val mutable parent_ti : tiwidget option = None
@@ -213,13 +125,18 @@ object(self : 'stype)
 
   method private save_start : Oformat.c -> unit = fun c ->
     Format.fprintf c#formatter
-      "<CLASS> %s %s@\n" classe name
-  method private save_end : Oformat.c -> unit = fun c -> ()
+      "@\n@[<2><%s name=%s>" classe name
+  method private save_end : Oformat.c -> unit = fun c ->
+    Format.fprintf c#formatter
+      "@]@\n</%s>" classe
   method save : Oformat.c -> unit = fun c ->
     self#save_start c;
-    Format.fprintf c#formatter "<CHILD>@\n";
+    List.iter proplist fun:
+      (fun (name, prop) ->
+	match prop_modified prop with
+	| None -> ()
+	| Some s -> Format.fprintf c#formatter "@\n\"%s\"=%s" name s);
     self#forall callback:(fun w -> w#save c);
-    Format.fprintf c#formatter "</CHILD>@\n";
     self#save_end c
 
   val name_changed : string signal = new signal
@@ -300,7 +217,7 @@ object(self : 'stype)
     label#set_text new_name;
     let old_name = name in
     name <- new_name;
-    property_update new_name;
+(*    property_update new_name; *)
     begin match self#glob#parent with
     | None -> ()
     | Some p -> p#tiw#change_name_in_proplist old_name new_name
@@ -330,10 +247,11 @@ object(self : 'stype)
     self#set_menu ();
 
     proplist <-  proplist @
-      [  "name", String (new rval init:name setfun:self#set_new_name); 
-        "width",        Int (new rval init:(-2)
+      [  "name", String (new rval init:name inits:name
+			   setfun:self#set_new_name); 
+        "width",        Int (new rval init:(-2) inits:"-2"
 			       setfun:(fun v -> widget#misc#set width:v));
-        "height",       Int (new rval init:(-2)
+        "height",       Int (new rval init:(-2) inits:"-2"
 	     setfun:(fun v -> widget#misc#set height:v))  ];
 
     self#add_signal name_changed
@@ -408,7 +326,7 @@ object(self)
   initializer
     proplist <-  proplist @
       [ "border width",
-	Int (new rval init:0
+	Int (new rval init:0 inits:"0"
 	       setfun:(fun v -> container#set_border_width v)) ];
 
     tree_item#connect#drag#data_received callback:
@@ -448,9 +366,9 @@ object
       "%s@\n@]@." name
 
   method private save_start : Oformat.c -> unit = fun c ->
-    Format.fprintf c#formatter "<WINDOW> %s@\n" name
+    Format.fprintf c#formatter "@[<0>@\n@[<2><window name=%s>" name
   method private save_end : Oformat.c -> unit = fun c ->
-    Format.fprintf c#formatter "</WINDOW>@\n"
+    Format.fprintf c#formatter "@]@\n</window>@\n@]"
 
   method menu :add remove:_ =
     let menu = new menu and menu_add = new menu in
@@ -481,7 +399,7 @@ object
     window#set_wm title:name;
     proplist <-	proplist @  [
           "title",
-          String (new rval init:name
+          String (new rval init:name inits:name
 	    setfun:(fun v -> window#set_wm title:v));
 	"allow_shrink", Bool (new rval init:true inits:"true"
 	   setfun:(fun v -> window#set_policy allow_shrink:v));
@@ -489,9 +407,9 @@ object
 	setfun:(fun v -> window#set_policy allow_grow:v));
       "auto_shrink",  Bool (new rval init:false inits:"false"
 	setfun:(fun v -> window#set_policy auto_shrink:v));
-      "x position",   Int (new rval init:(-2)
+      "x position",   Int (new rval init:(-2)  inits:"-2"
 	     setfun:(fun v -> window#misc#set x:v));
-      "y position",   Int (new rval init:(-2)
+      "y position",   Int (new rval init:(-2) inits:"-2"
 	     setfun:(fun v -> window#misc#set y:v))  ]
 end
 
@@ -510,8 +428,8 @@ object
     proplist <- List.fold_left acc:proplist fun:
 	(fun acc:pl propname ->
 	  change_property_name (oldn ^ propname) (newn ^ propname) pl)
-	[ "::expand"; "::fill"; "::padding" ];
-    property_update newn
+	[ "::expand"; "::fill"; "::padding" ]
+(*    property_update newn *)
 
   method child_up child =
     let pos = list_pos child#tiw in:(List.map fun:fst children) in
@@ -538,7 +456,7 @@ object
 	  setfun:(fun v -> box#set_child_packing (child#base) expand:v));
 	(n ^ "::fill"),    Bool (new rval init:true inits:"true"
 	   setfun:(fun v -> box#set_child_packing (child#base) fill:v));
-        (n ^ "::padding"), Int (new rval init:0
+        (n ^ "::padding"), Int (new rval init:0 inits:"0"
 	  setfun:(fun v -> box#set_child_packing (child#base) padding:v))
       ]
          
@@ -583,7 +501,7 @@ object
     proplist <-  proplist @ [
        "homogeneous",  Bool (new rval init:false inits:"false"
 	  setfun:(fun v -> box#set_packing homogeneous:v));
-      "spacing",      Int (new rval init:0
+      "spacing",      Int (new rval init:0 inits:"0"
 	  setfun:(fun v -> box#set_packing spacing:v)) ]
 end
 
@@ -601,7 +519,7 @@ let new_tivbox :name = new tivbox widget:(new vbox) :name
 class tibutton widget:(button : #button) :name :parent_tree =
 object
 
-  inherit tiwidget :name classe:"button" widget:(button :> widget) :parent_tree
+  inherit tiwidget :name classe:"button" widget:(button :> widget) :parent_tree as widget
 
 
   method emit_code c =
@@ -610,10 +528,10 @@ object
 
   initializer
     proplist <-  proplist @ [
-      "border_width",
-	Int (new rval init:0
+      "border width",
+	Int (new rval init:0 inits:"0"
 	       setfun:(fun v -> button#set_border_width v));
-      "label",   String (new rval init:name
+      "label",   String (new rval init:name inits:name
              setfun:(fun v -> button#remove (List.hd button#children);
 	       button#add (new label text:v xalign:0.5 yalign:0.5)))
     ]
@@ -641,9 +559,9 @@ object
   initializer
     proplist <-  proplist @ [
       "border width",
-	Int (new rval init:0
+	Int (new rval init:0 inits:"0"
 	       setfun:(fun v -> button#set_border_width v));
-      "label",   String (new rval init:name
+      "label",   String (new rval init:name inits:name
              setfun:(fun v -> button#remove (List.hd button#children);
 	       button#add (new label text:v xalign:0.5 yalign:0.5)))
     ]
@@ -667,9 +585,9 @@ object
   initializer
     proplist <-  proplist @ [
       "border width",
-	Int (new rval init:0
+	Int (new rval init:0 inits:"0"
 	       setfun:(fun v -> button#set_border_width v));
-      "label",   String (new rval init:name
+      "label",   String (new rval init:name inits:name
              setfun:(fun v -> button#remove (List.hd button#children);
 	       button#add (new label text:v xalign:0.5 yalign:0.5)))
     ]
@@ -698,7 +616,7 @@ object
   initializer
     label#set_text name;
     proplist <-  proplist @ [
-      "text",   String (new rval init:name
+      "text",   String (new rval init:name inits:name
              setfun:(fun v -> label#set_text v))
     ]
 end
@@ -719,9 +637,10 @@ class tiframe widget:(frame : frame) :name :parent_tree = object
   initializer
     frame#set_label name;
     proplist <-  proplist @ [
-          "label", String (new rval init:name
+          "label", String (new rval init:name inits:name
 	     setfun:(fun v -> frame#set_label v));
-          "label xalign", Float (new rval init:0.0 value_list:["min", 0. ; "max", 1.]
+          "label xalign", Float (new rval init:0.0 inits:"0.0"
+				   value_list:["min", 0. ; "max", 1.]
              setfun:(fun v -> frame#set_label xalign:v));
           "shadow", Shadow (new rval init:`ETCHED_IN inits:"ETCHED_IN"
 	     setfun:(fun v -> frame#set_shadow_type v))
@@ -834,7 +753,7 @@ let new_tiwidget :classe = List.assoc classe in:new_class_list
 
 
 class tiwrapper :classe :name parent_tree:(parent_tree : tree2) =
-object(self : 'stype)
+object(self)
   inherit tiwrapper0
 
   val tiw = new_tiwidget :classe :name :parent_tree
@@ -855,7 +774,7 @@ object(self : 'stype)
 	  memo#remove tiwr#tiw#tree_item;
 	  tip#tiw#tree#remove tiwr#tiw#tree_item;
 	  tip#tiw#remove tiwr#tiw;
-	  property_remove tiwr#tiw in
+(*	  property_remove tiwr#tiw *) in
     let rec remove_tiws (tw : tiwidget) =
       List.iter fun:remove_tiws (List.map fun:fst tw#children);
       remove_one_tiwr tw#glob in
@@ -866,7 +785,7 @@ object(self : 'stype)
     let (child : tiwrapper0) = new tiwrapper :classe :name parent_tree:tiw#tree in
     child#set_parent (self : #tiwrapper0 :> tiwrapper0);
     tiw#add child#tiw;
-    property_add child#tiw;
+    prop_affich child#tiw;
     child
 
   method add_child classe () = 
@@ -917,7 +836,8 @@ let new_window :name =
     | [] ->  last_sel := None
     | sel :: _  -> let ti = memo#find sel in
       ti#tiw#base#misc#set state:`SELECTED;
-      cb#entry#set_text ti#tiw#name;
+(*      cb#entry#set_text ti#tiw#name; *)
+      prop_affich ti#tiw;
       last_sel := Some ti
 					       );    
   tree_window#connect#event#focus_out callback:
@@ -930,7 +850,7 @@ let new_window :name =
       |	None -> ()
       |	Some sl -> sl#tiw#base#misc#set state:`SELECTED end;
       true);
-  property_add tiw1#tiw;
+  prop_affich tiw1#tiw;
   tree_window#connect#event#key_press callback:
     begin fun ev ->
       let state = GdkEvent.Key.state ev in
