@@ -12,51 +12,68 @@ class item_signals obj ?:after = object
   method collapse = Signal.connect obj sig:TreeItem.Signals.collapse ?:after
 end
 
-class item_wrapper obj = object
+class ['a] pre_item_wrapper :wrapper obj = object
   inherit container obj
   method as_item : TreeItem.t obj = obj
   method connect = new item_signals ?obj
-  method set_subtree : 'a. (#is_tree as 'a) -> unit =
+  method set_subtree : 'b. (#is_tree as 'b) -> unit =
     fun w -> TreeItem.set_subtree obj w#as_tree
   method remove_subtree () = TreeItem.remove_subtree obj
   method expand () = TreeItem.expand obj
   method collapse () = TreeItem.collapse obj
-  method subtree = new tree_wrapper (TreeItem.subtree obj)
+  method subtree : 'a = wrapper (TreeItem.subtree obj)
 end
 
-and tree_signals obj ?:after = object
+class ['a] pre_tree_signals obj :wrapper ?:after = object
   inherit container_signals obj ?:after
   method selection_changed =
     Signal.connect ?obj ?sig:Tree.Signals.selection_changed ?:after
-(*
-  method select_child 
-     callback:((#is_widget as 'a) -> unit) -> ?after:bool -> Gtk.Signal.id
-	  = fun :callback -> Signal.connect obj sig:Tree.Signals.select_child
-	  callback:(fun w -> callback (w #as_widget))
-  method unselect_child    = Signal.connect sig:Tree.Signals.unselect_child
-*)
+  method select_child :callback =
+    Signal.connect obj sig:Tree.Signals.select_child ?:after
+      callback:(fun w -> callback (wrapper w : 'a)) 
+  method unselect_child :callback =
+    Signal.connect obj sig:Tree.Signals.unselect_child ?:after
+      callback:(fun w -> callback (wrapper w : 'a)) 
 end
 
-and tree_wrapper obj = object
-  inherit [TreeItem.t,item_wrapper] item_container obj
-  method private wrap w = new item_wrapper (TreeItem.cast w)
+class virtual ['a] pre_tree_wrapper obj = object (self)
+  inherit [TreeItem.t,'a] item_container obj
   method as_tree = Tree.coerce obj
   method insert w :pos =
     Tree.insert obj (w #as_item) :pos
-  method connect = new tree_signals obj
+  method connect = new pre_tree_signals ?obj ?wrapper:self#wrap
   method clear_items = Tree.clear_items obj
   method select_item = Tree.select_item obj
   method unselect_item = Tree.unselect_item obj
-  method child_position : 'a. (TreeItem.t #is_item as 'a) -> _ =
+  method child_position : 'b. (TreeItem.t #is_item as 'b) -> _ =
     fun w -> Tree.child_position obj w#as_item
 end
+
+class tree_wrapper' obj = object
+  inherit [tree_wrapper' pre_item_wrapper] pre_tree_wrapper obj
+  method private wrap w =
+    new pre_item_wrapper wrapper:(new tree_wrapper') (TreeItem.cast w)
+end
+
+class item_wrapper obj =
+  [tree_wrapper'] pre_item_wrapper wrapper:(new tree_wrapper')
+    (TreeItem.coerce obj)
+
+class tree_wrapper obj = object
+  inherit [item_wrapper] pre_tree_wrapper (Tree.coerce obj)
+  method private wrap w = new item_wrapper (TreeItem.cast w)
+end
+
+class tree_signals obj =
+  [item_wrapper] pre_tree_signals ?obj
+    ?wrapper:(fun w -> new item_wrapper (TreeItem.cast w))
 
 class item ?:label ?:border_width ?:width ?:height ?:packing =
   let w = TreeItem.create ?None ?:label in
   let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit item_wrapper w
-    initializer pack_return :packing self
+    initializer pack_return :packing (self :> item_wrapper)
   end
 
 class tree ?:selection_mode ?:view_mode ?:view_lines
@@ -67,5 +84,6 @@ class tree ?:selection_mode ?:view_mode ?:view_lines
     Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit tree_wrapper w
-    initializer pack_return :packing self
+    initializer pack_return :packing (self :> tree_wrapper)
   end
+

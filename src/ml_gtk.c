@@ -1475,9 +1475,10 @@ value ml_gtk_timeout_add (value interval, value clos)
 }
 ML_1 (gtk_timeout_remove, Int_val, Unit)
 
+/*
 #include "ml_gtkcaller.h"
 ML_0 (gtk_caller_new, Val_GtkWidget)
-
+*/
 
 value ml_class_init=0;
 

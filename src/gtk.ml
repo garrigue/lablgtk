@@ -284,6 +284,7 @@ module Object = struct
   end
 end
 
+(*
 module Caller = struct
   type t = [caller] obj
   external create : unit -> t = "ml_gtk_caller_new"
@@ -299,6 +300,7 @@ module Caller = struct
       fun:(fun callback -> Signal.connect sig:Signals.call obj :callback);
     obj
 end
+*)
 
 module Data = struct
   module Signals = struct

@@ -1,5 +1,9 @@
 $Id$
 
+1999.6.3
+  * disabled gtk_caller
+  * subtle hack to have GTree get the right interface
+
 1999.6.2
   * integrated changes from Hubert in Gtk, GtkObj and testgtk.ml
   * added G* modules to replace GtkObj. "make lablgtk2" for it
