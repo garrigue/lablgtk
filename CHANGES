@@ -1,5 +1,9 @@
 $Id$
 
+1999.5.31
+  * Argv.get_{string,pointer,object} may raise Null_pointer (Jacques)
+  * Support for creating new widgets (Hubert)
+
 1999.5.28
   * a few stylistic corrections
   * added Packer in gtk.ml

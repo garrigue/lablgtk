@@ -13,6 +13,7 @@ end
 class gtkobj_signals obj = object
   val obj = obj
   method destroy = Signal.connect sig:Object.Signals.destroy obj
+  method emit_stop_by_name = Signal.emit_stop_by_name obj
 end
 
 class gtkobj_full obj = object
@@ -189,6 +190,7 @@ class handle_box_skel obj = object
 end
 
 class handle_box_signals obj = object
+  inherit container_signals obj
   method child_attached = Signal.connect sig:HandleBox.Signals.child_attached obj
   method child_detached = Signal.connect sig:HandleBox.Signals.child_detached obj
 end
@@ -342,8 +344,36 @@ let new_tree_item ?opt ?:label =
   Container.setter ?(TreeItem.create ?opt ?:label)
     ?cont:(pack_return (new tree_item))
 
-class box obj = object
-  inherit container_full obj
+class tree_signals obj = object
+  inherit container_signals obj
+  method selection_changed =
+    Signal.connect ?obj ?sig:Tree.Signals.selection_changed
+(*
+  method select_child 
+     callback:((#is_widget as 'a) -> unit) -> ?after:bool -> Gtk.Signal.id
+	  = fun :callback -> Signal.connect obj sig:Tree.Signals.select_child
+	  callback:(fun w -> callback (w #as_widget))
+  method unselect_child    = Signal.connect sig:Tree.Signals.unselect_child
+*)
+end
+
+class tree obj = object
+  inherit container obj
+  method as_tree = Tree.coerce obj
+  method insert (w : tree_item) ?:pos =
+    Tree.insert obj ?(w #as_item) ?:pos
+(*  method remove_item : 'a . (#is_widget as 'a) -> unit
+      = fun w -> Tree.remove_item obj (w #as_widget) *)
+  method connect = new tree_signals obj
+  method clear_items = Tree.clear_items obj
+  method select_item = Tree.select_item obj
+  method unselect_item = Tree.unselect_item obj
+  method child_position (child : TreeItem.t obj) =
+    Tree.child_position obj child
+end
+
+class box_skel obj = object
+  inherit container obj
   method pack : 'b . (#has_frame as 'b) -> _ =
     fun w ->  Box.pack ?obj ?w#frame
   method set_packing = Box.setter ?obj ?cont:null_cont
@@ -351,8 +381,10 @@ class box obj = object
     fun w -> Box.set_child_packing ?obj ?w#frame
 end
 
-class box_create dir ?:homogeneous ?:spacing =
-  box (Box.create dir ?:homogeneous ?:spacing)
+class box obj = object
+  inherit box_skel obj
+  method connect = new container_signals obj
+end
 
 let new_box dir ?:homogeneous ?:spacing =
   let w = Box.create dir ?:homogeneous ?:spacing in
@@ -661,6 +693,21 @@ let new_entry ?:max_length ?unit =
   Entry.setter ?(Entry.create ?:max_length ?unit) ?max_length:None
     ?cont:(pack_return (new entry))
 
+class spin_button obj = object
+  inherit entry obj
+(*  method configure = SpinButton.configure *)
+  method get_adjustment = SpinButton.get_adjustment obj
+  method get_value = SpinButton.get_value obj
+  method get_value_as_int = SpinButton.get_value_as_int obj
+  method spin = SpinButton.spin obj
+  method update = SpinButton.update obj
+  method set = SpinButton.set obj
+end
+
+let new_spin_button ?:adjustment :rate :digits =
+  SpinButton.setter ?(SpinButton.create ?:adjustment :rate :digits)
+    ?adjustment:None ?cont:(pack_return (new spin_button))
+
 class combo obj = object
   val combo = obj
   inherit entry (Combo.entry obj)
@@ -699,22 +746,57 @@ let new_text ?opt ?:hadjustment ?:vadjustment =
   Text.setter ?(Text.create ?:hadjustment ?:vadjustment ?opt) ?point:None
     ?cont:(pack_return (new text))
 
-class misc obj = object
-  inherit widget_full obj
+class misc_skel obj = object
+  inherit widget obj
   method set_alignment = Misc.set_alignment obj
   method set_padding = Misc.set_padding obj
 end
 
-class label obj = object
-  inherit misc obj
+class misc obj = object
+  inherit misc_skel obj
+  method connect = new widget_signals obj
+end
+
+class label_skel obj = object
+  inherit misc_skel obj
   method set_text = Label.set_text obj
   method set_justify = Label.set_justify obj
   method text = Label.get_text obj
 end
 
+class label obj = object
+  inherit label_skel obj
+  method connect = new widget_signals obj
+end
+
 let new_label ?:text [< "" >] =
   Label.setter ?(Label.create text) ?text:None
     ?cont:(Misc.setter ?cont:(pack_return (new label)))
+
+class tips_query_signals obj = object
+  inherit widget_signals obj
+  method widget_entered :callback = 
+    Signal.connect sig:TipsQuery.Signals.widget_entered obj 
+      callback:(function None -> callback None
+	| Some w -> callback (Some (new widget w)))
+  method widget_selected :callback = 
+    Signal.connect sig:TipsQuery.Signals.widget_selected obj
+      callback:(function None -> callback None
+	| Some w -> callback (Some (new widget w)))
+end
+
+class tips_query obj = object
+  inherit label_skel obj
+  method start () = TipsQuery.start obj
+  method stop () = TipsQuery.stop obj
+  method set_caller : 'a . (#is_widget as 'a) -> unit =
+    fun w -> TipsQuery.set_caller obj (w #as_widget)
+  method set_labels = TipsQuery.set_labels obj
+  method connect = new tips_query_signals obj
+end
+
+let new_tips_query ?(_ : unit option) =
+  TipsQuery.setter ?(TipsQuery.create ()) ?cont:(new tips_query )
 
 class pixmap obj = object
   inherit misc obj

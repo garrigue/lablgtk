@@ -3,8 +3,11 @@
 open Misc
 
 exception Error of string
-let _ = Callback.register_exception "gtkerror" (Error"")
 exception Warning of string
+exception Null_pointer
+let _ =
+  Callback.register_exception "gtkerror" (Error"");
+  Callback.register_exception "null_pointer" Null_pointer
 
 type 'a obj
 type clampf = float
@@ -70,6 +73,7 @@ module GtkArg = struct
   external get_bool : t -> bool = "ml_gtk_arg_get_bool"
   external get_int : t -> int = "ml_gtk_arg_get_int"
   external get_float : t -> float = "ml_gtk_arg_get_float"
+  (* These 3 may raise [Null_pointer] *)
   external get_string : t -> string = "ml_gtk_arg_get_string"
   external get_pointer : t -> pointer = "ml_gtk_arg_get_pointer"
   external get_object : t -> unit obj = "ml_gtk_arg_get_object"
@@ -82,7 +86,7 @@ module GtkArg = struct
   external set_float : t -> float -> unit = "ml_gtk_arg_set_float"
   external set_string : t -> string -> unit = "ml_gtk_arg_set_string"
   external set_pointer : t -> pointer -> unit = "ml_gtk_arg_set_pointer"
-  external set_object : t -> unit obj -> unit = "ml_gtk_arg_set_object"
+  external set_object : t -> 'a obj -> unit = "ml_gtk_arg_set_object"
 end
 
 module Argv = struct
@@ -131,6 +135,12 @@ module Signal = struct
   external emit : 'a obj -> name:string -> unit = "ml_gtk_signal_emit_by_name"
   let emit (obj : 'a obj) sig:(sgn : ('a,unit->unit) t) =
     emit obj name:sgn.name
+  external emit_stop_by_name: 'a obj -> name:string -> unit =
+    "ml_gtk_signal_emit_stop_by_name"
+  external handler_block: 'a obj -> id -> unit
+      = "ml_gtk_signal_handler_block"
+  external handler_unblock: 'a obj -> id -> unit
+      = "ml_gtk_signal_handler_unblock"
   let marshal_unit f _ = f ()
   let marshal_int f argv = f (Argv.get_int argv pos:0)
 end
@@ -1693,11 +1703,10 @@ module Tree = struct
   let cast w : t obj =
     if Object.is_a w "GtkTree" then Obj.magic w
     else invalid_arg "Gtk.Tree.cast"
+  external coerce : [> tree] obj -> t obj = "%identity"
   external create : unit -> t obj = "ml_gtk_tree_new"
-  external insert : [> tree] obj -> [> widget] obj -> ?pos:int -> unit
+  external insert : [> tree] obj -> [> treeitem] obj -> ?pos:int -> unit
       = "ml_gtk_tree_insert"
-  external remove : [> tree] obj -> [> widget] obj -> unit
-      = "ml_gtk_container_remove"
   external clear_items : [> tree] obj -> start:int -> end:int -> unit
       = "ml_gtk_tree_clear_items"
   external select_item : [> tree] obj -> pos:int -> unit
@@ -1721,7 +1730,7 @@ module Tree = struct
   let set = setter ?cont:Container.set
   module Signals = struct
     open Signal
-    let widget_entered : ([> tree],_) t =
+    let selection_changed : ([> tree],_) t =
       { name = "selection_changed"; marshaller = marshal_unit }
     let select_child : ([> tree],_) t =
       { name = "select_child"; marshaller = Widget.Signals.marshal }
@@ -1842,6 +1851,9 @@ module SpinButton = struct
       [> adjustment] optobj -> rate:float -> digits:int -> t obj
       = "ml_gtk_spin_button_new"
   let create ?:adjustment = create (optboxed adjustment)
+  external configure : [> spinbutton] obj -> adjustment:[> adjustment] optobj ->
+    rate:float -> digits:int -> unit ="ml_gtk_spin_button_configure"
+  let configure w ?:adjustment = configure w adjustment:(optboxed adjustment)
   external set_adjustment : [> spinbutton] obj -> [> adjustment] obj -> unit
       = "ml_gtk_spin_button_set_adjustment"
   external get_adjustment : [> spinbutton] obj -> Adjustment.t obj
@@ -1862,8 +1874,14 @@ module SpinButton = struct
       = "ml_gtk_spin_button_spin"
   external set_wrap : [> spinbutton] obj -> bool -> unit
       = "ml_gtk_spin_button_set_wrap"
+  external set_shadow_type : [> spinbutton] obj -> shadow_type -> unit
+      = "ml_gtk_spin_button_set_shadow_type"
+  external set_snap_to_ticks : [> spinbutton] obj -> bool -> unit
+      = "ml_gtk_spin_button_set_snap_to_ticks"
+  external update : [> spinbutton] obj -> unit
+      = "ml_gtk_spin_button_update"
   let setter w :cont ?:adjustment ?:digits ?:value ?:update_policy
-      ?:numeric ?:wrap =
+      ?:numeric ?:wrap ?:shadow_type ?:snap_to_ticks =
     let may_set f = may fun:(f w) in
     may_set set_adjustment adjustment;
     may_set set_digits digits;
@@ -1871,6 +1889,8 @@ module SpinButton = struct
     may_set set_update_policy update_policy;
     may_set set_numeric numeric;
     may_set set_wrap wrap;
+    may_set set_shadow_type shadow_type;
+    may_set set_snap_to_ticks snap_to_ticks;
     cont w
   let set = setter ?cont:Entry.set
 end
@@ -2089,11 +2109,28 @@ module TipsQuery = struct
       { name = "start_query"; marshaller = marshal_unit }
     let stop_query : ([> tipsquery],_) t =
       { name = "stop_query"; marshaller = marshal_unit }
-    (* Not really implemented *)
-    let widget_entered : ([> tipsquery],_) t =
-      { name = "widget_entered"; marshaller = marshal_unit }
-    let widget_selected : ([> tipsquery],_) t =
-      { name = "widget_selected"; marshaller = marshal_unit }
+    let widget_entered :
+	([> tipsquery],
+	 Widget.t obj option-> string option -> string option -> unit) t =
+      let marshal f argv =
+	f (try Some (Widget.cast (Argv.get_object argv pos:0))
+	   with Null_pointer -> None)
+	  (try Some(Argv.get_string argv pos:1) with Null_pointer -> None)
+	  (try Some(Argv.get_string argv pos:2) with Null_pointer -> None) in
+      { name = "widget_entered"; marshaller = marshal }
+    let widget_selected :
+	([> tipsquery],
+	 Widget.t obj option ->
+	 string option -> string option -> Gdk.Event.Button.t -> bool) t =
+      let marshal f argv =
+	let stop = 
+	  f (try Some (Widget.cast (Argv.get_object argv pos:0))
+	     with Null_pointer -> None)
+	    (try Some(Argv.get_string argv pos:1) with Null_pointer -> None)
+	    (try Some(Argv.get_string argv pos:2) with Null_pointer -> None)
+	    (Gdk.Event.unsafe_copy (Argv.get_pointer argv pos:3)) in
+	Argv.set_result_bool argv stop in
+      { name = "widget_selected"; marshaller = marshal }
   end
 end
 
@@ -2289,3 +2326,56 @@ end
 
 let _ = Glib.set_warning_handler (fun msg -> raise (Warning msg))
 let _ = Glib.set_print_handler (fun msg -> print_string msg)
+
+module New = struct
+  type t
+type object_type =
+  | OBJECT  | WIDGET  | MISC  | LABEL  | ACCELLABEL  | TIPSQUERY  | ARROW
+  | IMAGE   | PIXMAP  | CONTAINER  | BIN  | ALIGNMENT  | FRAME  | ASPECTFRAME
+  | BUTTON  | TOGGLEBUTTON  | CHECKBUTTON  | RADIOBUTTON  | OPTIONMENU
+  | ITEM  | MENUITEM  | CHECKMENUITEM  | RADIOMENUITEM  | TEAROFFMENUITEM
+  | LISTITEM  | TREEITEM  | WINDOW  | COLORSELECTIONDIALOG  | DIALOG
+  | INPUTDIALOG  | FILESELECTION  | FONTSELECTIONDIALOG  | PLUG
+  | EVENTBOX  | HANDLEBOX  | SCROLLEDWINDOW  | VIEWPORT  | BOX
+  | BUTTONBOX  | HBUTTONBOX  | VBUTTONBOX  | VBOX  | COLORSELECTION
+  | GAMMACURVE  | HBOX  | COMBO  | STATUSBAR  | CLIST  | CTREE  | FIXED
+  | NOTEBOOK  | FONTSELECTION  | PANED  | HPANED  | VPANED  | LAYOUT
+  | LIST  | MENUSHELL  | MENUBAR  | MENU  | PACKER  | SOCKET  | TABLE
+  | TOOLBAR  | TREE  | CALENDAR  | DRAWINGAREA  | CURVE  | EDITABLE
+  | ENTRY  | SPINBUTTON  | TEXT  | RULER  | HRULER  | VRULER  | RANGE
+  | SCALE  | HSCALE  | VSCALE  | SCROLLBAR  | HSCROLLBAR  | VSCROLLBAR
+  | SEPARATOR  | HSEPARATOR  | VSEPARATOR  | PREVIEW  | PROGRESS
+  | PROGRESSBAR  | DATA  | ADJUSTMENT  | TOOLTIPS  | ITEMFACTORY
+
+  external set_ml_class_init  : (t -> unit) -> unit = "set_ml_class_init"
+  external signal_new : string -> int -> t -> object_type -> int  -> int
+      = "ml_gtk_signal_new"
+  external object_class_add_signals : t -> int array -> int -> unit
+      = "ml_gtk_object_class_add_signals"
+  external type_unique : string -> parent:object_type -> nsignals:int -> int
+      = "ml_gtk_type_unique"
+  external type_new : int -> [> widget] obj
+      = "ml_gtk_type_new"
+
+let new_widget_get_type name :parent :nsignals =
+  let new_type = ref 0 in
+  let aux () =
+    if !new_type = 0 then
+      new_type := type_unique name :parent :nsignals;
+    !new_type
+  in aux
+  
+open Signal
+
+let make_new_widget name :parent :signal_array =
+  let nsignals = Array.length signal_array in
+  let class_init_func classe =
+    let signal_num_array = Array.create len:nsignals fill:0 in
+    for i = 0 to nsignals-1 do
+      signal_num_array.(i) <- signal_new signal_array.(i).name 1 classe parent i
+    done;
+    object_class_add_signals classe signal_num_array nsignals in
+  fun () ->
+    set_ml_class_init class_init_func;
+    type_new (new_widget_get_type name :parent :nsignals ())
+end
