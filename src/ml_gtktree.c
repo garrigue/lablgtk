@@ -167,7 +167,7 @@ static gboolean gtk_tree_model_foreach_func(GtkTreeModel *model,
   viter = Val_GtkTreeIter(iter);
   vret = callback2_exn(*closure, vpath, viter);
   if (Is_exception_result(vret)) {
-    CAML_EXN_LOG();
+    CAML_EXN_LOG("gtk_tree_model_foreach_func");
     CAMLreturn(FALSE);
   }
   CAMLreturn(Bool_val(vret));
@@ -299,7 +299,7 @@ static gboolean gtk_tree_selection_func(GtkTreeSelection *s, GtkTreeModel *m,
   value vp = Val_GtkTreePath_copy(p);
   value ret = callback2(*(value*)clos_p, vp, Val_bool(cs));
   if (Is_exception_result(ret)) {
-    CAML_EXN_LOG();
+    CAML_EXN_LOG("gtk_tree_selection_func");
     return TRUE;
   }
   return Bool_val(ret); 
@@ -320,7 +320,8 @@ static void gtk_tree_selection_foreach_func(GtkTreeModel      *model,
 { 
   value p = Val_GtkTreePath_copy(path);
   value ret = callback(*(value*)data, p);
-  if (Is_exception_result(ret)) CAML_EXN_LOG();
+  if (Is_exception_result(ret)) 
+    CAML_EXN_LOG("gtk_tree_selection_foreach_func");
 }
 CAMLprim value ml_gtk_tree_selection_selected_foreach (value s, value clos)
 {
@@ -395,7 +396,8 @@ static void gtk_tree_cell_data_func(GtkTreeViewColumn *tree_column, GtkCellRende
   vmod  = Val_GAnyObject(tree_model);
   vit   = Val_GtkTreeIter(iter);
   ret = callback2_exn(*closure, vmod, vit);
-  if (Is_exception_result(ret)) CAML_EXN_LOG();
+  if (Is_exception_result(ret)) 
+    CAML_EXN_LOG("gtk_tree_cell_data_func");
   CAMLreturn0;
 }
 CAMLprim value ml_gtk_tree_view_column_set_cell_data_func(value vcol, value cr, value cb)
@@ -561,7 +563,7 @@ static gint gtk_tree_iter_compare_func(GtkTreeModel *model,
   obj = Val_GAnyObject(model);
   ret = callback3_exn(*clos, obj, iter_a, iter_b);
   if (Is_exception_result(ret)) {
-    CAML_EXN_LOG();
+    CAML_EXN_LOG("gtk_tree_iter_compare_func");
     CAMLreturn(0);
   }
   CAMLreturn(Int_val(ret));
@@ -602,7 +604,7 @@ static gboolean gtk_tree_model_filter_visible_func(GtkTreeModel *model,
   obj = Val_GAnyObject(model);
   ret = callback2_exn(*clos, obj, it);
   if (Is_exception_result(ret)) {
-    CAML_EXN_LOG();
+    CAML_EXN_LOG("gtk_tree_model_filter_visible_func");
     CAMLreturn(FALSE);
   }
   CAMLreturn(Bool_val(ret));

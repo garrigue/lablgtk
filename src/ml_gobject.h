@@ -35,4 +35,4 @@ value Val_gboxed_new(GType t, gpointer p); /* without copy */
 /* Yell if a caml callback raised an exception */
 #undef  G_LOG_DOMAIN
 #define G_LOG_DOMAIN "LablGTK"
-#define CAML_EXN_LOG() g_critical("%s: callback raised an exception", G_STRFUNC)
+#define CAML_EXN_LOG(name) g_critical("%s: callback raised an exception", name)
