@@ -147,8 +147,8 @@ class table obj = object
     fun w -> Table.attach obj w#widget
 end
 
-let new_table r c ?:homogeneous =
-  new table (Table.create r c ?:homogeneous)
+let new_table :rows :columns ?:homogeneous =
+  new table (Table.create :rows :columns ?:homogeneous)
 
 class ['a] editable obj = object
   inherit ['a] widget_skel obj

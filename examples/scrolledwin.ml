@@ -14,7 +14,7 @@ let main () =
   Box.pack (Dialog.vbox window) scrolled_window;
   Widget.show scrolled_window;
 
-  let table = Table.create 10 10 in
+  let table = Table.create rows:10 columns:10 in
   Table.set table row_spacings: 10 col_spacings: 10;
 
   Container.add scrolled_window table;
