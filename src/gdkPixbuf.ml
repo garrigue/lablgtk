@@ -67,7 +67,7 @@ let from_data ~width ~height ?(bits=8) ?rowstride ?(has_alpha=false) data =
   let nc = if has_alpha then 4 else 3 in
   let rowstride = match rowstride with None -> width * nc | Some r -> r in
   if bits <> 8 || rowstride < width * nc || width <= 0 || height <= 0
-  || Gpointer.length data < (rowstride * (height - 1) + width) * nc
+  || Gpointer.length data < rowstride * (height - 1) + width * nc
   then invalid_arg "GdkPixbuf.from_data";
   _from_data data ~has_alpha ~bits ~width ~height ~rowstride
 
