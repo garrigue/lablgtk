@@ -7,10 +7,10 @@ let window = Window.create `TOPLEVEL
 let button = Button.create label:"Hello World"
 
 let main () =
-  Signal.connect window sig:Signal.Event.delete
+  Event.Connect.delete window
     cb:(fun _ -> prerr_endline "Delete event occured"; true);
   Window.Connect.destroy window cb:Main.quit;
-  Window.border_width window 10;
+  Window.set window border_width:10;
   Button.Connect.clicked button
     cb:(fun () -> prerr_endline "Hello World"; Object.destroy window);
   Window.add window button;

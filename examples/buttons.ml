@@ -5,7 +5,7 @@ open Gtk
 let xpm_label_box :parent :file :label =
   if not (Sys.file_exists file) then failwith (file ^ " does not exist");
   let box1 = Box.create `HORIZONTAL in
-  Box.border_width box1 2;
+  Box.set box1 border_width: 2;
   let style = Widget.get_style parent in
   let pixmap, mask =
     Gdk.Pixmap.create_from_xpm (Widget.window parent)
@@ -21,9 +21,8 @@ let xpm_label_box :parent :file :label =
 
 let main () =
   let window = Window.create `TOPLEVEL in
-  Window.set_title window "Pixmap'd Buttons!";
+  Window.set window title:"Pixmap'd Buttons!" border_width:10;
   Window.Connect.destroy window cb:Main.quit;
-  Window.border_width window 10;
   Widget.realize window;
   let button = Button.create () in
   Button.Connect.clicked button

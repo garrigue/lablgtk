@@ -5,19 +5,17 @@ open Gtk
 let main () =
   let window = Dialog.create () in
   Window.Connect.destroy window cb:Main.quit;
-  Window.set_title window "dialog";
-  Window.border_width window 10;
+  Window.set window title: "dialog" border_width: 10;
   Widget.set window width: 300 height: 300;
 
   let scrolled_window = ScrolledWindow.create () in
-  Container.border_width scrolled_window 10;
+  ScrolledWindow.set scrolled_window border_width: 10;
   ScrolledWindow.set_policy scrolled_window horiz: `AUTOMATIC vert: `ALWAYS;
   Box.pack (Dialog.vbox window) scrolled_window;
   Widget.show scrolled_window;
 
   let table = Table.create 10 10 in
-  (* Table.set_row_spacing table 10; *)
-  (* Table.set_col_spacing table 10; *)
+  Table.set table row_spacings: 10 col_spacings: 10;
 
   Container.add scrolled_window table;
   Widget.show table;
@@ -31,8 +29,8 @@ let main () =
     done
   done;
 
-  let button = Button.create_with_label "close" in
-  Button.Connect.clicked button cb:Main.quit;
+  let button = Button.create label: "close" in
+  Button.Connect.clicked button cb: Main.quit;
   (* GTK_WIDGET_SET_FLAGS(button, GTK_CAN_DEFAULT) is as follows *)
   Widget.set button can_default:true;
   Box.pack (Dialog.action_area window) button;

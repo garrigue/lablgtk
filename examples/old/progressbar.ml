@@ -21,7 +21,7 @@ let main () =
 
   let window = Window.create `TOPLEVEL in
   Window.Connect.destroy window cb:Main.quit;
-  Window.border_width window 10;
+  Window.set window border_width: 10;
 
   let table = Table.create 3 2 in
   Window.add window table;

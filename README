@@ -49,6 +49,17 @@ How to use the threaded toplevel:
   run directly by the caml main loop, so they can use all thread
   operations.
 
+Structure of the Gtk module:
+
+  This module is composed of one submodule for each class.
+  Signals shall be connected through the Mywidget.Connect.??? functions.
+  Also, you can use "set w param: value" in place of "set_param w value".
+  There is a weak form of inheritance: signals in Connect and
+  parameters in set are propagated to submodules, along with some
+  functions.
+  To avoid a blow-up in size, functions and signals in the Widget
+  module are not propagated: use them directly.
+
 Bug reports:
 	Jacques Garrigue
 	garrigue@kurims.kyoto-u.ac.jp

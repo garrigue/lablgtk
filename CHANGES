@@ -1,3 +1,6 @@
+1998.11.24
+  * added inheritance in gtk.ml (see README)
+
 1998.11.22
   * added gtkObj.ml and examples/*_obj.ml
   * various modifications in gtk.ml

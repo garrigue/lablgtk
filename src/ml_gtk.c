@@ -393,9 +393,14 @@ ML_1 (gtk_file_selection_hide_fileop_buttons, GtkFileSelection_val, Unit)
 ML_1 (gtk_window_new, Window_type_val, Val_GtkWidget)
 ML_2 (gtk_window_set_title, GtkWindow_val, String_val, Unit)
 ML_3 (gtk_window_set_wmclass, GtkWindow_val, String_val, String_val, Unit)
+Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_name, copy_string)
+Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_class, copy_string)
 ML_2 (gtk_window_set_focus, GtkWindow_val, GtkWidget_val, Unit)
 ML_2 (gtk_window_set_default, GtkWindow_val, GtkWidget_val, Unit)
 ML_4 (gtk_window_set_policy, GtkWindow_val, Bool_val, Bool_val, Bool_val, Unit)
+Make_Extractor (gtk_window_get, GtkWindow_val, allow_shrink, Val_bool)
+Make_Extractor (gtk_window_get, GtkWindow_val, allow_grow, Val_bool)
+Make_Extractor (gtk_window_get, GtkWindow_val, auto_shrink, Val_bool)
 ML_2 (gtk_window_add_accelerator_table, GtkWindow_val,
       GtkAcceleratorTable_val, Unit)
 ML_2 (gtk_window_remove_accelerator_table, GtkWindow_val,
@@ -497,18 +502,22 @@ ML_2 (gtk_vbox_new, Bool_val, Int_val, Val_GtkWidget)
 /* gtkbbox.h */
     
 #define GtkButtonBox_val(val) GTK_BUTTON_BOX(Pointer_val(val))
-Make_Extractor (gtk_button_box, GtkButtonBox_val, spacing, Val_int)
-Make_Extractor (gtk_button_box, GtkButtonBox_val, child_min_width, Val_int)
-Make_Extractor (gtk_button_box, GtkButtonBox_val, child_min_height, Val_int)
-Make_Extractor (gtk_button_box, GtkButtonBox_val, child_ipad_x, Val_int)
-Make_Extractor (gtk_button_box, GtkButtonBox_val, child_ipad_y, Val_int)
-Make_Extractor (gtk_button_box, GtkButtonBox_val, layout_style, Val_bbox_style)
+Make_Extractor (gtk_button_box_get, GtkButtonBox_val, spacing, Val_int)
+Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_min_width, Val_int)
+Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_min_height,
+		Val_int)
+Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_ipad_x, Val_int)
+Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_ipad_y, Val_int)
+Make_Extractor (gtk_button_box_get, GtkButtonBox_val, layout_style,
+		Val_bbox_style)
 ML_2 (gtk_button_box_set_spacing, GtkButtonBox_val, Int_val, Unit)
 ML_3 (gtk_button_box_set_child_size, GtkButtonBox_val,
       Int_val, Int_val, Unit)
 ML_3 (gtk_button_box_set_child_ipadding, GtkButtonBox_val,
       Int_val, Int_val, Unit)
 ML_2 (gtk_button_box_set_layout, GtkButtonBox_val, Bbox_style_val, Unit)
+ML_2 (gtk_button_box_set_child_size_default, Int_val, Int_val, Unit)
+ML_2 (gtk_button_box_set_child_ipadding_default, Int_val, Int_val, Unit)
 
 ML_0 (gtk_hbutton_box_new, Val_GtkWidget)
 ML_0 (gtk_vbutton_box_new, Val_GtkWidget)
@@ -799,6 +808,11 @@ ML_10 (gtk_table_attach, GtkTable_val, GtkWidget_val,
        Int_val, Int_val, Int_val, Int_val,
        Flags_Attach_val, Flags_Attach_val, Int_val, Int_val, Unit)
 ML_bc10 (ml_gtk_table_attach)
+ML_3 (gtk_table_set_row_spacing, GtkTable_val, Int_val, Int_val, Unit)
+ML_3 (gtk_table_set_col_spacing, GtkTable_val, Int_val, Int_val, Unit)
+ML_2 (gtk_table_set_row_spacings, GtkTable_val, Int_val, Unit)
+ML_2 (gtk_table_set_col_spacings, GtkTable_val, Int_val, Unit)
+ML_2 (gtk_table_set_homogeneous, GtkTable_val, Bool_val, Unit)
 
 /* gtktoolbar.h */
 
