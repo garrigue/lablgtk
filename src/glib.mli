@@ -26,6 +26,12 @@ module Timeout : sig
   val remove : id -> unit
 end
 
+module Idle : sig
+  type id
+  val add : callback:(unit -> bool) -> id
+  val remove : id -> unit
+end
+
 module Io : sig
   (* Io condition, called from the main loop *)
   type channel

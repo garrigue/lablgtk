@@ -29,6 +29,13 @@ module Timeout = struct
   external remove : id -> unit = "ml_g_source_remove"
 end
 
+module Idle = struct
+  type id
+  external add : callback:(unit -> bool) -> id
+    = "ml_g_idle_add"
+  external remove : id -> unit = "ml_g_source_remove"
+end
+
 module Io = struct
   type channel
   type condition = [ `IN | `OUT | `PRI | `ERR | `HUP | `NVAL ]
