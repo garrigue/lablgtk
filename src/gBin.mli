@@ -34,10 +34,10 @@ val scrolled_window :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> scrolled_window
 
-class event_box : Gtk.event_box obj ->
+class event_box : ([> Gtk.event_box] as 'a) obj ->
   object
     inherit container_full
-    val obj : Gtk.event_box obj
+    val obj : 'a obj
     method event : event_ops
   end
 val event_box :

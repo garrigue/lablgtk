@@ -1,4 +1,12 @@
 $Id$
+2003.09.17 [Olivier]
+  * GNOME libpanelapplet support. Now we can write panel applets in caml.
+
+2003.09.11 [Olivier]
+  * configure scripts prints a summary of the libraries that will be built.
+  * in the output of pkg-config, filter out the options that
+    ocamlmklib doesn't like.
+
 2003.08.28 [Benjamin]
   * mnemonic support for all kind of menus. Defaults to true in factory.
 
