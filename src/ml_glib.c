@@ -30,19 +30,13 @@ value Val_GList (GList *list, value (*func)(gpointer))
   CAMLlocal4 (new_cell, result, last_cell, cell);
 
   last_cell = cell = Val_unit;
-  if (list != NULL) {
-    result = func(list->data);
-    cell = last_cell = alloc_small(2,0);
-    Field(cell,0) = result;
-    Field(cell,1) = Val_unit;
-    list = list->next;
-  }
   while (list != NULL) {
     result = func(list->data);
     new_cell = alloc_small(2,0);
     Field(new_cell,0) = result;
     Field(new_cell,1) = Val_unit;
-    modify(&Field(last_cell,1), new_cell);
+    if (last_cell == Val_unit) cell = new_cell;
+    else modify(&Field(last_cell,1), new_cell);
     last_cell = new_cell;
     list = list->next;
   }
@@ -220,19 +214,13 @@ CAMLprim value Val_GSList (GSList *list, value (*func)(gpointer))
   CAMLlocal4 (new_cell, result, last_cell, cell);
   
   last_cell = cell = Val_unit;
-  if (list != NULL) {
-    result = func(list->data);
-    cell = last_cell = alloc_small (2,0);
-    Field(cell,0) = result;
-    Field(cell,1) = Val_unit;
-    list = list->next;
-  }
   while (list != NULL) {
     result = func(list->data);
     new_cell = alloc_small(2,0);
     Field(new_cell,0) = result;
     Field(new_cell,1) = Val_unit;
-    modify(&Field(last_cell,1), new_cell);
+    if (last_cell == Val_unit) cell = new_cell;
+    else modify(&Field(last_cell,1), new_cell);
     last_cell = new_cell;
     list = list->next;
   }

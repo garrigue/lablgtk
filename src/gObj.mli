@@ -2,27 +2,12 @@
 
 open Gtk
 
-(* Object *)
+(* GObject *)
 
-class gtkobj :
-  ([> `gtk] as 'a) obj ->
+class gobject_ops : 'a obj ->
   object
     val obj : 'a obj
-    method destroy : unit -> unit
     method get_oid : int
-  end
-
-class gtkobj_signals :
-  ?after:bool -> ([>`gtk] as 'a) obj ->
-  object ('b)
-    val obj : 'a obj
-    val after : bool
-    method after : 'b
-    method destroy : callback:(unit -> unit) -> GtkSignal.id
-  end
-
-class gtkobj_misc : 'a obj ->
-  object
     method get_type : string
     method disconnect : GtkSignal.id -> unit
     method handler_block : GtkSignal.id -> unit
@@ -31,6 +16,29 @@ class gtkobj_misc : 'a obj ->
     method get_property : string -> Gobject.data_get
     method freeze_notify : unit -> unit
     method thaw_notify : unit -> unit
+  end
+
+class gobject_signals : ?after:bool -> 'a ->
+  object ('b)
+    val obj : 'a
+    val after : bool
+    method after : 'b
+  end
+
+(* GtkObject *)
+
+class gtkobj : ([> `gtk] as 'a) obj ->
+  object
+    val obj : 'a obj
+    method destroy : unit -> unit
+    method get_oid : int
+  end
+
+class gtkobj_signals : ?after:bool -> ([>`gtk] as 'a) obj ->
+  object ('b)
+    inherit gobject_signals
+    val obj : 'a obj
+    method destroy : callback:(unit -> unit) -> GtkSignal.id
   end
 
 (* Widget *)
@@ -145,7 +153,7 @@ class drag_ops : Gtk.widget obj ->
 
 and misc_ops : Gtk.widget obj ->
   object
-    inherit gtkobj_misc
+    inherit gobject_ops
     val obj : Gtk.widget obj
     method activate : unit -> bool
     method add_accelerator :

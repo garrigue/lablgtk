@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open GTree.Data
 
 let cols = new GTree.column_list
@@ -35,6 +36,12 @@ let main () =
   let col = GTree.view_column ~title:"Checked-out" ()
       ~renderer:(GTree.cell_renderer_text(), ["text",checked]) in
   view#append_column col;
+  view#selection#connect#after#changed ~callback:
+    begin fun () ->
+      prerr_endline "selection changed";
+      List.iter view#selection#get_selected_rows ~f:
+        (fun p -> prerr_endline (GtkTree.TreePath.to_string p))
+    end;
   window#show ();
   GMain.main ()
 

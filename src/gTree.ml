@@ -177,11 +177,31 @@ class column_list = object (self)
   method lock () = locked <- true
 end
 
+class model_signals obj = object
+  inherit gobject_signals obj
+  method row_changed =
+    GtkSignal.connect obj ~sgn:TreeModel.Signals.row_changed ~after
+  method row_inserted =
+    GtkSignal.connect obj ~sgn:TreeModel.Signals.row_inserted ~after
+  method row_has_child_toggled =
+    GtkSignal.connect obj ~sgn:TreeModel.Signals.row_has_child_toggled ~after
+  method row_deleted =
+    GtkSignal.connect obj ~sgn:TreeModel.Signals.row_deleted ~after
+  method rows_reordered =
+    GtkSignal.connect obj ~sgn:TreeModel.Signals.rows_reordered ~after
+end
+
 class model obj ~id = object (self)
   val obj = obj
   val id : int = id
   method as_model = (obj :> tree_model obj)
   method coerce = (self :> model)
+  method misc = new gobject_ops obj
+  method connect = new model_signals obj
+  method n_columns = TreeModel.get_n_columns obj
+  method get_column_type = TreeModel.get_column_type obj
+  method get_iter = TreeModel.get_iter obj
+  method get_path = TreeModel.get_path obj
   method get : 'a. row:tree_iter -> column:'a column -> 'a =
     fun ~row ~column ->
       if column.creator <> id then invalid_arg "GTree.model#get: bad column";
@@ -191,6 +211,9 @@ class model obj ~id = object (self)
              (column.conv.Data.kind :> Gobject.fundamental_type)) in
       TreeModel.get_value obj ~row ~column:column.index v;
       Data.of_value column.conv v
+  method iter_next = TreeModel.iter_next obj
+  method iter_children ?(nth=0) p = TreeModel.iter_nth_child obj p nth
+  method iter_parent = TreeModel.iter_parent obj
 end
 
 class tree_store obj ~id = object
@@ -260,9 +283,17 @@ let checked = cols#add boolean;;
 let store = new GTree.tree_store cols;;
 *)
 
+class view_column_signals obj = object
+  inherit gtkobj_signals obj
+  method clicked =
+    GtkSignal.connect obj ~sgn:TreeViewColumn.Signals.clicked ~after
+end
+
 class view_column (obj : tree_view_column obj) = object
   inherit GObj.gtkobj obj
   method as_column = obj
+  method misc = new gobject_ops obj
+  method connect = new view_column_signals obj
   method pack : 'a. ?expand:_ -> ?from:_ -> ([>`cellrenderer] as 'a) obj -> _ =
     TreeViewColumn.pack obj
   method add_attribute :
@@ -281,13 +312,15 @@ let view_column ?title ?renderer () =
   w
 
 class selection_signals (obj : tree_selection) = object
+  inherit gobject_signals obj
   method changed =
-    GtkSignal.connect obj ~sgn:TreeSelection.Signals.changed
+    GtkSignal.connect obj ~sgn:TreeSelection.Signals.changed ~after
 end
 
 class selection obj = object
   val obj = obj
   method connect = new selection_signals obj
+  method misc = new gobject_ops obj
   method set_mode = TreeSelection.set_mode obj
   method get_mode = TreeSelection.get_mode obj
   method set_select_function = TreeSelection.set_select_function obj
@@ -305,8 +338,46 @@ class selection obj = object
   method unselect_range = TreeSelection.unselect_range obj
 end
 
+class view_signals obj = object
+  inherit GContainer.container_signals obj
+  method set_scroll_adjustments =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.set_scroll_adjustments ~after
+  method row_activated =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.row_activated ~after
+  method test_expand_row =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.test_expand_row ~after
+  method test_collapse_row =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.test_collapse_row ~after
+  method row_expanded =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.row_expanded ~after
+  method row_collapsed =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.row_collapsed ~after
+  method columns_changed =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.columns_changed ~after
+  method cursor_changed =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.cursor_changed ~after
+  method move_cursor =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.move_cursor ~after
+  method select_all =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.select_all ~after
+  method unselect_all =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.unselect_all ~after
+  method select_cursor_row =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.select_cursor_row ~after
+  method toggle_cursor_row =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.toggle_cursor_row ~after
+  method expand_collapse_cursor_row =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.expand_collapse_cursor_row
+      ~after
+  method select_cursor_parent =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.select_cursor_parent ~after
+  method start_interactive_search =
+    GtkSignal.connect obj ~sgn:TreeView.Signals.start_interactive_search ~after
+end
+
 class view obj = object
   inherit GContainer.container obj
+  method connect = new view_signals obj
   method append_column (col : view_column) =
     TreeView.append_column obj col#as_column
   method selection = new selection (TreeView.get_selection obj)

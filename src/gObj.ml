@@ -7,16 +7,17 @@ open Gtk
 open GtkData
 open GtkBase
 
-(* Object *)
+(* GObject *)
 
-class gtkobj obj = object
+class gobject_signals ?(after=false) obj = object
   val obj = obj
-  method destroy () = Object.destroy obj
-  method get_oid = get_oid obj
+  val after = after
+  method after = {< after = true >}
 end
 
-class gtkobj_misc obj = object
+class gobject_ops obj = object
   val obj = obj
+  method get_oid = get_oid obj
   method get_type = Type.name (get_type obj)
   method disconnect = GtkSignal.disconnect obj
   method handler_block = GtkSignal.handler_block obj
@@ -27,10 +28,16 @@ class gtkobj_misc obj = object
   method thaw_notify () = Property.thaw_notify obj
 end
 
-class gtkobj_signals ?(after=false) obj = object
+(* GtkObject *)
+
+class gtkobj obj = object
   val obj = obj
-  val after = after
-  method after = {< after = true >}
+  method destroy () = Object.destroy obj
+  method get_oid = get_oid obj
+end
+
+class gtkobj_signals ?after obj = object
+  inherit gobject_signals ?after obj
   method destroy = GtkSignal.connect ~sgn:Object.Signals.destroy obj
 end
 
@@ -236,7 +243,7 @@ and misc_signals ?after obj = object
 end
 
 and misc_ops obj = object (self)
-  inherit gtkobj_misc obj
+  inherit gobject_ops obj
   method connect = new misc_signals obj
   method show () = Widget.show obj
   method unparent () = Widget.unparent obj
