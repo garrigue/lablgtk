@@ -336,7 +336,7 @@ check_externals$(XE): check_externals.cmo
 	$(LINKER) -o $@ $<
 
 clean:
-	rm -f *.cm* *$(XO) *.a *.so *.exe *$(XO)bj *.lib *.dll *_tags.[ch] \
+	rm -f *.cm* *.o *.a *.so *.exe *.obj *.lib *.dll *_tags.[ch] \
 	  $(TARGETS) varcc.ml xml_lexer.ml \
 	  propcc$(XE) check_externals$(XE) check_externals.ml propcc.ml \
 	  *Enums.ml *Props.ml
