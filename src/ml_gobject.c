@@ -90,12 +90,11 @@ value ml_g_closure_new (value clos)
 #define g_value_unset_and_free(gv) g_value_unset(gv); g_free(gv)
 Make_Val_final_pointer_ext(GValue, _new, Ignore, g_value_unset_and_free, 20)
 
-value ml_g_value_new(value gtype)
+value ml_g_value_new(value v)
 {
     GValue *gvalue = g_malloc(sizeof(GValue));
     if (gvalue==NULL) raise_out_of_memory ();
     gvalue->g_type = 0;
-    g_value_init(gvalue, GType_val(gtype));
     return Val_GValue_new(gvalue);
 }
 
@@ -114,6 +113,7 @@ GValue* GValue_val(value val)
 }
 
 ML_1 (G_VALUE_TYPE, GValue_val, Val_GType)
+ML_2 (g_value_init, GValue_val, GType_val, Unit)
 ML_2 (g_value_copy, GValue_val, GValue_val, Unit)
 ML_1 (g_value_reset, GValue_val, Unit)
 ML_2 (g_value_type_compatible, GType_val, GType_val, Val_bool)

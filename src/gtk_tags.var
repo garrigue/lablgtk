@@ -177,3 +177,9 @@ type text_window_type = "GTK_TEXT_WINDOW_"
 
 type text_search_flag = "GTK_TEXT_SEARCH_"
   [ `VISIBLE_ONLY | `TEXT_ONLY ]
+
+type tree_view_column_sizing = "GTK_TREE_VIEW_COLUMN_"
+  [ `GROW_ONLY | `AUTOSIZE | `FIXED ]
+
+type cell_renderer_mode = "GTK_CELL_RENDERER_MODE_"
+  [ `INERT | `ACTIVATABLE | `EDITABLE ]

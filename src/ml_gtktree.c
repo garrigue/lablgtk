@@ -19,6 +19,14 @@
 #include "ml_gtk.h"
 #include "gtk_tags.h"
 
+CAMLprim value ml_gtk_tree_get_tables ()
+{
+  static lookup_info *ret[3] = { ml_table_tree_view_column_sizing,
+                                 ml_table_sort_type,
+                                 ml_table_cell_renderer_mode };
+  return (value)ret;
+}
+
 #define Tree_view_mode_val(val) \
   (val == MLTAG_ITEM ? GTK_TREE_VIEW_ITEM : GTK_TREE_VIEW_LINE)
 
@@ -85,6 +93,7 @@ Make_Val_final_pointer (GtkTreeRowReference, Ignore,
 
 /* TreePath */
 ML_0 (gtk_tree_path_new, Val_GtkTreePath)
+ML_1 (gtk_tree_path_new_from_string, String_val, Val_GtkTreePath)
 ML_1 (gtk_tree_path_to_string, GtkTreePath_val, copy_string_g_free)
 ML_2 (gtk_tree_path_append_index, GtkTreePath_val, Int_val, Unit)
 ML_2 (gtk_tree_path_prepend_index, GtkTreePath_val, Int_val, Unit)
@@ -300,7 +309,12 @@ Unsupported(gtk_tree_selection_unselect_range)
 /* GtkCellRenderer{Text,...} */
 
 #define GtkCellRenderer_val(val) check_cast(GTK_CELL_RENDERER,val)
+#define GtkCellRendererText_val(val) check_cast(GTK_CELL_RENDERER_TEXT,val)
+ML_0 (gtk_cell_renderer_pixbuf_new, Val_GtkAny_sink)
 ML_0 (gtk_cell_renderer_text_new, Val_GtkAny_sink)
+ML_2 (gtk_cell_renderer_text_set_fixed_height_from_font,
+      GtkCellRendererText_val, Int_val, Unit)
+ML_0 (gtk_cell_renderer_toggle_new, Val_GtkAny_sink)
 
 /* GtkTreeViewColumn */
 
@@ -312,7 +326,6 @@ ML_3 (gtk_tree_view_column_pack_end, GtkTreeViewColumn_val,
       GtkCellRenderer_val, Int_val, Unit)
 ML_4 (gtk_tree_view_column_add_attribute, GtkTreeViewColumn_val,
       GtkCellRenderer_val, String_val, Int_val, Unit)
-ML_2 (gtk_tree_view_column_set_title, GtkTreeViewColumn_val, String_val, Unit)
 
 /* GtkTreeView */
 

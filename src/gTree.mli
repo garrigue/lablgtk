@@ -102,7 +102,9 @@ class model_signals : ([> `treemodel] as 'b) obj ->
       callback:(tree_path -> tree_iter -> unit) -> GtkSignal.id
   end
 
-class model : ?id:int -> ([> `treemodel] as 'a) obj ->
+val model_ids : (int,int) Hashtbl.t
+
+class model : ([> `treemodel] as 'a) obj ->
   object
     val obj : 'a obj
     val id : int
@@ -120,7 +122,7 @@ class model : ?id:int -> ([> `treemodel] as 'a) obj ->
     method n_columns : int
   end
 
-class tree_store : Gtk.tree_store -> id:int ->
+class tree_store : Gtk.tree_store ->
   object
     inherit model
     val obj : Gtk.tree_store
@@ -141,7 +143,7 @@ class tree_store : Gtk.tree_store -> id:int ->
   end
 val tree_store : column_list -> tree_store
 
-class list_store : Gtk.list_store -> id:int ->
+class list_store : Gtk.list_store ->
   object
     inherit model
     val obj : Gtk.list_store
@@ -205,7 +207,17 @@ class view_column : tree_view_column obj ->
     method add_attribute : [>`cellrenderer] obj -> string -> 'a column -> unit
     method pack :
       ?expand:bool -> ?from:[ `END | `START] -> [>`cellrenderer] obj -> unit
+    method set_alignment : float -> unit
+    method set_clickable : bool -> unit
+    method set_fixed_width : int -> unit
+    method set_max_width : int -> unit
+    method set_reorderable : bool -> unit
+    method set_sizing : Gtk.Tags.tree_view_column_sizing -> unit
+    method set_sort_indicator : bool -> unit
     method set_title : string -> unit
+    method set_visible : bool -> unit
+    method set_widget : Gtk.widget Gobject.obj option -> unit
+    method set_width : int -> unit
   end
 val view_column :
   ?title:string ->
@@ -292,4 +304,6 @@ val view :
   ?border_width:int -> ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> view
 
+val cell_renderer_pixbuf : unit -> cell_renderer_pixbuf obj
 val cell_renderer_text : unit -> cell_renderer_text obj
+val cell_renderer_toggle : unit -> cell_renderer_toggle obj

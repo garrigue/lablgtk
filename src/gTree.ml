@@ -112,9 +112,12 @@ class model_signals obj = object
     GtkSignal.connect obj ~sgn:TreeModel.Signals.rows_reordered ~after
 end
 
-class model ?(id=0) obj = object (self)
+let model_ids = Hashtbl.create 7
+
+class model obj = object (self)
+  val id =
+    try Hashtbl.find model_ids (Gobject.get_oid obj) with Not_found -> 0
   val obj = obj
-  val id : int = id
   method as_model = (obj :> tree_model obj)
   method coerce = (self :> model)
   method misc = new gobject_ops obj
@@ -126,9 +129,7 @@ class model ?(id=0) obj = object (self)
   method get : 'a. row:tree_iter -> column:'a column -> 'a =
     fun ~row ~column ->
       if column.creator <> id then invalid_arg "GTree.model#get: bad column";
-      let v =
-        Value.create
-          (Type.of_fundamental (column.conv.Data.kind :> fundamental_type)) in
+      let v = Value.create_empty () in
       TreeModel.get_value obj ~row ~column:column.index v;
       Data.of_value column.conv v
   method iter_next = TreeModel.iter_next obj
@@ -136,8 +137,8 @@ class model ?(id=0) obj = object (self)
   method iter_parent = TreeModel.iter_parent obj
 end
 
-class tree_store obj ~id = object
-  inherit model obj ~id
+class tree_store obj = object
+  inherit model obj
   method set : 'a. row:tree_iter -> column:'a column -> 'a -> unit =
     fun ~row ~column data ->
       if column.creator <> id then
@@ -163,10 +164,12 @@ let tree_store (cols : column_list) =
   cols#lock ();
   let types =
     List.map Type.of_fundamental (cols#kinds :> fundamental_type list) in
-  new tree_store (TreeStore.create (Array.of_list types)) ~id:cols#id
+  let store = TreeStore.create (Array.of_list types) in
+  Hashtbl.add model_ids(Gobject.get_oid store) cols#id;
+  new tree_store store
 
-class list_store obj ~id = object
-  inherit model obj ~id
+class list_store obj = object
+  inherit model obj
   method set : 'a. row:tree_iter -> column:'a column -> 'a -> unit =
     fun ~row ~column data ->
       if column.creator <> id then
@@ -190,7 +193,9 @@ let list_store (cols : column_list) =
   cols#lock ();
   let types =
     List.map Type.of_fundamental (cols#kinds :> fundamental_type list) in
-  new list_store (ListStore.create (Array.of_list types)) ~id:cols#id
+  let store = ListStore.create (Array.of_list types) in
+  Hashtbl.add model_ids (Gobject.get_oid store) cols#id;
+  new list_store store
 
 (*
 open GTree.Data;;
@@ -200,6 +205,9 @@ let author = cols#add string;;
 let checked = cols#add boolean;;
 let store = new GTree.tree_store cols;;
 *)
+
+let set_prop = Gobject.Property.set
+module TVCProps = TreeViewColumn.Properties
 
 class view_column_signals obj = object
   inherit gtkobj_signals obj
@@ -217,7 +225,17 @@ class view_column (obj : tree_view_column obj) = object
   method add_attribute :
     'a 'b. ([>`cellrenderer] as 'a) obj -> string -> 'b column -> unit
     = fun crr attr col -> TreeViewColumn.add_attribute obj crr attr col.index
-  method set_title = TreeViewColumn.set_title obj
+  method set_alignment = set_prop obj TVCProps.alignment
+  method set_clickable = set_prop obj TVCProps.clickable
+  method set_fixed_width = set_prop obj TVCProps.fixed_width
+  method set_max_width = set_prop obj TVCProps.max_width
+  method set_reorderable = set_prop obj TVCProps.reorderable
+  method set_sizing = set_prop obj TVCProps.sizing
+  method set_sort_indicator = set_prop obj TVCProps.sort_indicator
+  method set_title = set_prop obj TVCProps.title
+  method set_visible = set_prop obj TVCProps.visible
+  method set_widget = set_prop obj TVCProps.widget
+  method set_width = set_prop obj TVCProps.width
 end
 let view_column ?title ?renderer () =
   let w = new view_column (TreeViewColumn.create ()) in
@@ -353,4 +371,6 @@ let view ?model ?border_width ?width ?height ?packing ?show () =
   Container.set w ?border_width ?width ?height;
   pack_return (new view w) ~packing ~show
 
+let cell_renderer_pixbuf = CellRendererPixbuf.create
 let cell_renderer_text = CellRendererText.create
+let cell_renderer_toggle = CellRendererToggle.create

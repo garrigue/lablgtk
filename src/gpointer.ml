@@ -40,6 +40,15 @@ let may_box ~f obj : 'a optboxed =
     None -> Obj.magic boxed_null
   | Some obj -> Obj.magic (f obj : 'a)
 
+(* Variant tables *)
+
+type 'a variant_table constraint 'a = [> ]
+
+external decode_variant : 'a variant_table -> int -> 'a
+  = "ml_ml_lookup_from_c"
+external encode_variant : 'a variant_table -> 'a -> int
+  = "ml_ml_lookup_to_c"
+
 (* Exceptions *)
 
 exception Null

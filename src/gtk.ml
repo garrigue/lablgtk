@@ -80,7 +80,8 @@ module Tags = struct
   type text_window_type = [ `PRIVATE | `WIDGET | `TEXT | `LEFT
 			  | `RIGHT | `TOP | `BOTTOM]
   type text_search_flag = [ `VISIBLE_ONLY | `TEXT_ONLY ]
-
+  type tree_view_column_sizing = [ `GROW_ONLY | `AUTOSIZE | `FIXED ]
+  type cell_renderer_mode = [ `INERT | `ACTIVATABLE | `EDITABLE ]
 end
 open Tags
 
@@ -190,7 +191,9 @@ type tree_iter
 type tree_path
 type row_reference
 type cell_renderer = [`gtk|`cellrenderer]
-type cell_renderer_text = [cell_renderer|`cell_renderer_text]
+type cell_renderer_pixbuf = [cell_renderer|`cellrendererpixbuf]
+type cell_renderer_text = [cell_renderer|`cellrenderertext]
+type cell_renderer_toggle = [cell_renderer|`cellrenderertoggle]
 
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj
