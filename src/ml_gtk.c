@@ -56,6 +56,8 @@ ML_5 (gtk_accelerator_table_install, GtkAcceleratorTable_val,
       GtkObject_val, String_val, Char_val, Flags_GdkModifier_val, Unit)
 ML_3 (gtk_accelerator_table_remove, GtkAcceleratorTable_val,
       GtkObject_val, String_val, Unit)
+ML_3 (gtk_accelerator_table_check, GtkAcceleratorTable_val,
+      Char_val, Flags_GdkModifier_val, Val_bool)
 ML_1 (gtk_accelerator_tables_delete, GtkObject_val, Unit)
 ML_2 (gtk_accelerator_table_set_mod_mask, GtkAcceleratorTable_val,
       Flags_GdkModifier_val, Unit)
