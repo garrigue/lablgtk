@@ -55,7 +55,7 @@ let _ =
     let j = i mod 4  in
     let k = i/4 in
     let frame =
-      GFrame.frame ~shadow_type:`OUT ~width:32 ~height:32
+      GBin.frame ~shadow_type:`OUT ~width:32 ~height:32
 	~packing:(tbl#attach ~left:j ~top:k) () in
     if i < 15 then
       arr.(j).(k) <-

@@ -6,9 +6,9 @@ open GObj
 class multibox ~rows ~columns ?(row_view = rows) ?(col_view = columns)
     ?packing ?show () =
   let sw =
-    GFrame.scrolled_window ~hpolicy:`AUTOMATIC ~vpolicy:`AUTOMATIC
+    GBin.scrolled_window ~hpolicy:`AUTOMATIC ~vpolicy:`AUTOMATIC
       ?show ?packing () in
-  let vp = GFrame.viewport ~shadow_type:`NONE ~packing:sw#add in
+  let vp = GBin.viewport ~shadow_type:`NONE ~packing:sw#add in
   let table =
     GPack.table ~columns ~rows ~homogeneous:true ~packing:vp#add () in
   let buttons =

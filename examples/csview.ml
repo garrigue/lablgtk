@@ -120,7 +120,7 @@ let main argv =
   let w0 = Gdk.Font.char_width font '0' in
   style#set_font font;
   w#connect#destroy ~callback:Main.quit;
-  let sw = GFrame.scrolled_window ~width:600 ~height:300 ~packing:w#add () in
+  let sw = GBin.scrolled_window ~width:600 ~height:300 ~packing:w#add () in
   let cl = GList.clist ~titles:data.titles ~packing:sw#add () in
   List.fold_left data.fields ~init:0 ~f:
     begin fun acc f ->
@@ -133,7 +133,7 @@ let main argv =
         if f = "NAPR" || f = "TIM1" || f = "CLAS" then
           cl#set_sort ~auto:true ~column:acc ();
         try
-          let ali = GFrame.alignment_cast (cl#column_widget acc) in
+          let ali = GBin.alignment_cast (cl#column_widget acc) in
           let lbl = GMisc.label_cast (List.hd ali#children) in
           lbl#set_alignment ~x:0. ()
         with _ ->

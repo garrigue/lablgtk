@@ -8,9 +8,9 @@ let dnd_source_window () =
   let vbx =
     GPack.vbox (* width:320 height:240 *) ~border_width:10 ~packing:window#add ()
   in   
-  let evb = GFrame.event_box ~border_width:0 ~packing:vbx#add () in
+  let evb = GBin.event_box ~border_width:0 ~packing:vbx#add () in
   (* type shadow_type = [ NONE IN OUT ETCHED_IN ETCHED_OUT ] *)
-  let frm = GFrame.frame ~shadow_type:`OUT ~packing:evb#add () in
+  let frm = GBin.frame ~shadow_type:`OUT ~packing:evb#add () in
   let lbl = GMisc.label ~text:"hello" ~packing:frm#add () in
   let lbl2 = GMisc.label ~text:"drag from here!" ~packing:vbx#add () in
   let targets = [ { target = "STRING"; flags = []; info = 0} ] in
@@ -142,7 +142,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
       grid <- g
 
     method new_child ~name ~x ~y ~width ~height ~callback =
-      let evb = GFrame.event_box ~border_width:0 ~packing:fix#add () in
+      let evb = GBin.event_box ~border_width:0 ~packing:fix#add () in
       let lbl = GMisc.label ~text:name ~width ~height ~packing:evb#add () in
       lbl#misc#set_usize ~width ~height;
       evb#misc#realize ();
@@ -158,7 +158,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
       ret_val
 
     method private connect_signals
-      ~ebox:(ebox : GFrame.event_box) ~widget:(widget : widget) ~callback:cbfun =
+      ~ebox:(ebox : GBin.event_box) ~widget:(widget : widget) ~callback:cbfun =
       let drawing = new GDraw.drawable (ebox#misc#window) in
       let draw_id = ref None in
       let exps_id = ref None in

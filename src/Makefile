@@ -83,10 +83,10 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkTree.cmo gtkList.cmo \
-	gtkFrame.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
+	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
 	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
-	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gFrame.cmo \
+	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gBin.cmo \
 	gEdit.cmo gRange.cmo gUtil.cmo $(GLMLOBJS) $(GNOMEMLOBJS)
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo

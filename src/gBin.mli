@@ -148,3 +148,16 @@ val alignment :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> alignment
 val alignment_cast : < as_widget : 'a obj; .. > -> alignment
+
+class socket :
+  Gtk.socket obj ->
+  object
+    inherit container_full
+    val obj : Gtk.socket obj
+    method steal : Gdk.xid -> unit
+    method xwindow : Gdk.xid
+  end
+
+val socket :
+  ?border_width:int -> ?width:int -> ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> socket

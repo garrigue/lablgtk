@@ -240,7 +240,7 @@ let xpm_window () =
       ~packing:vbox#pack () in
   let add_xpm ~file ~left ~top =
     let gdk_pix = GDraw.pixmap_from_xpm ~file ~window () in
-    let ev = GFrame.event_box ~packing:(table#attach ~left ~top) () in
+    let ev = GBin.event_box ~packing:(table#attach ~left ~top) () in
     let pix = GMisc.pixmap gdk_pix ~packing:ev#add () in
     ev#connect#event#button_press ~callback:
       (fun ev -> match GdkEvent.get_type ev with
@@ -256,7 +256,7 @@ let xpm_window () =
       ~row_spacings:20 ~col_spacings:20 ~border_width:20 () in
   let add_xpm ~file ~left ~top ~classe =
     let gdk_pix = GDraw.pixmap_from_xpm ~file ~window () in
-    let ev = GFrame.event_box ~packing:(table#attach ~left ~top) () in
+    let ev = GBin.event_box ~packing:(table#attach ~left ~top) () in
     let pix = GMisc.pixmap gdk_pix ~packing:ev#add () in
     ev#drag#source_set ~modi:[`BUTTON1] targets ~actions:[`COPY];
     ev#drag#source_set_icon ~colormap:window#misc#style#colormap 
