@@ -164,11 +164,10 @@ class paned obj = object
     try ignore(Paned.child2 obj);
       raise(Error "GPack.paned#pack2: already full")
     with _ -> Paned.pack2 obj (as_widget w) ~resize ~shrink
-  (* method set_handle_size = Paned.set_handle_size obj *)
   method set_position = set Paned.P.position obj
+  method position = get Paned.P.position obj
   method child1 = new widget (Paned.child1 obj)
   method child2 = new widget (Paned.child2 obj)
-  (* method handle_size = Paned.handle_size obj *)
 end
 
 let paned dir =

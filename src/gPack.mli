@@ -292,6 +292,7 @@ class paned :
     method child1 : widget
     method child2 : widget
     method set_position : int -> unit
+    method position : int
   end
 
 (** @gtkdoc gtk GtkPaned *)
