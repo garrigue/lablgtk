@@ -1,3 +1,4 @@
+(* -*- caml -*- *)
 (* $Id$ *)
 
 (* Compile a list of variant tags into CPP defines *) 
@@ -171,6 +172,7 @@ let process ic ~hc ~cc =
       let mlc = open_out (!package ^ "Enums.ml") in
       let ppf = Format.formatter_of_out_channel mlc in
       let out fmt = Format.fprintf ppf fmt in
+      out "(** %s enums *)\n\n" !package ;
       out "open Gpointer\n@.";
       List.iter convs ~f:
         begin fun (_,name,tags,_) ->
@@ -179,6 +181,7 @@ let process ic ~hc ~cc =
             (fun (s,_) -> out "@ | `%s" s);
           out " ]@]@]@."
         end;
+      out "\n(**/**)\n" ;
       out "\nexternal _get_tables : unit ->\n";
       let (_,name0,_,_) = List.hd convs in
       out "    %s variant_table\n" name0;
