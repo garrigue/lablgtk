@@ -80,6 +80,7 @@ type 'a group = 'a obj option
 
 type statusbar_message
 type statusbar_context
+type selection_data
 
 type color = { red: float; green: float; blue: float; opacity: float }
 type rectangle  = { x: int; y: int; width: int; height: int }

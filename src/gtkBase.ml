@@ -171,19 +171,7 @@ module Widget = struct
       | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_opt"
     let marshal_style f _ = function
       | POINTER p :: _ -> f (Obj.magic p : Gtk.style option)
-      | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_opt"
-    let marshal_drag1 f _ = function
-      | POINTER(Some p) :: _ -> f (Obj.magic p : Gdk.drag_context)
-      |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag1"
-    let marshal_drag2 f _ = function
-      | POINTER(Some p) :: INT time :: _ ->
-	  f (Obj.magic p : Gdk.drag_context) ~time
-      |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag2"
-    let marshal_drag3 f argv = function
-      | POINTER(Some p) :: INT x :: INT y :: INT time :: _ ->
-	  let res = f (Obj.magic p : Gdk.drag_context) ~x ~y ~time
-	  in GtkArgv.set_result argv (`BOOL res)
-      |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag3"
+      | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_style"
     external allocation_at_pointer : Gpointer.boxed -> rectangle
         = "ml_Val_GtkAllocation"
     let marshal_allocation f argv = function
@@ -219,38 +207,6 @@ module Widget = struct
       { name = "size_allocate"; marshaller = marshal_allocation }
     let style_set : ([>`widget],_) t =
       { name = "style_set"; marshaller = marshal_style }
-    let drag_begin : ([>`widget],_) t =
-      { name = "drag_begin"; marshaller = marshal_drag1 }
-    let drag_end : ([>`widget],_) t =
-      { name = "drag_end"; marshaller = marshal_drag1 }
-    let drag_data_delete : ([>`widget],_) t =
-      { name = "drag_data_delete"; marshaller = marshal_drag1 }
-    let drag_leave : ([>`widget],_) t =
-      { name = "drag_leave"; marshaller = marshal_drag2 }
-    let drag_motion : ([>`widget],_) t =
-      { name = "drag_motion"; marshaller = marshal_drag3 }
-    let drag_drop : ([>`widget],_) t =
-      { name = "drag_drop"; marshaller = marshal_drag3 }
-    let drag_data_get : ([>`widget],_) t =
-      let marshal f argv = function
-        | POINTER(Some p) :: POINTER(Some q) :: INT info :: INT time :: _ ->
-	    f (Obj.magic p : Gdk.drag_context)
-	      (Obj.magic q : GtkData.Selection.t) 
-	      ~info
-	      ~time
-	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_get"
-      in
-      { name = "drag_data_get"; marshaller = marshal }
-    let drag_data_received : ([>`widget],_) t =
-      let marshal f _ = function
-        | POINTER(Some p) :: INT x :: INT y :: POINTER(Some q) ::
-          INT info :: INT time :: _ ->
-	    f (Obj.magic p : Gdk.drag_context) ~x ~y
-              (Obj.magic q : GtkData.Selection.t)
-	      ~info ~time
-	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_received"
-      in
-      { name = "drag_data_received"; marshaller = marshal }
 
     module Event = struct
       let marshal f argv = function
@@ -373,6 +329,51 @@ module Item = struct
   end
 end
 
+module Selection = struct
+  external selection : selection_data -> Gdk.Tags.selection
+      = "ml_gtk_selection_data_selection"
+  external target : selection_data -> Gdk.atom
+      = "ml_gtk_selection_data_target"
+  external seltype : selection_data -> Gdk.atom
+      = "ml_gtk_selection_data_type"
+  external format : selection_data -> int
+      = "ml_gtk_selection_data_format"
+  external get_data : selection_data -> string
+      = "ml_gtk_selection_data_get_data"       (* May raise Gpointer.null *)
+  external set :
+      selection_data -> seltype:Gdk.atom -> format:int ->
+      data:string option -> unit
+      = "ml_gtk_selection_data_set"
+
+  external owner_set :
+    [>`widget] obj -> sel:Gdk.Tags.selection -> time:int -> bool
+    = "ml_gtk_selection_owner_set"
+  external add_target :
+    [>`widget] obj -> sel:Gdk.Tags.selection -> target:Gdk.atom ->
+    info:int -> unit
+    = "ml_gtk_selection_add_target"
+  external convert :
+    [> `widget] obj -> sel:Gdk.Tags.selection -> target:Gdk.atom ->
+    time:int -> bool
+    = "ml_gtk_selection_convert"
+  
+  module Signals = struct
+    open GtkArgv
+    open GtkSignal
+    let marshal_sel3 f _ = function
+      | POINTER(Some p) :: INT info :: INT time :: _ ->
+          f (Obj.magic p : selection_data) ~info ~time
+      | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_sel3"
+    let marshal_sel2 f _ = function
+      | POINTER(Some p) :: INT time :: _ ->
+          f (Obj.magic p : selection_data) ~time
+      | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_sel2"
+    let selection_get : ([>`widget],_) t =
+      { name = "selection_get"; marshaller = marshal_sel3 }
+    let selection_received : ([>`widget],_) t =
+      { name = "selection_received"; marshaller = marshal_sel2 }
+  end
+end
 
 module DnD = struct
   external dest_set :
@@ -415,5 +416,53 @@ module DnD = struct
   external source_unset : [>`widget] obj -> unit
       = "ml_gtk_drag_source_unset"
 (*  external dest_handle_event : [>`widget] -> *)
+  module Signals = struct
+    open GtkArgv
+    open GtkSignal
+    open Widget.Signals
+    let marshal_drag1 f _ = function
+      | POINTER(Some p) :: _ -> f (Obj.magic p : Gdk.drag_context)
+      |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag1"
+    let marshal_drag2 f _ = function
+      | POINTER(Some p) :: INT time :: _ ->
+	  f (Obj.magic p : Gdk.drag_context) ~time
+      |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag2"
+    let marshal_drag3 f argv = function
+      | POINTER(Some p) :: INT x :: INT y :: INT time :: _ ->
+	  let res = f (Obj.magic p : Gdk.drag_context) ~x ~y ~time
+	  in GtkArgv.set_result argv (`BOOL res)
+      |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag3"
+    let drag_begin : ([>`widget],_) t =
+      { name = "drag_begin"; marshaller = marshal_drag1 }
+    let drag_end : ([>`widget],_) t =
+      { name = "drag_end"; marshaller = marshal_drag1 }
+    let drag_data_delete : ([>`widget],_) t =
+      { name = "drag_data_delete"; marshaller = marshal_drag1 }
+    let drag_leave : ([>`widget],_) t =
+      { name = "drag_leave"; marshaller = marshal_drag2 }
+    let drag_motion : ([>`widget],_) t =
+      { name = "drag_motion"; marshaller = marshal_drag3 }
+    let drag_drop : ([>`widget],_) t =
+      { name = "drag_drop"; marshaller = marshal_drag3 }
+    let drag_data_get : ([>`widget],_) t =
+      let marshal f argv = function
+        | POINTER(Some p) :: POINTER(Some q) :: INT info :: INT time :: _ ->
+	    f (Obj.magic p : Gdk.drag_context)
+	      (Obj.magic q : selection_data) 
+	      ~info
+	      ~time
+	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_get"
+      in
+      { name = "drag_data_get"; marshaller = marshal }
+    let drag_data_received : ([>`widget],_) t =
+      let marshal f _ = function
+        | POINTER(Some p) :: INT x :: INT y :: POINTER(Some q) ::
+          INT info :: INT time :: _ ->
+	    f (Obj.magic p : Gdk.drag_context) ~x ~y
+              (Obj.magic q : selection_data)
+	      ~info ~time
+	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_received"
+      in
+      { name = "drag_data_received"; marshaller = marshal }
+  end
 end
-

@@ -16,6 +16,7 @@
 #include "ml_glib.h"
 #include "ml_gdk.h"
 #include "ml_gtk.h"
+#include "gdk_tags.h"
 #include "gtk_tags.h"
 
 void ml_raise_gtk (const char *errmsg)
@@ -387,7 +388,8 @@ ML_1 (gtk_drag_source_unset, GtkWidget_val, Unit)
 
 #define GtkSelectionData_val(val) ((GtkSelectionData *)Pointer_val(val))
 
-Make_Extractor (gtk_selection_data, GtkSelectionData_val, selection, Val_int)
+Make_Extractor (gtk_selection_data, GtkSelectionData_val, selection,
+                Val_gdkSelection)
 Make_Extractor (gtk_selection_data, GtkSelectionData_val, target, Val_int)
 Make_Extractor (gtk_selection_data, GtkSelectionData_val, type, Val_int)
 Make_Extractor (gtk_selection_data, GtkSelectionData_val, format, Val_int)
@@ -406,6 +408,13 @@ ML_4 (gtk_selection_data_set, GtkSelectionData_val, Int_val, Int_val,
       Insert((guchar*)String_option_val(arg4))
       Option_val(arg4, string_length, -1) Ignore,
       Unit)
+
+ML_3 (gtk_selection_owner_set, GtkWidget_val, GdkSelection_val,
+      Int_val, Val_bool)
+ML_4 (gtk_selection_add_target, GtkWidget_val, GdkSelection_val,
+      Int_val, Int_val, Unit)
+ML_4 (gtk_selection_convert, GtkWidget_val, GdkSelection_val,
+      Int_val, Int_val, Val_bool)
 
 /* gtkcontainer.h */
 

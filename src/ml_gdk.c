@@ -308,6 +308,11 @@ Make_Extractor (GdkFont, GdkFont_val, type, Val_gdkFontType)
 Make_Extractor (GdkFont, GdkFont_val, ascent, Val_int)
 Make_Extractor (GdkFont, GdkFont_val, descent, Val_int)
 
+/* Properties */
+
+ML_2 (gdk_atom_intern, String_val, Int_val, Val_int)
+ML_1 (gdk_atom_name, Int_val, Val_string)
+
 /* Region */
 
 #define PointArray_val(val) ((GdkPoint*)&Field(val,1))
