@@ -61,6 +61,8 @@ class event_signals : ?after:bool -> [> widget] obj ->
     method after : 'a
     method any :
 	callback:(Gdk.Tags.event_type Gdk.event -> bool) -> GtkSignal.id
+    method after_any :
+	callback:(Gdk.Tags.event_type Gdk.event -> unit) -> GtkSignal.id
     method button_press : callback:(GdkEvent.Button.t -> bool) -> GtkSignal.id
     method button_release :
 	callback:(GdkEvent.Button.t -> bool) -> GtkSignal.id

@@ -61,6 +61,7 @@ class type gtkobj_signals =
 class event_signals ?after obj = object (self)
   inherit ['a] gobject_signals ?after (obj :> Gtk.widget obj)
   method any = self#connect Widget.Signals.Event.any
+  method after_any = self#connect Widget.S.event_after
   method button_press = self#connect Widget.Signals.Event.button_press
   method button_release = self#connect Widget.Signals.Event.button_release
   method configure = self#connect Widget.Signals.Event.configure
