@@ -2,6 +2,9 @@
 
 open GObj
 
+(* A nice function to use with [#install_printer] *)
+val print_widget : Format.formatter -> #widget -> unit
+
 (* The memo class provides an easy way to remember the real class of
    a widget.
    Insert all widgets of class in one single t memo, and you can then
