@@ -1,5 +1,5 @@
 
-             LablGTK : an interface to the GIMP Tool Kit
+             LablGTK 1.2.4 : an interface to the GIMP Tool Kit
 
 Needed:
 	ocaml-3.05
@@ -28,6 +28,12 @@ How to compile:
         variable  to it (e.g. FreeBSD).
 
 	Then just type "make" to build the library and toplevels.
+
+        If you are using the windows precompiled version, you must
+        first obtain gtk-dlls-20020703.zip from the above location,
+        and then copy bin\lablgtk.bat, lib\stublibs\dlllablgtk.dll and
+        lib\lablgtk to their respective locations in the OCaml
+        distribution.
 
 Contents:
 
