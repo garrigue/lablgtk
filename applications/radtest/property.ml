@@ -220,14 +220,14 @@ cb#entry#connect#changed callback:
 	| Some sl -> sl#base#misc#set state:`NORMAL
       end;
       let n = cb#entry#text in
-      let w = List.find pred:(fun x -> x#name = n) !rwidget_list in
+      let w = List.find !rwidget_list pred:(fun x -> x#name = n) in
       if cb#entry#misc#has_focus then w#base#misc#set state:`SELECTED;
       last_sel := Some w
 	  );;
 
 let property_add rw =
     rwidget_list := (rw :> rwidget_base) :: !rwidget_list;
-    let nplist = List.map fun:(fun w -> (w#name, w#proplist)) !rwidget_list in
+    let nplist = List.map !rwidget_list fun:(fun w -> (w#name, w#proplist)) in
     rname_prop_list := nplist;
     cb#set_combo popdown_strings:(List.map fun:fst nplist)
 
@@ -236,12 +236,12 @@ let property_remove rw =
     |	[] -> []
     |	hd :: tl -> if hd = (rw :> rwidget_base) then tl else hd :: (aux tl)
   in rwidget_list := aux !rwidget_list;
-  let nplist = List.map fun:(fun w -> (w#name, w#proplist)) !rwidget_list in
+  let nplist = List.map !rwidget_list fun:(fun w -> (w#name, w#proplist)) in
   rname_prop_list := nplist;
   cb#set_combo popdown_strings:(List.map fun:fst nplist)
 
 let property_update () =
-  let nplist = List.map fun:(fun w -> (w#name, w#proplist)) !rwidget_list in
+  let nplist = List.map !rwidget_list fun:(fun w -> (w#name, w#proplist)) in
   rname_prop_list := nplist;
   cb#set_combo popdown_strings:(List.map fun:fst nplist)
 
