@@ -52,6 +52,9 @@ module Tags = struct
   type notify_type =
     [ ANCESTOR VIRTUAL INFERIOR NONLINEAR NONLINEAR_VIRTUAL UNKNOWN ] 
 
+  type crossing_mode =
+    [ NORMAL GRAB UNGRAB ]
+
   type modifier =
     [ SHIFT LOCK CONTROL MOD1 MOD2 MOD3 MOD4 MOD5 BUTTON1
       BUTTON2 BUTTON3 BUTTON4 BUTTON5 ]

@@ -107,7 +107,6 @@ end
 class widget_misc obj = object
   val obj = Widget.coerce obj
   method show () = Widget.show obj
-  method show_now () = Widget.show_now obj
   method show_all () = Widget.show_all obj
   method hide () = Widget.hide obj
   method hide_all () = Widget.hide_all obj
@@ -160,7 +159,6 @@ and widget_signals obj ?:after = object
   inherit gtkobj_signals obj ?:after
   method event = new event_signals obj ?:after
   method show = GtkSignal.connect sig:Widget.Signals.show obj ?:after
-  method draw = GtkSignal.connect sig:Widget.Signals.draw obj ?:after
   method parent_set :callback =
     GtkSignal.connect obj sig:Widget.Signals.parent_set ?:after callback:
       begin function

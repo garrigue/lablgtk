@@ -34,6 +34,9 @@ type gdkVisibilityState = "GDK_VISIBILITY_"
 type gdkInputSource = "GDK_SOURCE_"
     [ MOUSE PEN ERASER CURSOR ]
 
+type gdkCrossingMode = "GDK_CROSSING_"
+    [ NORMAL GRAB UNGRAB ]
+
 type gdkNotifyType = "GDK_NOTIFY_"
     [ ANCESTOR VIRTUAL INFERIOR NONLINEAR NONLINEAR_VIRTUAL UNKNOWN ] 
 
