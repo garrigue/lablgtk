@@ -1,3 +1,5 @@
+(* $Id$ *)
+
 open Misc
 open Gtk
 open GObj
@@ -5,6 +7,7 @@ open GWindow
 open GFrame
 open GMisc
 open GPack
+open GMain
 
 class position :init_x :init_y :min_x :min_y :max_x :max_y = object
   val mutable x = init_x
@@ -51,13 +54,16 @@ let tbl = new table rows:4 columns:4 homogeneous:true packing:window#add
 let dummy = new label text:"" packing:(tbl#attach left:3 top:3)   
 let arr = Array.create_matrix rows:4 cols:4 fill:dummy
 let init = game_init ()
-let _ = for i = 0 to 14 do
+let _ = for i = 0 to 15 do
           let j = i mod 4  in
           let k = i/4 in
-	  arr.(j).(k) <-
-	    new label text:(string_of_int (List.nth init pos:i))
-	              packing:(tbl#attach left:j top:k)
-	              width:32 height:32
+	  let frame =
+	    new frame shadow_type:`OUT width:32 height:32
+	      packing:(tbl#attach left:j top:k) in
+	  if i < 15 then
+	    arr.(j).(k) <-
+	      new label text:(string_of_int (List.nth init pos:i))
+		packing:frame#add
         done
 let pos = new position init_x:3 init_y:3 min_x:0 min_y:0 max_x:3 max_y:3
     
@@ -68,6 +74,7 @@ let _ = window#connect#event#key_press callback:
           let (x0, y0) = pos#current in
 	  let wid0 = arr.(x0).(y0) in
 	  let key = GdkEvent.Key.keyval ev in
+	  if key = _q || key = _Escape then (Main.quit (); exit 0) else
 	  let (x1, y1) =
 	    if key = _h || key = _Left then 
               pos#right ()
