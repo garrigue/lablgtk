@@ -430,7 +430,8 @@ let process_file f =
             | Function s -> out "%s" s
             | Types ([], [], "") -> out "marshal_unit" 
             | Types ([], [], ret) ->
-                out "marshal0_ret ~ret:%s" (Hashtbl.find conversions ret)
+                out "fun f -> marshal0_ret ~ret:%s f"
+                  (Hashtbl.find conversions ret)
             | Types (l, tyl, ret) ->
                 omarshaller ~gtk_class ~name ppf
                   (l, List.map (Hashtbl.find conversions) tyl, ret)
