@@ -3,6 +3,8 @@
 
 all: var2conv var2def lablgtk
 
+opt: lablgtkopt
+
 configure:
 	@rm -f config.make .depend
 	@$(MAKE) nothing > /dev/null 2> /dev/null
@@ -13,10 +15,13 @@ include config.make
 
 COMPILER = olablc $(MLFLAGS) -c
 LINKER = olablc $(MLFLAGS)
+COMPOPT = olablopt $(MLFLAGS) -c
+LINKOPT = olablopt $(MLFLAGS)
+
 TOPLEVEL = olablmktop $(MLFLAGS)
 RANLIB = ranlib
 
-CFLAGS = $(GTKCFLAGS) #-DGTK_NO_CHECK_CASTS
+CFLAGS = $(GTKCFLAGS) -DUSE_WC #-DGTK_NO_CHECK_CASTS
 LDFLAGS = $(GTKLIBS)
 
 THFLAGS = -thread
@@ -37,6 +42,8 @@ endif
 	$(COMPILER) $<
 .mli.cmi:
 	$(COMPILER) $<
+.ml.cmx:
+	$(COMPOPT) $<
 .var.h:
 	./var2def < $< > $@
 .var.c:
@@ -49,6 +56,8 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gtkObj.cmo
 lablgtk: liblablgtk.a lablgtk.cma
 	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" lablgtk.cma
 
+lablgtkopt: liblablgtk.a lablgtk.cmxa
+
 liblablgtk.a: $(COBJS)
 	ar rc $@ $(COBJS)
 	$(RANLIB) $@
@@ -56,8 +65,14 @@ liblablgtk.a: $(COBJS)
 lablgtk.cma: $(MLOBJS)
 	$(LINKER) -a -o $@ $(MLOBJS)
 
+lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
+	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx)
+
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
+
+gtkThread.cmx: gtkThread.ml
+	$(COMPOPT) $(THFLAGS) gtkThread.ml
 
 lablgtk_t: liblablgtk.a lablgtk.cma gtkThread.cmo
 	$(TOPLEVEL) $(THFLAGS) -o $@ -custom \
