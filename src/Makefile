@@ -20,7 +20,7 @@ CONFIG = ../config.make
 
 include $(CONFIG)
 
-LABLGLDIR = +lablGL
+LABLGLDIR = $(LIBDIR)/lablGL
 
 MLLIBS = lablgtk.cma
 CLIBS = liblablgtk.a
@@ -102,12 +102,13 @@ ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
 lablgtktop: $(MLLIBS) $(INITOBJS)
-	$(TOPLEVEL) -o $@ $(MLLINK) -ccopt -L. $(MLLIBS) $(INITOBJS) \
-	   -dllpath $(INSTALLDIR) -dllpath $(LIBDIR)/lablGL
+	LD_LIBRARY_PATH=.:${LD_LIBRARY_PATH}}} \
+	  $(TOPLEVEL) -o $@ $(MLLINK) -ccopt -L. $(MLLIBS) $(INITOBJS) \
+	   -dllpath $(INSTALLDIR) -dllpath $(LABLGLDIR)
 
 lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	$(TOPLEVEL) $(THFLAGS) -custom -o $@ $(THLINK) $(MLLINK) \
-	   -dllpath $(INSTALLDIR) -dllpath $(LIBDIR)/lablGL \
+	   -dllpath $(INSTALLDIR) -dllpath $(LABLGLDIR) \
 	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
 lablgtk: Makefile $(CONFIG) lablgtk.in
@@ -152,27 +153,23 @@ installopt:
 lablgtk.cma: $(MLOBJS) $(COBJS)
 	$(LIBRARIAN) -o lablgtk $(MLOBJS) $(COBJS) $(GTKLIBS)
 lablgtk.cmxa: lablgtk.cma $(MLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtk $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
+	$(LIBRARIAN) -o lablgtk $(MLOBJS:.cmo=.cmx)
 
 lablgtkgl.cma: $(GLMLOBJS) $(GLCOBJS)
-	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GTKLIBS) $(GLMLOBJS) $(GLCOBJS)
+	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS) $(GLCOBJS) \
+	    $(GLLIBS) $(GTKLIBS)
 lablgtkgl.cmxa: lablgtkgl.cma $(GLMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GTKLIBS) \
-		$(GLMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtkgl $(GLMLOBJS:.cmo=.cmx)
 
 lablgnome.cma: $(GNOMEMLOBJS) $(GNOMECOBJS)
-	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMECOBJS) \
-		-L. -llablgtk $(GNOMELIBS)
+	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMECOBJS) $(GNOMELIBS)
 lablgnome.cmxa: lablgnome.cma $(GNOMEMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) \
-		-L. -llablgtk $(GNOMELIBS)
+	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx)
 
 lablglade.cma: $(GLADEMLOBJS) $(GLADECOBJS)
-	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS) $(GLADECOBJS) \
-		-L. -llablgtk $(GLADELIBS)
+	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS) $(GLADECOBJS) $(GLADELIBS)
 lablglade.cmxa: lablglade.cma $(GLADEMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS:.cmo=.cmx) \
-		-L. -llablgtk $(GLADELIBS)
+	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS:.cmo=.cmx)
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml

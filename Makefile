@@ -35,6 +35,7 @@ endif
 endif
 
 GTKLIBS = `$(GTK_CONFIG) --libs`
+GLLIBS = -lGLU -lGL
 
 all:
 	cd src && $(MAKE) $@
@@ -58,6 +59,8 @@ configure:
 	@echo INSTALLDIR=$(INSTALLDIR) >> config.make
 	@echo GTKCFLAGS=$(GTKCFLAGS) >> config.make
 	@echo GTKLIBS=$(GTKLIBS) | sed -e 's/-[RWr][^ ]*/-ccopt &/g' \
+	  >> config.make
+	@echo GLLIBS=$(GLLIBS) | sed -e 's/-[RWr][^ ]*/-ccopt &/g' \
 	  >> config.make
 	@echo GNOMELIBS=$(GNOMELIBS) | sed -e 's/-[RWr][^ ]*/-ccopt &/g' \
 	  >> config.make
