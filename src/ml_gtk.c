@@ -382,19 +382,16 @@ ML_2 (gtk_container_add, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_remove, GtkContainer_val, GtkWidget_val, Unit)
 static void ml_gtk_simple_callback (GtkWidget *w, gpointer data)
 {
-    value val, clos = (value)data;
-    Begin_root(clos);
+    value val, *clos = (value*)data;
     val = Val_GtkWidget(w);
-    callback (clos, val);
-    End_roots();
+    callback (*clos, val);
 }
 value ml_gtk_container_foreach (value w, value clos)
 {
-    Begin_roots2 (w, clos);
+    CAMLparam1(clos);
     gtk_container_foreach (GtkContainer_val(w), ml_gtk_simple_callback,
-			   (gpointer)clos);
-    End_roots ();
-    return Val_unit;
+			   &clos);
+    CAMLreturn Val_unit;
 }
 ML_1 (gtk_container_register_toplevel, GtkContainer_val, Unit)
 ML_1 (gtk_container_unregister_toplevel, GtkContainer_val, Unit)
