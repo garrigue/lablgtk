@@ -190,6 +190,33 @@ CAMLprim value ml_g_value_shift (value args, value index)
     return Val_GValue_wrap (&GValue_val(args)[Int_val(index)]);
 }
 
+/* gboxed finalization */
+static void ml_final_gboxed (value val)
+{
+    gpointer p = Pointer_val(val);
+    if (p != NULL) g_boxed_free (Field(val,2), p);
+    p = NULL;
+}
+static struct custom_operations ml_custom_gboxed =
+{ "gboxed/2.0/", ml_final_gboxed, custom_compare_default, custom_hash_default,
+  custom_serialize_default, custom_deserialize_default };
+value Val_gboxed(GType t, gpointer p)
+{
+    value ret = alloc_custom(&ml_custom_gboxed, 2*sizeof(value), 10, 1000);
+    Pointer_val(ret) = g_boxed_copy (t,p);
+    Field(ret,2) = t;
+    return ret;
+}
+value Val_gboxed_new(GType t, gpointer p)
+{
+    value ret = alloc_custom(&ml_custom_gboxed, 2*sizeof(value), 10, 1000);
+    Pointer_val(ret) = p;
+    Field(ret,2) = t;
+    return ret;
+}
+
+/* Read/Write a value */
+
 #define DATA  (val->data[0])
 
 value g_value_get_variant (GValue *val)
@@ -244,6 +271,10 @@ value g_value_get_variant (GValue *val)
         tmp = Val_option ((GObject*)DATA.v_pointer, Val_GObject);
         break;
     case G_TYPE_BOXED:
+        tag = MLTAG_POINTER;
+        tmp = (DATA.v_pointer == NULL ? Val_unit
+               : ml_some(Val_gboxed(type, DATA.v_pointer)));
+        break;
     case G_TYPE_POINTER:
         tag = MLTAG_POINTER;
         tmp = Val_option (DATA.v_pointer, Val_pointer);

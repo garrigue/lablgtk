@@ -120,10 +120,10 @@ class group : GnomeCanvas.group Gtk.obj ->
     method get_items : GnomeCanvas.item Gobject.obj list
   end
 
-class richtext : GnomeCanvas.richtext Gtk.obj ->
+class rich_text : GnomeCanvas.rich_text Gtk.obj ->
   object
-    inherit [GnomeCanvas.richtext_p] item
-    val obj : GnomeCanvas.richtext Gtk.obj
+    inherit [GnomeCanvas.rich_text_p] item
+    val obj : GnomeCanvas.rich_text Gtk.obj
     method copy_clipboard : unit -> unit
     method cut_clipboard : unit -> unit
     method paste_clipboard : unit -> unit
@@ -227,11 +227,11 @@ val widget :
   ?props:GnomeCanvas.widget_p list ->
   #group -> widget
 
-val richtext :
+val rich_text :
   ?x:float -> ?y:float ->
   ?text:string ->
   ?width:float -> ?height:float ->
-  ?props:GnomeCanvas.richtext_p list ->
-  #group -> richtext
+  ?props:GnomeCanvas.rich_text_p list ->
+  #group -> rich_text
 
 val parent : 'a #item -> group

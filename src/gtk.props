@@ -8,10 +8,20 @@ module Object = struct
   external _ref_and_sink : [>`gtk] obj -> unit
     = "ml_gtk_object_ref_and_sink"
   let make ~classe params =
-    let obj = make ~classe params in _ref_and_sink obj;
+    let obj = unsafe_create ~classe params in _ref_and_sink obj;
     obj
 end
 }
+
+conversions {
+  GtkStock "GtkStock.conv"
+}
+
+classes {
+  GdkPixbuf "GdkPixbuf.pixbuf"
+  GtkTreeModel "Gtk.tree_model obj"
+}
+
 
 class Widget abstract : Object {
   "app-paintable"        gboolean             : Read / Write

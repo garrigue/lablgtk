@@ -92,7 +92,7 @@ let propertize = function
   | `CLIP_HEIGHT v -> "clip_height", `FLOAT v
   | `X_OFFSET v -> "x_offset", `FLOAT v
   | `Y_OFFSET v -> "y_offset", `FLOAT v
-  | `POINTS p -> "points", `POINTER (Some (convert_points p))
+  | `POINTS p -> "points", `POINTER (Some (Conv.convert_points p))
   | `ARROW_SHAPE_A v -> "arrow_shape_a", `FLOAT v
   | `ARROW_SHAPE_B v -> "arrow_shape_b", `FLOAT v
   | `ARROW_SHAPE_C v -> "arrow_shape_c", `FLOAT v
@@ -104,7 +104,7 @@ let propertize = function
   | `JOIN_STYLE c -> "join_style", encode GdkEnums.join_style c
   | `LINE_STYLE c -> "line_style", encode GdkEnums.line_style c
   | `BPATH p -> "bpath" , `POINTER (Some p)
-  | `DASH (off, d) -> "dash", `POINTER (Some (convert_dash off d))
+  | `DASH (off, d) -> "dash", `POINTER (Some (Conv.convert_dash off d))
   | `SMOOTH b -> "smooth", `BOOL b
   | `PIXBUF (p : GdkPixbuf.pixbuf) ->
       "pixbuf", `OBJECT (Some (Gobject.coerce p))
@@ -204,8 +204,8 @@ class group grp_obj = object
     Group.get_items grp_obj
 end
 
-class richtext rchtxt_obj = object
-  inherit [GnomeCanvas.richtext_p] item (rchtxt_obj : GnomeCanvas.richtext Gtk.obj)
+class rich_text rchtxt_obj = object
+  inherit [GnomeCanvas.rich_text_p] item (rchtxt_obj : GnomeCanvas.rich_text Gtk.obj)
   method cut_clipboard () = RichText.cut_clipboard obj
   method copy_clipboard () = RichText.copy_clipboard obj
   method paste_clipboard () = RichText.paste_clipboard obj
@@ -354,7 +354,7 @@ let widget ?widget ?x ?y ?width ?height ?(props=[]) p =
 	w ] in
   construct_item Types.widget ~props p
 
-let richtext ?x ?y ?text ?width ?height ?(props=[]) p =
+let rich_text ?x ?y ?text ?width ?height ?(props=[]) p =
   let props = unoption_list ~rest:props
       [ ( match x with None -> None | Some v -> Some (`X v) ) ;
 	( match y with None -> None | Some v -> Some (`Y v) ) ;
@@ -362,8 +362,8 @@ let richtext ?x ?y ?text ?width ?height ?(props=[]) p =
 	( match height with None -> None | Some v -> Some (`HEIGHT v) ) ;
 	( match text with None -> None | Some t -> Some (`TEXT t) ) ;
       ] in
-  let i = Item.new_item p#as_group Types.richtext in
-  let o = new richtext i in
+  let i = Item.new_item p#as_group Types.rich_text in
+  let o = new rich_text i in
   if props <> [] then o#set props ;
   o
 

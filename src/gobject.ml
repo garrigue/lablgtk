@@ -131,6 +131,7 @@ let objtype_from_name ~caller name =
   t
 
 external get_type : 'a obj -> g_type = "ml_G_TYPE_FROM_INSTANCE"
+external get_object_type : 'a obj -> g_type = "ml_G_TYPE_FROM_INSTANCE"
 let is_a obj name =
   Type.is_a (get_type obj) (objtype_from_name ~caller:"Gobject.is_a" name)
 
@@ -143,9 +144,20 @@ let try_cast w name =
 external coerce : 'a -> [`base] obj = "%identity"
   (* [coerce] is safe *)
 
-external make : g_type -> (string * 'a data_set) list -> 'b obj
+external unsafe_create : g_type -> (string * 'a data_set) list -> 'b obj
     = "ml_g_object_new"
   (* This is dangerous! *)
+
+type ('a,'b) property = { name: string; conv: 'b data_conv }
+
+type 'a param = string * unit data_set
+let dyn_param prop v =
+  (prop, (Obj.magic (v : 'a data_set) : unit data_set))
+let param (prop : ('a,'b) property) d : 'a param =
+  dyn_param prop.name (prop.conv.inj d)
+
+let unsafe_create ~classe l =
+  unsafe_create (objtype_from_name ~caller:"Gobject.unsafe_create" classe) l
 
 let get_oid (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
 
@@ -243,38 +255,27 @@ module Data = struct
   v
 end
 
-type ('a,'b) property = { name: string; conv: 'b data_conv }
-
-type 'a param = string * unit data_set
-let dyn_param prop v =
-  (prop, (Obj.magic (v : 'a data_set) : unit data_set))
-let param (prop : ('a,'b) property) d : 'a param =
-  dyn_param prop.name (prop.conv.inj d)
-
-let make ~classe l =
-  make (objtype_from_name ~caller:"Gobject.make" classe) l
-
 module Property = struct
   external freeze_notify : 'a obj -> unit = "ml_g_object_freeze_notify"
   external thaw_notify : 'a obj -> unit = "ml_g_object_thaw_notify"
   external notify : 'a obj -> string -> unit = "ml_g_object_notify"
-  external set_property : 'a obj -> string -> g_value -> unit 
+  external set_value : 'a obj -> string -> g_value -> unit 
     = "ml_g_object_set_property"
-  external get_property : 'a obj -> string -> g_value -> unit
+  external get_value : 'a obj -> string -> g_value -> unit
     = "ml_g_object_get_property"
-  external get_property_type : 'a obj -> string -> g_type
+  external get_type : 'a obj -> string -> g_type
     = "ml_my_g_object_get_property_type"
   (* get_property_type may raise Not_found *)
   (* Converted the following to C to avoid too many calls
   let set_dyn obj prop data =
-    let t = get_property_type obj prop in
+    let t = get_type obj prop in
     let v = Value.create t in
     Value.set v data;
-    set_property obj prop v
+    set_value obj prop v
   let get_dyn obj prop =
-    let t = get_property_type obj prop in
+    let t = get_type obj prop in
     let v = Value.create t in
-    get_property obj prop v;
+    get_value obj prop v;
     Value.get v
   *)
   external set_dyn : 'a obj -> string -> 'b data_set -> unit
@@ -288,9 +289,9 @@ module Property = struct
       match prop.conv.kind with
       | `INT32 | `UINT32 ->
           (* special case to get all 32 bits *)
-          let t = get_property_type obj prop.name in
+          let t = get_type obj prop.name in
           let v = Value.create t in
-          get_property obj prop.name v;
+          get_value obj prop.name v;
           `INT32 (Value.get_int32 v)
       | _ ->
           (get_dyn obj prop.name :> data_conv_get)
@@ -302,7 +303,7 @@ module Property = struct
     | None -> failwith ("Gobject.Property.get_some: " ^ prop.name)
 
   let check obj prop =
-    let tp obj = Type.name (get_type obj) in
+    let tp obj = Type.name (get_object_type obj) in
     let data =
       try get_dyn obj prop.name
       with

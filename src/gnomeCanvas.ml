@@ -1,10 +1,22 @@
-
-external register_types : unit -> Gobject.g_type array = "ml_gnome_canvas_register_types"
+(* $Id$ *)
 
 type canvas = [Gtk.layout|`canvas]
 type item   = [`gtk|`canvasitem]
-type group  = [item|`canvasgroup] 
-type richtext = [item|`canvasrichtext]
+type group  = [item|`canvasgroup]
+type clipgroup = [group|`canvasclipgroup]
+type shape  = [item|`canvasshape]
+type r_e    = [shape|`canvasre]
+type rect   = [r_e|`canvasrectangle]
+type ellipse = [r_e|`canvasellipse]
+type bpath  = [shape|`canvasbpath]
+type polygon = [shape|`canvaspolygon]
+type text   = [item|`canvastext]
+type line   = [item|`canvasline]
+type pixbuf = [item|`canvaspixbuf]
+type widget = [item|`canvaswidget]
+type rich_text = [item|`canvasrichtext]
+
+type path_def
 
 (* GnomeCanvas *)
 
@@ -88,7 +100,7 @@ type widget_p = [`X of float| `Y of float
 		| `SIZE_PIXELS of bool
 		| `ANCHOR of Gtk.Tags.anchor_type
 		| `WIDGET of GObj.widget| `NO_WIDGET]
-type richtext_p = [`X of float| `Y of float
+type rich_text_p = [`X of float| `Y of float
                   | `TEXT of string
                   | `WIDTH of float|  `HEIGHT of float
 		  | `EDITABLE of bool | `VISIBLE of bool
@@ -110,7 +122,7 @@ module Types : sig
   val pixbuf : ([item|`canvaspixbuf], pixbuf_p) t
   val polygon : ([item|`canvasshape|`canvaspolygon], polygon_p) t
   val widget : ([item|`canvaswidget], widget_p) t
-  val richtext : (richtext, richtext_p) t
+  val rich_text : (rich_text, rich_text_p) t
   val shape : ([item|`canvasshape], shape_p) t
   val rect_ellipse : ([item|`canvasshape|`canvasRE], re_p) t
 
@@ -120,6 +132,8 @@ module Types : sig
 end = 
   struct
   type ('a, 'b) t = Gobject.g_type constraint 'a = [> `gtk|`canvasitem]
+  external register_types : unit -> Gobject.g_type array
+     = "ml_gnome_canvas_register_types"
   let canvas_types = register_types ()
 
   let group = canvas_types.(4)
@@ -133,7 +147,7 @@ end =
   let shape = canvas_types.(13)
   let rect_ellipse = canvas_types.(10)
   let widget = canvas_types.(2)
-  let richtext = canvas_types.(12)
+  let rich_text = canvas_types.(12)
   let points = canvas_types.(8)
 
   let is_a obj typ =
@@ -191,14 +205,32 @@ end
 (* GnomeCanvasRichText *)
 module RichText =
   struct
-external cut_clipboard : [> richtext] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_cut_clipboard"
-external copy_clipboard : [> richtext] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_copy_clipboard"
-external paste_clipboard : [> richtext] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_paste_clipboard"
-external get_buffer : [> richtext] Gobject.obj -> Gtk.text_buffer = "ml_gnome_canvas_rich_text_get_buffer"
+external cut_clipboard : [> rich_text] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_cut_clipboard"
+external copy_clipboard : [> rich_text] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_copy_clipboard"
+external paste_clipboard : [> rich_text] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_paste_clipboard"
+external get_buffer : [> rich_text] Gobject.obj -> Gtk.text_buffer = "ml_gnome_canvas_rich_text_get_buffer"
 end
 
 (* Conversion  functions for properties *)
+module Conv = struct
 external convert_points : float array -> Gpointer.boxed
   = "ml_gnome_canvas_convert_points"
 external convert_dash : float -> float array -> Gpointer.boxed
   = "ml_gnome_canvas_convert_dash"
+external get_points : Gpointer.boxed -> float array
+  = "ml_gnome_canvas_get_points"
+external get_dash : Gpointer.boxed -> float * float array
+  = "ml_gnome_canvas_get_dash"
+open Gaux
+open Gobject
+let points =
+  { kind = `BOXED; inj = (fun x -> `POINTER (may_map convert_points x));
+    proj = (fun x -> may_map get_points (Data.boxed.proj x)) }
+let art_vpath_dash =
+  { kind = `POINTER;
+    inj = (fun x -> `POINTER (may_map (fun (x,y) -> convert_dash x y) x));
+    proj = (fun x -> may_map get_dash (Data.pointer.proj x)) }
+let path_def =
+  { Data.unsafe_pointer_option with proj =
+    (fun x -> may_map PathDef.duplicate (Data.unsafe_pointer_option.proj x)) }
+end
