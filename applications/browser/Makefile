@@ -26,7 +26,7 @@ MLFLAGS = -I ../../src -I ocaml-src/utils -I ocaml-src/parsing
 	$(COMPOPT) $<
 
 # Targets
-MLOBJS = text.cmo file.cmo lexical.cmo shell.cmo editor.cmo
+MLOBJS = file.cmo lexical.cmo shell.cmo editor.cmo
 
 browser: $(MLOBJS)
 	$(LINKER) -o $@	toplevellib.cma str.cma unix.cma \

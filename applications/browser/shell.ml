@@ -31,8 +31,10 @@ class shell ~prog ~args ~env ?packing ?show () =
   and (in1,out2) = Unix.pipe ()
   and (err1,err2) = Unix.pipe () in
   let _ = List.iter ~f:Unix.set_nonblock [out1;in1;err1] in
+  let view = GText.view ?packing ?show () in
+  let buffer = view#buffer in
 object (self)
-  val textw = GEdit.text ~editable:true ?packing ?show ()
+  inherit GObj.widget view#as_widget
   val pid = Unix.create_process_env
       ~prog ~args ~env ~stdin:in2 ~stdout:out2 ~stderr:err2
   val out = Unix.out_channel_of_descr out1
@@ -40,10 +42,12 @@ object (self)
   val mutable alive = true
   val mutable reading = false
   val mutable input_start = 0
-  method text = textw
+  method private position = buffer#get_iter_at_mark `INSERT
+  method private input_start = buffer#get_iter_at_char input_start
+  method textview = view
   method alive = alive
   method kill () =
-    textw#set_editable false;
+    view#set_editable false;
     if alive then begin
       alive <- false;
       protect close_out out;
@@ -68,77 +72,78 @@ object (self)
       let buf = String.create len in
       let len = Unix.read fd ~buf ~pos:0 ~len in
       if len > 0 then begin
-	textw#set_position textw#length;
+	buffer#place_cursor buffer#end_iter;
 	self#insert (String.sub buf ~pos:0 ~len);
-	input_start <- textw#position;
+	input_start <- self#position#offset;
       end;
       len
     with Unix.Unix_error _ -> 0
   method history (dir : [`next|`previous]) =
     if not h#empty then begin
       if reading then begin
-	textw#delete_text ~start:input_start ~stop:textw#position;
+	buffer#delete ~start:(self#input_start)
+          ~stop:(self#position);
       end else begin
 	reading <- true;
-	input_start <- textw#position
+	input_start <- self#position#offset
       end;
       self#insert (if dir = `previous then h#previous else h#next);
     end
-  val mutable lexing = false
-  method private lex ~start ~stop:e =
-    if not lexing && start < e then begin
-      lexing <- true;
-      Lexical.tag textw ~start ~stop:e;
-      lexing <- false
-    end
-  method insert ?(lex=true) text =
-    let start = Text.line_start textw in
-    textw#insert text;
-    if lex then self#lex ~start ~stop:(Text.line_end textw)
+  method private lex ~start ~stop =
+    if start < stop then Lexical.tag buffer ~start ~stop
+  method insert text =
+    buffer#insert text
   method private keypress c =
     if not reading & c > " " then begin
       reading <- true;
-      input_start <- textw#position
+      input_start <- self#position#offset
     end
   method private return () =
     if reading then reading <- false
-    else input_start <- textw#position;
-    textw#set_position (Text.line_end textw);
-    let s = textw#get_chars ~start:input_start ~stop:textw#position in
+    else input_start <- self#position#offset;
+    let stop = self#position in
+    stop#forward_to_line_end ();
+    buffer#place_cursor stop;
+    let s = buffer#get_text ~start:(self#input_start) ~stop () in
     h#add s;
     self#send s;
     self#send "\n"
   method private paste () =
     if not reading then begin
       reading <- true;
-      input_start <- textw#position;
+      input_start <- self#position#offset;
     end
   initializer
-    textw#event#connect#key_press ~callback:
+    Lexical.init_tags buffer;
+    view#event#connect#key_press ~callback:
       begin fun ev ->
 	if GdkEvent.Key.keyval ev = _Return && GdkEvent.Key.state ev = []
 	then self#return ()
 	else self#keypress (GdkEvent.Key.string ev);
         false
       end;
-    textw#connect#after#insert_text ~callback:
-      begin fun s ~pos ->
-        if not lexing then
-          self#lex ~start:(Text.line_start textw ~pos:(pos - String.length s))
-            ~stop:(Text.line_end textw ~pos)
+    buffer#connect#after#insert_text ~callback:
+      begin fun it s ->
+        let start = it#copy and stop = it#copy in
+        start#backward_chars (String.length s);
+        start#backward_line ();
+        stop#forward_line ();
+        self#lex ~start ~stop;
+        view#scroll_mark_onscreen `INSERT
       end;
-    textw#connect#after#delete_text ~callback:
-      begin fun ~start:pos ~stop ->
-        if not lexing then
-          self#lex ~start:(Text.line_start textw ~pos)
-            ~stop:(Text.line_end textw ~pos)
+    buffer#connect#after#delete_range ~callback:
+      begin fun ~start ~stop ->
+        let start = start#copy and stop = stop#copy in
+        start#backward_line ();
+        stop#forward_to_line_end ();
+        self#lex ~start ~stop
       end;
-    textw#event#connect#button_press ~callback:
+    view#event#connect#button_press ~callback:
       begin fun ev ->
 	if GdkEvent.Button.button ev = 2 then self#paste ();
 	false
       end;
-    textw#connect#destroy ~callback:self#kill;
+    view#connect#destroy ~callback:self#kill;
     GMain.Timeout.add ~ms:100 ~callback:
       begin fun () ->
 	if alive then begin
@@ -207,12 +212,8 @@ let f ~prog ~title =
   and history_menu = f#add_submenu "History"
   and signal_menu = f#add_submenu "Signal" in
 
-  let hbox = GPack.hbox ~packing:vbox#add () in
-  let sh = new shell ~prog ~env ~args ~packing:hbox#add () in
-  let sb =
-    GRange.scrollbar `VERTICAL ~adjustment:sh#text#vadjustment
-      ~packing:hbox#pack ()
-  in
+  let sw = GBin.scrolled_window ~hpolicy:`AUTOMATIC ~packing:vbox#add () in
+  let sh = new shell ~prog ~env ~args ~packing:sw#add () in
 
   let f = new GMenu.factory file_menu ~accel_group in
   f#add_item "Use..." ~callback:
