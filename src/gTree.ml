@@ -154,10 +154,10 @@ class tree_sortable obj = object
   method set_sort_column_id = GtkTree.TreeSortable.set_sort_column_id obj
   method set_sort_func id cmp = 
     GtkTree.TreeSortable.set_sort_func obj id
-      (fun m it_a it_b -> cmp (new tree_sortable m) it_a it_b)
+      (fun m it_a it_b -> cmp (new model m) it_a it_b)
   method set_default_sort_func cmp = 
     GtkTree.TreeSortable.set_default_sort_func obj
-      (fun m it_a it_b -> cmp (new tree_sortable m) it_a it_b)
+      (fun m it_a it_b -> cmp (new model m) it_a it_b)
   method has_default_sort_func = GtkTree.TreeSortable.has_default_sort_func obj
 end
 
@@ -216,7 +216,7 @@ end
 let list_store (cols : column_list) =
   cols#lock ();
   let types =
-    List.map Type.of_fundamental (cols#kinds :> fundamental_type list) in
+    List.map Type.of_fundamental cols#kinds in
   let store = ListStore.create (Array.of_list types) in
   Hashtbl.add model_ids (Gobject.get_oid store) cols#id;
   new list_store store
@@ -329,6 +329,14 @@ class view_column (_obj : tree_view_column obj) = object
 
   method set_sort_column_id = TreeViewColumn.set_sort_column_id obj
   method get_sort_column_id = TreeViewColumn.get_sort_column_id obj
+  method set_cell_data_func :
+    'a. (#cell_renderer as 'a) -> (model -> Gtk.tree_iter -> unit) -> unit =
+    fun crr cb -> 
+      TreeViewColumn.set_cell_data_func obj crr#as_renderer
+	(Some (fun m i -> cb (new model m) i))
+  method unset_cell_data_func : 'a. (#cell_renderer as 'a) -> unit = 
+    fun crr ->
+      TreeViewColumn.set_cell_data_func obj crr#as_renderer None
 end
 let view_column ?title ?renderer () =
   let w = new view_column (TreeViewColumn.create []) in

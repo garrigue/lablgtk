@@ -290,6 +290,9 @@ module TreeViewColumn = struct
     = "ml_gtk_tree_view_column_set_sort_column_id"      
   external get_sort_column_id : [>`treeviewcolumn] obj -> int
     = "ml_gtk_tree_view_column_get_sort_column_id"
+  external set_cell_data_func : 
+    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> 
+    ([`treemodel] obj -> tree_iter -> unit) option -> unit = "ml_gtk_tree_view_column_set_cell_data_func"
 end
 
 module TreeView = struct
