@@ -40,8 +40,8 @@ COBJS = ml_gtk.o ml_gdk.o ml_glib.o
 MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
-	$(TOPLEVEL) -o $@ -custom -cclib "$(LDFLAGS)" \
-	liblablgtk.a $(MLLIBS) lablgtk.cma
+	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" \
+	$(MLLIBS) lablgtk.cma
 
 liblablgtk.a: $(COBJS)
 	ar rc $@ $(COBJS)

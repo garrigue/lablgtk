@@ -2,9 +2,10 @@
 
 open Gtk
 
-class bar () = object
+class bar bar = object
+  val bar : ProgressBar.t = bar
   val mutable pstat = true
-  method progress (bar : ProgressBar.t) =
+  method progress =
     let pvalue = ProgressBar.percent bar in
     let pvalue =
       if pvalue >= 1.0 || not pstat then (pstat <- true; 0.0)
@@ -19,13 +20,37 @@ end
 let main () =
 
   let window = Window.create `TOPLEVEL in
+  Signal.connect window sig:Signal.delete_event
+    cb:(fun () -> Main.quit (); true);
   Container.border_width window 10;
 
-  let table = Table.create 3 2 homogeneous:true in
+  let table = Table.create 3 2 in
   Container.add window table;
   
   let label = Label.create "Progress Bar Example" in
-  Table.attach table label left:0 right:2 top:0;
+  Table.attach table label left:0 right:2 top:0 expand:`x shrink:`both;
   Widget.show label;
   
-  let pbar = ProgressBar.create 
+  let pbar = ProgressBar.create () in
+  Table.attach table pbar left:0 right:2 top:1 fill:`x shrink:`both;
+  Widget.show pbar;
+
+  let bar = new bar pbar in
+  let ptimer = Timeout.add 100 cb:(fun () -> bar#progress) in
+
+  let button = Button.create_with_label "Reset" in
+  Signal.connect button sig:Signal.clicked cb:(fun () -> bar#progress_r);
+  Table.attach table button left:0 top:2 expand:`none fill:`x shrink:`both;
+  Widget.show button;
+
+  let button = Button.create_with_label "Cancel" in
+  Signal.connect button sig:Signal.clicked cb:Main.quit;
+  Table.attach table button left:1 top:2 expand:`none fill:`x shrink:`both;
+  Widget.show button;
+
+  Widget.show table;
+  Widget.show window;
+
+  Main.main ()
+
+let _ = main ()
