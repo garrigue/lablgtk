@@ -209,3 +209,6 @@ type image_type = "GTK_IMAGE_"
 
 type size_group_mode = "GTK_SIZE_GROUP_"
   [ `NONE | `HORIZONTAL | `VERTICAL | `BOTH ]
+
+type file_chooser_action = "GTK_FILE_CHOOSER_ACTION_"
+  [ `OPEN | `SAVE ]

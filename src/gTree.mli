@@ -157,13 +157,13 @@ class tree_store : Gtk.tree_store ->
     method insert_before : ?parent:tree_iter -> tree_iter -> tree_iter
     method is_ancestor : iter:tree_iter -> descendant:tree_iter -> bool
     method iter_depth : tree_iter -> int
-    method iter_is_valid : tree_iter -> bool
-    method move_after : iter:tree_iter -> pos:tree_iter -> bool
-    method move_before : iter:tree_iter -> pos:tree_iter -> bool
+    method iter_is_valid : tree_iter -> bool (** @since GTK 2.2 *)
+    method move_after : iter:tree_iter -> pos:tree_iter -> bool (** @since GTK 2.2 *)
+    method move_before : iter:tree_iter -> pos:tree_iter -> bool (** @since GTK 2.2 *)
     method prepend : ?parent:tree_iter -> unit -> tree_iter
     method remove : tree_iter -> bool
     method set : row:tree_iter -> column:'a column -> 'a -> unit
-    method swap : tree_iter -> tree_iter -> bool
+    method swap : tree_iter -> tree_iter -> bool (** @since GTK 2.2 *)
   end
 
 (** @gtkdoc gtk GtkTreeStore *)
@@ -179,13 +179,13 @@ class list_store : Gtk.list_store ->
     method insert : int -> tree_iter
     method insert_after : tree_iter -> tree_iter
     method insert_before : tree_iter -> tree_iter
-    method iter_is_valid : tree_iter -> bool
-    method move_after : iter:tree_iter -> pos:tree_iter -> bool
-    method move_before : iter:tree_iter -> pos:tree_iter -> bool
+    method iter_is_valid : tree_iter -> bool (** @since GTK 2.2 *)
+    method move_after : iter:tree_iter -> pos:tree_iter -> bool (** @since GTK 2.2 *)
+    method move_before : iter:tree_iter -> pos:tree_iter -> bool (** @since GTK 2.2 *)
     method prepend : unit -> tree_iter
     method remove : tree_iter -> bool
     method set : row:tree_iter -> column:'a column -> 'a -> unit
-    method swap : tree_iter -> tree_iter -> bool
+    method swap : tree_iter -> tree_iter -> bool (** @since GTK 2.2 *)
   end
 
 (** @gtkdoc gtk GtkListStore *)
@@ -225,7 +225,7 @@ class selection :
     val obj : Gtk.tree_selection
     method connect : selection_signals
     method misc : gobject_ops
-    method count_selected_rows : int
+    method count_selected_rows : int (** @since GTK 2.2 *)
     method get_mode : Tags.selection_mode
     method get_selected_rows : tree_path list
     method iter_is_selected : tree_iter -> bool
@@ -239,7 +239,7 @@ class selection :
     method unselect_all : unit -> unit
     method unselect_iter : tree_iter -> unit
     method unselect_path : tree_path -> unit
-    method unselect_range : tree_path -> tree_path -> unit
+    method unselect_range : tree_path -> tree_path -> unit (** @since GTK 2.2 *)
   end
 
 (** {4 Views} *)
@@ -372,7 +372,7 @@ class view : tree_view obj ->
     method selection : selection
     method set_cursor :
       ?cell:#cell_renderer ->
-      ?edit:bool -> tree_path -> view_column -> unit
+      ?edit:bool -> tree_path -> view_column -> unit (** @since GTK 2.2 *)
     method set_enable_search : bool -> unit
     method set_expander_column : view_column option -> unit
     method set_hadjustment : GData.adjustment -> unit
@@ -516,3 +516,15 @@ val cell_renderer_text : cell_properties_text list -> cell_renderer_text
 
 (** @gtkdoc gtk GtkCellRendererToggle *)
 val cell_renderer_toggle : cell_properties_toggle list -> cell_renderer_toggle
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkCellLayout *)
+class cell_layout : [> Gtk.cell_layout] Gtk.obj ->
+  object
+    method pack :
+      ?from:Tags.pack_type ->
+      ?expand:bool -> #cell_renderer -> unit
+    method clear : unit -> unit
+    method add_attribute : #cell_renderer -> string -> 'a column -> unit
+    method clear_attributes : #cell_renderer -> unit
+  end

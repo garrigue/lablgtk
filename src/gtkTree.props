@@ -136,6 +136,14 @@ class CellRendererToggle vset : CellRenderer {
   signal toggled : GtkTreePathString
 }
 
+class CellLayout abstract : Object {
+  method pack_start : "Gtk.cell_renderer Gtk.obj -> expand:bool -> unit"
+  method pack_end   : "Gtk.cell_renderer Gtk.obj -> expand:bool -> unit"
+  method clear
+  method add_attribute : "Gtk.cell_renderer Gtk.obj -> string -> int -> unit"
+  method clear_attributes : "Gtk.cell_renderer Gtk.obj -> unit"
+}
+
 class TreeViewColumn wrap : Object {
   "alignment"            gfloat               : Read / Write
   "clickable"            gboolean             : Read / Write

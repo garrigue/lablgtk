@@ -106,3 +106,17 @@ module Combo = struct
   external set_item_string : [>`combo] obj -> [>`item] obj -> string -> unit
       = "ml_gtk_combo_set_item_string"
 end
+
+module ComboBox = struct
+  include GtkEditProps.ComboBox
+  external new_text : unit -> [> Gtk.combo_box|`comboboxtext] obj
+      = "ml_gtk_combo_box_new_text"
+  external append_text : [> Gtk.combo_box|`comboboxtext] obj -> string -> unit 
+      = "ml_gtk_combo_box_append_text"
+  external insert_text : [> Gtk.combo_box|`comboboxtext] obj -> int -> string -> unit
+      = "ml_gtk_combo_box_insert_text"
+  external prepend_text : [> Gtk.combo_box|`comboboxtext] obj -> string -> unit
+      = "ml_gtk_combo_box_prepend_text"
+end
+
+module ComboBoxEntry = GtkEditProps.ComboBoxEntry

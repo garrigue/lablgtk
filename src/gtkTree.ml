@@ -343,3 +343,11 @@ module CellRendererPixbuf = CellRendererPixbuf
 module CellRendererText = CellRendererText
 
 module CellRendererToggle = CellRendererToggle
+
+module CellLayout = struct
+  include GtkTreeProps.CellLayout
+  let pack layout 
+    ?from:( dir = (`START : pack_type)) ?(expand=false) renderer =
+    (match dir with `START -> pack_start | `END -> pack_end)
+      layout renderer ~expand
+end

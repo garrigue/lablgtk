@@ -197,9 +197,10 @@ val viewport :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> viewport
 
-(** {3 GtkAlignment}
-   A widget which controls the alignment and size of its child
-   @gtkdoc gtk GtkAlignment *)
+(** {3 GtkAlignment} 
+   A widget which controls the alignment and size of its child *)
+
+(** @gtkdoc gtk GtkAlignment *)
 class alignment : Gtk.alignment obj ->
   object
     inherit GContainer.bin
@@ -226,3 +227,49 @@ val alignment :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> alignment
 val alignment_cast : #widget -> alignment
+
+(** {3 GtkExpander}
+   A container which can hide its child *)
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkExpander *)
+class expander_signals : ([> Gtk.expander] as 'a) Gtk.obj ->
+  object
+    inherit GContainer.container_signals
+    val obj : 'a obj
+    method activate : callback:(unit -> unit) -> GtkSignal.id
+  end
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkExpander *)
+class expander :
+  ([> Gtk.expander ] as 'a) Gtk.obj ->
+  object
+    inherit GContainer.bin
+    val obj : 'a Gtk.obj
+    method connect : expander_signals
+    method expanded : bool
+    method label : string
+    method label_widget : GObj.widget
+    method set_expanded : bool -> unit
+    method set_label : string -> unit
+    method set_label_widget : GObj.widget -> unit
+    method set_spacing : int -> unit
+    method set_use_underline : bool -> unit
+    method spacing : int
+    method use_underline : bool
+  end
+
+(** @since GTK 2.4
+    @gtkdoc gtk GtkExpander *)
+val expander :
+  ?expanded:bool ->
+  ?label:string ->
+  ?spacing:int ->
+  ?use_underline:bool ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) ->
+  ?show:bool ->
+  unit -> expander

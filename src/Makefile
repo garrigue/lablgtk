@@ -131,12 +131,12 @@ opt:  $(TARGETS) lablgtkopt
 GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkbin$(XO) ml_gtkbutton$(XO) \
 	ml_gtkedit$(XO) ml_gtklist$(XO) ml_gtkmenu$(XO) ml_gtkmisc$(XO) \
 	ml_gtkpack$(XO) ml_gtkrange$(XO) ml_gtktext$(XO) ml_gtktree$(XO) \
-	ml_gtkstock$(XO)
+	ml_gtkstock$(XO) ml_gtkfile$(XO)
 COBJS = ml_gdkpixbuf$(XO) ml_gdk$(XO) ml_glib$(XO) ml_gobject$(XO) \
 	ml_gpointer$(XO) wrappers$(XO) $(GTKOBJS)
 GTKPROPS = gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
 	gtkList.props gtkMenu.props gtkMisc.props gtkPack.props \
-	gtkRange.props gtkText.props gtkTree.props
+	gtkRange.props gtkText.props gtkTree.props gtkFile.props
 MLOBJS1 =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo
 ENUMOBJS = gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
 MLOBJS2 = gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
@@ -144,10 +144,10 @@ MLOBJS2 = gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
 MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
-	gtkMain.cmo \
+	gtkFile.cmo gtkMain.cmo \
 	gPango.cmo gDraw.cmo gObj.cmo gData.cmo gMain.cmo
 MLOBJS4 = gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
-	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gWindow.cmo gBin.cmo \
+	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gFile.cmo gWindow.cmo gBin.cmo \
 	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
 MLOBJS =  $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(GTKPROPS:.props=Props.cmo) \
 	$(MLOBJS3) $(GTKPROPS:%.props=o%Props.cmo) $(MLOBJS4)
@@ -342,17 +342,18 @@ clean:
 
 
 DOCFILES =  gaux.ml gpointer.mli glib.mli gobject.mli \
+        gdkEnums.ml pangoEnums.ml gtkEnums.ml \
         gdk.mli gdkEvent.ml gdkPixbuf.mli \
         gtk.ml pango.ml gtkSignal.mli gtkObject.ml \
         $(GTKPROPS:%.props=%Props.ml) \
         gtkStock.ml gtkData.ml gtkBase.ml gtkPack.ml gtkButton.ml \
         gtkMenu.ml gtkMisc.ml gtkWindow.ml gtkList.ml \
         gtkEdit.ml gtkRange.ml gtkText.ml gtkTree.ml \
-        gtkMain.ml \
+        gtkFile.ml gtkMain.ml \
         gPango.ml gDraw.mli \
         gObj.mli gMain.mli gData.mli gContainer.mli gBin.mli gPack.mli gButton.mli \
         gText.mli \
-        gMenu.mli gMisc.mli gTree.mli gList.mli gWindow.mli \
+        gMenu.mli gMisc.mli gTree.mli gFile.mli gList.mli gWindow.mli \
         gEdit.mli gRange.mli gUtil.mli gToolbox.mli
 ifdef USE_GLADE
 DOCFILES += glade.mli xml_lexer.mli
@@ -376,6 +377,7 @@ lablgtk$(XO)doc : $(DOCFILES) $(ALLOBJS)
 gtkdoc.cmo : gtkdoc.ml
 	$(CAMLC) -I +ocamldoc -c $<
 DOCDIR=../doc
+DOC_URI=
 DOC_BASE_URI=$(if $(DOC_URI),-base-uri $(DOC_URI))
 doc : lablgtk$(XO)doc gtkdoc.cmo
 	mkdir -p $(DOCDIR)/html

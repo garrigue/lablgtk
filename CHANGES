@@ -1,5 +1,9 @@
 $Id$
 
+2003.12.10 [Olivier]
+  * support for GTK 2.4 widgets: 
+    GtkComboBox, GtkExpander, GtkFileChooser
+
 2003.11.30 [Olivier]
   * move event method of GRange.scrollbar in GRange.range (GtkScale
     widgets also receive events), removed GRange.scrollbar class

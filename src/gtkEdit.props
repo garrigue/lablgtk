@@ -76,3 +76,18 @@ class Combo set wrap : Box {
   "enable-arrows-always" gboolean             : Read / Write / NoSet / NoWrap
   "value-in-list"        gboolean             : Read / Write
 }
+
+class ComboBox set wrap wrapsig : Bin {
+  "active"               gint                 : Read / Write / NoSet
+  "column-span-column"   gint                 : Read / Write / NoSet / NoWrap
+  "model"                GtkTreeModel         : Read / Write / Construct Only / NoWrap
+  "row-span-column"      gint                 : Read / Write / NoSet / NoWrap
+  "wrap-width"           gint                 : Read / Write
+  signal changed
+  method get_active_iter : "Gtk.tree_iter"
+  method set_active_iter : "Gtk.tree_iter -> unit"
+}
+
+class ComboBoxEntry set : ComboBox {
+  "text-column"          gint                 : Read / Write / Construct Only / NoSet
+}

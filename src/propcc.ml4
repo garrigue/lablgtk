@@ -1,3 +1,4 @@
+(* -*- caml -*- *)
 (* $Id$ *)
 
 open StdLabels
@@ -80,7 +81,7 @@ let boxeds = [
 
 let classes = [
   "Gdk", [ "Image"; "Pixmap"; "Bitmap"; "Screen"; "DragContext";];
-  "Gtk", [ "Style"; "TreeStore"; ]
+  "Gtk", [ "Style"; "TreeStore"; "TreeModel" ]
 ]
 
 let specials = [
@@ -299,6 +300,8 @@ let process_file f =
   let type_name name ~attrs =
     try List.assoc "type" attrs with Not_found ->
       if List.mem_assoc "gobject" attrs then camlize name
+      else if !prefix <> ""
+      then !prefix ^ "." ^ camlize name ^ " obj"
       else camlize name ^ " obj"
   in
   let decls = List.rev !decls in

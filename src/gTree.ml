@@ -447,3 +447,18 @@ let cell_renderer_text l =
 let cell_renderer_toggle l =
   new cell_renderer_toggle
     (CellRendererToggle.create (List.map cell_renderer_toggle_param' l))
+
+class cell_layout obj = object
+  val obj = obj
+  method pack :
+    'a. ?from:Tags.pack_type -> ?expand:bool -> (#cell_renderer as 'a) -> unit =
+      fun ?from ?expand crr -> GtkTree.CellLayout.pack obj ?from ?expand crr#as_renderer
+  method clear () = GtkTree.CellLayout.clear obj
+  method add_attribute :
+    'a 'b. (#cell_renderer as 'a) -> string -> 'b column -> unit =
+      fun crr attr col ->
+        GtkTree.CellLayout.add_attribute obj crr#as_renderer attr col.index
+  method clear_attributes :
+    'a. (#cell_renderer as 'a) -> unit = 
+      fun crr -> GtkTree.CellLayout.clear_attributes obj crr#as_renderer
+end

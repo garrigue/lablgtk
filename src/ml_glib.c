@@ -215,7 +215,7 @@ ML_0(gdk_threads_leave, Unit)
 /* This is not used, but could be someday... */
 
 /* The day has come .... */
-CAMLprim value Val_GSList (GSList *list, value (*func)(gpointer))
+value Val_GSList (GSList *list, value (*func)(gpointer))
 {
   CAMLparam0();
   CAMLlocal4 (new_cell, result, last_cell, cell);

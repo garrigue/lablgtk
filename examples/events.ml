@@ -12,11 +12,9 @@
    for button 3 is still called, and I see no way to disable that.
    But this is not really relevant to [#event#send]. *)
 
-open GMain
-
 let _ =
   let window = GWindow.window ~width:200 ~height:200 () in
-  window#connect#destroy ~callback:Main.quit;
+  window#connect#destroy ~callback:GMain.quit ;
 
   let text = GText.view ~packing:window#add () in
   let buffer = text#buffer in
@@ -36,4 +34,4 @@ let _ =
       end
     end;
   window#show ();
-  Main.main ()
+  GMain.main ()

@@ -29,12 +29,18 @@ int ml_lookup_to_c (lookup_info *table, value key);
 #if GTK_CHECK_VERSION(2,2,0) && !defined(DISABLE_GTK22)
 #define HASGTK22
 #endif
+#if GTK_CHECK_VERSION(2,3,0) && !defined(DISABLE_GTK24)
+#define HASGTK24
+#endif
 
 /* Wrapper generators */
 
 #define Unsupported(cname) \
 CAMLprim value ml_##cname () \
 { failwith(#cname " unsupported in Gtk 2.x < 2.2"); return Val_unit; }
+#define Unsupported_24(cname) \
+CAMLprim value ml_##cname () \
+{ failwith(#cname " unsupported in Gtk 2.x < 2.4"); return Val_unit; }
 
 #define ID(x) (x)
 
