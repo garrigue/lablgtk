@@ -198,13 +198,13 @@ class selection :
     method get_selected_rows : tree_path list
     method iter_is_selected : tree_iter -> bool
     method path_is_selected : tree_path -> bool
-    method select_all : unit
+    method select_all : unit -> unit
     method select_iter : tree_iter -> unit
     method select_path : tree_path -> unit
     method select_range : tree_path -> tree_path -> unit
     method set_mode : Tags.selection_mode -> unit
     method set_select_function : (tree_path -> bool -> bool) -> unit
-    method unselect_all : unit
+    method unselect_all : unit -> unit
     method unselect_iter : tree_iter -> unit
     method unselect_path : tree_path -> unit
     method unselect_range : tree_path -> tree_path -> unit
