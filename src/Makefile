@@ -1,7 +1,7 @@
 # $Id$
 # Makefile for lablgtk.
 
-TARGETS = var2conv var2def lablgtktop lablgtktop_t lablgtkrun lablgtk
+TARGETS = varcc lablgtktop lablgtktop_t lablgtkrun lablgtk
 
 all: $(TARGETS)
 
@@ -79,9 +79,7 @@ endif
 .ml.cmx:
 	$(COMPOPT) $<
 .var.h:
-	./var2def < $< > $@
-.var.c:
-	./var2conv < $< > $@
+	./varcc $<
 
 # Targets
 COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o
@@ -170,20 +168,16 @@ gtkThread.cmx: gtkThread.ml
 	if test -f $(LIBDIR)/libthreadsnat.a; then \
 	   $(COMPOPT) $(THFLAGS) gtkThread.ml; fi
 
-var2conv: var2conv.cmo
-	$(LINKER) -o $@ var2conv.cmo
-	rm -f *_tags.c
-
-var2def: var2def.cmo
-	$(LINKER) -o $@ var2def.cmo
-	rm -f *_tags.h
+varcc: varcc.cmo
+	$(LINKER) -o $@ varcc.cmo
+	rm -f *_tags.h *_tags.c
 
 clean:
 	rm -f *.cm* *.o *.a *_tags.[ch] $(TARGETS)
 
-ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
-ml_gdk.o: gdk_tags.c gdk_tags.h ml_gdk.h wrappers.h
-ml_gtkgl.o: gtkgl_tags.c gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
-ml_gtkxmhtml.o: gtkxmhtml_tags.c gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gtk.o: gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gdk.o: gdk_tags.h ml_gdk.h wrappers.h
+ml_gtkgl.o: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gtkxmhtml.o: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
 
 include .depend

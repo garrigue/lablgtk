@@ -5,7 +5,7 @@ type string_direction = "TSTRING_DIRECTION_" [
   | `L_TO_R
 ]
 
-type position = "TALIGNMENT_" [
+type alignment = "TALIGNMENT_" [
   | `END
   | `CENTER
   | `BEGINNING

@@ -29,7 +29,7 @@ ML_1 (gtk_xmhtml_thaw, GtkXmHTML_val, Unit)
 ML_2 (gtk_xmhtml_source, GtkXmHTML_val, String_val, Unit)
 ML_2 (gtk_xmhtml_set_string_direction, GtkXmHTML_val, String_direction_val,
       Unit)
-ML_2 (gtk_xmhtml_set_alignment, GtkXmHTML_val, Position_val, Unit)
+ML_2 (gtk_xmhtml_set_alignment, GtkXmHTML_val, Alignment_val, Unit)
 /* ML_2 (gtk_xmhtml_outline, GtkXmHTML_val, Bool_val, Unit) */
 ML_3 (gtk_xmhtml_set_font_familty, GtkXmHTML_val, String_val, String_val, Unit)
 ML_3 (gtk_xmhtml_set_font_familty_fixed, GtkXmHTML_val, String_val, String_val,
