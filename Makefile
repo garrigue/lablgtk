@@ -16,6 +16,6 @@ configure: configure.in
 	aclocal
 	autoconf 
 
-config.make: config.make.in configure
+config.make: config.make.in
 	@echo config.make is not up to date. Execute ./configure first.
 	@exit 2
