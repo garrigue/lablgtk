@@ -162,7 +162,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
       let drawing = new GDraw.drawable (ebox#misc#window) in
       let draw_id = ref None in
       let exps_id = ref None in
-      let on_paint ev =
+      let on_paint _ =
       	let (width, height) = Window.get_size (ebox#misc#window) in begin
       	  drawing#set_foreground `BLACK;
       	  drawing#rectangle ~filled:true ~x:0 ~y:0
@@ -179,7 +179,6 @@ class fix_editor ~width ~height ~packing:pack_fun =
 	    ~width:corner_width ~height:corner_height ();
       	  drawing#rectangle ~filled:false
 	    ~x:0 ~y:0 ~width:(width-1) ~height:(height-1) ();
-      	  false
 	end
       in
       ebox#event#connect#button_press ~callback:
@@ -262,8 +261,9 @@ class fix_editor ~width ~height ~packing:pack_fun =
 	  info#unset_drag_widget ();
 	  true
       	end;
-      exps_id := Some (ebox#event#connect#after#expose ~callback:on_paint);
-      draw_id := Some (ebox#connect#draw ~callback:(fun ev -> on_paint ev; ()));
+      exps_id := Some (ebox#event#connect#after#expose
+                         ~callback:(fun _ -> on_paint(); false));
+      draw_id := Some (ebox#misc#connect#draw ~callback:on_paint);
       ()
     initializer
       fix#drag#dest_set ~actions:[`COPY]

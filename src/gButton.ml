@@ -44,7 +44,6 @@ end
 class toggle_button obj = object
   inherit button_skel obj
   method connect = new toggle_button_signals obj
-  method event = new GObj.event_ops obj
   method active = ToggleButton.get_active obj
   method set_active = ToggleButton.set_active obj
   method set_draw_indicator = ToggleButton.set_mode obj
@@ -65,11 +64,7 @@ let check_button ?label ?active ?draw_indicator
   pack_return (new toggle_button w) ~packing ~show
 
 class radio_button obj = object
-  inherit button_skel (obj : Gtk.radio_button obj)
-  method connect = new toggle_button_signals obj
-  method active = ToggleButton.get_active obj
-  method set_active = ToggleButton.set_active obj
-  method set_draw_indicator = ToggleButton.set_mode obj
+  inherit toggle_button (obj : Gtk.radio_button obj)
   method set_group = RadioButton.set_group obj
   method group = Some obj
 end

@@ -156,8 +156,14 @@ module ScrolledWindow = struct
 end
 
 module Socket = struct
-  let cast w : socket obj = Object.try_cast w "GtkItem"
-  external coerce : [>`item] obj -> item obj = "%identity"
+  let cast w : socket obj = Object.try_cast w "GtkSocket"
+  external coerce : [>`socket] obj -> socket obj = "%identity"
   external create : unit -> socket obj = "ml_gtk_socket_new"
   external steal : [>`socket] obj -> Gdk.xid -> unit = "ml_gtk_socket_steal"
+end
+
+module Inivisible = struct
+  let cast w : socket obj = Object.try_cast w "GtkInvisible"
+  external coerce : [>`invisible] obj -> invisible obj = "%identity"
+  external create : unit -> invisible obj = "ml_gtk_invisible_new"
 end

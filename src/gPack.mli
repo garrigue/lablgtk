@@ -163,10 +163,10 @@ class notebook_signals : 'a obj ->
     method switch_page : callback:(int -> unit) -> GtkSignal.id
   end
 
-class notebook : Gtk.notebook obj ->
+class notebook : ([> `widget | `container | `notebook] as 'a) obj ->
   object
     inherit container
-    val obj : Gtk.notebook obj
+    val obj : 'a obj
     method event : event_ops
     method append_page :
       ?tab_label:widget -> ?menu_label:widget -> widget -> unit

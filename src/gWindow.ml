@@ -49,7 +49,6 @@ let window ?kind:(t=`TOPLEVEL) ?title ?wm_name ?wm_class ?position
 class dialog obj = object
   inherit [window] window_skel (Dialog.coerce obj)
   method connect = new container_signals obj
-  method event = new GObj.event_ops obj
   method action_area = new GPack.box (Dialog.action_area obj)
   method vbox = new GPack.box (Dialog.vbox obj)
 end
@@ -67,7 +66,6 @@ let dialog ?title ?wm_name ?wm_class ?position ?allow_shrink
 class color_selection_dialog obj = object
   inherit [window] window_skel (obj : Gtk.color_selection_dialog obj)
   method connect = new container_signals obj
-  method event = new GObj.event_ops obj
   method ok_button =
     new GButton.button (ColorSelection.ok_button obj)
   method cancel_button =
@@ -92,7 +90,6 @@ let color_selection_dialog ?(title="Pick a color")
 class file_selection obj = object
   inherit [window] window_skel (obj : Gtk.file_selection obj)
   method connect = new container_signals obj
-  method event = new GObj.event_ops obj
   method set_filename = FileSelection.set_filename obj
   method get_filename = FileSelection.get_filename obj
   method set_fileop_buttons = FileSelection.set_fileop_buttons obj
@@ -118,13 +115,16 @@ let file_selection ?(title="Choose a file") ?filename
 class font_selection_dialog obj = object
   inherit [window] window_skel (obj : Gtk.font_selection_dialog obj)
   method connect = new container_signals obj
-  method event = new GObj.event_ops obj
+(*
   method font = FontSelectionDialog.get_font obj
   method font_name = FontSelectionDialog.get_font_name obj
   method set_font_name = FontSelectionDialog.set_font_name obj
   method preview_text = FontSelectionDialog.get_preview_text obj
   method set_preview_text = FontSelectionDialog.set_preview_text obj
   method set_filter = FontSelectionDialog.set_filter obj
+*)
+  method selection =
+    new GMisc.font_selection (FontSelectionDialog.font_selection obj)
   method ok_button =  new GButton.button (FontSelectionDialog.ok_button obj)
   method apply_button =
     new GButton.button (FontSelectionDialog.apply_button obj)

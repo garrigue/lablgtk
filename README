@@ -93,7 +93,7 @@ Structure of the G[A-Z]* modules:
 		menu_shell, menu, option_menu, menu_bar, factory
   GMisc		separator, statusbar, calendar, drawing_area,
 		misc, arrow, image, pixmap, label, tips_query,
-                color_selection
+                color_selection, font_selection
   GTree		tree_item, tree
   GList		list_item, liste, clist
   GEdit		editable, entry, spin_button, combo, text
@@ -101,21 +101,40 @@ Structure of the G[A-Z]* modules:
 
   While subtyping follows the Gtk widget hierarchy, you cannot always
   use width subtyping (i.e. #super is not unifiable with all the
-  subclasses of super). Still, it works for the gtkobj, widget and
-  container classes, and allows subtyping without coercion towards
-  these classes (cf. #container in pousse.ml for instance).
+  subclasses of super). Still, it works for some classes, like
+  container, and allows subtyping without coercion towards these classes
+  (cf. #container in pousse.ml for instance).
 
   Practically, each widget class is composed of:
   * a coerce method, returning the object coerced to the type widget.
   * an as_widget method, returning the raw Gtk widget used for packing, etc...
-  * a misc sub-object, giving access to miscellanous functionality of
-    the basic gtkwidget class.
-  * a connect sub-object, allowing one to connect all available
+  * a connect sub-object, allowing one to widget specific
     signals (this is what prevents width subtyping in subclasses.)
+  * a misc sub-object, giving access to miscellanous functionality of
+    the basic gtkwidget class, and a misc#connect sub-object.
   * an event sub-object, for Xevent related functions (only if the widget
     has an Xwindow), and an event#connect sub-object.
   * a grab sub-object, containing drag and drop functions,
     and a grab#connect sub-object.
+  * widget specific methods.
+
+  Here is a diagram of the structure (- for methods, + for sub-objects)
+        - coerce : widget
+        - as_widget : Gtk.widget obj
+        - destroy : unit -> unit
+        - ...
+        + connect : mywidget_signals
+        |   - after
+        |   - signal_name : callback:(... -> ...) -> GtkSignal.id
+        + misc : misc_ops
+        |   - show, hide, disconnect, ...
+        |   + connect : misc_signals
+        + event : event_ops
+        |   - add, ...
+        |   + connect : event_signals
+        + grab : grab_ops
+        |   - ...
+        |   + connect : grab_signals
 
   You create a widget by [<Module>.<widget name> options ... ()].
   Many optional arguments are admitted. The last two of them, packing:

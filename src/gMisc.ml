@@ -197,3 +197,15 @@ let pixmap (pm : #GDraw.pixmap) ?xalign ?yalign ?xpad ?ypad
   Misc.set w ?xalign ?yalign ?xpad ?ypad;
   if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height;
   pack_return (new pixmap w) ~packing ~show
+
+class font_selection obj = object
+  inherit widget_full (obj : Gtk.font_selection obj)
+  method notebook = new GPack.notebook obj
+  method event = new event_ops obj
+  method font = FontSelection.get_font obj
+  method font_name = FontSelection.get_font_name obj
+  method set_font_name = FontSelection.set_font_name obj
+  method preview_text = FontSelection.get_preview_text obj
+  method set_preview_text = FontSelection.set_preview_text obj
+  method set_filter = FontSelection.set_filter obj
+end

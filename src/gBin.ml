@@ -106,6 +106,7 @@ let aspect_frame ?label ?xalign ?yalign ?ratio ?obey_child
 
 class viewport obj = object
   inherit container_full (obj : Gtk.viewport obj)
+  method event = new event_ops obj
   method set_hadjustment adj =
     Viewport.set_hadjustment obj (GData.as_adjustment adj)
   method set_vadjustment adj =

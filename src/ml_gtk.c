@@ -488,6 +488,10 @@ ML_2 (gtk_handle_box_set_shadow_type, GtkHandleBox_val, Shadow_type_val, Unit)
 ML_2 (gtk_handle_box_set_handle_position, GtkHandleBox_val, Position_val, Unit)
 ML_2 (gtk_handle_box_set_snap_edge, GtkHandleBox_val, Position_val, Unit)
 
+/* gtkinvisible.h */
+
+ML_0 (gtk_invisible_new, Val_GtkWidget_sink)
+
 /* gtkitem.h */
 
 #define GtkItem_val(val) check_cast(GTK_ITEM,val)
@@ -677,9 +681,29 @@ Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, colorse
 
 /* gtkfontsel.h */
 
+#define GtkFontSelection_val(val) \
+   check_cast(GTK_FONT_SELECTION,val)
+ML_0 (gtk_font_selection_new, Val_GtkWidget_sink)
+ML_1 (gtk_font_selection_get_font, GtkFontSelection_val,
+      Val_GdkFont)
+ML_1 (gtk_font_selection_get_font_name, GtkFontSelection_val,
+      copy_string_check)
+ML_2 (gtk_font_selection_set_font_name, GtkFontSelection_val,
+      String_val, Val_bool)
+ML_9 (gtk_font_selection_set_filter, GtkFontSelection_val,
+      Font_filter_type_val, Flags_Font_type_val,
+      (gchar**), (gchar**), (gchar**),
+      (gchar**), (gchar**), (gchar**), Unit)
+ML_bc9 (ml_gtk_font_selection_set_filter)
+ML_1 (gtk_font_selection_get_preview_text, GtkFontSelection_val,
+      copy_string)
+ML_2 (gtk_font_selection_set_preview_text, GtkFontSelection_val,
+      String_val, Unit)
+
 #define GtkFontSelectionDialog_val(val) \
    check_cast(GTK_FONT_SELECTION_DIALOG,val)
 ML_1 (gtk_font_selection_dialog_new, String_option_val, Val_GtkWidget_window)
+/*
 ML_1 (gtk_font_selection_dialog_get_font, GtkFontSelectionDialog_val,
       Val_GdkFont)
 ML_1 (gtk_font_selection_dialog_get_font_name, GtkFontSelectionDialog_val,
@@ -695,6 +719,9 @@ ML_1 (gtk_font_selection_dialog_get_preview_text, GtkFontSelectionDialog_val,
       copy_string)
 ML_2 (gtk_font_selection_dialog_set_preview_text, GtkFontSelectionDialog_val,
       String_val, Unit)
+*/
+Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
+                fontsel, Val_GtkWidget)
 Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
 		ok_button, Val_GtkWidget)
 Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,

@@ -58,7 +58,6 @@ class toggle_button :
     val obj : 'a obj
     method active : bool
     method connect : toggle_button_signals
-    method event : event_ops
     method set_active : bool -> unit
     method set_draw_indicator : bool -> unit
   end
@@ -82,12 +81,8 @@ val check_button :
 class radio_button :
   Gtk.radio_button obj ->
   object
-    inherit button_skel
+    inherit toggle_button
     val obj : Gtk.radio_button obj
-    method active : bool
-    method connect : toggle_button_signals
-    method set_active : bool -> unit
-    method set_draw_indicator : bool -> unit
     method group : Gtk.radio_button group
     method set_group : Gtk.radio_button group -> unit
   end

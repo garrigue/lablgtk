@@ -130,6 +130,19 @@ module FileSelection = struct
 end
 
 module FontSelectionDialog = struct
+  let cast w : font_selection_dialog obj =
+    Object.try_cast w "GtkFontSelectionDialog"
+  external create : ?title:string -> unit -> font_selection_dialog obj
+      = "ml_gtk_font_selection_dialog_new"
+  external font_selection : [>`fontseldialog] obj -> font_selection obj
+      = "ml_gtk_font_selection_dialog_fontsel"
+  external ok_button : [>`fontseldialog] obj -> button obj
+      = "ml_gtk_font_selection_dialog_ok_button"
+  external apply_button : [>`fontseldialog] obj -> button obj
+      = "ml_gtk_font_selection_dialog_apply_button"
+  external cancel_button : [>`fontseldialog] obj -> button obj
+      = "ml_gtk_font_selection_dialog_cancel_button"
+(*
   type null_terminated
   let null_terminated arg : null_terminated =
     match arg with None -> Obj.magic Gpointer.raw_null
@@ -141,10 +154,6 @@ module FontSelectionDialog = struct
 	  | s::l -> arr.(i) <- s; loop (i+1) l
 	in loop 0 l;
 	Obj.magic (arr : string array)
-  let cast w : font_selection_dialog obj =
-    Object.try_cast w "GtkFontSelectionDialog"
-  external create : ?title:string -> unit -> font_selection_dialog obj
-      = "ml_gtk_font_selection_dialog_new"
   external get_font : [>`fontseldialog] obj -> Gdk.font
       = "ml_gtk_font_selection_dialog_get_font"
   let get_font w =
@@ -171,12 +180,7 @@ module FontSelectionDialog = struct
       = "ml_gtk_font_selection_dialog_get_preview_text"
   external set_preview_text : [>`fontseldialog] obj -> string -> unit
       = "ml_gtk_font_selection_dialog_set_preview_text"
-  external ok_button : [>`fontseldialog] obj -> button obj
-      = "ml_gtk_font_selection_dialog_ok_button"
-  external apply_button : [>`fontseldialog] obj -> button obj
-      = "ml_gtk_font_selection_dialog_apply_button"
-  external cancel_button : [>`fontseldialog] obj -> button obj
-      = "ml_gtk_font_selection_dialog_cancel_button"
+*)
 end
 
 module Plug = struct

@@ -172,7 +172,7 @@ class notebook_signals obj = object
 end
 
 class notebook obj = object (self)
-  inherit GContainer.container (obj : Gtk.notebook obj)
+  inherit GContainer.container obj
   method event = new GObj.event_ops obj
   method connect = new notebook_signals obj
   method insert_page ?tab_label ?menu_label ~pos child =

@@ -1024,7 +1024,7 @@ let create_reparent =
             ~packing:frame#add () in
 	let label = GMisc.label ~text:"Hello world"
 	    ~packing:vbox2#pack () in
-	label #connect#parent_set ~callback:(set_parent label);
+	label #misc#connect#parent_set ~callback:(set_parent label);
 	let button = GButton.button ~label:"switch"
 	    ~packing:vbox2#pack () in
 	button #connect#clicked ~callback:(reparent_label label vbox2#coerce);
