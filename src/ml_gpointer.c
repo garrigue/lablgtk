@@ -9,8 +9,6 @@
 #include "wrappers.h"
 #include "ml_gpointer.h"
 
-CAMLprim value ml_get_null (value unit) { return 0L; }
-
 CAMLprim value ml_stable_copy (value v)
 {
     if (Is_block(v) && (char*)(v) < young_end && (char*)(v) > young_start)
@@ -43,6 +41,17 @@ CAMLprim value ml_int_at_pointer (value ptr)
 CAMLprim value ml_set_int_at_pointer (value ptr, value n)
 {
     *(int*)Pointer_val(ptr) = Int_val(n);
+    return Val_unit;
+}
+
+CAMLprim value ml_long_at_pointer (value ptr)
+{
+    return copy_nativeint(*(long*)Pointer_val(ptr));
+}
+
+CAMLprim value ml_set_long_at_pointer (value ptr, value n)
+{
+    *(long*)Pointer_val(ptr) = Nativeint_val(n);
     return Val_unit;
 }
 

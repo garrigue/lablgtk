@@ -13,8 +13,7 @@ let optaddr : 'a option -> 'a optaddr =
 (* naked pointers *)
 type optstring
 
-external get_null : unit -> optstring = "ml_get_null"
-let raw_null = get_null ()
+let raw_null = snd (Obj.magic Nativeint.zero)
 
 let optstring : string option -> optstring =
   function
@@ -23,7 +22,7 @@ let optstring : string option -> optstring =
 
 (* boxed pointers *)
 type boxed
-let boxed_null : boxed = Obj.magic (0, raw_null)
+let boxed_null : boxed = Obj.magic Nativeint.zero
 
 external peek_string : ?pos:int -> ?len:int -> boxed -> string
     = "ml_string_at_pointer"
@@ -31,6 +30,10 @@ external peek_int : boxed -> int
     = "ml_int_at_pointer"
 external poke_int : boxed -> int -> unit
     = "ml_set_int_at_pointer"
+external peek_nativeint : boxed -> nativeint
+    = "ml_long_at_pointer"
+external poke_nativeint : boxed -> nativeint -> unit
+    = "ml_set_long_at_pointer"
 
 type 'a optboxed
 
