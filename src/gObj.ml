@@ -95,7 +95,7 @@ class style st = object
   method as_style = style
   method copy = {< style = Style.copy style >}
   method colormap = Style.get_colormap style
-  (* method font = Style.get_font style *)
+  method font = Style.get_font style
   method bg = Style.get_bg style
   method set_bg = iter_setcol Style.set_bg style
   method fg = Style.get_fg style
@@ -110,7 +110,7 @@ class style st = object
   method set_base = iter_setcol Style.set_base style
   method text = Style.get_text style
   method set_text = iter_setcol Style.set_text style
-  (* method set_font = Style.set_font style *)
+  method set_font = Style.set_font style
 end
 
 class selection_input (sel : Gtk.selection_data) = object

@@ -129,9 +129,9 @@ Make_Array_Setter (gtk_style_set, GtkStyle_val, State_type_val,
                    *GdkColor_val, text)
 Make_Extractor (gtk_style_get, GtkStyle_val, colormap, Val_GdkColormap)
 Make_Extractor (gtk_style_get, GtkStyle_val, depth, Val_int)
+ML_1 (gtk_style_get_font, GtkStyle_val, Val_GdkFont)
+ML_2 (gtk_style_set_font, GtkStyle_val, GdkFont_val, Unit)
 /*
-Make_Extractor (gtk_style_get, GtkStyle_val, font, Val_GdkFont)
-Make_Setter (gtk_style_set, GtkStyle_val, GdkFont_val, font)
 CAMLprim value ml_gtk_style_set_font (value st, value font)
 {
     GtkStyle *style = GtkStyle_val(st);
