@@ -1,5 +1,9 @@
 $Id$
 
+2005.01.02 [Olivier]
+  * 2.6 improvements to GtkComboBox (separators and a couple of new
+    properties)
+
 2004.12.05 [Olivier]
   * add GtkFileChooserButton (2.6)
 

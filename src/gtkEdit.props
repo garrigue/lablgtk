@@ -94,13 +94,17 @@ class Combo set wrap : Box {
 
 class ComboBox set wrap wrapsig : Bin {
   "active"               gint                 : Read / Write
+  "add-tearoffs"         gboolean             : Read / Write                  (* GTK+ 2.6 *)
   "column-span-column"   gint                 : Read / Write / NoSet / NoWrap
+  "focus-on-click"       gboolean             : Read / Write                  (* GTK+ 2.6 *)
+  "has-frame"            gboolean             : Read / Write                  (* GTK+ 2.6 *)
   "model"                GtkTreeModel         : Read / Write         / NoWrap
   "row-span-column"      gint                 : Read / Write / NoSet / NoWrap
   "wrap-width"           gint                 : Read / Write
   signal changed
   method get_active_iter : "Gtk.tree_iter option"
   method set_active_iter : "Gtk.tree_iter option -> unit"
+  method set_row_separator_func : "(Gtk.tree_model -> Gtk.tree_iter -> bool) option -> unit" (* GTK+ 2.6 *)
 }
 
 class ComboBoxEntry set : ComboBox {

@@ -83,6 +83,15 @@ let setup_combobox_entry_text packing =
     (fun () -> match combo#entry#text with "" -> () | s -> prerr_endline s) ;
   ()
 
+let setup_combobox_separator packing =
+  let tmp = GBin.frame ~label:"GtkComboBox (separators)" ~packing () in
+  let box = GPack.vbox ~border_width:5 ~packing:tmp#add () in
+  let (combo, (_, column)) = 
+    GEdit.combo_box_text ~packing:box#pack 
+      ~strings:[ "Paris" ; "Grenoble" ; "Toulouse" ; "--" ; "New York"; "владивосток"] () in
+  combo#set_row_separator_func
+    (Some (fun m row -> m#get ~row ~column = "--")) ;
+  ()
 
 let main () =
   let window = GWindow.window ~border_width:5 () in
@@ -94,6 +103,7 @@ let main () =
   setup_combobox_text mainbox#pack ;
   setup_combobox_entry mainbox#pack ;
   setup_combobox_entry_text mainbox#pack ;
+  setup_combobox_separator mainbox#pack ;
   
   window#show () ;
   GMain.main ()
