@@ -1,5 +1,5 @@
 %define	name	 lablgtk
-%define ver      1.2.5
+%define ver      1.2.7
 %define rel      2
 %define prefix   /usr/local/
 %define sysconfdir /etc/
