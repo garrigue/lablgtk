@@ -15,7 +15,8 @@ let entry_toggle_visibility button entry =
 
 let main () =
 
-  let window = GWindow.window ~title: "GTK Entry" ~width: 200 ~height: 100 () in
+  let window =
+    GWindow.window ~title: "GTK Entry" ~width: 200 ~height: 100 () in
   window#connect#destroy ~callback:Main.quit;
 
   let vbox = GPack.vbox ~packing: window#add () in
@@ -30,7 +31,8 @@ let main () =
 
   let check = GButton.check_button ~label: "Editable" ~active: true
       ~packing: hbox#add () in
-  check#connect#toggled ~callback:(fun () -> entry_toggle_editable check entry);
+  check#connect#toggled
+    ~callback:(fun () -> entry_toggle_editable check entry);
 
   let check =
     GButton.check_button ~label:"Visible" ~active:true ~packing:hbox#add () in
