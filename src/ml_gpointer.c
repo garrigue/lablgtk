@@ -8,7 +8,7 @@
 
 #include "ml_gpointer.h"
 
-value ml_get_null (value unit) { return 0L; }
+CAMLprim value ml_get_null (value unit) { return 0L; }
 
 
 unsigned char* ml_gpointer_base (value region)
@@ -24,18 +24,18 @@ unsigned char* ml_gpointer_base (value region)
     return (unsigned char*) ptr+RegOffset_val(region);
 }
 
-value ml_gpointer_get_char (value region, value pos)
+CAMLprim value ml_gpointer_get_char (value region, value pos)
 {
     return Val_int(*(ml_gpointer_base (region) + Long_val(pos)));
 }
 
-value ml_gpointer_set_char (value region, value pos, value ch)
+CAMLprim value ml_gpointer_set_char (value region, value pos, value ch)
 {
     *(ml_gpointer_base (region) + Long_val(pos)) = Int_val(ch);
     return Val_unit;
 }
 
-value ml_gpointer_blit (value region1, value region2)
+CAMLprim value ml_gpointer_blit (value region1, value region2)
 {
     void *base1 = ml_gpointer_base (region1);
     void *base2 = ml_gpointer_base (region2);
@@ -44,7 +44,7 @@ value ml_gpointer_blit (value region1, value region2)
     return Val_unit;
 }
 
-value ml_gpointer_get_addr (value region)
+CAMLprim value ml_gpointer_get_addr (value region)
 {
     return copy_nativeint ((long)ml_gpointer_base (region));
 }

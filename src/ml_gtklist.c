@@ -25,7 +25,7 @@ ML_1 (gtk_list_item_new_with_label, String_val, Val_GtkWidget_sink)
 
 #define GtkList_val(val) check_cast(GTK_LIST,val)
 ML_0 (gtk_list_new, Val_GtkWidget_sink)
-value ml_gtk_list_insert_item (value list, value item, value pos)
+CAMLprim value ml_gtk_list_insert_item (value list, value item, value pos)
 {
     GList *tmp_list = g_list_alloc ();
     tmp_list->data = GtkWidget_val(item);
@@ -89,7 +89,7 @@ ML_5 (gtk_clist_moveto, GtkCList_val, Int_val, Int_val,
 ML_2 (gtk_clist_row_is_visible, GtkCList_val, Int_val, Val_visibility)
 ML_3 (gtk_clist_get_cell_type, GtkCList_val, Int_val, Int_val, Val_cell_type)
 ML_4 (gtk_clist_set_text, GtkCList_val, Int_val, Int_val, Optstring_val, Unit)
-value ml_gtk_clist_get_text (value clist, value row, value column)
+CAMLprim value ml_gtk_clist_get_text (value clist, value row, value column)
 {
     char *text;
     if (!gtk_clist_get_text (GtkCList_val(clist), Int_val(row),
@@ -99,7 +99,7 @@ value ml_gtk_clist_get_text (value clist, value row, value column)
 }
 ML_5 (gtk_clist_set_pixmap, GtkCList_val, Int_val, Int_val, GdkPixmap_val,
       GdkBitmap_val, Unit)
-value ml_gtk_clist_get_pixmap (value clist, value row, value column)
+CAMLprim value ml_gtk_clist_get_pixmap (value clist, value row, value column)
 {
     CAMLparam0 ();
     GdkPixmap *pixmap;
@@ -135,7 +135,7 @@ ML_5 (gtk_clist_set_shift, GtkCList_val, Int_val, Int_val, Int_val, Int_val,
 /* ML_2 (gtk_clist_append, GtkCList_val, (char **), Val_int) */
 ML_3 (gtk_clist_insert, GtkCList_val, Int_val, (char **), Val_int)
 ML_2 (gtk_clist_remove, GtkCList_val, Int_val, Unit)
-value ml_gtk_clist_set_row_data (value w, value row, value data)
+CAMLprim value ml_gtk_clist_set_row_data (value w, value row, value data)
 {
      value *data_p = ml_global_root_new (data);
      gtk_clist_set_row_data_full (GtkCList_val(w), Int_val(row),
@@ -146,7 +146,7 @@ ML_2 (gtk_clist_get_row_data, GtkCList_val, Int_val, *(value*)Check_null)
 ML_3 (gtk_clist_select_row, GtkCList_val, Int_val, Int_val, Unit)
 ML_3 (gtk_clist_unselect_row, GtkCList_val, Int_val, Int_val, Unit)
 ML_1 (gtk_clist_clear, GtkCList_val, Unit)
-value ml_gtk_clist_get_selection_info (value clist, value x, value y)
+CAMLprim value ml_gtk_clist_get_selection_info (value clist, value x, value y)
 {
     int row, column;
     value ret;

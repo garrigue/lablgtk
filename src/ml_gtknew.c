@@ -20,14 +20,14 @@ static void class_init (value class)
 }
 
 
-value set_ml_class_init (value class_func)
+CAMLprim value set_ml_class_init (value class_func)
 {
   if (!ml_class_init) register_global_root (&ml_class_init);
   ml_class_init = class_func;
   return Val_unit;
 }
 
-value ml_gtk_type_new (value type)
+CAMLprim value ml_gtk_type_new (value type)
 {
   return Val_GtkWidget_sink(gtk_type_new(Int_val(type)));
 }
@@ -134,7 +134,7 @@ widget_info_array[] = {
 };
 
 
-value ml_gtk_type_unique (value name, value parent, value nsignals)
+CAMLprim value ml_gtk_type_unique (value name, value parent, value nsignals)
 {
   struct widget_info * wi;
   GtkTypeInfo ttt_info;
@@ -154,8 +154,8 @@ value ml_gtk_type_unique (value name, value parent, value nsignals)
 
 static guint sig[100];
 
-value ml_gtk_object_class_add_signals (value class, value signals,
-				       value nsignals)
+CAMLprim value ml_gtk_object_class_add_signals (value class, value signals,
+                                                value nsignals)
 {
   int i;
   for (i=0; i<nsignals; i++)
@@ -165,8 +165,8 @@ value ml_gtk_object_class_add_signals (value class, value signals,
   return Val_unit;
 }
 
-value ml_gtk_signal_new (value name, value run_type, value classe,
-			 value parent, value num)
+CAMLprim value ml_gtk_signal_new (value name, value run_type, value classe,
+                                  value parent, value num)
 {
   struct widget_info * wi;
   int offset;
