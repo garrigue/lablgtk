@@ -56,11 +56,10 @@ let flags = [
 let pointers = [
   "Gdk", ["Color"; "Font"; ];
   "Pango", ["FontDescription";];
-  "GnomeCanvas", ["PathDef"; "Points";];
 ]
 
 let classes = [
-  "Gdk", [ "Image"; "Drawable"; "Pixmap"; "Bitmap"; "Screen"; ];
+  "Gdk", [ "Image"; "Pixmap"; "Bitmap"; "Screen"; ];
   "Gtk", [ "Style"; "TreeStore"; "Widget"; ]
 ]
 
@@ -70,14 +69,6 @@ let specials = [
   "GtkAdjustment", "GData.conv_adjustment";
   "GtkAdjustment_opt", "GData.conv_adjustment_option";
 ]
-
-let all_classes =
-  [ "GdkPixbuf", "GdkPixbuf.pixbuf";
-    "GtkTreeModel", "Gtk.tree_model obj";
-  ] @
-  List.fold_right classes ~init:[] ~f:
-    (fun (pre,l) acc ->
-      List.map l ~f:(fun t -> pre^t, pre^"."^camlize t) @ acc)
 
 let add_pointer conv gtk name =
   Hashtbl.add conversions gtk
@@ -95,9 +86,6 @@ let () =
   List.iter ~f:(fun (gtype,conv) -> Hashtbl.add conversions gtype conv)
     [ "gchararray", "string";
       "gchararray_opt", "string_option";
-      "GtkStock", "GtkStock.conv";
-      "ArtWindRule", "conv_art_wind_rule";
-      "ArtVPathDash", "conv_art_vpath_dash";
     ];
   List.iter (enums @ flags) ~f:(fun (pre, _, l) ->
     List.iter l ~f:
@@ -106,7 +94,8 @@ let () =
       end);
   List.iter pointers ~f:(fun (pre, l) ->
     List.iter l ~f:(fun name -> add_unsafe (pre^name) (pre^"."^camlize name)));
-  List.iter all_classes ~f:(fun (gtk,name) -> add_object gtk name)
+  List.iter classes ~f:(fun (pre,l) ->
+    List.iter l ~f:(fun t -> add_object (pre^t) (pre^"."^camlize t)))
 
 open Genlex
 
@@ -148,6 +137,11 @@ let rec verbatim buf = parser
   | [< ''\\' ; 'c ; s >] -> Buffer.add_char buf c; verbatim buf s
   | [< 'c ; s >] -> Buffer.add_char buf c; verbatim buf s
 
+let rec read_pairs = parser
+    [< ' Kwd"}" >] -> []
+  | [< ' Ident cls ; data = may_string (camlize cls) ; s >] ->
+      (cls,data) :: read_pairs s
+
 let prefix = ref ""
 let use = ref ""
 let decls = ref []
@@ -170,6 +164,12 @@ let process_phrase ~chars = parser
       prefix := id
   | [< ' Ident"use"; ' Ident id >] ->
       use := id
+  | [< ' Ident"conversions"; pre1 = may_string ""; pre2 = may_string pre1;
+       ' Kwd"{"; l = read_pairs >] ->
+      List.iter l ~f:(fun (k,d) ->
+        Hashtbl.add conversions (pre1^k) (if pre2="" then d else pre2^"."^d))
+  | [< ' Ident"classes"; ' Kwd"{"; l = read_pairs >] ->
+      List.iter l ~f:(fun (k,d) -> add_object k d)
   | [< >] ->
       raise End_of_file
 

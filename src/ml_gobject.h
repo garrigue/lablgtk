@@ -20,6 +20,8 @@ value Val_GValue_copy(GValue *);    /* copy from the stack */
 #define Val_GValue_wrap Val_pointer /* just wrap a pointer */
 CAMLprim value ml_g_value_new(void);
 
+value Val_gboxed(GType t, gpointer p);     /* finalized gboxed */
+value Val_gboxed_new(GType t, gpointer p); /* without copy */
 
 /* Macro utilities for export */
 /* used in ml_gtk.h for instance */

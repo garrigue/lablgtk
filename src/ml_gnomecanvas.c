@@ -292,8 +292,6 @@ CAMLprim value ml_gnome_canvas_group_get_items(value cg)
 
 /* Converion functions for properties */
 
-Make_Val_final_pointer(GnomeCanvasPoints, Ignore, gnome_canvas_points_unref, 5)
-
 CAMLprim value ml_gnome_canvas_convert_points(value arr)
 {
   int len = Wosize_val(arr) / Double_wosize;
@@ -302,15 +300,18 @@ CAMLprim value ml_gnome_canvas_convert_points(value arr)
     invalid_argument("GnomeCanvas.convert_points: odd number of coords");
   p = gnome_canvas_points_new(len / 2);
   memcpy(p->coords, (double *)arr, Wosize_val(arr) * sizeof (value));
-  return Val_GnomeCanvasPoints(p);
+  return Val_gboxed_new(gnome_canvas_points_get_type(), p);
+}
+CAMLprim value ml_gnome_canvas_get_points(value arg)
+{
+  GnomeCanvasPoints *p = Pointer_val(arg);
+  value ret = alloc(p->num_points * 2 * Double_wosize, Double_array_tag);
+  memcpy(p->coords, (double*)ret, p->num_points * 2 * sizeof(double));
+  return ret;
 }
 
-static void artvpathdash_free(ArtVpathDash *d) 
-{
-  g_free(d->dash);
-  g_free(d);
-}
-Make_Val_final_pointer(ArtVpathDash, Ignore, artvpathdash_free, 10)
+#define artvpathdash_free(d) g_free((d)->dash); g_free(d)
+Make_Val_final_pointer_ext(ArtVpathDash, _new, Ignore, artvpathdash_free, 10)
 CAMLprim value ml_gnome_canvas_convert_dash(value off, value dash)
 {
   ArtVpathDash *d;
@@ -320,14 +321,27 @@ CAMLprim value ml_gnome_canvas_convert_dash(value off, value dash)
   d->n_dash = len;
   d->dash = g_malloc(d->n_dash * sizeof *d->dash);
   memcpy(d->dash, (double *)dash, Wosize_val(dash) * sizeof (value));
-  return Val_ArtVpathDash(d);
+  return Val_ArtVpathDash_new(d);
 }
+CAMLprim value ml_gnome_canvas_get_dash(value dash)
+{
+  CAMLparam1(dash);
+  CAMLlocal3(ret,dashes,offset);
+  ArtVpathDash *d = Pointer_val(dash);
+  int len = d->n_dash;
+  dashes = alloc(d->n_dash * Double_wosize, Double_array_tag);
+  offset = copy_double(d->offset);
+  ret = alloc_tuple(2);
+  Field(ret,0) = offset;
+  Field(ret,1) = dashes;
+  CAMLreturn (ret);
+}
+
 
 
 /* gome-canvas-path-def.h */
 
 Make_Val_final_pointer_ext(GnomeCanvasPathDef, _new, Ignore, gnome_canvas_path_def_unref, 50)
-#define Val_GnomeCanvasPathDef     Val_pointer
 #define GnomeCanvasPathDef_val(v) ((GnomeCanvasPathDef *)Pointer_val(v))
 
 CAMLprim value ml_gnome_canvas_path_def_new(value olen, value unit)
@@ -341,7 +355,6 @@ CAMLprim value ml_gnome_canvas_path_def_new(value olen, value unit)
   return Val_GnomeCanvasPathDef_new(p);
 }
 
-/* ML_1 (gnome_canvas_path_def_finish, GnomeCanvasPathDef_val, Unit) */
 ML_1 (gnome_canvas_path_def_duplicate, GnomeCanvasPathDef_val, Val_GnomeCanvasPathDef_new)
 
 static gpointer path_def_val(value v)

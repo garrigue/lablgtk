@@ -114,23 +114,26 @@ GTKOBJS =  ml_gtk.o ml_pango.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o \
 	ml_gtktext.o ml_gtktree.o ml_gtkstock.o
 COBJS = ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o \
 	wrappers.o $(GTKOBJS)
-MLOBJS =  gaux.cmo gpointer.cmo gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo \
-	glib.cmo gobject.cmo \
+MLOBJS1 =  gaux.cmo gpointer.cmo
+ENUMOBJS = gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
+MLOBJS2 = glib.cmo gobject.cmo \
 	gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
-	gtk.cmo pango.cmo gtkSignal.cmo gtkStock.cmo gtkProps.cmo \
-	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
+	gtk.cmo pango.cmo gtkSignal.cmo gtkStock.cmo
+MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
 	gtkMain.cmo \
-	gPango.cmo gDraw.cmo \
-	gObj.cmo gData.cmo gMain.cmo oGtkProps.cmo gContainer.cmo \
-	gPack.cmo gButton.cmo gText.cmo \
+	gPango.cmo gDraw.cmo gObj.cmo gData.cmo gMain.cmo
+MLOBJS4 = gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
 	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gWindow.cmo gBin.cmo \
 	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
+MLOBJS =  $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) gtkProps.cmo \
+	$(MLOBJS3) oGtkProps.cmo $(MLOBJS4)
+MLXOBJS = $(MLOBJS1) $(MLOBJS2) $(MLOBJS3) $(MLOBJS4)
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
-ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
+ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
@@ -138,10 +141,10 @@ depend: $(ENUMOBJS:.cmo=.ml)
 	ocamldep *.ml *.mli > .depend
 
 lablgtktop: $(MLLIBS) $(INITOBJS)
-	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
+	$(TOPLEVEL) $(CUSTOM) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
 
 lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
-	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
+	$(TOPLEVEL) $(THFLAGS) $(CUSTOM) -o $@ $(THLINK) $(MLLINK) \
 	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
 lablgtk2: Makefile $(CONFIG) lablgtk.in

@@ -61,7 +61,7 @@ type +'a param
 val dyn_param : string -> 'a data_set -> 'b param
 val param : ('a,'b) property -> 'b -> 'a param
 
-val make : classe:string -> 'a param list -> 'a obj
+val unsafe_create : classe:string -> 'a param list -> 'a obj
     (* This type is NOT safe *)
 
 val set : ('a, 'b) property -> 'a obj -> 'b -> unit
@@ -132,6 +132,8 @@ module Data :
     val ulong : int data_conv
     val flags : ([>  ] as 'a) Gpointer.variant_table -> 'a list data_conv
     val enum : ([>  ] as 'a) Gpointer.variant_table -> 'a data_conv
+    val int32 : int32 data_conv
+    val uint32 : int32 data_conv
     val int64 : int64 data_conv
     val uint64 : int64 data_conv
     val float : float data_conv
@@ -154,9 +156,9 @@ module Property :
     val freeze_notify : 'a obj -> unit
     val thaw_notify : 'a obj -> unit
     val notify : 'a obj -> string -> unit
-    val set_property : 'a obj -> string -> g_value -> unit
-    val get_property : 'a obj -> string -> g_value -> unit
-    val get_property_type : 'a obj -> string -> g_type
+    val set_value : 'a obj -> string -> g_value -> unit
+    val get_value : 'a obj -> string -> g_value -> unit
+    val get_type : 'a obj -> string -> g_type
     val set_dyn : 'a obj -> string -> 'b data_set -> unit
     val get_dyn : 'a obj -> string -> data_get
     val set : 'a obj -> ('a, 'b) property -> 'b -> unit

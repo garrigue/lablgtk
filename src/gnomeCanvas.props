@@ -4,10 +4,23 @@ header {
 open Gobject
 open Data
 open GtkProps
+let art_wind_rule = enum GnomeCanvasEnums.art_wind_rule
 }
 
 use Gtk
 prefix GnomeCanvas
+
+conversions {
+  GtkStock "GtkStock.conv"
+  ArtWindRule
+  ArtVpathDash "GnomeCanvas.Conv.art_vpath_dash"
+}
+conversions "GnomeCanvas" "GnomeCanvas.Conv" { Points PathDef }
+
+classes {
+  GdkPixbuf "GdkPixbuf.pixbuf"
+  GdkDrawable "[`drawable] obj"
+}
 
 class Item : GtkObject {
   "parent"               GnomeCanvasItem      : Read / Write
@@ -15,7 +28,7 @@ class Item : GtkObject {
 
 class Shape : Item {
   "cap-style"            GdkCapStyle          : Read / Write
-  "dash"                 ArtVPathDash         : Read / Write
+  "dash"                 ArtVpathDash         : Read / Write
   "fill-color"           gchararray           : Write
   "fill-color-gdk"       GdkColor             : Read / Write
   "fill-color-rgba"      guint32              : Read / Write

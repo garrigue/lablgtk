@@ -148,7 +148,7 @@ let process ic ~hc ~cc =
   with End_of_file ->
     if !all_convs <> [] && !package <> "" then begin
       let oc x = fprintf cc x in
-      oc "CAMLprim value ml_%s_get_tables ()\n{\n" !package;
+      oc "CAMLprim value ml_%s_get_tables ()\n{\n" (camlize !package);
       oc "  static lookup_info *ml_lookup_tables[] = {\n";
       let convs = List.rev !all_convs in
       List.iter convs ~f:(fun (s,_,_) -> oc "    ml_table_%s,\n" s);
@@ -171,7 +171,7 @@ let process ic ~hc ~cc =
       out "    %s variant_table\n" name0;
       List.iter (List.tl convs) ~f:
         (fun (_,s,_) -> out "  * %s variant_table\n" s);
-      out "  = \"ml_%s_get_tables\"\n\n" !package;
+      out "  = \"ml_%s_get_tables\"\n\n" (camlize !package);
       out "@[<hov 4>let %s" name0;
       List.iter (List.tl convs) ~f:(fun (_,s,_) -> out ",@ %s" s);
       out " = _get_tables ()@]@.";
