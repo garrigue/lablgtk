@@ -129,7 +129,7 @@ Goals
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 6
-Low level object encoding (I)
+Low level encoding (I)
 
 Example: buttons' hierarchy
 %size 2
@@ -150,10 +150,8 @@ type 'a obj
 type widget = [widget] obj
 type container = [widget container] obj
 type button = [widget container button] obj
-type toggle_button =
-    [widget ... togglebutton] obj
-type radio_button =
-    [widget ... radiobutton] obj
+type toggle_button = [widget ... togglebutton] obj
+type radio_button = [widget ... radiobutton] obj
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
@@ -174,23 +172,21 @@ Polymorphic variants introduce constraints
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 8
-Low level object encoding (II)
+Low level encoding (II)
 
 Some functions
 %size 2
 
-%font "code", size 4, prefix "    ", fore "yellow", vgap 50
-type state_type =
-    [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
+%font "code", size 4, prefix "  ", fore "yellow", vgap 50
+type state_type = [ NORMAL
+     ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
 val set_state : [> widget] obj -> state_type -> unit
 val children : [> container] obj -> [widget] obj list
 val clicked : [> button] obj -> unit
 val set_group : [> radiobutton] obj -> group -> unit
 
 &com Signals
-%size 2
-
-%font "code", size 4, prefix "    ", fore "yellow", vgap 50
+%font "code", size 4, prefix "  ", fore "yellow", vgap 50
 type ('a,'b) signal
 val connect : 'a obj -> sig:('a,'b) signal ->
                callback:'b -> ?after:bool -> id
@@ -199,9 +195,10 @@ val button_clicked : ([> button], unit -> unit) signal
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 9
-Why an High-Level Interface
+High-Level Interface
 
 Problems with GTK+
+%size 2
 
 	Name space is scattered
 &com1 One has to know in which superclass a function is defined
@@ -209,6 +206,7 @@ Problems with GTK+
 &com1 There is no clear distinction between public and private definitions
 
 &com LablGTK design
+%size 2
 
 	OCaml classes to reunify name space
 	Omit developper-oriented methods
