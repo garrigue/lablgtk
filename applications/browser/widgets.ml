@@ -14,7 +14,8 @@ class multibox ~rows ~columns ?(row_view = rows) ?(col_view = columns)
   let buttons =
     Array.init ~len:columns
       ~f:(fun left -> Array.init ~len:rows
-	  ~f:(fun top -> GButton.button ~packing:(table#attach ~top ~left)))
+	  ~f:(fun top -> GButton.button
+              ~packing:(table#attach ~top ~left ~expand:`BOTH)))
   in
   object (self)
     inherit widget sw#as_widget

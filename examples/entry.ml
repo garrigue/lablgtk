@@ -29,15 +29,15 @@ let main () =
   let hbox = GPack.hbox ~packing: vbox#add () in
 
   let check = GButton.check_button ~label: "Editable" ~active: true
-      ~packing: hbox#pack () in
+      ~packing: hbox#add () in
   check#connect#toggled ~callback:(fun () -> entry_toggle_editable check entry);
 
   let check =
-    GButton.check_button ~label: "Visible" ~active: true ~packing: hbox#pack () in
+    GButton.check_button ~label:"Visible" ~active:true ~packing:hbox#add () in
   check#connect#toggled
     ~callback:(fun () -> entry_toggle_visibility check entry);
 
-  let button = GButton.button ~label: "Close" ~packing: vbox#pack () in
+  let button = GButton.button ~label: "Close" ~packing: vbox#add () in
   button#connect#clicked ~callback:window#destroy;
   button#grab_default ();
 

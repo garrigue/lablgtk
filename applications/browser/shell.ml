@@ -198,7 +198,7 @@ let f ~prog ~title =
 
   let tl = GWindow.window ~title ~width:500 ~height:300 () in
   let vbox = GPack.vbox ~packing:tl#add () in
-  let menus = GMenu.menu_bar ~packing:(vbox#pack ~expand:false) () in
+  let menus = GMenu.menu_bar ~packing:vbox#pack () in
   let f = new GMenu.factory menus in
   let accel_group = f#accel_group in
   let file_menu = f#add_submenu "File"
@@ -209,7 +209,7 @@ let f ~prog ~title =
   let sh = new shell ~prog ~env ~args ~packing:hbox#add () in
   let sb =
     GRange.scrollbar `VERTICAL ~adjustment:sh#text#vadjustment
-      ~packing:(hbox#pack ~expand:false) ()
+      ~packing:hbox#pack ()
   in
 
   let f = new GMenu.factory file_menu ~accel_group in

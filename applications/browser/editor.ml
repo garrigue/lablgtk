@@ -48,7 +48,7 @@ class editor_window ?(show=false) () =
       ~title:"Program Editor" () in
   let vbox = GPack.vbox ~packing:window#add () in
 
-  let menubar = GMenu.menu_bar ~packing:(vbox#pack ~expand:false) () in
+  let menubar = GMenu.menu_bar ~packing:vbox#pack () in
   let factory = new GMenu.factory menubar in
   let accel_group = factory#accel_group
   and file_menu = factory#add_submenu "File"
@@ -57,7 +57,7 @@ class editor_window ?(show=false) () =
 
   let hbox = GPack.hbox ~packing:vbox#add () in
   let scrollbar =
-    GRange.scrollbar `VERTICAL ~packing:(hbox#pack ~from:`END ~expand:false) ()
+    GRange.scrollbar `VERTICAL ~packing:(hbox#pack ~from:`END) ()
   and editor = new editor ~packing:hbox#add () in
 object (self)
   inherit GObj.widget window#as_widget

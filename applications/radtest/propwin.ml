@@ -46,10 +46,10 @@ let prop_box list =
   List.iter list ~f:
     begin fun (name, prop) ->
       let hbox =
-	GPack.hbox ~homogeneous:true ~packing:(vbox#pack ~expand:false) () in
-      GMisc.label ~text:name ~packing:hbox#pack ();
-      hbox#pack ~fill:true (prop_widget prop);
-      GMisc.separator `HORIZONTAL ~packing:(vbox#pack ~expand:false) ();
+	GPack.hbox ~homogeneous:true ~packing:vbox#pack () in
+      GMisc.label ~text:name ~packing:hbox#add ();
+      hbox#add (prop_widget prop);
+      GMisc.separator `HORIZONTAL ~packing:vbox#pack ();
       ()
     end;
   vbox
@@ -105,8 +105,8 @@ let change_name oldname newname =
   Hashtbl.add widget_pool ~key:newname ~data:vb
 *)
 
-let update (w : #tiwidget_base) show_modif =
+let update ?(show=false) (w : #tiwidget_base) =
   let vb = prop_box w#proplist in
   Hashtbl.remove widget_pool w#name;
   Hashtbl.add widget_pool ~key:w#name ~data:vb;
-  if show_modif && !shown_widget = w#name then show_prop_box vb
+  if show && !shown_widget = w#name then show_prop_box vb

@@ -82,7 +82,7 @@ object (self)
     for i = 0 to 2 do
       for j = 0 to 2 do
 	let button = GButton.toggle_button ~width:20 ~height:20
-	    ~packing:(table#attach ~left:i ~top:j) () in
+	    ~packing:(table#attach ~left:i ~top:j ~expand:`BOTH) () in
 	buttons.(i).(j) <- button;
 	buttons_handlers.(i).(j) <-
 	  button #connect#toggled ~callback:self#toggle;

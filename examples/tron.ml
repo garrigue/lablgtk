@@ -69,16 +69,16 @@ let main () =
     false
   in
   area#connect#event#expose ~callback:area_expose;
-  let control = GPack.table ~rows:3 ~columns:7 ~packing:vbx#add () in
+  let control = GPack.table ~rows:3 ~columns:7 ~packing:vbx#pack () in
 
   let abuttonClicked num (lbl : GMisc.label) _ = begin
     let dialog =
       GWindow.window ~kind:`DIALOG ~border_width:10 ~title:"Key remap" () in
     let dvbx = GPack.box `VERTICAL ~packing:dialog#add () in
-    let entry  = GEdit.entry ~max_length:1 ~packing: dvbx#pack () in
+    let entry  = GEdit.entry ~max_length:1 ~packing: dvbx#add () in
     let txt = String.make 1 keys.[num] in
     entry#set_text txt;
-    let dquit = GButton.button ~label:"OK" ~packing: dvbx#pack () in 
+    let dquit = GButton.button ~label:"OK" ~packing: dvbx#add () in 
     dquit#connect#clicked ~callback:
       begin fun _ ->
 	let chr = entry#text.[0] in
@@ -89,9 +89,10 @@ let main () =
       end;
     dialog#show ()
   end in
+  let attach = control#attach ~expand:`BOTH in
   let new_my_button ~label:label ~left:left ~top:top =
       let str = String.make 1 keys.[label] in
-      let btn = GButton.button ~packing:(control#attach ~left:left ~top:top) () in
+      let btn = GButton.button ~packing:(attach ~left:left ~top:top) () in
       let lbl = GMisc.label ~text:str ~packing:(btn#add) () in
       btn#connect#clicked ~callback:(abuttonClicked label lbl);
       btn
@@ -105,9 +106,9 @@ let main () =
   new_my_button ~label:6 ~left:6 ~top:1;
   new_my_button ~label:7 ~left:7 ~top:2;
   let quit =
-    GButton.button ~label:"Quit" ~packing:(control#attach ~left:4 ~top:2) () in
+    GButton.button ~label:"Quit" ~packing:(attach ~left:4 ~top:2) () in
   quit#connect#clicked ~callback:window#destroy;
-  let message = GMisc.label ~text:"tron(?) game" ~packing:vbx#add () in
+  let message = GMisc.label ~text:"tron(?) game" ~packing:vbx#pack () in
 
   let game_step () =
         let lx = lpos.x in let ly = lpos.y in
@@ -191,7 +192,7 @@ let main () =
     timerID := Timeout.add ~ms:300 ~callback:timerTimer2;
   in
   let restart =
-    GButton.button ~label: "Restart" ~packing:(control#attach ~left:4 ~top:3) () in
+    GButton.button ~label: "Restart" ~packing:(attach ~left:4 ~top:3) () in
   restart#connect#clicked ~callback:restartClicked;
   restartClicked ();
 

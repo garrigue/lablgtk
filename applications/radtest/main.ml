@@ -11,14 +11,14 @@ let main_project_modify = ref false
 
 let main_window  = GWindow.window (* ~width:200 ~height:200 *) ()
 let main_vbox    = GPack.vbox ~packing:main_window#add ()
-let main_menu    = GMenu.menu_bar ~packing:(main_vbox#pack ~expand:false) ()
+let main_menu    = GMenu.menu_bar ~packing:main_vbox#pack ()
 
 let can_copy = ref (fun _ -> assert false)
 let can_paste = ref (fun _ -> assert false)
 
 class project () =
-  let project_box = GPack.vbox ~packing:main_vbox#pack () in
-  let project_tree = GTree2.tree ~packing:project_box#pack () in
+  let project_box = GPack.vbox ~packing:main_vbox#add () in
+  let project_tree = GTree2.tree ~packing:project_box#add () in
   object(self)
     val mutable window_list = []
 
@@ -258,11 +258,12 @@ let xpm_window () =
   window#misc#set_uposition ~x:250 ~y:10;
   let vbox = GPack.vbox ~packing:window#add () in
   let table = GPack.table ~rows:1 ~columns:5 ~border_width:20
-      ~packing:vbox#pack () in
+      ~packing:vbox#add () in
   let tooltips = GData.tooltips () in
   let add_xpm ~file ~left ~top ~tip =
     let gdk_pix = GDraw.pixmap_from_xpm ~file ~window () in
-    let ev = GBin.event_box ~packing:(table#attach ~left ~top) () in
+    let ev = GBin.event_box
+        ~packing:(table#attach ~left ~top ~expand:`BOTH) () in
     let pix = GMisc.pixmap gdk_pix ~packing:ev#add () in
     ev#connect#event#button_press ~callback:
       (fun ev -> match GdkEvent.get_type ev with
@@ -275,12 +276,13 @@ let xpm_window () =
     tooltips#set_tip ev#coerce ~text:tip
   in
   add_xpm ~file:"window.xpm" ~left:0 ~top:0 ~tip:"window";
-  GMisc.separator `HORIZONTAL ~packing:vbox#pack ();
-  let table = GPack.table ~rows:5 ~columns:6 ~packing:vbox#pack
+  GMisc.separator `HORIZONTAL ~packing:vbox#add ();
+  let table = GPack.table ~rows:5 ~columns:6 ~packing:vbox#add
       ~row_spacings:20 ~col_spacings:20 ~border_width:20 () in
   let add_xpm file ~left ~top ~classe =
     let gdk_pix = GDraw.pixmap_from_xpm ~file ~window () in
-    let ev = GBin.event_box ~packing:(table#attach ~left ~top) () in
+    let ev = GBin.event_box
+        ~packing:(table#attach ~left ~top ~expand:`BOTH) () in
     let pix = GMisc.pixmap gdk_pix ~packing:ev#add () in
     ev#drag#source_set ~modi:[`BUTTON1] targets ~actions:[`COPY];
     ev#drag#source_set_icon ~colormap:window#misc#style#colormap 

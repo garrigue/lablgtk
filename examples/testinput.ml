@@ -30,10 +30,10 @@ let main () =
   drawing_area#misc#set_can_focus true;
   drawing_area#misc#grab_focus ();
 
-  GButton.button ~label:"Input Dialog" ~packing:(vbox#pack ~expand:false) ();
+  GButton.button ~label:"Input Dialog" ~packing:vbox#pack ();
 
   let button =
-    GButton.button ~label:"Quit" ~packing:(vbox#pack ~expand:false) () in
+    GButton.button ~label:"Quit" ~packing:vbox#pack () in
 
   button#connect#clicked ~callback:window#destroy;
 

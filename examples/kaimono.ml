@@ -17,7 +17,7 @@ let file_dialog ~title ~callback ?filename () =
 let w = GWindow.window ~title:"Okaimono" ()
 let vb = GPack.vbox ~packing:w#add ()
 
-let menubar = GMenu.menu_bar ~packing:(vb#pack ~expand:false) ()
+let menubar = GMenu.menu_bar ~packing:vb#pack ()
 let factory = new GMenu.factory menubar
 let file_menu = factory#add_submenu "File"
 let edit_menu = factory#add_submenu "Edit"
