@@ -4,10 +4,10 @@ open Misc
 open Gtk
 open GUtil
 open GObj
-open GCont
+open GContainer
 
 class tree_item_signals obj ?:after = object
-  inherit GCont.item_signals obj ?:after
+  inherit item_signals obj ?:after
   method expand = Signal.connect obj sig:TreeItem.Signals.expand ?:after
   method collapse = Signal.connect obj sig:TreeItem.Signals.collapse ?:after
 end

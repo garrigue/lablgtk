@@ -4,7 +4,7 @@ open Misc
 open Gtk
 open GUtil
 open GObj
-open GCont
+open GContainer
 
 class button_skel obj = object (self)
   inherit container obj

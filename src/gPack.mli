@@ -2,7 +2,7 @@
 
 open Gtk
 open GObj
-open GCont
+open GContainer
 
 class box_skel :
   'a[> box container widget] obj ->

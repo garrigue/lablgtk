@@ -9,10 +9,10 @@ class list_item :
   ?height:int ->
   ?packing:(list_item -> unit) ->
   object
-    inherit GCont.container
+    inherit GContainer.container
     val obj : ListItem.t obj
     method as_item : ListItem.t obj
-    method connect : ?after:bool -> GCont.item_signals
+    method connect : ?after:bool -> GContainer.item_signals
     method deselect : unit -> unit
     method select : unit -> unit
     method toggle : unit -> unit
@@ -26,7 +26,7 @@ class liste :
   ?height:int ->
   ?packing:(liste -> unit) ->
   object
-    inherit [ListItem.t,list_item] GCont.item_container
+    inherit [ListItem.t,list_item] GContainer.item_container
     val obj : GtkList.t obj
     method child_position : ListItem.t #GObj.is_item -> int
     method clear_items : start:int -> end:int -> unit

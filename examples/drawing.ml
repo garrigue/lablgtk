@@ -4,7 +4,7 @@ open GdkObj
 open GMain
 
 (* let id = Thread.create GtkThread.main () *)
-let window = new GWin.window `TOPLEVEL
+let window = new GWindow.window `TOPLEVEL
 
 let w = window#show (); window#misc#window
 let drawing = new drawing w

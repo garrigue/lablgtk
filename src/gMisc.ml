@@ -27,7 +27,7 @@ class statusbar_context obj ctx = object (self)
 end
 
 class statusbar_wrapper obj = object
-  inherit GCont.container_wrapper (obj : Statusbar.t obj)
+  inherit GContainer.container_wrapper (obj : Statusbar.t obj)
   method new_context :name =
     new statusbar_context obj (Statusbar.get_context obj name)
 end
@@ -116,4 +116,21 @@ class tips_query ?:caller ?:emit_always ?:label_inactive ?:label_no_tip
   object (self)
     inherit tips_query_wrapper w
     initializer pack_return :packing (self :> tips_query_wrapper)
+  end
+
+class color_selection_wrapper obj = object
+  inherit GPack.box_skel (ColorSelection.coerce obj)
+  method connect = new GContainer.container_signals ?obj
+  method set_update_policy = ColorSelection.set_update_policy obj
+  method set_opacity = ColorSelection.set_opacity obj
+  method set_color = ColorSelection.set_color obj
+  method get_color = ColorSelection.get_color obj
+end
+
+class color_selection ?:border_width ?:width ?:height ?:packing =
+  let w = ColorSelection.create () in
+  let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+  object (self)
+    inherit color_selection_wrapper w
+    initializer pack_return :packing (self :> color_selection_wrapper)
   end

@@ -1,3 +1,5 @@
+(* $Id$ *)
+
 (* reverse polish calculator *)
 
 open GMain
@@ -8,7 +10,7 @@ let main () =
 
   (* toplevel window *)
   let window =
-    new GWin.window `TOPLEVEL border_width: 10
+    new GWindow.window `TOPLEVEL border_width: 10
       title:"Reverse Polish Calculator" in
   window#connect#event#delete
      callback:(fun _ -> prerr_endline "Delete event occured"; false);

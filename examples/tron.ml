@@ -1,6 +1,8 @@
+(* $Id$ *)
+
 (* Tron? Game *)
-open GtkObj
-open GdkObj  
+open GMain
+open GdkObj
 
 let m_pi = acos (-1.)
 let clRed   = `NAME "red"  (* `BLACK *)
@@ -35,12 +37,14 @@ let main () =
   let keyMapR = [|(-1, 0); (0, 1); (0, -1); (1, 0)|] in
 
 (* User Interface *)
-  let window = new_window `TOPLEVEL border_width:10 title:"tron(?)" in
+  let window = new GWindow.window `TOPLEVEL border_width:10 title:"tron(?)" in
   window#connect#event#delete
      callback:(fun _ -> prerr_endline "Delete event occured"; false);
   window#connect#destroy callback:Main.quit;
-  let vbx = new_box `VERTICAL packing:window#add in   
-  let area = new_drawing_area width:((gameSize+2)*4) height:((gameSize+2)*4) packing:vbx#add in
+  let vbx = new GPack.box `VERTICAL packing:window#add in   
+  let area =
+    new GMisc.drawing_area
+      width:((gameSize+2)*4) height:((gameSize+2)*4) packing:vbx#add in
   let drawing = area#misc#realize (); new drawing (area#misc#window) in
   drawing#set background:`WHITE;
   let area_expose _ =
@@ -62,15 +66,16 @@ let main () =
         done;
         false  in
   area#connect#event#expose callback:area_expose;
-  let control = new_table rows:3 columns:7 packing:vbx#add in
+  let control = new GPack.table rows:3 columns:7 packing:vbx#add in
 
-  let abuttonClicked num (lbl : label) _ = begin
-    let dialog = new_window `TOPLEVEL border_width:10 title:"Key remap" in
-    let dvbx = new_box `VERTICAL packing:dialog#add in
-    let entry  = new_entry max_length:1 packing: dvbx#pack in
+  let abuttonClicked num (lbl : GMisc.label) _ = begin
+    let dialog =
+      new GWindow.window `TOPLEVEL border_width:10 title:"Key remap" in
+    let dvbx = new GPack.box `VERTICAL packing:dialog#add in
+    let entry  = new GEdit.entry max_length:1 packing: dvbx#pack in
     let txt = String.make len:1 fill:keys.[num] in
     entry#set_text txt;
-    let dquit = new_button label:"OK" packing: dvbx#pack in 
+    let dquit = new GButton.button label:"OK" packing: dvbx#pack in 
     dquit#connect#clicked callback: (fun _ -> let chr = entry#text.[0] in
                                               let txt2 = String.make len:1 fill:chr in
                                               lbl#set_text txt2;
@@ -80,8 +85,9 @@ let main () =
   end in
   let new_my_button label:label left:left top:top =
       let str = String.make len:1 fill:keys.[label] in
-      let btn = new_button packing:(control#attach left:left top:top) in
-      let lbl = new_label text:str packing:(btn#add) in 
+      let btn =
+	new GButton.button packing:(control#attach left:left top:top) in
+      let lbl = new GMisc.label text:str packing:(btn#add) in 
       btn#connect#clicked callback:(abuttonClicked label lbl);
       btn in
   new_my_button label:0 left:1 top:2;
@@ -92,10 +98,11 @@ let main () =
   new_my_button label:5 left:6 top:3;
   new_my_button label:6 left:6 top:1;
   new_my_button label:7 left:7 top:2;
-  let quit = new_button label:"Quit" packing:(control#attach left:4 top:2) in
+  let quit =
+    new GButton.button label:"Quit" packing:(control#attach left:4 top:2) in
   quit#connect#clicked callback:
    (fun _ -> window#destroy ());
-  let message = new_label text:"tron(?) game" packing:vbx#add in
+  let message = new GMisc.label text:"tron(?) game" packing:vbx#add in
 
   let game_step _ = begin
         let lx = lpos.x in let ly = lpos.y in
@@ -175,7 +182,9 @@ let main () =
     count := 3;
     timerID := Timeout.add 500 callback:timerTimer2;
   end in
-  let restart = new_button label: "Restart" packing:(control#attach left:4 top:3) in
+  let restart =
+    new GButton.button label: "Restart"
+      packing:(control#attach left:4 top:3) in
   restart#connect#clicked callback:restartClicked;
   restartClicked ();
 

@@ -6,8 +6,8 @@ open GUtil
 open GObj
 
 class pixmap_wrapper obj = object
-  inherit GMisc.misc obj
-  method connect = new widget_signals obj
+  inherit GMisc.misc (obj : Pixmap.t obj)
+  method connect = new widget_signals ?obj
   method set = Pixmap.setter ?obj ?cont:null_cont
   method pixmap = Pixmap.pixmap obj
   method mask = Pixmap.mask obj
@@ -26,7 +26,7 @@ open GdkObj
 class pixdraw parent:(w : #GObj.widget) :width :height =
   let depth = w#misc#realize (); Style.get_depth w#misc#style in
   let window = w#misc#window in
-  object
+  object (self)
     inherit [[pixmap]] drawing
 	(Gdk.Pixmap.create window :width :height :depth) as pixmap
     val mask = new drawing (Gdk.Bitmap.create window :width :height)
@@ -53,10 +53,8 @@ class pixdraw parent:(w : #GObj.widget) :width :height =
       mask#set foreground:`BLACK;
       mask#rectangle x:0 y:0 :width :height filled:true;
       mask#set foreground:`WHITE
+    method new_pixmap = new pixmap self#raw mask:mask#raw
   end
 
-
-let new_pixdraw (pd : #pixdraw) =
-  new pixmap pd#raw mask:pd#mask#raw
-let set_pixdraw (pm : #pixmap) (pd : #pixdraw) =
-  pm#set pixmap:pd#raw mask:pd#mask#raw
+let set_pixmap (pm : #pixmap) (px : #pixdraw) =
+   pm#set pixmap:px#raw mask:px#mask#raw

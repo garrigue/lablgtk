@@ -4,7 +4,7 @@ open GMain
 
 let file_dialog :title :callback ?:filename =
   let sel =
-    new GDialog.file_selection :title fileop_buttons:false ?:filename in
+    new GWindow.file_selection :title fileop_buttons:false ?:filename in
   sel#cancel_button#connect#clicked callback:sel#destroy;
   sel#ok_button#connect#clicked callback:
     begin fun () ->
@@ -53,7 +53,7 @@ end
 
 let editor = new editor ()
 
-let window = new GWin.window `TOPLEVEL width:500 height:300 title:"editor"
+let window = new GWindow.window `TOPLEVEL width:500 height:300 title:"editor"
 let vbox = new GPack.box `VERTICAL packing:window#add
 
 let menubar = new GMenu.menu_bar packing:(vbox#pack expand:false)

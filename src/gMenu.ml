@@ -3,7 +3,7 @@
 open Misc
 open Gtk
 open GObj
-open GCont
+open GContainer
 open GUtil
 
 (* Menu items *)
@@ -26,7 +26,7 @@ class menu_item_skel obj = object
 end
 
 class menu_item_signals obj ?:after = object
-  inherit GCont.item_signals obj ?:after
+  inherit item_signals obj ?:after
   method activate = Signal.connect sig:MenuItem.Signals.activate obj ?:after
 end
 

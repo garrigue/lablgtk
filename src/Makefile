@@ -59,8 +59,8 @@ endif
 COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o
 OLDMLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gtkObj.cmo gtkExt.cmo
 MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gUtil.cmo \
-	gObj.cmo gMain.cmo gData.cmo gCont.cmo gPack.cmo gButton.cmo \
-	gMenu.cmo gWin.cmo gTree.cmo gMisc.cmo gDialog.cmo gList.cmo \
+	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
+	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gFrame.cmo \
 	gEdit.cmo gPix.cmo gRange.cmo
 THOBJS = gtkThread.cmo threadObj.cmo
 

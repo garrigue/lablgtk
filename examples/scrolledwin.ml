@@ -3,11 +3,11 @@
 open GMain
 
 let main () =
-  let window = new GDialog.dialog title: "dialog"
+  let window = new GWindow.dialog title: "dialog"
       border_width: 10 width: 300 height: 300 in
   window#connect#destroy callback:Main.quit;
 
-  let scrolled_window = new GWin.scrolled_window
+  let scrolled_window = new GFrame.scrolled_window
       border_width: 10 hscrollbar_policy: `AUTOMATIC packing: window#vbox#pack
   in
 

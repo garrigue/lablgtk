@@ -5,7 +5,7 @@ open Gtk
 class tree_item_signals :
   'a[> container item treeitem widget] obj -> ?after:bool ->
   object
-    inherit GCont.item_signals
+    inherit GContainer.item_signals
     val obj : 'a obj
     method collapse : callback:(unit -> unit) -> Signal.id
     method expand : callback:(unit -> unit) -> Signal.id
@@ -18,7 +18,7 @@ class tree_item :
   ?height:int ->
   ?packing:(tree_item -> unit) ->
   object
-    inherit GCont.container
+    inherit GContainer.container
     val obj : TreeItem.t obj
     method as_item : TreeItem.t obj
     method collapse : unit -> unit
@@ -32,7 +32,7 @@ class tree_item :
 and tree_signals :
   'a[> container tree widget] obj -> ?after:bool ->
   object
-    inherit GCont.container_signals
+    inherit GContainer.container_signals
     val obj : 'a obj
     method selection_changed : callback:(unit -> unit) -> Signal.id
     method select_child : callback:(tree_item -> unit) -> Gtk.Signal.id
@@ -48,7 +48,7 @@ and tree :
   ?height:int ->
   ?packing:(tree -> unit) ->
   object
-    inherit [TreeItem.t, tree_item] GCont.item_container
+    inherit [TreeItem.t, tree_item] GContainer.item_container
     val obj : Tree.t obj
     method as_tree : Tree.t obj
     method child_position : TreeItem.t #GObj.is_item -> int

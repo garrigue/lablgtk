@@ -4,7 +4,7 @@ open Misc
 open Gtk
 open GUtil
 open GObj
-open GCont
+open GContainer
 
 class list_item_wrapper obj = object
   inherit container (obj : ListItem.t obj)

@@ -28,7 +28,7 @@ class statusbar :
   ?height:int ->
   ?packing:(statusbar -> unit) ->
   object
-    inherit GCont.container_wrapper
+    inherit GContainer.container_wrapper
     val obj : Statusbar.t obj
     method new_context : name:string -> statusbar_context
   end
@@ -111,3 +111,19 @@ class tips_query :
     method stop : unit -> unit
   end
 class tips_query_wrapper : TipsQuery.t obj -> tips_query
+
+class color_selection :
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(color_selection -> unit) ->
+  object
+    inherit GPack.box_wrapper
+    val obj : ColorSelection.t obj
+    method get_color : ColorSelection.color
+    method set_color :
+      red:float -> green:float -> blue:float -> ?opacity:float -> unit
+    method set_update_policy : Tags.update_type -> unit
+    method set_opacity : bool -> unit
+  end
+class color_selection_wrapper : ([> colorsel] obj) -> color_selection
