@@ -39,7 +39,7 @@ ifdef USE_GLADE
 GTKCFLAGS = `$(GLADE_CONFIG) --cflags gtk`
 GLADELIBS = `$(GLADE_CONFIG) --libs gtk`
 else
-GTKCFLAGS = `$(GTK_CONFIG) --cflags`
+GTKCFLAGS = `$(GTK_CONFIG) --cflags` 
 endif
 endif
 
