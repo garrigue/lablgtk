@@ -1,5 +1,7 @@
 $Id$
 
+In lablgtk2-20040715 (2.4.0):
+
 2004.07.09 [Olivier]
   * Rewrite Xml_lexer so that it is more conformant.
 

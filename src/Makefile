@@ -9,7 +9,7 @@ LIBRARIAN = $(CAMLMKLIB) -verbose
 TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
 CAMLP4 = $(CAMLP4O) pr_o.cmo
 MKLIB = lib /nologo /debugtype:CV /out:
-MKDLL = link /nologo /dll "`$(CAMLC) -where`/ocamlrun.lib" /out:
+MKDLL = link /nologo /dll "`$(CAMLC) -where`/ocamlrun.lib" "$(GTKLIBPATH)" /out:
 CONFIG = ../config.make
 
 # protect against missing definitions
