@@ -524,7 +524,8 @@ static gint gtk_tree_iter_compare_func(GtkTreeModel *model,
   CAMLreturn(Int_val(ret));
 }
 
-CAMLprim value ml_gtk_tree_sortable_set_sort_func(value m, value id, value sort_fun)
+CAMLprim value ml_gtk_tree_sortable_set_sort_func(value m, value id,
+						  value sort_fun)
 {
   value *clos = ml_global_root_new(sort_fun);
   gtk_tree_sortable_set_sort_func(GtkTreeSortable_val(m), Int_val(id), 
@@ -533,7 +534,8 @@ CAMLprim value ml_gtk_tree_sortable_set_sort_func(value m, value id, value sort_
   return Val_unit;
 }
 
-CAMLprim value ml_gtk_tree_sortable_set_default_sort_func(value m, value sort_fun)
+CAMLprim value ml_gtk_tree_sortable_set_default_sort_func(value m,
+							  value sort_fun)
 {
   value *clos = ml_global_root_new(sort_fun);
   gtk_tree_sortable_set_default_sort_func(GtkTreeSortable_val(m),
@@ -574,25 +576,29 @@ CAMLprim value ml_gtk_tree_model_filter_set_visible_func(value m, value f)
   return Val_unit;
 }
 
-ML_2 (gtk_tree_model_filter_set_visible_column, GtkTreeModelFilter_val, Int_val, Unit)
+ML_2 (gtk_tree_model_filter_set_visible_column, GtkTreeModelFilter_val,
+      Int_val, Unit)
 ML_1 (gtk_tree_model_filter_refilter, GtkTreeModelFilter_val, Unit)
-
-ML_2 (gtk_tree_model_filter_convert_child_path_to_path, GtkTreeModelFilter_val, 
+ML_2 (gtk_tree_model_filter_convert_child_path_to_path, GtkTreeModelFilter_val,
       GtkTreePath_val, Val_GtkTreePath)
-CAMLprim value ml_gtk_tree_model_filter_convert_child_iter_to_iter(value m, value it)
+CAMLprim value ml_gtk_tree_model_filter_convert_child_iter_to_iter(value m,
+								   value it)
 {
   GtkTreeIter dst_it;
   gtk_tree_model_filter_convert_child_iter_to_iter(GtkTreeModelFilter_val(m), 
-						   &dst_it, GtkTreeIter_val(it));
+						   &dst_it,
+						   GtkTreeIter_val(it));
   return Val_GtkTreeIter(&dst_it);
 }
-ML_2 (gtk_tree_model_filter_convert_path_to_child_path, GtkTreeModelFilter_val, 
+ML_2 (gtk_tree_model_filter_convert_path_to_child_path, GtkTreeModelFilter_val,
       GtkTreePath_val, Val_GtkTreePath)
-CAMLprim value ml_gtk_tree_model_filter_convert_iter_to_child_iter(value m, value it)
+CAMLprim value ml_gtk_tree_model_filter_convert_iter_to_child_iter(value m,
+								   value it)
 {
   GtkTreeIter dst_it;
   gtk_tree_model_filter_convert_iter_to_child_iter(GtkTreeModelFilter_val(m),
-						   &dst_it, GtkTreeIter_val(it));
+						   &dst_it,
+						   GtkTreeIter_val(it));
   return Val_GtkTreeIter(&dst_it);
 }
 
