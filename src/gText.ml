@@ -179,7 +179,7 @@ class buffer_signals obj = object
      GtkSignal.connect ~sgn:GtkText.Buffer.Signals.remove_tag ~after obj
 end
 
-class buffer obj = object
+class buffer obj = object(self)
   inherit gtkobj (obj: Gtk.textbuffer obj)
   method as_buffer = obj
   method connect = new buffer_signals obj
@@ -207,8 +207,15 @@ class buffer obj = object
     GtkText.Buffer.delete_interactive obj start stop default_editable
   method set_text ?(length = (-1)) ~text () = 
     GtkText.Buffer.set_text obj text length
-  method get_text ?(include_hidden_chars=false) ~start ~stop () =
-    GtkText.Buffer.get_text obj start stop include_hidden_chars 
+  method get_text ?(include_hidden_chars=false) ?start ?stop () =
+    let start,stop = 
+      match start,stop with 
+	| None,None -> self#get_bounds ()
+	| Some start,None -> start,self#get_start_iter ()
+	| None,Some stop -> self#get_end_iter (),stop
+	| Some start,Some stop -> start,stop
+    in
+      GtkText.Buffer.get_text obj start stop include_hidden_chars 
   method get_slice ?(include_hidden_chars=false) ~start ~stop () =
     GtkText.Buffer.get_slice obj start stop include_hidden_chars 
   method insert_pixbuf ~iter ~pixbuf = GtkText.Buffer.insert_pixbuf obj iter pixbuf
@@ -298,16 +305,19 @@ class view obj = object
   inherit widget (obj : Gtk.textview obj)
   method event = new GObj.event_ops obj
   method connect = new view_signals obj
+  method as_view = obj
   method set_buffer (b:buffer) = GtkText.View.set_buffer obj (b#as_buffer)
   method get_buffer () = new buffer (GtkText.View.get_buffer obj)
-  method scroll_to_mark ?(within_margin=0.) ?(use_align=false)  ?(xalign=0.) ?(yalign=0.) mark =  
-    GtkText.View.scroll_to_mark obj mark within_margin use_align xalign yalign
+  method scroll_to_mark 
+    ?(within_margin=0.) ?(use_align=false)  
+    ?(xalign=0.) ?(yalign=0.) (mark:mark) =  
+    GtkText.View.scroll_to_mark obj mark#as_mark within_margin use_align xalign yalign
   method scroll_to_iter  ?(within_margin=0.) ?(use_align=false)  ?(xalign=0.) ?(yalign=0.) iter =
     GtkText.View.scroll_to_iter obj iter within_margin use_align xalign yalign
-  method scroll_mark_onscreen mark =  
-    GtkText.View.scroll_mark_onscreen obj mark
-  method move_mark_onscreen mark =  
-    GtkText.View.move_mark_onscreen obj mark
+  method scroll_mark_onscreen (mark:mark) =  
+    GtkText.View.scroll_mark_onscreen obj mark#as_mark
+  method move_mark_onscreen (mark:mark) =  
+    GtkText.View.move_mark_onscreen obj mark#as_mark
   method place_cursor_onscreen () =  
     GtkText.View.place_cursor_onscreen obj
   method get_visible_rect () = 

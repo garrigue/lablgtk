@@ -80,8 +80,25 @@ value Val_GtkTextIter(GtkTextIter* it){
 ML_2(gtk_text_mark_set_visible, GtkTextMark_val, Bool_val, Unit)
 ML_1(gtk_text_mark_get_visible, GtkTextMark_val, Val_bool)
 ML_1(gtk_text_mark_get_deleted, GtkTextMark_val, Val_bool)
-ML_1(gtk_text_mark_get_name, GtkTextMark_val, Val_string)
-ML_1(gtk_text_mark_get_buffer, GtkTextMark_val, Val_GtkTextBuffer)
+CAMLprim value ml_gtk_text_mark_get_name (value tm)
+{
+  CAMLparam1(tm);
+  CAMLlocal1(res);
+  const gchar* tmp;
+  tmp = gtk_text_mark_get_name(GtkTextMark_val(tm));
+  res = Val_option(tmp,Val_string);
+  CAMLreturn(res);
+}
+CAMLprim value ml_gtk_text_mark_get_buffer (value tm)
+{
+  CAMLparam1(tm);
+  CAMLlocal1(res);
+  GtkTextBuffer* tmp;
+  tmp = gtk_text_mark_get_buffer(GtkTextMark_val(tm));
+  res = Val_option(tmp,Val_GtkTextBuffer);
+  CAMLreturn(res);
+}
+
 ML_1(gtk_text_mark_get_left_gravity, GtkTextMark_val, Val_bool)
 
 /* gtktexttag */

@@ -23,8 +23,8 @@ module Mark = struct
     = "ml_gtk_text_mark_set_visible"
   external get_visible : textmark obj -> bool = "ml_gtk_text_mark_get_visible"
   external get_deleted : textmark obj -> bool = "ml_gtk_text_mark_get_deleted"
-  external get_name : textmark obj -> string = "ml_gtk_text_mark_get_name"
-  external get_buffer : textmark obj -> textbuffer obj 
+  external get_name : textmark obj -> string option = "ml_gtk_text_mark_get_name"
+  external get_buffer : textmark obj -> textbuffer obj option
     = "ml_gtk_text_mark_get_buffer"
   external get_left_gravity : textmark obj -> bool 
     = "ml_gtk_text_mark_get_left_gravity"
