@@ -140,7 +140,10 @@ class label_skel : 'a obj ->
     method set_line_wrap : bool -> unit
     method set_pattern : string -> unit
     method set_text : string -> unit
+    method set_markup : string -> unit
+    method set_markup_with_mnemonic : string -> unit
     method text : string
+    method label : string
   end
 
 class label : Gtk.label obj ->

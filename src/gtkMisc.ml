@@ -193,10 +193,12 @@ module Label = struct
   let cast w : label obj = Object.try_cast w "GtkLabel"
   external create : string -> label obj = "ml_gtk_label_new"
   external set_text : [>`label] obj -> string -> unit = "ml_gtk_label_set_text"
-  external set_justify : [>`label] obj -> justification -> unit
-      = "ml_gtk_label_set_justify"
+  external set_markup : [>`label] obj -> string -> unit = "ml_gtk_label_set_markup"
+  external set_markup_with_mnemonic : [>`label] obj -> string -> unit = "ml_gtk_label_set_markup"
   external set_pattern : [>`label] obj -> string -> unit
       = "ml_gtk_label_set_pattern"
+  external set_justify : [>`label] obj -> justification -> unit
+      = "ml_gtk_label_set_justify"
   external set_line_wrap : [>`label] obj -> bool -> unit
       = "ml_gtk_label_set_line_wrap"
   let set ?text ?justify ?line_wrap ?pattern w =
@@ -204,7 +206,8 @@ module Label = struct
     may ~f:(set_justify w) justify;
     may ~f:(set_line_wrap w) line_wrap;
     may ~f:(set_pattern w) pattern
-  external get_text : [>`label] obj -> string = "ml_gtk_label_get_label"
+  external get_label : [>`label] obj -> string = "ml_gtk_label_get_label"
+  external get_text : [>`label] obj -> string = "ml_gtk_label_get_text"
 end
 
 module TipsQuery = struct
