@@ -178,11 +178,9 @@ let new_aspect_frame ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child =
   Frame.setter ?w ?label:None
     ?cont:(Container.setter ?cont:(pack_return (new aspect_frame)))
 
-class item obj = object
-  inherit container obj
-  method select = Item.select obj
-  method deselect = Item.deselect obj
-  method toggle = Item.toggle obj
+class type ['a] item = object
+  inherit container
+  method item : 'a obj
 end
 
 class item_signals obj = object
@@ -193,7 +191,11 @@ class item_signals obj = object
 end
 
 class list_item obj = object
-  inherit item obj
+  inherit container obj
+  method item : ListItem.t obj = obj
+  method select = Item.select obj
+  method deselect = Item.deselect obj
+  method toggle = Item.toggle obj
   method connect = new item_signals obj
 end
 
@@ -201,15 +203,21 @@ let new_list_item ?opt ?:label =
   Container.setter ?(ListItem.create ?opt ?:label)
     ?cont:(pack_return (new list_item))
 
+class type menup = object
+  method menu : Menu.t obj
+end
+
 class menu_item_skel obj = object
   inherit container obj
-  method set_submenu : 'a. (#framed as 'a) -> unit =
-    fun w -> MenuItem.set_submenu obj w#frame
+  method item = MenuItem.coerce obj
+  method set_submenu : 'a. (#menup as 'a) -> unit =
+    fun w -> MenuItem.set_submenu obj w#menu
   method remove_submenu = MenuItem.remove_submenu obj
-  method accelerator_text = MenuItem.accelerator_text obj
   method configure = MenuItem.configure obj
   method activate = MenuItem.activate obj
   method right_justify = MenuItem.right_justify obj
+  method install_accelerator =
+    Widget.install_accelerator obj sig:MenuItem.Signals.activate
 end
 
 class menu_item_signals obj = object
@@ -223,8 +231,8 @@ class menu_item obj = object
 end
 
 let new_menu_item ?opt ?:label =
-  MenuItem.setter ?(MenuItem.create ?opt ?:label)
-    ?cont:(Container.setter ?cont:(pack_return (new menu_item)))
+  Container.setter ?(MenuItem.create ?opt ?:label)
+    ?cont:(pack_return (new menu_item))
 
 class check_menu_item_signals obj = object
   inherit menu_item_signals obj
@@ -241,9 +249,7 @@ end
 
 let new_check_menu_item ?opt ?:label =
   CheckMenuItem.setter ?(CheckMenuItem.create ?opt ?:label)
-    ?cont:(MenuItem.setter
-	     ?cont:(Container.setter
-		      ?cont:(pack_return (new check_menu_item))))
+    ?cont:(Container.setter ?cont:(pack_return (new check_menu_item)))
 
 class radio_menu_item obj = object
   inherit check_menu_item obj
@@ -253,9 +259,7 @@ end
 
 let new_radio_menu_item ?opt ?:group ?:label =
   CheckMenuItem.setter ?(RadioMenuItem.create ?opt ?:group ?:label)
-    ?cont:(MenuItem.setter
-	     ?cont:(Container.setter
-		      ?cont:(pack_return (new radio_menu_item))))
+    ?cont:(Container.setter ?cont:(pack_return (new radio_menu_item)))
 
 class tree_item_signals obj = object
   inherit item_signals obj
@@ -265,6 +269,7 @@ end
 
 class tree_item obj = object
   inherit container obj
+  method item : TreeItem.t obj = obj
   method connect = new tree_item_signals obj
   method set_subtree : 'a. (#framed as 'a) -> unit =
     fun w -> TreeItem.set_subtree obj w#frame
@@ -421,12 +426,18 @@ class menu_shell_signals obj = object
 end
 
 class menu_shell obj = object
-  inherit container obj
-  method append : 'a. (#framed as 'a) -> unit =
+  inherit widget obj
+  method remove : 'b. (MenuItem.t #item as 'b) -> unit =
+    fun w -> Container.remove obj w#item
+  method children =
+    List.map (Container.children obj)
+      fun:(fun w -> new widget (MenuItem.cast w))
+  method set_size ?:border = Container.set ?obj ?border_width:border
+  method append : 'a. (MenuItem.t #item as 'a) -> unit =
     fun w -> MenuShell.append obj w#frame
-  method prepend : 'a. (#framed as 'a) -> unit =
+  method prepend : 'a. (MenuItem.t #item as 'a) -> unit =
     fun w -> MenuShell.prepend obj w#frame
-  method insert : 'a. (#framed as 'a) -> _ =
+  method insert : 'a. (MenuItem.t #item as 'a) -> _ =
     fun w -> MenuShell.insert obj w#frame
   method deactivate = MenuShell.deactivate obj
   method connect = new menu_shell_signals obj
@@ -434,7 +445,6 @@ end
 
 class menu obj = object
   inherit menu_shell obj
-  method set_accelerator_table = Menu.set_accelerator_table obj
   method popup = Menu.popup obj
   method popdown () = Menu.popdown obj
   method menu : Menu.t obj = obj
@@ -442,6 +452,38 @@ end
 
 let new_menu ?(_ : unit option) =
   Container.setter ?(Menu.create ()) ?cont:(pack_return (new menu))
+
+class ['a] menu_factory (menu : 'a)
+    ?:table [< AcceleratorTable.create () >] ?mod:m [< [`CONTROL] >] =
+  object (self)
+    val menu : #menu_shell = menu
+    val table = table
+    val m = m
+    method menu = menu
+    method table = table
+    method private bind (item : menu_item) ?:key ?:callback =
+      menu#append item;
+      may key fun:(fun key -> item#install_accelerator table :key mod:m);
+      may callback fun:(fun callback -> item#connect#activate :callback)
+    method add_item :label ?:key ?:callback ?:submenu =
+      let item = new_menu_item :label in
+      self#bind item ?:key ?:callback;
+      may (submenu : menu option) fun:item#set_submenu;
+      item
+    method add_check_item :label ?:state ?:key ?:callback =
+      let item = new_check_menu_item :label ?:state in
+      self#bind (item :> menu_item) ?:key ?:callback;
+      item
+    method add_radio_item :label ?:group ?:state ?:key ?:callback =
+      let item = new_radio_menu_item :label ?:group ?:state in
+      self#bind (item :> menu_item) ?:key ?:callback;
+      item
+    method add_separator () = new_menu_item packing:menu#append
+    method add_submenu :label ?:key =
+      let item = new_menu_item :label in
+      self#bind item ?:key;
+      new_menu packing:item#set_submenu
+end
 
 class option_menu obj = object
   inherit button obj
