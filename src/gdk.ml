@@ -204,6 +204,15 @@ module PointArray = struct
     set arr ~pos
 end
 
+module SegmentArray = struct
+  type t = { len: int}
+  external create : len:int -> t = "ml_segment_array_new"
+  external set : t -> pos:int -> x1:int -> y1:int -> x2:int -> y2: int -> unit = "ml_segment_array_set_bc" "ml_segment_array_set"
+  let set arr ~pos =
+    if pos < 0 || pos >= arr.len then invalid_arg "SegmentArray.set";
+    set arr ~pos
+end
+
 module Region = struct
   type gdkFillRule = [ `EVEN_ODD_RULE|`WINDING_RULE ]
   type gdkOverlapType = [ `IN|`OUT|`PART ]
@@ -353,14 +362,32 @@ module Draw = struct
     arc w gc ~x ~y ~width ~height ~filled
       ~start:(truncate(start *. 64.))
       ~angle:(truncate(angle *. 64.))
+
+  let f_pointarray f l = 
+    let array_of_points l =
+      let len = List.length l in
+      let arr = PointArray.create ~len in
+      List.fold_left l ~init:0
+      	~f:(fun pos (x,y) -> PointArray.set arr ~pos ~x ~y; pos+1);
+      arr
+    in
+    f (array_of_points l)
+
+  let f_segmentarray f l = 
+    let array_of_segments l =
+      let len = List.length l in
+      let arr = SegmentArray.create ~len in
+      List.fold_left l ~init:0
+      	~f:(fun pos ((x1,y1),(x2,y2)) -> 
+	  SegmentArray.set arr ~pos ~x1 ~y1 ~x2 ~y2; pos+1);
+      arr
+    in
+    f (array_of_segments l)
+
   external polygon : 'a drawable -> gc -> filled:bool -> PointArray.t -> unit
       = "ml_gdk_draw_polygon"
   let polygon w gc ?(filled=false) l =
-    let len = List.length l in
-    let arr = PointArray.create ~len in
-    List.fold_left l ~init:0
-      ~f:(fun pos (x,y) -> PointArray.set arr ~pos ~x ~y; pos+1);
-    polygon w gc ~filled arr
+    f_pointarray (polygon w gc ~filled) l
   external string : 'a drawable -> font: font -> gc -> x: int -> y: int ->
     string: string -> unit
       = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"	
@@ -378,6 +405,16 @@ module Draw = struct
     xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
     width: int -> height: int -> unit
       = "ml_gdk_draw_pixmap_bc" "ml_gdk_draw_pixmap"
+
+  external points : 'a drawable -> gc -> PointArray.t -> unit
+      = "ml_gdk_draw_points"
+  let points w gc l = f_pointarray (points w gc) l
+  external lines : 'a drawable -> gc -> PointArray.t -> unit
+      = "ml_gdk_draw_lines"
+  let lines w gc l = f_pointarray (lines w gc) l
+  external segments : 'a drawable -> gc -> SegmentArray.t -> unit
+      = "ml_gdk_draw_segments"
+  let segments w gc l = f_segmentarray (segments w gc) l
 end
 
 module Rgb = struct

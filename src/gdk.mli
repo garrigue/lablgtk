@@ -337,6 +337,10 @@ module Draw :
       xsrc:int ->
       ysrc:int -> xdest:int -> ydest:int -> width:int -> height:int -> unit
       = "ml_gdk_draw_pixmap_bc" "ml_gdk_draw_pixmap"
+
+    val points : 'a drawable -> gc -> (int * int) list -> unit
+    val lines : 'a drawable -> gc -> (int * int) list -> unit
+    val segments : 'a drawable -> gc -> ((int * int) * (int * int)) list -> unit
   end
 
 module Rgb :

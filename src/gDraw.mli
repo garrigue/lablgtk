@@ -57,6 +57,9 @@ class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
       ?cap:GC.gdkCapStyle -> ?join:GC.gdkJoinStyle -> unit -> unit
     method size : int * int
     method string : string -> font:font -> x:int -> y:int -> unit
+    method points : (int * int) list -> unit
+    method lines : (int * int) list -> unit
+    method segments : ((int * int) * (int * int)) list -> unit
   end
 
 class pixmap :
