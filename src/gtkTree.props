@@ -209,3 +209,27 @@ class TreeModelFilter : GObject {
   method refilter
   (* method clear_cache *)
 }
+
+
+class IconView set wrap wrapsig : Container {
+  "markup-column"        gint                  : Read / Write / NoWrap / NoSet
+  "model"                GtkTreeModel          : Read / Write / NoWrap
+  "orientation"          GtkOrientation        : Read / Write
+  "pixbuf-column"        gint                  : Read / Write / NoWrap / NoSet
+  "selection-mode"       GtkSelectionMode      : Read / Write
+  "text-column"          gint                  : Read / Write / NoWrap / NoSet
+
+  signal item_activated : GtkTreePath
+  signal selection_changed
+  (* signal set_scroll_adjustments : GtkAdjustment GtkAdjustment *)
+
+  method get_path_at_pos : "int -> int -> Gtk.tree_path"
+  method selected_foreach : "(Gtk.tree_path -> unit) -> unit"
+  method select_path : "Gtk.tree_path -> unit"
+  method unselect_path : "Gtk.tree_path -> unit"
+  method path_is_selected : "Gtk.tree_path -> bool"
+  method get_selected_items : "Gtk.tree_path list"
+  method select_all
+  method unselect_all
+  method item_activated : "Gtk.tree_path -> unit"
+}

@@ -337,3 +337,5 @@ module TreeModelSort = TreeModelSort
 module TreeSortable = TreeSortable
 
 module TreeModelFilter = TreeModelFilter
+
+module IconView = IconView

@@ -572,3 +572,63 @@ val cell_renderer_progress : cell_properties_progress list -> cell_renderer_prog
 (** @since GTK 2.6 
     @gtkdoc gtk GtkCellRendererCombo *)
 val cell_renderer_combo : cell_properties_combo list -> cell_renderer_combo
+
+(** {3 GtkIconView} *)
+
+(** @gtkdoc gtk GtkIconView
+    @since GTK 2.6 *)
+class icon_view_signals : [> Gtk.icon_view] Gtk.obj ->
+  object
+    inherit GContainer.container_signals
+    method item_activated : callback:(Gtk.tree_path -> unit) -> GtkSignal.id
+    method selection_changed : callback:(unit -> unit) -> GtkSignal.id
+  end
+
+(** A widget which displays a list of icons in a grid
+    @gtkdoc gtk GtkIconView
+    @since GTK 2.6 *)
+class icon_view :
+  ([> Gtk.icon_view] as 'a) Gtk.obj ->
+  object
+    inherit GContainer.container
+    val obj : 'a Gtk.obj
+    method connect : icon_view_signals
+    method event : GObj.event_ops
+
+    (** Properties *)
+
+    method model : model
+    method set_model : model -> unit
+    method set_markup_column : string column -> unit
+    method set_pixbuf_column : GdkPixbuf.pixbuf column -> unit
+    method set_text_column : string column -> unit
+    method orientation : GtkEnums.orientation
+    method set_orientation : GtkEnums.orientation -> unit
+    method selection_mode : GtkEnums.selection_mode
+    method set_selection_mode : GtkEnums.selection_mode -> unit
+
+    method get_path_at_pos : int -> int -> Gtk.tree_path
+    method selected_foreach : (Gtk.tree_path -> unit) -> unit
+    method get_selected_items : Gtk.tree_path list
+    method path_is_selected : Gtk.tree_path -> bool
+    method select_path : Gtk.tree_path -> unit
+    method unselect_path : Gtk.tree_path -> unit
+    method select_all : unit -> unit
+    method unselect_all : unit -> unit
+
+    method item_activated : Gtk.tree_path -> unit
+  end
+
+(** A widget which displays a list of icons in a grid
+    @gtkdoc gtk GtkIconView
+    @since GTK 2.6 *)
+val icon_view :
+  ?model:#model ->
+  ?orientation:GtkEnums.orientation ->
+  ?selection_mode:GtkEnums.selection_mode ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) ->
+  ?show:bool ->
+  unit -> icon_view

@@ -553,3 +553,43 @@ let cell_renderer_progress l =
 let cell_renderer_combo l =
   new cell_renderer_combo
     (CellRendererCombo.create (List.map cell_renderer_combo_param' l))
+
+
+class icon_view_signals obj = object (self)
+  inherit container_signals_impl obj
+  inherit OgtkTreeProps.icon_view_sigs
+end
+
+class icon_view obj = object
+  inherit [[> Gtk.icon_view]] GContainer.container_impl obj
+  inherit OgtkTreeProps.icon_view_props
+
+  method connect = new icon_view_signals obj
+  method event = new GObj.event_ops obj
+
+  method model =
+    new model (Gobject.get IconView.P.model obj)
+  method set_model (m : model) =
+    Gobject.set IconView.P.model obj m#as_model
+  method set_markup_column (c : string column) =
+    Gobject.set IconView.P.markup_column obj c.index
+  method set_text_column (c : string column) =
+    Gobject.set IconView.P.text_column obj c.index
+  method set_pixbuf_column (c : GdkPixbuf.pixbuf column) =
+    Gobject.set IconView.P.pixbuf_column obj c.index
+
+  method get_path_at_pos = IconView.get_path_at_pos obj
+  method selected_foreach = IconView.selected_foreach obj
+  method select_path = IconView.select_path obj
+  method unselect_path = IconView.unselect_path obj
+  method path_is_selected = IconView.path_is_selected obj
+  method get_selected_items = IconView.get_selected_items obj
+  method select_all () = IconView.select_all obj
+  method unselect_all () = IconView.unselect_all obj
+  method item_activated = IconView.item_activated obj
+end
+
+let icon_view ?model =
+  let model = Gaux.may_map (fun m -> m#as_model) model in
+  IconView.make_params ?model [] ~cont:(
+  GContainer.pack_container ~create:(fun p -> new icon_view (IconView.create p)))
