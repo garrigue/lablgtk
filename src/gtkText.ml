@@ -5,27 +5,27 @@ open Tags
 open GtkBase
 
 (* This function helps one to guess the type of the arguments of signals *)
-
 let marshal_what f _ = function 
   | `OBJECT _ :: _  -> invalid_arg "OBJECT"
   | `BOOL _ ::_ -> invalid_arg "BOOL"  
-  | `CHAR _::_       -> invalid_arg "CHAR"
-  | `FLOAT _::_      -> invalid_arg "FLOAT"
-  | `INT _::_      -> invalid_arg "INT"
-  | `INT64 _::_      -> invalid_arg "INT64"
-  | `NONE::_      -> invalid_arg "NONE"
-  | `POINTER _::_       -> invalid_arg "POINTER"
-  | `STRING _::_      -> invalid_arg "STRING"
+  | `CHAR _::_ -> invalid_arg "CHAR"
+  | `FLOAT _::_ -> invalid_arg "FLOAT"
+  | `INT _::_ -> invalid_arg "INT"
+  | `INT64 _::_ -> invalid_arg "INT64"
+  | `NONE::_ -> invalid_arg "NONE"
+  | `POINTER _::_ -> invalid_arg "POINTER"
+  | `STRING _::_  -> invalid_arg "STRING"
   | [] -> invalid_arg "NO ARGUMENTS"
 
 module Mark = struct
   let cast w : textmark obj = Object.try_cast w "GtkTextMark"
+  exception No_such_mark of string
   external set_visible : textmark obj -> bool -> unit 
     = "ml_gtk_text_mark_set_visible"
   external get_visible : textmark obj -> bool = "ml_gtk_text_mark_get_visible"
   external get_deleted : textmark obj -> bool = "ml_gtk_text_mark_get_deleted"
-  external get_name : textmark obj -> string = "ml_gtk_text_mark_get_name"
-  external get_buffer : textmark obj -> textbuffer obj 
+  external get_name : textmark obj -> string option = "ml_gtk_text_mark_get_name"
+  external get_buffer : textmark obj -> textbuffer obj option
     = "ml_gtk_text_mark_get_buffer"
   external get_left_gravity : textmark obj -> bool 
     = "ml_gtk_text_mark_get_left_gravity"
@@ -37,183 +37,196 @@ module Tag = struct
   external get_priority : texttag obj -> int = "ml_gtk_text_tag_get_priority"
   external set_priority : texttag obj -> int -> unit 
     = "ml_gtk_text_tag_set_priority"
-  external event : texttag obj -> 'a obj ->  'a Gdk.event -> textiter -> bool
+  external event : texttag obj -> 'a obj ->  'b Gdk.event -> textiter -> bool
     = "ml_gtk_text_tag_event"
   type property = 
-    | Name of string
-    | Background of string
-    | Foreground of string 
-    | Background_gdk of GDraw.color
-    | Foreground_gdk of  GDraw.color
-    | Background_stipple of Gdk.pixmap
-    | Foreground_stipple of Gdk.pixmap
-    | Font of string
-	(*    | Font_desc of Pango.Font.description *)
-    | Family of string
-	(*    | Style of Pango.style 
-	      | Variant of Pango.variant *)
-    | Weight of int
-	(*    | Stretch of Pango.stretch *)
-    | Size of int
-    | Size_points of float
-    | Scale of float
-    | Pixels_above_lines of int
-    | Pixels_below_lines of int
-    | Pixels_inside_wrap of int
-    | Editable of bool
-    | Wrap_mode of Gtk.Tags.wrap_mode
-    | Justification of Gtk.Tags.justification
-    | Direction of Gtk.Tags.text_direction
-    | Left_margin of int
-    | Indent of int
-    | Strikethrough of bool
-    | Right_margin of int
-	(*    | Underline of Pango.underline *)
-    | Rise of int
-    | Background_full_height of bool
-    | Language of string
-	(*    | Tabs of Pango.TabArray.t *)
-    | Invisible of bool
-    | Background_set of bool
-    | Foreground_set of bool
-    | Background_stipple_set of bool
-    | Foreground_stipple_set of bool
-    | Family_set of bool
-    | Style_set of bool
-    | Variant_set of bool 
-    | Weight_set of bool
-    | Stretch_set of bool
-    | Size_set of bool             
-    | Scale_set of bool            
-    | Pixels_above_lines_set of bool 
-    | Pixels_below_lines_set of bool 
-    | Pixels_inside_wrap_set of bool 
-    | Editable_set of bool         
-    | Wrap_mode_set of bool        
-    | Justification_set of bool    
-    | Left_margin_set of bool      
-    | Indent_set of bool
-    | Strikethrough_set of bool    
-    | Right_margin_set of bool     
-    | Underline_set of bool        
-    | Rise_set of bool             
-    | Background_full_height_set of bool 
-    | Language_set of bool         
-    | Tabs_set of bool             
-    | Invisible_set of bool
+      [ | `NAME of string
+      | `BACKGROUND of string
+      | `FOREGROUND of string 
+      | `BACKGROUND_GDK of GDraw.color
+      | `FOREGROUND_GDK of  GDraw.color
+      | `BACKGROUND_STIPPLE of Gdk.pixmap
+      | `FOREGROUND_STIPPLE of Gdk.pixmap
+      | `FONT of string
+      | `FONT_DESC of Pango.Font.description
+      | `FAMILY of string
+	  (*    | `STYLE of Pango.style 
+		| `VARIANT of Pango.variant *)
+      | `WEIGHT of int
+	  (*    | `STRETCH of Pango.stretch *)
+      | `SIZE of int
+      | `SIZE_POINTS of float
+      | `SCALE of float
+      | `PIXELS_ABOVE_LINES of int
+      | `PIXELS_BELOW_LINES of int
+      | `PIXELS_INSIDE_WRAP of int
+      | `EDITABLE of bool
+      | `WRAP_MODE of Gtk.Tags.wrap_mode
+      | `JUSTIFICATION of Gtk.Tags.justification
+      | `DIRECTION of Gtk.Tags.text_direction
+      | `LEFT_MARGIN of int
+      | `INDENT of int
+      | `STRIKETHROUGH of bool
+      | `RIGHT_MARGIN of int
+	  (*    | `UNDERLINE of Pango.underline *)
+      | `RISE of int
+      | `BACKGROUND_FULL_HEIGHT of bool
+      | `LANGUAGE of string
+	  (*    | `TABS of Pango.TabArray.t *)
+      | `INVISIBLE of bool
+      | `BACKGROUND_SET of bool
+      | `FOREGROUND_SET of bool
+      | `BACKGROUND_STIPPLE_SET of bool
+      | `FOREGROUND_STIPPLE_SET of bool
+      | `FAMILY_SET of bool
+      | `STYLE_SET of bool
+      | `VARIANT_SET of bool 
+      | `WEIGHT_SET of bool
+      | `STRETCH_SET of bool
+      | `SIZE_SET of bool             
+      | `SCALE_SET of bool            
+      | `PIXELS_ABOVE_LINES_SET of bool 
+      | `PIXELS_BELOW_LINES_SET of bool 
+      | `PIXELS_INSIDE_WRAP_SET of bool 
+      | `EDITABLE_SET of bool         
+      | `WRAP_MODE_SET of bool        
+      | `JUSTIFICATION_SET of bool    
+      | `LEFT_MARGIN_SET of bool      
+      | `INDENT_SET of bool
+      | `STRIKETHROUGH_SET of bool    
+      | `RIGHT_MARGIN_SET of bool     
+      | `UNDERLINE_SET of bool        
+      | `RISE_SET of bool             
+      | `BACKGROUND_FULL_HEIGHT_SET of bool 
+      | `LANGUAGE_SET of bool         
+      | `TABS_SET of bool             
+      | `INVISIBLE_SET of bool
+      ]
+  let property_to_string (p:property) = match p with
+    | `NAME _ -> "name"
+    | `BACKGROUND _ -> "background"
+    | `FOREGROUND _ -> "foreground"
+    | `BACKGROUND_GDK _ -> "background-gdk"
+    | `FOREGROUND_GDK _ -> "foreground-gdk"
+    | `BACKGROUND_STIPPLE _ -> "background-stipple"
+    | `FOREGROUND_STIPPLE _ -> "foreground-stipple"
+    | `FONT _ -> "font"
+    | `FONT_DESC _ -> "font-desc"
+    | `FAMILY _ -> "family"
+	(*    | `STYLE _ -> "style"
+	      | `VARIANT _ -> "variant" *)
+    | `WEIGHT _ -> "weight"
+	(*    | `STRETCH _ -> "stretch" *)
+    | `SIZE _ -> "size"
+    | `SIZE_POINTS _ -> "size-points"
+    | `SCALE _ -> "scale"
+    | `PIXELS_ABOVE_LINES _ -> "pixels-above-lines"
+    | `PIXELS_BELOW_LINES _ -> "pixels-below-lines"
+    | `PIXELS_INSIDE_WRAP _ -> "pixels-inside-wrap"
+    | `EDITABLE _ -> "editable"
+    | `WRAP_MODE _ -> "wrap-mode"
+    | `JUSTIFICATION _ -> "justification"
+    | `DIRECTION _ -> "direction"
+    | `LEFT_MARGIN _ -> "left-margin"
+    | `INDENT _ -> "indent"
+    | `STRIKETHROUGH _ -> "strikethrough"
+    | `RIGHT_MARGIN _ -> "right-margin"
+	(*    | `UNDERLINE _ -> "underline" *)
+    | `RISE _ -> "rise"
+    | `BACKGROUND_FULL_HEIGHT _ -> "background-full-height"
+    | `LANGUAGE _ -> "language"
+	(*    | `TABS _ -> "tabs" *)
+    | `INVISIBLE _ -> "invisible"
+    | `BACKGROUND_SET _ -> "background-set"
+    | `FOREGROUND_SET _ -> "foreground-set"
+    | `BACKGROUND_STIPPLE_SET _ -> "background-stipple-set"
+    | `FOREGROUND_STIPPLE_SET _ -> "foreground-stipple-set"
+    | `FAMILY_SET _ -> "family-set"
+    | `STYLE_SET _ -> "style-set"
+    | `VARIANT_SET _ -> "variant-set" 
+    | `WEIGHT_SET _ -> "weight-set"
+    | `STRETCH_SET _ -> "stretch-set"
+    | `SIZE_SET _ -> "size-set"
+    | `SCALE_SET _ -> "scale-set"
+    | `PIXELS_ABOVE_LINES_SET _ -> "pixels-above-lines-set"
+    | `PIXELS_BELOW_LINES_SET _ -> "pixels-below-lines-set"
+    | `PIXELS_INSIDE_WRAP_SET _ -> "pixels-inside-wrap-set"
+    | `EDITABLE_SET _ -> "editable-set"
+    | `WRAP_MODE_SET _ -> "wrap-mode-set"
+    | `JUSTIFICATION_SET _ -> "justification-set"
+    | `LEFT_MARGIN_SET _ -> "left-margin-set"
+    | `INDENT_SET _ -> "indent-set"
+    | `STRIKETHROUGH_SET _ -> "strikethrough-set"
+    | `RIGHT_MARGIN_SET _ -> "right-margin-set"
+    | `UNDERLINE_SET _ -> "underline-set"
+    | `RISE_SET _ -> "rise-set"
+    | `BACKGROUND_FULL_HEIGHT_SET _ -> "background-full-height-set"
+    | `LANGUAGE_SET _ -> "language-set"
+    | `TABS_SET _ -> "tabs-set"
+    | `INVISIBLE_SET _ -> "invisible-set"
 
-  let property_to_string p = match p with
-    | Name _ -> "name"
-    | Background _ -> "background"
-    | Foreground _ -> "foreground"
-    | Background_gdk _ -> "background-gdk"
-    | Foreground_gdk _ -> "foreground-gdk"
-    | Background_stipple _ -> "background-stipple"
-    | Foreground_stipple _ -> "foreground-stipple"
-    | Font _ -> "font"
-	(*    | Font_desc _ -> "font-desc" *)
-    | Family _ -> "family"
-	(*    | Style _ -> "style"
-	      | Variant _ -> "variant" *)
-    | Weight _ -> "weight"
-	(*    | Stretch _ -> "stretch" *)
-    | Size _ -> "size"
-    | Size_points _ -> "size-points"
-    | Scale _ -> "scale"
-    | Pixels_above_lines _ -> "pixels-above-lines"
-    | Pixels_below_lines _ -> "pixels-below-lines"
-    | Pixels_inside_wrap _ -> "pixels-inside-wrap"
-    | Editable _ -> "editable"
-    | Wrap_mode _ -> "wrap-mode"
-    | Justification _ -> "justification"
-    | Direction _ -> "direction"
-    | Left_margin _ -> "left-margin"
-    | Indent _ -> "indent"
-    | Strikethrough _ -> "strikethrough"
-    | Right_margin _ -> "right-margin"
-	(*    | Underline _ -> "underline" *)
-    | Rise _ -> "rise"
-    | Background_full_height _ -> "background-full-height"
-    | Language _ -> "language"
-	(*    | Tabs _ -> "tabs" *)
-    | Invisible _ -> "invisible"
-    | Background_set _ -> "background-set"
-    | Foreground_set _ -> "foreground-set"
-    | Background_stipple_set _ -> "background-stipple-set"
-    | Foreground_stipple_set _ -> "foreground-stipple-set"
-    | Family_set _ -> "family-set"
-    | Style_set _ -> "style-set"
-    | Variant_set _ -> "variant-set" 
-    | Weight_set _ -> "weight-set"
-    | Stretch_set _ -> "stretch-set"
-    | Size_set _ -> "size-set"
-    | Scale_set _ -> "scale-set"
-    | Pixels_above_lines_set _ -> "pixels-above-lines-set"
-    | Pixels_below_lines_set _ -> "pixels-below-lines-set"
-    | Pixels_inside_wrap_set _ -> "pixels-inside-wrap-set"
-    | Editable_set _ -> "editable-set"
-    | Wrap_mode_set _ -> "wrap-mode-set"
-    | Justification_set _ -> "justification-set"
-    | Left_margin_set _ -> "left-margin-set"
-    | Indent_set _ -> "indent-set"
-    | Strikethrough_set _ -> "strikethrough-set"
-    | Right_margin_set _ -> "right-margin-set"
-    | Underline_set _ -> "underline-set"
-    | Rise_set _ -> "rise-set"
-    | Background_full_height_set _ -> "background-full-height-set"
-    | Language_set _ -> "language-set"
-    | Tabs_set _ -> "tabs-set"
-    | Invisible_set _ -> "invisible-set"
-
-  let set_property o p = match p with 
-    | Name s | Background s | Foreground s | Font s | Family s 
-    | Language s -> 
+  let set_property o (p:property) = match p with 
+    | `NAME s | `BACKGROUND s | `FOREGROUND s | `FONT s | `FAMILY s 
+    | `LANGUAGE s -> 
 	let gtyp = Gobject.Type.of_fundamental `STRING in 
 	let v = Gobject.Value.create gtyp in 
-	  Gobject.Value.set v (`STRING (Some s)); 
-	  Gobject.set_property o (property_to_string p) v 
-    | Editable b | Strikethrough b | Background_full_height b 
-    | Invisible b | Background_set b | Foreground_set b 
-    | Background_stipple_set b | Foreground_stipple_set b 
-    | Family_set b | Style_set b | Variant_set b
-    | Weight_set b | Stretch_set b | Size_set b | Scale_set b
-    | Pixels_above_lines_set b | Pixels_below_lines_set b 
-    | Pixels_inside_wrap_set b | Editable_set b | Wrap_mode_set b 
-    | Justification_set b | Left_margin_set b | Indent_set b 
-    | Strikethrough_set b | Right_margin_set b | Underline_set b 
-    | Rise_set b | Background_full_height_set b | Language_set b 
-    | Tabs_set b | Invisible_set b -> 
+	Gobject.Value.set v (`STRING (Some s)); 
+	Gobject.set_property o (property_to_string p) v 
+    | `EDITABLE b | `STRIKETHROUGH b | `BACKGROUND_FULL_HEIGHT b 
+    | `INVISIBLE b | `BACKGROUND_SET b | `FOREGROUND_SET b 
+    | `BACKGROUND_STIPPLE_SET b | `FOREGROUND_STIPPLE_SET b 
+    | `FAMILY_SET b | `STYLE_SET b | `VARIANT_SET b
+    | `WEIGHT_SET b | `STRETCH_SET b | `SIZE_SET b | `SCALE_SET b
+    | `PIXELS_ABOVE_LINES_SET b | `PIXELS_BELOW_LINES_SET b 
+    | `PIXELS_INSIDE_WRAP_SET b | `EDITABLE_SET b | `WRAP_MODE_SET b 
+    | `JUSTIFICATION_SET b | `LEFT_MARGIN_SET b | `INDENT_SET b 
+    | `STRIKETHROUGH_SET b | `RIGHT_MARGIN_SET b | `UNDERLINE_SET b 
+    | `RISE_SET b | `BACKGROUND_FULL_HEIGHT_SET b | `LANGUAGE_SET b 
+    | `TABS_SET b | `INVISIBLE_SET b -> 
 	let gtyp = Gobject.Type.of_fundamental `BOOLEAN in 
 	let v = Gobject.Value.create gtyp in 
-	  Gobject.Value.set v (`BOOL b); 
-	  Gobject.set_property o (property_to_string p) v 
-	    
-    | Rise b | Right_margin b | Indent b | Left_margin b 
-    | Pixels_inside_wrap b 
-    | Pixels_below_lines b | Pixels_above_lines b 
-    | Size b | Weight b ->
+	Gobject.Value.set v (`BOOL b);
+	Gobject.set_property o (property_to_string p) v 
+	  
+    | `RISE b | `RIGHT_MARGIN b | `INDENT b | `LEFT_MARGIN b 
+    | `PIXELS_INSIDE_WRAP b 
+    | `PIXELS_BELOW_LINES b | `PIXELS_ABOVE_LINES b 
+    | `SIZE b | `WEIGHT b ->
 	let gtyp = Gobject.Type.of_fundamental `INT in 
 	let v = Gobject.Value.create gtyp in 
-	  Gobject.Value.set v (`INT b); 
-	  Gobject.set_property o (property_to_string p) v 
-    | Size_points b | Scale b   -> 
+	Gobject.Value.set v (`INT b); 
+	Gobject.set_property o (property_to_string p) v 
+    | `SIZE_POINTS b | `SCALE b   -> 
 	let gtyp = Gobject.Type.of_fundamental `FLOAT in 
 	let v = Gobject.Value.create gtyp in 
-	  Gobject.Value.set v (`FLOAT b); 
-	  Gobject.set_property o (property_to_string p) v 
-    | Foreground_stipple b | Background_stipple b ->
-	assert false
-    | Foreground_gdk b | Background_gdk b  -> assert false
-    | Wrap_mode b  -> assert false
-    | Direction b  -> assert false
-    | Justification b -> assert false
+	Gobject.Value.set v (`FLOAT b); 
+	Gobject.set_property o (property_to_string p) v 
+    | `FOREGROUND_STIPPLE b | `BACKGROUND_STIPPLE b -> assert false
+    | `FOREGROUND_GDK b | `BACKGROUND_GDK b  -> assert false
+    | `WRAP_MODE b  -> assert false;
+	let gtyp = Gobject.Type.from_name "GtkWrapMode" in 
+	let v = Gobject.Value.create gtyp in 
+	Gobject.Value.set 
+	  v 
+	  (`INT (Obj.magic b)); (* some lookup is needed to translate...*) 
+	Gobject.set_property o (property_to_string p) v 
+
+    | `DIRECTION b  -> assert false
+    | `JUSTIFICATION b -> assert false
+    | `FONT_DESC f ->
+	let gtyp = Gobject.Type.from_name "PangoFontDescription" in 
+	let v = Gobject.Value.create gtyp in 
+	Gobject.Value.set 
+	  v 
+	  (`POINTER (Some (Obj.magic (Pango.Font.copy f))));
+	(* Copying the font is COMPULSARY. 
+	   Otherwise it's freed by the value itself...*)
+	Gobject.set_property o (property_to_string p) v
   module Signals = struct
     open GtkSignal
-    let marshal_event f _ = function 
+    let marshal_event f _ = function
       |`OBJECT(Some p)::`POINTER(Some ev)::`POINTER(Some ti)::_ ->
-	 f (* Don't know how to cast those safely...
-	      (Obj.magic p: 'a obj) (Obj.magic ev: 'a Gdk.event) 
-	   *)
+	 f ~origin:p (GdkEvent.unsafe_copy ev : GdkEvent.any)
 	  (Obj.magic ti:textiter)
       | _ -> invalid_arg "GtkText.Tag.Signals.marshal_event"
 	  
@@ -229,7 +242,43 @@ end
 module TagTable = struct
   let cast w : texttagtable obj = Object.try_cast w "GtkTextTagTable"
   external create : unit -> texttagtable obj = "ml_gtk_text_tag_table_new"
+  external add : texttagtable obj -> texttag obj -> unit = "ml_gtk_text_tag_table_add"
+  external remove : texttagtable obj -> texttag obj -> unit = "ml_gtk_text_tag_table_remove"
+  external lookup : texttagtable obj -> string -> (texttag obj) option 
+    = "ml_gtk_text_tag_table_add"
   external get_size : texttagtable obj -> int = "ml_gtk_text_tag_table_get_size"
+  module Signals = struct
+  open GtkSignal
+
+  let marshal_texttag f _ = function 
+    |`OBJECT(Some p)::_ ->
+       f (Obj.magic p:texttag)
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_texttag"
+
+  let marshal_tag_changed f _ = function 
+    | `OBJECT(Some p)::`BOOL b::_ ->
+       f (Obj.magic p:texttag) b
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_tag_changed"
+
+  let tag_added = 
+      {
+	name = "tag-added";
+	classe = `texttagtable;
+	marshaller = marshal_texttag
+      }
+  let tag_changed = 
+      {
+	name = "tag-changed";
+	classe = `texttagtable;
+	marshaller = marshal_tag_changed
+      }
+  let tag_removed = 
+      {
+	name = "tag-removed";
+	classe = `texttagtable;
+	marshaller = marshal_texttag
+      }
+  end
 end
 
 module Buffer = struct
@@ -255,9 +304,9 @@ module Buffer = struct
   external insert_range_interactive : textbuffer obj -> textiter -> textiter
     -> textiter -> bool -> bool = "ml_gtk_text_buffer_insert_range_interactive"
   external delete : textbuffer obj -> textiter -> textiter -> unit
-    = "ml_gtk_text_buffer_insert_range_interactive"
+    = "ml_gtk_text_buffer_delete"
   external delete_interactive : textbuffer obj -> textiter -> textiter 
-    -> bool -> bool = "ml_gtk_text_buffer_insert_range_interactive"
+    -> bool -> bool = "ml_gtk_text_buffer_delete_interactive"
   external set_text : textbuffer obj -> string -> int 
     -> unit = "ml_gtk_text_buffer_set_text"
   external get_text : textbuffer obj -> textiter -> textiter -> 
@@ -276,7 +325,7 @@ module Buffer = struct
     -> unit  = "ml_gtk_text_buffer_delete_mark"
   external delete_mark_by_name : textbuffer obj -> string
    -> unit  = "ml_gtk_text_buffer_delete_mark_by_name"
-  external get_mark : textbuffer obj -> string -> textmark obj 
+  external get_mark : textbuffer obj -> string -> textmark obj option 
     = "ml_gtk_text_buffer_get_mark"
   external get_insert : textbuffer obj -> textmark obj 
     = "ml_gtk_text_buffer_get_insert"
@@ -448,9 +497,9 @@ module View = struct
   external set_buffer : textview obj -> textbuffer obj -> unit = "ml_gtk_text_view_set_buffer"
   external get_buffer : textview obj -> textbuffer obj = "ml_gtk_text_view_get_buffer"
   external scroll_to_mark : textview obj -> textmark obj -> float -> bool -> float -> float -> unit = 
-	   "ml_gtk_text_view_scroll_to_mark" "ml_gtk_text_view_scroll_to_mark_bc"	
+	    "ml_gtk_text_view_scroll_to_mark_bc" "ml_gtk_text_view_scroll_to_mark"
   external scroll_to_iter : textview obj -> textiter -> float -> bool -> float -> float -> bool = 
-	   "ml_gtk_text_view_scroll_to_iter" "ml_gtk_text_view_scroll_to_iter_bc"	
+	    "ml_gtk_text_view_scroll_to_iter_bc" "ml_gtk_text_view_scroll_to_iter"
   external scroll_mark_onscreen : textview obj -> textmark obj -> unit = 
 	   "ml_gtk_text_view_scroll_mark_onscreen"
   external move_mark_onscreen : textview obj -> textmark obj -> bool = 
@@ -547,9 +596,113 @@ module View = struct
 	   "ml_gtk_text_view_set_indent"
   external get_indent : textview obj -> int =
 	   "ml_gtk_text_view_get_indent"
+  module Signals = struct
+    open GtkSignal
+
+    let marshal_delete_from_cursor f _ = function 
+      |`POINTER(Some p)::`INT(i)::_ ->
+	 f (Obj.magic p:delete_type) i
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_delete_from_cursor"
+    let marshal_move_cursor f _ = function 
+      |`POINTER(Some p)::(`INT i)::(`BOOL b)::_ ->
+	 f (Obj.magic p:movement_step) i b
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_move_cursor"
+    let marshal_move_focus f _ = function 
+      |`POINTER(Some p)::_ ->
+	 f (Obj.magic p:direction_type) 
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_move_focus"
+    let marshal_page_horizontally f _ = function 
+      | (`INT i)::(`BOOL b)::_ ->
+	 f i b
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_page_horizontally"
+    let marshal_populate_popup f _ = function 
+      |`OBJECT(Some p)::_ ->
+	 f (Obj.magic p: menu obj) 
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_populate_popup"
+    
+    let marshal_set_scroll_adjustments f _ = function 
+      |`OBJECT(Some p1)::`OBJECT(Some p2)::_ ->
+	 f (Obj.magic p1: adjustment) (Obj.magic p2: adjustment) 
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_set_scroll_adjustments"
+
+
+    let copy_clipboard = 
+      {
+	name = "copy-clipboard";
+	classe = `textview;
+	marshaller = marshal_unit
+      }
+    let cut_clipboard = 
+      {
+	name = "cut-clipboard";
+	classe = `textview;
+	marshaller = marshal_unit
+      }
+    let delete_from_cursor = 
+      {
+	name = "delete-from-cursor";
+	classe = `textview;
+	marshaller = marshal_delete_from_cursor
+      }
+    let insert_at_cursor = 
+      {
+	name = "insert-at-cursor";
+	classe = `textview;
+	marshaller = marshal_string
+      }
+    let move_cursor = 
+      {
+	name = "move-cursor";
+	classe = `textview;
+	marshaller = marshal_move_cursor
+      }
+    let move_focus = 
+      {
+	name = "move-focus";
+	classe = `textview;
+	marshaller = marshal_move_focus
+      }
+    let page_horizontally = 
+      {
+	name = "page-horizontally";
+	classe = `textview;
+	marshaller = marshal_page_horizontally
+      }
+    let paste_clipboard = 
+      {
+	name = "paste-clipboard";
+	classe = `textview;
+	marshaller = marshal_unit
+      }
+    let populate_popup = 
+      {
+	name = "populate-popup";
+	classe = `textview;
+	marshaller = marshal_populate_popup
+      }
+    let set_anchor = 
+      {
+	name = "set-anchor";
+	classe = `textview;
+	marshaller = marshal_unit
+      }
+    let set_scroll_adjustments = 
+      {
+	name = "set-scroll-adjustments";
+	classe = `textview;
+	marshaller = marshal_set_scroll_adjustments
+      }
+    let toggle_overwrite = 
+      {
+	name = "toggle-overwrite";
+	classe = `textview;
+	marshaller = marshal_unit
+      }
+  end
 end
 
 module Iter = struct
+  external copy : textiter -> textiter = "ml_gtk_text_iter_copy"
   external get_buffer : textiter -> textbuffer obj = "ml_gtk_text_iter_get_buffer"
   external get_offset : textiter -> int = "ml_gtk_text_iter_get_offset"
   external get_line : textiter -> int = "ml_gtk_text_iter_get_line"
@@ -571,7 +724,7 @@ module Iter = struct
   external ends_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_ends_tag"
   external toggles_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_toggles_tag"
   external has_tag : textiter -> texttag obj -> bool = "ml_gtk_text_iter_has_tag"
-  external get_tags : textiter -> textmark obj list = "ml_gtk_text_iter_get_tags"
+  external get_tags : textiter -> texttag obj list = "ml_gtk_text_iter_get_tags"
   external editable : textiter -> bool -> bool = "ml_gtk_text_iter_editable"
   external can_insert : textiter -> bool -> bool = "ml_gtk_text_iter_can_insert"
   external starts_word : textiter -> bool = "ml_gtk_text_iter_starts_word"
@@ -621,15 +774,4 @@ module Iter = struct
   external compare : textiter -> textiter -> int = "ml_gtk_text_iter_compare"
   external in_range : textiter -> textiter -> textiter -> int = "ml_gtk_text_iter_in_range"
   external order : textiter -> textiter -> unit = "ml_gtk_text_iter_order"
-(*
-  external : textview obj -> =
-	   "ml_gtk_text_view_"
-  external : textview obj -> =
-	   "ml_gtk_text_view_"
-  external : textview obj -> =
-	   "ml_gtk_text_view_"
-  external : textview obj -> =
-	   "ml_gtk_text_view_"
-*)
-
 end

@@ -22,6 +22,8 @@
 #define GtkTextMark_val(val) check_cast(GTK_TEXT_MARK,val)
 #define Val_GtkTextMark(val) (Val_GObject((GObject*)val))
 #define Val_GtkTextMark_new(val) (Val_GObject_new((GObject*)val))
+
+
 value Val_GtkTextMark_func(gpointer val){
   return(Val_GtkTextMark(val));
 }
@@ -71,6 +73,14 @@ value Val_GtkTextIter(GtkTextIter* it){
   return(Val_GtkTextIter_mine(gtk_text_iter_copy(it))); 
 }
 
+CAMLprim value ml_gtk_text_iter_copy (value tm)
+{
+  CAMLparam1(tm);
+  CAMLlocal1(res);
+  res = Val_GtkTextIter(GtkTextIter_val(tm));
+  CAMLreturn(res);
+}
+
 
 #define GtkTextView_val(val) check_cast(GTK_TEXT_VIEW,val)
 
@@ -80,8 +90,25 @@ value Val_GtkTextIter(GtkTextIter* it){
 ML_2(gtk_text_mark_set_visible, GtkTextMark_val, Bool_val, Unit)
 ML_1(gtk_text_mark_get_visible, GtkTextMark_val, Val_bool)
 ML_1(gtk_text_mark_get_deleted, GtkTextMark_val, Val_bool)
-ML_1(gtk_text_mark_get_name, GtkTextMark_val, Val_string)
-ML_1(gtk_text_mark_get_buffer, GtkTextMark_val, Val_GtkTextBuffer)
+CAMLprim value ml_gtk_text_mark_get_name (value tm)
+{
+  CAMLparam1(tm);
+  CAMLlocal1(res);
+  const gchar* tmp;
+  tmp = gtk_text_mark_get_name(GtkTextMark_val(tm));
+  res = Val_option(tmp,Val_string);
+  CAMLreturn(res);
+}
+CAMLprim value ml_gtk_text_mark_get_buffer (value tm)
+{
+  CAMLparam1(tm);
+  CAMLlocal1(res);
+  GtkTextBuffer* tmp;
+  tmp = gtk_text_mark_get_buffer(GtkTextMark_val(tm));
+  res = Val_option(tmp,Val_GtkTextBuffer);
+  CAMLreturn(res);
+}
+
 ML_1(gtk_text_mark_get_left_gravity, GtkTextMark_val, Val_bool)
 
 /* gtktexttag */
@@ -158,7 +185,7 @@ ML_3 (gtk_text_buffer_insert_pixbuf, GtkTextBuffer_val,
 
 ML_4 (gtk_text_buffer_create_mark, GtkTextBuffer_val, 
       Option_val(arg2,String_val,NULL) Ignore,
-      GtkTextIter_val,Bool_val,Val_GtkTextMark_new)
+      GtkTextIter_val,Bool_val,Val_GtkTextMark)
 
 ML_2 (gtk_text_buffer_get_mark, GtkTextBuffer_val, 
       String_val,Val_GtkTextMark_opt)
@@ -202,7 +229,7 @@ ML_2_name (ml_gtk_text_buffer_create_tag_0,gtk_text_buffer_create_tag,
 	   Split(Option_val(arg2,String_val,NULL),
 		 Id,
 		 NULL Ignore),
-	   Val_GtkTextTag_new)
+	   Val_GtkTextTag )
 
 CAMLprim value  ml_gtk_text_buffer_create_tag_1
 (value arg1, value arg2, value arg3) 

@@ -1,8 +1,11 @@
 ======================================================================================
 GtkTextIter:  
-	manquent : 
-		gtk_text_iter_get_language 
-		fonctions de recherches =
+Il manque :
+1) Fonction avec TextAttributes
+	gtk_text_iter_get_attributes
+2) Fonction avec Pango
+	gtk_text_iter_get_language 
+3) Fonctions de recherches =
 	gboolean    (*GtkTextCharPredicate)         (gunichar ch, 
 	                                    gpointer user_data);
 	gboolean    gtk_text_iter_forward_find_char (GtkTextIter *iter,
@@ -27,7 +30,6 @@ GtkTextIter:
                         	                     GtkTextIter *match_start,
                                 	             GtkTextIter *match_end,
                                         	     const GtkTextIter *limit);	
-	 + TESTER  le tout...
 =====================================================================================
 GtkTextMark : FINI
 =====================================================================================
@@ -70,6 +72,15 @@ Signal "event" : il faut caster les arguments 'a obj et 'a event correctement.
 	Je ne sais pas le faire sans laisser aparaître les g_type et g_values
 	 directement. Faut-il supprimer ce signal ?
 =====================================================================================
-GtkTextView
-TODO is TODO :-)
+GtkTextTagTable: 
+void        gtk_text_tag_table_foreach      (GtkTextTagTable *table,
+                                             GtkTextTagTableForeach func,
+                                             gpointer data);
+
+=====================================================================================
+GtkTextView: 
+Manquent les fonctions concernant Pango :  
+	void gtk_text_view_set_tabs(GtkTextView *text_view,PangoTabArray *tabs);
+	PangoTabArray* gtk_text_view_get_tabs(GtkTextView *text_view);
+	GtkTextAttributes* gtk_text_view_get_default_attributes(GtkTextView *text_view);
 =====================================================================================

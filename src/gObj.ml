@@ -272,6 +272,7 @@ and misc_ops obj = object
   method modify_bg = iter_setcol Widget.modify_bg obj
   method modify_text = iter_setcol Widget.modify_text obj
   method modify_base = iter_setcol Widget.modify_base obj
+  method modify_font = Widget.modify_font obj
   (* get functions *)
   method name = Widget.get_name obj
   method toplevel =

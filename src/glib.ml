@@ -43,3 +43,19 @@ module Thread = struct
   external leave : unit -> unit = "ml_gdk_threads_leave"
 end
 *)
+
+module Conversion = struct
+  external convert_ : string -> int -> string -> string -> string =
+	"ml_g_convert"
+  let convert 
+	?length
+	~to_codeset
+        ~from_codeset text =
+	
+    convert_ text 
+	(match length with
+	 | None -> String.length text
+	 | Some i -> i)
+ 	 to_codeset from_codeset
+	 	
+end

@@ -205,3 +205,23 @@ GSList *GSList_val (value list, gpointer (*func)(value))
     return res;
 }
 
+/* Character Set Conversion */
+
+CAMLprim value ml_g_convert(value str, value len, value to, value from)
+{
+  CAMLparam4(str,len,to,from);
+  CAMLlocal1(res);
+  gsize br,bw;
+  GError *error=NULL;
+  br=0;
+  bw=0;
+  res = Val_string(g_convert(String_val(str),Int_val(len),
+			     String_val(to),String_val(from),
+			     &br,&bw,&error));
+  if (error != NULL)
+    {
+      ml_raise_gerror(error);
+    };
+
+  CAMLreturn(res);
+}

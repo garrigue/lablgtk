@@ -15,12 +15,16 @@ let t_1 () =
     w#show ();;
 
 let t_2 () = 
-  let w = GWindow.window  ~title:"2)view_with_buffer"  () in
+  let w = GWindow.window 
+	    ~width:640 ~height:480 ~title:"2)view_with_buffer" ()
+  in
+  let sw = GBin.scrolled_window ~packing:(w#add) () in
   let b = GText.buffer () in
   let s = f_to_string "test.txt" in
     b#set_text ~text:s ();
-    GText.view ~buffer:b ~packing:(w#add) ();
+    GText.view ~buffer:b ~packing:(sw#add) ();
     w#show ();;
+
 
 
 let t_3 () = 
@@ -84,6 +88,7 @@ let t_8 () =
 			 flush stdout
 		      ) 
   in
+
   let _ = tb#connect#insert_child_anchor 
 	    ~callback:(fun ti tca ->   
 			 Printf.printf "insert_child_anchor is there :\"%c\"\n"
@@ -91,21 +96,21 @@ let t_8 () =
 			 flush stdout
 		      ) 
   in
-  let _ = tb#connect#insert_text
+ let _ = tb#connect#insert_text
 	    ~callback:(fun ti s i ->   
 			 Printf.printf "insert_text is there :'%c' \"%s\" %d\n"
  			 (GtkText.Iter.get_char ti ) s i ;
 			 flush stdout
 		      ) 
-  in
-
-  let tt = tb#create_tag ~properties:[GtkText.Tag.Background "red";
-			  GtkText.Tag.Foreground "blue";
-			  GtkText.Tag.Editable false] () in
-    tb#set_text ~text:"Un nouveau texte" ();    
+  in  
+ tb#set_text ~text:"Un nouveau texte" ();    
     let start = tb#get_start_iter () in
     let stop = tb#get_end_iter () in
-      tb#apply_tag tt start stop;
+  let tt = tb#create_tag ~properties:[GtkText.Tag.Background "red";
+			  GtkText.Tag.Foreground "blue";
+			  GtkText.Tag.Editable false] () in 
+
+
       Printf.printf "Je vois :\"%s\"\n"
 	(tb#get_text ~include_hidden_chars:true ~start ~stop ());
       flush stdout;
@@ -159,6 +164,6 @@ let t_10 () =
 
     
 (* t_1();t_2 ();t_3();t_4();t_5();t_6();t_7();t_8;t_9;t_10 ();; *)
-t_8 () ;; 
+t_2 () ;; 
 
 GMain.Main.main ();;

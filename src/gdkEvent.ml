@@ -187,8 +187,7 @@ module Client = struct
     match get_type ev with `CLIENT_EVENT -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Client.cast"
   external message_type : t -> int = "ml_GdkEventClient_message_type"
-  external data_format : t -> int = "ml_GdkEventClient_data_format"
-  external data : t -> string = "ml_GdkEventClient_data"
+  external data : t -> Tags.xdata_ret = "ml_GdkEventClient_data"
 end
 
 module Setting = struct

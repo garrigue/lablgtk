@@ -35,6 +35,7 @@ external handler_unblock : 'a obj -> id -> unit
 (* Some marshaller functions, to build signals *)
 val marshal_unit : (unit -> unit) -> Closure.argv -> data_get list -> unit
 val marshal_int : (int -> unit) -> Closure.argv -> data_get list -> unit
+val marshal_string : (string -> unit) -> Closure.argv -> data_get list -> unit
 
 (* Emitter functions *)
 val emit :

@@ -60,6 +60,9 @@ let marshal_unit f _ _ = f ()
 let marshal_int f _ = function
   | `INT n :: _ -> f n
   | _ -> invalid_arg "GtkSignal.marshal_int"
+let marshal_string f _ = function
+  | `STRING (Some s) :: _ -> f s
+  | _ -> invalid_arg "GtkSignal.marshal_string"
 
 external emit_by_name :
   'a obj -> name:string -> params:'b data_set array -> g_value
