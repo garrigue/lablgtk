@@ -9,6 +9,9 @@ module Object = struct
   let try_cast = Gobject.try_cast
   external destroy : [>`gtk] obj -> unit = "ml_gtk_object_destroy"
   let cast w : [`gtk] obj = try_cast w "GtkObject"
+  external get_flags : [>`gtk] obj -> int = "ml_GTK_OBJECT_FLAGS"
+  external widget_flag : widget_flags -> int = "ml_Widget_flags_val"
+  let get_flag obj wf = (get_flags obj) land (widget_flag wf) <> 0
   module Signals = struct
     open GtkSignal
     let destroy =
@@ -139,10 +142,6 @@ module Widget = struct
 *)
   external window : [>`widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
-  external visible : [>`widget] obj -> bool
-      = "ml_GTK_WIDGET_VISIBLE"
-  external has_focus : [>`widget] obj -> bool
-      = "ml_GTK_WIDGET_HAS_FOCUS"
   external parent : [>`widget] obj -> widget obj
       = "ml_gtk_widget_parent"
   external set_app_paintable : [>`widget] obj -> bool -> unit

@@ -87,6 +87,13 @@ module Tags = struct
   type response =
     [ `NONE | `REJECT | `ACCEPT | `DELETE_EVENT
     | `OK | `CANCEL | `CLOSE  | `YES | `NO | `APPLY | `HELP ]
+  type gtkobj_flags =
+    [ `IN_DESTRUCTION | `FLOATING ]
+  type widget_flags =
+    [ gtkobj_flags | `TOPLEVEL | `NO_WINDOW | `REALIZED | `MAPPED | `VISIBLE
+    | `SENSITIVE | `PARENT_SENSITIVE | `CAN_FOCUS | `HAS_FOCUS
+    | `CAN_DEFAULT | `HAS_DEFAULT | `HAS_GRAB | `RC_STYLE | `COMPOSITE_CHILD
+    | `NO_REPARENT | `APP_PAINTABLE | `RECEIVES_DEFAULT | `DOUBLE_BUFFERED ]
 end
 open Tags
 
