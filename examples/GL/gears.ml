@@ -254,4 +254,4 @@ let main () =
   window#show ();
   Main.main ()
 
-let _ = Printexc.print main ()
+let () = if not !Sys.interactive then Printexc.print main ()
