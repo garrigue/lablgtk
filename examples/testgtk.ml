@@ -1075,6 +1075,7 @@ let create_main_window () =
   ] in
 
   let window = GWindow.window ~title:"main window" ~width:200 ~height:400 () in
+  window#move ~x:20 ~y:20;
 
   window #connect#destroy ~callback: Main.quit;
 
