@@ -52,7 +52,7 @@ CAMLprim value ml_gtkwindow_init(value unit)
         gtk_file_selection_get_type() +
         gtk_font_selection_dialog_get_type() 
 #ifndef _WIN32
-        gtk_plug_get_type()
+        + gtk_plug_get_type()
 #endif
 ;
     return Val_GType(t);
