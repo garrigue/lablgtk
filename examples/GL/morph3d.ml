@@ -452,8 +452,8 @@ class view area = object (self)
   val mutable draw_object = fun :amp -> ()
   val mutable magnitude = 0.
 
-  method width =  area#misc#allocation.Gtk.width
-  method height = area#misc#allocation.Gtk.height
+  method width =  area#misc#allocation.width
+  method height = area#misc#allocation.height
 
   method draw () =
     let ratio = float self#height /. float self#width in
@@ -487,8 +487,8 @@ class view area = object (self)
     | "3" -> obj <- 3
     | "4" -> obj <- 4
     | "5" -> obj <- 5
-    | "Return" -> smooth <- not smooth
-    | "Escape" -> area#misc#toplevel#destroy ()
+    | "\r" -> smooth <- not smooth
+    | "\027" -> area#misc#toplevel#destroy ()
     | _ -> ()
     end;
     self#pinit
@@ -562,17 +562,16 @@ let main () =
     new GWindow.window title:"Morph 3D - Shows morphing platonic polyhedra"
   in
   window#connect#destroy callback:Main.quit;
+
   let area = new GlGtk.area width:640 height:480
       [`DEPTH_SIZE 1;`RGBA;`DOUBLEBUFFER] packing:window#add in
-  area#misc#realize ();
-  area#make_current ();
+
   GlClear.depth 1.0;
   GlClear.color (0.0, 0.0, 0.0);
   GlDraw.color (1.0, 1.0, 1.0);
 
   GlClear.clear [`color;`depth];
   Gl.flush();
-  area#swap_buffers ();
 
   List.iter fun:(GlLight.light num:0)
     [`ambient ambient; `diffuse diffuse; `position position0];
@@ -592,8 +591,11 @@ let main () =
 
   let view = new view area in
   view#pinit;
+  window#connect#event#key_press
+    callback:(fun ev -> view#key (GdkEvent.Key.string ev); true);
 
-  Timeout.add 20 callback:(fun _ -> view#draw (); true);
+  Timeout.add 20
+    callback:(fun _ -> if area#misc#visible then view#draw (); true);
   window#show ();
   Main.main ()
 

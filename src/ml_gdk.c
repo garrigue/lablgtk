@@ -234,6 +234,104 @@ value ml_gdk_event_new (value event_type)
     return Val_copy(event);
 }
 
+/*
+value Val_GdkEvent_ (GdkEvent *ev)
+{
+    value ret = 0;
+    int field;
+    CAMLparam1(ret);
+#define Get_field(data,name,conv) Field(ret,field++) = conv(data.name)
+#define Init_fields(len) ret = alloc(len,0); \
+for (field=0; field<len; field++) Field(ret,field) = 0; field = 3
+
+    switch (ev->type) {
+    case GDK_EXPOSE:
+	Init_fields(5);
+	Get_field (ev->expose, area, Val_copy);
+	Get_field (ev->expose, count, Val_int);
+	break;
+    case GDK_VISIBILITY_NOTIFY:
+	Init_fields(4);
+	Get_field (ev->visibility, state, Val_gdkVisibilityState);
+	break;
+    case GDK_MOTION_NOTIFY:
+	Init_fields(15);
+	Get_field (ev->motion, time, Val_int);
+	Get_field (ev->motion, x, copy_double);
+	Get_field (ev->motion, y, copy_double);
+	Get_field (ev->motion, pressure, copy_double);
+	Get_field (ev->motion, xtilt, copy_double);
+	Get_field (ev->motion, ytilt, copy_double);
+	Get_field (ev->motion, state, Val_int);
+	Get_field (ev->motion, is_hint, Val_int);
+	Get_field (ev->motion, source, Val_gdkInputSource);
+	Get_field (ev->motion, deviceid, Val_int);
+	Get_field (ev->motion, x_root, copy_double);
+	Get_field (ev->motion, y_root, copy_double);
+	break;
+    case GDK_BUTTON_PRESS:
+    case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
+    case GDK_BUTTON_RELEASE:
+	Init_fields(15);
+	Get_field (ev->button, time, Val_int);
+	Get_field (ev->button, x, copy_double);
+	Get_field (ev->button, y, copy_double);
+	Get_field (ev->button, pressure, copy_double);
+	Get_field (ev->button, xtilt, copy_double);
+	Get_field (ev->button, ytilt, copy_double);
+	Get_field (ev->button, state, Val_int);
+	Get_field (ev->button, button, Val_int);
+	Get_field (ev->button, source, Val_gdkInputSource);
+	Get_field (ev->button, deviceid, Val_int);
+	Get_field (ev->button, x_root, copy_double);
+	Get_field (ev->button, y_root, copy_double);
+	break;
+    case GDK_KEY_PRESS:
+    case GDK_KEY_RELEASE:
+	Init_fields(8);
+	Get_field (ev->key, time, Val_int);
+	Get_field (ev->key, state, Val_int);
+	Get_field (ev->key, keyval, Val_int);
+	Get_field (ev->key, length, Val_int);
+	Get_field (ev->key, string, copy_string);
+	break;
+    case GDK_ENTER_NOTIFY:
+    case GDK_LEAVE_NOTIFY:
+	Init_fields(13);
+	Get_field (ev->crossing, subwindow, Val_GdkWindow);
+	Get_field (ev->crossing, time, Val_int);
+	Get_field (ev->crossing, x, copy_double);
+	Get_field (ev->crossing, y, copy_double);
+	Get_field (ev->crossing, x_root, copy_double);
+	Get_field (ev->crossing, y_root, copy_double);
+	Get_field (ev->crossing, mode, Val_gdkCrossingMode);
+	Get_field (ev->crossing, detail, Val_gdkNotifyType);
+	Get_field (ev->crossing, focus, Val_bool);
+	Get_field (ev->crossing, state, Val_int);
+	break;
+    case GDK_FOCUS_CHANGE:
+	Init_fields(4);
+	Get_field (ev->focus_change, in, Val_bool);
+	break;
+    case GDK_CONFIGURE:
+	Init_fields(7);
+	Get_field (ev->configure, x, Val_int);
+	Get_field (ev->configure, y, Val_int);
+	Get_field (ev->configure, width, Val_int);
+	Get_field (ev->configure, height, Val_int);
+	break;
+    }
+    field = 0;
+    Get_field ((*ev), type, Val_gdkEventType);
+    Get_field (ev->any, window, Val_GdkWindow);
+    Get_field (ev->any, send_event, Val_bool);
+    CAMLreturn ret;
+#undef Get_field
+#undef Init_fields
+}
+*/
+
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), type, Val_gdkEventType)
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), window, Val_GdkWindow)
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), send_event, Val_bool)

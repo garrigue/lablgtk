@@ -68,12 +68,17 @@ class area_wrapper obj = object
 end
 
 class area options ?:share ?:width [< 0 >] ?:height [< 0 >]
-    ?:packing ?:show =
+    ?:packing ?:show [< true >] =
   let w = Raw.create options share:(optboxed share) in
   let () =
     if width <> 0 || height <> 0 then
       GtkMisc.DrawingArea.size w :width :height in
   object (self)
     inherit area_wrapper w
-    initializer GObj.pack_return :packing ?:show (self :> area_wrapper)
+    initializer
+      GObj.pack_return :packing :show (self :> area_wrapper);
+      if show then begin
+	self#misc#realize ();
+	self#make_current ()
+      end
   end

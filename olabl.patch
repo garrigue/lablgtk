@@ -2,10 +2,10 @@ Index: utils/config.mlp
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/utils/config.mlp,v
 retrieving revision 1.16
-retrieving revision 1.25
-diff -c -r1.16 -r1.25
+retrieving revision 1.26
+diff -c -r1.16 -r1.26
 *** config.mlp	1999/03/08 08:34:21	1.16
---- config.mlp	1999/06/08 07:49:46	1.25
+--- config.mlp	1999/06/22 05:46:50	1.26
 ***************
 *** 11,17 ****
   
@@ -19,7 +19,7 @@ diff -c -r1.16 -r1.25
   
   (* $Id$ *)
   
-! let version = "2.02 with Kyoto extensions (99/06/08)"
+! let version = "2.02 with Kyoto extensions (99/06/22)"
   
   let standard_library =
     try
@@ -124,10 +124,10 @@ Index: typing/ctype.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/ctype.ml,v
 retrieving revision 1.51
-retrieving revision 1.63
-diff -c -r1.51 -r1.63
+retrieving revision 1.64
+diff -c -r1.51 -r1.64
 *** ctype.ml	1999/03/08 07:49:10	1.51
---- ctype.ml	1999/06/08 07:49:46	1.63
+--- ctype.ml	1999/06/11 01:46:34	1.64
 ***************
 *** 166,171 ****
 --- 166,179 ----
@@ -161,6 +161,33 @@ diff -c -r1.51 -r1.63
   (* +++ Bientot obsolete *)
   
 ***************
+*** 509,514 ****
+--- 523,546 ----
+      iter_type_expr generalize_structure ty
+    end
+  
++ (* Generalize the structure and lower the variables *)
++ 
++ let rec generalize_expansive ty =
++   let ty = repr ty in
++   if ty.level <> generic_level then begin
++     if ty.desc = Tvar && ty.level > !nongen_level then
++       ty.level <- !nongen_level
++     else if ty.level > !current_level then begin
++       ty.level <- generic_level;
++       begin match ty.desc with
++ 	Tconstr (_, _, abbrev) ->
++           iter_abbrev generalize_expansive !abbrev
++       | _ -> ()
++       end;
++       iter_type_expr generalize_expansive ty
++     end
++   end
++ 
+  (*
+     Lower the levels of a type (assume [level] is not
+     [generic_level]).
+***************
 *** 534,544 ****
             (* +++ Levels should be restored... *)
             raise (Unify [(ty, newvar2 level)])
@@ -173,7 +200,7 @@ diff -c -r1.51 -r1.63
   	      raise (Unify [(ty, newvar2 level)])
           | _                              -> ()
           end;
---- 548,559 ----
+--- 566,577 ----
             (* +++ Levels should be restored... *)
             raise (Unify [(ty, newvar2 level)])
           end
@@ -186,6 +213,31 @@ diff -c -r1.51 -r1.63
   	      raise (Unify [(ty, newvar2 level)])
           | _                              -> ()
           end;
+***************
+*** 563,584 ****
+    with Unify [_, ty'] ->
+      raise (Unify [ty, ty'])
+  *)
+- (* Change it to allow polytype tagging *)
+  
+- let make_nongen ty =
+-   let rec nongen_rec ty =
+-     let ty = repr ty in
+-     if ty.level > !nongen_level then begin
+-       match ty.desc with
+- 	Tvar ->
+- 	  ty.level <- pivot_level - !nongen_level
+-       |	_ ->
+- 	  ty.level <- pivot_level - ty.level;
+- 	  iter_type_expr nongen_rec ty
+-     end
+-   in nongen_rec ty;
+-   unmark_type ty
+- 
+  (* Correct the levels of type [ty]. *)
+  let correct_levels ty =
+    duplicate_type ty
+--- 596,602 ----
 ***************
 *** 654,691 ****
   let abbreviations = ref (ref Mnil)
@@ -226,7 +278,7 @@ diff -c -r1.51 -r1.63
         ty.level <- pivot_level - ty.level;
         match ty.desc with
   	Tunivar ->
---- 669,679 ----
+--- 672,682 ----
   let abbreviations = ref (ref Mnil)
     (* Abbreviation memorized. *)
   
@@ -272,7 +324,7 @@ diff -c -r1.51 -r1.63
     else try
       if share & ty.desc <> Tunivar then raise Not_found;
       let t, bound_t = List.assq ty visited in
---- 700,727 ----
+--- 703,730 ----
     match l1 with [] -> invalid_arg "Ctype.diff_list"
     | a :: l1 -> a :: diff_list l1 l2
   
@@ -310,7 +362,7 @@ diff -c -r1.51 -r1.63
       let desc = ty.desc in
       if share or desc = Tvar or desc = Tunivar then begin
         save_desc ty desc;
---- 740,746 ----
+--- 743,749 ----
   	  (ty,(t,bound)) :: visited
         |	_ -> visited
       in
@@ -328,7 +380,7 @@ diff -c -r1.51 -r1.63
             | Fabsent ->
                 assert false
             end
---- 802,818 ----
+--- 805,821 ----
             begin match field_kind_repr kind with
               Fpresent ->
                 Tfield (label, Fpresent, copy t1, copy t2)
@@ -369,7 +421,7 @@ diff -c -r1.51 -r1.63
     cleanup_types ();
     List.iter unmark_type !to_unmark
   
---- 831,850 ----
+--- 834,853 ----
   	  let bound = tl @ bound in
   	  let visited =
   	    List.map2 (fun ty t -> ty,(t,bound)) tl tl' @ visited in
@@ -406,7 +458,7 @@ diff -c -r1.51 -r1.63
     finish_copy ();
     ty
   
---- 859,872 ----
+--- 862,875 ----
   let instance_poly env univars sch =
     let vars = List.map (fun _ -> newvar ()) univars in
     let pairs = List.map2 (fun u v -> repr u, (v, [])) univars vars in
@@ -439,7 +491,7 @@ diff -c -r1.51 -r1.63
     finish_copy ();
     (ty_arg, ty_res)
   
---- 877,892 ----
+--- 880,895 ----
     tyl
   
   let instance_constructor env cstr =
@@ -465,7 +517,7 @@ diff -c -r1.51 -r1.63
         newty2 ty.level (Tobject (fi, ref None))
     | Tvariant var when var.var_name <> None & is_variable var.var_ext ->
         newty2 ty.level
---- 1086,1092 ----
+--- 1089,1095 ----
   let rec full_expand env ty =
     let ty = repr (expand_head env ty) in
     match ty.desc with
@@ -505,7 +557,7 @@ diff -c -r1.51 -r1.63
          [] [] ty);
     visited := []
   
---- 1120,1150 ----
+--- 1123,1153 ----
   (* The marks are already used by [expand_abbrev]... *)
   let visited = ref []
   
@@ -551,7 +603,7 @@ diff -c -r1.51 -r1.63
       end
     in
     try
---- 1368,1374 ----
+--- 1371,1377 ----
       if ty.level >= lowest_level then begin
         if ty == t0 then raise Occur;
         ty.level <- pivot_level - ty.level;
@@ -571,7 +623,7 @@ diff -c -r1.51 -r1.63
     in
     if !strict then join ();
   
---- 1504,1515 ----
+--- 1507,1518 ----
     let d1 = t1'.desc and d2 = t2'.desc in
   
     let create_recursion = (t2 != t2') && (deep_occur t1' t2) in
@@ -596,7 +648,7 @@ diff -c -r1.51 -r1.63
   	let prepare vari =
   	  let ext = repr vari.var_ext in
   	  let dext' = ext.desc in
---- 1535,1544 ----
+--- 1538,1547 ----
   	let var = common_variant var1 var2 in
   	if (repr var1.var_ext).desc = Tunivar then
   	  unify env var1.var_ext var2.var_ext;
@@ -619,7 +671,7 @@ diff -c -r1.51 -r1.63
   	  raise (Unify trace)
   	end
       | (Tarrow (p, t1, u1), Tarrow (q, t2, u2))
---- 1571,1579 ----
+--- 1574,1582 ----
   		try unify_option env (List.assoc lab var2.var_max) ot
   		with Not_found -> ()
   	      end)
@@ -631,7 +683,7 @@ diff -c -r1.51 -r1.63
       | (Tarrow (p, t1, u1), Tarrow (q, t2, u2))
 ***************
 *** 1711,1716 ****
---- 1700,1706 ----
+--- 1703,1709 ----
   and unify_kind k1 k2 =
     let k1 = field_kind_repr k1 in
     let k2 = field_kind_repr k2 in
@@ -640,7 +692,8 @@ diff -c -r1.51 -r1.63
       (Fvar r, (Fvar _ | Fpresent))             -> r := Some k2
     | (Fpresent, Fvar r)                        -> r := Some k1
 ***************
-*** 1729,1736 ****
+*** 1728,1735 ****
+      unify env ty1 ty2
     with Unify trace ->
       raise (Unify (expand_trace env trace))
   
@@ -648,31 +701,30 @@ diff -c -r1.51 -r1.63
   
   let free_unify env ty1 ty2 =
     strict := !Clflags.nolabels; univar_pairs := [];
-    unify env ty1 ty2
---- 1719,1741 ----
+--- 1721,1743 ----
+      unify env ty1 ty2
     with Unify trace ->
       raise (Unify (expand_trace env trace))
-  
-! let unify_var env t1 t2 =
-!   let t1 = repr t1 and t2 = repr t2 in
-!   if t1 == t2 then () else
-!   match t1.desc with
-!     Tvar ->
-!       begin try
-! 	occur env t1 t2;
-! 	update_level env t1.level t2;
-! 	t1.desc <- Tlink t2
-!       with Unify trace ->
-! 	raise (Unify ((t1,t2)::trace))
-!       end
-!   | _ ->
-!       do_strict unify env t1 t2
-  
-+ let _ = unify' := unify_var
 + 
++ let unify_var env t1 t2 =
++   let t1 = repr t1 and t2 = repr t2 in
++   if t1 == t2 then () else
++   match t1.desc with
++     Tvar ->
++       begin try
++ 	occur env t1 t2;
++ 	update_level env t1.level t2;
++ 	t1.desc <- Tlink t2
++       with Unify trace ->
++ 	raise (Unify ((t1,t2)::trace))
++       end
++   | _ ->
++       do_strict unify env t1 t2
+  
+! let _ = unify' := unify_var
+  
   let free_unify env ty1 ty2 =
     strict := !Clflags.nolabels; univar_pairs := [];
-    unify env ty1 ty2
 ***************
 *** 1746,1765 ****
   (**** Special cases of unification ****)
@@ -695,7 +747,7 @@ diff -c -r1.51 -r1.63
   
   (* Unify [t] and ['a -> 'b]. Return ['a] and ['b]. *)
   let rec filter_arrow env p t =
---- 1751,1759 ----
+--- 1754,1762 ----
   (**** Special cases of unification ****)
   
   (* Unify with a variable *)
@@ -707,7 +759,7 @@ diff -c -r1.51 -r1.63
   let rec filter_arrow env p t =
 ***************
 *** 1999,2004 ****
---- 1993,1999 ----
+--- 1996,2002 ----
   and moregen_kind k1 k2 =
     let k1 = field_kind_repr k1 in
     let k2 = field_kind_repr k2 in
@@ -731,7 +783,7 @@ diff -c -r1.51 -r1.63
   (**** Build a subtype of a given type. ****)
   
   let subtypes = ref (HType.create 1)
---- 2444,2449 ----
+--- 2447,2452 ----
 ***************
 *** 2599,2605 ****
   	  then
@@ -741,7 +793,7 @@ diff -c -r1.51 -r1.63
   		  match rem with
   		    (c1, ot1)::rem when c1 = c2 ->
   		      begin match ot1,ot2 with
---- 2586,2592 ----
+--- 2589,2595 ----
   	  then
   	    let (_,cstrs) =
   	      List.fold_left
@@ -751,7 +803,7 @@ diff -c -r1.51 -r1.63
   		      begin match ot1,ot2 with
 ***************
 *** 2639,2644 ****
---- 2626,2633 ----
+--- 2629,2636 ----
           subtype_rec env ((u1, u2)::trace) u1 u2 cstrs
       | (Ttuple tl1, Ttuple tl2) ->
           subtype_list env trace tl1 tl2 cstrs
@@ -770,7 +822,7 @@ diff -c -r1.51 -r1.63
       | (Tconstr _, Tconstr _) ->
           [(trace, t1, t2, !univar_pairs)]
       | (Tconstr(p1, tl1, abbrev1), _) when generic_abbrev env p1 ->
---- 2647,2652 ----
+--- 2650,2655 ----
 ***************
 *** 2701,2709 ****
     let (fields1, rest1) = flatten_fields ty1 in
@@ -782,7 +834,7 @@ diff -c -r1.51 -r1.63
     begin match rest2.desc with
       Tnil   -> []
     | _      ->
---- 2688,2698 ----
+--- 2691,2701 ----
     let (fields1, rest1) = flatten_fields ty1 in
     let (fields2, rest2) = flatten_fields ty2 in
     let (pairs, miss1, miss2) = associate_fields fields1 fields2 in
@@ -794,6 +846,59 @@ diff -c -r1.51 -r1.63
     begin match rest2.desc with
       Tnil   -> []
     | _      ->
+Index: typing/ctype.mli
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/ctype.mli,v
+retrieving revision 1.16
+retrieving revision 1.17
+diff -c -r1.16 -r1.17
+*** ctype.mli	1998/12/14 00:02:51	1.16
+--- ctype.mli	1999/06/11 01:46:35	1.17
+***************
+*** 74,83 ****
+          (* Generalize in-place the given type *)
+  val iterative_generalization: int -> type_expr list -> type_expr list
+          (* Efficient repeated generalization of a type *)
+  val generalize_structure: type_expr -> unit
+          (* Generalize the structure of a type, at same level *)
+! val make_nongen: type_expr -> unit
+          (* Make non-generalizable the given type *)
+  val correct_levels: type_expr -> type_expr
+          (* Returns a copy with decreasing levels *)
+  val limited_generalize: type_expr -> type_expr -> unit
+--- 74,86 ----
+          (* Generalize in-place the given type *)
+  val iterative_generalization: int -> type_expr list -> type_expr list
+          (* Efficient repeated generalization of a type *)
++ val generalize_expansive: type_expr -> unit
++ 	(* Generalize the structure and lower the variables *)
+  val generalize_structure: type_expr -> unit
+          (* Generalize the structure of a type, at same level *)
+! (* val make_nongen: type_expr -> unit *)
+          (* Make non-generalizable the given type *)
++         (* Obsolete: use generalize_expansive *)
+  val correct_levels: type_expr -> type_expr
+          (* Returns a copy with decreasing levels *)
+  val limited_generalize: type_expr -> type_expr -> unit
+Index: typing/env.mli
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/env.mli,v
+retrieving revision 1.1.1.5
+retrieving revision 1.2
+diff -c -r1.1.1.5 -r1.2
+*** env.mli	1998/08/20 01:31:02	1.1.1.5
+--- env.mli	1999/06/22 05:46:50	1.2
+***************
+*** 121,123 ****
+--- 121,128 ----
+  (* Forward declaration to break mutual recursion with includemod. *)
+  
+  val check_modtype_inclusion: (t -> module_type -> module_type -> unit) ref
++ 
++ (* Private export: use with care *)
++ 
++ val labels_of_type:
++     Path.t -> type_declaration -> (string * label_description) list
 Index: typing/printtyp.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/printtyp.ml,v
@@ -884,10 +989,10 @@ Index: typing/typeclass.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/typeclass.ml,v
 retrieving revision 1.32
-retrieving revision 1.36
-diff -c -r1.32 -r1.36
+retrieving revision 1.37
+diff -c -r1.32 -r1.37
 *** typeclass.ml	1999/02/24 13:47:52	1.32
---- typeclass.ml	1999/06/08 12:14:22	1.36
+--- typeclass.ml	1999/06/11 01:46:36	1.37
 ***************
 *** 216,222 ****
     vars := Vars.add lab (id, mut, ty) !vars;
@@ -968,6 +1073,25 @@ diff -c -r1.32 -r1.36
         (* Variables *)
         let (val_env, met_env, par_env, inh_vars, inh_vals) =
 ***************
+*** 436,444 ****
+        Ctype.begin_def ();
+        let exp = type_exp val_env sexp in
+        Ctype.end_def ();
+!       (* no need to try since !nongen_level == !current_level *)
+!       Ctype.make_nongen exp.exp_type;
+!       Ctype.generalize exp.exp_type;
+        let (id, val_env, met_env, par_env) =
+          enter_val cl_num vars lab mut exp.exp_type val_env met_env par_env
+        in
+--- 442,448 ----
+        Ctype.begin_def ();
+        let exp = type_exp val_env sexp in
+        Ctype.end_def ();
+!       Ctype.generalize_expansive exp.exp_type;
+        let (id, val_env, met_env, par_env) =
+          enter_val cl_num vars lab mut exp.exp_type val_env met_env par_env
+        in
+***************
 *** 545,551 ****
   
     (* Self binder *)
@@ -976,7 +1100,7 @@ diff -c -r1.32 -r1.36
     let self_type = pat.pat_type in
   
     (* Check that the binder has a correct type, and introduce a dummy
---- 551,558 ----
+--- 549,556 ----
   
     (* Self binder *)
     let (pat, meths, vars, val_env, meth_env, par_env) =
@@ -986,6 +1110,23 @@ diff -c -r1.32 -r1.36
   
     (* Check that the binder has a correct type, and introduce a dummy
 ***************
+*** 630,636 ****
+  	     (Tconstr(Predef.path_option,[Ctype.newvar()],ref Mnil)));
+        Ctype.end_def ();
+        iter_pattern
+! 	(fun {pat_type=ty} -> Ctype.make_nongen ty; Ctype.generalize ty)
+  	pat;
+        let pv =
+          List.map
+--- 635,641 ----
+  	     (Tconstr(Predef.path_option,[Ctype.newvar()],ref Mnil)));
+        Ctype.end_def ();
+        iter_pattern
+! 	(fun {pat_type=ty} -> Ctype.generalize_expansive ty)
+  	pat;
+        let pv =
+          List.map
+***************
 *** 728,734 ****
                 raise(Error(cl.cl_loc, Cannot_apply cl.cl_type))
   	    else ([], ty_fun)
@@ -994,7 +1135,7 @@ diff -c -r1.32 -r1.36
         {cl_desc = Tclass_apply (cl, args);
          cl_loc = scl.pcl_loc;
          cl_type = cty}
---- 735,741 ----
+--- 733,739 ----
                 raise(Error(cl.cl_loc, Cannot_apply cl.cl_type))
   	    else ([], ty_fun)
         in
@@ -1004,7 +1145,7 @@ diff -c -r1.32 -r1.36
          cl_type = cty}
 ***************
 *** 853,858 ****
---- 860,866 ----
+--- 858,864 ----
        constr_type, dummy_class)
       (res, env) =
   
@@ -1014,7 +1155,7 @@ diff -c -r1.32 -r1.36
     
 ***************
 *** 868,873 ****
---- 876,882 ----
+--- 874,880 ----
     let (expr, typ) = kind env cl.pci_expr in
     
     Ctype.end_def ();
@@ -1031,7 +1172,7 @@ diff -c -r1.32 -r1.36
     let (res, env) =
       List.fold_left (initial_env define_class) ([], env) cls
     in
---- 1069,1075 ----
+--- 1067,1073 ----
         cls
     in
     Ctype.init_def (Ident.current_time ());
@@ -1048,7 +1189,7 @@ diff -c -r1.32 -r1.36
   
   let class_descriptions env cls =
     type_classes true class_description env cls
---- 1093,1099 ----
+--- 1091,1097 ----
     (expr, expr)
   
   let class_declarations env cls =
@@ -1056,14 +1197,388 @@ diff -c -r1.32 -r1.36
   
   let class_descriptions env cls =
     type_classes true class_description env cls
+Index: typing/typecore.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/typecore.ml,v
+retrieving revision 1.36
+retrieving revision 1.39
+diff -c -r1.36 -r1.39
+*** typecore.ml	1999/03/08 07:49:11	1.36
+--- typecore.ml	1999/06/22 06:18:27	1.39
+***************
+*** 475,484 ****
+      [] -> false
+    | (y,v) :: l -> no_opt x = no_opt y or mem_assoc x l
+  
+- type 'a clazy = Val of 'a | Lazy of (unit -> 'a)
+- 
+- let force = function Val x -> x | Lazy f -> f ()
+- 
+  let rec type_exp env sexp =
+    match sexp.pexp_desc with
+      Pexp_ident lid ->
+--- 475,480 ----
+***************
+*** 599,643 ****
+  	       var_max = [tag, ty] });
+        	   exp_env = env }
+    | Pexp_record(lid_sexp_list, opt_sexp) ->
+!       let ty = newvar() in
+!       let num_fields = ref 0 in
+!       let type_label_exp (lid, sarg) =
+!         let label =
+!           try
+!             Env.lookup_label lid env
+!           with Not_found ->
+!             raise(Error(sexp.pexp_loc, Unbound_label lid)) in
+!         let (ty_arg, ty_res) = instance_label env label in
+!         begin try
+!           free_unify env ty_res ty
+!         with Unify trace ->
+!           raise(Error(sexp.pexp_loc, Label_mismatch(lid, trace)))
+!         end;
+!         let arg = type_expect env sarg ty_arg in
+!         num_fields := Array.length label.lbl_all;
+!         (label, arg) in
+!       let lbl_exp_list = List.map type_label_exp lid_sexp_list in
+!       let rec check_duplicates = function
+!         [] -> ()
+!       | (lid, sarg) :: remainder ->
+!           if List.mem_assoc lid remainder
+!           then raise(Error(sexp.pexp_loc, Label_multiply_defined lid))
+!           else check_duplicates remainder in
+!       check_duplicates lid_sexp_list;
+!       let opt_exp =
+!         match opt_sexp with
+!           None -> None
+!         | Some sexp -> Some(type_expect env sexp ty) in
+!       if opt_sexp = None && List.length lid_sexp_list <> !num_fields then
+!         raise(Error(sexp.pexp_loc, Label_missing));
+!       { exp_desc = Texp_record(lbl_exp_list, opt_exp);
+!         exp_loc = sexp.pexp_loc;
+!         exp_type = ty;
+!         exp_env = env }
+    | Pexp_field(sarg, lid) ->
+        let arg = type_exp env sarg in
+        let label =
+!         try
+            Env.lookup_label lid env
+          with Not_found ->
+            raise(Error(sexp.pexp_loc, Unbound_label lid)) in
+--- 595,613 ----
+  	       var_max = [tag, ty] });
+        	   exp_env = env }
+    | Pexp_record(lid_sexp_list, opt_sexp) ->
+!       type_record env sexp.pexp_loc lid_sexp_list opt_sexp (newvar())
+    | Pexp_field(sarg, lid) ->
+        let arg = type_exp env sarg in
+        let label =
+! 	try match lid with Longident.Lident name ->
+! 	  let ty = expand_head env arg.exp_type in
+! 	  begin match ty.desc with Tconstr (path, _, _) ->
+! 	    let decl = Env.find_type path env in
+! 	    List.assoc name (Env.labels_of_type path decl)
+! 	  | _ -> raise Not_found
+! 	  end
+! 	| _ -> raise Not_found
+!         with Not_found -> try
+            Env.lookup_label lid env
+          with Not_found ->
+            raise(Error(sexp.pexp_loc, Unbound_label lid)) in
+***************
+*** 650,656 ****
+    | Pexp_setfield(srecord, lid, snewval) ->
+        let record = type_exp env srecord in
+        let label =
+!         try
+            Env.lookup_label lid env
+          with Not_found ->
+            raise(Error(sexp.pexp_loc, Unbound_label lid)) in
+--- 620,634 ----
+    | Pexp_setfield(srecord, lid, snewval) ->
+        let record = type_exp env srecord in
+        let label =
+! 	try match lid with Longident.Lident name ->
+! 	  let ty = expand_head env record.exp_type in
+! 	  begin match ty.desc with Tconstr (path, _, _) ->
+! 	    let decl = Env.find_type path env in
+! 	    List.assoc name (Env.labels_of_type path decl)
+! 	  | _ -> raise Not_found
+! 	  end
+! 	| _ -> raise Not_found
+!         with Not_found -> try
+            Env.lookup_label lid env
+          with Not_found ->
+            raise(Error(sexp.pexp_loc, Unbound_label lid)) in
+***************
+*** 722,729 ****
+  	    begin_def ();
+              let ty = Typetexp.transl_simple_type env false sty in
+  	    end_def ();
+! 	    make_nongen ty;
+! 	    generalize ty;
+  	    let ty1 = instance ty and ty2 = instance ty in
+              (type_expect env sarg ty1, ty2)
+  	| (None, Some {ptyp_desc = Ptyp_variant var; ptyp_loc = loc})
+--- 700,706 ----
+  	    begin_def ();
+              let ty = Typetexp.transl_simple_type env false sty in
+  	    end_def ();
+! 	    generalize_expansive ty;
+  	    let ty1 = instance ty and ty2 = instance ty in
+              (type_expect env sarg ty1, ty2)
+  	| (None, Some {ptyp_desc = Ptyp_variant var; ptyp_loc = loc})
+***************
+*** 977,982 ****
+--- 954,961 ----
+          exp_loc = sexp.pexp_loc;
+          exp_type = body.exp_type;
+          exp_env = env }
++   | Pexp_record(lid_sexp_list, opt_sexp) ->
++       type_record env sexp.pexp_loc lid_sexp_list opt_sexp ty_expected
+    | Pexp_sequence(sexp1, sexp2) ->
+        let exp1 = type_statement env sexp1 in
+        let exp2 = type_expect_opt del env sexp2 ty_expected in
+***************
+*** 1052,1062 ****
+  (* Typing of an application *)
+  
+  and type_application env funct sargs =
+!   let type_arg del sarg ty =
+!     let clazy () = type_expect_opt del env sarg ty in
+!     match sarg.pexp_desc with Pexp_function _ -> Lazy clazy
+!     | _ -> match (repr ty).desc with Tarrow _ -> Lazy clazy
+!     | _ -> Val (clazy ()) in
+    let rec type_args ty_fun = function
+      [] ->
+        ([], ty_fun)
+--- 1031,1037 ----
+  (* Typing of an application *)
+  
+  and type_application env funct sargs =
+!   let type_arg del sarg ty = lazy (type_expect_opt del env sarg ty) in
+    let rec type_args ty_fun = function
+      [] ->
+        ([], ty_fun)
+***************
+*** 1091,1097 ****
+        	      type_expect_opt true env sarg t1
+  	  | _ -> fatal_error "Typecore.type_application" in
+         	let argl, ty_res = solve_opt all_applied sargl' ty_parl ty_ret in
+!       	(p1, Val
+        	 { exp_desc = Texp_construct (Env.lookup_constructor
+          	     	       (Longident.Lident "Some") Env.initial, [arg]);
+    	   exp_loc = sarg.pexp_loc;
+--- 1066,1072 ----
+        	      type_expect_opt true env sarg t1
+  	  | _ -> fatal_error "Typecore.type_application" in
+         	let argl, ty_res = solve_opt all_applied sargl' ty_parl ty_ret in
+!       	(p1, lazy
+        	 { exp_desc = Texp_construct (Env.lookup_constructor
+          	     	       (Longident.Lident "Some") Env.initial, [arg]);
+    	   exp_loc = sarg.pexp_loc;
+***************
+*** 1100,1106 ****
+        	:: argl, ty_res
+      else if is_opt p1 & all_applied then
+        let argl, ty_res = solve_opt true sargl ty_parl ty_ret in
+!       (p1, Val
+        	{ exp_desc = Texp_construct (Env.lookup_constructor
+          	       	       	(Longident.Lident "None") Env.initial, []);
+    	  exp_loc = Location.none;
+--- 1075,1081 ----
+        	:: argl, ty_res
+      else if is_opt p1 & all_applied then
+        let argl, ty_res = solve_opt true sargl ty_parl ty_ret in
+!       (p1, lazy
+        	{ exp_desc = Texp_construct (Env.lookup_constructor
+          	       	       	(Longident.Lident "None") Env.initial, []);
+    	  exp_loc = Location.none;
+***************
+*** 1116,1124 ****
+        sargs = [] or List.exists (fun (p,_) -> not (is_opt p)) sargs
+      and ty_parl, ty_ret = all_args funct.exp_type
+      in solve_opt all_applied sargs ty_parl ty_ret in
+!   let args = List.map (fun (p, clazy) -> p, force clazy) args in
+    args, ty_res
+  
+  (* Typing of message sending *)
+  
+  and type_send env loc e met =
+--- 1091,1169 ----
+        sargs = [] or List.exists (fun (p,_) -> not (is_opt p)) sargs
+      and ty_parl, ty_ret = all_args funct.exp_type
+      in solve_opt all_applied sargs ty_parl ty_ret in
+!   let _ =
+!     List.fold_left
+!       (fun args (p,_) ->
+! 	let (clazy, args) = extract_assoc p args in
+! 	ignore (Lazy.force clazy);
+! 	args)
+!       args sargs
+!   in
+!   let args = List.map (fun (p, clazy) -> p, Lazy.force clazy) args in
+    args, ty_res
+  
++ (* Typing of record expression *)
++ 
++ and type_record env loc lid_sexp_list opt_sexp ty = 
++   let full_ty = expand_head env ty in
++   let opt_exp =
++     match opt_sexp with
++       None -> None
++     | Some sexp -> Some(type_expect env sexp ty) in
++   let (lid,_) = List.hd lid_sexp_list in
++   let labels, num_fields =
++     try match lid with Longident.Lident name ->
++       let path =
++ 	match full_ty.desc with Tconstr (path, _, _) -> path
++ 	| _ ->
++ 	    match opt_exp with None -> raise Not_found
++ 	    | Some exp ->
++ 		match (expand_head env exp.exp_type).desc with
++ 		| Tconstr (path, _, _) -> path
++ 		| _ -> raise Not_found
++       in
++       let decl = Env.find_type path env in
++       let labels = Env.labels_of_type path decl in
++       if List.length labels = 0 then raise Not_found;
++       labels, List.length labels
++     | _ -> raise Not_found
++     with Not_found -> try
++       [], Array.length (Env.lookup_label lid env).lbl_all
++     with Not_found ->
++       raise(Error(loc, Unbound_label lid))
++   in
++   let type_label_exp (lid, sarg) =
++     let label =
++       try match lid with
++ 	Longident.Lident name when labels <> [] ->
++ 	  List.assoc name labels
++       |	_ ->
++           Env.lookup_label lid env
++       with Not_found ->
++         raise(Error(loc, Unbound_label lid)) in
++     let (ty_arg, ty_res) = instance_label env label in
++     begin try
++       unify env ty_res ty
++     with Unify trace ->
++       raise(Error(loc, Label_mismatch(lid, trace)))
++     end;
++     let arg = type_expect env sarg ty_arg in
++     (label, arg) in
++   let lbl_exp_list = List.map type_label_exp lid_sexp_list in
++   let rec check_duplicates = function
++       [] -> ()
++     | (lid, sarg) :: remainder ->
++         if List.mem_assoc lid remainder
++         then raise(Error(loc, Label_multiply_defined lid))
++         else check_duplicates remainder in
++   check_duplicates lid_sexp_list;
++   if opt_sexp = None && List.length lid_sexp_list <> num_fields then
++     raise(Error(loc, Label_missing));
++   { exp_desc = Texp_record(lbl_exp_list, opt_exp);
++     exp_loc = loc;
++     exp_type = ty;
++     exp_env = env }
++ 
+  (* Typing of message sending *)
+  
+  and type_send env loc e met =
+***************
+*** 1171,1178 ****
+             filter_method env met Public obj.exp_type)
+      in
+      end_def ();
+!     if not (is_nonexpansive obj) then make_nongen typ;
+!     generalize typ;
+      let typ =
+        match repr typ with
+  	{desc = Tpoly (ty, [])} ->
+--- 1216,1222 ----
+             filter_method env met Public obj.exp_type)
+      in
+      end_def ();
+!     if is_nonexpansive obj then generalize typ else generalize_expansive typ;
+      let typ =
+        match repr typ with
+  	{desc = Tpoly (ty, [])} ->
+***************
+*** 1242,1248 ****
+        let ty_arg = instance_sep env ty_arg in
+        let (pat, ext_env) = type_pattern env spat in
+        end_def ();
+!       iter_pattern (fun {pat_type=ty} -> make_nongen ty; generalize ty) pat;
+        unify_pat env
+  	{ pat_desc = pat.pat_desc; pat_loc = pat.pat_loc;
+  	  pat_type = instance_sep env pat.pat_type; pat_env = env }
+--- 1286,1292 ----
+        let ty_arg = instance_sep env ty_arg in
+        let (pat, ext_env) = type_pattern env spat in
+        end_def ();
+!       iter_pattern (fun {pat_type=ty} -> generalize_expansive ty) pat;
+        unify_pat env
+  	{ pat_desc = pat.pat_desc; pat_loc = pat.pat_loc;
+  	  pat_type = instance_sep env pat.pat_type; pat_env = env }
+***************
+*** 1271,1277 ****
+    List.iter
+      (fun pat ->
+        iter_pattern
+! 	(fun pat -> make_nongen pat.pat_type; generalize pat.pat_type)
+  	pat)
+      pat_list;
+    let pat_list =
+--- 1315,1321 ----
+    List.iter
+      (fun pat ->
+        iter_pattern
+! 	(fun pat -> generalize_expansive pat.pat_type)
+  	pat)
+      pat_list;
+    let pat_list =
+***************
+*** 1290,1296 ****
+    List.iter2
+      (fun pat exp ->
+         if not (is_nonexpansive exp) then
+!          iter_pattern (fun pat -> make_nongen pat.pat_type) pat)
+      pat_list exp_list;
+    List.iter
+      (fun pat -> iter_pattern (fun pat -> generalize pat.pat_type) pat)
+--- 1334,1340 ----
+    List.iter2
+      (fun pat exp ->
+         if not (is_nonexpansive exp) then
+!          iter_pattern (fun pat -> generalize_expansive pat.pat_type) pat)
+      pat_list exp_list;
+    List.iter
+      (fun pat -> iter_pattern (fun pat -> generalize pat.pat_type) pat)
+***************
+*** 1311,1317 ****
+    let exp = type_exp env sexp in
+    end_def();
+    if is_nonexpansive exp then generalize exp.exp_type
+!   else make_nongen exp.exp_type;
+    exp
+  
+  (* Error report *)
+--- 1355,1361 ----
+    let exp = type_exp env sexp in
+    end_def();
+    if is_nonexpansive exp then generalize exp.exp_type
+!   else generalize_expansive exp.exp_type;
+    exp
+  
+  (* Error report *)
 Index: typing/typetexp.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/typetexp.ml,v
 retrieving revision 1.22
-retrieving revision 1.26
-diff -c -r1.22 -r1.26
+retrieving revision 1.27
+diff -c -r1.22 -r1.27
 *** typetexp.ml	1999/03/08 07:49:12	1.22
---- typetexp.ml	1999/06/02 02:03:56	1.26
+--- typetexp.ml	1999/06/11 01:46:37	1.27
 ***************
 *** 46,51 ****
 --- 46,52 ----
@@ -1177,6 +1692,42 @@ diff -c -r1.22 -r1.26
   		raise(Error(styp.ptyp_loc, No_row_variable "object "));
   	      unify_var env row v
 ***************
+*** 318,325 ****
+  	    begin_def ();
+  	    let ty = transl_type env policy (Some tc) st in
+  	    end_def ();
+! 	    make_nongen ty;
+! 	    generalize ty;
+  	    tr.desc <- Tlink ty;
+  	    Ctype.instance ty
+  	| _ ->
+--- 327,333 ----
+  	    begin_def ();
+  	    let ty = transl_type env policy (Some tc) st in
+  	    end_def ();
+! 	    generalize_expansive ty;
+  	    tr.desc <- Tlink ty;
+  	    Ctype.instance ty
+  	| _ ->
+***************
+*** 334,341 ****
+  	  let trace = swap_list trace in
+            raise(Error(styp.ptyp_loc, Alias_type_mismatch trace))
+          end;
+! 	make_nongen ty;
+! 	generalize ty;
+          Ctype.instance ty
+        end 
+    | Ptyp_poly(st, vars) ->
+--- 342,348 ----
+  	  let trace = swap_list trace in
+            raise(Error(styp.ptyp_loc, Alias_type_mismatch trace))
+          end;
+! 	generalize_expansive ty;
+          Ctype.instance ty
+        end 
+    | Ptyp_poly(st, vars) ->
+***************
 *** 379,399 ****
   
   let transl_simple_type env fixed styp =
@@ -1199,7 +1750,7 @@ diff -c -r1.22 -r1.26
     pre_univars := [];
     let univars =
       filter (fun v -> v.desc = Tvar && v.level = Btype.generic_level) univars in
---- 388,409 ----
+--- 386,407 ----
   
   let transl_simple_type env fixed styp =
     univars := [];
@@ -1236,7 +1787,7 @@ diff -c -r1.22 -r1.26
     used_variables := Tbl.empty;
     bindings := [];
     (typ,
---- 417,428 ----
+--- 415,426 ----
   
   let transl_simple_type_delayed env styp =
     univars := [];

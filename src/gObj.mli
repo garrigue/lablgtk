@@ -133,7 +133,6 @@ class widget_misc :
       ?x:int -> ?y:int -> ?width:int -> ?height:int -> unit
     method show : unit -> unit
     method show_all : unit -> unit
-    method show_now : unit -> unit
     method style : style
     method toplevel : widget_wrapper
     method unmap : unit -> unit
@@ -159,7 +158,6 @@ and widget_signals :
   object
     inherit gtkobj_signals 
     val obj : 'a obj
-    method draw : callback:(Gdk.Rectangle.t -> unit) -> GtkSignal.id
     method event : event_signals
     method parent_set :
 	callback:(widget_wrapper option -> unit) -> GtkSignal.id

@@ -1,5 +1,11 @@
 $Id$
 
+1999.6.22
+  * updated olabl.patch. With this new version you can access fields
+    of records without opening modules.  You can also use several times
+    the same label in one module.
+  * examples/GL/morph3d.ml uses it.
+
 1999.6.21
   * moved event functions to GdkEvent
 
