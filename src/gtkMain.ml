@@ -18,8 +18,8 @@ module Main = struct
   (* external exit : int -> unit = "ml_gtk_exit" *)
   external set_locale : unit -> string = "ml_gtk_set_locale"
   (* external main : unit -> unit = "ml_gtk_main" *)
-  let init () =
-    let locale = set_locale () in
+  let init ?(nolocale=false) () =
+    let locale = if nolocale then "" else set_locale () in
     let argv = init Sys.argv in
     Array.blit ~src:argv ~dst:Sys.argv ~len:(Array.length argv)
       ~src_pos:0 ~dst_pos:0;
@@ -35,8 +35,6 @@ module Main = struct
   and quit () = if !loops <> [] then Main.quit (List.hd !loops)
   external get_version : unit -> int * int * int = "ml_gtk_get_version"
   let version = get_version ()
-
-  let flush = Gdk.X.flush
 end
 
 module Grab = struct

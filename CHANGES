@@ -1,5 +1,11 @@
 $Id$
 
+2001.05.22
+  * add ?nolocale parameter to Main.init (cf. ocaml PR#275)
+  * remove Main.flush (enough to have it as Gdk.X.flush)
+  * include [main] and [quit] in GMain, so you can now write GMain.main
+    rather than GMain.Main.main
+
 2001.05.18
   * add -trace flag to lablgladecc, to trace handler calls
 

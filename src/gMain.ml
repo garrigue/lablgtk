@@ -4,13 +4,7 @@ open Gtk
 open GtkMain
 open GObj
 
-module Main : sig
-  val init : unit -> string (* returns the locale name *)
-  val main : unit -> unit
-  val quit : unit -> unit
-  val version : int * int * int
-  val flush : unit -> unit
-end = Main
+module Main = Main
 
 module Grab = struct
   open Grab
@@ -19,8 +13,8 @@ module Grab = struct
   let get_current () = new widget (get_current ())
 end
 
-module Timeout : sig
-  type id
-  val add : ms:int -> callback:(unit -> bool) -> id
-  val remove : id -> unit
-end = Timeout
+module Timeout = Timeout
+
+open Main
+let main = main
+let quit = quit
