@@ -82,20 +82,31 @@ class style : Gtk.style ->
   object ('a)
     val style : Gtk.style
     method as_style : Gtk.style
-    method bg : Tags.state_type -> Gdk.Color.t
+    method base : Gtk.Tags.state_type -> Gdk.Color.t
+    method bg : Gtk.Tags.state_type -> Gdk.Color.t
     method colormap : Gdk.colormap
     method copy : 'a
+    method dark : Gtk.Tags.state_type -> Gdk.Color.t
+    method fg : Gtk.Tags.state_type -> Gdk.Color.t
     method font : Gdk.font
-    method set_background : Gdk.window -> Tags.state_type -> unit
-    method set_bg : (Tags.state_type * GDraw.color) list -> unit
+    method light : Gtk.Tags.state_type -> Gdk.Color.t
+    method mid : Gtk.Tags.state_type -> Gdk.Color.t
+    method set_bg : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_dark : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method set_font : Gdk.font -> unit
+    method set_light : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_mid : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method text : Gtk.Tags.state_type -> Gdk.Color.t
   end
 
 class selection_data :
   Gtk.selection_data ->
   object
     val sel : Gtk.selection_data
-    method data : string	(* May raise Null_pointer *)
+    method data : string	(* May raise Gpointer.Null *)
     method format : int
     method selection : Gdk.Tags.selection
     method typ : string

@@ -2,8 +2,7 @@
 # Makefile for lablgtk.
 
 EXE = .exe
-CONFIG = ..\config.make.nt
-TARGETS = varcc lablgtk$(EXE) lablgtk_t$(EXE) lablgtkrun$(EXE)
+TARGETS = varcc lablgtk$(EXE) lablgtk_thread$(EXE)
 
 all: $(TARGETS)
 
@@ -12,15 +11,16 @@ opt: lablgtkopt
 depend:
 	ocamldep *.ml *.mli > .depend
 
-COMPILER = $(CAMLC) $(MLFLAGS) -w s -labels -c
+COMPILER = $(CAMLC) $(MLFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -labels -c
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
+MKLIB = lib /nologo /debugtype:CV /out:
 TOPLEVEL = ocamlmktop $(MLFLAGS)
-### How to invoke the librarian
-MKLIB=lib /nologo /debugtype:CV /out:
+CAMLP4 = camlp4o pr_o.cmo
+CONFIG = ..\config.make.nt
 
-!include $(CONFIG)
+include $(CONFIG)
 
 INSTALLDIR = $(LIBDIR:/=\)\lablgtk
 BINDIR = $(LIBDIR:/=\)\..\bin
@@ -52,7 +52,7 @@ GLCOBJS = ml_gtkgl.obj
 !endif
 
 # Rules
-.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .obj .var .h .opt .def
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .obj .var .h .opt .def .ml4
 .c.obj:
 	$(CCOMPILER) $<
 .ml.cmo:
@@ -63,12 +63,14 @@ GLCOBJS = ml_gtkgl.obj
 	$(COMPOPT) $<
 .var.h:
 	ocamlrun ./varcc $<
+ml4.ml:
+	$(CAMLP4) -impl $< -o $@
 
 # Targets
 GTKOBJS = ml_gtk.obj ml_gtkbin.obj ml_gtkbutton.obj ml_gtkedit.obj \
         ml_gtklist.obj ml_gtkmenu.obj ml_gtkmisc.obj ml_gtknew.obj \
         ml_gtkpack.obj ml_gtkrange.obj ml_gtktree.obj
-COBJS = ml_gdk.obj ml_glib.obj wrappers.obj $(GTKOBJS)
+COBJS = ml_gdk.obj ml_glib.obj ml_gpointer.obj wrappers.obj $(GTKOBJS)
 MLOBJS = gaux.cmo gpointer.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
@@ -87,12 +89,9 @@ ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(THOBJS) \
 lablgtk$(EXE): $(CLIBS) $(MLLIBS) $(INITOBJS)
 	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
 
-lablgtk_t$(EXE): $(CLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
+lablgtk_thread$(EXE): $(CLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
 	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
-
-lablgtkrun$(EXE): $(CLIBS) $(MLLIBS)
-	$(LINKER) -o $@ -make-runtime $(MLLINK) -I . $(MLLIBS)
 
 lablgtkopt: $(CLIBS) $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \
 	$(THOBJS:.cmo=.cmx)
@@ -104,7 +103,7 @@ install:
 	cp $(ALLOBJS:.cmo=.ml) $(INSTALLDIR)
 	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
 	cp $(CLIBS) $(INSTALLDIR)
-	cp lablgtk$(EXE) lablgtk_t$(EXE) lablgtkrun$(EXE) $(BINDIR)
+	cp lablgtk$(EXE) lablgtk_thread$(EXE) $(BINDIR)
 	cp varcc *.h $(INSTALLDIR)
 	if test -f lablgtk.cmxa; then \
 	   cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.lib) \
@@ -128,18 +127,17 @@ gtkThread.cmo: gtkThread.ml
 gtkThread.cmx: gtkThread.ml
 	$(COMPOPT) $(THFLAGS) gtkThread.ml
 
-varcc: varcc.ml
-	$(LINKER) -pp camlp4o -o $@ varcc.ml
+varcc: varcc.cmo
+	$(LINKER) -o $@ $<
 	rm -f *_tags.h *_tags.c
 
 clean:
 	rm -f *.cm* *.obj *.lib *_tags.[ch] $(TARGETS)
 
-depend .depend:
-	ocamldep *.ml *.mli > .depend
-
-ml_gtk.obj: gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
-ml_gdk.obj: gdk_tags.h ml_gdk.h wrappers.h
+$(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gdk.obj: gdk_tags.h ml_gdk.h ml_gpointer.h wrappers.h
 ml_gtkgl.obj: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gtkxmhtml.obj: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gpointer.obj: ml_gpointer.h
 
 !include .depend
