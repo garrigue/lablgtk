@@ -19,8 +19,7 @@ CONFIG = ../config.make
 
 include $(CONFIG)
 
-INSTALLDIR = $(LIBDIR)/lablgtk
-LABLGLDIR = $(LIBDIR)/lablGL
+LABLGLDIR = +lablGL
 
 MLLIBS = lablgtk.cma
 CLIBS = liblablgtk.a

@@ -5,13 +5,12 @@ CAMLC = ocamlc
 CAMLOPT = ocamlopt
 
 # Default installation directories
-BINDIR = `$(GETBINDIR)`
+BINDIR = `$(GETLIBDIR) | sed -e 's|/lib/[^/]*$$|/bin|' -e 's|/lib$$|/bin|'`
 INSTALLDIR = $(LIBDIR)/lablgtk
 
 # Autoconf
-GETLIBDIR = ocamlc -v | grep "^Standard" | sed 's/^.*: *//'
+GETLIBDIR = ocamlc -where
 LIBDIR = `$(GETLIBDIR)`
-BINDIR = `$(GETLIBDIR) | sed -e 's|/lib/[^/]*$$|/bin|' -e 's|/lib$$|/bin|'`
 RANLIB = `which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'`
 
 GTK_CONFIG = gtk-config
