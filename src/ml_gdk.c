@@ -13,6 +13,12 @@
 #include <caml/callback.h>
 #include <caml/bigarray.h>
 
+/* Compatibility */
+#include <gtk/gtkversion.h>
+#if GTK_CHECK_VERSION(2,2,0) && !defined(DISABLE_GTK22)
+#define HASGTK22
+#endif
+
 #include "wrappers.h"
 #include "ml_gpointer.h"
 #include "ml_glib.h"
