@@ -320,7 +320,7 @@ gtkThread.cmx: gtkThread.ml
 	   $(COMPOPT) $(THFLAGS) gtkThread.ml; fi
 
 xml_lexer.ml: xml_lexer.mll
-	$(OCAMLLEX) xml_lexer.mll
+	$(CAMLLEX) xml_lexer.mll
 xml_lexer.cmo xml_lexer.cmx : xml_lexer.cmi
 
 varcc$(XE): varcc.cmo
