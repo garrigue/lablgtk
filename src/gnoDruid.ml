@@ -1,20 +1,17 @@
 
-class virtual druid_page obj = object
-  inherit [[> GnomeDruid.druidpage]] GContainer.container_impl obj
-  method as_druidpage = (obj :> GnomeDruid.druidpage Gtk.obj)
+class type druid_page = object
+  method as_druidpage : GnomeDruid.druidpage Gtk.obj
 end
 
-
 class druid_signals obj = object (self)
-  inherit GContainer.container_signals_impl obj
+  inherit GContainer.container_signals_impl (obj : GnomeDruid.druid Gtk.obj)
   method cancel = self#connect GnomeDruid.Druid.Signals.cancel 
   method help   = self#connect GnomeDruid.Druid.Signals.help 
 end
 
 class druid obj = object (self)
-  inherit GContainer.container (obj :> GnomeDruid.druid Gtk.obj)
-  (* inherit [[> GnomeDruid.druid]] GContainer.container_impl obj *)
-  method connect = new druid_signals (obj :> GnomeDruid.druid Gtk.obj)
+  inherit GContainer.container obj
+  method connect = new druid_signals obj
 
   method show_finish = Gobject.get GnomeDruid.Druid.Prop.show_finish obj
   method show_help   = Gobject.get GnomeDruid.Druid.Prop.show_help obj
@@ -55,10 +52,14 @@ class druid_page_signals obj = object (self)
       (fun w -> callback (new druid w))
 end
 
+class druid_page_skel obj = object (self)
+  inherit [[> GnomeDruid.druidpage]] GContainer.container_impl obj
+  method as_druidpage = (obj :> GnomeDruid.druidpage Gtk.obj)
+  method connect = new druid_page_signals (obj :> GnomeDruid.druidpage Gtk.obj)
+end
   
 class druid_page_edge obj = object (self)
-  inherit druid_page obj
-  method connect = new druid_page_signals (obj :> GnomeDruid.druidpage Gtk.obj)
+  inherit druid_page_skel obj
   method set_bg_color = GnomeDruid.Page_Edge.set_bg_color obj
   method set_textbox_color = GnomeDruid.Page_Edge.set_textbox_color obj
   method set_logo_bg_color = GnomeDruid.Page_Edge.set_logo_bg_color obj
@@ -78,9 +79,8 @@ let druid_page_edge ~position ~aa ?title ?text ?logo ?watermark ?top_watermark =
     new druid_page_edge w)
 
 class druid_page_standard obj = object (self)
-  inherit druid_page obj
+  inherit druid_page_skel obj
   method vbox = new GPack.box (GnomeDruid.Page_Standard.vbox obj)
-  method connect = new druid_page_signals (obj :> GnomeDruid.druidpage Gtk.obj)
   method append_item ?question ?additional_info w =
     GnomeDruid.Page_Standard.append_item obj ?question (GObj.as_widget w) ?additional_info
   method set_background = Gobject.set GnomeDruid.Page_Standard.Prop.background obj
