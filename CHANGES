@@ -1,5 +1,8 @@
 $Id$
 
+1999.10.27
+  * added radtest/CHANGES for cooperative editing on radtest
+
 1999.10.21
   * added a UI for unison
     (ask bcpierce@saul.cis.upenn.edu about how to get unison)
