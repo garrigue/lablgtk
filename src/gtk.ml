@@ -302,7 +302,7 @@ module Adjustment = struct
       = "ml_gtk_adjustment_clamp_page"
   external get_value :
       [> adjustment] obj -> float
-      = "ml_adjustment_get_value"	  
+      = "ml_GtkAdjustment_value"
   module Signals = struct
     open Signal
     let changed : ([> adjustment],_) t =
