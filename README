@@ -205,6 +205,11 @@ ML-side signals:
   develop complex applications, abstracting the plumbing between
   various components. Explanations are provided in GUtil.mli.
 
+Contributed components:
+
+  The GToolbox module contains contributed components to help you build
+  your applications.
+
 Memory management:
 
   Important efforts have been dedicated to cooperate with Gtk's
