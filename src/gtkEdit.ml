@@ -13,8 +13,7 @@ module Editable = struct
   external select_region : [> editable] obj -> start:int -> end:int -> unit
       = "ml_gtk_editable_select_region"
   external insert_text : [> editable] obj -> string -> pos:int -> int
-      = "ml_gtk_editable_select_region"
-  let insert_text w s ?:pos [< -1 >] = insert_text w s :pos
+      = "ml_gtk_editable_insert_text"
   external delete_text : [> editable] obj -> start:int -> end:int -> unit
       = "ml_gtk_editable_delete_text"
   external get_chars : [> editable] obj -> start:int -> end:int -> string
@@ -31,6 +30,18 @@ module Editable = struct
   external delete_selection : [> editable] obj -> unit
       = "ml_gtk_editable_delete_selection"
   external changed : [> editable] obj -> unit = "ml_gtk_editable_changed"
+  external set_position : [> editable] obj -> int -> unit
+      = "ml_gtk_editable_set_position"
+  external get_position : [> editable] obj -> int
+      = "ml_gtk_editable_get_position"
+  external set_editable : [> editable] obj -> bool -> unit
+      = "ml_gtk_editable_set_editable"
+  external selection_start_pos : [> editable] obj -> int
+      = "ml_gtk_editable_selection_start_pos"
+  external selection_end_pos : [> editable] obj -> int
+      = "ml_gtk_editable_selection_end_pos"
+  external has_selection : [> editable] obj -> bool
+      = "ml_gtk_editable_has_selection"
   module Signals = struct
     open GtkSignal
     let activate : ([> editable],_) t =
@@ -57,20 +68,15 @@ module Entry = struct
       = "ml_gtk_entry_append_text"
   external prepend_text : [> entry] obj -> string -> unit
       = "ml_gtk_entry_prepend_text"
-  external set_position : [> entry] obj -> int -> unit
-      = "ml_gtk_entry_set_position"
   external get_text : [> entry] obj -> string = "ml_gtk_entry_get_text"
   external set_visibility : [> entry] obj -> bool -> unit
       = "ml_gtk_entry_set_visibility"
-  external set_editable : [> entry] obj -> bool -> unit
-      = "ml_gtk_entry_set_editable"
   external set_max_length : [> entry] obj -> int -> unit
       = "ml_gtk_entry_set_max_length"
-  let setter w :cont ?:text ?:visibility ?:editable ?:max_length =
+  let setter w :cont ?:text ?:visibility ?:max_length =
     let may_set f = may fun:(f w) in
     may_set set_text text;
     may_set set_visibility visibility;
-    may_set set_editable editable;
     may_set set_max_length max_length;
     cont w
   external text_length : [> entry] obj -> int
@@ -137,8 +143,6 @@ module Text = struct
       = "ml_gtk_text_new"
   let create ?:hadjustment ?:vadjustment ?(_ : unit option) =
     create (optboxed hadjustment) (optboxed vadjustment)
-  external set_editable : [> text] obj -> bool -> unit
-      = "ml_gtk_text_set_editable"
   external set_word_wrap : [> text] obj -> bool -> unit
       = "ml_gtk_text_set_word_wrap"
   external set_adjustment :
@@ -159,10 +163,9 @@ module Text = struct
       [> text] obj -> ?font:Gdk.font -> ?foreground:Gdk.Color.t ->
       ?background:Gdk.Color.t -> string -> unit
       = "ml_gtk_text_insert"
-  let setter w :cont ?:hadjustment ?:vadjustment ?:editable ?:word_wrap =
+  let setter w :cont ?:hadjustment ?:vadjustment ?:word_wrap =
     if hadjustment <> None || vadjustment <> None then
       set_adjustment w ?horizontal: hadjustment ?vertical: vadjustment;
-    may editable fun:(set_editable w);
     may word_wrap fun:(set_word_wrap w);
     cont w
 end

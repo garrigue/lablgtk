@@ -20,11 +20,16 @@ class editable :
     method connect : ?after:bool -> editable_signals
     method copy_clipboard : unit -> unit
     method cut_clipboard : unit -> unit
+    method delete_selection : unit -> unit
     method delete_text : start:int -> end:int -> unit
     method get_chars : start:int -> end:int -> string
-    method insert_text : string -> ?pos:int -> int
+    method insert_text : string -> pos:int -> int
     method paste_clipboard : unit -> unit
+    method position : int
     method select_region : start:int -> end:int -> unit
+    method selection : (int * int) option
+    method set_editable : bool -> unit
+    method set_position : int -> unit
   end
 
 class entry :
@@ -40,9 +45,7 @@ class entry :
     method add_events : Gdk.Tags.event_mask list -> unit
     method append_text : string -> unit
     method prepend_text : string -> unit
-    method set_entry :
-      ?visibility:bool -> ?editable:bool -> ?max_length:int -> unit
-    method set_position : int -> unit
+    method set_entry : ?visibility:bool -> ?max_length:int -> unit
     method set_text : string -> unit
     method text : string
     method text_length : int
@@ -125,8 +128,7 @@ class text :
     method vadjustment : GData.adjustment
     method set_text :
       ?hadjustment:GData.adjustment ->
-      ?vadjustment:GData.adjustment ->
-      ?editable:bool -> ?word_wrap:bool -> unit
+      ?vadjustment:GData.adjustment -> ?word_wrap:bool -> unit
     method set_point : int -> unit
     method freeze : unit -> unit
     method thaw : unit -> unit

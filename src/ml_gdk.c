@@ -235,9 +235,22 @@ ML_bc6 (ml_gdk_draw_string)
 Make_Val_final_pointer (GdkEvent, , Ignore, gdk_event_free)
 ML_1 (gdk_event_copy, GdkEvent_val( ), Val_GdkEvent)
 
+value ml_gdk_event_new (value event_type)
+{
+    value ret = alloc (Wosizeof(GdkEvent)+2, Abstract_tag);
+    GdkEventAny *event = (GdkEventAny*) &Field(ret,2);
+    Field(ret,1) = (value) event;
+    memset (event, 0, sizeof(GdkEvent));
+    event->type = GdkEventType_val(event_type);
+    event->send_event = TRUE;
+    return ret;
+}
+
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), type, Val_gdkEventType)
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), window, Val_GdkWindow)
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), send_event, Val_bool)
+Make_Setter (gdk_event_set, GdkEvent_val(Any), GdkEventType_val, type)
+Make_Setter (gdk_event_set, GdkEvent_val(Any), GdkWindow_val, window)
 
 Make_Extractor (GdkEventExpose, GdkEvent_val(Expose), area, Val_copy)
 Make_Extractor (GdkEventExpose, GdkEvent_val(Expose), count, Val_int)
@@ -270,6 +283,8 @@ Make_Extractor (GdkEventButton, GdkEvent_val(Button), source, Val_gdkInputSource
 Make_Extractor (GdkEventButton, GdkEvent_val(Button), deviceid, Val_int)
 Make_Extractor (GdkEventButton, GdkEvent_val(Button), x_root, copy_double)
 Make_Extractor (GdkEventButton, GdkEvent_val(Button), y_root, copy_double)
+
+Make_Setter (gdk_event_button_set, GdkEvent_val(Button), Int_val, button)
 
 Make_Extractor (GdkEventKey, GdkEvent_val(Key), time, Val_int)
 Make_Extractor (GdkEventKey, GdkEvent_val(Key), state, Val_int)
