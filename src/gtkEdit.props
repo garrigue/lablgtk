@@ -51,6 +51,7 @@ class Entry set wrap wrapsig : Editable {
   "scroll-offset"        gint                 : Read
   "selection-bound"      gint                 : Read / NoWrap
   "width-chars"          gint                 : Read / Write
+  "xalign"		 gfloat		      : Read / Write
   method append_text : "string -> unit"
   method prepend_text : "string -> unit"
   method text_length : "int"

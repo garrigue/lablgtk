@@ -1,5 +1,9 @@
 $Id$
 
+2005.03.07 [Olivier]
+  * add GEdit.entry#xalign property (2.4)
+  * make configure fail if GTK+ cannot be found
+
 In lablgtk2-20050218:
 2005.02.18 [Jacques]
   * add GObj.event_signals#scroll and other missing wevents (Hendrik Tews)
