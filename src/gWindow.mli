@@ -16,7 +16,6 @@ class ['a] window_skel : 'b obj ->
     method as_window : Gtk.window obj
     method set_allow_grow : bool -> unit
     method set_allow_shrink : bool -> unit
-    method set_auto_shrink : bool -> unit
     method set_default_size : width:int -> height:int -> unit
     method set_modal : bool -> unit
     method set_position : Tags.window_position -> unit
@@ -26,6 +25,7 @@ class ['a] window_skel : 'b obj ->
     method set_wm_class : string -> unit
     method set_wm_name : string -> unit
     method show : unit -> unit
+    method present : unit -> unit
   end
 
 class window : Gtk.window obj ->
@@ -42,7 +42,6 @@ val window :
   ?position:Tags.window_position ->
   ?allow_shrink:bool ->
   ?allow_grow:bool ->
-  ?auto_shrink:bool ->
   ?modal:bool ->
   ?x:int ->
   ?y:int ->
@@ -68,7 +67,6 @@ val dialog :
   ?position:Tags.window_position ->
   ?allow_shrink:bool ->
   ?allow_grow:bool ->
-  ?auto_shrink:bool ->
   ?modal:bool ->
   ?x:int ->
   ?y:int ->
@@ -92,7 +90,6 @@ val color_selection_dialog :
   ?position:Tags.window_position ->
   ?allow_shrink:bool ->
   ?allow_grow:bool ->
-  ?auto_shrink:bool ->
   ?modal:bool ->
   ?x:int ->
   ?y:int ->
@@ -122,7 +119,6 @@ val file_selection :
   ?position:Tags.window_position ->
   ?allow_shrink:bool ->
   ?allow_grow:bool ->
-  ?auto_shrink:bool ->
   ?modal:bool ->
   ?x:int ->
   ?y:int ->
@@ -146,7 +142,6 @@ val font_selection_dialog :
   ?position:Tags.window_position ->
   ?allow_shrink:bool ->
   ?allow_grow:bool ->
-  ?auto_shrink:bool ->
   ?modal:bool ->
   ?x:int ->
   ?y:int ->

@@ -5,15 +5,15 @@ open Gtk
 (* Object *)
 
 class gtkobj :
-  'a obj ->
+  ([> `gtk] as 'a) obj ->
   object
     val obj : 'a obj
     method destroy : unit -> unit
-    method get_id : int
+    method get_oid : int
   end
 
 class gtkobj_signals :
-  ?after:bool -> ([>`base] as 'a) obj ->
+  ?after:bool -> ([>`gtk] as 'a) obj ->
   object ('b)
     val obj : 'a obj
     val after : bool
@@ -27,6 +27,9 @@ class gtkobj_misc : 'a obj ->
     method disconnect : GtkSignal.id -> unit
     method handler_block : GtkSignal.id -> unit
     method handler_unblock : GtkSignal.id -> unit
+    method set_property : string -> Gobject.g_value -> unit
+    method freeze_notify : unit -> unit
+    method thaw_notify : unit -> unit
   end
 
 (* Widget *)
@@ -108,7 +111,7 @@ class selection_data :
     val sel : Gtk.selection_data
     method data : string	(* May raise Gpointer.Null *)
     method format : int
-    method selection : Gdk.Tags.selection
+    method selection : Gdk.atom
     method typ : string
     method target : string
   end
@@ -117,7 +120,7 @@ class selection_context :
   Gtk.selection_data ->
   object
     val sel : Gtk.selection_data
-    method selection : Gdk.Tags.selection
+    method selection : Gdk.atom
     method target : string
     method return : ?typ:string -> ?format:int -> string -> unit
   end
@@ -129,7 +132,7 @@ class drag_ops : Gtk.widget obj ->
       ?flags:Tags.dest_defaults list ->
       ?actions:Gdk.Tags.drag_action list -> target_entry list -> unit
     method dest_unset : unit -> unit
-    method get_data : target:string -> ?time:int -> drag_context ->unit
+    method get_data : target:string -> ?time:int32 -> drag_context ->unit
     method highlight : unit -> unit
     method source_set :
       ?modi:Gdk.Tags.modifier list ->
@@ -149,27 +152,31 @@ and misc_ops : Gtk.widget obj ->
       group:accel_group -> ?modi:Gdk.Tags.modifier list ->
       ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
     method add_selection_target :
-      target:string -> ?info:int -> Gdk.Tags.selection -> unit
+      target:string -> ?info:int -> Gdk.atom -> unit
     method allocation : rectangle
     method colormap : Gdk.colormap
     method connect : misc_signals
-    method convert_selection :
-      target:string -> ?time:int -> Gdk.Tags.selection -> bool
+    method convert_selection : target:string -> ?time:int32 -> Gdk.atom -> bool
+    method create_pango_context : unit -> Pango.context
     method draw : Gdk.Rectangle.t option -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
-    method grab_selection : ?time:int -> Gdk.Tags.selection -> bool
+    method grab_selection : ?time:int32 -> Gdk.atom -> bool
     method has_focus : bool
     method hide : unit -> unit
     method hide_all : unit -> unit
     method intersect : Gdk.Rectangle.t -> Gdk.Rectangle.t option
     method is_ancestor : widget -> bool
-    method lock_accelerators : unit -> unit
     method map : unit -> unit
+    method modify_bg : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method modify_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method modify_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method modify_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method modify_font : Pango.font_description -> unit
     method name : string
     method parent : widget option
+    method pango_context : Pango.context
     method pointer : int * int
-    method popup : x:int -> y:int -> unit
     method realize : unit -> unit
     method remove_accelerator :
       group:accel_group -> ?modi:Gdk.Tags.modifier list -> Gdk.keysym -> unit
@@ -179,6 +186,7 @@ and misc_ops : Gtk.widget obj ->
     method set_can_focus : bool -> unit
     method set_name : string -> unit
     method set_sensitive : bool -> unit
+    method set_size_request : width:int -> height:int -> unit
     method set_state : Tags.state_type -> unit
     method set_style : style -> unit
     method set_geometry :
@@ -213,16 +221,15 @@ and misc_signals :
     inherit gtkobj_signals 
     val obj : Gtk.widget obj
     method after : 'b
-    method draw : callback:(Gtk.rectangle -> unit) -> GtkSignal.id
     method hide : callback:(unit -> unit) -> GtkSignal.id
     method map : callback:(unit -> unit) -> GtkSignal.id
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id
     method selection_get :
-      callback:(selection_context -> info:int -> time:int -> unit) ->
+      callback:(selection_context -> info:int -> time:int32 -> unit) ->
       GtkSignal.id
     method selection_received :
-      callback:(selection_data -> time:int -> unit) -> GtkSignal.id
+      callback:(selection_data -> time:int32 -> unit) -> GtkSignal.id
     method show : callback:(unit -> unit) -> GtkSignal.id
     method size_allocate : callback:(Gtk.rectangle -> unit) -> GtkSignal.id
     method state_changed :
@@ -236,18 +243,18 @@ and drag_context :
   object
     val context : Gdk.drag_context
     method context : Gdk.drag_context
-    method finish : success:bool -> del:bool -> time:int -> unit
+    method finish : success:bool -> del:bool -> time:int32 -> unit
     method source_widget : widget 
     method set_icon_pixmap :
       ?colormap:Gdk.colormap -> GDraw.pixmap -> hot_x:int -> hot_y:int -> unit
     method set_icon_widget : widget -> hot_x:int -> hot_y:int -> unit
-    method status : ?time:int -> Gdk.Tags.drag_action list -> unit
+    method status : ?time:int32 -> Gdk.Tags.drag_action list -> unit
     method suggested_action : Gdk.Tags.drag_action
     method targets : string list
   end
 
 and drag_signals :
-  ?after:bool -> Gtk.widget obj ->
+  Gtk.widget obj ->
   object ('a)
     method after : 'a
     method beginning :
@@ -256,24 +263,24 @@ and drag_signals :
       callback:(drag_context -> unit) -> GtkSignal.id
     method data_get :
       callback:
-      (drag_context -> selection_context -> info:int -> time:int -> unit) ->
+      (drag_context -> selection_context -> info:int -> time:int32 -> unit) ->
       GtkSignal.id
     method data_received :
       callback:(drag_context -> x:int -> y:int ->
-	        selection_data -> info:int -> time:int -> unit) -> GtkSignal.id
+	        selection_data -> info:int -> time:int32 -> unit) -> GtkSignal.id
     method drop :
-      callback:(drag_context -> x:int -> y:int -> time:int -> bool) ->
+      callback:(drag_context -> x:int -> y:int -> time:int32 -> bool) ->
       GtkSignal.id
     method ending :
       callback:(drag_context -> unit) -> GtkSignal.id
     method leave :
-      callback:(drag_context -> time:int -> unit) -> GtkSignal.id
+      callback:(drag_context -> time:int32 -> unit) -> GtkSignal.id
     method motion :
-      callback:(drag_context -> x:int -> y:int -> time:int -> bool) ->
+      callback:(drag_context -> x:int -> y:int -> time:int32 -> bool) ->
       GtkSignal.id
   end
 
-class widget_signals : ?after:bool -> 'a obj ->
+class widget_signals : 'a obj ->
   object
     inherit gtkobj_signals
     constraint 'a = [> Gtk.widget]

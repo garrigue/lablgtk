@@ -3,50 +3,73 @@
 open StdLabels
 open GMain
 
-class editor ?packing ?show () =
-  let text = GEdit.text ~editable:true ?packing ?show () in
-object (self)
-  inherit GObj.widget text#as_widget
 
+class editor ?packing ?show () = object (self)
+  val view = GText.view ?packing ?show ()
   val mutable filename = None
 
-  method text = text
+  method view = view
+
+  method buffer = view#buffer
 
   method load_file name =
     try
-      let ic = open_in name in
+      let b = Buffer.create 1024 in
+      File.with_file name ~f:(File.input_channel b);
+      let s = Glib.Convert.locale_to_utf8 (Buffer.contents b) in
+      let n_buff = GText.buffer ~text:s () in
+      Lexical.init_tags n_buff;
+      Lexical.tag n_buff;
+      view#set_buffer n_buff;
       filename <- Some name;
-      text#freeze ();
-      text#delete_text ~start:0 ~stop:text#length;
-      let buf = String.create 1024 and len = ref 0 in
-      while len := input ic buf 0 1024; !len > 0 do
-	if !len = 1024 then text#insert buf
-	else text#insert (String.sub buf ~pos:0 ~len:!len)
-      done;
-      text#set_point 0;
-      text#thaw ();
-      close_in ic
-    with _ -> ()
+      n_buff#place_cursor n_buff#start_iter
+    with exn -> prerr_endline ("Load failed: " ^ Printexc.to_string exn)
 
   method open_file () = File.dialog ~title:"Open" ~callback:self#load_file ()
 
+  method save_dialog () =
+    File.dialog ~title:"Save" ?filename
+      ~callback:(fun file -> self#output ~file) ()
+
   method save_file () =
-    File.dialog ~title:"Save" ?filename () ~callback:
-      begin fun name ->
-	try
-	  if Sys.file_exists name then Sys.rename name (name ^ "~");
-	  let oc = open_out name in
-	  output_string oc (text#get_chars ~start:0 ~stop:text#length);
-	  close_out oc
-	with _ -> prerr_endline "Save failed"
-      end
+    match filename with
+      Some file -> self#output ~file
+    | None -> self#save_dialog ()
+
+  method output ~file =
+    try
+      if Sys.file_exists file then Sys.rename file (file ^ "~");
+      let s = view#buffer#get_text () in
+      let oc = open_out file in
+      output_string oc (Glib.Convert.locale_from_utf8 s);
+      close_out oc;
+      filename <- Some file
+    with _ -> prerr_endline "Save failed"
+
+  initializer
+    Lexical.init_tags view#buffer;
+    view#buffer#connect#after#insert_text ~callback:
+      begin fun it s ->
+        let start = it#backward_chars (String.length s) in
+        Lexical.tag view#buffer
+          ~start:start#backward_line ~stop:it#forward_to_line_end;
+      end;
+    view#buffer#connect#after#delete_range ~callback:
+      begin fun ~start ~stop ->
+        let start = start#backward_line
+        and stop = start#forward_to_line_end in
+        Lexical.tag view#buffer ~start ~stop
+      end;
+    let font = Pango.Font.from_string "monospace 11" in
+    view#misc#modify_font font;
+    Shell.set_size_chars view ~font ~width:80 ~height:25;
+    ()
 end
 
 open GdkKeysyms
 
 class editor_window ?(show=false) () =
-  let window = GWindow.window ~width:500 ~height:300
-      ~title:"Program Editor" () in
+  let window = GWindow.window ~title:"Program Editor" () in
   let vbox = GPack.vbox ~packing:window#add () in
 
   let menubar = GMenu.menu_bar ~packing:vbox#pack () in
@@ -56,10 +79,8 @@ class editor_window ?(show=false) () =
   and edit_menu = factory#add_submenu "Edit"
   and comp_menu = factory#add_submenu "Compiler" in
 
-  let hbox = GPack.hbox ~packing:vbox#add () in
-  let scrollbar =
-    GRange.scrollbar `VERTICAL ~packing:(hbox#pack ~from:`END) ()
-  and editor = new editor ~packing:hbox#add () in
+  let sw = GBin.scrolled_window ~hpolicy:`AUTOMATIC ~packing:vbox#add () in
+  let editor = new editor ~packing:sw#add () in
 object (self)
   inherit GObj.widget window#as_widget
 
@@ -77,19 +98,22 @@ object (self)
     factory#add_separator ();
     factory#add_item "Quit" ~key:_Q ~callback:window#destroy;
     let factory = new GMenu.factory edit_menu ~accel_group in
-    factory#add_item "Copy" ~key:_C ~callback:editor#text#copy_clipboard;
-    factory#add_item "Cut" ~key:_X ~callback:editor#text#cut_clipboard;
-    factory#add_item "Paste" ~key:_V ~callback:editor#text#paste_clipboard;
+    let clipboard = GtkBase.Clipboard.get Gdk.Atom.clipboard in
+    factory#add_item "Copy" ~key:_C ~callback:
+      (fun () -> editor#buffer#copy_clipboard clipboard);
+    factory#add_item "Cut" ~key:_X ~callback:
+      (fun () -> editor#buffer#cut_clipboard clipboard);
+    factory#add_item "Paste" ~key:_V ~callback:
+      (fun () -> editor#buffer#paste_clipboard clipboard);
     factory#add_separator ();
-    factory#add_check_item "Word wrap" ~active:false
-      ~callback:editor#text#set_word_wrap;
+    factory#add_check_item "Word wrap" ~active:false ~callback:
+      (fun b -> editor#view#set_wrap_mode (if b then `WORD else `NONE));
     factory#add_check_item "Read only" ~active:false
-      ~callback:(fun b -> editor#text#set_editable (not b));
+      ~callback:(fun b -> editor#view#set_editable (not b));
     let factory = new GMenu.factory comp_menu ~accel_group in
     factory#add_item "Lex" ~key:_L
-      ~callback:(fun () -> Lexical.tag editor#text);
+      ~callback:(fun () -> Lexical.tag editor#buffer);
     window#add_accel_group accel_group;
-    editor#text#set_vadjustment scrollbar#adjustment;
     if show then self#show ()
 end
 

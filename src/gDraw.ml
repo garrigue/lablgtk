@@ -32,15 +32,16 @@ let optcolor ?colormap (c : optcolor) =
   | `DEFAULT -> None
   | #color as c -> Some (color ?colormap c)
 
-class ['a] drawable ?(colormap = default_colormap ()) w =
+class drawable ?(colormap = default_colormap ()) w =
 object (self)
   val colormap = colormap
   val gc = GC.create w
-  val w : 'a Gdk.drawable = w
+  val w = w
   method color = color ~colormap
   method set_foreground col = GC.set_foreground gc (self#color col)
   method set_background col = GC.set_background gc (self#color col)
-  method size = Window.get_size w
+  method size = Drawable.get_size w
+  method depth = Drawable.get_depth w
   method gc_values = GC.get_values gc
   method set_clip_region = GC.set_clip_region gc
   method set_clip_origin = GC.set_clip_origin gc
@@ -68,7 +69,7 @@ object (self)
 end
 
 class pixmap ?colormap ?mask pm = object
-  inherit [[`pixmap]] drawable ?colormap pm as pixmap
+  inherit drawable ?colormap pm as pixmap
   val bitmap = may_map mask ~f:
       begin fun x ->
         let mask = new drawable x in
@@ -76,7 +77,7 @@ class pixmap ?colormap ?mask pm = object
         mask
       end
   val mask : Gdk.bitmap option = mask
-  method pixmap = w
+  method pixmap : Gdk.pixmap = w
   method mask = mask
   method set_line_attributes ?width ?style ?cap ?join () =
     pixmap#set_line_attributes ?width ?style ?cap ?join ();
@@ -179,7 +180,7 @@ let pixmap_from_xpm_d ~data ?window ?colormap ?transparent () =
 
 class drag_context context = object
   val context = context
-  method status ?(time=0) act = DnD.drag_status context act ~time
+  method status ?(time=Int32.zero) act = DnD.drag_status context act ~time
   method suggested_action = DnD.drag_context_suggested_action context
   method targets = List.map Gdk.Atom.name (DnD.drag_context_targets context)
 end

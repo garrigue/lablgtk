@@ -10,6 +10,7 @@
 
 #include "wrappers.h"
 #include "ml_glib.h"
+#include "ml_gobject.h"
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
@@ -62,8 +63,9 @@ ML_2 (gtk_range_set_update_policy, GtkRange_val, Update_type_val, Unit)
 ML_2 (gtk_scale_set_digits, GtkScale_val, Int_val, Unit)
 ML_2 (gtk_scale_set_draw_value, GtkScale_val, Bool_val, Unit)
 ML_2 (gtk_scale_set_value_pos, GtkScale_val, Position_val, Unit)
-ML_1 (gtk_scale_get_value_width, GtkScale_val, Val_int)
-ML_1 (gtk_scale_draw_value, GtkScale_val, Unit)
+ML_1 (gtk_scale_get_digits, GtkScale_val, Val_int)
+ML_1 (gtk_scale_get_draw_value, GtkScale_val, Val_bool)
+ML_1 (gtk_scale_get_value_pos, GtkScale_val, Val_position)
 ML_1 (gtk_hscale_new, GtkAdjustment_val, Val_GtkWidget_sink)
 ML_1 (gtk_vscale_new, GtkAdjustment_val, Val_GtkWidget_sink)
 

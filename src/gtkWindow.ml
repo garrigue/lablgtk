@@ -10,27 +10,32 @@ module Window = struct
   external create : window_type -> window obj = "ml_gtk_window_new"
   external set_title : [>`window] obj -> string -> unit
       = "ml_gtk_window_set_title"
+  external get_title : [>`window] obj -> string
+      = "ml_gtk_window_get_title"
   external set_wmclass : [>`window] obj -> name:string -> clas:string -> unit
       = "ml_gtk_window_set_wmclass"
   external get_wmclass_name : [>`window] obj -> string
       = "ml_gtk_window_get_wmclass_name"
   external get_wmclass_class : [>`window] obj -> string
       = "ml_gtk_window_get_wmclass_class"
+  external set_role : [>`window] obj -> string -> unit
+      = "ml_gtk_window_set_role"
+  external get_role : [>`window] obj -> string
+      = "ml_gtk_window_get_role"
   (* set_focus/default are called by Widget.grab_focus/default *)
   external set_focus : [>`window] obj -> [>`widget] obj -> unit
       = "ml_gtk_window_set_focus"
+  external get_focus : [>`window] obj -> widget obj
+      = "ml_gtk_window_get_focus"
   external set_default : [>`window] obj -> [>`widget] obj -> unit
       = "ml_gtk_window_set_default"
   external set_policy :
-      [>`window] obj ->
-      allow_shrink:bool -> allow_grow:bool -> auto_shrink:bool -> unit
+      [>`window] obj -> allow_shrink:bool -> allow_grow:bool -> unit
       = "ml_gtk_window_set_policy"
   external get_allow_shrink : [>`window] obj -> bool
       = "ml_gtk_window_get_allow_shrink"
   external get_allow_grow : [>`window] obj -> bool
       = "ml_gtk_window_get_allow_grow"
-  external get_auto_shrink : [>`window] obj -> bool
-      = "ml_gtk_window_get_auto_shrink"
   external activate_focus : [>`window] obj -> bool
       = "ml_gtk_window_activate_focus"
   external activate_default : [>`window] obj -> bool
@@ -44,23 +49,25 @@ module Window = struct
       = "ml_gtk_window_set_position"
   external set_transient_for : [>`window] obj ->[>`window] obj -> unit
       = "ml_gtk_window_set_transient_for"
+  external get_transient_for : [>`window] obj -> window obj
+      = "ml_gtk_window_get_transient_for"
 
   let set_wmclass ?name ?clas:wm_class w =
     set_wmclass w ~name:(may_default get_wmclass_name w ~opt:name)
       ~clas:(may_default get_wmclass_class w ~opt:wm_class)
-  let set_policy ?allow_shrink ?allow_grow ?auto_shrink w =
+  let set_policy ?allow_shrink ?allow_grow w =
     set_policy w
       ~allow_shrink:(may_default get_allow_shrink w ~opt:allow_shrink)
       ~allow_grow:(may_default get_allow_grow w ~opt:allow_grow)
-      ~auto_shrink:(may_default get_auto_shrink w ~opt:auto_shrink)
-  let set ?title ?wm_name ?wm_class ?position ?allow_shrink ?allow_grow
+  let set ?title ?wm_name ?wm_class ?role ?position ?allow_shrink ?allow_grow
       ?auto_shrink ?modal ?(x = -2) ?(y = -2) w =
     may title ~f:(set_title w);
     if wm_name <> None || wm_class <> None then
       set_wmclass w ?name:wm_name ?clas:wm_class;
+    may role ~f:(set_role w);
     may position ~f:(set_position w);
-    if allow_shrink <> None || allow_grow <> None || auto_shrink <> None then
-      set_policy w ?allow_shrink ?allow_grow ?auto_shrink;
+    if allow_shrink <> None || allow_grow <> None then
+      set_policy w ?allow_shrink ?allow_grow;
     may ~f:(set_modal w) modal;
     if x <> -2 || y <> -2 then Widget.set_uposition w ~x ~y
   external add_accel_group : [>`window] obj -> accel_group -> unit
@@ -72,6 +79,8 @@ module Window = struct
       = "ml_gtk_window_activate_focus"
   external activate_default : [>`window] obj -> unit
       = "ml_gtk_window_activate_default"
+  external present :  [>`window] obj -> unit
+      = "ml_gtk_window_present"
   module Signals = struct
     open GtkSignal
     let move_resize =

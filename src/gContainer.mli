@@ -8,7 +8,7 @@ class focus :
   object
     constraint 'a = [> `container]
     val obj : 'a obj
-    method circulate : Tags.direction_type -> bool
+    (* method circulate : Tags.direction_type -> bool *)
     method set : widget option -> unit
     method set_hadjustment : GData.adjustment option -> unit
     method set_vadjustment : GData.adjustment option -> unit

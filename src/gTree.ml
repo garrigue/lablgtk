@@ -75,3 +75,221 @@ let tree ?selection_mode ?view_mode ?view_lines
   Tree.set w ?selection_mode ?view_mode ?view_lines;
   Container.set w ?border_width ?width ?height;
   pack_return (new tree w) ~packing ~show
+
+
+module Data = struct
+type kind =
+    [ `BOOLEAN
+    | `CHAR
+    | `UCHAR
+    | `INT
+    | `UINT
+    | `LONG
+    | `ULONG
+    | `INT64
+    | `UINT64
+    | `ENUM
+    | `FLAGS
+    | `FLOAT
+    | `DOUBLE
+    | `STRING
+    | `POINTER
+    | `BOXED
+    | `OBJECT ]
+
+type 'a conv =
+    { kind: kind;
+      proj: (Gobject.data_get -> 'a);
+      inj: ('a -> unit Gobject.data_set) }
+let boolean =
+  { kind = `BOOLEAN;
+    proj = (function `BOOL b -> b | _ -> failwith "GTree.get_bool");
+    inj = (fun b -> `BOOL b) }
+let char =
+  { kind = `CHAR;
+    proj = (function `CHAR c -> c | _ -> failwith "GTree.get_char");
+    inj = (fun c -> `CHAR c) }
+let uchar = {char with kind = `UCHAR}
+let int =
+  { kind = `INT;
+    proj = (function `INT c -> c | _ -> failwith "GTree.get_int");
+    inj = (fun c -> `INT c) }
+let uint = {int with kind = `UINT}
+let long = {int with kind = `LONG}
+let ulong = {int with kind = `ULONG}
+let enum = {int with kind = `ENUM}
+let flags = {int with kind = `FLAGS}
+let int64 =
+  { kind = `INT64;
+    proj = (function `INT64 c -> c | _ -> failwith "GTree.get_int64");
+    inj = (fun c -> `INT64 c) }
+let uint64 = {int64 with kind = `UINT64}
+let float =
+  { kind = `FLOAT;
+    proj = (function `FLOAT c -> c | _ -> failwith "GTree.get_float");
+    inj = (fun c -> `FLOAT c) }
+let double = {float with kind = `DOUBLE}
+let string =
+  { kind = `STRING;
+    proj = (function `STRING (Some s) -> s | `STRING None -> ""
+           | _ -> failwith "GTree.get_string");
+    inj = (fun s -> `STRING (Some s)) }
+let string_option =
+  { kind = `STRING;
+    proj = (function `STRING c -> c | _ -> failwith "GTree.get_string");
+    inj = (fun c -> `STRING c) }
+let pointer =
+  { kind = `POINTER;
+    proj = (function `POINTER c -> c | _ -> failwith "GTree.get_pointer");
+    inj = (fun c -> `POINTER c) }
+let boxed = {pointer with kind = `BOXED}
+let gobject =
+  { kind = `OBJECT;
+    proj = (function `OBJECT c -> may_map ~f:Gobject.unsafe_cast c
+            | _ -> failwith "GTree.get_object");
+    inj = (fun c -> `OBJECT (may_map ~f:Gobject.unsafe_cast c)) }
+
+let of_value kind v =
+  kind.proj (Gobject.Value.get v)
+let to_value kind x =
+  let v =
+    Gobject.Value.create
+      (Gobject.Type.of_fundamental
+         (kind.kind :> Gobject.Tags.fundamental_type)) in
+  Gobject.Value.set v (kind.inj x);
+  v
+end
+
+type 'a column =
+    {index: int; conv: 'a Data.conv; creator: int}
+
+class column_list = object (self)
+  val mutable index = 0
+  val mutable kinds = []
+  val mutable locked = false
+  method kinds = List.rev kinds
+  method add : 'a. 'a Data.conv -> 'a column = fun conv ->
+    if locked then failwith "GTree.column_list#add";
+    let n = index in
+    kinds <- conv.Data.kind :: kinds;
+    index <- index + 1;
+    {index = n; conv = conv; creator = Oo.id self}
+  method id = Oo.id self
+  method lock () = locked <- true
+end
+
+class model obj ~id = object (self)
+  val obj = obj
+  val id : int = id
+  method as_model = (obj :> tree_model obj)
+  method coerce = (self :> model)
+  method get : 'a. row:tree_iter -> column:'a column -> 'a =
+    fun ~row ~column ->
+      if column.creator <> id then invalid_arg "GTree.model#get: bad column";
+      let v =
+        Gobject.Value.create
+          (Gobject.Type.of_fundamental
+             (column.conv.Data.kind :> Gobject.Tags.fundamental_type)) in
+      TreeModel.get_value obj ~row ~column:column.index v;
+      Data.of_value column.conv v
+end
+
+class tree_store obj ~id = object
+  inherit model obj ~id
+  method set : 'a. row:tree_iter -> column:'a column -> 'a -> unit =
+    fun ~row ~column data ->
+      if column.creator <> id then
+        invalid_arg "GTree.tree_store#set: bad column";
+      TreeStore.set_value obj ~row ~column:column.index
+        (Data.to_value column.conv data)
+  method remove = TreeStore.remove obj
+  method insert = TreeStore.insert obj
+  method insert_before = TreeStore.insert_before obj
+  method insert_after = TreeStore.insert_after obj
+  method append = TreeStore.append obj
+  method prepend = TreeStore.prepend obj
+  method is_ancestor = TreeStore.is_ancestor obj
+  method iter_depth = TreeStore.iter_depth obj
+  method clear () = TreeStore.clear obj
+  method iter_is_valid = TreeStore.iter_is_valid obj
+  method swap = TreeStore.swap obj
+  method move_before = TreeStore.move_before obj
+  method move_after = TreeStore.move_after obj
+end
+
+let tree_store (cols : column_list) =
+  cols#lock ();
+  let types =
+    List.map Gobject.Type.of_fundamental
+      (cols#kinds :> Gobject.Tags.fundamental_type list) in
+  new tree_store (TreeStore.create (Array.of_list types)) ~id:cols#id
+
+class list_store obj ~id = object
+  inherit model obj ~id
+  method set : 'a. row:tree_iter -> column:'a column -> 'a -> unit =
+    fun ~row ~column data ->
+      if column.creator <> id then
+        invalid_arg "GTree.list_store#set: bad column";
+      ListStore.set_value obj ~row ~column:column.index
+        (Data.to_value column.conv data)
+  method remove = ListStore.remove obj
+  method insert = ListStore.insert obj
+  method insert_before = ListStore.insert_before obj
+  method insert_after = ListStore.insert_after obj
+  method append = ListStore.append obj
+  method prepend = ListStore.prepend obj
+  method clear () = ListStore.clear obj
+  method iter_is_valid = ListStore.iter_is_valid obj
+  method swap = ListStore.swap obj
+  method move_before = ListStore.move_before obj
+  method move_after = ListStore.move_after obj
+end
+
+let list_store (cols : column_list) =
+  cols#lock ();
+  let types =
+    List.map Gobject.Type.of_fundamental
+      (cols#kinds :> Gobject.Tags.fundamental_type list) in
+  new list_store (ListStore.create (Array.of_list types)) ~id:cols#id
+
+(*
+open GTree.Data;;
+let cols = new GTree.column_list ;;
+let title = cols#add string;;
+let author = cols#add string;;
+let checked = cols#add boolean;;
+let store = new GTree.tree_store cols;;
+*)
+
+class view_column (obj : tree_view_column obj) = object
+  inherit GObj.gtkobj obj
+  method as_column = obj
+  method pack : 'a. ?expand:_ -> ?from:_ -> ([>`cellrenderer] as 'a) obj -> _ =
+    TreeViewColumn.pack obj
+  method add_attribute :
+    'a 'b. ([>`cellrenderer] as 'a) obj -> string -> 'b column -> unit
+    = fun crr attr col -> TreeViewColumn.add_attribute obj crr attr col.index
+  method set_title = TreeViewColumn.set_title obj
+end
+let view_column ?title ?renderer () =
+  let w = new view_column (TreeViewColumn.create ()) in
+  may title ~f:w#set_title;
+  may renderer ~f:
+    begin fun (crr, l) ->
+      w#pack crr;
+      List.iter l ~f:(fun (attr,col) -> w#add_attribute crr attr col)
+    end;
+  w
+
+class view obj = object
+  inherit GContainer.container obj
+  method append_column (col : view_column) =
+    TreeView.append_column obj col#as_column
+end
+let view ?model ?border_width ?width ?height ?packing ?show () =
+  let model = may_map ~f:(fun (model : #model) -> model#as_model) model in
+  let w = TreeView.create ?model () in
+  Container.set w ?border_width ?width ?height;
+  pack_return (new view w) ~packing ~show
+
+let cell_renderer_text = CellRendererText.create

@@ -21,10 +21,10 @@ type optcolor =
 
 val optcolor : ?colormap:colormap -> optcolor -> Color.t option
 
-class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
+class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
   object
     val gc : gc
-    val w : 'a Gdk.drawable
+    val w : 'a
     method arc :
       x:int ->
       y:int ->
@@ -32,6 +32,7 @@ class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
       height:int ->
       ?filled:bool -> ?start:float -> ?angle:float -> unit -> unit
     method color : color -> Color.t
+    method depth : int
     method gc_values : GC.values
     method line : x:int -> y:int -> x:int -> y:int -> unit
     method point : x:int -> y:int -> unit
@@ -67,10 +68,11 @@ class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
   end
 
 class pixmap :
-  ?colormap:colormap -> ?mask:bitmap -> [ `pixmap] Gdk.drawable ->
+  ?colormap:colormap -> ?mask:bitmap -> Gdk.pixmap ->
   object
-    inherit [[`pixmap]] drawable
-    val bitmap : [ `bitmap] drawable option
+    inherit drawable
+    val w : Gdk.pixmap
+    val bitmap : drawable option
     val mask : bitmap option
     method mask : bitmap option
     method pixmap : Gdk.pixmap
@@ -115,7 +117,7 @@ val pixmap_from_xpm_d :
 class drag_context : Gdk.drag_context ->
   object
     val context : Gdk.drag_context
-    method status : ?time:int -> Tags.drag_action list -> unit
+    method status : ?time:int32 -> Tags.drag_action list -> unit
     method suggested_action : Tags.drag_action
     method targets : string list
   end

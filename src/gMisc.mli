@@ -117,11 +117,13 @@ class image : 'a obj ->
     constraint 'a = [> Gtk.image]
     val obj : 'a obj
     method set_image : ?mask:Gdk.bitmap -> Gdk.image -> unit
+    method set_pixmap : ?mask:Gdk.bitmap -> Gdk.pixmap -> unit
+    method set_file : string -> unit
+    method set_pixbuf : GdkPixbuf.pixbuf -> unit
+    method set_stock : string -> size:int -> unit
   end
 
 val image :
-  Gdk.image ->
-  ?mask:Gdk.bitmap ->
   ?xalign:float ->
   ?yalign:float ->
   ?xpad:int ->
@@ -139,7 +141,10 @@ class label_skel : 'a obj ->
     method set_line_wrap : bool -> unit
     method set_pattern : string -> unit
     method set_text : string -> unit
+    method set_markup : string -> unit
+    method set_markup_with_mnemonic : string -> unit
     method text : string
+    method label : string
   end
 
 class label : Gtk.label obj ->
@@ -227,12 +232,10 @@ class color_selection : Gtk.color_selection obj ->
     method get_color : Gtk.color
     method set_color :
       red:float -> green:float -> blue:float -> ?opacity:float -> unit -> unit
-    method set_opacity : bool -> unit
     method set_update_policy : Tags.update_type -> unit
   end
 val color_selection :
   ?update_policy:Tags.update_type ->
-  ?opacity:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
@@ -247,14 +250,6 @@ class font_selection : Gtk.font_selection obj ->
     method font : Gdk.font option
     method font_name : string option
     method preview_text : string
-    method set_filter :
-      ?kind:Tags.font_type list ->
-      ?foundry:string list ->
-      ?weight:string list ->
-      ?slant:string list ->
-      ?setwidth:string list ->
-      ?spacing:string list ->
-      ?charset:string list -> Tags.font_filter_type -> unit
     method set_font_name : string -> unit
     method set_preview_text : string -> unit
   end

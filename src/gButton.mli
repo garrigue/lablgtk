@@ -99,7 +99,6 @@ class toolbar :
   object
     inherit container_full
     val obj : Gtk.toolbar obj
-    method button_relief : Tags.relief_style
     method insert_button :
       ?text:string ->
       ?tooltip:string ->
@@ -122,20 +121,14 @@ class toolbar :
     method insert_widget :
       ?tooltip:string ->
       ?tooltip_private:string -> ?pos:int -> widget -> unit
-    method set_button_relief : Tags.relief_style -> unit
     method set_orientation : Tags.orientation -> unit
-    method set_space_size : int -> unit
-    method set_space_style : [`EMPTY|`LINE] -> unit
     method set_style : Tags.toolbar_style -> unit
     method set_tooltips : bool -> unit
   end
 val toolbar :
   ?orientation:Tags.orientation ->
   ?style:Tags.toolbar_style ->
-  ?space_size:int ->
-  ?space_style:[`EMPTY|`LINE] ->
   ?tooltips:bool ->
-  ?button_relief:Tags.relief_style ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

@@ -1,37 +1,29 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gtk
 open Tags
 
 module AccelGroup = struct
   external create : unit -> accel_group = "ml_gtk_accel_group_new"
-  external activate :
-      accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> bool
-      = "ml_gtk_accel_group_activate"
-  external groups_activate :
-      'a obj -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> bool
-      = "ml_gtk_accel_groups_activate"
-  external attach : accel_group -> 'a obj -> unit
-      = "ml_gtk_accel_group_attach"
-  external detach : accel_group -> 'a obj -> unit
-      = "ml_gtk_accel_group_detach"
   external lock : accel_group -> unit
       = "ml_gtk_accel_group_lock"
   external unlock : accel_group -> unit
       = "ml_gtk_accel_group_unlock"
-  external lock_entry :
-      accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> bool
-      = "ml_gtk_accel_group_lock_entry"
-  external add :
+  external connect_ :
       accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list ->
-      ?flags:accel_flag list ->
-      call:'a obj -> sgn:('a,unit->unit) GtkSignal.t -> unit
-      = "ml_gtk_accel_group_add_bc" "ml_gtk_accel_group_add"
-  external remove :
-      accel_group ->
-      key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> call:'a obj -> unit
-      = "ml_gtk_accel_group_remove"
+      ?flags:accel_flag list ->  callback:g_closure -> unit
+      = "ml_gtk_accel_group_connect"
+  let connect ~key ?modi ?flags ~callback g =
+    connect_ g ~key ?modi ?flags
+      ~callback:(Closure.create (fun _ -> callback ()))
+  external disconnect :
+      accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> bool
+      = "ml_gtk_accel_group_disconnect_key"
+  external groups_activate :
+      'a obj -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> bool
+      = "ml_gtk_accel_groups_activate"
   external valid : key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> bool
       = "ml_gtk_accelerator_valid"
   external set_default_mod_mask : Gdk.Tags.modifier list option -> unit
@@ -92,14 +84,6 @@ module Style = struct
     may_set set_font font *)
 end
 
-module Data = struct
-  module Signals = struct
-    open GtkSignal
-    let disconnect =
-      { name = "disconnect"; classe = `data; marshaller = marshal_unit }
-  end
-end
-
 module Adjustment = struct
   external create :
       value:float -> lower:float -> upper:float ->
@@ -149,12 +133,4 @@ module Tooltips = struct
       [>`tooltips] obj ->
       [>`widget] obj -> ?text:string -> ?privat:string -> unit
       = "ml_gtk_tooltips_set_tip"
-  external set_colors :
-      [>`tooltips] obj ->
-      ?foreground:Gdk.Color.t -> ?background:Gdk.Color.t -> unit -> unit
-      = "ml_gtk_tooltips_set_colors"
-  let set ?delay ?foreground ?background tt =
-    may ~f:(set_delay tt) delay;
-    if foreground <> None || background <> None then
-      set_colors tt ?foreground ?background ()
 end

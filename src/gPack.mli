@@ -119,8 +119,11 @@ class fixed :
     method event : event_ops
     method move : widget -> x:int -> y:int -> unit
     method put : widget -> x:int -> y:int -> unit
+    method set_has_window : bool -> unit
+    method has_window : bool
   end
 val fixed :
+  ?has_window: bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
@@ -207,41 +210,6 @@ val notebook :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> notebook
 
-class packer :
-  Gtk.packer obj ->
-  object
-    inherit container_full
-    val obj : Gtk.packer obj
-    method pack :
-      ?side:Tags.side_type ->
-      ?anchor:Tags.anchor_type ->
-      ?expand:bool ->
-      ?fill:Tags.expand_type ->
-      ?border_width:int ->
-      ?pad_x:int ->
-      ?pad_y:int -> ?i_pad_x:int -> ?i_pad_y:int -> widget -> unit
-    method reorder_child : widget -> pos:int -> unit
-    method set_child_packing :
-      ?side:Tags.side_type ->
-      ?anchor:Tags.anchor_type ->
-      ?expand:bool ->
-      ?fill:Tags.expand_type ->
-      ?border_width:int ->
-      ?pad_x:int ->
-      ?pad_y:int -> ?i_pad_x:int -> ?i_pad_y:int -> widget -> unit
-    method set_defaults :
-      ?border_width:int ->
-      ?pad_x:int ->
-      ?pad_y:int -> ?i_pad_x:int -> ?i_pad_y:int -> unit -> unit
-    method set_spacing : int -> unit
-  end
-val packer :
-  ?spacing:int ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> packer
-
 class paned :
   Gtk.paned obj ->
   object
@@ -254,13 +222,10 @@ class paned :
     method pack2 : ?resize:bool -> ?shrink:bool -> widget -> unit
     method child1 : widget
     method child2 : widget
-    method handle_size : int
-    method set_handle_size : int -> unit
     method set_position : int -> unit
   end
 val paned :
   Tags.orientation ->
-  ?handle_size:int ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

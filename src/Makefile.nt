@@ -24,15 +24,15 @@ DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
 
-INSTALLDIR = $(LIBDIR)/lablgtk
+INSTALLDIR = $(LIBDIR)/lablgtk2
 BINDIR = $(LIBDIR)/../bin
 LABLGLDIR = $(LIBDIR)/lablGL
 
 MLLIBS = lablgtk.cma
-CLIBS = liblablgtk.lib
+CLIBS = liblablgtk2.lib
 MLLINK = unix.cma str.cma
 
-CFLAGS = -O -DGTK_NO_CHECK_CASTS -DGTK_DISABLE_COMPAT_H $(GTKCFLAGS)
+CFLAGS = -O  -DG_DISABLE_CAST_CHECKS $(GTKCFLAGS)
 
 THFLAGS = -thread
 THLINK = unix.cma threads.cma
@@ -65,19 +65,24 @@ endif
 	$(CAMLP4) -impl $< -o $@
 
 # Targets
-GTKOBJS = ml_gtk.obj ml_gtkbin.obj ml_gtkbutton.obj ml_gtkedit.obj \
-        ml_gtklist.obj ml_gtkmenu.obj ml_gtkmisc.obj ml_gtknew.obj \
-        ml_gtkpack.obj ml_gtkrange.obj ml_gtktree.obj
-COBJS = ml_gdk.obj ml_glib.obj ml_gpointer.obj wrappers.obj $(GTKOBJS)
-MLOBJS = gaux.cmo gpointer.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
-	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
+GTKOBJS =  ml_gtk.obj ml_pango.obj ml_gtkbin.obj ml_gtkbutton.obj ml_gtkedit.obj \
+	ml_gtklist.obj \
+	ml_gtkmenu.obj ml_gtkmisc.obj ml_gtkpack.obj ml_gtkrange.obj ml_gtktree.obj \
+	ml_gtktext.obj
+COBJS = ml_gdkpixbuf.obj ml_gdk.obj ml_glib.obj ml_gobject.obj ml_gpointer.obj \
+	wrappers.obj $(GTKOBJS)
+MLOBJS =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
+	gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
+	gtk.cmo pango.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
-	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkTree.cmo gtkList.cmo \
-	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
+	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
+	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkTree.cmo gtkMain.cmo \
+	gtkText.cmo \
 	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
-	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gBin.cmo \
-	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
+	gText.cmo \
+	gMenu.cmo gMisc.cmo gWindow.cmo gList.cmo gBin.cmo \
+	gEdit.cmo gRange.cmo gTree.cmo gUtil.cmo gToolbox.cmo
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
@@ -97,7 +102,7 @@ lablgtkopt: $(CLIBS) $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \
 install:
 	@if test -d "$(INSTALLDIR)"; then :; else mkdir -p "$(INSTALLDIR)"; fi
 	@if test -d "$(BINDIR)"; then :; else mkdir -p "$(BINDIR)"; fi
-	cp lablgtk.bat "$(BINDIR)"
+	cp lablgtk2.bat "$(BINDIR)"
 	cp $(ALLOBJS:.cmo=.cmi) "$(INSTALLDIR)"
 	cp *.mli "$(INSTALLDIR)"
 	cp $(ALLOBJS:.cmo=.ml) "$(INSTALLDIR)"
@@ -111,9 +116,9 @@ install:
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=.obj) "$(INSTALLDIR)"; fi
 
-liblablgtk.lib: $(COBJS)
+liblablgtk2.lib: $(COBJS)
 	$(MKLIB)$@ $(COBJS)
-dlllablgtk.dll: $(COBJS:.obj=.d.obj)
+dlllablgtk2.dll: $(COBJS:.obj=.d.obj)
 	$(MKDLL)$@ $(COBJS:.obj=.d.obj) $(GTKLIBS)
 
 lablgtk.cma: liblablgtk.lib dlllablgtk.dll $(MLOBJS)
@@ -137,12 +142,16 @@ varcc: varcc.cmo
 	rm -f *_tags.h *_tags.c
 
 clean:
-	rm -f *.cm* *.obj *.lib *_tags.[ch] $(TARGETS)
+	rm -f *.cm* *.obj *.lib *_tags.[ch] $(TARGETS) varcc.ml
 
-$(GTKOBJS) $(GTKOBJS:.obj=.d.obj): gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
-ml_glib.obj ml_glib.d.obj: glib_tags.h ml_glib.h wrappers.h
-ml_gdk.obj ml_gdk.d.obj: gdk_tags.h ml_gdk.h ml_gpointer.h wrappers.h
-ml_gtkgl.obj ml_gtkgl.d.obj: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
-ml_gpointer.obj ml_gpointer.d.obj: ml_gpointer.h
+$(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h ml_pango.h ml_gobject.h ml_glib.h wrappers.h
+ml_glib.obj: glib_tags.h ml_glib.h wrappers.h
+ml_gobject.obj: gobject_tags.h wrappers.h
+ml_gdk.obj: gdk_tags.h ml_gdk.h ml_gpointer.h wrappers.h
+ml_gtkgl.obj: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gtkxmhtml.obj: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gpointer.obj: ml_gpointer.h
+ml_gdkpixbuf.obj: gdkpixbuf_tags.h ml_gdk.h gdk_tags.h wrappers.h ml_gpointer.h
+ml_pango.obj: ml_pango.h
 
 include .depend

@@ -10,6 +10,7 @@
 
 #include "wrappers.h"
 #include "ml_glib.h"
+#include "ml_gobject.h"
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
@@ -166,6 +167,8 @@ ML_2 (gtk_clist_set_sort_column, GtkCList_val, Int_val, Unit)
 ML_2 (gtk_clist_set_sort_type, GtkCList_val, Sort_type_val, Unit)
 ML_1 (gtk_clist_sort, GtkCList_val, Unit)
 ML_2 (gtk_clist_set_auto_sort, GtkCList_val, Bool_val, Unit)
+
+ML_1 (Scroll_type_val, , Val_long)
 
 CAMLprim value ml_gtk_clist_get_row_state (value clist, value y)
 {

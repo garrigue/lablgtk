@@ -2,8 +2,9 @@
 
 module Main : sig
   val init : ?setlocale:bool -> unit -> string
-    (* [init] returns the locale name *)
-    (* Set [~setlocale] to [true] if your program needs a non-C locale *)
+    (* [init] also sets the locale and returns its name.
+       Either set [~setlocale] to [false] or GTK_SETLOCALE to "0"
+       if you don't want to the locale to be set *)
   val main : unit -> unit
     (* [main] runs the main loop, until [quit] is called. *)
     (* Do not use in multi-threaded programs. *)
@@ -27,7 +28,7 @@ module Rc : sig
 end
 
 module Timeout : sig
-  type id = GtkMain.Timeout.id
+  type id = Glib.Timeout.id
   val add : ms:int -> callback:(unit -> bool) -> id
   val remove : id -> unit
 end

@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include <string.h>
+#include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -11,17 +12,17 @@
 #include "wrappers.h"
 #include "ml_glib.h"
 #include "ml_gpointer.h"
+#include "ml_gobject.h"
 #include "ml_gdk.h"
+#include "ml_gdkpixbuf.h"
 #include "gdk_tags.h"
 #include "gdkpixbuf_tags.h"
 
 #include "gdkpixbuf_tags.c"
 
-#define GdkPixbuf_val(val) ((GdkPixbuf*)Pointer_val(val))
 
-/* Reference counting */
-Make_Val_final_pointer (GdkPixbuf, gdk_pixbuf_ref, gdk_pixbuf_unref, 0)
-Make_Val_final_pointer_ext (GdkPixbuf, _noref, Ignore, gdk_pixbuf_unref, 20)
+/* Reference counting (use GObject) */
+#define Val_GdkPixbuf_noref(val) (Val_GObject_new((GObject*)(val)))
 
 /* GdkPixbuf accessors */
 ML_1(gdk_pixbuf_get_n_channels, GdkPixbuf_val, Val_int)
@@ -46,7 +47,13 @@ value ml_gdk_pixbuf_get_pixels (value pixbuf)
 ML_5(gdk_pixbuf_new, GDK_COLORSPACE_RGB Ignore, Int_val, Int_val,
      Int_val, Int_val, Val_GdkPixbuf_noref)
 ML_1(gdk_pixbuf_copy, GdkPixbuf_val, Val_GdkPixbuf_noref)
-ML_1(gdk_pixbuf_new_from_file, String_val, Val_GdkPixbuf_noref)
+value ml_gdk_pixbuf_new_from_file(value f)
+{
+    GError *err = NULL;
+    GdkPixbuf *res = gdk_pixbuf_new_from_file(String_val(f), &err);
+    if (err) ml_raise_gerror(err);
+    return Val_GdkPixbuf(res);
+}
 ML_1(gdk_pixbuf_new_from_xpm_data, (const char**), Val_GdkPixbuf_noref)
 
 void ml_gdk_pixbuf_destroy_notify (guchar *pixels, gpointer data)

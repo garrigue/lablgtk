@@ -2,54 +2,43 @@
 
 open StdLabels
 open Parser
+open Lexing
 
-type tags = [`none|`control|`define|`structure|`char|`infix|`label|`uident]
+let tags =
+  ["control"; "define"; "structure"; "char";
+   "infix"; "label"; "uident"]
+and colors =
+    ["blue"; "forestgreen"; "purple"; "gray40";
+     "indianred4"; "saddlebrown"; "midnightblue"]
 
-let colors : (tags * GDraw.color) list Lazy.t =
-  lazy
-    (List.map ~f:(fun (tag,col) -> tag, `COLOR (GDraw.color (`NAME col)))
-       [ `control, "blue";
-	 `define, "forestgreen";
-	 `structure, "purple";
-	 `char, "gray40";
-	 `infix, "indianred4";
-	 `label, "brown";
-	 `uident, "midnightblue";
-         `none, "black" ])
+let init_tags (tb : GText.buffer) =
+  List.iter2 tags colors ~f:
+  begin fun tag col ->
+    ignore (tb#create_tag ~name:tag [`FOREGROUND col])
+  end;
+  tb#create_tag ~name:"error" [`FOREGROUND "red"; `WEIGHT `BOLD];
+  ()
 
-let tag ?(start=0) ?stop:pend (tw : GEdit.text) =
-  let pend = Gaux.default tw#length ~opt:pend in
-  let colors = Lazy.force colors in
-  tw#freeze ();
-  let position = tw#position
-  and text = tw#get_chars ~start ~stop:pend in
-  let replace ~start:pstart ~stop:pend ~tag =
-    if pend > pstart then begin
-      tw#delete_text ~start:(start+pstart) ~stop:(start+pend);
-      tw#set_point (start+pstart);
-      tw#insert ~foreground:(List.assoc tag colors)
-	(String.sub text ~pos:pstart ~len:(pend-pstart));
-    end
-  and next_lf = ref (-1) in
-  let colorize ~start:rstart ~stop:rend ~tag =
-    let rstart = ref rstart in
-    while !rstart < rend do
-      if !next_lf < !rstart then begin
-	try next_lf := String.index_from text !rstart '\n'
-	with Not_found -> next_lf := pend-start
-      end;
-      replace ~start:!rstart ~stop:(min !next_lf rend) ~tag;
-      rstart := !next_lf + 1
-    done
-  in
-  let buffer = Lexing.from_string text
-  and last = ref (EOF, 0, 0)
-  and last_pos = ref 0 in
+let tpos ~(start : GText.iter) pos =
+  let l = pos.pos_lnum - 1 in
+  if l = 0 then
+    start#set_line_index (pos.pos_cnum + start#line_index)
+  else
+    (start#forward_lines l)#set_line_index (pos.pos_cnum - pos.pos_bol)
+
+let tag ?start ?stop (tb : GText.buffer) =
+  let start = Gaux.default tb#start_iter ~opt:start
+  and stop = Gaux.default tb#end_iter ~opt:stop in
+  let tpos = tpos ~start in
+  let text = tb#get_text ~start ~stop () in
+  let buffer = Lexing.from_string text in
+  tb#remove_all_tags ~start ~stop;
+  let last = ref (EOF, dummy_pos, dummy_pos) in
   try
     while true do
     let token = Lexer.token buffer
-    and start = Lexing.lexeme_start buffer
-    and stop = Lexing.lexeme_end buffer in
+    and start = Lexing.lexeme_start_p buffer
+    and stop = Lexing.lexeme_end_p buffer in
     let tag =
       match token with
         AMPERAMPER
@@ -69,7 +58,7 @@ let tag ?(start=0) ?stop:pend (tw : GEdit.text) =
       | WHEN
       | WHILE
       | WITH
-          -> `control
+          -> "control"
       | AND
       | AS
       | BAR
@@ -94,7 +83,7 @@ let tag ?(start=0) ?stop:pend (tw : GEdit.text) =
       | TYPE
       | VAL
       | VIRTUAL
-          -> `define
+          -> "define"
       | BEGIN
       | END
       | INCLUDE
@@ -102,10 +91,10 @@ let tag ?(start=0) ?stop:pend (tw : GEdit.text) =
       | OPEN
       | SIG
       | STRUCT
-          -> `structure
+          -> "structure"
       | CHAR _
       | STRING _
-          -> `char
+          -> "char"
       | BACKQUOTE
       | INFIXOP1 _
       | INFIXOP2 _
@@ -113,42 +102,34 @@ let tag ?(start=0) ?stop:pend (tw : GEdit.text) =
       | INFIXOP4 _
       | PREFIXOP _
       | SHARP
-          -> `infix
+          -> "infix"
       | LABEL _
       | OPTLABEL _
       | QUESTION
       | TILDE
-          -> `label
-      | UIDENT _ -> `uident
+          -> "label"
+      | UIDENT _ -> "uident"
       | LIDENT _ ->
           begin match !last with
-            (QUESTION | TILDE), _, _ -> `label
-          | _ -> `none
+            (QUESTION | TILDE), _, _ -> "label"
+          | _ -> ""
           end
       | COLON ->
           begin match !last with
-            LIDENT _, lstart, lstop when lstop = start ->
-              colorize ~tag:`none ~start:!last_pos ~stop:lstart;
-              colorize ~tag:`label ~start:lstart ~stop;
-              last_pos := stop;
-              `none
-          | _ -> `none
+            LIDENT _, lstart, lstop ->
+              if lstop.pos_cnum = start.pos_cnum then
+                tb#apply_tag_by_name "label"
+                  ~start:(tpos lstart) ~stop:(tpos stop);
+              ""
+          | _ -> ""
           end
       | EOF -> raise End_of_file
-      | _ -> `none
+      | _ -> ""
     in
-    if tag <> `none then begin
-      colorize ~tag:`none ~start:!last_pos ~stop:start;
-      colorize ~tag ~start ~stop;
-      last_pos := stop
-    end;
+    if tag <> "" then
+      tb#apply_tag_by_name tag ~start:(tpos start) ~stop:(tpos stop);
     last := (token, start, stop)
     done
-  with exn ->
-    colorize ~tag:`none ~start:!last_pos ~stop:(pend-start);
-    tw#thaw ();
-    tw#set_position position;
-    tw#set_point position;
-    match exn with
-      End_of_file | Lexer.Error _ -> ()
-    | _ -> raise exn
+  with
+    End_of_file -> ()
+  | Lexer.Error _ -> ()
