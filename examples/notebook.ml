@@ -14,7 +14,7 @@ let main () =
   button#connect#clicked ~callback:
     (fun () -> prerr_endline "Hello again - cool button 2 was pressed");
   notebook#connect#switch_page 
-    ~callback:(fun i -> prerr_endline ("Page switch to " (*^ string_of_int i*)));
+    ~callback:(fun i -> prerr_endline ("Page switch to " ^ string_of_int i));
   button#connect#clicked ~callback:
     (fun () -> prerr_endline "Coucou");
   window#show ();
