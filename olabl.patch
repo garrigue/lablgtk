@@ -884,10 +884,10 @@ Index: typing/typeclass.ml
 ===================================================================
 RCS file: /staff2/garrigue/repos/ocaml/typing/typeclass.ml,v
 retrieving revision 1.32
-retrieving revision 1.35
-diff -c -r1.32 -r1.35
+retrieving revision 1.36
+diff -c -r1.32 -r1.36
 *** typeclass.ml	1999/02/24 13:47:52	1.32
---- typeclass.ml	1999/06/01 09:59:25	1.35
+--- typeclass.ml	1999/06/08 12:14:22	1.36
 ***************
 *** 216,222 ****
     vars := Vars.add lab (id, mut, ty) !vars;
@@ -944,16 +944,23 @@ diff -c -r1.32 -r1.35
      cty_vars = val_sig;
      cty_concr = concr_meths }
 ***************
-*** 393,399 ****
-        let parent = class_expr cl_num val_env par_env sparent in
+*** 390,399 ****
+      (val_env, met_env, par_env, fields, concr_meths, inh_vals) =
+    function
+      Pcf_inher (sparent, super) ->
+!       let parent = class_expr cl_num val_env par_env sparent in
         let (cl_sig, concr_meths) =
           inheritance true self_type val_env concr_meths sparent.pcl_loc
 ! 	  parent.cl_type
         in
         (* Variables *)
         let (val_env, met_env, par_env, inh_vars, inh_vals) =
---- 398,404 ----
-        let parent = class_expr cl_num val_env par_env sparent in
+--- 395,405 ----
+      (val_env, met_env, par_env, fields, concr_meths, inh_vals) =
+    function
+      Pcf_inher (sparent, super) ->
+!       let parent = class_expr cl_num val_env par_env
+! 	  {sparent with pcl_desc = Pcl_apply (sparent, [])} in
         let (cl_sig, concr_meths) =
           inheritance true self_type val_env concr_meths sparent.pcl_loc
 !           parent.cl_type
@@ -969,7 +976,7 @@ diff -c -r1.32 -r1.35
     let self_type = pat.pat_type in
   
     (* Check that the binder has a correct type, and introduce a dummy
---- 550,557 ----
+--- 551,558 ----
   
     (* Self binder *)
     let (pat, meths, vars, val_env, meth_env, par_env) =
@@ -979,8 +986,25 @@ diff -c -r1.32 -r1.35
   
     (* Check that the binder has a correct type, and introduce a dummy
 ***************
+*** 728,734 ****
+                raise(Error(cl.cl_loc, Cannot_apply cl.cl_type))
+  	    else ([], ty_fun)
+        in
+!       let (args, cty) = type_args false sargs cl.cl_type in
+        {cl_desc = Tclass_apply (cl, args);
+         cl_loc = scl.pcl_loc;
+         cl_type = cty}
+--- 735,741 ----
+                raise(Error(cl.cl_loc, Cannot_apply cl.cl_type))
+  	    else ([], ty_fun)
+        in
+!       let (args, cty) = type_args (sargs=[]) sargs cl.cl_type in
+        {cl_desc = Tclass_apply (cl, args);
+         cl_loc = scl.pcl_loc;
+         cl_type = cty}
+***************
 *** 853,858 ****
---- 859,865 ----
+--- 860,866 ----
        constr_type, dummy_class)
       (res, env) =
   
@@ -990,7 +1014,7 @@ diff -c -r1.32 -r1.35
     
 ***************
 *** 868,873 ****
---- 875,881 ----
+--- 876,882 ----
     let (expr, typ) = kind env cl.pci_expr in
     
     Ctype.end_def ();
@@ -1007,7 +1031,7 @@ diff -c -r1.32 -r1.35
     let (res, env) =
       List.fold_left (initial_env define_class) ([], env) cls
     in
---- 1068,1074 ----
+--- 1069,1075 ----
         cls
     in
     Ctype.init_def (Ident.current_time ());
@@ -1024,7 +1048,7 @@ diff -c -r1.32 -r1.35
   
   let class_descriptions env cls =
     type_classes true class_description env cls
---- 1092,1098 ----
+--- 1093,1099 ----
     (expr, expr)
   
   let class_declarations env cls =
