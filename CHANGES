@@ -1,5 +1,8 @@
 $Id$
 
+1999.6.23
+  * improved variant conversions for space.
+
 1999.6.22
   * updated olabl.patch. With this new version you can access fields
     of records without opening modules.  You can also use several times

@@ -33,6 +33,7 @@ extern value Val_GdkGC (GdkGC *);
 #define GdkVisual_val(val) ((GdkVisual*) val)
 #define Val_GdkVisual(visual) ((value) visual)
 
-extern long OptFlags_GdkModifier_val (value);
-extern long Flags_Event_mask_val (value);
-extern long Extension_events_val (value);
+extern int OptFlags_GdkModifier_val (value);
+extern int Flags_Event_mask_val (value);
+extern lookup_info ml_table_extension_events[];
+#define Extension_events_val(key) ml_lookup_to_c (ml_table_extension_events, key)
