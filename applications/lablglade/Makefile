@@ -34,7 +34,7 @@ MLFLAGS = -I $(LABLGTKDIR)
 endif
 
 ifdef USE_CC
-CCOMPILER = $(CC) -c -I$(LABLDIR)/olabl $(CFLAGS)
+CCOMPILER = $(CC) -c -I$(LABLLIB) $(CFLAGS)
 else
 CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
 endif
