@@ -173,7 +173,7 @@ type textbuffer = [`base|`textbuffer]
 type texttagtable = [`base|`texttagtable]
 type texttag = [`base|`texttag]
 type textmark = [`base | `textmark ]
-
+type textchildanchor = [`base | `textchildanchor ]
 type textiter
 
 (* re-export Gobject.obj *)

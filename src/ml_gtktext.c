@@ -41,6 +41,10 @@ static value Val_GtkTextMark_opt(GtkTextMark *mrk) {
 #define Val_GtkTextBuffer(val)  (Val_GObject((GObject*)val))
 #define Val_GtkTextBuffer_new(val) (Val_GObject_new((GObject*)val))
 
+#define GtkTextChildAnchor_val(val) check_cast(GTK_TEXT_CHILD_ANCHOR,val)
+#define Val_GtkTextChildAnchor(val)  (Val_GObject((GObject*)val))
+#define Val_GtkTextChildAnchor_new(val) (Val_GObject_new((GObject*)val))
+
 /* TextIter are not GObjects. They are stack allocated. */
 /* This is the Custom_block version for latter...
 static void text_iter_free (value v)
@@ -479,6 +483,27 @@ ML_2(gtk_text_view_starts_display_line,GtkTextView_val,
 
 ML_3(gtk_text_view_move_visually,GtkTextView_val,
      GtkTextIter_val,Int_val,Val_bool)
+
+ML_3(gtk_text_view_add_child_at_anchor,GtkTextView_val,
+     GtkWidget_val,GtkTextChildAnchor_val,Unit)
+
+ML_0(gtk_text_child_anchor_new,Val_GtkTextChildAnchor_new)
+
+CAMLprim value ml_gtk_text_child_anchor_get_widgets(value tca)
+{
+  CAMLparam1(tca);
+  CAMLlocal1(camlret);
+  GList* res;
+  res = gtk_text_child_anchor_get_widgets(GtkTextChildAnchor_val(tca));
+  camlret = Val_GList(res,Val_GtkWidget_func);
+/*
+    [BM] Should I free res ? Will it free the widgets also ?
+    g_list_free(res); 
+*/
+  CAMLreturn(camlret);
+}
+
+ML_1(gtk_text_child_anchor_get_deleted,GtkTextChildAnchor_val,Bool_val)
 
 ML_5(gtk_text_view_add_child_in_window,GtkTextView_val,
      GtkWidget_val,Text_window_type_val,Int_val,Int_val,

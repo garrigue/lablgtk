@@ -42,6 +42,11 @@ ML_1 (Val_scroll_type, Int_val, Id)
 static Make_Flags_val (Dest_defaults_val)
 static Make_Flags_val (Target_flags_val)
 
+value Val_GtkWidget_func(gpointer w)
+{
+  return (Val_GtkWidget((GtkWidget*)w));
+}
+
 /* gtkobject.h */
 
 #define gtk_object_ref_and_sink(w) (gtk_object_ref(w), gtk_object_sink(w))
