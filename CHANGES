@@ -1,5 +1,9 @@
 $Id$
 
+2003.10.09 [Benjamin]
+  * doc: correct GtkAjustement link to the right Gtk doc
+  * doc: fix Makefile for doc (use of OCAML instead of CAMLC and mkdir ../doc/html) 
+
 2003.10.07 [Jacques]
   * add Gpointer.{peek,poke}_nativeint
 
