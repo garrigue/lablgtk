@@ -1,6 +1,4 @@
-(* $I1: Unison file synchronizer: src/uitk.ml $ *)
-(* $I2: Last modified by bcpierce on Tue, 31 Aug 1999 11:42:29 -0400 $ *)
-(* $I3: Copyright 1999 $ *)
+(* $Id$ *)
 
 open Util
 open Os
@@ -81,18 +79,19 @@ let extRegExp path =
 (* Some widgets							      *)
 (**********************************************************************)
 
-class scrolled_text ?:editable ?:word_wrap ?:width ?:height ?:packing ?:show =
-  let hbox = new GPack.hbox ?:width ?:height ?:packing show:false in
-  let scrollbar = new GRange.scrollbar `VERTICAL
-      packing:(hbox#pack from:`END expand:false) in
-  let text = new GEdit.text vadjustment:scrollbar#adjustment
-      ?:editable ?:word_wrap packing:hbox#add in
+class scrolled_text ?:editable ?:word_wrap ?:width ?:height ?:packing ?:show
+    () =
+  let hbox = GPack.hbox ?:width ?:height ?:packing show:false () in
+  let scrollbar = GRange.scrollbar `VERTICAL
+      packing:(hbox#pack from:`END expand:false) () in
+  let text = GEdit.text vadjustment:scrollbar#adjustment
+      ?:editable ?:word_wrap packing:hbox#add () in
   object
-    inherit GObj.widget_wrapper hbox#as_widget
+    inherit GObj.widget_full hbox#as_widget
     method scrollbar = scrollbar
     method text = text
-    method insert s ?:font [< fontMonospaceMedium >] =
-      text#insert ?s ?font:(Some (Lazy.force font))
+    method insert ?(:font=fontMonospaceMedium) s =
+      text#insert font:(Lazy.force font) s
     method show () = hbox#misc#show ()
     initializer
       if show <> Some false then hbox#misc#show ()
@@ -107,8 +106,8 @@ let start () =
   (* Initialize the library *)
   Main.init ();
 
-  let toplevelWindow = new GWindow.window wm_name:myName in
-  let toplevelVBox = new GPack.vbox packing:toplevelWindow#add in
+  let toplevelWindow = GWindow.window wm_name:myName () in
+  let toplevelVBox = GPack.vbox packing:toplevelWindow#add () in
 
   (**********************************************************************)
   (* Function to display a message in a new window                      *)
@@ -116,14 +115,14 @@ let start () =
   let messageBox title message =
     begin
       (* Create a new toplevel window *)
-      let t = new GWindow.dialog :title wm_name:title in
+      let t = GWindow.dialog :title wm_name:title () in
       (* Create the dismiss button *)
       let t_dismiss =
-	new GButton.button label:"Dismiss" packing:t#action_area#add in
+	GButton.button label:"Dismiss" packing:t#action_area#add () in
       t_dismiss#connect#clicked callback:t#destroy;
       (* Create the display area *)
       let t_text = new scrolled_text editable:false
-	  width:500 height:200 packing:t#vbox#add in
+	  width:500 height:200 packing:t#vbox#add () in
       (* Insert text *)
       t_text#insert message;
       t#show ()
@@ -133,13 +132,13 @@ let start () =
   (* Create the menu bar                                                *)
   (**********************************************************************)
   let menuBar =
-    new GMenu.menu_bar border_width:2 packing:(toplevelVBox#pack expand:false)
+    GMenu.menu_bar border_width:2 packing:(toplevelVBox#pack expand:false) ()
   in
   let menus = new GMenu.factory menuBar accel_mod:[] in
   let accel_group = menus#accel_group in
   toplevelWindow#add_accel_group accel_group;
   let add_submenu :label =
-    new GMenu.factory (menus#add_submenu :label) :accel_group accel_mod:[]
+    new GMenu.factory (menus#add_submenu label) :accel_group accel_mod:[]
   in
   
   (**********************************************************************)
@@ -155,18 +154,18 @@ let start () =
   (**********************************************************************)
 
   let mainWindow =
-    let box = new GPack.hbox height:150 packing:toplevelVBox#add in
-    let sb = new GRange.scrollbar `VERTICAL
-	packing:(box#pack from:`END expand:false) in
-    new GList.clist columns:5 vadjustment:sb#adjustment
-      titles_show:true packing:box#add
+    let box = GPack.hbox height:150 packing:toplevelVBox#add () in
+    let sb = GRange.scrollbar `VERTICAL
+	packing:(box#pack from:`END expand:false) () in
+    GList.clist columns:5 vadjustment:sb#adjustment
+      titles_show:true packing:box#add ()
   in
   mainWindow#misc#grab_focus ();
   Array.iteri [|100; 40; 100; 40; 280|]
-    fun:(fun :i :data -> mainWindow#set_column i width:data);
+    fun:(fun :i data -> mainWindow#set_column i width:data);
   let displayTitle() =
     let s = roots2string () in
-    Array.iteri fun:(fun :i :data -> mainWindow#set_column i title:data)
+    Array.iteri fun:(fun :i data -> mainWindow#set_column i title:data)
       [| String.sub pos:0 len:12 s; "Action";
 	 String.sub pos:15 len:12 s; "Status"; "Path" |]
   in
@@ -177,8 +176,8 @@ let start () =
   (**********************************************************************)
 
   let detailsWindow =
-    new GEdit.text editable:false height:45
-      packing:(toplevelVBox#pack expand:false) in
+    GEdit.text editable:false height:45
+      packing:(toplevelVBox#pack expand:false) () in
   let displayDetails thePathString newtext =
     detailsWindow#freeze ();
     (* Delete the current text *)
@@ -196,7 +195,7 @@ let start () =
   (**********************************************************************)
 
   let messagesWindow =
-    new scrolled_text editable:false packing:toplevelVBox#add show:false in
+    new scrolled_text editable:false packing:toplevelVBox#add show:false () in
 
   if !Trace.printTrace then messagesWindow#show ();
 
@@ -226,14 +225,14 @@ let start () =
   (**********************************************************************)
 
   let statusWindow =
-    new GMisc.statusbar packing:(toplevelVBox#pack expand:false) in
+    GMisc.statusbar packing:(toplevelVBox#pack expand:false) () in
   let statusContext = statusWindow#new_context name:"status" in
   ignore (statusContext#push "");
 
   let displayStatus s1 s2 =
     (* Concatenate the new message *)
     let m =
-      s1 ^ (String.make len:(max 2 (30 - String.length s1)) fill:' ') ^ s2 in
+      s1 ^ (String.make len:(max 2 (30 - String.length s1)) ' ') ^ s2 in
     statusContext#pop ();
     ignore (statusContext#push m);
     (* Force message to be displayed immediately *)
@@ -362,7 +361,7 @@ let start () =
      end experimental *)
 
   let redisplay i =
-    mainWindow#remove i;
+    mainWindow#remove row:i;
     (* Insert the new text *)
     try insert i with DerefSome -> ()
   in
@@ -373,13 +372,13 @@ let start () =
 
   let displayErrorMessage errorMessage =
     (* Create a new toplevel window *)
-    let dialog = new GWindow.dialog title:"Error" wm_name:"Error" modal:true in
+    let dialog = GWindow.dialog title:"Error" wm_name:"Error" modal:true () in
     let _ =
-      new GMisc.label packing:(dialog#vbox#pack expand:false padding:4)
+      GMisc.label packing:(dialog#vbox#pack expand:false padding:4) ()
        text:(sprintf "The following error occured :\n%s\n%s should be closed"
                errorMessage myName)
     in
-    let ok = new GButton.button label:"OK" packing:dialog#action_area#add in
+    let ok = GButton.button label:"OK" packing:dialog#action_area#add () in
     ok#grab_default ();
     ok#connect#clicked
       callback:(fun () -> dialog#destroy (); toplevelWindow#destroy ());
@@ -435,21 +434,21 @@ let start () =
 
   let getRoots() =
     let t =
-      new GWindow.dialog title:"Enter roots" wm_name:"Enter roots" modal:true
+      GWindow.dialog title:"Enter roots" wm_name:"Enter roots" modal:true ()
     in
     (* Create the display area *)
-    let hbox = new GPack.hbox packing:(t#vbox#pack expand:false padding:10) in
-    let label1 = new GMisc.label text:"Local root:"
-	packing:(hbox#pack padding:2 expand:false) in
-    let entry1 = new GEdit.entry packing:hbox#add in
+    let hbox = GPack.hbox packing:(t#vbox#pack expand:false padding:10) () in
+    let label1 = GMisc.label text:"Local root:"
+	packing:(hbox#pack padding:2 expand:false) () in
+    let entry1 = GEdit.entry packing:hbox#add () in
     entry1#misc#grab_focus ();
-    let hbox = new GPack.hbox packing:(t#vbox#pack expand:false padding:10) in
-    new GMisc.label text: "Second root:"
-      packing:(hbox#pack padding:2 expand:false);
-    let entry2 = new GEdit.entry width:100 packing:hbox#add in
-    new GMisc.label text:"with optional host:"
-      packing:(hbox#pack padding:2 expand:false);
-    let entry3 = new GEdit.entry width:100 packing:hbox#add in
+    let hbox = GPack.hbox packing:(t#vbox#pack expand:false padding:10) () in
+    GMisc.label text: "Second root:"
+      packing:(hbox#pack padding:2 expand:false) ();
+    let entry2 = GEdit.entry width:100 packing:hbox#add () in
+    GMisc.label text:"with optional host:"
+      packing:(hbox#pack padding:2 expand:false) ();
+    let entry3 = GEdit.entry width:100 packing:hbox#add () in
     let go () =
       if entry1#text = "" || entry2#text = "" then () else
       let root1 = (Local, string2fspath entry1#text) in
@@ -464,13 +463,13 @@ let start () =
       detectUpdatesAndReconcile true;
       t#destroy ()
     in
-    let goButton = new GButton.button label: "Go!" packing:t#action_area#add in
+    let goButton = GButton.button label: "Go!" packing:t#action_area#add () in
     goButton#connect#clicked callback:go;
     goButton#grab_default ();
     List.iter [entry1;entry2;entry2]
       fun:(fun (e : GEdit.entry) -> ignore (e#connect#activate callback:go));
     let dismiss =
-      new GButton.button label: "Dismiss" packing:t#action_area#add in
+      GButton.button label: "Dismiss" packing:t#action_area#add () in
     dismiss#connect#clicked callback:t#destroy;
     dismiss#misc#set_can_default true;
     t#show ()
@@ -509,11 +508,11 @@ let start () =
 
   let yesOrNo :title :message yes:yesFunction no:noFunction =
     (* Create a new toplevel window *)
-    let t = new GWindow.dialog :title wm_name:title modal:true in
-    let theLabel = new GMisc.label text:message
-	packing:(t#vbox#pack expand:false padding:4) in
-    let yes = new GButton.button label:"Yes" packing:t#action_area#add
-    and no = new GButton.button label:"No" packing:t#action_area#add in
+    let t = GWindow.dialog :title wm_name:title modal:true () in
+    let theLabel = GMisc.label text:message
+	packing:(t#vbox#pack expand:false padding:4) () in
+    let yes = GButton.button label:"Yes" packing:t#action_area#add ()
+    and no = GButton.button label:"No" packing:t#action_area#add () in
     yes#connect#clicked callback:(fun () -> t#destroy(); yesFunction());
     no#connect#clicked callback:(fun () -> t#destroy(); noFunction());
     t#show ()
@@ -522,213 +521,120 @@ let start () =
   (**********************************************************************)
   (* The ignore dialog                                                  *)
   (**********************************************************************)
-(*
+
   let ignoreDialog() =
     begin
-      let t = Toplevel.create toplevelWindow [] in
-      Wm.title_set t "Ignore";
-      Wm.iconname_set t "Ignore";
-      let f1 = Frame.create t [] in
-      let f2 = Frame.create t [] in
-      let f3 = Frame.create t [] in
-      pack [f1] [Side Side_Top; Fill Fill_Both; Expand true];
-      pack [f2] [Side Side_Top; Fill Fill_X];
-      pack [f3] [Side Side_Top; Fill Fill_X];
-      let regExpWindow = Frame.create f1 [] in
-      pack [regExpWindow] [Side Side_Left; Fill Fill_Both; Expand true];
-      let regExpWindowText = Text.create regExpWindow
-          [ TextHeight 6;
-            Font fontMonospaceMedium;
-            Wrap(WrapNone);     (* Don't wrap text *)
-            SetGrid true;       (* Resizing will be in units of characters *)
-            Cursor(XCursor ""); (* Use the default (arrow) cursor *)
-            Foreground colorUsual;
-            Background colorBackground;
-          ] in
-      pack [regExpWindowText]
-        [Side Side_Left;Expand true;Fill Fill_Both];
-      let regExpWindowScrollbar = Scrollbar.create regExpWindow
-          [ScrollCommand (Text.yview regExpWindowText)] in
-      Text.configure regExpWindowText
-        [YScrollCommand(Scrollbar.set regExpWindowScrollbar)];
-      pack [regExpWindowScrollbar]
-        [Side Side_Right; Fill Fill_Y];
+      let t = GWindow.dialog title: "Ignore" wm_name: "Ignore" () in
+      let hbox = GPack.hbox packing:t#vbox#add () in
+      let sb = GRange.scrollbar `VERTICAL
+	  packing:(hbox#pack from:`END expand:false) () in
+      let regExpWindow =
+	GList.clist columns:1 titles_show:false packing:hbox#add
+	  vadjustment:sb#adjustment width:400 height:150 () in
+
       (* Local copy of the regular expressions; the global copy will
          not be changed until the Apply button is pressed *)
-      let theRegexps = ref(Ignore.extern()) in
-      let numRegexps = ref(List.length !theRegexps) in
-      let currentRegexp = (* A number from 0 to numRegexps-1 *)
-        ref(if !numRegexps>0 then Some 0 else None) in
+      let theRegexps = Ignore.extern () in
+      List.iter theRegexps fun:(fun r -> ignore (regExpWindow#append [r]));
       let maybeGettingBigger = ref false in
       let maybeGettingSmaller = ref false in
-      let deselect i =
-        Text.tag_configure regExpWindowText (tag i)
-          [ Foreground colorUsual;
-            Background colorBackground;
-          ] in
-      let select i =
-        begin
-          (try deselect(derefSome currentRegexp) with DerefSome -> ());
-          Text.tag_configure regExpWindowText (tag i)
-            [ Foreground colorForegroundHighlight;
-              Background colorBackgroundHighlight;
-            ];
-          currentRegexp := Some i;
-          Text.see regExpWindowText (TextIndex(TagFirst(tag i),[]));
-        end in
-      let next() =
-        begin
-          try
-            let x = derefSome currentRegexp + 1 in
-            if !numRegexps>x then select x
-          with DerefSome ->
-            if !numRegexps>0 then begin
-              currentRegexp := Some 0;
-              select 0
-            end
-        end in
-      let prev() =
-        begin
-          try
-            let x = derefSome currentRegexp - 1 in
-            if x>=0 & !numRegexps>x then select x
-          with DerefSome ->
-            if !numRegexps>0 then begin
-              currentRegexp := Some(!numRegexps-1);
-              select(!numRegexps-1)
-            end
-        end in
-      Tk.bind t [([],KeyPressDetail "Up")]
-        (BindSet([],(fun _ -> prev())));
-      Tk.bind t [([],KeyPressDetail "Down")]
-        (BindSet([],(fun _ -> next())));
-
-      (* Display the regexps *)
-      let displayRegexps() =
-        begin
-          Text.configure regExpWindowText [State Normal];
-          Text.tag_delete regExpWindowText
-            (Text.tag_allnames regExpWindowText);
-          Text.delete regExpWindowText
-            (TextIndex(LineChar(1,0),[]))
-            (TextIndex(End,[]));
-          let theList = !theRegexps in
-          let theArray = Array.of_list theList in
-          for i = 0 to !numRegexps - 1 do
-            Text.insert regExpWindowText (TextIndex(End,[]))
-              (theArray.(i)^ "\n") [tag i];
-            Text.tag_bind regExpWindowText (tag i) [([],ButtonPressDetail 1)]
-              (BindSet([], (fun _ -> select i)));
-          done;
-          Text.configure regExpWindowText [State Disabled];
-          try
-            select(derefSome currentRegexp)
-          with DerefSome -> ();
-        end in
-      displayRegexps();
+      let selectedRow = ref None in
+      regExpWindow#connect#select_row callback:
+	begin fun :row :column :event ->
+	  selectedRow := Some row
+	end;
+      regExpWindow#connect#unselect_row callback:
+	begin fun :row :column :event ->
+	  selectedRow := None
+	end;
 
       (* Configure the add frame *)
-      let label1 = Label.create f2 [Text "Regular expression:"] in
-      let var1 = Textvariable.create() in
-      let entry1 = Entry.create f2 [TextVariable var1] in
-      let addButton = Button.create f2
-          [ Relief Raised;
-            Text "Add";
-            Command(fun () ->
-              let theRegExp = Textvariable.get var1 in
-              if theRegExp<>"" then begin
-                Textvariable.set var1 "";
-                theRegexps := theRegExp::(!theRegexps);
-                numRegexps := !numRegexps + 1;
-                currentRegexp := None;
-                maybeGettingSmaller := true;
-                displayRegexps();
-              end)] in
-      pack [label1;entry1;addButton]
-        [Side Side_Left;PadX(Pixels 4);PadY(Pixels 4)];
-      Focus.set entry1;
+      let hbox = GPack.hbox spacing:4 packing:(t#vbox#pack expand:false) () in
+      GMisc.label text: "Regular expression:"
+	packing:(hbox#pack expand:false padding:2) ();
+      let entry = GEdit.entry packing:hbox#add () in
+      let add () =
+        let theRegExp = entry#text in
+        if theRegExp<>"" then begin
+	  entry#set_text "";
+	  regExpWindow#unselect_all ();
+	  regExpWindow#append [theRegExp];
+          maybeGettingSmaller := true
+	end
+      in
+      let addButton = GButton.button label:"Add"
+	  packing:(hbox#pack expand:false) () in
+      addButton#connect#clicked callback:add;
+      entry#connect#activate callback:add;
+      entry#misc#grab_focus ();
+
       (* Configure the delete button *)
-      let deleteButton = Button.create f3
-          [ Relief Raised;
-            Text "Delete";
-            Command(fun () ->
-              try
-                let x = derefSome currentRegexp in
-                (* After a deletion, updates must be detected again *)
-                maybeGettingBigger := true;
-                (* Delete xth regexp *)
-                let rec loop l i =
-                  match l with
-                    [] -> []
-                  | hd::tl ->
-                      if i<=0 then tl
-                      else hd::(loop tl (i-1)) in
-                theRegexps := loop (!theRegexps) x;
-                numRegexps := !numRegexps - 1;
-                if !numRegexps<=0 then
-                  (numRegexps := 0; currentRegexp := None)
-                else if x >= !numRegexps
-                    then currentRegexp := Some(!numRegexps-1);
-                (* Make the text editable *)
-                Text.configure regExpWindowText [State Normal];
-                (* Delete line x *)
-                Text.delete regExpWindowText
-                  (TextIndex(TagFirst(tag x),[]))
-                  (TextIndex(TagLast(tag x),[]));
-                (* Adjust tags *)
-                for y = x to !numRegexps-1 do
-                  Text.tag_add regExpWindowText (tag y)
-                    (TextIndex(TagFirst(tag(y+1)),[]))
-                    (TextIndex(TagLast(tag(y+1)),[]));
-                  Text.tag_delete regExpWindowText [tag(y+1)];
-                done;
-                (* Disable editing *)
-                Text.configure regExpWindowText [State Disabled];
-                (* Adjust highlight *)
-                select (derefSome currentRegexp);
-              with DerefSome
-              | Failure "nth" -> ())
-          ] in
-      pack [deleteButton] [Side Side_Left;PadX(Pixels 8);PadY(Pixels 4)];
+      let delete () =
+        try
+          let x = derefSome selectedRow in
+          (* After a deletion, updates must be detected again *)
+          maybeGettingBigger := true;
+          (* Delete xth regexp *)
+	  regExpWindow#unselect_all ();
+	  regExpWindow#remove row:x
+        with DerefSome -> ()
+      in
+      let deleteButton = GButton.button label:"Delete"
+	  packing:(hbox#pack expand:false) () in
+      deleteButton#connect#clicked callback:delete;
+
+      regExpWindow#connect#after#event#key_press callback:
+	begin fun ev ->
+	  let key = GdkEvent.Key.keyval ev in
+	  if key = _Up || key = _Down || key = _Prior || key = _Next ||
+	  key = _Page_Up || key = _Page_Down then begin
+	    regExpWindow#select (regExpWindow#focus_row) 0;
+	    true
+	  end else if key = _Delete then begin
+	    delete (); true
+	  end else
+	    false
+	end;
 
       (* A function to refresh the state and ignore list *)
       let refresh() =
-        begin
-          Ignore.intern(!theRegexps);
-          if !maybeGettingBigger || !maybeGettingSmaller then
-            (Ignore.save(); Globals.propagatePrefs());
-          if !maybeGettingBigger then detectUpdatesAndReconcile false
-          else if !maybeGettingSmaller then begin
-            try
-              let theSIArray = derefSome theState in
-              let theSIList = Array.to_list theSIArray in
-              let theSIList = filterIgnoreStateItems theSIList in
-              let theSIArray = Array.of_list theSIList in
-              theState := Some theSIArray;
-              displayMain()
-            with DerefSome -> ()
-          end;
-          maybeGettingBigger := false;
-          maybeGettingSmaller := false;
-        end in
+	let theRegexps = ref [] in
+	for i = regExpWindow#rows - 1 downto 0 do
+	  theRegexps := regExpWindow#cell_text i 0 :: !theRegexps
+	done;
+        Ignore.intern(!theRegexps);
+        if !maybeGettingBigger || !maybeGettingSmaller then begin
+          Ignore.save();
+	  Globals.propagatePrefs()
+	end;
+        if !maybeGettingBigger then detectUpdatesAndReconcile false
+        else if !maybeGettingSmaller then begin
+          try
+            let theSIArray = derefSome theState in
+            let theSIList = Array.to_list theSIArray in
+            let theSIList = filterIgnoreStateItems theSIList in
+            let theSIArray = Array.of_list theSIList in
+            theState := Some theSIArray;
+            displayMain()
+          with DerefSome -> ()
+        end;
+        maybeGettingBigger := false;
+        maybeGettingSmaller := false;
+      in
 
       (* Install the main buttons *)
-      let applyButton = Button.create f3
-          [ Relief Raised;
-            Text "Apply";
-            Command refresh ] in
-      let cancelButton = Button.create f3
-          [ Relief Raised;
-            Text "Cancel";
-            Command(fun () -> Tk.destroy t) ] in
-      let okButton = Button.create f3
-          [ Relief Raised;
-            Text "OK";
-            Command(fun () -> refresh(); Tk.destroy t) ] in
-      pack [applyButton;cancelButton;okButton]
-        [Side Side_Left;PadX(Pixels 4)];
-  end in
-*)
+      let applyButton =
+	GButton.button label:"Apply" packing:t#action_area#add () in
+      applyButton#connect#clicked callback:refresh;
+      let cancelButton =
+	GButton.button label:"Cancel" packing:t#action_area#add () in
+      cancelButton#connect#clicked callback:t#destroy;
+      let okButton =
+	GButton.button label:"OK" packing:t#action_area#add () in
+      okButton#connect#clicked callback:(fun () -> refresh(); t#destroy ());
+      t#show ()
+    end in
+
   (**********************************************************************)
   (*                         SAFE EXIT FUNCTION                         *)
   (**********************************************************************)
@@ -747,7 +653,7 @@ let start () =
   (* Add a command to obtain new roots to the File menu                 *)
   (**********************************************************************)
 
-  fileMenu#add_item label: "New roots"
+  fileMenu#add_item "New roots"
     callback:(fun () -> getLock getRoots);
 
   (**********************************************************************)
@@ -755,7 +661,7 @@ let start () =
   (**********************************************************************)
   let addDocSection (shortname, (name, docstr)) =
     if shortname<>"" && name<>"" then
-      ignore (helpMenu#add_item label:name
+      ignore (helpMenu#add_item name
 		callback:(fun () -> messageBox name docstr))
   in
 
@@ -796,21 +702,19 @@ let start () =
     | Failure "nameRegExp"
     | Failure "extRegExp" -> () in
 
-  ignoreMenu#add_item label:"Ignore this file" key:_i
+  ignoreMenu#add_item "Ignore this file" key:_i
     callback:(fun () -> getLock (fun () -> addRegExpByPath pathRegExp));
 
-  ignoreMenu#add_item label:"Ignore files with this extension" key:_E
+  ignoreMenu#add_item "Ignore files with this extension" key:_E
     callback:(fun () -> getLock (fun () -> addRegExpByPath extRegExp));
 
-  ignoreMenu#add_item label:"Ignore files with this name" key:_N
+  ignoreMenu#add_item "Ignore files with this name" key:_N
     callback:(fun () -> getLock (fun () -> addRegExpByPath extRegExp));
 
-(*
-  ignoreMenu#add_item label:"Edit ignore patterns" callback:
+  ignoreMenu#add_item "Edit ignore patterns" callback:
     begin fun () ->
       getLock (fun () -> try ignoreDialog() with DerefSome -> ())
     end;
-*)
  
   (**********************************************************************)
   (* Add an Edit command to the Preferences menu                        *)
@@ -885,15 +789,15 @@ let start () =
   (*                  CREATE THE ACTION BAR                             *)
   (**********************************************************************)
 
-  let actionBar = new GButton.toolbar
+  let actionBar = GButton.toolbar
       orientation:`HORIZONTAL tooltips:true space_size:10
-      packing:(toplevelVBox#pack expand:false) in
+      packing:(toplevelVBox#pack expand:false) () in
 
   (**********************************************************************)
   (*         CREATE AND CONFIGURE THE QUIT BUTTON                       *)
   (**********************************************************************)
 
-  actionBar#insert_space;
+  actionBar#insert_space ();
   let _ = actionBar#insert_button text:"Quit" callback:safeExit in
 
   (**********************************************************************)
@@ -901,10 +805,11 @@ let start () =
   (**********************************************************************)
 
   if not !batch then begin
-    actionBar#insert_space;
-    ignore (actionBar#insert_button text:"Proceed"
-	      tooltip:"Proceed with displayed actions"
-	      callback:(fun () -> getLock synchronize))
+    actionBar#insert_space ();
+    actionBar#insert_button text:"Proceed"
+      tooltip:"Proceed with displayed actions"
+      callback:(fun () -> getLock synchronize) ();
+    ()
   end; 
 
   (**********************************************************************)
@@ -916,9 +821,8 @@ let start () =
     getLock (fun () -> detectUpdatesAndReconcile false);
     if !batch then (batch := false; synchronize())
   in
-  actionBar#insert_space;
-  let detectButton =
-    actionBar#insert_button text:detectCmdName callback:detectCmd in
+  actionBar#insert_space ();
+  actionBar#insert_button text:detectCmdName callback:detectCmd ();
 
   (**********************************************************************)
   (* Buttons for <--, -->, ????                                         *)
@@ -967,12 +871,12 @@ let start () =
     with DerefSome -> () in
 
   if not !batch then begin
-    actionBar#insert_space;
-    actionBar#insert_button text:"<--" callback:leftAction;
-    actionBar#insert_space;
-    actionBar#insert_button text:"-->" callback:rightAction;
-    actionBar#insert_space;
-    actionBar#insert_button text:"????" callback:questionAction;
+    actionBar#insert_space ();
+    actionBar#insert_button text:"<--" callback:leftAction ();
+    actionBar#insert_space ();
+    actionBar#insert_button text:"-->" callback:rightAction ();
+    actionBar#insert_space ();
+    actionBar#insert_button text:"????" callback:questionAction ();
     ()
   end;
 
@@ -994,16 +898,16 @@ let start () =
 	with DerefSome -> ()
       end
   in
-  actionBar#insert_space;
-  let diffButton = actionBar#insert_button text:"Diff" callback:diffCmd in
+  actionBar#insert_space ();
+  actionBar#insert_button text:"Diff" callback:diffCmd ();
 
-  fileMenu#add_item label:"Show diffs" key:_d callback:diffCmd;
+  fileMenu#add_item "Show diffs" key:_d callback:diffCmd;
 
   (**********************************************************************)
   (* Configure keyboard commands                                        *)
   (**********************************************************************)
 
-  mainWindow#connect#event#key_press after:true callback:
+  mainWindow#connect#after#event#key_press callback:
     begin fun ev ->
       let key = GdkEvent.Key.keyval ev in
       if key = _Up || key = _Down || key = _Prior || key = _Next ||
@@ -1025,39 +929,39 @@ let start () =
   let descr = if root1=root2 then "left to right"
               else ("from "^root1^" to "^root2) in
   let left =
-    navigateMenu#add_item label:("Propagate " ^ descr) key:_greater
+    navigateMenu#add_item ("Propagate " ^ descr) key:_greater
       callback:rightAction in
-  left#add_accelerator accel_group key:_greater mod:[`SHIFT];
+  left#add_accelerator _greater mod:[`SHIFT] group:accel_group;
 
   let descl = if root1=root2 then "right to left"
               else ("from "^root2^" to "^root1) in
   let right =
-    navigateMenu#add_item label:("Propagate " ^ descl) key:_less
+    navigateMenu#add_item ("Propagate " ^ descl) key:_less
       callback:leftAction in
-  right#add_accelerator accel_group key:_less mod:[`SHIFT];
+  right#add_accelerator _less mod:[`SHIFT] group:accel_group;
 
-  navigateMenu#add_item label:"Do not propagate changes" key:_slash
+  navigateMenu#add_item "Do not propagate changes" key:_slash
     callback:questionAction;
 
   (**********************************************************************)
   (* Add commands to the File menu                                      *)
   (**********************************************************************)
-  fileMenu#add_item label:"Proceed" key:_g
+  fileMenu#add_item "Proceed" key:_g
     callback:(fun () -> getLock synchronize);
 
-  fileMenu#add_item label:detectCmdName key:_r callback:detectCmd;
+  fileMenu#add_item detectCmdName key:_r callback:detectCmd;
 
-  fileMenu#add_check_item label:"Make backups" active:!Transport.backups
+  fileMenu#add_check_item "Make backups" active:!Transport.backups
     callback:(fun b -> Transport.backups := b);
 
-  fileMenu#add_check_item label:"Trace" active:!Trace.printTrace callback:
+  fileMenu#add_check_item "Trace" active:!Trace.printTrace callback:
     begin fun b ->
       Trace.printTrace := b;
       if !Trace.printTrace then messagesWindow#misc#show ()
       else messagesWindow#misc#hide ()
     end;
 
-  fileMenu#add_check_item label:"Ignore files" active:(not !Ignore.noignore)
+  fileMenu#add_check_item "Ignore files" active:(not !Ignore.noignore)
     callback: begin fun b ->
       Ignore.noignore := not b;
       Globals.propagatePrefs();
@@ -1077,7 +981,7 @@ let start () =
       with DerefSome -> ()
     end;
 
-  fileMenu#add_item label:"Exit" key:_q callback:safeExit;
+  fileMenu#add_item "Exit" key:_q callback:safeExit;
 
   (**********************************************************************)
   (* Ask the Remote module to call us back at regular intervals during  *)
