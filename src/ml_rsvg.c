@@ -3,7 +3,6 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <librsvg/rsvg.h>
-#include <librsvg/rsvg-gz.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
@@ -27,13 +26,14 @@ void ml_rsvg_size_callback(gint *w, gint *h, gpointer user_data)
 }
 
 ML_0(rsvg_handle_new, Val_pointer)
-CAMLprim value ml_rsvg_handle_new_gz(value unit)
-{
-  RsvgHandle *h = rsvg_handle_new_gz();
-  if (h == NULL)
-    failwith ("Doesn't support GZipped SVG files");
-  return Val_pointer(h);
-}
+
+#ifdef HAVE_SVGZ
+#include <librsvg/rsvg-gz.h>
+ML_0 (rsvg_handle_new_gz, Val_pointer)
+#else
+CAMLprim value ml_rsvg_handle_new_gz()
+{ failwith ("Doesn't support GZipped SVG files"); return Val_unit; }
+#endif /* HAVE_SVGZ */
 
 #define RsvgHandle_val(val) ((RsvgHandle *)Pointer_val(val))
 
