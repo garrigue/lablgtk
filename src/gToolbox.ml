@@ -154,7 +154,9 @@ let input_text ~title ?ok ?cancel ?(text="") message =
   let wview_chaine = GText.view ~editable: true ~packing: wscroll#add () in
   if text <> "" then begin
     wview_chaine#buffer#insert text;
-(* A VOIR    wview_chaine#select_region 0 (wt_chaine#length); *)
+    wview_chaine#buffer#move_mark 
+      `SEL_BOUND
+      ~where:wview_chaine#buffer#start_iter;
   end;
   input_widget ~widget:wscroll#coerce ~event:wview_chaine#event
     ~get_text: wview_chaine#buffer#get_text

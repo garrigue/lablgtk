@@ -68,6 +68,7 @@ module Message = struct
   external remove_log_handler : log_handler -> unit
     = "ml_g_log_remove_handler"
 end
+
 (*    
 module Thread = struct
   external init : unit -> unit = "ml_g_thread_init"
