@@ -1,5 +1,8 @@
 $Id$
 
+2003.06.11 [Jacques]
+  * changes in object properties (GtkBase.Tables, gtkWindow.ml)
+
 2003.06.10 [Jacques]
   * changes in object properties (gobject.ml, gtkTree.ml)
 

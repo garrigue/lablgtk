@@ -59,18 +59,21 @@ module Tags = struct
   type wrap_mode = [ `NONE|`CHAR|`WORD ]
   type sort_type = [ `ASCENDING|`DESCENDING ]
 
-  type accel_flag = [ `VISIBLE|`LOCKED ]
   type expand_type = [ `X|`Y|`BOTH|`NONE ]
   type update_policy = [ `ALWAYS|`IF_VALID|`SNAP_TO_TICKS ]
   type cell_type = [ `EMPTY|`TEXT|`PIXMAP|`PIXTEXT|`WIDGET ]
+  type toolbar_child =
+      [ `SPACE | `BUTTON | `TOGGLEBUTTON | `RADIOBUTTON | `WIDGET ]
+  type toolbar_space_style = [ `EMPTY | `LINE ]
+  type spin_type =
+    [ `STEP_FORWARD | `STEP_BACKWARD | `PAGE_FORWARD | `PAGE_BACKWARD
+    | `HOME | `END | `USER_DEFINED of float ]
+  type accel_flag = [ `VISIBLE|`LOCKED ]
   type button_action = [ `SELECTS|`DRAGS|`EXPANDS ]
   type calendar_display_options =
     [ `SHOW_HEADING|`SHOW_DAY_NAMES|`NO_MONTH_CHANGE|`SHOW_WEEK_NUMBERS
     | `WEEK_START_MONDAY ]
   type spin_button_update_policy = [ `ALWAYS|`IF_VALID ]
-  type spin_type =
-    [ `STEP_FORWARD | `STEP_BACKWARD | `PAGE_FORWARD | `PAGE_BACKWARD
-    | `HOME | `END | `USER_DEFINED of float ]
   type progress_bar_style = [ `CONTINUOUS|`DISCRETE ]
   type progress_bar_orientation =
     [ `LEFT_TO_RIGHT|`RIGHT_TO_LEFT|`BOTTOM_TO_TOP|`TOP_TO_BOTTOM ]

@@ -207,7 +207,7 @@ let store = new GTree.tree_store cols;;
 *)
 
 let set_prop = Gobject.Property.set
-module TVCProps = TreeViewColumn.Properties
+module TVCProps = TreeViewColumn.Prop
 
 class view_column_signals obj = object
   inherit gtkobj_signals obj
@@ -319,7 +319,7 @@ class view_signals obj = object
     GtkSignal.connect obj ~sgn:TreeView.Signals.start_interactive_search ~after
 end
 
-open TreeView.Properties
+open TreeView.Prop
 open Gobject.Property
 class view obj = object
   inherit GContainer.container obj
@@ -336,8 +336,7 @@ class view obj = object
   method headers_visible = get obj headers_visible
   method set_headers_visible = set obj headers_visible
   method model = new model (get_some obj model)
-  method set_model (m:model) = set obj model (Some m#as_model)
-
+  method set_model m = set obj model (may_map (fun (m:model) -> m#as_model) m)
   method reorderable = get obj reorderable
   method set_reorderable = set obj reorderable
   method rules_hint = get obj rules_hint

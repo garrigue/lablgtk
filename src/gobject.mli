@@ -139,7 +139,8 @@ module Data :
     val pointer : Gpointer.boxed option conv
     val unsafe_pointer : 'a option conv
     val boxed : Gpointer.boxed option conv
-    val gobject : 'a obj option conv
+    val gobject : 'a obj conv
+    val gobject_option : 'a obj option conv
     val of_value : 'a conv -> g_value -> 'a
     val to_value : 'a conv -> 'a -> g_value
   end

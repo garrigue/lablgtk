@@ -185,11 +185,17 @@ module Data = struct
              | _ -> failwith "Gobject.get_pointer");
       inj = (fun c -> `POINTER (magic c)) }
   let boxed = {pointer with kind = `BOXED}
-  let gobject =
+  let gobject_option =
     { kind = `OBJECT;
       proj = (function `OBJECT c -> may_map ~f:unsafe_cast c
              | _ -> failwith "Gobject.get_object");
       inj = (fun c -> `OBJECT (may_map ~f:unsafe_cast c)) }
+  let gobject =
+    { kind = `OBJECT;
+      proj = (function `OBJECT (Some c) -> unsafe_cast c
+             | `OBJECT None -> raise Gpointer.Null
+             | _ -> failwith "Gobject.get_object");
+      inj = (fun c -> `OBJECT (Some (unsafe_cast c))) }
 
   let of_value kind v =
     kind.proj (Value.get v)
@@ -248,9 +254,12 @@ module Property = struct
             ("exception while looking for " ^ tp obj ^ "->" ^ prop.name);
           raise exn
     in
-    try ignore (prop.conv.Data.proj data)
-    with Failure s ->
-      failwith (s ^ " cannot handle " ^ tp obj ^ "->" ^ prop.name)
+    try ignore (prop.conv.Data.proj data) with
+      Failure s ->
+        failwith (s ^ " cannot handle " ^ tp obj ^ "->" ^ prop.name)
+    | exn ->
+        failwith (tp obj ^ "->" ^ prop.name ^
+                  " raised " ^ Printexc.to_string exn)
 end
 
 (*

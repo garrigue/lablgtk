@@ -31,6 +31,11 @@ void ml_raise_gtk (const char *errmsg)
 
 #include "gtk_tags.c"
 
+CAMLprim value ml_gtk_get_tables ()
+{
+  return (value)ml_lookup_tables;
+}
+
 ML_1 (Val_direction_type, Int_val, Id)
 ML_1 (Val_orientation, Int_val, Id)
 ML_1 (Val_toolbar_style, Int_val, Id)
