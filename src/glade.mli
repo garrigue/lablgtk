@@ -30,6 +30,10 @@ external get_widget_name : [> `widget] Gtk.obj -> string
 external get_widget_tree : [> `widget] Gtk.obj -> glade_xml Gtk.obj
   = "ml_glade_get_widget_tree"
 
+val get_widget_msg :
+    name:string -> ?info:string -> [> `glade_xml] Gtk.obj -> Gtk.widget Gtk.obj
+      (* Same as get_widget, but fails with a useful message including info,
+         rather than just raising Gpointer.Null *)
 
 (* Handler bindings *)
 type handler =
