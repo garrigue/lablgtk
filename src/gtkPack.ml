@@ -106,6 +106,42 @@ module Fixed = struct
       = "ml_gtk_fixed_move"
 end
 
+module Layout = struct
+  let cast w : layout obj =
+    if Object.is_a w "GtkLayout" then Obj.magic w
+    else invalid_arg "Gtk.Layout.cast"
+  external create :
+      [> adjustment] optobj -> [> adjustment] optobj -> layout obj
+      = "ml_gtk_layout_new"
+  external put : [> layout] obj -> [> widget] obj -> x:int -> y:int -> unit
+      = "ml_gtk_layout_put"
+  external move : [> layout] obj -> [> widget] obj -> x:int -> y:int -> unit
+      = "ml_gtk_layout_move"
+  external set_size : [> layout] obj -> width:int -> height:int -> unit
+      = "ml_gtk_layout_set_size"
+  external get_hadjustment : [> layout] obj -> adjustment obj
+      = "ml_gtk_layout_get_hadjustment"
+  external get_vadjustment : [> layout] obj -> adjustment obj
+      = "ml_gtk_layout_get_vadjustment"
+  external set_hadjustment : [> layout] obj -> [> adjustment] obj -> unit
+      = "ml_gtk_layout_set_hadjustment"
+  external set_vadjustment : [> layout] obj -> [> adjustment] obj -> unit
+      = "ml_gtk_layout_set_vadjustment"
+  external freeze : [> layout] obj -> unit
+      = "ml_gtk_layout_freeze"
+  external thaw : [> layout] obj -> unit
+      = "ml_gtk_layout_thaw"
+  external get_height : [> layout] obj -> int
+      = "ml_gtk_layout_get_height"
+  external get_width : [> layout] obj -> int
+      = "ml_gtk_layout_get_width"
+  let set w ?:width ?:height =
+    if width <> None || height <> None then
+      set_size w width:(may_default get_width w for:width)
+	height:(may_default get_height w for:height)
+end
+
+
 module Packer = struct
   let cast w : packer obj =
     if Object.is_a w "GtkPacker" then Obj.magic w
@@ -135,12 +171,16 @@ module Packer = struct
   external set_spacing : [> packer] obj -> int -> unit
       = "ml_gtk_packer_set_spacing"
   external set_defaults :
-      [> packer] obj -> 
-      ?side:side_type -> ?anchor:anchor_type ->
-      ?options:packer_options list ->
-      ?border_width:int -> ?pad_x:int -> ?pad_y:int ->
+      [> packer] obj -> ?border_width:int -> ?pad_x:int -> ?pad_y:int ->
       ?i_pad_x:int -> ?i_pad_y:int -> unit
       = "ml_gtk_packer_set_defaults_bc" "ml_gtk_packer_set_defaults"
+
+  let build_options ?:expand [< true >] ?:fill [< `BOTH >] =
+    (if expand then [`PACK_EXPAND] else []) @
+    (match (fill : expand_type) with `NONE -> []
+    | `X -> [`FILL_X]
+    | `Y -> [`FILL_Y]
+    | `BOTH -> [`FILL_X;`FILL_Y])
 end
 
 module Paned = struct

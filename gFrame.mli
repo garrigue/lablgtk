@@ -106,3 +106,23 @@ class aspect_frame :
       ?yalign:clampf -> ?ratio:clampf -> ?obey_child:bool -> unit
   end
 class aspect_frame_wrapper : Gtk.aspect_frame obj -> aspect_frame
+
+class viewport :
+  ?hadjustment:GData.adjustment ->
+  ?vadjustment:GData.adjustment ->
+  ?shadow_type:Tags.shadow_type ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(viewport -> unit) -> ?show:bool ->
+  object
+    inherit GContainer.container_wrapper
+    val obj : Gtk.viewport obj
+    method hadjustment : GData.adjustment
+    method set_viewport :
+      ?hadjustment:GData.adjustment ->
+      ?vadjustment:GData.adjustment ->
+      ?shadow_type:Tags.shadow_type -> unit
+    method vadjustment : GData.adjustment
+  end
+class viewport_wrapper : Gtk.viewport obj -> viewport

@@ -34,6 +34,39 @@ class statusbar :
   end
 class statusbar_wrapper : Gtk.statusbar obj -> statusbar
 
+class calendar_signals :
+  'a[> calendar widget] Gtk.obj -> ?after:bool ->
+  object
+    inherit GObj.widget_signals
+    val obj : 'a Gtk.obj
+    method day_selected : callback:(unit -> unit) -> GtkSignal.id
+    method day_selected_double_click : callback:(unit -> unit) -> GtkSignal.id
+    method month_changed : callback:(unit -> unit) -> GtkSignal.id
+    method next_month : callback:(unit -> unit) -> GtkSignal.id
+    method next_year : callback:(unit -> unit) -> GtkSignal.id
+    method prev_month : callback:(unit -> unit) -> GtkSignal.id
+    method prev_year : callback:(unit -> unit) -> GtkSignal.id
+  end
+class calendar :
+  ?options:Tags.calendar_display_options list ->
+  ?packing:(calendar -> unit) -> ?show:bool ->
+  object
+    inherit GObj.widget
+    val obj : Gtk.calendar obj
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method connect : ?after:bool -> calendar_signals
+    method clear_marks : unit
+    method date : int * int * int
+    method display_options : Tags.calendar_display_options list -> unit
+    method freeze : unit -> unit
+    method mark_day : int -> unit
+    method select_day : int -> unit
+    method select_month : month:int -> year:int -> unit
+    method thaw : unit -> unit
+    method unmark_day : int -> unit
+  end
+class calendar_wrapper : Gtk.calendar obj -> calendar
+
 class drawing_area :
   ?width:int ->
   ?height:int ->
@@ -112,6 +145,60 @@ class tips_query :
     method stop : unit -> unit
   end
 class tips_query_wrapper : Gtk.tips_query obj -> tips_query
+
+class notebook_signals :
+  'a[> container notebook widget] Gtk.obj -> ?after:bool ->
+  object
+    inherit GContainer.container_signals
+    val obj : 'a Gtk.obj
+    method switch_page : callback:(int -> unit) -> GtkSignal.id
+  end
+
+class notebook :
+  ?tab_pos:Tags.position ->
+  ?tab_border:int ->
+  ?show_tabs:bool ->
+  ?homogeneous_tabs:bool ->
+  ?show_border:bool ->
+  ?scrollable:bool ->
+  ?popup:bool ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(notebook -> unit) ->
+  ?show:bool ->
+  object
+    inherit GContainer.container
+    val obj : Gtk.notebook obj
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method connect : ?after:bool -> notebook_signals
+    method append_page :
+      #GObj.is_widget ->
+      ?tab_label:#GObj.is_widget -> ?menu_label:#GObj.is_widget -> unit
+    method current_page : int
+    method goto_page : int -> unit
+    method insert_page :
+      #GObj.is_widget -> ?tab_label:#GObj.is_widget ->
+      ?menu_label:#GObj.is_widget -> pos:int -> unit
+    method next_page : unit -> unit
+    method nth_page : int -> GObj.widget
+    method page_num : #GObj.is_widget -> int
+    method prepend_page :
+      #GObj.is_widget ->
+      ?tab_label:#GObj.is_widget -> ?menu_label:#GObj.is_widget -> unit
+    method previous_page : unit -> unit
+    method remove_page : int -> unit
+    method set_notebook :
+      ?tab_pos:Tags.position ->
+      ?show_tabs:bool ->
+      ?homogeneous_tabs:bool ->
+      ?show_border:bool ->
+      ?scrollable:bool -> ?tab_border:int -> ?popup:bool -> unit
+    method set_page :
+      #GObj.is_widget ->
+      ?tab_label:#GObj.is_widget -> ?menu_label:#GObj.is_widget -> unit
+  end
+class notebook_wrapper : Gtk.notebook obj -> notebook
 
 class color_selection :
   ?border_width:int ->

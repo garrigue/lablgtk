@@ -28,6 +28,22 @@ class range obj = object
   method set_update_policy = Range.set_update_policy obj
 end
 
+class scale_wrapper obj = object
+  inherit range (obj : scale obj)
+  method set_display = Scale.setter ?obj ?cont:null_cont
+end
+
+class scale dir ?:adjustment ?:digits ?:draw_value ?:value_pos
+    ?:packing ?:show =
+  let w =
+    Scale.create dir ?adjustment:(may_map adjustment fun:GData.adjustment_obj)
+  in
+  let () = Scale.setter w cont:null_cont ?:digits ?:draw_value ?:value_pos in
+  object (self)
+    inherit scale_wrapper w
+    initializer pack_return :packing ?:show (self :> scale_wrapper)
+  end
+
 class scrollbar_wrapper obj = object
   inherit range (obj : Gtk.scrollbar obj)
   method add_events = Widget.add_events obj

@@ -23,6 +23,21 @@ class range :
     method set_update_policy : Tags.update_type -> unit
   end
 
+class scale :
+  Tags.orientation ->
+  ?adjustment:GData.adjustment ->
+  ?digits:int ->
+  ?draw_value:bool ->
+  ?value_pos:Tags.position ->
+  ?packing:(scale -> unit) -> ?show:bool ->
+  object
+    inherit range
+    val obj : Gtk.scale obj
+    method set_display :
+      ?digits:int -> ?draw_value:bool -> ?value_pos:Tags.position -> unit
+  end
+class scale_wrapper : Gtk.scale obj -> scale
+
 class scrollbar :
   Tags.orientation ->
   ?adjustment:GData.adjustment ->

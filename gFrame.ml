@@ -115,3 +115,31 @@ class aspect_frame ?:label ?:xalign ?:yalign ?:ratio ?:obey_child
     inherit aspect_frame_wrapper w
     initializer pack_return :packing ?:show (self :> aspect_frame_wrapper)
   end
+
+class viewport_wrapper obj = object
+  inherit container_wrapper (obj : viewport obj)
+  method set_viewport ?:hadjustment ?:vadjustment ?:shadow_type =
+    may hadjustment
+      fun:(fun a -> Viewport.set_hadjustment obj (GData.adjustment_obj a));
+    may vadjustment
+      fun:(fun a -> Viewport.set_vadjustment obj (GData.adjustment_obj a));
+    may shadow_type fun:(Viewport.set_shadow_type obj)
+  method hadjustment =
+    new GData.adjustment_wrapper (Viewport.get_hadjustment obj)
+  method vadjustment =
+    new GData.adjustment_wrapper (Viewport.get_vadjustment obj)
+end
+
+class viewport ?:hadjustment ?:vadjustment ?:shadow_type
+    ?:border_width ?:width ?:height ?:packing ?:show =
+  let w = Viewport.create ?None
+      ?hadjustment:(may_map hadjustment fun:GData.adjustment_obj)
+      ?vadjustment:(may_map vadjustment fun:GData.adjustment_obj) in
+  let () =
+    may shadow_type fun:(Viewport.set_shadow_type w);
+    Container.setter w ?:border_width ?:width ?:height cont:null_cont
+  in
+  object (self)
+    inherit viewport_wrapper w
+    initializer pack_return :packing ?:show (self :> viewport_wrapper)
+  end

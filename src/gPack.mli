@@ -101,3 +101,80 @@ class fixed :
     method put : #GObj.is_widget -> x:int -> y:int -> unit
   end
 class fixed_wrapper : Gtk.fixed obj -> fixed
+
+class layout :
+  ?hadjustment:GData.adjustment ->
+  ?vadjustment:GData.adjustment ->
+  ?layout_width:int ->
+  ?layout_height:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(layout -> unit) -> ?show:bool ->
+  object
+    inherit container_wrapper
+    val obj : Gtk.layout obj
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method freeze : unit -> unit
+    method hadjustment : GData.adjustment
+    method height : int
+    method move : #GObj.is_widget -> x:int -> y:int -> unit
+    method put : #GObj.is_widget -> x:int -> y:int -> unit
+    method set_layout :
+      ?hadjustment:GData.adjustment ->
+      ?vadjustment:GData.adjustment -> ?width:int -> ?height:int -> unit
+    method thaw : unit -> unit
+    method vadjustment : GData.adjustment
+    method width : int
+  end
+
+class packer :
+  ?spacing:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(packer -> unit) -> ?show:bool ->
+  object
+    inherit GContainer.container_wrapper
+    val obj : Gtk.packer obj
+    method pack :
+      #GObj.is_widget ->
+      ?side:Tags.side_type ->
+      ?anchor:Tags.anchor_type ->
+      ?expand:bool ->
+      ?fill:Tags.expand_type ->
+      ?border_width:int ->
+      ?pad_x:int -> ?pad_y:int -> ?i_pad_x:int -> ?i_pad_y:int -> unit
+    method reorder_child : #GObj.is_widget -> pos:int -> unit
+    method set_child_packing :
+      #GObj.is_widget ->
+      ?side:Tags.side_type ->
+      ?anchor:Tags.anchor_type ->
+      ?expand:bool ->
+      ?fill:Tags.expand_type ->
+      ?border_width:int ->
+      ?pad_x:int -> ?pad_y:int -> ?i_pad_x:int -> ?i_pad_y:int -> unit
+    method set_defaults :
+      ?border_width:int ->
+      ?pad_x:int -> ?pad_y:int -> ?i_pad_x:int -> ?i_pad_y:int -> unit
+    method set_spacing : int -> unit
+  end
+class packer_wrapper : Gtk.packer obj -> packer
+
+class paned :
+  Tags.orientation ->
+  ?handle_size:int ->
+  ?gutter_size:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(paned -> unit) -> ?show:bool ->
+  object
+    inherit GContainer.container_wrapper
+    val obj : Gtk.paned obj
+    method add1 : #GObj.is_widget -> unit
+    method add2 : #GObj.is_widget -> unit
+    method add_events : Gdk.Tags.event_mask list -> unit
+    method set_paned : ?handle_size:int -> ?gutter_size:int -> unit
+  end
+class paned_wrapper : Gtk.paned obj -> paned

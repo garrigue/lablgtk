@@ -814,6 +814,22 @@ ML_0 (gtk_fixed_new, Val_GtkWidget_sink)
 ML_4 (gtk_fixed_put, GtkFixed_val, GtkWidget_val, Int_val, Int_val, Unit)
 ML_4 (gtk_fixed_move, GtkFixed_val, GtkWidget_val, Int_val, Int_val, Unit)
 
+/* gtklayout.h */
+
+#define GtkLayout_val(val) check_cast(GTK_LAYOUT,val)
+ML_2 (gtk_layout_new, GtkAdjustment_val, GtkAdjustment_val, Val_GtkWidget_sink)
+ML_4 (gtk_layout_put, GtkLayout_val, GtkWidget_val, Int_val, Int_val, Unit)
+ML_4 (gtk_layout_move, GtkLayout_val, GtkWidget_val, Int_val, Int_val, Unit)
+ML_3 (gtk_layout_set_size, GtkLayout_val, Int_val, Int_val, Unit)
+ML_1 (gtk_layout_get_hadjustment, GtkLayout_val, Val_GtkAny)
+ML_1 (gtk_layout_get_vadjustment, GtkLayout_val, Val_GtkAny)
+ML_2 (gtk_layout_set_hadjustment, GtkLayout_val, GtkAdjustment_val, Unit)
+ML_2 (gtk_layout_set_vadjustment, GtkLayout_val, GtkAdjustment_val, Unit)
+ML_1 (gtk_layout_freeze, GtkLayout_val, Unit)
+ML_1 (gtk_layout_thaw, GtkLayout_val, Unit)
+Make_Extractor (gtk_layout_get, GtkLayout_val, width, Val_int)
+Make_Extractor (gtk_layout_get, GtkLayout_val, height, Val_int)
+
 /* gtkmenushell.h */
 
 #define GtkMenuShell_val(val) check_cast(GTK_MENU_SHELL,val)
@@ -850,19 +866,38 @@ ML_0 (gtk_menu_bar_new, Val_GtkWidget_sink)
 
 #define GtkNotebook_val(val) check_cast(GTK_NOTEBOOK,val)
 ML_0 (gtk_notebook_new, Val_GtkWidget_sink)
+
 ML_5 (gtk_notebook_insert_page_menu, GtkNotebook_val, GtkWidget_val,
-      GtkWidget_val, Option_val(arg4,GtkWidget_val,NULL) Ignore,
-      Option_val(arg5,Int_val,-1) Ignore, Unit)
+      GtkWidget_val, GtkWidget_val, Int_val, Unit)
 ML_2 (gtk_notebook_remove_page, GtkNotebook_val, Int_val, Unit)
-ML_1 (gtk_notebook_get_current_page, GtkNotebook_val, Val_int)
-ML_2 (gtk_notebook_set_page, GtkNotebook_val, Int_val, Unit)
+
 ML_2 (gtk_notebook_set_tab_pos, GtkNotebook_val, Position_val, Unit)
+ML_2 (gtk_notebook_set_homogeneous_tabs, GtkNotebook_val, Bool_val, Unit)
 ML_2 (gtk_notebook_set_show_tabs, GtkNotebook_val, Bool_val, Unit)
 ML_2 (gtk_notebook_set_show_border, GtkNotebook_val, Bool_val, Unit)
 ML_2 (gtk_notebook_set_scrollable, GtkNotebook_val, Bool_val, Unit)
 ML_2 (gtk_notebook_set_tab_border, GtkNotebook_val, Int_val, Unit)
 ML_1 (gtk_notebook_popup_enable, GtkNotebook_val, Unit)
 ML_1 (gtk_notebook_popup_disable, GtkNotebook_val, Unit)
+
+ML_1 (gtk_notebook_get_current_page, GtkNotebook_val, Val_int)
+ML_2 (gtk_notebook_set_page, GtkNotebook_val, Int_val, Unit)
+ML_2 (gtk_notebook_get_nth_page, GtkNotebook_val, Int_val, Val_GtkWidget)
+ML_2 (gtk_notebook_page_num, GtkNotebook_val, GtkWidget_val, Val_int)
+ML_1 (gtk_notebook_next_page, GtkNotebook_val, Unit)
+ML_1 (gtk_notebook_prev_page, GtkNotebook_val, Unit)
+
+ML_2 (gtk_notebook_get_tab_label, GtkNotebook_val, GtkWidget_val,
+      Val_GtkWidget)
+ML_3 (gtk_notebook_set_tab_label, GtkNotebook_val, GtkWidget_val,
+      GtkWidget_val, Unit)
+ML_2 (gtk_notebook_get_menu_label, GtkNotebook_val, GtkWidget_val,
+      Val_GtkWidget)
+ML_3 (gtk_notebook_set_menu_label, GtkNotebook_val, GtkWidget_val,
+      GtkWidget_val, Unit)
+ML_3 (gtk_notebook_reorder_child, GtkNotebook_val, GtkWidget_val,
+      Int_val, Unit)
+
 
 /* gtkpacker.h */
 
@@ -1006,6 +1041,33 @@ value ml_gtk_tree_remove_items (value tree, value items)
   gtk_tree_remove_items (GtkTree_val(tree), items_list);
   return Val_unit;
 }
+
+/* gtkcalendar.h */
+
+#define GtkCalendar_val(val) check_cast(GTK_CALENDAR,val)
+ML_0 (gtk_calendar_new, Val_GtkWidget_sink)
+ML_3 (gtk_calendar_select_month, GtkCalendar_val, Int_val, Int_val, Unit)
+ML_2 (gtk_calendar_select_day, GtkCalendar_val, Int_val, Unit)
+ML_2 (gtk_calendar_mark_day, GtkCalendar_val, Int_val, Unit)
+ML_2 (gtk_calendar_unmark_day, GtkCalendar_val, Int_val, Unit)
+ML_1 (gtk_calendar_clear_marks, GtkCalendar_val, Unit)
+Make_Flags_val (Calendar_display_options_val)
+ML_2 (gtk_calendar_display_options, GtkCalendar_val,
+      Flags_Calendar_display_options_val, Unit)
+value ml_gtk_calendar_get_date (value w)
+{
+    guint year, month, day;
+    value ret = Val_unit;
+
+    gtk_calendar_get_date (GtkCalendar_val(w), &year, &month, &day);
+    ret = alloc (3, 0);
+    Field(ret,0) = Val_int(year);
+    Field(ret,1) = Val_int(month);
+    Field(ret,2) = Val_int(day);
+    return ret;
+}
+ML_1 (gtk_calendar_freeze, GtkCalendar_val, Unit)
+ML_1 (gtk_calendar_thaw, GtkCalendar_val, Unit)
 
 /* gtkdrawingarea.h */
 

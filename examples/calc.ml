@@ -102,7 +102,7 @@ class calculator ?:packing ?:show =
 
 (* Finally start everything *)
 
-let w = new GWindow.window
+let w = new GWindow.window auto_shrink:true
 
 let applet = new calculator packing: w#add
 
