@@ -131,6 +131,9 @@ testcc: lablgladecc lablgtktop
 
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
+	if test `grep -s -c '^$(INSTALLDIR)$$' $(LIBDIR)/ld.conf` = 0; then \
+	    echo $(INSTALLDIR) >> $(LIBDIR)/ld.conf; \
+	fi
 	cp $(ALLOBJS:.cmo=.cmi) $(THOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp -p *.mli $(INSTALLDIR)
 	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(INSTALLDIR)
