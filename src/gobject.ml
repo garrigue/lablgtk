@@ -42,6 +42,8 @@ module Type = struct
       = "ml_G_TYPE_FUNDAMENTAL"
   external of_fundamental : fundamental_type -> g_type
       = "ml_Fundamental_type_val"
+  external interface_prerequisites : g_type -> g_type list
+      = "ml_g_type_interface_prerequisites"
 end
 
 module Value = struct
@@ -55,6 +57,11 @@ module Value = struct
   external get_type : g_value -> g_type = "ml_G_VALUE_TYPE"
   external copy : g_value -> g_value -> unit = "ml_g_value_copy"
   external reset : g_value -> unit = "ml_g_value_reset"
+  external type_compatible : g_type -> g_type -> bool
+      = "ml_g_value_type_compatible"
+  external type_transformable : g_type -> g_type -> bool
+      = "ml_g_value_type_transformable"
+  external transform : g_value -> g_value -> bool = "ml_g_value_transform"
   external get : g_value -> data_get = "ml_g_value_get"
   external set : g_value -> 'a data_set -> unit = "ml_g_value_set_variant"
   external get_pointer : g_value -> Gpointer.boxed = "ml_g_value_get_pointer"
@@ -200,11 +207,13 @@ module Property = struct
   external get_property_type : 'a obj -> string -> g_type
     = "ml_g_object_get_property_type"
   let set_dyn obj prop data =
-    let v = Value.create (get_property_type obj prop) in
+    let t = get_property_type obj prop in
+    let v = Value.create t in
     Value.set v data;
     set_property obj prop v
   let get_dyn obj prop =
-    let v = Value.create (get_property_type obj prop) in
+    let t = get_property_type obj prop in
+    let v = Value.create t in
     get_property obj prop v;
     Value.get v
   let set (obj : 'a obj) (prop : ('a,_) property) x =

@@ -46,6 +46,21 @@ ML_1 (g_type_depth, GType_val, Val_int)
 ML_2 (g_type_is_a, GType_val, GType_val, Val_bool)
 ML_1 (G_TYPE_FUNDAMENTAL, GType_val, Val_fundamental_type)
 ML_1 (Fundamental_type_val, ID, Val_GType)
+CAMLprim value ml_g_type_interface_prerequisites(value type)
+{
+    value res = Val_unit;
+    CAMLparam1(res);
+    CAMLlocal1(tmp);
+    guint n;
+    GType *intf = g_type_interface_prerequisites(GType_val(type), &n);
+    while (n-- > 0) {
+        tmp = res;
+        res = alloc_small(2,0);
+        Field(res,0) = Val_GType(intf[n]);
+        Field(res,1) = tmp;
+    }
+    CAMLreturn(res);
+}
 
 /* gclosure.h */
 
@@ -174,6 +189,7 @@ CAMLprim value ml_g_value_get (value arg)
         tag = MLTAG_STRING;
         tmp = Val_option (DATA.v_pointer, copy_string);
         break;
+    case G_TYPE_INTERFACE: /* assume interfaces are for objects */
     case G_TYPE_OBJECT:
         tag = MLTAG_OBJECT;
         tmp = Val_option ((GObject*)DATA.v_pointer, Val_GObject);
@@ -246,6 +262,7 @@ void g_value_set_variant (GValue *val, value arg2)
         if (tag != MLTAG_STRING) break;
         g_value_set_string(val, String_option_val(data));
         return;
+    case G_TYPE_INTERFACE: /* assume interfaces are for objects */
     case G_TYPE_OBJECT:
         if (tag != MLTAG_OBJECT) break;
         g_value_set_object(val, Option_val(data,GObject_val,NULL));
