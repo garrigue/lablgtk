@@ -30,6 +30,8 @@ module MenuItem = struct
     open GtkSignal
     let activate : ([>`menuitem],_) t =
       { name = "activate"; marshaller = marshal_unit }
+    let activate_item : ([>`menuitem],_) t =
+      { name = "activate_item"; marshaller = marshal_unit }
   end
 end
 
@@ -124,6 +126,8 @@ module Menu = struct
       = "ml_gtk_menu_set_accel_group"
   external get_accel_group : [>`menu] obj -> accel_group
       = "ml_gtk_menu_get_accel_group"
+  external ensure_uline_accel_group : [>`menu] obj -> accel_group
+      = "ml_gtk_menu_ensure_uline_accel_group"
   external attach_to_widget : [>`menu] obj -> [>`widget] obj -> unit
       = "ml_gtk_menu_attach_to_widget"
   external get_attach_widget : [>`menu] obj -> widget obj
