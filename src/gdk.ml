@@ -460,7 +460,7 @@ module Rgb = struct
   external draw_image_ :
     'a drawable -> gc -> x:int -> y:int -> width:int -> height:int ->
     dither:rgb_dither -> buf:Gpointer.region -> row_stride:int -> unit
-    = "ml_gdk_draw_rgb_image_bc" "ml_gdk_raw_rgb_image"
+    = "ml_gdk_draw_rgb_image_bc" "ml_gdk_draw_rgb_image"
   let draw_image w gc ~width ~height ?(x=0) ?(y=0) ?(dither=`NORMAL)
     ?(row_stride=width*3) buf =
     if height <= 0 || width <= 0 || row_stride < width * 3
