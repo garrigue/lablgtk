@@ -31,7 +31,7 @@ module Main = struct
   external get_version : unit -> int * int * int = "ml_gtk_get_version"
   let version = get_version ()
 
-  let flush = Gdk.flush
+  let flush = Gdk.X.flush
 end
 
 module Grab = struct
