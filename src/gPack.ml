@@ -208,7 +208,7 @@ class notebook obj = object (self)
   method get_tab_label w =
     new widget (Notebook.get_tab_label obj (as_widget w))
   method get_menu_label w =
-    new widget (Notebook.get_tab_label obj (as_widget w))
+    new widget (Notebook.get_menu_label obj (as_widget w))
   method set_page ?tab_label ?menu_label page =
     let child = as_widget page in
     may tab_label
