@@ -83,7 +83,7 @@ void ml_g_value_free(value val)
     GValue *v = GValue_val(val);
     if (v == NULL) return;
     g_value_unset (v);
-    stat_free (v);
+    free (v);
 }
 
 value ml_g_value_new(value gtype)
@@ -335,10 +335,10 @@ value ml_g_signal_emit_by_name (value obj, value sig, value params)
     CAMLparam3(obj,sig,params);
     CAMLlocal1(ret);
     GObject *instance = GObject_val(obj);
-    GValue *iparams =
-        (GValue*)stat_alloc(sizeof(GValue) * (1 + Wosize_val(params)));
+    GValue *iparams = (GValue*)calloc(1 + Wosize_val(params), sizeof(GValue));
     GQuark detail = 0;
-    GType itype = G_TYPE_FROM_INSTANCE (instance), return_type;
+    GType itype = G_TYPE_FROM_INSTANCE (instance);
+    GType return_type;
     guint signal_id;
     int i;
     GSignalQuery query;
@@ -353,11 +353,14 @@ value ml_g_signal_emit_by_name (value obj, value sig, value params)
     return_type = query.return_type & ~G_SIGNAL_TYPE_STATIC_SCOPE;
     if (return_type != G_TYPE_NONE)
         ret = ml_g_value_new (Val_GType (return_type));
-    for (i = 0; i < Wosize_val(params); i++) {
+    for (i = 0; i < query.n_params; i++) {
         g_value_init (&iparams[i+1],
                       query.param_types[i] & ~G_SIGNAL_TYPE_STATIC_SCOPE);
         g_value_set_variant (&iparams[i+1], Field(params,i));
     }
-    g_signal_emitv (iparams, signal_id, detail, GValue_val(ret));
+    g_signal_emitv (iparams, signal_id, detail, (ret ? GValue_val(ret) : 0));
+    for (i = 0; i < query.n_params + 1; i++)
+        g_value_unset (iparams + i);
+    free (iparams);
     CAMLreturn(ret);
 }
