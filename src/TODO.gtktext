@@ -1,22 +1,22 @@
 ===============================================================================
-GtkTextIter:  
+GtkTextIter:
 Il manque :
 1) Fonction avec TextAttributes
 	gtk_text_iter_get_attributes
 2) Fonction avec Pango
-	gtk_text_iter_get_language 
+	gtk_text_iter_get_language
 ===============================================================================
 GtkTextMark : FINI
 ===============================================================================
 GtkTextBuffer: FINI
 ===============================================================================
-GtkTextTag: 
+GtkTextTag:
 Il manque les PangoTabs.
 ===============================================================================
 GtkTextTagTable: FINI
 ===============================================================================
-GtkTextView: 
-Manquent les fonctions concernant Pango :  
+GtkTextView:
+Manquent les fonctions concernant Pango :
 	void gtk_text_view_set_tabs(GtkTextView *text_view,PangoTabArray *tabs);
 	PangoTabArray* gtk_text_view_get_tabs(GtkTextView *text_view);
 	GtkTextAttributes* gtk_text_view_get_default_attributes(GtkTextView *text_view);
