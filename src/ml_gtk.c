@@ -269,11 +269,9 @@ ML_1 (gtk_widget_lock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unlock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_accelerators_locked, GtkWidget_val, Val_bool)
 
+ML_1 (GTK_WIDGET_VISIBLE, GtkWidget_val, Val_bool)
+
 Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
-ml_gtk_widget_visible (value w)
-{ 
-  return Val_bool(GTK_WIDGET_VISIBLE(GtkWidget_val(w)));
-}
 Make_Extractor (gtk_widget, GtkWidget_val, parent, Val_GtkWidget)
 
 /* gtkcontainer.h */

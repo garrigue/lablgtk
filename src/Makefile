@@ -37,9 +37,16 @@ THLIBS = unix.cma threads.cma
 THLDFLAGS = -lthreads -lunix
 
 ifdef USE_CC
-CCOMPILER = $(CC) -c -I/usr/local/lib/olabl $(CFLAGS)
+CCOMPILER = $(CC) -c -I$(LABLLIB)/olabl $(CFLAGS)
 else
 CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
+endif
+
+ifdef USE_GL
+GLLINK = -I $(LABLLIB)/lablGL lablgl.cma \
+	-cclib "-lgtkgl -L$(LABLLIB)/lablGL -llablgl -lGL -lGLU"
+GLMLOBJS = gtkGl.cmo
+GLCOBJS = ml_gtkgl.o
 endif
 
 # Rules
@@ -58,7 +65,7 @@ endif
 	./var2conv < $< > $@
 
 # Targets
-COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o
+COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o $(GLCOBJS)
 OLDMLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gtkObj.cmo gtkExt.cmo
 MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
@@ -67,11 +74,12 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gdkObj.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
 	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gFrame.cmo \
-	gEdit.cmo gPix.cmo gRange.cmo gUtil.cmo
+	gEdit.cmo gPix.cmo gRange.cmo gUtil.cmo $(GLMLOBJS)
 THOBJS = gtkThread.cmo threadObj.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
-	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" lablgtk.cma
+	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" \
+		lablgtk.cma $(GLLINK)
 
 lablgtkopt: liblablgtk.a lablgtk.cmxa
 
@@ -100,7 +108,7 @@ threadObj.cmx: threadObj.ml
 lablgtk_t: liblablgtk.a lablgtk.cma $(THOBJS)
 	$(TOPLEVEL) $(THFLAGS) -o $@ -custom \
 		-cclib "-L. -llablgtk $(LDFLAGS) $(THLDFLAGS)" \
-		$(THLIBS) lablgtk.cma $(THOBJS)
+		$(THLIBS) lablgtk.cma $(THOBJS) $(GLLINK)
 
 var2conv: var2conv.cmo
 	$(LINKER) -o $@ var2conv.cmo
@@ -115,10 +123,12 @@ clean:
 	olabldep *.ml *.mli > .depend
 
 config.make:
-	echo GTKCFLAGS=`gtk-config --cflags` > config.make
+	olablc -v | grep "^Standard" | sed "s/.*: */LABLLIB=/" > config.make
+	echo GTKCFLAGS=`gtk-config --cflags` >> config.make
 	echo GTKLIBS=`gtk-config --libs` >> config.make
 
-ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h ml_gtkcaller.h
+ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gdk.o: gdk_tags.c gdk_tags.h ml_gdk.h wrappers.h
+ml_gtkgl.o: gtkgl_tags.c gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 
 include .depend

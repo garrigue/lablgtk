@@ -129,10 +129,10 @@ module Widget = struct
       = "ml_gtk_widget_accelerators_locked"
   external window : [> widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
-  external visible : [> widget] obj -> bool =
-    "ml_gtk_widget_visible"
-  external parent : [> widget] obj -> widget obj =
-    "ml_gtk_widget_parent"
+  external visible : [> widget] obj -> bool
+      = "ml_GTK_WIDGET_VISIBLE"
+  external parent : [> widget] obj -> widget obj
+      = "ml_gtk_widget_parent"
   let set_position w ?:x [< -2 >] ?:y [< -2 >] =
     if x > -2 || y > -2 then set_uposition w :x :y
   let set_size w ?:width [< -2 >] ?:height [< -2 >] =

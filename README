@@ -22,6 +22,7 @@ Contents:
 
 	olabl.patch	patch for olabl-2.02 compiler
 	threads.patch	patch for olabl-2.02 thread library
+	lablgl.patch	patch for lablgl-0.92
 
 	gdk.ml		low-level interface to the General Drawing Kit
 	gtk.ml		low-level interface to the GIMP Tool Kit
@@ -63,9 +64,7 @@ Structure of the (raw) Gtk module:
 
   This module is composed of one submodule for each class.
   Signals specific to a widget are in a Signals inner module.
-  Also, you can use "set w param: value" in place of "set_param w value".
-  The set function has a weak form of inheritance: it provides access
-  to all parameters in superclasses.
+  A setter function is defined to give access to set_param functions.
 
 Structure of the G[A-Z]* modules:
 
@@ -114,6 +113,18 @@ Memory management:
   its last container is destroyed. For this reason you should only
   destroy toplevel widgets, and be careful about not loosing all
   references to a still unused widget.
+
+GL extension
+
+  You can use lablgtk in combination with LablGL
+
+  * apply lablgl.patch to lablgl-0.92, compile and install
+  * get and install gtkglarea-1.2.x.tar.gz from
+    http://www.student.oulu.fi/~jlof/gtkglarea/index.html
+  * do "setenv USE_GL 1" before compiling lablgtk
+
+  Some examples are in examples/GL, but basically any LablGL example
+  can be easily ported.
 				   
 Bug reports:
 	Jacques Garrigue
