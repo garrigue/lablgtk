@@ -1,5 +1,11 @@
 $Id$
 
+2004.03.10 [Olivier]
+  * update several 2.4 widgets to the latest API (ComboBox, TreeView,
+    FileChooser).
+  * add a convenience function GTree.store_of_list
+  * change the type of #iter_n_children and #iter_children in GTree.mdel
+
 2004.03.05 [Olivier]
   * gtk_dialog->action_area is a GtkHButtonBox
   * add gtk_button_box_{set,get}_child_secondary (2.4)
