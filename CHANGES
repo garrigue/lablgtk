@@ -1,5 +1,8 @@
 $Id$
 
+2003.04.14
+  * fix Glib.IO (Henri Dubois-Ferriere)
+
 2003.04.08
   * fixes in ml_gdk.c: win32 and ClientData
 
