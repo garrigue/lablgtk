@@ -8,7 +8,7 @@
 NAME=unison
 
 # $Format: "VERSION=$ProjectVersion$"$
-VERSION=1.180
+VERSION=1.200
 
 ########################################################################
 # Try to automatically guess OS -- WIN32, SUNOS, or LINUX.
@@ -43,6 +43,7 @@ ifdef WIN32
     CAMLLIB=c:/ocaml/lib
   endif
   CWD = .
+  COMPFLAGS += -cclib /link -cclib /subsystem:windows
   buildexecutable:: 
 	@echo Building for Windows
 else
@@ -74,9 +75,9 @@ LABLGTKDIR=../../..
 
 include $(LABLGTKDIR)/config.make
 WITH_TK= -I $(LABLGTKDIR) lablgtk.cma \
-	-cclib $(LABLGTKDIR)/liblablgtk$(LIB_EXT) -cclib "$(GTKLIBS)" \
-#	-thread -cclib -lthreads threads.cma gtkThread.cmo
-
+	-cclib $(LABLGTKDIR)/liblablgtk$(LIB_EXT) -cclib "$(GTKLIBS)"
+WITH_TK_OPT= -I $(LABLGTKDIR) lablgtk.cmxa \
+	-cclib $(LABLGTKDIR)/liblablgtk$(LIB_EXT) -cclib "$(GTKLIBS)"
 endif
 
 ifeq ($(UISTYLE),tk)
@@ -155,6 +156,14 @@ buildexecutable:: checktk
 
 endif
 
+ifdef WIN32
+  ifeq ($(UISTYLE),tk)
+    # Some incantations to make the windows version come up
+    # with no console window when click-started 
+    WITH_TK += winmain.c 
+    COMPFLAGS += -cclib /link -cclib /subsystem:windows
+  endif
+endif
 
 ####################################################################
 # Dependencies
@@ -183,8 +192,8 @@ endif
 # Object code files for the native-code version (the names of the
 # corresponding bytecode files are generated automatically if needed)
 OBJS_NATIVE0 = \
-	strings.cmx util.cmx rx.cmx arg.cmx prefs.cmx pred.cmx \
-        os.cmx trace.cmx uri.cmx common.cmx remote.cmx \
+	strings.cmx safelist.cmx util.cmx rx.cmx arg.cmx prefs.cmx pred.cmx \
+        os.cmx trace.cmx uri.cmx common.cmx rsync.cmx remote.cmx \
 	globals.cmx files.cmx update.cmx recon.cmx transport.cmx \
 	uicommon.cmx uitext.cmx $(UIOBJS) \
 	main.cmx
@@ -207,6 +216,10 @@ ifeq ($(NATIVE),true)
   %.cmx : %.ml
 	@echo "OCAMLOPT: $< $(ZFLAGS) --->  $@"
 	@ocamlopt $(COMPFLAGS) -c $(CWD)/$<
+
+  uigtk.cmx : uigtk.ml
+	@echo "OCAMLOPT: $< $(ZFLAGS) --->  $@"
+	ocamlopt -modern -w s -I $(LABLGTKDIR) -c $(CWD)/$<
 
   OBJS=$(OBJS_NATIVE)
   LINK = unix.cmxa -cclib -lunix str.cmxa -cclib -lstr
