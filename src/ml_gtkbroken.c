@@ -76,7 +76,7 @@ CAMLprim value ml_gtk_tree_remove_items (value tree, value items)
 
 /* gtkoldeditable.h */
 
-#define GtkOldEditable_val(val) check_cast(GTK_EDITABLE,val)
+#define GtkOldEditable_val(val) check_cast(GTK_OLD_EDITABLE,val)
 ML_3 (gtk_old_editable_claim_selection, GtkOldEditable_val, Bool_val, Int_val,
       Unit)
 ML_1 (gtk_old_editable_changed, GtkOldEditable_val, Unit)
