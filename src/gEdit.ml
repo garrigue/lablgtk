@@ -45,9 +45,9 @@ class entry obj = object
   method text_length = Entry.text_length obj
 end
 
-let set_editable ?editable ?(width = -2) ?(height = -2) w =
+let set_editable ?editable ?(width = -1) ?(height = -1) w =
   may editable ~f:(Editable.set_editable w);
-  if width <> -2 || height <> -2 then Widget.set_size_request w ~width ~height
+  if width <> -1 || height <> -1 then Widget.set_size_request w ~width ~height
 
 let entry ?max_length ?text ?visibility ?editable
     ?width ?height ?packing ?show () =

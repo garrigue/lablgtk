@@ -291,9 +291,9 @@ module Container = struct
       = "ml_gtk_container_add"
   external remove : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_remove"
-  let set ?border_width ?(width = -2) ?(height = -2) w =
+  let set ?border_width ?(width = -1) ?(height = -1) w =
     may border_width ~f:(set_border_width w);
-    if width <> -2 || height <> -2 then
+    if width <> -1 || height <> -1 then
       Widget.set_size_request w ?width ?height
   external foreach : [>`container] obj -> f:(widget obj-> unit) -> unit
       = "ml_gtk_container_foreach"
@@ -406,11 +406,11 @@ module Selection = struct
     open Gobject.Closure
     let marshal_sel3 f argv = function
       | `POINTER(Some p) :: `INT info :: `INT time :: _ ->
-          f (Obj.magic p : selection_data) ~info ~time:(get_int32 argv ~pos:2)
+          f (Obj.magic p : selection_data) ~info ~time:(get_int32 argv ~pos:3)
       | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_sel3"
     let marshal_sel2 f argv = function
       | `POINTER(Some p) :: `INT time :: _ ->
-          f (copy(Obj.magic p : selection_data)) ~time:(get_int32 argv ~pos:1)
+          f (copy(Obj.magic p : selection_data)) ~time:(get_int32 argv ~pos:2)
       | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_sel2"
     let selection_get =
       { name = "selection_get"; classe = `widget;
@@ -471,12 +471,12 @@ module DnD = struct
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag1"
     let marshal_drag2 f argv = function
       | `OBJECT(Some p) :: `INT time :: _ ->
-	  f (unsafe_cast p : Gdk.drag_context) ~time:(get_int32 argv ~pos:1)
+	  f (unsafe_cast p : Gdk.drag_context) ~time:(get_int32 argv ~pos:2)
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag2"
     let marshal_drag3 f argv = function
       | `OBJECT(Some p) :: `INT x :: `INT y :: `INT time :: _ ->
 	  let res = f (unsafe_cast p : Gdk.drag_context) ~x ~y 
-	              ~time:(get_int32 argv ~pos:3)
+	              ~time:(get_int32 argv ~pos:4)
 	  in Closure.set_result argv (`BOOL res)
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag3"
     let drag_begin =
@@ -502,7 +502,7 @@ module DnD = struct
           `INT info :: `INT time :: _ ->
 	    f (unsafe_cast p : Gdk.drag_context)
 	      (Obj.magic q : selection_data) 
-	      ~info ~time:(get_int32 argv ~pos:3)
+	      ~info ~time:(get_int32 argv ~pos:4)
 	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_get"
       in
       { name = "drag_data_get"; classe = `widget; marshaller = marshal }
@@ -512,7 +512,7 @@ module DnD = struct
           `INT info :: `INT time :: _ ->
 	    f (unsafe_cast p : Gdk.drag_context) ~x ~y
               (Obj.magic q : selection_data)
-	      ~info ~time:(get_int32 argv ~pos:5)
+	      ~info ~time:(get_int32 argv ~pos:6)
 	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_received"
       in
       { name = "drag_data_received"; classe = `widget;
