@@ -39,6 +39,8 @@ Contents:
 				(by Hubert Fauque)
 		lablglade	another experimental RAD, based on glade
 				(by Koji Kagawa)
+		xxaplay		CD-XA audio track player, for Linux only
+				(by Jun Furuse)
 
 	lablgl.patch	patch for lablgl-0.92
 
