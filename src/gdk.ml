@@ -278,6 +278,9 @@ module Font = struct
   external char_height : font -> char -> int = "ml_gdk_char_height"
   external string_measure : font -> string -> int = "ml_gdk_string_measure"
   external char_measure : font -> char -> int = "ml_gdk_char_measure"
+  external get_type : font -> [`FONT | `FONTSET] = "ml_GdkFont_type"
+  external ascent : font -> int = "ml_GdkFont_ascent"
+  external descent : font -> int = "ml_GdkFont_descent"
 end
 
 module PointArray = struct

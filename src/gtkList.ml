@@ -253,7 +253,7 @@ module CList = struct
     may_set set_column_resizeable resizeable;
     may_set set_column_auto_resize auto_resize;
     may_set set_column_width width;
-    may_set set_column_max_width min_width;
+    may_set set_column_min_width min_width;
     may_set set_column_max_width max_width
   let set_row w ?foreground ?background ?selectable ?style row =
     let may_set f = may ~f:(f w ~row) in
