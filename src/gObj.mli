@@ -25,7 +25,8 @@ class ['a] gobject_signals : ?after:bool -> 'a obj ->
     val obj : 'a obj
     val after : bool
     method after : 'b
-    method private connect : ('a,'c) GtkSignal.t -> callback:'c -> GtkSignal.id
+    method private connect :
+        'c. ('a,'c) GtkSignal.t -> callback:'c -> GtkSignal.id
   end
 
 (** {3 GtkObject} *)

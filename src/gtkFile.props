@@ -2,7 +2,7 @@
 prefix "Gtk"
 
 conversions {
-  GtkFileChooserAction  "enum GtkEnums.file_chooser_action"
+  GtkFileChooserAction  "GtkEnums.file_chooser_action_conv"
   GtkFileFilter         "(gobject : Gtk.file_filter Gtk.obj data_conv)"
 }
 
