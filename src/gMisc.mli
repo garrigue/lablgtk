@@ -96,7 +96,9 @@ class label_skel :
   object
     inherit misc
     val obj : 'a obj
-    method set_justify : Tags.justification -> unit
+    method set_label :
+      ?justify:Tags.justification ->
+      ?line_wrap:bool -> ?pattern:string -> unit
     method set_text : string -> unit
     method text : string
   end

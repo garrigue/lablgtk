@@ -110,7 +110,7 @@ end
 class label_skel obj = object
   inherit misc obj
   method set_text = Label.set_text obj
-  method set_justify = Label.set_justify obj
+  method set_label = Label.setter ?obj ?text:None ?cont:null_cont
   method text = Label.get_text obj
 end
 
