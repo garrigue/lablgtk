@@ -1,5 +1,8 @@
 $Id$
 
+2003.05.24 [Jun Furuse]
+  * added Window.get_visual
+
 2003.05.23 [Benjamin]
   * fixed incorrect type of trreview#connect#row_activated
 
