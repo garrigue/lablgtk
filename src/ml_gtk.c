@@ -969,12 +969,60 @@ value ml_gtk_pixmap_set (value val, value pixmap, value mask)
 Make_Extractor (GtkPixmap, GtkPixmap_val, pixmap, Val_GdkPixmap)
 Make_Extractor (GtkPixmap, GtkPixmap_val, mask, Val_GdkBitmap)
 
+/* gtkpreview.h */
+/*
+#define GtkPreview_val(val) GTK_PREVIEW(Pointer_val(val))
+ML_1 (gtk_preview_new, Preview_val, Val_GtkWidget)
+ML_3 (gtk_preview_size, GtkPreview_val, Int_val, Int_val, Unit)
+ML_9 (gtk_preview_put, GtkPreview_val, GdkWindow_val, GdkGC_val,
+      Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
+ML_bc9 (ml_gtk_preview_put)
+*/
+
 /* gtkprogressbar.h */
 
 #define GtkProgressBar_val(val) GTK_PROGRESS_BAR(Pointer_val(val))
 ML_0 (gtk_progress_bar_new, Val_GtkWidget)
 ML_2 (gtk_progress_bar_update, GtkProgressBar_val, Float_val, Unit)
 Make_Extractor (GtkProgressBar, GtkProgressBar_val, percentage, copy_double)
+
+/* gtkrange.h */
+
+#define GtkRange_val(val) GTK_RANGE(Pointer_val(val))
+ML_1 (gtk_range_get_adjustment, GtkRange_val, Val_GtkWidget)
+ML_2 (gtk_range_set_adjustment, GtkRange_val, GtkAdjustment_val, Unit)
+ML_2 (gtk_range_set_update_policy, GtkRange_val, Update_val, Unit)
+
+/* gtkscale.h */
+
+#define GtkScale_val(val) GTK_SCALE(Pointer_val(val))
+ML_2 (gtk_scale_set_digits, GtkScale_val, Int_val, Unit)
+ML_2 (gtk_scale_set_draw_value, GtkScale_val, Bool_val, Unit)
+ML_2 (gtk_scale_set_value_pos, GtkScale_val, Position_val, Unit)
+ML_1 (gtk_scale_value_width, GtkScale_val, Val_int)
+ML_1 (gtk_scale_draw_value, GtkScale_val, Unit)
+ML_1 (gtk_hscale_new, GtkAdjustment_val, Val_GtkWidget)
+ML_1 (gtk_vscale_new, GtkAdjustment_val, Val_GtkWidget)
+
+/* gtkscrollbar.h */
+
+ML_1 (gtk_hscrollbar_new, GtkAdjustment_val, Val_GtkWidget)
+ML_1 (gtk_vscrollbar_new, GtkAdjustment_val, Val_GtkWidget)
+
+/* gtkruler.h */
+
+#define GtkRuler_val(val) GTK_RULER(Pointer_val(val))
+ML_2 (gtk_ruler_set_metric, GtkRuler_val, Metric_val, Unit)
+ML_5 (gtk_ruler_set_range, GtkRuler_val, Float_val,
+      Float_val, Float_val, Float_val, Unit)
+Make_Extractor (gtk_ruler_get, GtkRuler_val, lower, copy_double)
+Make_Extractor (gtk_ruler_get, GtkRuler_val, upper, copy_double)
+Make_Extractor (gtk_ruler_get, GtkRuler_val, position, copy_double)
+Make_Extractor (gtk_ruler_get, GtkRuler_val, max_size, copy_double)
+ML_1 (gtk_ruler_draw_ticks, GtkRuler_val, Unit)
+ML_1 (gtk_ruler_draw_pos, GtkRuler_val, Unit)
+ML_0 (gtk_hruler_new, Val_GtkWidget)
+ML_0 (gtk_vruler_new, Val_GtkWidget)
 
 /* gtk[hv]separator.h */
 

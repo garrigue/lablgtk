@@ -10,13 +10,11 @@ let _ = Glib.set_warning_handler (fun msg -> raise (Warning msg))
 type 'a obj
 type clampf = float
 
-(*
 type 'a optobj
 let optobj : 'a obj option -> 'a optobj =
   function
       None -> Obj.magic (0,null)
     | Some obj -> Obj.magic obj
-*)
 
 module Tags = struct
   type state = [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
@@ -1468,6 +1466,92 @@ module ProgressBar = struct
       = "ml_gtk_progress_bar_update"
   external percent : [> progress] obj -> float
       = "ml_GtkProgressBar_percentage"
+end
+
+module Range = struct
+  type t = [widget range] obj
+  let cast w : t =
+    if Object.is_a w "GtkRange" then Obj.magic w
+    else invalid_arg "Gtk.Range.cast"
+  external get_adjustment : [> range] obj -> Adjustment.t
+      = "ml_gtk_range_get_adjustment"
+  external set_adjustment : [> range] obj -> [> adjustment] obj -> unit
+      = "ml_gtk_range_set_adjustment"
+  external set_update_policy : [> range] obj -> update -> unit
+      = "ml_gtk_range_set_update_policy"
+  let set w ?:adjustment ?:update_policy =
+    may adjustment fun:(set_adjustment w);
+    may update_policy fun:(set_update_policy w)
+end
+
+module Scale = struct
+  type t = [widget range scale] obj
+  let cast w : t =
+    if Object.is_a w "GtkScale" then Obj.magic w
+    else invalid_arg "Gtk.Scale.cast"
+  external hscale_new : [> adjustment] optobj -> t = "ml_gtk_hscale_new"
+  external vscale_new : [> adjustment] optobj -> t = "ml_gtk_vscale_new"
+  let create (dir : orientation) ?:adjustment =
+    let create = if dir = `HORIZONTAL then hscale_new else vscale_new  in
+    create (optobj adjustment)
+  external set_digits : [> adjustment] obj -> int -> unit
+      = "ml_gtk_scale_set_digits"
+  external set_draw_value : [> adjustment] obj -> bool -> unit
+      = "ml_gtk_scale_set_draw_value"
+  external set_value_pos : [> adjustment] obj -> position -> unit
+      = "ml_gtk_scale_set_value_pos"
+  external value_width : [> adjustment] obj -> int
+      = "ml_gtk_scale_value_width"
+  external draw_value : [> adjustment] obj -> unit
+      = "ml_gtk_scale_draw_value"
+  let set w ?:adjustment ?:update_policy ?:digits ?:draw_value ?:value_pos =
+    Range.set w ?:adjustment ?:update_policy;
+    may digits fun:(set_digits w);
+    may draw_value fun:(set_draw_value w);
+    may value_pos fun:(set_value_pos w)
+end
+
+module Scrollbar = struct
+  type t = [widget range scrollbar] obj
+  let cast w : t =
+    if Object.is_a w "GtkScrollbar" then Obj.magic w
+    else invalid_arg "Gtk.Scrollbar.cast"
+  external hscrollbar_new : [> adjustment] optobj -> t
+      = "ml_gtk_hscrollbar_new"
+  external vscrollbar_new : [> adjustment] optobj -> t
+      = "ml_gtk_vscrollbar_new"
+  let create (dir : orientation) ?:adjustment =
+    let create = if dir = `HORIZONTAL then hscrollbar_new else vscrollbar_new
+    in create (optobj adjustment)
+end
+
+module Ruler = struct
+  type t = [widget ruler] obj
+  let cast w : t =
+    if Object.is_a w "GtkRuler" then Obj.magic w
+    else invalid_arg "Gtk.Ruler.cast"
+  external hruler_new : unit -> t = "ml_gtk_hruler_new"
+  external vruler_new : unit -> t = "ml_gtk_vruler_new"
+  let create (dir : orientation) =
+    if dir = `HORIZONTAL then hruler_new () else vruler_new ()
+  external set_metric : [> ruler] obj -> metric -> unit
+      = "ml_gtk_ruler_set_metric"
+  external set_range :
+      [> ruler] obj ->
+      lower:float -> upper:float -> position:float -> max_size:float -> unit
+      = "ml_gtk_ruler_set_range"
+  external get_lower : [> ruler] obj -> float = "ml_gtk_ruler_get_lower"
+  external get_upper : [> ruler] obj -> float = "ml_gtk_ruler_get_upper"
+  external get_position : [> ruler] obj -> float = "ml_gtk_ruler_get_position"
+  external get_max_size : [> ruler] obj -> float = "ml_gtk_ruler_get_max_size"
+  let set w ?:metric ?:lower ?:upper ?:position ?:max_size =
+    may metric fun:(set_metric w);
+    if lower <> None || upper <> None || position <> None || max_size <> None
+    then
+      set_range w lower:(may_default get_lower w for:lower)
+	upper:(may_default get_upper w for:upper)
+	position:(may_default get_position w for:position)
+	max_size:(may_default get_max_size w for:max_size)
 end
 
 module Separator = struct
