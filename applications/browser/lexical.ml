@@ -2,6 +2,7 @@
 
 open StdLabels
 open Parser
+open Lexing
 
 let tags =
   ["control"; "define"; "structure"; "char";
@@ -18,20 +19,24 @@ let init_tags (tb : GText.buffer) =
   tb#create_tag ~name:"error" [`FOREGROUND "red"; `WEIGHT `BOLD];
   ()
 
+let tpos ~(start : GText.iter) pos =
+  let bol = start#copy#forward_lines pos.pos_lnum in
+  bol#set_line_index (pos.pos_cnum - pos.pos_bol);
+  bol
+
 let tag ?start ?stop (tb : GText.buffer) =
-  let start = Gaux.default tb#start_iter~opt: start
+  let start = Gaux.default tb#start_iter~opt:start
   and stop = Gaux.default tb#end_iter ~opt:stop in
-  let tpos c =
-    let it = start#copy in it#forward_chars c; it in
+  let tpos = tpos ~start in
   let text = tb#get_text ~start ~stop () in
   let buffer = Lexing.from_string text in
   tb#remove_all_tags ~start ~stop;
-  let last = ref (EOF, 0, 0) in
+  let last = ref (EOF, dummy_pos, dummy_pos) in
   try
     while true do
     let token = Lexer.token buffer
-    and start = Lexing.lexeme_start buffer
-    and stop = Lexing.lexeme_end buffer in
+    and start = Lexing.lexeme_start_p buffer
+    and stop = Lexing.lexeme_end_p buffer in
     let tag =
       match token with
         AMPERAMPER

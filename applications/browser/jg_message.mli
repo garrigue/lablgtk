@@ -14,10 +14,18 @@
 
 (* $Id$ *)
 
-open StdLabels
+val formatted :
+  title:string ->
+  ?on:#GContainer.container ->
+  ?ppf:Format.formatter ->
+  ?width:int ->
+  ?maxheight:int ->
+  ?minheight:int ->
+  unit -> GText.view * (unit -> unit)
 
-let exclude x l = List.filter l ~f:((<>) x)
+val ask :
+    title:string -> ?master:GWindow.window ->
+    ?no:bool -> ?cancel:bool -> string -> [`Cancel|`No|`Yes]
 
-let rec flat_map ~f = function
-    [] -> []
-  | x :: l -> f x @ flat_map ~f l
+val info :
+    title:string -> ?master:GWindow.window -> string -> unit
