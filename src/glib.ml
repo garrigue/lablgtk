@@ -158,87 +158,55 @@ module Utf8 = struct
   external validate : string -> bool = "ml_g_utf8_validate"
   external length : string -> int = "ml_g_utf8_strlen"
 
+  let rec log64 n =
+    if n = 0 then 0 else
+    1 + log64 (n lsr 6)
+  
+  let write_unichar s ~pos (c : unichar) =
+    if c < 0x80 then begin
+      s.[!pos] <- Char.chr c; incr pos
+    end else begin
+      let len = log64 c and p = !pos in
+      pos := !pos + len;
+      s.[p] <- Char.chr (((1 lsl len - 1) lsl (8-len)) lor (c lsr (len*6-6)));
+      for i = 1 to len-1 do
+        s.[p+i] <- Char.chr (((c lsr ((len-i-1)*6)) land 0x3f) lor 0x80)
+      done
+    end
+ 
   let from_unichar (n : unichar) =
-    if n < 0 || n >= 0x4000000 then
-      let s = String.create 6 in
-      String.unsafe_set s 0 (Char.chr (0xfc + (n lsr 30) land 0b1));
-      String.unsafe_set s 1 (Char.chr (0x80 + (n lsr 24) land 0b111111)); 
-      String.unsafe_set s 2 (Char.chr (0x80 + (n lsr 18) land 0b111111)); 
-      String.unsafe_set s 3 (Char.chr (0x80 + (n lsr 12) land 0b111111));
-      String.unsafe_set s 4 (Char.chr (0x80 + (n lsr 6) land 0b111111));
-      String.unsafe_set s 5 (Char.chr (0x80 + n land 0b111111));
-      s
-    else if n <= 0x7f then
-      String.make 1 (Char.chr n)
-    else if n <= 0x7ff then
-      let s = String.create 2 in
-      String.unsafe_set s 0 (Char.chr (0xC0 + (n lsr 6) land 0b11111)); 
-      String.unsafe_set s 1 (Char.chr (0x80 + n land 0b111111));
-      s
-    else if n <= 0xffff then
-      let s = String.create 3 in
-      String.unsafe_set s 0 (Char.chr (0xE0 + (n lsr 12) land 0b1111)); 
-      String.unsafe_set s 1 (Char.chr (0x80 + (n lsr 6) land 0b111111));
-      String.unsafe_set s 2 (Char.chr (0x80 + n land 0b111111));
-      s
-    else if n <= 0x1fffff then
-      let s = String.create 4 in
-      String.unsafe_set s 0 (Char.chr (0xF0 + (n lsr 18) land 0b111));
-      String.unsafe_set s 1 (Char.chr (0x80 + (n lsr 12) land 0b111111)); 
-      String.unsafe_set s 2 (Char.chr (0x80 + (n lsr 6) land 0b111111));
-      String.unsafe_set s 3 (Char.chr (0x80 + n land 0b111111));
-      s
-    else
-      let s = String.create 5 in
-      String.unsafe_set s 0 (Char.chr (0xf8 + (n lsr 24) land 0b11));
-      String.unsafe_set s 1 (Char.chr (0x80 + (n lsr 18) land 0b111111)); 
-      String.unsafe_set s 2 (Char.chr (0x80 + (n lsr 12) land 0b111111));
-      String.unsafe_set s 3 (Char.chr (0x80 + (n lsr 6) land 0b111111));
-      String.unsafe_set s 4 (Char.chr (0x80 + n land 0b111111));
-      s
+    let s = String.create 6 and pos = ref 0 in
+    write_unichar s ~pos n;
+    String.sub s 0 !pos
 
-  let from_unistring (us : unistring) =
-    let len = Array.length us in
-    let b = Buffer.create (len * 2) in
-    for i = 0 to len - 1 do
-      Buffer.add_string b (from_unichar us.(i))
-    done;
-    Buffer.contents b
+  let from_unistring (s : unistring) =
+    let len = Array.length s in
+    let r = String.create (len*6) in
+    let pos = ref 0 in
+    for i = 0 to len-1 do write_unichar r ~pos s.(i) done;
+    String.sub r 0 !pos
+
+  let rec hi_bits n =
+    if n land 0x80 = 0 then 0 else
+    1 + hi_bits (n lsl 1)
 
   let to_unichar s ~pos : unichar =
-    let i = !pos in
-    let c = Char.code s.[i] in
-    if c < 0x80 then (pos := i+1; c) else
-    if c < 0xe0 then begin 
-      pos := i+2;
-      (c - 0xc0) lsl 6 + (Char.code s.[i+1]) - 0x80
-    end else if c < 0xf0 then begin
-      pos := i+3;
-      ((c - 0xe0) lsl 6
-         + Char.code s.[i+1] - 0x80) lsl 6
-        + Char.code s.[i+2] - 0x80
-    end else if c < 0xf8 then begin
-      pos := i+4;
-      (((c - 0xf0) lsl 6
-          + Char.code s.[i+1] - 0x80) lsl 6
-         + Char.code s.[i+2] - 0x80) lsl 6
-        + Char.code s.[i+3] - 0x80
-    end else if c < 0xfc then begin
-      pos := i+5;
-      ((((c - 0xf8) lsl 6
-           + Char.code s.[i+1] - 0x80) lsl 6
-          + Char.code s.[i+2] - 0x80) lsl 6
-         + Char.code s.[i+3] - 0x80) lsl 6
-        + Char.code s.[i+4] - 0x80
-    end else begin
-      pos := i+6;
-      (((((c - 0xf8) lsl 6
-            + Char.code s.[i+1] - 0x80) lsl 6
-           + Char.code s.[i+2] - 0x80) lsl 6
-          + Char.code s.[i+3] - 0x80) lsl 6
-         + Char.code s.[i+4] - 0x80) lsl 6
-        + Char.code s.[i+5] - 0x80
-    end
+    let c = Char.code s.[!pos] in
+    incr pos;
+    let n = hi_bits c in
+    if n < 2 or n > 6 then c else
+    let u = ref (c land (1 lsl (7-n) - 1)) in
+    let len = String.length s in
+    for i = 1 to n-1 do
+      u := !u lsl 6;
+      if !pos < len then 
+        let c = Char.code s.[!pos] in
+        if c land 0xc0 = 0x80 then begin
+          u := !u + c land 0x3f;
+          incr pos
+        end
+    done;
+    !u
 
   let to_unistring s : unistring =
     let len = length s in
