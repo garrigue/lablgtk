@@ -122,6 +122,7 @@ class check_menu_item : 'a obj ->
   end
 val check_menu_item :
   ?label:string ->
+  ?use_mnemonic:bool ->
   ?active:bool ->
   ?show_toggle:bool ->
   ?right_justified:bool ->

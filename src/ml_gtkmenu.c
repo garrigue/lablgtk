@@ -86,6 +86,8 @@ ML_1 (gtk_image_menu_item_get_image, GtkImageMenuItem_val, Val_GtkWidget)
 #define GtkCheckMenuItem_val(val) check_cast(GTK_CHECK_MENU_ITEM,val)
 ML_0 (gtk_check_menu_item_new, Val_GtkWidget_sink)
 ML_1 (gtk_check_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
+ML_1 (gtk_check_menu_item_new_with_mnemonic, String_val, Val_GtkWidget_sink)
+
 ML_2 (gtk_check_menu_item_set_active, GtkCheckMenuItem_val, Bool_val, Unit)
 ML_2 (gtk_check_menu_item_set_inconsistent, GtkCheckMenuItem_val, Bool_val, Unit)
 ML_1 (gtk_check_menu_item_get_inconsistent, GtkCheckMenuItem_val, Val_bool)
