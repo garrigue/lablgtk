@@ -23,13 +23,13 @@ type visual_options = [
 type gl_area = [drawing glarea widget]
 
 class area_signals :
-  'a[> glarea widget] obj -> ?after:bool ->
+  'a[> glarea widget] obj ->
   object
     inherit GObj.widget_signals
     val obj : 'a obj
-    method display : callback:(unit -> unit) -> GtkSignal.id
+    method display : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
     method reshape :
-      callback:(width:int -> height:int -> unit) -> GtkSignal.id
+      callback:(width:int -> height:int -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class area :
@@ -43,7 +43,7 @@ class area :
     inherit GObj.widget
     val obj : gl_area obj
     method add_events : Gdk.Tags.event_mask list -> unit
-    method connect : ?after:bool -> area_signals
+    method connect : area_signals
     method set_size : width:int -> height:int -> unit
     method make_current : unit -> unit
     method swap_buffers : unit -> unit

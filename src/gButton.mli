@@ -12,15 +12,15 @@ class button_skel :
   end
 
 class button_signals :
-  'a[> button container widget] obj -> ?after:bool ->
+  'a[> button container widget] obj ->
   object
     inherit GContainer.container_signals
     val obj : 'a obj
-    method clicked : callback:(unit -> unit) -> GtkSignal.id
-    method enter : callback:(unit -> unit) -> GtkSignal.id
-    method leave : callback:(unit -> unit) -> GtkSignal.id
-    method pressed : callback:(unit -> unit) -> GtkSignal.id
-    method released : callback:(unit -> unit) -> GtkSignal.id
+    method clicked : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method enter : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method leave : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method pressed : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method released : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class button :
@@ -32,17 +32,17 @@ class button :
   object
     inherit button_skel
     val obj : Gtk.button obj
-    method connect : ?after:bool -> button_signals
+    method connect : button_signals
     method add_events : Gdk.Tags.event_mask list -> unit
   end
 class button_wrapper : ([> button] obj) -> button
 
 class toggle_button_signals :
-  'a[> button container toggle widget] obj -> ?after:bool ->
+  'a[> button container toggle widget] obj ->
   object
     inherit button_signals
     val obj : 'a obj
-    method toggled : callback:(unit -> unit) -> GtkSignal.id
+    method toggled : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class toggle_button :
@@ -57,7 +57,7 @@ class toggle_button :
     inherit button_skel
     val obj : Gtk.toggle_button obj
     method active : bool
-    method connect : ?after:bool -> toggle_button_signals
+    method connect : toggle_button_signals
     method set_active : bool -> unit
     method set_draw_indicator : bool -> unit
   end

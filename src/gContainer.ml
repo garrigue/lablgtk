@@ -29,14 +29,14 @@ class container obj = object
   method focus = new focus obj
 end
 
-class container_signals obj ?:after = object
-  inherit widget_signals obj ?:after
+class container_signals obj = object
+  inherit widget_signals obj
   method add :callback =
-    GtkSignal.connect sig:Container.Signals.add obj ?:after
-      callback:(fun w -> callback (new widget_wrapper w))
+    GtkSignal.connect ?sig:Container.Signals.add ?obj
+      ?callback:(fun w -> callback (new widget_wrapper w))
   method remove :callback =
-    GtkSignal.connect sig:Container.Signals.remove obj ?:after
-      callback:(fun w -> callback (new widget_wrapper w))
+    GtkSignal.connect ?sig:Container.Signals.remove ?obj
+      ?callback:(fun w -> callback (new widget_wrapper w))
 end
 
 class container_wrapper obj = object
@@ -62,9 +62,9 @@ class virtual ['a,'b] item_container obj = object (self)
     fun w -> self#insert w pos:0
 end
 
-class item_signals obj ?:after = object
-  inherit container_signals obj ?:after
-  method select = GtkSignal.connect sig:Item.Signals.select obj ?:after
-  method deselect = GtkSignal.connect sig:Item.Signals.deselect obj ?:after
-  method toggle = GtkSignal.connect sig:Item.Signals.toggle obj ?:after
+class item_signals obj = object
+  inherit container_signals obj
+  method select = GtkSignal.connect sig:Item.Signals.select obj
+  method deselect = GtkSignal.connect sig:Item.Signals.deselect obj
+  method toggle = GtkSignal.connect sig:Item.Signals.toggle obj
 end

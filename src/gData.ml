@@ -5,17 +5,17 @@ open Gtk
 open GtkData
 open GObj
 
-class data_signals obj ?:after = object
-  inherit gtkobj_signals obj ?:after
+class data_signals obj = object
+  inherit gtkobj_signals obj
   method disconnect_data =
-    GtkSignal.connect sig:Data.Signals.disconnect obj ?:after
+    GtkSignal.connect sig:Data.Signals.disconnect obj
 end
 
-class adjustment_signals obj ?:after = object
-  inherit data_signals obj ?:after
-  method changed = GtkSignal.connect sig:Adjustment.Signals.changed obj ?:after
+class adjustment_signals obj = object
+  inherit data_signals obj
+  method changed = GtkSignal.connect sig:Adjustment.Signals.changed obj
   method value_changed =
-    GtkSignal.connect sig:Adjustment.Signals.value_changed obj ?:after
+    GtkSignal.connect sig:Adjustment.Signals.value_changed obj
 end
 
 class adjustment_wrapper obj = object

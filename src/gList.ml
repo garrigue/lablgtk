@@ -49,14 +49,14 @@ class liste ?:selection_mode ?:border_width ?:width ?:height ?:packing ?:show =
 
 (* Cell lists *)
 
-class clist_signals obj ?:after = object
-  inherit container_signals obj ?:after
+class clist_signals obj = object
+  inherit container_signals obj
   method click_column =
-    GtkSignal.connect sig:CList.Signals.click_column obj ?:after
+    GtkSignal.connect sig:CList.Signals.click_column obj
   method select_row =
-    GtkSignal.connect sig:CList.Signals.select_row obj ?:after
+    GtkSignal.connect sig:CList.Signals.select_row obj
   method unselect_row =
-    GtkSignal.connect sig:CList.Signals.unselect_row obj ?:after
+    GtkSignal.connect sig:CList.Signals.unselect_row obj
 end
 
 class clist_wrapper obj = object (self)

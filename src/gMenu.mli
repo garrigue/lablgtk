@@ -25,11 +25,11 @@ class menu_item_skel :
   end
 
 class menu_item_signals :
-  'a[> container item menuitem widget] obj -> ?after:bool ->
+  'a[> container item menuitem widget] obj ->
   object
     inherit item_signals
     val obj : 'a obj
-    method activate : callback:(unit -> unit) -> GtkSignal.id
+    method activate : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class menu_item :
@@ -41,7 +41,7 @@ class menu_item :
   object
     inherit menu_item_skel
     val obj : Gtk.menu_item obj
-    method connect : ?after:bool -> menu_item_signals
+    method connect : menu_item_signals
     method add_events : Gdk.Tags.event_mask list -> unit
   end
 
@@ -54,11 +54,11 @@ class tearoff_item :
   ?packing:(menu_item -> unit) -> ?show:bool -> menu_item
 
 class check_menu_item_signals :
-  'a[> checkmenuitem container item menuitem widget] obj -> ?after:bool ->
+  'a[> checkmenuitem container item menuitem widget] obj ->
   object
     inherit menu_item_signals
     val obj : 'a obj
-    method toggled : callback:(unit -> unit) -> GtkSignal.id
+    method toggled : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class check_menu_item_skel :
@@ -83,7 +83,7 @@ class check_menu_item :
   object
     inherit check_menu_item_skel
     val obj : Gtk.check_menu_item obj
-    method connect : ?after:bool -> check_menu_item_signals
+    method connect : check_menu_item_signals
     method add_events : Gdk.Tags.event_mask list -> unit
   end
 
@@ -101,7 +101,7 @@ class radio_menu_item :
   object
     inherit check_menu_item_skel
     val obj : Gtk.radio_menu_item obj
-    method connect : ?after:bool -> check_menu_item_signals
+    method connect : check_menu_item_signals
     method add_events : Gdk.Tags.event_mask list -> unit
     method group : group
     method set_group : group -> unit
@@ -111,11 +111,11 @@ class radio_menu_item_wrapper : Gtk.radio_menu_item obj -> radio_menu_item
 (* Menus and menubars *)
 
 class menu_shell_signals :
-  'a[> container menushell widget] obj -> ?after:bool ->
+  'a[> container menushell widget] obj ->
   object
     inherit container_signals
     val obj : 'a obj
-    method deactivate : callback:(unit -> unit) -> GtkSignal.id
+    method deactivate : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class menu_shell :
@@ -123,7 +123,7 @@ class menu_shell :
   object
     inherit [Gtk.menu_item,menu_item] item_container
     val obj : 'a obj
-    method connect : ?after:bool -> menu_shell_signals
+    method connect : menu_shell_signals
     method add_events : Gdk.Tags.event_mask list -> unit
     method deactivate : unit -> unit
     method insert : Gtk.menu_item #is_item -> pos:int -> unit

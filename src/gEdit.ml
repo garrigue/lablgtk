@@ -6,10 +6,10 @@ open GtkBase
 open GtkEdit
 open GObj
 
-class editable_signals obj ?:after = object
-  inherit widget_signals obj ?:after
-  method activate = GtkSignal.connect sig:Editable.Signals.activate obj ?:after
-  method changed = GtkSignal.connect sig:Editable.Signals.changed obj ?:after
+class editable_signals obj = object
+  inherit widget_signals obj
+  method activate = GtkSignal.connect sig:Editable.Signals.activate obj
+  method changed = GtkSignal.connect sig:Editable.Signals.changed obj
 end
 
 class editable obj = object

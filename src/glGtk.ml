@@ -35,18 +35,18 @@ module Raw = struct
     = "ml_gtk_gl_area_make_current"
 end
 
-class area_signals obj ?:after = object (connect)
-  inherit GObj.widget_signals obj ?:after
-  method display :callback =
-    connect#event#expose callback:
+class area_signals obj = object (connect)
+  inherit GObj.widget_signals obj
+  method display :callback ?:after =
+    connect#event#expose ?:after callback:
       begin fun ev ->
 	if GdkEvent.Expose.count ev = 0 && Raw.make_current obj then begin
 	  callback ()
 	end;
 	true
       end
-  method reshape :callback =
-    connect#event#configure callback:
+  method reshape :callback ?:after =
+    connect#event#configure ?:after callback:
       begin fun ev ->
 	if Raw.make_current obj then begin
 	  callback width:(GdkEvent.Configure.width ev)

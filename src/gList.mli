@@ -13,7 +13,7 @@ class list_item :
     val obj : Gtk.list_item obj
     method add_events : Gdk.Tags.event_mask list -> unit
     method as_item : Gtk.list_item obj
-    method connect : ?after:bool -> GContainer.item_signals
+    method connect : GContainer.item_signals
     method deselect : unit -> unit
     method select : unit -> unit
     method toggle : unit -> unit
@@ -39,17 +39,17 @@ class liste :
 class liste_wrapper : Gtk.liste obj -> liste
 
 class clist_signals :
-  'a[> clist container widget] obj -> ?after:bool ->
+  'a[> clist container widget] obj ->
   object
     inherit GContainer.container_signals
     val obj : 'a obj
-    method click_column : callback:(int -> unit) -> GtkSignal.id
+    method click_column : callback:(int -> unit) -> ?after:bool -> GtkSignal.id
     method select_row :
       callback:(row:int -> column:int -> event:GdkEvent.Button.t -> unit) ->
-      GtkSignal.id
+      ?after:bool -> GtkSignal.id
      method unselect_row :
       callback:(row:int -> column:int -> event:GdkEvent.Button.t -> unit) ->
-      GtkSignal.id
+      ?after:bool -> GtkSignal.id
    end
 
 class clist :
@@ -85,7 +85,7 @@ class clist :
     method column_widget : int -> GObj.widget_wrapper
     method columns : int
     method columns_autosize : unit -> unit
-    method connect : ?after:bool -> clist_signals
+    method connect : clist_signals
     method freeze : unit -> unit
     method get_row_column : x:int -> y:int -> int * int
     method hadjustment : GData.adjustment_wrapper

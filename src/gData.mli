@@ -3,20 +3,22 @@
 open Gtk
 
 class data_signals :
-  'a[> data] obj -> ?after:bool ->
+  'a[> data] obj ->
   object
     inherit GObj.gtkobj_signals
     val obj : 'a obj
-    method disconnect_data : callback:(unit -> unit) -> GtkSignal.id
+    method disconnect_data :
+	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class adjustment_signals :
-  'a[> adjustment data] obj -> ?after:bool ->
+  'a[> adjustment data] obj ->
   object
     inherit data_signals
     val obj : 'a obj
-    method changed : callback:(unit -> unit) -> GtkSignal.id
-    method value_changed : callback:(unit -> unit) -> GtkSignal.id
+    method changed : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method value_changed :
+	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class adjustment :
@@ -29,7 +31,7 @@ class adjustment :
     val obj : Gtk.adjustment obj
     method as_adjustment : Gtk.adjustment obj
     method clamp_page : lower:float -> upper:float -> unit
-    method connect : ?after:bool -> adjustment_signals
+    method connect : adjustment_signals
     method set_value : float -> unit
     method value : float
   end
@@ -40,7 +42,7 @@ class tooltips :
   object
     inherit GObj.gtkobj
     val obj : Gtk.tooltips obj
-    method connect : ?after:bool -> data_signals
+    method connect : data_signals
     method disable : unit -> unit
     method enable : unit -> unit
     method set :

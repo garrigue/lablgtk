@@ -52,12 +52,12 @@ class event_box ?:border_width ?:width ?:height ?:packing ?:show =
     initializer pack_return :packing ?:show (self :> event_box_wrapper)
   end
 
-class handle_box_signals obj ?:after = object
-  inherit container_signals obj ?:after
+class handle_box_signals obj = object
+  inherit container_signals obj
   method child_attached =
-    GtkSignal.connect sig:HandleBox.Signals.child_attached obj ?:after
+    GtkSignal.connect sig:HandleBox.Signals.child_attached obj
   method child_detached =
-    GtkSignal.connect sig:HandleBox.Signals.child_detached obj ?:after
+    GtkSignal.connect sig:HandleBox.Signals.child_detached obj
 end
 
 class handle_box_wrapper obj = object

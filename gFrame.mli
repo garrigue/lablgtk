@@ -39,14 +39,14 @@ class event_box :
 class event_box_wrapper : Gtk.event_box obj -> event_box
 
 class handle_box_signals :
-  'a[> container handlebox widget] obj -> ?after:bool ->
+  'a[> container handlebox widget] obj ->
   object
     inherit GContainer.container_signals
     val obj : 'a obj
     method child_attached :
-      callback:(Gtk.widget obj -> unit) -> GtkSignal.id
+      callback:(Gtk.widget obj -> unit) -> ?after:bool -> GtkSignal.id
     method child_detached :
-      callback:(Gtk.widget obj -> unit) -> GtkSignal.id
+      callback:(Gtk.widget obj -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class handle_box :
@@ -58,7 +58,7 @@ class handle_box :
     inherit GContainer.container
     val obj : Gtk.handle_box obj
     method add_events : Gdk.Tags.event_mask list -> unit
-    method connect : ?after:bool -> handle_box_signals
+    method connect : handle_box_signals
     method set_handle_position : Tags.position -> unit
     method set_shadow_type : Tags.shadow_type -> unit
     method set_snap_edge : Tags.position -> unit
@@ -87,7 +87,7 @@ class frame :
   object
     inherit frame_skel
     val obj : Gtk.frame obj
-    method connect : ?after:bool -> GContainer.container_signals
+    method connect : GContainer.container_signals
   end
 class frame_wrapper : ([> frame]) obj -> frame
 
@@ -107,7 +107,7 @@ class aspect_frame :
   object
     inherit frame_skel
     val obj : Gtk.aspect_frame obj
-    method connect : ?after:bool -> GContainer.container_signals
+    method connect : GContainer.container_signals
     method set_alignment : ?x:clampf -> ?y:clampf -> unit
     method set_ratio : clampf -> unit
     method set_obey_child : bool -> unit

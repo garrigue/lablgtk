@@ -37,17 +37,20 @@ class statusbar :
 class statusbar_wrapper : Gtk.statusbar obj -> statusbar
 
 class calendar_signals :
-  'a[> calendar widget] Gtk.obj -> ?after:bool ->
+  'a[> calendar widget] Gtk.obj ->
   object
     inherit GObj.widget_signals
     val obj : 'a Gtk.obj
-    method day_selected : callback:(unit -> unit) -> GtkSignal.id
-    method day_selected_double_click : callback:(unit -> unit) -> GtkSignal.id
-    method month_changed : callback:(unit -> unit) -> GtkSignal.id
-    method next_month : callback:(unit -> unit) -> GtkSignal.id
-    method next_year : callback:(unit -> unit) -> GtkSignal.id
-    method prev_month : callback:(unit -> unit) -> GtkSignal.id
-    method prev_year : callback:(unit -> unit) -> GtkSignal.id
+    method day_selected :
+	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method day_selected_double_click :
+	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method month_changed :
+	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method next_month : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method next_year : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method prev_month : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method prev_year : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 class calendar :
   ?options:Tags.calendar_display_options list ->
@@ -57,7 +60,7 @@ class calendar :
     inherit GObj.widget
     val obj : Gtk.calendar obj
     method add_events : Gdk.Tags.event_mask list -> unit
-    method connect : ?after:bool -> calendar_signals
+    method connect : calendar_signals
     method clear_marks : unit
     method date : int * int * int
     method display_options : Tags.calendar_display_options list -> unit
@@ -117,24 +120,24 @@ class label :
   object
     inherit label_skel
     val obj : Gtk.label obj
-    method connect : ?after:bool -> GObj.widget_signals
+    method connect : GObj.widget_signals
   end
 class label_wrapper : ([> label]) obj -> label
 
 class tips_query_signals :
-  'a[> tipsquery widget] obj -> ?after:bool ->
+  'a[> tipsquery widget] obj ->
   object
     inherit GObj.widget_signals
     val obj : 'a obj
     method widget_entered :
       callback:(GObj.widget_wrapper option ->
                 text:string option -> private:string option -> unit) ->
-      GtkSignal.id
+      ?after:bool -> GtkSignal.id
     method widget_selected :
       callback:(GObj.widget_wrapper option ->
                 text:string option ->
 		private:string option -> GdkEvent.Button.t -> bool) ->
-      GtkSignal.id
+      ?after:bool -> GtkSignal.id
   end
 
 class tips_query :
@@ -147,7 +150,7 @@ class tips_query :
   object
     inherit label_skel
     val obj : Gtk.tips_query obj
-    method connect : ?after:bool -> tips_query_signals
+    method connect : tips_query_signals
     method set_caller : #GObj.is_widget -> unit
     method set_emit_always : bool -> unit
     method set_label_inactive : string -> unit
@@ -158,11 +161,11 @@ class tips_query :
 class tips_query_wrapper : Gtk.tips_query obj -> tips_query
 
 class notebook_signals :
-  'a[> container notebook widget] Gtk.obj -> ?after:bool ->
+  'a[> container notebook widget] Gtk.obj ->
   object
     inherit GContainer.container_signals
     val obj : 'a Gtk.obj
-    method switch_page : callback:(int -> unit) -> GtkSignal.id
+    method switch_page : callback:(int -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class notebook :
@@ -182,7 +185,7 @@ class notebook :
     inherit GContainer.container
     val obj : Gtk.notebook obj
     method add_events : Gdk.Tags.event_mask list -> unit
-    method connect : ?after:bool -> notebook_signals
+    method connect : notebook_signals
     method append_page :
       #GObj.is_widget ->
       ?tab_label:#GObj.is_widget -> ?menu_label:#GObj.is_widget -> unit

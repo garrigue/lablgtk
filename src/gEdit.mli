@@ -4,12 +4,11 @@ open Gtk
 
 class editable_signals :
   'a[> editable widget] obj ->
-  ?after:bool ->
   object
     inherit GObj.widget_signals
     val obj : 'a obj
-    method activate : callback:(unit -> unit) -> GtkSignal.id
-    method changed : callback:(unit -> unit) -> GtkSignal.id
+    method activate : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method changed : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 
 class editable :
@@ -17,7 +16,7 @@ class editable :
   object
     inherit GObj.widget
     val obj : 'a obj
-    method connect : ?after:bool -> editable_signals
+    method connect : editable_signals
     method copy_clipboard : unit -> unit
     method cut_clipboard : unit -> unit
     method delete_selection : unit -> unit
