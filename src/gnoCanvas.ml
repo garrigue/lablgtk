@@ -213,11 +213,9 @@ end
 
 class canvas obj = object
   inherit GPack.layout (obj : GnomeCanvas.canvas Gtk.obj)
+  val aa = { Gobject.name = "aa" ; Gobject.classe = `canvas ; Gobject.conv = Gobject.Data.boolean }
   method root = new group (Canvas.root obj)
-  method aa =
-    match Gobject.Property.get_dyn obj "aa" with
-    | `BOOL b -> b
-    | _ -> failwith "GnoCanvas.canvas#aa"
+  method aa = Gobject.Property.get obj aa
   method set_scroll_region = Canvas.set_scroll_region obj
   method get_scroll_region = Canvas.get_scroll_region obj
   method set_center_scroll_region = Canvas.set_center_scroll_region obj
