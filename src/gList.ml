@@ -80,7 +80,7 @@ class ['a] clist obj = object (self)
   method row_selectable = CList.get_selectable obj
   method set_shift = CList.set_shift obj
   method insert :row texts =
-    let texts = List.map texts fun:(fun x -> Some x) in
+    let texts = List.map texts f:(fun x -> Some x) in
     CList.insert obj :row texts
   method append = self#insert row:self#rows
   method prepend = self#insert row:0

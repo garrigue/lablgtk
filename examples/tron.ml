@@ -77,13 +77,13 @@ let main () =
       GWindow.window type:`DIALOG border_width:10 title:"Key remap" () in
     let dvbx = GPack.box `VERTICAL packing:dialog#add () in
     let entry  = GEdit.entry max_length:1 packing: dvbx#pack () in
-    let txt = String.make len:1 keys.[num] in
+    let txt = String.make 1 keys.[num] in
     entry#set_text txt;
     let dquit = GButton.button label:"OK" packing: dvbx#pack () in 
     dquit#connect#clicked callback:
       begin fun _ ->
 	let chr = entry#text.[0] in
-        let txt2 = String.make len:1 chr in
+        let txt2 = String.make 1 chr in
         lbl#set_text txt2;
         keys.[num]<-chr; 
         dialog#destroy ()
@@ -91,7 +91,7 @@ let main () =
     dialog#show ()
   end in
   let new_my_button label:label left:left top:top =
-      let str = String.make len:1 keys.[label] in
+      let str = String.make 1 keys.[label] in
       let btn = GButton.button packing:(control#attach left:left top:top) () in
       let lbl = GMisc.label text:str packing:(btn#add) () in
       btn#connect#clicked callback:(abuttonClicked label lbl);

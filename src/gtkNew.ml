@@ -41,7 +41,7 @@ let make_new_widget name :parent :signal_array =
   let get_type () =
     let new_type = lazy (type_unique name :parent :nsignals) in
     Lazy.force new_type in
-  let signal_num_array = Array.create len:nsignals 0 in
+  let signal_num_array = Array.create nsignals 0 in
   let class_init_func classe =
     for i = 0 to nsignals-1 do
       signal_num_array.(i) <- signal_new signal_array.(i).name 1 classe parent i

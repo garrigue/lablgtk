@@ -488,7 +488,7 @@ class view area = object (self)
     | "4" -> obj <- 4
     | "5" -> obj <- 5
     | "\r" -> smooth <- not smooth
-    | "\027" -> area#misc#toplevel#destroy ()
+    | "\027" -> area#misc#toplevel#destroy (); exit 0
     | _ -> ()
     end;
     self#pinit

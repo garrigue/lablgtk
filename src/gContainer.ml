@@ -28,7 +28,7 @@ class container obj = object (self)
       raise (Gtk.Error "GConatiner.container#add: already full");
     Container.add obj (as_widget w)
   method remove w = Container.remove obj (as_widget w)
-  method children = List.map fun:(new widget) (Container.children obj)
+  method children = List.map f:(new widget) (Container.children obj)
   method set_border_width = Container.set_border_width obj
   method focus = new focus obj
 end
@@ -59,7 +59,7 @@ class virtual ['a] item_container obj = object (self)
     Container.remove obj w#as_item
   method private virtual wrap : Gtk.widget obj -> 'a
   method children : 'a list =
-    List.map fun:self#wrap (Container.children obj)
+    List.map f:self#wrap (Container.children obj)
   method set_border_width = Container.set_border_width obj
   method focus = new focus obj
   method virtual insert : 'a -> pos:int -> unit

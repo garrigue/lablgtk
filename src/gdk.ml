@@ -73,7 +73,7 @@ module Convert = struct
   let modifier i =
     List.filter [`SHIFT;`LOCK;`CONTROL;`MOD1;`MOD2;`MOD3;`MOD4;`MOD5;
 		 `BUTTON1;`BUTTON2;`BUTTON3;`BUTTON4;`BUTTON5]
-      pred:(fun m -> test_modifier m i)
+      f:(fun m -> test_modifier m i)
 end
 
 module Screen = struct
@@ -284,8 +284,8 @@ module Draw = struct
   let polygon w gc ?(:filled=false) l =
     let len = List.length l in
     let arr = PointArray.create :len in
-    List.fold_left l acc:0
-      fun:(fun acc:pos (x,y) -> PointArray.set arr :pos :x :y; pos+1);
+    List.fold_left l init:0
+      f:(fun pos (x,y) -> PointArray.set arr :pos :x :y; pos+1);
     polygon w gc :filled arr
   external string : 'a drawable -> font: font -> gc -> x: int -> y: int ->
     string: string -> unit

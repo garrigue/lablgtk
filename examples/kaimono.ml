@@ -41,11 +41,11 @@ let entry_list = ref []
 let add_entry () =
   let entry =
     List.map [40;200;40;60]
-      fun:(fun width -> GEdit.entry packing:add_to_table :width ())
+      f:(fun width -> GEdit.entry packing:add_to_table :width ())
   in entry_list := entry :: !entry_list
 
 let _ =
-  List.iter2 ["Number";"Name";"Count";"Price"] [40;200;40;60] fun:
+  List.iter2 ["Number";"Name";"Count";"Price"] [40;200;40;60] f:
     begin fun text width ->
       ignore (GButton.button label:text :width packing:add_to_table ())
     end;
@@ -55,7 +55,7 @@ let split :sep s =
   let len = String.length s in
   let rec loop pos =
     let next =
-      try String.index_from :pos char:sep s with Not_found -> len
+      try String.index_from s pos sep with Not_found -> len
     in
     let sub = String.sub s :pos len:(next-pos) in
     if next = len then [sub] else sub::loop (next+1)
@@ -65,9 +65,9 @@ let load name =
   try
     let ic = open_in name in
     List.iter !entry_list
-      fun:(fun l -> List.iter l fun:(fun e -> e#set_text ""));
+      f:(fun l -> List.iter l f:(fun e -> e#set_text ""));
     let entries = Stack.create () in
-    List.iter !entry_list fun:(fun x -> Stack.push x entries);
+    List.iter !entry_list f:(fun x -> Stack.push x entries);
     try while true do
       let line = input_line ic in
       let fields = split sep:'\t' line in
@@ -76,8 +76,8 @@ let load name =
 	with Stack.Empty ->
 	  add_entry (); List.hd !entry_list
       in
-      List.fold_left fields acc:entry fun:
-	begin fun :acc field ->
+      List.fold_left fields init:entry f:
+	begin fun acc field ->
 	  (List.hd acc)#set_text field;
 	  List.tl acc
 	end
@@ -89,10 +89,10 @@ let load name =
 let save name =
   try
     let oc = open_out name in
-    List.iter (List.rev !entry_list) fun:
+    List.iter (List.rev !entry_list) f:
       begin fun entry ->
-	let l = List.map entry fun:(fun e -> e#text) in
-	if List.exists l pred:((<>) "") then
+	let l = List.map entry f:(fun e -> e#text) in
+	if List.exists l f:((<>) "") then
 	  let rec loop = function
 	      [] -> ()
 	    | [x] -> fprintf oc "%s\n" x

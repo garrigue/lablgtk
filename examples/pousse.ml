@@ -30,14 +30,14 @@ module Board (Spec : BoardSpec) = struct
   let find_swaps board :x :y :color =
     if get board :x :y <> `none then [] else
     List.fold_left [-1,-1; -1,0; -1,1; 0,-1; 0,1; 1,-1; 1,0; 1,1]
-      acc:[]
-      fun:(fun :acc (dx,dy) -> string board :x :y :dx :dy :color [] @ acc)
+      init:[]
+      f:(fun acc (dx,dy) -> string board :x :y :dx :dy :color [] @ acc)
 
   let action board :x :y :color =
     let swaps = find_swaps board :x :y :color in
     if swaps = [] then false else begin
       List.iter ((x,y)::swaps)
-	fun:(fun (x,y) -> set board :x :y color:(color :> color));
+	f:(fun (x,y) -> set board :x :y color:(color :> color));
       true
     end
 
@@ -120,9 +120,9 @@ class game (:frame : #GContainer.container) (:label : #GMisc.label)
   let table = GPack.table columns:size rows:size packing:frame#add () in
 object (self)
   val cells =
-    Array.init len:size
-      fun:(fun i -> Array.init len:size
-	  fun:(fun j -> new cell packing:(table#attach top:i left:j) ()))
+    Array.init size
+      f:(fun i -> Array.init size
+	  f:(fun j -> new cell packing:(table#attach top:i left:j) ()))
   val label = label
   val turn = statusbar#new_context name:"turn"
   val messages = statusbar#new_context name:"messages"
@@ -167,7 +167,7 @@ object (self)
       cell#connect#enter callback:cell#misc#grab_focus;
       cell#connect#clicked callback:(fun () -> self#play i j)
     done done;
-    List.iter fun:(fun (x,y,col) -> cells.(x).(y)#set_color col)
+    List.iter f:(fun (x,y,col) -> cells.(x).(y)#set_color col)
       [ 3,3,`black; 4,4,`black; 3,4,`white; 4,3,`white ];
     self#update_label ();
     turn#push "Player is black";

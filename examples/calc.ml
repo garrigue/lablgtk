@@ -41,10 +41,10 @@ class virtual calc = object (calc)
 	begin match op with
 	  None ->
 	    x <- calc#get_float;
-	    op <- Some (List.assoc key:c ops)
+	    op <- Some (List.assoc c ops)
 	| Some f ->
 	    x <- f x (calc#get_float);
-	    op <- Some (List.assoc key:c ops);
+	    op <- Some (List.assoc c ops);
 	    calc#set (string_of_float x)
 	end
     | '='|'\n'|'\r' ->

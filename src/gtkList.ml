@@ -23,7 +23,7 @@ module Liste = struct
       = "ml_gtk_list_insert_item"
   let insert_items l wl :pos =
     let wl = if pos < 0 then wl else List.rev wl in
-    List.iter wl fun:(insert_item l :pos)
+    List.iter wl f:(insert_item l :pos)
   let append_items l = insert_items l pos:(-1)
   let prepend_items l = insert_items l pos:0
   external clear_items : [>`list] obj -> start:int -> end:int -> unit =
@@ -165,10 +165,10 @@ module CList = struct
   let insert w :row texts =
     let len = get_columns w in
     if List.length texts > len then invalid_arg "CList.insert";
-    let arr = Array.create len:(get_columns w) None in
-    List.fold_left texts acc:0
-      fun:(fun :acc text -> arr.(acc) <- text; acc+1);
-    let r = insert w :row (Array.map fun:optstring arr) in
+    let arr = Array.create (get_columns w) None in
+    List.fold_left texts init:0
+      f:(fun pos text -> arr.(pos) <- text; pos+1);
+    let r = insert w :row (Array.map f:optstring arr) in
     if r = -1 then invalid_arg "GtkCList::insert";
     r
   external remove : [>`clist] obj -> row:int -> unit
@@ -211,7 +211,7 @@ module CList = struct
     may_set set_hadjustment hadjustment;
     may_set set_vadjustment vadjustment;
     may_set set_shadow_type shadow_type;
-    List.iter button_actions fun:(fun (n,act) -> set_button_actions w n act);
+    List.iter button_actions f:(fun (n,act) -> set_button_actions w n act);
     may_set set_selection_mode selection_mode;
     may_set set_reorderable reorderable;
     may_set set_use_drag_icons use_drag_icons;

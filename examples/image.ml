@@ -5,7 +5,7 @@ open GMain
 open Gdk
 
 (* load image *)
-let buf = String.create len: (256*256*3)
+let buf = String.create (256*256*3)
 let ic = open_in_bin "image256x256.rgb"
 let _ = 
   really_input ic buf:buf pos:0 len:(256*256*3);

@@ -49,12 +49,12 @@ class virtual ['a] pre_tree obj = object (self)
   method child_position (w : 'a) = Tree.child_position obj w#as_item
   method remove_items items =
     Tree.remove_items obj
-      (List.map fun:(fun (t : 'a) -> t#as_item) items)
+      (List.map f:(fun (t : 'a) -> t#as_item) items)
   method set_selection_mode = Tree.set_selection_mode obj
   method set_view_mode = Tree.set_view_mode obj
   method set_view_lines = Tree.set_view_lines obj
   method selection =
-    List.map fun:(fun w -> self#wrap (Widget.coerce w)) (Tree.selection obj)
+    List.map f:(fun w -> self#wrap (Widget.coerce w)) (Tree.selection obj)
 end
 
 class tree obj = object

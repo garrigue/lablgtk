@@ -20,12 +20,12 @@ let lexer = make_lexer ["type"; "="; "["; "]"]
 
 let main () =
   let s = lexer (Stream.of_channel stdin) in
-  let tags = Hashtbl.create size:57 in
+  let tags = Hashtbl.create 57 in
   try while true do match s with parser
       [< ' Ident tag >] ->
 	let hash = hash_variant tag in
 	begin try
-	  let tag' = Hashtbl.find key:hash tags in
+	  let tag' = Hashtbl.find tags hash in
 	  if tag <> tag' then
 	    failwith (String.concat sep:" " ["Doublon tag:";tag;"and";tag'])
 	with Not_found ->

@@ -86,7 +86,7 @@ class style st = object
   method colormap = Style.get_colormap style
   method font = Style.get_font style
   method set_bg =
-    List.iter fun:
+    List.iter f:
       (fun (state,c) -> Style.set_bg style :state color:(GdkObj.color c))
   method set_font = Style.set_font style
   method set_background = Style.set_background style
