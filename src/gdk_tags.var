@@ -97,6 +97,15 @@ type gdkRgbDither = "GDK_RGB_DITHER_"
 type gdkSelection = "GDK_SELECTION_"
   [ `PRIMARY | `SECONDARY ]
 
+type xdata =
+  [ `BYTES "8" | `SHORTS "16" | `INT32S "32" | `NONE "0" ]
+
+type property_state = "GDK_PROPERTY_"
+  [ `NEW_VALUE | `DELETE ]
+
+type property_mode = "GDK_PROP_MODE_"
+  [ `REPLACE | `PREPEND | `APPEND ]
+
 type gdkCursorType = "GDK_" [
   | `X_CURSOR
   | `ARROW
