@@ -107,8 +107,9 @@ type toolbar_space_style = "GTK_TOOLBAR_SPACE_"
 type tree_view_mode = "GTK_TREE_VIEW_"
     [ LINE ITEM ]
 
-type spin_button_update_policy = "GTK_UPDATE_"
-    [ ALWAYS IF_VALID ]
+type spin_type = "GTK_SPIN_"
+    [ STEP_FORWARD STEP_BACKWARD PAGE_FORWARD PAGE_BACKWARD
+      HOME END USER_DEFINED ]
 
 type accel_flag = "GTK_ACCEL_"
     [ VISIBLE SIGNAL_VISIBLE LOCKED ]

@@ -625,7 +625,10 @@ ML_2 (gtk_list_set_selection_mode, GtkList_val, Selection_mode_val, Unit)
 
 #define GtkCombo_val(val) check_cast(GTK_COMBO,val)
 ML_0 (gtk_combo_new, Val_GtkWidget_sink)
-ML_3 (gtk_combo_set_value_in_list, GtkCombo_val, Bool_val, Bool_val, Unit)
+ML_3 (gtk_combo_set_value_in_list, GtkCombo_val,
+      Option_val(arg2, Bool_val, GtkCombo_val(arg1)->value_in_list) Ignore,
+      Option_val(arg3, Bool_val, GtkCombo_val(arg1)->ok_if_empty) Ignore,
+      Unit)
 ML_2 (gtk_combo_set_use_arrows, GtkCombo_val, Bool_val, Unit)
 ML_2 (gtk_combo_set_use_arrows_always, GtkCombo_val, Bool_val, Unit)
 ML_2 (gtk_combo_set_case_sensitive, GtkCombo_val, Bool_val, Unit)
@@ -1124,9 +1127,11 @@ ML_2 (gtk_spin_button_set_digits, GtkSpinButton_val, Int_val, Unit)
 ML_1 (gtk_spin_button_get_value_as_float, GtkSpinButton_val, copy_double)
 ML_2 (gtk_spin_button_set_value, GtkSpinButton_val, Float_val, Unit)
 ML_2 (gtk_spin_button_set_update_policy, GtkSpinButton_val,
-      Spin_button_update_policy_val, Unit)
+      Update_type_val, Unit)
 ML_2 (gtk_spin_button_set_numeric, GtkSpinButton_val, Bool_val, Unit)
-ML_3 (gtk_spin_button_spin, GtkSpinButton_val, Arrow_type_val, Float_val, Unit)
+ML_2 (gtk_spin_button_spin, GtkSpinButton_val,
+      Insert (Is_long(arg2) ? Spin_type_val(arg2) : GTK_SPIN_USER_DEFINED)
+      (Is_long(arg2) ? 0.0 : Float_val(Field(arg2,1))) Ignore, Unit)
 ML_2 (gtk_spin_button_set_wrap, GtkSpinButton_val, Bool_val, Unit)
 ML_2 (gtk_spin_button_set_shadow_type, GtkSpinButton_val, Shadow_type_val, Unit)
 ML_2 (gtk_spin_button_set_snap_to_ticks, GtkSpinButton_val, Bool_val, Unit)

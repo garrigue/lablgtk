@@ -781,10 +781,8 @@ let create_tree_mode_window =
 	if single_button #active then `SINGLE
 	else if browse_button #active then `BROWSE
 	else `MULTIPLE in
-      let nb_item =
-	int_of_float (nb_item_spinner #get_value_as_int)  in
-      let recursion_level =
-	int_of_float (recursion_spinner #get_value_as_int) in
+      let nb_item = nb_item_spinner#value_as_int  in
+      let recursion_level = recursion_spinner#value_as_int in
       create_tree_sample selection_mode (draw_line_button #active)
 	(if (view_line_button #active) then `ITEM else `LINE)
 	(no_root_item_button #active)
@@ -817,10 +815,10 @@ let create_tree_mode_window =
 	let box4 = new box `VERTICAL packing:(frame#add)
 	    border_width:5 in
 	box4 #pack draw_line_button;
-	draw_line_button #set_active true;
+	draw_line_button #set_toggle active: true;
 	
 	box4 #pack view_line_button;
-	view_line_button #set_active true;
+	view_line_button #set_toggle active: true;
 	
 	box4 #pack no_root_item_button;
 

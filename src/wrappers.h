@@ -75,7 +75,7 @@ value ml_##cname (value arg1, value arg2, value arg3, value arg4, value arg5, \
 
 /* Use with care: needs the argument index */
 #define Ignore(x)
-#define Insert(x) x,
+#define Insert(x) (x),
 #define Split(x,f,g) f(x), g(x) Ignore
 #define Split3(x,f,g,h) f(x), g(x), h(x) Ignore
 #define Pair(x,f,g) f(Field(x,0)), g(Field(x,1)) Ignore

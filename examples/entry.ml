@@ -11,10 +11,10 @@ let enter_callback (entry : entry) =
   flush stdout
 
 let entry_toggle_editable (button : #toggle_button) (entry : #entry) =
-  entry#set_editable button#active
+  entry#set_entry editable:button#active
 
 let entry_toggle_visibility (button : #toggle_button) (entry : #entry) =
-  entry#set_visibility button#active
+  entry#set_entry visibility:button#active
 
 let main () =
 

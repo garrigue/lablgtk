@@ -58,8 +58,7 @@ class toggle_button :
     val obj : Gtk.toggle_button obj
     method active : bool
     method connect : ?after:bool -> toggle_button_signals
-    method draw_indicator : bool -> unit
-    method set_active : bool -> unit
+    method set_toggle : ?active:bool -> ?draw_indicator:bool -> unit
   end
 class toggle_button_wrapper : ([> toggle] obj) -> toggle_button
 
@@ -86,10 +85,9 @@ class radio_button :
     val obj : Gtk.radio_button obj
     method active : bool
     method connect : ?after:bool -> toggle_button_signals
-    method draw_indicator : bool -> unit
     method group : group
-    method set_active : bool -> unit
     method set_group : group -> unit
+    method set_toggle : ?active:bool -> ?draw_indicator:bool -> unit
   end
 class radio_button_wrapper : Gtk.radio_button obj -> radio_button
 

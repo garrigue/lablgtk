@@ -40,11 +40,10 @@ class entry :
     method add_events : Gdk.Tags.event_mask list -> unit
     method append_text : string -> unit
     method prepend_text : string -> unit
-    method set_editable : bool -> unit
-    method set_max_length : int -> unit
-    method set_position : int -> unit
+    method set_entry :
+      ?position:int ->
+      ?visibility:bool -> ?editable:bool -> ?max_length:int -> unit
     method set_text : string -> unit
-    method set_visibility : bool -> unit
     method text : string
     method text_length : int
   end
@@ -55,7 +54,7 @@ class spin_button :
   digits:int ->
   ?adjustment:GData.adjustment ->
   ?value:float ->
-  ?update_policy:Tags.update_policy ->
+  ?update_policy:[ALWAYS IF_VALID] ->
   ?numeric:bool ->
   ?wrap:bool ->
   ?shadow_type:Tags.shadow_type ->
@@ -64,16 +63,16 @@ class spin_button :
   object
     inherit entry
     val obj : Gtk.spin_button obj
-    method get_adjustment : GData.adjustment
-    method get_value : float
-    method get_value_as_int : float
-    method spin : [DOWN UP] -> step:float -> unit
+    method adjustment : GData.adjustment
+    method value : float
+    method value_as_int : int
+    method spin : Tags.spin_type -> unit
     method update : unit
-    method set :
+    method set_spin :
       ?adjustment:GData.adjustment ->
       ?digits:int ->
       ?value:float ->
-      ?update_policy:Tags.update_policy ->
+      ?update_policy:[ALWAYS IF_VALID] ->
       ?numeric:bool ->
       ?wrap:bool ->
       ?shadow_type:Tags.shadow_type -> ?snap_to_ticks:bool -> unit
@@ -85,20 +84,23 @@ class combo :
   ?use_arrows:bool ->
   ?use_arrows_always:bool ->
   ?case_sensitive:bool ->
+  ?value_in_list:bool ->
+  ?ok_if_empty:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(combo -> unit) -> ?show:bool ->
   object
-    inherit GPack.box
+    inherit GContainer.container_wrapper
     val obj : Gtk.combo obj
     method disable_activate : unit -> unit
     method entry : entry
-    method set_case_sensitive : bool -> unit
-    method set_popdown_strings : string list -> unit
-    method set_use_arrows : bool -> unit
-    method set_use_arrows_always : bool -> unit
-    method set_value_in_list : bool -> ok_if_empty:bool -> unit
+    method set_combo :
+      ?popdown_strings:string list ->
+      ?use_arrows:bool ->
+      ?use_arrows_always:bool ->
+      ?case_sensitive:bool ->
+      ?value_in_list:bool -> ?ok_if_empty:bool -> unit
   end
 class combo_wrapper : Gtk.combo obj -> combo
 
@@ -107,25 +109,24 @@ class text :
   ?vadjustment:GData.adjustment ->
   ?editable:bool ->
   ?word_wrap:bool ->
-  ?point:int ->
   ?packing:(text -> unit) -> ?show:bool ->
   object
     inherit editable
     val obj : Gtk.text obj
     method add_events : Gdk.Tags.event_mask list -> unit
-    method freeze : unit -> unit
     method insert :
       ?font:Gdk.font ->
       ?foreground:Gdk.Color.t -> ?background:Gdk.Color.t -> string -> unit
     method length : int
     method point : int
-    method set_adjustment :
-      ?horizontal:GData.adjustment -> ?vertical:GData.adjustment -> unit
     method hadjustment : GData.adjustment
     method vadjustment : GData.adjustment
-    method set_editable : bool -> unit
+    method set_text :
+      ?hadjustment:GData.adjustment ->
+      ?vadjustment:GData.adjustment ->
+      ?editable:bool -> ?word_wrap:bool -> unit
     method set_point : int -> unit
-    method set_word_wrap : bool -> unit
+    method freeze : unit -> unit
     method thaw : unit -> unit
   end
 class text_wrapper : Gtk.text obj -> text

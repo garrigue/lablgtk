@@ -47,10 +47,10 @@ module Style = struct
       = "ml_gtk_style_set_background"
   external draw_hline :
       style -> Gdk.window -> state_type -> x:int -> x:int -> y:int -> unit
-      = "ml_gtk_draw_hline"
+      = "ml_gtk_draw_hline_bc" "ml_gtk_draw_hline"
   external draw_vline :
       style -> Gdk.window -> state_type -> y:int -> y:int -> x:int -> unit
-      = "ml_gtk_draw_vline"
+      = "ml_gtk_draw_vline_bc" "ml_gtk_draw_vline"
   external get_bg : style -> state:state_type -> Gdk.Color.t
       = "ml_gtk_style_get_bg"
   external set_bg : style -> state:state_type -> color:Gdk.Color.t -> unit
