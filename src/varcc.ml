@@ -16,7 +16,7 @@ let hash_variant s =
 
 open Genlex
 
-let lexer = make_lexer ["type"; "public"; "="; "["; "]"; "`"; "|"]
+let lexer = make_lexer ["type"; "public"; "private"; "="; "["; "]"; "`"; "|"]
 
 let may_string = parser
     [< ' String s >] -> s
