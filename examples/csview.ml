@@ -15,7 +15,7 @@ let mem_string :char s =
     false
   with Exit -> true
 
-let rec until :chars ?(:buf = Buffer.create size:80) s =
+let rec until :chars ?(:buf = Buffer.create 80) s =
   match Stream.peek s with
     Some c ->
       if mem_string char:c chars then Buffer.contents buf else begin
@@ -65,7 +65,7 @@ let read_file file =
   close_in ic;
   match data with
     ("i"::fields) :: ("T"::titles) :: data ->
-      {fields=fields; titles=titles; data=List.map fun:List.tl data}
+      {fields=fields; titles=titles; data=List.map f:List.tl data}
   | titles :: data ->
       {fields=titles; titles=titles; data=data}
   | _ -> failwith "Insufficient data"
@@ -122,15 +122,16 @@ let main argv =
   w#connect#destroy callback:Main.quit;
   let sw = GFrame.scrolled_window width:600 height:300 packing:w#add () in
   let cl = GList.clist titles:data.titles packing:sw#add () in
-  List.fold_left data.fields acc:0 fun:
-    begin fun :acc f ->
-      let width = try List.assoc key:f field_widths with Not_found -> -1 in
+  List.fold_left data.fields init:0 f:
+    begin fun acc f ->
+      let width = try List.assoc f field_widths with Not_found -> -1 in
       if width = 0 then
         cl#set_column visibility:false acc
       else begin
         if width > 0 then cl#set_column width:(width * w0) acc
         else cl#set_column auto_resize:true acc;
-        if f = "NAPR" || f = "TIM1" || f = "CLAS" then cl#set_sort auto:true column:acc ();
+        if f = "NAPR" || f = "TIM1" || f = "CLAS" then
+          cl#set_sort auto:true column:acc ();
         try
           let ali = GFrame.alignment_cast (cl#column_widget acc) in
           let lbl = GMisc.label_cast (List.hd ali#children) in
@@ -141,7 +142,7 @@ let main argv =
       succ acc
     end;
   List.iter data.data
-    fun:(fun l -> if List.length l > 1 then ignore (cl#append l));
+    f:(fun l -> if List.length l > 1 then ignore (cl#append l));
   w#show ();
   Main.main ()
 

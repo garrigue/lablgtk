@@ -135,7 +135,7 @@ module FontSelectionDialog = struct
     match arg with None -> Obj.magic Misc.null
     | Some l ->
 	let len = List.length l in
-	let arr = Array.create len:(len + 1) "" in
+	let arr = Array.create (len + 1) "" in
 	let rec loop i = function
 	    [] -> arr.(i) <- Obj.magic Misc.null
 	  | s::l -> arr.(i) <- s; loop (i+1) l

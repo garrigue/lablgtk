@@ -19,12 +19,12 @@ let schedule =
     s
   with Sys_error msg ->
     prerr_endline msg; flush stderr;
-    Hashtbl.create size:13;;
+    Hashtbl.create 13;;
 
     (* Saves the schedule data when the application terminates *)
 at_exit (fun () ->
   let ochan = open_out calendar_file in
-  Marshal.to_channel ochan data: schedule flags: [];
+  Marshal.to_channel ochan schedule mode: [];
   close_out ochan);;
 
     (* date: Current date initialized to "today" *)
@@ -116,7 +116,7 @@ let update_calendar (calendar : GPack.table) (buttons : date_button array) =
     if date.mon = 1 & leap date.year then mdays_in_month.(date.mon) + 1
     else mdays_in_month.(date.mon) in
 
-  Array.iter fun: (fun button -> button#hide)
+  Array.iter f: (fun button -> button#hide)
     buttons;
 
   for i = 0 to ndays - 1 do buttons.(i)#show wday0 done
@@ -159,13 +159,13 @@ let create_GUI () =
       border_width: 10 row_spacings: 2 col_spacings: 2 :packing () in
 
   Array.iteri
-    fun: (fun :i wday ->
+    f: (fun i wday ->
       ignore (GButton.button label: wday
 	      	packing: (calendar#attach top: 0 left: i) ()))
     wday_name;
 
   let buttons =
-    Array.init len: 31 fun: (fun i -> new date_button i calendar) in
+    Array.init 31 f: (fun i -> new date_button i calendar) in
 
   let date_view = GMisc.label justify: `CENTER :packing () in
 
@@ -176,7 +176,7 @@ let create_GUI () =
   let save_text () =
     let data = text#get_chars start: 0 end: text#length in
     let key = (date.year, date.mon, date.mday) in
-    Hashtbl.remove schedule :key;
+    Hashtbl.remove schedule key;
     if data <> "" then
       (Hashtbl.add schedule :key :data;
        buttons.(date.mday - 1)#set_plan)
@@ -186,7 +186,7 @@ let create_GUI () =
     text#delete_text start: 0 end: text#length;
     try
       text#insert_text pos: 0
- 	(Hashtbl.find schedule key: (date.year, date.mon, date.mday));
+ 	(Hashtbl.find schedule (date.year, date.mon, date.mday));
       ()
     with Not_found -> () in
 
@@ -197,9 +197,9 @@ let create_GUI () =
   let update_view () =
     update_calendar calendar buttons;
     update_date_view ();
-    Array.iteri fun: (fun :i button ->
+    Array.iteri f: (fun i button ->
       (try
- 	Hashtbl.find schedule key: (date.year, date.mon, i + 1);
+ 	Hashtbl.find schedule (date.year, date.mon, i + 1);
 	button#set_plan
       with Not_found -> button#unset_plan);
       button#focus_off) buttons;
@@ -225,7 +225,7 @@ let create_GUI () =
       buttons.(0)#focus_on);
   
   Array.iteri
-    fun: (fun :i button ->
+    f: (fun i button ->
       button#widget#connect#clicked
       	callback: (fun () ->
 	  save_text ();

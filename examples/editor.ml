@@ -26,7 +26,7 @@ class editor ?:packing ?:show () = object (self)
       filename <- Some name;
       text#freeze ();
       text#delete_text start:0 end:text#length;
-      let buf = String.create len:1024 and len = ref 0 in
+      let buf = String.create 1024 and len = ref 0 in
       while len := input ic :buf pos:0 len:1024; !len > 0 do
 	if !len = 1024 then text#insert buf
 	else text#insert (String.sub buf pos:0 len:!len)
@@ -51,7 +51,7 @@ class editor ?:packing ?:show () = object (self)
     try
       if Sys.file_exists file then Sys.rename old:file new:(file ^ "~");
       let oc = open_out file in
-      output_string (text#get_chars start:0 end:text#length) to:oc;
+      output_string oc (text#get_chars start:0 end:text#length);
       close_out oc;
       filename <- Some file
     with _ -> prerr_endline "Save failed"

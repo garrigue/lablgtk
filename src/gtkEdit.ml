@@ -197,7 +197,7 @@ module Combo = struct
   external list : [>`combo] obj -> liste obj= "ml_gtk_combo_list"
   let set_popdown_strings combo strings =
     GtkList.Liste.clear_items (list combo) start:0 end:(-1);
-    List.iter strings fun:
+    List.iter strings f:
       begin fun s ->
 	let li = GtkList.ListItem.create_with_label s in
 	Widget.show li;

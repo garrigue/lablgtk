@@ -26,7 +26,7 @@ let main () =
   let button_add = GButton.button label:"Add List" packing:hbox#add () in
   button_add#connect#clicked callback:
     begin fun () ->
-      List.iter fun:(fun t -> ignore (clist#append t))
+      List.iter f:(fun t -> ignore (clist#append t))
 	[ ["Milk"; "3 Oz"];
 	  ["Water"; "6 l"];
 	  ["Carrots"; "2"];

@@ -63,7 +63,7 @@ let declaration = parser
     printf "/* %s : conversion table */\n" name;
     printf "lookup_info ml_table_%s[] = {\n" name;
     printf "  { 0, %d },\n" (List.length tags);
-    List.iter tags fun:
+    List.iter tags f:
       begin fun (tag,trans) ->
 	printf "  { MLTAG_%s, %s },\n" tag (ctag tag trans)
       end;

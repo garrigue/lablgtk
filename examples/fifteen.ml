@@ -59,7 +59,7 @@ let _ =
 	packing:(tbl#attach left:j top:k) () in
     if i < 15 then
       arr.(j).(k) <-
-	GMisc.label text:(string_of_int (List.nth init pos:i))
+	GMisc.label text:(string_of_int (List.nth init i))
 	  packing:frame#add ()
   done
 let pos = new position init_x:3 init_y:3 min_x:0 min_y:0 max_x:3 max_y:3
