@@ -409,3 +409,5 @@ UNI_BOOL(istitle)
 UNI_BOOL(isdefined)
 UNI_BOOL(iswide)
 #undef UNI_BOOL
+
+ML_1 (g_markup_escape_text, SizedString_val, copy_string)
