@@ -26,23 +26,29 @@ let create_button_box =
 	let main_vbox = GPack.vbox ~packing: (window#add) () in
 
 	let frame_horz = GBin.frame ~label: "Horizontal Button Boxes"
-	    ~packing: (main_vbox#pack ~padding: 10) () in
+	    ~packing:(main_vbox#pack ~expand:true ~fill:true ~padding:10) () in
 	
 	let vbox = GPack.vbox ~border_width: 10 ~packing: frame_horz#add () in
 	
-	vbox#pack (create_bbox `HORIZONTAL "Spread" 40 85 20 `SPREAD);
-	vbox#pack (create_bbox `HORIZONTAL "Edge"   40 85 20 `EDGE)  ~padding: 5;
-	vbox#pack (create_bbox `HORIZONTAL "Start"  40 85 20 `START) ~padding: 5;
-	vbox#pack (create_bbox `HORIZONTAL "End"    40 85 20 `END)   ~padding: 5;
+	vbox#add  (create_bbox `HORIZONTAL "Spread" 40 85 20 `SPREAD);
+	vbox#pack (create_bbox `HORIZONTAL "Edge"   40 85 20 `EDGE) 
+          ~expand: true ~fill: true ~padding: 5;
+	vbox#pack (create_bbox `HORIZONTAL "Start"  40 85 20 `START)
+          ~expand: true ~fill: true ~padding: 5;
+	vbox#pack (create_bbox `HORIZONTAL "End"    40 85 20 `END)
+          ~expand: true ~fill: true ~padding: 5;
 
 	let frame_vert = GBin.frame ~label: "Vertical Button Boxes"
-	    ~packing: (main_vbox#pack ~padding: 10) () in
+	    ~packing:(main_vbox#pack ~expand:true ~fill:true ~padding:10) () in
 	
 	let hbox = GPack.hbox ~border_width: 10 ~packing: frame_vert#add () in
-	hbox#pack (create_bbox `VERTICAL "Spread" 30 85 20 `SPREAD);
-	hbox#pack (create_bbox `VERTICAL "Edge"   30 85 20 `EDGE)  ~padding: 5;
-	hbox#pack (create_bbox `VERTICAL "Start"  30 85 20 `START) ~padding: 5;
-	hbox#pack (create_bbox `VERTICAL "End"    30 85 20 `END)   ~padding: 5;
+	hbox#add  (create_bbox `VERTICAL "Spread" 30 85 20 `SPREAD);
+	hbox#pack (create_bbox `VERTICAL "Edge"   30 85 20 `EDGE)
+          ~expand: true ~fill: true ~padding: 5;
+	hbox#pack (create_bbox `VERTICAL "Start"  30 85 20 `START)
+          ~expand: true ~fill: true ~padding: 5;
+	hbox#pack (create_bbox `VERTICAL "End"    30 85 20 `END)
+          ~expand: true ~fill: true ~padding: 5;
 	window #show ()	
 
     | Some window -> window #destroy ()
@@ -68,7 +74,7 @@ let create_buttons =
 	
 	let table = GPack.table ~rows:3 ~columns:3 ~homogeneous:false 
 	    ~row_spacings:3 ~col_spacings:3 ~border_width:10
-	    ~packing:box1#pack () in
+	    ~packing:box1#add () in
 
 	let button = Array.create 9 (GButton.button ~label:"button1" ()) in
 	for i = 2 to 9 do
@@ -78,7 +84,7 @@ let create_buttons =
 	let f i l r t b =
 	  button.(i) #connect#clicked ~callback:(button_window button.(i+1));
 	  table #attach button.(i)#coerce ~left:l ~right:r ~top:t ~bottom:b
-	    ~xpadding:0 ~ypadding:0
+	    ~xpadding:0 ~ypadding:0 ~expand:`BOTH
 	in
 	f 0 0 1 0 1;
 	f 1 1 2 1 2;
@@ -90,14 +96,14 @@ let create_buttons =
 	f 7 2 3 1 2;
 	button.(8) #connect#clicked ~callback:(button_window button.(0)); 
 	table #attach button.(8)#coerce ~left:0 ~right:1 ~top:1 ~bottom:2
-	  ~xpadding:0 ~ypadding:0;
+	  ~xpadding:0 ~ypadding:0 ~expand:`BOTH;
 
-	GMisc.separator `HORIZONTAL ~packing:(box1 #pack ~expand: false) ();
+	GMisc.separator `HORIZONTAL ~packing:box1#pack ();
 	
 	let box2 = GPack.vbox ~spacing: 10 ~border_width: 10
-	    ~packing:(box1 #pack ~expand: false) () in
+            ~packing: box1#pack () in
 
-	let button = GButton.button ~label: "close" ~packing:box2#pack () in
+	let button = GButton.button ~label: "close" ~packing: box2#add () in
 	button #connect#clicked ~callback: window#destroy;
 	button #grab_default ();
 	window #show ()
@@ -119,19 +125,19 @@ let create_check_buttons =
 
 	let box1 = GPack.vbox ~packing:window#add () in
 	let box2 = GPack.vbox ~spacing: 10 ~border_width: 10
-	    ~packing:(box1#pack ~expand:false) () in
+	    ~packing: box1#pack () in
 	
 	for i = 1 to 3 do
 	  GButton.check_button ~label:("button" ^ (string_of_int i))
-	    ~packing:box2#pack ();
+	    ~packing: box2#add ();
 	done;
 
-	GMisc.separator `HORIZONTAL ~packing:(box1#pack ~expand:false) ();
+	GMisc.separator `HORIZONTAL ~packing: box1#pack ();
 	
 	let box2 = GPack.vbox ~spacing:10 ~border_width:10
-	    ~packing:(box1#pack ~expand:false) () in
+	    ~packing: box1#pack () in
 
-	let button = GButton.button ~label: "close" ~packing:box2#pack () in
+	let button = GButton.button ~label: "close" ~packing:box2#add () in
 	button #connect#clicked ~callback: window#destroy;
 	button #grab_default ();
 	window #show ()
@@ -153,23 +159,23 @@ let create_radio_buttons =
 	let box1 = GPack.vbox ~packing:window#add () in
 	
 	let box2 = GPack.vbox ~spacing:10 ~border_width:10 
-	    ~packing: (box1#pack ~expand:false) () in
+	    ~packing: box1#pack () in
 	
 	let button = GButton.radio_button ~label:"button1"
-	    ~packing:box2#pack () in
+	    ~packing: box2#add () in
 
 	let button = GButton.radio_button ~label:"button2" ~group:button#group
-	    ~packing: box2 #pack ~active:true () in
+	    ~packing: box2#add ~active:true () in
 	
 	let button = GButton.radio_button ~label:"button3" ~group:button#group
-	    ~packing: box2#pack () in
+	    ~packing: box2#add () in
 
-	GMisc.separator `HORIZONTAL ~packing:(box1#pack ~expand:false) ();
+	GMisc.separator `HORIZONTAL ~packing: box1#pack ();
 	
 	let box2 = GPack.vbox ~spacing:10 ~border_width:10
-	    ~packing: (box1#pack ~expand:false) () in
+            ~packing: box1#pack () in
 
-	let button = GButton.button ~label:"close" ~packing:box2#pack () in
+	let button = GButton.button ~label: "close" ~packing: box2#add () in
 	button #connect#clicked ~callback: window #destroy;
 	button #grab_default ();
 	window #show ()
@@ -188,20 +194,20 @@ let create_toggle_buttons =
 	rw := Some window;
 	window #connect#destroy ~callback:(fun _ -> rw := None);
 
-	let box1 = GPack.vbox ~packing:window#add () in
+	let box1 = GPack.vbox ~packing: window#add () in
 	
-	let box2 = GPack.vbox ~spacing:10 ~border_width:10
-	~packing:(box1#pack ~expand:false) () in
+	let box2 = GPack.vbox ~spacing: 10 ~border_width: 10
+	    ~packing: box1#pack () in
 	
 	for i = 1 to 3 do
 	  GButton.toggle_button ~label:("button" ^ (string_of_int i))
-	    ~packing:box2#pack ()
+	    ~packing: box2#add ()
 	done;
 
-	GMisc.separator `HORIZONTAL ~packing:(box1 #pack ~expand: false) ();
+	GMisc.separator `HORIZONTAL ~packing: box1#pack ();
 	
 	let box2 = GPack.vbox ~spacing: 10 ~border_width: 10
-	    ~packing:(box1 #pack ~expand: false) () in
+	    ~packing: box1#pack () in
 
 	let button = GButton.button ~label: "close" ~packing:box2#add () in
 	button #connect#clicked ~callback: window#destroy;
@@ -249,7 +255,7 @@ let rw = ref None in
 
 	let box1 = GPack.vbox ~packing:window#add () in
 
-	let menubar = GMenu.menu_bar ~packing:(box1#pack ~expand:false) () in
+	let menubar = GMenu.menu_bar ~packing: box1#pack () in
 
 	let menuitem = GMenu.menu_item ~label:"test\nline2"
 	    ~packing: menubar#append () in
@@ -264,8 +270,8 @@ let rw = ref None in
 	menuitem #set_submenu (create_menu 4 true);
 	menuitem #right_justify ();
 
-	let box2 = GPack.vbox ~spacing:10 ~packing:box1#pack
-	    ~border_width:10 () in
+	let box2 = GPack.vbox ~spacing: 10 ~packing: box1#add
+	    ~border_width: 10 () in
 
 	let menu = create_menu 1 false in
 	menu #set_accel_group accel_group;
@@ -286,16 +292,16 @@ let rw = ref None in
 	  ~flags:[`VISIBLE];
 	menuitem #misc#lock_accelerators ();
 
-	let optionmenu = GMenu.option_menu ~packing:box2#pack () in
+	let optionmenu = GMenu.option_menu ~packing: box2#add () in
 	optionmenu #set_menu menu;
 	optionmenu #set_history 3;
 
-	GMisc.separator `HORIZONTAL ~packing:(box1#pack ~expand:false) ();
+	GMisc.separator `HORIZONTAL ~packing: box1#pack ();
 
 	let box2 = GPack.vbox ~spacing:10 ~border_width:10
-	    ~packing:(box1#pack ~expand:false) () in
+	    ~packing: box1#pack () in
 
-	let button = GButton.button ~label: "close" ~packing:box2#pack () in
+	let button = GButton.button ~label: "close" ~packing: box2#add () in
 	button #connect#clicked ~callback: window#destroy;
 	button #grab_default ();
 	window #show ()
@@ -334,16 +340,16 @@ let create_modal_window () =
   let window = GWindow.window ~modal:true ~title:"This window is modal" () in
   let box1 = GPack.vbox ~spacing:5 ~border_width:3 ~packing:window#add () in
   let frame1 = GBin.frame ~label:"Standard dialogs in modal form"
-      ~packing:(box1#pack ~padding:4) () in
+      ~packing:(box1#pack ~expand:true ~padding:4) () in
   let box2 = GPack.vbox ~homogeneous:true ~spacing:5 ~packing:frame1#add () in
   let btnColor = GButton.button ~label:"Color" 
-      ~packing:(box2#pack ~expand:false ~fill:false ~padding:4) ()
+      ~packing:(box2#pack ~padding:4) ()
   and btnFile = GButton.button ~label:"File selection" 
-      ~packing:(box2#pack ~expand:false ~fill:false ~padding:4) ()
+      ~packing:(box2#pack ~padding:4) ()
   and btnClose = GButton.button ~label:"Close" 
-      ~packing:(box2#pack ~expand:false ~fill:false ~padding:4) () in
+      ~packing:(box2#pack ~padding:4) () in
   GMisc.separator `HORIZONTAL
-    ~packing:(box1#pack ~expand:false ~fill:false ~padding:4) ();
+    ~packing:(box1#pack ~padding:4) ();
   
   btnClose #connect#clicked ~callback:(fun _ -> window #destroy ());
   window #connect#destroy ~callback:cmw_destroy_cb;
@@ -396,7 +402,7 @@ let create_scrolled_windows =
 
 	let scrolled_window = GBin.scrolled_window ~border_width:10
 	    ~hpolicy: `AUTOMATIC ~vpolicy:`AUTOMATIC
-	    ~packing: window#vbox#pack () in
+	    ~packing: window#vbox#add () in
 
 	let table = GPack.table ~rows:20 ~columns:20 ~row_spacings:10
 	    ~col_spacings:10 ~packing:scrolled_window#add_with_viewport () in
@@ -407,7 +413,7 @@ let create_scrolled_windows =
 	  for j=0 to 19 do
 	    GButton.toggle_button
 	      ~label:("button ("^ string_of_int i ^","^ string_of_int j ^")\n")
-	      ~packing:(table #attach ~left:i ~top:j) ()
+	      ~packing:(table #attach ~left:i ~top:j ~expand:`BOTH) ()
 	  done
 	done;
 
@@ -564,15 +570,14 @@ let create_handle_box =
 
 	let vbox = GPack.vbox ~packing:window#add () in
 
-	GMisc.label ~text:"Above" ~packing:vbox#pack ();
-	GMisc.separator `HORIZONTAL ~packing:vbox#pack ();
+	GMisc.label ~text:"Above" ~packing:vbox#add ();
+	GMisc.separator `HORIZONTAL ~packing:vbox#add ();
 
-	let hbox = GPack.hbox ~spacing:10 ~packing:vbox#pack () in
-	GMisc.separator `HORIZONTAL ~packing:vbox#pack ();
+	let hbox = GPack.hbox ~spacing:10 ~packing:vbox#add () in
+	GMisc.separator `HORIZONTAL ~packing:vbox#add ();
 
-	GMisc.label ~text:"Below" ~packing:vbox#pack ();
-	let handle_box = GBin.handle_box
-	    ~packing:(hbox#pack ~expand:false ~fill:false) () in
+	GMisc.label ~text:"Below" ~packing:vbox#add ();
+	let handle_box = GBin.handle_box ~packing:hbox#pack () in
 	handle_box #connect#child_attached
 	  ~callback:(handle_box_child_signal "attached" handle_box);
 	handle_box #connect#child_detached
@@ -582,8 +587,7 @@ let create_handle_box =
 	make_toolbar toolbar window;
 	toolbar #set_button_relief `NORMAL;
 
-	let handle_box = GBin.handle_box
-	    ~packing:(hbox#pack ~expand:false ~fill:false) () in
+	let handle_box = GBin.handle_box ~packing:hbox#pack () in
 	handle_box #connect#child_attached
 	  ~callback:(handle_box_child_signal "attached" handle_box);
 	handle_box #connect#child_detached
@@ -684,8 +688,8 @@ let create_tree_sample selection_mode draw_line view_line no_root_item
     nb_item_max recursion_level_max =
   let window = GWindow.window ~title:"Tree Sample" () in
   let box1 = GPack.vbox ~packing:window#add () in
-  let box2 = GPack.vbox ~packing:box1#pack ~border_width:5 () in
-  let scrolled_win = GBin.scrolled_window ~packing:box2#pack
+  let box2 = GPack.vbox ~packing:box1#add ~border_width:5 () in
+  let scrolled_win = GBin.scrolled_window ~packing:box2#add
       ~hpolicy: `AUTOMATIC ~vpolicy:`AUTOMATIC
       ~width:200 ~height:200 () in
 
@@ -710,27 +714,26 @@ let create_tree_sample selection_mode draw_line view_line no_root_item
     create_subtree root_item 0 nb_item_max recursion_level_max
   end;
 
-  let box2 = GPack.vbox ~border_width:5
-      ~packing:(box1#pack ~expand:false ~fill:false) () in
+  let box2 = GPack.vbox ~border_width:5 ~packing:box1#pack () in
 
   let button = root_treeb #add_button in
   button #misc#set_sensitive false;
   button #connect#clicked ~callback:(cb_add_new_item root_treeb);
-  box2 #pack button#coerce;
+  box2 #add button#coerce;
 
   let button = root_treeb #remove_button in
   button #misc#set_sensitive false;
   button #connect#clicked ~callback:(cb_remove_item root_treeb);
-  box2 #pack button#coerce;
+  box2 #add button#coerce;
 
   let button = root_treeb #subtree_button in
   button #misc#set_sensitive false;
   button #connect#clicked ~callback:(cb_remove_subtree root_treeb);
-  box2 #pack button#coerce;
+  box2 #add button#coerce;
 
-  GMisc.separator `HORIZONTAL ~packing:(box1#pack ~expand:false ~fill:false) ();
+  GMisc.separator `HORIZONTAL ~packing:box1#pack ();
 
-  let button = GButton.button ~label:"Close" ~packing:box2#pack () in
+  let button = GButton.button ~label:"Close" ~packing:box2#add () in
   button #connect#clicked ~callback:window#destroy;
 
   window #show ()
@@ -776,58 +779,57 @@ let create_tree_mode_window =
 	rw := Some window;
 	window #connect#destroy ~callback:(fun _ -> rw := None);
 
-	let box1 = GPack.vbox ~packing:(window#add) () in
+	let box1 = GPack.vbox ~packing:window#add () in
 
-	let box2 = GPack.vbox ~spacing:5 ~packing:(box1#pack)
+	let box2 = GPack.vbox ~spacing:5 ~packing:box1#add
 	    ~border_width:5 () in
 
-	let box3 = GPack.hbox ~spacing:5 ~packing:(box2#pack) () in
+	let box3 = GPack.hbox ~spacing:5 ~packing:box2#add () in
 
-	let frame = GBin.frame ~label:"Selection Mode" ~packing:(box3#pack) ()
+	let frame = GBin.frame ~label:"Selection Mode" ~packing:box3#add ()
 	in
 	
-	let box4 = GPack.vbox ~packing:(frame#add) ~border_width:5 () in
+	let box4 = GPack.vbox ~packing:frame#add ~border_width:5 () in
 
-	box4 #pack single_button#coerce;
-	box4 #pack browse_button#coerce;
-	box4 #pack multiple_button#coerce;
+	box4 #add single_button#coerce;
+	box4 #add browse_button#coerce;
+	box4 #add multiple_button#coerce;
 
-	let frame = GBin.frame ~label:"Options" ~packing:(box3#pack) () in
+	let frame = GBin.frame ~label:"Options" ~packing:box3#add () in
 	
-	let box4 = GPack.vbox ~packing:(frame#add) ~border_width:5 () in
-	box4 #pack draw_line_button#coerce;
+	let box4 = GPack.vbox ~packing:frame#add ~border_width:5 () in
+	box4 #add draw_line_button#coerce;
 	draw_line_button #set_active true;
 	
-	box4 #pack view_line_button#coerce;
+	box4 #add view_line_button#coerce;
 	view_line_button #set_active true;
 	
-	box4 #pack no_root_item_button#coerce;
+	box4 #add no_root_item_button#coerce;
 
-	let frame = GBin.frame ~label:"Size Parameters" ~packing:box2#pack ()
+	let frame = GBin.frame ~label:"Size Parameters" ~packing:box2#add ()
 	in
 
 	let box4 = GPack.hbox ~spacing:5 ~packing:frame#add ~border_width:5 () in
 
-	let box5 = GPack.hbox ~spacing:5 ~packing:(box4#pack) () in
-	let label = GMisc.label ~text:"Number of items : " ~xalign:0. ~yalign:0.5
-	  ~packing:(box5#pack ~expand:false) () in
-	box5 #pack nb_item_spinner#coerce ~expand:false;
+	let box5 = GPack.hbox ~spacing:5 ~packing:box4#add () in
+	let label = GMisc.label ~text:"Number of items : "
+            ~xalign:0. ~yalign:0.5 ~packing:box5#pack () in
+	box5 #pack nb_item_spinner#coerce;
 	
 	let label = GMisc.label ~text:"Depth : " ~xalign:0. ~yalign:0.5
-	  ~packing:(box5#pack ~expand:false) () in
-	box5 #pack recursion_spinner#coerce ~expand:false;
+	    ~packing:box5#pack () in
+	box5 #pack recursion_spinner#coerce;
 	
-	GMisc.separator `HORIZONTAL
-	  ~packing:(box1#pack ~expand:false ~fill:false) ();
+	GMisc.separator `HORIZONTAL ~packing:box1#pack ();
 
-	let box2 = GPack.hbox ~homogeneous:true ~spacing:10
-	    ~packing:(box1#pack ~expand:false ~fill:false)
-	    ~border_width:5 () in
+	let box2 = GPack.hbox ~homogeneous:true ~spacing:10 ~border_width:5
+	    ~packing:box1#pack () in
 
-	let button = GButton.button ~label:"Create Tree" ~packing:box2#pack () in
+	let button = GButton.button ~label:"Create Tree"
+            ~packing:box2#add () in
 	button #connect#clicked ~callback:cb_create_tree;
 
-	let button = GButton.button ~label: "close" ~packing:(box2#pack) () in
+	let button = GButton.button ~label: "close" ~packing:box2#add () in
 	button #connect#clicked ~callback: window#destroy;
 	button #grab_default ();
 	window #show ()
@@ -875,28 +877,30 @@ let create_tooltips =
 	let box1 = GPack.vbox ~packing:window#add () in
 
 	let box2 = GPack.vbox ~spacing:10 ~border_width:10
-	    ~packing:box1#pack () in
+	    ~packing:box1#add () in
 
-	let button = GButton.toggle_button ~label:"button1" ~packing:box2#pack ()
+	let button = GButton.toggle_button ~label:"button1"
+            ~packing:box2#add ()
 	in
 	tooltips #set_tip button#coerce ~text:"This is button1"
 	  ~privat:"ContextHelp/buttons/1";
 	
-	let button = GButton.toggle_button ~label:"button2" ~packing:box2#pack ()
+	let button = GButton.toggle_button ~label:"button2"
+            ~packing:box2#add ()
 	in
 	tooltips #set_tip button#coerce
 	  ~text:"This is button 2. This is also a really long tooltip which probably won't fit on a single line and will therefore need to be wrapped. Hopefully the wrapping will work correctly."
 	  ~privat:"ContextHelp/buttons/2_long";
 
 	let toggle = GButton.toggle_button ~label:"Override TipsQuery Label" 
-	    ~packing:box2#pack () in
+	    ~packing:box2#add () in
 	tooltips #set_tip toggle#coerce ~text:"Toggle TipsQuery view."
 	  ~privat:"Hi msw! ;)";
 
 	let box3 = GPack.vbox ~spacing:5 ~border_width:5 () in
 
 	let button = GButton.button ~label:"[?]" 
-	    ~packing:(box3 #pack ~expand:false ~fill:false) () in
+	    ~packing:box3#pack () in
 
 	let tips_query = GMisc.tips_query ~packing:box3#add () in
 	button #connect#clicked ~callback:(tips_query #start);
@@ -910,16 +914,16 @@ let create_tooltips =
 	tips_query #connect#widget_selected ~callback:tips_query_widget_selected;
 
 	let frame = GBin.frame ~label:"Tooltips Inspector"
-	    ~border_width:0 ~packing:(box2#pack ~padding:10) 
+	    ~border_width:0 ~packing:(box2#pack ~expand:true ~padding:10) 
 	    ~label_xalign:0.5 ~label_yalign:0.0 () in
 	frame #add box3#coerce;
 
-	GMisc.separator `HORIZONTAL ~packing:(box1#pack ~expand:false) ();
+	GMisc.separator `HORIZONTAL ~packing:box1#pack ();
 
 	let box2 = GPack.vbox ~spacing: 10 ~border_width: 10
-	    ~packing:(box1#pack ~expand:false) () in
+	    ~packing: box1#pack () in
 
-	let button = GButton.button ~label: "close" ~packing:box2#pack () in
+	let button = GButton.button ~label: "close" ~packing: box2#add () in
 	button #connect#clicked ~callback: window#destroy;
 	button #grab_default ();
 	tooltips #set_tip button#coerce ~text:"Push this button to close window"
@@ -944,36 +948,36 @@ let create_labels =
 	  ~callback:(fun _ -> rw := None);
 
 	let hbox = GPack.hbox ~spacing:5 ~packing:window#add () in
-	let vbox = GPack.vbox ~spacing:5 ~packing:hbox#pack () in
+	let vbox = GPack.vbox ~spacing:5 ~packing:hbox#add () in
 
 	let frame = GBin.frame ~label:"Normal Label"
-	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
+	    ~packing:vbox#pack () in
 	GMisc.label ~text:"This is a normal label" ~packing:frame#add ();
 
 	let frame = GBin.frame ~label:"Multi_line Label"
-	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
+	    ~packing:vbox#pack () in
 	GMisc.label ~packing:frame#add
 	  ~text:"This is a multi-line label.\nSecond line\nThird line" ();
 
 	let frame = GBin.frame ~label:"Left Justified Label"
-	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
+	    ~packing:vbox#pack () in
 	GMisc.label ~packing:frame#add ~justify:`LEFT
 	  ~text:"This is a left justified\nmulti_line label\nThird line" ();
 
 	let frame = GBin.frame ~label:"Right Justified Label"
-	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
+	    ~packing:vbox#pack () in
 	GMisc.label ~packing:frame#add ~justify:`RIGHT
 	  ~text:"This is a right justified\nmulti_line label\nThird line" ();
 
-	let vbox = GPack.vbox ~spacing:5 ~packing:hbox#pack () in
+	let vbox = GPack.vbox ~spacing:5 ~packing:hbox#add () in
 
 	let frame = GBin.frame ~label:"Line wrapped Label"
-	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
+	    ~packing:vbox#pack () in
 	GMisc.label ~packing:frame#add ~line_wrap:true
 	  ~text:"This is an example of a line-wrapped label.  It should not be taking up the entire             width allocated to it, but automatically wraps the words to fit.  The time has come, for all good men, to come to the aid of their party.  The sixth sheik's six sheep's sick.\n     It supports multiple paragraphs correctly, and  correctly   adds many          extra  spaces. " ();
 
 	let frame = GBin.frame ~label:"Underlined Label"
-	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
+	    ~packing:vbox#pack () in
 	GMisc.label ~text:"This label is underlined!\nThis one is underlined in a quite a funky fashion" ~packing:frame#add
 	  ~justify:`LEFT ~pattern:"_________________________ _ _________ _ _____ _ __ __  ___ ____ _____" ();
 
@@ -1012,29 +1016,31 @@ let create_reparent =
 	window #connect#destroy ~callback:(fun _ -> rw := None);
 
 	let vbox = GPack.vbox ~packing:window#add () in
-	let hbox = GPack.hbox ~spacing:5 ~packing:vbox#pack ~border_width:10 () in
+	let hbox = GPack.hbox ~spacing:5 ~border_width:10
+            ~packing:vbox#add () in
 
-	let frame = GBin.frame ~label:"Frame1"  ~packing:hbox#pack () in
-	let vbox2 = GPack.vbox ~spacing:5 ~packing:frame#add ~border_width:5 () in
+	let frame = GBin.frame ~label:"Frame1"  ~packing:hbox#add () in
+	let vbox2 = GPack.vbox ~spacing:5 ~border_width:5
+            ~packing:frame#add () in
 	let label = GMisc.label ~text:"Hello world"
-	    ~packing:(vbox2#pack ~expand:false) () in
+	    ~packing:vbox2#pack () in
 	label #connect#parent_set ~callback:(set_parent label);
 	let button = GButton.button ~label:"switch"
-	    ~packing:(vbox2#pack ~expand:false) () in
+	    ~packing:vbox2#pack () in
 	button #connect#clicked ~callback:(reparent_label label vbox2#coerce);
 
-	let frame = GBin.frame ~label:"Frame2"  ~packing:hbox#pack () in
+	let frame = GBin.frame ~label:"Frame2"  ~packing:hbox#add () in
 	let vbox2 = GPack.vbox ~spacing:5 ~packing:frame#add ~border_width:5 () in
 	let button = GButton.button ~label:"switch"
-	    ~packing:(vbox2#pack ~expand:false) () in
+	    ~packing:vbox2#pack () in
 	button #connect#clicked ~callback:(reparent_label label vbox2#coerce);
 
-	GMisc.separator `HORIZONTAL ~packing:(vbox#pack ~expand:false) ();
+	GMisc.separator `HORIZONTAL ~packing:vbox#pack ();
 
 	let vbox = GPack.vbox ~spacing:10 ~border_width:10
-	    ~packing:(vbox#pack ~expand:false) () in
+	    ~packing:vbox#pack () in
 
-	let button = GButton.button ~label: "close" ~packing:vbox#pack () in
+	let button = GButton.button ~label: "close" ~packing:vbox#add () in
 	button #connect#clicked ~callback: window#destroy;
 	button #grab_default ();
 
@@ -1104,11 +1110,11 @@ let create_main_window () =
 
   let box1 = GPack.vbox ~packing: window#add () in
 
-  GMisc.label ~text: "Gtk+ v1.2" ~packing:(box1#pack ~expand:false ~fill:false) ();
+  GMisc.label ~text: "Gtk+ v1.2" ~packing:box1#pack ();
 
   let scrolled_window = GBin.scrolled_window ~border_width: 10
       ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC
-      ~packing:box1#pack () in
+      ~packing:box1#add () in
 
   let box2 = GPack.vbox ~border_width: 10
       ~packing:scrolled_window#add_with_viewport () in
@@ -1118,18 +1124,17 @@ let create_main_window () =
     | [] -> ()
     | (_,     None) :: tl -> aux tl
     | (label, Some func) :: tl ->
-	let button = GButton.button ~label: label
-	    ~packing:(box2 #pack ~expand: true ~fill: true ~padding: 0) () in
+	let button = GButton.button ~label: label ~packing: box2#add () in
 	button #connect#clicked ~callback: func;
 	aux tl
   in aux buttons;
 
-  GMisc.separator `HORIZONTAL ~packing:(box1#pack ~expand:false) ();
+  GMisc.separator `HORIZONTAL ~packing: box1#pack ();
 
   let box2 = GPack.vbox ~spacing: 10 ~border_width: 10
-      ~packing:(box1 #pack ~expand: false) () in
+      ~packing: box1#pack () in
 
-  let button = GButton.button ~label: "close"  ~packing:box2#pack () in
+  let button = GButton.button ~label: "close"  ~packing: box2#add () in
   button #connect#clicked ~callback: window#destroy;
   button #grab_default ();
 

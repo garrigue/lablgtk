@@ -91,7 +91,7 @@ class date_button i (calendar : GPack.table) =
       if not show then
       	let top = (mday + wday0) / 7 + 1
       	and left = (mday + wday0) mod 7 in
-      	calendar#attach ~left ~top widget#coerce;
+      	calendar#attach ~left ~top ~expand:`BOTH widget#coerce;
       	widget#misc#show ();
 	show <- true
 	    
@@ -146,7 +146,7 @@ let create_GUI () =
   styles.(s_planned) <- style;
 
   let vbox = GPack.vbox ~packing: win#add () in
-  let packing = vbox#pack in
+  let packing = vbox#add in
   let toolbar = GButton.toolbar ~style: `TEXT ~packing () in
 
   let prev =
@@ -161,7 +161,7 @@ let create_GUI () =
   Array.iteri
     ~f: (fun i wday ->
       ignore (GButton.button ~label: wday
-	      	~packing: (calendar#attach ~top: 0 ~left: i) ()))
+	      	~packing:(calendar#attach ~top: 0 ~left: i ~expand:`BOTH) ()))
     wday_name;
 
   let buttons =

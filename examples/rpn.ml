@@ -39,7 +39,8 @@ let main () =
     with  [] -> ()
         | (lbl, cb) :: t  ->
     let button =
-      GButton.button ~label:lbl ~packing:(table0#attach ~left:n ~top:1) () in
+      GButton.button ~label:lbl
+        ~packing:(table0#attach ~left:n ~top:1 ~expand:`BOTH) () in
     button#connect#clicked ~callback:cb;
     loop0 t (n+1) in
   loop0 labels0 1;
@@ -55,11 +56,11 @@ let main () =
        entry#append_text n
      end in
   let rec loop1 labels n =
-  	match labels
-	with [] -> ()
-	   | lbl :: lbls ->
+    match labels with [] -> ()
+    | lbl :: lbls ->
         let button = GButton.button ~label:(" "^lbl^" ")
-	    ~packing:(table1#attach ~left:(n mod 3) ~top:(n/3)) () in
+	    ~packing:(table1#attach ~left:(n mod 3) ~top:(n/3) ~expand:`BOTH)
+            () in
         button#connect#clicked ~callback:(numClicked lbl);
         loop1 lbls (n+1) in
   loop1 labels1 0; 
@@ -73,7 +74,8 @@ let main () =
      end
      else
        entry#append_text "." in
-  (GButton.button ~label:" . " ~packing:(table1#attach ~left:1 ~top:3) ())
+  (GButton.button ~label:" . "
+     ~packing:(table1#attach ~left:1 ~top:3 ~expand:`BOTH) ())
     #connect#clicked ~callback:periodClicked;
 
   (* Enter (Push) *)
@@ -83,7 +85,8 @@ let main () =
        Stack.push n stack;
        entry#set_text "0"
      end in
-  (GButton.button ~label:"Ent"  ~packing:(table1#attach ~left:2 ~top:3) ())
+  (GButton.button ~label:"Ent"
+     ~packing:(table1#attach ~left:2 ~top:3 ~expand:`BOTH) ())
     #connect#clicked ~callback:enterClicked;
 
   (* Operators *)
@@ -111,7 +114,9 @@ let main () =
     with [] -> ()
     | (lbl, cb) :: t ->
 	let button = GButton.button ~label:lbl
-            ~packing:(table1#attach ~left:(3 + n/4) ~top: (n mod 4)) () in
+            ~packing:(table1#attach ~left:(3 + n/4) ~top: (n mod 4)
+                        ~expand:`BOTH)
+            () in
 	button#connect#clicked ~callback:cb;
 	loop2 t (n+1)
   in

@@ -17,7 +17,7 @@ module Box = struct
       expand:bool -> fill:bool -> padding:int -> unit
       = "ml_gtk_box_pack_end"
   let pack box ?from:( dir = (`START : pack_type))
-      ?(expand=true) ?(fill=true) ?(padding=0) child =
+      ?(expand=false) ?(fill=true) ?(padding=0) child =
     (match dir with `START -> pack_start | `END -> pack_end)
       box child ~expand ~fill ~padding
   external reorder_child : [>`box] obj -> [>`widget] obj -> pos:int -> unit
@@ -168,7 +168,7 @@ module Packer = struct
       ?i_pad_x:int -> ?i_pad_y:int -> unit -> unit
       = "ml_gtk_packer_set_defaults_bc" "ml_gtk_packer_set_defaults"
 
-  let build_options ?(expand=true) ?(fill=`BOTH) () =
+  let build_options ?(expand=false) ?(fill=`BOTH) () =
     (if expand then [`PACK_EXPAND] else []) @
     (match (fill : expand_type) with `NONE -> []
     | `X -> [`FILL_X]
@@ -215,7 +215,7 @@ module Table = struct
   let has_y : expand_type -> bool =
     function `Y|`BOTH -> true | `X|`NONE -> false
   let attach t ~left ~top ?(right=left+1) ?(bottom=top+1)
-      ?(expand=`BOTH) ?(fill=`BOTH) ?(shrink=`NONE)
+      ?(expand=`NONE) ?(fill=`BOTH) ?(shrink=`NONE)
       ?(xpadding=0) ?(ypadding=0) w =
     let xoptions = if has_x shrink then [`SHRINK] else [] in
     let xoptions = if has_x fill then `FILL::xoptions else xoptions in

@@ -113,7 +113,7 @@ let layout ?hadjustment ?vadjustment ?layout_width ?layout_height
 
 class packer obj = object
   inherit container_full (obj : Gtk.packer obj)
-  method pack  ?side ?anchor ?expand ?fill
+  method pack ?side ?anchor ?expand ?fill
       ?border_width ?pad_x ?pad_y ?i_pad_x ?i_pad_y w =
     let options = Packer.build_options ?expand ?fill () in
     if border_width == None && pad_x == None && pad_y == None &&
@@ -124,7 +124,7 @@ class packer obj = object
   method set_child_packing ?side ?anchor ?expand ?fill
       ?border_width ?pad_x ?pad_y ?i_pad_x ?i_pad_y w =
     Packer.set_child_packing obj (as_widget w) ?side ?anchor
-      ?options:(Some (Packer.build_options ?expand ?fill ()))
+      ~options:(Packer.build_options ?expand ?fill ())
       ?border_width ?pad_x ?pad_y ?i_pad_x ?i_pad_y
   method reorder_child w = Packer.reorder_child obj (as_widget w)
   method set_spacing = Packer.set_spacing obj

@@ -184,7 +184,7 @@ object(self)
     classe <- "radio_button";
     radio_button_pool := name :: !radio_button_pool;
     List.iter
-      ~f:(fun x -> Propwin.update (Hashtbl.find widget_map x) true)
+      ~f:(fun x -> Propwin.update (Hashtbl.find widget_map x) ~show:true)
       (List.tl !radio_button_pool);
 
     proplist <-  proplist @

@@ -79,7 +79,7 @@ class calculator ?packing ?show () =
 
     val label =
       let frame = GBin.frame ~shadow_type:`IN ()
-	~packing:(table#attach ~left:0 ~top:0 ~right:4) in
+	~packing:(table#attach ~left:0 ~top:0 ~right:4 ~expand:`BOTH) in
       let evbox = GBin.event_box ~packing:frame#add () in
       evbox#misc#set_style evbox#misc#style#copy;
       evbox#misc#style#set_bg [`NORMAL,`WHITE];
@@ -94,7 +94,7 @@ class calculator ?packing ?show () =
       for i = 0 to 3 do for j = 0 to 3 do
 	let button =
 	  GButton.button ~label:("  " ^ m.(i).(j) ^ "  ")
-	    ~packing:(table#attach ~top:(i+1) ~left:j) () in
+	    ~packing:(table#attach ~top:(i+1) ~left:j ~expand:`BOTH) () in
 	button#connect#clicked ~callback:(fun () -> calc#command m.(i).(j));
       done done;
       ignore (GObj.pack_return table ~packing ~show)

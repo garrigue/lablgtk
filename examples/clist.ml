@@ -10,7 +10,7 @@ let main () =
 
   let hbox = GPack.hbox ~packing:vbox#add () in
   let sb =
-    GRange.scrollbar `VERTICAL ~packing:(hbox#pack ~from:`END ~expand:false) () in
+    GRange.scrollbar `VERTICAL ~packing:(hbox#pack ~from:`END) () in
   let clist =
     GList.clist ~titles:["Ingredients";"Amount"] ~shadow_type:`OUT
       ~packing:hbox#add ~vadjustment:sb#adjustment () in
@@ -21,7 +21,7 @@ let main () =
       flush stdout
     end;
 
-  let hbox = GPack.hbox ~packing:(vbox#pack ~expand:false) () in
+  let hbox = GPack.hbox ~packing:vbox#pack () in
 
   let button_add = GButton.button ~label:"Add List" ~packing:hbox#add () in
   button_add#connect#clicked ~callback:

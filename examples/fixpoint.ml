@@ -13,11 +13,11 @@ let _ =
   let top = GWindow.window () in
   top#connect#destroy ~callback:Main.quit;
   let vbox = GPack.vbox ~packing: top#add () in
-  let entry = GEdit.entry ~max_length: 20 ~packing: vbox#pack () in
+  let entry = GEdit.entry ~max_length: 20 ~packing: vbox#add () in
   let tips = GData.tooltips () in
   tips#set_tip entry#coerce ~text:"Initial value for fix-point";
   let result =
-    GEdit.entry ~max_length: 20 ~editable: false ~packing: vbox#pack () in
+    GEdit.entry ~max_length: 20 ~editable: false ~packing: vbox#add () in
 
   entry#connect#activate ~callback:
     begin fun () ->

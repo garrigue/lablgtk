@@ -454,7 +454,7 @@ class popup () = object (self)
 	  for j = 0 to 2 do
 	    let button =
 	      GButton.button ~label:(string_of_int i ^ "," ^ string_of_int j)
-		~packing:(table#attach ~left:i ~top:j) ()
+		~packing:(table#attach ~left:i ~top:j ~expand:`BOTH) ()
 	    in
 	    button#drag#dest_set targets ~actions:[`COPY; `MOVE ];
 	    button#connect#drag#motion ~callback:self#motion;
@@ -497,10 +497,11 @@ end
 let main () =
   window#connect#destroy ~callback: Main.quit;
   let table = GPack.table ~rows:2 ~columns:2 ~packing:window#add () in
-  new label_drag ~packing:(table#attach ~left:0 ~top:0) ();
-  new target_drag ~packing:(table#attach ~left:1 ~top:0) ();
-  new source_drag ~packing:(table#attach ~left:0 ~top:1) ();
-  new popsite ~packing:(table#attach ~left:1 ~top:1) ();
+  let attach = table#attach ~expand:`BOTH in
+  new label_drag ~packing:(attach ~left:0 ~top:0) ();
+  new target_drag ~packing:(attach ~left:1 ~top:0) ();
+  new source_drag ~packing:(attach ~left:0 ~top:1) ();
+  new popsite ~packing:(attach ~left:1 ~top:1) ();
 
   window#show ();
   Main.main ()

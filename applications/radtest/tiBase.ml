@@ -111,7 +111,7 @@ let radio_button_pool = ref []
 class window_and_tree ~name =
   let tree_window = GWindow.window ~show:true ~title:(name ^ "-Tree") () in
   let vbox = GPack.vbox ~spacing:2 ~packing:tree_window#add () in
-  let root_tree = GTree2.tree ~packing:vbox#pack ~selection_mode:`EXTENDED () in
+  let root_tree = GTree2.tree ~packing:vbox#add ~selection_mode:`EXTENDED () in
   let project_tree_item = GTree2.tree_item () in
   let label = GMisc.label ~text:name ~xalign:0. ~yalign:0.5
       ~packing:project_tree_item#add () in
@@ -519,7 +519,7 @@ object(self)
 	radio_button_pool := new_name ::
 	  (list_remove !radio_button_pool ~f:(fun x -> x = name));
 	List.iter
-	  ~f:(fun x -> Propwin.update (Hashtbl.find widget_map x) false)
+	  ~f:(fun x -> Propwin.update (Hashtbl.find widget_map x))
 	  !radio_button_pool
       end;
       label#set_text new_name;
@@ -537,7 +537,7 @@ object(self)
     end
     else begin
       message_name ();
-      Propwin.update self true;
+      Propwin.update self ~show:true;
       false
     end
 

@@ -92,7 +92,7 @@ let main () =
   let adjustment = GData.adjustment ~value:0. ~lower:(-90.) ~upper:90.
       ~step_incr:1. ~page_incr:5. ~page_size:5. () in
   let scale = GRange.scale `VERTICAL ~adjustment ~draw_value:false
-      ~packing:(hb#pack ~expand:false) () in
+      ~packing:hb#pack () in
   adjustment#connect#value_changed
     ~callback:(fun () -> planet#eye adjustment#value);
   w#connect#event#key_press ~callback:

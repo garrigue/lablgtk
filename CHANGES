@@ -1,6 +1,13 @@
 $Id$
 
 2000.5.10
+  * Incompatible!: Change default for ~expand in Box.pack,
+    Pack.build_options, Table.build_options. Now defaults to false/`NONE.
+    This means that all options default to false/`NONE, except ~show
+    (true for all widgets except windows) and ~fill (always true but
+    effect controlled by ~expand).
+
+2000.5.10
   * rename GtkFrame to GtkBin and GFrame to GBin
   * move socket to GBin
 

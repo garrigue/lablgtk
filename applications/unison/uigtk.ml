@@ -60,7 +60,7 @@ class scrolled_text ?editable ?word_wrap ?width ?height ?packing ?show
     () =
   let hbox = GPack.hbox ?width ?height ?packing ~show:false () in
   let scrollbar = GRange.scrollbar `VERTICAL
-      ~packing:(hbox#pack ~from:`END ~expand:false) () in
+      ~packing:(hbox#pack ~from:`END) () in
   let text = GEdit.text ~vadjustment:scrollbar#adjustment
       ?editable ?word_wrap ~packing:hbox#add () in
   object
@@ -84,7 +84,7 @@ let okBox ~title ~message =
     (* Create a new toplevel window *)
     let t = GWindow.dialog ~title ~wm_name:title ~modal:true () in
     let theLabel = GMisc.label ~text:message
-	~packing:(t#vbox#pack ~expand:false ~padding:4) () in
+	~packing:(t#vbox#pack ~padding:4) () in
     let ok = GButton.button ~label:"OK" ~packing:t#action_area#add () in
     ok#grab_default ();
     ok#connect#clicked ~callback:(fun () -> t#destroy());
@@ -101,7 +101,7 @@ let warnBox ~title ~message =
     (* Create a new toplevel window *)
     let t = GWindow.dialog ~title ~wm_name:title ~modal:true () in
     let theLabel = GMisc.label ~text:message
-	~packing:(t#vbox#pack ~expand:false ~padding:4) () in
+	~packing:(t#vbox#pack ~padding:4) () in
     let ok = GButton.button ~label:"OK" ~packing:t#action_area#add () in
     ok#grab_default ();
     ok#connect#clicked ~callback:(fun () -> t#destroy());
@@ -159,7 +159,7 @@ let profileSelect toplevelWindow =
         let vb = t#vbox in
 
         GMisc.label ~text:"Select an existing profile or start a new one."
-          ~packing:(vb#pack ~expand:false) ();
+          ~packing:vb#pack ();
 
         let buttons =
           Safelist.map profiles ~f:
@@ -177,7 +177,7 @@ let profileSelect toplevelWindow =
         let f1 = GPack.hbox ~packing:vb#add () in
         let newValue = "//NEWPROFILE//" in
         let newButton = GButton.radio_button ~label:"New:"
-            ~packing:(f1#pack ~expand:false) () in
+            ~packing:f1#pack () in
 
         let entry = GEdit.entry ~packing:f1#add () in
         let newCommand() =
@@ -290,23 +290,23 @@ let rootSelect toplevelWindow =
       ~packing:vb#add ();
 
     let makeGetRoot() =
-      let f = GPack.vbox ~packing:(vb#pack ~padding:4) () in
+      let f = GPack.vbox ~packing:(vb#pack ~expand:true ~padding:4) () in
       let f0 = GPack.hbox ~spacing:4 ~packing:f#add () in
-      GMisc.label ~text:"Host:" ~packing:(f0#pack ~expand:false) ();
-      let localB = GButton.radio_button ~packing:(f0#pack ~expand:false)
+      GMisc.label ~text:"Host:" ~packing:f0#pack ();
+      let localB = GButton.radio_button ~packing:f0#pack
           ~label:"Local" () in
       let remoteB = GButton.radio_button ~group:localB#group
-          ~packing:(f0#pack ~expand:false) ~label:"Remote" () in
+          ~packing:f0#pack ~label:"Remote" () in
       let hostE = GEdit.entry ~packing:f0#add () in
       let f1 = GPack.hbox ~spacing:4 ~packing:f#add () in
-      GMisc.label ~text:"File:" ~packing:(f1#pack ~expand:false) ();
+      GMisc.label ~text:"File:" ~packing:f1#pack ();
       let fileE = GEdit.entry ~packing:f1#add () in
       let browseCommand() =
         file_dialog ~title:"Select a local file"
           ~callback:(fun file -> fileE#set_text file) ()
       in
       let b = GButton.button ~label:"Browse"
-          ~packing:(f1#pack ~expand:false) () in
+          ~packing:f1#pack () in
       b#connect#clicked ~callback:browseCommand;
       let varLocalRemote = ref (`Local : [`Local|`Remote]) in
       let localState() =
@@ -333,10 +333,12 @@ let rootSelect toplevelWindow =
     in
 
     
-    GMisc.label ~text:"ROOT 1:" ~xalign:0. ~packing:(vb#pack ~padding:4) ();
+    GMisc.label ~text:"ROOT 1:" ~xalign:0.
+      ~packing:(vb#pack ~expand:true ~padding:4) ();
     let getRoot1 = makeGetRoot() in
 
-    GMisc.label ~text:"ROOT 2:" ~xalign:0. ~packing:(vb#pack ~padding:4) ();
+    GMisc.label ~text:"ROOT 2:" ~xalign:0.
+      ~packing:(vb#pack ~expand:true ~padding:4) ();
     let getRoot2 = makeGetRoot() in
 
     let f3 = t#action_area in
@@ -418,7 +420,7 @@ let start _ =
   (* Create the menu bar                                                *)
   (**********************************************************************)
   let menuBar =
-    GMenu.menu_bar ~border_width:2 ~packing:(toplevelVBox#pack ~expand:false) ()
+    GMenu.menu_bar ~border_width:2 ~packing:toplevelVBox#pack ()
   in
   let menus = new GMenu.factory menuBar ~accel_modi:[] in
   let accel_group = menus#accel_group in
@@ -443,7 +445,7 @@ let start _ =
     let box = GPack.hbox ~height:(Prefs.readPref mainWindowHeight * 12)
         ~packing:toplevelVBox#add () in
     let sb = GRange.scrollbar `VERTICAL
-	~packing:(box#pack ~from:`END ~expand:false) () in
+	~packing:(box#pack ~from:`END) () in
     GList.clist ~columns:5 ~vadjustment:sb#adjustment
       ~titles_show:true ~packing:box#add ()
   in
@@ -463,7 +465,7 @@ let start _ =
 
   let detailsWindow =
     GEdit.text ~editable:false ~height:(3*charH) ~width:(charW*96)
-      ~packing:(toplevelVBox#pack ~expand:false) () in
+      ~packing:toplevelVBox#pack () in
   let displayDetails thePathString newtext =
     detailsWindow#freeze ();
     (* Delete the current text *)
@@ -511,7 +513,7 @@ let start _ =
   (**********************************************************************)
 
   let statusWindow =
-    GMisc.statusbar ~packing:(toplevelVBox#pack ~expand:false) () in
+    GMisc.statusbar ~packing:toplevelVBox#pack () in
   let statusContext = statusWindow#new_context ~name:"status" in
   ignore (statusContext#push "");
 
@@ -780,7 +782,7 @@ let start _ =
     (* Create a new toplevel window *)
     let t = GWindow.dialog ~title ~wm_name:title ~modal:true () in
     let theLabel = GMisc.label ~text:message
-	~packing:(t#vbox#pack ~expand:false ~padding:4) () in
+	~packing:(t#vbox#pack ~padding:4) () in
     let yes = GButton.button ~label:"Yes" ~packing:t#action_area#add ()
     and no = GButton.button ~label:"No" ~packing:t#action_area#add () in
     yes#connect#clicked ~callback:(fun () -> t#destroy(); yesFunction());
@@ -797,7 +799,7 @@ let start _ =
       let t = GWindow.dialog ~title: "Ignore" ~wm_name: "Ignore" () in
       let hbox = GPack.hbox ~packing:t#vbox#add () in
       let sb = GRange.scrollbar `VERTICAL
-	  ~packing:(hbox#pack ~from:`END ~expand:false) () in
+	  ~packing:(hbox#pack ~from:`END) () in
       let regExpWindow =
 	GList.clist ~columns:1 ~titles_show:false ~packing:hbox#add
 	  ~vadjustment:sb#adjustment ~width:400 ~height:150 () in
@@ -819,9 +821,9 @@ let start _ =
 	end;
 
       (* Configure the add frame *)
-      let hbox = GPack.hbox ~spacing:4 ~packing:(t#vbox#pack ~expand:false) () in
+      let hbox = GPack.hbox ~spacing:4 ~packing:t#vbox#pack () in
       GMisc.label ~text: "Regular expression:"
-	~packing:(hbox#pack ~expand:false ~padding:2) ();
+	~packing:(hbox#pack ~padding:2) ();
       let entry = GEdit.entry ~packing:hbox#add () in
       let add () =
         let theRegExp = entry#text in
@@ -832,8 +834,7 @@ let start _ =
           maybeGettingSmaller := true
 	end
       in
-      let addButton = GButton.button ~label:"Add"
-	  ~packing:(hbox#pack ~expand:false) () in
+      let addButton = GButton.button ~label:"Add" ~packing:hbox#pack () in
       addButton#connect#clicked ~callback:add;
       entry#connect#activate ~callback:add;
       entry#misc#grab_focus ();
@@ -850,7 +851,7 @@ let start _ =
         with DerefSome -> ()
       in
       let deleteButton = GButton.button ~label:"Delete"
-	  ~packing:(hbox#pack ~expand:false) () in
+          ~packing:hbox#pack () in
       deleteButton#connect#clicked ~callback:delete;
 
       regExpWindow#connect#after#event#key_press ~callback:
@@ -1004,7 +1005,7 @@ let start _ =
 
   let actionBar = GButton.toolbar
       ~orientation:`HORIZONTAL ~tooltips:true ~space_size:10
-      ~packing:(toplevelVBox#pack ~expand:false) () in
+      ~packing:toplevelVBox#pack () in
 
   (**********************************************************************)
   (*         CREATE AND CONFIGURE THE QUIT BUTTON                       *)

@@ -29,17 +29,20 @@ let main () =
   
   let pbar =
     GRange.progress_bar ~bar_style:`DISCRETE ~discrete_blocks:20 ()
-      ~packing:(table#attach ~left:0 ~right:2 ~top:1 ~fill:`X ~shrink:`BOTH) in
+      ~packing:(table#attach ~left:0 ~right:2 ~top:1
+                  ~expand:`BOTH ~fill:`X ~shrink:`BOTH) in
 
   let bar = new bar pbar in
   let ptimer = Timeout.add ~ms:50 ~callback:bar#progress in
 
   let button = GButton.button ~label:"Reset" ()
-      ~packing:(table#attach ~left:0 ~top:2 ~expand:`NONE ~fill:`X ~shrink:`BOTH) in
+      ~packing:(table#attach ~left:0 ~top:2
+                  ~expand:`NONE ~fill:`X ~shrink:`BOTH) in
   button#connect#clicked ~callback:bar#reset;
 
   let button = GButton.button ~label:"Cancel" ()
-      ~packing:(table#attach ~left:1 ~top:2 ~expand:`NONE ~fill:`X ~shrink:`BOTH) in
+      ~packing:(table#attach ~left:1 ~top:2
+                  ~expand:`NONE ~fill:`X ~shrink:`BOTH) in
   button#connect#clicked ~callback:Main.quit;
 
   window#show ();
