@@ -111,7 +111,8 @@ value cname##_bc (value *argv, int argn) \
 /* Utility */
 
 #define Copy_array(ret,l,src,conv) \
- if (l <= Max_young_wosize) { int i; ret = alloc_tuple(l); \
+ if (!l) ret = Atom(0); \
+ else if (l <= Max_young_wosize) { int i; ret = alloc_tuple(l); \
    for(i=0;i<l;i++) Field(ret,i) = conv(src[i]); } \
  else { int i; ret = alloc_shr(l,0); \
    for(i=0;i<l;i++) initialize (&Field(ret,i), conv(src[i])); }

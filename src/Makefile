@@ -21,7 +21,7 @@ RANLIB = ranlib
 
 include config.make
 
-CFLAGS = $(GTKCFLAGS) #-DGTK_NO_CHECK_CASTS
+CFLAGS = -g $(GTKCFLAGS) #-DGTK_NO_CHECK_CASTS
 LDFLAGS = $(GTKLIBS)
 
 THFLAGS = -thread
