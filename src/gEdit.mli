@@ -260,6 +260,7 @@ class combo_box :
     method set_active : int -> unit
     method set_active_iter : Gtk.tree_iter option -> unit				   
     method set_column_span_column : int GTree.column -> unit
+    method set_model : GTree.model -> unit
     method set_row_span_column : int GTree.column -> unit
     method set_wrap_width : int -> unit
     method wrap_width : int
@@ -268,9 +269,8 @@ class combo_box :
 (** @since GTK 2.4
     @gtkdoc gtk GtkComboBox *)
 val combo_box :
-  model:#GTree.model ->
+  ?model:#GTree.model ->
   ?wrap_width:int ->
-  ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(GObj.widget -> unit) ->
@@ -279,28 +279,14 @@ val combo_box :
 
 (** @since GTK 2.4
     @gtkdoc gtk GtkComboBox *)
-class combo_box_text : 
-  ([> Gtk.combo_box|`comboboxtext] as 'a) Gtk.obj ->
-    object
-      inherit combo_box
-      val obj : 'a Gtk.obj
-      val column : string GTree.column
-      method column : string GTree.column
-      method append_text : string -> unit
-      method insert_text : int -> string -> unit
-      method prepend_text : string -> unit
-    end
-
-(** @since GTK 2.4
-    @gtkdoc gtk GtkComboBox *)
 val combo_box_text :
+  ?strings:string list ->
   ?wrap_width:int ->
-  ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(GObj.widget -> unit) ->
   ?show:bool ->
-  unit -> combo_box_text
+  unit -> combo_box * (GTree.list_store * string GTree.column)
 
 (** @since GTK 2.4
     @gtkdoc gtk GtkComboBoxEntry *)
@@ -309,18 +295,17 @@ class combo_box_entry :
     object
       inherit combo_box
       val obj : 'a Gtk.obj
-      val text_column : string GTree.column
       method text_column : string GTree.column
+      method set_text_column : string GTree.column -> unit
       method entry : entry
     end
 
 (** @since GTK 2.4
     @gtkdoc gtk GtkComboBoxEntry *)
 val combo_box_entry :
-  model:#GTree.model ->
-  text_column:string GTree.column ->
+  ?model:#GTree.model ->
+  ?text_column:string GTree.column ->
   ?wrap_width:int ->
-  ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(GObj.widget -> unit) ->
