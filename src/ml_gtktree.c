@@ -14,6 +14,7 @@
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
+#include "ml_gtktree.h"
 
 /* Init all */
 
@@ -45,8 +46,6 @@ CAMLprim value ml_gtktree_init(value unit)
 /* gtktreemodel.h */
 
 /* "Lighter" version: allocate in the ocaml heap */
-#define GtkTreeIter_val(val) ((GtkTreeIter*)MLPointer_val(val))
-#define Val_GtkTreeIter(it) (copy_memblock_indirected(it,sizeof(GtkTreeIter)))
 CAMLprim value ml_gtk_tree_iter_copy (value it) {
   /* Only valid if in old generation and compaction off */
   return Val_GtkTreeIter(GtkTreeIter_val(it));
@@ -454,6 +453,55 @@ CAMLprim value ml_gtk_tree_view_get_path_at_pos(value treeview,
   }
   return Val_unit;
 }
+
+#ifdef HASGTK26
+gboolean
+ml_gtk_row_separator_func (GtkTreeModel *model,
+			   GtkTreeIter *iter,
+			   gpointer data)
+{
+  gboolean ret;
+  value *closure = data;
+  CAMLparam0();
+  CAMLlocal3 (arg1, arg2, mlret);
+  arg1 = Val_GAnyObject (model);
+  arg2 = Val_GtkTreeIter (iter);
+  mlret = callback2_exn (*closure, arg1, arg2);
+  if (Is_exception_result (ret))
+    {
+      CAML_EXN_LOG ("gtk_row_separator_func");
+      ret = FALSE;
+    }
+  else
+    ret = Bool_val (mlret);
+  CAMLreturn (ret);
+}
+
+CAMLprim value
+ml_gtk_tree_view_set_row_separator_func (value cb, value fun_o)
+{
+  gpointer data;
+  GtkDestroyNotify dnotify;
+  GtkTreeViewRowSeparatorFunc func;
+  if (Is_long (fun_o))
+    {
+      data = NULL;
+      dnotify = NULL;
+      func = NULL;
+    }
+  else
+    {
+      data = ml_global_root_new (Field (fun_o, 0));
+      dnotify = ml_global_root_destroy;
+      func = ml_gtk_row_separator_func;
+    }
+  gtk_tree_view_set_row_separator_func (GtkTreeView_val (cb), func, data, dnotify);
+  return Val_unit;
+}
+#else
+Unsupported_26 (gtk_tree_view_set_row_separator_func)
+#endif /* HASGTK26 */
+
 
 /* GtkCellLayout */
 #ifdef HASGTK24

@@ -398,6 +398,12 @@ class view : tree_view obj ->
     method set_search_column : int -> unit
     method set_vadjustment : GData.adjustment -> unit
     method vadjustment : GData.adjustment
+
+    method hover_expand : bool (** @since GTK 2.6 *)
+    method set_hover_expand : bool -> unit (** @since GTK 2.6 *)
+    method hover_selection : bool (** @since GTK 2.6 *)
+    method set_hover_selection : bool -> unit (** @since GTK 2.6 *)
+    method set_row_separator_func : (model -> tree_iter -> bool) option -> unit (** @since GTK 2.6 *)
   end
 
 (** @gtkdoc gtk GtkTreeView *)
