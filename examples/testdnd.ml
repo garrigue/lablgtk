@@ -328,7 +328,7 @@ object (self)
       with Gpointer.Null -> "unknown"
     in
     Printf.printf "motion, source %s\n" source_typename; flush stdout;
-    context#status [context#suggested_action] ~time;
+    context#status (Some context#suggested_action) ~time;
     true
 
   method drop context ~x ~y ~time =
