@@ -14,7 +14,7 @@ object
 
   method private class_name =
     match dir with `VERTICAL -> "GMisc.separator `VERTICAL"
-    | `HORIZONTAL -> "GMisc.hseparator `HORIZONTAL"
+    | `HORIZONTAL -> "GMisc.separator `HORIZONTAL"
   initializer
     classe <-
     (match dir with `VERTICAL -> "vseparator" | `HORIZONTAL -> "hseparator")

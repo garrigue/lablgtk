@@ -284,7 +284,8 @@ object(self)
 	let child = new tibutton_toolbar ~name ~widget:b ~pos:(-1)
 	      ~insert_evbox:false ~parent_tree:stree parent_window ~toolbar:self in
 	let tp = new prop_string ~name:"text" ~init:t
-	    ~set:(fun v -> toolbar#set_text v (self#get_pos child); true)
+	    ~set:(fun v -> 
+	      toolbar#set_text v (self#get_pos child); true)
 	and ttp = new prop_string ~name:"tooltip" ~init:tt
 	    ~set:(fun _ -> true)
 	and pttp = new prop_string ~name:"tooltip_private" ~init:ptt

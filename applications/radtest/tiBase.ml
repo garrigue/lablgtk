@@ -317,7 +317,7 @@ object(self)
     fun _ _ -> ()
   method set_property name value_string = try
     (List.assoc name proplist)#set value_string
-  with Not_found -> Printf.printf "Not_found %s, %s\n" name value_string;
+  with Not_found -> Printf.printf "Property not_found %s, %s\n" name value_string;
     flush stdout
 
   method private get_property name =
