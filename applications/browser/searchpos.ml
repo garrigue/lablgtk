@@ -150,10 +150,10 @@ let search_pos_type_decl td ~pos ~env =
     end;
     begin match td.ptype_kind with
       Ptype_abstract -> ()
-    | Ptype_variant dl ->
+    | Ptype_variant (dl, priv) ->
         List.iter dl
           ~f:(fun (_, tl) -> List.iter tl ~f:(search_pos_type ~pos ~env))
-    | Ptype_record dl ->
+    | Ptype_record (dl, priv) ->
         List.iter dl ~f:(fun (_, _, t) -> search_pos_type t ~pos ~env)
     end;
     List.iter td.ptype_cstrs ~f:
