@@ -27,8 +27,11 @@ CAMLprim value ml_gtkbin_init(value unit)
         gtk_aspect_frame_get_type() +
         gtk_handle_box_get_type() +
         gtk_viewport_get_type() +
-        gtk_scrolled_window_get_type() +
-        gtk_socket_get_type();
+        gtk_scrolled_window_get_type() 
+#ifndef _WIN32
+        + gtk_socket_get_type()
+#endif
+;
     return Val_GType(t);
 }
 
