@@ -324,7 +324,7 @@ ML_0 (gtk_widget_pop_colormap, Unit)
 
 value ml_gtk_drag_dest_set (value w, value f, value t, value a)
 {
-  GtkTargetEntry *targets;
+  GtkTargetEntry *targets = (GtkTargetEntry *)Val_unit;
   int n_targets, i;
   
   CAMLparam4 (w,f,t,a);
@@ -360,7 +360,7 @@ ML_5 (gtk_drag_set_default_icon, GdkColormap_val,
       Int_val, Int_val, Unit)
 value ml_gtk_drag_source_set (value w, value m, value t, value a)
 {
-  GtkTargetEntry *targets;
+  GtkTargetEntry *targets = (GtkTargetEntry *)Val_unit;
   int n_targets, i;
   CAMLparam4 (w,m,t,a);
   
@@ -1644,6 +1644,7 @@ value ml_gtk_arg_get_int (GtkArg *arg)
     default:
 	ml_raise_gtk ("argument type mismatch");
     }
+    return Val_unit;
 }
 
 value ml_gtk_arg_get_nativeint(GtkArg *arg) {
@@ -1662,6 +1663,7 @@ value ml_gtk_arg_get_nativeint(GtkArg *arg) {
      default:
           ml_raise_gtk ("argument type mismatch");
      }
+     return Val_unit;
 }
 
 value ml_gtk_arg_get_float (GtkArg *arg)
@@ -1674,6 +1676,7 @@ value ml_gtk_arg_get_float (GtkArg *arg)
     default:
 	ml_raise_gtk ("argument type mismatch");
     }
+    return Val_unit;
 }
 
 value ml_gtk_arg_get_string (GtkArg *arg)
@@ -1687,7 +1690,7 @@ value ml_gtk_arg_get_string (GtkArg *arg)
 
 value ml_gtk_arg_get_pointer (GtkArg *arg)
 {
-    gpointer p;
+    gpointer p = NULL;
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
     case GTK_TYPE_STRING:
         p = GTK_VALUE_STRING(*arg);
@@ -1729,23 +1732,32 @@ value ml_int_at_pointer (value ptr)
 
 value ml_gtk_arg_set_char (GtkArg *arg, value val)
 {
-    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_CHAR)
+    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
+    case GTK_TYPE_POINTER:
+    case GTK_TYPE_CHAR:
+         *GTK_RETLOC_CHAR(*arg) = Char_val(val); break;
+    default:
 	ml_raise_gtk ("argument type mismatch");
-    *GTK_RETLOC_CHAR(*arg) = Char_val(val);
+    }
     return Val_unit;
 }
 
 value ml_gtk_arg_set_bool (GtkArg *arg, value val)
 {
-    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_BOOL)
+    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
+    case GTK_TYPE_POINTER:
+    case GTK_TYPE_BOOL:
+         *GTK_RETLOC_BOOL(*arg) = Bool_val(val); break;
+    default:
 	ml_raise_gtk ("argument type mismatch");
-    *GTK_RETLOC_BOOL(*arg) = Bool_val(val);
+    }
     return Val_unit;
 }
 
 value ml_gtk_arg_set_int (GtkArg *arg, value val)
 {
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
+    case GTK_TYPE_POINTER:
     case GTK_TYPE_INT:
     case GTK_TYPE_UINT:
 	*GTK_RETLOC_INT(*arg) = Int_val(val); break;
@@ -1765,6 +1777,7 @@ value ml_gtk_arg_set_int (GtkArg *arg, value val)
 value ml_gtk_arg_set_nativeint (GtkArg *arg, value val)
 {
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
+    case GTK_TYPE_POINTER:
     case GTK_TYPE_INT:
     case GTK_TYPE_UINT:
 	*GTK_RETLOC_INT(*arg) = Nativeint_val(val); break;
@@ -1784,6 +1797,7 @@ value ml_gtk_arg_set_nativeint (GtkArg *arg, value val)
 value ml_gtk_arg_set_float (GtkArg *arg, value val)
 {
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
+    case GTK_TYPE_POINTER:
     case GTK_TYPE_FLOAT:
 	*GTK_RETLOC_FLOAT(*arg) = (float) Double_val(val); break;
     case GTK_TYPE_DOUBLE:
@@ -1796,9 +1810,13 @@ value ml_gtk_arg_set_float (GtkArg *arg, value val)
 
 value ml_gtk_arg_set_string (GtkArg *arg, value val)
 {
-    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_STRING)
+    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
+    case GTK_TYPE_POINTER:
+    case GTK_TYPE_STRING:
+         *GTK_RETLOC_STRING(*arg) = String_val(val); break;
+    default:
 	ml_raise_gtk ("argument type mismatch");
-    *GTK_RETLOC_STRING(*arg) = String_val(val);
+    }
     return Val_unit;
 }
 
@@ -1817,9 +1835,13 @@ value ml_gtk_arg_set_pointer (GtkArg *arg, value val)
 
 value ml_gtk_arg_set_object (GtkArg *arg, value val)
 {
-    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_OBJECT)
+    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
+    case GTK_TYPE_POINTER:
+    case GTK_TYPE_OBJECT:
+         *GTK_RETLOC_OBJECT(*arg) = GtkObject_val(val); break;
+    default:
 	ml_raise_gtk ("argument type mismatch");
-    *GTK_RETLOC_OBJECT(*arg) = GtkObject_val(val);
+    }
     return Val_unit;
 }
 
