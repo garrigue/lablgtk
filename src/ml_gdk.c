@@ -580,8 +580,11 @@ CAMLprim value ml_gdk_gc_get_values (value gc)
 
 CAMLprim value ml_point_array_new (value len)
 {
-    value ret = alloc (1 + Wosize_asize(Int_val(len)*sizeof(GdkPoint)),
-                       Abstract_tag);
+    value ret
+    if(Int_val(len) <= 0)
+      invalid_argument("PointArray.new");
+    ret = alloc (1 + Wosize_asize(Int_val(len)*sizeof(GdkPoint)),
+		 Abstract_tag);
     Field(ret,0) = len;
     return ret;
 }
@@ -597,8 +600,11 @@ CAMLprim value ml_point_array_set (value arr, value pos, value x, value y)
 #define SegmentArrayLen_val(val) Int_val(Field(val,0))
 CAMLprim value ml_segment_array_new (value len)
 {
-    value ret = alloc (1 + Wosize_asize(Int_val(len)*sizeof(GdkSegment)),
-                       Abstract_tag);
+    value ret;
+    if(Int_val(len) <= 0)
+      invalid_argument("SegmentArray.new");
+    ret = alloc (1 + Wosize_asize(Int_val(len)*sizeof(GdkSegment)),
+		 Abstract_tag);
     Field(ret,0) = len;
     return ret;
 }
