@@ -6,7 +6,7 @@ class xpm_label_box parent:(parent : #widget) :file :text =
   let _ = 
     if not (Sys.file_exists file) then failwith (file ^ " does not exist") in
   object
-    inherit box_create `HORIZONTAL as box
+    inherit box (Gtk.Box.create `HORIZONTAL) as box
 
     val pixmapwid =
       parent#misc#realize ();
