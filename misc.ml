@@ -47,3 +47,8 @@ let null_cont _ = ()
 let identity x = x
 
 let kill x y = x
+
+(* Exceptions *)
+
+exception Null_pointer
+let _ =  Callback.register_exception "null_pointer" Null_pointer

@@ -2,72 +2,11 @@
 
 open Misc
 open Gtk
-open GtkObj
-open GtkUtil
+open GObj
+open GCont
+open GUtil
 
-(* Menu Shell *)
-
-class menu_shell_signals obj = object
-  inherit container_signals obj
-  method deactivate = Signal.connect sig:MenuShell.Signals.deactivate obj
-end
-
-class menu_shell obj = object
-  inherit [MenuItem.t,menu_item] item_container obj
-  method private wrap w = new menu_item (MenuItem.cast w)
-  method insert : 'a. (MenuItem.t #is_item as 'a) -> _ =
-    fun w -> MenuShell.insert obj w#as_item
-  method deactivate () = MenuShell.deactivate obj
-  method connect = new menu_shell_signals obj
-end
-
-(* Menu *)
-
-class menu_wrapper obj = object
-  inherit menu_shell obj
-  method popup = Menu.popup obj
-  method popdown () = Menu.popdown obj
-  method as_menu : Menu.t obj = obj
-  method set_accel_group = Menu.set_accel_group obj
-end
-
-class menu ?:border_width ?:width ?:height ?:packing =
-  let w = Menu.create () in
-  let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
-  object
-    inherit menu_wrapper w
-    inherit packing packing
-  end
-
-(* Option Menu (GtkButton?) *)
-
-class option_menu_wrapper (obj : OptionMenu.t obj) = object
-  inherit button obj
-  method set_menu (menu : menu) = OptionMenu.set_menu obj menu#as_menu
-  method get_menu = new menu_wrapper (OptionMenu.get_menu obj)
-  method remove_menu () = OptionMenu.remove_menu obj
-  method set_history = OptionMenu.set_history obj
-end
-
-class option_menu ?:border_width ?:width ?:height ?:packing =
-  let w = OptionMenu.create () in
-  let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
-  object
-    inherit option_menu_wrapper w
-    inherit packing packing
-  end
-
-(* Menu Bar *)
-
-class menu_bar ?:border_width ?:width ?:height ?:packing =
-  let w = MenuBar.create () in
-  let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
-  object
-    inherit menu_shell w
-    inherit packing packing
-  end
-
-(* Items *)
+(* Menu items *)
 
 class type is_menu = object
   method as_menu : Menu.t obj
@@ -86,35 +25,35 @@ class item_skel obj = object
     Widget.add_accelerator obj sig:MenuItem.Signals.activate
 end
 
-class item_signals obj = object
-  inherit GtkObj.item_signals obj
-  method activate = Signal.connect sig:MenuItem.Signals.activate obj
+class item_signals obj ?:after = object
+  inherit GCont.item_signals obj ?:after
+  method activate = Signal.connect sig:MenuItem.Signals.activate obj ?:after
 end
 
-class item_wrapper (obj : MenuItem.t obj) = object
-  inherit item_skel obj
-  method connect = new item_signals obj
+class item_wrapper obj = object
+  inherit item_skel (MenuItem.coerce obj)
+  method connect = new item_signals ?obj
 end
 
 class item ?:label ?:border_width ?:width ?:height ?:packing =
   let w = MenuItem.create ?None ?:label in
   let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
-  object
+  object (self)
     inherit item_wrapper w
-    inherit packing packing
+    initializer pack_return :packing (self :> item_wrapper)
   end
 
 class tearoff_item ?:border_width ?:width ?:height ?:packing =
   let w = MenuItem.tearoff_create () in
   let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
-  object (_ : #item)
+  object (self)
     inherit item_wrapper w
-    inherit packing (packing : (#item -> unit) option)
+    initializer pack_return :packing (self :> item_wrapper)
   end
 
-class check_item_signals obj = object
-  inherit item_signals obj
-  method toggled = Signal.connect sig:CheckMenuItem.Signals.toggled obj
+class check_item_signals obj ?:after = object
+  inherit item_signals obj ?:after
+  method toggled = Signal.connect sig:CheckMenuItem.Signals.toggled obj ?:after
 end
 
 class check_item_skel obj = object
@@ -125,9 +64,9 @@ class check_item_skel obj = object
   method toggled () = CheckMenuItem.toggled obj
 end
 
-class check_item_wrapper (obj : CheckMenuItem.t obj) = object
-  inherit check_item_skel obj
-  method connect = new check_item_signals obj
+class check_item_wrapper obj = object
+  inherit check_item_skel (CheckMenuItem.coerce obj)
+  method connect = new check_item_signals ?obj
 end
 
 class check_item ?:label
@@ -136,9 +75,9 @@ class check_item ?:label
   let () =
     CheckMenuItem.setter w cont:ignore ?:active ?:show_toggle;
     Container.setter w cont:ignore ?:border_width ?:width ?:height in
-  object
+  object (self)
     inherit check_item_wrapper w
-    inherit packing packing
+    initializer pack_return :packing (self :> check_item_wrapper)
   end
 
 class radio_item_skel obj = object
@@ -147,9 +86,9 @@ class radio_item_skel obj = object
   method set_group = RadioMenuItem.set_group obj
 end
 
-class radio_item_wrapper (obj : RadioMenuItem.t obj) = object
-  inherit radio_item_skel obj
-  method connect = new check_item_signals obj
+class radio_item_wrapper obj = object
+  inherit radio_item_skel (RadioMenuItem.coerce obj)
+  method connect = new check_item_signals ?obj
 end
 
 class radio_item ?:group ?:label
@@ -158,9 +97,72 @@ class radio_item ?:group ?:label
   let () =
     CheckMenuItem.setter w cont:ignore ?:active ?:show_toggle;
     Container.setter w cont:ignore ?:border_width ?:width ?:height in
-  object
+  object (self)
     inherit radio_item_wrapper w
-    inherit packing packing
+    initializer pack_return :packing (self :> radio_item_wrapper)
+  end
+
+(* Menu Shell *)
+
+class menu_shell_signals obj ?:after = object
+  inherit container_signals obj ?:after
+  method deactivate =
+    Signal.connect sig:MenuShell.Signals.deactivate obj ?:after
+end
+
+class menu_shell obj = object
+  inherit [MenuItem.t,item] item_container obj
+  method private wrap w = new item_wrapper (MenuItem.cast w)
+  method insert : 'a. (MenuItem.t #is_item as 'a) -> _ =
+    fun w -> MenuShell.insert obj w#as_item
+  method deactivate () = MenuShell.deactivate obj
+  method connect = new menu_shell_signals ?obj
+end
+
+(* Menu *)
+
+class menu_wrapper obj = object
+  inherit menu_shell (Menu.coerce obj)
+  method popup = Menu.popup obj
+  method popdown () = Menu.popdown obj
+  method as_menu : Menu.t obj = obj
+  method set_accel_group = Menu.set_accel_group obj
+end
+
+class menu ?:border_width ?:packing =
+  let w = Menu.create () in
+  let () = may border_width fun:(Container.set_border_width w) in
+  object (self)
+    inherit menu_wrapper w
+    initializer pack_return :packing (self :> menu_wrapper)
+  end
+
+(* Option Menu (GtkButton?) *)
+(*
+class option_menu_wrapper obj = object
+  inherit button (OptionMenu.coerce obj)
+  method set_menu (menu : menu) = OptionMenu.set_menu obj menu#as_menu
+  method get_menu = new menu_wrapper (OptionMenu.get_menu obj)
+  method remove_menu () = OptionMenu.remove_menu obj
+  method set_history = OptionMenu.set_history obj
+end
+
+class option_menu ?:border_width ?:width ?:height ?:packing =
+  let w = OptionMenu.create () in
+  let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
+  object (self)
+    inherit option_menu_wrapper w
+    initializer pack_return :packing (self :> option_menu_wrapper)
+  end
+*)
+(* Menu Bar *)
+
+class menu_bar ?:border_width ?:width ?:height ?:packing =
+  let w = MenuBar.create () in
+  let () = Container.setter w cont:ignore ?:border_width ?:width ?:height in
+  object (self)
+    inherit menu_shell w
+    initializer pack_return :packing (self :> menu_shell)
   end
 
 (* Menu Factory *)
@@ -188,12 +190,12 @@ class ['a] factory (menu : 'a)
       item
     method add_check_item :label ?:active ?:key ?:callback =
       let item = new check_item :label ?:active in
-      self#bind (item :> menu_item) ?:key
+      self#bind (item :> item) ?:key
 	?callback:(may_map callback fun:(fun f () -> f item#active));
       item
     method add_radio_item :label ?:group ?:active ?:key ?:callback =
       let item = new radio_item :label ?:group ?:active in
-      self#bind (item :> menu_item) ?:key
+      self#bind (item :> item) ?:key
 	?callback:(may_map callback fun:(fun f () -> f item#active));
       item
     method add_separator () = new item packing:menu#append

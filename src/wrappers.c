@@ -13,3 +13,11 @@ value copy_memblock (void *src, asize_t size)
     memcpy ((void *)ret, src, size);
     return ret;
 }
+
+void ml_raise_null_pointer ()
+{
+  static value * exn = NULL;
+  if (exn == NULL)
+      exn = caml_named_value ("null_pointer");
+  raise_constant (*exn);
+}   

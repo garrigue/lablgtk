@@ -11,14 +11,12 @@
 #include "ml_gdk.h"
 #include "gdk_tags.h"
 
-extern void raise_with_string (value tag, const char * msg) Noreturn;
-
 void ml_raise_gdk (const char *errmsg)
 {
   static value * exn = NULL;
   if (exn == NULL)
       exn = caml_named_value ("gdkerror");
-  raise_with_string (*exn, errmsg);
+  raise_with_string (*exn, (char*)errmsg);
 }
 
 #include "gdk_tags.c"
