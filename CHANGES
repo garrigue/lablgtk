@@ -1,5 +1,7 @@
 $Id$
 
+In lablgtk2-20040302:
+
 2004.03.01 [Jacques]
   * add Pango.Layout and GDraw.drawable#layout
 
