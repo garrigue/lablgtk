@@ -1,8 +1,8 @@
 # $Id$
 # Makefile for lablgtk.
 
-COMPILER = $(CAMLC) $(MLFLAGS) -w s -c
-LINKER = $(CAMLC) $(MLFLAGS)
+COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
+LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 LIBRARIAN = $(CAMLMKLIB) -verbose
@@ -39,7 +39,7 @@ ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
 MLLINK = -custom
 #MLLINK += -cclib -lcamlrund
-MLFLAGS = -g
+MLBYTEFLAGS = -g
 else
 CFLAGS = -O -DG_DISABLE_CAST_CHECKS $(GTKCFLAGS)
 endif
