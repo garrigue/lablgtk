@@ -6,8 +6,8 @@ This is an experimental R.A.D. for Lablgtk.
 You can compile it simply by make.
 
 
-by clicking on the third button in the tree window you can
-add or remove widgets;
+by clicking on an item in the tree window with the third button
+you can add or remove widgets;
 you can also drag widgets from the icons window and drop them
 on the tree;
 when a widget is selected (click on it in the tree) you can
