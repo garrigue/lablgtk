@@ -14,11 +14,11 @@ case $1 in
 esac
 
 if test $thread = yes; then
-    toplevel=@INSTALLDIR@/lablgtktop_t
+    toplevel="@INSTALLDIR@/lablgtktop_t -I @LIBDIR@/threads"
 else
     toplevel=@INSTALLDIR@/lablgtktop
 fi
 
-exec $toplevel -I @OCAMLLIB@/threads \
+exec $toplevel -w s \
                -I @LABLGLDIR@ \
                -I @INSTALLDIR@ $*

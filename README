@@ -14,7 +14,6 @@ How to compile:
 	Options are
 		USE_CC=1	to use $(CC) rather than gcc
 		USE_GL=1	to compile with OpenGL support (see lower)
-		MESA=Mesa	to link with Mesa libs rather than OpenGL
 
 	Then just type "make" to build the library and toplevels.
 
@@ -151,7 +150,6 @@ GL extension
   * get and install gtkglarea-1.2.x.tar.gz from
     http://www.student.oulu.fi/~jlof/gtkglarea/index.html
   * reconfigure: "make configure USE_GL=1"
-  * if you use Mesa, then "make configure USE_GL=1 MESA=Mesa"
 
   You can then use the widget GlGtk.gl_area as an OpenGL window.
   Some examples are in examples/GL, but basically any LablGL example

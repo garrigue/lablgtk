@@ -25,8 +25,8 @@ RANLIB = ranlib
 
 include config.make
 
-INSTALLDIR = $(OCAMLLIB)/lablgtk
-LABLGLDIR = $(OCAMLLIB)/lablGL
+INSTALLDIR = $(LIBDIR)/lablgtk
+LABLGLDIR = $(LIBDIR)/lablGL
 INSTALLBINDIR = /sansho/opt/ocaml3/bin
 
 ifdef DEBUG
@@ -41,7 +41,7 @@ THFLAGS = -thread
 THLIBS = unix.cma threads.cma
 
 ifdef USE_CC
-CCOMPILER = $(CC) -c -I$(OCAMLLIB) $(CFLAGS)
+CCOMPILER = $(CC) -c -I$(LIBDIR) $(CFLAGS)
 else
 CCOMPILER = ocamlc -c -ccopt "$(CFLAGS)"
 endif
@@ -95,7 +95,7 @@ lablgtktop_t: liblablgtk.a lablgtk.cma $(THOBJS) $(INITOBJS)
 lablgtk: Makefile config.make lablgtk.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
 	    -e "s|@LABLGLDIR@|$(LABLGLDIR)|g" \
-	    -e "s|@OCAMLLIB@|$(OCAMLLIB)|g" \
+	    -e "s|@LIBDIR@|$(LIBDIR)|g" \
 	    < lablgtk.in > $@
 	chmod 755 $@
 
@@ -109,7 +109,7 @@ install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(ALLOBJS:.cmo=.cmi) $(INSTALLDIR)
 	cp lablgtk.cma $(THOBJS) $(INITOBJS) $(INSTALLDIR)
-	cp liblablgtk.a $(OCAMLLIB) || cp liblablgtk.a $(INSTALLDIR)
+	cp liblablgtk.a $(LIBDIR) || cp liblablgtk.a $(INSTALLDIR)
 	cp lablgtktop  lablgtktop_t $(INSTALLDIR)
 	cp lablgtk lablgtkrun $(INSTALLBINDIR)
 	if test -f lablgtk.cmxa; then cp lablgtk.cmxa $(INSTALLDIR); fi
@@ -153,7 +153,10 @@ clean:
 	ocamldep *.ml *.mli > .depend
 
 config.make:
-	ocamlc -v | grep "^Standard" | sed "s/.*: */OCAMLLIB=/" > config.make
+	ocamlc -v | grep "^Standard" | sed 's/.*: */LIBDIR=/' > config.make
+	ocamlc -v | grep "^Standard" \
+	  | sed -e 's/.*: */BINDIR=/' -e 's|/lib/[^/]*$$|/bin|' \
+	        -e 's|/lib$$|/bin|' >> config.make
 	echo GTKCFLAGS=`gtk-config --cflags` >> config.make
 	echo GTKLIBS=`gtk-config --libs` | \
 	  sed -e 's/-l/-cclib &/g' -e 's/-[LWr]/-ccopt &/g' >> config.make
