@@ -241,6 +241,19 @@ value Val_##type##ext (type *p) \
   ret = alloc_custom (&ml_custom_##type##ext, sizeof(value), adv, 1000); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
+#define Make_Val_final_pointer_compare(type, init, comp, final, adv) \
+static void ml_final_##type (value val) \
+{ if (Field(val,1)) final ((type*)Field(val,1)); } \
+static int ml_comp_##type(value v1, value v2) \
+{ return comp((type*)Field(v1,1), (type*)Field(v2,1)); } \
+static struct custom_operations ml_custom_##type = \
+{ #type"/2.0/", ml_final_##type, ml_comp_##type, \
+  custom_hash_default, custom_serialize_default, custom_deserialize_default };\
+value Val_##type (type *p) \
+{ value ret; if (!p) ml_raise_null_pointer(); \
+  ret = alloc_custom (&ml_custom_##type, sizeof(value), adv, 1000); \
+  initialize (&Field(ret,1), (value) p); init(p); return ret; }
+
 #define Pointer_val(val) ((void*)Field(val,1))
 #define MLPointer_val(val) \
         (Field(val,1) == 2 ? &Field(val,2) : (void*)Field(val,1))

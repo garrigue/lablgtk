@@ -98,7 +98,7 @@ CAMLprim value ml_alloc_GtkTreeIter(value v) {
 
 #define GtkTreeModel_val(val) check_cast(GTK_TREE_MODEL,val)
 
-Make_Val_final_pointer (GtkTreePath, Ignore, gtk_tree_path_free, 1)
+Make_Val_final_pointer_compare (GtkTreePath, Ignore, gtk_tree_path_compare, gtk_tree_path_free, 1)
 #define Val_GtkTreePath_copy(p) (Val_GtkTreePath(gtk_tree_path_copy(p)))
 #define GtkTreePath_val(val) ((GtkTreePath*)Pointer_val(val))
 
