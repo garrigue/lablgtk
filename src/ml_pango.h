@@ -1,7 +1,9 @@
 /* $Id$ */
 
 #define PangoFontDescription_val(val) ((PangoFontDescription*)Pointer_val(val))
-value Val_PangoFontDescription(PangoFontDescription* it);
+value Val_PangoFontDescription_new(PangoFontDescription* it);
+#define Val_PangoFontDescription(desc) \
+  (Val_PangoFontDescription_new(pango_font_description_copy(desc)))
 
 value ml_PangoStyle_Val (value val);
 

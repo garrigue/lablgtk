@@ -45,6 +45,10 @@ let may_box ~f obj : 'a optboxed =
 exception Null
 let _ =  Callback.register_exception "null_pointer" Null
 
+(* Stable pointer *)
+type 'a stable
+external stable_copy : 'a -> 'a stable = "ml_stable_copy"
+
 (* Region pointers *)
 
 type region = { data: Obj.t; path: int array; offset:int; length: int }

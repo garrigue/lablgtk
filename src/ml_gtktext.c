@@ -223,15 +223,16 @@ problems with alloca on Linux.
 */
 
 ML_3 (gtk_text_buffer_insert, GtkTextBuffer_val,
-      GtkTextIter_val, SizedStableString_val, Unit)
+      GtkTextIter_val, SizedString_val, Unit)
+
 ML_2 (gtk_text_buffer_insert_at_cursor, GtkTextBuffer_val,
-      SizedStableString_val, Unit)
+      SizedString_val, Unit)
 
 ML_4 (gtk_text_buffer_insert_interactive,GtkTextBuffer_val,
-      GtkTextIter_val, SizedStableString_val, Bool_val, Val_bool)
+      GtkTextIter_val, SizedString_val, Bool_val, Val_bool)
 
 ML_3 (gtk_text_buffer_insert_interactive_at_cursor,GtkTextBuffer_val,
-      SizedStableString_val, Bool_val, Val_bool)
+      SizedString_val, Bool_val, Val_bool)
 
 ML_4 (gtk_text_buffer_insert_range,GtkTextBuffer_val,
       GtkTextIter_val, GtkTextIter_val,GtkTextIter_val,Unit)

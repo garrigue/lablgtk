@@ -11,7 +11,6 @@ CAMLextern char *young_start, *young_end; /* from minor_gc.h */
 
 value copy_memblock_indirected (void *src, asize_t size);
 value alloc_memblock_indirected (asize_t size);
-value ml_stable_copy (value); /* may cause a GC! */
 value ml_some (value);
 void ml_raise_null_pointer (void) Noreturn;
 value Val_pointer (void *);
@@ -196,13 +195,6 @@ CAMLprim value cname##_bc (value *argv, int argn) \
    memcpy(alloca(Bosize_val(val)), (char*)(val), Bosize_val(val)) : \
    String_val(val))
 */
-/* Argument should not be a field. May cause GC.*/
-#define Stable_val(val) \
-  ((char*)(val) < young_end && (char*)(val) > young_start ? \
-   (val = ml_stable_copy(val)) : val)
-#define StableString_val(val) String_val(Stable_val(val))
-#define SizedStableString_val(val) \
-  Insert(StableString_val(val)) string_length(val)
 
 /* Utility */
 
@@ -212,8 +204,6 @@ CAMLprim value cname##_bc (value *argv, int argn) \
    for(i=0;i<l;i++) Field(ret,i) = conv(src[i]); } \
  else { int i; ret = alloc_shr(l,0); \
    for(i=0;i<l;i++) initialize (&Field(ret,i), conv(src[i])); }
-
-#define Make_pointer_final(type, final) \
 
 #define Make_Val_final_pointer(type, init, final, adv) \
 static void ml_final_##type (value val) \
