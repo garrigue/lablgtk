@@ -144,12 +144,15 @@ install:
 	cp $(CLIBS) $(INSTALLDIR)
 	cd $(INSTALLDIR) && $(RANLIB) $(CLIBS)
 	cp lablgtktop varcc $(INSTALLDIR)
+	if test -f lablgtktop_t; then cp lablgtktop_t $(INSTALLDIR); fi
 	cp -p *.h $(INSTALLDIR)
-	cp lablgtk $(BINDIR)
-	if test -f dlllablgtk.so; then cp $(CLIBS:lib%.a=dll%.so) $(DLLDIR); fi
-	if test -f lablgladecc; then cp lablgladecc $(BINDIR); fi
 	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
-	cp lablgtktop_t $(INSTALLDIR)
+	if test -f dlllablgtk.so; then \
+	   cp $(CLIBS:lib%.a=dll%.so) $(DLLDIR) || \
+	   echo "Couldn't install dlls in default location"; \
+	fi
+	cp lablgtk $(BINDIR)
+	if test -f lablgladecc; then cp lablgladecc $(BINDIR); fi
 
 installopt:
 	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.a) $(INSTALLDIR)
