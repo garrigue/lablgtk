@@ -115,7 +115,7 @@ class project () =
 		callback:(fun () -> self#cut_wt wt);
 	      menu#popup button:3 time:(GdkEvent.Button.time ev)
 	    end;
-	    project_tree_item#stop_emit "button_press_event";
+	    project_tree_item#connect#stop_emit name:"button_press_event";
 	    true
 	| _ -> false);
       window_list <- wt :: window_list;

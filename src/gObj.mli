@@ -208,6 +208,7 @@ and widget_signals :
     method event : event_signals
     method parent_set :
 	callback:(widget_wrapper option -> unit) -> ?after:bool -> GtkSignal.id
+    method realize : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
     method show : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
   end
 

@@ -7,10 +7,10 @@ open GtkTree2
 open GObj
 open GContainer
 
-class tree_item2_signals obj ?:after = object
-  inherit item_signals obj ?:after
-  method expand = GtkSignal.connect obj sig:TreeItem2.Signals.expand ?:after
-  method collapse = GtkSignal.connect obj sig:TreeItem2.Signals.collapse ?:after
+class tree_item2_signals obj = object
+  inherit item_signals obj
+  method expand = GtkSignal.connect obj sig:TreeItem2.Signals.expand
+  method collapse = GtkSignal.connect obj sig:TreeItem2.Signals.collapse
 end
 
 class ['a] pre_tree_item2_wrapper :wrapper obj = object
@@ -26,16 +26,16 @@ class ['a] pre_tree_item2_wrapper :wrapper obj = object
   method subtree : 'a = wrapper (TreeItem2.subtree obj)
 end
 
-class ['a] pre_tree2_signals obj :wrapper ?:after = object
-  inherit container_signals obj ?:after
+class ['a] pre_tree2_signals obj :wrapper = object
+  inherit container_signals obj
   method selection_changed =
-    GtkSignal.connect ?obj ?sig:Tree2.Signals.selection_changed ?:after
+    GtkSignal.connect ?obj ?sig:Tree2.Signals.selection_changed
   method select_child :callback =
-    GtkSignal.connect obj sig:Tree2.Signals.select_child ?:after
-      callback:(fun w -> callback (wrapper w : 'a)) 
+    GtkSignal.connect ?obj ?sig:Tree2.Signals.select_child
+      ?callback:(fun w -> callback (wrapper w : 'a)) 
   method unselect_child :callback =
-    GtkSignal.connect obj sig:Tree2.Signals.unselect_child ?:after
-      callback:(fun w -> callback (wrapper w : 'a)) 
+    GtkSignal.connect ?obj ?sig:Tree2.Signals.unselect_child
+      ?callback:(fun w -> callback (wrapper w : 'a)) 
 end
 
 class virtual ['a] pre_tree2_wrapper obj = object (self)

@@ -36,13 +36,13 @@ module Raw = struct
 end
 
 class area_signals obj = object (connect)
-  inherit GObj.widget_signals obj
+  inherit GObj.widget_signals obj as super
   method display :callback ?:after =
     connect#event#expose ?:after callback:
       begin fun ev ->
-	if GdkEvent.Expose.count ev = 0 && Raw.make_current obj then begin
-	  callback ()
-	end;
+	if GdkEvent.Expose.count ev = 0 then
+	  if Raw.make_current obj then callback ()
+	  else prerr_endline "GlGtk-WARNING **: could not make current";
 	true
       end
   method reshape :callback ?:after =
@@ -51,8 +51,15 @@ class area_signals obj = object (connect)
 	if Raw.make_current obj then begin
 	  callback width:(GdkEvent.Configure.width ev)
 	    height:(GdkEvent.Configure.height ev)
-	end;
+	end
+	else prerr_endline "GlGtk-WARNING **: could not make current";
 	true
+      end
+  method realize :callback ?:after =
+    super#realize ?:after callback:
+      begin fun ev ->
+	if Raw.make_current obj then callback ()
+	else prerr_endline "GlGtk-WARNING **: could not make current"
       end
 end
 
@@ -77,8 +84,5 @@ class area options ?:share ?:width [< 0 >] ?:height [< 0 >]
     inherit area_wrapper w
     initializer
       GObj.pack_return :packing :show (self :> area_wrapper);
-      if show then begin
-	self#misc#realize ();
-	self#make_current ()
-      end
+      self#add_events [`EXPOSURE]
   end

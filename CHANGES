@@ -1,5 +1,11 @@
 $Id$
 
+1999.8.10
+  * reduced the number of methods in widget
+  * moved disconnect and stop_emit to object_signals
+  * moved ?:after to each signal
+  * more functions in applications/browser
+
 1999.8.9
   * Major change: created one set_param method by parameter,
     rather than grouping them and using options.

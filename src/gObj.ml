@@ -240,6 +240,7 @@ and widget_signals obj = object
   inherit gtkobj_signals obj
   method event = new event_signals obj
   method drag = new drag_signals obj
+  method realize = GtkSignal.connect sig:Widget.Signals.realize obj
   method show = GtkSignal.connect sig:Widget.Signals.show obj
   method parent_set :callback =
     GtkSignal.connect ?obj ?sig:Widget.Signals.parent_set ?callback:
