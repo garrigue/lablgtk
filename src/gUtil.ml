@@ -41,7 +41,7 @@ class ['a] signal obj = object (self)
 	  Hashtbl.remove disconnectors key
 	end;
       Hashtbl.add disconnectors ~key ~data:[(self :> disconnector)]
-  method connect ~callback ~after =
+  method connect ~after ~callback =
     if not registered then self#register ();
     let id = next_callback_id () in
     callbacks <-
@@ -64,4 +64,40 @@ class has_ml_signals obj = object
       else raise Not_found
     with Not_found ->
       GtkSignal.disconnect obj id
+end
+
+class ['a] variable_signals obj
+    ~(changed : 'a signal)~(accessed : unit signal)  ~(destroy : unit signal) =
+object
+  inherit has_ml_signals obj
+  val obj = obj
+  val after = false
+  method after = {< after = true >}
+  method changed = changed#connect ~after
+  method accessed = accessed#connect ~after
+  method destroy = destroy#connect ~after
+end
+
+class ['a] variable ~on:(w : #widget) x =
+  let obj = w#as_widget in
+object (self)
+  val changed = new signal obj
+  val accessed = new signal obj
+  val destroy = new signal obj
+  val obj = obj
+  method connect = new variable_signals obj ~changed ~accessed ~destroy
+  val mutable x : 'a = x
+  method set y = x <- y; changed#call y
+  method get = accessed#call (); x
+  val mutable cbid = None
+  method destroy () =
+    match cbid with None -> ()
+    | Some id ->
+        cbid <- None;
+        GtkSignal.disconnect obj id;
+        destroy#call ()
+  initializer
+    cbid <- Some
+        (GtkSignal.connect obj ~sgn:GtkBase.Object.Signals.destroy
+           ~callback:self#destroy)
 end

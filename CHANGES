@@ -1,5 +1,8 @@
 $Id$
 
+2000.4.28
+  * add GUtil.variable
+
 2000.4.27
   * add GtkXmHTML widget
 
