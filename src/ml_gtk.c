@@ -7,6 +7,8 @@
 #include <caml/callback.h>
 
 #include "wrappers.h"
+#include "ml_glib.h"
+#include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
 
@@ -20,6 +22,8 @@ void ml_raise_gtk (const char *errmsg)
   raise_with_string (*exn, errmsg);
 }
 
+value ml_get_null (value unit) { return 0L; }
+
 #include "gtk_tags.c"
 
 inline value Val_pointer (void *p)
@@ -30,7 +34,6 @@ inline value Val_pointer (void *p)
 }
 
 Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref)
-Make_Val_final_pointer(GdkColormap, gdk_colormap_ref, gdk_colormap_unref)
 
 /* gtkaccelerator.h */
 
@@ -38,6 +41,27 @@ Make_Val_final_pointer(GdkColormap, gdk_colormap_ref, gdk_colormap_unref)
 Make_Val_final_pointer (GtkAcceleratorTable, gtk_accelerator_table_ref, gtk_accelerator_table_unref)
 
 ML_0 (gtk_accelerator_table_new, Val_GtkAcceleratorTable)
+
+/* gtkstyle.h */
+
+#define GtkStyle_val(val) ((GtkStyle*)Pointer_val(val))
+Make_Val_final_pointer (GtkStyle, gtk_style_ref, gtk_style_unref)
+ML_0 (gtk_style_new, Val_GtkStyle)
+ML_1 (gtk_style_copy, GtkStyle_val, Val_GtkStyle)
+ML_2 (gtk_style_attach, GtkStyle_val, GdkWindow_val, Val_GtkStyle)
+ML_1 (gtk_style_detach, GtkStyle_val, Unit)
+ML_3 (gtk_style_set_background, GtkStyle_val, GdkWindow_val, State_val, Unit)
+ML_6 (gtk_draw_hline, GtkStyle_val, GdkWindow_val, State_val,
+      Int_val, Int_val, Int_val, Unit)
+ML_bc6 (ml_gtk_draw_hline)
+ML_6 (gtk_draw_vline, GtkStyle_val, GdkWindow_val, State_val,
+      Int_val, Int_val, Int_val, Unit)
+ML_bc6 (ml_gtk_draw_vline)
+
+value ml_GtkStyle_bg (value style, value state)
+{
+    return (value)&GtkStyle_val(style)->bg[State_val(state)];
+}
 
 /* gtktypeutils.h */
 
@@ -137,6 +161,13 @@ value ml_gtk_widget_get_pointer (value w)
 }
 ML_2 (gtk_widget_is_ancestor, GtkWidget_val, GtkWidget_val, Val_bool)
 ML_2 (gtk_widget_is_child, GtkWidget_val, GtkWidget_val, Val_bool)
+ML_2 (gtk_widget_set_style, GtkWidget_val, GtkStyle_val, Unit)
+ML_1 (gtk_widget_set_rc_style, GtkWidget_val, Unit)
+ML_1 (gtk_widget_ensure_style, GtkWidget_val, Unit)
+ML_1 (gtk_widget_get_style, GtkWidget_val, Val_GtkStyle)
+ML_1 (gtk_widget_restore_default_style, GtkWidget_val, Unit)
+
+Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
 
 /* gtkcontainer.h */
 
@@ -234,6 +265,9 @@ value ml_gtk_box_set_child_packing (value vbox, value vchild, value vexpand,
     return Val_unit;
 }
 ML_bc6 (ml_gtk_box_set_child_packing)
+
+ML_2 (gtk_hbox_new, Bool_val, Int_val, Val_GtkWidget)
+ML_2 (gtk_vbox_new, Bool_val, Int_val, Val_GtkWidget)
     
 /* gtkbutton.h */
 
@@ -245,6 +279,57 @@ ML_1 (gtk_button_released, GtkButton_val, Unit)
 ML_1 (gtk_button_clicked, GtkButton_val, Unit)
 ML_1 (gtk_button_enter, GtkButton_val, Unit)
 ML_1 (gtk_button_leave, GtkButton_val, Unit)
+
+/* gtktogglebutton.h */
+
+#define GtkToggleButton_val(val) GTK_TOGGLE_BUTTON(Pointer_val(val))
+ML_0 (gtk_toggle_button_new, Val_GtkWidget)
+ML_1 (gtk_toggle_button_new_with_label, String_val, Val_GtkWidget)
+ML_2 (gtk_toggle_button_set_mode, GtkToggleButton_val, Bool_val, Unit)
+ML_2 (gtk_toggle_button_set_state, GtkToggleButton_val, Bool_val, Unit)
+ML_1 (gtk_toggle_button_toggled, GtkToggleButton_val, Unit)
+
+/* gtkcheckbutton.h */
+
+#define GtkCheckButton_val(val) GTK_CHECK_BUTTON(Pointer_val(val))
+ML_0 (gtk_check_button_new, Val_GtkWidget)
+ML_1 (gtk_check_button_new_with_label, String_val, Val_GtkWidget)
+
+/* gtkradiobutton.h */
+
+#define GtkRadioButton_val(val) GTK_RADIO_BUTTON(Pointer_val(val))
+ML_1 (gtk_radio_button_new, (GSList*), Val_GtkWidget)
+ML_2 (gtk_radio_button_new_with_label, (GSList*), String_val, Val_GtkWidget)
+ML_1 (gtk_radio_button_group, GtkRadioButton_val, (value))
+ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, (GSList*), Unit)
+
+/* gtkmisc.h */
+
+#define GtkMisc_val(val) GTK_MISC(Pointer_val(val))
+ML_3 (gtk_misc_set_alignment, GtkMisc_val, Double_val, Double_val, Unit)
+ML_3 (gtk_misc_set_padding, GtkMisc_val, Int_val, Int_val, Unit)
+
+/* gtklabel.h */
+
+#define GtkLabel_val(val) GTK_LABEL(Pointer_val(val))
+ML_1 (gtk_label_new, String_val, Val_GtkWidget)
+ML_2 (gtk_label_set, GtkLabel_val, String_val, Unit)
+ML_2 (gtk_label_set_justify, GtkLabel_val, Justification_val, Unit)
+Make_Extractor (GtkLabel, GtkLabel_val, label, copy_string)
+
+/* gtkpixmap.h */
+
+#define GtkPixmap_val(val) GTK_PIXMAP(Pointer_val(val))
+ML_2 (gtk_pixmap_new, GdkPixmap_val, GdkBitmap_val, Val_GtkWidget)
+value ml_gtk_pixmap_set (value val, value pixmap, value mask)
+{
+    GtkPixmap *w = GtkPixmap_val(val);
+    gtk_pixmap_set (w, Option_val(pixmap,GdkPixmap_val,w->pixmap),
+		    Option_val(mask,GdkBitmap_val,w->mask));
+    return Val_unit;
+}
+Make_Extractor (GtkPixmap, GtkPixmap_val, pixmap, Val_GdkPixmap)
+Make_Extractor (GtkPixmap, GtkPixmap_val, mask, Val_GdkBitmap)
 
 /* gtkmain.h */
 
