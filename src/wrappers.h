@@ -152,7 +152,6 @@ long Flags_##conv (value list) \
   while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
   return flags; }
 
-#define Make_Copy(name, type) \
-value copy_##name (type *arg) \
-{ value ret = alloc_shr (Wosizeof(type), Abstract_tag); \
-  memcpy ((void*)ret, (void*)arg, sizeof(type)); return ret; }
+value copy_memblock (void *src, asize_t size);
+
+#define Val_copy(val) copy_memblock (&val, sizeof(val))

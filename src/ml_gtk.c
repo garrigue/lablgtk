@@ -77,14 +77,8 @@ ML_bc6 (ml_gtk_draw_hline)
 ML_6 (gtk_draw_vline, GtkStyle_val, GdkWindow_val, State_val,
       Int_val, Int_val, Int_val, Unit)
 ML_bc6 (ml_gtk_draw_vline)
-Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_val,  bg, (value)&)
+Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_val,  bg, Val_copy)
 Make_Array_Setter (gtk_style_set, GtkStyle_val, State_val, *GdkColor_val, bg)
-/*
-value ml_gtk_style_get_bg (value style, value state)
-{
-    return (value)&GtkStyle_val(style)->bg[State_val(state)];
-}
-*/
 Make_Extractor (gtk_style_get, GtkStyle_val, colormap, Val_GdkColormap)
 Make_Extractor (gtk_style_get, GtkStyle_val, font, Val_GdkFont)
 Make_Setter (gtk_style_set, GtkStyle_val, GdkFont_val, font)

@@ -89,8 +89,6 @@ Make_Extractor (GdkRectangle,(GdkRectangle*),y,Val_int)
 Make_Extractor (GdkRectangle,(GdkRectangle*),width,Val_int)
 Make_Extractor (GdkRectangle,(GdkRectangle*),height,Val_int)
 
-Make_Copy (rectangle, GdkRectangle)    
-
 /* Window */
 
 Make_Val_final_pointer (GdkWindow, gdk_window_ref, gdk_window_unref)
@@ -227,7 +225,7 @@ Make_Extractor (GdkEventAny, GdkEvent_val(Any), type, Val_gdkEventType)
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), window, Val_GdkWindow)
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), send_event, Val_bool)
 
-Make_Extractor (GdkEventExpose, GdkEvent_val(Expose), area, (value)&)
+Make_Extractor (GdkEventExpose, GdkEvent_val(Expose), area, Val_copy)
 Make_Extractor (GdkEventExpose, GdkEvent_val(Expose), count, Val_int)
 
 Make_Extractor (GdkEventVisibility, GdkEvent_val(Visibility), state,
