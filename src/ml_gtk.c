@@ -113,25 +113,25 @@ ML_1 (gtk_object_destroy, GtkObject_val, Unit)
 
 /* gtkadjustment.h */
 
-#define GtkAdjustment_val(val) cast(GTK_ADJUSTMENT,Pointer_val(val))
+#define GtkAdjustment_val(val) check_cast(GTK_ADJUSTMENT,val)
 ML_6 (gtk_adjustment_new, Float_val, Float_val, Float_val, Float_val,
       Float_val, Float_val, Val_GtkObject)
 ML_bc6 (ml_gtk_adjustment_new)
 ML_2 (gtk_adjustment_set_value, GtkAdjustment_val, Float_val, Unit)
 ML_3 (gtk_adjustment_clamp_page, GtkAdjustment_val,
       Float_val, Float_val, Unit)
-gfloat gtk_adjustment_get_value( GtkAdjustment* adj )
+gfloat adjustment_get_value( GtkAdjustment* adj )
 {
   return adj->value;
 }
-ML_1 (gtk_adjustment_get_value, GtkAdjustment_val, copy_double)
+ML_1 (adjustment_get_value, GtkAdjustment_val, copy_double)
 
 /* gtktooltips.h */
 
-#define GtkWidget_val(val) cast(GTK_WIDGET,Pointer_val(val))
+#define GtkWidget_val(val) check_cast(GTK_WIDGET,val)
 #define Val_GtkWidget(w) Val_GtkObject((GtkObject*)w)
 
-#define GtkTooltips_val(val) cast(GTK_TOOLTIPS,Pointer_val(val))
+#define GtkTooltips_val(val) check_cast(GTK_TOOLTIPS,val)
 ML_0 (gtk_tooltips_new, Val_GtkWidget)
 ML_1 (gtk_tooltips_enable, GtkTooltips_val, Unit)
 ML_1 (gtk_tooltips_disable, GtkTooltips_val, Unit)
@@ -236,7 +236,7 @@ Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
 
 /* gtkcontainer.h */
 
-#define GtkContainer_val(val) cast(GTK_CONTAINER,Pointer_val(val))
+#define GtkContainer_val(val) check_cast(GTK_CONTAINER,val)
 ML_2 (gtk_container_border_width, GtkContainer_val, Int_val, Unit)
 ML_2 (gtk_container_add, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_remove, GtkContainer_val, GtkWidget_val, Unit)
@@ -274,7 +274,7 @@ ML_2 (gtk_container_set_focus_hadjustment, GtkContainer_val,
 
 /* gtkalignment.h */
 
-#define GtkAlignment_val(val) cast(GTK_ALIGNMENT,Pointer_val(val))
+#define GtkAlignment_val(val) check_cast(GTK_ALIGNMENT,val)
 ML_4 (gtk_alignment_new, Float_val, Float_val, Float_val, Float_val,
       Val_GtkWidget)
 value ml_gtk_alignment_set (value val, value x, value y,
@@ -295,7 +295,7 @@ ML_0 (gtk_event_box_new, Val_GtkWidget)
 
 /* gtkframe.h */
 
-#define GtkFrame_val(val) cast(GTK_FRAME,Pointer_val(val))
+#define GtkFrame_val(val) check_cast(GTK_FRAME,val)
 ML_1 (gtk_frame_new, String_val, Val_GtkWidget)
 ML_2 (gtk_frame_set_label, GtkFrame_val, String_val, Unit)
 ML_3 (gtk_frame_set_label_align, GtkFrame_val, Float_val, Float_val, Unit)
@@ -305,7 +305,7 @@ Make_Extractor (gtk_frame_get, GtkFrame_val, label_yalign, copy_double)
 
 /* gtkaspectframe.h */
 
-#define GtkAspectFrame_val(val) cast(GTK_ASPECT_FRAME,Pointer_val(val))
+#define GtkAspectFrame_val(val) check_cast(GTK_ASPECT_FRAME,val)
 ML_5 (gtk_aspect_frame_new, String_val, Float_val, Float_val,
       Float_val, Bool_val, Val_GtkWidget)
 ML_5 (gtk_aspect_frame_set, GtkAspectFrame_val, Float_val, Float_val,
@@ -321,7 +321,7 @@ ML_0 (gtk_handle_box_new, Val_GtkWidget)
 
 /* gtkitem.h */
 
-#define GtkItem_val(val) cast(GTK_ITEM,Pointer_val(val))
+#define GtkItem_val(val) check_cast(GTK_ITEM,val)
 ML_1 (gtk_item_select, GtkItem_val, Unit)
 ML_1 (gtk_item_deselect, GtkItem_val, Unit)
 ML_1 (gtk_item_toggle, GtkItem_val, Unit)
@@ -333,7 +333,7 @@ ML_1 (gtk_list_item_new_with_label, String_val, Val_GtkWidget)
 
 /* gtkmenuitem.h */
 
-#define GtkMenuItem_val(val) cast(GTK_MENU_ITEM,Pointer_val(val))
+#define GtkMenuItem_val(val) check_cast(GTK_MENU_ITEM,val)
 ML_0 (gtk_menu_item_new, Val_GtkWidget)
 ML_1 (gtk_menu_item_new_with_label, String_val, Val_GtkWidget)
 ML_2 (gtk_menu_item_set_submenu, GtkMenuItem_val, GtkWidget_val, Unit)
@@ -348,7 +348,7 @@ ML_1 (gtk_menu_item_right_justify, GtkMenuItem_val, Unit)
 
 /* gtkcheckmenuitem.h */
 
-#define GtkCheckMenuItem_val(val) cast(GTK_CHECK_MENU_ITEM,Pointer_val(val))
+#define GtkCheckMenuItem_val(val) check_cast(GTK_CHECK_MENU_ITEM,val)
 ML_0 (gtk_check_menu_item_new, Val_GtkWidget)
 ML_1 (gtk_check_menu_item_new_with_label, String_val, Val_GtkWidget)
 ML_2 (gtk_check_menu_item_set_state, GtkCheckMenuItem_val, Bool_val, Unit)
@@ -358,7 +358,7 @@ ML_1 (gtk_check_menu_item_toggled, GtkCheckMenuItem_val, Unit)
 
 /* gtkradiomenuitem.h */
 
-#define GtkRadioMenuItem_val(val) cast(GTK_RADIO_MENU_ITEM,Pointer_val(val))
+#define GtkRadioMenuItem_val(val) check_cast(GTK_RADIO_MENU_ITEM,val)
 ML_1 (gtk_radio_menu_item_new, (GSList *), Val_GtkWidget)
 ML_2 (gtk_radio_menu_item_new_with_label, (GSList *),
       String_val, Val_GtkWidget)
@@ -367,7 +367,7 @@ ML_2 (gtk_radio_menu_item_set_group, GtkRadioMenuItem_val, (GSList *), Unit)
 
 /* gtktreeitem.h */
 
-#define GtkTreeItem_val(val) cast(GTK_TREE_ITEM,Pointer_val(val))
+#define GtkTreeItem_val(val) check_cast(GTK_TREE_ITEM,val)
 ML_0 (gtk_tree_item_new, Val_GtkWidget)
 ML_1 (gtk_tree_item_new_with_label, String_val, Val_GtkWidget)
 ML_2 (gtk_tree_item_set_subtree, GtkTreeItem_val, GtkWidget_val, Unit)
@@ -377,7 +377,7 @@ ML_1 (gtk_tree_item_collapse, GtkTreeItem_val, Unit)
 
 /* gtkviewport.h */
 
-#define GtkViewport_val(val) cast(GTK_VIEWPORT,Pointer_val(val))
+#define GtkViewport_val(val) check_cast(GTK_VIEWPORT,val)
 ML_2 (gtk_viewport_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
       Option_val(arg2,GtkAdjustment_val,NULL) Ignore, Val_GtkWidget)
 ML_1 (gtk_viewport_get_hadjustment, GtkViewport_val, Val_GtkWidget)
@@ -388,7 +388,7 @@ ML_2 (gtk_viewport_set_shadow_type, GtkViewport_val, Shadow_val, Unit)
 
 /* gtkdialog.h */
 
-#define GtkDialog_val(val) cast(GTK_DIALOG,Pointer_val(val))
+#define GtkDialog_val(val) check_cast(GTK_DIALOG,val)
 ML_0 (gtk_dialog_new, Val_GtkWidget)
 Make_Extractor (GtkDialog, GtkDialog_val, action_area, Val_GtkWidget)
 Make_Extractor (GtkDialog, GtkDialog_val, vbox, Val_GtkWidget)
@@ -399,7 +399,7 @@ ML_0 (gtk_input_dialog_new, Val_GtkWidget)
 
 /* gtkfileselection.h */
 
-#define GtkFileSelection_val(val) cast(GTK_FILE_SELECTION,Pointer_val(val))
+#define GtkFileSelection_val(val) check_cast(GTK_FILE_SELECTION,val)
 ML_1 (gtk_file_selection_new, String_val, Val_GtkWidget)
 ML_2 (gtk_file_selection_set_filename, GtkFileSelection_val, String_val, Unit)
 ML_1 (gtk_file_selection_get_filename, GtkFileSelection_val, copy_string)
@@ -408,7 +408,7 @@ ML_1 (gtk_file_selection_hide_fileop_buttons, GtkFileSelection_val, Unit)
 
 /* gtkwindow.h */
 
-#define GtkWindow_val(val) cast(GTK_WINDOW,Pointer_val(val))
+#define GtkWindow_val(val) check_cast(GTK_WINDOW,val)
 ML_1 (gtk_window_new, Window_type_val, Val_GtkWidget)
 ML_2 (gtk_window_set_title, GtkWindow_val, String_val, Unit)
 ML_3 (gtk_window_set_wmclass, GtkWindow_val, String_val, String_val, Unit)
@@ -431,7 +431,7 @@ ML_1 (gtk_window_activate_default, GtkWindow_val, Val_bool)
 
 /* gtkcolorsel.h */
 
-#define GtkColorSelection_val(val) cast(GTK_COLOR_SELECTION,Pointer_val(val))
+#define GtkColorSelection_val(val) check_cast(GTK_COLOR_SELECTION,val)
 ML_0 (gtk_color_selection_new, Val_GtkWidget)
 ML_2 (gtk_color_selection_set_update_policy, GtkColorSelection_val,
       Update_val, Unit)
@@ -476,7 +476,7 @@ ML_1 (gtk_color_selection_dialog_new, String_val, Val_GtkWidget)
 
 /* gtkbox.h */
 
-#define GtkBox_val(val) cast(GTK_BOX,Pointer_val(val))
+#define GtkBox_val(val) check_cast(GTK_BOX,val)
 ML_5 (gtk_box_pack_start, GtkBox_val, GtkWidget_val, Bool_val, Bool_val,
       Int_val, Unit)
 ML_5 (gtk_box_pack_end, GtkBox_val, GtkWidget_val, Bool_val, Bool_val,
@@ -520,7 +520,7 @@ ML_2 (gtk_vbox_new, Bool_val, Int_val, Val_GtkWidget)
 
 /* gtkbbox.h */
     
-#define GtkButtonBox_val(val) cast(GTK_BUTTON_BOX,Pointer_val(val))
+#define GtkButtonBox_val(val) check_cast(GTK_BUTTON_BOX,val)
 Make_Extractor (gtk_button_box_get, GtkButtonBox_val, spacing, Val_int)
 Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_min_width, Val_int)
 Make_Extractor (gtk_button_box_get, GtkButtonBox_val, child_min_height,
@@ -543,7 +543,7 @@ ML_0 (gtk_vbutton_box_new, Val_GtkWidget)
 
 /* gtklist.h */
 
-#define GtkList_val(val) cast(GTK_LIST,Pointer_val(val))
+#define GtkList_val(val) check_cast(GTK_LIST,val)
 ML_0 (gtk_list_new, Val_GtkWidget)
 value ml_gtk_list_insert_item (value list, value item, value pos)
 {
@@ -564,7 +564,7 @@ ML_2 (gtk_list_set_selection_mode, GtkList_val, Selection_val, Unit)
 
 /* gtkcombo.h */
 
-#define GtkCombo_val(val) cast(GTK_COMBO,Pointer_val(val))
+#define GtkCombo_val(val) check_cast(GTK_COMBO,val)
 ML_0 (gtk_combo_new, Val_GtkWidget)
 ML_3 (gtk_combo_set_value_in_list, GtkCombo_val, Bool_val, Bool_val, Unit)
 ML_2 (gtk_combo_set_use_arrows, GtkCombo_val, Bool_val, Unit)
@@ -577,7 +577,7 @@ Make_Extractor (gtk_combo, GtkCombo_val, list, Val_GtkWidget)
 
 /* gtkstatusbar.h */
 
-#define GtkStatusbar_val(val) cast(GTK_STATUSBAR,Pointer_val(val))
+#define GtkStatusbar_val(val) check_cast(GTK_STATUSBAR,val)
 ML_0 (gtk_statusbar_new, Val_GtkWidget)
 ML_2 (gtk_statusbar_get_context_id, GtkStatusbar_val, String_val, Val_int)
 ML_3 (gtk_statusbar_push, GtkStatusbar_val, Int_val, String_val, Val_int)
@@ -586,13 +586,13 @@ ML_3 (gtk_statusbar_remove, GtkStatusbar_val, Int_val, Int_val, Unit)
 
 /* gtkgamma.h */
 
-#define GtkGammaCurve_val(val) cast(GTK_GAMMA_CURVE,Pointer_val(val))
+#define GtkGammaCurve_val(val) check_cast(GTK_GAMMA_CURVE,val)
 ML_0 (gtk_gamma_curve_new, Val_GtkWidget)
 Make_Extractor (gtk_gamma_curve_get, GtkGammaCurve_val, gamma, copy_double)
 
 /* gtkbutton.h */
 
-#define GtkButton_val(val) cast(GTK_BUTTON,Pointer_val(val))
+#define GtkButton_val(val) check_cast(GTK_BUTTON,val)
 ML_0 (gtk_button_new, Val_GtkWidget)
 ML_1 (gtk_button_new_with_label, String_val, Val_GtkWidget)
 ML_1 (gtk_button_pressed, GtkButton_val, Unit)
@@ -603,7 +603,7 @@ ML_1 (gtk_button_leave, GtkButton_val, Unit)
 
 /* gtkoptionmenu.h */
 
-#define GtkOptionMenu_val(val) cast(GTK_OPTION_MENU,Pointer_val(val))
+#define GtkOptionMenu_val(val) check_cast(GTK_OPTION_MENU,val)
 ML_0 (gtk_option_menu_new, Val_GtkWidget)
 ML_1 (gtk_option_menu_get_menu, GtkOptionMenu_val, Val_GtkWidget)
 ML_2 (gtk_option_menu_set_menu, GtkOptionMenu_val, GtkWidget_val, Unit)
@@ -612,7 +612,7 @@ ML_2 (gtk_option_menu_set_history, GtkOptionMenu_val, Int_val, Unit)
 
 /* gtktogglebutton.h */
 
-#define GtkToggleButton_val(val) cast(GTK_TOGGLE_BUTTON,Pointer_val(val))
+#define GtkToggleButton_val(val) check_cast(GTK_TOGGLE_BUTTON,val)
 ML_0 (gtk_toggle_button_new, Val_GtkWidget)
 ML_1 (gtk_toggle_button_new_with_label, String_val, Val_GtkWidget)
 ML_2 (gtk_toggle_button_set_mode, GtkToggleButton_val, Bool_val, Unit)
@@ -622,13 +622,13 @@ Make_Extractor (GtkToggleButton, GtkToggleButton_val, active, Val_bool)
 
 /* gtkcheckbutton.h */
 
-#define GtkCheckButton_val(val) cast(GTK_CHECK_BUTTON,Pointer_val(val))
+#define GtkCheckButton_val(val) check_cast(GTK_CHECK_BUTTON,val)
 ML_0 (gtk_check_button_new, Val_GtkWidget)
 ML_1 (gtk_check_button_new_with_label, String_val, Val_GtkWidget)
 
 /* gtkradiobutton.h */
 
-#define GtkRadioButton_val(val) cast(GTK_RADIO_BUTTON,Pointer_val(val))
+#define GtkRadioButton_val(val) check_cast(GTK_RADIO_BUTTON,val)
 ML_1 (gtk_radio_button_new, (GSList*), Val_GtkWidget)
 ML_2 (gtk_radio_button_new_with_label, (GSList*), String_val, Val_GtkWidget)
 ML_1 (gtk_radio_button_group, GtkRadioButton_val, (value))
@@ -636,7 +636,7 @@ ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, (GSList*), Unit)
 
 /* gtkclist.h */
 
-#define GtkClist_val(val) cast(GTK_CLIST,Pointer_val(val))
+#define GtkClist_val(val) check_cast(GTK_CLIST,val)
 ML_1 (gtk_clist_new, Int_val, Val_GtkWidget)
 ML_1 (gtk_clist_new_with_titles, Insert(Wosize_val(arg1)) (char **),
       Val_GtkWidget)
@@ -740,14 +740,14 @@ value ml_gtk_clist_get_selection_info (value clist, value x, value y)
 
 /* gtkfixed.h */
 
-#define GtkFixed_val(val) cast(GTK_FIXED,Pointer_val(val))
+#define GtkFixed_val(val) check_cast(GTK_FIXED,val)
 ML_0 (gtk_fixed_new, Val_GtkWidget)
 ML_4 (gtk_fixed_put, GtkFixed_val, GtkWidget_val, Int_val, Int_val, Unit)
 ML_4 (gtk_fixed_move, GtkFixed_val, GtkWidget_val, Int_val, Int_val, Unit)
 
 /* gtkmenushell.h */
 
-#define GtkMenuShell_val(val) cast(GTK_MENU_SHELL,Pointer_val(val))
+#define GtkMenuShell_val(val) check_cast(GTK_MENU_SHELL,val)
 ML_2 (gtk_menu_shell_append, GtkMenuShell_val, GtkWidget_val, Unit)
 ML_2 (gtk_menu_shell_prepend, GtkMenuShell_val, GtkWidget_val, Unit)
 ML_3 (gtk_menu_shell_insert, GtkMenuShell_val, GtkWidget_val, Int_val, Unit)
@@ -755,7 +755,7 @@ ML_1 (gtk_menu_shell_deactivate, GtkMenuShell_val, Unit)
 
 /* gtkmenu.h */
 
-#define GtkMenu_val(val) cast(GTK_MENU,Pointer_val(val))
+#define GtkMenu_val(val) check_cast(GTK_MENU,val)
 ML_0 (gtk_menu_new, Val_GtkWidget)
 ML_5 (gtk_menu_popup, GtkMenu_val,
       Option_val(arg2, GtkWidget_val, NULL) Ignore,
@@ -776,12 +776,12 @@ ML_1 (gtk_menu_detach, GtkMenu_val, Unit)
 
 /* gtkmenubar.h */
 
-#define GtkMenuBar_val(val) cast(GTK_MENU_BAR,Pointer_val(val))
+#define GtkMenuBar_val(val) check_cast(GTK_MENU_BAR,val)
 ML_0 (gtk_menu_bar_new, Val_GtkWidget)
 
 /* gtknotebook.h */
 
-#define GtkNotebook_val(val) cast(GTK_NOTEBOOK,Pointer_val(val))
+#define GtkNotebook_val(val) check_cast(GTK_NOTEBOOK,val)
 ML_0 (gtk_notebook_new, Val_GtkWidget)
 ML_5 (gtk_notebook_insert_page_menu, GtkNotebook_val, GtkWidget_val,
       GtkWidget_val, Option_val(arg4,GtkWidget_val,NULL) Ignore,
@@ -799,7 +799,7 @@ ML_1 (gtk_notebook_popup_disable, GtkNotebook_val, Unit)
 
 /* gtkpaned.h */
 
-#define GtkPaned_val(val) cast(GTK_PANED,Pointer_val(val))
+#define GtkPaned_val(val) check_cast(GTK_PANED,val)
 ML_0 (gtk_hpaned_new, Val_GtkWidget)
 ML_0 (gtk_vpaned_new, Val_GtkWidget)
 ML_2 (gtk_paned_add1, GtkPaned_val, GtkWidget_val, Unit)
@@ -809,7 +809,7 @@ ML_2 (gtk_paned_gutter_size, GtkPaned_val, Int_val, Unit)
 
 /* gtkscrolledwindow.h */
 
-#define GtkScrolledWindow_val(val) cast(GTK_SCROLLED_WINDOW,Pointer_val(val))
+#define GtkScrolledWindow_val(val) check_cast(GTK_SCROLLED_WINDOW,val)
 ML_2 (gtk_scrolled_window_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
       Option_val(arg2,GtkAdjustment_val,NULL) Ignore, Val_GtkWidget)
 ML_1 (gtk_scrolled_window_get_hadjustment, GtkScrolledWindow_val,
@@ -825,7 +825,7 @@ Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
 
 /* gtktable.h */
 
-#define GtkTable_val(val) cast(GTK_TABLE,Pointer_val(val))
+#define GtkTable_val(val) check_cast(GTK_TABLE,val)
 ML_3 (gtk_table_new, Int_val, Int_val, Int_val, Val_GtkWidget)
 ML_10 (gtk_table_attach, GtkTable_val, GtkWidget_val,
        Int_val, Int_val, Int_val, Int_val,
@@ -839,7 +839,7 @@ ML_2 (gtk_table_set_homogeneous, GtkTable_val, Bool_val, Unit)
 
 /* gtktoolbar.h */
 
-#define GtkToolbar_val(val) cast(GTK_TOOLBAR,Pointer_val(val))
+#define GtkToolbar_val(val) check_cast(GTK_TOOLBAR,val)
 ML_2 (gtk_toolbar_new, Orientation_val, Toolbar_style_val, Val_GtkWidget)
 ML_2 (gtk_toolbar_insert_space, GtkToolbar_val,
       Option_val (arg2, Int_val, -1) Ignore, Unit)
@@ -856,7 +856,7 @@ ML_5 (gtk_toolbar_insert_widget, GtkToolbar_val, GtkWidget_val,
 
 /* gtktree.h */
 
-#define GtkTree_val(val) cast(GTK_TREE,Pointer_val(val))
+#define GtkTree_val(val) check_cast(GTK_TREE,val)
 ML_0 (gtk_tree_new, Val_GtkWidget)
 ML_3 (gtk_tree_insert, GtkTree_val, GtkWidget_val,
       Option_val (arg3, Int_val, -1) Ignore, Unit)
@@ -870,13 +870,13 @@ ML_2 (gtk_tree_set_view_lines, GtkTree_val, Bool_val, Unit)
 
 /* gtkdrawingarea.h */
 
-#define GtkDrawingArea_val(val) cast(GTK_DRAWING_AREA,Pointer_val(val))
+#define GtkDrawingArea_val(val) check_cast(GTK_DRAWING_AREA,val)
 ML_0 (gtk_drawing_area_new, Val_GtkWidget)
 ML_3 (gtk_drawing_area_size, GtkDrawingArea_val, Int_val, Int_val, Unit)
 
 /* gtkeditable.h */
 
-#define GtkEditable_val(val) cast(GTK_EDITABLE,Pointer_val(val))
+#define GtkEditable_val(val) check_cast(GTK_EDITABLE,val)
 ML_3 (gtk_editable_select_region, GtkEditable_val, Int_val, Int_val, Unit)
 value ml_gtk_editable_insert_text (value w, value s, value pos)
 {
@@ -897,7 +897,7 @@ ML_1 (gtk_editable_changed, GtkEditable_val, Unit)
 
 /* gtkentry.h */
 
-#define GtkEntry_val(val) cast(GTK_ENTRY,Pointer_val(val))
+#define GtkEntry_val(val) check_cast(GTK_ENTRY,val)
 ML_0 (gtk_entry_new, Val_GtkWidget)
 ML_1 (gtk_entry_new_with_max_length, Int_val, Val_GtkWidget)
 ML_2 (gtk_entry_set_text, GtkEntry_val, String_val, Unit)
@@ -913,7 +913,7 @@ Make_Extractor (GtkEntry, GtkEntry_val, text_length, Val_int)
 
 /* gtkspinbutton.h */
 
-#define GtkSpinButton_val(val) cast(GTK_SPIN_BUTTON,Pointer_val(val))
+#define GtkSpinButton_val(val) check_cast(GTK_SPIN_BUTTON,val)
 ML_3 (gtk_spin_button_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
       Float_val, Int_val, Val_GtkWidget)
 ML_2 (gtk_spin_button_set_adjustment, GtkSpinButton_val, GtkAdjustment_val,
@@ -930,7 +930,7 @@ ML_2 (gtk_spin_button_set_wrap, GtkSpinButton_val, Bool_val, Unit)
 
 /* gtktext.h */
 
-#define GtkText_val(val) cast(GTK_TEXT,Pointer_val(val))
+#define GtkText_val(val) check_cast(GTK_TEXT,val)
 ML_2 (gtk_text_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
       Option_val(arg2,GtkAdjustment_val,NULL) Ignore, Val_GtkWidget)
 ML_2 (gtk_text_set_editable, GtkText_val, Bool_val, Unit)
@@ -957,19 +957,19 @@ ML_2 (gtk_text_backward_delete, GtkText_val, Int_val, Val_int)
 
 /* gtkmisc.h */
 
-#define GtkMisc_val(val) cast(GTK_MISC,Pointer_val(val))
+#define GtkMisc_val(val) check_cast(GTK_MISC,val)
 ML_3 (gtk_misc_set_alignment, GtkMisc_val, Double_val, Double_val, Unit)
 ML_3 (gtk_misc_set_padding, GtkMisc_val, Int_val, Int_val, Unit)
 
 /* gtkarrow.h */
 
-#define GtkArrow_val(val) cast(GTK_ARROW,Pointer_val(val))
+#define GtkArrow_val(val) check_cast(GTK_ARROW,val)
 ML_2 (gtk_arrow_new, Arrow_val, Shadow_val, Val_GtkWidget)
 ML_3 (gtk_arrow_set, GtkArrow_val, Arrow_val, Shadow_val, Unit)
 
 /* gtkimage.h */
 
-#define GtkImage_val(val) cast(GTK_IMAGE,Pointer_val(val))
+#define GtkImage_val(val) check_cast(GTK_IMAGE,val)
 ML_2 (gtk_image_new, GdkImage_val,
       Option_val (arg2, GdkBitmap_val, NULL) Ignore, Val_GtkWidget)
 ML_3 (gtk_image_set, GtkImage_val, GdkImage_val,
@@ -977,7 +977,7 @@ ML_3 (gtk_image_set, GtkImage_val, GdkImage_val,
 
 /* gtklabel.h */
 
-#define GtkLabel_val(val) cast(GTK_LABEL,Pointer_val(val))
+#define GtkLabel_val(val) check_cast(GTK_LABEL,val)
 ML_1 (gtk_label_new, String_val, Val_GtkWidget)
 ML_2 (gtk_label_set, GtkLabel_val, String_val, Unit)
 ML_2 (gtk_label_set_justify, GtkLabel_val, Justification_val, Unit)
@@ -985,7 +985,7 @@ Make_Extractor (GtkLabel, GtkLabel_val, label, copy_string)
 
 /* gtktipsquery.h */
 
-#define GtkTipsQuery_val(val) cast(GTK_TIPS_QUERY,Pointer_val(val))
+#define GtkTipsQuery_val(val) check_cast(GTK_TIPS_QUERY,val)
 ML_0 (gtk_tips_query_new, Val_GtkWidget)
 ML_1 (gtk_tips_query_start_query, GtkTipsQuery_val, Unit)
 ML_1 (gtk_tips_query_stop_query, GtkTipsQuery_val, Unit)
@@ -1006,7 +1006,7 @@ Make_Extractor (gtk_tips_query_get, GtkTipsQuery_val, label_no_tip,
 
 /* gtkpixmap.h */
 
-#define GtkPixmap_val(val) cast(GTK_PIXMAP,Pointer_val(val))
+#define GtkPixmap_val(val) check_cast(GTK_PIXMAP,val)
 ML_2 (gtk_pixmap_new, GdkPixmap_val, GdkBitmap_val, Val_GtkWidget)
 value ml_gtk_pixmap_set (value val, value pixmap, value mask)
 {
@@ -1030,21 +1030,21 @@ ML_bc9 (ml_gtk_preview_put)
 
 /* gtkprogressbar.h */
 
-#define GtkProgressBar_val(val) cast(GTK_PROGRESS_BAR,Pointer_val(val))
+#define GtkProgressBar_val(val) check_cast(GTK_PROGRESS_BAR,val)
 ML_0 (gtk_progress_bar_new, Val_GtkWidget)
 ML_2 (gtk_progress_bar_update, GtkProgressBar_val, Float_val, Unit)
 Make_Extractor (GtkProgressBar, GtkProgressBar_val, percentage, copy_double)
 
 /* gtkrange.h */
 
-#define GtkRange_val(val) cast(GTK_RANGE,Pointer_val(val))
+#define GtkRange_val(val) check_cast(GTK_RANGE,val)
 ML_1 (gtk_range_get_adjustment, GtkRange_val, Val_GtkWidget)
 ML_2 (gtk_range_set_adjustment, GtkRange_val, GtkAdjustment_val, Unit)
 ML_2 (gtk_range_set_update_policy, GtkRange_val, Update_val, Unit)
 
 /* gtkscale.h */
 
-#define GtkScale_val(val) cast(GTK_SCALE,Pointer_val(val))
+#define GtkScale_val(val) check_cast(GTK_SCALE,val)
 ML_2 (gtk_scale_set_digits, GtkScale_val, Int_val, Unit)
 ML_2 (gtk_scale_set_draw_value, GtkScale_val, Bool_val, Unit)
 ML_2 (gtk_scale_set_value_pos, GtkScale_val, Position_val, Unit)
@@ -1060,7 +1060,7 @@ ML_1 (gtk_vscrollbar_new, GtkAdjustment_val, Val_GtkWidget)
 
 /* gtkruler.h */
 
-#define GtkRuler_val(val) cast(GTK_RULER,Pointer_val(val))
+#define GtkRuler_val(val) check_cast(GTK_RULER,val)
 ML_2 (gtk_ruler_set_metric, GtkRuler_val, Metric_val, Unit)
 ML_5 (gtk_ruler_set_range, GtkRuler_val, Float_val,
       Float_val, Float_val, Float_val, Unit)
