@@ -73,7 +73,7 @@ ML_1 (Pango_weight_val, 0+, Val_int)
 
 /* This one uses the generated MLTAG but not the conversion functions because
    we have defined float values */
-value ml_Pango_scale_val (value val) 
+CAMLprim value ml_Pango_scale_val (value val) 
 {
   double r;
   if (Is_block(val)) return Field(val,1); /* `CUSTOM */

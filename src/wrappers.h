@@ -30,6 +30,8 @@ int ml_lookup_to_c (lookup_info *table, value key);
 CAMLprim value ml_##cname () \
 { failwith(#cname " unsupported in Gtk 2.x < 2.2"); return Val_unit; }
 
+#define ID(x) (x)
+
 #define ML_0(cname, conv) \
 CAMLprim value ml_##cname (value unit) { return conv (cname ()); }
 #define ML_1(cname, conv1, conv) \

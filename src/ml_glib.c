@@ -102,9 +102,9 @@ void ml_g_log_func(const gchar *log_domain,
     callback2(*clos_p, Val_int(log_level), Val_string(message));
 }
 
-ML_1 (Log_level_val, , Val_int)
+ML_1 (Log_level_val, ID, Val_int)
 
-value ml_g_log_set_handler (value domain, value levels, value clos)
+CAMLprim value ml_g_log_set_handler (value domain, value levels, value clos)
 {
     value *clos_p = ml_global_root_new (clos);
     int id = g_log_set_handler (String_val(domain), Int_val(levels),
@@ -117,7 +117,7 @@ value ml_g_log_set_handler (value domain, value levels, value clos)
     CAMLreturn(ret);
 }
 
-value ml_g_log_remove_handler (value hnd)
+CAMLprim value ml_g_log_remove_handler (value hnd)
 {
     if (Field(hnd,2) != 0) {
         g_log_remove_handler (String_val(Field(hnd,0)), Int_val(Field(hnd,1)));
@@ -148,7 +148,7 @@ gboolean ml_g_source_func (gpointer data)
     return Bool_val (callback (*(value*)data, Val_unit));
 }
 
-value ml_g_timeout_add (value interval, value clos)
+CAMLprim value ml_g_timeout_add (value interval, value clos)
 {
     value *clos_p = ml_global_root_new (clos);
     return Val_int
@@ -157,7 +157,7 @@ value ml_g_timeout_add (value interval, value clos)
                              ml_global_root_destroy));
 }
 
-value ml_g_idle_add (value clos)
+CAMLprim value ml_g_idle_add (value clos)
 {
     value *clos_p = ml_global_root_new (clos);
     return Val_int

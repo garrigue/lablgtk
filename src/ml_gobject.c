@@ -45,7 +45,7 @@ ML_1 (g_type_parent, GType_val, Val_GType)
 ML_1 (g_type_depth, GType_val, Val_int)
 ML_2 (g_type_is_a, GType_val, GType_val, Val_bool)
 ML_1 (G_TYPE_FUNDAMENTAL, GType_val, Val_fundamental_type)
-ML_1 (Fundamental_type_val,,Val_GType)
+ML_1 (Fundamental_type_val, ID, Val_GType)
 
 /* gclosure.h */
 
@@ -76,7 +76,7 @@ static void marshal (GClosure *closure, GValue *ret,
     CAMLreturn0;
 }
 
-value ml_g_closure_new (value clos)
+CAMLprim value ml_g_closure_new (value clos)
 {
     GClosure* closure = g_closure_new_simple(sizeof(GClosure), (gpointer)clos);
     register_global_root((value*)&closure->data);
@@ -90,7 +90,7 @@ value ml_g_closure_new (value clos)
 #define g_value_unset_and_free(gv) g_value_unset(gv); g_free(gv)
 Make_Val_final_pointer_ext(GValue, _new, Ignore, g_value_unset_and_free, 20)
 
-value ml_g_value_new(value v)
+CAMLprim value ml_g_value_new(value v)
 {
     GValue *gvalue = g_malloc(sizeof(GValue));
     if (gvalue==NULL) raise_out_of_memory ();
@@ -98,7 +98,7 @@ value ml_g_value_new(value v)
     return Val_GValue_new(gvalue);
 }
 
-value ml_g_value_release(value val)
+CAMLprim value ml_g_value_release(value val)
 {
     if (Tag_val(val) == Custom_tag) ml_final_GValue_new(val);
     Pointer_val(val) = NULL;
@@ -278,7 +278,7 @@ void g_value_set_variant (GValue *val, value arg2)
     return;
 }
 
-ML_2 (g_value_set_variant, GValue_val, , Unit)
+ML_2 (g_value_set_variant, GValue_val, ID, Unit)
 
 CAMLprim value ml_g_value_get_nativeint(value arg) {
     GValue *val = GValue_val(arg);
@@ -339,7 +339,7 @@ ML_2 (g_signal_handler_unblock, GObject_val, Long_val, Unit)
 ML_2 (g_signal_handler_disconnect, GObject_val, Long_val, Unit)
 ML_2 (g_signal_handler_is_connected, GObject_val, Long_val, Val_bool)
 ML_2 (g_signal_stop_emission_by_name, GObject_val, String_val, Unit)
-value ml_g_signal_emit_by_name (value obj, value sig, value params)
+CAMLprim value ml_g_signal_emit_by_name (value obj, value sig, value params)
 {
     CAMLparam3(obj,sig,params);
     CAMLlocal1(ret);

@@ -32,7 +32,7 @@ ML_1(gdk_pixbuf_get_width, GdkPixbuf_val, Val_int)
 ML_1(gdk_pixbuf_get_height, GdkPixbuf_val, Val_int)
 ML_1(gdk_pixbuf_get_rowstride, GdkPixbuf_val, Val_int)
 
-value ml_gdk_pixbuf_get_pixels (value pixbuf)
+CAMLprim value ml_gdk_pixbuf_get_pixels (value pixbuf)
 {
     long pixels = (long)gdk_pixbuf_get_pixels (GdkPixbuf_val(pixbuf));
     unsigned int ofs = pixels % sizeof(value);
@@ -47,7 +47,7 @@ value ml_gdk_pixbuf_get_pixels (value pixbuf)
 ML_5(gdk_pixbuf_new, GDK_COLORSPACE_RGB Ignore, Int_val, Int_val,
      Int_val, Int_val, Val_GdkPixbuf_noref)
 ML_1(gdk_pixbuf_copy, GdkPixbuf_val, Val_GdkPixbuf_noref)
-value ml_gdk_pixbuf_new_from_file(value f)
+CAMLprim value ml_gdk_pixbuf_new_from_file(value f)
 {
     GError *err = NULL;
     GdkPixbuf *res = gdk_pixbuf_new_from_file(String_val(f), &err);
@@ -60,7 +60,7 @@ void ml_gdk_pixbuf_destroy_notify (guchar *pixels, gpointer data)
 {
     ml_global_root_destroy(data);
 }
-value ml_gdk_pixbuf_new_from_data(value data, value has_alpha,
+CAMLprim value ml_gdk_pixbuf_new_from_data(value data, value has_alpha,
 				 value bits, value w, value h, value rs)
 {
     value *root = ml_global_root_new(data);
@@ -95,7 +95,7 @@ ML_13(gdk_pixbuf_render_to_drawable_alpha, GdkPixbuf_val, GdkDrawable_val,
       Alpha_mode_val, Int_val, GdkRgbDither_val, Int_val, Int_val, Unit)
 ML_bc13(ml_gdk_pixbuf_render_to_drawable_alpha)
 
-value ml_gdk_pixbuf_render_pixmap_and_mask (value pixbuf, value thr)
+CAMLprim value ml_gdk_pixbuf_render_pixmap_and_mask (value pixbuf, value thr)
 {
     CAMLparam0();
     CAMLlocal2(vpm,vmask);

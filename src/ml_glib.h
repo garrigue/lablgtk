@@ -9,7 +9,7 @@ value Val_GList (GList *list, value_in);
 value Val_GList_free (GList *list, value_in);
 GList *GList_val (value list, value_out);
 
-value Val_GSList (GSList *list, value_in);
+CAMLprim value Val_GSList (GSList *list, value_in);
 value Val_GSList_free (GSList *list, value_in);
 GSList *GSList_val (value list, value_out);
 

@@ -1,5 +1,8 @@
 $Id$
 
+2003.05.26 [Jun Furuse]
+  * msvc port is done!
+
 2003.05.24 [Jun Furuse]
   * added Window.get_visual
 
