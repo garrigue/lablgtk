@@ -186,6 +186,12 @@ module Widget = struct
 	  let res = f (Obj.magic p : Gdk.drag_context) ~x ~y ~time
 	  in GtkArgv.set_result argv (`BOOL res)
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag3"
+    external allocation_at_pointer : Gpointer.boxed -> rectangle
+        = "ml_Val_GtkAllocation"
+    let marshal_allocation f argv = function
+      | POINTER(Some p) :: _ ->
+          f (allocation_at_pointer p)
+      |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_allocation"
     let show : ([>`widget],_) t =
       { name = "show"; marshaller = marshal_unit }
     let hide : ([>`widget],_) t =
@@ -211,6 +217,8 @@ module Widget = struct
       { name = "state_changed"; marshaller = marshal }
     let parent_set : ([>`widget],_) t =
       { name = "parent_set"; marshaller = marshal_opt }
+    let size_allocate : ([`widget],_) t =
+      { name = "size_allocate"; marshaller = marshal_allocation }
     let style_set : ([>`widget],_) t =
       { name = "style_set"; marshaller = marshal_style }
     let drag_begin : ([>`widget],_) t =

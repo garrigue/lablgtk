@@ -189,6 +189,8 @@ and misc_signals ?after obj = object
   method map = GtkSignal.connect ~sgn:Widget.Signals.map ~after obj
   method unmap = GtkSignal.connect ~sgn:Widget.Signals.unmap ~after obj
   method realize = GtkSignal.connect ~sgn:Widget.Signals.realize ~after obj
+  method size_allocate =
+    GtkSignal.connect ~sgn:Widget.Signals.size_allocate ~after obj
   method state_changed =
     GtkSignal.connect ~sgn:Widget.Signals.state_changed ~after obj
   method parent_set ~callback =
