@@ -469,9 +469,9 @@ class CellRendererText vset : CellRenderer {
   "background-gdk"       GdkColor             : Read / Write
   "background-set"       gboolean             : Read / Write
   "editable"             gboolean             : Read / Write
-  "editable-set"         gboolean             : Read / Write
+  "editable-set"         gboolean             : Read / Write / NoVSet
   "family"               gchararray           : Read / Write
-  "family-set"           gboolean             : Read / Write
+  "family-set"           gboolean             : Read / Write / NoVSet
   "font"                 gchararray           : Read / Write
   "font-desc"            PangoFontDescription : Read / Write
   "foreground"           gchararray           : Write
@@ -479,25 +479,25 @@ class CellRendererText vset : CellRenderer {
   "foreground-set"       gboolean             : Read / Write
   "markup"               gchararray           : Write
   "rise"                 gint                 : Read / Write
-  "rise-set"             gboolean             : Read / Write
+  "rise-set"             gboolean             : Read / Write / NoVSet
   "scale"                gdouble              : Read / Write
-  "scale-set"            gboolean             : Read / Write
+  "scale-set"            gboolean             : Read / Write / NoVSet
   "size"                 gint                 : Read / Write
   "size-points"          gdouble              : Read / Write
-  "size-set"             gboolean             : Read / Write
+  "size-set"             gboolean             : Read / Write / NoVSet
   "stretch"              PangoStretch         : Read / Write
-  "stretch-set"          gboolean             : Read / Write
+  "stretch-set"          gboolean             : Read / Write / NoVSet
   "strikethrough"        gboolean             : Read / Write
-  "strikethrough-set"    gboolean             : Read / Write
+  "strikethrough-set"    gboolean             : Read / Write / NoVSet
   "style"                PangoStyle           : Read / Write
-  "style-set"            gboolean             : Read / Write
+  "style-set"            gboolean             : Read / Write / NoVSet
   "text"                 gchararray           : Read / Write
   "underline"            PangoUnderline       : Read / Write
-  "underline-set"        gboolean             : Read / Write
+  "underline-set"        gboolean             : Read / Write / NoVSet
   "variant"              PangoVariant         : Read / Write
-  "variant-set"          gboolean             : Read / Write
+  "variant-set"          gboolean             : Read / Write / NoVSet
   "weight"               gint                 : Read / Write
-  "weight-set"           gboolean             : Read / Write
+  "weight-set"           gboolean             : Read / Write / NoVSet
 }
 
 class CellRendererToggle vset : CellRenderer {

@@ -376,9 +376,7 @@ type cell_properties_text_only =
   | `BACKGROUND_GDK of Gdk.color
   | `BACKGROUND_SET of bool
   | `EDITABLE of bool
-  | `EDITABLE_SET of bool
   | `FAMILY of string
-  | `FAMILY_SET of bool
   | `FONT of string
   | `FONT_DESC of Pango.font_description
   | `FOREGROUND of string
@@ -386,26 +384,19 @@ type cell_properties_text_only =
   | `FOREGROUND_SET of bool
   | `MARKUP of string
   | `RISE of int
-  | `RISE_SET of bool
-  | `SCALE of float
-  | `SCALE_SET of bool
   | `SIZE of int
   | `SIZE_POINTS of float
-  | `SIZE_SET of bool
-  | `STRETCH of PangoEnums.stretch
-  | `STRETCH_SET of bool
+  | `STRETCH of Pango.Tags.stretch
   | `STRIKETHROUGH of bool
-  | `STRIKETHROUGH_SET of bool
-  | `STYLE of PangoEnums.style
-  | `STYLE_SET of bool
+  | `STYLE of Pango.Tags.style
   | `TEXT of string
-  | `UNDERLINE of PangoEnums.underline
-  | `UNDERLINE_SET of bool
-  | `VARIANT of PangoEnums.variant
-  | `VARIANT_SET of bool
-  | `WEIGHT of int
-  | `WEIGHT_SET of bool ]
-type cell_properties_text = [ cell_properties | cell_properties_text_only ]
+  | `UNDERLINE of Pango.Tags.underline
+  | `VARIANT of Pango.Tags.variant ]
+type cell_properties_text =
+  [ cell_properties
+  | cell_properties_text_only
+  | `SCALE of Pango.Tags.scale
+  | `WEIGHT of Pango.Tags.weight ]
 type cell_properties_toggle_only =
   [ `ACTIVATABLE of bool
   | `ACTIVE of bool
@@ -417,6 +408,8 @@ let cell_renderer_pixbuf_param' = function
   | #cell_properties_pixbuf_only as x -> cell_renderer_pixbuf_param x
   | #cell_properties as x -> cell_renderer_param x
 let cell_renderer_text_param' = function
+  | `SCALE s -> cell_renderer_text_param (`SCALE (Pango.Tags.scale_to_float s))
+  | `WEIGHT w -> cell_renderer_text_param(`WEIGHT (Pango.Tags.weight_to_int w))
   | #cell_properties as x -> cell_renderer_param x
   | #cell_properties_text_only as x -> cell_renderer_text_param x
 let cell_renderer_toggle_param' = function
