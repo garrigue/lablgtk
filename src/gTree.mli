@@ -20,10 +20,10 @@ class tree_item :
   object
     inherit GContainer.container
     val obj : Gtk.tree_item obj
+    method add_events : Gdk.Tags.event_mask list -> unit
     method as_item : Gtk.tree_item obj
     method collapse : unit -> unit
     method connect : ?after:bool -> tree_item_signals
-    method event : GObj.event_ops
     method expand : unit -> unit
     method remove_subtree : unit -> unit
     method set_subtree : #GObj.is_tree -> unit
@@ -51,11 +51,11 @@ and tree :
   object
     inherit [Gtk.tree_item, tree_item] GContainer.item_container
     val obj : Gtk.tree obj
+    method add_events : Gdk.Tags.event_mask list -> unit
     method as_tree : Gtk.tree obj
     method child_position : Gtk.tree_item #GObj.is_item -> int
     method clear_items : start:int -> end:int -> unit
     method connect : ?after:bool -> tree_signals
-    method event : GObj.event_ops
     method insert : Gtk.tree_item #GObj.is_item -> pos:int -> unit
     method remove_items : tree_item list -> unit
     method select_item : pos:int -> unit

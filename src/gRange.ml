@@ -2,12 +2,13 @@
 
 open Misc
 open Gtk
+open GtkBase
 open GtkRange
 open GObj
 
 class progress_bar_wrapper obj = object
   inherit widget_wrapper (obj : Gtk.progress_bar obj)
-  method event = new event_ops obj
+  method add_events = Widget.add_events obj
   method update percent = ProgressBar.update obj :percent
   method percentage = Progress.get_percentage obj
 end
@@ -29,7 +30,7 @@ end
 
 class scrollbar_wrapper obj = object
   inherit range (obj : Gtk.scrollbar obj)
-  method event = new event_ops obj
+  method add_events = Widget.add_events obj
 end
 
 class scrollbar dir ?:adjustment ?:update_policy ?:packing ?:show =

@@ -27,7 +27,7 @@ end
 class button_wrapper obj = object
   inherit button_skel (Button.coerce obj)
   method connect = new button_signals ?obj
-  method event = new event_ops obj
+  method add_events = Widget.add_events obj
 end
 
 class button ?:label ?:border_width ?:width ?:height ?:packing ?:show =

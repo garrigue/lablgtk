@@ -7,7 +7,7 @@ class window_skel :
   object
     inherit GContainer.container
     val obj : 'a obj
-    method event : GObj.event_ops
+    method add_events : Gdk.Tags.event_mask list -> unit
     method activate_default : unit -> unit
     method activate_focus : unit -> unit
     method add_accel_group : accel_group -> unit

@@ -6,6 +6,8 @@ open GdkObj
 
 let main () =
   let window = new GWindow.window border_width: 10 in
+  window#connect#event#delete
+     callback:(fun _ -> prerr_endline "Delete event occured"; true);
   window#connect#destroy callback:Main.quit;
   let vbx = new GPack.box `VERTICAL packing:window#add in  
   let quit = new GButton.button label:"Quit" packing:vbx#add in
@@ -35,7 +37,7 @@ let main () =
     done;  
     false
   in 
-  area#event#connect#expose callback:expose_event;
+  area#connect#event#expose callback:expose_event;
   let timeout _ = c := !c +. 0.01*.m_pi;
                   expose_event ();
 		  true in 

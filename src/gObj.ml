@@ -88,8 +88,6 @@ end
 class event_ops obj = object
   val obj = (Widget.coerce obj)
   method connect = new event_signals ?obj
-  method send : 'a. 'a Gdk.event -> bool = Widget.event obj
-  method add = Widget.add_events obj
   method set_extensions = Widget.set_extension_events obj
 end
 
@@ -118,6 +116,7 @@ class widget_misc obj = object
   method realize () = Widget.realize obj
   method unrealize () = Widget.realize obj
   method draw = Widget.draw obj
+  method event : 'a. 'a Gdk.event -> bool = Widget.event obj
   method activate () = Widget.activate obj
   method reparent : 'a. (#is_widget as 'a) -> unit =
     fun w -> Widget.reparent obj w#as_widget
@@ -158,6 +157,7 @@ end
 
 and widget_signals obj ?:after = object
   inherit gtkobj_signals obj ?:after
+  method event = new event_signals obj ?:after
   method show = GtkSignal.connect sig:Widget.Signals.show obj ?:after
   method draw = GtkSignal.connect sig:Widget.Signals.draw obj ?:after
   method parent_set :callback =

@@ -1,10 +1,8 @@
 $Id$
 
-1999.6.13
+1999.6.14
   * added two examples
-  * event functions transferred to #event subobject, available only
-    in object with proper window
-  * #connect#event -> #event#connect
+  * #add_events only available on windowed widgets
 
 1999.6.11
   * added CList widget in GList module, and examples/clist.ml

@@ -96,7 +96,7 @@ class fixed :
   object
     inherit container_wrapper
     val obj : Gtk.fixed obj
-    method event : GObj.event_ops
+    method add_events : Gdk.Tags.event_mask list -> unit
     method move : #GObj.is_widget -> x:int -> y:int -> unit
     method put : #GObj.is_widget -> x:int -> y:int -> unit
   end

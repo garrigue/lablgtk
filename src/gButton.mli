@@ -33,7 +33,7 @@ class button :
     inherit button_skel
     val obj : Gtk.button obj
     method connect : ?after:bool -> button_signals
-    method event : GObj.event_ops
+    method add_events : Gdk.Tags.event_mask list -> unit
   end
 class button_wrapper : ([> button] obj) -> button
 

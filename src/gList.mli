@@ -11,9 +11,9 @@ class list_item :
   object
     inherit GContainer.container
     val obj : Gtk.list_item obj
+    method add_events : Gdk.Tags.event_mask list -> unit
     method as_item : Gtk.list_item obj
     method connect : ?after:bool -> GContainer.item_signals
-    method event : GObj.event_ops
     method deselect : unit -> unit
     method select : unit -> unit
     method toggle : unit -> unit
@@ -73,6 +73,7 @@ class clist :
   object
     inherit GObj.widget
     val obj : Gtk.clist obj
+    method add_events : Gdk.Tags.event_mask list -> unit
     method append : string list -> int
     method cell_pixmap : int -> int -> GdkObj.pixmap
     method cell_text : int -> int -> string
@@ -83,7 +84,6 @@ class clist :
     method columns : int
     method columns_autosize : unit -> unit
     method connect : ?after:bool -> clist_signals
-    method event : GObj.event_ops
     method freeze : unit -> unit
     method get_row_column : x:int -> y:int -> int * int
     method hadjustment : GData.adjustment_wrapper

@@ -133,12 +133,14 @@ module Widget = struct
     "ml_gtk_widget_visible"
   external parent : [> widget] obj -> widget obj =
     "ml_gtk_widget_parent"
-  let setter w :cont ?:name ?:state ?:sensitive ?:can_default ?:can_focus
+  let setter w :cont ?:name ?:state ?:sensitive ?:extension_events
+      ?:can_default ?:can_focus
       ?:x [< -2 >] ?:y [< -2 >] ?:width [< -1 >] ?:height [< -1 >] ?:style =
     let may_set f arg = may fun:(f w) arg in
     may_set set_name name;
     may_set set_state state;
     may_set set_sensitive sensitive;
+    may_set set_extension_events extension_events;
     may_set set_can_default can_default;
     may_set set_can_focus can_focus;
     may_set set_style style;
