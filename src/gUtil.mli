@@ -21,21 +21,18 @@ class ['a] memo : unit ->
 
    class mywidget_signals obj :mysignal1 :mysignal2 ?:after = object
      inherit somewidget_signals obj ?:after
+     inherit has_ml_signals obj
      method mysignal1 = mysignal1#connect ?:after
      method mysignal2 = mysignal2#connect ?:after
    end
 
    class mywidget obj = object (self)
      inherit somewidget obj
-     inherit has_ml_signals obj
-     val mysignal1 = new signal
-     val mysignal2 = new signal
+     val mysignal1 = new signal obj
+     val mysignal2 = new signal obj
      method connect = new mywidget_signals ?obj ?:mysignal1 ?:mysignal2
      method call1 = mysignal1#call
      method call2 = mysignal2#call
-     initializer
-       self#add_signal mysignal1;
-       self#add_signal mysignal2
    end
 
    Remark: you only need to inherit once from has_ml_signals.
@@ -44,7 +41,7 @@ class ['a] memo : unit ->
 
 val next_callback_id : unit -> GtkSignal.id
 
-class ['a] signal :
+class ['a] signal : 'b Gtk.obj ->
   object
     method call : 'a -> unit
     method connect : callback:('a -> unit) -> ?after:bool -> GtkSignal.id
@@ -54,6 +51,5 @@ class ['a] signal :
 
 class has_ml_signals : 'a Gtk.obj ->
   object
-    method private add_signal : 'b signal -> unit
     method disconnect : GtkSignal.id -> unit
   end

@@ -14,8 +14,11 @@ let file_dialog :title :callback ?:filename =
     end;
   sel#show ()
 
-class editor () = object (self)
-  val text = new GEdit.text editable:true
+class editor ?:packing ?:show =
+  let text = new GEdit.text editable:true ?:packing ?:show in
+object (self)
+  inherit GObj.widget text#as_widget
+
   val mutable filename = None
 
   method text = text
@@ -50,51 +53,61 @@ class editor () = object (self)
       end
 end
 
-let editor = new editor ()
-
-let window = new GWindow.window width:500 height:300 title:"editor"
-let vbox = new GPack.box `VERTICAL packing:window#add
-
-let menubar = new GMenu.menu_bar packing:(vbox#pack expand:false)
-let factory = new GMenu.factory menubar
-let accel_group = factory#accel_group
-let file_menu = factory#add_submenu label:"File"
-let edit_menu = factory#add_submenu label:"Edit"
-let comp_menu = factory#add_submenu label:"Compiler"
-
-let hbox = new GPack.box `HORIZONTAL packing:vbox#add
-let scrollbar =
-  new GRange.scrollbar `VERTICAL packing:(hbox#pack from:`END expand:false)
-
 open GdkKeysyms
 
+class editor_window ?:show [< false >] =
+  let window = new GWindow.window width:500 height:300 title:"editor" in
+  let vbox = new GPack.box `VERTICAL packing:window#add in
+
+  let menubar = new GMenu.menu_bar packing:(vbox#pack expand:false) in
+  let factory = new GMenu.factory menubar in
+  let accel_group = factory#accel_group
+  and file_menu = factory#add_submenu label:"File"
+  and edit_menu = factory#add_submenu label:"Edit"
+  and comp_menu = factory#add_submenu label:"Compiler" in
+
+  let hbox = new GPack.box `HORIZONTAL packing:vbox#add in
+  let scrollbar =
+    new GRange.scrollbar `VERTICAL packing:(hbox#pack from:`END expand:false)
+  and editor = new editor packing:hbox#add in
+object (self)
+  inherit GObj.widget window#as_widget
+
+  method window = window
+  method editor = editor
+  method show = window#show
+
+  initializer
+    window#connect#destroy callback:Main.quit;
+    let factory = new GMenu.factory file_menu :accel_group in
+    factory#add_item label:"Open..." key:_O callback:editor#open_file;
+    factory#add_item label:"Save..." key:_S callback:editor#save_file;
+    factory#add_separator ();
+    factory#add_item label:"Quit" key:_Q callback:window#destroy;
+    let factory = new GMenu.factory edit_menu :accel_group in
+    factory#add_item label:"Copy" key:_C callback:editor#text#copy_clipboard;
+    factory#add_item label:"Cut" key:_X callback:editor#text#cut_clipboard;
+    factory#add_item label:"Paste" key:_V callback:editor#text#paste_clipboard;
+    factory#add_separator ();
+    factory#add_check_item label:"Word wrap" active:false
+      callback:editor#text#set_word_wrap;
+    factory#add_check_item label:"Read only" active:false
+      callback:(fun b -> editor#text#set_editable (not b));
+    let factory = new GMenu.factory comp_menu :accel_group in
+    factory#add_item label:"Lex" key:_L
+      callback:(fun () -> Lexical.tag editor#text);
+    window#add_accel_group accel_group;
+    hbox#add editor#text;
+    editor#text#connect#event#button_press
+      callback:(fun ev ->
+	let button = GdkEvent.Button.button ev in
+	if button = 3 then begin
+	  file_menu#popup :button time:(GdkEvent.Button.time ev); true
+	end else false);
+    editor#text#set_vadjustment scrollbar#adjustment;
+    if show then self#show ()
+end
+
 let _ =
-  window#connect#destroy callback:Main.quit;
-  let factory = new GMenu.factory file_menu :accel_group in
-  factory#add_item label:"Open..." key:_O callback:editor#open_file;
-  factory#add_item label:"Save..." key:_S callback:editor#save_file;
-  factory#add_separator ();
-  factory#add_item label:"Quit" key:_Q callback:window#destroy;
-  let factory = new GMenu.factory edit_menu :accel_group in
-  factory#add_item label:"Copy" key:_C callback:editor#text#copy_clipboard;
-  factory#add_item label:"Cut" key:_X callback:editor#text#cut_clipboard;
-  factory#add_item label:"Paste" key:_V callback:editor#text#paste_clipboard;
-  factory#add_separator ();
-  factory#add_check_item label:"Word wrap" active:false
-    callback:editor#text#set_word_wrap;
-  factory#add_check_item label:"Read only" active:false
-    callback:(fun b -> editor#text#set_editable (not b));
-  let factory = new GMenu.factory comp_menu :accel_group in
-  factory#add_item label:"Lex" key:_L
-    callback:(fun () -> Lexical.tag editor#text);
-  window#add_accel_group accel_group;
-  hbox#add editor#text;
-  editor#text#connect#event#button_press
-    callback:(fun ev ->
-      let button = GdkEvent.Button.button ev in
-      if button = 3 then begin
-	file_menu#popup :button time:(GdkEvent.Button.time ev); true
-      end else false);
-  editor#text#set_vadjustment scrollbar#adjustment;
-  window#show ();
+  new editor_window show:true;
   Main.main ()

@@ -22,6 +22,7 @@ class window_skel :
     method set_title : string -> unit
     method set_wm_name : string -> unit
     method set_wm_class : string -> unit
+    method show : unit -> unit
   end
 
 class window :
