@@ -134,7 +134,7 @@ liblablgtk.a: $(COBJS)
 
 lablgtk.cma: $(MLOBJS)
 	$(LINKER) -a -custom -o $@ $(MLOBJS) \
-	  -cclib "-llablgtk $(GTKLIBS)"
+	  -cclib -llablgtk $(GTKLIBS)
 
 lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \
