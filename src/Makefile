@@ -32,9 +32,9 @@ CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
 .mli.cmi:
 	$(COMPILER) $<
 .var.h:
-	var2def < $< > $@
+	./var2def < $< > $@
 .var.c:
-	var2conv < $< > $@
+	./var2conv < $< > $@
 
 # Targets
 COBJS = ml_gtk.o ml_gdk.o ml_glib.o

@@ -71,4 +71,23 @@ value ml_g_set_warning_handler (value clos)
     return old_handler;
 }
 
+static value ml_print_handler = 0L;
+
+static void ml_print_wrapper (char *msg)
+{
+    value arg = copy_string (msg);
+    callback (ml_print_handler, arg);
+}
+    
+value ml_g_set_print_handler (value clos)
+{
+    value old_handler = ml_print_handler ? ml_print_handler : clos;
+    if (!ml_print_handler) {
+	register_global_root (&ml_print_handler);
+	g_set_print_handler (ml_print_wrapper);
+    }
+    ml_print_handler = clos;
+    return old_handler;
+}
+
 value ml_get_null (value unit) { return 0L; }
