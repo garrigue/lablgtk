@@ -175,3 +175,37 @@ class TreeModel abstract wrapsig : GObject {
 }
 
 (* class ListStore : TreeModel {} *)
+
+class TreeModelSort : GObject {
+  "model"                GtkTreeModel         : Read / Write / Construct Only
+  method convert_child_path_to_path : "Gtk.tree_path -> Gtk.tree_path"
+  method convert_child_iter_to_iter : "Gtk.tree_iter -> Gtk.tree_iter"
+  method convert_path_to_child_path : "Gtk.tree_path -> Gtk.tree_path"
+  method convert_iter_to_child_iter : "Gtk.tree_iter -> Gtk.tree_iter"
+  method reset_default_sort_func 
+  (* method clear_cache *)
+  method iter_is_valid : "Gtk.tree_iter -> bool"
+}
+
+class TreeSortable abstract wrapsig : GObject {
+  signal sort_column_changed
+  method sort_column_changed
+  method get_sort_column_id : "(int * Gtk.Tags.sort_type) option"
+  method set_sort_column_id : "int -> Gtk.Tags.sort_type -> unit"
+  method set_sort_func : "int -> ([> `treesortable] Gobject.obj -> Gtk.tree_iter -> Gtk.tree_iter -> int) -> unit"
+  method set_default_sort_func : "([> `treesortable] Gobject.obj -> Gtk.tree_iter -> Gtk.tree_iter -> int) -> unit"
+  method has_default_sort_func : "bool"
+}
+
+class TreeModelFilter : GObject {
+  "child-model"          GtkTreeModel         : Read / Write / Construct Only
+  "virtual-root"         GtkTreePath          : Read / Write / Construct Only
+  method set_visible_func : "([> `treemodel] Gobject.obj -> Gtk.tree_iter -> bool) -> unit"
+  method set_visible_column : "int -> unit"
+  method convert_child_path_to_path : "Gtk.tree_path -> Gtk.tree_path"
+  method convert_child_iter_to_iter : "Gtk.tree_iter -> Gtk.tree_iter"
+  method convert_path_to_child_path : "Gtk.tree_path -> Gtk.tree_path"
+  method convert_iter_to_child_iter : "Gtk.tree_iter -> Gtk.tree_iter"
+  method refilter
+  (* method clear_cache *)
+}

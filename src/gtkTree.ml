@@ -264,12 +264,18 @@ end
 
 module TreeViewColumn = struct
   include TreeViewColumn
+  external clear : 
+    [>`treeviewcolumn] obj -> unit
+    = "ml_gtk_tree_view_column_clear"
   external pack_start :
     [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> bool -> unit
     = "ml_gtk_tree_view_column_pack_start"
   external pack_end :
     [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> bool -> unit
     = "ml_gtk_tree_view_column_pack_end"
+  external clear_attributes : 
+    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> unit
+    = "ml_gtk_tree_view_column_clear_attributes"
   let pack obj ?(expand=true) ?(from:[`START|`END]=`START) crr =
     (if from = `START then pack_start else pack_end)
       obj crr expand
@@ -278,6 +284,8 @@ module TreeViewColumn = struct
     = "ml_gtk_tree_view_column_add_attribute"
   external set_sort_column_id : [>`treeviewcolumn] obj -> int -> unit	
     = "ml_gtk_tree_view_column_set_sort_column_id"      
+  external get_sort_column_id : [>`treeviewcolumn] obj -> int
+    = "ml_gtk_tree_view_column_get_sort_column_id"
 end
 
 module TreeView = struct
@@ -347,7 +355,13 @@ module CellRendererToggle = CellRendererToggle
 module CellLayout = struct
   include GtkTreeProps.CellLayout
   let pack layout 
-    ?from:( dir = (`START : pack_type)) ?(expand=false) renderer =
+    ?(expand=false) ?from:( dir = (`START : pack_type)) renderer =
     (match dir with `START -> pack_start | `END -> pack_end)
       layout renderer ~expand
 end
+
+module TreeModelSort = TreeModelSort
+
+module TreeSortable = TreeSortable
+
+module TreeModelFilter = TreeModelFilter

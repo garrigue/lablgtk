@@ -178,11 +178,12 @@ CAMLprim value
 ml_gtk_combo_box_get_active_iter(value combo)
 {
   GtkTreeIter it;
-  gboolean ret;
-  ret = gtk_combo_box_get_active_iter(GtkComboBox_val(combo), &it);
-  return Val_GtkTreeIter(ret ? &it : NULL);
+  if (! gtk_combo_box_get_active_iter(GtkComboBox_val(combo), &it))
+    return Val_unit;
+  return ml_some(Val_GtkTreeIter(&it));
 }
-ML_2(gtk_combo_box_set_active_iter, GtkComboBox_val, GtkTreeIter_val, Unit)
+#define GtkTreeIterOption(v) Option_val(v,GtkTreeIter_val,NULL)
+ML_2(gtk_combo_box_set_active_iter, GtkComboBox_val, GtkTreeIterOption, Unit)
 
 #else
 Unsupported_24(gtk_combo_box_new_text)

@@ -1,5 +1,12 @@
 $Id$
 
+2003.12.19 [Olivier]
+  * added support for GtkTreeSortable, GtkTreeModelSort
+    and GtkTreeModelFilter (2.4)
+  * fixes for GtkComboBox
+  * GTree.view_column inherit from GTree.cell_layout,
+    add a few methods to GTree.view_column
+
 2003.12.17 [Jacques]
   * some additions/improvements to lablgladecc
 

@@ -207,11 +207,11 @@ class combo_box :
     inherit GTree.cell_layout
     val obj : 'a Gtk.obj
     method active : int
-    method active_iter : Gtk.tree_iter
+    method active_iter : Gtk.tree_iter option
     method connect : combo_box_signals
     method model : GTree.model
     method set_active : int -> unit
-    method set_active_iter : Gtk.tree_iter -> unit				   
+    method set_active_iter : Gtk.tree_iter option -> unit				   
     method set_column_span_column : int GTree.column -> unit
     method set_row_span_column : int GTree.column -> unit
     method set_wrap_width : int -> unit
