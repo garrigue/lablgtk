@@ -36,7 +36,7 @@ LIBDIR=@LIBDIR@
 THREADS_LIB=@THREADS_LIB@
 HAS_DLL_SUPPORT=@HAS_DLL_SUPPORT@
 
-# if using ocaml >= 3.08, add a -DOCAML_308 (for camlp4)
+# if using ocaml >= 3.08, add a -D OCAML_308 (for camlp4)
 ODOC_DEF=@ODOC_DEF@
 
 # where to install the binaries
