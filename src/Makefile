@@ -98,8 +98,8 @@ MLOBJS = gaux.cmo gpointer.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
-ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(THOBJS) \
-	$(INITOBJS) $(THINITOBJS)
+ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(INITOBJS)
+ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
 lablgtktop: $(CLIBS) $(MLLIBS) $(INITOBJS)
 	$(TOPLEVEL) -o $@ $(MLLINK) -ccopt -L. $(MLLIBS) $(INITOBJS)
@@ -123,17 +123,20 @@ lablgtkopt: $(CLIBS) $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \
 
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
-	cp $(ALLOBJS:.cmo=.cmi) $(INSTALLDIR)
-	cp *.mli $(INSTALLDIR)
-	cp $(ALLOBJS:.cmo=.ml) $(INSTALLDIR)
+	cp $(ALLOBJS:.cmo=.cmi) $(THOBJS:.cmo=.cmi) $(INSTALLDIR)
+	cp -p *.mli $(INSTALLDIR)
+	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(INSTALLDIR)
 	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
 	cp $(CLIBS) $(INSTALLDIR)
 	cp lablgtktop lablgtktop_t varcc $(INSTALLDIR)
-	cp *.h $(INSTALLDIR)
+	cp -p *.h $(INSTALLDIR)
 	cp lablgtk lablgtkrun $(BINDIR)
-	if test -f lablgtk.cmxa; then \
-	   cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.a) \
-	      $(INITOBJS:.cmo=.cmx) $(INITOBJS:.cmo=.o) $(INSTALLDIR); fi
+	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
+
+installopt:
+	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.a) $(INSTALLDIR)
+	cp $(ALLOBJS:.cmo=.cmx) $(INSTALLDIR)
+	cp $(INITOBJS:.cmo=.o) $(INSTALLDIR)
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=.o) $(INSTALLDIR); fi
 
