@@ -280,6 +280,7 @@ static value Val_GtkAllocation (GtkAllocation allocation)
     return ret;
 }
 Make_Extractor (gtk_widget, GtkWidget_val, allocation, Val_GtkAllocation)
+ML_1(Val_GtkAllocation, *(GtkAllocation*)Pointer_val, )
 /*
 #define GtkAllocation_val(val) ((GtkAllocation*)Pointer_val(val))
 Make_Extractor (gtk_allocation, GtkAllocation_val, x, Val_int)

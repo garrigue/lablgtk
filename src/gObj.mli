@@ -197,6 +197,7 @@ and misc_signals :
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id
     method show : callback:(unit -> unit) -> GtkSignal.id
+    method size_allocate : callback:(Gtk.rectangle -> unit) -> GtkSignal.id
     method state_changed :
       callback:(Gtk.Tags.state_type -> unit) -> GtkSignal.id
     method style_set : callback:(unit -> unit) -> GtkSignal.id
