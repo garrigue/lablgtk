@@ -5,16 +5,17 @@ open GdkObj
 open GtkObj
 
 class ['a] menu_factory (menu : 'a)
-    ?:table [< Gtk.AcceleratorTable.create () >] ?mod:m [< [`CONTROL] >] =
+    ?:group [< Gtk.AccelGroup.create () >] ?mod:m [< [`CONTROL] >] =
   object (self)
     val menu : #menu_shell = menu
-    val table = table
+    val group = group
     val m = m
     method menu = menu
-    method table = table
+    method group = group
     method private bind (item : menu_item) ?:key ?:callback =
       menu#append item;
-      may key fun:(fun key -> item#install_accelerator table :key mod:m);
+      may key fun:
+	(fun key -> item#add_accelerator group :key mod:m flags:[`VISIBLE]);
       may callback fun:(fun callback -> item#connect#activate :callback)
     method add_item :label ?:key ?:callback ?:submenu =
       let item = new_menu_item :label in
