@@ -9,7 +9,7 @@ module Timeout = struct
   external add : ms:int -> callback:(GtkArgv.t -> unit) -> id
       = "ml_gtk_timeout_add"
   let add ~ms ~callback =
-    add ~ms ~callback:(fun arg -> GtkArgv.set_result_bool arg (callback ()))
+    add ~ms ~callback:(fun arg -> GtkArgv.set_result arg (`BOOL(callback ())))
   external remove : id -> unit = "ml_gtk_timeout_remove"
 end
 

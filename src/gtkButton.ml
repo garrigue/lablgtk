@@ -143,11 +143,10 @@ module Toolbar = struct
     external val_toolbar_style : int -> toolbar_style
 	= "ml_Val_toolbar_style"
     let orientation_changed : ([>`toolbar],_) t =
-      let marshal f argv = f (val_orientation (GtkArgv.get_int argv ~pos:0)) in
+      let marshal f = marshal_int (fun x -> f (val_orientation x)) in
       { name = "orientation_changed"; marshaller = marshal }
     let style_changed : ([>`toolbar],_) t =
-      let marshal f argv =
-	f (val_toolbar_style (GtkArgv.get_int argv ~pos:0)) in
+      let marshal f = marshal_int (fun x -> f (val_toolbar_style x)) in
       { name = "style_changed"; marshaller = marshal }
   end
 end

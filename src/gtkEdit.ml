@@ -47,23 +47,19 @@ module Editable = struct
       { name = "activate"; marshaller = marshal_unit }
     let changed : ([>`editable],_) t =
       { name = "changed"; marshaller = marshal_unit }
-    let marshal_insert f argv =
-      (* These two accesses are highly specification-dependent *)
-      let s =
-        match get_pointer argv ~pos:0 with
-          Some ptr ->
-            string_at_pointer ptr ~len:(get_int argv ~pos:1)
-        | None -> assert false
-      and pos =
-        match get_pointer argv ~pos:2 with
-          Some ptr -> int_at_pointer ptr
-        | None -> assert false
-      in
-      f s ~pos
+    let marshal_insert f argv = function
+      | STRING _ :: INT len :: POINTER(Some pos) :: _ ->
+          (* XXX These two accesses are implementation-dependent *)
+          let s = string_at_pointer (get_pointer argv ~pos:0) ~len
+          and pos = int_at_pointer pos in
+          f s ~pos
+      | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_insert"
     let insert_text : ([>`editable],_) t =
       { name = "insert_text"; marshaller = marshal_insert }
-    let marshal_delete f argv =
-      f ~start:(get_int argv ~pos:0) ~stop:(get_int argv ~pos:1)
+    let marshal_delete f _ = function
+      | INT start :: INT stop :: _ ->
+          f ~start ~stop
+      | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_delete"
     let delete_text : ([>`editable],_) t =
       { name = "delete_text"; marshaller = marshal_delete }
   end

@@ -240,8 +240,8 @@ let create_menu depth tearoff =
 
 
 let create_menus =
-let rw = ref None in
-  let aux () =
+  let rw = ref None in
+  fun () ->
     match !rw with
     | None ->
 	let window = GWindow.window ~title: "menus"
@@ -264,10 +264,6 @@ let rw = ref None in
 	let menuitem = GMenu.menu_item ~label:"foo"
 	    ~packing: menubar#append () in
 	menuitem #set_submenu (create_menu 3 true);
-
-	let menuitem = GMenu.menu_item ~label:"bar"
-	    ~packing: menubar#append () in
-	menuitem #set_submenu (create_menu 4 true);
 	menuitem #right_justify ();
 
 	let box2 = GPack.vbox ~spacing: 10 ~packing: box1#add
@@ -307,7 +303,6 @@ let rw = ref None in
 	window #show ()
 
     | Some window -> window #destroy ()
-  in aux
 
 
 

@@ -227,7 +227,8 @@ class window_and_tree ~name =
 		  self#change_selected t#next
 		with Not_found -> ()
 	  end;
-	  GtkSignal.stop_emit ()
+	  GtkSignal.stop_emit ();
+          true
 	end;
       ()
   end
@@ -660,7 +661,8 @@ object(self)
 	    then self#menu ~time:(GdkEvent.Button.time ev)
 	    else self#restricted_menu ~time:(GdkEvent.Button.time ev);
 	  end;
-	  GtkSignal.stop_emit ()
+	  GtkSignal.stop_emit ();
+          true
       | _ -> false);
     ()
 end
