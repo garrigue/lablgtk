@@ -1,10 +1,31 @@
 CAMLC=ocamlc
 CAMLOPT=ocamlopt
-#LIBDIR=c:/Program Files/Objective Caml/lib
-LIBDIR=c:/mlfi/lib
+OCAMLDOC=ocamldoc
+CAMLMKTOP=ocamlmktop
+CAMLMKLIB=ocamlmklib
+CAMLP4O=camlp4o
+USE_GL=
+USE_GNOME=
+USE_GLADE=1
+USE_RSVG=
+USE_GNOMECANVAS=
+USE_CC=
+DEBUG=
+CC=
+RANLIB=
+LIBDIR=c:/Program Files/Objective Caml/lib
+
+# where to install the binaries
+BINDIR=$(LIBDIR)/../bin
+
+# where to install the man page
+MANDIR=$(LIBDIR)/../man
+
+INSTALLDIR=$(LIBDIR)/lablgtk2
+DLLDIR=$(LIBDIR)/stublibs
+
 GTKROOT=c:/GTK
 GTKCFLAGS=-I$(GTKROOT)/include/glib-2.0 -I$(GTKROOT)/lib/glib-2.0/include -I$(GTKROOT)/include/gtk-2.0/ -I$(GTKROOT)/lib/gtk-2.0/include -I$(GTKROOT)/include/pango-1.0 -I$(GTKROOT)/include/atk-1.0 -I$(GTKROOT)/include 
-GTKLIBS=/link /libpath:$(GTKROOT)/lib gtk-win32-2.0.lib gdk_pixbuf-2.0.lib gdk-win32-2.0.lib  pango-1.0.lib atk-1.0.lib glib-2.0.lib gobject-2.0.lib #gthread-2.0.lib
-USE_GL=
-USE_CC=
-USE_GLADE=1
+GTKLIBS=/link /libpath:$(GTKROOT)/lib glade-2.0.lib gtk-win32-2.0.lib gdk_pixbuf-2.0.lib gdk-win32-2.0.lib  pango-1.0.lib atk-1.0.lib glib-2.0.lib gobject-2.0.lib #gthread-2.0.lib
+
+OCAMLLEX=ocamllex

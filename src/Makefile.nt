@@ -5,7 +5,7 @@ COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
-LIBRARIAN = $(CAMLMKLIB) -verbose
+LIBRARIAN = NO LIBRARIAN
 
 MKLIB = lib /nologo /debugtype:CV /out:
 MKDLL = link /nologo /dll "`ocamlc -where`/ocamlrun.lib" /out:
@@ -65,11 +65,16 @@ GLCOBJS = ml_gtkgl.obj
 endif
 
 ifdef USE_GLADE
-MLLIBS += lablglade.cma
-CLIBS += liblablglade2.lib
+# MLLIBS += lablglade.cma
+# CLIBS += liblablglade2.lib
+# GLADELINK = -cclib -llablglade2 -cclib -lglade
+# GLADEMLOBJS = glade.cmo
+# GLADECOBJS = ml_glade.obj
+
 GLADELINK = -cclib -llablglade2 -cclib -lglade
-GLADEMLOBJS = glade.cmo
-GLADECOBJS = ml_glade.obj
+MLOBJS += glade.cmo
+COBJS += ml_glade.obj
+
 endif
 
 
@@ -154,7 +159,6 @@ liblablgtk2.lib: $(COBJS)
 	$(MKLIB)$@ $(COBJS)
 dlllablgtk2.dll: $(COBJS:.obj=.d.obj)
 	$(MKDLL)$@ $(COBJS:.obj=.d.obj) $(GTKLIBS)
-
 lablgtk.cma: liblablgtk2.lib dlllablgtk2.dll $(MLOBJS)
 	$(LINKER) -a -o $@ $(MLOBJS) \
 	  -dllib -llablgtk2 -cclib -llablgtk2 -cclib "$(GTKLIBS)"
@@ -162,6 +166,17 @@ lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \
 	  -cclib -llablgtk2 -cclib "$(GTKLIBS)"
 
+# liblablglade2.lib: $(GLADECOBJS)
+# 	$(MKLIB)$@ $(GLADECOBJS)
+# dlllablglade2.dll: $(GLADECOBJS:.obj=.d.obj)
+# 	$(MKDLL)$@ $(GLADECOBJS:.obj=.d.obj) liblablgtk2.lib $(GTKLIBS)
+# lablglade.cma: liblablglade2.lib dlllablglade2.dll $(GLADEMLOBJS)
+# 	$(LINKER) -a -o $@ $(GLADEMLOBJS) \
+# 	  -dllib -llablglade2 -cclib -llablglade2 -dllib -llablgtk2 -cclib -llablgtk2 -cclib "$(GTKLIBS)"
+# lablglade.cmxa: liblablglade2.lib dlllablglade2.dll $(GLADEMLOBJS:.cmo=.cmx)
+# 	$(LINKOPT) -a -o $@ $(GLADEMLOBJS:.cmo=.cmx) \
+# 	  -dllib -llablglade2 -cclib -llablglade2 -dllib -llablgtk2 -cclib -llablgtk2 -cclib "$(GTKLIBS)"
+# 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
