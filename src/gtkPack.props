@@ -88,7 +88,7 @@ class Notebook set wrap : Container {
   method get_menu_label : "[>`widget] obj -> widget obj"
   method set_menu_label : "[>`widget] obj -> [>`widget] obj -> unit"
   method reorder_child : "[>`widget] obj -> int -> unit"
-  signal change_current_page : gint
+  signal switch_page : GObject gint
   (* omit others *)
 }
 

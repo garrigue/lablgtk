@@ -165,7 +165,7 @@ val layout :
 class notebook_signals : [> Gtk.notebook] obj ->
   object
     inherit container_signals
-    method change_current_page : callback:(int -> unit) -> GtkSignal.id
+    method switch_page : callback:(int -> unit) -> GtkSignal.id
   end
 
 class notebook : Gtk.notebook obj ->
