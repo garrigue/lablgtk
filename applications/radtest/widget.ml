@@ -30,7 +30,7 @@ class virtual rwidget :classe :widget ?:root [<false>]
     val evbox =
       if root then None
       else let ev = new event_box in ev#add widget; Some ev
-    val widget = (widget :> widget)
+    val widget = (widget : #widget :> widget)
 
     val mutable parent : rwidget option = None
     val mutable proplist : property SMap.t = SMap.empty
@@ -45,8 +45,9 @@ class virtual rwidget :classe :widget ?:root [<false>]
       if (name <> n) && (test_unique n) then begin
 	let oldname = name in name <- n; setname n;
 	begin match parent with
-	|	None -> ()
-	|	Some p when p#classe = "vbox" || p#classe = "hbox" ->
+	| None -> ()
+	| Some (p : < classe : _ ; change_name_in_proplist : _ ; .. >)
+	  when p#classe = "vbox" || p#classe = "hbox" ->
 	    p#change_name_in_proplist oldname n
 	| _	-> () end;
 	property_update ()
@@ -205,16 +206,15 @@ class rbox dir:(dir : orientation) widget:(box : box) :name :setname =
 
       let startl, endl =
 	list_split pred:(fun (_, dir, _) -> dir=`START) children in
-      List.iter
+      List.iter	(List.rev startl)
 	fun:(fun (rw, _, _) -> rw#emit_code c;
 	  Format.fprintf c#formatter
 	    "%s#pack %s expand:%s fill:%s padding:%d;@\n"
 	    name rw#name
 	    (string_of_bool_prop (rw#name ^ "::expand") in:proplist)
 	    (string_of_bool_prop (rw#name ^ "::fill") in:proplist)
-	    (get_int_prop (rw#name ^ "::padding") in:proplist))
-	(List.rev startl);
-      List.iter
+	    (get_int_prop (rw#name ^ "::padding") in:proplist));
+      List.iter	(List.rev endl)
 	fun:(fun (rw, _, _) -> rw#emit_code c;
 	  Format.fprintf c#formatter
 	    "%s#pack from: `END %s expand:%s fill:%s padding:%d;@\n"
@@ -222,8 +222,6 @@ class rbox dir:(dir : orientation) widget:(box : box) :name :setname =
 	    (string_of_bool_prop (rw#name ^ "::expand") in:proplist)
 	    (string_of_bool_prop (rw#name ^ "::fill") in:proplist)
 	    (get_int_prop (rw#name ^ "::padding") in:proplist))
-	(List.rev endl);
-		    
          
   initializer
     proplist <-  List.fold_left
