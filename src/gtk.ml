@@ -639,11 +639,11 @@ module HandleBox = struct
     if Object.is_a w "GtkHandleBox" then Obj.magic w
     else invalid_arg "Gtk.HandleBox.cast"
   external create : unit -> t obj = "ml_gtk_handle_box_new"
-  external set_shadow_type : t obj -> shadow_type -> unit =
+  external set_shadow_type : [> handlebox] obj -> shadow_type -> unit =
    "ml_gtk_handle_box_set_shadow_type"
-  external set_handle_position : t obj -> position -> unit =
+  external set_handle_position : [> handlebox] obj -> position -> unit =
    "ml_gtk_handle_box_set_handle_position"
-  external set_snap_edge : t obj -> position -> unit =
+  external set_snap_edge : [> handlebox] obj -> position -> unit =
    "ml_gtk_handle_box_set_snap_edge"
   module Signals = struct
     open Signal
@@ -698,11 +698,9 @@ module MenuItem = struct
       = "ml_gtk_menu_item_new_with_label"
   external tearoff_create : unit -> t obj
       = "ml_gtk_tearoff_menu_item_new"
-  let create ?:label ?(_ : unit option) :tearoff =
-    match label, tearoff with None, false -> create ()
-    | Some label, false -> create_with_label label
-    | None, true -> tearoff_create ()
-    | _ -> invalid_arg "MenuItem.create"
+  let create ?:label ?(_ : unit option) =
+    match label with None -> create ()
+    | Some label -> create_with_label label
   external set_submenu : [> menuitem] obj -> [> menu] obj -> unit
       = "ml_gtk_menu_item_set_submenu"
   external remove_submenu : [> menuitem] obj -> unit
@@ -1480,6 +1478,47 @@ module Notebook = struct
       let marshal f argv = f (Argv.get_int argv pos:1) in
       { name = "notebook"; marshaller = marshal }
   end
+end
+
+module Packer = struct
+  type t = [wdiget container packer]
+  let cast w : t obj =
+    if Object.is_a w "GtkPacker" then Obj.magic w
+    else invalid_arg "Gtk.Packer.cast"
+  external create : unit -> t obj = "ml_gtk_packer_new"
+  type packer_options = [ PACK_EXPAND FILL_X FILL_Y ]
+  type side_type = [ TOP BOTTOM LEFT RIGHT ]
+  type anchor_type = [ CENTER N NW NE S SW SE W E ]
+  external add :
+      [> packer] obj -> [> widget] obj ->
+      ?side:side_type -> ?anchor:anchor_type ->
+      ?options:packer_options list ->
+      ?border_width:int -> ?pad_x:int -> ?pad_y:int ->
+      ?i_pad_x:int -> ?i_pad_y:int -> unit
+      = "ml_gtk_packer_add_bc" "ml_gtk_packer_add"
+  external add_defaults :
+      [> packer] obj -> [> widget] obj ->
+      ?side:side_type -> ?anchor:anchor_type ->
+      ?options:packer_options list -> unit
+      = "ml_gtk_packer_add_defaults"
+  external set_child_packing :
+      [> packer] obj -> [> widget] obj ->
+      ?side:side_type -> ?anchor:anchor_type ->
+      ?options:packer_options list ->
+      ?border_width:int -> ?pad_x:int -> ?pad_y:int ->
+      ?i_pad_x:int -> ?i_pad_y:int -> unit
+      = "ml_gtk_packer_set_child_packing_bc" "ml_gtk_packer_set_child_packing"
+  external reorder_child : [> packer] obj -> [> widget] obj -> pos:int -> unit
+      = "ml_gtk_packer_reorder_child"
+  external set_spacing : [> packer] obj -> int -> unit
+      = "ml_gtk_packer_set_spacing"
+  external set_defaults :
+      [> packer] obj -> 
+      ?side:side_type -> ?anchor:anchor_type ->
+      ?options:packer_options list ->
+      ?border_width:int -> ?pad_x:int -> ?pad_y:int ->
+      ?i_pad_x:int -> ?i_pad_y:int -> unit
+      = "ml_gtk_packer_set_defaults_bc" "ml_gtk_packer_set_defaults"
 end
 
 module Paned = struct
