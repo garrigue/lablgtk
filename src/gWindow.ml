@@ -89,7 +89,7 @@ let rec list_rassoc k = function
 let rnone = Dialog.std_response `NONE
 let rdelete = Dialog.std_response `DELETE_EVENT
 
-class ['a] dialog obj = object
+class ['a] dialog obj = object (self)
   inherit [window] window_skel obj
   inherit dialog_props
   val tbl = ref [rnone, `NONE; rdelete, `DELETE_EVENT]
@@ -102,9 +102,7 @@ class ['a] dialog obj = object
     Dialog.add_button obj text id ;
     id <- succ id
   method add_button_stock s_id (v : 'a) =
-    tbl := (id, v) :: !tbl ;
-    Dialog.add_button obj (GtkStock.convert_id s_id) id ;
-    id <- succ id
+    self#add_button (GtkStock.convert_id s_id) v
   method response v = Dialog.response obj (list_rassoc v !tbl)
   method set_response_sensitive v s =
     Dialog.set_response_sensitive obj (list_rassoc v !tbl) s
@@ -115,14 +113,16 @@ class ['a] dialog obj = object
     List.assoc resp !tbl
 end
 
-let dialog ?parent ?destroy_with_parent ?(no_separator=false) =
-  make_window [] ~create:(fun pl ->
-    let w = new dialog (Dialog.create pl) in
-    may (fun p -> w#set_transient_for (p :> window)) parent ;
-    may w#set_destroy_with_parent destroy_with_parent ;
-    if no_separator then w#set_has_separator false;
-    w)
+let make_dialog pl ?parent ?destroy_with_parent ~create =
+  make_window ~create:(fun pl ->
+    let d = create pl in
+    may (fun p -> d#set_transient_for (p : #window :> window)) parent ;
+    may d#set_destroy_with_parent destroy_with_parent ;
+    d) pl
 
+let dialog ?(no_separator=false) =
+  make_dialog [] ~create:(fun pl ->
+    new dialog (Dialog.create pl))
 
 (** MessageDialog **)
 
@@ -147,22 +147,19 @@ class ['a] message_dialog obj ~(buttons : 'a buttons) = object
     tbl := snd buttons @ !tbl
 end
 
-let message_dialog ?(message="") ~message_type ~buttons
-    ?parent ?destroy_with_parent=
-  make_window [] ~create:(fun pl ->
-    let parent = match parent with None -> None | Some x -> Some x#as_window in
-    let w = MessageDialog.create ?parent
-        ~message_type ~buttons:(fst buttons) ~message () in
+let message_dialog ?(message="") ~message_type ~buttons =
+  make_dialog [] ~create:(fun pl ->
+    let w = MessageDialog.create 
+	~message_type ~buttons:(fst buttons) ~message () in
     Gobject.set_params w pl;
-    may (Gobject.set Window.P.destroy_with_parent w) destroy_with_parent ;
     new message_dialog ~buttons w)
 
 
 (** ColorSelectionDialog **)
 
-class color_selection_dialog obj = object
-  inherit [window] window_skel (obj : Gtk.color_selection_dialog obj)
-  method connect = new container_signals_impl obj
+class ['a] color_selection_dialog obj = object
+  constraint 'a = [> `OK | `CANCEL | `HELP]
+  inherit ['a] dialog (obj : Gtk.color_selection_dialog obj)
   method ok_button =
     new GButton.button (ColorSelectionDialog.ok_button obj)
   method cancel_button =
@@ -171,19 +168,22 @@ class color_selection_dialog obj = object
     new GButton.button (ColorSelectionDialog.help_button obj)
   method colorsel =
     new GMisc.color_selection (ColorSelectionDialog.colorsel obj)
+  initializer
+    tbl := [ Buttons.rok, `OK ; 
+	     Buttons.rcancel, `CANCEL ;
+	     Dialog.std_response `HELP, `HELP ] @ !tbl
 end
 
 let color_selection_dialog ?(title="Pick a color") =
-  make_window [] ~title ~resizable:false ~create:(fun pl ->
+  make_dialog [] ~title ~resizable:false ~create:(fun pl ->
     new color_selection_dialog (ColorSelectionDialog.create pl))
 
 
 (** FileSelection **)
-
-class file_selection obj = object
-  inherit [window] window_skel (obj : Gtk.file_selection obj)
+class ['a] file_selection obj = object
+  constraint 'a = [> `OK | `CANCEL | `HELP]
+  inherit ['a] dialog (obj : Gtk.file_selection obj)
   inherit file_selection_props
-  method connect = new container_signals_impl obj
   method complete = FileSelection.complete obj
   method get_selections = FileSelection.get_selections obj
   method ok_button = new GButton.button (FileSelection.get_ok_button obj)
@@ -192,11 +192,15 @@ class file_selection obj = object
   method help_button = new GButton.button (FileSelection.get_help_button obj)
   method file_list =
     ((new GList.clist (FileSelection.get_file_list obj)) : string GList.clist)
+  initializer
+    tbl := [ Buttons.rok, `OK ; 
+	     Buttons.rcancel, `CANCEL ;
+	     Dialog.std_response `HELP, `HELP ] @ !tbl
 end
 
 let file_selection ?(title="Choose a file") ?(show_fileops=false) =
   FileSelection.make_params [] ~show_fileops ~cont:(
-  make_window ?title:None ~create:(fun pl ->
+  make_dialog ?title:None ~create:(fun pl ->
     let w = FileSelection.create title in
     Gobject.set_params w pl;
     new file_selection w))
@@ -204,9 +208,9 @@ let file_selection ?(title="Choose a file") ?(show_fileops=false) =
 
 (** FontSelectionDialog **)
 
-class font_selection_dialog obj = object
-  inherit [window] window_skel (obj : Gtk.font_selection_dialog obj)
-  method connect = new container_signals_impl obj
+class ['a] font_selection_dialog obj = object
+  constraint 'a = [> `OK | `CANCEL | `APPLY]
+  inherit ['a] dialog (obj : Gtk.font_selection_dialog obj)
   method selection =
     new GMisc.font_selection (FontSelectionDialog.font_selection obj)
   method ok_button =  new GButton.button (FontSelectionDialog.ok_button obj)
@@ -214,10 +218,14 @@ class font_selection_dialog obj = object
     new GButton.button (FontSelectionDialog.apply_button obj)
   method cancel_button =
     new GButton.button (FontSelectionDialog.cancel_button obj)
+  initializer
+    tbl := [ Buttons.rok, `OK ; 
+	     Buttons.rcancel, `CANCEL ;
+	     Dialog.std_response `APPLY, `APPLY ] @ !tbl
 end
 
-let font_selection_dialog =
-  make_window [] ~create:(fun pl ->
+let font_selection_dialog ?title =
+  make_dialog [] ?title ~create:(fun pl ->
     new font_selection_dialog (FontSelectionDialog.create pl))
 
 

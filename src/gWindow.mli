@@ -119,9 +119,9 @@ class ['a] dialog : ([>Gtk.dialog] as 'b) obj ->
     method run : unit -> 'a
   end
 val dialog :
+  ?no_separator:bool ->
   ?parent:#window ->
   ?destroy_with_parent:bool ->
-  ?no_separator:bool ->
   ?title:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
@@ -171,18 +171,20 @@ val message_dialog :
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> 'a message_dialog
 
-class color_selection_dialog : Gtk.color_selection_dialog obj ->
+class ['a] color_selection_dialog : Gtk.color_selection_dialog obj ->
   object
-    inherit [window] window_skel
+    constraint 'a = [> `OK | `CANCEL | `HELP]
+    inherit ['a] dialog
     val obj : Gtk.color_selection_dialog obj
     method cancel_button : GButton.button
     method colorsel : GMisc.color_selection
-    method connect : GContainer.container_signals
     method help_button : GButton.button
     method ok_button : GButton.button
   end
 val color_selection_dialog :
   ?title:string ->
+  ?parent:#window ->
+  ?destroy_with_parent:bool ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
   ?icon:GdkPixbuf.pixbuf ->
@@ -193,15 +195,15 @@ val color_selection_dialog :
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> color_selection_dialog
+  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a color_selection_dialog
 
-class file_selection : Gtk.file_selection obj ->
+class ['a] file_selection : Gtk.file_selection obj ->
   object
-    inherit [window] window_skel
+    constraint 'a = [> `OK | `CANCEL | `HELP]
+    inherit ['a] dialog
     val obj : Gtk.file_selection obj
     method cancel_button : GButton.button
     method complete : filter:string -> unit
-    method connect : GContainer.container_signals
     method filename : string
     method get_selections : string list
     method help_button : GButton.button
@@ -218,6 +220,8 @@ val file_selection :
   ?show_fileops:bool ->
   ?filename:string ->
   ?select_multiple:bool ->
+  ?parent:#window ->
+  ?destroy_with_parent:bool ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
   ?icon:GdkPixbuf.pixbuf ->
@@ -229,20 +233,22 @@ val file_selection :
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> file_selection
+  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a file_selection
 
-class font_selection_dialog : Gtk.font_selection_dialog obj ->
+class ['a] font_selection_dialog : Gtk.font_selection_dialog obj ->
   object
-    inherit [window] window_skel
+    constraint 'a = [> `OK | `CANCEL | `APPLY]
+    inherit ['a] dialog
     val obj : Gtk.font_selection_dialog obj
     method apply_button : GButton.button
     method cancel_button : GButton.button
-    method connect : GContainer.container_signals
     method selection : GMisc.font_selection
     method ok_button : GButton.button
   end
 val font_selection_dialog :
   ?title:string ->
+  ?parent:#window ->
+  ?destroy_with_parent:bool ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
   ?icon:GdkPixbuf.pixbuf ->
@@ -254,7 +260,7 @@ val font_selection_dialog :
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> font_selection_dialog
+  ?width:int -> ?height:int -> ?show:bool -> unit -> 'a font_selection_dialog
 
 class plug : Gtk.plug obj -> window
 

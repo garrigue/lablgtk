@@ -1,5 +1,9 @@
 $Id$
 
+2003.08.06 [Olivier]
+  * in GWindow: color_selection_dialog, file_selection and 
+    font_selection_dialog now inherit from GWindow.dialog
+
 2003.08.05 [Olivier]
   * Added some libgnomeui bindings (Druids)
   * some new things in Gdkpixbuf :
