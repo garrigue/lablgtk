@@ -23,7 +23,7 @@ module Object = struct
   external unsafe_cast : 'a obj -> 'b obj = "%identity"
   let try_cast w name =
     if is_a w name then unsafe_cast w
-    else raise (Cannot_cast name)
+    else raise (Cannot_cast(Type.name(get_type w), name))
   let get_id (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
   module Signals = struct
     open GtkSignal

@@ -113,6 +113,8 @@ let label ?(:text="") ?:justify ?:line_wrap ?:pattern
   Misc.set w ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height;
   pack_return (new label w) :packing :show
 
+let label_cast w = new label (Label.cast w#as_widget)
+
 class tips_query_signals obj = object
   inherit widget_signals obj
   method widget_entered :callback = 

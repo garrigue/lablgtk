@@ -13,8 +13,8 @@ module Alignment = struct
   let create ?(:x=0.5) ?(:y=0.5) ?(:xscale=1.) ?(:yscale=1.) () =
     create :x :y :xscale :yscale
   external set :
-      [>`alignment] obj ->
-      ?x:clampf -> ?y:clampf -> ?xscale:clampf -> ?yscale:clampf -> unit
+      ?x:clampf -> ?y:clampf -> ?xscale:clampf -> ?yscale:clampf ->
+      [>`alignment] obj -> unit
       = "ml_gtk_alignment_set"
 end
 

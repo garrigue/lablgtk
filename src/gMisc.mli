@@ -122,6 +122,7 @@ val label :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> label
+val label_cast : < as_widget : 'a obj ; .. > -> label
 
 class tips_query_signals : 'a obj ->
   object
