@@ -11,6 +11,7 @@
 
 #include "wrappers.h"
 #include "ml_glib.h"
+#include "ml_gobject.h"
 #include "ml_gdk.h"
 #include "ml_gdkpixbuf.h"
 #include "ml_gtk.h"

@@ -61,8 +61,10 @@ let pack_item self ~packing ~show =
   if show <> Some false then self#misc#show ();
   self
 
-let menu_item ?label ?border_width ?width ?height ?packing ?show () =
+let menu_item ?label ?right_justified
+    ?border_width ?width ?height ?packing ?show () =
   let w = MenuItem.create ?label () in
+  may right_justified ~f:(MenuItem.set_right_justified w);
   Container.set w ?border_width ?width ?height;
   pack_item (new menu_item w) ?packing ?show
 
@@ -87,10 +89,10 @@ class check_menu_item obj = object
   method event = new GObj.event_ops obj
 end
 
-let check_menu_item ?label ?active ?show_toggle
+let check_menu_item ?label ?active ?show_toggle ?right_justified
     ?border_width ?width ?height ?packing ?show () =
   let w = CheckMenuItem.create ?label () in
-  CheckMenuItem.set w ?active ?show_toggle;
+  CheckMenuItem.set w ?active ?show_toggle ?right_justified;
   Container.set w ?border_width ?width ?height;
   pack_item (new check_menu_item w) ?packing ?show
 
@@ -100,10 +102,10 @@ class radio_menu_item obj = object
   method set_group = RadioMenuItem.set_group obj
 end
 
-let radio_menu_item ?group ?label ?active ?show_toggle
+let radio_menu_item ?group ?label ?active ?show_toggle ?right_justified
     ?border_width ?width ?height ?packing ?show () =
   let w = RadioMenuItem.create ?group ?label () in
-  CheckMenuItem.set w ?active ?show_toggle;
+  CheckMenuItem.set w ?active ?show_toggle ?right_justified;
   Container.set w ?border_width ?width ?height;
   pack_item (new radio_menu_item w) ?packing ?show
 
