@@ -9,16 +9,16 @@ all:: $(TARGETS)
 opt: lablgtkopt
 
 depend:
-	ocamldep *.ml *.mli > .depend
+	$(CAMLDEP) *.ml *.mli > .depend
 
 COMPILER = $(CAMLC) $(MLFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 MKLIB = lib /nologo /debugtype:CV /out:
-MKDLL = link /nologo /dll "`ocamlc -where`/ocamlrun.lib" /out:
-TOPLEVEL = ocamlmktop $(MLFLAGS)
-CAMLP4 = camlp4o -I "$(LIBDIR)/camlp4" pr_o.cmo
+MKDLL = link /nologo /dll "`$(CAMLC) -where`/ocamlrun.lib" /out:
+TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
+CAMLP4 = $(CAMLP4O) -I "$(LIBDIR)/camlp4" pr_o.cmo
 CONFIG = ../config.make.nt
 DLLDIR = $(LIBDIR)/stublibs
 
@@ -60,7 +60,7 @@ endif
 .ml.cmx:
 	$(COMPOPT) $<
 .var.h:
-	ocamlrun ./varcc $<
+	$(CAMLRUN) ./varcc $<
 .ml4.ml:
 	$(CAMLP4) -impl $< -o $@
 
@@ -155,7 +155,7 @@ gtkThread.cmx: gtkThread.ml
 	$(COMPOPT) $(THFLAGS) gtkThread.ml
 
 xml_lexer.ml: xml_lexer.mll
-	ocamllex xml_lexer.mll
+	$(CAMLLEX) xml_lexer.mll
 
 varcc: varcc.cmo
 	$(LINKER) -o $@ $<
