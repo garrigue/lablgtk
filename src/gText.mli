@@ -391,4 +391,7 @@ object
 end
 val view :
   ?buffer:buffer ->
+  ?editable:bool ->
+  ?cursor_visible:bool ->
+  ?wrap_mode:Gtk.Tags.wrap_mode ->
   ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> view
