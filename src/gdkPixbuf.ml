@@ -64,7 +64,7 @@ external _get_from_drawable :
   = "ml_gdk_pixbuf_get_from_drawable_bc" "ml_gdk_pixbuf_get_from_drawable"
 let get_from_drawable ~dest ?(dest_x=0) ?(dest_y=0) ?width ?height
     ?(src_x=0) ?(src_y=0) ?(colormap=Gdk.Rgb.get_cmap()) src =
-  let dw, dh = Gdk.Window.get_size src in
+  let dw, dh = Gdk.Drawable.get_size src in
   let mw = min (dw - src_x) (get_width dest - dest_x)
   and mh = min (dh - src_y) (get_height dest - dest_y) in
   let width = default mw ~opt:width and height = default mh ~opt:height in

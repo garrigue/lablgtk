@@ -40,7 +40,8 @@ object (self)
   method color = color ~colormap
   method set_foreground col = GC.set_foreground gc (self#color col)
   method set_background col = GC.set_background gc (self#color col)
-  method size = Window.get_size w
+  method size = Drawable.get_size w
+  method depth = Drawable.get_depth w
   method gc_values = GC.get_values gc
   method set_clip_region = GC.set_clip_region gc
   method set_clip_origin = GC.set_clip_origin gc

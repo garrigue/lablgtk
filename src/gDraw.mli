@@ -32,6 +32,7 @@ class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
       height:int ->
       ?filled:bool -> ?start:float -> ?angle:float -> unit -> unit
     method color : color -> Color.t
+    method depth : int
     method gc_values : GC.values
     method line : x:int -> y:int -> x:int -> y:int -> unit
     method point : x:int -> y:int -> unit
