@@ -113,9 +113,18 @@ module Closure = struct
   let get_int32 arg ~pos = Nativeint.to_int32 (get_nativeint arg ~pos)
 end
 
+let objtype_from_name ~caller name =
+  let t = Type.from_name name in
+  let f = Type.fundamental t in
+  if f = `INVALID then
+    failwith (caller ^ " : type " ^ name ^ " is not yet defined");
+  if f <> `OBJECT then
+    failwith (caller ^ " : " ^ name ^ " is not an object type");
+  t
+
 external get_type : 'a obj -> g_type = "ml_G_TYPE_FROM_INSTANCE"
 let is_a obj name =
-  Type.is_a (get_type obj) (Type.from_name name)
+  Type.is_a (get_type obj) (objtype_from_name ~caller:"Gobject.is_a" name)
 
 exception Cannot_cast of string * string
 external unsafe_cast : 'a obj -> 'b obj = "%identity"
@@ -215,7 +224,7 @@ let param (prop : ('a,'b) property) d : 'a param =
   dyn_param prop.name (prop.conv.inj d)
 
 let make ~classe l =
-  make (Type.from_name classe) l
+  make (objtype_from_name ~caller:"Gobject.make" classe) l
 
 module Property = struct
   external freeze_notify : 'a obj -> unit = "ml_g_object_freeze_notify"
