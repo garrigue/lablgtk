@@ -213,14 +213,14 @@ CAMLprim value Val_GSList (GSList *list, value (*func)(gpointer))
   last_cell = cell = Val_unit;
   if (list != NULL) {
     result = func(list->data);
-    cell = last_cell = alloc_small (0, 2);
+    cell = last_cell = alloc_small (2,0);
     Field(cell,0) = result;
     Field(cell,1) = Val_unit;
     list = list->next;
   }
   while (list != NULL) {
     result = func(list->data);
-    new_cell = alloc_small(0, 2);
+    new_cell = alloc_small(2,0);
     Field(new_cell,0) = result;
     Field(new_cell,1) = Val_unit;
     modify(&Field(last_cell,1), new_cell);
