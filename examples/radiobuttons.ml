@@ -7,7 +7,7 @@ let main () =
 
   let window = new_window `TOPLEVEL
       title: "radio buttons" border_width: 0 in
-  window#connect_destroy callback:Main.quit;
+  window#connect#destroy callback:Main.quit;
 
   let box1 = new_box `VERTICAL packing: window#add in
 
@@ -30,7 +30,7 @@ let main () =
       spacing: 10 border_width: 10 packing:(box1#pack expand:false) in
 
   let button = new_button label: "close" packing: box3#pack in
-  button#connect_clicked callback:Main.quit;
+  button#connect#clicked callback:Main.quit;
   button#grab_default ();
 
   window#show_all ();

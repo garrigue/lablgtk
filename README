@@ -71,13 +71,20 @@ Structure of the GtkObj module:
   The structure has been greatly simplified.
   You can now freely inherit and subtype between widget classes.
 
+  While subtyping follows the Gtk widget hierarchy, you cannot always
+  use width subtyping (i.e. #super is not unifiable with all the
+  subclasses of super). Still, it works for the gtkobj, widget and
+  container classes, and allows subtyping without coercion towards
+  these classes (cf. #container in pousse.ml for instance).
+
   Practically, each widget class is composed of:
   * a frame method, returning the Gtk widget used for packing, etc...
     Usually this is the widget itself.
   * a misc sub-object, giving access to miscellanous functionality of
     the basic gtkwidget class
-  * many connect_??? methods, allowing one to connect all available signals
-  * a connect_event sub-object, for event signals
+  * a connect sub-object, allowing one to connect all available
+    signals (this is what prevents width subtyping in subcases)
+  * a connect#event sub-object, for event signals
 
   Use the new_??? functions to create widgets. They admit many
   optional arguments. The last of them, packing:, allows you to call a

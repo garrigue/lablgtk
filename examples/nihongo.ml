@@ -18,13 +18,13 @@ let button = new_button label: "終了" packing: box#add
 let label = new_label label:"これにも影響する" packing: box#add
 
 let _ =
-  window#connect_destroy callback:Main.quit;
+  window#connect#destroy callback:Main.quit;
   text#misc#realize ();
   text#insert "こんにちは" :font;
   let style = button#misc#style in
   Style.set style :font;
   Style.set_bg style color:(Gdk.Color.alloc (`Name "green"));
-  button#connect_clicked callback:Main.quit
+  button#connect#clicked callback:Main.quit
 
 let _ =
   window#show_all ();

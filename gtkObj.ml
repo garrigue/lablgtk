@@ -7,10 +7,30 @@ class gtkobj obj = object
   val obj = obj
   method destroy () = Object.destroy obj
   method disconnect = Signal.disconnect obj
-  method connect_destroy = Signal.connect sig:Object.Signals.destroy obj
+end
+
+class gtkobj_signals obj = object
+  val obj = obj
+  method destroy = Signal.connect sig:Object.Signals.destroy obj
+end
+
+class gtkobj_full obj = object
+  inherit gtkobj obj
+  method connect = new gtkobj_signals obj
 end
 
 class type framed = object method frame : Widget.t obj end
+
+class tooltips obj = object
+  inherit gtkobj_full obj
+  method enable () = Tooltips.enable obj
+  method disable () = Tooltips.disable obj
+  method set_tip : 'b . (#framed as 'b) -> _ =
+    fun w -> Tooltips.set_tip ?obj ?w#frame
+  method set = Tooltips.set ?obj
+end
+
+let new_tooltips () = new tooltips (Tooltips.create ())
 
 class widget_misc obj = object
   val obj = Widget.coerce obj
@@ -49,12 +69,9 @@ class widget_misc obj = object
   method visual = Widget.get_visual obj
   method pointer = Widget.get_pointer obj
   method style = Widget.get_style obj
-  (* signals *)
-  method connect_show = Signal.connect sig:Widget.Signals.show obj
-  method connect_draw = Signal.connect sig:Widget.Signals.draw obj
 end
 
-class event_signal obj = object
+class event_signals obj = object
   val obj = Widget.coerce obj
   method any = Signal.connect sig:Event.Signals.any obj
   method button_press = Signal.connect sig:Event.Signals.button_press obj
@@ -87,19 +104,19 @@ class widget obj = object
   method frame = Widget.coerce obj
   method misc = new widget_misc obj
   method show () = Widget.show obj
-  method connect_event = new event_signal obj
 end
 
-class tooltips obj = object
-  inherit gtkobj obj
-  method enable () = Tooltips.enable obj
-  method disable () = Tooltips.disable obj
-  method set_tip : 'b . (#framed as 'b) -> _ =
-    fun w -> Tooltips.set_tip ?obj ?w#frame
-  method set = Tooltips.set ?obj
+class widget_signals obj = object
+  inherit gtkobj_signals obj
+  method show = Signal.connect sig:Widget.Signals.show obj
+  method draw = Signal.connect sig:Widget.Signals.draw obj
+  method event = new event_signals obj
 end
 
-let new_tooltips () = new tooltips (Tooltips.create ())
+class widget_full obj = object
+  inherit widget obj
+  method connect = new widget_signals obj
+end
 
 class container obj = object
   inherit widget obj
@@ -107,19 +124,27 @@ class container obj = object
     fun w -> Container.add obj w#frame
   method remove : 'b. (#framed as 'b) -> unit =
     fun w -> Container.remove obj w#frame
-  method foreach fun:f = Container.foreach obj fun:(fun x -> f (new widget x))
   method children = List.map fun:(new widget) (Container.children obj)
-  method connect_add = Signal.connect sig:Container.Signals.add obj
-  method connect_remove = Signal.connect sig:Container.Signals.remove obj
   method set_size = Container.set ?obj
 end
 
-class event_box = container
+class container_signals obj = object
+  inherit widget_signals obj
+  method add = Signal.connect sig:Container.Signals.add obj
+  method remove = Signal.connect sig:Container.Signals.remove obj
+end
+
+class container_full obj = object
+  inherit container obj
+  method connect = new container_signals obj
+end
+
+class event_box = container_full
 
 let new_event_box () = new event_box (EventBox.create ())
 
 class frame obj = object
-  inherit container obj
+  inherit container_full obj
   method set_label ?label ?:xalign ?:yalign =
     Frame.setter obj ?:label ?label_xalign:xalign ?label_yalign:yalign
       cont:null_cont
@@ -153,7 +178,7 @@ let new_aspect_frame ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child =
     ?cont:(Container.setter ?cont:(pack_return (new aspect_frame)))
 
 class box obj = object
-  inherit container obj
+  inherit container_full obj
   method pack : 'b . (#framed as 'b) -> _ = fun w ->  Box.pack ?obj ?w#frame
   method set_packing = Box.setter ?obj ?cont:null_cont
   method set_child_packing : 'b . (#framed as 'b) -> _ =
@@ -178,7 +203,7 @@ class statusbar_context obj ctx = object (self)
 end
 
 class statusbar obj = object
-  inherit container obj
+  inherit container_full obj
   method new_context :name =
     new statusbar_context obj (Statusbar.get_context obj name)
 end
@@ -188,7 +213,7 @@ let new_statusbar ?(_ : unit option) =
   Container.setter ?w ?cont:(pack_return (new statusbar))
 
 class window obj = object
-  inherit container obj
+  inherit container_full obj
   method show_all () = Widget.show_all obj
   method activate_focus () = Window.activate_focus obj
   method activate_default () = Window.activate_default obj
@@ -213,17 +238,26 @@ let new_dialog ?(_ : unit option) =
   Window.setter ?(Dialog.create ())
     ?cont:(Container.setter ?cont:(new dialog))
 
-class button obj = object (self)
+class button_skel obj = object (self)
   inherit container obj
   method clicked = Button.clicked obj
-  method connect_clicked = Signal.connect sig:Button.Signals.clicked obj
-  method connect_pressed = Signal.connect sig:Button.Signals.pressed obj
-  method connect_released = Signal.connect sig:Button.Signals.released obj
-  method connect_enter = Signal.connect sig:Button.Signals.enter obj
-  method connect_leave = Signal.connect sig:Button.Signals.leave obj
   method grab_default () =
     Widget.set_can_default (self#frame) true;
     Widget.grab_default (self#frame)
+end
+
+class button_signals obj = object
+  inherit container_signals obj
+  method clicked = Signal.connect sig:Button.Signals.clicked obj
+  method pressed = Signal.connect sig:Button.Signals.pressed obj
+  method released = Signal.connect sig:Button.Signals.released obj
+  method enter = Signal.connect sig:Button.Signals.enter obj
+  method leave = Signal.connect sig:Button.Signals.leave obj
+end
+
+class button obj = object
+  inherit button_skel obj
+  method connect = new button_signals obj
 end
 
 class button_create ?:label ?opt = button (Button.create ?:label ?opt)
@@ -232,10 +266,15 @@ let new_button ?opt ?:label =
   Container.setter ?(Button.create ?:label ?opt)
     ?cont:(pack_return (new button))
 
+class toggle_button_signals obj = object
+  inherit button_signals obj
+  method toggled = Signal.connect sig:ToggleButton.Signals.toggled obj
+end
+
 class toggle_button obj = object
-  inherit button obj
+  inherit button_skel obj
+  method connect = new toggle_button_signals obj
   method active = ToggleButton.active obj
-  method connect_toggled = Signal.connect sig:ToggleButton.Signals.toggled obj
   method set_state = ToggleButton.set_state obj
   method draw_indicator = ToggleButton.set_mode obj
 end
@@ -260,7 +299,7 @@ let new_radio_button ?opt ?:group ?:label =
 	     ?cont:(Container.setter ?cont:(pack_return (new radio_button))))
 
 class scrolled_window obj = object
-  inherit container obj
+  inherit container_full obj
   method hadjustment = ScrolledWindow.get_hadjustment obj
   method vadjustment = ScrolledWindow.get_vadjustment obj
   method set_policy ?:horizontal ?:vertical =
@@ -273,7 +312,7 @@ let new_scrolled_window () =
     ?cont:(Container.setter ?cont:(pack_return (new scrolled_window)))
 
 class table obj = object
-  inherit container obj
+  inherit container_full obj
   method attach : 'a. (#framed as 'a) -> _ =
     fun w -> Table.attach obj w#frame
   method set_packing = Table.setter ?obj ?cont:null_cont
@@ -283,8 +322,15 @@ let new_table :rows :columns ?:homogeneous =
   Table.setter ?(Table.create :rows :columns ?:homogeneous) ?homogeneous:None
     ?cont:(Container.setter ?cont:(pack_return (new table)))
 
+class editable_signals obj = object
+  inherit widget_signals obj
+  method activate = Signal.connect sig:Editable.Signals.activate obj
+  method changed = Signal.connect sig:Editable.Signals.changed obj
+end
+
 class editable obj = object
   inherit widget obj
+  method connect = new editable_signals obj
   method select_region = Editable.select_region obj
   method insert_text = Editable.insert_text obj
   method delete_text = Editable.delete_text obj
@@ -292,8 +338,6 @@ class editable obj = object
   method cut_clipboard = Editable.cut_clipboard obj
   method copy_clipboard = Editable.copy_clipboard obj
   method paste_clipboard = Editable.paste_clipboard obj
-  method connect_activate = Signal.connect sig:Editable.Signals.activate obj
-  method connect_changed = Signal.connect sig:Editable.Signals.changed obj
 end
 
 class entry obj = object
@@ -330,7 +374,7 @@ let new_text ?opt ?:hadjustment ?:vadjustment =
     ?cont:(pack_return (new text))
 
 class misc obj = object
-  inherit widget obj
+  inherit widget_full obj
   method set_alignment = Misc.set_alignment obj
   method set_padding = Misc.set_padding obj
 end
@@ -357,7 +401,7 @@ let new_pixmap pix ?:mask =
   Misc.setter ?(Pixmap.create pix ?:mask) ?cont:(pack_return (new pixmap))
 
 class progress_bar obj = object
-  inherit widget obj
+  inherit widget_full obj
   method update percent = ProgressBar.update obj :percent
   method percent = ProgressBar.percent obj
 end
@@ -365,7 +409,7 @@ end
 let new_progress_bar ?(_ : unit option) =
   pack_return ?(new progress_bar) ?(ProgressBar.create ())
 
-class separator = widget
+class separator = widget_full
 
 let new_separator dir =
   pack_return ?(new separator) ?(Separator.create dir)

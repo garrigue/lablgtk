@@ -164,8 +164,8 @@ let frame : #container = frame in object (self)
   initializer
     for i = 0 to size-1 do for j = 0 to size-1 do
       let cell = cells.(i).(j) in
-      cell#connect_enter callback:cell#misc#grab_focus;
-      cell#connect_clicked callback:(fun () -> self#play i j);
+      cell#connect#enter callback:cell#misc#grab_focus;
+      cell#connect#clicked callback:(fun () -> self#play i j);
       table#attach left:i top:j cell
     done done;
     List.iter fun:(fun (x,y,col) -> cells.(x).(y)#set_color col)
@@ -191,6 +191,6 @@ let game = new game :frame :label statusbar:bar
 (* Start *)
 
 let _ =
-  window#connect_destroy callback:Main.quit;
+  window#connect#destroy callback:Main.quit;
   window#show_all ();
   Main.main ()

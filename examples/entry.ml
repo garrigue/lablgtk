@@ -18,12 +18,12 @@ let main () =
 
   let window =
     new_window `TOPLEVEL title: "GTK Entry" width: 200 height: 100 in
-  window#connect_destroy callback:Main.quit;
+  window#connect#destroy callback:Main.quit;
 
   let vbox = new_box `VERTICAL packing: window#add in
 
   let entry = new_entry max_length: 50 packing: vbox#add in
-  entry#connect_activate callback:(fun () -> enter_callback entry);
+  entry#connect#activate callback:(fun () -> enter_callback entry);
   entry#set_text "Hello";
   entry#append_text " world";
   entry#select_region start:0 end:entry#text_length;
@@ -32,15 +32,15 @@ let main () =
 
   let check =
     new_check_button label: "Editable" state: true packing: hbox#pack in
-  check#connect_toggled callback:(fun () -> entry_toggle_editable check entry);
+  check#connect#toggled callback:(fun () -> entry_toggle_editable check entry);
 
   let check =
     new_check_button label: "Visible" state: true packing: hbox#pack in
-  check#connect_toggled
+  check#connect#toggled
     callback:(fun () -> entry_toggle_visibility check entry);
 
   let button = new_button label: "Close" packing: vbox#pack in
-  button#connect_clicked callback:Main.quit;
+  button#connect#clicked callback:Main.quit;
   button#grab_default ();
 
   window#show_all ();

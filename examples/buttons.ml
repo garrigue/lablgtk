@@ -33,9 +33,9 @@ class xpm_label_box parent:(parent : #widget) :file :label =
 let main () =
   let window =
     new_window `TOPLEVEL title:"Pixmap'd Buttons!" border_width:10 in
-  window#connect_destroy callback:Main.quit;
+  window#connect#destroy callback:Main.quit;
   let button = new_button () in
-  button#connect_clicked
+  button#connect#clicked
     callback:(fun () -> prerr_endline "Hello again - cool button was pressed");
   let box =
     new xpm_label_box parent:window file:"info.xpm" label:"cool button" in
