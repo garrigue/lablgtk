@@ -27,6 +27,9 @@ Contents:
 
 	examples/*.ml	various examples
 
+	olabl.diffs		patch to apply to olabl-2.00
+	lablbrowser.diffs	patch to apply to labltk41-2.00
+
 How to run the examples:
 
 	./lablgtk examples/???.ml
