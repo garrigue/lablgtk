@@ -26,6 +26,7 @@ class window_skel obj = object
   method set_allow_shrink allow_shrink = Window.set_policy obj :allow_shrink
   method set_allow_grow allow_grow = Window.set_policy obj :allow_grow
   method set_auto_shrink auto_shrink = Window.set_policy obj :auto_shrink
+  method show () = Widget.show obj
 end
 
 class window_wrapper obj = object

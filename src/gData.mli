@@ -7,7 +7,7 @@ class data_signals :
   object
     inherit GObj.gtkobj_signals
     val obj : 'a obj
-    method disconnect : callback:(unit -> unit) -> GtkSignal.id
+    method disconnect_data : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class adjustment_signals :

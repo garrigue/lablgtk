@@ -25,16 +25,16 @@ class type is_window = object method as_window : window obj end
 class gtkobj obj = object
   val obj = obj
   method destroy () = Object.destroy obj
-  method disconnect = GtkSignal.disconnect obj
   method get_type = Object.get_type obj
   method get_id = Object.get_id obj
-  method stop_emit name = GtkSignal.emit_stop_by_name obj :name
 end
 
 class gtkobj_signals obj ?:after = object
   val obj = obj
   val after : bool option = after
   method destroy = GtkSignal.connect sig:Object.Signals.destroy obj ?:after
+  method disconnect = GtkSignal.disconnect obj
+  method stop_emit :name = GtkSignal.emit_stop_by_name obj :name
 end
 
 (* Widget *)
@@ -235,7 +235,6 @@ and widget obj = object (self)
   inherit gtkobj obj
   method as_widget = Widget.coerce obj
   method misc = new widget_misc obj
-  method show () = Widget.show obj
   method drag = new widget_drag (Object.unsafe_cast obj)
 end
 
@@ -261,4 +260,4 @@ end
 
 let pack_return (self : #widget) :packing ?:show [< true >] =
   may packing fun:(fun f -> (f self : unit));
-  if show then self#show ()
+  if show then self#misc#show ()

@@ -7,7 +7,8 @@ open GObj
 
 class data_signals obj ?:after = object
   inherit gtkobj_signals obj ?:after
-  method disconnect = GtkSignal.connect sig:Data.Signals.disconnect obj ?:after
+  method disconnect_data =
+    GtkSignal.connect sig:Data.Signals.disconnect obj ?:after
 end
 
 class adjustment_signals obj ?:after = object

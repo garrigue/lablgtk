@@ -24,10 +24,8 @@ class gtkobj :
   object
     val obj : 'a obj
     method destroy : unit -> unit
-    method disconnect : GtkSignal.id -> unit
     method get_type : gtk_type
     method get_id : int
-    method stop_emit : string -> unit
   end
 
 class gtkobj_signals :
@@ -36,6 +34,8 @@ class gtkobj_signals :
     val obj : 'a obj
     val after : bool option
     method destroy : callback:(unit -> unit) -> GtkSignal.id
+    method disconnect : GtkSignal.id -> unit
+    method stop_emit : name:string -> unit
   end
 
 (* Widget *)
@@ -188,7 +188,6 @@ and widget :
     method as_widget : Gtk.widget obj
     method drag : widget_drag
     method misc : widget_misc
-    method show : unit -> unit
   end
 
 and widget_signals :

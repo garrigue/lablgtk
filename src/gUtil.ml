@@ -18,9 +18,33 @@ let signal_id = ref 0
 let next_callback_id () : GtkSignal.id =
   decr signal_id; Obj.magic (!signal_id : int)
 
-class ['a] signal = object
+class type disconnector = object
+  method disconnect : GtkSignal.id -> bool
+  method reset : unit -> unit
+end
+
+let disconnectors : (int, disconnector list) Hashtbl.t =
+  Hashtbl.create size:7
+
+class ['a] signal obj = object (self)
   val mutable callbacks : (GtkSignal.id * ('a -> unit)) list = []
+  val mutable registered = false
+  method private register () =
+    registered <- true;
+    let key = GtkBase.Object.get_id obj in
+    try
+      let l = Hashtbl.find disconnectors :key in
+      Hashtbl.remove disconnectors :key;
+      Hashtbl.add disconnectors :key data:((self :> disconnector)::l)
+    with Not_found ->
+      GtkSignal.connect obj sig:GtkBase.Object.Signals.destroy callback:
+	begin fun () ->
+	  List.iter (Hashtbl.find disconnectors :key) fun:(fun d -> d#reset());
+	  Hashtbl.remove disconnectors :key
+	end;
+      Hashtbl.add disconnectors :key data:[(self :> disconnector)]
   method connect :callback ?:after [< false >] =
+    if not registered then self#register ();
     let id = next_callback_id () in
     callbacks <-
       if after then callbacks @ [id,callback] else (id,callback)::callbacks;
@@ -33,21 +57,13 @@ class ['a] signal = object
   method reset () = callbacks <- []
 end
 
-class type disconnector = object
-  method disconnect : GtkSignal.id -> bool
-  method reset : unit -> unit
-end
-
 class has_ml_signals obj = object
-  val obj2 = obj
-  val mutable disconnectors = []
-  method private add_signal : 'a. 'a signal -> unit =
-    fun sgn -> disconnectors <- (sgn :> disconnector) :: disconnectors
   method disconnect id =
-    if List.exists disconnectors pred:(fun d -> d#disconnect id) then ()
-    else GtkSignal.disconnect obj2 id
-  initializer
-    GtkSignal.connect obj sig:GtkBase.Object.Signals.destroy
-      callback:(fun () -> List.iter disconnectors fun:(fun d -> d#reset ()));
-    ()
+    let key = GtkBase.Object.get_id obj in
+    try
+      let l = Hashtbl.find disconnectors :key in
+      if List.exists l pred:(fun d -> d#disconnect id) then ()
+      else raise Not_found
+    with Not_found ->
+      GtkSignal.disconnect obj id
 end
