@@ -373,7 +373,7 @@ DOCFILES =  gaux.ml gpointer.mli glib.mli gobject.mli \
         gObj.mli gMain.mli gData.mli gContainer.mli gBin.mli gPack.mli gButton.mli \
         gText.mli \
         gMenu.mli gMisc.mli gTree.mli gFile.mli gList.mli gWindow.mli \
-        gEdit.mli gRange.mli gAction.mli gUtil.mli gToolbox.mli
+        gEdit.mli gRange.mli gAction.mli gUtil.mli gToolbox.mli gBroken.mli
 ifdef USE_GLADE
 DOCFILES += glade.mli xml_lexer.mli
 endif

@@ -100,7 +100,7 @@ class entry_signals : [> Gtk.entry] obj ->
 class entry : ([> Gtk.entry] as 'a) obj ->
   object
     inherit editable
-    inherit ['a] objvar
+    inherit ['a] GObj.objvar
     method connect : entry_signals
     method event : event_ops
     method append_text : string -> unit
