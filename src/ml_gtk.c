@@ -414,6 +414,12 @@ ML_2 (gtk_file_selection_set_filename, GtkFileSelection_val, String_val, Unit)
 ML_1 (gtk_file_selection_get_filename, GtkFileSelection_val, copy_string)
 ML_1 (gtk_file_selection_show_fileop_buttons, GtkFileSelection_val, Unit)
 ML_1 (gtk_file_selection_hide_fileop_buttons, GtkFileSelection_val, Unit)
+Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, ok_button,
+		Val_GtkWidget)
+Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, cancel_button,
+		Val_GtkWidget)
+Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, help_button,
+		Val_GtkWidget)
 
 /* gtkwindow.h */
 

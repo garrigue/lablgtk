@@ -139,9 +139,15 @@ class container_full obj = object
   method connect = new container_signals obj
 end
 
+let pack_return wrapper w ?:packing =
+  let w = wrapper w in
+  may packing fun:(fun f -> (f w : unit));
+  w
+
 class event_box = container_full
 
-let new_event_box () = new event_box (EventBox.create ())
+let new_event_box () =
+  Container.setter ?(EventBox.create ()) ?cont:(pack_return (new event_box))
 
 class frame obj = object
   inherit container_full obj
@@ -152,11 +158,6 @@ class frame obj = object
 end
 
 class frame_create ?:label ?opt = frame (Frame.create ?:label ?opt) 
-
-let pack_return wrapper w ?:packing =
-  let w = wrapper w in
-  may packing fun:(fun f -> f w);
-  w
 
 let new_frame ?opt ?:label =
   Frame.setter ?(Frame.create ?:label ?opt) ?label:None
@@ -176,6 +177,105 @@ let new_aspect_frame ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child =
     AspectFrame.create ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child in
   Frame.setter ?w ?label:None
     ?cont:(Container.setter ?cont:(pack_return (new aspect_frame)))
+
+class item obj = object
+  inherit container obj
+  method select = Item.select obj
+  method deselect = Item.deselect obj
+  method toggle = Item.toggle obj
+end
+
+class item_signals obj = object
+  inherit container_signals obj
+  method select = Signal.connect sig:Item.Signals.select obj
+  method deselect = Signal.connect sig:Item.Signals.deselect obj
+  method toggle = Signal.connect sig:Item.Signals.toggle obj
+end
+
+class list_item obj = object
+  inherit item obj
+  method connect = new item_signals obj
+end
+
+let new_list_item ?opt ?:label =
+  Container.setter ?(ListItem.create ?opt ?:label)
+    ?cont:(pack_return (new list_item))
+
+class menu_item_skel obj = object
+  inherit container obj
+  method set_submenu : 'a. (#framed as 'a) -> unit =
+    fun w -> MenuItem.set_submenu obj w#frame
+  method remove_submenu = MenuItem.remove_submenu obj
+  method accelerator_text = MenuItem.accelerator_text obj
+  method configure = MenuItem.configure obj
+  method activate = MenuItem.activate obj
+  method right_justify = MenuItem.right_justify obj
+end
+
+class menu_item_signals obj = object
+  inherit item_signals obj
+  method activate = Signal.connect sig:MenuItem.Signals.activate obj
+end
+
+class menu_item obj = object
+  inherit menu_item_skel obj
+  method connect = new menu_item_signals obj
+end
+
+let new_menu_item ?opt ?:label =
+  MenuItem.setter ?(MenuItem.create ?opt ?:label)
+    ?cont:(Container.setter ?cont:(pack_return (new menu_item)))
+
+class check_menu_item_signals obj = object
+  inherit menu_item_signals obj
+  method toggled = Signal.connect sig:CheckMenuItem.Signals.toggled obj
+end
+
+class check_menu_item obj = object
+  inherit menu_item_skel obj
+  method set_state = CheckMenuItem.set_state obj
+  method set_show_toggle = CheckMenuItem.set_show_toggle obj
+  method toggled = CheckMenuItem.toggled obj
+  method connect = new check_menu_item_signals obj
+end
+
+let new_check_menu_item ?opt ?:label =
+  CheckMenuItem.setter ?(CheckMenuItem.create ?opt ?:label)
+    ?cont:(MenuItem.setter
+	     ?cont:(Container.setter
+		      ?cont:(pack_return (new check_menu_item))))
+
+class radio_menu_item obj = object
+  inherit check_menu_item obj
+  method group = RadioMenuItem.group obj
+  method set_group = RadioMenuItem.set_group obj
+end
+
+let new_radio_menu_item ?opt ?:group ?:label =
+  CheckMenuItem.setter ?(RadioMenuItem.create ?opt ?:group ?:label)
+    ?cont:(MenuItem.setter
+	     ?cont:(Container.setter
+		      ?cont:(pack_return (new radio_menu_item))))
+
+class tree_item_signals obj = object
+  inherit item_signals obj
+  method expand = Signal.connect obj sig:TreeItem.Signals.expand
+  method collapse = Signal.connect obj sig:TreeItem.Signals.collapse
+end
+
+class tree_item obj = object
+  inherit container obj
+  method connect = new tree_item_signals obj
+  method set_subtree : 'a. (#framed as 'a) -> unit =
+    fun w -> TreeItem.set_subtree obj w#frame
+  method remove_subtree = TreeItem.remove_subtree obj
+  method expand = TreeItem.expand obj
+  method collapse = TreeItem.collapse obj
+end
+
+let new_tree_item ?opt ?:label =
+  Container.setter ?(TreeItem.create ?opt ?:label)
+    ?cont:(pack_return (new tree_item))
 
 class box obj = object
   inherit container_full obj
@@ -217,6 +317,7 @@ class window obj = object
   method show_all () = Widget.show_all obj
   method activate_focus () = Window.activate_focus obj
   method activate_default () = Window.activate_default obj
+  method add_accelerator_table = Window.add_accelerator_table obj
   method set_wm ?:title ?:name ?class:c =
     Window.setter obj cont:null_cont
       ?:title ?wmclass_name:name ?wmclass_class:c
@@ -297,6 +398,67 @@ let new_radio_button ?opt ?:group ?:label =
   RadioButton.setter ?(RadioButton.create ?:group ?:label ?opt)
     ?cont:(ToggleButton.setter
 	     ?cont:(Container.setter ?cont:(pack_return (new radio_button))))
+
+class file_selection obj = object
+  inherit window obj
+  method set_filename = FileSelection.set_filename obj
+  method get_filename = FileSelection.get_filename obj
+  method show_fileop_buttons () = FileSelection.show_fileop_buttons obj
+  method hide_fileop_buttons () = FileSelection.hide_fileop_buttons obj
+  method ok_button = new button (FileSelection.get_ok_button obj)
+  method cancel_button = new button (FileSelection.get_cancel_button obj)
+  method help_button = new button (FileSelection.get_help_button obj)
+end
+
+let new_file_selection :title =
+  FileSelection.setter ?(FileSelection.create title)
+    ?cont:(Window.setter
+	     ?cont:(Container.setter ?cont:(new file_selection)))
+
+class menu_shell_signals obj = object
+  inherit container_signals obj
+  method deactivate = Signal.connect sig:MenuShell.Signals.deactivate obj
+end
+
+class menu_shell obj = object
+  inherit container obj
+  method append : 'a. (#framed as 'a) -> unit =
+    fun w -> MenuShell.append obj w#frame
+  method prepend : 'a. (#framed as 'a) -> unit =
+    fun w -> MenuShell.prepend obj w#frame
+  method insert : 'a. (#framed as 'a) -> _ =
+    fun w -> MenuShell.insert obj w#frame
+  method deactivate = MenuShell.deactivate obj
+  method connect = new menu_shell_signals obj
+end
+
+class menu obj = object
+  inherit menu_shell obj
+  method set_accelerator_table = Menu.set_accelerator_table obj
+  method popup = Menu.popup obj
+  method popdown () = Menu.popdown obj
+  method menu : Menu.t obj = obj
+end
+
+let new_menu ?(_ : unit option) =
+  Container.setter ?(Menu.create ()) ?cont:(pack_return (new menu))
+
+class option_menu obj = object
+  inherit button obj
+  method set_menu (menu : menu) = OptionMenu.set_menu obj menu#menu
+  method get_menu = new menu (OptionMenu.get_menu obj)
+  method remove_menu = OptionMenu.remove_menu obj
+  method set_history = OptionMenu.set_history obj
+end
+
+let new_option_menu ?(_ : unit option) =
+  Container.setter ?(OptionMenu.create ())
+    ?cont:(pack_return (new option_menu))
+
+class menu_bar = menu_shell
+
+let new_menu_bar ?(_ : unit option) =
+  Container.setter ?(MenuBar.create ()) ?cont:(pack_return (new menu_bar))
 
 class scrolled_window obj = object
   inherit container_full obj
@@ -380,8 +542,8 @@ class text obj = object
   method set_word_wrap = Text.set_word_wrap obj
   method point = Text.get_point obj
   method length = Text.get_length obj
-  method freeze = Text.freeze obj
-  method thaw = Text.thaw obj
+  method freeze () = Text.freeze obj
+  method thaw () = Text.thaw obj
   method insert = Text.insert ?obj
 end
 
