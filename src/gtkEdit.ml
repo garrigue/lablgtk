@@ -7,7 +7,6 @@ open GtkBase
 
 module Editable = struct
   let cast w : editable obj = Object.try_cast w "GtkEditable"
-  external coerce : [>`editable] obj -> editable obj = "%identity"
   external select_region : [>`editable] obj -> start:int -> stop:int -> unit
       = "ml_gtk_editable_select_region"
   external insert_text : [>`editable] obj -> string -> pos:int -> int
@@ -67,7 +66,6 @@ end
 
 module Entry = struct
   let cast w : entry obj = Object.try_cast w "GtkEntry"
-  external coerce : [>`entry] obj -> entry obj = "%identity"
   external create : unit -> entry obj = "ml_gtk_entry_new"
   external create_with_max_length : int -> entry obj
       = "ml_gtk_entry_new_with_max_length"

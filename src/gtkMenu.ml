@@ -6,7 +6,6 @@ open GtkBase
 
 module MenuItem = struct
   let cast w : menu_item obj = Object.try_cast w "GtkMenuItem"
-  external coerce : [>`menuitem] obj -> menu_item obj = "%identity"
   external create : unit -> menu_item obj = "ml_gtk_menu_item_new"
   external create_with_label : string -> menu_item obj
       = "ml_gtk_menu_item_new_with_label"
@@ -37,7 +36,6 @@ end
 
 module CheckMenuItem = struct
   let cast w : check_menu_item obj = Object.try_cast w "GtkCheckMenuItem"
-  external coerce : [>`checkmenuitem] obj -> check_menu_item obj = "%identity"
   external create : unit -> check_menu_item obj = "ml_gtk_check_menu_item_new"
   external create_with_label : string -> check_menu_item obj
       = "ml_gtk_check_menu_item_new_with_label"
@@ -94,7 +92,6 @@ end
 
 module MenuShell = struct
   let cast w : menu_shell obj = Object.try_cast w "GtkMenuShell"
-  external coerce : [>`menushell] obj -> menu_shell obj = "%identity"
   external append : [>`menushell] obj -> [>`widget] obj -> unit
       = "ml_gtk_menu_shell_append"
   external prepend : [>`menushell] obj -> [>`widget] obj -> unit

@@ -76,7 +76,7 @@ class frame_skel obj = object
 end
 
 class frame obj = object
-  inherit frame_skel (Frame.coerce obj)
+  inherit frame_skel (obj : Gtk.frame obj)
   method connect = new container_signals obj
 end
 

@@ -25,7 +25,6 @@ end
 
 module Frame = struct
   let cast w : frame obj = Object.try_cast w "GtkFrame"
-  external coerce : [>`frame] obj -> frame obj = "%identity"
   external create : string -> frame obj = "ml_gtk_frame_new"
   external set_label : [>`frame] obj -> string -> unit
       = "ml_gtk_frame_set_label"
@@ -156,7 +155,6 @@ end
 
 module Socket = struct
   let cast w : socket obj = Object.try_cast w "GtkSocket"
-  external coerce : [>`socket] obj -> socket obj = "%identity"
   external create : unit -> socket obj = "ml_gtk_socket_new"
   external steal : [>`socket] obj -> Gdk.xid -> unit = "ml_gtk_socket_steal"
 end
@@ -164,7 +162,6 @@ end
 (*
 module Invisible = struct
   let cast w : socket obj = Object.try_cast w "GtkInvisible"
-  external coerce : [>`invisible] obj -> invisible obj = "%identity"
   external create : unit -> invisible obj = "ml_gtk_invisible_new"
 end
 *)

@@ -34,7 +34,6 @@ end
 
 module Tree = struct
   let cast w : tree obj = Object.try_cast w "GtkTree"
-  external coerce : [>`tree] obj -> tree obj = "%identity"
   external create : unit -> tree obj = "ml_gtk_tree_new"
   external insert : [>`tree] obj -> [>`treeitem] obj -> pos:int -> unit
       = "ml_gtk_tree_insert"

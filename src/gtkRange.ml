@@ -71,7 +71,6 @@ end
 
 module Range = struct
   let cast w : range obj = Object.try_cast w "GtkRange"
-  external coerce : [>`range] obj -> range obj = "%identity"
   external get_adjustment : [>`range] obj -> adjustment obj
       = "ml_gtk_range_get_adjustment"
   external set_adjustment : [>`range] obj -> [>`adjustment] obj -> unit

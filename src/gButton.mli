@@ -4,8 +4,7 @@ open Gtk
 open GObj
 open GContainer
 
-class button_skel :
-  'a obj ->
+class button_skel : 'a obj ->
   object
     inherit container
     constraint 'a = [>`widget|`button|`container]
@@ -13,8 +12,7 @@ class button_skel :
     method clicked : unit -> unit
     method grab_default : unit -> unit
   end
-class button_signals :
-  'b obj ->
+class button_signals : 'b obj ->
   object ('a)
     inherit container_signals
     constraint 'b = [>`button|`container|`widget]
@@ -26,8 +24,7 @@ class button_signals :
     method released : callback:(unit -> unit) -> GtkSignal.id
   end
 
-class button :
-  [>`button] obj ->
+class button : Gtk.button obj ->
   object
     inherit button_skel
     val obj : Gtk.button obj
@@ -41,8 +38,7 @@ val button :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> button
 
-class toggle_button_signals :
-  'b obj ->
+class toggle_button_signals : 'b obj ->
   object ('a)
     inherit button_signals
     constraint 'b = [>`toggle|`button|`container|`widget]
