@@ -183,8 +183,11 @@ let field = parser
          if not (List.for_all attrs ~f:(List.mem ~set:attributes)) then
            raise (Stream.Error "bad attribute");
          `Prop (name, mlname, gtype, attrs)
-  | [< ' Kwd"method"; ' Ident name; ty = may_colon string "unit" >] ->
-      `Method (name, ty)
+  | [< ' Kwd"method"; ' Ident name; ty = may_colon string "unit";
+       attrs = star simple_attr >] ->
+         if not (List.for_all attrs ~f:(List.mem ~set:["Wrap"])) then
+           raise (Stream.Error "bad attribute");
+         `Method (name, ty, attrs)
   | [< ' Kwd"signal"; ' Ident name; m = marshaller; l = star simple_attr >] ->
       if not (List.for_all l ~f:(List.mem ~set:["Wrap";"NoWrap"])) then
         raise (Stream.Error "bad attribute");
@@ -465,7 +468,7 @@ let process_file f =
         end
       end;
       List.iter meths ~f:
-        begin fun (name, typ) ->
+        begin fun (name, typ, attrs) ->
           out "@ @[<hov2>external %s :" name;
           out "@ @[<hv>[>`%s] obj ->@ %s@]" tag typ;
           let cname = camlize ("ml" ^ gtk_class) ^ "_" ^ name in
@@ -543,8 +546,10 @@ let process_file f =
             let has = List.mem ~set in
             (wrap || has "Wrap" || has "WrapGet") && has "Read" &&
             not (has "NoWrap" || has "WrapSet"))
+      and wr_meths =
+        List.filter meths ~f:(fun (_,_,attrs) -> List.mem "Wrap" attrs)
       in
-      if wr_props <> [] || rd_props <> [] then begin
+      if wr_props <> [] || rd_props <> [] || wr_meths <> [] then begin
         out "@ @[<hv2>class virtual %s_props = object (self)" (camlize name);
         List.iter wr_props ~f:(fun (pname,mlname,gtype,_) ->
           out "@ @[<hv2>method set_%s =@ set %a self#obj@]"
@@ -552,6 +557,9 @@ let process_file f =
         List.iter rd_props ~f:(fun (pname,mlname,gtype,_) ->
           out "@ @[<hv2>method %s =@ get %a self#obj@]"
             mlname (oprop ~name ~gtype) pname);
+        List.iter wr_meths ~f:(fun (mname,typ,_) ->
+          out "@ @[<hv2>method %s %s=@ %s.%s self#obj@]"
+            mname (if typ = "unit" then "() " else "") (camlizeM name) mname);
         out "@]@ end@ "
       end;
       let vset = List.mem_assoc "vset" attrs in

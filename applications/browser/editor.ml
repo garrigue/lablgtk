@@ -60,7 +60,7 @@ class editor ?packing ?show () = object (self)
         and stop = start#forward_to_line_end in
         Lexical.tag view#buffer ~start ~stop
       end;
-    view#misc#modify_font_by_name "monospace 11";
+    view#misc#modify_font_by_name "monospace";
     view#misc#set_size_chars ~width:80 ~height:25 ~lang:"C" ();
     ()
 end
@@ -97,13 +97,12 @@ object (self)
     factory#add_separator ();
     factory#add_item "Quit" ~key:_Q ~callback:window#destroy;
     let factory = new GMenu.factory edit_menu ~accel_group in
-    let clipboard = GtkBase.Clipboard.get Gdk.Atom.clipboard in
     factory#add_item "Copy" ~key:_C ~callback:
-      (fun () -> editor#buffer#copy_clipboard clipboard);
+      (fun () -> editor#buffer#copy_clipboard GMain.clipboard);
     factory#add_item "Cut" ~key:_X ~callback:
-      (fun () -> editor#buffer#cut_clipboard clipboard);
+      (fun () -> editor#buffer#cut_clipboard GMain.clipboard);
     factory#add_item "Paste" ~key:_V ~callback:
-      (fun () -> editor#buffer#paste_clipboard clipboard);
+      (fun () -> editor#buffer#paste_clipboard GMain.clipboard);
     factory#add_separator ();
     factory#add_check_item "Word wrap" ~active:false ~callback:
       (fun b -> editor#view#set_wrap_mode (if b then `WORD else `NONE));

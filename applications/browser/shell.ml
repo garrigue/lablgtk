@@ -124,7 +124,7 @@ object (self)
     end
   initializer
     Lexical.init_tags buffer;
-    view#misc#modify_font_by_name "monospace 11";
+    view#misc#modify_font_by_name "monospace";
     view#misc#set_size_chars ~width:80 ~height:25 ~lang:"C" ();
     view#event#connect#key_press ~callback:
       begin fun ev ->
