@@ -46,9 +46,9 @@ let setup_stock () =
 	       GtkStock.modifier = [] ;
 	       GtkStock.keyval= 0 ; } in
   GtkStock.Item.add logo ;
-  if Sys.file_exists "gtk-logo-rgb.gif"
+  if Sys.file_exists "/usr/share/gtk-2.0/demo/gtk-logo-rgb.gif"
   then begin
-    let pb = GdkPixbuf.from_file "gtk-logo-rgb.gif" in
+    let pb = GdkPixbuf.from_file "/usr/share/gtk-2.0/demo/gtk-logo-rgb.gif" in
     let pb = GdkPixbuf.add_alpha ~transparent:(0xff, 0xff, 0xff) pb in
     GtkStock.make_icon_factory ~default:true
       ~icons:[ `STOCK id, GtkStock.make_icon_set ~pixbuf:pb [] ] () ;

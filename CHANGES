@@ -2,6 +2,7 @@ $Id$
 
 2004.05.09 [Olivier]
   * extended toolbar API (2.4)
+  * update GtkAction* widgets to the final API
 
 2004.04.04 [Olivier]
   * re-implement Gobject.Data.caml (correctly this time)

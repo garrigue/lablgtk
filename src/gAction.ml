@@ -17,6 +17,8 @@ class action_skel obj = object
   method as_action = (obj :> Gtk.action Gobject.obj)
 
   method activate () = Action.activate obj
+  method is_sensitive = Action.is_sensitive obj
+  method is_visible = Action.is_visible obj
   method connect_proxy w = Action.connect_proxy obj (GObj.as_widget w)
   method disconnect_proxy w = Action.disconnect_proxy obj (GObj.as_widget w)
   method get_proxies = List.map (new GObj.widget) (Action.get_proxies obj)
@@ -24,6 +26,8 @@ class action_skel obj = object
   method disconnect_accelerator () = Action.disconnect_accelerator obj
   method set_accel_path = Action.set_accel_path obj
   (* method set_accel_group = Action.set_accel_group obj *)
+  method block_activate_from (w : GObj.widget) = Action.block_activate_from obj w#as_widget
+  method unblock_activate_from (w : GObj.widget) = Action.unblock_activate_from obj w#as_widget
 end
 
 class action obj = object
@@ -69,24 +73,52 @@ class radio_action obj = object
   inherit OgtkActionProps.radio_action_props
   method connect = new radio_action_signals obj
   method as_radio_action = (obj :> Gtk.radio_action Gobject.obj)
-  method set_group = RadioAction.set_group obj
   method get_current_value = RadioAction.get_current_value obj
 end
 
-let radio_action ~name ~value () =
-  new radio_action (RadioAction.create [ Gobject.param Action.P.name name ;
-					 Gobject.param RadioAction.P.value value ])
+let radio_action ?group ~name ~value () =
+  new radio_action (RadioAction.create 
+		      (Gobject.Property.may_cons RadioAction.P.group
+			 (Gaux.may_map (fun g -> Some (g#as_radio_action)) group)
+			 [ Gobject.param Action.P.name name ;
+			   Gobject.param RadioAction.P.value value ]))
 
+class action_group_signals obj = object (self)
+  inherit [[> Gtk.action_group]] GObj.gobject_signals obj
+  method private virtual connect :
+    'b. ('a,'b) GtkSignal.t -> callback:'b -> GtkSignal.id
+  method connect_proxy ~callback = self#connect
+    {ActionGroup.S.connect_proxy with GtkSignal.marshaller = fun f ->
+     GtkSignal.marshal2 
+	(Gobject.Data.gobject : Gtk.action Gtk.obj Gobject.data_conv) 
+	GObj.conv_widget
+       "GtkActionGroup::connect_proxy" f}
+      (fun o -> callback (new action o))
+  method disconnect_proxy ~callback = self#connect
+    {ActionGroup.S.disconnect_proxy with GtkSignal.marshaller = fun f ->
+     GtkSignal.marshal2 
+	(Gobject.Data.gobject : Gtk.action Gtk.obj Gobject.data_conv) 
+	GObj.conv_widget
+	"GtkActionGroup::disconnect_proxy" f}
+      (fun o -> callback (new action o))
+  method post_activate ~callback = self#connect ActionGroup.S.post_activate
+      (fun o -> callback (new action o))
+  method pre_activate ~callback = self#connect ActionGroup.S.pre_activate
+      (fun o -> callback (new action o))
+end
 
 class action_group obj = object
   val obj = obj
   method private obj = obj
   inherit OgtkActionProps.action_group_props
   method as_group = (obj :> Gtk.action_group Gobject.obj)
+  method connect = new action_group_signals obj
   method get_action n = new action (ActionGroup.get_action obj n)
   method list_actions = List.map (new action) (ActionGroup.list_actions obj)
-  method add_action : 'a. (#action_skel as 'a) -> unit = 
-    fun a -> ActionGroup.add_action obj a#as_action
+  method add_action : 'a. ?accel:string -> (#action_skel as 'a) -> unit = 
+    fun ?accel a -> match accel with
+    | None -> ActionGroup.add_action obj a#as_action
+    | Some acc -> ActionGroup.add_action_with_accel obj a#as_action acc
   method remove_action : 'a. (#action_skel as 'a) -> unit = 
     fun a -> ActionGroup.remove_action obj a#as_action
 end
@@ -152,9 +184,27 @@ let group_radio_actions ?init_value ?callback radio_action_entries ac_group =
     callback ;
   ()
 
-class ui_manager_signals obj = object
+class ui_manager_signals obj = object (self)
   inherit [[> Gtk.ui_manager]] GObj.gobject_signals obj
   inherit OgtkActionProps.ui_manager_sigs
+  method connect_proxy ~callback = self#connect
+    {UIManager.S.connect_proxy with GtkSignal.marshaller = fun f ->
+     GtkSignal.marshal2 
+	(Gobject.Data.gobject : Gtk.action Gtk.obj Gobject.data_conv) 
+	GObj.conv_widget
+       "GtkUIManager::connect_proxy" f}
+      (fun o -> callback (new action o))
+  method disconnect_proxy ~callback = self#connect
+    {UIManager.S.disconnect_proxy with GtkSignal.marshaller = fun f ->
+     GtkSignal.marshal2 
+	(Gobject.Data.gobject : Gtk.action Gtk.obj Gobject.data_conv) 
+	GObj.conv_widget
+       "GtkUIManager::disconnect_proxy" f}
+      (fun o -> callback (new action o))
+  method post_activate ~callback = self#connect UIManager.S.post_activate
+      (fun o -> callback (new action o))
+  method pre_activate ~callback = self#connect UIManager.S.pre_activate
+      (fun o -> callback (new action o))
 end
 
 type ui_id = int
@@ -173,6 +223,8 @@ class ui_manager obj = object
     List.map (new action_group) (UIManager.get_action_groups obj)
   method get_accel_group = UIManager.get_accel_group obj
   method get_widget s = new GObj.widget (UIManager.get_widget obj s)
+  method get_toplevels kind =
+    List.map (new GObj.widget) (UIManager.get_toplevels obj kind)
   method get_action s = new action (UIManager.get_action obj s)
   method add_ui_from_string = UIManager.add_ui_from_string obj
   method add_ui_from_file = UIManager.add_ui_from_file obj
