@@ -589,7 +589,7 @@ module Viewport = struct
 end
 
 module Dialog = struct
-  type t = [widget container bin dialog] obj
+  type t = [widget container bin dialog window] obj
   let cast w : t =
     if Object.is_a w "GtkDialog" then Obj.magic w
     else invalid_arg "Gtk.Dialog.cast"
