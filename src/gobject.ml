@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open Gaux
 
 type -'a obj
@@ -245,6 +246,8 @@ module Property = struct
     = "ml_g_object_get_property_dyn"
   let set (obj : 'a obj) (prop : ('a,_) property) x =
     set_dyn obj prop.name (prop.conv.inj x)
+  let set_params obj params =
+    List.iter params ~f:(fun (prop,arg) -> set_dyn obj prop arg)
   let get (obj : 'a obj) (prop : ('a,_) property) =
     prop.conv.proj (get_dyn obj prop.name)
   let get_some obj prop =

@@ -377,6 +377,7 @@ CAMLprim value ml_g_object_new (value type, value params)
 
     for (i=0; i<n; i++) g_value_unset(&params_copy[i].value);
     free(params_copy);
+    g_type_class_unref(class);
     return Val_GObject_new(ret);
 }
 

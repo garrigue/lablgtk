@@ -166,6 +166,7 @@ module Property :
     val set_dyn : 'a obj -> string -> 'b data_set -> unit
     val get_dyn : 'a obj -> string -> data_get
     val set : 'a obj -> ('a, 'b) property -> 'b -> unit
+    val set_params : 'a obj -> 'a param list -> unit
     val get : 'a obj -> ('a, 'b) property -> 'b
     val get_some : 'a obj -> ('a, 'b option) property -> 'b
     val check : 'a obj -> ('a, 'c) property -> unit
