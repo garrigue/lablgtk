@@ -13,7 +13,7 @@ GETLIBDIR = ocamlc -where
 LIBDIR = `$(GETLIBDIR)`
 RANLIB = `which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'`
 
-GTK_CONFIG = gtk-config
+GTK_CONFIG = pkg-config gtk+-2.0
 GNOME_CONFIG = gnome-config
 GLADE_CONFIG = libglade-config
 
