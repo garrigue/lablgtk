@@ -99,10 +99,13 @@ ML_3 (gtk_image_set_from_stock, GtkImage_val, String_val, Int_val, Unit)
 #define GtkLabel_val(val) check_cast(GTK_LABEL,val)
 ML_1 (gtk_label_new, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_label_set_text, GtkLabel_val, String_val, Unit)
+ML_2 (gtk_label_set_markup, GtkLabel_val, String_val, Unit)
+ML_2 (gtk_label_set_markup_with_mnemonic, GtkLabel_val, String_val, Unit)
 ML_2 (gtk_label_set_pattern, GtkLabel_val, String_val, Unit)
 ML_2 (gtk_label_set_justify, GtkLabel_val, Justification_val, Unit)
 ML_2 (gtk_label_set_line_wrap, GtkLabel_val, Bool_val, Unit)
-Make_Extractor (gtk_label_get, GtkLabel_val, label, Val_string)
+ML_1 (gtk_label_get_text, GtkLabel_val, Val_string)
+ML_1 (gtk_label_get_label, GtkLabel_val, Val_string)
 
 /* gtktipsquery.h */
 

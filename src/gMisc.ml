@@ -119,10 +119,13 @@ let image ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
 class label_skel obj = object
   inherit misc obj
   method set_text = Label.set_text obj
+  method set_markup = Label.set_markup obj
+  method set_markup_with_mnemonic = Label.set_markup_with_mnemonic obj
   method set_justify = Label.set_justify obj
   method set_pattern = Label.set_pattern obj
   method set_line_wrap = Label.set_line_wrap obj
   method text = Label.get_text obj
+  method label = Label.get_label obj
 end
 
 class label obj = object
