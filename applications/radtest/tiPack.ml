@@ -69,7 +69,7 @@ object(self)
     end;
     let n = child#name in
     let expand =
-      new prop_bool ~name:"expand" ~init:"true" ~set:
+      new prop_bool ~name:"expand" ~init:"false" ~set:
 	begin fun v ->
 	  box#set_child_packing (child#base) ~expand:v;
 	  Propwin.update child false;

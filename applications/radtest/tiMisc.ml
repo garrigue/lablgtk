@@ -13,8 +13,8 @@ object
   inherit tiwidget ~name ~widget ~parent_tree ~pos parent_window ~insert_evbox
 
   method private class_name =
-    match dir with `VERTICAL -> "GMisc.vseparator"
-    | `HORIZONTAL -> "GMisc.hseparator"
+    match dir with `VERTICAL -> "GMisc.separator `VERTICAL"
+    | `HORIZONTAL -> "GMisc.hseparator `HORIZONTAL"
   initializer
     classe <-
     (match dir with `VERTICAL -> "vseparator" | `HORIZONTAL -> "hseparator")

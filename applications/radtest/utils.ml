@@ -79,7 +79,7 @@ let split name =
   let i = ref (l-1) in
   while !i >= 0 && name.[!i] >= '0' && name.[!i] <= '9' do decr i done;
   if !i = l-1 then
-    name, 0
+    name, (-1)
   else
     (String.sub name ~pos:0 ~len:(!i+1)),
     int_of_string (String.sub name ~pos:(!i+1) ~len:(l- !i-1))
@@ -87,8 +87,9 @@ let split name =
 let test_unique name = not (List.mem name !name_list)
 
 let make_new_name ?(index=1) base =
-  let index = ref index in
-  let name = ref (base ^ (string_of_int !index)) in
+  let index, name =
+    if index = -1 then ref 1, ref base
+    else ref index, ref (base ^ (string_of_int index)) in
   while not (test_unique !name) do
     incr index;
     name := base ^ (string_of_int !index)
