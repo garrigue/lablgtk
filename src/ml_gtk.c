@@ -959,8 +959,8 @@ ML_3 (gtk_clist_set_selectable, GtkCList_val, Int_val, Bool_val, Unit)
 ML_2 (gtk_clist_get_selectable, GtkCList_val, Int_val, Val_bool)
 ML_5 (gtk_clist_set_shift, GtkCList_val, Int_val, Int_val, Int_val, Int_val,
       Unit)
-ML_2 (gtk_clist_append, GtkCList_val, (char **), Val_int)
-ML_3 (gtk_clist_insert, GtkCList_val, Int_val, (char **), Unit)
+/* ML_2 (gtk_clist_append, GtkCList_val, (char **), Val_int) */
+ML_3 (gtk_clist_insert, GtkCList_val, Int_val, (char **), Val_int)
 ML_2 (gtk_clist_remove, GtkCList_val, Int_val, Unit)
 value ml_gtk_clist_set_row_data (value w, value row, value data)
 {
