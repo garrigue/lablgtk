@@ -18,7 +18,7 @@ class server_info ~(setting_name : string)
     ?(server = "") ?(port = 6667) ?(timeout = 0.01) 
     ?(passwd = "") ?(quit = "CamlIRC") ?(part = "bye...") 
      () =
-  let user_entry = getpwnam (getlogin ())
+  let user_entry = Constants.user_entry
   and name_changed = new GUtil.signal ()
   in
   object (self)

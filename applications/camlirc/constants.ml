@@ -16,4 +16,10 @@ let datestring =
 let id = software^" "^version^"("^datestring^")"
 and author = ""
 
-let config_file = (getpwnam (getlogin ())).pw_dir^"/.camlirc.xml"
+(* getlogin doesn't work all the time.  I observe it to raise an
+   exception when I log in via xdm on my Debian system, March 21, 2002.
+   Using getpwuid instead.  tim@fungible.com. *)
+
+let user_entry = getpwuid (getuid ());;
+
+let config_file = user_entry.pw_dir^"/.camlirc.xml";;
