@@ -5,6 +5,7 @@ $Id$
     #add_action_with_accel in a single method because they have
     different behaviour. Fixes a bug where stock items accelerators
     were not connected.
+  * add the padding properties of GBin.alignment (2.4)
 
 2004.08.27 [Olivier]
   * add GTree.cell_layout#reorder and GTree.cell_layout#set_cell_data_func

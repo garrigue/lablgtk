@@ -9,7 +9,7 @@ open GObj
 open OgtkBinProps
 open GContainer
 
-let set = Gobject.Property.set
+let param = Gobject.param
 
 class scrolled_window obj = object
   inherit [Gtk.scrolled_window] bin_impl obj
@@ -96,8 +96,14 @@ class alignment obj = object
   inherit alignment_props
 end
 
-let alignment =
-  Alignment.make_params [] ~cont:(
+let alignment ?padding =
+  let pl = match padding with 
+  | None -> [] 
+  | Some (t, b, l, r) -> [ param Alignment.P.top_padding t ;
+			   param Alignment.P.bottom_padding b ;
+			   param Alignment.P.left_padding l ;
+			   param Alignment.P.right_padding r ] in
+  Alignment.make_params pl ~cont:(
   pack_container ~create:(fun pl -> new alignment (Alignment.create pl)))
   
 let alignment_cast w = new alignment (Alignment.cast w#as_widget)
