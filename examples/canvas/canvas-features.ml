@@ -47,8 +47,7 @@ let create_canvas_features window =
 	       `outline_color "black" ;
 	       `fill_color "mediumseagreen" ;
 	       `width_units 3. ] in
-  let sigs = new GnoCanvas.item_signals (item#as_item) in
-  sigs#event (item_callback item (parent_1, parent_2)) ;
+  item#connect#event (item_callback item (parent_1, parent_2)) ;
   
   let group = GnoCanvas.group parent_2 ~props:[ `x 100.; `y 100. ] in
   GnoCanvas.ellipse group 
@@ -61,8 +60,7 @@ let create_canvas_features window =
     ~props:[ `x1 (-25.); `y1 (-25.); 
 	     `x2 25.; `y2 25.; 
 	     `fill_color "steelblue" ] ;
-  let sigs = new GnoCanvas.item_signals (group#as_item) in
-  sigs#event (item_callback group (parent_1, parent_2)) ;
+  group#connect#event (item_callback group (parent_1, parent_2)) ;
   
   vbox
 
