@@ -1,9 +1,13 @@
 $Id$
 
-1999.2.24
+2000.3.02
+  * move locale setting inside GtkMain.init, since it requires an
+    X display
+
+2000.2.24
   * add checks in add methods, to avoid critical errors
 
-1999.2.23
+2000.2.23
   * add dcalendar.ml (submitted by Ken Wakita) and csview.ml
   * correct bug in GdkObj.pixmap#line
 
