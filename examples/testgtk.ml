@@ -534,13 +534,13 @@ let create_handle_box =
 
 	let vbox = GPack.vbox ~packing:window#add () in
 
-	GMisc.label ~label:"Above" ~packing:vbox#add ();
+	GMisc.label ~text:"Above" ~packing:vbox#add ();
 	GMisc.separator `HORIZONTAL ~packing:vbox#add ();
 
 	let hbox = GPack.hbox ~spacing:10 ~packing:vbox#add () in
 	GMisc.separator `HORIZONTAL ~packing:vbox#add ();
 
-	GMisc.label ~label:"Below" ~packing:vbox#add ();
+	GMisc.label ~text:"Below" ~packing:vbox#add ();
 	let handle_box = GBin.handle_box ~packing:hbox#pack () in
 	handle_box #connect#child_attached
 	  ~callback:(handle_box_child_signal "attached" handle_box);
@@ -562,7 +562,7 @@ let create_handle_box =
 	handle_box2 #connect#child_detached
 	  ~callback:(handle_box_child_signal "detached" handle_box);
 
-	GMisc.label ~label:"Fooo!" ~packing:handle_box2#add ();
+	GMisc.label ~text:"Fooo!" ~packing:handle_box2#add ();
 	window #show ()
 	  
     | Some window -> window #destroy ()
@@ -643,7 +643,7 @@ let rec create_subtree (item : GTree.tree_item) level nb_item_max
       let ali =
         GBin.alignment ~xalign:0. ~xscale:0. ~packing:item_new#add () in
       let label = GMisc.label ~packing:ali#add
-          ~label:("item" ^ string_of_int level ^ "-" ^ string_of_int nb_item) ()
+          ~text:("item" ^ string_of_int level ^ "-" ^ string_of_int nb_item) ()
       in
       if nb_item = 2 then begin
         ali#remove label#coerce;
@@ -785,11 +785,11 @@ let create_tree_mode_window =
 	let box4 = GPack.hbox ~spacing:5 ~packing:frame#add ~border_width:5 () in
 
 	let box5 = GPack.hbox ~spacing:5 ~packing:box4#add () in
-	let label = GMisc.label ~label:"Number of items : "
+	let label = GMisc.label ~text:"Number of items : "
             ~xalign:0. ~yalign:0.5 ~packing:box5#pack () in
 	box5 #pack nb_item_spinner#coerce;
 	
-	let label = GMisc.label ~label:"Depth : " ~xalign:0. ~yalign:0.5
+	let label = GMisc.label ~text:"Depth : " ~xalign:0. ~yalign:0.5
 	    ~packing:box5#pack () in
 	box5 #pack recursion_spinner#coerce;
 	
@@ -922,33 +922,33 @@ let create_labels =
 
 	let frame = GBin.frame ~label:"Normal Label"
 	    ~packing:vbox#pack () in
-	GMisc.label ~label:"This is a normal label" ~packing:frame#add ();
+	GMisc.label ~text:"This is a normal label" ~packing:frame#add ();
 
 	let frame = GBin.frame ~label:"Multi_line Label"
 	    ~packing:vbox#pack () in
 	GMisc.label ~packing:frame#add
-	  ~label:"This is a multi-line label.\nSecond line\nThird line" ();
+	  ~text:"This is a multi-line label.\nSecond line\nThird line" ();
 
 	let frame = GBin.frame ~label:"Left Justified Label"
 	    ~packing:vbox#pack () in
 	GMisc.label ~packing:frame#add ~justify:`LEFT
-	  ~label:"This is a left justified\nmulti_line label\nThird line" ();
+	  ~text:"This is a left justified\nmulti_line label\nThird line" ();
 
 	let frame = GBin.frame ~label:"Right Justified Label"
 	    ~packing:vbox#pack () in
 	GMisc.label ~packing:frame#add ~justify:`RIGHT
-	  ~label:"This is a right justified\nmulti_line label\nThird line" ();
+	  ~text:"This is a right justified\nmulti_line label\nThird line" ();
 
 	let vbox = GPack.vbox ~spacing:5 ~packing:hbox#add () in
 
 	let frame = GBin.frame ~label:"Line wrapped Label"
 	    ~packing:vbox#pack () in
 	GMisc.label ~packing:frame#add ~line_wrap:true
-	  ~label:"This is an example of a line-wrapped label.  It should not be taking up the entire             width allocated to it, but automatically wraps the words to fit.  The time has come, for all good men, to come to the aid of their party.  The sixth sheik's six sheep's sick.\n     It supports multiple paragraphs correctly, and  correctly   adds many          extra  spaces. " ();
+	  ~text:"This is an example of a line-wrapped label.  It should not be taking up the entire             width allocated to it, but automatically wraps the words to fit.  The time has come, for all good men, to come to the aid of their party.  The sixth sheik's six sheep's sick.\n     It supports multiple paragraphs correctly, and  correctly   adds many          extra  spaces. " ();
 
 	let frame = GBin.frame ~label:"Underlined Label"
 	    ~packing:vbox#pack () in
-	GMisc.label ~label:"This label is underlined!\nThis one is underlined in a quite a funky fashion" ~packing:frame#add
+	GMisc.label ~text:"This label is underlined!\nThis one is underlined in a quite a funky fashion" ~packing:frame#add
 	  ~justify:`LEFT ~pattern:"_________________________ _ _________ _ _____ _ __ __  ___ ____ _____" ();
 
 	window #show ();
@@ -993,7 +993,7 @@ let create_reparent =
 	let frame = GBin.frame ~label:"Frame1"  ~packing:hbox#add () in
 	let vbox2 = GPack.vbox ~spacing:5 ~border_width:5
             ~packing:frame#add () in
-	let label = GMisc.label ~label:"Hello world"
+	let label = GMisc.label ~text:"Hello world"
 	    ~packing:vbox2#pack () in
 	label #misc#connect#parent_set ~callback:(set_parent label);
 	let button = GButton.button ~label:"switch"
@@ -1081,10 +1081,7 @@ let create_main_window () =
 
   let box1 = GPack.vbox ~packing: window#add () in
 
-  GMisc.label ~label:
-    (let x,y,z = GMain.Main.version in 
-     Printf.sprintf "Gtk+ v %d.%d.%d" x y z)
-    ~packing:box1#pack ();
+  GMisc.label ~text: "Gtk+ v1.2" ~packing:box1#pack ();
 
   let scrolled_window = GBin.scrolled_window ~border_width: 10
       ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC

@@ -58,7 +58,7 @@ let question_box ~title  ~buttons ?(default=1) ?icon message =
   | Some i -> hbox#pack i#coerce ~padding:4
   end;
   let lMessage =
-    GMisc.label ~label: message ~packing: hbox#add () in
+    GMisc.label ~text: message ~packing: hbox#add () in
   (* the function called to create each button by iterating *)
   let rec iter_buttons n = function
       [] ->
@@ -97,7 +97,7 @@ let input_widget ~widget ~event ~get_text ~bind_ok ~expand
   let vbox_saisie = GPack.vbox ~packing: (main_box#pack ~expand: true) () in
   
   let wl_invite = GMisc.label
-      ~label: message
+      ~text: message
       ~packing: (vbox_saisie#pack ~padding: 3)
       ()
   in

@@ -144,12 +144,12 @@ class Misc abstract set wrap : Widget {
 
 class Label set wrap : Misc {
   "label"	         gchararray           : Read / Write
-  "justify"              GtkJustification     : Read / Write
-  "wrap"(line_wrap)      gboolean             : Read / Write
   "use-markup"           gboolean             : Read / Write
   "use-underline"        gboolean             : Read / Write
   "mnemonic-keyval"      guint                : Read
   "mnemonic-widget"      GtkWidget_opt        : Read / Write
+  "justify"              GtkJustification     : Read / Write
+  "wrap"(line_wrap)      gboolean             : Read / Write
   "pattern"              gchararray           : Write
   "selectable"           gboolean             : Read / Write
   "attributes"           PangoAttrList        : Read / Write

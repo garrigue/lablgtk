@@ -357,7 +357,7 @@ object (self)
 end
 
 class label_drag ?packing ?show () =
-  let label = GMisc.label ~label:"Drop Here\n" ?packing ?show () in
+  let label = GMisc.label ~text:"Drop Here\n" ?packing ?show () in
 object (self)
   inherit widget label#as_widget
   inherit drag_handler
@@ -471,7 +471,7 @@ class popup () = object (self)
 end
 
 class popsite ?packing ?show () =
-  let label = GMisc.label ~label:"Popup\n" ?packing ?show ()
+  let label = GMisc.label ~text:"Popup\n" ?packing ?show ()
   and popup = new popup () in
 object (self)
   inherit widget label#as_widget

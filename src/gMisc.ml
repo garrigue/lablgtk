@@ -120,8 +120,12 @@ class label obj = object
   method connect = new widget_signals_impl obj
 end
 
-let label =
-  Label.make_params [] ~cont:(
+let label ?text ?markup ?use_underline ?mnemonic_widget =
+  let label, use_markup =
+    if markup = None then text, None else markup, Some true in
+  let mnemonic_widget = may_map (fun w -> w#as_widget) mnemonic_widget in
+  Label.make_params [] ?label ?use_markup ?use_underline ?mnemonic_widget
+    ~cont:(
   Misc.all_params ~cont:(fun p ?packing ?show () ->
     pack_return (new label (Label.create p)) ~packing ~show))
 
