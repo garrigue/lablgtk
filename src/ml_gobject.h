@@ -3,8 +3,8 @@
 /* Defined in ml_gobject.h */
 
 #define GObject_val(val) ((GObject*)Pointer_val(val))
-value Val_GObject (GObject *);
-value Val_GObject_new (GObject *);
+CAMLprim value Val_GObject (GObject *);
+CAMLprim value Val_GObject_new (GObject *);
 #define Val_GAnyObject(val) Val_GObject(G_OBJECT(val))
 #define Val_GAnyObject_new(val) Val_GObject_new(G_OBJECT(val))
 

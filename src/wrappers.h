@@ -11,13 +11,13 @@ CAMLextern char *young_start, *young_end; /* from minor_gc.h */
 
 value copy_memblock_indirected (void *src, asize_t size);
 value alloc_memblock_indirected (asize_t size);
-value ml_some (value);
+CAMLprim value ml_some (value);
 void ml_raise_null_pointer (void) Noreturn;
 value Val_pointer (void *);
-value copy_string_check (const char*);
+CAMLprim value copy_string_check (const char*);
 value copy_string_or_null (const char *);
 
-value *ml_global_root_new (value v);
+CAMLprim value *ml_global_root_new (value v);
 void ml_global_root_destroy (void *data);
 
 /* enums <-> polymorphic variants */
