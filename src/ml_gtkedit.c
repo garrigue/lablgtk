@@ -167,10 +167,6 @@ Make_Extractor (gtk_combo, GtkCombo_val, list, Val_GtkWidget)
 #ifdef HASGTK24
 /* gtkcombobox.h */
 #define GtkComboBox_val(val) check_cast(GTK_COMBO_BOX,val)
-ML_0 (gtk_combo_box_new_text, Val_GtkWidget_sink)
-ML_2 (gtk_combo_box_append_text, GtkComboBox_val, String_val, Unit)
-ML_3 (gtk_combo_box_insert_text, GtkComboBox_val, Int_val, String_val, Unit)
-ML_2 (gtk_combo_box_prepend_text, GtkComboBox_val, String_val, Unit)
 
 /* taken from ml_gtktree.c, this should go in a .h */
 #define GtkTreeIter_val(val) ((GtkTreeIter*)MLPointer_val(val))
