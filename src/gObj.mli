@@ -152,16 +152,16 @@ and misc_ops : Gtk.widget obj ->
       group:accel_group -> ?modi:Gdk.Tags.modifier list ->
       ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
     method add_selection_target :
-      target:string -> ?info:int -> Gdk.Tags.selection -> unit
+      target:string -> ?info:int -> Gdk.atom -> unit
     method allocation : rectangle
     method colormap : Gdk.colormap
     method connect : misc_signals
     method convert_selection :
-      target:string -> ?time:int32 -> Gdk.Tags.selection -> bool
+      target:string -> ?time:int32 -> Gdk.atom -> bool
     method draw : Gdk.Rectangle.t option -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
-    method grab_selection : ?time:int32 -> Gdk.Tags.selection -> bool
+    method grab_selection : ?time:int32 -> Gdk.atom -> bool
     method has_focus : bool
     method hide : unit -> unit
     method hide_all : unit -> unit

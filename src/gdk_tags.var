@@ -94,9 +94,6 @@ type gdkDragAction = "GDK_ACTION_"
 type gdkRgbDither = "GDK_RGB_DITHER_"
   [ `NONE | `NORMAL | `MAX ]
 
-type gdkSelection = "(gulong)GDK_SELECTION_"
-  [ `PRIMARY | `SECONDARY ]
-
 type xdata =
   [ `BYTES "8" | `SHORTS "16" | `INT32S "32" | `NONE "0" ]
 

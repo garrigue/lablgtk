@@ -59,30 +59,17 @@ Make_OptFlags_val (Accel_flag_val)
 
 #define Val_GtkAccelGroup_new(val) (Val_GObject_new(&val->parent))
 ML_0 (gtk_accel_group_new, Val_GtkAccelGroup_new)
-/*
-ML_0 (gtk_accel_group_get_default, Val_GtkAccelGroup)
-ML_3 (gtk_accel_group_activate, GtkAccelGroup_val, Int_val,
-      OptFlags_GdkModifier_val, Val_bool)
-ML_2 (gtk_accel_group_attach, GtkAccelGroup_val, GtkObject_val, Unit)
-ML_2 (gtk_accel_group_detach, GtkAccelGroup_val, GtkObject_val, Unit)
-*/
 ML_1 (gtk_accel_group_lock, GtkAccelGroup_val, Unit)
 ML_1 (gtk_accel_group_unlock, GtkAccelGroup_val, Unit)
-/*
-ML_3 (gtk_accel_group_lock_entry, GtkAccelGroup_val, Int_val,
-      OptFlags_GdkModifier_val, Unit)
-ML_3 (gtk_accel_group_unlock_entry, GtkAccelGroup_val, Int_val,
-      OptFlags_GdkModifier_val, Unit)
-
-ML_6 (gtk_accel_group_add, GtkAccelGroup_val, Int_val,
+ML_5 (gtk_accel_group_connect, GtkAccelGroup_val, Int_val,
       OptFlags_GdkModifier_val, OptFlags_Accel_flag_val,
-      GtkObject_val, Signal_name_val, Unit)
-ML_bc6 (ml_gtk_accel_group_add)
-ML_4 (gtk_accel_group_remove, GtkAccelGroup_val, Int_val,
-      OptFlags_GdkModifier_val, GtkObject_val, Unit)
+      GClosure_val, Unit)
+ML_3 (gtk_accel_group_disconnect_key, GtkAccelGroup_val, Int_val,
+      OptFlags_GdkModifier_val, Val_bool)
+ML_3 (gtk_accel_groups_activate, GObject_val, Int_val,
+      OptFlags_GdkModifier_val, Val_bool)
 ML_2 (gtk_accelerator_valid, Int_val, OptFlags_GdkModifier_val, Val_bool)
 ML_1 (gtk_accelerator_set_default_mod_mask, OptFlags_GdkModifier_val, Unit)
-*/
 
 /* gtkstyle.h */
 
@@ -407,6 +394,7 @@ ML_1 (gtk_drag_source_unset, GtkWidget_val, Unit)
 
 /* gtkwidget.h / gtkselection.h */
 
+Make_Val_final_pointer(GtkSelectionData, Ignore, gtk_selection_data_free, 20)
 #define GtkSelectionData_val(val) ((GtkSelectionData *)Pointer_val(val))
 
 Make_Extractor (gtk_selection_data, GtkSelectionData_val, selection,
@@ -424,18 +412,76 @@ CAMLprim value ml_gtk_selection_data_get_data (value val)
     if (data->length) memcpy ((void*)ret, data->data, data->length);
     return ret;
 }
+ML_1 (gtk_selection_data_copy, GtkSelectionData_val, Val_GtkSelectionData)
 
 ML_4 (gtk_selection_data_set, GtkSelectionData_val, GdkAtom_val, Int_val,
       Insert((guchar*)String_option_val(arg4))
       Option_val(arg4, string_length, -1) Ignore,
       Unit)
 
-ML_3 (gtk_selection_owner_set, GtkWidget_val, (GdkAtom)GdkSelection_val,
+ML_3 (gtk_selection_owner_set, GtkWidget_val, GdkAtom_val,
       Int32_val, Val_bool)
-ML_4 (gtk_selection_add_target, GtkWidget_val, (GdkAtom)GdkSelection_val,
+ML_4 (gtk_selection_add_target, GtkWidget_val, GdkAtom_val,
       GdkAtom_val, Int_val, Unit)
-ML_4 (gtk_selection_convert, GtkWidget_val, (GdkAtom)GdkSelection_val,
+ML_4 (gtk_selection_convert, GtkWidget_val, GdkAtom_val,
       GdkAtom_val, Int32_val, Val_bool)
+
+/* gtkclipboard.h */
+
+ML_1 (gtk_clipboard_get, GdkAtom_val, Val_pointer)
+ML_1 (gtk_clipboard_clear, GtkClipboard_val, Unit)
+ML_2 (gtk_clipboard_set_text, GtkClipboard_val, SizedString_val, Unit)
+ML_2 (gtk_clipboard_wait_for_contents, GtkClipboard_val, GdkAtom_val,
+      Val_GtkSelectionData)
+CAMLprim value ml_gtk_clipboard_wait_for_text (value c)
+{
+  const char *res = gtk_clipboard_wait_for_text (GtkClipboard_val(c));
+  return (res != NULL ? ml_some(copy_string_g_free(res)) : Val_unit);
+}
+static void clipboard_received_func (GtkClipboard *clipboard,
+                                     GtkSelectionData *selection_data,
+                                     gpointer data)
+{
+  value arg = Val_pointer (selection_data);
+  callback (*(value*)data, arg);
+  ml_global_root_destroy (data);
+}
+CAMLprim value ml_gtk_clipboard_request_contents (value c, value a, value f)
+{
+  void *f_p = ml_global_root_new (f);
+  gtk_clipboard_request_contents (GtkClipboard_val(c), GdkAtom_val(a),
+                                  clipboard_received_func, f_p);
+  return Val_unit;
+}
+static void clipboard_text_received_func (GtkClipboard *clipboard,
+                                          const gchar *text,
+                                          gpointer data)
+{
+  value arg = (text != NULL ? ml_some(copy_string(text)) : Val_unit);
+  callback (*(value*)data, arg);
+  ml_global_root_destroy (data);
+}
+CAMLprim value ml_gtk_clipboard_request_text (value c, value f)
+{
+  void *f_p = ml_global_root_new (f);
+  gtk_clipboard_request_text (GtkClipboard_val(c),
+                              clipboard_text_received_func, f_p);
+  return Val_unit;
+}
+/*
+static void clipboard_get_func (GtkClipboard *clipboard,
+                                GtkSelectionData *selection_data,
+                                guint info, gpointer data)
+{
+  value arg = Val_pointer (selection_data);
+  callback2 (Field(*(value*)data,0), arg, Val_int(info));
+}
+static void clipboard_clear_func (GtkClipboard *clipboard, gpointer data)
+{
+  callback (Field(*(value*)data,1), Val_unit);
+  ml_global_root_destroy (data);
+}
+*/
 
 /* gtkcontainer.h */
 
