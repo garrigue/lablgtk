@@ -68,6 +68,10 @@ val param : ('a,'b) property -> 'b -> 'a param
 
 val unsafe_create : classe:string -> 'a param list -> 'a obj
     (* This type is NOT safe *)
+val unsafe_unref : 'a obj -> unit
+    (* Creates a NULL pointer; many places do not check for them! *)
+val get_ref_count : 'a obj -> int
+    (* Number of references to an object (for debugging) *)
 
 val set : ('a, 'b) property -> 'a obj -> 'b -> unit
 val get : ('a, 'b) property -> 'a obj -> 'b

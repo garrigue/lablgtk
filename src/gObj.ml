@@ -279,7 +279,7 @@ and misc_ops obj = object (self)
   method modify_font = modify_font obj
   method modify_font_by_name s =
     modify_font obj (Pango.Font.from_string s)
-  method create_pango_context () =
+  method create_pango_context =
     new GPango.context_rw (create_pango_context obj)
   (* get functions *)
   method name = get P.name obj

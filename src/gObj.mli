@@ -186,7 +186,7 @@ and misc_ops : Gtk.widget obj ->
     method colormap : Gdk.colormap
     method connect : misc_signals
     method convert_selection : target:string -> ?time:int32 -> Gdk.atom -> bool
-    method create_pango_context : unit -> GPango.context_rw
+    method create_pango_context : GPango.context_rw
     method draw : Gdk.Rectangle.t option -> unit
     method get_flag : Tags.widget_flags -> bool
     method grab_default : unit -> unit

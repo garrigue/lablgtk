@@ -161,6 +161,8 @@ external coerce_option : 'a obj option -> unit obj option = "%identity"
 external unsafe_create : g_type -> (string * 'a data_set) list -> 'b obj
     = "ml_g_object_new"
   (* This is dangerous! *)
+external unsafe_unref : 'a obj -> unit = "ml_g_object_unref"
+external get_ref_count : 'a obj -> int = "ml_g_object_ref_count"
 
 type ('a,'b) property = { name: string; conv: 'b data_conv }
 
