@@ -426,8 +426,9 @@ module Widget = struct
   external remove_accelerator :
       [> widget] obj -> AcceleratorTable.t -> string -> unit
       = "ml_gtk_widget_remove_accelerator"
-  let install_accelerator w t sig:(sgn : ([> widget],unit->unit) Signal.t) =
-    install_accelerator w t sgn.Signal.name
+  let install_accelerator w t sig:(sgn : ([> widget],unit->unit) Signal.t)
+      :key ?mod:mods [< [] >] =
+    install_accelerator w t sgn.Signal.name :key mod:mods
   let remove_accelerator w t sig:(sgn : ([> widget],unit->unit) Signal.t) =
     remove_accelerator w t sgn.Signal.name
   external window : [> widget] obj -> Gdk.window
@@ -691,7 +692,7 @@ module MenuItem = struct
   let create ?:label ?(_ : unit option) =
     match label with None -> create ()
     | Some label -> create_with_label label
-  external set_submenu : [> menuitem] obj -> [> widget] obj -> unit
+  external set_submenu : [> menuitem] obj -> [> menu] obj -> unit
       = "ml_gtk_menu_item_set_submenu"
   external remove_submenu : [> menuitem] obj -> unit
       = "ml_gtk_menu_item_remove_submenu"
@@ -699,10 +700,6 @@ module MenuItem = struct
       = "ml_gtk_menu_item_accelerator_size"
   external accelerator_text : [> menuitem] obj -> string -> unit
       = "ml_gtk_menu_item_accelerator_size"
-  let setter w :cont ?accelerator:text =
-    may text fun:(accelerator_text w);
-    cont w
-  let set = setter ?cont:Container.set
   external configure :
       [> menuitem] obj -> show_toggle:bool -> show_indicator:bool -> unit
       = "ml_gtk_menu_item_configure"
@@ -737,7 +734,7 @@ module CheckMenuItem = struct
     may state fun:(set_state w);
     may show_toggle fun:(set_show_toggle w);
     cont w
-  let set = setter ?cont:MenuItem.set
+  let set = setter ?cont:Container.set
   external toggled : [> checkmenuitem] obj -> unit
       = "ml_gtk_check_menu_item_toggled"
   module Signals = struct

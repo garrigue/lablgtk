@@ -3,22 +3,6 @@
 open Gtk
 open GtkObj
 
-let window = new_window `TOPLEVEL width:500 height:300
-
-let vbox = new_box `VERTICAL packing:window#add
-
-let menubar = new_menu_bar packing:(vbox#pack expand:false)
-
-let file_item = new_menu_item label:"File" packing:menubar#append
-
-let file_menu = new_menu packing:file_item#set_submenu
-
-let open_item = new_menu_item label:"Open..." packing:file_menu#append
-
-let save_item = new_menu_item label:"Save..." packing:file_menu#append
-
-let quit_item = new_menu_item label:"Quit" packing:file_menu#append
-
 let file_dialog :title :callback ?:filename =
   let sel = new_file_selection :title fileop_buttons:false ?:filename in
   sel#cancel_button#connect#clicked callback:sel#destroy;
@@ -69,18 +53,22 @@ end
 
 let editor = new editor ()
 
-let table = AcceleratorTable.create ()
+let window = new_window `TOPLEVEL width:500 height:300
+let vbox = new_box `VERTICAL packing:window#add
+
+let menubar = new_menu_bar packing:(vbox#pack expand:false)
+let file_item = new_menu_item label:"File" packing:menubar#append
+let file_menu = new_menu packing:file_item#set_submenu
+
+let factory = new menu_factory file_menu
 
 let _ =
   window#connect#destroy callback:Main.quit;
-  open_item#connect#activate callback:editor#open_file;
-  save_item#connect#activate callback:editor#save_file;
-  quit_item#connect#activate callback:window#destroy;
-  List.iter [ open_item, 'O'; save_item, 'S'; quit_item, 'Q' ] fun:
-    (fun ((item : menu_item), key) ->
-      Widget.install_accelerator (MenuItem.cast item#frame) table
-	sig:MenuItem.Signals.activate :key mod:[`CONTROL]);
-  window#add_accelerator_table table;
+  factory#add_item label:"Open..." key:'O' callback:editor#open_file;
+  factory#add_item label:"Save..." key:'S' callback:editor#save_file;
+  factory#add_separator ();
+  factory#add_item label:"Quit" key:'Q' callback:window#destroy;
+  window#add_accelerator_table factory#table;
   vbox#add editor#text;
   editor#text#connect#event#button_press
     callback:(fun ev ->
