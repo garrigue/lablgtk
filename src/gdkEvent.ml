@@ -184,10 +184,12 @@ end
 module Client = struct
   type t = [ `CLIENT_EVENT ] event
   let cast (ev : any) : t =
-    match get_type ev with `CLIENT_EVENT -> Obj.magic ev
+    match get_type ev with
+      `CLIENT_EVENT -> Obj.magic ev
     | _ -> invalid_arg "GdkEvent.Client.cast"
-  external message_type : t -> int = "ml_GdkEventClient_message_type"
-  external data : t -> Tags.xdata_ret = "ml_GdkEventClient_data"
+  external window : t -> window = "ml_GdkEventClient_window"
+  external message_type : t -> atom = "ml_GdkEventClient_message_type"
+  external data : t -> xdata_ret = "ml_GdkEventClient_data"
 end
 
 module Setting = struct

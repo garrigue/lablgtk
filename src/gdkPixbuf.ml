@@ -116,7 +116,7 @@ let render_to_drawable_alpha dw ?(dest_x=0) ?(dest_y=0) ?width ?height
   _render_to_drawable_alpha ~src dw ~src_x ~src_y ~dest_x ~dest_y ~width
     ~height ~dither ~x_dither ~y_dither ~alpha ~threshold
 
-external _create_pixmap : pixbuf -> threshold:int -> pixmap * bitmap
+external _create_pixmap : pixbuf -> threshold:int -> pixmap * bitmap option
   = "ml_gdk_pixbuf_render_pixmap_and_mask"
 let create_pixmap ?(threshold=128) pb = _create_pixmap pb ~threshold
 

@@ -746,7 +746,7 @@ Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity),
                 device, Val_GdkDevice)
 
 Make_Extractor (GdkEventClient, GdkEvent_arg(Client), window, Val_GdkWindow)
-Make_Extractor (GdkEventClient, GdkEvent_arg(Client), message_type, Val_int)
+Make_Extractor(GdkEventClient, GdkEvent_arg(Client), message_type, Val_GdkAtom)
 value ml_GdkEventClient_data (GdkEventClient *ev)
 {
     int nitems = 0;

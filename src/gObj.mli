@@ -94,6 +94,14 @@ class style : Gtk.style ->
     method font : Gdk.font
     method light : Gtk.Tags.state_type -> Gdk.Color.t
     method mid : Gtk.Tags.state_type -> Gdk.Color.t
+    method set_bg : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_dark : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_font : Gdk.font -> unit
+    method set_light : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_mid : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method text : Gtk.Tags.state_type -> Gdk.Color.t
   end
 

@@ -217,7 +217,7 @@ varcc: varcc.cmo
 	rm -f *_tags.h *_tags.c
 
 clean:
-	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml
+	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml xml_lexer.ml
 
 $(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h ml_pango.h ml_gobject.h ml_glib.h wrappers.h
 ml_glib.o: glib_tags.h ml_glib.h wrappers.h

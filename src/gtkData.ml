@@ -86,16 +86,14 @@ module Style = struct
   external get_colormap : style -> Gdk.colormap = "ml_gtk_style_get_colormap"
   external get_font : style -> Gdk.font = "ml_gtk_style_get_font"
   external set_font : style -> Gdk.font -> unit = "ml_gtk_style_set_font"
-(*
-  external get_dark_gc : style -> state:state_type -> Gdk.gc
+  (* external get_dark_gc : style -> state:state_type -> Gdk.gc
       = "ml_gtk_style_get_dark_gc"
   external get_light_gc : style -> state:state_type -> Gdk.gc
       = "ml_gtk_style_get_light_gc"
   let set st ?:background ?:font =
     let may_set f = may fun:(f st) in
     may_set set_background background;
-    may_set set_font font
-*)
+    may_set set_font font *)
 end
 
 module Data = struct
