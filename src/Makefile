@@ -68,6 +68,13 @@ GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo
 GNOMECOBJS = ml_gtkxmhtml.o
 endif
 
+ifdef USE_GLADE
+MLLIBS += lablglade.cma
+CLIBS += liblablglade.a
+GLADEMLOBJS = glade.cmo
+GLADECOBJS = ml_glade.o
+endif
+
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
 .c.o:
@@ -163,6 +170,16 @@ lablgnome.cma: $(GNOMEMLOBJS)
 lablgnome.cmxa: $(GNOMEMLOBJS:.cmo=.cmx)
 	$(LINKOPT) -a -o $@ $(GNOMEMLOBJS:.cmo=.cmx) \
 	  -cclib -llablgnome $(GNOMELIBS)
+
+liblablglade.a: $(GLADECOBJS)
+	ar rc $@ $(GLADECOBJS)
+	$(RANLIB) $@
+lablglade.cma: $(GLADEMLOBJS)
+	$(LINKER) -a -custom -o $@ $(GLADEMLOBJS) \
+	  -cclib -llablglade $(GLADELIBS)
+lablglade.cmxa: $(GLADEMLOBJS:.cmo=.cmx)
+	$(LINKOPT) -a -o $@ $(GLADEMLOBJS:.cmo=.cmx) \
+	  -cclib -llablglade $(GLADELIBS)
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml

@@ -1,5 +1,8 @@
 $Id$
 
+2001.02.10
+  * added preliminary support for libglade
+
 2000.12.20
   * add Filesection.complete (Sven Luther's patch)
 

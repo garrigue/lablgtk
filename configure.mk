@@ -16,12 +16,23 @@ GETRANLIB = which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/
 
 GTK_CONFIG = gtk-config
 GNOME_CONFIG = gnome-config
+GLADE_CONFIG = libglade-config
 
 ifdef USE_GNOME
-GTKGETCFLAGS = $(GTK_CONFIG) --cflags`" -I"`gnome-config --includedir
+ifdef USE_GLADE
+GTKCFLAGS = `$(GLADE_CONFIG) --cflags gnome`
+GLADELIBS = `$(GLADE_CONFIG) --libs gnome`
+else
+GTKCFLAGS = `$(GTK_CONFIG) --cflags`" -I"`gnome-config --includedir`
+endif
 GNOMELIBS = `$(GNOME_CONFIG) --libs gtkxmhtml`
 else
-GTKGETCFLAGS = $(GTK_CONFIG) --cflags
+ifdef USE_GLADE
+GTKCFLAGS = `$(GLADE_CONFIG) --cflags gtk`
+GLADELIBS = `$(GLADE_CONFIG) --libs gtk`
+else
+GTKCFLAGS = `$(GTK_CONFIG) --cflags`
+endif
 endif
 
 GTKGETLIBS = $(GTK_CONFIG) --libs
@@ -36,6 +47,7 @@ config.make:
 	@echo CAMLOPT=$(CAMLOPT) >> config.make
 	@echo USE_GL=$(USE_GL) >> config.make
 	@echo USE_GNOME=$(USE_GNOME) >> config.make
+	@echo USE_GLADE=$(USE_GLADE) >> config.make
 	@echo USE_CC=$(USE_CC) >> config.make
 	@echo DEBUG=$(DEBUG) >> config.make
 	@echo CC=$(CC) >> config.make
@@ -43,11 +55,14 @@ config.make:
 	@echo LIBDIR=$(LIBDIR) >> config.make
 	@echo BINDIR=`$(GETBINDIR)` >> config.make
 	@echo INSTALLDIR=$(INSTALLDIR) >> config.make
-	@echo GTKCFLAGS=`$(GTKGETCFLAGS)` >> config.make
+	@echo GTKCFLAGS=$(GTKCFLAGS) >> config.make
 	@echo GTKLIBS=`$(GTKGETLIBS)` | \
 	  sed -e 's/-l/-cclib &/g' -e 's/-[LRWr][^ ]*/-ccopt &/g' \
 	  >> config.make
 	@echo GNOMELIBS=$(GNOMELIBS) | \
+	  sed -e 's/-l/-cclib &/g' -e 's/-[LRWr][^ ]*/-ccopt &/g' \
+	  >> config.make
+	@echo GLADELIBS=$(GLADELIBS) | \
 	  sed -e 's/-l/-cclib &/g' -e 's/-[LRWr][^ ]*/-ccopt &/g' \
 	  >> config.make
 	cat config.make
