@@ -1,5 +1,8 @@
 $Id$
 
+2004.06.22 [Olivier]
+  * extend GtkComboBox convenience API to GtkComboBoxEntry.
+
 2004.06.15 [Olivier]
   * fix the ocamldoc generator for ocaml 3.08
   * silence some GCC 3.4 warnings

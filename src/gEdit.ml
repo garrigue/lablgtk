@@ -171,17 +171,6 @@ let combo_box ?model =
     let c = new combo_box (GtkEdit.ComboBox.create pl) in
     GObj.pack_return c ~packing ~show))
 
-let combo_box_text ?(strings=[]) =
-  let (store, column) as model = GTree.store_of_list Gobject.Data.string strings in
-  GtkEdit.ComboBox.make_params ~model:store#as_model [] ~cont:(
-  GtkBase.Widget.size_params ~cont:(fun pl ?packing ?show () ->
-    let combo = new combo_box (GtkEdit.ComboBox.create pl) in
-    let r = GTree.cell_renderer_text [] in
-    combo#pack r ; 
-    combo#add_attribute r "text" column ;
-    GObj.pack_return combo ~packing ~show ;
-    combo, model))
-
 class combo_box_entry _obj = object (self)
   inherit combo_box _obj
   method text_column = 
@@ -214,6 +203,38 @@ let combo_box_entry ?model ?text_column =
       (new combo_box_entry (GtkEdit.ComboBoxEntry.create pl))
       ~packing ~show ))
 
+type 'a text_combo = 'a * (GTree.list_store * string GTree.column) 
+  constraint 'a = #combo_box
+
+let text_combo_add ((_, (lstore, column)) : 'a text_combo) str =
+  let row = lstore#append () in
+  lstore#set ~row ~column str
+
+let text_combo_get_active ((combo, (lstore, column)) : 'a text_combo) =
+  match combo#active_iter with
+  | None -> None
+  | Some row -> Some (lstore#get ~row ~column)
+
+let combo_box_text ?(strings=[]) =
+  let (store, column) as model = GTree.store_of_list Gobject.Data.string strings in
+  GtkEdit.ComboBox.make_params ~model:store#as_model [] ~cont:(
+  GtkBase.Widget.size_params ~cont:(fun pl ?packing ?show () ->
+    let combo = new combo_box (GtkEdit.ComboBox.create pl) in
+    let r = GTree.cell_renderer_text [] in
+    combo#pack r ; 
+    combo#add_attribute r "text" column ;
+    GObj.pack_return combo ~packing ~show ;
+    combo, model))
+
+let combo_box_entry_text ?(strings=[]) =
+  let (store, column) as model = GTree.store_of_list Gobject.Data.string strings in
+  GtkEdit.ComboBox.make_params ~model:store#as_model 
+    [ Gobject.param GtkEdit.ComboBoxEntry.P.text_column column.GTree.index ] 
+    ~cont:(
+  GtkBase.Widget.size_params ~cont:(fun pl ?packing ?show () ->
+    let combo = new combo_box_entry (GtkEdit.ComboBoxEntry.create pl) in
+    GObj.pack_return combo ~packing ~show ;
+    combo, model))
 
 (*
 class text obj = object (self)

@@ -279,17 +279,6 @@ val combo_box :
   unit -> combo_box
 
 (** @since GTK 2.4
-    @gtkdoc gtk GtkComboBox *)
-val combo_box_text :
-  ?strings:string list ->
-  ?wrap_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(GObj.widget -> unit) ->
-  ?show:bool ->
-  unit -> combo_box * (GTree.list_store * string GTree.column)
-
-(** @since GTK 2.4
     @gtkdoc gtk GtkComboBoxEntry *)
 class combo_box_entry : 
   ([> Gtk.combo_box_entry] as 'a) Gtk.obj ->
@@ -312,3 +301,38 @@ val combo_box_entry :
   ?packing:(GObj.widget -> unit) ->
   ?show:bool ->
   unit -> combo_box_entry
+
+(** {4 Convenience API for text-only ComboBoxes} *)
+
+type 'a text_combo = 'a * (GTree.list_store * string GTree.column)
+  constraint 'a = #combo_box
+
+val text_combo_add        : 'a text_combo -> string -> unit
+val text_combo_get_active : 'a text_combo -> string option
+
+(** A convenience function for creating simple {!GEdit.combo_box}. 
+    Creates a simple {!GTree.list_store} with a single text column, 
+    adds [strings] in it, creates a {!GTree.cell_renderer_text} and 
+    connects it with the model.
+    @since GTK 2.4
+    @gtkdoc gtk GtkComboBox *)
+val combo_box_text :
+  ?strings:string list ->
+  ?wrap_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) ->
+  ?show:bool ->
+  unit -> combo_box text_combo
+
+(** A convenience function. See {!GEdit.combo_box_text}
+    @since GTK 2.4
+    @gtkdoc gtk GtkComboBoxEntry *)
+val combo_box_entry_text :
+  ?strings:string list ->
+  ?wrap_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) ->
+  ?show:bool ->
+  unit -> combo_box_entry text_combo
