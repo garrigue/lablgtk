@@ -14,7 +14,7 @@ let font = Gdk.Font.load_fontset
      -misc-fixed-medium-r-normal--14-*-jisx0208.1983-0, \
      -misc-fixed-medium-r-normal--14-*-jisx0201.1976-0"
 let button = new_button label: "終了" packing: box#add
-let label = new_label label:"これにも影響する" packing: box#add
+let label = new_label text:"これにも影響する" packing: box#add
 
 let _ =
   window#connect#destroy callback:Main.quit;

@@ -264,7 +264,7 @@ Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
 /* gtkcontainer.h */
 
 #define GtkContainer_val(val) check_cast(GTK_CONTAINER,val)
-ML_2 (gtk_container_border_width, GtkContainer_val, Int_val, Unit)
+ML_2 (gtk_container_set_border_width, GtkContainer_val, Int_val, Unit)
 ML_2 (gtk_container_add, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_remove, GtkContainer_val, GtkWidget_val, Unit)
 static void ml_gtk_simple_callback (GtkWidget *w, gpointer data)
@@ -371,7 +371,7 @@ ML_1 (gtk_menu_item_right_justify, GtkMenuItem_val, Unit)
 #define GtkCheckMenuItem_val(val) check_cast(GTK_CHECK_MENU_ITEM,val)
 ML_0 (gtk_check_menu_item_new, Val_GtkWidget_sink)
 ML_1 (gtk_check_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
-ML_2 (gtk_check_menu_item_set_state, GtkCheckMenuItem_val, Bool_val, Unit)
+ML_2 (gtk_check_menu_item_set_active, GtkCheckMenuItem_val, Bool_val, Unit)
 ML_2 (gtk_check_menu_item_set_show_toggle, GtkCheckMenuItem_val,
       Bool_val, Unit)
 ML_1 (gtk_check_menu_item_toggled, GtkCheckMenuItem_val, Unit)
@@ -452,8 +452,7 @@ ML_2 (gtk_window_add_accel_group, GtkWindow_val,
       GtkAccelGroup_val, Unit)
 ML_2 (gtk_window_remove_accel_group, GtkWindow_val,
       GtkAccelGroup_val, Unit)
-ML_2 (gtk_window_position, GtkWindow_val,
-      Window_position_val, Unit)
+ML_2 (gtk_window_set_position, GtkWindow_val, Window_position_val, Unit)
 ML_1 (gtk_window_activate_focus, GtkWindow_val, Val_bool)
 ML_1 (gtk_window_activate_default, GtkWindow_val, Val_bool)
 
@@ -644,9 +643,9 @@ ML_2 (gtk_option_menu_set_history, GtkOptionMenu_val, Int_val, Unit)
 ML_0 (gtk_toggle_button_new, Val_GtkWidget_sink)
 ML_1 (gtk_toggle_button_new_with_label, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_toggle_button_set_mode, GtkToggleButton_val, Bool_val, Unit)
-ML_2 (gtk_toggle_button_set_state, GtkToggleButton_val, Bool_val, Unit)
+ML_2 (gtk_toggle_button_set_active, GtkToggleButton_val, Bool_val, Unit)
 ML_1 (gtk_toggle_button_toggled, GtkToggleButton_val, Unit)
-Make_Extractor (GtkToggleButton, GtkToggleButton_val, active, Val_bool)
+Make_Extractor (gtk_toggle_button_get, GtkToggleButton_val, active, Val_bool)
 
 /* gtkcheckbutton.h */
 
@@ -811,7 +810,7 @@ ML_5 (gtk_notebook_insert_page_menu, GtkNotebook_val, GtkWidget_val,
       GtkWidget_val, Option_val(arg4,GtkWidget_val,NULL) Ignore,
       Option_val(arg5,Int_val,-1) Ignore, Unit)
 ML_2 (gtk_notebook_remove_page, GtkNotebook_val, Int_val, Unit)
-ML_1 (gtk_notebook_current_page, GtkNotebook_val, Val_int)
+ML_1 (gtk_notebook_get_current_page, GtkNotebook_val, Val_int)
 ML_2 (gtk_notebook_set_page, GtkNotebook_val, Int_val, Unit)
 ML_2 (gtk_notebook_set_tab_pos, GtkNotebook_val, Position_val, Unit)
 ML_2 (gtk_notebook_set_show_tabs, GtkNotebook_val, Bool_val, Unit)
@@ -828,8 +827,8 @@ ML_0 (gtk_hpaned_new, Val_GtkWidget_sink)
 ML_0 (gtk_vpaned_new, Val_GtkWidget_sink)
 ML_2 (gtk_paned_add1, GtkPaned_val, GtkWidget_val, Unit)
 ML_2 (gtk_paned_add2, GtkPaned_val, GtkWidget_val, Unit)
-ML_2 (gtk_paned_handle_size, GtkPaned_val, Int_val, Unit)
-ML_2 (gtk_paned_gutter_size, GtkPaned_val, Int_val, Unit)
+ML_2 (gtk_paned_set_handle_size, GtkPaned_val, Int_val, Unit)
+ML_2 (gtk_paned_set_gutter_size, GtkPaned_val, Int_val, Unit)
 
 /* gtkscrolledwindow.h */
 
@@ -846,6 +845,8 @@ Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
 		hscrollbar_policy, Val_policy_type)
 Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
 		vscrollbar_policy, Val_policy_type)
+ML_2 (gtk_scrolled_window_add_with_viewport, GtkScrolledWindow_val,
+      GtkWidget_val, Unit)
 
 /* gtktable.h */
 
@@ -1002,9 +1003,9 @@ ML_3 (gtk_image_set, GtkImage_val, GdkImage_val,
 
 #define GtkLabel_val(val) check_cast(GTK_LABEL,val)
 ML_1 (gtk_label_new, String_val, Val_GtkWidget_sink)
-ML_2 (gtk_label_set, GtkLabel_val, String_val, Unit)
+ML_2 (gtk_label_set_text, GtkLabel_val, String_val, Unit)
 ML_2 (gtk_label_set_justify, GtkLabel_val, Justification_val, Unit)
-Make_Extractor (GtkLabel, GtkLabel_val, label, copy_string)
+Make_Extractor (gtk_label_get, GtkLabel_val, label, copy_string)
 
 /* gtktipsquery.h */
 
@@ -1092,7 +1093,7 @@ ML_2 (gtk_range_set_update_policy, GtkRange_val, Update_type_val, Unit)
 ML_2 (gtk_scale_set_digits, GtkScale_val, Int_val, Unit)
 ML_2 (gtk_scale_set_draw_value, GtkScale_val, Bool_val, Unit)
 ML_2 (gtk_scale_set_value_pos, GtkScale_val, Position_val, Unit)
-ML_1 (gtk_scale_value_width, GtkScale_val, Val_int)
+ML_1 (gtk_scale_get_value_width, GtkScale_val, Val_int)
 ML_1 (gtk_scale_draw_value, GtkScale_val, Unit)
 ML_1 (gtk_hscale_new, GtkAdjustment_val, Val_GtkWidget_sink)
 ML_1 (gtk_vscale_new, GtkAdjustment_val, Val_GtkWidget_sink)

@@ -5,30 +5,33 @@ open GdkObj
 open GtkObj
 
 class ['a] menu_factory (menu : 'a)
-    ?:group [< Gtk.AccelGroup.create () >] ?mod:m [< [`CONTROL] >] =
+    ?:accel_group [< Gtk.AccelGroup.create () >]
+    ?:accel_mod [< [`CONTROL] >]
+    ?:accel_flags [< [`VISIBLE] >] =
   object (self)
     val menu : #menu_shell = menu
-    val group = group
-    val m = m
+    val group = accel_group
+    val m = accel_mod
+    val flags = accel_flags
     method menu = menu
-    method group = group
+    method accel_group = group
     method private bind (item : menu_item) ?:key ?:callback =
       menu#append item;
       may key fun:
-	(fun key -> item#add_accelerator group :key mod:m flags:[`VISIBLE]);
+	(fun key -> item#add_accelerator group :key mod:m :flags);
       may callback fun:(fun callback -> item#connect#activate :callback)
     method add_item :label ?:key ?:callback ?:submenu =
       let item = new_menu_item :label in
       self#bind item ?:key ?:callback;
       may (submenu : menu option) fun:item#set_submenu;
       item
-    method add_check_item :label ?:state ?:key ?:callback =
-      let item = new_check_menu_item :label ?:state in
+    method add_check_item :label ?:active ?:key ?:callback =
+      let item = new_check_menu_item :label ?:active in
       self#bind (item :> menu_item) ?:key
 	?callback:(may_map callback fun:(fun f () -> f item#active));
       item
-    method add_radio_item :label ?:group ?:state ?:key ?:callback =
-      let item = new_radio_menu_item :label ?:group ?:state in
+    method add_radio_item :label ?:group ?:active ?:key ?:callback =
+      let item = new_radio_menu_item :label ?:group ?:active in
       self#bind (item :> menu_item) ?:key
 	?callback:(may_map callback fun:(fun f () -> f item#active));
       item
