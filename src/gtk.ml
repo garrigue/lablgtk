@@ -299,6 +299,133 @@ module AspectFrame = struct
       = "ml_gtk_aspect_frame_set"
 end
 
+module HandleBox = struct
+  type t = [widget container bin handle] obj
+  external create : unit -> t = "ml_gtk_handle_box_new"
+end
+
+module Item = struct
+  type t = [widget container bin item] obj
+  external select : [> item] obj -> unit = "ml_gtk_item_select"
+  external deselect : [> item] obj -> unit = "ml_gtk_item_deselect"
+  external toggle : [> item] obj -> unit = "ml_gtk_item_toggle"
+end
+
+module ListItem = struct
+  type t = [widget container bin item list] obj
+  external create : unit -> t = "ml_gtk_list_item_new"
+  external create_with_label : string -> t
+      = "ml_gtk_list_item_new_with_label"
+end
+
+module MenuItem = struct
+  type t = [widget container bin item menuitem] obj
+  external create : unit -> t = "ml_gtk_menu_item_new"
+  external create_with_label : string -> t
+      = "ml_gtk_menu_item_new_with_label"
+  external set_submenu : [> menuitem] obj -> [> widget] obj -> unit
+      = "ml_gtk_menu_item_set_submenu"
+  external remove_submenu : [> menuitem] obj -> unit
+      = "ml_gtk_menu_item_remove_submenu"
+  external accelerator_size : [> menuitem] obj -> unit
+      = "ml_gtk_menu_item_accelerator_size"
+  external accelerator_text : [> menuitem] obj -> string -> unit
+      = "ml_gtk_menu_item_accelerator_size"
+  external configure :
+      [> menuitem] obj -> show_toggle:bool -> show_indicator:bool -> unit
+      = "ml_gtk_menu_item_configure"
+  external activate : [> menuitem] obj -> unit
+      = "ml_gtk_menu_item_activate"
+  external right_justify : [> menuitem] obj -> unit
+      = "ml_gtk_menu_item_right_justify"
+end
+
+module CheckMenuItem = struct
+  type t = [widget container bin item menuitem checkmenuitem] obj
+  external create : unit -> t = "ml_gtk_check_menu_item_new"
+  external create_with_label : string -> t
+      = "ml_gtk_check_menu_item_new_with_label"
+  external set_state : [> checkmenuitem] obj -> bool -> unit
+      = "ml_gtk_check_menu_item_set_state"
+  external set_show_toggle : [> checkmenuitem] obj -> bool -> unit
+      = "ml_gtk_check_menu_item_set_show_toggle"
+  external toggled : [> checkmenuitem] obj -> unit
+      = "ml_gtk_check_menu_item_toggled"
+end
+
+module RadioMenuItem = struct
+  type t = [widget container bin item menuitem checkmenuitem radiomenuitem] obj
+  type group
+  external get_empty : unit -> group = "ml_get_null"
+  let empty = get_empty ()
+  external create : group -> t = "ml_gtk_radio_menu_item_new"
+  external create_with_label : group -> string -> t
+      = "ml_gtk_radio_menu_item_new_with_label"
+  external group : [> radiotmenuitem] -> group
+      = "ml_gtk_radio_menu_item_group"
+  external set_group : [> radiotmenuitem] -> group -> unit
+      = "ml_gtk_radio_menu_item_set_group"
+end
+
+module TreeItem = struct
+  type t = [widget container bin item treeitem] obj
+  external create : unit -> t = "ml_gtk_tree_item_new"
+  external create_with_label : string -> t
+      = "ml_gtk_tree_item_new_with_label"
+  external set_subtree : [> treeitem] obj -> [> widget] obj -> unit
+      = "ml_gtk_tree_item_set_subtree"
+  external remove_subtree : [> treeitem] obj -> unit
+      = "ml_gtk_tree_item_remove_subtree"
+  external expand : [> treeitem] obj -> unit
+      = "ml_gtk_tree_item_expand"
+  external collapse : [> treeitem] obj -> unit
+      = "ml_gtk_tree_item_collapse"
+end
+
+module Viewport = struct
+  type t = [widget container bin viewport] obj
+  external create :
+      ?hadj:[> adjustment] obj -> ?vadj:[> adjustment] obj -> ?unit -> t
+      = "ml_gtk_viewport_new"
+  external get_hadjustment : [> viewport] obj -> Adjustment.t
+      = "ml_gtk_viewport_get_hadjustment"
+  external get_vadjustment : [> viewport] obj -> Adjustment.t
+      = "ml_gtk_viewport_get_vadjustment"
+  external set_hadjustment : [> viewport] obj -> Adjustment.t -> unit
+      = "ml_gtk_viewport_set_hadjustment"
+  external set_vadjustment : [> viewport] obj -> Adjustment.t -> unit
+      = "ml_gtk_viewport_set_vadjustment"
+  external set_shadow_type : [> viewport] obj -> shadow -> unit
+      = "ml_gtk_viewport_set_shadow_type"
+end
+
+module Dialog = struct
+  type t = [widget container bin dialog] obj
+  external create : unit -> t = "ml_gtk_dialog_new"
+  external action_area : [> dialog] obj -> [> box] obj
+      = "ml_GtkDialog_action_area"
+  external vbox : [> dialog] obj -> [> box] obj
+      = "ml_GtkDialog_vbox"
+end
+
+module InputDialog = struct
+  type t = [widget container bin dialog inputdialog] obj
+  external create : unit -> t = "ml_gtk_input_dialog_new"
+end
+
+module FileSelection = struct
+  type t = [widget container bin filesel] obj
+  external create : string -> t = "ml_gtk_file_selection_new"
+  external set_filename : [> filesel] obj -> string -> unit
+      = "ml_gtk_file_selection_set_filename"
+  external get_filename : [> filesel] obj -> string
+      = "ml_gtk_file_selection_get_filename"
+  external show_fileop_buttons : [> filesel] obj -> unit
+      = "ml_gtk_file_selection_show_fileop_buttons"
+  external hide_fileop_buttons : [> filesel] obj -> unit
+      = "ml_gtk_file_selection_hide_fileop_buttons"
+end
+
 module Window = struct
   type t = [widget container bin window] obj
   external create : window_type -> t = "ml_gtk_window_new"
@@ -323,6 +450,25 @@ module Window = struct
       = "ml_gtk_window_activate_focus"
   external activate_default : [> window] obj -> unit
       = "ml_gtk_window_activate_default"
+end
+
+module ColorSelection = struct
+  type t = [widget container box colorsel] obj
+  type dialog = [widget container window colorseldialog] obj
+  external create : unit -> t = "ml_gtk_color_selection_new"
+  external create_dialog : string -> dialog
+      = "ml_gtk_color_selection_dialog_new"
+  external set_update_policy : [> colorsel] obj -> update -> unit
+      = "ml_gtk_color_selection_set_update_policy"
+  external set_opacity : [> colorsel] obj -> bool -> unit
+      = "ml_gtk_color_selection_set_opacity"
+  external set_color :
+      [> colorsel] obj ->
+      red:float -> green:float -> blue:float -> ?opacity:float -> unit
+      = "ml_gtk_color_selection_set_color"
+  type color = { red: float; green: float; blue: float; opacity: float }
+  external get_color : [> colorsel] obj -> color
+      = "ml_gtk_color_selection_get_color"
 end
 
 module Box = struct
@@ -358,6 +504,32 @@ module Box = struct
   let create (dir : orientation) ?:homogeneous [< false >] ?:spacing [< 0 >] =
     (match dir with `HORIZONTAL -> hbox_new | `VERTICAL -> vbox_new)
       :homogeneous :spacing
+end
+
+module BBox = struct
+  (* Omitted defaults setting *)
+  type t = [widget container bbox] obj
+  type bbox_style = [ DEFAULT_STYLE SPREAD EDGE START END ]
+  external spacing : [> bbox] -> int = "ml_gtk_button_box_spacing"
+  external child_width : [> bbox] -> int
+      = "ml_gtk_button_box_child_min_width"
+  external child_height : [> bbox] -> int
+      = "ml_gtk_button_box_child_min_height"
+  external child_ipad_x : [> bbox] -> int = "ml_gtk_button_box_child_ipad_x"
+  external child_ipad_y : [> bbox] -> int = "ml_gtk_button_box_child_ipad_y"
+  external layout : [> bbox] -> bbox_style
+      = "ml_gtk_button_box_layout_style"
+  external set_spacing : [> bbox] -> int = "ml_gtk_button_box_set_spacing"
+  external set_child_size : [> bbox] -> width:int -> height:int -> unit
+      = "ml_gtk_button_box_set_child_size"
+  external set_child_ipadding : [> bbox] -> x:int -> y:int -> unit
+      = "ml_gtk_button_box_set_child_ipadding"
+  external set_layout : [> bbox] -> bbox_style -> unit
+      = "ml_gtk_button_box_set_layout"
+  external create_hbbox : unit -> t = "ml_gtk_hbutton_box_new"
+  external create_vbbox : unit -> t = "ml_gtk_vbutton_box_new"
+  let create (dir : orientation) =
+    if dir = `HORIZONTAL then create_hbbox () else create_vbbox ()
 end
 
 module Button = struct
@@ -415,6 +587,33 @@ module RadioButton = struct
     in
     match label with None -> create group
     | Some label -> create_with_label group label
+end
+
+module GtkList = struct
+  type t = [widget container list] obj
+  external create : unit -> t = "ml_gtk_list_new"
+  external insert_item :
+      [> list] obj -> [> widget] obj -> pos:int -> unit
+      = "ml_gtk_list_insert_item"
+  let insert_items l wl :pos =
+    let wl = if pos < 0 then wl else List.rev wl in
+    List.iter wl fun:(insert_item l :pos)
+  let append_items l = insert_items l pos:(-1)
+  let prepend_items l = insert_items l pos:0
+  external clear_items : [> list] obj -> start:int -> end:int -> unit =
+    "ml_gtk_list_clear_items"
+  external select_item : [> list] obj -> int -> unit
+      = "ml_gtk_list_select_item"
+  external unselect_item : [> list] obj -> int -> unit
+      = "ml_gtk_list_unselect_item"
+  external select_child : [> list] obj -> [> widget] obj -> unit
+      = "ml_gtk_list_select_child"
+  external unselect_child : [> list] obj -> [> widget] obj -> unit
+      = "ml_gtk_list_unselect_child"
+  external child_position : [> list] obj -> [> widget] obj -> int
+      = "ml_gtk_list_child_position"
+  external set_selection_mode : [> list] obj -> selection -> unit
+      = "ml_gtk_list_set_selection_mode"
 end
 
 module Table = struct
@@ -524,6 +723,34 @@ module Text = struct
       = "ml_gtk_text_insert"
 end
 
+module Combo = struct
+  type t = [widget container bbox combo] obj
+  external create : unit -> t = "ml_gtk_combo_new"
+  external set_value_in_list :
+      [> combo] obj -> bool -> ok_if_empty:bool -> unit
+      = "ml_gtk_combo_set_value_in_list"
+  external set_use_arrows : [> combo] obj -> bool -> unit
+      = "ml_gtk_combo_set_use_arrows"
+  external set_use_arrows_always : [> combo] obj -> bool -> unit
+      = "ml_gtk_combo_set_use_arrows_always"
+  external set_case_sensitive : [> combo] obj -> bool -> unit
+      = "ml_gtk_combo_set_case_sensitive"
+  external set_item_string : [> combo] obj -> [> item] obj -> string -> unit
+      = "ml_gtk_combo_set_item_string"
+  external entry : [> combo] obj -> Entry.t = "ml_gtk_combo_entry"
+  external list : [> combo] obj -> GtkList.t = "ml_gtk_combo_list"
+  let set_popdown_strings combo strings =
+    GtkList.clear_items (list combo) start:0 end:(-1);
+    List.iter strings fun:
+      begin fun s ->
+	let li = ListItem.create_with_label s in
+	Widget.show li;
+	Container.add (list combo) li
+      end
+  external disable_activate : [> combo] obj -> unit
+      = "ml_gtk_combo_disable_activate"
+end
+    
 module Misc = struct type t = [widget misc] obj external set_alignment
   : [> misc] obj -> x:float -> y:float -> unit =
   "ml_gtk_misc_set_alignment" external set_padding : [> misc] obj ->

@@ -285,6 +285,97 @@ ML_5 (gtk_aspect_frame_new, String_val, Float_val, Float_val,
 ML_5 (gtk_aspect_frame_set, GtkAspectFrame_val, Float_val, Float_val,
       Float_val, Bool_val, Unit)
 
+/* gtkhandlebox.h */
+
+ML_0 (gtk_handle_box_new, Val_GtkWidget)
+
+/* gtkitem.h */
+
+#define GtkItem_val(val) GTK_ITEM(Pointer_val(val))
+ML_1 (gtk_item_select, GtkItem_val, Unit)
+ML_1 (gtk_item_deselect, GtkItem_val, Unit)
+ML_1 (gtk_item_toggle, GtkItem_val, Unit)
+
+/* gtklistitem.h */
+
+ML_0 (gtk_list_item_new, Val_GtkWidget)
+ML_1 (gtk_list_item_new_with_label, String_val, Val_GtkWidget)
+
+/* gtkmenuitem.h */
+
+#define GtkMenuItem_val(val) GTK_MENU_ITEM(Pointer_val(val))
+ML_0 (gtk_menu_item_new, Val_GtkWidget)
+ML_1 (gtk_menu_item_new_with_label, String_val, Val_GtkWidget)
+ML_2 (gtk_menu_item_set_submenu, GtkMenuItem_val, GtkWidget_val, Unit)
+ML_1 (gtk_menu_item_remove_submenu, GtkMenuItem_val, Unit)
+ML_2 (gtk_menu_item_set_placement, GtkMenuItem_val,
+      Submenu_placement_val, Unit)
+ML_1 (gtk_menu_item_accelerator_size, GtkMenuItem_val, Unit)
+ML_2 (gtk_menu_item_accelerator_text, GtkMenuItem_val, String_val, Unit)
+ML_3 (gtk_menu_item_configure, GtkMenuItem_val, Bool_val, Bool_val, Unit)
+ML_1 (gtk_menu_item_activate, GtkMenuItem_val, Unit)
+ML_1 (gtk_menu_item_right_justify, GtkMenuItem_val, Unit)
+
+/* gtkcheckmenuitem.h */
+
+#define GtkCheckMenuItem_val(val) GTK_CHECK_MENU_ITEM(Pointer_val(val))
+ML_0 (gtk_check_menu_item_new, Val_GtkWidget)
+ML_1 (gtk_check_menu_item_new_with_label, String_val, Val_GtkWidget)
+ML_2 (gtk_check_menu_item_set_state, GtkCheckMenuItem_val, Bool_val, Unit)
+ML_2 (gtk_check_menu_item_set_show_toggle, GtkCheckMenuItem_val,
+      Bool_val, Unit)
+ML_1 (gtk_check_menu_item_toggled, GtkCheckMenuItem_val, Unit)
+
+/* gtkradiomenuitem.h */
+
+#define GtkRadioMenuItem_val(val) GTK_RADIO_MENU_ITEM(Pointer_val(val))
+ML_1 (gtk_radio_menu_item_new, (GSList *), Val_GtkWidget)
+ML_2 (gtk_radio_menu_item_new_with_label, (GSList *),
+      String_val, Val_GtkWidget)
+ML_1 (gtk_radio_menu_item_group, GtkRadioMenuItem_val, Val_any)
+ML_2 (gtk_radio_menu_item_set_group, GtkRadioMenuItem_val, (GSList *), Unit)
+
+/* gtktreeitem.h */
+
+#define GtkTreeItem_val(val) GTK_TREE_ITEM(Pointer_val(val))
+ML_0 (gtk_tree_item_new, Val_GtkWidget)
+ML_1 (gtk_tree_item_new_with_label, String_val, Val_GtkWidget)
+ML_2 (gtk_tree_item_set_subtree, GtkTreeItem_val, GtkWidget_val, Unit)
+ML_1 (gtk_tree_item_remove_subtree, GtkTreeItem_val, Unit)
+ML_1 (gtk_tree_item_expand, GtkTreeItem_val, Unit)
+ML_1 (gtk_tree_item_collapse, GtkTreeItem_val, Unit)
+
+/* gtkviewport.h */
+
+#define GtkViewport_val(val) GTK_VIEWPORT(Pointer_val(val))
+ML_2 (gtk_viewport_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
+      Option_val(arg2,GtkAdjustment_val,NULL) Ignore, Val_GtkWidget)
+ML_1 (gtk_viewport_get_hadjustment, GtkViewport_val, Val_GtkWidget)
+ML_1 (gtk_viewport_get_vadjustment, GtkViewport_val, Val_GtkWidget)
+ML_2 (gtk_viewport_set_hadjustment, GtkViewport_val, GtkAdjustment_val, Unit)
+ML_2 (gtk_viewport_set_vadjustment, GtkViewport_val, GtkAdjustment_val, Unit)
+ML_2 (gtk_viewport_set_shadow_type, GtkViewport_val, Shadow_val, Unit)
+
+/* gtkdialog.h */
+
+#define GtkDialog_val(val) GTK_DIALOG(Pointer_val(val))
+ML_0 (gtk_dialog_new, Val_GtkWidget)
+Make_Extractor (GtkDialog, GtkDialog_val, action_area, Val_GtkWidget)
+Make_Extractor (GtkDialog, GtkDialog_val, vbox, Val_GtkWidget)
+
+/* gtkinputdialog.h */
+
+ML_0 (gtk_input_dialog_new, Val_GtkWidget)
+
+/* gtkfileselection.h */
+
+#define GtkFileSelection_val(val) GTK_FILE_SELECTION(Pointer_val(val))
+ML_1 (gtk_file_selection_new, String_val, Val_GtkWidget)
+ML_2 (gtk_file_selection_set_filename, GtkFileSelection_val, String_val, Unit)
+ML_1 (gtk_file_selection_get_filename, GtkFileSelection_val, copy_string)
+ML_1 (gtk_file_selection_show_fileop_buttons, GtkFileSelection_val, Unit)
+ML_1 (gtk_file_selection_hide_fileop_buttons, GtkFileSelection_val, Unit)
+
 /* gtkwindow.h */
 
 #define GtkWindow_val(val) GTK_WINDOW(Pointer_val(val))
@@ -302,6 +393,51 @@ ML_2 (gtk_window_position, GtkWindow_val,
       Window_position_val, Unit)
 ML_1 (gtk_window_activate_focus, GtkWindow_val, Val_bool)
 ML_1 (gtk_window_activate_default, GtkWindow_val, Val_bool)
+
+/* gtkcolorsel.h */
+
+#define GtkColorSelection_val(val) GTK_COLOR_SELECTION(Pointer_val(val))
+ML_0 (gtk_color_selection_new, Val_GtkWidget)
+ML_2 (gtk_color_selection_set_update_policy, GtkColorSelection_val,
+      Update_val, Unit)
+ML_2 (gtk_color_selection_set_opacity, GtkColorSelection_val,
+      Bool_val, Unit)
+enum
+{
+  COLOR_HUE,
+  COLOR_SATURATION,
+  COLOR_VALUE,
+  COLOR_RED,
+  COLOR_GREEN,
+  COLOR_BLUE,
+  COLOR_OPACITY,
+  COLOR_NUM_CHANNELS
+};
+value ml_gtk_color_selection_set_color (value w, value red, value green,
+					value blue, value opacity)
+{
+    double color[COLOR_NUM_CHANNELS];
+    color[COLOR_RED] = Double_val(red);
+    color[COLOR_GREEN] = Double_val(green);
+    color[COLOR_BLUE] = Double_val(blue);
+    color[COLOR_OPACITY] = Option_val(opacity,Double_val,0.0);
+    gtk_color_selection_set_color (GtkColorSelection_val(w), color);
+    return Val_unit;
+}
+value ml_gtk_color_selection_get_color (value w)
+{
+    value ret;
+    double color[COLOR_NUM_CHANNELS];
+    color[COLOR_OPACITY] = 0.0;
+    gtk_color_selection_get_color (GtkColorSelection_val(w), color);
+    ret = alloc (4*Double_wosize, Double_array_tag);
+    Store_double_field (ret, 0, color[COLOR_RED]);
+    Store_double_field (ret, 1, color[COLOR_GREEN]);
+    Store_double_field (ret, 2, color[COLOR_BLUE]);
+    Store_double_field (ret, 3, color[COLOR_OPACITY]);
+    return ret;
+}
+ML_1 (gtk_color_selection_dialog_new, String_val, Val_GtkWidget)
 
 /* gtkbox.h */
 
@@ -346,7 +482,60 @@ ML_bc6 (ml_gtk_box_set_child_packing)
 
 ML_2 (gtk_hbox_new, Bool_val, Int_val, Val_GtkWidget)
 ML_2 (gtk_vbox_new, Bool_val, Int_val, Val_GtkWidget)
+
+/* gtkbbox.h */
     
+#define GtkButtonBox_val(val) GTK_BUTTON_BOX(Pointer_val(val))
+Make_Extractor (gtk_button_box, GtkButtonBox_val, spacing, Val_int)
+Make_Extractor (gtk_button_box, GtkButtonBox_val, child_min_width, Val_int)
+Make_Extractor (gtk_button_box, GtkButtonBox_val, child_min_height, Val_int)
+Make_Extractor (gtk_button_box, GtkButtonBox_val, child_ipad_x, Val_int)
+Make_Extractor (gtk_button_box, GtkButtonBox_val, child_ipad_y, Val_int)
+Make_Extractor (gtk_button_box, GtkButtonBox_val, layout_style, Val_bbox_style)
+ML_2 (gtk_button_box_set_spacing, GtkButtonBox_val, Int_val, Unit)
+ML_3 (gtk_button_box_set_child_size, GtkButtonBox_val,
+      Int_val, Int_val, Unit)
+ML_3 (gtk_button_box_set_child_ipadding, GtkButtonBox_val,
+      Int_val, Int_val, Unit)
+ML_2 (gtk_button_box_set_layout, GtkButtonBox_val, Bbox_style_val, Unit)
+
+ML_0 (gtk_hbutton_box_new, Val_GtkWidget)
+ML_0 (gtk_vbutton_box_new, Val_GtkWidget)
+
+/* gtklist.h */
+
+#define GtkList_val(val) GTK_LIST(Pointer_val(val))
+ML_0 (gtk_list_new, Val_GtkWidget)
+value ml_gtk_list_insert_item (value list, value item, value pos)
+{
+    GList *tmp_list = g_list_alloc ();
+    tmp_list->data = GtkWidget_val(item);
+    tmp_list->next = NULL;
+    tmp_list->prev = NULL;
+    gtk_list_insert_items (GtkList_val(list), tmp_list, Int_val(pos));
+    return Val_unit;
+}
+ML_3 (gtk_list_clear_items, GtkList_val, Int_val, Int_val, Unit)
+ML_2 (gtk_list_select_item, GtkList_val, Int_val, Unit)
+ML_2 (gtk_list_unselect_item, GtkList_val, Int_val, Unit)
+ML_2 (gtk_list_select_child, GtkList_val, GtkWidget_val, Unit)
+ML_2 (gtk_list_unselect_child, GtkList_val, GtkWidget_val, Unit)
+ML_2 (gtk_list_child_position, GtkList_val, GtkWidget_val, Val_int)
+ML_2 (gtk_list_set_selection_mode, GtkList_val, Selection_val, Unit)
+
+/* gtkcombo.h */
+
+#define GtkCombo_val(val) GTK_COMBO(Pointer_val(val))
+ML_0 (gtk_combo_new, Val_GtkWidget)
+ML_3 (gtk_combo_set_value_in_list, GtkCombo_val, Bool_val, Bool_val, Unit)
+ML_2 (gtk_combo_set_use_arrows, GtkCombo_val, Bool_val, Unit)
+ML_2 (gtk_combo_set_use_arrows_always, GtkCombo_val, Bool_val, Unit)
+ML_2 (gtk_combo_set_case_sensitive, GtkCombo_val, Bool_val, Unit)
+ML_3 (gtk_combo_set_item_string, GtkCombo_val, GtkItem_val, String_val, Unit)
+ML_1 (gtk_combo_disable_activate, GtkCombo_val, Unit)
+Make_Extractor (gtk_combo, GtkCombo_val, entry, Val_GtkWidget)
+Make_Extractor (gtk_combo, GtkCombo_val, list, Val_GtkWidget)
+
 /* gtkbutton.h */
 
 #define GtkButton_val(val) GTK_BUTTON(Pointer_val(val))
