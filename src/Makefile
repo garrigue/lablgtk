@@ -168,6 +168,7 @@ install:
 	cp -p *.h $(INSTALLDIR)
 	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
 	if test -f dlllablgtk2.so; then \
+	   if test -d $(DLLDIR); then : ; else mkdir -p $(DLLDIR); fi; \
 	   cp $(CLIBS:lib%.a=dll%.so) $(DLLDIR) || \
 	   echo "Couldn't install dlls in default location"; \
 	fi
