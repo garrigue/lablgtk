@@ -38,16 +38,23 @@ class editor () = object (self)
 
   method open_file () = file_dialog title:"Open" callback:self#load_file
 
+  method save_dialog () =
+    file_dialog title:"Save" ?:filename
+      callback:(fun file -> self#output :file)
+
   method save_file () =
-    file_dialog title:"Save" ?:filename callback:
-      begin fun name ->
-	try
-	  if Sys.file_exists name then Sys.rename old:name new:(name ^ "~");
-	  let oc = open_out file:name in
-	  output_string (text#get_chars start:0 end:text#length) to:oc;
-	  close_out oc
-	with _ -> prerr_endline "Save failed"
-      end
+    match filename with
+      Some file -> self#output :file
+    | None -> self#save_dialog ()
+
+  method output :file =
+    try
+      if Sys.file_exists file then Sys.rename old:file new:(file ^ "~");
+      let oc = open_out :file in
+      output_string (text#get_chars start:0 end:text#length) to:oc;
+      close_out oc;
+      filename <- Some file
+    with _ -> prerr_endline "Save failed"
 end
 
 let editor = new editor ()
@@ -69,7 +76,8 @@ let _ =
   window#connect#destroy callback:Main.quit;
   let factory = new GMenu.factory file_menu :accel_group in
   factory#add_item label:"Open..." key:'O' callback:editor#open_file;
-  factory#add_item label:"Save..." key:'S' callback:editor#save_file;
+  factory#add_item label:"Save" key:'S' callback:editor#save_file;
+  factory#add_item label:"Save as..." callback:editor#save_dialog;
   factory#add_separator ();
   factory#add_item label:"Quit" key:'Q' callback:window#destroy;
   let factory = new GMenu.factory edit_menu :accel_group in
