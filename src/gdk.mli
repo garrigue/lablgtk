@@ -270,3 +270,10 @@ module Truecolor :
 
     val color_parser : visual -> int -> int * int * int
   end
+
+module X :
+  (* X related functions *)
+  sig
+    val flush : unit -> unit (* also in GtkMain *)
+    val beep : unit -> unit
+  end

@@ -1,5 +1,9 @@
 $Id$
 
+1999.10.6
+  * added Gdk.X.flush and Gdk.X.beep 
+  * Gdk.X.flush is exported in GtkMain.Main
+
 1999.9.9
   * added font selection dialog
 
