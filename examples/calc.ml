@@ -2,7 +2,7 @@
 
 (* A simple calculator ported from LablTk to LablGtk *)
 
-let mem_string :char s =
+let mem_string ~char s =
   try
     for i = 0 to String.length s -1 do
       if s.[i] = char then raise Exit
@@ -35,7 +35,7 @@ class virtual calc = object (calc)
 	if displaying then
 	  (calc#set "0."; displaying <- false)
 	else
-	  if not (mem_string char:'.' calc#get) then calc#insert s
+	  if not (mem_string ~char:'.' calc#get) then calc#insert s
     | '+'|'-'|'*'|'/' as c ->
 	displaying <- true;
 	begin match op with
@@ -72,18 +72,18 @@ let m =
 
 open GMain
 
-class calculator ?:packing ?:show () =
-  let table = GPack.table rows:5 columns:4 homogeneous:true show:false () in
+class calculator ?packing ?show () =
+  let table = GPack.table ~rows:5 ~columns:4 ~homogeneous:true ~show:false () in
   object (calc)
     inherit calc
 
     val label =
-      let frame = GFrame.frame shadow_type:`IN ()
-	packing:(table#attach left:0 top:0 right:4) in
-      let evbox = GFrame.event_box packing:frame#add () in
+      let frame = GFrame.frame ~shadow_type:`IN ()
+	~packing:(table#attach ~left:0 ~top:0 ~right:4) in
+      let evbox = GFrame.event_box ~packing:frame#add () in
       evbox#misc#set_style evbox#misc#style#copy;
       evbox#misc#style#set_bg [`NORMAL,`WHITE];
-      GMisc.label justify:`RIGHT xalign:0.95 packing:evbox#add ()
+      GMisc.label ~justify:`RIGHT ~xalign:0.95 ~packing:evbox#add ()
     val table = table
 
     method set = label#set_text
@@ -93,22 +93,22 @@ class calculator ?:packing ?:show () =
     initializer
       for i = 0 to 3 do for j = 0 to 3 do
 	let button =
-	  GButton.button label:("  " ^ m.(i).(j) ^ "  ")
-	    packing:(table#attach top:(i+1) left:j) () in
-	button#connect#clicked callback:(fun () -> calc#command m.(i).(j));
+	  GButton.button ~label:("  " ^ m.(i).(j) ^ "  ")
+	    ~packing:(table#attach ~top:(i+1) ~left:j) () in
+	button#connect#clicked ~callback:(fun () -> calc#command m.(i).(j));
       done done;
-      ignore (GObj.pack_return table :packing :show)
+      ignore (GObj.pack_return table ~packing ~show)
   end
 
 (* Finally start everything *)
 
-let w = GWindow.window auto_shrink:true ()
+let w = GWindow.window ~auto_shrink:true ()
 
-let applet = new calculator packing: w#add ()
+let applet = new calculator ~packing: w#add ()
 
 let _ =
-  w#connect#destroy callback: Main.quit;
+  w#connect#destroy ~callback: Main.quit;
   w#connect#event#key_press
-    callback:(fun ev -> applet#command (GdkEvent.Key.string ev); true);
+    ~callback:(fun ev -> applet#command (GdkEvent.Key.string ev); true);
   w#show ();
   Main.main ()

@@ -26,27 +26,27 @@ module Tictactoe = struct
 end
 
 
-let _,tictactoe_new,_ = make_new_widget "Tictactoe" parent:VBOX
-    signal_array:Tictactoe.tictactoe_sig
+let _,tictactoe_new,_ = make_new_widget "Tictactoe" ~parent:VBOX
+    ~signal_array:Tictactoe.tictactoe_sig
 
 
 open GMain
 
 class tictactoe_signals obj = object
   inherit GContainer.container_signals obj
-  method tictactoe = GtkSignal.connect sig:Tictactoe.tictactoe obj :after
+  method tictactoe = GtkSignal.connect ~sgn:Tictactoe.tictactoe obj ~after
 end
 
 exception Trouve
 
-class tictactoe ?:packing ?:show () =
+class tictactoe ?packing ?show () =
   let obj : Gtk.box Gtk.obj = GtkBase.Object.unsafe_cast (tictactoe_new ()) in
   let box = new GPack.box_skel obj in
 object (self)
   inherit GObj.widget obj
-  val buttons = Array.create_matrix dimx:3 dimy:3 (GButton.toggle_button ())
-  val buttons_handlers = Array.create_matrix dimx:3 dimy:3 (Obj.magic 0)
-  val label = GMisc.label text:"Go on!" packing:box#add ()
+  val buttons = Array.create_matrix ~dimx:3 ~dimy:3 (GButton.toggle_button ())
+  val buttons_handlers = Array.create_matrix ~dimx:3 ~dimy:3 (Obj.magic 0)
+  val label = GMisc.label ~text:"Go on!" ~packing:box#add ()
   method clear () =
     for i = 0 to 2 do
       for j = 0 to 2 do
@@ -58,7 +58,7 @@ object (self)
       done
     done
   method connect = new tictactoe_signals obj
-  method emit_tictactoe () = GtkSignal.emit obj sig:Tictactoe.tictactoe
+  method emit_tictactoe () = GtkSignal.emit obj ~sgn:Tictactoe.tictactoe
   method toggle () =
     let rwins = [| [| 0; 0; 0 |]; [| 1; 1; 1 |]; [| 2; 2; 2 |];
                   [| 0; 1; 2 |]; [| 0; 1; 2 |]; [| 0; 1; 2 |];
@@ -78,17 +78,17 @@ object (self)
 	
   initializer
     let table =
-      GPack.table rows:3 columns:3 homogeneous:true packing:box#add () in
+      GPack.table ~rows:3 ~columns:3 ~homogeneous:true ~packing:box#add () in
     for i = 0 to 2 do
       for j = 0 to 2 do
-	let button = GButton.toggle_button width:20 height:20
-	    packing:(table#attach left:i top:j) () in
+	let button = GButton.toggle_button ~width:20 ~height:20
+	    ~packing:(table#attach ~left:i ~top:j) () in
 	buttons.(i).(j) <- button;
 	buttons_handlers.(i).(j) <-
-	  button #connect#toggled callback:self#toggle;
+	  button #connect#toggled ~callback:self#toggle;
       done
     done;
-    GObj.pack_return self :packing :show;
+    GObj.pack_return self ~packing ~show;
     ()
 end
 
@@ -97,10 +97,10 @@ let win (ttt : tictactoe)  _ =
   ttt #clear ()
 
 let essai () =
-  let window = GWindow.window title:"Tictactoe" border_width:10 () in
-  window #connect#destroy callback:Main.quit;
-  let ttt = new tictactoe packing:window#add () in
-  ttt #connect#tictactoe callback:(win ttt);
+  let window = GWindow.window ~title:"Tictactoe" ~border_width:10 () in
+  window #connect#destroy ~callback:Main.quit;
+  let ttt = new tictactoe ~packing:window#add () in
+  ttt #connect#tictactoe ~callback:(win ttt);
   window #show ();
   Main.main ()
 

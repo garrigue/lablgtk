@@ -19,28 +19,28 @@ end
 
 let main () =
 
-  let window = GWindow.window border_width: 10 () in
-  window#connect#destroy callback:Main.quit;
+  let window = GWindow.window ~border_width: 10 () in
+  window#connect#destroy ~callback:Main.quit;
 
-  let table = GPack.table rows:3 columns:2 packing: window#add () in
+  let table = GPack.table ~rows:3 ~columns:2 ~packing: window#add () in
   
-  GMisc.label text:"Progress Bar Example" ()
-    packing:(table#attach left:0 right:2 top:0 expand:`X shrink:`BOTH);
+  GMisc.label ~text:"Progress Bar Example" ()
+    ~packing:(table#attach ~left:0 ~right:2 ~top:0 ~expand:`X ~shrink:`BOTH);
   
   let pbar =
-    GRange.progress_bar bar_style:`DISCRETE discrete_blocks:20 ()
-      packing:(table#attach left:0 right:2 top:1 fill:`X shrink:`BOTH) in
+    GRange.progress_bar ~bar_style:`DISCRETE ~discrete_blocks:20 ()
+      ~packing:(table#attach ~left:0 ~right:2 ~top:1 ~fill:`X ~shrink:`BOTH) in
 
   let bar = new bar pbar in
-  let ptimer = Timeout.add 100 callback:bar#progress in
+  let ptimer = Timeout.add 100 ~callback:bar#progress in
 
-  let button = GButton.button label:"Reset" ()
-      packing:(table#attach left:0 top:2 expand:`NONE fill:`X shrink:`BOTH) in
-  button#connect#clicked callback:bar#reset;
+  let button = GButton.button ~label:"Reset" ()
+      ~packing:(table#attach ~left:0 ~top:2 ~expand:`NONE ~fill:`X ~shrink:`BOTH) in
+  button#connect#clicked ~callback:bar#reset;
 
-  let button = GButton.button label:"Cancel" ()
-      packing:(table#attach left:1 top:2 expand:`NONE fill:`X shrink:`BOTH) in
-  button#connect#clicked callback:Main.quit;
+  let button = GButton.button ~label:"Cancel" ()
+      ~packing:(table#attach ~left:1 ~top:2 ~expand:`NONE ~fill:`X ~shrink:`BOTH) in
+  button#connect#clicked ~callback:Main.quit;
 
   window#show ();
   Main.main ()

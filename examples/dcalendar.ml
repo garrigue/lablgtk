@@ -24,7 +24,7 @@ let schedule =
     (* Saves the schedule data when the application terminates *)
 at_exit (fun () ->
   let ochan = open_out calendar_file in
-  Marshal.to_channel ochan schedule mode: [];
+  Marshal.to_channel ochan schedule ~mode: [];
   close_out ochan);;
 
     (* date: Current date initialized to "today" *)
@@ -69,7 +69,7 @@ class date_button i (calendar : GPack.table) =
   let mday = i + 1 in
 
   object (self)
-    val widget = GButton.button label: (string_of_int mday) show: false ()
+    val widget = GButton.button ~label: (string_of_int mday) ~show: false ()
     val mday = mday
     val mutable show = false
     val mutable have_plan = false
@@ -91,7 +91,7 @@ class date_button i (calendar : GPack.table) =
       if not show then
       	let top = (mday + wday0) / 7 + 1
       	and left = (mday + wday0) mod 7 in
-      	calendar#attach :left :top widget#coerce;
+      	calendar#attach ~left ~top widget#coerce;
       	widget#misc#show ();
 	show <- true
 	    
@@ -116,7 +116,7 @@ let update_calendar (calendar : GPack.table) (buttons : date_button array) =
     if date.mon = 1 & leap date.year then mdays_in_month.(date.mon) + 1
     else mdays_in_month.(date.mon) in
 
-  Array.iter f: (fun button -> button#hide)
+  Array.iter ~f: (fun button -> button#hide)
     buttons;
 
   for i = 0 to ndays - 1 do buttons.(i)#show wday0 done
@@ -126,10 +126,10 @@ let create_GUI () =
   (* views part *)
 
   let win =
-    GWindow.window title: "Camlendar" show: true
-      allow_shrink: false allow_grow: false () in
+    GWindow.window ~title: "Camlendar" ~show: true
+      ~allow_shrink: false ~allow_grow: false () in
   win#connect#event#delete
-    callback: (fun _ -> GMain.Main.quit (); exit 0; false);
+    ~callback: (fun _ -> GMain.Main.quit (); exit 0; false);
 
   let style = win#misc#style#copy in
   styles.(s_normal) <- style;
@@ -145,47 +145,47 @@ let create_GUI () =
 		`PRELIGHT, `NAME "sky blue"];
   styles.(s_planned) <- style;
 
-  let vbox = GPack.vbox packing: win#add () in
+  let vbox = GPack.vbox ~packing: win#add () in
   let packing = vbox#pack in
-  let toolbar = GButton.toolbar style: `TEXT :packing () in
+  let toolbar = GButton.toolbar ~style: `TEXT ~packing () in
 
   let prev =
-    toolbar#insert_button text: "Prev" tooltip: "Show previous month" () in
+    toolbar#insert_button ~text: "Prev" ~tooltip: "Show previous month" () in
   let next =
-    toolbar#insert_button text: "Next" tooltip: "Show next month" () in
+    toolbar#insert_button ~text: "Next" ~tooltip: "Show next month" () in
   
   let calendar =
-    GPack.table homogeneous: true rows: 7 columns: 7
-      border_width: 10 row_spacings: 2 col_spacings: 2 :packing () in
+    GPack.table ~homogeneous: true ~rows: 7 ~columns: 7
+      ~border_width: 10 ~row_spacings: 2 ~col_spacings: 2 ~packing () in
 
   Array.iteri
-    f: (fun i wday ->
-      ignore (GButton.button label: wday
-	      	packing: (calendar#attach top: 0 left: i) ()))
+    ~f: (fun i wday ->
+      ignore (GButton.button ~label: wday
+	      	~packing: (calendar#attach ~top: 0 ~left: i) ()))
     wday_name;
 
   let buttons =
-    Array.init 31 f: (fun i -> new date_button i calendar) in
+    Array.init 31 ~f: (fun i -> new date_button i calendar) in
 
-  let date_view = GMisc.label justify: `CENTER :packing () in
+  let date_view = GMisc.label ~justify: `CENTER ~packing () in
 
-  let text = GEdit.text editable: true width: 70 height: 50 :packing () in
+  let text = GEdit.text ~editable: true ~width: 70 ~height: 50 ~packing () in
 
   (* Controls part *)
 
   let save_text () =
-    let data = text#get_chars start: 0 end: text#length in
+    let data = text#get_chars ~start: 0 ~stop: text#length in
     let key = (date.year, date.mon, date.mday) in
     Hashtbl.remove schedule key;
     if data <> "" then
-      (Hashtbl.add schedule :key :data;
+      (Hashtbl.add schedule ~key ~data;
        buttons.(date.mday - 1)#set_plan)
     else buttons.(date.mday - 1)#unset_plan in
 
   let restore_text () =
-    text#delete_text start: 0 end: text#length;
+    text#delete_text ~start: 0 ~stop: text#length;
     try
-      text#insert_text pos: 0
+      text#insert_text ~pos: 0
  	(Hashtbl.find schedule (date.year, date.mon, date.mday));
       ()
     with Not_found -> () in
@@ -197,7 +197,7 @@ let create_GUI () =
   let update_view () =
     update_calendar calendar buttons;
     update_date_view ();
-    Array.iteri f: (fun i button ->
+    Array.iteri ~f: (fun i button ->
       (try
  	Hashtbl.find schedule (date.year, date.mon, i + 1);
 	button#set_plan
@@ -207,7 +207,7 @@ let create_GUI () =
 		     mon_name.(date.mon) date.year) in
 
   prev#connect#clicked
-    callback: (fun () ->
+    ~callback: (fun () ->
       save_text ();
       previous_month ();
       
@@ -216,7 +216,7 @@ let create_GUI () =
       buttons.(0)#focus_on);
   
   next#connect#clicked
-    callback: (fun () ->
+    ~callback: (fun () ->
       save_text ();
       next_month ();
       
@@ -225,9 +225,9 @@ let create_GUI () =
       buttons.(0)#focus_on);
   
   Array.iteri
-    f: (fun i button ->
+    ~f: (fun i button ->
       button#widget#connect#clicked
-      	callback: (fun () ->
+      	~callback: (fun () ->
 	  save_text ();
 	  buttons.(date.mday - 1)#focus_off;
 
