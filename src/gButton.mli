@@ -13,6 +13,7 @@ class button_skel : 'a obj ->
     method set_relief : Tags.relief_style -> unit
     method relief : Tags.relief_style
     method grab_default : unit -> unit
+    method event : event_ops
   end
 class button_signals : 'b obj ->
   object ('a)
@@ -30,7 +31,6 @@ class button : Gtk.button obj ->
   object
     inherit button_skel
     val obj : Gtk.button obj
-    method event : event_ops
     method connect : button_signals
   end
 val button :
