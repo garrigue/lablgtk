@@ -16,7 +16,21 @@ let default_colormap = GtkBase.Widget.get_default_colormap
 let color ?(colormap = default_colormap ()) (c : color) =
   match c with
   | `COLOR col -> col
-  | `WHITE|`BLACK|`NAME _|`RGB _ as def -> Color.alloc ~colormap def
+  | #Gdk.Color.spec as def -> Color.alloc ~colormap def
+
+type optcolor = [
+  | `COLOR of Color.t
+  | `WHITE
+  | `BLACK
+  | `NAME of string
+  | `RGB of int * int * int
+  | `DEFAULT
+]
+
+let optcolor ?colormap (c : optcolor) =
+  match c with
+  | `DEFAULT -> None
+  | #color as c -> Some (color ?colormap c)
 
 class ['a] drawable ?(colormap = default_colormap ()) w =
 object (self)

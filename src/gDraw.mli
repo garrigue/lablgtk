@@ -11,6 +11,16 @@ type color =
 
 val color : ?colormap:colormap -> color -> Color.t
 
+type optcolor =
+  [ `COLOR of Color.t
+  | `WHITE
+  | `BLACK
+  | `NAME of string
+  | `RGB of int * int * int
+  | `DEFAULT ]
+
+val optcolor : ?colormap:colormap -> optcolor -> Color.t option
+
 class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
   object
     val gc : gc
