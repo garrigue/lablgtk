@@ -8,6 +8,7 @@ class filter obj = object
    method name = FileFilter.get_name obj
    method add_mime_type = FileFilter.add_mime_type obj
    method add_pattern = FileFilter.add_pattern obj
+   method add_custom = FileFilter.add_custom obj
 end
 
 let filter ?name () =

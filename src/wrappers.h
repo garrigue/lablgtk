@@ -12,6 +12,7 @@ CAMLextern char *young_start, *young_end; /* from minor_gc.h */
 value copy_memblock_indirected (void *src, asize_t size);
 value alloc_memblock_indirected (asize_t size);
 CAMLprim value ml_some (value);
+value ml_cons (value, value);
 void ml_raise_null_pointer (void) Noreturn;
 value Val_pointer (void *);
 CAMLprim value copy_string_check (const char*);
@@ -31,7 +32,7 @@ value ml_lookup_flags_getter (lookup_info *table, int data);
 #if GTK_CHECK_VERSION(2,2,0) && !defined(DISABLE_GTK22)
 #define HASGTK22
 #endif
-#if GTK_CHECK_VERSION(2,3,6) && !defined(DISABLE_GTK24)
+#if GTK_CHECK_VERSION(2,4,0) && !defined(DISABLE_GTK24)
 #define HASGTK24
 #endif
 

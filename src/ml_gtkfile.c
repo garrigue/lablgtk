@@ -93,6 +93,39 @@ ML_2 (gtk_file_filter_set_name, GtkFileFilter_val, String_val, Unit)
 ML_1 (gtk_file_filter_get_name, GtkFileFilter_val, copy_string_or_null);
 ML_2 (gtk_file_filter_add_mime_type, GtkFileFilter_val, String_val, Unit)
 ML_2 (gtk_file_filter_add_pattern, GtkFileFilter_val, String_val, Unit)
+static gboolean ml_gtk_file_filter_func (const GtkFileFilterInfo *filter_info, 
+					 gpointer data)
+{
+  value *cb = data;
+  CAMLparam0();
+  CAMLlocal5(r, l, v, t, s);
+  l = Val_emptylist;
+#define CONS_MEMBER(memb, flag) \
+  if (filter_info->contains & GTK_FILE_FILTER_##flag) {	\
+    s = copy_string (filter_info->memb);	\
+    v = alloc_small(2, 0);			\
+    Field(v, 0) = MLTAG_##flag;			\
+    Field(v, 1) = s;				\
+    l = ml_cons (v, l);				\
+  }
+  CONS_MEMBER (mime_type, MIME_TYPE)
+  CONS_MEMBER (display_name, DISPLAY_NAME)
+  CONS_MEMBER (uri, URI)
+  CONS_MEMBER (filename, FILENAME)
+#undef CONS_MEMBER
+  r = callback_exn (*cb, l);
+  if (Is_exception_result (r)) CAMLreturn(TRUE);
+  CAMLreturn (Bool_val(r));
+}
+Make_Flags_val(File_filter_flags_val)
+CAMLprim value ml_gtk_file_filter_add_custom(value obj, value needed, value cb)
+{
+  value *clos = ml_global_root_new(cb);
+  gtk_file_filter_add_custom (GtkFileFilter_val(obj), Flags_File_filter_flags_val(needed),
+			      ml_gtk_file_filter_func, clos, ml_global_root_destroy);
+  return Val_unit;
+}
+
 
 ML_2 (gtk_file_chooser_add_filter, GtkFileChooser_val, GtkFileFilter_val, Unit)
 ML_2 (gtk_file_chooser_remove_filter, GtkFileChooser_val, GtkFileFilter_val, Unit)
@@ -159,6 +192,7 @@ Unsupported_24(gtk_file_filter_set_name)
 Unsupported_24(gtk_file_filter_get_name)
 Unsupported_24(gtk_file_filter_add_mime_type)
 Unsupported_24(gtk_file_filter_add_pattern)
+Unsupported_24(gtk_file_filter_add_custom)
 Unsupported_24(gtk_file_chooser_add_filter)
 Unsupported_24(gtk_file_chooser_remove_filter)
 Unsupported_24(gtk_file_chooser_list_filters)
