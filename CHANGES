@@ -1,5 +1,9 @@
 $Id$
 
+2001.02.27
+  * add extractors to Gdk.Image
+  * slight API change in GDraw.drawing#put_{image,pixmap}
+
 2001.02.21
   * add size-allocate signal
 

@@ -37,13 +37,11 @@ class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
     method point : x:int -> y:int -> unit
     method polygon : ?filled:bool -> (int * int) list -> unit
     method put_image :
-      width:int ->
-      height:int ->
-      ?xsrc:int -> ?ysrc:int -> ?xdest:int -> ?ydest:int -> image -> unit
+      x:int -> y:int ->
+      ?xsrc:int -> ?ysrc:int -> ?width:int -> ?height:int -> image -> unit
     method put_pixmap :
-      width:int ->
-      height:int ->
-      ?xsrc:int -> ?ysrc:int -> ?xdest:int -> ?ydest:int -> pixmap -> unit
+      x:int -> y:int ->
+      ?xsrc:int -> ?ysrc:int -> ?width:int -> ?height:int -> pixmap -> unit
     method rectangle :
       x:int ->
       y:int -> width:int -> height:int -> ?filled:bool -> unit -> unit

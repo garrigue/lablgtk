@@ -56,12 +56,19 @@ object (self)
   method arc = Draw.arc w gc
   method polygon ?filled l = Draw.polygon w gc ?filled l
   method string s = Draw.string w gc ~string:s
-  method put_image ~width ~height ?(xsrc=0) ?(ysrc=0) ?(xdest=0) ?(ydest=0)
-      image =
-    Draw.image w gc ~image ~width ~height ~xsrc ~ysrc ~xdest ~ydest
-  method put_pixmap ~width ~height ?(xsrc=0) ?(ysrc=0) ?(xdest=0) ?(ydest=0)
-      pixmap =
-    Draw.pixmap w gc ~pixmap ~width ~height ~xsrc ~ysrc ~xdest ~ydest
+  method put_image ~x ~y ?(xsrc=0) ?(ysrc=0) ?width ?height image =
+    let width = may_default Image.width image ~opt:width in
+    let height = may_default Image.height image ~opt:height in
+    Draw.image w gc ~image ~width ~height ~xsrc ~ysrc ~xdest:x ~ydest:y
+  method put_pixmap ~x ~y ?(xsrc=0) ?(ysrc=0) ?width ?height pixmap =
+    let width, height =
+      match width, height with
+        Some w, Some h -> w, h
+      | _ ->
+          let w, h = Window.get_size pixmap in
+          default w ~opt:width, default h ~opt:height
+    in
+    Draw.pixmap w gc ~pixmap ~width ~height ~xsrc ~ysrc ~xdest:x ~ydest:y
 end
 
 class pixmap ?colormap ?mask pm = object

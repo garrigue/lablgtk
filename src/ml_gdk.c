@@ -96,6 +96,15 @@ ML_5 (gdk_image_get, GdkWindow_val, Int_val, Int_val, Int_val, Int_val,
       Val_GdkImage)
 ML_4 (gdk_image_put_pixel, GdkImage_val, Int_val, Int_val, Int_val, Unit)
 ML_3 (gdk_image_get_pixel, GdkImage_val, Int_val, Int_val, Val_int)
+Make_Extractor(gdk_image, GdkImage_val, visual, Val_GdkVisual)
+Make_Extractor(gdk_image, GdkImage_val, width, Val_int)
+Make_Extractor(gdk_image, GdkImage_val, height, Val_int)
+Make_Extractor(gdk_image, GdkImage_val, depth, Val_int)
+/*
+Make_Extractor(gdk_image, GdkImage_val, bpp, Val_int)
+Make_Extractor(gdk_image, GdkImage_val, bpl, Val_int)
+Make_Extractor(gdk_image, GdkImage_val, mem, Val_pointer)
+*/
 
 /* Color */
 
