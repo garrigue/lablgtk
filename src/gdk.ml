@@ -43,3 +43,7 @@ module Rectangle = struct
   external width : t -> int = "ml_GdkRectangle_width"
   external height : t -> int = "ml_GdkRectangle_height"
 end
+
+module Event = struct
+  type t
+end
