@@ -85,7 +85,7 @@ module Image :
       visual:visual -> data:string -> width:int -> height:int -> image
       = "ml_gdk_image_new_bitmap"
     external create :
-      image_type:image_type ->
+      kind:image_type ->
       visual:visual -> width:int -> height:int -> image = "ml_gdk_image_new"
     external get :
       'a drawable -> x:int -> y:int -> width:int -> height:int -> image
