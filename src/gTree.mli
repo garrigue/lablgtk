@@ -301,7 +301,6 @@ class view : ([> tree_view] as 'a) obj ->
     method set_headers_clickable : bool -> unit
     method set_headers_visible : bool -> unit
     method set_model : model -> unit
-    method set_model2 : model -> unit
     method set_reorderable : bool -> unit
     method set_rules_hint : bool -> unit
     method set_search_column : int -> unit

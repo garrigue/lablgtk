@@ -384,9 +384,6 @@ CAMLprim value ml_gtk_tree_view_get_cursor (value arg)
   CAMLreturn(ret);
 }
 
-ML_2 (gtk_tree_view_set_model, GtkTreeView_val, GtkTreeModel_val, Unit)
-
-
 CAMLprim value ml_gtk_tree_view_get_path_at_pos(value treeview, value path, value column, value x, value y)
 {
   gint cell_x;

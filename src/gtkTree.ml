@@ -441,9 +441,6 @@ module TreeView = struct
     | Some xy -> Some (path, column, xy)
     | None -> None
 
-external set_model : [>`treeview] obj -> tree_model obj -> unit
-    = "ml_gtk_tree_view_set_model"
-	  
   module Properties = struct
     open Gobject
     open Gobject.Data
