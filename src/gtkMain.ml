@@ -18,8 +18,12 @@ module Main = struct
   (* external exit : int -> unit = "ml_gtk_exit" *)
   external set_locale : unit -> string = "ml_gtk_set_locale"
   (* external main : unit -> unit = "ml_gtk_main" *)
-  let init ?(nolocale=false) () =
-    let locale = if nolocale then "" else set_locale () in
+  let init ?(setlocale=false) () =
+    let locale =
+      if try Sys.getenv "GTK_SETLOCALE" <> "0" with Not_found -> setlocale
+      then set_locale ()
+      else ""
+    in
     let argv = init Sys.argv in
     Array.blit ~src:argv ~dst:Sys.argv ~len:(Array.length argv)
       ~src_pos:0 ~dst_pos:0;

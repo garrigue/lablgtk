@@ -1,8 +1,7 @@
 (* $Id$ *)
 
-(* これを実行する前にLC_CTYPE=ja_JP.EUCなどと指定しなければならない *)
-
-(* cut-and-paste も対応していますが、editはうまくいきません *)
+(* これを実行する前にLC_ALL=ja_JP.EUCなどと指定しなければならない *)
+(* GTK_SETLOCALEもセットしないとlocaleが無視されます *)
 
 open GMain
 
