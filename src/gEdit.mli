@@ -120,8 +120,8 @@ class text :
     val obj : Gtk.text obj
     method add_events : Gdk.Tags.event_mask list -> unit
     method insert :
-      ?font:Gdk.font ->
-      ?foreground:Gdk.Color.t -> ?background:Gdk.Color.t -> string -> unit
+      string -> ?font:Gdk.font ->
+      ?foreground:GdkObj.color -> ?background:GdkObj.color -> unit
     method length : int
     method point : int
     method hadjustment : GData.adjustment

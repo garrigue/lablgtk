@@ -218,7 +218,7 @@ value ml_gtk_widget_intersect (value w, value area)
 {
     value ret = Val_unit;
     value inter = alloc (Wosizeof(GdkRectangle)+2, Abstract_tag);
-    Field(inter,1) = (value) &Field(inter,2);
+    Field(inter,1) = 2;
     if (gtk_widget_intersect (GtkWidget_val(w), GdkRectangle_val(area),
 			      GdkRectangle_val(inter)))
     {
