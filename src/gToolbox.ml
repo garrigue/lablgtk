@@ -82,7 +82,7 @@ let message_box ~title ?icon ?(ok=mOk) message =
   ignore (question_box ?icon ~title message ~buttons:[ ok ])
 
 
-let input_widget ~widget ~event ~get_text
+let input_widget ~widget ~event ~get_text ~bind_ok
     ~title ?(ok=mOk) ?(cancel=mCancel) message =
   let retour = ref None in
   let window = GWindow.dialog ~title ~modal:true () in
@@ -120,7 +120,7 @@ let input_widget ~widget ~event ~get_text
   (* the escape key is linked to the cancel action *)
   event#connect#key_press ~callback:
     begin fun ev -> 
-      if GdkEvent.Key.keyval ev = GdkKeysyms._Return then f_ok () else
+      if GdkEvent.Key.keyval ev = GdkKeysyms._Return && bind_ok then f_ok ();
       if GdkEvent.Key.keyval ev = GdkKeysyms._Escape then f_cancel ();
       true
     end;
@@ -136,7 +136,7 @@ let input_string ~title ?ok ?cancel ?(text="") message =
   if text <> "" then
     we_chaine#select_region 0 (we_chaine#text_length);
   input_widget ~widget:we_chaine#coerce ~event:we_chaine#event
-    ~get_text:(fun () -> we_chaine#text)
+    ~get_text:(fun () -> we_chaine#text) ~bind_ok:true
     ~title ?ok ?cancel message
 
 let input_text ~title ?ok ?cancel ?(text="") message =
@@ -147,7 +147,7 @@ let input_text ~title ?ok ?cancel ?(text="") message =
   end;
   input_widget ~widget:wt_chaine#coerce ~event:wt_chaine#event
     ~get_text:(fun () -> wt_chaine#get_chars ~start:0 ~stop:wt_chaine#length)
-    ~title ?ok ?cancel message
+    ~bind_ok:false ~title ?ok ?cancel message
 
 
 (**This variable contains the last directory where the user selected a file.*)
