@@ -105,10 +105,12 @@ ML_13(gdk_pixbuf_render_to_drawable_alpha, GdkPixbuf_val, GdkDrawable_val,
       Int_val, Int_val, Int_val, Int_val, Int_val, Int_val,
       Alpha_mode_val, Int_val, GdkRgbDither_val, Int_val, Int_val, Unit)
 ML_bc13(ml_gdk_pixbuf_render_to_drawable_alpha)
+/* Not available before 2.2
 ML_12(gdk_draw_pixbuf, GdkDrawable_val, GdkGC_val, GdkPixbuf_val,
       Int_val, Int_val, Int_val, Int_val, Int_val, Int_val,
       GdkRgbDither_val, Int_val, Int_val, Unit)
 ML_bc12(ml_gdk_draw_pixbuf)
+*/
 
 CAMLprim value ml_gdk_pixbuf_render_pixmap_and_mask (value pixbuf, value thr)
 {
