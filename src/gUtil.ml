@@ -3,6 +3,9 @@
 open StdLabels
 open GObj
 
+let print_widget ppf (o : #widget) = 
+    Format.fprintf ppf "<%s@@0x%x>" o#misc#get_type o#get_oid
+
 class ['a] memo () = object
   constraint 'a = #widget
   val tbl = Hashtbl.create 7
