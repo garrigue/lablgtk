@@ -12,7 +12,7 @@ type units = int
 module Tags = struct
   type style =
       [ `NORMAL | `OBLIQUE | `ITALIC ]
-  external style_to_int : style -> int = "ml_Pango_style_val"
+
   type weight_internal =
       [ `ULTRALIGHT | `LIGHT | `NORMAL |`BOLD | `ULTRABOLD |`HEAVY ]
   external weight_to_int_internal : weight_internal -> int 
@@ -22,28 +22,35 @@ module Tags = struct
     match w with 
       | `CUSTOM b -> b 
       | #weight_internal as w -> weight_to_int_internal w
+
   type variant =
         [ `NORMAL | `SMALL_CAPS ]
-  external variant_to_int : variant -> int = "ml_Pango_variant_val"
     
   type stretch =
       [ `ULTRA_CONDENSED | `EXTRA_CONDENSED 
       | `CONDENSED | `SEMI_CONDENSED 
       | `NORMAL | `SEMI_EXPANDED
       | `EXPANDED | `EXTRA_EXPANDED | `ULTRA_EXPANDED ]
-  external stretch_to_int : stretch -> int = "ml_Pango_stretch_val"
 
   type scale =
       [ `XX_SMALL | `X_SMALL | `SMALL | `MEDIUM 
       | `LARGE | `X_LARGE | `XX_LARGE
       | `CUSTOM of float ]
   external scale_to_float : scale -> float = "ml_Pango_scale_val"
+
   type underline = [ `NONE | `SINGLE | `DOUBLE | `LOW ]
-  external underline_to_int : underline -> int = "ml_Pango_underline_val"
-  external justification_to_int : Gtk.Tags.justification -> int 
-    = "ml_Justification_val"
-  external text_direction_to_int : Gtk.Tags.text_direction -> int 
-    = "ml_Text_direction_val"
+
+  open Gpointer
+  external get_tables : unit ->
+    style variant_table
+    * variant variant_table
+    * stretch variant_table
+    * underline variant_table
+    * Gtk.Tags.justification variant_table
+    * Gtk.Tags.text_direction variant_table
+    = "ml_pango_get_tables"
+  let style, variant, stretch, underline, justification, text_direction =
+    get_tables ()
 end
 
 module Font = struct

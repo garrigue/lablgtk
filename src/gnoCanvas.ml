@@ -59,6 +59,7 @@ type items_properties = [
   | `Y1 of float
   | `Y2 of float] 
 
+let encode tbl v = `INT (Gpointer.encode_variant tbl v)
 let propertize = function
   | `X v -> "x", `FLOAT v
   | `Y v -> "y", `FLOAT v
@@ -97,11 +98,11 @@ let propertize = function
   | `ARROW_SHAPE_C v -> "arrow_shape_c", `FLOAT v
   | `FIRST_ARROWHEAD b -> "first_arrowhead", `BOOL b
   | `LAST_ARROWHEAD  b -> "last_arrowhead", `BOOL b
-  | `ANCHOR a -> "anchor", `INT (convert_tags (ANCHOR a))
-  | `JUSTIFICATION j -> "justification", `INT (convert_tags (JUSTIFICATION j))
-  | `CAP_STYLE c -> "cap_style", `INT (convert_tags (CAPSTYLE c))
-  | `JOIN_STYLE c -> "join_style", `INT (convert_tags (JOINSTYLE c))
-  | `LINE_STYLE c -> "line_style", `INT (convert_tags (LINESTYLE c))
+  | `ANCHOR a -> "anchor", encode anchor_type a
+  | `JUSTIFICATION j -> "justification", encode justification j
+  | `CAP_STYLE c -> "cap_style", encode gdkCapStyle c
+  | `JOIN_STYLE c -> "join_style", encode gdkJoinStyle c
+  | `LINE_STYLE c -> "line_style", encode gdkLineStyle c
   | `BPATH p -> "bpath" , `POINTER (Some p)
   | `DASH (off, d) -> "dash", `POINTER (Some (convert_dash off d))
   | `SMOOTH b -> "smooth", `BOOL b
