@@ -19,7 +19,7 @@ end
 
 class list_item ?:label ?:border_width ?:width ?:height ?:packing ?:show =
   let w = ListItem.create ?:label ?None in
-  let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+  let () = Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit list_item_wrapper w
     initializer pack_return :packing ?:show (self :> list_item_wrapper)
@@ -40,7 +40,7 @@ class liste ?:selection_mode ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Liste.create () in
   let () =
     may selection_mode fun:(Liste.set_selection_mode w);
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height
+    Container.set w ?:border_width ?:width ?:height
   in
   object (self)
     inherit liste_wrapper w
@@ -102,8 +102,8 @@ class clist_wrapper obj = object (self)
   method sort () = CList.sort obj
   method set_clist ?:hadjustment ?:vadjustment =
     CList.set ?obj
-      ?hadjustment:(may_map hadjustment fun:GData.adjustment_obj)
-      ?vadjustment:(may_map vadjustment fun:GData.adjustment_obj)
+      ?hadjustment:(GData.adjustment_option hadjustment)
+      ?vadjustment:(GData.adjustment_option vadjustment)
   method set_titles = CList.set_titles ?obj
   method set_sort = CList.set_sort ?obj
   method set_column : 'b. int -> ?widget:(#is_widget as 'b) -> _ =
@@ -124,7 +124,8 @@ class clist_wrapper obj = object (self)
 end
 
 class clist ?:columns [< 1 >] ?:titles ?:hadjustment ?:vadjustment
-    ?:shadow_type ?:reorderable ?:use_drag_icons ?:row_height
+    ?:shadow_type ?:button_actions ?:selection_mode
+    ?:reorderable ?:use_drag_icons ?:row_height
     ?:titles_show ?:titles_active ?:auto_sort ?:sort_column ?:sort_type
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w =
@@ -133,9 +134,10 @@ class clist ?:columns [< 1 >] ?:titles ?:hadjustment ?:vadjustment
   in
   let () =
     CList.set w 
-      ?hadjustment:(may_map hadjustment fun:GData.adjustment_obj)
-      ?vadjustment:(may_map vadjustment fun:GData.adjustment_obj)
-      ?:shadow_type ?:reorderable ?:use_drag_icons ?:row_height;
+      ?hadjustment:(GData.adjustment_option hadjustment)
+      ?vadjustment:(GData.adjustment_option vadjustment)
+      ?:shadow_type ?:button_actions ?:selection_mode ?:reorderable
+      ?:use_drag_icons ?:row_height;
     CList.set_titles w ?show:titles_show ?active:titles_active;
     CList.set_sort w ?auto:auto_sort ?column:sort_column ?type:sort_type;
     Container.set w ?:border_width ?:width ?:height

@@ -81,7 +81,7 @@ class tree_signals obj =
 
 class tree_item ?:label ?:border_width ?:width ?:height ?:packing ?:show =
   let w = TreeItem.create ?None ?:label in
-  let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+  let () = Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit tree_item_wrapper w
     initializer pack_return :packing ?:show (self :> tree_item_wrapper)
@@ -92,7 +92,7 @@ class tree ?:selection_mode ?:view_mode ?:view_lines
   let w = Tree.create () in
   let () =
     Tree.setter w cont:null_cont ?:selection_mode ?:view_mode ?:view_lines;
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit tree_wrapper w
     initializer pack_return :packing ?:show (self :> tree_wrapper)

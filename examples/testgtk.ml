@@ -408,8 +408,7 @@ let create_scrolled_windows =
 	window #connect#destroy callback:scrolled_windows_clean;
 
 	let scrolled_window = new scrolled_window border_width:10
-	    hscrollbar_policy: `AUTOMATIC
-	    vscrollbar_policy:`AUTOMATIC
+	    hpolicy: `AUTOMATIC vpolicy:`AUTOMATIC
 	    packing: window#vbox#pack in
 
 	let table = new table rows:20 columns:20 row_spacings:10
@@ -457,13 +456,13 @@ let make_toolbar (toolbar : toolbar) (window : window) =
     tooltip:"Horizontal toolbar layout"
     tooltip_private:"Toolbar/Horizontal"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_orientation `HORIZONTAL);
+    callback:(fun _ -> toolbar #set_toolbar orientation: `HORIZONTAL);
   
   toolbar #insert_button text:"Vertical"
     tooltip:"Vertical toolbar layout"
     tooltip_private:"Toolbar/Vertical"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_orientation `VERTICAL);
+    callback:(fun _ -> toolbar #set_toolbar orientation: `VERTICAL);
   
   toolbar #insert_space;
   
@@ -471,19 +470,19 @@ let make_toolbar (toolbar : toolbar) (window : window) =
     tooltip: "Only show toolbar icons"
     tooltip_private:"Toolbar/IconsOnly"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_style `ICONS);
+    callback:(fun _ -> toolbar #set_toolbar style: `ICONS);
   
   toolbar #insert_button text:"Text"
     tooltip: "Only show toolbar text"
     tooltip_private:"Toolbar/TextOnly"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_style `TEXT);
+    callback:(fun _ -> toolbar #set_toolbar style: `TEXT);
   
   toolbar #insert_button text:"Both"
     tooltip: "Show toolbar icons and text"
     tooltip_private:"Toolbar/Both"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_style `BOTH);
+    callback:(fun _ -> toolbar #set_toolbar style: `BOTH);
   
   toolbar #insert_space;
   
@@ -495,49 +494,49 @@ let make_toolbar (toolbar : toolbar) (window : window) =
     tooltip:"Use small spaces"
     tooltip_private:"Toolbar/Small"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_space_size 5);
+    callback:(fun _ -> toolbar #set_toolbar space_size: 5);
   
   toolbar #insert_button text:"Big"
     tooltip:"Use big spaces"
     tooltip_private:"Toolbar/Big"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_space_size 10);
+    callback:(fun _ -> toolbar #set_toolbar space_size: 10);
   
   toolbar #insert_space;
   
   toolbar #insert_button text:"Enable"
     tooltip:"Enable tooltips"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_tooltips true);
+    callback:(fun _ -> toolbar #set_toolbar tooltips: true);
   
   toolbar #insert_button text:"Disable"
     tooltip:"Disable tooltips"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_tooltips false);
+    callback:(fun _ -> toolbar #set_toolbar tooltips: false);
   
   toolbar #insert_space;
   
   toolbar #insert_button text:"Borders"
     tooltip:"Show borders"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_button_relief `NORMAL);
+    callback:(fun _ -> toolbar #set_toolbar button_relief: `NORMAL);
   
   toolbar #insert_button text:"Borderless"
     tooltip:"Hide borders"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_button_relief `NONE);
+    callback:(fun _ -> toolbar #set_toolbar button_relief: `NONE);
   
   toolbar #insert_space;
   
   toolbar #insert_button text:"Empty"
     tooltip:"Empty spaces"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_space_style `EMPTY);
+    callback:(fun _ -> toolbar #set_toolbar space_style: `EMPTY);
   
   toolbar #insert_button text:"Lines"
     tooltip:"Lines in spaces"
     icon:(icon ())
-    callback:(fun _ -> toolbar #set_space_style `LINE)
+    callback:(fun _ -> toolbar #set_toolbar space_style: `LINE)
  
 let create_toolbar =
   let rw = ref None in
@@ -596,7 +595,7 @@ let create_handle_box =
 
 	let toolbar = new toolbar in
 	make_toolbar toolbar window;
-	toolbar #set_button_relief `NORMAL;
+	toolbar #set_toolbar button_relief: `NORMAL;
 	handle_box #add toolbar;
 
 	let handle_box = new handle_box
@@ -704,7 +703,7 @@ let create_tree_sample selection_mode draw_line view_line no_root_item nb_item_m
   let box1 = new box `VERTICAL packing:window#add in
   let box2 = new box `VERTICAL packing:box1#pack border_width:5 in
   let scrolled_win = new scrolled_window packing:box2#pack
-      hscrollbar_policy: `AUTOMATIC vscrollbar_policy:`AUTOMATIC
+      hpolicy: `AUTOMATIC vpolicy:`AUTOMATIC
       width:200 height:200 in
 
   let root_treeb = new tree_and_buttons in
@@ -815,10 +814,10 @@ let create_tree_mode_window =
 	let box4 = new box `VERTICAL packing:(frame#add)
 	    border_width:5 in
 	box4 #pack draw_line_button;
-	draw_line_button #set_toggle active: true;
+	draw_line_button #set_active true;
 	
 	box4 #pack view_line_button;
-	view_line_button #set_toggle active: true;
+	view_line_button #set_active true;
 	
 	box4 #pack no_root_item_button;
 
@@ -828,14 +827,12 @@ let create_tree_mode_window =
 	    border_width:5 in
 
 	let box5 = new box `HORIZONTAL spacing:5 packing:(box4#pack) in
-	let label = new label text:"Number of items : "
+	let label = new label text:"Number of items : " xalign:0. yalign:0.5
 	  packing:(box5#pack expand:false) in
-	label #set_alignment x:0. y:0.5;
 	box5 #pack nb_item_spinner expand:false;
 	
-	let label = new label text:"Depth : "
+	let label = new label text:"Depth : " xalign:0. yalign:0.5
 	  packing:(box5#pack expand:false) in
-	label #set_alignment x:0. y:0.5;
 	box5 #pack recursion_spinner expand:false;
 	
 	new separator `HORIZONTAL
@@ -1136,7 +1133,7 @@ let create_main_window () =
     packing:(box1#pack expand:false fill:false);
 
   let scrolled_window = new scrolled_window border_width: 10
-      hscrollbar_policy: `AUTOMATIC vscrollbar_policy: `AUTOMATIC
+      hpolicy: `AUTOMATIC vpolicy: `AUTOMATIC
       packing:box1#pack in
 
   let box2 = new box `VERTICAL border_width: 10 in

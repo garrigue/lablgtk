@@ -3,15 +3,15 @@
 open GMain
 
 class bar bar = object
-  val bar : GRange.progress_bar = bar
+  val bar : #GRange.progress = bar
   val mutable pstat = true
   method progress () =
     let pvalue = bar#percentage in
     let pvalue =
-      if pvalue >= 1.0 || not pstat then (pstat <- true; 0.0)
+      if pvalue > 0.99 || not pstat then (pstat <- true; 0.0)
       else pvalue +. 0.01
     in
-    bar#update pvalue;
+    bar#set_percentage pvalue;
     true
   method reset () =
     pstat <- false
@@ -27,7 +27,7 @@ let main () =
   let label = new GMisc.label text:"Progress Bar Example" in
   table#attach label left:0 right:2 top:0 expand:`X shrink:`BOTH;
   
-  let pbar = new GRange.progress_bar in
+  let pbar = new GRange.progress_bar bar_style:`DISCRETE discrete_blocks:20 in
   table#attach pbar left:0 right:2 top:1 fill:`X shrink:`BOTH;
 
   let bar = new bar pbar in

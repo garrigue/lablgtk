@@ -8,9 +8,11 @@ open GObj
 
 class separator_wrapper w = widget_wrapper (w : separator obj)
 
-class separator dir ?:packing ?:show =
+class separator dir ?:width ?:height ?:packing ?:show =
+  let w = Separator.create dir in
+  let () = Widget.set_size w ?:width ?:height in
   object (self)
-    inherit separator_wrapper (Separator.create dir)
+    inherit separator_wrapper w
     initializer pack_return :packing ?:show (self :> separator_wrapper)
   end
 
@@ -35,7 +37,7 @@ end
 
 class statusbar ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Statusbar.create () in
-  let () = Container.setter w ?:border_width ?:width ?:height cont:null_cont in
+  let () = Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit statusbar_wrapper w
     initializer pack_return :packing ?:show (self :> statusbar_wrapper)
@@ -75,9 +77,11 @@ class calendar_wrapper obj = object
   method thaw () = Calendar.thaw obj
 end
 
-class calendar ?:options ?:packing ?:show =
+class calendar ?:options ?:width ?:height ?:packing ?:show =
   let w = Calendar.create () in
-  let () = may options fun:(Calendar.display_options w) in
+  let () =
+    Widget.set_size w ?:width ?:height;
+    may options fun:(Calendar.display_options w) in
   object (self)
     inherit calendar_wrapper w
     initializer pack_return :packing ?:show (self :> calendar_wrapper)
@@ -100,8 +104,7 @@ class drawing_area  ?:width [< 0 >] ?:height [< 0 >] ?:packing ?:show =
 
 class misc obj = object
   inherit widget obj
-  method set_alignment = Misc.set_alignment obj
-  method set_padding = Misc.set_padding obj
+  method set_misc = Misc.setter ?obj ?cont:null_cont
 end
 
 class label_skel obj = object
@@ -117,11 +120,11 @@ class label_wrapper obj = object
 end
 
 class label ?:text [< "" >] ?:justify ?:line_wrap ?:pattern
-    ?:xalign ?:yalign ?:xpad ?:ypad ?:packing ?:show =
+    ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height ?:packing ?:show =
   let w = Label.create text in
   let () =
     Label.setter w cont:null_cont ?:justify ?:line_wrap ?:pattern;
-    Misc.setter w cont:null_cont ?:xalign ?:yalign ?:xpad ?:ypad
+    Misc.set w ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height
   in
   object (self)
     inherit label_wrapper w
@@ -146,17 +149,18 @@ class tips_query_wrapper obj = object
   method stop () = TipsQuery.stop obj
   method set_caller : 'a . (#is_widget as 'a) -> unit =
     fun w -> TipsQuery.set_caller obj (w #as_widget)
-  method set_labels = TipsQuery.set_labels obj
+  method set_tips = TipsQuery.setter ?obj ?cont:null_cont ?caller:None
   method connect = new tips_query_signals ?obj
 end
 
 class tips_query ?:caller ?:emit_always ?:label_inactive ?:label_no_tip
-    ?:packing ?:show =
+    ?:width ?:height ?:packing ?:show =
   let w = TipsQuery.create () in
   let () =
     let caller = may_map (caller : #is_widget option) fun:(#as_widget) in
     TipsQuery.setter w cont:null_cont ?:caller ?:emit_always
-      ?:label_inactive ?:label_no_tip
+      ?:label_inactive ?:label_no_tip;
+    Widget.set_size w ?:width ?:height
   in
   object (self)
     inherit tips_query_wrapper w
@@ -211,7 +215,7 @@ class notebook ?:tab_pos ?:tab_border ?:show_tabs ?:homogeneous_tabs
   let () =
     Notebook.setter w cont:null_cont ?:tab_pos ?:tab_border ?:show_tabs
       ?:homogeneous_tabs ?:show_border ?:scrollable ?:popup;
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit notebook_wrapper w
     initializer pack_return :packing ?:show (self :> notebook_wrapper)
@@ -228,7 +232,7 @@ end
 
 class color_selection ?:border_width ?:width ?:height ?:packing ?:show =
   let w = ColorSelection.create () in
-  let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+  let () = Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit color_selection_wrapper w
     initializer pack_return :packing ?:show (self :> color_selection_wrapper)

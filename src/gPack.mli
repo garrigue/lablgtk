@@ -175,6 +175,6 @@ class paned :
     method add1 : #GObj.is_widget -> unit
     method add2 : #GObj.is_widget -> unit
     method add_events : Gdk.Tags.event_mask list -> unit
-    method set_paned : ?handle_size:int -> ?gutter_size:int -> unit
+    method set_size : ?handle:int -> ?gutter:int -> unit
   end
 class paned_wrapper : Gtk.paned obj -> paned

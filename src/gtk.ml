@@ -57,6 +57,9 @@ module Tags = struct
   type spin_type =
     [ STEP_FORWARD STEP_BACKWARD PAGE_FORWARD PAGE_BACKWARD
       HOME END USER_DEFINED(float) ]
+  type progress_bar_style = [ CONTINUOUS DISCRETE ]
+  type progress_bar_orientation =
+    [ LEFT_TO_RIGHT RIGHT_TO_LEFT BOTTOM_TO_TOP TOP_TO_BOTTOM ]
 end
 open Tags
 

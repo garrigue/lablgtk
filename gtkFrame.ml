@@ -149,13 +149,15 @@ module ScrolledWindow = struct
       = "ml_gtk_scrolled_window_new"
   let create ?:hadjustment ?:vadjustment ?(_ : unit option) =
     create (optboxed hadjustment) (optboxed vadjustment)
+  external set_hadjustment : [> scrolled] obj -> [> adjustment] obj -> unit
+      = "ml_gtk_scrolled_window_set_hadjustment"
+  external set_vadjustment : [> scrolled] obj -> [> adjustment] obj -> unit
+      = "ml_gtk_scrolled_window_set_vadjustment"
   external get_hadjustment : [> scrolled] obj -> adjustment obj
       = "ml_gtk_scrolled_window_get_hadjustment"
   external get_vadjustment : [> scrolled] obj -> adjustment obj
       = "ml_gtk_scrolled_window_get_vadjustment"
-  external set_policy :
-      [> scrolled] obj ->
-      horizontal:policy_type -> vertical:policy_type -> unit
+  external set_policy : [> scrolled] obj -> policy_type -> policy_type -> unit
       = "ml_gtk_scrolled_window_set_policy"
   external add_with_viewport : [> scrolled] obj -> [> widget] obj -> unit
       = "ml_gtk_scrolled_window_add_with_viewport"
@@ -163,10 +165,12 @@ module ScrolledWindow = struct
       = "ml_gtk_scrolled_window_get_hscrollbar_policy"
   external get_vscrollbar_policy : [> scrolled] obj -> policy_type
       = "ml_gtk_scrolled_window_get_vscrollbar_policy"
-  let setter w :cont ?:hscrollbar_policy ?:vscrollbar_policy =
-    if hscrollbar_policy <> None || vscrollbar_policy <> None then
+  external set_placement : [> scrolled] obj -> corner_type -> unit
+      = "ml_gtk_scrolled_window_set_placement"
+  let set w ?:hpolicy ?:vpolicy ?:placement =
+    if hpolicy <> None || vpolicy <> None then
       set_policy w
-	horizontal:(may_default get_hscrollbar_policy w for:hscrollbar_policy)
-	vertical:(may_default get_vscrollbar_policy w for:vscrollbar_policy);
-    cont w
+	(may_default get_hscrollbar_policy w for:hpolicy)
+	(may_default get_vscrollbar_policy w for:vpolicy);
+    may placement fun:(set_placement w)
 end

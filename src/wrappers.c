@@ -36,6 +36,6 @@ value Val_pointer (void *ptr)
 
 value copy_string_check (const char*str)
 {
-    if (!str) ml_raise_null_pointer;
+    if (!str) ml_raise_null_pointer ();
     return copy_string ((char*) str);
 }

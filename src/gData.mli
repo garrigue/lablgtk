@@ -36,7 +36,7 @@ class adjustment :
 class adjustment_wrapper : Gtk.adjustment obj -> adjustment
 
 class tooltips :
-  ?delay:int -> ?foreground:Gdk.Color.t -> ?background:Gdk.Color.t ->
+  ?delay:int -> ?foreground:GdkObj.color -> ?background:GdkObj.color ->
   object
     inherit GObj.gtkobj
     val obj : Gtk.tooltips obj
@@ -45,9 +45,9 @@ class tooltips :
     method enable : unit -> unit
     method set :
       ?delay:int ->
-      ?foreground:Gdk.Color.t -> ?background:Gdk.Color.t -> unit
+      ?foreground:GdkObj.color -> ?background:GdkObj.color -> unit
     method set_tip : #GObj.is_widget -> ?text:string -> ?private:string -> unit
   end
 class tooltips_wrapper : Gtk.tooltips obj -> tooltips
 
-val adjustment_obj : adjustment -> Gtk.adjustment obj
+val adjustment_option : adjustment option -> Gtk.adjustment obj option

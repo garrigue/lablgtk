@@ -58,6 +58,8 @@ class clist :
   ?hadjustment:GData.adjustment ->
   ?vadjustment:GData.adjustment ->
   ?shadow_type:Gtk.Tags.shadow_type ->
+  ?button_actions:(int * Tags.button_action list) list ->
+  ?selection_mode:Tags.selection_mode ->
   ?reorderable:bool ->
   ?use_drag_icons:bool ->
   ?row_height:int ->
@@ -107,6 +109,7 @@ class clist :
       ?hadjustment:GData.adjustment ->
       ?vadjustment:GData.adjustment ->
       ?shadow_type:Tags.shadow_type ->
+      ?button_actions:(int * Tags.button_action list) list ->
       ?selection_mode:Tags.selection_mode ->
       ?reorderable:bool -> ?use_drag_icons:bool -> ?row_height:int -> unit
     method set_column :

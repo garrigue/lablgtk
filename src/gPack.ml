@@ -25,7 +25,7 @@ class box dir ?:homogeneous ?:spacing
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Box.create dir ?:homogeneous ?:spacing in
   let () =
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit box_wrapper w
     initializer pack_return :packing ?:show (self :> box_wrapper)
@@ -45,7 +45,7 @@ class button_box dir ?:spacing ?:child_width ?:child_height ?:child_ipadx
   let () =
     BBox.setter w cont:null_cont ?:spacing ?:child_width ?:child_height
       ?:child_ipadx ?:child_ipady ?:layout;
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit button_box_wrapper w
     initializer pack_return :packing ?:show (self :> button_box_wrapper)
@@ -63,7 +63,7 @@ class table :rows :columns ?:homogeneous ?:row_spacings ?:col_spacings
   let w = Table.create :rows :columns ?:homogeneous in
   let () =
     Table.setter w cont:null_cont ?:row_spacings ?:col_spacings;
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit table_wrapper w
     initializer pack_return :packing ?:show (self :> table_wrapper)
@@ -80,7 +80,7 @@ end
 
 class fixed ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Fixed.create () in
-  let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+  let () = Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit fixed_wrapper w
     initializer pack_return :packing ?:show (self :> fixed_wrapper)
@@ -94,10 +94,8 @@ class layout_wrapper obj = object
   method move : 'a. (#is_widget as 'a) -> _ =
     fun w -> Layout.move obj w#as_widget
   method set_layout ?:hadjustment ?:vadjustment =
-    may hadjustment
-      fun:(fun a -> Layout.set_hadjustment obj (GData.adjustment_obj a));
-    may vadjustment
-      fun:(fun a -> Layout.set_vadjustment obj (GData.adjustment_obj a));
+    may (GData.adjustment_option hadjustment) fun:(Layout.set_hadjustment obj);
+    may (GData.adjustment_option vadjustment) fun:(Layout.set_vadjustment obj);
     Layout.set ?obj
   method hadjustment =
     new GData.adjustment_wrapper (Layout.get_hadjustment obj)
@@ -111,12 +109,12 @@ end
 
 class layout ?:hadjustment ?:vadjustment ?:layout_width ?:layout_height
     ?:border_width ?:width ?:height ?:packing ?:show =
-  let hadj = may_map hadjustment fun:GData.adjustment_obj
-  and vadj = may_map vadjustment fun:GData.adjustment_obj in
-  let w = Layout.create (optboxed hadj) (optboxed vadj) in
+  let w = Layout.create
+      (optboxed (GData.adjustment_option hadjustment))
+      (optboxed (GData.adjustment_option vadjustment)) in
   let () =
     Layout.set w ?width:layout_width ?height:layout_height;
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit layout_wrapper w
     initializer pack_return :packing ?:show (self :> layout_wrapper)
@@ -147,7 +145,7 @@ class packer ?:spacing ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Packer.create () in
   let () =
     may spacing fun:(Packer.set_spacing w);
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit packer_wrapper w
     initializer pack_return :packing ?:show (self :> packer_wrapper)
@@ -160,7 +158,8 @@ class paned_wrapper obj = object
     fun w -> Paned.add1 obj w#as_widget
   method add2 : 'a. (#is_widget as 'a) -> _ =
     fun w -> Paned.add2 obj w#as_widget
-  method set_paned = Paned.setter ?obj ?cont:null_cont
+  method set_size ?:handle ?:gutter =
+    Paned.setter obj cont:null_cont ?handle_size:handle ?gutter_size:gutter
 end
 
 class paned dir ?:handle_size ?:gutter_size ?:border_width
@@ -168,7 +167,7 @@ class paned dir ?:handle_size ?:gutter_size ?:border_width
   let w = Paned.create dir in
   let () =
     Paned.setter w cont:null_cont ?:handle_size ?:gutter_size;
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit paned_wrapper w
     initializer pack_return :packing ?:show (self :> paned_wrapper)

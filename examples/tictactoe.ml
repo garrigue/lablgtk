@@ -49,7 +49,7 @@ object(self)
       for j = 0 to 2 do
 	GtkSignal.handler_block (buttons.(i).(j) #as_widget)
 	  buttons_handlers.(i).(j);
-	buttons.(i).(j)#set_toggle active: false;
+	buttons.(i).(j)#set_active false;
 	GtkSignal.handler_unblock (buttons.(i).(j) #as_widget)
 	  buttons_handlers.(i).(j)
       done

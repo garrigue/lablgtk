@@ -133,9 +133,12 @@ module Widget = struct
     "ml_gtk_widget_visible"
   external parent : [> widget] obj -> widget obj =
     "ml_gtk_widget_parent"
+  let set_position w ?:x [< -2 >] ?:y [< -2 >] =
+    if x > -2 || y > -2 then set_uposition w :x :y
+  let set_size w ?:width [< -2 >] ?:height [< -2 >] =
+    if width > -2 || height > -2 then set_usize w :width :height
   let setter w :cont ?:name ?:state ?:sensitive ?:extension_events
-      ?:can_default ?:can_focus
-      ?:x [< -2 >] ?:y [< -2 >] ?:width [< -1 >] ?:height [< -1 >] ?:style =
+      ?:can_default ?:can_focus ?:x ?:y ?:width ?:height ?:style =
     let may_set f arg = may fun:(f w) arg in
     may_set set_name name;
     may_set set_state state;
@@ -144,8 +147,8 @@ module Widget = struct
     may_set set_can_default can_default;
     may_set set_can_focus can_focus;
     may_set set_style style;
-    if x > -2 || y > -2 then set_uposition w :x :y;
-    if width > -1 || height > -1 then set_usize w :width :height;
+    set_position w ?:x ?:y;
+    set_size w ?:height ?:width;
     cont w
   let set = setter cont:null_cont
   module Signals = struct
@@ -244,11 +247,10 @@ module Container = struct
       = "ml_gtk_container_add"
   external remove : [> container] obj -> [> widget] obj -> unit
       = "ml_gtk_container_remove"
-  let setter w :cont ?:border_width ?:width [< -1 >] ?:height [< -1 >] =
+  let setter w :cont ?:border_width =
     may border_width fun:(set_border_width w);
-    if width > -1 || height > -1 then Widget.set_usize w :width :height;
     cont w
-  let set = setter cont:null_cont
+  let set = setter ?cont:Widget.set_size
   external foreach : [> container] obj -> fun:(widget obj-> unit) -> unit
       = "ml_gtk_container_foreach"
   let children w =

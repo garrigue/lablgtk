@@ -35,6 +35,15 @@ module Progress = struct
       = "ml_gtk_progress_get_current_text"
   external get_adjustment : [> progress] obj -> adjustment obj
       = "ml_gtk_progress_get_adjustment"
+  let set_text w ?:show ?:format_string ?:xalign ?:yalign =
+    may show fun:(set_show_text w);
+    may format_string fun:(set_format_string w);
+    if xalign <> None || yalign <> None then
+      set_text_alignment w ?x:xalign ?y:yalign
+  let set w ?:value ?:percentage ?:activity_mode =
+    may value fun:(set_value w);
+    may percentage fun:(set_percentage w);
+    may activity_mode fun:(set_activity_mode w)
 end
 
 module ProgressBar = struct
@@ -42,8 +51,25 @@ module ProgressBar = struct
     if Object.is_a w "GtkProgressBar" then Obj.magic w
     else invalid_arg "Gtk.ProgressBar.cast"
   external create : unit -> progress_bar obj = "ml_gtk_progress_bar_new"
-  external update : [> progressbar] obj -> percent:float -> unit
-      = "ml_gtk_progress_bar_update"
+  external create_with_adjustment : [> adjustment] obj -> progress_bar obj
+      = "ml_gtk_progress_bar_new_with_adjustment"
+  external set_bar_style : [> progressbar] obj -> [CONTINUOUS DISCRETE] -> unit
+      = "ml_gtk_progress_bar_set_bar_style"
+  external set_discrete_blocks : [> progressbar] obj -> int -> unit
+      = "ml_gtk_progress_bar_set_discrete_blocks"
+  external set_activity_step : [> progressbar] obj -> int -> unit
+      = "ml_gtk_progress_bar_set_activity_step"
+  external set_activity_blocks : [> progressbar] obj -> int -> unit
+      = "ml_gtk_progress_bar_set_activity_blocks"
+  external set_orientation :
+      [> progressbar] obj -> Tags.progress_bar_orientation -> unit
+      = "ml_gtk_progress_bar_set_orientation"
+  let set w ?:bar_style ?:discrete_blocks ?:activity_step ?:activity_blocks =
+    let may_set f opt = may opt fun:(f w) in
+    may_set set_bar_style bar_style;
+    may_set set_discrete_blocks discrete_blocks;
+    may_set set_activity_step activity_step;
+    may_set set_activity_blocks activity_blocks
 end
 
 module Range = struct

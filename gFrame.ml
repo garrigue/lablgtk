@@ -13,20 +13,25 @@ class scrolled_window_wrapper obj = object
     new GData.adjustment_wrapper (ScrolledWindow.get_hadjustment obj)
   method vadjustment =
     new GData.adjustment_wrapper (ScrolledWindow.get_vadjustment obj)
-  method set_policy ?:hscrollbar ?:vscrollbar =
-    ScrolledWindow.setter obj cont:null_cont
-      ?hscrollbar_policy:hscrollbar ?vscrollbar_policy:vscrollbar
+  method set_scrolled ?:hadjustment ?:vadjustment =
+    may fun:(ScrolledWindow.set_hadjustment obj)
+      (GData.adjustment_option hadjustment);
+    may fun:(ScrolledWindow.set_vadjustment obj)
+      (GData.adjustment_option vadjustment);
+    ScrolledWindow.set ?obj
   method add_with_viewport : 'a. (#is_widget as 'a) -> _ =
     fun w -> ScrolledWindow.add_with_viewport obj w#as_widget
 end
 
-class scrolled_window ?:hscrollbar_policy ?:vscrollbar_policy
-    ?:border_width ?:width ?:height ?:packing ?:show =
-  let w = ScrolledWindow.create () in
+class scrolled_window ?:hadjustment ?:vadjustment ?:hpolicy ?:vpolicy
+    ?:placement ?:border_width ?:width ?:height ?:packing ?:show =
+  let w =
+    ScrolledWindow.create ?None
+      ?hadjustment:(GData.adjustment_option hadjustment)
+      ?vadjustment:(GData.adjustment_option vadjustment) in
   let () =
-    ScrolledWindow.setter w cont:null_cont
-      ?:hscrollbar_policy ?:vscrollbar_policy;
-    Container.setter w ?:border_width ?:width ?:height cont:null_cont
+    ScrolledWindow.set w ?:hpolicy ?:vpolicy ?:placement;
+    Container.set w ?:border_width ?:width ?:height
   in
   object (self)
     inherit scrolled_window_wrapper w
@@ -40,7 +45,7 @@ end
 
 class event_box ?:border_width ?:width ?:height ?:packing ?:show =
   let w = EventBox.create () in
-  let () = Container.setter w ?:border_width ?:width ?:height cont:null_cont in
+  let () = Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit event_box_wrapper w
     initializer pack_return :packing ?:show (self :> event_box_wrapper)
@@ -65,7 +70,7 @@ end
 
 class handle_box ?:border_width ?:width ?:height ?:packing ?:show =
   let w = HandleBox.create () in
-  let () = Container.setter w ?:border_width ?:width ?:height cont:null_cont in
+  let () = Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit handle_box_wrapper w
     initializer pack_return :packing ?:show (self :> handle_box_wrapper)
@@ -89,7 +94,7 @@ class frame ?:label ?:label_xalign ?:label_yalign ?:shadow_type
   let w = Frame.create ?:label ?None in
   let () =
     Frame.setter w cont:null_cont ?:label_xalign ?:label_yalign ?:shadow_type;
-    Container.setter w ?:border_width ?:width ?:height cont:null_cont
+    Container.set w ?:border_width ?:width ?:height
   in
   object (self)
     inherit frame_wrapper w
@@ -109,7 +114,7 @@ class aspect_frame ?:label ?:xalign ?:yalign ?:ratio ?:obey_child
     AspectFrame.create ?:label ?:xalign ?:yalign ?:ratio ?:obey_child ?None in
   let () =
     Frame.setter w cont:null_cont ?:label_xalign ?:label_yalign ?:shadow_type;
-    Container.setter w ?:border_width ?:width ?:height cont:null_cont
+    Container.set w ?:border_width ?:width ?:height
   in
   object (self)
     inherit aspect_frame_wrapper w
@@ -119,10 +124,10 @@ class aspect_frame ?:label ?:xalign ?:yalign ?:ratio ?:obey_child
 class viewport_wrapper obj = object
   inherit container_wrapper (obj : viewport obj)
   method set_viewport ?:hadjustment ?:vadjustment ?:shadow_type =
-    may hadjustment
-      fun:(fun a -> Viewport.set_hadjustment obj (GData.adjustment_obj a));
-    may vadjustment
-      fun:(fun a -> Viewport.set_vadjustment obj (GData.adjustment_obj a));
+    may (GData.adjustment_option hadjustment)
+      fun:(Viewport.set_hadjustment obj);
+    may (GData.adjustment_option vadjustment)
+      fun:(Viewport.set_vadjustment obj);
     may shadow_type fun:(Viewport.set_shadow_type obj)
   method hadjustment =
     new GData.adjustment_wrapper (Viewport.get_hadjustment obj)
@@ -133,11 +138,11 @@ end
 class viewport ?:hadjustment ?:vadjustment ?:shadow_type
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Viewport.create ?None
-      ?hadjustment:(may_map hadjustment fun:GData.adjustment_obj)
-      ?vadjustment:(may_map vadjustment fun:GData.adjustment_obj) in
+      ?hadjustment:(GData.adjustment_option hadjustment)
+      ?vadjustment:(GData.adjustment_option vadjustment) in
   let () =
     may shadow_type fun:(Viewport.set_shadow_type w);
-    Container.setter w ?:border_width ?:width ?:height cont:null_cont
+    Container.set w ?:border_width ?:width ?:height
   in
   object (self)
     inherit viewport_wrapper w

@@ -39,7 +39,7 @@ class window ?type:t [< `TOPLEVEL >] ?:title ?:wm_name ?:wm_class ?:position
   let () =
     Window.setter w ?:title ?:wm_name ?:wm_class ?:position
       ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
-    Container.setter w ?:border_width ?:width ?:height cont:null_cont
+    Container.set w ?:border_width ?:width ?:height
   in
   object (self)
     inherit window_wrapper w
@@ -60,7 +60,7 @@ class dialog ?:title ?:wm_name ?:wm_class ?:position ?:allow_shrink
   let () =
     Window.setter w ?:title ?:wm_name ?:wm_class ?:position
       ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
-    Container.setter w ?:border_width ?:width ?:height cont:null_cont
+    Container.set w ?:border_width ?:width ?:height
   in
   object (self)
     inherit dialog_wrapper w
@@ -88,7 +88,7 @@ class color_selection_dialog ?:title [< "Pick a color" >]
   let () =
     Window.setter w ?title:None ?:wm_name ?:wm_class ?:position
       ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
-    Container.setter w ?:border_width ?:width ?:height cont:null_cont
+    Container.set w ?:border_width ?:width ?:height
   in
   object (self)
     inherit color_selection_dialog_wrapper w
@@ -121,7 +121,7 @@ class file_selection ?:title [< "Choose a file" >] ?:filename
     FileSelection.setter w cont:null_cont ?:filename :fileop_buttons;
     Window.setter w ?title:None ?:wm_name ?:wm_class ?:position
       ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y cont:null_cont;
-    Container.setter w ?:border_width ?:width ?:height cont:null_cont
+    Container.set w ?:border_width ?:width ?:height
   in
   object (self)
     inherit file_selection_wrapper w

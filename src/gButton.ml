@@ -33,7 +33,7 @@ end
 class button ?:label ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Button.create ?:label ?None in
   let () =
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit button_wrapper w
     initializer pack_return :packing ?:show (self :> button_wrapper)
@@ -49,7 +49,8 @@ class pre_toggle_button_wrapper obj = object
   inherit button_skel obj
   method connect = new toggle_button_signals ?obj
   method active = ToggleButton.get_active obj
-  method set_toggle = ToggleButton.setter ?obj ?cont:null_cont
+  method set_active = ToggleButton.set_active obj
+  method set_toggle :draw_indicator = ToggleButton.set_mode obj draw_indicator
 end
 
 class toggle_button_wrapper obj =
@@ -60,7 +61,7 @@ class toggle_button ?:label ?:active ?:draw_indicator
   let w = ToggleButton.create_toggle ?:label ?None in
   let () =
     ToggleButton.setter w cont:null_cont ?:active ?:draw_indicator;
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit toggle_button_wrapper w
     initializer pack_return :packing ?:show (self :> toggle_button_wrapper)
@@ -71,7 +72,7 @@ class check_button ?:label ?:active ?:draw_indicator
   let w = ToggleButton.create_check ?:label ?None in
   let () =
     ToggleButton.setter w cont:null_cont ?:active ?:draw_indicator;
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit toggle_button_wrapper w
     initializer pack_return :packing ?:show (self :> toggle_button_wrapper)
@@ -88,7 +89,7 @@ class radio_button ?:group ?:label ?:active ?:draw_indicator
   let w = RadioButton.create ?:group ?:label ?None in
   let () =
     ToggleButton.setter w cont:null_cont ?:active ?:draw_indicator;
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+    Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit radio_button_wrapper w
     initializer pack_return :packing ?:show (self :> radio_button_wrapper)
@@ -126,13 +127,8 @@ class toolbar_wrapper obj = object
 
   method insert_space = Toolbar.insert_space ?obj
 
-  method set_orientation = Toolbar.set_orientation obj
-  method set_style = Toolbar.set_style obj
-  method set_space_size = Toolbar.set_space_size obj
-  method set_space_style = Toolbar.set_space_style obj
-  method set_tooltips = Toolbar.set_tooltips obj
-  method set_button_relief = Toolbar.set_button_relief obj
-  method get_button_relief = Toolbar.get_button_relief obj
+  method set_toolbar = Toolbar.setter ?obj ?cont:null_cont
+  method button_relief = Toolbar.get_button_relief obj
 end
 
 class toolbar ?:orientation [< `HORIZONTAL >] ?:style
@@ -142,7 +138,7 @@ class toolbar ?:orientation [< `HORIZONTAL >] ?:style
   let () =
     Toolbar.setter w cont:null_cont ?:space_size ?:space_style
       ?:tooltips ?:button_relief;
-    Container.setter w cont:null_cont ?:border_width ?:width ?:height
+    Container.set w ?:border_width ?:width ?:height
   in
   object (self)
     inherit toolbar_wrapper w

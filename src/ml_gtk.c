@@ -971,6 +971,10 @@ ML_2 (gtk_paned_set_gutter_size, GtkPaned_val, Int_val, Unit)
 #define GtkScrolledWindow_val(val) check_cast(GTK_SCROLLED_WINDOW,val)
 ML_2 (gtk_scrolled_window_new, GtkAdjustment_val ,GtkAdjustment_val,
       Val_GtkWidget_sink)
+ML_2 (gtk_scrolled_window_set_hadjustment, GtkScrolledWindow_val ,
+      GtkAdjustment_val, Unit)
+ML_2 (gtk_scrolled_window_set_vadjustment, GtkScrolledWindow_val ,
+      GtkAdjustment_val, Unit)
 ML_1 (gtk_scrolled_window_get_hadjustment, GtkScrolledWindow_val,
       Val_GtkWidget)
 ML_1 (gtk_scrolled_window_get_vadjustment, GtkScrolledWindow_val,
@@ -981,6 +985,8 @@ Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
 		hscrollbar_policy, Val_policy_type)
 Make_Extractor (gtk_scrolled_window_get, GtkScrolledWindow_val,
 		vscrollbar_policy, Val_policy_type)
+ML_2 (gtk_scrolled_window_set_placement, GtkScrolledWindow_val,
+      Corner_type_val, Unit)
 ML_2 (gtk_scrolled_window_add_with_viewport, GtkScrolledWindow_val,
       GtkWidget_val, Unit)
 
@@ -1274,7 +1280,16 @@ Make_Extractor (gtk_progress_get, GtkProgress_val, adjustment,
 
 #define GtkProgressBar_val(val) check_cast(GTK_PROGRESS_BAR,val)
 ML_0 (gtk_progress_bar_new, Val_GtkWidget_sink)
-ML_2 (gtk_progress_bar_update, GtkProgressBar_val, Float_val, Unit)
+ML_1 (gtk_progress_bar_new_with_adjustment, GtkAdjustment_val,
+      Val_GtkWidget_sink)
+ML_2 (gtk_progress_bar_set_bar_style, GtkProgressBar_val,
+      Progress_bar_style_val, Unit)
+ML_2 (gtk_progress_bar_set_discrete_blocks, GtkProgressBar_val, Int_val, Unit)
+ML_2 (gtk_progress_bar_set_activity_step, GtkProgressBar_val, Int_val, Unit)
+ML_2 (gtk_progress_bar_set_activity_blocks, GtkProgressBar_val, Int_val, Unit)
+ML_2 (gtk_progress_bar_set_orientation, GtkProgressBar_val,
+      Progress_bar_orientation_val, Unit)
+/* ML_2 (gtk_progress_bar_update, GtkProgressBar_val, Float_val, Unit) */
 
 /* gtkrange.h */
 
