@@ -320,15 +320,43 @@ ML_2 (gtk_tree_view_column_set_title, GtkTreeViewColumn_val, String_val, Unit)
 ML_0 (gtk_tree_view_new, Val_GtkWidget_sink)
 ML_1 (gtk_tree_view_new_with_model, GtkTreeModel_val, Val_GtkWidget_sink)
 ML_1 (gtk_tree_view_get_selection, GtkTreeView_val, Val_GtkWidget)
-/*
-ML_1 (gtk_tree_view_get_model, GtkTreeView_val, Val_GAnyObject)
-ML_2 (gtk_tree_view_set_model, GtkTreeView_val, GtkTreeModel_val, Unit)
-ML_1 (gtk_tree_view_get_hadjustment, GtkTreeView_val, Val_GtkWidget)
-ML_1 (gtk_tree_view_get_vadjustment, GtkTreeView_val, Val_GtkWidget)
-ML_2 (gtk_tree_view_set_hadjustment, GtkTreeView_val, GtkAdjustment_val)
-ML_2 (gtk_tree_view_set_vadjustment, GtkTreeView_val, GtkAdjustment_val)
-ML_1 (gtk_tree_view_get_headers_visible, GtkTreeView_val, Val_bool)
-ML_2 (gtk_tree_view_set_headers_visible, GtkTreeView_val, Val_bool)
-*/
+ML_1 (gtk_tree_view_columns_autosize, GtkTreeView_val, Unit)
 ML_2 (gtk_tree_view_append_column, GtkTreeView_val, GtkTreeViewColumn_val,
       Val_int)
+ML_2 (gtk_tree_view_remove_column, GtkTreeView_val, GtkTreeViewColumn_val,
+      Val_int)
+ML_3 (gtk_tree_view_insert_column, GtkTreeView_val, GtkTreeViewColumn_val,
+      Int_val, Val_int)
+ML_2 (gtk_tree_view_get_column, GtkTreeView_val, Int_val, Val_GtkWidget)
+ML_3 (gtk_tree_view_move_column_after, GtkTreeView_val, GtkTreeViewColumn_val,
+      GtkTreeViewColumn_val, Unit)
+ML_3 (gtk_tree_view_scroll_to_point, GtkTreeView_val, Int_val, Int_val, Unit)
+ML_4 (gtk_tree_view_scroll_to_cell, GtkTreeView_val, GtkTreePath_val,
+      GtkTreeViewColumn_val, Insert(Bool_val(arg4))
+      Insert(Bool_val(arg4) ? Float_val(Field(Field(arg4,0),0)) : 0)
+      (Bool_val(arg4) ? Float_val(Field(Field(arg4,0),1)) : 0) Ignore,
+      Unit)
+ML_3 (gtk_tree_view_row_activated, GtkTreeView_val, GtkTreePath_val,
+      GtkTreeViewColumn_val, Unit)
+ML_1 (gtk_tree_view_expand_all, GtkTreeView_val, Unit)
+ML_1 (gtk_tree_view_collapse_all, GtkTreeView_val, Unit)
+ML_3 (gtk_tree_view_expand_row, GtkTreeView_val, GtkTreePath_val,
+      Bool_val, Unit)
+ML_2 (gtk_tree_view_collapse_row, GtkTreeView_val, GtkTreePath_val, Unit)
+ML_2 (gtk_tree_view_row_expanded, GtkTreeView_val, GtkTreePath_val, Val_bool)
+ML_4 (gtk_tree_view_set_cursor, GtkTreeView_val, GtkTreePath_val,
+      GtkTreeViewColumn_val, Bool_val, Unit)
+ML_5 (gtk_tree_view_set_cursor_on_cell, GtkTreeView_val, GtkTreePath_val,
+      GtkTreeViewColumn_val, GtkCellRenderer_val, Bool_val, Unit)
+CAMLprim value ml_gtk_tree_view_get_cursor (value arg)
+{
+  CAMLparam0();
+  CAMLlocal1(ret);
+  GtkTreePath *path;
+  GtkTreeViewColumn *col;
+  gtk_tree_view_get_cursor(GtkTreeView_val(arg), &path, &col);
+  ret = alloc_tuple(2);
+  Store_field(ret,0,Val_option(path,Val_GtkTreePath));
+  Store_field(ret,1,Val_option(col,Val_GtkWidget));
+  CAMLreturn(ret);
+}
