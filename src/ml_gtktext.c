@@ -564,7 +564,7 @@ ML_1 (gtk_text_iter_get_line_index, GtkTextIter_val, Val_int)
 ML_1 (gtk_text_iter_get_visible_line_index, GtkTextIter_val, Val_int)
 ML_1 (gtk_text_iter_get_visible_line_offset, GtkTextIter_val, Val_int)
 
-     // CHECK THIS WITH CHAR <-> GUNICHAR
+     //[BM] CHECK THIS WITH CHAR <-> GUNICHAR
 ML_1 (gtk_text_iter_get_char, GtkTextIter_val, Val_char)
 
 ML_2 (gtk_text_iter_get_slice, GtkTextIter_val, GtkTextIter_val, Val_string)
@@ -588,6 +588,12 @@ value ml_gtk_text_iter_get_toggled_tags(value ti, value b){
 			(GtkTextIter_val(ti),Bool_val(b)),
 			Val_GtkTextMark_func));
     }
+
+
+value ml_gtk_text_iter_get_child_anchor(value ti)
+{
+  return (Val_option(gtk_text_iter_get_child_anchor(GtkTextIter_val(ti)),Val_GtkTextChildAnchor_new));
+}
 
 ML_2 (gtk_text_iter_begins_tag,GtkTextIter_val,
       Option_val(arg2,GtkTextTag_val,NULL) Ignore, Val_bool)

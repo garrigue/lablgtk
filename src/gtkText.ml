@@ -399,7 +399,114 @@ module View = struct
   external get_cursor_visible : textview obj -> bool =
 	   "ml_gtk_text_view_get_cursor_visible"
 
+  external set_pixels_above_lines : textview obj -> int -> unit =
+	   "ml_gtk_text_view_set_pixels_above_lines"
+  external get_pixels_above_lines : textview obj -> int  =
+	   "ml_gtk_text_view_get_pixels_above_lines"
 
+
+  external set_pixels_below_lines : textview obj -> int -> unit =
+	   "ml_gtk_text_view_set_pixels_below_lines"
+  external get_pixels_below_lines : textview obj -> int  =
+	   "ml_gtk_text_view_get_pixels_below_lines"
+
+
+  external set_pixels_inside_wrap : textview obj -> int -> unit =
+	   "ml_gtk_text_view_set_pixels_inside_wrap"
+  external get_pixels_inside_wrap : textview obj -> int  =
+	   "ml_gtk_text_view_get_pixels_inside_wrap"
+
+  external set_justification : textview obj -> justification -> unit =
+	   "ml_gtk_text_view_set_justification"
+  external get_justification : textview obj -> justification =
+	   "ml_gtk_text_view_get_justification"
+
+  external set_left_margin : textview obj -> int -> unit =
+	   "ml_gtk_text_view_set_left_margin"
+  external get_left_margin : textview obj -> int =
+	   "ml_gtk_text_view_get_left_margin"
+  external set_right_margin : textview obj -> int -> unit =
+	   "ml_gtk_text_view_set_right_margin"
+  external get_right_margin : textview obj -> int =
+	   "ml_gtk_text_view_get_right_margin"
+  external set_indent : textview obj -> int -> unit =
+	   "ml_gtk_text_view_set_indent"
+  external get_indent : textview obj -> int =
+	   "ml_gtk_text_view_get_indent"
+end
+
+module Iter = struct
+  external get_buffer : textiter -> textbuffer obj = "ml_gtk_text_iter_get_buffer"
+  external get_offset : textiter -> int = "ml_gtk_text_iter_get_offset"
+  external get_line : textiter -> int = "ml_gtk_text_iter_get_line"
+  external get_line_offset : textiter -> int = "ml_gtk_text_iter_get_line_offset"
+  external get_line_index : textiter -> int = "ml_gtk_text_iter_get_line_index"
+  external get_visible_line_index : textiter -> int = "ml_gtk_text_iter_get_visible_line_index"
+  external get_visible_line_offset : textiter -> int = "ml_gtk_text_iter_get_visible_line_offset"
+  external get_char : textiter -> char = "ml_gtk_text_iter_get_char"
+  external get_slice : textiter -> textiter -> string = "ml_gtk_text_iter_get_slice"
+  external get_text : textiter -> textiter -> string = "ml_gtk_text_iter_get_text"
+  external get_visible_slice : textiter -> textiter -> string = 
+	   "ml_gtk_text_iter_get_visible_slice"
+  external get_visible_text : textiter -> textiter -> string = "ml_gtk_text_iter_get_visible_text"
+  external get_pixbuf : textiter -> GdkPixbuf.pixbuf = "ml_gtk_text_iter_get_pixbuf"
+  external get_marks : textiter -> textmark obj list = "ml_gtk_text_iter_get_marks"
+  external get_toggled_tags : textiter -> bool -> texttag obj list = "ml_gtk_text_iter_get_marks"
+  external get_child_anchor : textiter -> textchildanchor option ="ml_gtk_text_iter_get_child_anchor"
+  external begins_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_begins_tag"
+  external ends_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_ends_tag"
+  external toggles_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_toggles_tag"
+  external has_tag : textiter -> texttag obj -> bool = "ml_gtk_text_iter_has_tag"
+  external get_tags : textiter -> textmark obj list = "ml_gtk_text_iter_get_tags"
+  external editable : textiter -> bool -> bool = "ml_gtk_text_iter_editable"
+  external can_insert : textiter -> bool -> bool = "ml_gtk_text_iter_can_insert"
+  external starts_word : textiter -> bool = "ml_gtk_text_iter_starts_word"
+  external ends_word : textiter -> bool = "ml_gtk_text_iter_ends_word"
+  external inside_word : textiter -> bool = "ml_gtk_text_iter_inside_word"
+  external starts_line : textiter -> bool = "ml_gtk_text_iter_starts_line"
+  external ends_line : textiter -> bool = "ml_gtk_text_iter_ends_line"
+  external starts_sentence : textiter -> bool = "ml_gtk_text_iter_starts_sentence"
+  external ends_sentence : textiter -> bool = "ml_gtk_text_iter_ends_sentence"
+  external inside_sentence : textiter -> bool = "ml_gtk_text_iter_inside_sentence"
+  external is_cursor_position : textiter -> bool = "ml_gtk_text_iter_is_cursor_position"
+  external get_chars_in_line : textiter -> int = "ml_gtk_text_iter_get_chars_in_line"
+  external get_bytes_in_line : textiter -> int = "ml_gtk_text_iter_get_bytes_in_line"
+  external is_end : textiter -> bool = "ml_gtk_text_iter_is_end"
+  external is_start : textiter -> bool = "ml_gtk_text_iter_is_start"
+  external forward_char : textiter -> bool = "ml_gtk_text_iter_forward_char"
+  external backward_char : textiter -> bool = "ml_gtk_text_iter_backward_char"
+  external forward_chars : textiter -> int -> bool = "ml_gtk_text_iter_forward_chars"
+  external backward_chars : textiter -> int -> bool = "ml_gtk_text_iter_backward_chars"
+  external forward_line : textiter -> bool = "ml_gtk_text_iter_forward_line"
+  external backward_line : textiter -> bool = "ml_gtk_text_iter_backward_line"
+  external forward_lines : textiter -> int -> bool = "ml_gtk_text_iter_forward_lines"
+  external backward_lines : textiter -> int -> bool = "ml_gtk_text_iter_backward_lines"
+  external forward_word_end : textiter -> bool = "ml_gtk_text_iter_forward_word_end"
+  external forward_word_ends : textiter -> int -> bool = "ml_gtk_text_iter_forward_word_ends"
+  external backward_word_start : textiter -> bool = "ml_gtk_text_iter_backward_word_start"
+  external backward_word_starts : textiter -> int -> bool = "ml_gtk_text_iter_backward_word_starts"
+  external forward_cursor_position : textiter -> bool = "ml_gtk_text_iter_forward_cursor_position"
+  external backward_cursor_position : textiter -> bool = "ml_gtk_text_iter_backward_cursor_position"
+  external forward_cursor_positions : textiter -> int -> bool = "ml_gtk_text_iter_forward_cursor_positions"
+  external backward_cursor_positions : textiter -> int -> bool = "ml_gtk_text_iter_backward_cursor_positions"
+  external forward_sentence_end : textiter -> bool = "ml_gtk_text_iter_forward_sentence_end"
+  external backward_sentence_start : textiter -> bool = "ml_gtk_text_iter_backward_sentence_start"
+  external forward_sentence_ends : textiter -> int -> bool = "ml_gtk_text_iter_forward_sentence_ends"
+  external backward_sentence_starts : textiter -> int -> bool = "ml_gtk_text_iter_backward_sentence_starts"
+  external set_offset : textiter -> int -> unit = "ml_gtk_text_iter_set_offset"
+  external set_line : textiter -> int -> unit = "ml_gtk_text_iter_set_line"
+  external set_line_offset : textiter -> int -> unit = "ml_gtk_text_iter_set_line_offset"
+  external set_line_index : textiter -> int -> unit = "ml_gtk_text_iter_set_line_index"
+  external set_visible_line_index : textiter -> int -> unit = "ml_gtk_text_iter_set_visible_line_index"
+  external set_visible_line_offset : textiter -> int -> unit = "ml_gtk_text_iter_set_visible_line_offset"
+  external forward_to_end : textiter -> unit = "ml_gtk_text_iter_forward_to_end"
+  external forward_to_line_end : textiter -> bool = "ml_gtk_text_iter_forward_to_line_end"
+  external forward_to_tag_toggle : textiter -> texttag obj -> bool = "ml_gtk_text_iter_forward_to_tag_toggle"
+  external backward_to_tag_toggle : textiter -> texttag obj -> bool = "ml_gtk_text_iter_backward_to_tag_toggle"
+  external equal : textiter -> textiter -> bool = "ml_gtk_text_iter_equal"
+  external compare : textiter -> textiter -> int = "ml_gtk_text_iter_compare"
+  external in_range : textiter -> textiter -> textiter -> int = "ml_gtk_text_iter_in_range"
+  external order : textiter -> textiter -> unit = "ml_gtk_text_iter_order"
 (*
   external : textview obj -> =
 	   "ml_gtk_text_view_"
@@ -409,7 +516,6 @@ module View = struct
 	   "ml_gtk_text_view_"
   external : textview obj -> =
 	   "ml_gtk_text_view_"
-  external : textview obj -> =
-	   "ml_gtk_text_view_"
 *)
+
 end
