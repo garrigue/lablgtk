@@ -857,4 +857,10 @@ module Iter = struct
   external backward_search : textiter -> string -> 
     text_search_flag -> textiter option -> (textiter * textiter) option 
     = "ml_gtk_text_iter_backward_search"
+  external forward_find_char : 
+    textiter -> (char -> bool) -> textiter option -> bool
+      = "ml_gtk_text_iter_forward_find_char"
+  external backward_find_char : 
+    textiter -> (char -> bool) -> textiter option -> bool
+      = "ml_gtk_text_iter_backward_find_char"
 end

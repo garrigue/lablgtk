@@ -2,6 +2,7 @@ $Id$
 
 2003.01.22
  * Support for interaction between GtkTextBuffer and GtkClipboard. (Benjamin)
+ * Support for search functions in GtkTextIter. (Benjamin)
 
 2002.01.16
  * fix memory management in ml_gdk.h

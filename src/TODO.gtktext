@@ -5,18 +5,6 @@ Il manque :
 	gtk_text_iter_get_attributes
 2) Fonction avec Pango
 	gtk_text_iter_get_language 
-3) Fonctions de recherches =
-	gboolean    (*GtkTextCharPredicate)         (gunichar ch, 
-	                                    gpointer user_data);
-	gboolean    gtk_text_iter_forward_find_char (GtkTextIter *iter,
-     	                                        GtkTextCharPredicate pred,
-        	                                     gpointer user_data,
-                	                             const GtkTextIter *limit);
-	gboolean    gtk_text_iter_backward_find_char
-        	                                    (GtkTextIter *iter,
-                	                             GtkTextCharPredicate pred,
-                        	                     gpointer user_data,
-                                	             const GtkTextIter *limit);
 ===============================================================================
 GtkTextMark : FINI
 ===============================================================================
@@ -25,10 +13,7 @@ GtkTextBuffer: FINI
 GtkTextTag: 
 Il manque les PangoTabs.
 ===============================================================================
-GtkTextTagTable: 
-void        gtk_text_tag_table_foreach      (GtkTextTagTable *table,
-                                             GtkTextTagTableForeach func,
-                                             gpointer data);
+GtkTextTagTable: FINI
 ===============================================================================
 GtkTextView: 
 Manquent les fonctions concernant Pango :  
