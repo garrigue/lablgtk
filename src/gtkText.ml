@@ -328,6 +328,7 @@ module TagTable = struct
 end
 
 module Buffer = struct
+  open Gpointer
   let cast w : textbuffer = Object.try_cast w "GtkTextBuffer"
   external create : texttagtable option 
     -> textbuffer = "ml_gtk_text_buffer_new"
@@ -337,16 +338,21 @@ module Buffer = struct
     = "ml_gtk_text_buffer_get_char_count"
   external get_tag_table : textbuffer -> texttagtable 
     = "ml_gtk_text_buffer_get_tag_table"
-  external insert : textbuffer -> textiter -> string -> unit
+  external insert : textbuffer -> textiter -> string stable -> unit
     = "ml_gtk_text_buffer_insert"
-  external insert_at_cursor : textbuffer -> string -> unit
+  let insert a b c = insert a b (stable_copy c)
+  external insert_at_cursor : textbuffer -> string stable -> unit
     = "ml_gtk_text_buffer_insert_at_cursor"
+  let insert_at_cursor a b = insert_at_cursor a (stable_copy b)
   external insert_interactive :
-    textbuffer -> textiter -> string -> bool -> bool
+    textbuffer -> textiter -> string stable -> bool -> bool
     = "ml_gtk_text_buffer_insert_interactive"
+  let insert_interactive a b c = insert_interactive a b (stable_copy c)
   external insert_interactive_at_cursor :
-    textbuffer -> string -> bool -> bool
+    textbuffer -> string stable -> bool -> bool
     = "ml_gtk_text_buffer_insert_interactive_at_cursor"
+  let insert_interactive_at_cursor a b =
+    insert_interactive_at_cursor a (stable_copy b)
   external insert_range : textbuffer -> textiter -> textiter
     -> textiter -> unit = "ml_gtk_text_buffer_insert_range"
   external insert_range_interactive : textbuffer -> textiter -> textiter
@@ -355,8 +361,9 @@ module Buffer = struct
     = "ml_gtk_text_buffer_delete"
   external delete_interactive : textbuffer -> textiter -> textiter 
     -> bool -> bool = "ml_gtk_text_buffer_delete_interactive"
-  external set_text : textbuffer -> string -> unit
+  external set_text : textbuffer -> string stable -> unit
     = "ml_gtk_text_buffer_set_text"
+  let set_text b s = set_text b (stable_copy s)
   external get_text : textbuffer -> textiter -> textiter -> 
     bool -> string = "ml_gtk_text_buffer_get_text"
   external get_slice : textbuffer -> textiter -> textiter -> 

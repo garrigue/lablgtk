@@ -24,6 +24,9 @@ val may_box : f:('a -> 'b) -> 'a option -> 'b optboxed
 (** Null pointer exception *)
 exception Null
 
+(** Ensure a value is copied in the old generation *)
+type 'a stable
+val stable_copy : 'a -> 'a stable
 
 (** Region handling *)
 

@@ -20,8 +20,6 @@
 
 /* PangoFontDescription */
 
-Make_Val_final_pointer (PangoFontDescription, pango_font_description_copy,
-                        pango_font_description_free, 20)
 Make_Val_final_pointer_ext (PangoFontDescription, _new, Ignore,
                             pango_font_description_free, 20)
 
