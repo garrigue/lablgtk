@@ -89,20 +89,15 @@ let rec list_rassoc k = function
 let rnone = Dialog.std_response `NONE
 let rdelete = Dialog.std_response `DELETE_EVENT
 
-class ['a] dialog obj = object (self)
+class ['a] dialog_skel obj = object (self)
   inherit [window] window_skel obj
   inherit dialog_props
-  val tbl = ref [rnone, `NONE; rdelete, `DELETE_EVENT]
+  val tbl : (int * 'a) list ref = 
+    ref [rnone, `NONE; rdelete, `DELETE_EVENT]
   val mutable id = 0
   method action_area = new GPack.box (Dialog.action_area obj)
   method vbox = new GPack.box (Dialog.vbox obj)
   method connect : 'a dialog_signals = new dialog_signals obj tbl
-  method add_button text (v : 'a) =
-    tbl := (id, v) :: !tbl ;
-    Dialog.add_button obj text id ;
-    id <- succ id
-  method add_button_stock s_id (v : 'a) =
-    self#add_button (GtkStock.convert_id s_id) v
   method response v = Dialog.response obj (list_rassoc v !tbl)
   method set_response_sensitive v s =
     Dialog.set_response_sensitive obj (list_rassoc v !tbl) s
@@ -111,6 +106,16 @@ class ['a] dialog obj = object (self)
   method run () = 
     let resp = Dialog.run obj in
     List.assoc resp !tbl
+end
+
+class ['a] dialog obj = object (self)
+  inherit ['a] dialog_skel obj
+  method add_button text (v : 'a) =
+    tbl := (id, v) :: !tbl ;
+    Dialog.add_button obj text id ;
+    id <- succ id
+  method add_button_stock s_id (v : 'a) =
+    self#add_button (GtkStock.convert_id s_id) v
 end
 
 let make_dialog pl ?parent ?destroy_with_parent ~create =
@@ -138,10 +143,13 @@ let ok = `OK, [ rok, `OK ]
 let close = `CLOSE, [ rclose, `CLOSE ]
 let yes_no = `YES_NO, [ ryes, `YES ; rno, `NO ]
 let ok_cancel = `OK_CANCEL, [ rok, `OK; rcancel, `CANCEL ]
+type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT | `NONE]
+type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT | `NONE]
+type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT | `NONE]
 end
 
 class ['a] message_dialog obj ~(buttons : 'a buttons) = object
-  inherit ['a] dialog obj
+  inherit ['a] dialog_skel obj
   inherit message_dialog_props
   initializer
     tbl := snd buttons @ !tbl
@@ -157,9 +165,8 @@ let message_dialog ?(message="") ~message_type ~buttons =
 
 (** ColorSelectionDialog **)
 
-class ['a] color_selection_dialog obj = object
-  constraint 'a = [> `OK | `CANCEL | `HELP]
-  inherit ['a] dialog (obj : Gtk.color_selection_dialog obj)
+class color_selection_dialog obj = object
+  inherit [Buttons.color_selection] dialog_skel (obj : Gtk.color_selection_dialog obj)
   method ok_button =
     new GButton.button (ColorSelectionDialog.ok_button obj)
   method cancel_button =
@@ -180,9 +187,8 @@ let color_selection_dialog ?(title="Pick a color") =
 
 
 (** FileSelection **)
-class ['a] file_selection obj = object
-  constraint 'a = [> `OK | `CANCEL | `HELP]
-  inherit ['a] dialog (obj : Gtk.file_selection obj)
+class file_selection obj = object
+  inherit [Buttons.file_selection] dialog_skel (obj : Gtk.file_selection obj)
   inherit file_selection_props
   method complete = FileSelection.complete obj
   method get_selections = FileSelection.get_selections obj
@@ -208,9 +214,8 @@ let file_selection ?(title="Choose a file") ?(show_fileops=false) =
 
 (** FontSelectionDialog **)
 
-class ['a] font_selection_dialog obj = object
-  constraint 'a = [> `OK | `CANCEL | `APPLY]
-  inherit ['a] dialog (obj : Gtk.font_selection_dialog obj)
+class font_selection_dialog obj = object
+  inherit [Buttons.font_selection] dialog_skel (obj : Gtk.font_selection_dialog obj)
   method selection =
     new GMisc.font_selection (FontSelectionDialog.font_selection obj)
   method ok_button =  new GButton.button (FontSelectionDialog.ok_button obj)
