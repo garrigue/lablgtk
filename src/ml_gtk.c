@@ -50,6 +50,15 @@ Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref)
 Make_Val_final_pointer (GtkAcceleratorTable, gtk_accelerator_table_ref, gtk_accelerator_table_unref)
 
 ML_0 (gtk_accelerator_table_new, Val_GtkAcceleratorTable_no_ref)
+ML_4 (gtk_accelerator_table_find, GtkObject_val, String_val,
+      Char_val, Flags_GdkModifier_val, Val_GtkAcceleratorTable)
+ML_5 (gtk_accelerator_table_install, GtkAcceleratorTable_val,
+      GtkObject_val, String_val, Char_val, Flags_GdkModifier_val, Unit)
+ML_3 (gtk_accelerator_table_remove, GtkAcceleratorTable_val,
+      GtkObject_val, String_val, Unit)
+ML_1 (gtk_accelerator_tables_delete, GtkObject_val, Unit)
+ML_2 (gtk_accelerator_table_set_mod_mask, GtkAcceleratorTable_val,
+      Flags_GdkModifier_val, Unit)
 
 /* gtkstyle.h */
 
@@ -212,6 +221,11 @@ ML_1 (gtk_widget_set_rc_style, GtkWidget_val, Unit)
 ML_1 (gtk_widget_ensure_style, GtkWidget_val, Unit)
 ML_1 (gtk_widget_get_style, GtkWidget_val, Val_GtkStyle)
 ML_1 (gtk_widget_restore_default_style, GtkWidget_val, Unit)
+
+ML_5 (gtk_widget_install_accelerator, GtkWidget_val, GtkAcceleratorTable_val,
+      String_val, Char_val, Flags_GdkModifier_val, Unit)
+ML_3 (gtk_widget_remove_accelerator, GtkWidget_val, GtkAcceleratorTable_val,
+      String_val, Unit)
 
 Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
 
@@ -1286,6 +1300,7 @@ value ml_gtk_signal_connect (value object, value name, value clos, value after)
 }
 
 ML_2 (gtk_signal_disconnect, GtkObject_val, Int_val, Unit)
+ML_2 (gtk_signal_emit_by_name, GtkObject_val, String_val, Unit)
 
 /* gtkmain.h (again) */
 
@@ -1299,3 +1314,6 @@ value ml_gtk_timeout_add (value interval, value clos)
 		     ml_gtk_callback_destroy));
 }
 ML_1 (gtk_timeout_remove, Int_val, Unit)
+
+#include "ml_gtkcaller.h"
+ML_0 (gtk_caller_new, Val_GtkWidget)

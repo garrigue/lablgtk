@@ -23,6 +23,8 @@ void ml_raise_gdk (const char *errmsg)
 
 #include "gdk_tags.c"
 
+Make_Flags_val (GdkModifier_val)
+
 /* Colormap */
 
 Make_Val_final_pointer (GdkColormap, gdk_colormap_ref, gdk_colormap_unref)

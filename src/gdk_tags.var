@@ -40,3 +40,7 @@ type gdkCapStyle = "GDK_CAP_"
 
 type gdkJoinStyle = "GDK_JOIN_"
     [ MITER ROUND BEVEL ]
+
+type gdkModifier = "GDK_"
+    [ SHIFT LOCK CONTROL MOD1 MOD2 MOD3 MOD4 MOD5 BUTTON1
+      BUTTON2 BUTTON3 BUTTON4 BUTTON5 ] "_MASK"

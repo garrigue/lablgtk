@@ -129,6 +129,9 @@ module Signal = struct
       connect obj name:signal.name cb:(signal.marshaller cb) :after
   external disconnect : 'a obj -> id -> unit
       = "ml_gtk_signal_disconnect"
+  external emit : 'a obj -> name:string -> unit = "ml_gtk_signal_emit_by_name"
+  let emit (obj : 'a obj) sig:(sgn : ('a,unit->unit) t) =
+    emit obj name:sgn.name
   let marshal_unit f _ = f ()
   let marshal_int f argv = f (Argv.get_int argv pos:0)
 end
@@ -223,6 +226,23 @@ end
 module AcceleratorTable = struct
   type t
   external create : unit -> t = "ml_gtk_accelerator_table_new"
+  external find :
+      'a obj -> string -> key:char -> mod:Gdk.Tags.modifier list -> t
+      = "ml_gtk_accelerator_table_find"
+  external install :
+      t -> 'a obj -> string -> key:char -> mod:Gdk.Tags.modifier list -> unit
+      = "ml_gtk_accelerator_table_install"
+  external remove : t -> 'a obj -> string -> unit
+      = "ml_gtk_accelerator_table_install"
+  external delete_tables : 'a obj -> unit = "ml_gtk_accelerator_tables_delete"
+  external set_mod_mask : t -> Gdk.Tags.modifier list -> unit
+      = "ml_gtk_accelerator_table_set_mod_mask"
+  let find (obj : 'a obj) sig:(sgn : ('a,unit->unit) Signal.t) =
+    find obj sgn.Signal.name
+  let install t (obj : 'a obj) sig:(sgn : ('a,unit->unit) Signal.t) =
+    install t obj sgn.Signal.name
+  let remove t (obj : 'a obj) sig:(sgn : ('a,unit->unit) Signal.t) =
+    remove t obj sgn.Signal.name
 end
 
 module Style = struct
@@ -263,6 +283,28 @@ module Object = struct
   module Connect = struct
     let destroy = Signal.connect sig:Signals.destroy
   end
+end
+
+module Caller = struct
+  open Object
+  let destroy = destroy
+  type t = [caller] obj
+  external create : unit -> t = "ml_gtk_caller_new"
+  module Signals = struct
+    open Signal
+    let call : ([> caller],unit->unit) t =
+      { name = "call"; marshaller = marshal_unit }
+  end
+  module Connect = struct
+    open Connect
+    let destroy = destroy
+    let call = Signal.connect sig:Signals.call
+  end
+  let call = Signal.emit sig:Signals.call
+  let create ?:cb ?(_ : unit option) =
+    let obj = create () in
+    may cb fun:(fun cb -> Connect.call obj :cb);
+    obj
 end
 
 module Data = struct
@@ -419,6 +461,17 @@ module Widget = struct
       = "ml_gtk_widget_get_style"
   external restore_default_style : [> widget] obj -> unit
       = "ml_gtk_widget_restore_default_style"
+  external install_accelerator :
+      [> widget] obj -> AcceleratorTable.t ->
+      string -> key:char -> mod:Gdk.Tags.modifier list -> unit
+      = "ml_gtk_widget_install_accelerator"
+  external remove_accelerator :
+      [> widget] obj -> AcceleratorTable.t -> string -> unit
+      = "ml_gtk_widget_remove_accelerator"
+  let install_accelerator w t sig:(sgn : ([> widget],unit->unit) Signal.t) =
+    install_accelerator w t sgn.Signal.name
+  let remove_accelerator w t sig:(sgn : ([> widget],unit->unit) Signal.t) =
+    remove_accelerator w t sgn.Signal.name
   external window : [> widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
   let set w ?:name ?:state ?:sensitive ?:can_default ?:can_focus
