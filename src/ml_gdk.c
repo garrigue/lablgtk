@@ -48,6 +48,8 @@ ML_0 (gdk_colormap_get_system, Val_GdkColormap)
 /* Screen geometry */
 ML_0 (gdk_screen_width, Val_int)
 ML_0 (gdk_screen_height, Val_int)
+ML_0 (gdk_screen_width_mm, Val_int)
+ML_0 (gdk_screen_height_mm, Val_int)
 
 /* Visual */
 CAMLprim value ml_gdk_visual_get_best (value depth, value type)
