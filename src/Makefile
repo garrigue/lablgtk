@@ -172,7 +172,7 @@ lablgtktop$(XE): $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS)
 endif
 
-lablgtk2$(XB): Makefile $(CONFIG) lablgtk2.in
+lablgtk2: Makefile $(CONFIG) lablgtk2.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
 	    -e "s|@LABLGLDIR@|$(LABLGLDIR)|g" \
 	    -e "s|@LIBDIR@|$(LIBDIR)|g" \
