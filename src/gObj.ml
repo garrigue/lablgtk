@@ -264,9 +264,7 @@ and widget obj = object (self)
   method as_widget = (obj :> Gtk.widget obj)
   method misc = new misc_ops (obj :> Gtk.widget obj)
   method drag = new drag_ops (Object.unsafe_cast obj : Gtk.widget obj)
-  method coerce =
-    (self :> < destroy : _; get_id : _; as_widget : _; misc : _;
-               drag : _; coerce : _ >)
+  method coerce = (self :> widget)
 end
 
 (* just to check that GDraw.misc_ops is compatible with misc_ops *)
