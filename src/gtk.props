@@ -1,0 +1,109 @@
+(* $Id$ *)
+
+class Widget noset {
+  "app-paintable"        gboolean             : Read / Write
+  "can-default"          gboolean             : Read / Write
+  "can-focus"            gboolean             : Read / Write
+  "composite-child"      gboolean             : Read
+  "events"               GdkEventMask         : Read / Write
+  "extension-events"     GdkExtensionMode     : Read / Write
+  "has-default"          gboolean             : Read / Write
+  "has-focus"            gboolean             : Read / Write
+  "height-request"       gint                 : Read / Write
+  "is-focus"             gboolean             : Read / Write
+  "name"                 gchararray           : Read / Write
+  "parent"               GtkContainer         : Read / Write
+  "receives-default"     gboolean             : Read / Write
+  "sensitive"            gboolean             : Read / Write
+  "style"                GtkStyle             : Read / Write
+  "visible"              gboolean             : Read / Write
+  "width-request"        gint                 : Read / Write
+}
+
+class Misc {
+  "xalign"               gfloat               : Read / Write
+  "xpad"                 gint                 : Read / Write
+  "yalign"               gfloat               : Read / Write
+  "ypad"                 gint                 : Read / Write
+}
+
+class Label {
+  "attributes"           PangoAttrList        : Read / Write
+  "cursor-position"      gint                 : Read
+  "justify"              GtkJustification     : Read / Write
+  "label"                gchararray           : Read / Write
+  "mnemonic-keyval"      guint                : Read
+  "mnemonic-widget"      GtkWidget            : Read / Write
+  "pattern"              gchararray           : Write
+  "selectable"           gboolean             : Read / Write
+  "selection-bound"      gint                 : Read
+  "use-markup"           gboolean             : Read / Write
+  "use-underline"        gboolean             : Read / Write
+  "wrap"                 gboolean             : Read / Write
+}
+
+class TipsQuery {
+  "caller"               GtkWidget            : Read / Write
+  "emit-always"          gboolean             : Read / Write
+  "label-inactive"       gchararray           : Read / Write
+  "label-no-tip"         gchararray           : Read / Write
+}
+
+class Arrow {
+  "arrow-type"           GtkArrowType         : Read / Write
+  "shadow-type"          GtkShadowType        : Read / Write
+}
+
+class Image {
+  "file"                 gchararray           : Write
+  "icon-set"             GtkIconSet           : Read / Write
+  "icon-size"            gint                 : Read / Write
+  "image"                GdkImage             : Read / Write
+  "mask"                 GdkPixmap            : Read / Write
+  "pixbuf"               GdkPixbuf            : Read / Write
+  "pixbuf-animation"     GdkPixbufAnimation   : Read / Write
+  "pixmap"               GdkPixmap            : Read / Write
+  "stock"                gchararray           : Read / Write
+  "storage-type"         GtkImageType         : Read
+}
+
+class Container {
+  "border-width"         guint                : Read / Write
+  "child"                GtkWidget            : Write
+  "resize-mode"          GtkResizeMode        : Read / Write
+}
+
+class Alignment {
+  "xalign"               gfloat               : Read / Write
+  "xscale"               gfloat               : Read / Write
+  "yalign"               gfloat               : Read / Write
+  "yscale"               gfloat               : Read / Write
+}
+
+class Frame {
+  "label"                gchararray           : Read / Write
+  "label-widget"         GtkWidget            : Read / Write
+  "label-xalign"         gfloat               : Read / Write
+  "label-yalign"         gfloat               : Read / Write
+  "shadow-type"          GtkShadowType        : Read / Write
+}
+
+class AspectFrame {
+  "obey-child"           gboolean             : Read / Write
+  "ratio"                gfloat               : Read / Write
+  "xalign"               gfloat               : Read / Write
+  "yalign"               gfloat               : Read / Write
+}
+
+class Button {
+  "label"                gchararray           : Read / Write / Construct
+  "relief"               GtkReliefStyle       : Read / Write
+  "use-stock"            gboolean             : Read / Write / Construct
+  "use-underline"        gboolean             : Read / Write / Construct
+}
+
+class ToggleButton {
+  "active"               gboolean             : Read / Write
+  "draw-indicator"       gboolean             : Read / Write
+  "inconsistent"         gboolean             : Read / Write
+}
