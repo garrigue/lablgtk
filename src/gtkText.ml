@@ -4,7 +4,7 @@ open Gaux
 open Gobject
 open Gtk
 open Tags
-open GtkProps
+open GtkTextProps
 open GtkBase
 
 external _gtktext_init : unit -> unit = "ml_gtktext_init"

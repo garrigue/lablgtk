@@ -4,7 +4,7 @@ open Gaux
 open Gobject
 open Gtk
 open Tags
-open GtkProps
+open GtkMiscProps
 open GtkBase
 
 external _gtkmisc_init : unit -> unit = "ml_gtkmisc_init"

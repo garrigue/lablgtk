@@ -4,7 +4,7 @@ open Gaux
 open Gtk
 open GtkBase
 open GtkEdit
-open OGtkProps
+open OgtkEditProps
 open GObj
 
 class editable_signals obj = object

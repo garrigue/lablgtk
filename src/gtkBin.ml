@@ -3,7 +3,7 @@
 open Gaux
 open Gtk
 open Tags
-open GtkProps
+open GtkBinProps
 open GtkBase
 
 external _gtkbin_init : unit -> unit = "ml_gtkbin_init"

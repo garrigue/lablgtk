@@ -2,7 +2,7 @@
 
 open Gaux
 open Gobject
-open GtkProps
+open GtkBaseProps
 open Gtk
 open Tags
 

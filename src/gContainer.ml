@@ -5,7 +5,7 @@ open Gaux
 open Gobject
 open Gtk
 open GtkBase
-open OGtkProps
+open OgtkBaseProps
 open GObj
 open GData
 

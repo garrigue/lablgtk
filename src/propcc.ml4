@@ -119,7 +119,8 @@ let () =
     List.iter l ~f:(fun name -> add_boxed (pre^name) (pre^"."^camlize name)));
   List.iter classes ~f:(fun (pre,l) ->
     List.iter l ~f:(fun t -> add_object (pre^t) (pre^"."^camlize t)));
-  add_object "GObject" "unit obj"
+  add_object "GObject" "unit obj";
+  add_object "GtkWidget" "Gtk.widget obj"
 
 open Genlex
 
@@ -222,13 +223,12 @@ let qualifier = parser
 
 let prefix = ref ""
 let tagprefix = ref ""
-let use = ref ""
 let decls = ref []
 let headers = ref []
 let oheaders = ref []
 let checks = ref false
 let class_qualifiers =
-  ["abstract";"hv";"set";"wrap";"wrapset";"vset";"tag";"wrapsig";
+  ["abstract";"notype";"hv";"set";"wrap";"wrapset";"vset";"tag";"wrapsig";
    "type";"gobject";]
 
 let process_phrase ~chars = parser
@@ -253,8 +253,6 @@ let process_phrase ~chars = parser
       prefix := id
   | [< ' Ident"tagprefix"; ' String id >] ->
       tagprefix := id
-  | [< ' Ident"use"; ' String id >] ->
-      use := id
   | [< ' Ident"conversions"; pre1 = may_string ""; pre2 = may_string pre1;
        ' Kwd"{"; l = star read_pair; ' Kwd"}" >] ->
       List.iter l ~f:(fun (k,d) ->
@@ -278,7 +276,11 @@ let process_file f =
   let baseM = String.capitalize base in
   prefix := baseM;
   (* Input *)
-  headers := []; oheaders := [];
+  (* Redefining saves space in bytecode! *)
+  headers  := ["open Gobject"; "open Data";
+               "module Object = GtkObject"];
+  oheaders := ["open GtkSignal"; "open Gobject"; "open Data";
+               "let set = set"; "let get = get"; "let param = param"];
   let ic = open_in f in
   let chars = Stream.of_channel ic in
   let s = lexer chars in
@@ -300,11 +302,14 @@ let process_file f =
       else camlize name ^ " obj"
   in
   let decls = List.rev !decls in
+  let decls = List.filter decls
+      ~f:(fun (_,_,attrs,_,_,_) -> not (List.mem_assoc "notype" attrs)) in
   List.iter decls ~f:
     (fun (name, gtk_name, attrs, _, _, _) ->
       add_object gtk_name (type_name name ~attrs));
   (* Output modules *)
-  let oc = open_out (if !outfile = "" then base ^ "Props.ml" else !outfile) in
+  if !outfile = "" then outfile := base ^ "Props.ml";
+  let oc = open_out !outfile in
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
   List.iter !headers ~f:(fun s -> out "%s@." s);
@@ -516,11 +521,12 @@ let process_file f =
     end;
   close_out oc;
   (* Output classes *)
-  let oc = open_out
-      (if !ooutfile = "" then "o" ^ baseM ^ "Props.ml" else !ooutfile) in
+  if !ooutfile = "" then ooutfile := "o" ^ !outfile;
+  let oc = open_out !ooutfile in
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
   List.iter !oheaders ~f:(fun s -> out "%s@." s);
+  out "open %s@." (String.capitalize (Filename.chop_extension !outfile));
   out "@[<hv>";
   let oprop ~name ~gtype ppf pname =
     try

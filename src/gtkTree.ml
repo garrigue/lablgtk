@@ -3,7 +3,7 @@
 open Gaux
 open Gtk
 open Tags
-open GtkProps
+open GtkTreeProps
 open GtkBase
 
 external _gtktree_init : unit -> unit = "ml_gtktree_init"

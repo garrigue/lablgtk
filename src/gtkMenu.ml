@@ -3,7 +3,7 @@
 open Gaux
 open Gobject
 open Gtk
-open GtkProps
+open GtkMenuProps
 open GtkBase
 
 external _gtkmenu_init : unit -> unit = "ml_gtkmenu_init"

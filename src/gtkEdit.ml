@@ -5,7 +5,7 @@ open Gaux
 open Gobject
 open Gtk
 open Tags
-open GtkProps
+open GtkEditProps
 open GtkBase
 
 external _gtkedit_init : unit -> unit = "ml_gtkedit_init"

@@ -5,7 +5,7 @@ open Gaux
 open Gtk
 open GtkBase
 open GtkText
-open OGtkProps
+open OgtkTextProps
 open GObj
 
 type mark_name = [`INSERT | `SEL_BOUND | `NAME of string]

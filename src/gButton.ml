@@ -5,7 +5,7 @@ open Gobject
 open Gtk
 open GtkBase
 open GtkButton
-open OGtkProps
+open OgtkButtonProps
 open GObj
 open GContainer
 

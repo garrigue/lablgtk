@@ -114,6 +114,9 @@ endif
 %_tags.h %_tags.c %Enums.ml: %_tags.var varcc
 	./varcc $<
 
+%Props.ml o%Props.ml: %.props propcc
+	./propcc $<
+
 
 # Targets
 GTKOBJS =  ml_gtk.o ml_pango.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o \
@@ -121,10 +124,13 @@ GTKOBJS =  ml_gtk.o ml_pango.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o \
 	ml_gtktext.o ml_gtktree.o ml_gtkstock.o
 COBJS = ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o \
 	wrappers.o $(GTKOBJS)
+GTKPROPS = gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
+	gtkList.props gtkMenu.props gtkMisc.props gtkPack.props \
+	gtkRange.props gtkText.props gtkTree.props
 MLOBJS1 =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo
 ENUMOBJS = gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
 MLOBJS2 = gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
-	gtk.cmo pango.cmo gtkSignal.cmo gtkStock.cmo
+	gtk.cmo pango.cmo gtkSignal.cmo gtkStock.cmo gtkObject.cmo
 MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
@@ -133,8 +139,8 @@ MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 MLOBJS4 = gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
 	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gWindow.cmo gBin.cmo \
 	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
-MLOBJS =  $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) gtkProps.cmo \
-	$(MLOBJS3) oGtkProps.cmo $(MLOBJS4)
+MLOBJS =  $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(GTKPROPS:.props=Props.cmo) \
+	$(MLOBJS3) $(GTKPROPS:%.props=o%Props.cmo) $(MLOBJS4)
 MLXOBJS = $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(MLOBJS3) $(MLOBJS4)
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
@@ -289,9 +295,6 @@ varcc: varcc.cmo
 
 propcc: propcc.cmo
 	$(LINKER) -o $@ $<
-
-gtkProps.ml oGtkProps.ml: gtk.props propcc
-	./propcc gtk.props # -checks
 
 check_externals: check_externals.cmo
 	$(LINKER) -o $@ $<

@@ -4,7 +4,7 @@ open Gaux
 open Gtk
 open GtkBase
 open GtkRange
-open OGtkProps
+open OgtkRangeProps
 open GObj
 
 class progress_bar obj = object

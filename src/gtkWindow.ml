@@ -4,7 +4,7 @@ open Gaux
 open Gobject
 open Gtk
 open Tags
-open GtkProps
+open GtkBaseProps
 open GtkBase
 
 external _gtkwindow_init : unit -> unit = "ml_gtkwindow_init"
