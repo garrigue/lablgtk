@@ -67,9 +67,6 @@ Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref)
 Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
                            gtk_object_unref)
 
-#define Val_GtkAny(w) Val_GtkObject((GtkObject*)w)
-#define Val_GtkAny_sink(w) Val_GtkObject_sink((GtkObject*)w)
-
 /* gtkaccelgroup.h */
 
 #define GtkAccelGroup_val(val) ((GtkAccelGroup*)Pointer_val(val))

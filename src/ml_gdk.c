@@ -180,6 +180,14 @@ value ml_gdk_window_get_size (value window)
   return ret;
 }
 
+/* Cursor */
+
+ML_1 (gdk_cursor_new, GdkCursorType_val, Val_GdkCursor)
+ML_6 (gdk_cursor_new_from_pixmap, GdkPixmap_val, GdkPixmap_val,
+      GdkColor_val, GdkColor_val, Int_val, Int_val, Val_GdkCursor)
+ML_bc6 (ml_gdk_cursor_new_from_pixmap)
+ML_1 (gdk_cursor_destroy, GdkCursor_val, Unit)
+
 /* Pixmap */
 
 Make_Val_final_pointer (GdkPixmap, gdk_pixmap_ref, gdk_pixmap_unref)
