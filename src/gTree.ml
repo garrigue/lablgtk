@@ -280,10 +280,36 @@ let view_column ?title ?renderer () =
     end;
   w
 
+class selection_signals (obj : tree_selection) = object
+  method changed =
+    GtkSignal.connect obj ~sgn:TreeSelection.Signals.changed
+end
+
+class selection obj = object
+  val obj = obj
+  method connect = new selection_signals obj
+  method set_mode = TreeSelection.set_mode obj
+  method get_mode = TreeSelection.get_mode obj
+  method set_select_function = TreeSelection.set_select_function obj
+  method get_selected_rows = TreeSelection.get_selected_rows obj
+  method count_selected_rows = TreeSelection.count_selected_rows obj
+  method select_path = TreeSelection.select_path obj
+  method unselect_path = TreeSelection.unselect_path obj
+  method path_is_selected = TreeSelection.path_is_selected obj
+  method select_iter = TreeSelection.select_iter obj
+  method unselect_iter = TreeSelection.unselect_iter obj
+  method iter_is_selected = TreeSelection.iter_is_selected obj
+  method select_all = TreeSelection.select_all obj
+  method unselect_all = TreeSelection.unselect_all obj
+  method select_range = TreeSelection.select_range obj
+  method unselect_range = TreeSelection.unselect_range obj
+end
+
 class view obj = object
   inherit GContainer.container obj
   method append_column (col : view_column) =
     TreeView.append_column obj col#as_column
+  method selection = new selection (TreeView.get_selection obj)
 end
 let view ?model ?border_width ?width ?height ?packing ?show () =
   let model = may_map ~f:(fun (model : #model) -> model#as_model) model in

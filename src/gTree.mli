@@ -181,6 +181,30 @@ class list_store : Gtk.list_store -> id:int ->
   end
 val list_store : column_list -> list_store
 
+class selection_signals : tree_selection ->
+  object method changed : callback:(unit -> unit) -> GtkSignal.id end
+class selection :
+  Gtk.tree_selection ->
+  object
+    val obj : Gtk.tree_selection
+    method connect : selection_signals
+    method count_selected_rows : int
+    method get_mode : Gtk.Tags.selection_mode
+    method get_selected_rows : Gtk.tree_path list
+    method iter_is_selected : Gtk.tree_iter -> bool
+    method path_is_selected : Gtk.tree_path -> bool
+    method select_all : unit
+    method select_iter : Gtk.tree_iter -> unit
+    method select_path : Gtk.tree_path -> unit
+    method select_range : Gtk.tree_path -> Gtk.tree_path -> unit
+    method set_mode : Gtk.Tags.selection_mode -> unit
+    method set_select_function : (Gtk.tree_path -> bool -> bool) -> unit
+    method unselect_all : unit
+    method unselect_iter : Gtk.tree_iter -> unit
+    method unselect_path : Gtk.tree_path -> unit
+    method unselect_range : Gtk.tree_path -> Gtk.tree_path -> unit
+  end
+
 class view_column : tree_view_column obj ->
   object
     inherit gtkobj
@@ -201,6 +225,7 @@ class view : ([> tree_view] as 'a) obj ->
     inherit GContainer.container
     val obj : 'a obj
     method append_column : view_column -> int
+    method selection : selection
   end
 val view :
   ?model:#model ->

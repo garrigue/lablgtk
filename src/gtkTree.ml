@@ -173,8 +173,48 @@ module ListStore = struct
     = "ml_gtk_list_store_move_after"
 end
 
+module TreeSelection = struct
+  let cast w : tree_selection = Object.try_cast w "GtkTreeSelection"
+  external set_mode : tree_selection -> selection_mode -> unit
+    = "ml_gtk_tree_selection_set_mode"
+  external get_mode : tree_selection -> selection_mode
+    = "ml_gtk_tree_selection_get_mode"
+  external set_select_function :
+    tree_selection -> (tree_path -> bool -> bool) -> unit
+    = "ml_gtk_tree_selection_set_select_function"
+  external get_selected_rows : tree_selection -> tree_path list
+    = "ml_gtk_tree_selection_get_selected_rows"
+  external count_selected_rows : tree_selection -> int
+    = "ml_gtk_tree_selection_count_selected_rows"
+  external select_path : tree_selection -> tree_path -> unit
+    = "ml_gtk_tree_selection_select_path"
+  external path_is_selected : tree_selection -> tree_path -> bool
+    = "ml_gtk_tree_selection_path_is_selected"
+  external unselect_path : tree_selection -> tree_path -> unit
+    = "ml_gtk_tree_selection_unselect_path"
+  external select_iter : tree_selection -> tree_iter -> unit
+    = "ml_gtk_tree_selection_select_iter"
+  external unselect_iter : tree_selection -> tree_iter -> unit
+    = "ml_gtk_tree_selection_unselect_iter"
+  external iter_is_selected : tree_selection -> tree_iter -> bool
+    = "ml_gtk_tree_selection_iter_is_selected"
+  external select_all : tree_selection -> unit
+    = "ml_gtk_tree_selection_select_all"
+  external unselect_all : tree_selection -> unit
+    = "ml_gtk_tree_selection_unselect_all"
+  external select_range : tree_selection -> tree_path -> tree_path -> unit
+    = "ml_gtk_tree_selection_select_range"
+  external unselect_range : tree_selection -> tree_path -> tree_path -> unit
+    = "ml_gtk_tree_selection_unselect_range"
+  module Signals = struct
+    open GtkSignal
+    let changed = { name = "changed"; classe = `treeselection;
+                    marshaller = marshal_unit }
+  end
+end
+
 module TreeView = struct
-  let cast w : tree_view obj= Object.try_cast w "GtkTreeView"
+  let cast w : tree_view obj = Object.try_cast w "GtkTreeView"
   external create : unit -> tree_view obj = "ml_gtk_tree_view_new"
   external create_with_model : tree_model obj -> tree_view obj
     = "ml_gtk_tree_view_new_with_model"
@@ -183,6 +223,8 @@ module TreeView = struct
     | Some model -> create_with_model model
   external append_column : [>`treeview] obj -> [>`treeviewcolumn] obj -> int
     = "ml_gtk_tree_view_append_column"
+  external get_selection : [>`treeview] obj -> tree_selection
+    = "ml_gtk_tree_view_get_selection"
 end
 
 module TreeViewColumn = struct
