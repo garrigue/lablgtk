@@ -229,15 +229,15 @@ let affich_vb vb =
   vbox#pack vb;
   vboxref := vb
 
-let prop_affich_pool = ref SMap.empty
+let prop_affich_pool = new Omap.c []
 
 let prop_affich (w : #tiwidget_base) =
   let name = w#name in
   let vb = try
-    SMap.find key:name !prop_affich_pool
+    prop_affich_pool#find key:name
   with Not_found ->
     let vb = plist_affich w#proplist in
-    prop_affich_pool := SMap.add key:name data:vb !prop_affich_pool;
+    prop_affich_pool#add key:name data:vb;
     vb in
   affich_vb vb;
   affiched := name
@@ -245,24 +245,24 @@ let prop_affich (w : #tiwidget_base) =
 
 let prop_add (w : #tiwidget_base) =
   let vb = plist_affich w#proplist in
-  prop_affich_pool := SMap.add key:w#name data:vb !prop_affich_pool
+  prop_affich_pool#add key:w#name data:vb
 
 
 let prop_remove name =
-  prop_affich_pool := SMap.remove key:name !prop_affich_pool;
+  prop_affich_pool#remove key:name;
   if !affiched = name then begin
     affich_vb (plist_affich [])
   end
 
 let prop_change_name oldname newname =
-  let vb = SMap.find key:oldname !prop_affich_pool in
-  prop_affich_pool := SMap.add key:newname data:vb
-      (SMap.remove key:oldname !prop_affich_pool)
+  let vb = prop_affich_pool#find key:oldname in
+  prop_affich_pool#remove key:oldname;
+  prop_affich_pool#add key:newname data:vb
 
 let prop_update (w : #tiwidget_base) =
   let vb = plist_affich w#proplist in
-  prop_affich_pool := SMap.add key:w#name data:vb
-      (SMap.remove key:w#name !prop_affich_pool);
+  prop_affich_pool#remove key:w#name;
+  prop_affich_pool#add key:w#name data:vb;
   if !affiched = w#name then affich_vb vb
 
 
