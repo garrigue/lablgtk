@@ -300,7 +300,7 @@ SVG support:
 GnomeCanvas support:
 
   This binding was also contributed by Olivier Andrieu.
-  It requires libcnomecanvas-2.x.
+  It requires libgnomecanvas-2.x.
   See examples in examples/canvas.
   The executable must be linked with lablgnomecanvas.cma.
 
