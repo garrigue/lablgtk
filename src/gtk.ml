@@ -76,6 +76,8 @@ module Tags = struct
     [ `LEFT_TO_RIGHT|`RIGHT_TO_LEFT|`BOTTOM_TO_TOP|`TOP_TO_BOTTOM ]
   type dest_defaults = [ `MOTION|`HIGHLIGHT|`DROP|`ALL ]
   type target_flags = [ `SAME_APP|`SAME_WIDGET ]
+  type text_window_type = [ `PRIVATE | `WIDGET | `TEXT | `LEFT
+			  | `RIGHT | `TOP | `BOTTOM]
 end
 open Tags
 

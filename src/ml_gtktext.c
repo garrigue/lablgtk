@@ -442,8 +442,15 @@ CAMLprim value ml_gtk_text_view_window_to_buffer_coords (value tv,
   CAMLreturn(res);
 }
 
-ML_2(gtk_text_view_get_window,GtkTextView_val,Text_window_type_val,
-     Val_GdkWindow)
+CAMLprim value ml_gtk_text_view_get_window (value tv, value tt)
+{
+  CAMLparam2(tv,tt);
+  CAMLlocal1(res);
+  GdkWindow* tmp;
+  tmp = gtk_text_view_get_window(GtkTextView_val(tv), Text_window_type_val(tt));
+  res = Val_option(tmp,Val_GdkWindow);
+  CAMLreturn(res);
+}
 
 ML_2(gtk_text_view_get_window_type,GtkTextView_val,GdkWindow_val,
      Val_text_window_type)
