@@ -19,45 +19,28 @@ let init_tags (tb : GText.buffer) =
   tb#create_tag ~name:"error" [`FOREGROUND "red"; `WEIGHT `BOLD];
   ()
 
-let line_starts s =
-  let len = String.length s in
-  let rec next_line ~accu pos =
-    if pos >= len then accu else
-    let res = try 1 + String.index_from s pos '\n' with Not_found -> 0 in
-    if res = 0 then accu else
-    next_line ~accu:(res :: accu) res
-  in
-  next_line ~accu:[0] 0
-
-let rec line_offset ~lines pos =
-  match lines with [] -> invalid_arg "Lexical.line_num"
-  | last :: prev ->
-      if pos >= last then (List.length prev, pos - last)
-      else line_offset ~lines:prev pos
-
-let tpos ~(start : GText.iter) ~lines pos =
-  let l, c = line_offset ~lines pos in
+let tpos ~(start : GText.iter) pos =
+  let l = pos.pos_lnum - 1 in
   if l = 0 then
-    start#set_line_index (c + start#line_index)
+    start#set_line_index (pos.pos_cnum + start#line_index)
   else
-    (start#forward_lines l)#set_line_index c
+    (start#forward_lines l)#set_line_index (pos.pos_cnum - pos.pos_bol)
 
 let tag ?start ?stop (tb : GText.buffer) =
   let start = Gaux.default tb#start_iter ~opt:start
   and stop = Gaux.default tb#end_iter ~opt:stop in
   (* Printf.printf "tagging: %d-%d\n" start#offset stop#offset;
      flush stdout; *)
+  let tpos = tpos ~start in
   let text = tb#get_text ~start ~stop () in
-  let lines = line_starts text in
-  let tpos = tpos ~start ~lines in
   let buffer = Lexing.from_string text in
   tb#remove_all_tags ~start ~stop;
-  let last = ref (EOF, 0, 0) in
+  let last = ref (EOF, dummy_pos, dummy_pos) in
   try
     while true do
     let token = Lexer.token buffer
-    and start = Lexing.lexeme_start buffer
-    and stop = Lexing.lexeme_end buffer in
+    and start = Lexing.lexeme_start_p buffer
+    and stop = Lexing.lexeme_end_p buffer in
     let tag =
       match token with
         AMPERAMPER
@@ -136,7 +119,7 @@ let tag ?start ?stop (tb : GText.buffer) =
       | COLON ->
           begin match !last with
             LIDENT _, lstart, lstop ->
-              if lstop = start then
+              if lstop.pos_cnum = start.pos_cnum then
                 tb#apply_tag_by_name "label"
                   ~start:(tpos lstart) ~stop:(tpos stop);
               ""
