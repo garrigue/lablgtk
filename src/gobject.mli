@@ -142,7 +142,7 @@ module Data :
     val uint : int data_conv
     val long : int data_conv
     val ulong : int data_conv
-    val flags : int data_conv
+    val flags : ([>  ] as 'a) Gpointer.variant_table -> 'a list data_conv
     val enum : ([>  ] as 'a) Gpointer.variant_table -> 'a data_conv
     val int64 : int64 data_conv
     val uint64 : int64 data_conv
@@ -173,6 +173,10 @@ module Property :
     val set_params : 'a obj -> 'a param list -> unit
     val get : 'a obj -> ('a, 'b) property -> 'b
     val get_some : 'a obj -> ('a, 'b option) property -> 'b
-    val check : 'a obj -> ('a, 'c) property -> unit
+    val check : 'a obj -> ('a, 'b) property -> unit
+    val may_cons :
+      ('a,'b) property -> 'b option -> 'a param list -> 'a param list
+    val may_cons_opt :
+      ('a,'b option) property -> 'b option -> 'a param list -> 'a param list
   end
 

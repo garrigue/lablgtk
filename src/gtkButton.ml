@@ -149,12 +149,12 @@ module Toolbar = struct
     open GtkSignal
     let orientation_changed =
       let marshal f = marshal_int
-          (fun x -> f (Gpointer.decode_variant Tables.orientation x)) in
+          (fun x -> f (Gpointer.decode_variant GtkEnums.orientation x)) in
       { name = "orientation_changed"; classe = `toolbar;
         marshaller = marshal }
     let style_changed =
       let marshal f = marshal_int
-          (fun x -> f (Gpointer.decode_variant Tables.toolbar_style x)) in
+          (fun x -> f (Gpointer.decode_variant GtkEnums.toolbar_style x)) in
       { name = "style_changed"; classe = `toolbar; marshaller = marshal }
   end
 end

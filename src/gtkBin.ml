@@ -3,10 +3,11 @@
 open Gaux
 open Gtk
 open Tags
+open GtkProps
 open GtkBase
 
-external gtkbin_init : unit -> unit = "ml_gtkbin_init"
-let () = gtkbin_init ()
+external _gtkbin_init : unit -> unit = "ml_gtkbin_init"
+let () = _gtkbin_init ()
 
 module Alignment = struct
   let cast w : alignment obj = Object.try_cast w "GtkAlignment"
@@ -30,33 +31,15 @@ module Frame = struct
   let cast w : frame obj = Object.try_cast w "GtkFrame"
   let create params : frame obj = Object.make "GtkFrame" params
     
-  module Prop = struct
-    open Gobject
-    open Data
-    let label = {name="label"; classe=`frame; conv=string_option}
-    let label_widget = {name="label_widget"; classe=`frame;
-                        conv=(gobject_option : widget obj option data_conv)}
-    let label_xalign = {name="label_xalign"; classe=`frame; conv=float}
-    let label_yalign = {name="label_yalign"; classe=`frame; conv=float}
-    let conv_shadow_type = enum Tables.shadow_type
-    let shadow_type = {name="shadow_type"; classe=`frame;
-                       conv=conv_shadow_type}
-    let check () =
-      let w = create [] in
-      let c p = Gobject.Property.check w p in
-      c label; c label_widget; c label_xalign; c label_yalign;
-      c shadow_type;
-      Object.destroy w
-  end
-
   let make_params ~cont ?label ?label_xalign ?label_yalign ?shadow_type =
+    let module P = PFrame in
     let may_cons prop x l =
       match x with Some x -> Gobject.param prop x :: l | None -> l in
     cont (
-    may_cons Prop.label_xalign label_xalign (
-    may_cons Prop.label_yalign label_yalign (
-    may_cons Prop.shadow_type shadow_type (
-    if label <> None then [Gobject.param Prop.label label] else []))))
+    may_cons P.label_xalign label_xalign (
+    may_cons P.label_yalign label_yalign (
+    may_cons P.shadow_type shadow_type (
+    may_cons P.label label []))))
 
   let setter ~cont =
     make_params ~cont:(fun params ->

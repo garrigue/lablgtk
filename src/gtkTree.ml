@@ -343,10 +343,10 @@ module TreeViewColumn = struct
     let min_width = {name="min_width"; classe=classe; conv=int}
     let reorderable = {name="reorderable"; classe=classe; conv=boolean}
     let resizable = {name="resizable"; classe=classe; conv=boolean}
-    let conv_sizing = enum Tables.tree_view_column_sizing
+    let conv_sizing = enum GtkEnums.tree_view_column_sizing
     let sizing = {name="sizing"; classe=classe; conv=conv_sizing}
     let sort_indicator = {name="sort_indicator"; classe=classe; conv=boolean}
-    let conv_sort = enum Tables.sort_type
+    let conv_sort = enum GtkEnums.sort_type
     let sort_order = {name="sort_order"; classe=classe; conv=conv_sort}
     let title = {name="title"; classe=classe; conv=string}
     let visible = {name="visible"; classe=classe; conv=boolean}
@@ -484,7 +484,7 @@ module TreeView = struct
     let marshal_move_cursor f argv = function
       | `INT step :: `INT n :: _ ->
           return argv
-            (`BOOL (f (Gpointer.decode_variant Tables.movement_step step) n))
+            (`BOOL (f (Gpointer.decode_variant GtkEnums.movement_step step) n))
       | _ -> failwith "GtkTree.TreeView.Signals.move_cursor"
     let move_cursor =
       { name = "move_cursor"; classe = `treeview;
@@ -569,7 +569,7 @@ module CellRenderer = struct
     (* is_expanded and is_expander cannot be read because of bug (2.2.1) *)
     let is_expanded = {name="is-expanded"; classe=classe; conv=boolean}
     let is_expander = {name="is_expander"; classe=classe; conv=boolean}
-    let conv_mode = enum Tables.cell_renderer_mode
+    let conv_mode = enum GtkEnums.cell_renderer_mode
     let mode = {name="mode"; classe=classe; conv=conv_mode}
     let visible = {name="visible"; classe=classe; conv=boolean}
     let width = {name="width"; classe=classe; conv=int}

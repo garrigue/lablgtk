@@ -11,7 +11,7 @@ type window = [`drawable|`gdkwindow] obj
 type pixmap = [`drawable|`gdkpixmap] obj
 type bitmap = [`drawable|`gdkpixmap|`gdkbitmap] obj
 type font
-type image
+type image = [`gdkimage] obj
 type atom
 type keysym = int
 type +'a event
@@ -45,7 +45,7 @@ module Tags : sig
     | `PROXIMITY_IN | `PROXIMITY_OUT
     | `SUBSTRUCTURE | `SCROLL
     | `ALL_EVENTS ]
-  type extension_events = [ `NONE | `ALL | `CURSOR ]
+  type extension_mode = [ `NONE | `ALL | `CURSOR ]
   type visibility_state = [ `UNOBSCURED | `PARTIAL | `FULLY_OBSCURED ]
   type input_source = [ `MOUSE | `PEN | `ERASER | `CURSOR ]
   type scroll_direction = [ `UP | `DOWN | `LEFT | `RIGHT ]
@@ -67,6 +67,12 @@ module Tags : sig
     | `SHORTS of int array
     | `INT32S of int32 array ]
   type xdata_ret = [ xdata | `NONE ]
+  type gravity =
+    [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `CENTER | `EAST
+    | `SOUTH_WEST | `SOUTH | `SOUTH_EAST | `STATIC ]
+  type window_type_hint =
+    [ `NORMAL | `DIALOG | `MENU | `TOOLBAR | `SPLASHSCREEN | `UTILITY
+    | `DOCK | `DESKTOP ]
 end
 
 module Convert :

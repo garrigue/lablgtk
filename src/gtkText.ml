@@ -208,7 +208,7 @@ module Tag = struct
     | `FOREGROUND_GDK b | `BACKGROUND_GDK b  ->
  	`POINTER (Some (Obj.magic (b : Gdk.Color.t)))
 
-    | `WRAP_MODE b -> `INT (Gpointer.encode_variant Tables.wrap_mode b)
+    | `WRAP_MODE b -> `INT (Gpointer.encode_variant GtkEnums.wrap_mode b)
 
     | `STYLE b  -> encode Pango.Tags.style b
 
@@ -218,9 +218,9 @@ module Tag = struct
     
     | `VARIANT s ->  encode Pango.Tags.variant s
 
-    | `DIRECTION b  -> encode Tables.text_direction b
+    | `DIRECTION b  -> encode GtkEnums.text_direction b
 
-    | `JUSTIFICATION b -> encode Tables.justification b
+    | `JUSTIFICATION b -> encode GtkEnums.justification b
 
     | `FONT_DESC f ->
         `POINTER (Some (Obj.magic (f : Pango.font_description)))
@@ -652,15 +652,15 @@ module View = struct
 
     let marshal_delete_from_cursor f _ = function 
       |`INT ty ::`INT i ::_ ->
-	 f (Gpointer.decode_variant Tables.delete_type ty) i
+	 f (Gpointer.decode_variant GtkEnums.delete_type ty) i
       | _ -> invalid_arg "GtkText.View.Signals.marshal_delete_from_cursor"
     let marshal_move_cursor f _ = function 
       |`INT step :: `INT i :: `BOOL b :: _ ->
-	 f (Gpointer.decode_variant Tables.movement_step step) i b
+	 f (Gpointer.decode_variant GtkEnums.movement_step step) i b
       | _ -> invalid_arg "GtkText.View.Signals.marshal_move_cursor"
     let marshal_move_focus f _ = function 
       |`INT dir :: _ ->
-	 f (Gpointer.decode_variant Tables.direction_type dir)
+	 f (Gpointer.decode_variant GtkEnums.direction_type dir)
       | _ -> invalid_arg "GtkText.View.Signals.marshal_move_focus"
     let marshal_page_horizontally f _ = function 
       | (`INT i)::(`BOOL b)::_ ->

@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+open StdLabels
+
 (* marked pointers *)
 type 'a optaddr
 
@@ -48,6 +50,17 @@ external decode_variant : 'a variant_table -> int -> 'a
   = "ml_ml_lookup_from_c"
 external encode_variant : 'a variant_table -> 'a -> int
   = "ml_ml_lookup_to_c"
+
+let encode_flags tbl l =
+  List.fold_left l ~init:0 ~f:(fun acc v -> acc lor (encode_variant tbl v))
+
+let decode_flags tbl c =
+  let l = ref [] in
+  for i = 30 downto 0 do (* only 31-bits in ocaml usual integers *)
+    let d = 1 lsl i in
+    if c land d <> 0 then l := decode_variant tbl d :: !l
+  done;
+  !l
 
 (* Exceptions *)
 

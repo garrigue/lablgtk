@@ -162,7 +162,11 @@ module Data = struct
   let uint = {int with kind = `UINT}
   let long = {int with kind = `LONG}
   let ulong = {int with kind = `ULONG}
-  let flags = {int with kind = `FLAGS}
+  let flags tbl =
+    { kind = `FLAGS;
+      proj = (function `INT c -> Gpointer.decode_flags tbl c
+             | _ -> failwith "Gobject.get_flags");
+      inj = (fun c -> `INT (Gpointer.encode_flags tbl c)) }
   let enum tbl =
     { kind = `ENUM;
       proj = (function `INT c -> Gpointer.decode_variant tbl c
@@ -185,8 +189,9 @@ module Data = struct
       inj = (fun s -> `STRING (Some s)) }
   let string_option =
     { kind = `STRING;
-      proj = (function `STRING c -> c | _ -> failwith "Gobject.get_string");
-      inj = (fun c -> `STRING c) }
+      proj = (function `STRING s -> s
+             | _ -> failwith "Gobject.get_string_option");
+      inj = (fun s -> `STRING s) }
   let pointer =
     { kind = `POINTER;
       proj = (function `POINTER c -> c | _ -> failwith "Gobject.get_pointer");
@@ -284,9 +289,9 @@ module Property = struct
     | exn ->
         failwith (tp obj ^ "->" ^ prop.name ^
                   " raised " ^ Printexc.to_string exn)
-end
 
-(*
-   To produce properties from Gtk documentation:
-   sed -e 's/"\([^"]*\)" *[A-z]\([^ ]*\).*/let \1 = {name="\1"; classe=classe; conv=\2}/'    "
-*)
+  let may_cons prop x l =
+    match x with Some x -> param prop x :: l | None -> l
+  let may_cons_opt prop x l =
+    match x with Some _ -> param prop x :: l | None -> l
+end

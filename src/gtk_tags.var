@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-(* Only add at end! The order must be the same as in GtkBase.Tables *)
+package "gtk"
 
 type anchor_type = "GTK_ANCHOR_"
   [ `CENTER | `NORTH | `NW | `NE | `SOUTH | `SW | `SE | `WEST | `EAST ]
@@ -204,10 +204,5 @@ type widget_flags = "GTK_"
   | `CAN_DEFAULT | `HAS_DEFAULT | `HAS_GRAB | `RC_STYLE | `COMPOSITE_CHILD
   | `NO_REPARENT | `APP_PAINTABLE | `RECEIVES_DEFAULT | `DOUBLE_BUFFERED ]
 
-type gravity = "GDK_GRAVITY_"
-  [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `CENTER | `EAST
-  | `SOUTH_WEST | `SOUTH | `SOUTH_EAST | `STATIC ]
-
-type window_type_hint = "GDK_WINDOW_TYPE_HINT_"
-  [ `NORMAL | `DIALOG | `MENU | `TOOLBAR | `SPLASHSCREEN | `UTILITY
-  | `DOCK | `DESKTOP ]
+type image_type = "GTK_IMAGE_"
+  [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION ]

@@ -87,7 +87,7 @@ class event_ops : [> widget] obj ->
     method add : Gdk.Tags.event_mask list -> unit
     method connect : event_signals
     method send : GdkEvent.any -> bool
-    method set_extensions : Gdk.Tags.extension_events -> unit
+    method set_extensions : Gdk.Tags.extension_mode -> unit
   end
 
 class style : Gtk.style ->

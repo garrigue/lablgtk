@@ -1,5 +1,6 @@
 .depend
 check_externals
+propcc
 varcc
 lablgtk2
 lablgtktop
@@ -9,6 +10,7 @@ lablgladecc
 xml_lexer.ml
 *_tags.c
 *_tags.h
+*Enums.ml
 *.lib
 *.dll
 *.exp

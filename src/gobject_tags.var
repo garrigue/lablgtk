@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+package "gobject"
+
 type fundamental_type = "G_TYPE_"
   [ `INVALID | `NONE | `INTERFACE
   | `CHAR | `UCHAR | `BOOLEAN

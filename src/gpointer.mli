@@ -25,6 +25,8 @@ val may_box : f:('a -> 'b) -> 'a option -> 'b optboxed
 type 'a variant_table constraint 'a = [> ]
 val decode_variant : 'a variant_table -> int -> 'a
 val encode_variant : 'a variant_table -> 'a -> int
+val decode_flags : 'a variant_table -> int -> 'a list
+val encode_flags : 'a variant_table -> 'a list -> int
 
 (** Null pointer exception *)
 exception Null

@@ -2,6 +2,7 @@
 
 open Gaux
 open Gtk
+open GtkProps
 open GtkBase
 open GtkBin
 open GObj
@@ -73,7 +74,7 @@ let handle_box ?handle_position ?snap_edge ?shadow_type
   Container.set w ?border_width ?width ?height;
   pack_return (new handle_box w) ~packing ~show
 
-module P = Frame.Prop
+module P = PFrame
 
 class frame_skel obj = object
   inherit container (obj : [> frame] obj)
@@ -90,7 +91,7 @@ class frame obj = object
 end
 
 let frame ?label =
-  Frame.make_params ?label ~cont:
+  PFrame.make_params ?label ~cont:
     (fun params -> Container.setter ~cont:
         (fun f ?packing ?show () ->
           let w = Frame.create params in f w;
