@@ -8,20 +8,21 @@ all: $(TARGETS)
 opt: lablgtkopt
 
 configure:
-	rm -f config.make .depend
-	$(MAKE) nothing > /dev/null
+	@rm -f config.make
+	@$(MAKE) --no-print-directory -f configure.mk
 
-nothing:
+depend:
+	@rm -f .depend
+	@$(MAKE) --no-print-directory -f configure.mk .depend
 
-CAMLC = ocamlc
-CAMLOPT = ocamlopt
+.depend config.make:
+	@$(MAKE) --no-print-directory -f configure.mk
+
 COMPILER = $(CAMLC) $(MLFLAGS) -w s -labels -c
 LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -labels -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
-
 TOPLEVEL = ocamlmktop $(MLFLAGS)
-RANLIB = ranlib
 
 include config.make
 
@@ -55,11 +56,6 @@ endif
 ifdef USE_GNOME
 GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo
 GNOMECOBJS = ml_gtkxmhtml.o
-GTKGETCFLAGS = `gtk-config --cflags`" -I"`gnome-config --includedir`
-GTKGETLIBS = `gnome-config --libs gtkxmhtml`
-else
-GTKGETCFLAGS = `gtk-config --cflags`
-GTKGETLIBS = `gtk-config --libs`
 endif
 
 # Rules
@@ -157,23 +153,6 @@ var2def: var2def.cmo
 
 clean:
 	rm -f *.cm* *.o *.a *_tags.[ch] $(TARGETS)
-
-.depend:
-	ocamldep *.ml *.mli > .depend
-
-config.make:
-	ocamlc -v | grep "^Standard" | sed 's/.*: */LIBDIR=/' > config.make
-	ocamlc -v | grep "^Standard" \
-	  | sed -e 's/.*: */BINDIR=/' -e 's|/lib/[^/]*$$|/bin|' \
-	        -e 's|/lib$$|/bin|' >> config.make
-	echo GTKCFLAGS=$(GTKGETCFLAGS) >> config.make
-	echo GTKLIBS=$(GTKGETLIBS) | \
-	  sed -e 's/-l/-cclib &/g' -e 's/-[LRWr][^ ]*/-ccopt &/g' >> config.make
-	echo USE_GL=$(USE_GL) >> config.make
-	echo USE_GNOME=$(USE_GNOME) >> config.make
-	echo USE_CC=$(USE_CC) >> config.make
-	(which ranlib > /dev/null 2>&1 && echo RANLIB=ranlib >> config.make) \
-	  || echo RANLIB=: >> config.make
 
 ml_gtk.o: gtk_tags.c gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gdk.o: gdk_tags.c gdk_tags.h ml_gdk.h wrappers.h
