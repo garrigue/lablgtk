@@ -16,7 +16,7 @@
 
 
 ML_0 (glade_init, Unit)
-ML_0 (glade_gnome_init, Unit)
+/* ML_0 (glade_gnome_init, Unit) */
 
 #define GladeXML_val(val) ((GladeXML*)GtkObject_val(val))
 

@@ -174,14 +174,14 @@ module Window = struct
   external visual_depth : visual -> int = "ml_gdk_visual_get_depth"
   external get_visual : window -> visual = "ml_gdk_window_get_visual"
   external get_parent : window -> window = "ml_gdk_window_get_parent"
-  external get_size : window -> int * int = "ml_gdk_window_get_size"
-  external get_position : window -> int * int =
+  external get_size : 'a drawable -> int * int = "ml_gdk_window_get_size"
+  external get_position : 'a drawable -> int * int =
     "ml_gdk_window_get_position"
   external root_parent : unit -> window = "ml_GDK_ROOT_PARENT"
   external set_back_pixmap : window -> pixmap -> int -> unit = 
     "ml_gdk_window_set_back_pixmap"
   external clear : window -> unit = "ml_gdk_window_clear"
-  external get_xwindow : window -> xid = "ml_GDK_WINDOW_XWINDOW"
+  external get_xwindow : 'a drawable -> xid = "ml_GDK_WINDOW_XWINDOW"
 
   let set_back_pixmap w pix = 
     let null_pixmap = (Obj.magic Gpointer.boxed_null : pixmap) in

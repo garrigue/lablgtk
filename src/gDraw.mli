@@ -54,6 +54,7 @@ class ['a] drawable : ?colormap:colormap -> 'a Gdk.drawable ->
       ?width:int ->
       ?style:GC.gdkLineStyle ->
       ?cap:GC.gdkCapStyle -> ?join:GC.gdkJoinStyle -> unit -> unit
+    method size : int * int
     method string : string -> font:font -> x:int -> y:int -> unit
   end
 
