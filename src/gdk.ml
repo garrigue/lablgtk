@@ -1,11 +1,14 @@
 (* $Id$ *)
 
+open Misc
+
 type colormap
 type visual
 type window
 type pixmap
 type bitmap
 type font
+type image
 type atom = int
 type 'a event
 
@@ -107,7 +110,7 @@ module Font = struct
 end
 
 module Event = struct
-  external unsafe_copy : Glib.pointer -> #event_type event
+  external unsafe_copy : pointer -> #event_type event
       = "ml_gdk_event_copy"
   external get_type : 'a event -> 'a = "ml_GdkEventAny_type"
   external get_window : 'a event -> window = "ml_GdkEventAny_window"

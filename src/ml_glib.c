@@ -70,3 +70,5 @@ value ml_g_set_warning_handler (value clos)
     ml_warning_handler = clos;
     return old_handler;
 }
+
+value ml_get_null (value unit) { return 0L; }

@@ -10,6 +10,14 @@ let _ = Glib.set_warning_handler (fun msg -> raise (Warning msg))
 type 'a obj
 type clampf = float
 
+(*
+type 'a optobj
+let optobj : 'a obj option -> 'a optobj =
+  function
+      None -> Obj.magic (0,null)
+    | Some obj -> Obj.magic obj
+*)
+
 module Tags = struct
   type state = [ NORMAL ACTIVE PRELIGHT SELECTED INSENSITIVE ] 
   type window_type = [ TOPLEVEL DIALOG POPUP ]
@@ -65,7 +73,7 @@ module Arg = struct
   external get_int : t -> int = "ml_gtk_arg_get_int"
   external get_float : t -> float = "ml_gtk_arg_get_float"
   external get_string : t -> string = "ml_gtk_arg_get_string"
-  external get_pointer : t -> Glib.pointer = "ml_gtk_arg_get_pointer"
+  external get_pointer : t -> pointer = "ml_gtk_arg_get_pointer"
   external get_object : t -> unit obj = "ml_gtk_arg_get_object"
   (* Safely set a result
      Beware: this is not the opposite of get, arguments and results
@@ -75,7 +83,7 @@ module Arg = struct
   external set_int : t -> int -> unit = "ml_gtk_arg_set_int"
   external set_float : t -> float -> unit = "ml_gtk_arg_set_float"
   external set_string : t -> string -> unit = "ml_gtk_arg_set_string"
-  external set_pointer : t -> Glib.pointer -> unit = "ml_gtk_arg_set_pointer"
+  external set_pointer : t -> pointer -> unit = "ml_gtk_arg_set_pointer"
   external set_object : t -> unit obj -> unit = "ml_gtk_arg_set_object"
 end
 
@@ -526,8 +534,7 @@ module RadioMenuItem = struct
     if Object.is_a w "GtkRadioMenuItem" then Obj.magic w
     else invalid_arg "Gtk.RadioMenuItem.cast"
   type group
-  external get_empty : unit -> group = "ml_get_null"
-  let empty = get_empty ()
+  let empty : group = Obj.obj null
   external create : group -> t = "ml_gtk_radio_menu_item_new"
   external create_with_label : group -> string -> t
       = "ml_gtk_radio_menu_item_new_with_label"
@@ -778,8 +785,7 @@ module RadioButton = struct
     if Object.is_a w "GtkRadioButton" then Obj.magic w
     else invalid_arg "Gtk.RadioButton.cast"
   type group
-  external get_empty : unit -> group = "ml_get_null"
-  let empty = get_empty ()
+  let empty : group = Obj.obj null
   external create : group -> t = "ml_gtk_radio_button_new"
   external create_with_label : group -> string -> t
       = "ml_gtk_radio_button_new_with_label"
@@ -959,6 +965,25 @@ module Menu = struct
   external get_attach_widget : [> menu] obj -> Widget.t
       = "ml_gtk_menu_get_attach_widget"
   external detach : [> menu] obj -> unit = "ml_gtk_menu_detach"
+end
+
+module OptionMenu = struct
+  type t = [widget container button optionmenu] obj
+  let cast w : t =
+    if Object.is_a w "GtkOptionMenu" then Obj.magic w
+    else invalid_arg "Gtk.OptionMenu.cast"
+  external create : unit -> t = "ml_gtk_option_menu_new"
+  external get_menu : [> optionmenu] obj -> Menu.t
+      = "ml_gtk_option_menu_get_menu"
+  external set_menu : [> optionmenu] obj -> [> menu] obj -> unit
+      = "ml_gtk_option_menu_set_menu"
+  external remove_menu : [> optionmenu] obj -> unit
+      = "ml_gtk_option_menu_remove_menu"
+  external set_history : [> optionmenu] obj -> int -> unit
+      = "ml_gtk_option_menu_set_history"
+  let set w ?:menu ?:history =
+    may menu fun:(set_menu w);
+    may history fun:(set_history w)
 end
 
 module MenuBar = struct
@@ -1222,6 +1247,43 @@ module Entry = struct
       = "ml_GtkEntry_text_length"
 end
 
+module SpinButton = struct
+  type t = [widget editable entry spinbutton] obj
+  let cast w : t =
+    if Object.is_a w "GtkSpinButton" then Obj.magic w
+    else invalid_arg "Gtk.SpinButton.cast"
+  external create : ?adj:[> adjustment] obj -> rate:float -> digits:int -> t
+      = "ml_gtk_spin_button_new"
+  external set_adjustment : [> spinbutton] obj -> [> adjustment] obj -> unit
+      = "ml_gtk_spin_button_set_adjustment"
+  external get_adjustment : [> spinbutton] obj -> Adjustment.t
+      = "ml_gtk_spin_button_get_adjustment"
+  external set_digits : [> spinbutton] obj -> int -> unit
+      = "ml_gtk_spin_button_set_digits"
+  external get_value : [> spinbutton] obj -> float
+      = "ml_gtk_spin_button_get_value_as_float"
+  let get_value_as_int w = floor (get_value w +. 0.5)
+  external set_value : [> spinbutton] obj -> float -> unit
+      = "ml_gtk_spin_button_set_value"
+  type update_policy = [ ALWAYS IF_VALID SNAP_TO_TICKS ]
+  external set_update_policy : [> spinbutton] obj -> update_policy -> unit
+      = "ml_gtk_spin_button_set_update_policy"
+  external set_numeric : [> spinbutton] obj -> bool -> unit
+      = "ml_gtk_spin_button_set_numeric"
+  external spin : [> spinbutton] obj -> [UP DOWN] -> step:float -> unit
+      = "ml_gtk_spin_button_spin"
+  external set_wrap : [> spinbutton] obj -> bool -> unit
+      = "ml_gtk_spin_button_set_wrap"
+  let set w ?:adjustment ?:digits ?:value ?:update_policy ?:numeric ?:wrap =
+    let may_set f = may fun:(f w) in
+    may_set set_adjustment adjustment;
+    may_set set_digits digits;
+    may_set set_value value;
+    may_set set_update_policy update_policy;
+    may_set set_numeric numeric;
+    may_set set_wrap wrap
+end
+
 module Text = struct
   type t = [widget editable text] obj
   let cast w : t =
@@ -1315,6 +1377,26 @@ module Misc = struct
       = "ml_gtk_misc_set_padding"
 end
 
+module Arrow = struct
+  type t = [widget misc arrow] obj
+  let cast w : t =
+    if Object.is_a w "GtkArrow" then Obj.magic w
+    else invalid_arg "Gtk.Arrow.cast"
+  external create : type:arrow -> :shadow -> t = "ml_gtk_arrow_new"
+  external set : [> arrow] obj -> type:arrow -> :shadow -> unit
+      = "ml_gtk_arrow_set"
+end
+
+module Image = struct
+  type t = [widget misc image] obj
+  let cast w : t =
+    if Object.is_a w "GtkImage" then Obj.magic w
+    else invalid_arg "Gtk.Image.cast"
+  external create : Gdk.image -> ?mask:Gdk.bitmap -> t = "ml_gtk_image_new"
+  external set : [> image] obj -> Gdk.image -> ?mask:Gdk.bitmap -> unit
+      = "ml_gtk_image_set"
+end
+
 module Label = struct
   type t = [widget misc label] obj
   let cast w : t =
@@ -1328,6 +1410,38 @@ module Label = struct
     may fun:(set w) text;
     may fun:(set_justify w) justify
   external text : [> label] obj -> string = "ml_GtkLabel_label"
+end
+
+module TipsQuery = struct
+  type t = [widget misc label tipsquery] obj
+  let cast w : t =
+    if Object.is_a w "GtkTipsQuery" then Obj.magic w
+    else invalid_arg "Gtk.TipsQuery.cast"
+  external create : unit -> t = "ml_gtk_tips_query_new"
+  external start : [> tipsquery] obj -> unit = "ml_gtk_tips_query_start_query"
+  external stop : [> tipsquery] obj -> unit = "ml_gtk_tips_query_stop_query"
+  external set_caller : [> tipsquery] obj -> [> widget] obj -> unit
+      = "ml_gtk_tips_query_set_caller"
+  external set_labels :
+      [> tipsquery] obj -> inactive:string -> no_tip:string -> unit
+      = "ml_gtk_tips_query_set_labels"
+  external set_emit_always : [> tipsquery] obj -> bool -> unit
+      = "ml_gtk_tips_query_set_emit_always"
+  external get_caller : [> tipsquery] obj -> Widget.t
+      = "ml_gtk_tips_query_get_caller"
+  external get_label_inactive : [> tipsquery] obj -> string
+      = "ml_gtk_tips_query_get_label_inactive"
+  external get_label_no_tip : [> tipsquery] obj -> string
+      = "ml_gtk_tips_query_get_label_no_tip"
+  external get_emit_always : [> tipsquery] obj -> bool
+      = "ml_gtk_tips_query_get_emit_always"
+  let set w ?:caller ?:emit_always ?:label_inactive ?:label_no_tip =
+    may caller fun:(set_caller w);
+    may emit_always fun:(set_emit_always w);
+    if label_inactive <> None || label_no_tip <> None then
+      set_labels w
+	inactive:(may_default get_label_inactive w for:label_inactive)
+	no_tip:(may_default get_label_no_tip w for:label_no_tip)
 end
 
 module Pixmap = struct

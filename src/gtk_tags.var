@@ -91,3 +91,6 @@ type toolbar_child = "GTK_TOOLBAR_CHILD_"
 
 type tree_view_mode = "GTK_TREE_VIEW_"
     [ LINE ITEM ]
+
+type spin_button_update_policy = "GTK_UPDATE_"
+    [ ALWAYS IF_VALID SNAP_TO_TICKS ]
