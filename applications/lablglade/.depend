@@ -1,0 +1,16 @@
+gProjectView.cmo: glade.cmo gladeProject.cmo gladeProjectView.cmo 
+gProjectView.cmx: glade.cmx gladeProject.cmx gladeProjectView.cmx 
+gProjectWindow.cmo: glade.cmo gladeProjectWindow.cmo 
+gProjectWindow.cmx: glade.cmx gladeProjectWindow.cmx 
+gladeCallBack.cmo: gladeGbWidget.cmo 
+gladeCallBack.cmx: gladeGbWidget.cmx 
+gladeGbWidget.cmo: glade.cmo 
+gladeGbWidget.cmx: glade.cmx 
+gladeMisc.cmo: glade.cmo 
+gladeMisc.cmx: glade.cmx 
+gladeProject.cmo: glade.cmo 
+gladeProject.cmx: glade.cmx 
+gladeProjectView.cmo: glade.cmo 
+gladeProjectView.cmx: glade.cmx 
+gladeProjectWindow.cmo: glade.cmo gladeProject.cmo 
+gladeProjectWindow.cmx: glade.cmx gladeProject.cmx 

@@ -1,0 +1,1070 @@
+/*  Gtk+ User Interface Builder
+ *  Copyright (C) 1998  Damon Chaplin
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdarg.h>
+#include <errno.h>
+#include <ctype.h>
+#include <locale.h>
+
+#include <gtk/gtk.h>
+
+#include "gladeconfig.h"
+
+#include "gbwidget.h"
+#include "glade_project.h"
+#include "source.h"
+#include "utils.h"
+#ifdef HAVE_OS2_H
+#include "source_os2.h"
+#endif
+
+
+#define GB_SOURCE_BUFFER_INCREMENT	8192
+#define GB_SOURCE_BUFFER_ENSURE_SPACE	4096
+
+#define MAX_IDENTIFIER_LEN		1024
+
+#define TEXT_BUFFER_INCREMENT		1024
+
+static GladeStatusCode real_source_write (GladeProject * project);
+static void destroy_standard_widget (gchar * key,
+				     GtkWidget * widget,
+				     gpointer data);
+
+static void close_all_files (GbWidgetWriteSourceData * data);
+
+static void source_write_configure_in (GbWidgetWriteSourceData * data);
+static void source_write_makefile_am (GbWidgetWriteSourceData * data);
+static void source_write_makefile (GbWidgetWriteSourceData * data);
+
+static void source_write_main_c_preamble (GbWidgetWriteSourceData * data);
+static void source_write_main_h_preamble (GbWidgetWriteSourceData * data);
+static void source_write_signal_c_preamble (GbWidgetWriteSourceData * data);
+static void source_write_signal_h_preamble (GbWidgetWriteSourceData * data);
+static void source_write_preamble (GbWidgetWriteSourceData * data,
+				   FILE * fp);
+
+static void source_write_component_create (GtkWidget * component,
+					   GbWidgetWriteSourceData * data);
+static void source_write_component (GtkWidget * component,
+				    GbWidgetWriteSourceData * data);
+static time_t file_last_modification_time (gchar *filename);
+static GladeStatusCode backup_file_if_exists (gchar * filename);
+
+static void add_to_buffer (gchar ** buffer,
+			   gint * buffer_pos,
+			   gint * buffer_space,
+			   gchar * text);
+static void add_char_to_buffer (gchar ** buffer,
+				gint * buffer_pos,
+				gint * buffer_space,
+				gchar ch);
+
+/* We need this so that numbers are written in C syntax rather than the
+   current locale, which may use ',' instead of '.' and then the code
+   will not compile. This code is from glibc info docs. */
+GladeStatusCode
+source_write (GladeProject *project)
+{
+  gchar *old_locale, *saved_locale;
+  GladeStatusCode status;
+     
+  old_locale = setlocale (LC_NUMERIC, NULL);
+  saved_locale = g_strdup (old_locale);
+  setlocale (LC_NUMERIC, "C");
+  status = real_source_write (project);
+  setlocale (LC_NUMERIC, saved_locale);
+  g_free (saved_locale);
+  return status;
+}
+
+
+static GladeStatusCode
+real_source_write (GladeProject * project)
+{
+  GbWidgetWriteSourceData data;
+  struct stat filestat;
+
+  /* Create the source directory if it doesn't exist. */
+  if (stat (project->source_directory, &filestat) != 0)
+    {
+      if (errno == ENOENT)
+	{
+	  if (mkdir (project->source_directory, 0777) != 0)
+	    return GLADE_STATUS_MKDIR_ERROR;
+	}
+      else
+	return GLADE_STATUS_FILE_STAT_ERROR;
+    }
+  else if (!S_ISDIR (filestat.st_mode))
+    g_warning ("Source directory is not a directory");
+
+  /* Set the status to OK. If anything changes it we know there is an error. */
+  data.project = project;
+  data.status = GLADE_STATUS_OK;
+  data.project_name = project->name;
+  data.main_c_filename = project->main_source_file;
+  data.main_h_filename = project->main_header_file;
+  data.signal_c_filename = project->handler_source_file;
+  data.signal_h_filename = project->handler_header_file;
+  data.set_widget_names = project->use_widget_names;
+  data.use_widget_hash = TRUE;
+  data.use_gettext = project->gettext_support;
+  /* FIXME: This gets leaked if we get an error below. */
+  data.standard_widgets = g_hash_table_new (g_str_hash, g_str_equal);
+  data.creating_signals_files = FALSE;
+
+  if (chdir (project->source_directory) == -1)
+    return GLADE_STATUS_CHDIR_ERROR;
+
+#ifdef HAVE_OS2_H
+  source_write_os2_files();
+#endif
+  
+  if (!glade_util_file_exists (data.signal_c_filename))
+    data.creating_signals_files = TRUE;
+  else
+    {
+      data.last_write_time = file_last_modification_time (data.main_c_filename);
+      if ((data.last_write_time == (time_t) -1)
+	  || (data.last_write_time == (time_t) 0))
+	return GLADE_STATUS_FILE_READ_ERROR;
+    }
+
+  source_write_configure_in (&data);
+  if (data.status != GLADE_STATUS_OK)
+    return data.status;
+  source_write_makefile_am (&data);
+  if (data.status != GLADE_STATUS_OK)
+    return data.status;
+  source_write_makefile (&data);
+  if (data.status != GLADE_STATUS_OK)
+    return data.status;
+
+  /* Backup the two main files. We don't backup the signals files since we only
+     ever append to them. */
+  backup_file_if_exists (data.main_c_filename);
+  backup_file_if_exists (data.main_h_filename);
+
+  /* Create the 2 main files, and the handlers files if necessary. */
+  data.cfp = data.hfp = data.sigcfp = data.sighfp = NULL;
+  data.cfp = fopen (data.main_c_filename, "w");
+  if (data.cfp == NULL)
+    {
+      close_all_files (&data);
+      return GLADE_STATUS_FILE_OPEN_ERROR;
+    }
+  data.hfp = fopen (data.main_h_filename, "w");
+  if (data.hfp == NULL)
+    {
+      close_all_files (&data);
+      return GLADE_STATUS_FILE_OPEN_ERROR;
+    }
+
+  source_write_main_c_preamble (&data);
+  if (data.status != GLADE_STATUS_OK)
+    {
+      close_all_files (&data);
+      return data.status;
+    }
+  source_write_main_h_preamble (&data);
+  if (data.status != GLADE_STATUS_OK)
+    {
+      close_all_files (&data);
+      return data.status;
+    }
+
+  if (data.creating_signals_files)
+    {
+      data.sigcfp = fopen (data.signal_c_filename, "w");
+      if (data.sigcfp == NULL)
+	{
+	  close_all_files (&data);
+	  return GLADE_STATUS_FILE_OPEN_ERROR;
+	}
+      data.sighfp = fopen (data.signal_h_filename, "w");
+      if (data.sighfp == NULL)
+	{
+	  close_all_files (&data);
+	  return GLADE_STATUS_FILE_OPEN_ERROR;
+	}
+
+      source_write_signal_c_preamble (&data);
+      if (data.status != GLADE_STATUS_OK)
+	{
+	  close_all_files (&data);
+	  return data.status;
+	}
+      source_write_signal_h_preamble (&data);
+      if (data.status != GLADE_STATUS_OK)
+	{
+	  close_all_files (&data);
+	  return data.status;
+	}
+    }
+  else
+    {
+      data.sigcfp = fopen (data.signal_c_filename, "a");
+      if (data.sigcfp == NULL)
+	{
+	  close_all_files (&data);
+	  return GLADE_STATUS_FILE_OPEN_ERROR;
+	}
+      data.sighfp = fopen (data.signal_h_filename, "a");
+      if (data.sighfp == NULL)
+	{
+	  close_all_files (&data);
+	  return GLADE_STATUS_FILE_OPEN_ERROR;
+	}
+    }
+
+  gb_init_buffer_struct(0, GB_SOURCE_BUFFER_INCREMENT, &data.buffer);
+  gb_init_buffer_struct(0, GB_SOURCE_BUFFER_INCREMENT, &data.decl_buffer);
+
+  /* This outputs code in main() to create one of each component, just so that
+     the user sees something after first building the project. */
+  if (data.creating_signals_files)
+    {
+      glade_project_foreach_component (data.project,
+				       (GtkCallback) source_write_component_create,
+				       &data);
+      fprintf (data.sigcfp, "%s", data.decl_buffer.ptr);
+      fprintf (data.sigcfp,
+	       "\n"
+	       "  gtk_set_locale ();\n"
+	       "  gtk_init (&argc, &argv);\n"
+	       "\n"
+	       "  /*\n"
+	       "   * The following code was added by Glade to create one of each component\n"
+	       "   * (except popup menus), just so that you see something after building\n"
+	       "   * the project. Delete any components that you don't want shown initially.\n"
+	       "   */\n");
+      fprintf (data.sigcfp, "%s", data.buffer.ptr);
+      fprintf (data.sigcfp, "\n  gtk_main ();\n  return 0;\n}\n\n");
+    }
+
+  /* This outputs the code to create the components and the signal handler
+     prototypes. */
+  glade_project_foreach_component (data.project,
+				   (GtkCallback) source_write_component,
+				   &data);
+
+  g_free (data.buffer.ptr);
+  g_free (data.decl_buffer.ptr);
+  g_hash_table_foreach (data.standard_widgets,
+			(GHFunc) destroy_standard_widget, NULL);
+  g_hash_table_destroy (data.standard_widgets);
+
+  close_all_files (&data);
+  return data.status;
+}
+
+
+static void
+close_all_files (GbWidgetWriteSourceData * data)
+{
+  if (data->cfp)
+    fclose (data->cfp);
+  if (data->hfp)
+    fclose (data->hfp);
+  if (data->sigcfp)
+    fclose (data->sigcfp);
+  if (data->sighfp)
+    fclose (data->sighfp);
+}
+
+
+static void
+destroy_standard_widget (gchar * key, GtkWidget * widget, gpointer data)
+{
+  gtk_widget_destroy (widget);
+}
+
+FILE *
+create_file_if_not_exist (gchar *filename, GladeStatusCode  *status)
+{
+  FILE *fp;
+
+  if (glade_util_file_exists (filename))
+    return NULL;
+
+  fp = fopen (filename, "wt");
+  if (fp == NULL)
+    {
+      *status = GLADE_STATUS_FILE_OPEN_ERROR;
+      return NULL;
+    }
+  return (fp);
+}
+
+static void
+source_write_configure_in (GbWidgetWriteSourceData * data)
+{
+  FILE *fp;
+
+  /* FIXME: If configure.in exists, just leave it, for now. */
+  fp = create_file_if_not_exist ("configure.in", &data->status);
+  if (fp == NULL)
+      return;
+
+  /* FIXME: May want to use 1.1.0 for GTK version 1.1, especially if I
+     write accelerator code. */
+  fprintf (fp,
+      "dnl Process this file with autoconf to produce a configure script.\n"
+	   "\n"
+	   "AC_INIT(%s)\n"
+	   "AM_INIT_AUTOMAKE(%s, 0.1)\n"
+	   "AM_CONFIG_HEADER(config.h)\n"
+	   "\n"
+	   "AC_PROG_CC\n"
+	   "AM_PROG_CC_STDC\n"
+	   "AC_HEADER_STDC\n"
+	   "\n"
+	   "AM_PATH_GTK(1.0.0, ,\n"
+      "            AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?))\n"
+	   "\n"
+	   "dnl Only use -Wall if we have gcc\n"
+	   "if test \"x$GCC\" = \"xyes\"; then\n"
+	   "  if test -z \"`echo \"$CFLAGS\" | grep \"\\-Wall\" 2> /dev/null`\" ; then\n"
+	   "    CFLAGS=\"$CFLAGS -Wall\"\n"
+	   "  fi\n"
+	   "fi\n"
+	   "\n"
+	   "AC_OUTPUT(Makefile)\n",
+	   data->main_c_filename, data->project_name);
+  fclose (fp);
+}
+
+
+static void
+source_write_makefile_am (GbWidgetWriteSourceData * data)
+{
+  FILE *fp;
+
+  /* FIXME: If Makefile.am exists, just leave it, for now. */
+  fp = create_file_if_not_exist ("Makefile.am", &data->status);
+  if (fp == NULL)
+      return;
+
+  /* 134 is '\', but I have trouble if I use '\' in the string. */
+  fprintf (fp,
+	   "## Process this file with automake to produce Makefile.in\n"
+	   "\n"
+	   "INCLUDES = @GTK_CFLAGS@\n"
+	   "\n"
+	   "bin_PROGRAMS = %s\n"
+	   "\n"
+	   "%s_SOURCES = %c\n"
+	   "	%s %s %c\n"
+	   "	%s %s\n"
+	   "%s_LDADD = @GTK_LIBS@\n",
+	   data->project_name, data->project_name, '\\',
+	   data->main_c_filename, data->main_h_filename, '\\',
+	   data->signal_c_filename, data->signal_h_filename,
+	   data->project_name);
+  fclose (fp);
+}
+
+
+/* Output a simple Makefile to run aclocal, automake & autoconf to create
+   the real Makefiles. */
+static void
+source_write_makefile (GbWidgetWriteSourceData * data)
+{
+  FILE *fp;
+
+  /* If Makefile exists, just return. */
+  fp = create_file_if_not_exist ("Makefile", &data->status);
+  if (fp == NULL)
+      return;
+
+  fprintf (fp,
+	   "all:\n"
+	   "\taclocal\n"
+	   "\tautoheader\n"
+	   "\tautomake -a --foreign\n"
+	   "\tautoconf\n"
+	   "\t./configure\n"
+	   "\tmake\n");
+  fclose (fp);
+}
+
+
+static void
+source_write_main_c_preamble (GbWidgetWriteSourceData * data)
+{
+  gchar *relative_pixmaps_directory;
+
+  source_write_preamble (data, data->cfp);
+
+  fprintf (data->cfp,
+	   "#include <sys/stat.h>\n"
+	   "#include <unistd.h>\n"
+	   "#include <string.h>\n"
+	   "\n"
+	   "#ifdef HAVE_CONFIG_H\n"
+	   "#  include <config.h>\n"
+	   "#endif\n"
+	   "\n"
+	   "#include <gtk/gtk.h>\n"
+	   "%s"
+	   "#include <gdk/gdkkeysyms.h>\n"
+	   "#include \"%s\"\n"
+	   "#include \"%s\"\n\n",
+	   data->use_gettext ? "#include <gtk/gtkintl.h>\n" : "",
+	   data->signal_h_filename, data->main_h_filename);
+
+  /* Write a function to get a widget from the component's hash. */
+  if (data->use_widget_hash)
+    {
+      fprintf (data->cfp,
+	       "GtkWidget*\n"
+	       "get_widget                             (GtkWidget       *widget,\n"
+	       "                                        gchar           *widget_name)\n"
+	       "{\n"
+	       "  GtkWidget *parent, *found_widget;\n"
+	       "\n"
+	       "  for (;;)\n"
+	       "    {\n"
+	       "      if (GTK_IS_MENU (widget))\n"
+	       "        parent = gtk_menu_get_attach_widget (GTK_MENU (widget));\n"
+	       "      else\n"
+	       "        parent = widget->parent;\n"
+	       "      if (parent == NULL)\n"
+	       "        break;\n"
+	       "      widget = parent;\n"
+	       "    }\n"
+	       "\n"
+	       "  found_widget = (GtkWidget*) gtk_object_get_data (GTK_OBJECT (widget),\n"
+	       "                                                   widget_name);\n"
+	       "  if (!found_widget)\n"
+	       "    g_warning (\"Widget not found: %%s\", widget_name);\n"
+	       "  return found_widget;\n"
+	       "}\n\n");
+    }
+
+  /* Write a real kludgey function to set the tab of an already-created
+     notebook page. */
+  fprintf (data->cfp,
+	   "/* This is an internally used function to set notebook tab widgets. */\n"
+	   "void\n"
+	   "set_notebook_tab                       (GtkWidget       *notebook,\n"
+	   "                                        gint             page_num,\n"
+	   "                                        GtkWidget       *widget)\n"
+	   "{\n"
+
+	   "  GtkNotebookPage *page;\n"
+	   "  GtkWidget *notebook_page;\n"
+	   "\n"
+	   "  page = (GtkNotebookPage*) g_list_nth (GTK_NOTEBOOK (notebook)->children, page_num)->data;\n"
+	   "  notebook_page = page->child;\n"
+	   "  gtk_widget_ref (notebook_page);\n"
+	   "  gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);\n"
+	   "  gtk_notebook_insert_page (GTK_NOTEBOOK (notebook), notebook_page,\n"
+	   "                            widget, page_num);\n"
+	   "  gtk_widget_unref (notebook_page);\n"
+	   "}\n\n");
+
+
+  /* Write a function used to set the installed pixmaps directory. */
+  fprintf (data->cfp,
+	   "static GList *pixmaps_directories = NULL;\n"
+	   "\n"
+	   "/* Use this function to set the directory containing installed pixmaps. */\n"
+	   "void\n"
+	   "add_pixmap_directory                   (gchar           *directory)\n"
+	   "{\n"
+	   "  pixmaps_directories = g_list_prepend (pixmaps_directories, g_strdup (directory));\n"
+	   "}\n\n");
+
+  /* Write a function to check if a pixmap file exists. */
+  fprintf (data->cfp,
+	   "/* This is an internally used function to check if a pixmap file exists. */\n"
+	   /* FIXME: This is not needed for GTK 1.2. */
+	   "#ifndef G_DIR_SEPARATOR_S\n"
+	   "#define G_DIR_SEPARATOR_S \"/\"\n"
+	   "#endif\n"
+	   "gchar*\n"
+	   "check_file_exists                      (gchar           *directory,\n"
+	   "                                        gchar           *filename)\n"
+	   "{\n"
+	   "  gchar *full_filename;\n"
+	   "  struct stat s;\n"
+	   "  gint status;\n"
+	   "\n"
+	   "  full_filename = g_malloc (strlen (directory) + 1 + strlen (filename) + 1);\n"
+	   "  strcpy (full_filename, directory);\n"
+	   "  strcat (full_filename, G_DIR_SEPARATOR_S);\n"
+	   "  strcat (full_filename, filename);\n"
+	   "\n"
+	   "  status = stat (full_filename, &s);\n"
+	   "  if (status == 0 && S_ISREG (s.st_mode))\n"
+	   "    return full_filename;\n"
+	   "  g_free (full_filename);\n"
+	   "  return NULL;\n"
+	   "}\n\n");
+
+  /* Write a function used for creating pixmaps. */
+  fprintf (data->cfp,
+	   "/* This is an internally used function to create pixmaps. */\n"
+	   "GtkWidget*\n"
+	   "create_pixmap                          (GtkWidget       *widget,\n"
+	   "                                        gchar           *filename)\n"
+	   "{\n"
+	   "  gchar *found_filename = NULL;\n"
+	   "  GdkColormap *colormap;\n"
+	   "  GdkPixmap *gdkpixmap;\n"
+	   "  GdkBitmap *mask;\n"
+	   "  GtkWidget *pixmap;\n"
+	   "  GList *elem;\n"
+	   "\n");
+  fprintf (data->cfp,
+	   "  /* We first try any pixmaps directories set by the application. */\n"
+	   "  elem = pixmaps_directories;\n"
+	   "  while (elem)\n"
+	   "    {\n"
+	   "      found_filename = check_file_exists ((gchar*)elem->data, filename);\n"
+	   "      if (found_filename)\n"
+	   "        break;\n"
+	   "      elem = elem->next;\n"
+	   "    }\n"
+	   "\n");
+
+  relative_pixmaps_directory = glade_util_make_relative_path (data->project->source_directory, data->project->pixmaps_directory);
+  fprintf (data->cfp,
+	   "  /* If we haven't found the pixmap, try the source directory. */\n"
+	   "  if (!found_filename)\n"
+	   "    {\n"
+	   "      found_filename = check_file_exists (\"%s\", filename);\n"
+	   "    }\n"
+	   "\n"
+	   "  if (!found_filename)\n"
+	   "    {\n"
+	   "      g_print (%s, filename);\n"
+	   "      return NULL;\n"
+	   "    }\n"
+	   "\n", relative_pixmaps_directory,
+	   source_make_string ("Couldn't find pixmap file: %s",
+			       data->use_gettext));
+  g_free (relative_pixmaps_directory);
+
+  fprintf (data->cfp,
+	   "  colormap = gtk_widget_get_colormap (widget);\n"
+	   "  gdkpixmap = gdk_pixmap_colormap_create_from_xpm (NULL, colormap, &mask,\n"
+	   "                                                   NULL, found_filename);\n"
+	   "  g_free (found_filename);\n"
+	   "  if (gdkpixmap == NULL)\n"
+	   "    return NULL;\n"
+	   "  pixmap = gtk_pixmap_new (gdkpixmap, mask);\n"
+	   "  gdk_pixmap_unref (gdkpixmap);\n"
+	   "  gdk_bitmap_unref (mask);\n"
+	   "  return pixmap;\n"
+	   "}\n\n");
+}
+
+
+static void
+source_write_main_h_preamble (GbWidgetWriteSourceData * data)
+{
+  source_write_preamble (data, data->hfp);
+
+  fprintf (data->hfp,
+	   "#include <gtk/gtk.h>\n"
+	   "\n");
+
+  if (data->use_widget_hash)
+    {
+      fprintf (data->hfp,
+	       "/*\n"
+	       " * This function returns a widget in a component created by Glade.\n"
+	       " * Call it with the toplevel widget in the component (i.e. a window/dialog),\n"
+	       " * or alternatively any widget in the component, and the name of the widget\n"
+	       " * you want returned.\n"
+	       " */\n"
+	       "GtkWidget*\n"
+	       "get_widget                             (GtkWidget       *widget,\n"
+	       "                                        gchar           *widget_name);\n"
+	       "\n"
+	       "\n");
+    }
+
+  fprintf (data->hfp,
+	   " /*\n"
+	   "  * This is an internally used function for setting notebook tabs. It is only\n"
+	   "  * included in this header file so you don't get compilation warnings\n"
+	   "  */\n"
+	   "void\n"
+	   "set_notebook_tab                       (GtkWidget       *notebook,\n"
+	   "                                        gint             page_num,\n"
+	   "                                        GtkWidget       *widget);\n"
+	   "\n");
+
+  fprintf (data->hfp,
+	   "/* Use this function to set the directory containing installed pixmaps. */\n"
+	   "void\n"
+	   "add_pixmap_directory                   (gchar           *directory);\n"
+	   "\n");
+
+  fprintf (data->hfp,
+	   "/* This is an internally used function to create pixmaps. */\n"
+	   "GtkWidget*\n"
+	   "create_pixmap                          (GtkWidget       *widget,\n"
+	   "                                        gchar           *filename);\n"
+	   "\n");
+}
+
+
+static void
+source_write_signal_c_preamble (GbWidgetWriteSourceData * data)
+{
+  source_write_preamble (data, data->sigcfp);
+
+  fprintf (data->sigcfp,
+	   "#ifdef HAVE_CONFIG_H\n"
+	   "#  include <config.h>\n"
+	   "#endif\n"
+	   "\n"
+	   "#include <gtk/gtk.h>\n"
+	   "%s"
+	   "#include \"%s\"\n"
+	   "#include \"%s\"\n\n",
+	   data->use_gettext ? "#include <gtk/gtkintl.h>\n" : "",
+	   data->main_h_filename, data->signal_h_filename);
+
+  fprintf (data->sigcfp,
+	   "int\n"
+	   "main (int argc, char *argv[])\n"
+	   "{\n");
+}
+
+
+static void
+source_write_signal_h_preamble (GbWidgetWriteSourceData * data)
+{
+  source_write_preamble (data, data->sighfp);
+
+  fprintf (data->sighfp,
+	   "#include <gtk/gtk.h>\n"
+	   "\n");
+}
+
+void
+source_write_subcomponent_create (GtkWidget * component,
+                               GbWidgetWriteSourceData * data)
+{
+  GbWidgetData *wdata;
+  gchar        *component_name = gtk_widget_get_name (component);
+
+  wdata = data->widget_data;
+
+  /* Don't show popup menus. */
+  if (GTK_IS_MENU (component))
+    return;
+
+  component_name = source_create_valid_identifier (component_name);
+  source_add (data, "  %s = create_%s ();\n",
+              component_name, component_name);
+
+  if (wdata->flags & GB_VISIBLE)
+        source_add (data, "  gtk_widget_show (%s);\n", component_name);
+
+  data->wname = component_name;
+ 
+  gb_widget_write_standard_source (component, data);
+
+  g_free (component_name);
+}
+
+
+
+static void
+source_write_preamble (GbWidgetWriteSourceData * data, FILE * fp)
+{
+  /* Write license info. Note this will eventually be editable in the
+     user interface, with an option to include a few standard licenses, e.g.
+     GPL, which are then edited by the user. */
+  fprintf (fp,
+	   "/*  Note: You are free to use whatever license you want.\n"
+	   "    Eventually you will be able to edit it within Glade. */\n"
+	   "\n"
+	   "/*  %s\n"
+	   " *  Copyright (C) <YEAR> <AUTHORS>\n"
+	   " *\n"
+	   " *  This program is free software; you can redistribute it and/or modify\n"
+	   " *  it under the terms of the GNU General Public License as published by\n"
+	   " *  the Free Software Foundation; either version 2 of the License, or\n"
+	   " *  (at your option) any later version.\n"
+	   " *\n"
+	   " *  This program is distributed in the hope that it will be useful,\n"
+	   " *  but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+	   " *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+	   " *  GNU General Public License for more details.\n"
+	   " *\n"
+	   " *  You should have received a copy of the GNU General Public License\n"
+	   " *  along with this program; if not, write to the Free Software\n"
+	   " *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+	   "*/\n\n", data->project_name);
+
+}
+
+
+static void
+source_write_component_create (GtkWidget * component,
+			       GbWidgetWriteSourceData * data)
+{
+  gchar *compKey;
+  gchar *component_name = gtk_widget_get_name (component);
+
+  /* Don't show popup menus. */
+  if (GTK_IS_MENU (component))
+    return;
+
+  compKey = gtk_object_get_data( GTK_OBJECT( component), GB_COMPONENT_KEY);
+
+  /* Don't create embedded components here. */
+  if ((!compKey) || (strcmp(compKey, "True")))
+    {
+      component_name = source_create_valid_identifier (component_name);
+      source_add_decl (data, "  GtkWidget *%s;\n", component_name);
+      source_add (data, "  %s = create_%s ();\n  gtk_widget_show (%s);\n",
+		  component_name, component_name, component_name);
+      g_free (component_name);
+    }
+}
+
+
+static void
+source_write_component (GtkWidget * component, GbWidgetWriteSourceData * data)
+{
+  gchar *compKey;
+
+  compKey = gtk_object_get_data( GTK_OBJECT(component), GB_COMPONENT_KEY);
+
+  data->component = component;
+  data->component_name = source_create_valid_identifier (gtk_widget_get_name (component));
+  data->need_tooltips = FALSE;
+  data->need_accel_group = FALSE;
+  data->buffer.pos = 0;
+  data->decl_buffer.pos = 0;
+  if ((!compKey) || (strcmp(compKey, "True")))
+    data->parent = NULL;
+
+  data->create_widget = TRUE;
+  data->write_children = TRUE;
+
+  fprintf (data->cfp,
+	   "GtkWidget*\n"
+	   "create_%s ()\n"
+	   "{\n",
+	   data->component_name);
+
+  fprintf (data->hfp,
+	   "GtkWidget* create_%s (void);\n",
+	   data->component_name);
+
+  if ((compKey) && (!strcmp(compKey, "True")))
+    {
+      gtk_object_set_data (GTK_OBJECT (component), GB_COMPONENT_KEY, NULL);
+
+      gb_widget_write_source (component, data);
+
+      gtk_object_set_data (GTK_OBJECT (component), GB_COMPONENT_KEY,
+			   g_strdup ("True"));
+    }
+  else
+    {
+      gb_widget_write_source (component, data);
+    }
+
+  fprintf (data->cfp, "%s", data->decl_buffer.ptr);
+
+  if (data->need_accel_group)
+    {
+#ifdef GTK_HAVE_FEATURES_1_1_0
+      fprintf (data->cfp, "  GtkAccelGroup *accel_group;\n");
+#else
+      fprintf (data->cfp, "  GtkAcceleratorTable *accelerator_table;\n");
+#endif
+    }
+
+  if (data->need_tooltips)
+    {
+      fprintf (data->cfp,
+	       "  GtkTooltips *tooltips;\n"
+	       "\n"
+	       "  tooltips = gtk_tooltips_new ();\n\n");
+    }
+  else
+    {
+      fprintf (data->cfp, "\n");
+    }
+  fprintf (data->cfp, "%s", data->buffer.ptr);
+
+  if (data->need_tooltips)
+    {
+      fprintf (data->cfp,
+	       "  gtk_object_set_data (GTK_OBJECT (%s), "
+	       "\"tooltips\", tooltips);\n\n",
+	       data->component_name);
+    }
+
+  fprintf (data->cfp, "  return %s;\n}\n\n", data->component_name);
+  g_free (data->component_name);
+}
+
+static void
+gb_realloc_buffer_if_needed (GbBuffControl * p)
+{
+  if (p->space - p->pos < GB_SOURCE_BUFFER_ENSURE_SPACE)
+    {
+      p->space += GB_SOURCE_BUFFER_INCREMENT;
+      p->ptr = g_realloc (p->ptr, p->space);
+    }
+}
+
+void
+source_add (GbWidgetWriteSourceData * data, gchar * fmt,...)
+{
+  va_list args;
+
+  gb_realloc_buffer_if_needed (&data->buffer);
+
+  va_start (args, fmt);
+  vsprintf (data->buffer.ptr + data->buffer.pos, fmt, args);
+  data->buffer.pos += strlen (data->buffer.ptr + data->buffer.pos);
+  va_end (args);
+}
+
+
+void
+source_add_decl (GbWidgetWriteSourceData * data, gchar * fmt,...)
+{
+  va_list args;
+
+  gb_realloc_buffer_if_needed (&data->decl_buffer);
+ 
+  va_start (args, fmt);
+  vsprintf (data->decl_buffer.ptr + data->decl_buffer.pos, fmt, args);
+  data->decl_buffer.pos += strlen (data->decl_buffer.ptr + data->decl_buffer.pos);
+  va_end (args);
+}
+
+
+/* Returns the last modification time of the given file, or 0 if it doesn't
+   exist, or -1 on error. */
+static time_t
+file_last_modification_time (gchar *filename)
+{
+  int status;
+  struct stat filestat;
+
+  status = stat(filename, &filestat);
+  if (status == -1)
+    {
+      if (errno == ENOENT)
+	return (time_t) 0;
+      else
+	return (time_t) -1;
+    }
+  return filestat.st_mtime;
+}
+
+
+static GladeStatusCode
+backup_file_if_exists (gchar * filename)
+{
+  int status;
+  gchar buffer[1024];
+
+  /* FIXME: better error handling. */
+  if (glade_util_file_exists (filename))
+    {
+      sprintf (buffer, "%s.bak", filename);
+      status = rename (filename, buffer);
+      if (status == 0)
+	return GLADE_STATUS_OK;
+    }
+  return GLADE_STATUS_FILE_OPEN_ERROR;
+}
+
+
+gchar *
+source_create_valid_identifier (gchar * name)
+{
+  gchar buffer[MAX_IDENTIFIER_LEN];
+  gint name_len, i;
+
+  if ((name[0] >= 'a' && name[0] <= 'z')
+      || (name[0] >= 'A' && name[0] <= 'Z')
+      || name[0] == '_')
+    buffer[0] = name[0];
+  else
+    buffer[0] = '_';
+
+  name_len = strlen (name);
+  for (i = 1; i < name_len; i++)
+    {
+      if ((name[i] >= 'a' && name[i] <= 'z')
+	  || (name[i] >= 'A' && name[i] <= 'Z')
+	  || (name[i] >= '0' && name[i] <= '9')
+	  || name[i] == '_')
+	buffer[i] = name[i];
+      else
+	buffer[i] = '_';
+    }
+  buffer[i] = '\0';
+
+  return g_strdup (buffer);
+}
+
+
+/* This converts a string so that it can be output as part of the C source
+ * code. It converts non-printable characters to escape codes.
+ * Note that it uses one dynamically allocated buffer, so the result is only
+ * valid until the next call to the function.
+ */
+gchar *
+source_make_string (gchar * text,
+		    gboolean translatable)
+{
+  static gchar *buffer = NULL;
+  static gint buffer_space = 0;
+  static gint buffer_pos;
+
+  gchar escape_buffer[16];
+  gchar *p;
+
+  g_return_val_if_fail (text != NULL, "\"\"");
+
+  /* If the text is empty, we return an empty string without the _ macro. */
+  if (text[0] == '\0')
+    return "\"\"";
+
+  buffer_pos = 0;
+  if (translatable)
+    add_to_buffer (&buffer, &buffer_pos, &buffer_space, "_(\"");
+  else
+    add_to_buffer (&buffer, &buffer_pos, &buffer_space, "\"");
+
+  for (p = text; *p; p++)
+    {
+      switch (*p)
+	{
+	case '\n':
+	  add_to_buffer (&buffer, &buffer_pos, &buffer_space, "\\n");
+	  break;
+	case '\r':
+	  add_to_buffer (&buffer, &buffer_pos, &buffer_space, "\\r");
+	  break;
+	case '\t':
+	  add_to_buffer (&buffer, &buffer_pos, &buffer_space, "\\t");
+	  break;
+	case '\\':
+	  add_to_buffer (&buffer, &buffer_pos, &buffer_space, "\\\\");
+	  break;
+	case '"':
+	  add_to_buffer (&buffer, &buffer_pos, &buffer_space, "\\\"");
+	  break;
+	default:
+	  if (isprint (*p))
+	    add_char_to_buffer (&buffer, &buffer_pos, &buffer_space, *p);
+	  else
+	    {
+	      sprintf (escape_buffer, "\\%02o", (guchar) *p);
+	      add_to_buffer (&buffer, &buffer_pos, &buffer_space,
+			     escape_buffer);
+	    }
+	  break;
+	}
+    }
+
+  if (translatable)
+    add_to_buffer (&buffer, &buffer_pos, &buffer_space, "\")");
+  else
+    add_to_buffer (&buffer, &buffer_pos, &buffer_space, "\"");
+
+  add_char_to_buffer (&buffer, &buffer_pos, &buffer_space, '\0');
+
+  return buffer;
+}
+
+
+static void
+add_char_to_buffer (gchar ** buffer, gint * buffer_pos, gint * buffer_space,
+		    gchar ch)
+{
+  if (*buffer_pos == *buffer_space)
+    {
+      *buffer_space += TEXT_BUFFER_INCREMENT;
+      *buffer = g_realloc (*buffer, *buffer_space);
+    }
+  *(*buffer + *buffer_pos) = ch;
+  *buffer_pos = *buffer_pos + 1;
+}
+
+
+static void
+add_to_buffer (gchar ** buffer, gint * buffer_pos, gint * buffer_space,
+	       gchar * text)
+{
+  gchar *pos;
+
+  for (pos = text; *pos; pos++)
+    add_char_to_buffer (buffer, buffer_pos, buffer_space, *pos);
+}
+
+
+void
+source_create_pixmap (GbWidgetWriteSourceData * data,
+		      gchar                   * identifier,
+		      gchar                   * filename)
+{
+  gchar *pixmaps_dir;
+  gint pixmaps_dir_len;
+
+  /* If the pixmap file is already in the pixmaps directory, we use the
+     relative path. If not we just use the basename of the pixmap file, since
+     it will be copied to the pixmaps directory in
+     glade_project_copy_all_pixmaps(). */
+  pixmaps_dir = glade_project_get_pixmaps_directory (data->project);
+  g_return_if_fail (pixmaps_dir != NULL);
+  g_return_if_fail (pixmaps_dir[0] != '\0');
+
+  pixmaps_dir_len = strlen (pixmaps_dir);
+
+  if (filename == NULL || filename[0] == '\0')
+    filename = NULL;
+  else if (strncmp (pixmaps_dir, filename, pixmaps_dir_len)
+      || (pixmaps_dir[pixmaps_dir_len - 1] != G_DIR_SEPARATOR
+	  && filename[0] != G_DIR_SEPARATOR))
+    filename = g_basename (filename);
+  else
+    filename = glade_util_make_relative_path (pixmaps_dir, filename);
+
+  source_add (data,
+	      "  %s = create_pixmap (%s, \"%s\");\n"
+	      "  if (%s == NULL)\n"
+	      "    g_error (%s);\n",
+	      identifier, data->component_name, filename, identifier,
+	      source_make_string ("Couldn't create pixmap",
+				  data->use_gettext));
+}

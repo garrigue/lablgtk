@@ -1,0 +1,1604 @@
+/*  Gtk+ User Interface Builder
+ *  Copyright (C) 1998  Damon Chaplin
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#include <string.h>
+#include <locale.h>
+
+#include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
+
+#include "gladeconfig.h"
+
+#ifdef USE_GNOME
+#include <gnome.h>
+#endif
+
+#include "glade.h"
+#include "glade_clipboard.h"
+#include "glade_project_options.h"
+#include "glade_project_window.h"
+#include "editor.h"
+#include "gbwidget.h"
+#include "load.h"
+#include "utils.h"
+
+/* Include pixmaps if not using Gnome. */
+#ifndef USE_GNOME
+#include "graphics/new.xpm"
+#include "graphics/open.xpm"
+#include "graphics/save.xpm"
+#include "graphics/source.xpm"
+#include "graphics/options.xpm"
+#endif
+
+/* This is used to store a pointer to a GladeProjectWindow in the main window.
+ */
+static gchar *GladeProjectWindowKey = "GladeProjectWindowKey";
+
+
+/* FIXME: The position of the main project window, used for determining window
+   manager borders. For GTK 1.1 we don't need these. */
+static gint win_main_x = 0;
+static gint win_main_y = 0;
+/* These are used to contain the size of the window manager borders around
+   our windows, and are used to show/hide windows in the same positions. */
+gint windows_x_offset = -1;
+gint windows_y_offset = -1;
+
+/* Used to set a flag on file selections to indicate that we want the source
+   code to be written after the project is saved. */
+static gchar *GladeProjectWriteSourceKey = "GladeProjectWriteSourceKey";
+
+static void glade_project_window_destroy (GtkWidget *widget,
+					  gpointer   data);
+
+static void glade_project_window_new_project (GtkWidget *widget,
+					      gpointer   data);
+static void glade_project_window_on_new_project_ok (GtkWidget *button,
+						    GladeProjectWindow *project_window);
+static void glade_project_window_on_open_project (GtkWidget *widget,
+					       gpointer   data);
+static void glade_project_window_real_open_project (GtkWidget          *widget,
+						    GladeProjectWindow *project_window);
+static void glade_project_window_show_loading_errors (GladeProjectWindow *project_window,
+						      GList		 *errors);
+static void glade_project_window_edit_options (GtkWidget *widget,
+					       gpointer   data);
+static void glade_project_window_save_project (GtkWidget *widget,
+					       gpointer   data);
+static void glade_project_window_on_save_project_as (GtkWidget *widget,
+						     gpointer   data);
+static void glade_project_window_save_project_as (GladeProjectWindow *project_window,
+						  gboolean write_source_after);
+static void glade_project_window_save_as_callback (GtkWidget          *widget,
+						   GladeProjectWindow *project_window);
+static GladeStatusCode glade_project_window_real_save_project (GladeProjectWindow *project_window,
+						    gboolean            warn_before_overwrite);
+static void glade_project_window_write_source (GtkWidget *widget,
+					       gpointer   data);
+static void glade_project_window_write_source_callback (GtkWidget          *widget,
+							GladeProjectWindow *project_window);
+static void glade_project_window_real_write_source (GladeProjectWindow *project_window);
+static void glade_project_window_quit (GtkWidget *widget,
+				       gpointer   data);
+
+static void glade_project_window_cut (GtkWidget *widget,
+				      gpointer   data);
+static void glade_project_window_copy (GtkWidget *widget,
+				       gpointer   data);
+static void glade_project_window_paste (GtkWidget *widget,
+					gpointer   data);
+static void glade_project_window_delete (GtkWidget *widget,
+					 gpointer   data);
+static void glade_project_window_real_delete (GladeProjectWindow *project_window);
+
+static void glade_project_window_show_palette (GtkWidget *widget,
+					       gpointer   data);
+static void glade_project_window_show_property_editor (GtkWidget *widget,
+						       gpointer   data);
+#ifdef GTK_HAVE_FEATURES_1_1_0
+static void glade_project_window_show_widget_tree (GtkWidget *widget,
+						   gpointer   data);
+#endif
+static void glade_project_window_show_clipboard (GtkWidget *widget,
+						 gpointer   data);
+static void glade_project_window_toggle_tooltips (GtkWidget *widget,
+						  gpointer   data);
+static void glade_project_window_toggle_grid (GtkWidget *widget,
+					      gpointer   data);
+static void glade_project_window_edit_grid_settings (GtkWidget *widget,
+						     gpointer   data);
+static void glade_project_window_toggle_snap (GtkWidget *widget,
+					      gpointer   data);
+static void glade_project_window_edit_snap_settings (GtkWidget *widget,
+						     gpointer   data);
+
+static void glade_project_window_about (GtkWidget *widget,
+					gpointer   data);
+
+static gint glade_project_window_key_press_event (GtkWidget * widget,
+						  GdkEventKey * event,
+						  gpointer data);
+static void glade_project_window_expose_event (GtkWidget * widget,
+					       GdkEvent * event,
+					       gpointer data);
+
+static void glade_project_window_options_ok (GtkWidget	    *widget,
+					     GladeProjectWindow *project_window);
+static void glade_project_window_update_title (GladeProjectWindow *project_window);
+
+/*
+ * These are the menubar and toolbar definitions for Gnome.
+ */
+#ifdef USE_GNOME
+static GnomeUIInfo FileMenu[] =
+{
+  {
+    GNOME_APP_UI_ITEM, N_("New"), N_("Create a new project"),
+    glade_project_window_new_project, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_NEW,
+    0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Open..."), N_("Open an existing project"),
+    glade_project_window_on_open_project, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_OPEN,
+    'O', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Save"), N_("Save project"),
+    glade_project_window_save_project, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_SAVE,
+    'S', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Save as..."), N_("Save project to a new file"),
+    glade_project_window_on_save_project_as, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_SAVE_AS,
+    0, 0, NULL
+  },
+  GNOMEUIINFO_SEPARATOR,
+  {
+    GNOME_APP_UI_ITEM, N_("Write Source Code..."),
+    N_("Output the project source code"),
+    glade_project_window_write_source, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_EXEC,
+    'W', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Options"), N_("Edit project options"),
+    glade_project_window_edit_options, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_PREF,
+    0, 0, NULL
+  },
+  GNOMEUIINFO_SEPARATOR,
+  {
+    GNOME_APP_UI_ITEM, N_("Quit"), N_("Quit Glade"),
+    glade_project_window_quit, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_QUIT,
+    'Q', GDK_CONTROL_MASK, NULL
+  },
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo EditMenu[] =
+{
+  {
+    GNOME_APP_UI_ITEM, N_("Cut"), NULL,
+    glade_project_window_cut, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_CUT,
+    'X', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Copy"), NULL,
+    glade_project_window_copy, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_COPY,
+    'C', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Paste"), NULL,
+    glade_project_window_paste, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_PASTE,
+    'V', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Delete"), NULL,
+    glade_project_window_delete, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_TRASH,
+    GDK_DELETE, 0, NULL
+  },
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo GridMenu[] =
+{
+  {
+    GNOME_APP_UI_TOGGLEITEM, N_("Show Grid"),
+    N_("Shows the grid (in fixed containers only)"),
+    glade_project_window_toggle_grid, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Set Grid Options..."),
+    N_("Set the spacing between grid lines"),
+    glade_project_window_edit_grid_settings, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_TOGGLEITEM, N_("Snap to Grid"),
+    N_("Snap widgets to the grid (in fixed containers only)"),
+    glade_project_window_toggle_snap, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Set Snap Options..."),
+    N_("Set which parts of a widget snap to the grid"),
+    glade_project_window_edit_snap_settings, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, 0, NULL
+  },
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo ViewMenu[] =
+{
+  {
+    GNOME_APP_UI_ITEM, N_("Show Palette"), N_("Show the palette of widgets"),
+    glade_project_window_show_palette, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Show Properties"),
+    N_("Show the properties of the selected widget"),
+    glade_project_window_show_property_editor, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Show Widget Tree"),
+    N_("Show the project widget tree"),
+    glade_project_window_show_widget_tree, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Show Clipboard"),
+    N_("Show the clipboard"),
+    glade_project_window_show_clipboard, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_TOGGLEITEM, N_("Show Widget Tooltips"),
+    N_("Shows the tooltips of created widgets"),
+    glade_project_window_toggle_tooltips, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, 0, NULL
+  },
+  GNOMEUIINFO_SUBTREE(N_("Grid"), GridMenu),
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo HelpMenu[] =
+{
+  /* Don't show these yet as we have no help pages.
+  {
+    GNOME_APP_UI_ITEM, N_("Contents"), NULL,
+    NULL, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_BOOK_RED,
+    0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Index"), NULL,
+    NULL, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_BOOK_YELLOW,
+    0, 0, NULL
+  },
+  */
+  {
+    GNOME_APP_UI_ITEM, N_("About..."), NULL,
+    glade_project_window_about, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_ABOUT,
+    0, 0, NULL
+  },
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo MainMenu[] =
+{
+  GNOMEUIINFO_SUBTREE(N_("File"), FileMenu),
+  GNOMEUIINFO_SUBTREE(N_("Edit"), EditMenu),
+  GNOMEUIINFO_SUBTREE(N_("View"), ViewMenu),
+  GNOMEUIINFO_SUBTREE(N_("Help"), HelpMenu),
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo ToolBar[] =
+{
+  {
+    GNOME_APP_UI_ITEM, N_("New"), N_("New Project"), 
+    glade_project_window_new_project, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_PIXMAP_NEW, 0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Open"), N_("Open Project"), 
+    glade_project_window_on_open_project, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_PIXMAP_OPEN, 0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Save"), N_("Save Project"), 
+    glade_project_window_save_project, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_PIXMAP_SAVE, 0, 0, NULL
+  },
+  GNOMEUIINFO_SEPARATOR,
+  {
+    GNOME_APP_UI_ITEM, N_("Options"), N_("Project Options"), 
+    glade_project_window_edit_options, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_PIXMAP_PREFERENCES, 0, 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Build"), N_("Write Source Code"), 
+    glade_project_window_write_source, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_PIXMAP_EXEC, 0, 0, NULL
+  },
+  GNOMEUIINFO_END
+};
+#endif
+
+
+GladeProjectWindow*
+glade_project_window_new (void)
+{
+  GladeProjectWindow *project_window;
+  GtkTooltips *tooltips;
+
+#ifndef USE_GNOME
+  GtkWidget *menubar;
+  GtkWidget *menu;
+  GtkWidget *menuitem;
+  GtkWidget *toolbar;
+  GdkColormap *colormap;
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  GtkAccelGroup *accel_group;
+#else
+  GtkAcceleratorTable *accelerator_table;
+#endif
+#endif /* USE_GNOME */
+
+  GtkWidget *vbox_main;
+
+  project_window = g_new (GladeProjectWindow, 1);
+  project_window->current_directory = NULL;
+
+#ifdef USE_GNOME
+  project_window->window = gnome_app_new ("Glade", "Glade");
+#else
+  project_window->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (project_window->window), "Glade");
+#endif
+
+  /* Save a pointer to the GladeProjectWindow, so we can find it in callbacks.
+   */
+  gtk_object_set_data (GTK_OBJECT (project_window->window),
+		       GladeProjectWindowKey, project_window);
+
+  gtk_widget_set_uposition (project_window->window, win_main_x, win_main_y);
+
+  gtk_signal_connect (GTK_OBJECT (project_window->window), "destroy",
+		      GTK_SIGNAL_FUNC (glade_project_window_destroy), NULL);
+  gtk_signal_connect_after (GTK_OBJECT (project_window->window),
+			    "key_press_event",
+			    GTK_SIGNAL_FUNC (glade_project_window_key_press_event),
+			    NULL);
+  gtk_signal_connect (GTK_OBJECT (project_window->window), "expose_event",
+		      GTK_SIGNAL_FUNC (glade_project_window_expose_event),
+		      NULL);
+
+  tooltips = gtk_tooltips_new ();
+
+  vbox_main = gtk_vbox_new (FALSE, 0);
+
+#ifdef USE_GNOME
+  gnome_app_set_contents (GNOME_APP (project_window->window), vbox_main);
+#else
+  gtk_container_add (GTK_CONTAINER (project_window->window), vbox_main);
+  gtk_widget_show (vbox_main);
+#endif
+
+#ifdef USE_GNOME
+  gnome_app_create_menus (GNOME_APP (project_window->window), MainMenu);
+#else
+  /* create menu bar */
+  menubar = gtk_menu_bar_new ();
+  gtk_box_pack_start (GTK_BOX (vbox_main), menubar, FALSE, TRUE, 0);
+  gtk_widget_show (menubar);
+
+  /* Create accelerator table */
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  accel_group = gtk_accel_group_get_default ();
+#else
+  accelerator_table = gtk_accelerator_table_new ();
+  gtk_window_add_accelerator_table (GTK_WINDOW (project_window->window),
+				    accelerator_table);
+#endif /* GTK_HAVE_FEATURES_1_1_0 */
+
+  /* create File menu */
+  menuitem = gtk_menu_item_new_with_label (_("File"));
+  gtk_menu_bar_append (GTK_MENU_BAR (menubar), menuitem);
+  gtk_widget_show (menuitem);
+
+  menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem), menu);
+
+  menuitem = gtk_menu_item_new_with_label (_("New"));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_new_project),
+		      NULL);
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+
+  gtk_tooltips_set_tip (tooltips, menuitem, _("Create a new project"), NULL);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Open..."));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_on_open_project),
+		      NULL);
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  gtk_widget_add_accelerator (menuitem, "activate", accel_group,
+			      'O', GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+  gtk_widget_install_accelerator (menuitem, accelerator_table,
+				  "activate", 'O', GDK_CONTROL_MASK);
+#endif
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem, _("Open an existing project"),
+			NULL);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Save"));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_save_project),
+		      NULL);
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  gtk_widget_add_accelerator (menuitem, "activate", accel_group,
+			      'S', GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+  gtk_widget_install_accelerator (menuitem, accelerator_table,
+				  "activate", 'S', GDK_CONTROL_MASK);
+#endif
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem, _("Save project"), NULL);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Save As..."));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_on_save_project_as),
+		      NULL);
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem, _("Save project to a new file"),
+			NULL);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new ();
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Write Source Code..."));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_write_source),
+		      NULL);
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  gtk_widget_add_accelerator (menuitem, "activate", accel_group,
+			      'W', GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+  gtk_widget_install_accelerator (menuitem, accelerator_table,
+				  "activate", 'W', GDK_CONTROL_MASK);
+#endif
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem,
+			_("Output the project source code"), NULL);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Project Options..."));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_edit_options),
+		      NULL);
+
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem, _("Edit the project options"),
+			NULL);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new ();
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Quit"));
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_quit), NULL);
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  gtk_widget_add_accelerator (menuitem, "activate", accel_group,
+			      'Q', GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+  gtk_widget_install_accelerator (menuitem, accelerator_table,
+				  "activate", 'Q', GDK_CONTROL_MASK);
+#endif
+  gtk_tooltips_set_tip (tooltips, menuitem, _("Quit Glade"), NULL);
+  gtk_widget_show (menuitem);
+
+
+  /* This code was for creating new widget composites, based on existing
+     widgets. But it was not finished. */
+#if 0
+  /* Create Component menu */
+  menuitem = gtk_menu_item_new_with_label (_("Component"));
+  gtk_menu_bar_append (GTK_MENU_BAR (menubar), menuitem);
+  gtk_widget_show (menuitem);
+
+  menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem), menu);
+  
+  menuitem = gtk_menu_item_new_with_label (_("New"));
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_new_component),
+		      NULL);
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  gtk_widget_add_accelerator (menuitem, "activate", accel_group,
+			      'N', GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+  gtk_widget_install_accelerator (menuitem, accelerator_table,
+				  "activate", 'N', GDK_CONTROL_MASK);
+#endif
+  gtk_widget_show (menuitem);
+#endif
+
+
+  /* Create Edit menu */
+  menuitem = gtk_menu_item_new_with_label (_("Edit"));
+  gtk_menu_bar_append (GTK_MENU_BAR (menubar), menuitem);
+  gtk_widget_show (menuitem);
+
+  menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem), menu);
+
+  menuitem = gtk_menu_item_new_with_label (_("Cut"));
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_cut),
+		      NULL);
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  gtk_widget_add_accelerator (menuitem, "activate", accel_group,
+			      'X', GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+  gtk_widget_install_accelerator (menuitem, accelerator_table,
+				  "activate", 'X', GDK_CONTROL_MASK);
+#endif
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Copy"));
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_copy),
+		      NULL);
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  gtk_widget_add_accelerator (menuitem, "activate", accel_group,
+			      'C', GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+  gtk_widget_install_accelerator (menuitem, accelerator_table,
+				  "activate", 'C', GDK_CONTROL_MASK);
+#endif
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Paste"));
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_paste),
+		      NULL);
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  gtk_widget_add_accelerator (menuitem, "activate", accel_group,
+			      'V', GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+#else
+  gtk_widget_install_accelerator (menuitem, accelerator_table,
+				  "activate", 'V', GDK_CONTROL_MASK);
+#endif
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Delete"));
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_delete), NULL);
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  gtk_widget_add_accelerator (menuitem, "activate", accel_group,
+			      GDK_DELETE, 0, GTK_ACCEL_VISIBLE);
+#else
+  gtk_widget_install_accelerator (menuitem, accelerator_table,
+				  "activate", GDK_DELETE, 0);
+#endif
+  gtk_widget_show (menuitem);
+
+
+  /* Create View menu */
+  menuitem = gtk_menu_item_new_with_label (_("View"));
+  gtk_menu_bar_append (GTK_MENU_BAR (menubar), menuitem);
+  gtk_widget_show (menuitem);
+
+  menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem), menu);
+
+  menuitem = gtk_menu_item_new_with_label (_("Show Palette"));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_show_palette),
+		      NULL);
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem, _("Show the palette of widgets"),
+			NULL);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Show Properties"));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_show_property_editor),
+		      NULL);
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem,
+			_("Show the properties of the selected widget"), NULL);
+  gtk_widget_show (menuitem);
+
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  menuitem = gtk_menu_item_new_with_label (_("Show Widget Tree"));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_show_widget_tree),
+		      NULL);
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem,
+			_("Show the project widget tree"), NULL);
+  gtk_widget_show (menuitem);
+#endif
+
+  menuitem = gtk_menu_item_new_with_label (_("Show Clipboard"));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_show_clipboard),
+		      NULL);
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem,
+			_("Show the clipboard"), NULL);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_check_menu_item_new_with_label (_("Show Widget Tooltips"));
+  gtk_check_menu_item_set_state (GTK_CHECK_MENU_ITEM (menuitem),
+				 gb_widget_get_show_tooltips ());
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_toggle_tooltips),
+		      NULL);
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem,
+			_("Shows the tooltips of created widgets"), NULL);
+  gtk_widget_show (menuitem);
+
+
+  menuitem = gtk_menu_item_new_with_label (_("Grid"));
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_widget_show (menuitem);
+
+  /* Create Grid submenu */
+  menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem), menu);
+
+  menuitem = gtk_check_menu_item_new_with_label (_("Show Grid"));
+  gtk_check_menu_item_set_state (GTK_CHECK_MENU_ITEM (menuitem),
+				 editor_get_show_grid ());
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_toggle_grid),
+		      NULL);
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem,
+			_("Shows the grid (in fixed containers only)"), NULL);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Set Grid Options..."));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_edit_grid_settings),
+		      NULL);
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem,
+			_("Set the spacing between grid lines"), NULL);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_check_menu_item_new_with_label (_("Snap to Grid"));
+  gtk_check_menu_item_set_state (GTK_CHECK_MENU_ITEM (menuitem),
+				 editor_get_snap_to_grid ());
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_toggle_snap),
+		      NULL);
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem,
+		      _("Snap widgets to the grid (in fixed containers only)"),
+			NULL);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Set Snap Options..."));
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_edit_snap_settings),
+		      NULL);
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_tooltips_set_tip (tooltips, menuitem,
+		      _("Set which parts of a widget snap to the grid"), NULL);
+  gtk_widget_show (menuitem);
+
+  /* Create Help menu */
+  menuitem = gtk_menu_item_new_with_label (_("Help"));
+  gtk_menu_bar_append (GTK_MENU_BAR (menubar), menuitem);
+  gtk_widget_show (menuitem);
+
+  menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem), menu);
+
+  /* Don't show these yet as we have no help pages.
+  menuitem = gtk_menu_item_new_with_label (_("Contents"));
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new_with_label (_("Index"));
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_widget_show (menuitem);
+
+  menuitem = gtk_menu_item_new ();
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_widget_show (menuitem);
+  */
+
+  menuitem = gtk_menu_item_new_with_label (_("About..."));
+  gtk_menu_append (GTK_MENU (menu), menuitem);
+  gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+		      GTK_SIGNAL_FUNC (glade_project_window_about),
+		      NULL);
+  gtk_widget_show (menuitem);
+#endif /* USE_GNOME */
+
+  /* Create toolbar */
+#ifdef USE_GNOME
+  gnome_app_create_toolbar (GNOME_APP (project_window->window), ToolBar);
+#else
+  toolbar = gtk_toolbar_new (GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_ICONS);
+#ifdef GTK_HAVE_FEATURES_1_1_0
+  /*gtk_toolbar_set_button_relief (GTK_TOOLBAR (toolbar), GTK_RELIEF_HALF);*/
+#endif
+  gtk_box_pack_start (GTK_BOX (vbox_main), toolbar, FALSE, TRUE, 0);
+  gtk_widget_show (toolbar);
+
+  colormap = gtk_widget_get_colormap (toolbar);
+  gtk_toolbar_append_item (GTK_TOOLBAR (toolbar),
+			   _("New"), _("New Project"), "",
+			   glade_util_create_pixmap_using_colormap (colormap,
+								    new_xpm),
+			   GTK_SIGNAL_FUNC (glade_project_window_new_project),
+			   NULL);
+  gtk_toolbar_append_item (GTK_TOOLBAR (toolbar),
+			   _("Open"), _("Open Project"), "",
+			   glade_util_create_pixmap_using_colormap (colormap,
+								    open_xpm),
+			   GTK_SIGNAL_FUNC (glade_project_window_on_open_project),
+			   NULL);
+  gtk_toolbar_append_item (GTK_TOOLBAR (toolbar),
+			   _("Save"), _("Save Project"), "",
+			   glade_util_create_pixmap_using_colormap (colormap,
+								    save_xpm),
+			   GTK_SIGNAL_FUNC (glade_project_window_save_project),
+			   NULL);
+  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
+  gtk_toolbar_append_item (GTK_TOOLBAR (toolbar),
+			   _("Options"), _("Project Options"), "",
+			   glade_util_create_pixmap_using_colormap (colormap,
+								    options_xpm),
+			   GTK_SIGNAL_FUNC (glade_project_window_edit_options),
+			   NULL);
+  gtk_toolbar_append_item (GTK_TOOLBAR (toolbar),
+			   _("Build"), _("Write Source Code"), "",
+			   glade_util_create_pixmap_using_colormap (colormap,
+								    source_xpm),
+			   GTK_SIGNAL_FUNC (glade_project_window_write_source),
+			   NULL);
+#endif /* USE_GNOME */
+
+  /* Create list of components */
+  project_window->project_view = glade_project_view_new ();
+  gtk_clist_column_titles_hide (GTK_CLIST (project_window->project_view));
+  gtk_clist_set_row_height (GTK_CLIST (project_window->project_view), 20);
+  gtk_clist_set_column_width (GTK_CLIST (project_window->project_view),
+			      0, 140);
+  gtk_widget_show (project_window->project_view);
+
+#ifdef GTK_HAVE_FEATURES_1_1_4
+  /* IN GTK 1.1.4+ the size doesn't include the scrollbars. */
+  gtk_widget_set_usize (project_window->project_view, 172, 100);
+#else
+  gtk_widget_set_usize (project_window->project_view, 190, 120);
+#endif
+
+  gb_box_clist_auto_policy (vbox_main, project_window->project_view);
+
+  /* Create status bar. */
+  project_window->statusbar = gtk_statusbar_new ();
+  gtk_box_pack_start (GTK_BOX (vbox_main), project_window->statusbar,
+		      FALSE, FALSE, 0);
+  gtk_widget_show (project_window->statusbar);
+
+  return project_window;
+}
+
+
+/* This returns the GladeProjectWindow given any widget in the window,
+   e.g. a menuitem or a toolbar item, or NULL if not found. */
+static GladeProjectWindow*
+get_glade_project_window (GtkWidget *widget)
+{
+  return (gtk_object_get_data (GTK_OBJECT (glade_util_get_toplevel (widget)),
+			       GladeProjectWindowKey));
+}
+
+
+static void
+glade_project_window_destroy (GtkWidget *widget,
+			      gpointer   data)
+{
+  GladeProjectWindow *project_window;
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  gtk_widget_destroy (project_window->window);
+  g_free (project_window->current_directory);
+  g_free (project_window);
+
+  gtk_exit (0);
+}
+
+
+static void
+glade_project_window_new_project (GtkWidget *widget,
+				  gpointer   data)
+{
+  GladeProjectWindow *project_window;
+  GtkWidget *dialog;
+  gchar *buttons[] = { N_("OK"), N_("Cancel") };
+  GtkSignalFunc handlers[] = { glade_project_window_on_new_project_ok, NULL };
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  dialog = glade_util_create_dialog_with_buttons (_("Are you sure you want to create a new project?"), 2, buttons, 2, handlers, project_window);
+  gtk_window_position (GTK_WINDOW (dialog), GTK_WIN_POS_MOUSE);
+#ifdef GTK_HAVE_FEATURES_1_1_6
+  gtk_window_set_transient_for (GTK_WINDOW (dialog),
+				GTK_WINDOW (project_window->window));
+  gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+#endif
+  gtk_widget_show (dialog);
+}
+
+
+static void
+glade_project_window_on_new_project_ok (GtkWidget *button,
+					GladeProjectWindow *project_window)
+{
+  GladeProject *project;
+
+  project = glade_project_new ();
+  glade_project_view_set_project (GLADE_PROJECT_VIEW (project_window->project_view), project);
+  glade_project_window_update_title (project_window);
+
+  gtk_statusbar_pop (GTK_STATUSBAR (project_window->statusbar), 1);
+  gtk_statusbar_push (GTK_STATUSBAR (project_window->statusbar), 1,
+		      _("New project created."));
+}
+
+
+static void
+glade_project_window_on_open_project (GtkWidget *widget,
+				      gpointer   data)
+{
+  GladeProjectWindow *project_window;
+  GtkWidget *filesel;
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  filesel = gtk_file_selection_new (_("Open Project"));
+  gtk_window_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
+  if (project_window->current_directory)
+    gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
+				     project_window->current_directory);
+
+  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
+		      "clicked",
+		      GTK_SIGNAL_FUNC (glade_project_window_real_open_project),
+		      project_window);
+  gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
+			     "clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
+			     GTK_OBJECT (filesel));
+  gtk_widget_show (filesel);
+}
+
+
+static void
+glade_project_window_real_open_project (GtkWidget          *widget,
+					GladeProjectWindow *project_window)
+{
+  GtkWidget *filesel;
+  gchar *filename;
+
+  filesel = gtk_widget_get_toplevel (widget);
+  filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (filesel));
+
+  glade_project_window_open_project (project_window, filename);
+  gtk_widget_destroy (filesel);
+}
+
+
+void
+glade_project_window_open_project (GladeProjectWindow *project_window,
+				   gchar              *filename)
+{
+  GladeProject *project;
+  GladeStatusCode status;
+  GList *errors;
+
+  g_free (project_window->current_directory);
+  project_window->current_directory = glade_util_dirname (filename);
+
+  status = glade_project_open (filename, &project, &errors);
+  if (errors)
+    glade_project_window_show_loading_errors (project_window, errors);
+
+  gtk_statusbar_pop (GTK_STATUSBAR (project_window->statusbar), 1);
+  if (status == GLADE_STATUS_OK)
+    {
+      glade_project_view_set_project (GLADE_PROJECT_VIEW (project_window->project_view), project);
+      gtk_statusbar_push (GTK_STATUSBAR (project_window->statusbar), 1,
+			  _("Project opened."));
+    }
+  else
+    {
+      /* FIXME: We have to do this at present to reset everything. */
+      project = glade_project_new ();
+      glade_project_view_set_project (GLADE_PROJECT_VIEW (project_window->project_view), project);
+      gtk_statusbar_push (GTK_STATUSBAR (project_window->statusbar), 1,
+			  _("Error opening project."));
+    }
+  glade_project_window_update_title (project_window);
+}
+
+
+/* This shows the errors in a dialog, and frees them. */
+static void
+glade_project_window_show_loading_errors (GladeProjectWindow *project_window,
+					  GList		     *errors)
+{
+  GtkWidget *dialog, *vbox, *text, *hbbox, *ok_button;
+  GList *element;
+  gchar *message, buf[16];
+  gint pos = 0;
+#ifdef GTK_HAVE_FEATURES_1_1_4
+  GtkWidget *scrolled_win;
+#endif
+
+  dialog = gtk_window_new (GTK_WINDOW_DIALOG);
+  gtk_window_set_title (GTK_WINDOW (dialog), _("Errors opening project file"));
+  gtk_window_position (GTK_WINDOW (dialog), GTK_WIN_POS_MOUSE);
+  gtk_container_border_width (GTK_CONTAINER (dialog), 2);
+
+  vbox = gtk_vbox_new (FALSE, 4);
+  gtk_widget_show (vbox);
+  gtk_container_add (GTK_CONTAINER (dialog), vbox);
+
+  text = gtk_text_new (NULL, NULL);
+  gtk_widget_show (text);
+  gtk_widget_set_usize (text, 400, 150);
+  gtk_text_set_editable (GTK_TEXT (text), FALSE);
+  GTK_WIDGET_UNSET_FLAGS (text, GTK_CAN_FOCUS);
+
+#ifdef GTK_HAVE_FEATURES_1_1_4
+  scrolled_win = gtk_scrolled_window_new (NULL, NULL);
+  gtk_container_add (GTK_CONTAINER (scrolled_win), text);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_win),
+				  GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+  gtk_box_pack_start (GTK_BOX (vbox), scrolled_win, TRUE, TRUE, 0);
+  gtk_widget_show(scrolled_win);
+#else
+  gtk_box_pack_start (GTK_BOX (vbox), text, TRUE, TRUE, 0);
+#endif
+
+  hbbox = gtk_hbutton_box_new ();
+  gtk_widget_show (hbbox);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (hbbox), GTK_BUTTONBOX_END);
+  gtk_box_pack_start (GTK_BOX (vbox), hbbox, FALSE, TRUE, 0);
+
+  ok_button = gtk_button_new_with_label (_("OK"));
+  gtk_widget_show (ok_button);
+  GTK_WIDGET_SET_FLAGS (ok_button, GTK_CAN_DEFAULT);
+  gtk_container_add (GTK_CONTAINER (hbbox), ok_button);
+  gtk_widget_grab_default (ok_button);
+  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+			     GTK_SIGNAL_FUNC (gtk_widget_destroy),
+			     GTK_OBJECT (dialog));
+
+  gtk_text_freeze (GTK_TEXT (text));
+  sprintf (buf, "\n%i", g_list_length (errors));
+  gtk_editable_insert_text (GTK_EDITABLE (text), buf, strlen (buf), &pos);
+
+  message = _(" errors opening project file:");
+  gtk_editable_insert_text (GTK_EDITABLE (text), message, strlen (message),
+			    &pos);
+  gtk_editable_insert_text (GTK_EDITABLE (text), "\n\n", 2, &pos);
+
+  element = errors;
+  while (element)
+    {
+      message = (gchar*) element->data;
+      gtk_editable_insert_text (GTK_EDITABLE (text), message, strlen (message),
+				&pos);
+      g_free (message);
+      element = element->next;
+    }
+  g_list_free (errors);
+  gtk_text_thaw (GTK_TEXT (text));
+
+  gtk_widget_show (dialog);
+}
+
+
+static void
+glade_project_window_edit_options (GtkWidget *widget,
+				   gpointer   data)
+{
+  GladeProjectWindow *project_window;
+  GladeProject *project;
+  GtkWidget *project_options;
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  project = glade_project_view_get_project (GLADE_PROJECT_VIEW (project_window->project_view));
+  if (project)
+    {
+      project_options = glade_project_options_new (project);
+      gtk_signal_connect (GTK_OBJECT (GLADE_PROJECT_OPTIONS (project_options)->ok_button),
+			  "clicked",
+			  GTK_SIGNAL_FUNC (glade_project_window_options_ok),
+			  project_window);
+      gtk_widget_show (project_options);
+    }
+}
+
+
+static void
+glade_project_window_save_project (GtkWidget *widget,
+				   gpointer   data)
+{
+  GladeProjectWindow *project_window;
+  GladeProject *project;
+  gchar *xml_filename = NULL;
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  project = glade_project_view_get_project (GLADE_PROJECT_VIEW (project_window->project_view));
+  if (project)
+    {
+      xml_filename = glade_project_get_xml_filename (project);
+
+      if (xml_filename == NULL || xml_filename[0] == '\0')
+	glade_project_window_save_project_as (project_window, FALSE);
+      else
+	glade_project_window_real_save_project (project_window, FALSE);
+    }
+}
+
+
+static void
+glade_project_window_on_save_project_as (GtkWidget *widget,
+					 gpointer   data)
+{
+  GladeProjectWindow *project_window;
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  glade_project_window_save_project_as (project_window, FALSE);
+}
+
+
+static void
+glade_project_window_save_project_as (GladeProjectWindow *project_window,
+				      gboolean write_source_after)
+{
+  GtkWidget *filesel;
+
+  filesel = gtk_file_selection_new (_("Save Project"));
+  gtk_window_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
+  if (project_window->current_directory)
+    gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
+				     project_window->current_directory);
+  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
+		      "clicked",
+		      GTK_SIGNAL_FUNC (glade_project_window_save_as_callback),
+		      project_window);
+  gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
+			     "clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
+			     GTK_OBJECT (filesel));
+  /* Set a flag to indicate if we want the source code to be built after
+     saving the project. */
+  if (write_source_after)
+    gtk_object_set_data (GTK_OBJECT (filesel), GladeProjectWriteSourceKey,
+			 GINT_TO_POINTER (TRUE));
+
+  gtk_widget_show (filesel);
+}
+
+
+static void
+glade_project_window_save_as_callback (GtkWidget          *widget,
+				       GladeProjectWindow *project_window)
+{
+  GladeProject *project;
+  GtkWidget *filesel;
+  gchar *filename;
+  GladeStatusCode status;
+
+  filesel = gtk_widget_get_toplevel (widget);
+  filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (filesel));
+
+  g_free (project_window->current_directory);
+  project_window->current_directory = glade_util_dirname (filename);
+
+  project = glade_project_view_get_project (GLADE_PROJECT_VIEW (project_window->project_view));
+  if (project)
+    {
+      glade_project_set_xml_filename (project, filename);
+      status = glade_project_window_real_save_project (project_window, TRUE);
+
+      if (status == GLADE_STATUS_OK
+	  && gtk_object_get_data (GTK_OBJECT (filesel),
+				  GladeProjectWriteSourceKey))
+	glade_project_window_real_write_source (project_window);
+    }
+  gtk_widget_destroy (filesel);
+}
+
+
+static GladeStatusCode
+glade_project_window_real_save_project (GladeProjectWindow *project_window,
+					gboolean            warn_before_overwrite)
+{
+  GladeProject *project;
+  GladeStatusCode status;
+
+  project = glade_project_view_get_project (GLADE_PROJECT_VIEW (project_window->project_view));
+  g_return_val_if_fail (project != NULL, GLADE_STATUS_ERROR);
+
+  status = glade_project_save (project);
+
+  gtk_statusbar_pop (GTK_STATUSBAR (project_window->statusbar), 1);
+  if (status != GLADE_STATUS_OK)
+    {
+      glade_util_show_message_box (_("Error saving file"));
+      MSG1 ("Error saving file:%i", status);
+      gtk_statusbar_push (GTK_STATUSBAR (project_window->statusbar), 1,
+			  _("Error saving project."));
+    }
+  else
+    gtk_statusbar_push (GTK_STATUSBAR (project_window->statusbar), 1,
+			_("Project saved."));
+  return status;
+}
+
+
+static void
+glade_project_window_write_source (GtkWidget *widget,
+				   gpointer   data)
+{
+  GladeProjectWindow *project_window;
+  GladeProject *project;
+  GtkWidget *filesel;
+  gchar *xml_filename, *source_directory;
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  project = glade_project_view_get_project (GLADE_PROJECT_VIEW (project_window->project_view));
+  g_return_if_fail (project != NULL);
+
+  /* First we need to make sure the XML is saved. */
+  xml_filename = glade_project_get_xml_filename (project);
+
+  if (xml_filename == NULL || xml_filename[0] == '\0')
+    {
+      glade_project_window_save_project_as (project_window, TRUE);
+      return;
+    }
+  else
+    glade_project_window_real_save_project (project_window, FALSE);
+
+  /* Now make sure we have a source directory. */
+  source_directory = glade_project_get_source_directory (project);
+
+  if (source_directory == NULL || source_directory[0] == '\0')
+    {
+      filesel = gtk_file_selection_new (_("Select source directory"));
+      gtk_window_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
+
+      gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
+			  "clicked",
+			  GTK_SIGNAL_FUNC (glade_project_window_write_source_callback),
+			  project_window);
+      gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
+				 "clicked",
+				 GTK_SIGNAL_FUNC (gtk_widget_destroy),
+				 GTK_OBJECT (filesel));
+      gtk_widget_show (filesel);
+    }
+  else
+    glade_project_window_real_write_source (project_window);
+}
+
+
+static void
+glade_project_window_write_source_callback (GtkWidget          *widget,
+					    GladeProjectWindow *project_window)
+{
+  GladeProject *project;
+  GtkWidget *filesel;
+  gchar *directory;
+
+  filesel = gtk_widget_get_toplevel (widget);
+  directory = gtk_file_selection_get_filename (GTK_FILE_SELECTION (filesel));
+
+  project = glade_project_view_get_project (GLADE_PROJECT_VIEW (project_window->project_view));
+  if (project)
+    {
+      glade_project_set_source_directory (project, directory);
+      glade_project_window_real_write_source (project_window);
+    }
+  gtk_widget_destroy (filesel);
+}
+
+
+static void
+glade_project_window_real_write_source (GladeProjectWindow *project_window)
+{
+  GladeProject *project;
+  GladeStatusCode status;
+
+  project = glade_project_view_get_project (GLADE_PROJECT_VIEW (project_window->project_view));
+  g_return_if_fail (project != NULL);
+
+  status = glade_project_write_source (project);
+
+  gtk_statusbar_pop (GTK_STATUSBAR (project_window->statusbar), 1);
+  if (status != GLADE_STATUS_OK)
+    {
+      glade_util_show_message_box (_("Error writing source"));
+      MSG1 ("Error saving file:%i", status);
+      gtk_statusbar_push (GTK_STATUSBAR (project_window->statusbar), 1,
+			  _("Error writing source."));
+      return;
+    }
+
+  gtk_statusbar_push (GTK_STATUSBAR (project_window->statusbar), 1,
+		      _("Source code written."));
+}
+
+
+static void
+glade_project_window_quit (GtkWidget *widget,
+			   gpointer   data)
+{
+  GladeProjectWindow *project_window;
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  gtk_widget_destroy (project_window->window);
+}
+
+
+static void
+glade_project_window_cut (GtkWidget *widget,
+			  gpointer   user_data)
+{
+  GladeProjectWindow *project_window;
+  GladeProject *project;
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  project = glade_project_view_get_project (GLADE_PROJECT_VIEW (project_window->project_view));
+  if (project == NULL)
+    return;
+
+  glade_clipboard_cut (GLADE_CLIPBOARD (glade_clipboard), project, NULL);
+}
+
+
+static void
+glade_project_window_copy (GtkWidget *widget,
+			   gpointer   data)
+{
+  GladeProjectWindow *project_window;
+  GladeProject *project;
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  project = glade_project_view_get_project (GLADE_PROJECT_VIEW (project_window->project_view));
+  if (project == NULL)
+    return;
+
+  glade_clipboard_copy (GLADE_CLIPBOARD (glade_clipboard), project, NULL);
+}
+
+
+static void
+glade_project_window_paste (GtkWidget *widget,
+			    gpointer  user_data)
+{
+  GladeProjectWindow *project_window;
+  GladeProject *project;
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  project = glade_project_view_get_project (GLADE_PROJECT_VIEW (project_window->project_view));
+  if (project == NULL)
+    return;
+
+  glade_clipboard_paste (GLADE_CLIPBOARD (glade_clipboard), project, NULL);
+}
+
+
+static void
+glade_project_window_delete (GtkWidget *widget,
+			     gpointer   data)
+{
+  GladeProjectWindow *project_window;
+
+  project_window = get_glade_project_window (widget);
+  g_return_if_fail (project_window != NULL);
+
+  glade_project_window_real_delete (project_window);
+}
+
+
+/* If one or more items in the project view is selected, we delete them.
+   If not, we delete any widgets selected in the interface.
+   FIXME: I'm not sure of the correct way to handle the Delete key. Should we
+   be using X selections to determine what is currently selected? */
+static void
+glade_project_window_real_delete (GladeProjectWindow *project_window)
+{
+  if (glade_project_view_has_selection (GLADE_PROJECT_VIEW (project_window->project_view)))
+    glade_project_view_delete_selection (GLADE_PROJECT_VIEW (project_window->project_view));
+  else
+    editor_on_delete ();
+}
+
+
+static void
+glade_project_window_show_palette (GtkWidget *widget,
+				   gpointer   data)
+{
+  glade_show_palette ();
+}
+
+
+static void
+glade_project_window_show_property_editor (GtkWidget *widget,
+					   gpointer   data)
+{
+  glade_show_property_editor ();
+}
+
+
+#ifdef GTK_HAVE_FEATURES_1_1_0
+static void
+glade_project_window_show_widget_tree (GtkWidget *widget,
+				       gpointer   data)
+{
+  glade_show_widget_tree ();
+}
+#endif
+
+
+static void
+glade_project_window_show_clipboard (GtkWidget *widget,
+				     gpointer   data)
+{
+  glade_show_clipboard ();
+}
+
+
+static void
+glade_project_window_toggle_tooltips (GtkWidget *widget,
+				      gpointer   data)
+{
+  gboolean show_tooltips;
+
+  show_tooltips =  GTK_CHECK_MENU_ITEM (widget)->active;
+  gb_widget_set_show_tooltips (show_tooltips);
+}
+
+
+static void
+glade_project_window_toggle_grid (GtkWidget *widget,
+				  gpointer   data)
+{
+  gboolean show_grid;
+
+  show_grid = GTK_CHECK_MENU_ITEM (widget)->active;
+  editor_set_show_grid (show_grid);
+}
+
+
+static void
+glade_project_window_edit_grid_settings (GtkWidget *widget,
+					 gpointer   data)
+{
+  editor_show_grid_settings_dialog ();
+}
+
+
+static void
+glade_project_window_toggle_snap (GtkWidget *widget,
+				  gpointer   data)
+{
+  gboolean snap_to_grid;
+
+  snap_to_grid = GTK_CHECK_MENU_ITEM (widget)->active;
+  editor_set_snap_to_grid (snap_to_grid);
+}
+
+
+static void
+glade_project_window_edit_snap_settings (GtkWidget *widget,
+					 gpointer   data)
+{
+  editor_show_snap_settings_dialog ();
+}
+
+
+static void
+glade_project_window_about (GtkWidget *widget,
+			    gpointer   data)
+{
+#ifdef USE_GNOME
+  const gchar *author[] = {"Damon Chaplin <glade@glade.pn.org>", NULL };
+  GtkWidget *about;
+#else
+  /* I hope the translations don't overflow the buffer! */
+  gchar buf[1024];
+#endif
+
+  /* VERSION comes from configure.in - the only place it should be defined */
+#ifdef USE_GNOME
+  about = gnome_about_new ("Glade",
+  			VERSION,
+			"Copyright 1998 Damon Chaplin",
+			author,
+			"A GTK+ User Interface Builder\n"
+			"Web: http://glade.pn.org\n",
+			NULL); /* TODO: we need a logo ;) */
+	gtk_window_set_modal (GTK_WINDOW (about), TRUE);
+	gtk_widget_show (about);
+#else
+  sprintf (buf,
+	   _("G L A D E\n\n"
+	     "A GTK+ User Interface Builder\n\n"
+	     "Version %s\n\n"
+	     "By Damon Chaplin\n\n"
+	     "Email: glade@glade.pn.org\n"
+	     "Web: http://glade.pn.org\n"),
+	   VERSION);
+  glade_util_show_message_box (buf);
+#endif
+}
+
+
+static gint
+glade_project_window_key_press_event (GtkWidget * widget,
+				      GdkEventKey * event,
+				      gpointer data)
+{
+  GladeProjectWindow *project_window;
+
+  project_window = get_glade_project_window (widget);
+  g_return_val_if_fail (project_window != NULL, FALSE);
+
+  switch (event->keyval)
+    {
+    case GDK_Delete:
+      glade_project_window_real_delete (project_window);
+      break;
+    }
+  return TRUE;
+}
+
+
+/* FIXME: GTK 1.0 workaround. Take out when we drop support, and replace with
+   GTK 1.1. functions. */
+static void
+glade_project_window_expose_event (GtkWidget * widget,
+				   GdkEvent * event,
+				   gpointer data)
+{
+  gint x, y;
+
+  if (windows_x_offset == -1)
+    {
+      gdk_window_get_origin (widget->window, &x, &y);
+      windows_x_offset = x - win_main_x;
+      /* Make sure offset seems reasonable. If not, set it to -2 so we don't
+         try this again later. */
+      if (windows_x_offset < 0 || windows_x_offset > 50)
+	windows_x_offset = -2;
+      else
+	windows_y_offset = y - win_main_y;
+    }
+}
+
+
+void
+glade_project_window_set_project	(GladeProjectWindow *project_window,
+					 GladeProject       *project)
+{
+  glade_project_view_set_project (GLADE_PROJECT_VIEW (project_window->project_view),
+				  project);
+  glade_project_window_update_title (project_window);
+}
+
+
+static void
+glade_project_window_options_ok (GtkWidget	    *widget,
+				 GladeProjectWindow *project_window)
+{
+  glade_project_window_update_title (project_window);
+}
+
+
+static void
+glade_project_window_update_title	(GladeProjectWindow *project_window)
+{
+  GladeProject *project;
+  gchar title[256], *project_name;
+
+  project = glade_project_view_get_project (GLADE_PROJECT_VIEW (project_window->project_view));
+  if (project == NULL)
+    strcpy (title, "Glade");
+  else
+    {
+      strcpy (title, "Glade: ");
+      project_name = glade_project_get_name (project);
+      if (project_name && strlen (project_name) < 200)
+	strcat (title, project_name);
+    }
+  gtk_window_set_title (GTK_WINDOW (project_window->window), title);
+}

@@ -1,0 +1,10 @@
+Edit $(GLADETOPDIR) and $(LABLGTKDIR) in Makefile and libglade/Makefile, 
+if necessary.
+
+Then
+
+  make configure; make
+
+To try, 
+
+  ./lablglade -I ../.. examples/main.ml
