@@ -125,6 +125,11 @@ lablgtkopt: $(CLIBS) $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \
 lablgladecc: xml_lexer.cmo lablgladecc.cmo
 	$(LINKER) -o $@ $(MLLINK) xml_lexer.cmo lablgladecc.cmo
 
+testcc: lablgladecc lablgtktop
+	./lablgladecc -test > testcc.ml
+	./lablgtktop testcc.ml
+	rm -f testcc.ml
+
 install:
 	if test -d $(INSTALLDIR); then : ; else mkdir -p $(INSTALLDIR); fi
 	cp $(ALLOBJS:.cmo=.cmi) $(THOBJS:.cmo=.cmi) $(INSTALLDIR)

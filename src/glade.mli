@@ -44,9 +44,10 @@ val add_handler : name:string -> handler -> unit
        The default ones (gtk_main_quit, gtk_widget_destroy, ...) are
        already defined. *)
 val bind_handlers :
-  ?extra:(string * handler) list -> [> `glade_xml] Gtk.obj -> unit
+  ?extra:(string * handler) list ->
+  ?warn:bool -> [> `glade_xml] Gtk.obj -> unit
     (* Bind handlers on a glade widget. You may add some local bindings
-       specific to this widget. *)
+       specific to this widget. Warn for missing handlers. *)
 
 val bind_handler :
   name:string -> handler:handler ->

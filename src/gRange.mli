@@ -85,3 +85,26 @@ val scrollbar :
   ?adjustment:GData.adjustment ->
   ?update_policy:Tags.update_type ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> scrollbar
+
+class ruler :
+  ([> `ruler | `widget] as 'a) Gtk.obj ->
+  object
+    inherit widget_full
+    val obj : 'a Gtk.obj
+    method lower : float
+    method max_size : float
+    method position : float
+    method set_metric : Tags.metric_type -> unit
+    method set_range :
+      ?lower:float ->
+      ?upper:float -> ?position:float -> ?max_size:float -> unit -> unit
+    method upper : float
+  end
+val ruler :
+  Tags.orientation ->
+  ?metric:Tags.metric_type ->
+  ?lower:float ->
+  ?upper:float ->
+  ?position:float ->
+  ?max_size:float ->
+  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> ruler
