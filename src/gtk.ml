@@ -3,6 +3,7 @@
 open Gobject
 
 exception Error of string
+exception Critical of string
 
 type 'a optobj = 'a obj Gpointer.optboxed
 type clampf = float

@@ -27,7 +27,7 @@ module Main = struct
     Obj.truncate (Obj.repr Sys.argv) (Array.length argv);
     if setlocale then Glib.Main.setlocale `ALL None else ""
   open Glib
-  let loops = ref [] 
+  let loops = ref []
   let main () =
     let loop = (Main.create true) in
     loops := loop :: !loops;
@@ -73,6 +73,6 @@ module Message = struct
       (fun ~level msg ->
         let crit = level land (Glib.Message.log_level `CRITICAL) <> 0 in
         if crit || is_critical_warning msg then
-          raise (Gtk.Error ("Gtk-CRITICAL: " ^ msg))
+          raise (Gtk.Critical msg)
         else prerr_endline ("Gtk-WARNING **: " ^ msg))
 end
