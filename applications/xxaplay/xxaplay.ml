@@ -5,6 +5,7 @@ open Xafile
 open Xaadpcm
 
 open Gtk
+open GMain
 
 let track_conf_path app volume = 
   Filename.concat
@@ -40,7 +41,12 @@ let create_track_conf fd app volume =
   in
 
   let conf_path = track_conf_path app volume in
-  let oc = open_out file: conf_path in
+  let oc = 
+    try
+      open_out file: conf_path 
+    with
+      e -> prerr_endline ("Failed to open to write a track connfiguratoin file "^conf_path); raise e
+  in
 
   let xa_files = Xafile.list_xa_files_of_disk fd in
 
@@ -78,9 +84,12 @@ let read_track_conf app volume =
     _ -> raise NoConf
   end
 
-let create_xpm_button :parent :file :label =
+let create_xpm_button parent: (parent : GPack.hbox) :file :label =
+(*
   if not (Sys.file_exists file) then 
-    Button.create :label
+*)
+    new GButton.button :label
+(*
   else begin
     Widget.realize parent;
     let style = Widget.get_style parent in
@@ -93,51 +102,41 @@ let create_xpm_button :parent :file :label =
     Container.add button w;
     button
   end
+*)
 
-class time_scale parent time length = 
-  let time_scale_adjustment = 
-    Adjustment.create value: 0.0
-	                lower: 0.0
-                        upper: (float (length - 1))
-                        step_incr: 1.0
-                        page_incr: 1.0
-                        page_size: 0.0 in
-  let  time_scale = 
-    Scale.create `HORIZONTAL adjustment: time_scale_adjustment
+class time_scale (time : GMisc.label) (scale : GRange.scale) length = 
+  let adjustment = 
+    new GData.adjustment value: 0.0
+	                 lower: 0.0
+                         upper: (float (length - 1))
+                         step_incr: 1.0
+                         page_incr: 1.0
+                         page_size: 0.0 
   in
-  let _ = 
-    Scale.set time_scale draw_value: false;
-    Box.pack parent time_scale padding: 1;
-    Widget.show time_scale
+  let _ = scale#set_adjustment adjustment;
   in
   object
 
   method set_time =
-    let v = Adjustment.get_value time_scale_adjustment in
+    let v = adjustment#value in
     let sec = Pervasives.truncate (v *. 0.0533333333) in
     let min = sec / 60 in
     let hour = min / 60 in
     let min = min mod 60 in
     let sec = sec mod 60 in
-    Label.set time label: (Printf.sprintf "%02d:%02d:%02d" hour min sec);
+    time#set_text (Printf.sprintf "%02d:%02d:%02d" hour min sec);
     Pervasives.truncate v
 
   method destroy =
-    Object.destroy time_scale_adjustment;
-    Object.destroy time_scale
+    adjustment#destroy ()
 
-  method adjustment = time_scale_adjustment
+  method adjustment = adjustment
 end
  
 class player :fd :start :length :interleave :report :finish = 
   let _ = Xaadpcm.init_decoder () in
   object (self)
-  val dsp = 
-    let dsp = new Dsp.dspplay "/dev/dsp" in
-    dsp#set_sample_size 16;
-    dsp#set_stereo true;
-    dsp#set_speed 37800;
-    dsp
+  val dsp = new Dsp.dspplay "/dev/dsp"
   val mutable current = 0
   val mutable current_sector = start
   val mutable job = None
@@ -166,23 +165,42 @@ class player :fd :start :length :interleave :report :finish =
       self#next
     end
 
-  method init = Xaadpcm.init_decoder ()
+  method init = 
+    Xaadpcm.init_decoder ();
+    dsp#open_dsp;
+    dsp#set_sample_size 16;
+    dsp#set_stereo true;
+    dsp#set_speed 37800
 
   method play =
     prerr_endline "play";
+    dsp#open_dsp;
+    dsp#set_sample_size 16;
+    dsp#set_stereo true;
+    dsp#set_speed 37800;
     report true current;
     if job = None then
-      job <- Some (Timeout.add 10 callback: (fun () -> 
+      let magic = 40 in
+      (* 40 is good for my computer *)
+      (* if < 35, gtk does not update the text (too busy) *) 
+      (* if > 35, noise *)
+      job <- Some (Timeout.add magic callback: (fun () -> 
 	let _,fdok,_ = Unix.select read:[] write:[fd] exn:[] timeout:(-1.0) in
-	if fdok <> [] then self#send; 
-	true))
+	if fdok <> [] then begin 
+	  self#send; 
+	  true
+	end else begin
+	  true
+	end))
 
   method pause =
     match job with
       Some j -> 
 	prerr_endline "pause";
 	report true current;
-	Timeout.remove j; job <- None
+	Timeout.remove j; job <- None;
+	dsp#flush;
+	dsp#close
     | None -> ()
 
   method stop =
@@ -190,7 +208,9 @@ class player :fd :start :length :interleave :report :finish =
       Some j -> 
 	self#pause;
 	prerr_endline "stop";
-	self#jump 0
+	self#jump 0;
+	dsp#flush;
+	dsp#close
     | None -> ()
 
   method destroy =
@@ -206,12 +226,12 @@ let main () =
     "-device", Arg.String (fun s -> device := s), "\t: device(=/dev/cdrom)";
   ] others: (fun _ -> ()) errmsg: "xxaplay";
 
-  let window = Window.create `TOPLEVEL in
-  Signal.connect sig:Object.Signals.destroy window callback:Main.quit;
+  let window = new GWindow.window in
+  window#connect#destroy callback:Main.quit;
 
-  let bar_and_other = Box.vbox_new homogeneous: false spacing: 0 in
-  Container.add window bar_and_other;
-  Widget.show bar_and_other;
+  let bar_and_other = new GPack.vbox homogeneous: false spacing: 0 
+  packing: window#add
+  in
 
 (*
   let menubar = MenuBar.create () in
@@ -223,57 +243,50 @@ let main () =
   MenuShell.append menubar menuitem;
 *)
 
-  let vbox = Box.vbox_new homogeneous: false spacing: 2 in
-  Container.border_width vbox 5;
-  Container.add bar_and_other vbox; 
+  let vbox = new GPack.vbox  homogeneous: false spacing: 2 border_width: 5 packing: bar_and_other#add in
 
-  let cdtitle = Label.create "unknown disk" in
-  Box.pack vbox cdtitle padding: 1;
+  let cdtitle = new GMisc.label text: "unknown disk" packing: (vbox#pack padding: 1) in
 
-  let tracktitle = Label.create "unknown track" in
-  Box.pack vbox tracktitle padding: 1;
+  let tracktitle = new GMisc.label text: "unknown track" packing: (vbox#pack padding: 1) in
 
-  let trackselecter = Box.hbox_new homogeneous: false spacing: 0 in
-  Box.pack vbox trackselecter expand: false fill: false padding: 1;
+  let trackselecter = new GPack.hbox homogeneous: false spacing: 0 packing: (vbox#pack expand: false fill: false padding: 1) in
   
-  let timebar = Box.vbox_new homogeneous: false spacing: 2 in
-  Box.pack vbox timebar padding: 1;
+  let timebar = new GPack.vbox  homogeneous: false spacing: 2 packing: (vbox#pack padding: 1) in
 
-  let buttons = Box.hbox_new homogeneous: false spacing: 0 in
-  Box.pack vbox buttons from: `END padding: 1;
+  let buttons = new GPack.hbox  homogeneous: false spacing: 0 packing: (vbox#pack from: `END padding: 1) in
 
   let b_rewind = create_xpm_button parent: buttons 
       file: "rewind.xpm" label: "<<" in
-  Box.pack buttons b_rewind expand: false fill: false;
+  buttons#pack b_rewind expand: false fill: false;
   let b_play = create_xpm_button parent: buttons 
       file: "play.xpm" label: "=>" in
-  Box.pack buttons b_play expand: false fill: false;
+  buttons#pack b_play expand: false fill: false;
   let b_forward = create_xpm_button parent: buttons
       file: "forward.xpm" label: ">>" in
-  Box.pack buttons b_forward expand: false fill: false;
+  buttons#pack b_forward expand: false fill: false;
   let b_pause = create_xpm_button parent: buttons
       file: "pause.xpm" label: "||" in
-  Box.pack buttons b_pause expand: false fill: false;
+  buttons#pack b_pause expand: false fill: false;
   let b_stop = create_xpm_button parent: buttons
       file: "stop.xpm" label: "[]" in
-  Box.pack buttons b_stop expand: false fill: false;
+  buttons#pack b_stop expand: false fill: false;
   let b_eject = create_xpm_button parent: buttons
       file: "eject.xpm" label: "/\\" in
-  Box.pack buttons b_eject expand: false fill: false;
+  buttons#pack b_eject expand: false fill: false;
 
-  let time = Label.create "00:00:00" in
-  Label.set time label: "00:00:00";
-  Box.pack timebar time expand: false fill: false padding: 1;
+  let time = new GMisc.label text: "00:00:00" packing: (timebar#pack expand: false fill: false padding: 1) in
+  let time_scale = new GRange.scale `HORIZONTAL packing: vbox#add in
+  time_scale#set_display draw_value: false;
 
-  let scale = ref (new time_scale vbox time 1) in
+  let scale = ref (new time_scale time time_scale 1) in
 
   let recreate_time_scale length =
     (!scale)#destroy;
-    scale := new time_scale timebar time length
+    scale := new time_scale time time_scale length
   in
 
-  Widget.show_all window;
-  
+  window#show ();
+
   let fd = Unix.openfile !device flags: [O_RDONLY] perm: 0o644 in
 
   let current_player = ref None in
@@ -284,7 +297,7 @@ let main () =
   in
 
   let set_cd_title s =
-    Label.set cdtitle label:s
+    cdtitle#set_text s
   in
   
   let current_track = ref 0 in
@@ -292,12 +305,12 @@ let main () =
   let finish = ref (fun () -> ()) in
   let tracks = ref [] in
 
-  let trackbox = ref None in
+  let trackbox = ref (None : GPack.table option) in
 
   let prepare_track finish onplay x =
     try
       let name, track = List.nth !tracks pos: x in
-      Label.set tracktitle label: (sprintf "%d: %s" (x+1) name);
+      tracktitle#set_text (sprintf "%d: %s" (x+1) name);
   
       recreate_time_scale track.tlength;
   
@@ -307,24 +320,24 @@ let main () =
   	  report: (fun sw cur ->
   	    if (sw && !cur_frame <> cur) || 
   	       abs(!cur_frame - cur) > 18  (* more than 1 sec *) then begin
-  	      Adjustment.set_value (!scale#adjustment) (float cur);
+  		 !scale#adjustment#set_value (float cur);
   	      cur_frame := cur
   	    end)
       in
       
       current_player := Some player;
   
-      Signal.connect sig:Adjustment.Signals.value_changed (!scale)#adjustment
-  	callback: (fun _ -> 
+(* does not work ? *)
+      (!scale)#adjustment#connect#changed callback: (fun _ -> 
   	  let v = (!scale)#set_time in
   	  player_send (fun x -> x#jump v) );
-      Signal.connect sig:Adjustment.Signals.changed (!scale)#adjustment
-  	callback: (fun _ -> (!scale)#set_time; ());
+      (!scale)#adjustment#connect#value_changed callback: (fun _-> 
+	  (!scale)#set_time; ());
       if onplay then player#play;
       ()
     with
       Failure("nth") ->
-	Label.set tracktitle label: "No XA" 
+	tracktitle#set_text "No XA" 
   in
 
   let check_cdrom () =
@@ -344,25 +357,26 @@ let main () =
 	  read_track_conf app volume
     in
     begin match !trackbox with
-      Some t -> Object.destroy t
+      Some t -> 
+	prerr_endline "trackbox destroy";
+	t#destroy ()
     | None -> ()
     end;
     let num_tracks = List.length tracks in
     if num_tracks <> 0 then begin
-      let table = Table.create rows: 5 
+      let table = new GPack.table rows: 5 
 	  columns: (num_tracks / 5 + (if num_tracks mod 5 <> 0 then 1 else 0))
       in
       for i = 0 to num_tracks - 1 do
-	let button = Button.create label: (sprintf "%d" (i + 1)) in
-	Signal.connect sig:Button.Signals.clicked button callback:(fun () ->
+	let button = new GButton.button label: (sprintf "%d" (i + 1)) in
+	button#connect#clicked callback:(fun () ->
 	  current_track := i;
 	  player_send (fun x -> x#destroy);
 	  prepare_track !finish true i);
-	Table.attach table button left: (i mod 5) top: (i / 5);
-	Widget.show button
+	table#attach button left: (i mod 5) top: (i / 5);
       done;
-      Box.pack trackselecter table expand: true fill: false padding: 1;
-      Widget.show table;
+      trackselecter#pack table expand: true fill: false padding: 1;
+      (* Widget.show table; *)
       trackbox := Some table
     end else trackbox := None;
     tracks
@@ -390,19 +404,19 @@ let main () =
 
   prepare_track !finish false !current_track;
 
-  Signal.connect sig:Button.Signals.clicked b_play callback:(fun () ->
+  b_play#connect#clicked callback:(fun () ->
     player_send (fun x -> x#play));
-  Signal.connect sig:Button.Signals.clicked b_stop callback:(fun () ->
+  b_stop#connect#clicked callback:(fun () ->
     player_send (fun x -> x#stop));
-  Signal.connect sig:Button.Signals.clicked b_pause callback:(fun () ->
+  b_pause#connect#clicked callback:(fun () ->
     player_send (fun x -> x#pause));
-  Signal.connect sig:Button.Signals.clicked b_eject callback:(fun () ->
+  b_eject#connect#clicked callback:(fun () ->
     tracks := check_cdrom ());
 
-  Signal.connect sig:Button.Signals.clicked b_rewind callback: (fun () ->
+  b_rewind#connect#clicked callback: (fun () ->
     prev_track false);
 
-  Signal.connect sig:Button.Signals.clicked b_forward callback: (fun () ->
+  b_forward#connect#clicked callback: (fun () ->
     next_track false);
 
   Main.main ()
