@@ -24,6 +24,8 @@ ML_1 (gtk_button_released, GtkButton_val, Unit)
 ML_1 (gtk_button_clicked, GtkButton_val, Unit)
 ML_1 (gtk_button_enter, GtkButton_val, Unit)
 ML_1 (gtk_button_leave, GtkButton_val, Unit)
+ML_2 (gtk_button_set_relief, GtkButton_val, Relief_style_val, Unit)
+ML_1 (gtk_button_get_relief, GtkButton_val, Val_relief_style)
 
 /* gtktogglebutton.h */
 

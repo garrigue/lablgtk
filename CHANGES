@@ -1,5 +1,9 @@
 $Id$
 
+2002.04.30
+  * added button#set_relief, paned#pack1/pack2/set_position,
+    Gdk.Window.set_cursor (required by malc)
+
 2002.02.25
   * add GtkPreview support
   * add applications/camlirc

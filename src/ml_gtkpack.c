@@ -206,8 +206,11 @@ ML_0 (gtk_hpaned_new, Val_GtkWidget_sink)
 ML_0 (gtk_vpaned_new, Val_GtkWidget_sink)
 ML_2 (gtk_paned_add1, GtkPaned_val, GtkWidget_val, Unit)
 ML_2 (gtk_paned_add2, GtkPaned_val, GtkWidget_val, Unit)
-ML_2 (gtk_paned_set_handle_size, GtkPaned_val, (gint16)Int_val, Unit)
-/* ML_2 (gtk_paned_set_gutter_size, GtkPaned_val, (gint16)Int_val, Unit) */
+ML_2 (gtk_paned_set_handle_size, GtkPaned_val, (guint16)Int_val, Unit)
+/* ML_2 (gtk_paned_set_gutter_size, GtkPaned_val, (guint16)Int_val, Unit) */
+ML_2 (gtk_paned_set_position, GtkPaned_val, Int_val, Unit)
+ML_4 (gtk_paned_pack1, GtkPaned_val, GtkWidget_val, Int_val, Int_val, Unit)
+ML_4 (gtk_paned_pack2, GtkPaned_val, GtkWidget_val, Int_val, Int_val, Unit)
 Make_Extractor (gtk_paned, GtkPaned_val, child1, Val_GtkWidget)
 Make_Extractor (gtk_paned, GtkPaned_val, child2, Val_GtkWidget)
 Make_Extractor (gtk_paned, GtkPaned_val, handle_size, Val_int)

@@ -18,6 +18,10 @@ module Button = struct
   external clicked : [>`button] obj -> unit = "ml_gtk_button_clicked"
   external enter : [>`button] obj -> unit = "ml_gtk_button_enter"
   external leave : [>`button] obj -> unit = "ml_gtk_button_leave"
+  external set_relief : [>`button] obj -> relief_style -> unit
+      = "ml_gtk_button_set_relief"
+  external get_relief : [>`button] obj -> relief_style
+      = "ml_gtk_button_get_relief"
   module Signals = struct
     open GtkSignal
     let pressed : ([>`button],_) t =

@@ -10,6 +10,8 @@ class button_skel : 'a obj ->
     constraint 'a = [>`widget|`button|`container]
     val obj : 'a obj
     method clicked : unit -> unit
+    method set_relief : Tags.relief_style -> unit
+    method relief : Tags.relief_style
     method grab_default : unit -> unit
   end
 class button_signals : 'b obj ->

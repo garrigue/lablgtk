@@ -10,6 +10,8 @@ open GContainer
 class button_skel obj = object (self)
   inherit container obj
   method clicked () = Button.clicked obj
+  method set_relief = Button.set_relief obj
+  method relief = Button.get_relief obj
   method grab_default () =
     Widget.set_can_default obj true;
     Widget.grab_default obj
