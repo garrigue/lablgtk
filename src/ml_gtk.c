@@ -22,8 +22,6 @@ void ml_raise_gtk (const char *errmsg)
   raise_with_string (*exn, errmsg);
 }
 
-value ml_get_null (value unit) { return 0L; }
-
 value copy_string_and_free (char *str)
 {
     value res = copy_string (str);
@@ -562,6 +560,15 @@ ML_1 (gtk_button_clicked, GtkButton_val, Unit)
 ML_1 (gtk_button_enter, GtkButton_val, Unit)
 ML_1 (gtk_button_leave, GtkButton_val, Unit)
 
+/* gtkoptionmenu.h */
+
+#define GtkOptionMenu_val(val) GTK_OPTION_MENU(Pointer_val(val))
+ML_0 (gtk_option_menu_new, Val_GtkWidget)
+ML_1 (gtk_option_menu_get_menu, GtkOptionMenu_val, Val_GtkWidget)
+ML_2 (gtk_option_menu_set_menu, GtkOptionMenu_val, GtkWidget_val, Unit)
+ML_1 (gtk_option_menu_remove_menu, GtkOptionMenu_val, Unit)
+ML_2 (gtk_option_menu_set_history, GtkOptionMenu_val, Int_val, Unit)
+
 /* gtktogglebutton.h */
 
 #define GtkToggleButton_val(val) GTK_TOGGLE_BUTTON(Pointer_val(val))
@@ -855,6 +862,23 @@ ML_2 (gtk_entry_set_editable, GtkEntry_val, Bool_val, Unit)
 ML_2 (gtk_entry_set_max_length, GtkEntry_val, Bool_val, Unit)
 Make_Extractor (GtkEntry, GtkEntry_val, text_length, Val_int)
 
+/* gtkspinbutton.h */
+
+#define GtkSpinButton_val(val) GTK_SPIN_BUTTON(Pointer_val(val))
+ML_3 (gtk_spin_button_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
+      Float_val, Int_val, Val_GtkWidget)
+ML_2 (gtk_spin_button_set_adjustment, GtkSpinButton_val, GtkAdjustment_val,
+      Unit)
+ML_1 (gtk_spin_button_get_adjustment, GtkSpinButton_val, Val_GtkWidget)
+ML_2 (gtk_spin_button_set_digits, GtkSpinButton_val, Int_val, Unit)
+ML_1 (gtk_spin_button_get_value_as_float, GtkSpinButton_val, copy_double)
+ML_2 (gtk_spin_button_set_value, GtkSpinButton_val, Float_val, Unit)
+ML_2 (gtk_spin_button_set_update_policy, GtkSpinButton_val,
+      Spin_button_update_policy_val, Unit)
+ML_2 (gtk_spin_button_set_numeric, GtkSpinButton_val, Bool_val, Unit)
+ML_3 (gtk_spin_button_spin, GtkSpinButton_val, Arrow_val, Float_val, Unit)
+ML_2 (gtk_spin_button_set_wrap, GtkSpinButton_val, Bool_val, Unit)
+
 /* gtktext.h */
 
 #define GtkText_val(val) GTK_TEXT(Pointer_val(val))
@@ -888,6 +912,20 @@ ML_2 (gtk_text_backward_delete, GtkText_val, Int_val, Val_int)
 ML_3 (gtk_misc_set_alignment, GtkMisc_val, Double_val, Double_val, Unit)
 ML_3 (gtk_misc_set_padding, GtkMisc_val, Int_val, Int_val, Unit)
 
+/* gtkarrow.h */
+
+#define GtkArrow_val(val) GTK_ARROW(Pointer_val(val))
+ML_2 (gtk_arrow_new, Arrow_val, Shadow_val, Val_GtkWidget)
+ML_3 (gtk_arrow_set, GtkArrow_val, Arrow_val, Shadow_val, Unit)
+
+/* gtkimage.h */
+
+#define GtkImage_val(val) GTK_IMAGE(Pointer_val(val))
+ML_2 (gtk_image_new, GdkImage_val,
+      Option_val (arg2, GdkBitmap_val, NULL) Ignore, Val_GtkWidget)
+ML_3 (gtk_image_set, GtkImage_val, GdkImage_val,
+      Option_val (arg2, GdkBitmap_val, NULL) Ignore, Unit)
+
 /* gtklabel.h */
 
 #define GtkLabel_val(val) GTK_LABEL(Pointer_val(val))
@@ -895,6 +933,27 @@ ML_1 (gtk_label_new, String_val, Val_GtkWidget)
 ML_2 (gtk_label_set, GtkLabel_val, String_val, Unit)
 ML_2 (gtk_label_set_justify, GtkLabel_val, Justification_val, Unit)
 Make_Extractor (GtkLabel, GtkLabel_val, label, copy_string)
+
+/* gtktipsquery.h */
+
+#define GtkTipsQuery_val(val) GTK_TIPS_QUERY(Pointer_val(val))
+ML_0 (gtk_tips_query_new, Val_GtkWidget)
+ML_1 (gtk_tips_query_start_query, GtkTipsQuery_val, Unit)
+ML_1 (gtk_tips_query_stop_query, GtkTipsQuery_val, Unit)
+ML_2 (gtk_tips_query_set_caller, GtkTipsQuery_val, GtkWidget_val, Unit)
+ML_3 (gtk_tips_query_set_labels, GtkTipsQuery_val,
+      String_val, String_val, Unit)
+value ml_gtk_tips_query_set_emit_always (value w, value arg)
+{
+    GtkTipsQuery_val(w)->emit_always = Bool_val(arg);
+    return Val_unit;
+}
+Make_Extractor (gtk_tips_query_get, GtkTipsQuery_val, emit_always, Val_bool)
+Make_Extractor (gtk_tips_query_get, GtkTipsQuery_val, caller, Val_GtkWidget)
+Make_Extractor (gtk_tips_query_get, GtkTipsQuery_val, label_inactive,
+		copy_string)
+Make_Extractor (gtk_tips_query_get, GtkTipsQuery_val, label_no_tip,
+		copy_string)
 
 /* gtkpixmap.h */
 
