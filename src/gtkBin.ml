@@ -23,7 +23,7 @@ end
 
 module EventBox = struct
   let cast w : event_box obj = Object.try_cast w "GtkEventBox"
-  let create () : event_box obj = Gobject.make "GtkEventBox" []
+  let create () : event_box obj = Object.make "GtkEventBox" []
 end
 
 module Frame = struct
@@ -42,7 +42,7 @@ module Frame = struct
     let shadow_type = {name="shadow_type"; classe=`frame;
                        conv=conv_shadow_type}
     let check () =
-      let w = Gobject.make "GtkFrame" [] in
+      let w = create [] in
       let c p = Gobject.Property.check w p in
       c label; c label_widget; c label_xalign; c label_yalign;
       c shadow_type;
