@@ -130,20 +130,43 @@ class column_list :
     method lock : unit -> unit
   end
 
+class model_signals : ([> `treemodel] as 'b) obj ->
+  object ('a)
+    inherit gobject_signals
+    val obj : 'b obj
+    method row_changed :
+      callback:(tree_path -> tree_iter -> unit) -> GtkSignal.id
+    method row_deleted : callback:(tree_path -> unit) -> GtkSignal.id
+    method row_has_child_toggled :
+      callback:(tree_path -> tree_iter -> unit) -> GtkSignal.id
+    method row_inserted :
+      callback:(tree_path -> tree_iter -> unit) -> GtkSignal.id
+    method rows_reordered :
+      callback:(tree_path -> tree_iter -> unit) -> GtkSignal.id
+  end
+
 class model : ([> `treemodel] obj as 'a) -> id:int ->
-object
-  val obj : 'a
-  val id : int
-  method as_model : tree_model obj
-  method coerce : model
-  method get : row:tree_iter -> column:'b column -> 'b
-end
+  object
+    val obj : 'a
+    val id : int
+    method as_model : Gtk.tree_model Gtk.obj
+    method coerce : model
+    method connect : model_signals
+    method get : row:Gtk.tree_iter -> column:'b column -> 'b
+    method get_column_type : int -> Gobject.g_type
+    method get_iter : Gtk.tree_path -> Gtk.tree_iter
+    method get_path : Gtk.tree_iter -> Gtk.tree_path
+    method iter_children : ?nth:int -> Gtk.tree_iter -> Gtk.tree_iter
+    method iter_next : Gtk.tree_iter -> bool
+    method iter_parent : Gtk.tree_iter -> Gtk.tree_iter
+    method misc : gobject_ops
+    method n_columns : int
+  end
 
 class tree_store : Gtk.tree_store -> id:int ->
   object
     inherit model
     val obj : Gtk.tree_store
-    method as_model : tree_model obj
     method append : ?parent:tree_iter -> unit -> tree_iter
     method clear : unit -> unit
     method insert : ?parent:tree_iter -> int -> tree_iter
@@ -165,7 +188,6 @@ class list_store : Gtk.list_store -> id:int ->
   object
     inherit model
     val obj : Gtk.list_store
-    method as_model : tree_model obj
     method append : unit -> tree_iter
     method clear : unit -> unit
     method insert : int -> tree_iter
@@ -182,12 +204,17 @@ class list_store : Gtk.list_store -> id:int ->
 val list_store : column_list -> list_store
 
 class selection_signals : tree_selection ->
-  object method changed : callback:(unit -> unit) -> GtkSignal.id end
+  object
+    inherit gobject_signals
+    val obj : Gtk.tree_selection
+    method changed : callback:(unit -> unit) -> GtkSignal.id
+  end
 class selection :
   Gtk.tree_selection ->
   object
     val obj : Gtk.tree_selection
     method connect : selection_signals
+    method misc : gobject_ops
     method count_selected_rows : int
     method get_mode : Gtk.Tags.selection_mode
     method get_selected_rows : Gtk.tree_path list
@@ -205,11 +232,19 @@ class selection :
     method unselect_range : Gtk.tree_path -> Gtk.tree_path -> unit
   end
 
+class view_column_signals : ([> `gtk | `treeviewcolumn] as 'b) Gtk.obj ->
+  object ('a)
+    inherit gtkobj_signals
+    val obj : 'b Gtk.obj
+    method clicked : callback:(unit -> unit) -> GtkSignal.id
+  end
 class view_column : tree_view_column obj ->
   object
     inherit gtkobj
     val obj : tree_view_column obj
     method as_column : tree_view_column obj
+    method connect : view_column_signals
+    method misc : gobject_ops
     method add_attribute : [>`cellrenderer] obj -> string -> 'a column -> unit
     method pack :
       ?expand:bool -> ?from:[ `END | `START] -> [>`cellrenderer] obj -> unit
@@ -220,10 +255,45 @@ val view_column :
   ?renderer:([>`cellrenderer] obj * (string * 'a column) list) ->
   unit -> view_column
 
+class view_signals : ([> tree_view] as 'b) obj ->
+  object ('a)
+    inherit GContainer.container_signals
+    val obj : 'b obj
+    method columns_changed : callback:(unit -> unit) -> GtkSignal.id
+    method cursor_changed : callback:(unit -> unit) -> GtkSignal.id
+    method expand_collapse_cursor_row :
+      callback:(logical:bool -> expand:bool -> all:bool -> bool) ->
+      GtkSignal.id
+    method move_cursor :
+      callback:(Gtk.Tags.movement_step -> int -> bool) -> GtkSignal.id
+    method row_activated :
+      callback:(tree_iter -> Gtk.tree_view_column obj -> unit) ->
+      GtkSignal.id
+    method row_collapsed :
+      callback:(tree_iter -> tree_path -> unit) -> GtkSignal.id
+    method row_expanded :
+      callback:(tree_iter -> tree_path -> unit) -> GtkSignal.id
+    method select_all : callback:(unit -> bool) -> GtkSignal.id
+    method select_cursor_parent : callback:(unit -> bool) -> GtkSignal.id
+    method select_cursor_row :
+      callback:(start_editing:bool -> bool) -> GtkSignal.id
+    method set_scroll_adjustments :
+      callback:(Gtk.adjustment obj option ->
+                Gtk.adjustment obj option -> unit) ->
+      GtkSignal.id
+    method start_interactive_search : callback:(unit -> bool) -> GtkSignal.id
+    method test_collapse_row : callback:(unit -> bool) -> GtkSignal.id
+    method test_expand_row :
+      callback:(tree_iter -> tree_path -> bool) -> GtkSignal.id
+    method toggle_cursor_row : callback:(unit -> bool) -> GtkSignal.id
+    method unselect_all : callback:(unit -> bool) -> GtkSignal.id
+  end
+
 class view : ([> tree_view] as 'a) obj ->
   object
     inherit GContainer.container
     val obj : 'a obj
+    method connect : view_signals
     method append_column : view_column -> int
     method selection : selection
   end

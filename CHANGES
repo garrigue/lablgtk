@@ -1,5 +1,9 @@
 $Id$
 
+2003.03.18 [Jacques]
+ * lots of GtkTree* additions
+ * small changes in ml_glibc, gObj.ml
+
 2003.03.17 [Benjamin]
  * Restore Variant and stretch properties in GtkText
  * GTK 2.0 fixes in GtkTree

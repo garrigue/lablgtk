@@ -321,6 +321,93 @@ module TreeView = struct
     = "ml_gtk_tree_view_append_column"
   external get_selection : [>`treeview] obj -> tree_selection
     = "ml_gtk_tree_view_get_selection"
+  module Signals = struct
+    open GtkSignal
+    let return = Gobject.Closure.set_result
+    let columns_changed =
+      { name = "columns-changed"; classe = `treeview;
+        marshaller = marshal_unit }
+    let cursor_changed =
+      { name = "cursor-changed"; classe = `treeview;
+        marshaller = marshal_unit }
+    let marshal_expand_bool3 f argv = function
+      | `BOOL logical :: `BOOL expand :: `BOOL all :: _ ->
+          return argv (`BOOL (f ~logical ~expand ~all))
+      | _ -> failwith "GtkTree.TreeView.Signals.expand_collapse_cursor_row"
+    let expand_collapse_cursor_row =
+      { name = "expand_collapse_cursor_row"; classe = `treeview;
+        marshaller = marshal_expand_bool3 }
+    external extract_movement_step : int -> Gtk.Tags.movement_step
+      = "ml_Val_movement_step"
+    let marshal_move_cursor f argv = function
+      | `INT step :: `INT n :: _ ->
+          return argv (`BOOL (f (extract_movement_step step) n))
+      | _ -> failwith "GtkTree.TreeView.Signals.move_cursor"
+    let move_cursor =
+      { name = "move_cursor"; classe = `treeview;
+        marshaller = marshal_move_cursor }
+    let marshal_row_activated f _ = function
+      | `POINTER(Some i) :: `OBJECT(Some c) :: _ ->
+          f (TreeModel.Signals.extract_iter i)
+            (Gobject.unsafe_cast c : tree_view_column obj)
+      | _ -> failwith "GtkTree.TreeView.Signals.row_activated"
+    let row_activated =
+      { name = "row_activated"; classe = `treeview;
+        marshaller = marshal_row_activated }
+    let marshal_iter_path f _ = function
+      | `POINTER(Some i) :: `POINTER(Some p) :: _ ->
+          f (TreeModel.Signals.extract_iter i)
+            (TreeModel.Signals.extract_path p)
+      |	_ -> invalid_arg "GtkTree.TreeView.Signals.marshal_iter_path"
+    let row_collapsed =
+      { name = "row_collapsed"; classe = `treeview;
+        marshaller = marshal_iter_path }
+    let row_expanded =
+      { name = "row_expanded"; classe = `treeview;
+        marshaller = marshal_iter_path }
+    let marshal_ret_bool f argv _ = return argv (`BOOL (f ()))
+    let select_all =
+      { name = "select_all"; classe = `treeview;
+        marshaller = marshal_ret_bool }
+    let select_cursor_parent =
+      { name = "select_cursor_parent"; classe = `treeview;
+        marshaller = marshal_ret_bool }
+    let marshal_select_cursor_row f argv = function
+      | `BOOL start_editing :: _ ->
+          return argv (`BOOL (f ~start_editing))
+      | _ -> failwith "GtkTree.TreeView.Signals.select_cursor_row"
+    let select_cursor_row =
+      { name = "select_cursor_row"; classe = `treeview;
+        marshaller = marshal_select_cursor_row }
+    let marshal_adjustments f _ = function
+      | `OBJECT a :: `OBJECT b :: _ ->
+          f (may_map Gobject.unsafe_cast a : adjustment obj option)
+            (may_map Gobject.unsafe_cast b : adjustment obj option)
+      | _ -> failwith "GtkTree.TreeView.Signals.set_scroll_adjustments"
+    let set_scroll_adjustments =
+      { name = "set_scroll_adjustments"; classe = `treeview;
+        marshaller = marshal_adjustments }
+    let start_interactive_search =
+      { name = "start_interactive_search"; classe = `treeview;
+        marshaller = marshal_ret_bool }
+    let test_collapse_row =
+      { name = "test_collapse_row"; classe = `treeview;
+        marshaller = marshal_ret_bool }
+    let marshal_expand_row f argv = function
+      | `POINTER(Some i) :: `POINTER(Some p) :: _ ->
+          return argv (`BOOL (f (TreeModel.Signals.extract_iter i)
+                                (TreeModel.Signals.extract_path p)))
+      |	_ -> invalid_arg "GtkTree.TreeView.Signals.marshal_expand_row"
+    let test_expand_row =
+      { name = "test_expand_row"; classe = `treeview;
+        marshaller = marshal_expand_row }
+    let toggle_cursor_row =
+      { name = "toggle_cursor_row"; classe = `treeview;
+        marshaller = marshal_ret_bool }
+    let unselect_all =
+      { name = "unselect_all"; classe = `treeview;
+        marshaller = marshal_ret_bool }
+  end
 end
 
 module TreeViewColumn = struct
@@ -341,6 +428,11 @@ module TreeViewColumn = struct
     = "ml_gtk_tree_view_column_add_attribute"
   external set_title : [>`treeviewcolumn] obj -> string -> unit
     = "ml_gtk_tree_view_column_set_title"
+  module Signals = struct
+    open GtkSignal
+    let clicked = { name = "clicked"; classe = `treeviewcolumn;
+                    marshaller = marshal_unit }
+  end
 end
 
 module CellRenderer = struct
