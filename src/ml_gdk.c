@@ -76,11 +76,13 @@ Make_Extractor (GdkVisual,GdkVisual_val,blue_prec,Val_int)
 
 /* Image */
 
+#ifndef UnsafeImage
+
 Make_Val_final_pointer (GdkImage, Ignore, gdk_image_destroy, 0)
 GdkImage *GdkImage_val(value val)
 {
-    if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkImage");
-    return (GdkImage*)(Field(val,1));
+  if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkImage");
+  return (GdkImage*)(Field(val,1));
 }
 value ml_gdk_image_destroy (value val)
 {
@@ -88,6 +90,21 @@ value ml_gdk_image_destroy (value val)
     Field(val,1) = 0;
     return Val_unit;
 }
+
+#else
+
+/* Unsafe Image */
+
+#define GdkImage_val(val) ((GdkImage*)val)
+#define Val_GdkImage(img) ((value) img)
+value ml_gdk_image_destroy (value val)
+{
+  gdk_image_destroy(GdkImage_val(val));
+  return Val_unit;
+}
+
+#endif
+
 ML_4 (gdk_image_new_bitmap, GdkVisual_val, String_val, Int_val, Int_val,
       Val_GdkImage)
 ML_4 (gdk_image_new, GdkImageType_val, GdkVisual_val, Int_val, Int_val,
@@ -100,6 +117,7 @@ Make_Extractor(gdk_image, GdkImage_val, visual, Val_GdkVisual)
 Make_Extractor(gdk_image, GdkImage_val, width, Val_int)
 Make_Extractor(gdk_image, GdkImage_val, height, Val_int)
 Make_Extractor(gdk_image, GdkImage_val, depth, Val_int)
+
 /*
 Make_Extractor(gdk_image, GdkImage_val, bpp, Val_int)
 Make_Extractor(gdk_image, GdkImage_val, bpl, Val_int)
@@ -336,6 +354,32 @@ ML_2 (gdk_gc_set_subwindow, GdkGC_val, GdkSubwindowMode_val, Unit)
 ML_2 (gdk_gc_set_exposures, GdkGC_val, Bool_val, Unit)
 ML_5 (gdk_gc_set_line_attributes, GdkGC_val, Int_val, GdkLineStyle_val,
       GdkCapStyle_val, GdkJoinStyle_val, Unit)
+
+value ml_gdk_gc_set_dashes(value gc, value offset, value dashes)
+{
+  CAMLparam3(gc, offset, dashes);
+  CAMLlocal1(tmp);
+  int l = 0;
+  int i;
+  char *cdashes;
+  for(tmp = dashes; tmp != Val_int(0); tmp = Field(tmp,1)){
+    l++;
+  }
+  if( l == 0 ){ ml_raise_gdk("line dashes must have at least one element"); }
+  cdashes = malloc(sizeof(char) * l);
+  for(i=0, tmp= dashes; i<l; i++, tmp = Field(tmp,1)){
+    int d;
+    d = Int_val(Field(tmp,0));
+    if( d<0 && d>255 ){
+      ml_raise_gdk("line dashes must be [0..255]");
+    }
+    cdashes[i] = (char)d;
+  }
+  gdk_gc_set_dashes( GdkGC_val(gc), Int_val(offset), cdashes, l);
+  CAMLreturn(Val_unit);
+}
+  
+
 ML_2 (gdk_gc_copy, GdkGC_val, GdkGC_val, Unit)
 value ml_gdk_gc_get_values (value gc)
 {

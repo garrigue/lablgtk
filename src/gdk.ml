@@ -279,6 +279,8 @@ module GC = struct
       gc -> width:int -> style:gdkLineStyle -> cap:gdkCapStyle ->
       join:gdkJoinStyle -> unit
       = "ml_gdk_gc_set_line_attributes"
+  external set_dashes : gc -> offset:int -> int list -> unit =
+    "ml_gdk_gc_set_dashes"
   external copy : dst:gc -> gc -> unit = "ml_gdk_gc_copy"
   type values = {
       foreground : Color.t;
