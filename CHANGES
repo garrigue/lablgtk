@@ -1,5 +1,8 @@
 $Id$
 
+2004.09.17 [Olivier]
+  * more unicode fixes, add a Utf8.to_unichar_validated function
+
 2004.09.17 [Jacques]
   * Gobject.Data.boxed parameterized by the real type, to be able to
     create tree store columns from it. Gobject.fundamental_type

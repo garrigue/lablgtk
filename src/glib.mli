@@ -114,14 +114,14 @@ module Convert :  sig
 
   val locale_from_utf8 : string -> string 
     (** Converts the input string from [UTF-8] to the encoding of the current locale.
-        @raise Error if the conversion fails
         If the locale's encoding is [UTF-8], the string is simply validated and returned unmodified.
+        @raise Error if the conversion fails
         @raise Error if the string is not a valid [UTF-8] string *)
 
   val locale_to_utf8 : string -> string (** @raise Error . *)
     (** Converts the input string from the encoding of the current locale to [UTF-8].
-        @raise Error if the conversion fails
         If the locale's encoding is [UTF-8], the string is simply validated and returned unmodified.
+        @raise Error if the conversion fails
         @raise Error if the string is not a valid [UTF-8] string *)
 
   val filename_from_utf8 : string -> string (** @raise Error . *)
@@ -163,21 +163,33 @@ end
 (** Unicode Manipulation
    @gtkdoc glib glib-Unicode-Manipulation *)
 module Utf8 : sig
-  (** Utf8 handling, and conversion to ucs4 *)
+  (** UTF-8 handling, and conversion to UCS-4 *)
 
-  (** If you read an utf8 string from somewhere, you should validate it,
+  (** If you read an UTF-8 string from somewhere, you should validate it,
      or risk random segmentation faults *)
   val validate : string -> bool
   val length : string -> int
 
-  (** [from_unichar 0xiii] converts an index [iii] (usually in hexadecimal form)
+  (** [from_unichar 0xiii] converts a code point [iii] (usually in hexadecimal form)
      into a string containing the UTF-8 encoded character [0xiii]. See 
      {{:http://www.unicode.org/}unicode.org} for charmaps.
-     Does not check that the given index is a valid unicode index. *)
+     Does not check that the given code point is a valid unicode code point. *)
   val from_unichar : unichar -> string
   val from_unistring : unistring -> string
+
+  (** [to_unichar_validated] decodes an UTF-8 encoded code point and checks for 
+      incomplete characters, invalid characters and overlong encodings. 
+      @raise Convert.Error if invalid *)
+  val to_unichar_validated : string -> pos:int ref -> unichar
+
+  (** [to_unichar] decodes an UTF-8 encoded code point. Result is undefined 
+      if [pos] does not point to a valid UTF-8 encoded character. *)
   val to_unichar : string -> pos:int ref -> unichar
+
+  (** [to_unistring] decodes an UTF-8 encoded string into an array of [unichar].
+      The string {e must} be valid. *)
   val to_unistring : string -> unistring
+
   val first_char : string -> unichar
 
   val offset_to_pos : string -> pos:int -> off:int -> int
