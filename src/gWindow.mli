@@ -35,7 +35,7 @@ class window : [>`window] obj ->
     method connect : GContainer.container_signals
   end
 val window :
-  ?type:Tags.window_type ->
+  ?kind:Tags.window_type ->
   ?title:string ->
   ?wm_name:string ->
   ?wm_class:string ->
@@ -144,7 +144,7 @@ class font_selection_dialog : Gtk.font_selection_dialog obj ->
     method ok_button : GButton.button
     method preview_text : string
     method set_filter :
-      ?type:Tags.font_type list ->
+      ?kind:Tags.font_type list ->
       ?foundry:string list ->
       ?weight:string list ->
       ?slant:string list ->

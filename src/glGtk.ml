@@ -37,26 +37,26 @@ end
 
 class area_signals obj = object (connect)
   inherit GObj.widget_signals obj as super
-  method display :callback =
-    connect#event#expose callback:
+  method display ~callback =
+    connect#event#expose ~callback:
       begin fun ev ->
 	if GdkEvent.Expose.count ev = 0 then
 	  if Raw.make_current obj then callback ()
 	  else prerr_endline "GlGtk-WARNING **: could not make current";
 	true
       end
-  method reshape :callback =
-    connect#event#configure callback:
+  method reshape ~callback =
+    connect#event#configure ~callback:
       begin fun ev ->
 	if Raw.make_current obj then begin
-	  callback width:(GdkEvent.Configure.width ev)
-	    height:(GdkEvent.Configure.height ev)
+	  callback ~width:(GdkEvent.Configure.width ev)
+	    ~height:(GdkEvent.Configure.height ev)
 	end
 	else prerr_endline "GlGtk-WARNING **: could not make current";
 	true
       end
-  method realize :callback =
-    super#realize callback:
+  method realize ~callback =
+    super#realize ~callback:
       begin fun ev ->
 	if Raw.make_current obj then callback ()
 	else prerr_endline "GlGtk-WARNING **: could not make current"
@@ -75,10 +75,10 @@ class area obj = object
       raise (Gl.GLerror "make_current")
 end
 
-let area options ?:share ?(:width=0) ?(:height=0) ?:packing ?:show () =
+let area options ?share ?(width=0) ?(height=0) ?packing ?show () =
   let share =
     match share with Some (x : area) -> Some x#as_area | None -> None in
-  let w = Raw.create options share:(optboxed share) in
-  if width <> 0 || height <> 0 then GtkMisc.DrawingArea.size w :width :height;
+  let w = Raw.create options ~share:(optboxed share) in
+  if width <> 0 || height <> 0 then GtkMisc.DrawingArea.size w ~width ~height;
   GtkBase.Widget.add_events w [`EXPOSURE];
-  GObj.pack_return (new area w) :packing :show
+  GObj.pack_return (new area w) ~packing ~show

@@ -88,7 +88,7 @@ class selection_data :
     method selection : Gdk.atom
     method seltype : Gdk.atom
     method target : Gdk.atom
-    method set : type:Gdk.atom -> format:int -> ?data:string -> unit
+    method set : typ:Gdk.atom -> format:int -> ?data:string -> unit
   end
 
 class widget_drag : [>`widget] obj ->
@@ -101,7 +101,7 @@ class widget_drag : [>`widget] obj ->
     method get_data : ?time:int -> context:drag_context -> Gdk.atom ->unit
     method highlight : unit -> unit
     method source_set :
-      ?mod:Gdk.Tags.modifier list ->
+      ?modi:Gdk.Tags.modifier list ->
       ?actions:Gdk.Tags.drag_action list -> target_entry list -> unit
     method source_set_icon : ?colormap:Gdk.colormap -> GdkObj.pixmap -> unit
     method source_unset : unit -> unit
@@ -114,8 +114,8 @@ and widget_misc :
     val obj : Gtk.widget obj
     method activate : unit -> bool
     method add_accelerator :
-      sig:(Gtk.widget, unit -> unit) GtkSignal.t ->
-      group:accel_group -> ?mod:Gdk.Tags.modifier list ->
+      sgn:(Gtk.widget, unit -> unit) GtkSignal.t ->
+      group:accel_group -> ?modi:Gdk.Tags.modifier list ->
       ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
     method allocation : rectangle
     method colormap : Gdk.colormap
@@ -136,7 +136,7 @@ and widget_misc :
     method popup : x:int -> y:int -> unit
     method realize : unit -> unit
     method remove_accelerator :
-      accel_group -> key:Gdk.keysym -> ?mod:Gdk.Tags.modifier list -> unit
+      accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> unit
     method reparent : widget -> unit
     method set_app_paintable : bool -> unit
     method set_can_default : bool -> unit

@@ -8,13 +8,13 @@ open GtkBase
 module Editable = struct
   let cast w : editable obj = Object.try_cast w "GtkEditable"
   external coerce : [>`editable] obj -> editable obj = "%identity"
-  external select_region : [>`editable] obj -> start:int -> end:int -> unit
+  external select_region : [>`editable] obj -> start:int -> stop:int -> unit
       = "ml_gtk_editable_select_region"
   external insert_text : [>`editable] obj -> string -> pos:int -> int
       = "ml_gtk_editable_insert_text"
-  external delete_text : [>`editable] obj -> start:int -> end:int -> unit
+  external delete_text : [>`editable] obj -> start:int -> stop:int -> unit
       = "ml_gtk_editable_delete_text"
-  external get_chars : [>`editable] obj -> start:int -> end:int -> string
+  external get_chars : [>`editable] obj -> start:int -> stop:int -> string
       = "ml_gtk_editable_get_chars"
   external cut_clipboard : [>`editable] obj -> unit
       = "ml_gtk_editable_cut_clipboard"
@@ -50,19 +50,19 @@ module Editable = struct
     let marshal_insert f argv =
       (* These two accesses are highly specification-dependent *)
       let s =
-        match get_pointer argv pos:0 with
-          Some ptr -> substring_of_pointer ptr pos:0 len:(get_int argv pos:1)
+        match get_pointer argv ~pos:0 with
+          Some ptr -> substring_of_pointer ptr ~pos:0 ~len:(get_int argv ~pos:1)
         | None -> assert false
       and pos =
-        match get_pointer argv pos:2 with
+        match get_pointer argv ~pos:2 with
           Some ptr -> int_of_pointer ptr
         | None -> assert false
       in
-      f s :pos
+      f s ~pos
     let insert_text : ([>`editable],_) t =
       { name = "insert_text"; marshaller = marshal_insert }
     let marshal_delete f argv =
-      f start:(get_int argv pos:0) end:(get_int argv pos:1)
+      f ~start:(get_int argv ~pos:0) ~stop:(get_int argv ~pos:1)
     let delete_text : ([>`editable],_) t =
       { name = "delete_text"; marshaller = marshal_delete }
   end
@@ -74,7 +74,7 @@ module Entry = struct
   external create : unit -> entry obj = "ml_gtk_entry_new"
   external create_with_max_length : int -> entry obj
       = "ml_gtk_entry_new_with_max_length"
-  let create ?:max_length () =
+  let create ?max_length () =
     match max_length with None -> create ()
     | Some len -> create_with_max_length len
   external set_text : [>`entry] obj -> string -> unit
@@ -88,8 +88,8 @@ module Entry = struct
       = "ml_gtk_entry_set_visibility"
   external set_max_length : [>`entry] obj -> int -> unit
       = "ml_gtk_entry_set_max_length"
-  let set ?:text ?:visibility ?:max_length w =
-    let may_set f = may fun:(f w) in
+  let set ?text ?visibility ?max_length w =
+    let may_set f = may ~f:(f w) in
     may_set set_text text;
     may_set set_visibility visibility;
     may_set set_max_length max_length
@@ -102,8 +102,8 @@ module SpinButton = struct
   external create :
       [>`adjustment] optobj -> rate:float -> digits:int -> spin_button obj
       = "ml_gtk_spin_button_new"
-  let create ?:adjustment ?(:rate=0.5) ?(:digits=0) () =
-    create (optboxed adjustment) :rate :digits
+  let create ?adjustment ?(rate=0.5) ?(digits=0) () =
+    create (optboxed adjustment) ~rate ~digits
   external configure :
     [>`spinbutton] obj -> adjustment:[>`adjustment] obj ->
     rate:float -> digits:int -> unit
@@ -134,9 +134,9 @@ module SpinButton = struct
       = "ml_gtk_spin_button_set_snap_to_ticks"
   external update : [>`spinbutton] obj -> unit
       = "ml_gtk_spin_button_update"
-  let set ?:adjustment ?:digits ?:value ?:update_policy
-      ?:numeric ?:wrap ?:shadow_type ?:snap_to_ticks w =
-    let may_set f = may fun:(f w) in
+  let set ?adjustment ?digits ?value ?update_policy
+      ?numeric ?wrap ?shadow_type ?snap_to_ticks w =
+    let may_set f = may ~f:(f w) in
     may_set set_adjustment adjustment;
     may_set set_digits digits;
     may_set set_value value;
@@ -151,7 +151,7 @@ module Text = struct
   let cast w : text obj = Object.try_cast w "GtkText"
   external create : [>`adjustment] optobj -> [>`adjustment] optobj -> text obj
       = "ml_gtk_text_new"
-  let create ?:hadjustment ?:vadjustment () =
+  let create ?hadjustment ?vadjustment () =
     create (optboxed hadjustment) (optboxed vadjustment)
   external set_word_wrap : [>`text] obj -> bool -> unit
       = "ml_gtk_text_set_word_wrap"
@@ -173,10 +173,10 @@ module Text = struct
       [>`text] obj -> ?font:Gdk.font -> ?foreground:Gdk.Color.t ->
       ?background:Gdk.Color.t -> string -> unit
       = "ml_gtk_text_insert"
-  let set ?:hadjustment ?:vadjustment ?:word_wrap w =
+  let set ?hadjustment ?vadjustment ?word_wrap w =
     if hadjustment <> None || vadjustment <> None then
       set_adjustment w ?horizontal: hadjustment ?vertical: vadjustment ();
-    may word_wrap fun:(set_word_wrap w)
+    may word_wrap ~f:(set_word_wrap w)
 end
 
 module Combo = struct
@@ -196,8 +196,8 @@ module Combo = struct
   external entry : [>`combo] obj -> entry obj= "ml_gtk_combo_entry"
   external list : [>`combo] obj -> liste obj= "ml_gtk_combo_list"
   let set_popdown_strings combo strings =
-    GtkList.Liste.clear_items (list combo) start:0 end:(-1);
-    List.iter strings f:
+    GtkList.Liste.clear_items (list combo) ~start:0 ~stop:(-1);
+    List.iter strings ~f:
       begin fun s ->
 	let li = GtkList.ListItem.create_with_label s in
 	Widget.show li;
@@ -212,13 +212,13 @@ module Combo = struct
     in
     set_use_arrows w def;
     set_use_arrows_always w always
-  let set ?:popdown_strings ?:use_arrows
-      ?:case_sensitive ?:value_in_list ?:ok_if_empty w =
-    may popdown_strings fun:(set_popdown_strings w);
-    may use_arrows fun:(set_use_arrows' w);
-    may case_sensitive fun:(set_case_sensitive w);
+  let set ?popdown_strings ?use_arrows
+      ?case_sensitive ?value_in_list ?ok_if_empty w =
+    may popdown_strings ~f:(set_popdown_strings w);
+    may use_arrows ~f:(set_use_arrows' w);
+    may case_sensitive ~f:(set_case_sensitive w);
     if value_in_list <> None || ok_if_empty <> None then
-      set_value_in_list w ?required:value_in_list ?:ok_if_empty ()
+      set_value_in_list w ?required:value_in_list ?ok_if_empty ()
   external disable_activate : [>`combo] obj -> unit
       = "ml_gtk_combo_disable_activate"
 end

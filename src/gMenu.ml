@@ -13,7 +13,7 @@ open GContainer
 class menu_shell_signals obj = object
   inherit container_signals obj
   method deactivate =
-    GtkSignal.connect sig:MenuShell.Signals.deactivate obj :after
+    GtkSignal.connect ~sgn:MenuShell.Signals.deactivate obj ~after
 end
 
 class type virtual ['a] pre_menu = object
@@ -31,7 +31,7 @@ end
 
 class menu_item_signals obj = object
   inherit item_signals obj
-  method activate = GtkSignal.connect sig:MenuItem.Signals.activate obj
+  method activate = GtkSignal.connect ~sgn:MenuItem.Signals.activate obj
 end
 
 
@@ -43,9 +43,9 @@ class ['a] pre_menu_item_skel obj = object
   method configure = MenuItem.configure obj
   method activate () = MenuItem.activate obj
   method right_justify () = MenuItem.right_justify obj
-  method add_accelerator :group ?mod:m ?:flags key=
-    Widget.add_accelerator obj sig:MenuItem.Signals.activate group ?:flags
-      ?mod:m :key
+  method add_accelerator ~group ?modi:m ?flags key=
+    Widget.add_accelerator obj ~sgn:MenuItem.Signals.activate group ?flags
+      ?modi:m ~key
 end
 
 class menu_item obj = object
@@ -56,25 +56,25 @@ end
 
 class menu_item_skel = [menu_item] pre_menu_item_skel
 
-let pack_item self :packing :show =
-  may packing fun:(fun f -> (f (self :> menu_item) : unit));
+let pack_item self ~packing ~show =
+  may packing ~f:(fun f -> (f (self :> menu_item) : unit));
   if show <> Some false then self#misc#show ();
   self
 
-let menu_item ?:label ?:border_width ?:width ?:height ?:packing ?:show () =
-  let w = MenuItem.create ?:label () in
-  Container.set w ?:border_width ?:width ?:height;
-  pack_item (new menu_item w) ?:packing ?:show
+let menu_item ?label ?border_width ?width ?height ?packing ?show () =
+  let w = MenuItem.create ?label () in
+  Container.set w ?border_width ?width ?height;
+  pack_item (new menu_item w) ?packing ?show
 
-let tearoff_item ?:border_width ?:width ?:height ?:packing ?:show () =
+let tearoff_item ?border_width ?width ?height ?packing ?show () =
   let w = MenuItem.tearoff_create () in
-  Container.set w ?:border_width ?:width ?:height;
-  pack_item (new menu_item w) ?:packing ?:show
+  Container.set w ?border_width ?width ?height;
+  pack_item (new menu_item w) ?packing ?show
 
 class check_menu_item_signals obj = object
   inherit menu_item_signals obj
   method toggled =
-    GtkSignal.connect sig:CheckMenuItem.Signals.toggled obj :after
+    GtkSignal.connect ~sgn:CheckMenuItem.Signals.toggled obj ~after
 end
 
 class check_menu_item obj = object
@@ -87,12 +87,12 @@ class check_menu_item obj = object
   method add_events = Widget.add_events obj
 end
 
-let check_menu_item ?:label ?:active ?:show_toggle
-    ?:border_width ?:width ?:height ?:packing ?:show () =
-  let w = CheckMenuItem.create ?:label () in
-  CheckMenuItem.set w ?:active ?:show_toggle;
-  Container.set w ?:border_width ?:width ?:height;
-  pack_item (new check_menu_item w) ?:packing ?:show
+let check_menu_item ?label ?active ?show_toggle
+    ?border_width ?width ?height ?packing ?show () =
+  let w = CheckMenuItem.create ?label () in
+  CheckMenuItem.set w ?active ?show_toggle;
+  Container.set w ?border_width ?width ?height;
+  pack_item (new check_menu_item w) ?packing ?show
 
 class radio_menu_item obj = object
   inherit check_menu_item (obj : Gtk.radio_menu_item obj)
@@ -100,12 +100,12 @@ class radio_menu_item obj = object
   method set_group = RadioMenuItem.set_group obj
 end
 
-let radio_menu_item ?:group ?:label ?:active ?:show_toggle
-    ?:border_width ?:width ?:height ?:packing ?:show () =
-  let w = RadioMenuItem.create ?:group ?:label () in
-  CheckMenuItem.set w ?:active ?:show_toggle;
-  Container.set w ?:border_width ?:width ?:height;
-  pack_item (new radio_menu_item w) ?:packing ?:show
+let radio_menu_item ?group ?label ?active ?show_toggle
+    ?border_width ?width ?height ?packing ?show () =
+  let w = RadioMenuItem.create ?group ?label () in
+  CheckMenuItem.set w ?active ?show_toggle;
+  Container.set w ?border_width ?width ?height;
+  pack_item (new radio_menu_item w) ?packing ?show
 
 (* Menus *)
 
@@ -126,11 +126,11 @@ class menu obj = object
   method set_accel_group = Menu.set_accel_group obj
 end
 
-let menu ?:border_width ?:packing ?:show () =
+let menu ?border_width ?packing ?show () =
   let w = Menu.create () in
-  may border_width fun:(Container.set_border_width w);
+  may border_width ~f:(Container.set_border_width w);
   let self = new menu w in
-  may packing fun:(fun f -> (f (self :> menu) : unit));
+  may packing ~f:(fun f -> (f (self :> menu) : unit));
   if show <> Some false then self#misc#show ();
   self
 
@@ -146,24 +146,24 @@ class option_menu obj = object
   method set_history = OptionMenu.set_history obj
 end
 
-let option_menu ?:border_width ?:width ?:height ?:packing ?:show () =
+let option_menu ?border_width ?width ?height ?packing ?show () =
   let w = OptionMenu.create () in
-  Container.set w ?:border_width ?:width ?:height;
-  pack_return (new option_menu w) :packing :show
+  Container.set w ?border_width ?width ?height;
+  pack_return (new option_menu w) ~packing ~show
 
 (* Menu Bar *)
 
-let menu_bar ?:border_width ?:width ?:height ?:packing ?:show () =
+let menu_bar ?border_width ?width ?height ?packing ?show () =
   let w = MenuBar.create () in
-  Container.set w ?:border_width ?:width ?:height;
-  pack_return (new menu_shell w) :packing :show
+  Container.set w ?border_width ?width ?height;
+  pack_return (new menu_shell w) ~packing ~show
 
 (* Menu Factory *)
 
 class ['a] factory
-    ?(:accel_group=AccelGroup.create ())
-    ?(:accel_mod=[`CONTROL])
-    ?(:accel_flags=[`VISIBLE]) (menu_shell : 'a) =
+    ?(accel_group=AccelGroup.create ())
+    ?(accel_mod=[`CONTROL])
+    ?(accel_flags=[`VISIBLE]) (menu_shell : 'a) =
   object (self)
     val menu_shell : #menu_shell = menu_shell
     val group = accel_group
@@ -171,29 +171,29 @@ class ['a] factory
     val flags = accel_flags
     method menu = menu_shell
     method accel_group = group
-    method private bind ?:key ?:callback (item : menu_item) =
+    method private bind ?key ?callback (item : menu_item) =
       menu_shell#append item;
-      may key fun:(item#add_accelerator :group mod:m :flags);
-      may callback fun:(fun callback -> item#connect#activate :callback)
-    method add_item ?:key ?:callback ?:submenu label =
-      let item = menu_item :label () in
-      self#bind item ?:key ?:callback;
-      may (submenu : menu option) fun:item#set_submenu;
+      may key ~f:(item#add_accelerator ~group ~modi:m ~flags);
+      may callback ~f:(fun callback -> item#connect#activate ~callback)
+    method add_item ?key ?callback ?submenu label =
+      let item = menu_item ~label () in
+      self#bind item ?key ?callback;
+      may (submenu : menu option) ~f:item#set_submenu;
       item
-    method add_check_item ?:active ?:key ?:callback label =
-      let item = check_menu_item :label ?:active () in
-      self#bind (item :> menu_item) ?:key
-	?callback:(may_map callback fun:(fun f () -> f item#active));
+    method add_check_item ?active ?key ?callback label =
+      let item = check_menu_item ~label ?active () in
+      self#bind (item :> menu_item) ?key
+	?callback:(may_map callback ~f:(fun f () -> f item#active));
       item
-    method add_radio_item ?:group ?:active ?:key ?:callback label =
-      let item = radio_menu_item :label ?:group ?:active () in
-      self#bind (item :> menu_item) ?:key
-	?callback:(may_map callback fun:(fun f () -> f item#active));
+    method add_radio_item ?group ?active ?key ?callback label =
+      let item = radio_menu_item ~label ?group ?active () in
+      self#bind (item :> menu_item) ?key
+	?callback:(may_map callback ~f:(fun f () -> f item#active));
       item
-    method add_separator () = menu_item packing:menu_shell#append ()
-    method add_submenu ?:key label =
-      let item = menu_item :label () in
-      self#bind item ?:key;
-      menu packing:item#set_submenu ();
-    method add_tearoff () = tearoff_item packing:menu_shell#append ()
+    method add_separator () = menu_item ~packing:menu_shell#append ()
+    method add_submenu ?key label =
+      let item = menu_item ~label () in
+      self#bind item ?key;
+      menu ~packing:item#set_submenu ();
+    method add_tearoff () = tearoff_item ~packing:menu_shell#append ()
 end

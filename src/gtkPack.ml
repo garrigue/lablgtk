@@ -16,19 +16,19 @@ module Box = struct
       [>`box] obj -> [>`widget] obj ->
       expand:bool -> fill:bool -> padding:int -> unit
       = "ml_gtk_box_pack_end"
-  let pack box ?(from: dir = (`START : pack_type))
-      ?(:expand=true) ?(:fill=true) ?(:padding=0) child =
+  let pack box ?from:( dir = (`START : pack_type))
+      ?(expand=true) ?(fill=true) ?(padding=0) child =
     (match dir with `START -> pack_start | `END -> pack_end)
-      box child :expand :fill :padding
+      box child ~expand ~fill ~padding
   external reorder_child : [>`box] obj -> [>`widget] obj -> pos:int -> unit
       = "ml_gtk_box_reorder_child"
   external set_homogeneous : [>`box] obj -> bool -> unit
       = "ml_gtk_box_set_homogeneous"
   external set_spacing : [>`box] obj -> int -> unit
       = "ml_gtk_box_set_spacing"
-  let set ?:homogeneous ?:spacing w =
-    may homogeneous fun:(set_homogeneous w);
-    may spacing fun:(set_spacing w)
+  let set ?homogeneous ?spacing w =
+    may homogeneous ~f:(set_homogeneous w);
+    may spacing ~f:(set_spacing w)
   type packing =
       { expand: bool; fill: bool; padding: int; pack_type: pack_type }
   external query_child_packing : [>`box] obj -> [>`widget] obj -> packing
@@ -41,9 +41,9 @@ module Box = struct
       = "ml_gtk_hbox_new"
   external vbox_new : homogeneous:bool -> spacing:int -> box obj
       = "ml_gtk_vbox_new"
-  let create (dir : orientation) ?(:homogeneous=false) ?(:spacing=0) () =
+  let create (dir : orientation) ?(homogeneous=false) ?(spacing=0) () =
     (match dir with `HORIZONTAL -> hbox_new | `VERTICAL -> vbox_new)
-      :homogeneous :spacing
+      ~homogeneous ~spacing
 end
 
 module BBox = struct
@@ -70,21 +70,21 @@ module BBox = struct
       = "ml_gtk_button_box_set_child_ipadding"
   external set_layout : [>`bbox] obj -> bbox_style -> unit
       = "ml_gtk_button_box_set_layout"
-  let set_child_size w ?:width ?:height () =
-    set_child_size w width:(may_default get_child_width w for:width)
-      height:(may_default get_child_height w for:height)
-  let set_child_ipadding w ?:x ?:y () =
+  let set_child_size w ?width ?height () =
+    set_child_size w ~width:(may_default get_child_width w ~opt:width)
+      ~height:(may_default get_child_height w ~opt:height)
+  let set_child_ipadding w ?x ?y () =
     set_child_ipadding w
-      x:(may_default get_child_ipadx w for:x)
-      y:(may_default get_child_ipady w for:y)
-  let set ?:spacing ?:child_width ?:child_height ?:child_ipadx
-      ?:child_ipady ?:layout w =
-    may spacing fun:(set_spacing w);
+      ~x:(may_default get_child_ipadx w ~opt:x)
+      ~y:(may_default get_child_ipady w ~opt:y)
+  let set ?spacing ?child_width ?child_height ?child_ipadx
+      ?child_ipady ?layout w =
+    may spacing ~f:(set_spacing w);
     if child_width <> None || child_height <> None then
       set_child_size w ?width:child_width ?height:child_height ();
     if child_ipadx <> None || child_ipady <> None then
       set_child_ipadding w ?x:child_ipadx ?y:child_ipady ();
-    may layout fun:(set_layout w)
+    may layout ~f:(set_layout w)
   external set_child_size_default : width:int -> height:int -> unit
       = "ml_gtk_button_box_set_child_size_default"
   external set_child_ipadding_default : x:int -> y:int -> unit
@@ -131,9 +131,9 @@ module Layout = struct
       = "ml_gtk_layout_get_height"
   external get_width : [>`layout] obj -> int
       = "ml_gtk_layout_get_width"
-  let set_size ?:width ?:height w =
-    set_size w width:(may_default get_width w for:width)
-      height:(may_default get_height w for:height)
+  let set_size ?width ?height w =
+    set_size w ~width:(may_default get_width w ~opt:width)
+      ~height:(may_default get_height w ~opt:height)
 end
 
 
@@ -168,7 +168,7 @@ module Packer = struct
       ?i_pad_x:int -> ?i_pad_y:int -> unit -> unit
       = "ml_gtk_packer_set_defaults_bc" "ml_gtk_packer_set_defaults"
 
-  let build_options ?(:expand=true) ?(:fill=`BOTH) () =
+  let build_options ?(expand=true) ?(fill=`BOTH) () =
     (if expand then [`PACK_EXPAND] else []) @
     (match (fill : expand_type) with `NONE -> []
     | `X -> [`FILL_X]
@@ -186,9 +186,9 @@ module Paned = struct
       = "ml_gtk_paned_set_handle_size"
   external set_gutter_size : [>`paned] obj -> int -> unit
       = "ml_gtk_paned_set_gutter_size"
-  let set ?:handle_size ?:gutter_size w =
-    may fun:(set_handle_size w) handle_size;
-    may fun:(set_gutter_size w) gutter_size
+  let set ?handle_size ?gutter_size w =
+    may ~f:(set_handle_size w) handle_size;
+    may ~f:(set_gutter_size w) gutter_size
   external child1 : [>`paned] obj -> widget obj = "ml_gtk_paned_child1"
   external child2 : [>`paned] obj -> widget obj = "ml_gtk_paned_child2"
   external handle_size : [>`paned] obj -> int = "ml_gtk_paned_handle_size"
@@ -203,8 +203,8 @@ module Table = struct
   let cast w : table obj = Object.try_cast w "GtkTable"
   external create : int -> int -> homogeneous:bool -> table obj
       = "ml_gtk_table_new"
-  let create rows:r columns:c ?(:homogeneous=false) () =
-    create r c :homogeneous
+  let create ~rows:r ~columns:c ?(homogeneous=false) () =
+    create r c ~homogeneous
   external attach :
       [>`table] obj -> [>`widget] obj -> left:int -> right:int ->
       top:int -> bottom:int -> xoptions:attach_options list ->
@@ -214,17 +214,17 @@ module Table = struct
     function `X|`BOTH -> true | `Y|`NONE -> false
   let has_y : expand_type -> bool =
     function `Y|`BOTH -> true | `X|`NONE -> false
-  let attach t :left :top ?(:right=left+1) ?(:bottom=top+1)
-      ?(:expand=`BOTH) ?(:fill=`BOTH) ?(:shrink=`NONE)
-      ?(:xpadding=0) ?(:ypadding=0) w =
+  let attach t ~left ~top ?(right=left+1) ?(bottom=top+1)
+      ?(expand=`BOTH) ?(fill=`BOTH) ?(shrink=`NONE)
+      ?(xpadding=0) ?(ypadding=0) w =
     let xoptions = if has_x shrink then [`SHRINK] else [] in
     let xoptions = if has_x fill then `FILL::xoptions else xoptions in
     let xoptions = if has_x expand then `EXPAND::xoptions else xoptions in
     let yoptions = if has_y shrink then [`SHRINK] else [] in
     let yoptions = if has_y fill then `FILL::yoptions else yoptions in
     let yoptions = if has_y expand then `EXPAND::yoptions else yoptions in
-    attach t w :left :top :right :bottom :xoptions :yoptions
-      :xpadding :ypadding
+    attach t w ~left ~top ~right ~bottom ~xoptions ~yoptions
+      ~xpadding ~ypadding
   external set_row_spacing : [>`table] obj -> int -> int -> unit
       = "ml_gtk_table_set_row_spacing"
   external set_col_spacing : [>`table] obj -> int -> int -> unit
@@ -235,8 +235,8 @@ module Table = struct
       = "ml_gtk_table_set_col_spacings"
   external set_homogeneous : [>`table] obj -> bool -> unit
       = "ml_gtk_table_set_homogeneous"
-  let set ?:homogeneous ?:row_spacings ?:col_spacings w =
-    may row_spacings fun:(set_row_spacings w);
-    may col_spacings fun:(set_col_spacings w);
-    may homogeneous fun:(set_homogeneous w)
+  let set ?homogeneous ?row_spacings ?col_spacings w =
+    may row_spacings ~f:(set_row_spacings w);
+    may col_spacings ~f:(set_col_spacings w);
+    may homogeneous ~f:(set_homogeneous w)
 end

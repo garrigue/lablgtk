@@ -73,7 +73,7 @@ module Convert = struct
   let modifier i =
     List.filter [`SHIFT;`LOCK;`CONTROL;`MOD1;`MOD2;`MOD3;`MOD4;`MOD5;
 		 `BUTTON1;`BUTTON2;`BUTTON3;`BUTTON4;`BUTTON5]
-      f:(fun m -> test_modifier m i)
+      ~f:(fun m -> test_modifier m i)
 end
 
 module Screen = struct
@@ -133,16 +133,16 @@ module Color = struct
   external get_system_colormap : unit -> colormap
       = "ml_gdk_colormap_get_system"
   type spec = [ `BLACK | `NAME of string | `RGB of int * int * int | `WHITE]
-  let color_alloc :colormap color =
+  let color_alloc ~colormap color =
     if not (color_alloc colormap color) then raise (Error"Color.alloc");
     color
-  let alloc ?(:colormap=get_system_colormap()) color =
+  let alloc ?(colormap=get_system_colormap()) color =
     match color with
       `WHITE -> color_white colormap
     | `BLACK -> color_black colormap
-    | `NAME s -> color_alloc :colormap (color_parse s)
+    | `NAME s -> color_alloc ~colormap (color_parse s)
     | `RGB (red,green,blue) ->
-	color_alloc :colormap (color_create :red :green :blue)
+	color_alloc ~colormap (color_create ~red ~green ~blue)
 
   external red : t -> int = "ml_GdkColor_red"
   external blue : t -> int = "ml_GdkColor_green"
@@ -173,7 +173,7 @@ module Window = struct
     "ml_gdk_window_set_back_pixmap"
   external clear : window -> unit = "ml_gdk_window_clear"
 
-  let set_back_pixmap w pixmap: pix = 
+  let set_back_pixmap w ~pixmap: pix = 
     let null_pixmap = (Obj.magic null : pixmap) in
     match pix with
       `NONE -> set_back_pixmap w null_pixmap 0
@@ -211,7 +211,7 @@ module GC = struct
       gc -> width:int -> style:gdkLineStyle -> cap:gdkCapStyle ->
       join:gdkJoinStyle -> unit
       = "ml_gdk_gc_set_line_attributes"
-  external copy : to:gc -> gc -> unit = "ml_gdk_gc_copy"
+  external copy : dst:gc -> gc -> unit = "ml_gdk_gc_copy"
 end
 
 module Pixmap = struct
@@ -233,7 +233,7 @@ end
 
 module Bitmap = struct
   let create : window -> width:int -> height:int -> bitmap =
-    Obj.magic (Pixmap.create depth:1)
+    Obj.magic (Pixmap.create ~depth:1)
   external create_from_data :
       window -> string -> width:int -> height:int -> bitmap
       = "ml_gdk_bitmap_create_from_data"
@@ -254,9 +254,9 @@ module PointArray = struct
   type t = { len: int}
   external create : len:int -> t = "ml_point_array_new"
   external set : t -> pos:int -> x:int -> y:int -> unit = "ml_point_array_set"
-  let set arr :pos =
+  let set arr ~pos =
     if pos < 0 || pos >= arr.len then invalid_arg "PointArray.set";
-    set arr :pos
+    set arr ~pos
 end
 
 module Draw = struct
@@ -268,25 +268,25 @@ module Draw = struct
       'a drawable -> gc ->
       filled:bool -> x:int -> y:int -> width:int -> height:int -> unit
       = "ml_gdk_draw_rectangle_bc" "ml_gdk_draw_rectangle"
-  let rectangle w gc :x :y :width :height ?(:filled=false) () =
-    rectangle w gc :x :y :width :height :filled
+  let rectangle w gc ~x ~y ~width ~height ?(filled=false) () =
+    rectangle w gc ~x ~y ~width ~height ~filled
   external arc :
       'a drawable -> gc -> filled:bool -> x:int -> y:int ->
       width:int -> height:int -> start:int -> angle:int -> unit
       = "ml_gdk_draw_arc_bc" "ml_gdk_draw_arc"
-  let arc w gc :x :y :width :height ?(:filled=false) ?(:start=0.)
-      ?(:angle=360.) () =
-    arc w gc :x :y :width :height :filled
-      start:(truncate(start *. 64.))
-      angle:(truncate(angle *. 64.))
+  let arc w gc ~x ~y ~width ~height ?(filled=false) ?(start=0.)
+      ?(angle=360.) () =
+    arc w gc ~x ~y ~width ~height ~filled
+      ~start:(truncate(start *. 64.))
+      ~angle:(truncate(angle *. 64.))
   external polygon : 'a drawable -> gc -> filled:bool -> PointArray.t -> unit
       = "ml_gdk_draw_polygon"
-  let polygon w gc ?(:filled=false) l =
+  let polygon w gc ?(filled=false) l =
     let len = List.length l in
-    let arr = PointArray.create :len in
-    List.fold_left l init:0
-      f:(fun pos (x,y) -> PointArray.set arr :pos :x :y; pos+1);
-    polygon w gc :filled arr
+    let arr = PointArray.create ~len in
+    List.fold_left l ~init:0
+      ~f:(fun pos (x,y) -> PointArray.set arr ~pos ~x ~y; pos+1);
+    polygon w gc ~filled arr
   external string : 'a drawable -> font: font -> gc -> x: int -> y: int ->
     string: string -> unit
       = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"	
@@ -340,7 +340,7 @@ module Truecolor = struct
 	let red_lsr = 16 - shift_prec.red_prec
 	and green_lsr = 16 - shift_prec.green_prec
 	and blue_lsr = 16 - shift_prec.blue_prec in
-	fun red: red green: green blue: blue ->
+	fun ~red: red ~green: green ~blue: blue ->
 	  (((red lsr red_lsr) lsl shift_prec.red_shift) lor 
     	   ((green lsr green_lsr) lsl shift_prec.green_shift) lor
     	   ((blue lsr blue_lsr) lsl shift_prec.blue_shift))
