@@ -1,5 +1,9 @@
 $Id$
 
+2003.06.16 [Benjamin]
+  * Fix dependencies in Makefile. Now make -j works.
+  * Add "world" target in Makefile. 
+
 2003.06.15 [Jacques]
   * Starting automatic generation of code. Should reduce need to write
     wrappers and externals manually.
