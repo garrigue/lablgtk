@@ -7,6 +7,7 @@ class gtkobj obj = object
   val obj = obj
   method destroy () = Object.destroy obj
   method disconnect = Signal.disconnect obj
+  method get_type () = Object.get_type obj
 end
 
 class gtkobj_signals obj = object
@@ -71,7 +72,7 @@ class widget_misc obj = object
   method realize () = Widget.realize obj
   method unrealize () = Widget.realize obj
   method draw = Widget.draw obj
-  method event : 'a. 'a Gdk.event -> unit = Widget.event obj
+  method event : 'a. 'a Gdk.event -> bool = Widget.event obj
   method activate () = Widget.activate obj
   method reparent : 'a. (#is_widget as 'a) -> unit =
     fun w -> Widget.reparent obj w#as_widget
@@ -83,6 +84,7 @@ class widget_misc obj = object
     fun w -> Widget.is_ancestor obj w#as_widget
   method add_accelerator = Widget.add_accelerator obj
   method remove_accelerator = Widget.remove_accelerator obj
+  method lock_accelerators () = Widget.lock_accelerators obj
   method set = Widget.set ?obj
   (* get functions *)
   method name = Widget.get_name obj
@@ -92,6 +94,8 @@ class widget_misc obj = object
   method visual = Widget.get_visual obj
   method pointer = Widget.get_pointer obj
   method style = Widget.get_style obj
+  method visible = Widget.visible obj
+  method parent = Widget.parent obj
 end
 
 class event_signals obj = object
@@ -150,6 +154,10 @@ class container obj = object
     fun w -> Container.remove obj w#frame
   method children = List.map fun:(new widget) (Container.children obj)
   method set_size ?:border = Container.set ?obj ?border_width:border
+  method set_focus_vadjustment = fun (w : adjustment) ->
+    Container.set_focus_vadjustment obj (w # as_adjustment)
+  method set_focus_hadjustment = fun (w : adjustment) ->
+    Container.set_focus_hadjustment obj (w # as_adjustment)
 end
 
 class container_signals obj = object
@@ -172,6 +180,27 @@ class event_box = container_full
 
 let new_event_box () =
   Container.setter ?(EventBox.create ()) ?cont:(pack_return (new event_box))
+
+class handle_box_skel obj = object
+  inherit container obj
+  method set_shadow_type     = HandleBox.set_shadow_type     obj
+  method set_handle_position = HandleBox.set_handle_position obj
+  method set_snap_edge       = HandleBox.set_snap_edge       obj
+end
+
+class handle_box_signals obj = object
+  method child_attached = Signal.connect sig:HandleBox.Signals.child_attached obj
+  method child_detached = Signal.connect sig:HandleBox.Signals.child_detached obj
+end
+
+class handle_box obj = object
+  inherit handle_box_skel obj
+  method connect = new handle_box_signals obj
+end
+
+let new_handle_box () =
+  Container.setter ?(HandleBox.create ()) ?cont:(pack_return (new handle_box))
+
 
 class frame obj = object
   inherit container_full obj
@@ -253,8 +282,8 @@ class menu_item obj = object
   method connect = new menu_item_signals obj
 end
 
-let new_menu_item ?opt ?:label =
-  Container.setter ?(MenuItem.create ?opt ?:label)
+let new_menu_item ?opt ?:label ?:tearoff [< false >] =
+  Container.setter ?(MenuItem.create ?opt ?:label :tearoff)
     ?cont:(pack_return (new menu_item))
 
 class check_menu_item_signals obj = object
@@ -326,6 +355,17 @@ let new_box dir ?:homogeneous ?:spacing =
   let w = Box.create dir ?:homogeneous ?:spacing in
   Container.setter ?w ?cont:(pack_return (new box))
 
+class bbox obj = object
+  inherit box obj
+  method set_layout  = BBox.set_layout  obj
+  method set_spacing = BBox.set_spacing obj
+  method set_child_size = BBox.set_child_size obj
+end
+
+let new_bbox dir =
+  let w = BBox.create dir in
+  BBox.setter ?w ?cont:(Container.setter ?cont:(pack_return (new bbox)))
+
 class statusbar_context obj ctx = object (self)
   val obj : Statusbar.t obj = obj
   val context : Statusbar.context = ctx
@@ -349,12 +389,20 @@ let new_statusbar ?(_ : unit option) =
   let w = Statusbar.create () in
   Container.setter ?w ?cont:(pack_return (new statusbar))
 
+class type is_window = object method as_window : Window.t obj end
+
 class window obj = object
   inherit container_full obj
+  method as_window = Window.coerce obj
   method show_all () = Widget.show_all obj
   method activate_focus () = Window.activate_focus obj
   method activate_default () = Window.activate_default obj
   method add_accel_group = Window.add_accel_group obj
+  method set_modal = Window.set_modal obj
+  method set_default_size = Window.set_default_size obj
+  method set_position = Window.set_position obj
+  method set_transient_for : 'a . (#is_window as 'a) -> unit
+      = fun w -> Window.set_transient_for obj (w #as_window)
   method set_wm ?:title ?:name ?class:c =
     Window.setter obj cont:null_cont
       ?:title ?wmclass_name:name ?wmclass_class:c
@@ -365,6 +413,19 @@ end
 let new_window dir =
   Window.setter ?(Window.create dir)
     ?cont:(Container.setter ?cont:(new window))
+
+class color_selection obj = object
+  inherit box obj
+  method set_update_policy = ColorSelection.set_update_policy obj
+  method set_opacity = ColorSelection.set_opacity obj
+  method set_color = ColorSelection.set_color obj
+  method get_color = ColorSelection.get_color obj
+end
+
+let new_color_selection () =
+  Container.setter
+    ?(ColorSelection.create ())
+    ?cont:(Widget.setter ?cont:(new color_selection))
 
 class dialog obj = object
   inherit window obj
@@ -436,6 +497,19 @@ let new_radio_button ?opt ?:group ?:label =
     ?cont:(ToggleButton.setter
 	     ?cont:(Container.setter ?cont:(pack_return (new radio_button))))
 
+class color_selection_dialog obj = object
+  inherit window obj
+  method ok_button     = new button (ColorSelection.ok_button     obj)
+  method cancel_button = new button (ColorSelection.cancel_button obj)
+  method help_button   = new button (ColorSelection.help_button   obj)
+  method colorsel      = new color_selection (ColorSelection.colorsel obj)
+end
+
+let new_color_selection_dialog :title =
+  Window.setter ?(ColorSelection.create_dialog title)
+    ?cont:(Container.setter
+	     ?cont:(Widget.setter ?cont:(new color_selection_dialog)))
+  
 class file_selection obj = object
   inherit window obj
   method set_filename = FileSelection.set_filename obj
@@ -490,6 +564,7 @@ class menu obj = object
   method popup = Menu.popup obj
   method popdown () = Menu.popdown obj
   method as_menu : Menu.t obj = obj
+  method set_accel_group = Menu.set_accel_group obj
 end
 
 let new_menu ?(_ : unit option) =
@@ -676,6 +751,36 @@ class separator = widget_full
 
 let new_separator dir =
   pack_return ?(new separator) ?(Separator.create dir)
+
+class toolbar obj = object
+  inherit container_full obj
+  method insert_widget : 'a .
+      (#is_widget as 'a) -> ?tooltip:string -> ?tooltip_private:string -> ?pos:int -> unit =
+	fun (w : #is_widget) ?:tooltip ?:tooltip_private ?:pos ->
+	  Toolbar.insert_widget obj (w #as_widget) ?:tooltip ?:tooltip_private ?:pos
+
+  method insert_button : 'a .
+        ?type:[BUTTON RADIOBUTTON TOGGLEBUTTON] -> ?text:string ->
+        ?tooltip:string -> ?tooltip_private:string ->
+        ?icon:([> widget] as 'a) Gtk.obj -> ?pos:int ->
+	?callback:(unit -> unit) -> Gtk.Button.t Gtk.obj =
+    fun ?type:t ?:text ?:tooltip ?:tooltip_private ?:icon ?:pos ?:callback ->
+    Toolbar.insert_button obj ?type:t ?:text ?:tooltip ?:tooltip_private
+	?:icon ?:pos ?:callback
+
+  method insert_space ?:pos = Toolbar.insert_space obj ?:pos
+
+  method set_orientation = Toolbar.set_orientation obj
+  method set_style = Toolbar.set_style obj
+  method set_space_size = Toolbar.set_space_size obj
+  method set_space_style = Toolbar.set_space_style obj
+  method set_tooltips = Toolbar.set_tooltips obj
+  method set_button_relief = Toolbar.set_button_relief obj
+  method get_button_relief = Toolbar.get_button_relief obj
+end
+
+let new_toolbar dir ?:style =
+  Container.setter (Toolbar.create dir ?:style)  ?cont:(pack_return(new toolbar))
 
 module Main : sig
   val locale : string

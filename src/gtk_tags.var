@@ -109,3 +109,6 @@ type spin_button_update_policy = "GTK_UPDATE_"
 
 type accel_flag = "GTK_ACCEL_"
     [ VISIBLE SIGNAL_VISIBLE LOCKED ]
+
+type toolbar_space_style = "GTK_TOOLBAR_SPACE_"
+    [ EMPTY LINE ]
