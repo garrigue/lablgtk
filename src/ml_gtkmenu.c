@@ -19,6 +19,7 @@
 
 #define GtkMenuItem_val(val) check_cast(GTK_MENU_ITEM,val)
 ML_0 (gtk_menu_item_new, Val_GtkWidget_sink)
+ML_0 (gtk_separator_menu_item_new, Val_GtkWidget_sink)
 ML_0 (gtk_tearoff_menu_item_new, Val_GtkWidget_sink)
 ML_1 (gtk_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
 ML_1 (gtk_menu_item_new_with_mnemonic, String_val, Val_GtkWidget_sink)
