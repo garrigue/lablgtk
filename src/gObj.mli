@@ -102,6 +102,7 @@ class widget_misc :
     method add_accelerator :
       sig:(Gtk.widget, unit -> unit) GtkSignal.t -> accel_group -> key:char ->
       ?mod:Gdk.Tags.modifier list -> ?flags:Tags.accel_flag list -> unit
+    method allocation : Gdk.rectangle
     method colormap : Gdk.colormap
     method draw : Gdk.Rectangle.t -> unit
     method event : 'a. 'a Gdk.event -> bool

@@ -37,15 +37,16 @@ THLIBS = unix.cma threads.cma
 THLDFLAGS = -lthreads -lunix
 
 ifdef USE_CC
-CCOMPILER = $(CC) -c -I$(LABLLIB)/olabl $(CFLAGS)
+CCOMPILER = $(CC) -c -I$(LABLLIB) $(CFLAGS)
 else
 CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
 endif
 
 ifdef USE_GL
+MLFLAGS += -I $(LABLLIB)/lablGL
 GLLINK = -I $(LABLLIB)/lablGL lablgl.cma \
 	-cclib "-lgtkgl -L$(LABLLIB)/lablGL -llablgl -lGL -lGLU"
-GLMLOBJS = gtkGl.cmo
+GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.o
 endif
 
@@ -79,7 +80,7 @@ THOBJS = gtkThread.cmo threadObj.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
 	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" \
-		lablgtk.cma $(GLLINK)
+		$(GLLINK) lablgtk.cma
 
 lablgtkopt: liblablgtk.a lablgtk.cmxa
 

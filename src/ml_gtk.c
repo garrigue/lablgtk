@@ -273,6 +273,16 @@ ML_1 (GTK_WIDGET_VISIBLE, GtkWidget_val, Val_bool)
 
 Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
 Make_Extractor (gtk_widget, GtkWidget_val, parent, Val_GtkWidget)
+value Val_GtkAllocation (GtkAllocation allocation)
+{
+    value ret = alloc (4, 0);
+    Field(ret,0) = allocation.x;
+    Field(ret,1) = allocation.y;
+    Field(ret,2) = allocation.width;
+    Field(ret,3) = allocation.height;
+    return ret;
+}
+Make_Extractor (gtk_widget, GtkWidget_val, allocation, Val_GtkAllocation)
 
 /* gtkcontainer.h */
 

@@ -146,6 +146,7 @@ class widget_misc obj = object
   method parent =
     try new widget_wrapper (Object.unsafe_cast (Widget.parent obj))
     with Null_pointer -> raise Not_found
+  method allocation = Widget.allocation obj
 end
 
 and widget obj = object (self)

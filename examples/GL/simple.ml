@@ -6,10 +6,9 @@ let main () =
   let w = new GWindow.window title:"LablGL/Gtk" in
   w#connect#destroy callback:Main.quit;
   let area =
-    new GtkGl.area [`RGBA;`DEPTH_SIZE 1] width:500 height:500 packing:w#add in
-  area#connect#event#expose callback:
-    begin fun ev ->
-      area#make_current ();
+    new GlGtk.area [`RGBA;`DEPTH_SIZE 1] width:500 height:500 packing:w#add in
+  area#connect#display callback:
+    begin fun () ->
       GlClear.color (0.0, 0.0, 0.0);
       GlClear.clear [`color];
       GlDraw.color (1.0, 1.0, 1.0);
@@ -22,8 +21,6 @@ let main () =
       GlDraw.vertex x:(0.5) y:(0.5);
       GlDraw.vertex x:(0.5) y:(-0.5);
       GlDraw.ends ();
-      Gl.flush ();
-      true
     end;
   Timeout.add 10000 callback:(fun () -> w#destroy ();false);
   w#show ();
