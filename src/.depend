@@ -49,9 +49,9 @@ gRange.cmo: gData.cmi gObj.cmi gaux.cmo gtk.cmo gtkBase.cmo gtkRange.cmo \
 gRange.cmx: gData.cmx gObj.cmx gaux.cmx gtk.cmx gtkBase.cmx gtkRange.cmx \
     gRange.cmi 
 gText.cmo: gObj.cmi gaux.cmo gdkEvent.cmo gdkPixbuf.cmi glib.cmi gobject.cmo \
-    gtk.cmo gtkBase.cmo gtkSignal.cmi gtkText.cmo gText.cmi 
+    gtk.cmo gtkBase.cmo gtkSignal.cmi gtkText.cmo pango.cmo gText.cmi 
 gText.cmx: gObj.cmx gaux.cmx gdkEvent.cmx gdkPixbuf.cmx glib.cmx gobject.cmx \
-    gtk.cmx gtkBase.cmx gtkSignal.cmx gtkText.cmx gText.cmi 
+    gtk.cmx gtkBase.cmx gtkSignal.cmx gtkText.cmx pango.cmx gText.cmi 
 gToolbox.cmo: gButton.cmi gEdit.cmi gMain.cmi gMenu.cmi gMisc.cmi gPack.cmi \
     gWindow.cmi gdkEvent.cmo gdkKeysyms.cmo gToolbox.cmi 
 gToolbox.cmx: gButton.cmx gEdit.cmx gMain.cmx gMenu.cmx gMisc.cmx gPack.cmx \
@@ -86,6 +86,12 @@ glade.cmx: gobject.cmx gtk.cmx gtkBase.cmx gtkMain.cmx gtkSignal.cmx \
     gtkWindow.cmx glade.cmi 
 glib.cmo: glib.cmi 
 glib.cmx: glib.cmi 
+gnoCanvas.cmo: gObj.cmi gaux.cmo gdkEvent.cmo gnomeCanvas.cmo gobject.cmo \
+    gtk.cmo gtkBase.cmo gtkSignal.cmi gnoCanvas.cmi 
+gnoCanvas.cmx: gObj.cmx gaux.cmx gdkEvent.cmx gnomeCanvas.cmx gobject.cmx \
+    gtk.cmx gtkBase.cmx gtkSignal.cmx gnoCanvas.cmi 
+gnomeCanvas.cmo: gdk.cmi gdkEvent.cmo gobject.cmo gtk.cmo gtkSignal.cmi 
+gnomeCanvas.cmx: gdk.cmx gdkEvent.cmx gobject.cmx gtk.cmx gtkSignal.cmx 
 gobject.cmo: gpointer.cmi 
 gobject.cmx: gpointer.cmx 
 gpointer.cmo: gpointer.cmi 
@@ -168,7 +174,7 @@ gPack.cmi: gContainer.cmi gData.cmi gObj.cmi gtk.cmo gtkPack.cmo \
     gtkSignal.cmi 
 gRange.cmi: gData.cmi gObj.cmi gtk.cmo 
 gText.cmi: gObj.cmi gdk.cmi gdkEvent.cmo gdkPixbuf.cmi glib.cmi gobject.cmo \
-    gtk.cmo gtkSignal.cmi gtkText.cmo pango.cmo 
+    gtk.cmo gtkSignal.cmi gtkText.cmo 
 gToolbox.cmi: gList.cmi gMenu.cmi gObj.cmi 
 gTree.cmi: gContainer.cmi gObj.cmi gobject.cmo gpointer.cmi gtk.cmo \
     gtkSignal.cmi 
@@ -179,5 +185,7 @@ gdk.cmi: gobject.cmo gpointer.cmi pango.cmo
 gdkPixbuf.cmi: gdk.cmi gobject.cmo gpointer.cmi 
 glGtk.cmi: gObj.cmi gpointer.cmi gtk.cmo gtkSignal.cmi 
 glade.cmi: gobject.cmo gtk.cmo 
+gnoCanvas.cmi: gObj.cmi gdk.cmi gdkEvent.cmo gnomeCanvas.cmo gobject.cmo \
+    gtk.cmo gtkSignal.cmi 
 gtkSignal.cmi: gobject.cmo 
 rsvg.cmi: gdkPixbuf.cmi 
