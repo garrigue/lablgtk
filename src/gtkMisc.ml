@@ -6,6 +6,9 @@ open Gtk
 open Tags
 open GtkBase
 
+external _gtkmisc_init : unit -> unit = "ml_gtkmisc_init"
+let () = _gtkmisc_init ()
+
 module GammaCurve = struct
   let cast w : gamma_curve obj = Object.try_cast w "GtkGammaCurve"
   external create : unit -> gamma_curve obj = "ml_gtk_gamma_curve_new"

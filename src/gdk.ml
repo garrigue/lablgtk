@@ -13,7 +13,7 @@ type window = [`drawable|`gdkwindow] obj
 type pixmap = [`drawable|`gdkpixmap] obj
 type bitmap = [`drawable|`gdkpixmap|`gdkbitmap] obj
 type font
-type image
+type image = [`gdkimage] obj
 type atom
 type keysym = int
 type +'a event
@@ -50,7 +50,7 @@ module Tags = struct
     | `SUBSTRUCTURE | `SCROLL
     | `ALL_EVENTS ]
 
-  type extension_events =
+  type extension_mode =
     [ `NONE | `ALL | `CURSOR ]
 
   type visibility_state =
@@ -93,6 +93,14 @@ module Tags = struct
     | `INT32S of int32 array ]
 
   type xdata_ret = [ xdata | `NONE ]
+
+  type gravity =
+    [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `CENTER | `EAST
+    | `SOUTH_WEST | `SOUTH | `SOUTH_EAST | `STATIC ]
+
+  type window_type_hint =
+    [ `NORMAL | `DIALOG | `MENU | `TOOLBAR | `SPLASHSCREEN | `UTILITY
+    | `DOCK | `DESKTOP ]
 end
 open Tags
 

@@ -1,5 +1,9 @@
 $Id$
 
+2003.06.15 [Jacques]
+  * Starting automatic generation of code. Should reduce need to write
+    wrappers and externals manually.
+
 2003.06.13 [Benjamin]
   * Experimental g_type_register_static: not to be used at this time
 

@@ -16,6 +16,17 @@ let hash_variant s =
   (* make it signed for 64 bits architectures *)
   if !accu > 0x3FFFFFFF then !accu - (1 lsl 31) else !accu
 
+let camlize id =
+  let b = Buffer.create (String.length id + 4) in
+  for i = 0 to String.length id - 1 do
+    if id.[i] >= 'A' && id.[i] <= 'Z' then begin
+      if i > 0 then Buffer.add_char b '_';
+      Buffer.add_char b (Char.lowercase id.[i])
+    end
+    else Buffer.add_char b id.[i]
+  done;
+  Buffer.contents b
+
 open Genlex
 
 let lexer = make_lexer ["type"; "="; "["; "]"; "`"; "|"]
@@ -48,13 +59,16 @@ open Printf
 let hashes = Hashtbl.create 57
 
 let all_convs = ref []
+let package = ref ""
+let pkgprefix = ref ""
 
 let declaration ~hc ~cc = parser
     [< ' Kwd "type"; public = may_public; noconv = may_noconv;
-       ' Ident name; ' Kwd "="; prefix = may_string;
+       ' Ident mlname; name = may_string; ' Kwd "="; prefix = may_string;
        ' Kwd "["; _ = may_bar; tags = ident_list; ' Kwd "]";
        suffix = may_string >] ->
     let oh x = fprintf hc x and oc x = fprintf cc x in
+    let name = if name = "" then !pkgprefix ^ mlname else name in
     (* Output tag values to headers *)
     let first = ref true in
     List.iter tags ~f:
@@ -95,7 +109,7 @@ let declaration ~hc ~cc = parser
     and cname =
       String.capitalize name
     in
-    all_convs := name :: !all_convs;
+    all_convs := (name, mlname, tags) :: !all_convs;
     let tags =
       List.sort tags ~cmp:
         (fun (tag1,_) (tag2,_) ->
@@ -118,35 +132,50 @@ let declaration ~hc ~cc = parser
       name name;
     oh "#define %s_val(key) ml_lookup_to_c (ml_table_%s, key)\n\n"
       cname name;
+  | [< ' Ident "package"; ' String s >] ->
+      package := s
+  | [< ' Ident "prefix"; ' String s >] ->
+      pkgprefix := s
   | [< >] -> raise End_of_file
 
 
-let process ic ~hc ~cc ~mlc =  
+let process ic ~hc ~cc =  
   all_convs := [];
   let chars = Stream.of_channel ic in
   let s = lexer chars in
   try
     while true do declaration s ~hc ~cc done
   with End_of_file ->
-    if !all_convs <> [] then begin
+    if !all_convs <> [] && !package <> "" then begin
       let oc x = fprintf cc x in
-      oc "static lookup_info *ml_lookup_tables[] = {\n";
+      oc "CAMLprim value ml_%s_get_tables ()\n{\n" !package;
+      oc "  static lookup_info *ml_lookup_tables[] = {\n";
       let convs = List.rev !all_convs in
-      List.iter convs ~f:(fun s -> oc "  ml_table_%s,\n" s);
-      oc "};\n";
-      match mlc with None -> ()
-      | Some mlc ->
-          let out fmt = Printf.fprintf mlc fmt in
-          out "open Gpointer\n";
-          out "open Gtk.Tags\n\n";
-          out "external _get_tables : unit ->\n";
-          out "    %s variant_table\n" (List.hd convs);
-          List.iter (List.tl convs) ~f:
-            (fun s -> out "  * %s variant_table\n" s);
-          out "  = \"ml_gtk_get_tables\"\n\n";
-          out "let %s" (List.hd convs);
-          List.iter (List.tl convs) ~f:(fun s -> out "\n  , %s" s);
-          out " = _get_tables ()\n"
+      List.iter convs ~f:(fun (s,_,_) -> oc "    ml_table_%s,\n" s);
+      oc "  };\n";
+      oc "  return (value)ml_lookup_tables;";
+      oc "}\n";
+      let mlc = open_out (!package ^ "Enums.ml") in
+      let ppf = Format.formatter_of_out_channel mlc in
+      let out fmt = Format.fprintf ppf fmt in
+      out "open Gpointer\n@.";
+      List.iter convs ~f:
+        begin fun (_,name,tags) ->
+          out "@[<hv 2>type %s =@ @[<hov>[ `%s" name (fst (List.hd tags));
+          List.iter (List.tl tags) ~f:
+            (fun (s,_) -> out "@ | `%s" s);
+          out " ]@]@]@."
+        end;
+      out "\nexternal _get_tables : unit ->\n";
+      let (_,name0,_) = List.hd convs in
+      out "    %s variant_table\n" name0;
+      List.iter (List.tl convs) ~f:
+        (fun (_,s,_) -> out "  * %s variant_table\n" s);
+      out "  = \"ml_%s_get_tables\"\n\n" !package;
+      out "@[<hov 4>let %s" name0;
+      List.iter (List.tl convs) ~f:(fun (_,s,_) -> out ",@ %s" s);
+      out " = _get_tables ()@]@.";
+      close_out mlc
     end
   | Stream.Error err ->
       failwith
@@ -157,13 +186,10 @@ let main () =
   let inputs = ref [] in
   let header = ref "" in
   let code = ref "" in
-  let mlwrappers = ref "" in
   Arg.parse
     [ "-h", Arg.String ((:=) header), "file to output macros (file.h)";
       "-c", Arg.String ((:=) code),
       "file to output conversion tables (file.c)";
-      "-ml", Arg.String ((:=) mlwrappers),
-      "file to put ml wrappers in (no default)";
       "-static", Arg.Set static, "do not export conversion tables" ]
     (fun s -> inputs := s :: !inputs)
     "usage: varcc [options] file.var";
@@ -180,17 +206,15 @@ let main () =
       if !code = "" then code := rad ^ ".c"
   end;
   let hc = open_out !header and cc = open_out !code in
-  let mlc = if !mlwrappers <> "" then Some (open_out !mlwrappers) else None in
   let chars = Stream.of_channel stdin in
-  if inputs = [] then process stdin ~hc ~cc ~mlc else begin
+  if inputs = [] then process stdin ~hc ~cc else begin
     List.iter inputs ~f:
       begin fun file ->
         let ic = open_in file in
-        try process ic ~hc ~cc ~mlc; close_in ic
+        try process ic ~hc ~cc; close_in ic
         with exn -> close_in ic; prerr_endline ("Error in " ^ file); raise exn
       end
   end;
-  close_out hc; close_out cc;
-  match mlc with None -> () | Some c -> close_out c
+  close_out hc; close_out cc
 
 let _ = Printexc.print main ()

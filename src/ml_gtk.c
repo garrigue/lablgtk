@@ -31,11 +31,6 @@ void ml_raise_gtk (const char *errmsg)
 
 #include "gtk_tags.c"
 
-CAMLprim value ml_gtk_get_tables ()
-{
-  return (value)ml_lookup_tables;
-}
-
 static Make_Flags_val (Dest_defaults_val)
 static Make_Flags_val (Target_flags_val)
 static Make_Flags_val (GdkModifier_val)
@@ -259,7 +254,7 @@ ML_3 (gtk_widget_set_usize, GtkWidget_val, Int_val, Int_val, Unit)
 ML_3 (gtk_widget_set_size_request, GtkWidget_val, Int_val, Int_val, Unit)
 ML_2 (gtk_widget_add_events, GtkWidget_val, Flags_Event_mask_val, Unit)
 ML_2 (gtk_widget_set_events, GtkWidget_val, Flags_Event_mask_val, Unit)
-ML_2 (gtk_widget_set_extension_events, GtkWidget_val, Extension_events_val,
+ML_2 (gtk_widget_set_extension_events, GtkWidget_val, Extension_mode_val,
       Unit)
 ML_1 (gtk_widget_get_toplevel, GtkWidget_val, Val_GtkWidget)
 ML_2 (gtk_widget_get_ancestor, GtkWidget_val, Int_val, Val_GtkWidget)

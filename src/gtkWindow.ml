@@ -29,13 +29,13 @@ module Window = struct
       [>`window] obj -> ?pos: bool -> ?min_size: int * int ->
       ?max_size: int * int -> ?base_size: int * int ->
       ?aspect: float * float -> ?resize_inc: int * int ->
-      ?win_gravity: gravity -> ?user_pos: bool ->
+      ?win_gravity: Gdk.Tags.gravity -> ?user_pos: bool ->
       ?user_size: bool -> [>`widget] obj -> unit
       = "ml_gtk_window_set_geometry_hints_bc"
         "ml_gtk_window_set_geometry_hints"
-  external set_gravity : [>`window] obj -> gravity -> unit
+  external set_gravity : [>`window] obj -> Gdk.Tags.gravity -> unit
       = "ml_gtk_window_set_gravity"
-  external get_gravity : [>`window] obj -> gravity
+  external get_gravity : [>`window] obj -> Gdk.Tags.gravity
       = "ml_gtk_window_get_gravity"
   external set_transient_for : [>`window] obj ->[>`window] obj -> unit
       = "ml_gtk_window_set_transient_for"
@@ -82,45 +82,7 @@ module Window = struct
   external get_role : [>`window] obj -> string
       = "ml_gtk_window_get_role"
 
-  module Prop = struct
-    open Gobject
-    open Data
-    let allow_grow = {name="allow_grow"; classe=`window; conv=boolean}
-    let allow_shrink = {name="allow_shrink"; classe=`window; conv=boolean}
-    let default_height = {name="default_height"; classe=`window; conv=int}
-    let default_width = {name="default_width"; classe=`window; conv=int}
-    let destroy_with_parent =
-      {name="destroy_with_parent"; classe=`window; conv=boolean}
-    let has_toplevel_focus = (* ro *)
-      {name="has_toplevel_focus"; classe=`window; conv=boolean}
-    let icon : (_, GdkPixbuf.pixbuf option) property =
-      {name="icon"; classe=`window; conv=gobject_option}
-    let is_active = (* ro *)
-      {name="is_active"; classe=`window; conv=boolean}
-    let modal = {name="modal"; classe=`window; conv=boolean}
-    let resizable = {name="resizable"; classe=`window; conv=boolean}
-    let screen : (_, Gdk.screen) property =
-      {name="screen"; classe=`window; conv=gobject}
-    let skip_pager_hint =
-      {name="skip_pager_hint"; classe=`window; conv=boolean}
-    let skip_taskbar_hint =
-      {name="skip_taskbar_hint"; classe=`window; conv=boolean}
-    let title =
-      {name="title"; classe=`window; conv=string}
-    let conv_hint = enum Tables.window_type_hint
-    let type_hint = {name="type_hint"; classe=`window; conv=conv_hint}
-    let conv_pos = enum Tables.window_position
-    let window_position =
-      {name="window_position"; classe=`window; conv=conv_pos}
-    let check () =
-      let w = create `TOPLEVEL in
-      let c p = Gobject.Property.check w p in
-      c allow_grow; c allow_shrink; c default_height; c default_width;
-      c destroy_with_parent; c has_toplevel_focus; c icon; c is_active;
-      c modal; c resizable; c screen; c skip_pager_hint;
-      c skip_taskbar_hint; c title; c type_hint; c window_position; 
-      Object.destroy w
-  end
+  module Prop = GtkProps.PWindow
 
   let set_wmclass ?name ?clas:wm_class w =
     set_wmclass w ~name:(may_default get_wmclass_name w ~opt:name)
@@ -155,7 +117,7 @@ module Window = struct
     let move_focus =
       let marshal f argv = function
         | `INT dir :: _ ->
-            f (Gpointer.decode_variant Tables.direction_type dir)
+            f (Gpointer.decode_variant GtkEnums.direction_type dir)
         | _ -> invalid_arg "GtkWindow.Window.Signals.marshal_focus"
       in { name = "move_focus"; classe = `window; marshaller = marshal }
     let set_focus =
@@ -181,7 +143,7 @@ module Dialog = struct
       = "ml_gtk_dialog_set_default_response"
   external run : [>`dialog] obj -> int
       = "ml_gtk_dialog_run"
-  let std_response = Gpointer.encode_variant Tables.response
+  let std_response = Gpointer.encode_variant GtkEnums.response
   external create_message :
       ?parent:[>`window] obj -> message_type:Gtk.Tags.message_type ->
       buttons:Gtk.Tags.buttons -> message:string -> unit -> dialog obj

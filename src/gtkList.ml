@@ -287,7 +287,7 @@ module CList = struct
       { name = "click_column"; classe = `clist; marshaller = marshal_int }
     let marshal_scroll f argv = function
       | `INT st :: `FLOAT (pos : clampf) :: _ ->
-          f (Gpointer.decode_variant Tables.scroll_type st) ~pos
+          f (Gpointer.decode_variant GtkEnums.scroll_type st) ~pos
       | _ -> invalid_arg "GtkList.CList.Signals.marshal_scroll"
     let scroll_horizontal =
       { name = "scroll_horizontal"; classe = `clist;
@@ -298,7 +298,7 @@ module CList = struct
     let emit_scroll =
       emit ~conv:ignore ~emitter:
         (fun ~cont t ~(pos:clampf) ->
-          cont [|`INT(Gpointer.encode_variant Tables.scroll_type t);
+          cont [|`INT(Gpointer.encode_variant GtkEnums.scroll_type t);
                  `FLOAT pos|])
   end
 end

@@ -112,9 +112,10 @@ GTKOBJS =  ml_gtk.o ml_pango.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o \
 	ml_gtktext.o ml_gtktree.o ml_gtkstock.o
 COBJS = ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o \
 	wrappers.o $(GTKOBJS)
-MLOBJS =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
+ENUMOBJS = gdkEnums.cmo gtkEnums.cmo
+MLOBJS =  gaux.cmo gpointer.cmo $(ENUMOBJS) glib.cmo gobject.cmo \
 	gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
-	gtk.cmo pango.cmo gtkSignal.cmo \
+	gtk.cmo pango.cmo gtkSignal.cmo gtkProps.cmo \
 	gtkData.cmo gtkStock.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
@@ -254,11 +255,15 @@ varcc: varcc.cmo
 propcc: propcc.cmo
 	$(LINKER) -o $@ $<
 
+gtkProps.ml: gtk.props propcc
+	./propcc -checks gtk.props > $@
+
 check_externals: check_externals.cmo
 	$(LINKER) -o $@ $<
 
 clean:
-	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml xml_lexer.ml
+	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml xml_lexer.ml \
+	  check_externals.ml propcc.ml *Enums.ml gtkProps.ml
 	rm -f \#*\# *~
 
 srcdoc: $(ALLOBJS)

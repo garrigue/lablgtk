@@ -18,11 +18,6 @@
 #include "gtk_tags.h"
 #include "pango_tags.c"
 
-CAMLprim value ml_pango_get_tables ()
-{
-  return (value)ml_lookup_tables;
-}
-
 
 /* PangoFontDescription */
 

@@ -12,7 +12,7 @@ class Widget noset {
   "height-request"       gint                 : Read / Write
   "is-focus"             gboolean             : Read / Write
   "name"                 gchararray           : Read / Write
-  "parent"               GtkContainer         : Read / Write
+  "parent"               GtkContainer_opt     : Read / Write
   "receives-default"     gboolean             : Read / Write
   "sensitive"            gboolean             : Read / Write
   "style"                GtkStyle             : Read / Write
@@ -33,7 +33,7 @@ class Label {
   "justify"              GtkJustification     : Read / Write
   "label"                gchararray           : Read / Write
   "mnemonic-keyval"      guint                : Read
-  "mnemonic-widget"      GtkWidget            : Read / Write
+  "mnemonic-widget"      GtkWidget_opt        : Read / Write
   "pattern"              gchararray           : Write
   "selectable"           gboolean             : Read / Write
   "selection-bound"      gint                 : Read
@@ -81,8 +81,8 @@ class Alignment {
 }
 
 class Frame {
-  "label"                gchararray           : Read / Write
-  "label-widget"         GtkWidget            : Read / Write
+  "label"                gchararray_opt       : Read / Write
+  "label-widget"         GtkWidget_opt        : Read / Write / NoSet
   "label-xalign"         gfloat               : Read / Write
   "label-yalign"         gfloat               : Read / Write
   "shadow-type"          GtkShadowType        : Read / Write
@@ -106,4 +106,52 @@ class ToggleButton {
   "active"               gboolean             : Read / Write
   "draw-indicator"       gboolean             : Read / Write
   "inconsistent"         gboolean             : Read / Write
+}
+
+class CheckButton {}
+
+class RadioButton {
+  "group"                GtkRadioButton       : Write
+}
+
+class OptionMenu {
+  "menu"                 GtkMenu              : Read / Write
+}
+
+class Item {}
+
+class CheckMenuItem {
+  "active"               gboolean             : Read / Write
+  "inconsistent"         gboolean             : Read / Write
+}
+
+class RadioMenuItem {}
+
+class ImageMenuItem {
+  "image"                GtkWidget            : Read / Write
+}
+
+class SeparatorMenuItem {}
+class TearoffMenuItem {}
+class ListItem {}
+class TreeItem {}
+
+class Window {
+  "allow-grow"           gboolean             : Read / Write
+  "allow-shrink"         gboolean             : Read / Write
+  "default-height"       gint                 : Read / Write
+  "default-width"        gint                 : Read / Write
+  "destroy-with-parent"  gboolean             : Read / Write
+  "has-toplevel-focus"   gboolean             : Read
+  "icon"                 GdkPixbuf_opt        : Read / Write
+  "is-active"            gboolean             : Read
+  "modal"                gboolean             : Read / Write
+  "resizable"            gboolean             : Read / Write
+  "screen"               GdkScreen            : Read / Write
+  "skip-pager-hint"      gboolean             : Read / Write
+  "skip-taskbar-hint"    gboolean             : Read / Write
+  "title"                gchararray           : Read / Write
+  "type"                 GtkWindowType        : Read / Write / Construct Only
+  "type-hint"            GdkWindowTypeHint    : Read / Write
+  "window-position"      GtkWindowPosition    : Read / Write
 }

@@ -18,6 +18,28 @@
 #include "gtk_tags.h"
 #include "gdk_tags.h"
 
+/* Init all */
+
+CAMLprim value ml_gtkmisc_init(value unit)
+{
+    /* Since these are declared const, must force gcc to call them! */
+    GType t =
+        gtk_gamma_curve_get_type() +
+        gtk_statusbar_get_type() +
+        gtk_calendar_get_type() +
+        gtk_drawing_area_get_type() +
+        gtk_misc_get_type() +
+        gtk_arrow_get_type() +
+        gtk_image_get_type() +
+        gtk_label_get_type() +
+        gtk_tips_query_get_type() +
+        gtk_pixmap_get_type() +
+        gtk_hseparator_get_type() +
+        gtk_vseparator_get_type() +
+        gtk_preview_get_type ();
+    return Val_GType(t);
+}
+
 /* gtkgamma.h */
 
 #define GtkGammaCurve_val(val) check_cast(GTK_GAMMA_CURVE,val)
