@@ -114,12 +114,15 @@ module Convert = struct
 
   external utf8_validate : string -> bool = "ml_g_utf8_validate"
 
+  let raise_bad_utf8 () = 
+    raise (Error (ILLEGAL_SEQUENCE, "Invalid byte sequence for UTF-8 string"))
+
   let locale_from_utf8 s =
     match get_charset () with
     | (true, _) -> 
 	if utf8_validate s 
 	then s 
-	else raise (Error (ILLEGAL_SEQUENCE, "Invalid byte sequence in conversion input"))
+	else raise_bad_utf8 ()
     | (false, to_codeset) ->
 	convert s ~to_codeset ~from_codeset:"UTF-8"
 
@@ -128,7 +131,7 @@ module Convert = struct
     | (true, _) -> 
 	if utf8_validate s 
 	then s 
-	else raise (Error (ILLEGAL_SEQUENCE, "Invalid byte sequence in conversion input"))
+	else raise_bad_utf8 ()
     | (false, from_codeset) ->
 	convert s ~to_codeset:"UTF-8" ~from_codeset
 
@@ -151,7 +154,7 @@ module Unichar = struct
   external digit_value : unichar -> int = "ml_g_unichar_digit_value"
   external xdigit_value : unichar -> int = "ml_g_unichar_xdigit_value"
 
-  external validate : unichar -> bool = "ml_g_unichar_validate"
+  external validate : unichar -> bool = "ml_g_unichar_validate" "noalloc"
   external isalnum : unichar -> bool = "ml_g_unichar_isalnum"
   external isalpha : unichar -> bool = "ml_g_unichar_isalpha"
   external iscntrl : unichar -> bool = "ml_g_unichar_iscntrl"
@@ -174,20 +177,27 @@ module Utf8 = struct
 
   let rec log64 n =
     if n = 0 then 0 else
-    1 + log64 (n lsr 6)
+    1 + log64 (n lsr 5)
   
+  let utf8_storage_len n =
+    if n < 0x80 then 1 else
+    log64 (n lsr 1)
+
+  (* this function is not exported, so it's OK to do a few 'unsafe' things *)
   let write_unichar s ~pos (c : unichar) =
-    if c < 0x80 then begin
-      s.[!pos] <- Char.chr c; incr pos
-    end else begin
-      let len = log64 c and p = !pos in
-      pos := !pos + len;
-      s.[p] <- Char.chr (((1 lsl len - 1) lsl (8-len)) lor (c lsr (len*6-6)));
+    let len = utf8_storage_len c in
+    let p = !pos in
+    if len = 1 then
+      String.unsafe_set s p (Char.unsafe_chr c)
+    else begin
+      String.unsafe_set s p (Char.unsafe_chr (((1 lsl len - 1) lsl (8-len)) lor (c lsr ((len-1)*6))));
       for i = 1 to len-1 do
-        s.[p+i] <- Char.chr (((c lsr ((len-i-1)*6)) land 0x3f) lor 0x80)
-      done
-    end
- 
+	String.unsafe_set s (p+i) 
+	  (Char.unsafe_chr (((c lsr ((len-1-i)*6)) land 0x3f) lor 0x80))
+      done ;
+    end ;
+    pos := p + len
+
   let from_unichar (n : unichar) =
     let s = String.create 6 and pos = ref 0 in
     write_unichar s ~pos n;
@@ -208,19 +218,36 @@ module Utf8 = struct
     let c = Char.code s.[!pos] in
     incr pos;
     let n = hi_bits c in
-    if n < 2 or n > 6 then c else
+    if n = 0 then c else (* if string is valid then 2 <= n <= 6 *)
     let u = ref (c land (1 lsl (7-n) - 1)) in
-    let len = String.length s in
     for i = 1 to n-1 do
-      u := !u lsl 6;
-      if !pos < len then 
-        let c = Char.code s.[!pos] in
-        if c land 0xc0 = 0x80 then begin
-          u := !u + c land 0x3f;
-          incr pos
-        end
+      let c = Char.code s.[!pos] in
+      u := !u lsl 6 + c land 0x3f ;
+      incr pos
     done;
     !u
+
+  let to_unichar_validated s ~pos : unichar =
+    let c = Char.code s.[!pos] in
+    incr pos ;
+    let n = hi_bits c in
+    if n = 0 then c else begin
+      if n = 1 || n > 6 then Convert.raise_bad_utf8 () ;
+      if !pos + n > String.length s then
+	raise (Convert.Error (Convert.PARTIAL_INPUT, "partial UTF-8 character")) ;
+      let u = ref (c land (1 lsl (7-n) - 1)) in
+      for i = 1 to n-1 do
+	let c = Char.code s.[!pos] in
+	if c lsr 6 <> 0b10 then Convert.raise_bad_utf8 () ;
+	u := !u lsl 6 + c land 0x3f ;
+	incr pos
+      done;
+      let v = !u in
+      (* reject overlong sequences && invalid values *)
+      if utf8_storage_len v <> n || not (Unichar.validate v)
+      then Convert.raise_bad_utf8 () ;
+      v
+    end
 
   let to_unistring s : unistring =
     let len = length s in
