@@ -127,6 +127,8 @@ ML_1(gtk_text_tag_get_priority, GtkTextTag_val, Val_int)
 ML_2(gtk_text_tag_set_priority, GtkTextTag_val, Int_val, Unit)
 ML_4(gtk_text_tag_event, GtkTextTag_val, GObject_val, GdkEvent_val, 
      GtkTextIter_val, Val_bool)
+/* export needed conversion */
+ML_1(Wrap_mode_val, (value), Val_int)
 
 /* gtktexttagtable */
 
@@ -157,17 +159,17 @@ ML_1 (gtk_text_buffer_get_char_count,GtkTextBuffer_val,Val_int)
 
 ML_1 (gtk_text_buffer_get_tag_table,GtkTextBuffer_val,Val_GtkTextTagTable)
 
-ML_4 (gtk_text_buffer_insert,GtkTextBuffer_val,
-      GtkTextIter_val, String_val,Int_val,Unit)
+ML_3 (gtk_text_buffer_insert, GtkTextBuffer_val,
+      GtkTextIter_val, SizedString_val, Unit)
 
-ML_3 (gtk_text_buffer_insert_at_cursor,GtkTextBuffer_val,
-      String_val,Int_val,Unit)
+ML_2 (gtk_text_buffer_insert_at_cursor,GtkTextBuffer_val,
+      SizedString_val, Unit)
 
-ML_5 (gtk_text_buffer_insert_interactive,GtkTextBuffer_val,
-      GtkTextIter_val, String_val,Int_val,Bool_val,Val_bool)
+ML_4 (gtk_text_buffer_insert_interactive,GtkTextBuffer_val,
+      GtkTextIter_val, SizedString_val, Bool_val, Val_bool)
 
-ML_4 (gtk_text_buffer_insert_interactive_at_cursor,GtkTextBuffer_val,
-      String_val,Int_val,Bool_val,Val_bool)
+ML_3 (gtk_text_buffer_insert_interactive_at_cursor,GtkTextBuffer_val,
+      SizedString_val, Bool_val, Val_bool)
 
 ML_4 (gtk_text_buffer_insert_range,GtkTextBuffer_val,
       GtkTextIter_val, GtkTextIter_val,GtkTextIter_val,Unit)
@@ -181,7 +183,7 @@ ML_3 (gtk_text_buffer_delete,GtkTextBuffer_val,
 ML_4 (gtk_text_buffer_delete_interactive,GtkTextBuffer_val,
       GtkTextIter_val, GtkTextIter_val,Bool_val,Val_bool)
 
-ML_3 (gtk_text_buffer_set_text, GtkTextBuffer_val, String_val , Int_val, Unit)
+ML_2 (gtk_text_buffer_set_text, GtkTextBuffer_val, SizedString_val, Unit)
 
 ML_4 (gtk_text_buffer_get_text, GtkTextBuffer_val, 
       GtkTextIter_val,GtkTextIter_val,Bool_val,Val_string)
@@ -193,11 +195,10 @@ ML_3 (gtk_text_buffer_insert_pixbuf, GtkTextBuffer_val,
       GtkTextIter_val,GdkPixbuf_val,Unit)
 
 ML_4 (gtk_text_buffer_create_mark, GtkTextBuffer_val, 
-      Option_val(arg2,String_val,NULL) Ignore,
-      GtkTextIter_val,Bool_val,Val_GtkTextMark)
+      String_option_val, GtkTextIter_val, Bool_val, Val_GtkTextMark)
 
 ML_2 (gtk_text_buffer_get_mark, GtkTextBuffer_val, 
-      String_val,Val_GtkTextMark_opt)
+      String_val, Val_GtkTextMark_opt)
 
 ML_1 (gtk_text_buffer_get_insert, GtkTextBuffer_val, Val_GtkTextMark)
 
@@ -213,7 +214,7 @@ ML_2 (gtk_text_buffer_delete_mark, GtkTextBuffer_val,
       GtkTextMark_val,Unit)
 
 ML_2 (gtk_text_buffer_delete_mark_by_name, GtkTextBuffer_val, 
-      String_val,Unit)
+      String_val, Unit)
 
 ML_2 (gtk_text_buffer_place_cursor, GtkTextBuffer_val, 
       GtkTextIter_val, Unit)
@@ -376,6 +377,9 @@ ML_1(gtk_text_buffer_end_user_action,GtkTextBuffer_val,Unit)
 
 
 /* gtktextview.h */
+
+ML_1 (Val_delete_type, Int_val, (value))
+ML_1 (Val_movement_step, Int_val, (value))
 
 ML_0 (gtk_text_view_new, Val_GtkWidget_sink)
 

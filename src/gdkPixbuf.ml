@@ -1,9 +1,10 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gdk
 
-type pixbuf
+type pixbuf = [`base|`pixbuf] obj
 type colorspace = [ `RGB ]
 type alpha_mode = [ `BILEVEL | `FULL ]
 type interpolation = [ `NEAREST | `TILES | `BILINEAR | `HYPER ]
@@ -37,6 +38,8 @@ external _create :
   = "ml_gdk_pixbuf_new"
 let create ~width ~height ?(bits=8) ?(colorspace=`RGB) ?(has_alpha=false) () =
   _create ~colorspace ~has_alpha ~bits ~width ~height
+
+let cast o : pixbuf = Gobject.try_cast o "GdkPixbuf"
 
 external copy : pixbuf -> pixbuf = "ml_gdk_pixbuf_copy" 
 external from_file : string -> pixbuf = "ml_gdk_pixbuf_new_from_file"

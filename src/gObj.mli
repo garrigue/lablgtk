@@ -9,7 +9,7 @@ class gtkobj :
   object
     val obj : 'a obj
     method destroy : unit -> unit
-    method get_id : int
+    method get_oid : int
   end
 
 class gtkobj_signals :

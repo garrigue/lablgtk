@@ -2,7 +2,7 @@
 
 (* Types *)
 
-type pixbuf
+type pixbuf = [`base|`pixbuf] Gobject.obj
 type colorspace = [ `RGB]
 type alpha_mode = [ `BILEVEL | `FULL]
 type interpolation = [ `BILINEAR | `HYPER | `NEAREST | `TILES]
@@ -14,6 +14,7 @@ val create :
   width:int -> height:int ->
   ?bits:int -> ?colorspace:colorspace -> ?has_alpha:bool -> unit -> pixbuf
 
+val cast : 'a Gobject.obj -> pixbuf
 external copy : pixbuf -> pixbuf = "ml_gdk_pixbuf_copy"
 external from_file : string -> pixbuf = "ml_gdk_pixbuf_new_from_file"
 external from_xpm_data : string array -> pixbuf

@@ -1,3 +1,5 @@
+(* $Id$ *)
+
 open Gaux
 open Gobject
 open Gtk
@@ -16,6 +18,9 @@ let marshal_what f _ = function
   | `POINTER _::_ -> invalid_arg "POINTER"
   | `STRING _::_  -> invalid_arg "STRING"
   | [] -> invalid_arg "NO ARGUMENTS"
+
+
+let textiter_of_pointer = ref (fun _ -> failwith "textiter_of_pointer")
 
 module Mark = struct
   let cast w : textmark obj = Object.try_cast w "GtkTextMark"
@@ -40,7 +45,7 @@ module Tag = struct
   external event : texttag obj -> 'a obj ->  'b Gdk.event -> textiter -> bool
     = "ml_gtk_text_tag_event"
   type property = 
-      [ | `NAME of string
+      [ `NAME of string
       | `BACKGROUND of string
       | `FOREGROUND of string 
       | `BACKGROUND_GDK of GDraw.color
@@ -165,6 +170,8 @@ module Tag = struct
     | `TABS_SET _ -> "tabs-set"
     | `INVISIBLE_SET _ -> "invisible-set"
 
+  external wrap_mode : Gtk.Tags.wrap_mode -> int = "ml_Wrap_mode_val"
+
   let set_property o (p:property) = match p with 
     | `NAME s | `BACKGROUND s | `FOREGROUND s | `FONT s | `FAMILY s 
     | `LANGUAGE s -> 
@@ -206,9 +213,7 @@ module Tag = struct
     | `WRAP_MODE b  -> assert false;
 	let gtyp = Gobject.Type.from_name "GtkWrapMode" in 
 	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set 
-	  v 
-	  (`INT (Obj.magic b)); (* some lookup is needed to translate...*) 
+	Gobject.Value.set v (`INT (wrap_mode b));
 	Gobject.set_property o (property_to_string p) v 
 
     | `DIRECTION b  -> assert false
@@ -219,15 +224,15 @@ module Tag = struct
 	Gobject.Value.set 
 	  v 
 	  (`POINTER (Some (Obj.magic (Pango.Font.copy f))));
-	(* Copying the font is COMPULSARY. 
+	(* Copying the font is COMPULSORY. 
 	   Otherwise it's freed by the value itself...*)
 	Gobject.set_property o (property_to_string p) v
   module Signals = struct
     open GtkSignal
     let marshal_event f _ = function
       |`OBJECT(Some p)::`POINTER(Some ev)::`POINTER(Some ti)::_ ->
-	 f ~origin:p (GdkEvent.unsafe_copy ev : GdkEvent.any)
-	  (Obj.magic ti:textiter)
+	  f ~origin:p (GdkEvent.unsafe_copy ev : GdkEvent.any)
+	    (!textiter_of_pointer ti)
       | _ -> invalid_arg "GtkText.Tag.Signals.marshal_event"
 	  
     let event = 
@@ -252,12 +257,12 @@ module TagTable = struct
 
   let marshal_texttag f _ = function 
     |`OBJECT(Some p)::_ ->
-       f (Obj.magic p:texttag)
+       f (Gobject.unsafe_cast p : texttag obj)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_texttag"
 
   let marshal_tag_changed f _ = function 
     | `OBJECT(Some p)::`BOOL b::_ ->
-       f (Obj.magic p:texttag) b
+       f (Gobject.unsafe_cast p : texttag obj) b
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_tag_changed"
 
   let tag_added = 
@@ -291,14 +296,16 @@ module Buffer = struct
     = "ml_gtk_text_buffer_get_char_count"
   external get_tag_table : textbuffer obj -> texttagtable obj 
     = "ml_gtk_text_buffer_get_tag_table"
-  external insert : textbuffer obj -> textiter -> string -> int 
-    -> unit = "ml_gtk_text_buffer_insert"
-  external insert_at_cursor : textbuffer obj -> string -> int 
-    -> unit = "ml_gtk_text_buffer_insert_at_cursor"
-  external insert_interactive : textbuffer obj -> textiter -> string -> int 
-    -> bool -> bool = "ml_gtk_text_buffer_insert_interactive"
-  external insert_interactive_at_cursor : textbuffer obj -> string -> int
-    -> bool -> bool = "ml_gtk_text_buffer_insert_interactive_at_cursor"
+  external insert : textbuffer obj -> textiter -> string -> unit
+    = "ml_gtk_text_buffer_insert"
+  external insert_at_cursor : textbuffer obj -> string -> unit
+    = "ml_gtk_text_buffer_insert_at_cursor"
+  external insert_interactive :
+    textbuffer obj -> textiter -> string -> bool -> bool
+    = "ml_gtk_text_buffer_insert_interactive"
+  external insert_interactive_at_cursor :
+    textbuffer obj -> string -> bool -> bool
+    = "ml_gtk_text_buffer_insert_interactive_at_cursor"
   external insert_range : textbuffer obj -> textiter -> textiter
     -> textiter -> unit = "ml_gtk_text_buffer_insert_range"
   external insert_range_interactive : textbuffer obj -> textiter -> textiter
@@ -307,8 +314,8 @@ module Buffer = struct
     = "ml_gtk_text_buffer_delete"
   external delete_interactive : textbuffer obj -> textiter -> textiter 
     -> bool -> bool = "ml_gtk_text_buffer_delete_interactive"
-  external set_text : textbuffer obj -> string -> int 
-    -> unit = "ml_gtk_text_buffer_set_text"
+  external set_text : textbuffer obj -> string -> unit
+    = "ml_gtk_text_buffer_set_text"
   external get_text : textbuffer obj -> textiter -> textiter -> 
     bool -> string = "ml_gtk_text_buffer_get_text"
   external get_slice : textbuffer obj -> textiter -> textiter -> 
@@ -380,47 +387,53 @@ module Buffer = struct
 
   let marshal_apply_tag f _ = function 
     |`OBJECT(Some p)::`POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
-       f (Obj.magic p:texttag) ~start:(Obj.magic ti1:textiter) 
-	~stop:(Obj.magic ti2:textiter)
+       f (Gobject.unsafe_cast p : texttag obj)
+        ~start:(!textiter_of_pointer ti1) 
+	~stop:(!textiter_of_pointer ti2)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_apply_tag"
 
   let marshal_delete_range f _ = function 
     | `POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
-       f ~start:(Obj.magic ti1:textiter) 
-	~stop:(Obj.magic ti2:textiter)
+       f ~start:(!textiter_of_pointer ti1) 
+	~stop:(!textiter_of_pointer ti2)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_delete_range"
   let marshal_insert_child_anchor f _ = function 
-    | `POINTER(Some ti)::`POINTER(Some tca)::_ ->
-       f (Obj.magic ti:textiter) 
-	(Obj.magic tca:textchildanchor)
+    | `POINTER(Some ti)::`OBJECT(Some tca)::_ ->
+       f (!textiter_of_pointer ti) 
+	(Gobject.unsafe_cast tca : textchildanchor obj)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_insert_child_anchor"
 
 
   let marshal_insert_pixbuf f _ = function 
-    | `POINTER(Some ti)::`POINTER(Some pb)::_ ->
-       f (Obj.magic ti:textiter) (Obj.magic pb:GdkPixbuf.pixbuf)
+    | `POINTER(Some ti)::`OBJECT(Some pb)::_ ->
+       f (!textiter_of_pointer ti) (Gobject.unsafe_cast pb : GdkPixbuf.pixbuf)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_insert_pixbuf"
 
-  let marshal_insert_text f _ = function 
-    | `POINTER(Some ti)::`STRING(Some s)::`INT i::_  ->
-       f (Obj.magic ti:textiter) s i
+  let marshal_insert_text f argv = function 
+    | `POINTER(Some ti)::`STRING(Some s)::`INT len::_  ->
+        let s =
+          if len = -1 then s else
+          Gpointer.peek_string ~pos:0 ~len
+            (Gobject.Closure.get_pointer argv ~pos:2)
+        in
+        f (!textiter_of_pointer ti) s
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_insert_text"
 
   let marshal_textmark f _ = function 
     | `OBJECT(Some tm)::_ -> 
-	f (Obj.magic tm:textmark)
+	f (Gobject.unsafe_cast tm : textmark obj)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_textmark"
 
   let marshal_mark_set f _ = function 
     | `POINTER(Some ti)::`OBJECT(Some tm)::_ -> 
-	f (Obj.magic ti:textiter) (Obj.magic tm:textmark) 
+	f (!textiter_of_pointer ti) (Gobject.unsafe_cast tm : textmark obj) 
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_mark_set"
   
   let marshal_remove_tag f _ = function 
     |`OBJECT(Some p)::`POINTER(Some ti1)::`POINTER(Some ti2)::_ ->
-       f (Obj.magic p:texttag) 
-	~start:(Obj.magic ti1:textiter) 
-	~stop:(Obj.magic ti2:textiter)
+       f (Gobject.unsafe_cast p : texttag obj) 
+	~start:(!textiter_of_pointer ti1) 
+	~stop:(!textiter_of_pointer ti2)
     | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_remove_tag"
 
   let apply_tag = 
@@ -596,20 +609,23 @@ module View = struct
 	   "ml_gtk_text_view_set_indent"
   external get_indent : textview obj -> int =
 	   "ml_gtk_text_view_get_indent"
+  external val_delete_type : int -> delete_type = "ml_Val_delete_type"
+  external val_movement_step : int -> movement_step = "ml_Val_movement_step"
+  external val_direction_type : int -> direction_type = "ml_Val_direction_type"
   module Signals = struct
     open GtkSignal
 
     let marshal_delete_from_cursor f _ = function 
-      |`POINTER(Some p)::`INT(i)::_ ->
-	 f (Obj.magic p:delete_type) i
+      |`INT ty ::`INT i ::_ ->
+	 f (val_delete_type ty) i
       | _ -> invalid_arg "GtkText.View.Signals.marshal_delete_from_cursor"
     let marshal_move_cursor f _ = function 
-      |`POINTER(Some p)::(`INT i)::(`BOOL b)::_ ->
-	 f (Obj.magic p:movement_step) i b
+      |`INT step :: `INT i :: `BOOL b :: _ ->
+	 f (val_movement_step step) i b
       | _ -> invalid_arg "GtkText.View.Signals.marshal_move_cursor"
     let marshal_move_focus f _ = function 
-      |`POINTER(Some p)::_ ->
-	 f (Obj.magic p:direction_type) 
+      |`INT dir :: _ ->
+	 f (val_direction_type dir)
       | _ -> invalid_arg "GtkText.View.Signals.marshal_move_focus"
     let marshal_page_horizontally f _ = function 
       | (`INT i)::(`BOOL b)::_ ->
@@ -617,12 +633,13 @@ module View = struct
       | _ -> invalid_arg "GtkText.View.Signals.marshal_page_horizontally"
     let marshal_populate_popup f _ = function 
       |`OBJECT(Some p)::_ ->
-	 f (Obj.magic p: menu obj) 
+	 f (Gobject.unsafe_cast p : menu obj) 
       | _ -> invalid_arg "GtkText.View.Signals.marshal_populate_popup"
     
     let marshal_set_scroll_adjustments f _ = function 
       |`OBJECT(Some p1)::`OBJECT(Some p2)::_ ->
-	 f (Obj.magic p1: adjustment) (Obj.magic p2: adjustment) 
+	  f (Gobject.unsafe_cast p1 : adjustment obj)
+            (Gobject.unsafe_cast p2 : adjustment obj) 
       | _ -> invalid_arg "GtkText.View.Signals.marshal_set_scroll_adjustments"
 
 
@@ -703,6 +720,8 @@ end
 
 module Iter = struct
   external copy : textiter -> textiter = "ml_gtk_text_iter_copy"
+  let () =
+    textiter_of_pointer := (fun (p : Gpointer.boxed) -> copy (Obj.magic p))
   external get_buffer : textiter -> textbuffer obj = "ml_gtk_text_iter_get_buffer"
   external get_offset : textiter -> int = "ml_gtk_text_iter_get_offset"
   external get_line : textiter -> int = "ml_gtk_text_iter_get_line"

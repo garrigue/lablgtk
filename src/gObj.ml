@@ -12,7 +12,7 @@ open GtkBase
 class gtkobj obj = object
   val obj = obj
   method destroy () = Object.destroy obj
-  method get_id = get_id obj
+  method get_oid = get_oid obj
 end
 
 class gtkobj_misc obj = object

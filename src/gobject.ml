@@ -92,7 +92,7 @@ let try_cast w name =
   if is_a w name then unsafe_cast w
   else raise (Cannot_cast(Type.name(get_type w), name))
 
-let get_id (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
+let get_oid (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
 
 external freeze_notify : 'a obj -> unit = "ml_g_object_freeze_notify"
 external thaw_notify : 'a obj -> unit = "ml_g_object_thaw_notify"

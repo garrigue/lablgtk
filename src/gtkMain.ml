@@ -5,6 +5,9 @@ open Gtk
 
 let _ = Callback.register_exception "gtkerror" (Error"")
 
+let critical_warnings =
+  ref [ "Invalid text buffer iterator" ]
+
 module Main = struct
   external init : string array -> string array = "ml_gtk_init"
   (* external exit : int -> unit = "ml_gtk_exit" *)
@@ -19,12 +22,21 @@ module Main = struct
     let argv =
       try
 	init Sys.argv
-      with
-      |	Error err -> raise (Error ("GtkMain.init: initialization failed\n"
-				   ^err^"\n"))
+      with Error err ->
+        raise (Error ("GtkMain.init: initialization failed\n" ^ err))
+    in
+    let is_critical s =
+      List.exists !critical_warnings ~f:
+        (fun w ->
+          let len = String.length w in
+          String.length s >= len && w = String.sub s ~pos:0 ~len)
     in
     Glib.Message.set_log_handler ~domain:"Gtk" ~levels:[`WARNING;`CRITICAL]
-      (fun ~level s -> raise (Gtk.Error s));
+      (fun ~level msg ->
+        let crit = level land (Glib.Message.log_level `CRITICAL) <> 0 in
+        if crit || is_critical msg then
+          raise (Gtk.Error ("Gtk-CRITICAL ***: " ^ msg))
+        else prerr_endline ("Gtk-WARNING **: " ^ msg));
     Array.blit ~src:argv ~dst:Sys.argv ~len:(Array.length argv)
       ~src_pos:0 ~dst_pos:0;
     Obj.truncate (Obj.repr Sys.argv) (Array.length argv);
