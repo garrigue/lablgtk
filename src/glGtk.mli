@@ -39,6 +39,7 @@ class area_signals : 'a obj ->
     constraint 'a = [>`glarea|`widget]
     val obj : 'a obj
     method display : callback:(unit -> unit) -> GtkSignal.id
+    method realize : callback:(unit -> unit) -> GtkSignal.id
     method reshape :
       callback:(width:int -> height:int -> unit) -> GtkSignal.id
   end

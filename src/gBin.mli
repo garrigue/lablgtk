@@ -116,6 +116,7 @@ class viewport : Gtk.viewport obj ->
   object
     inherit container_full
     val obj : Gtk.viewport obj
+    method event : event_ops
     method hadjustment : GData.adjustment
     method set_hadjustment : GData.adjustment -> unit
     method set_shadow_type : Gtk.Tags.shadow_type -> unit
@@ -149,8 +150,7 @@ val alignment :
   ?packing:(widget -> unit) -> ?show:bool -> unit -> alignment
 val alignment_cast : < as_widget : 'a obj; .. > -> alignment
 
-class socket :
-  Gtk.socket obj ->
+class socket : Gtk.socket obj ->
   object
     inherit container_full
     val obj : Gtk.socket obj

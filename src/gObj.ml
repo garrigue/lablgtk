@@ -20,18 +20,18 @@ class gtkobj_misc obj = object
   method stop_emit ~name = GtkSignal.emit_stop_by_name obj ~name
 end
 
-class gtkobj_signals obj = object
+class gtkobj_signals ?(after=false) obj = object
   val obj = obj
-  val after = false
+  val after = after
   method after = {< after = true >}
   method destroy = GtkSignal.connect ~sgn:Object.Signals.destroy obj
 end
 
 (* Widget *)
 
-class event_signals obj = object
+class event_signals ?(after=false) obj = object
   val obj = Widget.coerce obj
-  val after = false
+  val after = after
   method after = {< after = true >}
   method any = GtkSignal.connect ~sgn:Widget.Signals.Event.any ~after obj
   method button_press =
@@ -108,7 +108,40 @@ class selection_data (sel : Selection.t) = object
   method set = Selection.set sel
 end
 
-class widget_drag obj = object
+class drag_signals ?(after=false) obj = object
+  val obj =  Widget.coerce obj
+  val after = after
+  method after = {< after = true >}
+  method beginning ~callback =
+    GtkSignal.connect ~sgn:Widget.Signals.drag_begin ~after obj
+      ~callback:(fun context -> callback (new drag_context context))
+  method ending ~callback =
+    GtkSignal.connect ~sgn:Widget.Signals.drag_end ~after obj
+      ~callback:(fun context -> callback (new drag_context context))
+  method data_delete ~callback =
+    GtkSignal.connect ~sgn:Widget.Signals.drag_data_delete ~after obj
+      ~callback:(fun context -> callback (new drag_context context))
+  method leave ~callback =
+    GtkSignal.connect ~sgn:Widget.Signals.drag_leave ~after obj
+      ~callback:(fun context -> callback (new drag_context context))
+  method motion ~callback =
+    GtkSignal.connect ~sgn:Widget.Signals.drag_motion ~after obj
+      ~callback:(fun context -> callback (new drag_context context))
+  method drop ~callback =
+    GtkSignal.connect ~sgn:Widget.Signals.drag_drop ~after obj
+      ~callback:(fun context -> callback (new drag_context context))
+  method data_get ~callback =
+    GtkSignal.connect ~sgn:Widget.Signals.drag_data_get ~after obj
+      ~callback:(fun context data -> callback (new drag_context context)
+	       (new selection_data data))
+  method data_received ~callback =
+    GtkSignal.connect ~sgn:Widget.Signals.drag_data_received ~after obj
+      ~callback:(fun context ~x ~y data -> callback (new drag_context context)
+	       ~x ~y (new selection_data data))
+
+end
+
+and drag_ops obj = object
   val obj = Widget.coerce obj
   method connect = new drag_signals obj
   method dest_set ?(flags=[`ALL]) ?(actions=[]) targets =
@@ -140,8 +173,37 @@ and drag_context context = object
     DnD.set_icon_pixmap context ~colormap pix#pixmap ?mask:pix#mask
 end
 
-and widget_misc obj = object
+and misc_signals ?after obj = object
+  inherit gtkobj_signals ?after obj
+  method draw ~callback =
+    GtkSignal.connect obj ~sgn:Widget.Signals.draw ~after ~callback:
+      begin fun rect ->
+	callback
+	  { x = Gdk.Rectangle.x rect ; y = Gdk.Rectangle.y rect;
+	    width = Gdk.Rectangle.width rect;
+	    height = Gdk.Rectangle.height rect }
+      end
+  method show = GtkSignal.connect ~sgn:Widget.Signals.show ~after obj
+  method hide = GtkSignal.connect ~sgn:Widget.Signals.hide ~after obj
+  method map = GtkSignal.connect ~sgn:Widget.Signals.map ~after obj
+  method unmap = GtkSignal.connect ~sgn:Widget.Signals.unmap ~after obj
+  method realize = GtkSignal.connect ~sgn:Widget.Signals.realize ~after obj
+  method state_changed =
+    GtkSignal.connect ~sgn:Widget.Signals.state_changed ~after obj
+  method parent_set ~callback =
+    GtkSignal.connect obj ~sgn:Widget.Signals.parent_set ~after ~callback:
+      begin function
+	  None   -> callback None
+	| Some w -> callback (Some (new widget (Object.unsafe_cast w)))
+      end
+  method style_set ~callback =
+    GtkSignal.connect obj ~sgn:Widget.Signals.style_set ~after ~callback:
+      (fun opt -> callback (may opt ~f:(new style)))
+end
+
+and misc_ops obj = object
   inherit gtkobj_misc (Widget.coerce obj)
+  method connect = new misc_signals obj
   method show () = Widget.show obj
   method unparent () = Widget.unparent obj
   method show_all () = Widget.show_all obj
@@ -196,63 +258,13 @@ and widget obj = object (self)
   method as_widget = Widget.coerce obj
   method coerce = (self :> < destroy : _; get_id : _; as_widget : _;
                              coerce : _; misc : _; drag : _ >)
-  method misc = new widget_misc obj
-  method drag = new widget_drag (Object.unsafe_cast obj)
+  method misc = new misc_ops obj
+  method drag = new drag_ops (Object.unsafe_cast obj)
 end
 
-and drag_signals obj = object
-  val obj =  Widget.coerce obj
-  val after = false
-  method after = {< after = true >}
-  method beginning ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_begin ~after obj
-      ~callback:(fun context -> callback (new drag_context context))
-  method ending ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_end ~after obj
-      ~callback:(fun context -> callback (new drag_context context))
-  method data_delete ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_data_delete ~after obj
-      ~callback:(fun context -> callback (new drag_context context))
-  method leave ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_leave ~after obj
-      ~callback:(fun context -> callback (new drag_context context))
-  method motion ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_motion ~after obj
-      ~callback:(fun context -> callback (new drag_context context))
-  method drop ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_drop ~after obj
-      ~callback:(fun context -> callback (new drag_context context))
-  method data_get ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_data_get ~after obj
-      ~callback:(fun context data -> callback (new drag_context context)
-	       (new selection_data data))
-  method data_received ~callback =
-    GtkSignal.connect ~sgn:Widget.Signals.drag_data_received ~after obj
-      ~callback:(fun context ~x ~y data -> callback (new drag_context context)
-	       ~x ~y (new selection_data data))
 
-end
-
-class widget_signals obj = object
-  inherit gtkobj_signals obj
-  method draw ~callback =
-    GtkSignal.connect obj ~sgn:Widget.Signals.draw ~after ~callback:
-      begin fun rect ->
-	callback
-	  { x = Gdk.Rectangle.x rect ; y = Gdk.Rectangle.y rect;
-	    width = Gdk.Rectangle.width rect;
-	    height = Gdk.Rectangle.height rect }
-      end
-  method realize = GtkSignal.connect ~sgn:Widget.Signals.realize ~after obj
-  method show = GtkSignal.connect ~sgn:Widget.Signals.show ~after obj
-  method hide = GtkSignal.connect ~sgn:Widget.Signals.hide ~after obj
-  method parent_set ~callback =
-    GtkSignal.connect obj ~sgn:Widget.Signals.parent_set ~after ~callback:
-      begin function
-	  None   -> callback None
-	| Some w -> callback (Some (new widget (Object.unsafe_cast w)))
-      end
-end
+class widget_signals ?after (obj : [> `widget] obj) =
+  gtkobj_signals ?after obj
 
 class widget_full obj = object
   inherit widget obj

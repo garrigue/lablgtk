@@ -36,11 +36,10 @@ module Raw = struct
 end
 
 class area_signals obj =
-  let event = new GObj.event_ops obj in
 object (connect)
-  inherit GObj.widget_signals obj as super
+  inherit GObj.widget_signals obj
   method display ~callback =
-    event#connect#expose ~callback:
+    (new GObj.event_signals ~after obj)#expose ~callback:
       begin fun ev ->
 	if GdkEvent.Expose.count ev = 0 then
 	  if Raw.make_current obj then callback ()
@@ -48,7 +47,7 @@ object (connect)
 	true
       end
   method reshape ~callback =
-    event#connect#configure ~callback:
+    (new GObj.event_signals ~after obj)#configure ~callback:
       begin fun ev ->
 	if Raw.make_current obj then begin
 	  callback ~width:(GdkEvent.Configure.width ev)
@@ -58,7 +57,8 @@ object (connect)
 	true
       end
   method realize ~callback =
-    super#realize ~callback:
+    let connect = new GObj.misc_signals ~after (GtkBase.Widget.coerce obj) in
+    connect#realize ~callback:
       begin fun ev ->
 	if Raw.make_current obj then callback ()
 	else prerr_endline "GlGtk-WARNING **: could not make current"

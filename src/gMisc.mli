@@ -235,3 +235,24 @@ val pixmap :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> pixmap
+
+class font_selection : Gtk.font_selection obj ->
+  object
+    inherit widget_full
+    val obj : Gtk.font_selection obj
+    method event : event_ops
+    method notebook : GPack.notebook
+    method font : Gdk.font option
+    method font_name : string option
+    method preview_text : string
+    method set_filter :
+      ?kind:Tags.font_type list ->
+      ?foundry:string list ->
+      ?weight:string list ->
+      ?slant:string list ->
+      ?setwidth:string list ->
+      ?spacing:string list ->
+      ?charset:string list -> Tags.font_filter_type -> unit
+    method set_font_name : string -> unit
+    method set_preview_text : string -> unit
+  end
