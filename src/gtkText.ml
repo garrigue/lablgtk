@@ -323,4 +323,48 @@ module View = struct
   external create_with_buffer : textbuffer obj -> textview obj = "ml_gtk_text_view_new_with_buffer"
   external set_buffer : textview obj -> textbuffer obj -> unit = "ml_gtk_text_view_set_buffer"
   external get_buffer : textview obj -> textbuffer obj = "ml_gtk_text_view_get_buffer"
+  external scroll_to_mark : textview obj -> textmark obj -> float -> bool -> float -> float -> unit = 
+	   "ml_gtk_text_view_scroll_to_mark" "ml_gtk_text_view_scroll_to_mark_bc"	
+  external scroll_to_iter : textview obj -> textiter -> float -> bool -> float -> float -> bool = 
+	   "ml_gtk_text_view_scroll_to_iter" "ml_gtk_text_view_scroll_to_iter_bc"	
+  external scroll_mark_onscreen : textview obj -> textmark obj -> unit = 
+	   "ml_gtk_text_view_scroll_mark_onscreen"
+  external move_mark_onscreen : textview obj -> textmark obj -> bool = 
+	   "ml_gtk_text_view_move_mark_onscreen"
+  external place_cursor_onscreen : textview obj -> bool = 
+	   "ml_gtk_text_view_place_cursor_onscreen"
+  external get_visible_rect : textview obj -> Gdk.Rectangle.t = 
+	   "ml_gtk_text_view_get_visible_rect"
+  external get_iter_location : textview obj -> textiter -> Gdk.Rectangle.t = 
+	   "ml_gtk_text_view_get_iter_location"
+  external get_line_at_y : textview obj -> int -> textiter*int = 
+	   "ml_gtk_text_view_get_line_at_y"
+  external get_line_yrange : textview obj -> textiter -> int*int = 
+	   "ml_gtk_text_view_get_line_yrange"
+  external get_iter_at_location : textview obj -> int -> int -> textiter = 
+	   "ml_gtk_text_view_get_iter_at_location"
+  external buffer_to_window_coords : textview obj -> Gtk.Tags.text_window_type -> int -> int -> int*int =
+	   "ml_gtk_text_view_buffer_to_window_coords"
+  external window_to_buffer_coords : textview obj -> Gtk.Tags.text_window_type -> int -> int -> int*int =
+	   "ml_gtk_text_view_window_to_buffer_coords"
+  external get_window : textview obj -> Gtk.Tags.text_window_type -> Gdk.window option =
+	   "ml_gtk_text_view_get_window"
+  external get_window_type : textview obj -> Gdk.window -> Gtk.Tags.text_window_type =
+	   "ml_gtk_text_view_get_window_type"
+  external set_border_window_size : textview obj -> [`LEFT | `RIGHT | `TOP | `BOTTOM ] -> int -> unit =
+	   "ml_gtk_text_view_set_border_window_size"
+  external get_border_window_size : textview obj ->  [`LEFT | `RIGHT | `TOP | `BOTTOM ] -> int =
+	   "ml_gtk_text_view_get_border_window_size"
+  external forward_display_line : textview obj -> textiter -> bool =
+	   "ml_gtk_text_view_forward_display_line"
+  external backward_display_line : textview obj -> textiter -> bool =
+	   "ml_gtk_text_view_backward_display_line"
+  external forward_display_line_end : textview obj -> textiter -> bool =
+	   "ml_gtk_text_view_forward_display_line_end"
+  external backward_display_line_start : textview obj -> textiter -> bool =
+	   "ml_gtk_text_view_backward_display_line_start"
+  external starts_display_line : textview obj -> textiter -> bool =
+	   "ml_gtk_text_view_starts_display_line"
+  external move_visually : textview obj -> textiter -> int -> bool =
+	   "ml_gtk_text_view_move_visually"
 end

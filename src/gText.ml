@@ -149,6 +149,50 @@ class view obj = object
   method event = new GObj.event_ops obj
   method set_buffer (b:buffer) = GtkText.View.set_buffer obj (b#as_buffer)
   method get_buffer () = new buffer (GtkText.View.get_buffer obj)
+  method scroll_to_mark ?(within_margin=0.) ?(use_align=false)  ?(xalign=0.) ?(yalign=0.) mark =  
+	  GtkText.View.scroll_to_mark obj mark within_margin use_align xalign yalign
+  method scroll_to_iter  ?(within_margin=0.) ?(use_align=false)  ?(xalign=0.) ?(yalign=0.) iter =  
+    GtkText.View.scroll_to_iter obj iter within_margin use_align xalign yalign
+  method scroll_mark_onscreen mark =  
+	  GtkText.View.scroll_mark_onscreen obj mark
+  method move_mark_onscreen mark =  
+	  GtkText.View.move_mark_onscreen obj mark
+  method place_cursor_onscreen () =  
+	  GtkText.View.place_cursor_onscreen obj
+  method get_visible_rect () = 
+	  GtkText.View.get_visible_rect obj
+  method get_iter_location iter = 
+	  GtkText.View.get_iter_location obj iter
+  method get_line_at_y y = 
+	  GtkText.View.get_line_at_y obj y
+  method get_line_yrange iter = 
+	  GtkText.View.get_line_yrange obj iter
+  method get_iter_at_location ~x ~y =
+	  GtkText.View.get_iter_at_location obj x y
+  method buffer_to_window_coords ~tag ~x ~y =
+	  GtkText.View.buffer_to_window_coords obj tag x y
+  method window_to_buffer_coords  ~tag ~x ~y =
+	  GtkText.View.window_to_buffer_coords obj tag x y
+  method get_window win = 
+    GtkText.View.get_window obj win
+  method get_window_type win = 
+    GtkText.View.get_window_type obj win
+  method set_border_window_size ~typ ~size =
+    GtkText.View.set_border_window_size obj typ size
+  method get_border_window_size typ = 
+    GtkText.View.get_border_window_size obj typ
+  method forward_display_line iter =
+    GtkText.View.forward_display_line obj iter
+  method backward_display_line iter =
+    GtkText.View.backward_display_line obj iter
+  method forward_display_line_end iter =
+    GtkText.View.forward_display_line_end obj iter
+  method backward_display_line_start iter =
+    GtkText.View.backward_display_line_start obj iter
+  method starts_display_line iter =
+    GtkText.View.starts_display_line obj iter
+  method move_visually iter count =
+    GtkText.View.move_visually obj iter count
 end
 
 
