@@ -185,7 +185,7 @@ let materialWhite   =   0.7, 0.7, 0.7, 1.0
 let materialGray    =   0.2, 0.2, 0.2, 1.0
 let all_gray = Array.create 20 materialGray
 
-let vertex :xf :yf :zf :ampvr2 =
+let vertex ~xf ~yf ~zf ~ampvr2 =
   let xa = xf +. 0.01 and yb = yf +. 0.01 in
   let xf2 = sqr xf and yf2 = sqr yf in
   let factor = 1. -. (xf2 +. yf2) *. ampvr2
@@ -199,7 +199,7 @@ let vertex :xf :yf :zf :ampvr2 =
   GlDraw.normal3 (vect_mul (neiax, neiay, neiaz) (neibx, neiby, neibz));
   GlDraw.vertex3 (vertx, verty, vertz)
 
-let triangle :edge :amp :divisions :z =
+let triangle ~edge ~amp ~divisions ~z =
   let divi = float divisions in
   let vr = edge *. sqrt3 /. 3. in
   let ampvr2 = amp /. sqr vr
@@ -210,18 +210,18 @@ let triangle :edge :amp :divisions :z =
   for ri = 1 to divisions do
     GlDraw.begins `triangle_strip;
     for ti = 0 to ri - 1 do
-      vertex :zf :ampvr2
-	xf:(float (ri-ti) *. ax +. float ti *. bx)
-	yf:(vr +. float (ri-ti) *. ay +. float ti *. ay);
-      vertex :zf :ampvr2
-	xf:(float (ri-ti-1) *. ax +. float ti *. bx)
-	yf:(vr +. float (ri-ti-1) *. ay +. float ti *. ay)
+      vertex ~zf ~ampvr2
+	~xf:(float (ri-ti) *. ax +. float ti *. bx)
+	~yf:(vr +. float (ri-ti) *. ay +. float ti *. ay);
+      vertex ~zf ~ampvr2
+	~xf:(float (ri-ti-1) *. ax +. float ti *. bx)
+	~yf:(vr +. float (ri-ti-1) *. ay +. float ti *. ay)
     done;
-    vertex xf:(float ri *. bx) yf:(vr +. float ri *. ay) :zf :ampvr2;
+    vertex ~xf:(float ri *. bx) ~yf:(vr +. float ri *. ay) ~zf ~ampvr2;
     GlDraw.ends ()
   done
 
-let square :edge :amp :divisions :z =
+let square ~edge ~amp ~divisions ~z =
   let divi = float divisions in
   let zf = edge *. z
   and ampvr2 = amp /. sqr (edge *. sqrt2 /. 2.) in
@@ -233,169 +233,169 @@ let square :edge :amp :divisions :z =
     GlDraw.begins `quad_strip;
     for xi = 0 to divisions do
       let xf = edge *. (-0.5 +. float xi /. divi) in
-      vertex :xf yf:y :zf :ampvr2;
-      vertex :xf :yf :zf :ampvr2
+      vertex ~xf ~yf:y ~zf ~ampvr2;
+      vertex ~xf ~yf ~zf ~ampvr2
     done;
     GlDraw.ends ()
   done
 
-let pentagon :edge :amp :divisions :z =
+let pentagon ~edge ~amp ~divisions ~z =
   let divi = float divisions in
   let zf = edge *. z
   and ampvr2 = amp /. sqr(edge *. cossec36_2) in
   let x =
     Array.init 6
-      f:(fun fi -> -. cos (float fi *. 2. *. pi /. 5. +. pi /. 10.)
+      ~f:(fun fi -> -. cos (float fi *. 2. *. pi /. 5. +. pi /. 10.)
 	             /. divi *. cossec36_2 *. edge)
   and y =
     Array.init 6
-      f:(fun fi -> sin (float fi *. 2. *. pi /. 5. +. pi /. 10.)
+      ~f:(fun fi -> sin (float fi *. 2. *. pi /. 5. +. pi /. 10.)
 	             /. divi *. cossec36_2 *. edge)
   in
   for ri = 1 to divisions do
     for fi = 0 to 4 do
       GlDraw.begins `triangle_strip;
       for ti = 0 to ri-1 do
-	vertex :zf :ampvr2
-	  xf:(float(ri-ti) *. x.(fi) +. float ti *. x.(fi+1))
-	  yf:(float(ri-ti) *. y.(fi) +. float ti *. y.(fi+1));
-	vertex :zf :ampvr2
-	  xf:(float(ri-ti-1) *. x.(fi) +. float ti *. x.(fi+1))
-	  yf:(float(ri-ti-1) *. y.(fi) +. float ti *. y.(fi+1))
+	vertex ~zf ~ampvr2
+	  ~xf:(float(ri-ti) *. x.(fi) +. float ti *. x.(fi+1))
+	  ~yf:(float(ri-ti) *. y.(fi) +. float ti *. y.(fi+1));
+	vertex ~zf ~ampvr2
+	  ~xf:(float(ri-ti-1) *. x.(fi) +. float ti *. x.(fi+1))
+	  ~yf:(float(ri-ti-1) *. y.(fi) +. float ti *. y.(fi+1))
       done;
-      vertex xf:(float ri *. x.(fi+1)) yf:(float ri *. y.(fi+1)) :zf :ampvr2;
+      vertex ~xf:(float ri *. x.(fi+1)) ~yf:(float ri *. y.(fi+1)) ~zf ~ampvr2;
       GlDraw.ends ()
     done
   done
 
 let call_list list color =
-  GlLight.material face:`both (`diffuse color);
+  GlLight.material ~face:`both (`diffuse color);
   GlList.call list
 
-let draw_tetra :amp :divisions :color =
+let draw_tetra ~amp ~divisions ~color =
   let list = GlList.create `compile in
-  triangle edge:2.0 :amp :divisions z:(0.5 /. sqrt6);
+  triangle ~edge:2.0 ~amp ~divisions ~z:(0.5 /. sqrt6);
   GlList.ends();
 
   call_list list color.(0);
   GlMat.push();
-  GlMat.rotate angle:180.0 z:1.0 ();
-  GlMat.rotate angle:(-.tetraangle) x:1.0 ();
+  GlMat.rotate ~angle:180.0 ~z:1.0 ();
+  GlMat.rotate ~angle:(-.tetraangle) ~x:1.0 ();
   call_list list color.(1);
   GlMat.pop();
   GlMat.push();
-  GlMat.rotate angle:180.0 y:1.0 ();
-  GlMat.rotate angle:(-180.0 +. tetraangle) x:0.5 y:(sqrt3 /. 2.) ();
+  GlMat.rotate ~angle:180.0 ~y:1.0 ();
+  GlMat.rotate ~angle:(-180.0 +. tetraangle) ~x:0.5 ~y:(sqrt3 /. 2.) ();
   call_list list color.(2);
   GlMat.pop();
-  GlMat.rotate angle:180.0 y:1.0 ();
-  GlMat.rotate angle:(-180.0 +. tetraangle) x:0.5 y:(-.sqrt3 /. 2.) ();
+  GlMat.rotate ~angle:180.0 ~y:1.0 ();
+  GlMat.rotate ~angle:(-180.0 +. tetraangle) ~x:0.5 ~y:(-.sqrt3 /. 2.) ();
   call_list list color.(3);
 
   GlList.delete list
 
-let draw_cube :amp :divisions :color =
+let draw_cube ~amp ~divisions ~color =
   let list = GlList.create `compile in
-  square edge:2.0 :amp :divisions z:0.5;
+  square ~edge:2.0 ~amp ~divisions ~z:0.5;
   GlList.ends ();
 
   call_list list color.(0);
   for i = 1 to 3 do
-    GlMat.rotate angle:cubeangle x:1.0 ();
+    GlMat.rotate ~angle:cubeangle ~x:1.0 ();
     call_list list color.(i)
   done;
-  GlMat.rotate angle:cubeangle y:1.0 ();
+  GlMat.rotate ~angle:cubeangle ~y:1.0 ();
   call_list list color.(4);
-  GlMat.rotate angle:(2.0 *. cubeangle) y:1.0 ();
+  GlMat.rotate ~angle:(2.0 *. cubeangle) ~y:1.0 ();
   call_list list color.(5);
 
   GlList.delete list
 
-let draw_octa :amp :divisions :color =
+let draw_octa ~amp ~divisions ~color =
   let list = GlList.create `compile in
-  triangle edge:2.0 :amp :divisions z:(1.0 /. sqrt6);
+  triangle ~edge:2.0 ~amp ~divisions ~z:(1.0 /. sqrt6);
   GlList.ends ();
 
   let do_list (i,y) =
     GlMat.push();
-    GlMat.rotate angle:180.0 y:1.0 ();
-    GlMat.rotate angle:(-.octaangle) x:0.5 :y ();
+    GlMat.rotate ~angle:180.0 ~y:1.0 ();
+    GlMat.rotate ~angle:(-.octaangle) ~x:0.5 ~y ();
     call_list list color.(i);
     GlMat.pop()
   in
   call_list list color.(0);
   GlMat.push();
-  GlMat.rotate angle:180.0 z:1.0 ();
-  GlMat.rotate angle:(-180.0 +. octaangle) x:1.0 ();
+  GlMat.rotate ~angle:180.0 ~z:1.0 ();
+  GlMat.rotate ~angle:(-180.0 +. octaangle) ~x:1.0 ();
   call_list list color.(1);
   GlMat.pop();
-  List.iter [2, sqrt3 /. 2.0; 3, -.sqrt3 /. 2.0] f:do_list;
-  GlMat.rotate angle:180.0 x:1.0 ();
-  GlLight.material face:`both (`diffuse color.(4));
+  List.iter [2, sqrt3 /. 2.0; 3, -.sqrt3 /. 2.0] ~f:do_list;
+  GlMat.rotate ~angle:180.0 ~x:1.0 ();
+  GlLight.material ~face:`both (`diffuse color.(4));
   GlList.call list;
   GlMat.push();
-  GlMat.rotate angle:180.0 z:1.0 ();
-  GlMat.rotate angle:(-180.0 +. octaangle) x:1.0 ();
-  GlLight.material face:`both (`diffuse color.(5));
+  GlMat.rotate ~angle:180.0 ~z:1.0 ();
+  GlMat.rotate ~angle:(-180.0 +. octaangle) ~x:1.0 ();
+  GlLight.material ~face:`both (`diffuse color.(5));
   GlList.call list;
   GlMat.pop();
-  List.iter [6, sqrt3 /. 2.0; 7, -.sqrt3 /. 2.0] f:do_list;
+  List.iter [6, sqrt3 /. 2.0; 7, -.sqrt3 /. 2.0] ~f:do_list;
 
   GlList.delete list
 
-let draw_dodeca :amp :divisions :color =
+let draw_dodeca ~amp ~divisions ~color =
   let tau = (sqrt5 +. 1.0) /. 2.0 in
   let list = GlList.create `compile in
-  pentagon edge:2.0 :amp :divisions
-    z:(sqr(tau) *. sqrt ((tau+.2.0)/.5.0) /. 2.0);
+  pentagon ~edge:2.0 ~amp ~divisions
+    ~z:(sqr(tau) *. sqrt ((tau+.2.0)/.5.0) /. 2.0);
   GlList.ends ();
 
   let do_list (i,angle,x,y) =
     GlMat.push();
-    GlMat.rotate angle:angle :x :y ();
+    GlMat.rotate ~angle:angle ~x ~y ();
     call_list list color.(i);
     GlMat.pop();
   in
   GlMat.push ();
   call_list list color.(0);
-  GlMat.rotate angle:180.0 z:1.0 ();
-  List.iter f:do_list
+  GlMat.rotate ~angle:180.0 ~z:1.0 ();
+  List.iter ~f:do_list
     [ 1, -.dodecaangle, 1.0, 0.0;
       2, -.dodecaangle, cos72, sin72;
       3, -.dodecaangle, cos72, -.sin72;
       4, dodecaangle, cos36, -.sin36;
       5, dodecaangle, cos36, sin36 ];
   GlMat.pop ();
-  GlMat.rotate angle:180.0 x:1.0 ();
+  GlMat.rotate ~angle:180.0 ~x:1.0 ();
   call_list list color.(6);
-  GlMat.rotate angle:180.0 z:1.0 ();
-  List.iter f:do_list
+  GlMat.rotate ~angle:180.0 ~z:1.0 ();
+  List.iter ~f:do_list
     [ 7, -.dodecaangle, 1.0, 0.0;
       8, -.dodecaangle, cos72, sin72;
       9, -.dodecaangle, cos72, -.sin72;
       10, dodecaangle, cos36, -.sin36 ];
-  GlMat.rotate angle:dodecaangle x:cos36 y:sin36 ();
+  GlMat.rotate ~angle:dodecaangle ~x:cos36 ~y:sin36 ();
   call_list list color.(11);
 
   GlList.delete list
 
-let draw_ico :amp :divisions :color =
+let draw_ico ~amp ~divisions ~color =
   let list = GlList.create `compile in
-  triangle edge:1.5 :amp :divisions
-    z:((3.0 *. sqrt3 +. sqrt15) /. 12.0);
+  triangle ~edge:1.5 ~amp ~divisions
+    ~z:((3.0 *. sqrt3 +. sqrt15) /. 12.0);
   GlList.ends ();
 
   let do_list1 i =
-    GlMat.rotate angle:180.0 y:1.0 ();
-    GlMat.rotate angle:(-180.0 +. icoangle) x:0.5 y:(sqrt3/.2.0) ();
+    GlMat.rotate ~angle:180.0 ~y:1.0 ();
+    GlMat.rotate ~angle:(-180.0 +. icoangle) ~x:0.5 ~y:(sqrt3/.2.0) ();
     call_list list color.(i)
   and do_list2 i =
-    GlMat.rotate angle:180.0 y:1.0 ();
-    GlMat.rotate angle:(-180.0 +. icoangle) x:0.5 y:(-.sqrt3/.2.0) ();
+    GlMat.rotate ~angle:180.0 ~y:1.0 ();
+    GlMat.rotate ~angle:(-180.0 +. icoangle) ~x:0.5 ~y:(-.sqrt3/.2.0) ();
     call_list list color.(i)
   and do_list3 i =
-    GlMat.rotate angle:180.0 z:1.0 ();
-    GlMat.rotate angle:(-.icoangle) x:1.0 ();
+    GlMat.rotate ~angle:180.0 ~z:1.0 ();
+    GlMat.rotate ~angle:(-.icoangle) ~x:1.0 ();
     call_list list color.(i)
   in
   GlMat.push ();
@@ -420,7 +420,7 @@ let draw_ico :amp :divisions :color =
   GlMat.pop ();
   do_list3 9;
   GlMat.pop ();
-  GlMat.rotate angle:180.0 x:1.0 ();
+  GlMat.rotate ~angle:180.0 ~x:1.0 ();
   call_list list color.(10);
   GlMat.push ();
   do_list3 11;
@@ -449,7 +449,7 @@ class view area = object (self)
   val mutable smooth = true
   val mutable step = 0.
   val mutable obj = 1
-  val mutable draw_object = fun :amp -> ()
+  val mutable draw_object = fun ~amp -> ()
   val mutable magnitude = 0.
 
   method width =  area#misc#allocation.Gtk.width
@@ -459,25 +459,25 @@ class view area = object (self)
     let ratio = float self#height /. float self#width in
     GlClear.clear [`color;`depth];
     GlMat.push();
-    GlMat.translate z:(-10.0) ();
-    GlMat.scale x:(scale *. ratio) y:scale z:scale ();
+    GlMat.translate ~z:(-10.0) ();
+    GlMat.scale ~x:(scale *. ratio) ~y:scale ~z:scale ();
     GlMat.translate ()
-      x:(2.5 *. ratio *. sin (step *. 1.11))
-      y:(2.5 *. cos (step *. 1.25 *. 1.11));
-    GlMat.rotate angle:(step *. 100.) x:1.0 ();
-    GlMat.rotate angle:(step *. 95.) y:1.0 ();
-    GlMat.rotate angle:(step *. 90.) z:1.0 ();
-    draw_object amp:((sin step +. 1.0/.3.0) *. (4.0/.5.0) *. magnitude);
+      ~x:(2.5 *. ratio *. sin (step *. 1.11))
+      ~y:(2.5 *. cos (step *. 1.25 *. 1.11));
+    GlMat.rotate ~angle:(step *. 100.) ~x:1.0 ();
+    GlMat.rotate ~angle:(step *. 95.) ~y:1.0 ();
+    GlMat.rotate ~angle:(step *. 90.) ~z:1.0 ();
+    draw_object ~amp:((sin step +. 1.0/.3.0) *. (4.0/.5.0) *. magnitude);
     GlMat.pop();
     Gl.flush();
     area#swap_buffers ();
     step <- step +. 0.05
 
-  method reshape :width :height =
-    GlDraw.viewport x:0 y:0 w:width h:height;
+  method reshape ~width ~height =
+    GlDraw.viewport ~x:0 ~y:0 ~w:width ~h:height;
     GlMat.mode `projection;
     GlMat.load_identity();
-    GlMat.frustum x:(-1.0, 1.0) y:(-1.0, 1.0) z:(5.0, 15.0);
+    GlMat.frustum ~x:(-1.0, 1.0) ~y:(-1.0, 1.0) ~z:(5.0, 15.0);
     GlMat.mode `modelview
 
   method key sym =
@@ -497,35 +497,35 @@ class view area = object (self)
     begin match obj with
       1 ->
 	draw_object <- draw_tetra
-	     divisions:tetradivisions
-	     color:[|materialRed;  materialGreen;
+	     ~divisions:tetradivisions
+	     ~color:[|materialRed;  materialGreen;
 		     materialBlue; materialWhite|];
 	magnitude <- 2.5
     | 2 ->
 	draw_object <- draw_cube
-	     divisions:cubedivisions
-	     color:[|materialRed; materialGreen; materialCyan;
+	     ~divisions:cubedivisions
+	     ~color:[|materialRed; materialGreen; materialCyan;
 		     materialMagenta; materialYellow; materialBlue|];
 	magnitude <- 2.0
     | 3 ->
 	draw_object <- draw_octa
-	     divisions:octadivisions
-	     color:[|materialRed; materialGreen; materialBlue;
+	     ~divisions:octadivisions
+	     ~color:[|materialRed; materialGreen; materialBlue;
 		     materialWhite; materialCyan; materialMagenta;
 		     materialGray; materialYellow|];
 	magnitude <- 2.5
     | 4 ->
       draw_object <- draw_dodeca
-	   divisions:dodecadivisions
-	   color:[|materialRed; materialGreen; materialCyan;
+	   ~divisions:dodecadivisions
+	   ~color:[|materialRed; materialGreen; materialCyan;
 		   materialBlue; materialMagenta; materialYellow;
 		   materialGreen; materialCyan; materialRed;
 		   materialMagenta; materialBlue; materialYellow|];
       magnitude <- 2.0
     | 5 ->
 	draw_object <- draw_ico
-	     divisions:icodivisions
-	     color:[|materialRed; materialGreen; materialBlue;
+	     ~divisions:icodivisions
+	     ~color:[|materialRed; materialGreen; materialBlue;
 		     materialCyan; materialYellow; materialMagenta;
 		     materialRed; materialGreen; materialBlue;
 		     materialWhite; materialCyan; materialYellow;
@@ -537,15 +537,15 @@ class view area = object (self)
     end;
     GlDraw.shade_model (if smooth then `smooth else `flat)
   initializer
-    area#connect#display callback:self#draw;
-    area#connect#reshape callback:self#reshape;
+    area#connect#display ~callback:self#draw;
+    area#connect#reshape ~callback:self#reshape;
     ()
 end
 
 open GMain
 
 let main () =
-  List.iter f:print_string
+  List.iter ~f:print_string
     [ "Morph 3D - Shows morphing platonic polyhedra\n";
       "Author: Marcelo Fernandes Vianna (vianna@cat.cbpf.br)\n";
       "Ported to LablGL by Jacques Garrigue\n\n";
@@ -559,17 +559,17 @@ let main () =
   flush stdout;
 
   let window =
-    GWindow.window title:"Morph 3D - Shows morphing platonic polyhedra" ()
+    GWindow.window ~title:"Morph 3D - Shows morphing platonic polyhedra" ()
   in
-  window#connect#destroy callback:Main.quit;
+  window#connect#destroy ~callback:Main.quit;
   window#set_resize_mode `IMMEDIATE;
 
   let area = GlGtk.area [`DEPTH_SIZE 1;`RGBA;`DOUBLEBUFFER]
-      width:640 height:480 packing:window#add () in
+      ~width:640 ~height:480 ~packing:window#add () in
 
   let view = new view area in
 
-  area#connect#realize callback:
+  area#connect#realize ~callback:
     begin fun () ->
       view#pinit;
       GlClear.depth 1.0;
@@ -579,17 +579,17 @@ let main () =
       GlClear.clear [`color;`depth];
       Gl.flush();
 
-      List.iter f:(GlLight.light num:0)
+      List.iter ~f:(GlLight.light ~num:0)
 	[`ambient ambient; `diffuse diffuse; `position position0];
-      List.iter f:(GlLight.light num:1)
+      List.iter ~f:(GlLight.light ~num:1)
 	[`ambient ambient; `diffuse diffuse; `position position1];
       GlLight.light_model (`ambient lmodel_ambient);
       GlLight.light_model (`two_side lmodel_twoside);
-      List.iter f:Gl.enable
+      List.iter ~f:Gl.enable
 	[`lighting;`light0;`light1;`depth_test;`normalize];
 
-      GlLight.material face:`both (`shininess front_shininess);
-      GlLight.material face:`both (`specular front_specular);
+      GlLight.material ~face:`both (`shininess front_shininess);
+      GlLight.material ~face:`both (`specular front_specular);
 
       GlMisc.hint `fog `fastest;
       GlMisc.hint `perspective_correction `fastest;
@@ -597,10 +597,10 @@ let main () =
     end;
 
   window#connect#event#key_press
-    callback:(fun ev -> view#key (GdkEvent.Key.string ev); true);
+    ~callback:(fun ev -> view#key (GdkEvent.Key.string ev); true);
 
   Timeout.add 20
-    callback:(fun _ -> if area#misc#visible then view#draw (); true);
+    ~callback:(fun _ -> if area#misc#visible then view#draw (); true);
   window#show ();
   Main.main ()
 

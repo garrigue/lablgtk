@@ -5,14 +5,14 @@ open GMain
 let main () =
   let window = GWindow.window () in
   window#misc#set_name "Test input";
-  window#connect#destroy callback:Main.quit;
+  window#connect#destroy ~callback:Main.quit;
 
-  let vbox = GPack.vbox packing:window#add () in
+  let vbox = GPack.vbox ~packing:window#add () in
 
   let drawing_area =
-    GMisc.drawing_area width:200 height:200 packing:vbox#add () in
+    GMisc.drawing_area ~width:200 ~height:200 ~packing:vbox#add () in
 
-  drawing_area#connect#event#key_press callback:
+  drawing_area#connect#event#key_press ~callback:
     begin fun ev ->
       let key = GdkEvent.Key.keyval ev in
       if key >= 32 && key < 256 then
@@ -30,12 +30,12 @@ let main () =
   drawing_area#misc#set_can_focus true;
   drawing_area#misc#grab_focus ();
 
-  GButton.button label:"Input Dialog" packing:(vbox#pack expand:false) ();
+  GButton.button ~label:"Input Dialog" ~packing:(vbox#pack ~expand:false) ();
 
   let button =
-    GButton.button label:"Quit" packing:(vbox#pack expand:false) () in
+    GButton.button ~label:"Quit" ~packing:(vbox#pack ~expand:false) () in
 
-  button#connect#clicked callback:window#destroy;
+  button#connect#clicked ~callback:window#destroy;
 
   window#show ();
   Main.main ()
