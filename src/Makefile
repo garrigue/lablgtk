@@ -10,9 +10,9 @@ opt: lablgtkopt
 depend:
 	ocamldep *.ml *.mli > .depend
 
-COMPILER = $(CAMLC) $(MLFLAGS) -w s -labels -c
+COMPILER = $(CAMLC) $(MLFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -labels -c
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 TOPLEVEL = ocamlmktop $(MLFLAGS)
 CONFIG = ../config.make

@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+open StdLabels
+
 (* A simple CSV data viewer *)
 
 type data =

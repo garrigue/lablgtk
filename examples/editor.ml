@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open GMain
 
 let file_dialog ~title ~callback ?filename () =
@@ -27,7 +28,7 @@ class editor ?packing ?show () = object (self)
       text#freeze ();
       text#delete_text ~start:0 ~stop:text#length;
       let buf = String.create 1024 and len = ref 0 in
-      while len := input ic ~buf ~pos:0 ~len:1024; !len > 0 do
+      while len := input' ic ~buf ~pos:0 ~len:1024; !len > 0 do
 	if !len = 1024 then text#insert buf
 	else text#insert (String.sub buf ~pos:0 ~len:!len)
       done;
@@ -49,7 +50,7 @@ class editor ?packing ?show () = object (self)
 
   method output ~file =
     try
-      if Sys.file_exists file then Sys.rename ~src:file ~dst:(file ^ "~");
+      if Sys.file_exists file then Sys.rename' ~src:file ~dst:(file ^ "~");
       let oc = open_out file in
       output_string oc (text#get_chars ~start:0 ~stop:text#length);
       close_out oc;

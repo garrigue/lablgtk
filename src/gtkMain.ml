@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open StdLabels
 open Gtk
 
 let _ = Callback.register_exception "gtkerror" (Error"")
@@ -23,7 +24,7 @@ module Main = struct
     let argv = init Sys.argv in
     Array.blit ~src:argv ~dst:Sys.argv ~len:(Array.length argv)
       ~src_pos:0 ~dst_pos:0;
-    Obj.truncate (Obj.repr Sys.argv) ~len:(Array.length argv);
+    Obj.truncate (Obj.repr Sys.argv) (Array.length argv);
     locale
   open Glib
   let loops = ref [] 
