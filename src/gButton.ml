@@ -10,7 +10,7 @@ open GObj
 open GContainer
 
 class button_skel obj = object (self)
-  inherit container obj
+  inherit bin obj
   method clicked () = Button.clicked obj
   method set_relief = set Button.P.relief obj
   method relief = get Button.P.relief obj
@@ -23,7 +23,7 @@ class button_skel obj = object (self)
 end
 
 class button_signals obj = object
-  inherit container_signals_impl obj
+  inherit container_signals_impl (obj : [> button] obj)
   inherit button_sigs
 end
 

@@ -55,6 +55,12 @@ let pack_container ~create =
   Container.make_params ~cont:
     (fun p ?packing ?show () -> pack_return (create p) ~packing ~show)
 
+class ['a] bin_impl obj = object
+  inherit ['a] container_impl obj
+  method child = new widget (Bin.get_child obj)
+end
+
+class bin = ['a] bin_impl
 
 class virtual ['a] item_container obj = object (self)
   inherit ['b] widget_impl obj

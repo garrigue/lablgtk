@@ -517,6 +517,11 @@ ML_2 (gtk_container_set_focus_vadjustment, GtkContainer_val,
 ML_2 (gtk_container_set_focus_hadjustment, GtkContainer_val,
       GtkAdjustment_val, Unit)
 
+/* gtkbin.h */
+
+#define GtkBin_val(val) check_cast(GTK_BIN,val)
+ML_1 (gtk_bin_get_child, GtkBin_val, Val_GtkWidget)
+
 /* gtkitem.h */
 
 ML_1 (gtk_item_select, GtkItem_val, Unit)

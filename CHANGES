@@ -1,5 +1,8 @@
 $Id$
 
+2003.10.20 [Jacques]
+  * add bin class for #child
+
 2003.10.13 [Olivier]
   * autoconf support for lablGL location
 

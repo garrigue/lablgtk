@@ -238,6 +238,8 @@ module Container = struct
     List.rev !l
 end
 
+module Bin = Bin
+
 module Item = Item
 
 (* Clipboard provides high-level access to Selection *)

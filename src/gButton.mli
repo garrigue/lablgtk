@@ -11,7 +11,7 @@ open GContainer
 (** @gtkdoc gtk GtkButton *)
 class button_skel : 'a obj ->
   object
-    inherit GContainer.container
+    inherit GContainer.bin
     constraint 'a = [> button]
     val obj : 'a obj
     method clicked : unit -> unit
