@@ -8,6 +8,8 @@ LINKOPT = $(CAMLOPT) $(MLFLAGS)
 LIBRARIAN = $(CAMLMKLIB) -verbose
 TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
 CAMLP4 = $(CAMLP4O) pr_o.cmo
+MKLIB = lib /nologo /debugtype:CV /out:
+MKDLL = link /nologo /dll "`$(CAMLC) -where`/ocamlrun.lib" /out:
 CONFIG = ../config.make
 
 # protect against missing definitions
@@ -18,19 +20,15 @@ DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
 
-TARGETS = varcc lablgtktop lablgtk2 lablgladecc
+TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB)
 
 all: byte
-
 world: byte $(OCAMLBEST)
-
-byte: $(TARGETS)
-opt:  $(TARGETS) lablgtkopt
 
 LABLGLDIR = $(LIBDIR)/lablGL
 
 MLLIBS = lablgtk.cma
-CLIBS = liblablgtk2.a
+CLIBS = liblablgtk2$(XA)
 #MLLINK = unix.cma str.cma
 
 ifdef DEBUG
@@ -55,58 +53,61 @@ ifdef USE_GL
 MLFLAGS += -I $(LABLGLDIR)
 MLLINK += lablgl.cma
 MLLIBS += lablgtkgl.cma
-CLIBS += liblablgtkgl2.a
+CLIBS += liblablgtkgl2$(XA)
 GLMLOBJS = glGtk.cmo
-GLCOBJS = ml_gtkgl.o
+GLCOBJS = ml_gtkgl$(XO)
 endif
 
 #ifdef USE_GNOME
 #MLLIBS += lablgnome.cma
-#CLIBS += liblablgnome.a
+#CLIBS += liblablgnome$(XA)
 #GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo
-#GNOMECOBJS = ml_gtkxmhtml.o
+#GNOMECOBJS = ml_gtkxmhtml$(XO)
 #endif
 
 ifdef USE_GLADE
 MLLIBS += lablglade.cma
-CLIBS += liblablglade2.a
+CLIBS += liblablglade2$(XA)
 GLADEMLOBJS = glade.cmo
-GLADECOBJS = ml_glade.o
+GLADECOBJS = ml_glade$(XO)
+TARGETS += lablgladecc$(XE)
 endif
 
 ifdef USE_GNOMECANVAS
 MLLIBS += lablgnomecanvas.cma
-CLIBS += liblablgnomecanvas.a
+CLIBS += liblablgnomecanvas$(XA)
 GNOMECANVASMLOBJS = gnomeCanvas.cmo gnoCanvas.cmo
-GNOMECANVASCOBJS = ml_gnomecanvas.o
+GNOMECANVASCOBJS = ml_gnomecanvas$(XO)
 endif
 
 ifdef USE_GNOMEUI
 MLLIBS += lablgnomeui.cma
-CLIBS += liblablgnomeui.a
+CLIBS += liblablgnomeui$(XA)
 GNOMEUIMLOBJS = gnomeDruid.cmo gnoDruid.cmo
-GNOMEUICOBJS = ml_gnomedruid.o
+GNOMEUICOBJS = ml_gnomedruid$(XO)
 endif
 
 ifdef USE_PANEL
 MLLIBS += lablpanel.cma
-CLIBS += liblablpanel.a
+CLIBS += liblablpanel$(XA)
 PANELMLOBJS = panel.cmo
-PANELCOBJS = ml_panel.o
+PANELCOBJS = ml_panel$(XO)
 endif
 
 ifdef USE_RSVG
 MLLIBS += lablrsvg.cma
-CLIBS += liblablrsvg.a
+CLIBS += liblablrsvg$(XA)
 RSVGMLOBJS = rsvg.cmo
-RSVGCOBJS = ml_rsvg.o
+RSVGCOBJS = ml_rsvg$(XO)
 endif
 
 
 # Rules
-.SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def .ml4
-.c.o:
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .c $(XO) .d$(XO) .var .h .opt .def .ml4
+.c$(XO):
 	$(CCOMPILER) $<
+.c.d.obj:
+	$(COMPILER) -verbose -ccopt "/MD -DCAML_DLL /Fo$@ $(CFLAGS)" $<
 .ml.cmo:
 	$(COMPILER) $<
 .mli.cmi:
@@ -118,19 +119,23 @@ endif
 #.ml4.ml:
 #	$(CAMLP4) -impl $< -o $@
 
-%_tags.h %_tags.c %Enums.ml: %_tags.var varcc
+%_tags.h %_tags.c %Enums.ml: %_tags.var varcc$(XE)
 	./varcc $<
 
-%Props.ml o%Props.ml: %.props propcc
+%Props.ml o%Props.ml: %.props propcc$(XE)
 	./propcc $<
 
-
 # Targets
-GTKOBJS =  ml_gtk.o ml_pango.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o \
-	ml_gtklist.o ml_gtkmenu.o ml_gtkmisc.o ml_gtkpack.o ml_gtkrange.o \
-	ml_gtktext.o ml_gtktree.o ml_gtkstock.o
-COBJS = ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o \
-	wrappers.o $(GTKOBJS)
+byte: $(TARGETS)
+opt:  $(TARGETS) lablgtkopt
+
+# Files
+GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkbin$(XO) ml_gtkbutton$(XO) \
+	ml_gtkedit$(XO) ml_gtklist$(XO) ml_gtkmenu$(XO) ml_gtkmisc$(XO) \
+	ml_gtkpack$(XO) ml_gtkrange$(XO) ml_gtktext$(XO) ml_gtktree$(XO) \
+	ml_gtkstock$(XO)
+COBJS = ml_gdkpixbuf$(XO) ml_gdk$(XO) ml_glib$(XO) ml_gobject$(XO) \
+	ml_gpointer$(XO) wrappers$(XO) $(GTKOBJS)
 GTKPROPS = gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
 	gtkList.props gtkMenu.props gtkMisc.props gtkPack.props \
 	gtkRange.props gtkText.props gtkTree.props
@@ -153,17 +158,18 @@ THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
 ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
-	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELOBJS) $(INITOBJS)
+	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELOBJS) \
+	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
 depend: $(ENUMOBJS:.cmo=.ml) $(GTKPROPS:%.props=%Props.ml) $(GTKPROPS:%.props=o%Props.ml)
 	ocamldep *.ml *.mli > .depend
 
 ifeq ($(THREADS_LIB),no)
-lablgtktop: $(MLLIBS) $(INITOBJS)
+lablgtktop$(XE): $(MLLIBS) $(INITOBJS)
 	$(TOPLEVEL) $(CUSTOM) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
 else
-lablgtktop: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
+lablgtktop$(XE): $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	$(TOPLEVEL) $(THFLAGS) $(CUSTOM) -o $@ $(THLINK) $(MLLINK) \
 	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS)
 endif
@@ -186,107 +192,122 @@ ifeq ($(THREADS_LIB),system)
 lablgtkopt:: $(THOBJS:.cmo=.cmx)
 endif
 
-lablgladecc: xml_lexer.cmo lablgladecc.cmo
+lablgladecc$(XE): xml_lexer.cmo lablgladecc.cmo
 	$(LINKER) -o $@ $(MLLINK) xml_lexer.cmo lablgladecc.cmo
 
-testcc: lablgladecc lablgtktop
+testcc$(XE): lablgladecc$(XE) lablgtktop
 	./lablgladecc -test > testcc.ml
 	./lablgtktop testcc.ml
 	rm -f testcc.ml
 
 install:
-	mkdir -p $(INSTALLDIR) $(BINDIR) $(DLLDIR)
-	cp $(ALLOBJS:.cmo=.cmi) $(THOBJS:.cmo=.cmi) $(INSTALLDIR)
-	cp -p *.mli $(INSTALLDIR)
-	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(INSTALLDIR)
-	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
-	cp $(CLIBS) $(INSTALLDIR)
-	cd $(INSTALLDIR) && $(RANLIB) $(CLIBS)
-	cp varcc propcc $(INSTALLDIR)
+	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
+	cp $(ALLOBJS:.cmo=.cmi) $(THOBJS:.cmo=.cmi) "$(INSTALLDIR)"
+	cp -p *.mli "$(INSTALLDIR)"
+	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) "$(INSTALLDIR)"
+	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) "$(INSTALLDIR)"
+	cp $(CLIBS) "$(INSTALLDIR)"
+	cd "$(INSTALLDIR)" && $(RANLIB) $(CLIBS)
+	cp varcc$(XE) propcc$(XE) "$(INSTALLDIR)"
 	if test $(THREADS_LIB) != system || test $(HAS_DLL_SUPPORT) != yes; \
-	   then cp lablgtktop $(INSTALLDIR); \
+	   then cp lablgtktop$(XE) "$(INSTALLDIR)"; \
 	fi
-	cp -p *.h $(INSTALLDIR)
-	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
-	@if test -f dlllablgtk2.so; then \
-	   if test -d $(DLLDIR); then : ; else mkdir -p $(DLLDIR); fi; \
-	   cp $(CLIBS:lib%.a=dll%.so) $(DLLDIR) || \
-	   echo "Couldn't install dlls in default location: " $(DLLDIR); \
-	fi
-	cp lablgtk2 $(BINDIR)
-	if test -f lablgladecc; then cp lablgladecc $(BINDIR)/lablgladecc2; fi
+	cp -p *.h "$(INSTALLDIR)"
+	@if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
+	@if test -f dlllablgtk2$(XS); then $(MAKE) installdll; fi
+	cp lablgtk2$(XB) "$(BINDIR)"
+	if test -f lablgladecc$(XE); then \
+	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; fi
+
+installdll:
+	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)" || \
+	   echo "Couldn't install dlls in default location: $(DLLDIR)"
 
 installopt:
-	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.a) $(INSTALLDIR)
-	cd $(INSTALLDIR) && $(RANLIB) $(MLLIBS:.cma=.a)
-	cp $(ALLOBJS:.cmo=.cmx) $(INSTALLDIR)
-	cp $(INITOBJS:.cmo=.o) $(INSTALLDIR)
+	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=$(XA)) "$(INSTALLDIR)"
+	cd "$(INSTALLDIR)" && $(RANLIB) $(MLLIBS:.cma=$(XA))
+	cp $(ALLOBJS:.cmo=.cmx) "$(INSTALLDIR)"
+	cp $(INITOBJS:.cmo=$(XO)) "$(INSTALLDIR)"
 	if test -f gtkThread.cmx; then \
-	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=.o) $(INSTALLDIR); fi
+	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) "$(INSTALLDIR)"; fi
 
-liblablgtk2.a: $(COBJS)
+ifeq ($(TOOLCHAIN),msvc)
+liblablgtk2$(XA): $(COBJS)
+	$(MKLIB)$@ $(COBJS)
+dlllablgtk2.dll: $(COBJS:$(XO)=.d$(XO))
+	$(MKDLL)$@ $(COBJS:$(XO)=.d$(XO)) $(GTKLIBS) $(OCAMLDLL)
+lablgtk.cma: liblablgtk2$(XA) dlllablgtk2.dll $(MLOBJS) $(CONFIG)
+	$(LINKER) -a -o $@ $(MLOBJS) \
+	  -cclib -llablgtk2 -dllib -llablgtk2 \
+	  -cclib "$(GTKLIBS)"
+lablgtk.cmxa: liblablgtk2$(XA) $(MLOBJS:.cmo=.cmx) $(CONFIG)
+	$(LINKOPT) -a -o $@  $(MLOBJS:.cmo=.cmx) -cclib -llablgtk2 \
+	  -cclib "$(GTKLIBS)"
+else
+liblablgtk2$(XA): $(COBJS)
 	$(LIBRARIAN) -o lablgtk2 $(COBJS) $(GTKLIBS)
-lablgtk.cma: liblablgtk2.a $(MLOBJS)
+lablgtk.cma: liblablgtk2$(XA) $(MLOBJS)
 	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(MLOBJS) $(GTKLIBS)
-lablgtk.cmxa: liblablgtk2.a $(MLOBJS:.cmo=.cmx)
+lablgtk.cmxa: liblablgtk2$(XA) $(MLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
+endif
 
-liblablgtkgl2.a: $(GLCOBJS)
+liblablgtkgl2$(XA): $(GLCOBJS)
 	$(LIBRARIAN) -o lablgtkgl2 $(GLCOBJS) \
 	    $(GTKGLLIBS)
-lablgtkgl.cma: liblablgtkgl2.a $(GLMLOBJS)
+lablgtkgl.cma: liblablgtkgl2$(XA) $(GLMLOBJS)
 	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $(GLMLOBJS) \
 	    $(GTKGLLIBS)
-lablgtkgl.cmxa: liblablgtkgl2.a $(GLMLOBJS:.cmo=.cmx)
+lablgtkgl.cmxa: liblablgtkgl2$(XA) $(GLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $(GLMLOBJS:.cmo=.cmx) \
 	    $(GTKGLLIBS)
 
-#liblablgnome.a: $(GNOMECOBJS)
+#liblablgnome$(XA): $(GNOMECOBJS)
 #	$(LIBRARIAN) -o lablgnome $(GNOMECOBJS) $(GNOMELIBS)
-#lablgnome.cma: liblablgnome.a $(GNOMEMLOBJS)
+#lablgnome.cma: liblablgnome$(XA) $(GNOMEMLOBJS)
 #	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMELIBS)
-#lablgnome.cmxa: liblablgnome.a $(GNOMEMLOBJS:.cmo=.cmx)
+#lablgnome.cmxa: liblablgnome$(XA) $(GNOMEMLOBJS:.cmo=.cmx)
 #	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) $(GNOMELIBS)
 
-liblablglade2.a: $(GLADECOBJS)
+liblablglade2$(XA): $(GLADECOBJS)
 	$(LIBRARIAN) -o lablglade2 $(GLADECOBJS) $(GLADELIBS)
-lablglade.cma: liblablglade2.a $(GLADEMLOBJS)
+lablglade.cma: liblablglade2$(XA) $(GLADEMLOBJS)
 	$(LIBRARIAN) -o lablglade -oc lablglade2 $(GLADEMLOBJS) $(GLADELIBS)
-lablglade.cmxa: liblablglade2.a $(GLADEMLOBJS:.cmo=.cmx)
+lablglade.cmxa: liblablglade2$(XA) $(GLADEMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablglade -oc lablglade2 \
 	    $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
 
-liblablrsvg.a: $(RSVGCOBJS)
+liblablrsvg$(XA): $(RSVGCOBJS)
 	$(LIBRARIAN) -o lablrsvg $(RSVGCOBJS) $(RSVGLIBS)
-lablrsvg.cma: liblablrsvg.a $(RSVGMLOBJS)
+lablrsvg.cma: liblablrsvg$(XA) $(RSVGMLOBJS)
 	$(LIBRARIAN) -o lablrsvg -oc lablrsvg $(RSVGMLOBJS) $(RSVGLIBS)
-lablrsvg.cmxa: liblablrsvg.a $(RSVGMLOBJS:.cmo=.cmx)
+lablrsvg.cmxa: liblablrsvg$(XA) $(RSVGMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablrsvg -oc lablrsvg \
 	    $(RSVGMLOBJS:.cmo=.cmx) $(RSVGLIBS)
 
-liblablgnomecanvas.a: $(GNOMECANVASCOBJS)
+liblablgnomecanvas$(XA): $(GNOMECANVASCOBJS)
 	$(LIBRARIAN) -o lablgnomecanvas $(GNOMECANVASCOBJS) $(GNOMECANVASLIBS)
-lablgnomecanvas.cma: liblablgnomecanvas.a $(GNOMECANVASMLOBJS)
+lablgnomecanvas.cma: liblablgnomecanvas$(XA) $(GNOMECANVASMLOBJS)
 	$(LIBRARIAN) -o lablgnomecanvas $(GNOMECANVASMLOBJS) $(GNOMECANVASLIBS)
-lablgnomecanvas.cmxa: liblablgnomecanvas.a $(GNOMECANVASMLOBJS:.cmo=.cmx)
+lablgnomecanvas.cmxa: liblablgnomecanvas$(XA) $(GNOMECANVASMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgnomecanvas \
 	    $(GNOMECANVASMLOBJS:.cmo=.cmx) $(GNOMECANVASLIBS)
 # gnoCanvas.cmo: COMPILER+= -i
 
-liblablgnomeui.a: $(GNOMEUICOBJS)
+liblablgnomeui$(XA): $(GNOMEUICOBJS)
 	$(LIBRARIAN) -o lablgnomeui $(GNOMEUICOBJS) $(GNOMEUILIBS)
-lablgnomeui.cma: liblablgnomeui.a $(GNOMEUIMLOBJS)
+lablgnomeui.cma: liblablgnomeui$(XA) $(GNOMEUIMLOBJS)
 	$(LIBRARIAN) -o lablgnomeui $(GNOMEUIMLOBJS) $(GNOMEUILIBS)
-lablgnomeui.cmxa: liblablgnomeui.a $(GNOMEUIMLOBJS:.cmo=.cmx)
+lablgnomeui.cmxa: liblablgnomeui$(XA) $(GNOMEUIMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgnomeui \
 	    $(GNOMEUIMLOBJS:.cmo=.cmx) $(GNOMEUILIBS)
 # gnoDruid.cmo: COMPILER+= -i
 
-liblablpanel.a: $(PANELCOBJS)
+liblablpanel$(XA): $(PANELCOBJS)
 	$(LIBRARIAN) -o lablpanel $(PANELCOBJS) $(PANELLIBS)
-lablpanel.cma: liblablpanel.a $(PANELMLOBJS)
+lablpanel.cma: liblablpanel$(XA) $(PANELMLOBJS)
 	$(LIBRARIAN) -o lablpanel $(PANELMLOBJS) $(PANELLIBS)
-lablpanel.cmxa: liblablpanel.a $(PANELMLOBJS:.cmo=.cmx)
+lablpanel.cmxa: liblablpanel$(XA) $(PANELMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablpanel \
 	    $(PANELMLOBJS:.cmo=.cmx) $(PANELLIBS)
 
@@ -297,26 +318,27 @@ gtkThread.cmi: gtkThread.mli
 	$(COMPILER) $(THFLAGS) gtkThread.mli
 
 gtkThread.cmx: gtkThread.ml
-	if test -f $(LIBDIR)/libthreadsnat.a; then \
+	if test -f "$(LIBDIR)/libthreadsnat$(XA)"; then \
 	   $(COMPOPT) $(THFLAGS) gtkThread.ml; fi
 
 xml_lexer.ml: xml_lexer.mll
 	$(OCAMLLEX) xml_lexer.mll
 xml_lexer.cmo xml_lexer.cmx : xml_lexer.cmi
 
-varcc: varcc.cmo
+varcc$(XE): varcc.cmo
 	$(LINKER) -o $@ $<
 	rm -f *_tags.h *_tags.c
 
-propcc: propcc.cmo
+propcc$(XE): propcc.cmo
 	$(LINKER) -o $@ $<
 
-check_externals: check_externals.cmo
+check_externals$(XE): check_externals.cmo
 	$(LINKER) -o $@ $<
 
 clean:
-	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml xml_lexer.ml \
-	  propcc check_externals check_externals.ml propcc.ml \
+	rm -f *.cm* *$(XO) *.a *.so *.exe *$(XO)bj *.lib *.dll *_tags.[ch] \
+	  $(TARGETS) varcc.ml xml_lexer.ml \
+	  propcc$(XE) check_externals$(XE) check_externals.ml propcc.ml \
 	  *Enums.ml *Props.ml
 	rm -f \#*\# *~
 
@@ -351,14 +373,14 @@ DOCFILES += panel.mli
 endif
 
 OCAMLDOC = ocamldoc
-lablgtk.odoc : $(DOCFILES) $(ALLOBJS)
+lablgtk$(XO)doc : $(DOCFILES) $(ALLOBJS)
 	$(OCAMLDOC) -dump $@ -v  -I $(LABLGLDIR) $(DOCFILES)
 gtkdoc.cmo : gtkdoc.ml
 	$(CAMLC) -I +ocamldoc -c $<
-doc : lablgtk.odoc gtkdoc.cmo
+doc : lablgtk$(XO)doc gtkdoc.cmo
 	mkdir -p ../doc/html
 	$(OCAMLDOC) -g ./gtkdoc.cmo -v -t LablGTK -d ../doc/html -load $<
-doc_texi : lablgtk.odoc
+doc_texi : lablgtk$(XO)doc
 	$(OCAMLDOC) -texi -v -t LablGTK -o ../doc/lablgtk2.texi -load $<
 
 srcdoc: $(ALLOBJS)
@@ -369,19 +391,20 @@ $(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
 	    ml_gobject.h ml_glib.h wrappers.h
 $(GNOMEUICOBJS) : gnomeui_tags.h
 $(PANELCOBJS) : panel_tags.h
-ml_glib.o: glib_tags.h ml_glib.h wrappers.h
-ml_gobject.o: gobject_tags.h wrappers.h
-ml_gdk.o: gdk_tags.h ml_gdk.h ml_gpointer.h ml_pango.h wrappers.h
-ml_gtk.o ml_gtktext.o: ml_pango.h
-ml_gtkgl.o: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
-ml_gtkxmhtml.o: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
-ml_gpointer.o: ml_gpointer.h
-ml_gdkpixbuf.o: gdkpixbuf_tags.h ml_gdk.h gdk_tags.h wrappers.h ml_gpointer.h
-ml_pango.o: pango_tags.h ml_pango.h
-ml_rsvg.o: ml_gobject.h ml_gdkpixbuf.h wrappers.h
-ml_gnomecanvas.o: ml_gtk.h ml_gobject.h wrappers.h
-ml_gnomedruid.o: ml_gtk.h ml_gobject.h wrappers.h
-ml_panel.o: ml_gtk.h ml_gobject.h wrappers.h
+ml_glib$(XO): glib_tags.h ml_glib.h wrappers.h
+ml_gobject$(XO): gobject_tags.h wrappers.h
+ml_gdk$(XO): gdk_tags.h ml_gdk.h ml_gpointer.h ml_pango.h wrappers.h
+ml_gtk$(XO) ml_gtktext$(XO): ml_pango.h
+ml_gtkgl$(XO): gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gtkxmhtml$(XO): gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
+ml_gpointer$(XO): ml_gpointer.h
+ml_gdkpixbuf$(XO): gdkpixbuf_tags.h ml_gdk.h gdk_tags.h \
+	wrappers.h ml_gpointer.h
+ml_pango$(XO): pango_tags.h ml_pango.h
+ml_rsvg$(XO): ml_gobject.h ml_gdkpixbuf.h wrappers.h
+ml_gnomecanvas$(XO): ml_gtk.h ml_gobject.h wrappers.h
+ml_gnomedruid$(XO): ml_gtk.h ml_gobject.h wrappers.h
+ml_panel$(XO): ml_gtk.h ml_gobject.h wrappers.h
 varcc.cmo: varcc.ml4
 
 include .depend

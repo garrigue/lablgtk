@@ -1,6 +1,27 @@
-   Here is a small howto about compilation of lablgtk2 on Win32 with mingw
+        Here is a small howto about using lablgtk2 on Win32
 
-0) Install cygwin base devel. tools with gcc-mingw. First check your 
+Binary installation
+
+0) Both MSVC and mingw versions of ocaml 3.07 should work.
+
+1) Install the gtk2 libraries and dependencies. You can find them
+in a single zip file at
+    http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgtk.html
+
+2) Install lablgtk2 binaries and scripts inside the OCaml distribution
+     bin/lablgtk2             -> bin
+     stublibs/dlllablgtk2.dll -> lib/stublibs
+     lablgtk2                 -> lib/lablgtk2
+
+   Only bytecode is included, custom compilation is not supported
+
+3) Test in examples
+     lablgtk2 testgtk.ml
+
+Full compilation (required for native compilation)
+
+0) You will need either the MSVC or mingw version of ocaml 3.07,
+and cygwin development tools. If you use mingw, check your 
 installation by trying to compile a hello world C program with
     gcc -mno-cygwin  -mms-bitfields main.c
  
@@ -25,21 +46,11 @@ Unzip all these in the base directory (something like X:\cygwin\ )
 Try to compile a small hello-gtk.c (see the tutorial page on 
 http://www.gtk.org) before going further.
 
+3) If you are using mingw, "./configure" should succeed.
+For MSVC, copy config.make.nt to config.make, and edit it to set GTKROOT.
 
-2) Compile OCaml 3.06 for mingw. This is needed as INRIA does not 
-provide precompiled version. Follow the instructions in the README
-    for mingw. Edit the configuration file and replace all occurences of 
--fnative-struct by "-mms-bitfields -mno-cygwin". Then make opt.opt.
-    (you do not need Tk, do you ?).
+4) Simply do "make" and "make opt" for the native version.
 
-At this step "ocamlc hello.ml", "ocamlopt hello.ml", "ocaml" should  
-work ok.
+5) Install ("make install") and test.
 
-Before compiling lablgtk2, you need to manualy compile 
-ocaml/tools/ocamlmklib.ml. Edit this file with sensible values for variables 
-from bindir to ranlib then "make ocamlmklib" and install it to your bindir.
-
-3) now proceed with lablgtk2:
-    "./configure" and then "make" should succeed.
-
- Install ("make install") and test.
+$Id$

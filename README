@@ -1,8 +1,8 @@
 
-             LablGTK2 beta : an interface to the GIMP Tool Kit
+             LablGTK2 : an interface to the GIMP Tool Kit
 
 Needed:
-	ocaml-3.06
+	ocaml-3.07
 	gtk+-2.x (preferably gtk+-2.2.x)
 	GNU make (there is no standard for conditionals)
 
@@ -10,16 +10,12 @@ Info/upgrades:
         http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgtk.html
 
 Status:
-  Contrary to lablgtk, which is a mature interface to gtk-1.2,
-  lablgtk2 is still in development.
+  LablGtk2 is now pretty stable, but it has not been as thoroughly
+  tested as LablGtk.
   
   Support for the old text widget has been dropped, but it is
   replaced by a new one, much more powerful (thanks to Benjamin
-  Monate). Yet many programs will not compile due to the absence of
-  the old text widget.
-
-  In other widgets many methods are missing, and will be progressively
-  added, as we review the changes. Requests may be considered.
+  Monate).
 
   Another important change in gtk-2 is the use of unicode (utf8) for
   all strings. If you use non-ascii strings, you must imperatively
@@ -32,14 +28,7 @@ Status:
   GTK_SETLOCALE to 0 in the environment), but LC_NUMERIC is reverted
   to "C" to avoid problems with floating point conversion in Caml.
 
-  This snapshot also includes extensive changes in various areas.
-  * removed #misc#set_geometry
-  * arguments to #misc#set_size_request are optional
-  * add #misc#set_size_chars to set request in number of characters
-  * ?width and ?height in GWindow set default size rather than size request
-  * add GWindow#move to position a window
-  * new clipboard handling in GMain
-  * etc...
+  There are of course many other changes and additions.
 
 How to compile:
 

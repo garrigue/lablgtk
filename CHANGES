@@ -1,5 +1,8 @@
 $Id$
 
+2003.10.10 [Jacques]
+  * merge Makefile.nt into Makefile, check for msvc
+
 2003.10.09 [Benjamin]
   * doc: correct GtkAjustement link to the right Gtk doc
   * doc: fix Makefile for doc (use of OCAML instead of CAMLC and mkdir ../doc/html) 
