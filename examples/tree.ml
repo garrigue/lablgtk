@@ -8,7 +8,7 @@ let author = cols#add string
 let checked = cols#add boolean
 
 let create_model () =
-  let store = GTree.store cols in
+  let store = GTree.tree_store cols in
   let row = store#append () in
   store#set ~row ~column:title "The Art of Computer Programming";
   store#set ~row ~column:author "Donald E. Knuth";

@@ -64,9 +64,7 @@ CAMLprim value ml_gtk_tree_remove_items (value tree, value items)
 
 /* "Lighter" version: allocate in the ocaml heap */
 #define GtkTreeIter_val(val) ((GtkTreeIter*)MLPointer_val(val))
-CAMLprim value Val_GtkTreeIter(GtkTreeIter *it) {
-  return Val_copy(it);
-}
+#define Val_GtkTreeIter(it) (copy_memblock_indirected(it,sizeof(GtkTreeIter)))
 #define alloc_GtkTreeIter (alloc_memblock_indirected(sizeof(GtkTreeIter)))
 
 CAMLprim value ml_alloc_GtkTreeIter(value v)

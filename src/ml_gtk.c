@@ -523,11 +523,12 @@ ML_2 (gtk_container_set_focus_hadjustment, GtkContainer_val,
 
 static void window_unref (GtkObject *w)
 {
-    /* If the window exists, has no parent, and is still not visible,
-       then unreference it twice.
-       This should be enough to destroy it. */
-    if (GTK_WINDOW(w)->has_user_ref_count && !GTK_WIDGET_VISIBLE(w))
-        gtk_object_unref (w);
+    /* If the window exists, has no parent, is still not visible,
+       and has only two references (mine and toplevel_list),
+       then destroy it. */
+    if (GTK_WINDOW(w)->has_user_ref_count && !GTK_WIDGET_VISIBLE(w)
+        && G_OBJECT(w)->ref_count == 2)
+        gtk_object_destroy (w);
     gtk_object_unref(w);
 }
 Make_Val_final_pointer_ext (GtkObject, _window, gtk_object_ref, window_unref,

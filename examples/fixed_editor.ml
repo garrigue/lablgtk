@@ -85,7 +85,7 @@ class drag_info = object
   method set_drag_action (w : Gdk.window) ~x ~y =
     begin
       let (x0, y0) = Window.get_position w in
-      let (width, height) = Window.get_size w in
+      let (width, height) = Drawable.get_size w in
       drag_action <- get_position_in_widget w ~x ~y ~width ~height;
       let (x1, y1) = (x0+width, y0+height) in
       toimen <-
@@ -145,7 +145,7 @@ class fix_editor ~width ~height ~packing =
       let draw_id = ref None in
       let exps_id = ref None in
       let on_paint _ =
-      	let (width, height) = Window.get_size (ebox#misc#window) in begin
+      	let (width, height) = Drawable.get_size (ebox#misc#window) in begin
       	  drawing#set_foreground `BLACK;
       	  drawing#rectangle ~filled:true ~x:0 ~y:0
 	    ~width:corner_width ~height:corner_height ();

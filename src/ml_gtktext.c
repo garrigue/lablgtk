@@ -82,10 +82,11 @@ ML_1 (gtk_text_iter_copy, GtkTextIter_val, Val_GtkTextIter_mine)
 /* "Lighter" version: allocate in the ocaml heap */
 /*
 #define GtkTextIter_val(val) ((GtkTextIter*)MLPointer_val(val))
-value Val_GtkTextIter(GtkTextIter *it) {
-  return Val_copy(it);
+#define Val_GtkTextIter(it) (copy_memblock_indirected(it,sizeof(GtkTextIter)))
+value obj_dup(value arg);
+CAMLprim value ml_gtk_text_iter_copy (value it) {
+  return (Field(it,1) == 2 ? obj_dup(it) : Val_GtkTextIter(GtkTextIter_val(it)));
 }
-#define alloc_GtkTextIter (alloc_memblock_indirected(sizeof(GtkTextIter)))
 */
 
 #define GtkTextView_val(val) check_cast(GTK_TEXT_VIEW,val)

@@ -234,7 +234,7 @@ and misc_signals ?after obj = object
       ~callback:(fun data -> callback (new selection_data data)) 
 end
 
-and misc_ops obj = object
+and misc_ops obj = object (self)
   inherit gtkobj_misc obj
   method connect = new misc_signals obj
   method show () = Widget.show obj
@@ -268,6 +268,14 @@ and misc_ops obj = object
     if x+y <> -4 then Widget.set_uposition obj ~x ~y;
     if width+height <> -4 then Widget.set_usize obj ~width ~height
   method set_size_request = Widget.set_size_request obj
+  method set_size_chars ?desc ?lang ?width ?height () =
+    let metrics = 
+      (self#pango_context : GPango.context)#get_metrics ?desc ?lang () in
+    let width = may_map width ~f:
+        (fun w -> w * GPango.to_pixels metrics#approx_digit_width)
+    and height = may_map height ~f:
+        (fun h -> h * GPango.to_pixels (metrics#ascent+metrics#descent)) in
+    self#set_geometry ?width ?height ()
   method set_style (style : style) = Widget.set_style obj style#as_style
   method modify_fg = iter_setcol Widget.modify_fg obj
   method modify_bg = iter_setcol Widget.modify_bg obj

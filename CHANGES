@@ -1,5 +1,12 @@
 $Id$
 
+In lablgtk2-20030221:
+
+2003.02.21
+ * add GObj.misc_ops#set_size_chars
+ * applications/browser only works with CVS version of ocaml
+ * bug fixes
+
 2003.02.20
  * additions to Pango [Jacques]
 [Benjamin]:
