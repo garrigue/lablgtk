@@ -108,7 +108,7 @@ class ['a] dialog_signals :
   end
 class ['a] dialog_skel : ([>Gtk.dialog] as 'b) obj ->
   object
-    constraint 'a = [> `DELETE_EVENT | `NONE]
+    constraint 'a = [> `DELETE_EVENT]
     inherit [window] window_skel
     val obj : 'b obj
     method action_area : GPack.box
@@ -148,14 +148,13 @@ val dialog :
 
 type 'a buttons
 module Buttons : sig
-val none : [>`NONE] buttons
 val ok : [>`OK] buttons
 val close : [>`CLOSE] buttons
 val yes_no : [>`YES|`NO] buttons
 val ok_cancel : [>`OK|`CANCEL] buttons
-type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT | `NONE]
-type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT | `NONE]
-type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT | `NONE]
+type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
+type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
+type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT]
 end
 class type ['a] message_dialog =
   object
