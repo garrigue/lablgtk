@@ -16,4 +16,5 @@ let redraw _ =
 let _ =
   window#connect#destroy ~callback:Main.quit;
   window#event#connect#after#configure ~callback:redraw;
+  window#event#connect#after#expose ~callback:redraw;
   Main.main ()
