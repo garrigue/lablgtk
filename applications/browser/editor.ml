@@ -43,7 +43,7 @@ end
 
 open GdkKeysyms
 
-class editor_window ?:show[= false] () =
+class editor_window ?(:show=false) () =
   let window = GWindow.window width:500 height:300
       title:"Program Editor" () in
   let vbox = GPack.vbox packing:window#add () in

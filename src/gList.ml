@@ -69,7 +69,7 @@ class ['a] clist obj = object (self)
     new widget (CList.get_column_widget obj col)
   method columns_autosize () = CList.columns_autosize obj
   method optimal_column_width = CList.optimal_column_width obj
-  method moveto ?:row_align[=0.] ?:col_align[=0.] row col =
+  method moveto ?(:row_align=0.) ?(:col_align=0.) row col =
     CList.moveto obj row col :row_align :col_align
   method row_is_visible = CList.row_is_visible obj
   method cell_type = CList.get_cell_type obj
@@ -110,7 +110,7 @@ class ['a] clist obj = object (self)
   method set_column ?:widget =
     CList.set_column obj ?widget:(may_map widget fun:as_widget)
   method set_row = CList.set_row obj
-  method set_cell ?:text ?:pixmap ?:spacing[=0] row col =
+  method set_cell ?:text ?:pixmap ?(:spacing=0) row col =
     match text, pixmap with
       _, None -> CList.set_text obj row col text
     | None, Some (pm : GdkObj.pixmap) ->
@@ -123,7 +123,7 @@ class ['a] clist obj = object (self)
   method get_row_data n : 'a = Obj.obj (CList.get_row_data obj row:n)
 end
 
-let clist ?:columns[=1] ?:titles ?:hadjustment ?:vadjustment
+let clist ?(:columns=1) ?:titles ?:hadjustment ?:vadjustment
     ?:shadow_type ?:button_actions ?:selection_mode
     ?:reorderable ?:use_drag_icons ?:row_height
     ?:titles_show ?:titles_active ?:auto_sort ?:sort_column ?:sort_type

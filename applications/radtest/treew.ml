@@ -224,7 +224,7 @@ class window_and_tree :name =
 *)
 
 class virtual tiwidget :name parent_tree:(parent_tree : GTree2.tree) :pos
-    :classe :widget ?:root[=false] (parent_window : window_and_tree0) =
+    :classe :widget ?(:root=false) (parent_window : window_and_tree0) =
 object(self)
 
   inherit tiwidget0
@@ -339,7 +339,7 @@ object(self)
     self#add_child_tiw child affich:true;
     add_undo (Remove name)
 
-  method private add_child_tiw :affich ?:pos[= -1] child =
+  method private add_child_tiw :affich ?(:pos = -1) child =
     child#set_parent (self : #tiwidget0 :> tiwidget0);
     self#add child :pos;
     if affich then Propwin.show child (* else Propwin.add child *)
@@ -356,11 +356,11 @@ object(self)
 
 
 (* adds the subtree saved in the Node *)
-  method add_children ?:pos[= -1] node =
+  method add_children ?(:pos = -1) node =
     let child_name = self#add_children_wo_undo node :pos in
     add_undo (Remove child_name)
 
-  method private add_children_wo_undo ?:pos[= -1] (Node (child, children)) =
+  method private add_children_wo_undo ?(:pos = -1) (Node (child, children)) =
     let classe, name, property_list = child in
     let rname = change_name name in
     let tc = self#add_child_with_name classe rname :pos in
@@ -603,7 +603,7 @@ end
    not for buttons (can't have children) *)
 
 class virtual ticontainer :widget :name
-    ?:root[= false] :classe :parent_tree :pos parent_window =
+    ?(:root=false) :classe :parent_tree :pos parent_window =
 object(self)
 
   val container = (widget : #container :> container)
@@ -676,10 +676,10 @@ object(self)
       end;()
 end
 
-class tiwindow widget:window :name :parent_tree :pos parent_window =
+class tiwindow :widget :name :parent_tree :pos parent_window =
 object(self)
-
-  inherit ticontainer :name classe:"window" widget:window
+  val window = widget
+  inherit ticontainer :name classe:"window" :widget
       root:true :parent_tree :pos parent_window as container
 
   method private class_name = "GWindow.window"
@@ -773,11 +773,11 @@ let new_tiwindow :name =
 
 
 
-class tibox dir:(dir : Gtk.Tags.orientation) widget:(box : GPack.box)
+class tibox (:dir : Gtk.Tags.orientation) (:widget : GPack.box)
     :name :parent_tree :pos parent_window =
 object(self)
-
-  inherit ticontainer :name widget:box :parent_tree :pos parent_window
+  val box = widget
+  inherit ticontainer :name :widget :parent_tree :pos parent_window
       classe:(match dir with `VERTICAL -> "vbox" | _ -> "hbox") as container
 
   method private class_name =
@@ -895,11 +895,11 @@ let new_tivbox :name = new tivbox widget:(GPack.vbox ()) :name
 (* the button inherits from widget because it can't accept
    a child; 
    needs to add the border_width property *)
-class tibutton widget:(button : #GButton.button) :name :parent_tree :pos
+class tibutton (:widget : #GButton.button) :name :parent_tree :pos
     parent_window =
 object(self)
-      
-  inherit tiwidget :name classe:"button" widget:button :parent_tree :pos
+  val button = widget
+  inherit tiwidget :name classe:"button" :widget :parent_tree :pos
       parent_window as widget
 
   method private class_name = "GButton.button"
@@ -940,10 +940,11 @@ let new_tibutton :name =
   new tibutton widget:b :name
 
 
-class ticheck_button widget:(button : #GButton.toggle_button) :name
-    :parent_tree :pos parent_window = object(self)
-
-  inherit tiwidget :name classe:"check_button" widget:button
+class ticheck_button (:widget : #GButton.toggle_button) :name
+    :parent_tree :pos parent_window =
+object(self)
+  val button = widget
+  inherit tiwidget :name classe:"check_button" :widget
       :parent_tree :pos parent_window as widget
 
 
@@ -980,10 +981,11 @@ let new_ticheck_button :name =
 
 
 
-class titoggle_button widget:(button : #GButton.toggle_button) :name
-    :parent_tree :pos parent_window = object(self)
-
-  inherit tiwidget :name classe:"toggle_button" widget:button
+class titoggle_button (:widget : #GButton.toggle_button) :name
+    :parent_tree :pos parent_window =
+object(self)
+  val button = widget
+  inherit tiwidget :name classe:"toggle_button" :widget
       :parent_tree :pos parent_window as widget
 
   method private class_name = "GButton.toggle_button"
@@ -1024,11 +1026,11 @@ let new_titoggle_button :name =
 
 
 
-class tilabel widget:(labelw : GMisc.label) :name :parent_tree :pos
+class tilabel (:widget : GMisc.label) :name :parent_tree :pos
     parent_window =
 object(self)
-
-  inherit tiwidget :name classe:"label" widget:labelw
+  val labelw = widget
+  inherit tiwidget :name classe:"label" :widget
       :parent_tree :pos parent_window as widget
 
   method private class_name = "GMisc.label"
@@ -1057,11 +1059,12 @@ end
 let new_tilabel :name = new tilabel widget:(GMisc.label text:name ()) :name
 
 
-class tiframe widget:(frame : GFrame.frame) :name :parent_tree :pos
+class tiframe (:widget : GFrame.frame) :name :parent_tree :pos
     parent_window =
-  object
+object
+  val frame = widget
   inherit ticontainer
-      classe:"frame" :name widget:frame :parent_tree :pos parent_window
+      classe:"frame" :name :widget :parent_tree :pos parent_window
 
   method private class_name = "GFrame.frame"
 
@@ -1080,11 +1083,12 @@ end
 let new_tiframe :name = new tiframe widget:(GFrame.frame ()) :name
 
 
-class tiscrolled_window widget:(scrolled_window : GFrame.scrolled_window)
+class tiscrolled_window (:widget : GFrame.scrolled_window)
     :name :parent_tree :pos parent_window =
   object(self)
+    val scrolled_window = widget
     inherit ticontainer classe:"scrolled_window" :name
-	:parent_tree :pos widget:scrolled_window parent_window
+	:parent_tree :pos :widget parent_window
 
     method private class_name = "GFrame.scrolled_window"
     method private name_of_add_method = "#add_with_viewport"
@@ -1124,18 +1128,17 @@ let new_tiscrolled_window :name =
   new tiscrolled_window widget:(GFrame.scrolled_window ()) :name
 
 
-class tiseparator dir:(dir : Gtk.Tags.orientation)
-    widget:(separator : widget_full) :name :parent_tree :pos
-    parent_window =
+class tiseparator (:dir : Gtk.Tags.orientation) (:widget : widget_full)
+    :name :parent_tree :pos parent_window =
 object
+  val separator = widget
+  inherit tiwidget :name :widget :parent_tree :pos parent_window
+      classe:
+      (match dir with `VERTICAL -> "vseparator" | `HORIZONTAL -> "hseparator")
 
-  inherit tiwidget :name
-      widget:separator :parent_tree :pos parent_window
-      classe:(match dir with `VERTICAL -> "vseparator"
-                           | `HORIZONTAL -> "hseparator")
-
-  method private class_name = match dir with `VERTICAL -> "GMisc.vseparator"
-      | `HORIZONTAL -> "GMisc.hseparator"
+  method private class_name =
+    match dir with `VERTICAL -> "GMisc.vseparator"
+    | `HORIZONTAL -> "GMisc.hseparator"
 
 end
 
@@ -1146,12 +1149,11 @@ let new_tivseparator :name = new tiseparator dir: `VERTICAL :name
 
 
 
-class tientry widget:(entry : GEdit.entry) :name :parent_tree :pos
+class tientry (:widget : GEdit.entry) :name :parent_tree :pos
     parent_window =
 object
-
-  inherit tiwidget :name widget:entry :parent_tree :pos
-      classe:"entry" parent_window
+  val entry = widget
+  inherit tiwidget :name :widget :parent_tree :pos classe:"entry" parent_window
 
   method private class_name = "GEdit.entry"
 
@@ -1177,4 +1179,4 @@ let new_class_list = [
 
 let _ =
   new_tiwidget :=
-    (fun :classe ?:pos[= -1] -> (List.assoc key:classe new_class_list) :pos)
+    (fun :classe ?(:pos = -1) -> (List.assoc key:classe new_class_list) :pos)

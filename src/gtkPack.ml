@@ -16,8 +16,8 @@ module Box = struct
       [>`box] obj -> [>`widget] obj ->
       expand:bool -> fill:bool -> padding:int -> unit
       = "ml_gtk_box_pack_end"
-  let pack box ?from:dir[= (`START : pack_type)]
-      ?:expand[=true] ?:fill[=true] ?:padding[=0] child =
+  let pack box ?(from: dir = (`START : pack_type))
+      ?(:expand=true) ?(:fill=true) ?(:padding=0) child =
     (match dir with `START -> pack_start | `END -> pack_end)
       box child :expand :fill :padding
   external reorder_child : [>`box] obj -> [>`widget] obj -> pos:int -> unit
@@ -41,7 +41,7 @@ module Box = struct
       = "ml_gtk_hbox_new"
   external vbox_new : homogeneous:bool -> spacing:int -> box obj
       = "ml_gtk_vbox_new"
-  let create (dir : orientation) ?:homogeneous[=false] ?:spacing[=0] () =
+  let create (dir : orientation) ?(:homogeneous=false) ?(:spacing=0) () =
     (match dir with `HORIZONTAL -> hbox_new | `VERTICAL -> vbox_new)
       :homogeneous :spacing
 end
@@ -168,7 +168,7 @@ module Packer = struct
       ?i_pad_x:int -> ?i_pad_y:int -> unit -> unit
       = "ml_gtk_packer_set_defaults_bc" "ml_gtk_packer_set_defaults"
 
-  let build_options ?:expand[=true] ?:fill[=`BOTH] () =
+  let build_options ?(:expand=true) ?(:fill=`BOTH) () =
     (if expand then [`PACK_EXPAND] else []) @
     (match (fill : expand_type) with `NONE -> []
     | `X -> [`FILL_X]
@@ -199,7 +199,7 @@ module Table = struct
   let cast w : table obj = Object.try_cast w "GtkTable"
   external create : int -> int -> homogeneous:bool -> table obj
       = "ml_gtk_table_new"
-  let create rows:r columns:c ?:homogeneous[=false] () =
+  let create rows:r columns:c ?(:homogeneous=false) () =
     create r c :homogeneous
   external attach :
       [>`table] obj -> [>`widget] obj -> left:int -> right:int ->
@@ -210,9 +210,9 @@ module Table = struct
     function `X|`BOTH -> true | `Y|`NONE -> false
   let has_y : expand_type -> bool =
     function `Y|`BOTH -> true | `X|`NONE -> false
-  let attach t :left :top ?:right[=left+1] ?:bottom[=top+1]
-      ?:expand[=`BOTH] ?:fill[=`BOTH] ?:shrink[=`NONE]
-      ?:xpadding[=0] ?:ypadding[=0] w =
+  let attach t :left :top ?(:right=left+1) ?(:bottom=top+1)
+      ?(:expand=`BOTH) ?(:fill=`BOTH) ?(:shrink=`NONE)
+      ?(:xpadding=0) ?(:ypadding=0) w =
     let xoptions = if has_x shrink then [`SHRINK] else [] in
     let xoptions = if has_x fill then `FILL::xoptions else xoptions in
     let xoptions = if has_x expand then `EXPAND::xoptions else xoptions in

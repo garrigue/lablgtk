@@ -82,10 +82,10 @@ object (self)
       end;
       self#insert lex:true (if dir = `previous then h#previous else h#next);
     end
-  method private lex ?:start[=Text.line_start textw]
-      ?end:e[=Text.line_end textw] () =
+  method private lex ?(:start = Text.line_start textw)
+      ?(end: e = Text.line_end textw) () =
     if start < e then Lexical.tag textw :start end:e
-  method insert ?:lex[=false] text =
+  method insert ?(:lex=false) text =
     let start = Text.line_start textw in
     textw#insert text;
     if lex then self#lex :start ()

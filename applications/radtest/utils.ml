@@ -86,7 +86,7 @@ let split name =
 
 let test_unique name = not (List.mem key:name !name_list)
 
-let make_new_name ?:index[= 1] base =
+let make_new_name ?(:index=1) base =
   let index = ref index in
   let name = ref (base ^ (string_of_int !index)) in
   while not (test_unique !name) do
@@ -112,7 +112,7 @@ let message_name () = message "name already in use\npick a new name"
 
 (*************** file selection *****************)
 
-let get_filename callback:set_filename ?:dir[=""] () =
+let get_filename callback:set_filename ?(:dir="") () =
   let res = ref false in
   let file_selection = GWindow.file_selection modal:true () in
   if dir <> "" then file_selection#set_filename dir;

@@ -115,8 +115,8 @@ module RealBoard = Board (
 
 open RealBoard
 
-class game frame:(frame : #GContainer.container) label:(label : #GMisc.label)
-    statusbar:(bar : #GMisc.statusbar) =
+class game (:frame : #GContainer.container) (:label : #GMisc.label)
+    (:statusbar : #GMisc.statusbar) =
   let table = GPack.table columns:size rows:size packing:frame#add () in
 object (self)
   val cells =
@@ -124,8 +124,8 @@ object (self)
       fun:(fun i -> Array.init len:size
 	  fun:(fun j -> new cell packing:(table#attach top:i left:j) ()))
   val label = label
-  val turn = bar#new_context name:"turn"
-  val messages = bar#new_context name:"messages"
+  val turn = statusbar#new_context name:"turn"
+  val messages = statusbar#new_context name:"messages"
   val mutable current_color = `black
   method board = cells
   method table = table

@@ -223,7 +223,7 @@ module Misc = struct
   let set_padding w ?:x ?:y () =
     set_padding w x:(may_default get_xpad w for:x)
       y:(may_default get_ypad w for:y)
-  let set ?:xalign ?:yalign ?:xpad ?:ypad ?:width[= -2] ?:height[= -2] w =
+  let set ?:xalign ?:yalign ?:xpad ?:ypad ?(:width = -2) ?(:height = -2) w =
     if xalign <> None || yalign <> None then
       set_alignment w ?x:xalign ?y:yalign ();
     if xpad <> None || ypad <> None then
