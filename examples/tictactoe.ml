@@ -1,6 +1,7 @@
 (* $Id$ *)
 
 open GtkNew
+open GtkBase
 
 (* To create a new widget:
    create an array sig_array containing the signals defined by
@@ -18,54 +19,57 @@ open GtkNew
 *)
 
 module Tictactoe = struct
-  open GtkSignal
-  let tictactoe : (_,_) t =
-    { name = "tictactoe"; marshaller = marshal_unit }
-  let tictactoe_sig : ([`widget] Gtk.obj, _) t array
-      = [| tictactoe |]
+  type t = [`widget|`container|`box|`tictactoe]
+  module Signals = struct
+    open GtkSignal
+    let tictactoe : ([>`tictactoe],_) t =
+      { name = "tictactoe"; marshaller = marshal_unit }
+    let emit_tictactoe = emit_unit ~sgn:tictactoe
+  end
+  let create : unit -> t Gtk.obj =
+    let _,tictactoe_new = make_new_widget
+	~name:"Tictactoe" ~parent:VBOX ~signals:[Signals.tictactoe]
+    in fun () -> Object.try_cast (tictactoe_new ()) "Tictactoe"
 end
-
-
-let _,tictactoe_new,_ = make_new_widget "Tictactoe" ~parent:VBOX
-    ~signal_array:Tictactoe.tictactoe_sig
-
 
 open GMain
 
 class tictactoe_signals obj = object
   inherit GContainer.container_signals obj
-  method tictactoe = GtkSignal.connect ~sgn:Tictactoe.tictactoe obj ~after
+  method tictactoe =
+    GtkSignal.connect ~sgn:Tictactoe.Signals.tictactoe obj ~after
 end
 
 exception Trouve
 
 class tictactoe ?packing ?show () =
-  let obj : Gtk.box Gtk.obj = GtkBase.Object.unsafe_cast (tictactoe_new ()) in
+  let obj : Tictactoe.t Gtk.obj = Tictactoe.create () in
   let box = new GPack.box_skel obj in
 object (self)
   inherit GObj.widget obj
-  val buttons = Array.create_matrix ~dimx:3 ~dimy:3 (GButton.toggle_button ())
-  val buttons_handlers = Array.create_matrix ~dimx:3 ~dimy:3 (Obj.magic 0)
+  val mutable buttons = [||]
+  val mutable buttons_handlers = [||]
   val label = GMisc.label ~text:"Go on!" ~packing:box#add ()
   method clear () =
     for i = 0 to 2 do
       for j = 0 to 2 do
-	GtkSignal.handler_block (buttons.(i).(j) #as_widget)
-	  buttons_handlers.(i).(j);
-	buttons.(i).(j)#set_active false;
-	GtkSignal.handler_unblock (buttons.(i).(j) #as_widget)
-	  buttons_handlers.(i).(j)
+	let button = buttons.(i).(j)
+	and handler = buttons_handlers.(i).(j) in
+	button#misc#handler_block handler;
+	button#set_active false;
+	button#misc#handler_unblock handler
       done
     done
   method connect = new tictactoe_signals obj
-  method emit_tictactoe () = GtkSignal.emit obj ~sgn:Tictactoe.tictactoe
+  method emit_tictactoe () =
+    GtkSignal.emit_unit obj ~sgn:Tictactoe.Signals.tictactoe
   method toggle () =
     let rwins = [| [| 0; 0; 0 |]; [| 1; 1; 1 |]; [| 2; 2; 2 |];
-                  [| 0; 1; 2 |]; [| 0; 1; 2 |]; [| 0; 1; 2 |];
-                  [| 0; 1; 2 |]; [| 0; 1; 2 |] |]
+                   [| 0; 1; 2 |]; [| 0; 1; 2 |]; [| 0; 1; 2 |];
+                   [| 0; 1; 2 |]; [| 0; 1; 2 |] |]
     and cwins = [| [| 0; 1; 2 |]; [| 0; 1; 2 |]; [| 0; 1; 2 |];
-                  [| 0; 0; 0 |]; [| 1; 1; 1 |]; [| 2; 2; 2 |];
-                  [| 0; 1; 2 |]; [| 2; 1; 0 |] |] in
+                   [| 0; 0; 0 |]; [| 1; 1; 1 |]; [| 2; 2; 2 |];
+                   [| 0; 1; 2 |]; [| 2; 1; 0 |] |] in
     label#set_text"Go on!";
     try
       for k = 0 to 7 do
@@ -79,15 +83,16 @@ object (self)
   initializer
     let table =
       GPack.table ~rows:3 ~columns:3 ~homogeneous:true ~packing:box#add () in
-    for i = 0 to 2 do
-      for j = 0 to 2 do
-	let button = GButton.toggle_button ~width:20 ~height:20
-	    ~packing:(table#attach ~left:i ~top:j ~expand:`BOTH) () in
-	buttons.(i).(j) <- button;
-	buttons_handlers.(i).(j) <-
-	  button #connect#toggled ~callback:self#toggle;
-      done
-    done;
+    buttons <-
+      Array.init 3 ~f:
+	(fun i -> Array.init 3 ~f:
+	    (fun j ->
+	      GButton.toggle_button ~width:20 ~height:20
+		~packing:(table#attach ~left:i ~top:j ~expand:`BOTH) ()));
+    buttons_handlers <-
+      Array.mapi buttons ~f:
+	(fun i -> Array.mapi ~f:
+	  (fun j button -> button #connect#toggled ~callback:self#toggle));
     GObj.pack_return self ~packing ~show;
     ()
 end

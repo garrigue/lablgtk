@@ -490,8 +490,9 @@ ML_2 (gtk_handle_box_set_handle_position, GtkHandleBox_val, Position_val, Unit)
 ML_2 (gtk_handle_box_set_snap_edge, GtkHandleBox_val, Position_val, Unit)
 
 /* gtkinvisible.h */
-
+/* private class
 ML_0 (gtk_invisible_new, Val_GtkWidget_sink)
+*/
 
 /* gtkitem.h */
 
@@ -1912,9 +1913,9 @@ ML_1 (gtk_timeout_remove, Int_val, Unit)
 ML_0 (gtk_caller_new, Val_GtkWidget)
 */
 
-value ml_class_init=0;
+static value ml_class_init=0;
 
-void class_init (value class)
+static void class_init (value class)
 {
   callback(ml_class_init, class);
 }
@@ -2052,7 +2053,7 @@ value ml_gtk_type_unique (value name, value parent, value nsignals)
   return Val_int(gtk_type_unique(wi->get_type_func (), &ttt_info));
 }
 
-guint sig[100];
+static guint sig[100];
 
 value ml_gtk_object_class_add_signals (value class, value signals,
 				       value nsignals)
