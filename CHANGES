@@ -1,5 +1,8 @@
 $Id$
 
+2003.10.13 [Olivier]
+  * autoconf support for lablGL location
+
 2003.10.09 [Olivier]
   * wrap GtkButton label property in button_skel
 

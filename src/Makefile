@@ -25,8 +25,6 @@ TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB)
 all: byte
 world: byte $(OCAMLBEST)
 
-LABLGLDIR = $(LIBDIR)/lablGL
-
 MLLIBS = lablgtk.cma
 CLIBS = liblablgtk2$(XA)
 #MLLINK = unix.cma str.cma

@@ -37,6 +37,7 @@ MANDIR=$(DESTDIR)@mandir@
 
 INSTALLDIR=$(DESTDIR)@LIBDIR@/lablgtk2
 DLLDIR=$(DESTDIR)@LIBDIR@/stublibs
+LABLGLDIR=@LABLGLDIR@
 
 FILT = -pthread -Wl,--export-dynamic
 clean_libs = $(filter-out $(FILT),$(1))
