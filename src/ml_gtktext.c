@@ -375,6 +375,12 @@ ML_1(gtk_text_buffer_begin_user_action,GtkTextBuffer_val,Unit)
 
 ML_1(gtk_text_buffer_end_user_action,GtkTextBuffer_val,Unit)
 
+     /* no ref returned to the caller. */
+ML_2(gtk_text_buffer_create_child_anchor,
+     GtkTextBuffer_val,GtkTextIter_val,Val_GtkTextChildAnchor)
+
+ML_3(gtk_text_buffer_insert_child_anchor,
+     GtkTextBuffer_val,GtkTextIter_val,GtkTextChildAnchor_val,Unit)
 
 /* gtktextview.h */
 

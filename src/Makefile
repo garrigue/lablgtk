@@ -219,7 +219,7 @@ varcc: varcc.cmo
 clean:
 	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml xml_lexer.ml
 
-$(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h ml_pango.h ml_gobject.h ml_glib.h wrappers.h
+$(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h ml_gdk.h ml_pango.h ml_gobject.h ml_glib.h wrappers.h
 ml_glib.o: glib_tags.h ml_glib.h wrappers.h
 ml_gobject.o: gobject_tags.h wrappers.h
 ml_gdk.o: gdk_tags.h ml_gdk.h ml_gpointer.h wrappers.h
@@ -227,6 +227,6 @@ ml_gtkgl.o: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gtkxmhtml.o: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gpointer.o: ml_gpointer.h
 ml_gdkpixbuf.o: gdkpixbuf_tags.h ml_gdk.h gdk_tags.h wrappers.h ml_gpointer.h
-ml_pango.o: ml_pango.h
+ml_pango.o: pango_tags.h ml_pango.h
 
 include .depend

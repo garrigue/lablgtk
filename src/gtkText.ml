@@ -50,18 +50,18 @@ module Tag = struct
       | `FOREGROUND of string 
       | `BACKGROUND_GDK of GDraw.color
       | `FOREGROUND_GDK of  GDraw.color
-      | `BACKGROUND_STIPPLE of Gdk.pixmap
-      | `FOREGROUND_STIPPLE of Gdk.pixmap
+      | `BACKGROUND_STIPPLE of Gdk.bitmap
+      | `FOREGROUND_STIPPLE of Gdk.bitmap
       | `FONT of string
       | `FONT_DESC of Pango.Font.description
       | `FAMILY of string
-	  (*    | `STYLE of Pango.style 
-		| `VARIANT of Pango.variant *)
-      | `WEIGHT of int
-	  (*    | `STRETCH of Pango.stretch *)
+      | `STYLE of Pango.Font.style 
+      | `VARIANT of Pango.Font.variant 
+      | `WEIGHT of Pango.Font.weight
+      | `STRETCH of Pango.Font.stretch
       | `SIZE of int
       | `SIZE_POINTS of float
-      | `SCALE of float
+      | `SCALE of Pango.Font.scale
       | `PIXELS_ABOVE_LINES of int
       | `PIXELS_BELOW_LINES of int
       | `PIXELS_INSIDE_WRAP of int
@@ -73,7 +73,7 @@ module Tag = struct
       | `INDENT of int
       | `STRIKETHROUGH of bool
       | `RIGHT_MARGIN of int
-	  (*    | `UNDERLINE of Pango.underline *)
+      | `UNDERLINE of Pango.Font.underline
       | `RISE of int
       | `BACKGROUND_FULL_HEIGHT of bool
       | `LANGUAGE of string
@@ -118,10 +118,10 @@ module Tag = struct
     | `FONT _ -> "font"
     | `FONT_DESC _ -> "font-desc"
     | `FAMILY _ -> "family"
-	(*    | `STYLE _ -> "style"
-	      | `VARIANT _ -> "variant" *)
+    | `STYLE _ -> "style"
+    | `VARIANT _ -> "variant" 
     | `WEIGHT _ -> "weight"
-	(*    | `STRETCH _ -> "stretch" *)
+    | `STRETCH _ -> "stretch"
     | `SIZE _ -> "size"
     | `SIZE_POINTS _ -> "size-points"
     | `SCALE _ -> "scale"
@@ -136,7 +136,7 @@ module Tag = struct
     | `INDENT _ -> "indent"
     | `STRIKETHROUGH _ -> "strikethrough"
     | `RIGHT_MARGIN _ -> "right-margin"
-	(*    | `UNDERLINE _ -> "underline" *)
+    | `UNDERLINE _ -> "underline"
     | `RISE _ -> "rise"
     | `BACKGROUND_FULL_HEIGHT _ -> "background-full-height"
     | `LANGUAGE _ -> "language"
@@ -198,26 +198,62 @@ module Tag = struct
     | `RISE b | `RIGHT_MARGIN b | `INDENT b | `LEFT_MARGIN b 
     | `PIXELS_INSIDE_WRAP b 
     | `PIXELS_BELOW_LINES b | `PIXELS_ABOVE_LINES b 
-    | `SIZE b | `WEIGHT b ->
+    | `SIZE b ->
+	let gtyp = Gobject.Type.of_fundamental `INT in 
+	let v = Gobject.Value.create gtyp in
+	Gobject.Value.set v (`INT b);
+	Gobject.set_property o (property_to_string p) v 
+    | `WEIGHT b ->
 	let gtyp = Gobject.Type.of_fundamental `INT in 
 	let v = Gobject.Value.create gtyp in 
-	Gobject.Value.set v (`INT b); 
+	let b' = Pango.Font.weight_to_int b in
+	Gobject.Value.set v (`INT b'); 
 	Gobject.set_property o (property_to_string p) v 
-    | `SIZE_POINTS b | `SCALE b   -> 
+    | `SIZE_POINTS b ->
 	let gtyp = Gobject.Type.of_fundamental `FLOAT in 
 	let v = Gobject.Value.create gtyp in 
 	Gobject.Value.set v (`FLOAT b); 
 	Gobject.set_property o (property_to_string p) v 
-    | `FOREGROUND_STIPPLE b | `BACKGROUND_STIPPLE b -> assert false
+    | `SCALE b  -> 
+	let gtyp = Gobject.Type.of_fundamental `FLOAT in 
+	let v = Gobject.Value.create gtyp in 
+	Gobject.Value.set v (`FLOAT (Pango.Font.scale_to_float b)); 
+	Gobject.set_property o (property_to_string p) v 
+    | `FOREGROUND_STIPPLE b | `BACKGROUND_STIPPLE b -> 
+	let gtyp = Gobject.Type.from_name "GdkPixmap" in 
+	let v = Gobject.Value.create gtyp in
+	Gobject.Value.set v (`OBJECT (Some (Obj.magic b))); 
+	Gobject.set_property o (property_to_string p) v 
     | `FOREGROUND_GDK b | `BACKGROUND_GDK b  -> assert false
-    | `WRAP_MODE b  -> assert false;
+    | `WRAP_MODE b ->
 	let gtyp = Gobject.Type.from_name "GtkWrapMode" in 
 	let v = Gobject.Value.create gtyp in 
 	Gobject.Value.set v (`INT (wrap_mode b));
 	Gobject.set_property o (property_to_string p) v 
+    | `STYLE b  -> 
+	let gtyp = Gobject.Type.from_name "PangoStyle" in 
+	let v = Gobject.Value.create gtyp in 
+	Gobject.Value.set v (`INT (Pango.Font.style_to_int b));
+	Gobject.set_property o (property_to_string p) v 
+    | `UNDERLINE u -> 
+	let gtyp = Gobject.Type.from_name "PangoUnderline" in 
+	let v = Gobject.Value.create gtyp in 
+	Gobject.Value.set v (`INT (Pango.Font.underline_to_int u));
+	Gobject.set_property o (property_to_string p) v 
 
-    | `DIRECTION b  -> assert false
-    | `JUSTIFICATION b -> assert false
+    | `STRETCH _ | `VARIANT _ -> assert false
+    | `DIRECTION b  -> 
+	let gtyp = Gobject.Type.from_name "GtkTextDirection" in 
+	let v = Gobject.Value.create gtyp in 
+	Gobject.Value.set v (`INT (Pango.Font.text_direction_to_int b));
+	Gobject.set_property o (property_to_string p) v 
+
+    | `JUSTIFICATION b ->
+	let gtyp = Gobject.Type.from_name "GtkJustification" in 
+	let v = Gobject.Value.create gtyp in 
+	Gobject.Value.set v (`INT (Pango.Font.justification_to_int b));
+	Gobject.set_property o (property_to_string p) v 
+
     | `FONT_DESC f ->
 	let gtyp = Gobject.Type.from_name "PangoFontDescription" in 
 	let v = Gobject.Value.create gtyp in 
@@ -382,6 +418,12 @@ module Buffer = struct
     = "ml_gtk_text_buffer_begin_user_action"
   external end_user_action : textbuffer obj -> unit
     = "ml_gtk_text_buffer_end_user_action"
+  external create_child_anchor : textbuffer obj 
+    -> textiter -> textchildanchor obj
+    = "ml_gtk_text_buffer_create_child_anchor"
+  external insert_child_anchor : 
+    textbuffer obj -> textiter -> textchildanchor obj -> unit
+    = "ml_gtk_text_buffer_insert_child_anchor"
   module Signals = struct
   open GtkSignal
 
@@ -738,7 +780,7 @@ module Iter = struct
   external get_pixbuf : textiter -> GdkPixbuf.pixbuf = "ml_gtk_text_iter_get_pixbuf"
   external get_marks : textiter -> textmark obj list = "ml_gtk_text_iter_get_marks"
   external get_toggled_tags : textiter -> bool -> texttag obj list = "ml_gtk_text_iter_get_marks"
-  external get_child_anchor : textiter -> textchildanchor option ="ml_gtk_text_iter_get_child_anchor"
+  external get_child_anchor : textiter -> textchildanchor obj option ="ml_gtk_text_iter_get_child_anchor"
   external begins_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_begins_tag"
   external ends_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_ends_tag"
   external toggles_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_toggles_tag"
