@@ -1,5 +1,10 @@
 $Id$
 
+2003.06.24 [Benjamin]
+  * Fix deps in Makefile
+  * Fix generation of an incorrect lablgtk2 when debug is enabled
+  * Fix Gtk 2.0 compatibility
+  
 2003.06.24 [Jacques]
   * finish going to generation, add missing signals
   * wrap clipboard and cell renderers

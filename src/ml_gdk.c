@@ -677,7 +677,7 @@ CAMLprim value ml_gdk_event_new (value event_type)
 {
     GdkEvent event;
     memset (&event, 0, sizeof(GdkEvent));
-    event.type = GdkEventType_val(event_type);
+    event.type = Event_type_val(event_type);
     event.any.send_event = TRUE;
     return Val_copy(event);
 }

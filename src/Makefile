@@ -152,7 +152,7 @@ lablgtk2: Makefile $(CONFIG) lablgtk2.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
 	    -e "s|@LABLGLDIR@|$(LABLGLDIR)|g" \
 	    -e "s|@LIBDIR@|$(LIBDIR)|g" \
-	    -e "s|@MLLIBS@|$(MLLINK) $(MLLIBS)|g" \
+	    -e "s|@MLLIBS@|$(MLLINK:-custom=) $(MLLIBS)|g" \
 	    -e "s|@INITOBJS@|$(INITOBJS)|g" \
 	    -e "s|@THOBJS@|$(THOBJS)|g" \
 	    -e "s|@THINITOBJS@|$(THINITOBJS)|g" \
@@ -188,10 +188,10 @@ install:
 	fi
 	cp -p *.h $(INSTALLDIR)
 	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
-	if test -f dlllablgtk2.so; then \
+	@if test -f dlllablgtk2.so; then \
 	   if test -d $(DLLDIR); then : ; else mkdir -p $(DLLDIR); fi; \
 	   cp $(CLIBS:lib%.a=dll%.so) $(DLLDIR) || \
-	   echo "Couldn't install dlls in default location"; \
+	   echo "Couldn't install dlls in default location: " $(DLLDIR); \
 	fi
 	cp lablgtk2 $(BINDIR)
 	if test -f lablgladecc; then cp lablgladecc $(BINDIR)/lablgladecc2; fi
@@ -274,7 +274,7 @@ varcc: varcc.cmo
 propcc: propcc.cmo
 	$(LINKER) -o $@ $<
 
-gtkProps.ml: gtk.props propcc
+gtkProps.ml oGtkProps.ml: gtk.props propcc
 	./propcc gtk.props # -checks
 
 check_externals: check_externals.cmo
