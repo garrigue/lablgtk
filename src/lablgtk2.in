@@ -53,14 +53,17 @@ if test $thread = yes; then
     libpath="$libpath -I +threads"
     case "$threads_lib" in
     no)     echo "Threads are not supported on this platform"; exit 2 ;;
-    system) libraries="unix.cma threads.cma $libraries @THOBJS@" ;;
-    *)      usedll="no" ;;
+    system) libpath="$libpath -I +threads"
+            libraries="unix.cma threads.cma $libraries @THOBJS@" ;;
+    *)      libpath="$libpath -I +vmthreads"
+            usedll="no" ;; # use different stdlib.cma
     esac
     initobjs="$initobjs @THINITOBJS@"
-else
-    if test $extra = yes; then
-        libraries="unix.cma $libraries"
-    fi
+elif test $extra = yes; then
+    case "$threads_lib" in
+    system) libraries="unix.cma $libraries";;
+    *)      usedll="no";; # some libraries require posix threads
+    esac
 fi
 
 if test $usedll = no; then

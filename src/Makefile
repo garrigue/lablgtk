@@ -33,7 +33,7 @@ GTKCFLAGS += -DLOG_DOMAIN=\"LablGTK\"
 
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
-MLLINK = -custom
+CUSTOM = -custom
 #MLLINK += -cclib -lcamlrund
 MLBYTEFLAGS = -g
 else
@@ -44,6 +44,7 @@ ifeq ($(THREADS_LIB),system)
 THFLAGS = -thread
 else
 THFLAGS = -vmthread
+CUSTOM = -custom
 endif
 THLINK = unix.cma threads.cma
 
@@ -194,7 +195,7 @@ lablgtk2: Makefile $(CONFIG) lablgtk2.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
 	    -e "s|@LABLGLDIR@|$(LABLGLDIR)|g" \
 	    -e "s|@LIBDIR@|$(LIBDIR)|g" \
-	    -e "s|@MLLIBS@|$(MLLINK:-custom=) $(MLLIBS)|g" \
+	    -e "s|@MLLIBS@|$(MLLINK) $(MLLIBS)|g" \
 	    -e "s|@INITOBJS@|$(INITOBJS)|g" \
 	    -e "s|@THOBJS@|$(THOBJS)|g" \
 	    -e "s|@THINITOBJS@|$(THINITOBJS)|g" \
