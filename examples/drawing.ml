@@ -2,16 +2,16 @@
 
 open Gdk
 open Gtk
+open GtkObj
 
 (* let id = Thread.create GtkThread.main () *)
-let top = Window.create `TOPLEVEL
-let _ = Widget.show top
-let w = Widget.window top
+let window = new_window `TOPLEVEL
+let w = window#widget_ops#show (); window#widget_ops#window
 let gc = GC.create w
 
 let _ =
-  Window.Connect.destroy top cb:Main.quit;
-  Event.Connect.expose top cb:
+  window#connect#destroy callback:Main.quit;
+  window#connect#event#expose callback:
     begin fun _ ->
       Draw.polygon w gc filled:true
 	[ 10,100; 35,35; 100,10; 165,35; 190,100;

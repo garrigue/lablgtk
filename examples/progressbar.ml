@@ -23,27 +23,27 @@ end
 let main () =
 
   let window = new_window `TOPLEVEL in
-  window#connect#destroy cb:Main.quit;
-  window#border_width 10;
+  window#connect#destroy callback:Main.quit;
+  window#set border_width: 10;
 
   let table = new_table rows:3 columns:2 in
   window#add table;
   
-  let label = new_label "Progress Bar Example" in
+  let label = new_label label:"Progress Bar Example" in
   table#attach label left:0 right:2 top:0 expand:`x shrink:`both;
   
   let pbar = new_progress_bar () in
   table#attach pbar left:0 right:2 top:1 fill:`x shrink:`both;
 
   let bar = new bar pbar in
-  let ptimer = Timeout.add 100 cb:bar#progress in
+  let ptimer = Timeout.add 100 callback:bar#progress in
 
   let button = new_button label:"Reset" in
-  button#connect#clicked cb:bar#reset;
+  button#connect#clicked callback:bar#reset;
   table#attach button left:0 top:2 expand:`none fill:`x shrink:`both;
 
   let button = new_button label:"Cancel" in
-  button#connect#clicked cb:Main.quit;
+  button#connect#clicked callback:Main.quit;
   table#attach button left:1 top:2 expand:`none fill:`x shrink:`both;
 
   window#show_all ();

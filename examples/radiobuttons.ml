@@ -1,44 +1,45 @@
 (* $Id$ *)
 
 open Gtk
+open GtkObj
 
 let main () =
 
-  let window = Window.create `TOPLEVEL in
-  Window.Connect.destroy window cb:Main.quit;
-  Window.set window title: "radio buttons" border_width: 0;
+  let window = new_window `TOPLEVEL in
+  window#connect#destroy callback:Main.quit;
+  window#set title: "radio buttons" border_width: 0;
 
-  let box1 = Box.create `VERTICAL in
-  Box.add window box1;
+  let box1 = new_box `VERTICAL in
+  window#add box1;
 
-  let box2 = Box.create `VERTICAL spacing:10 in
-  Box.set box2 border_width: 10;
-  Box.pack box1 box2;
+  let box2 = new_box `VERTICAL spacing:10 in
+  box2#set border_width: 10;
+  box1#pack box2;
 
-  let button1 = RadioButton.create `none label:"button1" in
-  Box.pack box2 button1;
+  let button1 = new_radio_button label:"button1" in
+  box2#pack button1;
 
-  let button2 = RadioButton.create (`widget button1) label:"button2" in
-  RadioButton.set button2 state:true;
-  Box.pack box2 button2;
+  let button2 = new_radio_button group:button1#group label:"button2" in
+  button2#set state:true;
+  box2#pack button2;
 
-  let button3 = RadioButton.create (`widget button1) label:"button3" in
-  Box.pack box2 button3;
+  let button3 = new_radio_button group:button1#group label:"button3" in
+  box2#pack button3;
 
-  let separator = Separator.create `HORIZONTAL in
-  Box.pack box1 separator expand:false;
+  let separator = new_separator `HORIZONTAL in
+  box1#pack separator expand:false;
   
-  let box3 = Box.create `VERTICAL spacing:10 in
-  Box.set box3 border_width: 10;
-  Box.pack box1 box3 expand:false;
+  let box3 = new_box `VERTICAL spacing:10 in
+  box3#set border_width: 10;
+  box1#pack box3 expand:false;
 
-  let button = Button.create_with_label "close" in
-  Button.Connect.clicked button cb:Main.quit;
-  Box.pack box3 button;
-  Widget.set button can_default:true;
-  Widget.grab_default button;
+  let button = new_button label: "close" in
+  button#connect#clicked callback:Main.quit;
+  box3#pack button;
+  button#widget_ops#set can_default:true;
+  button#widget_ops#grab_default ();
 
-  Widget.show_all window;
+  window#show_all ();
 
   Main.main ()
 

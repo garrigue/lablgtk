@@ -860,11 +860,10 @@ ML_2 (gtk_tree_set_view_mode, GtkTree_val, Tree_view_mode_val, Unit)
 ML_2 (gtk_tree_set_view_lines, GtkTree_val, Bool_val, Unit)
 
 /* gtkdrawingarea.h */
-/*
+
 #define GtkDrawingArea_val(val) GTK_DRAWING_AREA(Pointer_val(val))
 ML_0 (gtk_drawing_area_new, Val_GtkWidget)
-ML_3 (gtk_drawing_area_size, GtkTree_val, Int_val, Int_val, Unit)
-*/
+ML_3 (gtk_drawing_area_size, GtkDrawingArea_val, Int_val, Int_val, Unit)
 
 /* gtkeditable.h */
 
