@@ -159,12 +159,14 @@ AC_PROG_CC
 
 # platform
 AC_MSG_CHECKING(platform)
-if echo "let _ = Sys.os_type" | ocaml | grep -q Win32; then
-    AC_MSG_RESULT(Win32)
+echo "print_endline Sys.os_type ;;" > ac_ocaml_tmp.ml
+ac_ocaml_platform=$(ocaml ac_ocaml_tmp.ml)
+rm -f ac_ocaml_tmp.ml
+AC_MSG_RESULT($ac_ocaml_platform)
+if test $ac_ocaml_platform = Win32 ; then
     OCAMLWIN32=yes
     EXE=.exe
 else
-    AC_MSG_RESULT(Non Win32)
     OCAMLWIN32=no
     EXE=
 fi
@@ -191,6 +193,7 @@ if test $USE_GL = yes ; then
 	if test $FORCE_GL = yes ; then
 	AC_MSG_ERROR(gtkgl enforced but support not found)
 	else
+	AC_MSG_RESULT(no)
 	USE_GL=no
 	fi)
 fi
@@ -212,6 +215,7 @@ if test $USE_GLADE = yes ; then
 	if test $FORCE_GLADE = yes ; then
 	AC_MSG_ERROR(libglade enforced but no support found)
 	else
+	AC_MSG_RESULT(no)
 	USE_GLADE=no
 	fi)
 fi
@@ -232,6 +236,7 @@ if test $USE_RSVG = yes ; then
 	if test $FORCE_RSVG = yes ; then
 	AC_MSG_ERROR(librsvg enforced but support not found)
 	else
+	AC_MSG_RESULT(no)
 	USE_RSVG=no
 	fi)
 fi
@@ -254,6 +259,7 @@ if test $USE_GNOMECANVAS = yes ; then
 	if test $FORCE_GNOMECANVAS = yes ; then
 	AC_MSG_ERROR(libgnomecanvas enforced but support not found)
 	else
+	AC_MSG_RESULT(no)
 	USE_GNOMECANVAS=no
 	fi)
 fi
