@@ -1,5 +1,5 @@
 ########################################################################
-# Makefile rules for compiling olabl programs
+# Makefile rules for compiling ocaml programs
 
 ########################################################################
 # Project name
@@ -42,13 +42,19 @@ ifdef WIN32
     CAMLLIB=c:/ocaml/lib
   endif
   CWD = .
+  buildexecutable:: 
+	@echo Building for Windows
 else
 # UNIX
   EXEC_EXT=
   OBJ_EXT=.o
   CWD = $(shell pwd)
+  buildexecutable:: 
+	@echo Building for Unix
 endif
 
+buildexecutable:: 
+	@echo OSTYPE = $(OSTYPE)
 
 ########################################################################
 # Find and load camltk Makefile
@@ -103,6 +109,12 @@ ifndef CAMLTKLIB
 endif
 
 ifndef CAMLTKLIB
+  ifneq (,$(wildcard c:/ocaml/lib/camltk))
+    CAMLTKLIB=c:/ocaml/lib/camltk
+  endif
+endif
+
+ifndef CAMLTKLIB
   ifneq (,$(wildcard /usr/lib/ocaml/camltk))
     CAMLTKLIB=/usr/lib/ocaml/camltk
   endif
@@ -141,6 +153,7 @@ COMPFLAGS+= $(TKCOMPFLAGS)
 buildexecutable:: checktk
 
 endif
+
 
 ####################################################################
 # Dependencies
