@@ -23,9 +23,9 @@ void ml_global_root_destroy (void *data);
 
 /* enums <-> polymorphic variants */
 typedef struct { value key; int data; } lookup_info;
-value ml_lookup_from_c (lookup_info *table, int data);
-int ml_lookup_to_c (lookup_info *table, value key);
-value ml_lookup_flags_getter (lookup_info *table, int data);
+value ml_lookup_from_c (const lookup_info table[], int data);
+int ml_lookup_to_c (const lookup_info table[], value key);
+value ml_lookup_flags_getter (const lookup_info table[], int data);
 
 /* Compatibility */
 #include <gtk/gtkversion.h>

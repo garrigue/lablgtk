@@ -271,6 +271,7 @@ class combo_box :
     @gtkdoc gtk GtkComboBox *)
 val combo_box :
   ?model:#GTree.model ->
+  ?active:int ->
   ?wrap_width:int ->
   ?width:int ->
   ?height:int ->
@@ -295,6 +296,7 @@ class combo_box_entry :
 val combo_box_entry :
   ?model:#GTree.model ->
   ?text_column:string GTree.column ->
+  ?active:int ->
   ?wrap_width:int ->
   ?width:int ->
   ?height:int ->
@@ -318,6 +320,7 @@ val text_combo_get_active : 'a text_combo -> string option
     @gtkdoc gtk GtkComboBox *)
 val combo_box_text :
   ?strings:string list ->
+  ?active:int ->
   ?wrap_width:int ->
   ?width:int ->
   ?height:int ->
@@ -330,6 +333,7 @@ val combo_box_text :
     @gtkdoc gtk GtkComboBoxEntry *)
 val combo_box_entry_text :
   ?strings:string list ->
+  ?active:int ->
   ?wrap_width:int ->
   ?width:int ->
   ?height:int ->

@@ -38,7 +38,8 @@ class box : ([> Gtk.box] as 'a) obj ->
     method connect : GContainer.container_signals
   end
 
-(** @gtkdoc gtk GtkBox *)
+(** @gtkdoc gtk GtkBox 
+    @param homogeneous default value is [false] *)
 val box :
   Tags.orientation ->
   ?homogeneous:bool ->
@@ -46,12 +47,18 @@ val box :
   ?border_width:int ->
   ?width:int ->
   ?height:int -> ?packing:(widget -> unit) -> ?show:bool -> unit -> box
+
+(** @gtkdoc gtk GtkVBox
+    @param homogeneous default value is [false] *)
 val vbox :
   ?homogeneous:bool ->
   ?spacing:int ->
   ?border_width:int ->
   ?width:int ->
   ?height:int -> ?packing:(widget -> unit) -> ?show:bool -> unit -> box
+
+(** @gtkdoc gtk GtkHVBox
+    @param homogeneous default value is [false] *)
 val hbox :
   ?homogeneous:bool ->
   ?spacing:int ->

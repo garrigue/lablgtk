@@ -12,11 +12,12 @@
 
 value copy_memblock_indirected (void *src, asize_t size)
 {
-    mlsize_t i, wosize = Wosize_asize(size);
-    value ret = alloc_shr (wosize+2, Abstract_tag);
+    mlsize_t wosize = Wosize_asize(size);
+    value ret;
     if (!src) ml_raise_null_pointer ();
+    ret = alloc_shr (wosize+2, Abstract_tag);
     Field(ret,1) = 2;
-    for (i=0; i < wosize; i++) Field(ret,i+2) = ((value*)src)[i];
+    memcpy ((value *) ret + 2, src, size);
     return ret;
 }
 
@@ -86,7 +87,7 @@ void ml_global_root_destroy (void *data)
     stat_free (data);
 }
 
-value ml_lookup_from_c (lookup_info *table, int data)
+value ml_lookup_from_c (const lookup_info table[], int data)
 {
     int i;
     for (i = table[0].data; i > 0; i--)
@@ -94,7 +95,7 @@ value ml_lookup_from_c (lookup_info *table, int data)
     invalid_argument ("ml_lookup_from_c");
 }
     
-int ml_lookup_to_c (lookup_info *table, value key)
+int ml_lookup_to_c (const lookup_info table[], value key)
 {
     int first = 1, last = table[0].data, current;
     while (first < last) {
@@ -106,7 +107,7 @@ int ml_lookup_to_c (lookup_info *table, value key)
     invalid_argument ("ml_lookup_to_c");
 }
 
-value ml_lookup_flags_getter (lookup_info *table, int data)
+value ml_lookup_flags_getter (const lookup_info table[], int data)
 {
   CAMLparam0();
   CAMLlocal2(cell, l);
