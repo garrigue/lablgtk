@@ -105,8 +105,10 @@ end
 let pixmap ~(window : < misc : #widget_draw; .. >)
     ~width ~height ?(mask=false) () =
   window#misc#realize ();
-  let depth = window#misc#visual_depth
-  and window = window#misc#window
+  let window =
+    try window#misc#window
+    with Null_pointer -> failwith "GDraw.pixmap : no window"
+  and depth = window#misc#visual_depth
   and colormap = window#misc#colormap in
   let mask =
     if not mask then None else
@@ -119,6 +121,10 @@ let pixmap ~(window : < misc : #widget_draw; .. >)
   new pixmap (Pixmap.create window ~width ~height ~depth) ~colormap ?mask
 
 let pixmap_from_xpm ~window ~file ?colormap ?transparent () =
+  window#misc#realize ();
+  let window =
+    try window#misc#window
+    with Null_pointer -> failwith "GDraw.pixmap_from_xpm : no window" in
   let pm, mask =
     try Pixmap.create_from_xpm window ~file ?colormap
 	?transparent:(may_map transparent ~f:(fun c -> color c))
@@ -126,6 +132,10 @@ let pixmap_from_xpm ~window ~file ?colormap ?transparent () =
   new pixmap pm ?colormap ~mask
 
 let pixmap_from_xpm_d ~window ~data ?colormap ?transparent () =
+  window#misc#realize ();
+  let window =
+    try window#misc#window
+    with Null_pointer -> failwith "GDraw.pixmap_from_xpm_d : no window" in
   let pm, mask =
     Pixmap.create_from_xpm_d window ~data ?colormap
       ?transparent:(may_map transparent ~f:(fun c -> color c)) in
