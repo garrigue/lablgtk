@@ -867,6 +867,7 @@ ML_1 (gtk_clist_new_with_titles, Insert(Wosize_val(arg1)) (char **),
       Val_GtkWidget_sink)
 Make_Extractor (gtk_clist_get, GtkCList_val, rows, Val_int)
 Make_Extractor (gtk_clist_get, GtkCList_val, columns, Val_int)
+Make_Extractor (gtk_clist_get, GtkCList_val, focus_row, Val_int)
 ML_2 (gtk_clist_set_hadjustment, GtkCList_val, GtkAdjustment_val, Unit)
 ML_2 (gtk_clist_set_vadjustment, GtkCList_val, GtkAdjustment_val, Unit)
 ML_1 (gtk_clist_get_hadjustment, GtkCList_val, Val_GtkAny)

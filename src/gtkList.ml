@@ -64,6 +64,8 @@ module CList = struct
       = "ml_gtk_clist_new_with_titles"
   external get_rows : [> clist] obj -> int = "ml_gtk_clist_get_rows"
   external get_columns : [> clist] obj -> int = "ml_gtk_clist_get_columns"
+  external get_focus_row : [> clist] obj -> int
+      = "ml_gtk_clist_get_focus_row"
   external set_hadjustment : [> clist] obj -> [> adjustment] obj -> unit
       = "ml_gtk_clist_set_hadjustment"
   external set_vadjustment : [> clist] obj -> [> adjustment] obj -> unit
