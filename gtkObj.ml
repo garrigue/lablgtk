@@ -541,6 +541,16 @@ let new_table :rows :columns ?:homogeneous =
   Table.setter ?(Table.create :rows :columns ?:homogeneous) ?homogeneous:None
     ?cont:(Container.setter ?cont:(pack_return (new table)))
 
+class drawing_area obj = object
+  inherit widget_full obj
+  method set_size = DrawingArea.size obj
+end
+
+let new_drawing_area ?(_ : unit option) ?:width [< 0 >] ?:height [< 0 >] =
+  let w = DrawingArea.create () in
+  if width <> 0 || height <> 0 then DrawingArea.size w :width :height;
+  pack_return ?(new drawing_area) ?w
+
 class editable_signals obj = object
   inherit widget_signals obj
   method activate = Signal.connect sig:Editable.Signals.activate obj
