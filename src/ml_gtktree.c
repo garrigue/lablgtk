@@ -319,6 +319,16 @@ ML_2 (gtk_tree_view_column_set_title, GtkTreeViewColumn_val, String_val, Unit)
 #define GtkTreeView_val(val) check_cast(GTK_TREE_VIEW,val)
 ML_0 (gtk_tree_view_new, Val_GtkWidget_sink)
 ML_1 (gtk_tree_view_new_with_model, GtkTreeModel_val, Val_GtkWidget_sink)
+ML_1 (gtk_tree_view_get_selection, GtkTreeView_val, Val_GtkWidget)
+/*
+ML_1 (gtk_tree_view_get_model, GtkTreeView_val, Val_GAnyObject)
+ML_2 (gtk_tree_view_set_model, GtkTreeView_val, GtkTreeModel_val, Unit)
+ML_1 (gtk_tree_view_get_hadjustment, GtkTreeView_val, Val_GtkWidget)
+ML_1 (gtk_tree_view_get_vadjustment, GtkTreeView_val, Val_GtkWidget)
+ML_2 (gtk_tree_view_set_hadjustment, GtkTreeView_val, GtkAdjustment_val)
+ML_2 (gtk_tree_view_set_vadjustment, GtkTreeView_val, GtkAdjustment_val)
+ML_1 (gtk_tree_view_get_headers_visible, GtkTreeView_val, Val_bool)
+ML_2 (gtk_tree_view_set_headers_visible, GtkTreeView_val, Val_bool)
+*/
 ML_2 (gtk_tree_view_append_column, GtkTreeView_val, GtkTreeViewColumn_val,
       Val_int)
-ML_1 (gtk_tree_view_get_selection, GtkTreeView_val, Val_GtkWidget)

@@ -1,5 +1,8 @@
 $Id$
 
+2003.03.19 [Jacques]
+ * more property support (phantom type like for signals)
+
 2003.03.18 [Jacques]
  * lots of GtkTree* additions
  * small changes in ml_glibc, gObj.ml

@@ -169,7 +169,7 @@ class ['p] item obj = object
   method connect = new item_signals (obj :> GnomeCanvas.item Gtk.obj)
   method set (p : 'p list) =
     List.iter
-      (fun p -> let p, d = propertize p in Gobject.Property.set obj p d)
+      (fun p -> let p, d = propertize p in Gobject.Property.set_dyn obj p d)
       p;
     Item.set obj
   method as_item = (obj :> GnomeCanvas.item Gtk.obj)
@@ -215,9 +215,9 @@ class canvas obj = object
   inherit GPack.layout (obj : GnomeCanvas.canvas Gtk.obj)
   method root = new group (Canvas.root obj)
   method aa =
-    match Gobject.Property.get obj "aa" with
+    match Gobject.Property.get_dyn obj "aa" with
     | `BOOL b -> b
-    | _ -> failwith "unexpected type for property"
+    | _ -> failwith "GnoCanvas.canvas#aa"
   method set_scroll_region = Canvas.set_scroll_region obj
   method get_scroll_region = Canvas.get_scroll_region obj
   method set_center_scroll_region = Canvas.set_center_scroll_region obj

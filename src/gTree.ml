@@ -8,6 +8,8 @@ open GtkTree
 open GObj
 open GContainer
 
+(* Obsolete GtkTree/GtkTreeItem framework *)
+
 class tree_item_signals obj = object
   inherit item_signals obj
   method expand = GtkSignal.connect obj ~sgn:TreeItem.Signals.expand ~after
@@ -76,91 +78,10 @@ let tree ?selection_mode ?view_mode ?view_lines
   Container.set w ?border_width ?width ?height;
   pack_return (new tree w) ~packing ~show
 
+(* New GtkTreeView/Model framework *)
 
-module Data = struct
-type kind =
-    [ `BOOLEAN
-    | `CHAR
-    | `UCHAR
-    | `INT
-    | `UINT
-    | `LONG
-    | `ULONG
-    | `INT64
-    | `UINT64
-    | `ENUM
-    | `FLAGS
-    | `FLOAT
-    | `DOUBLE
-    | `STRING
-    | `POINTER
-    | `BOXED
-    | `OBJECT ]
-
-type 'a conv =
-    { kind: kind;
-      proj: (Gobject.data_get -> 'a);
-      inj: ('a -> unit Gobject.data_set) }
-let boolean =
-  { kind = `BOOLEAN;
-    proj = (function `BOOL b -> b | _ -> failwith "GTree.get_bool");
-    inj = (fun b -> `BOOL b) }
-let char =
-  { kind = `CHAR;
-    proj = (function `CHAR c -> c | _ -> failwith "GTree.get_char");
-    inj = (fun c -> `CHAR c) }
-let uchar = {char with kind = `UCHAR}
-let int =
-  { kind = `INT;
-    proj = (function `INT c -> c | _ -> failwith "GTree.get_int");
-    inj = (fun c -> `INT c) }
-let uint = {int with kind = `UINT}
-let long = {int with kind = `LONG}
-let ulong = {int with kind = `ULONG}
-let enum = {int with kind = `ENUM}
-let flags = {int with kind = `FLAGS}
-let int64 =
-  { kind = `INT64;
-    proj = (function `INT64 c -> c | _ -> failwith "GTree.get_int64");
-    inj = (fun c -> `INT64 c) }
-let uint64 = {int64 with kind = `UINT64}
-let float =
-  { kind = `FLOAT;
-    proj = (function `FLOAT c -> c | _ -> failwith "GTree.get_float");
-    inj = (fun c -> `FLOAT c) }
-let double = {float with kind = `DOUBLE}
-let string =
-  { kind = `STRING;
-    proj = (function `STRING (Some s) -> s | `STRING None -> ""
-           | _ -> failwith "GTree.get_string");
-    inj = (fun s -> `STRING (Some s)) }
-let string_option =
-  { kind = `STRING;
-    proj = (function `STRING c -> c | _ -> failwith "GTree.get_string");
-    inj = (fun c -> `STRING c) }
-let pointer =
-  { kind = `POINTER;
-    proj = (function `POINTER c -> c | _ -> failwith "GTree.get_pointer");
-    inj = (fun c -> `POINTER c) }
-let boxed = {pointer with kind = `BOXED}
-let gobject =
-  { kind = `OBJECT;
-    proj = (function `OBJECT c -> may_map ~f:Gobject.unsafe_cast c
-            | _ -> failwith "GTree.get_object");
-    inj = (fun c -> `OBJECT (may_map ~f:Gobject.unsafe_cast c)) }
-
-let of_value kind v =
-  kind.proj (Gobject.Value.get v)
-let to_value kind x =
-  let v =
-    Gobject.Value.create
-      (Gobject.Type.of_fundamental (kind.kind :> Gobject.fundamental_type)) in
-  Gobject.Value.set v (kind.inj x);
-  v
-end
-
-type 'a column =
-    {index: int; conv: 'a Data.conv; creator: int}
+open Gobject
+type 'a column = {index: int; conv: 'a Data.conv; creator: int}
 
 class column_list = object (self)
   val mutable index = 0
@@ -191,7 +112,7 @@ class model_signals obj = object
     GtkSignal.connect obj ~sgn:TreeModel.Signals.rows_reordered ~after
 end
 
-class model obj ~id = object (self)
+class model ?(id=0) obj = object (self)
   val obj = obj
   val id : int = id
   method as_model = (obj :> tree_model obj)
@@ -206,9 +127,8 @@ class model obj ~id = object (self)
     fun ~row ~column ->
       if column.creator <> id then invalid_arg "GTree.model#get: bad column";
       let v =
-        Gobject.Value.create
-          (Gobject.Type.of_fundamental
-             (column.conv.Data.kind :> Gobject.fundamental_type)) in
+        Value.create
+          (Type.of_fundamental (column.conv.Data.kind :> fundamental_type)) in
       TreeModel.get_value obj ~row ~column:column.index v;
       Data.of_value column.conv v
   method iter_next = TreeModel.iter_next obj
@@ -242,8 +162,7 @@ end
 let tree_store (cols : column_list) =
   cols#lock ();
   let types =
-    List.map Gobject.Type.of_fundamental
-      (cols#kinds :> Gobject.fundamental_type list) in
+    List.map Type.of_fundamental (cols#kinds :> fundamental_type list) in
   new tree_store (TreeStore.create (Array.of_list types)) ~id:cols#id
 
 class list_store obj ~id = object
@@ -270,8 +189,7 @@ end
 let list_store (cols : column_list) =
   cols#lock ();
   let types =
-    List.map Gobject.Type.of_fundamental
-      (cols#kinds :> Gobject.fundamental_type list) in
+    List.map Type.of_fundamental (cols#kinds :> fundamental_type list) in
   new list_store (ListStore.create (Array.of_list types)) ~id:cols#id
 
 (*
@@ -340,10 +258,13 @@ end
 
 class view_signals obj = object
   inherit GContainer.container_signals obj
-  method set_scroll_adjustments =
+  method set_scroll_adjustments ~callback =
     GtkSignal.connect obj ~sgn:TreeView.Signals.set_scroll_adjustments ~after
-  method row_activated =
+      ~callback:(fun h v -> callback (may_map (new GData.adjustment) h)
+                                     (may_map (new GData.adjustment) v))
+  method row_activated ~callback =
     GtkSignal.connect obj ~sgn:TreeView.Signals.row_activated ~after
+      ~callback:(fun it vc -> callback it (new view_column vc))
   method test_expand_row =
     GtkSignal.connect obj ~sgn:TreeView.Signals.test_expand_row ~after
   method test_collapse_row =
@@ -375,12 +296,34 @@ class view_signals obj = object
     GtkSignal.connect obj ~sgn:TreeView.Signals.start_interactive_search ~after
 end
 
+open TreeView.Properties
+open Gobject.Property
 class view obj = object
   inherit GContainer.container obj
   method connect = new view_signals obj
   method append_column (col : view_column) =
     TreeView.append_column obj col#as_column
   method selection = new selection (TreeView.get_selection obj)
+  method enable_search = get obj enable_search
+  method set_enable_search = set obj enable_search
+  method expander_column = new view_column (get_some obj expander_column)
+  method set_expander_column c =
+    set obj expander_column (may_map (fun (x:view_column) -> x#as_column) c)
+  method hadjustment = new GData.adjustment (get_some obj hadjustment)
+  method set_hadjustment a= set obj hadjustment (may_map GData.as_adjustment a)
+  method set_headers_clickable = set obj headers_clickable
+  method headers_visible = get obj headers_visible
+  method set_headers_visible = set obj headers_visible
+  method model = new model (get_some obj model)
+  method set_model (m:model) = set obj model (Some m#as_model)
+  method reorderable = get obj reorderable
+  method set_reorderable = set obj reorderable
+  method rules_hint = get obj rules_hint
+  method set_rules_hint = set obj rules_hint
+  method search_column = get obj search_column
+  method set_search_column = set obj search_column
+  method vadjustment = new GData.adjustment (get_some obj vadjustment)
+  method set_vadjustment a= set obj vadjustment (may_map GData.as_adjustment a)
 end
 let view ?model ?border_width ?width ?height ?packing ?show () =
   let model = may_map ~f:(fun (model : #model) -> model#as_model) model in

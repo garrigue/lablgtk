@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+open Gaux
+
 type -'a obj
 type g_type
 type g_class
@@ -97,6 +99,89 @@ external coerce : 'a -> [`base] obj = "%identity"
 
 let get_oid (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
 
+module Data = struct
+  type kind =
+    [ `BOOLEAN
+    | `CHAR
+    | `UCHAR
+    | `INT
+    | `UINT
+    | `LONG
+    | `ULONG
+    | `INT64
+    | `UINT64
+    | `ENUM
+    | `FLAGS
+    | `FLOAT
+    | `DOUBLE
+    | `STRING
+    | `POINTER
+    | `BOXED
+    | `OBJECT ]
+
+  type 'a conv =
+      { kind: kind;
+        proj: (data_get -> 'a);
+        inj: ('a -> unit data_set) }
+  let boolean =
+    { kind = `BOOLEAN;
+      proj = (function `BOOL b -> b | _ -> failwith "Gobject.get_bool");
+      inj = (fun b -> `BOOL b) }
+  let char =
+    { kind = `CHAR;
+      proj = (function `CHAR c -> c | _ -> failwith "Gobject.get_char");
+      inj = (fun c -> `CHAR c) }
+  let uchar = {char with kind = `UCHAR}
+  let int =
+    { kind = `INT;
+      proj = (function `INT c -> c | _ -> failwith "Gobject.get_int");
+      inj = (fun c -> `INT c) }
+  let uint = {int with kind = `UINT}
+  let long = {int with kind = `LONG}
+  let ulong = {int with kind = `ULONG}
+  let enum = {int with kind = `ENUM}
+  let flags = {int with kind = `FLAGS}
+  let int64 =
+    { kind = `INT64;
+      proj = (function `INT64 c -> c | _ -> failwith "Gobject.get_int64");
+      inj = (fun c -> `INT64 c) }
+  let uint64 = {int64 with kind = `UINT64}
+  let float =
+    { kind = `FLOAT;
+      proj = (function `FLOAT c -> c | _ -> failwith "Gobject.get_float");
+      inj = (fun c -> `FLOAT c) }
+  let double = {float with kind = `DOUBLE}
+  let string =
+    { kind = `STRING;
+      proj = (function `STRING (Some s) -> s | `STRING None -> ""
+             | _ -> failwith "Gobject.get_string");
+      inj = (fun s -> `STRING (Some s)) }
+  let string_option =
+    { kind = `STRING;
+      proj = (function `STRING c -> c | _ -> failwith "Gobject.get_string");
+      inj = (fun c -> `STRING c) }
+  let pointer =
+    { kind = `POINTER;
+      proj = (function `POINTER c -> c | _ -> failwith "Gobject.get_pointer");
+      inj = (fun c -> `POINTER c) }
+  let boxed = {pointer with kind = `BOXED}
+  let gobject =
+    { kind = `OBJECT;
+      proj = (function `OBJECT c -> may_map ~f:unsafe_cast c
+             | _ -> failwith "Gobject.get_object");
+      inj = (fun c -> `OBJECT (may_map ~f:unsafe_cast c)) }
+
+  let of_value kind v =
+    kind.proj (Value.get v)
+  let to_value kind x =
+    let v =
+      Value.create (Type.of_fundamental (kind.kind :> fundamental_type)) in
+    Value.set v (kind.inj x);
+  v
+end
+
+type ('a,'b) property = { name: string; classe: 'a; conv: 'b Data.conv }
+
 module Property = struct
   external freeze_notify : 'a obj -> unit = "ml_g_object_freeze_notify"
   external thaw_notify : 'a obj -> unit = "ml_g_object_thaw_notify"
@@ -107,12 +192,19 @@ module Property = struct
     = "ml_g_object_get_property"
   external get_property_type : 'a obj -> string -> g_type
     = "ml_g_object_get_property_type"
-  let set obj prop data =
+  let set_dyn obj prop data =
     let v = Value.create (get_property_type obj prop) in
     Value.set v data;
     set_property obj prop v
-  let get obj prop =
+  let get_dyn obj prop =
     let v = Value.create (get_property_type obj prop) in
     get_property obj prop v;
     Value.get v
+  let set (obj : 'a obj) (prop : ('a,_) property) x =
+    set_dyn obj prop.name (prop.conv.Data.inj x)
+  let get (obj : 'a obj) (prop : ('a,_) property) =
+    prop.conv.Data.proj (get_dyn obj prop.name)
+  let get_some obj prop =
+    match get obj prop with Some x -> x
+    | None -> failwith ("Gobject.Property.get_some: " ^ prop.name)
 end

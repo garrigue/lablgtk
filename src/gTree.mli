@@ -1,8 +1,11 @@
 (* $Id$ *)
 
+open Gobject
 open Gtk
 open GObj
 open GContainer
+
+(* Obsolete GtkTree/GtkTreeItem framework *)
 
 class tree_item_signals : 'a obj ->
   object
@@ -72,55 +75,9 @@ val tree :
   ?height:int -> ?packing:(widget -> unit) -> ?show:bool -> unit -> tree
 
 
-module Data :
-  sig
-    type kind =
-      [ `BOOLEAN
-      | `BOXED
-      | `CHAR
-      | `DOUBLE
-      | `ENUM
-      | `FLAGS
-      | `FLOAT
-      | `INT
-      | `INT64
-      | `LONG
-      | `OBJECT
-      | `POINTER
-      | `STRING
-      | `UCHAR
-      | `UINT
-      | `UINT64
-      | `ULONG]
-    type 'a conv = {
-      kind : kind;
-      proj : Gobject.data_get -> 'a;
-      inj : 'a -> unit Gobject.data_set;
-    } 
-    val boolean : bool conv
-    val char : char conv
-    val uchar : char conv
-    val int : int conv
-    val uint : int conv
-    val long : int conv
-    val ulong : int conv
-    val enum : int conv
-    val flags : int conv
-    val int64 : int64 conv
-    val uint64 : int64 conv
-    val float : float conv
-    val double : float conv
-    val string : string conv
-    val string_option : string option conv
-    val pointer : Gpointer.boxed option conv
-    val boxed : Gpointer.boxed option conv
-    val gobject : 'a Gobject.obj option conv
-    val of_value : 'a conv -> Gobject.g_value -> 'a
-    val to_value : 'a conv -> 'a -> Gobject.g_value
-  end
+(* New GtkTreeView/Model framework *)
 
-type 'a column =
-    {index: int; conv: 'a Data.conv; creator: int}
+type 'a column = {index: int; conv: 'a Data.conv; creator: int}
 
 class column_list :
   object
@@ -145,20 +102,20 @@ class model_signals : ([> `treemodel] as 'b) obj ->
       callback:(tree_path -> tree_iter -> unit) -> GtkSignal.id
   end
 
-class model : ([> `treemodel] obj as 'a) -> id:int ->
+class model : ?id:int -> ([> `treemodel] as 'a) obj ->
   object
-    val obj : 'a
+    val obj : 'a obj
     val id : int
-    method as_model : Gtk.tree_model Gtk.obj
+    method as_model : Gtk.tree_model obj
     method coerce : model
     method connect : model_signals
-    method get : row:Gtk.tree_iter -> column:'b column -> 'b
+    method get : row:tree_iter -> column:'b column -> 'b
     method get_column_type : int -> Gobject.g_type
-    method get_iter : Gtk.tree_path -> Gtk.tree_iter
-    method get_path : Gtk.tree_iter -> Gtk.tree_path
-    method iter_children : ?nth:int -> Gtk.tree_iter -> Gtk.tree_iter
-    method iter_next : Gtk.tree_iter -> bool
-    method iter_parent : Gtk.tree_iter -> Gtk.tree_iter
+    method get_iter : tree_path -> tree_iter
+    method get_path : tree_iter -> tree_path
+    method iter_children : ?nth:int -> tree_iter -> tree_iter
+    method iter_next : tree_iter -> bool
+    method iter_parent : tree_iter -> tree_iter
     method misc : gobject_ops
     method n_columns : int
   end
@@ -217,25 +174,25 @@ class selection :
     method misc : gobject_ops
     method count_selected_rows : int
     method get_mode : Gtk.Tags.selection_mode
-    method get_selected_rows : Gtk.tree_path list
-    method iter_is_selected : Gtk.tree_iter -> bool
-    method path_is_selected : Gtk.tree_path -> bool
+    method get_selected_rows : tree_path list
+    method iter_is_selected : tree_iter -> bool
+    method path_is_selected : tree_path -> bool
     method select_all : unit
-    method select_iter : Gtk.tree_iter -> unit
-    method select_path : Gtk.tree_path -> unit
-    method select_range : Gtk.tree_path -> Gtk.tree_path -> unit
+    method select_iter : tree_iter -> unit
+    method select_path : tree_path -> unit
+    method select_range : tree_path -> tree_path -> unit
     method set_mode : Gtk.Tags.selection_mode -> unit
-    method set_select_function : (Gtk.tree_path -> bool -> bool) -> unit
+    method set_select_function : (tree_path -> bool -> bool) -> unit
     method unselect_all : unit
-    method unselect_iter : Gtk.tree_iter -> unit
-    method unselect_path : Gtk.tree_path -> unit
-    method unselect_range : Gtk.tree_path -> Gtk.tree_path -> unit
+    method unselect_iter : tree_iter -> unit
+    method unselect_path : tree_path -> unit
+    method unselect_range : tree_path -> tree_path -> unit
   end
 
-class view_column_signals : ([> `gtk | `treeviewcolumn] as 'b) Gtk.obj ->
+class view_column_signals : ([> `gtk | `treeviewcolumn] as 'b) obj ->
   object ('a)
     inherit gtkobj_signals
-    val obj : 'b Gtk.obj
+    val obj : 'b obj
     method clicked : callback:(unit -> unit) -> GtkSignal.id
   end
 class view_column : tree_view_column obj ->
@@ -267,8 +224,7 @@ class view_signals : ([> tree_view] as 'b) obj ->
     method move_cursor :
       callback:(Gtk.Tags.movement_step -> int -> bool) -> GtkSignal.id
     method row_activated :
-      callback:(tree_iter -> Gtk.tree_view_column obj -> unit) ->
-      GtkSignal.id
+      callback:(tree_iter -> view_column -> unit) -> GtkSignal.id
     method row_collapsed :
       callback:(tree_iter -> tree_path -> unit) -> GtkSignal.id
     method row_expanded :
@@ -278,8 +234,7 @@ class view_signals : ([> tree_view] as 'b) obj ->
     method select_cursor_row :
       callback:(start_editing:bool -> bool) -> GtkSignal.id
     method set_scroll_adjustments :
-      callback:(Gtk.adjustment obj option ->
-                Gtk.adjustment obj option -> unit) ->
+      callback:(GData.adjustment option -> GData.adjustment option -> unit) ->
       GtkSignal.id
     method start_interactive_search : callback:(unit -> bool) -> GtkSignal.id
     method test_collapse_row : callback:(unit -> bool) -> GtkSignal.id
@@ -295,7 +250,26 @@ class view : ([> tree_view] as 'a) obj ->
     val obj : 'a obj
     method connect : view_signals
     method append_column : view_column -> int
+    method enable_search : bool
+    method expander_column : view_column
+    method hadjustment : GData.adjustment
+    method headers_visible : bool
+    method model : model
+    method reorderable : bool
+    method rules_hint : bool
+    method search_column : int
     method selection : selection
+    method set_enable_search : bool -> unit
+    method set_expander_column : view_column option -> unit
+    method set_hadjustment : GData.adjustment option -> unit
+    method set_headers_clickable : bool -> unit
+    method set_headers_visible : bool -> unit
+    method set_model : model -> unit
+    method set_reorderable : bool -> unit
+    method set_rules_hint : bool -> unit
+    method set_search_column : int -> unit
+    method set_vadjustment : GData.adjustment option -> unit
+    method vadjustment : GData.adjustment
   end
 val view :
   ?model:#model ->

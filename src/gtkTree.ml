@@ -324,6 +324,26 @@ module TreeView = struct
     = "ml_gtk_tree_view_append_column"
   external get_selection : [>`treeview] obj -> tree_selection
     = "ml_gtk_tree_view_get_selection"
+  module Properties = struct
+    open Gobject
+    open Gobject.Data
+    let enable_search = {name="enable_search"; classe=`treeview; conv=boolean}
+    let expander_column : (_,tree_view_column obj option) property =
+      {name="expander_column"; classe=`treeview; conv=gobject}
+    let hadjustment : (_,adjustment obj option) property =
+      {name="hadjustment"; classe=`treeview; conv=gobject}
+    let headers_clickable =
+      {name="headers_clickable"; classe=`treeview; conv=boolean}
+    let headers_visible =
+      {name="headers_visible"; classe=`treeview; conv=boolean}
+    let model : (_,tree_model obj option) property =
+      {name="vadjustment"; classe=`treeview; conv=gobject}
+    let reorderable = {name="reorderable"; classe=`treeview; conv=boolean}
+    let rules_hint = {name="rules_hint"; classe=`treeview; conv=boolean}
+    let search_column = {name="search_column"; classe=`treeview; conv=int}
+    let vadjustment : (_,adjustment obj option) property =
+      {name="vadjustment"; classe=`treeview; conv=gobject}
+  end
   module Signals = struct
     open GtkSignal
     let return = Gobject.Closure.set_result
