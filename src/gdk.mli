@@ -4,9 +4,9 @@ type colormap
 type visual
 type gc
 type 'a drawable
-type window = [window] drawable
-type pixmap = [pixmap] drawable
-type bitmap = [bitmap] drawable
+type window = [`window] drawable
+type pixmap = [`pixmap] drawable
+type bitmap = [`bitmap] drawable
 type font
 type image
 type atom = int
@@ -16,32 +16,38 @@ type drag_context
 
 exception Error of string
 
-module Tags :
-  sig
-    type event_type =
-      [BUTTON_PRESS BUTTON_RELEASE CLIENT_EVENT CONFIGURE DELETE DESTROY
-       DRAG_ENTER DRAG_LEAVE DRAG_MOTION DRAG_STATUS DROP_FINISHED DROP_START
-       ENTER_NOTIFY EXPOSE FOCUS_CHANGE KEY_PRESS KEY_RELEASE LEAVE_NOTIFY
-       MAP MOTION_NOTIFY NOTHING NO_EXPOSE PROPERTY_NOTIFY PROXIMITY_IN
-       PROXIMITY_OUT SELECTION_CLEAR SELECTION_NOTIFY SELECTION_REQUEST
-       THREE_BUTTON_PRESS TWO_BUTTON_PRESS UNMAP VISIBILITY_NOTIFY]
-    type event_mask =
-      [ALL_EVENTS BUTTON1_MOTION BUTTON2_MOTION BUTTON3_MOTION BUTTON_MOTION
-       BUTTON_PRESS BUTTON_RELEASE ENTER_NOTIFY EXPOSURE FOCUS_CHANGE
-       KEY_PRESS KEY_RELEASE LEAVE_NOTIFY POINTER_MOTION POINTER_MOTION_HINT
-       PROPERTY_CHANGE PROXIMITY_IN PROXIMITY_OUT STRUCTURE SUBSTRUCTURE
-       VISIBILITY_NOTIFY]
-    type extension_events = [ALL CURSOR NONE]
-    type visibility_state = [FULLY_OBSCURED PARTIAL UNOBSCURED]
-    type input_source = [CURSOR ERASER MOUSE PEN]
-    type notify_type =
-      [ANCESTOR INFERIOR NONLINEAR NONLINEAR_VIRTUAL UNKNOWN VIRTUAL]
-    type crossing_mode = [GRAB NORMAL UNGRAB]
-    type modifier =
-      [BUTTON1 BUTTON2 BUTTON3 BUTTON4 BUTTON5 CONTROL LOCK MOD1 MOD2 
-       MOD3 MOD4 MOD5 SHIFT]
-    type drag_action = [ASK COPY DEFAULT LINK MOVE PRIVATE]
-  end
+module Tags : sig
+  type event_type =
+    [ `NOTHING|`DELETE|`DESTROY|`EXPOSE|`MOTION_NOTIFY|`BUTTON_PRESS
+     |`TWO_BUTTON_PRESS|`THREE_BUTTON_PRESS
+     |`BUTTON_RELEASE|`KEY_PRESS
+     |`KEY_RELEASE|`ENTER_NOTIFY|`LEAVE_NOTIFY|`FOCUS_CHANGE
+     |`CONFIGURE|`MAP|`UNMAP|`PROPERTY_NOTIFY|`SELECTION_CLEAR
+     |`SELECTION_REQUEST|`SELECTION_NOTIFY|`PROXIMITY_IN
+     |`PROXIMITY_OUT|`DRAG_ENTER|`DRAG_LEAVE|`DRAG_MOTION|`DRAG_STATUS
+     |`DROP_START|`DROP_FINISHED|`CLIENT_EVENT|`VISIBILITY_NOTIFY
+     |`NO_EXPOSE ]
+  type event_mask =
+    [ `EXPOSURE
+     |`POINTER_MOTION|`POINTER_MOTION_HINT
+     |`BUTTON_MOTION|`BUTTON1_MOTION|`BUTTON2_MOTION|`BUTTON3_MOTION
+     |`BUTTON_PRESS|`BUTTON_RELEASE
+     |`KEY_PRESS|`KEY_RELEASE
+     |`ENTER_NOTIFY|`LEAVE_NOTIFY|`FOCUS_CHANGE
+     |`STRUCTURE|`PROPERTY_CHANGE|`VISIBILITY_NOTIFY
+     |`PROXIMITY_IN|`PROXIMITY_OUT|`SUBSTRUCTURE
+     |`ALL_EVENTS ]
+  type extension_events = [ `NONE|`ALL|`CURSOR ]
+  type visibility_state = [ `UNOBSCURED|`PARTIAL|`FULLY_OBSCURED ]
+  type input_source = [ `MOUSE|`PEN|`ERASER|`CURSOR ]
+  type notify_type =
+    [ `ANCESTOR|`VIRTUAL|`INFERIOR|`NONLINEAR|`NONLINEAR_VIRTUAL|`UNKNOWN ] 
+  type crossing_mode = [ `NORMAL|`GRAB|`UNGRAB ]
+  type modifier =
+    [ `SHIFT|`LOCK|`CONTROL|`MOD1|`MOD2|`MOD3|`MOD4|`MOD5|`BUTTON1
+     |`BUTTON2|`BUTTON3|`BUTTON4|`BUTTON5 ]
+  type drag_action = [ `DEFAULT|`COPY|`MOVE|`LINK|`PRIVATE|`ASK ]
+end
 
 module Convert :
   sig
@@ -57,8 +63,8 @@ module Screen :
 module Visual :
   sig
     type visual_type =
-      [DIRECT_COLOR GRAYSCALE PSEUDO_COLOR STATIC_COLOR STATIC_GRAY
-       TRUE_COLOR]
+      [ `STATIC_GRAY|`GRAYSCALE|`STATIC_COLOR
+       |`PSEUDO_COLOR|`TRUE_COLOR|`DIRECT_COLOR ]
     external get_type : visual -> visual_type = "ml_GdkVisual_type"
     external depth : visual -> int = "ml_GdkVisual_depth"
     external red_mask : visual -> int = "ml_GdkVisual_red_mask"
@@ -74,7 +80,7 @@ module Visual :
 
 module Image :
   sig
-    type image_type = [FASTEST NORMAL SHARED]
+    type image_type = [ `FASTEST|`NORMAL|`SHARED ]
     external create_bitmap :
       visual:visual -> data:string -> width:int -> height:int -> image
       = "ml_gdk_image_new_bitmap"
@@ -94,8 +100,8 @@ module Image :
 module Color :
   sig
     type t
-    type spec = [BLACK NAME(string) RGB(int * int * int) WHITE]
-    val alloc : spec -> ?colormap:colormap -> t
+    type spec = [ `BLACK|`NAME string |`RGB (int * int * int)|`WHITE ]
+    val alloc : ?colormap:colormap -> spec -> t
     external get_system_colormap : unit -> colormap
 	= "ml_gdk_colormap_get_system"
     external red : t -> int = "ml_GdkColor_red"
@@ -117,7 +123,7 @@ module Rectangle :
 
 module Window :
   sig
-    type background_pixmap = [NONE PARENT_RELATIVE PIXMAP(pixmap)]
+    type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP pixmap ]
     external visual_depth : visual -> int = "ml_gdk_visual_get_depth"
     external get_visual : window -> visual = "ml_gdk_window_get_visual"
     external get_parent : window -> window = "ml_gdk_window_get_parent"
@@ -131,12 +137,12 @@ module Window :
 
 module GC :
   sig
-    type gdkFunction = [COPY INVERT XOR]
-    type gdkFill = [OPAQUE_STIPPLED SOLID STIPPLED TILED]
-    type gdkSubwindowMode = [CLIP_BY_CHILDREN INCLUDE_INFERIORS]
-    type gdkLineStyle = [DOUBLE_DASH ON_OFF_DASH SOLID]
-    type gdkCapStyle = [BUTT NOT_LAST PROJECTING ROUND]
-    type gdkJoinStyle = [BEVEL MITER ROUND]
+    type gdkFunction = [ `COPY|`INVERT|`XOR ]
+    type gdkFill = [ `SOLID|`TILED|`STIPPLED|`OPAQUE_STIPPLED ]
+    type gdkSubwindowMode = [ `CLIP_BY_CHILDREN|`INCLUDE_INFERIORS ]
+    type gdkLineStyle = [ `SOLID|`ON_OFF_DASH|`DOUBLE_DASH ]
+    type gdkCapStyle = [ `NOT_LAST|`BUTT|`ROUND|`PROJECTING ]
+    type gdkJoinStyle = [ `MITER|`ROUND|`BEVEL ]
     external create : 'a drawable -> gc = "ml_gdk_gc_new"
     external set_foreground : gc -> Color.t -> unit
       = "ml_gdk_gc_set_foreground"
@@ -180,12 +186,12 @@ module Pixmap :
     external create_from_xpm :
       window ->
       ?colormap:colormap ->
-      ?transparent:Color.t -> file:string -> pixmap * bitmap
+      ?transparent:Color.t -> string -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm"
     external create_from_xpm_d :
       window ->
       ?colormap:colormap ->
-      ?transparent:Color.t -> data:string array -> pixmap * bitmap
+      ?transparent:Color.t -> string array -> pixmap * bitmap
       = "ml_gdk_pixmap_colormap_create_from_xpm_d"
   end
 
@@ -222,17 +228,14 @@ module Draw :
       'a drawable -> gc -> x:int -> y:int -> x:int -> y:int -> unit
       = "ml_gdk_draw_line_bc" "ml_gdk_draw_line"
     val rectangle :
-      'a drawable ->
-      gc -> x:int -> y:int -> width:int -> height:int -> ?filled:bool -> unit
+      'a drawable -> gc ->
+      x:int -> y:int -> width:int -> height:int -> ?filled:bool -> unit -> unit
     val arc :
-      'a drawable ->
-      gc ->
-      x:int ->
-      y:int ->
-      width:int ->
-      height:int -> ?filled:bool -> ?start:float -> ?angle:float -> unit
+      'a drawable -> gc ->
+      x:int -> y:int -> width:int -> height:int ->
+      ?filled:bool -> ?start:float -> ?angle:float -> unit -> unit
     val polygon :
-      'a drawable -> gc -> (int * int) list -> ?filled:bool -> unit
+      'a drawable -> gc -> ?filled:bool ->(int * int) list -> unit
     external string :
       'a drawable ->
       font:font -> gc -> x:int -> y:int -> string:string -> unit
