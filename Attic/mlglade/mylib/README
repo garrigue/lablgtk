@@ -1,0 +1,76 @@
+-----------------------------------------------------------------------------
+ $Id$
+-----------------------------------------------------------------------------
+
+This is a library of modules for the functional programming language
+Objective Caml (http://caml.inria.fr) . It provides:
+
+PC.ML             
+-----
+    
+Parser combinators.  Parsers can be build from primitive parsers
+provided by this module.  Perfect for small parsing issues like
+command line arguments.
+
+PC2.ML
+------
+
+This is a similar implementation of parser combinators but uses
+different sequence and semantic action operators. 
+ 
+PP.ML	      	
+-----
+    
+Pretty printing.  Structured documents are build up from primtive
+ones.  These documents then can be pretty printed for different line
+length to strings or files.  The approach follows Philip Wadlers
+proposed pretty printer algebra.  However, it features some small
+additions and is redesigned for strict implementations.
+
+LC.ML
+-----
+ 
+Lexer combinators for string scanning.  Inspired by the idea of parser
+combinators but especially suited for strings.
+
+STD.ML	
+------
+
+Generic functions which I feel are missing in the OCaml Standard
+library. 
+ 
+		
+BUILDING
+--------
+
+Simply typing 'make' should work. See the Makefile for additional
+targets.
+
+
+COPYING
+-------
+
+You can modify and redistribute this software under certain terms. See
+the file COPYING for details.  In short:  do what you like but do not
+blame me for any problems.
+
+FEEDBACK
+--------
+
+Any feedback is appreciated - bug reports, patches, enhancements.
+Please send them to the address given below.
+
+AUTHOR 
+------
+
+Christian Lindig
+TU Braunschweig
+Software Institute
+D-38106 Braunschweig
+Germany 
+
+lindig@ips.cs.tu-bs.de
+http://www.cs.tu-bs.de/softech/people/lindig
+
+
+

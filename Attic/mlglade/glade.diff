@@ -1,0 +1,112 @@
+diff -c glade-0.6.2/glade/glade_project.c glade-0.6.2-ocaml/glade/glade_project.c
+*** glade-0.6.2/glade/glade_project.c	Thu Sep 14 19:28:25 2000
+--- glade-0.6.2-ocaml/glade/glade_project.c	Tue Aug 28 19:53:16 2001
+***************
+*** 42,48 ****
+  
+  
+  /* The order must match the GladeLanguageType enum in glade_project.h. */
+! gchar *GladeLanguages[] = { "C", "C++", "Ada 95", "Perl", "Eiffel" };
+  gint GladeNumLanguages = sizeof (GladeLanguages) / sizeof (GladeLanguages[0]);
+  
+  
+--- 42,48 ----
+  
+  
+  /* The order must match the GladeLanguageType enum in glade_project.h. */
+! gchar *GladeLanguages[] = { "C", "C++", "Ada 95", "Perl", "Eiffel" , "Ocaml" };
+  gint GladeNumLanguages = sizeof (GladeLanguages) / sizeof (GladeLanguages[0]);
+  
+  
+***************
+*** 55,60 ****
+--- 55,61 ----
+  static GladeError* glade_project_write_ada95_source (GladeProject *project);
+  static GladeError* glade_project_write_perl_source (GladeProject *project);
+  static GladeError* glade_project_write_eiffel_source (GladeProject *project);
++ static GladeError* glade_project_write_ocaml_source (GladeProject *project);
+  
+  static void free_key (gchar	*key,
+  		      gchar	*value,
+***************
+*** 395,400 ****
+--- 396,403 ----
+        return glade_project_write_perl_source (project);
+      case GLADE_LANGUAGE_EIFFEL:
+        return glade_project_write_eiffel_source (project);
++     case GLADE_LANGUAGE_OCAML:
++       return glade_project_write_ocaml_source (project);
+      default:
+        break;
+      }
+***************
+*** 502,507 ****
+--- 505,529 ----
+  	return NULL;
+  }
+  
++ 	static GladeError*
++ glade_project_write_ocaml_source (GladeProject *project)
++ {
++ 	gchar *command_buffer;
++ 	gint status;
++ 
++ 	command_buffer = g_strdup_printf ("mlglade %s", project->xml_filename);
++ 	status = system (command_buffer);
++ 	g_free (command_buffer);
++ 
++ 	if (status != 0)
++ 	{
++ 		return glade_error_new_general (GLADE_STATUS_ERROR,
++ 			_("Error running mlglade to generate the OCaml source code.\n"
++ 			"Check that you have mlglade installed and that it is in your PATH."));
++ 	}
++ 
++ 	return NULL;
++ }
+  
+  /* This should be called by anything which changes the project - adding or
+     removing widgets, changing properties, setting project options etc.
+diff -c glade-0.6.2/glade/glade_project.h glade-0.6.2-ocaml/glade/glade_project.h
+*** glade-0.6.2/glade/glade_project.h	Sun May 14 00:54:05 2000
+--- glade-0.6.2-ocaml/glade/glade_project.h	Tue Aug 28 19:02:30 2001
+***************
+*** 41,47 ****
+    GLADE_LANGUAGE_CPP,
+    GLADE_LANGUAGE_ADA95,
+    GLADE_LANGUAGE_PERL,
+!   GLADE_LANGUAGE_EIFFEL
+  } GladeLanguageType;
+  
+  extern gchar *GladeLanguages[];
+--- 41,48 ----
+    GLADE_LANGUAGE_CPP,
+    GLADE_LANGUAGE_ADA95,
+    GLADE_LANGUAGE_PERL,
+!   GLADE_LANGUAGE_EIFFEL,
+!   GLADE_LANGUAGE_OCAML
+  } GladeLanguageType;
+  
+  extern gchar *GladeLanguages[];
+diff -c glade-0.6.2/glade/property.c glade-0.6.2-ocaml/glade/property.c
+*** glade-0.6.2/glade/property.c	Wed Feb  7 23:07:18 2001
+--- glade-0.6.2-ocaml/glade/property.c	Tue Aug 28 19:10:29 2001
+***************
+*** 911,916 ****
+--- 911,926 ----
+    property_set_table_position (table, 0);
+    /* No properties yet. */
+  
++   /* Create table for OCaml-specific properties. */
++   table = gtk_table_new (3, 3, FALSE);
++   if (property_language == GLADE_LANGUAGE_OCAML)
++     gtk_widget_show (table);
++   lang_specific_properties[GLADE_LANGUAGE_OCAML] = table;
++   gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
++ 
++   property_set_table_position (table, 0);
++   /* No properties yet. */
++ 
+  }
+  
+  
