@@ -482,7 +482,9 @@ module Draw = struct
   let lines w gc l = f_pointarray (lines w gc) l
   external segments : 'a drawable -> gc -> SegmentArray.t -> unit
       = "ml_gdk_draw_segments"
-  let segments w gc l = f_segmentarray (segments w gc) l
+  let segments w gc = function
+    | [] -> ()
+    | l -> f_segmentarray (segments w gc) l
 end
 
 module Rgb = struct
