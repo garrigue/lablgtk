@@ -7,6 +7,8 @@ open GtkBin
 open GObj
 open GContainer
 
+let set = Gobject.Property.set
+
 class scrolled_window obj = object
   inherit container_full (obj : Gtk.scrolled_window obj)
   method hadjustment =
@@ -41,9 +43,8 @@ class event_box obj = object
   method event = new GObj.event_ops obj
 end
 
-let event_box ?border_width ?width ?height ?packing ?show () =
+let event_box ?packing ?show () =
   let w = EventBox.create () in
-  Container.set w ?border_width ?width ?height;
   pack_return (new event_box w) ~packing ~show
 
 class handle_box_signals obj = object
@@ -72,11 +73,15 @@ let handle_box ?handle_position ?snap_edge ?shadow_type
   Container.set w ?border_width ?width ?height;
   pack_return (new handle_box w) ~packing ~show
 
+module P = Frame.Prop
+
 class frame_skel obj = object
   inherit container (obj : [> frame] obj)
-  method set_label = Frame.set_label obj
-  method set_label_align ?x ?y () = Frame.set_label_align' obj ?x ?y
-  method set_shadow_type = Frame.set_shadow_type obj
+  method set_label = set obj P.label
+  method set_label_xalign = set obj P.label_xalign
+  method set_label_yalign = set obj P.label_yalign
+  method set_shadow_type = set obj P.shadow_type
+  method set_label_widget w = set obj P.label_widget (may_map as_widget w)
 end
 
 class frame obj = object
@@ -84,12 +89,12 @@ class frame obj = object
   method connect = new container_signals obj
 end
 
-let frame ?(label="") ?label_xalign ?label_yalign ?shadow_type
-    ?border_width ?width ?height ?packing ?show () =
-  let w = Frame.create label in
-  Frame.set w ?label_xalign ?label_yalign ?shadow_type;
-  Container.set w ?border_width ?width ?height;
-  pack_return (new frame w) ~packing ~show
+let frame ?label =
+  Frame.setter ?label ~cont:
+    (fun f1 -> Container.setter ~cont:
+        (fun f2 ?packing ?show () ->
+          let w = Frame.create label in f1 w; f2 w;
+          pack_return (new frame w) ~packing ~show))
 
 class aspect_frame obj = object
   inherit frame_skel (obj : Gtk.aspect_frame obj)
@@ -99,14 +104,13 @@ class aspect_frame obj = object
   method set_obey_child obey_child = AspectFrame.set obj ~obey_child
 end
 
-let aspect_frame ?label ?xalign ?yalign ?ratio ?obey_child
-    ?label_xalign ?label_yalign ?shadow_type
-    ?border_width ?width ?height ?packing ?show () =
-  let w =
-    AspectFrame.create ?label ?xalign ?yalign ?ratio ?obey_child () in
-  Frame.set w ?label_xalign ?label_yalign ?shadow_type;
-  Container.set w ?border_width ?width ?height;
-  pack_return (new aspect_frame w) ~packing ~show
+let aspect_frame ?label ?xalign ?yalign ?ratio ?obey_child =
+  Frame.setter ?label:None ~cont:
+    (fun f1 -> Container.setter ~cont:
+        (fun f2 ?packing ?show () ->
+          let w =
+            AspectFrame.create ?label ?xalign ?yalign ?ratio ?obey_child () in
+          pack_return (new aspect_frame w) ~packing ~show))
 
 class viewport obj = object
   inherit container_full (obj : Gtk.viewport obj)

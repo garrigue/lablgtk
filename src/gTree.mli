@@ -77,13 +77,13 @@ val tree :
 
 (* New GtkTreeView/Model framework *)
 
-type 'a column = {index: int; conv: 'a Data.conv; creator: int}
+type 'a column = {index: int; conv: 'a data_conv; creator: int}
 
 class column_list :
   object
-    method add : 'a Data.conv -> 'a column
+    method add : 'a data_conv -> 'a column
     method id : int
-    method kinds : Data.kind list
+    method kinds : data_kind list
     method lock : unit -> unit
   end
 

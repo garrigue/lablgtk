@@ -16,7 +16,26 @@ type basic =
 
 type data_get = [ basic | `NONE | `OBJECT of unit obj option ]
 type 'a data_set =
- [ basic | `OBJECT of 'a obj option | `INT32 of int32 | `LONG of nativeint ]
+  [ basic | `OBJECT of 'a obj option | `INT32 of int32 | `LONG of nativeint ]
+
+type data_kind =
+  [ `BOOLEAN
+  | `BOXED
+  | `CHAR
+  | `DOUBLE
+  | `ENUM
+  | `FLAGS
+  | `FLOAT
+  | `INT
+  | `INT64
+  | `LONG
+  | `OBJECT
+  | `POINTER
+  | `STRING
+  | `UCHAR
+  | `UINT
+  | `UINT64
+  | `ULONG ]
 
 type fundamental_type =
   [ `BOOLEAN
@@ -41,6 +60,11 @@ type fundamental_type =
   | `UINT64
   | `ULONG ]
 
+type 'a data_conv =
+    { kind : data_kind; proj : data_get -> 'a; inj : 'a -> unit data_set }
+
+type ('a, 'b) property = { name : string; classe : 'a; conv : 'b data_conv }
+
 exception Cannot_cast of string * string
 
 val get_type : 'a obj -> g_type
@@ -49,6 +73,13 @@ val unsafe_cast : 'a obj -> 'b obj
 val try_cast : 'a obj -> string -> 'b obj
 val coerce : 'a -> [ `base ] obj
 val get_oid : 'a obj -> int
+
+type 'a param
+val dyn_param : string -> 'a data_set -> 'b param
+val param : ('a,'b) property -> 'b -> 'a param
+
+val make : classe:string -> 'a param list -> 'a obj
+    (* This type is NOT safe *)
 
 module Type :
   sig
@@ -62,6 +93,7 @@ module Type :
     val of_fundamental : fundamental_type -> g_type
     val interface_prerequisites : g_type -> g_type list
   end
+
 module Value :
   sig
     val create_empty : unit -> g_value
@@ -79,6 +111,7 @@ module Value :
     val get_pointer : g_value -> Gpointer.boxed
     val get_nativeint : g_value -> nativeint
   end
+
 module Closure :
   sig
     type args
@@ -98,54 +131,29 @@ module Closure :
 
 module Data :
   sig
-    type kind =
-      [ `BOOLEAN
-      | `BOXED
-      | `CHAR
-      | `DOUBLE
-      | `ENUM
-      | `FLAGS
-      | `FLOAT
-      | `INT
-      | `INT64
-      | `LONG
-      | `OBJECT
-      | `POINTER
-      | `STRING
-      | `UCHAR
-      | `UINT
-      | `UINT64
-      | `ULONG ]
-    type 'a conv = {
-      kind : kind;
-      proj : data_get -> 'a;
-      inj : 'a -> unit data_set;
-    }
-    val boolean : bool conv
-    val char : char conv
-    val uchar : char conv
-    val int : int conv
-    val uint : int conv
-    val long : int conv
-    val ulong : int conv
-    val flags : int conv
-    val enum : ([>  ] as 'a) Gpointer.variant_table -> 'a conv
-    val int64 : int64 conv
-    val uint64 : int64 conv
-    val float : float conv
-    val double : float conv
-    val string : string conv
-    val string_option : string option conv
-    val pointer : Gpointer.boxed option conv
-    val unsafe_pointer : 'a option conv
-    val boxed : Gpointer.boxed option conv
-    val gobject : 'a obj conv
-    val gobject_option : 'a obj option conv
-    val of_value : 'a conv -> g_value -> 'a
-    val to_value : 'a conv -> 'a -> g_value
+    val boolean : bool data_conv
+    val char : char data_conv
+    val uchar : char data_conv
+    val int : int data_conv
+    val uint : int data_conv
+    val long : int data_conv
+    val ulong : int data_conv
+    val flags : int data_conv
+    val enum : ([>  ] as 'a) Gpointer.variant_table -> 'a data_conv
+    val int64 : int64 data_conv
+    val uint64 : int64 data_conv
+    val float : float data_conv
+    val double : float data_conv
+    val string : string data_conv
+    val string_option : string option data_conv
+    val pointer : Gpointer.boxed option data_conv
+    val unsafe_pointer : 'a option data_conv
+    val boxed : Gpointer.boxed option data_conv
+    val gobject : 'a obj data_conv
+    val gobject_option : 'a obj option data_conv
+    val of_value : 'a data_conv -> g_value -> 'a
+    val to_value : 'a data_conv -> 'a -> g_value
   end
-
-type ('a, 'b) property = { name : string; classe : 'a; conv : 'b Data.conv; }
 
 module Property :
   sig
@@ -162,3 +170,4 @@ module Property :
     val get_some : 'a obj -> ('a, 'b option) property -> 'b
     val check : 'a obj -> ('a, 'c) property -> unit
   end
+

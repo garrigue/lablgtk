@@ -25,26 +25,35 @@ end
 
 module Frame = struct
   let cast w : frame obj = Object.try_cast w "GtkFrame"
-  external create : string -> frame obj = "ml_gtk_frame_new"
-  external set_label : [>`frame] obj -> string -> unit
-      = "ml_gtk_frame_set_label"
-  external set_label_align : [>`frame] obj -> x:clampf -> y:clampf -> unit
-      = "ml_gtk_frame_set_label_align"
-  external set_shadow_type : [>`frame] obj -> shadow_type -> unit
-      = "ml_gtk_frame_set_shadow_type"
-  external get_label_xalign : [>`frame] obj -> float
-      = "ml_gtk_frame_get_label_xalign"
-  external get_label_yalign : [>`frame] obj -> float
-      = "ml_gtk_frame_get_label_yalign"
-  let set_label_align' ?x ?y w =
-    set_label_align w
-      ~x:(may_default get_label_xalign w ~opt:x)
-      ~y:(may_default get_label_yalign w ~opt:y)
-  let set ?label ?label_xalign ?label_yalign ?shadow_type w =
-    may label ~f:(set_label w);
-    if label_xalign <> None || label_yalign <> None then
-      set_label_align' w ?x:label_xalign ?y:label_yalign;
-    may shadow_type ~f:(set_shadow_type w)
+  external create : Gpointer.optstring -> frame obj = "ml_gtk_frame_new"
+  let create s = create (Gpointer.optstring s)
+  module Prop = struct
+    open Gobject
+    open Data
+    let label = {name="label"; classe=`frame; conv=string_option}
+    let label_widget = {name="label_widget"; classe=`frame;
+                        conv=(gobject_option : widget obj option data_conv)}
+    let label_xalign = {name="label_xalign"; classe=`frame; conv=float}
+    let label_yalign = {name="label_yalign"; classe=`frame; conv=float}
+    let conv_shadow_type = enum Tables.shadow_type
+    let shadow_type = {name="shadow_type"; classe=`frame;
+                       conv=conv_shadow_type}
+    let check () =
+      let w = create None in
+      let c p = Gobject.Property.check w p in
+      c label; c label_widget; c label_xalign; c label_yalign;
+      c shadow_type;
+      Object.destroy w
+  end
+  let setter ~cont ?label ?label_xalign ?label_yalign ?shadow_type =
+    cont (fun w ->
+      let may_set p = may ~f:(Gobject.Property.set w p) in
+      if label <> None then Gobject.Property.set w Prop.label label;
+      may_set Prop.label_xalign label_xalign;
+      may_set Prop.label_yalign label_yalign;
+      may_set Prop.shadow_type shadow_type)
+
+  let set ?label = setter ~cont:(fun f w -> f w) ?label
 end
 
 module AspectFrame = struct

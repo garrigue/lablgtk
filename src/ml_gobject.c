@@ -21,7 +21,7 @@ Make_Val_final_pointer_ext (GObject, _new, G_OBJECT, g_object_unref, 20)
 ML_1 (G_TYPE_FROM_INSTANCE, GObject_val, Val_int)
 ML_1 (g_object_ref, GObject_val, Unit)
 ML_1 (g_object_unref, GObject_val, Unit)
-
+    
 ML_1 (g_object_freeze_notify, GObject_val, Unit)
 ML_1 (g_object_thaw_notify, GObject_val, Unit)
 ML_2 (g_object_notify, GObject_val, String_val, Unit)
@@ -351,6 +351,34 @@ CAMLprim value ml_g_value_get_pointer (value arg)
 #undef DATA
 
 /* gobject.h / properties */
+
+CAMLprim value ml_g_object_new (value type, value params)
+{
+    int i, n;
+    value cell = params;
+    GParameter *params_copy, *param;
+    GObjectClass *class = g_type_class_ref(GType_val(type));
+    GParamSpec *pspec;
+    GObject *ret;
+
+    for (n = 0; cell != Val_unit; cell = Field(cell,1)) n++;
+    params_copy = (GParameter*)calloc(n, sizeof(GParameter));
+    param = params_copy;
+    for (cell = params; cell != Val_unit; cell = Field(cell,1)) {
+        param->name = String_val(Field(Field(cell,0),0));
+        pspec = g_object_class_find_property (class, param->name);
+        if (!pspec) failwith ("Gobject.create");
+        g_value_init (&param->value, pspec->value_type);
+        g_value_set_variant (&param->value, Field(Field(cell,0),1));
+        param++;
+    }
+
+    ret = g_object_newv (GType_val(type), n, params_copy);
+
+    for (i=0; i<n; i++) g_value_unset(&params_copy[i].value);
+    free(params_copy);
+    return Val_GObject_new(ret);
+}
 
 CAMLprim value ml_g_object_get_property_dyn (value vobj, value prop)
 {

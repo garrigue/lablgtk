@@ -40,11 +40,6 @@ ML_0 (gtk_event_box_new, Val_GtkWidget_sink)
 
 #define GtkFrame_val(val) check_cast(GTK_FRAME,val)
 ML_1 (gtk_frame_new, Optstring_val, Val_GtkWidget_sink)
-ML_2 (gtk_frame_set_label, GtkFrame_val, Optstring_val, Unit)
-ML_3 (gtk_frame_set_label_align, GtkFrame_val, Float_val, Float_val, Unit)
-ML_2 (gtk_frame_set_shadow_type, GtkFrame_val, Shadow_type_val, Unit)
-Make_Extractor (gtk_frame_get, GtkFrame_val, label_xalign, copy_double)
-Make_Extractor (gtk_frame_get, GtkFrame_val, label_yalign, copy_double)
 
 /* gtkaspectframe.h */
 
