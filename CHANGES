@@ -1,6 +1,11 @@
 $Id$
 
-In lablgtk2-20040302:
+In lablgtk2-20040304:
+
+2004.03.04 [Jacques]
+  * fix dependencies in src/Makefile
+  * fix #layout in GDraw.{drawable,pixmap}
+  * fix typing problems in 3.06 and 3.07+14
 
 2004.03.01 [Jacques]
   * add Pango.Layout and GDraw.drawable#layout

@@ -409,7 +409,8 @@ $(PANELCOBJS) : panel_tags.h
 ml_glib$(XO): glib_tags.h ml_glib.h wrappers.h
 ml_gobject$(XO): gobject_tags.h ml_gvaluecaml.h wrappers.h
 ml_gvaluecaml$(XO): ml_gobject.h wrappers.h
-ml_gdk$(XO): gdk_tags.h ml_gdk.h ml_gpointer.h ml_pango.h wrappers.h
+ml_gdk$(XO): gdk_tags.h ml_gdk.h ml_gpointer.h \
+	pango_tags.h ml_pango.h wrappers.h
 ml_gtk$(XO) ml_gtktext$(XO): ml_pango.h
 ml_gtkgl$(XO): gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gtkxmhtml$(XO): gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
