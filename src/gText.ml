@@ -125,10 +125,26 @@ end
 
 let tag s = new tag(Tag.create s)
 
+
+class tagtable_signals obj = object
+  inherit gtkobj_signals obj
+  method tag_added = 
+     GtkSignal.connect ~sgn:GtkText.TagTable.Signals.tag_added ~after obj
+  method tag_changed = 
+     GtkSignal.connect ~sgn:GtkText.TagTable.Signals.tag_changed ~after obj
+  method tag_removed = 
+     GtkSignal.connect ~sgn:GtkText.TagTable.Signals.tag_removed ~after obj
+end
+
 class tagtable obj = 
 object
   inherit gtkobj (obj :Gtk.texttagtable obj)
   method as_tagtable = obj
+  method connect = new tagtable_signals obj
+  method add =  TagTable.add obj
+  method remove =  TagTable.remove obj
+  method lookup =  TagTable.lookup obj
+
   method size () = TagTable.get_size obj
 end
 
@@ -249,35 +265,65 @@ let buffer ?(tagtable:tagtable option) ?text () =
   in
     match text with | None -> b | Some t -> b#set_text ~text:t () ; b
  
+
+class view_signals obj = object
+  inherit gtkobj_signals obj
+  method copy_clipboard = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.copy_clipboard ~after obj
+  method cut_clipboard = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.cut_clipboard ~after obj
+  method delete_from_cursor = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.delete_from_cursor ~after obj
+  method insert_at_cursor = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.insert_at_cursor ~after obj
+  method move_cursor = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.move_cursor ~after obj
+  method move_focus = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.move_focus ~after obj
+  method page_horizontally = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.page_horizontally ~after obj
+  method paste_clipboard = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.paste_clipboard ~after obj
+  method populate_popup = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.populate_popup ~after obj
+  method set_anchor = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.set_anchor ~after obj
+  method set_scroll_adjustments = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.set_scroll_adjustments ~after obj
+  method toggle_overwrite = 
+     GtkSignal.connect ~sgn:GtkText.View.Signals.toggle_overwrite ~after obj
+end
+
 class view obj = object
   inherit widget (obj : Gtk.textview obj)
   method event = new GObj.event_ops obj
+  method connect = new view_signals obj
   method set_buffer (b:buffer) = GtkText.View.set_buffer obj (b#as_buffer)
   method get_buffer () = new buffer (GtkText.View.get_buffer obj)
   method scroll_to_mark ?(within_margin=0.) ?(use_align=false)  ?(xalign=0.) ?(yalign=0.) mark =  
-	  GtkText.View.scroll_to_mark obj mark within_margin use_align xalign yalign
-  method scroll_to_iter  ?(within_margin=0.) ?(use_align=false)  ?(xalign=0.) ?(yalign=0.) iter =  
+    GtkText.View.scroll_to_mark obj mark within_margin use_align xalign yalign
+  method scroll_to_iter  ?(within_margin=0.) ?(use_align=false)  ?(xalign=0.) ?(yalign=0.) iter =
     GtkText.View.scroll_to_iter obj iter within_margin use_align xalign yalign
   method scroll_mark_onscreen mark =  
-	  GtkText.View.scroll_mark_onscreen obj mark
+    GtkText.View.scroll_mark_onscreen obj mark
   method move_mark_onscreen mark =  
-	  GtkText.View.move_mark_onscreen obj mark
+    GtkText.View.move_mark_onscreen obj mark
   method place_cursor_onscreen () =  
-	  GtkText.View.place_cursor_onscreen obj
+    GtkText.View.place_cursor_onscreen obj
   method get_visible_rect () = 
-	  GtkText.View.get_visible_rect obj
+    GtkText.View.get_visible_rect obj
   method get_iter_location iter = 
-	  GtkText.View.get_iter_location obj iter
+    GtkText.View.get_iter_location obj iter
   method get_line_at_y y = 
-	  GtkText.View.get_line_at_y obj y
+    GtkText.View.get_line_at_y obj y
   method get_line_yrange iter = 
-	  GtkText.View.get_line_yrange obj iter
+    GtkText.View.get_line_yrange obj iter
   method get_iter_at_location ~x ~y =
-	  GtkText.View.get_iter_at_location obj x y
+    GtkText.View.get_iter_at_location obj x y
   method buffer_to_window_coords ~tag ~x ~y =
-	  GtkText.View.buffer_to_window_coords obj tag x y
+    GtkText.View.buffer_to_window_coords obj tag x y
   method window_to_buffer_coords  ~tag ~x ~y =
-	  GtkText.View.window_to_buffer_coords obj tag x y
+    GtkText.View.window_to_buffer_coords obj tag x y
   method get_window win = 
     GtkText.View.get_window obj win
   method get_window_type win = 
@@ -344,7 +390,6 @@ class view obj = object
     GtkText.View.get_indent obj 
   method set_indent n = 
     GtkText.View.set_indent obj n
-
 end
 
 

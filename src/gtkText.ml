@@ -5,17 +5,16 @@ open Tags
 open GtkBase
 
 (* This function helps one to guess the type of the arguments of signals *)
-
 let marshal_what f _ = function 
   | `OBJECT _ :: _  -> invalid_arg "OBJECT"
   | `BOOL _ ::_ -> invalid_arg "BOOL"  
-  | `CHAR _::_       -> invalid_arg "CHAR"
-  | `FLOAT _::_      -> invalid_arg "FLOAT"
-  | `INT _::_      -> invalid_arg "INT"
-  | `INT64 _::_      -> invalid_arg "INT64"
-  | `NONE::_      -> invalid_arg "NONE"
-  | `POINTER _::_       -> invalid_arg "POINTER"
-  | `STRING _::_      -> invalid_arg "STRING"
+  | `CHAR _::_ -> invalid_arg "CHAR"
+  | `FLOAT _::_ -> invalid_arg "FLOAT"
+  | `INT _::_ -> invalid_arg "INT"
+  | `INT64 _::_ -> invalid_arg "INT64"
+  | `NONE::_ -> invalid_arg "NONE"
+  | `POINTER _::_ -> invalid_arg "POINTER"
+  | `STRING _::_  -> invalid_arg "STRING"
   | [] -> invalid_arg "NO ARGUMENTS"
 
 module Mark = struct
@@ -229,7 +228,43 @@ end
 module TagTable = struct
   let cast w : texttagtable obj = Object.try_cast w "GtkTextTagTable"
   external create : unit -> texttagtable obj = "ml_gtk_text_tag_table_new"
+  external add : texttagtable obj -> texttag obj -> unit = "ml_gtk_text_tag_table_add"
+  external remove : texttagtable obj -> texttag obj -> unit = "ml_gtk_text_tag_table_remove"
+  external lookup : texttagtable obj -> string -> (texttag obj) option 
+    = "ml_gtk_text_tag_table_add"
   external get_size : texttagtable obj -> int = "ml_gtk_text_tag_table_get_size"
+  module Signals = struct
+  open GtkSignal
+
+  let marshal_texttag f _ = function 
+    |`OBJECT(Some p)::_ ->
+       f (Obj.magic p:texttag)
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_texttag"
+
+  let marshal_tag_changed f _ = function 
+    | `OBJECT(Some p)::`BOOL b::_ ->
+       f (Obj.magic p:texttag) b
+    | _ -> invalid_arg "GtkText.Buffer.Signals.marshal_tag_changed"
+
+  let tag_added = 
+      {
+	name = "tag-added";
+	classe = `texttagtable;
+	marshaller = marshal_texttag
+      }
+  let tag_changed = 
+      {
+	name = "tag-changed";
+	classe = `texttagtable;
+	marshaller = marshal_tag_changed
+      }
+  let tag_removed = 
+      {
+	name = "tag-removed";
+	classe = `texttagtable;
+	marshaller = marshal_texttag
+      }
+  end
 end
 
 module Buffer = struct
@@ -448,9 +483,9 @@ module View = struct
   external set_buffer : textview obj -> textbuffer obj -> unit = "ml_gtk_text_view_set_buffer"
   external get_buffer : textview obj -> textbuffer obj = "ml_gtk_text_view_get_buffer"
   external scroll_to_mark : textview obj -> textmark obj -> float -> bool -> float -> float -> unit = 
-	   "ml_gtk_text_view_scroll_to_mark" "ml_gtk_text_view_scroll_to_mark_bc"	
+	    "ml_gtk_text_view_scroll_to_mark_bc" "ml_gtk_text_view_scroll_to_mark"
   external scroll_to_iter : textview obj -> textiter -> float -> bool -> float -> float -> bool = 
-	   "ml_gtk_text_view_scroll_to_iter" "ml_gtk_text_view_scroll_to_iter_bc"	
+	    "ml_gtk_text_view_scroll_to_iter_bc" "ml_gtk_text_view_scroll_to_iter"
   external scroll_mark_onscreen : textview obj -> textmark obj -> unit = 
 	   "ml_gtk_text_view_scroll_mark_onscreen"
   external move_mark_onscreen : textview obj -> textmark obj -> bool = 
@@ -547,6 +582,109 @@ module View = struct
 	   "ml_gtk_text_view_set_indent"
   external get_indent : textview obj -> int =
 	   "ml_gtk_text_view_get_indent"
+  module Signals = struct
+    open GtkSignal
+
+    let marshal_delete_from_cursor f _ = function 
+      |`POINTER(Some p)::`INT(i)::_ ->
+	 f (Obj.magic p:delete_type) i
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_delete_from_cursor"
+    let marshal_move_cursor f _ = function 
+      |`POINTER(Some p)::(`INT i)::(`BOOL b)::_ ->
+	 f (Obj.magic p:movement_step) i b
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_move_cursor"
+    let marshal_move_focus f _ = function 
+      |`POINTER(Some p)::_ ->
+	 f (Obj.magic p:direction_type) 
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_move_focus"
+    let marshal_page_horizontally f _ = function 
+      | (`INT i)::(`BOOL b)::_ ->
+	 f i b
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_page_horizontally"
+    let marshal_populate_popup f _ = function 
+      |`OBJECT(Some p)::_ ->
+	 f (Obj.magic p: menu obj) 
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_populate_popup"
+    
+    let marshal_set_scroll_adjustments f _ = function 
+      |`OBJECT(Some p1)::`OBJECT(Some p2)::_ ->
+	 f (Obj.magic p1: adjustment) (Obj.magic p2: adjustment) 
+      | _ -> invalid_arg "GtkText.View.Signals.marshal_set_scroll_adjustments"
+
+
+    let copy_clipboard = 
+      {
+	name = "copy-clipboard";
+	classe = `textview;
+	marshaller = marshal_unit
+      }
+    let cut_clipboard = 
+      {
+	name = "cut-clipboard";
+	classe = `textview;
+	marshaller = marshal_unit
+      }
+    let delete_from_cursor = 
+      {
+	name = "delete-from-cursor";
+	classe = `textview;
+	marshaller = marshal_delete_from_cursor
+      }
+    let insert_at_cursor = 
+      {
+	name = "insert-at-cursor";
+	classe = `textview;
+	marshaller = marshal_string
+      }
+    let move_cursor = 
+      {
+	name = "move-cursor";
+	classe = `textview;
+	marshaller = marshal_move_cursor
+      }
+    let move_focus = 
+      {
+	name = "move-focus";
+	classe = `textview;
+	marshaller = marshal_move_focus
+      }
+    let page_horizontally = 
+      {
+	name = "page-horizontally";
+	classe = `textview;
+	marshaller = marshal_page_horizontally
+      }
+    let paste_clipboard = 
+      {
+	name = "paste-clipboard";
+	classe = `textview;
+	marshaller = marshal_unit
+      }
+    let populate_popup = 
+      {
+	name = "populate-popup";
+	classe = `textview;
+	marshaller = marshal_populate_popup
+      }
+    let set_anchor = 
+      {
+	name = "set-anchor";
+	classe = `textview;
+	marshaller = marshal_unit
+      }
+    let set_scroll_adjustments = 
+      {
+	name = "set-scroll-adjustments";
+	classe = `textview;
+	marshaller = marshal_set_scroll_adjustments
+      }
+    let toggle_overwrite = 
+      {
+	name = "toggle-overwrite";
+	classe = `textview;
+	marshaller = marshal_unit
+      }
+  end
 end
 
 module Iter = struct
