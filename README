@@ -211,6 +211,13 @@ ML-side signals:
   develop complex applications, abstracting the plumbing between
   various components. Explanations are provided in GUtil.mli.
 
+Comments on some widgets:
+  GText.iter may be tricky to use, for 2 reasons. 1) Any change inside
+  the buffer buffer will invalidate its iterators, causing exceptions
+  if you try to use them afterwards. 2) Some functions modify the
+  iterator they are passed as argument; if you want to keep the old
+  value, use #copy beforehand.
+
 Contributed components:
 
   The GToolbox module contains contributed components to help you build
