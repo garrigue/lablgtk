@@ -319,3 +319,27 @@ module FontSelection = struct
   external set_preview_text : [>`fontsel] obj -> string -> unit
       = "ml_gtk_font_selection_set_preview_text"
 end
+
+module Preview = struct
+  external create : Tags.preview_type -> preview obj
+    = "ml_gtk_preview_new"
+  external put : 
+    [>`preview] obj -> Gdk.window -> Gdk.gc -> 
+    xsrc:int -> ysrc:int -> xdest:int -> ydest:int ->
+    width:int -> height:int -> unit
+    = "ml_gtk_preview_put_bc" "ml_gtk_preview_put"
+  let put w  ?(xsrc = 0) ?(ysrc = 0) ?(xdest = 0) ?(ydest = 0) 
+    ?(width= -1) ?(height= -1) gdkwin gc =
+    put w gdkwin gc ~xsrc ~ysrc ~xdest ~ydest ~width ~height
+  external draw_row :
+    [>`preview] obj -> data:int array -> x:int -> y:int -> unit
+    = "ml_gtk_preview_draw_row"
+  external set_size : [>`preview] obj -> width:int -> height:int -> unit
+    = "ml_gtk_preview_size"
+  external set_expand : [>`preview] obj -> bool -> unit
+    = "ml_gtk_preview_set_expand"
+  external set_dither : [>`preview] obj -> Gdk.Tags.rgb_dither -> unit
+    = "ml_gtk_preview_set_dither"
+  external set_gamma : float -> unit
+    = "ml_gtk_preview_set_gamma"
+end

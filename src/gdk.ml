@@ -68,6 +68,8 @@ module Tags = struct
   type drag_action =
     [ `DEFAULT|`COPY|`MOVE|`LINK|`PRIVATE|`ASK ]
 
+  type rgb_dither = 
+    [ `NONE|`NORMAL|`MAX]
 end
 open Tags
 
@@ -406,23 +408,29 @@ module Draw = struct
       = "ml_gdk_draw_polygon"
   let polygon w gc ?(filled=false) l =
     f_pointarray (polygon w gc ~filled) l
-  external string : 'a drawable -> font: font -> gc -> x: int -> y: int ->
-    string: string -> unit
-      = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"	
-  external image : 'a drawable -> gc -> image: image -> 
+  external string :
+    'a drawable -> font: font -> gc -> x: int -> y: int -> string -> unit
+     = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"	
+  external image_ : 'a drawable -> gc -> image -> 
     xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
     width: int -> height: int -> unit
-      = "ml_gdk_draw_image_bc" "ml_gdk_draw_image"
+    = "ml_gdk_draw_image_bc" "ml_gdk_draw_image"
+  let image w gc ?(xsrc=0) ?(ysrc=0) ?(xdest=0) ?(ydest=0)
+      ?(width= -1) ?(height= -1) image =
+    image_ w gc image ~xsrc ~ysrc ~xdest ~ydest ~width ~height
 (*
   external bitmap : 'a drawable -> gc -> bitmap: bitmap -> 
     xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
     width: int -> height: int -> unit
       = "ml_gdk_draw_bitmap_bc" "ml_gdk_draw_bitmap"
 *)
-  external pixmap : 'a drawable -> gc -> pixmap: pixmap -> 
+  external pixmap_ : 'a drawable -> gc -> pixmap -> 
     xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
     width: int -> height: int -> unit
-      = "ml_gdk_draw_pixmap_bc" "ml_gdk_draw_pixmap"
+    = "ml_gdk_draw_pixmap_bc" "ml_gdk_draw_pixmap"
+  let pixmap w gc ?(xsrc=0) ?(ysrc=0) ?(xdest=0) ?(ydest=0)
+      ?(width= -1) ?(height= -1) pixmap =
+    pixmap_ w gc pixmap ~xsrc ~ysrc ~xdest ~ydest ~width ~height
 
   external points : 'a drawable -> gc -> PointArray.t -> unit
       = "ml_gdk_draw_points"

@@ -217,3 +217,21 @@ let font_selection ?border_width ?width ?height ?packing ?show () =
   let w = FontSelection.create () in
   Container.set w ?border_width ?width ?height;
   pack_return (new font_selection w) ~packing ~show
+
+class preview obj = object
+  inherit widget_full (obj : Gtk.preview obj)
+  method event = new event_ops obj
+  method put = Preview.put obj
+  method draw_row = Preview.draw_row obj
+  method size = Preview.set_size obj
+  method set_expand = Preview.set_expand obj
+  method set_dither = Preview.set_dither obj
+end
+
+let preview ?(kind=`COLOR) ?(dither=`NORMAL) ?(expand=false)
+    ?(width=0) ?(height=0) ?packing ?show () =
+  let w = Preview.create kind in
+  Preview.set_size w ~width ~height;
+  Preview.set_dither w dither;
+  Preview.set_expand w expand;
+  pack_return (new preview w) ~packing ~show

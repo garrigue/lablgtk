@@ -13,6 +13,7 @@
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
+#include "gdk_tags.h"
 
 /* gtkgamma.h */
 
@@ -137,3 +138,52 @@ Make_Extractor (GtkPixmap, GtkPixmap_val, mask, Val_GdkBitmap)
 
 ML_0 (gtk_hseparator_new, Val_GtkWidget_sink)
 ML_0 (gtk_vseparator_new, Val_GtkWidget_sink)
+
+/* gtkpreview.h */
+
+#define GtkPreview_val(val) check_cast(GTK_PREVIEW,val)
+ML_1 (gtk_preview_new, Preview_type_val, Val_GtkWidget_sink)
+ML_9 (gtk_preview_put, GtkPreview_val, GdkWindow_val, GdkGC_val,
+      Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
+ML_bc9 (ml_gtk_preview_put)
+ML_3 (gtk_preview_size, GtkPreview_val, Int_val, Int_val, Unit)
+ML_2 (gtk_preview_set_expand, GtkPreview_val, Bool_val, Unit)
+ML_1 (gtk_preview_set_gamma, Float_val, Unit)
+ML_2 (gtk_preview_set_dither, GtkPreview_val, GdkRgbDither_val, Unit)
+
+#define ROWBUF_SIZE 3072     
+value ml_gtk_preview_draw_row (value val, value data, value x, value y)
+{
+    GtkPreview *w = GtkPreview_val(val);
+    gint length = Wosize_val(data);
+    gint xi = Int_val(x);
+    gint yi = Int_val(y);
+    guchar buf[ROWBUF_SIZE];
+    gint offset = 0;
+    gboolean rgb = w->type == GTK_PREVIEW_COLOR;
+    
+    while (offset < length) {
+	guchar* p = buf;
+	gint block_len;
+	gint i;
+
+	if (rgb) {
+	    block_len = MIN(length - offset, ROWBUF_SIZE / 3);
+	    for (i = 0; i < block_len; i++) {
+		gint32 c = Int_val(Field(data, offset + i));
+		*p++ = (c >> 16) & 0xff;
+		*p++ = (c >> 8) & 0xff;
+		*p++ = c & 0xff;
+	    }
+	} else {
+	    block_len = MIN(length - offset, ROWBUF_SIZE);
+	    for (i = 0; i < block_len; i++) {
+		gint32 c = Int_val(Field(data, offset + i));
+		*p++ = c & 0xff;
+	    }
+	}
+	gtk_preview_draw_row(w, buf, xi + offset, yi, block_len);
+	offset += block_len;
+    }
+    return Val_unit;
+}

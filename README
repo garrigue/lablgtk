@@ -37,6 +37,8 @@ Contents:
 
 	examples/*.ml	various examples
 	applications/*	applications using the library
+                camlirc         an IRC (chat) client
+                                (by Nobuaki Yoshida)
 		radtest		a very experimental RAD for lablgtk
 				(by Hubert Fauque)
 		browser		the begin of a port of OCamlBrowser

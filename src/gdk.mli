@@ -50,6 +50,7 @@ module Tags : sig
     [ `SHIFT|`LOCK|`CONTROL|`MOD1|`MOD2|`MOD3|`MOD4|`MOD5|`BUTTON1
      |`BUTTON2|`BUTTON3|`BUTTON4|`BUTTON5 ]
   type drag_action = [ `DEFAULT|`COPY|`MOVE|`LINK|`PRIVATE|`ASK ]
+  type rgb_dither = [ `NONE|`NORMAL|`MAX]
 end
 
 module Convert :
@@ -310,31 +311,14 @@ module Draw :
       'a drawable -> gc -> ?filled:bool ->(int * int) list -> unit
     external string :
       'a drawable ->
-      font:font -> gc -> x:int -> y:int -> string:string -> unit
+      font:font -> gc -> x:int -> y:int -> string -> unit
       = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"
-    external image :
-      'a drawable ->
-      gc ->
-      image:image ->
-      xsrc:int ->
-      ysrc:int -> xdest:int -> ydest:int -> width:int -> height:int -> unit
-      = "ml_gdk_draw_image_bc" "ml_gdk_draw_image"
-(*
-    external bitmap :
-      'a drawable ->
-      gc ->
-      bitmap:bitmap ->
-      xsrc:int ->
-      ysrc:int -> xdest:int -> ydest:int -> width:int -> height:int -> unit
-      = "ml_gdk_draw_bitmap_bc" "ml_gdk_draw_bitmap"
-*)
-    external pixmap :
-      'a drawable ->
-      gc ->
-      pixmap:pixmap ->
-      xsrc:int ->
-      ysrc:int -> xdest:int -> ydest:int -> width:int -> height:int -> unit
-      = "ml_gdk_draw_pixmap_bc" "ml_gdk_draw_pixmap"
+    val image :
+      'a drawable -> gc -> ?xsrc:int -> ?ysrc:int ->
+      ?xdest:int -> ?ydest:int -> ?width:int -> ?height:int -> image -> unit
+    val pixmap :
+      'a drawable -> gc -> ?xsrc:int -> ?ysrc:int ->
+      ?xdest:int -> ?ydest:int -> ?width:int -> ?height:int -> pixmap -> unit
 
     val points : 'a drawable -> gc -> (int * int) list -> unit
     val lines : 'a drawable -> gc -> (int * int) list -> unit
