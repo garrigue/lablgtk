@@ -278,6 +278,10 @@ module Data = struct
 	     | `NONE -> None
              | _ -> failwith "Gobject.get_caml") ;
       inj = (function None -> `POINTER None | Some v -> `CAML (Obj.repr v)) }
+  let wrap ~inj ~proj conv =
+    { kind = conv.kind;
+      proj = (fun x -> proj (conv.proj x));
+      inj = (fun x -> conv.inj (inj x)) }
 
   let of_value conv v =
     conv.proj (Value.get_conv conv.kind v)
