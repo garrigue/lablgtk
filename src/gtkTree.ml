@@ -81,6 +81,10 @@ module Tables = struct
             * cell_renderer_mode variant_table
     = "ml_gtk_tree_get_tables"
   let sizing, sort, renderer_mode = get_tables_ ()
+  open Gobject.Data
+  let conv_sort = enum sort
+  let conv_sizing = enum sizing
+  let conv_renderer_mode = enum renderer_mode
 end
 
 module TreePath = struct
@@ -516,9 +520,9 @@ module TreeViewColumn = struct
     let min_width = {name="min_width"; classe=classe; conv=int}
     let reorderable = {name="reorderable"; classe=classe; conv=boolean}
     let resizable = {name="resizable"; classe=classe; conv=boolean}
-    let sizing = {name="sizing"; classe=classe; conv=enum Tables.sizing}
+    let sizing = {name="sizing"; classe=classe; conv=Tables.conv_sizing}
     let sort_indicator = {name="sort_indicator"; classe=classe; conv=boolean}
-    let sort_order = {name="sort_order"; classe=classe; conv=enum Tables.sort}
+    let sort_order = {name="sort_order"; classe=classe; conv=Tables.conv_sort}
     let title = {name="title"; classe=classe; conv=string}
     let visible = {name="visible"; classe=classe; conv=boolean}
     let widget = {name="widget"; classe=classe;
@@ -547,7 +551,7 @@ module CellRenderer = struct
     let height = {name="height"; classe=classe; conv=int}
     let is_expanded = {name="is_expanded"; classe=classe; conv=boolean}
     let is_expander = {name="is_expander"; classe=classe; conv=boolean}
-    let mode = {name="mode"; classe=classe; conv=enum Tables.renderer_mode}
+    let mode = {name="mode"; classe=classe; conv=Tables.conv_renderer_mode}
     let visible = {name="visible"; classe=classe; conv=boolean}
     let width = {name="width"; classe=classe; conv=int}
     let xalign = {name="xalign"; classe=classe; conv=float}
