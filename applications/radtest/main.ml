@@ -278,7 +278,7 @@ let xpm_window () =
   add_xpm "vbox.xpm"           ~left:1 ~top:1 ~classe:"vbox";
   add_xpm "hbuttonbox.xpm"     ~left:2 ~top:1 ~classe:"hbutton_box";
   add_xpm "vbuttonbox.xpm"     ~left:3 ~top:1 ~classe:"vbutton_box";
-  add_xpm "fixed.xpm.xpm"     ~left:3 ~top:1 ~classe:"fixed";
+  add_xpm "fixed.xpm"          ~left:4 ~top:1 ~classe:"fixed";
   add_xpm "frame.xpm"          ~left:0 ~top:2 ~classe:"frame";
   add_xpm "aspectframe.xpm"    ~left:1 ~top:2 ~classe:"aspect_frame";
   add_xpm "scrolledwindow.xpm" ~left:2 ~top:2 ~classe:"scrolled_window";
