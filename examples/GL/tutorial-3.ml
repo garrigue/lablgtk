@@ -100,6 +100,6 @@ let main () =
   let w = createGLWindow "Tutorial 3" 640 480 16 false in
   GMain.Main.main ()
 
-let _ = Printexc.print main ()
+let () = if not !Sys.interactive then Printexc.print main ()
 
 
