@@ -1,5 +1,9 @@
 $Id$
 
+1998.12.8
+  * refined memory management
+  * all variants in upper case
+
 1998.12.7
   * after deeper thought, re-introduced the connect sub-object
   * simplified GtkObj: use simple inheritance and allow easy subtyping
