@@ -160,7 +160,7 @@ config.make:
 	        -e 's|/lib$$|/bin|' >> config.make
 	echo GTKCFLAGS=`gtk-config --cflags` >> config.make
 	echo GTKLIBS=`gtk-config --libs` | \
-	  sed -e 's/-l/-cclib &/g' -e 's/-[LWr]/-ccopt &/g' >> config.make
+	  sed -e 's/-l/-cclib &/g' -e 's/-[LWr][^ ]*/-ccopt &/g' >> config.make
 	echo USE_GL=$(USE_GL) >> config.make
 	echo USE_CC=$(USE_CC) >> config.make
 

@@ -277,6 +277,13 @@ module Draw :
       = "ml_gdk_draw_image_bc" "ml_gdk_draw_image"
   end
 
+module Rgb :
+  sig
+    external init : unit -> unit = "ml_gdk_rgb_init"
+    external get_visual : unit -> visual = "ml_gdk_rgb_get_visual"
+    external get_cmap : unit -> colormap = "ml_gdk_rgb_get_cmap"
+  end
+
 module DnD :
   sig
     external drag_status :

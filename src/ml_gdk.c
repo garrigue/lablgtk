@@ -329,6 +329,12 @@ ML_bc6 (ml_gdk_draw_string)
 ML_9 (gdk_draw_image, GdkDrawable_val, GdkGC_val, GdkImage_val, Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
 ML_bc9 (ml_gdk_draw_image)
 
+/* RGB */
+
+ML_0 (gdk_rgb_init, Unit)
+ML_0 (gdk_rgb_get_visual, Val_GdkVisual)
+ML_0 (gdk_rgb_get_cmap, Val_GdkColormap)
+
 /* Events */
 
 Make_Val_final_pointer (GdkEvent, Ignore, gdk_event_free)

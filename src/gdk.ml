@@ -317,6 +317,12 @@ module Draw = struct
       = "ml_gdk_draw_image_bc" "ml_gdk_draw_image"
 end
 
+module Rgb = struct
+  external init : unit -> unit = "ml_gdk_rgb_init"
+  external get_visual : unit -> visual = "ml_gdk_rgb_get_visual"
+  external get_cmap : unit -> colormap = "ml_gdk_rgb_get_cmap"
+end
+
 module DnD = struct
   external drag_status : drag_context -> drag_action list -> time:int -> unit
       = "ml_gdk_drag_status"
