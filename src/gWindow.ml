@@ -58,6 +58,8 @@ class ['a] dialog_signals obj tbl = object
   method response ~(callback : 'a -> unit) = 
     GtkSignal.connect ~sgn:Dialog.Signals.response obj ~after 
       ~callback:(fun i -> callback (List.assoc i !tbl))
+  method close =
+    GtkSignal.connect ~sgn:Dialog.Signals.close obj ~after
 end
 
 let rec list_rassoc k = function
@@ -65,9 +67,12 @@ let rec list_rassoc k = function
   | _ :: l -> list_rassoc k l
   | [] -> raise Not_found
 
+let rnone = Dialog.std_response `NONE
+let rdelete = Dialog.std_response `DELETE_EVENT
+
 class ['a] dialog obj = object
   inherit [window] window_skel (obj : Gtk.dialog obj)
-  val tbl = ref [ (-1), `NONE ; (-4), `DELETE_EVENT ]
+  val tbl = ref [rnone, `NONE; rdelete, `DELETE_EVENT]
   val mutable id = 0
   method action_area = new GPack.box (Dialog.action_area obj)
   method vbox = new GPack.box (Dialog.vbox obj)
@@ -85,12 +90,10 @@ class ['a] dialog obj = object
     Dialog.set_response_sensitive obj (list_rassoc v !tbl) s
   method set_default_response v = 
     Dialog.set_default_response obj (list_rassoc v !tbl)
-  val separator_property = 
-    { Gobject.name = "has-separator" ;
-      Gobject.classe = `dialog ;
-      Gobject.conv = Gobject.Data.boolean }
-  method set_has_separator = Gobject.Property.set obj separator_property
-  method get_has_separator = Gobject.Property.get obj separator_property
+  method set_has_separator =
+    Gobject.Property.set obj Dialog.Properties.has_separator
+  method get_has_separator =
+    Gobject.Property.get obj Dialog.Properties.has_separator
   method run () = 
     let resp = Dialog.run obj in
     List.assoc resp !tbl
@@ -123,11 +126,16 @@ let dialog ?parent ?destroy_with_parent ?(no_separator=false) ?title
 
 type 'a buttons = Gtk.Tags.buttons * (int * 'a) list
 module Buttons = struct
+let rok = Dialog.std_response `OK
+and rclose = Dialog.std_response `CLOSE
+and ryes = Dialog.std_response `YES
+and rno = Dialog.std_response `NO
+and rcancel = Dialog.std_response `CANCEL
 let none = `NONE, [ ]
-let ok = `OK, [ (-5), `OK ]
-let close = `CLOSE, [ (-7), `CLOSE ]
-let yes_no = `YES_NO, [ (-8), `YES ; (-9), `NO ]
-let ok_cancel = `OK_CANCEL, [ (-5), `OK; (-6), `CANCEL ]
+let ok = `OK, [ rok, `OK ]
+let close = `CLOSE, [ rclose, `CLOSE ]
+let yes_no = `YES_NO, [ ryes, `YES ; rno, `NO ]
+let ok_cancel = `OK_CANCEL, [ rok, `OK; rcancel, `CANCEL ]
 end
 
 class ['a] message_dialog obj (buttons : 'a buttons) = object
@@ -136,13 +144,14 @@ class ['a] message_dialog obj (buttons : 'a buttons) = object
     tbl := snd buttons @ !tbl
 end
 
-let message_dialog ~message ~message_type ~buttons ~parent 
+let message_dialog ?(message="") ~message_type ~buttons ?parent 
     ?destroy_with_parent ?(no_separator=false) 
     ?title ?wm_name ?wm_class ?position ?allow_shrink
     ?allow_grow ?modal ?x ?y ?border_width ?width ?height
     ?(show=false) () =
-  let w = Dialog.create_message (parent#as_window) 
-      message_type (fst buttons) message in
+  let parent = match parent with None -> None | Some x -> Some x#as_window in
+  let w = Dialog.create_message ?parent
+      ~message_type ~buttons:(fst buttons) ~message () in
   Window.set w ?title ?wm_name ?wm_class ?position
     ?allow_shrink ?allow_grow ?modal ?x ?y ;
   Gaux.may ~f:(Window.set_destroy_with_parent w) destroy_with_parent ;

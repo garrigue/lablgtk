@@ -57,6 +57,7 @@ class ['a] dialog_signals : Gtk.dialog obj -> (int * 'a) list ref ->
     inherit GContainer.container_signals
     val obj : Gtk.dialog obj
     method response : callback:('a -> unit) -> GtkSignal.id
+    method close : callback:(unit -> unit) -> GtkSignal.id
   end
 class ['a] dialog : Gtk.dialog obj ->
   object
@@ -72,7 +73,6 @@ class ['a] dialog : Gtk.dialog obj ->
     method response : 'a -> unit
     method set_response_sensitive : 'a -> bool -> unit
     method set_default_response : 'a -> unit
-    val separator_property : (Gtk.dialog, bool) Gobject.property
     method get_has_separator : bool
     method set_has_separator : bool -> unit
     method run : unit -> 'a
@@ -102,10 +102,10 @@ val yes_no : [>`YES|`NO] buttons
 val ok_cancel : [>`OK|`CANCEL] buttons
 end
 val message_dialog :
-  message:string ->
+  ?message:string ->
   message_type:Gtk.Tags.message_type ->
   buttons:'a buttons ->
-  parent:#window ->
+  ?parent:#window ->
   ?destroy_with_parent:bool ->
   ?no_separator:bool ->
   ?title:string ->

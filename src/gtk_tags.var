@@ -190,3 +190,7 @@ type message_type = "GTK_MESSAGE_"
 type buttons = "GTK_BUTTONS_"
   [ `NONE | `OK | `CLOSE
   | `CANCEL | `YES_NO | `OK_CANCEL ]
+
+type response = "GTK_RESPONSE_"
+  [ `NONE | `REJECT | `ACCEPT | `DELETE_EVENT
+  | `OK | `CANCEL | `CLOSE  | `YES | `NO | `APPLY | `HELP ]

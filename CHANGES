@@ -1,5 +1,9 @@
 $Id$
 
+2003.06.04 [Jacques]
+  * GtkDialog cleanup
+  * add applications/osiris (just started)
+
 2003.05.29 [Jacques]
   * fixed GtkTree.TreeView.Properties.model
   * fixed ml_gobject.{get,set}_value to assume interfaces are objects
