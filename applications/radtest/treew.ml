@@ -105,7 +105,7 @@ let new_window :name =
       List.iter fun:remove_tiws
 	(List.map fun:(fun ti -> memo#find ti) tiw#tree#children);
       remove_one_tiw tiw in
-    match sel () with
+    match sel () with   (* test a supprimer ensuite*)
     | None -> ()
     | Some (sel : tiw) -> 
 	let one = List.length sel#parent_tree#children = 1 in
@@ -166,36 +166,28 @@ let new_window :name =
     mi_remove#connect#activate callback:remove_widget;
     menu in
 
-  let menu_box = 
+  let menu_box =
+    let box_widget_list = [ "vbox"; "hbox"; "frame"; "label"; "button";
+			    "toggle_button"; "check_button" ] in
     let menu = new menu in
     let menu_end = new menu in
     let menu_start = new menu in
     let mi_start = new menu_item packing:menu#append label:"add at start"
-    and mi_end = new menu_item packing:menu#append label:"add at end"
-    and mi_vboxs = new menu_item packing:menu_start#append label:"vbox"
-    and mi_hboxs = new menu_item packing:menu_start#append label:"hbox"
-    and mi_frames = new menu_item packing:menu_start#append label:"frame"
-    and mi_labels = new menu_item packing:menu_start#append label:"label"
-    and mi_buttons = new menu_item packing:menu_start#append label:"button"
-    and mi_vboxe = new menu_item packing:menu_end#append label:"vbox"
-    and mi_hboxe = new menu_item packing:menu_end#append label:"hbox"
-    and mi_framee = new menu_item packing:menu_end#append label:"frame"
-    and mi_labele = new menu_item packing:menu_end#append label:"label"
-    and mi_buttone = new menu_item packing:menu_end#append label:"button"
-    and mi_remove = new menu_item packing:menu#append label:"remove" in
+    and mi_end = new menu_item packing:menu#append label:"add at end" in
+    List.iter
+      fun:(fun n ->
+	let mi = new menu_item packing:menu_start#append label:n
+	in mi#connect#activate callback:(add_widget n meth:`START); ())
+      box_widget_list;
+    List.iter
+      fun:(fun n ->
+	let mi = new menu_item packing:menu_end#append label:n
+	in mi#connect#activate callback:(add_widget n meth:`END); ())
+      box_widget_list;
+    let mi_remove = new menu_item packing:menu#append label:"remove" in
+    mi_remove#connect#activate callback:remove_widget;
     mi_start#set_submenu menu_start;
     mi_end#set_submenu menu_end;
-    mi_vboxs#connect#activate callback:(add_widget "vbox" meth:`START);
-    mi_hboxs#connect#activate callback:(add_widget "hbox" meth:`START);
-    mi_frames#connect#activate callback:(add_widget "frame" meth:`START);
-    mi_labels#connect#activate callback:(add_widget "label" meth:`START);
-    mi_buttons#connect#activate callback:(add_widget "button" meth:`START);
-    mi_vboxe#connect#activate callback:(add_widget "vbox" meth:`END);
-    mi_hboxe#connect#activate callback:(add_widget "hbox" meth:`END);
-    mi_framee#connect#activate callback:(add_widget "frame" meth:`END);
-    mi_labele#connect#activate callback:(add_widget "label" meth:`END);
-    mi_buttone#connect#activate callback:(add_widget "button" meth:`END);
-    mi_remove#connect#activate callback:remove_widget;
     menu in
 
   let last_sel = ref (None : rwidget option) in

@@ -7,16 +7,19 @@ open GMisc
 open GWindow
 
 
-module SMap =
-  Map.Make (struct type t = string let compare = compare end)
-
-class ['a] rval (init : 'a) :setfun ?:value_list [< [] >] = object
-  val mutable value = init
+class ['a] rval :init ?inits:inits [< "" >] :setfun ?:value_list [< [] >] = object
+  val mutable value : 'a = init
+  val mutable value_string : string = inits
   val value_list : (string * 'a) list = value_list
   method value = value
   method value_list = value_list
-  method set : 'a -> unit = fun v -> 
-    if value <> v then begin value <- v; setfun v end
+  method value_string = value_string
+  method set : 'a -> n:string -> unit = fun v n:n -> 
+    if value <> v then begin
+      value <- v; 
+      value_string <- n;
+      setfun v
+    end
 end
 
 type property =
@@ -24,45 +27,36 @@ type property =
   | Int of int rval
   | Float of float rval
   | String of string rval
-(*
+  | Shadow of Gtk.Tags.shadow_type rval
+
+
+(* these functions return a string except int and float *)
 let get_int_prop name in:l =
   match List.assoc name in:l with
   | Int rval -> rval#value
   | _ -> failwith "bug get_int_prop"
-
-let get_bool_prop name in:l =
-  match List.assoc name in:l with
-  | Bool rval -> rval#value
-  | _ -> failwith "bug get_bool_prop"
-
-let get_string_prop name in:l =
-  match List.assoc name in:l with
-  | String rval -> rval#value
-  | _ -> failwith "bug get_string_prop"
-*)
-
-let get_int_prop name in:l =
-  match SMap.find key:name l with
-  | Int rval -> rval#value
-  | _ -> failwith "bug get_int_prop"
-
-let get_bool_prop name in:l =
-  match SMap.find key:name l with
-  | Bool rval -> rval#value
-  | _ -> failwith "bug get_bool_prop"
 
 let get_float_prop name in:l =
-  match SMap.find key:name l with
+  match List.assoc name in:l with
   | Float rval -> rval#value
   | _ -> failwith "bug get_float_prop"
 
+let get_bool_prop name in:l =
+  match List.assoc name in:l with
+  | Bool rval -> rval#value
+  | _ -> failwith "bug get_bool_prop"
+
 let get_string_prop name in:l =
-  match SMap.find key:name l with
+  match List.assoc name in:l with
   | String rval -> rval#value
   | _ -> failwith "bug get_string_prop"
 
-let string_of_bool_prop name in:l =
-  string_of_bool (get_bool_prop name in:l)
+let get_enum_prop name in:l =
+  match List.assoc name in:l with
+  | Bool rval -> rval#value_string
+  | Shadow rval -> rval#value_string
+  | _ -> failwith "bug get_enum_prop"
+
 
 let string_of_int_prop name in:l =
   string_of_int (get_int_prop name in:l)
@@ -72,27 +66,34 @@ let string_of_float_prop name in:l =
 
 class type rwidget_base = object
   method name : string
-  method proplist : property SMap.t
+  method proplist : (string * property) list
   method base : widget
 end
 
 class prop_enumtype l :callback ?:packing :value = object(self)
-  inherit combo popdown_strings:(List.map fun:fst l) show:true ?:packing
-      use_arrows_always:true
+  inherit combo popdown_strings:(List.map fun:fst l) show:true
+      ?:packing use_arrows_always:true
+
+  val revl = List.map fun:(fun (a,b) -> (b,a)) l
   initializer
     self#entry#connect#changed callback:
-      (fun _ -> callback (List.assoc self#entry#text in:l));
+      (fun _ ->
+	callback (List.assoc self#entry#text in:l) n:self#entry#text);
     self#entry#set_editable false;
-    self#entry#set_text value
+    self#entry#set_text (List.assoc value in:revl)
 end
 
 
 class prop_bool = prop_enumtype ["true", true; "false", false]
 
+class prop_shadow =
+  prop_enumtype ["NONE", `NONE; "IN", `IN; "OUT", `OUT;
+		  "ETCHED_IN", `ETCHED_IN; "ETCHED_OUT", `ETCHED_OUT ]
+
 class prop_string :callback ?:packing :value = object(self)
   inherit entry text:value ?:packing show:true
   initializer
-    self#connect#activate callback:(fun _ -> callback self#text);
+    self#connect#activate callback:(fun _ -> callback self#text n:"");
     ()
 end
 
@@ -105,7 +106,7 @@ object(self)
       show:true ?:packing
   initializer
     self#connect#activate callback:
-      (fun _ -> callback self#value_as_int);
+      (fun _ -> callback self#value_as_int n:"");
     ()
 end
 
@@ -118,7 +119,7 @@ object(self)
       show:true ?:packing
   initializer
     self#connect#activate callback:
-      (fun _ -> callback self#value);
+      (fun _ -> callback self#value n:"");
     ()
 end
 
@@ -129,7 +130,7 @@ let plist_affich list =
     | name, Bool prop -> new label text:name show:true
 	  packing:(hbox#pack fill:true);
 	new prop_bool callback:prop#set packing:(hbox#pack fill:true)
-	  value:(string_of_bool prop#value);
+	  value:prop#value;
 	()
     | name, Int prop -> new label text:name show:true
 	  packing:(hbox#pack fill:true);
@@ -147,10 +148,15 @@ let plist_affich list =
 	new prop_string  callback:prop#set
 	  packing:(hbox#pack fill:true) value:prop#value;
 	()
+    | name, Shadow prop -> new label text:name show:true
+	  packing:(hbox#pack fill:true);
+	new prop_shadow  callback:prop#set
+	  packing:(hbox#pack fill:true) value:prop#value;
+	()
     end;
     hbox
   in let vbox = new box `VERTICAL show:true in
-  SMap.iter fun:(fun key:n data: p -> vbox#pack (une_prop_affich (n,p));
+  List.iter fun:(fun (n, p) -> vbox#pack (une_prop_affich (n,p));
 	new separator `HORIZONTAL show:true packing:vbox#pack; ()) list;
   vbox
 ;;
@@ -169,12 +175,12 @@ let cb = new combo popdown_strings:[]
     show:true use_arrows_always:true
     packing:(hbox#pack expand:true fill:false)
 
-let vbox2 = plist_affich SMap.empty;;
+let vbox2 = plist_affich [];;
 vbox#pack vbox2;;
 let vboxref = ref vbox2
 let last_sel = ref (None : rwidget_base option)
 let rwidget_list = ref ([] : rwidget_base list)
-let rname_prop_list = ref ([] : (string * property SMap.t) list);;
+let rname_prop_list = ref ([] : (string * (string * property) list) list);;
     
 
 propwin#connect#event#focus_out callback:
@@ -201,14 +207,14 @@ cb#entry#connect#changed callback:
 	| Some sl -> sl#base#misc#set state:`NORMAL
       end;
       let n = cb#entry#text in
-      let w = List.find !rwidget_list pred:(fun x -> x#name = n) in
+      let w = List.find pred:(fun x -> x#name = n) !rwidget_list in
       if cb#entry#misc#has_focus then w#base#misc#set state:`SELECTED;
       last_sel := Some w
 	  );;
 
 let property_add rw =
     rwidget_list := (rw :> rwidget_base) :: !rwidget_list;
-    let nplist = List.map !rwidget_list fun:(fun w -> (w#name, w#proplist)) in
+    let nplist = List.map fun:(fun w -> (w#name, w#proplist)) !rwidget_list in
     rname_prop_list := nplist;
     cb#set_combo popdown_strings:(List.map fun:fst nplist)
 
@@ -217,12 +223,12 @@ let property_remove rw =
     |	[] -> []
     |	hd :: tl -> if hd = (rw :> rwidget_base) then tl else hd :: (aux tl)
   in rwidget_list := aux !rwidget_list;
-  let nplist = List.map !rwidget_list fun:(fun w -> (w#name, w#proplist)) in
+  let nplist = List.map fun:(fun w -> (w#name, w#proplist)) !rwidget_list in
   rname_prop_list := nplist;
   cb#set_combo popdown_strings:(List.map fun:fst nplist)
 
 let property_update () =
-  let nplist = List.map !rwidget_list fun:(fun w -> (w#name, w#proplist)) in
+  let nplist = List.map fun:(fun w -> (w#name, w#proplist)) !rwidget_list in
   rname_prop_list := nplist;
   cb#set_combo popdown_strings:(List.map fun:fst nplist)
 
