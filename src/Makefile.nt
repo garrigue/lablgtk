@@ -52,7 +52,7 @@ endif
 .c.obj:
 	$(COMPILER) -verbose -ccopt "$(CFLAGS)" $<
 .c.d.obj:
-	$(COMPILER) -verbose -ccopt "/MD /Fo$@ $(CFLAGS)" $<
+	$(COMPILER) -verbose -ccopt "/MD /Fo$@ -DCAML_DLL $(CFLAGS)" $<
 .ml.cmo:
 	$(COMPILER) $<
 .mli.cmi:
@@ -84,7 +84,7 @@ THINITOBJS = gtkThInit.cmo
 ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(THOBJS) \
 	$(INITOBJS) $(THINITOBJS)
 
-ifdef USE_GLADE
+ifeq ($(USE_GLADE), 1)
 GTKOBJS += ml_glade.obj
 MLOBJS += glade.cmo
 all:: lablgladecc$(EXE)
