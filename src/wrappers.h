@@ -126,7 +126,7 @@ static value Val_##type##_no_ref (type *p) \
 value Val_##type (type *p) \
 { value ret = Val_##type##_no_ref(p); init(p); return ret; }
 
-#define Pointer_val(val) Field(val,1)
+#define Pointer_val(val) (void *)Field(val,1)
 
 #define Wosizeof(x) ((sizeof(x)-1)/sizeof(value)+1)
 
