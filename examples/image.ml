@@ -1,6 +1,5 @@
 (* $Id$ *)
 
-open GdkObj
 open GMain
 open Gdk
 
@@ -19,6 +18,12 @@ let rgb_at x y =
 
 (* let id = Thread.create GtkThread.main () *)
 
+(* Choose a visual appropriate for RGB *)
+let _ =
+  Gdk.Rgb.init ();
+  GtkBase.Widget.set_default_visual (Gdk.Rgb.get_visual ());
+  GtkBase.Widget.set_default_colormap (Gdk.Rgb.get_cmap ())
+
 (* We need show: true because of the need of visual *)
 let window = GWindow.window ~show:true ~width: 256 ~height: 256 ()
 
@@ -27,13 +32,13 @@ let visual = window#misc#visual
 let color_create = Truecolor.color_creator visual
 
 let w = window#misc#window
-let drawing = new drawing w
+let drawing = new GDraw.drawable w
 
 let _ =
   window#connect#destroy ~callback:Main.quit;
 
   let image =
-    Image.create ~image_type: `FASTEST ~visual: visual ~width: 256 ~height: 256
+    Image.create ~kind: `FASTEST ~visual: visual ~width: 256 ~height: 256
   in
 
   let draw () =

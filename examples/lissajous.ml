@@ -2,7 +2,6 @@
 (* Lissajous 図形 *)
 
 open GMain
-open GdkObj  
 
 
 let main () =
@@ -14,7 +13,7 @@ let main () =
   let quit = GButton.button ~label:"Quit" ~packing:vbx#add () in
   quit#connect#clicked ~callback:window#destroy;
   let area = GMisc.drawing_area ~width:200 ~height:200 ~packing:vbx#add () in
-  let drawing = area#misc#realize (); new drawing (area#misc#window) in
+  let drawing = area#misc#realize (); new GDraw.drawable (area#misc#window) in
   let m_pi = acos (-1.) in
   let c = ref 0. in
   let expose_event _ =
