@@ -6,13 +6,14 @@ open TiContainer
 
 class tibox ~(dir : Gtk.Tags.orientation) ~(widget : GPack.box)
     ~name ~parent_tree ~pos ?(insert_evbox=true) parent_window =
+  let class_name =
+    match dir with `VERTICAL -> "GPack.vbox" | _ -> "GPack.hbox" in
 object(self)
   val box = widget
   inherit ticontainer ~name ~widget ~parent_tree ~pos ~insert_evbox
       parent_window as container
 
-  method private class_name =
-    match dir with `VERTICAL -> "GPack.vbox" | _ -> "GPack.hbox"
+  method private class_name = class_name
 
   method private name_of_add_method = "#pack"
 
@@ -147,12 +148,100 @@ initializer
 	new prop_button_box_style ~name:"layout" ~init:"DEFAULT_STYLE"
 	  ~set:(ftrue bbox#set_layout);
 	"spacing",
-	new prop_int ~name:"spacing" ~init:"-1"
-	  ~set:(ftrue bbox#set_spacing);
+	new prop_int ~name:"spacing"
+	  ~init:(match dir with `VERTICAL -> "10" | _ -> "30")
+(*  donne -1 (defaut)  
+(GtkPack.BBox.get_spacing bbox#as_button_box) *)
+	  ~set:(fun v -> bbox#set_spacing v;
+	    GtkBase.Widget.queue_resize bbox#as_widget; true);
+	"child_width",
+	new prop_int ~name:"child_width" ~init:"85"
+	  ~set:(fun v ->
+	    bbox#set_child_size ~width:v
+	      ~height:(int_of_string (self#get_property "child_height")) ();
+	    GtkBase.Widget.queue_resize bbox#as_widget; true);
+	"child_height",
+	new prop_int ~name:"child_height" ~init:"27"
+	  ~set:(fun v ->
+	    bbox#set_child_size ~height:v
+	      ~width:(int_of_string (self#get_property "child_width")) (); 
+	    GtkBase.Widget.queue_resize bbox#as_widget; true);
+	"child_ipad_x",
+	new prop_int ~name:"child_ipad_x" ~init:"7"
+	  ~set:(fun v ->
+	    bbox#set_child_ipadding ~x:v
+	      ~y:(int_of_string (self#get_property "child_ipad_y")) ();
+	    GtkBase.Widget.queue_resize bbox#as_widget; true);
+	"child_ipad_y",
+	new prop_int ~name:"child_ipad_y" ~init:"0"
+	  ~set:(fun v ->
+	    bbox#set_child_ipadding ~y:v
+	      ~x:(int_of_string (self#get_property "child_ipad_x")) (); 
+	    GtkBase.Widget.queue_resize bbox#as_widget; true);
       ]
 end
 
-let new_tihbutton_box ~name = new tibbox ~dir:`HORIZONTAL ~widget:(GPack.button_box `HORIZONTAL ()) ~name
 
-let new_tivbutton_box ~name = new tibbox ~dir:`VERTICAL ~widget:(GPack.button_box `VERTICAL ()) ~name
+(* TODO:  pour proplist/spacing il faudrait implementer
+          les fonctions get_spacing ... (voir dans gtkPack) *)
 
+class tihbutton_box = tibbox ~dir:`HORIZONTAL
+class tivbutton_box = tibbox ~dir:`VERTICAL
+
+let new_tihbutton_box ~name =
+  new tihbutton_box ~widget:(GPack.button_box `HORIZONTAL ()) ~name
+
+let new_tivbutton_box ~name =
+  new tivbutton_box ~widget:(GPack.button_box `VERTICAL ()) ~name
+
+
+
+
+let get_fixed_pos () =
+  let rx = ref 0 and ry = ref 0 in
+  let w  = GWindow.window ~modal:true () in
+  let v  = GPack.vbox  ~packing:w#add () in
+  let l  = GMisc.label ~text:"Enter position for child" ~packing:v#pack () in
+  let h1 = GPack.hbox ~packing:v#pack () in
+  let l1 = GMisc.label ~text:"x:" ~packing:h1#pack () in
+  let e1 = GEdit.entry ~text:"0" ~packing:h1#pack () in
+  let h2 = GPack.hbox ~packing:v#pack () in
+  let l2 = GMisc.label ~text:"y" ~packing:h2#pack () in
+  let e2 = GEdit.entry ~text:"0" ~packing:h2#pack () in
+  let h7 = GPack.hbox ~packing:v#pack () in
+  let b1 = GButton.button ~label:"OK" ~packing:h7#pack () in
+  let b2 = GButton.button ~label:"Cancel" ~packing:h7#pack () in
+  w#show ();
+  b1#connect#clicked
+    ~callback:(fun () ->
+      begin
+	try rx  := int_of_string e1#text with _ -> () end;
+      begin
+	try ry  := int_of_string e2#text with _ -> () end;
+      w#destroy ());
+  b2#connect#clicked ~callback:w#destroy;
+  w#connect#destroy ~callback:GMain.Main.quit;
+  GMain.Main.main ();
+  !rx, !ry
+
+
+class tifixed ~(widget : GPack.fixed)
+    ~name ~parent_tree ~pos ?(insert_evbox=true) parent_window =
+object(self)
+  val fixed = widget
+  inherit ticontainer ~widget
+    ~name ~parent_tree ~pos ~insert_evbox parent_window
+
+  method private class_name = "GPack.fixed"
+
+  method private add child ~pos =
+    let x, y = get_fixed_pos () in
+    fixed#put child#base ~x ~y;
+    children <-  children @ [(child, `START)]
+  initializer
+    classe <- "fixed"
+	
+end
+
+let new_tifixed ~name =
+  new tifixed ~widget:(GPack.fixed ()) ~name

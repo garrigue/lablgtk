@@ -9,7 +9,7 @@ open TiBase
 
 let main_project_modify = ref false
 
-let main_window  = GWindow.window ~width:200 ~height:200 ()
+let main_window  = GWindow.window (* ~width:200 ~height:200 *) ()
 let main_vbox    = GPack.vbox ~packing:main_window#add ()
 let main_menu    = GMenu.menu_bar ~packing:(main_vbox#pack ~expand:false) ()
 
@@ -235,6 +235,7 @@ let xpm_window () =
     data#set ~typ:data#target ~format:0 ~data:classe in
   let window = GWindow.window ~title:"icons" () in
   window#misc#realize ();
+  window#misc#set_uposition ~x:250 ~y:10;
   let vbox = GPack.vbox ~packing:window#add () in
   let table = GPack.table ~rows:1 ~columns:5 ~border_width:20
       ~packing:vbox#pack () in
@@ -275,11 +276,14 @@ let xpm_window () =
   add_xpm "toolbar.xpm"        ~left:4 ~top:0 ~classe:"toolbar";
   add_xpm "hbox.xpm"           ~left:0 ~top:1 ~classe:"hbox";
   add_xpm "vbox.xpm"           ~left:1 ~top:1 ~classe:"vbox";
+  add_xpm "hbuttonbox.xpm"     ~left:2 ~top:1 ~classe:"hbutton_box";
+  add_xpm "vbuttonbox.xpm"     ~left:3 ~top:1 ~classe:"vbutton_box";
+  add_xpm "fixed.xpm.xpm"     ~left:3 ~top:1 ~classe:"fixed";
   add_xpm "frame.xpm"          ~left:0 ~top:2 ~classe:"frame";
-  add_xpm "aspectframe.xpm"   ~left:1 ~top:2 ~classe:"aspect_frame";
+  add_xpm "aspectframe.xpm"    ~left:1 ~top:2 ~classe:"aspect_frame";
   add_xpm "scrolledwindow.xpm" ~left:2 ~top:2 ~classe:"scrolled_window";
-  add_xpm "eventbox.xpm"      ~left:3 ~top:2 ~classe:"event_box";
-  add_xpm "handlebox.xpm"     ~left:4 ~top:2 ~classe:"handle_box";
+  add_xpm "eventbox.xpm"       ~left:3 ~top:2 ~classe:"event_box";
+  add_xpm "handlebox.xpm"      ~left:4 ~top:2 ~classe:"handle_box";
   add_xpm "viewport.xpm"       ~left:5 ~top:2 ~classe:"viewport";
   add_xpm "hseparator.xpm"     ~left:0 ~top:3 ~classe:"hseparator";
   add_xpm "vseparator.xpm"     ~left:1 ~top:3 ~classe:"vseparator";
@@ -287,7 +291,7 @@ let xpm_window () =
   add_xpm "statusbar.xpm"      ~left:1 ~top:4 ~classe:"statusbar";
   add_xpm "notebook.xpm"       ~left:2 ~top:4 ~classe:"notebook";
   add_xpm "entry.xpm"          ~left:3 ~top:4 ~classe:"entry";
-  add_xpm "spinbutton.xpm"    ~left:4 ~top:4 ~classe:"spin_button";
+  add_xpm "spinbutton.xpm"     ~left:4 ~top:4 ~classe:"spin_button";
   add_xpm "combo.xpm"          ~left:5 ~top:4 ~classe:"combo";
 
   window#show ();
@@ -299,6 +303,7 @@ let main () =
   let _ = GMain.Main.init () in
   let prop_win = Propwin.init () in
   let xpm_win = xpm_window () in
+  main_window#misc#set_uposition ~x:10 ~y:10;
   main_window#show ();
   main_window#connect#destroy ~callback:GMain.Main.quit;
 

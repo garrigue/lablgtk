@@ -5,6 +5,7 @@ let new_class_list = [
   "vbox",            TiPack.new_tivbox;
   "hbutton_box",     TiPack.new_tihbutton_box;
   "vbutton_box",     TiPack.new_tivbutton_box;
+  "fixed",           TiPack.new_tifixed;
   "button",          TiButton.new_tibutton;
   "check_button",    TiButton.new_ticheck_button;
   "toggle_button",   TiButton.new_titoggle_button;
