@@ -83,11 +83,11 @@ ML_1 (gtk_text_iter_copy, GtkTextIter_val, Val_GtkTextIter_mine)
 
 /* "Lighter" version: allocate in the ocaml heap */
 #define GtkTextIter_val(val) ((GtkTextIter*)MLPointer_val(val))
-#define Val_GtkTextIter(it) (copy_memblock_indirected(it,sizeof(GtkTextIter)))
-CAMLextern value obj_dup(value arg);
+#define Val_GtkTextIter(it) \
+  (copy_memblock_indirected_shr(it,sizeof(GtkTextIter)))
 CAMLprim value ml_gtk_text_iter_copy (value it) {
-  return (Field(it,1) == 2 ? obj_dup(it) :
-          Val_GtkTextIter(GtkTextIter_val(it)));
+  /* Only valid if in old generation and compaction off */
+  return Val_GtkTextIter(GtkTextIter_val(it));
 }
 
 #define GtkTextView_val(val) check_cast(GTK_TEXT_VIEW,val)
@@ -184,13 +184,21 @@ let bug () =
   b#set_text  "Initial text\n";
   GText.view ~buffer:b ~packing:(w#add) ();
   w#show ();
-  b#connect#insert_text (fun it s -> Printf.printf "Handler got: \"%s\"\n" s;
+  b#connect#insert_text (fun it s -> Gc.full_major ();
+                        Printf.printf "Handler got: \"%s\"\n" s;
 			flush stdout);
+  b#connect#delete_range (fun ~start ~stop -> Gc.full_major ());
   let s = "azert"^"yuiop" in
+  let iter_ref = ref b#start_iter in
   for i = 0 to 100 do 
-    Printf.printf "Number %d, \"%s\"\n" i s;
+    let start = !iter_ref#offset in
+    Printf.printf "Number %d, \"%s\", %d\n" i s start;
     flush stdout;
-    b#insert s)
+    let iter = !iter_ref#copy in
+    b#insert ~iter s;
+    let iter' = iter#copy in
+    b#delete (b#get_iter (`OFFSET start)) iter';
+    iter_ref := iter'
   done
 ;;
 
@@ -206,74 +214,38 @@ string.
 Caml string are correctly 0-terminated, so this is not the cause.
 By the way, I had problems with "light" textiters for the same reason.
 
+Now the above code is OK, but replacing [full_major] by [compact] it will fail,
+as will do most code... Disabling compaction is essential.
+
 */
 
-/* ML_3 (gtk_text_buffer_insert, GtkTextBuffer_val, */
-/*       GtkTextIter_val, SizedString_val, Unit) */
-/* ML_2 (gtk_text_buffer_insert_at_cursor,GtkTextBuffer_val, */
-/*       SizedString_val, Unit) */
-
-CAMLprim value ml_gtk_text_buffer_insert (value tb, value ti,value st)
-{
-  CAMLparam3(tb,ti,st);
-  GtkTextIter it = *GtkTextIter_val(ti);
-  int l = string_length(st);
-  char* c = g_malloc(l+1); /* Do not forget the null char */
-  memcpy(c, String_val(st), l+1);
-  gtk_text_buffer_insert(GtkTextBuffer_val(tb), &it, c, l);
-  g_free(c);
-  *GtkTextIter_val(ti) = it;
-  CAMLreturn(0);
-}
-
-CAMLprim value ml_gtk_text_buffer_insert_at_cursor (value tb,value st)
-{
-  CAMLparam2(tb,st);
-  int l = string_length(st);
-  char* c = g_malloc(l+1);
-  memcpy(c, String_val(st), l+1);
-  gtk_text_buffer_insert_at_cursor(GtkTextBuffer_val(tb), c, l);
-  g_free(c);
-  CAMLreturn(0);
-}
-
-CAMLprim value ml_gtk_text_buffer_insert_interactive (value tb, value ti,
-                                                      value st, value b)
-{
-  CAMLparam4(tb,ti,st,b);
-  GtkTextIter it = *GtkTextIter_val(ti);
-  int l = string_length(st);
-  char* c = g_malloc(l+1);
-  gboolean r;
-  memcpy(c, String_val(st), l+1);
-  r = gtk_text_buffer_insert_interactive(GtkTextBuffer_val(tb),
-                                         &it, c, l, Bool_val(b));
-  g_free(c);
-  *GtkTextIter_val(ti) = it;
-  CAMLreturn(Val_bool(r));
-}
-
-CAMLprim value ml_gtk_text_buffer_insert_interactive_at_cursor (value tb,value st,value b)
-{
-  CAMLparam3(tb,st,b);
-  int l = string_length(st);
-  char* c = g_malloc(l+1);
-  gboolean r;
-  memcpy(c, String_val(st), l+1);
-  r = gtk_text_buffer_insert_interactive_at_cursor(GtkTextBuffer_val(tb),
-				       c,
-				       l,
-				       Bool_val(b));
-  g_free(c);
-  CAMLreturn(Val_bool(r));
-}
-
-/* ML_4 (gtk_text_buffer_insert_interactive,GtkTextBuffer_val,
-   GtkTextIter_val, SizedString_val, Bool_val, Val_bool)
-
-   ML_3 (gtk_text_buffer_insert_interactive_at_cursor,GtkTextBuffer_val,
-   SizedString_val, Bool_val, Val_bool)
+/*
+   Old_val(val) makes sure a value is in the old generation.
+   Old values are not moved by the GC, only by compaction.
+   Beware that if young values are included in one another they may be
+   moved around.
 */
+#ifndef _WIN32
+void oldify_one (value v, value *p);
+#define Old_val(val) (oldify_one(val,&val),val)
+#else
+/* oldify+one not shared under windows: initialize dummy_shr somewhere... */
+#define Old_val(val) (modify(&Field(*dummy_shr,0),val),Field(dummy_shr,0))
+#endif
+
+#define SizedString_old_val(val) \
+  Insert(String_val(Old_val(val))) string_length(val)
+
+ML_3 (gtk_text_buffer_insert, GtkTextBuffer_val,
+      GtkTextIter_val, SizedString_old_val, Unit)
+ML_2 (gtk_text_buffer_insert_at_cursor, GtkTextBuffer_val,
+      SizedString_old_val, Unit)
+
+ML_4 (gtk_text_buffer_insert_interactive,GtkTextBuffer_val,
+      GtkTextIter_val, SizedString_old_val, Bool_val, Val_bool)
+
+ML_3 (gtk_text_buffer_insert_interactive_at_cursor,GtkTextBuffer_val,
+      SizedString_old_val, Bool_val, Val_bool)
 
 ML_4 (gtk_text_buffer_insert_range,GtkTextBuffer_val,
       GtkTextIter_val, GtkTextIter_val,GtkTextIter_val,Unit)

@@ -10,6 +10,7 @@
 
 value copy_memblock_indirected (void *src, asize_t size);
 value alloc_memblock_indirected (asize_t size);
+value copy_memblock_indirected_shr (void *src, asize_t size);
 value ml_some (value);
 void ml_raise_null_pointer (void) Noreturn;
 value Val_pointer (void *);

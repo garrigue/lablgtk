@@ -27,6 +27,15 @@ value alloc_memblock_indirected (asize_t size)
     return ret;
 }
 
+value copy_memblock_indirected_shr (void *src, asize_t size)
+{
+    value ret = alloc_shr (Wosize_asize(size)+2, Abstract_tag);
+    if (!src) ml_raise_null_pointer ();
+    
+    Field(ret,1) = 2;
+    memcpy (&Field(ret,2), src, size);
+    return ret;
+}
 
 value ml_some (value v)
 {
