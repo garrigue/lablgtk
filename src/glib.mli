@@ -79,9 +79,12 @@ module Message : sig
     (level:int -> string -> unit) -> log_handler
   val remove_log_handler : log_handler -> unit
   val set_always_fatal : log_level list -> unit
-  val set_fatal_mask : ?domain:string -> [log_level|`CUSTOM of int] list -> unit
+  val set_fatal_mask :
+    ?domain:string -> [log_level|`CUSTOM of int] list -> unit
 
-  val log : ?domain:string -> [log_level|`CUSTOM of int] -> ('a, unit, string, unit) format4 -> 'a
+  val log :
+    ?domain:string ->
+    [log_level|`CUSTOM of int] -> ('a, unit, string, unit) format4 -> 'a
 end
 
 (*
@@ -95,10 +98,11 @@ end
 (** {3 Character Sets} *)
 
 (** Character Set Conversion 
-   @gtkdoc glib glib-Character-Set-Conversion *)
+    @gtkdoc glib glib-Character-Set-Conversion *)
 module Convert :  sig
   type error = 
-    | NO_CONVERSION (** Conversion between the requested character sets is not supported *)
+    | NO_CONVERSION
+        (** Conversion between the requested character sets is not supported *)
     | ILLEGAL_SEQUENCE (** Invalid byte sequence in conversion input *)
     | FAILED (** Conversion failed for some reason *)
     | PARTIAL_INPUT (** Partial character sequence at end of input *)
@@ -107,37 +111,45 @@ module Convert :  sig
   exception Error of error * string
 
   val convert :
-    string -> to_codeset:string -> from_codeset:string -> string (** @raise Error . *)
+    string -> to_codeset:string -> from_codeset:string -> string
+      (** @raise Error . *)
   val convert_with_fallback :
-    ?fallback:string -> to_codeset:string -> from_codeset:string -> string -> string (** @raise Error . *)
+    ?fallback:string ->
+    to_codeset:string -> from_codeset:string -> string -> string
+      (** @raise Error . *)
 
   (** All internal strings are encoded in utf8: you should use
-     the following conversion functions *)
+      the following conversion functions *)
 
   val locale_from_utf8 : string -> string 
-    (** Converts the input string from [UTF-8] to the encoding of the current locale.
-        If the locale's encoding is [UTF-8], the string is simply validated and returned unmodified.
+    (** Converts the input string from [UTF-8] to the encoding of the
+        current locale. If the locale's encoding is [UTF-8], the string
+        is simply validated and returned unmodified.
         @raise Error if the conversion fails
         @raise Error if the string is not a valid [UTF-8] string *)
 
   val locale_to_utf8 : string -> string (** @raise Error . *)
-    (** Converts the input string from the encoding of the current locale to [UTF-8].
-        If the locale's encoding is [UTF-8], the string is simply validated and returned unmodified.
+    (** Converts the input string from the encoding of the current locale
+        to [UTF-8]. If the locale's encoding is [UTF-8], the string is
+        simply validated and returned unmodified.
         @raise Error if the conversion fails
         @raise Error if the string is not a valid [UTF-8] string *)
 
   val filename_from_utf8 : string -> string (** @raise Error . *)
   val filename_to_utf8 : string -> string (** @raise Error . *)
-  val filename_from_uri : string -> string option * string (** @raise Error . *)
-  val filename_to_uri : ?hostname:string -> string -> string (** @raise Error . *)
+  val filename_from_uri : string -> string option * string
+      (** @raise Error . *)
+  val filename_to_uri : ?hostname:string -> string -> string
+      (** @raise Error . *)
 
   val get_charset : unit -> bool * string
     (** Obtains the character set for the current locale.
-        @return the pair [u,s] where [u] is true if the character set is [UTF-8] and [s] is the character set name *)
+        @return the pair [u,s] where [u] is true if the character set is
+        [UTF-8] and [s] is the character set name *)
 end
 
 (** Unicode Manipulation
-   @gtkdoc glib glib-Unicode-Manipulation *)
+    @gtkdoc glib glib-Unicode-Manipulation *)
 module Unichar : sig 
   val to_lower : unichar -> unichar
   val to_upper : unichar -> unichar
@@ -163,24 +175,24 @@ module Unichar : sig
 end
 
 (** Unicode Manipulation
-   @gtkdoc glib glib-Unicode-Manipulation *)
+    @gtkdoc glib glib-Unicode-Manipulation *)
 module Utf8 : sig
   (** UTF-8 handling, and conversion to UCS-4 *)
 
   (** If you read an UTF-8 string from somewhere, you should validate it,
-     or risk random segmentation faults *)
+      or risk random segmentation faults *)
   val validate : string -> bool
   val length : string -> int
 
-  (** [from_unichar 0xiii] converts a code point [iii] (usually in hexadecimal form)
-     into a string containing the UTF-8 encoded character [0xiii]. See 
-     {{:http://www.unicode.org/}unicode.org} for charmaps.
-     Does not check that the given code point is a valid unicode code point. *)
+  (** [from_unichar 0xiii] converts a code point [iii] (usually in hexadecimal
+      form) into a string containing the UTF-8 encoded character [0xiii]. See 
+      {{:http://www.unicode.org/}unicode.org} for charmaps.
+      Does not check that the given code point is a valid unicode point. *)
   val from_unichar : unichar -> string
   val from_unistring : unistring -> string
 
-  (** [to_unichar_validated] decodes an UTF-8 encoded code point and checks for 
-      incomplete characters, invalid characters and overlong encodings. 
+  (** [to_unichar_validated] decodes an UTF-8 encoded code point and checks
+      for incomplete characters, invalid characters and overlong encodings. 
       @raise Convert.Error if invalid *)
   val to_unichar_validated : string -> pos:int ref -> unichar
 
@@ -188,8 +200,8 @@ module Utf8 : sig
       if [pos] does not point to a valid UTF-8 encoded character. *)
   val to_unichar : string -> pos:int ref -> unichar
 
-  (** [to_unistring] decodes an UTF-8 encoded string into an array of [unichar].
-      The string {e must} be valid. *)
+  (** [to_unistring] decodes an UTF-8 encoded string into an array of
+      [unichar]. The string {e must} be valid. *)
   val to_unistring : string -> unistring
 
   val first_char : string -> unichar
@@ -223,15 +235,17 @@ end
 
 (** {3 Miscellaneous Utility Functions} *)
 
-external get_prgname : unit -> string = "ml_g_get_prgname"
-external set_prgname : string -> unit = "ml_g_set_prgname"
-external get_application_name : unit -> string = "ml_g_get_application_name" (** @since GTK 2.2 *)
-external set_application_name : string -> unit = "ml_g_set_application_name"
+val get_prgname : unit -> string
+val set_prgname : string -> unit
+val get_application_name : unit -> string (** @since GTK 2.2 *)
+val set_application_name : string -> unit (** @since GTK 2.2 *)
 
-external get_user_name : unit -> string = "ml_g_get_user_name"
-external get_real_name : unit -> string = "ml_g_get_real_name"
+val get_user_name : unit -> string
+val get_real_name : unit -> string
 
-external get_home_dir : unit -> string option = "ml_g_get_home_dir"
-external get_tmp_dir  : unit -> string = "ml_g_get_tmp_dir"
+val get_home_dir : unit -> string option
+val get_tmp_dir  : unit -> string
 
-external find_program_in_path : string -> string = "ml_g_find_program_in_path" (** @raise Not_found if the program is not found in the path or is not executable *)
+val find_program_in_path : string -> string
+    (** @raise Not_found if the program is not found in the path
+        or is not executable *)
