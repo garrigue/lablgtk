@@ -8,9 +8,10 @@ arch-clean:
 	@rm -f \#*\# *~ aclocal.m4
 	@rm -rf autom4te*.cache
 
-configure: configure.in
-	aclocal
-	autoconf 
+#configure: configure.in
+#	aclocal
+#	autoconf 
 
 config.make: config.make.in configure
-	@./configure
+	@echo config.make is not up to date. Execute ./configure first.
+	@exit 2
