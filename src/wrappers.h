@@ -1,5 +1,14 @@
 /* $Id$ */
 
+#ifndef _wrappers_
+#define _wrappers_
+
+#include <caml/mlvalues.h>
+#include <caml/fail.h>
+
+value copy_memblock (void *src, asize_t size);
+void ml_raise_null_pointer (void) Noreturn;
+
 /* Wrapper generators */
 
 #define ML_0(cname, conv) \
@@ -121,7 +130,7 @@ value cname##_bc (value *argv, int argn) \
 static void ml_final_##type##ext (value val) \
 { final ((type*)Field(val,1)); } \
 value Val_##type##ext (type *p) \
-{ value ret; if (!p) invalid_argument ("Val_"#type" : null pointer"); \
+{ value ret; if (!p) ml_raise_null_pointer(); \
   ret = alloc_final (2, ml_final_##type##ext, 1, 200); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
@@ -160,6 +169,6 @@ long OptFlags_##conv (value list) \
   while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
   return flags; }
 
-value copy_memblock (void *src, asize_t size);
-
 #define Val_copy(val) copy_memblock (&val, sizeof(val))
+
+#endif /* _wrappers_ */

@@ -4,10 +4,8 @@ open Misc
 
 exception Error of string
 exception Warning of string
-exception Null_pointer
 let _ =
-  Callback.register_exception "gtkerror" (Error"");
-  Callback.register_exception "null_pointer" Null_pointer
+  Callback.register_exception "gtkerror" (Error"")
 
 type 'a obj
 type clampf = float
@@ -278,6 +276,7 @@ module Object = struct
   let is_a obj name =
     Type.is_a (get_type obj) (Type.from_name name)
   external destroy : 'a obj -> unit = "ml_gtk_object_destroy"
+  external unsafe_cast : 'a obj -> 'b obj = "%identity"
   module Signals = struct
     open Signal
     let destroy : (_,_) t =
@@ -334,6 +333,7 @@ end
 
 module Tooltips = struct
   type t = [data tooltips]
+  external coerce : [> tooltips] obj -> t obj = "%identity"
   external create : unit -> t obj = "ml_gtk_tooltips_new"
   external enable : [> tooltips] obj -> unit = "ml_gtk_tooltips_enable"
   external disable : [> tooltips] obj -> unit = "ml_gtk_tooltips_disable"
@@ -469,6 +469,8 @@ module Widget = struct
   module Signals = struct
     open Signal
     let marshal f argv = f (cast (Argv.get_object argv pos:0))
+    let marshal_opt f argv = f (try Some(cast (Argv.get_object argv pos:0))
+	                        with Null_pointer -> None)
 
     let show : ([> widget],_) t =
       { name = "show"; marshaller = marshal_unit }
@@ -494,7 +496,7 @@ module Widget = struct
       let marshal f argv = f (val_state (Argv.get_int argv pos:0)) in
       { name = "state_changed"; marshaller = marshal }
     let parent_set : ([> widget],_) t =
-      { name = "parent_set"; marshaller = marshal }
+      { name = "parent_set"; marshaller = marshal_opt }
   end
 end
 
@@ -766,6 +768,7 @@ module RadioMenuItem = struct
   let cast w : t obj =
     if Object.is_a w "GtkRadioMenuItem" then Obj.magic w
     else invalid_arg "Gtk.RadioMenuItem.cast"
+  external coerce : [> radiomenuitem] obj -> t obj = "%identity"
   type group
   external create : group optpointer -> t obj = "ml_gtk_radio_menu_item_new"
   external create_with_label : group optpointer -> string -> t obj
@@ -789,6 +792,7 @@ module TreeItem = struct
   let cast w : t obj =
     if Object.is_a w "GtkTreeItem" then Obj.magic w
     else invalid_arg "Gtk.TreeItem.cast"
+  external coerce : [> treeitem] obj -> t obj = "%identity"
   external create : unit -> t obj = "ml_gtk_tree_item_new"
   external create_with_label : string -> t obj
       = "ml_gtk_tree_item_new_with_label"
@@ -807,6 +811,9 @@ module TreeItem = struct
       = "ml_gtk_tree_item_expand"
   external collapse : [> treeitem] obj -> unit
       = "ml_gtk_tree_item_collapse"
+  external subtree : [> treeitem] obj -> [widget container tree] obj
+      = "ml_GTK_TREE_ITEM_SUBTREE"
+  let subtree t = try subtree t with Null_pointer -> raise Not_found
   module Signals = struct
     open Signal
     let expand : ([> treeitem],_) t =
@@ -877,14 +884,15 @@ module Window = struct
       = "ml_gtk_window_activate_focus"
   external activate_default : [> window] obj -> bool
       = "ml_gtk_window_activate_default"
-  external set_modal : [>window] obj -> bool -> unit =
-    "ml_gtk_window_set_modal"
-  external set_default_size : [> window] obj -> int -> int -> unit =
-    "ml_gtk_window_set_default_size"
-  external set_position : [> window] obj -> window_position -> unit =
-    "ml_gtk_window_set_position"
-  external set_transient_for : [> window] obj ->[> window] obj -> unit =
-    "ml_gtk_window_set_transient_for"
+  external set_modal : [>window] obj -> bool -> unit
+      = "ml_gtk_window_set_modal"
+  external set_default_size :
+      [> window] obj -> width:int -> height:int -> unit
+      = "ml_gtk_window_set_default_size"
+  external set_position : [> window] obj -> window_position -> unit
+      = "ml_gtk_window_set_position"
+  external set_transient_for : [> window] obj ->[> window] obj -> unit
+      = "ml_gtk_window_set_transient_for"
 
   let setter w :cont ?:title ?:wmclass_name ?:wmclass_class ?:position
       ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal
@@ -970,6 +978,7 @@ module Dialog = struct
   let cast w : t obj =
     if Object.is_a w "GtkDialog" then Obj.magic w
     else invalid_arg "Gtk.Dialog.cast"
+  external coerce : [> dialog] obj -> t obj = "%identity"
   external create : unit -> t obj = "ml_gtk_dialog_new"
   external action_area : [> dialog] obj -> Box.t obj
       = "ml_GtkDialog_action_area"
@@ -1116,6 +1125,7 @@ module RadioButton = struct
   let cast w : t obj =
     if Object.is_a w "GtkRadioButton" then Obj.magic w
     else invalid_arg "Gtk.RadioButton.cast"
+  external coerce : [> radio] obj -> t obj = "%identity"
   type group
   external create : group optpointer -> t obj = "ml_gtk_radio_button_new"
   external create_with_label : group optpointer -> string -> t obj
@@ -1138,6 +1148,7 @@ module ColorSelection = struct
   let cast w : t obj =
     if Object.is_a w "GtkColorSelection" then Obj.magic w
     else invalid_arg "Gtk.ColorSelection.cast"
+  external coerce : [> colorsel] obj -> t obj = "%identity"
   type dialog = [widget container window colorseldialog]
   external create : unit -> t obj = "ml_gtk_color_selection_new"
   external create_dialog : string -> dialog obj
@@ -1384,6 +1395,7 @@ module Menu = struct
   let cast w : t obj =
     if Object.is_a w "GtkMenu" then Obj.magic w
     else invalid_arg "Gtk.Menu.cast"
+  external coerce : [> menu] obj -> t obj = "%identity"
   external create : unit -> t obj = "ml_gtk_menu_new"
   external popup :
       [> menu] obj -> [> menushell] optobj ->
@@ -1415,6 +1427,7 @@ module OptionMenu = struct
   let cast w : t obj =
     if Object.is_a w "GtkOptionMenu" then Obj.magic w
     else invalid_arg "Gtk.OptionMenu.cast"
+  external coerce : [> optionmenu] obj -> t obj = "%identity"
   external create : unit -> t obj = "ml_gtk_option_menu_new"
   external get_menu : [> optionmenu] obj -> Menu.t obj
       = "ml_gtk_option_menu_get_menu"
@@ -1712,8 +1725,10 @@ module Tree = struct
     else invalid_arg "Gtk.Tree.cast"
   external coerce : [> tree] obj -> t obj = "%identity"
   external create : unit -> t obj = "ml_gtk_tree_new"
-  external insert : [> tree] obj -> [> treeitem] obj -> ?pos:int -> unit
+  external insert : [> tree] obj -> [> treeitem] obj -> pos:int -> unit
       = "ml_gtk_tree_insert"
+  external remove_items : [> tree] obj -> [> treeitem] obj list -> unit
+      = "ml_gtk_tree_remove_items"
   external clear_items : [> tree] obj -> start:int -> end:int -> unit
       = "ml_gtk_tree_clear_items"
   external select_item : [> tree] obj -> pos:int -> unit
@@ -1728,6 +1743,8 @@ module Tree = struct
       = "ml_gtk_tree_set_view_mode"
   external set_view_lines : [> tree] obj -> bool -> unit
       = "ml_gtk_tree_set_view_lines"
+  external selection : [> tree] obj -> TreeItem.t obj list =
+    "ml_gtk_tree_selection"
   let setter w :cont ?:selection_mode ?:view_mode ?:view_lines =
     let may_set f = may fun:(f w) in
     may_set set_selection_mode selection_mode;
@@ -2068,11 +2085,17 @@ module Label = struct
   external coerce : [> label] obj -> t obj = "%identity"
   external create : string -> t obj = "ml_gtk_label_new"
   external set_text : [> label] obj -> string -> unit = "ml_gtk_label_set_text"
+  external set_pattern : [> label] obj -> string -> unit
+      = "ml_gtk_label_set_pattern"
+  external set_line_wrap : [> label] obj -> bool -> unit
+      = "ml_gtk_label_set_line_wrap"
   external set_justify : [> label] obj -> justification -> unit
       = "ml_gtk_label_set_justify"
-  let setter w :cont ?:text ?:justify =
+  let setter w :cont ?:text ?:justify ?:line_wrap ?:pattern =
     may fun:(set_text w) text;
     may fun:(set_justify w) justify;
+    may fun:(set_line_wrap w) line_wrap;
+    may fun:(set_pattern w) pattern;
     cont w
   let set = setter ?cont:Misc.set
   external get_text : [> label] obj -> string = "ml_gtk_label_get_label"
@@ -2336,6 +2359,9 @@ let _ = Glib.set_print_handler (fun msg -> print_string msg)
 
 module New = struct
   type t
+
+(* if you modify this type modify widget_info_array 
+   in ml_gtk.c in accordance *)
 type object_type =
   | OBJECT  | WIDGET  | MISC  | LABEL  | ACCELLABEL  | TIPSQUERY  | ARROW
   | IMAGE   | PIXMAP  | CONTAINER  | BIN  | ALIGNMENT  | FRAME  | ASPECTFRAME
@@ -2364,21 +2390,22 @@ type object_type =
   external type_new : int -> [> widget] obj
       = "ml_gtk_type_new"
 
-let new_widget_get_type name :parent :nsignals =
-  let new_type = lazy (type_unique name :parent :nsignals) in
-  fun () -> Lazy.force new_type
-
 open Signal
 
 let make_new_widget name :parent :signal_array =
   let nsignals = Array.length signal_array in
+  let get_type () =
+    let new_type = lazy (type_unique name :parent :nsignals) in
+    Lazy.force new_type in
+  let signal_num_array = Array.create len:nsignals fill:0 in
   let class_init_func classe =
-    let signal_num_array = Array.create len:nsignals fill:0 in
     for i = 0 to nsignals-1 do
       signal_num_array.(i) <- signal_new signal_array.(i).name 1 classe parent i
     done;
     object_class_add_signals classe signal_num_array nsignals in
-  fun () ->
+  get_type,
+  (fun () ->
     set_ml_class_init class_init_func;
-    type_new (new_widget_get_type name :parent :nsignals ())
+    type_new (get_type ())),
+  signal_num_array
 end

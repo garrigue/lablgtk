@@ -21,14 +21,6 @@ void ml_raise_gtk (const char *errmsg)
   raise_with_string (*exn, (char*)errmsg);
 }
 
-void ml_raise_null_pointer ()
-{
-  static value * exn = NULL;
-  if (exn == NULL)
-      exn = caml_named_value ("null_pointer");
-  raise_constant (*exn);
-}   
-
 value copy_string_and_free (char *str)
 {
     value res = copy_string (str);
@@ -413,6 +405,7 @@ ML_2 (gtk_tree_item_set_subtree, GtkTreeItem_val, GtkWidget_val, Unit)
 ML_1 (gtk_tree_item_remove_subtree, GtkTreeItem_val, Unit)
 ML_1 (gtk_tree_item_expand, GtkTreeItem_val, Unit)
 ML_1 (gtk_tree_item_collapse, GtkTreeItem_val, Unit)
+ML_1 (GTK_TREE_ITEM_SUBTREE, GtkTreeItem_val, Val_GtkWidget)
 
 /* gtkviewport.h */
 
@@ -966,8 +959,7 @@ ML_1 (gtk_toolbar_get_button_relief, GtkToolbar_val, Val_relief_type)
 
 #define GtkTree_val(val) check_cast(GTK_TREE,val)
 ML_0 (gtk_tree_new, Val_GtkWidget_sink)
-ML_3 (gtk_tree_insert, GtkTree_val, GtkWidget_val,
-      Option_val (arg3, Int_val, -1) Ignore, Unit)
+ML_3 (gtk_tree_insert, GtkTree_val, GtkWidget_val, Int_val, Unit)
 ML_3 (gtk_tree_clear_items, GtkTree_val, Int_val, Int_val, Unit)
 ML_2 (gtk_tree_select_item, GtkTree_val, Int_val, Unit)
 ML_2 (gtk_tree_unselect_item, GtkTree_val, Int_val, Unit)
@@ -975,6 +967,20 @@ ML_2 (gtk_tree_child_position, GtkTree_val, GtkWidget_val, Val_int)
 ML_2 (gtk_tree_set_selection_mode, GtkTree_val, Selection_mode_val, Unit)
 ML_2 (gtk_tree_set_view_mode, GtkTree_val, Tree_view_mode_val, Unit)
 ML_2 (gtk_tree_set_view_lines, GtkTree_val, Bool_val, Unit)
+
+static value val_gtkany (gpointer p) { return Val_GtkAny(p); }
+value ml_gtk_tree_selection (value tree)
+{
+  GList *selection = GTK_TREE_SELECTION(GtkTree_val(tree));
+  return Val_GList(selection, val_gtkany);
+}
+static gpointer gtkobject_val (value val) { return GtkObject_val(val); }
+value ml_gtk_tree_remove_items (value tree, value items)
+{
+  GList *items_list = GList_val (items, gtkobject_val);
+  gtk_tree_remove_items (GtkTree_val(tree), items_list);
+  return Val_unit;
+}
 
 /* gtkdrawingarea.h */
 
@@ -1096,7 +1102,9 @@ ML_3 (gtk_image_set, GtkImage_val, GdkImage_val,
 #define GtkLabel_val(val) check_cast(GTK_LABEL,val)
 ML_1 (gtk_label_new, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_label_set_text, GtkLabel_val, String_val, Unit)
+ML_2 (gtk_label_set_pattern, GtkLabel_val, String_val, Unit)
 ML_2 (gtk_label_set_justify, GtkLabel_val, Justification_val, Unit)
+ML_2 (gtk_label_set_line_wrap, GtkLabel_val, Bool_val, Unit)
 Make_Extractor (gtk_label_get, GtkLabel_val, label, copy_string)
 
 /* gtktipsquery.h */
@@ -1348,7 +1356,7 @@ value ml_gtk_arg_get_object (GtkArg *arg)
 {
     if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_OBJECT)
 	ml_raise_gtk ("argument type mismatch");
-    if (!GTK_VALUE_OBJECT(*arg)) ml_raise_null_pointer();
+    /* Val_GtkObject checks for null pointer */
     return Val_GtkObject (GTK_VALUE_OBJECT(*arg));
 }
 

@@ -140,6 +140,10 @@ class widget_signals obj = object
   method show = Signal.connect sig:Widget.Signals.show obj
   method draw = Signal.connect sig:Widget.Signals.draw obj
   method event = new event_signals obj
+  method parent_set = fun :callback ?:after ->
+    Signal.connect sig:Widget.Signals.parent_set obj
+      callback:(function None -> callback None
+	| Some w  -> callback (Some (new widget w))) ?:after
 end
 
 class widget_full obj = object
@@ -360,6 +364,7 @@ class tree_item obj = object
   method remove_subtree () = TreeItem.remove_subtree obj
   method expand () = TreeItem.expand obj
   method collapse () = TreeItem.collapse obj
+  method subtree = TreeItem.subtree obj
 end
 
 let new_tree_item ?opt ?:label =
@@ -705,7 +710,9 @@ class spin_button obj = object
 end
 
 let new_spin_button ?:adjustment :rate :digits =
-  SpinButton.setter ?(SpinButton.create ?:adjustment :rate :digits)
+  SpinButton.setter ?(SpinButton.create
+     ?adjustment:(match adjustment with None -> None
+     | Some (a : adjustment) -> Some(a# as_adjustment)) :rate :digits)
     ?adjustment:None ?cont:(pack_return (new spin_button))
 
 class combo obj = object
@@ -882,27 +889,33 @@ class tree_signals obj = object
   inherit container_signals obj
   method selection_changed =
     Signal.connect ?obj ?sig:Tree.Signals.selection_changed
-(*
-  method select_child 
-     callback:((#is_widget as 'a) -> unit) -> ?after:bool -> Gtk.Signal.id
-	  = fun :callback -> Signal.connect obj sig:Tree.Signals.select_child
-	  callback:(fun w -> callback (w #as_widget))
-  method unselect_child    = Signal.connect sig:Tree.Signals.unselect_child
-*)
+  method select_child :callback =
+    Signal.connect obj sig:Tree.Signals.select_child
+      callback:(fun w -> callback (new tree_item (TreeItem.cast w))) 
+  method unselect_child :callback =
+    Signal.connect obj sig:Tree.Signals.unselect_child
+      callback:(fun w -> callback (new tree_item (TreeItem.cast w))) 
 end
 
 class tree obj = object
   inherit [TreeItem.t,tree_item] item_container obj
   method private wrap w = new tree_item (TreeItem.cast w)
   method as_tree = Tree.coerce obj
-  method insert w :pos =
-    Tree.insert obj (w #as_item) :pos
+  method insert w = Tree.insert obj (w #as_item)
+  method remove_items items =
+    Tree.remove_items obj
+      (List.map fun:(fun (t : tree_item) -> t #as_item) items)
   method connect = new tree_signals obj
   method clear_items = Tree.clear_items obj
   method select_item = Tree.select_item obj
   method unselect_item = Tree.unselect_item obj
   method child_position : 'a. (TreeItem.t #is_item as 'a) -> _ =
     fun w -> Tree.child_position obj w#as_item
+  method set_selection_mode = Tree.set_selection_mode obj
+  method set_view_mode = Tree.set_view_mode obj
+  method set_view_lines = Tree.set_view_lines obj
+  method selection = List.map fun:(fun w -> new tree_item w)
+      (Tree.selection obj)
 end
 
 let new_tree ?(_ : unit option) =

@@ -21,7 +21,7 @@ module Tictactoe = struct
 end
 
 
-let tictactoe_new = make_new_widget "Tictactoe" parent:VBOX
+let _,tictactoe_new,_ = make_new_widget "Tictactoe" parent:VBOX
     signal_array:Tictactoe.tictactoe_sig
 
 
