@@ -1,0 +1,17 @@
+Since this library was written in commuting label mode, examples were
+also written in this mode.
+Still, the following examples also compile in classic mode without
+any modification.
+
+* calendar.ml
+* clist.ml
+* drawing.ml
+* entry.ml
+* events.ml
+* fifteen.ml
+* hello.ml
+* image.ml
+* radiobuttons.ml
+* rpn.ml
+* scrolledwin.ml
+* testinput.ml
