@@ -2,6 +2,15 @@
 # Makefile rules for compiling olabl programs
 
 ########################################################################
+# Project name
+
+# $Format: "NAME=$Project$"$
+NAME=unison
+
+# $Format: "VERSION=$ProjectVersion$"$
+VERSION=1.169
+
+########################################################################
 # Try to automatically guess OS -- WIN32, SUNOS, or LINUX.
 
 ifeq (${OSTYPE},cygwin32) # Cygwin Beta 19
@@ -150,7 +159,7 @@ depend:
 buildexecutable:: $(NAME)$(EXEC_EXT)
 
 ifeq ($(UISTYLE),tk)
-  UIOBJS=uitk.cmx
+  UIOBJS=myfileselect.cmx uitk.cmx
 endif
 
 ifeq ($(UISTYLE),gtk)
@@ -160,8 +169,8 @@ endif
 # Object code files for the native-code version (the names of the
 # corresponding bytecode files are generated automatically if needed)
 OBJS_NATIVE0 = \
-	strings.cmx util.cmx os.cmx arg.cmx prefs.cmx trace.cmx common.cmx \
-	ignore.cmx remote.cmx uri.cmx \
+	strings.cmx util.cmx arg.cmx prefs.cmx pred.cmx \
+        os.cmx trace.cmx uri.cmx common.cmx remote.cmx \
 	globals.cmx files.cmx update.cmx recon.cmx transport.cmx \
 	uicommon.cmx uitext.cmx $(UIOBJS) \
 	main.cmx
