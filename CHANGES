@@ -1,5 +1,8 @@
 $Id$
 
+2005.01.08 [Olivier]
+  * add a use_markup optional argument to GEdit.combo_box_text.
+
 2005.01.04 [Olivier] (2.6)
   * new stock items
   * add PangoEllipsizeMode for PangoLayout

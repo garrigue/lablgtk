@@ -333,6 +333,7 @@ val text_combo_get_active : 'a text_combo -> string option
     @gtkdoc gtk GtkComboBox *)
 val combo_box_text :
   ?strings:string list ->
+  ?use_markup:bool ->
   ?active:int ->
   ?add_tearoffs:bool ->
   ?focus_on_click:bool ->
