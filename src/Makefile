@@ -185,6 +185,9 @@ lablgtk2: Makefile $(CONFIG) lablgtk2.in
 	    < lablgtk2.in > $@
 	chmod 755 $@
 
+lablgtk2.bat: lablgtk2.bat.in
+	cp lablgtk2.bat.in lablgtk2.bat
+
 lablgtkopt:: $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx)
 ifeq ($(THREADS_LIB),system)
 lablgtkopt:: $(THOBJS:.cmo=.cmx)
