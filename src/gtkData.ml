@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open Tags
 
@@ -141,7 +141,7 @@ module Selection = struct
   external format : t -> int
       = "ml_gtk_selection_data_format"
   external get_data : t -> string
-      = "ml_gtk_selection_data_get_data"       (* May raise Null_pointer *)
+      = "ml_gtk_selection_data_get_data"       (* May raise Gpointer.null *)
   external set :
       t -> typ:Gdk.atom -> format:int -> ?data:string -> unit
       = "ml_gtk_selection_data_set"

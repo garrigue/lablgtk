@@ -321,7 +321,7 @@ end
 
 
 let set_editable ?editable ?(width = -2) ?(height = -2) w =
-  Misc.may editable ~f:(GtkEdit.Editable.set_editable w);
+  Gaux.may editable ~f:(GtkEdit.Editable.set_editable w);
   if width <> -2 || height <> -2 then GtkBase.Widget.set_usize w ~width ~height
 
 

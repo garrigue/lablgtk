@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open GtkBase
 
@@ -118,7 +118,7 @@ module Menu = struct
       [>`menuitem] optobj -> button:int -> time:int -> unit
       = "ml_gtk_menu_popup"
   let popup ?parent_menu ?parent_item w =
-    popup w (optboxed parent_menu) (optboxed parent_item)
+    popup w (Gpointer.optboxed parent_menu) (Gpointer.optboxed parent_item)
   external popdown : [>`menu] obj -> unit = "ml_gtk_menu_popdown"
   external get_active : [>`menu] obj -> widget obj= "ml_gtk_menu_get_active"
   external set_active : [>`menu] obj -> int -> unit = "ml_gtk_menu_set_active"

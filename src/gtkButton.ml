@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open Tags
 open GtkBase
@@ -92,14 +92,16 @@ module Toolbar = struct
   let insert_space w ?(pos = -1) () = insert_space w ~pos
   external insert_button :
       [>`toolbar] obj -> kind:[`BUTTON|`TOGGLEBUTTON|`RADIOBUTTON] ->
-      text:optstring -> tooltip:optstring -> tooltip_private:optstring ->
+      text:Gpointer.optstring -> tooltip:Gpointer.optstring ->
+      tooltip_private:Gpointer.optstring ->
       icon:[>`widget] optobj -> pos:int -> button obj
       = "ml_gtk_toolbar_insert_element_bc" "ml_gtk_toolbar_insert_element"
   let insert_button w ?kind:(t=`BUTTON) ?text ?tooltip ?tooltip_private
       ?icon ?(pos = -1) ?callback () =
-    let b =insert_button w ~kind:t ~text:(optstring text)
-	~tooltip:(optstring tooltip)
-	~tooltip_private:(optstring tooltip_private) ~icon:(optboxed icon)
+    let b =insert_button w ~kind:t ~text:(Gpointer.optstring text)
+	~tooltip:(Gpointer.optstring tooltip)
+	~tooltip_private:(Gpointer.optstring tooltip_private)
+        ~icon:(Gpointer.optboxed icon)
 	~pos in
     match callback with
     | None   -> b
@@ -107,11 +109,12 @@ module Toolbar = struct
 	  ~callback: c; b
   external insert_widget :
       [>`toolbar] obj -> [>`widget] obj ->
-      tooltip:optstring -> tooltip_private:optstring -> pos:int -> unit
+      tooltip:Gpointer.optstring ->
+      tooltip_private:Gpointer.optstring -> pos:int -> unit
       = "ml_gtk_toolbar_insert_widget"
   let insert_widget w ?tooltip ?tooltip_private ?(pos = -1) w' =
-    insert_widget w w' ~tooltip:(optstring tooltip)
-      ~tooltip_private:(optstring tooltip_private) ~pos
+    insert_widget w w' ~tooltip:(Gpointer.optstring tooltip)
+      ~tooltip_private:(Gpointer.optstring tooltip_private) ~pos
   external set_orientation : [>`toolbar] obj -> orientation -> unit =
     "ml_gtk_toolbar_set_orientation"
   external set_style : [>`toolbar] obj -> toolbar_style -> unit =

@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open Tags
 open GtkBase
@@ -26,8 +26,8 @@ end
 module Frame = struct
   let cast w : frame obj = Object.try_cast w "GtkFrame"
   external coerce : [>`frame] obj -> frame obj = "%identity"
-  external create : optstring -> frame obj = "ml_gtk_frame_new"
-  let create ?label () = create (optstring label)
+  external create : Gpointer.optstring -> frame obj = "ml_gtk_frame_new"
+  let create ?label () = create (Gpointer.optstring label)
   external set_label : [>`frame] obj -> string -> unit
       = "ml_gtk_frame_set_label"
   external set_label_align : [>`frame] obj -> x:clampf -> y:clampf -> unit
@@ -52,12 +52,12 @@ end
 module AspectFrame = struct
   let cast w : aspect_frame obj = Object.try_cast w "GtkAspectFrame"
   external create :
-      label:optstring -> xalign:clampf ->
+      label:Gpointer.optstring -> xalign:clampf ->
       yalign:clampf -> ratio:float -> obey_child:bool -> aspect_frame obj
       = "ml_gtk_aspect_frame_new"
   let create ?label ?(xalign=0.5) ?(yalign=0.5)
       ?(ratio=1.0) ?(obey_child=true) () =
-    create ~label:(optstring label) ~xalign ~yalign ~ratio ~obey_child
+    create ~label:(Gpointer.optstring label) ~xalign ~yalign ~ratio ~obey_child
   external set :
       [>`aspect] obj ->
       xalign:clampf -> yalign:clampf -> ratio:float -> obey_child:bool -> unit
@@ -103,7 +103,7 @@ module Viewport = struct
       [>`adjustment] optobj -> [>`adjustment] optobj -> viewport obj
       = "ml_gtk_viewport_new"
   let create ?hadjustment ?vadjustment () =
-    create (optboxed hadjustment) (optboxed vadjustment)
+    create (Gpointer.optboxed hadjustment) (Gpointer.optboxed vadjustment)
   external get_hadjustment : [>`viewport] obj -> adjustment obj
       = "ml_gtk_viewport_get_hadjustment"
   external get_vadjustment : [>`viewport] obj -> adjustment obj
@@ -126,7 +126,7 @@ module ScrolledWindow = struct
       [>`adjustment] optobj -> [>`adjustment] optobj -> scrolled_window obj
       = "ml_gtk_scrolled_window_new"
   let create ?hadjustment ?vadjustment () =
-    create (optboxed hadjustment) (optboxed vadjustment)
+    create (Gpointer.optboxed hadjustment) (Gpointer.optboxed vadjustment)
   external set_hadjustment : [>`scrolled] obj -> [>`adjustment] obj -> unit
       = "ml_gtk_scrolled_window_set_hadjustment"
   external set_vadjustment : [>`scrolled] obj -> [>`adjustment] obj -> unit

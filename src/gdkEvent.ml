@@ -1,11 +1,11 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gdk
 open Tags
 
 external coerce : 'a event -> event_type event = "%identity"
-external unsafe_copy : pointer -> #event_type event
+external unsafe_copy : Gpointer.boxed -> #event_type event
     = "ml_gdk_event_copy"
 external copy : (#event_type as 'a) event -> 'a event
     = "ml_gdk_event_copy"

@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open GtkBase
 open GtkPack
@@ -103,8 +103,8 @@ end
 let layout ?hadjustment ?vadjustment ?layout_width ?layout_height
     ?border_width ?width ?height ?packing ?show () =
   let w = Layout.create
-      (optboxed (may_map ~f:GData.as_adjustment hadjustment))
-      (optboxed (may_map ~f:GData.as_adjustment vadjustment)) in
+      (Gpointer.optboxed (may_map ~f:GData.as_adjustment hadjustment))
+      (Gpointer.optboxed (may_map ~f:GData.as_adjustment vadjustment)) in
   if layout_width <> None || layout_height <> None then
     Layout.set_size w ?width:layout_width ?height:layout_height;
   Container.set w ?border_width ?width ?height;

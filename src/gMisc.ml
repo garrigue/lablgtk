@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open GtkBase
 open GtkMisc
@@ -180,8 +180,8 @@ class notebook obj = object (self)
   method connect = new notebook_signals obj
   method insert_page ?tab_label ?menu_label ~pos child =
       Notebook.insert_page obj (as_widget child) ~pos
-	~tab_label:(may_box tab_label ~f:as_widget)
-	~menu_label:(may_box menu_label ~f:as_widget)
+	~tab_label:(Gpointer.may_box tab_label ~f:as_widget)
+	~menu_label:(Gpointer.may_box menu_label ~f:as_widget)
   method append_page = self#insert_page ~pos:(-1)
   method prepend_page = self#insert_page ~pos:0
   method remove_page = Notebook.remove_page obj
@@ -239,7 +239,7 @@ class pixmap obj = object
     Pixmap.set obj ~pixmap:pm#pixmap ?mask:pm#mask
   method pixmap =
     new GDraw.pixmap (Pixmap.pixmap obj)
-      ?mask:(try Some(Pixmap.mask obj) with Null_pointer -> None)
+      ?mask:(try Some(Pixmap.mask obj) with Gpointer.Null -> None)
 end
 
 let pixmap (pm : #GDraw.pixmap) ?xalign ?yalign ?xpad ?ypad

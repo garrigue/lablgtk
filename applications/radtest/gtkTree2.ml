@@ -1,11 +1,6 @@
 (* $Id$ *)
 
-open Misc
-open Gtk
-open Tags
-open GtkBase
-
-open Misc
+open Gaux
 open Gtk
 open Tags
 open GtkBase
@@ -30,7 +25,7 @@ module TreeItem = struct
       = "ml_gtk_tree_item2_collapse"
   external subtree : [>`treeitem] obj -> tree obj
       = "ml_GTK_TREE_ITEM2_SUBTREE"
-  let subtree t = try subtree t with Misc.Null_pointer -> raise Not_found
+  let subtree t = try subtree t with Gpointer.Null -> raise Not_found
   module Signals = struct
     open GtkSignal
     let expand : ([>`treeitem],_) t =

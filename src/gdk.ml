@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 
 type colormap
 type visual
@@ -183,7 +183,7 @@ module Window = struct
   external get_xwindow : window -> xid = "ml_GDK_WINDOW_XWINDOW"
 
   let set_back_pixmap w pix = 
-    let null_pixmap = (Obj.magic null : pixmap) in
+    let null_pixmap = (Obj.magic Gpointer.boxed_null : pixmap) in
     match pix with
       `NONE -> set_back_pixmap w null_pixmap 0
     | `PARENT_RELATIVE -> set_back_pixmap w null_pixmap 1

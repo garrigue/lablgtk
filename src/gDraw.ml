@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gdk
 
 type color = [
@@ -30,10 +30,10 @@ object (self)
   method set_line_attributes ?width ?style ?cap ?join () =
     let v = GC.get_values gc in
     GC.set_line_attributes gc
-      ~width:(default v.GC.line_width width)
-      ~style:(default v.GC.line_style style)
-      ~cap:(default v.GC.cap_style cap)
-      ~join:(default v.GC.join_style join)
+      ~width:(default v.GC.line_width ~opt:width)
+      ~style:(default v.GC.line_style ~opt:style)
+      ~cap:(default v.GC.cap_style ~opt:cap)
+      ~join:(default v.GC.join_style ~opt:join)
   method point = Draw.point w gc
   method line = Draw.line w gc
   method rectangle = Draw.rectangle w gc
@@ -107,7 +107,7 @@ let pixmap ~(window : < misc : #widget_draw; .. >)
   window#misc#realize ();
   let window =
     try window#misc#window
-    with Null_pointer -> failwith "GDraw.pixmap : no window"
+    with Gpointer.Null -> failwith "GDraw.pixmap : no window"
   and depth = window#misc#visual_depth
   and colormap = window#misc#colormap in
   let mask =
@@ -124,18 +124,18 @@ let pixmap_from_xpm ~window ~file ?colormap ?transparent () =
   window#misc#realize ();
   let window =
     try window#misc#window
-    with Null_pointer -> failwith "GDraw.pixmap_from_xpm : no window" in
+    with Gpointer.Null -> failwith "GDraw.pixmap_from_xpm : no window" in
   let pm, mask =
     try Pixmap.create_from_xpm window ~file ?colormap
 	?transparent:(may_map transparent ~f:(fun c -> color c))
-    with Null_pointer -> invalid_arg ("GDraw.pixmap_from_xpm : " ^ file) in
+    with Gpointer.Null -> invalid_arg ("GDraw.pixmap_from_xpm : " ^ file) in
   new pixmap pm ?colormap ~mask
 
 let pixmap_from_xpm_d ~window ~data ?colormap ?transparent () =
   window#misc#realize ();
   let window =
     try window#misc#window
-    with Null_pointer -> failwith "GDraw.pixmap_from_xpm_d : no window" in
+    with Gpointer.Null -> failwith "GDraw.pixmap_from_xpm_d : no window" in
   let pm, mask =
     Pixmap.create_from_xpm_d window ~data ?colormap
       ?transparent:(may_map transparent ~f:(fun c -> color c)) in

@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open Tags
 open GtkBase
@@ -132,12 +132,12 @@ end
 module FontSelectionDialog = struct
   type null_terminated
   let null_terminated arg : null_terminated =
-    match arg with None -> Obj.magic Misc.null
+    match arg with None -> Obj.magic Gpointer.raw_null
     | Some l ->
 	let len = List.length l in
 	let arr = Array.create (len + 1) "" in
 	let rec loop i = function
-	    [] -> arr.(i) <- Obj.magic Misc.null
+	    [] -> arr.(i) <- Obj.magic Gpointer.raw_null
 	  | s::l -> arr.(i) <- s; loop (i+1) l
 	in loop 0 l;
 	Obj.magic (arr : string array)
@@ -148,11 +148,11 @@ module FontSelectionDialog = struct
   external get_font : [>`fontseldialog] obj -> Gdk.font
       = "ml_gtk_font_selection_dialog_get_font"
   let get_font w =
-    try Some (get_font w) with Null_pointer -> None
+    try Some (get_font w) with Gpointer.Null -> None
   external get_font_name : [>`fontseldialog] obj -> string
       = "ml_gtk_font_selection_dialog_get_font_name"
   let get_font_name w =
-    try Some (get_font_name w) with Null_pointer -> None
+    try Some (get_font_name w) with Gpointer.Null -> None
   external set_font_name : [>`fontseldialog] obj -> string -> unit
       = "ml_gtk_font_selection_dialog_set_font_name"
   external set_filter :

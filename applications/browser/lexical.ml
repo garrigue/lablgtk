@@ -17,7 +17,7 @@ let colors : (tags * GDraw.color) list Lazy.t =
          `none, "black" ])
 
 let tag ?(start=0) ?stop:pend (tw : GEdit.text) =
-  let pend = Misc.default tw#length pend in
+  let pend = Gaux.default tw#length ~opt:pend in
   let colors = Lazy.force colors in
   tw#freeze ();
   let position = tw#position
