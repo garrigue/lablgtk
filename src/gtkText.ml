@@ -832,7 +832,7 @@ module Iter = struct
   external backward_to_tag_toggle : textiter -> texttag option -> bool = "ml_gtk_text_iter_backward_to_tag_toggle"
   external equal : textiter -> textiter -> bool = "ml_gtk_text_iter_equal"
   external compare : textiter -> textiter -> int = "ml_gtk_text_iter_compare"
-  external in_range : textiter -> textiter -> textiter -> int = "ml_gtk_text_iter_in_range"
+  external in_range : textiter -> textiter -> textiter -> bool = "ml_gtk_text_iter_in_range"
   external order : textiter -> textiter -> unit = "ml_gtk_text_iter_order"
 
   external forward_search :

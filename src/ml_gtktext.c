@@ -864,7 +864,7 @@ ML_2 (gtk_text_iter_backward_to_tag_toggle, GtkTextIter_val,
 ML_2 (gtk_text_iter_equal, GtkTextIter_val, GtkTextIter_val, Val_bool)
 ML_2 (gtk_text_iter_compare, GtkTextIter_val, GtkTextIter_val, Val_int)
 ML_3 (gtk_text_iter_in_range, GtkTextIter_val, GtkTextIter_val,
-      GtkTextIter_val, Val_int)
+      GtkTextIter_val, Val_bool)
 ML_2 (gtk_text_iter_order, GtkTextIter_val, GtkTextIter_val, Unit)
 
 Make_OptFlags_val(Text_search_flag_val)

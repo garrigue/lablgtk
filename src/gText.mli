@@ -146,7 +146,7 @@ object ('self)
   method get_visible_slice : stop:iter -> string
   method get_visible_text : stop:iter -> string
   method has_tag : tag -> bool
-  method in_range : start:iter -> stop:iter -> int
+  method in_range : start:iter -> stop:iter -> bool
   method inside_sentence : bool
   method inside_word : bool
   method is_cursor_position : bool
