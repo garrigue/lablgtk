@@ -11,6 +11,7 @@ module Arg = struct
   external get_char : t -> char = "ml_gtk_arg_get_char"
   external get_bool : t -> bool = "ml_gtk_arg_get_bool"
   external get_int : t -> int = "ml_gtk_arg_get_int"
+  external get_nativeint : t -> nativeint = "ml_gtk_arg_get_nativeint"
   external get_float : t -> float = "ml_gtk_arg_get_float"
   external get_string : t -> string option = "ml_gtk_arg_get_string"
   external get_pointer : t -> pointer option = "ml_gtk_arg_get_pointer"
@@ -21,6 +22,7 @@ module Arg = struct
   external set_char : t -> char -> unit = "ml_gtk_arg_set_char"
   external set_bool : t -> bool -> unit = "ml_gtk_arg_set_bool"
   external set_int : t -> int -> unit = "ml_gtk_arg_set_int"
+  external set_nativeint : t -> nativeint -> unit = "ml_gtk_arg_set_nativeint"
   external set_float : t -> float -> unit = "ml_gtk_arg_set_float"
   external set_string : t -> string -> unit = "ml_gtk_arg_set_string"
   external set_pointer : t -> pointer -> unit = "ml_gtk_arg_set_pointer"
@@ -45,6 +47,7 @@ let get_type arg ~pos = get_type (nth arg ~pos)
 let get_char arg ~pos = get_char (nth arg ~pos)
 let get_bool arg ~pos = get_bool (nth arg ~pos)
 let get_int arg ~pos = get_int (nth arg ~pos)
+let get_nativeint arg ~pos = get_nativeint (nth arg ~pos)
 let get_float arg ~pos = get_float (nth arg ~pos)
 let get_string arg ~pos = get_string (nth arg ~pos)
 let get_pointer arg ~pos = get_pointer (nth arg ~pos)
@@ -52,12 +55,13 @@ let get_object arg ~pos = get_object (nth arg ~pos)
 let set_result_char arg = set_char (result arg)
 let set_result_bool arg = set_bool (result arg)
 let set_result_int arg = set_int (result arg)
+let set_result_nativeint arg = set_nativeint (result arg)
 let set_result_float arg = set_float (result arg)
 let set_result_string arg = set_string (result arg)
 let set_result_pointer arg = set_pointer (result arg)
 let set_result_object arg = set_object (result arg)
 
-external substring_of_pointer : pointer -> pos:int -> len:int -> string
-    = "ml_substring_of_pointer"
-external int_of_pointer : pointer -> int
-    = "ml_int_of_pointer"
+external string_at_pointer : ?pos:int -> ?len:int -> pointer -> string
+    = "ml_string_at_pointer"
+external int_at_pointer : pointer -> int
+    = "ml_int_at_pointer"

@@ -51,11 +51,12 @@ module Editable = struct
       (* These two accesses are highly specification-dependent *)
       let s =
         match get_pointer argv ~pos:0 with
-          Some ptr -> substring_of_pointer ptr ~pos:0 ~len:(get_int argv ~pos:1)
+          Some ptr ->
+            string_at_pointer ptr ~len:(get_int argv ~pos:1)
         | None -> assert false
       and pos =
         match get_pointer argv ~pos:2 with
-          Some ptr -> int_of_pointer ptr
+          Some ptr -> int_at_pointer ptr
         | None -> assert false
       in
       f s ~pos

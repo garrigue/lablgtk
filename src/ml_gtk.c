@@ -191,9 +191,6 @@ ML_3 (gtk_tooltips_set_colors, GtkTooltips_val,
 
 /* gtkwidget.h */
 
-#define Val_GtkWidget Val_GtkAny
-#define Val_GtkWidget_sink Val_GtkAny_sink
-
 value ml_gtk_widget_set_can_default (value val, value bool)
 {
     GtkWidget *w = GtkWidget_val(val);
@@ -1649,6 +1646,24 @@ value ml_gtk_arg_get_int (GtkArg *arg)
     }
 }
 
+value ml_gtk_arg_get_nativeint(GtkArg *arg) {
+
+     switch(GTK_FUNDAMENTAL_TYPE(arg->type)) {
+     case GTK_TYPE_INT:
+     case GTK_TYPE_UINT:
+          return copy_nativeint (GTK_VALUE_INT(*arg));
+     case GTK_TYPE_LONG:
+     case GTK_TYPE_ULONG:
+          return copy_nativeint (GTK_VALUE_LONG(*arg));
+     case GTK_TYPE_ENUM:
+          return copy_nativeint (GTK_VALUE_ENUM(*arg));
+     case GTK_TYPE_FLAGS:
+          return copy_nativeint (GTK_VALUE_FLAGS(*arg));
+     default:
+          ml_raise_gtk ("argument type mismatch");
+     }
+}
+
 value ml_gtk_arg_get_float (GtkArg *arg)
 {
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
@@ -1698,15 +1713,16 @@ value ml_gtk_arg_get_object (GtkArg *arg)
     return Val_option (p, Val_GtkObject);
 }
 
-value ml_substring_of_pointer (value ptr, value pos, value len)
+value ml_string_at_pointer (value ofs, value len, value ptr)
 {
-    value ret = alloc_string(Int_val(len));
-    memcpy ((char*)ret, ((char*)Pointer_val(ptr)) + Int_val(pos),
-            Int_val(len));
+    char *start = ((char*)Pointer_val(ptr)) + Option_val(ofs, Int_val, 0);
+    int length = Option_val(len, Int_val, strlen(start));
+    value ret = alloc_string(length);
+    memcpy ((char*)ret, start, length);
     return ret;
 }
 
-value ml_int_of_pointer (value ptr)
+value ml_int_at_pointer (value ptr)
 {
     return Val_int(*(int*)Pointer_val(ptr));
 }
@@ -1740,6 +1756,25 @@ value ml_gtk_arg_set_int (GtkArg *arg, value val)
 	*GTK_RETLOC_ENUM(*arg) = Int_val(val); break;
     case GTK_TYPE_FLAGS:
 	*GTK_RETLOC_FLAGS(*arg) = Int_val(val); break;
+    default:
+	ml_raise_gtk ("argument type mismatch");
+    }
+    return Val_unit;
+}
+
+value ml_gtk_arg_set_nativeint (GtkArg *arg, value val)
+{
+    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
+    case GTK_TYPE_INT:
+    case GTK_TYPE_UINT:
+	*GTK_RETLOC_INT(*arg) = Nativeint_val(val); break;
+    case GTK_TYPE_LONG:
+    case GTK_TYPE_ULONG:
+	*GTK_RETLOC_LONG(*arg) = Nativeint_val(val); break;
+    case GTK_TYPE_ENUM:
+	*GTK_RETLOC_ENUM(*arg) = Nativeint_val(val); break;
+    case GTK_TYPE_FLAGS:
+	*GTK_RETLOC_FLAGS(*arg) = Nativeint_val(val); break;
     default:
 	ml_raise_gtk ("argument type mismatch");
     }
