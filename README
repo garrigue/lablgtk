@@ -1,11 +1,13 @@
 
-		LablGTK : an interface to the GIMP Tool Kit
-
+             LablGTK : an interface to the GIMP Tool Kit
 
 Needed:
 	ocaml-3.01
 	gtk-1.2.x
 	gmake (there is no standard for conditionals)
+
+Info/upgrades:
+        http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgtk.html
 
 How to compile:
 
