@@ -154,3 +154,10 @@ module ScrolledWindow = struct
       set_policy' w ?hpolicy ?vpolicy;
     may placement ~f:(set_placement w)
 end
+
+module Socket = struct
+  let cast w : socket obj = Object.try_cast w "GtkItem"
+  external coerce : [>`item] obj -> item obj = "%identity"
+  external create : unit -> socket obj = "ml_gtk_socket_new"
+  external steal : [>`socket] obj -> Gdk.xid -> unit = "ml_gtk_socket_steal"
+end

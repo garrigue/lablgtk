@@ -232,7 +232,7 @@ object(self)
 
   val evbox =
     if root then None else
-    let ev = GFrame.event_box () in
+    let ev = GBin.event_box () in
     ev#add widget#coerce; Some ev
 
   val widget = widget#coerce
@@ -1058,14 +1058,14 @@ end
 let new_tilabel ~name = new tilabel ~widget:(GMisc.label ~text:name ()) ~name
 
 
-class tiframe ~(widget : GFrame.frame) ~name ~parent_tree ~pos
+class tiframe ~(widget : GBin.frame) ~name ~parent_tree ~pos
     parent_window =
 object
   val frame = widget
   inherit ticontainer
       ~classe:"frame" ~name ~widget ~parent_tree ~pos parent_window
 
-  method private class_name = "GFrame.frame"
+  method private class_name = "GBin.frame"
 
   initializer
     frame#set_label name;
@@ -1079,17 +1079,17 @@ object
 	           ~set:frame#set_shadow_type ]
 end
 
-let new_tiframe ~name = new tiframe ~widget:(GFrame.frame ()) ~name
+let new_tiframe ~name = new tiframe ~widget:(GBin.frame ()) ~name
 
 
-class tiscrolled_window ~(widget : GFrame.scrolled_window)
+class tiscrolled_window ~(widget : GBin.scrolled_window)
     ~name ~parent_tree ~pos parent_window =
   object(self)
     val scrolled_window = widget
     inherit ticontainer ~classe:"scrolled_window" ~name
 	~parent_tree ~pos ~widget parent_window
 
-    method private class_name = "GFrame.scrolled_window"
+    method private class_name = "GBin.scrolled_window"
     method private name_of_add_method = "#add_with_viewport"
 
 
@@ -1124,7 +1124,7 @@ class tiscrolled_window ~(widget : GFrame.scrolled_window)
 end
 
 let new_tiscrolled_window ~name =
-  new tiscrolled_window ~widget:(GFrame.scrolled_window ()) ~name
+  new tiscrolled_window ~widget:(GBin.scrolled_window ()) ~name
 
 
 class tiseparator ~(dir : Gtk.Tags.orientation) ~(widget : widget_full)

@@ -1,5 +1,9 @@
 $Id$
 
+2000.5.10
+  * rename GtkFrame to GtkBin and GFrame to GBin
+  * move socket to GBin
+
 2000.5.9
   * add arrow and image classes to GMisc
   * add list and set_item_string methods to GEdit.combo

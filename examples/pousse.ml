@@ -180,12 +180,12 @@ end
 (* Graphical elements *)
 
 let vbox = GPack.vbox ~packing:window#add ()
-let frame = GFrame.frame ~shadow_type:`IN ~packing:vbox#add ()
+let frame = GBin.frame ~shadow_type:`IN ~packing:vbox#add ()
 let hbox = GPack.hbox ~packing:(vbox#pack ~expand:false) ()
 
 let bar = GMisc.statusbar ~packing:hbox#add ()
 
-let frame2 = GFrame.frame ~shadow_type:`IN ~packing:(hbox#pack ~expand:false) ()
+let frame2 = GBin.frame ~shadow_type:`IN ~packing:(hbox#pack ~expand:false) ()
 let label = GMisc.label ~justify:`LEFT ~xpad:5 ~xalign:0.0 ~packing:frame2#add ()
 
 let game = new game ~frame ~label ~statusbar:bar

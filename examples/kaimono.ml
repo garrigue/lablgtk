@@ -22,9 +22,9 @@ let factory = new GMenu.factory menubar
 let file_menu = factory#add_submenu "File"
 let edit_menu = factory#add_submenu "Edit"
 
-let sw = GFrame.scrolled_window ~height:200 ~packing:vb#add
+let sw = GBin.scrolled_window ~height:200 ~packing:vb#add
     ~hpolicy:`AUTOMATIC ~vpolicy:`AUTOMATIC ()
-let vp = GFrame.viewport ~width:340 ~shadow_type:`NONE ~packing:sw#add ()
+let vp = GBin.viewport ~width:340 ~shadow_type:`NONE ~packing:sw#add ()
 let table = GPack.table ~columns:4 ~rows:256 ~packing:vp#add ()
 let _ =
   table#focus#set_vadjustment (Some vp#vadjustment)

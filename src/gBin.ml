@@ -3,7 +3,7 @@
 open Misc
 open Gtk
 open GtkBase
-open GtkFrame
+open GtkBin
 open GObj
 open GContainer
 
@@ -137,3 +137,16 @@ let alignment ?x ?y ?xscale ?yscale
   pack_return (new alignment w) ~packing ~show
   
 let alignment_cast w = new alignment (Alignment.cast w#as_widget)
+
+class socket obj = object (self)
+  inherit container_full (obj : Gtk.socket obj)
+  method steal = Socket.steal obj
+  method xwindow =
+    self#misc#realize ();
+    Gdk.Window.get_xwindow self#misc#window
+end
+
+let socket ?border_width ?width ?height ?packing ?show () =
+  let w = Socket.create () in
+  Container.set w ?border_width ?width ?height;
+  pack_return (new socket w) ?packing ?show

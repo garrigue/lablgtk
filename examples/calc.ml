@@ -78,9 +78,9 @@ class calculator ?packing ?show () =
     inherit calc
 
     val label =
-      let frame = GFrame.frame ~shadow_type:`IN ()
+      let frame = GBin.frame ~shadow_type:`IN ()
 	~packing:(table#attach ~left:0 ~top:0 ~right:4) in
-      let evbox = GFrame.event_box ~packing:frame#add () in
+      let evbox = GBin.event_box ~packing:frame#add () in
       evbox#misc#set_style evbox#misc#style#copy;
       evbox#misc#style#set_bg [`NORMAL,`WHITE];
       GMisc.label ~justify:`RIGHT ~xalign:0.95 ~packing:evbox#add ()

@@ -5,7 +5,7 @@ open GMain
 open GObj
 
 let create_bbox direction title spacing child_w child_h layout =
-  let frame = GFrame.frame ~label: title () in
+  let frame = GBin.frame ~label: title () in
   let bbox = GPack.button_box direction ~border_width: 5 ~packing: frame#add 
       ~layout: layout ~child_height: child_h ~child_width: child_w
       ~spacing: spacing () in
@@ -25,7 +25,7 @@ let create_button_box =
 
 	let main_vbox = GPack.vbox ~packing: (window#add) () in
 
-	let frame_horz = GFrame.frame ~label: "Horizontal Button Boxes"
+	let frame_horz = GBin.frame ~label: "Horizontal Button Boxes"
 	    ~packing: (main_vbox#pack ~padding: 10) () in
 	
 	let vbox = GPack.vbox ~border_width: 10 ~packing: frame_horz#add () in
@@ -35,7 +35,7 @@ let create_button_box =
 	vbox#pack (create_bbox `HORIZONTAL "Start"  40 85 20 `START) ~padding: 5;
 	vbox#pack (create_bbox `HORIZONTAL "End"    40 85 20 `END)   ~padding: 5;
 
-	let frame_vert = GFrame.frame ~label: "Vertical Button Boxes"
+	let frame_vert = GBin.frame ~label: "Vertical Button Boxes"
 	    ~packing: (main_vbox#pack ~padding: 10) () in
 	
 	let hbox = GPack.hbox ~border_width: 10 ~packing: frame_vert#add () in
@@ -333,7 +333,7 @@ let cmw_file parent _ =
 let create_modal_window () =
   let window = GWindow.window ~modal:true ~title:"This window is modal" () in
   let box1 = GPack.vbox ~spacing:5 ~border_width:3 ~packing:window#add () in
-  let frame1 = GFrame.frame ~label:"Standard dialogs in modal form"
+  let frame1 = GBin.frame ~label:"Standard dialogs in modal form"
       ~packing:(box1#pack ~padding:4) () in
   let box2 = GPack.vbox ~homogeneous:true ~spacing:5 ~packing:frame1#add () in
   let btnColor = GButton.button ~label:"Color" 
@@ -356,7 +356,7 @@ let create_modal_window () =
 (* corrected bug in testgtk.c *)
 let scrolled_windows_remove, scrolled_windows_clean =
   let parent = ref None and float_parent = ref None in
-  let remove (scrollwin : GFrame.scrolled_window) () =
+  let remove (scrollwin : GBin.scrolled_window) () =
     match !parent with
     | None ->
 	parent :=
@@ -394,7 +394,7 @@ let create_scrolled_windows =
 	window #connect#destroy ~callback:(fun  _ -> rw := None);
 	window #connect#destroy ~callback:scrolled_windows_clean;
 
-	let scrolled_window = GFrame.scrolled_window ~border_width:10
+	let scrolled_window = GBin.scrolled_window ~border_width:10
 	    ~hpolicy: `AUTOMATIC ~vpolicy:`AUTOMATIC
 	    ~packing: window#vbox#pack () in
 
@@ -547,7 +547,7 @@ let create_toolbar =
 
 (* Handlebox *)
 
-let handle_box_child_signal action (hb : GFrame.handle_box) child =
+let handle_box_child_signal action (hb : GBin.handle_box) child =
   Printf.printf "%s: child <%s> %s\n" hb#get_type child#get_type action
 
 let create_handle_box =
@@ -571,7 +571,7 @@ let create_handle_box =
 	GMisc.separator `HORIZONTAL ~packing:vbox#pack ();
 
 	GMisc.label ~text:"Below" ~packing:vbox#pack ();
-	let handle_box = GFrame.handle_box
+	let handle_box = GBin.handle_box
 	    ~packing:(hbox#pack ~expand:false ~fill:false) () in
 	handle_box #connect#child_attached
 	  ~callback:(handle_box_child_signal "attached" handle_box);
@@ -582,14 +582,14 @@ let create_handle_box =
 	make_toolbar toolbar window;
 	toolbar #set_button_relief `NORMAL;
 
-	let handle_box = GFrame.handle_box
+	let handle_box = GBin.handle_box
 	    ~packing:(hbox#pack ~expand:false ~fill:false) () in
 	handle_box #connect#child_attached
 	  ~callback:(handle_box_child_signal "attached" handle_box);
 	handle_box #connect#child_detached
 	  ~callback:(handle_box_child_signal "detached" handle_box);
 
-	let handle_box2 = GFrame.handle_box ~packing:handle_box#add () in
+	let handle_box2 = GBin.handle_box ~packing:handle_box#add () in
 	handle_box2 #connect#child_attached
 	  ~callback:(handle_box_child_signal "attached" handle_box);
 	handle_box2 #connect#child_detached
@@ -685,7 +685,7 @@ let create_tree_sample selection_mode draw_line view_line no_root_item
   let window = GWindow.window ~title:"Tree Sample" () in
   let box1 = GPack.vbox ~packing:window#add () in
   let box2 = GPack.vbox ~packing:box1#pack ~border_width:5 () in
-  let scrolled_win = GFrame.scrolled_window ~packing:box2#pack
+  let scrolled_win = GBin.scrolled_window ~packing:box2#pack
       ~hpolicy: `AUTOMATIC ~vpolicy:`AUTOMATIC
       ~width:200 ~height:200 () in
 
@@ -783,7 +783,7 @@ let create_tree_mode_window =
 
 	let box3 = GPack.hbox ~spacing:5 ~packing:(box2#pack) () in
 
-	let frame = GFrame.frame ~label:"Selection Mode" ~packing:(box3#pack) ()
+	let frame = GBin.frame ~label:"Selection Mode" ~packing:(box3#pack) ()
 	in
 	
 	let box4 = GPack.vbox ~packing:(frame#add) ~border_width:5 () in
@@ -792,7 +792,7 @@ let create_tree_mode_window =
 	box4 #pack browse_button#coerce;
 	box4 #pack multiple_button#coerce;
 
-	let frame = GFrame.frame ~label:"Options" ~packing:(box3#pack) () in
+	let frame = GBin.frame ~label:"Options" ~packing:(box3#pack) () in
 	
 	let box4 = GPack.vbox ~packing:(frame#add) ~border_width:5 () in
 	box4 #pack draw_line_button#coerce;
@@ -803,7 +803,7 @@ let create_tree_mode_window =
 	
 	box4 #pack no_root_item_button#coerce;
 
-	let frame = GFrame.frame ~label:"Size Parameters" ~packing:box2#pack ()
+	let frame = GBin.frame ~label:"Size Parameters" ~packing:box2#pack ()
 	in
 
 	let box4 = GPack.hbox ~spacing:5 ~packing:frame#add ~border_width:5 () in
@@ -909,7 +909,7 @@ let create_tooltips =
 	  ~callback:(tips_query_widget_entered toggle tips_query);
 	tips_query #connect#widget_selected ~callback:tips_query_widget_selected;
 
-	let frame = GFrame.frame ~label:"Tooltips Inspector"
+	let frame = GBin.frame ~label:"Tooltips Inspector"
 	    ~border_width:0 ~packing:(box2#pack ~padding:10) 
 	    ~label_xalign:0.5 ~label_yalign:0.0 () in
 	frame #add box3#coerce;
@@ -946,33 +946,33 @@ let create_labels =
 	let hbox = GPack.hbox ~spacing:5 ~packing:window#add () in
 	let vbox = GPack.vbox ~spacing:5 ~packing:hbox#pack () in
 
-	let frame = GFrame.frame ~label:"Normal Label"
+	let frame = GBin.frame ~label:"Normal Label"
 	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
 	GMisc.label ~text:"This is a normal label" ~packing:frame#add ();
 
-	let frame = GFrame.frame ~label:"Multi_line Label"
+	let frame = GBin.frame ~label:"Multi_line Label"
 	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
 	GMisc.label ~packing:frame#add
 	  ~text:"This is a multi-line label.\nSecond line\nThird line" ();
 
-	let frame = GFrame.frame ~label:"Left Justified Label"
+	let frame = GBin.frame ~label:"Left Justified Label"
 	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
 	GMisc.label ~packing:frame#add ~justify:`LEFT
 	  ~text:"This is a left justified\nmulti_line label\nThird line" ();
 
-	let frame = GFrame.frame ~label:"Right Justified Label"
+	let frame = GBin.frame ~label:"Right Justified Label"
 	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
 	GMisc.label ~packing:frame#add ~justify:`RIGHT
 	  ~text:"This is a right justified\nmulti_line label\nThird line" ();
 
 	let vbox = GPack.vbox ~spacing:5 ~packing:hbox#pack () in
 
-	let frame = GFrame.frame ~label:"Line wrapped Label"
+	let frame = GBin.frame ~label:"Line wrapped Label"
 	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
 	GMisc.label ~packing:frame#add ~line_wrap:true
 	  ~text:"This is an example of a line-wrapped label.  It should not be taking up the entire             width allocated to it, but automatically wraps the words to fit.  The time has come, for all good men, to come to the aid of their party.  The sixth sheik's six sheep's sick.\n     It supports multiple paragraphs correctly, and  correctly   adds many          extra  spaces. " ();
 
-	let frame = GFrame.frame ~label:"Underlined Label"
+	let frame = GBin.frame ~label:"Underlined Label"
 	    ~packing:(vbox#pack ~expand:false ~fill:false) () in
 	GMisc.label ~text:"This label is underlined!\nThis one is underlined in a quite a funky fashion" ~packing:frame#add
 	  ~justify:`LEFT ~pattern:"_________________________ _ _________ _ _____ _ __ __  ___ ____ _____" ();
@@ -1014,7 +1014,7 @@ let create_reparent =
 	let vbox = GPack.vbox ~packing:window#add () in
 	let hbox = GPack.hbox ~spacing:5 ~packing:vbox#pack ~border_width:10 () in
 
-	let frame = GFrame.frame ~label:"Frame1"  ~packing:hbox#pack () in
+	let frame = GBin.frame ~label:"Frame1"  ~packing:hbox#pack () in
 	let vbox2 = GPack.vbox ~spacing:5 ~packing:frame#add ~border_width:5 () in
 	let label = GMisc.label ~text:"Hello world"
 	    ~packing:(vbox2#pack ~expand:false) () in
@@ -1023,7 +1023,7 @@ let create_reparent =
 	    ~packing:(vbox2#pack ~expand:false) () in
 	button #connect#clicked ~callback:(reparent_label label vbox2#coerce);
 
-	let frame = GFrame.frame ~label:"Frame2"  ~packing:hbox#pack () in
+	let frame = GBin.frame ~label:"Frame2"  ~packing:hbox#pack () in
 	let vbox2 = GPack.vbox ~spacing:5 ~packing:frame#add ~border_width:5 () in
 	let button = GButton.button ~label:"switch"
 	    ~packing:(vbox2#pack ~expand:false) () in
@@ -1106,7 +1106,7 @@ let create_main_window () =
 
   GMisc.label ~text: "Gtk+ v1.2" ~packing:(box1#pack ~expand:false ~fill:false) ();
 
-  let scrolled_window = GFrame.scrolled_window ~border_width: 10
+  let scrolled_window = GBin.scrolled_window ~border_width: 10
       ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC
       ~packing:box1#pack () in
 

@@ -7,7 +7,7 @@ let main () =
       ~border_width: 10 ~width: 300 ~height: 300 () in
   window#connect#destroy ~callback:Main.quit;
 
-  let scrolled_window = GFrame.scrolled_window
+  let scrolled_window = GBin.scrolled_window
       ~border_width: 10 ~hpolicy: `AUTOMATIC ~packing: window#vbox#pack ()
   in
 
