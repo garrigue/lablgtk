@@ -221,9 +221,9 @@ end
 class list_item obj = object
   inherit container obj
   method as_item : ListItem.t obj = obj
-  method select = Item.select obj
-  method deselect = Item.deselect obj
-  method toggle = Item.toggle obj
+  method select () = Item.select obj
+  method deselect () = Item.deselect obj
+  method toggle () = Item.toggle obj
   method connect = new item_signals obj
 end
 
@@ -272,7 +272,7 @@ class check_menu_item obj = object
   method set_state = CheckMenuItem.set_state obj
   method set_show_toggle = CheckMenuItem.set_show_toggle obj
   method active = CheckMenuItem.get_active obj
-  method toggled = CheckMenuItem.toggled obj
+  method toggled () = CheckMenuItem.toggled obj
   method connect = new check_menu_item_signals obj
 end
 
@@ -306,9 +306,9 @@ class tree_item obj = object
   method connect = new tree_item_signals obj
   method set_subtree : 'a. (#is_tree as 'a) -> unit =
     fun w -> TreeItem.set_subtree obj w#as_tree
-  method remove_subtree = TreeItem.remove_subtree obj
-  method expand = TreeItem.expand obj
-  method collapse = TreeItem.collapse obj
+  method remove_subtree () = TreeItem.remove_subtree obj
+  method expand () = TreeItem.expand obj
+  method collapse () = TreeItem.collapse obj
 end
 
 let new_tree_item ?opt ?:label =
@@ -383,7 +383,7 @@ let new_dialog ?(_ : unit option) =
 
 class button_skel obj = object (self)
   inherit container obj
-  method clicked = Button.clicked obj
+  method clicked () = Button.clicked obj
   method grab_default () =
     Widget.set_can_default obj true;
     Widget.grab_default obj
@@ -486,7 +486,7 @@ class menu_shell obj = object
     fun w -> MenuShell.prepend obj w#as_item
   method insert : 'a. (MenuItem.t #is_item as 'a) -> _ =
     fun w -> MenuShell.insert obj w#as_item
-  method deactivate = MenuShell.deactivate obj
+  method deactivate () = MenuShell.deactivate obj
   method connect = new menu_shell_signals obj
 end
 
@@ -504,7 +504,7 @@ class option_menu obj = object
   inherit button obj
   method set_menu (menu : menu) = OptionMenu.set_menu obj menu#as_menu
   method get_menu = new menu (OptionMenu.get_menu obj)
-  method remove_menu = OptionMenu.remove_menu obj
+  method remove_menu () = OptionMenu.remove_menu obj
   method set_history = OptionMenu.set_history obj
 end
 
@@ -595,7 +595,7 @@ class combo obj = object
   method set_use_arrows_always = Combo.set_use_arrows_always combo
   method set_case_sensitive = Combo.set_case_sensitive combo
   method set_popdown_strings = Combo.set_popdown_strings combo
-  method disable_activate = Combo.disable_activate combo
+  method disable_activate () = Combo.disable_activate combo
 end
 
 let new_combo ?(_ : unit option) =
