@@ -95,12 +95,10 @@ value cname##_bc (value *argv, int argn) \
 /* result conversion */
 #define Unit(x) ((x), Val_unit)
 #define Val_char Val_int
-#define Val_ptr(x) ((value) x)
 
 /* parameter conversion */
 #define Bool_ptr(x) ((long) x - 1)
 #define Char_val Int_val
-#define Ptr_val(x) ((void *) x)
 
 /* Utility */
 
@@ -109,3 +107,18 @@ value cname##_bc (value *argv, int argn) \
    for(i=0;i<l;i++) Field(ret,i) = conv(src[i]); } \
  else { int i; ret = alloc_shr(l,0); \
    for(i=0;i<l;i++) initialize (&Field(ret,i), conv(src[i])); }
+
+#define Make_Val_final_pointer(type, init, final) \
+static void ml_final_##type (value val) \
+{ final (type##_val(val)); } \
+inline value Val_##type (type *p) \
+{ value ret = alloc_final (2, ml_final_##type, 1, 50); \
+  initialize (&Field(ret,1), (value) p); init (p); return ret; }
+
+#define Pointer_val(val) Field(val,1)
+
+#define Wosizeof(x) ((sizeof(x)-1)/sizeof(value)+1)
+
+#define Make_Extractor(name,conv1,field,conv2) \
+value ml_##name##_##field (value val) \
+{ return conv2 ((conv1(val))->field); }

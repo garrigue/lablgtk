@@ -12,8 +12,6 @@
 #include "gtk_tags.c"
 */
 
-#define Wosizeof(x) ((sizeof(x)-1)/sizeof(value)+1)
-
 inline value Val_pointer (void *p)
 {
     value ret = alloc_shr (2, Abstract_tag);
@@ -29,13 +27,6 @@ inline value Val_final_pointer (void *p, final_fun final)
     return ret;
 }
 */
-
-#define Make_Val_final_pointer(type, init, final) \
-static void ml_final_##type (value val) \
-{ final (type##_val(val)); } \
-inline value Val_##type (type *p) \
-{ value ret = alloc_final (2, ml_final_##type, 1, 50); \
-  initialize (&Field(ret,1), (value) p); init (p); return ret; }
 
 Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref)
 
