@@ -121,6 +121,8 @@ end
 module Screen = struct
   external width : unit -> int = "ml_gdk_screen_width"
   external height : unit -> int = "ml_gdk_screen_height"
+  external width_mm : unit -> int = "ml_gdk_screen_width_mm"
+  external height_mm : unit -> int = "ml_gdk_screen_height_mm"
 end
 
 module Visual = struct
