@@ -6,10 +6,8 @@ open Gtk
 
 type glade_xml = [`data|`glade_xml]
 
-external init : unit -> unit
-    = "ml_glade_init"
-external gnome_init : unit -> unit
-    = "ml_glade_gnome_init"
+external init : unit -> unit = "ml_glade_init"
+(* external gnome_init : unit -> unit = "ml_glade_gnome_init" *)
 external create : file:string -> root:string -> glade_xml obj
     = "ml_glade_xml_new"
 external signal_autoconnect :

@@ -1,5 +1,9 @@
 $Id$
 
+2001.02.13
+  * relax some types in Gdk.Window, to allow all drawables
+  * support for (dangerous?) callbacks in libglade
+
 2001.02.10
   * added preliminary support for libglade
 
