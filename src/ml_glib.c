@@ -3,6 +3,9 @@
 #include <locale.h>
 #ifdef _WIN32
 #include "win32.h"
+#include <wtypes.h>
+#include <io.h>
+#include <fcntl.h>
 #endif
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -258,8 +261,12 @@ Make_Val_final_pointer_ext (GIOChannel, _noref, Ignore, g_io_channel_unref, 20)
 #ifndef _WIN32
 ML_1 (g_io_channel_unix_new, Int_val, Val_GIOChannel_noref)
 #else
-CAMLprim value ml_g_io_channel_unix_new(value v)
-{  invalid_argument("Glib.channel_unix_new: not implemented"); return 1; }
+CAMLprim value ml_g_io_channel_unix_new(value wh)
+{
+  return Val_GIOChannel_noref
+    (g_io_channel_unix_new
+     (_open_osfhandle((long)*(HANDLE*)Data_custom_val(wh), O_BINARY)));
+}
 #endif
 
 static gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c,
