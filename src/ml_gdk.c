@@ -33,74 +33,64 @@ ML_0 (gdk_colormap_get_system, Val_GdkColormap)
 
 value ml_gdk_color_white (value cmap)
 {
-    value ret = alloc (Wosizeof(GdkColor)+2, Abstract_tag);
-    GdkColor *color = (GdkColor*) &Field(ret,2);
-    Field(ret,1) = (value) color;
-    gdk_color_white (GdkColormap_val(cmap), color);
-    return ret;
+    GdkColor color;
+    gdk_color_white (GdkColormap_val(cmap), &color);
+    return Val_copy(color);
 }
     
 value ml_gdk_color_black (value cmap)
 {
-    value ret = alloc (Wosizeof(GdkColor)+2, Abstract_tag);
-    GdkColor *color = (GdkColor*) &Field(ret,2);
-    Field(ret,1) = (value) color;
-    gdk_color_black (GdkColormap_val(cmap), color);
-    return ret;
+    GdkColor color;
+    gdk_color_black (GdkColormap_val(cmap), &color);
+    return Val_copy(color);
 }
 
 value ml_gdk_color_parse (char *spec)
 {
-    value ret = alloc (Wosizeof(GdkColor)+2, Abstract_tag);
-    GdkColor *color = (GdkColor*) &Field(ret,2);
-    Field(ret,1) = (value) color;
-    if (!gdk_color_parse (spec, color))
+    GdkColor color;
+    if (!gdk_color_parse (spec, &color))
 	ml_raise_gdk ("color_parse");
-    return ret;
+    return Val_copy(color);
 }
 
 ML_2 (gdk_color_alloc, GdkColormap_val, GdkColor_val, Val_bool)
 
 value ml_GdkColor (value red, value green, value blue)
 {
-    value ret = alloc (Wosizeof(GdkColor)+2, Abstract_tag);
-    GdkColor *color = (GdkColor*) &Field(ret,2);
-    Field(ret,1) = (value) color;
-    color->red = Int_val(red);
-    color->green = Int_val(green);
-    color->blue = Int_val(blue);
-    color->pixel = 0;
-    return ret;
+    GdkColor color;
+    color.red = Int_val(red);
+    color.green = Int_val(green);
+    color.blue = Int_val(blue);
+    color.pixel = 0;
+    return Val_copy(color);
 }
 
-Make_Extractor (GdkColor,GdkColor_val,red,Val_int)
-Make_Extractor (GdkColor,GdkColor_val,green,Val_int)
-Make_Extractor (GdkColor,GdkColor_val,blue,Val_int)
-Make_Extractor (GdkColor,GdkColor_val,pixel,Val_int)
+Make_Extractor (GdkColor, GdkColor_val, red, Val_int)
+Make_Extractor (GdkColor, GdkColor_val, green, Val_int)
+Make_Extractor (GdkColor, GdkColor_val, blue, Val_int)
+Make_Extractor (GdkColor, GdkColor_val, pixel, Val_int)
 
 /* Rectangle */
 
 value ml_GdkRectangle (value x, value y, value width, value height)
 {
-    value ret = alloc (Wosizeof(GdkRectangle)+2, Abstract_tag);
-    GdkRectangle *rectangle = (GdkRectangle*) &Field(ret,2);
-    Field(ret,1) = (value) rectangle;
-    rectangle->x = Int_val(x);
-    rectangle->y = Int_val(y);
-    rectangle->width = Int_val(width);
-    rectangle->height = Int_val(height);
-    return ret;
+    GdkRectangle rectangle;
+    rectangle.x = Int_val(x);
+    rectangle.y = Int_val(y);
+    rectangle.width = Int_val(width);
+    rectangle.height = Int_val(height);
+    return Val_copy(rectangle);
 }
 
-Make_Extractor (GdkRectangle,GdkRectangle_val,x,Val_int)
-Make_Extractor (GdkRectangle,GdkRectangle_val,y,Val_int)
-Make_Extractor (GdkRectangle,GdkRectangle_val,width,Val_int)
-Make_Extractor (GdkRectangle,GdkRectangle_val,height,Val_int)
+Make_Extractor (GdkRectangle, GdkRectangle_val, x, Val_int)
+Make_Extractor (GdkRectangle, GdkRectangle_val, y, Val_int)
+Make_Extractor (GdkRectangle, GdkRectangle_val, width, Val_int)
+Make_Extractor (GdkRectangle, GdkRectangle_val, height, Val_int)
 
 /* Window */
 
 Make_Val_final_pointer (GdkWindow, , gdk_window_ref, gdk_window_unref)
-Make_Extractor (gdk_visual_get,GdkVisual_val,depth,Val_int)
+Make_Extractor (gdk_visual_get, GdkVisual_val, depth, Val_int)
 ML_1 (gdk_window_get_visual, GdkWindow_val, Val_GdkVisual)
 
 /* Pixmap */
@@ -237,13 +227,11 @@ ML_1 (gdk_event_copy, GdkEvent_val( ), Val_GdkEvent)
 
 value ml_gdk_event_new (value event_type)
 {
-    value ret = alloc (Wosizeof(GdkEvent)+2, Abstract_tag);
-    GdkEventAny *event = (GdkEventAny*) &Field(ret,2);
-    Field(ret,1) = (value) event;
-    memset (event, 0, sizeof(GdkEvent));
-    event->type = GdkEventType_val(event_type);
-    event->send_event = TRUE;
-    return ret;
+    GdkEvent event;
+    memset (&event, 0, sizeof(GdkEvent));
+    event.type = GdkEventType_val(event_type);
+    event.any.send_event = TRUE;
+    return Val_copy(event);
 }
 
 Make_Extractor (GdkEventAny, GdkEvent_val(Any), type, Val_gdkEventType)

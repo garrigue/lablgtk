@@ -123,7 +123,7 @@ let main () =
         drawing#rectangle filled:true x:(rx*4) y:(ry*4) width:4 height:4 end in
   game_step ();
   let keyDown ev = begin
-    let key = Gdk.Event.Key.keyval ev in
+    let key = GdkEvent.Key.keyval ev in
     for i=0 to (Array.length keyMapL)-1 do
        let (x, y) = keyMapL.(i) in
        let k = keys.[i] in

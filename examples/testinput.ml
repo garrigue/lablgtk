@@ -14,7 +14,7 @@ let main () =
 
   drawing_area#connect#event#key_press callback:
     begin fun ev ->
-      let key = Gdk.Event.Key.keyval ev in
+      let key = GdkEvent.Key.keyval ev in
       if key >= 32 && key < 256 then
 	Printf.printf "I got a %c\n" (Char.chr key)
       else

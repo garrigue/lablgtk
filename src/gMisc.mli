@@ -130,7 +130,7 @@ class tips_query_signals :
     method widget_selected :
       callback:(GObj.widget_wrapper option ->
                 string option ->
-		string option -> Gdk.Event.Button.t -> bool) -> GtkSignal.id
+		string option -> GdkEvent.Button.t -> bool) -> GtkSignal.id
   end
 
 class tips_query :

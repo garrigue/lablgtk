@@ -40,7 +40,7 @@ class area_signals obj ?:after = object (connect)
   method display :callback =
     connect#event#expose callback:
       begin fun ev ->
-	if Gdk.Event.Expose.count ev = 0 && Raw.make_current obj then begin
+	if GdkEvent.Expose.count ev = 0 && Raw.make_current obj then begin
 	  callback ()
 	end;
 	true
@@ -49,8 +49,8 @@ class area_signals obj ?:after = object (connect)
     connect#event#configure callback:
       begin fun ev ->
 	if Raw.make_current obj then begin
-	  callback width:(Gdk.Event.Configure.width ev)
-	    height:(Gdk.Event.Configure.height ev)
+	  callback width:(GdkEvent.Configure.width ev)
+	    height:(GdkEvent.Configure.height ev)
 	end;
 	true
       end

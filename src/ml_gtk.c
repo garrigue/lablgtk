@@ -273,16 +273,23 @@ ML_1 (GTK_WIDGET_VISIBLE, GtkWidget_val, Val_bool)
 
 Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
 Make_Extractor (gtk_widget, GtkWidget_val, parent, Val_GtkWidget)
-value Val_GtkAllocation (GtkAllocation allocation)
+static value Val_GtkAllocation (GtkAllocation allocation)
 {
     value ret = alloc (4, 0);
-    Field(ret,0) = allocation.x;
-    Field(ret,1) = allocation.y;
-    Field(ret,2) = allocation.width;
-    Field(ret,3) = allocation.height;
+    Field(ret,0) = Val_int(allocation.x);
+    Field(ret,1) = Val_int(allocation.y);
+    Field(ret,2) = Val_int(allocation.width);
+    Field(ret,3) = Val_int(allocation.height);
     return ret;
 }
 Make_Extractor (gtk_widget, GtkWidget_val, allocation, Val_GtkAllocation)
+/*
+#define GtkAllocation_val(val) ((GtkAllocation*)Pointer_val(val))
+Make_Extractor (gtk_allocation, GtkAllocation_val, x, Val_int)
+Make_Extractor (gtk_allocation, GtkAllocation_val, y, Val_int)
+Make_Extractor (gtk_allocation, GtkAllocation_val, width, Val_int)
+Make_Extractor (gtk_allocation, GtkAllocation_val, height, Val_int)
+*/
 
 /* gtkcontainer.h */
 
