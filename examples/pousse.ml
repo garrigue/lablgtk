@@ -117,9 +117,8 @@ module RealBoard = Board (
 
 open RealBoard
 
-class game frame:(frame : _ #container_skel) :label
-    statusbar:(bar : #statusbar) =
-object (self)
+class game :frame :label statusbar:(bar : #statusbar) =
+let frame : _ #container_skel = frame in object (self)
   val cells =
     Array.init len:size
       fun:(fun _ -> Array.init len:size fun:(fun _ -> new cell ()))
