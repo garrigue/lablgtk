@@ -1,7 +1,10 @@
-This library is made available under the LGPL.
-You should have got a copy of the LGPL with Objective Caml.
-The LGPL applies to all the files in this directory, but not in
-subdirectories.
+This library is made available under the LGPL, with the same exception
+as specified in the Objective Caml distribution, to allow freely static
+linking.
+You should have got a copy of the LGPL and this exception with
+Objective Caml.
+This modified LGPL applies to all the files in the src/ directory, but
+not in other directories.
 
 For the examples subdirectory, there is no specific licensing policy,
 but you may freely take inspiration from the code, and copy parts of
