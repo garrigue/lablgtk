@@ -2,7 +2,7 @@
              LablGTK : an interface to the GIMP Tool Kit
 
 Needed:
-	ocaml-3.03-alpha
+	ocaml-3.04
 	gtk-1.2.x
 	gmake (there is no standard for conditionals)
 
@@ -17,7 +17,7 @@ How to compile:
 		USE_CC=1	to use $(CC) rather than gcc
 		USE_GL=1	to compile with OpenGL support (see lower)
 		USE_GNOME=1	to compile GtkXmHTML support (requires gnome)
-                USE_GLADE=1     to compile libglade support (preliminary)
+                USE_GLADE=1     to compile libglade support
         The following variables will also be remembered if passed as options
                 CAMLC CAMLOPT CC BINDIR INSTALLDIR
         or you may directly edit config.make.
@@ -44,34 +44,19 @@ Contents:
                 unison          a frontend for the Unison file synchronizer
                                 see the README for details.
 
-Upgrading from lablgtk-1.00:
-  There are a few incompatibilities between this version and the
-  previous release. We do not describe them all, since usually a type
-  error message will inform you.
-  * all signals are no longer under #connect. #connect#event changed
-    to #event#connect, and some signals are under #misc#connect or
-    #grab#connect. See lower for a description of the new widget
-    structure.
-  * some defaults changed. In particular GPack.box#pack have now all
-    its parameters defaulting to false rather than true. See lower for
-    the new default policy. Beware that this does not cause type
-    errors, just changes in the aspect.
-  * coerce functions disappeared from Gtk*.ml. You can now coerce with
-    (w :> Gtk.mywidget Gtk.obj), thanks to variance annotations.
-
 How to run the examples:
   In the examples directory just type:
-	lablgtk -labels examples/???.ml
+	lablgtk examples/???.ml
 
   Before installing lablgtk you have to be more explicit:
-	../src/lablgtktop -labels -w s -I ../src ???.ml
+	../src/lablgtktop -w s -I ../src ???.ml
 
 How to link them:
   lablgtktop contains an extra module GtkInit, whose only contents is:
         let locale = GtkMain.Main.init ()
   You must either add this line, or add this module to your link,
   before calling any Gtk function.
-  ocamlc -I CAMLLIB/lablgtk -labels -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
+  ocamlc -I CAMLLIB/lablgtk -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
 
 How to use the threaded toplevel:
 
@@ -102,6 +87,21 @@ Locale or not locale ?
   Note that GTK_SETLOCALE, when set, overrides ~setlocale.
   On some systems you may also need to link libxpg4.so for the locale to
   work.
+
+Upgrading from lablgtk-1.00:
+  There are a few incompatibilities between 1.00 and 1.2.x releases.
+  We do not describe them all, since usually a type error message will
+  inform you.
+  * all signals are no longer under #connect. #connect#event changed
+    to #event#connect, and some signals are under #misc#connect or
+    #grab#connect. See lower for a description of the new widget
+    structure.
+  * some defaults changed. In particular GPack.box#pack have now all
+    its parameters defaulting to false rather than true. See lower for
+    the new default policy. Beware that this does not cause type
+    errors, just changes in the aspect.
+  * coerce functions disappeared from Gtk*.ml. You can now coerce with
+    (w :> Gtk.mywidget Gtk.obj), thanks to variance annotations.
 
 Structure of the (raw) Gtk* modules:
 
@@ -241,15 +241,18 @@ LibGlade support:
 
   See lablgladecc -help for other features (tracing and source embedding).
 
-Glade support:
+External prototyping tools:
+  Two other tools are available for GUI prototyping
 
-  This is an experimental version of a glade xml file compiler.
-  Compile it with 
-	cd mlglade
-	make
-  See the mlglade/README file for more informations.
-	
+  MLglade compiles a glade description file to lablgtk source code,
+  rather than the dynamic interpretation of lablglade.
+        http://www.lri.fr/~monate/mlglade
 
+  Zoggy is GUI builder writte in OCaml, which also generates lablgtk
+  source code. It is much more advanced than radtest, which is only
+  left as code sample.
+        http://pauillac.inria.fr/~guesdon/Tools/zoggy/zoggy.html
+  
 GL extension:
 
   You can use lablgtk in combination with LablGL
