@@ -6,9 +6,7 @@ open Tags
 open GtkBase
 
 module ListItem = struct
-  let cast w : list_item obj =
-    if Object.is_a w "GtkListItem" then Obj.magic w
-    else invalid_arg "Gtk.ListItem.cast"
+  let cast w : list_item obj = Object.try_cast w "GtkListItem"
   external create : unit -> list_item obj = "ml_gtk_list_item_new"
   external create_with_label : string -> list_item obj
       = "ml_gtk_list_item_new_with_label"
@@ -18,9 +16,7 @@ module ListItem = struct
 end
 
 module Liste = struct
-  let cast w : liste obj =
-    if Object.is_a w "GtkList" then Obj.magic w
-    else invalid_arg "Gtk.GtkList.cast"
+  let cast w : liste obj = Object.try_cast w "GtkList"
   external create : unit -> liste obj = "ml_gtk_list_new"
   external insert_item :
       [>`list] obj -> [>`listitem] obj -> pos:int -> unit
@@ -56,9 +52,7 @@ module Liste = struct
 end
 
 module CList = struct
-  let cast w : clist obj =
-    if Object.is_a w "GtkCList" then Obj.magic w
-    else invalid_arg "Gtk.CList.cast"
+  let cast w : clist obj = Object.try_cast w "GtkCList"
   external create : cols:int -> clist obj = "ml_gtk_clist_new"
   external create_with_titles : string array -> clist obj
       = "ml_gtk_clist_new_with_titles"

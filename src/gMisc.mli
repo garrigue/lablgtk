@@ -129,11 +129,11 @@ class tips_query_signals : 'a obj ->
     constraint 'a = [>`tipsquery|`widget]
     val obj : 'a obj
     method widget_entered :
-      callback:(widget_full option ->
+      callback:(widget option ->
                 text:string option -> private:string option -> unit) ->
       GtkSignal.id
     method widget_selected :
-      callback:(widget_full option -> text:string option ->
+      callback:(widget option -> text:string option ->
                 private:string option -> GdkEvent.Button.t option -> bool) ->
       GtkSignal.id
   end

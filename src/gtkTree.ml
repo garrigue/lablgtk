@@ -6,9 +6,7 @@ open Tags
 open GtkBase
 
 module TreeItem = struct
-  let cast w : tree_item obj =
-    if Object.is_a w "GtkTreeItem" then Obj.magic w
-    else invalid_arg "Gtk.TreeItem.cast"
+  let cast w : tree_item obj = Object.try_cast w "GtkTreeItem"
   external create : unit -> tree_item obj = "ml_gtk_tree_item_new"
   external create_with_label : string -> tree_item obj
       = "ml_gtk_tree_item_new_with_label"
@@ -36,9 +34,7 @@ module TreeItem = struct
 end
 
 module Tree = struct
-  let cast w : tree obj =
-    if Object.is_a w "GtkTree" then Obj.magic w
-    else invalid_arg "Gtk.Tree.cast"
+  let cast w : tree obj = Object.try_cast w "GtkTree"
   external coerce : [>`tree] obj -> tree obj = "%identity"
   external create : unit -> tree obj = "ml_gtk_tree_new"
   external insert : [>`tree] obj -> [>`treeitem] obj -> pos:int -> unit

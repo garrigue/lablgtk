@@ -24,7 +24,7 @@ class container obj = object
   inherit widget obj
   method add w = Container.add obj (as_widget w)
   method remove w = Container.remove obj (as_widget w)
-  method children = List.map fun:(new widget_full) (Container.children obj)
+  method children = List.map fun:(new widget) (Container.children obj)
   method set_border_width = Container.set_border_width obj
   method focus = new focus obj
 end
@@ -33,16 +33,19 @@ class container_signals obj = object
   inherit widget_signals obj
   method add :callback =
     GtkSignal.connect sig:Container.Signals.add obj :after
-      callback:(fun w -> callback (new widget_full w))
+      callback:(fun w -> callback (new widget w))
   method remove :callback =
     GtkSignal.connect sig:Container.Signals.remove obj :after
-      callback:(fun w -> callback (new widget_full w))
+      callback:(fun w -> callback (new widget w))
 end
 
 class container_full obj = object
   inherit container obj
   method connect = new container_signals obj
 end
+
+let cast_container (w : widget) =
+  new container_full (GtkBase.Container.cast w#as_widget)
 
 class virtual ['a] item_container obj = object (self)
   inherit widget obj

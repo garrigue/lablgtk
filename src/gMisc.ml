@@ -118,11 +118,11 @@ class tips_query_signals obj = object
   method widget_entered :callback = 
     GtkSignal.connect sig:TipsQuery.Signals.widget_entered obj :after
       callback:(function None -> callback None
-	| Some w -> callback (Some (new widget_full w)))
+	| Some w -> callback (Some (new widget w)))
   method widget_selected :callback = 
     GtkSignal.connect sig:TipsQuery.Signals.widget_selected obj :after
       callback:(function None -> callback None
-	| Some w -> callback (Some (new widget_full w)))
+	| Some w -> callback (Some (new widget w)))
 end
 
 class tips_query obj = object

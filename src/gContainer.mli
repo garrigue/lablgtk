@@ -21,7 +21,7 @@ class container :
     constraint 'a = [>`container|`widget]
     val obj : 'a obj
     method add : widget -> unit
-    method children : widget_full list
+    method children : widget list
     method remove : widget -> unit
     method focus : focus
     method set_border_width : int -> unit
@@ -33,8 +33,8 @@ class container_signals :
     inherit widget_signals
     constraint 'a = [>`container|`widget]
     val obj : 'a obj
-    method add : callback:(widget_full -> unit) -> GtkSignal.id
-    method remove : callback:(widget_full -> unit) -> GtkSignal.id
+    method add : callback:(widget -> unit) -> GtkSignal.id
+    method remove : callback:(widget -> unit) -> GtkSignal.id
   end
 
 class container_full :
@@ -45,6 +45,9 @@ class container_full :
     val obj : 'a obj
     method connect : container_signals
   end
+
+val cast_container : widget -> container_full
+(* may raise [Gtk.Cannot_cast "GtkContainer"] *)
 
 class virtual ['a] item_container :
   'c obj ->

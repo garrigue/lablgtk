@@ -6,9 +6,7 @@ open Tags
 open GtkBase
 
 module Button = struct
-  let cast w : button obj =
-    if Object.is_a w "GtkButton" then Obj.magic w
-    else invalid_arg "Gtk.Button.cast"
+  let cast w : button obj = Object.try_cast w "GtkButton"
   external coerce : [>`button] obj -> button obj = "%identity"
   external create : unit -> button obj = "ml_gtk_button_new"
   external create_with_label : string -> button obj
@@ -37,9 +35,7 @@ module Button = struct
 end
 
 module ToggleButton = struct
-  let cast w : toggle_button obj =
-    if Object.is_a w "GtkToggleButton" then Obj.magic w
-    else invalid_arg "Gtk.ToggleButton.cast"
+  let cast w : toggle_button obj = Object.try_cast w "GtkToggleButton"
   external coerce : [>`toggle] obj -> toggle_button obj = "%identity"
   external toggle_button_create : unit -> toggle_button obj
       = "ml_gtk_toggle_button_new"
@@ -74,9 +70,7 @@ module ToggleButton = struct
 end
 
 module RadioButton = struct
-  let cast w : radio_button obj =
-    if Object.is_a w "GtkRadioButton" then Obj.magic w
-    else invalid_arg "Gtk.RadioButton.cast"
+  let cast w : radio_button obj = Object.try_cast w "GtkRadioButton"
   external create : group optaddr -> radio_button obj
       = "ml_gtk_radio_button_new"
   external create_with_label : group optaddr -> string -> radio_button obj
@@ -91,9 +85,7 @@ module RadioButton = struct
 end
 
 module Toolbar = struct
-  let cast w : toolbar obj =
-    if Object.is_a w "GtkToolbar" then Obj.magic w
-    else invalid_arg "Gtk.Toolbar.cast"
+  let cast w : toolbar obj = Object.try_cast w "GtkToolbar"
   external create : orientation -> style:toolbar_style -> toolbar obj
       = "ml_gtk_toolbar_new"
   let create dir ?:style{=`BOTH} () = create dir :style

@@ -6,9 +6,7 @@ open Tags
 open GtkBase
 
 module Editable = struct
-  let cast w : editable obj =
-    if Object.is_a w "GtkEditable" then Obj.magic w
-    else invalid_arg "Gtk.Editable.cast"
+  let cast w : editable obj = Object.try_cast w "GtkEditable"
   external coerce : [>`editable] obj -> editable obj = "%identity"
   external select_region : [>`editable] obj -> start:int -> end:int -> unit
       = "ml_gtk_editable_select_region"
@@ -52,9 +50,7 @@ module Editable = struct
 end
 
 module Entry = struct
-  let cast w : entry obj =
-    if Object.is_a w "GtkEntry" then Obj.magic w
-    else invalid_arg "Gtk.Entry.cast"
+  let cast w : entry obj = Object.try_cast w "GtkEntry"
   external coerce : [>`entry] obj -> entry obj = "%identity"
   external create : unit -> entry obj = "ml_gtk_entry_new"
   external create_with_max_length : int -> entry obj
@@ -83,9 +79,7 @@ module Entry = struct
 end
 
 module SpinButton = struct
-  let cast w : spin_button obj =
-    if Object.is_a w "GtkSpinButton" then Obj.magic w
-    else invalid_arg "Gtk.SpinButton.cast"
+  let cast w : spin_button obj = Object.try_cast w "GtkSpinButton"
   external create :
       [>`adjustment] optobj -> rate:float -> digits:int -> spin_button obj
       = "ml_gtk_spin_button_new"
@@ -135,9 +129,7 @@ module SpinButton = struct
 end
 
 module Text = struct
-  let cast w : text obj =
-    if Object.is_a w "GtkText" then Obj.magic w
-    else invalid_arg "Gtk.Text.cast"
+  let cast w : text obj = Object.try_cast w "GtkText"
   external create : [>`adjustment] optobj -> [>`adjustment] optobj -> text obj
       = "ml_gtk_text_new"
   let create ?:hadjustment ?:vadjustment () =
@@ -169,9 +161,7 @@ module Text = struct
 end
 
 module Combo = struct
-  let cast w : combo obj =
-    if Object.is_a w "GtkCombo" then Obj.magic w
-    else invalid_arg "Gtk.Combo.cast"
+  let cast w : combo obj = Object.try_cast w "GtkCombo"
   external create : unit -> combo obj = "ml_gtk_combo_new"
   external set_value_in_list :
       [>`combo] obj -> ?required:bool -> ?ok_if_empty:bool -> unit -> unit

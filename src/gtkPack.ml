@@ -6,9 +6,7 @@ open Tags
 open GtkBase
 
 module Box = struct
-  let cast w : box obj =
-    if Object.is_a w "GtkBox" then Obj.magic w
-    else invalid_arg "Gtk.Box.cast"
+  let cast w : box obj = Object.try_cast w "GtkBox"
   external coerce : [>`box] obj -> box obj = "%identity"
   external pack_start :
       [>`box] obj -> [>`widget] obj ->
@@ -50,9 +48,7 @@ end
 
 module BBox = struct
   (* Omitted defaults setting *)
-  let cast w : button_box obj =
-    if Object.is_a w "GtkBBox" then Obj.magic w
-    else invalid_arg "Gtk.BBox.cast"
+  let cast w : button_box obj = Object.try_cast w "GtkBBox"
   external coerce : [>`bbox] obj -> button_box obj = "%identity"
   type bbox_style = [ `DEFAULT_STYLE|`SPREAD|`EDGE|`START|`END ]
   external get_spacing : [>`bbox] obj -> int = "ml_gtk_button_box_get_spacing"
@@ -100,9 +96,7 @@ module BBox = struct
 end
 
 module Fixed = struct
-  let cast w : fixed obj =
-    if Object.is_a w "GtkFixed" then Obj.magic w
-    else invalid_arg "Gtk.Fixed.cast"
+  let cast w : fixed obj = Object.try_cast w "GtkFixed"
   external create : unit -> fixed obj = "ml_gtk_fixed_new"
   external put : [>`fixed] obj -> [>`widget] obj -> x:int -> y:int -> unit
       = "ml_gtk_fixed_put"
@@ -111,9 +105,7 @@ module Fixed = struct
 end
 
 module Layout = struct
-  let cast w : layout obj =
-    if Object.is_a w "GtkLayout" then Obj.magic w
-    else invalid_arg "Gtk.Layout.cast"
+  let cast w : layout obj = Object.try_cast w "GtkLayout"
   external create :
       [>`adjustment] optobj -> [>`adjustment] optobj -> layout obj
       = "ml_gtk_layout_new"
@@ -146,9 +138,7 @@ end
 
 
 module Packer = struct
-  let cast w : packer obj =
-    if Object.is_a w "GtkPacker" then Obj.magic w
-    else invalid_arg "Gtk.Packer.cast"
+  let cast w : packer obj = Object.try_cast w "GtkPacker"
   external create : unit -> packer obj = "ml_gtk_packer_new"
   external add :
       [>`packer] obj -> [>`widget] obj ->
@@ -187,9 +177,7 @@ module Packer = struct
 end
 
 module Paned = struct
-  let cast w : paned obj =
-    if Object.is_a w "GtkPaned" then Obj.magic w
-    else invalid_arg "Gtk.Paned.cast"
+  let cast w : paned obj = Object.try_cast w "GtkPaned"
   external add1 : [>`paned] obj -> [>`widget] obj -> unit
       = "ml_gtk_paned_add1"
   external add2 : [>`paned] obj -> [>`widget] obj -> unit
@@ -208,9 +196,7 @@ module Paned = struct
 end
 
 module Table = struct
-  let cast w : table obj =
-    if Object.is_a w "GtkTable" then Obj.magic w
-    else invalid_arg "Gtk.Table.cast"
+  let cast w : table obj = Object.try_cast w "GtkTable"
   external create : int -> int -> homogeneous:bool -> table obj
       = "ml_gtk_table_new"
   let create rows:r columns:c ?:homogeneous{=false} () =

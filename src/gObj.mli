@@ -9,7 +9,7 @@ class gtkobj :
   object
     val obj : 'a obj
     method destroy : unit -> unit
-    method get_type : gtk_type
+    method get_type : string
     method get_id : int
   end
 
@@ -131,7 +131,7 @@ and widget_misc :
     method lock_accelerators : unit -> unit
     method map : unit -> unit
     method name : string
-    method parent : widget_full
+    method parent : widget
     method pointer : int * int
     method popup : x:int -> y:int -> unit
     method realize : unit -> unit
@@ -151,7 +151,7 @@ and widget_misc :
     method show : unit -> unit
     method show_all : unit -> unit
     method style : style
-    method toplevel : widget_full
+    method toplevel : widget
     method unmap : unit -> unit
     method unparent : unit -> unit
     method unrealize : unit -> unit
@@ -184,7 +184,7 @@ and widget_signals :
     method drag : drag_signals 
     method draw : callback:(rectangle -> unit) -> GtkSignal.id
     method event : event_signals
-    method parent_set :	callback:(widget_full option -> unit) -> GtkSignal.id
+    method parent_set :	callback:(widget option -> unit) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id
     method show : callback:(unit -> unit) -> GtkSignal.id
   end
@@ -204,7 +204,7 @@ and drag_context :
     val context : Gdk.drag_context
     method context : Gdk.drag_context
     method finish : success:bool -> del:bool -> time:int -> unit
-    method source_widget : widget_full 
+    method source_widget : widget 
     method set_icon_pixmap :
       ?colormap:Gdk.colormap -> GdkObj.pixmap -> hot_x:int -> hot_y:int -> unit
     method set_icon_widget : widget -> hot_x:int -> hot_y:int -> unit

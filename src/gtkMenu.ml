@@ -5,9 +5,7 @@ open Gtk
 open GtkBase
 
 module MenuItem = struct
-  let cast w : menu_item obj =
-    if Object.is_a w "GtkMenuItem" then Obj.magic w
-    else invalid_arg "Gtk.MenuItem.cast"
+  let cast w : menu_item obj = Object.try_cast w "GtkMenuItem"
   external coerce : [>`menuitem] obj -> menu_item obj = "%identity"
   external create : unit -> menu_item obj = "ml_gtk_menu_item_new"
   external create_with_label : string -> menu_item obj
@@ -36,9 +34,7 @@ module MenuItem = struct
 end
 
 module CheckMenuItem = struct
-  let cast w : check_menu_item obj =
-    if Object.is_a w "GtkCheckMenuItem" then Obj.magic w
-    else invalid_arg "Gtk.CheckMenuItem.cast"
+  let cast w : check_menu_item obj = Object.try_cast w "GtkCheckMenuItem"
   external coerce : [>`checkmenuitem] obj -> check_menu_item obj = "%identity"
   external create : unit -> check_menu_item obj = "ml_gtk_check_menu_item_new"
   external create_with_label : string -> check_menu_item obj
@@ -65,9 +61,7 @@ module CheckMenuItem = struct
 end
 
 module RadioMenuItem = struct
-  let cast w : radio_menu_item obj =
-    if Object.is_a w "GtkRadioMenuItem" then Obj.magic w
-    else invalid_arg "Gtk.RadioMenuItem.cast"
+  let cast w : radio_menu_item obj = Object.try_cast w "GtkRadioMenuItem"
   external create : group optaddr -> radio_menu_item obj
       = "ml_gtk_radio_menu_item_new"
   external create_with_label :
@@ -84,9 +78,7 @@ module RadioMenuItem = struct
 end
 
 module OptionMenu = struct
-  let cast w : option_menu obj =
-    if Object.is_a w "GtkOptionMenu" then Obj.magic w
-    else invalid_arg "Gtk.OptionMenu.cast"
+  let cast w : option_menu obj = Object.try_cast w "GtkOptionMenu"
   external create : unit -> option_menu obj = "ml_gtk_option_menu_new"
   external get_menu : [>`optionmenu] obj -> menu obj
       = "ml_gtk_option_menu_get_menu"
@@ -102,9 +94,7 @@ module OptionMenu = struct
 end
 
 module MenuShell = struct
-  let cast w : menu_shell obj =
-    if Object.is_a w "GtkMenuShell" then Obj.magic w
-    else invalid_arg "Gtk.MenuShell.cast"
+  let cast w : menu_shell obj = Object.try_cast w "GtkMenuShell"
   external coerce : [>`menushell] obj -> menu_shell obj = "%identity"
   external append : [>`menushell] obj -> [>`widget] obj -> unit
       = "ml_gtk_menu_shell_append"
@@ -122,9 +112,7 @@ module MenuShell = struct
 end
 
 module Menu = struct
-  let cast w : menu obj =
-    if Object.is_a w "GtkMenu" then Obj.magic w
-    else invalid_arg "Gtk.Menu.cast"
+  let cast w : menu obj = Object.try_cast w "GtkMenu"
   external create : unit -> menu obj = "ml_gtk_menu_new"
   external popup :
       [>`menu] obj -> [>`menushell] optobj ->
@@ -150,8 +138,6 @@ module Menu = struct
 end
 
 module MenuBar = struct
-  let cast w : menu_bar obj =
-    if Object.is_a w "GtkMenuBar" then Obj.magic w
-    else invalid_arg "Gtk.MenuBar.cast"
+  let cast w : menu_bar obj = Object.try_cast w "GtkMenuBar"
   external create : unit -> menu_bar obj = "ml_gtk_menu_bar_new"
 end
