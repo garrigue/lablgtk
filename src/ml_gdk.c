@@ -751,3 +751,24 @@ CAMLprim value ml_GdkDragContext_targets (value c)
 /* Misc */
 ML_0 (gdk_flush, Unit)
 ML_0 (gdk_beep, Unit)
+
+/* Input */
+void ml_gdk_input_function(gpointer data, gint src, GdkInputCondition cnd)
+{
+  value *clos_p = (value*)data;
+  callback(*clos_p, Val_unit);
+}
+void ml_gdk_input_destroy_notify(gpointer data)
+{
+    ml_global_root_destroy(data);
+}
+
+ML_1 (gdk_input_remove, Int_val, Unit)
+
+CAMLprim value ml_gdk_input_add (value src, value cond, value clos) 
+{
+  return Val_int( gdk_input_add( Int_val(src),
+				 Input_condition_val( cond ),
+				 ml_gdk_input_function,
+				 ml_global_root_new(clos)));
+}
