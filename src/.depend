@@ -208,6 +208,12 @@ gnoDruid.cmo: gContainer.cmi gObj.cmi gPack.cmi gnomeDruid.cmo gobject.cmi \
     gtk.cmo gnoDruid.cmi 
 gnoDruid.cmx: gContainer.cmx gObj.cmx gPack.cmx gnomeDruid.cmx gobject.cmx \
     gtk.cmx gnoDruid.cmi 
+panel.cmo: gContainer.cmi gObj.cmi gdk.cmi gobject.cmi gtk.cmo gtkEnums.cmo \
+    gtkSignal.cmi panel.cmi 
+panel.cmx: gContainer.cmx gObj.cmx gdk.cmx gobject.cmx gtk.cmx gtkEnums.cmx \
+    gtkSignal.cmx panel.cmi 
+gtkSpell.cmo: gtk.cmo gtkSpell.cmi 
+gtkSpell.cmx: gtk.cmx gtkSpell.cmi 
 gtkInit.cmo: gtkMain.cmo 
 gtkInit.cmx: gtkMain.cmx 
 gtkBaseProps.cmo: gdk.cmi gdkEnums.cmo gdkEvent.cmo gdkPixbuf.cmi gobject.cmi \

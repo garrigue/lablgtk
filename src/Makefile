@@ -179,7 +179,10 @@ PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
 byte: $(TARGETS) $(INITOBJS)
 opt:  $(TARGETS) lablgtkopt
 
-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml)
+depend:
+	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
+	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1
+real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml)
 	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) *.mli > .depend
 
 ifeq ($(THREADS_LIB),no)
