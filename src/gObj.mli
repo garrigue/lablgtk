@@ -13,7 +13,7 @@ class gtkobj :
   end
 
 class gtkobj_signals :
-  ([>`gtk] as 'a) obj ->
+  ?after:bool -> ([>`gtk] as 'a) obj ->
   object ('b)
     val obj : 'a obj
     val after : bool
@@ -35,7 +35,7 @@ class gtkobj_misc : 'a obj ->
 (* Widget *)
 
 class event_signals :
-  [> widget] obj ->
+  ?after:bool -> [> widget] obj ->
   object ('a)
     method after : 'a
     method any :
@@ -215,7 +215,7 @@ and widget :
   end
 
 and misc_signals :
-  Gtk.widget obj ->
+  ?after:bool -> Gtk.widget obj ->
   object ('b)
     inherit gtkobj_signals 
     val obj : Gtk.widget obj

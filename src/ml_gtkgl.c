@@ -10,6 +10,7 @@
 
 #include "wrappers.h"
 #include "ml_glib.h"
+#include "ml_gobject.h"
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtkgl_tags.h"
@@ -17,7 +18,7 @@
 /* Conversion functions */
 #include "gtkgl_tags.c"
 
-#define GtkGLArea_val(val) ((GtkGLArea*)GtkObject_val(val))
+#define GtkGLArea_val(val) check_cast(GTK_GL_AREA,val)
 
 CAMLprim value ml_gtk_gl_area_new (value list, value share)
 {
@@ -44,7 +45,7 @@ CAMLprim value ml_gtk_gl_area_new (value list, value share)
     }
     attrs[i] = GDK_GL_NONE;
 
-    res = Val_GtkObject
+    res = Val_GtkObject_sink
 	((GtkObject*)gtk_gl_area_share_new(attrs,GtkGLArea_val(share)));
     stat_free(attrs);
     return res;
