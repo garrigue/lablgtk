@@ -3,7 +3,7 @@
 
 
 Needed:
-	olabl-2.00
+	olabl-2.01
 	gtk-1.0.x
 	gmake (there is no standard for conditionals)
 
@@ -29,9 +29,6 @@ Contents:
 	lablgtk_t	threaded toplevel
 
 	examples/*.ml	various examples
-
-	olabl.diffs		patch to apply to olabl-2.00
-	lablbrowser.diffs	patch to apply to labltk41-2.00
 
 How to run the examples:
 
