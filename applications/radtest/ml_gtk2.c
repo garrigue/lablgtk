@@ -18,9 +18,12 @@
 
 
 /* conversion functions */
-/*
-#include "../../gtk_tags.c"
-*/
+
+lookup_info ml_table_selection_mode[4];
+
+#define Selection_mode_val(key) ml_lookup_to_c (ml_table_selection_mode, key)
+lookup_info ml_table_tree_view_mode[2];
+#define Tree_view_mode_val(key) ml_lookup_to_c (ml_table_tree_view_mode, key)
 
 /* gtkobject.h */
 /*
@@ -64,10 +67,10 @@ ML_2 (gtk_tree2_select_child, GtkTree2_val, GtkWidget_val, Unit)
 ML_2 (gtk_tree2_unselect_child, GtkTree2_val, GtkWidget_val, Unit)
 ML_2 (gtk_tree2_child_position, GtkTree2_val, GtkWidget_val, Val_int)
 
-/*
+
 ML_2 (gtk_tree2_set_selection_mode, GtkTree2_val, Selection_mode_val, Unit)
 ML_2 (gtk_tree2_set_view_mode, GtkTree2_val, Tree_view_mode_val, Unit)
-*/
+
 
 ML_2 (gtk_tree2_set_view_lines, GtkTree2_val, Bool_val, Unit)
 ML_2 (gtk_tree2_item_up, GtkTree2_val, Int_val, Unit)

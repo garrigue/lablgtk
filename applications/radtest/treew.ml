@@ -16,17 +16,6 @@ open GTree2
 open Utils
 open Property
 
-let memo = new memo ()
-
-class tiwidget_signals :signals =
-  let name_changed : string signal = signals in
-  object
-    method name_changed = name_changed#connect
-  end
-
-(***************  used for the name of the widgets *************)
-let index = ref 0
-
 
 (* possible children; used to make the menus *)
 let widget_add_list =
@@ -35,42 +24,194 @@ let widget_add_list =
     "hseparator"; "vseparator" ; "entry" ]
 
 
-class type ['wrap] pre_tiwidget = object
-  method child_up : 'wrap -> unit
-  method child_down : 'wrap -> unit
-  method emit_code : Oformat.c -> unit
-  method name : string
-  method change_name_in_proplist : string -> string -> unit
-  method save : Oformat.c -> unit
+(*********** selection ***********)
+
+let selection = ref ""
+
+
+(**************** signals class ***************)
+
+class tiwidget_signals :signals =
+  let name_changed : string signal = signals in
+  object
+    method name_changed = name_changed#connect
+  end
+
+
+(************* class type ***************)
+(* the ti<gtkwidget> classes encapsulate the corresponding gtk
+   widget which will be in the gtk-window and a tree item
+   labelled with the name of the widget which will be in the
+   tree-window.
+   all these classes have the same following interface *)
+
+class virtual tiwidget0 = object
+  method virtual widget : GObj.widget
+  method virtual parent : tiwidget0 option
+  method virtual set_parent : tiwidget0 -> unit
+  method virtual base : GObj.widget
+  method virtual tree_item : GTree2.tree_item2
+  method virtual tree : GTree2.tree2
+  method virtual children : (tiwidget0 * Gtk.Tags.pack_type) list
+  method virtual name : string
+  method virtual proplist : (string * Property.property) list
+  method virtual change_name_in_proplist : string -> string -> unit
+  method virtual set_property : string -> string -> unit
+  method virtual forall : 'a . callback:(tiwidget0 -> 'a) -> 'a list
+  method virtual remove : tiwidget0 -> unit
+  method virtual add_child_with_name : string -> string -> tiwidget0
+  method virtual remove_me  : unit -> unit
+  method virtual emit_code : Oformat.c -> unit
+  method virtual save : Oformat.c -> unit
+  method virtual connect : tiwidget_signals
+  method virtual disconnect : GtkSignal.id -> bool
+  method virtual child_up : tiwidget0 -> unit
+  method virtual up : unit -> unit
+  method virtual child_down : tiwidget0 -> unit
+  method virtual down : unit -> unit
+  method virtual next : tiwidget0
+  method virtual next_child : tiwidget0 -> tiwidget0
+  method virtual last : tiwidget0
+  method virtual prev : tiwidget0
+  method virtual set_full_menu : bool -> unit
 end
 
-class virtual ['tiwidget] pre_tiwrapper0 = object
-  constraint 'tiwidget = 'tiwidget pre_tiwrapper0 #pre_tiwidget
-  method virtual tiw : 'tiwidget
-  method virtual add_child : string -> unit -> unit
-  method virtual add_child_with_name :
-      string -> string -> 'tiwidget pre_tiwrapper0
-  method virtual remove_me : unit -> unit
-  method virtual set_parent : 'tiwidget pre_tiwrapper0 -> unit
-  method virtual parent : 'tiwidget pre_tiwrapper0 option
-end
 
-class virtual tiwrapper0 = [tiwidget] pre_tiwrapper0
+(* forward declaration of function new_widget *)
+let new_tiwidget :
+    (classe:string -> name:string -> parent_tree:tree2 ->
+      select_fun:(tiwidget0 -> unit) -> tiwidget0) ref =
+  ref (fun classe:_ name:_ parent_tree:_ select_fun:_ -> failwith "new_tiwidget")
 
-and virtual tiwidget  :name parent_tree:(parent_tree : tree2)
-    :classe widget:w ?:root [<false>] =   
-object(self : 'stype)
 
+
+(************* window creation class *************)
+(* an instance of this class is created for each window opened
+   in radtest. It contains the tree window and the gtk window (tiwin) *)
+class window_and_tree :name =
+  let tree_window = new window show:true title:(name ^ "-Tree") in
+  let vbox = new vbox spacing:2 packing:tree_window#add in
+  let menu_bar = new menu_bar packing:(vbox#pack expand:false) in
+  let mi = new menu_item label:"File" packing:menu_bar#append in
+  let menu = new menu packing:mi#set_submenu in
+  let mi_emit = new menu_item label:"emit code" packing:menu#append in
+  let root_tree = new tree2 packing:vbox#pack selection_mode:`EXTENDED in
+
+  object(self)
+
+(* I use magic here because the real initialization is done
+   below in the initializer part. It can't be done here because
+   of the call to self#change_selected *)
+    val mutable tiwin = (Obj.magic 0 : tiwidget0)
+
+    method tiwin = tiwin
+    method tree_window = tree_window
+
+(* the selected item in this window *)
+    val mutable selected = (None : tiwidget0 option)
+
+(* what to do when a new item is selected.
+   this method is passed to all the tiwidgets (by the select_fun
+   parameter) and they will call it when they are clicked on;
+   she is also called when changing the selection the arrow keys
+   (see in the initializer part) *)
+    method change_selected sel =
+      match selected with
+      |	None ->
+	  selected <- Some sel;
+	  sel#tree_item#misc#set state:`SELECTED;
+	  sel#base#misc#set state:`SELECTED;
+	  prop_affich sel
+      |	Some old_sel ->
+	  if sel = old_sel then begin
+	    selected <- None;
+	    sel#base#misc#set state:`NORMAL;
+	    sel#tree_item#misc#set state:`NORMAL
+	  end else begin
+	    old_sel#tree_item#misc#set state:`NORMAL;
+	    old_sel#base#misc#set state:`NORMAL;
+	    selected <- Some sel;
+	    sel#tree_item#misc#set state:`SELECTED;
+	    sel#base#misc#set state:`SELECTED;
+	    prop_affich sel
+	  end
+
+(* emits the code corresponding to this window *)
+    method emit () =
+      let outc = open_out file:(tiwin#name ^ ".ml") in
+      let c = Oformat.of_channel outc in
+      tiwin#emit_code c;
+      close_out outc
+
+
+    initializer
+      tiwin <- !new_tiwidget classe:"window" :name parent_tree:root_tree
+	  select_fun:self#change_selected;
+
+      mi_emit#connect#activate callback:self#emit;
+
+      prop_affich tiwin;
+
+      tree_window#connect#event#key_press callback:
+	begin fun ev ->
+	  let state = GdkEvent.Key.state ev in
+	  let keyval = GdkEvent.Key.keyval ev in
+	  if keyval = GdkKeysyms._Up then begin
+	    match selected with
+	    | None -> ()
+	    | Some t -> 
+		if test_modifier `CONTROL state then t#up ()
+		else try
+		  self#change_selected t#prev
+		with Not_found -> ()
+	  end
+	  else if keyval = GdkKeysyms._Down then begin
+	    match selected with
+	    | None -> ()
+	    | Some t -> 
+		if test_modifier `CONTROL state then t#down ()
+		else try
+		  self#change_selected t#next
+		with Not_found -> ()
+	  end;
+	  tree_window#stop_emit "key_press_event";
+	  true
+	end;
+      ()
+  end
+
+
+
+(***************** class implementation *****************)
+(* this is the base class of the ti<gtkwidget> hierarchy.
+   all these classes will inherit from tiwidget, but without
+   adding new methods. In this way all the classes have the
+   same interface and we can use them in lists, pass them to
+   functions without caring on the type.
+   All methods needed by any of the class are defined in
+   tiwidget but if a method is not pertinent in tiwidget
+   it has for implementation:
+      failwith "<name of the method>"
+   the real implementation of the method is done in the
+   class (or classes) in which it is needed (or sometimes
+   in tiwidget anyway).
+   Additionally, to workaround some problem with recursive types
+   the type of the (public) methods of tiwidget is defined in
+   tiwidget0 of which tiwidget inherits *)
+
+class virtual tiwidget  :name parent_tree:(parent_tree : tree2)
+    :classe widget:w ?:root [<false>] :select_fun =   
+object(self)
+
+  inherit tiwidget0
   inherit has_ml_signals
 
   val widget = (w : #widget :> widget)
   method widget = widget
 
-  val mutable glob : tiwrapper0 option = None
-  method set_glob g =  glob <- Some g
-  method glob = match glob with
-  | None -> raise Not_found
-  | Some g -> g
+  val mutable parent = None
+  method set_parent p = parent <- Some p
+  method parent =  parent
 
   val evbox =
     if root then None
@@ -81,7 +222,6 @@ object(self : 'stype)
 
 
   val classe : string = classe
-(*  method classe = classe *)
 
   val tree_item = new tree_item2
   method tree_item = tree_item
@@ -102,27 +242,67 @@ object(self : 'stype)
   method set_property name value_string =
     set_property_in_list name value_string proplist
 
-(*
-  val mutable parent_ti : tiwidget option = None
-  method parent_ti = parent_ti
-  method set_parent_ti p = parent_ti <- Some p
-*)
-      
-  val mutable children : (tiwidget * Gtk.Tags.pack_type) list = []
+
+  val mutable children : (tiwidget0 * Gtk.Tags.pack_type) list = []
   method children = children
+  method forall : 'a . callback:(_ -> 'a) -> 'a list =
+    fun :callback -> List.map (List.map children fun:fst) fun:callback
 
-  method forall : callback:_ -> unit =
-    fun :callback -> List.iter (List.map children fun:fst) fun:callback
+(* encapsulate container#add and container#remove 
+   they are here because they depend on the type of the widget:
+   e.g.: gtkbin->add scrolled_window->add_with_viewport box->pack *)
+  method private add = failwith (name ^ "::add")
+  method remove = failwith (name ^ "::remove")
 
-(* correspond to container#add and container#remove *)
-  method add        : tiwidget -> unit = failwith (name ^ "::add")
-  method remove     : tiwidget -> unit = failwith (name ^ "::remove")
+
+(* removes self from his parent *)
+(* it should be enough to only recursively remove the children from the
+   name_list and do the tip#remove and tip#tree#remove
+   only for self *)
+  method remove_me () =
+    self#forall callback:(fun tiw -> tiw#remove_me ());
+    match parent with
+    | None -> failwith "remove without parent"
+    | Some (tip : #tiwidget0) ->
+	tip#tree#remove tree_item;
+	tip#remove (self : #tiwidget0 :> tiwidget0);
+	name_list := list_remove !name_list pred:(fun n -> n=name);
+	prop_remove name
+
+(* adds a child and shows his properties;
+   used when adding a child by the menu or DnD *)
+  method private add_child classe () = 
+    let index = ref 1 in
+    let name = ref (classe ^ "1") in
+    while not (test_unique !name) do
+      incr index;
+      name := classe ^ (string_of_int !index)
+    done;
+    let child =
+      !new_tiwidget :classe name:!name parent_tree:stree :select_fun in
+    self#add_child_tiw child affich:true;
+
+  method private add_child_tiw child :affich =
+    child#set_parent (self : #tiwidget0 :> tiwidget0);
+    self#add child;
+    if affich then prop_affich child else prop_add child
+
+(* adds a child without showing immediatly his properties;
+   used by load and paste *)
+  method add_child_with_name classe name = 
+    let child =
+      !new_tiwidget :classe :name parent_tree:stree :select_fun in
+    self#add_child_tiw child affich:false;
+    child
+
+
 
   method private emit_start_code : Oformat.c -> unit = fun _ -> ()
   method private emit_end_code : Oformat.c -> unit = fun _ -> ()
   method virtual emit_code : Oformat.c -> unit
 
 
+(* for saving the project to a file. Used also by copy and cut *)
   method private save_start : Oformat.c -> unit = fun c ->
     Format.fprintf c#formatter
       "@\n@[<2><%s name=%s>" classe name
@@ -139,9 +319,35 @@ object(self : 'stype)
     self#forall callback:(fun w -> w#save c);
     self#save_end c
 
+  method private copy () =
+    let to_sel = to_string selection in
+    self#save to_sel;
+    to_sel#flush
+
+  method private cut () =
+    self#copy ();
+    self#remove_me ()
+
+  method private paste () =
+    let lexbuf = Lexing.from_string !selection in
+    let node = Paste_parser.widget Paste_lexer.token lexbuf in
+    let rec add_children (t : tiwidget0) (Node (child, children)) =
+      let classe, name, property_list = child in
+      let rname = ref name in
+      while not (test_unique !rname) do
+	rname := change_name !rname
+      done;
+      let tc = t#add_child_with_name classe !rname in
+      List.iter (List.rev children) fun:(fun c -> add_children tc c);
+      List.iter property_list fun:(fun (n,v) -> tc#set_property n v) in
+    add_children (self : #tiwidget0 :> tiwidget0) node
+    
+
+(* ML signal used when the name of the widget is changed *)
   val name_changed : string signal = new signal
   method connect = new tiwidget_signals signals:name_changed
-  method call_name_changed = name_changed#call
+  method private call_name_changed = name_changed#call
+
 
 (* this is necessary because gtk_tree#remove deletes the tree
    when removing the last item  *)
@@ -151,100 +357,101 @@ object(self : 'stype)
     tree_item#set_subtree stree;
     tree_item#expand ()
 *)
-(* signal id of button_press handler *)
-  val mutable button_press_id = None
 
-(* true if the current menu is the add_menu; for changing the name *)
-(*  val mutable menu_set = false *)
+(* when full_menu is true we use the menu else the restricted menu *)
+  val mutable full_menu  = true
+  method set_full_menu b = full_menu <- b
 
 (* the menu for this widget 
-   the default menu has just a remove item *)
-  method menu : 
-      add:(string -> unit -> unit) -> remove:(unit -> unit) -> menu =
-	fun add:_ :remove ->
-	  let menu = new menu in
-	  let mi_remove = new menu_item packing:menu#append
-	      label:"remove" in
-	  mi_remove#connect#activate callback:remove;
-	  menu
-
+   the default menu has just a remove item.
+   This menu is recalculated when one clicks on the 3rd button.
+   There is nothing to do e.g. when the name of the widget changes,
+   it will change in the menu the next time. *)
+  method private menu :time =
+    let menu = new menu in
+    let mi_remove = new menu_item packing:menu#append
+	label:"remove" in
+    mi_remove#connect#activate callback:self#remove_me;
+    menu#popup button:3 :time
 
 (* the restricted menu for this widget 
    used for containers when they are full *)
-  method restricted_menu : remove:(unit -> unit) -> menu =
-    failwith (name ^ "restricted_menu")
-
-(* sets the add menu of the tree_item; the stop_emit
-   stops the default action of button 3 (hiding the tree) 
-   the drag_data_received is set in the initializer because
-   it needs to be done only once *)
-  method set_menu () =
-(*    menu_set <- true; *)
-    may button_press_id fun:tree_item#disconnect;
-    button_press_id <- Some
-	(tree_item#connect#event#button_press callback:
-	   (fun ev -> match GdkEvent.get_type ev with
-	   | `BUTTON_PRESS ->
-	       if GdkEvent.Button.button ev = 3 then begin
-		 tree_item#stop_emit "button_press_event";
-		 (self#menu
-		    add:self#glob#add_child
-		    remove:self#glob#remove_me)#popup
-                   button:3 time:(GdkEvent.Button.time ev)
-	       end;
-	       true
-	   | _ -> false));
-
-  method set_restricted_menu () =
-(*    menu_set <- true; *)
-    may button_press_id fun:tree_item#disconnect;
-    button_press_id <- Some
-	(tree_item#connect#event#button_press callback:
-	   (fun ev -> match GdkEvent.get_type ev with
-	   | `BUTTON_PRESS ->
-	       if GdkEvent.Button.button ev = 3 then begin
-		 tree_item#stop_emit "button_press_event";
-		 (self#restricted_menu remove:self#glob#remove_me)#popup
-                   button:3 time:(GdkEvent.Button.time ev)
-	       end;
-	       true
-	   | _ -> false))
-
-
+  method private restricted_menu :time = self#menu :time
 
 (* changes all that depends on the name *)
-  method set_new_name new_name =
-    label#set_text new_name;
-    let old_name = name in
-    name <- new_name;
-(*    property_update new_name; *)
-    begin match self#glob#parent with
-    | None -> ()
-    | Some p -> p#tiw#change_name_in_proplist old_name new_name
-    end;
-    self#call_name_changed new_name
+  method private set_new_name new_name =
+    if test_unique new_name then begin
+      label#set_text new_name;
+      let old_name = name in
+      name <- new_name;
+      prop_change_name old_name new_name;
+      begin match self#parent with
+      | None -> ()
+      | Some p -> p#change_name_in_proplist old_name new_name
+      end;
+      self#call_name_changed new_name
+    end
+    else message_name ()
 	
 
 (* moves the present tiw up in his parents' children list *)
 (* does something only when the parent is a box *)
-  method child_up : tiwrapper0 -> unit = fun _ -> ()
+  method child_up = fun _ -> ()
 
-  method up () = match self#glob#parent with
+  method up () = match parent with
   | None -> ()
-  | Some (t : tiwrapper0) -> t#tiw#child_up self#glob
+  | Some t -> t#child_up (self : #tiwidget0 :> tiwidget0)
 
-  method child_down : tiwrapper0 -> unit = fun _ -> ()
+  method child_down = fun _ -> ()
 
-  method down () = match self#glob#parent with
+  method down () = match parent with
   | None -> ()
-  | Some (t : tiwrapper0) -> t#tiw#child_down self#glob
+  | Some t -> t#child_down (self : #tiwidget0 :> tiwidget0)
+
+
+(* get the next tiwidget in the tree (used with Down arrow) *)
+  method next =
+    if children <> [] then fst (List.hd children)
+    else begin
+      match parent with
+      |	None -> raise Not_found
+      |	Some p -> p#next_child (self : #tiwidget0 :> tiwidget0)
+    end
+
+  method next_child child =
+    let _, tl = cut_list elt:child (List.map fun:fst children) in
+    match tl with
+    | ch :: next :: _ -> next
+    | ch :: [] -> begin
+	match parent with
+	| None -> raise Not_found
+	| Some p -> p#next_child (self : #tiwidget0 :> tiwidget0)
+    end
+    | _ -> failwith "next_child"
+
+(* get the last child of the last child ... of our last child.
+   Used by prev. *)
+  method last =
+    if children = [] then (self : #tiwidget0 :> tiwidget0)
+    else (fst (List.hd (List.rev children)))#last
+
+(* get the previous tiwidget in the tree (used with Up arrow) *)
+  method prev =
+    match parent with
+    | None -> raise Not_found
+    | Some p ->
+	let hd, _ = cut_list elt:(self : #tiwidget0 :> tiwidget0)
+	    (List.map fun:fst p#children) in
+	match hd with
+	| [] -> p
+	| h :: _ -> h#last
 
   initializer
+    name_list := name :: !name_list;
     parent_tree#append tree_item;
     tree_item#set_subtree stree;
     tree_item#add label;
     tree_item#expand ();
-    self#set_menu ();
 
     proplist <-  proplist @
       [  "name", String (new rval init:name inits:name
@@ -254,8 +461,23 @@ object(self : 'stype)
         "height",       Int (new rval init:(-2) inits:"-2"
 	     setfun:(fun v -> widget#misc#set height:v))  ];
 
-    self#add_signal name_changed
+    self#add_signal name_changed;
 
+    tree_item#connect#event#button_press callback:
+      (fun ev -> match GdkEvent.get_type ev with
+      | `BUTTON_PRESS ->
+	  if GdkEvent.Button.button ev = 1 then begin
+	    select_fun (self : #tiwidget0 :> tiwidget0);
+	  end
+	  else if GdkEvent.Button.button ev = 3 then begin
+	    if full_menu
+	    then self#menu time:(GdkEvent.Button.time ev)
+	    else self#restricted_menu time:(GdkEvent.Button.time ev);
+	  end;
+	  tree_item#stop_emit "button_press_event";
+	  true
+      | _ -> false);
+    ()
 end
 
 
@@ -263,51 +485,49 @@ end
    not for buttons (can't have children) *)
 
 class virtual ticontainer widget:(container : #container) :name
-    ?:root [<false>] :classe :parent_tree =
+    ?:root [<false>] :classe :parent_tree :select_fun =
 object(self)
 
-  inherit tiwidget :name :classe widget:(container :> widget) :root :parent_tree as super
+  inherit tiwidget :name :classe widget:(container :> widget) :root :parent_tree :select_fun as super
 
-  method add w =
+  method private add w =
     container#add w#base;
     children <- [w, `START];
-    self#set_restricted_menu ()
+    self#set_full_menu false;
+    tree_item#drag#dest_unset ()
 
   method remove w =
     container#remove w#base;
     children <- [];
-    self#set_menu ()
-    
+    self#set_full_menu true;
+    tree_item#drag#dest_set actions:[`COPY]
+      targets:[ { target = "STRING"; flags = []; info = 0} ]
 
-  method menu :add :remove =
+  method private menu :time =
     let menu = new menu and menu_add = new menu in
     List.iter
       fun:(fun n ->
 	let mi = new menu_item packing:menu_add#append label:n
-	in mi#connect#activate callback:(add n); ())
+	in mi#connect#activate callback:(self#add_child n); ())
       widget_add_list;      
-    let mi_add = new menu_item packing:menu#append label:("add to " ^ name)
+    let mi_add = new menu_item packing:menu#append
+	label:("add to " ^ name)
     and mi_remove = new menu_item packing:menu#append
-	label:("remove " ^ name) in
-    mi_remove#connect#activate callback:remove;
+	label:("remove " ^ name)
+    and mi_cut  = new menu_item packing:menu#append
+	label:"Cut"
+    and mi_copy = new menu_item packing:menu#append
+	label:"Copy"
+    and mi_paste = new menu_item packing:menu#append
+	label:"Paste"
+    in
+    mi_remove#connect#activate callback:self#remove_me;
     mi_add#set_submenu menu_add;
-    menu
+    mi_paste#connect#activate callback:self#paste;
+    mi_copy#connect#activate callback:self#copy;
+    mi_cut#connect#activate callback:self#cut;
+    menu#popup button:3 :time
 
-  method restricted_menu :remove =
-    let menu = new menu in
-    let mi_remove = new menu_item packing:menu#append label:"remove" in
-    mi_remove#connect#activate callback:remove;
-    menu
-
-  method set_menu () =
-    super#set_menu ();
-    tree_item#drag#dest_set actions:[`COPY]
-      targets:[ { target = "STRING"; flags = []; info = 0} ]
-    
-  method set_restricted_menu () =
-    super#set_restricted_menu ();
-    tree_item#drag#dest_unset ()
-    
 
   method emit_code c =
     self#emit_start_code c;
@@ -329,18 +549,20 @@ object(self)
 	Int (new rval init:0 inits:"0"
 	       setfun:(fun v -> container#set_border_width v)) ];
 
+    tree_item#drag#dest_set actions:[`COPY]
+      targets:[ { target = "STRING"; flags = []; info = 0} ];
     tree_item#connect#drag#data_received callback:
       begin fun (context : drag_context) :x :y
 	  (data : selection_data) :info :time ->
-	    self#glob#add_child data#data ();
+	    self#add_child data#data ();
 	    context#finish success:true del:false :time
       end;()
 end
 
-class tiwindow widget:(window : #window) :name :parent_tree =
-object
+class tiwindow widget:(window : #window) :name :parent_tree :select_fun =
+object(self)
 
-  inherit ticontainer :name classe:"window" widget:window root:true :parent_tree
+  inherit ticontainer :name classe:"window" widget:window root:true :parent_tree :select_fun
 
   method private emit_start_code c =
     Format.fprintf c#formatter
@@ -370,30 +592,19 @@ object
   method private save_end : Oformat.c -> unit = fun c ->
     Format.fprintf c#formatter "@]@\n</window>@\n@]"
 
-  method menu :add remove:_ =
+  method private menu :time =
     let menu = new menu and menu_add = new menu in
     List.iter
       fun:(fun n ->
 	let mi = new menu_item packing:menu_add#append label:n
-	in mi#connect#activate callback:(add n); ())
+	in mi#connect#activate callback:(self#add_child n); ())
       widget_add_list;      
     let mi_add = new menu_item packing:menu#append label:("add to " ^ name)
     in
     mi_add#set_submenu menu_add;
-    menu
+    menu#popup button:3 :time
 
-  method set_restricted_menu () =
-(*    menu_set <- false; *)
-    may button_press_id fun:tree_item#disconnect;
-    button_press_id <- Some
-	(tree_item#connect#event#button_press callback:
-	   (fun ev -> match GdkEvent.get_type ev with
-	   | `BUTTON_PRESS ->
-	       if GdkEvent.Button.button ev = 3 then begin
-		 tree_item#stop_emit "button_press_event";
-		 true end else false
-	   | _ -> false));
-    tree_item#drag#dest_unset ()
+  method private restricted_menu :time = ()
 
   initializer
     window#set_wm title:name;
@@ -418,10 +629,10 @@ let new_tiwindow :name = new tiwindow widget:(new window show:true) :name
 
 
 
-class tibox dir:(dir : Gtk.Tags.orientation) widget:(box : #box) :name :parent_tree =
-object
+class tibox dir:(dir : Gtk.Tags.orientation) widget:(box : #box) :name :parent_tree :select_fun =
+object(self)
 
-  inherit ticontainer :name widget:box :parent_tree
+  inherit ticontainer :name widget:box :parent_tree :select_fun
       classe:(match dir with `VERTICAL -> "vbox" | _ -> "hbox")
 
   method change_name_in_proplist oldn newn =
@@ -432,22 +643,22 @@ object
 (*    property_update newn *)
 
   method child_up child =
-    let pos = list_pos child#tiw in:(List.map fun:fst children) in
+    let pos = list_pos child in:(List.map fun:fst children) in
     if pos > 0 then begin
-      box#reorder_child child#tiw#base pos:(pos-1);
+      box#reorder_child child#base pos:(pos-1);
       children <- list_reorder_up children :pos;
       stree#item_up :pos
     end
 	    
   method child_down child =
-    let pos = list_pos child#tiw in:(List.map fun:fst children) in
+    let pos = list_pos child in:(List.map fun:fst children) in
     if pos < (List.length children - 1) then begin
-      box#reorder_child child#tiw#base pos:(pos+1);
+      box#reorder_child child#base pos:(pos+1);
       children <- list_reorder_down children :pos;
       stree#item_up pos:(pos+1)
     end
 	    
-  method add child =
+  method private add child =
     box#pack  (child#base);
     children <-  children @ [(child, `START)];
     let n = child#name in
@@ -458,7 +669,8 @@ object
 	   setfun:(fun v -> box#set_child_packing (child#base) fill:v));
         (n ^ "::padding"), Int (new rval init:0 inits:"0"
 	  setfun:(fun v -> box#set_child_packing (child#base) padding:v))
-      ]
+      ];
+    prop_update (self : #tiwidget0 :> tiwidget0)
          
 
   method remove child =
@@ -468,7 +680,8 @@ object
     proplist <-  List.fold_left
 	fun:(fun :acc n -> List.remove_assoc n in:acc)
 	acc:proplist
-	[ (n ^ "::expand"); (n ^ "::fill"); (n ^ "::padding") ]
+	[ (n ^ "::expand"); (n ^ "::fill"); (n ^ "::padding") ];
+    prop_update (self : #tiwidget0 :> tiwidget0)
 
   method emit_code c =
     Format.fprintf c#formatter
@@ -516,10 +729,10 @@ let new_tivbox :name = new tivbox widget:(new vbox) :name
 (* the button inherits from widget because it can't accept
    a child; 
    needs to add the border_width property *)
-class tibutton widget:(button : #button) :name :parent_tree =
+class tibutton widget:(button : #button) :name :parent_tree :select_fun =
 object
 
-  inherit tiwidget :name classe:"button" widget:(button :> widget) :parent_tree as widget
+  inherit tiwidget :name classe:"button" widget:(button :> widget) :parent_tree :select_fun as widget
 
 
   method emit_code c =
@@ -546,10 +759,10 @@ let new_tibutton :name = new tibutton
     :name
 
 
-class ticheck_button widget:(button : check_button) :name :parent_tree =
+class ticheck_button widget:(button : check_button) :name :parent_tree :select_fun =
 object
 
-  inherit tiwidget :name classe:"check_button" widget:(button :> widget) :parent_tree
+  inherit tiwidget :name classe:"check_button" widget:(button :> widget) :parent_tree :select_fun
 
 
   method emit_code c =
@@ -572,10 +785,10 @@ let new_ticheck_button :name = new ticheck_button
 
 
 
-class titoggle_button widget:(button : toggle_button) :name :parent_tree =
+class titoggle_button widget:(button : toggle_button) :name :parent_tree :select_fun =
 object
 
-  inherit tiwidget :name classe:"toggle_button" widget:(button :> widget) :parent_tree
+  inherit tiwidget :name classe:"toggle_button" widget:(button :> widget) :parent_tree :select_fun
 
 
   method emit_code c =
@@ -602,10 +815,10 @@ let new_titoggle_button :name = new titoggle_button :name
 
 
 
-class tilabel widget:(label : label) :name :parent_tree =
+class tilabel widget:(labelw : label) :name :parent_tree :select_fun =
 object
 
-  inherit tiwidget :name classe:"label" widget:(label :> widget) :parent_tree
+  inherit tiwidget :name classe:"label" widget:(labelw :> widget) :parent_tree :select_fun
 
 
   method emit_code c =
@@ -614,18 +827,20 @@ object
       (get_string_prop "text" in:proplist)
 
   initializer
-    label#set_text name;
+(*    labelw#set_text name; *)
     proplist <-  proplist @ [
       "text",   String (new rval init:name inits:name
-             setfun:(fun v -> label#set_text v))
-    ]
+             setfun:(fun v -> labelw#set_text v));
+       "line_wrap",  Bool (new rval init:true inits:"true"
+	  setfun:(fun v -> labelw#set_label line_wrap:v));    ]
 end
 
-let new_tilabel :name = new tilabel widget:(new label) :name
+let new_tilabel :name = new tilabel widget:(new label text:name) :name
 
 
-class tiframe widget:(frame : frame) :name :parent_tree = object
-  inherit ticontainer classe:"frame" :name widget:frame :parent_tree
+class tiframe widget:(frame : frame) :name :parent_tree :select_fun =
+  object
+  inherit ticontainer classe:"frame" :name widget:frame :parent_tree :select_fun
 
   method private emit_start_code c =
     Format.fprintf c#formatter
@@ -651,14 +866,16 @@ let new_tiframe :name = new tiframe widget:(new frame) :name
 
 
 class tiscrolled_window widget:(scrolled_window : scrolled_window)
-    :name :parent_tree =
+    :name :parent_tree :select_fun =
   object(self)
-    inherit ticontainer classe:"scrolled_window" :name :parent_tree widget:scrolled_window
+    inherit ticontainer classe:"scrolled_window" :name :parent_tree widget:scrolled_window :select_fun
 
-    method add rw =
+    method private add rw =
       scrolled_window#add_with_viewport (rw#base);
       children <- [ rw, `START];
-      self#set_restricted_menu ()
+      self#set_full_menu false;
+      tree_item#drag#dest_unset ()
+
 
 (* we must remove the child from the viewport,
    not from the scrolled_window;
@@ -669,7 +886,9 @@ class tiscrolled_window widget:(scrolled_window : scrolled_window)
       viewport#remove child#base;
 (*      scrolled_window#remove (List.hd scrolled_window#children); *)
       children <- [ ];
-      self#set_menu ()
+      self#set_full_menu true;
+      tree_item#drag#dest_set actions:[`COPY]
+	targets:[ { target = "STRING"; flags = []; info = 0} ]
 
 
     method private emit_start_code c =
@@ -691,10 +910,10 @@ end
 let new_tiscrolled_window :name = new tiscrolled_window widget:(new scrolled_window) :name
 
 
-class tiseparator dir:(dir : Gtk.Tags.orientation) widget:(separator : separator) :name :parent_tree =
+class tiseparator dir:(dir : Gtk.Tags.orientation) widget:(separator : separator) :name :parent_tree :select_fun =
 object
 
-  inherit tiwidget :name widget:(separator :> widget) :parent_tree
+  inherit tiwidget :name widget:(separator :> widget) :parent_tree :select_fun
       classe:(match dir with `VERTICAL -> "vseparator"
       | `HORIZONTAL -> "hseparator")
 
@@ -713,11 +932,11 @@ let new_tivseparator :name = new tiseparator dir: `VERTICAL :name
 
 
 
-class tientry widget:(entry : entry) :name :parent_tree =
+class tientry widget:(entry : entry) :name :parent_tree :select_fun =
 object
 
   inherit tiwidget :name widget:(entry :> widget) :parent_tree
-      classe:"entry"
+      classe:"entry" :select_fun
 
 
   method emit_code c =
@@ -730,163 +949,22 @@ let new_tientry :name = new tientry :name widget:(new entry)
 
 
 
-
-
-
 let new_class_list = [
-  "window", new_tiwindow ;
-  "hbox",   new_tihbox;
-  "vbox",   new_tivbox;
-  "button", new_tibutton;
-  "check_button", new_ticheck_button;
-  "toggle_button", new_titoggle_button;
-  "label",  new_tilabel;
-  "frame",  new_tiframe;
+  "window",          new_tiwindow ;
+  "hbox",            new_tihbox;
+  "vbox",            new_tivbox;
+  "button",          new_tibutton;
+  "check_button",    new_ticheck_button;
+  "toggle_button",   new_titoggle_button;
+  "label",           new_tilabel;
+  "frame",           new_tiframe;
   "scrolled_window", new_tiscrolled_window;
-  "hseparator", new_tihseparator;
-  "vseparator", new_tivseparator;
-  "entry", new_tientry
+  "hseparator",      new_tihseparator;
+  "vseparator",      new_tivseparator;
+  "entry",           new_tientry
 ]
-
-let new_tiwidget :classe = List.assoc classe in:new_class_list
-
-
-
-class tiwrapper :classe :name parent_tree:(parent_tree : tree2) =
-object(self)
-  inherit tiwrapper0
-
-  val tiw = new_tiwidget :classe :name :parent_tree
-  method tiw = tiw
-
-
-  val mutable parent = None
-  method set_parent p = parent <- Some p
-  method parent =  parent
-
-
-(* removes self from his parent *)
-  method remove_me () =
-    let remove_one_tiwr (tiwr : tiwrapper0) =
-      match tiwr#parent with
-      | None -> failwith "remove without parent"
-      | Some (tip : tiwrapper0) ->
-	  memo#remove tiwr#tiw#tree_item;
-	  tip#tiw#tree#remove tiwr#tiw#tree_item;
-	  tip#tiw#remove tiwr#tiw;
-(*	  property_remove tiwr#tiw *) in
-    let rec remove_tiws (tw : tiwidget) =
-      List.iter fun:remove_tiws (List.map fun:fst tw#children);
-      remove_one_tiwr tw#glob in
-    remove_tiws tiw
-
-
-  method add_child_with_name classe name = 
-    let (child : tiwrapper0) = new tiwrapper :classe :name parent_tree:tiw#tree in
-    child#set_parent (self : #tiwrapper0 :> tiwrapper0);
-    tiw#add child#tiw;
-    prop_affich child#tiw;
-    child
-
-  method add_child classe () = 
-    incr index;
-    let name = classe ^ (string_of_int !index) in
-    self#add_child_with_name classe name; ()
-
-  initializer
-    memo#add tiw#tree_item  data:(self : #tiwrapper0 :> tiwrapper0);
-    tiw#set_glob (self : #tiwrapper0 :> tiwrapper0)
-end
-  
-  
-
-let new_window :name =
-  let tree_window = new window type:`TOPLEVEL show:true
-      title:(name ^ "-Tree") in
-  let vbox = new vbox spacing:2 packing:tree_window#add in
-  let menu_bar = new menu_bar packing:(vbox#pack expand:false) in
-  let mi = new menu_item label:"File" packing:menu_bar#append in
-  let menu = new menu packing:mi#set_submenu in
-  let mi_emit = new menu_item label:"emit code" packing:menu#append in
-  let root_tree = new tree2 packing:vbox#pack in
-  let tiw1 = new tiwrapper classe:"window" :name parent_tree:root_tree in
-  
-
-
-
-  let sel () = match root_tree#selection with
-  | [] -> None
-  | sel :: _ -> Some (memo#find sel) in
-
-  let emit () =
-    let outc = open_out file:(tiw1#tiw#name ^ ".ml") in
-    let c = Oformat.of_channel outc in
-    tiw1#tiw#emit_code c;
-    close_out outc in
-
-  mi_emit#connect#activate callback:emit;
-
-  let last_sel = ref (None : tiwrapper0 option) in
-
-  root_tree#connect#selection_changed callback:(fun _ ->
-    begin match !last_sel with
-      | None -> ()
-      |	Some sl -> sl#tiw#base#misc#set state:`NORMAL end;
-    match root_tree#selection with
-    | [] ->  last_sel := None
-    | sel :: _  -> let ti = memo#find sel in
-      ti#tiw#base#misc#set state:`SELECTED;
-(*      cb#entry#set_text ti#tiw#name; *)
-      prop_affich ti#tiw;
-      last_sel := Some ti
-					       );    
-  tree_window#connect#event#focus_out callback:
-    (fun _ -> begin match !last_sel with
-      |	None -> ()
-      |	Some sl -> sl#tiw#base#misc#set state:`NORMAL end;
-      true);
-  tree_window#connect#event#focus_in callback:
-    (fun _ -> begin match !last_sel with
-      |	None -> ()
-      |	Some sl -> sl#tiw#base#misc#set state:`SELECTED end;
-      true);
-  prop_affich tiw1#tiw;
-  tree_window#connect#event#key_press callback:
-    begin fun ev ->
-      let state = GdkEvent.Key.state ev in
-      let keyval = GdkEvent.Key.keyval ev in
-      if keyval = GdkKeysyms._Up then begin
-	match sel () with
-	| None -> ()
-	| Some (t : tiwrapper0) -> 
-	    if test_modifier `CONTROL state then t#tiw#up () else
-	    match t#parent with
-	    | None -> ()
-	    | Some (p : tiwrapper0) ->
-		p#tiw#tree#unselect_child t#tiw#tree_item;
-		p#tiw#tree#select_prev_child t#tiw#tree_item
-      end
-      else if keyval = GdkKeysyms._Down then begin
-	match sel () with
-	| None -> ()
-	| Some (t : tiwrapper0) -> 
-	    if test_modifier `CONTROL state then t#tiw#down () else
-	    match t#parent with
-	    | None -> root_tree#select_next_child t#tiw#tree_item true
-	    | Some (p : tiwrapper0) ->
-		p#tiw#tree#select_next_child t#tiw#tree_item true
-      end;
-      tree_window#stop_emit "key_press_event";
-      true
-    end;
-
-
-  tree_window, tiw1
 ;;
-(*
-new_window name:"window"
+
+new_tiwidget := fun :classe -> List.assoc classe in:new_class_list
 ;;
-*)
-(*
-Main.main ()
-*)
+

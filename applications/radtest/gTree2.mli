@@ -41,6 +41,8 @@ and tree2_signals :
   end
 
 and tree2 :
+  ?selection_mode:Tags.selection_mode ->
+  ?view_mode:[ITEM LINE] ->
   ?view_lines:bool ->
   ?border_width:int ->
   ?width:int ->
@@ -62,9 +64,9 @@ and tree2 :
     method unselect_item : pos:int -> unit
     method selection : tree_item2 list
     method children2 : tree_item2 list
-(*    method set_selection_mode : Gtk.Tags.selection_mode -> unit *)
+    method set_selection_mode : Gtk.Tags.selection_mode -> unit
     method set_view_lines : bool -> unit
-(*    method set_view_mode : [ITEM LINE] -> unit *)
+    method set_view_mode : [ITEM LINE] -> unit
     method private wrap : Gtk.widget obj -> tree_item2
     method item_up : pos:int -> unit
     method select_next_child : Gtk.tree_item #GObj.is_item -> bool -> unit

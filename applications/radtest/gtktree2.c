@@ -853,6 +853,7 @@ gtk_tree2_remove_items (GtkTree2 *tree,
       gtk_widget_unparent (widget);
       
       /* delete subtree if there is no children in it */
+/* HF supprime */
 /*       if(real_tree->children == NULL && 
 	 real_tree != root_tree)
 	{
