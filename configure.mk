@@ -14,14 +14,17 @@ LIBDIR = `$(GETLIBDIR)`
 GETBINDIR = $(GETLIBDIR) | sed -e 's|/lib/[^/]*$$|/bin|' -e 's|/lib$$|/bin|'
 GETRANLIB = which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'
 
+GTK_CONFIG = gtk-config
+GNOME_CONFIG = gnome-config
+
 ifdef USE_GNOME
-GTKGETCFLAGS = gtk-config --cflags`" -I"`gnome-config --includedir
-GNOMELIBS = `gnome-config --libs gtkxmhtml`
+GTKGETCFLAGS = $(GTK_CONFIG) --cflags`" -I"`gnome-config --includedir
+GNOMELIBS = `$(GNOME_CONFIG) --libs gtkxmhtml`
 else
-GTKGETCFLAGS = gtk-config --cflags
+GTKGETCFLAGS = $(GTK_CONFIG) --cflags
 endif
 
-GTKGETLIBS = gtk-config --libs
+GTKGETLIBS = $(GTK_CONFIG) --libs
 
 configure: .depend config.make
 
