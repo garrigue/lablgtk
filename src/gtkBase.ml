@@ -289,6 +289,8 @@ module Container = struct
       = "ml_gtk_container_get_border_width"
   external get_resize_mode : [>`container] obj -> resize_mode
       = "ml_gtk_container_get_resize_mode"
+  external check_resize : [>`container] obj -> unit
+      = "ml_gtk_container_check_resize"
   external add : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_add"
   external remove : [>`container] obj -> [>`widget] obj -> unit
@@ -303,10 +305,6 @@ module Container = struct
     let l = ref [] in
     foreach w ~f:(fun c -> l := c :: !l);
     List.rev !l
-(*
-  external focus : [>`container] obj -> direction_type -> bool
-      = "ml_gtk_container_focus"
-*)
   (* Called by Widget.grab_focus *)
   external set_focus_child : [>`container] obj -> [>`widget] optobj -> unit
       = "ml_gtk_container_set_focus_child"
@@ -324,16 +322,11 @@ module Container = struct
     let remove =
       { name = "remove"; classe = `container;
         marshaller = Widget.Signals.marshal }
-    let need_resize =
-      let marshal f argv _ = Closure.set_result argv (`BOOL(f ())) in
-      { name = "need_resize"; classe = `container; marshaller = marshal }
-    external val_direction : int -> direction_type = "ml_Val_direction_type"
-    let focus =
-      let marshal f argv = function
-        | `INT dir :: _ ->
-            Closure.set_result argv (`BOOL(f (val_direction dir)))
-        | _ -> invalid_arg "GtkBase.Container.Signals.marshal_focus"
-      in { name = "focus"; classe = `container; marshaller = marshal }
+    let check_resize =
+      { name = "check_resize"; classe = `container; marshaller = marshal_unit }
+    let set_focus =
+      { name = "set_focus"; classe = `container;
+        marshaller = Widget.Signals.marshal_opt }
   end
 end
 

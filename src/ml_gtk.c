@@ -503,6 +503,7 @@ ML_2 (gtk_container_add, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_remove, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_set_resize_mode, GtkContainer_val, Resize_mode_val, Unit)
 ML_1 (gtk_container_get_resize_mode, GtkContainer_val, Val_resize_mode)
+ML_1 (gtk_container_check_resize, GtkContainer_val, Unit)
 static void ml_gtk_simple_callback (GtkWidget *w, gpointer data)
 {
     value val, *clos = (value*)data;
@@ -516,12 +517,6 @@ CAMLprim value ml_gtk_container_foreach (value w, value clos)
 			   &clos);
     CAMLreturn(Val_unit);
 }
-
-/*
-ML_1 (gtk_container_register_toplevel, GtkContainer_val, Unit)
-ML_1 (gtk_container_unregister_toplevel, GtkContainer_val, Unit)
-ML_2 (gtk_container_focus, GtkContainer_val, Direction_type_val, Val_bool)
-*/
 ML_2 (gtk_container_set_focus_child, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_set_focus_vadjustment, GtkContainer_val,
       GtkAdjustment_val, Unit)
@@ -607,29 +602,103 @@ ML_1 (gtk_window_get_title, GtkWindow_val, Val_optstring)
 ML_3 (gtk_window_set_wmclass, GtkWindow_val, String_val, String_val, Unit)
 Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_name, Val_optstring)
 Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_class, Val_optstring)
-ML_2 (gtk_window_set_role, GtkWindow_val, String_val, Unit)
-ML_1 (gtk_window_get_role, GtkWindow_val, Val_optstring)
+ML_2 (gtk_window_set_resizable, GtkWindow_val, Bool_val, Unit)
+ML_1 (gtk_window_get_resizable, GtkWindow_val, Val_bool)
 ML_2 (gtk_window_add_accel_group, GtkWindow_val,
       GtkAccelGroup_val, Unit)
 ML_2 (gtk_window_remove_accel_group, GtkWindow_val,
       GtkAccelGroup_val, Unit)
-ML_2 (gtk_window_set_position, GtkWindow_val, Window_position_val, Unit)
 ML_1 (gtk_window_activate_focus, GtkWindow_val, Val_bool)
-ML_2 (gtk_window_set_focus, GtkWindow_val, GtkWidget_val, Unit)
-ML_1 (gtk_window_get_focus, GtkWindow_val, Val_GtkWidget)
-ML_2 (gtk_window_set_default, GtkWindow_val, GtkWidget_val, Unit)
 ML_1 (gtk_window_activate_default, GtkWindow_val, Val_bool)
-ML_3 (gtk_window_set_policy, GtkWindow_val, Bool_val,
-      Insert(Bool_val(arg3)) Bool_val, Unit)
+ML_2 (gtk_window_set_modal, GtkWindow_val, Bool_val, Unit)
+ML_3 (gtk_window_set_default_size, GtkWindow_val, Int_val, Int_val, Unit)
+CAMLprim value ml_gtk_window_set_geometry_hints (
+  value win, value pos, value min_size, value max_size, value base_size, 
+  value aspect, value resize_inc, value win_gravity, value user_pos,
+  value user_size, value wid )
+{
+  GdkWindowHints hints = 0;
+  GdkGeometry geom;
+  
+  if (pos != Val_unit && Field(pos,0) != Val_unit) hints |= GDK_HINT_POS;
+  if (min_size != Val_unit) {
+    hints |= GDK_HINT_MIN_SIZE;
+    geom.min_width = Int_val (Field(Field(min_size,0),0));
+    geom.min_height = Int_val (Field(Field(min_size,0),1));
+  }
+  if (max_size != Val_unit) {
+    hints |= GDK_HINT_MAX_SIZE;
+    geom.max_width = Int_val (Field(Field(max_size,0),0));
+    geom.max_height = Int_val (Field(Field(max_size,0),1));
+  }
+  if (base_size != Val_unit) {
+    hints |= GDK_HINT_BASE_SIZE;
+    geom.base_width = Int_val (Field(Field(base_size,0),0));
+    geom.base_height = Int_val (Field(Field(base_size,0),1));
+  }
+  if (aspect != Val_unit) {
+    hints |= GDK_HINT_ASPECT;
+    geom.min_aspect = Double_val (Field(Field(aspect,0),0));
+    geom.max_aspect = Double_val (Field(Field(aspect,0),1));
+  }
+  if (resize_inc != Val_unit) {
+    hints |= GDK_HINT_RESIZE_INC;
+    geom.width_inc = Int_val (Field(Field(resize_inc,0),0));
+    geom.height_inc = Int_val (Field(Field(resize_inc,0),1));
+  }
+  if (win_gravity != Val_unit) {
+    hints |= GDK_HINT_WIN_GRAVITY;
+    geom.win_gravity = Gravity_val (Field(win_gravity,0));
+  }
+  if (user_pos != Val_unit && Field(user_pos,0) != Val_unit)
+    hints |= GDK_HINT_USER_POS;
+  if (user_size != Val_unit && Field(user_size,0) != Val_unit)
+    hints |= GDK_HINT_USER_SIZE;
+
+  gtk_window_set_geometry_hints (GtkWindow_val(win), GtkWidget_val(wid),
+                                 &geom, hints);
+  return Val_unit;
+}
+ML_bc11 (ml_gtk_window_set_geometry_hints)
+ML_2 (gtk_window_set_gravity, GtkWindow_val, Gravity_val, Unit)
+ML_1 (gtk_window_get_gravity, GtkWindow_val, Val_gravity)
+ML_2 (gtk_window_set_position, GtkWindow_val, Window_position_val, Unit)
 ML_2 (gtk_window_set_transient_for, GtkWindow_val, GtkWindow_val, Unit)
 ML_1 (gtk_window_get_transient_for, GtkWindow_val, Val_GtkWidget)
 ML_2 (gtk_window_set_destroy_with_parent, GtkWindow_val, Bool_val, Unit)
-Make_Extractor (gtk_window_get, GtkWindow_val, allow_shrink, Val_bool)
-Make_Extractor (gtk_window_get, GtkWindow_val, allow_grow, Val_bool)
-ML_2 (gtk_window_set_modal, GtkWindow_val, Bool_val, Unit)
-ML_3 (gtk_window_set_default_size, GtkWindow_val, Int_val, Int_val, Unit)
-ML_3 (gtk_window_resize, GtkWindow_val, Int_val, Int_val, Unit)
+ML_2 (gtk_window_set_screen, GtkWindow_val, GdkScreen_val, Unit)
+ML_1 (gtk_window_get_screen, GtkWindow_val, Val_GdkScreen)
+static value wrap_widget (gpointer arg)
+{ return Val_GtkWidget(arg); }
+CAMLprim value ml_gtk_window_list_toplevels(value unit)
+{  return Val_GList(gtk_window_list_toplevels(), wrap_widget); }
+ML_3 (gtk_window_add_mnemonic, GtkWindow_val, Int_val, GtkWidget_val, Unit)
+ML_3 (gtk_window_remove_mnemonic, GtkWindow_val, Int_val, GtkWidget_val, Unit)
+ML_3 (gtk_window_mnemonic_activate, GtkWindow_val, Int_val(arg3) Ignore,
+      OptFlags_GdkModifier_val(arg2) Ignore, Unit)
+ML_1 (gtk_window_get_focus, GtkWindow_val, Val_GtkWidget)
+ML_2 (gtk_window_set_focus, GtkWindow_val, GtkWidget_val, Unit)
+ML_2 (gtk_window_set_default, GtkWindow_val, GtkWidget_val, Unit)
 ML_1 (gtk_window_present, GtkWindow_val, Unit)
+ML_1 (gtk_window_iconify, GtkWindow_val, Unit)
+ML_1 (gtk_window_deiconify, GtkWindow_val, Unit)
+ML_1 (gtk_window_stick, GtkWindow_val, Unit)
+ML_1 (gtk_window_unstick, GtkWindow_val, Unit)
+ML_1 (gtk_window_maximize, GtkWindow_val, Unit)
+ML_1 (gtk_window_unmaximize, GtkWindow_val, Unit)
+#ifdef HASGTK22
+ML_1 (gtk_window_fullscreen, GtkWindow_val, Unit)
+ML_1 (gtk_window_unfullscreen, GtkWindow_val, Unit)
+#endif
+ML_2 (gtk_window_set_decorated, GtkWindow_val, Bool_val, Unit)
+ML_2 (gtk_window_set_mnemonic_modifier, GtkWindow_val,
+      OptFlags_GdkModifier_val, Unit)
+ML_2 (gtk_window_set_type_hint, GtkWindow_val, Window_type_hint_val,
+      Unit)
+ML_2 (gtk_window_set_skip_taskbar_hint, GtkWindow_val, Bool_val, Unit)
+ML_3 (gtk_window_resize, GtkWindow_val, Int_val, Int_val, Unit)
+ML_2 (gtk_window_set_role, GtkWindow_val, String_val, Unit)
+ML_1 (gtk_window_get_role, GtkWindow_val, Val_optstring)
 
 /* gtkmessagedialog.h */
 ML_4 (gtk_message_dialog_new, Option_val(arg1,GtkWindow_val,NULL) Ignore,
