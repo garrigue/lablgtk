@@ -7,16 +7,15 @@
 #include <caml/mlvalues.h>
 #include <caml/fail.h>
 #include <caml/custom.h>
+CAMLextern char *young_start, *young_end; /* from minor_gc.h */
 
 value copy_memblock_indirected (void *src, asize_t size);
 value alloc_memblock_indirected (asize_t size);
-value copy_memblock_indirected_shr (void *src, asize_t size);
 value ml_some (value);
 void ml_raise_null_pointer (void) Noreturn;
 value Val_pointer (void *);
 value copy_string_check (const char*);
 value copy_string_or_null (const char *);
-value copy_string_g_free (char *);
 
 value *ml_global_root_new (value v);
 void ml_global_root_destroy (void *data);
@@ -188,6 +187,14 @@ CAMLprim value cname##_bc (value *argv, int argn) \
 #define Option_val(val,unwrap,default) \
 ((long)val-1 ? unwrap(Field(val,0)) : default)
 #define String_option_val(s) Option_val(s,String_val,NULL)
+
+/* Strings are not always old, so they may move around... */
+#define StableString_val(val) \
+  ((char*)(val) < young_end && (char*)(val) > young_start ? \
+   memcpy(alloca(Bosize_val(val)), (char*)(val), Bosize_val(val)) : \
+   String_val(val))
+#define SizedStableString_val(val) \
+  Insert(StableString_val(val)) string_length(val)
 
 /* Utility */
 

@@ -17,38 +17,43 @@
 ML_2(setlocale, Locale_category_val, String_option_val, Val_optstring)
 
 /* Utility functions */
-value copy_string_and_free (char *str)
+value copy_string_g_free (char *str)
 {
-    value res;
-    res = copy_string_check (str);
+    value res = copy_string_check (str);
     g_free (str);
     return res;
 }
 
 value Val_GList (GList *list, value (*func)(gpointer))
 {
-    value new_cell, result, last_cell, cell;
+  CAMLparam0 ();
+  CAMLlocal4 (new_cell, result, last_cell, cell);
 
-    if (list == NULL) return Val_unit;
-
-    last_cell = cell = Val_unit;
+  last_cell = cell = Val_unit;
+  if (list != NULL) {
     result = func(list->data);
-    Begin_roots3 (last_cell, cell, result);
     cell = last_cell = alloc_small(2,0);
     Field(cell,0) = result;
     Field(cell,1) = Val_unit;
     list = list->next;
-    while (list != NULL) {
-	result = func(list->data);
-	new_cell = alloc_small(2,0);
-	Field(new_cell,0) = result;
-	Field(new_cell,1) = Val_unit;
-	modify(&Field(last_cell,1), new_cell);
-	last_cell = new_cell;
-	list = list->next;
-    }
-    End_roots ();
-    return cell;
+  }
+  while (list != NULL) {
+    result = func(list->data);
+    new_cell = alloc_small(2,0);
+    Field(new_cell,0) = result;
+    Field(new_cell,1) = Val_unit;
+    modify(&Field(last_cell,1), new_cell);
+    last_cell = new_cell;
+    list = list->next;
+  }
+  CAMLreturn (cell);
+}
+
+value Val_GList_free (GList *list, value (*func)(gpointer))
+{
+  value res = Val_GList (list, func);
+  g_list_free (list);
+  return res;
 }
 
 GList *GList_val (value list, gpointer (*func)(value))
@@ -202,28 +207,34 @@ ML_0(gdk_threads_leave, Unit)
 /* The day has come .... */
 CAMLprim value Val_GSList (GSList *list, value (*func)(gpointer))
 {
-    value new_cell, result, last_cell, cell;
-
-    if (list == NULL) return Val_unit;
-
-    last_cell = cell = Val_unit;
+  CAMLparam0();
+  CAMLlocal4 (new_cell, result, last_cell, cell);
+  
+  last_cell = cell = Val_unit;
+  if (list != NULL) {
     result = func(list->data);
-    Begin_roots3 (last_cell, cell, result);
-    cell = last_cell = alloc_tuple (2);
+    cell = last_cell = alloc_small (0, 2);
     Field(cell,0) = result;
     Field(cell,1) = Val_unit;
     list = list->next;
-    while (list != NULL) {
-	result = func(list->data);
-	new_cell = alloc_tuple(2);
-	Field(new_cell,0) = result;
-	Field(new_cell,1) = Val_unit;
-	modify(&Field(last_cell,1), new_cell);
-	last_cell = new_cell;
-	list = list->next;
-    }
-    End_roots ();
-    return cell;
+  }
+  while (list != NULL) {
+    result = func(list->data);
+    new_cell = alloc_small(0, 2);
+    Field(new_cell,0) = result;
+    Field(new_cell,1) = Val_unit;
+    modify(&Field(last_cell,1), new_cell);
+    last_cell = new_cell;
+    list = list->next;
+  }
+  CAMLreturn(cell);
+}
+
+value Val_GSList_free (GSList *list, value (*func)(gpointer))
+{
+  value res = Val_GSList (list, func);
+  g_slist_free (list);
+  return res;
 }
 
 GSList *GSList_val (value list, gpointer (*func)(value))
