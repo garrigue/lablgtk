@@ -1,6 +1,6 @@
 # Makefile for lablgtk. $Id$
 
-all: config.make .depend var2conv var2def ml_gtk.o
+all: config.make .depend var2conv var2def ml_gtk.o ml_gdk.o
 
 config.make:
 	echo GTKCFLAGS=`gtk-config --cflags` > config.make
