@@ -14,13 +14,11 @@ TOPLEVEL = olablmktop $(MLFLAGS)
 RANLIB = ranlib
 
 CFLAGS = $(GTKCFLAGS)
-ifdef THREADS
-MLFLAGS = -thread
-MLLIBS = unix.cma threads.cma
-LDFLAGS = $(GTKLIBS) -lthreads -lunix
-else
 LDFLAGS = $(GTKLIBS)
-endif
+
+THFLAGS = -thread
+THLIBS = unix.cma threads.cma
+THLDFLAGS = -lthreads -lunix
 
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
@@ -40,8 +38,7 @@ COBJS = ml_gtk.o ml_gdk.o ml_glib.o
 MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
-	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" \
-	$(MLLIBS) lablgtk.cma
+	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" lablgtk.cma
 
 liblablgtk.a: $(COBJS)
 	ar rc $@ $(COBJS)
@@ -49,6 +46,14 @@ liblablgtk.a: $(COBJS)
 
 lablgtk.cma: $(MLOBJS)
 	$(LINKER) -a -o $@ $(MLOBJS)
+
+gtkThread.cmo: gtkThread.ml
+	$(COMPILER) $(THFLAGS) gtkThread.ml
+
+lablgtk_t: liblablgtk.a lablgtk.cma gtkThread.cmo
+	$(TOPLEVEL) $(THFLAGS) -thread -o $@ -custom \
+		-cclib "-L. -llablgtk $(LDFLAGS) $(THLDFLAGS)" \
+		$(THLIBS) lablgtk.cma gtkThread.cmo
 
 var2conv: var2conv.cmo
 	olablc -o $@ var2conv.cmo

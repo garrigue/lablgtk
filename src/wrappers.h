@@ -95,6 +95,7 @@ value cname##_bc (value *argv, int argn) \
 /* result conversion */
 #define Unit(x) ((x), Val_unit)
 #define Val_char Val_int
+#define Val_any(any) ((value) any)
 
 /* parameter conversion */
 #define Bool_ptr(x) ((long) x - 1)
@@ -103,6 +104,7 @@ value cname##_bc (value *argv, int argn) \
 
 #define Option_val(val,unwrap,default) \
 ((long)val-1 ? unwrap(Field(val,0)) : default)
+#define String_option_val(s) Option_val(s,String_val,NULL)
 
 /* Utility */
 

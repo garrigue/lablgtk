@@ -106,10 +106,25 @@ ML_2 (gtk_adjustment_set_value, GtkAdjustment_val, Float_val, Unit)
 ML_3 (gtk_adjustment_clamp_page, GtkAdjustment_val,
       Float_val, Float_val, Unit)
 
-/* gtkwidget.h */
+/* gtktooltips.h */
 
 #define GtkWidget_val(val) GTK_WIDGET(Pointer_val(val))
 #define Val_GtkWidget(w) Val_GtkObject((GtkObject*)w)
+
+#define GtkTooltips_val(val) GTK_TOOLTIPS(Pointer_val(val))
+ML_0 (gtk_tooltips_new, Val_GtkWidget)
+ML_1 (gtk_tooltips_enable, GtkTooltips_val, Unit)
+ML_1 (gtk_tooltips_disable, GtkTooltips_val, Unit)
+ML_2 (gtk_tooltips_set_delay, GtkTooltips_val, Int_val, Unit)
+ML_4 (gtk_tooltips_set_tip, GtkTooltips_val, GtkWidget_val,
+      String_option_val, String_option_val, Unit)
+ML_3 (gtk_tooltips_set_colors, GtkTooltips_val,
+      Option_val(arg2, GdkColor_val, NULL) Ignore,
+      Option_val(arg3, GdkColor_val, NULL) Ignore,
+      Unit)
+
+/* gtkwidget.h */
+
 value ml_gtk_widget_set_can_default (value val, value bool)
 {
     GtkWidget *w = GtkWidget_val(val);
@@ -232,6 +247,43 @@ ML_2 (gtk_container_set_focus_hadjustment, GtkContainer_val,
       GtkAdjustment_val, Unit)
 
 /* gtkbin.h */
+
+/* gtkalignment.h */
+
+#define GtkAlignment_val(val) GTK_ALIGNMENT(Pointer_val(val))
+ML_4 (gtk_alignment_new, Float_val, Float_val, Float_val, Float_val,
+      Val_GtkWidget)
+value ml_gtk_aligment_set (value val, value x, value y,
+			   value xscale, value yscale)
+{
+    GtkAlignment *alignment = GtkAlignment_val(val);
+    gtk_alignment_set (alignment,
+		       Option_val(x, Float_val, alignment->xalign),
+		       Option_val(y, Float_val, alignment->yalign),
+		       Option_val(xscale, Float_val, alignment->xscale),
+		       Option_val(yscale, Float_val, alignment->xscale));
+    return Val_unit;
+}
+
+/* gtkeventbox.h */
+
+ML_0 (gtk_event_box_new, Val_GtkWidget)
+
+/* gtkframe.h */
+
+#define GtkFrame_val(val) GTK_FRAME(Pointer_val(val))
+ML_1 (gtk_frame_new, String_val, Val_GtkWidget)
+ML_2 (gtk_frame_set_label, GtkFrame_val, String_val, Unit)
+ML_3 (gtk_frame_set_label_align, GtkFrame_val, Float_val, Float_val, Unit)
+ML_3 (gtk_frame_set_shadow_type, GtkFrame_val, Shadow_val, Unit)
+
+/* gtkaspectframe.h */
+
+#define GtkAspectFrame_val(val) GTK_ASPECT_FRAME(Pointer_val(val))
+ML_5 (gtk_aspect_frame_new, String_val, Float_val, Float_val,
+      Float_val, Bool_val, Val_GtkWidget)
+ML_5 (gtk_aspect_frame_set, GtkAspectFrame_val, Float_val, Float_val,
+      Float_val, Bool_val, Unit)
 
 /* gtkwindow.h */
 
@@ -379,12 +431,8 @@ Make_Extractor (GtkEntry, GtkEntry_val, text_length, Val_int)
 /* gtktext.h */
 
 #define GtkText_val(val) GTK_TEXT(Pointer_val(val))
-value ml_gtk_text_new (value hadj, value vadj)
-{
-    return Val_GtkWidget
-	(gtk_text_new (Option_val(hadj,GtkAdjustment_val,NULL),
-		       Option_val(vadj,GtkAdjustment_val,NULL)));
-}
+ML_2 (gtk_text_new, Option_val(arg1,GtkAdjustment_val,NULL) Ignore,
+      Option_val(arg2,GtkAdjustment_val,NULL) Ignore, Val_GtkWidget)
 ML_2 (gtk_text_set_editable, GtkText_val, Bool_val, Unit)
 ML_2 (gtk_text_set_word_wrap, GtkText_val, Bool_val, Unit)
 ML_3 (gtk_text_set_adjustments, GtkText_val, GtkAdjustment_val,
@@ -399,8 +447,8 @@ value ml_gtk_text_insert (value text, value font, value fore, value back,
 {
     gtk_text_insert (GtkText_val(text),
 		     Option_val(font,GdkFont_val,NULL),
-		     Option_val(fore,(GdkColor *),NULL),
-		     Option_val(back,(GdkColor *),NULL),
+		     Option_val(fore,GdkColor_val,NULL),
+		     Option_val(back,GdkColor_val,NULL),
 		     String_val(str), string_length(str));
     return Val_unit;
 }

@@ -49,8 +49,9 @@ let main () =
   Widget.show button;
 
   Widget.show table;
-  Widget.show window;
+  Widget.show window
 
+
+let _ =
+  main ();
   Main.main ()
-
-let _ = main ()
