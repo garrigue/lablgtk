@@ -256,6 +256,6 @@ module CList = struct
     let unselect_row : ([>`clist],_) t =
       { name = "unselect_row"; marshaller = marshal_select }
     let click_column : ([>`clist],_) t =
-      { name = "unselect_row"; marshaller = marshal_int }
+      { name = "click_column"; marshaller = marshal_int }
   end
 end
