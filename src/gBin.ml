@@ -28,8 +28,8 @@ let scrolled_window ?hadjustment ?vadjustment =
     new scrolled_window (ScrolledWindow.create pl)))
 
 class event_box obj = object
-  inherit container_full (obj : Gtk.event_box obj)
-  method event = new GObj.event_ops obj
+  inherit container_full obj
+  method event = new GObj.event_ops (obj :> Gtk.event_box obj)
 end
 
 let event_box =

@@ -88,6 +88,13 @@ GNOMEUIMLOBJS = gnomeDruid.cmo gnoDruid.cmo
 GNOMEUICOBJS = ml_gnomedruid.o
 endif
 
+ifdef USE_PANEL
+MLLIBS += lablpanel.cma
+CLIBS += liblablpanel.a
+PANELMLOBJS = panel.cmo
+PANELCOBJS = ml_panel.o
+endif
+
 ifdef USE_RSVG
 MLLIBS += lablrsvg.cma
 CLIBS += liblablrsvg.a
@@ -146,10 +153,10 @@ THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
 ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
-	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(INITOBJS)
+	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELOBJS) $(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
-depend: $(ENUMOBJS:.cmo=.ml)
+depend: $(ENUMOBJS:.cmo=.ml) $(GTKPROPS:%.props=%Props.ml) $(GTKPROPS:%.props=o%Props.ml)
 	ocamldep *.ml *.mli > .depend
 
 ifeq ($(THREADS_LIB),no)
@@ -275,6 +282,14 @@ lablgnomeui.cmxa: liblablgnomeui.a $(GNOMEUIMLOBJS:.cmo=.cmx)
 	    $(GNOMEUIMLOBJS:.cmo=.cmx) $(GNOMEUILIBS)
 # gnoDruid.cmo: COMPILER+= -i
 
+liblablpanel.a: $(PANELCOBJS)
+	$(LIBRARIAN) -o lablpanel $(PANELCOBJS) $(PANELLIBS)
+lablpanel.cma: liblablpanel.a $(PANELMLOBJS)
+	$(LIBRARIAN) -o lablpanel $(PANELMLOBJS) $(PANELLIBS)
+lablpanel.cmxa: liblablpanel.a $(PANELMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablpanel \
+	    $(PANELMLOBJS:.cmo=.cmx) $(PANELLIBS)
+
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
@@ -312,6 +327,7 @@ srcdoc: $(ALLOBJS)
 $(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
 	    ml_gobject.h ml_glib.h wrappers.h
 $(GNOMEUICOBJS) : gnomeui_tags.h
+$(PANELCOBJS) : panel_tags.h
 ml_glib.o: glib_tags.h ml_glib.h wrappers.h
 ml_gobject.o: gobject_tags.h wrappers.h
 ml_gdk.o: gdk_tags.h ml_gdk.h ml_gpointer.h ml_pango.h wrappers.h
@@ -324,6 +340,7 @@ ml_pango.o: pango_tags.h ml_pango.h
 ml_rsvg.o: ml_gobject.h ml_gdkpixbuf.h wrappers.h
 ml_gnomecanvas.o: ml_gtk.h ml_gobject.h wrappers.h
 ml_gnomedruid.o: ml_gtk.h ml_gobject.h wrappers.h
+ml_panel.o: ml_gtk.h ml_gobject.h wrappers.h
 varcc.cmo: varcc.ml4
 
 include .depend
