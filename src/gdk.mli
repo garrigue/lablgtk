@@ -58,7 +58,6 @@ module Tags : sig
     | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 ]
   type drag_action = [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
   type rgb_dither = [ `NONE | `NORMAL | `MAX]
-  type selection = [ `PRIMARY | `SECONDARY ]
   type property_state = [ `NEW_VALUE | `DELETE ]
   type property_mode = [ `REPLACE | `PREPEND | `APPEND ]
   type xdata =
@@ -76,8 +75,14 @@ module Convert :
 
 module Atom :
   sig
+    (* Currently Gtk2 does not implement ?dont_create... *)
     val intern :  ?dont_create:bool -> string -> atom
-    external name : atom -> string = "ml_gdk_atom_name"
+    val name : atom -> string
+    val none : atom
+    val primary : atom
+    val secondary : atom
+    val clipboard : atom
+    val string : atom
   end
 
 module Property :

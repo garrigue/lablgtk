@@ -84,6 +84,7 @@ open Tags
 type gtk_class
 
 type accel_group
+type clipboard
 
 type style
 type 'a group = 'a obj option

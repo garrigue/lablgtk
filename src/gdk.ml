@@ -82,8 +82,6 @@ module Tags = struct
   type rgb_dither = 
     [ `NONE | `NORMAL | `MAX]
 
-  type selection = [ `PRIMARY | `SECONDARY ]
-
   type property_state = [ `NEW_VALUE | `DELETE ]
 
   type property_mode = [ `REPLACE | `PREPEND | `APPEND ]
@@ -115,6 +113,11 @@ module Atom = struct
   external intern : string -> bool -> atom = "ml_gdk_atom_intern"
   let intern ?(dont_create=false) name = intern name dont_create
   external name : atom -> string = "ml_gdk_atom_name"
+  let none = intern "NONE"
+  let primary = intern "PRIMARY"
+  let secondary = intern "SECONDARY"
+  let clipboard = intern "CLIPBOARD"
+  let string = intern "STRING"
 end
 
 module Property = struct

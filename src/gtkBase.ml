@@ -351,6 +351,24 @@ module Item = struct
   end
 end
 
+(* Clipboard provides high-level access to Selection *)
+module Clipboard = struct
+  external get : Gdk.atom -> clipboard = "ml_gtk_clipboard_get"
+  external clear : clipboard -> unit = "ml_gtk_clipboard_clear"
+  external set_text : clipboard -> string -> unit = "ml_gtk_clipboard_set_text"
+  external wait_for_contents : clipboard -> target:Gdk.atom -> selection_data
+      = "ml_gtk_clipboard_wait_for_contents"
+  external wait_for_text : clipboard -> string option
+      = "ml_gtk_clipboard_wait_for_text"
+  external request_contents :
+      clipboard -> target:Gdk.atom -> callback:(selection_data -> unit) -> unit
+      = "ml_gtk_clipboard_request_contents"
+  external request_text :
+      clipboard -> callback:(string option -> unit) -> unit
+      = "ml_gtk_clipboard_request_text"
+end
+
+(* Use of Selection is deprecated: rather use simpler Clipboard module *)
 module Selection = struct
   external selection : selection_data -> Gdk.atom
       = "ml_gtk_selection_data_selection"
@@ -367,15 +385,19 @@ module Selection = struct
       typ:Gdk.atom -> format:int -> data:string option -> unit
       = "ml_gtk_selection_data_set"
 
+  (* Create a memory-managed copy of the data *)
+  external copy : selection_data -> selection_data
+      = "ml_gtk_selection_data_copy"
+
   external owner_set :
-    [>`widget] obj -> sel:Gdk.Tags.selection -> time:int32 -> bool
+    [>`widget] obj -> sel:Gdk.atom -> time:int32 -> bool
     = "ml_gtk_selection_owner_set"
   external add_target :
-    [>`widget] obj -> sel:Gdk.Tags.selection -> target:Gdk.atom ->
+    [>`widget] obj -> sel:Gdk.atom -> target:Gdk.atom ->
     info:int -> unit
     = "ml_gtk_selection_add_target"
   external convert :
-    [> `widget] obj -> sel:Gdk.Tags.selection -> target:Gdk.atom ->
+    [> `widget] obj -> sel:Gdk.atom -> target:Gdk.atom ->
     time:int32 -> bool
     = "ml_gtk_selection_convert"
   
@@ -388,7 +410,7 @@ module Selection = struct
       | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_sel3"
     let marshal_sel2 f argv = function
       | `POINTER(Some p) :: `INT time :: _ ->
-          f (Obj.magic p : selection_data) ~time:(get_int32 argv ~pos:1)
+          f (copy(Obj.magic p : selection_data)) ~time:(get_int32 argv ~pos:1)
       | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_sel2"
     let selection_get =
       { name = "selection_get"; classe = `widget;

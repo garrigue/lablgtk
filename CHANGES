@@ -1,5 +1,10 @@
 $Id$
 
+2002.01.15
+  * added GtkAccelGroup and GtkClipboard support (Jacques)
+  * suppress Gdk.Tags.selection (use Gdk.Atom.primary/secondary/clipboard)
+  * time is 32-bit! (Benjamin)
+
 In lablgtk2-alpha:
 
 2002.12.26
