@@ -1,5 +1,8 @@
 $Id$
 
+2004.12.04 [Jacques]
+  * fix constraint in GUtil.memo
+
 2004.12.02 [Olivier]
   * add GtkAboutDialog (2.6)
 
