@@ -1,10 +1,11 @@
 .depend
-config.make
 varcc
 lablgtk
 lablgtktop
 lablgtktop_t
 lablgtkrun
+lablgladecc
+xml_lexer.ml
 *_tags.c
 *_tags.h
 *.lib

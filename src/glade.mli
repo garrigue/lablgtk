@@ -4,6 +4,7 @@
 
 external init : unit -> unit = "ml_glade_init"
     (* You must call [init] before importing any glade specification *)
+    (* Returns immediately if already initialized *)
 
 (* The raw glade XML widget *)
 type glade_xml = [ `data | `glade_xml]
