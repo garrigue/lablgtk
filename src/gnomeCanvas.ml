@@ -54,6 +54,7 @@ module Types : sig
 
   type group_p = [`x of float| `y of float]
   type shape_p = [`fill_color of string| `outline_color of string
+                 | `fill_color_rgba of int32
                  | `width_units of float| `width_pixels of int
 		 | `cap_style of Gdk.GC.gdkCapStyle]
   type re_p = [shape_p| `x1 of float| `y1 of float| `x2 of float| `y2 of float]
@@ -63,8 +64,12 @@ module Types : sig
   type line_p = [`arrow_shape_a of float| `arrow_shape_b of float| `arrow_shape_c of float
                 | `fill_color of string| `width_units of float| `width_pixels of int
                 | `points of float array| `first_arrowhead of bool
-		| `last_arrowhead of bool]
+		| `last_arrowhead of bool| `smooth of bool]
   type bpath_p = [shape_p| `bpath of PathDef.t]
+  type pixbuf_p = [`x of float| `y of float
+                  | `width of float|  `height of float
+		  | `anchor of Gtk.Tags.anchor_type| `pixbuf of GdkPixbuf.pixbuf]
+  type polygon_p = [shape_p| `points of float array]
 
   val group : (group, group_p) t
   val rect : ([item|`canvasshape|`canvasRE|`canvasrect], re_p) t
@@ -72,6 +77,10 @@ module Types : sig
   val text : ([item|`canvastext], text_p) t
   val line : ([item|`canvasline], line_p) t
   val bpath : ([item|`canvasshape|`canvasbpath], bpath_p) t
+  val pixbuf : ([item|`canvaspixbuf], pixbuf_p) t
+  val polygon : ([item|`canvasshape|`canvaspolygon], polygon_p) t
+  val shape : ([item|`canvasshape], shape_p) t
+  val rect_ellipse : ([item|`canvasshape|`canvasRE], re_p) t
   val points : Gobject.g_type
   val is_a : 'a Gobject.obj -> ('b, 'c) t -> bool
 end = 
@@ -80,6 +89,7 @@ end =
 
   type group_p = [`x of float| `y of float]
   type shape_p = [`fill_color of string| `outline_color of string
+                 | `fill_color_rgba of int32
                  | `width_units of float| `width_pixels of int
 		 | `cap_style of Gdk.GC.gdkCapStyle]
   type re_p = [shape_p| `x1 of float| `y1 of float| `x2 of float| `y2 of float]
@@ -89,8 +99,12 @@ end =
   type line_p = [`arrow_shape_a of float| `arrow_shape_b of float| `arrow_shape_c of float
                 | `fill_color of string| `width_units of float| `width_pixels of int
                 | `points of float array| `first_arrowhead of bool
-		| `last_arrowhead of bool]
+		| `last_arrowhead of bool| `smooth of bool]
   type bpath_p = [shape_p| `bpath of PathDef.t]
+  type pixbuf_p = [`x of float| `y of float
+                  | `width of float|  `height of float
+		  | `anchor of Gtk.Tags.anchor_type| `pixbuf of GdkPixbuf.pixbuf]
+  type polygon_p = [shape_p| `points of float array]
 
   let canvas_types = register_types ()
   let group = canvas_types.(4)
@@ -99,6 +113,12 @@ end =
   let text = canvas_types.(14)
   let line = canvas_types.(6)
   let bpath = canvas_types.(1)
+  let pixbuf = canvas_types.(7)
+  let polygon = canvas_types.(9)
+  let shape = canvas_types.(13)
+  let rect_ellipse = canvas_types.(10)
+  let widget = canvas_types.(2)
+  let rich_text = canvas_types.(12)
   let points = canvas_types.(8)
 
   let is_a obj typ =
@@ -110,9 +130,13 @@ module Item =
   struct
 external new_item : [> group] Gobject.obj -> ('a, 'b) Types.t -> 'a Gobject.obj = "ml_gnome_canvas_item_new"
 external parent : [> item] Gobject.obj -> group Gobject.obj = "ml_gnome_canvas_item_parent"
+external canvas : [> item] Gobject.obj -> canvas Gobject.obj = "ml_gnome_canvas_item_canvas"
+external xform :  [> item] Gobject.obj -> [`IDENTITY|`TRANSL of float array|`AFFINE of float array] = "ml_gnome_canvas_item_xform"
+external affine_relative : [> item] Gobject.obj -> float array -> unit = "ml_gnome_canvas_item_affine_relative"
+external affine_absolute : [> item] Gobject.obj -> float array -> unit = "ml_gnome_canvas_item_affine_absolute"
 external set : [> item] Gobject.obj -> (string * Gobject.g_value) list -> unit = "ml_gnome_canvas_item_set"
 external move : [> item] Gobject.obj -> x:float -> y:float -> unit = "ml_gnome_canvas_item_move"
-external raise_item : [> item] Gobject.obj -> int -> unit = "ml_gnome_canvas_item_raise"
+external raise : [> item] Gobject.obj -> int -> unit = "ml_gnome_canvas_item_raise"
 external lower : [> item] Gobject.obj -> int -> unit = "ml_gnome_canvas_item_lower"
 external raise_to_top : [> item] Gobject.obj -> unit = "ml_gnome_canvas_item_raise_to_top"
 external lower_to_bottom : [> item] Gobject.obj -> unit = "ml_gnome_canvas_item_lower_to_bottom"
