@@ -3,26 +3,26 @@
 
 
 Needed:
-	olabl-2.02
+	olabl-2.02 Summer edition (olabl-2.02-summer.tar.gz)
 	gtk-1.2.x
 	gmake (there is no standard for conditionals)
 
 How to compile:
 
-	Just type "make".
-	If anything changed, type "make configure; make".
+	You should normally not need to modify Makefiles.
+	First type "make configure <options>".
+	Options are
+		USE_CC=1	to use $(CC) rather than gcc
+		USE_GL=1	to compile with OpenGL support (see lower)
+		MESA=Mesa	to link with Mesa libs rather than OpenGL
+
+	Then just type "make" to build the library and toplevel.
+	Also type "make lablgtk_t" to make the threaded toplevel.
 
 	On FreeBSD, you need to link with libxpg4.so for Japanese
 	output.
 
-	If present, apply olabl.patch to the fresh olabl distribution.
-	If you intend to use threads, apply also threads.patch.
-
 Contents:
-
-	olabl.patch	patch for olabl-2.02 compiler
-	threads.patch	patch for olabl-2.02 thread library
-	lablgl.patch	patch for lablgl-0.92
 
 	gdk.ml		low-level interface to the General Drawing Kit
 	gtk.ml		low-level interface to the GIMP Tool Kit
@@ -34,6 +34,11 @@ Contents:
 	lablgtk_t	threaded toplevel
 
 	examples/*.ml	various examples
+	applications/*	application using the library
+		radtest		a very experimental RAD for lablgtk
+		lablglade	another experimental RAD, based on glade
+
+	lablgl.patch	patch for lablgl-0.92
 
 How to run the examples:
 
@@ -60,16 +65,15 @@ How to use the threaded toplevel:
   run directly by the caml main loop, so they can use all thread
   operations.
 
-Structure of the (raw) Gtk module:
+Structure of the (raw) Gtk* modules:
 
-  This module is composed of one submodule for each class.
+  These modules are composed of one submodule for each class.
   Signals specific to a widget are in a Signals inner module.
   A setter function is defined to give access to set_param functions.
 
 Structure of the G[A-Z]* modules:
 
-  The structure has been greatly simplified.
-  You can now freely inherit and subtype between widget classes.
+  These modules provide classes to wrap the raw function calls.
 
   While subtyping follows the Gtk widget hierarchy, you cannot always
   use width subtyping (i.e. #super is not unifiable with all the
@@ -86,8 +90,11 @@ Structure of the G[A-Z]* modules:
   * a connect#event sub-object, for event signals
 
   You create a widget by [new <widget name> options ...].
-  Many optional arguments are admitted. The last of them, packing:,
-  allows you to call a function on your newly created widget.
+  Many optional arguments are admitted. The two last of them, packing:
+  and show:, allow you respectively to call a function on your newly
+  created widget, and to decide wether to show it immediately or not.
+  By default all widgets except toplevel windows are shown
+  immediately.
 
 Note about unit as method argument:
 
@@ -111,8 +118,7 @@ Memory management:
   referenced. They have to be explicitely destroyed. If a widget was
   added to a container widget, it will automatically be destroyed when
   its last container is destroyed. For this reason you should only
-  destroy toplevel widgets, and be careful about not loosing all
-  references to a still unused widget.
+  destroy toplevel widgets.
 
 GL extension
 
@@ -121,13 +127,19 @@ GL extension
   * apply lablgl.patch to lablgl-0.92, compile and install
   * get and install gtkglarea-1.2.x.tar.gz from
     http://www.student.oulu.fi/~jlof/gtkglarea/index.html
-  * do "setenv USE_GL 1" before compiling lablgtk
+  * reconfigure: "make configure USE_GL=1"
+  * if you use Mesa, then "make configure USE_GL=1 MESA=Mesa"
 
   Some examples are in examples/GL, but basically any LablGL example
   can be easily ported.
+
+Authors:
+	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>
+	Hubert Fauque  <hubert.fauque@wanadoo.fr>
+	Jun Furuse     <Jun.Furuse@inria.fr>
+	Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
 				   
 Bug reports:
-	Jacques Garrigue
-	garrigue@kurims.kyoto-u.ac.jp
+	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>
 
 $Id$
