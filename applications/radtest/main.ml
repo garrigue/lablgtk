@@ -312,6 +312,7 @@ let xpm_window () =
   add_xpm "statusbar.xpm"      ~left:1 ~top:4 ~classe:"statusbar";
   add_xpm "notebook.xpm"       ~left:2 ~top:4 ~classe:"notebook";
   add_xpm "colorselection.xpm" ~left:3 ~top:4 ~classe:"color_selection";
+  add_xpm "pixmap.xpm"         ~left:4 ~top:4 ~classe:"pixmap";
   add_xpm "entry.xpm"          ~left:0 ~top:5 ~classe:"entry";
   add_xpm "spinbutton.xpm"     ~left:1 ~top:5 ~classe:"spin_button";
   add_xpm "combo.xpm"          ~left:2 ~top:5 ~classe:"combo";

@@ -1,13 +1,14 @@
 (* $Id$ *)
 
 type range =
-    String
+  |  String
   | Int
   | Float of float * float
   | Enum of string list
   | Enum_string of string list
   | Adjust
   | CList_titles
+  | File
 
 class type prop =
   object

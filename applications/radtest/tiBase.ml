@@ -86,8 +86,8 @@ class virtual tiwidget0 = object
 end
 
 class virtual window_and_tree0 = object
-(*  method virtual tiwin : tiwidget0
-  method virtual tree_window : window *)
+  method virtual tiwin : tiwidget0
+(*  method virtual tree_window : window *)
   method virtual change_selected : tiwidget0 -> unit
   method virtual remove_sel : tiwidget0 -> unit
   method virtual add_param : char

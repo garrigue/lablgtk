@@ -147,3 +147,30 @@ end
 
 let new_ticolor_selection ~name ?(listprop = []) =
   new ticolor_selection ~widget:(GMisc.color_selection ()) ~name
+
+
+class tipixmap ~(widget : GMisc.pixmap) ~name ~parent_tree ~pos
+    ?(insert_evbox=true) parent_window =
+object(self)
+  val pixmap = widget
+  inherit timisc ~name ~widget:(widget :> GMisc.misc) ~insert_evbox
+      ~parent_tree ~pos parent_window as widget
+
+  method private class_name = "GMisc.pixmap"
+  initializer
+    classe <- "pixmap";
+    proplist <- proplist @
+      [ "file",
+	new prop_file ~name:"file" ~init:""
+	  ~set:(fun v ->
+	    pixmap#set_pixmap
+	      (GDraw.pixmap_from_xpm ~window:parent_window#tiwin#widget
+		 ~file:v ());
+	    true)
+      ]
+end
+
+let new_tipixmap ~name ?(listprop = []) ~parent_tree ~pos ?(insert_evbox=true) (parent_window : window_and_tree0) =
+  new tipixmap ~widget:(GMisc.pixmap (GDraw.pixmap_from_xpm 
+   ~window:parent_window#tiwin#widget ~file:"pixmap.xpm" ()) ()) ~name
+    ~parent_tree ~pos ~insert_evbox parent_window

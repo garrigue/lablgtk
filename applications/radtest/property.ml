@@ -164,3 +164,12 @@ class prop_clist_titles ~name ~init ~set : prop =
       String.concat ~sep:"\"; \"" (split_string ~sep:' ' s) ^ "\" ]"
     method save_code = "\"" ^ s ^ "\""
   end
+
+class prop_file ~name ~init ~set : prop =
+  object
+    inherit vprop ~name ~init ~set
+    method private parse s = s
+    method range = File
+    method code = "\"" ^ String.escaped s ^ "\""
+  end
+

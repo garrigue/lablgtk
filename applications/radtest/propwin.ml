@@ -22,6 +22,14 @@ let prop_widget (prop : prop) =
       let w = GEdit.entry ~text:prop#get () in
       w#connect#activate ~callback:(fun () -> prop#set w#text);
       w#coerce
+  | File ->
+      let w = GPack.hbox () in
+      let e = GEdit.entry ~text:prop#get ~editable:false ~packing:w#pack () in
+      let b = GButton.button ~label:"..." ~packing:w#pack () in
+      b#connect#clicked
+	~callback:(fun () -> get_filename
+	    ~callback:(fun name -> e#set_text name; prop#set name) (); ());
+      w#coerce
   | Int ->
       let adjustment =
 	GData.adjustment ~value:(float_of_string prop#get)
