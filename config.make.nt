@@ -6,7 +6,7 @@ CAMLP4O=camlp4o
 CAMLRUN=ocamlrun
 CAMLLEX=ocamllex
 
-LIBDIR=c:/Program Files/Objective Caml/lib
+LIBDIR=`$(CAMLC) -where`
 GTKROOT=c:/Home/garrigue/gtk+
 #GTKROOT=c:/GTK
 GTKCFLAGS=-I$(GTKROOT)/include -I$(GTKROOT)/include/glib-2.0 -I$(GTKROOT)/lib/glib-2.0/include -I$(GTKROOT)/lib/gtk+/include -Ic:/libglade
