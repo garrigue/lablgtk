@@ -53,12 +53,25 @@ CAMLprim value ml_gtk_menu_item_toggle_size_request(value sm,value i)
 
 ML_2 (gtk_menu_item_toggle_size_allocate, GtkMenuItem_val, Int_val, Unit)
 
+/* gtkimagemenuitem.h */
+#define GtkImageMenuItem_val(val) check_cast(GTK_IMAGE_MENU_ITEM,val)
+ML_0 (gtk_image_menu_item_new, Val_GtkWidget_sink)
+ML_1 (gtk_image_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
+ML_1 (gtk_image_menu_item_new_with_mnemonic, String_val, Val_GtkWidget_sink)
+
+ML_2 (gtk_image_menu_item_new_from_stock, String_val, Option_val(arg2,GtkAccelGroup_val,NULL) Ignore, Val_GtkWidget_sink)
+ML_2 (gtk_image_menu_item_set_image, GtkImageMenuItem_val, GtkWidget_val, Unit)
+ML_1 (gtk_image_menu_item_get_image, GtkImageMenuItem_val, Val_GtkWidget)
+
+
 /* gtkcheckmenuitem.h */
 
 #define GtkCheckMenuItem_val(val) check_cast(GTK_CHECK_MENU_ITEM,val)
 ML_0 (gtk_check_menu_item_new, Val_GtkWidget_sink)
 ML_1 (gtk_check_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_check_menu_item_set_active, GtkCheckMenuItem_val, Bool_val, Unit)
+ML_2 (gtk_check_menu_item_set_inconsistent, GtkCheckMenuItem_val, Bool_val, Unit)
+ML_1 (gtk_check_menu_item_get_inconsistent, GtkCheckMenuItem_val, Val_bool)
 ML_2 (gtk_check_menu_item_set_show_toggle, GtkCheckMenuItem_val,
       Bool_val, Unit)
 ML_1 (gtk_check_menu_item_toggled, GtkCheckMenuItem_val, Unit)
@@ -75,6 +88,8 @@ static GSList* item_group_val(value val)
 }
 ML_1 (gtk_radio_menu_item_new, item_group_val, Val_GtkWidget_sink)
 ML_2 (gtk_radio_menu_item_new_with_label, item_group_val,
+      String_val, Val_GtkWidget_sink)
+ML_2 (gtk_radio_menu_item_new_with_mnemonic, item_group_val,
       String_val, Val_GtkWidget_sink)
 ML_2 (gtk_radio_menu_item_set_group, GtkRadioMenuItem_val,
       item_group_val, Unit)
@@ -107,6 +122,7 @@ ML_1 (gtk_menu_get_active, GtkMenu_val, Val_GtkWidget)
 ML_2 (gtk_menu_set_active, GtkMenu_val, Int_val, Unit)
 ML_2 (gtk_menu_set_accel_group, GtkMenu_val, GtkAccelGroup_val, Unit)
 ML_1 (gtk_menu_get_accel_group, GtkMenu_val, Val_GtkAccelGroup)
+ML_2 (gtk_menu_set_accel_path, GtkMenu_val, String_val, Unit)
 CAMLprim value ml_gtk_menu_attach_to_widget (value menu, value widget)
 {
     gtk_menu_attach_to_widget (GtkMenu_val(menu), GtkWidget_val(widget), NULL);

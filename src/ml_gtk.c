@@ -72,6 +72,10 @@ ML_3 (gtk_accel_groups_activate, GObject_val, Int_val,
 ML_2 (gtk_accelerator_valid, Int_val, OptFlags_GdkModifier_val, Val_bool)
 ML_1 (gtk_accelerator_set_default_mod_mask, OptFlags_GdkModifier_val, Unit)
 
+ML_1(gtk_accel_map_load,String_val,Unit)
+ML_1(gtk_accel_map_save,String_val,Unit)
+ML_3(gtk_accel_map_add_entry,String_val,Int_val, OptFlags_GdkModifier_val, Unit)
+
 /* gtkstyle.h */
 
 #define Val_GtkStyle_new(val) (Val_GObject_new(&val->parent_instance))
@@ -289,6 +293,9 @@ ML_6 (gtk_widget_add_accelerator, GtkWidget_val, Signal_name_val,
 ML_bc6 (ml_gtk_widget_add_accelerator)
 ML_4 (gtk_widget_remove_accelerator, GtkWidget_val, GtkAccelGroup_val,
       Char_val, OptFlags_GdkModifier_val, Unit)
+
+ML_3 (gtk_widget_set_accel_path, 
+      GtkWidget_val, String_val, GtkAccelGroup_val, Unit)
 /*
 ML_1 (gtk_widget_lock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unlock_accelerators, GtkWidget_val, Unit)

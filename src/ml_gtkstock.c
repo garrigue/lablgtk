@@ -86,3 +86,32 @@ CAMLprim value ml_gtk_stock_list_ids(value unit)
 {
   return Val_GSList_free( gtk_stock_list_ids(), (value_in) copy_string_g_free);
 }
+
+CAMLprim value ml_gtk_stock_lookup(value id)
+{
+  CAMLparam1(id);
+  CAMLlocal3(stock_result,p,c);
+  GtkStockItem r;
+  gboolean b;
+  
+  b = gtk_stock_lookup(String_val(id),&r);
+  if (!b) raise_not_found();
+  p = Val_emptylist;
+#define TESTANDCONS(mod)\
+  if (r.modifier & GDK_##mod##_MASK) \
+    { c = alloc_small(2,Tag_cons);\
+      Field(c,0) = Val_gdkModifier(GDK_##mod##_MASK); Field(c,1) = p; p = c;}
+  TESTANDCONS(SHIFT);
+  TESTANDCONS(LOCK);
+  TESTANDCONS(CONTROL);
+  TESTANDCONS(MOD1); TESTANDCONS(MOD2); TESTANDCONS(MOD3);  
+  TESTANDCONS(MOD4); TESTANDCONS(MOD5);
+  TESTANDCONS(BUTTON1); TESTANDCONS(BUTTON2); TESTANDCONS(BUTTON3);  
+  TESTANDCONS(BUTTON4); TESTANDCONS(BUTTON5);
+  stock_result = alloc_tuple(4);
+  Store_field(stock_result,0,Val_string(r.stock_id));
+  Store_field(stock_result,1,Val_string(r.label));
+  Store_field(stock_result,2,p);
+  Store_field(stock_result,3,Val_int(r.keyval));
+  CAMLreturn(stock_result);
+}

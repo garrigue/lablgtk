@@ -54,6 +54,32 @@ module MenuItem = struct
   end
 end
 
+module ImageMenuItem = struct
+  let cast w : menu_item obj = Object.try_cast w "GtkImageMenuItem"
+  external create : unit -> image_menu_item obj = "ml_gtk_image_menu_item_new"
+  external create_with_label : string -> image_menu_item obj
+      = "ml_gtk_image_menu_item_new_with_label"
+  external create_with_mnemonic : string -> image_menu_item obj
+      = "ml_gtk_image_menu_item_new_with_mnemonic"
+  external create_from_stock : string -> accel_group option 
+    -> image_menu_item obj = "ml_gtk_image_menu_item_new_from_stock"
+  let create_from_stock ?accel_group s = 
+    create_from_stock (GtkStock.convert_id s) accel_group
+  let create ?label ?(use_mnemonic=false) ?stock ?accel_group () = 
+    match stock with 
+    | None -> 
+	begin match label with
+	| None -> create ()
+	| Some l -> 
+	    if use_mnemonic then create_with_mnemonic l 
+	    else create_with_label l 
+	end
+    | Some s -> create_from_stock ?accel_group s
+  external set_image : image_menu_item obj -> widget -> unit = "ml_gtk_image_menu_item_set_image"
+  external get_image : image_menu_item obj -> widget = "ml_gtk_image_menu_item_get_image"
+
+end
+
 module CheckMenuItem = struct
   let cast w : check_menu_item obj = Object.try_cast w "GtkCheckMenuItem"
   external create : unit -> check_menu_item obj = "ml_gtk_check_menu_item_new"
@@ -66,6 +92,10 @@ module CheckMenuItem = struct
       = "ml_gtk_check_menu_item_set_active"
   external get_active : [>`checkmenuitem] obj -> bool
       = "ml_gtk_check_menu_item_get_active"
+  external set_inconsistent : [>`checkmenuitem] obj -> bool -> unit
+      = "ml_gtk_check_menu_item_set_inconsistent"
+  external get_inconsistent : [>`checkmenuitem] obj -> bool
+      = "ml_gtk_check_menu_item_get_inconsistent"
   external set_show_toggle : [>`checkmenuitem] obj -> bool -> unit
       = "ml_gtk_check_menu_item_set_show_toggle"
   let set ?active ?show_toggle ?right_justified w =
@@ -88,9 +118,14 @@ module RadioMenuItem = struct
   external create_with_label :
       radio_menu_item group -> string -> radio_menu_item obj
       = "ml_gtk_radio_menu_item_new_with_label"
-  let create ?(group = None) ?label () =
+  external create_with_mnemonic :
+      radio_menu_item group -> string -> radio_menu_item obj
+      = "ml_gtk_radio_menu_item_new_with_mnemonic"
+  let create ?(group = None) ?(use_mnemonic=false) ?label () =
     match label with None -> create group
-    | Some label -> create_with_label group label
+    | Some label -> 
+	if use_mnemonic then create_with_mnemonic group label
+	else create_with_label group label
   external set_group : [>`radiomenuitem] obj -> radio_menu_item group -> unit
       = "ml_gtk_radio_menu_item_set_group"
 end
@@ -144,6 +179,8 @@ module Menu = struct
       = "ml_gtk_menu_set_accel_group"
   external get_accel_group : [>`menu] obj -> accel_group
       = "ml_gtk_menu_get_accel_group"
+  external set_accel_path : [> `menu] obj -> string -> unit
+    = "ml_gtk_menu_set_accel_path"
   external attach_to_widget : [>`menu] obj -> [>`widget] obj -> unit
       = "ml_gtk_menu_attach_to_widget"
   external get_attach_widget : [>`menu] obj -> widget obj

@@ -1,5 +1,11 @@
 $Id$
 
+2003.05.12 [Benjamin]
+ * GtkData.AccelMap support
+ * GtkImageMenuItem support
+ * MenuFactory accel_map support by default
+ * GtkStock.Item.lookup support
+
 2003.05.01 [Maxence]
  * srcdoc target added to generate HTML doc in src/doc/index.html
    (I did not test on Windows)

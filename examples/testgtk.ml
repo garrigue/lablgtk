@@ -287,6 +287,14 @@ let create_menus =
 	menuitem #add_accelerator ~group:accel_group _F
 	  ~flags:[`VISIBLE];
 
+	let menuitem = GMenu.image_menu_item ~stock:`OPEN
+	    ~packing:menu#append () in
+	let path = "<APPLICATION>/Open" in
+	GtkMenu.MenuItem.set_accel_path menuitem#as_item path;
+	let stock = GtkStock.Item.lookup `OPEN in
+	GtkData.AccelMap.add_entry ~key:stock.GtkStock.keyval 
+	  ~modi:stock.GtkStock.modifier path;
+
 	let optionmenu = GMenu.option_menu ~packing: box2#add () in
 	optionmenu #set_menu menu;
 	optionmenu #set_history 3;

@@ -158,4 +158,6 @@ type item = {
 module Item = struct
 external add : item -> unit = "ml_gtk_stock_add"
 external list_ids : unit -> string list = "ml_gtk_stock_list_ids"
+external lookup : string -> item = "ml_gtk_stock_lookup"
+let lookup id = lookup (convert_id id)
 end

@@ -125,6 +125,10 @@ module Widget = struct
       [>`widget] obj -> accel_group ->
       key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> unit
       = "ml_gtk_widget_remove_accelerator"
+  external set_accel_path :
+      [>`widget] obj -> string -> accel_group -> unit
+      = "ml_gtk_widget_set_accel_path"
+
 (*
   external lock_accelerators : [>`widget] obj -> unit
       = "ml_gtk_widget_lock_accelerators"

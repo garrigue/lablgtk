@@ -30,6 +30,17 @@ module AccelGroup = struct
       = "ml_gtk_accelerator_set_default_mod_mask"
 end
 
+module AccelMap = struct
+  external load : string -> unit = "ml_gtk_accel_map_load"
+  external save : string -> unit = "ml_gtk_accel_map_save"
+  external add_entry : 
+    string -> 
+    key:Gdk.keysym -> 
+    ?modi:Gdk.Tags.modifier list ->
+    unit = "ml_gtk_accel_map_add_entry"
+  let add_entry  ?(key=0) ?modi s = add_entry s ~key ?modi	     
+end
+
 module Style = struct
   external create : unit -> style = "ml_gtk_style_new"
   external copy : style -> style = "ml_gtk_style_copy"
