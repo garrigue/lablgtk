@@ -9,7 +9,7 @@ open GObj
 
 class progress_bar obj = object
   inherit [Gtk.progress_bar] widget_impl obj
-  method connect = new widget_signals obj
+  method connect = new widget_signals_impl obj
   method event = new GObj.event_ops obj
   inherit progress_bar_props
   method pulse () = ProgressBar.pulse obj
@@ -19,9 +19,14 @@ let progress_bar =
   ProgressBar.make_params [] ~cont:(fun pl ?packing ?show () ->
     pack_return (new progress_bar (ProgressBar.create pl)) ~packing ~show)
 
+class range_signals obj = object
+  inherit widget_signals_impl obj
+  inherit range_sigs
+end
+
 class range obj = object
   inherit ['a] widget_impl obj
-  method connect = new widget_signals obj
+  method connect = new range_signals obj
   inherit range_props
 end
 
@@ -48,7 +53,7 @@ let scrollbar dir ?adjustment =
 
 class ruler obj = object
   inherit ['a] widget_impl obj
-  method connect = new widget_signals obj
+  method connect = new widget_signals_impl obj
   inherit ruler_props
   method set_metric = Ruler.set_metric obj
 end

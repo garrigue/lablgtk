@@ -10,7 +10,7 @@ class editable_signals : [> editable] obj ->
     method delete_text :
       callback:(start:int -> stop:int -> unit) -> GtkSignal.id
     method insert_text :
-      callback:(string -> pos:int -> unit) -> GtkSignal.id
+      callback:(string -> pos:int ref -> unit) -> GtkSignal.id
   end
 
 class editable : 'a obj ->
@@ -35,6 +35,17 @@ class entry_signals : [> Gtk.entry] obj ->
   object
     inherit editable_signals
     method activate : callback:(unit -> unit) -> GtkSignal.id
+    method copy_clipboard : callback:(unit -> unit) -> GtkSignal.id
+    method cut_clipboard : callback:(unit -> unit) -> GtkSignal.id
+    method delete_from_cursor :
+      callback:(Gtk.Tags.delete_type -> int -> unit) -> GtkSignal.id
+    method insert_at_cursor : callback:(string -> unit) -> GtkSignal.id
+    method move_cursor :
+      callback:(Gtk.Tags.movement_step -> int -> extend:bool -> unit) ->
+      GtkSignal.id
+    method paste_clipboard : callback:(unit -> unit) -> GtkSignal.id
+    method populate_popup : callback:(GMenu.menu -> unit) -> GtkSignal.id
+    method toggle_overwrite : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class entry : ([> Gtk.entry] as 'a) obj ->
@@ -75,11 +86,21 @@ val entry :
   ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> entry
 
+class spin_button_signals : [> Gtk.spin_button] obj ->
+  object
+    inherit entry_signals
+    method change_value :
+      callback:(Gtk.Tags.scroll_type -> unit) -> GtkSignal.id
+    method input : callback:(unit -> int) -> GtkSignal.id
+    method output : callback:(unit -> bool) -> GtkSignal.id
+    method value_changed : callback:(unit -> unit) -> GtkSignal.id
+  end
+
 class spin_button : Gtk.spin_button obj ->
   object
     inherit widget
     val obj : Gtk.spin_button obj
-    method connect : editable_signals
+    method connect : spin_button_signals
     method event : GObj.event_ops
     method spin : Tags.spin_type -> unit
     method update : unit

@@ -45,10 +45,16 @@ class gtkobj obj = object
   method get_oid = get_oid obj
 end
 
-class gtkobj_signals obj = object (self)
-  inherit ['a] gobject_signals obj
+class gtkobj_signals_impl ?after obj = object (self)
+  inherit ['a] gobject_signals ?after obj
   method destroy = self#connect Object.S.destroy
 end
+
+class type gtkobj_signals =
+  object ('a)
+    method after : 'a
+    method destroy : callback:(unit -> unit) -> GtkSignal.id
+  end
 
 (* Widget *)
 
@@ -142,20 +148,20 @@ class drag_signals obj = object (self)
     callback:(drag_context -> 'b) -> _ =
       fun sgn ~callback ->
         self#connect sgn (fun context -> callback (new drag_context context))
-  method beginning = self#connect_drag DnD.Signals.drag_begin
-  method ending = self#connect_drag DnD.Signals.drag_end
-  method data_delete = self#connect_drag DnD.Signals.drag_data_delete
-  method leave = self#connect_drag DnD.Signals.drag_leave
-  method motion = self#connect_drag DnD.Signals.drag_motion
-  method drop = self#connect_drag DnD.Signals.drag_drop
+  method beginning = self#connect_drag Widget.S.drag_begin
+  method ending = self#connect_drag Widget.S.drag_end
+  method data_delete = self#connect_drag Widget.S.drag_data_delete
+  method leave = self#connect_drag Widget.S.drag_leave
+  method motion = self#connect_drag Widget.S.drag_motion
+  method drop = self#connect_drag Widget.S.drag_drop
   method data_get ~callback =
-    self#connect DnD.Signals.drag_data_get ~callback:
+    self#connect Widget.S.drag_data_get ~callback:
       begin fun context seldata ~info ~time ->
         callback (new drag_context context) (new selection_context seldata)
           ~info ~time
       end
   method data_received ~callback =
-    self#connect DnD.Signals.drag_data_received
+    self#connect Widget.S.drag_data_received
       ~callback:(fun context ~x ~y data -> callback (new drag_context context)
 	       ~x ~y (new selection_data data))
 
@@ -193,8 +199,7 @@ and drag_context context = object
 end
 
 and misc_signals ?after obj = object (self)
-  inherit ['a] gobject_signals ?after obj
-  method destroy = self#connect Object.S.destroy
+  inherit gtkobj_signals_impl ?after obj
   method show = self#connect S.show
   method hide = self#connect S.hide
   method map = self#connect S.map
@@ -212,12 +217,12 @@ and misc_signals ?after obj = object (self)
     self#connect S.style_set ~callback:
       (fun opt -> callback (may opt ~f:(new style)))
   method selection_get ~callback =
-    self#connect Selection.Signals.selection_get ~callback:
+    self#connect S.selection_get ~callback:
       begin fun seldata ~info ~time ->
         callback (new selection_context seldata) ~info ~time
       end
   method selection_received ~callback =
-    self#connect Selection.Signals.selection_received
+    self#connect S.selection_received
       ~callback:(fun data -> callback (new selection_data data)) 
 end
 
@@ -313,15 +318,15 @@ end
 (* just to check that GDraw.misc_ops is compatible with misc_ops *)
 let _ = fun (x : #GDraw.misc_ops) -> (x : misc_ops)
 
-class widget_signals_impl (obj : [>Gtk.widget] obj) = gtkobj_signals obj
+class widget_signals_impl (obj : [>Gtk.widget] obj) = gtkobj_signals_impl obj
 
-class widget_signals = gtkobj_signals
+class type widget_signals = gtkobj_signals
 
 class ['a] widget_impl (obj : 'a obj) = widget obj
 
 class widget_full obj = object
   inherit widget obj
-  method connect = new widget_signals obj
+  method connect = new widget_signals_impl obj
 end
 
 let as_widget (w : widget) = w#as_widget

@@ -35,65 +35,21 @@ module Editable = struct
       = "ml_gtk_editable_set_position"
   external get_position : [>`editable] obj -> int
       = "ml_gtk_editable_get_position"
-  module Signals = struct
-    open GtkSignal
-    let changed =
-      { name = "changed"; classe = `editable; marshaller = marshal_unit }
-    let marshal_insert f argv = function
-      | `STRING _ :: `INT len :: `POINTER(Some pos) :: _ ->
-          (* XXX These two accesses are implementation-dependent *)
-          let s = Gpointer.peek_string (Closure.get_pointer argv ~pos:1) ~len
-          and pos = Gpointer.peek_int pos in
-          f s ~pos
-      | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_insert"
-    let insert_text =
-      { name = "insert_text"; classe = `editable; marshaller = marshal_insert }
-    let marshal_delete f _ = function
-      | `INT start :: `INT stop :: _ ->
-          f ~start ~stop
-      | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_delete"
-    let delete_text =
-      { name = "delete_text"; classe = `editable; marshaller = marshal_delete }
-  end
+  let marshal_insert f argv =
+    match List.tl (Closure.get_args argv) with
+    | `STRING _ :: `INT len :: `POINTER(Some p) :: _ ->
+        (* XXX These two accesses are implementation-dependent *)
+        let s = Gpointer.peek_string (Closure.get_pointer argv ~pos:1) ~len
+        and pos = ref (Gpointer.peek_int p) in
+        (f s ~pos : unit); Gpointer.poke_int p !pos
+    | _ -> invalid_arg "GtkEdit.Editable.marshal_insert"
+  let () = Internal.marshal_insert := marshal_insert
 end
 
-module Entry = struct
-  include Entry
-  external append_text : [>`entry] obj -> string -> unit
-      = "ml_gtk_entry_append_text"
-  external prepend_text : [>`entry] obj -> string -> unit
-      = "ml_gtk_entry_prepend_text"
-  external text_length : [>`entry] obj -> int
-      = "ml_GtkEntry_text_length"
-  module S = struct
-    open GtkSignal
-    let activate =
-      { name = "activate"; classe = `entry; marshaller = marshal_unit }
-    let copy_clipboard =
-      { name = "copy_clipboard"; classe = `entry; marshaller = marshal_unit }
-    let cut_clipboard =
-      { name = "cut_clipboard"; classe = `entry; marshaller = marshal_unit }
-    let paste_clipboard =
-      { name = "paste_clipboard"; classe = `entry; marshaller = marshal_unit }
-    let toggle_overwrite =
-      { name = "toggle_overwrite"; classe = `entry; marshaller = marshal_unit }
-    let insert_at_cursor =
-      { name = "insert_at_cursor"; classe = `entry;
-        marshaller = marshal_string }
-    let delete_from_cursor =
-      let marshal f _ = function
-          `INT dt :: `INT len :: _ ->
-            f (Gpointer.decode_variant GtkEnums.delete_type) len
-        | _ -> invalid_arg "GtkEdit.Entry.S.delete_from_cursor" in
-      { name = "insert_at_cursor"; classe = `entry; marshaller = marshal }
-  end
-end
+module Entry = Entry
 
 module SpinButton = struct
   include SpinButton
-  external spin : [>`spinbutton] obj -> spin_type -> unit
-      = "ml_gtk_spin_button_spin"
-  external update : [>`spinbutton] obj -> unit = "ml_gtk_spin_button_update"
   let get_value_as_int w = truncate (floor (get P.value w +. 0.5))
 end
 

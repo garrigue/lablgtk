@@ -14,8 +14,14 @@ module Main : sig
     (* [major, minor, micro] *)
 end
 
-val main : unit -> unit (* cf. [Main.main] *)
-val quit : unit -> unit (* cf. [Main.quit] *)
+(* Direct access to functions of [GMain.Main] *)
+val init : ?setlocale:bool -> unit -> string
+val main : unit -> unit
+val quit : unit -> unit
+
+(* Global structures *)
+val selection : GData.clipboard
+val clipboard : GData.clipboard
 
 module Grab : sig
   val add : #GObj.widget -> unit
@@ -46,6 +52,3 @@ module Io : sig
   val add_watch :
     cond:condition -> callback:(unit -> bool) -> ?prio:int -> channel -> unit
 end
-
-val selection : GData.clipboard
-val clipboard : GData.clipboard

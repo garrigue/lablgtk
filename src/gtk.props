@@ -20,6 +20,9 @@ module Internal = struct
      proj=(function `POINTER(Some p) -> allocation_at_pointer p
           | _ -> failwith "GtkProps.Internal.allocation")}
   let tree_path_string = ref (unsafe_boxed : tree_path data_conv)
+  let marshal_insert =
+    ref (fun (_ : string -> pos:int ref -> unit) ->
+           failwith "GtkProps.Internal.marshal_insert")
 end
 }
 
@@ -38,7 +41,8 @@ let param = param
 conversions {
   GtkStock "GtkStock.conv"
   GtkAllocation "Internal.allocation"
-  GtkTreePathString "!Internal.tree_path_string" 
+  GtkTreePathString "!Internal.tree_path_string"
+  GtkSelectionData_nocopy "(unsafe_pointer : Gtk.selection_data data_conv)"
 }
 
 boxed {
@@ -80,6 +84,7 @@ class Widget abstract : Object {
   "style"                GtkStyle             : Read / Write
   "visible"              gboolean             : Read / Write
   "width-request"        gint                 : Read / Write
+  (* misc *)
   signal show
   signal hide
   signal map
@@ -89,8 +94,23 @@ class Widget abstract : Object {
   signal parent_set : GtkWidget_opt
   signal size_allocate : GtkAllocation
   signal style_set : GtkStyle_opt
-  (* better done by hand?
+  (* selection *)
+  signal selection_get : GtkSelectionData_nocopy info:int time:int32
+  signal selection_received : GtkSelectionData time:int32
+  (* dnd *)
+  signal drag_begin : GdkDragContext
+  signal drag_data_delete : GdkDragContext
+  signal drag_data_get :
+    GdkDragContext GtkSelectionData_nocopy info:int time:int32
+  signal drag_data_received :
+    GdkDragContext x:int y:int GtkSelectionData info:int time:int32
+  signal drag_drop : GdkDragContext x:int y:int time:int32 -> bool
+  signal drag_end : GdkDragContext
+  signal drag_leave : GdkDragContext time:int32
+  signal drag_motion : GdkDragContext x:int y:int time:int32 -> bool
+  (* events *)
   signal event : GdkEvent -> bool
+  (* events share the same marshaller
   signal button_press_event : GdkEventButton -> bool
   signal button_release_event : GdkEventButton -> bool
   signal motion_notify_event : GdkEventMotion -> bool
@@ -591,9 +611,9 @@ class TextView wrap wrapsig : Container {
   signal cut_clipboard
   signal delete_from_cursor : GtkDeleteType gint
   signal insert_at_cursor :   gchararray
-  signal move_cursor :        GtkMovementStep gint gboolean
+  signal move_cursor :        GtkMovementStep gint extend:gboolean
   signal move_focus :         GtkDirectionType
-  signal page_horizontally :  gint gboolean
+  signal page_horizontally :  gint extend:gboolean
   signal paste_clipboard
   signal populate_popup :     GtkMenu
   signal set_anchor
@@ -676,9 +696,13 @@ class Curve {
 }
 *)
 
-class Editable abstract : Widget {} (* actually an interface *)
+class Editable abstract wrapsig : Widget { (* actually an interface *)
+  signal changed
+  signal delete_text : start:int stop:int
+  signal insert_text "(fun f -> !Internal.marshal_insert f)"
+}
 
-class Entry set wrap : Editable {
+class Entry set wrap wrapsig : Editable {
   "text"                 gchararray           : Read / Write
   "visibility"           gboolean             : Read / Write
   "max-length"           gint                 : Read / Write
@@ -690,9 +714,21 @@ class Entry set wrap : Editable {
   "scroll-offset"        gint                 : Read
   "selection-bound"      gint                 : Read / NoWrap
   "width-chars"          gint                 : Read / Write
+  method append_text : "string -> unit"
+  method prepend_text : "string -> unit"
+  method text_length : "int"
+  signal activate
+  signal copy_clipboard
+  signal cut_clipboard
+  signal delete_from_cursor : GtkDeleteType int
+  signal insert_at_cursor : string
+  signal move_cursor : GtkMovementStep gint extend:gboolean
+  signal paste_clipboard
+  signal populate_popup : GtkMenu       / NoWrap
+  signal toggle_overwrite
 }
 
-class SpinButton set wrap : Entry {
+class SpinButton set wrap wrapsig : Entry {
   "adjustment"           GtkAdjustment        : Read / Write
   "climb-rate"(rate)     gdouble              : Read / Write
   "digits"               guint                : Read / Write
@@ -701,6 +737,12 @@ class SpinButton set wrap : Entry {
   "update-policy"        GtkSpinButtonUpdatePolicy : Read / Write
   "value"                gdouble              : Read / Write
   "wrap"                 gboolean             : Read / Write
+  method spin : "Tags.spin_type -> unit"
+  method update
+  signal change_value : GtkScrollType
+  signal input : -> int
+  signal output : -> bool
+  signal value_changed
 }
 
 class Ruler hv set wrap : Widget {
@@ -710,16 +752,20 @@ class Ruler hv set wrap : Widget {
   "position"             gdouble              : Read / Write
 }
 
-class Range abstract set wrap : Widget {
+class Range abstract set wrap wrapsig : Widget {
   "adjustment"           GtkAdjustment        : Read / Write / Construct
   "inverted"             gboolean             : Read / Write
   "update-policy"        GtkUpdateType        : Read / Write
+  signal adjust_bounds : gdouble
+  signal move_slider : GtkScrollType
+  signal value_changed
 }
 
 class Scale hv set wrap : Range {
   "digits"               gint                 : Read / Write
   "draw-value"           gboolean             : Read / Write
   "value-pos"            GtkPositionType      : Read / Write
+  signal format_value : gdouble -> string
 }
 
 class Scrollbar hv : Range {}
@@ -851,7 +897,47 @@ class TreeViewColumn wrap : Object {
   signal clicked
 }
 
-class TextTag abstract vset : GObject {
+(* class IconFactory : GObject {} *)
+
+class SizeGroup : GObject {
+  "mode"                 GtkSizeGroupMode     : Read / Write
+  method add_widget : "[>`widget] obj -> unit"
+  method remove_widget : "[>`widget] obj -> unit"
+}
+
+class Style abstract : GObject {}
+
+class TextBuffer : GObject {
+  "tag-table"            GtkTextTagTable      : Read / Write / Construct Only
+  signal apply_tag : GtkTextTag GtkTextIter GtkTextIter
+  signal begin_user_action                  / Wrap
+  signal changed                            / Wrap
+  signal delete_range : GtkTextIter GtkTextIter
+  signal end_user_action                    / Wrap
+  signal insert_child_anchor : GtkTextIter GtkTextChildAnchor
+  signal insert_pixbuf : GtkTextIter GdkPixbuf
+  signal insert_text : GtkTextIter string (*len:int*)
+  signal mark_deleted : GtkTextMark         / Wrap
+  signal mark_set : GtkTextIter GtkTextMark
+  signal modified_changed                   / Wrap
+  signal remove_tag : GtkTextTag GtkTextIter GtkTextIter
+}
+
+class TextChildAnchor : GObject {
+  method get_widgets : "widget obj list"
+  method get_deleted : "bool"
+}
+
+class TextMark : GObject {
+  method set_visible : "bool -> unit"
+  method get_visible : "bool"
+  method get_deleted : "bool"
+  method get_name : "string option"
+  method get_buffer : "text_buffer option"
+  method get_left_gravity : "bool"
+}
+
+class TextTag vset : GObject {
   "background"           gchararray           : Write
   "background-full-height" gboolean             : Read / Write
   "background-full-height-set" gboolean             : Read / Write
@@ -913,9 +999,23 @@ class TextTag abstract vset : GObject {
   "weight-set"           gboolean             : Read / Write
   "wrap-mode"            GtkWrapMode          : Read / Write
   "wrap-mode-set"        gboolean             : Read / Write
+  method get_priority : "int"
+  method set_priority : "int -> unit"
+  method event : "'a obj ->  'b Gdk.event -> text_iter -> bool"
+  signal event : origin:GObject GdkEvent GtkTextIter -> bool
 }
 
-class TreeSelection abstract : Gobject {
+class TextTagTable wrapsig : GObject {
+  method add : "text_tag -> unit"
+  method remove : "text_tag -> unit"
+  method lookup : "string -> text_tag option"
+  method get_size : "int"
+  signal tag_added : GtkTextTag
+  signal tag_changed : GtkTextTag size:bool
+  signal tag_removed : GtkTextTag
+}
+
+class TreeSelection abstract : GObject {
   signal changed
 }
 
@@ -926,3 +1026,5 @@ class TreeModel abstract wrapsig : GObject {
   signal row_inserted : GtkTreePath GtkTreeIter
   signal rows_reordered : GtkTreePath GtkTreeIter (* gpointer *)
 }
+
+(* class ListStore : TreeModel {} *)

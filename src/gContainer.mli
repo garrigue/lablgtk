@@ -31,11 +31,17 @@ class ['a] container_impl :([> Gtk.container] as 'a) obj ->
     inherit ['a] objvar
   end
 
-class container_signals : [> Gtk.container] obj ->
+class type container_signals =
   object
     inherit widget_signals
     method add : callback:(widget -> unit) -> GtkSignal.id
     method remove : callback:(widget -> unit) -> GtkSignal.id
+  end
+
+class container_signals_impl : ([> Gtk.container] as 'a) obj ->
+  object
+    inherit ['a] gobject_signals
+    inherit container_signals
   end
 
 class container_full : ([> Gtk.container] as 'a) obj ->

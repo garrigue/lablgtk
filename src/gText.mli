@@ -7,7 +7,6 @@ type mark = [`INSERT | `SEL_BOUND | `NAME of string | `MARK of text_mark]
 
 class child_anchor : text_child_anchor ->
 object
-  val obj : text_child_anchor
   method as_childanchor : text_child_anchor
   method deleted : bool
   method get_oid : int
@@ -79,17 +78,14 @@ type tag_property = [
 
 class tag_signals : ([> `texttag] as 'b) obj ->
 object ('a)
-  val after : bool
-  val obj : 'b obj
   method after : 'a
   method event :
-    callback:(origin:unit Gobject.obj -> GdkEvent.any -> text_iter -> unit) ->
+    callback:(origin:unit Gobject.obj -> GdkEvent.any -> text_iter -> bool) ->
     GtkSignal.id
 end
 
 class tag : text_tag ->
 object
-  val obj : text_tag
   method as_tag : text_tag
   method connect : tag_signals
   method event : 'a obj -> GdkEvent.any -> text_iter -> bool
@@ -100,7 +96,7 @@ object
   method set_property : tag_property -> unit
   method get_property : ([`texttag],'a) Gobject.property -> 'a
 end
-val tag : string -> tag
+val tag : ?name:string -> unit -> tag
 
 type contents =
   [ `CHAR of Glib.unichar
@@ -116,7 +112,6 @@ type contents =
 
 class nocopy_iter :  text_iter -> 
 object
-  val it : Gtk.text_iter
   method backward_char : bool
   method backward_chars : int -> bool
   method backward_cursor_position : bool
@@ -153,8 +148,6 @@ end
 
 and iter : text_iter ->
 object ('self)
-  val it : text_iter
-  val nocopy : nocopy_iter
   method as_iter : text_iter
   method copy : iter
   method nocopy : nocopy_iter
@@ -237,33 +230,28 @@ end
 
 val as_iter : iter -> text_iter
 
-class tagtable_signals : ([> `texttagtable] as 'b) obj ->
+class tag_table_signals : ([> `texttagtable] as 'b) obj ->
 object ('a)
-  val after : bool
-  val obj : 'b obj
   method after : 'a
   method tag_added : callback:(text_tag -> unit) -> GtkSignal.id
-  method tag_changed : callback:(text_tag -> bool -> unit) -> GtkSignal.id
+  method tag_changed : callback:(text_tag -> size:bool -> unit) -> GtkSignal.id
   method tag_removed : callback:(text_tag -> unit) -> GtkSignal.id
 end
 
-class tagtable : text_tag_table ->
+class tag_table : text_tag_table ->
 object
-  val obj : text_tag_table
+  method as_tag_table : text_tag_table
+  method connect : tag_table_signals
   method add : text_tag -> unit
-  method as_tagtable : text_tag_table
-  method connect : tagtable_signals
   method get_oid : int
   method lookup : string -> text_tag option
   method remove : text_tag -> unit
   method size : int
 end
-val tagtable : unit -> tagtable
+val tag_table : unit -> tag_table
 
 class buffer_signals : ([> `textbuffer] as 'b) obj ->
 object ('a)
-  val after : bool
-  val obj : 'b obj
   method after : 'a
   method apply_tag :
     callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
@@ -293,21 +281,20 @@ type position =
 
 class buffer : text_buffer ->
 object
-  val obj : text_buffer
-  method add_selection_clipboard : Gtk.clipboard -> unit
+  method as_buffer : text_buffer
+  method add_selection_clipboard : GData.clipboard -> unit
   method apply_tag : tag -> start:iter -> stop:iter -> unit
   method apply_tag_by_name : string -> start:iter -> stop:iter -> unit
-  method as_buffer : text_buffer
   method begin_user_action : unit -> unit
   method bounds : iter * iter
   method char_count : int
   method connect : buffer_signals
-  method copy_clipboard : Gtk.clipboard -> unit
+  method copy_clipboard : GData.clipboard -> unit
   method create_child_anchor : iter -> child_anchor
   method create_mark :
     ?name:string -> ?left_gravity:bool -> iter -> text_mark
   method create_tag : ?name:string -> tag_property list -> tag
-  method cut_clipboard : ?default_editable:bool -> Gtk.clipboard -> unit
+  method cut_clipboard : ?default_editable:bool -> GData.clipboard -> unit
   method delete : start:iter -> stop:iter -> unit
   method delete_interactive :
     start:iter ->
@@ -341,10 +328,10 @@ object
   method modified : bool
   method move_mark : mark -> where:iter -> unit
   method paste_clipboard : 
-    ?iter:iter -> ?default_editable:bool -> Gtk.clipboard -> unit
+    ?iter:iter -> ?default_editable:bool -> GData.clipboard -> unit
   method place_cursor : where:iter -> unit
   method remove_all_tags : start:iter -> stop:iter -> unit
-  method remove_selection_clipboard : Gtk.clipboard -> unit
+  method remove_selection_clipboard : GData.clipboard -> unit
   method remove_tag : tag -> start:iter -> stop:iter -> unit
   method remove_tag_by_name : string -> start:iter -> stop:iter -> unit
   method selection_bounds : iter * iter
@@ -353,12 +340,10 @@ object
   method start_iter : iter
   method tag_table : text_tag_table
 end
-val buffer : ?tagtable:tagtable -> ?text:string -> unit -> buffer
+val buffer : ?tag_table:tag_table -> ?text:string -> unit -> buffer
 
 class view_signals : ([> Gtk.text_view] as 'b) obj ->
 object ('a)
-  val after : bool
-  val obj : 'b obj
   method after : 'a
   method copy_clipboard : callback:(unit -> unit) -> GtkSignal.id
   method cut_clipboard : callback:(unit -> unit) -> GtkSignal.id
@@ -367,10 +352,11 @@ object ('a)
   method destroy : callback:(unit -> unit) -> GtkSignal.id
   method insert_at_cursor : callback:(string -> unit) -> GtkSignal.id
   method move_cursor :
-    callback:(Tags.movement_step -> int -> bool -> unit) -> GtkSignal.id
+    callback:(Tags.movement_step -> int -> extend:bool -> unit) -> GtkSignal.id
   method move_focus :
     callback:(Tags.direction_type -> unit) -> GtkSignal.id
-  method page_horizontally : callback:(int -> bool -> unit) -> GtkSignal.id
+  method page_horizontally :
+    callback:(int -> extend:bool -> unit) -> GtkSignal.id
   method paste_clipboard : callback:(unit -> unit) -> GtkSignal.id
   method populate_popup :
     callback:(menu obj -> unit) -> GtkSignal.id
@@ -385,11 +371,11 @@ class view : text_view obj ->
 object
   inherit widget
   val obj : text_view obj
+  method as_view : text_view obj
   method add_child_at_anchor : GObj.widget -> child_anchor -> unit
   method add_child_in_window :
     child:GObj.widget ->
     which_window:Tags.text_window_type -> x:int -> y:int -> unit
-  method as_view : text_view obj
   method backward_display_line : iter -> bool
   method backward_display_line_start : iter -> bool
   method buffer : buffer

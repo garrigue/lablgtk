@@ -93,6 +93,15 @@ module Value = struct
   external get_pointer : g_value -> Gpointer.boxed = "ml_g_value_get_pointer"
   external get_nativeint : g_value -> nativeint = "ml_g_value_get_nativeint"
   external get_int32 : g_value -> int32 = "ml_g_value_get_int32"
+  let get_conv kind v =
+    try match kind with
+    (* special case to get all 32 bits *)
+    | `INT32 | `UINT32 -> `INT32 (get_int32 v)
+    (* special case to avoid copy of boxed *)
+    | `POINTER ->
+        `POINTER (try Some (get_pointer v) with Gpointer.Null -> None)
+    | _ -> (get v :> data_conv_get)
+    with Failure ("Gobject.get_int32"|"Gobject.get_pointer") -> `NONE
 end
 
 module Closure = struct
@@ -218,18 +227,20 @@ module Data = struct
     { kind = `POINTER;
       proj = (function `POINTER c -> c | _ -> failwith "Gobject.get_pointer");
       inj = (fun c -> `POINTER c) }
-  let unsafe_boxed =
-    { kind = `BOXED;
+  let unsafe_pointer =
+    { kind = `POINTER;
       proj = (function `POINTER (Some c) -> Obj.magic c
-             | _ -> failwith "Gobject.get_boxed");
+             | _ -> failwith "Gobject.get_pointer");
       inj = (fun c -> `POINTER (Some (Obj.magic c))) }
   let magic : 'a option -> 'b option = Obj.magic
-  let unsafe_boxed_option =
-    { kind = `BOXED;
+  let unsafe_pointer_option =
+    { kind = `POINTER;
       proj = (function `POINTER c -> magic c
-             | _ -> failwith "Gobject.get_boxed");
+             | _ -> failwith "Gobject.get_pointer");
       inj = (fun c -> `POINTER (magic c)) }
   let boxed = {pointer with kind = `BOXED}
+  let unsafe_boxed = {unsafe_pointer with kind = `BOXED}
+  let unsafe_boxed_option = {unsafe_pointer_option with kind = `BOXED}
   let gobject_option =
     { kind = `OBJECT;
       proj = (function `OBJECT c -> may_map ~f:unsafe_cast c
@@ -243,11 +254,7 @@ module Data = struct
       inj = (fun c -> `OBJECT (Some (unsafe_cast c))) }
 
   let of_value conv v =
-    let d =
-      match conv.kind with
-      | `INT32 | `UINT32 -> `INT32 (Value.get_int32 v)
-      | _ -> (Value.get v :> data_conv_get)
-    in conv.proj d
+    conv.proj (Value.get_conv conv.kind v)
   let to_fundamental = function
     | `INT32 -> `INT
     | `UINT32 -> `UINT
@@ -292,12 +299,12 @@ module Property = struct
   let get (obj : 'a obj) (prop : ('a,_) property) =
     let v =
       match prop.conv.kind with
-      | `INT32 | `UINT32 ->
-          (* special case to get all 32 bits *)
+      (* Special cases: need to bypass normal conversion *)
+      | `INT32 | `UINT32 | `POINTER as k ->
           let t = get_type obj prop.name in
           let v = Value.create t in
           get_value obj prop.name v;
-          `INT32 (Value.get_int32 v)
+          Value.get_conv k v
       | _ ->
           (get_dyn obj prop.name :> data_conv_get)
     in

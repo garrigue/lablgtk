@@ -20,8 +20,7 @@ class button_skel obj = object (self)
 end
 
 class button_signals obj = object
-  inherit widget_signals_impl obj
-  inherit container_sigs
+  inherit container_signals_impl obj
   inherit button_sigs
 end
 
@@ -38,10 +37,9 @@ let button ?label =
   Button.make_params [] ?label ~cont:(
   pack_return (fun p -> new button (Button.create p)))
 
-class toggle_button_signals obj = object
+class toggle_button_signals obj = object (self)
   inherit button_signals obj
-  method toggled =
-    GtkSignal.connect ~sgn:ToggleButton.Signals.toggled obj ~after
+  method toggled = self#connect ToggleButton.S.toggled
 end
 
 class toggle_button obj = object

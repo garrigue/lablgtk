@@ -99,10 +99,10 @@ endif
 	$(COMPILER) $<
 .ml.cmx:
 	$(COMPOPT) $<
-#.var.h _tags.:
-#	./varcc $<
-.ml4.ml:
-	$(CAMLP4) -impl $< -o $@
+.ml4.cmo:
+	$(CAMLC) -pp "$(CAMLP4O) -impl" -impl $<
+#.ml4.ml:
+#	$(CAMLP4) -impl $< -o $@
 
 %_tags.h %_tags.c %Enums.ml: %_tags.var varcc
 	./varcc $<

@@ -41,17 +41,6 @@ module Liste = struct
       = "ml_gtk_list_unselect_child"
   external child_position : [>`list] obj -> [>`listitem] obj -> int
       = "ml_gtk_list_child_position"
-  module Signals = struct
-    open GtkSignal
-    let selection_changed =
-      { name = "selection_changed"; classe = `list; marshaller = marshal_unit }
-    let select_child =
-      { name = "select_child"; classe = `list;
-        marshaller = Widget.Signals.marshal }
-    let unselect_child =
-      { name = "unselect_child"; classe = `list;
-        marshaller = Widget.Signals.marshal }
-  end
 end
 
 module CList = struct
@@ -263,36 +252,9 @@ module CList = struct
       [>`clist] obj -> int -> Gtk.Tags.state_type
 	  = "ml_gtk_clist_get_row_state"
 
-
-  module Signals = struct
-    open GtkSignal
-    let marshal_select f argv = function
-      | `INT row :: `INT column :: `POINTER p :: _ ->
-          let event : GdkEvent.Button.t option =
-	    may_map ~f:GdkEvent.unsafe_copy p
-          in
-          f ~row ~column ~event
-      | _ -> invalid_arg "GtkList.CList.Signals.marshal_select"
-    let select_row =
-      { name = "select_row"; classe = `clist; marshaller = marshal_select }
-    let unselect_row =
-      { name = "unselect_row"; classe = `clist; marshaller = marshal_select }
-    let click_column =
-      { name = "click_column"; classe = `clist; marshaller = marshal_int }
-    let marshal_scroll f argv = function
-      | `INT st :: `FLOAT (pos : clampf) :: _ ->
-          f (Gpointer.decode_variant GtkEnums.scroll_type st) ~pos
-      | _ -> invalid_arg "GtkList.CList.Signals.marshal_scroll"
-    let scroll_horizontal =
-      { name = "scroll_horizontal"; classe = `clist;
-        marshaller = marshal_scroll }
-    let scroll_vertical =
-      { name = "scroll_vertical"; classe = `clist;
-        marshaller = marshal_scroll }
-    let emit_scroll =
-      emit ~conv:ignore ~emitter:
-        (fun ~cont t ~(pos:clampf) ->
-          cont [|`INT(Gpointer.encode_variant GtkEnums.scroll_type t);
-                 `FLOAT pos|])
-  end
+  let emit_scroll =
+    GtkSignal.emit ~conv:ignore ~emitter:
+      (fun ~cont t ~(pos:clampf) ->
+        cont [|`INT(Gpointer.encode_variant GtkEnums.scroll_type t);
+               `FLOAT pos|])
 end

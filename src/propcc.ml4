@@ -56,7 +56,7 @@ let enums = [
     "CornerType"; "SelectionMode"; "SortType"; "WrapMode";
     "SpinButtonUpdatePolicy"; "UpdateType"; "ProgressBarStyle";
     "ProgressBarOrientation"; "CellRendererMode";
-    "TreeViewColumnSizing"; "SortType"; "TextDirection";
+    "TreeViewColumnSizing"; "SortType"; "TextDirection"; "SizeGroupMode";
     (* in signals *)
     "MovementStep"; "ScrollType"; "MenuDirectionType"; "DeleteType";
     "StateType";
@@ -75,11 +75,11 @@ let enums = [
 let boxeds = [
   "Gdk", ["Color"; "Font";];
   "Pango", ["FontDescription";];
-  "Gtk", ["IconSet";"TextIter";"TreePath"; "TreeIter";];
+  "Gtk", ["IconSet";"SelectionData";"TextIter";"TreePath"; "TreeIter";];
 ]
 
 let classes = [
-  "Gdk", [ "Image"; "Pixmap"; "Bitmap"; "Screen"; ];
+  "Gdk", [ "Image"; "Pixmap"; "Bitmap"; "Screen"; "DragContext";];
   "Gtk", [ "Style"; "TreeStore"; ]
 ]
 
@@ -107,6 +107,7 @@ let () =
     [ "gchararray", "string";
       "gchararray_opt", "string_option";
       "string", "string"; "bool", "boolean"; "int", "int";
+      "int32", "int32"; "float", "float";
     ];
   List.iter enums ~f:(fun (pre, modu, l) ->
     List.iter l ~f:
@@ -117,7 +118,8 @@ let () =
   List.iter boxeds ~f:(fun (pre, l) ->
     List.iter l ~f:(fun name -> add_boxed (pre^name) (pre^"."^camlize name)));
   List.iter classes ~f:(fun (pre,l) ->
-    List.iter l ~f:(fun t -> add_object (pre^t) (pre^"."^camlize t)))
+    List.iter l ~f:(fun t -> add_object (pre^t) (pre^"."^camlize t)));
+  add_object "GObject" "unit obj"
 
 open Genlex
 
@@ -133,6 +135,10 @@ let may_token tok s =
 let ident = parser [< ' Ident id >] -> id
 
 let string = parser [< ' String s >] -> s
+
+let may_colon p def = parser
+  | [< ' Kwd":"; s >] -> p s
+  | [< >] -> def
 
 let may_string def = parser
     [< ' String s >] -> s
@@ -169,10 +175,6 @@ let marshaller = parser
       return_type (List.split types) s
   | [< >] -> Types ([], [], "")
 
-let may_type = parser
-  | [< ' Kwd":"; ' String s >] -> s
-  | [< >] -> "unit"
-
 let simple_attr = parser [< ' Kwd"/"; ' Ident s >] -> s
 
 let field = parser
@@ -181,7 +183,7 @@ let field = parser
          if not (List.for_all attrs ~f:(List.mem ~set:attributes)) then
            raise (Stream.Error "bad attribute");
          `Prop (name, mlname, gtype, attrs)
-  | [< ' Kwd"method"; ' Ident name; ty = may_type >] ->
+  | [< ' Kwd"method"; ' Ident name; ty = may_colon string "unit" >] ->
       `Method (name, ty)
   | [< ' Kwd"signal"; ' Ident name; m = marshaller; l = star simple_attr >] ->
       if not (List.for_all l ~f:(List.mem ~set:["Wrap";"NoWrap"])) then
@@ -223,15 +225,19 @@ let headers = ref []
 let oheaders = ref []
 let checks = ref false
 let class_qualifiers =
-  ["abstract";"hv";"set";"wrap";"wrapset";"vset";"tag";"wrapsig"]
+  ["abstract";"hv";"set";"wrap";"wrapset";"vset";"tag";"wrapsig";
+   "type";"gobject";]
 
 let process_phrase ~chars = parser
     [< ' Ident"class"; ' Ident name; gtk_name = may_string (!prefix ^ name);
-       attrs = star qualifier; ' Kwd":"; ' Ident parent;
+       attrs = star qualifier; parent = may_colon ident "";
        ' Kwd"{"; fields = star field; ' Kwd"}" >] ->
          if List.exists attrs ~f:
              (fun (x,_) -> not (List.mem x class_qualifiers))
          then raise (Stream.Error "bad qualifier");
+         let attrs = ("parent",parent) :: attrs in
+         let attrs =
+           if parent = "GObject" then ("gobject","")::attrs else attrs in
          let props, meths, sigs = split_fields fields in
          decls := (name, gtk_name, attrs, props, meths, sigs) :: !decls
   | [< ' Ident"header"; ' Kwd"{" >] ->
@@ -283,10 +289,15 @@ let process_file f =
       exit 2
   end;
   (* Preproccess *)
+  let type_name name ~attrs =
+    try List.assoc "type" attrs with Not_found ->
+      if List.mem_assoc "gobject" attrs then camlize name
+      else camlize name ^ " obj"
+  in
   let decls = List.rev !decls in
   List.iter decls ~f:
-    (fun (name, gtk_name, _, _, _, _) ->
-      add_object gtk_name (baseM ^ "." ^ camlize name ^ " obj"));
+    (fun (name, gtk_name, attrs, _, _, _) ->
+      add_object gtk_name (type_name name ~attrs));
   (* Output modules *)
   let oc = open_out (base ^ "Props.ml") in
   let ppf = Format.formatter_of_out_channel oc in
@@ -306,7 +317,8 @@ let process_file f =
                with Not_found ->
                  Hashtbl.add all_props (name,gtype) (ref 1, ref ""); true
              with Not_found ->
-               prerr_endline ("Warning: no conversion for type " ^ gtype);
+               prerr_endline ("Warning: no conversion for type " ^ gtype ^
+                              " in class " ^ gtk_name);
                false
            end,
          meths,
@@ -317,7 +329,8 @@ let process_file f =
                List.for_all (if ret = "" then l else ret::l) ~f:
                  (fun ty ->
                    if Hashtbl.mem conversions ty then true else
-                   (prerr_endline ("Warning: no conversion for type " ^ ty);
+                   (prerr_endline ("Warning: no conversion for type " ^ ty ^
+                                   " in class " ^ gtk_name);
                     false))
            end)
       end in
@@ -387,8 +400,8 @@ let process_file f =
   List.iter decls ~f:
     begin fun (name, gtk_class, attrs, props, meths, sigs) ->
       out "@[<hv2>module %s = struct" (camlizeM name);
-      out "@ @[<hv2>let cast w : %s.%s obj =@ try_cast w \"%s\"@]"
-        baseM (camlize name) gtk_class;
+      out "@ @[<hv2>let cast w : %s =@ try_cast w \"%s\"@]"
+        (type_name name ~attrs) gtk_class;
       let tag =
         try List.assoc "tag" attrs
         with Not_found -> !tagprefix ^ String.lowercase name
@@ -432,17 +445,20 @@ let process_file f =
         out "@ @[<hv2>let create";
         List.iter cprops ~f:(fun (_,name,_,_) -> out " ?%s" name);
         if List.mem_assoc "hv" attrs then begin
-          out " (dir : Gtk.Tags.orientation) pl";
-          out " : %s.%s obj =" baseM (camlize name);
+          out " (dir : Gtk.Tags.orientation) pl : %s ="
+            (type_name name ~attrs);
           may_cons_props cprops;
           out "@ @[<hov2>Object.make";
           out "@ (if dir = `HORIZONTAL then \"%sH%s\" else \"%sV%s\")@  pl"
             !prefix name !prefix name;
           out "@]@]";
         end else begin
-          out " pl : %s.%s obj =" baseM (camlize name);
+          out " pl : %s =" (type_name name ~attrs);
           may_cons_props cprops;
-          out "@ Object.make \"%s\" pl@]" gtk_class;
+          if List.mem_assoc "gobject" attrs then
+            out "@ Gobject.unsafe_create"
+          else out "@ Object.make";
+           out " \"%s\" pl@]" gtk_class;
         end
       end;
       List.iter meths ~f:

@@ -36,14 +36,16 @@ end
 
 class container = ['a] container_impl
 
-class container_signals obj = object
+class container_signals_impl obj = object
   inherit widget_signals_impl obj
   inherit container_sigs
 end
 
+class type container_signals = container_signals_impl
+
 class container_full obj = object
   inherit container obj
-  method connect = new container_signals obj
+  method connect = new container_signals_impl obj
 end
 
 let cast_container (w : widget) =
@@ -71,6 +73,6 @@ class virtual ['a] item_container obj = object (self)
 end
 
 class item_signals obj = object
-  inherit container_signals (obj : [> Gtk.item] obj)
+  inherit container_signals_impl (obj : [> Gtk.item] obj)
   inherit item_sigs
 end
