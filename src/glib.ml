@@ -254,5 +254,14 @@ module Utf8 = struct
 end
 
 module Markup = struct
+  type error =
+    | BAD_UTF8
+    | EMPTY
+    | PARSE
+    | UNKNOWN_ELEMENT
+    | UNKNOWN_ATTRIBUTE
+    | INVALID_CONTENT
+  exception Error of error * string
+  let () = Callback.register_exception "g_markup_error" (Error (BAD_UTF8, ""))
   external escape_text : string -> string = "ml_g_markup_escape_text"
 end

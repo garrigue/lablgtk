@@ -125,7 +125,6 @@ widget_info_array[] = {
   { sizeof(GtkSeparator), sizeof(GtkSeparatorClass), gtk_separator_get_type },
   { sizeof(GtkHSeparator), sizeof(GtkHSeparatorClass), gtk_hseparator_get_type },
   { sizeof(GtkVSeparator), sizeof(GtkVSeparatorClass), gtk_vseparator_get_type },
-  { sizeof(GtkPreview), sizeof(GtkPreviewClass), gtk_preview_get_type },
   { sizeof(GtkProgress), sizeof(GtkProgressClass), gtk_progress_get_type },
   { sizeof(GtkProgressBar), sizeof(GtkProgressBarClass), gtk_progress_bar_get_type },
   { sizeof(GtkData), sizeof(GtkDataClass), gtk_data_get_type },

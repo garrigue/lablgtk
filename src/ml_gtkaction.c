@@ -89,13 +89,22 @@ ML_2 (gtk_ui_manager_get_widget, GtkUIManager_val, String_val, Val_GtkWidget)
 ML_2 (gtk_ui_manager_get_action, GtkUIManager_val, String_val, Val_GAnyObject)
 CAMLprim value ml_gtk_ui_manager_add_ui_from_string(value uim, value s)
 {
-  return Val_int(gtk_ui_manager_add_ui_from_string(GtkUIManager_val(uim),
-						   String_val(s), -1, NULL));
+  GError *error = NULL;
+  guint id;
+  id = gtk_ui_manager_add_ui_from_string(GtkUIManager_val(uim),
+					 String_val(s), string_length(s), 
+					 &error);
+  if (error != NULL) ml_raise_gerror (error);
+  return Val_int(id);
 }
 CAMLprim value ml_gtk_ui_manager_add_ui_from_file(value uim, value s)
 {
-  return Val_int(gtk_ui_manager_add_ui_from_file(GtkUIManager_val(uim),
-						 String_val(s), NULL));
+  GError *error = NULL;
+  guint id;
+  id = gtk_ui_manager_add_ui_from_file(GtkUIManager_val(uim),
+				       String_val(s), &error);
+  if (error != NULL) ml_raise_gerror (error);
+  return Val_int(id);
 }
 ML_2 (gtk_ui_manager_remove_ui, GtkUIManager_val, Int_val, Unit)
 ML_1 (gtk_ui_manager_ensure_update, GtkUIManager_val, Unit)

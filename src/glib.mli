@@ -168,5 +168,14 @@ end
 
 (** @gtkdoc glib glib-Simple-XML-Subset-Parser *)
 module Markup : sig
-  val escape_text: string -> string
+  type error =
+    | BAD_UTF8
+    | EMPTY
+    | PARSE
+    | UNKNOWN_ELEMENT
+    | UNKNOWN_ATTRIBUTE
+    | INVALID_CONTENT
+  exception Error of error * string
+
+  val escape_text : string -> string
 end

@@ -1,5 +1,12 @@
 $Id$
 
+2004.08.11 [Olivier]
+  * have GAction.ui_manager#add_ui_from_string raise an exception in
+    case of error.
+  * add Glib.Markup.Error exception.
+  * avoid memory leaks in Glib.Convert.
+  * remove some dead code (GtkPreview).
+
 In lablgtk2-20040716 (2.4.0):
 
 2004.07.16 [Jacques]
