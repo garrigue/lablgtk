@@ -14,13 +14,13 @@ RANLIB = ranlib
 
 include ../../config.make
 
-MLFLAGS = -I ../.. -w s -labels
+MLFLAGS = -I ../../src -w s -labels
 
 ifdef DEBUG
-CFLAGS = -g $(GTKCFLAGS)
+CFLAGS = -g $(GTKCFLAGS) -I../../src
 MLFLAGS += -g
 else
-CFLAGS = -O -DGTK_NO_CHECK_CASTS -DGTK_DISABLE_COMPAT_H $(GTKCFLAGS)
+CFLAGS = -O -DGTK_NO_CHECK_CASTS -DGTK_DISABLE_COMPAT_H $(GTKCFLAGS) -I../../src
 endif
 
 ifdef USE_CC
@@ -80,7 +80,7 @@ gtk2.cmxa: gtkTree2.cmx gTree2.cmx gToolbar2.cmx libgtk2.a
 clean:
 	rm -f *.cm* *.o *.a radtest *_parser.ml *_parser.mli *_lexer.ml
 
-.depend: $(MLSRC) load_parser.ml load_lexer.ml
+depend: load_parser.ml load_lexer.ml
 	ocamldep $(MLSRC) load_parser.ml* load_lexer.ml* > .depend
 
 include .depend

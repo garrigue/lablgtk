@@ -14,7 +14,7 @@ RANLIB = ranlib
 
 include ../../config.make
 
-MLFLAGS = -I ../.. -I ocaml-src/utils -I ocaml-src/parsing
+MLFLAGS = -I ../../src -I ocaml-src/utils -I ocaml-src/parsing
 
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def

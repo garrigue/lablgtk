@@ -7,24 +7,17 @@ all: $(TARGETS)
 
 opt: lablgtkopt
 
-configure:
-	@rm -f config.make
-	@$(MAKE) --no-print-directory -f configure.mk
-
 depend:
-	@rm -f .depend
-	@$(MAKE) --no-print-directory -f configure.mk .depend
-
-.depend config.make:
-	@$(MAKE) --no-print-directory -f configure.mk
+	ocamldep *.ml *.mli > .depend
 
 COMPILER = $(CAMLC) $(MLFLAGS) -w s -labels -c
 LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -labels -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 TOPLEVEL = ocamlmktop $(MLFLAGS)
+CONFIG = ../config.make
 
-include config.make
+include $(CONFIG)
 
 INSTALLDIR = $(LIBDIR)/lablgtk
 LABLGLDIR = $(LIBDIR)/lablGL
@@ -115,7 +108,7 @@ lablgtktop_t: $(CLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
 	   -ccopt -L. $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
-lablgtk: Makefile config.make lablgtk.in
+lablgtk: Makefile $(CONFIG) lablgtk.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
 	    -e "s|@LABLGLDIR@|$(LABLGLDIR)|g" \
 	    -e "s|@LIBDIR@|$(LIBDIR)|g" \
@@ -135,7 +128,8 @@ install:
 	cp $(ALLOBJS:.cmo=.ml) $(INSTALLDIR)
 	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
 	cp $(CLIBS) $(INSTALLDIR)
-	cp lablgtktop  lablgtktop_t $(INSTALLDIR)
+	cp lablgtktop lablgtktop_t varcc $(INSTALLDIR)
+	cp *.h $(INSTALLDIR)
 	cp lablgtk lablgtkrun $(BINDIR)
 	if test -f lablgtk.cmxa; then \
 	   cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.a) \
