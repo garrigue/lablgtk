@@ -16,7 +16,7 @@ let get = Gobject.Property.get
 
 module P = Window.P
 
-class window_skel obj = object (self)
+class window obj = object (self)
   inherit ['b] bin_impl obj
   inherit window_props
   method event = new GObj.event_ops obj
@@ -46,8 +46,8 @@ class window_skel obj = object (self)
   method deiconify () = Window.deiconify obj
 end
 
-and window obj = object
-  inherit window_skel (obj : [> Gtk.window] obj)
+class window_full obj = object
+  inherit window (obj : [> Gtk.window] obj)
   method connect = new container_signals_impl obj
   method maximize () = Window.maximize obj
   method unmaximize () = Window.unmaximize obj
@@ -60,17 +60,17 @@ end
 let make_window ~create =
   Window.make_params ~cont:(fun pl ?wm_name ?wm_class ->
     Container.make_params pl ~cont:(fun pl ?(show=false) () ->
-      let (w : #window_skel) = create pl in
+      let (w : #window) = create pl in
       may w#set_wm_name wm_name;
       may w#set_wm_class wm_class;
       if show then w#show ();
       w))
 
 let window ?kind =
-  make_window [] ~create:(fun pl -> new window (Window.create ?kind pl))
+  make_window [] ~create:(fun pl -> new window_full (Window.create ?kind pl))
 
 let cast_window (w : #widget) =
-  new window (Window.cast w#as_widget)
+  new window_full (Window.cast w#as_widget)
 
 let toplevel (w : #widget) =
   try Some (cast_window w#misc#toplevel) with Gobject.Cannot_cast _ -> None
@@ -95,7 +95,7 @@ let rnone = Dialog.std_response `NONE
 let rdelete = Dialog.std_response `DELETE_EVENT
 
 class ['a] dialog_skel obj = object (self)
-  inherit window_skel obj
+  inherit window obj
   inherit dialog_props
   val tbl : (int * 'a) list ref = 
     ref [rdelete, `DELETE_EVENT]
@@ -250,7 +250,7 @@ class plug_signals obj = object
 end
 
 class plug (obj : Gtk.plug obj) = object
-  inherit window_skel obj
+  inherit window obj
   method connect = new plug_signals obj
 end
 
