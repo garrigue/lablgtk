@@ -92,8 +92,13 @@ ML_3 (gtk_button_box_set_child_size, GtkButtonBox_val,
       Int_val, Int_val, Unit)
 ML_3 (gtk_button_box_set_child_ipadding, GtkButtonBox_val,
       Int_val, Int_val, Unit)
+#ifdef HASGTK24
 ML_2 (gtk_button_box_get_child_secondary, GtkButtonBox_val, GtkWidget_val, Val_bool)
 ML_3 (gtk_button_box_set_child_secondary, GtkButtonBox_val, GtkWidget_val, Bool_val, Unit)
+#else
+Unsupported_24 (gtk_button_box_get_child_secondary)
+Unsupported_24 (gtk_button_box_set_child_secondary)
+#endif
 
 /* gtkfixed.h */
 
