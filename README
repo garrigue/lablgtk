@@ -15,10 +15,8 @@ Status:
   
   Support for the old text widget has been dropped, but it is
   remplaced by a new one, much more powerful (thanks to Benjamin
-  Monate). However its API is not yet fixed. In particular text
-  iterators are not foolproof, and may cause exceptions (hopefully
-  segmentation faults should be avoided, contrary to the gtk-2
-  "specification").
+  Monate). However its API is not yet fixed. Many examples do not
+  compile due to the absence of the old text widget.
 
   In other widgets many methods are missing, and will be progressively
   added, as we review the changes. Requests may be considered.
