@@ -100,7 +100,12 @@ module Image :
 module Color :
   sig
     type t
-    type spec = [ `BLACK|`NAME string |`RGB (int * int * int)|`WHITE ]
+    type spec = [
+      | `BLACK
+      | `NAME of string
+      | `RGB of int * int * int
+      | `WHITE
+    ]
     val alloc : ?colormap:colormap -> spec -> t
     external get_system_colormap : unit -> colormap
 	= "ml_gdk_colormap_get_system"
@@ -123,7 +128,7 @@ module Rectangle :
 
 module Window :
   sig
-    type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP pixmap ]
+    type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP of pixmap ]
     external visual_depth : visual -> int = "ml_gdk_visual_get_depth"
     external get_visual : window -> visual = "ml_gdk_window_get_visual"
     external get_parent : window -> window = "ml_gdk_window_get_parent"
