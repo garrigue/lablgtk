@@ -328,6 +328,8 @@ ML_3 (gtk_tree_view_column_pack_end, GtkTreeViewColumn_val,
       GtkCellRenderer_val, Int_val, Unit)
 ML_4 (gtk_tree_view_column_add_attribute, GtkTreeViewColumn_val,
       GtkCellRenderer_val, String_val, Int_val, Unit)
+ML_2 (gtk_tree_view_column_set_sort_column_id, GtkTreeViewColumn_val,
+      Int_val, Unit)
 
 /* GtkTreeView */
 
@@ -380,4 +382,38 @@ CAMLprim value ml_gtk_tree_view_get_cursor (value arg)
   Store_field(ret,0,Val_option(path,Val_GtkTreePath));
   Store_field(ret,1,Val_option(col,Val_GtkWidget));
   CAMLreturn(ret);
+}
+
+ML_2 (gtk_tree_view_set_model, GtkTreeView_val, GtkTreeModel_val, Unit)
+
+
+CAMLprim value ml_gtk_tree_view_get_path_at_pos(value treeview, value path, value column, value x, value y)
+{
+  gint cell_x;
+  gint cell_y;
+  GtkTreePath *gpath;
+  GtkTreeViewColumn *gcolumn;
+
+  gpath = GtkTreePath_val(path);
+  gcolumn = GtkTreeViewColumn_val(column);
+
+  if (gtk_tree_view_get_path_at_pos( GtkTreeView_val(treeview), 
+				     Int_val(x), 
+				     Int_val(y), 
+				     &gpath,
+				     &gcolumn,
+				     &cell_x, &cell_y)){
+    /* return Some */
+    CAMLparam0 ();
+    CAMLlocal1(tup);
+
+    tup = alloc_small(2,0);
+    Store_field(tup,0,Val_int(cell_x));
+    Store_field(tup,1,Val_int(cell_y));
+    CAMLreturn(ml_some (tup));
+    
+  } else {
+    /* return None */
+    return Val_unit;
+  }
 }

@@ -207,6 +207,7 @@ class view_column : tree_view_column obj ->
     method add_attribute : [>`cellrenderer] obj -> string -> 'a column -> unit
     method pack :
       ?expand:bool -> ?from:[ `END | `START] -> [>`cellrenderer] obj -> unit
+    method set_sort_column_id : int -> unit
     method set_alignment : float -> unit
     method set_clickable : bool -> unit
     method set_fixed_width : int -> unit
@@ -218,6 +219,7 @@ class view_column : tree_view_column obj ->
     method set_visible : bool -> unit
     method set_widget : Gtk.widget Gobject.obj option -> unit
     method set_width : int -> unit
+    method set_sort_order : Gtk.Tags.sort_type -> unit
   end
 val view_column :
   ?title:string ->
@@ -269,6 +271,12 @@ class view : ([> tree_view] as 'a) obj ->
     method expand_row : ?all:bool -> Gtk.tree_path -> unit
     method expander_column : view_column
     method get_column : int -> view_column
+
+    method get_cursor :
+        unit -> Gtk.tree_path option * Gtk.tree_view_column option
+    method get_path_at_pos :
+        x:int -> y:int ->
+        (Gtk.tree_path * Gtk.tree_view_column Gtk.obj * (int * int)) option
     method hadjustment : GData.adjustment
     method headers_visible : bool
     method insert_column : view_column -> int -> int
@@ -293,6 +301,7 @@ class view : ([> tree_view] as 'a) obj ->
     method set_headers_clickable : bool -> unit
     method set_headers_visible : bool -> unit
     method set_model : model -> unit
+    method set_model2 : model -> unit
     method set_reorderable : bool -> unit
     method set_rules_hint : bool -> unit
     method set_search_column : int -> unit
