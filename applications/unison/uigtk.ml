@@ -56,19 +56,19 @@ let busy = ref false
 (* Some widgets							      *)
 (**********************************************************************)
 
-class scrolled_text ?:editable ?:word_wrap ?:width ?:height ?:packing ?:show
+class scrolled_text ?editable ?word_wrap ?width ?height ?packing ?show
     () =
-  let hbox = GPack.hbox ?:width ?:height ?:packing show:false () in
+  let hbox = GPack.hbox ?width ?height ?packing ~show:false () in
   let scrollbar = GRange.scrollbar `VERTICAL
-      packing:(hbox#pack from:`END expand:false) () in
-  let text = GEdit.text vadjustment:scrollbar#adjustment
-      ?:editable ?:word_wrap packing:hbox#add () in
+      ~packing:(hbox#pack ~from:`END ~expand:false) () in
+  let text = GEdit.text ~vadjustment:scrollbar#adjustment
+      ?editable ?word_wrap ~packing:hbox#add () in
   object
     inherit GObj.widget_full hbox#as_widget
     method scrollbar = scrollbar
     method text = text
-    method insert ?(:font=fontMonospaceMedium) s =
-      text#insert font:(Lazy.force font) s
+    method insert ?(font=fontMonospaceMedium) s =
+      text#insert ~font:(Lazy.force font) s
     method show () = hbox#misc#show ()
     initializer
       if show <> Some false then hbox#misc#show ()
@@ -80,36 +80,36 @@ let gtk_sync () = while Glib.Main.iteration false do () done
 (* okBox: Display a message in a window and wait for the user   *)
 (* to hit the "OK" button.                                            *)
 (**********************************************************************)
-let okBox :title :message =
+let okBox ~title ~message =
     (* Create a new toplevel window *)
-    let t = GWindow.dialog :title wm_name:title modal:true () in
-    let theLabel = GMisc.label text:message
-	packing:(t#vbox#pack expand:false padding:4) () in
-    let ok = GButton.button label:"OK" packing:t#action_area#add () in
+    let t = GWindow.dialog ~title ~wm_name:title ~modal:true () in
+    let theLabel = GMisc.label ~text:message
+	~packing:(t#vbox#pack ~expand:false ~padding:4) () in
+    let ok = GButton.button ~label:"OK" ~packing:t#action_area#add () in
     ok#grab_default ();
-    ok#connect#clicked callback:(fun () -> t#destroy());
+    ok#connect#clicked ~callback:(fun () -> t#destroy());
     t#show ();
     (* Do nothing until user destroys window *)
-    t#connect#destroy callback:Main.quit;
+    t#connect#destroy ~callback:Main.quit;
     Main.main ()
 
 (**********************************************************************)
 (* warnBox: Display a warning message in a window and wait for the    *)
 (* user to hit "OK" or "Exit".                                        *)
 (**********************************************************************)
-let warnBox :title :message =
+let warnBox ~title ~message =
     (* Create a new toplevel window *)
-    let t = GWindow.dialog :title wm_name:title modal:true () in
-    let theLabel = GMisc.label text:message
-	packing:(t#vbox#pack expand:false padding:4) () in
-    let ok = GButton.button label:"OK" packing:t#action_area#add () in
+    let t = GWindow.dialog ~title ~wm_name:title ~modal:true () in
+    let theLabel = GMisc.label ~text:message
+	~packing:(t#vbox#pack ~expand:false ~padding:4) () in
+    let ok = GButton.button ~label:"OK" ~packing:t#action_area#add () in
     ok#grab_default ();
-    ok#connect#clicked callback:(fun () -> t#destroy());
-    let exitB = GButton.button label:"Exit" packing:t#action_area#add () in
-    ok#connect#clicked callback:(fun () -> t#destroy(); GMain.Main.quit ());
+    ok#connect#clicked ~callback:(fun () -> t#destroy());
+    let exitB = GButton.button ~label:"Exit" ~packing:t#action_area#add () in
+    ok#connect#clicked ~callback:(fun () -> t#destroy(); GMain.Main.quit ());
     t#show ();
     (* Do nothing until user destroys window *)
-    t#connect#destroy callback:Main.quit;
+    t#connect#destroy ~callback:Main.quit;
     Main.main ()
 
 (**********************************************************************)
@@ -122,7 +122,7 @@ let profileSelect toplevelWindow =
   else (* > first use, look for existing profiles *)
     let profiles =
       Safelist.map (Files.ls dirString "*.prf")
-        f:(fun f -> Filename.chop_suffix f ".prf")
+        ~f:(fun f -> Filename.chop_suffix f ".prf")
     in
     match profiles with
       [] -> true (* No profiles; return and build a default profile *)
@@ -132,15 +132,15 @@ let profileSelect toplevelWindow =
            becomes the default. *)
         let profiles =
           if Safelist.mem "default" profiles
-          then "default":: Safelist.filter f:(fun f -> f<>"default") profiles
+          then "default":: Safelist.filter ~f:(fun f -> f<>"default") profiles
           else profiles in
         let var1 = ref (Safelist.hd profiles) in
 
         let roots_of_profile f =
           try
             let filename = fspath2string (Os.fileInUnisonDir (f^".prf")) in
-            Safelist.map f:(fun (n,v) -> v)
-              (Safelist.filter f:(fun (n,v) -> n="root")
+            Safelist.map ~f:(fun (n,v) -> v)
+              (Safelist.filter ~f:(fun (n,v) -> n="root")
                  (Prefs.scanPreferencesFile filename))
           with _ -> []
         in
@@ -152,34 +152,34 @@ let profileSelect toplevelWindow =
         let successful = ref false in
 
         (* Build the dialog *)
-        let t = GWindow.dialog title:"Profiles"
-            wm_name:"Profiles" modal:true allow_grow:false () in
+        let t = GWindow.dialog ~title:"Profiles"
+            ~wm_name:"Profiles" ~modal:true ~allow_grow:false () in
         t#misc#grab_focus ();
 
         let vb = t#vbox in
 
-        GMisc.label text:"Select an existing profile or start a new one."
-          packing:(vb#pack expand:false) ();
+        GMisc.label ~text:"Select an existing profile or start a new one."
+          ~packing:(vb#pack ~expand:false) ();
 
         let buttons =
-          Safelist.map profiles f:
+          Safelist.map profiles ~f:
             begin fun profile ->
-              let b = GButton.radio_button label:profile packing:vb#add () in
-              Safelist.iter (roots_of_profile profile) f:
+              let b = GButton.radio_button ~label:profile ~packing:vb#add () in
+              Safelist.iter (roots_of_profile profile) ~f:
                 begin fun s ->
-                  ignore (GMisc.label text:("          Root: "^s)
-                            packing:vb#add ())
+                  ignore (GMisc.label ~text:("          Root: "^s)
+                            ~packing:vb#add ())
                 end;
               b
             end
         in
 
-        let f1 = GPack.hbox packing:vb#add () in
+        let f1 = GPack.hbox ~packing:vb#add () in
         let newValue = "//NEWPROFILE//" in
-        let newButton = GButton.radio_button label:"New:"
-            packing:(f1#pack expand:false) () in
+        let newButton = GButton.radio_button ~label:"New:"
+            ~packing:(f1#pack ~expand:false) () in
 
-        let entry = GEdit.entry packing:f1#add () in
+        let entry = GEdit.entry ~packing:f1#add () in
         let newCommand() =
           let profile = entry#text in
           if profile<>"" then
@@ -187,15 +187,15 @@ let profileSelect toplevelWindow =
             let fspath = Os.fileInUnisonDir file in
             let filename = fspath2string fspath in
             if Sys.file_exists filename then
-              okBox title:(myName^" error")
-                message:("Profile \""
+              okBox ~title:(myName^" error")
+                ~message:("Profile \""
                          ^ profile
                          ^ "\" already exists!\nPlease select another name.")
             else begin
               (* Make an empty file *)
               let ch =
                 open_out_gen filename
-                  mode:[Open_wronly; Open_creat; Open_trunc] perm:0o600 in
+                  ~mode:[Open_wronly; Open_creat; Open_trunc] ~perm:0o600 in
               close_out ch;
               Globals.prefsFileName := file;
               successful := true;
@@ -211,7 +211,7 @@ let profileSelect toplevelWindow =
             t#destroy ()
           end in
 
-        entry#connect#activate callback:newCommand;
+        entry#connect#activate ~callback:newCommand;
 
         let oldState() =
           entry#set_editable false
@@ -222,10 +222,10 @@ let profileSelect toplevelWindow =
         oldState();
 
         let button0 = Safelist.hd buttons in
-        List.iter2 (newValue::profiles) (newButton::buttons) f:
+        List.iter2 (newValue::profiles) (newButton::buttons) ~f:
           begin fun profile (button : GButton.radio_button) ->
             if button <> button0 then button#set_group button0#group;
-            button#connect#clicked callback:
+            button#connect#clicked ~callback:
               begin fun () ->
                 if profile = newValue then newState () else oldState ();
                 var1 := profile
@@ -234,20 +234,20 @@ let profileSelect toplevelWindow =
           end;
         button0#set_active true;
 
-        let okButton = GButton.button label:"OK"
-            packing:t#action_area#add () in
-        okButton#connect#clicked callback:okCommand;
+        let okButton = GButton.button ~label:"OK"
+            ~packing:t#action_area#add () in
+        okButton#connect#clicked ~callback:okCommand;
         okButton#grab_default ();
         let cancelCommand() = t#destroy (); toplevelWindow#destroy () in
-        let cancelButton = GButton.button label:"Cancel"
-            packing:t#action_area#add () in
-        cancelButton#connect#clicked callback:cancelCommand;
+        let cancelButton = GButton.button ~label:"Cancel"
+            ~packing:t#action_area#add () in
+        cancelButton#connect#clicked ~callback:cancelCommand;
         cancelButton#misc#set_can_default true;
 
         (* The profile selection dialog has been installed into the Gtk
            main interaction loop; wait until it completes. *)
         t#show ();
-        t#connect#destroy callback:Main.quit;
+        t#connect#destroy ~callback:Main.quit;
         Main.main ();
 
         (* Return whether the selection was successful *)
@@ -257,11 +257,11 @@ let profileSelect toplevelWindow =
 (**********************************************************************)
 (* Standard file dialog                                               *)
 (**********************************************************************)
-let file_dialog :title :callback ?:filename () =
+let file_dialog ~title ~callback ?filename () =
   let sel =
-    GWindow.file_selection :title modal:true ?:filename () in
-  sel#cancel_button#connect#clicked callback:sel#destroy;
-  sel#ok_button#connect#clicked callback:
+    GWindow.file_selection ~title ~modal:true ?filename () in
+  sel#cancel_button#connect#clicked ~callback:sel#destroy;
+  sel#ok_button#connect#clicked ~callback:
     begin fun () ->
       let name = sel#get_filename in
       sel#destroy ();
@@ -280,34 +280,34 @@ let rootSelect toplevelWindow =
        be closed. *)
     let successful = ref false in
 
-    let t = GWindow.dialog title:"Enter roots" wm_name:"Enter roots"
-        modal:true allow_grow:false () in
+    let t = GWindow.dialog ~title:"Enter roots" ~wm_name:"Enter roots"
+        ~modal:true ~allow_grow:false () in
     t#misc#grab_focus ();
 
-    let vb = GPack.vbox border_width:4 packing:t#vbox#add () in
+    let vb = GPack.vbox ~border_width:4 ~packing:t#vbox#add () in
 
-    GMisc.label text:"Enter the roots you want to synchronize."
-      packing:vb#add ();
+    GMisc.label ~text:"Enter the roots you want to synchronize."
+      ~packing:vb#add ();
 
     let makeGetRoot() =
-      let f = GPack.vbox packing:(vb#pack padding:4) () in
-      let f0 = GPack.hbox spacing:4 packing:f#add () in
-      GMisc.label text:"Host:" packing:(f0#pack expand:false) ();
-      let localB = GButton.radio_button packing:(f0#pack expand:false)
-          label:"Local" () in
-      let remoteB = GButton.radio_button group:localB#group
-          packing:(f0#pack expand:false) label:"Remote" () in
-      let hostE = GEdit.entry packing:f0#add () in
-      let f1 = GPack.hbox spacing:4 packing:f#add () in
-      GMisc.label text:"File:" packing:(f1#pack expand:false) ();
-      let fileE = GEdit.entry packing:f1#add () in
+      let f = GPack.vbox ~packing:(vb#pack ~padding:4) () in
+      let f0 = GPack.hbox ~spacing:4 ~packing:f#add () in
+      GMisc.label ~text:"Host:" ~packing:(f0#pack ~expand:false) ();
+      let localB = GButton.radio_button ~packing:(f0#pack ~expand:false)
+          ~label:"Local" () in
+      let remoteB = GButton.radio_button ~group:localB#group
+          ~packing:(f0#pack ~expand:false) ~label:"Remote" () in
+      let hostE = GEdit.entry ~packing:f0#add () in
+      let f1 = GPack.hbox ~spacing:4 ~packing:f#add () in
+      GMisc.label ~text:"File:" ~packing:(f1#pack ~expand:false) ();
+      let fileE = GEdit.entry ~packing:f1#add () in
       let browseCommand() =
-        file_dialog title:"Select a local file"
-          callback:(fun file -> fileE#set_text file) ()
+        file_dialog ~title:"Select a local file"
+          ~callback:(fun file -> fileE#set_text file) ()
       in
-      let b = GButton.button label:"Browse"
-          packing:(f1#pack expand:false) () in
-      b#connect#clicked callback:browseCommand;
+      let b = GButton.button ~label:"Browse"
+          ~packing:(f1#pack ~expand:false) () in
+      b#connect#clicked ~callback:browseCommand;
       let varLocalRemote = ref (`Local : [`Local|`Remote]) in
       let localState() =
         varLocalRemote := `Local;
@@ -319,8 +319,8 @@ let rootSelect toplevelWindow =
         hostE#set_editable true;
         b#misc#set_sensitive false
       in
-      localB#connect#clicked callback:localState;
-      remoteB#connect#clicked callback:remoteState;
+      localB#connect#clicked ~callback:localState;
+      remoteB#connect#clicked ~callback:remoteState;
       localState();
       let getRoot() =
         let filePart = fileE#text in
@@ -333,10 +333,10 @@ let rootSelect toplevelWindow =
     in
 
     
-    GMisc.label text:"ROOT 1:" xalign:0. packing:(vb#pack padding:4) ();
+    GMisc.label ~text:"ROOT 1:" ~xalign:0. ~packing:(vb#pack ~padding:4) ();
     let getRoot1 = makeGetRoot() in
 
-    GMisc.label text:"ROOT 2:" xalign:0. packing:(vb#pack padding:4) ();
+    GMisc.label ~text:"ROOT 2:" ~xalign:0. ~packing:(vb#pack ~padding:4) ();
     let getRoot2 = makeGetRoot() in
 
     let f3 = t#action_area in
@@ -347,19 +347,19 @@ let rootSelect toplevelWindow =
       Globals.savePrefs();
       successful := true;
       t#destroy () in
-    let okButton = GButton.button label:"OK" packing:f3#add () in
-    okButton#connect#clicked callback:okCommand;
+    let okButton = GButton.button ~label:"OK" ~packing:f3#add () in
+    okButton#connect#clicked ~callback:okCommand;
     let cancelCommand() =
       t#destroy ();
       toplevelWindow#destroy ()
     in
-    let cancelButton = GButton.button label:"Cancel" packing:f3#add () in
-    cancelButton#connect#clicked callback:cancelCommand;
+    let cancelButton = GButton.button ~label:"Cancel" ~packing:f3#add () in
+    cancelButton#connect#clicked ~callback:cancelCommand;
 
     (* The root selection dialog has been installed into the Gtk
        main interaction loop; wait until it completes. *)
     t#show ();
-    t#connect#destroy callback:Main.quit;
+    t#connect#destroy ~callback:Main.quit;
     Main.main ();
 
     (* Return whether the selection was successful *)
@@ -375,8 +375,8 @@ let start _ =
   (* Initialize the library *)
   Main.init ();
 
-  let toplevelWindow = GWindow.window wm_name:myName () in
-  let toplevelVBox = GPack.vbox packing:toplevelWindow#add () in
+  let toplevelWindow = GWindow.window ~wm_name:myName () in
+  let toplevelVBox = GPack.vbox ~packing:toplevelWindow#add () in
 
   (* displayHooks is a list of functions that should be called to
      actually display the ui elements on screen. It allows us to
@@ -385,7 +385,7 @@ let start _ =
   let displayHooks = ref [] in
   let addDisplayHook f = displayHooks := f::!displayHooks in
   let invokeDisplayHooks () =
-    Safelist.iter f:(fun f -> f()) (Safelist.rev !displayHooks) in
+    Safelist.iter ~f:(fun f -> f()) (Safelist.rev !displayHooks) in
 
   (**********************************************************************)
   (* Function to display a message in a new window                      *)
@@ -393,68 +393,68 @@ let start _ =
   let charW = Gdk.Font.char_width (Lazy.force fontMonospaceMedium) 'M'
   and charH = 15
     (* Gdk.Font.char_height (Lazy.force fontMonospaceMedium) 'l' *) in
-  let messageBox :title ?(:label = "Dismiss")
-      ?(:action = fun t -> t#destroy) ?(:modal = false) message =
+  let messageBox ~title ?(label = "Dismiss")
+      ?(action = fun t -> t#destroy) ?(modal = false) message =
     begin
       (* Create a new toplevel window *)
-      let t = GWindow.dialog :title wm_name:title :modal () in
+      let t = GWindow.dialog ~title ~wm_name:title ~modal () in
       (* Create the dismiss button *)
       let t_dismiss =
-	GButton.button :label packing:t#action_area#add () in
-      t_dismiss#connect#clicked callback:(action t);
+	GButton.button ~label ~packing:t#action_area#add () in
+      t_dismiss#connect#clicked ~callback:(action t);
       (* Create the display area *)
-      let t_text = new scrolled_text editable:false
-	  width:(charW*80) height:(charH*20) packing:t#vbox#add () in
+      let t_text = new scrolled_text ~editable:false
+	  ~width:(charW*80) ~height:(charH*20) ~packing:t#vbox#add () in
       (* Insert text *)
       t_text#insert message;
       t#show ()
     end in
   let fatalError =
-    messageBox title:"Fatal Error" label:"Exit" modal:true
-      action:(fun t () -> t#destroy (); toplevelWindow#destroy ())
+    messageBox ~title:"Fatal Error" ~label:"Exit" ~modal:true
+      ~action:(fun t () -> t#destroy (); toplevelWindow#destroy ())
   in
 
   (**********************************************************************)
   (* Create the menu bar                                                *)
   (**********************************************************************)
   let menuBar =
-    GMenu.menu_bar border_width:2 packing:(toplevelVBox#pack expand:false) ()
+    GMenu.menu_bar ~border_width:2 ~packing:(toplevelVBox#pack ~expand:false) ()
   in
-  let menus = new GMenu.factory menuBar accel_mod:[] in
+  let menus = new GMenu.factory menuBar ~accel_modi:[] in
   let accel_group = menus#accel_group in
   toplevelWindow#add_accel_group accel_group;
-  let add_submenu :label =
-    new GMenu.factory (menus#add_submenu label) :accel_group accel_mod:[]
+  let add_submenu ~label =
+    new GMenu.factory (menus#add_submenu label) ~accel_group ~accel_modi:[]
   in
   
   (**********************************************************************)
   (* Create the menus                                                   *)
   (**********************************************************************)
-  let fileMenu = add_submenu label:"File"
-  and actionsMenu = add_submenu label:"Actions"
-  and ignoreMenu = add_submenu label:"Ignore"
-  and helpMenu = add_submenu label:"Help" in
+  let fileMenu = add_submenu ~label:"File"
+  and actionsMenu = add_submenu ~label:"Actions"
+  and ignoreMenu = add_submenu ~label:"Ignore"
+  and helpMenu = add_submenu ~label:"Help" in
 
   (**********************************************************************)
   (* Create the main window                                             *)
   (**********************************************************************)
 
   let mainWindow =
-    let box = GPack.hbox height:(Prefs.readPref mainWindowHeight * 12)
-        packing:toplevelVBox#add () in
+    let box = GPack.hbox ~height:(Prefs.readPref mainWindowHeight * 12)
+        ~packing:toplevelVBox#add () in
     let sb = GRange.scrollbar `VERTICAL
-	packing:(box#pack from:`END expand:false) () in
-    GList.clist columns:5 vadjustment:sb#adjustment
-      titles_show:true packing:box#add ()
+	~packing:(box#pack ~from:`END ~expand:false) () in
+    GList.clist ~columns:5 ~vadjustment:sb#adjustment
+      ~titles_show:true ~packing:box#add ()
   in
   mainWindow#misc#grab_focus ();
   Array.iteri [|100; 40; 100; 40; 200|]
-    f:(fun i data -> mainWindow#set_column i width:data);
+    ~f:(fun i data -> mainWindow#set_column i ~width:data);
   let displayTitle() =
     let s = roots2string () in
-    Array.iteri f:(fun i data -> mainWindow#set_column i title:data)
-      [| String.sub pos:0 len:12 s; "Action";
-	 String.sub pos:15 len:12 s; "Status"; "Path" |]
+    Array.iteri ~f:(fun i data -> mainWindow#set_column i ~title:data)
+      [| String.sub ~pos:0 ~len:12 s; "Action";
+	 String.sub ~pos:15 ~len:12 s; "Status"; "Path" |]
   in
 
   (**********************************************************************)
@@ -462,16 +462,16 @@ let start _ =
   (**********************************************************************)
 
   let detailsWindow =
-    GEdit.text editable:false height:(3*charH) width:(charW*96)
-      packing:(toplevelVBox#pack expand:false) () in
+    GEdit.text ~editable:false ~height:(3*charH) ~width:(charW*96)
+      ~packing:(toplevelVBox#pack ~expand:false) () in
   let displayDetails thePathString newtext =
     detailsWindow#freeze ();
     (* Delete the current text *)
-    detailsWindow#delete_text start:0 end:detailsWindow#length;
+    detailsWindow#delete_text ~start:0 ~stop:detailsWindow#length;
     (* Insert the new text *)
-    detailsWindow#insert thePathString font:(Lazy.force fontMonospaceBold);
+    detailsWindow#insert thePathString ~font:(Lazy.force fontMonospaceBold);
     detailsWindow#insert "\n";
-    detailsWindow#insert newtext font:(Lazy.force fontMonospaceMedium);
+    detailsWindow#insert newtext ~font:(Lazy.force fontMonospaceMedium);
     (* Display text *)
     detailsWindow#thaw ()
   in
@@ -481,7 +481,7 @@ let start _ =
   (**********************************************************************)
 
   let traceWindow =
-    new scrolled_text editable:false packing:toplevelVBox#add show:false () in
+    new scrolled_text ~editable:false ~packing:toplevelVBox#add ~show:false () in
 
   if Prefs.readPref Trace.printTrace then traceWindow#show ();
 
@@ -503,7 +503,7 @@ let start _ =
   let traceContinue m = Trace.message m in
 
   let deleteTraceWindow() =
-    traceWindow#text#delete_text start:0 end:traceWindow#text#length
+    traceWindow#text#delete_text ~start:0 ~stop:traceWindow#text#length
   in
 
   (**********************************************************************)
@@ -511,8 +511,8 @@ let start _ =
   (**********************************************************************)
 
   let statusWindow =
-    GMisc.statusbar packing:(toplevelVBox#pack expand:false) () in
-  let statusContext = statusWindow#new_context name:"status" in
+    GMisc.statusbar ~packing:(toplevelVBox#pack ~expand:false) () in
+  let statusContext = statusWindow#new_context ~name:"status" in
   ignore (statusContext#push "");
 
   let displayStatus s1 s2 =
@@ -539,8 +539,8 @@ let start _ =
 
   let select i = mainWindow#select i 0 in
 
-  mainWindow#connect#select_row callback:
-    begin fun :row :column :event ->
+  mainWindow#connect#select_row ~callback:
+    begin fun ~row ~column ~event ->
       try
 	let a = derefSome theState in
 	current := Some row;
@@ -625,12 +625,12 @@ let start _ =
     let oldPath =
       if i = 0 then emptypath else theSIArray.(i-1).ri.path in
     let s = reconItem2string oldPath theSIArray.(i).ri (resultof i) in
-    mainWindow#insert row:i
-      [ String.sub pos:0 len:8 s;
-	String.sub pos:9 len:5 s;
-	String.sub pos:15 len:8 s;
-	String.sub pos:24 len:8 s;
-	String.sub pos:33 len:(String.length s - 33) s ];
+    mainWindow#insert ~row:i
+      [ String.sub ~pos:0 ~len:8 s;
+	String.sub ~pos:9 ~len:5 s;
+	String.sub ~pos:15 ~len:8 s;
+	String.sub ~pos:24 ~len:8 s;
+	String.sub ~pos:33 ~len:(String.length s - 33) s ];
     ()
   in
 
@@ -656,7 +656,7 @@ let start _ =
      end experimental *)
 
   let redisplay i =
-    mainWindow#remove row:i;
+    mainWindow#remove ~row:i;
     (* Insert the new text *)
     try insert i with DerefSome -> ()
   in
@@ -674,14 +674,14 @@ let start _ =
           not (Pred.test Globals.ignore (path2string sI.ri.path)) in
         begin match !current with
           None ->
-            let theSIList = Safelist.filter f:keep theSIList in
+            let theSIList = Safelist.filter ~f:keep theSIList in
             let theSIArray = Array.of_list theSIList in
             theState := Some theSIArray
         | Some index ->
             deselect ();
             let (theSIList,newCurrent) =
               if index < 0 then
-                (Safelist.filter f:keep theSIList,None)
+                (Safelist.filter ~f:keep theSIList,None)
               else
                 try
                   let beforeIndex,atIndex,afterIndex =
@@ -692,8 +692,8 @@ let start _ =
                           if i=index then (Safelist.rev before,hd,tl)
                           else loop (i+1) (hd::before,tl) in
                     loop 0 ([],theSIList) in
-                  let before = Safelist.filter f:keep beforeIndex in
-                  let after = Safelist.filter f:keep afterIndex in
+                  let before = Safelist.filter ~f:keep beforeIndex in
+                  let after = Safelist.filter ~f:keep afterIndex in
                   if keep atIndex then
                     (Safelist.append before (atIndex::after),
                      Some(Safelist.length before))
@@ -703,7 +703,7 @@ let start _ =
                     (before,Some(Safelist.length before - 1))
                   else ([],None)
                 with Transient "ignoreAndRedisplay" ->
-                  (Safelist.filter f:keep theSIList,None) in
+                  (Safelist.filter ~f:keep theSIList,None) in
             let theSIArray = Array.of_list theSIList in
             current := newCurrent;
             theState := Some theSIArray
@@ -743,7 +743,7 @@ let start _ =
           theState :=
             Some(Array.of_list
                    (Safelist.map reconItemList
-                      f:(fun ri -> { ri = ri; whatHappened = None })))
+                      ~f:(fun ri -> { ri = ri; whatHappened = None })))
 	end;
         displayMain()
       end
@@ -776,15 +776,15 @@ let start _ =
   (* are the functions associated two the two buttons                   *)
   (**********************************************************************)
 
-  let yesOrNo :title :message yes:yesFunction no:noFunction =
+  let yesOrNo ~title ~message ~yes:yesFunction ~no:noFunction =
     (* Create a new toplevel window *)
-    let t = GWindow.dialog :title wm_name:title modal:true () in
-    let theLabel = GMisc.label text:message
-	packing:(t#vbox#pack expand:false padding:4) () in
-    let yes = GButton.button label:"Yes" packing:t#action_area#add ()
-    and no = GButton.button label:"No" packing:t#action_area#add () in
-    yes#connect#clicked callback:(fun () -> t#destroy(); yesFunction());
-    no#connect#clicked callback:(fun () -> t#destroy(); noFunction());
+    let t = GWindow.dialog ~title ~wm_name:title ~modal:true () in
+    let theLabel = GMisc.label ~text:message
+	~packing:(t#vbox#pack ~expand:false ~padding:4) () in
+    let yes = GButton.button ~label:"Yes" ~packing:t#action_area#add ()
+    and no = GButton.button ~label:"No" ~packing:t#action_area#add () in
+    yes#connect#clicked ~callback:(fun () -> t#destroy(); yesFunction());
+    no#connect#clicked ~callback:(fun () -> t#destroy(); noFunction());
     t#show ()
   in
 
@@ -794,35 +794,35 @@ let start _ =
 
   let ignoreDialog() =
     begin
-      let t = GWindow.dialog title: "Ignore" wm_name: "Ignore" () in
-      let hbox = GPack.hbox packing:t#vbox#add () in
+      let t = GWindow.dialog ~title: "Ignore" ~wm_name: "Ignore" () in
+      let hbox = GPack.hbox ~packing:t#vbox#add () in
       let sb = GRange.scrollbar `VERTICAL
-	  packing:(hbox#pack from:`END expand:false) () in
+	  ~packing:(hbox#pack ~from:`END ~expand:false) () in
       let regExpWindow =
-	GList.clist columns:1 titles_show:false packing:hbox#add
-	  vadjustment:sb#adjustment width:400 height:150 () in
+	GList.clist ~columns:1 ~titles_show:false ~packing:hbox#add
+	  ~vadjustment:sb#adjustment ~width:400 ~height:150 () in
 
       (* Local copy of the regular expressions; the global copy will
          not be changed until the Apply button is pressed *)
       let theRegexps = Pred.extern Globals.ignore in
-      Safelist.iter theRegexps f:(fun r -> ignore (regExpWindow#append [r]));
+      Safelist.iter theRegexps ~f:(fun r -> ignore (regExpWindow#append [r]));
       let maybeGettingBigger = ref false in
       let maybeGettingSmaller = ref false in
       let selectedRow = ref None in
-      regExpWindow#connect#select_row callback:
-	begin fun :row :column :event ->
+      regExpWindow#connect#select_row ~callback:
+	begin fun ~row ~column ~event ->
 	  selectedRow := Some row
 	end;
-      regExpWindow#connect#unselect_row callback:
-	begin fun :row :column :event ->
+      regExpWindow#connect#unselect_row ~callback:
+	begin fun ~row ~column ~event ->
 	  selectedRow := None
 	end;
 
       (* Configure the add frame *)
-      let hbox = GPack.hbox spacing:4 packing:(t#vbox#pack expand:false) () in
-      GMisc.label text: "Regular expression:"
-	packing:(hbox#pack expand:false padding:2) ();
-      let entry = GEdit.entry packing:hbox#add () in
+      let hbox = GPack.hbox ~spacing:4 ~packing:(t#vbox#pack ~expand:false) () in
+      GMisc.label ~text: "Regular expression:"
+	~packing:(hbox#pack ~expand:false ~padding:2) ();
+      let entry = GEdit.entry ~packing:hbox#add () in
       let add () =
         let theRegExp = entry#text in
         if theRegExp<>"" then begin
@@ -832,10 +832,10 @@ let start _ =
           maybeGettingSmaller := true
 	end
       in
-      let addButton = GButton.button label:"Add"
-	  packing:(hbox#pack expand:false) () in
-      addButton#connect#clicked callback:add;
-      entry#connect#activate callback:add;
+      let addButton = GButton.button ~label:"Add"
+	  ~packing:(hbox#pack ~expand:false) () in
+      addButton#connect#clicked ~callback:add;
+      entry#connect#activate ~callback:add;
       entry#misc#grab_focus ();
 
       (* Configure the delete button *)
@@ -846,14 +846,14 @@ let start _ =
           maybeGettingBigger := true;
           (* Delete xth regexp *)
 	  regExpWindow#unselect_all ();
-	  regExpWindow#remove row:x
+	  regExpWindow#remove ~row:x
         with DerefSome -> ()
       in
-      let deleteButton = GButton.button label:"Delete"
-	  packing:(hbox#pack expand:false) () in
-      deleteButton#connect#clicked callback:delete;
+      let deleteButton = GButton.button ~label:"Delete"
+	  ~packing:(hbox#pack ~expand:false) () in
+      deleteButton#connect#clicked ~callback:delete;
 
-      regExpWindow#connect#after#event#key_press callback:
+      regExpWindow#connect#after#event#key_press ~callback:
 	begin fun ev ->
 	  let key = GdkEvent.Key.keyval ev in
 	  if key = _Up || key = _Down || key = _Prior || key = _Next ||
@@ -885,14 +885,14 @@ let start _ =
 
       (* Install the main buttons *)
       let applyButton =
-	GButton.button label:"Apply" packing:t#action_area#add () in
-      applyButton#connect#clicked callback:refresh;
+	GButton.button ~label:"Apply" ~packing:t#action_area#add () in
+      applyButton#connect#clicked ~callback:refresh;
       let cancelButton =
-	GButton.button label:"Cancel" packing:t#action_area#add () in
-      cancelButton#connect#clicked callback:t#destroy;
+	GButton.button ~label:"Cancel" ~packing:t#action_area#add () in
+      cancelButton#connect#clicked ~callback:t#destroy;
       let okButton =
-	GButton.button label:"OK" packing:t#action_area#add () in
-      okButton#connect#clicked callback:(fun () -> refresh(); t#destroy ());
+	GButton.button ~label:"OK" ~packing:t#action_area#add () in
+      okButton#connect#clicked ~callback:(fun () -> refresh(); t#destroy ());
       t#show ()
     end in
 
@@ -904,10 +904,10 @@ let start _ =
     if not !busy then begin
      Remote.shutDown(); Main.quit ()
     end else
-      yesOrNo title:"Premature exit"
-        message:"Unison is working, exit anyway ?"
-        yes:(fun () -> Remote.shutDown(); Main.quit ())
-        no:(fun () -> ())
+      yesOrNo ~title:"Premature exit"
+        ~message:"Unison is working, exit anyway ?"
+        ~yes:(fun () -> Remote.shutDown(); Main.quit ())
+        ~no:(fun () -> ())
   in
 
   (**********************************************************************)
@@ -916,10 +916,10 @@ let start _ =
   let addDocSection (shortname, (name, docstr)) =
     if shortname<>"" && name<>"" then
       ignore (helpMenu#add_item name
-		callback:(fun () -> messageBox title:name docstr))
+		~callback:(fun () -> messageBox ~title:name docstr))
   in
 
-  Safelist.iter f:addDocSection Strings.docs;
+  Safelist.iter ~f:addDocSection Strings.docs;
 
   (**********************************************************************)
   (* Add entries to the Ignore menu                                     *)
@@ -942,14 +942,14 @@ let start _ =
     | Failure "nameRegExp"
     | Failure "extRegExp" -> () in
 
-  ignoreMenu#add_item "Ignore this file permanently" key:_i
-    callback:(fun () -> getLock (fun () -> addRegExpByPath ignorePath));
+  ignoreMenu#add_item "Ignore this file permanently" ~key:_i
+    ~callback:(fun () -> getLock (fun () -> addRegExpByPath ignorePath));
 
-  ignoreMenu#add_item "Ignore files with this extension" key:_E
-    callback:(fun () -> getLock (fun () -> addRegExpByPath ignoreExt));
+  ignoreMenu#add_item "Ignore files with this extension" ~key:_E
+    ~callback:(fun () -> getLock (fun () -> addRegExpByPath ignoreExt));
 
-  ignoreMenu#add_item "Ignore files with this name" key:_N
-    callback:(fun () -> getLock (fun () -> addRegExpByPath ignoreName));
+  ignoreMenu#add_item "Ignore files with this name" ~key:_N
+    ~callback:(fun () -> getLock (fun () -> addRegExpByPath ignoreName));
 
 (* This is currently broken
   ignoreMenu#add_item "Edit ignore patterns" callback:
@@ -1003,15 +1003,15 @@ let start _ =
   (**********************************************************************)
 
   let actionBar = GButton.toolbar
-      orientation:`HORIZONTAL tooltips:true space_size:10
-      packing:(toplevelVBox#pack expand:false) () in
+      ~orientation:`HORIZONTAL ~tooltips:true ~space_size:10
+      ~packing:(toplevelVBox#pack ~expand:false) () in
 
   (**********************************************************************)
   (*         CREATE AND CONFIGURE THE QUIT BUTTON                       *)
   (**********************************************************************)
 
   actionBar#insert_space ();
-  let _ = actionBar#insert_button text:"Quit" callback:safeExit in
+  let _ = actionBar#insert_button ~text:"Quit" ~callback:safeExit in
 
   (**********************************************************************)
   (*         CREATE AND CONFIGURE THE PROCEED BUTTON                    *)
@@ -1019,9 +1019,9 @@ let start _ =
 
   if not (Prefs.readPref batch) then begin
     actionBar#insert_space ();
-    actionBar#insert_button text:"Proceed"
-      tooltip:"Proceed with displayed actions"
-      callback:(fun () -> getLock synchronize) ();
+    actionBar#insert_button ~text:"Proceed"
+      ~tooltip:"Proceed with displayed actions"
+      ~callback:(fun () -> getLock synchronize) ();
     ()
   end; 
 
@@ -1037,7 +1037,7 @@ let start _ =
       (Prefs.setPref batch Prefs.TempSetting false; synchronize())
   in
   actionBar#insert_space ();
-  actionBar#insert_button text:detectCmdName callback:detectCmd ();
+  actionBar#insert_button ~text:detectCmdName ~callback:detectCmd ();
 
   (**********************************************************************)
   (* Buttons for <--, -->, Skip                                         *)
@@ -1098,7 +1098,7 @@ let start _ =
           let a = derefSome theState in
           let theSI = a.(i) in
           showDiffs a.(i).ri
-            (fun title text -> messageBox :title text)
+            (fun title text -> messageBox ~title text)
             Trace.status
 	with DerefSome -> ()
       end
@@ -1106,24 +1106,24 @@ let start _ =
 
   if not(Prefs.readPref batch) && Sys.os_type <> "Win32" then begin
     actionBar#insert_space ();
-    actionBar#insert_button text:"<--" callback:leftAction ();
+    actionBar#insert_button ~text:"<--" ~callback:leftAction ();
     actionBar#insert_space ();
-    actionBar#insert_button text:"-->" callback:rightAction ();
+    actionBar#insert_button ~text:"-->" ~callback:rightAction ();
     actionBar#insert_space ();
-    actionBar#insert_button text:"Skip" callback:questionAction ();
+    actionBar#insert_button ~text:"Skip" ~callback:questionAction ();
     actionBar#insert_space ();
-    actionBar#insert_button text:"Diff" callback:diffCmd ();
+    actionBar#insert_button ~text:"Diff" ~callback:diffCmd ();
     ()
   end;
 
   if Sys.os_type <> "Win32" then
-    ignore (fileMenu#add_item "Show diffs" key:_d callback:diffCmd);
+    ignore (fileMenu#add_item "Show diffs" ~key:_d ~callback:diffCmd);
 
   (**********************************************************************)
   (* Configure keyboard commands                                        *)
   (**********************************************************************)
 
-  mainWindow#connect#after#event#key_press callback:
+  mainWindow#connect#after#event#key_press ~callback:
     begin fun ev ->
       let key = GdkEvent.Key.keyval ev in
       if key = _Up || key = _Down || key = _Prior || key = _Next ||
@@ -1146,38 +1146,38 @@ let start _ =
       else (Printf.sprintf "from %s to %s"
               (root2hostname root1) (root2hostname root2)) in
     let left =
-      actionsMenu#add_item ("Propagate " ^ descr) key:_greater
-        callback:rightAction in
-    left#add_accelerator _greater mod:[`SHIFT] group:accel_group;
+      actionsMenu#add_item ("Propagate " ^ descr) ~key:_greater
+        ~callback:rightAction in
+    left#add_accelerator _greater ~modi:[`SHIFT] ~group:accel_group;
 
     let descl =
       if root1=root2 then "right to left"
       else (Printf.sprintf "from %s to %s"
               (root2hostname root2) (root2hostname root1)) in
     let right =
-      actionsMenu#add_item ("Propagate " ^ descl) key:_less
-        callback:leftAction in
-    right#add_accelerator _less mod:[`SHIFT] group:accel_group;
+      actionsMenu#add_item ("Propagate " ^ descl) ~key:_less
+        ~callback:leftAction in
+    right#add_accelerator _less ~modi:[`SHIFT] ~group:accel_group;
 
-    actionsMenu#add_item "Do not propagate changes" key:_slash
-      callback:questionAction;
+    actionsMenu#add_item "Do not propagate changes" ~key:_slash
+      ~callback:questionAction;
     ()
     );
 
   (**********************************************************************)
   (* Add commands to the File menu                                      *)
   (**********************************************************************)
-  fileMenu#add_item "Proceed" key:_g
-    callback:(fun () -> getLock synchronize);
+  fileMenu#add_item "Proceed" ~key:_g
+    ~callback:(fun () -> getLock synchronize);
 
-  fileMenu#add_item detectCmdName key:_r callback:detectCmd;
+  fileMenu#add_item detectCmdName ~key:_r ~callback:detectCmd;
 
   fileMenu#add_check_item "Make backups"
-    active:(Prefs.readPref Transport.backups)
-    callback:(fun b -> Prefs.setPref Transport.backups Prefs.TempSetting b);
+    ~active:(Prefs.readPref Transport.backups)
+    ~callback:(fun b -> Prefs.setPref Transport.backups Prefs.TempSetting b);
 
-  fileMenu#add_check_item "Trace" active:(Prefs.readPref Trace.printTrace)
-    callback:
+  fileMenu#add_check_item "Trace" ~active:(Prefs.readPref Trace.printTrace)
+    ~callback:
     begin fun b ->
       Prefs.setPref Trace.printTrace Prefs.TempSetting b;
       if b then traceWindow#misc#show ()
@@ -1200,7 +1200,7 @@ let start _ =
     end;
 *)
 
-  fileMenu#add_item "Exit" key:_q callback:safeExit;
+  fileMenu#add_item "Exit" ~key:_q ~callback:safeExit;
 
   (**********************************************************************)
   (* Ask the Remote module to call us back at regular intervals during  *)
@@ -1215,7 +1215,7 @@ let start _ =
   (* a lot of time to detect updates.                                   *)
   (**********************************************************************)
   ignore(Timeout.add 1   (* = 1 millisecond *)
-           callback:(fun () ->
+           ~callback:(fun () ->
              begin  try
                let successful =
                  Uicommon.uiInit
@@ -1238,9 +1238,9 @@ let start _ =
   (**********************************************************************)
   (* Display the ui                                                     *)
   (**********************************************************************)
-  toplevelWindow#connect#destroy callback:safeExit;
+  toplevelWindow#connect#destroy ~callback:safeExit;
   toplevelWindow#show ();
-  Util.warnPrinter := Some (fun message -> warnBox title:"Warning" :message);
+  Util.warnPrinter := Some (fun message -> warnBox ~title:"Warning" ~message);
   displayMessage "Starting up...";
   Main.main ()
 
