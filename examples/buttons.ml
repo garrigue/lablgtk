@@ -15,11 +15,18 @@ let xpm_label_box ~(window : #GContainer.container)
 let main () =
   let window = GWindow.window ~title:"Pixmap'd Buttons!" ~border_width:10 () in
   window#connect#destroy ~callback:Main.quit;
-  let button = GButton.button ~packing:window#add () in
+  let hbox = GPack.hbox ~packing:window#add () in
+  let button = GButton.button ~packing:(hbox#pack ~padding:5) () in
   button#connect#clicked ~callback:
     (fun () -> prerr_endline "Hello again - cool button was pressed");
   xpm_label_box ~window ~file:"test.xpm" ~text:"cool button"
     ~packing:button#add ();
+  let button = GButton.button ~mnemonic:"_Coucou" ~packing:(hbox#pack ~padding:5) () in
+  button#connect#clicked ~callback:
+    (fun () -> prerr_endline "Coucou");
+  let button = GButton.button ~stock:`HOME ~packing:(hbox#pack ~padding:5) () in
+  button#connect#clicked ~callback:
+    (fun () -> prerr_endline "Stock buttons look nice");
   window#show ();
   Main.main ()
 
