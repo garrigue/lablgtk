@@ -18,7 +18,8 @@ type gdkpixbuferror =
   | ERROR_UNSUPPORTED_OPERATION
   | ERROR_FAILED
 exception GdkPixbufError of gdkpixbuferror * string
-let () = Callback.register_exception "gdk_pixbuf_error" (GdkPixbufError (ERROR_CORRUPT_IMAGE, ""))
+external _init : unit -> unit = "ml_gdkpixbuf_init"
+let () = _init () ; Callback.register_exception "gdk_pixbuf_error" (GdkPixbufError (ERROR_CORRUPT_IMAGE, ""))
 
 (* Accessors *)
 

@@ -17,6 +17,13 @@
 
 #include "glib_tags.c"
 
+CAMLprim value ml_glib_init(value unit)
+{
+  ml_register_exn_map (G_CONVERT_ERROR,
+		       "g_convert_error");
+  return Val_unit;
+}
+
 /* Not from glib! */
 ML_2(setlocale, Locale_category_val, String_option_val, Val_optstring)
 
@@ -84,24 +91,86 @@ CAMLprim value ml_g_set_print_handler (value clos)
 }
 
 /* Error handling */
+static GSList *exn_map;
 
-void ml_raise_gerror(GError *err)
+struct exn_data {
+  GQuark domain;
+  char *caml_exn_name;
+  value *caml_exn;
+};
+
+void ml_register_exn_map (GQuark domain, char *caml_name)
 {
-  static value * exn = NULL;
-  value msg;
-  if (exn == NULL)
-      exn = caml_named_value ("gerror");
+  struct exn_data *exn_data = stat_alloc (sizeof *exn_data);
+  exn_data->domain = domain;
+  exn_data->caml_exn_name = caml_name;
+  exn_data->caml_exn = NULL;
+  exn_map = g_slist_prepend (exn_map, exn_data);
+}
+
+static value *lookup_exn_map (GQuark domain)
+{
+  GSList *l = exn_map;
+  struct exn_data *exn_data;
+  for (l = exn_map; l; l=l->next) {
+    exn_data = l->data;
+    if (exn_data->domain == domain) {
+      if (exn_data->caml_exn == NULL)
+	exn_data->caml_exn = caml_named_value (exn_data->caml_exn_name);
+      return exn_data->caml_exn;
+    }
+  }
+  return NULL;
+}
+
+static void ml_raise_gerror_exn(GError *, value *) Noreturn;
+static void ml_raise_gerror_exn(GError *err, value *exn)
+{
+  CAMLparam0();
+  CAMLlocal2(b, msg);
+  g_assert (err && exn);
   msg = copy_string(err->message);
-  g_error_free(err);
+  b = alloc_small (3, 0);
+  Field (b, 0) = *exn;
+  Field (b, 1) = Val_int(err->code);
+  Field (b, 2) = msg;
+  g_error_free (err);
+  local_roots = caml__frame; /* gcc moans with CAMLreturn */
+  mlraise(b);
+}
+
+static void ml_raise_generic_gerror (GError *) Noreturn;
+static void ml_raise_generic_gerror (GError *err)
+{
+  static value *exn;
+  value msg;
+  if (exn == NULL) {
+    exn = caml_named_value ("gerror");
+    if (exn == NULL)
+      failwith ("gerror");
+  }
+  msg = copy_string (err->message);
+  g_error_free (err);
   raise_with_arg (*exn, msg);
 }
 
-void ml_g_log_func(const gchar *log_domain,
-                   GLogLevelFlags log_level,
-                   const gchar *message,
-                   gpointer data)
+void ml_raise_gerror(GError *err)
 {
-    value *clos_p = (value*)data;
+  value *caml_exn;
+  g_assert (err);
+  caml_exn = lookup_exn_map (err->domain);
+  if (caml_exn)
+    ml_raise_gerror_exn (err, caml_exn);
+  else 
+    ml_raise_generic_gerror (err);
+}
+
+static void ml_g_log_func(const gchar *log_domain,
+			  GLogLevelFlags log_level,
+			  const gchar *message,
+			  gpointer data)
+{
+    value *clos_p = data;
     callback2(*clos_p, Val_int(log_level), Val_string(message));
 }
 
@@ -146,7 +215,7 @@ ML_1 (g_main_is_running, GMainLoop_val, Val_bool)
 ML_1 (g_main_quit, GMainLoop_val, Unit)
 ML_1 (g_main_destroy, GMainLoop_val, Unit)
 
-gboolean ml_g_source_func (gpointer data)
+static gboolean ml_g_source_func (gpointer data)
 {
     return Bool_val (callback (*(value*)data, Val_unit));
 }
@@ -184,16 +253,11 @@ CAMLprim value ml_g_io_channel_unix_new(value v)
 {  invalid_argument("Glib.channel_unix_new: not implemented"); return 1; }
 #endif
 
-gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c, gpointer data)
+static gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c, gpointer data)
 {
     value *clos_p = (value*)data;
     return Bool_val(callback(*clos_p, Val_unit));
 }
-void ml_g_destroy_notify(gpointer data)
-{
-    ml_global_root_destroy(data);
-}
-
 CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
 {
     g_io_add_watch_full(GIOChannel_val(io),
@@ -201,7 +265,7 @@ CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
                         Io_condition_val(cond),
                         ml_g_io_channel_watch,
                         ml_global_root_new(clos),
-                        ml_g_destroy_notify);
+                        ml_global_root_destroy);
     return Val_unit;
 }
 

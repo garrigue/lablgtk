@@ -16,41 +16,16 @@
 
 CAMLprim value ml_gtkfile_init(value unit)
 {
-  GType t =
 #ifdef HASGTK24
+  GType t =
     gtk_file_chooser_dialog_get_type () +
     gtk_file_chooser_widget_get_type ();
-#else
-    0;
-#endif
+  ml_register_exn_map (GTK_FILE_CHOOSER_ERROR, 
+		       "gtk_file_chooser_error");
   return Val_GType(t);
-}
-
-static void ml_raise_gtk_file_chooser_error(GError *) Noreturn;
-static void ml_raise_gtk_file_chooser_error(GError *err)
-{
-  static value *exn = NULL;
-#ifdef HASGTK24
-  if(err && err->domain == GTK_FILE_CHOOSER_ERROR) {
-    if(exn == NULL)
-      exn = caml_named_value("gtk_file_chooser_error");
-    if(exn == NULL)
-      ml_raise_gerror(err);
-    {
-      value b = 0, msg = 0;
-      Begin_roots2(b, msg)
-	msg = copy_string(err->message);
-        b = alloc_small(3, 0);
-        Field(b, 0) = *exn;
-        Field(b, 1) = Val_int(err->code);
-        Field(b, 2) = msg;
-        g_error_free(err);
-      End_roots();
-      mlraise(b);
-    }
-  }
+#else
+  return Val_unit;
 #endif
-  ml_raise_gerror(err);
 }
 
 #ifdef HASGTK24
@@ -136,7 +111,7 @@ CAMLprim value ml_gtk_file_chooser_add_shortcut_folder(value w, value f)
   GError *err = NULL;
   gtk_file_chooser_add_shortcut_folder(GtkFileChooser_val(w), 
 				       String_val(f), &err);
-  if (err) ml_raise_gtk_file_chooser_error(err);
+  if (err) ml_raise_gerror(err);
   return Val_unit;
 }
 CAMLprim value ml_gtk_file_chooser_remove_shortcut_folder(value w, value f)
@@ -144,7 +119,7 @@ CAMLprim value ml_gtk_file_chooser_remove_shortcut_folder(value w, value f)
   GError *err = NULL;
   gtk_file_chooser_remove_shortcut_folder(GtkFileChooser_val(w), 
 				       String_val(f), &err);
-  if (err) ml_raise_gtk_file_chooser_error(err);
+  if (err) ml_raise_gerror(err);
   return Val_unit;
 }
 ML_1 (gtk_file_chooser_list_shortcut_folders, GtkFileChooser_val, string_list_of_GSList)
@@ -153,7 +128,7 @@ CAMLprim value ml_gtk_file_chooser_add_shortcut_folder_uri(value w, value f)
   GError *err = NULL;
   gtk_file_chooser_add_shortcut_folder_uri(GtkFileChooser_val(w), 
 					   String_val(f), &err);
-  if (err) ml_raise_gtk_file_chooser_error(err);
+  if (err) ml_raise_gerror(err);
   return Val_unit;
 }
 CAMLprim value ml_gtk_file_chooser_remove_shortcut_folder_uri(value w, value f)
@@ -161,7 +136,7 @@ CAMLprim value ml_gtk_file_chooser_remove_shortcut_folder_uri(value w, value f)
   GError *err = NULL;
   gtk_file_chooser_remove_shortcut_folder_uri(GtkFileChooser_val(w), 
 					      String_val(f), &err);
-  if (err) ml_raise_gtk_file_chooser_error(err);
+  if (err) ml_raise_gerror(err);
   return Val_unit;
 }
 ML_1 (gtk_file_chooser_list_shortcut_folder_uris, GtkFileChooser_val, string_list_of_GSList)
