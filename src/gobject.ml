@@ -243,7 +243,7 @@ module Data = struct
   v
 end
 
-type ('a,'b) property = { name: string; classe: 'a; conv: 'b data_conv }
+type ('a,'b) property = { name: string; conv: 'b data_conv }
 
 type 'a param = string * unit data_set
 let dyn_param prop v =

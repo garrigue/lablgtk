@@ -43,7 +43,7 @@ type data_conv_get = [ `INT32 of int32 | data_get ]
 type 'a data_conv =
     { kind : data_kind; proj : data_conv_get -> 'a; inj : 'a -> unit data_set }
 
-type ('a, 'b) property = { name : string; classe : 'a; conv : 'b data_conv }
+type ('a, 'b) property = { name : string; conv : 'b data_conv }
 
 type fundamental_type =
   [ `INVALID | `NONE | `INTERFACE | `PARAM | base_data ]
