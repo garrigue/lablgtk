@@ -141,7 +141,7 @@ module SpinButton = struct
       = "ml_gtk_spin_button_set_digits"
   external get_value : [>`spinbutton] obj -> float
       = "ml_gtk_spin_button_get_value_as_float"
-  let get_value_as_int w = floor (get_value w +. 0.5)
+  let get_value_as_int w = truncate (floor (get_value w +. 0.5))
   external set_value : [>`spinbutton] obj -> float -> unit
       = "ml_gtk_spin_button_set_value"
   external set_update_policy :
