@@ -1,6 +1,6 @@
 $Id$
 
-2000.5.10
+2000.5.22
   * Incompatible!: Change default for ~expand in Box.pack,
     Pack.build_options, Table.build_options. Now defaults to false/`NONE.
     This means that all options default to false/`NONE, except ~show
