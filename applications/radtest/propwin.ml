@@ -98,13 +98,15 @@ let remove name =
     show_prop_box (GMisc.label ~text:"No widget selected" ())
   end
 
+(*
 let change_name oldname newname =
   let vb = Hashtbl.find widget_pool oldname in
   Hashtbl.remove widget_pool oldname;
   Hashtbl.add widget_pool ~key:newname ~data:vb
+*)
 
-let update (w : #tiwidget_base) =
+let update (w : #tiwidget_base) show_modif =
   let vb = prop_box w#proplist in
   Hashtbl.remove widget_pool w#name;
   Hashtbl.add widget_pool ~key:w#name ~data:vb;
-  if !shown_widget = w#name then show_prop_box vb
+  if show_modif && !shown_widget = w#name then show_prop_box vb
