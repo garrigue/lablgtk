@@ -74,6 +74,11 @@ CAMLprim value ml_alloc_GtkTreeIter(value v)
 ML_4 (gtk_tree_model_get_value, GtkTreeModel_val, GtkTreeIter_val, Int_val,
       GValue_val, Unit)
 
+Make_Val_final_pointer (GtkTreePath, Ignore, gtk_tree_path_free, 1)
+#define Val_GtkTreePath_copy(p) (Val_GtkTreePath(gtk_tree_path_copy(p)))
+#define GtkTreePath_val(val) ((GtkTreePath*)Pointer_val(val))
+ML_1 (gtk_tree_path_copy, GtkTreePath_val, Val_GtkTreePath)
+
 /* gtktreestore.h */
 
 #define GtkTreeStore_val(val) check_cast(GTK_TREE_STORE,val)
@@ -177,6 +182,51 @@ Unsupported(gtk_list_store_move_before)
 Unsupported(gtk_list_store_move_after)
 #endif
 
+/* GtkTreeSelection */
+
+#define GtkTreeSelection_val(val) check_cast(GTK_TREE_SELECTION,val)
+ML_2 (gtk_tree_selection_set_mode, GtkTreeSelection_val, Selection_mode_val,
+      Unit)
+ML_1 (gtk_tree_selection_get_mode, GtkTreeSelection_val, Val_selection_mode)
+static gboolean tree_selection_func(GtkTreeSelection *s, GtkTreeModel *m,
+                                    GtkTreePath *p, gboolean cs,
+                                    gpointer clos_p)
+{ return callback2(*(value*)clos_p, Val_GtkTreePath_copy(p), Val_bool(cs)); }
+CAMLprim value ml_gtk_tree_selection_set_select_function (value s, value clos)
+{
+  value *clos_p = ml_global_root_new(clos);
+  gtk_tree_selection_set_select_function (GtkTreeSelection_val(s),
+                                          tree_selection_func,
+                                          clos_p,
+                                          ml_global_root_destroy);
+  return Val_unit;
+}
+CAMLprim value ml_gtk_tree_selection_get_selected_rows (value s)
+{
+  return Val_GList_free (gtk_tree_selection_get_selected_rows
+                         (GtkTreeSelection_val(s), NULL),
+                         (value_in)Val_GtkTreePath);
+}
+ML_1 (gtk_tree_selection_count_selected_rows, GtkTreeSelection_val, Val_int)
+ML_2 (gtk_tree_selection_select_path, GtkTreeSelection_val, GtkTreePath_val,
+      Unit)
+ML_2 (gtk_tree_selection_unselect_path, GtkTreeSelection_val, GtkTreePath_val,
+      Unit)
+ML_2 (gtk_tree_selection_select_iter, GtkTreeSelection_val, GtkTreeIter_val,
+      Unit)
+ML_2 (gtk_tree_selection_unselect_iter, GtkTreeSelection_val, GtkTreeIter_val,
+      Unit)
+ML_2 (gtk_tree_selection_path_is_selected, GtkTreeSelection_val,
+      GtkTreePath_val, Val_bool)
+ML_2 (gtk_tree_selection_iter_is_selected, GtkTreeSelection_val,
+      GtkTreeIter_val, Val_bool)
+ML_1 (gtk_tree_selection_select_all, GtkTreeSelection_val, Unit)
+ML_1 (gtk_tree_selection_unselect_all, GtkTreeSelection_val, Unit)
+ML_3 (gtk_tree_selection_select_range, GtkTreeSelection_val, GtkTreePath_val,
+      GtkTreePath_val, Unit)
+ML_3 (gtk_tree_selection_unselect_range, GtkTreeSelection_val, GtkTreePath_val,
+      GtkTreePath_val, Unit)
+
 /* GtkCellRenderer{Text,...} */
 
 #define GtkCellRenderer_val(val) check_cast(GTK_CELL_RENDERER,val)
@@ -201,4 +251,5 @@ ML_0 (gtk_tree_view_new, Val_GtkWidget_sink)
 ML_1 (gtk_tree_view_new_with_model, GtkTreeModel_val, Val_GtkWidget_sink)
 ML_2 (gtk_tree_view_append_column, GtkTreeView_val, GtkTreeViewColumn_val,
       Val_int)
+ML_1 (gtk_tree_view_get_selection, GtkTreeView_val, Val_GtkWidget)
 
