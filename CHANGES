@@ -1,5 +1,8 @@
 $Id$
 
+2003.05.14 [Benjamin]
+ * Glib.Convert convert_with_fallback support
+
 2003.05.12 [Benjamin]
  * GtkData.AccelMap support
  * GtkImageMenuItem support

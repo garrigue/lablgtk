@@ -82,6 +82,9 @@ module Convert = struct
   external convert :
     string -> to_codeset:string -> from_codeset:string -> string
     = "ml_g_convert"
+  external convert_with_fallback :
+    ?fallback:string -> to_codeset:string -> from_codeset:string -> string -> string
+    = "ml_g_convert_with_fallback"
   external locale_from_utf8 : string -> string
     = "ml_g_locale_from_utf8"
   external locale_to_utf8 : string -> string
