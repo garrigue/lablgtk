@@ -1,48 +1,54 @@
 type items_properties = [ 
-  | `no_widget
-  | `no_fill_color
-  | `no_outline_color
-  | `no_font
-  | `no_text
-  | `no_bpath
-  | `no_pixbuf
-  | `size_pixels of bool
-  | `widget of GObj.widget
-  | `pixbuf of GdkPixbuf.pixbuf
-  | `width of float
-  | `height of float
-  | `bpath of GnomeCanvas.PathDef.t
-  | `anchor of Gtk.Tags.anchor_type
-  | `justification of Gtk.Tags.justification
-  | `cap_style of Gdk.GC.gdkCapStyle
-  | `join_style of Gdk.GC.gdkJoinStyle
-  | `smooth of bool
-  | `first_arrowhead of bool
-  | `last_arrowhead of bool
-  | `arrow_shape_a of float
-  | `arrow_shape_b of float
-  | `arrow_shape_c of float
-  | `points of float array
-  | `fill_color of string
-  | `fill_color_rgba of int32
-  | `fill_stipple of Gdk.bitmap
-  | `font of string
-  | `outline_color of string
-  | `size of int
-  | `text of string
-  | `clip of bool
-  | `clip_width of float
-  | `clip_height of float
-  | `x_offset of float
-  | `y_offset of float
-  | `width_units of float
-  | `width_pixels of int
-  | `x of float
-  | `x1 of float
-  | `x2 of float
-  | `y of float
-  | `y1 of float
-  | `y2 of float] 
+  | `NO_WIDGET
+  | `NO_FILL_COLOR
+  | `NO_OUTLINE_COLOR
+  | `NO_FONT
+  | `NO_TEXT
+  | `NO_BPATH
+  | `NO_PIXBUF
+  | `SIZE_PIXELS of bool
+  | `WIDGET of GObj.widget
+  | `PIXBUF of GdkPixbuf.pixbuf
+  | `WIDTH of float
+  | `HEIGHT of float
+  | `BPATH of GnomeCanvas.PathDef.t
+  | `ANCHOR of Gtk.Tags.anchor_type
+  | `JUSTIFICATION of Gtk.Tags.justification
+  | `CAP_STYLE of Gdk.GC.gdkCapStyle
+  | `JOIN_STYLE of Gdk.GC.gdkJoinStyle
+  | `SMOOTH of bool
+  | `FIRST_ARROWHEAD of bool
+  | `LAST_ARROWHEAD of bool
+  | `ARROW_SHAPE_A of float
+  | `ARROW_SHAPE_B of float
+  | `ARROW_SHAPE_C of float
+  | `POINTS of float array
+  | `FILL_COLOR of string
+  | `FILL_COLOR_RGBA of int32
+  | `FILL_STIPPLE of Gdk.bitmap
+  | `FONT of string
+  | `OUTLINE_COLOR of string
+  | `SIZE of int
+  | `TEXT of string
+  | `EDITABLE of bool
+  | `VISIBLE of bool
+  | `CURSOR_VISIBLE of bool| `CURSOR_BLINK of bool
+  | `GROW_HEIGHT of bool
+  | `LEFT_MARGIN of int
+  | `RIGHT_MARGIN of int
+  | `CLIP of bool
+  | `CLIP_WIDTH of float
+  | `CLIP_HEIGHT of float
+  | `X_OFFSET of float
+  | `Y_OFFSET of float
+  | `WIDTH_UNITS of float
+  | `WIDTH_PIXELS of int
+  | `X of float
+  | `X1 of float
+  | `X2 of float
+  | `Y of float
+  | `Y1 of float
+  | `Y2 of float] 
       
 val propertize : [< items_properties] -> string * Gobject.g_value
 
@@ -65,11 +71,11 @@ class ['a] item : 'b Gtk.obj ->
     method connect : item_signals
     method get_bounds : float array
     method grab : Gdk.Tags.event_mask list -> Gdk.cursor -> int32 -> unit
-    method grab_focus : unit
-    method hide : unit
+    method grab_focus : unit -> unit
+    method hide : unit -> unit
     method i2w : x:float -> y:float -> float * float
     method lower : int -> unit
-    method lower_to_bottom : unit
+    method lower_to_bottom : unit -> unit
     method move : x:float -> y:float -> unit
     method parent : GnomeCanvas.group Gobject.obj
     method canvas : GnomeCanvas.canvas Gobject.obj
@@ -77,11 +83,11 @@ class ['a] item : 'b Gtk.obj ->
     method affine_relative : float array -> unit
     method affine_absolute : float array -> unit
     method raise : int -> unit
-    method raise_to_top : unit
+    method raise_to_top : unit -> unit
     method reparent : GnomeCanvas.group Gobject.obj -> unit
     method set_raw : (string * Gobject.g_value) list -> unit
     method set : 'a list -> unit
-    method show : unit
+    method show : unit -> unit
     method ungrab : int32 -> unit
     method w2i : x:float -> y:float -> float * float
   end
@@ -94,14 +100,22 @@ class group : GnomeCanvas.group Gtk.obj ->
     method get_items : GnomeCanvas.item Gobject.obj list
   end
 
+class richtext : GnomeCanvas.richtext Gtk.obj ->
+  object
+    inherit [GnomeCanvas.Types.richtext_p] item
+    val obj : GnomeCanvas.richtext Gtk.obj
+    method copy_clipboard : unit -> unit
+    method cut_clipboard : unit -> unit
+    method paste_clipboard : unit -> unit
+    method get_buffer : GText.buffer
+  end
+
 class canvas : GnomeCanvas.canvas Gtk.obj ->
   object
-    (* inherit GObj.widget_full *)
     inherit GPack.layout
     val obj : GnomeCanvas.canvas Gtk.obj
     method aa : bool
     method c2w : cx:float -> cy:float -> float * float
-    (* method event : GObj.event_ops *)
     method get_center_scroll_region : bool
     method get_item_at : x:float -> y:float -> GnomeCanvas.item Gobject.obj
     method get_scroll_offsets : int * int
@@ -132,10 +146,6 @@ val canvas :
 val wrap_item : 
   [> GnomeCanvas.item] Gtk.obj -> ('a, 'p) GnomeCanvas.Types.t -> 'p item
 
-val item :
-  ('a, 'p) GnomeCanvas.Types.t ->
-  ?props:'p list -> #group -> 'p item
-
 val group : ?x:float -> ?y:float -> #group -> group
 
 type rect = GnomeCanvas.Types.re_p item
@@ -150,6 +160,8 @@ val ellipse :
 
 type text = GnomeCanvas.Types.text_p item
 val text :
+  ?x:float -> ?y:float -> ?text:string ->
+  ?font:string -> ?size:int -> ?anchor:Gtk.Tags.anchor_type ->
   ?props:GnomeCanvas.Types.text_p list ->
   #group -> text
 
@@ -160,6 +172,8 @@ val line :
 
 type bpath = GnomeCanvas.Types.bpath_p item
 val bpath :
+  ?bpath:GnomeCanvas.PathDef.t ->
+  ?fill_color:string ->
   ?props:GnomeCanvas.Types.bpath_p list ->
   #group -> bpath
 
@@ -183,5 +197,12 @@ val widget :
   ?width:float -> ?height:float ->
   ?props:GnomeCanvas.Types.widget_p list ->
   #group -> widget
-    
+
+val richtext :
+  ?x:float -> ?y:float ->
+  ?text:string ->
+  ?width:float -> ?height:float ->
+  ?props:GnomeCanvas.Types.richtext_p list ->
+  #group -> richtext
+
 val parent : 'a #item -> group

@@ -4,6 +4,7 @@ external register_types : unit -> Gobject.g_type array = "ml_gnome_canvas_regist
 type canvas = [Gtk.layout|`canvas]
 type item   = [`gtk|`canvasitem]
 type group  = [item|`canvasgroup] 
+type richtext = [item|`canvasrichtext]
 
 (* GnomeCanvas *)
 
@@ -52,34 +53,43 @@ end
 module Types : sig
   type ('a, 'b) t constraint 'a = [> `gtk|`canvasitem]
 
-  type group_p = [`x of float| `y of float]
-  type shape_p = [`fill_color of string| `outline_color of string
-                 | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
-                 | `width_units of float| `width_pixels of int
-		 | `cap_style of Gdk.GC.gdkCapStyle]
-  type re_p = [shape_p| `x1 of float| `y1 of float| `x2 of float| `y2 of float]
-  type text_p = [`x of float| `y of float| `text of string| `font of string
-                | `size of int| `fill_color of string
-                | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
-		| `clip of bool| `clip_width of float| `clip_height of float
-		| `x_offset of float| `y_offset of float
-		| `justification of Gtk.Tags.justification
-		| `anchor of Gtk.Tags.anchor_type]
-  type line_p = [`arrow_shape_a of float| `arrow_shape_b of float| `arrow_shape_c of float
-                | `fill_color of string| `width_units of float| `width_pixels of int
-                | `points of float array| `first_arrowhead of bool
-		| `last_arrowhead of bool| `smooth of bool
-                | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
-		| `cap_style of Gdk.GC.gdkCapStyle| `join_style of Gdk.GC.gdkJoinStyle]
-  type bpath_p = [shape_p| `bpath of PathDef.t]
-  type pixbuf_p = [`x of float| `y of float
-                  | `width of float|  `height of float
-		  | `anchor of Gtk.Tags.anchor_type| `pixbuf of GdkPixbuf.pixbuf]
-  type polygon_p = [shape_p| `points of float array]
-  type widget_p = [`x of float| `y of float
-                  | `width of float|  `height of float
-		  | `size_pixels of bool
-		  | `anchor of Gtk.Tags.anchor_type| `widget of GObj.widget]
+  type group_p = [`X of float| `Y of float]
+  type shape_p = [`FILL_COLOR of string| `OUTLINE_COLOR of string
+                 | `FILL_COLOR_RGBA of int32 | `FILL_STIPPLE of Gdk.bitmap
+                 | `WIDTH_UNITS of float| `WIDTH_PIXELS of int
+		 | `CAP_STYLE of Gdk.GC.gdkCapStyle]
+  type re_p = [shape_p| `X1 of float| `Y1 of float| `X2 of float| `Y2 of float]
+  type text_p = [`X of float| `Y of float| `TEXT of string| `FONT of string
+                | `SIZE of int| `FILL_COLOR of string
+                | `FILL_COLOR_RGBA of int32 | `FILL_STIPPLE of Gdk.bitmap
+		| `CLIP of bool| `CLIP_WIDTH of float| `CLIP_HEIGHT of float
+		| `X_OFFSET of float| `Y_OFFSET of float
+		| `JUSTIFICATION of Gtk.Tags.justification
+		| `ANCHOR of Gtk.Tags.anchor_type]
+  type line_p = [`ARROW_SHAPE_A of float| `ARROW_SHAPE_B of float| `ARROW_SHAPE_C of float
+                | `FILL_COLOR of string| `WIDTH_UNITS of float| `WIDTH_PIXELS of int
+                | `POINTS of float array| `FIRST_ARROWHEAD of bool
+		| `LAST_ARROWHEAD of bool| `SMOOTH of bool
+                | `FILL_COLOR_RGBA of int32 | `FILL_STIPPLE of Gdk.bitmap
+		| `CAP_STYLE of Gdk.GC.gdkCapStyle| `JOIN_STYLE of Gdk.GC.gdkJoinStyle]
+  type bpath_p = [shape_p| `BPATH of PathDef.t]
+  type pixbuf_p = [`X of float| `Y of float
+                  | `WIDTH of float|  `HEIGHT of float
+		  | `ANCHOR of Gtk.Tags.anchor_type| `PIXBUF of GdkPixbuf.pixbuf]
+  type polygon_p = [shape_p| `POINTS of float array]
+  type widget_p = [`X of float| `Y of float
+                  | `WIDTH of float|  `HEIGHT of float
+		  | `SIZE_PIXELS of bool
+		  | `ANCHOR of Gtk.Tags.anchor_type| `WIDGET of GObj.widget]
+  type richtext_p = [`X of float| `Y of float
+                    | `TEXT of string
+                    | `WIDTH of float|  `HEIGHT of float
+		    | `EDITABLE of bool | `VISIBLE of bool
+		    | `JUSTIFICATION of Gtk.Tags.justification
+		    | `ANCHOR of Gtk.Tags.anchor_type
+		    | `CURSOR_VISIBLE of bool| `CURSOR_BLINK of bool
+		    | `GROW_HEIGHT of bool
+		    | `LEFT_MARGIN of int| `RIGHT_MARGIN of int]
 
   val group : (group, group_p) t
   val rect : ([item|`canvasshape|`canvasRE|`canvasrect], re_p) t
@@ -90,6 +100,7 @@ module Types : sig
   val pixbuf : ([item|`canvaspixbuf], pixbuf_p) t
   val polygon : ([item|`canvasshape|`canvaspolygon], polygon_p) t
   val widget : ([item|`canvaswidget], widget_p) t
+  val richtext : (richtext, richtext_p) t
   val shape : ([item|`canvasshape], shape_p) t
   val rect_ellipse : ([item|`canvasshape|`canvasRE], re_p) t
 
@@ -100,34 +111,43 @@ end =
   struct
   type ('a, 'b) t = Gobject.g_type constraint 'a = [> `gtk|`canvasitem]
 
-  type group_p = [`x of float| `y of float]
-  type shape_p = [`fill_color of string| `outline_color of string
-                 | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
-                 | `width_units of float| `width_pixels of int
-		 | `cap_style of Gdk.GC.gdkCapStyle]
-  type re_p = [shape_p| `x1 of float| `y1 of float| `x2 of float| `y2 of float]
-  type text_p = [`x of float| `y of float| `text of string| `font of string
-                | `size of int| `fill_color of string
-                | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
-		| `clip of bool| `clip_width of float| `clip_height of float
-		| `x_offset of float| `y_offset of float
-		| `justification of Gtk.Tags.justification
-		| `anchor of Gtk.Tags.anchor_type]
-  type line_p = [`arrow_shape_a of float| `arrow_shape_b of float| `arrow_shape_c of float
-                | `fill_color of string| `width_units of float| `width_pixels of int
-                | `points of float array| `first_arrowhead of bool
-		| `last_arrowhead of bool| `smooth of bool
-                | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
-		| `cap_style of Gdk.GC.gdkCapStyle| `join_style of Gdk.GC.gdkJoinStyle]
-  type bpath_p = [shape_p| `bpath of PathDef.t]
-  type pixbuf_p = [`x of float| `y of float
-                  | `width of float|  `height of float
-		  | `anchor of Gtk.Tags.anchor_type| `pixbuf of GdkPixbuf.pixbuf]
-  type polygon_p = [shape_p| `points of float array]
-  type widget_p = [`x of float| `y of float
-                  | `width of float|  `height of float
-		  | `size_pixels of bool
-		  | `anchor of Gtk.Tags.anchor_type| `widget of GObj.widget]
+  type group_p = [`X of float| `Y of float]
+  type shape_p = [`FILL_COLOR of string| `OUTLINE_COLOR of string
+                 | `FILL_COLOR_RGBA of int32 | `FILL_STIPPLE of Gdk.bitmap
+                 | `WIDTH_UNITS of float| `WIDTH_PIXELS of int
+		 | `CAP_STYLE of Gdk.GC.gdkCapStyle]
+  type re_p = [shape_p| `X1 of float| `Y1 of float| `X2 of float| `Y2 of float]
+  type text_p = [`X of float| `Y of float| `TEXT of string| `FONT of string
+                | `SIZE of int| `FILL_COLOR of string
+                | `FILL_COLOR_RGBA of int32 | `FILL_STIPPLE of Gdk.bitmap
+		| `CLIP of bool| `CLIP_WIDTH of float| `CLIP_HEIGHT of float
+		| `X_OFFSET of float| `Y_OFFSET of float
+		| `JUSTIFICATION of Gtk.Tags.justification
+		| `ANCHOR of Gtk.Tags.anchor_type]
+  type line_p = [`ARROW_SHAPE_A of float| `ARROW_SHAPE_B of float| `ARROW_SHAPE_C of float
+                | `FILL_COLOR of string| `WIDTH_UNITS of float| `WIDTH_PIXELS of int
+                | `POINTS of float array| `FIRST_ARROWHEAD of bool
+		| `LAST_ARROWHEAD of bool| `SMOOTH of bool
+                | `FILL_COLOR_RGBA of int32 | `FILL_STIPPLE of Gdk.bitmap
+		| `CAP_STYLE of Gdk.GC.gdkCapStyle| `JOIN_STYLE of Gdk.GC.gdkJoinStyle]
+  type bpath_p = [shape_p| `BPATH of PathDef.t]
+  type pixbuf_p = [`X of float| `Y of float
+                  | `WIDTH of float|  `HEIGHT of float
+		  | `ANCHOR of Gtk.Tags.anchor_type| `PIXBUF of GdkPixbuf.pixbuf]
+  type polygon_p = [shape_p| `POINTS of float array]
+  type widget_p = [`X of float| `Y of float
+                  | `WIDTH of float|  `HEIGHT of float
+		  | `SIZE_PIXELS of bool
+		  | `ANCHOR of Gtk.Tags.anchor_type| `WIDGET of GObj.widget]
+  type richtext_p = [`X of float| `Y of float
+                    | `TEXT of string
+                    | `WIDTH of float|  `HEIGHT of float
+		    | `EDITABLE of bool | `VISIBLE of bool
+		    | `JUSTIFICATION of Gtk.Tags.justification
+		    | `ANCHOR of Gtk.Tags.anchor_type
+		    | `CURSOR_VISIBLE of bool| `CURSOR_BLINK of bool
+		    | `GROW_HEIGHT of bool
+		    | `LEFT_MARGIN of int| `RIGHT_MARGIN of int]
 
   let canvas_types = register_types ()
   let group = canvas_types.(4)
@@ -141,7 +161,7 @@ end =
   let shape = canvas_types.(13)
   let rect_ellipse = canvas_types.(10)
   let widget = canvas_types.(2)
-  let rich_text = canvas_types.(12)
+  let richtext = canvas_types.(12)
   let points = canvas_types.(8)
 
   let is_a obj typ =
@@ -185,6 +205,15 @@ end
 module Group = 
   struct
 external get_items : [> group] Gobject.obj -> item Gobject.obj list  = "ml_gnome_canvas_group_get_items"
+end
+
+(* GnomeCanvasRichText *)
+module RichText =
+  struct
+external cut_clipboard : [> richtext] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_cut_clipboard"
+external copy_clipboard : [> richtext] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_copy_clipboard"
+external paste_clipboard : [> richtext] Gobject.obj -> unit = "ml_gnome_canvas_rich_text_paste_clipboard"
+external get_buffer : [> richtext] Gobject.obj -> Gtk.textbuffer = "ml_gnome_canvas_rich_text_get_buffer"
 end
 
 (* Conversion  functions for properties *)

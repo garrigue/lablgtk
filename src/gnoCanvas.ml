@@ -1,98 +1,111 @@
 type items_properties = [ 
-  | `no_widget
-  | `no_fill_color
-  | `no_outline_color
-  | `no_font
-  | `no_text
-  | `no_bpath
-  | `no_pixbuf
-  | `size_pixels of bool
-  | `widget of GObj.widget
-  | `pixbuf of GdkPixbuf.pixbuf
-  | `width of float
-  | `height of float
-  | `bpath of GnomeCanvas.PathDef.t
-  | `anchor of Gtk.Tags.anchor_type
-  | `justification of Gtk.Tags.justification
-  | `cap_style of Gdk.GC.gdkCapStyle
-  | `join_style of Gdk.GC.gdkJoinStyle
-  | `smooth of bool
-  | `first_arrowhead of bool
-  | `last_arrowhead of bool
-  | `arrow_shape_a of float
-  | `arrow_shape_b of float
-  | `arrow_shape_c of float
-  | `points of float array
-  | `fill_color of string
-  | `fill_color_rgba of int32
-  | `fill_stipple of Gdk.bitmap
-  | `font of string
-  | `outline_color of string
-  | `size of int
-  | `text of string
-  | `clip of bool
-  | `clip_width of float
-  | `clip_height of float
-  | `x_offset of float
-  | `y_offset of float
-  | `width_units of float
-  | `width_pixels of int
-  | `x of float
-  | `x1 of float
-  | `x2 of float
-  | `y of float
-  | `y1 of float
-  | `y2 of float] 
+  | `NO_WIDGET
+  | `NO_FILL_COLOR
+  | `NO_OUTLINE_COLOR
+  | `NO_FONT
+  | `NO_TEXT
+  | `NO_BPATH
+  | `NO_PIXBUF
+  | `SIZE_PIXELS of bool
+  | `WIDGET of GObj.widget
+  | `PIXBUF of GdkPixbuf.pixbuf
+  | `WIDTH of float
+  | `HEIGHT of float
+  | `BPATH of GnomeCanvas.PathDef.t
+  | `ANCHOR of Gtk.Tags.anchor_type
+  | `JUSTIFICATION of Gtk.Tags.justification
+  | `CAP_STYLE of Gdk.GC.gdkCapStyle
+  | `JOIN_STYLE of Gdk.GC.gdkJoinStyle
+  | `SMOOTH of bool
+  | `FIRST_ARROWHEAD of bool
+  | `LAST_ARROWHEAD of bool
+  | `ARROW_SHAPE_A of float
+  | `ARROW_SHAPE_B of float
+  | `ARROW_SHAPE_C of float
+  | `POINTS of float array
+  | `FILL_COLOR of string
+  | `FILL_COLOR_RGBA of int32
+  | `FILL_STIPPLE of Gdk.bitmap
+  | `FONT of string
+  | `OUTLINE_COLOR of string
+  | `SIZE of int
+  | `TEXT of string
+  | `EDITABLE of bool
+  | `VISIBLE of bool
+  | `CURSOR_VISIBLE of bool| `CURSOR_BLINK of bool
+  | `GROW_HEIGHT of bool
+  | `LEFT_MARGIN of int
+  | `RIGHT_MARGIN of int
+  | `CLIP of bool
+  | `CLIP_WIDTH of float
+  | `CLIP_HEIGHT of float
+  | `X_OFFSET of float
+  | `Y_OFFSET of float
+  | `WIDTH_UNITS of float
+  | `WIDTH_PIXELS of int
+  | `X of float
+  | `X1 of float
+  | `X2 of float
+  | `Y of float
+  | `Y1 of float
+  | `Y2 of float] 
 
 let propertize p =
   let name, g_fund, (g_val : unit Gobject.data_set) = match p with
-  | `x v -> "x", `DOUBLE, `FLOAT v
-  | `y v -> "y", `DOUBLE, `FLOAT v
-  | `x1 v -> "x1", `DOUBLE, `FLOAT v
-  | `y1 v -> "y1", `DOUBLE, `FLOAT v
-  | `x2 v -> "x2", `DOUBLE, `FLOAT v
-  | `y2 v -> "y2", `DOUBLE, `FLOAT v
-  | `outline_color "" -> "outline_color", `STRING, `STRING None
-  | `outline_color c -> "outline_color", `STRING, `STRING (Some c)
-  | `fill_color "" -> "fill_color", `STRING, `STRING None
-  | `fill_color c -> "fill_color", `STRING, `STRING (Some c)
-  | `fill_color_rgba c -> "fill_color_rgba", `UINT, `INT32 c
-  | `fill_stipple (d : Gdk.bitmap) -> "fill_stipple", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast d))
-  | `width_units v -> "width_units", `DOUBLE, `FLOAT v
-  | `width_pixels v -> "width_pixels", `UINT, `INT v
-  (* | `text "" -> "text", `STRING, `STRING None *)
-  | `text t -> "text", `STRING, `STRING (Some t)
-  | `font t -> "font", `STRING, `STRING (Some t)
-  | `size i -> "size", `INT, `INT i
-  | `clip b -> "clip", `BOOLEAN, `BOOL b
-  | `clip_width v -> "clip_width", `DOUBLE, `FLOAT v
-  | `clip_height v -> "clip_height", `DOUBLE, `FLOAT v
-  | `x_offset v -> "x_offset", `DOUBLE, `FLOAT v
-  | `y_offset v -> "y_offset", `DOUBLE, `FLOAT v
-  | `points p -> "points", `GVAL (GnomeCanvas.convert_points p), `BOOL false
-  | `arrow_shape_a v -> "arrow_shape_a", `DOUBLE, `FLOAT v
-  | `arrow_shape_b v -> "arrow_shape_b", `DOUBLE, `FLOAT v
-  | `arrow_shape_c v -> "arrow_shape_c", `DOUBLE, `FLOAT v
-  | `first_arrowhead b -> "first_arrowhead", `BOOLEAN, `BOOL b
-  | `last_arrowhead  b -> "last_arrowhead", `BOOLEAN, `BOOL b
-  | `anchor a -> "anchor", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.ANCHOR a))
-  | `justification j -> "justification", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.JUSTIFICATION j))
-  | `cap_style c -> "cap_style", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.CAPSTYLE c))
-  | `join_style c -> "join_style", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.JOINSTYLE c))
-  | `bpath p -> "bpath", `POINTER , `POINTER (Some p)
-  | `smooth b -> "smooth", `BOOLEAN, `BOOL b
-  | `pixbuf (p : GdkPixbuf.pixbuf) -> "pixbuf", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast p))
-  | `width v -> "width", `DOUBLE, `FLOAT v
-  | `height v -> "height", `DOUBLE, `FLOAT v
-  | `size_pixels b -> "size_pixels", `BOOLEAN, `BOOL b
-  | `widget (w : GObj.widget) -> "widget", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast w#as_widget))
-  | `no_fill_color -> "fill_color", `STRING, `STRING None
-  | `no_outline_color -> "outline_color", `STRING, `STRING None
-  | `no_font -> "font", `STRING, `STRING None
-  | `no_text -> "text", `STRING, `STRING None
-  | `no_bpath -> "bpath", `POINTER, `POINTER None
-  | `no_pixbuf -> "pixbuf", `OBJECT, `OBJECT None
-  | `no_widget -> "widget", `OBJECT, `OBJECT None
+  | `X v -> "x", `DOUBLE, `FLOAT v
+  | `Y v -> "y", `DOUBLE, `FLOAT v
+  | `X1 v -> "x1", `DOUBLE, `FLOAT v
+  | `Y1 v -> "y1", `DOUBLE, `FLOAT v
+  | `X2 v -> "x2", `DOUBLE, `FLOAT v
+  | `Y2 v -> "y2", `DOUBLE, `FLOAT v
+  | `OUTLINE_COLOR "" -> "outline_color", `STRING, `STRING None
+  | `OUTLINE_COLOR c -> "outline_color", `STRING, `STRING (Some c)
+  | `FILL_COLOR "" -> "fill_color", `STRING, `STRING None
+  | `FILL_COLOR c -> "fill_color", `STRING, `STRING (Some c)
+  | `FILL_COLOR_RGBA c -> "fill_color_rgba", `UINT, `INT32 c
+  | `FILL_STIPPLE (d : Gdk.bitmap) -> "fill_stipple", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast d))
+  | `WIDTH_UNITS v -> "width_units", `DOUBLE, `FLOAT v
+  | `WIDTH_PIXELS v -> "width_pixels", `UINT, `INT v
+  (* | `TEXT "" -> "text", `STRING, `STRING None *)
+  | `TEXT t -> "text", `STRING, `STRING (Some t)
+  | `FONT t -> "font", `STRING, `STRING (Some t)
+  | `SIZE i -> "size", `INT, `INT i
+  | `EDITABLE b -> "editable", `BOOLEAN, `BOOL b
+  | `VISIBLE b -> "visible", `BOOLEAN, `BOOL b
+  | `CURSOR_VISIBLE b -> "cursor_visible", `BOOLEAN, `BOOL b
+  | `CURSOR_BLINK b -> "cursor_blink", `BOOLEAN, `BOOL b
+  | `GROW_HEIGHT b -> "grow_height", `BOOLEAN, `BOOL b
+  | `LEFT_MARGIN i -> "left_margin", `INT, `INT i
+  | `RIGHT_MARGIN i -> "right_margin", `INT, `INT i
+  | `CLIP b -> "clip", `BOOLEAN, `BOOL b
+  | `CLIP_WIDTH v -> "clip_width", `DOUBLE, `FLOAT v
+  | `CLIP_HEIGHT v -> "clip_height", `DOUBLE, `FLOAT v
+  | `X_OFFSET v -> "x_offset", `DOUBLE, `FLOAT v
+  | `Y_OFFSET v -> "y_offset", `DOUBLE, `FLOAT v
+  | `POINTS p -> "points", `GVAL (GnomeCanvas.convert_points p), `BOOL false
+  | `ARROW_SHAPE_A v -> "arrow_shape_a", `DOUBLE, `FLOAT v
+  | `ARROW_SHAPE_B v -> "arrow_shape_b", `DOUBLE, `FLOAT v
+  | `ARROW_SHAPE_C v -> "arrow_shape_c", `DOUBLE, `FLOAT v
+  | `FIRST_ARROWHEAD b -> "first_arrowhead", `BOOLEAN, `BOOL b
+  | `LAST_ARROWHEAD  b -> "last_arrowhead", `BOOLEAN, `BOOL b
+  | `ANCHOR a -> "anchor", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.ANCHOR a))
+  | `JUSTIFICATION j -> "justification", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.JUSTIFICATION j))
+  | `CAP_STYLE c -> "cap_style", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.CAPSTYLE c))
+  | `JOIN_STYLE c -> "join_style", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.JOINSTYLE c))
+  | `BPATH p -> "bpath", `POINTER , `POINTER (Some p)
+  | `SMOOTH b -> "smooth", `BOOLEAN, `BOOL b
+  | `PIXBUF (p : GdkPixbuf.pixbuf) -> "pixbuf", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast p))
+  | `WIDTH v -> "width", `DOUBLE, `FLOAT v
+  | `HEIGHT v -> "height", `DOUBLE, `FLOAT v
+  | `SIZE_PIXELS b -> "size_pixels", `BOOLEAN, `BOOL b
+  | `WIDGET (w : GObj.widget) -> "widget", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast w#as_widget))
+  | `NO_FILL_COLOR -> "fill_color", `STRING, `STRING None
+  | `NO_OUTLINE_COLOR -> "outline_color", `STRING, `STRING None
+  | `NO_FONT -> "font", `STRING, `STRING None
+  | `NO_TEXT -> "text", `STRING, `STRING None
+  | `NO_BPATH -> "bpath", `POINTER, `POINTER None
+  | `NO_PIXBUF -> "pixbuf", `OBJECT, `OBJECT None
+  | `NO_WIDGET -> "widget", `OBJECT, `OBJECT None
   in
   let v = match g_fund with
   | `GVAL v -> v
@@ -123,16 +136,16 @@ class ['p] item obj = object
   method move = GnomeCanvas.Item.move obj
   method raise = GnomeCanvas.Item.raise obj
   method lower = GnomeCanvas.Item.lower obj
-  method raise_to_top = GnomeCanvas.Item.raise_to_top obj
-  method lower_to_bottom = GnomeCanvas.Item.lower_to_bottom obj
-  method show = GnomeCanvas.Item.show obj
-  method hide = GnomeCanvas.Item.hide obj
+  method raise_to_top () = GnomeCanvas.Item.raise_to_top obj
+  method lower_to_bottom () = GnomeCanvas.Item.lower_to_bottom obj
+  method show () = GnomeCanvas.Item.show obj
+  method hide () = GnomeCanvas.Item.hide obj
   method grab = GnomeCanvas.Item.grab obj
   method ungrab = GnomeCanvas.Item.ungrab obj
   method w2i = GnomeCanvas.Item.w2i obj
   method i2w = GnomeCanvas.Item.i2w obj
   method reparent grp = GnomeCanvas.Item.reparent obj grp
-  method grab_focus = GnomeCanvas.Item.grab_focus obj
+  method grab_focus () = GnomeCanvas.Item.grab_focus obj
   method get_bounds = GnomeCanvas.Item.get_bounds obj
 end
 
@@ -144,6 +157,13 @@ class group grp_obj = object
       (GnomeCanvas.Group.get_items grp_obj)
 end
 
+class richtext rchtxt_obj = object
+  inherit [GnomeCanvas.Types.richtext_p] item (rchtxt_obj : GnomeCanvas.richtext Gtk.obj)
+  method cut_clipboard () = GnomeCanvas.RichText.cut_clipboard obj
+  method copy_clipboard () = GnomeCanvas.RichText.copy_clipboard obj
+  method paste_clipboard () = GnomeCanvas.RichText.paste_clipboard obj
+  method get_buffer = new GText.buffer (GnomeCanvas.RichText.get_buffer obj)
+end
 
 class canvas obj = object
   inherit GPack.layout (obj : GnomeCanvas.canvas Gtk.obj)
@@ -192,7 +212,7 @@ let item (typ : (_, 'p) GnomeCanvas.Types.t) ?(props=[]) parent =
   if props <> [] then o#set props ;
   o
 
-let unoption_list ?(rest=[]) l =
+let unoption_list ~rest l =
   List.rev_append
     (List.fold_left (fun acc -> function Some v -> v :: acc | None -> acc) [] l)
     rest
@@ -200,37 +220,55 @@ let unoption_list ?(rest=[]) l =
 let group ?x ?y parent =
   let i = GnomeCanvas.Item.new_item parent#as_group GnomeCanvas.Types.group in
   let g = new group i in
-  let props = unoption_list
-      [ ( match x with None -> None | Some v -> Some (`x v) ) ;
-	( match y with None -> None | Some v -> Some (`y v) ) ; ] in
+  let props = unoption_list ~rest:[]
+      [ ( match x with None -> None | Some v -> Some (`X v) ) ;
+	( match y with None -> None | Some v -> Some (`Y v) ) ; ] in
   if props <> [] then g#set props ;
   g
 
 type rect = GnomeCanvas.Types.re_p item
 let rect ?props p = item GnomeCanvas.Types.rect ?props p
+
 type ellipse = GnomeCanvas.Types.re_p item
 let ellipse ?props p = item GnomeCanvas.Types.ellipse ?props p
+
 type text = GnomeCanvas.Types.text_p item
-let text ?props p = item GnomeCanvas.Types.text ?props p
+let text ?x ?y ?text ?font ?size ?anchor ?(props=[]) p =
+  let props = unoption_list ~rest:props
+      [ ( match x with None -> None | Some v -> Some (`X v) ) ;
+	( match y with None -> None | Some v -> Some (`Y v) ) ;
+	( match text with None -> None | Some v -> Some (`TEXT v) ) ;
+	( match font with None -> None | Some v -> Some (`FONT v) ) ;
+	( match size with None -> None | Some v -> Some (`SIZE v) ) ;
+	( match anchor with None -> None | Some v -> Some (`ANCHOR v) ) ; 
+      ] in
+  item GnomeCanvas.Types.text ~props p
+
 type line = GnomeCanvas.Types.line_p item
 let line ?props p = item GnomeCanvas.Types.line ?props p
+
 type bpath = GnomeCanvas.Types.bpath_p item
-let bpath ?props p = item GnomeCanvas.Types.bpath ?props p
+let bpath ?bpath ?fill_color ?(props=[]) p = 
+  let props = unoption_list ~rest:props
+      [ ( match bpath with None -> None | Some v -> Some (`BPATH v) ) ;
+	( match fill_color with None -> None | Some v -> Some (`FILL_COLOR v) ) ;
+      ] in
+  item GnomeCanvas.Types.bpath ~props p
 
 type pixbuf = GnomeCanvas.Types.pixbuf_p item
 let pixbuf ?x ?y ?pixbuf ?width ?height ?(props=[]) p =
   let width = match (width, pixbuf) with
-  | (None, Some p) -> Some (`width (float (GdkPixbuf.get_width p)))
+  | (None, Some p) -> Some (`WIDTH (float (GdkPixbuf.get_width p)))
   | (None, _) -> None
-  | (Some v, _) -> Some (`width v) in
+  | (Some v, _) -> Some (`WIDTH v) in
   let height = match (height, pixbuf) with
-  | (None, Some p) -> Some (`height (float (GdkPixbuf.get_height p)))
+  | (None, Some p) -> Some (`HEIGHT (float (GdkPixbuf.get_height p)))
   | (None, _) -> None
-  | (Some v, _) -> Some (`height v) in
+  | (Some v, _) -> Some (`HEIGHT v) in
   let props = unoption_list ~rest:props
-      [ ( match x with None -> None | Some v -> Some (`x v) ) ;
-	( match y with None -> None | Some v -> Some (`y v) ) ;
-	( match pixbuf with None -> None | Some v -> Some (`pixbuf v) ) ;
+      [ ( match x with None -> None | Some v -> Some (`X v) ) ;
+	( match y with None -> None | Some v -> Some (`Y v) ) ;
+	( match pixbuf with None -> None | Some v -> Some (`PIXBUF v) ) ;
 	width ; height ;
       ] in
   item GnomeCanvas.Types.pixbuf ~props p
@@ -238,19 +276,32 @@ let pixbuf ?x ?y ?pixbuf ?width ?height ?(props=[]) p =
 type polygon = GnomeCanvas.Types.polygon_p item
 let polygon ?points ?(props=[]) p =
   let props = 
-    match points with None -> props | Some p -> `points p :: props in
+    match points with None -> props | Some p -> `POINTS p :: props in
   item GnomeCanvas.Types.polygon ~props p
 
 type widget = GnomeCanvas.Types.widget_p item
 let widget ?widget ?x ?y ?width ?height ?(props=[]) p =
-  let w = match widget with None -> None | Some wi -> Some (`widget wi#coerce) in
+  let w = match widget with None -> None | Some wi -> Some (`WIDGET wi#coerce) in
   let props = unoption_list ~rest:props
-      [ ( match x with None -> None | Some v -> Some (`x v) ) ;
-	( match y with None -> None | Some v -> Some (`y v) ) ;
-	( match width with None -> None | Some v -> Some (`width v) ) ;
-	( match height with None -> None | Some v -> Some (`height v) ) ;
+      [ ( match x with None -> None | Some v -> Some (`X v) ) ;
+	( match y with None -> None | Some v -> Some (`Y v) ) ;
+	( match width with None -> None | Some v -> Some (`WIDTH v) ) ;
+	( match height with None -> None | Some v -> Some (`HEIGHT v) ) ;
 	w ] in
   item GnomeCanvas.Types.widget ~props p
+
+let richtext ?x ?y ?text ?width ?height ?(props=[]) p =
+  let props = unoption_list ~rest:props
+      [ ( match x with None -> None | Some v -> Some (`X v) ) ;
+	( match y with None -> None | Some v -> Some (`Y v) ) ;
+	( match width with None -> None | Some v -> Some (`WIDTH v) ) ;
+	( match height with None -> None | Some v -> Some (`HEIGHT v) ) ;
+	( match text with None -> None | Some t -> Some (`TEXT t) ) ;
+      ] in
+  let i = GnomeCanvas.Item.new_item p#as_group GnomeCanvas.Types.richtext in
+  let o = new richtext i in
+  if props <> [] then o#set props ;
+  o
 
 let parent i =
   new group (i#parent)

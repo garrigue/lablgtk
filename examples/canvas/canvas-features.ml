@@ -28,34 +28,34 @@ let create_canvas_features window =
 
   let parent_1 = GnoCanvas.group canvas#root ~x:0. ~y:0. in
   GnoCanvas.rect parent_1
-    ~props:[ `x1 0.; `y1 0.; 
-	     `x2 200.; `y2 200.; 
-	     `fill_color "tan" ] ;
+    ~props:[ `X1 0.; `Y1 0.; 
+	     `X2 200.; `Y2 200.; 
+	     `FILL_COLOR "tan" ] ;
   let parent_2 = GnoCanvas.group canvas#root ~x:200. ~y:0. in
   GnoCanvas.rect parent_2
-    ~props:[ `x1 0.; `y1 0.; 
-	     `x2 200.; `y2 200.; 
-	     `fill_color "#204060" ] ;
+    ~props:[ `X1 0.; `Y1 0.; 
+	     `X2 200.; `Y2 200.; 
+	     `FILL_COLOR "#204060" ] ;
 
   let item = GnoCanvas.ellipse parent_1
-      ~props:[ `x1 10.; `y1 10.; 
-	       `x2 190.; `y2 190.; 
-	       `outline_color "black" ;
-	       `fill_color "mediumseagreen" ;
-	       `width_units 3. ] in
+      ~props:[ `X1 10.; `Y1 10.; 
+	       `X2 190.; `Y2 190.; 
+	       `OUTLINE_COLOR "black" ;
+	       `FILL_COLOR "mediumseagreen" ;
+	       `WIDTH_UNITS 3. ] in
   item#connect#event (item_callback item (parent_1, parent_2)) ;
   
   let group = GnoCanvas.group parent_2 ~x:100. ~y:100. in
   GnoCanvas.ellipse group 
-    ~props:[ `x1 (-50.); `y1 (-50.); 
-	     `x2 50.; `y2 50.; 
-	     `outline_color "black" ;
-	     `fill_color "wheat" ;
-	     `width_units 3. ] ;
+    ~props:[ `X1 (-50.); `Y1 (-50.); 
+	     `X2 50.; `Y2 50.; 
+	     `OUTLINE_COLOR "black" ;
+	     `FILL_COLOR "wheat" ;
+	     `WIDTH_UNITS 3. ] ;
   GnoCanvas.ellipse group 
-    ~props:[ `x1 (-25.); `y1 (-25.); 
-	     `x2 25.; `y2 25.; 
-	     `fill_color "steelblue" ] ;
+    ~props:[ `X1 (-25.); `Y1 (-25.); 
+	     `X2 25.; `Y2 25.; 
+	     `FILL_COLOR "steelblue" ] ;
   group#connect#event (item_callback group (parent_1, parent_2)) ;
   
   vbox

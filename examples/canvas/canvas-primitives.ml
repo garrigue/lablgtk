@@ -9,11 +9,40 @@ type 'p item_state = {
     mutable y : float ;
   }
 
+let affine_rotate angle =
+  let rad_angle = angle /. 180. *. acos (-1.) in
+  let cos_a = cos rad_angle in
+  let sin_a = sin rad_angle in
+  [| cos_a ; sin_a ; ~-. sin_a ; cos_a ; 0. ; 0. |]
+
+let affine_compose a1 a2 =
+  [| a1.(0) *. a2.(0) +. a1.(1) *. a2.(2) ;
+     a1.(0) *. a2.(1) +. a1.(1) *. a2.(3) ;
+     a1.(2) *. a2.(0) +. a1.(3) *. a2.(2) ;
+     a1.(2) *. a2.(1) +. a1.(3) *. a2.(3) ;
+     a1.(4) *. a2.(0) +. a1.(5) *. a2.(2) +. a2.(4) ;
+     a1.(4) *. a2.(1) +. a1.(5) *. a2.(3) +. a2.(5) ; |]
+let affine_transl x y =
+  [| 1. ; 0. ; 0. ; 1. ; x ; y |]
+
+let affine_rotate_around_point x y angle =
+  affine_compose
+    (affine_compose
+       (affine_transl (~-. x) (~-. y))
+       (affine_rotate angle))
+    (affine_transl x y)
+
 let item_event_button_press config ev =
   let state = GdkEvent.Button.state ev in
   match GdkEvent.Button.button ev with
   | 1 when Gdk.Convert.test_modifier `SHIFT state ->
       config.item#destroy ()
+  | 1 when Gdk.Convert.test_modifier `CONTROL state ->
+      let (x, y) = config.item#w2i (GdkEvent.Button.x ev) (GdkEvent.Button.y ev) in
+      config.item#affine_relative (affine_rotate_around_point x y (15.))
+  | 3 when Gdk.Convert.test_modifier `CONTROL state ->
+      let (x, y) = config.item#w2i (GdkEvent.Button.x ev) (GdkEvent.Button.y ev) in
+      config.item#affine_relative (affine_rotate_around_point x y (~-. 15.))
   | 1 ->
       let x = GdkEvent.Button.x ev in
       let y = GdkEvent.Button.y ev in
@@ -22,14 +51,15 @@ let item_event_button_press config ev =
       config.y <- item_y ;
       config.dragging <- true
   | 2 when Gdk.Convert.test_modifier `SHIFT state ->
-      config.item#lower_to_bottom
+      config.item#lower_to_bottom ()
   | 2 ->
       config.item#lower 1
   | 3 when Gdk.Convert.test_modifier `SHIFT state ->
-      config.item#raise_to_top
+      config.item#raise_to_top ()
   | 3 ->
       config.item#raise 1
   | _ -> ()
+
 
 let item_event_button_release config ev =
   config.dragging <- false
@@ -70,13 +100,13 @@ let setup_item (it : 'a #GnoCanvas.item) =
 let setup_div root =
   let grp = GnoCanvas.group root ~x:0. ~y:0. in
   GnoCanvas.rect grp 
-    ~props:[ `x1 0.; `y1 0.; `x2 600.; `y2 450. ;
-	     `outline_color "black" ; `width_units 4. ] ;
+    ~props:[ `X1 0.; `Y1 0.; `X2 600.; `Y2 450. ;
+	     `OUTLINE_COLOR "black" ; `WIDTH_UNITS 4. ] ;
   List.map
     (fun p ->
       GnoCanvas.line grp
-	~props:[ `fill_color "black"; `width_units 4. ;
-		 `points p ])
+	~props:[ `FILL_COLOR "black"; `WIDTH_UNITS 4. ;
+		 `POINTS p ])
     [ [| 0.; 150.; 600.; 150. |] ;
       [| 0.; 300.; 600.; 300. |] ;
       [| 200.; 0.; 200.; 450. |] ;
@@ -85,11 +115,11 @@ let setup_div root =
   List.map
     (fun (text, pos) ->
       GnoCanvas.text grp
-	~props:[ `text text ;
-		 `x (float (pos mod 3 * 200 + 100)) ;
-		 `y (float (pos / 3 * 150 + 5)) ;
-		 `font "Sans 12" ; `anchor `NORTH ;
-		 `fill_color "black" ])
+	~props:[ `TEXT text ;
+		 `X (float (pos mod 3 * 200 + 100)) ;
+		 `Y (float (pos / 3 * 150 + 5)) ;
+		 `FONT "Sans 12" ; `ANCHOR `NORTH ;
+		 `FILL_COLOR "black" ])
     [ ("Rectangles", 0);
       ("Ellipses", 1);
       ("Texts", 2);
@@ -104,92 +134,92 @@ let setup_div root =
 let setup_rectangles root =
   setup_item
     (GnoCanvas.rect root
-       ~props:[ `x1 20.; `y1 30.; `x2 70.; `y2 60.;
-		`outline_color "red" ; `width_pixels 8 ]) ;
+       ~props:[ `X1 20.; `Y1 30.; `X2 70.; `Y2 60.;
+		`OUTLINE_COLOR "red" ; `WIDTH_PIXELS 8 ]) ;
   
   setup_item
     (GnoCanvas.rect root
-       ~props:( [ `x1 90.; `y1 40.; `x2 180.; `y2 100.;
-		  `outline_color "black" ;
-		  `width_units 4. ] @
+       ~props:( [ `X1 90.; `Y1 40.; `X2 180.; `Y2 100.;
+		  `OUTLINE_COLOR "black" ;
+		  `WIDTH_UNITS 4. ] @
 		if (new GnoCanvas.canvas root#canvas)#aa   (* glurg ! c'est moche *)
-		then [ `fill_color_rgba (Int32.of_int 0x3cb37180) ]
-		else [ `fill_color "mediumseagreen" ;
-		       `fill_stipple (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
+		then [ `FILL_COLOR_RGBA (Int32.of_int 0x3cb37180) ]
+		else [ `FILL_COLOR "mediumseagreen" ;
+		       `FILL_STIPPLE (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
 		     ] )) ;
      
   setup_item
     (GnoCanvas.rect root
-       ~props:[ `x1 10.; `y1 80.; `x2 80.; `y2 140.;
-		`fill_color "steelblue" ])
+       ~props:[ `X1 10.; `Y1 80.; `X2 80.; `Y2 140.;
+		`FILL_COLOR "steelblue" ])
 
 
 let setup_ellipses root =
   setup_item
     (GnoCanvas.ellipse root
-       ~props:[ `x1 220.; `y1 30.; `x2 270.; `y2 60. ;
-		`outline_color "goldenrod" ;
-		`width_pixels 8 ]) ;
+       ~props:[ `X1 220.; `Y1 30.; `X2 270.; `Y2 60. ;
+		`OUTLINE_COLOR "goldenrod" ;
+		`WIDTH_PIXELS 8 ]) ;
   setup_item
     (GnoCanvas.ellipse root
-       ~props:[ `x1 290.; `y1 40.; `x2 380.; `y2 100. ;
-		`fill_color "wheat" ;
-		`outline_color "midnightblue" ;
-		`width_units 4. ]) ;
+       ~props:[ `X1 290.; `Y1 40.; `X2 380.; `Y2 100. ;
+		`FILL_COLOR "wheat" ;
+		`OUTLINE_COLOR "midnightblue" ;
+		`WIDTH_UNITS 4. ]) ;
   setup_item
     (GnoCanvas.ellipse root
-       ~props:( [ `x1 210.; `y1 80.; `x2 280.; `y2 140.;
-		  `outline_color "black" ;
-		  `width_pixels 0 ] @
+       ~props:( [ `X1 210.; `Y1 80.; `X2 280.; `Y2 140.;
+		  `OUTLINE_COLOR "black" ;
+		  `WIDTH_PIXELS 0 ] @
 		if (new GnoCanvas.canvas root#canvas)#aa   (* glurg ! c'est moche *)
-		then [ `fill_color_rgba (Int32.of_int 0x5f9ea080) ]
-		else [ `fill_color "cadetblue" ;
-		       `fill_stipple (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
+		then [ `FILL_COLOR_RGBA (Int32.of_int 0x5f9ea080) ]
+		else [ `FILL_COLOR "cadetblue" ;
+		       `FILL_STIPPLE (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
 		     ] ))
 
 let make_anchor root ~x ~y =
   let grp = GnoCanvas.group ~x ~y root in
   setup_item grp ;
   GnoCanvas.rect grp
-    ~props:[ `x1 (-2.); `y1 (-2.); `x2 2.; `y2 2. ;
-	     `outline_color "black" ; `width_pixels 0 ] ;
+    ~props:[ `X1 (-2.); `Y1 (-2.); `X2 2.; `Y2 2. ;
+	     `OUTLINE_COLOR "black" ; `WIDTH_PIXELS 0 ] ;
   grp
 
 let setup_texts root =
   GnoCanvas.text (make_anchor root ~x:420. ~y:20.)
-    ~props:([ `text "Anchor NW" ;`anchor `NW ; 
-	      `x 0. ; `y 0. ; `font "Sans Bold 24" ; ] @
+    ~props:([ `TEXT "Anchor NW" ;`ANCHOR `NW ; 
+	      `X 0. ; `Y 0. ; `FONT "Sans Bold 24" ; ] @
 	    if (new GnoCanvas.canvas root#canvas)#aa   (* glurg ! c'est moche *)
-	    then [ `fill_color_rgba (Int32.of_int 0x0000ff80) ]
-	    else [ `fill_color "blue" ;
-		       `fill_stipple (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
+	    then [ `FILL_COLOR_RGBA (Int32.of_int 0x0000ff80) ]
+	    else [ `FILL_COLOR "blue" ;
+		       `FILL_STIPPLE (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
 		 ] ) ;
   GnoCanvas.text (make_anchor root ~x:470. ~y:75.)
-    ~props:[ `text "Anchor center\nJustify center\nMultiline text" ;
-	     `x 0. ; `y 0. ; `font "Sans monospace bold 14" ;
-	     `anchor `CENTER ; `justification `CENTER ;
-	     `fill_color "firebrick" ] ;
+    ~props:[ `TEXT "Anchor center\nJustify center\nMultiline text" ;
+	     `X 0. ; `Y 0. ; `FONT "Sans monospace bold 14" ;
+	     `ANCHOR `CENTER ; `JUSTIFICATION `CENTER ;
+	     `FILL_COLOR "firebrick" ] ;
 	    
   GnoCanvas.text (make_anchor root ~x:590. ~y:140.)
-    ~props:[ `text "Clipped text\nClipped text\nClipped text\nClipped text\nClipped text\nClipped text" ;
-	     `x 0. ; `y 0. ; `font "Sans 12" ;
-	     `anchor `SE ; 
-	     `clip true ; `clip_width 50. ; `clip_height 55. ;
-	     `x_offset 10. ; `fill_color "darkgreen" ] ;
+    ~props:[ `TEXT "Clipped text\nClipped text\nClipped text\nClipped text\nClipped text\nClipped text" ;
+	     `X 0. ; `Y 0. ; `FONT "Sans 12" ;
+	     `ANCHOR `SE ; 
+	     `CLIP true ; `CLIP_WIDTH 50. ; `CLIP_HEIGHT 55. ;
+	     `X_OFFSET 10. ; `FILL_COLOR "darkgreen" ] ;
   ()
 	     
 let plant_flower root x y =
   let im = GdkPixbuf.from_file "flower.png" in
   setup_item
     (GnoCanvas.pixbuf root ~pixbuf:im ~x ~y 
-       ~props:[ `anchor `CENTER] ) ;
+       ~props:[ `ANCHOR `CENTER] ) ;
   ()
 
 let setup_images root =
   let im = GdkPixbuf.from_file "toroid.png" in
   setup_item
     (GnoCanvas.pixbuf ~x:100. ~y:225. ~pixbuf:im 
-       ~props:[ `anchor `CENTER ] root) ;
+       ~props:[ `ANCHOR `CENTER ] root) ;
 
   plant_flower root  20. 170. ;
   plant_flower root 180. 170. ;
@@ -211,8 +241,8 @@ let polish_diamond root =
       p.(2) <- radius *. cos a ;
       p.(3) <- radius *. sin a ;
       GnoCanvas.line grp
-	~props:[ `points p; `fill_color "black" ;
-		 `width_units 1. ; `cap_style `ROUND ] ;
+	~props:[ `POINTS p; `FILL_COLOR "black" ;
+		 `WIDTH_UNITS 1. ; `CAP_STYLE `ROUND ] ;
       ()
     done
   done
@@ -235,12 +265,12 @@ let make_hilbert root =
   done ;
   setup_item
     (GnoCanvas.line root
-       ~props:( [ `points points ; `width_units 4. ;
-		  `cap_style `PROJECTING ; `join_style `MITER ] @
+       ~props:( [ `POINTS points ; `WIDTH_UNITS 4. ;
+		  `CAP_STYLE `PROJECTING ; `JOIN_STYLE `MITER ] @
 		if (new GnoCanvas.canvas root#canvas)#aa   (* glurg ! c'est moche *)
-		then [ `fill_color_rgba (Int32.of_int 0xff000080) ]
-		else [ `fill_color "red" ;
-		       `fill_stipple (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
+		then [ `FILL_COLOR_RGBA (Int32.of_int 0xff000080) ]
+		else [ `FILL_COLOR "red" ;
+		       `FILL_STIPPLE (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
 		     ] ) ) ;
   ()
 	
@@ -250,23 +280,23 @@ let setup_lines root =
   let points = [| 340.; 170.; 340.; 230.; 390.; 230.; 390.; 170. |] in
   setup_item
     (GnoCanvas.line root
-       ~props:[ `points points ; `fill_color "midnightblue" ; `width_units 3. ; 
-		`first_arrowhead true ; `last_arrowhead true ; 
-		`arrow_shape_a 8. ; `arrow_shape_b 12. ; `arrow_shape_c 4. ]) ;
+       ~props:[ `POINTS points ; `FILL_COLOR "midnightblue" ; `WIDTH_UNITS 3. ; 
+		`FIRST_ARROWHEAD true ; `LAST_ARROWHEAD true ; 
+		`ARROW_SHAPE_A 8. ; `ARROW_SHAPE_B 12. ; `ARROW_SHAPE_C 4. ]) ;
 
   let points = [| 356.; 180.; 374.; 220.; |] in
   setup_item
     (GnoCanvas.line root
-       ~props:[ `points points ; `fill_color "blue" ; `width_pixels 0 ; 
-		`first_arrowhead true ; `last_arrowhead true ; 
-		`arrow_shape_a 6. ; `arrow_shape_b 6. ; `arrow_shape_c 4. ]) ;
+       ~props:[ `POINTS points ; `FILL_COLOR "blue" ; `WIDTH_PIXELS 0 ; 
+		`FIRST_ARROWHEAD true ; `LAST_ARROWHEAD true ; 
+		`ARROW_SHAPE_A 6. ; `ARROW_SHAPE_B 6. ; `ARROW_SHAPE_C 4. ]) ;
 
   let points = [| 356.; 220.; 374.; 180.; |] in
   setup_item
     (GnoCanvas.line root
-       ~props:[ `points points ; `fill_color "blue" ; `width_pixels 0 ; 
-		`first_arrowhead true ; `last_arrowhead true ; 
-		`arrow_shape_a 6. ; `arrow_shape_b 6. ; `arrow_shape_c 4. ]) ;
+       ~props:[ `POINTS points ; `FILL_COLOR "blue" ; `WIDTH_PIXELS 0 ; 
+		`FIRST_ARROWHEAD true ; `LAST_ARROWHEAD true ; 
+		`ARROW_SHAPE_A 6. ; `ARROW_SHAPE_B 6. ; `ARROW_SHAPE_C 4. ]) ;
   ()
 
 let setup_curves root =
@@ -275,18 +305,18 @@ let setup_curves root =
   GnomeCanvas.PathDef.curveto p 550. 175. 550. 275. 500. 275. ;
   setup_item
     (GnoCanvas.bpath root
-       ~props:[ `bpath p ; `outline_color "black" ; `width_pixels 4 ]) ;
+       ~props:[ `BPATH p ; `OUTLINE_COLOR "black" ; `WIDTH_PIXELS 4 ]) ;
   ()
 
 let setup_polygons root =
   let points = [| 210. ; 320.; 210.; 380.; 260.; 350.; |] in
   setup_item
     (GnoCanvas.polygon ~points root
-       ~props:( (`outline_color "black") ::
+       ~props:( (`OUTLINE_COLOR "black") ::
 		if (new GnoCanvas.canvas root#canvas)#aa
-		then [ `fill_color_rgba (Int32.of_int 0x0000ff80) ]
-		else [ `fill_color "blue" ; 
-		       `fill_stipple (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001") ] )) ;
+		then [ `FILL_COLOR_RGBA (Int32.of_int 0x0000ff80) ]
+		else [ `FILL_COLOR "blue" ; 
+		       `FILL_STIPPLE (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001") ] )) ;
   let points = [|
 	270.0; 330.0; 270.0; 430.0;
 	390.0; 430.0; 390.0; 330.0;
@@ -297,7 +327,7 @@ let setup_polygons root =
 	290.0; 410.0; 290.0; 330.0; |] in
   setup_item
     (GnoCanvas.polygon ~points root
-       ~props:[ `fill_color "tan" ; `outline_color "black" ; `width_units 3. ]) ;
+       ~props:[ `FILL_COLOR "tan" ; `OUTLINE_COLOR "black" ; `WIDTH_UNITS 3. ]) ;
   ()
 
 
@@ -305,8 +335,8 @@ let setup_widgets root =
   let w = GButton.button ~label:"Hello world!" () in
   setup_item
     (GnoCanvas.widget root ~widget:w ~x:420. ~y:330.
-       ~props:[ `anchor `NW ; `size_pixels false ;
-		`width 100. ; `height 40. ]) ;
+       ~props:[ `ANCHOR `NW ; `SIZE_PIXELS false ;
+		`WIDTH 100. ; `HEIGHT 40. ]) ;
   ()
 
 let key_press (canvas : GnoCanvas.canvas) ev =
@@ -317,6 +347,12 @@ let key_press (canvas : GnoCanvas.canvas) ev =
   | k when k = GdkKeysyms._Left -> canvas#scroll_to (x-10) y ; true
   | k when k = GdkKeysyms._Right -> canvas#scroll_to (x+10) y ; true
   | _ -> false
+
+let focus canvas ev = 
+  if GdkEvent.Focus.focus_in ev
+  then prerr_endline "focus in"
+  else prerr_endline "focus out" ;
+  false
 
 let create_canvas_primitives window ~aa =
   let vbox = GPack.vbox ~border_width:4 ~spacing:4 ~packing:window#add () in
@@ -357,6 +393,7 @@ let create_canvas_primitives window ~aa =
   canvas#set_scroll_region 0. 0. 600. 450. ;
   frame#add canvas#coerce ;
   canvas#event#connect#after#key_press (key_press canvas) ;
+  canvas#event#connect#enter_notify (fun _ -> canvas#misc#grab_focus () ; false) ;
   let w = GRange.scrollbar `HORIZONTAL ~adjustment:canvas#hadjustment () in
   table#attach ~left:0 ~right:1 ~top:1 ~bottom:2
     ~expand:`X ~fill:`BOTH ~shrink:`X ~xpadding:0 ~ypadding:0
