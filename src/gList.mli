@@ -111,8 +111,8 @@ class ['a] clist : Gtk.clist obj ->
     method set_hadjustment : GData.adjustment -> unit
     method set_reorderable : bool -> unit
     method set_row :
-      ?foreground:Gdk.Color.t ->
-      ?background:Gdk.Color.t -> ?selectable:bool -> int -> unit
+      ?foreground:GDraw.optcolor ->
+      ?background:GDraw.optcolor -> ?selectable:bool -> int -> unit
     method set_row_data : int -> data:'a -> unit
     method set_row_height : int -> unit
     method set_selection_mode : Tags.selection_mode -> unit

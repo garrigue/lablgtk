@@ -149,9 +149,11 @@ module CList = struct
       = "ml_gtk_clist_set_pixtext_bc" "ml_gtk_clist_set_pixtext"
   let set_pixtext w row col ~spacing ~pixmap ?mask text =
     set_pixtext w row col text spacing pixmap (Gpointer.optboxed mask)
-  external set_foreground : [>`clist] obj -> row:int -> Gdk.Color.t -> unit
+  external set_foreground :
+      [>`clist] obj -> row:int -> Gdk.Color.t Gpointer.optboxed -> unit
       = "ml_gtk_clist_set_foreground"
-  external set_background : [>`clist] obj -> row:int -> Gdk.Color.t -> unit
+  external set_background :
+      [>`clist] obj -> row:int -> Gdk.Color.t Gpointer.optboxed -> unit
       = "ml_gtk_clist_set_background"
   external set_selectable : [>`clist] obj -> row:int -> bool -> unit
       = "ml_gtk_clist_set_selectable"

@@ -116,7 +116,10 @@ class ['a] clist obj = object (self)
   method set_sort = CList.set_sort obj
   method set_column ?widget =
     CList.set_column obj ?widget:(may_map widget ~f:as_widget)
-  method set_row = CList.set_row obj
+  method set_row ?foreground ?background =
+    let color = may_map ~f:(fun c -> Gpointer.optboxed (GDraw.optcolor c)) in
+    CList.set_row obj
+      ?foreground:(color foreground) ?background:(color background)
   method set_cell ?text ?pixmap ?(spacing=0) row col =
     match text, pixmap with
       _, None -> CList.set_text obj row col text
