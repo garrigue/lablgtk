@@ -76,7 +76,7 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo \
 	gdkObj.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
 	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gFrame.cmo \
-	gEdit.cmo gPix.cmo gRange.cmo gUtil.cmo truecolor.cmo $(GLMLOBJS)
+	gEdit.cmo gPix.cmo gRange.cmo gUtil.cmo $(GLMLOBJS)
 THOBJS = gtkThread.cmo threadObj.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
