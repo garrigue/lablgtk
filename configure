@@ -272,7 +272,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
 ac_unique_file="src/gtk.ml"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CAMLC CAMLOPT OCAMLCDOTOPT OCAMLOPTDOTOPT OCAMLRUN OCAMLDEP OCAMLDOC OCAMLLEX OCAMLLEXDOTOPT OCAMLYACC CAMLMKTOP CAMLMKLIB CAMLP4O ODOC_DEF RANLIB ac_ct_RANLIB CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT PKG_CONFIG GTK_CFLAGS GTK_LIBS GTKGL_CFLAGS GTKGL_LIBS GLADE_CFLAGS GLADE_LIBS RSVG_CFLAGS RSVG_LIBS GNOMECANVAS_CFLAGS GNOMECANVAS_LIBS GNOMEUI_CFLAGS GNOMEUI_LIBS PANEL_CFLAGS PANEL_LIBS GTKALL_CFLAGS GTKALL_LIBS EXE LIBDIR OCAMLBEST OCAMLWIN32 THREADS_LIB HAS_DLL_SUPPORT LABLGLDIR USE_GL USE_GNOME USE_GLADE USE_RSVG HAVE_SVGZ USE_GNOMECANVAS USE_GNOMEUI USE_PANEL USE_CC DEBUG LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CAMLC CAMLOPT OCAMLCDOTOPT OCAMLOPTDOTOPT OCAMLRUN OCAMLDEP OCAMLDOC OCAMLLEX OCAMLYACC CAMLMKTOP CAMLMKLIB CAMLP4O ODOC_DEF RANLIB ac_ct_RANLIB CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT PKG_CONFIG GTK_CFLAGS GTK_LIBS GTKGL_CFLAGS GTKGL_LIBS GLADE_CFLAGS GLADE_LIBS RSVG_CFLAGS RSVG_LIBS GNOMECANVAS_CFLAGS GNOMECANVAS_LIBS GNOMEUI_CFLAGS GNOMEUI_LIBS PANEL_CFLAGS PANEL_LIBS GTKALL_CFLAGS GTKALL_LIBS EXE LIBDIR OCAMLBEST OCAMLWIN32 THREADS_LIB HAS_DLL_SUPPORT LABLGLDIR USE_GL USE_GNOME USE_GLADE USE_RSVG HAVE_SVGZ USE_GNOMECANVAS USE_GNOMEUI USE_PANEL USE_CC DEBUG LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1657,46 +1657,11 @@ if test "$OCAMLLEX" = no ; then
     { { echo "$as_me:$LINENO: error: Cannot find ocamllex." >&5
 echo "$as_me: error: Cannot find ocamllex." >&2;}
    { (exit 1); exit 1; }; }
-else
-    # Extract the first word of "ocamllex.opt", so it can be a program name with args.
-set dummy ocamllex.opt; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_prog_OCAMLLEXDOTOPT+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test -n "$OCAMLLEXDOTOPT"; then
-  ac_cv_prog_OCAMLLEXDOTOPT="$OCAMLLEXDOTOPT" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_OCAMLLEXDOTOPT="ocamllex.opt"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-
-  test -z "$ac_cv_prog_OCAMLLEXDOTOPT" && ac_cv_prog_OCAMLLEXDOTOPT="no"
-fi
-fi
-OCAMLLEXDOTOPT=$ac_cv_prog_OCAMLLEXDOTOPT
-if test -n "$OCAMLLEXDOTOPT"; then
-  echo "$as_me:$LINENO: result: $OCAMLLEXDOTOPT" >&5
-echo "${ECHO_T}$OCAMLLEXDOTOPT" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-    if test "$OCAMLLEXDOTOPT" != no ; then
-	OCAMLLEX=$OCAMLLEXDOTOPT
-    fi
+#else
+#    AC_CHECK_PROG(OCAMLLEXDOTOPT,ocamllex.opt,ocamllex.opt,no)
+#    if test "$OCAMLLEXDOTOPT" != no ; then
+#	OCAMLLEX=$OCAMLLEXDOTOPT
+#    fi
 fi
 
 # Extract the first word of "ocamlyacc", so it can be a program name with args.
@@ -4981,7 +4946,6 @@ s,@OCAMLRUN@,$OCAMLRUN,;t t
 s,@OCAMLDEP@,$OCAMLDEP,;t t
 s,@OCAMLDOC@,$OCAMLDOC,;t t
 s,@OCAMLLEX@,$OCAMLLEX,;t t
-s,@OCAMLLEXDOTOPT@,$OCAMLLEXDOTOPT,;t t
 s,@OCAMLYACC@,$OCAMLYACC,;t t
 s,@CAMLMKTOP@,$CAMLMKTOP,;t t
 s,@CAMLMKLIB@,$CAMLMKLIB,;t t
