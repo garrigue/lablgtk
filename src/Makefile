@@ -1,15 +1,6 @@
 # $Id$
 # Makefile for lablgtk.
 
-TARGETS = varcc lablgtktop lablgtktop_t lablgtk2 lablgladecc
-
-all:: $(TARGETS)
-
-opt: lablgtkopt
-
-depend:
-	ocamldep *.ml *.mli > .depend
-
 COMPILER = $(CAMLC) $(MLFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
@@ -26,6 +17,17 @@ INSTALLDIR = $(LIBDIR)/lablgtk2
 DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
+
+TARGETS = varcc lablgtktop lablgtktop_t lablgtk2 lablgladecc
+
+all:: $(OCAMLBEST)
+
+byte: $(TARGETS)
+opt:  $(TARGETS) lablgtkopt
+
+depend:
+	ocamldep *.ml *.mli > .depend
+
 
 LABLGLDIR = $(LIBDIR)/lablGL
 
@@ -252,7 +254,7 @@ varcc: varcc.cmo
 
 clean:
 	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml xml_lexer.ml
-
+	rm -f \#*\# *~
 
 srcdoc: $(ALLOBJS)
 	mkdir -p doc

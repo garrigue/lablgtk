@@ -1,0 +1,45 @@
+   Here is a small howto about compilation of lablgtk2 on Win32 with mingw
+
+0) Install cygwin base devel. tools with gcc-mingw. First check your 
+installation by trying to compile a hello world C program with
+    gcc -mno-cygwin  -mms-bitfields main.c
+ 
+1)  Install Gtk 2: use the precompiled binaries available at 
+
+http://www.gimp.org/~tml/gimp/win32/downloads.html
+     Do NOT even try to compile it yourself from scratch.
+
+You need to install :
+ -libiconv
+ -libintl
+ -gettext-dev
+ -glib-2.2.1 runtime+dvel
+ -pkgconfig
+ -zlib libpng libjpeg libtiff freetype runtime+devel
+ -gtk+-2.2.1 runtime+dev
+ -atk-1.03  runtime+dev
+ -pango-1.2.1 runtime+dev
+ 
+Unzip all these in the base directory (something like X:\cygwin\ )
+
+Try to compile a small hello-gtk.c (see the tutorial page on 
+http://www.gtk.org) before going further.
+
+
+2) Compile OCaml 3.06 for mingw. This is needed as INRIA does not 
+provide precompiled version. Follow the instructions in the README
+    for mingw. Edit the configuration file and replace all occurences of 
+-fnative-struct by "-mms-bitfields -mno-cygwin". Then make opt.opt.
+    (you do not need Tk, do you ?).
+
+At this step "ocamlc hello.ml", "ocamlopt hello.ml", "ocaml" should  
+work ok.
+
+Before compiling lablgtk2, you need to manualy compile 
+ocaml/tools/ocamlmklib.ml. Edit this file with sensible values for variables 
+from bindir to ranlib then "make ocamlmklib" and install it to your bindir.
+
+3) now proceed with lablgtk2:
+    "./configure" and then "make" should succeed.
+
+ Install ("make install") and test.

@@ -1,1 +1,4 @@
 config.make
+config.cache
+ config.status
+configure
