@@ -1,5 +1,9 @@
 $Id$
 
+2001.09.13
+  * improve dll-ization
+  * add patch for unison-2.7.1
+
 2001.09.06
   * merge strict labels
   * attempt dll-ization
