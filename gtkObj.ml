@@ -240,10 +240,10 @@ class menu_item_skel obj = object
   method as_item = MenuItem.coerce obj
   method set_submenu : 'a. (#is_menu as 'a) -> unit =
     fun w -> MenuItem.set_submenu obj w#as_menu
-  method remove_submenu = MenuItem.remove_submenu obj
+  method remove_submenu () = MenuItem.remove_submenu obj
   method configure = MenuItem.configure obj
-  method activate = MenuItem.activate obj
-  method right_justify = MenuItem.right_justify obj
+  method activate () = MenuItem.activate obj
+  method right_justify () = MenuItem.right_justify obj
   method install_accelerator =
     Widget.install_accelerator obj sig:MenuItem.Signals.activate
 end
