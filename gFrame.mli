@@ -17,12 +17,11 @@ class scrolled_window :
     val obj : Gtk.scrolled_window Gtk.obj
     method add_with_viewport : #GObj.is_widget -> unit
     method hadjustment : GData.adjustment_wrapper
-    method set_scrolled :
-      ?hadjustment:GData.adjustment ->
-      ?vadjustment:GData.adjustment ->
-      ?hpolicy:Gtk.Tags.policy_type ->
-      ?vpolicy:Gtk.Tags.policy_type ->
-      ?placement:Gtk.Tags.corner_type -> unit
+    method set_hadjustment : GData.adjustment -> unit
+    method set_vadjustment : GData.adjustment -> unit
+    method set_hpolicy : Gtk.Tags.policy_type -> unit
+    method set_vpolicy : Gtk.Tags.policy_type -> unit
+    method set_placement : Gtk.Tags.corner_type -> unit
     method vadjustment : GData.adjustment_wrapper
   end
 class scrolled_window_wrapper : Gtk.scrolled_window obj -> scrolled_window
@@ -71,7 +70,8 @@ class frame_skel :
   object
     inherit GContainer.container
     val obj : 'a obj
-    method set_label : ?string -> ?xalign:clampf -> ?yalign:clampf -> unit
+    method set_label : string -> unit
+    method set_label_align : ?x:clampf -> ?y:clampf -> unit
     method set_shadow_type : Tags.shadow_type -> unit
   end
 
@@ -108,9 +108,9 @@ class aspect_frame :
     inherit frame_skel
     val obj : Gtk.aspect_frame obj
     method connect : ?after:bool -> GContainer.container_signals
-    method set_aspect :
-      ?xalign:clampf ->
-      ?yalign:clampf -> ?ratio:clampf -> ?obey_child:bool -> unit
+    method set_alignment : ?x:clampf -> ?y:clampf -> unit
+    method set_ratio : clampf -> unit
+    method set_obey_child : bool -> unit
   end
 class aspect_frame_wrapper : Gtk.aspect_frame obj -> aspect_frame
 
@@ -126,10 +126,9 @@ class viewport :
     inherit GContainer.container_wrapper
     val obj : Gtk.viewport obj
     method hadjustment : GData.adjustment
-    method set_viewport :
-      ?hadjustment:GData.adjustment ->
-      ?vadjustment:GData.adjustment ->
-      ?shadow_type:Tags.shadow_type -> unit
+    method set_hadjustment : GData.adjustment -> unit
+    method set_vadjustment : GData.adjustment -> unit
+    method set_shadow_type : Tags.shadow_type -> unit
     method vadjustment : GData.adjustment
   end
 class viewport_wrapper : Gtk.viewport obj -> viewport

@@ -40,7 +40,7 @@ let main () =
   let flag = ref false in
   button_hide_show#connect#clicked callback:
     begin fun () ->
-      clist#set_titles show:!flag;
+      clist#set_titles_show !flag;
       flag := not !flag
     end;
 

@@ -59,10 +59,9 @@ module ToggleButton = struct
       = "ml_gtk_toggle_button_set_mode"
   external set_active : [> toggle] obj -> bool -> unit
       = "ml_gtk_toggle_button_set_active"
-  let setter w :cont ?:active ?:draw_indicator =
+  let set w ?:active ?:draw_indicator =
     may fun:(set_mode w) draw_indicator;
-    may fun:(set_active w) active;
-    cont w
+    may fun:(set_active w) active
   external get_active : [> toggle] obj -> bool
       = "ml_gtk_toggle_button_get_active"
   external toggled : [> toggle] obj -> unit
@@ -85,9 +84,6 @@ module RadioButton = struct
   external group : [> radio] obj -> group = "ml_gtk_radio_button_group"
   external set_group : [> radio] obj -> group -> unit
       = "ml_gtk_radio_button_set_group"
-  let setter w :cont ?:group =
-    may group fun:(set_group w);
-    cont w
   let create ?:group ?:label ?(_ : unit option) =
     let group = optaddr group in
     match label with None -> create group
@@ -140,15 +136,14 @@ module Toolbar = struct
     "ml_gtk_toolbar_set_button_relief"
   external get_button_relief : [> toolbar] obj -> relief_type =
     "ml_gtk_toolbar_get_button_relief"
-  let setter w :cont ?:orientation ?:style ?:space_size
+  let set w ?:orientation ?:style ?:space_size
       ?:space_style ?:tooltips ?:button_relief =
     may orientation fun:(set_orientation w);
     may style fun:(set_style w);
     may space_size fun:(set_space_size w);
     may space_style fun:(set_space_style w);
     may tooltips fun:(set_tooltips w);
-    may button_relief fun:(set_button_relief w);
-    cont w
+    may button_relief fun:(set_button_relief w)
   module Signals = struct
     open GtkSignal
     external val_orientation : int -> orientation = "ml_Val_orientation"

@@ -48,8 +48,8 @@ let main () =
       width:((gameSize+2)*4) height:((gameSize+2)*4) packing:vbx#add in
   let drawing = area#misc#realize (); new drawing (area#misc#window) in
   let style = area#misc#style#copy in
-  style#set bg:[`NORMAL,`WHITE];
-  area#misc#set :style;
+  style#set_bg [`NORMAL,`WHITE];
+  area#misc#set_style style;
   drawing#set background:`WHITE;
   let area_expose _ =
     for i=0 to gameSize+1 do

@@ -45,8 +45,9 @@ class entry :
     method add_events : Gdk.Tags.event_mask list -> unit
     method append_text : string -> unit
     method prepend_text : string -> unit
-    method set_entry : ?visibility:bool -> ?max_length:int -> unit
+    method set_max_length : int -> unit
     method set_text : string -> unit
+    method set_visibility : bool -> unit
     method text : string
     method text_length : int
   end
@@ -72,21 +73,20 @@ class spin_button :
     method value_as_int : int
     method spin : Tags.spin_type -> unit
     method update : unit
-    method set_spin :
-      ?adjustment:GData.adjustment ->
-      ?digits:int ->
-      ?update_policy:[ALWAYS IF_VALID] ->
-      ?numeric:bool ->
-      ?wrap:bool ->
-      ?shadow_type:Tags.shadow_type -> ?snap_to_ticks:bool -> unit
+    method set_adjustment : GData.adjustment -> unit
+    method set_digits : int -> unit
+    method set_numeric : bool -> unit
+    method set_shadow_type : Tags.shadow_type -> unit
+    method set_snap_to_ticks : bool -> unit
+    method set_update_policy : [ALWAYS IF_VALID] -> unit
     method set_value : float -> unit
+    method set_wrap : bool -> unit
   end
 class spin_button_wrapper : Gtk.spin_button obj -> spin_button
 
 class combo :
   ?popdown_strings:string list ->
-  ?use_arrows:bool ->
-  ?use_arrows_always:bool ->
+  ?use_arrows:[NEVER DEFAULT ALWAYS] ->
   ?case_sensitive:bool ->
   ?value_in_list:bool ->
   ?ok_if_empty:bool ->
@@ -95,16 +95,14 @@ class combo :
   ?height:int ->
   ?packing:(combo -> unit) -> ?show:bool ->
   object
-    inherit GContainer.container_wrapper
+    inherit GObj.widget_wrapper
     val obj : Gtk.combo obj
     method disable_activate : unit -> unit
     method entry : entry
-    method set_combo :
-      ?popdown_strings:string list ->
-      ?use_arrows:bool ->
-      ?use_arrows_always:bool ->
-      ?case_sensitive:bool ->
-      ?value_in_list:bool -> ?ok_if_empty:bool -> unit
+    method set_case_sensitive : bool -> unit
+    method set_popdown_strings : string list -> unit
+    method set_use_arrows : [NEVER DEFAULT ALWAYS] -> unit
+    method set_value_in_list : ?bool -> ?ok_if_empty:bool -> unit
   end
 class combo_wrapper : Gtk.combo obj -> combo
 
@@ -124,12 +122,12 @@ class text :
       ?foreground:GdkObj.color -> ?background:GdkObj.color -> unit
     method length : int
     method point : int
+    method set_point : int -> unit
     method hadjustment : GData.adjustment
     method vadjustment : GData.adjustment
-    method set_text :
-      ?hadjustment:GData.adjustment ->
-      ?vadjustment:GData.adjustment -> ?word_wrap:bool -> unit
-    method set_point : int -> unit
+    method set_hadjustment : GData.adjustment -> unit
+    method set_vadjustment : GData.adjustment -> unit
+    method set_word_wrap : bool -> unit
     method freeze : unit -> unit
     method thaw : unit -> unit
   end

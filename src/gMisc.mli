@@ -87,8 +87,8 @@ class misc :
   object
     inherit GObj.widget
     val obj : 'a obj
-    method set_misc :
-      ?xalign:float -> ?yalign:float -> ?xpad:int -> ?ypad:int -> unit
+    method set_alignment : ?x:float -> ?y:float -> unit
+    method set_padding : ?x:int -> ?y:int -> unit
   end
 
 class label_skel :
@@ -96,9 +96,9 @@ class label_skel :
   object
     inherit misc
     val obj : 'a obj
-    method set_label :
-      ?justify:Tags.justification ->
-      ?line_wrap:bool -> ?pattern:string -> unit
+    method set_justify : Tags.justification -> unit
+    method set_line_wrap : bool -> unit 
+    method set_pattern : string -> unit
     method set_text : string -> unit
     method text : string
   end
@@ -128,11 +128,13 @@ class tips_query_signals :
     val obj : 'a obj
     method widget_entered :
       callback:(GObj.widget_wrapper option ->
-                string option -> string option -> unit) -> GtkSignal.id
+                text:string option -> private:string option -> unit) ->
+      GtkSignal.id
     method widget_selected :
       callback:(GObj.widget_wrapper option ->
-                string option ->
-		string option -> GdkEvent.Button.t -> bool) -> GtkSignal.id
+                text:string option ->
+		private:string option -> GdkEvent.Button.t -> bool) ->
+      GtkSignal.id
   end
 
 class tips_query :
@@ -146,10 +148,10 @@ class tips_query :
     inherit label_skel
     val obj : Gtk.tips_query obj
     method connect : ?after:bool -> tips_query_signals
-    method set_tips :
-      ?emit_always:bool ->
-      ?label_inactive:string -> ?label_no_tip:string -> unit
     method set_caller : #GObj.is_widget -> unit
+    method set_emit_always : bool -> unit
+    method set_label_inactive : string -> unit
+    method set_label_no_tip : string -> unit
     method start : unit -> unit
     method stop : unit -> unit
   end
@@ -197,12 +199,13 @@ class notebook :
       ?tab_label:#GObj.is_widget -> ?menu_label:#GObj.is_widget -> unit
     method previous_page : unit -> unit
     method remove_page : int -> unit
-    method set_notebook :
-      ?tab_pos:Tags.position ->
-      ?show_tabs:bool ->
-      ?homogeneous_tabs:bool ->
-      ?show_border:bool ->
-      ?scrollable:bool -> ?tab_border:int -> ?popup:bool -> unit
+    method set_tab_pos : Tags.position -> unit
+    method set_show_tabs : bool -> unit
+    method set_homogeneous_tabs : bool -> unit
+    method set_show_border : bool -> unit
+    method set_scrollable : bool -> unit
+    method set_tab_border : int -> unit
+    method set_popup : bool -> unit
     method set_page :
       #GObj.is_widget ->
       ?tab_label:#GObj.is_widget -> ?menu_label:#GObj.is_widget -> unit
@@ -215,7 +218,7 @@ class color_selection :
   ?height:int ->
   ?packing:(color_selection -> unit) -> ?show:bool ->
   object
-    inherit GPack.box_wrapper
+    inherit GObj.widget_wrapper
     val obj : Gtk.color_selection obj
     method get_color : color
     method set_color :

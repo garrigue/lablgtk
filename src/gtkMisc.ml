@@ -24,10 +24,9 @@ module ColorSelection = struct
       = "ml_gtk_color_selection_set_update_policy"
   external set_opacity : [> colorsel] obj -> bool -> unit
       = "ml_gtk_color_selection_set_opacity"
-  let setter w :cont ?:update_policy ?:opacity =
+  let set w :cont ?:update_policy ?:opacity =
     may update_policy fun:(set_update_policy w);
-    may opacity fun:(set_opacity w);
-    cont w
+    may opacity fun:(set_opacity w)
   external set_color :
       [> colorsel] obj ->
       red:float -> green:float -> blue:float -> ?opacity:float -> unit
@@ -130,7 +129,10 @@ module Notebook = struct
   external reorder_child : [> notebook] obj -> [> widget] obj -> int -> unit
       = "ml_gtk_notebook_reorder_child"
 
-  let setter w :cont ?:page ?:tab_pos ?:show_tabs ?:homogeneous_tabs
+  let set_popup w = function
+      true -> popup_enable w
+    | false -> popup_disable w
+  let set w :cont ?:page ?:tab_pos ?:show_tabs ?:homogeneous_tabs
       ?:show_border ?:scrollable ?:tab_border ?:popup =
     let may_set f = may fun:(f w) in
     may_set set_page page;
@@ -140,8 +142,7 @@ module Notebook = struct
     may_set set_show_border show_border;
     may_set set_scrollable scrollable;
     may_set set_tab_border tab_border;
-    may popup fun:(fun b -> (if b then popup_enable else popup_disable) w);
-    cont w
+    may_set set_popup popup
   module Signals = struct
     open GtkSignal
     let switch_page : ([> notebook],_) t =
@@ -232,15 +233,17 @@ module Misc = struct
   external get_yalign : [> misc] obj -> float = "ml_gtk_misc_get_yalign"
   external get_xpad : [> misc] obj -> int = "ml_gtk_misc_get_xpad"
   external get_ypad : [> misc] obj -> int = "ml_gtk_misc_get_ypad"
-  let setter w :cont ?:xalign ?:yalign ?:xpad ?:ypad =
+  let set_alignment w ?:x ?:y =
+    set_alignment w x:(may_default get_xalign w for:x)
+      y:(may_default get_yalign w for:y)
+  let set_padding w ?:x ?:y =
+    set_padding w x:(may_default get_xpad w for:x)
+      y:(may_default get_ypad w for:y)
+  let set w ?:xalign ?:yalign ?:xpad ?:ypad =
     if xalign <> None || yalign <> None then
-      set_alignment w x:(may_default get_xalign w for:xalign)
-	y:(may_default get_yalign w for:yalign);
+      set_alignment w ?x:xalign ?y:yalign;
     if xpad <> None || ypad <> None then
-      set_padding w x:(may_default get_xpad w for:xpad)
-	y:(may_default get_ypad w for:ypad);
-    cont w
-  let set = setter ?cont:Widget.set_size
+      set_padding w ?x:xpad ?y:ypad
 end
 
 module Arrow = struct
@@ -276,12 +279,11 @@ module Label = struct
       = "ml_gtk_label_set_pattern"
   external set_line_wrap : [> label] obj -> bool -> unit
       = "ml_gtk_label_set_line_wrap"
-  let setter w :cont ?:text ?:justify ?:line_wrap ?:pattern =
+  let set w ?:text ?:justify ?:line_wrap ?:pattern =
     may fun:(set_text w) text;
     may fun:(set_justify w) justify;
     may fun:(set_line_wrap w) line_wrap;
-    may fun:(set_pattern w) pattern;
-    cont w
+    may fun:(set_pattern w) pattern
   external get_text : [> label] obj -> string = "ml_gtk_label_get_label"
 end
 
@@ -307,14 +309,15 @@ module TipsQuery = struct
       = "ml_gtk_tips_query_get_label_no_tip"
   external get_emit_always : [> tipsquery] obj -> bool
       = "ml_gtk_tips_query_get_emit_always"
-  let setter w :cont ?:caller ?:emit_always ?:label_inactive ?:label_no_tip =
+  let set_labels w ?:inactive ?:no_tip =
+    set_labels w
+      inactive:(may_default get_label_inactive w for:inactive)
+      no_tip:(may_default get_label_no_tip w for:no_tip)
+  let set w ?:caller ?:emit_always ?:label_inactive ?:label_no_tip =
     may caller fun:(set_caller w);
     may emit_always fun:(set_emit_always w);
     if label_inactive <> None || label_no_tip <> None then
-      set_labels w
-	inactive:(may_default get_label_inactive w for:label_inactive)
-	no_tip:(may_default get_label_no_tip w for:label_no_tip);
-    cont w
+      set_labels w ?inactive:label_inactive ?no_tip:label_no_tip
   module Signals = struct
     open GtkSignal
     let start_query : ([> tipsquery],_) t =
@@ -323,24 +326,30 @@ module TipsQuery = struct
       { name = "stop_query"; marshaller = marshal_unit }
     let widget_entered :
 	([> tipsquery],
-	 widget obj option-> string option -> string option -> unit) t =
+	 widget obj option ->
+	 text:string option -> private:string option -> unit) t =
       let marshal f argv =
 	f (try Some (Widget.cast (GtkArgv.get_object argv pos:0))
 	   with Null_pointer -> None)
-	  (try Some(GtkArgv.get_string argv pos:1) with Null_pointer -> None)
-	  (try Some(GtkArgv.get_string argv pos:2) with Null_pointer -> None)
+	  text:(try Some(GtkArgv.get_string argv pos:1)
+	        with Null_pointer -> None)
+	  private:(try Some(GtkArgv.get_string argv pos:2)
+	           with Null_pointer -> None)
       in
       { name = "widget_entered"; marshaller = marshal }
     let widget_selected :
 	([> tipsquery],
 	 widget obj option ->
-	 string option -> string option -> GdkEvent.Button.t -> bool) t =
+	 text:string option ->
+	 private:string option -> GdkEvent.Button.t -> bool) t =
       let marshal f argv =
 	let stop = 
 	  f (try Some (Widget.cast (GtkArgv.get_object argv pos:0))
 	     with Null_pointer -> None)
-	    (try Some(GtkArgv.get_string argv pos:1) with Null_pointer -> None)
-	    (try Some(GtkArgv.get_string argv pos:2) with Null_pointer -> None)
+	    text:(try Some(GtkArgv.get_string argv pos:1)
+	          with Null_pointer -> None)
+	    private:(try Some(GtkArgv.get_string argv pos:2)
+	             with Null_pointer -> None)
 	    (GdkEvent.unsafe_copy (GtkArgv.get_pointer argv pos:3)) in
 	GtkArgv.set_result_bool argv stop in
       { name = "widget_selected"; marshaller = marshal }
@@ -356,10 +365,6 @@ module Pixmap = struct
   external set :
       [> pixmap] obj -> ?pixmap:Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
       = "ml_gtk_pixmap_set"
-  let setter w :cont ?:pixmap ?:mask =
-    if pixmap <> None || mask <> None then
-      set w ?:pixmap ?:mask;
-    cont w
   external pixmap : [> pixmap] obj -> Gdk.pixmap = "ml_GtkPixmap_pixmap"
   external mask : [> pixmap] obj -> Gdk.bitmap = "ml_GtkPixmap_mask"
 end

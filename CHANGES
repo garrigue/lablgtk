@@ -1,5 +1,12 @@
 $Id$
 
+1999.8.9
+  * Major change: created one set_param method by parameter,
+    rather than grouping them and using options.
+    You can get previous versions with tag "changing_set"
+  * corrected examples, radtest and browser for these changes
+  * a bit of clean-up in radtest (treew.ml and Makefile)
+
 1999.8.5
   * corrected a bad bug with indirected pointers in caml heap
 

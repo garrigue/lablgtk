@@ -62,12 +62,12 @@ module Style = struct
   external get_colormap : style -> Gdk.colormap = "ml_gtk_style_get_colormap"
   external get_font : style -> Gdk.font = "ml_gtk_style_get_font"
   external set_font : style -> Gdk.font -> unit = "ml_gtk_style_set_font"
-  let setter st :cont ?:background ?:font =
+(*
+  let set st ?:background ?:font =
     let may_set f = may fun:(f st) in
     may_set set_background background;
-    may_set set_font font;
-    cont st
-  let set = setter cont:null_cont
+    may_set set_font font
+*)
 end
 
 module Data = struct
@@ -114,12 +114,10 @@ module Tooltips = struct
       [> tooltips] obj ->
       ?foreground:Gdk.Color.t -> ?background:Gdk.Color.t -> unit
       = "ml_gtk_tooltips_set_colors"
-  let setter tt :cont ?:delay ?:foreground ?:background =
+  let set tt ?:delay ?:foreground ?:background =
     may fun:(set_delay tt) delay;
     if foreground <> None || background <> None then
-      set_colors tt ?:foreground ?:background;
-    cont tt
-  let set = setter cont:null_cont
+      set_colors tt ?:foreground ?:background
 end
 
 

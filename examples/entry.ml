@@ -14,7 +14,7 @@ let entry_toggle_editable (button : #toggle_button) (entry : #entry) =
   entry#set_editable button#active
 
 let entry_toggle_visibility (button : #toggle_button) (entry : #entry) =
-  entry#set_entry visibility:button#active
+  entry#set_visibility button#active
 
 let main () =
 

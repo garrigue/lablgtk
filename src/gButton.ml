@@ -50,7 +50,7 @@ class pre_toggle_button_wrapper obj = object
   method connect = new toggle_button_signals ?obj
   method active = ToggleButton.get_active obj
   method set_active = ToggleButton.set_active obj
-  method set_toggle :draw_indicator = ToggleButton.set_mode obj draw_indicator
+  method set_draw_indicator = ToggleButton.set_mode obj
 end
 
 class toggle_button_wrapper obj =
@@ -60,7 +60,7 @@ class toggle_button ?:label ?:active ?:draw_indicator
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w = ToggleButton.create_toggle ?:label ?None in
   let () =
-    ToggleButton.setter w cont:null_cont ?:active ?:draw_indicator;
+    ToggleButton.set w ?:active ?:draw_indicator;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit toggle_button_wrapper w
@@ -71,7 +71,7 @@ class check_button ?:label ?:active ?:draw_indicator
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w = ToggleButton.create_check ?:label ?None in
   let () =
-    ToggleButton.setter w cont:null_cont ?:active ?:draw_indicator;
+    ToggleButton.set w ?:active ?:draw_indicator;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit toggle_button_wrapper w
@@ -88,7 +88,7 @@ class radio_button ?:group ?:label ?:active ?:draw_indicator
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w = RadioButton.create ?:group ?:label ?None in
   let () =
-    ToggleButton.setter w cont:null_cont ?:active ?:draw_indicator;
+    ToggleButton.set w ?:active ?:draw_indicator;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit radio_button_wrapper w
@@ -127,7 +127,12 @@ class toolbar_wrapper obj = object
 
   method insert_space = Toolbar.insert_space ?obj
 
-  method set_toolbar = Toolbar.setter ?obj ?cont:null_cont
+  method set_orientation = Toolbar.set_orientation obj
+  method set_style = Toolbar.set_style obj
+  method set_space_size = Toolbar.set_space_size obj
+  method set_space_style = Toolbar.set_space_style obj
+  method set_tooltips = Toolbar.set_tooltips obj
+  method set_button_relief = Toolbar.set_button_relief obj
   method button_relief = Toolbar.get_button_relief obj
 end
 
@@ -136,8 +141,7 @@ class toolbar ?:orientation [< `HORIZONTAL >] ?:style
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Toolbar.create orientation ?:style in
   let () =
-    Toolbar.setter w cont:null_cont ?:space_size ?:space_style
-      ?:tooltips ?:button_relief;
+    Toolbar.set w ?:space_size ?:space_style ?:tooltips ?:button_relief;
     Container.set w ?:border_width ?:width ?:height
   in
   object (self)

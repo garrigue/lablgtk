@@ -18,33 +18,32 @@ let colors : (tags * GdkObj.color) list Lazy.t =
 
 let tag (tw : GEdit.text) ?:start [< 0 >] ?end:pend [< tw#length >] =
   let colors = Lazy.force colors in
-  let black = List.assoc `none in:colors in
   tw#freeze ();
-  let position = tw#position in
-  tw#set_point start;
-  let text = tw#get_chars :start end:pend in
-  let buffer = Lexing.from_string text
-  and last = ref 0
-  and insert start:pstart end:pend :tag =
+  let position = tw#position
+  and text = tw#get_chars :start end:pend in
+  let replace start:pstart end:pend :tag =
+    if pend > pstart then begin
+      tw#delete_text start:(start+pstart) end:(start+pend);
+      tw#set_point (start+pstart);
+      tw#insert foreground:(List.assoc tag in:colors)
+	(String.sub text pos:pstart len:(pend-pstart))
+    end
+  and next_lf = ref (-1) in
+  let colorize start:pstart end:pend :tag =
     if pend - pstart > 0 then begin
       let rstart = ref pstart in
       try while true do
-	let mid = String.index_from text char:'\n' pos:!rstart in
-	if mid > pend then raise Not_found;
-	if mid > !rstart then begin
-	  tw#delete_text start:(start + !rstart) end:(start+mid);
-	  tw#insert foreground:(List.assoc tag in:colors)
-	    (String.sub text pos:!rstart len:(mid - !rstart));
-	end;
-	rstart := mid+1;
-	tw#set_point !rstart
+	if !next_lf < !rstart then
+	  next_lf := String.index_from text char:'\n' pos:!rstart;
+	if !next_lf > pend then raise Not_found;
+	replace start:!rstart end:!next_lf :tag;
+	rstart := !next_lf + 1
       done with Not_found ->
-	if pend > !rstart then begin
-	  tw#delete_text start:(start + !rstart) end:(start+pend);
-	  tw#insert foreground:(List.assoc tag in:colors)
-	    (String.sub text pos:!rstart len:(pend - !rstart))
-	end
+	replace start:!rstart end:pend :tag
     end
+  in
+  let buffer = Lexing.from_string text
+  and last = ref 0
   in
   try
     while true do
@@ -122,14 +121,14 @@ let tag (tw : GEdit.text) ?:start [< 0 >] ?end:pend [< tw#length >] =
       | _ -> `none
     in
     if tag <> `none then begin
-      insert tag:`none start:!last end:(Lexing.lexeme_start buffer);
-      insert :tag start:(Lexing.lexeme_start buffer)
+      colorize tag:`none start:!last end:(Lexing.lexeme_start buffer);
+      colorize :tag start:(Lexing.lexeme_start buffer)
 	end:(Lexing.lexeme_end buffer);
       last := Lexing.lexeme_end buffer
     end
     done
   with exn ->
-    insert tag:`none start:!last end:pend;
+    colorize tag:`none start:!last end:pend;
     tw#thaw ();
     tw#set_position position;
     match exn with

@@ -26,7 +26,8 @@ class adjustment_wrapper obj = object
   method value = Adjustment.get_value obj
 end
 
-class adjustment :value :lower :upper :step_incr :page_incr :page_size =
+class adjustment ?:value [< 0. >] ?:lower [< 0. >] ?:upper [< 100. >]
+    ?:step_incr [< 1. >] ?:page_incr [< 10. >] ?:page_size [< 10. >] =
   let w =
     Adjustment.create :value :lower :upper :step_incr :page_incr :page_size in
   adjustment_wrapper w

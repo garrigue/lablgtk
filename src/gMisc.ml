@@ -80,7 +80,8 @@ end
 class calendar ?:options ?:width ?:height ?:packing ?:show =
   let w = Calendar.create () in
   let () =
-    Widget.set_size w ?:width ?:height;
+    if width <> None || height <> None then
+      Widget.set_size w ?:width ?:height;
     may options fun:(Calendar.display_options w) in
   object (self)
     inherit calendar_wrapper w
@@ -104,13 +105,16 @@ class drawing_area  ?:width [< 0 >] ?:height [< 0 >] ?:packing ?:show =
 
 class misc obj = object
   inherit widget obj
-  method set_misc = Misc.setter ?obj ?cont:null_cont
+  method set_alignment = Misc.set_alignment ?obj
+  method set_padding = Misc.set_padding ?obj
 end
 
 class label_skel obj = object
   inherit misc obj
   method set_text = Label.set_text obj
-  method set_label = Label.setter ?obj ?text:None ?cont:null_cont
+  method set_justify = Label.set_justify obj
+  method set_pattern = Label.set_pattern obj
+  method set_line_wrap = Label.set_line_wrap obj
   method text = Label.get_text obj
 end
 
@@ -123,8 +127,9 @@ class label ?:text [< "" >] ?:justify ?:line_wrap ?:pattern
     ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height ?:packing ?:show =
   let w = Label.create text in
   let () =
-    Label.setter w cont:null_cont ?:justify ?:line_wrap ?:pattern;
-    Misc.set w ?:xalign ?:yalign ?:xpad ?:ypad ?:width ?:height
+    Label.set w ?:justify ?:line_wrap ?:pattern;
+    Misc.set w ?:xalign ?:yalign ?:xpad ?:ypad;
+    if width <> None || height <> None then Widget.set_size w ?:width ?:height
   in
   object (self)
     inherit label_wrapper w
@@ -149,7 +154,9 @@ class tips_query_wrapper obj = object
   method stop () = TipsQuery.stop obj
   method set_caller : 'a . (#is_widget as 'a) -> unit =
     fun w -> TipsQuery.set_caller obj (w #as_widget)
-  method set_tips = TipsQuery.setter ?obj ?cont:null_cont ?caller:None
+  method set_emit_always = TipsQuery.set_emit_always obj
+  method set_label_inactive inactive = TipsQuery.set_labels obj :inactive
+  method set_label_no_tip no_tip = TipsQuery.set_labels obj :no_tip
   method connect = new tips_query_signals ?obj
 end
 
@@ -158,9 +165,8 @@ class tips_query ?:caller ?:emit_always ?:label_inactive ?:label_no_tip
   let w = TipsQuery.create () in
   let () =
     let caller = may_map (caller : #is_widget option) fun:(#as_widget) in
-    TipsQuery.setter w cont:null_cont ?:caller ?:emit_always
-      ?:label_inactive ?:label_no_tip;
-    Widget.set_size w ?:width ?:height
+    TipsQuery.set w ?:caller ?:emit_always ?:label_inactive ?:label_no_tip;
+    if width <> None || height <> None then Widget.set_size w ?:width ?:height
   in
   object (self)
     inherit tips_query_wrapper w
@@ -194,7 +200,13 @@ class notebook_wrapper obj = object (self)
   method goto_page = Notebook.set_page obj
   method previous_page () = Notebook.prev_page obj
   method next_page () = Notebook.next_page obj
-  method set_notebook = Notebook.setter ?obj ?cont:null_cont ?page:None
+  method set_tab_pos = Notebook.set_tab_pos obj
+  method set_show_tabs = Notebook.set_show_tabs obj
+  method set_homogeneous_tabs = Notebook.set_homogeneous_tabs obj
+  method set_show_border = Notebook.set_show_border obj
+  method set_scrollable = Notebook.set_scrollable obj
+  method set_tab_border = Notebook.set_tab_border obj
+  method set_popup = Notebook.set_popup obj
   method page_num : 'a. (#is_widget as 'a) -> _ =
     fun w -> Notebook.page_num obj w#as_widget
   method nth_page n = new widget (Notebook.get_nth_page obj n)
@@ -213,7 +225,7 @@ class notebook ?:tab_pos ?:tab_border ?:show_tabs ?:homogeneous_tabs
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Notebook.create () in
   let () =
-    Notebook.setter w cont:null_cont ?:tab_pos ?:tab_border ?:show_tabs
+    Notebook.set w cont:null_cont ?:tab_pos ?:tab_border ?:show_tabs
       ?:homogeneous_tabs ?:show_border ?:scrollable ?:popup;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
@@ -222,8 +234,7 @@ class notebook ?:tab_pos ?:tab_border ?:show_tabs ?:homogeneous_tabs
   end
 
 class color_selection_wrapper obj = object
-  inherit GPack.box_skel (obj : Gtk.color_selection obj)
-  method connect = new GContainer.container_signals ?obj
+  inherit GObj.widget_wrapper (obj : Gtk.color_selection obj)
   method set_update_policy = ColorSelection.set_update_policy obj
   method set_opacity = ColorSelection.set_opacity obj
   method set_color = ColorSelection.set_color obj

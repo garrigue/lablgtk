@@ -98,10 +98,11 @@ class style st = object
   method bg state = Style.get_bg style :state
   method colormap = Style.get_colormap style
   method font = Style.get_font style
-  method set ?:bg [< [] >] =
-    List.iter bg fun:
-      (fun (state,c) -> Style.set_bg style :state color:(GdkObj.color c));
-    Style.set ?style
+  method set_bg =
+    List.iter fun:
+      (fun (state,c) -> Style.set_bg style :state color:(GdkObj.color c))
+  method set_font = Style.set_font style
+  method set_background = Style.set_background style
 end
 
 class selection_data (sel : Selection.t) = object
@@ -201,8 +202,15 @@ and widget_misc obj = object
   method add_accelerator = Widget.add_accelerator obj
   method remove_accelerator = Widget.remove_accelerator obj
   method lock_accelerators () = Widget.lock_accelerators obj
-  method set ?:style =
-    Widget.set ?obj ?style:(may_map (style : style option) fun:(#as_style))
+  method set_name = Widget.set_name obj
+  method set_state = Widget.set_state obj
+  method set_sensitive = Widget.set_sensitive obj
+  method set_extension_events = Widget.set_extension_events obj
+  method set_can_default = Widget.set_can_default obj
+  method set_can_focus = Widget.set_can_focus obj
+  method set_position = Widget.set_position ?obj
+  method set_size = Widget.set_size ?obj
+  method set_style (style : style) = Widget.set_style obj style#as_style
   (* get functions *)
   method name = Widget.get_name obj
   method toplevel =

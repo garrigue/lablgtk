@@ -81,8 +81,8 @@ class calculator ?:packing ?:show =
       let frame = new GFrame.frame shadow_type:`IN
 	packing:(table#attach left:0 top:0 right:4) in
       let evbox = new GFrame.event_box packing:frame#add in
-      evbox#misc#set style:evbox#misc#style#copy;
-      evbox#misc#style#set bg:[`NORMAL,`WHITE];
+      evbox#misc#set_style evbox#misc#style#copy;
+      evbox#misc#style#set_bg [`NORMAL,`WHITE];
       new GMisc.label justify:`RIGHT xalign:0.95 packing:evbox#add
     val table = table
 
