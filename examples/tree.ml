@@ -40,13 +40,15 @@ let main () =
     begin fun () ->
       prerr_endline "selection changed";
       List.iter view#selection#get_selected_rows ~f:
-        (fun p -> prerr_endline (GtkTree.TreePath.to_string p))
+        (fun p -> prerr_endline (GtkTree.TreePath.to_string p));
     end;
-  view#connect#after#row_activated
+  view#connect#after#row_activated ~callback:
     (fun path vcol ->
        prerr_endline "Row activated";
        let it = model#get_iter path in
-       assert (model#iter_is_valid it));
+       assert (model#iter_is_valid it);
+       model#clear ();
+    );
   window#show ();
   GMain.main ()
 

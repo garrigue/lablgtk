@@ -63,6 +63,32 @@ CAMLprim value ml_g_type_interface_prerequisites(value type)
     CAMLreturn(res);
 }
 
+CAMLprim value ml_g_type_register_static(value parent_type,value type_name)
+{
+  value res;
+  CAMLparam1(res);
+  GTypeQuery query;
+  g_type_query(GType_val(parent_type),&query);
+  printf("Parent_name: %s\nClass_size: %d\nInstance Size: %d\n",
+	  query.type_name,query.class_size,query.instance_size);
+  const GTypeInfo info =
+    { query.class_size,
+      NULL, /* base_init */
+      NULL, /* base_finalize */
+      NULL, /*      (GClassInitFunc) tictactoe_class_init */
+      NULL, /* class_finalize */
+      NULL, /* class_data */
+      query.instance_size,
+      0,    /* n_preallocs */
+      NULL, /*(GInstanceInitFunc) tictactoe_init*/}; 
+
+  res = Val_GType
+    (g_type_register_static(GType_val(parent_type),
+			    String_val(type_name),
+			    &info,
+			    0));
+  CAMLreturn(res);
+}
 /* gclosure.h */
 
 Make_Val_final_pointer(GClosure, g_closure_ref, g_closure_unref, 0)

@@ -1,5 +1,8 @@
 $Id$
 
+2003.06.13 [Benjamin]
+  * Experimental g_type_register_static: not to be used at this time
+
 2003.06.11 [Jacques]
   * changes in object properties (GtkBase.Tables, ...)
   * add check_externals utility, fix some bugs

@@ -7,7 +7,7 @@
 
 class editor () =
   object (self)
-    inherit window1 ()
+    inherit window1  ()
 
     method open_file () =
       let fs = GWindow.file_selection ~title:"Open file" ~modal:true () in
@@ -20,7 +20,10 @@ class editor () =
       fs#show ()
 
     initializer
-      self#bind ~name:"on_open1_activate" ~callback:self#open_file
+      self#bind ~name:"on_open1_activate" ~callback:self#open_file;
+      self#bind ~name:"on_about1_activate" 
+	~callback:
+	(fun () -> prerr_endline "XXX")
   end
 
 let main () =

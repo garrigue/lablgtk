@@ -73,7 +73,7 @@ module Window = struct
       = "ml_gtk_window_set_decorated"
   external set_mnemonic_modifier :
       [>`window] obj -> Gdk.Tags.modifier list -> unit
-      = "ml_gtk_window_set_decorated"
+      = "ml_gtk_window_set_mnemonic_modifier"
   external resize :
       [>`window] obj -> width:int -> height:int -> unit
       = "ml_gtk_window_resize"

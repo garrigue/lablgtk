@@ -63,6 +63,10 @@ module Type = struct
       = "ml_Fundamental_type_val"
   external interface_prerequisites : g_type -> g_type list
       = "ml_g_type_interface_prerequisites"
+  external register_static : g_type -> string -> g_type
+      = "ml_g_type_register_static"
+  let register_static ~parent ~name =
+    register_static parent name
 end
 
 module Value = struct

@@ -59,11 +59,11 @@ let classes = ref [
   "GtkVBBox", ("GtkPack.BBox", "GPack.button_box");
   "GtkFixed", ("GtkPack.Fixed", "GPack.fixed");
   "GtkLayout", ("GtkPack.Layout", "GPack.layout");
-  "GtkPacker", ("GtkPack.Packer", "GPack.packer");
+(*  "GtkPacker", ("GtkPack.Packer", "GPack.packer"); *)
   "GtkPaned", ("GtkPack.Paned", "GPack.paned");
   "GtkTable", ("GtkPack.Table", "GPack.table");
   "GtkNotebook", ("GtkPack.Notebook", "GPack.notebook");
-  "GtkProgress", ("GtkRange.Progress", "GRange.progress");
+(*   "GtkProgress", ("GtkRange.Progress", "GRange.progress"); *)
   "GtkProgressBar", ("GtkRange.ProgressBar", "GRange.progress_bar");
   "GtkRange", ("GtkRange.Range", "GRange.range");
   "GtkScale", ("GtkRange.Scale", "GRange.scale");
@@ -75,18 +75,18 @@ let classes = ref [
   "GtkRuler", ("GtkRange.Ruler", "GRange.ruler");
   "GtkHRuler", ("GtkRange.Ruler", "GRange.ruler");
   "GtkVRuler", ("GtkRange.Ruler", "GRange.ruler");
-  "GtkTextMark", ("GtkText.Mark", "GText.mark");
+(*   "GtkTextMark", ("GtkText.Mark", "GText.mark"); *)
   "GtkTextTag", ("GtkText.Tag", "GText.tag");
-  "GtkTextTagTable", ("GtkText.TagTable", "GText.tag_table");
+(*   "GtkTextTagTable", ("GtkText.TagTable", "GText.tag_table");*)
   "GtkTextBuffer", ("GtkText.Buffer", "GText.buffer");
-  "GtkTextChildAnchor", ("GtkText.ChildAnchor", "GText.child_anchor");
+(*   "GtkTextChildAnchor", ("GtkText.ChildAnchor", "GText.child_anchor");*)
   "GtkTextView", ("GtkText.View", "GText.view");
   "GtkTreeItem", ("GtkTree.TreeItem", "GTree.tree_item");
   "GtkTree", ("GtkTree.Tree", "GTree.tree");
   "GtkCTree", ("GtkBase.Container", "GContainer.container");
   "GtkWindow", ("GtkWindow.Window", "GWindow.window");
-  "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog");
-  "GtkInputDialog", ("GtkWindow.Dialog", "GWindow.dialog");
+(* "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog"); 
+  "GtkInputDialog", ("GtkWindow.Dialog", "GWindow.dialog"); *)
   "GtkFileSelection", ("GtkWindow.FileSelection", "GWindow.file_selection");
   "GtkFontSelectionDialog", ("GtkWindow.FontSelectionDialog",
                              "GWindow.font_selection_dialog");
@@ -150,13 +150,28 @@ let rec flatten_tree w =
   let children = List.map ~f:flatten_tree w.wchildren in
   w :: List.flatten children
 
+(* map arbitrary strings to caml identifiers. Clashes may occur! *) 
+
+let camlize s = match s with 
+  | "" -> "_"
+  |  s -> let s = String.uncapitalize s in
+     for i = 0 to String.length s - 1 do 
+       match s.[i] with
+       | 'a'..'z'| 'A'..'Z' | '0'..'9' -> ()
+       | _ -> s.[i] <- '_'
+     done;
+     s
+
+
 let output_widget w =
   try
     let (modul, clas) = List.assoc w.wclass !classes in
     w.wrapped <- true;
     if clas = "GList.clist" then
-      Printf.printf "    method %s : int %s = new %s\n" w.wname clas clas
-    else Printf.printf "    method %s = new %s\n" w.wname clas;
+      Printf.printf "    method %s : int %s = new %s\n" 
+	(camlize w.wname) clas clas
+    else Printf.printf "    method %s = new %s\n" 
+      (camlize w.wname) clas;
     Printf.printf "      (%s.cast (Glade.get_widget xml ~name:\"%s\"))\n"
       modul w.wname;
   with Not_found -> ()
@@ -167,7 +182,7 @@ let trace = ref false
 
 let output_wrapper ~file wtree =
   Printf.printf "class %s %s?domain ?autoconnect(*=true*) () =\n"
-    wtree.wname
+    (camlize wtree.wname)
     (if !embed then "" else
     if file = "<stdin>" then "~file " else "?(file=\"" ^ file ^ "\") ");
   print_string "  object (self)\n";
@@ -181,7 +196,8 @@ let output_wrapper ~file wtree =
   Printf.printf "    method check_widgets () =\n";
   List.iter widgets ~f:
     (fun w ->
-      if w.wrapped then Printf.printf "      ignore self#%s;\n" w.wname);
+      if w.wrapped then Printf.printf "      ignore self#%s;\n" 
+	(camlize w.wname));
   Printf.printf "  end\n"
 
 let parse_body ~file lexbuf =
