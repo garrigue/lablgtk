@@ -26,7 +26,7 @@ type event_mask = "GDK_"
   | `PROXIMITY_IN | `PROXIMITY_OUT | `SUBSTRUCTURE
   | `ALL_EVENTS ] "_MASK"
 
-type extension_events = "GDK_EXTENSION_EVENTS_"
+type public extension_events = "GDK_EXTENSION_EVENTS_"
   [ `NONE | `ALL | `CURSOR ]
 
 type gdkVisibilityState = "GDK_VISIBILITY_"

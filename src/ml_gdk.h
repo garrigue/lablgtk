@@ -23,8 +23,8 @@ extern value Val_GdkPixmap (GdkPixmap *);
 #define GdkBitmap_val(val) ((GdkBitmap*)Pointer_val(val))
 extern value Val_GdkBitmap (GdkBitmap *);
 
-#define GdkImage_val(val) ((GdkImage*)Pointer_val(val))
-#define Val_GdkImage(image) (Val_pointer(image))
+extern GdkImage *GdkImage_val (value); /* check argument */
+extern value Val_GdkImage (GdkImage *); /* finalizer is destroy! */
 
 #define GdkFont_val(val) ((GdkFont*)Pointer_val(val))
 extern value Val_GdkFont (GdkFont *);

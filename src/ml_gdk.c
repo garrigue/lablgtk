@@ -38,7 +38,7 @@ Make_test(GdkModifier_val)
 
 /* Colormap */
 
-Make_Val_final_pointer (GdkColormap, gdk_colormap_ref, gdk_colormap_unref)
+Make_Val_final_pointer (GdkColormap, gdk_colormap_ref, gdk_colormap_unref, 0)
 ML_0 (gdk_colormap_get_system, Val_GdkColormap)
 
 /* Screen geometry */
@@ -49,11 +49,11 @@ ML_0 (gdk_screen_height, Val_int)
 value ml_gdk_visual_get_best (value depth, value type)
 {
      GdkVisual *vis;
-     if (type = Val_unit)
-          if (depth = Val_unit) vis = gdk_visual_get_best ();
+     if (type == Val_unit)
+          if (depth == Val_unit) vis = gdk_visual_get_best ();
           else vis = gdk_visual_get_best_with_depth (Int_val(Field(depth,0)));
      else
-          if (depth = Val_unit)
+          if (depth == Val_unit)
                vis = gdk_visual_get_best_with_type
                     (GdkVisualType_val(Field(type,0)));
           else vis = gdk_visual_get_best_with_both
@@ -74,12 +74,28 @@ Make_Extractor (GdkVisual,GdkVisual_val,blue_mask,Val_int)
 Make_Extractor (GdkVisual,GdkVisual_val,blue_shift,Val_int)
 Make_Extractor (GdkVisual,GdkVisual_val,blue_prec,Val_int)
 
-ML_4 (gdk_image_new_bitmap, GdkVisual_val, String_val, Int_val, Int_val, Val_GdkImage)
-ML_4 (gdk_image_new, GdkImageType_val, GdkVisual_val, Int_val, Int_val, Val_GdkImage)
-ML_5 (gdk_image_get, GdkWindow_val, Int_val, Int_val, Int_val, Int_val, Val_GdkImage)
+/* Image */
+
+Make_Val_final_pointer (GdkImage, Ignore, gdk_image_destroy, 5)
+GdkImage *GdkImage_val(value val)
+{
+    if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkImage");
+    return (GdkImage*)(Field(val,1));
+}
+ML_4 (gdk_image_new_bitmap, GdkVisual_val, String_val, Int_val, Int_val,
+      Val_GdkImage)
+ML_4 (gdk_image_new, GdkImageType_val, GdkVisual_val, Int_val, Int_val,
+      Val_GdkImage)
+ML_5 (gdk_image_get, GdkWindow_val, Int_val, Int_val, Int_val, Int_val,
+      Val_GdkImage)
 ML_4 (gdk_image_put_pixel, GdkImage_val, Int_val, Int_val, Int_val, Unit)
 ML_3 (gdk_image_get_pixel, GdkImage_val, Int_val, Int_val, Val_int)
-ML_1 (gdk_image_destroy, GdkImage_val, Unit)
+value ml_gdk_image_destroy (value val)
+{
+    if (Field(val,1)) gdk_image_destroy((GdkImage*)(Field(val,1)));
+    modify(&Field(val,1), NULL);
+    return Val_unit;
+}
 
 /* Color */
 
@@ -143,7 +159,7 @@ Make_Extractor (GdkRectangle, GdkRectangle_val, height, Val_int)
 
 /* Window */
 
-Make_Val_final_pointer (GdkWindow, gdk_window_ref, gdk_window_unref)
+Make_Val_final_pointer (GdkWindow, gdk_window_ref, gdk_window_unref, 0)
 Make_Extractor (gdk_visual_get, GdkVisual_val, depth, Val_int)
 ML_1 (gdk_window_get_visual, GdkWindow_val, Val_GdkVisual)
 ML_3 (gdk_window_set_back_pixmap, GdkWindow_val, GdkPixmap_val, Int_val, Unit)
@@ -190,10 +206,10 @@ ML_1 (gdk_cursor_destroy, GdkCursor_val, Unit)
 
 /* Pixmap */
 
-Make_Val_final_pointer (GdkPixmap, gdk_pixmap_ref, gdk_pixmap_unref)
-Make_Val_final_pointer (GdkBitmap, gdk_bitmap_ref, gdk_bitmap_unref)
-Make_Val_final_pointer_ext (GdkPixmap, _no_ref, Ignore, gdk_pixmap_unref)
-Make_Val_final_pointer_ext (GdkBitmap, _no_ref, Ignore, gdk_bitmap_unref)
+Make_Val_final_pointer (GdkPixmap, gdk_pixmap_ref, gdk_pixmap_unref, 0)
+Make_Val_final_pointer (GdkBitmap, gdk_bitmap_ref, gdk_bitmap_unref, 0)
+Make_Val_final_pointer_ext (GdkPixmap, _no_ref, Ignore, gdk_pixmap_unref, 20)
+Make_Val_final_pointer_ext (GdkBitmap, _no_ref, Ignore, gdk_bitmap_unref, 20)
 ML_4 (gdk_pixmap_new, GdkWindow_val, Int_val, Int_val, Int_val,
       Val_GdkPixmap_no_ref)
 ML_4 (gdk_bitmap_create_from_data, GdkWindow_val,
@@ -243,8 +259,8 @@ value ml_gdk_pixmap_colormap_create_from_xpm_d
 
 /* Font */
 
-Make_Val_final_pointer (GdkFont, gdk_font_ref, gdk_font_unref)
-Make_Val_final_pointer_ext (GdkFont, _no_ref, Ignore, gdk_font_unref)
+Make_Val_final_pointer (GdkFont, gdk_font_ref, gdk_font_unref, 0)
+Make_Val_final_pointer_ext (GdkFont, _no_ref, Ignore, gdk_font_unref, 20)
 ML_1 (gdk_font_load, String_val, Val_GdkFont_no_ref)
 ML_1 (gdk_fontset_load, String_val, Val_GdkFont_no_ref)
 ML_2 (gdk_string_width, GdkFont_val, String_val, Val_int)
@@ -256,8 +272,8 @@ ML_2 (gdk_char_measure, GdkFont_val, (char)Long_val, Val_int)
 
 /* GC */
 
-Make_Val_final_pointer (GdkGC, gdk_gc_ref, gdk_gc_unref)
-Make_Val_final_pointer_ext (GdkGC, _no_ref, Ignore, gdk_gc_unref)
+Make_Val_final_pointer (GdkGC, gdk_gc_ref, gdk_gc_unref, 0)
+Make_Val_final_pointer_ext (GdkGC, _no_ref, Ignore, gdk_gc_unref, 20)
 ML_1 (gdk_gc_new, GdkWindow_val, Val_GdkGC_no_ref)
 ML_2 (gdk_gc_set_foreground, GdkGC_val, GdkColor_val, Unit)
 ML_2 (gdk_gc_set_background, GdkGC_val, GdkColor_val, Unit)
@@ -363,7 +379,8 @@ ML_0 (gdk_rgb_get_cmap, Val_GdkColormap)
 
 /* Events */
 
-Make_Val_final_pointer (GdkEvent, Ignore, gdk_event_free)
+/* Have a major collection every 1000 events */
+Make_Val_final_pointer (GdkEvent, Ignore, gdk_event_free, 1)
 ML_1 (gdk_event_copy, GdkEvent_val, Val_GdkEvent)
 
 value ml_gdk_event_new (value event_type)
@@ -450,7 +467,7 @@ Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity), source,
 Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity), deviceid, Val_int)
 
 /* DnD */
-Make_Val_final_pointer (GdkDragContext, gdk_drag_context_ref, gdk_drag_context_unref)
+Make_Val_final_pointer (GdkDragContext, gdk_drag_context_ref, gdk_drag_context_unref, 0)
 Make_Flags_val (GdkDragAction_val)
 ML_3 (gdk_drag_status, GdkDragContext_val, Flags_GdkDragAction_val, Int_val, Unit)
 Make_Extractor (GdkDragContext, GdkDragContext_val, suggested_action, Val_gdkDragAction)

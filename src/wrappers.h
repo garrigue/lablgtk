@@ -146,20 +146,20 @@ value cname##_bc (value *argv, int argn) \
  else { int i; ret = alloc_shr(l,0); \
    for(i=0;i<l;i++) initialize (&Field(ret,i), conv(src[i])); }
 
-#define Make_Val_final_pointer(type, init, final) \
+#define Make_Val_final_pointer(type, init, final, adv) \
 static void ml_final_##type (value val) \
-{ final ((type*)Field(val,1)); } \
+{ if (Field(val,1)) final ((type*)Field(val,1)); } \
 value Val_##type (type *p) \
 { value ret; if (!p) ml_raise_null_pointer(); \
-  ret = alloc_final (2, ml_final_##type, 1, 200); \
+  ret = alloc_final (2, ml_final_##type, adv, 1000); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
-#define Make_Val_final_pointer_ext(type, ext, init, final) \
+#define Make_Val_final_pointer_ext(type, ext, init, final, adv) \
 static void ml_final_##type##ext (value val) \
-{ final ((type*)Field(val,1)); } \
+{ if (Field(val,1)) final ((type*)Field(val,1)); } \
 value Val_##type##ext (type *p) \
 { value ret; if (!p) ml_raise_null_pointer(); \
-  ret = alloc_final (2, ml_final_##type##ext, 1, 200); \
+  ret = alloc_final (2, ml_final_##type##ext, adv, 1000); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
 #define Pointer_val(val) ((void*)Field(val,1))
