@@ -21,7 +21,7 @@ let main () =
     (fun () -> prerr_endline "Hello again - cool button was pressed");
   xpm_label_box ~window ~file:"test.xpm" ~text:"cool button"
     ~packing:button#add ();
-  let button = GButton.button ~mnemonic:"_Coucou" ~packing:(hbox#pack ~padding:5) () in
+  let button = GButton.button ~use_mnemonic:true ~label:"_Coucou" ~packing:(hbox#pack ~padding:5) () in
   button#connect#clicked ~callback:
     (fun () -> prerr_endline "Coucou");
   let button = GButton.button ~stock:`HOME ~packing:(hbox#pack ~padding:5) () in

@@ -35,7 +35,7 @@ class button : Gtk.button obj ->
   end
 val button :
   ?label:string ->
-  ?mnemonic:string ->
+  ?use_mnemonic:bool ->
   ?stock:GtkStock.id ->
   ?border_width:int ->
   ?width:int ->
@@ -63,7 +63,7 @@ class toggle_button :
   end
 val toggle_button :
   ?label:string ->
-  ?mnemonic:string ->
+  ?use_mnemonic:bool ->
   ?active:bool ->
   ?draw_indicator:bool ->
   ?border_width:int ->
@@ -72,7 +72,7 @@ val toggle_button :
   ?packing:(widget -> unit) -> ?show:bool -> unit -> toggle_button
 val check_button :
   ?label:string ->
-  ?mnemonic:string ->
+  ?use_mnemonic:bool ->
   ?active:bool ->
   ?draw_indicator:bool ->
   ?border_width:int ->
@@ -91,7 +91,7 @@ class radio_button :
 val radio_button :
   ?group:Gtk.radio_button group ->
   ?label:string ->
-  ?mnemonic:string ->
+  ?use_mnemonic:bool ->
   ?active:bool ->
   ?draw_indicator:bool ->
   ?border_width:int ->

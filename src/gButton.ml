@@ -32,8 +32,8 @@ class button obj = object
   method event = new GObj.event_ops obj
 end
 
-let button ?label ?mnemonic ?stock ?border_width ?width ?height ?packing ?show () =
-  let w = Button.create ?label ?mnemonic ?stock () in
+let button ?label ?use_mnemonic ?stock ?border_width ?width ?height ?packing ?show () =
+  let w = Button.create ?label ?use_mnemonic ?stock () in
   Container.set w ?border_width ?width ?height;
   pack_return (new button w) ~packing ~show
 
@@ -51,16 +51,16 @@ class toggle_button obj = object
   method set_draw_indicator = ToggleButton.set_mode obj
 end
 
-let toggle_button ?label ?mnemonic ?active ?draw_indicator
+let toggle_button ?label ?use_mnemonic ?active ?draw_indicator
     ?border_width ?width ?height ?packing ?show () =
-  let w = ToggleButton.create_toggle ?label ?mnemonic () in
+  let w = ToggleButton.create_toggle ?label ?use_mnemonic () in
   ToggleButton.set w ?active ?draw_indicator;
   Container.set w ?border_width ?width ?height;
   pack_return (new toggle_button w) ~packing ~show
 
-let check_button ?label ?mnemonic ?active ?draw_indicator
+let check_button ?label ?use_mnemonic ?active ?draw_indicator
     ?border_width ?width ?height ?packing ?show () =
-  let w = ToggleButton.create_check ?label ?mnemonic () in
+  let w = ToggleButton.create_check ?label ?use_mnemonic () in
   ToggleButton.set w ?active ?draw_indicator;
   Container.set w ?border_width ?width ?height;
   pack_return (new toggle_button w) ~packing ~show
@@ -71,9 +71,9 @@ class radio_button obj = object
   method group = Some obj
 end
 
-let radio_button ?group ?label ?mnemonic ?active ?draw_indicator
+let radio_button ?group ?label ?use_mnemonic ?active ?draw_indicator
     ?border_width ?width ?height ?packing ?show () =
-  let w = RadioButton.create ?group ?label ?mnemonic () in
+  let w = RadioButton.create ?group ?label ?use_mnemonic () in
   ToggleButton.set w ?active ?draw_indicator;
   Container.set w ?border_width ?width ?height;
   pack_return (new radio_button w) ~packing ~show
