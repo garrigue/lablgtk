@@ -4,19 +4,20 @@ open GMain
 
 let l = Main.init ()
 
-let ch = Io.channel_of_descr Unix.stdin
+let fd = Unix.stdin (* Unix.openfile "giotest.ml" [Unix.O_RDONLY] 0 *)
+let ch = Io.channel_of_descr fd
 let w = GWindow.window ~width:300 ~height:200 ()
-let text = GText.view ~packing:w#add ()
+let buffer = GText.buffer ()
+let text = GText.view ~buffer ~packing:w#add ()
 
 let () =
   prerr_endline "Input some text on <stdin>";
-  Io.add_watch ch ~cond:`IN ~callback:
+  Io.add_watch ch ~prio:0 ~cond:`IN ~callback:
     begin fun () -> 
-      let buf = String.create 128 in
-      let len = Unix.read Unix.stdin ~buf ~pos:0 ~len:1 in
-      if len = 0 then w#destroy ();
-      text#buffer#insert (String.sub buf ~pos:0 ~len);
-      true
+      let buf = " " in
+      (* On Windows, you must use Io.read *)
+      let len = Io.read ch ~buf ~pos:0 ~len:1 in
+      len = 1 && (buffer#insert buf; true)
     end;
   w#connect#destroy quit;
   w#show ();
