@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-(* This example does not work with lablgtk2, see editor2.ml *)
+(* Uses the deprecated old text widget. See editor2.ml for the new one *)
 
 open StdLabels
 open GMain
