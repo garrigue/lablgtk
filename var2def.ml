@@ -16,34 +16,29 @@ let hash_variant s =
 
 open Genlex
 
-let lexer = make_lexer ["type"; "exception"; "public"; "="; "["; "]"]
-
-let may_public = parser
-    [< ' Kwd "public" >] -> true
-  | [< >] -> false
+let lexer = make_lexer ["`"; "["; "]"; "|"]
 
 let main () =
   let s = lexer (Stream.of_channel stdin) in
   let tags = Hashtbl.create 57 in
-  try while true do match s with parser
-      [< ' Ident tag >] ->
-	let hash = hash_variant tag in
-	begin try
-	  let tag' = Hashtbl.find tags hash in
-	  if tag <> tag' then
-	    failwith (String.concat ~sep:" " ["Doublon tag:";tag;"and";tag'])
-	with Not_found ->
-	  Hashtbl.add ~key:hash ~data:tag tags;
-	  print_string "#define MLTAG_";
-	  print_string tag;
-	  print_string "\tVal_int(";
-	  print_int hash;
-	  print_string ")\n"
-	end
-    | [< ' Kwd "type"; _ = may_public; ' Ident _; ' Kwd "=" >] -> ()
-    | [< ' Kwd "exception"; ' Ident _ >] -> ()
-    | [< ' (String _ | Kwd("["|"]")) >] -> ()
-    | [< >] -> raise End_of_file
-  done with End_of_file -> ()
+  while match s with parser
+    [< ' Kwd "`"; ' Ident tag >] ->
+      let hash = hash_variant tag in
+      begin try
+	let tag' = Hashtbl.find tags hash in
+	if tag <> tag' then
+	  failwith (String.concat ~sep:" " ["Doublon tag:";tag;"and";tag'])
+      with Not_found ->
+	Hashtbl.add ~key:hash ~data:tag tags;
+	print_string "#define MLTAG_";
+	print_string tag;
+	print_string "\tVal_int(";
+	print_int hash;
+	print_string ")\n"
+      end;
+      true
+  | [< ' _ >] -> true
+  | [< >] -> false
+  do () done
 
 let _ = Printexc.print main ()

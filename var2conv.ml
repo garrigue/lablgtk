@@ -16,7 +16,7 @@ let hash_variant s =
 
 open Genlex
 
-let lexer = make_lexer ["type"; "public"; "exception"; "="; "["; "]"]
+let lexer = make_lexer ["type"; "public"; "exception"; "="; "["; "]"; "`"; "|"]
 
 let exn_name = ref "invalid_argument"
 
@@ -24,8 +24,13 @@ let may_string = parser
     [< ' String s >] -> s
   | [< >] -> ""
 
+let may_bar = parser
+    [< ' Kwd "|" >] -> ()
+  | [< >] -> ()
+
 let rec ident_list = parser
-    [< ' Ident x; trans = may_string; s >] -> (x, trans) :: ident_list s
+    [< ' Kwd "`"; ' Ident x; trans = may_string; _ = may_bar; s >] ->
+      (x, trans) :: ident_list s
   | [< >] -> []
 
 let may_public = parser
@@ -36,7 +41,7 @@ open Printf
 
 let declaration = parser
     [< ' Kwd "type"; public = may_public; ' Ident name; ' Kwd "=";
-       prefix = may_string; ' Kwd "[";
+       prefix = may_string; ' Kwd "["; _ = may_bar;
        tags = ident_list; ' Kwd "]"; suffix = may_string >] ->
     let ctag tag trans =
       if trans <> "" then trans else
@@ -82,9 +87,13 @@ let declaration = parser
   | [< >] -> raise End_of_file
 
 let main () =
-  let s = lexer (Stream.of_channel stdin) in
+  let chars = Stream.of_channel stdin in
+  let s = lexer chars in
   try
     while true do declaration s done
   with End_of_file -> ()
+  | Stream.Error err ->
+      Printf.eprintf "Parsing error \"%s\" at character %d on input stream"
+        err (Stream.count chars)
 
 let _ = Printexc.print main ()

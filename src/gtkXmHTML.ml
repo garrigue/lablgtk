@@ -56,13 +56,13 @@ external set_allow_body_colors : [> `xmhtml] obj -> bool -> unit
   = "ml_gtk_xmhtml_set_allow_body_colors"
 external set_hilight_on_enter : [> `xmhtml] obj -> bool -> unit
   = "ml_gtk_xmhtml_set_hilight_on_enter"
-external set_anchor_underline_type : [> `xmhtml] obj -> line_type -> unit
+external set_anchor_underline_type : [> `xmhtml] obj -> line_type list -> unit
   = "ml_gtk_xmhtml_set_anchor_underline_type"
 external set_anchor_visited_underline_type :
-  [> `xmhtml] obj -> line_type -> unit
+  [> `xmhtml] obj -> line_type list -> unit
   = "ml_gtk_xmhtml_set_anchor_visited_underline_type"
 external set_anchor_target_underline_type :
-  [> `xmhtml] obj -> line_type -> unit
+  [> `xmhtml] obj -> line_type list -> unit
   = "ml_gtk_xmhtml_set_anchor_target_underline_type"
 external set_allow_color_switching : [> `xmhtml] obj -> bool -> unit
   = "ml_gtk_xmhtml_set_allow_color_switching"

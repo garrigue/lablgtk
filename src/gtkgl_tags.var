@@ -1,19 +1,19 @@
 (* $Id$ *)
 
 type visual_options = "GDK_GL_" [
-    USE_GL
-    BUFFER_SIZE
-    LEVEL
-    RGBA
-    DOUBLEBUFFER
-    STEREO
-    AUX_BUFFERS
-    RED_SIZE
-    GREEN_SIZE
-    BLUE_SIZE
-    ALPHA_SIZE
-    DEPTH_SIZE
-    STENCIL_SIZE
-    ACCUM_GREEN_SIZE
-    ACCUM_ALPHA_SIZE
-  ]
+  | `USE_GL
+  | `BUFFER_SIZE
+  | `LEVEL
+  | `RGBA
+  | `DOUBLEBUFFER
+  | `STEREO
+  | `AUX_BUFFERS
+  | `RED_SIZE
+  | `GREEN_SIZE
+  | `BLUE_SIZE
+  | `ALPHA_SIZE
+  | `DEPTH_SIZE
+  | `STENCIL_SIZE
+  | `ACCUM_GREEN_SIZE
+  | `ACCUM_ALPHA_SIZE
+]
