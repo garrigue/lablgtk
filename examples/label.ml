@@ -38,7 +38,7 @@ let main () =
   let w = GWindow.window ~border_width:2 () in
   w#misc#realize ();
   let hbox = GPack.hbox ~spacing:10 ~packing:w#add () in
-  let pm = GDraw.pixmap_from_xpm_d ~data:openfile ~window:w#misc#window () in
+  let pm = GDraw.pixmap_from_xpm_d ~data:openfile ~window:w () in
   GMisc.pixmap pm ~packing:hbox#add ();
   GMisc.label ~text:"Embedded xpm" ~packing:hbox#add ();
   w#show ();

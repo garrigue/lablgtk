@@ -52,15 +52,6 @@ class pixmap :
     method pixmap : Gdk.pixmap
   end
 
-val pixmap_from_xpm :
-  window:window ->
-  file:string ->
-  ?colormap:colormap -> ?transparent:color -> unit -> pixmap
-val pixmap_from_xpm_d :
-  window:window ->
-  data:string array ->
-  ?colormap:colormap -> ?transparent:color -> unit -> pixmap
-
 class type widget_draw =
   object
     method allocation : Gtk.rectangle
@@ -88,6 +79,14 @@ class type widget_draw =
 val pixmap :
   window:< misc : #widget_draw; .. > ->
   width:int -> height:int -> ?mask:bool -> unit -> pixmap
+val pixmap_from_xpm :
+  window:< misc : #widget_draw; .. > ->
+  file:string ->
+  ?colormap:colormap -> ?transparent:color -> unit -> pixmap
+val pixmap_from_xpm_d :
+  window:< misc : #widget_draw; .. > ->
+  data:string array ->
+  ?colormap:colormap -> ?transparent:color -> unit -> pixmap
 
 class drag_context : Gdk.drag_context ->
   object

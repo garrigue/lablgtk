@@ -274,14 +274,13 @@ let window = GWindow.window ~title:"DnD Test" ()
 let _ = window#misc#realize ()
 
 let drag_icon =
-  GDraw.pixmap_from_xpm_d ~data:drag_icon_xpm ~window:window#misc#window ()
+  GDraw.pixmap_from_xpm_d ~data:drag_icon_xpm ~window ()
 
 let trashcan_open =
-  GDraw.pixmap_from_xpm_d ~data:trashcan_open_xpm ~window:window#misc#window ()
+  GDraw.pixmap_from_xpm_d ~data:trashcan_open_xpm ~window ()
 
 let trashcan_closed =
-  GDraw.pixmap_from_xpm_d ~data:trashcan_closed_xpm
-    ~window:window#misc#window ()
+  GDraw.pixmap_from_xpm_d ~data:trashcan_closed_xpm ~window ()
 
 let targets = [
   { target = "STRING"; flags = []; info = 0};

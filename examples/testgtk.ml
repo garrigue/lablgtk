@@ -433,8 +433,7 @@ let create_scrolled_windows =
 
 let make_toolbar (toolbar : GButton.toolbar) window =
   let icon =
-    let info =
-      GDraw.pixmap_from_xpm ~file:"test.xpm" ~window:window#misc#window () in
+    let info = GDraw.pixmap_from_xpm ~file:"test.xpm" ~window () in
     fun () -> (GMisc.pixmap info ())#coerce
   in
 
