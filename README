@@ -103,7 +103,7 @@ Memory management:
   able to use Gdk/Gtk data structures without caring about memory
   management. They will be freed when nobody points to them any more.
   This also means that you do not need to pay too much attention to
-  wether a data structure is still alive or not. If it is not, you
+  whether a data structure is still alive or not. If it is not, you
   should get an error rather than a core dump.
   The case of Gtk objects deserves special care. Since they are
   interactive, we cannot just destroy them when they are no longer
