@@ -52,4 +52,4 @@ CAMLprim value ml_gtk_gl_area_new (value list, value share)
 }
 
 ML_1 (gtk_gl_area_make_current, GtkGLArea_val, Val_bool)
-ML_1 (gtk_gl_area_swapbuffers, GtkGLArea_val, Unit)
+ML_1 (gtk_gl_area_swap_buffers, GtkGLArea_val, Unit)

@@ -28,7 +28,7 @@ module GtkRaw :
       visual_options list -> share:[>`glarea] optobj -> gl_area obj
       = "ml_gtk_gl_area_new"
     external swap_buffers : [>`glarea] obj -> unit
-      = "ml_gtk_gl_area_swapbuffers"
+      = "ml_gtk_gl_area_swap_buffers"
     external make_current : [>`glarea] obj -> bool
       = "ml_gtk_gl_area_make_current"
   end
