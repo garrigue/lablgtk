@@ -72,10 +72,12 @@ object
   method get_visible_line_index = Iter.get_visible_line_index it
   method get_visible_line_offset = Iter.get_visible_line_offset it
   method get_char = Iter.get_char it
-  method get_slice ~stop = Iter.get_slice it stop
-  method get_text ~stop = Iter.get_text it stop
-  method get_visible_slice ~stop = Iter.get_visible_slice it stop
-  method get_visible_text  ~stop = Iter.get_visible_text it stop
+  method get_slice ~(stop:iter) = Iter.get_slice it stop#as_textiter
+  method get_text ~(stop:iter) = Iter.get_text it stop#as_textiter
+  method get_visible_slice ~(stop:iter) = 
+    Iter.get_visible_slice it stop#as_textiter
+  method get_visible_text ~(stop:iter) = 
+    Iter.get_visible_text it stop#as_textiter
   method get_pixbuf = Iter.get_pixbuf it
   method get_marks = Iter.get_marks it
   method get_toggled_tags  = Iter.get_toggled_tags it
@@ -134,9 +136,20 @@ object
   method forward_to_line_end () = Iter.forward_to_line_end it
   method forward_to_tag_toggle  = Iter.forward_to_tag_toggle it
   method backward_to_tag_toggle  = Iter.backward_to_tag_toggle it
-  method equal = Iter.equal it
-  method compare = Iter.compare it
-  method in_range ~start ~stop  = Iter.in_range it start stop
+  method equal (a:iter) = Iter.equal it a#as_textiter
+  method compare (a:iter) = Iter.compare it a#as_textiter
+  method in_range ~(start:iter) ~(stop:iter)  = 
+    Iter.in_range it start#as_textiter stop#as_textiter
+  method forward_search ~flag ?limit s =
+    let r = Iter.forward_search it s flag limit in
+    match r with 
+	Some(s,t) -> Some((new iter s),(new iter t))
+      | _ -> None
+  method backward_search ~flag ?limit s =
+    let r = Iter.backward_search it s flag limit in
+    match r with 
+	Some(s,t) -> Some((new iter s),(new iter t))
+      | _ -> None
 end
 
 (* let iter i = new iter (Iter.copy i) *)
@@ -290,9 +303,9 @@ class buffer obj = object(self)
              | None -> raise (No_such_mark name)
 	     | Some m -> m)
   method move_mark (mark:mark) ~where =
-    Buffer.move_mark obj mark#as_mark where
+    Buffer.move_mark obj mark#as_mark (as_textiter where)
   method move_mark_by_name name ~where =
-    Buffer.move_mark_by_name obj name where
+    Buffer.move_mark_by_name obj name (as_textiter where)
   method delete_mark (mark:mark) = Buffer.delete_mark obj mark#as_mark
   method delete_mark_by_name name = Buffer.delete_mark_by_name obj name
   method get_insert = new mark (Buffer.get_insert obj)
