@@ -5,7 +5,7 @@ open GdkObj
 open GtkObj
 
 class ['a] menu_factory (menu : 'a)
-    ?:accel_group [< Gtk.AccelGroup.create () >]
+    ?:accel_group [< GtkRaw.AccelGroup.create () >]
     ?:accel_mod [< [`CONTROL] >]
     ?:accel_flags [< [`VISIBLE] >] =
   object (self)
@@ -43,7 +43,7 @@ class ['a] menu_factory (menu : 'a)
 end
 
 class pixdraw parent:(w : #GtkObj.widget) :width :height =
-  let depth = w#misc#realize (); Gtk.Style.get_depth w#misc#style in
+  let depth = w#misc#realize (); GtkRaw.Style.get_depth w#misc#style in
   let window = w#misc#window in
   object
     inherit [[pixmap]] drawing

@@ -2,6 +2,7 @@
 
 open Misc
 open Gtk
+open GtkRaw
 
 class gtkobj obj = object
   val obj = obj
@@ -35,7 +36,7 @@ end
 
 class adjustment obj = object
   inherit gtkobj obj
-  method as_adjustment : Adjustment.t obj = obj
+  method as_adjustment : Gtk.adjustment obj = obj
   method connect = new adjustment_signals obj
   method set_value = Adjustment.set_value obj
   method clamp_page = Adjustment.clamp_page obj
@@ -46,8 +47,8 @@ let new_adjustment :value :lower :upper :step_incr :page_incr :page_size =
   new adjustment
     (Adjustment.create :value :lower :upper :step_incr :page_incr :page_size)
 
-class type has_frame = object method frame : Widget.t obj end
-class type is_widget = object method as_widget : Widget.t obj end
+class type has_frame = object method frame : Gtk.widget obj end
+class type is_widget = object method as_widget : Gtk.widget obj end
 
 class tooltips obj = object
   inherit gtkobj obj
@@ -183,7 +184,7 @@ class virtual ['a,'b] item_container obj = object (self)
     fun w -> Container.add obj w#as_item
   method remove : 'c. ('a #is_item as 'c) -> _ =
     fun w -> Container.remove obj w#as_item
-  method private virtual wrap : Widget.t obj -> 'b
+  method private virtual wrap : Gtk.widget obj -> 'b
   method children : 'b list =
     List.map fun:self#wrap (Container.children obj)
   method set_size ?:border = Container.set ?obj ?border_width:border
@@ -268,7 +269,7 @@ end
 
 class list_item obj = object
   inherit container obj
-  method as_item : ListItem.t obj = obj
+  method as_item : Gtk.list_item obj = obj
   method select () = Item.select obj
   method deselect () = Item.deselect obj
   method toggle () = Item.toggle obj
@@ -280,7 +281,7 @@ let new_list_item ?opt ?:label =
     ?cont:(pack_return (new list_item))
 
 class type is_menu = object
-  method as_menu : Menu.t obj
+  method as_menu : Gtk.menu obj
 end
 
 class menu_item_skel obj = object
@@ -348,12 +349,12 @@ class tree_item_signals obj = object
 end
 
 class type is_tree = object
-  method as_tree : Tree.t obj
+  method as_tree : Gtk.tree obj
 end
 
 class tree_item obj = object
   inherit container obj
-  method as_item : TreeItem.t obj = obj
+  method as_item : Gtk.tree_item obj = obj
   method connect = new tree_item_signals obj
   method set_subtree : 'a. (#is_tree as 'a) -> unit =
     fun w -> TreeItem.set_subtree obj w#as_tree
@@ -396,7 +397,7 @@ let new_bbox dir =
   BBox.setter ?w ?cont:(Container.setter ?cont:(pack_return (new bbox)))
 
 class statusbar_context obj ctx = object (self)
-  val obj : Statusbar.t obj = obj
+  val obj : Gtk.statusbar obj = obj
   val context : Statusbar.context = ctx
   method context = context
   method push text = Statusbar.push obj context :text
@@ -418,7 +419,7 @@ let new_statusbar ?(_ : unit option) =
   let w = Statusbar.create () in
   Container.setter ?w ?cont:(pack_return (new statusbar))
 
-class type is_window = object method as_window : Window.t obj end
+class type is_window = object method as_window : Gtk.window obj end
 
 class window obj = object
   inherit container_full obj
@@ -566,13 +567,13 @@ let new_fixed  ?(_ : unit option) =
   Container.setter ?(Fixed.create ()) ?cont:(pack_return (new fixed))
 
 class gtk_list obj = object
-  inherit [ListItem.t,list_item] item_container obj
+  inherit [Gtk.list_item,list_item] item_container obj
   method private wrap w = new list_item (ListItem.cast w)
   method insert w = GtkList.insert_item obj w#as_item
   method clear_items = GtkList.clear_items obj
   method select_item = GtkList.select_item obj
   method unselect_item = GtkList.unselect_item obj
-  method child_position : 'a. (ListItem.t #is_item as 'a) -> _ =
+  method child_position : 'a. (Gtk.list_item #is_item as 'a) -> _ =
     fun w -> GtkList.child_position obj w#as_item
 end
 
@@ -586,10 +587,9 @@ class menu_shell_signals obj = object
 end
 
 class menu_shell obj = object
-  inherit [MenuItem.t,menu_item] item_container obj
+  inherit [Gtk.menu_item,menu_item] item_container obj
   method private wrap w = new menu_item (MenuItem.cast w)
-  method insert : 'a. (MenuItem.t #is_item as 'a) -> _ =
-    fun w -> MenuShell.insert obj w#as_item
+  method insert w = MenuShell.insert obj w#as_item
   method deactivate () = MenuShell.deactivate obj
   method connect = new menu_shell_signals obj
 end
@@ -598,7 +598,7 @@ class menu obj = object
   inherit menu_shell obj
   method popup = Menu.popup obj
   method popdown () = Menu.popdown obj
-  method as_menu : Menu.t obj = obj
+  method as_menu : Gtk.menu obj = obj
   method set_accel_group = Menu.set_accel_group obj
 end
 
@@ -892,7 +892,7 @@ class tree_signals obj = object
 end
 
 class tree obj = object
-  inherit [TreeItem.t,tree_item] item_container obj
+  inherit [Gtk.tree_item,tree_item] item_container obj
   method private wrap w = new tree_item (TreeItem.cast w)
   method as_tree = Tree.coerce obj
   method insert w :pos =
@@ -901,7 +901,7 @@ class tree obj = object
   method clear_items = Tree.clear_items obj
   method select_item = Tree.select_item obj
   method unselect_item = Tree.unselect_item obj
-  method child_position : 'a. (TreeItem.t #is_item as 'a) -> _ =
+  method child_position : 'a. (Gtk.tree_item #is_item as 'a) -> _ =
     fun w -> Tree.child_position obj w#as_item
 end
 

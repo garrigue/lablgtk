@@ -56,8 +56,9 @@ endif
 	./var2conv < $< > $@
 
 # Targets
-COBJS = ml_gtk.o ml_gdk.o ml_glib.o ml_gtkcaller.o wrappers.o
-MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gtkObj.cmo gtkExt.cmo
+COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o
+MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gtkRaw.cmo \
+	gdkObj.cmo gtkObj.cmo gtkExt.cmo
 THOBJS = gtkThread.cmo threadObj.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
