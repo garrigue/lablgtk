@@ -136,6 +136,9 @@ In lablgtk2-alpha:
 
 In trunk:
 
+2003.04.14
+  * fix Glib.IO (Henri Dubois-Ferriere)
+
 2003.01.22
   * GtkThread.main switches GtkMain.Main.main to call GtkThread.thread_main
 

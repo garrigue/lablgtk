@@ -184,7 +184,7 @@ CAMLprim value ml_g_io_channel_unix_new(value v)
 gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c, gpointer data)
 {
     value *clos_p = (value*)data;
-    return Val_int(callback(*clos_p, Val_unit));
+    return Bool_val(callback(*clos_p, Val_unit));
 }
 void ml_g_destroy_notify(gpointer data)
 {
