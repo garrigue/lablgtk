@@ -169,7 +169,8 @@ module Draw = struct
       'a drawable -> gc ->
       filled:bool -> x:int -> y:int -> width:int -> height:int -> unit
       = "ml_gdk_draw_rectangle_bc" "ml_gdk_draw_rectangle"
-  let rectangle w gc ?:filled [< false >] = rectangle w gc :filled
+  let rectangle w gc :x :y :width :height ?:filled [< false >] =
+    rectangle w gc :x :y :width :height :filled
   external arc :
       'a drawable -> gc -> filled:bool -> x:int -> y:int ->
       width:int -> height:int -> start:int -> angle:int -> unit

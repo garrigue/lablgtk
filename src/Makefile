@@ -11,8 +11,6 @@ configure:
 
 nothing:
 
-include config.make
-
 COMPILER = olablc $(MLFLAGS) -c
 LINKER = olablc $(MLFLAGS)
 COMPOPT = olablopt $(MLFLAGS) -c
@@ -20,6 +18,8 @@ LINKOPT = olablopt $(MLFLAGS)
 
 TOPLEVEL = olablmktop $(MLFLAGS)
 RANLIB = ranlib
+
+include config.make
 
 CFLAGS = $(GTKCFLAGS) #-DGTK_NO_CHECK_CASTS
 LDFLAGS = $(GTKLIBS)
