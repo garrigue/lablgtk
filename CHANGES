@@ -1,5 +1,8 @@
 $Id$
 
+2005.02.07 [Olivier]
+  * GTree.Path.is_prev now returns bool (T. Kurt Bond)
+
 2005.01.08 [Olivier]
   * add a use_markup optional argument to GEdit.combo_box_text.
 

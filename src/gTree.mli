@@ -197,7 +197,7 @@ module Path : sig
   val append_index : Gtk.tree_path -> int -> unit
   val prepend_index : Gtk.tree_path -> int -> unit
   val next : Gtk.tree_path -> unit
-  val prev : Gtk.tree_path -> unit
+  val prev : Gtk.tree_path -> bool
   val up : Gtk.tree_path -> bool
   val down : Gtk.tree_path -> unit
 end
