@@ -131,7 +131,7 @@ let create_GUI () =
     GWindow.window ~title: "Camlendar" ~show: true
       ~allow_shrink: false ~allow_grow: false () in
   win#event#connect#delete
-    ~callback: (fun _ -> GMain.Main.quit (); exit 0; false);
+    ~callback: (fun _ -> GMain.Main.quit ());
 
   let style = win#misc#style#copy in
   styles.(s_normal) <- style;
