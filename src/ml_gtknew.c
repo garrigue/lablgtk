@@ -16,7 +16,7 @@ static value ml_class_init=0;
 
 static void class_init (value class)
 {
-  callback(ml_class_init, class);
+  callback_exn(ml_class_init, class);
 }
 
 

@@ -3,6 +3,9 @@
 #ifndef _wrappers_
 #define _wrappers_
 
+/* Yell if a caml callback raised an exception */
+#define CAML_EXN_LOG(name) g_critical("%s: callback raised an exception", name)
+
 #include <caml/misc.h>
 #include <caml/mlvalues.h>
 #include <caml/fail.h>

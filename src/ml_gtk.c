@@ -451,7 +451,7 @@ static void clipboard_received_func (GtkClipboard *clipboard,
                                      gpointer data)
 {
   value arg = Val_pointer (selection_data);
-  callback (*(value*)data, arg);
+  callback_exn (*(value*)data, arg);
   ml_global_root_destroy (data);
 }
 CAMLprim value ml_gtk_clipboard_request_contents (value c, value a, value f)
@@ -466,7 +466,7 @@ static void clipboard_text_received_func (GtkClipboard *clipboard,
                                           gpointer data)
 {
   value arg = (text != NULL ? ml_some(copy_string(text)) : Val_unit);
-  callback (*(value*)data, arg);
+  callback_exn (*(value*)data, arg);
   ml_global_root_destroy (data);
 }
 CAMLprim value ml_gtk_clipboard_request_text (value c, value f)
@@ -507,7 +507,7 @@ static void ml_gtk_simple_callback (GtkWidget *w, gpointer data)
 {
     value val, *clos = (value*)data;
     val = Val_GtkWidget(w);
-    callback (*clos, val);
+    callback_exn (*clos, val);
 }
 CAMLprim value ml_gtk_container_foreach (value w, value clos)
 {

@@ -86,25 +86,6 @@ GList *GList_val (value list, gpointer (*func)(value))
     CAMLreturn (res);
 }
 
-/* Redirect printer */
-
-static value ml_print_handler = 0L;
-
-static void ml_print_wrapper (const gchar *msg)
-{
-    value arg = copy_string ((char*)msg);
-    callback (ml_print_handler, arg);
-}
-    
-CAMLprim value ml_g_set_print_handler (value clos)
-{
-    value old_handler = ml_print_handler ? ml_print_handler : clos;
-    if (!ml_print_handler) register_global_root (&ml_print_handler);
-    g_set_print_handler (ml_print_wrapper);
-    ml_print_handler = clos;
-    return old_handler;
-}
-
 /* Error handling */
 static GSList *exn_map;
 
@@ -178,13 +159,16 @@ void ml_raise_gerror(GError *err)
     ml_raise_generic_gerror (err);
 }
 
-static void ml_g_log_func(const gchar *log_domain,
-			  GLogLevelFlags log_level,
-			  const gchar *message,
-			  gpointer data)
+/* Logging */
+static void
+ml_g_log_func(const gchar *log_domain,
+	      GLogLevelFlags log_level,
+	      const gchar *message,
+	      gpointer data)
 {
-    value *clos_p = data;
-    callback2(*clos_p, Val_int(log_level), Val_string(message));
+    value msg, *clos_p = data;
+    msg = copy_string (message);
+    callback2_exn(*clos_p, Val_int(log_level), msg);
 }
 
 ML_1 (Log_level_val, ID, Val_int)
@@ -192,7 +176,8 @@ ML_1 (Log_level_val, ID, Val_int)
 CAMLprim value ml_g_log_set_handler (value domain, value levels, value clos)
 {
     value *clos_p = ml_global_root_new (clos);
-    int id = g_log_set_handler (String_val(domain), Int_val(levels),
+    int id = g_log_set_handler (String_option_val(domain), 
+				Int_val(levels),
                                 ml_g_log_func, clos_p);
     CAMLparam1(domain);
     value ret = alloc_small(3,0);
@@ -205,11 +190,21 @@ CAMLprim value ml_g_log_set_handler (value domain, value levels, value clos)
 CAMLprim value ml_g_log_remove_handler (value hnd)
 {
     if (Field(hnd,2) != 0) {
-        g_log_remove_handler (String_val(Field(hnd,0)), Int_val(Field(hnd,1)));
+        g_log_remove_handler (String_option_val(Field(hnd,0)),
+			      Int_val(Field(hnd,1)));
         ml_global_root_destroy ((value*)Field(hnd,2));
         Field(hnd,2) = 0;
     }
     return Val_unit;
+}
+
+ML_1(g_log_set_always_fatal, Int_val, Unit)
+ML_2(g_log_set_fatal_mask, String_option_val, Int_val, Unit)
+
+CAMLprim value ml_g_log (value domain, value level, value msg)
+{
+  g_log (String_option_val(domain), Int_val(level), "%s", String_val(msg));
+  return Val_unit;
 }
 
 /* Main loop handling */
@@ -230,23 +225,31 @@ ML_1 (g_main_destroy, GMainLoop_val, Unit)
 
 static gboolean ml_g_source_func (gpointer data)
 {
-    return Bool_val (callback (*(value*)data, Val_unit));
+  value res, *clos = data;
+  res = callback_exn (*clos, Val_unit);
+  if (Is_exception_result(res))
+    {
+      CAML_EXN_LOG ("GSourceFunc");
+      return FALSE;
+    }
+  return Bool_val (res);
 }
 
-CAMLprim value ml_g_timeout_add (value interval, value clos)
+CAMLprim value ml_g_timeout_add (value o_prio, value interval, value clos)
 {
     value *clos_p = ml_global_root_new (clos);
     return Val_int
-        (g_timeout_add_full (G_PRIORITY_DEFAULT, Long_val(interval),
+        (g_timeout_add_full (Option_val(o_prio, Int_val, G_PRIORITY_DEFAULT),
+			     Long_val(interval),
                              ml_g_source_func, clos_p,
                              ml_global_root_destroy));
 }
 
-CAMLprim value ml_g_idle_add (value clos)
+CAMLprim value ml_g_idle_add (value o_prio, value clos)
 {
     value *clos_p = ml_global_root_new (clos);
     return Val_int
-      (g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+      (g_idle_add_full (Option_val(o_prio, Int_val, G_PRIORITY_DEFAULT_IDLE),
 			ml_g_source_func, clos_p,
 			ml_global_root_destroy));
 }
@@ -273,29 +276,24 @@ CAMLprim value ml_g_io_channel_unix_new(value wh)
 static gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c,
                                       gpointer data)
 {
-    value *clos_p = (value*)data;
-    return Bool_val(callback(*clos_p, Val_unit));
-}
-void ml_g_destroy_notify(gpointer data)
-{
-    ml_global_root_destroy(data);
+    value res, *clos_p = data;
+    res = callback_exn (*clos_p, Val_unit);
+    if (Is_exception_result (res))
+      {
+	CAML_EXN_LOG("GIOChannel watch");
+	return FALSE;
+      }
+    return Bool_val(res);
 }
 
 CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
 {
-    g_io_add_watch_full(GIOChannel_val(io),
-                        Option_val(prio,Int_val,0),
-                        Io_condition_val(cond),
-                        ml_g_io_channel_watch,
-                        ml_global_root_new(clos),
-                        ml_global_root_destroy);
-    return Val_unit;
-    return Val_int ( g_io_add_watch_full(GIOChannel_val(io),
-					 Option_val(prio,Int_val,0),
-					 Io_condition_val(cond),
-					 ml_g_io_channel_watch,
-					 ml_global_root_new(clos),
-					 ml_g_destroy_notify) );
+    return Val_long ( g_io_add_watch_full(GIOChannel_val(io),
+					  Option_val(prio,Int_val,G_PRIORITY_DEFAULT),
+					  Io_condition_val(cond),
+					  ml_g_io_channel_watch,
+					  ml_global_root_new(clos),
+					  ml_global_root_destroy) );
 }
 
 CAMLprim value ml_g_io_channel_read(value io, value str, value offset,
@@ -403,7 +401,7 @@ CAMLprim value ml_g_convert_with_fallback(value fallback, value to, value from, 
   GError *error=NULL;
   c_res = g_convert_with_fallback(String_val(str),string_length(str),
 				  String_val(to),String_val(from),
-				  Option_val(fallback ,String_val,NULL),
+				  String_option_val(fallback),
 				  NULL,&bw,&error);
   if (error != NULL) ml_raise_gerror(error);
   return caml_copy_string_len_and_free (c_res, bw);

@@ -29,6 +29,8 @@ MLLIBS = lablgtk.cma
 CLIBS = liblablgtk2$(XA)
 #MLLINK = unix.cma str.cma
 
+GTKCFLAGS += -DLOG_DOMAIN=\"LablGTK\"
+
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
 MLLINK = -custom
@@ -388,6 +390,9 @@ endif
 ifdef USE_GNOMECANVAS
 DOCFILES += gnomeCanvas.ml gnoCanvas.mli
 endif
+ifdef USE_GNOMEUI
+DOCFILES += gnomeDruid.ml gnoDruid.mli
+endif
 ifdef USE_PANEL
 DOCFILES += panel.mli
 endif
@@ -395,10 +400,10 @@ endif
 OCAMLDOC = ocamldoc
 lablgtk$(XO)doc : $(DOCFILES) $(ALLOBJS)
 	$(OCAMLDOC) -dump $@ -v $(if $(LABLGLDIR),-I $(LABLGLDIR)) $(DOCFILES)
-gtkdoc.cmo : gtkdoc.ml4
-	$(CAMLC) -I +ocamldoc -pp "$(CAMLP4O) pa_macro.cmo $(ODOC_DEF) -impl" -c -impl $<
+gtkdoc.cmo : gtkdoc.ml
+	$(CAMLC) -I +ocamldoc -pp "$(CAMLP4O) pa_macro.cmo $(ODOC_DEF)" -c $<
 DOCDIR=../doc
-DOC_URI=
+DOC_URI=file:///usr/share/gtk-doc/html
 DOC_BASE_URI=$(if $(DOC_URI),-base-uri $(DOC_URI))
 doc : lablgtk$(XO)doc gtkdoc.cmo
 	mkdir -p $(DOCDIR)/html

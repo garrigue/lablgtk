@@ -31,8 +31,3 @@ value Val_gboxed_new(GType t, gpointer p); /* without copy */
 #else
 #define check_cast(f,v) (Pointer_val(v) == NULL ? NULL : f(Pointer_val(v)))
 #endif
-
-/* Yell if a caml callback raised an exception */
-#undef  G_LOG_DOMAIN
-#define G_LOG_DOMAIN "LablGTK"
-#define CAML_EXN_LOG(name) g_critical("%s: callback raised an exception", name)

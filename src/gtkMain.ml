@@ -51,31 +51,3 @@ end
 module Rc = struct
   external add_default_file : string -> unit = "ml_gtk_rc_add_default_file"
 end
-
-module Message = struct
-  (* Use normal caml printing function *)
-  let _ =
-    Glib.Message.set_print_handler (fun msg -> print_string msg)
-
-  (* A list of strings used as prefix to determine whether a warning
-     should cause an exception or not *)
-  let critical_warnings =
-    ref [ "Invalid text buffer iterator" ]
-
-  let is_critical_warning s =
-    List.exists !critical_warnings ~f:
-      (fun w ->
-        let len = String.length w in
-        String.length s >= len && w = String.sub s ~pos:0 ~len)
-
-  let () =
-    (* Cause exceptions for critical messages in the Gtk domain,
-       including "critical" warnings *)
-    Glib.Message.set_log_handler ~domain:"Gtk" ~levels:[`WARNING;`CRITICAL]
-      (fun ~level msg ->
-        let crit = level land (Glib.Message.log_level `CRITICAL) <> 0 in
-        if crit || is_critical_warning msg then
-          raise (Glib.Critical ("Gtk", msg))
-        else prerr_endline ("Gtk-WARNING **: " ^ msg));
-    ()
-end

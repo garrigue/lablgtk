@@ -7,7 +7,6 @@ type unichar = int
 type unistring = unichar array
 
 exception GError of string
-exception Critical of string * string
 
 (** {3 Main Event Loop} *)
 
@@ -26,19 +25,23 @@ module Main : sig
   val setlocale : locale_category -> string option -> string 
 end
 
+val int_of_priority : [< `HIGH | `DEFAULT | `HIGH_IDLE | `DEFAULT_IDLE | `LOW] -> int
+
 (** @gtkdoc glib glib-The-Main-Event-Loop *)
 module Timeout : sig
   type id
-  val add : ms:int -> callback:(unit -> bool) -> id
+  val add : ?prio:int -> ms:int -> callback:(unit -> bool) -> id
   val remove : id -> unit
 end
 
 (** @gtkdoc glib glib-The-Main-Event-Loop *)
 module Idle : sig
   type id
-  val add : callback:(unit -> bool) -> id
+  val add : ?prio:int -> callback:(unit -> bool) -> id
   val remove : id -> unit
 end
+
+(** {3 IO Channels} *)
 
 (** IO Channels
    @gtkdoc glib glib-IO-Channels *)
@@ -59,11 +62,6 @@ end
 
 (** @gtkdoc glib glib-Message-Logging *)
 module Message : sig
-  (* Redirect output *)
-  type print_func = string -> unit
-  val set_print_handler : (string -> unit) -> print_func
-
-  (* Redirect log, or cause exception *)
   type log_level =
     [ `CRITICAL
     | `DEBUG
@@ -73,13 +71,17 @@ module Message : sig
     | `INFO
     | `MESSAGE
     | `WARNING]
-  val log_level : log_level -> int
+  val log_level : [< log_level|`CUSTOM of int] -> int
   type log_handler
   val set_log_handler :
-    domain:string ->
-    levels:log_level list -> (level:int -> string -> unit) -> log_handler
+    ?domain:string ->
+    levels:log_level list -> 
+    (level:int -> string -> unit) -> log_handler
   val remove_log_handler : log_handler -> unit
-  val handle_criticals : domain:string -> unit
+  val set_always_fatal : log_level list -> unit
+  val set_fatal_mask : ?domain:string -> [log_level|`CUSTOM of int] list -> unit
+
+  val log : ?domain:string -> [log_level|`CUSTOM of int] -> ('a, unit, string, unit) format4 -> 'a
 end
 
 (*

@@ -134,7 +134,7 @@ static void marshal (GClosure *closure, GValue *ret,
     Store_field(vargs, 1, Val_int(nargs));
     Store_field(vargs, 2, Val_GValue_wrap((GValue*)args));
 
-    callback ((value)closure->data, vargs);
+    callback_exn ((value)closure->data, vargs);
 
     CAMLreturn0;
 }

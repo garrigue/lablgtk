@@ -40,13 +40,13 @@ end
 
 module Timeout : sig
   type id = Glib.Timeout.id
-  val add : ms:int -> callback:(unit -> bool) -> id
+  val add : ?prio:int -> ms:int -> callback:(unit -> bool) -> id
   val remove : id -> unit
 end
 
 module Idle : sig
   type id = Glib.Idle.id
-  val add : callback:(unit -> bool) -> id
+  val add : ?prio:int -> callback:(unit -> bool) -> id
   val remove : id -> unit
 end
 
