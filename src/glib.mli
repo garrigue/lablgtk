@@ -162,3 +162,8 @@ module Utf8 : sig
   val to_unistring : string -> unistring
   val first_char : string -> unichar
 end
+
+(** @gtkdoc glib glib-Simple-XML-Subset-Parser *)
+module Markup : sig
+  val escape_text: string -> string
+end

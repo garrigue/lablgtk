@@ -5,6 +5,7 @@ $Id$
     GnoCanvas.text class with getters for text height and width
   * relax type constraint in GUtil.memo so that it can work for
     non-widget gobjects
+  * add Glib.Markup.escape_text (useful for dealing with pango markup)
 
 2004.06.01 [Olivier]
   * export a couple of properties in GButton.button_skel

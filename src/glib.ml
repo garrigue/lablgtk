@@ -248,3 +248,7 @@ module Utf8 = struct
   let first_char s =
     to_unichar s ~pos:(ref 0)
 end
+
+module Markup = struct
+  external escape_text : string -> string = "ml_g_markup_escape_text"
+end
