@@ -31,7 +31,7 @@ value ml_lookup_flags_getter (lookup_info *table, int data);
 #if GTK_CHECK_VERSION(2,2,0) && !defined(DISABLE_GTK22)
 #define HASGTK22
 #endif
-#if GTK_CHECK_VERSION(2,3,1) && !defined(DISABLE_GTK24)
+#if GTK_CHECK_VERSION(2,3,2) && !defined(DISABLE_GTK24)
 #define HASGTK24
 #endif
 

@@ -432,6 +432,7 @@ class view : tree_view obj ->
     method expand_all : unit -> unit
     method expand_row : ?all:bool -> tree_path -> unit
     method expander_column : view_column option
+    method fixed_height_mode : bool
     method get_column : int -> view_column
     method get_cursor : unit -> tree_path option * tree_view_column option
     method get_path_at_pos :
@@ -456,6 +457,7 @@ class view : tree_view obj ->
       ?edit:bool -> tree_path -> view_column -> unit (** @since GTK 2.2 *)
     method set_enable_search : bool -> unit
     method set_expander_column : view_column option -> unit
+    method set_fixed_height_mode : bool -> unit
     method set_hadjustment : GData.adjustment -> unit
     method set_headers_clickable : bool -> unit
     method set_headers_visible : bool -> unit
@@ -473,6 +475,7 @@ val view :
   ?hadjustment:GData.adjustment ->
   ?vadjustment:GData.adjustment ->
   ?enable_search:bool ->
+  ?fixed_height_mode:bool ->
   ?headers_clickable:bool ->
   ?headers_visible:bool ->
   ?reorderable:bool ->
