@@ -131,17 +131,22 @@ class model : ([> `treemodel] as 'a) obj ->
     val obj : 'a obj
     val id : int
     method as_model : Gtk.tree_model
+    method misc : gobject_ops
     method coerce : model
-    method get : row:tree_iter -> column:'b column -> 'b
+    method flags : GtkEnums.tree_model_flags list
+    method n_columns : int
     method get_column_type : int -> Gobject.g_type
     method get_iter : tree_path -> tree_iter
     method get_path : tree_iter -> tree_path
     method get_row_reference : tree_path -> row_reference
-    method iter_children : ?nth:int -> tree_iter -> tree_iter
+    method get : row:tree_iter -> column:'b column -> 'b
+    method get_iter_first : tree_iter option
     method iter_next : tree_iter -> bool
+    method iter_has_child : tree_iter -> bool
+    method iter_n_children : tree_iter -> int
+    method iter_children : ?nth:int -> tree_iter -> tree_iter
     method iter_parent : tree_iter -> tree_iter
-    method misc : gobject_ops
-    method n_columns : int
+    method foreach : (tree_path -> tree_iter -> bool) -> unit
   end
 
 (** @gtkdoc gtk GtkTreeSortable *)
@@ -259,7 +264,9 @@ module Path : sig
   val to_string : Gtk.tree_path -> string
   val get_depth : Gtk.tree_path -> int
   val is_ancestor : Gtk.tree_path -> Gtk.tree_path -> bool
-  (* Mutating functions *)
+
+  (** {5 Mutating functions} *)
+
   val append_index : Gtk.tree_path -> int -> unit
   val prepend_index : Gtk.tree_path -> int -> unit
   val next : Gtk.tree_path -> unit

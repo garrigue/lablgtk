@@ -8,6 +8,7 @@
 #include "wrappers.h"
 #include "ml_glib.h"
 #include "ml_gobject.h"
+#include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "ml_gdkpixbuf.h"
 #include "gtk_tags.h"
@@ -68,8 +69,6 @@ ML_1 (gtk_icon_factory_remove_default, GtkIconFactory_val, Unit)
 ML_1 (gtk_icon_factory_lookup_default, String_val, Val_GtkIconSet)
 
 /* GtkStockItem */
-static Make_Flags_val (GdkModifier_val)
-
 CAMLprim value ml_gtk_stock_add(value item)
 {
   GtkStockItem it;

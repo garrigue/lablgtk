@@ -136,6 +136,8 @@ ML_1 (gtk_tree_row_reference_get_path, GtkTreeRowReference_val,
       Val_GtkTreePath) /* already copied! */
 
 /* TreeModel */
+#define Val_TreeModel_flags(f) ml_lookup_flags_getter(ml_table_tree_model_flags,f)
+ML_1 (gtk_tree_model_get_flags, GtkTreeModel_val, Val_TreeModel_flags)
 ML_1 (gtk_tree_model_get_n_columns, GtkTreeModel_val, Val_int)
 ML_2 (gtk_tree_model_get_column_type, GtkTreeModel_val, Int_val, Val_GType)
 ML_3 (gtk_tree_model_get_iter, GtkTreeModel_val, GtkTreeIter_val,
@@ -144,14 +146,38 @@ ML_2 (gtk_tree_model_get_path, GtkTreeModel_val, GtkTreeIter_val,
       Val_GtkTreePath)
 ML_4 (gtk_tree_model_get_value, GtkTreeModel_val, GtkTreeIter_val, Int_val,
       GValue_val, Unit)
+ML_2 (gtk_tree_model_get_iter_first, GtkTreeModel_val, GtkTreeIter_val, Val_bool)
 ML_2 (gtk_tree_model_iter_next, GtkTreeModel_val, GtkTreeIter_val,
       Val_bool)
-ML_3 (gtk_tree_model_iter_children, GtkTreeModel_val, GtkTreeIter_val,
-      GtkTreeIter_val, Val_bool)
+ML_2 (gtk_tree_model_iter_has_child, GtkTreeModel_val, GtkTreeIter_val, Val_bool)
 ML_2 (gtk_tree_model_iter_n_children, GtkTreeModel_val, GtkTreeIter_val,
       Val_int)
+ML_4 (gtk_tree_model_iter_nth_child, GtkTreeModel_val, GtkTreeIter_val, 
+      GtkTreeIter_val, Int_val, Val_bool)
 ML_3 (gtk_tree_model_iter_parent, GtkTreeModel_val, GtkTreeIter_val,
       GtkTreeIter_val, Val_bool)
+static gboolean model_foreach_func(GtkTreeModel *model, 
+				   GtkTreePath *path, GtkTreeIter *iter, 
+				   gpointer data)
+{
+  value *closure = data;
+  CAMLparam0();
+  CAMLlocal3(vpath, viter, vret);
+  vpath = Val_GtkTreePath_copy(path);
+  viter = Val_GtkTreeIter(iter);
+  vret = callback2_exn(*closure, vpath, viter);
+  if (Is_exception_result(vret))
+    CAMLreturn(FALSE);
+  CAMLreturn(Bool_val(vret));
+}
+CAMLprim value ml_gtk_tree_model_foreach(value m, value cb)
+{
+  CAMLparam1(cb);
+  gtk_tree_model_foreach(GtkTreeModel_val(m),
+			 model_foreach_func,
+			 &cb);
+  CAMLreturn(Val_unit);
+}
 
 /* gtktreestore.h */
 

@@ -64,6 +64,7 @@ extern value Val_GdkRegion (GdkRegion *); /* finalizer is destroy! */
 #define XID_val Int32_val
 
 extern int OptFlags_GdkModifier_val (value);
+extern int Flags_GdkModifier_val (value);
 extern int Flags_Event_mask_val (value);
 extern lookup_info ml_table_extension_events[];
 #define Extension_events_val(key) ml_lookup_to_c (ml_table_extension_events, key)
