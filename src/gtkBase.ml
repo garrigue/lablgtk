@@ -168,6 +168,9 @@ module Widget = struct
       |	None -> invalid_arg "GtkBase.Widget.Signals.marshal"
     let marshal_opt f argv =
       f (may_map ~f:cast (GtkArgv.get_object argv ~pos:0))
+    let marshal_style f argv =
+      f (Obj.magic (GtkArgv.get_pointer argv ~pos:0 : _ option)
+           : Gtk.style option)
     let marshal_drag1 f argv =
       match GtkArgv.get_pointer argv ~pos:0 with
 	Some p -> f (Obj.magic p : Gdk.drag_context)
@@ -211,6 +214,8 @@ module Widget = struct
       { name = "state_changed"; marshaller = marshal }
     let parent_set : ([>`widget],_) t =
       { name = "parent_set"; marshaller = marshal_opt }
+    let style_set : ([>`widget],_) t =
+      { name = "style_set"; marshaller = marshal_style }
     let drag_begin : ([>`widget],_) t =
       { name = "drag_begin"; marshaller = marshal_drag1 }
     let drag_end : ([>`widget],_) t =

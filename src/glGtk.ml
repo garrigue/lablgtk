@@ -78,7 +78,7 @@ end
 let area options ?share ?(width=0) ?(height=0) ?packing ?show () =
   let share =
     match share with Some (x : area) -> Some x#as_area | None -> None in
-  let w = Raw.create options ~share:(optboxed share) in
+  let w = Raw.create options ~share:(Gpointer.optboxed share) in
   if width <> 0 || height <> 0 then GtkMisc.DrawingArea.size w ~width ~height;
   GtkBase.Widget.add_events w [`EXPOSURE];
   GObj.pack_return (new area w) ~packing ~show
