@@ -25,19 +25,20 @@ static void ml_raise_gdkpixbuf_error(GError *err)
 {
   static value *exn = NULL;
   if(err->domain == GDK_PIXBUF_ERROR) {
-    CAMLparam0();
-    CAMLlocal2(b, msg);
-    if(exn == NULL)
-      exn = caml_named_value("gdk_pixbuf_error");
-    if(exn == NULL)
-      ml_raise_gerror(err);
-    msg = copy_string(err->message);
-    /* is this the right way to raise exceptions with multiple arguments ? */
-    b = alloc_small(3, 0);
-    Field(b, 0) = *exn;
-    Field(b, 1) = Val_int(err->code);
-    Field(b, 2) = msg;
-    g_error_free(err);
+    value b = 0, msg = 0;
+    Begin_roots2(b, msg);
+      if(exn == NULL)
+	exn = caml_named_value("gdk_pixbuf_error");
+      if(exn == NULL)
+	ml_raise_gerror(err);
+      msg = copy_string(err->message);
+      /* is this the right way to raise exceptions with multiple arguments ? */
+      b = alloc_small(3, 0);
+      Field(b, 0) = *exn;
+      Field(b, 1) = Val_int(err->code);
+      Field(b, 2) = msg;
+      g_error_free(err);
+    End_roots();
     mlraise(b);
   }
   ml_raise_gerror(err);
