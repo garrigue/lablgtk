@@ -140,10 +140,22 @@ let packer ?:spacing ?:border_width ?:width ?:height ?:packing ?:show () =
 class paned obj = object
   inherit container_full (obj : Gtk.paned obj)
   method add_events = Widget.add_events obj
-  method add1 w = Paned.add1 obj (as_widget w)
-  method add2 w = Paned.add2 obj (as_widget w)
+  method add w =
+    if List.length (Container.children obj) = 2 then
+      raise(Error "Gpack.paned#add: already full");
+    Container.add obj (as_widget w)
+  method add1 w =
+    try ignore(Paned.child1 obj); raise(Error "GPack.paned#add1: already full")
+    with _ -> Paned.add1 obj (as_widget w)
+  method add2 w =
+    try ignore(Paned.child2 obj); raise(Error "GPack.paned#add2: already full")
+    with _ -> Paned.add2 obj (as_widget w)
   method set_handle_size = Paned.set_handle_size obj
   method set_gutter_size = Paned.set_gutter_size obj
+  method child1 = new widget (Paned.child1 obj)
+  method child2 = new widget (Paned.child2 obj)
+  method handle_size = Paned.handle_size obj
+  method gutter_size = Paned.gutter_size obj
 end
 
 let paned dir ?:handle_size ?:gutter_size

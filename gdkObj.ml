@@ -33,9 +33,9 @@ class pixmap ?:mask pm = object
   method point :x :y =
     pixmap#point :x :y;
     may bitmap fun:(fun m -> m#point :x :y)
-  method line :x :y :x :y =
-    pixmap#line :x :y :x :y;
-    may bitmap fun:(fun m -> m#line :x :y :x :y)
+  method line :x :y x:x' y:y' =
+    pixmap#line :x :y x:x' y:y';
+    may bitmap fun:(fun m -> m#line :x :y x:x' y:y')
   method rectangle :x :y :width :height ?:filled () =
     pixmap#rectangle :x :y :width :height ?:filled ();
     may bitmap fun:(fun m -> m#rectangle :x :y :width :height ?:filled ())

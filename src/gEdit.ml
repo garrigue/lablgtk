@@ -110,7 +110,7 @@ class text obj = object
   inherit editable (obj : Gtk.text obj) as super
   method get_chars :start end:e =
     if start < 0 || e > Text.get_length obj || e < start then
-      invalid_arg "GEdit.text::get_chars";
+      invalid_arg "GEdit.text#get_chars";
     super#get_chars :start end:e
   method add_events = Widget.add_events obj
   method set_point = Text.set_point obj

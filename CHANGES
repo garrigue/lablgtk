@@ -1,5 +1,12 @@
 $Id$
 
+1999.2.24
+  * add checks in add methods, to avoid critical errors
+
+1999.2.23
+  * add dcalendar.ml (submitted by Ken Wakita) and csview.ml
+  * correct bug in GdkObj.pixmap#line
+
 1999.12.19
   * release lablGTK beta2
 
