@@ -18,8 +18,6 @@ let _ =
   pixdraw2#set foreground:`Black;
   pixdraw2#arc x:3 y:3 width:34 height:34
 
-let table = new_table columns:8 rows:8
-
 class cell () = object (self)
   inherit button (Button.create ())
   val pm = new_pixdraw pixdraw
@@ -65,32 +63,55 @@ let action x y :color =
     true
   end
 
-let current_color = ref `white
+let count_cells () =
+  Array.fold_left
+    (Array.fold_left
+       begin fun (w,b) (cell : cell) ->
+	 match cell#color with
+	   `white -> (w+1,b) | `black -> (w,b+1) | `none -> (w,b)
+       end)
+    (0,0) cells
 
+let table = new_table columns:8 rows:8
 let vbox = new_box `VERTICAL
+let hbox = new_box `HORIZONTAL
+let frame = new_frame ()
+let label = new_label label:""
+
+let update_label () =
+  let w, b = count_cells () in
+  label#set label:(Printf.sprintf "White: %d Black: %d" w b)
 
 let bar = new_statusbar ()
 let turn = bar#new_context name:"turn"
 let messages = bar#new_context name:"messages"
+
+let current_color = ref `white
 
 let _ =
   window#connect#destroy callback:Main.quit;
   window#set title:"pousse";
   window#add vbox;
   vbox#add table;
-  vbox#add bar;
+  vbox#add hbox;
+  hbox#add bar;
+  hbox#pack frame expand:false;
+  frame#set shadow_type:`IN;
+  frame#add label;
+  label#set justify:`LEFT xpad:5 xalign:0.0;
   for i = 0 to 7 do for j = 0 to 7 do
     let cell = cells.(i).(j) in
     cell#connect#event#enter_notify
       callback:(fun _ -> cell#misc#grab_focus (); false);
     cell#connect#clicked callback:
       begin fun () ->
-	if action i j color:!current_color then
+	if action i j color:!current_color then begin
+	  update_label ();
 	  current_color :=
 	    match !current_color with
 	      `white -> turn#pop (); turn#push "Player is black"; `black
 	    | `black -> turn#pop (); turn#push "Player is white"; `white
-	else
+	end else
 	  messages#flash "You cannot play there"
       end;
     table#attach left:i top:j cell
@@ -99,6 +120,7 @@ let _ =
   cells.(4).(4)#set_color `white;
   cells.(3).(4)#set_color `black;
   cells.(4).(3)#set_color `black;
+  update_label ();
   turn#push "Player is white";
   window#show_all ();
   Main.main ()
