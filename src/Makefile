@@ -102,7 +102,7 @@ MLOBJS = gaux.cmo gpointer.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
 	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
-	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gBin.cmo \
+	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gWindow.cmo gBin.cmo \
 	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
