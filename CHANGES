@@ -1,5 +1,8 @@
 $Id$
 
+1999.6.1
+  * added experimental GtkMenu for a cleaner approach to OO (Jacques)
+
 1999.5.31
   * GtkObj: list, tree and menu_shell inherit from item_container (Jacques)
   * Argv.get_{string,pointer,object} may raise Null_pointer (Jacques)
