@@ -286,7 +286,7 @@ let make_hilbert root =
        ~props:( [ `POINTS points ; `WIDTH_UNITS 4. ;
 		  `CAP_STYLE `PROJECTING ; `JOIN_STYLE `MITER ] @
 		if (new GnoCanvas.canvas root#canvas)#aa   (* glurg ! c'est moche *)
-		then [ `FILL_COLOR_RGBA (Int32.of_int 0xff000080) ]
+		then [ `FILL_COLOR_RGBA 0xff000080l ]
 		else [ `FILL_COLOR "red" ;
 		       `FILL_STIPPLE (Gdk.Bitmap.create_from_data ~width:2 ~height:2 "\002\001")
 		     ] ) ) ;

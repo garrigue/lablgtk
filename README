@@ -30,6 +30,11 @@ Status:
 
   There are of course many other changes and additions.
 
+  Note that some widgets are only supported in newer versions of GTK+
+  (post 2.3). If you use them in older versions, you will get a runtime
+  error:
+    Failure "Gobject.unsafe_create : type GtkActionGroup is not yet defined"
+
 How to compile:
 
   You should normally not need to modify Makefiles.

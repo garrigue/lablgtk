@@ -321,7 +321,7 @@ let cmw_destroy_cb _ =
 let cmw_color parent _ =
   let csd = GWindow.color_selection_dialog ~modal:true
       ~title:"This is a modal color selection dialog" () in
-  csd # set_transient_for (parent :> GWindow.window);
+  csd # set_transient_for parent#as_window;
   csd # connect#destroy ~callback:cmw_destroy_cb;
   csd # ok_button # connect#clicked ~callback:csd#destroy;
   csd # cancel_button # connect#clicked ~callback:csd#destroy;
@@ -331,7 +331,7 @@ let cmw_color parent _ =
 let cmw_file parent _ =
   let fs = GWindow.file_selection ~modal:true
       ~title:"This is a modal file selection dialog" () in
-  fs # set_transient_for (parent :> GWindow.window);
+  fs # set_transient_for parent#as_window;
   fs # connect#destroy ~callback:cmw_destroy_cb;
   fs # ok_button # connect#clicked ~callback:fs#destroy;
   fs # cancel_button # connect#clicked ~callback:fs#destroy;

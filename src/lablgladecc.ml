@@ -97,7 +97,7 @@ let classes = ref [
   "GtkTreeView", ("GtkTree.TreeView", "GTree.view");
   "GtkTree", ("GtkTree.Tree", "GTree.tree");
   "GtkCTree", ("GtkBase.Container", "GContainer.container");
-  "GtkWindow", ("GtkWindow.Window", "GWindow.window_full");
+  "GtkWindow", ("GtkWindow.Window", "GWindow.window");
   "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog");
   "GtkInputDialog", ("GtkWindow.Dialog", "GWindow.dialog");
   "GtkFileSelection", ("GtkWindow.FileSelection", "GWindow.file_selection");
