@@ -1,5 +1,10 @@
 $Id$
 
+1999.10.13
+  * improved gtkThread.ml (no timer)
+  * modify Sys.argv in place (gtkMain.ml)
+  * add set_row_data and get_row_data for GtkCList
+
 1999.10.11
   * bugfixes in Makefile, radtest and lv
 

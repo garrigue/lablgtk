@@ -172,9 +172,15 @@ module CList = struct
     let arr = Array.create len:(get_columns w) fill:None in
     List.fold_left texts acc:0
       fun:(fun text :acc -> arr.(acc) <- text; acc+1);
-    insert w row (Array.map fun:optstring arr)
+    let r = insert w row (Array.map fun:optstring arr) in
+    if r = -1 then invalid_arg "GtkCList::insert";
+    r
   external remove : [> clist] obj -> int -> unit
       = "ml_gtk_clist_remove"
+  external set_row_data : [> clist] obj -> int -> Obj.t -> unit
+      = "ml_gtk_clist_set_row_data"
+  external get_row_data : [> clist] obj -> int -> Obj.t
+      = "ml_gtk_clist_get_row_data"
   external select : [> clist] obj -> int -> int -> unit
       = "ml_gtk_clist_select_row"
   external unselect : [> clist] obj -> int -> int -> unit

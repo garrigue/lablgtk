@@ -56,7 +56,7 @@ How to run the examples:
 How to use the threaded toplevel:
 
 	% ./lablgtk_t
-	        Objective Caml version 2.02 with Kyoto labels and variants
+	        Objective Caml version 2.02 with Kyoto extensions (99/08/05)
 	
 	# let id = GtkThread.start ();;
 	val id : Thread.t = <abstr>
