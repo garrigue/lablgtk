@@ -21,9 +21,11 @@ object
 
 end
 
-let new_tihseparator ~name = new tiseparator ~dir: `HORIZONTAL ~name
+let new_tihseparator ~name ?(listprop = []) =
+  new tiseparator ~dir: `HORIZONTAL ~name
     ~widget:(GMisc.separator `HORIZONTAL ())
-let new_tivseparator ~name = new tiseparator ~dir: `VERTICAL ~name
+let new_tivseparator ~name ?(listprop = []) = 
+  new tiseparator ~dir: `VERTICAL ~name
     ~widget:(GMisc.separator `VERTICAL ())
 
 
@@ -42,7 +44,8 @@ object(self)
     classe <- "statusbar"
 end
 
-let new_tistatusbar ~name = new tistatusbar ~widget:(GMisc.statusbar ()) ~name
+let new_tistatusbar ~name ?(listprop = []) =
+  new tistatusbar ~widget:(GMisc.statusbar ()) ~name
 
 
 
@@ -103,17 +106,6 @@ object(self)
 
   method private get_mandatory_props = [ "text" ]
 
-  method private save_clean_proplist =
-    List.remove_assoc "text" widget#save_clean_proplist
-
-  method private emit_clean_proplist plist =
-    List.remove_assoc "text" (widget#emit_clean_proplist plist)
-
-  method private save_start formatter =
-    Format.fprintf formatter "@\n@[<2><%s name=%s>" classe name;
-    Format.fprintf formatter "@\ntext=\"%s\""
-      (List.assoc "text" proplist)#get
-
   initializer
     classe <- "label";
     proplist <-  proplist @
@@ -125,7 +117,8 @@ object(self)
       ]
 end
 
-let new_tilabel ~name = new tilabel ~widget:(GMisc.label ~text:name ()) ~name
+let new_tilabel ~name ?(listprop = []) =
+  new tilabel ~widget:(GMisc.label ~text:name ()) ~name
 
 
 
@@ -179,7 +172,8 @@ object(self)
       ]
 end
 
-let new_tinotebook ~name = new tinotebook ~widget:(GMisc.notebook ()) ~name
+let new_tinotebook ~name ?(listprop = []) =
+  new tinotebook ~widget:(GMisc.notebook ()) ~name
 
 
 
@@ -206,5 +200,5 @@ object(self)
       ]
 end
 
-let new_ticolor_selection ~name = new ticolor_selection
-    ~widget:(GMisc.color_selection ()) ~name
+let new_ticolor_selection ~name ?(listprop = []) =
+  new ticolor_selection ~widget:(GMisc.color_selection ()) ~name

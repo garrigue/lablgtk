@@ -27,8 +27,8 @@ object(self)
 	  i = String.length n || n.[i+1] <> ':'
 	with Not_found -> true)
 
-  method private emit_clean_proplist pl =
-    List.filter (container#emit_clean_proplist pl)
+  method private emit_clean_proplist =
+    List.filter container#emit_clean_proplist
       ~f:(fun (n,p) ->
 	try
 	  let i = String.index n ':' in
@@ -40,7 +40,7 @@ object(self)
 	(fun pl propname ->
 	  change_property_name (oldn ^ propname) (newn ^ propname) pl)
 	[ "::expand"; "::fill"; "::padding" ];
-    Propwin.update self
+    Propwin.update self false
 
   method child_up child =
     let pos = list_pos ~item:child (List.map ~f:fst children) in
@@ -69,25 +69,25 @@ object(self)
     end;
     let n = child#name in
     let expand =
-      new prop_bool ~name:"expand" ~init:"false" ~set:
+      new prop_bool ~name:"expand" ~init:"true" ~set:
 	begin fun v ->
 	  box#set_child_packing (child#base) ~expand:v;
-	  Propwin.update child;
-	  Propwin.update self; false
+	  Propwin.update child false;
+	  Propwin.update self false; true
 	end
     and fill =
       new prop_bool ~name:"fill" ~init:"true" ~set:
 	begin fun v ->
 	  box#set_child_packing (child#base) ~fill:v;
-	  Propwin.update child;
-	  Propwin.update self; true
+	  Propwin.update child false;
+	  Propwin.update self false; true
 	end
     and padding =
       new prop_int ~name:"padding" ~init:"0" ~set:
 	begin fun v ->
 	  box#set_child_packing (child#base) ~padding:v;
-	  Propwin.update child;
-	  Propwin.update self; true
+	  Propwin.update child false;
+	  Propwin.update self false; true
 	end
     in
     proplist <-  proplist @ 
@@ -96,7 +96,7 @@ object(self)
         (n ^ "::padding"), padding ];
     child#add_to_proplist
       [ "expand", expand; "fill", fill; "padding", padding ];
-    Propwin.update self ~show:true
+    Propwin.update self true
          
 
   method remove child =
@@ -106,7 +106,7 @@ object(self)
     proplist <-  List.fold_left ~init:proplist
 	~f:(fun acc n -> List.remove_assoc n acc)
 	[ (n ^ "::expand"); (n ^ "::fill"); (n ^ "::padding") ];
-    Propwin.update self ~show:true
+    Propwin.update self true
 
   initializer
     classe <- (match dir with `VERTICAL -> "vbox" | _ -> "hbox");
@@ -123,8 +123,8 @@ end
 class tihbox = tibox ~dir:`HORIZONTAL
 class tivbox = tibox ~dir:`VERTICAL
 
-let new_tihbox ~name = new tihbox ~widget:(GPack.hbox ()) ~name
-let new_tivbox ~name = new tivbox ~widget:(GPack.vbox ()) ~name
+let new_tihbox ~name ?(listprop = []) = new tihbox ~widget:(GPack.hbox ()) ~name
+let new_tivbox ~name ?(listprop = []) = new tivbox ~widget:(GPack.vbox ()) ~name
 
 
 
@@ -188,10 +188,10 @@ end
 class tihbutton_box = tibbox ~dir:`HORIZONTAL
 class tivbutton_box = tibbox ~dir:`VERTICAL
 
-let new_tihbutton_box ~name =
+let new_tihbutton_box ~name ?(listprop = []) =
   new tihbutton_box ~widget:(GPack.button_box `HORIZONTAL ()) ~name
 
-let new_tivbutton_box ~name =
+let new_tivbutton_box ~name ?(listprop = []) =
   new tivbutton_box ~widget:(GPack.button_box `VERTICAL ()) ~name
 
 
@@ -201,16 +201,16 @@ let get_fixed_pos () =
   let rx = ref 0 and ry = ref 0 in
   let w  = GWindow.window ~modal:true () in
   let v  = GPack.vbox  ~packing:w#add () in
-  let l  = GMisc.label ~text:"Enter position for child" ~packing:v#add () in
-  let h1 = GPack.hbox ~packing:v#add () in
-  let l1 = GMisc.label ~text:"x:" ~packing:h1#add () in
-  let e1 = GEdit.entry ~text:"0" ~packing:h1#add () in
-  let h2 = GPack.hbox ~packing:v#add () in
-  let l2 = GMisc.label ~text:"y" ~packing:h2#add () in
-  let e2 = GEdit.entry ~text:"0" ~packing:h2#add () in
-  let h7 = GPack.hbox ~packing:v#add () in
-  let b1 = GButton.button ~label:"OK" ~packing:h7#add () in
-  let b2 = GButton.button ~label:"Cancel" ~packing:h7#add () in
+  let l  = GMisc.label ~text:"Enter position for child" ~packing:v#pack () in
+  let h1 = GPack.hbox ~packing:v#pack () in
+  let l1 = GMisc.label ~text:"x:" ~packing:h1#pack () in
+  let e1 = GEdit.entry ~text:"0" ~packing:h1#pack () in
+  let h2 = GPack.hbox ~packing:v#pack () in
+  let l2 = GMisc.label ~text:"y" ~packing:h2#pack () in
+  let e2 = GEdit.entry ~text:"0" ~packing:h2#pack () in
+  let h7 = GPack.hbox ~packing:v#pack () in
+  let b1 = GButton.button ~label:"OK" ~packing:h7#pack () in
+  let b2 = GButton.button ~label:"Cancel" ~packing:h7#pack () in
   w#show ();
   b1#connect#clicked
     ~callback:(fun () ->
@@ -242,5 +242,5 @@ object(self)
     classe <- "fixed"
 end
 
-let new_tifixed ~name =
+let new_tifixed ~name ?(listprop = []) =
   new tifixed ~widget:(GPack.fixed ()) ~name

@@ -1,5 +1,12 @@
 
-let new_class_list = [
+let new_class_list (* :
+  (string *
+  (name:string -> ?listprop:string list ->
+   parent_tree:GTree2.tree -> pos:int ->
+   ?insert_evbox:bool ->
+   
+   TiBase.window_and_tree0 -> TiBase.tiwidget0)) list *)
+= [
   "window",          TiWindow.new_tiwindow;
   "hbox",            TiPack.new_tihbox;
   "vbox",            TiPack.new_tivbox;
@@ -31,5 +38,5 @@ let new_class_list = [
 
 let _ =
   TiBase.new_tiwidget :=
-    (fun ~classe ?(pos = -1) ~name ~parent_tree ?insert_evbox ?(listprop = []) -> (List.assoc classe new_class_list) ~pos ~name ~parent_tree ?insert_evbox )
+    (fun ~classe ?(pos = -1) ~name ~parent_tree ?insert_evbox ?(listprop = []) -> (List.assoc classe new_class_list) ~pos ~name ~parent_tree ?insert_evbox ~listprop)
 

@@ -19,12 +19,12 @@ object(self)
 
   method private get_mandatory_props = [ "title" ]
 
-  method private save_clean_proplist =
+(*  method private save_clean_proplist =
     List.remove_assoc "title" container#save_clean_proplist
 
   method private emit_clean_proplist plist =
     List.remove_assoc "title" (container#emit_clean_proplist plist)
-
+*)
   method remove_me () =
     let sref = ref "" in
     self#save_to_string sref;
@@ -45,9 +45,16 @@ object(self)
 
   method private get_packing packing = ""
 
-  method emit_code f =
-    Format.fprintf f "(* Code for %s *)@\n@\n@[<hv 2>class %s () ="
-      name name;
+  method emit_code f param_list =
+    let param_string =
+      match param_list with
+      |	 [] -> ""
+      |	_ -> "['" ^
+	  (String.concat ~sep:", '"
+	     (List.map ~f:(fun c -> (String.make 1 c)) param_list)) ^
+	  "] " in
+    Format.fprintf f "(* Code for %s *)@\n@\n@[<hv 2>class %s%s () ="
+      name param_string name;
     self#emit_init_code f ~packing:"";
     Format.fprintf f "@]@\n@[<hv 2>object (self)";
     self#emit_method_code f;
@@ -56,11 +63,11 @@ object(self)
     self#emit_initializer_code f;
     Format.fprintf f "@ ()@]@]@ end@\n@\n"
 
-  method private save_start formatter =
+(*  method private save_start formatter =
     Format.fprintf formatter "@[<0>@\n@[<2><window name=%s>" name;
     Format.fprintf formatter "@\ntitle=\"%s\""
       (List.assoc "title" proplist)#get
-
+*)
   method private save_end formatter =
     Format.fprintf formatter "@]@\n</window>@\n@]"
 
@@ -100,7 +107,7 @@ object(self)
 	  ~set:(fun y -> window#misc#set_uposition ~y ~x:(-2); true) ]
 end
 
-let new_tiwindow ~name =
+let new_tiwindow ~name ?(listprop = []) =
   let w = GWindow.window ~show:true () in
   w#misc#set_can_focus false;
   w#misc#set_can_default false;

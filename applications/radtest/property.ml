@@ -31,6 +31,7 @@ class virtual vprop ~name ~init ~set =
     method name = name
     method code = s
     method virtual range : range
+    method save_code = self#code
   end
 
 let invalid_prop kind name s =
@@ -127,6 +128,7 @@ class prop_int ~name ~init ~set : prop =
     method range = Int
   end
 
+(* NB: float_of_string doesn't raise an exception in case of error *)
 class prop_float ~name ~init ~min ~max ~set : prop =
   object
     inherit vprop ~name ~init ~set
@@ -151,4 +153,14 @@ class prop_adjustment ~name ~init ~set : prop =
     inherit vprop ~name ~init ~set
     method private parse = get5floats_from_string
     method range = Adjust
+  end
+
+class prop_clist_titles ~name ~init ~set : prop =
+  object
+    inherit vprop ~name ~init ~set
+    method private parse = split_string ~sep:' '
+    method range = CList_titles
+    method code = "[ \"" ^
+      String.concat ~sep:"\"; \"" (split_string ~sep:' ' s) ^ "\" ]"
+    method save_code = "\"" ^ s ^ "\""
   end

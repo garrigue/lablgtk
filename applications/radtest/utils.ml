@@ -1,3 +1,4 @@
+(* $Id$ *)
 
 open GObj
 
@@ -219,18 +220,18 @@ let toolbar_child_prop kind =
   let rt = ref "" and rtt = ref "" and rptt = ref "" and ok = ref false in
   let w  = GWindow.window ~modal:true () in
   let v  = GPack.vbox ~packing:w#add () in
-  let h1 = GPack.hbox ~packing:v#add () in
-  let h2 = GPack.hbox ~packing:v#add () in
-  let h3 = GPack.hbox ~packing:v#add () in
-  let h4 = GPack.hbox ~packing:v#add () in
-  let l1 = GMisc.label ~text:"text" ~packing:h1#add () in
-  let e1 = GEdit.entry ~packing:h1#add () in
-  let l2 = GMisc.label ~text:"tooltip_text" ~packing:h2#add () in
-  let e2 = GEdit.entry ~packing:h2#add () in
-  let l3 = GMisc.label ~text:"private_text" ~packing:h3#add () in
-  let e3 = GEdit.entry ~packing:h3#add () in
-  let b1 = GButton.button ~label:"OK" ~packing:h4#add () in
-  let b2 = GButton.button ~label:"Cancel" ~packing:h4#add () in
+  let h1 = GPack.hbox ~packing:v#pack () in
+  let h2 = GPack.hbox ~packing:v#pack () in
+  let h3 = GPack.hbox ~packing:v#pack () in
+  let h4 = GPack.hbox ~packing:v#pack () in
+  let l1 = GMisc.label ~text:"text" ~packing:h1#pack () in
+  let e1 = GEdit.entry ~packing:h1#pack () in
+  let l2 = GMisc.label ~text:"tooltip_text" ~packing:h2#pack () in
+  let e2 = GEdit.entry ~packing:h2#pack () in
+  let l3 = GMisc.label ~text:"private_text" ~packing:h3#pack () in
+  let e3 = GEdit.entry ~packing:h3#pack () in
+  let b1 = GButton.button ~label:"OK" ~packing:h4#pack () in
+  let b2 = GButton.button ~label:"Cancel" ~packing:h4#pack () in
   w#show ();
   b1#connect#clicked
     ~callback:(fun () -> rt := e1#text; rtt := e2#text;
@@ -331,3 +332,21 @@ let entry_float ~init ?max_length ?visibility ?editable
   GtkEdit.Entry.set w ~text:(string_of_float init) ?visibility;
   set_editable w ?editable ?width ?height;
   pack_return (new entry_float w ~init) ~packing ~show
+
+
+(*************************************************************)
+
+
+let split_string s ~sep =
+  let l = String.length s in
+  let r = ref [] in
+  let j = ref 0 in
+  for i = 0 to l-1 do
+    if String.unsafe_get s i = sep then begin
+      r := (String.sub s ~pos:!j ~len:(i - !j)) :: !r;
+      j := i + 1
+    end
+  done;
+  List.rev ((String.sub s ~pos:!j ~len:(l - !j)) :: !r)
+
+

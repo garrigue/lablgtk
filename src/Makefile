@@ -21,6 +21,7 @@ COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -labels -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 
 TOPLEVEL = ocamlmktop $(MLFLAGS)
+RANLIB = ranlib
 
 include config.make
 
@@ -133,7 +134,7 @@ liblablgtk.a: $(COBJS)
 
 lablgtk.cma: $(MLOBJS)
 	$(LINKER) -a -custom -o $@ $(MLOBJS) \
-	  -cclib -llablgtk $(GTKLIBS)
+	  -cclib "-llablgtk $(GTKLIBS)"
 
 lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \

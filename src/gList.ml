@@ -109,6 +109,7 @@ class ['a] clist obj = object (self)
   method set_row_height = CList.set_row_height obj
   method set_titles_show = CList.set_titles_show obj
   method set_titles_active = CList.set_titles_active obj
+  method set_column_title = CList.set_column_title obj
   method set_sort = CList.set_sort obj
   method set_column ?widget =
     CList.set_column obj ?widget:(may_map widget ~f:as_widget)

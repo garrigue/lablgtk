@@ -25,7 +25,8 @@ object
       ]
 end
 
-let new_tientry ~name = new tientry ~name ~widget:(GEdit.entry ())
+let new_tientry ~name ?(listprop = []) =
+  new tientry ~name ~widget:(GEdit.entry ())
 
 
 class tispin_button ~(widget : GEdit.spin_button) ~name ~parent_tree ~pos
@@ -68,28 +69,28 @@ let get_adjustment () =
       and rpi = ref 10. and rps = ref 10. in
   let w  = GWindow.window ~modal:true () in
   let v  = GPack.vbox  ~packing:w#add () in
-  let l  = GMisc.label ~text:"adjustment properties" ~packing:v#add () in
-  let h1 = GPack.hbox ~packing:v#add () in
-  let l1 = GMisc.label ~text:"value" ~packing:h1#add () in
-  let e1 = GEdit.entry ~text:"0." ~packing:h1#add () in
-  let h2 = GPack.hbox ~packing:v#add () in
-  let l2 = GMisc.label ~text:"lower" ~packing:h2#add () in
-  let e2 = GEdit.entry ~text:"0." ~packing:h2#add () in
-  let h3 = GPack.hbox ~packing:v#add () in
-  let l3 = GMisc.label ~text:"upper" ~packing:h3#add () in
-  let e3 = GEdit.entry ~text:"100." ~packing:h3#add () in
-  let h4 = GPack.hbox ~packing:v#add () in
-  let l4 = GMisc.label ~text:"step_incr" ~packing:h4#add () in
-  let e4 = GEdit.entry ~text:"1." ~packing:h4#add () in
-  let h5 = GPack.hbox ~packing:v#add () in
-  let l5 = GMisc.label ~text:"page_incr" ~packing:h5#add () in
-  let e5 = GEdit.entry ~text:"10." ~packing:h5#add () in
-  let h6 = GPack.hbox ~packing:v#add () in
-  let l6 = GMisc.label ~text:"page_size" ~packing:h6#add () in
-  let e6 = GEdit.entry ~text:"10." ~packing:h6#add () in
-  let h7 = GPack.hbox ~packing:v#add () in
-  let b1 = GButton.button ~label:"OK" ~packing:h7#add () in
-  let b2 = GButton.button ~label:"Cancel" ~packing:h7#add () in
+  let l  = GMisc.label ~text:"adjustment properties" ~packing:v#pack () in
+  let h1 = GPack.hbox ~packing:v#pack () in
+  let l1 = GMisc.label ~text:"value" ~packing:h1#pack () in
+  let e1 = GEdit.entry ~text:"0." ~packing:h1#pack () in
+  let h2 = GPack.hbox ~packing:v#pack () in
+  let l2 = GMisc.label ~text:"lower" ~packing:h2#pack () in
+  let e2 = GEdit.entry ~text:"0." ~packing:h2#pack () in
+  let h3 = GPack.hbox ~packing:v#pack () in
+  let l3 = GMisc.label ~text:"upper" ~packing:h3#pack () in
+  let e3 = GEdit.entry ~text:"100." ~packing:h3#pack () in
+  let h4 = GPack.hbox ~packing:v#pack () in
+  let l4 = GMisc.label ~text:"step_incr" ~packing:h4#pack () in
+  let e4 = GEdit.entry ~text:"1." ~packing:h4#pack () in
+  let h5 = GPack.hbox ~packing:v#pack () in
+  let l5 = GMisc.label ~text:"page_incr" ~packing:h5#pack () in
+  let e5 = GEdit.entry ~text:"10." ~packing:h5#pack () in
+  let h6 = GPack.hbox ~packing:v#pack () in
+  let l6 = GMisc.label ~text:"page_size" ~packing:h6#pack () in
+  let e6 = GEdit.entry ~text:"10." ~packing:h6#pack () in
+  let h7 = GPack.hbox ~packing:v#pack () in
+  let b1 = GButton.button ~label:"OK" ~packing:h7#pack () in
+  let b2 = GButton.button ~label:"Cancel" ~packing:h7#pack () in
   w#show ();
   b1#connect#clicked
     ~callback:(fun () ->
@@ -117,7 +118,7 @@ let get_adjustment () =
   GMain.Main.main ();
   !rv, !rl, !ru, !rsi, !rpi, !rps
 
-let new_tispin_button ~name =
+let new_tispin_button ~name ?(listprop = []) =
   let v, l, u, si, pi, ps = get_adjustment () in
   new tispin_button ~name
     ~widget:(GEdit.spin_button ~adjustment:
@@ -146,6 +147,7 @@ object
       ]
 end
 
-let new_ticombo ~name = new ticombo ~name ~widget:(GEdit.combo ())
+let new_ticombo ~name ?(listprop = []) =
+  new ticombo ~name ~widget:(GEdit.combo ())
 
 

@@ -7,6 +7,7 @@ type range =
   | Enum of string list
   | Enum_string of string list
   | Adjust
+  | CList_titles
 
 class type prop =
   object
@@ -15,7 +16,8 @@ class type prop =
     method get : string		(* current value *)
     method set : string -> unit	(* change value *)
     method modified : bool	(* value differs from default *)
-    method code : string	(* encoded value *)
+    method code : string	(* encoded value for the ml code *)
+    method save_code : string   (* encoded value for saving *)
   end
 
 class type tiwidget_base = object

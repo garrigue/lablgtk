@@ -31,6 +31,13 @@ rule token = parse
     IDENT s
   }
 
+| '\'' [^ '\'']* '\''
+  {
+    let l = Lexing.lexeme lexbuf in
+    let s = String.sub l ~pos:1 ~len:(String.length l - 2) in
+    IDENT s
+  }
+
 | ['A'-'Z' 'a'-'z' '0'-'9' '_' '.']+
   {
     let s = Lexing.lexeme lexbuf in IDENT s

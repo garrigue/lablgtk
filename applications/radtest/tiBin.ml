@@ -10,9 +10,11 @@ class tiframe ~(widget : GBin.frame) ~name ~parent_tree ~pos
 object
   val frame = widget
   inherit ticontainer ~name ~widget ~parent_tree ~pos
-      ~insert_evbox parent_window
+      ~insert_evbox parent_window as container
 
   method private class_name = "GBin.frame"
+
+  method private get_mandatory_props = [ "label" ]
 
   initializer
     classe <- "frame";
@@ -28,7 +30,8 @@ object
 	  ~set:(ftrue frame#set_shadow_type) ]
 end
 
-let new_tiframe ~name = new tiframe ~widget:(GBin.frame ()) ~name
+let new_tiframe ~name ?(listprop = []) =
+  new tiframe ~widget:(GBin.frame ()) ~name
 
 
 
@@ -55,7 +58,7 @@ object
       ]	
 end
 
-let new_tiaspect_frame ~name =
+let new_tiaspect_frame ~name ?(listprop = []) =
   new tiaspect_frame ~widget:(GBin.aspect_frame ()) ~name
 
 
@@ -73,7 +76,8 @@ object
     classe <- "event_box"
 end
 
-let new_event_box ~name = new tievent_box ~widget:(GBin.event_box ()) ~name
+let new_event_box ~name ?(listprop = []) =
+  new tievent_box ~widget:(GBin.event_box ()) ~name
 
 
 
@@ -102,8 +106,8 @@ object
       ]
 end
 
-let new_handle_box ~name = new tihandle_box ~widget:(GBin.handle_box ())
-    ~name
+let new_handle_box ~name ?(listprop = []) =
+  new tihandle_box ~widget:(GBin.handle_box ()) ~name
 
 
 
@@ -127,8 +131,8 @@ object
       ]
 end
 
-let new_viewport ~name = new tiviewport ~widget:(GBin.handle_box ())
-    ~name
+let new_viewport ~name ?(listprop = []) =
+  new tiviewport ~widget:(GBin.handle_box ()) ~name
 
 
 
@@ -175,7 +179,7 @@ class tiscrolled_window ~(widget : GBin.scrolled_window)
 	    ~set:(ftrue scrolled_window#set_vpolicy) ]
 end
 
-let new_tiscrolled_window ~name =
+let new_tiscrolled_window ~name ?(listprop = []) =
   new tiscrolled_window ~widget:(GBin.scrolled_window ()) ~name
 
 

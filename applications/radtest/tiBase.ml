@@ -66,7 +66,7 @@ class virtual tiwidget0 = object
   method virtual add_children_wo_undo : ?pos:int -> yywidget_tree -> string
   method virtual remove_me  : unit -> unit
   method virtual remove_me_without_undo  : unit -> unit
-  method virtual emit_code : Format.formatter -> unit
+  method virtual emit_code : Format.formatter -> char list -> unit
   method virtual emit_init_code : Format.formatter -> packing:string -> unit
   method virtual emit_method_code : Format.formatter -> unit
   method virtual emit_initializer_code : Format.formatter -> unit
@@ -90,13 +90,15 @@ class virtual window_and_tree0 = object
   method virtual tree_window : window *)
   method virtual change_selected : tiwidget0 -> unit
   method virtual remove_sel : tiwidget0 -> unit
+  method virtual add_param : char
+  method virtual remove_param : char -> unit
 (*  method virtual emit : unit -> unit *)
 end
 
 (* forward declaration of function new_widget *)
 let new_tiwidget :
     (classe:string -> ?pos:int -> name:string ->parent_tree:GTree2.tree ->
-      ?insert_evbox:bool -> ?listprop:string list -> window_and_tree0 -> tiwidget0) ref =
+      ?insert_evbox:bool -> ?listprop:(string * string) list -> window_and_tree0 -> tiwidget0) ref =
   ref (fun ~classe ?pos ~name ~parent_tree ?insert_evbox ?listprop w -> failwith "new_tiwidget")
 
 
@@ -113,7 +115,7 @@ let radio_button_pool = ref []
 class window_and_tree ~name =
   let tree_window = GWindow.window ~show:true ~title:(name ^ "-Tree") () in
   let vbox = GPack.vbox ~spacing:2 ~packing:tree_window#add () in
-  let root_tree = GTree2.tree ~packing:vbox#add ~selection_mode:`EXTENDED () in
+  let root_tree = GTree2.tree ~packing:vbox#pack ~selection_mode:`EXTENDED () in
   let project_tree_item = GTree2.tree_item () in
   let label = GMisc.label ~text:name ~xalign:0. ~yalign:0.5
       ~packing:project_tree_item#add () in
@@ -121,6 +123,25 @@ class window_and_tree ~name =
   object(self)
 
     inherit window_and_tree0
+
+(* the params of the window class; because the class clist needs a param *)
+    val param_list = Array.create 26 false
+
+    method add_param =
+      let i = ref 0 in
+      while param_list.(!i) do incr i done;
+      param_list.(!i) <- true;
+      char_of_int (97 + !i)
+
+    method remove_param c =
+      param_list.(int_of_char c - 97) <- false
+
+    method private param_list =
+      let r = ref [] in
+      for i = 25 downto 0 do
+	if Array.unsafe_get param_list i then r := (char_of_int (i+97)) :: !r
+      done;
+      !r
 
 (* I use magic here because the real initialization is done
    below in the initializer part. It can't be done here because
@@ -169,7 +190,7 @@ class window_and_tree ~name =
       |	_ -> ()
 
 (* emits the code corresponding to this window *)
-    method emit c = tiwin#emit_code c;
+    method emit c = tiwin#emit_code c self#param_list;
 
     method delete () =
       tiwin#remove_me_without_undo ();
@@ -293,8 +314,10 @@ object(self)
 (* for children of a box *)
   method change_name_in_proplist : string -> string -> unit =
     fun _ _ -> ()
-  method set_property name value_string =
+  method set_property name value_string = try
     (List.assoc name proplist)#set value_string
+  with Not_found -> Printf.printf "Not_found %s, %s\n" name value_string;
+    flush stdout
 
   method private get_property name =
     (List.assoc name proplist)#get
@@ -302,13 +325,21 @@ object(self)
 
 (* the proplist with some items removed e.g. the expand... in a box
    used for saving and emitting code *)
-  method private emit_clean_proplist plist =
+  method private emit_clean_proplist =
+    List.fold_left ~f:(fun l p -> List.remove_assoc p l)
+      ~init:proplist
+      ([ "name"; "expand"; "fill"; "padding" ] @ self#get_mandatory_props)
+(*  method private emit_clean_proplist plist =
     List.fold_left ~init:plist ~f:
       (fun pl propname -> List.remove_assoc propname pl)
 	[ "name"; "expand"; "fill"; "padding" ]
+*)
 
   method private save_clean_proplist =
-    List.remove_assoc "name" proplist
+    List.fold_left ~f:(fun l p -> List.remove_assoc p l)
+      ~init:proplist ("name" :: self#get_mandatory_props)
+(*  method private save_clean_proplist =
+    List.remove_assoc "name" proplist *)
 
   val mutable children : (tiwidget0 * Gtk.Tags.pack_type) list = []
   method children = children
@@ -361,11 +392,11 @@ object(self)
 
 (* adds a child and shows his properties;
    used when adding a child by the menu or DnD *)
-  method private add_child classe ?name ?(undo = true) ?(affich = true) ?(pos = -1) () =
+  method private add_child classe ?name ?(undo = true) ?(affich = true) ?(pos = -1) ?(listprop = []) () =
     let name = match name with
     | None -> make_new_name classe
     | Some n -> n in
-    let child = self#make_child ~classe ~name ~parent_tree:stree parent_window ~pos in
+    let child = self#make_child ~classe ~name ~parent_tree:stree parent_window ~pos ~listprop in
     child#set_parent (self : #tiwidget0 :> tiwidget0);
     self#add child ~pos;
     if affich then Propwin.show child;
@@ -378,10 +409,10 @@ object(self)
     let child_name = self#add_children_wo_undo node ~pos in
     add_undo (Remove child_name)
 
-  method private add_children_wo_undo ?(pos = -1) (Node (child, children)) =
+  method add_children_wo_undo ?(pos = -1) (Node (child, children)) =
     let classe, name, property_list = child in
     let rname = change_name name in
-    let tc = self#add_child classe ~name:rname ~undo:false ~affich:false ~pos () in
+    let tc = self#add_child classe ~name:rname ~undo:false ~affich:false ~pos ~listprop:property_list () in
     List.iter (List.rev children)
       ~f:(fun c -> tc#add_children_wo_undo c; ());
     List.iter property_list ~f:(fun (n,v) -> tc#set_property n v);
@@ -408,8 +439,8 @@ object(self)
   method emit_init_code formatter ~packing =
     Format.fprintf formatter "@ @[<hv 2>let %s =@ @[<hov 2>%s"
       name self#class_name;
-    List.iter self#get_mandatory_props ~f:
-      begin fun name ->
+    List.iter self#get_mandatory_props
+      ~f:begin fun name ->
 	Format.fprintf formatter "@ ~%s:%s" name
 	  (List.assoc name proplist)#code
       end;
@@ -422,7 +453,7 @@ object(self)
    default value; used by emit_init_code *)
   method private emit_prop_code formatter =
     let mandatory = self#get_mandatory_props in
-    List.iter (self#emit_clean_proplist proplist) ~f:
+    List.iter self#emit_clean_proplist ~f:
       begin  fun (name, prop) ->
 	if List.mem name mandatory then () else
 	if prop#modified then
@@ -438,7 +469,12 @@ object(self)
 
 (* for saving the project to a file. Used also by copy and cut *)
   method private save_start formatter =
-    Format.fprintf formatter "@\n@[<2><%s name=%s>" classe name
+    Format.fprintf formatter "@\n@[<2><%s name=%s>" classe name;
+    List.iter
+      ~f:(fun p -> Format.fprintf formatter 
+	  "@\n%s=\"%s\"" p (List.assoc p proplist)#get)
+      self#get_mandatory_props
+      
 
   method private save_end formatter =
     Format.fprintf formatter "@]@\n</%s>" classe
@@ -448,7 +484,7 @@ object(self)
     List.iter self#save_clean_proplist ~f:
       (fun (name, prop) ->
 	if prop#modified then
-	  Format.fprintf formatter "@\n%s=%s" name prop#code);
+	  Format.fprintf formatter "@\n%s=%s" name prop#save_code);
     self#forall ~callback:(fun w -> w#save formatter);
     self#save_end formatter
 
@@ -521,7 +557,7 @@ object(self)
 	radio_button_pool := new_name ::
 	  (list_remove !radio_button_pool ~f:(fun x -> x = name));
 	List.iter
-	  ~f:(fun x -> Propwin.update (Hashtbl.find widget_map x))
+	  ~f:(fun x -> Propwin.update (Hashtbl.find widget_map x) false)
 	  !radio_button_pool
       end;
       label#set_text new_name;
@@ -539,7 +575,7 @@ object(self)
     end
     else begin
       message_name ();
-      Propwin.update self ~show:true;
+      Propwin.update self true;
       false
     end
 
