@@ -98,6 +98,13 @@ class column_list = object (self)
   method lock () = locked <- true
 end
 
+class row_reference rr ~model = object (self)
+  method as_ref = rr
+  method path = RowReference.get_path rr
+  method valid = RowReference.valid rr
+  method iter = TreeModel.get_iter model self#path
+end
+
 class model_signals obj = object
   inherit ['a] gobject_signals obj
   inherit tree_model_sigs
@@ -117,6 +124,8 @@ class model obj = object (self)
   method get_column_type = TreeModel.get_column_type obj
   method get_iter = TreeModel.get_iter obj
   method get_path = TreeModel.get_path obj
+  method get_row_reference path =
+    new row_reference (RowReference.create obj path) obj
   method get : 'a. row:tree_iter -> column:'a column -> 'a =
     fun ~row ~column ->
       if column.creator <> id then invalid_arg "GTree.model#get: bad column";
@@ -187,6 +196,8 @@ let list_store (cols : column_list) =
   let store = ListStore.create (Array.of_list types) in
   Hashtbl.add model_ids (Gobject.get_oid store) cols#id;
   new list_store store
+
+module Path = TreePath
 
 (*
 open GTree.Data;;

@@ -82,6 +82,14 @@ class column_list :
     method lock : unit -> unit
   end
 
+class row_reference : Gtk.row_reference -> model:[> `treemodel ] obj ->
+  object
+    method as_ref : Gtk.row_reference
+    method iter : tree_iter
+    method path : tree_path
+    method valid : bool
+  end
+
 class model_signals : [> `treemodel] obj ->
   object ('a)
     method after : 'a
@@ -109,6 +117,7 @@ class model : ([> `treemodel] as 'a) obj ->
     method get_column_type : int -> Gobject.g_type
     method get_iter : tree_path -> tree_iter
     method get_path : tree_iter -> tree_path
+    method get_row_reference : tree_path -> row_reference
     method iter_children : ?nth:int -> tree_iter -> tree_iter
     method iter_next : tree_iter -> bool
     method iter_parent : tree_iter -> tree_iter
@@ -155,6 +164,23 @@ class list_store : Gtk.list_store ->
     method swap : tree_iter -> tree_iter -> bool
   end
 val list_store : column_list -> list_store
+
+module Path : sig
+  val create : int list -> Gtk.tree_path
+  val copy : Gtk.tree_path -> Gtk.tree_path
+  val get_indices : Gtk.tree_path -> int array
+  val from_string : string -> Gtk.tree_path
+  val to_string : Gtk.tree_path -> string
+  val get_depth : Gtk.tree_path -> int
+  val is_ancestor : Gtk.tree_path -> Gtk.tree_path -> bool
+  (* Mutating functions *)
+  val append_index : Gtk.tree_path -> int -> unit
+  val prepend_index : Gtk.tree_path -> int -> unit
+  val next : Gtk.tree_path -> unit
+  val prev : Gtk.tree_path -> unit
+  val up : Gtk.tree_path -> bool
+  val down : Gtk.tree_path -> unit
+end
 
 class selection_signals : tree_selection ->
   object ('a)

@@ -1,4 +1,9 @@
 $Id$
+
+2003.09.22 [Jacques] (request F.Pottier)
+  * add window#maximize/fulscreen/stick
+  * add GTree.row_reference and GTree.Path
+
 2003.09.17 [Olivier]
   * GNOME libpanelapplet support. Now we can write panel applets in caml.
 

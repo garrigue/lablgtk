@@ -50,6 +50,12 @@ end
 class window obj = object
   inherit [window] window_skel (obj : Gtk.window obj)
   method connect = new container_signals_impl obj
+  method maximize () = Window.maximize obj
+  method unmaximize () = Window.unmaximize obj
+  method fullscreen () = Window.fullscreen obj
+  method unfullscreen () = Window.unfullscreen obj
+  method stick () = Window.stick obj
+  method unstick () = Window.unstick obj
 end
 
 let make_window ~create =

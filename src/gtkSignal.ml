@@ -27,6 +27,8 @@ let pop_callback (State old) =
   !exit_callback ();
   res
 
+let user_handler = ref raise
+
 external connect_by_name :
   'a obj -> name:string -> callback:g_closure -> after:bool -> id
   = "ml_g_signal_connect_closure"
@@ -35,12 +37,15 @@ external emit_stop_by_name : 'a obj -> name:string -> unit
 let connect  ~(sgn : ('a, _) t) ~callback ?(after=false) (obj : 'a obj) =
   let callback argv =
     let old = push_callback () in
-    let exn =
-      try sgn.marshaller callback argv; None
-      with exn -> Some exn
-    in
-    if pop_callback old then emit_stop_by_name obj ~name:sgn.name;
-    Gaux.may ~f:raise exn
+    begin
+      try sgn.marshaller callback argv
+      with exn -> try !user_handler exn
+      with exn ->
+        Printf.eprintf "In callback for signal %s, uncaught exception: %s\n"
+          sgn.name (Printexc.to_string exn);
+        flush stderr
+    end;
+    if pop_callback old then emit_stop_by_name obj ~name:sgn.name
   in
   connect_by_name obj ~name:sgn.name ~callback:(Closure.create callback) ~after
 external handler_block : 'a obj -> id -> unit
