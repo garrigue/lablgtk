@@ -202,13 +202,35 @@ val font_button :
 
 (** {3 GtkToolbar} *)
 
+
+class type tool_item_o = object
+  method as_tool_item : Gtk.tool_item obj
+end
+
+(** @gtkdoc gtk GtkToolbar *)
+class toolbar_signals :
+  ([> Gtk.toolbar] as 'a) obj ->
+  object
+    inherit GContainer.container_signals
+    method orientation_changed :
+        callback:(GtkEnums.orientation -> unit) -> GtkSignal.id
+    method style_changed :
+        callback:(GtkEnums.toolbar_style -> unit) -> GtkSignal.id
+    method focus_home_or_end : callback:(bool -> bool) -> GtkSignal.id (** @since GTK 2.4 *)
+    method move_focus :
+        callback:(GtkEnums.direction_type -> bool) -> GtkSignal.id (** @since GTK 2.4 *)
+    method popup_context_menu :
+        callback:(int -> int -> int -> bool) -> GtkSignal.id (** @since GTK 2.4 *)
+  end
+
 (** Create bars of buttons and other widgets 
    @gtkdoc gtk GtkToolbar *)
 class toolbar :
   Gtk.toolbar obj ->
   object
-    inherit GContainer.container_full
+    inherit GContainer.container
     val obj : Gtk.toolbar obj
+    method connect : toolbar_signals
     method insert_button :
       ?text:string ->
       ?tooltip:string ->
@@ -231,9 +253,28 @@ class toolbar :
     method insert_widget :
       ?tooltip:string ->
       ?tooltip_private:string -> ?pos:int -> widget -> unit
+    method orientation : Tags.orientation
     method set_orientation : Tags.orientation -> unit
+    method style : Tags.toolbar_style
     method set_style : Tags.toolbar_style -> unit
+    method unset_style : unit -> unit
+    method icon_size : Tags.icon_size
+    method set_icon_size : Tags.icon_size -> unit
+    method unset_icon_size : unit -> unit
+    method get_tooltips : bool
     method set_tooltips : bool -> unit
+
+    (** Extended API, available in GTK 2.4 *)
+
+    method show_arrow : bool (** @since GTK 2.4 *)
+    method set_show_arrow : bool -> unit (** @since GTK 2.4 *)
+    method relief_style : Tags.relief_style (** @since GTK 2.4 *)
+    method get_drop_index : int -> int -> int (** @since GTK 2.4 *)
+    method set_drop_highlight_item : (#tool_item_o * int) option -> unit (** @since GTK 2.4 *)
+    method get_item_index : #tool_item_o -> int (** @since GTK 2.4 *)
+    method get_n_items : int (** @since GTK 2.4 *)
+    method get_nth_item : int -> [`toolitem ] Gtk.obj (** @since GTK 2.4 *)
+    method insert : ?pos:int -> #tool_item_o -> unit (** @since GTK 2.4 *)
   end
 
 (** @gtkdoc gtk GtkToolbar *)
@@ -245,3 +286,173 @@ val toolbar :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> toolbar
+
+
+(** {4 ToolItems for the new toolbar API} *)
+
+(** @gtkdoc gtk GtkToolItem 
+    @since GTK 2.4 *)
+class tool_item_skel :
+  ([> Gtk.tool_item] as 'a) obj ->
+  object
+    inherit GContainer.bin
+    val obj : 'a obj
+    method as_tool_item : Gtk.tool_item obj
+    method is_important : bool
+    method set_is_important : bool -> unit
+    method visible_horizontal : bool
+    method set_visible_horizontal : bool -> unit
+    method visible_vertical : bool
+    method set_visible_vertical : bool -> unit
+    method set_homogeneous : bool -> unit
+    method get_homogeneous : bool
+    method set_expand : bool -> unit
+    method get_expand : bool
+    method set_tooltip : GData.tooltips -> string -> string -> unit
+    method set_use_drag_window : bool -> unit
+    method get_use_drag_window : bool
+end
+
+(** @gtkdoc gtk GtkToolItem 
+    @since GTK 2.4 *)
+class tool_item : 
+  [> Gtk.tool_item] obj ->
+  object
+    inherit tool_item_skel
+    method connect : GContainer.container_signals
+  end
+
+(** @gtkdoc gtk GtkToolItem 
+    @since GTK 2.4 *)
+val tool_item :
+  ?homogeneous:bool ->
+  ?expand:bool ->
+  ?packing:(tool_item_o -> unit) ->
+  ?show:bool -> unit -> tool_item
+
+(** @gtkdoc gtk GtkSeparatorToolItem
+    @since GTK 2.4 *)
+class separator_tool_item :
+  ([> Gtk.separator_tool_item] as 'a) obj ->
+  object
+    inherit tool_item
+    val obj : 'a obj
+    method draw : bool
+    method set_draw : bool -> unit
+  end
+
+(** @gtkdoc gtk GtkSeparatorToolItem
+    @since GTK 2.4 *)
+val separator_tool_item :
+  ?draw:bool ->
+  ?homogeneous:bool ->
+  ?expand:bool ->
+  ?packing:(tool_item_o -> unit) ->
+  ?show:bool -> unit -> separator_tool_item
+
+(** @gtkdoc gtk GtkToolButton
+    @since GTK 2.4 *)
+class tool_button_signals :
+  ([> Gtk.tool_button] as 'a) obj ->
+  object
+    inherit GContainer.container_signals
+    val obj : 'a obj
+    method clicked : callback:(unit -> unit) -> GtkSignal.id
+  end
+
+(** @gtkdoc gtk GtkToolButton
+    @since GTK 2.4 *)
+class tool_button_skel :
+  ([> Gtk.tool_button] as 'a) obj ->
+  object
+    inherit tool_item_skel
+    val obj : 'a obj
+    method icon_widget : GObj.widget
+    method set_icon_widget : GObj.widget -> unit
+    method label : string
+    method set_label : string -> unit
+    method label_widget : GObj.widget
+    method set_label_widget : GObj.widget -> unit
+    method stock_id : GtkStock.id
+    method set_stock_id : GtkStock.id -> unit
+    method use_underline : bool
+    method set_use_underline : bool -> unit
+  end
+
+(** @gtkdoc gtk GtkToolButton
+    @since GTK 2.4 *)
+class tool_button : 
+  [> Gtk.tool_button] obj ->
+  object
+    inherit tool_button_skel
+    method connect : tool_button_signals
+  end
+
+(** @gtkdoc gtk GtkToolButton
+    @since GTK 2.4 *)
+val tool_button :
+  ?label:string ->
+  ?stock:GtkStock.id ->
+  ?use_underline:bool ->
+  ?homogeneous:bool ->
+  ?expand:bool ->
+  ?packing:(tool_item_o -> unit) ->
+  ?show:bool -> unit -> tool_button
+
+(** @gtkdoc gtk GtkToggleToolButton
+    @since GTK 2.4 *)
+class toggle_tool_button_signals :
+  ([> Gtk.toggle_tool_button] as 'a) obj ->
+  object
+    inherit tool_button_signals
+    val obj : 'a obj
+    method toggled : callback:(unit -> unit) -> GtkSignal.id
+  end
+
+(** @gtkdoc gtk GtkToggleToolButton
+    @since GTK 2.4 *)
+class toggle_tool_button :
+  ([> Gtk.toggle_tool_button] as 'a) obj -> 
+  object
+    inherit tool_button_skel
+    val obj : 'a obj
+    method connect : toggle_tool_button_signals
+    method set_active : bool -> unit
+    method get_active : bool
+  end
+
+(** @gtkdoc gtk GtkToggleToolButton
+    @since GTK 2.4 *)
+val toggle_tool_button :
+  ?active:bool ->
+  ?label:string ->
+  ?stock:GtkStock.id ->
+  ?use_underline:bool ->
+  ?homogeneous:bool ->
+  ?expand:bool ->
+  ?packing:(tool_item_o -> unit) ->
+  ?show:bool -> unit -> toggle_tool_button
+
+(** @gtkdoc gtk GtkRadioToolButton
+    @since GTK 2.4 *)
+class radio_tool_button :
+  ([> Gtk.radio_tool_button] as 'a) obj ->
+  object
+    inherit toggle_tool_button
+    val obj : 'a obj
+    method group : Gtk.radio_tool_button group
+    method set_group : Gtk.radio_tool_button group -> unit
+  end
+
+(** @gtkdoc gtk GtkRadioToolButton
+    @since GTK 2.4 *)
+val radio_tool_button :
+  ?group:radio_tool_button ->
+  ?active:bool ->
+  ?label:string ->
+  ?stock:GtkStock.id ->
+  ?use_underline:bool ->
+  ?homogeneous:bool ->
+  ?expand:bool ->
+  ?packing:(tool_item_o -> unit) ->
+  ?show:bool -> unit -> radio_tool_button

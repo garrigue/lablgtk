@@ -23,5 +23,6 @@ value Val_GtkWidget_func(gpointer w);
 #define GtkWidget_val(val) check_cast(GTK_WIDGET,val)
 #define GtkAdjustment_val(val) check_cast(GTK_ADJUSTMENT,val)
 #define GtkItem_val(val) check_cast(GTK_ITEM,val)
+#define GtkTooltips_val(val) check_cast(GTK_TOOLTIPS,val)
 
 #define GtkClipboard_val(val) ((GtkClipboard*)Pointer_val(val))
