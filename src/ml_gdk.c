@@ -227,7 +227,7 @@ CAMLprim value ml_gdk_window_get_size (value window)
   return ret;
 }
 
-value ml_gdk_window_get_pointer_location (value window)
+CAMLprim value ml_gdk_window_get_pointer_location (value window)
 {
   int x = 0;
   int y = 0;
@@ -329,8 +329,8 @@ Make_Extractor (GdkFont, GdkFont_val, descent, Val_int)
 ML_2 (gdk_atom_intern, String_val, Int_val, Val_GdkAtom)
 ML_1 (gdk_atom_name, GdkAtom_val, copy_string_g_free)
 
-value ml_gdk_property_change (value window, value property, value type,
-                              value mode, value xdata)
+CAMLprim value ml_gdk_property_change(value window, value property, value type,
+                                      value mode, value xdata)
 {
     int format = Xdata_val (Field(xdata,0));
     value data = Field(xdata,1);
@@ -394,8 +394,8 @@ value copy_xdata (gint format, guchar *xdata, gulong nitems)
     CAMLreturn(ret);
 }
 
-value ml_gdk_property_get (value window, value property,
-                           value length, value pdelete)
+CAMLprim value ml_gdk_property_get (value window, value property,
+                                    value length, value pdelete)
 {
     GdkAtom atype;
     int aformat, alength;
@@ -718,8 +718,9 @@ Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity), deviceid, Val_int)
 
 Make_Extractor (GdkEventClient, GdkEvent_arg(Client), window, Val_GdkWindow)
 Make_Extractor (GdkEventClient, GdkEvent_arg(Client), message_type, Val_int)
-value ml_GdkEventClient_data (GdkEventClient *ev)
+CAMLprim value ml_GdkEventClient_data (value arg)
 {
+    GdkEventClient *ev = GdkEvent_arg(Client)(arg);
     int nitems = 0;
     switch (ev->data_format) {
     case 8:  nitems = 20; break;
@@ -734,7 +735,8 @@ Make_Val_final_pointer (GdkDragContext, gdk_drag_context_ref, gdk_drag_context_u
 Make_Flags_val (GdkDragAction_val)
 ML_3 (gdk_drag_status, GdkDragContext_val, Flags_GdkDragAction_val, Int_val, Unit)
 Make_Extractor (GdkDragContext, GdkDragContext_val, suggested_action, Val_gdkDragAction)
-value val_int(gpointer i)
+
+static value val_int(gpointer i)
 {
   return Val_int (GPOINTER_TO_INT(i));
 }
