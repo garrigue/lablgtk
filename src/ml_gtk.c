@@ -44,14 +44,14 @@ Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref)
 #define GtkAcceleratorTable_val(val) ((GtkAcceleratorTable*)Pointer_val(val))
 Make_Val_final_pointer (GtkAcceleratorTable, gtk_accelerator_table_ref, gtk_accelerator_table_unref)
 
-ML_0 (gtk_accelerator_table_new, Val_GtkAcceleratorTable)
+ML_0 (gtk_accelerator_table_new, Val_GtkAcceleratorTable_no_ref)
 
 /* gtkstyle.h */
 
 #define GtkStyle_val(val) ((GtkStyle*)Pointer_val(val))
 Make_Val_final_pointer (GtkStyle, gtk_style_ref, gtk_style_unref)
-ML_0 (gtk_style_new, Val_GtkStyle)
-ML_1 (gtk_style_copy, GtkStyle_val, Val_GtkStyle)
+ML_0 (gtk_style_new, Val_GtkStyle_no_ref)
+ML_1 (gtk_style_copy, GtkStyle_val, Val_GtkStyle_no_ref)
 ML_2 (gtk_style_attach, GtkStyle_val, GdkWindow_val, Val_GtkStyle)
 ML_1 (gtk_style_detach, GtkStyle_val, Unit)
 ML_3 (gtk_style_set_background, GtkStyle_val, GdkWindow_val, State_val, Unit)
@@ -61,11 +61,11 @@ ML_bc6 (ml_gtk_draw_hline)
 ML_6 (gtk_draw_vline, GtkStyle_val, GdkWindow_val, State_val,
       Int_val, Int_val, Int_val, Unit)
 ML_bc6 (ml_gtk_draw_vline)
-
-value ml_GtkStyle_bg (value style, value state)
+value ml_gtk_style_get_bg (value style, value state)
 {
     return (value)&GtkStyle_val(style)->bg[State_val(state)];
 }
+Make_Extractor (gtk_style_get, GtkStyle_val, colormap, Val_GdkColormap)
 
 /* gtktypeutils.h */
 

@@ -54,7 +54,7 @@ gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
 lablgtk_t: liblablgtk.a lablgtk.cma gtkThread.cmo
-	$(TOPLEVEL) $(THFLAGS) -thread -o $@ -custom \
+	$(TOPLEVEL) $(THFLAGS) -o $@ -custom \
 		-cclib "-L. -llablgtk $(LDFLAGS) $(THLDFLAGS)" \
 		$(THLIBS) lablgtk.cma gtkThread.cmo
 

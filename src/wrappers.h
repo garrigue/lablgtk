@@ -119,10 +119,12 @@ value cname##_bc (value *argv, int argn) \
 #define Make_Val_final_pointer(type, init, final) \
 static void ml_final_##type (value val) \
 { final ((type*)Field(val,1)); } \
-inline value Val_##type (type *p) \
+static value Val_##type##_no_ref (type *p) \
 { value ret; if (!p) invalid_argument ("Val_"#type" : null pointer"); \
   ret = alloc_final (2, ml_final_##type, 1, 50); \
-  initialize (&Field(ret,1), (value) p); init (p); return ret; }
+  initialize (&Field(ret,1), (value) p); return ret; } \
+value Val_##type (type *p) \
+{ value ret = Val_##type##_no_ref(p); init(p); return ret; }
 
 #define Pointer_val(val) Field(val,1)
 
