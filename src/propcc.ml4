@@ -36,7 +36,7 @@ let enums = [
     "CornerType"; "SelectionMode"; "SortType"; "WrapMode";
     "SpinButtonUpdatePolicy"; "UpdateType"; "ProgressBarStyle";
     "ProgressBarOrientation"; "CellRendererMode";
-    "TreeViewColumnSizing"; "SortType";
+    "TreeViewColumnSizing"; "SortType"; "TextDirection";
   ];
   "Gdk", "GdkEnums",
   [ "ExtensionMode"; "WindowTypeHint" ];

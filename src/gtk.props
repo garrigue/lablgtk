@@ -532,8 +532,8 @@ class TextTag abstract vset : GObject {
   "background-full-height-set" gboolean             : Read / Write
   "background-gdk"       GdkColor             : Read / Write
   "background-set"       gboolean             : Read / Write
-  "background-stipple"   GdkPixmap            : Read / Write
-  "background-stipple-set" gboolean             : Read / Write
+  "background-stipple"   GdkBitmap            : Read / Write
+  "background-stipple-set" gboolean           : Read / Write
   "direction"            GtkTextDirection     : Read / Write
   "editable"             gboolean             : Read / Write
   "editable-set"         gboolean             : Read / Write
@@ -544,8 +544,8 @@ class TextTag abstract vset : GObject {
   "foreground"           gchararray           : Write
   "foreground-gdk"       GdkColor             : Read / Write
   "foreground-set"       gboolean             : Read / Write
-  "foreground-stipple"   GdkPixmap            : Read / Write
-  "foreground-stipple-set" gboolean             : Read / Write
+  "foreground-stipple"   GdkBitmap            : Read / Write
+  "foreground-stipple-set" gboolean           : Read / Write
   "indent"               gint                 : Read / Write
   "indent-set"           gboolean             : Read / Write
   "invisible"            gboolean             : Read / Write
@@ -558,11 +558,11 @@ class TextTag abstract vset : GObject {
   "left-margin-set"      gboolean             : Read / Write
   "name"                 gchararray           : Read / Write / Construct Only
   "pixels-above-lines"   gint                 : Read / Write
-  "pixels-above-lines-set" gboolean             : Read / Write
+  "pixels-above-lines-set" gboolean           : Read / Write
   "pixels-below-lines"   gint                 : Read / Write
-  "pixels-below-lines-set" gboolean             : Read / Write
+  "pixels-below-lines-set" gboolean           : Read / Write
   "pixels-inside-wrap"   gint                 : Read / Write
-  "pixels-inside-wrap-set" gboolean             : Read / Write
+  "pixels-inside-wrap-set" gboolean           : Read / Write
   "right-margin"         gint                 : Read / Write
   "right-margin-set"     gboolean             : Read / Write
   "rise"                 gint                 : Read / Write
