@@ -29,15 +29,15 @@ class planet area = object (self)
 
     GlDraw.color (1.0, 1.0, 1.0);
     GlMat.push();
-    GlMat.rotate eye x:1.;
+    GlMat.rotate angle:eye x:1. ();
 (*	draw sun	*)
     GlLight.material face:`front (`specular (1.0,1.0,0.0,1.0));
     GlLight.material face:`front (`shininess 5.0);
     GluQuadric.sphere radius:1.0 slices:32 stacks:32 ();
 (*	draw smaller planet	*)
-    GlMat.rotate year y:1.0;
+    GlMat.rotate angle:year y:1.0 ();
     GlMat.translate x:3.0 ();
-    GlMat.rotate day y:1.0;
+    GlMat.rotate angle:day y:1.0 ();
     GlDraw.color (0.0, 1.0, 1.0);
     GlDraw.shade_model `flat;
     GlLight.material face:`front(`shininess 128.0);

@@ -279,17 +279,17 @@ let draw_tetra :amp :divisions :color =
 
   call_list list color.(0);
   GlMat.push();
-  GlMat.rotate 180.0 z:1.0;
-  GlMat.rotate (-.tetraangle) x:1.0;
+  GlMat.rotate angle:180.0 z:1.0 ();
+  GlMat.rotate angle:(-.tetraangle) x:1.0 ();
   call_list list color.(1);
   GlMat.pop();
   GlMat.push();
-  GlMat.rotate 180.0 y:1.0;
-  GlMat.rotate (-180.0 +. tetraangle) x:0.5 y:(sqrt3 /. 2.);
+  GlMat.rotate angle:180.0 y:1.0 ();
+  GlMat.rotate angle:(-180.0 +. tetraangle) x:0.5 y:(sqrt3 /. 2.) ();
   call_list list color.(2);
   GlMat.pop();
-  GlMat.rotate 180.0 y:1.0;
-  GlMat.rotate (-180.0 +. tetraangle) x:0.5 y:(-.sqrt3 /. 2.);
+  GlMat.rotate angle:180.0 y:1.0 ();
+  GlMat.rotate angle:(-180.0 +. tetraangle) x:0.5 y:(-.sqrt3 /. 2.) ();
   call_list list color.(3);
 
   GlList.delete list
@@ -301,12 +301,12 @@ let draw_cube :amp :divisions :color =
 
   call_list list color.(0);
   for i = 1 to 3 do
-    GlMat.rotate cubeangle x:1.0;
+    GlMat.rotate angle:cubeangle x:1.0 ();
     call_list list color.(i)
   done;
-  GlMat.rotate cubeangle y:1.0;
+  GlMat.rotate angle:cubeangle y:1.0 ();
   call_list list color.(4);
-  GlMat.rotate (2.0 *. cubeangle) y:1.0;
+  GlMat.rotate angle:(2.0 *. cubeangle) y:1.0 ();
   call_list list color.(5);
 
   GlList.delete list
@@ -318,24 +318,24 @@ let draw_octa :amp :divisions :color =
 
   let do_list (i,y) =
     GlMat.push();
-    GlMat.rotate 180.0 y:1.0;
-    GlMat.rotate (-.octaangle) x:0.5 :y;
+    GlMat.rotate angle:180.0 y:1.0 ();
+    GlMat.rotate angle:(-.octaangle) x:0.5 :y ();
     call_list list color.(i);
     GlMat.pop()
   in
   call_list list color.(0);
   GlMat.push();
-  GlMat.rotate 180.0 z:1.0;
-  GlMat.rotate (-180.0 +. octaangle) x:1.0;
+  GlMat.rotate angle:180.0 z:1.0 ();
+  GlMat.rotate angle:(-180.0 +. octaangle) x:1.0 ();
   call_list list color.(1);
   GlMat.pop();
   List.iter [2, sqrt3 /. 2.0; 3, -.sqrt3 /. 2.0] fun:do_list;
-  GlMat.rotate 180.0 x:1.0;
+  GlMat.rotate angle:180.0 x:1.0 ();
   GlLight.material face:`both (`diffuse color.(4));
   GlList.call list;
   GlMat.push();
-  GlMat.rotate 180.0 z:1.0;
-  GlMat.rotate (-180.0 +. octaangle) x:1.0;
+  GlMat.rotate angle:180.0 z:1.0 ();
+  GlMat.rotate angle:(-180.0 +. octaangle) x:1.0 ();
   GlLight.material face:`both (`diffuse color.(5));
   GlList.call list;
   GlMat.pop();
@@ -352,13 +352,13 @@ let draw_dodeca :amp :divisions :color =
 
   let do_list (i,angle,x,y) =
     GlMat.push();
-    GlMat.rotate angle :x :y;
+    GlMat.rotate angle:angle :x :y ();
     call_list list color.(i);
     GlMat.pop();
   in
   GlMat.push ();
   call_list list color.(0);
-  GlMat.rotate 180.0 z:1.0;
+  GlMat.rotate angle:180.0 z:1.0 ();
   List.iter fun:do_list
     [ 1, -.dodecaangle, 1.0, 0.0;
       2, -.dodecaangle, cos72, sin72;
@@ -366,15 +366,15 @@ let draw_dodeca :amp :divisions :color =
       4, dodecaangle, cos36, -.sin36;
       5, dodecaangle, cos36, sin36 ];
   GlMat.pop ();
-  GlMat.rotate 180.0 x:1.0;
+  GlMat.rotate angle:180.0 x:1.0 ();
   call_list list color.(6);
-  GlMat.rotate 180.0 z:1.0;
+  GlMat.rotate angle:180.0 z:1.0 ();
   List.iter fun:do_list
     [ 7, -.dodecaangle, 1.0, 0.0;
       8, -.dodecaangle, cos72, sin72;
       9, -.dodecaangle, cos72, -.sin72;
       10, dodecaangle, cos36, -.sin36 ];
-  GlMat.rotate dodecaangle x:cos36 y:sin36;
+  GlMat.rotate angle:dodecaangle x:cos36 y:sin36 ();
   call_list list color.(11);
 
   GlList.delete list
@@ -386,16 +386,16 @@ let draw_ico :amp :divisions :color =
   GlList.ends ();
 
   let do_list1 i =
-    GlMat.rotate 180.0 y:1.0;
-    GlMat.rotate (-180.0 +. icoangle) x:0.5 y:(sqrt3/.2.0);
+    GlMat.rotate angle:180.0 y:1.0 ();
+    GlMat.rotate angle:(-180.0 +. icoangle) x:0.5 y:(sqrt3/.2.0) ();
     call_list list color.(i)
   and do_list2 i =
-    GlMat.rotate 180.0 y:1.0;
-    GlMat.rotate (-180.0 +. icoangle) x:0.5 y:(-.sqrt3/.2.0);
+    GlMat.rotate angle:180.0 y:1.0 ();
+    GlMat.rotate angle:(-180.0 +. icoangle) x:0.5 y:(-.sqrt3/.2.0) ();
     call_list list color.(i)
   and do_list3 i =
-    GlMat.rotate 180.0 z:1.0;
-    GlMat.rotate (-.icoangle) x:1.0;
+    GlMat.rotate angle:180.0 z:1.0 ();
+    GlMat.rotate angle:(-.icoangle) x:1.0 ();
     call_list list color.(i)
   in
   GlMat.push ();
@@ -420,7 +420,7 @@ let draw_ico :amp :divisions :color =
   GlMat.pop ();
   do_list3 9;
   GlMat.pop ();
-  GlMat.rotate 180.0 x:1.0;
+  GlMat.rotate angle:180.0 x:1.0 ();
   call_list list color.(10);
   GlMat.push ();
   do_list3 11;
@@ -464,9 +464,9 @@ class view area = object (self)
     GlMat.translate ()
       x:(2.5 *. ratio *. sin (step *. 1.11))
       y:(2.5 *. cos (step *. 1.25 *. 1.11));
-    GlMat.rotate (step *. 100.) x:1.0;
-    GlMat.rotate (step *. 95.) y:1.0;
-    GlMat.rotate (step *. 90.) z:1.0;
+    GlMat.rotate angle:(step *. 100.) x:1.0 ();
+    GlMat.rotate angle:(step *. 95.) y:1.0 ();
+    GlMat.rotate angle:(step *. 90.) z:1.0 ();
     draw_object amp:((sin step +. 1.0/.3.0) *. (4.0/.5.0) *. magnitude);
     GlMat.pop();
     Gl.flush();
