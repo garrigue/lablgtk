@@ -168,17 +168,5 @@ type target_flags = "GTK_TARGET_"
 type spin_button_update_policy = "GTK_UPDATE_"
   [ `ALWAYS | `IF_VALID ]
 
-(*
-type tree_pos = "GTK_CTREE_POS_"
-  [ `BEFORE | `AS_CHILD | `AFTER ]
-
-type tree_line_style = "GTK_CTREE_LINES_"
-  [ `NONE | `SOLID | `DOTTED | `TABBED ]
-
-type tree_expander_style = "GTK_CTREE_EXPANDER_"
-  [ `NONE | `SQUARE | `TRIANGLE | `CIRCULAR ]
-
-type tree_expansion_type = "GTK_CTREE_EXPANSION_"
-  [ `EXPAND | `EXPAND_RECURSIVE | `COLLAPSE | `COLLAPSE_RECURSIVE
-  | `TOGGLE | `TOGGLE_RECURSIVE ]
-*)
+type noconv tree_view_mode = "GTK_TREE_VIEW_"
+  [ `LINE | `ITEM ]
