@@ -85,6 +85,36 @@ ML_3 (gtk_accel_groups_activate, GObject_val, Int_val,
       OptFlags_GdkModifier_val, Val_bool)
 ML_2 (gtk_accelerator_valid, Int_val, OptFlags_GdkModifier_val, Val_bool)
 ML_1 (gtk_accelerator_set_default_mod_mask, OptFlags_GdkModifier_val, Unit)
+static value Val_GdkModifier_flags(GdkModifierType mod)
+{
+  CAMLparam0();
+  CAMLlocal2(l, cell);
+  l = cell = Val_emptylist;
+  lookup_info *tab = ml_table_gdkModifier;
+  int i, nb = tab[0].data;
+  for (i=nb; i>0; i--) {
+    if (tab[i].data & mod) {
+      cell = alloc_small(2, Tag_cons);
+      Field(cell, 0) = tab[i].key;
+      Field(cell, 1) = l;
+      l = cell;
+    }
+  }
+  CAMLreturn(l);
+}
+CAMLprim value ml_gtk_accelerator_parse(value acc)
+{
+  CAMLparam0();
+  CAMLlocal2(vmods, tup);
+  guint key;
+  GdkModifierType mods;
+  gtk_accelerator_parse(String_val(acc), &key, &mods);
+  vmods = mods ? Val_GdkModifier_flags(mods) : Val_emptylist;
+  tup = alloc_small(2, 0);
+  Field(tup, 0) = Val_int(key);
+  Field(tup, 1) = vmods;
+  CAMLreturn(tup);
+}
 
 ML_1(gtk_accel_map_load,String_val,Unit)
 ML_1(gtk_accel_map_save,String_val,Unit)

@@ -29,6 +29,8 @@ module AccelGroup = struct
       = "ml_gtk_accelerator_valid"
   external set_default_mod_mask : Gdk.Tags.modifier list option -> unit
       = "ml_gtk_accelerator_set_default_mod_mask"
+  external parse : string -> Gdk.keysym * Gdk.Tags.modifier list
+      = "ml_gtk_accelerator_parse"
 end
 
 module AccelMap = struct
