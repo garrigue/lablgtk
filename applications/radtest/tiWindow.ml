@@ -11,6 +11,8 @@ object(self)
   inherit ticontainer ~name ~widget
       ~insert_evbox:false ~parent_tree ~pos parent_window as container
 
+  method connect_event = window#connect#event
+
   method private class_name = "GWindow.window"
 
   method private get_mandatory_props = [ "title" ]
