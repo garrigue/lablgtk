@@ -104,7 +104,7 @@ class old_editable_signals : ([> Gtk.old_editable ] as 'b) Gtk.obj ->
 class text : Gtk.text Gtk.obj ->
   object
     inherit GEdit.editable
-    inherit [Gtk.text] objvar
+    inherit [Gtk.text] GObj.objvar
     method connect : old_editable_signals
     method backward_delete : int -> unit
     method event : GObj.event_ops
