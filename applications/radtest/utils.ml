@@ -1,7 +1,6 @@
 (* $Id$ *)
 
 open GObj
-open GMain
 
 open Common
 
@@ -111,8 +110,8 @@ let message s =
   let l = GMisc.label text:s packing:v#add () in
   let b = GButton. button label:"OK" packing:v#add () in
   b#connect#clicked callback:w#destroy;
-  w#connect#destroy callback:Main.quit;
-  Main.main ()
+  w#connect#destroy callback:GMain.Main.quit;
+  GMain.Main.main ()
 
 let message_name () = message "name already in use\npick a new name"
 
@@ -130,8 +129,8 @@ let get_filename callback:set_filename ?:dir{=""} () =
       file_selection#destroy ());
   file_selection#cancel_button#connect#clicked
     callback:file_selection#destroy;
-  file_selection#connect#destroy callback:Main.quit;
-  Main.main ();
+  file_selection#connect#destroy callback:GMain.Main.quit;
+  GMain.Main.main ();
   !res
 
 (* returns the directory and the file name (without the extension) *)
