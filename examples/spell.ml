@@ -1,15 +1,10 @@
 let languages = [ "fr_FR"; "en_US"; "de_DE"; "ja_JP" ]
 
-let parent_window widget =
-  (* Woot ! *)
-  try Some (new GWindow.window (GtkWindow.Window.cast widget#misc#toplevel#as_widget))
-  with _ -> None
-
 let report_error view msg =
   let message = "<b><big>GtkSpell error:</big></b>\n" ^ (Glib.Markup.escape_text msg) in
   let dlg = GWindow.message_dialog 
       ~message ~use_markup:true ~message_type:`ERROR ~buttons:GWindow.Buttons.close
-      ?parent:(parent_window view) ~destroy_with_parent:true () in
+      ?parent:(GWindow.toplevel view) ~destroy_with_parent:true () in
   ignore (dlg#run ()) ;
   dlg#destroy ()
 
