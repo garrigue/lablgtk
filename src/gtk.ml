@@ -589,6 +589,100 @@ module RadioButton = struct
     | Some label -> create_with_label group label
 end
 
+module Clist = struct
+  type t = [widget container clist] obj
+  external create : cols:int -> t = "ml_gtk_clist_new"
+  external create_with_titles : string array -> t
+      = "ml_gtk_clist_new_with_titles"
+  external set_border : [> clist] obj -> shadow -> unit
+      = "ml_gtk_clist_set_border"
+  external set_selection_mode : [> clist] obj -> selection -> unit
+      = "ml_gtk_clist_set_selection_mode"
+  external set_policy : [> clist] obj -> vert:policy -> horiz:policy -> unit
+      = "ml_gtk_clist_set_policy"
+  external freeze : [> clist] obj -> unit = "ml_gtk_clist_freeze"
+  external thaw : [> clist] obj -> unit = "ml_gtk_clist_thaw"
+  external column_titles_show : [> clist] obj -> unit
+      = "ml_gtk_clist_column_titles_show"
+  external column_titles_hide : [> clist] obj -> unit
+      = "ml_gtk_clist_column_titles_hide"
+  external column_title_active : [> clist] obj -> int -> unit
+      = "ml_gtk_clist_column_title_active"
+  external column_title_passive : [> clist] obj -> int -> unit
+      = "ml_gtk_clist_column_title_passive"
+  external column_titles_active : [> clist] obj -> unit
+      = "ml_gtk_clist_column_titles_active"
+  external column_titles_passive : [> clist] obj -> unit
+      = "ml_gtk_clist_column_titles_passive"
+  external set_column_title : [> clist] obj -> int -> string -> unit
+      = "ml_gtk_clist_set_column_title"
+  external set_column_widget : [> clist] obj -> int -> [> widget] obj -> unit
+      = "ml_gtk_clist_set_column_widget"
+  external set_column_justification :
+      [> clist] obj -> int -> justification -> unit
+      = "ml_gtk_clist_set_column_justification"
+  external set_column_width : [> clist] obj -> int -> int -> unit
+      = "ml_gtk_clist_set_column_width"
+  external set_row_height : [> clist] obj -> int -> unit
+      = "ml_gtk_clist_set_row_height"
+  external moveto :
+      [> clist] obj ->
+      int -> int -> row_align:clampf -> col_align:clampf -> unit
+      = "ml_gtk_clist_moveto"
+  external row_is_visible : [> clist] obj -> int -> visibility
+      = "ml_gtk_clist_row_is_visible"
+  type cell_type = [ EMPTY TEXT PIXMAP PIXTEXT WIDGET ]
+  external get_cell_type : [> clist] obj -> int -> int -> cell_type
+      = "ml_gtk_clist_get_cell_type"
+  external set_text : [> clist] obj -> int -> int -> string -> unit
+      = "ml_gtk_clist_set_text"
+  external get_text : [> clist] obj -> int -> int -> string
+      = "ml_gtk_clist_get_text"
+  external set_pixmap :
+      [> clist] obj -> int -> int -> Gdk.pixmap -> Gdk.bitmap -> unit
+      = "ml_gtk_clist_set_pixmap"
+  external get_pixmap : [> clist] obj -> int -> int -> Gdk.pixmap * Gdk.bitmap
+      = "ml_gtk_clist_get_pixmap"
+  external set_pixtext :
+      [> clist] obj -> int -> int ->
+      text:string -> spacing:int ->
+      pixmap:Gdk.pixmap -> bitmap:Gdk.bitmap -> unit
+      = "ml_gtk_clist_set_pixtext"
+  type pixtext =
+      { text: string; spacing: int; pixmap: Gdk.pixmap; bitmap: Gdk.bitmap }
+  external get_pixtext : [> clist] obj -> int -> int -> pixtext
+      = "ml_gtk_clist_get_pixtext"
+  external set_foreground : [> clist] obj -> row:int -> Gdk.Color.t -> unit
+      = "ml_gtk_clist_set_foreground"
+  external set_background : [> clist] obj -> row:int -> Gdk.Color.t -> unit
+      = "ml_gtk_clist_set_background"
+  external set_shift :
+      [> clist] obj -> int -> int -> vert:int -> horiz:int -> unit
+      = "ml_gtk_clist_set_shift"
+  external append : [> clist] obj -> string array -> int
+      = "ml_gtk_clist_append"
+  external insert : [> clist] obj -> int -> string array -> unit
+      = "ml_gtk_clist_insert"
+  external remove : [> clist] obj -> int -> unit
+      = "ml_gtk_clist_remove"
+  external select : [> clist] obj -> int -> int -> unit
+      = "ml_gtk_clist_select_row"
+  external unselect : [> clist] obj -> int -> int -> unit
+      = "ml_gtk_clist_unselect_row"
+  external clear : [> clist] obj -> unit = "ml_gtk_clist_clear"
+  external get_row_column : [> clist] obj -> x:int -> y:int -> int * int
+      = "ml_gtk_clist_get_selection_info"
+end
+
+module Fixed = struct
+  type t = [widget container fixed] obj
+  external create : unit -> t = "ml_gtk_fixed_new"
+  external put : [> fixed] obj -> [> widget] obj -> x:int -> y:int -> unit
+      = "ml_gtk_fixed_put"
+  external move : [> fixed] obj -> [> widget] obj -> x:int -> y:int -> unit
+      = "ml_gtk_fixed_move"
+end
+
 module GtkList = struct
   type t = [widget container list] obj
   external create : unit -> t = "ml_gtk_list_new"
@@ -614,6 +708,42 @@ module GtkList = struct
       = "ml_gtk_list_child_position"
   external set_selection_mode : [> list] obj -> selection -> unit
       = "ml_gtk_list_set_selection_mode"
+end
+
+module MenuShell = struct
+  type t = [widget container menushell] obj
+  external append : [> menushell] obj -> [> widget] obj -> unit
+      = "ml_gtk_menu_shell_append"
+  external prepend : [> menushell] obj -> [> widget] obj -> unit
+      = "ml_gtk_menu_shell_prepend"
+  external insert : [> menushell] obj -> [> widget] obj -> int -> unit
+      = "ml_gtk_menu_shell_insert"
+  external deactivate : [> menushell] obj -> unit
+      = "ml_gtk_menu_shell_deactivate"
+end
+
+module Menu = struct
+  type t = [widget container menushell menu] obj
+  external create : unit -> t = "ml_gtk_menu_new"
+  external popup :
+      [> menu] obj -> ?parent_menu:[> menushell] obj ->
+      ?parent_item:[> menuitem] obj -> button:int -> activate_time:int -> unit
+      = "ml_gtk_menu_popup"
+  external popdown : [> menu] obj -> unit = "ml_gtk_menu_popdown"
+  external get_active : [> menu] obj -> Widget.t = "ml_gtk_menu_get_active"
+  external set_active : [> menu] obj -> int -> unit = "ml_gtk_menu_set_active"
+  external set_accelerator_table : [> menu] obj -> [> accelerator] obj -> unit
+      = "ml_gtk_menu_set_accelerator_table"
+  external attach_to_widget : [> menu] obj -> [> widget] obj -> unit
+      = "ml_gtk_menu_attach_to_widget"
+  external get_attach_widget : [> menu] obj -> Widget.t
+      = "ml_gtk_menu_get_attach_widget"
+  external detach : [> menu] obj -> unit = "ml_gtk_menu_detach"
+end
+
+module MenuBar = struct
+  type t = [widget container menushell menubar] obj
+  external create : unit -> t = "ml_gtk_menu_bar_new"
 end
 
 module Table = struct
@@ -750,11 +880,35 @@ module Combo = struct
   external disable_activate : [> combo] obj -> unit
       = "ml_gtk_combo_disable_activate"
 end
+
+module Statusbar = struct
+  type t = [widget container bbox statusbar]
+  type context
+  type message
+  external create : unit -> t = "ml_gtk_statusbar_new"
+  external get_context : [> statusbar] obj -> string -> context
+      = "ml_gtk_statusbar_get_context_id"
+  external push : [> statusbar] obj -> context -> text:string -> message
+      = "ml_gtk_statusbar_push"
+  external pop : [> statusbar] obj -> context ->  unit
+      = "ml_gtk_statusbar_pop"
+  external remove : [> statusbar] obj -> context -> message -> unit
+      = "ml_gtk_statusbar_push"
+end
+
+module GammaCurve = struct
+  type t = [widget container bbox gamma]
+  external create : unit -> t = "ml_gtk_gamma_curve_new"
+  external get : [> gamma] obj -> float = "ml_gtk_gamma_curve_get_gamma"
+end
     
-module Misc = struct type t = [widget misc] obj external set_alignment
-  : [> misc] obj -> x:float -> y:float -> unit =
-  "ml_gtk_misc_set_alignment" external set_padding : [> misc] obj ->
-  x:int -> y:int -> unit = "ml_gtk_misc_set_padding" end
+module Misc = struct
+  type t = [widget misc] obj
+  external set_alignment : [> misc] obj -> x:float -> y:float -> unit
+      = "ml_gtk_misc_set_alignment"
+  external set_padding : [> misc] obj -> x:int -> y:int -> unit
+      = "ml_gtk_misc_set_padding"
+end
 
 module Label = struct
   type t = [widget misc label] obj
