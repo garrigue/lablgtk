@@ -685,7 +685,7 @@ module Item = struct
 end
 
 module ListItem = struct
-  type t = [widget container bin item list]
+  type t = [widget container bin item listitem]
   let cast w : t obj =
     if Object.is_a w "GtkListItem" then Obj.magic w
     else invalid_arg "Gtk.ListItem.cast"
@@ -1322,7 +1322,7 @@ module GtkList = struct
     else invalid_arg "Gtk.GtkList.cast"
   external create : unit -> t obj = "ml_gtk_list_new"
   external insert_item :
-      [> list] obj -> [> widget] obj -> pos:int -> unit
+      [> list] obj -> [> listitem] obj -> pos:int -> unit
       = "ml_gtk_list_insert_item"
   let insert_items l wl :pos =
     let wl = if pos < 0 then wl else List.rev wl in
@@ -1331,15 +1331,15 @@ module GtkList = struct
   let prepend_items l = insert_items l pos:0
   external clear_items : [> list] obj -> start:int -> end:int -> unit =
     "ml_gtk_list_clear_items"
-  external select_item : [> list] obj -> int -> unit
+  external select_item : [> list] obj -> pos:int -> unit
       = "ml_gtk_list_select_item"
-  external unselect_item : [> list] obj -> int -> unit
+  external unselect_item : [> list] obj -> pos:int -> unit
       = "ml_gtk_list_unselect_item"
-  external select_child : [> list] obj -> [> widget] obj -> unit
+  external select_child : [> list] obj -> [> listitem] obj -> unit
       = "ml_gtk_list_select_child"
-  external unselect_child : [> list] obj -> [> widget] obj -> unit
+  external unselect_child : [> list] obj -> [> listitem] obj -> unit
       = "ml_gtk_list_unselect_child"
-  external child_position : [> list] obj -> [> widget] obj -> int
+  external child_position : [> list] obj -> [> listitem] obj -> int
       = "ml_gtk_list_child_position"
   external set_selection_mode : [> list] obj -> selection_mode -> unit
       = "ml_gtk_list_set_selection_mode"
@@ -1684,6 +1684,13 @@ module Toolbar = struct
     "ml_gtk_toolbar_set_button_relief"
   external get_button_relief : [> toolbar] obj -> relief_type =
     "ml_gtk_toolbar_get_button_relief"
+  let setter w :cont ?:space_size ?:space_style ?:tooltips ?:button_relief =
+    may space_size fun:(set_space_size w);
+    may space_style fun:(set_space_style w);
+    may tooltips fun:(set_tooltips w);
+    may button_relief fun:(set_button_relief w);
+    cont w
+    
   module Signals = struct
     open Signal
     external val_orientation : int -> orientation = "ml_Val_orientation"
@@ -1713,7 +1720,7 @@ module Tree = struct
       = "ml_gtk_tree_select_item"
   external unselect_item : [> tree] obj -> pos:int -> unit
       = "ml_gtk_tree_unselect_item"
-  external child_position : [> tree] obj -> [> widget] obj -> unit
+  external child_position : [> tree] obj -> [> treeitem] obj -> unit
       = "ml_gtk_tree_child_position"
   external set_selection_mode : [> tree] obj -> selection_mode -> unit
       = "ml_gtk_tree_set_selection_mode"
@@ -2358,13 +2365,9 @@ type object_type =
       = "ml_gtk_type_new"
 
 let new_widget_get_type name :parent :nsignals =
-  let new_type = ref 0 in
-  let aux () =
-    if !new_type = 0 then
-      new_type := type_unique name :parent :nsignals;
-    !new_type
-  in aux
-  
+  let new_type = lazy (type_unique name :parent :nsignals) in
+  fun () -> Lazy.force new_type
+
 open Signal
 
 let make_new_widget name :parent :signal_array =

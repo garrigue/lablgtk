@@ -172,6 +172,32 @@ class container_full obj = object
   method connect = new container_signals obj
 end
 
+class type ['a] is_item = object
+  method as_item : 'a obj
+end
+
+class virtual ['a,'b] item_container obj = object (self)
+  inherit widget obj
+  constraint 'a = [> item]
+  method add : 'c. ('a #is_item as 'c) -> _ =
+    fun w -> Container.add obj w#as_item
+  method remove : 'c. ('a #is_item as 'c) -> _ =
+    fun w -> Container.remove obj w#as_item
+  method private virtual wrap : Widget.t obj -> 'b
+  method children : 'b list =
+    List.map fun:self#wrap (Container.children obj)
+  method set_size ?:border = Container.set ?obj ?border_width:border
+  method set_focus_vadjustment (w : adjustment) =
+    Container.set_focus_vadjustment obj (w # as_adjustment)
+  method set_focus_hadjustment (w : adjustment) =
+    Container.set_focus_hadjustment obj (w # as_adjustment)
+  method virtual insert : 'c. ('a #is_item as 'c) -> pos:int -> unit
+  method append : 'c. ('a #is_item as 'c) -> unit =
+    fun w -> self#insert w pos:(-1)
+  method prepend : 'c. ('a #is_item as 'c) -> unit =
+    fun w -> self#insert w pos:0
+end
+
 let pack_return wrapper w ?:packing =
   let w = wrapper w in
   may packing fun:(fun f -> (f w : unit));
@@ -232,10 +258,6 @@ let new_aspect_frame ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child =
     AspectFrame.create ?opt ?:label ?:xalign ?:yalign ?:ratio ?:obey_child in
   Frame.setter ?w ?label:None
     ?cont:(Container.setter ?cont:(pack_return (new aspect_frame)))
-
-class type ['a] is_item = object
-  method as_item : 'a obj
-end
 
 class item_signals obj = object
   inherit container_signals obj
@@ -343,34 +365,6 @@ end
 let new_tree_item ?opt ?:label =
   Container.setter ?(TreeItem.create ?opt ?:label)
     ?cont:(pack_return (new tree_item))
-
-class tree_signals obj = object
-  inherit container_signals obj
-  method selection_changed =
-    Signal.connect ?obj ?sig:Tree.Signals.selection_changed
-(*
-  method select_child 
-     callback:((#is_widget as 'a) -> unit) -> ?after:bool -> Gtk.Signal.id
-	  = fun :callback -> Signal.connect obj sig:Tree.Signals.select_child
-	  callback:(fun w -> callback (w #as_widget))
-  method unselect_child    = Signal.connect sig:Tree.Signals.unselect_child
-*)
-end
-
-class tree obj = object
-  inherit container obj
-  method as_tree = Tree.coerce obj
-  method insert (w : tree_item) ?:pos =
-    Tree.insert obj ?(w #as_item) ?:pos
-(*  method remove_item : 'a . (#is_widget as 'a) -> unit
-      = fun w -> Tree.remove_item obj (w #as_widget) *)
-  method connect = new tree_signals obj
-  method clear_items = Tree.clear_items obj
-  method select_item = Tree.select_item obj
-  method unselect_item = Tree.unselect_item obj
-  method child_position (child : TreeItem.t obj) =
-    Tree.child_position obj child
-end
 
 class box_skel obj = object
   inherit container obj
@@ -571,23 +565,29 @@ end
 let new_fixed  ?(_ : unit option) =
   Container.setter ?(Fixed.create ()) ?cont:(pack_return (new fixed))
 
+class gtk_list obj = object
+  inherit [ListItem.t,list_item] item_container obj
+  method private wrap w = new list_item (ListItem.cast w)
+  method insert w = GtkList.insert_item obj w#as_item
+  method clear_items = GtkList.clear_items obj
+  method select_item = GtkList.select_item obj
+  method unselect_item = GtkList.unselect_item obj
+  method child_position : 'a. (ListItem.t #is_item as 'a) -> _ =
+    fun w -> GtkList.child_position obj w#as_item
+end
+
+let new_list ?(_ : unit option) =
+  GtkList.setter ?(GtkList.create ())
+    ?cont:(Container.setter ?cont:(pack_return (new gtk_list)))
+
 class menu_shell_signals obj = object
   inherit container_signals obj
   method deactivate = Signal.connect sig:MenuShell.Signals.deactivate obj
 end
 
 class menu_shell obj = object
-  inherit widget obj
-  method remove : 'b. (MenuItem.t #is_item as 'b) -> unit =
-    fun w -> Container.remove obj w#as_item
-  method children =
-    List.map (Container.children obj)
-      fun:(fun w -> new widget (MenuItem.cast w))
-  method set_size ?:border = Container.set ?obj ?border_width:border
-  method append : 'a. (MenuItem.t #is_item as 'a) -> unit =
-    fun w -> MenuShell.append obj w#as_item
-  method prepend : 'a. (MenuItem.t #is_item as 'a) -> unit =
-    fun w -> MenuShell.prepend obj w#as_item
+  inherit [MenuItem.t,menu_item] item_container obj
+  method private wrap w = new menu_item (MenuItem.cast w)
   method insert : 'a. (MenuItem.t #is_item as 'a) -> _ =
     fun w -> MenuShell.insert obj w#as_item
   method deactivate () = MenuShell.deactivate obj
@@ -839,17 +839,29 @@ let new_separator dir =
 
 class toolbar obj = object
   inherit container_full obj
-  method insert_widget : 'a .
-      (#is_widget as 'a) -> ?tooltip:string -> ?tooltip_private:string -> ?pos:int -> unit =
-	fun (w : #is_widget) ?:tooltip ?:tooltip_private ?:pos ->
-	  Toolbar.insert_widget obj (w #as_widget) ?:tooltip ?:tooltip_private ?:pos
+  method insert_widget : 'a . (#has_frame as 'a) -> _ =
+    fun w -> Toolbar.insert_widget ?obj ?(w#frame)
 
-  method insert_button : 'a .
-        ?type:[BUTTON RADIOBUTTON TOGGLEBUTTON] -> ?text:string ->
-        ?tooltip:string -> ?tooltip_private:string ->
-        ?icon:([> widget] as 'a) Gtk.obj -> ?pos:int ->
-	?callback:(unit -> unit) -> Gtk.Button.t Gtk.obj =
-    Toolbar.insert_button ?obj
+  method insert_button : 'a . ?icon:(#has_frame as 'a) -> _ =
+    fun ?:icon ?:text ?:tooltip ?:tooltip_private ?:pos ?:callback ->
+      let icon = match icon with Some w -> Some w#frame | None -> None in
+      new button
+	(Toolbar.insert_button obj type:`BUTTON ?:icon ?:text
+	   ?:tooltip ?:tooltip_private ?:pos ?:callback)
+
+  method insert_toggle_button : 'a . ?icon:(#has_frame as 'a) -> _ =
+    fun ?:icon ?:text ?:tooltip ?:tooltip_private ?:pos ?:callback ->
+      let icon = match icon with Some w -> Some w#frame | None -> None in
+      new toggle_button (ToggleButton.cast
+	(Toolbar.insert_button obj type:`BUTTON ?:icon ?:text
+	   ?:tooltip ?:tooltip_private ?:pos ?:callback))
+
+  method insert_radio_button : 'a . ?icon:(#has_frame as 'a) -> _ =
+    fun ?:icon ?:text ?:tooltip ?:tooltip_private ?:pos ?:callback ->
+      let icon = match icon with Some w -> Some w#frame | None -> None in
+      new radio_button (RadioButton.cast
+	(Toolbar.insert_button obj type:`BUTTON ?:icon ?:text
+	   ?:tooltip ?:tooltip_private ?:pos ?:callback))
 
   method insert_space = Toolbar.insert_space ?obj
 
@@ -863,7 +875,39 @@ class toolbar obj = object
 end
 
 let new_toolbar dir ?:style =
-  Container.setter (Toolbar.create dir ?:style)  ?cont:(pack_return(new toolbar))
+  Toolbar.setter ?(Toolbar.create dir ?:style)
+    ?cont:(Container.setter ?cont:(pack_return(new toolbar)))
+
+class tree_signals obj = object
+  inherit container_signals obj
+  method selection_changed =
+    Signal.connect ?obj ?sig:Tree.Signals.selection_changed
+(*
+  method select_child 
+     callback:((#is_widget as 'a) -> unit) -> ?after:bool -> Gtk.Signal.id
+	  = fun :callback -> Signal.connect obj sig:Tree.Signals.select_child
+	  callback:(fun w -> callback (w #as_widget))
+  method unselect_child    = Signal.connect sig:Tree.Signals.unselect_child
+*)
+end
+
+class tree obj = object
+  inherit [TreeItem.t,tree_item] item_container obj
+  method private wrap w = new tree_item (TreeItem.cast w)
+  method as_tree = Tree.coerce obj
+  method insert w :pos =
+    Tree.insert obj (w #as_item) :pos
+  method connect = new tree_signals obj
+  method clear_items = Tree.clear_items obj
+  method select_item = Tree.select_item obj
+  method unselect_item = Tree.unselect_item obj
+  method child_position : 'a. (TreeItem.t #is_item as 'a) -> _ =
+    fun w -> Tree.child_position obj w#as_item
+end
+
+let new_tree ?(_ : unit option) =
+  Tree.setter ?(Tree.create ())
+    ?cont:(Container.setter ?cont:(pack_return (new tree)))
 
 module Main : sig
   val locale : string

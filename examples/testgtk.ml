@@ -450,7 +450,7 @@ let create_scrolled_windows =
 
 let pixmap_new filename window background =
   let pixmap,mask = Gdk.Pixmap.create_from_xpm window file:filename in
-  Gtk.Pixmap.create pixmap :mask
+  new_pixmap pixmap :mask
 
 let make_toolbar (toolbar : toolbar) (window : window) =
   let icon () = (pixmap_new "test.xpm" (window #misc#window)
