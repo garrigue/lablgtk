@@ -220,7 +220,7 @@ cb#entry#connect#changed callback:
 	| Some sl -> sl#base#misc#set state:`NORMAL
       end;
       let n = cb#entry#text in
-      let w = List.find !rwidget_list pred:(fun x -> x#name = n) in
+      let w = List.find !rwidget_list pred:(fun w -> w#name = n) in
       if cb#entry#misc#has_focus then w#base#misc#set state:`SELECTED;
       last_sel := Some w
 	  );;
@@ -241,7 +241,7 @@ let property_remove rw =
   cb#set_combo popdown_strings:(List.map fun:fst nplist)
 
 let property_update () =
-  let nplist = List.map !rwidget_list fun:(fun w -> (w#name, w#proplist)) in
+  let nplist = List.map fun:(fun (w : rwidget_base) -> (w#name, w#proplist)) !rwidget_list in
   rname_prop_list := nplist;
   cb#set_combo popdown_strings:(List.map fun:fst nplist)
 
