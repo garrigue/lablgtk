@@ -21,6 +21,9 @@ How to compile:
         The following variables will also be remembered if passed as options
                 CAMLC CAMLOPT DEBUG CC BINDIR INSTALLDIR DLLDIR
         or you may directly edit config.make.
+        Note that if you change DLLDIR, you should add the new directory
+        either to OCAMLLIB/ld.conf or to CAML_LD_LIBRARY_PATH before
+	running programs.
         If gtk-config has a different name, you can set the GTK_CONFIG
         variable  to it (e.g. FreeBSD).
 
@@ -50,9 +53,10 @@ Contents:
 
 How to run the examples:
   In the examples directory just type:
-	lablgtk examples/???.ml
+	lablgtk ???.ml
 
   Before installing lablgtk you have to be more explicit:
+        setenv CAML_LD_LIBRARY_PATH ../src  (or export CAML..PATH=../src)
 	../src/lablgtktop -w s -I ../src ???.ml
 
 How to link them:
