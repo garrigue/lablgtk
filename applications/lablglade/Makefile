@@ -34,9 +34,13 @@ MLFLAGS = -I $(LABLGTKDIR)
 endif
 
 ifdef USE_CC
-CCOMPILER = $(CC) -c -I/usr/local/lib/olabl $(CFLAGS)
+CCOMPILER = $(CC) -c -I$(LABLDIR)/olabl $(CFLAGS)
 else
 CCOMPILER = olablc -c -ccopt "$(CFLAGS)"
+endif
+
+ifdef USE_INTL
+LDFLAGS += -L$(GLADETOPDIR)/intl -lintl
 endif
 
 # Rules
@@ -91,8 +95,12 @@ clean:
 	olabldep *.ml *.mli > .depend
 
 config.make:
-	echo GTKCFLAGS=`gtk-config --cflags` > config.make
+	olablc -v | grep "^Standard" | sed "s/.*: */LABLLIB=/" > config.make
+	echo GTKCFLAGS=`gtk-config --cflags` >> config.make
 	echo GTKLIBS=`gtk-config --libs` >> config.make
+	echo USE_CC=$(USE_CC) >> config.make
+	echo USE_INTL=$(USE_INTL) >> config.make
+	echo GLADETOPDIR=$(GLADETOPDIR) >> config.make
 
 ml_glade.o: ml_glade.h 
 
