@@ -171,12 +171,14 @@ let create_GUI () =
 
   let date_view = GMisc.label ~justify: `CENTER ~packing () in
 
-  let text = GEdit.text ~editable: true ~width: 70 ~height: 50 ~packing () in
+  let text = GText.view ~packing () in
+  text#set_editable true;
+  text#misc#set_size_request ~width:70 ~height:50;
 
   (* Controls part *)
 
   let save_text () =
-    let data = text#get_chars ~start: 0 ~stop: text#length in
+    let data = text#get_buffer#get_text () in
     let key = (date.year, date.mon, date.mday) in
     Hashtbl.remove schedule key;
     if data <> "" then
@@ -185,12 +187,14 @@ let create_GUI () =
     else buttons.(date.mday - 1)#unset_plan in
 
   let restore_text () =
-    text#delete_text ~start: 0 ~stop: text#length;
     try
-      text#insert_text ~pos: 0
+      text#get_buffer#set_text
  	(Hashtbl.find schedule (date.year, date.mon, date.mday));
       ()
-    with Not_found -> () in
+    with Not_found -> 
+      let start,stop = text#get_buffer#get_bounds in
+      text#get_buffer#delete ~start ~stop
+  in
 
   let update_date_view () =
     date_view#set_text (sprintf "%d %s, %d\n"
@@ -243,7 +247,7 @@ let create_GUI () =
   buttons.(0)#focus_on;;
 
 GMain.Main.init ();
-print_endline (GtkMain.Main.set_locale ());
+print_endline (Glib.Main.setlocale `ALL None);
 flush stdout;
 create_GUI ();
 GMain.Main.main ()

@@ -1,5 +1,9 @@
 (* $Id$ *)
 
+(* I cannot translate this program directly to Gtk 2. The event generation
+   causes segfault and starts some drag-n-drop op. 
+   The default signal for left button has probably changed.*)
+
 open GMain
 
 let _ =

@@ -129,7 +129,8 @@ let main argv =
   let w = GWindow.window () in
   w#misc#realize ();
   let style = w#misc#style in
-  let font = Gdk.Font.load_fontset "-schumacher-clean-medium-r-normal--13-*-*-*-c-60-*,-mnkaname-fixed-*--12-*" in
+  let font = Gdk.Font.load_fontset 
+	       "-schumacher-clean-medium-r-normal--13-*-*-*-c-60-*,-mnkaname-fixed-*--12-*" in
   let w0 = Gdk.Font.char_width font '0' in
   style#set_font font;
   w#connect#destroy ~callback:Main.quit;

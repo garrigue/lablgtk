@@ -68,16 +68,16 @@ object
   method backward_lines : int -> bool
   method backward_sentence_start : unit -> bool
   method backward_sentence_starts : int -> bool
-  method backward_to_tag_toggle : texttag obj -> bool
+  method backward_to_tag_toggle : ?tag:tag -> unit -> bool
   method backward_word_start : unit -> bool
   method backward_word_starts : int -> bool
-  method begins_tag : texttag obj option -> bool
+  method begins_tag : ?tag:tag -> unit -> bool
   method can_insert : bool -> bool
   method compare : iter -> int
   method editable : bool -> bool
   method ends_line : bool
   method ends_sentence : bool
-  method ends_tag : texttag obj option -> bool
+  method ends_tag : ?tag:tag -> unit -> bool
   method ends_word : bool
   method equal : iter -> bool
   method forward_char : unit -> bool
@@ -91,7 +91,7 @@ object
   method forward_sentence_ends : int -> bool
   method forward_to_end : unit -> unit
   method forward_to_line_end : unit -> bool
-  method forward_to_tag_toggle : texttag obj -> bool
+  method forward_to_tag_toggle : ?tag:tag -> unit -> bool
   method forward_word_end : unit -> bool
   method forward_word_ends : int -> bool
   method get_buffer : textbuffer obj
@@ -108,12 +108,12 @@ object
   method get_slice : stop:iter -> string
   method get_tags : tag list
   method get_text : stop:iter -> string
-  method get_toggled_tags : bool -> texttag obj list
+  method get_toggled_tags : bool -> tag list
   method get_visible_line_index : int
   method get_visible_line_offset : int
   method get_visible_slice : stop:iter -> string
   method get_visible_text : stop:iter -> string
-  method has_tag : texttag obj -> bool
+  method has_tag : tag -> bool
   method in_range : start:iter -> stop:iter -> int
   method inside_sentence : bool
   method inside_word : bool
@@ -129,7 +129,7 @@ object
   method starts_line : bool
   method starts_sentence : bool
   method starts_word : bool
-  method toggles_tag : texttag obj option -> bool
+  method toggles_tag : ?tag:tag -> unit -> bool
   method forward_search : flag:Gtk.Tags.text_search_flag ->
     ?limit:iter -> string -> (iter * iter) option
   method backward_search : flag:Gtk.Tags.text_search_flag ->
@@ -208,10 +208,10 @@ object
   method create_tag :
     ?name:string -> ?properties:GtkText.Tag.property list -> unit -> tag
   method cut_clipboard : ?default_editable:bool -> Gtk.clipboard -> unit
-  method delete : start:textiter -> stop:textiter -> unit
+  method delete : start:iter -> stop:iter -> unit
   method delete_interactive :
-    start:textiter ->
-    stop:textiter -> ?default_editable:bool -> unit -> bool
+    start:iter ->
+    stop:iter -> ?default_editable:bool -> unit -> bool
   method delete_mark : mark -> unit
   method delete_mark_by_name : string -> unit
   method delete_selection :
