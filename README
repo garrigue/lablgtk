@@ -80,9 +80,18 @@ Structure of the GtkObj module:
   mywidget is not a subtype of its superclasses. However you can
   coerce any widget to the widgeter class.
 
-  Also, to avoid having too many methods in mywidget_skel, some
-  miscellanous widget methods are available through the widget_ops
-  sub-object.
+  Practically, each widget class is composed of:
+  * a raw method, returning the raw Gtk.obj handle
+  * a widget method, returing the same handle coerced to [widget] Gtk.obj.
+    this is needed for technical reasons
+  * a misc sub-object, giving access to miscellanous functionality of
+    the basic gtkwidget class
+  * a connect sub-object, allowing one to connect all available signals
+  * a connect#event sub-object, for event signals
+  * various methods inherited from the widget_skel object, itself
+    inheriting from superclasses
+  * a set method
+  * possibly some widget specific methods, not inherit by subclasses
 
 Memory management:
 

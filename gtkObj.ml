@@ -1,5 +1,6 @@
 (* $Id$ *)
 
+open Misc
 open Gtk
 
 class ['a] gtkobj_skel obj = object
@@ -37,7 +38,7 @@ end
 
 let new_tooltips () = new tooltips (Tooltips.create ())
 
-class widget_ops obj = object
+class widget_misc obj = object
   val obj = Widget.coerce obj
   method show () = Widget.show obj
   method show_now () = Widget.show_now obj
@@ -79,7 +80,7 @@ end
 class ['a] widget_skel obj = object
   inherit ['a] gtkobj_skel obj
   method widget = Widget.coerce obj
-  method widget_ops = new widget_ops obj
+  method misc = new widget_misc obj
   method show () = Widget.show obj
 end
 
@@ -231,7 +232,10 @@ end
 class button obj = object
   inherit [Button.t] button_skel obj
   method connect = new button_signals obj
-  method set = Container.set ?obj
+  method set ?:can_default =
+    may can_default fun:(Widget.set_can_default obj);
+    Container.set ?obj
+  method grab_default () = Widget.grab_default obj
 end
 
 let new_button ?:label ?x = new button (Button.create ?:label ?x)
@@ -273,8 +277,7 @@ class scrolled_window obj = object
   method connect = new container_signals obj
   method hadjustment = ScrolledWindow.get_hadjustment obj
   method vadjustment = ScrolledWindow.get_vadjustment obj
-  method set_policy = ScrolledWindow.set_policy obj
-  method set = Container.set ?obj
+  method set = ScrolledWindow.set ?obj
 end
 
 let new_scrolled_window () = new scrolled_window (ScrolledWindow.create ())

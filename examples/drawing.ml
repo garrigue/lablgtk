@@ -6,7 +6,7 @@ open GtkObj
 
 (* let id = Thread.create GtkThread.main () *)
 let window = new_window `TOPLEVEL
-let w = window#widget_ops#show (); window#widget_ops#window
+let w = window#show (); window#misc#window
 let gc = GC.create w
 
 let _ =

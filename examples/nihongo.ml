@@ -19,11 +19,11 @@ let _ =
   window#connect#destroy callback:Main.quit;
   window#add box;
   box#add text;
-  text#widget_ops#realize ();
+  text#misc#realize ();
   text#insert "こんにちは" :font;
   text#set editable:true;
   let button = new_button label:"終了" in
-  let style = button#widget_ops#style in
+  let style = button#misc#style in
   Style.set style :font;
   Style.set_bg style color:(Gdk.Color.alloc (`Name "green"));
   box#add button;

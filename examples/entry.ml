@@ -17,8 +17,7 @@ let entry_toggle_visibility (button : toggle_button) (entry : entry) =
 let main () =
 
   let window = new_window `TOPLEVEL in
-  window#widget_ops#set width:200 height:100;
-  window#set title:"GTK Entry";
+  window#set title:"GTK Entry" width:200 height:100;
   window#connect#destroy callback:Main.quit;
 
   let vbox = new_box `VERTICAL in
@@ -48,8 +47,8 @@ let main () =
   let button = new_button label:"Close" in
   button#connect#clicked callback:Main.quit;
   vbox#pack button;
-  button#widget_ops#set can_default:true;
-  button#widget_ops#grab_default ();
+  button#set can_default:true;
+  button#grab_default ();
 
   window#show_all ();
 
