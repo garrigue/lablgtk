@@ -17,6 +17,8 @@ class button_skel : 'a obj ->
     method clicked : unit -> unit
     method set_relief : Tags.relief_style -> unit
     method relief : Tags.relief_style
+    method set_label : string -> unit
+    method label : string
     method grab_default : unit -> unit
     method event : event_ops
   end
