@@ -44,7 +44,8 @@ end
 open GdkKeysyms
 
 class editor_window ?:show [< false >] =
-  let window = new GWindow.window width:500 height:300 title:"editor" in
+  let window = new GWindow.window width:500 height:300
+      title:"Program Editor" in
   let vbox = new GPack.box `VERTICAL packing:window#add in
 
   let menubar = new GMenu.menu_bar packing:(vbox#pack expand:false) in
