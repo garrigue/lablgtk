@@ -181,8 +181,8 @@ gtkThread.cmx: gtkThread.ml
 xml_lexer.ml: xml_lexer.mll
 	ocamllex xml_lexer.mll
 
-varcc: varcc.cmo
-	$(LINKER) -o $@ varcc.cmo
+varcc: varcc.ml
+	$(LINKER) -pp camlp4o -o $@ varcc.ml
 	rm -f *_tags.h *_tags.c
 
 clean:
