@@ -1,43 +1,60 @@
 # $Id$
 # Makefile for lablgtk.
 
-EXE = .exe
-TARGETS = varcc lablgtktop$(EXE) lablgtktop_t$(EXE) # lablgtk2 lablgladecc
-
-all:: $(TARGETS)
-
-opt: lablgtkopt
-
-depend:
-	ocamldep *.ml *.mli > .depend
-
-COMPILER = $(CAMLC) $(MLFLAGS) -w s -c
-LINKER = $(CAMLC) $(MLFLAGS)
+COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
+LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
+LIBRARIAN = $(CAMLMKLIB) -verbose
+
 MKLIB = lib /nologo /debugtype:CV /out:
 MKDLL = link /nologo /dll "`ocamlc -where`/ocamlrun.lib" /out:
 TOPLEVEL = ocamlmktop -verbose $(MLFLAGS)
 CAMLP4 = camlp4o -I "$(LIBDIR)/camlp4" pr_o.cmo
+DLLDIR = $(LIBDIR)/stublibs
+
+TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
+CAMLP4 = $(CAMLP4O) pr_o.cmo
 CONFIG = ../config.make.nt
+
+# protect against missing definitions
+BINDIR = ""
+LIBDIR = ""
+INSTALLDIR = $(LIBDIR)/lablgtk2
 DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
 
-INSTALLDIR = $(LIBDIR)/lablgtk2
-BINDIR = $(LIBDIR)/../bin
+TARGETS = varcc lablgtktop$(EXE) lablgtktop_t$(EXE) lablgladecc$(EXE)
+
+all: byte
+
+byte: $(TARGETS)
+opt:  $(TARGETS) lablgtkopt
+
+depend:
+	ocamldep *.ml *.mli > .depend
+
+
 LABLGLDIR = $(LIBDIR)/lablGL
 
 MLLIBS = lablgtk.cma
 CLIBS = liblablgtk2.lib
 MLLINK = unix.cma str.cma
 
-CFLAGS = -O  -DG_DISABLE_CAST_CHECKS $(GTKCFLAGS)
+ifdef DEBUG
+CFLAGS = -g $(GTKCFLAGS)
+MLLINK = -custom
+#MLLINK += -cclib -lcamlrund
+MLBYTEFLAGS = -g
+else
+CFLAGS = -O -DG_DISABLE_CAST_CHECKS $(GTKCFLAGS)
+endif
 
 THFLAGS = -thread
 THLINK = unix.cma threads.cma
 
-ifeq ($(USE_GL), 1)
+ifdef USE_GL
 MLFLAGS += -I "$(LABLGLDIR)"
 MLLINK += lablgl.cma
 MLLIBS += lablgtkgl.cma
@@ -45,6 +62,14 @@ CLIBS += liblablgtkgl2.lib
 GLLINK = -cclib -llablgtkgl -cclib -lgtkgl
 GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.obj
+endif
+
+ifdef USE_GLADE
+MLLIBS += lablglade.cma
+CLIBS += liblablglade2.lib
+GLADELINK = -cclib -llablglade2 -cclib -lglade
+GLADEMLOBJS = glade.cmo
+GLADECOBJS = ml_glade.obj
 endif
 
 
@@ -87,7 +112,7 @@ THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
 ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
-	$(RSVGMLOBJS) $(GNOMECANVSMLOBJS) $(INITOBJS)
+	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 
 lablgtktop$(EXE): $(CLIBS) $(MLLIBS) $(INITOBJS)
@@ -99,6 +124,14 @@ lablgtktop_t$(EXE): $(CLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
 lablgtkopt: $(CLIBS) $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \
 	$(THOBJS:.cmo=.cmx)
+
+lablgladecc$(EXE): xml_lexer.cmo lablgladecc.cmo
+	$(LINKER) -o $@ $(MLLINK) xml_lexer.cmo lablgladecc.cmo
+
+testcc: lablgladecc$(EXE) lablgtktop
+	./lablgladecc -test > testcc.ml
+	./lablgtktop testcc.ml
+	rm -f testcc.ml
 
 install:
 	@if test -d "$(INSTALLDIR)"; then :; else mkdir -p "$(INSTALLDIR)"; fi
@@ -138,25 +171,33 @@ gtkThread.cmi: gtkThread.mli
 gtkThread.cmx: gtkThread.ml
 	$(COMPOPT) $(THFLAGS) gtkThread.ml
 
+xml_lexer.ml: xml_lexer.mll
+	$(OCAMLLEX) xml_lexer.mll
+xml_lexer.cmo xml_lexer.cmx : xml_lexer.cmi
+
 varcc: varcc.cmo
 	$(LINKER) -o $@ $<
 	rm -f *_tags.h *_tags.c
 
 clean:
-	rm -f *.cm* *.obj *.lib *_tags.[ch] $(TARGETS) varcc.ml
+	rm -f *.cm* *.obj *.lib *_tags.[ch] $(TARGETS) varcc.ml xml_lexer.ml
 
 srcdoc: $(ALLOBJS)
 	mkdir -p doc
 	$(OCAMLDOC) -html -t "Lablgtk2" -d doc -I . `ls $(ALLOBJS:.cmo=.mli) 2> /dev/null`
 
-$(GTKOBJS): gtk_tags.h ml_gtk.h ml_gdk.h ml_pango.h ml_gobject.h ml_glib.h wrappers.h
+$(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
+	    ml_gobject.h ml_glib.h wrappers.h
 ml_glib.obj: glib_tags.h ml_glib.h wrappers.h
 ml_gobject.obj: gobject_tags.h wrappers.h
-ml_gdk.obj: gdk_tags.h ml_gdk.h ml_gpointer.h wrappers.h
+ml_gdk.obj: gdk_tags.h ml_gdk.h ml_gpointer.h ml_pango.h wrappers.h
+ml_gtk.obj ml_gtktext.obj: ml_pango.h
 ml_gtkgl.obj: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gtkxmhtml.obj: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gpointer.obj: ml_gpointer.h
 ml_gdkpixbuf.obj: gdkpixbuf_tags.h ml_gdk.h gdk_tags.h wrappers.h ml_gpointer.h
-ml_pango.obj: pango_tags.h
+ml_pango.obj: pango_tags.h ml_pango.h
+ml_rsvg.obj: ml_gobject.h ml_gdkpixbuf.h wrappers.h
+ml_gnomecanvas.obj: ml_gtk.h ml_gobject.h wrappers.h
 
 include .depend
