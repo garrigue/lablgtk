@@ -93,7 +93,13 @@ CAMLprim value ml_gtk_tree_store_newv(value arr)
 
 ML_4 (gtk_tree_store_set_value, GtkTreeStore_val, GtkTreeIter_val,
       Int_val, GValue_val, Unit)
+#ifdef HASGTK22
 ML_2 (gtk_tree_store_remove, GtkTreeStore_val, GtkTreeIter_val, Val_bool)
+#else
+ML_2 (gtk_tree_store_remove, GtkTreeStore_val, GtkTreeIter_val, Val_false Igno
+re)
+#endif
+
 ML_4 (gtk_tree_store_insert, GtkTreeStore_val, GtkTreeIter_val,
       Option_val(arg3,GtkTreeIter_val,NULL) Ignore, Int_val, Unit)
 ML_4 (gtk_tree_store_insert_before, GtkTreeStore_val, GtkTreeIter_val,
@@ -108,6 +114,8 @@ ML_3 (gtk_tree_store_is_ancestor, GtkTreeStore_val, GtkTreeIter_val,
       GtkTreeIter_val, Val_bool)
 ML_2 (gtk_tree_store_iter_depth, GtkTreeStore_val, GtkTreeIter_val, Val_int)
 ML_1 (gtk_tree_store_clear, GtkTreeStore_val, Unit)
+
+#ifdef HASGTK22
 ML_2 (gtk_tree_store_iter_is_valid, GtkTreeStore_val, GtkTreeIter_val,
       Val_bool)
 ML_3 (gtk_tree_store_swap, GtkTreeStore_val, GtkTreeIter_val,
@@ -116,6 +124,12 @@ ML_3 (gtk_tree_store_move_before, GtkTreeStore_val, GtkTreeIter_val,
       GtkTreeIter_val, Unit)
 ML_3 (gtk_tree_store_move_after, GtkTreeStore_val, GtkTreeIter_val,
       GtkTreeIter_val, Unit)
+#else
+Unsupported(gtk_tree_store_iter_is_valid)
+Unsupported(gtk_tree_store_swap)
+Unsupported(gtk_tree_store_move_before)
+Unsupported(gtk_tree_store_move_after)
+#endif
 
 /* GtkListStore */
 
@@ -134,7 +148,14 @@ CAMLprim value ml_gtk_list_store_newv(value arr)
 
 ML_4 (gtk_list_store_set_value, GtkListStore_val, GtkTreeIter_val,
       Int_val, GValue_val, Unit)
+
+#ifdef HASGTK22
 ML_2 (gtk_list_store_remove, GtkListStore_val, GtkTreeIter_val, Val_bool)
+#else
+ML_2 (gtk_list_store_remove, GtkListStore_val, GtkTreeIter_val, Val_false Igno
+re)
+#endif
+
 ML_3 (gtk_list_store_insert, GtkListStore_val, GtkTreeIter_val, Int_val, Unit)
 ML_3 (gtk_list_store_insert_before, GtkListStore_val, GtkTreeIter_val,
       GtkTreeIter_val, Unit)
@@ -144,6 +165,7 @@ ML_2 (gtk_list_store_append, GtkListStore_val, GtkTreeIter_val,
       Unit)
 ML_2 (gtk_list_store_prepend, GtkListStore_val, GtkTreeIter_val, Unit)
 ML_1 (gtk_list_store_clear, GtkListStore_val, Unit)
+#ifdef HASGTK22
 ML_2 (gtk_list_store_iter_is_valid, GtkListStore_val, GtkTreeIter_val,
       Val_bool)
 ML_3 (gtk_list_store_swap, GtkListStore_val, GtkTreeIter_val,
@@ -152,6 +174,12 @@ ML_3 (gtk_list_store_move_before, GtkListStore_val, GtkTreeIter_val,
       GtkTreeIter_val, Unit)
 ML_3 (gtk_list_store_move_after, GtkListStore_val, GtkTreeIter_val,
       GtkTreeIter_val, Unit)
+#else
+Unsupported(gtk_list_store_iter_is_valid)
+Unsupported(gtk_list_store_swap)
+Unsupported(gtk_list_store_move_before)
+Unsupported(gtk_list_store_move_after)
+#endif
 
 /* GtkCellRenderer{Text,...} */
 

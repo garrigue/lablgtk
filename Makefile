@@ -25,6 +25,8 @@ RANLIB = `which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/
 PKG_CONFIG = pkg-config
 GTKPKG = gtk+-2.0
 GTKLIBS = `$(PKG_CONFIG) $(GTKPKG) --libs`
+GTKVERSION = `$(PKG_CONFIG) $(GTKPKG) --modversion`
+HASGTK22 := $(shell if $(PKG_CONFIG) $(GTKPKG) --atleast-version=2.2; then echo 1 ; else echo 0 ; fi)
 
 ifdef USE_GL
 GTKGLPKG = gtkgl-2.0
@@ -87,4 +89,5 @@ configure:
 	@echo GTKGLLIBS=$(GTKGLLIBS) >> config.make
 	@echo GLADELIBS=$(GLADELIBS) >> config.make
 	@echo RSVGLIBS=$(RSVGLIBS) >> config.make
+	@echo HASGTK22=$(HASGTK22) >> config.make
 	@cat config.make
