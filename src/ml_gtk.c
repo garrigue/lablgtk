@@ -51,6 +51,7 @@ value Val_GtkWidget_func(gpointer w)
 Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
                            gtk_object_unref, 20)
 ML_1 (GTK_OBJECT_FLAGS, GtkObject_val, Val_int)
+ML_1 (gtk_object_ref_and_sink, GtkObject_val, Unit)
 
 /* gtkaccelgroup.h */
 

@@ -91,6 +91,10 @@ module Object = struct
   let try_cast = Gobject.try_cast
   external destroy : [>`gtk] obj -> unit = "ml_gtk_object_destroy"
   let cast w : [`gtk] obj = try_cast w "GtkObject"
+  external _ref_and_sink : [>`gtk] obj -> unit = "ml_gtk_object_ref_and_sink"
+  let make ~classe params =
+    let obj = Gobject.make ~classe params in _ref_and_sink obj;
+    obj
   external get_flags : [>`gtk] obj -> int = "ml_GTK_OBJECT_FLAGS"
   let get_flag obj wf =
     (get_flags obj) land (Gpointer.encode_variant Tables.widget_flags wf) <> 0
