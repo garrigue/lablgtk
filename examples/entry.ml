@@ -18,8 +18,7 @@ let main () =
   let window = Window.create `TOPLEVEL in
   Widget.set window width:200 height:100;
   Window.set_title window "GTK Entry";
-  Signal.connect window sig:Signal.delete_event
-    cb:(fun _ -> Main.quit (); true);
+  Signal.connect window sig:Signal.delete_event cb:(fun _ -> Main.quit ());
 
   let vbox = Box.create `VERTICAL in
   Container.add window vbox;
