@@ -654,11 +654,9 @@ ML_1 (gdk_event_copy, GdkEvent_val, Val_GdkEvent)
 
 CAMLprim value ml_gdk_event_new (value event_type)
 {
-    GdkEvent event;
-    memset (&event, 0, sizeof(GdkEvent));
-    event.type = GdkEventType_val(event_type);
-    event.any.send_event = TRUE;
-    return Val_copy(event);
+    GdkEvent *event = gdk_event_new(GdkEventType_val(event_type));
+    event->any.send_event = TRUE;
+    return Val_GdkEvent(event);
 }
 
 ML_1 (gdk_event_get_time, GdkEvent_val, copy_int32)
