@@ -193,9 +193,9 @@ class Image set wrap : Misc {
 }
 
 class Container abstract : Widget {
-  "border-width"         guint                : Read / Write
+  "border-width"         guint                : Read / Write / Wrap
   "child"                GtkWidget            : Write
-  "resize-mode"          GtkResizeMode        : Read / Write
+  "resize-mode"          GtkResizeMode        : Read / Write / Wrap
   method check_resize
   method add : "[>`widget] obj -> unit"
   method remove : "[>`widget] obj -> unit"

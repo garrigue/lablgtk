@@ -23,6 +23,9 @@ class container : ([> Gtk.container] as 'a) obj ->
     method remove : widget -> unit
     method focus : focus
     method set_border_width : int -> unit
+    method set_resize_mode : Tags.resize_mode -> unit
+    method border_width : int
+    method resize_mode : Tags.resize_mode
   end
 
 class ['a] container_impl :([> Gtk.container] as 'a) obj ->
@@ -75,6 +78,9 @@ class virtual ['a] item_container : ([> Gtk.container] as 'c) obj ->
     method remove : 'a -> unit
     method focus : focus
     method set_border_width : int -> unit
+    method set_resize_mode : Tags.resize_mode -> unit
+    method border_width : int
+    method resize_mode : Tags.resize_mode
     method private virtual wrap : Gtk.widget obj -> 'a
   end
 
