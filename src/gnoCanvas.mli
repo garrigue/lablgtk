@@ -1,10 +1,21 @@
 type items_properties = [ 
+  | `no_widget
+  | `no_fill_color
+  | `no_outline_color
+  | `no_font
+  | `no_text
+  | `no_bpath
+  | `no_pixbuf
+  | `size_pixels of bool
+  | `widget of GObj.widget
   | `pixbuf of GdkPixbuf.pixbuf
   | `width of float
   | `height of float
   | `bpath of GnomeCanvas.PathDef.t
   | `anchor of Gtk.Tags.anchor_type
+  | `justification of Gtk.Tags.justification
   | `cap_style of Gdk.GC.gdkCapStyle
+  | `join_style of Gdk.GC.gdkJoinStyle
   | `smooth of bool
   | `first_arrowhead of bool
   | `last_arrowhead of bool
@@ -14,10 +25,16 @@ type items_properties = [
   | `points of float array
   | `fill_color of string
   | `fill_color_rgba of int32
+  | `fill_stipple of Gdk.bitmap
   | `font of string
   | `outline_color of string
   | `size of int
   | `text of string
+  | `clip of bool
+  | `clip_width of float
+  | `clip_height of float
+  | `x_offset of float
+  | `y_offset of float
   | `width_units of float
   | `width_pixels of int
   | `x of float
@@ -79,11 +96,12 @@ class group : GnomeCanvas.group Gtk.obj ->
 
 class canvas : GnomeCanvas.canvas Gtk.obj ->
   object
-    inherit GObj.widget_full
+    (* inherit GObj.widget_full *)
+    inherit GPack.layout
     val obj : GnomeCanvas.canvas Gtk.obj
     method aa : bool
     method c2w : cx:float -> cy:float -> float * float
-    method event : GObj.event_ops
+    (* method event : GObj.event_ops *)
     method get_center_scroll_region : bool
     method get_item_at : x:float -> y:float -> GnomeCanvas.item Gobject.obj
     method get_scroll_offsets : int * int
@@ -148,6 +166,7 @@ val bpath :
 type pixbuf = GnomeCanvas.Types.pixbuf_p item
 val pixbuf :
   ?x:float -> ?y:float -> ?pixbuf:GdkPixbuf.pixbuf ->
+  ?width:float -> ?height:float ->
   ?props:GnomeCanvas.Types.pixbuf_p list ->
   #group -> pixbuf
 
@@ -157,4 +176,12 @@ val polygon :
   ?props:GnomeCanvas.Types.polygon_p list ->
   #group -> polygon
 
+type widget = GnomeCanvas.Types.widget_p item
+val widget :
+  ?widget:< coerce: GObj.widget; .. > ->
+  ?x:float -> ?y:float -> 
+  ?width:float -> ?height:float ->
+  ?props:GnomeCanvas.Types.widget_p list ->
+  #group -> widget
+    
 val parent : 'a #item -> group

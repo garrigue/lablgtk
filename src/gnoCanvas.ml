@@ -1,10 +1,21 @@
 type items_properties = [ 
+  | `no_widget
+  | `no_fill_color
+  | `no_outline_color
+  | `no_font
+  | `no_text
+  | `no_bpath
+  | `no_pixbuf
+  | `size_pixels of bool
+  | `widget of GObj.widget
   | `pixbuf of GdkPixbuf.pixbuf
   | `width of float
   | `height of float
   | `bpath of GnomeCanvas.PathDef.t
   | `anchor of Gtk.Tags.anchor_type
+  | `justification of Gtk.Tags.justification
   | `cap_style of Gdk.GC.gdkCapStyle
+  | `join_style of Gdk.GC.gdkJoinStyle
   | `smooth of bool
   | `first_arrowhead of bool
   | `last_arrowhead of bool
@@ -14,10 +25,16 @@ type items_properties = [
   | `points of float array
   | `fill_color of string
   | `fill_color_rgba of int32
+  | `fill_stipple of Gdk.bitmap
   | `font of string
   | `outline_color of string
   | `size of int
   | `text of string
+  | `clip of bool
+  | `clip_width of float
+  | `clip_height of float
+  | `x_offset of float
+  | `y_offset of float
   | `width_units of float
   | `width_pixels of int
   | `x of float
@@ -28,7 +45,7 @@ type items_properties = [
   | `y2 of float] 
 
 let propertize p =
-  let name, g_fund, g_val = match p with
+  let name, g_fund, (g_val : unit Gobject.data_set) = match p with
   | `x v -> "x", `DOUBLE, `FLOAT v
   | `y v -> "y", `DOUBLE, `FLOAT v
   | `x1 v -> "x1", `DOUBLE, `FLOAT v
@@ -40,13 +57,18 @@ let propertize p =
   | `fill_color "" -> "fill_color", `STRING, `STRING None
   | `fill_color c -> "fill_color", `STRING, `STRING (Some c)
   | `fill_color_rgba c -> "fill_color_rgba", `UINT, `INT32 c
-  (* | `fill_color_stipple (c : Gdk.bitmap) -> "fill_stipple", `OBJECT, `OBJECT (Some (d :> [`gtk] Gobject.obj)) *)
+  | `fill_stipple (d : Gdk.bitmap) -> "fill_stipple", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast d))
   | `width_units v -> "width_units", `DOUBLE, `FLOAT v
   | `width_pixels v -> "width_pixels", `UINT, `INT v
   (* | `text "" -> "text", `STRING, `STRING None *)
   | `text t -> "text", `STRING, `STRING (Some t)
   | `font t -> "font", `STRING, `STRING (Some t)
   | `size i -> "size", `INT, `INT i
+  | `clip b -> "clip", `BOOLEAN, `BOOL b
+  | `clip_width v -> "clip_width", `DOUBLE, `FLOAT v
+  | `clip_height v -> "clip_height", `DOUBLE, `FLOAT v
+  | `x_offset v -> "x_offset", `DOUBLE, `FLOAT v
+  | `y_offset v -> "y_offset", `DOUBLE, `FLOAT v
   | `points p -> "points", `GVAL (GnomeCanvas.convert_points p), `BOOL false
   | `arrow_shape_a v -> "arrow_shape_a", `DOUBLE, `FLOAT v
   | `arrow_shape_b v -> "arrow_shape_b", `DOUBLE, `FLOAT v
@@ -54,12 +76,23 @@ let propertize p =
   | `first_arrowhead b -> "first_arrowhead", `BOOLEAN, `BOOL b
   | `last_arrowhead  b -> "last_arrowhead", `BOOLEAN, `BOOL b
   | `anchor a -> "anchor", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.ANCHOR a))
+  | `justification j -> "justification", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.JUSTIFICATION j))
   | `cap_style c -> "cap_style", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.CAPSTYLE c))
+  | `join_style c -> "join_style", `INT, `INT (GnomeCanvas.convert_tags (GnomeCanvas.JOINSTYLE c))
   | `bpath p -> "bpath", `POINTER , `POINTER (Some p)
   | `smooth b -> "smooth", `BOOLEAN, `BOOL b
-  | `pixbuf (p : GdkPixbuf.pixbuf) -> "pixbuf", `OBJECT, `OBJECT (Some p)
+  | `pixbuf (p : GdkPixbuf.pixbuf) -> "pixbuf", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast p))
   | `width v -> "width", `DOUBLE, `FLOAT v
   | `height v -> "height", `DOUBLE, `FLOAT v
+  | `size_pixels b -> "size_pixels", `BOOLEAN, `BOOL b
+  | `widget (w : GObj.widget) -> "widget", `OBJECT, `OBJECT (Some (Gobject.unsafe_cast w#as_widget))
+  | `no_fill_color -> "fill_color", `STRING, `STRING None
+  | `no_outline_color -> "outline_color", `STRING, `STRING None
+  | `no_font -> "font", `STRING, `STRING None
+  | `no_text -> "text", `STRING, `STRING None
+  | `no_bpath -> "bpath", `POINTER, `POINTER None
+  | `no_pixbuf -> "pixbuf", `OBJECT, `OBJECT None
+  | `no_widget -> "widget", `OBJECT, `OBJECT None
   in
   let v = match g_fund with
   | `GVAL v -> v
@@ -113,9 +146,9 @@ end
 
 
 class canvas obj = object
-  inherit GObj.widget_full (obj : GnomeCanvas.canvas Gtk.obj)
-  method event = new GObj.event_ops obj
-
+  inherit GPack.layout (obj : GnomeCanvas.canvas Gtk.obj)
+  (* inherit GObj.widget_full (obj : GnomeCanvas.canvas Gtk.obj) *)
+  (* method event = new GObj.event_ops obj *)
   method root = new group (GnomeCanvas.Canvas.root obj)
   method aa =
     let v = Gobject.Value.create (Gobject.Type.of_fundamental `BOOLEAN) in
@@ -149,7 +182,8 @@ let canvas ?(aa=false) ?border_width ?width ?height ?packing ?show () =
 
 let wrap_item o (typ : (_, 'p) GnomeCanvas.Types.t) =
   if not (GnomeCanvas.Types.is_a o typ)
-  then failwith "type error" ;
+  then raise (Gobject.Cannot_cast (Gobject.Type.name (Gobject.get_type o), 
+				   GnomeCanvas.Types.name typ)) ;
   (new item o : 'p item)
 
 let item (typ : (_, 'p) GnomeCanvas.Types.t) ?(props=[]) parent =
@@ -184,11 +218,20 @@ type bpath = GnomeCanvas.Types.bpath_p item
 let bpath ?props p = item GnomeCanvas.Types.bpath ?props p
 
 type pixbuf = GnomeCanvas.Types.pixbuf_p item
-let pixbuf ?x ?y ?pixbuf ?(props=[]) p =
+let pixbuf ?x ?y ?pixbuf ?width ?height ?(props=[]) p =
+  let width = match (width, pixbuf) with
+  | (None, Some p) -> Some (`width (float (GdkPixbuf.get_width p)))
+  | (None, _) -> None
+  | (Some v, _) -> Some (`width v) in
+  let height = match (height, pixbuf) with
+  | (None, Some p) -> Some (`height (float (GdkPixbuf.get_height p)))
+  | (None, _) -> None
+  | (Some v, _) -> Some (`height v) in
   let props = unoption_list ~rest:props
       [ ( match x with None -> None | Some v -> Some (`x v) ) ;
 	( match y with None -> None | Some v -> Some (`y v) ) ;
 	( match pixbuf with None -> None | Some v -> Some (`pixbuf v) ) ;
+	width ; height ;
       ] in
   item GnomeCanvas.Types.pixbuf ~props p
 
@@ -197,6 +240,17 @@ let polygon ?points ?(props=[]) p =
   let props = 
     match points with None -> props | Some p -> `points p :: props in
   item GnomeCanvas.Types.polygon ~props p
+
+type widget = GnomeCanvas.Types.widget_p item
+let widget ?widget ?x ?y ?width ?height ?(props=[]) p =
+  let w = match widget with None -> None | Some wi -> Some (`widget wi#coerce) in
+  let props = unoption_list ~rest:props
+      [ ( match x with None -> None | Some v -> Some (`x v) ) ;
+	( match y with None -> None | Some v -> Some (`y v) ) ;
+	( match width with None -> None | Some v -> Some (`width v) ) ;
+	( match height with None -> None | Some v -> Some (`height v) ) ;
+	w ] in
+  item GnomeCanvas.Types.widget ~props p
 
 let parent i =
   new group (i#parent)

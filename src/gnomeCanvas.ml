@@ -54,22 +54,32 @@ module Types : sig
 
   type group_p = [`x of float| `y of float]
   type shape_p = [`fill_color of string| `outline_color of string
-                 | `fill_color_rgba of int32
+                 | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
                  | `width_units of float| `width_pixels of int
 		 | `cap_style of Gdk.GC.gdkCapStyle]
   type re_p = [shape_p| `x1 of float| `y1 of float| `x2 of float| `y2 of float]
   type text_p = [`x of float| `y of float| `text of string| `font of string
                 | `size of int| `fill_color of string
+                | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
+		| `clip of bool| `clip_width of float| `clip_height of float
+		| `x_offset of float| `y_offset of float
+		| `justification of Gtk.Tags.justification
 		| `anchor of Gtk.Tags.anchor_type]
   type line_p = [`arrow_shape_a of float| `arrow_shape_b of float| `arrow_shape_c of float
                 | `fill_color of string| `width_units of float| `width_pixels of int
                 | `points of float array| `first_arrowhead of bool
-		| `last_arrowhead of bool| `smooth of bool]
+		| `last_arrowhead of bool| `smooth of bool
+                | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
+		| `cap_style of Gdk.GC.gdkCapStyle| `join_style of Gdk.GC.gdkJoinStyle]
   type bpath_p = [shape_p| `bpath of PathDef.t]
   type pixbuf_p = [`x of float| `y of float
                   | `width of float|  `height of float
 		  | `anchor of Gtk.Tags.anchor_type| `pixbuf of GdkPixbuf.pixbuf]
   type polygon_p = [shape_p| `points of float array]
+  type widget_p = [`x of float| `y of float
+                  | `width of float|  `height of float
+		  | `size_pixels of bool
+		  | `anchor of Gtk.Tags.anchor_type| `widget of GObj.widget]
 
   val group : (group, group_p) t
   val rect : ([item|`canvasshape|`canvasRE|`canvasrect], re_p) t
@@ -79,32 +89,45 @@ module Types : sig
   val bpath : ([item|`canvasshape|`canvasbpath], bpath_p) t
   val pixbuf : ([item|`canvaspixbuf], pixbuf_p) t
   val polygon : ([item|`canvasshape|`canvaspolygon], polygon_p) t
+  val widget : ([item|`canvaswidget], widget_p) t
   val shape : ([item|`canvasshape], shape_p) t
   val rect_ellipse : ([item|`canvasshape|`canvasRE], re_p) t
+
   val points : Gobject.g_type
   val is_a : 'a Gobject.obj -> ('b, 'c) t -> bool
+  val name : ('a, 'b) t -> string
 end = 
   struct
   type ('a, 'b) t = Gobject.g_type constraint 'a = [> `gtk|`canvasitem]
 
   type group_p = [`x of float| `y of float]
   type shape_p = [`fill_color of string| `outline_color of string
-                 | `fill_color_rgba of int32
+                 | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
                  | `width_units of float| `width_pixels of int
 		 | `cap_style of Gdk.GC.gdkCapStyle]
   type re_p = [shape_p| `x1 of float| `y1 of float| `x2 of float| `y2 of float]
   type text_p = [`x of float| `y of float| `text of string| `font of string
                 | `size of int| `fill_color of string
+                | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
+		| `clip of bool| `clip_width of float| `clip_height of float
+		| `x_offset of float| `y_offset of float
+		| `justification of Gtk.Tags.justification
 		| `anchor of Gtk.Tags.anchor_type]
   type line_p = [`arrow_shape_a of float| `arrow_shape_b of float| `arrow_shape_c of float
                 | `fill_color of string| `width_units of float| `width_pixels of int
                 | `points of float array| `first_arrowhead of bool
-		| `last_arrowhead of bool| `smooth of bool]
+		| `last_arrowhead of bool| `smooth of bool
+                | `fill_color_rgba of int32 | `fill_stipple of Gdk.bitmap
+		| `cap_style of Gdk.GC.gdkCapStyle| `join_style of Gdk.GC.gdkJoinStyle]
   type bpath_p = [shape_p| `bpath of PathDef.t]
   type pixbuf_p = [`x of float| `y of float
                   | `width of float|  `height of float
 		  | `anchor of Gtk.Tags.anchor_type| `pixbuf of GdkPixbuf.pixbuf]
   type polygon_p = [shape_p| `points of float array]
+  type widget_p = [`x of float| `y of float
+                  | `width of float|  `height of float
+		  | `size_pixels of bool
+		  | `anchor of Gtk.Tags.anchor_type| `widget of GObj.widget]
 
   let canvas_types = register_types ()
   let group = canvas_types.(4)
@@ -123,6 +146,7 @@ end =
 
   let is_a obj typ =
     Gobject.Type.is_a (Gobject.get_type obj) typ
+  let name = Gobject.Type.name
   end
 
 (* GnomeCanvasItem *)
@@ -167,5 +191,7 @@ end
 type tags =
   | ANCHOR of Gtk.Tags.anchor_type
   | CAPSTYLE of Gdk.GC.gdkCapStyle
+  | JOINSTYLE of Gdk.GC.gdkJoinStyle
+  | JUSTIFICATION of Gtk.Tags.justification
 external convert_tags : tags -> int = "ml_gnome_canvas_convert_tags"
 external convert_points : float array -> Gobject.g_value = "ml_gnome_canvas_convert_points"

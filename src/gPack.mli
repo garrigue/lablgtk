@@ -130,10 +130,11 @@ val fixed :
   ?packing:(widget -> unit) -> ?show:bool -> unit -> fixed
 
 class layout :
-  Gtk.layout obj ->
+  'a obj ->
   object
     inherit container_full
-    val obj : Gtk.layout obj
+    constraint 'a = [> Gtk.layout]
+    val obj : 'a obj
     method event : event_ops
     method freeze : unit -> unit
     method hadjustment : GData.adjustment

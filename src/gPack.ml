@@ -86,7 +86,7 @@ let fixed ?has_window ?border_width ?width ?height ?packing ?show () =
   pack_return (new fixed w) ~packing ~show
 
 class layout obj = object
-  inherit container_full (obj : Gtk.layout obj)
+  inherit container_full obj
   method event = new GObj.event_ops obj
   method put w = Layout.put obj (as_widget w)
   method move w = Layout.move obj (as_widget w)
