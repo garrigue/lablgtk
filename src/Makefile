@@ -27,16 +27,14 @@ include config.make
 
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
-LDFLAGS = $(GTKLIBS) -lcamlrund
+DBLINK = -cclib -lcamlrund
 MLFLAGS = -g
 else
 CFLAGS = -O -DGTK_NO_CHECK_CASTS -DGTK_DISABLE_COMPAT_H $(GTKCFLAGS)
-LDFLAGS = $(GTKLIBS)
 endif
 
 THFLAGS = -thread
 THLIBS = unix.cma threads.cma
-THLDFLAGS = -lthreads -lunix
 
 ifdef USE_CC
 CCOMPILER = $(CC) -c -I$(LABLLIB) $(CFLAGS)
@@ -46,8 +44,7 @@ endif
 
 ifdef USE_GL
 MLFLAGS += -I $(LABLLIB)/lablGL
-GLLINK = -I $(LABLLIB)/lablGL lablgl.cma \
-	-cclib "-lgtkgl -L$(LABLLIB)/lablGL -llablgl -l$(MESA)GL -l$(MESA)GLU"
+GLLINK = -I $(LABLLIB)/lablGL -ccopt -L$(LABLLIB)/lablGL -cclib -lgtkgl
 GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.o
 endif
@@ -82,12 +79,12 @@ MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 THOBJS = gtkThread.cmo threadObj.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma gtkInit.cmo
-	$(TOPLEVEL) -o $@ -custom -cclib "-L. -llablgtk $(LDFLAGS)" \
-		$(GLLINK) lablgtk.cma gtkInit.cmo
+	$(TOPLEVEL) -custom -o $@ $(GLLINK) lablgl.cma \
+		-ccopt -L. lablgtk.cma gtkInit.cmo
 
 lablgtkrun: liblablgtk.a lablgtk.cma
-	$(LINKER) -o $@ -make-runtime $(GLLINK) lablgtk.cma \
-		-cclib "-L. -llablgtk $(LDFLAGS)"
+	$(LINKER) -o $@ -make-runtime $(GLLINK) lablgl.cmxa \
+		-ccopt -L. lablgtk.cma
 
 lablgtkopt: liblablgtk.a lablgtk.cmxa
 
@@ -96,10 +93,12 @@ liblablgtk.a: $(COBJS)
 	$(RANLIB) $@
 
 lablgtk.cma: $(MLOBJS)
-	$(LINKER) -a -o $@ $(MLOBJS)
+	$(LINKER) -a -o $@ $(MLOBJS) \
+	  -cclib -llablgtk $(GTKLIBS)
 
 lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
-	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx)
+	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \
+	  -cclib -llablgtk $(GTKLIBS) $(GLLINK)
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
@@ -114,9 +113,8 @@ threadObj.cmx: threadObj.ml
 	$(COMPOPT) $(THFLAGS) threadObj.ml
 
 lablgtk_t: liblablgtk.a lablgtk.cma $(THOBJS) gtkInit.cmo
-	$(TOPLEVEL) $(THFLAGS) -o $@ -custom \
-		-cclib "-L. -llablgtk $(LDFLAGS) $(THLDFLAGS)" \
-		$(GLLINK) $(THLIBS) lablgtk.cma $(THOBJS) gtkInit.cmo
+	$(TOPLEVEL) -custom $(THFLAGS) -o $@ $(THLIBS) $(GLLINK) \
+	   -ccopt -L. lablgtk.cma $(THOBJS) gtkInit.cmo
 
 var2conv: var2conv.cmo
 	$(LINKER) -o $@ var2conv.cmo
@@ -135,8 +133,8 @@ clean:
 config.make:
 	ocamlc -v | grep "^Standard" | sed "s/.*: */LABLLIB=/" > config.make
 	echo GTKCFLAGS=`gtk-config --cflags` >> config.make
-	echo GTKLIBS=`gtk-config --libs` >> config.make
-	echo MESA=$(MESA) >> config.make
+	echo GTKLIBS=`gtk-config --libs` | \
+	  sed -e 's/-l/-cclib &/g' -e 's/-[LW]/-ccopt &/g' >> config.make
 	echo USE_GL=$(USE_GL) >> config.make
 	echo USE_CC=$(USE_CC) >> config.make
 
