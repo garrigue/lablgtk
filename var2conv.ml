@@ -48,7 +48,7 @@ let declaration = parser
     List.iter tags fun:
       (fun tag -> printf "  case MLTAG_%s: return %s;\n" tag (ctag tag));
     printf "  }\n";
-    printf "  ml_raise_xerror(\"%s_val : unknown tag\");\n" cname;
+    printf "  ml_raise_gtk(\"%s_val : unknown tag\");\n" cname;
     printf "}\n\n";
     printf "/* %s : C to ML */\n" name;
     printf "value Val_%s (long tag) {\n" name;
@@ -56,7 +56,7 @@ let declaration = parser
     List.iter tags fun:
       (fun tag -> printf "  case %s: return MLTAG_%s;\n" (ctag tag) tag);
     printf "  }\n";
-    printf "  ml_raise_xerror(\"Val_%s : unknown tag\");\n" name;
+    printf "  ml_raise_gtk(\"Val_%s : unknown tag\");\n" name;
     printf "}\n\n"
   | [< >] -> raise End_of_file
 

@@ -1,6 +1,6 @@
 # Makefile for lablgtk. $Id$
 
-all: config.make .depend var2conv var2def ml_gtk.o ml_gdk.o
+all: config.make .depend var2conv var2def lablgtk
 
 config.make:
 	echo GTKCFLAGS=`gtk-config --cflags` > config.make
@@ -10,6 +10,8 @@ include config.make
 
 COMPILER = olablc -c
 LINKER = olablc
+TOPLEVEL = olablmktop
+RANLIB = ranlib
 CFLAGS = $(GTKCFLAGS)
 LDFLAGS = $(GTKLIBS)
 
@@ -27,6 +29,18 @@ LDFLAGS = $(GTKLIBS)
 	var2conv < $< > $@
 
 # Targets
+COBJS = ml_gtk.o ml_gdk.o
+MLOBJS = misc.cmo gdk.cmo gtk.cmo
+
+lablgtk: liblablgtk.a lablgtk.cma
+	$(TOPLEVEL) -o $@ -custom -cclib "$(LDFLAGS)" liblablgtk.a lablgtk.cma
+
+liblablgtk.a: $(COBJS)
+	ar rc $@ $(COBJS)
+	$(RANLIB) $@
+
+lablgtk.cma: $(MLOBJS)
+	$(LINKER) -a -o $@ $(MLOBJS)
 
 var2conv: var2conv.cmo
 	olablc -o $@ var2conv.cmo
