@@ -41,6 +41,8 @@ class Label set wrap : Misc {
   "selection-bound"      gint                 : Read
   method get_text : "string"
   method set_text : "string -> unit"
+  method select_region : "int -> int -> unit"
+  method get_selection_bounds : "(int * int) option"
   signal copy_clipboard
   signal move_cursor : GtkMovementStep gint gboolean
   signal populate_popup : GtkMenu
@@ -105,11 +107,16 @@ class Statusbar : Box {
   signal text_pushed : guint gchararray
 }
 
-class Calendar wrapsig : Widget {
+class Calendar wrap wrapsig : Widget {
+  "day"                  gint                  : Read / Write
+  "month"                gint                  : Read / Write
+  "year"                 gint                  : Read / Write
   method select_month : "month:int -> year:int -> unit"
   method select_day : "int -> unit"
   method mark_day : "int -> unit"
   method unmark_day : "int -> unit"
+  method get_num_marked_dates : "int"
+  method is_day_marked : "int -> bool"
   method clear_marks
   method display_options : "Gtk.Tags.calendar_display_options list -> unit"
   method get_date : "int * int * int" (* year * month * day *)
