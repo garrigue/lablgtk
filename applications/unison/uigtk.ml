@@ -21,9 +21,15 @@ open GdkKeysyms
 (**********************************************************************)
 
 let fontMonospaceMedium =
-  lazy (Gdk.Font.load "-*-Clean-Medium-R-Normal--*-130-*-*-*-60-*-*")
+  if Sys.os_type = "Win32" then
+    lazy (Gdk.Font.load "-*-Courier New-Medium-R-Normal--*-90-*-*-*-*-*-*")
+  else
+    lazy (Gdk.Font.load "-*-Clean-Medium-R-Normal--*-130-*-*-*-60-*-*")
 let fontMonospaceBold =
-  lazy (Gdk.Font.load "-*-Courier-Bold-R-Normal--*-120-*-*-*-*-*-*")
+  if Sys.os_type = "Win32" then
+    lazy (Gdk.Font.load "-*-Courier New-Bold-R-Normal--*-90-*-*-*-*-*-*")
+  else
+    lazy (Gdk.Font.load "-*-Courier-Bold-R-Normal--*-120-*-*-*-*-*-*")
 
 (**********************************************************************)
 (* UI state variables                                                 *)
@@ -369,6 +375,9 @@ let start _ =
   (**********************************************************************)
   (* Function to display a message in a new window                      *)
   (**********************************************************************)
+  let testString = String.make len:89 'M' in
+  let testW = Gdk.Font.char_width (Lazy.force fontMonospaceMedium) 'M'
+  and testH = Gdk.Font.char_height (Lazy.force fontMonospaceMedium) 'M' in
   let messageBox :title ?(:label = "Dismiss")
       ?(:action = fun t -> t#destroy) ?(:modal = false) message =
     begin
@@ -380,7 +389,7 @@ let start _ =
       t_dismiss#connect#clicked callback:(action t);
       (* Create the display area *)
       let t_text = new scrolled_text editable:false
-	  width:500 height:200 packing:t#vbox#add () in
+	  width:(testW*80) height:(testH*25) packing:t#vbox#add () in
       (* Insert text *)
       t_text#insert message;
       t#show ()
@@ -438,7 +447,7 @@ let start _ =
   (**********************************************************************)
 
   let detailsWindow =
-    GEdit.text editable:false height:45
+    GEdit.text editable:false height:(3*testH) width:(testW*89)
       packing:(toplevelVBox#pack expand:false) () in
   let displayDetails thePathString newtext =
     detailsWindow#freeze ();

@@ -38,6 +38,7 @@ endif
 ifdef WIN32
   EXEC_EXT=.exe
   OBJ_EXT=.obj
+  LIB_EXT=.lib
   ifndef CAMLLIB
     CAMLLIB=c:/ocaml/lib
   endif
@@ -48,6 +49,7 @@ else
 # UNIX
   EXEC_EXT=
   OBJ_EXT=.o
+  LIB_EXT=.a
   CWD = $(shell pwd)
   buildexecutable:: 
 	@echo Building for Unix
@@ -64,8 +66,7 @@ buildexecutable::
 #    OCAMLLIBDIR=$(filter /%,$(shell ocamlc -v | tail -1))
 #  So use the following instead
 OCAMLLIBDIR:=$(word 4,$(shell ocamlc -v | tail -1))
-OCAMLLIBDIR:=$(subst 
-,,$(OCAMLLIBDIR))
+OCAMLLIBDIR:=$(subst ,,$(OCAMLLIBDIR))
 
 ifeq ($(UISTYLE),gtk)
 
@@ -73,7 +74,7 @@ LABLGTKDIR=../../..
 
 include $(LABLGTKDIR)/config.make
 WITH_TK= -I $(LABLGTKDIR) lablgtk.cma \
-	-cclib "-L$(LABLGTKDIR) -llablgtk $(GTKLIBS)" \
+	-cclib $(LABLGTKDIR)/liblablgtk$(LIB_EXT) -cclib "$(GTKLIBS)" \
 #	-thread -cclib -lthreads threads.cma gtkThread.cmo
 
 endif

@@ -209,6 +209,8 @@ module Font :
     external load_fontset : string -> font = "ml_gdk_fontset_load"
     external string_width : font -> string -> int = "ml_gdk_string_width"
     external char_width : font -> char -> int = "ml_gdk_char_width"
+    external string_height : font -> string -> int = "ml_gdk_string_height"
+    external char_height : font -> char -> int = "ml_gdk_char_height"
     external string_measure : font -> string -> int = "ml_gdk_string_measure"
     external char_measure : font -> char -> int = "ml_gdk_char_measure"
   end

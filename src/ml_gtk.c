@@ -1,5 +1,6 @@
 /* $Id$ */
 
+#include <string.h>
 #include <gtk/gtk.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -47,10 +48,10 @@ void ml_gtk_root_destroy (gpointer data)
 
 #include "gtk_tags.c"
 
-ML_1 (Val_direction_type, Int_val, )
-ML_1 (Val_orientation, Int_val, )
-ML_1 (Val_toolbar_style, Int_val, )
-ML_1 (Val_state_type, Int_val, )
+ML_1 (Val_direction_type, Int_val, Id)
+ML_1 (Val_orientation, Int_val, Id)
+ML_1 (Val_toolbar_style, Int_val, Id)
+ML_1 (Val_state_type, Int_val, Id)
 
 Make_Flags_val (Attach_options_val)
 Make_Flags_val (Button_action_val)
@@ -60,11 +61,11 @@ Make_Flags_val (Font_type_val)
 
 /* gtkobject.h */
 
-Make_Val_final_pointer(GtkObject, , gtk_object_ref, gtk_object_unref)
+Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref)
 
 #define gtk_object_ref_and_sink(w) (gtk_object_ref(w), gtk_object_sink(w))
-Make_Val_final_pointer(GtkObject, _sink , gtk_object_ref_and_sink,
-		       gtk_object_unref)
+Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
+                           gtk_object_unref)
 
 #define Val_GtkAny(w) Val_GtkObject((GtkObject*)w)
 #define Val_GtkAny_sink(w) Val_GtkObject_sink((GtkObject*)w)
@@ -72,10 +73,10 @@ Make_Val_final_pointer(GtkObject, _sink , gtk_object_ref_and_sink,
 /* gtkaccelgroup.h */
 
 #define GtkAccelGroup_val(val) ((GtkAccelGroup*)Pointer_val(val))
-Make_Val_final_pointer (GtkAccelGroup, , gtk_accel_group_ref,
+Make_Val_final_pointer (GtkAccelGroup, gtk_accel_group_ref,
 			gtk_accel_group_unref)
-Make_Val_final_pointer (GtkAccelGroup, _no_ref, Ignore,
-			gtk_accel_group_unref)
+Make_Val_final_pointer_ext (GtkAccelGroup, _no_ref, Ignore,
+                            gtk_accel_group_unref)
 Make_OptFlags_val (Accel_flag_val)
 
 #define Signal_name_val(val) String_val(Field(val,0))
@@ -106,8 +107,8 @@ ML_1 (gtk_accelerator_set_default_mod_mask, OptFlags_GdkModifier_val, Unit)
 /* gtkstyle.h */
 
 #define GtkStyle_val(val) ((GtkStyle*)Pointer_val(val))
-Make_Val_final_pointer (GtkStyle, , gtk_style_ref, gtk_style_unref)
-Make_Val_final_pointer (GtkStyle, _no_ref, Ignore, gtk_style_unref)
+Make_Val_final_pointer (GtkStyle, gtk_style_ref, gtk_style_unref)
+Make_Val_final_pointer_ext (GtkStyle, _no_ref, Ignore, gtk_style_unref)
 ML_0 (gtk_style_new, Val_GtkStyle_no_ref)
 ML_1 (gtk_style_copy, GtkStyle_val, Val_GtkStyle_no_ref)
 ML_2 (gtk_style_attach, GtkStyle_val, GdkWindow_val, Val_GtkStyle)
@@ -233,7 +234,7 @@ ML_2 (gtk_widget_draw, GtkWidget_val,
 ML_1 (gtk_widget_draw_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_draw_default, GtkWidget_val, Unit)
 /* ML_1 (gtk_widget_draw_children, GtkWidget_val, Unit) */
-ML_2 (gtk_widget_event, GtkWidget_val, GdkEvent_val( ), Val_bool)
+ML_2 (gtk_widget_event, GtkWidget_val, GdkEvent_val, Val_bool)
 ML_1 (gtk_widget_activate, GtkWidget_val, Val_bool)
 ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit)
 ML_3 (gtk_widget_popup, GtkWidget_val, Int_val, Int_val, Unit)
@@ -567,7 +568,7 @@ static void window_unref (GtkObject *w)
 	gtk_object_unref (w);
     gtk_object_unref (w);
 }
-Make_Val_final_pointer (GtkObject, _window, gtk_object_ref, window_unref)
+Make_Val_final_pointer_ext (GtkObject, _window, gtk_object_ref, window_unref)
 #define Val_GtkWidget_window(w) Val_GtkObject_window((GtkObject*)w)
 
 #define GtkDialog_val(val) check_cast(GTK_DIALOG,val)
@@ -600,8 +601,8 @@ Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, help_button,
 ML_1 (gtk_window_new, Window_type_val, Val_GtkWidget_window)
 ML_2 (gtk_window_set_title, GtkWindow_val, String_val, Unit)
 ML_3 (gtk_window_set_wmclass, GtkWindow_val, String_val, String_val, Unit)
-Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_name, Val_string)
-Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_class, Val_string)
+Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_name, Val_optstring)
+Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_class, Val_optstring)
 ML_2 (gtk_window_set_focus, GtkWindow_val, GtkWidget_val, Unit)
 ML_2 (gtk_window_set_default, GtkWindow_val, GtkWidget_val, Unit)
 ML_4 (gtk_window_set_policy, GtkWindow_val, Bool_val, Bool_val, Bool_val, Unit)
@@ -885,7 +886,7 @@ ML_2 (gtk_clist_set_selection_mode, GtkCList_val, Selection_mode_val, Unit)
 ML_2 (gtk_clist_set_reorderable, GtkCList_val, Bool_val, Unit)
 ML_2 (gtk_clist_set_use_drag_icons, GtkCList_val, Bool_val, Unit)
 ML_3 (gtk_clist_set_button_actions, GtkCList_val, Int_val,
-      Flags_Button_action_val, Unit)
+      (guint8)Flags_Button_action_val, Unit)
 ML_1 (gtk_clist_freeze, GtkCList_val, Unit)
 ML_1 (gtk_clist_thaw, GtkCList_val, Unit)
 ML_1 (gtk_clist_column_titles_show, GtkCList_val, Unit)
@@ -943,7 +944,7 @@ value ml_gtk_clist_get_pixmap (value clist, value row, value column)
     CAMLreturn(ret);
 }
 ML_7 (gtk_clist_set_pixtext, GtkCList_val, Int_val, Int_val, String_val,
-      Int_val, GdkPixmap_val, GdkBitmap_val, Unit)
+      (guint8)Long_val, GdkPixmap_val, GdkBitmap_val, Unit)
 ML_bc7 (ml_gtk_clist_set_pixtext)
 ML_3 (gtk_clist_set_foreground, GtkCList_val, Int_val, GdkColor_val, Unit)
 ML_3 (gtk_clist_set_background, GtkCList_val, Int_val, GdkColor_val, Unit)
@@ -1009,8 +1010,8 @@ ML_2 (gtk_ctree_is_viewable, GtkCTree_val, GtkCTreeNode_val, Val_bool)
 
 #define GtkFixed_val(val) check_cast(GTK_FIXED,val)
 ML_0 (gtk_fixed_new, Val_GtkWidget_sink)
-ML_4 (gtk_fixed_put, GtkFixed_val, GtkWidget_val, Int_val, Int_val, Unit)
-ML_4 (gtk_fixed_move, GtkFixed_val, GtkWidget_val, Int_val, Int_val, Unit)
+ML_4 (gtk_fixed_put, GtkFixed_val, GtkWidget_val, (gint16)Long_val, (gint16)Long_val, Unit)
+ML_4 (gtk_fixed_move, GtkFixed_val, GtkWidget_val, (gint16)Long_val, (gint16)Long_val, Unit)
 
 /* gtklayout.h */
 
@@ -1158,8 +1159,8 @@ ML_0 (gtk_hpaned_new, Val_GtkWidget_sink)
 ML_0 (gtk_vpaned_new, Val_GtkWidget_sink)
 ML_2 (gtk_paned_add1, GtkPaned_val, GtkWidget_val, Unit)
 ML_2 (gtk_paned_add2, GtkPaned_val, GtkWidget_val, Unit)
-ML_2 (gtk_paned_set_handle_size, GtkPaned_val, Int_val, Unit)
-ML_2 (gtk_paned_set_gutter_size, GtkPaned_val, Int_val, Unit)
+ML_2 (gtk_paned_set_handle_size, GtkPaned_val, (gint16)Int_val, Unit)
+ML_2 (gtk_paned_set_gutter_size, GtkPaned_val, (gint16)Int_val, Unit)
 
 /* gtkscrolledwindow.h */
 
@@ -1310,14 +1311,14 @@ Make_Extractor (gtk_editable, GtkEditable_val, has_selection, Val_bool)
 
 #define GtkEntry_val(val) check_cast(GTK_ENTRY,val)
 ML_0 (gtk_entry_new, Val_GtkWidget_sink)
-ML_1 (gtk_entry_new_with_max_length, Int_val, Val_GtkWidget_sink)
+ML_1 (gtk_entry_new_with_max_length, (gint16)Long_val, Val_GtkWidget_sink)
 ML_2 (gtk_entry_set_text, GtkEntry_val, String_val, Unit)
 ML_2 (gtk_entry_append_text, GtkEntry_val, String_val, Unit)
 ML_2 (gtk_entry_prepend_text, GtkEntry_val, String_val, Unit)
 ML_1 (gtk_entry_get_text, GtkEntry_val, Val_string)
 ML_3 (gtk_entry_select_region, GtkEntry_val, Int_val, Int_val, Unit)
 ML_2 (gtk_entry_set_visibility, GtkEntry_val, Bool_val, Unit)
-ML_2 (gtk_entry_set_max_length, GtkEntry_val, Bool_val, Unit)
+ML_2 (gtk_entry_set_max_length, GtkEntry_val, (gint16)Long_val, Unit)
 Make_Extractor (GtkEntry, GtkEntry_val, text_length, Val_int)
 
 /* gtkspinbutton.h */
