@@ -138,6 +138,8 @@ gtkXmHTML.cmo: gdk.cmi gtk.cmo
 gtkXmHTML.cmx: gdk.cmx gtk.cmx 
 lablgladecc.cmo: xml_lexer.cmi 
 lablgladecc.cmx: xml_lexer.cmi 
+utf8.cmo: utf8.cmi 
+utf8.cmx: utf8.cmi 
 gBin.cmi: gContainer.cmi gData.cmi gObj.cmi gdk.cmi gtk.cmo gtkSignal.cmi 
 gButton.cmi: gContainer.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
 gContainer.cmi: gData.cmi gObj.cmi gtk.cmo gtkSignal.cmi 
