@@ -27,7 +27,6 @@ include config.make
 
 INSTALLDIR = $(LIBDIR)/lablgtk
 LABLGLDIR = $(LIBDIR)/lablGL
-INSTALLBINDIR = /sansho/opt/ocaml3/bin
 
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
@@ -112,7 +111,7 @@ install:
 	cp lablgtk.cma $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
 	cp liblablgtk.a $(LIBDIR) || cp liblablgtk.a $(INSTALLDIR)
 	cp lablgtktop  lablgtktop_t $(INSTALLDIR)
-	cp lablgtk lablgtkrun $(INSTALLBINDIR)
+	cp lablgtk lablgtkrun $(BINDIR)
 	if test -f lablgtk.cmxa; then cp lablgtk.cmxa $(INSTALLDIR); fi
 
 liblablgtk.a: $(COBJS)
