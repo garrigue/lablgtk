@@ -1,8 +1,0 @@
------------------------------------------------------------------------------
- $Id$
------------------------------------------------------------------------------
-
-* lexer combinators: saving results is now more flexible. The order of
-  the reslut list has changed. Used saveStr where you have have used
-  save up to now.
-
