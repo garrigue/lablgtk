@@ -43,8 +43,8 @@ static Make_Flags_val (Font_type_val)
 
 /* gtkobject.h */
 
-CAMLprim value Val_GtkObject (GtkObject *w);
 Make_Val_final_pointer(GtkObject, gtk_object_ref, gtk_object_unref, 0)
+ML_1(Val_GtkObject, (GtkObject*), (value))
 
 #define gtk_object_ref_and_sink(w) (gtk_object_ref(w), gtk_object_sink(w))
 Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
