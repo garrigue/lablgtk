@@ -91,14 +91,14 @@ let prop_widget (prop : prop) =
 	  List.iter2 ~f:(fun f v -> f v) !rset !rtitles);
       let e = GEdit.entry ~text:"double click here" ~editable:false () in
       e#event#connect#button_press ~callback:
-	(fun ev -> match GdkEvent.get_type ev with
-	| `TWO_BUTTON_PRESS ->
-	    if GdkEvent.Button.button ev = 1 then begin
-	      wpop#misc#show ();
-	      true
-	    end
-	    else false
-	| _ -> false);
+	(fun ev -> 
+          GdkEvent.get_type ev = `TWO_BUTTON_PRESS &&
+	  GdkEvent.Button.button ev = 1 &&
+          begin
+	    wpop#misc#show ();
+            GtkSignal.stop_emit ();
+            true
+	  end);
       e#coerce
 
 let prop_box list =
