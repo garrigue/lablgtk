@@ -35,16 +35,15 @@ module Progress = struct
       = "ml_gtk_progress_get_current_text"
   external get_adjustment : [>`progress] obj -> adjustment obj
       = "ml_gtk_progress_get_adjustment"
-  let set w :cont ?:value ?:percentage ?:activity_mode
-      ?:show_text ?:format_string ?:text_xalign ?:text_yalign =
+  let set ?:value ?:percentage ?:activity_mode
+      ?:show_text ?:format_string ?:text_xalign ?:text_yalign w =
     may value fun:(set_value w);
     may percentage fun:(set_percentage w);
     may activity_mode fun:(set_activity_mode w);
     may show_text fun:(set_show_text w);
     may format_string fun:(set_format_string w);
     if text_xalign <> None || text_yalign <> None then
-      set_text_alignment w ?x:text_xalign ?y:text_yalign ();
-    cont w
+      set_text_alignment w ?x:text_xalign ?y:text_yalign ()
 end
 
 module ProgressBar = struct
@@ -66,14 +65,12 @@ module ProgressBar = struct
   external set_orientation :
       [>`progressbar] obj -> Tags.progress_bar_orientation -> unit
       = "ml_gtk_progress_bar_set_orientation"
-  let set w :cont ?:bar_style ?:discrete_blocks
-      ?:activity_step ?:activity_blocks =
+  let set ?:bar_style ?:discrete_blocks ?:activity_step ?:activity_blocks w =
     let may_set f opt = may opt fun:(f w) in
     may_set set_bar_style bar_style;
     may_set set_discrete_blocks discrete_blocks;
     may_set set_activity_step activity_step;
-    may_set set_activity_blocks activity_blocks;
-    cont w
+    may_set set_activity_blocks activity_blocks
 end
 
 module Range = struct
@@ -87,10 +84,9 @@ module Range = struct
       = "ml_gtk_range_set_adjustment"
   external set_update_policy : [>`range] obj -> update_type -> unit
       = "ml_gtk_range_set_update_policy"
-  let set w :cont ?:adjustment ?:update_policy =
+  let set ?:adjustment ?:update_policy w =
     may adjustment fun:(set_adjustment w);
-    may update_policy fun:(set_update_policy w);
-    cont w
+    may update_policy fun:(set_update_policy w)
 end
 
 module Scale = struct
@@ -114,11 +110,10 @@ module Scale = struct
       = "ml_gtk_scale_get_value_width"
   external draw_value : [>`scale] obj -> unit
       = "ml_gtk_scale_draw_value"
-  let set w :cont ?:digits ?:draw_value ?:value_pos =
+  let set ?:digits ?:draw_value ?:value_pos w =
     may digits fun:(set_digits w);
     may draw_value fun:(set_draw_value w);
-    may value_pos fun:(set_value_pos w);
-    cont w
+    may value_pos fun:(set_value_pos w)
 end
 
 module Scrollbar = struct
@@ -157,9 +152,8 @@ module Ruler = struct
       upper:(may_default get_upper w for:upper)
       position:(may_default get_position w for:position)
       max_size:(may_default get_max_size w for:max_size)
-  let set w :cont ?:metric ?:lower ?:upper ?:position ?:max_size =
+  let set ?:metric ?:lower ?:upper ?:position ?:max_size w =
     may metric fun:(set_metric w);
     if lower <> None || upper <> None || position <> None || max_size <> None
-    then set_range w ?:lower ?:upper ?:position ?:max_size;
-    cont w
+    then set_range w ?:lower ?:upper ?:position ?:max_size
 end

@@ -121,13 +121,12 @@ module Tooltips = struct
       = "ml_gtk_tooltips_set_tip"
   external set_colors :
       [>`tooltips] obj ->
-      ?foreground:Gdk.Color.t -> ?background:Gdk.Color.t -> unit
+      ?foreground:Gdk.Color.t -> ?background:Gdk.Color.t -> unit -> unit
       = "ml_gtk_tooltips_set_colors"
-  let setter tt :cont ?:delay ?:foreground ?:background =
+  let set ?:delay ?:foreground ?:background tt =
     may fun:(set_delay tt) delay;
     if foreground <> None || background <> None then
-      set_colors tt ?:foreground ?:background;
-    cont tt
+      set_colors tt ?:foreground ?:background ()
 end
 
 

@@ -133,7 +133,7 @@ and widget_misc :
     method lock_accelerators : unit -> unit
     method map : unit -> unit
     method name : string
-    method parent : widget
+    method parent : widget_full
     method pointer : int * int
     method popup : x:int -> y:int -> unit
     method realize : unit -> unit
@@ -170,6 +170,7 @@ and widget :
     constraint 'a = [>`widget]
     val obj : 'a obj
     method as_widget : Gtk.widget obj
+    method coerce : widget
     method drag : widget_drag
     method misc : widget_misc
   end
@@ -185,7 +186,7 @@ and widget_signals :
     method drag : drag_signals 
     method draw : callback:(rectangle -> unit) -> GtkSignal.id
     method event : event_signals
-    method parent_set :	callback:(widget option -> unit) -> GtkSignal.id
+    method parent_set :	callback:(widget_full option -> unit) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id
     method show : callback:(unit -> unit) -> GtkSignal.id
   end
@@ -205,7 +206,7 @@ and drag_context :
     val context : Gdk.drag_context
     method context : Gdk.drag_context
     method finish : success:bool -> del:bool -> time:int -> unit
-    method source_widget : widget 
+    method source_widget : widget_full 
     method set_icon_pixmap :
       ?colormap:Gdk.colormap -> GdkObj.pixmap -> hot_x:int -> hot_y:int -> unit
     method set_icon_widget : widget -> hot_x:int -> hot_y:int -> unit
@@ -241,5 +242,6 @@ and drag_signals :
   end
 
 val pack_return :
-    #widget -> packing:(widget -> unit) option -> show:bool option -> unit
+    (#widget as 'a) ->
+    packing:(widget -> unit) option -> show:bool option -> 'a
     (* To use in initializers to provide a ?packing: option *)

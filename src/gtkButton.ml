@@ -59,10 +59,9 @@ module ToggleButton = struct
       = "ml_gtk_toggle_button_set_mode"
   external set_active : [>`toggle] obj -> bool -> unit
       = "ml_gtk_toggle_button_set_active"
-  let set w :cont ?:active ?:draw_indicator =
+  let set ?:active ?:draw_indicator w =
     may fun:(set_mode w) draw_indicator;
-    may fun:(set_active w) active;
-    cont w
+    may fun:(set_active w) active
   external get_active : [>`toggle] obj -> bool
       = "ml_gtk_toggle_button_get_active"
   external toggled : [>`toggle] obj -> unit
@@ -137,15 +136,14 @@ module Toolbar = struct
     "ml_gtk_toolbar_set_button_relief"
   external get_button_relief : [>`toolbar] obj -> relief_type =
     "ml_gtk_toolbar_get_button_relief"
-  let set w :cont ?:orientation ?:style ?:space_size
-      ?:space_style ?:tooltips ?:button_relief =
+  let set ?:orientation ?:style ?:space_size
+      ?:space_style ?:tooltips ?:button_relief w =
     may orientation fun:(set_orientation w);
     may style fun:(set_style w);
     may space_size fun:(set_space_size w);
     may space_style fun:(set_space_style w);
     may tooltips fun:(set_tooltips w);
-    may button_relief fun:(set_button_relief w);
-    cont w
+    may button_relief fun:(set_button_relief w)
   module Signals = struct
     open GtkSignal
     external val_orientation : int -> orientation = "ml_Val_orientation"

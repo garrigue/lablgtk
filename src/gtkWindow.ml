@@ -56,8 +56,8 @@ module Window = struct
       allow_shrink:(may_default get_allow_shrink w for:allow_shrink)
       allow_grow:(may_default get_allow_grow w for:allow_grow)
       auto_shrink:(may_default get_auto_shrink w for:auto_shrink)
-  let set w :cont ?:title ?:wm_name ?:wm_class ?:position
-      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x{= -2} ?:y{= -2} =
+  let set ?:title ?:wm_name ?:wm_class ?:position ?:allow_shrink ?:allow_grow
+      ?:auto_shrink ?:modal ?:x{= -2} ?:y{= -2} w =
     may title fun:(set_title w);
     if wm_name <> None || wm_class <> None then
       set_wmclass w ?name:wm_name ?class:wm_class;
@@ -65,8 +65,7 @@ module Window = struct
     if allow_shrink <> None || allow_grow <> None || auto_shrink <> None then
       set_policy w ?:allow_shrink ?:allow_grow ?:auto_shrink;
     may fun:(set_modal w) modal;
-    if x <> -2 || y <> -2 then Widget.set_uposition w :x :y;
-    cont w
+    if x <> -2 || y <> -2 then Widget.set_uposition w :x :y
   external add_accel_group : [>`window] obj -> accel_group -> unit
       = "ml_gtk_window_add_accel_group"
   external remove_accel_group :
@@ -133,10 +132,9 @@ module FileSelection = struct
   let set_fileop_buttons w = function
       true -> show_fileop_buttons w
     | false -> hide_fileop_buttons w
-  let set w :cont ?:filename ?:fileop_buttons =
+  let set ?:filename ?:fileop_buttons w =
     may filename fun:(set_filename w);
-    may fileop_buttons fun:(set_fileop_buttons w);
-    cont w
+    may fileop_buttons fun:(set_fileop_buttons w)
 end
 
 module FontSelectionDialog = struct

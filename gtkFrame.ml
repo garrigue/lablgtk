@@ -48,12 +48,11 @@ module Frame = struct
     set_label_align w
       x:(may_default get_label_xalign w for:x)
       y:(may_default get_label_yalign w for:y)
-  let set w :cont ?:label ?:label_xalign ?:label_yalign ?:shadow_type =
+  let set ?:label ?:label_xalign ?:label_yalign ?:shadow_type w =
     may label fun:(set_label w);
     if label_xalign <> None || label_yalign <> None then
       set_label_align' w ?x:label_xalign ?y:label_yalign;
-    may shadow_type fun:(set_shadow_type w);
-    cont w
+    may shadow_type fun:(set_shadow_type w)
 end
 
 module AspectFrame = struct
@@ -79,13 +78,13 @@ module AspectFrame = struct
       = "ml_gtk_aspect_frame_get_ratio"
   external get_obey_child : [>`aspect] obj -> bool
       = "ml_gtk_aspect_frame_get_obey_child"
-  let set w :cont ?:xalign ?:yalign ?:ratio ?:obey_child =
-    set w
-      xalign:(may_default get_xalign w for:xalign)
-      yalign:(may_default get_yalign w for:yalign)
-      ratio:(may_default get_ratio w for:ratio)
-      obey_child:(may_default get_obey_child w for:obey_child);
-    cont w
+  let set ?:xalign ?:yalign ?:ratio ?:obey_child w =
+    if xalign <> None || yalign <> None || ratio <> None || obey_child <> None
+    then set w
+	xalign:(may_default get_xalign w for:xalign)
+	yalign:(may_default get_yalign w for:yalign)
+	ratio:(may_default get_ratio w for:ratio)
+	obey_child:(may_default get_obey_child w for:obey_child)
 end
 
 module HandleBox = struct
@@ -127,11 +126,10 @@ module Viewport = struct
       = "ml_gtk_viewport_set_vadjustment"
   external set_shadow_type : [>`viewport] obj -> shadow_type -> unit
       = "ml_gtk_viewport_set_shadow_type"
-  let set w :cont ?:hadjustment ?:vadjustment ?:shadow_type =
+  let set ?:hadjustment ?:vadjustment ?:shadow_type w =
     may hadjustment fun:(set_hadjustment w);
     may vadjustment fun:(set_vadjustment w);
-    may shadow_type fun:(set_shadow_type w);
-    cont w
+    may shadow_type fun:(set_shadow_type w)
 end
 
 module ScrolledWindow = struct
@@ -165,9 +163,8 @@ module ScrolledWindow = struct
     set_policy w
       (may_default get_hscrollbar_policy w for:hpolicy)
       (may_default get_vscrollbar_policy w for:vpolicy)
-  let set w :cont ?:hpolicy ?:vpolicy ?:placement =
+  let set ?:hpolicy ?:vpolicy ?:placement w =
     if hpolicy <> None || vpolicy <> None then
       set_policy' w ?:hpolicy ?:vpolicy;
-    may placement fun:(set_placement w);
-    cont w
+    may placement fun:(set_placement w)
 end

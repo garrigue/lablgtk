@@ -313,11 +313,10 @@ module Container = struct
       = "ml_gtk_container_add"
   external remove : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_remove"
-  let set w :cont ?:border_width ?:width{= -2} ?:height{= -2} =
+  let set ?:border_width ?:width{= -2} ?:height{= -2} w =
     may border_width fun:(set_border_width w);
     if width <> -2 || height <> -2 then
-      Widget.set_usize w ?:width ?:height;
-    cont w
+      Widget.set_usize w ?:width ?:height
   external foreach : [>`container] obj -> fun:(widget obj-> unit) -> unit
       = "ml_gtk_container_foreach"
   let children w =

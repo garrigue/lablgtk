@@ -73,12 +73,11 @@ module Entry = struct
       = "ml_gtk_entry_set_visibility"
   external set_max_length : [>`entry] obj -> int -> unit
       = "ml_gtk_entry_set_max_length"
-  let set w :cont ?:text ?:visibility ?:max_length =
+  let set ?:text ?:visibility ?:max_length w =
     let may_set f = may fun:(f w) in
     may_set set_text text;
     may_set set_visibility visibility;
-    may_set set_max_length max_length;
-    cont w
+    may_set set_max_length max_length
   external text_length : [>`entry] obj -> int
       = "ml_GtkEntry_text_length"
 end
@@ -122,8 +121,8 @@ module SpinButton = struct
       = "ml_gtk_spin_button_set_snap_to_ticks"
   external update : [>`spinbutton] obj -> unit
       = "ml_gtk_spin_button_update"
-  let set w :cont ?:adjustment ?:digits ?:value ?:update_policy
-      ?:numeric ?:wrap ?:shadow_type ?:snap_to_ticks =
+  let set ?:adjustment ?:digits ?:value ?:update_policy
+      ?:numeric ?:wrap ?:shadow_type ?:snap_to_ticks w =
     let may_set f = may fun:(f w) in
     may_set set_adjustment adjustment;
     may_set set_digits digits;
@@ -132,8 +131,7 @@ module SpinButton = struct
     may_set set_numeric numeric;
     may_set set_wrap wrap;
     may_set set_shadow_type shadow_type;
-    may_set set_snap_to_ticks snap_to_ticks;
-    cont w
+    may_set set_snap_to_ticks snap_to_ticks
 end
 
 module Text = struct
@@ -164,11 +162,10 @@ module Text = struct
       [>`text] obj -> ?font:Gdk.font -> ?foreground:Gdk.Color.t ->
       ?background:Gdk.Color.t -> string -> unit
       = "ml_gtk_text_insert"
-  let set w :cont ?:hadjustment ?:vadjustment ?:word_wrap =
+  let set ?:hadjustment ?:vadjustment ?:word_wrap w =
     if hadjustment <> None || vadjustment <> None then
       set_adjustment w ?horizontal: hadjustment ?vertical: vadjustment ();
-    may word_wrap fun:(set_word_wrap w);
-    cont w
+    may word_wrap fun:(set_word_wrap w)
 end
 
 module Combo = struct
@@ -206,14 +203,13 @@ module Combo = struct
     in
     set_use_arrows w def;
     set_use_arrows_always w always
-  let set w :cont ?:popdown_strings ?:use_arrows
-      ?:case_sensitive ?:value_in_list ?:ok_if_empty =
+  let set ?:popdown_strings ?:use_arrows
+      ?:case_sensitive ?:value_in_list ?:ok_if_empty w =
     may popdown_strings fun:(set_popdown_strings w);
     may use_arrows fun:(set_use_arrows' w);
     may case_sensitive fun:(set_case_sensitive w);
     if value_in_list <> None || ok_if_empty <> None then
-      set_value_in_list w ?required:value_in_list ?:ok_if_empty ();
-    cont w
+      set_value_in_list w ?required:value_in_list ?:ok_if_empty ()
   external disable_activate : [>`combo] obj -> unit
       = "ml_gtk_combo_disable_activate"
 end
