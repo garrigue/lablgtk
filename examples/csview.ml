@@ -3,7 +3,7 @@
 (* Compile with
      ocamlc -pp camlp4o -I +lablgtk2 lablgtk.cma csview.ml -o csview
    or run with
-     lablgtk2 camlp4.cma csview.ml <file.csv>
+     lablgtk2 camlp4o.cma csview.ml <file.csv>
 *)
 
 open StdLabels
