@@ -63,12 +63,46 @@ module Toolbar = struct
     insert_widget w w' ~tooltip ~tooltip_private ~pos
   external set_tooltips : [>`toolbar] obj -> bool -> unit =
     "ml_gtk_toolbar_set_tooltips"
+  external get_tooltips : [>`toolbar] obj -> bool
+      = "ml_gtk_toolbar_get_tooltips"
   let set ?orientation ?style ?tooltips w =
     may orientation ~f:(set P.orientation w);
     may style ~f:(set P.toolbar_style w);
     may tooltips ~f:(set_tooltips w)
+  external unset_style : [>`toolbar] obj -> unit = "ml_gtk_toolbar_unset_style"
+  external get_icon_size : [>`toolbar] obj -> Tags.icon_size
+      = "ml_gtk_toolbar_get_icon_size"
+  external set_icon_size : [>`toolbar] obj -> Tags.icon_size -> unit 
+      = "ml_gtk_toolbar_set_icon_size"
+  external unset_icon_size : [>`toolbar] obj -> unit 
+      = "ml_gtk_toolbar_unset_icon_size"
+
+  (* extended API in GTK 2.4 *)
+  external insert : [>`toolbar] obj -> [>`toolitem] obj -> pos:int -> unit
+      = "ml_gtk_toolbar_insert"
+  external get_item_index : [>`toolbar] obj -> [>`toolitem] obj -> int
+      = "ml_gtk_toolbar_get_item_index"
+  external get_n_items : [>`toolbar] obj -> int = "ml_gtk_toolbar_get_n_items"
+  external get_nth_item : [>`toolbar] obj -> int -> [`toolitem] obj
+      = "ml_gtk_toolbar_get_nth_item"
+  external get_drop_index : [>`toolbar] obj -> int -> int -> int
+      = "ml_gtk_toolbar_get_drop_index"
+  external set_drop_highlight_item : [>`toolbar] obj -> [>`toolitem] obj option -> int -> unit
+      = "ml_gtk_toolbar_set_drop_highlight_item"
+  external get_relief_style : [>`toolbar] obj -> GtkEnums.relief_style
+      = "ml_gtk_toolbar_get_relief_style"
 end
 
 module ColorButton = ColorButton
 
 module FontButton = FontButton
+
+module ToolItem = ToolItem
+
+module SeparatorToolItem = SeparatorToolItem
+
+module ToolButton = ToolButton
+
+module ToggleToolButton = ToggleToolButton
+
+module RadioToolButton = RadioToolButton

@@ -16,3 +16,5 @@ configure: configure.in
 config.make: config.make.in
 	@echo config.make is not up to date. Execute ./configure first.
 	@exit 2
+
+.PHONY: all opt doc install byte world clean depend arch-clean

@@ -54,9 +54,71 @@ class FontButton wrap : Button {
   signal font_set
 }
 
-class Toolbar set : Container {
+class ToolItem wrap : Bin {
+  "is-important"         gboolean             : Read / Write
+  "visible-horizontal"   gboolean             : Read / Write
+  "visible-vertical"     gboolean             : Read / Write
+
+  method set_homogeneous : "bool -> unit"
+  method get_homogeneous : "bool"
+  method set_expand : "bool -> unit"
+  method get_expand : "bool"
+  method set_tooltip : "[>`tooltips] obj -> string -> string -> unit"
+  method set_use_drag_window : "bool -> unit"
+  method get_use_drag_window : "bool"
+
+(* probably only useful when subclassing ToolItem
+
+    signal create_menu_proxy : -> bool
+    signal set_tooltip : GtkTooltips string string -> bool
+    signal toolbar_reconfigured
+    get_icon_size
+    get_orientation
+    get_toolbar_style
+    get_relief_style
+    retrieve_proxy_menu_item
+    get_proxy_menu_item
+    set_proxy_menu_item 
+*)
+}
+
+class SeparatorToolItem : ToolItem {
+  "draw"                 gboolean             : Read / Write
+}
+
+conversions {
+  GtkStockId             "GtkStock.conv"
+}
+
+class ToolButton wrap : ToolItem {
+  "icon-widget"          GtkWidget            : Read / Write
+  "label"                gchararray           : Read / Write
+  "label-widget"         GtkWidget            : Read / Write
+  "stock-id"             GtkStockId           : Read / Write
+  "use-underline"        gboolean             : Read / Write
+  signal clicked
+}
+
+class ToggleToolButton : ToolButton {
+  signal toggled 
+  method set_active : "bool -> unit"
+  method get_active : "bool"
+}
+
+class RadioToolButton : ToggleToolButton {
+  "group"		 GtkRadioToolButton_opt      : Write
+}
+
+
+class Toolbar set wrapsig : Container {
   "orientation"          GtkOrientation       : Read / Write
   "toolbar-style"        GtkToolbarStyle      : Read / Write
   signal orientation_changed : GtkOrientation
   signal style_changed :       GtkToolbarStyle
+
+  (* API extended in GTK 2.4 *)
+  "show-arrow"           gboolean             : Read / Write
+  signal focus_home_or_end  : bool -> bool
+  signal move_focus         : GtkDirectionType -> bool
+  signal popup_context_menu : int int int -> bool
 }
