@@ -7,11 +7,11 @@
 #include <caml/callback.h>
 #include <caml/fail.h>
 
-#include "../../wrappers.h"
-#include "../../ml_glib.h"
-#include "../../ml_gdk.h"
-#include "../../ml_gtk.h"
-#include "../../gtk_tags.h"
+#include "wrappers.h"
+#include "ml_glib.h"
+#include "ml_gdk.h"
+#include "ml_gtk.h"
+#include "gtk_tags.h"
 
 #include "gtktree2.h"
 #include "gtktreeitem2.h"

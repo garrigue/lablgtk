@@ -1,5 +1,8 @@
 $Id$
 
+2001.02.15
+  * changed directory structure: sources moved to src/
+
 2001.02.13
   * relax some types in Gdk.Window, to allow all drawables
   * support for (dangerous?) callbacks in libglade
