@@ -16,3 +16,4 @@ ogtk*Props.ml
 *.lib
 *.dll
 *.exp
+lablgtk.odoc

@@ -6,7 +6,7 @@ open Gtk
 
 (** {3 GtkAdjustement} *)
 
-(** @gtkdoc gtk GtkAjustement *)
+(** @gtkdoc gtk GtkAdjustment *)
 class adjustment_signals : [> adjustment] obj ->
   object
     inherit GObj.gtkobj_signals
@@ -15,7 +15,7 @@ class adjustment_signals : [> adjustment] obj ->
   end
 
 (** A GtkObject representing an adjustable bounded value
-   @gtkdoc gtk GtkAjustement *)
+   @gtkdoc gtk GtkAdjustment *)
 class adjustment : Gtk.adjustment obj ->
   object
     inherit GObj.gtkobj
@@ -35,7 +35,7 @@ class adjustment : Gtk.adjustment obj ->
       ?page_incr:float -> ?page_size:float -> unit -> unit
   end
 
-(** @gtkdoc gtk GtkAjustement *)
+(** @gtkdoc gtk GtkAdjustment *)
 val adjustment :
   ?value:float ->
   ?lower:float ->

@@ -354,8 +354,9 @@ OCAMLDOC = ocamldoc
 lablgtk.odoc : $(DOCFILES) $(ALLOBJS)
 	$(OCAMLDOC) -dump $@ -v  -I $(LABLGLDIR) $(DOCFILES)
 gtkdoc.cmo : gtkdoc.ml
-	$(OCAMLC) -I +ocamldoc -c $<
+	$(CAMLC) -I +ocamldoc -c $<
 doc : lablgtk.odoc gtkdoc.cmo
+	mkdir -p ../doc/html
 	$(OCAMLDOC) -g ./gtkdoc.cmo -v -t LablGTK -d ../doc/html -load $<
 doc_texi : lablgtk.odoc
 	$(OCAMLDOC) -texi -v -t LablGTK -o ../doc/lablgtk2.texi -load $<
