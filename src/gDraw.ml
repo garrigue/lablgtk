@@ -48,8 +48,9 @@ class pixmap ?colormap ?mask pm = object
   inherit [[`pixmap]] drawable ?colormap pm as pixmap
   val bitmap = may_map mask ~f:
       begin fun x ->
-        let colormap = Color.get_colormap  (Visual.get_best ~depth:1 ()) in
-        new drawable ~colormap x
+        let mask = new drawable x in
+        mask#set_foreground `WHITE;
+        mask
       end
   val mask : Gdk.bitmap option = mask
   method pixmap = w
@@ -107,18 +108,15 @@ let pixmap ~(window : < misc : #widget_draw; .. >)
   let depth = window#misc#visual_depth
   and window = window#misc#window
   and colormap = window#misc#colormap in
-  let pm =
-    new pixmap (Pixmap.create window ~width ~height ~depth) ~colormap
-      ?mask:(if mask then Some(Bitmap.create window ~width ~height)
-                     else None)
+  let mask =
+    if not mask then None else
+    let bm = Bitmap.create window ~width ~height in
+    let mask = new drawable bm in
+    mask#set_foreground `BLACK;
+    mask#rectangle ~x:0 ~y:0 ~width ~height ~filled:true ();
+    Some bm
   in
-  may pm#mask ~f:
-    begin fun mask ->
-      let mask = new drawable mask in
-      mask#set_foreground `BLACK;
-      mask#rectangle ~x:0 ~y:0 ~width ~height ~filled:true ()
-    end;
-  pm
+  new pixmap (Pixmap.create window ~width ~height ~depth) ~colormap ?mask
 
 let pixmap_from_xpm ~window ~file ?colormap ?transparent () =
   let pm, mask =
