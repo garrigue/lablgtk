@@ -79,7 +79,7 @@ class prop_float :name :init :min :max :set : prop =
     method private parse s =
       try float_of_string s with _ -> invalid_prop "float" name s
     method code =
-      if String.contains s elt:'.' || String.contains s elt:'e' then s
+      if String.contains s char:'.' || String.contains s char:'e' then s
       else s ^ ".0"
     method range = Float(min,max)
   end

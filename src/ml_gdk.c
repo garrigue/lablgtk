@@ -188,7 +188,7 @@ value ml_gdk_pixmap_colormap_create_from_xpm
     Field(ret,0) = vpixmap;
     Field(ret,1) = vmask;
 
-    CAMLreturn ret;
+    CAMLreturn(ret);
 }
 
 value ml_gdk_pixmap_colormap_create_from_xpm_d
@@ -207,7 +207,7 @@ value ml_gdk_pixmap_colormap_create_from_xpm_d
     Field(ret,0) = vpixmap;
     Field(ret,1) = vmask;
 
-    CAMLreturn ret;
+    CAMLreturn(ret);
 }
 
 /* Font */

@@ -1,8 +1,8 @@
 (* $Id$ *)
 
-let dialog :title :callback ?:filename =
+let dialog :title :callback ?:filename () =
   let sel =
-    new GWindow.file_selection :title modal:true ?:filename in
+    GWindow.file_selection :title modal:true ?:filename () in
   sel#cancel_button#connect#clicked callback:sel#destroy;
   sel#ok_button#connect#clicked callback:
     begin fun () ->

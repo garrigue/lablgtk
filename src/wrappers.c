@@ -24,7 +24,7 @@ value ml_some (value v)
      CAMLparam1(v);
      value ret = alloc_tuple(1);
      Field(ret,0) = v;
-     CAMLreturn ret;
+     CAMLreturn(ret);
 }
 
 void ml_raise_null_pointer ()

@@ -3,19 +3,18 @@
 
 all: browser
 
-CAMLC = olablc
-CAMLOPT = olablopt
-COMPILER = $(CAMLC) $(MLFLAGS) -c
+CAMLC = ocamlc
+CAMLOPT = ocamlopt
+COMPILER = $(CAMLC) $(MLFLAGS) -modern -w s -c
 LINKER = $(CAMLC) $(MLFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -c
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -modern -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 
-TOPLEVEL = olablmktop $(MLFLAGS)
 RANLIB = ranlib
 
 include ../../config.make
 
-MLFLAGS = -I ../.. -I olabl-src/utils -I olabl-src/parsing
+MLFLAGS = -I ../.. -I ocaml-src/utils -I ocaml-src/parsing
 
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c .o .var .h .opt .def
@@ -31,7 +30,7 @@ MLOBJS = text.cmo file.cmo lexical.cmo shell.cmo editor.cmo
 
 browser: $(MLOBJS)
 	$(LINKER) -o $@ -custom -cclib "-L../..	-llablgtk $(GTKLIBS)" \
-	toplevellib.cma stdclass.cma str.cma unix.cma \
+	toplevellib.cma str.cma unix.cma \
 	lablgtk.cma -cclib "-lstr -lunix" $(MLOBJS) 
 
 clean:

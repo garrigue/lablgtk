@@ -55,7 +55,7 @@ let split :sep s =
   let len = String.length s in
   let rec loop pos =
     let next =
-      try String.index_from :pos elt:sep s with Not_found -> len
+      try String.index_from :pos char:sep s with Not_found -> len
     in
     let sub = String.sub s :pos len:(next-pos) in
     if next = len then [sub] else sub::loop (next+1)

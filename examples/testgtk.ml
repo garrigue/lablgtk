@@ -549,8 +549,7 @@ let create_toolbar =
 (* Handlebox *)
 
 let handle_box_child_signal action (hb : GFrame.handle_box) child =
-  Printf.printf "%s: child <%s> %s\n" (GtkBase.Type.name hb#get_type)
-    (GtkBase.Type.name (GtkBase.Object.get_type child)) action
+  Printf.printf "%s: child <%s> %s\n" hb#get_type child#get_type action
 
 let create_handle_box =
   let rw = ref None in
@@ -856,7 +855,7 @@ let tips_query_widget_selected (w : #widget option) :text private:tp _ =
   | Some w -> 
     Printf.printf "Help \"%s\" requested for <%s>\n"
 	(match tp with None -> "None" | Some t -> t)
-	(GtkBase.Type.name (w #get_type)));
+	(w #get_type));
    true
 
 
@@ -989,14 +988,13 @@ let create_labels =
 
 
 let set_parent child old_parent =
-  let name (w : #widget) = GtkBase.Type.name (w #get_type) in
   let name_opt = function
     | None -> "(NULL)"
-    | Some w -> name w in
+    | Some w -> w#get_type in
   Printf.printf
     "set parent for \"%s\": new parent: \"%s\", old parent: \"%s\"\n" 
-    (name child)
-    (try name child#misc#parent with Not_found -> "(NULL)")
+    child#get_type
+    (try child#misc#parent#get_type with Not_found -> "(NULL)")
     (name_opt old_parent)
 
 let reparent_label (label : GMisc.label) new_parent _ =

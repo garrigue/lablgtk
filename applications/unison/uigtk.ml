@@ -68,7 +68,7 @@ let extRegExp path =
   try
     let name = List.hd (List.rev path) in
     let theString = name2string name in
-    let pos = String.index theString elt:'.' in
+    let pos = String.index theString char:'.' in
     let ext = String.sub theString pos:(pos + 1)
         len:(String.length theString - pos -1) in
     ".*\\." ^ (Str.quote ext)
