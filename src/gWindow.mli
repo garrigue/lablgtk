@@ -16,6 +16,8 @@ class ['a] window_skel : 'b obj ->
     method as_window : Gtk.window obj
     method set_default_size : width:int -> height:int -> unit
     method resize : width:int -> height:int -> unit
+    method set_allow_shrink : bool -> unit
+    method set_allow_grow : bool -> unit
     method set_modal : bool -> unit
     method set_position : Tags.window_position -> unit
     method set_resizable : bool -> unit
@@ -39,7 +41,11 @@ val window :
   ?title:string ->
   ?wm_name:string ->
   ?wm_class:string ->
-  ?position:Tags.window_position ->
+  ?icon:GdkPixbuf.pixbuf ->
+  ?screen:Gdk.screen ->
+  ?position:Gtk.Tags.window_position ->
+  ?allow_grow:bool ->
+  ?allow_shrink:bool ->
   ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->
@@ -82,7 +88,11 @@ val dialog :
   ?title:string ->
   ?wm_name:string ->
   ?wm_class:string ->
-  ?position:Tags.window_position ->
+  ?icon:GdkPixbuf.pixbuf ->
+  ?screen:Gdk.screen ->
+  ?position:Gtk.Tags.window_position ->
+  ?allow_grow:bool ->
+  ?allow_shrink:bool ->
   ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->
@@ -108,7 +118,11 @@ val message_dialog :
   ?title:string ->
   ?wm_name:string ->
   ?wm_class:string ->
-  ?position:Tags.window_position ->
+  ?icon:GdkPixbuf.pixbuf ->
+  ?screen:Gdk.screen ->
+  ?position:Gtk.Tags.window_position ->
+  ?allow_grow:bool ->
+  ?allow_shrink:bool ->
   ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->
@@ -130,7 +144,11 @@ val color_selection_dialog :
   ?title:string ->
   ?wm_name:string ->
   ?wm_class:string ->
-  ?position:Tags.window_position ->
+  ?icon:GdkPixbuf.pixbuf ->
+  ?screen:Gdk.screen ->
+  ?position:Gtk.Tags.window_position ->
+  ?allow_grow:bool ->
+  ?allow_shrink:bool ->
   ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->
@@ -162,7 +180,11 @@ val file_selection :
   ?select_multiple:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
-  ?position:Tags.window_position ->
+  ?icon:GdkPixbuf.pixbuf ->
+  ?screen:Gdk.screen ->
+  ?position:Gtk.Tags.window_position ->
+  ?allow_grow:bool ->
+  ?allow_shrink:bool ->
   ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->
@@ -184,7 +206,11 @@ val font_selection_dialog :
   ?title:string ->
   ?wm_name:string ->
   ?wm_class:string ->
-  ?position:Tags.window_position ->
+  ?icon:GdkPixbuf.pixbuf ->
+  ?screen:Gdk.screen ->
+  ?position:Gtk.Tags.window_position ->
+  ?allow_grow:bool ->
+  ?allow_shrink:bool ->
   ?resizable:bool ->
   ?modal:bool ->
   ?x:int ->

@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+(* Only add at end! The order must be the same as in GtkBase.Tables *)
+
 type anchor_type = "GTK_ANCHOR_"
   [ `CENTER | `NORTH | `NW | `NE | `SOUTH | `SW | `SE | `WEST | `EAST ]
 

@@ -8,20 +8,12 @@ open GtkBase
 module Window = struct
   let cast w : window obj = Object.try_cast w "GtkWindow"
   external create : window_type -> window obj = "ml_gtk_window_new"
-  external set_title : [>`window] obj -> string -> unit
-      = "ml_gtk_window_set_title"
-  external get_title : [>`window] obj -> string
-      = "ml_gtk_window_get_title"
   external set_wmclass : [>`window] obj -> name:string -> clas:string -> unit
       = "ml_gtk_window_set_wmclass"
   external get_wmclass_name : [>`window] obj -> string
       = "ml_gtk_window_get_wmclass_name"
   external get_wmclass_class : [>`window] obj -> string
       = "ml_gtk_window_get_wmclass_class"
-  external set_resizable : [>`window] obj -> bool -> unit
-      = "ml_gtk_window_set_resizable"
-  external get_resizable : [>`window] obj -> bool -> unit
-      = "ml_gtk_window_get_resizable"
   external add_accel_group : [>`window] obj -> accel_group -> unit
       = "ml_gtk_window_add_accel_group"
   external remove_accel_group :
@@ -31,8 +23,6 @@ module Window = struct
       = "ml_gtk_window_activate_focus"
   external activate_default : [>`window] obj -> bool
       = "ml_gtk_window_activate_default"
-  external set_modal : [>`window] obj -> bool -> unit
-      = "ml_gtk_window_set_modal"
   external set_default_size :
       [>`window] obj -> width:int -> height:int -> unit
       = "ml_gtk_window_set_default_size"
@@ -48,18 +38,10 @@ module Window = struct
       = "ml_gtk_window_set_gravity"
   external get_gravity : [>`window] obj -> gravity
       = "ml_gtk_window_get_gravity"
-  external set_position : [>`window] obj -> window_position -> unit
-      = "ml_gtk_window_set_position"
   external set_transient_for : [>`window] obj ->[>`window] obj -> unit
       = "ml_gtk_window_set_transient_for"
   external get_transient_for : [>`window] obj -> window obj
       = "ml_gtk_window_get_transient_for"
-  external set_destroy_with_parent : [>`window] obj -> bool -> unit
-      = "ml_gtk_window_set_destroy_with_parent"
-  external set_screen : [>`window] obj -> Gdk.screen -> unit
-      = "ml_gtk_window_set_screen"
-  external get_screen : [>`window] obj -> Gdk.screen
-      = "ml_gtk_window_get_screen"
   external list_toplevels : unit -> window obj list
       = "ml_gtk_window_list_toplevels"
   external add_mnemonic :
@@ -88,18 +70,63 @@ module Window = struct
   external get_role : [>`window] obj -> string
       = "ml_gtk_window_get_role"
 
+  module Prop = struct
+    open Gobject
+    open Data
+    let allow_grow = {name="allow_grow"; classe=`window; conv=boolean}
+    let allow_shrink = {name="allow_shrink"; classe=`window; conv=boolean}
+    let default_height = {name="default_height"; classe=`window; conv=int}
+    let default_width = {name="default_width"; classe=`window; conv=int}
+    let destroy_with_parent =
+      {name="destroy_with_parent"; classe=`window; conv=boolean}
+    let has_toplevel_focus = (* ro *)
+      {name="has_toplevel_focus"; classe=`window; conv=boolean}
+    let icon : (_, GdkPixbuf.pixbuf option) property =
+      {name="icon"; classe=`window; conv=gobject_option}
+    let is_active = (* ro *)
+      {name="is_active"; classe=`window; conv=boolean}
+    let modal = {name="modal"; classe=`window; conv=boolean}
+    let resizable = {name="resizable"; classe=`window; conv=boolean}
+    let screen : (_, Gdk.screen) property =
+      {name="screen"; classe=`window; conv=gobject}
+    let skip_pager_hint =
+      {name="skip_pager_hint"; classe=`window; conv=boolean}
+    let skip_taskbar_hint =
+      {name="skip_taskbar_hint"; classe=`window; conv=boolean}
+    let title =
+      {name="title"; classe=`window; conv=string}
+    let conv_hint = enum Tables.window_type_hint
+    let type_hint = {name="type_hint"; classe=`window; conv=conv_hint}
+    let conv_pos = enum Tables.window_position
+    let window_position =
+      {name="window_position"; classe=`window; conv=conv_pos}
+    let check () =
+      let w = create `TOPLEVEL in
+      let c p = Gobject.Property.check w p in
+      c allow_grow; c allow_shrink; c default_height; c default_width;
+      c destroy_with_parent; c has_toplevel_focus; c icon; c is_active;
+      c modal; c resizable; c screen; c skip_pager_hint;
+      c skip_taskbar_hint; c title; c type_hint; c window_position; 
+      Object.destroy w
+  end
+
   let set_wmclass ?name ?clas:wm_class w =
     set_wmclass w ~name:(may_default get_wmclass_name w ~opt:name)
       ~clas:(may_default get_wmclass_class w ~opt:wm_class)
-  let set ?title ?wm_name ?wm_class ?role ?position ?resizable
-      ?modal ?(x = -2) ?(y = -2) w =
-    may title ~f:(set_title w);
+
+  let set ?title ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+      ?allow_shrink ?resizable ?modal ?(x = -2) ?(y = -2) w =
+    let may_set p = may ~f:(Gobject.Property.set w p) in
+    may_set Prop.title title;
     if wm_name <> None || wm_class <> None then
       set_wmclass w ?name:wm_name ?clas:wm_class;
-    may role ~f:(set_role w);
-    may position ~f:(set_position w);
-    may resizable ~f:(set_resizable w);
-    may ~f:(set_modal w) modal;
+    if icon <> None then Gobject.Property.set w Prop.icon icon;
+    may_set Prop.screen screen;
+    may_set Prop.window_position position;
+    may_set Prop.allow_grow allow_grow;
+    may_set Prop.allow_shrink allow_shrink;
+    may_set Prop.resizable resizable;
+    may_set Prop.modal modal;
     if x <> -2 || y <> -2 then Widget.set_uposition w ~x ~y
 
   module Signals = struct

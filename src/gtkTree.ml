@@ -73,20 +73,6 @@ module Tree = struct
   end
 end
 
-module Tables = struct
-  open Gpointer
-  external get_tables_ :
-    unit -> tree_view_column_sizing variant_table
-            * sort_type variant_table
-            * cell_renderer_mode variant_table
-    = "ml_gtk_tree_get_tables"
-  let sizing, sort, renderer_mode = get_tables_ ()
-  open Gobject.Data
-  let conv_sort = enum sort
-  let conv_sizing = enum sizing
-  let conv_renderer_mode = enum renderer_mode
-end
-
 module TreePath = struct
   external create_ : unit -> tree_path = "ml_gtk_tree_path_new"
   external from_string : string -> tree_path
@@ -347,7 +333,7 @@ module TreeViewColumn = struct
   external set_sort_column_id : [>`treeviewcolumn] obj -> int -> unit	
     = "ml_gtk_tree_view_column_set_sort_column_id"      
   let classe = `treeviewcolumn
-  module Properties = struct
+  module Prop = struct
     open Gobject
     open Gobject.Data
     let alignment = {name="alignment"; classe=classe; conv=float}
@@ -357,13 +343,15 @@ module TreeViewColumn = struct
     let min_width = {name="min_width"; classe=classe; conv=int}
     let reorderable = {name="reorderable"; classe=classe; conv=boolean}
     let resizable = {name="resizable"; classe=classe; conv=boolean}
-    let sizing = {name="sizing"; classe=classe; conv=Tables.conv_sizing}
+    let conv_sizing = enum Tables.tree_view_column_sizing
+    let sizing = {name="sizing"; classe=classe; conv=conv_sizing}
     let sort_indicator = {name="sort_indicator"; classe=classe; conv=boolean}
-    let sort_order = {name="sort_order"; classe=classe; conv=Tables.conv_sort}
+    let conv_sort = enum Tables.sort_type
+    let sort_order = {name="sort_order"; classe=classe; conv=conv_sort}
     let title = {name="title"; classe=classe; conv=string}
     let visible = {name="visible"; classe=classe; conv=boolean}
     let widget = {name="widget"; classe=classe;
-                  conv=(gobject : widget obj option conv)}
+                  conv=(gobject_option : widget obj option conv)}
     let width = {name="width"; classe=classe; conv=int}
     let check () =
       let w = create () in
@@ -449,25 +437,25 @@ module TreeView = struct
     | Some xy -> Some (path, column, xy)
     | None -> None
 
-  module Properties = struct
+  module Prop = struct
     open Gobject
     open Gobject.Data
     let enable_search = {name="enable_search"; classe=`treeview; conv=boolean}
     let expander_column : (_,tree_view_column obj option) property =
-      {name="expander_column"; classe=`treeview; conv=gobject}
+      {name="expander_column"; classe=`treeview; conv=gobject_option}
     let hadjustment : (_,adjustment obj option) property =
-      {name="hadjustment"; classe=`treeview; conv=gobject}
+      {name="hadjustment"; classe=`treeview; conv=gobject_option}
     let headers_clickable =
       {name="headers_clickable"; classe=`treeview; conv=boolean}
     let headers_visible =
       {name="headers_visible"; classe=`treeview; conv=boolean}
     let model : (_,tree_model obj option) property =
-      {name="model"; classe=`treeview; conv=gobject}
+      {name="model"; classe=`treeview; conv=gobject_option}
     let reorderable = {name="reorderable"; classe=`treeview; conv=boolean}
     let rules_hint = {name="rules_hint"; classe=`treeview; conv=boolean}
     let search_column = {name="search_column"; classe=`treeview; conv=int}
     let vadjustment : (_,adjustment obj option) property =
-      {name="vadjustment"; classe=`treeview; conv=gobject}
+      {name="vadjustment"; classe=`treeview; conv=gobject_option}
     let check () =
       let w = create () in
       let c p = Gobject.Property.check w p in
@@ -569,7 +557,7 @@ end
 module CellRenderer = struct
   let cast w : cell_renderer obj = Object.try_cast w "GtkCellRenderer"
   let classe = `cellrenderer
-  module Properties = struct
+  module Prop = struct
     open Gobject
     open Gobject.Data
     let cell_background =
@@ -582,7 +570,8 @@ module CellRenderer = struct
     (* is_expanded and is_expander cannot be read because of bug (2.2.1) *)
     let is_expanded = {name="is-expanded"; classe=classe; conv=boolean}
     let is_expander = {name="is_expander"; classe=classe; conv=boolean}
-    let mode = {name="mode"; classe=classe; conv=Tables.conv_renderer_mode}
+    let conv_mode = enum Tables.cell_renderer_mode
+    let mode = {name="mode"; classe=classe; conv=conv_mode}
     let visible = {name="visible"; classe=classe; conv=boolean}
     let width = {name="width"; classe=classe; conv=int}
     let xalign = {name="xalign"; classe=classe; conv=float}
@@ -620,10 +609,10 @@ module CellRendererText = struct
     let edited = { name = "edited"; classe = `cellrenderertext;
                    marshaller = marshal_edited }
   end
-  module Properties = struct
+  module Prop = struct
     let check () =
       let w = create () in
-      CellRenderer.Properties.check w;
+      CellRenderer.Prop.check w;
       Object.destroy w
   end
       

@@ -47,6 +47,8 @@ open Printf
 
 let hashes = Hashtbl.create 57
 
+let all_convs = ref []
+
 let declaration ~hc ~cc = parser
     [< ' Kwd "type"; public = may_public; noconv = may_noconv;
        ' Ident name; ' Kwd "="; prefix = may_string;
@@ -93,6 +95,7 @@ let declaration ~hc ~cc = parser
     and cname =
       String.capitalize name
     in
+    all_convs := name :: !all_convs;
     let tags =
       List.sort tags ~cmp:
         (fun (tag1,_) (tag2,_) ->
@@ -119,11 +122,18 @@ let declaration ~hc ~cc = parser
 
 
 let process ic ~hc ~cc =  
+  all_convs := [];
   let chars = Stream.of_channel ic in
   let s = lexer chars in
   try
     while true do declaration s ~hc ~cc done
-  with End_of_file -> ()
+  with End_of_file ->
+    if !all_convs <> [] then begin
+      let oc x = fprintf cc x in
+      oc "static lookup_info *ml_lookup_tables[] = {\n";
+      List.iter (List.rev !all_convs) ~f:(fun s -> oc "  ml_table_%s,\n" s);
+      oc "};\n"
+    end
   | Stream.Error err ->
       failwith
         (Printf.sprintf "Parsing error \"%s\" at character %d on input stream"

@@ -8,6 +8,9 @@ open GtkMisc
 open GObj
 open GContainer
 
+let set = Gobject.Property.set
+module P = Window.Prop
+
 class ['a] window_skel obj = object
   constraint 'a = _ #window_skel
   inherit container obj
@@ -16,17 +19,19 @@ class ['a] window_skel obj = object
   method activate_focus () = Window.activate_focus obj
   method activate_default () = Window.activate_default obj
   method add_accel_group = Window.add_accel_group obj
-  method set_modal = Window.set_modal obj
+  method set_modal = set obj P.modal
   method set_default_size = Window.set_default_size obj
   method resize = Window.resize obj
-  method set_position = Window.set_position obj
+  method set_allow_shrink = set obj P.allow_shrink
+  method set_allow_grow = set obj P.allow_grow
+  method set_position = set obj P.window_position
   method set_resize_mode = Container.set_resize_mode obj
   method set_transient_for (w : 'a) =
     Window.set_transient_for obj w#as_window
-  method set_title = Window.set_title obj
+  method set_title = set obj P.title
   method set_wm_name name = Window.set_wmclass obj ~name
   method set_wm_class cls = Window.set_wmclass obj ~clas:cls
-  method set_resizable = Window.set_resizable obj
+  method set_resizable = set obj P.resizable
   method show () = Widget.show obj
   method present () = Window.present obj
 end
@@ -36,11 +41,12 @@ class window obj = object
   method connect = new container_signals obj
 end
 
-let window ?kind:(t=`TOPLEVEL) ?title ?wm_name ?wm_class ?position
-    ?resizable ?modal ?x ?y
+let window ?kind:(t=`TOPLEVEL) ?title ?wm_name ?wm_class
+    ?icon ?screen ?position ?allow_grow ?allow_shrink ?resizable ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = Window.create t in
-  Window.set w ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y;
+  Window.set w ?title ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+      ?allow_shrink ?resizable ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new window w
@@ -97,21 +103,24 @@ class ['a] dialog obj = object
     List.assoc resp !tbl
 end
 
-let dialog ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y
+let dialog ?title ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+    ?allow_shrink ?resizable ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = Dialog.create () in
-  Window.set w ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y;
+  Window.set w ?title ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+      ?allow_shrink ?resizable ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new dialog w
 
 let dialog ?parent ?destroy_with_parent ?(no_separator=false) ?title 
-    ?wm_name ?wm_class ?position ?resizable ?modal
-    ?x ?y ?border_width ?width ?height ?(show=false) () =
+    ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow ?allow_shrink
+    ?resizable ?modal ?x ?y ?border_width ?width ?height ?(show=false) () =
   let w = Dialog.create () in
-  Window.set w ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y ;
+  Window.set w ?title ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+      ?allow_shrink ?resizable ?modal ?x ?y;
   Gaux.may (fun p -> Window.set_transient_for w p#as_window) parent ;
-  Gaux.may ~f:(Window.set_destroy_with_parent w) destroy_with_parent ;
+  Gaux.may ~f:(set w P.destroy_with_parent) destroy_with_parent ;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   let d = new dialog w in
@@ -140,13 +149,15 @@ end
 
 let message_dialog ?(message="") ~message_type ~buttons ?parent 
     ?destroy_with_parent ?(no_separator=false) 
-    ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y
+    ?title ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+    ?allow_shrink ?resizable ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let parent = match parent with None -> None | Some x -> Some x#as_window in
   let w = Dialog.create_message ?parent
       ~message_type ~buttons:(fst buttons) ~message () in
-  Window.set w ?title ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y ;
-  Gaux.may ~f:(Window.set_destroy_with_parent w) destroy_with_parent ;
+  Window.set w ?title ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+      ?allow_shrink ?resizable ?modal ?x ?y;
+  Gaux.may ~f:(set w P.destroy_with_parent) destroy_with_parent ;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   let d = new message_dialog w buttons in
@@ -168,10 +179,12 @@ class color_selection_dialog obj = object
 end
 
 let color_selection_dialog ?(title="Pick a color")
-    ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y
+    ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+    ?allow_shrink ?resizable ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = ColorSelection.create_dialog title in
-  Window.set w ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y;
+  Window.set w ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+      ?allow_shrink ?resizable ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new color_selection_dialog w
@@ -196,11 +209,13 @@ end
 
 let file_selection ?(title="Choose a file") ?filename
     ?(fileop_buttons=false) ?select_multiple
-    ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y
+    ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+    ?allow_shrink ?resizable ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = FileSelection.create title in
   FileSelection.set w ?filename ~fileop_buttons ?select_multiple;
-  Window.set w ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y;
+  Window.set w ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+      ?allow_shrink ?resizable ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new file_selection w
@@ -226,10 +241,12 @@ class font_selection_dialog obj = object
     new GButton.button (FontSelectionDialog.cancel_button obj)
 end
 
-let font_selection_dialog ?title ?wm_name ?wm_class ?position ?resizable
+let font_selection_dialog ?title ?wm_name ?wm_class ?icon ?screen
+    ?position ?allow_grow ?allow_shrink ?resizable
     ?modal ?x ?y ?border_width ?width ?height ?(show=false) () =
   let w = FontSelectionDialog.create ?title () in
-  Window.set w ?wm_name ?wm_class ?position ?resizable ?modal ?x ?y;
+  Window.set w ?title ?wm_name ?wm_class ?icon ?screen ?position ?allow_grow
+      ?allow_shrink ?resizable ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new font_selection_dialog w

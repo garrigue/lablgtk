@@ -142,7 +142,7 @@ open GtkTree
 
 let add_columns ~(view : GTree.view) ~model =
   let renderer = GTree.cell_renderer_text () in
-  Gobject.Property.set renderer CellRenderer.Properties.xalign 0.;
+  Gobject.Property.set renderer CellRenderer.Prop.xalign 0.;
   view#append_column
     (GTree.view_column ~title:"Holiday" ~renderer:(renderer, ["text", name])
        ());
@@ -153,7 +153,7 @@ let add_columns ~(view : GTree.view) ~model =
     ~f:
     begin fun (title, column, euro) ->
       let renderer = GTree.cell_renderer_toggle () in
-      Gobject.Property.set renderer CellRenderer.Properties.xalign 0.;
+      Gobject.Property.set renderer CellRenderer.Prop.xalign 0.;
       GtkSignal.connect renderer
         ~sgn:CellRendererToggle.Signals.toggled
         ~callback:(item_toggled ~model ~column);

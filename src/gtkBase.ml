@@ -5,6 +5,88 @@ open Gobject
 open Gtk
 open Tags
 
+module Tables = struct
+  open Gpointer
+  external get_tables :
+    unit -> anchor_type variant_table *
+        arrow_type variant_table *
+        attach_options variant_table *
+        button_box_style variant_table *
+        curve_type variant_table *
+        delete_type variant_table *
+        direction_type variant_table *
+        expander_style variant_table *
+        icon_size variant_table *
+        side_type variant_table *
+        text_direction variant_table *
+        justification variant_table *
+        match_type variant_table *
+        menu_direction variant_table *
+        metric_type variant_table *
+        movement_step variant_table *
+        orientation variant_table *
+        corner_type variant_table *
+        pack_type variant_table *
+        path_priority variant_table *
+        path_type variant_table *
+        policy_type variant_table *
+        position variant_table *
+        preview_type variant_table *
+        relief_style variant_table *
+        resize_mode variant_table *
+        signal_run_type variant_table *
+        scroll_type variant_table *
+        selection_mode variant_table *
+        shadow_type variant_table *
+        state_type variant_table *
+        submenu_direction variant_table *
+        submenu_placement variant_table *
+        toolbar_style variant_table *
+        update_type variant_table *
+        visibility variant_table *
+        window_position variant_table *
+        window_type variant_table *
+        wrap_mode variant_table *
+        sort_type variant_table *
+        cell_type variant_table *
+        toolbar_child variant_table *
+        toolbar_space_style variant_table *
+        spin_type variant_table *
+        accel_flag variant_table *
+        button_action variant_table *
+        calendar_display_options variant_table *
+        progress_bar_style variant_table *
+        progress_bar_orientation variant_table *
+        dest_defaults variant_table *
+        target_flags variant_table *
+        spin_button_update_policy variant_table *
+        text_window_type variant_table *
+        text_search_flag variant_table *
+        tree_view_column_sizing variant_table *
+        cell_renderer_mode variant_table *
+        message_type variant_table *
+        buttons variant_table *
+        response variant_table *
+        widget_flags variant_table *
+        gravity variant_table *
+        window_type_hint variant_table
+        = "ml_gtk_get_tables"
+  let anchor_type, arrow_type, attach_options, button_box_style,
+    curve_type, delete_type, direction_type, expander_style, icon_size,
+    side_type, text_direction, justification, match_type, menu_direction,
+    metric_type, movement_step, orientation, corner_type, pack_type,
+    path_priority, path_type, policy_type, position, preview_type,
+    relief_style, resize_mode, signal_run_type, scroll_type, selection_mode,
+    shadow_type, state_type, submenu_direction, submenu_placement,
+    toolbar_style, update_type, visibility, window_position, window_type,
+    wrap_mode, sort_type, cell_type, toolbar_child, toolbar_space_style,
+    spin_type, accel_flag, button_action, calendar_display_options,
+    progress_bar_style, progress_bar_orientation, dest_defaults, target_flags,
+    spin_button_update_policy, text_window_type, text_search_flag,
+    tree_view_column_sizing, cell_renderer_mode, message_type, buttons,
+    response, widget_flags, gravity, window_type_hint = get_tables ()
+end
+    
 module Object = struct
   let try_cast = Gobject.try_cast
   external destroy : [>`gtk] obj -> unit = "ml_gtk_object_destroy"
