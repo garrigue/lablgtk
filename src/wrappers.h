@@ -126,3 +126,9 @@ inline value Val_##type (type *p) \
 #define Make_Extractor(name,conv1,field,conv2) \
 value ml_##name##_##field (value val) \
 { return conv2 ((conv1(val))->field); }
+
+#define Make_Flags_val(conv) \
+long Flags_##conv (value list) \
+{ long flags = 0L; \
+  while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
+  return flags; }

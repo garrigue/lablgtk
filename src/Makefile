@@ -36,8 +36,8 @@ endif
 	var2conv < $< > $@
 
 # Targets
-COBJS = ml_gtk.o ml_gdk.o
-MLOBJS = misc.cmo gdk.cmo gtk.cmo
+COBJS = ml_gtk.o ml_gdk.o ml_glib.o
+MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo
 
 lablgtk: liblablgtk.a lablgtk.cma
 	$(TOPLEVEL) -o $@ -custom -cclib "$(LDFLAGS)" \
