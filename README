@@ -5,7 +5,7 @@
 Needed:
 	olabl-2.00
 	gtk-1.0.x
-	gmake (standard make may work with a twist)
+	gmake (there is no standard for conditionals)
 
 How to compile:
 
@@ -44,7 +44,7 @@ How to use the threaded toplevel:
 	% ./lablgtk_t
 	        Objective Caml version 2.00 with Kyoto labels and variants
 	
-	# let id = Thread.create GtkThread.main ();;
+	# let id = GtkThread.start ();;
 	val id : Thread.t = <abstr>
 
   The GTK main loop is now running in a separate thread. Any command
