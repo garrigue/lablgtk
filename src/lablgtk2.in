@@ -5,9 +5,13 @@ localdir="no"
 usedll="@USEDLL@"
 threads_lib="@THREADS_LIB@"
 verbose="no"
+extra="yes"
 init="yes"
+toplevel="ocaml"
 libraries=""
 libpath="-I @LABLGLDIR@"
+lablgtkdir="@INSTALLDIR@"
+initobjs="@INITOBJS@"
 cmd="$0"
 
 while test -n "$1"; do
@@ -15,6 +19,7 @@ case $1 in
 -help)
     echo "Usage: lablgtk2 <options> <ocaml options> [script-file]"
     echo "  -thread   use the threaded version of the toplevel"
+    echo "  -noextra  do not load extensions (i.e. only lablgtk.cma)"
     echo "  -noinit   do not initialize gtk"
     echo "  -localdir use libraries in the same directory (before install)"
     echo "  -verbose  show actions executed"
@@ -22,47 +27,49 @@ case $1 in
     ;;
 -thread)  thread=yes; shift ;;
 -localdir) localdir=yes; shift ;;
+-noextra) extra=no; shift ;;
 -noinit)  init=no; shift ;;
 -verbose) verbose=yes; shift ;;
 *)  break ;;
 esac
 done
 
-if test $localdir = no; then
-    libpath="-I @INSTALLDIR@ $libpath"
-else
-    base=`dirname "$cmd"`
-    libpath="-I $base $libpath"
-    CAML_LD_LIBRARY_PATH=${base}:$CAML_LD_LIBRARY_PATH
+if test $localdir = yes; then
+    lablgtkdir=`dirname "$cmd"`
+    CAML_LD_LIBRARY_PATH=${lablgtkdir}:$CAML_LD_LIBRARY_PATH
     if test $verbose = yes; then
         echo CAML_LD_LIBRARY_PATH=$CAML_LD_LIBRARY_PATH
     fi
 fi
+libpath="-I $lablgtkdir $libpath"
+
+if test $extra = yes; then
+    libraries="@MLLIBS@"
+else
+    libraries="lablgtk.cma"
+fi
 
 if test $thread = yes; then
     libpath="$libpath -I +threads"
-    if test "$threads_lib" = no; then
-        echo "Threads are not supported on this platform"; exit 2
-    elif test "$threads_lib" = system && test $usedll = yes; then
-        toplevel="ocaml"
-        libraries="unix.cma threads.cma @MLLIBS@"
-        libraries="$libraries @THOBJS@"
-    else
-        toplevel="@INSTALLDIR@/lablgtktop"
-    fi
-    if test $init = yes; then
-        libraries="$libraries @INITOBJS@ @THINITOBJS@"
-    fi
+    case "$threads_lib" in
+    no)     echo "Threads are not supported on this platform"; exit 2 ;;
+    system) libraries="unix.cma threads.cma $libraries @THOBJS@" ;;
+    *)      usedll="no" ;;
+    esac
+    initobjs="$initobjs @THINITOBJS@"
 else
-    if test $usedll = yes; then
-        toplevel="ocaml"
-        libraries="unix.cma @MLLIBS@"
-    else
-        toplevel="@INSTALLDIR@/lablgtktop"
+    if test $extra = yes; then
+        libraries="unix.cma $libraries"
     fi
-    if test $init = yes; then
-        libraries="$libraries @INITOBJS@"
-    fi
+fi
+
+if test $usedll = no; then
+    toplevel="$lablgtkdir/lablgtktop"
+    libraries=""
+fi
+
+if test $init = yes; then
+    libraries="$libraries $initobjs"
 fi
 
 if test $verbose = yes; then echo $toplevel -w s $libpath $libraries $*; fi
