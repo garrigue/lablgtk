@@ -93,6 +93,7 @@ module MessageDialog = struct
       ?parent:[>`window] obj -> message_type:Gtk.Tags.message_type ->
       buttons:Gtk.Tags.buttons -> message:string -> unit -> message_dialog obj
       = "ml_gtk_message_dialog_new"
+  external set_markup : [>`messagedialog] obj -> string -> unit = "ml_gtk_message_dialog_set_markup"
 end
 
 module FileSelection = struct

@@ -201,12 +201,13 @@ module Buttons : sig
 end
 
 (** Convenient message window
-   @gtkdoc gtk GtkMessageDialog *)
+    @gtkdoc gtk GtkMessageDialog *)
 class type ['a] message_dialog =
   object
     inherit ['a] dialog_skel
     val obj : [> Gtk.message_dialog] obj
     method connect : 'a dialog_signals
+    method set_markup : string -> unit (** @since GTK 2.4 *)
     method message_type : Tags.message_type
     method set_message_type : Tags.message_type -> unit
   end
@@ -214,6 +215,7 @@ class type ['a] message_dialog =
 (** @gtkdoc gtk GtkMessageDialog *)
 val message_dialog :
   ?message:string ->
+  ?use_markup:bool ->
   message_type:Tags.message_type ->
   buttons:'a buttons ->
   ?parent:#window_skel ->
