@@ -11,7 +11,7 @@ module Progress = struct
       = "ml_gtk_progress_set_show_text"
   external set_text_alignment :
       [>`progress] obj -> ?x:float -> ?y:float -> unit -> unit
-      = "ml_gtk_progress_set_show_text"
+      = "ml_gtk_progress_set_text_alignment"
   external set_format_string : [>`progress] obj -> string -> unit
       = "ml_gtk_progress_set_format_string"
   external set_adjustment : [>`progress] obj -> [>`adjustment] obj -> unit

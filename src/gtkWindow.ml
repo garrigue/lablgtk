@@ -68,10 +68,6 @@ module Window = struct
   external remove_accel_group :
       [>`window] obj -> accel_group -> unit
       = "ml_gtk_window_remove_accel_group"
-  external activate_focus : [>`window] obj -> unit
-      = "ml_gtk_window_activate_focus"
-  external activate_default : [>`window] obj -> unit
-      = "ml_gtk_window_activate_default"
   module Signals = struct
     open GtkSignal
     let move_resize =
