@@ -104,12 +104,12 @@ value ml_gdk_pixbuf_render_pixmap_and_mask (value pixbuf, value thr)
     GdkBitmap *mask;
     gdk_pixbuf_render_pixmap_and_mask(GdkPixbuf_val(pixbuf), &pm, &mask,
 				      Int_val(thr));
-    vpm = Val_GdkPixmap(pm);
-    vmask = Val_GdkBitmap(mask);
+    vpm = Val_GdkPixmap_no_ref(pm);
+    vmask = Val_option(mask,Val_GdkBitmap_no_ref);
     ret = alloc_small(2,0);
     Field(ret,0) = vpm;
     Field(ret,1) = vmask;
-    return ret;
+    CAMLreturn(ret);
 }
 
 /* Fetching a region from a drawable */

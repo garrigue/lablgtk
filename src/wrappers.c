@@ -6,6 +6,7 @@
 #include <caml/memory.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
+#include <glib.h>
 
 #include "wrappers.h"
 
@@ -60,6 +61,13 @@ value copy_string_check (const char*str)
 value copy_string_or_null (const char*str)
 {
     return copy_string (str ? (char*) str : "");
+}
+
+value copy_string_g_free (char *str)
+{
+    value ret = copy_string (str);
+    g_free (str);
+    return ret;
 }
 
 value *ml_global_root_new (value v)

@@ -22,9 +22,11 @@ extern value Val_GdkWindow (GdkWindow *);
 
 #define GdkPixmap_val(val) ((GdkPixmap*)Pointer_val(val))
 extern value Val_GdkPixmap (GdkPixmap *);
+extern value Val_GdkPixmap_no_ref (GdkPixmap *);
 
 #define GdkBitmap_val(val) ((GdkBitmap*)Pointer_val(val))
 extern value Val_GdkBitmap (GdkBitmap *);
+extern value Val_GdkBitmap_no_ref (GdkBitmap *);
 
 extern GdkImage *GdkImage_val (value); /* check argument */
 extern value Val_GdkImage (GdkImage *); /* finalizer is destroy! */

@@ -30,6 +30,9 @@ Status:
   utf8, it is still a good idea to validate it with
   Glib.Utf8.validate, as malformed utf8 strings may cause segmentation
   faults.
+  Note that setlocale is now always called (except if you set
+  GTK_SETLOCALE to 0 in the environment), but LC_NUMERIC is reverted
+  to "C" to avoid problems with floating point conversion in Caml.
 
 How to compile:
 
@@ -104,20 +107,6 @@ How to use the threaded toplevel:
 
   When using threads in a stand-alone application, you must link with
   gtkThread.cmo and call GtkThread.main in place of GMain.main.
-
-Locale or not locale ?
-  Until version 1.2.0, lablgtk called setlocale automatically on
-  intitialization. Unfortunately, this appears to have side effects
-  in some cases, particularly when the locale defines a numeric
-  format different from the standard one.
-  Since locale must be set before initialization, you may do it in two
-  ways:
-    * set the GTK_SETLOCALE environment variable to a non-0 value
-    * use the ~setlocale parameter to GMain.Main.init (if you do not link
-      gtkInit.cmo)
-  Note that GTK_SETLOCALE, when set, overrides ~setlocale.
-  On some systems you may also need to link libxpg4.so for the locale to
-  work.
 
 Structure of the (raw) Gtk* modules:
 
