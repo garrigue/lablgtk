@@ -72,6 +72,7 @@ MLLIBS += lablglade.cma
 CLIBS += liblablglade.a
 GLADEMLOBJS = glade.cmo
 GLADECOBJS = ml_glade.o
+TARGETS += lablgladecc
 all:: lablgladecc
 endif
 
@@ -205,7 +206,7 @@ gtkThread.cmx: gtkThread.ml
 	   $(COMPOPT) $(THFLAGS) gtkThread.ml; fi
 
 xml_lexer.ml: xml_lexer.mll
-	ocamllex xml_lexer.mll
+	$(CAMLLEX) xml_lexer.mll
 
 varcc: varcc.cmo
 	$(LINKER) -o $@ $<
