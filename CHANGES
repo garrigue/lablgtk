@@ -3,6 +3,7 @@ $Id$
 2004.08.27 [Olivier]
   * add GTree.cell_layout#reorder and GTree.cell_layout#set_cell_data_func
   * add a couple of utility functions in Glib
+  * decimate ml_gtkmisc.c, add a couple of things to GtkCalendar and GtkLabel
 
 2004.08.24 [Olivier]
   * add GWindow.message_dialog#set_markup (2.4)

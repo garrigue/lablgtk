@@ -68,6 +68,12 @@ class calendar : Gtk.calendar obj ->
   object
     inherit GObj.widget
     val obj : Gtk.calendar obj
+    method day : int
+    method month : int
+    method year : int
+    method set_day : int -> unit
+    method set_month : int -> unit
+    method set_year : int -> unit
     method event : event_ops
     method clear_marks : unit
     method connect : calendar_signals
@@ -79,6 +85,8 @@ class calendar : Gtk.calendar obj ->
     method select_month : month:int -> year:int -> unit
     method thaw : unit -> unit
     method unmark_day : int -> unit
+    method is_day_marked : int -> bool
+    method num_marked_dates : int
   end
 
 (** @gtkdoc gtk GtkCalendar *)
@@ -215,6 +223,8 @@ class label_skel : 'a obj ->
     val obj : 'a obj
     method cursor_position : int
     method selection_bound : int
+    method selection_bounds : (int * int) option
+    method select_region : int -> int -> unit
     method set_justify : Tags.justification -> unit
     method set_label : string -> unit
     method set_line_wrap : bool -> unit
@@ -224,10 +234,6 @@ class label_skel : 'a obj ->
     method set_text : string -> unit
     method set_use_markup : bool -> unit
     method set_use_underline : bool -> unit
-    method set_xalign : float -> unit
-    method set_xpad : int -> unit
-    method set_yalign : float -> unit
-    method set_ypad : int -> unit
     method justify : Tags.justification
     method label : string
     method line_wrap : bool
