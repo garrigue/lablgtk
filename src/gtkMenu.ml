@@ -18,13 +18,12 @@ module MenuItem = struct
       = "ml_gtk_menu_item_set_submenu"
   external remove_submenu : [>`menuitem] obj -> unit
       = "ml_gtk_menu_item_remove_submenu"
-  external configure :
-      [>`menuitem] obj -> show_toggle:bool -> show_indicator:bool -> unit
-      = "ml_gtk_menu_item_configure"
   external activate : [>`menuitem] obj -> unit
       = "ml_gtk_menu_item_activate"
-  external right_justify : [>`menuitem] obj -> unit
-      = "ml_gtk_menu_item_right_justify"
+  external set_right_justified : [>`menuitem] obj -> bool -> unit
+      = "ml_gtk_menu_item_set_right_justified"
+  external get_right_justified : [>`menuitem] obj -> bool
+      = "ml_gtk_menu_item_get_right_justified"
   module Signals = struct
     open GtkSignal
     let activate =
@@ -123,8 +122,6 @@ module Menu = struct
       = "ml_gtk_menu_set_accel_group"
   external get_accel_group : [>`menu] obj -> accel_group
       = "ml_gtk_menu_get_accel_group"
-  external ensure_uline_accel_group : [>`menu] obj -> accel_group
-      = "ml_gtk_menu_ensure_uline_accel_group"
   external attach_to_widget : [>`menu] obj -> [>`widget] obj -> unit
       = "ml_gtk_menu_attach_to_widget"
   external get_attach_widget : [>`menu] obj -> widget obj

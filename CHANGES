@@ -1,8 +1,56 @@
 $Id$
 
+2002.08.19
+  * add GWindow.toplevel (Tim Freeman report)
+
+2002.08.09
+  * Makefile and tictactoe patches (Tim Freeman)
+
+2002.08.07
+  * add GtkThread.sync and GtkThread.async to post calls to GTK from
+    different threads on windows (GTK/win32 is not reentrant)
+
+2002.07.15
+  * add dll support to windows port
+
+2002.07.13
+  * install dlls to stublibs directory
+
+2002.07.06
+  * add g_io_add_watch support in GMain.Io (requested by Maxence)
+
+2002.07.04
+  * add rpm spec (Ben Martin)
+
+2002.07.01
+  * add GdkPixbuf support
+
+2002.06.20
+  * add all color settings in GtkData.Style/GObj.style
+    (requested by N. Raynaud)
+  * add GMain.Rc
+
+2002.06.19
+  * add Gpointer.region, to handle bigarray/string/Raw.t in an uniform way
+
+2002.06.18
+  * add Gdk.Rgb.draw_image (requested by F. Dellaert)
+
+2002.05.30
+  * change typing of GtkSignal.t
+
+2002.05.28
+  * move GtkData.Selection to GtkBase.Selection
+  * add actual selection handling
+  * add Gdk.Atom
+
+2002.04.30
+  * added button#set_relief, paned#pack1/pack2/set_position,
+    Gdk.Window.set_cursor (requested by malc)
+
 2002.02.25
-  * add GtkPreview support
-  * add applications/camlirc
+  * add GtkPreview support (by Lauri Alanko)
+  * add applications/camlirc (by Noabuaki Yoshida)
 
 2002.01.25
   * correct ml_gtk_spin_button_set_update_policy

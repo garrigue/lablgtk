@@ -22,6 +22,10 @@ module Button = struct
       = "ml_gtk_button_set_relief"
   external get_relief : [>`button] obj -> relief_style
       = "ml_gtk_button_get_relief"
+  external set_label : [>`button] obj -> string -> unit
+      = "ml_gtk_button_set_label"
+  external get_label : [>`button] obj -> string
+      = "ml_gtk_button_get_label"
   module Signals = struct
     open GtkSignal
     let pressed =
@@ -86,9 +90,8 @@ end
 
 module Toolbar = struct
   let cast w : toolbar obj = Object.try_cast w "GtkToolbar"
-  external create : orientation -> style:toolbar_style -> toolbar obj
+  external create : unit -> toolbar obj
       = "ml_gtk_toolbar_new"
-  let create dir ?(style=`BOTH) () = create dir ~style
   external insert_space : [>`toolbar] obj -> pos:int -> unit
       = "ml_gtk_toolbar_insert_space"
   let insert_space w ?(pos = -1) () = insert_space w ~pos
@@ -117,24 +120,12 @@ module Toolbar = struct
     "ml_gtk_toolbar_set_orientation"
   external set_style : [>`toolbar] obj -> toolbar_style -> unit =
     "ml_gtk_toolbar_set_style"
-  external set_space_size : [>`toolbar] obj -> int -> unit =
-    "ml_gtk_toolbar_set_space_size"
-  external set_space_style : [>`toolbar] obj -> [ `EMPTY|`LINE ] -> unit =
-    "ml_gtk_toolbar_set_space_style"
   external set_tooltips : [>`toolbar] obj -> bool -> unit =
     "ml_gtk_toolbar_set_tooltips"
-  external set_button_relief : [>`toolbar] obj -> relief_style -> unit =
-    "ml_gtk_toolbar_set_button_relief"
-  external get_button_relief : [>`toolbar] obj -> relief_style =
-    "ml_gtk_toolbar_get_button_relief"
-  let set ?orientation ?style ?space_size
-      ?space_style ?tooltips ?button_relief w =
+  let set ?orientation ?style ?tooltips w =
     may orientation ~f:(set_orientation w);
     may style ~f:(set_style w);
-    may space_size ~f:(set_space_size w);
-    may space_style ~f:(set_space_style w);
-    may tooltips ~f:(set_tooltips w);
-    may button_relief ~f:(set_button_relief w)
+    may tooltips ~f:(set_tooltips w)
   module Signals = struct
     open GtkSignal
     external val_orientation : int -> orientation = "ml_Val_orientation"

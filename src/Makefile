@@ -1,7 +1,7 @@
 # $Id$
 # Makefile for lablgtk.
 
-TARGETS = varcc lablgtktop lablgtktop_t lablgtk
+TARGETS = varcc lablgtktop lablgtktop_t lablgtk2
 
 all:: $(TARGETS)
 
@@ -22,7 +22,7 @@ CONFIG = ../config.make
 # protect against missing definitions
 BINDIR = ""
 LIBDIR = ""
-INSTALLDIR = $(LIBDIR)/lablgtk
+INSTALLDIR = $(LIBDIR)/lablgtk2
 DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
@@ -30,7 +30,7 @@ include $(CONFIG)
 LABLGLDIR = $(LIBDIR)/lablGL
 
 MLLIBS = lablgtk.cma
-CLIBS = liblablgtk.a
+CLIBS = liblablgtk2.a
 MLLINK = unix.cma str.cma
 
 ifdef DEBUG
@@ -63,8 +63,8 @@ endif
 ifdef USE_GNOME
 MLLIBS += lablgnome.cma
 CLIBS += liblablgnome.a
-GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo gdkPixbuf.cmo
-GNOMECOBJS = ml_gtkxmhtml.o ml_gdkpixbuf.o
+GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo
+GNOMECOBJS = ml_gtkxmhtml.o
 endif
 
 ifdef USE_GLADE
@@ -92,18 +92,19 @@ endif
 
 # Targets
 GTKOBJS = ml_gtk.o ml_gtkbin.o ml_gtkbutton.o ml_gtkedit.o ml_gtklist.o \
-	ml_gtkmenu.o ml_gtkmisc.o ml_gtknew.o ml_gtkpack.o ml_gtkrange.o
-COBJS = ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o wrappers.o $(GTKOBJS)
+	ml_gtkmenu.o ml_gtkmisc.o ml_gtkpack.o ml_gtkrange.o
+COBJS = ml_gdkpixbuf.o ml_gdk.o ml_glib.o ml_gobject.o ml_gpointer.o \
+	wrappers.o $(GTKOBJS)
 MLOBJS = gaux.cmo gpointer.cmo glib.cmo gobject.cmo \
-	gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
+	gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
 	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
-	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
-	gDraw.cmo \
-	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
-	gMenu.cmo gMisc.cmo gWindow.cmo.cmo gList.cmo gBin.cmo \
-	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
+	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo
+#	gDraw.cmo \
+#	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
+#	gMenu.cmo gMisc.cmo gWindow.cmo.cmo gList.cmo gBin.cmo \
+#	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
@@ -117,7 +118,7 @@ lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	$(TOPLEVEL) $(THFLAGS) -o $@ $(THLINK) $(MLLINK) \
 	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
-lablgtk: Makefile $(CONFIG) lablgtk.in
+lablgtk2: Makefile $(CONFIG) lablgtk.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
 	    -e "s|@LABLGLDIR@|$(LABLGLDIR)|g" \
 	    -e "s|@LIBDIR@|$(LIBDIR)|g" \
@@ -147,11 +148,11 @@ install:
 	if test -f lablgtktop_t; then cp lablgtktop_t $(INSTALLDIR); fi
 	cp -p *.h $(INSTALLDIR)
 	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
-	if test -f dlllablgtk.so; then \
+	if test -f dlllablgtk2.so; then \
 	   cp $(CLIBS:lib%.a=dll%.so) $(DLLDIR) || \
 	   echo "Couldn't install dlls in default location"; \
 	fi
-	cp lablgtk $(BINDIR)
+	cp lablgtk2 $(BINDIR)
 	if test -f lablgladecc; then cp lablgladecc $(BINDIR); fi
 
 installopt:
@@ -162,12 +163,12 @@ installopt:
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=.o) $(INSTALLDIR); fi
 
-liblablgtk.a: $(COBJS)
-	$(LIBRARIAN) -o lablgtk $(COBJS) $(GTKLIBS)
-lablgtk.cma: liblablgtk.a $(MLOBJS)
-	$(LIBRARIAN) -o lablgtk $(MLOBJS) $(GTKLIBS)
-lablgtk.cmxa: liblablgtk.a $(MLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtk $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
+liblablgtk2.a: $(COBJS)
+	$(LIBRARIAN) -o lablgtk2 $(COBJS) $(GTKLIBS)
+lablgtk.cma: liblablgtk2.a $(MLOBJS)
+	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(MLOBJS) $(GTKLIBS)
+lablgtk.cmxa: liblablgtk2.a $(MLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
 
 liblablgtkgl.a: $(GLCOBJS)
 	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLCOBJS) \
@@ -220,6 +221,6 @@ ml_gdk.o: gdk_tags.h ml_gdk.h ml_gpointer.h wrappers.h
 ml_gtkgl.o: gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gtkxmhtml.o: gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gpointer.o: ml_gpointer.h
-ml_gdkpixbuf.o: gdkpixbuf_tags.h ml_gdk.h wrappers.h ml_gpointer.h
+ml_gdkpixbuf.o: gdkpixbuf_tags.h ml_gdk.h gdk_tags.h wrappers.h ml_gpointer.h
 
 include .depend

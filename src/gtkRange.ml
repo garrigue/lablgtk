@@ -97,10 +97,12 @@ module Scale = struct
       = "ml_gtk_scale_set_draw_value"
   external set_value_pos : [>`scale] obj -> position -> unit
       = "ml_gtk_scale_set_value_pos"
-  external get_value_width : [>`scale] obj -> int
-      = "ml_gtk_scale_get_value_width"
-  external draw_value : [>`scale] obj -> unit
-      = "ml_gtk_scale_draw_value"
+  external get_digits : [>`scale] obj -> int
+      = "ml_gtk_scale_get_digits"
+  external get_draw_value : [>`scale] obj -> bool
+      = "ml_gtk_scale_get_draw_value"
+  external get_value_pos : [>`scale] obj -> position
+      = "ml_gtk_scale_get_value_pos"
   let set ?digits ?draw_value ?value_pos w =
     may digits ~f:(set_digits w);
     may draw_value ~f:(set_draw_value w);

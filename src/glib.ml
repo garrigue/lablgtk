@@ -5,6 +5,9 @@ type print_func = string -> unit
 external set_print_handler : (string -> unit) -> print_func
     = "ml_g_set_print_handler"
 
+exception GError of string
+let () = Callback.register_exception "gerror" (GError "")
+
 module Main = struct
   type t
   external create : bool -> t = "ml_g_main_new"

@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-type 'a obj
+type -'a obj
 type g_type
 type g_class
 
@@ -26,10 +26,11 @@ module Type = struct
       = "ml_g_type_fundamental"
 end
 
-external get_type : 'a obj -> gtk_type = "ml_G_TYPE_FROM_INSTANCE"
+external get_type : 'a obj -> g_type = "ml_G_TYPE_FROM_INSTANCE"
 let is_a obj name =
   Type.is_a (get_type obj) (Type.from_name name)
 
+exception Cannot_cast of string * string
 external unsafe_cast : 'a obj -> 'b obj = "%identity"
 let try_cast w name =
   if is_a w name then unsafe_cast w
@@ -37,5 +38,5 @@ let try_cast w name =
 
 let get_id (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
 
-external freeze_notify : g_object -> unit = "ml_g_object_freeze_notify"
-external thaw_notify : g_object -> unit = "ml_g_object_thaw_notify"
+external freeze_notify : 'a obj -> unit = "ml_g_object_freeze_notify"
+external thaw_notify : 'a obj -> unit = "ml_g_object_thaw_notify"
