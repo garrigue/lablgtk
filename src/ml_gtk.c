@@ -405,6 +405,7 @@ ML_4 (gtk_selection_data_set, GtkSelectionData_val, Int_val, Int_val,
 
 #define GtkContainer_val(val) check_cast(GTK_CONTAINER,val)
 ML_2 (gtk_container_set_border_width, GtkContainer_val, Int_val, Unit)
+ML_2 (gtk_container_set_resize_mode, GtkContainer_val, Resize_mode_val, Unit)
 ML_2 (gtk_container_add, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_remove, GtkContainer_val, GtkWidget_val, Unit)
 static void ml_gtk_simple_callback (GtkWidget *w, gpointer data)
@@ -1208,8 +1209,8 @@ ML_2 (gtk_toolbar_set_style, GtkToolbar_val, Toolbar_style_val, Unit)
 ML_2 (gtk_toolbar_set_space_size, GtkToolbar_val, Int_val, Unit)
 ML_2 (gtk_toolbar_set_space_style, GtkToolbar_val, Toolbar_space_style_val, Unit)
 ML_2 (gtk_toolbar_set_tooltips, GtkToolbar_val, Bool_val, Unit)
-ML_2 (gtk_toolbar_set_button_relief, GtkToolbar_val, Relief_type_val, Unit)
-ML_1 (gtk_toolbar_get_button_relief, GtkToolbar_val, Val_relief_type)
+ML_2 (gtk_toolbar_set_button_relief, GtkToolbar_val, Relief_style_val, Unit)
+ML_1 (gtk_toolbar_get_button_relief, GtkToolbar_val, Val_relief_style)
 
 /* gtktree.h */
 

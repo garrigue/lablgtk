@@ -51,18 +51,18 @@ class pixmap ?:mask pm = object
     may bitmap fun:(fun m -> m#string s :font :x :y)
 end
 
-class pixmap_from_xpm :file ?:colormap ?:transparent window =
+let pixmap_from_xpm :window :file ?:colormap ?:transparent () =
   let pm, mask =
     try Pixmap.create_from_xpm window :file ?:colormap
 	?transparent:(may_map transparent fun:color)
-    with Null_pointer -> invalid_arg "GdkObj.pixmap_from_xpm"
-  in pixmap pm :mask
+    with Null_pointer -> invalid_arg "GdkObj.pixmap_from_xpm" in
+  new pixmap pm :mask
 
-class pixmap_from_xpm_d :data ?:colormap ?:transparent window =
+let pixmap_from_xpm_d :window :data ?:colormap ?:transparent () =
   let pm, mask =
     Pixmap.create_from_xpm_d window :data ?:colormap
       ?transparent:(may_map transparent fun:color) in
-  pixmap pm :mask
+  new pixmap pm :mask
 
 class drag_context context = object
   val context = context

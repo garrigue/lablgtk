@@ -20,6 +20,7 @@ class ['a] window_skel : 'b obj ->
     method set_default_size : width:int -> height:int -> unit
     method set_modal : bool -> unit
     method set_position : Tags.window_position -> unit
+    method set_resize_mode : Tags.resize_mode -> unit
     method set_title : string -> unit
     method set_transient_for : 'a -> unit
     method set_wm_class : string -> unit

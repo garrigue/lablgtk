@@ -1,3 +1,4 @@
+(* $Id$ *)
 (* Lissajous 図形 *)
 
 open GMain
@@ -5,21 +6,21 @@ open GdkObj
 
 
 let main () =
-  let window = new GWindow.window border_width: 10 in
+  let window = GWindow.window border_width: 10 () in
   window#connect#event#delete
      callback:(fun _ -> prerr_endline "Delete event occured"; true);
   window#connect#destroy callback:Main.quit;
-  let vbx = new GPack.box `VERTICAL packing:window#add in  
-  let quit = new GButton.button label:"Quit" packing:vbx#add in
+  let vbx = GPack.vbox packing:window#add () in
+  let quit = GButton.button label:"Quit" packing:vbx#add () in
   quit#connect#clicked callback:window#destroy;
-  let area = new GMisc.drawing_area width:200 height:200 packing:vbx#add in
+  let area = GMisc.drawing_area width:200 height:200 packing:vbx#add () in
   let drawing = area#misc#realize (); new drawing (area#misc#window) in
   let m_pi = acos (-1.) in
   let c = ref 0. in
   let expose_event _ =
-    drawing#set foreground: `WHITE;
-    drawing#rectangle filled:true x:0 y:0 width:200 height:200;
-    drawing#set foreground: `BLACK;
+    drawing#set_foreground `WHITE;
+    drawing#rectangle filled:true x:0 y:0 width:200 height:200 ();
+    drawing#set_foreground `BLACK;
 (*    drawing#line x:0 y:0 x:150 y:150; 
       drawing#polygon filled:true [10,100; 35,35; 100,10; 10, 100];
 *)

@@ -96,15 +96,13 @@ class widget_drag : [>`widget] obj ->
     val obj : Gtk.widget obj
     method dest_set :
       ?flags:Tags.dest_defaults list ->
-      target_entry list ->
-      actions:Gdk.Tags.drag_action list -> unit
+      ?actions:Gdk.Tags.drag_action list -> target_entry list -> unit
     method dest_unset : unit -> unit
-    method get_data : target:Gdk.atom -> ?time:int -> drag_context -> unit
+    method get_data : ?time:int -> context:drag_context -> Gdk.atom ->unit
     method highlight : unit -> unit
     method source_set :
       ?mod:Gdk.Tags.modifier list ->
-      target_entry list ->
-      actions:Gdk.Tags.drag_action list -> unit
+      ?actions:Gdk.Tags.drag_action list -> target_entry list -> unit
     method source_set_icon : ?colormap:Gdk.colormap -> GdkObj.pixmap -> unit
     method source_unset : unit -> unit
     method unhighlight : unit -> unit
@@ -117,8 +115,8 @@ and widget_misc :
     method activate : unit -> bool
     method add_accelerator :
       sig:(Gtk.widget, unit -> unit) GtkSignal.t ->
-      accel_group -> key:Gdk.keysym ->
-      ?mod:Gdk.Tags.modifier list -> ?flags:Tags.accel_flag list -> unit
+      group:accel_group -> ?mod:Gdk.Tags.modifier list ->
+      ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
     method allocation : rectangle
     method colormap : Gdk.colormap
     method draw : Gdk.Rectangle.t option -> unit

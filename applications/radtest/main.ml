@@ -4,29 +4,22 @@ open GdkKeysyms
 open Gtk
 open GdkObj
 open GObj
-open GWindow
-open GPack
-open GMenu
-open GMisc
-open GFrame
-open GPix
 
-open GTree2
 open Utils
 open Treew
 
 let main_project_modify = ref false
 
-let main_window  = new window width:200 height:200
-let main_vbox    = new vbox packing:main_window#add
-let main_menu    = new menu_bar packing:(main_vbox#pack expand:false)
+let main_window  = GWindow.window width:200 height:200 ()
+let main_vbox    = GPack.vbox packing:main_window#add ()
+let main_menu    = GMenu.menu_bar packing:(main_vbox#pack expand:false) ()
 
 let can_copy = ref (fun _ -> assert false)
 let can_paste = ref (fun _ -> assert false)
 
 class project () =
-  let project_box = new vbox packing:main_vbox#pack in
-  let project_tree = new tree2 packing:project_box#pack in
+  let project_box = GPack.vbox packing:main_vbox#pack () in
+  let project_tree = GTree2.tree packing:project_box#pack () in
   object(self)
     val mutable window_list = []
 
@@ -63,7 +56,7 @@ class project () =
 
 (*    method set_dirname f = dirname <- f *)
 
-    method add_window :name ?wt =
+    method add_window :name ?tree:wt () =
       let wt = match wt with
       |	None -> new window_and_tree :name
       |	Some wt -> wt in
@@ -77,14 +70,14 @@ class project () =
 	      self#change_selected wt
 	    end else
 	    if GdkEvent.Button.button ev = 3 then begin
-	      let menu = new menu in
+	      let menu = GMenu.menu () in
 	      let name = wt#tiwin#name in
-	      let mi_remove = new menu_item label:("delete " ^ name)
-		  packing:menu#append
-	      and mi_copy = new menu_item label:("copy " ^ name)
-		  packing:menu#append	      
-	      and mi_cut = new menu_item label:("cut " ^ name)
-		  packing:menu#append in
+	      let mi_remove = GMenu.menu_item label:("delete " ^ name)
+		  packing:menu#append ()
+	      and mi_copy = GMenu.menu_item label:("copy " ^ name)
+		  packing:menu#append ()      
+	      and mi_cut = GMenu.menu_item label:("cut " ^ name)
+		  packing:menu#append () in
 	      mi_remove#connect#activate
 		callback:(fun () -> self#delete_window wt);
 	      mi_copy#connect#activate
@@ -115,7 +108,7 @@ class project () =
       | [ ch ] -> tiwin#add_children_wo_undo ch; ()
       | _ -> failwith "add_window_by_node: more than one child"
       end;
-      self#add_window :name wt
+      self#add_window :name tree:wt ()
 
     method delete_window (wt : window_and_tree) =
       let tiwin = wt#tiwin in
@@ -132,19 +125,19 @@ class project () =
     method delete () =
       List.iter window_list
 	fun:(fun wt -> self#delete_window wt);
-      main_vbox#remove project_box;
+      main_vbox#remove project_box#coerce;
 (* remove after test *)
       if !name_list <> [] then failwith "name_list not empty"
 
     method get_filename () =
-      get_filename set_fun:self#set_filename dir:dirname
+      get_filename callback:self#set_filename dir:dirname ()
 
     method save_as () = if self#get_filename () then self#save ()
 
     method save () =
       if filename = "" then self#save_as ()
       else begin
-	let outch = open_out file:(dirname ^ filename ^ ".rad") in
+	let outch = open_out (dirname ^ filename ^ ".rad") in
 	let f = Format.formatter_of_out_channel outch in
 	List.iter window_list fun:(fun wt -> wt#tiwin#save f);
 	close_out outch;
@@ -175,15 +168,17 @@ class project () =
       self#add_window_by_node node
 
     method emit () =
-      let outc = open_out file:(dirname ^ filename ^ ".ml") in
+      let outc = open_out (dirname ^ filename ^ ".ml") in
       let f = Format.formatter_of_out_channel outc in
       List.iter window_list fun:(fun wt -> wt#emit f);
       Format.fprintf f "let main () =@\n";
 (* this is just for demo *)
-      List.iter window_list
-	fun:(fun wt -> let name = wt#tiwin#name in
-	Format.fprintf f "  let %s = new %s in %s#show ();@\n"
-	  name name name);
+      List.iter window_list fun:
+	begin fun wt ->
+	  let name = wt#tiwin#name in
+	  Format.fprintf f "  let %s = new %s () in %s#show ();@\n"
+	    name name name
+	end;
       Format.fprintf f
 	"  GMain.Main.main ()@\n@\nlet _ = main ()@\n";
       close_out outc
@@ -195,11 +190,11 @@ let main_project = ref (new project ())
 
 let load () =
   let filename = ref "" in
-  get_filename set_fun:(fun f -> filename := f) dir:!main_project#dirname;
+  get_filename callback:(fun f -> filename := f) dir:!main_project#dirname ();
   if !filename <> "" then begin
     !main_project#delete ();
     main_project := new project ();
-    let inch = open_in file:!filename in
+    let inch = open_in !filename in
     let lexbuf = Lexing.from_channel inch in
     let project_list = Load_parser.project Load_lexer.token lexbuf in
     close_in inch;
@@ -211,10 +206,10 @@ let load () =
 
 let interpret_undo = function
   | Add (parent_name, node, pos) ->
-      let parent = widget_map#find key:parent_name in
+      let parent = Hashtbl.find widget_map key:parent_name in
       parent#add_children node :pos
   | Remove child_name ->
-      let child  = widget_map#find key:child_name in
+      let child  = Hashtbl.find widget_map key:child_name in
       child#remove_me ()
   | Property (property, value_string) ->
       property#set value_string
@@ -240,33 +235,32 @@ let targets = [  { target = "STRING"; flags = []; info = 0}  ]
 let xpm_window () =
   let source_drag_data_get classe _ (data : selection_data) :info :time =
     data#set type:data#target format:0 data:classe in
-  let window = new window title:"icons" in
+  let window = GWindow.window title:"icons" () in
   window#misc#realize ();
-  let vbox = new vbox packing:window#add in
-  let table = new table rows:1 columns:5 border_width:20  packing:vbox#pack in
+  let vbox = GPack.vbox packing:window#add () in
+  let table = GPack.table rows:1 columns:5 border_width:20
+      packing:vbox#pack () in
   let add_xpm :file :left :top =
-    let gdk_pix = new pixmap_from_xpm :file window:window#misc#window in
-    let ev = new event_box in
-    let pix = new pixmap gdk_pix packing:ev#add in
-    table#attach ev :left :top;
+    let gdk_pix = GdkObj.pixmap_from_xpm :file window:window#misc#window () in
+    let ev = GFrame.event_box packing:(table#attach :left :top) () in
+    let pix = GPix.pixmap gdk_pix packing:ev#add () in
     ev#connect#event#button_press callback:
       (fun ev -> match GdkEvent.get_type ev with
 	| `BUTTON_PRESS ->
 	    if GdkEvent.Button.button ev = 1 then begin
-	      !main_project#add_window name:(make_new_name "window")
+	      !main_project#add_window name:(make_new_name "window") ()
 	    end;
 	    true
 	| _ -> false) in
-  add_xpm file:"window.xpm"       left:0 top:0;
-  new separator `HORIZONTAL packing:vbox#pack;
-  let table = new table rows:3 columns:4 packing:vbox#pack
-      row_spacings:20 col_spacings:20 border_width:20 in
+  add_xpm file:"window.xpm" left:0 top:0;
+  GMisc.separator `HORIZONTAL packing:vbox#pack ();
+  let table = GPack.table rows:3 columns:4 packing:vbox#pack
+      row_spacings:20 col_spacings:20 border_width:20 () in
   let add_xpm :file :left :top :classe =
-    let gdk_pix = new pixmap_from_xpm :file window:window#misc#window in
-    let ev = new event_box in
-    let pix = new pixmap gdk_pix packing:ev#add in
-    table#attach ev :left :top;
-    ev#drag#source_set mod:[`BUTTON1] :targets actions:[`COPY];
+    let gdk_pix = GdkObj.pixmap_from_xpm :file window:window#misc#window () in
+    let ev = GFrame.event_box packing:(table#attach :left :top) () in
+    let pix = GPix.pixmap gdk_pix packing:ev#add () in
+    ev#drag#source_set mod:[`BUTTON1] targets actions:[`COPY];
     ev#drag#source_set_icon colormap:window#misc#style#colormap 
       gdk_pix; 
     ev#connect#drag#data_get callback:(source_drag_data_get classe) in
@@ -294,39 +288,39 @@ let main () =
   main_window#connect#destroy callback:GMain.Main.quit;
 
   let mp = main_project in
-  let f = new factory main_menu in
+  let f = new GMenu.factory main_menu in
   let accel_group  = f#accel_group in
   main_window#add_accel_group accel_group;
   prop_win#add_accel_group accel_group;
   xpm_win#add_accel_group accel_group;
 
-  let file_menu    = new factory (f#add_submenu label:"File") :accel_group
-  and edit_menu    = new factory (f#add_submenu label:"Edit") :accel_group
-  and project_menu = new factory (f#add_submenu label:"Project") :accel_group
+  let file_menu    = new GMenu.factory (f#add_submenu "File") :accel_group
+  and edit_menu    = new GMenu.factory (f#add_submenu "Edit") :accel_group
+  and project_menu = new GMenu.factory (f#add_submenu "Project") :accel_group
   in
 
-  file_menu#add_item label:"Emit code" callback:(fun () -> !mp#emit ());
+  file_menu#add_item "Emit code" callback:(fun () -> !mp#emit ());
   file_menu#add_separator ();
-  file_menu#add_item label:"Quit" key:_Q callback:GMain.Main.quit;
+  file_menu#add_item "Quit" key:_Q callback:GMain.Main.quit;
 
-  project_menu#add_item label:"New" key:_N
+  project_menu#add_item "New" key:_N
     callback:(fun () -> !mp#delete (); mp := new project ());
-  project_menu#add_item label:"Open..." key:_O callback:load;
-  project_menu#add_item label:"Save" key:_S callback:(fun () -> !mp#save ());
-  project_menu#add_item label:"Save as..." callback:(fun () -> !mp#save_as ());
+  project_menu#add_item "Open..." key:_O callback:load;
+  project_menu#add_item "Save" key:_S callback:(fun () -> !mp#save ());
+  project_menu#add_item "Save as..." callback:(fun () -> !mp#save_as ());
 
   let copy_item =
-    edit_menu#add_item label:"Copy" key:_C callback:(fun () -> !mp#copy ())
+    edit_menu#add_item "Copy" key:_C callback:(fun () -> !mp#copy ())
   and cut_item =
-    edit_menu#add_item label:"Cut" key:_X callback:(fun () -> !mp#cut ())
+    edit_menu#add_item "Cut" key:_X callback:(fun () -> !mp#cut ())
   and paste_item =
-    edit_menu#add_item label:"Paste" key:_V callback:(fun () -> !mp#paste ())
+    edit_menu#add_item "Paste" key:_V callback:(fun () -> !mp#paste ())
   in
   can_copy :=
     (fun b -> copy_item#misc#set_sensitive b; cut_item#misc#set_sensitive b);
   can_paste := paste_item#misc#set_sensitive;
   !can_copy false; !can_paste false;
-  edit_menu#add_item label:"Undo" key:_Z callback:undo;
+  edit_menu#add_item "Undo" key:_Z callback:undo;
 
   GMain.Main.main ()
 

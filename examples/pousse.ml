@@ -2,7 +2,7 @@
 
 (* The game logic *)
 
-type color = [none white black]
+type color = [`none|`white|`black]
 
 module type BoardSpec = sig
   type t
@@ -22,7 +22,7 @@ module Board (Spec : BoardSpec) = struct
     let x = x+dx and y = y+dy in
     if on_board x y then
       let col = get board :x :y in 
-      if col = (color : [white black] :> color) then l else
+      if col = (color : [`white|`black] :> color) then l else
       if col = `none then [] else
       string board :x :y :dx :dy :color ((x,y)::l)
     else []
@@ -66,7 +66,7 @@ open GMain
 
 (* Toplevel window *)
 
-let window = new GWindow.window title:"pousse"
+let window = GWindow.window title:"pousse" ()
 
 (* Create pixmaps *)
 
@@ -75,19 +75,22 @@ let pixdraw1 = new GPix.pixdraw parent:window width:40 height:40
 let pixdraw2 = new GPix.pixdraw parent:window width:40 height:40
 
 let _ =
-  pixdraw1#set foreground:`BLACK;
-  pixdraw1#arc x:3 y:3 width:34 height:34 filled:true;
-  pixdraw2#set foreground:`WHITE;
-  pixdraw2#arc x:3 y:3 width:34 height:34 filled:true;
-  pixdraw2#set foreground:`BLACK;
-  pixdraw2#arc x:3 y:3 width:34 height:34
+  pixdraw1#set_foreground `BLACK;
+  pixdraw1#arc x:3 y:3 width:34 height:34 filled:true ();
+  pixdraw2#set_foreground `WHITE;
+  pixdraw2#arc x:3 y:3 width:34 height:34 filled:true ();
+  pixdraw2#set_foreground `BLACK;
+  pixdraw2#arc x:3 y:3 width:34 height:34 ()
 
 (* The cell class: a button with a pixmap on it *)
 
-class cell ?:packing = object (self)
-  inherit GButton.button ?:packing
+class cell ?:packing ?:show () =
+  let button = GButton.button ?:packing ?:show () in
+object (self)
+  inherit GObj.widget button#as_widget
+  method connect = button#connect
   val mutable color : color = `none
-  val pm = new GPix.pixmap pixdraw
+  val pm = GPix.pixmap pixdraw packing:button#add ()
   method color = color
   method set_color col =
     if col <> color then begin
@@ -97,9 +100,6 @@ class cell ?:packing = object (self)
 	| `black -> pixdraw1
 	| `white -> pixdraw2)
     end
-  initializer
-    self#add pm;
-    ()
 end
 
 module RealBoard = Board (
@@ -117,11 +117,12 @@ open RealBoard
 
 class game frame:(frame : #GContainer.container) label:(label : #GMisc.label)
     statusbar:(bar : #GMisc.statusbar) =
+  let table = GPack.table columns:size rows:size packing:frame#add () in
 object (self)
   val cells =
     Array.init len:size
-      fun:(fun _ -> Array.init len:size fun:(fun _ -> new cell))
-  val table = new GPack.table columns:size rows:size packing:frame#add
+      fun:(fun i -> Array.init len:size
+	  fun:(fun j -> new cell packing:(table#attach top:i left:j) ()))
   val label = label
   val turn = bar#new_context name:"turn"
   val messages = bar#new_context name:"messages"
@@ -164,8 +165,7 @@ object (self)
     for i = 0 to size-1 do for j = 0 to size-1 do
       let cell = cells.(i).(j) in
       cell#connect#enter callback:cell#misc#grab_focus;
-      cell#connect#clicked callback:(fun () -> self#play i j);
-      table#attach left:i top:j cell
+      cell#connect#clicked callback:(fun () -> self#play i j)
     done done;
     List.iter fun:(fun (x,y,col) -> cells.(x).(y)#set_color col)
       [ 3,3,`black; 4,4,`black; 3,4,`white; 4,3,`white ];
@@ -176,14 +176,14 @@ end
 
 (* Graphical elements *)
 
-let vbox = new GPack.box `VERTICAL packing:window#add
-let frame = new GFrame.frame shadow_type:`IN packing:vbox#add
-let hbox = new GPack.box `HORIZONTAL packing:(vbox#pack expand:false)
+let vbox = GPack.vbox packing:window#add ()
+let frame = GFrame.frame shadow_type:`IN packing:vbox#add ()
+let hbox = GPack.hbox packing:(vbox#pack expand:false) ()
 
-let bar = new GMisc.statusbar packing:hbox#add
+let bar = GMisc.statusbar packing:hbox#add ()
 
-let frame2 = new GFrame.frame shadow_type:`IN packing:(hbox#pack expand:false)
-let label = new GMisc.label justify:`LEFT xpad:5 xalign:0.0 packing:frame2#add
+let frame2 = GFrame.frame shadow_type:`IN packing:(hbox#pack expand:false) ()
+let label = GMisc.label justify:`LEFT xpad:5 xalign:0.0 packing:frame2#add ()
 
 let game = new game :frame :label statusbar:bar
 

@@ -28,9 +28,9 @@ class menu_item_skel :
     val obj : 'a obj
     method activate : unit -> unit
     method add_accelerator :
-      accel_group ->
-      key:Gdk.keysym ->
-      ?mod:Gdk.Tags.modifier list -> ?flags:Tags.accel_flag list -> unit
+      group:accel_group ->
+      ?mod:Gdk.Tags.modifier list ->
+      ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
     method as_item : Gtk.menu_item obj
     method configure : show_toggle:bool -> show_indicator:bool -> unit
     method remove_submenu : unit -> unit

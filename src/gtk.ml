@@ -20,7 +20,8 @@ module Tags = struct
   type policy_type = [ `ALWAYS|`AUTOMATIC ]
   type position = [ `LEFT|`RIGHT|`TOP|`BOTTOM ]
   type preview_type = [ `COLOR|`GRAYSCALE ]
-  type relief_type = [ `NORMAL|`HALF|`NONE ]
+  type relief_style = [ `NORMAL|`HALF|`NONE ]
+  type resize_mode = [ `PARENT|`QUEUE|`IMMEDIATE ]
   type signal_run_type = [ `FIRST|`LAST|`BOTH|`NO_RECURSE|`ACTION|`NO_HOOKS ]
   type scroll_type =
       [ `NONE|`STEP_FORWARD|`STEP_BACKWARD|`PAGE_BACKWARD|`PAGE_FORWARD|`JUMP ]

@@ -68,7 +68,7 @@ let extRegExp path =
   try
     let name = List.hd (List.rev path) in
     let theString = name2string name in
-    let pos = String.index theString char:'.' in
+    let pos = String.index theString elt:'.' in
     let ext = String.sub theString pos:(pos + 1)
         len:(String.length theString - pos -1) in
     ".*\\." ^ (Str.quote ext)
@@ -79,18 +79,19 @@ let extRegExp path =
 (* Some widgets							      *)
 (**********************************************************************)
 
-class scrolled_text ?:editable ?:word_wrap ?:width ?:height ?:packing ?:show =
-  let hbox = new GPack.hbox ?:width ?:height ?:packing show:false in
-  let scrollbar = new GRange.scrollbar `VERTICAL
-      packing:(hbox#pack from:`END expand:false) in
-  let text = new GEdit.text vadjustment:scrollbar#adjustment
-      ?:editable ?:word_wrap packing:hbox#add in
+class scrolled_text ?:editable ?:word_wrap ?:width ?:height ?:packing ?:show
+    () =
+  let hbox = GPack.hbox ?:width ?:height ?:packing show:false () in
+  let scrollbar = GRange.scrollbar `VERTICAL
+      packing:(hbox#pack from:`END expand:false) () in
+  let text = GEdit.text vadjustment:scrollbar#adjustment
+      ?:editable ?:word_wrap packing:hbox#add () in
   object
-    inherit GObj.widget_wrapper hbox#as_widget
+    inherit GObj.widget_full hbox#as_widget
     method scrollbar = scrollbar
     method text = text
-    method insert s ?:font [< fontMonospaceMedium >] =
-      text#insert ?s ?font:(Some (Lazy.force font))
+    method insert ?:font{=fontMonospaceMedium} s =
+      text#insert font:(Lazy.force font) s
     method show () = hbox#misc#show ()
     initializer
       if show <> Some false then hbox#misc#show ()
@@ -105,8 +106,8 @@ let start () =
   (* Initialize the library *)
   Main.init ();
 
-  let toplevelWindow = new GWindow.window wm_name:myName in
-  let toplevelVBox = new GPack.vbox packing:toplevelWindow#add in
+  let toplevelWindow = GWindow.window wm_name:myName () in
+  let toplevelVBox = GPack.vbox packing:toplevelWindow#add () in
 
   (**********************************************************************)
   (* Function to display a message in a new window                      *)
@@ -114,14 +115,14 @@ let start () =
   let messageBox title message =
     begin
       (* Create a new toplevel window *)
-      let t = new GWindow.dialog :title wm_name:title in
+      let t = GWindow.dialog :title wm_name:title () in
       (* Create the dismiss button *)
       let t_dismiss =
-	new GButton.button label:"Dismiss" packing:t#action_area#add in
+	GButton.button label:"Dismiss" packing:t#action_area#add () in
       t_dismiss#connect#clicked callback:t#destroy;
       (* Create the display area *)
       let t_text = new scrolled_text editable:false
-	  width:500 height:200 packing:t#vbox#add in
+	  width:500 height:200 packing:t#vbox#add () in
       (* Insert text *)
       t_text#insert message;
       t#show ()
@@ -131,13 +132,13 @@ let start () =
   (* Create the menu bar                                                *)
   (**********************************************************************)
   let menuBar =
-    new GMenu.menu_bar border_width:2 packing:(toplevelVBox#pack expand:false)
+    GMenu.menu_bar border_width:2 packing:(toplevelVBox#pack expand:false) ()
   in
   let menus = new GMenu.factory menuBar accel_mod:[] in
   let accel_group = menus#accel_group in
   toplevelWindow#add_accel_group accel_group;
   let add_submenu :label =
-    new GMenu.factory (menus#add_submenu :label) :accel_group accel_mod:[]
+    new GMenu.factory (menus#add_submenu label) :accel_group accel_mod:[]
   in
   
   (**********************************************************************)
@@ -153,18 +154,18 @@ let start () =
   (**********************************************************************)
 
   let mainWindow =
-    let box = new GPack.hbox height:150 packing:toplevelVBox#add in
-    let sb = new GRange.scrollbar `VERTICAL
-	packing:(box#pack from:`END expand:false) in
-    new GList.clist columns:5 vadjustment:sb#adjustment
-      titles_show:true packing:box#add
+    let box = GPack.hbox height:150 packing:toplevelVBox#add () in
+    let sb = GRange.scrollbar `VERTICAL
+	packing:(box#pack from:`END expand:false) () in
+    GList.clist columns:5 vadjustment:sb#adjustment
+      titles_show:true packing:box#add ()
   in
   mainWindow#misc#grab_focus ();
   Array.iteri [|100; 40; 100; 40; 280|]
-    fun:(fun :i :data -> mainWindow#set_column i width:data);
+    fun:(fun :i data -> mainWindow#set_column i width:data);
   let displayTitle() =
     let s = roots2string () in
-    Array.iteri fun:(fun :i :data -> mainWindow#set_column i title:data)
+    Array.iteri fun:(fun :i data -> mainWindow#set_column i title:data)
       [| String.sub pos:0 len:12 s; "Action";
 	 String.sub pos:15 len:12 s; "Status"; "Path" |]
   in
@@ -175,8 +176,8 @@ let start () =
   (**********************************************************************)
 
   let detailsWindow =
-    new GEdit.text editable:false height:45
-      packing:(toplevelVBox#pack expand:false) in
+    GEdit.text editable:false height:45
+      packing:(toplevelVBox#pack expand:false) () in
   let displayDetails thePathString newtext =
     detailsWindow#freeze ();
     (* Delete the current text *)
@@ -194,7 +195,7 @@ let start () =
   (**********************************************************************)
 
   let messagesWindow =
-    new scrolled_text editable:false packing:toplevelVBox#add show:false in
+    new scrolled_text editable:false packing:toplevelVBox#add show:false () in
 
   if !Trace.printTrace then messagesWindow#show ();
 
@@ -224,14 +225,14 @@ let start () =
   (**********************************************************************)
 
   let statusWindow =
-    new GMisc.statusbar packing:(toplevelVBox#pack expand:false) in
+    GMisc.statusbar packing:(toplevelVBox#pack expand:false) () in
   let statusContext = statusWindow#new_context name:"status" in
   ignore (statusContext#push "");
 
   let displayStatus s1 s2 =
     (* Concatenate the new message *)
     let m =
-      s1 ^ (String.make len:(max 2 (30 - String.length s1)) fill:' ') ^ s2 in
+      s1 ^ (String.make len:(max 2 (30 - String.length s1)) ' ') ^ s2 in
     statusContext#pop ();
     ignore (statusContext#push m);
     (* Force message to be displayed immediately *)
@@ -360,7 +361,7 @@ let start () =
      end experimental *)
 
   let redisplay i =
-    mainWindow#remove i;
+    mainWindow#remove row:i;
     (* Insert the new text *)
     try insert i with DerefSome -> ()
   in
@@ -371,13 +372,13 @@ let start () =
 
   let displayErrorMessage errorMessage =
     (* Create a new toplevel window *)
-    let dialog = new GWindow.dialog title:"Error" wm_name:"Error" modal:true in
+    let dialog = GWindow.dialog title:"Error" wm_name:"Error" modal:true () in
     let _ =
-      new GMisc.label packing:(dialog#vbox#pack expand:false padding:4)
+      GMisc.label packing:(dialog#vbox#pack expand:false padding:4) ()
        text:(sprintf "The following error occured :\n%s\n%s should be closed"
                errorMessage myName)
     in
-    let ok = new GButton.button label:"OK" packing:dialog#action_area#add in
+    let ok = GButton.button label:"OK" packing:dialog#action_area#add () in
     ok#grab_default ();
     ok#connect#clicked
       callback:(fun () -> dialog#destroy (); toplevelWindow#destroy ());
@@ -433,21 +434,21 @@ let start () =
 
   let getRoots() =
     let t =
-      new GWindow.dialog title:"Enter roots" wm_name:"Enter roots" modal:true
+      GWindow.dialog title:"Enter roots" wm_name:"Enter roots" modal:true ()
     in
     (* Create the display area *)
-    let hbox = new GPack.hbox packing:(t#vbox#pack expand:false padding:10) in
-    let label1 = new GMisc.label text:"Local root:"
-	packing:(hbox#pack padding:2 expand:false) in
-    let entry1 = new GEdit.entry packing:hbox#add in
+    let hbox = GPack.hbox packing:(t#vbox#pack expand:false padding:10) () in
+    let label1 = GMisc.label text:"Local root:"
+	packing:(hbox#pack padding:2 expand:false) () in
+    let entry1 = GEdit.entry packing:hbox#add () in
     entry1#misc#grab_focus ();
-    let hbox = new GPack.hbox packing:(t#vbox#pack expand:false padding:10) in
-    new GMisc.label text: "Second root:"
-      packing:(hbox#pack padding:2 expand:false);
-    let entry2 = new GEdit.entry width:100 packing:hbox#add in
-    new GMisc.label text:"with optional host:"
-      packing:(hbox#pack padding:2 expand:false);
-    let entry3 = new GEdit.entry width:100 packing:hbox#add in
+    let hbox = GPack.hbox packing:(t#vbox#pack expand:false padding:10) () in
+    GMisc.label text: "Second root:"
+      packing:(hbox#pack padding:2 expand:false) ();
+    let entry2 = GEdit.entry width:100 packing:hbox#add () in
+    GMisc.label text:"with optional host:"
+      packing:(hbox#pack padding:2 expand:false) ();
+    let entry3 = GEdit.entry width:100 packing:hbox#add () in
     let go () =
       if entry1#text = "" || entry2#text = "" then () else
       let root1 = (Local, string2fspath entry1#text) in
@@ -462,13 +463,13 @@ let start () =
       detectUpdatesAndReconcile true;
       t#destroy ()
     in
-    let goButton = new GButton.button label: "Go!" packing:t#action_area#add in
+    let goButton = GButton.button label: "Go!" packing:t#action_area#add () in
     goButton#connect#clicked callback:go;
     goButton#grab_default ();
     List.iter [entry1;entry2;entry2]
       fun:(fun (e : GEdit.entry) -> ignore (e#connect#activate callback:go));
     let dismiss =
-      new GButton.button label: "Dismiss" packing:t#action_area#add in
+      GButton.button label: "Dismiss" packing:t#action_area#add () in
     dismiss#connect#clicked callback:t#destroy;
     dismiss#misc#set_can_default true;
     t#show ()
@@ -507,11 +508,11 @@ let start () =
 
   let yesOrNo :title :message yes:yesFunction no:noFunction =
     (* Create a new toplevel window *)
-    let t = new GWindow.dialog :title wm_name:title modal:true in
-    let theLabel = new GMisc.label text:message
-	packing:(t#vbox#pack expand:false padding:4) in
-    let yes = new GButton.button label:"Yes" packing:t#action_area#add
-    and no = new GButton.button label:"No" packing:t#action_area#add in
+    let t = GWindow.dialog :title wm_name:title modal:true () in
+    let theLabel = GMisc.label text:message
+	packing:(t#vbox#pack expand:false padding:4) () in
+    let yes = GButton.button label:"Yes" packing:t#action_area#add ()
+    and no = GButton.button label:"No" packing:t#action_area#add () in
     yes#connect#clicked callback:(fun () -> t#destroy(); yesFunction());
     no#connect#clicked callback:(fun () -> t#destroy(); noFunction());
     t#show ()
@@ -523,13 +524,13 @@ let start () =
 
   let ignoreDialog() =
     begin
-      let t = new GWindow.dialog title: "Ignore" wm_name: "Ignore" in
-      let hbox = new GPack.hbox packing:t#vbox#add in
-      let sb = new GRange.scrollbar `VERTICAL
-	  packing:(hbox#pack from:`END expand:false) in
+      let t = GWindow.dialog title: "Ignore" wm_name: "Ignore" () in
+      let hbox = GPack.hbox packing:t#vbox#add () in
+      let sb = GRange.scrollbar `VERTICAL
+	  packing:(hbox#pack from:`END expand:false) () in
       let regExpWindow =
-	new GList.clist columns:1 titles_show:false packing:hbox#add
-	  vadjustment:sb#adjustment width:400 height:150 in
+	GList.clist columns:1 titles_show:false packing:hbox#add
+	  vadjustment:sb#adjustment width:400 height:150 () in
 
       (* Local copy of the regular expressions; the global copy will
          not be changed until the Apply button is pressed *)
@@ -548,10 +549,10 @@ let start () =
 	end;
 
       (* Configure the add frame *)
-      let hbox = new GPack.hbox spacing:4 packing:(t#vbox#pack expand:false) in
-      new GMisc.label text: "Regular expression:"
-	packing:(hbox#pack expand:false padding:2);
-      let entry = new GEdit.entry packing:hbox#add in
+      let hbox = GPack.hbox spacing:4 packing:(t#vbox#pack expand:false) () in
+      GMisc.label text: "Regular expression:"
+	packing:(hbox#pack expand:false padding:2) ();
+      let entry = GEdit.entry packing:hbox#add () in
       let add () =
         let theRegExp = entry#text in
         if theRegExp<>"" then begin
@@ -561,8 +562,8 @@ let start () =
           maybeGettingSmaller := true
 	end
       in
-      let addButton = new GButton.button label:"Add"
-	  packing:(hbox#pack expand:false) in
+      let addButton = GButton.button label:"Add"
+	  packing:(hbox#pack expand:false) () in
       addButton#connect#clicked callback:add;
       entry#connect#activate callback:add;
       entry#misc#grab_focus ();
@@ -575,14 +576,14 @@ let start () =
           maybeGettingBigger := true;
           (* Delete xth regexp *)
 	  regExpWindow#unselect_all ();
-	  regExpWindow#remove x
+	  regExpWindow#remove row:x
         with DerefSome -> ()
       in
-      let deleteButton = new GButton.button label:"Delete"
-	  packing:(hbox#pack expand:false) in
+      let deleteButton = GButton.button label:"Delete"
+	  packing:(hbox#pack expand:false) () in
       deleteButton#connect#clicked callback:delete;
 
-      regExpWindow#connect#event#key_press after:true callback:
+      regExpWindow#connect#after#event#key_press callback:
 	begin fun ev ->
 	  let key = GdkEvent.Key.keyval ev in
 	  if key = _Up || key = _Down || key = _Prior || key = _Next ||
@@ -623,13 +624,13 @@ let start () =
 
       (* Install the main buttons *)
       let applyButton =
-	new GButton.button label:"Apply" packing:t#action_area#add in
+	GButton.button label:"Apply" packing:t#action_area#add () in
       applyButton#connect#clicked callback:refresh;
       let cancelButton =
-	new GButton.button label:"Cancel" packing:t#action_area#add in
+	GButton.button label:"Cancel" packing:t#action_area#add () in
       cancelButton#connect#clicked callback:t#destroy;
       let okButton =
-	new GButton.button label:"OK" packing:t#action_area#add in
+	GButton.button label:"OK" packing:t#action_area#add () in
       okButton#connect#clicked callback:(fun () -> refresh(); t#destroy ());
       t#show ()
     end in
@@ -652,7 +653,7 @@ let start () =
   (* Add a command to obtain new roots to the File menu                 *)
   (**********************************************************************)
 
-  fileMenu#add_item label: "New roots"
+  fileMenu#add_item "New roots"
     callback:(fun () -> getLock getRoots);
 
   (**********************************************************************)
@@ -660,7 +661,7 @@ let start () =
   (**********************************************************************)
   let addDocSection (shortname, (name, docstr)) =
     if shortname<>"" && name<>"" then
-      ignore (helpMenu#add_item label:name
+      ignore (helpMenu#add_item name
 		callback:(fun () -> messageBox name docstr))
   in
 
@@ -701,16 +702,16 @@ let start () =
     | Failure "nameRegExp"
     | Failure "extRegExp" -> () in
 
-  ignoreMenu#add_item label:"Ignore this file" key:_i
+  ignoreMenu#add_item "Ignore this file" key:_i
     callback:(fun () -> getLock (fun () -> addRegExpByPath pathRegExp));
 
-  ignoreMenu#add_item label:"Ignore files with this extension" key:_E
+  ignoreMenu#add_item "Ignore files with this extension" key:_E
     callback:(fun () -> getLock (fun () -> addRegExpByPath extRegExp));
 
-  ignoreMenu#add_item label:"Ignore files with this name" key:_N
+  ignoreMenu#add_item "Ignore files with this name" key:_N
     callback:(fun () -> getLock (fun () -> addRegExpByPath extRegExp));
 
-  ignoreMenu#add_item label:"Edit ignore patterns" callback:
+  ignoreMenu#add_item "Edit ignore patterns" callback:
     begin fun () ->
       getLock (fun () -> try ignoreDialog() with DerefSome -> ())
     end;
@@ -788,15 +789,15 @@ let start () =
   (*                  CREATE THE ACTION BAR                             *)
   (**********************************************************************)
 
-  let actionBar = new GButton.toolbar
+  let actionBar = GButton.toolbar
       orientation:`HORIZONTAL tooltips:true space_size:10
-      packing:(toplevelVBox#pack expand:false) in
+      packing:(toplevelVBox#pack expand:false) () in
 
   (**********************************************************************)
   (*         CREATE AND CONFIGURE THE QUIT BUTTON                       *)
   (**********************************************************************)
 
-  actionBar#insert_space;
+  actionBar#insert_space ();
   let _ = actionBar#insert_button text:"Quit" callback:safeExit in
 
   (**********************************************************************)
@@ -804,10 +805,11 @@ let start () =
   (**********************************************************************)
 
   if not !batch then begin
-    actionBar#insert_space;
-    ignore (actionBar#insert_button text:"Proceed"
-	      tooltip:"Proceed with displayed actions"
-	      callback:(fun () -> getLock synchronize))
+    actionBar#insert_space ();
+    actionBar#insert_button text:"Proceed"
+      tooltip:"Proceed with displayed actions"
+      callback:(fun () -> getLock synchronize) ();
+    ()
   end; 
 
   (**********************************************************************)
@@ -819,9 +821,8 @@ let start () =
     getLock (fun () -> detectUpdatesAndReconcile false);
     if !batch then (batch := false; synchronize())
   in
-  actionBar#insert_space;
-  let detectButton =
-    actionBar#insert_button text:detectCmdName callback:detectCmd in
+  actionBar#insert_space ();
+  actionBar#insert_button text:detectCmdName callback:detectCmd ();
 
   (**********************************************************************)
   (* Buttons for <--, -->, ????                                         *)
@@ -870,12 +871,12 @@ let start () =
     with DerefSome -> () in
 
   if not !batch then begin
-    actionBar#insert_space;
-    actionBar#insert_button text:"<--" callback:leftAction;
-    actionBar#insert_space;
-    actionBar#insert_button text:"-->" callback:rightAction;
-    actionBar#insert_space;
-    actionBar#insert_button text:"????" callback:questionAction;
+    actionBar#insert_space ();
+    actionBar#insert_button text:"<--" callback:leftAction ();
+    actionBar#insert_space ();
+    actionBar#insert_button text:"-->" callback:rightAction ();
+    actionBar#insert_space ();
+    actionBar#insert_button text:"????" callback:questionAction ();
     ()
   end;
 
@@ -897,16 +898,16 @@ let start () =
 	with DerefSome -> ()
       end
   in
-  actionBar#insert_space;
-  let diffButton = actionBar#insert_button text:"Diff" callback:diffCmd in
+  actionBar#insert_space ();
+  actionBar#insert_button text:"Diff" callback:diffCmd ();
 
-  fileMenu#add_item label:"Show diffs" key:_d callback:diffCmd;
+  fileMenu#add_item "Show diffs" key:_d callback:diffCmd;
 
   (**********************************************************************)
   (* Configure keyboard commands                                        *)
   (**********************************************************************)
 
-  mainWindow#connect#event#key_press after:true callback:
+  mainWindow#connect#after#event#key_press callback:
     begin fun ev ->
       let key = GdkEvent.Key.keyval ev in
       if key = _Up || key = _Down || key = _Prior || key = _Next ||
@@ -928,39 +929,39 @@ let start () =
   let descr = if root1=root2 then "left to right"
               else ("from "^root1^" to "^root2) in
   let left =
-    navigateMenu#add_item label:("Propagate " ^ descr) key:_greater
+    navigateMenu#add_item ("Propagate " ^ descr) key:_greater
       callback:rightAction in
-  left#add_accelerator accel_group key:_greater mod:[`SHIFT];
+  left#add_accelerator _greater mod:[`SHIFT] group:accel_group;
 
   let descl = if root1=root2 then "right to left"
               else ("from "^root2^" to "^root1) in
   let right =
-    navigateMenu#add_item label:("Propagate " ^ descl) key:_less
+    navigateMenu#add_item ("Propagate " ^ descl) key:_less
       callback:leftAction in
-  right#add_accelerator accel_group key:_less mod:[`SHIFT];
+  right#add_accelerator _less mod:[`SHIFT] group:accel_group;
 
-  navigateMenu#add_item label:"Do not propagate changes" key:_slash
+  navigateMenu#add_item "Do not propagate changes" key:_slash
     callback:questionAction;
 
   (**********************************************************************)
   (* Add commands to the File menu                                      *)
   (**********************************************************************)
-  fileMenu#add_item label:"Proceed" key:_g
+  fileMenu#add_item "Proceed" key:_g
     callback:(fun () -> getLock synchronize);
 
-  fileMenu#add_item label:detectCmdName key:_r callback:detectCmd;
+  fileMenu#add_item detectCmdName key:_r callback:detectCmd;
 
-  fileMenu#add_check_item label:"Make backups" active:!Transport.backups
+  fileMenu#add_check_item "Make backups" active:!Transport.backups
     callback:(fun b -> Transport.backups := b);
 
-  fileMenu#add_check_item label:"Trace" active:!Trace.printTrace callback:
+  fileMenu#add_check_item "Trace" active:!Trace.printTrace callback:
     begin fun b ->
       Trace.printTrace := b;
       if !Trace.printTrace then messagesWindow#misc#show ()
       else messagesWindow#misc#hide ()
     end;
 
-  fileMenu#add_check_item label:"Ignore files" active:(not !Ignore.noignore)
+  fileMenu#add_check_item "Ignore files" active:(not !Ignore.noignore)
     callback: begin fun b ->
       Ignore.noignore := not b;
       Globals.propagatePrefs();
@@ -980,7 +981,7 @@ let start () =
       with DerefSome -> ()
     end;
 
-  fileMenu#add_item label:"Exit" key:_q callback:safeExit;
+  fileMenu#add_item "Exit" key:_q callback:safeExit;
 
   (**********************************************************************)
   (* Ask the Remote module to call us back at regular intervals during  *)

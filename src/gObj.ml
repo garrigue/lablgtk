@@ -104,16 +104,16 @@ end
 
 class widget_drag obj = object
   val obj = Widget.coerce obj
-  method dest_set ?:flags{=[`ALL]} targets =
-    DnD.dest_set obj :flags targets:(Array.of_list targets)
+  method dest_set ?:flags{=[`ALL]} ?:actions{=[]} targets =
+    DnD.dest_set obj :flags :actions targets:(Array.of_list targets)
   method dest_unset () = DnD.dest_unset obj
-  method get_data :target ?:time{=0} (context : drag_context) =
+  method get_data ?:time{=0} context:(context : drag_context) target =
     DnD.get_data obj (context : < context : Gdk.drag_context; .. >)#context
       :target :time
   method highlight () = DnD.highlight obj
   method unhighlight () = DnD.unhighlight obj
-  method source_set ?mod:m targets =
-    DnD.source_set obj ?mod:m targets:(Array.of_list targets)
+  method source_set ?mod:m ?:actions{=[]} targets =
+    DnD.source_set obj ?mod:m :actions targets:(Array.of_list targets)
   method source_set_icon ?:colormap{= Gdk.Color.get_system_colormap ()}
       (pix : GdkObj.pixmap) =
     DnD.source_set_icon obj :colormap pix#pixmap ?mask:pix#mask
@@ -186,7 +186,8 @@ and widget_misc obj = object
   method grab_focus () = Widget.grab_focus obj
   method grab_default () = Widget.grab_default obj
   method is_ancestor (w : widget) = Widget.is_ancestor obj w#as_widget
-  method add_accelerator = Widget.add_accelerator obj
+  method add_accelerator sig:sg :group ?mod:m ?:flags key =
+    Widget.add_accelerator obj sig:sg group :key ?mod:m ?:flags
   method remove_accelerator = Widget.remove_accelerator obj
   method lock_accelerators () = Widget.lock_accelerators obj
   method set_name = Widget.set_name obj

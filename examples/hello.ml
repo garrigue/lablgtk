@@ -2,9 +2,9 @@
 
 open GMain
 
-let window = new GWindow.window border_width: 10
+let window = GWindow.window border_width: 10 ()
 
-let button = new GButton.button label:"Hello World" packing: window#add
+let button = GButton.button label:"Hello World" packing: window#add ()
 
 let main () =
   window#connect#event#delete 

@@ -73,7 +73,7 @@ class frame_skel : 'a obj ->
     constraint 'a = [>`frame|`container|`widget]
     val obj : 'a obj
     method set_label : string -> unit
-    method set_label_align : unit
+    method set_label_align : ?x:clampf -> ?y:clampf -> unit -> unit
     method set_shadow_type : Tags.shadow_type -> unit
   end
 class frame : [>`frame] obj ->

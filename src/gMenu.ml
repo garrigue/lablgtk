@@ -43,8 +43,9 @@ class ['a] pre_menu_item_skel obj = object
   method configure = MenuItem.configure obj
   method activate () = MenuItem.activate obj
   method right_justify () = MenuItem.right_justify obj
-  method add_accelerator =
-    Widget.add_accelerator obj sig:MenuItem.Signals.activate
+  method add_accelerator :group ?mod:m ?:flags key=
+    Widget.add_accelerator obj sig:MenuItem.Signals.activate group ?:flags
+      ?mod:m :key
 end
 
 class menu_item obj = object
@@ -172,8 +173,7 @@ class ['a] factory
     method accel_group = group
     method private bind ?:key ?:callback (item : menu_item) =
       menu_shell#append item;
-      may key fun:
-	(fun key -> item#add_accelerator group :key mod:m :flags);
+      may key fun:(item#add_accelerator :group mod:m :flags);
       may callback fun:(fun callback -> item#connect#activate :callback)
     method add_item ?:key ?:callback ?:submenu label =
       let item = menu_item :label () in

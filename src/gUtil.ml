@@ -3,14 +3,12 @@
 open GObj
 
 class ['a] memo () = object
-  constraint 'a = #gtkobj
-  val tbl = Hashtbl.create size:7
+  constraint 'a = #widget
+  val tbl = Hashtbl.create 7
   method add (obj : 'a) =
     Hashtbl.add tbl key:obj#get_id data:obj
-  method find : 'b. (#gtkobj as 'b) -> 'a =
-    fun obj -> Hashtbl.find tbl key:obj#get_id
-  method remove : 'c. (#gtkobj as 'c) -> unit =
-    fun obj -> Hashtbl.remove tbl key:obj#get_id
+  method find (obj : widget) = Hashtbl.find tbl key:obj#get_id
+  method remove (obj : widget) = Hashtbl.remove tbl key:obj#get_id
 end
 
 let signal_id = ref 0
@@ -24,7 +22,7 @@ class type disconnector = object
 end
 
 let disconnectors : (int, disconnector list) Hashtbl.t =
-  Hashtbl.create size:7
+  Hashtbl.create 7
 
 class ['a] signal obj = object (self)
   val mutable callbacks : (GtkSignal.id * ('a -> unit)) list = []
@@ -43,7 +41,7 @@ class ['a] signal obj = object (self)
 	  Hashtbl.remove disconnectors :key
 	end;
       Hashtbl.add disconnectors :key data:[(self :> disconnector)]
-  method connect :callback ?:after [< false >] =
+  method connect :callback :after =
     if not registered then self#register ();
     let id = next_callback_id () in
     callbacks <-
@@ -51,9 +49,9 @@ class ['a] signal obj = object (self)
     id
   method call arg =
     List.iter callbacks fun:(fun (_,f) -> f arg)
-  method disconnect id =
-    List.mem_assoc id in:callbacks &&
-    (callbacks <- List.remove_assoc id in:callbacks; true)
+  method disconnect key =
+    List.mem_assoc :key callbacks &&
+    (callbacks <- List.remove_assoc :key callbacks; true)
   method reset () = callbacks <- []
 end
 
