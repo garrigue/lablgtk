@@ -1,0 +1,33 @@
+/* XPM */
+static char *button_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 6 1",
+"  c Gray0",
+". c #7b7b7b",
+"X c #d6d6d6",
+"o c #b3cece",
+"O c Gray100",
+"+ c None",
+/* pixels */
+"+++++++++++++++++++++",
+"+++++++++++++++++++++",
+"+++++++++++++++++++++",
+"+OOOOOOOOOOOOOOOOOO +",
+"+OXXXXXXXXXXXXXXXX. +",
+"+OXXXXXXXXXXXXXXXX. +",
+"+OXXX   XXX XXX XX. +",
+"+OXX XXX XX XX XXX. +",
+"+OXX XXX XX X XXXX. +",
+"+OXX XXX XX  XXXXX. +",
+"+OXX XXX XX X XXXX. +",
+"+OXX XXX XX XX XXX. +",
+"+OXXX   XXX XXX XX. +",
+"+OXXXXXXXXXXXXXXXX. +",
+"+OXXXXXXXXXXXXXXXX. +",
+"+OXXXXXXXXXXXXXXXX. +",
+"+O................. +",
+"+                   +",
+"+++++++++++++++++++++",
+"+++++++++++++++++++++",
+"+++++++++++++++++++++"
+};

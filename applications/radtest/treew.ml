@@ -1,44 +1,21 @@
+open Gtk
 open GObj
 open GTree
 open GWindow
 open GMenu
 open GMisc
 open GMain
+open GFrame
+open Misc
+open GPack
 
 open Property
 open Widget
 
 
-class tiw ?:border_width [< 0 >] parent_tree:(parent_tree : tree) :name =
-  object(self : 'stype)
-    val tree_item = new tree_item :border_width show:true
-    val mutable stree = new tree
-    val label = new label text:name show:true xalign:0. yalign:0.5
-    val mutable parent_ti : 'stype option = None
-    val parent_tree = parent_tree
-    method parent_tree = parent_tree
-    method parent_ti = parent_ti
-    method set_parent_ti p = parent_ti <- Some p
-    method set_label name = label#set_text name
-    method tree = stree
-    method tree_item = tree_item
-    method new_tree () =
-      stree <- new tree;
-      tree_item#set_subtree stree;
-      tree_item#expand ()
-    val mutable widget : rwidget option = None
-    method widget = match widget with
-    | None -> raise Not_found
-    | Some w -> w
-    method set_widget w = widget <- Some w
-
-    initializer
-      parent_tree#insert tree_item pos:0;
-      tree_item#set_subtree stree;
-      tree_item#add label;
-      tree_item#expand ();
-  end
-
+let get_opt = function
+| Some x -> x
+| None -> failwith "get_opt"
 
 class ['a, 'd] memo () = object
   constraint 'a = #gtkobj
@@ -51,70 +28,277 @@ class ['a, 'd] memo () = object
     fun obj -> Hashtbl.remove tbl key:obj#get_id
 end
 
+
 let memo = new memo ()
 
 (* GtkThread.start ();; *)
 
-
 let index = ref 0
 
+(* this is necessary to avoid the "self type cannot escape its class"
+   error *)
+class virtual tiw0 = object
+  method virtual parent_tree : tree
+  method virtual parent_ti : tiw0 option
+  method virtual set_parent_ti : tiw0 -> unit
+  method virtual set_new_name : string -> unit
+  method virtual tree : tree
+  method virtual tree_item : tree_item
+  method virtual new_tree : unit -> unit
+  method virtual widget : rwidget
+  method virtual set_widget : rwidget -> unit
+  method virtual add_child : string -> meth:[ADD END START] -> unit -> unit
+end
+
+(* possible children *)
+let widget_add_list = [ "vbox"; "hbox"; "frame"; "label"; "button";
+			"toggle_button"; "check_button" ; "scrolled_window"]
+
+(* widgets which can have one or more children  *)
+let bin_list = [ "hbox"; "vbox"; "frame"; "scrolled_window"; "window"]
+
+(* widgets which can accept only one child *)
+let bin1_list = [ "frame"; "window" ; "scrolled_window"]
+
+(* widgets which can accept only one child except window *)
+let bin2_list = [ "frame"; "scrolled_window"]
+
+(* widgets which can accept only one child window included *)
+let bin1_list = bin2_list @ [ "window" ]
+
+(* let menu_box add remove =
+  let menu = new menu in
+  let menu_end = new menu in
+  let menu_start = new menu in
+  let mi_start = new menu_item packing:menu#append label:"add at start"
+  and mi_end = new menu_item packing:menu#append label:"add at end" in
+  List.iter
+    fun:(fun n ->
+      let mi = new menu_item packing:menu_start#append label:n
+      in mi#connect#activate callback:(add n meth:`START); ())
+    widget_add_list;
+  List.iter
+    fun:(fun n ->
+      let mi = new menu_item packing:menu_end#append label:n
+      in mi#connect#activate callback:(add n meth:`END); ())
+    widget_add_list;
+  let mi_remove = new menu_item packing:menu#append label:"remove" in
+  mi_remove#connect#activate callback:remove;
+  mi_start#set_submenu menu_start;
+  mi_end#set_submenu menu_end;
+  menu
+*)
+
+let menu_bin name add remove = 
+  let menu = new menu and menu_add = new menu in
+  List.iter
+    fun:(fun n ->
+      let mi = new menu_item packing:menu_add#append label:n
+      in mi#connect#activate callback:(add n meth:`ADD); ())
+    widget_add_list;      
+  let mi_add = new menu_item packing:menu#append label:("add to " ^ name)
+  and mi_remove = new menu_item packing:menu#append
+      label:("remove " ^ name) in
+  mi_remove#connect#activate callback:remove;
+  mi_add#set_submenu menu_add;
+  menu
+  
+let menu_window name add _ =
+  let menu = new menu and menu_add = new menu in
+  List.iter
+    fun:(fun n ->
+      let mi = new menu_item packing:menu_add#append label:n
+      in mi#connect#activate callback:(add n meth:`ADD); ())
+    widget_add_list;      
+  let mi_add = new menu_item packing:menu#append label:("add to " ^ name)
+  in
+  mi_add#set_submenu menu_add;
+  menu
+(*  let menu = new menu in
+  List.iter
+    fun:(fun n ->
+      let mi = new menu_item packing:menu#append label:n
+      in mi#connect#activate callback:(add n meth:`ADD); ())
+    widget_add_list;      
+  menu
+*)
+let menu_remove remove =
+  let menu = new menu in
+  let mi_remove = new menu_item packing:menu#append label:"remove" in
+  mi_remove#connect#activate callback:remove;
+  menu
+
+let remove_widget (tiw : tiw0) () =
+  let remove_one_tiw (tiw : tiw0) =
+    match tiw#parent_ti with
+    | None -> ()
+    | Some tip ->
+	memo#remove tiw#tree_item;
+	tiw#parent_tree#remove tiw#tree_item ;
+	tiw#widget#parent#remove tiw#widget;
+	property_remove tiw#widget in
+  let rec remove_tiws (tiw : tiw0) =
+    List.iter fun:remove_tiws
+      (List.map fun:(fun ti -> memo#find ti) tiw#tree#children);
+    remove_one_tiw tiw in
+  let one = List.length tiw#parent_tree#children = 1 in
+  remove_tiws tiw;
+  if one then begin
+    match tiw#parent_ti with 
+    | None -> failwith "bug remove_widget"
+    | Some tip -> tip#new_tree ()
+  end
+
+
+class tiw parent_tree:(parent_tree : tree) :name = object(self : 'stype)
+  inherit tiw0
+  val tree_item = new tree_item
+  val  mutable stree = new tree
+  val label = new label text:name xalign:0. yalign:0.5
+  val mutable parent_ti : tiw option = None
+  val parent_tree = parent_tree
+  method parent_tree = parent_tree
+  method parent_ti = parent_ti
+  method set_parent_ti p = parent_ti <- Some p
+  method tree = stree
+  method tree_item = tree_item
+
+(* this is necessary because gtk_tree#remove deletes the tree
+   when removing the last item  *)
+  method new_tree () =
+    stree <- new tree;
+    tree_item#set_subtree stree;
+    tree_item#expand ()
+  val mutable widget : rwidget option = None
+  method widget = match widget with
+  | None -> raise Not_found
+  | Some w -> w
+
+(* signal id of button_press handler *)
+  val mutable button_press_id = None
+
+(* true if the current menu is the add_menu; for changing the name *)
+  val mutable menu_add_set = false
+
+(* sets the add menu of the tree_item; the stop_emit
+ stops the default action of button 3 (hiding the tree) *)
+  method private set_add_menu classe name =
+    menu_add_set <- true;
+    may button_press_id fun:tree_item#disconnect;
+    button_press_id <- Some
+	(let menu =
+	  if classe = "window" then menu_window name else menu_bin name in
+	(tree_item#connect#event#button_press callback:
+	   (fun ev -> match GdkEvent.get_type ev with
+	   | `BUTTON_PRESS ->
+	       if GdkEvent.Button.button ev = 3 then begin
+		 tree_item#stop_emit "button_press_event";
+		 (menu self#add_child
+		    (remove_widget (self : #tiw0 :> tiw0)))#popup  button:3 time:(GdkEvent.Button.time ev) end;
+	       true
+	   | _ -> false)))
+
+
+(* changes all that depends on the name *)
+  method set_new_name name =
+    label#set_text name;
+    if menu_add_set then begin
+      self#set_add_menu self#widget#classe self#widget#name
+    end
+      
+(* sets the menu with only remove item *)
+  method private set_remove_menu () =
+    menu_add_set <- false;
+    button_press_id <- Some
+	(tree_item#connect#event#button_press callback:
+	   (fun ev -> match GdkEvent.get_type ev with
+	   | `BUTTON_PRESS ->
+	       if GdkEvent.Button.button ev = 3 then begin
+		 tree_item#stop_emit "button_press_event";
+		 (menu_remove (remove_widget (self : #tiw0 :> tiw0)))#popup  button:3 time:(GdkEvent.Button.time ev);
+		 true end else false
+	   | _ -> false))
+
+(* only stops the third button default action *)
+  method private stop_third_button () =
+    menu_add_set <- false;
+    button_press_id <- Some
+	(tree_item#connect#event#button_press callback:
+	   (fun ev -> match GdkEvent.get_type ev with
+	   | `BUTTON_PRESS ->
+	       if GdkEvent.Button.button ev = 3 then begin
+		 tree_item#stop_emit "button_press_event";
+		 true end else false
+	   | _ -> false))
+
+  method set_widget w =
+    widget <- Some w;
+    let classe = w#classe in
+    if List.mem classe in:bin_list then begin
+      let label = (List.hd tree_item#children) in
+      label#misc#drag#dest_set [`ALL] 
+	[|  { target = "STRING"; flags = []; info = 0}  |] 1 [`COPY];
+      label#connect#drag#data_received callback:
+	(fun (context : drag_context) _ _  (data : selection_data) _ time ->
+	  self#add_child data#data meth:`ADD ();
+	  context#finish success:true del:false :time);
+      self#set_add_menu classe w#name
+    end
+    else begin
+      self#set_remove_menu ()
+    end
+
+  method add_child classe meth:(meth : [ START END ADD ]) () =
+    incr index;
+    let name = classe ^ (string_of_int !index) in
+    let t = new tiw parent_tree:stree :name in
+    let t = (t : #tiw0 :> tiw0) in
+    t#set_parent_ti (self : #tiw0 :> tiw0); 
+    let w = new_rwidget :classe :name  setname:t#set_new_name in
+    t#set_widget w;
+    begin match meth with
+    | `START -> self#widget#pack w
+    | `ADD -> self#widget#add w
+    | `END -> self#widget#pack from:`END w
+    end;
+    w#set_parent self#widget;
+    property_add w;
+    memo#add t#tree_item data:t;
+    let classe = self#widget#classe in
+    if List.mem classe in:bin1_list then begin
+      may fun:tree_item#disconnect button_press_id;
+      tree_item#misc#drag#dest_unset ();
+      if classe <> "window"
+      then self#set_remove_menu ()
+      else self#stop_third_button ()
+    end
+
+      
+  initializer
+    parent_tree#append tree_item; 
+    tree_item#set_subtree stree;
+    tree_item#add label;
+    tree_item#expand ();
+end
 
 let new_window :name =
   let tree_window = new window type:`TOPLEVEL show:true
       title:(name ^ "-Tree") in
-  let root_tree = new tree packing:tree_window#add in
+  let vbox = new vbox spacing:2 packing:tree_window#add in
+  let menu_bar = new menu_bar packing:(vbox#pack expand:false) in
+  let mi = new menu_item label:"File" packing:menu_bar#append in
+  let menu = new menu packing:mi#set_submenu in
+  let mi_emit = new menu_item label:"emit code" packing:menu#append in
+  let root_tree = new tree packing:vbox#pack in
   let tiw1 = new tiw parent_tree:root_tree :name in
   memo#add tiw1#tree_item data:tiw1;
-  let gtk_window = new_rwidget classe:"window" :name setname:tiw1#set_label in
+  let gtk_window = new_rwidget classe:"window" :name setname:tiw1#set_new_name in
+
   tiw1#set_widget gtk_window;
 
   let sel () = match root_tree#selection with
   | [] -> None
   | sel :: _ -> Some (memo#find sel) in
-
-  let add_widget classe meth:(meth : [ START END ADD ]) _ =
-    match sel () with   (* test a supprimer ensuite*)
-    | None -> ()
-    | Some (sel : tiw) ->
-	incr index;
-	let name = classe ^ (string_of_int !index) in
-	let t = new tiw parent_tree:sel#tree :name in
-	t#set_parent_ti sel;
-	let w = new_rwidget :classe :name  setname:t#set_label in
-	t#set_widget w;
-	begin match meth with
-	| `START -> sel#widget#pack w
-	| `ADD -> sel#widget#add w
-	| `END -> sel#widget#pack from:`END w
-	end;
-	w#set_parent sel#widget;
-	property_add w;
-	memo#add t#tree_item data:t in
-  
-  let remove_widget _ =
-    let remove_one_tiw (tiw : tiw) =
-   flush stdout;  
-      match tiw#parent_ti with
-      |	None -> ()
-      |	Some tip ->
-	  memo#remove tiw#tree_item;
-	  tiw#parent_tree#remove_items [ tiw#tree_item ];
-	  tiw#widget#parent#remove tiw#widget;
-	  property_remove tiw#widget in
-    let rec remove_tiws (tiw : tiw) =
-      List.iter fun:remove_tiws
-	(List.map fun:(fun ti -> memo#find ti) tiw#tree#children);
-      remove_one_tiw tiw in
-    match sel () with   (* test a supprimer ensuite*)
-    | None -> ()
-    | Some (sel : tiw) -> 
-	let one = List.length sel#parent_tree#children = 1 in
-	remove_tiws sel;
-	if one then begin
-	  match sel#parent_ti with 
-	  | None -> failwith "bug remove_widget"
-	  | Some tip -> tip#new_tree ()
-	end in
 
   let emit () =
     let outc = open_out file:(gtk_window#name ^ ".ml") in
@@ -122,73 +306,7 @@ let new_window :name =
     gtk_window#emit_code c;
     close_out outc in
 
-  let menu_bin = 
-    let menu = new menu in
-    let mi_vbox = new menu_item packing:menu#append label:"add vbox"
-    and mi_hbox = new menu_item packing:menu#append label:"add hbox"
-    and mi_frame = new menu_item packing:menu#append label:"add frame"
-    and mi_label = new menu_item packing:menu#append label:"add label"
-    and mi_button = new menu_item packing:menu#append label:"add button"
-    and mi_remove = new menu_item packing:menu#append label:"remove" in
-    mi_vbox#connect#activate callback:(add_widget "vbox" meth:`ADD);
-    mi_hbox#connect#activate callback:(add_widget "hbox" meth:`ADD);
-    mi_frame#connect#activate callback:(add_widget "frame" meth:`ADD);
-    mi_label#connect#activate callback:(add_widget "label" meth:`ADD);
-    mi_button#connect#activate callback:(add_widget "button" meth:`ADD);
-    mi_remove#connect#activate callback:remove_widget;
-    menu in
-  
-  let menu_window = 
-    let menu = new menu in
-    let mi_vbox = new menu_item packing:menu#append label:"add vbox"
-    and mi_hbox = new menu_item packing:menu#append label:"add hbox"
-    and mi_frame = new menu_item packing:menu#append label:"add frame"
-    and mi_label = new menu_item packing:menu#append label:"add label"
-    and mi_button = new menu_item packing:menu#append label:"add button"
-    and mi_emit = new menu_item packing:menu#append label:"emit code" in
-    mi_vbox#connect#activate callback:(add_widget "vbox" meth:`ADD);
-    mi_hbox#connect#activate callback:(add_widget "hbox" meth:`ADD);
-    mi_frame#connect#activate callback:(add_widget "frame" meth:`ADD);
-    mi_label#connect#activate callback:(add_widget "label" meth:`ADD);
-    mi_button#connect#activate callback:(add_widget "button" meth:`ADD);
-    mi_emit#connect#activate callback:emit;
-    menu in
-
-  let menu_window2 =
-    let menu = new menu in
-    let mi_emit = new menu_item packing:menu#append label:"emit code" in
-    mi_emit#connect#activate callback:emit;
-    menu in
-
-  let menu_remove =
-    let menu = new menu in
-    let mi_remove = new menu_item packing:menu#append label:"remove" in
-    mi_remove#connect#activate callback:remove_widget;
-    menu in
-
-  let menu_box =
-    let box_widget_list = [ "vbox"; "hbox"; "frame"; "label"; "button";
-			    "toggle_button"; "check_button" ] in
-    let menu = new menu in
-    let menu_end = new menu in
-    let menu_start = new menu in
-    let mi_start = new menu_item packing:menu#append label:"add at start"
-    and mi_end = new menu_item packing:menu#append label:"add at end" in
-    List.iter
-      fun:(fun n ->
-	let mi = new menu_item packing:menu_start#append label:n
-	in mi#connect#activate callback:(add_widget n meth:`START); ())
-      box_widget_list;
-    List.iter
-      fun:(fun n ->
-	let mi = new menu_item packing:menu_end#append label:n
-	in mi#connect#activate callback:(add_widget n meth:`END); ())
-      box_widget_list;
-    let mi_remove = new menu_item packing:menu#append label:"remove" in
-    mi_remove#connect#activate callback:remove_widget;
-    mi_start#set_submenu menu_start;
-    mi_end#set_submenu menu_end;
-    menu in
+  mi_emit#connect#activate callback:emit;
 
   let last_sel = ref (None : rwidget option) in
 
@@ -200,16 +318,8 @@ let new_window :name =
     | [] ->  last_sel := None
     | sel :: _  -> let ti = memo#find sel in
       ti#widget#base#misc#set state:`SELECTED;
-      begin match ti#widget#classe with
-      | "hbox" | "vbox" -> menu_box#popup button:0 time:0
-      |	"frame" when ti#tree#children = [] -> menu_bin#popup button:0 time:0
-      | "window" when ti#tree#children = [] ->
-	  menu_window#popup button:0 time:0
-      |	"window" -> menu_window2#popup button:0 time:0
-      | _ -> menu_remove#popup button:0 time:0 end;
       last_sel := Some ti#widget
 					       );    
-  
   tree_window#connect#event#focus_out callback:
     (fun _ -> begin match !last_sel with
       |	None -> ()

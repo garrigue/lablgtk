@@ -18,6 +18,7 @@ type property =
   | Float of float rval
   | String of string rval
   | Shadow of Gtk.Tags.shadow_type rval
+  | Policy of Gtk.Tags.policy_type rval
 val get_int_prop : 'a -> in:('a * property) list -> int
 val get_float_prop : 'a -> in:('a * property) list -> float
 val get_bool_prop : 'a -> in:('a * property) list -> bool
@@ -25,6 +26,12 @@ val get_string_prop : 'a -> in:('a * property) list -> string
 val get_enum_prop : 'a -> in:('a * property) list -> string
 val string_of_int_prop : 'a -> in:('a * property) list -> string
 val string_of_float_prop : 'a -> in:('a * property) list -> string
+class type rwidget_base =
+  object
+    method base : GObj.widget
+    method name : string
+    method proplist : (string * property) list
+  end
 val property_add :
   < base :
       < as_widget : Gtk.widget Gtk.obj;
@@ -42,6 +49,24 @@ val property_add :
               ?flags:Gtk.Tags.accel_flag list -> unit;
             allocation : Gtk.rectangle;
             colormap : Gdk.colormap;
+            drag :
+              < dest_set :
+                  Gtk.Tags.dest_defaults list ->
+                  Gtk.target_entry array ->
+                  int -> Gdk.Tags.drag_action list -> unit;
+                dest_unset : unit -> unit;
+                get_data :
+                  Gdk.drag_context -> target:Gdk.atom -> time:int -> unit;
+                highlight : unit -> unit;
+                source_set :
+                  ?mod:Gdk.Tags.modifier list ->
+                  Gtk.target_entry array ->
+                  int -> Gdk.Tags.drag_action list -> unit;
+                source_set_icon :
+                  colormap:Gdk.colormap -> GdkObj.pixmap -> unit;
+                source_unset : unit -> unit;
+                unhighlight : unit -> unit;
+                .. >;
             draw : Gdk.Rectangle.t -> unit;
             event : 'b. 'b Gdk.event -> bool;
             grab_default : unit -> unit;
@@ -59,6 +84,31 @@ val property_add :
                 connect :
                   ?after:bool ->
                   < destroy : callback:(unit -> unit) -> GtkSignal.id;
+                    drag :
+                      < beginning :
+                          callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        data_delete :
+                          callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        data_get :
+                          callback:(GObj.drag_context ->
+                                    GObj.selection_data -> int -> int -> unit) ->
+                          GtkSignal.id;
+                        data_received :
+                          callback:(GObj.drag_context ->
+                                    int ->
+                                    int ->
+                                    GObj.selection_data -> int -> int -> unit) ->
+                          GtkSignal.id;
+                        drop :
+                          callback:(GObj.drag_context -> int -> int -> int -> bool) ->
+                          GtkSignal.id;
+                        ending : callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        leave :
+                          callback:(GObj.drag_context -> int -> unit) -> GtkSignal.id;
+                        motion :
+                          callback:(GObj.drag_context -> int -> int -> int -> bool) ->
+                          GtkSignal.id;
+                        .. >;
                     event :
                       < any :
                           callback:(Gdk.Tags.event_type Gdk.event -> bool) ->
@@ -169,6 +219,31 @@ val property_add :
                 connect :
                   ?after:bool ->
                   < destroy : callback:(unit -> unit) -> GtkSignal.id;
+                    drag :
+                      < beginning :
+                          callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        data_delete :
+                          callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        data_get :
+                          callback:(GObj.drag_context ->
+                                    GObj.selection_data -> int -> int -> unit) ->
+                          GtkSignal.id;
+                        data_received :
+                          callback:(GObj.drag_context ->
+                                    int ->
+                                    int ->
+                                    GObj.selection_data -> int -> int -> unit) ->
+                          GtkSignal.id;
+                        drop :
+                          callback:(GObj.drag_context -> int -> int -> int -> bool) ->
+                          GtkSignal.id;
+                        ending : callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        leave :
+                          callback:(GObj.drag_context -> int -> unit) -> GtkSignal.id;
+                        motion :
+                          callback:(GObj.drag_context -> int -> int -> int -> bool) ->
+                          GtkSignal.id;
+                        .. >;
                     event :
                       < any :
                           callback:(Gdk.Tags.event_type Gdk.event -> bool) ->
@@ -277,6 +352,24 @@ val property_remove :
               ?flags:Gtk.Tags.accel_flag list -> unit;
             allocation : Gtk.rectangle;
             colormap : Gdk.colormap;
+            drag :
+              < dest_set :
+                  Gtk.Tags.dest_defaults list ->
+                  Gtk.target_entry array ->
+                  int -> Gdk.Tags.drag_action list -> unit;
+                dest_unset : unit -> unit;
+                get_data :
+                  Gdk.drag_context -> target:Gdk.atom -> time:int -> unit;
+                highlight : unit -> unit;
+                source_set :
+                  ?mod:Gdk.Tags.modifier list ->
+                  Gtk.target_entry array ->
+                  int -> Gdk.Tags.drag_action list -> unit;
+                source_set_icon :
+                  colormap:Gdk.colormap -> GdkObj.pixmap -> unit;
+                source_unset : unit -> unit;
+                unhighlight : unit -> unit;
+                .. >;
             draw : Gdk.Rectangle.t -> unit;
             event : 'b. 'b Gdk.event -> bool;
             grab_default : unit -> unit;
@@ -294,6 +387,31 @@ val property_remove :
                 connect :
                   ?after:bool ->
                   < destroy : callback:(unit -> unit) -> GtkSignal.id;
+                    drag :
+                      < beginning :
+                          callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        data_delete :
+                          callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        data_get :
+                          callback:(GObj.drag_context ->
+                                    GObj.selection_data -> int -> int -> unit) ->
+                          GtkSignal.id;
+                        data_received :
+                          callback:(GObj.drag_context ->
+                                    int ->
+                                    int ->
+                                    GObj.selection_data -> int -> int -> unit) ->
+                          GtkSignal.id;
+                        drop :
+                          callback:(GObj.drag_context -> int -> int -> int -> bool) ->
+                          GtkSignal.id;
+                        ending : callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        leave :
+                          callback:(GObj.drag_context -> int -> unit) -> GtkSignal.id;
+                        motion :
+                          callback:(GObj.drag_context -> int -> int -> int -> bool) ->
+                          GtkSignal.id;
+                        .. >;
                     event :
                       < any :
                           callback:(Gdk.Tags.event_type Gdk.event -> bool) ->
@@ -404,6 +522,31 @@ val property_remove :
                 connect :
                   ?after:bool ->
                   < destroy : callback:(unit -> unit) -> GtkSignal.id;
+                    drag :
+                      < beginning :
+                          callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        data_delete :
+                          callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        data_get :
+                          callback:(GObj.drag_context ->
+                                    GObj.selection_data -> int -> int -> unit) ->
+                          GtkSignal.id;
+                        data_received :
+                          callback:(GObj.drag_context ->
+                                    int ->
+                                    int ->
+                                    GObj.selection_data -> int -> int -> unit) ->
+                          GtkSignal.id;
+                        drop :
+                          callback:(GObj.drag_context -> int -> int -> int -> bool) ->
+                          GtkSignal.id;
+                        ending : callback:(GObj.drag_context -> unit) -> GtkSignal.id;
+                        leave :
+                          callback:(GObj.drag_context -> int -> unit) -> GtkSignal.id;
+                        motion :
+                          callback:(GObj.drag_context -> int -> int -> int -> bool) ->
+                          GtkSignal.id;
+                        .. >;
                     event :
                       < any :
                           callback:(Gdk.Tags.event_type Gdk.event -> bool) ->

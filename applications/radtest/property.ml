@@ -22,12 +22,14 @@ class ['a] rval :init ?inits:inits [< "" >] :setfun ?:value_list [< [] >] = obje
     end
 end
 
+
 type property =
   | Bool of bool rval
   | Int of int rval
   | Float of float rval
   | String of string rval
   | Shadow of Gtk.Tags.shadow_type rval
+  | Policy of Gtk.Tags.policy_type rval
 
 
 (* these functions return a string except int and float *)
@@ -55,6 +57,7 @@ let get_enum_prop name in:l =
   match List.assoc name in:l with
   | Bool rval -> rval#value_string
   | Shadow rval -> rval#value_string
+  | Policy rval -> rval#value_string
   | _ -> failwith "bug get_enum_prop"
 
 
@@ -90,6 +93,9 @@ class prop_shadow =
   prop_enumtype ["NONE", `NONE; "IN", `IN; "OUT", `OUT;
 		  "ETCHED_IN", `ETCHED_IN; "ETCHED_OUT", `ETCHED_OUT ]
 
+class prop_policy =
+  prop_enumtype ["ALWAYS", `ALWAYS; "AUTOMATIC", `AUTOMATIC ]
+
 class prop_string :callback ?:packing :value = object(self)
   inherit entry text:value ?:packing show:true
   initializer
@@ -113,7 +119,7 @@ end
 class spin_float ?:value [< 0. >] :lower :upper ?:step_incr [< 1. >]
     ?:page_incr [< 1. >] ?:packing :callback =
 object(self)
-  inherit spin_button rate:0.5 digits:0
+  inherit spin_button rate:0.5 digits:2
       adjustment:(new adjustment value:value :lower
 		    :upper :step_incr :page_incr page_size:0.)
       show:true ?:packing
@@ -139,8 +145,10 @@ let plist_affich list =
 	()
     | name, Float prop -> new label text:name show:true
 	  packing:(hbox#pack fill:true);
-	new spin_float lower:(List.assoc "min" in:prop#value_list)
-	  upper:(List.assoc "max" in:prop#value_list) callback:prop#set
+	let mini = List.assoc "min" in:prop#value_list
+	and maxi = List.assoc "max" in:prop#value_list in
+	new spin_float lower:mini upper:maxi
+	  step_incr:((maxi-.mini)/.100.) callback:prop#set
 	  packing:(hbox#pack fill:true) value:prop#value;
 	()
     | name, String prop -> new label text:name show:true
@@ -151,6 +159,11 @@ let plist_affich list =
     | name, Shadow prop -> new label text:name show:true
 	  packing:(hbox#pack fill:true);
 	new prop_shadow  callback:prop#set
+	  packing:(hbox#pack fill:true) value:prop#value;
+	()
+    | name, Policy prop -> new label text:name show:true
+	  packing:(hbox#pack fill:true);
+	new prop_policy  callback:prop#set
 	  packing:(hbox#pack fill:true) value:prop#value;
 	()
     end;
@@ -171,9 +184,9 @@ let hbox = new box `HORIZONTAL show:true
 new separator `HORIZONTAL packing:vbox#pack show:true;
 new separator `HORIZONTAL packing:vbox#pack show:true;;
 
-let cb = new combo popdown_strings:[]
-    show:true use_arrows_always:true
-    packing:(hbox#pack expand:true fill:false)
+let cb = new combo popdown_strings:[] use_arrows_always:true
+    packing:(hbox#pack expand:true fill:false);;
+cb#entry#set_editable false;;
 
 let vbox2 = plist_affich [];;
 vbox#pack vbox2;;
