@@ -57,7 +57,7 @@ let vbox = new_box `VERTICAL packing:window#add
 
 let menubar = new_menu_bar packing:(vbox#pack expand:false)
 let factory = new GtkExt.menu_factory menubar
-let table = factory#table
+let group = factory#group
 let file_menu = factory#add_submenu label:"File"
 let edit_menu = factory#add_submenu label:"Edit"
 
@@ -67,12 +67,12 @@ let scrollbar = new_scrollbar `VERTICAL
 
 let _ =
   window#connect#destroy callback:Main.quit;
-  let factory = new GtkExt.menu_factory file_menu :table in
+  let factory = new GtkExt.menu_factory file_menu :group in
   factory#add_item label:"Open..." key:'O' callback:editor#open_file;
   factory#add_item label:"Save..." key:'S' callback:editor#save_file;
   factory#add_separator ();
   factory#add_item label:"Quit" key:'Q' callback:window#destroy;
-  let factory = new GtkExt.menu_factory edit_menu :table in
+  let factory = new GtkExt.menu_factory edit_menu :group in
   factory#add_item label:"Copy" key:'C' callback:editor#text#copy_clipboard;
   factory#add_item label:"Cut" key:'X' callback:editor#text#cut_clipboard;
   factory#add_item label:"Paste" key:'V' callback:editor#text#paste_clipboard;
@@ -81,7 +81,7 @@ let _ =
     callback:editor#text#set_word_wrap;
   factory#add_check_item label:"Read only" state:false
     callback:(fun b -> editor#text#set_editable (not b));
-  window#add_accelerator_table table;
+  window#add_accel_group group;
   hbox#add editor#text;
   editor#text#connect#event#button_press
     callback:(fun ev ->
