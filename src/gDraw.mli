@@ -119,7 +119,7 @@ val pixmap_from_xpm_d :
 class drag_context : Gdk.drag_context ->
   object
     val context : Gdk.drag_context
-    method status : ?time:int32 -> Tags.drag_action list -> unit
+    method status : ?time:int32 -> Tags.drag_action option -> unit
     method suggested_action : Tags.drag_action
     method targets : string list
   end

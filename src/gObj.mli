@@ -280,7 +280,7 @@ and drag_context :
     method set_icon_pixmap :
       ?colormap:Gdk.colormap -> GDraw.pixmap -> hot_x:int -> hot_y:int -> unit
     method set_icon_widget : widget -> hot_x:int -> hot_y:int -> unit
-    method status : ?time:int32 -> Gdk.Tags.drag_action list -> unit
+    method status : ?time:int32 -> Gdk.Tags.drag_action option -> unit
     method suggested_action : Gdk.Tags.drag_action
     method targets : string list
   end
