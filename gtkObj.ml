@@ -130,7 +130,7 @@ class ['a] container_skel obj = object
     fun w -> Container.add obj w#widget
   method remove : 'b. (#widgeter as 'b) -> unit =
     fun w -> Container.remove obj w#widget
-  method foreach = Container.foreach obj
+  method foreach fun:f = Container.foreach obj fun:(fun w -> f (new widget w)) 
   method children = Container.children obj
 end
 
