@@ -1,5 +1,13 @@
 $Id$
 
+2003.05.15
+  * ocamllex is abstracted by CAMLLEX in Makefiles (Jun Furuse)
+  * more parametrizations in config.make.nt (Jun)
+  * added the selection method to clist. (Jun)
+  * Glib.Io.add_watch returns event source, so that we can remove it later (J)
+  * added Glib.Io.read (J)
+  * added a new module Gdk.Input (J)
+
 2003.05.13
   * various improvements to GtkText (Antoine Mine)
 
