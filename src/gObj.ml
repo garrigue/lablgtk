@@ -257,10 +257,8 @@ and misc_ops obj = object (self)
   method set_sensitive = set P.sensitive obj
   method set_can_default = set P.can_default obj
   method set_can_focus = set P.can_focus obj
-  method set_geometry ?(x = -2) ?(y = -2) =
-    Widget.size_params [] ~cont:(fun p () ->
-      if x+y <> -4 then set_uposition obj ~x ~y;
-      set_params obj p)
+  method set_size_request =
+    Widget.size_params [] ~cont:(fun p () -> set_params obj p)
   method set_size_chars ?desc ?lang ?width ?height () =
     let metrics = 
       (self#pango_context : GPango.context)#get_metrics ?desc ?lang () in
@@ -268,7 +266,7 @@ and misc_ops obj = object (self)
         (fun w -> w * GPango.to_pixels metrics#approx_digit_width)
     and height = may_map height ~f:
         (fun h -> h * GPango.to_pixels (metrics#ascent+metrics#descent)) in
-    self#set_geometry ?width ?height ()
+    self#set_size_request ?width ?height ()
   method set_style (style : style) = set P.style obj style#as_style
   method modify_fg = iter_setcol modify_fg obj
   method modify_bg = iter_setcol modify_bg obj

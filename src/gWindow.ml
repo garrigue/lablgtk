@@ -43,15 +43,14 @@ class window obj = object
   method connect = new container_signals_impl obj
 end
 
-let make_window ~create =
-  Window.make_params ~cont:(fun pl ?wm_name ?wm_class ?x ?y ->
-    Container.make_params pl ~cont:(fun pl ?(show=false) () ->
+let make_window ~create pl ?title ?wm_name ?wm_class =
+  Window.make_params pl ?title ~cont:
+    (fun pl ?(show=false) () ->
       let (w : _ #window_skel) = create pl in
       may w#set_wm_name wm_name;
       may w#set_wm_class wm_class;
-      w#misc#set_geometry ?x ?y ();
       if show then w#show ();
-      w))
+      w)
 
 let window ?kind =
   make_window [] ~create:(fun pl -> new window (Window.create ?kind pl))

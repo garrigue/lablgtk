@@ -80,23 +80,8 @@ class pixmap :
 
 class type misc_ops =
   object
-    method allocation : Gtk.rectangle
     method colormap : colormap
-    method draw : Rectangle.t option -> unit
-    method hide : unit -> unit
-    method hide_all : unit -> unit
-    method intersect : Rectangle.t -> Rectangle.t option
-    method pointer : int * int
     method realize : unit -> unit
-    method set_app_paintable : bool -> unit
-    method set_geometry :
-      ?x:int -> ?y:int -> ?width:int -> ?height:int -> unit -> unit
-    method show : unit -> unit
-    method unmap : unit -> unit
-    method unparent : unit -> unit
-    method unrealize : unit -> unit
-    method visible : bool
-    method visual : visual
     method visual_depth : int
     method window : window
   end

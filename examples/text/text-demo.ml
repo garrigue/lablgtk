@@ -235,7 +235,7 @@ let attach_widgets (text_view:GText.view) =
 	widget#coerce
       | 2 -> let widget = GRange.scale `HORIZONTAL () in
 	widget#adjustment#set_bounds ~lower:0. ~upper:100. ();
-	widget#misc#set_geometry ~height:(-1) ~width:70 ();
+	widget#misc#set_size_request ~height:(-1) ~width:70 ();
 	widget#coerce
       | 3 -> let image = GMisc.image () in
 	image#set_file "floppybuddy.gif";

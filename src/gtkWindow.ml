@@ -1,6 +1,7 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gtk
 open Tags
 open GtkProps
@@ -83,19 +84,17 @@ module Window = struct
   external get_role : [>`window] obj -> string
       = "ml_gtk_window_get_role"
 
+  let make_params ~cont =
+    make_params ~cont:(fun pl ?width ?height ?border_width ->
+      let may_cons = Property.may_cons in
+      cont (
+      may_cons Container.P.border_width border_width (
+      may_cons P.default_width width (
+      may_cons P.default_height height pl))))
+
   let set_wmclass ?name ?clas:wm_class w =
     set_wmclass w ~name:(may_default get_wmclass_name w ~opt:name)
       ~clas:(may_default get_wmclass_class w ~opt:wm_class)
-
-  let setter ~cont ?title ?wm_name ?wm_class =
-    make_params ?title ~cont:(fun p ?(x= -2) ?(y= -2) ->
-      cont (fun w ->
-        if wm_name <> None || wm_class <> None then
-          set_wmclass w ?name:wm_name ?clas:wm_class;
-        if x <> -2 || y <> -2 then Widget.set_uposition w ~x ~y;
-        Gobject.set_params w p))
-
-  let set ?title = setter ~cont:(fun f w -> f w) ?title
 end
 
 module Dialog = struct
