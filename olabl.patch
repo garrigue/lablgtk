@@ -1,0 +1,1084 @@
+Index: utils/config.mlp
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/utils/config.mlp,v
+retrieving revision 1.16
+retrieving revision 1.24
+diff -c -r1.16 -r1.24
+*** config.mlp	1999/03/08 08:34:21	1.16
+--- config.mlp	1999/06/02 15:49:59	1.24
+***************
+*** 11,17 ****
+  
+  (* $Id$ *)
+  
+! let version = "2.02 with Kyoto labels and variants"
+  
+  let standard_library =
+    try
+--- 11,17 ----
+  
+  (* $Id$ *)
+  
+! let version = "2.02 with Kyoto extensions (99/06/03)"
+  
+  let standard_library =
+    try
+Index: typing/btype.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/btype.ml,v
+retrieving revision 1.13
+retrieving revision 1.14
+diff -c -r1.13 -r1.14
+*** btype.ml	1999/01/19 10:37:18	1.13
+--- btype.ml	1999/03/30 09:58:42	1.14
+***************
+*** 47,91 ****
+      Fvar {contents = Some kind} -> field_kind_repr kind
+    | kind                        -> kind
+  
+! let rec repr =
+!   function
+!     {desc = Tlink t'} ->
+        (* 
+           We do no path compression. Path compression does not seem to
+           improve notably efficiency, and it prevents from changing a
+           [Tlink] into another type (for instance, for undoing a
+           unification).
+        *)
+! 	repr t'
+!     | {desc = Tfield (_, k, _, t')} when field_kind_repr k = Fabsent ->
+! 	repr t'
+!     | {desc = Tvariant ({var_ext = {desc = Tlink _|Tvariant _}} as var)}
+!       as t ->
+! 	(* Too big to do it here ? Fast enough *)
+! 	let var' = last_variant var in
+! 	if var' == var then t else
+! 	let var =
+! 	  { var_max =
+! 	      List.map
+! 	        (fun (lab, t) ->
+! 		  lab, try List.assoc lab var.var_max with Not_found -> t)
+! 	         var'.var_max;
+! 	      var_min = var'.var_min;
+! 	    var_closed = var'.var_closed;
+! 	    var_ext = var'.var_ext;
+! 	    var_name =
+! 	      if var.var_name <> None & var.var_closed &
+! 		List.length var.var_max = List.length var'.var_max
+! 	      then var.var_name else var'.var_name }
+! 	in
+! 	(* Here path compression is needed :-( *)
+! 	t.desc <- Tvariant var; t
+!     | t -> t
+! 
+! and last_variant var =
+!   match repr var.var_ext with
+!     {desc=Tvariant var} -> last_variant var
+!   | _ -> var
+  
+  
+                    (**********************************)
+--- 47,87 ----
+      Fvar {contents = Some kind} -> field_kind_repr kind
+    | kind                        -> kind
+  
+! let rec repr t =
+!   match t.desc with
+!     Tlink t' ->
+        (* 
+           We do no path compression. Path compression does not seem to
+           improve notably efficiency, and it prevents from changing a
+           [Tlink] into another type (for instance, for undoing a
+           unification).
+        *)
+!       repr t'
+!   | Tfield (_, k, _, t') when field_kind_repr k = Fabsent ->
+!       repr t'
+!   | Tvariant var ->
+!       (* Too big to do it here ? Fast enough *)
+!       let ext = repr var.var_ext in
+!       begin match ext.desc with
+! 	Tvariant var' ->
+! 	  if var' == var then t else
+! 	  let var =
+! 	    { var' with
+! 	      var_max =
+! 	        List.map
+! 		  (fun (lab, t) ->
+! 		    lab, try List.assoc lab var.var_max with Not_found -> t)
+! 		  var'.var_max;
+! 	      var_name =
+! 	        if var.var_name <> None & var.var_closed &
+! 		  List.length var.var_max = List.length var'.var_max
+! 		then var.var_name else var'.var_name }
+! 	  in
+!           (* Here path compression is needed :-( *)
+! 	  t.desc <- Tvariant var; t
+!       |	_ -> t
+!       end
+!   | _ -> t
+  
+  
+                    (**********************************)
+Index: typing/ctype.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/ctype.ml,v
+retrieving revision 1.51
+retrieving revision 1.61
+diff -c -r1.51 -r1.61
+*** ctype.ml	1999/03/08 07:49:10	1.51
+--- ctype.ml	1999/06/02 15:50:00	1.61
+***************
+*** 248,253 ****
+--- 248,259 ----
+      Tobject (fi, _) -> find fi
+    | _               -> assert false
+  
++ let rec row_level f =
++   match repr f with
++     { desc = Tvar ; level = l } -> l
++   | { desc = Tfield (_,_,_,f) } -> row_level f
++   | _                           -> assert false
++ 
+  (**** Object name manipulation ****)
+  (* +++ Bientot obsolete *)
+  
+***************
+*** 534,544 ****
+            (* +++ Levels should be restored... *)
+            raise (Unify [(ty, newvar2 level)])
+          end
+!     | Tfield(_, k, _, _) ->
+          begin match field_kind_repr k with
+            Fvar _ (* {contents = None} *) ->
+! 	    (* hideous hack for Didier *)
+! 	    if ty.level > level + 1 && ty.level <> generic_level then
+  	      raise (Unify [(ty, newvar2 level)])
+          | _                              -> ()
+          end;
+--- 540,551 ----
+            (* +++ Levels should be restored... *)
+            raise (Unify [(ty, newvar2 level)])
+          end
+!     | Tfield(_, k, _, f) ->
+          begin match field_kind_repr k with
+            Fvar _ (* {contents = None} *) ->
+! 	    (* Olabl is quite different *)
+! 	    let level' = row_level f in
+! 	    if level' > level + 1 && level' <> generic_level then
+  	      raise (Unify [(ty, newvar2 level)])
+          | _                              -> ()
+          end;
+***************
+*** 715,720 ****
+--- 722,734 ----
+  let delayed_copy = ref []
+      (* copying to do later *)
+  let to_unmark = ref []
++ let kind_variables = ref []
++     (* Only used inside class definitions *)
++     (* The following is a hook:
++        there is always a call to cleanup_types later *)
++ let cleanup_types () =
++   kind_variables := [];
++   cleanup_types ()
+  
+  (*
+     copy0 works in two modes:
+***************
+*** 818,825 ****
+            begin match field_kind_repr kind with
+              Fpresent ->
+                Tfield (label, Fpresent, copy t1, copy t2)
+!           | Fvar _ (* {contents = None} *) ->
+!               Tfield (label, Fvar (ref None), copy t1, copy t2)
+            | Fabsent ->
+                assert false
+            end
+--- 832,848 ----
+            begin match field_kind_repr kind with
+              Fpresent ->
+                Tfield (label, Fpresent, copy t1, copy t2)
+!           | Fvar _ as k (* {contents = None} *) ->
+! 	      let level = row_level t2 in
+! 	      let k =
+! 		if level = generic_level or level < lowest_level then
+! 		  try List.assq k !kind_variables
+! 		  with Not_found ->
+! 		    let k' = Fvar (ref None) in
+! 		    kind_variables := (k,k') :: !kind_variables;
+! 		    k'
+! 		else k in
+!               Tfield (label, k, copy t1, copy t2)
+            | Fabsent ->
+                assert false
+            end
+***************
+*** 1094,1100 ****
+  let rec full_expand env ty =
+    let ty = repr (expand_head env ty) in
+    match ty.desc with
+!     Tobject (fi, {contents = Some (_, v::_)}) when (repr v).desc = Tvar ->
+        newty2 ty.level (Tobject (fi, ref None))
+    | Tvariant var when var.var_name <> None & is_variable var.var_ext ->
+        newty2 ty.level
+--- 1117,1123 ----
+  let rec full_expand env ty =
+    let ty = repr (expand_head env ty) in
+    match ty.desc with
+!     Tobject (fi, {contents = Some (_, v::_)}) when is_variable v ->
+        newty2 ty.level (Tobject (fi, ref None))
+    | Tvariant var when var.var_name <> None & is_variable var.var_ext ->
+        newty2 ty.level
+***************
+*** 1128,1157 ****
+  (* The marks are already used by [expand_abbrev]... *)
+  let visited = ref []
+  
+! let rec non_recursive_abbrev env ty =
+!   let ty = repr ty in
+!   if ty == none then raise Recursive_abbrev;
+    if not (List.memq ty !visited) then begin
+      let level = ty.level in
+      visited := ty :: !visited;
+      match ty.desc with
+        Tconstr(p, args, abbrev) ->
+          begin try
+!           non_recursive_abbrev env (try_expand_head env ty)
+          with Cannot_expand ->
+!           iter_type_expr (non_recursive_abbrev env) ty
+          end
+      | Tobject (_, _) | Tvariant _->
+          ()
+      | _ ->
+!         iter_type_expr (non_recursive_abbrev env) ty
+    end
+  
+  let correct_abbrev env ident params ty =
+    visited := [];
+!   non_recursive_abbrev env
+      (subst env generic_level
+!        (ref (Mcons (Path.Pident ident, none, none, Mnil))) None
+         [] [] ty);
+    visited := []
+  
+--- 1151,1181 ----
+  (* The marks are already used by [expand_abbrev]... *)
+  let visited = ref []
+  
+! let rec non_recursive_abbrev env ty0 ty =
+!   let ty0 = repr ty0 and ty = repr ty in
+!   if ty == ty0 then raise Recursive_abbrev;
+    if not (List.memq ty !visited) then begin
+      let level = ty.level in
+      visited := ty :: !visited;
+      match ty.desc with
+        Tconstr(p, args, abbrev) ->
+          begin try
+!           non_recursive_abbrev env ty0 (try_expand_head env ty)
+          with Cannot_expand ->
+!           iter_type_expr (non_recursive_abbrev env ty0) ty
+          end
+      | Tobject (_, _) | Tvariant _->
+          ()
+      | _ ->
+!         iter_type_expr (non_recursive_abbrev env ty0) ty
+    end
+  
+  let correct_abbrev env ident params ty =
+    visited := [];
+!   let ty0 = newgenvar () in
+!   non_recursive_abbrev env ty0
+      (subst env generic_level
+!        (ref (Mcons (Path.Pident ident, ty0, ty0, Mnil))) None
+         [] [] ty);
+    visited := []
+  
+***************
+*** 1375,1386 ****
+      if ty.level >= lowest_level then begin
+        if ty == t0 then raise Occur;
+        ty.level <- pivot_level - ty.level;
+!       match ty.desc with
+! 	Tvariant var ->
+! 	  List.iter (function (_,Some t) -> occur_rec t | _ -> ()) var.var_max;
+! 	  occur_rec var.var_ext
+!       |	_ ->
+! 	  iter_type_expr occur_rec ty
+      end
+    in
+    try
+--- 1399,1405 ----
+      if ty.level >= lowest_level then begin
+        if ty == t0 then raise Occur;
+        ty.level <- pivot_level - ty.level;
+!       iter_type_expr occur_rec ty
+      end
+    in
+    try
+***************
+*** 1516,1525 ****
+    let d1 = t1'.desc and d2 = t2'.desc in
+  
+    let create_recursion = (t2 != t2') && (deep_occur t1' t2) in
+!   let join () =
+!     occur env t1' t2;
+!     update_level env t1'.level t2;
+!     t1'.desc <- Tlink t2
+    in
+    if !strict then join ();
+  
+--- 1535,1546 ----
+    let d1 = t1'.desc and d2 = t2'.desc in
+  
+    let create_recursion = (t2 != t2') && (deep_occur t1' t2) in
+!   let join =
+!     let ty = if t1 == t1' || t1'.desc == Tvar then t2 else t2' in
+!     fun () ->
+!       occur env t1' ty;
+!       update_level env t1'.level ty;
+!       t1'.desc <- Tlink ty
+    in
+    if !strict then join ();
+  
+***************
+*** 1545,1554 ****
+  	let var = common_variant var1 var2 in
+  	if (repr var1.var_ext).desc = Tunivar then
+  	  unify env var1.var_ext var2.var_ext;
+- 	let t1' = repr t1' in
+- 	let d1' = t1'.desc in
+  	let d = Tvariant var in
+!        	t1'.desc <- d;
+  	let prepare vari =
+  	  let ext = repr vari.var_ext in
+  	  let dext' = ext.desc in
+--- 1566,1575 ----
+  	let var = common_variant var1 var2 in
+  	if (repr var1.var_ext).desc = Tunivar then
+  	  unify env var1.var_ext var2.var_ext;
+  	let d = Tvariant var in
+! 	let ty = newty2 t1'.level d in
+! 	update_level env t2'.level ty;
+! 	t2'.desc <- Tlink ty;
+  	let prepare vari =
+  	  let ext = repr vari.var_ext in
+  	  let dext' = ext.desc in
+***************
+*** 1581,1590 ****
+  		try unify_option env (List.assoc lab var2.var_max) ot
+  		with Not_found -> ()
+  	      end)
+! 	    var.var_max;
+! 	  t1'.desc <- d1'
+  	with Unify trace ->
+! 	  t1'.desc <- d1'; undo1 (); undo2 ();
+  	  raise (Unify trace)
+  	end
+      | (Tarrow (p, t1, u1), Tarrow (q, t2, u2))
+--- 1602,1610 ----
+  		try unify_option env (List.assoc lab var2.var_max) ot
+  		with Not_found -> ()
+  	      end)
+! 	    var.var_max
+  	with Unify trace ->
+! 	  t2'.desc <- d2; undo1 (); undo2 ();
+  	  raise (Unify trace)
+  	end
+      | (Tarrow (p, t1, u1), Tarrow (q, t2, u2))
+***************
+*** 1711,1716 ****
+--- 1731,1737 ----
+  and unify_kind k1 k2 =
+    let k1 = field_kind_repr k1 in
+    let k2 = field_kind_repr k2 in
++   if k1 == k2 then () else
+    match k1, k2 with
+      (Fvar r, (Fvar _ | Fpresent))             -> r := Some k2
+    | (Fpresent, Fvar r)                        -> r := Some k1
+***************
+*** 1729,1736 ****
+    with Unify trace ->
+      raise (Unify (expand_trace env trace))
+  
+! let _ = unify' := do_strict unify
+  
+  let free_unify env ty1 ty2 =
+    strict := !Clflags.nolabels; univar_pairs := [];
+    unify env ty1 ty2
+--- 1750,1772 ----
+    with Unify trace ->
+      raise (Unify (expand_trace env trace))
+  
+! let unify_var env t1 t2 =
+!   let t1 = repr t1 and t2 = repr t2 in
+!   if t1 == t2 then () else
+!   match t1.desc with
+!     Tvar ->
+!       begin try
+! 	occur env t1 t2;
+! 	update_level env t1.level t2;
+! 	t1.desc <- Tlink t2
+!       with Unify trace ->
+! 	raise (Unify ((t1,t2)::trace))
+!       end
+!   | _ ->
+!       do_strict unify env t1 t2
+  
++ let _ = unify' := unify_var
++ 
+  let free_unify env ty1 ty2 =
+    strict := !Clflags.nolabels; univar_pairs := [];
+    unify env ty1 ty2
+***************
+*** 1746,1765 ****
+  (**** Special cases of unification ****)
+  
+  (* Unify with a variable *)
+! let unify_var env t1 t2 =
+!   let t1 = repr t1 and t2 = repr t2 in
+!   if t1 == t2 then () else
+!   match t1.desc with
+!     Tvar ->
+!       begin try
+! 	occur env t1 t2;
+! 	update_level env t1.level t2;
+! 	t1.desc <- Tlink t2
+!       with Unify trace ->
+! 	raise (Unify ((t1,t2)::trace))
+!       end
+!   | _ ->
+!       unify env t1 t2
+  
+  (* Unify [t] and ['a -> 'b]. Return ['a] and ['b]. *)
+  let rec filter_arrow env p t =
+--- 1782,1790 ----
+  (**** Special cases of unification ****)
+  
+  (* Unify with a variable *)
+! let unify_var env ty1 ty2 =
+!   strict := true; univar_pairs := [];
+!   unify_var env ty1 ty2
+  
+  (* Unify [t] and ['a -> 'b]. Return ['a] and ['b]. *)
+  let rec filter_arrow env p t =
+***************
+*** 1999,2004 ****
+--- 2024,2030 ----
+  and moregen_kind k1 k2 =
+    let k1 = field_kind_repr k1 in
+    let k2 = field_kind_repr k2 in
++   if k1 == k2 then () else
+    match k1, k2 with
+      (Fvar r, (Fvar _ | Fpresent))  -> r := Some k2
+    | (Fpresent, Fpresent)           -> ()
+***************
+*** 2599,2605 ****
+  	  then
+  	    let (_,cstrs) =
+  	      List.fold_left
+! 		(fun (rem,subtrace) (c2,ot2) ->
+  		  match rem with
+  		    (c1, ot1)::rem when c1 = c2 ->
+  		      begin match ot1,ot2 with
+--- 2625,2631 ----
+  	  then
+  	    let (_,cstrs) =
+  	      List.fold_left
+! 		(fun (rem,cstrs) (c2,ot2) ->
+  		  match rem with
+  		    (c1, ot1)::rem when c1 = c2 ->
+  		      begin match ot1,ot2 with
+***************
+*** 2639,2644 ****
+--- 2665,2672 ----
+          subtype_rec env ((u1, u2)::trace) u1 u2 cstrs
+      | (Ttuple tl1, Ttuple tl2) ->
+          subtype_list env trace tl1 tl2 cstrs
++     | (Tconstr(p1, [], _), Tconstr(p2, [], _)) when Path.same p1 p2 ->
++         cstrs
+      | (Tconstr(p1, tl1, abbrev1), Tconstr _) when generic_abbrev env p1 ->
+          subtype_rec env trace (expand_abbrev env t1) t2 cstrs
+      | (Tconstr _, Tconstr(p2, tl2, abbrev2)) when generic_abbrev env p2 ->
+***************
+*** 2658,2665 ****
+  	with
+  	  Not_found -> (trace, t1, t2, !univar_pairs) :: cstrs
+  	end
+-     | (Tconstr(p1, [], _), Tconstr(p2, [], _)) when Path.same p1 p2 ->
+-         cstrs
+      | (Tconstr _, Tconstr _) ->
+          [(trace, t1, t2, !univar_pairs)]
+      | (Tconstr(p1, tl1, abbrev1), _) when generic_abbrev env p1 ->
+--- 2686,2691 ----
+***************
+*** 2701,2709 ****
+    let (fields1, rest1) = flatten_fields ty1 in
+    let (fields2, rest2) = flatten_fields ty2 in
+    let (pairs, miss1, miss2) = associate_fields fields1 fields2 in
+!   (trace, rest1, build_fields (repr ty2).level miss2 (newvar ()),
+!    !univar_pairs)
+!     ::
+    begin match rest2.desc with
+      Tnil   -> []
+    | _      ->
+--- 2727,2737 ----
+    let (fields1, rest1) = flatten_fields ty1 in
+    let (fields2, rest2) = flatten_fields ty2 in
+    let (pairs, miss1, miss2) = associate_fields fields1 fields2 in
+!   begin if miss2 = [] then [] else
+!     [trace, rest1, build_fields (repr ty2).level miss2 (newvar ()),
+!      !univar_pairs]
+!   end
+!     @
+    begin match rest2.desc with
+      Tnil   -> []
+    | _      ->
+Index: typing/printtyp.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/printtyp.ml,v
+retrieving revision 1.35
+retrieving revision 1.37
+diff -c -r1.35 -r1.37
+*** printtyp.ml	1999/03/08 07:49:11	1.35
+--- printtyp.ml	1999/06/01 13:51:31	1.37
+***************
+*** 181,195 ****
+  	mark_loops_rec visited ty
+      | Tunivar             -> ()
+  
+! let mark_loops ty = mark_loops_rec [] ty
+  
+  let reset_loop_marks () =
+    visited_objects := []; aliased := []
+  
+  let delayed = ref []
+  
+  let reset () =
+!   reset_names (); reset_loop_marks (); delayed := []
+  
+  let rec print_sep_list pr sep = function
+      [] -> ()
+--- 181,197 ----
+  	mark_loops_rec visited ty
+      | Tunivar             -> ()
+  
+! let already_visited = ref []
+  
++ let mark_loops ty = mark_loops_rec !already_visited ty
++ 
+  let reset_loop_marks () =
+    visited_objects := []; aliased := []
+  
+  let delayed = ref []
+  
+  let reset () =
+!   reset_names (); reset_loop_marks (); delayed := []; already_visited := []
+  
+  let rec print_sep_list pr sep = function
+      [] -> ()
+***************
+*** 702,709 ****
+  
+    reset ();
+    aliased := params @ !aliased;
+-   prepare_class_type cl.cty_type;
+    let sty = referent_type (self_type cl.cty_type) in
+    List.iter mark_loops cl.cty_params;
+  
+    List.iter check_name_of_type params;
+--- 704,712 ----
+  
+    reset ();
+    aliased := params @ !aliased;
+    let sty = referent_type (self_type cl.cty_type) in
++   already_visited := [sty];
++   prepare_class_type cl.cty_type;
+    List.iter mark_loops cl.cty_params;
+  
+    List.iter check_name_of_type params;
+***************
+*** 853,865 ****
+  let rec type_expansion t t' =
+    match t'.desc with
+      Tvariant({var_name=Some _} as var) ->
+!       type_expansion t
+!         (newgenty(Tvariant
+! 		  { var_closed = var.var_closed;
+! 		    var_max = var.var_max;
+! 		    var_min = var.var_min;
+! 		    var_ext = var.var_ext;
+! 		    var_name = None }))
+    | _ ->
+        if t == t' then type_expr t else begin
+  	open_box 2;
+--- 856,862 ----
+  let rec type_expansion t t' =
+    match t'.desc with
+      Tvariant({var_name=Some _} as var) ->
+!       type_expansion t (newgenty(Tvariant {var with var_name = None}))
+    | _ ->
+        if t == t' then type_expr t else begin
+  	open_box 2;
+Index: typing/typeclass.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/typeclass.ml,v
+retrieving revision 1.32
+retrieving revision 1.35
+diff -c -r1.32 -r1.35
+*** typeclass.ml	1999/02/24 13:47:52	1.32
+--- typeclass.ml	1999/06/01 09:59:25	1.35
+***************
+*** 216,222 ****
+    vars := Vars.add lab (id, mut, ty) !vars;
+    result
+  
+- 
+  let inheritance impl self_type env concr_meths loc parent =
+    match scrape_class_type parent with
+      Tcty_signature cl_sig ->
+--- 216,221 ----
+***************
+*** 251,259 ****
+       Ctype.filter_self_method val_env lab priv meths self_type
+    in
+    let ty = transl_simple_type val_env false sty in
+!   begin try Ctype.unify val_env ty ty' with Ctype.Unify trace ->
+      raise(Error(loc, Method_type_mismatch (lab, trace)))
+-   end
+  
+  let declare_method val_env meths self_type lab priv sty loc =
+    let (_, ty') =
+--- 250,257 ----
+       Ctype.filter_self_method val_env lab priv meths self_type
+    in
+    let ty = transl_simple_type val_env false sty in
+!   try Ctype.unify val_env ty ty' with Ctype.Unify trace ->
+      raise(Error(loc, Method_type_mismatch (lab, trace)))
+  
+  let declare_method val_env meths self_type lab priv sty loc =
+    let (_, ty') =
+***************
+*** 326,331 ****
+--- 324,332 ----
+  
+  and class_signature env sty sign =
+    let meths = ref Meths.empty in
++   (* One more level by symmetry with class declarations *)
++   Ctype.begin_def ();
++   Ctype.increase_global_level (); (* correct since no new outer variables *)
+    let self_type = transl_simple_type env false sty in
+    
+    (* Check that the binder is a correct type, and introduce a dummy
+***************
+*** 345,350 ****
+--- 346,355 ----
+        sign
+    in
+    
++   (* Back to outer level *)
++   Ctype.end_def ();
++   Ctype.restore_global_level ();
++   
+    {cty_self = self_type;
+     cty_vars = val_sig;
+     cty_concr = concr_meths }
+***************
+*** 393,399 ****
+        let parent = class_expr cl_num val_env par_env sparent in
+        let (cl_sig, concr_meths) =
+          inheritance true self_type val_env concr_meths sparent.pcl_loc
+! 	  parent.cl_type
+        in
+        (* Variables *)
+        let (val_env, met_env, par_env, inh_vars, inh_vals) =
+--- 398,404 ----
+        let parent = class_expr cl_num val_env par_env sparent in
+        let (cl_sig, concr_meths) =
+          inheritance true self_type val_env concr_meths sparent.pcl_loc
+!           parent.cl_type
+        in
+        (* Variables *)
+        let (val_env, met_env, par_env, inh_vars, inh_vals) =
+***************
+*** 545,551 ****
+  
+    (* Self binder *)
+    let (pat, meths, vars, val_env, meth_env, par_env) =
+!       type_self_pattern cl_num val_env met_env par_env spat in
+    let self_type = pat.pat_type in
+  
+    (* Check that the binder has a correct type, and introduce a dummy
+--- 550,557 ----
+  
+    (* Self binder *)
+    let (pat, meths, vars, val_env, meth_env, par_env) =
+!     type_self_pattern cl_num val_env met_env par_env spat
+!   in
+    let self_type = pat.pat_type in
+  
+    (* Check that the binder has a correct type, and introduce a dummy
+***************
+*** 853,858 ****
+--- 859,865 ----
+       constr_type, dummy_class)
+      (res, env) =
+  
++   Ctype.begin_class_def ();  (* quick hack to make difference with env >= 2 *)
+    reset_type_variables ();
+    Ctype.begin_class_def ();
+    
+***************
+*** 868,873 ****
+--- 875,881 ----
+    let (expr, typ) = kind env cl.pci_expr in
+    
+    Ctype.end_def ();
++   Ctype.end_def ();
+    
+    let sty = Ctype.self_type typ in
+  
+***************
+*** 1060,1066 ****
+        cls
+    in
+    Ctype.init_def (Ident.current_time ());
+!   Ctype.begin_class_def ();
+    let (res, env) =
+      List.fold_left (initial_env define_class) ([], env) cls
+    in
+--- 1068,1074 ----
+        cls
+    in
+    Ctype.init_def (Ident.current_time ());
+!   Ctype.begin_def ();
+    let (res, env) =
+      List.fold_left (initial_env define_class) ([], env) cls
+    in
+***************
+*** 1084,1090 ****
+    (expr, expr)
+  
+  let class_declarations env cls =
+!   type_classes true  class_declaration env cls
+  
+  let class_descriptions env cls =
+    type_classes true class_description env cls
+--- 1092,1098 ----
+    (expr, expr)
+  
+  let class_declarations env cls =
+!   type_classes true class_declaration env cls
+  
+  let class_descriptions env cls =
+    type_classes true class_description env cls
+Index: typing/typetexp.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/typing/typetexp.ml,v
+retrieving revision 1.22
+retrieving revision 1.26
+diff -c -r1.22 -r1.26
+*** typetexp.ml	1999/03/08 07:49:12	1.22
+--- typetexp.ml	1999/06/02 02:03:56	1.26
+***************
+*** 46,51 ****
+--- 46,52 ----
+  let univars        = ref ([] : type_expr list)
+  let pre_univars    = ref ([] : type_expr list)
+  let saved_type_variables = ref ([] : (string, type_expr) Tbl.t list)
++ let saved_aliases = ref ([] : (string, type_expr) Tbl.t list)
+  
+  let used_variables = ref (Tbl.empty : (string, type_expr) Tbl.t)
+  let bindings       = ref ([] : (Location.t * type_expr * type_expr) list)
+***************
+*** 54,70 ****
+  let reset_type_variables () =
+    reset_global_level ();
+    type_variables := Tbl.empty;
+!   saved_type_variables := []
+  
+  let narrow () =
+    increase_global_level ();
+!   saved_type_variables := !type_variables :: !saved_type_variables
+  
+  let widen () =
+    restore_global_level ();
+!   match !saved_type_variables with
+!     tv :: rem -> type_variables := tv; saved_type_variables := rem
+!   | []        -> assert false
+  
+  let enter_type_variable strict name =
+    try
+--- 55,76 ----
+  let reset_type_variables () =
+    reset_global_level ();
+    type_variables := Tbl.empty;
+!   saved_type_variables := [];
+!   aliases := Tbl.empty;
+!   saved_aliases := []
+  
+  let narrow () =
+    increase_global_level ();
+!   saved_type_variables := !type_variables :: !saved_type_variables;
+!   saved_aliases := !aliases :: !saved_aliases
+  
+  let widen () =
+    restore_global_level ();
+!   match !saved_type_variables, !saved_aliases with
+!     tv :: rem, al :: rem' ->
+!       type_variables := tv; saved_type_variables := rem;
+!       aliases := al; saved_aliases := rem'
+!   | _ -> assert false
+  
+  let enter_type_variable strict name =
+    try
+***************
+*** 107,114 ****
+    | Ptyp_var name ->
+        begin try
+  	let ty0 = Tbl.find name !aliases in
+! 	let ty =
+! 	  if ty0.level <> Btype.generic_level then ty0 else instance ty0 in
+  	try unify env (newvar()) (newty(Tpoly(ty,!univars))); ty
+  	with Unify _ -> raise (Error(styp.ptyp_loc, Bad_alias name))
+        with Not_found ->
+--- 113,121 ----
+    | Ptyp_var name ->
+        begin try
+  	let ty0 = Tbl.find name !aliases in
+! 	let ty = (* ty0 may be a stub; only drop it if really changed *)
+! 	  if (repr ty0).level < Btype.generic_level then ty0 else instance ty0
+! 	in
+  	try unify env (newvar()) (newty(Tpoly(ty,!univars))); ty
+  	with Unify _ -> raise (Error(styp.ptyp_loc, Bad_alias name))
+        with Not_found ->
+***************
+*** 223,229 ****
+        List.iter2
+          (fun (sty, ty) ty' ->
+             try unify_var env ty' ty with Unify trace ->
+!              raise (Error(sty.ptyp_loc, Type_mismatch trace)))
+          (List.combine stl args) params;
+        cstr
+    | Ptyp_object fields ->
+--- 230,236 ----
+        List.iter2
+          (fun (sty, ty) ty' ->
+             try unify_var env ty' ty with Unify trace ->
+!              raise (Error(sty.ptyp_loc, Type_mismatch (swap_list trace))))
+          (List.combine stl args) params;
+        cstr
+    | Ptyp_object fields ->
+***************
+*** 298,306 ****
+  		    else v }
+  	  in newty (Tvariant var)
+        |	Tobject (fi, nm) ->
+! 	  begin match rowvar with None -> ()
+  	  | Some v ->
+- 	      let _, row = flatten_fields fi in
+  	      if row.desc <> Tvar then
+  		raise(Error(styp.ptyp_loc, No_row_variable "object "));
+  	      unify_var env row v
+--- 305,315 ----
+  		    else v }
+  	  in newty (Tvariant var)
+        |	Tobject (fi, nm) ->
+! 	  let _, row = flatten_fields fi in
+! 	  begin match rowvar with None ->
+! 	      if policy = Univars && row.desc = Tvar then
+! 		unify_var env row (new_pre_univar ())
+  	  | Some v ->
+  	      if row.desc <> Tvar then
+  		raise(Error(styp.ptyp_loc, No_row_variable "object "));
+  	      unify_var env row v
+***************
+*** 379,399 ****
+  
+  let transl_simple_type env fixed styp =
+    univars := [];
+!   aliases := Tbl.empty;
+    let typ = transl_type env (if fixed then Fixed else Extensible) None styp in
+!   aliases := Tbl.empty;
+    typ
+  
+  let transl_simple_type_univars env styp =
+    univars := [];
+-   aliases := Tbl.empty;
+    pre_univars := [];
+    begin_def ();
+    let typ = transl_type env Univars None styp in
+    end_def ();
+    generalize typ;
+    let univars = List.map repr !pre_univars in
+-   aliases := Tbl.empty;
+    pre_univars := [];
+    let univars =
+      filter (fun v -> v.desc = Tvar && v.level = Btype.generic_level) univars in
+--- 388,409 ----
+  
+  let transl_simple_type env fixed styp =
+    univars := [];
+!   let saved = !aliases in
+    let typ = transl_type env (if fixed then Fixed else Extensible) None styp in
+!   if fixed then aliases := saved;
+!   univars := [];
+    typ
+  
+  let transl_simple_type_univars env styp =
+    univars := [];
+    pre_univars := [];
++   let saved = !aliases in
+    begin_def ();
+    let typ = transl_type env Univars None styp in
+    end_def ();
+    generalize typ;
++   aliases := saved;
+    let univars = List.map repr !pre_univars in
+    pre_univars := [];
+    let univars =
+      filter (fun v -> v.desc = Tvar && v.level = Btype.generic_level) univars in
+***************
+*** 407,418 ****
+  
+  let transl_simple_type_delayed env styp =
+    univars := [];
+!   aliases := Tbl.empty;
+    used_variables := Tbl.empty;
+    bindings := [];
+    let typ = transl_type env Delayed None styp in
+    let b = !bindings in
+!   aliases := Tbl.empty;
+    used_variables := Tbl.empty;
+    bindings := [];
+    (typ,
+--- 417,428 ----
+  
+  let transl_simple_type_delayed env styp =
+    univars := [];
+!   let saved = !aliases in
+    used_variables := Tbl.empty;
+    bindings := [];
+    let typ = transl_type env Delayed None styp in
+    let b = !bindings in
+!   aliases := saved;
+    used_variables := Tbl.empty;
+    bindings := [];
+    (typ,
+Index: bytecomp/simplif.ml
+===================================================================
+RCS file: /staff2/garrigue/repos/ocaml/bytecomp/simplif.ml,v
+retrieving revision 1.7
+retrieving revision 1.9
+diff -c -r1.7 -r1.9
+*** simplif.ml	1998/12/11 03:31:07	1.7
+--- simplif.ml	1999/04/14 02:30:54	1.9
+***************
+*** 97,111 ****
+      Lvar y when Ident.same x y -> v
+    | lam -> map_lambda (subst x v) lam
+  
+! let rec beta_reduce lam = match map_lambda beta_reduce lam with
+!     Lapply (Lfunction (kind, par::pars, lam), arg::args) ->
+!       let func = if pars = [] then lam else Lfunction (kind, pars, lam) in
+!       let body = if args = [] then func else Lapply (func, args) in
+!       if Translcore.is_value (Ident.name par = "#conv") arg
+!       then beta_reduce (subst par arg body)
+!       else Llet (Strict, par, arg, beta_reduce body)
+!   | Lapply (Llet (kind, ident, lam, body), args) ->
+!       Llet (kind, ident, lam, beta_reduce (Lapply (body, args)))
+    | lam -> lam
+  
+  let rec last = function
+--- 97,125 ----
+      Lvar y when Ident.same x y -> v
+    | lam -> map_lambda (subst x v) lam
+  
+! let rec scrape_events lam =
+!   match lam with
+!     Levent (lam, _) -> scrape_events lam
+!   | _ -> lam
+! 
+! let rec beta_reduce lam =
+!   match map_lambda beta_reduce lam with
+!     Lapply (func, args) as lam ->
+!       begin match scrape_events func, args with
+! 	Lfunction (kind, par::pars, lam), arg::args ->
+! 	  let func =
+! 	    if pars = [] then match lam with
+! 	      Levent (lam, {lev_kind = Lev_function}) -> lam
+! 	    |  _ -> lam
+! 	    else Lfunction (kind, pars, lam) in
+! 	  let body = if args = [] then func else Lapply (func, args) in
+! 	  if Translcore.is_value (Ident.name par = "#conv") arg
+! 	  then beta_reduce (subst par arg body)
+! 	  else Llet (Strict, par, arg, beta_reduce body)
+!       | Llet (kind, ident, lam, body), args ->
+! 	  Llet (kind, ident, lam, beta_reduce (Lapply (body, args)))
+!       |	_ -> lam
+!       end
+    | lam -> lam
+  
+  let rec last = function
+***************
+*** 123,148 ****
+      Llet (Strict, id, lam, Lvar id')
+      when Ident.name id = "#conv" & Ident.same id id' ->
+        eta_reduce lam
+!   | Lfunction (kind, pars, Lapply (lam, args)) as lam1
+!     when pars <> [] & args <> [] ->
+!       let par = last pars and arg = last args in
+!       if arg = Lvar par & Ident.name par = "#conv" then
+!         let args = but_last args and pars = but_last pars in
+!         let app = if args = [] then lam else Lapply (lam, args) in
+!         eta_reduce (if pars = [] then app else Lfunction (kind, pars, app))
+!       else lam1
+    | lam -> lam
+  
+  let rec group lam =
+    match map_lambda group lam with
+!     Lfunction (Curried, par1, Lfunction (Curried, par2, body)) ->
+!       Lfunction (Curried, par1 @ par2, body)
+!   | Lapply (Lapply (body, arg1), arg2) ->
+!       Lapply (body, arg1 @ arg2)
+!   | Lapply (Lsend (body, self, arg1), arg2) ->
+!       Lsend (body, self, arg1 @ arg2)
+!   | Lapply (Levent (Lsend (body, self, arg1), _), arg2) ->
+!       Lsend (body, self, arg1 @ arg2)
+    | lam -> lam
+  
+  (* Elimination of useless Llet(Alias) bindings.
+--- 137,169 ----
+      Llet (Strict, id, lam, Lvar id')
+      when Ident.name id = "#conv" & Ident.same id id' ->
+        eta_reduce lam
+!   | Lfunction (kind, pars, body) as lam1 when pars <> [] ->
+!       begin match scrape_events body with
+! 	Lapply (lam, args) when args <> [] ->
+! 	  let par = last pars and arg = last args in
+! 	  if arg = Lvar par & Ident.name par = "#conv" then
+!             let args = but_last args and pars = but_last pars in
+!             let app = if args = [] then lam else Lapply (lam, args) in
+!             eta_reduce (if pars = [] then app else Lfunction (kind, pars, app))
+! 	  else lam1
+!       |	_ -> lam1
+!       end
+    | lam -> lam
+  
+  let rec group lam =
+    match map_lambda group lam with
+!     Lfunction (Curried, par1, body) as lam ->
+!       begin match scrape_events body with
+! 	Lfunction (Curried, par2, body) ->
+! 	  Lfunction (Curried, par1 @ par2, body)
+!       |	_ -> lam
+!       end
+!   | Lapply (body, arg2) as lam ->
+!       begin match scrape_events body with
+! 	Lapply (body, arg1) -> Lapply (body, arg1 @ arg2)
+!       | Lsend (body, self, arg1) -> Lsend (body, self, arg1 @ arg2)
+!       |	_ -> lam
+!       end
+    | lam -> lam
+  
+  (* Elimination of useless Llet(Alias) bindings.
