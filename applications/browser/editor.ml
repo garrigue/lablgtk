@@ -61,7 +61,7 @@ class editor ?packing ?show () = object (self)
         Lexical.tag view#buffer ~start ~stop
       end;
     view#misc#modify_font_by_name "monospace 11";
-    Shell.set_size_chars view ~width:80 ~height:25;
+    view#misc#set_size_chars ~width:80 ~height:25 ~lang:"C" ();
     ()
 end
 
@@ -88,7 +88,7 @@ object (self)
   method show = window#show
 
   initializer
-    window#connect#destroy ~callback:Main.quit;
+    window#connect#destroy ~callback:(fun () -> Gc.full_major(); Main.quit());
     let factory = new GMenu.factory file_menu ~accel_group in
     factory#add_item "Open..." ~key:_O ~callback:editor#open_file;
     factory#add_item "Save..." ~key:_S ~callback:editor#save_file;

@@ -17,7 +17,7 @@ include ../../config.make
 MLFLAGS = -I ../../src -I ocaml-src/utils -I ocaml-src/parsing \
 	-I ocaml-src/typing
 ifdef DEBUG
-MLFLAGS += -custom -g -ccopt -g -cclib -lcamlrund
+MLFLAGS += -custom -g -ccopt -g #-cclib -lcamlrund
 endif
 
 # Rules
