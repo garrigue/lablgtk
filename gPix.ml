@@ -24,12 +24,13 @@ let pixmap (pm : #GdkObj.pixmap) ?xalign ?yalign ?xpad ?ypad
   if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height;
   pack_return (new pixmap w) ~packing ~show
 
-class pixdraw ~parent:(w : #GObj.widget) ~width ~height =
-  let depth = w#misc#realize (); w#misc#visual_depth in
-  let window = w#misc#window in
+class pixdraw ~(window : #GObj.widget) ~width ~height ?(mask=false) () =
+  let depth = window#misc#realize (); window#misc#visual_depth in
+  let window = window#misc#window in
   object
     inherit GdkObj.pixmap (Gdk.Pixmap.create window ~width ~height ~depth)
-	~mask:(Gdk.Bitmap.create window ~width ~height)
+	?mask:(if mask then Some(Gdk.Bitmap.create window ~width ~height)
+                       else None)
     initializer
       may bitmap ~f:
 	begin fun (mask : _ GdkObj.drawing) ->

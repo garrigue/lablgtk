@@ -130,7 +130,8 @@ class fix_editor ~width ~height ~packing:pack_fun =
     method as_widget = fix#as_widget
     method set_grid g =
       if (grid != g) then begin
-      	let pix = new GPix.pixdraw ~parent:fix ~width:g ~height:g in
+      	let pix =
+          new GPix.pixdraw ~window:fix ~width:g ~height:g ~mask:true () in
 	let c = fix#misc#style#bg `NORMAL in
 	pix#set_foreground (`COLOR c);
 	pix#rectangle ~filled:true ~x:0 ~y:0 ~width:g ~height:g ();

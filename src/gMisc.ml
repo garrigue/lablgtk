@@ -20,7 +20,7 @@ class statusbar_context obj ctx = object (self)
   method remove = Statusbar.remove obj context
   method flash ?(delay=1000) text =
     let msg = self#push text in
-    GtkMain.Timeout.add delay ~callback:(fun () -> self#remove msg; false);
+    GtkMain.Timeout.add ~ms:delay ~callback:(fun () -> self#remove msg; false);
     ()
 end
 

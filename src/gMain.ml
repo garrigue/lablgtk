@@ -21,6 +21,6 @@ end
 
 module Timeout : sig
   type id
-  val add : int -> callback:(unit -> bool) -> id
+  val add : ms:int -> callback:(unit -> bool) -> id
   val remove : id -> unit
 end = Timeout

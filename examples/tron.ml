@@ -149,7 +149,7 @@ let main () =
       (* player 2 *)
       (if gameState.(rpos.x).(rpos.y) != 0  then 1 else 0)
       in
-  let timerID = ref (* dummy *) (Timeout.add 100 ~callback:(fun _ -> true)) in
+  let timerID = ref (* dummy *) (Timeout.add ~ms:100 ~callback:(fun _ -> true)) in
   let timerTimer _ = begin
      lpos.x <- lpos.x+lspeed.x;
      lpos.y <- lpos.y+lspeed.y;
@@ -170,7 +170,7 @@ let main () =
 (*    message#set_label (string_of_int (!count)); *)
     if (!count==0) then begin
       Timeout.remove (!timerID);
-      timerID := Timeout.add 100 ~callback:timerTimer
+      timerID := Timeout.add ~ms:100 ~callback:timerTimer
     end
     else begin
       count := !count-1;
@@ -189,7 +189,7 @@ let main () =
       ~width:((gameSize+2)*4) ~height:((gameSize+2)*4) ();
     area_expose();
     count := 3;
-    timerID := Timeout.add 300 ~callback:timerTimer2;
+    timerID := Timeout.add ~ms:300 ~callback:timerTimer2;
   in
   let restart =
     GButton.button ~label: "Restart" ~packing:(control#attach ~left:4 ~top:3) () in

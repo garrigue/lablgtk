@@ -250,6 +250,47 @@ ML_2 (gdk_gc_set_exposures, GdkGC_val, Bool_val, Unit)
 ML_5 (gdk_gc_set_line_attributes, GdkGC_val, Int_val, GdkLineStyle_val,
       GdkCapStyle_val, GdkJoinStyle_val, Unit)
 ML_2 (gdk_gc_copy, GdkGC_val, GdkGC_val, Unit)
+value ml_gdk_gc_get_values (value gc)
+{
+     GdkGCValues values;
+     int i;
+     value ret, tmp;
+     CAMLparam2(ret, tmp);
+     gdk_gc_get_values (GdkGC_val(gc), &values);
+     ret = alloc (18, 0);
+     for (i = 0; i < 18; i++) Field(ret,i) = Val_unit;
+     tmp = Val_copy(values.foreground); modify (&Field(ret,0), tmp);
+     tmp = Val_copy(values.background); modify (&Field(ret,1), tmp);
+     if (values.font) {
+          tmp = ml_some(Val_GdkFont(values.font));
+          modify (&Field(ret,2), tmp);
+     }
+     Field(ret,3) = Val_gdkFunction(values.function);
+     Field(ret,4) = Val_gdkFill(values.fill);
+     if (values.tile) {
+          tmp = ml_some(Val_GdkPixmap(values.tile));
+          modify (&Field(ret,5), tmp);
+     }
+     if (values.tile) {
+          tmp = ml_some(Val_GdkPixmap(values.stipple));
+          modify (&Field(ret,6), tmp);
+     }
+     if (values.tile) {
+          tmp = ml_some(Val_GdkPixmap(values.clip_mask));
+          modify (&Field(ret,7), tmp);
+     }
+     Field(ret,8) = Val_gdkSubwindowMode(values.subwindow_mode);
+     Field(ret,9) = Val_int(values.ts_x_origin);
+     Field(ret,10) = Val_int(values.ts_y_origin);
+     Field(ret,11) = Val_int(values.clip_x_origin);
+     Field(ret,12) = Val_int(values.clip_y_origin);
+     Field(ret,13) = Val_bool(values.graphics_exposures);
+     Field(ret,14) = Val_int(values.line_width);
+     Field(ret,15) = Val_gdkLineStyle(values.line_style);
+     Field(ret,16) = Val_gdkCapStyle(values.cap_style);
+     Field(ret,17) = Val_gdkJoinStyle(values.join_style);
+     CAMLreturn(ret);
+}
 
 /* Draw */
 

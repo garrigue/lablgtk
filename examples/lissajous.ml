@@ -42,7 +42,7 @@ let main () =
   let timeout _ = c := !c +. 0.01*.m_pi;
                   expose_event ();
 		  true in 
-  Timeout.add 500 ~callback:timeout;
+  Timeout.add ~ms:500 ~callback:timeout;
   window#show ();
   Main.main ()
 

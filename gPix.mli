@@ -22,4 +22,5 @@ val pixmap :
   ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> pixmap
 
 class pixdraw :
-  parent:#GObj.widget -> width:int -> height:int -> GdkObj.pixmap
+  window:#GObj.widget ->
+  width:int -> height:int -> ?mask:bool -> unit -> GdkObj.pixmap

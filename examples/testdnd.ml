@@ -416,7 +416,7 @@ class popup () = object (self)
     may popup_timer
       ~f:(fun pdt -> Timeout.remove pdt; popup_timer <- None)
   method add_timer time ~callback =
-    popup_timer <- Some (Timeout.add time ~callback)
+    popup_timer <- Some (Timeout.add ~ms:time ~callback)
 
   method popdown () =
     popdown_timer <- None;
@@ -441,7 +441,7 @@ class popup () = object (self)
       in_popup <- false;
       if popdown_timer = None then begin
 	print_endline "added popdown"; flush stdout;
-	popdown_timer <- Some (Timeout.add 500 ~callback:self#popdown)
+	popdown_timer <- Some (Timeout.add ~ms:500 ~callback:self#popdown)
       end
     end
 
@@ -466,7 +466,7 @@ class popup () = object (self)
       may popup_window ~f:(fun w -> w#show ());
       popped_up <- true
     end;
-    popdown_timer <- Some (Timeout.add 500 ~callback:self#popdown);
+    popdown_timer <- Some (Timeout.add ~ms:500 ~callback:self#popdown);
     print_endline "added popdown"; flush stdout;
     self#remove_timer ();
     false

@@ -6,10 +6,10 @@ let _ = Callback.register_exception "gtkerror" (Error"")
 
 module Timeout = struct
   type id
-  external add : int -> callback:(GtkArgv.t -> unit) -> id
+  external add : ms:int -> callback:(GtkArgv.t -> unit) -> id
       = "ml_gtk_timeout_add"
-  let add inter ~callback =
-    add inter ~callback:(fun arg -> GtkArgv.set_result_bool arg (callback ()))
+  let add ~ms ~callback =
+    add ~ms ~callback:(fun arg -> GtkArgv.set_result_bool arg (callback ()))
   external remove : id -> unit = "ml_gtk_timeout_remove"
 end
 

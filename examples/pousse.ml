@@ -70,9 +70,12 @@ let window = GWindow.window ~title:"pousse" ()
 
 (* Create pixmaps *)
 
-let pixdraw = new GPix.pixdraw ~parent:window ~width:40 ~height:40
-let pixdraw1 = new GPix.pixdraw ~parent:window ~width:40 ~height:40
-let pixdraw2 = new GPix.pixdraw ~parent:window ~width:40 ~height:40
+let pixdraw =
+  new GPix.pixdraw ~parent:window ~width:40 ~height:40 ~mask:true ()
+let pixdraw1 =
+  new GPix.pixdraw ~parent:window ~width:40 ~height:40 ~mask:true ()
+let pixdraw2 =
+  new GPix.pixdraw ~parent:window ~width:40 ~height:40 ~mask:true ()
 
 let _ =
   pixdraw1#set_foreground `BLACK;
