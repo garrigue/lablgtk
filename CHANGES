@@ -1,5 +1,8 @@
 $Id$
 
+2001.07.04
+  * add signals to GList.liste
+
 2001.05.22
   * add ?nolocale parameter to Main.init (cf. ocaml PR#275)
   * remove Main.flush (enough to have it as Gdk.X.flush)

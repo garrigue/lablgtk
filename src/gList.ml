@@ -25,9 +25,22 @@ let list_item ?label ?border_width ?width ?height ?packing ?(show=true) () =
   if show then item#misc#show ();
   item
 
+class liste_signals obj = object
+  inherit container_signals (obj : Gtk.liste obj)
+  method selection_changed =
+    GtkSignal.connect obj ~sgn:Liste.Signals.selection_changed ~after
+  method select_child ~callback =
+    GtkSignal.connect obj ~sgn:Liste.Signals.select_child ~after
+      ~callback:(fun w -> callback (new list_item (ListItem.cast w))) 
+  method unselect_child ~callback =
+    GtkSignal.connect obj ~sgn:Liste.Signals.unselect_child ~after
+      ~callback:(fun w -> callback (new list_item (ListItem.cast w))) 
+end
+
 class liste obj = object
   inherit [list_item] item_container (obj : Gtk.liste obj)
   method private wrap w = new list_item (ListItem.cast w)
+  method connect = new liste_signals obj
   method insert w = Liste.insert_item obj w#as_item
   method clear_items = Liste.clear_items obj
   method select_item = Liste.select_item obj
