@@ -213,7 +213,7 @@ ML_4 (gtk_list_store_set_value, GtkListStore_val, GtkTreeIter_val,
 #ifdef HASGTK22
 ML_2 (gtk_list_store_remove, GtkListStore_val, GtkTreeIter_val, Val_bool)
 #else
-ML_2 (gtk_list_store_remove, GtkListStore_val, GtkTreeIter_val, Val_false Ignore)
+ML_2 (gtk_list_store_remove, GtkListStore_val, GtkTreeIter_val, Unit)
 #endif
 
 ML_3 (gtk_list_store_insert, GtkListStore_val, GtkTreeIter_val, Int_val, Unit)
