@@ -2,7 +2,6 @@
 
 (* Tron? Game *)
 open GMain
-open GdkObj
 
 let m_pi = acos (-1.)
 let clRed   = `NAME "red"  (* `BLACK *)
@@ -45,7 +44,7 @@ let main () =
   let vbx = GPack.vbox ~packing:window#add () in
   let area = GMisc.drawing_area ~width:((gameSize+2)*4) ~height:((gameSize+2)*4)
       ~packing:vbx#add () in
-  let drawing = area#misc#realize (); new drawing (area#misc#window) in
+  let drawing = area#misc#realize (); new GDraw.drawable (area#misc#window) in
   let style = area#misc#style#copy in
   style#set_bg [`NORMAL,`WHITE];
   area#misc#set_style style;

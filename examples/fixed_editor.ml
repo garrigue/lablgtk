@@ -123,7 +123,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
   let fix = GPack.fixed ~width ~height ~packing:pack_fun () in
   let _ = fix#misc#realize () in
   let fix_window = fix#misc#window in
-  let fix_drawing = new GdkObj.drawing fix_window in
+  let fix_drawing = new GDraw.drawable fix_window in
 
   object (self)
     val mutable grid = 1
@@ -131,7 +131,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
     method set_grid g =
       if (grid != g) then begin
       	let pix =
-          new GPix.pixdraw ~window:fix ~width:g ~height:g ~mask:true () in
+          GDraw.pixmap ~window:fix ~width:g ~height:g ~mask:true () in
 	let c = fix#misc#style#bg `NORMAL in
 	pix#set_foreground (`COLOR c);
 	pix#rectangle ~filled:true ~x:0 ~y:0 ~width:g ~height:g ();
@@ -160,7 +160,7 @@ class fix_editor ~width ~height ~packing:pack_fun =
 
     method private connect_signals
       ~ebox:(ebox : GFrame.event_box) ~widget:(widget : widget) ~callback:cbfun =
-      let drawing = new GdkObj.drawing (ebox#misc#window) in
+      let drawing = new GDraw.drawable (ebox#misc#window) in
       let draw_id = ref None in
       let exps_id = ref None in
       let on_paint ev =

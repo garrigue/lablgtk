@@ -71,11 +71,11 @@ let window = GWindow.window ~title:"pousse" ()
 (* Create pixmaps *)
 
 let pixdraw =
-  new GPix.pixdraw ~parent:window ~width:40 ~height:40 ~mask:true ()
+  GDraw.pixmap ~window ~width:40 ~height:40 ~mask:true ()
 let pixdraw1 =
-  new GPix.pixdraw ~parent:window ~width:40 ~height:40 ~mask:true ()
+  GDraw.pixmap ~window ~width:40 ~height:40 ~mask:true ()
 let pixdraw2 =
-  new GPix.pixdraw ~parent:window ~width:40 ~height:40 ~mask:true ()
+  GDraw.pixmap ~window ~width:40 ~height:40 ~mask:true ()
 
 let _ =
   pixdraw1#set_foreground `BLACK;
@@ -93,7 +93,7 @@ object (self)
   inherit GObj.widget button#as_widget
   method connect = button#connect
   val mutable color : color = `none
-  val pm = GPix.pixmap pixdraw ~packing:button#add ()
+  val pm = GMisc.pixmap pixdraw ~packing:button#add ()
   method color = color
   method set_color col =
     if col <> color then begin

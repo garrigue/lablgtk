@@ -1,12 +1,11 @@
 (* $Id$ *)
 
-open GdkObj
 open GMain
 
 let window = GWindow.window ~show:true ()
 
 let w = window#misc#window
-let drawing = new drawing w
+let drawing = new GDraw.drawable w
 
 let redraw _ =
   drawing#polygon ~filled:true

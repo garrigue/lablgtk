@@ -3,7 +3,6 @@
 
 open Misc
 open Gtk
-open GdkObj
 open GObj
 open GMain
 
@@ -275,13 +274,14 @@ let window = GWindow.window ~title:"DnD Test" ()
 let _ = window#misc#realize ()
 
 let drag_icon =
-  pixmap_from_xpm_d ~data:drag_icon_xpm ~window:window#misc#window ()
+  GDraw.pixmap_from_xpm_d ~data:drag_icon_xpm ~window:window#misc#window ()
 
 let trashcan_open =
-  pixmap_from_xpm_d ~data:trashcan_open_xpm ~window:window#misc#window ()
+  GDraw.pixmap_from_xpm_d ~data:trashcan_open_xpm ~window:window#misc#window ()
 
 let trashcan_closed =
-  pixmap_from_xpm_d ~data:trashcan_closed_xpm ~window:window#misc#window ()
+  GDraw.pixmap_from_xpm_d ~data:trashcan_closed_xpm
+    ~window:window#misc#window ()
 
 let targets = [
   { target = "STRING"; flags = []; info = 0};
@@ -307,7 +307,7 @@ end
 
 
 class target_drag ?packing ?show () =
-  let pixmap = GPix.pixmap trashcan_closed ?packing ?show () in
+  let pixmap = GMisc.pixmap trashcan_closed ?packing ?show () in
 object (self)
   inherit widget pixmap#as_widget
   inherit drag_handler

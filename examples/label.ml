@@ -38,8 +38,8 @@ let main () =
   let w = GWindow.window ~border_width:2 () in
   w#misc#realize ();
   let hbox = GPack.hbox ~spacing:10 ~packing:w#add () in
-  let pm = GdkObj.pixmap_from_xpm_d ~data:openfile ~window:w#misc#window () in
-  GPix.pixmap pm ~packing:hbox#add ();
+  let pm = GDraw.pixmap_from_xpm_d ~data:openfile ~window:w#misc#window () in
+  GMisc.pixmap pm ~packing:hbox#add ();
   GMisc.label ~text:"Embedded xpm" ~packing:hbox#add ();
   w#show ();
   w#connect#destroy ~callback:Main.quit;

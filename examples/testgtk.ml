@@ -434,8 +434,8 @@ let create_scrolled_windows =
 let make_toolbar (toolbar : GButton.toolbar) window =
   let icon =
     let info =
-      GdkObj.pixmap_from_xpm ~file:"test.xpm" ~window:window#misc#window () in
-    fun () -> (GPix.pixmap info ())#coerce
+      GDraw.pixmap_from_xpm ~file:"test.xpm" ~window:window#misc#window () in
+    fun () -> (GMisc.pixmap info ())#coerce
   in
 
   toolbar #insert_button ~text:"Horizontal"
