@@ -55,8 +55,8 @@ class virtual tiwidget0 = object
   method virtual tree : GTree2.tree2
   method virtual children : (tiwidget0 * Gtk.Tags.pack_type) list
   method virtual name : string
-  method virtual proplist : (string * Property.property) list
-  method virtual add_to_proplist : (string * Property.property) list -> unit
+  method virtual proplist : (string * Property.prop) list
+  method virtual add_to_proplist : (string * Property.prop) list -> unit
   method virtual change_name_in_proplist : string -> string -> unit
   method virtual set_property : string -> string -> unit
   method virtual forall :  callback:(tiwidget0 -> unit) -> unit
@@ -275,7 +275,7 @@ object(self)
 
   method private class_name = ""  (* used in the init code *)
 
-  val mutable proplist : (string * property) list = []
+  val mutable proplist : (string * prop) list = []
   method proplist = proplist
   method private get_mandatory_props = []
 
@@ -584,10 +584,10 @@ object(self)
     tree_item#expand ();
 
     proplist <-  proplist @
-      [  "name", prop_string name:"name" init:name set:self#set_new_name; 
-         "width", prop_int name:"width" init:"-2"
+      [  "name", new prop_string name:"name" init:name set:self#set_new_name; 
+         "width", new prop_int name:"width" init:"-2"
 	                   set:(fun v -> widget#misc#set_size width:v);
-         "height", prop_int name:"height" init:"-2"
+         "height", new prop_int name:"height" init:"-2"
 	                    set:(fun v -> widget#misc#set_size height:v) ];
 
     self#add_signal name_changed;
@@ -676,7 +676,7 @@ object(self)
   initializer
     proplist <-  proplist @
       [ "border width",
-	prop_int name:"border_width" init:"0" set:container#set_border_width ];
+	new prop_int name:"border_width" init:"0" set:container#set_border_width ];
 
     tree_item#drag#dest_set actions:[`COPY]
       targets:[ { target = "STRING"; flags = []; info = 0} ];
@@ -765,16 +765,16 @@ object(self)
   initializer
     window#set_title name;
     proplist <-	proplist @
-      [ "title", prop_string name:"title" init:name set:window#set_title;
+      [ "title", new prop_string name:"title" init:name set:window#set_title;
 	"allow_shrink",
-	prop_bool name:"allow_shrink" init:"true" set:window#set_allow_shrink;
+	new prop_bool name:"allow_shrink" init:"true" set:window#set_allow_shrink;
 	"allow_grow",
-	prop_bool name:"allow_grow" init:"true"set:window#set_allow_grow;
+	new prop_bool name:"allow_grow" init:"true"set:window#set_allow_grow;
 	"auto_shrink",
-	prop_bool name:"auto_shrink" init:"true" set:window#set_auto_shrink;
-	"x position", prop_int name:"x" init:"-2"
+	new prop_bool name:"auto_shrink" init:"true" set:window#set_auto_shrink;
+	"x position", new prop_int name:"x" init:"-2"
 	                       set:(fun x -> window#misc#set_position :x);
-	"y position", prop_int name:"y" init:"-2"
+	"y position", new prop_int name:"y" init:"-2"
 	                       set:(fun y -> window#misc#set_position :y) ]
 end
 
@@ -851,21 +851,21 @@ object(self)
     end;
     let n = child#name in
     let expand =
-      prop_bool name:"expand" init:"true" set:
+      new prop_bool name:"expand" init:"true" set:
 	begin fun v ->
 	  box#set_child_packing (child#base) expand:v;
 	  prop_update child;
 	  prop_update (self : #tiwidget0 :> tiwidget0)
 	end
     and fill =
-      prop_bool name:"fill" init:"true" set:
+      new prop_bool name:"fill" init:"true" set:
 	begin fun v ->
 	  box#set_child_packing (child#base) fill:v;
 	  prop_update child;
 	  prop_update (self : #tiwidget0 :> tiwidget0)
 	end
     and padding =
-      prop_int name:"fill" init:"0" set:
+      new prop_int name:"fill" init:"0" set:
 	begin fun v ->
 	  box#set_child_packing (child#base) padding:v;
 	  prop_update child;
@@ -913,8 +913,8 @@ object(self)
   initializer
     proplist <-  proplist @
       [ "homogeneous",
-	prop_bool name:"homogeneous" init:"false" set:box#set_homogeneous;
-       "spacing", prop_int name:"spacing" init:"0" set:box#set_spacing ]
+	new prop_bool name:"homogeneous" init:"false" set:box#set_homogeneous;
+       "spacing", new prop_int name:"spacing" init:"0" set:box#set_spacing ]
 end
 
 class tihbox = tibox dir:`HORIZONTAL
@@ -984,9 +984,9 @@ class tibutton widget:(button : #button) :name :parent_tree :pos :parent_window 
   initializer
     proplist <-  proplist @
       [ "border width",
-	prop_int name:"border_width" init:"0" set:button#set_border_width;
+	new prop_int name:"border_width" init:"0" set:button#set_border_width;
 	"label",
-	prop_string name:"label" init:name set:
+	new prop_string name:"label" init:name set:
 	  begin fun v ->
 	    button#remove (List.hd button#children);
 	    button#add (new label text:v xalign:0.5 yalign:0.5)
@@ -1032,9 +1032,9 @@ class ticheck_button widget:(button : check_button) :name :parent_tree :pos :par
   initializer
     proplist <-  proplist @
       [ "border width",
-	prop_int name:"border_width" init:"0" set:button#set_border_width;
+	new prop_int name:"border_width" init:"0" set:button#set_border_width;
 	"label",
-	prop_string name:"label" init:name set:
+	new prop_string name:"label" init:name set:
 	  begin fun v ->
 	    button#remove (List.hd button#children);
 	    button#add (new label text:v xalign:0.5 yalign:0.5)
@@ -1075,9 +1075,9 @@ class titoggle_button widget:(button : toggle_button) :name :parent_tree :pos :p
   initializer
     proplist <-  proplist @
       [ "border width",
-	prop_int name:"border_width" init:"0" set:button#set_border_width;
+	new prop_int name:"border_width" init:"0" set:button#set_border_width;
 	"label",
-	prop_string name:"label" init:name set:
+	new prop_string name:"label" init:name set:
 	  begin fun v ->
 	    button#remove (List.hd button#children);
 	    button#add (new label text:v xalign:0.5 yalign:0.5)
@@ -1125,9 +1125,9 @@ object(self)
   initializer
     proplist <-  proplist @
       [ "text",
-	prop_string name:"text" init:name set:labelw#set_text;
+	new prop_string name:"text" init:name set:labelw#set_text;
 	"line_wrap",
-	prop_bool name:"line_wrap" init:"true" set:labelw#set_line_wrap ]
+	new prop_bool name:"line_wrap" init:"true" set:labelw#set_line_wrap ]
 end
 
 let new_tilabel :name = new tilabel widget:(new label text:name) :name
@@ -1144,12 +1144,12 @@ class tiframe widget:(frame : frame) :name :parent_tree :pos :parent_window =
     frame#set_label name;
     proplist <- proplist @
       [ "label",
-	prop_string name:"label" init:name set:frame#set_label;
+	new prop_string name:"label" init:name set:frame#set_label;
        "label xalign",
-	prop_float name:"label_xalign" init:"0.0" min:0. max:1.
+	new prop_float name:"label_xalign" init:"0.0" min:0. max:1.
             set:(fun x -> frame#set_label_align :x);
        "shadow",
-	prop_shadow name:"shadow" init:"ETCHED_IN" set:frame#set_shadow_type ]
+	new prop_shadow name:"shadow" init:"ETCHED_IN" set:frame#set_shadow_type ]
 end
 
 let new_tiframe :name = new tiframe widget:(new frame) :name
@@ -1196,10 +1196,10 @@ class tiscrolled_window widget:(scrolled_window : scrolled_window)
     initializer
       proplist <- proplist @
 	[ "hscrollbar policy",
-	  prop_policy name:"hscrollbar_policy" init:"ALWAYS"
+	  new prop_policy name:"hscrollbar_policy" init:"ALWAYS"
 	    set:scrolled_window#set_hpolicy;
 	  "vscrollbar policy",
-	  prop_policy name:"vscrollbar_policy" init:"ALWAYS"
+	  new prop_policy name:"vscrollbar_policy" init:"ALWAYS"
 	    set:scrolled_window#set_vpolicy ]
 end
 
