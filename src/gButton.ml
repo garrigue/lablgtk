@@ -49,8 +49,7 @@ class pre_toggle_button_wrapper obj = object
   inherit button_skel obj
   method connect = new toggle_button_signals ?obj
   method active = ToggleButton.get_active obj
-  method set_active = ToggleButton.set_active obj
-  method draw_indicator = ToggleButton.set_mode obj
+  method set_toggle = ToggleButton.setter ?obj ?cont:null_cont
 end
 
 class toggle_button_wrapper obj =

@@ -53,6 +53,10 @@ module Tags = struct
   type calendar_display_options =
     [ SHOW_HEADING SHOW_DAY_NAMES NO_MONTH_CHANGE SHOW_WEEK_NUMBERS
       WEEK_START_MONDAY ]
+  type spin_button_update_policy = [ ALWAYS IF_VALID ]
+  type spin_type =
+    [ STEP_FORWARD STEP_BACKWARD PAGE_FORWARD PAGE_BACKWARD
+      HOME END USER_DEFINED(float) ]
 end
 open Tags
 

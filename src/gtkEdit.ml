@@ -100,14 +100,14 @@ module SpinButton = struct
       = "ml_gtk_spin_button_set_digits"
   external get_value : [> spinbutton] obj -> float
       = "ml_gtk_spin_button_get_value_as_float"
-  let get_value_as_int w = floor (get_value w +. 0.5)
+  let get_value_as_int w = truncate (get_value w +. 0.5)
   external set_value : [> spinbutton] obj -> float -> unit
       = "ml_gtk_spin_button_set_value"
-  external set_update_policy : [> spinbutton] obj -> update_policy -> unit
+  external set_update_policy : [> spinbutton] obj -> [ALWAYS IF_VALID] -> unit
       = "ml_gtk_spin_button_set_update_policy"
   external set_numeric : [> spinbutton] obj -> bool -> unit
       = "ml_gtk_spin_button_set_numeric"
-  external spin : [> spinbutton] obj -> [UP DOWN] -> step:float -> unit
+  external spin : [> spinbutton] obj -> spin_type -> unit
       = "ml_gtk_spin_button_spin"
   external set_wrap : [> spinbutton] obj -> bool -> unit
       = "ml_gtk_spin_button_set_wrap"
@@ -161,10 +161,11 @@ module Text = struct
       [> text] obj -> ?font:Gdk.font -> ?foreground:Gdk.Color.t ->
       ?background:Gdk.Color.t -> string -> unit
       = "ml_gtk_text_insert"
-  let setter w :cont ?:editable ?:word_wrap ?:point =
+  let setter w :cont ?:hadjustment ?:vadjustment ?:editable ?:word_wrap =
+    if hadjustment <> None || vadjustment <> None then
+      set_adjustment w ?horizontal: hadjustment ?vertical: vadjustment;
     may editable fun:(set_editable w);
     may word_wrap fun:(set_word_wrap w);
-    may point fun:(set_point w);
     cont w
 end
 
@@ -174,7 +175,7 @@ module Combo = struct
     else invalid_arg "Gtk.Combo.cast"
   external create : unit -> combo obj = "ml_gtk_combo_new"
   external set_value_in_list :
-      [> combo] obj -> bool -> ok_if_empty:bool -> unit
+      [> combo] obj -> ?bool -> ?ok_if_empty:bool -> unit
       = "ml_gtk_combo_set_value_in_list"
   external set_use_arrows : [> combo] obj -> bool -> unit
       = "ml_gtk_combo_set_use_arrows"
@@ -195,11 +196,13 @@ module Combo = struct
 	Container.add (list combo) li
       end
   let setter w :cont ?:popdown_strings ?:use_arrows ?:use_arrows_always
-      ?:case_sensitive =
+      ?:case_sensitive ?:value_in_list ?:ok_if_empty =
     may popdown_strings fun:(set_popdown_strings w);
     may use_arrows fun:(set_use_arrows w);
     may use_arrows_always fun:(set_use_arrows_always w);
     may case_sensitive fun:(set_case_sensitive w);
+    if value_in_list <> None || ok_if_empty <> None then
+      set_value_in_list w ?value_in_list ?:ok_if_empty;
     cont w
   external disable_activate : [> combo] obj -> unit
       = "ml_gtk_combo_disable_activate"
