@@ -3,7 +3,7 @@
 
 TARGETS = varcc lablgtktop lablgtktop_t lablgtk
 
-all: $(TARGETS)
+all:: $(TARGETS)
 
 opt: lablgtkopt
 
@@ -65,7 +65,7 @@ MLLIBS += lablglade.cma
 CLIBS += liblablglade.a
 GLADEMLOBJS = glade.cmo
 GLADECOBJS = ml_glade.o
-TARGETS += lablgladecc
+all:: lablgladecc
 endif
 
 # Rules
