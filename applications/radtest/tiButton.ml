@@ -34,10 +34,8 @@ end
 
 let new_tibutton ~name ?(listprop = []) =
   let b = GButton.button ~label:name () in
-  b#event#connect#enter_notify
-    ~callback:(fun _ -> b#misc#stop_emit ~name:"enter_notify_event"; true);
-  b#event#connect#leave_notify
-    ~callback:(fun _ -> b#misc#stop_emit ~name:"leave_notify_event"; true);
+  b#event#connect#enter_notify ~callback:(fun _ -> GtkSignal.stop_emit ());
+  b#event#connect#leave_notify ~callback:(fun _ -> GtkSignal.stop_emit ());
   new tibutton ~widget:b ~name
 
 

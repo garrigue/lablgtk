@@ -257,7 +257,10 @@ module Widget = struct
 	  | None -> invalid_arg "GtkBase.Widget.Event.marshal"
 	in
 	let ev = GdkEvent.unsafe_copy p in
-	GtkArgv.set_result_bool argv (f ev)
+	try GtkArgv.set_result_bool argv (f ev)
+        with GtkSignal.Stop_emit ->
+          GtkArgv.set_result_bool argv true;
+          raise GtkSignal.Stop_emit
       let any : ([>`widget], Gdk.Tags.event_type Gdk.event -> bool) t =
 	{ name = "event"; marshaller = marshal }
       let button_press : ([>`widget], GdkEvent.Button.t -> bool) t =
