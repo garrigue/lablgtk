@@ -192,7 +192,7 @@ if test $USE_GL = yes ; then
 	AC_MSG_RESULT(ok)
     else
 	AC_MSG_RESULT(no)
-	if test FORCE_GL = yes ; then
+	if test $FORCE_GL = yes ; then
 	AC_MSG_ERROR(gtkgl 2 support not found)
 	else
 	USE_GL=no
@@ -219,7 +219,7 @@ if test $USE_GLADE = yes ; then
 	AC_MSG_RESULT(ok)
     else
 	AC_MSG_RESULT(no)
-	if test FORCE_GLADE = yes ; then
+	if test $FORCE_GLADE = yes ; then
 	AC_MSG_ERROR(libglade 2 support not found)
 	else
 	USE_GLADE=no
@@ -245,7 +245,7 @@ if test $USE_RSVG = yes ; then
 	AC_MSG_RESULT(ok)
     else
 	AC_MSG_RESULT(no)
-	if test FORCE_RSVG = yes ; then
+	if test $FORCE_RSVG = yes ; then
 	AC_MSG_ERROR(librsvg support not found)
 	else
 	USE_RSVG=no
