@@ -193,16 +193,19 @@ class buffer :
   textbuffer obj ->
 object
   val obj : textbuffer obj
+  method add_selection_clipboard : Gtk.clipboard -> unit
   method apply_tag : tag -> start:iter -> stop:iter -> unit
   method apply_tag_by_name : string -> start:iter -> stop:iter -> unit
   method as_buffer : textbuffer obj
   method begin_user_action : unit -> unit
   method connect : buffer_signals
+  method copy_clipboard : Gtk.clipboard -> unit
   method create_child_anchor : iter -> child_anchor
   method insert_child_anchor : iter -> child_anchor -> unit
   method create_mark : ?name:string -> ?left_gravity:bool -> iter -> mark
   method create_tag :
     ?name:string -> ?properties:GtkText.Tag.property list -> unit -> tag
+  method cut_clipboard : ?default_editable:bool -> Gtk.clipboard -> unit
   method delete : start:textiter -> stop:textiter -> unit
   method delete_interactive :
     start:textiter ->
@@ -248,8 +251,11 @@ object
     stop:textiter -> ?default_editable:bool -> unit -> bool
   method move_mark : mark -> where:iter -> unit
   method move_mark_by_name : string -> where:iter -> unit
+  method paste_clipboard : 
+    ?iter:iter -> ?default_editable:bool -> Gtk.clipboard -> unit
   method place_cursor : where:iter -> unit
   method remove_all_tags : start:iter -> stop:iter -> unit
+  method remove_selection_clipboard : Gtk.clipboard -> unit
   method remove_tag : tag -> start:iter -> stop:iter -> unit
   method remove_tag_by_name : string -> start:iter -> stop:iter -> unit
   method set_modified : bool -> unit

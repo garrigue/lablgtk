@@ -356,6 +356,16 @@ class buffer obj = object(self)
     new child_anchor (Buffer.create_child_anchor obj iter#as_textiter)
   method insert_child_anchor (iter:iter) (child_anchor:child_anchor) = 
     Buffer.insert_child_anchor obj iter#as_textiter child_anchor#as_childanchor
+  method paste_clipboard ?(iter:iter option) ?(default_editable=true)
+    clipboard = 
+    Buffer.paste_clipboard obj clipboard 
+      (match iter with None -> None | Some i -> Some i#as_textiter)
+      default_editable
+  method copy_clipboard = Buffer.copy_clipboard obj
+  method cut_clipboard ?(default_editable=true) clipboard = 
+    Buffer.cut_clipboard obj clipboard default_editable
+  method add_selection_clipboard = Buffer.add_selection_clipboard obj
+  method remove_selection_clipboard = Buffer.remove_selection_clipboard obj
 end
 
 let buffer ?(tagtable:tagtable option) ?text () =

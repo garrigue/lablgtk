@@ -382,6 +382,40 @@ ML_2(gtk_text_buffer_create_child_anchor,
 ML_3(gtk_text_buffer_insert_child_anchor,
      GtkTextBuffer_val,GtkTextIter_val,GtkTextChildAnchor_val,Unit)
 
+
+CAMLprim value ml_gtk_text_buffer_paste_clipboard
+     (value arg1, value arg2, value arg3, value arg4) 
+{ 
+  gtk_text_buffer_paste_clipboard
+    (GtkTextBuffer_val(arg1),
+     GtkClipboard_val(arg2),
+     Option_val(arg3,GtkTextIter_val,NULL),
+     Bool_val(arg4)
+     );
+  return(Val_unit); 
+}
+
+ML_2(gtk_text_buffer_copy_clipboard,
+     GtkTextBuffer_val,
+     GtkClipboard_val,
+     Unit)
+
+ML_3(gtk_text_buffer_cut_clipboard,
+     GtkTextBuffer_val,
+     GtkClipboard_val,
+     Bool_val,
+     Unit)
+
+ML_2(gtk_text_buffer_add_selection_clipboard,
+     GtkTextBuffer_val,
+     GtkClipboard_val,
+     Unit)
+
+ML_2(gtk_text_buffer_remove_selection_clipboard,
+     GtkTextBuffer_val,
+     GtkClipboard_val,
+     Unit)
+
 /* gtktextview.h */
 
 ML_1 (Val_delete_type, Int_val, (value))
