@@ -286,18 +286,7 @@ CAMLprim value ml_gnome_canvas_item_get_bounds(value i)
 
 CAMLprim value ml_gnome_canvas_group_get_items(value cg)
 {
-  CAMLparam0();
-  CAMLlocal1(v);
-  GList *item_list = GnomeCanvasGroup_val(cg)->item_list_end;
-  v = Val_int(0);
-  while(item_list) {
-    value tmp = alloc_small(2, 0);
-    Field(tmp, 0) = Val_GtkAny(item_list->data);
-    Field(tmp, 1) = v;
-    v = tmp;
-    item_list = item_list->prev;
-  }
-  CAMLreturn(v);
+  return Val_GList(GnomeCanvasGroup_val(cg)->item_list, (value_in)Val_GObject);
 }
 
 
