@@ -3,7 +3,7 @@
 
 EXE = .exe
 TARGETS = var2conv var2def lablgtk$(EXE) lablgtk_t$(EXE) \
-	lablgtkrun$(EXE)
+	lablgtkrun$(EXE) config.make
 
 all: $(TARGETS)
 
@@ -133,6 +133,9 @@ var2def: var2def.cmo
 
 clean:
 	rm -f *.cm* *.obj *.lib *_tags.[ch] $(TARGETS)
+
+config.make: config.make.nt
+	cp config.make.nt config.make
 
 depend .depend:
 	ocamldep *.ml *.mli > .depend
