@@ -121,7 +121,7 @@ let new_window_name () =
 ;;
 
 let load () =
-  let file_selection = new file_selection show:true modal:true title:"coucou" in
+  let file_selection = new file_selection show:true modal:true in
   let filename = ref "" in
   file_selection#ok_button#connect#clicked
     callback:(fun () -> filename := file_selection#get_filename;
