@@ -1,5 +1,8 @@
 $Id$
 
+2003.04.22 [Jacques]
+ * GtkThread.thread_main automatically switches to gui thread.
+
 2003.04.21 [Benjamin]
  * GRange.progress_bar updated. Old functions deprecated.
 
