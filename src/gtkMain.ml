@@ -25,7 +25,12 @@ module Main = struct
       then set_locale ()
       else ""
     in
-    let argv = init Sys.argv in
+    let argv =
+      try
+	init Sys.argv 
+      with
+      |	Error _ -> raise (Error "Gtk.Main.init: initialization failed")
+    in
     Array.blit ~src:argv ~dst:Sys.argv ~len:(Array.length argv)
       ~src_pos:0 ~dst_pos:0;
     Obj.truncate (Obj.repr Sys.argv) (Array.length argv);

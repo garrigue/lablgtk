@@ -632,7 +632,9 @@ value ml_gtk_init (value argv)
 
     copy = (argc ? alloc (argc, Abstract_tag) : Atom(0));
     for (i = 0; i < argc; i++) Field(copy,i) = Field(argv,i);
-    gtk_init (&argc, (char ***)&copy);
+    if( !gtk_init_check (&argc, (char ***)&copy) ){
+      ml_raise_gtk ("ml_gtk_init: initialization failed");
+    }
 
     argv = (argc ? alloc (argc, 0) : Atom(0));
     for (i = 0; i < argc; i++) modify(&Field(argv,i), Field(copy,i));
