@@ -128,3 +128,36 @@ class file_selection ?:title [< "Choose a file" >] ?:filename
     inherit file_selection_wrapper w
     initializer pack_return :packing :show (self :> file_selection_wrapper)
   end
+
+class font_selection_dialog_wrapper obj = object
+  inherit window_skel (obj : Gtk.font_selection_dialog obj)
+  method connect = new GContainer.container_signals ?obj
+  method font = FontSelectionDialog.get_font obj
+  method font_name = FontSelectionDialog.get_font_name obj
+  method set_font_name = FontSelectionDialog.set_font_name obj
+  method preview_text = FontSelectionDialog.get_preview_text obj
+  method set_preview_text = FontSelectionDialog.set_preview_text obj
+  method set_filter = FontSelectionDialog.set_filter obj
+  method ok_button =
+    new GButton.button_wrapper (FontSelectionDialog.ok_button obj)
+  method apply_button =
+    new GButton.button_wrapper (FontSelectionDialog.apply_button obj)
+  method cancel_button =
+    new GButton.button_wrapper (FontSelectionDialog.cancel_button obj)
+end
+
+class font_selection_dialog ?:title 
+    ?:wm_name ?:wm_class ?:position
+    ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y
+    ?:border_width ?:width ?:height ?:packing ?:show [< false >] =
+  let w = FontSelectionDialog.create ?:title in
+  let () =
+    Window.set w ?title:None ?:wm_name ?:wm_class ?:position
+      ?:allow_shrink ?:allow_grow ?:auto_shrink ?:modal ?:x ?:y;
+    Container.set w ?:border_width ?:width ?:height
+  in
+  object (self)
+    inherit font_selection_dialog_wrapper w
+    initializer pack_return :packing :show
+	(self :> font_selection_dialog_wrapper)
+  end

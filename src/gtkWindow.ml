@@ -136,3 +136,54 @@ module FileSelection = struct
     may filename fun:(set_filename w);
     may fileop_buttons fun:(set_fileop_buttons w)
 end
+
+module FontSelectionDialog = struct
+  type null_terminated
+  let null_terminated arg : null_terminated =
+    match arg with None -> Obj.magic Misc.null
+    | Some l ->
+	let len = List.length l in
+	let arr = Array.create len:(len + 1) fill:"" in
+	let rec loop i = function
+	    [] -> arr.(i) <- Obj.magic Misc.null
+	  | s::l -> arr.(i) <- s; loop (i+1) l
+	in loop 0 l;
+	Obj.magic (arr : string array)
+  let cast w : font_selection_dialog obj =
+    if Object.is_a w "GtkFontSelectionDialog" then Obj.magic w
+    else invalid_arg "Gtk.FontSelectionDialog.cast"
+  external create : ?title:string -> font_selection_dialog obj
+      = "ml_gtk_font_selection_dialog_new"
+  external get_font : [> fontseldialog] obj -> Gdk.font
+      = "ml_gtk_font_selection_dialog_get_font"
+  let get_font w =
+    try Some (get_font w) with Null_pointer -> None
+  external get_font_name : [> fontseldialog] obj -> string
+      = "ml_gtk_font_selection_dialog_get_font_name"
+  let get_font_name w =
+    try Some (get_font_name w) with Null_pointer -> None
+  external set_font_name : [> fontseldialog] obj -> string -> unit
+      = "ml_gtk_font_selection_dialog_set_font_name"
+  external set_filter :
+    [> fontseldialog] obj -> font_filter_type -> font_type list ->
+    null_terminated -> null_terminated -> null_terminated ->
+    null_terminated -> null_terminated -> null_terminated -> unit
+    = "ml_gtk_font_selection_dialog_set_filter_bc"
+      "ml_gtk_font_selection_dialog_set_filter"
+  let set_filter w :filter ?type:tl [< [`ALL] >] ?:foundry
+      ?:weight ?:slant ?:setwidth ?:spacing ?:charset =
+    set_filter w filter tl (null_terminated foundry)
+      (null_terminated weight) (null_terminated slant)
+      (null_terminated setwidth) (null_terminated spacing)
+      (null_terminated charset)
+  external get_preview_text : [> fontseldialog] obj -> string
+      = "ml_gtk_font_selection_dialog_get_preview_text"
+  external set_preview_text : [> fontseldialog] obj -> string -> unit
+      = "ml_gtk_font_selection_dialog_set_preview_text"
+  external ok_button : [> fontseldialog] obj -> button obj
+      = "ml_gtk_font_selection_dialog_ok_button"
+  external apply_button : [> fontseldialog] obj -> button obj
+      = "ml_gtk_font_selection_dialog_apply_button"
+  external cancel_button : [> fontseldialog] obj -> button obj
+      = "ml_gtk_font_selection_dialog_cancel_button"
+end

@@ -125,3 +125,42 @@ class file_selection :
     method set_fileop_buttons : bool -> unit
   end
 class file_selection_wrapper : Gtk.file_selection obj -> file_selection
+
+class font_selection_dialog :
+  ?title:string ->
+  ?wm_name:string ->
+  ?wm_class:string ->
+  ?position:Tags.window_position ->
+  ?allow_shrink:bool ->
+  ?allow_grow:bool ->
+  ?auto_shrink:bool ->
+  ?modal:bool ->
+  ?x:int ->
+  ?y:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(font_selection_dialog -> unit) ->
+  ?show:bool ->
+  object
+    inherit window
+    val obj : Gtk.font_selection_dialog obj
+    method font : Gdk.font option
+    method font_name : string option
+    method preview_text : string
+    method set_filter :
+      filter:Tags.font_filter_type ->
+      ?type:Tags.font_type list ->
+      ?foundry:string list ->
+      ?weight:string list ->
+      ?slant:string list ->
+      ?setwidth:string list ->
+      ?spacing:string list -> ?charset:string list -> unit
+    method set_font_name : string -> unit
+    method set_preview_text : string -> unit
+    method ok_button : GButton.button
+    method apply_button : GButton.button
+    method cancel_button : GButton.button
+  end
+class font_selection_dialog_wrapper :
+    Gtk.font_selection_dialog obj -> font_selection_dialog
