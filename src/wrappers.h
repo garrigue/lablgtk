@@ -122,7 +122,7 @@ static void ml_final_##type##ext (value val) \
 { final ((type*)Field(val,1)); } \
 value Val_##type##ext (type *p) \
 { value ret; if (!p) invalid_argument ("Val_"#type" : null pointer"); \
-  ret = alloc_final (2, ml_final_##type##ext, 1, 50); \
+  ret = alloc_final (2, ml_final_##type##ext, 1, 200); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
 #define Pointer_val(val) (void *)Field(val,1)
