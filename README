@@ -19,8 +19,10 @@ How to compile:
 		USE_GNOME=1	to compile GtkXmHTML support (requires gnome)
                 USE_GLADE=1     to compile libglade support
         The following variables will also be remembered if passed as options
-                CAMLC CAMLOPT CC BINDIR INSTALLDIR
+                CAMLC CAMLOPT DEBUG CC BINDIR INSTALLDIR DLLDIR
         or you may directly edit config.make.
+        If gtk-config has a different name, you can set the GTK_CONFIG
+        variable  to it (e.g. FreeBSD).
 
 	Then just type "make" to build the library and toplevels.
 

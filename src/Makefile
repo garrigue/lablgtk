@@ -19,6 +19,12 @@ TOPLEVEL = ocamlmktop $(MLFLAGS)
 CAMLP4 = camlp4o pr_o.cmo
 CONFIG = ../config.make
 
+# protect against missing definitions
+BINDIR = ""
+LIBDIR = ""
+INSTALLDIR = $(LIBDIR)/lablgtk
+DLLDIR = $(LIBDIR)/stublibs
+
 include $(CONFIG)
 
 LABLGLDIR = $(LIBDIR)/lablGL
