@@ -47,7 +47,7 @@ let shadow_type_values = ["NONE", `NONE; "IN", `IN; "OUT", `OUT;
 		  "ETCHED_IN", `ETCHED_IN; "ETCHED_OUT", `ETCHED_OUT ]
 let policy_type_values = ["ALWAYS", `ALWAYS; "AUTOMATIC", `AUTOMATIC ]
 
-(* values is the string representation of the value *)
+(* value_string is the string representation of the value *)
 let change_value_in_prop :value_string = function
   | Int rval  -> rval#set value:(int_of_string value_string) :value_string
   | Float rval ->  rval#set value:(float_of_string value_string) :value_string
@@ -66,8 +66,6 @@ let rec set_property_in_list name value_string = function
   | [] -> failwith ("set_property_in_list: property not found " ^ name)
 
 
-
-
 (* these functions return a string except int and float *)
 let get_int_prop name in:l =
   match List.assoc name in:l with
@@ -78,13 +76,6 @@ let get_float_prop name in:l =
   match List.assoc name in:l with
   | Float rval -> rval#value
   | _ -> failwith "bug get_float_prop"
-
-(*
-let get_bool_prop name in:l =
-  match List.assoc name in:l with
-  | Bool rval -> rval#value
-  | _ -> failwith "bug get_bool_prop"
-*)
 
 let get_string_prop name in:l =
   match List.assoc name in:l with
@@ -99,15 +90,7 @@ let get_enum_prop name in:l =
   | _ -> failwith "bug get_enum_prop"
 
 
-(*
-let string_of_int_prop name in:l =
-  string_of_int (get_int_prop name in:l)
-
-let string_of_float_prop name in:l =
-  string_of_float (get_float_prop name in:l)
-*)
-
-class type rwidget_base = object
+class type tiwidget_base = object
   method name : string
   method proplist : (string * property) list
   method base : widget
@@ -172,17 +155,17 @@ let plist_affich list =
   let une_prop_affich prop = 
     let hbox = new hbox homogeneous:true in
     begin match prop with
-    | name, Bool prop -> new label text:name show:true
+    | name, Bool prop -> new label text:name
 	  packing:(hbox#pack fill:true);
 	new prop_bool callback:prop#set packing:(hbox#pack fill:true)
 	  value:prop#value;
 	()
-    | name, Int prop -> new label text:name show:true
+    | name, Int prop -> new label text:name
 	  packing:(hbox#pack fill:true);
 	new spin_int lower:(-2.) upper:5000. callback:prop#set
 	  packing:(hbox#pack fill:true) value:prop#value;
 	()
-    | name, Float prop -> new label text:name show:true
+    | name, Float prop -> new label text:name
 	  packing:(hbox#pack fill:true);
 	let mini = List.assoc "min" in:prop#value_list
 	and maxi = List.assoc "max" in:prop#value_list in
@@ -190,17 +173,17 @@ let plist_affich list =
 	  step_incr:((maxi-.mini)/.100.) callback:prop#set
 	  packing:(hbox#pack fill:true) value:prop#value;
 	()
-    | name, String prop -> new label text:name show:true
+    | name, String prop -> new label text:name
 	  packing:(hbox#pack fill:true);
 	new prop_string  callback:prop#set
 	  packing:(hbox#pack fill:true) value:prop#value;
 	()
-    | name, Shadow prop -> new label text:name show:true
+    | name, Shadow prop -> new label text:name
 	  packing:(hbox#pack fill:true);
 	new prop_shadow  callback:prop#set
 	  packing:(hbox#pack fill:true) value:prop#value;
 	()
-    | name, Policy prop -> new label text:name show:true
+    | name, Policy prop -> new label text:name
 	  packing:(hbox#pack fill:true);
 	new prop_policy  callback:prop#set
 	  packing:(hbox#pack fill:true) value:prop#value;
@@ -208,8 +191,12 @@ let plist_affich list =
     end;
     hbox
   in let vbox = new vbox in
-  List.iter fun:(fun (n, p) -> vbox#pack (une_prop_affich (n,p)) expand:false;
-	new separator `HORIZONTAL show:true packing:(vbox#pack expand:false); ()) list;
+  List.iter
+    fun:(fun (n, p) ->
+      vbox#pack (une_prop_affich (n,p)) expand:false;
+      new separator `HORIZONTAL packing:(vbox#pack expand:false);
+      ())
+    list;
   vbox
 ;;
 
@@ -218,105 +205,44 @@ let plist_affich list =
 let propwin = new window show:true title:"properties"
 let vbox = new vbox packing:propwin#add
 
-(*
-let hbox = new hbox packing:(vbox#pack padding:5);;
-
-
-new separator `HORIZONTAL packing:vbox#pack show:true;
-new separator `HORIZONTAL packing:vbox#pack show:true;;
-
- let cb = new combo popdown_strings:[] use_arrows_always:true
-    packing:(hbox#pack expand:true fill:false);;
-cb#entry#set_editable false;;
-*)
-
 let vbox2 = plist_affich [];;
 vbox#pack vbox2;;
 let vboxref = ref vbox2
 
-let prop_affich (w : #rwidget_base) =
-  let vb = plist_affich w#proplist in
+
+module SMap = Map.Make (struct type t = string let compare = compare end)
+
+let prop_affich_pool = ref SMap.empty
+
+let prop_affich (w : #tiwidget_base) =
+  let vb = try
+    SMap.find key:w#name !prop_affich_pool
+  with Not_found ->
+    let vb = plist_affich w#proplist in
+    prop_affich_pool := SMap.add key:w#name data:vb !prop_affich_pool;
+    vb in
   vbox#remove !vboxref;
   vbox#pack vb;
   vboxref := vb
 
-
-(*  
-let last_sel = ref (None : rwidget_base option)
-
-
-let rwidget_list = ref ([] : rwidget_base list)
-let rname_prop_list = ref ([] : (string * (string * property) list) list);;
-    
-
-propwin#connect#event#focus_out callback:
-    (fun _ -> begin match !last_sel with
-    |	None -> ()
-    |	Some sl -> sl#base#misc#set state:`NORMAL end;
-      true);
-
-propwin#connect#event#focus_in callback:
-    (fun _ -> begin match !last_sel with
-    |	None -> ()
-    |	Some sl -> sl#base#misc#set state:`SELECTED end;
-      true);
+let prop_add (w : #tiwidget_base) =
+  let vb = plist_affich w#proplist in
+  prop_affich_pool := SMap.add key:w#name data:vb !prop_affich_pool
 
 
-cb#entry#connect#changed callback:
-    (fun _ ->
-      let text = cb#entry#text in
-(* text = "" when we remove the last window *)
-      if text <> "" then begin
-	let vb = plist_affich (List.assoc text in:!rname_prop_list) in
-	vbox#remove !vboxref;
-	vbox#pack vb;
-	vboxref := vb;
-	if cb#entry#misc#has_focus then begin
-	  match !last_sel with
-	  | None -> ()
-	  | Some sl -> sl#base#misc#set state:`NORMAL
-	end;
-	let n = cb#entry#text in
-	let w = List.find !rwidget_list pred:(fun w -> w#name = n) in
-	if cb#entry#misc#has_focus then w#base#misc#set state:`SELECTED;
-	last_sel := Some w
-      end
-      else begin
-	let vb = new vbox in
-	vbox#remove !vboxref;
-	vbox#pack vb;
-	vboxref := vb;
-      end  );;
+let prop_remove name =
+  prop_affich_pool := SMap.remove key:name !prop_affich_pool
 
+let prop_change_name oldname newname =
+  let vb = SMap.find key:oldname !prop_affich_pool in
+  prop_affich_pool := SMap.add key:newname data:vb
+      (SMap.remove key:oldname !prop_affich_pool)
 
-let property_add rw =
-    rwidget_list := (rw :> rwidget_base) :: !rwidget_list;
-    let nplist = List.map !rwidget_list fun:(fun w -> (w#name, w#proplist)) in
-    rname_prop_list := nplist;
-    cb#set_combo popdown_strings:(List.map fun:fst nplist)
-
-let property_remove rw =
-  let rec list_remove = function
-    |	[] -> []
-    |	hd :: tl -> if hd = (rw :> rwidget_base) then tl else hd :: (list_remove tl)
-  in rwidget_list := list_remove !rwidget_list;
-  if !rwidget_list <> [] then begin
-    let nplist = List.map !rwidget_list fun:(fun w -> (w#name, w#proplist)) in
-    rname_prop_list := nplist;
-    cb#set_combo popdown_strings:(List.map fun:fst nplist)
-  end
-  else cb#entry#set_text ""
-
-let property_update name =
-  let nplist = List.map !rwidget_list fun:(fun w -> (w#name, w#proplist)) in
-  rname_prop_list := nplist;
-  cb#set_combo popdown_strings:(List.map fun:fst nplist);
-  cb#entry#set_text name
-
-let test_unique name = not (List.mem_assoc name in:!rname_prop_list)
-
-*)
+let prop_update (w : #tiwidget_base) =
+  prop_affich_pool := SMap.add key:w#name data:(plist_affich w#proplist)
+      (SMap.remove key:w#name !prop_affich_pool)
 
 
 
+  
 

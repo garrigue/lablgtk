@@ -1,11 +1,9 @@
 {
-open Load_parser
+open Paste_parser
 } 
 
 rule token = parse
   [ ' ' '\t' '\n']+     { token lexbuf }
-| "<window"             { WINDOW_START }
-| "</window>"           { WINDOW_END }
 | "name"                { NAME }
 |  '='                  { EQUAL }
 |  '>'                  { SUP }
@@ -36,4 +34,3 @@ rule token = parse
     let s = Lexing.lexeme lexbuf in IDENT s
   }
 
-| eof               { EOF }

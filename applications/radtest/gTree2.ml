@@ -57,9 +57,9 @@ class virtual ['a] pre_tree2_wrapper obj = object (self)
   method remove_items (items : 'a list) =
     Tree2.remove_items obj
       (List.map fun:(fun (t : _ #is_item) -> t #as_item) items)
-(*  method set_selection_mode = Tree2.set_selection_mode obj
+  method set_selection_mode = Tree2.set_selection_mode obj
   method set_view_mode = Tree2.set_view_mode obj
-*)
+
   method set_view_lines = Tree2.set_view_lines obj
   method selection =
     List.map fun:(fun w -> self#wrap (Widget.coerce w)) (Tree2.selection obj)
@@ -99,11 +99,11 @@ class tree_item2 ?:label ?:border_width ?:width ?:height ?:packing ?:show =
     initializer pack_return :packing ?:show (self :> tree_item2_wrapper)
   end
 
-class tree2  ?:view_lines
+class tree2  ?:selection_mode ?:view_mode ?:view_lines
     ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Tree2.create () in
   let () =
-    Tree2.setter w cont:null_cont ?:view_lines;
+    Tree2.setter w cont:null_cont ?:selection_mode ?:view_mode ?:view_lines;
     Container.set w ?:border_width ?:width ?:height in
   object (self)
     inherit tree2_wrapper w

@@ -49,8 +49,8 @@ endif
 	$(COMPOPT) $<
 
 # Targets
-MLOBJS = utils.ml property.cmo treew.cmo load_parser.cmo \
-  load_lexer.cmo main.cmo
+MLOBJS = utils.ml property.cmo paste_parser.cmo paste_lexer.cmo \
+ treew.cmo load_parser.cmo load_lexer.cmo main.cmo
 
 radtest: $(MLOBJS)  libtree2.a gtree2.cma
 	$(LINKER) -o $@ -custom -cclib "-L../.. -L. \
@@ -62,11 +62,17 @@ radtestopt: $(MLOBJS:.cmo=.cmx) libtree2.a gtree2.cmxa
 	-llablgtk -ltree2 $(GTKLIBS)" \
 	stdclass.cmxa lablgtk.cmxa gtree2.cmxa $(MLOBJS:.cmo=.cmx)
 
-load_parser.ml: load_parser.mly
+load_parser.mli load_parser.ml: load_parser.mly
 	olablyacc load_parser.mly
 
 load_lexer.ml: load_lexer.mll
 	olabllex load_lexer.mll
+
+paste_parser.mli paste_parser.ml: paste_parser.mly
+	olablyacc paste_parser.mly
+
+paste_lexer.ml: paste_lexer.mll
+	olabllex paste_lexer.mll
 
 libtree2.a: gtktree2.o gtktreeitem2.o ml_gtk2.o
 	ar rc $@ gtktree2.o gtktreeitem2.o ml_gtk2.o
@@ -79,7 +85,8 @@ gtree2.cmxa: gtkTree2.cmx gTree2.cmx
 	$(LINKOPT) -a -o $@ gtkTree2.cmx gTree2.cmx
 
 clean:
-	rm -f *.cm* *.o *.a radtest load_parser.ml load_parser.mli
+	rm -f *.cm* *.o *.a radtest load_parser.ml load_parser.mli \
+	   paste_parser.ml paste_parser.mli load_lexer.ml paste_lexer.ml
 
 .depend:
 	olabldep *.ml *.mli > .depend

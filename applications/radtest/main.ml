@@ -1,7 +1,6 @@
 open Gtk
 open GdkObj
 open GObj
-
 open GWindow
 open GPack
 open GMenu
@@ -11,6 +10,7 @@ open GPix
 
 open GTree2
 open Property
+open Utils
 open Treew
 
 let main_window = new window width:200 height:200
@@ -25,6 +25,7 @@ let new_item = new menu_item label:"New" packing:project_menu#append
 let open_item = new menu_item label:"Open" packing:project_menu#append
 let save_item = new menu_item label:"Save" packing:project_menu#append
 let save_as_item = new menu_item label:"Save as" packing:project_menu#append
+let test_item = new menu_item label:"Test" packing:project_menu#append
 ;;
 
 exit_item#connect#activate callback:GMain.Main.quit
@@ -45,10 +46,11 @@ class project () =
       filename <- f
 
     method add_window_by_name :name =
-      self#add_window (new_window :name)
+      let wt = new window_and_tree :name in
+      self#add_window (wt#tree_window, wt#tiwin)
 
     method add_window (tw, tiw) =
-      let name = tiw#tiw#name in
+      let name = tiw#name in
       let label = new label text:name xalign:0. yalign:0.5 in
       let tree_item = new tree_item2 in
       tree_item#add label;
@@ -61,31 +63,29 @@ class project () =
 	      let menu = new menu in
 	      let mi_remove = new menu_item label:"delete"
 		  packing:menu#append in
-	      mi_remove#connect#activate callback:(fun () -> self#delete_window :name);
+	      mi_remove#connect#activate
+		callback:(fun () -> self#delete_window :name);
 	      menu#popup button:3 time:(GdkEvent.Button.time ev)
 	    end;
 	    true
 	| _ -> false);
-      let id = tiw#tiw#connect#name_changed callback:
+      let id = tiw#connect#name_changed callback:
 	  (fun n -> label#set_text n; tw#set_wm title:(n ^ "-Tree")) in
       window_list <- window_list @ [name, (tw, tiw, tree_item, id)]
       
     method delete_window :name =
       let (tw, tiw, ti, id) = List.assoc name in:window_list in
-      tiw#tiw#disconnect id;
+      tiw#disconnect id;
       tw#destroy ();
-      tiw#tiw#widget#destroy ();
+      tiw#widget#destroy ();
       project_tree#remove ti;
-(* l'enlever aussi de la fenetre property *)
-(*      let rec rem (t : #tiwidget) =
-	t#forall callback:rem; property_remove t in
-      rem tiw#tiw; *)
       window_list <- List.remove_assoc name in:window_list
       
     method delete () =
       List.iter (List.map window_list fun:fst)
 	fun:(fun name -> self#delete_window :name);
-      main_vbox#remove project_box
+      main_vbox#remove project_box;
+      name_list := []
 
     method get_filename () =
       let res = ref false in
@@ -107,7 +107,7 @@ class project () =
       else begin
 	let outch = open_out file:filename in
 	let c = Oformat.of_channel outch in
-	List.iter window_list fun:(fun (_, (_, t, _, _)) -> t#tiw#save c);
+	List.iter window_list fun:(fun (_, (_, t, _, _)) -> t#save c);
 	close_out outch;
 	main_project_modify := false
       end
@@ -124,10 +124,14 @@ new_item#connect#activate callback:
       main_project := new project ())
 ;;
 
-let window_index = ref 99;;
 let new_window_name () =
-  incr window_index;
-  "window" ^ (string_of_int !window_index)
+  let window_index = ref 1 in
+  let name = ref "window1" in
+  while not (test_unique !name) do
+    incr window_index;
+    name := "window" ^ (string_of_int !window_index)
+  done;
+  !name
 ;;
 
 let load () =
@@ -141,13 +145,14 @@ let load () =
   file_selection#connect#destroy callback:GMain.Main.quit;
   GMain.Main.main ();
   if !filename <> "" then begin
+    !main_project#delete ();
+    main_project := new project ();
     let inch = open_in file:!filename in
     let lexbuf = Lexing.from_channel inch in
     let project_list = Load_parser.project Load_lexer.token lexbuf in
     close_in inch;
-    !main_project#delete ();
-    main_project := new project ();
-    List.iter project_list fun:!main_project#add_window;
+    List.iter project_list
+      fun:(fun (tw, tiw) -> !main_project#add_window (tw, tiw));
     !main_project#set_filename !filename
   end
 ;;
@@ -196,7 +201,8 @@ let xpm_window () =
   add_xpm file:"scrolledwindow.xpm" left:3 top:1 classe:"scrolled_window";
   add_xpm file:"hseparator.xpm"     left:0 top:2 classe:"hseparator";
   add_xpm file:"vseparator.xpm"     left:1 top:2 classe:"vseparator";
-  add_xpm file:"entry.xpm"          left:2 top:2 classe:"entry"
+  add_xpm file:"label.xpm"          left:2 top:2 classe:"label";
+  add_xpm file:"entry.xpm"          left:3 top:2 classe:"entry"
 ;;
 
 xpm_window ()
@@ -205,6 +211,12 @@ xpm_window ()
 
 main_window#show ()
 ;;
+
+
+let print_names () =
+  List.iter !name_list fun:(fun n -> Printf.printf "%s\n" n);
+  flush stdout in
+test_item#connect#activate callback:print_names;
 
 open_item#connect#activate callback:load;
 save_item#connect#activate callback:(fun () -> !main_project#save ());

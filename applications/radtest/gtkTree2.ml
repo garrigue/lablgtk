@@ -64,15 +64,17 @@ module Tree2 = struct
       = "ml_gtk_tree2_child_position"
   external item_up : [> tree] obj -> pos:int -> unit
       = "ml_gtk_tree2_item_up"
+  external cut_item : [> tree] obj -> [> treeitem] obj -> unit
+      = "ml_gtk_tree2_cut_item"
   external select_next_child : [> tree] obj -> [> treeitem] obj -> bool -> unit
       = "ml_gtk_tree2_select_next_child"
   external select_prev_child : [> tree] obj -> [> treeitem] obj -> unit
       = "ml_gtk_tree2_select_prev_child"
-(*  external set_selection_mode : [> tree] obj -> selection_mode -> unit
+  external set_selection_mode : [> tree] obj -> selection_mode -> unit
       = "ml_gtk_tree2_set_selection_mode"
   external set_view_mode : [> tree] obj -> [LINE ITEM] -> unit
       = "ml_gtk_tree2_set_view_mode"
-*)
+
   external set_view_lines : [> tree] obj -> bool -> unit
       = "ml_gtk_tree2_set_view_lines"
   external selection : [> tree] obj -> tree_item obj list =
@@ -81,9 +83,9 @@ module Tree2 = struct
     "ml_gtk_tree2_children"
   let setter w :cont ?:selection_mode ?:view_mode ?:view_lines =
     let may_set f = may fun:(f w) in
-(*    may_set set_selection_mode selection_mode;
+    may_set set_selection_mode selection_mode;
     may_set set_view_mode view_mode;
-*)
+
     may_set set_view_lines view_lines;
     cont w
   module Signals = struct
