@@ -14,7 +14,7 @@ COMPILER = $(CAMLC) $(MLFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
-LIBRARIAN = ocamlmklib
+LIBRARIAN = ocamlmklib -verbose
 TOPLEVEL = ocamlmktop $(MLFLAGS)
 CAMLP4 = camlp4o pr_o.cmo
 CONFIG = ../config.make
@@ -141,6 +141,7 @@ install:
 	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(INSTALLDIR)
 	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
 	cp $(CLIBS) $(INSTALLDIR)
+	cd $(INSTALLDIR) && $(RANLIB) $(CLIBS)
 	cp lablgtktop lablgtktop_t varcc $(INSTALLDIR)
 	cp -p *.h $(INSTALLDIR)
 	cp lablgtk $(BINDIR)
@@ -150,31 +151,41 @@ install:
 
 installopt:
 	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.a) $(INSTALLDIR)
+	cd $(INSTALLDIR) && $(RANLIB) $(MLLIBS:.cma=.a)
 	cp $(ALLOBJS:.cmo=.cmx) $(INSTALLDIR)
 	cp $(INITOBJS:.cmo=.o) $(INSTALLDIR)
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=.o) $(INSTALLDIR); fi
 
-lablgtk.cma: $(MLOBJS) $(COBJS)
-	$(LIBRARIAN) -o lablgtk $(MLOBJS) $(COBJS) $(GTKLIBS)
-lablgtk.cmxa: lablgtk.cma $(MLOBJS:.cmo=.cmx)
+liblablgtk.a: $(COBJS)
+	$(LIBRARIAN) -o lablgtk $(COBJS) $(GTKLIBS)
+lablgtk.cma: liblablgtk.a $(MLOBJS)
+	$(LIBRARIAN) -o lablgtk $(MLOBJS) $(GTKLIBS)
+lablgtk.cmxa: liblablgtk.a $(MLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtk $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
 
-lablgtkgl.cma: $(GLMLOBJS) $(GLCOBJS)
-	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS) $(GLCOBJS) \
+liblablgtkgl.a: $(GLCOBJS)
+	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLCOBJS) \
 	    $(GLLIBS) $(GTKLIBS)
-lablgtkgl.cmxa: lablgtkgl.cma $(GLMLOBJS:.cmo=.cmx)
+lablgtkgl.cma: liblablgtkgl.a $(GLMLOBJS)
+	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS) \
+	    $(GLLIBS) $(GTKLIBS)
+lablgtkgl.cmxa: liblablgtkgl.a $(GLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS:.cmo=.cmx) \
 	    $(GLLIBS) $(GTKLIBS)
 
-lablgnome.cma: $(GNOMEMLOBJS) $(GNOMECOBJS)
-	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMECOBJS) $(GNOMELIBS)
-lablgnome.cmxa: lablgnome.cma $(GNOMEMLOBJS:.cmo=.cmx)
+liblablgnome.a: $(GNOMECOBJS)
+	$(LIBRARIAN) -o lablgnome $(GNOMECOBJS) $(GNOMELIBS)
+lablgnome.cma: liblablgnome.a $(GNOMEMLOBJS)
+	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMELIBS)
+lablgnome.cmxa: liblablgnome.a $(GNOMEMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) $(GNOMELIBS)
 
-lablglade.cma: $(GLADEMLOBJS) $(GLADECOBJS)
-	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS) $(GLADECOBJS) $(GLADELIBS)
-lablglade.cmxa: lablglade.cma $(GLADEMLOBJS:.cmo=.cmx)
+liblablglade.a: $(GLADECOBJS)
+	$(LIBRARIAN) -o lablglade $(GLADECOBJS) $(GLADELIBS)
+lablglade.cma: liblablglade.a $(GLADEMLOBJS)
+	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS) $(GLADELIBS)
+lablglade.cmxa: liblablglade.a $(GLADEMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablglade $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
 
 gtkThread.cmo: gtkThread.ml
