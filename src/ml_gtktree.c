@@ -460,7 +460,7 @@ ml_gtk_row_separator_func (GtkTreeModel *model,
 			   GtkTreeIter *iter,
 			   gpointer data)
 {
-  gboolean ret;
+  gboolean ret = FALSE;
   value *closure = data;
   CAMLparam0();
   CAMLlocal3 (arg1, arg2, mlret);
@@ -468,10 +468,7 @@ ml_gtk_row_separator_func (GtkTreeModel *model,
   arg2 = Val_GtkTreeIter (iter);
   mlret = callback2_exn (*closure, arg1, arg2);
   if (Is_exception_result (ret))
-    {
-      CAML_EXN_LOG ("gtk_row_separator_func");
-      ret = FALSE;
-    }
+    CAML_EXN_LOG ("gtk_row_separator_func");
   else
     ret = Bool_val (mlret);
   CAMLreturn (ret);
