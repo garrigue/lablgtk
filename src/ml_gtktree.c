@@ -1,5 +1,9 @@
 /* $Id$ */
 
+/* GtkTree is obsolete, but we keep it for a while */
+
+#define GTK_ENABLE_BROKEN 1
+
 #include <string.h>
 #include <gtk/gtk.h>
 #include <caml/mlvalues.h>
@@ -13,6 +17,9 @@
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
+
+#define Tree_view_mode_val(val) \
+  (val == MLTAG_ITEM ? GTK_TREE_VIEW_ITEM : GTK_TREE_VIEW_LINE)
 
 /* gtktreeitem.h */
 
