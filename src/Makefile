@@ -164,7 +164,8 @@ lablgtkgl.cma: $(GLMLOBJS) $(GLCOBJS)
 	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS) $(GLCOBJS) \
 	    $(GLLIBS) $(GTKLIBS)
 lablgtkgl.cmxa: lablgtkgl.cma $(GLMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtkgl $(GLMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtkgl -lgtkgl $(GLMLOBJS:.cmo=.cmx) \
+	    $(GLLIBS) $(GTKLIBS)
 
 lablgnome.cma: $(GNOMEMLOBJS) $(GNOMECOBJS)
 	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMECOBJS) $(GNOMELIBS)
