@@ -133,7 +133,7 @@ module Widget = struct
       = "ml_GTK_WIDGET_VISIBLE"
   external parent : [> widget] obj -> widget obj
       = "ml_gtk_widget_parent"
-  external allocation : [> widget] obj -> Gdk.rectangle
+  external allocation : [> widget] obj -> rectangle
       = "ml_gtk_widget_allocation"
   let set_position w ?:x [< -2 >] ?:y [< -2 >] =
     if x > -2 || y > -2 then set_uposition w :x :y
@@ -188,51 +188,51 @@ module Widget = struct
     module Event = struct
       let marshal f argv =
 	let p = GtkArgv.get_pointer argv pos:0 in
-	let ev = Gdk.Event.unsafe_copy p in
+	let ev = GdkEvent.unsafe_copy p in
 	GtkArgv.set_result_bool argv (f ev)
       let any : ([> widget], Gdk.Tags.event_type Gdk.event -> bool) t =
 	{ name = "event"; marshaller = marshal }
-      let button_press : ([> widget], Gdk.Event.Button.t -> bool) t =
+      let button_press : ([> widget], GdkEvent.Button.t -> bool) t =
 	{ name = "button_press_event"; marshaller = marshal }
-      let button_release : ([> widget], Gdk.Event.Button.t -> bool) t =
+      let button_release : ([> widget], GdkEvent.Button.t -> bool) t =
 	{ name = "button_release_event"; marshaller = marshal }
-      let motion_notify : ([> widget], Gdk.Event.Motion.t -> bool) t =
+      let motion_notify : ([> widget], GdkEvent.Motion.t -> bool) t =
 	{ name = "motion_notify_event"; marshaller = marshal }
       let delete : ([> widget], [DELETE] Gdk.event -> bool) t =
 	{ name = "delete_event"; marshaller = marshal }
       let destroy : ([> widget], [DESTROY] Gdk.event -> bool) t =
 	{ name = "destroy_event"; marshaller = marshal }
-      let expose : ([> widget], Gdk.Event.Expose.t -> bool) t =
+      let expose : ([> widget], GdkEvent.Expose.t -> bool) t =
 	{ name = "expose_event"; marshaller = marshal }
-      let key_press : ([> widget], Gdk.Event.Key.t -> bool) t =
+      let key_press : ([> widget], GdkEvent.Key.t -> bool) t =
 	{ name = "key_press_event"; marshaller = marshal }
-      let key_release : ([> widget], Gdk.Event.Key.t -> bool) t =
+      let key_release : ([> widget], GdkEvent.Key.t -> bool) t =
 	{ name = "key_release_event"; marshaller = marshal }
-      let enter_notify : ([> widget], Gdk.Event.Crossing.t -> bool) t =
+      let enter_notify : ([> widget], GdkEvent.Crossing.t -> bool) t =
 	{ name = "enter_notify_event"; marshaller = marshal }
-      let leave_notify : ([> widget], Gdk.Event.Crossing.t -> bool) t =
+      let leave_notify : ([> widget], GdkEvent.Crossing.t -> bool) t =
 	{ name = "leave_notify_event"; marshaller = marshal }
-      let configure : ([> widget], Gdk.Event.Configure.t -> bool) t =
+      let configure : ([> widget], GdkEvent.Configure.t -> bool) t =
 	{ name = "configure_event"; marshaller = marshal }
-      let focus_in : ([> widget], Gdk.Event.Focus.t -> bool) t =
+      let focus_in : ([> widget], GdkEvent.Focus.t -> bool) t =
 	{ name = "focus_in_event"; marshaller = marshal }
-      let focus_out : ([> widget], Gdk.Event.Focus.t -> bool) t =
+      let focus_out : ([> widget], GdkEvent.Focus.t -> bool) t =
 	{ name = "focus_out_event"; marshaller = marshal }
       let map : ([> widget], [MAP] Gdk.event -> bool) t =
 	{ name = "map_event"; marshaller = marshal }
       let unmap : ([> widget], [UNMAP] Gdk.event -> bool) t =
 	{ name = "unmap_event"; marshaller = marshal }
-      let property_notify : ([> widget], Gdk.Event.Property.t -> bool) t =
+      let property_notify : ([> widget], GdkEvent.Property.t -> bool) t =
 	{ name = "property_notify_event"; marshaller = marshal }
-      let selection_clear : ([> widget], Gdk.Event.Selection.t -> bool) t =
+      let selection_clear : ([> widget], GdkEvent.Selection.t -> bool) t =
 	{ name = "selection_clear_event"; marshaller = marshal }
-      let selection_request : ([> widget], Gdk.Event.Selection.t -> bool) t =
+      let selection_request : ([> widget], GdkEvent.Selection.t -> bool) t =
 	{ name = "selection_request_event"; marshaller = marshal }
-      let selection_notify : ([> widget], Gdk.Event.Selection.t -> bool) t =
+      let selection_notify : ([> widget], GdkEvent.Selection.t -> bool) t =
 	{ name = "selection_notify_event"; marshaller = marshal }
-      let proximity_in : ([> widget], Gdk.Event.Proximity.t -> bool) t =
+      let proximity_in : ([> widget], GdkEvent.Proximity.t -> bool) t =
 	{ name = "proximity_in_event"; marshaller = marshal }
-      let proximity_out : ([> widget], Gdk.Event.Proximity.t -> bool) t =
+      let proximity_out : ([> widget], GdkEvent.Proximity.t -> bool) t =
 	{ name = "proximity_out_event"; marshaller = marshal }
     end
   end

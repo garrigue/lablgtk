@@ -45,7 +45,7 @@ endif
 ifdef USE_GL
 MLFLAGS += -I $(LABLLIB)/lablGL
 GLLINK = -I $(LABLLIB)/lablGL lablgl.cma \
-	-cclib "-lgtkgl -L$(LABLLIB)/lablGL -llablgl -lGL -lGLU"
+	-cclib "-lgtkgl -L$(LABLLIB)/lablGL -llablgl -l$(MESA)GL -l$(MESA)GLU"
 GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl.o
 endif
@@ -68,7 +68,8 @@ endif
 # Targets
 COBJS = ml_gtk.o ml_gdk.o ml_glib.o wrappers.o $(GLCOBJS)
 OLDMLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gdkObj.cmo gtkObj.cmo gtkExt.cmo
-MLOBJS = misc.cmo glib.cmo gdk.cmo gtk.cmo gtkArgv.cmo gtkSignal.cmo \
+MLOBJS = misc.cmo glib.cmo gdk.cmo gdkEvent.cmo \
+	gtk.cmo gtkArgv.cmo gtkSignal.cmo \
 	gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkTree.cmo gtkList.cmo \
 	gtkFrame.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
@@ -109,7 +110,7 @@ threadObj.cmx: threadObj.ml
 lablgtk_t: liblablgtk.a lablgtk.cma $(THOBJS)
 	$(TOPLEVEL) $(THFLAGS) -o $@ -custom \
 		-cclib "-L. -llablgtk $(LDFLAGS) $(THLDFLAGS)" \
-		$(THLIBS) lablgtk.cma $(THOBJS) $(GLLINK)
+		$(GLLINK) $(THLIBS) lablgtk.cma $(THOBJS)
 
 var2conv: var2conv.cmo
 	$(LINKER) -o $@ var2conv.cmo

@@ -48,36 +48,36 @@ class event_signals :
     method any :
 	callback:(Gdk.Tags.event_type Gdk.event -> bool) -> GtkSignal.id
     method button_press :
-	callback:(Gdk.Event.Button.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Button.t -> bool) -> GtkSignal.id
     method button_release :
-	callback:(Gdk.Event.Button.t -> bool) -> GtkSignal.id
-    method configure : callback:(Gdk.Event.Configure.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Button.t -> bool) -> GtkSignal.id
+    method configure : callback:(GdkEvent.Configure.t -> bool) -> GtkSignal.id
     method delete : callback:([DELETE] Gdk.event -> bool) -> GtkSignal.id
     method destroy : callback:([DESTROY] Gdk.event -> bool) -> GtkSignal.id
     method enter_notify :
-	callback:(Gdk.Event.Crossing.t -> bool) -> GtkSignal.id
-    method expose : callback:(Gdk.Event.Expose.t -> bool) -> GtkSignal.id
-    method focus_in : callback:(Gdk.Event.Focus.t -> bool) -> GtkSignal.id
-    method focus_out : callback:(Gdk.Event.Focus.t -> bool) -> GtkSignal.id
-    method key_press : callback:(Gdk.Event.Key.t -> bool) -> GtkSignal.id
-    method key_release : callback:(Gdk.Event.Key.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Crossing.t -> bool) -> GtkSignal.id
+    method expose : callback:(GdkEvent.Expose.t -> bool) -> GtkSignal.id
+    method focus_in : callback:(GdkEvent.Focus.t -> bool) -> GtkSignal.id
+    method focus_out : callback:(GdkEvent.Focus.t -> bool) -> GtkSignal.id
+    method key_press : callback:(GdkEvent.Key.t -> bool) -> GtkSignal.id
+    method key_release : callback:(GdkEvent.Key.t -> bool) -> GtkSignal.id
     method leave_notify :
-	callback:(Gdk.Event.Crossing.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Crossing.t -> bool) -> GtkSignal.id
     method map : callback:([MAP] Gdk.event -> bool) -> GtkSignal.id
     method motion_notify :
-	callback:(Gdk.Event.Motion.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Motion.t -> bool) -> GtkSignal.id
     method property_notify :
-	callback:(Gdk.Event.Property.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Property.t -> bool) -> GtkSignal.id
     method proximity_in :
-	callback:(Gdk.Event.Proximity.t -> bool) -> GtkSignal.id
+	callback:(GdkEvent.Proximity.t -> bool) -> GtkSignal.id
     method proximity_out :
-      callback:(Gdk.Event.Proximity.t -> bool) -> GtkSignal.id
+      callback:(GdkEvent.Proximity.t -> bool) -> GtkSignal.id
     method selection_clear :
-      callback:(Gdk.Event.Selection.t -> bool) -> GtkSignal.id
+      callback:(GdkEvent.Selection.t -> bool) -> GtkSignal.id
     method selection_notify :
-      callback:(Gdk.Event.Selection.t -> bool) -> GtkSignal.id
+      callback:(GdkEvent.Selection.t -> bool) -> GtkSignal.id
     method selection_request :
-      callback:(Gdk.Event.Selection.t -> bool) -> GtkSignal.id
+      callback:(GdkEvent.Selection.t -> bool) -> GtkSignal.id
     method unmap : callback:([UNMAP] Gdk.event -> bool) -> GtkSignal.id
   end
 
@@ -102,7 +102,7 @@ class widget_misc :
     method add_accelerator :
       sig:(Gtk.widget, unit -> unit) GtkSignal.t -> accel_group -> key:char ->
       ?mod:Gdk.Tags.modifier list -> ?flags:Tags.accel_flag list -> unit
-    method allocation : Gdk.rectangle
+    method allocation : rectangle
     method colormap : Gdk.colormap
     method draw : Gdk.Rectangle.t -> unit
     method event : 'a. 'a Gdk.event -> bool

@@ -452,8 +452,8 @@ class view area = object (self)
   val mutable draw_object = fun :amp -> ()
   val mutable magnitude = 0.
 
-  method width =  area#misc#allocation.Gdk.width
-  method height = area#misc#allocation.Gdk.height
+  method width =  area#misc#allocation.Gtk.width
+  method height = area#misc#allocation.Gtk.height
 
   method draw () =
     let ratio = float self#height /. float self#width in
@@ -565,6 +565,7 @@ let main () =
   let area = new GlGtk.area width:640 height:480
       [`DEPTH_SIZE 1;`RGBA;`DOUBLEBUFFER] packing:window#add in
   area#misc#realize ();
+  area#make_current ();
   GlClear.depth 1.0;
   GlClear.color (0.0, 0.0, 0.0);
   GlDraw.color (1.0, 1.0, 1.0);

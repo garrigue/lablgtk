@@ -334,14 +334,14 @@ module TipsQuery = struct
     let widget_selected :
 	([> tipsquery],
 	 widget obj option ->
-	 string option -> string option -> Gdk.Event.Button.t -> bool) t =
+	 string option -> string option -> GdkEvent.Button.t -> bool) t =
       let marshal f argv =
 	let stop = 
 	  f (try Some (Widget.cast (GtkArgv.get_object argv pos:0))
 	     with Null_pointer -> None)
 	    (try Some(GtkArgv.get_string argv pos:1) with Null_pointer -> None)
 	    (try Some(GtkArgv.get_string argv pos:2) with Null_pointer -> None)
-	    (Gdk.Event.unsafe_copy (GtkArgv.get_pointer argv pos:3)) in
+	    (GdkEvent.unsafe_copy (GtkArgv.get_pointer argv pos:3)) in
 	GtkArgv.set_result_bool argv stop in
       { name = "widget_selected"; marshaller = marshal }
   end
