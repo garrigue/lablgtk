@@ -224,7 +224,7 @@ Glade support:
        % lablgtk -thread
        # #use "project1.ml" ;;
        class window1 : ...
-       # let w1 = new window1 ~file:"project1.glade" ;;
+       # let w1 = new window1 () ;;
 
 GL extension:
 

@@ -1,5 +1,9 @@
 $Id$
 
+2001.05.17
+  * add GRange.ruler
+  * improve lablgladecc, support all widgets
+
 2001.05.16
   * add lablgladecc, a libglade wrapper compiler
 

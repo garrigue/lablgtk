@@ -95,7 +95,7 @@ let check_handler ?target ?(name="<unknown>") handler =
         eprintf "Glade.ml: %s does not take an object argument.\n" name;
       fun argv -> f argv (GtkArgv.get_args argv)
 
-let bind_handlers ?(extra=[]) xml =
+let bind_handlers ?(extra=[]) ?(warn=false) xml =
   signal_autoconnect xml ~f:
     begin fun ~handler:name ~signal ~after ?target obj ->
       try
@@ -106,9 +106,7 @@ let bind_handlers ?(extra=[]) xml =
         let callback = check_handler ?target ~name handler in
         ignore (GtkSignal.connect_by_name obj ~name:signal ~after ~callback)
       with Not_found ->
-        if String.length name < 3
-        || String.sub name ~pos:0 ~len:3 <> "on_"
-        then eprintf "Glade.ml: no handler for %s.\n" name
+        if warn then eprintf "Glade.bind_handlers: no handler for %s\n" name
     end;
   flush stderr
 
@@ -121,7 +119,7 @@ let bind_handler ~name ~handler ?(warn=true) xml =
       ignore (GtkSignal.connect_by_name obj ~name:signal ~after ~callback)
     end;
   if !warn then begin
-    Printf.eprintf "Glade.bind: handler %s is not used\n" name;
+    eprintf "Glade.bind_handler: handler %s is not used\n" name;
     flush stderr
   end
 

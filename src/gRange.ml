@@ -81,3 +81,19 @@ let scrollbar dir ?adjustment ?update_policy ?packing ?show () =
       ?adjustment:(may_map ~f:GData.as_adjustment adjustment) in
   let () = may update_policy ~f:(Range.set_update_policy w) in
   pack_return (new scrollbar w) ~packing ~show
+
+class ruler obj = object
+  inherit widget_full obj
+  method set_metric = Ruler.set_metric obj
+  method set_range ?lower ?upper ?position ?max_size () =
+    Ruler.set_range obj ?lower ?upper ?position ?max_size
+  method lower = Ruler.get_lower obj
+  method upper = Ruler.get_upper obj
+  method position = Ruler.get_position obj
+  method max_size = Ruler.get_max_size obj
+end
+
+let ruler dir ?metric ?lower ?upper ?position ?max_size ?packing ?show () =
+  let w = Ruler.create dir in
+  let () = Ruler.set ?metric ?lower ?upper ?position ?max_size w in
+  pack_return (new ruler w) ~packing ~show
