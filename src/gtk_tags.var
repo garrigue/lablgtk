@@ -107,3 +107,5 @@ type tree_view_mode = "GTK_TREE_VIEW_"
 type spin_button_update_policy = "GTK_UPDATE_"
     [ ALWAYS IF_VALID ]
 
+type accel_flag = "GTK_ACCEL_"
+    [ VISIBLE SIGNAL_VISIBLE LOCKED ]
