@@ -59,9 +59,9 @@ CAMLprim value ml_gtkwindow_init(value unit)
 
 /* gtkobject.h */
 
-#define gtk_object_ref_and_sink(w) (gtk_object_ref(w), gtk_object_sink(w))
+#define gtk_object_ref_and_sink(w) (g_object_ref(w), gtk_object_sink(w))
 Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
-                           gtk_object_unref, 20)
+                           g_object_unref, 20)
 ML_1 (GTK_OBJECT_FLAGS, GtkObject_val, Val_int)
 ML_1 (gtk_object_ref_and_sink, GtkObject_val, Unit)
 
@@ -840,7 +840,6 @@ CAMLprim value ml_gtk_init (value argv)
     for (i = 0; i < argc; i++) modify(&Field(argv,i), Field(copy,i));
     CAMLreturn (argv);
 }
-ML_1 (gtk_exit, Int_val, Unit)
 ML_0 (gtk_set_locale, Val_string)
 ML_0 (gtk_disable_setlocale, Unit)
 ML_0 (gtk_main, Unit)
@@ -859,179 +858,6 @@ CAMLprim value ml_gtk_get_version (value unit)
 }
 
 ML_0 (gtk_get_current_event_time,copy_int32)
-
-/* Marshalling */
-
-/*
-void ml_gtk_callback_marshal (GtkObject *object, gpointer data,
-			       guint nargs, GtkArg *args)
-{
-    value vargs = alloc_small(3,0);
-
-    CAMLparam1 (vargs);
-    Field(vargs,0) = (value) object;
-    Field(vargs,1) = Val_int(nargs);
-    Field(vargs,2) = (value) args;
-
-    callback (*(value*)data, vargs);
-
-    Field(vargs,0) = Val_int(-1);
-    Field(vargs,1) = Val_int(-1);
-    CAMLreturn0;
-}
-
-CAMLprim value ml_gtk_arg_shift (GtkArg *args, value index)
-{
-    return (value) (&args[Int_val(index)]);
-}
-
-CAMLprim value ml_gtk_arg_get_type (GtkArg *arg)
-{
-    return Val_int (arg->type);
-}
-
-CAMLprim value ml_gtk_arg_get (GtkArg *arg)
-{
-    CAMLparam0();
-    CAMLlocal1(tmp);
-    value ret = Val_unit;
-    GtkFundamentalType type = GTK_FUNDAMENTAL_TYPE(arg->type);
-    int tag;
-
-    switch (type) {
-    case GTK_TYPE_CHAR:
-        tag = 0;
-        tmp = Int_val(GTK_VALUE_CHAR(*arg));
-        break;
-    case GTK_TYPE_BOOL:
-        tag = 1;
-        tmp = Val_bool(GTK_VALUE_BOOL(*arg));
-        break;
-    case GTK_TYPE_INT:
-    case GTK_TYPE_ENUM:
-    case GTK_TYPE_UINT:
-    case GTK_TYPE_FLAGS:
-        tag = 2;
-        tmp = Val_int (GTK_VALUE_INT(*arg)); break;
-    case GTK_TYPE_LONG:
-    case GTK_TYPE_ULONG:
-        tag = 2;
-        tmp = Val_int (GTK_VALUE_LONG(*arg)); break;
-    case GTK_TYPE_FLOAT:
-        tag = 3;
-        tmp = copy_double ((double)GTK_VALUE_FLOAT(*arg)); break;
-    case GTK_TYPE_DOUBLE:
-        tag = 3;
-        tmp = copy_double (GTK_VALUE_DOUBLE(*arg)); break;
-    case GTK_TYPE_STRING:
-        tag = 4;
-        tmp = Val_option (GTK_VALUE_STRING(*arg), copy_string); break;
-    case GTK_TYPE_OBJECT:
-        tag = 5;
-        tmp = Val_option (GTK_VALUE_OBJECT(*arg), Val_GtkObject); break;
-    case GTK_TYPE_BOXED:
-    case GTK_TYPE_POINTER:
-        tag = 6;
-        tmp = Val_option (GTK_VALUE_POINTER(*arg), Val_pointer); break;
-    default:
-        tag = -1;
-    }
-    if (tag != -1) {
-        ret = alloc_small(1,tag);
-        Field(ret,0) = tmp;
-    }
-    CAMLreturn(ret);
-}
-
-CAMLprim value ml_gtk_arg_set_retloc (GtkArg *arg, value val)
-{
-    value type = Fundamental_type_val(Is_block(val) ? Field(val,0) : val);
-    value data = (Is_block(val) ? Field(val,1) : 0);
-    if (GTK_FUNDAMENTAL_TYPE(arg->type) != GTK_TYPE_POINTER
-        && GTK_FUNDAMENTAL_TYPE(arg->type) != type)
-	ml_raise_gtk ("GtkArgv.Arg.set : argument type mismatch");
-    switch (type) {
-    case GTK_TYPE_CHAR:   *GTK_RETLOC_CHAR(*arg) = Int_val(data); break;
-    case GTK_TYPE_BOOL:   *GTK_RETLOC_BOOL(*arg) = Int_val(data); break;
-    case GTK_TYPE_INT:
-    case GTK_TYPE_ENUM:   *GTK_RETLOC_INT(*arg) = Int_val(data); break;
-    case GTK_TYPE_UINT:
-    case GTK_TYPE_FLAGS:  *GTK_RETLOC_UINT(*arg) = Int32_val(data); break;
-    case GTK_TYPE_LONG:
-    case GTK_TYPE_ULONG:  *GTK_RETLOC_LONG(*arg) = Nativeint_val(data); break;
-    case GTK_TYPE_FLOAT:  *GTK_RETLOC_FLOAT(*arg) = Float_val(data); break;
-    case GTK_TYPE_DOUBLE: *GTK_RETLOC_DOUBLE(*arg) = Double_val(data); break;
-    case GTK_TYPE_STRING:
-         *GTK_RETLOC_STRING(*arg) = Option_val(data, String_val, NULL);
-         break;
-    case GTK_TYPE_OBJECT:
-    case GTK_TYPE_BOXED:
-    case GTK_TYPE_POINTER:
-         *GTK_RETLOC_POINTER(*arg) = Option_val(data, Pointer_val, NULL);
-         break;
-    }
-    return Val_unit;
-}
-
-CAMLprim value ml_gtk_arg_get_nativeint(GtkArg *arg) {
-
-     switch(GTK_FUNDAMENTAL_TYPE(arg->type)) {
-     case GTK_TYPE_INT:
-     case GTK_TYPE_UINT:
-          return copy_nativeint (GTK_VALUE_INT(*arg));
-     case GTK_TYPE_LONG:
-     case GTK_TYPE_ULONG:
-          return copy_nativeint (GTK_VALUE_LONG(*arg));
-     case GTK_TYPE_ENUM:
-          return copy_nativeint (GTK_VALUE_ENUM(*arg));
-     case GTK_TYPE_FLAGS:
-          return copy_nativeint (GTK_VALUE_FLAGS(*arg));
-     default:
-          ml_raise_gtk ("argument type mismatch");
-     }
-     return Val_unit;
-}
-
-CAMLprim value ml_gtk_arg_get_pointer (GtkArg *arg)
-{
-    gpointer p = NULL;
-    switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-    case GTK_TYPE_STRING:
-    case GTK_TYPE_BOXED:
-    case GTK_TYPE_POINTER:
-    case G_TYPE_OBJECT:
-        p = GTK_VALUE_POINTER(*arg); break;
-    default:
-	ml_raise_gtk ("GtkArgv.get_pointer : argument type mismatch");
-    }
-    return Val_pointer(p);
-}
-*/
-
-/* gtksignal.h */
-
-/*
-CAMLprim value ml_gtk_signal_connect (value object, value name,
-                                      value clos, value after)
-{
-    value *clos_p = ml_global_root_new (clos);
-    return Val_int (gtk_signal_connect_full
-		    (GtkObject_val(object), String_val(name), NULL,
-		     ml_gtk_callback_marshal, clos_p,
-		     ml_global_root_destroy, FALSE, Bool_val(after)));
-}
-
-ML_2 (gtk_signal_disconnect, GtkObject_val, Int_val, Unit)
-ML_2 (gtk_signal_emit_stop_by_name, GtkObject_val, String_val, Unit)
-ML_2 (gtk_signal_handler_block, GtkObject_val, Int_val, Unit)
-ML_2 (gtk_signal_handler_unblock, GtkObject_val, Int_val, Unit)
-ML_2_name (ml_gtk_signal_emit_none, gtk_signal_emit_by_name,
-           GtkObject_val, String_val, Unit)
-ML_3_name (ml_gtk_signal_emit_int, gtk_signal_emit_by_name,
-           GtkObject_val, String_val, Int_val, Unit)
-ML_4_name (ml_gtk_signal_emit_scroll, gtk_signal_emit_by_name,
-           GtkObject_val, String_val, Scroll_type_val, Double_val, Unit)
-*/
 
 /* gtkmain.h (again) */
 
