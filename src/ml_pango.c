@@ -125,3 +125,86 @@ ML_3 (pango_context_load_fontset, PangoContext_val, PangoFontDescription_val,
       PangoLanguage_val, Val_PangoFont_new)
 ML_3 (pango_context_get_metrics, PangoContext_val, PangoFontDescription_val,
       Option_val(arg3,PangoLanguage_val,NULL) Ignore, Val_PangoFontMetrics_new)
+
+/* PangoLayout */
+
+#define Val_PangoLayout_new(val) Val_GObject_new(G_OBJECT(val))
+ML_1 (pango_layout_new, PangoContext_val, Val_PangoLayout_new)
+ML_1 (pango_layout_copy, PangoLayout_val, Val_PangoLayout_new)
+ML_1 (pango_layout_get_context, PangoLayout_val, Val_PangoContext)
+ML_2 (pango_layout_set_text, PangoLayout_val, SizedString_val, Unit)
+ML_1 (pango_layout_get_text, PangoLayout_val, Val_string)
+ML_2 (pango_layout_set_markup, PangoLayout_val, SizedString_val, Unit)
+ML_4 (pango_layout_set_markup_with_accel, PangoLayout_val, SizedString_val,
+      Int_val, NULL Ignore, Unit)
+ML_2 (pango_layout_set_font_description, PangoLayout_val,
+      PangoFontDescription_val, Unit)
+ML_2 (pango_layout_set_width, PangoLayout_val, Int_val, Unit)
+ML_1 (pango_layout_get_width, PangoLayout_val, Val_int)
+ML_2 (pango_layout_set_wrap, PangoLayout_val, Pango_wrap_mode_val, Unit)
+ML_1 (pango_layout_get_wrap, PangoLayout_val, Val_pango_wrap_mode)
+ML_2 (pango_layout_set_indent, PangoLayout_val, Int_val, Unit)
+ML_1 (pango_layout_get_indent, PangoLayout_val, Val_int)
+ML_2 (pango_layout_set_spacing, PangoLayout_val, Int_val, Unit)
+ML_1 (pango_layout_get_spacing, PangoLayout_val, Val_int)
+ML_2 (pango_layout_set_justify, PangoLayout_val, Bool_val, Unit)
+ML_1 (pango_layout_get_justify, PangoLayout_val, Val_bool)
+ML_2 (pango_layout_set_single_paragraph_mode, PangoLayout_val, Bool_val, Unit)
+ML_1 (pango_layout_get_single_paragraph_mode, PangoLayout_val, Val_bool)
+ML_1 (pango_layout_context_changed, PangoLayout_val, Unit)
+CAMLprim value ml_pango_layout_get_size(value layout)
+{
+  int width, height;
+  value res = alloc_tuple(2);
+  pango_layout_get_size(PangoLayout_val(layout), &width, &height);
+  Field(res,0) = Val_int(width);
+  Field(res,1) = Val_int(height);
+  return res;
+}
+CAMLprim value ml_pango_layout_get_pixel_size(value layout)
+{
+  int width, height;
+  value res = alloc_tuple(2);
+  pango_layout_get_pixel_size(PangoLayout_val(layout), &width, &height);
+  Field(res,0) = Val_int(width);
+  Field(res,1) = Val_int(height);
+  return res;
+}
+value Val_PangoRectangle(PangoRectangle *rect)
+{
+  value res = alloc_tuple(4);
+  Field(res,0) = Val_int(rect->x); Field(res,1) = Val_int(rect->y);
+  Field(res,2) = Val_int(rect->width); Field(res,3) = Val_int(rect->height);
+  return res;
+}
+CAMLprim value ml_pango_layout_index_to_pos(value layout, value index)
+{
+  PangoRectangle pos;
+  pango_layout_index_to_pos(PangoLayout_val(layout), Int_val(index), &pos);
+  return Val_PangoRectangle(&pos);
+}
+CAMLprim value ml_pango_layout_xy_to_index(value layout, value x, value y)
+{
+  int index, trailing;
+  gboolean exact;
+  value res;
+  exact = pango_layout_xy_to_index(PangoLayout_val(layout), Int_val(x),
+                                   Int_val(y), &index, &trailing);
+  res = alloc_tuple(3);
+  Field(res,0) = Val_int(index);
+  Field(res,1) = Val_int(trailing);
+  Field(res,2) = Val_bool(exact);
+  return res;
+}
+CAMLprim value ml_pango_layout_get_extent(value layout)
+{
+  PangoRectangle ink;
+  pango_layout_get_extents(PangoLayout_val(layout), &ink, NULL);
+  return Val_PangoRectangle(&ink);
+}
+CAMLprim value ml_pango_layout_get_pixel_extent(value layout)
+{
+  PangoRectangle ink;
+  pango_layout_get_pixel_extents(PangoLayout_val(layout), &ink, NULL);
+  return Val_PangoRectangle(&ink);
+}

@@ -518,6 +518,10 @@ module Draw = struct
   external string :
     [>`drawable] obj -> font: font -> gc -> x: int -> y: int -> string -> unit
     = "ml_gdk_draw_string_bc" "ml_gdk_draw_string"	
+  external layout :
+    [>`drawable] obj -> gc -> x: int -> y: int -> Pango.layout ->
+    ?fore:color -> ?back:color -> unit
+    = "ml_gdk_draw_layout_with_colors_bc" "ml_gdk_draw_layout_with_colors"
   external image_ : [>`drawable] obj -> gc -> image -> 
     xsrc: int -> ysrc: int -> xdest: int -> ydest: int -> 
     width: int -> height: int -> unit

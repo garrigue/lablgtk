@@ -73,6 +73,9 @@ class drawable ?(colormap = default_colormap ()) w = object (self)
   method arc = Draw.arc w gc
   method polygon = Draw.polygon w gc
   method string s = Draw.string w gc s
+  method layout ~x ~y ?fore ?back lay =
+    Draw.layout w gc ~x ~y lay
+      ?fore:(may_map color fore) ?back:(may_map color back)
   method put_image ~x ~y = Draw.image w gc ~xdest:x ~ydest:y
   method put_pixmap ~x ~y = Draw.pixmap w gc ~xdest:x ~ydest:y
   method put_rgb_data = Rgb.draw_image w gc

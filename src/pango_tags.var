@@ -28,3 +28,6 @@ type noconv scale = "PANGO_SCALE_"
 
 type underline = "PANGO_UNDERLINE_"
   [ `NONE | `SINGLE | `DOUBLE | `LOW ]
+
+type wrap_mode = "PANGO_WRAP_"
+  [ `WORD | `CHAR | `WORD_CHAR ]

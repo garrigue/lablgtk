@@ -8,7 +8,9 @@ type font = [`pangofont] obj
 type font_description
 type font_metrics
 type language
+type layout = [`pangolayout] obj
 type units = int
+type rectangle = {x:int; y:int; width:int; height:int}
 
 module Tags = struct
   type style =
@@ -34,6 +36,8 @@ module Tags = struct
   external scale_to_float : scale -> float = "ml_Pango_scale_val"
 
   type underline = [ `NONE | `SINGLE | `DOUBLE | `LOW ]
+
+  type wrap_mode = [ `WORD | `CHAR | `WORD_CHAR ]
 
   open Gpointer
   external get_tables :
@@ -135,3 +139,41 @@ end
 
 external scale : unit -> int = "ml_PANGO_SCALE"
 let scale = scale ()
+
+module Layout = struct
+  open Tags
+  let cast w : layout = Gobject.try_cast w "PangoLayout"
+  external create : context -> layout = "ml_pango_layout_new"
+  external copy : layout -> layout = "ml_pango_layout_copy"
+  external get_context : layout -> context = "ml_pango_layout_get_context"
+  external get_text : layout -> string = "ml_pango_layout_get_text"
+  external set_text : layout -> string -> unit = "ml_pango_layout_set_text"
+  external set_markup : layout -> string -> unit = "ml_pango_layout_set_markup"
+  external set_markup_with_accel : layout -> string -> Glib.unichar -> unit
+    = "ml_pango_layout_set_markup_with_accel"
+  external get_width : layout -> int = "ml_pango_layout_get_width"
+  external set_width : layout -> int -> unit = "ml_pango_layout_set_width"
+  external get_indent : layout -> int = "ml_pango_layout_get_indent"
+  external set_indent : layout -> int -> unit = "ml_pango_layout_set_indent"
+  external get_spacing : layout -> int = "ml_pango_layout_get_spacing"
+  external set_spacing : layout -> int -> unit = "ml_pango_layout_set_spacing"
+  external get_wrap : layout -> wrap_mode = "ml_pango_layout_get_wrap"
+  external set_wrap : layout -> wrap_mode -> unit = "ml_pango_layout_set_wrap"
+  external get_justify : layout -> bool = "ml_pango_layout_get_justify"
+  external set_justify : layout -> bool -> unit = "ml_pango_layout_set_justify"
+  external get_single_paragraph_mode : layout -> bool
+    = "ml_pango_layout_get_single_paragraph_mode"
+  external set_single_paragraph_mode : layout -> bool -> unit
+    = "ml_pango_layout_set_single_paragraph_mode"
+  external context_changed : layout -> unit = "ml_pango_layout_context_changed"
+  external get_size : layout -> int * int = "ml_pango_layout_get_size"
+  external get_pixel_size : layout -> int * int
+    = "ml_pango_layout_get_pixel_size"
+  external get_extent : layout -> rectangle = "ml_pango_layout_get_extent"
+  external get_pixel_extent : layout -> rectangle
+    = "ml_pango_layout_get_pixel_extent"
+  external index_to_pos : layout -> int -> rectangle
+    = "ml_pango_layout_index_to_pos"
+  external xy_to_index : layout -> x:int -> y:int -> int * int * bool
+    = "ml_pango_layout_xy_to_index"
+end

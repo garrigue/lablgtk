@@ -1,5 +1,8 @@
 $Id$
 
+2004.03.01 [Jacques]
+  * add Pango.Layout and GDraw.drawable#layout
+
 2004.02.29 [Olivier]
   * add Gobject.Data.caml to store caml values in GtkTreeModels.
   * add signal emitting gtk_tree_model_row_changed
