@@ -76,8 +76,8 @@ ifeq ($(UISTYLE),gtk)
 LABLGTKDIR=../../..
 
 include $(LABLGTKDIR)/config.make
-WITH_TK= -I $(LABLGTKDIR) -ccopt -L$(LABLGTKDIR) lablgtk.cma
-WITH_TK_OPT= -I $(LABLGTKDIR) -ccopt -L$(LABLGTKDIR) lablgtk.cmxa
+WITH_TK= -I $(LABLGTKDIR) lablgtk.cma
+WITH_TK_OPT= -I $(LABLGTKDIR) lablgtk.cmxa
 endif
 
 ifeq ($(UISTYLE),tk)
@@ -222,15 +222,15 @@ ifeq ($(NATIVE),true)
 
   %.cmi : %.mli
 	@echo "$(OCAMLOPT): $< $(ZFLAGS) --->  $@"
-	@$(OCAMLOPT) $(COMPFLAGS) -c $(CWD)/$<
+	@$(OCAMLOPT) $(COMPFLAGS) -c $<
 
   %.cmx : %.ml
 	@echo "$(OCAMLOPT): $< $(ZFLAGS) --->  $@"
-	@$(OCAMLOPT) $(COMPFLAGS) -c $(CWD)/$<
+	@$(OCAMLOPT) $(COMPFLAGS) -c $<
 
   uigtk.cmx : uigtk.ml
 	@echo "$(OCAMLOPT): $< $(ZFLAGS) --->  $@"
-	@$(OCAMLOPT) -labels -w s -I $(LABLGTKDIR) -c $(CWD)/$<
+	@$(OCAMLOPT) -labels -w s -I $(LABLGTKDIR) -c $<
 
   OBJS=$(OBJS_NATIVE)
   LINK = unix.cmxa -cclib -lunix str.cmxa -cclib -lstr

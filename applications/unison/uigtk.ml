@@ -22,12 +22,12 @@ open GdkKeysyms
 
 let fontMonospaceMedium =
   if Sys.os_type = "Win32" then
-    lazy (Gdk.Font.load "-*-Courier New-Medium-R-Normal--*-90-*-*-*-*-*-*")
+    lazy (Gdk.Font.load "-*-Courier New-Medium-R-Normal--*-110-*-*-*-*-*-*")
   else
     lazy (Gdk.Font.load "-*-Clean-Medium-R-Normal--*-130-*-*-*-60-*-*")
 let fontMonospaceBold =
   if Sys.os_type = "Win32" then
-    lazy (Gdk.Font.load "-*-Courier New-Bold-R-Normal--*-90-*-*-*-*-*-*")
+    lazy (Gdk.Font.load "-*-Courier New-Bold-R-Normal--*-110-*-*-*-*-*-*")
   else
     lazy (Gdk.Font.load "-*-Courier-Bold-R-Normal--*-120-*-*-*-*-*-*")
 
@@ -391,7 +391,7 @@ let start _ =
   (* Function to display a message in a new window                      *)
   (**********************************************************************)
   let charW = Gdk.Font.char_width (Lazy.force fontMonospaceMedium) 'M'
-  and charH = 15
+  and charH = 16
     (* Gdk.Font.char_height (Lazy.force fontMonospaceMedium) 'l' *) in
   let messageBox ~title ?(label = "Dismiss")
       ?(action = fun t -> t#destroy) ?(modal = false) message =
