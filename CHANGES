@@ -1,5 +1,8 @@
 $Id$
 
+2004.12.02 [Olivier]
+  * add GtkAboutDialog (2.6)
+
 2004.12.02 [Jacques]
   * fix Michael Furr's bug reports
 

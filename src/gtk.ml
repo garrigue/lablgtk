@@ -248,6 +248,7 @@ type ui_manager = [`uimanager]
 
 (* New widgets in 2.6 *)
 type icon_view = [container|`iconview]
+type about_dialog = [dialog|`aboutdialog]
 
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj
