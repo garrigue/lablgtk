@@ -119,8 +119,11 @@ class fixed :
     method event : event_ops
     method move : widget -> x:int -> y:int -> unit
     method put : widget -> x:int -> y:int -> unit
+    method set_has_window : bool -> unit
+    method has_window : bool
   end
 val fixed :
+  ?has_window: bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

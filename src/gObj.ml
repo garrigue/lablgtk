@@ -205,14 +205,6 @@ end
 
 and misc_signals obj = object
   inherit gtkobj_signals obj
-  method draw ~callback =
-    GtkSignal.connect obj ~sgn:Widget.Signals.draw ~after ~callback:
-      begin fun rect ->
-	callback
-	  { x = Gdk.Rectangle.x rect ; y = Gdk.Rectangle.y rect;
-	    width = Gdk.Rectangle.width rect;
-	    height = Gdk.Rectangle.height rect }
-      end
   method show = GtkSignal.connect ~sgn:Widget.Signals.show ~after obj
   method hide = GtkSignal.connect ~sgn:Widget.Signals.hide ~after obj
   method map = GtkSignal.connect ~sgn:Widget.Signals.map ~after obj

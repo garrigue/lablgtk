@@ -89,6 +89,8 @@ ML_0 (gtk_vbutton_box_new, Val_GtkWidget_sink)
 ML_0 (gtk_fixed_new, Val_GtkWidget_sink)
 ML_4 (gtk_fixed_put, GtkFixed_val, GtkWidget_val, (gint16)Long_val, (gint16)Long_val, Unit)
 ML_4 (gtk_fixed_move, GtkFixed_val, GtkWidget_val, (gint16)Long_val, (gint16)Long_val, Unit)
+ML_2 (gtk_fixed_set_has_window, GtkFixed_val, Int_val, Unit)
+ML_1 (gtk_fixed_get_has_window, GtkFixed_val, Val_bool)
 
 /* gtklayout.h */
 

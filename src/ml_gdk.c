@@ -418,6 +418,7 @@ ML_2 (gdk_property_delete, GdkWindow_val, GdkAtom_val, Unit)
 #define PointArray_val(val) ((GdkPoint*)&Field(val,1))
 #define PointArrayLen_val(val) Int_val(Field(val,0))
 Make_Val_final_pointer (GdkRegion, Ignore, gdk_region_destroy, 0)
+#define Val_GdkRegion_copy(r) (Val_GdkRegion(gdk_region_copy(r)))
 GdkRegion *GdkRegion_val(value val)
 {
     if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkRegion");
@@ -637,6 +638,8 @@ Make_Setter (gdk_event_set, GdkEvent_arg(Any), GdkEventType_val, type)
 Make_Setter (gdk_event_set, GdkEvent_arg(Any), GdkWindow_val, window)
 
 Make_Extractor (GdkEventExpose, GdkEvent_arg(Expose), area, Val_copy)
+Make_Extractor (GdkEventExpose, GdkEvent_arg(Expose), region,
+                Val_GdkRegion_copy)
 Make_Extractor (GdkEventExpose, GdkEvent_arg(Expose), count, Val_int)
 
 Make_Extractor (GdkEventVisibility, GdkEvent_arg(Visibility), state,
