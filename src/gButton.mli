@@ -28,7 +28,7 @@ class button :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(button -> unit) ->
+  ?packing:(button -> unit) -> ?show:bool ->
   object
     inherit button_skel
     val obj : Gtk.button obj
@@ -51,7 +51,7 @@ class toggle_button :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(toggle_button -> unit) ->
+  ?packing:(toggle_button -> unit) -> ?show:bool ->
   object
     inherit button_skel
     val obj : Gtk.toggle_button obj
@@ -69,7 +69,7 @@ class check_button :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(toggle_button -> unit) -> toggle_button
+  ?packing:(toggle_button -> unit) -> ?show:bool -> toggle_button
 
 class radio_button :
   ?group:group ->
@@ -79,7 +79,7 @@ class radio_button :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(radio_button -> unit) ->
+  ?packing:(radio_button -> unit) -> ?show:bool ->
   object
     inherit button_skel
     val obj : Gtk.radio_button obj
@@ -102,7 +102,7 @@ class toolbar :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(toolbar -> unit) ->
+  ?packing:(toolbar -> unit) -> ?show:bool ->
   object
     inherit GContainer.container_wrapper
     val obj : Gtk.toolbar obj

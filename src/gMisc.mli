@@ -4,7 +4,7 @@ open Gtk
 
 class separator :
   Tags.orientation ->
-  ?packing:(separator -> unit) ->
+  ?packing:(separator -> unit) -> ?show:bool ->
   object
     inherit GObj.widget_wrapper
     val obj : Gtk.separator obj
@@ -26,7 +26,7 @@ class statusbar :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(statusbar -> unit) ->
+  ?packing:(statusbar -> unit) -> ?show:bool ->
   object
     inherit GContainer.container_wrapper
     val obj : Gtk.statusbar obj
@@ -37,7 +37,7 @@ class statusbar_wrapper : Gtk.statusbar obj -> statusbar
 class drawing_area :
   ?width:int ->
   ?height:int ->
-  ?packing:(drawing_area -> unit) ->
+  ?packing:(drawing_area -> unit) -> ?show:bool ->
   object
     inherit GObj.widget_wrapper
     val obj : Gtk.drawing_area obj
@@ -73,7 +73,7 @@ class label :
   ?yalign:float ->
   ?xpad:int ->
   ?ypad:int ->
-  ?packing:(label -> unit) ->
+  ?packing:(label -> unit) -> ?show:bool ->
   object
     inherit label_skel
     val obj : Gtk.label obj
@@ -100,7 +100,7 @@ class tips_query :
   ?emit_always:bool ->
   ?label_inactive:string ->
   ?label_no_tip:string ->
-  ?packing:(tips_query -> unit) ->
+  ?packing:(tips_query -> unit) -> ?show:bool ->
   object
     inherit label_skel
     val obj : Gtk.tips_query obj
@@ -116,7 +116,7 @@ class color_selection :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(color_selection -> unit) ->
+  ?packing:(color_selection -> unit) -> ?show:bool ->
   object
     inherit GPack.box_wrapper
     val obj : Gtk.color_selection obj

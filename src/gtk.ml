@@ -2,7 +2,6 @@
 
 exception Error of string
 exception Warning of string
-exception Null_pointer
 type 'a obj
 type 'a optobj = 'a obj Misc.optboxed
 type clampf = float

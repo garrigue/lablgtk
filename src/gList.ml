@@ -16,12 +16,12 @@ class list_item_wrapper obj = object
   method connect = new item_signals ?obj
 end
 
-class list_item ?:label ?:border_width ?:width ?:height ?:packing =
+class list_item ?:label ?:border_width ?:width ?:height ?:packing ?:show =
   let w = ListItem.create ?:label ?None in
   let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit list_item_wrapper w
-    initializer pack_return :packing (self :> list_item_wrapper)
+    initializer pack_return :packing ?:show (self :> list_item_wrapper)
   end
 
 class liste_wrapper obj = object
@@ -35,7 +35,7 @@ class liste_wrapper obj = object
     fun w -> Liste.child_position obj w#as_item
 end
 
-class liste ?:selection_mode ?:border_width ?:width ?:height ?:packing =
+class liste ?:selection_mode ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Liste.create () in
   let () =
     may selection_mode fun:(Liste.set_selection_mode w);
@@ -43,5 +43,5 @@ class liste ?:selection_mode ?:border_width ?:width ?:height ?:packing =
   in
   object (self)
     inherit liste_wrapper w
-    initializer pack_return :packing (self :> liste_wrapper)
+    initializer pack_return :packing ?:show (self :> liste_wrapper)
   end

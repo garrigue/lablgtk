@@ -37,13 +37,14 @@ class entry_wrapper obj = object
   method text_length = Entry.text_length obj
 end
 
-class entry ?:max_length ?:text ?:position ?:visibility ?:editable ?:packing =
+class entry ?:max_length ?:text ?:position
+    ?:visibility ?:editable ?:packing ?:show =
   let w = Entry.create ?:max_length ?None in
   let () =
     Entry.setter w cont:null_cont ?:text ?:position ?:visibility ?:editable in
   object (self)
     inherit entry_wrapper w
-    initializer pack_return :packing (self :> entry_wrapper)
+    initializer pack_return :packing ?:show (self :> entry_wrapper)
   end
 
 class spin_button_wrapper myobj = object
@@ -61,7 +62,7 @@ class spin_button_wrapper myobj = object
 end
 
 class spin_button :rate :digits ?:adjustment ?:value ?:update_policy
-    ?:numeric ?:wrap ?:shadow_type ?:snap_to_ticks ?:packing =
+    ?:numeric ?:wrap ?:shadow_type ?:snap_to_ticks ?:packing ?:show =
   let w = SpinButton.create :rate :digits ?adjustment:
       (may_map adjustment fun:(fun (a : GData.adjustment) -> a#as_adjustment))
   in
@@ -71,7 +72,7 @@ class spin_button :rate :digits ?:adjustment ?:value ?:update_policy
   in
   object (self)
     inherit spin_button_wrapper w
-    initializer pack_return :packing (self :> spin_button_wrapper)
+    initializer pack_return :packing ?:show (self :> spin_button_wrapper)
   end
 
 class combo_wrapper obj = object
@@ -87,7 +88,7 @@ class combo_wrapper obj = object
 end
 
 class combo ?:popdown_strings ?:use_arrows ?:use_arrows_always
-    ?:case_sensitive ?:border_width ?:width ?:height ?:packing =
+    ?:case_sensitive ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Combo.create () in
   let () =
     Combo.setter w cont:null_cont ?:popdown_strings ?:use_arrows
@@ -96,7 +97,7 @@ class combo ?:popdown_strings ?:use_arrows ?:use_arrows_always
   in
   object (self)
     inherit combo_wrapper w
-    initializer pack_return :packing (self :> combo_wrapper)
+    initializer pack_return :packing ?:show (self :> combo_wrapper)
   end
 
 class text_wrapper obj = object
@@ -118,10 +119,10 @@ class text_wrapper obj = object
 end
 
 class text ?:hadjustment ?:vadjustment ?:editable
-    ?:word_wrap ?:point ?:packing =
+    ?:word_wrap ?:point ?:packing ?:show =
   let w = Text.create ?:hadjustment ?:vadjustment ?None in
   let () = Text.setter w cont:null_cont ?:editable ?:word_wrap ?:point in
   object (self)
     inherit text_wrapper w
-    initializer pack_return :packing (self :> text_wrapper)
+    initializer pack_return :packing ?:show (self :> text_wrapper)
   end

@@ -33,7 +33,7 @@ class entry :
   ?position:int ->
   ?visibility:bool ->
   ?editable:bool ->
-  ?packing:(entry -> unit) ->
+  ?packing:(entry -> unit) -> ?show:bool ->
   object
     inherit editable
     val obj : Gtk.entry obj
@@ -59,7 +59,7 @@ class spin_button :
   ?wrap:bool ->
   ?shadow_type:Tags.shadow_type ->
   ?snap_to_ticks:bool ->
-  ?packing:(spin_button -> unit) ->
+  ?packing:(spin_button -> unit) -> ?show:bool ->
   object
     inherit entry
     val obj : Gtk.spin_button obj
@@ -87,7 +87,7 @@ class combo :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(combo -> unit) ->
+  ?packing:(combo -> unit) -> ?show:bool ->
   object
     inherit GPack.box
     val obj : Gtk.combo obj
@@ -107,7 +107,7 @@ class text :
   ?editable:bool ->
   ?word_wrap:bool ->
   ?point:int ->
-  ?packing:(text -> unit) ->
+  ?packing:(text -> unit) -> ?show:bool ->
   object
     inherit editable
     val obj : Gtk.text obj

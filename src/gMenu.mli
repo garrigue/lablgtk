@@ -37,7 +37,7 @@ class menu_item :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(menu_item -> unit) ->
+  ?packing:(menu_item -> unit) -> ?show:bool ->
   object
     inherit menu_item_skel
     val obj : Gtk.menu_item obj
@@ -50,7 +50,7 @@ class tearoff_item :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(menu_item -> unit) -> menu_item
+  ?packing:(menu_item -> unit) -> ?show:bool -> menu_item
 
 class check_menu_item_signals :
   'a[> checkmenuitem container item menuitem widget] obj -> ?after:bool ->
@@ -78,7 +78,7 @@ class check_menu_item :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(check_menu_item -> unit) ->
+  ?packing:(check_menu_item -> unit) -> ?show:bool ->
   object
     inherit check_menu_item_skel
     val obj : Gtk.check_menu_item obj
@@ -95,7 +95,7 @@ class radio_menu_item :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(radio_menu_item -> unit) ->
+  ?packing:(radio_menu_item -> unit) -> ?show:bool ->
   object
     inherit check_menu_item_skel
     val obj : Gtk.radio_menu_item obj
@@ -128,7 +128,7 @@ class menu_shell :
 
 class menu :
   ?border_width:int ->
-  ?packing:(menu -> unit) ->
+  ?packing:(menu -> unit) -> ?show:bool ->
   object
     inherit menu_shell
     val obj : Gtk.menu obj
@@ -143,7 +143,7 @@ class option_menu :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(option_menu -> unit) ->
+  ?packing:(option_menu -> unit) -> ?show:bool ->
   object
     inherit GButton.button
     val obj : Gtk.option_menu obj
@@ -158,7 +158,7 @@ class menu_bar :
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(menu_bar -> unit) ->
+  ?packing:(menu_bar -> unit) -> ?show:bool ->
   object
     inherit menu_shell
     val obj : Gtk.menu_bar obj

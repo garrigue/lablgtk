@@ -9,7 +9,7 @@ class pixmap :
   ?yalign:float ->
   ?xpad:int ->
   ?ypad:int ->
-  ?packing:(pixmap -> unit) ->
+  ?packing:(pixmap -> unit) -> ?show:bool ->
   object
     inherit GMisc.misc
     val obj : Gtk.pixmap obj

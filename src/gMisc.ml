@@ -8,10 +8,10 @@ open GObj
 
 class separator_wrapper w = widget_wrapper (w : separator obj)
 
-class separator dir ?:packing =
+class separator dir ?:packing ?:show =
   object (self)
     inherit separator_wrapper (Separator.create dir)
-    initializer pack_return :packing (self :> separator_wrapper)
+    initializer pack_return :packing ?:show (self :> separator_wrapper)
   end
 
 class statusbar_context obj ctx = object (self)
@@ -33,12 +33,12 @@ class statusbar_wrapper obj = object
     new statusbar_context obj (Statusbar.get_context obj name)
 end
 
-class statusbar ?:border_width ?:width ?:height ?:packing =
+class statusbar ?:border_width ?:width ?:height ?:packing ?:show =
   let w = Statusbar.create () in
   let () = Container.setter w ?:border_width ?:width ?:height cont:null_cont in
   object (self)
     inherit statusbar_wrapper w
-    initializer pack_return :packing (self :> statusbar_wrapper)
+    initializer pack_return :packing ?:show (self :> statusbar_wrapper)
   end
 
 class drawing_area_wrapper obj = object
@@ -46,13 +46,13 @@ class drawing_area_wrapper obj = object
   method set_size = DrawingArea.size obj
 end
 
-class drawing_area  ?:width [< 0 >] ?:height [< 0 >] ?:packing =
+class drawing_area  ?:width [< 0 >] ?:height [< 0 >] ?:packing ?:show =
   let w = DrawingArea.create () in
   let () =
     if width <> 0 || height <> 0 then DrawingArea.size w :width :height in
   object (self)
     inherit drawing_area_wrapper w
-    initializer pack_return :packing (self :> drawing_area_wrapper)
+    initializer pack_return :packing ?:show (self :> drawing_area_wrapper)
   end
 
 class misc obj = object
@@ -74,7 +74,7 @@ class label_wrapper obj = object
 end
 
 class label ?:text [< "" >] ?:justify ?:line_wrap ?:pattern
-    ?:xalign ?:yalign ?:xpad ?:ypad ?:packing =
+    ?:xalign ?:yalign ?:xpad ?:ypad ?:packing ?:show =
   let w = Label.create text in
   let () =
     Label.setter w cont:null_cont ?:justify ?:line_wrap ?:pattern;
@@ -82,7 +82,7 @@ class label ?:text [< "" >] ?:justify ?:line_wrap ?:pattern
   in
   object (self)
     inherit label_wrapper w
-    initializer pack_return :packing (self :> label_wrapper)
+    initializer pack_return :packing ?:show (self :> label_wrapper)
   end
 
 class tips_query_signals obj ?:after = object
@@ -108,7 +108,7 @@ class tips_query_wrapper obj = object
 end
 
 class tips_query ?:caller ?:emit_always ?:label_inactive ?:label_no_tip
-    ?:packing =
+    ?:packing ?:show =
   let w = TipsQuery.create () in
   let () =
     TipsQuery.setter w cont:null_cont ?:caller ?:emit_always
@@ -116,7 +116,7 @@ class tips_query ?:caller ?:emit_always ?:label_inactive ?:label_no_tip
   in
   object (self)
     inherit tips_query_wrapper w
-    initializer pack_return :packing (self :> tips_query_wrapper)
+    initializer pack_return :packing ?:show (self :> tips_query_wrapper)
   end
 
 class color_selection_wrapper obj = object
@@ -128,10 +128,10 @@ class color_selection_wrapper obj = object
   method get_color = ColorSelection.get_color obj
 end
 
-class color_selection ?:border_width ?:width ?:height ?:packing =
+class color_selection ?:border_width ?:width ?:height ?:packing ?:show =
   let w = ColorSelection.create () in
   let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
     inherit color_selection_wrapper w
-    initializer pack_return :packing (self :> color_selection_wrapper)
+    initializer pack_return :packing ?:show (self :> color_selection_wrapper)
   end
