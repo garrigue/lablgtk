@@ -41,6 +41,48 @@ class statusbar ?:border_width ?:width ?:height ?:packing ?:show =
     initializer pack_return :packing ?:show (self :> statusbar_wrapper)
   end
 
+class calendar_signals obj ?:after = object
+  inherit widget_signals obj ?:after
+  method month_changed =
+    GtkSignal.connect obj sig:Calendar.Signals.month_changed ?:after
+  method day_selected =
+    GtkSignal.connect obj sig:Calendar.Signals.day_selected ?:after
+  method day_selected_double_click =
+    GtkSignal.connect obj
+      sig:Calendar.Signals.day_selected_double_click ?:after
+  method prev_month =
+    GtkSignal.connect obj sig:Calendar.Signals.prev_month ?:after
+  method next_month =
+    GtkSignal.connect obj sig:Calendar.Signals.next_month ?:after
+  method prev_year =
+    GtkSignal.connect obj sig:Calendar.Signals.prev_year ?:after
+  method next_year =
+    GtkSignal.connect obj sig:Calendar.Signals.next_year ?:after
+end
+
+class calendar_wrapper obj = object
+  inherit widget (obj : Gtk.calendar obj)
+  method add_events = Widget.add_events obj
+  method connect = new calendar_signals ?obj
+  method select_month = Calendar.select_month obj
+  method select_day = Calendar.select_day obj
+  method mark_day = Calendar.mark_day obj
+  method unmark_day = Calendar.unmark_day obj
+  method clear_marks = Calendar.clear_marks obj
+  method display_options = Calendar.display_options obj
+  method date = Calendar.get_date obj
+  method freeze () = Calendar.freeze obj
+  method thaw () = Calendar.thaw obj
+end
+
+class calendar ?:options ?:packing ?:show =
+  let w = Calendar.create () in
+  let () = may options fun:(Calendar.display_options w) in
+  object (self)
+    inherit calendar_wrapper w
+    initializer pack_return :packing ?:show (self :> calendar_wrapper)
+  end
+
 class drawing_area_wrapper obj = object
   inherit widget_wrapper (obj : Gtk.drawing_area obj)
   method add_events = Widget.add_events obj
@@ -119,6 +161,60 @@ class tips_query ?:caller ?:emit_always ?:label_inactive ?:label_no_tip
   object (self)
     inherit tips_query_wrapper w
     initializer pack_return :packing ?:show (self :> tips_query_wrapper)
+  end
+
+class notebook_signals obj ?:after = object
+  inherit GContainer.container_signals obj ?:after
+  method switch_page =
+    GtkSignal.connect obj sig:Notebook.Signals.switch_page ?:after
+end
+
+class notebook_wrapper obj = object (self)
+  inherit GContainer.container (obj : notebook obj)
+  method add_events = Widget.add_events obj
+  method connect = new notebook_signals ?obj
+  method insert_page : 'a 'b 'c. (#is_widget as 'a) ->
+    ?tab_label:(#is_widget as 'b) -> ?menu_label:(#is_widget as 'c) -> _ =
+    fun child ?:tab_label ?:menu_label ->
+      Notebook.insert_page obj child#as_widget
+	tab_label:(may_box tab_label fun:(#as_widget))
+	menu_label:(may_box menu_label fun:(#as_widget))
+  method append_page : 'a 'b 'c. (#is_widget as 'a) ->
+    ?tab_label:(#is_widget as 'b) -> ?menu_label:(#is_widget as 'c) -> _ =
+    self#insert_page pos:(-1)
+  method prepend_page : 'a 'b 'c. (#is_widget as 'a) ->
+    ?tab_label:(#is_widget as 'b) -> ?menu_label:(#is_widget as 'c) -> _ =
+    self#insert_page pos:0
+  method remove_page = Notebook.remove_page obj
+  method current_page = Notebook.get_current_page obj
+  method goto_page = Notebook.set_page obj
+  method previous_page () = Notebook.prev_page obj
+  method next_page () = Notebook.next_page obj
+  method set_notebook = Notebook.setter ?obj ?cont:null_cont ?page:None
+  method page_num : 'a. (#is_widget as 'a) -> _ =
+    fun w -> Notebook.page_num obj w#as_widget
+  method nth_page n = new widget (Notebook.get_nth_page obj n)
+  method set_page : 'a 'b 'c. (#is_widget as 'a) ->
+    ?tab_label:(#is_widget as 'b) -> ?menu_label:(#is_widget as 'c) -> _ =
+    fun page ?:tab_label ?:menu_label ->
+      let child = page#as_widget in
+      may tab_label
+	fun:(fun lbl -> Notebook.set_tab_label obj child lbl#as_widget);
+      may menu_label
+	fun:(fun lbl -> Notebook.set_menu_label obj child lbl#as_widget)
+end
+
+class notebook ?:tab_pos ?:tab_border ?:show_tabs ?:homogeneous_tabs
+    ?:show_border ?:scrollable ?:popup
+    ?:border_width ?:width ?:height ?:packing ?:show =
+  let w = Notebook.create () in
+  let () =
+    Notebook.setter w cont:null_cont ?:tab_pos ?:tab_border ?:show_tabs
+      ?:homogeneous_tabs ?:show_border ?:scrollable ?:popup;
+    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+  object (self)
+    inherit notebook_wrapper w
+    initializer pack_return :packing ?:show (self :> notebook_wrapper)
   end
 
 class color_selection_wrapper obj = object

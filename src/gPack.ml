@@ -85,3 +85,91 @@ class fixed ?:border_width ?:width ?:height ?:packing ?:show =
     inherit fixed_wrapper w
     initializer pack_return :packing ?:show (self :> fixed_wrapper)
   end
+
+class layout_wrapper obj = object
+  inherit container_wrapper (obj : layout obj)
+  method add_events = Widget.add_events obj
+  method put : 'a. (#is_widget as 'a) -> _ =
+    fun w -> Layout.put obj w#as_widget
+  method move : 'a. (#is_widget as 'a) -> _ =
+    fun w -> Layout.move obj w#as_widget
+  method set_layout ?:hadjustment ?:vadjustment =
+    may hadjustment
+      fun:(fun a -> Layout.set_hadjustment obj (GData.adjustment_obj a));
+    may vadjustment
+      fun:(fun a -> Layout.set_vadjustment obj (GData.adjustment_obj a));
+    Layout.set ?obj
+  method hadjustment =
+    new GData.adjustment_wrapper (Layout.get_hadjustment obj)
+  method vadjustment =
+    new GData.adjustment_wrapper (Layout.get_vadjustment obj)
+  method freeze () = Layout.freeze obj
+  method thaw () = Layout.thaw obj
+  method width = Layout.get_width obj
+  method height = Layout.get_height obj
+end
+
+class layout ?:hadjustment ?:vadjustment ?:layout_width ?:layout_height
+    ?:border_width ?:width ?:height ?:packing ?:show =
+  let hadj = may_map hadjustment fun:GData.adjustment_obj
+  and vadj = may_map vadjustment fun:GData.adjustment_obj in
+  let w = Layout.create (optboxed hadj) (optboxed vadj) in
+  let () =
+    Layout.set w ?width:layout_width ?height:layout_height;
+    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+  object (self)
+    inherit layout_wrapper w
+    initializer pack_return :packing ?:show (self :> layout_wrapper)
+  end
+
+class packer_wrapper obj = object
+  inherit container_wrapper (obj : packer obj)
+  method pack : 'a. (#is_widget as 'a) -> _ =
+    fun w ?:side ?:anchor ?:expand ?:fill
+	?:border_width ?:pad_x ?:pad_y ?:i_pad_x ?:i_pad_y ->
+      let options = Packer.build_options ?:expand ?:fill in
+      if border_width == None && pad_x == None && pad_y == None &&
+	i_pad_x == None && i_pad_y == None
+      then Packer.add_defaults obj w#as_widget ?:side ?:anchor :options
+      else Packer.add obj w#as_widget ?:side ?:anchor :options
+	  ?:border_width ?:pad_x ?:pad_y ?:i_pad_x ?:i_pad_y
+  method set_child_packing : 'a. (#is_widget as 'a) -> _ =
+    fun w ?:side ?:anchor ?:expand ?:fill ->
+      Packer.set_child_packing ?obj ?w#as_widget ?:side ?:anchor
+	?options:(Some (Packer.build_options ?:expand ?:fill))
+  method reorder_child : 'a. (#is_widget as 'a) -> _ =
+    fun w -> Packer.reorder_child obj w#as_widget
+  method set_spacing = Packer.set_spacing obj
+  method set_defaults = Packer.set_defaults ?obj
+end
+
+class packer ?:spacing ?:border_width ?:width ?:height ?:packing ?:show =
+  let w = Packer.create () in
+  let () =
+    may spacing fun:(Packer.set_spacing w);
+    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+  object (self)
+    inherit packer_wrapper w
+    initializer pack_return :packing ?:show (self :> packer_wrapper)
+  end
+
+class paned_wrapper obj = object
+  inherit container_wrapper (obj : paned obj)
+  method add_events = Widget.add_events obj
+  method add1 : 'a. (#is_widget as 'a) -> _ =
+    fun w -> Paned.add1 obj w#as_widget
+  method add2 : 'a. (#is_widget as 'a) -> _ =
+    fun w -> Paned.add2 obj w#as_widget
+  method set_paned = Paned.setter ?obj ?cont:null_cont
+end
+
+class paned dir ?:handle_size ?:gutter_size ?:border_width
+    ?:width ?:height ?:packing ?:show =
+  let w = Paned.create dir in
+  let () =
+    Paned.setter w cont:null_cont ?:handle_size ?:gutter_size;
+    Container.setter w cont:null_cont ?:border_width ?:width ?:height in
+  object (self)
+    inherit paned_wrapper w
+    initializer pack_return :packing ?:show (self :> paned_wrapper)
+  end

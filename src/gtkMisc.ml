@@ -83,8 +83,8 @@ module Notebook = struct
     else invalid_arg "Gtk.Notebook.cast"
   external create : unit -> notebook obj = "ml_gtk_notebook_new"
   external insert_page :
-      [> notebook] obj -> [> widget] obj -> tab:[> widget] obj ->
-      ?menu:[> widget] obj -> ?pos:int -> unit
+      [> notebook] obj -> [> widget] obj -> tab_label:[> widget] optobj ->
+      menu_label:[> widget] optobj -> pos:int -> unit
       = "ml_gtk_notebook_insert_page_menu"
       (* default is append to end *)
   external remove_page : [> notebook] obj -> int -> unit
@@ -95,6 +95,8 @@ module Notebook = struct
       = "ml_gtk_notebook_set_page"
   external set_tab_pos : [> notebook] obj -> position -> unit
       = "ml_gtk_notebook_set_tab_pos"
+  external set_homogeneous_tabs : [> notebook] obj -> bool -> unit
+      = "ml_gtk_notebook_set_homogeneous_tabs"
   external set_show_tabs : [> notebook] obj -> bool -> unit
       = "ml_gtk_notebook_set_show_tabs"
   external set_show_border : [> notebook] obj -> bool -> unit
@@ -107,12 +109,34 @@ module Notebook = struct
       = "ml_gtk_notebook_popup_enable"
   external popup_disable : [> notebook] obj -> unit
       = "ml_gtk_notebook_popup_disable"
-  let setter w :cont ?:page ?:tab_pos ?:show_tabs ?:show_border ?:scrollable
-      ?:tab_border ?:popup =
+  external get_nth_page : [> notebook] obj -> int -> widget obj
+      = "ml_gtk_notebook_get_nth_page"
+  external page_num : [> notebook] obj -> [> widget] obj -> int
+      = "ml_gtk_notebook_page_num"
+  external next_page : [> notebook] obj -> unit
+      = "ml_gtk_notebook_next_page"
+  external prev_page : [> notebook] obj -> unit
+      = "ml_gtk_notebook_prev_page"
+  external get_tab_label : [> notebook] obj -> [> widget] obj -> widget obj
+      = "ml_gtk_notebook_get_tab_label"
+  external set_tab_label :
+      [> notebook] obj -> [> widget] obj -> [> widget] obj -> unit
+      = "ml_gtk_notebook_set_tab_label"
+  external get_menu_label : [> notebook] obj -> [> widget] obj -> widget obj
+      = "ml_gtk_notebook_get_menu_label"
+  external set_menu_label :
+      [> notebook] obj -> [> widget] obj -> [> widget] obj -> unit
+      = "ml_gtk_notebook_set_menu_label"
+  external reorder_child : [> notebook] obj -> [> widget] obj -> int -> unit
+      = "ml_gtk_notebook_reorder_child"
+
+  let setter w :cont ?:page ?:tab_pos ?:show_tabs ?:homogeneous_tabs
+      ?:show_border ?:scrollable ?:tab_border ?:popup =
     let may_set f = may fun:(f w) in
     may_set set_page page;
     may_set set_tab_pos tab_pos;
     may_set set_show_tabs show_tabs;
+    may_set set_homogeneous_tabs homogeneous_tabs;
     may_set set_show_border show_border;
     may_set set_scrollable scrollable;
     may_set set_tab_border tab_border;
@@ -122,7 +146,50 @@ module Notebook = struct
     open GtkSignal
     let switch_page : ([> notebook],_) t =
       let marshal f argv = f (GtkArgv.get_int argv pos:1) in
-      { name = "notebook"; marshaller = marshal }
+      { name = "switch_page"; marshaller = marshal }
+  end
+end
+
+module Calendar = struct
+  let cast w : calendar obj =
+    if Object.is_a w "GtkCalendar" then Obj.magic w
+    else invalid_arg "Gtk.Calendar.cast"
+  external create : unit -> calendar obj = "ml_gtk_calendar_new"
+  external select_month : [> calendar] obj -> month:int -> year:int -> unit
+      = "ml_gtk_calendar_select_month"
+  external select_day : [> calendar] obj -> int -> unit
+      = "ml_gtk_calendar_select_day"
+  external mark_day : [> calendar] obj -> int -> unit
+      = "ml_gtk_calendar_mark_day"
+  external unmark_day : [> calendar] obj -> int -> unit
+      = "ml_gtk_calendar_unmark_day"
+  external clear_marks : [> calendar] obj -> unit
+      = "ml_gtk_calendar_clear_marks"
+  external display_options :
+      [> calendar] obj -> Tags.calendar_display_options list -> unit
+      = "ml_gtk_calendar_display_options"
+  external get_date : [> calendar] obj -> int * int * int
+      = "ml_gtk_calendar_get_date"   (* year * month * day *)
+  external freeze : [> calendar] obj -> unit
+      = "ml_gtk_calendar_freeze"
+  external thaw : [> calendar] obj -> unit
+      = "ml_gtk_calendar_thaw"
+  module Signals = struct
+    open GtkSignal
+    let month_changed : ([> calendar],_) t =
+      { name = "month_changed"; marshaller = marshal_unit }
+    let day_selected : ([> calendar],_) t =
+      { name = "day_selected"; marshaller = marshal_unit }
+    let day_selected_double_click : ([> calendar],_) t =
+      { name = "day_selected_double_click"; marshaller = marshal_unit }
+    let prev_month : ([> calendar],_) t =
+      { name = "prev_month"; marshaller = marshal_unit }
+    let next_month : ([> calendar],_) t =
+      { name = "next_month"; marshaller = marshal_unit }
+    let prev_year : ([> calendar],_) t =
+      { name = "prev_year"; marshaller = marshal_unit }
+    let next_year : ([> calendar],_) t =
+      { name = "next_year"; marshaller = marshal_unit }
   end
 end
 

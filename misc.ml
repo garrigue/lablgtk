@@ -48,6 +48,11 @@ let optboxed : 'a option -> 'a optboxed =
       None -> Obj.magic (0,null)
     | Some obj -> Obj.magic obj
 
+let may_box fun:f obj : 'a optboxed =
+  match obj with
+    None -> Obj.magic (0,null)
+  | Some obj -> Obj.magic (f obj : 'a)
+
 type pointer
 
 let null_cont _ = ()
