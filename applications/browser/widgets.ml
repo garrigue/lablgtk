@@ -1,6 +1,5 @@
 (* $Id$ *)
 
-open Misc
 open GObj
 
 class multibox ~rows ~columns ?(row_view = rows) ?(col_view = columns)

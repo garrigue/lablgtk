@@ -83,7 +83,7 @@ let boxref = ref None
 let shown_widget = ref ""
 
 let show_prop_box vb =
-  Misc.may !boxref ~f:vbox#get#remove;
+  Gaux.may !boxref ~f:vbox#get#remove;
   vbox#get#add vb#coerce;
   boxref := Some vb#coerce
 

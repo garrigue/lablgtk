@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open GtkData
 open GtkBase
@@ -170,7 +170,7 @@ and widget_misc obj = object
   method name = Widget.get_name obj
   method toplevel =
     try new widget (Object.unsafe_cast (Widget.get_toplevel obj))
-    with Null_pointer -> raise Not_found
+    with Gpointer.Null -> raise Not_found
   method window = Widget.window obj
   method colormap = Widget.get_colormap obj
   method visual = Widget.get_visual obj
@@ -181,7 +181,7 @@ and widget_misc obj = object
   method has_focus = Widget.has_focus obj
   method parent =
     try new widget (Object.unsafe_cast (Widget.parent obj))
-    with Null_pointer -> raise Not_found
+    with Gpointer.Null -> raise Not_found
   method set_app_paintable = Widget.set_app_paintable obj
   method allocation = Widget.allocation obj
 end

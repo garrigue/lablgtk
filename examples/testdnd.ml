@@ -1,7 +1,7 @@
 (* this is a translation in Caml of the gtk+ example testdnd.c  *)
 
 
-open Misc
+open Gaux
 open Gtk
 open GObj
 open GMain

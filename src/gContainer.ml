@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open GtkBase
 open GObj
@@ -11,13 +11,13 @@ class focus obj = object
   method circulate = Container.focus obj
   method set (child : widget option) =
     let child = may_map child ~f:(fun x -> x#as_widget) in
-    Container.set_focus_child obj (optboxed child)
+    Container.set_focus_child obj (Gpointer.optboxed child)
   method set_hadjustment adj =
     Container.set_focus_hadjustment obj
-      (optboxed (may_map adj ~f:as_adjustment))
+      (Gpointer.optboxed (may_map adj ~f:as_adjustment))
   method set_vadjustment adj =
     Container.set_focus_vadjustment obj
-      (optboxed (may_map adj ~f:as_adjustment))
+      (Gpointer.optboxed (may_map adj ~f:as_adjustment))
 end
 
 class container obj = object (self)

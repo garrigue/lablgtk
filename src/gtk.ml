@@ -4,7 +4,7 @@ exception Error of string
 exception Warning of string
 exception Cannot_cast of string * string
 type 'a obj
-type 'a optobj = 'a obj Misc.optboxed
+type 'a optobj = 'a obj Gpointer.optboxed
 type clampf = float
 
 module Tags = struct

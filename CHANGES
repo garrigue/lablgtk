@@ -1,5 +1,8 @@
 $Id$
 
+2000.5.25
+  * split misc.ml into gaux.ml and gpointer.ml
+
 2000.5.23
   * add GMisc.notebook#get_{tab,menu}_label. Rename nth_page to get_nth_page.
   * modified ML signals in GUtil, to allow signals without widget.

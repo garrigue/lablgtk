@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open Tags
 open GtkBase
@@ -91,7 +91,7 @@ module Scale = struct
       = "ml_gtk_vscale_new"
   let create ?adjustment (dir : orientation) =
     let create = if dir = `HORIZONTAL then hscale_new else vscale_new  in
-    create (optboxed adjustment)
+    create (Gpointer.optboxed adjustment)
   external set_digits : [>`scale] obj -> int -> unit
       = "ml_gtk_scale_set_digits"
   external set_draw_value : [>`scale] obj -> bool -> unit
@@ -116,7 +116,7 @@ module Scrollbar = struct
       = "ml_gtk_vscrollbar_new"
   let create ?adjustment (dir : orientation) =
     let create = if dir = `HORIZONTAL then hscrollbar_new else vscrollbar_new
-    in create (optboxed adjustment)
+    in create (Gpointer.optboxed adjustment)
 end
 
 module Ruler = struct

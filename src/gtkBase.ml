@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open Tags
 
@@ -320,7 +320,7 @@ module Container = struct
       = "ml_gtk_container_foreach"
   let children w =
     let l = ref [] in
-    foreach w ~f:(push ~on:l);
+    foreach w ~f:(fun c -> l := c :: !l);
     List.rev !l
   external focus : [>`container] obj -> direction_type -> bool
       = "ml_gtk_container_focus"

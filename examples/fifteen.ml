@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open GObj
 open GMain

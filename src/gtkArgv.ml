@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 
 module Arg = struct
@@ -14,7 +14,7 @@ module Arg = struct
   external get_nativeint : t -> nativeint = "ml_gtk_arg_get_nativeint"
   external get_float : t -> float = "ml_gtk_arg_get_float"
   external get_string : t -> string option = "ml_gtk_arg_get_string"
-  external get_pointer : t -> pointer option = "ml_gtk_arg_get_pointer"
+  external get_pointer : t -> Gpointer.boxed option = "ml_gtk_arg_get_pointer"
   external get_object : t -> unit obj option = "ml_gtk_arg_get_object"
   (* Safely set a result
      Beware: this is not the opposite of get, arguments and results
@@ -25,7 +25,7 @@ module Arg = struct
   external set_nativeint : t -> nativeint -> unit = "ml_gtk_arg_set_nativeint"
   external set_float : t -> float -> unit = "ml_gtk_arg_set_float"
   external set_string : t -> string -> unit = "ml_gtk_arg_set_string"
-  external set_pointer : t -> pointer -> unit = "ml_gtk_arg_set_pointer"
+  external set_pointer : t -> Gpointer.boxed -> unit = "ml_gtk_arg_set_pointer"
   external set_object : t -> 'a obj -> unit = "ml_gtk_arg_set_object"
 end
 
@@ -61,7 +61,7 @@ let set_result_string arg = set_string (result arg)
 let set_result_pointer arg = set_pointer (result arg)
 let set_result_object arg = set_object (result arg)
 
-external string_at_pointer : ?pos:int -> ?len:int -> pointer -> string
+external string_at_pointer : ?pos:int -> ?len:int -> Gpointer.boxed -> string
     = "ml_string_at_pointer"
-external int_at_pointer : pointer -> int
+external int_at_pointer : Gpointer.boxed -> int
     = "ml_int_at_pointer"

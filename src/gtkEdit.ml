@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open Tags
 open GtkBase
@@ -104,7 +104,7 @@ module SpinButton = struct
       [>`adjustment] optobj -> rate:float -> digits:int -> spin_button obj
       = "ml_gtk_spin_button_new"
   let create ?adjustment ?(rate=0.5) ?(digits=0) () =
-    create (optboxed adjustment) ~rate ~digits
+    create (Gpointer.optboxed adjustment) ~rate ~digits
   external configure :
     [>`spinbutton] obj -> adjustment:[>`adjustment] obj ->
     rate:float -> digits:int -> unit
@@ -153,7 +153,7 @@ module Text = struct
   external create : [>`adjustment] optobj -> [>`adjustment] optobj -> text obj
       = "ml_gtk_text_new"
   let create ?hadjustment ?vadjustment () =
-    create (optboxed hadjustment) (optboxed vadjustment)
+    create (Gpointer.optboxed hadjustment) (Gpointer.optboxed vadjustment)
   external set_word_wrap : [>`text] obj -> bool -> unit
       = "ml_gtk_text_set_word_wrap"
   external set_adjustment :

@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-open Misc
+open Gaux
 open Gtk
 open Tags
 open GtkBase
@@ -130,25 +130,25 @@ module CList = struct
       = "ml_gtk_clist_row_is_visible"
   external get_cell_type : [>`clist] obj -> int -> int -> cell_type
       = "ml_gtk_clist_get_cell_type"
-  external set_text : [>`clist] obj -> int -> int -> optstring -> unit
+  external set_text : [>`clist] obj -> int -> int -> Gpointer.optstring -> unit
       = "ml_gtk_clist_set_text"
-  let set_text w row col text = set_text w row col (optstring text)
+  let set_text w row col text = set_text w row col (Gpointer.optstring text)
   external get_text : [>`clist] obj -> int -> int -> string
       = "ml_gtk_clist_get_text"
   external set_pixmap :
-      [>`clist] obj -> int -> int -> Gdk.pixmap -> Gdk.bitmap optboxed -> unit
+      [>`clist] obj -> int -> int -> Gdk.pixmap -> Gdk.bitmap Gpointer.optboxed -> unit
       = "ml_gtk_clist_set_pixmap"
   let set_pixmap w row col ?mask pixmap =
-    set_pixmap w row col pixmap (optboxed mask)
+    set_pixmap w row col pixmap (Gpointer.optboxed mask)
   external get_pixmap :
       [>`clist] obj -> int -> int -> Gdk.pixmap * Gdk.bitmap option
       = "ml_gtk_clist_get_pixmap"
   external set_pixtext :
       [>`clist] obj -> int -> int ->
-      string -> int -> Gdk.pixmap -> Gdk.bitmap optboxed -> unit
+      string -> int -> Gdk.pixmap -> Gdk.bitmap Gpointer.optboxed -> unit
       = "ml_gtk_clist_set_pixtext"
   let set_pixtext w row col ~spacing ~pixmap ?mask text =
-    set_pixtext w row col text spacing pixmap (optboxed mask)
+    set_pixtext w row col text spacing pixmap (Gpointer.optboxed mask)
   external set_foreground : [>`clist] obj -> row:int -> Gdk.Color.t -> unit
       = "ml_gtk_clist_set_foreground"
   external set_background : [>`clist] obj -> row:int -> Gdk.Color.t -> unit
@@ -160,7 +160,7 @@ module CList = struct
   external set_shift :
       [>`clist] obj -> int -> int -> vertical:int -> horizontal:int -> unit
       = "ml_gtk_clist_set_shift"
-  external insert : [>`clist] obj -> row:int -> optstring array -> int
+  external insert : [>`clist] obj -> row:int -> Gpointer.optstring array -> int
       = "ml_gtk_clist_insert"
   let insert w ~row texts =
     let len = get_columns w in
@@ -168,7 +168,7 @@ module CList = struct
     let arr = Array.create (get_columns w) None in
     List.fold_left texts ~init:0
       ~f:(fun pos text -> arr.(pos) <- text; pos+1);
-    let r = insert w ~row (Array.map ~f:optstring arr) in
+    let r = insert w ~row (Array.map ~f:Gpointer.optstring arr) in
     if r = -1 then invalid_arg "GtkCList::insert";
     r
   external remove : [>`clist] obj -> row:int -> unit
