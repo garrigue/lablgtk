@@ -1,5 +1,7 @@
 /* $Id$ */
 
+#include "pango_tags.h"
+
 #define PangoFontDescription_val(val) ((PangoFontDescription*)Pointer_val(val))
 value Val_PangoFontDescription_new(PangoFontDescription* it);
 #define Val_PangoFontDescription(desc) \
@@ -18,3 +20,6 @@ value ml_PangoStyle_Val (value val);
 #define Val_PangoFont Val_GAnyObject
 
 #define PangoFontMetrics_val(val) ((PangoFontMetrics*)Pointer_val(val))
+
+#define PangoLayout_val(val) check_cast(PANGO_LAYOUT, val)
+#define Val_PangoLayout Val_GAnyObject

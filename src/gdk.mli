@@ -343,6 +343,9 @@ module Draw :
     val string :
       [>`drawable] obj ->
       font:font -> gc -> x:int -> y:int -> string -> unit
+    val layout :
+      [>`drawable] obj -> gc -> x: int -> y: int -> Pango.layout ->
+      ?fore:color -> ?back:color -> unit
     val image :
       [>`drawable] obj -> gc -> ?xsrc:int -> ?ysrc:int ->
       ?xdest:int -> ?ydest:int -> ?width:int -> ?height:int -> image -> unit

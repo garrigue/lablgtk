@@ -139,8 +139,8 @@ GTKPROPS = gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
 	gtkRange.props gtkText.props gtkTree.props gtkFile.props gtkAction.props
 MLOBJS1 =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo
 ENUMOBJS = gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
-MLOBJS2 = gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
-	gtk.cmo pango.cmo gtkSignal.cmo gtkStock.cmo gtkObject.cmo
+MLOBJS2 = pango.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
+	gtk.cmo gtkSignal.cmo gtkStock.cmo gtkObject.cmo
 MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \

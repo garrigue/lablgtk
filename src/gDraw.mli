@@ -71,7 +71,9 @@ class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
       ?cap:GC.gdkCapStyle -> ?join:GC.gdkJoinStyle -> unit -> unit
     method size : int * int
     method string : string -> font:font -> x:int -> y:int -> unit
-    method points : (int * int) list -> unit
+    method layout :
+      x: int -> y: int -> ?fore:color -> ?back:color -> Pango.layout -> unit
+  method points : (int * int) list -> unit
     method lines : (int * int) list -> unit
     method segments : ((int * int) * (int * int)) list -> unit
   end

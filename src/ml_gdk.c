@@ -641,8 +641,13 @@ ML_9 (gdk_draw_arc, GdkDrawable_val, GdkGC_val, Bool_val, Int_val, Int_val,
 ML_bc9 (ml_gdk_draw_arc)
 ML_4 (gdk_draw_polygon, GdkDrawable_val, GdkGC_val, Bool_val,
       Insert(PointArray_val(arg4)) PointArrayLen_val, Unit)
-ML_6 (gdk_draw_string, GdkDrawable_val, GdkFont_val, GdkGC_val, Int_val, Int_val, String_val, Unit)
+ML_6 (gdk_draw_string, GdkDrawable_val, GdkFont_val, GdkGC_val, Int_val,
+      Int_val, String_val, Unit)
 ML_bc6 (ml_gdk_draw_string)
+ML_7 (gdk_draw_layout_with_colors, GdkDrawable_val, GdkGC_val, Int_val,
+      Int_val, PangoLayout_val, Option_val(arg6,GdkColor_val,NULL) Ignore,
+      Option_val(arg7,GdkColor_val,NULL) Ignore, Unit)
+ML_bc7 (ml_gdk_draw_layout_with_colors)
 
 /*
 ML_9 (gdk_draw_bitmap, GdkDrawable_val, GdkGC_val, GdkBitmap_val, Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
