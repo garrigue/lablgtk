@@ -6,9 +6,9 @@ open GtkBase
 open GtkMisc
 open GObj
 
-let separator dir ?(width = -2) ?(height = -2) ?packing ?show () =
+let separator dir ?(width = -1) ?(height = -1) ?packing ?show () =
   let w = Separator.create dir in
-  if width <> -2 || height <> -2 then Widget.set_size_request w ~width ~height;
+  if width <> -1 || height <> -1 then Widget.set_size_request w ~width ~height;
   pack_return (new widget_full w) ~packing ~show
 
 class statusbar_context obj ctx = object (self)
@@ -196,10 +196,10 @@ class pixmap obj = object
 end
 
 let pixmap (pm : #GDraw.pixmap) ?xalign ?yalign ?xpad ?ypad
-    ?(width = -2) ?(height = -2) ?packing ?show () =
+    ?(width = -1) ?(height = -1) ?packing ?show () =
   let w = Pixmap.create pm#pixmap ?mask:pm#mask in
   Misc.set w ?xalign ?yalign ?xpad ?ypad;
-  if width <> -2 || height <> -2 then Widget.set_size_request w ~width ~height;
+  if width <> -1 || height <> -1 then Widget.set_size_request w ~width ~height;
   pack_return (new pixmap w) ~packing ~show
 
 class font_selection obj = object

@@ -146,12 +146,13 @@ module Misc = struct
   let set_padding w ?x ?y () =
     set_padding w ~x:(may_default get_xpad w ~opt:x)
       ~y:(may_default get_ypad w ~opt:y)
-  let set ?xalign ?yalign ?xpad ?ypad ?(width = -2) ?(height = -2) w =
+  let set ?xalign ?yalign ?xpad ?ypad ?(width = -1) ?(height = -1) w =
     if xalign <> None || yalign <> None then
       set_alignment w ?x:xalign ?y:yalign ();
     if xpad <> None || ypad <> None then
       set_padding w ?x:xpad ?y:ypad ();
-    if width <> -2 || height <> -2 then Widget.set_size_request w ~width ~height
+    if width <> -1 || height <> -1 then
+      Widget.set_size_request w ~width ~height
 end
 
 module Arrow = struct
