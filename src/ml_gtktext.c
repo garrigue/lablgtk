@@ -1,4 +1,5 @@
 /* $Id$ */
+/* Author: Benjamin Monate */
 
 #include <stdio.h>
 #include <string.h>
