@@ -37,6 +37,7 @@ ML_1 (Val_toolbar_style, Int_val, Id)
 ML_1 (Val_state_type, Int_val, Id)
 ML_1 (Val_scroll_type, Int_val, Id)
 ML_1 (Response_val, Id, Val_int)
+ML_1 (Widget_flags_val, Id, Val_int)
 
 static Make_Flags_val (Dest_defaults_val)
 static Make_Flags_val (Target_flags_val)
@@ -51,6 +52,7 @@ value Val_GtkWidget_func(gpointer w)
 #define gtk_object_ref_and_sink(w) (gtk_object_ref(w), gtk_object_sink(w))
 Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
                            gtk_object_unref, 20)
+ML_1 (GTK_OBJECT_FLAGS, GtkObject_val, Val_int)
 
 /* gtkaccelgroup.h */
 
@@ -301,9 +303,6 @@ ML_1 (gtk_widget_lock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unlock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_accelerators_locked, GtkWidget_val, Val_bool)
 */
-
-ML_1 (GTK_WIDGET_VISIBLE, GtkWidget_val, Val_bool)
-ML_1 (GTK_WIDGET_HAS_FOCUS, GtkWidget_val, Val_bool)
 
 Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
 Make_Extractor (gtk_widget, GtkWidget_val, parent, Val_GtkWidget)

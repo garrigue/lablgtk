@@ -245,6 +245,7 @@ end
 
 and misc_ops obj = object (self)
   inherit gobject_ops obj
+  method get_flag = Object.get_flag obj
   method connect = new misc_signals obj
   method show () = Widget.show obj
   method unparent () = Widget.unparent obj
@@ -306,8 +307,7 @@ and misc_ops obj = object (self)
   method visual_depth = Gdk.Visual.depth (Widget.get_visual obj)
   method pointer = Widget.get_pointer obj
   method style = new style (Widget.get_style obj)
-  method visible = Widget.visible obj
-  method has_focus = Widget.has_focus obj
+  method visible = self#get_flag `VISIBLE
   method parent =
     try Some (new widget (unsafe_cast (Widget.parent obj)))
     with Gpointer.Null -> None
