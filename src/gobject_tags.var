@@ -12,5 +12,5 @@ type fundamental_type = "G_TYPE_"
   | `OBJECT ]
 
 type noconv data =
-  [ `NONE | `CHAR | `BOOL | `INT | `FLOAT | `STRING
+  [ `NONE | `CHAR | `CAML | `BOOL | `INT | `FLOAT | `STRING
   | `OBJECT | `POINTER | `INT64 | `INT32 | `LONG ]

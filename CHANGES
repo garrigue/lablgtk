@@ -1,5 +1,8 @@
 $Id$
 
+2004.02.29 [Olivier]
+  * add Gobject.Data.caml to store caml values in GtkTreeModels.
+
 2004.02.15 [Olivier]
   * change type of gdk_drag_status: argument is drag_action option
     instead of drag_action list
@@ -16,6 +19,8 @@ $Id$
   * log error messages if ml_gtktree callbacks raise exceptions
   * fix the types of some callbacks in GtkTreeSortable 
     and GtkTreeModelFilter
+
+In lablgtk2-20040113:
 
 2004.01.13 [Jacques]
   * revert to GWindow.window_skel/window
@@ -159,7 +164,7 @@ In lablgtk-2.2.0:
     label properties (label may contain pango makups/text never do)
 
 
-In lablgtk2-20030707
+In lablgtk2-20030707:
 
 2003.07.05 [Jacques]
   * #misc#set_geometry renamed in #misc#set_size_request

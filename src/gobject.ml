@@ -11,6 +11,7 @@ type g_closure
 
 type basic =
   [ `CHAR of char
+  | `CAML of Obj.t
   | `BOOL of bool
   | `INT of int
   | `FLOAT of float
@@ -24,6 +25,7 @@ type 'a data_set =
 
 type base_data =
   [ `BOOLEAN
+  | `CAML
   | `CHAR
   | `UCHAR
   | `INT
@@ -70,6 +72,8 @@ module Type = struct
       = "ml_g_type_register_static"
   let register_static ~parent ~name =
     register_static parent name
+  external g_caml_get_type : unit -> g_type = "ml_g_caml_get_type"
+  let caml = g_caml_get_type ()
 end
 
 module Value = struct
@@ -252,6 +256,17 @@ module Data = struct
              | `OBJECT None -> raise Gpointer.Null
              | _ -> failwith "Gobject.get_object");
       inj = (fun c -> `OBJECT (Some (unsafe_cast c))) }
+  let caml =
+    { kind = `CAML;
+      proj = (function `CAML v -> Obj.obj v
+             | _ -> failwith "Gobject.get_caml") ;
+      inj = (fun v -> `CAML (Obj.repr v)) }
+  let caml_option =
+    { kind = `CAML;
+      proj = (function `CAML v -> Some (Obj.obj v)
+	     | `NONE -> None
+             | _ -> failwith "Gobject.get_caml") ;
+      inj = (function None -> `POINTER None | Some v -> `CAML (Obj.repr v)) }
 
   let of_value conv v =
     conv.proj (Value.get_conv conv.kind v)

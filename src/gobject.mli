@@ -7,6 +7,7 @@ type g_value
 type g_closure
 type basic =
   [ `BOOL of bool
+  | `CAML of Obj.t
   | `CHAR of char
   | `FLOAT of float
   | `INT of int
@@ -20,6 +21,7 @@ type 'a data_set =
 
 type base_data =
   [ `BOOLEAN
+  | `CAML
   | `CHAR
   | `UCHAR
   | `INT
@@ -86,6 +88,8 @@ module Type :
       (* [Benjamin] Experimental stub: the new class has the same size as 
       its parent. No init functions right now. *)
     val register_static : parent:g_type -> name:string -> g_type
+
+    val caml : g_type
   end
 
 module Value :
@@ -154,6 +158,8 @@ module Data :
     val unsafe_boxed_option : 'a option data_conv
     val gobject : 'a obj data_conv
     val gobject_option : 'a obj option data_conv
+    val caml : 'a data_conv
+    val caml_option : 'a option data_conv
     val of_value : 'a data_conv -> g_value -> 'a
     val to_value : 'a data_conv -> 'a -> g_value
     val get_fundamental : 'a data_conv -> fundamental_type
