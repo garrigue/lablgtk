@@ -63,7 +63,6 @@ class type font =
     method size : int -> unit
     method bold : bool -> unit
     method italic : bool -> unit
-    method underline : bool -> unit
     (* color : GDI low-level *)
   end
 
@@ -108,7 +107,6 @@ class type virtual component =
     method get_height : int
     method align : align -> unit
     method get_align : align
-    method pos : int -> int -> int -> int -> unit
     method virtual update : unit
     method component : component
     method destroy : unit
@@ -133,6 +131,7 @@ class type menu =
   object
     method handle : menuhandle
     method destroy : unit
+    method popup : unit
   end
 
 class type menuitem =
@@ -170,13 +169,6 @@ class type window =
     method on_destroy : event
     method on_resize : event
     method on_move : event
-  end
-
-class type popupmenu =
-  object
-    inherit menu
-    method popup : window -> int -> int -> unit
-    method menu : menu
   end
 
 class type panel =
@@ -374,17 +366,17 @@ val new_menu : unit -> menu
 val new_popupmenu : unit -> popupmenu
 
 val new_window : unit -> window
-val new_panel : container -> panel
+val new_panel : #container -> panel
 
-val new_button : container -> button
-val new_listbox : container -> listbox
-val new_combobox : container -> combobox
-val new_radiobutton : container -> radiobutton
-val new_checkbox : container -> checkbox
-val new_label : container -> label
-val new_edit : container -> edit
-val new_richedit : container -> richedit
-val new_treeview : container -> treeview
+val new_button : #container -> button
+val new_listbox : #container -> listbox
+val new_combobox : #container -> combobox
+val new_radiobutton : #container -> radiobutton
+val new_checkbox : #container -> checkbox
+val new_label : #container -> label
+val new_edit : #container -> edit
+val new_richedit : #container -> richedit
+val new_treeview : #container -> treeview
 
 val new_litems : genlist -> 'a litems
 val new_resources : width:int -> height:int -> resources
