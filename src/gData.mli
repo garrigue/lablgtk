@@ -33,7 +33,12 @@ class adjustment :
     method clamp_page : lower:float -> upper:float -> unit
     method connect : adjustment_signals
     method set_value : float -> unit
+    method lower : float
+    method upper : float
     method value : float
+    method step_increment : float
+    method page_increment : float
+    method page_size : float
   end
 class adjustment_wrapper : Gtk.adjustment obj -> adjustment
 

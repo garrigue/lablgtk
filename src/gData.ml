@@ -24,7 +24,12 @@ class adjustment_wrapper obj = object
   method connect = new adjustment_signals ?obj
   method set_value = Adjustment.set_value obj
   method clamp_page = Adjustment.clamp_page obj
+  method lower = Adjustment.get_lower obj
+  method upper = Adjustment.get_upper obj
   method value = Adjustment.get_value obj
+  method step_increment = Adjustment.get_step_increment obj
+  method page_increment = Adjustment.get_page_increment obj
+  method page_size = Adjustment.get_page_size obj
 end
 
 class adjustment ?:value [< 0. >] ?:lower [< 0. >] ?:upper [< 100. >]

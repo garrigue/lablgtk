@@ -27,26 +27,29 @@ let sw = new GFrame.scrolled_window height:200 packing:vb#add
     hpolicy:`AUTOMATIC vpolicy:`AUTOMATIC
 let vp = new GFrame.viewport width:340
     shadow_type:`NONE packing:sw#add
-let vb = new GPack.vbox packing:vp#add
+let table = new GPack.table columns:4 rows:256 packing:vp#add
 let _ =
-  vb#focus#set_vadjustment vp#vadjustment
-let titles = new GPack.hbox packing:(vb#pack expand:false)
+  table#focus#set_vadjustment vp#vadjustment
+
+let top = ref 0
+and left = ref 0
+let add_to_table  w =
+  table#attach left:!left top:!top expand:`X w;
+  incr left;
+  if !left >= 4 then (incr top; left := 0)
 
 let entry_list = ref []
 
 let add_entry () =
-  let hb = new GPack.hbox packing:(vb#pack expand:false) in
   let entry =
     List.map [40;200;40;60]
-      fun:(fun width -> new GEdit.entry packing:hb#add :width)
+      fun:(fun width -> new GEdit.entry packing:add_to_table :width)
   in entry_list := entry :: !entry_list
 
 let _ =
   List.iter2 ["Number";"Name";"Count";"Price"] [40;200;40;60] fun:
     begin fun text width ->
-      let frame =
-	new GFrame.frame shadow_type:`OUT packing:titles#add :width in
-      ignore (new GMisc.label :text packing:frame#add)
+      ignore (new GButton.button label:text :width packing:add_to_table)
     end;
   for i = 1 to 9 do add_entry () done
 
@@ -107,11 +110,12 @@ let _ =
   w#connect#destroy callback:Main.quit;
   w#connect#event#key_press callback:
     begin fun ev ->
-      let key = GdkEvent.Key.keyval ev in
+      let key = GdkEvent.Key.keyval ev and adj = vp#vadjustment in
       if key = _Page_Up then
-	vp#vadjustment#set_value (vp#vadjustment#value -. 20.)
+	adj#set_value (adj#value -. adj#page_increment)
       else if key = _Page_Down then
-	vp#vadjustment#set_value (vp#vadjustment#value +. 20.);
+	adj#set_value (min (adj#value +. adj#page_increment)
+			 (adj#upper -. adj#page_size));
       false
     end;
   w#add_accel_group factory#accel_group;

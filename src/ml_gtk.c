@@ -152,7 +152,14 @@ ML_bc6 (ml_gtk_adjustment_new)
 ML_2 (gtk_adjustment_set_value, GtkAdjustment_val, Float_val, Unit)
 ML_3 (gtk_adjustment_clamp_page, GtkAdjustment_val,
       Float_val, Float_val, Unit)
-Make_Extractor (GtkAdjustment, GtkAdjustment_val, value, copy_double)
+Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, lower, copy_double)
+Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, upper, copy_double)
+Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, value, copy_double)
+Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, step_increment,
+		copy_double)
+Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, page_increment,
+		copy_double)
+Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, page_size, copy_double)
 
 /* gtktooltips.h */
 
