@@ -431,7 +431,7 @@ module TreeView = struct
         marshaller = marshal_move_cursor }
     let marshal_row_activated f _ = function
       | `POINTER(Some i) :: `OBJECT(Some c) :: _ ->
-          f (TreeModel.Signals.extract_iter i)
+          f (TreeModel.Signals.extract_path i)
             (Gobject.unsafe_cast c : tree_view_column obj)
       | _ -> failwith "GtkTree.TreeView.Signals.row_activated"
     let row_activated =

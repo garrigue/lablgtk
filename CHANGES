@@ -1,5 +1,8 @@
 $Id$
 
+2003.05.23 [Benjamin]
+  * fixed incorrect type of trreview#connect#row_activated
+
 2003.05.21 [Jun Furuse]
   * fixed a problem of SpinButton.get_value_as_int for the case of 
     the value is minus' src/gtkEdit.ml

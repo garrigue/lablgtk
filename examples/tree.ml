@@ -42,6 +42,11 @@ let main () =
       List.iter view#selection#get_selected_rows ~f:
         (fun p -> prerr_endline (GtkTree.TreePath.to_string p))
     end;
+  view#connect#after#row_activated
+    (fun path vcol ->
+       prerr_endline "Row activated";
+       let it = model#get_iter path in
+       prerr_endline (string_of_bool (model#iter_is_valid it)));
   window#show ();
   GMain.main ()
 
