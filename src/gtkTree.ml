@@ -397,7 +397,7 @@ module TreeView = struct
     let headers_visible =
       {name="headers_visible"; classe=`treeview; conv=boolean}
     let model : (_,tree_model obj option) property =
-      {name="vadjustment"; classe=`treeview; conv=gobject}
+      {name="model"; classe=`treeview; conv=gobject}
     let reorderable = {name="reorderable"; classe=`treeview; conv=boolean}
     let rules_hint = {name="rules_hint"; classe=`treeview; conv=boolean}
     let search_column = {name="search_column"; classe=`treeview; conv=int}
