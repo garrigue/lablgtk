@@ -46,7 +46,7 @@ let main () =
     (fun path vcol ->
        prerr_endline "Row activated";
        let it = model#get_iter path in
-       prerr_endline (string_of_bool (model#iter_is_valid it)));
+       assert (model#iter_is_valid it));
   window#show ();
   GMain.main ()
 
