@@ -62,7 +62,7 @@ How to run the examples:
 	lablgtk -labels examples/???.ml
 
   Before installing lablgtk you have to be more explicit:
-	../lablgtktop -labels -w s -I .. ???.ml
+	../src/lablgtktop -labels -w s -I ../src ???.ml
 
 How to link them:
   lablgtktop contains an extra module GtkInit, whose only contents is:
