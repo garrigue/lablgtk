@@ -16,7 +16,7 @@ let hash_variant s =
 
 open Genlex
 
-let lexer = make_lexer ["type"; "exception"; "="; "["; "]"]
+let lexer = make_lexer ["type"; "public"; "exception"; "="; "["; "]"]
 
 let exn_name = ref "invalid_argument"
 
@@ -28,10 +28,14 @@ let rec ident_list = parser
     [< ' Ident x; trans = may_string; s >] -> (x, trans) :: ident_list s
   | [< >] -> []
 
+let may_public = parser
+    [< ' Kwd "public" >] -> true
+  | [< >] -> false
+
 open Printf
 
 let declaration = parser
-    [< ' Kwd "type"; ' Ident name; ' Kwd "=";
+    [< ' Kwd "type"; public = may_public; ' Ident name; ' Kwd "=";
        prefix = may_string; ' Kwd "[";
        tags = ident_list; ' Kwd "]"; suffix = may_string >] ->
     let ctag tag trans =
@@ -61,6 +65,7 @@ let declaration = parser
 	~order:(fun (tag1,_) (tag2,_) -> hash_variant tag1 < hash_variant tag2)
     in
     printf "/* %s : conversion table */\n" name;
+    if not public then printf "static ";
     printf "lookup_info ml_table_%s[] = {\n" name;
     printf "  { 0, %d },\n" (List.length tags);
     List.iter tags ~f:

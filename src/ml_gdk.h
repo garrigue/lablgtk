@@ -14,6 +14,9 @@ extern value Val_GdkColormap (GdkColormap *);
 #define GdkWindow_val(val) ((GdkWindow*)Pointer_val(val))
 extern value Val_GdkWindow (GdkWindow *);
 
+#define GdkCursor_val(val) ((GdkCursor*)Pointer_val(val))
+#define Val_GdkCursor Val_pointer
+
 #define GdkPixmap_val(val) ((GdkPixmap*)Pointer_val(val))
 extern value Val_GdkPixmap (GdkPixmap *);
 
