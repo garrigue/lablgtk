@@ -328,8 +328,8 @@ CAMLprim value ml_gnome_canvas_get_dash(value dash)
   CAMLparam1(dash);
   CAMLlocal3(ret,dashes,offset);
   ArtVpathDash *d = Pointer_val(dash);
-  int len = d->n_dash;
   dashes = alloc(d->n_dash * Double_wosize, Double_array_tag);
+  memcpy((double *)dashes, d->dash, d->n_dash * sizeof (double));
   offset = copy_double(d->offset);
   ret = alloc_tuple(2);
   Field(ret,0) = offset;
