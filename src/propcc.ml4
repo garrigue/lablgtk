@@ -126,7 +126,7 @@ let next_attr = parser
 
 let attributes =
   ["Read";"Write";"Construct";"ConstructOnly";"NoSet";"Set";
-   "NoWrap";"Wrap";"NoGet"]
+   "NoWrap";"Wrap";"NoGet";"VSet";"NoVSet"]
 
 let prop = parser
     [< ' String name; mlname = may_name name; ' Ident gtype; ' Kwd":";
@@ -144,7 +144,7 @@ let prefix = ref ""
 let decls = ref []
 let headers = ref []
 let checks = ref false
-let class_qualifiers = ["abstract";"hv";"set";"wrap";"wrapset"]
+let class_qualifiers = ["abstract";"hv";"set";"wrap";"wrapset";"vset"]
 
 let process_phrase ~chars = parser
     [< ' Ident"class"; ' Ident name;
@@ -215,6 +215,9 @@ let process_file f =
                false
            end)
       end in
+  (* Redefining saves space in bytecode! *)
+  out "@ let may_cons = Property.may_cons";
+  out "@ let may_cons_opt = Property.may_cons_opt@ ";
   let may_cons_props props =
     if props <> [] then begin
       out "@ @[<hv2>let pl = ";
@@ -223,7 +226,7 @@ let process_file f =
           let op =
             if check_suffix gtype "_opt" then "may_cons_opt" else "may_cons"
           in
-          out "(@;Property.%s P.%s %s " op name name;
+          out "(@;%s P.%s %s " op name name;
         end;
       out "pl";
       for k = 1 to List.length props do out ")" done;
@@ -233,7 +236,7 @@ let process_file f =
   List.iter decls ~f:
     begin fun (name, gtk_name, attrs, props) ->
       out "@[<hv2>module %s = struct" (camlizeM name);
-      out "@ let cast w : %s.%s obj = try_cast w \"%s%s\""
+      out "@ @[<hv2>let cast w : %s.%s obj =@ try_cast w \"%s%s\"@]"
         baseM (camlize name) baseM name;
       if props <> [] then begin
         out "@ @[<hv2>module P = struct";
@@ -304,6 +307,8 @@ let process_file f =
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
   out "@[<hv>open Gobject@ open GtkProps@ ";
+  (* Redefining saves space in bytecode! *)
+  out "@ let set = set@ let get = get@ let param = param@ ";
   let oprop ~name ~gtype ppf pname =
     try
       let conv = List.assoc gtype specials in
@@ -331,13 +336,28 @@ let process_file f =
       if wr_props <> [] || rd_props <> [] then begin
         out "@ @[<hv2>class virtual %s_props = object (self)" (camlize name);
         List.iter wr_props ~f:(fun (_,pname,gtype,_) ->
-          out "@ method set_%s = set %a self#obj"
+          out "@ @[<hv2>method set_%s =@ set %a self#obj@]"
             pname (oprop ~name ~gtype) pname);
         List.iter rd_props ~f:(fun (_,pname,gtype,_) ->
-          out "@ method %s = get %a self#obj"
+          out "@ @[<hv2>method %s =@ get %a self#obj@]"
             pname (oprop ~name ~gtype) pname);
         out "@]@ end@ "
-      end
+      end;
+      let vset = List.mem "vset" attrs in
+      let vprops =
+        List.filter props ~f:
+          (fun (_,_,_,set) ->
+            let has = List.mem ~set in
+            (vset || has "VSet") && has "Write" &&
+            not (has "ConstructOnly" || has "NoVSet"))
+      in
+      if vprops <> [] then begin
+        out "@ @[<hv2>let %s_param = function" (camlize name);
+        List.iter vprops ~f:(fun (_,pname,gtype,_) ->
+          out "@ @[<hv4>| `%s p ->@ param %a p@]"
+            (String.uppercase pname) (oprop ~name ~gtype) pname);
+        out "@]@ ";
+      end;
     end;
   out "@.";
   close_out oc

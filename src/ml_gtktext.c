@@ -672,6 +672,7 @@ ML_4(gtk_text_view_move_child,GtkTextView_val,
      GtkWidget_val,Int_val,Int_val,
      Unit)
 
+/*
 ML_2(gtk_text_view_set_wrap_mode,GtkTextView_val, Wrap_mode_val,Unit)
 
 ML_1(gtk_text_view_get_wrap_mode,GtkTextView_val, Val_wrap_mode)
@@ -711,7 +712,7 @@ ML_1(gtk_text_view_get_right_margin,GtkTextView_val, Val_int)
 ML_2(gtk_text_view_set_indent,GtkTextView_val, Int_val,Unit)
 
 ML_1(gtk_text_view_get_indent,GtkTextView_val, Val_int)
-
+*/
 
 /* gtktextiter */
 

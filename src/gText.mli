@@ -15,6 +15,67 @@ object
 end
 val child_anchor : unit -> child_anchor
 
+type tag_property = [
+  | `BACKGROUND of string
+  | `BACKGROUND_FULL_HEIGHT of bool
+  | `BACKGROUND_FULL_HEIGHT_SET of bool
+  | `BACKGROUND_GDK of Gdk.color
+  | `BACKGROUND_SET of bool
+  | `BACKGROUND_STIPPLE of Gdk.pixmap
+  | `BACKGROUND_STIPPLE_SET of bool
+  | `EDITABLE of bool
+  | `EDITABLE_SET of bool
+  | `FAMILY of string
+  | `FAMILY_SET of bool
+  | `FONT of string
+  | `FONT_DESC of Pango.font_description
+  | `FOREGROUND of string
+  | `FOREGROUND_GDK of Gdk.color
+  | `FOREGROUND_SET of bool
+  | `FOREGROUND_STIPPLE of Gdk.pixmap
+  | `FOREGROUND_STIPPLE_SET of bool
+  | `INDENT of int
+  | `INDENT_SET of bool
+  | `INVISIBLE of bool
+  | `INVISIBLE_SET of bool
+  | `JUSTIFICATION of Tags.justification
+  | `JUSTIFICATION_SET of bool
+  | `LANGUAGE of string
+  | `LANGUAGE_SET of bool
+  | `LEFT_MARGIN of int
+  | `LEFT_MARGIN_SET of bool
+  | `PIXELS_ABOVE_LINES of int
+  | `PIXELS_ABOVE_LINES_SET of bool
+  | `PIXELS_BELOW_LINES of int
+  | `PIXELS_BELOW_LINES_SET of bool
+  | `PIXELS_INSIDE_WRAP of int
+  | `PIXELS_INSIDE_WRAP_SET of bool
+  | `RIGHT_MARGIN of int
+  | `RIGHT_MARGIN_SET of bool
+  | `RISE of int
+  | `RISE_SET of bool
+  | `SCALE of float
+  | `SCALE_SET of bool
+  | `SIZE of int
+  | `SIZE_POINTS of float
+  | `SIZE_SET of bool
+  | `STRETCH of Pango.Tags.stretch
+  | `STRETCH_SET of bool
+  | `STRIKETHROUGH of bool
+  | `STRIKETHROUGH_SET of bool
+  | `STYLE of Pango.Tags.style
+  | `STYLE_SET of bool
+  | `TABS_SET of bool
+  | `UNDERLINE of Pango.Tags.underline
+  | `UNDERLINE_SET of bool
+  | `VARIANT of Pango.Tags.variant
+  | `VARIANT_SET of bool
+  | `WEIGHT of Pango.Tags.weight
+  | `WEIGHT_SET of bool
+  | `WRAP_MODE of Tags.wrap_mode
+  | `WRAP_MODE_SET of bool
+]
+
 class tag_signals : ([> `texttag] as 'b) obj ->
 object ('a)
   val after : bool
@@ -34,8 +95,8 @@ object
   method get_oid : int
   method priority : int
   method set_priority : int -> unit
-  method set_properties : GtkText.Tag.property list -> unit
-  method set_property : GtkText.Tag.property -> unit
+  method set_properties : tag_property list -> unit
+  method set_property : tag_property -> unit
 end
 val tag : string -> tag
 
@@ -243,8 +304,7 @@ object
   method create_child_anchor : iter -> child_anchor
   method create_mark :
     ?name:string -> ?left_gravity:bool -> iter -> text_mark
-  method create_tag :
-    ?name:string -> GtkText.Tag.property list -> tag
+  method create_tag : ?name:string -> tag_property list -> tag
   method cut_clipboard : ?default_editable:bool -> Gtk.clipboard -> unit
   method delete : start:iter -> stop:iter -> unit
   method delete_interactive :
