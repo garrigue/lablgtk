@@ -292,7 +292,7 @@ GL extension:
   * get and install gtkglarea-1.99.0.tar.gz from
       ftp://ftp.gnome.org/pub/gnome/sources/gtkglarea/1.99/
     or any other gnome mirror site
-  * reconfigure: "make configure USE_GL=1"
+  * reconfigure
 
   You can then use the widget GlGtk.gl_area as an OpenGL window.
   Some examples are in examples/GL, but basically any LablGL example
