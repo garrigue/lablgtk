@@ -126,7 +126,7 @@ and drag_context context = object
   method context = context
   method finish = DnD.finish context
   method source_widget =
-    new widget (Object.unsafe_cast (DnD.get_source_widget context))
+    new widget_full (Object.unsafe_cast (DnD.get_source_widget context))
   method set_icon_widget (w : widget) =
     DnD.set_icon_widget context (w#as_widget)
   method set_icon_pixmap ?:colormap{=Gdk.Color.get_system_colormap ()}
@@ -212,7 +212,7 @@ and widget_misc obj = object
   method visible = Widget.visible obj
   method has_focus = Widget.has_focus obj
   method parent =
-    try new widget (Object.unsafe_cast (Widget.parent obj))
+    try new widget_full (Object.unsafe_cast (Widget.parent obj))
     with Null_pointer -> raise Not_found
   method set_app_paintable = Widget.set_app_paintable obj
   method allocation = Widget.allocation obj
@@ -221,6 +221,8 @@ end
 and widget obj = object (self)
   inherit gtkobj obj
   method as_widget = Widget.coerce obj
+  method coerce = (self :> < destroy : _; get_type : _; get_id : _;
+		             as_widget : _; coerce : _; misc : _; drag : _ >)
   method misc = new widget_misc obj
   method drag = new widget_drag (Object.unsafe_cast obj)
 end
@@ -243,7 +245,7 @@ and widget_signals obj = object
     GtkSignal.connect obj sig:Widget.Signals.parent_set :after callback:
       begin function
 	  None   -> callback None
-	| Some w -> callback (Some (new widget (Object.unsafe_cast w)))
+	| Some w -> callback (Some (new widget_full (Object.unsafe_cast w)))
       end
 end
 
@@ -256,4 +258,5 @@ end
 
 let pack_return self :packing :show =
   may packing fun:(fun f -> (f (self : #widget :> widget) : unit));
-  if show <> Some false then self#misc#show ()
+  if show <> Some false then self#misc#show ();
+  self

@@ -210,9 +210,9 @@ module CList = struct
   let set_titles_active w = function
       true -> column_titles_active w
     | false -> column_titles_passive w
-  let set w :cont ?:hadjustment ?:vadjustment ?:shadow_type
+  let set ?:hadjustment ?:vadjustment ?:shadow_type
       ?:button_actions{=[]} ?:selection_mode ?:reorderable
-      ?:use_drag_icons ?:row_height ?:titles_show ?:titles_active =
+      ?:use_drag_icons ?:row_height ?:titles_show ?:titles_active w =
     let may_set f param = may param fun:(f w) in
     may_set set_hadjustment hadjustment;
     may_set set_vadjustment vadjustment;
@@ -223,8 +223,7 @@ module CList = struct
     may_set set_use_drag_icons use_drag_icons;
     may_set set_row_height row_height;
     may_set set_titles_show titles_show;
-    may_set set_titles_active titles_active;
-    cont w
+    may_set set_titles_active titles_active
   let set_sort w ?:auto ?:column ?type:sort_type () =
     may auto fun:(set_auto_sort w);
     may column fun:(set_sort_column w);

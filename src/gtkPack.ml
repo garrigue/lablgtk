@@ -28,10 +28,9 @@ module Box = struct
       = "ml_gtk_box_set_homogeneous"
   external set_spacing : [>`box] obj -> int -> unit
       = "ml_gtk_box_set_spacing"
-  let set w :cont ?:homogeneous ?:spacing =
+  let set ?:homogeneous ?:spacing w =
     may homogeneous fun:(set_homogeneous w);
-    may spacing fun:(set_spacing w);
-    cont w
+    may spacing fun:(set_spacing w)
   type packing =
       { expand: bool; fill: bool; padding: int; pack_type: pack_type }
   external query_child_packing : [>`box] obj -> [>`widget] obj -> packing
@@ -75,22 +74,21 @@ module BBox = struct
       = "ml_gtk_button_box_set_child_ipadding"
   external set_layout : [>`bbox] obj -> bbox_style -> unit
       = "ml_gtk_button_box_set_layout"
-  let set_child_size ?:width ?:height w =
+  let set_child_size w ?:width ?:height () =
     set_child_size w width:(may_default get_child_width w for:width)
       height:(may_default get_child_height w for:height)
-  let set_child_ipadding ?:x ?:y w =
+  let set_child_ipadding w ?:x ?:y () =
     set_child_ipadding w
       x:(may_default get_child_ipadx w for:x)
       y:(may_default get_child_ipady w for:y)
-  let set w :cont ?:spacing ?:child_width ?:child_height ?:child_ipadx
-      ?:child_ipady ?:layout =
+  let set ?:spacing ?:child_width ?:child_height ?:child_ipadx
+      ?:child_ipady ?:layout w =
     may spacing fun:(set_spacing w);
     if child_width <> None || child_height <> None then
-      set_child_size w ?width:child_width ?height:child_height;
+      set_child_size w ?width:child_width ?height:child_height ();
     if child_ipadx <> None || child_ipady <> None then
-      set_child_ipadding w ?x:child_ipadx ?y:child_ipady;
-    may layout fun:(set_layout w);
-    cont w
+      set_child_ipadding w ?x:child_ipadx ?y:child_ipady ();
+    may layout fun:(set_layout w)
   external set_child_size_default : width:int -> height:int -> unit
       = "ml_gtk_button_box_set_child_size_default"
   external set_child_ipadding_default : x:int -> y:int -> unit
@@ -177,7 +175,7 @@ module Packer = struct
       = "ml_gtk_packer_set_spacing"
   external set_defaults :
       [>`packer] obj -> ?border_width:int -> ?pad_x:int -> ?pad_y:int ->
-      ?i_pad_x:int -> ?i_pad_y:int -> unit
+      ?i_pad_x:int -> ?i_pad_y:int -> unit -> unit
       = "ml_gtk_packer_set_defaults_bc" "ml_gtk_packer_set_defaults"
 
   let build_options ?:expand{=true} ?:fill{=`BOTH} () =
@@ -200,10 +198,9 @@ module Paned = struct
       = "ml_gtk_paned_set_handle_size"
   external set_gutter_size : [>`paned] obj -> int -> unit
       = "ml_gtk_paned_set_gutter_size"
-  let set w :cont ?:handle_size ?:gutter_size =
+  let set ?:handle_size ?:gutter_size w =
     may fun:(set_handle_size w) handle_size;
-    may fun:(set_gutter_size w) gutter_size;
-    cont w
+    may fun:(set_gutter_size w) gutter_size
   external hpaned_new : unit -> paned obj = "ml_gtk_hpaned_new"
   external vpaned_new : unit -> paned obj = "ml_gtk_vpaned_new"
   let create (dir : orientation) =
@@ -248,9 +245,8 @@ module Table = struct
       = "ml_gtk_table_set_col_spacings"
   external set_homogeneous : [>`table] obj -> bool -> unit
       = "ml_gtk_table_set_homogeneous"
-  let set w :cont ?:row_spacings ?:col_spacings ?:homogeneous =
+  let set ?:homogeneous ?:row_spacings ?:col_spacings w =
     may row_spacings fun:(set_row_spacings w);
     may col_spacings fun:(set_col_spacings w);
-    may homogeneous fun:(set_homogeneous w);
-    cont w
+    may homogeneous fun:(set_homogeneous w)
 end

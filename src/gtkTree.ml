@@ -61,12 +61,11 @@ module Tree = struct
       = "ml_gtk_tree_set_view_lines"
   external selection : [>`tree] obj -> tree_item obj list =
     "ml_gtk_tree_selection"
-  let set w :cont ?:selection_mode ?:view_mode ?:view_lines =
+  let set ?:selection_mode ?:view_mode ?:view_lines w =
     let may_set f = may fun:(f w) in
     may_set set_selection_mode selection_mode;
     may_set set_view_mode view_mode;
-    may_set set_view_lines view_lines;
-    cont w
+    may_set set_view_lines view_lines
   module Signals = struct
     open GtkSignal
     let selection_changed : ([>`tree],_) t =

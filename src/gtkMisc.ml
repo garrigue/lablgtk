@@ -24,10 +24,9 @@ module ColorSelection = struct
       = "ml_gtk_color_selection_set_update_policy"
   external set_opacity : [>`colorsel] obj -> bool -> unit
       = "ml_gtk_color_selection_set_opacity"
-  let set w :cont ?:update_policy ?:opacity =
+  let set ?:update_policy ?:opacity w =
     may update_policy fun:(set_update_policy w);
-    may opacity fun:(set_opacity w);
-    cont w
+    may opacity fun:(set_opacity w)
   external set_color :
       [>`colorsel] obj ->
       red:float -> green:float -> blue:float -> ?opacity:float -> unit
@@ -133,8 +132,8 @@ module Notebook = struct
   let set_popup w = function
       true -> popup_enable w
     | false -> popup_disable w
-  let set w :cont ?:page ?:tab_pos ?:show_tabs ?:homogeneous_tabs
-      ?:show_border ?:scrollable ?:tab_border ?:popup =
+  let set ?:page ?:tab_pos ?:show_tabs ?:homogeneous_tabs
+      ?:show_border ?:scrollable ?:tab_border ?:popup w =
     let may_set f = may fun:(f w) in
     may_set set_page page;
     may_set set_tab_pos tab_pos;
@@ -143,8 +142,7 @@ module Notebook = struct
     may_set set_show_border show_border;
     may_set set_scrollable scrollable;
     may_set set_tab_border tab_border;
-    may_set set_popup popup;
-    cont w
+    may_set set_popup popup
   module Signals = struct
     open GtkSignal
     let switch_page : ([>`notebook],_) t =
@@ -241,12 +239,11 @@ module Misc = struct
   let set_padding w ?:x ?:y () =
     set_padding w x:(may_default get_xpad w for:x)
       y:(may_default get_ypad w for:y)
-  let set w :cont ?:xalign ?:yalign ?:xpad ?:ypad =
+  let set ?:xalign ?:yalign ?:xpad ?:ypad w =
     if xalign <> None || yalign <> None then
       set_alignment w ?x:xalign ?y:yalign ();
     if xpad <> None || ypad <> None then
-      set_padding w ?x:xpad ?y:ypad ();
-    cont w
+      set_padding w ?x:xpad ?y:ypad ()
 end
 
 module Arrow = struct
@@ -283,12 +280,11 @@ module Label = struct
       = "ml_gtk_label_set_pattern"
   external set_line_wrap : [>`label] obj -> bool -> unit
       = "ml_gtk_label_set_line_wrap"
-  let set w :cont ?:text ?:justify ?:line_wrap ?:pattern =
+  let set ?:text ?:justify ?:line_wrap ?:pattern w =
     may fun:(set_text w) text;
     may fun:(set_justify w) justify;
     may fun:(set_line_wrap w) line_wrap;
-    may fun:(set_pattern w) pattern;
-    cont w
+    may fun:(set_pattern w) pattern
   external get_text : [>`label] obj -> string = "ml_gtk_label_get_label"
 end
 
@@ -318,12 +314,11 @@ module TipsQuery = struct
     set_labels w
       inactive:(may_default get_label_inactive w for:inactive)
       no_tip:(may_default get_label_no_tip w for:no_tip)
-  let set w :cont ?:caller ?:emit_always ?:label_inactive ?:label_no_tip =
+  let set ?:caller ?:emit_always ?:label_inactive ?:label_no_tip w =
     may caller fun:(set_caller w);
     may emit_always fun:(set_emit_always w);
     if label_inactive <> None || label_no_tip <> None then
-      set_labels w ?inactive:label_inactive ?no_tip:label_no_tip;
-    cont w
+      set_labels w ?inactive:label_inactive ?no_tip:label_no_tip
   module Signals = struct
     open GtkSignal
     let start_query : ([>`tipsquery],_) t =

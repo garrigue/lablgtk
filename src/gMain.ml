@@ -15,9 +15,9 @@ end = Main
 
 module Grab = struct
   open Grab
-  let add (w : #is_widget) = add w#as_widget
-  let remove (w : #is_widget) = remove w#as_widget
-  let get_current () = new widget_wrapper (get_current ())
+  let add (w : #widget) = add w#as_widget
+  let remove (w : #widget) = remove w#as_widget
+  let get_current () = new widget (get_current ())
 end
 
 module Timeout : sig

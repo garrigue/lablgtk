@@ -8,20 +8,20 @@ open GObj
 class data_signals obj = object
   inherit gtkobj_signals obj
   method disconnect_data =
-    GtkSignal.connect sig:Data.Signals.disconnect obj
+    GtkSignal.connect sig:Data.Signals.disconnect obj :after
 end
 
 class adjustment_signals obj = object
   inherit data_signals obj
-  method changed = GtkSignal.connect sig:Adjustment.Signals.changed obj
+  method changed = GtkSignal.connect sig:Adjustment.Signals.changed obj :after
   method value_changed =
-    GtkSignal.connect sig:Adjustment.Signals.value_changed obj
+    GtkSignal.connect sig:Adjustment.Signals.value_changed obj :after
 end
 
-class adjustment_wrapper obj = object
+class adjustment obj = object
   inherit gtkobj obj
   method as_adjustment : Gtk.adjustment obj = obj
-  method connect = new adjustment_signals ?obj
+  method connect = new adjustment_signals obj
   method set_value = Adjustment.set_value obj
   method clamp_page = Adjustment.clamp_page obj
   method lower = Adjustment.get_lower obj
@@ -32,32 +32,36 @@ class adjustment_wrapper obj = object
   method page_size = Adjustment.get_page_size obj
 end
 
-class adjustment ?:value [< 0. >] ?:lower [< 0. >] ?:upper [< 100. >]
-    ?:step_incr [< 1. >] ?:page_incr [< 10. >] ?:page_size [< 10. >] =
+let adjustment ?:value{=0.} ?:lower{=0.} ?:upper{=100.}
+    ?:step_incr{=1.} ?:page_incr{=10.} ?:page_size{=10.} () =
   let w =
     Adjustment.create :value :lower :upper :step_incr :page_incr :page_size in
-  adjustment_wrapper w
+  new adjustment w
 
 let adjustment_option = function None -> None
   | Some (adj : adjustment) -> Some adj#as_adjustment
 
-let set_tooltips obj ?:delay ?:foreground ?:background =
-  Tooltips.set obj ?:delay
-    ?foreground:(may_map foreground fun:GdkObj.color)
-    ?background:(may_map background fun:GdkObj.color)
-
-class tooltips_wrapper obj = object
-  inherit gtkobj (obj : tooltips obj)
-  method connect = new data_signals ?obj
+class tooltips obj = object
+  inherit gtkobj (obj : Gtk.tooltips obj)
+  method as_tooltips = obj
+  method connect = new data_signals obj
   method enable () = Tooltips.enable obj
   method disable () = Tooltips.disable obj
-  method set_tip : 'b . (#is_widget as 'b) -> _ =
-    fun w -> Tooltips.set_tip ?obj ?w#as_widget
-  method set = set_tooltips ?obj
-
+  method set_tip ?:text ?:private (w : widget) =
+    Tooltips.set_tip obj w#as_widget ?:text ?:private
+  method set_delay = Tooltips.set_delay obj
+  method set_foreground col =
+    Tooltips.set_colors obj foreground:(GdkObj.color col) ()
+  method set_background col =
+    Tooltips.set_colors obj background:(GdkObj.color col) ()
 end
 
-class tooltips ?:delay ?:foreground ?:background =
-  let w = Tooltips.create () in
-  let () = set_tooltips w ?:delay ?:foreground ?:background
-  in tooltips_wrapper w
+let tooltips ?:delay ?:foreground ?:background () =
+  let tt = Tooltips.create () in
+  Tooltips.set tt ?:delay
+    ?foreground:(may_map foreground fun:GdkObj.color)
+    ?background:(may_map background fun:GdkObj.color);
+  new tooltips tt
+
+
+

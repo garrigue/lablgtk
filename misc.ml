@@ -61,6 +61,8 @@ let identity x = x
 
 let kill x y = x
 
+let end_cont _ () = ()
+
 (* Exceptions *)
 
 exception Null_pointer

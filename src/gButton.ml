@@ -17,115 +17,98 @@ end
 
 class button_signals obj = object
   inherit container_signals obj
-  method clicked = GtkSignal.connect sig:Button.Signals.clicked obj
-  method pressed = GtkSignal.connect sig:Button.Signals.pressed obj
-  method released = GtkSignal.connect sig:Button.Signals.released obj
-  method enter = GtkSignal.connect sig:Button.Signals.enter obj
-  method leave = GtkSignal.connect sig:Button.Signals.leave obj
+  method clicked = GtkSignal.connect sig:Button.Signals.clicked :after obj
+  method pressed = GtkSignal.connect sig:Button.Signals.pressed :after obj
+  method released = GtkSignal.connect sig:Button.Signals.released :after obj
+  method enter = GtkSignal.connect sig:Button.Signals.enter :after obj
+  method leave = GtkSignal.connect sig:Button.Signals.leave :after obj
 end
 
-class button_wrapper obj = object
+class button obj = object
   inherit button_skel (Button.coerce obj)
-  method connect = new button_signals ?obj
+  method connect = new button_signals obj
   method add_events = Widget.add_events obj
 end
 
-class button ?:label ?:border_width ?:width ?:height ?:packing ?:show =
-  let w = Button.create ?:label ?None in
-  let () =
-    Container.set w ?:border_width ?:width ?:height in
-  object (self)
-    inherit button_wrapper w
-    initializer pack_return :packing ?:show (self :> button_wrapper)
-  end
+let button ?:label ?:border_width ?:width ?:height ?:packing ?:show () =
+  let w = Button.create ?:label () in
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new button w) :packing :show
 
 class toggle_button_signals obj = object
   inherit button_signals obj
   method toggled =
-    GtkSignal.connect sig:ToggleButton.Signals.toggled obj
+    GtkSignal.connect sig:ToggleButton.Signals.toggled obj :after
 end
 
-class pre_toggle_button_wrapper obj = object
+class toggle_button obj = object
   inherit button_skel obj
-  method connect = new toggle_button_signals ?obj
+  method connect = new toggle_button_signals obj
   method active = ToggleButton.get_active obj
   method set_active = ToggleButton.set_active obj
   method set_draw_indicator = ToggleButton.set_mode obj
 end
 
-class toggle_button_wrapper obj =
-  pre_toggle_button_wrapper (ToggleButton.coerce obj)
+let toggle_button ?:label ?:active ?:draw_indicator
+    ?:border_width ?:width ?:height ?:packing ?:show () =
+  let w = ToggleButton.create_toggle ?:label () in
+  ToggleButton.set w ?:active ?:draw_indicator;
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new toggle_button w) :packing :show
 
-class toggle_button ?:label ?:active ?:draw_indicator
-    ?:border_width ?:width ?:height ?:packing ?:show =
-  let w = ToggleButton.create_toggle ?:label ?None in
-  let () =
-    ToggleButton.set w ?:active ?:draw_indicator;
-    Container.set w ?:border_width ?:width ?:height in
-  object (self)
-    inherit toggle_button_wrapper w
-    initializer pack_return :packing ?:show (self :> toggle_button_wrapper)
-  end
+let check_button ?:label ?:active ?:draw_indicator
+    ?:border_width ?:width ?:height ?:packing ?:show () =
+  let w = ToggleButton.create_check ?:label () in
+  ToggleButton.set w ?:active ?:draw_indicator;
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new toggle_button w) :packing :show
 
-class check_button ?:label ?:active ?:draw_indicator
-    ?:border_width ?:width ?:height ?:packing ?:show =
-  let w = ToggleButton.create_check ?:label ?None in
-  let () =
-    ToggleButton.set w ?:active ?:draw_indicator;
-    Container.set w ?:border_width ?:width ?:height in
-  object (self)
-    inherit toggle_button_wrapper w
-    initializer pack_return :packing ?:show (self :> toggle_button_wrapper)
-  end
-
-class radio_button_wrapper obj = object
-  inherit pre_toggle_button_wrapper (obj : radio_button obj)
+class radio_button obj = object
+  inherit toggle_button (obj : Gtk.radio_button obj)
   method set_group = RadioButton.set_group obj
   method group = RadioButton.group obj
 end
 
-class radio_button ?:group ?:label ?:active ?:draw_indicator
-    ?:border_width ?:width ?:height ?:packing ?:show =
-  let w = RadioButton.create ?:group ?:label ?None in
-  let () =
-    ToggleButton.set w ?:active ?:draw_indicator;
-    Container.set w ?:border_width ?:width ?:height in
-  object (self)
-    inherit radio_button_wrapper w
-    initializer pack_return :packing ?:show (self :> radio_button_wrapper)
-  end
+let radio_button ?:group ?:label ?:active ?:draw_indicator
+    ?:border_width ?:width ?:height ?:packing ?:show () =
+  let w = RadioButton.create ?:group ?:label () in
+  ToggleButton.set w ?:active ?:draw_indicator;
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new radio_button w) :packing :show
 
 let may_as_widget = function
     None -> None
-  | Some (w : #is_widget) -> Some w#as_widget
+  | Some (w : widget) -> Some w#as_widget
 
-class toolbar_wrapper obj = object
-  inherit container_wrapper (obj : toolbar obj)
-  method insert_widget : 'a . (#is_widget as 'a) -> _ =
-    fun w -> Toolbar.insert_widget ?obj ?(w#as_widget)
+class toolbar obj = object
+  inherit container_full (obj : Gtk.toolbar obj)
+  method insert_widget ?:tooltip ?:tooltip_private ?:pos (w : widget) =
+    Toolbar.insert_widget obj w#as_widget ?:tooltip ?:tooltip_private ?:pos
 
-  method insert_button : 'a . ?icon:(#is_widget as 'a) -> _ =
-    fun ?:icon ?:text ?:tooltip ?:tooltip_private ?:pos ?:callback ->
-      let icon = may_as_widget icon in
-      new button_wrapper
-	(Toolbar.insert_button obj type:`BUTTON ?:icon ?:text
-	   ?:tooltip ?:tooltip_private ?:pos ?:callback)
+  method insert_button ?:text ?:tooltip ?:tooltip_private ?:icon
+      ?:pos ?:callback () =
+    let icon = may_as_widget icon in
+    new button
+      (Toolbar.insert_button obj type:`BUTTON ?:icon ?:text
+	 ?:tooltip ?:tooltip_private ?:pos ?:callback ())
 
-  method insert_toggle_button : 'a . ?icon:(#is_widget as 'a) -> _ =
-    fun ?:icon ?:text ?:tooltip ?:tooltip_private ?:pos ?:callback ->
-      let icon = may_as_widget icon in
-      new toggle_button_wrapper (ToggleButton.cast
-	(Toolbar.insert_button obj type:`BUTTON ?:icon ?:text
-	   ?:tooltip ?:tooltip_private ?:pos ?:callback))
+  method insert_toggle_button ?:text ?:tooltip ?:tooltip_private ?:icon
+      ?:pos ?:callback () =
+    let icon = may_as_widget icon in
+    new toggle_button
+      (ToggleButton.cast
+	 (Toolbar.insert_button obj type:`TOGGLEBUTTON ?:icon ?:text
+	    ?:tooltip ?:tooltip_private ?:pos ?:callback ()))
 
-  method insert_radio_button : 'a . ?icon:(#is_widget as 'a) -> _ =
-    fun ?:icon ?:text ?:tooltip ?:tooltip_private ?:pos ?:callback ->
-      let icon = may_as_widget icon in
-      new radio_button_wrapper (RadioButton.cast
-	(Toolbar.insert_button obj type:`BUTTON ?:icon ?:text
-	   ?:tooltip ?:tooltip_private ?:pos ?:callback))
+  method insert_radio_button ?:text ?:tooltip ?:tooltip_private ?:icon
+      ?:pos ?:callback () =
+    let icon = may_as_widget icon in
+    new radio_button
+      (RadioButton.cast
+	 (Toolbar.insert_button obj type:`RADIOBUTTON ?:icon ?:text
+	    ?:tooltip ?:tooltip_private ?:pos ?:callback ()))
 
-  method insert_space = Toolbar.insert_space ?obj
+  method insert_space = Toolbar.insert_space obj
 
   method set_orientation = Toolbar.set_orientation obj
   method set_style = Toolbar.set_style obj
@@ -136,15 +119,10 @@ class toolbar_wrapper obj = object
   method button_relief = Toolbar.get_button_relief obj
 end
 
-class toolbar ?:orientation [< `HORIZONTAL >] ?:style
+let toolbar ?:orientation{=`HORIZONTAL} ?:style
     ?:space_size ?:space_style ?:tooltips ?:button_relief
-    ?:border_width ?:width ?:height ?:packing ?:show =
-  let w = Toolbar.create orientation ?:style in
-  let () =
-    Toolbar.set w ?:space_size ?:space_style ?:tooltips ?:button_relief;
-    Container.set w ?:border_width ?:width ?:height
-  in
-  object (self)
-    inherit toolbar_wrapper w
-    initializer pack_return :packing ?:show (self :> toolbar_wrapper)
-  end
+    ?:border_width ?:width ?:height ?:packing ?:show () =
+  let w = Toolbar.create orientation ?:style () in
+  Toolbar.set w ?:space_size ?:space_style ?:tooltips ?:button_relief;
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new toolbar w) :packing :show

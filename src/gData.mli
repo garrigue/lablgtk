@@ -3,29 +3,25 @@
 open Gtk
 
 class data_signals :
-  'a[> data] obj ->
+  'a obj ->
   object
     inherit GObj.gtkobj_signals
+    constraint 'a = [>`data]
     val obj : 'a obj
-    method disconnect_data :
-	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method disconnect_data : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class adjustment_signals :
-  'a[> adjustment data] obj ->
+  'a obj ->
   object
     inherit data_signals
+    constraint 'a = [>`adjustment|`data]
     val obj : 'a obj
-    method changed : callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
-    method value_changed :
-	callback:(unit -> unit) -> ?after:bool -> GtkSignal.id
+    method changed : callback:(unit -> unit) -> GtkSignal.id
+    method value_changed : callback:(unit -> unit) -> GtkSignal.id
   end
 
-class adjustment :
-  ?value:float ->
-  ?lower:float ->
-  ?upper:float ->
-  ?step_incr:float -> ?page_incr:float -> ?page_size:float ->
+class adjustment : Gtk.adjustment obj ->
   object
     inherit GObj.gtkobj
     val obj : Gtk.adjustment obj
@@ -40,21 +36,29 @@ class adjustment :
     method page_increment : float
     method page_size : float
   end
-class adjustment_wrapper : Gtk.adjustment obj -> adjustment
+val adjustment :
+  ?value:float ->
+  ?lower:float ->
+  ?upper:float ->
+  ?step_incr:float ->
+  ?page_incr:float -> ?page_size:float -> unit -> adjustment
 
 class tooltips :
-  ?delay:int -> ?foreground:GdkObj.color -> ?background:GdkObj.color ->
+  Gtk.tooltips obj ->
   object
     inherit GObj.gtkobj
     val obj : Gtk.tooltips obj
+    method as_tooltips : Gtk.tooltips obj
     method connect : data_signals
     method disable : unit -> unit
     method enable : unit -> unit
-    method set :
-      ?delay:int ->
-      ?foreground:GdkObj.color -> ?background:GdkObj.color -> unit
-    method set_tip : #GObj.is_widget -> ?text:string -> ?private:string -> unit
+    method set_delay : int -> unit
+    method set_foreground : GdkObj.color -> unit
+    method set_background : GdkObj.color -> unit
+    method set_tip : ?text:string -> ?private:string -> GObj.widget -> unit
   end
-class tooltips_wrapper : Gtk.tooltips obj -> tooltips
+val tooltips :
+  ?delay:int ->
+  ?foreground:GdkObj.color -> ?background:GdkObj.color -> unit -> tooltips
 
 val adjustment_option : adjustment option -> Gtk.adjustment obj option
