@@ -294,10 +294,10 @@ ML_4 (gtk_text_buffer_delete_interactive,GtkTextBuffer_val,
 ML_2 (gtk_text_buffer_set_text, GtkTextBuffer_val, SizedString_val, Unit)
 
 ML_4 (gtk_text_buffer_get_text, GtkTextBuffer_val, 
-      GtkTextIter_val,GtkTextIter_val,Bool_val,Val_string)
+      GtkTextIter_val,GtkTextIter_val,Bool_val, copy_string_g_free)
 
 ML_4 (gtk_text_buffer_get_slice, GtkTextBuffer_val, 
-      GtkTextIter_val,GtkTextIter_val,Bool_val,Val_string)
+      GtkTextIter_val,GtkTextIter_val,Bool_val, copy_string_g_free)
 
 ML_3 (gtk_text_buffer_insert_pixbuf, GtkTextBuffer_val, 
       GtkTextIter_val,GdkPixbuf_val,Unit)
@@ -768,32 +768,35 @@ ML_1 (gtk_text_iter_get_visible_line_offset, GtkTextIter_val, Val_int)
      //[BM] CHECK THIS WITH CHAR <-> GUNICHAR
 ML_1 (gtk_text_iter_get_char, GtkTextIter_val, Val_char)
 
-ML_2 (gtk_text_iter_get_slice, GtkTextIter_val, GtkTextIter_val, Val_string)
-ML_2 (gtk_text_iter_get_text, GtkTextIter_val, GtkTextIter_val, Val_string)
+ML_2 (gtk_text_iter_get_slice, GtkTextIter_val, GtkTextIter_val,
+      copy_string_g_free)
+ML_2 (gtk_text_iter_get_text, GtkTextIter_val, GtkTextIter_val,
+      copy_string_g_free)
 
 ML_2 (gtk_text_iter_get_visible_slice, GtkTextIter_val,
-      GtkTextIter_val, Val_string)
+      GtkTextIter_val, copy_string_g_free)
 ML_2 (gtk_text_iter_get_visible_text, GtkTextIter_val,
-      GtkTextIter_val, Val_string)
+      GtkTextIter_val, copy_string_g_free)
 ML_1 (gtk_text_iter_get_pixbuf, GtkTextIter_val, Val_GdkPixbuf)
 
-value ml_gtk_text_iter_get_marks(value ti){
-  CAMLparam1(ti);
-  CAMLreturn(Val_GSList(gtk_text_iter_get_marks(GtkTextIter_val(ti)),
-			Val_GtkTextMark_func));
-    }
+value ml_gtk_text_iter_get_marks(value ti)
+{
+  return Val_GSList(gtk_text_iter_get_marks(GtkTextIter_val(ti)),
+                    Val_GtkTextMark_func);
+}
 
-value ml_gtk_text_iter_get_toggled_tags(value ti, value b){
-  CAMLparam2(ti,b);
-  CAMLreturn(Val_GSList(gtk_text_iter_get_toggled_tags
-			(GtkTextIter_val(ti),Bool_val(b)),
-			Val_GtkTextMark_func));
-    }
+value ml_gtk_text_iter_get_toggled_tags(value ti, value b)
+{
+  return
+    Val_GSList(gtk_text_iter_get_toggled_tags(GtkTextIter_val(ti),Bool_val(b)),
+               Val_GtkTextMark_func);
+}
 
 
 value ml_gtk_text_iter_get_child_anchor(value ti)
 {
-  return (Val_option(gtk_text_iter_get_child_anchor(GtkTextIter_val(ti)),Val_GtkTextChildAnchor));
+  return Val_option(gtk_text_iter_get_child_anchor(GtkTextIter_val(ti)),
+                    Val_GtkTextChildAnchor);
 }
 
 ML_2 (gtk_text_iter_begins_tag,GtkTextIter_val,

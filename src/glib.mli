@@ -2,6 +2,9 @@
 
 (* Interface to Glib functions *)
 
+type unichar = int
+type unistring = unichar array
+
 exception GError of string
 
 module Main : sig
@@ -69,8 +72,6 @@ end
 
 module Utf8 : sig
   (* Utf8 handling, and conversion to ucs4 *)
-  type unichar = int
-  type unistring = unichar array
   (* If you read an utf8 string from somewhere, you should validate it,
      or risk random segmentation faults *)
   val validate : string -> bool
@@ -85,4 +86,5 @@ module Utf8 : sig
   val from_unistring : unistring -> string
   val to_unichar : string -> pos:int ref -> unichar
   val to_unistring : string -> unistring
+  val first_char : string -> unichar
 end
