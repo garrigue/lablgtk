@@ -14,7 +14,8 @@ type point = {mutable x: int; mutable y: int}
 let main () =
 (* Game State *)
   let gameSize = 64 in
-  let gameState = Array.create_matrix cols:(gameSize+2) rows:(gameSize+2) fill:0 in
+  let gameState =
+    Array.create_matrix cols:(gameSize+2) rows:(gameSize+2) fill:0 in
   let gameInit _ = 
     for i=1 to gameSize do
       for j=1 to gameSize do
@@ -46,25 +47,29 @@ let main () =
     new GMisc.drawing_area
       width:((gameSize+2)*4) height:((gameSize+2)*4) packing:vbx#add in
   let drawing = area#misc#realize (); new drawing (area#misc#window) in
+  let style = area#misc#style#copy in
+  style#set bg:[`NORMAL,`WHITE];
+  area#misc#set :style;
   drawing#set background:`WHITE;
   let area_expose _ =
-        for i=1 to gameSize+2 do
-          for j=1 to gameSize+2 do
-            if gameState.(i-1).(j-1) = 1 then begin
-               drawing#set foreground:clRed;
-               drawing#rectangle filled:true x:((i-1)*4) y:((j-1)*4) width:4 height:4
-            end
-            else if gameState.(i-1).(j-1) = 2 then begin
-               drawing#set foreground:clBlue;
-               drawing#rectangle filled:true x:((i-1)*4) y:((j-1)*4) width:4 height:4
-            end
-            else if gameState.(i-1).(j-1) = 3 then begin
-               drawing#set foreground:clBlack;
-               drawing#rectangle filled:true x:((i-1)*4) y:((j-1)*4) width:4 height:4
-            end 
-          done
-        done;
-        false  in
+    for i=0 to gameSize+1 do
+      for j=0 to gameSize+1 do
+        if gameState.(i).(j) = 1 then begin
+          drawing#set foreground:clRed;
+          drawing#rectangle filled:true x:(i*4) y:(j*4) width:4 height:4
+        end
+        else if gameState.(i).(j) = 2 then begin
+          drawing#set foreground:clBlue;
+          drawing#rectangle filled:true x:(i*4) y:(j*4) width:4 height:4
+        end
+        else if gameState.(i).(j) = 3 then begin
+          drawing#set foreground:clBlack;
+          drawing#rectangle filled:true x:(i*4) y:(j*4) width:4 height:4
+        end 
+      done
+    done;
+    false
+  in
   area#connect#event#expose callback:area_expose;
   let control = new GPack.table rows:3 columns:7 packing:vbx#add in
 
@@ -174,16 +179,18 @@ let main () =
     true
   end in
   let restartClicked _ = begin
+    Timeout.remove !timerID;
     gameInit();
     lpos.x <- 4; lpos.y <- 4;
     lspeed.x <- 0; lspeed.y <- 1;
     rpos.x <- gameSize-3; rpos.y <- gameSize-3;
     rspeed.x <- 0; rspeed.y <- -1;
     drawing#set foreground:`WHITE;
-    drawing#rectangle filled:true x:0 y:0 width:((gameSize+2)*4) height:((gameSize+2)*4);
+    drawing#rectangle filled:true x:0 y:0
+      width:((gameSize+2)*4) height:((gameSize+2)*4);
     area_expose();
     count := 3;
-    timerID := Timeout.add 500 callback:timerTimer2;
+    timerID := Timeout.add 300 callback:timerTimer2;
   end in
   let restart =
     new GButton.button label: "Restart"

@@ -2,6 +2,7 @@
 
 open Misc
 open Gtk
+open GtkData
 open GtkBase
 
 (* Class declarations *)
@@ -84,6 +85,19 @@ class event_signals obj ?:after = object
   method unmap = GtkSignal.connect sig:Widget.Signals.Event.unmap obj ?:after
 end
 
+class style st = object
+  val style = st
+  method as_style = style
+  method copy = {< style = Style.copy style >}
+  method bg state = Style.get_bg style :state
+  method colormap = Style.get_colormap style
+  method font = Style.get_font style
+  method set ?:bg [< [] >] =
+    List.iter bg fun:
+      (fun (state,c) -> Style.set_bg style :state color:(GdkObj.color c));
+    Style.set ?style
+end
+
 class widget_misc obj = object
   val obj = Widget.coerce obj
   method show () = Widget.show obj
@@ -109,7 +123,8 @@ class widget_misc obj = object
   method add_accelerator = Widget.add_accelerator obj
   method remove_accelerator = Widget.remove_accelerator obj
   method lock_accelerators () = Widget.lock_accelerators obj
-  method set = Widget.set ?obj
+  method set ?:style =
+    Widget.set ?obj ?style:(may_map (style : style option) fun:(#as_style))
   (* get functions *)
   method name = Widget.get_name obj
   method toplevel =
@@ -118,8 +133,9 @@ class widget_misc obj = object
   method window = Widget.window obj
   method colormap = Widget.get_colormap obj
   method visual = Widget.get_visual obj
+  method visual_depth = Gdk.Window.visual_depth (Widget.get_visual obj)
   method pointer = Widget.get_pointer obj
-  method style = Widget.get_style obj
+  method style = new style (Widget.get_style obj)
   method visible = Widget.visible obj
   method parent =
     try new widget_wrapper (Object.unsafe_cast (Widget.parent obj))

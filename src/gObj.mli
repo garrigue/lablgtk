@@ -81,6 +81,19 @@ class event_signals :
     method unmap : callback:([UNMAP] Gdk.event -> bool) -> GtkSignal.id
   end
 
+class style : Gtk.style ->
+  object ('a)
+    val style : Gtk.style
+    method as_style : Gtk.style
+    method bg : Tags.state_type -> Gdk.Color.t
+    method colormap : Gdk.colormap
+    method copy : 'a
+    method font : Gdk.font
+    method set :
+      ?bg:(Tags.state_type * GdkObj.color) list ->
+      ?background:Gdk.window -> ?font:Gdk.font -> unit
+  end
+
 class widget_misc :
   ([> widget]) obj ->
   object
@@ -109,13 +122,13 @@ class widget_misc :
       accel_group -> key:char -> ?mod:Gdk.Tags.modifier list -> unit
     method reparent : #is_widget -> unit
     method set :
+      ?style:style ->
       ?name:string ->
       ?state:Tags.state_type ->
       ?sensitive:bool ->
       ?can_default:bool ->
       ?can_focus:bool ->
-      ?x:int ->
-      ?y:int -> ?width:int -> ?height:int -> ?style:style -> unit
+      ?x:int -> ?y:int -> ?width:int -> ?height:int -> unit
     method show : unit -> unit
     method show_all : unit -> unit
     method show_now : unit -> unit
@@ -125,6 +138,7 @@ class widget_misc :
     method unrealize : unit -> unit
     method visible : bool
     method visual : Gdk.visual
+    method visual_depth : int
     method window : Gdk.window
   end
 

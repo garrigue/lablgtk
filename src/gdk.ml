@@ -85,6 +85,11 @@ module Rectangle = struct
   external height : t -> int = "ml_GdkRectangle_height"
 end
 
+module Window = struct
+  external visual_depth : visual -> int = "ml_gdk_visual_get_depth"
+  external get_visual : window -> visual = "ml_gdk_window_get_visual"
+end
+
 module GC = struct
   type gdkFunction = [ COPY INVERT XOR ]
   type gdkFill = [ SOLID TILED STIPPLED OPAQUE_STIPPLED ]

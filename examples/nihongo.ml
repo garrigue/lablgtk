@@ -10,19 +10,20 @@ let window = new GWindow.window
 let box = new GPack.box `VERTICAL packing: window#add
 let text = new GEdit.text editable: true packing: box#add
 let font = Gdk.Font.load_fontset
-    "-misc-fixed-medium-r-normal--14-*-c-70-iso8859-1, \
-     -misc-fixed-medium-r-normal--14-*-jisx0208.1983-0, \
-     -misc-fixed-medium-r-normal--14-*-jisx0201.1976-0"
+    "-*-fixed-medium-r-normal--24-*-c-120-iso8859-1, \
+     -*-fixed-medium-r-normal--24-*-jisx0208.1983-0, \
+     -*-fixed-medium-r-normal--24-*-jisx0201.1976-0"
 let button = new GButton.button label: "終了" packing: box#add
-let label = new GMisc.label text:"これにも影響する" packing: box#add
+let label = new GMisc.label text:"これには影響しない" packing: box#add
 
 let _ =
   window#connect#destroy callback:Main.quit;
   text#misc#realize ();
   text#insert "こんにちは" :font;
-  let style = button#misc#style in
-  GtkData.Style.set style :font;
-  GtkData.Style.set_bg style color:(Gdk.Color.alloc (`NAME "green"));
+  let style = button#misc#style#copy in
+  button#misc#set :style;
+  List.iter button#children fun:(fun w -> w#misc#set :style);
+  style#set :font bg:[`NORMAL,`NAME "green"; `PRELIGHT,`NAME "red"];
   button#connect#clicked callback:Main.quit
 
 let _ =

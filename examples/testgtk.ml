@@ -455,7 +455,7 @@ let pixmap_new filename window background =
 
 let make_toolbar (toolbar : toolbar) (window : window) =
   let icon () = (pixmap_new "test.xpm" (window #misc#window)
-		(GtkData.Style.get_bg (window #misc#style))) in
+		(window#misc#style#bg `NORMAL)) in
   toolbar #insert_button text:"Horizontal"
     tooltip:"Horizontal toolbar layout"
     tooltip_private:"Toolbar/Horizontal"

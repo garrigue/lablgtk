@@ -13,7 +13,7 @@ class xpm_label_box parent:(parent : #GContainer.container)
       parent#misc#realize ();
       let pixmap, mask =
 	Gdk.Pixmap.create_from_xpm (parent#misc#window)
-	  transparent:(GtkData.Style.get_bg parent#misc#style) :file
+	  transparent:(parent#misc#style#bg `NORMAL) :file
       in
       new GPix.pixmap pixmap :mask
 

@@ -27,4 +27,7 @@ extern value Val_GdkGC (GdkGC *);
 
 #define GdkEvent_val(type) (GdkEvent##type *)Pointer_val
 
+#define GdkVisual_val(val) ((GdkVisual*)Unmark_val(val))
+#define Val_GdkVisual Mark_ptr
+
 extern long OptFlags_GdkModifier_val (value);
