@@ -10,10 +10,9 @@ open GData
 
 open Container
 
-(* Not really useful
 class focus obj = object
   val obj = obj
-  method circulate = focus obj
+  (* method circulate = focus obj *)
   method set (child : widget option) =
     let child = may_map child ~f:(fun x -> x#as_widget) in
     set_focus_child obj (Gpointer.optboxed child)
@@ -24,7 +23,6 @@ class focus obj = object
     set_focus_vadjustment obj
       (Gpointer.optboxed (may_map adj ~f:as_adjustment))
 end
-*)
 
 class ['a] container_impl obj = object (self)
   inherit ['a] widget_impl obj
@@ -32,6 +30,7 @@ class ['a] container_impl obj = object (self)
   method remove w = remove obj (as_widget w)
   method children = List.map ~f:(new widget) (children obj)
   method set_border_width = set P.border_width obj
+  method focus = new focus obj
 end
 
 class container = ['a] container_impl
@@ -69,6 +68,7 @@ class virtual ['a] item_container obj = object (self)
   method children : 'a list =
     List.map ~f:self#wrap (children obj)
   method set_border_width = set Container.P.border_width obj
+  method focus = new focus obj
   method virtual insert : 'a -> pos:int -> unit
   method append (w : 'a) = self#insert w ~pos:(-1)
   method prepend (w : 'a) = self#insert w ~pos:0

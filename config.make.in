@@ -14,6 +14,8 @@ DEBUG=@DEBUG@
 CC=@CC@
 RANLIB=@RANLIB@
 LIBDIR=@LIBDIR@
+THREADS_LIB=@THREADS_LIB@
+HAS_DLL_SUPPORT=@HAS_DLL_SUPPORT@
 
 # where to install the binaries
 prefix=@prefix@

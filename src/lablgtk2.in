@@ -2,8 +2,10 @@
 
 thread="no"
 localdir="no"
-usedll="yes"
+usedll="@USEDLL@"
+threads_lib="@THREADS_LIB@"
 verbose="no"
+init="yes"
 libraries=""
 libpath="-I @LABLGLDIR@"
 cmd="$0"
@@ -13,12 +15,14 @@ case $1 in
 -help)
     echo "Usage: lablgtk2 <options> <ocaml options> [script-file]"
     echo "  -thread   use the threaded version of the toplevel"
+    echo "  -noinit   do not initialize gtk"
     echo "  -localdir use libraries in the same directory (before install)"
     echo "  -verbose  show actions executed"
     exit 0
     ;;
--thread) thread=yes; shift ;;
+-thread)  thread=yes; shift ;;
 -localdir) localdir=yes; shift ;;
+-noinit)  init=no; shift ;;
 -verbose) verbose=yes; shift ;;
 *)  break ;;
 esac
@@ -33,19 +37,30 @@ else
     if test $verbose = yes; then echo LD_LIBRARY_PATH=$LD_LIBRARY_PATH; fi
 fi
 
-if test $usedll = yes; then
-    libraries="@MLLIBS@"
-    if test $thread = yes; then
-        libpath="$libpath -I +threads"
-        libraries="unix.cma threads.cma $libraries @THINITOBJS@"
+if test $thread = yes; then
+    libpath="$libpath -I +threads"
+    if test "$threads_lib" = no; then
+        echo "Threads are not supported on this platform"; exit 2
+    elif test "$threads_lib" = system && test $usedll = yes; then
+        toplevel="ocaml"
+        libraries="unix.cma threads.cma @MLLIBS@"
+        libraries="$libraries @THOBJS@"
     else
+        toplevel="@INSTALLDIR@/lablgtktop"
+    fi
+    if test $init = yes; then
+        libraries="$libraries @INITOBJS@ @THINITOBJS@"
+    fi
+else
+    if test $usedll = yes; then
+        toplevel="ocaml"
+        libraries="@MLLIBS@"
+    else
+        toplevel="@INSTALLDIR@/lablgtktop"
+    fi
+    if test $init = yes; then
         libraries="$libraries @INITOBJS@"
     fi
-    toplevel="ocaml"
-elif test $thread = yes; then
-    toplevel="@INSTALLDIR@/lablgtktop_t -I +threads"
-else
-    toplevel="@INSTALLDIR@/lablgtktop"
 fi
 
 if test $verbose = yes; then echo $toplevel -w s $libpath $libraries $*; fi

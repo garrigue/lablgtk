@@ -3,6 +3,17 @@
 open Gtk
 open GObj
 
+class focus :
+  'a obj ->
+  object
+    constraint 'a = [> `container]
+    val obj : 'a obj
+    (* method circulate : Tags.direction_type -> bool *)
+    method set : widget option -> unit
+    method set_hadjustment : GData.adjustment option -> unit
+    method set_vadjustment : GData.adjustment option -> unit
+  end
+
 class container : ([> Gtk.container] as 'a) obj ->
   object
     inherit widget
@@ -10,6 +21,7 @@ class container : ([> Gtk.container] as 'a) obj ->
     method add : widget -> unit
     method children : widget list
     method remove : widget -> unit
+    method focus : focus
     method set_border_width : int -> unit
   end
 
@@ -58,6 +70,7 @@ class virtual ['a] item_container : ([> Gtk.container] as 'c) obj ->
     method virtual insert : 'a -> pos:int -> unit
     method prepend : 'a -> unit
     method remove : 'a -> unit
+    method focus : focus
     method set_border_width : int -> unit
     method private virtual wrap : Gtk.widget obj -> 'a
   end

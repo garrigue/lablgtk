@@ -18,7 +18,7 @@ DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
 
-TARGETS = varcc lablgtktop lablgtktop_t lablgtk2 lablgladecc
+TARGETS = varcc lablgtktop lablgtk2 lablgladecc
 
 all: byte
 
@@ -139,12 +139,14 @@ ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 depend: $(ENUMOBJS:.cmo=.ml)
 	ocamldep *.ml *.mli > .depend
 
+ifeq ($(THREADS_LIB),no)
 lablgtktop: $(MLLIBS) $(INITOBJS)
 	$(TOPLEVEL) $(CUSTOM) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
-
-lablgtktop_t: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
+else
+lablgtktop: $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 	$(TOPLEVEL) $(THFLAGS) $(CUSTOM) -o $@ $(THLINK) $(MLLINK) \
-	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
+	   -I . $(MLLIBS) $(THOBJS) $(INITOBJS)
+endif
 
 lablgtk2: Makefile $(CONFIG) lablgtk2.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
@@ -152,12 +154,17 @@ lablgtk2: Makefile $(CONFIG) lablgtk2.in
 	    -e "s|@LIBDIR@|$(LIBDIR)|g" \
 	    -e "s|@MLLIBS@|$(MLLINK) $(MLLIBS)|g" \
 	    -e "s|@INITOBJS@|$(INITOBJS)|g" \
-	    -e "s|@THINITOBJS@|$(THOBJS) $(INITOBJS) $(THINITOBJS)|g" \
+	    -e "s|@THOBJS@|$(THOBJS)|g" \
+	    -e "s|@THINITOBJS@|$(THINITOBJS)|g" \
+	    -e "s|@USEDLL@|$(HAS_DLL_SUPPORT)|g" \
+	    -e "s|@THREADS_LIB@|$(THREADS_LIB)|g" \
 	    < lablgtk2.in > $@
 	chmod 755 $@
 
-lablgtkopt: $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \
-	$(THOBJS:.cmo=.cmx)
+lablgtkopt:: $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx)
+ifeq ($(THREADS_LIB),system)
+lablgtkopt:: $(THOBJS:.cmo=.cmx)
+endif
 
 lablgladecc: xml_lexer.cmo lablgladecc.cmo
 	$(LINKER) -o $@ $(MLLINK) xml_lexer.cmo lablgladecc.cmo
@@ -175,8 +182,10 @@ install:
 	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) $(INSTALLDIR)
 	cp $(CLIBS) $(INSTALLDIR)
 	cd $(INSTALLDIR) && $(RANLIB) $(CLIBS)
-	cp lablgtktop varcc $(INSTALLDIR)
-	if test -f lablgtktop_t; then cp lablgtktop_t $(INSTALLDIR); fi
+	cp varcc propcc $(INSTALLDIR)
+	if test $(THREADS_LIB) != system || test $(HAS_DLL_SUPPORT) != yes; \
+	   then cp lablgtktop $(INSTALLDIR); \
+	fi
 	cp -p *.h $(INSTALLDIR)
 	if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
 	if test -f dlllablgtk2.so; then \
