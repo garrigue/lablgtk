@@ -134,6 +134,10 @@ let make_dialog pl ?parent ?destroy_with_parent ~create =
 
 let dialog ?(no_separator=false) =
   make_dialog [] ~create:(fun pl ->
+    let pl = 
+      if no_separator 
+      then (Gobject.param Dialog.P.has_separator false) :: pl
+      else pl in
     new dialog (Dialog.create pl))
 
 (** MessageDialog **)
