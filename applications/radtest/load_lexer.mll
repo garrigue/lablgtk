@@ -24,7 +24,7 @@ rule token = parse
     WIDGET_END s
   }
 
-| '"' ['A'-'Z' 'a'-'z' '0'-'9' '_' ':' ' ']+ '"'
+| '"' [^ '"']* '"'
   {
     let l = Lexing.lexeme lexbuf in
     let s = String.sub l pos:1 len:(String.length l - 2) in
