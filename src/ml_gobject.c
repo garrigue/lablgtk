@@ -78,28 +78,21 @@ value ml_g_closure_new (value clos)
 
 /* gvalue.h / gparamspec.h */
 
-void ml_g_value_free(value val)
-{
-    GValue *v = GValue_val(val);
-    if (v == NULL) return;
-    g_value_unset (v);
-    free (v);
-}
+#define g_value_unset_and_free(gv) g_value_unset(gv); g_free(gv)
+Make_Val_final_pointer_ext(GValue, _new, Ignore, g_value_unset_and_free, 20)
 
 value ml_g_value_new(value gtype)
 {
-    GValue *gvalue = calloc(1,sizeof(GValue));
-    value v = alloc_final(2, ml_g_value_free, 2, 100);
-
+    GValue *gvalue = g_malloc(sizeof(GValue));
     if (gvalue==NULL) raise_out_of_memory ();
+    gvalue->g_type = 0;
     g_value_init(gvalue, GType_val(gtype));
-    Field(v,1)=(value)gvalue;
-    return v;
+    return Val_GValue_new(gvalue);
 }
 
 value ml_g_value_release(value val)
 {
-    if (Tag_val(val) == Custom_tag) ml_g_value_free(val);
+    if (Tag_val(val) == Custom_tag) ml_final_GValue_new(val);
     GValue_val(val) = NULL;
     return Val_unit;
 }
