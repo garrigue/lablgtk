@@ -550,20 +550,28 @@ CAMLprim value ml_gdk_gc_get_values (value gc)
         tmp = ml_some(Val_GdkFont(values.font));
         Store_field(ret, 2, tmp);
     }
+    else
+      Store_field(ret, 2, Val_int(0));
     Field(ret,3) = Val_function_type(values.function);
     Field(ret,4) = Val_fill(values.fill);
     if (values.tile) {
         tmp = ml_some(Val_GdkPixmap(values.tile));
         Store_field(ret, 5, tmp);
     }
-    if (values.tile) {
+    else
+      Store_field(ret, 5, Val_int(0));
+    if (values.stipple) {
         tmp = ml_some(Val_GdkPixmap(values.stipple));
         Store_field(ret, 6, tmp);
     }
-    if (values.tile) {
+    else
+      Store_field(ret, 6, Val_int(0));
+    if (values.clip_mask) {
         tmp = ml_some(Val_GdkPixmap(values.clip_mask));
         Store_field(ret, 7, tmp);
     }
+    else
+      Store_field(ret, 7, Val_int(0));
     Field(ret,8) = Val_subwindow_mode(values.subwindow_mode);
     Field(ret,9) = Val_int(values.ts_x_origin);
     Field(ret,10) = Val_int(values.ts_y_origin);
