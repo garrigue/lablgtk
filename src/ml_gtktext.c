@@ -25,6 +25,9 @@
 value Val_GtkTextMark_func(gpointer val){
   return(Val_GtkTextMark(val));
 }
+static value Val_GtkTextMark_opt(GtkTextMark *mrk) {
+  return Val_option(mrk, Val_GtkTextMark);
+}
         
 #define GtkTextTag_val(val) check_cast(GTK_TEXT_TAG,val)
 #define Val_GtkTextTag(val) (Val_GObject((GObject*)val))
@@ -140,8 +143,8 @@ ML_4 (gtk_text_buffer_create_mark, GtkTextBuffer_val,
       Option_val(arg2,String_val,NULL) Ignore,
       GtkTextIter_val,Bool_val,Val_GtkTextMark_new)
 
-ML_2_opt (gtk_text_buffer_get_mark, GtkTextBuffer_val, 
-      String_val,Val_GtkTextMark)
+ML_2 (gtk_text_buffer_get_mark, GtkTextBuffer_val, 
+      String_val,Val_GtkTextMark_opt)
 
 ML_1 (gtk_text_buffer_get_insert, GtkTextBuffer_val, Val_GtkTextMark)
 
