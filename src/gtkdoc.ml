@@ -1,4 +1,3 @@
-
 let base_uri =
   ref "http://developer.gnome.org/doc/API/2.0"
 
@@ -39,26 +38,78 @@ let gtkdoc = function
       end
   | _ -> failwith "bad @gtkdoc format"
 
+open Odoc_info.Value
+open Odoc_info.Module
+
+IFDEF OCAML_308 
+THEN
 class gtkdoc =
   object (self)
-    inherit Odoc_html.html
+    inherit Odoc_html.html as super
+
+    method html_of_value b v =
+      v.val_code <- None ;
+      super#html_of_value b v
+
+    method html_of_attribute b a =
+      a.att_value.val_code <- None ;
+      super#html_of_attribute b a
+
+    method html_of_method b m =
+      if m.met_value.val_name = "GPack.box_skel.pack"
+      then begin
+	Printf.eprintf "method %s: %d params\n%!"
+	  m.met_value.val_name (List.length m.met_value.val_parameters)
+      end ;
+      m.met_value.val_code <- None ;
+      super#html_of_method b m 
+
+    method generate_for_module pre post modu =
+      modu.m_code <- None ;
+      super#generate_for_module pre post modu
 
     method prepare_header module_list =
       header <-
-IFDEF OCAML_308 
-THEN
         make_prepare_header style self#index module_list
+
+    method html_of_class b ?complete ?with_link c =
+      super#html_of_class b ?complete ?with_link c ;
+      Buffer.add_string b "<br>"
+
+    initializer
+      tag_functions <- ("gtkdoc", gtkdoc) :: tag_functions 
+  end
+
 ELSE
+class gtkdoc =
+  object (self)
+    inherit Odoc_html.html as super
+
+    method html_of_value v =
+      v.val_code <- None ;
+      super#html_of_value v
+
+    method html_of_attribute a =
+      a.att_value.val_code <- None ;
+      super#html_of_attribute a
+
+    method html_of_method m =
+      m.met_value.val_code <- None ;
+      super#html_of_method m 
+
+    method prepare_header module_list =
+      header <-
     	let b = Buffer.create 1024 in
     	fun ?nav ?comments t ->
     	  Buffer.clear b ;
     	  make_prepare_header style index module_list b ?nav ?comments t ;
     	  Buffer.contents b
-END
 
     initializer
       tag_functions <- ("gtkdoc", gtkdoc) :: tag_functions 
   end
+END
+
 
 let _ = 
   Odoc_info.Args.add_option
