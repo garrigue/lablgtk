@@ -1,10 +1,13 @@
 $Id$
 
+1998.12.13
+  * upgraded to olabl-2.01
+
 1998.12.9
   * replicated Main, Timeout and Grab to GtkObj (no need to open Gtk anymore)
   * moved some non standard classes to GtkExt
 
- 1998.12.8
+1998.12.8
   * added the first application, xxaplay, Playstation audio track 
     player for linux. (How architecture specific!) (Furuse)
 
