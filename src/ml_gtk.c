@@ -1048,6 +1048,7 @@ ML_1 (gtk_menu_get_active, GtkMenu_val, Val_GtkWidget)
 ML_2 (gtk_menu_set_active, GtkMenu_val, Int_val, Unit)
 ML_2 (gtk_menu_set_accel_group, GtkMenu_val, GtkAccelGroup_val, Unit)
 ML_1 (gtk_menu_get_accel_group, GtkMenu_val, Val_GtkAccelGroup)
+ML_1 (gtk_menu_ensure_uline_accel_group, GtkMenu_val, Val_GtkAccelGroup)
 value ml_gtk_menu_attach_to_widget (value menu, value widget)
 {
     gtk_menu_attach_to_widget (GtkMenu_val(menu), GtkWidget_val(widget), NULL);
