@@ -392,7 +392,7 @@ value copy_xdata (gint format, guchar *xdata, gulong nitems)
     CAMLreturn(ret);
 }
 
-value ml_gdk_property_get (value window, value property, value type,
+value ml_gdk_property_get (value window, value property,
                            value length, value pdelete)
 {
     GdkAtom atype;
