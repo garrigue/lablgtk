@@ -1104,9 +1104,9 @@ ML_0 (gtk_grab_get_current, Val_GtkWidget)
 value ml_gtk_get_version (value unit)
 {
     value ret = alloc_tuple(3);
-    Field(ret,0) = gtk_major_version;
-    Field(ret,1) = gtk_minor_version;
-    Field(ret,0) = gtk_micro_version;
+    Field(ret,0) = Val_int(gtk_major_version);
+    Field(ret,1) = Val_int(gtk_minor_version);
+    Field(ret,2) = Val_int(gtk_micro_version);
     return ret;
 }
 
