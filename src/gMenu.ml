@@ -130,7 +130,7 @@ let menu ?border_width ?packing ?show () =
   let w = Menu.create () in
   may border_width ~f:(Container.set_border_width w);
   let self = new menu w in
-  may packing ~f:(fun f -> (f (self :> menu) : unit));
+  may packing ~f:(fun f -> (f self : unit));
   if show <> Some false then self#misc#show ();
   self
 
