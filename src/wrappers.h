@@ -134,6 +134,10 @@ value Val_##type (type *p) \
 value ml_##name##_##field (value val) \
 { return conv2 ((conv1(val))->field); }
 
+#define Make_Setter(name,conv1,conv2,field) \
+value ml_##name##_##field (value val, value new) \
+{ (conv1(val))->field = conv2(new); return Val_unit; }
+
 #define Make_Flags_val(conv) \
 long Flags_##conv (value list) \
 { long flags = 0L; \
