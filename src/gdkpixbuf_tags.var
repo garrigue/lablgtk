@@ -1,6 +1,6 @@
 (* $Id$ *)
 
-package "gdkpixbuf"
+(* package "gdkPixbuf" *)
 
 type colorspace = "GDK_COLORSPACE_" [ `RGB ]
 type alpha_mode = "GDK_PIXBUF_ALPHA_" [ `BILEVEL | `FULL ]

@@ -60,7 +60,7 @@ let pointers = [
 
 let classes = [
   "Gdk", [ "Image"; "Pixmap"; "Bitmap"; "Screen"; ];
-  "Gtk", [ "Style"; "TreeStore"; "Widget"; ]
+  "Gtk", [ "Style"; "TreeStore"; ]
 ]
 
 let specials = [
@@ -137,39 +137,45 @@ let rec verbatim buf = parser
   | [< ''\\' ; 'c ; s >] -> Buffer.add_char buf c; verbatim buf s
   | [< 'c ; s >] -> Buffer.add_char buf c; verbatim buf s
 
-let rec read_pairs = parser
-    [< ' Kwd"}" >] -> []
-  | [< ' Ident cls ; data = may_string (camlize cls) ; s >] ->
-      (cls,data) :: read_pairs s
+let read_pair = parser
+  | [< ' Ident cls ; data = may_string (camlize cls) >] -> (cls,data)
+
+let qualifier = parser
+  | [< ' Ident id ; data = may_string "" >] -> (id,data)
 
 let prefix = ref ""
+let tagprefix = ref ""
 let use = ref ""
 let decls = ref []
 let headers = ref []
 let checks = ref false
-let class_qualifiers = ["abstract";"hv";"set";"wrap";"wrapset";"vset"]
+let class_qualifiers = ["abstract";"hv";"set";"wrap";"wrapset";"vset";"tag"]
 
 let process_phrase ~chars = parser
-    [< ' Ident"class"; ' Ident name;
-       gtk_name = may_string (!prefix ^ name);
-       attrs = star ident; ' Kwd":"; ' Ident parent;
+    [< ' Ident"class"; ' Ident name; gtk_name = may_string (!prefix ^ name);
+       attrs = star qualifier; ' Kwd":"; ' Ident parent;
        ' Kwd"{"; props = star prop; ' Kwd"}" >] ->
-         if List.exists attrs ~f:(fun x -> not (List.mem x class_qualifiers))
+         if List.exists attrs ~f:
+             (fun (x,_) -> not (List.mem x class_qualifiers))
          then raise (Stream.Error "bad qualifier");
          decls := (name, gtk_name, attrs, props) :: !decls
   | [< ' Ident"header"; ' Kwd"{" >] ->
       let h = verbatim (Buffer.create 1000) chars in
       headers := !headers @ [h]
-  | [< ' Ident"prefix"; ' Ident id >] ->
+  | [< ' Ident"prefix"; ' String id >] ->
       prefix := id
-  | [< ' Ident"use"; ' Ident id >] ->
+  | [< ' Ident"tagprefix"; ' String id >] ->
+      tagprefix := id
+  | [< ' Ident"use"; ' String id >] ->
       use := id
   | [< ' Ident"conversions"; pre1 = may_string ""; pre2 = may_string pre1;
-       ' Kwd"{"; l = read_pairs >] ->
+       ' Kwd"{"; l = star read_pair; ' Kwd"}" >] ->
       List.iter l ~f:(fun (k,d) ->
         Hashtbl.add conversions (pre1^k) (if pre2="" then d else pre2^"."^d))
-  | [< ' Ident"classes"; ' Kwd"{"; l = read_pairs >] ->
+  | [< ' Ident"classes"; ' Kwd"{"; l = star read_pair; ' Kwd"}" >] ->
       List.iter l ~f:(fun (k,d) -> add_object k d)
+  | [< ' _ >] ->
+      raise (Stream.Error "")
   | [< >] ->
       raise End_of_file
 
@@ -200,7 +206,7 @@ let process_file f =
   let decls = List.rev !decls in
   List.iter decls ~f:
     (fun (name, gtk_name, _, _) ->
-      add_object gtk_name (!prefix ^ "." ^ camlize name ^ " obj"));
+      add_object gtk_name (baseM ^ "." ^ camlize name ^ " obj"));
   (* Output modules *)
   let oc = open_out (base ^ "Props.ml") in
   let ppf = Format.formatter_of_out_channel oc in
@@ -281,13 +287,16 @@ let process_file f =
     end
   in
   List.iter decls ~f:
-    begin fun (name, gtk_name, attrs, props) ->
+    begin fun (name, gtk_class, attrs, props) ->
       out "@[<hv2>module %s = struct" (camlizeM name);
-      out "@ @[<hv2>let cast w : %s.%s obj =@ try_cast w \"%s%s\"@]"
-        !prefix (camlize name) !prefix name;
+      out "@ @[<hv2>let cast w : %s.%s obj =@ try_cast w \"%s\"@]"
+        baseM (camlize name) gtk_class;
       if props <> [] then begin
         out "@ @[<hv2>module P = struct";
-        let tag = String.lowercase name in
+        let tag =
+          try List.assoc "tag" attrs
+          with Not_found -> !tagprefix ^ String.lowercase name
+        in
         List.iter props ~f:
           begin fun (name, _, gtype, attrs) ->
             let count, rpname = Hashtbl.find all_props (name,gtype) in
@@ -299,27 +308,27 @@ let process_file f =
           end;
         out "@]@ end"
       end;
-      if not (List.mem "abstract" attrs) then begin
+      if not (List.mem_assoc "abstract" attrs) then begin
         let cprops = List.filter props ~f:(fun (_,_,_,a) ->
           List.mem "ConstructOnly" a && not (List.mem "NoSet" a)) in
         out "@ @[<hv2>let create";
         List.iter cprops ~f:(fun (_,name,_,_) -> out " ?%s" name);
-        if List.mem "hv" attrs then begin
+        if List.mem_assoc "hv" attrs then begin
           out " (dir : Gtk.Tags.orientation) pl";
-          out " : %s.%s obj =" !prefix (camlize name);
+          out " : %s.%s obj =" baseM (camlize name);
           may_cons_props cprops;
           out "@ @[<hov2>Object.make";
           out "@ (if dir = `HORIZONTAL then \"%sH%s\" else \"%sV%s\")@  pl"
             !prefix name !prefix name;
           out "@]@]";
         end else begin
-          out " pl : %s.%s obj =" !prefix (camlize name);
+          out " pl : %s.%s obj =" baseM (camlize name);
           may_cons_props cprops;
-          out "@ Object.make \"%s%s\" pl@]" !prefix name;
+          out "@ Object.make \"%s\" pl@]" gtk_class;
         end
       end;
       let set_props =
-        let set = List.mem "set" attrs in
+        let set = List.mem_assoc "set" attrs in
         List.filter props ~f:
           (fun (_,_,_,a) ->
             (set || List.mem "Set" a) && List.mem "Write" a &&
@@ -334,12 +343,12 @@ let process_file f =
         out "@ cont pl@]";
       end;
       if !checks then begin
-        if List.mem "abstract" attrs then 
+        if List.mem_assoc "abstract" attrs then 
           out "@ @[<hv2>let check w ="
         else begin
           out "@ @[<hv2>let check () =";
           out "@ let w = create%s [] in"
-            (if List.mem "hv" attrs then " `HORIZONTAL" else "");
+            (if List.mem_assoc "hv" attrs then " `HORIZONTAL" else "");
         end;
         out "@ let c p = Property.check w p in";
         out "@ @[<hov>";
@@ -367,9 +376,9 @@ let process_file f =
       Format.fprintf ppf "%s.P.%s" (camlizeM name) (camlize pname)
   in
   List.iter decls ~f:
-    begin fun (name, gtk_name, attrs, props) ->
-      let wrap = List.mem "wrap" attrs in
-      let wrapset = wrap || List.mem "wrapset" attrs in
+    begin fun (name, gtk_class, attrs, props) ->
+      let wrap = List.mem_assoc "wrap" attrs in
+      let wrapset = wrap || List.mem_assoc "wrapset" attrs in
       let wr_props =
         List.filter props ~f:
           (fun (_,_,_,set) ->
@@ -393,7 +402,7 @@ let process_file f =
             mlname (oprop ~name ~gtype) pname);
         out "@]@ end@ "
       end;
-      let vset = List.mem "vset" attrs in
+      let vset = List.mem_assoc "vset" attrs in
       let vprops =
         List.filter props ~f:
           (fun (_,_,_,set) ->
