@@ -27,6 +27,7 @@ let classes = ref [
   "GtkSocket", ("GtkWindow.Socket", "GWindow.socket");
   "GtkInvisible", ("GtkBase.Container", "GContainer.container");
   "GtkButton", ("GtkButton.Button", "GButton.button");
+  "button", ("GtkButton.Button", "GButton.button");
   "GtkToggleButton", ("GtkButton.ToggleButton", "GButton.toggle_button");
   "GtkCheckButton", ("GtkButton.ToggleButton", "GButton.toggle_button");
   "GtkRadioButton", ("GtkButton.RadioButton", "GButton.radio_button");
