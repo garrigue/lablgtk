@@ -42,8 +42,9 @@ type tag_property0 = [
   | `BACKGROUND_FULL_HEIGHT_SET of bool
   | `BACKGROUND_GDK of Gdk.color
   | `BACKGROUND_SET of bool
-  | `BACKGROUND_STIPPLE of Gdk.pixmap
+  | `BACKGROUND_STIPPLE of Gdk.bitmap
   | `BACKGROUND_STIPPLE_SET of bool
+  | `DIRECTION of Tags.text_direction
   | `EDITABLE of bool
   | `EDITABLE_SET of bool
   | `FAMILY of string
@@ -53,7 +54,7 @@ type tag_property0 = [
   | `FOREGROUND of string
   | `FOREGROUND_GDK of Gdk.color
   | `FOREGROUND_SET of bool
-  | `FOREGROUND_STIPPLE of Gdk.pixmap
+  | `FOREGROUND_STIPPLE of Gdk.bitmap
   | `FOREGROUND_STIPPLE_SET of bool
   | `INDENT of int
   | `INDENT_SET of bool
@@ -75,7 +76,6 @@ type tag_property0 = [
   | `RIGHT_MARGIN_SET of bool
   | `RISE of int
   | `RISE_SET of bool
-  | `SCALE of float
   | `SCALE_SET of bool
   | `SIZE of int
   | `SIZE_POINTS of float
@@ -96,11 +96,17 @@ type tag_property0 = [
   | `WRAP_MODE_SET of bool
 ]
 
-type tag_property = [ `WEIGHT of Pango.Tags.weight | tag_property0 ]
+type tag_property = [
+  | `WEIGHT of Pango.Tags.weight
+  | `SCALE of Pango.Tags.scale
+  | tag_property0
+]
 
-let text_tag_param : tag_property -> _ = function
-    `WEIGHT w -> text_tag_param (`WEIGHT (Pango.Tags.weight_to_int w))
-  | #tag_property0 as x -> text_tag_param x
+let text_tag_param (x : tag_property) = text_tag_param
+    (match x with
+    | `WEIGHT w -> `WEIGHT (Pango.Tags.weight_to_int w)
+    | `SCALE s  -> `SCALE (Pango.Tags.scale_to_float s)
+    | #tag_property0 as x -> x)
 
 class tag obj =
 object (self)

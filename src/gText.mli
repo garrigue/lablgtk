@@ -21,8 +21,9 @@ type tag_property = [
   | `BACKGROUND_FULL_HEIGHT_SET of bool
   | `BACKGROUND_GDK of Gdk.color
   | `BACKGROUND_SET of bool
-  | `BACKGROUND_STIPPLE of Gdk.pixmap
+  | `BACKGROUND_STIPPLE of Gdk.bitmap
   | `BACKGROUND_STIPPLE_SET of bool
+  | `DIRECTION of Tags.text_direction
   | `EDITABLE of bool
   | `EDITABLE_SET of bool
   | `FAMILY of string
@@ -32,7 +33,7 @@ type tag_property = [
   | `FOREGROUND of string
   | `FOREGROUND_GDK of Gdk.color
   | `FOREGROUND_SET of bool
-  | `FOREGROUND_STIPPLE of Gdk.pixmap
+  | `FOREGROUND_STIPPLE of Gdk.bitmap
   | `FOREGROUND_STIPPLE_SET of bool
   | `INDENT of int
   | `INDENT_SET of bool
@@ -54,7 +55,7 @@ type tag_property = [
   | `RIGHT_MARGIN_SET of bool
   | `RISE of int
   | `RISE_SET of bool
-  | `SCALE of float
+  | `SCALE of Pango.Tags.scale
   | `SCALE_SET of bool
   | `SIZE of int
   | `SIZE_POINTS of float
