@@ -337,7 +337,6 @@ class view obj = object
   method set_headers_visible = set obj headers_visible
   method model = new model (get_some obj model)
   method set_model (m:model) = set obj model (Some m#as_model)
-  method set_model2 (m:model) = TreeView.set_model obj m#as_model
 
   method reorderable = get obj reorderable
   method set_reorderable = set obj reorderable
