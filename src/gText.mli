@@ -2,21 +2,19 @@
 
 open Gtk
 
-type mark = [`INSERT | `SEL_BOUND | `NAME of string | `MARK of textmark obj]
+type mark = [`INSERT | `SEL_BOUND | `NAME of string | `MARK of textmark]
 
-class child_anchor :
-  textchildanchor obj ->
+class child_anchor : textchildanchor ->
 object
-  val obj : textchildanchor obj
-  method as_childanchor : textchildanchor obj
+  val obj : textchildanchor
+  method as_childanchor : textchildanchor
   method deleted : bool
   method get_oid : int
   method widgets : widget list
 end
 val child_anchor : unit -> child_anchor
 
-class tag_signals :
-  ([> `texttag] as 'b) obj ->
+class tag_signals : ([> `texttag] as 'b) obj ->
 object ('a)
   val after : bool
   val obj : 'b obj
@@ -26,11 +24,10 @@ object ('a)
     GtkSignal.id
 end
 
-class tag :
-  texttag obj ->
+class tag : texttag ->
 object
-  val obj : texttag obj
-  method as_tag : texttag obj
+  val obj : texttag
+  method as_tag : texttag
   method connect : tag_signals
   method event : 'a obj -> GdkEvent.any -> textiter -> bool
   method get_oid : int
@@ -68,7 +65,7 @@ object
   method backward_word_start : unit -> bool
   method backward_word_starts : int -> bool
   method begins_tag : ?tag:tag -> unit -> bool
-  method buffer : textbuffer obj
+  method buffer : textbuffer
   method bytes_in_line : int
   method can_insert : default:bool -> bool
   method char : Glib.unichar
@@ -112,7 +109,7 @@ object
   method line : int
   method line_index : int
   method line_offset : int
-  method marks : textmark obj list
+  method marks : textmark list
   method offset : int
   method set_line : int -> unit
   method set_line_index : int -> unit
@@ -130,35 +127,30 @@ object
 end
 val as_textiter : iter -> textiter
 
-class tagtable_signals :
-  ([> `texttagtable] as 'b) obj ->
+class tagtable_signals : ([> `texttagtable] as 'b) obj ->
 object ('a)
   val after : bool
   val obj : 'b obj
   method after : 'a
-  method tag_added : callback:(texttag obj -> unit) -> GtkSignal.id
-  method tag_changed :
-    callback:(texttag obj -> bool -> unit) -> GtkSignal.id
-  method tag_removed :
-    callback:(texttag obj -> unit) -> GtkSignal.id
+  method tag_added : callback:(texttag -> unit) -> GtkSignal.id
+  method tag_changed : callback:(texttag -> bool -> unit) -> GtkSignal.id
+  method tag_removed : callback:(texttag -> unit) -> GtkSignal.id
 end
 
-class tagtable :
-  texttagtable obj ->
+class tagtable : texttagtable ->
 object
-  val obj : texttagtable obj
-  method add : texttag obj -> unit
-  method as_tagtable : texttagtable obj
+  val obj : texttagtable
+  method add : texttag -> unit
+  method as_tagtable : texttagtable
   method connect : tagtable_signals
   method get_oid : int
-  method lookup : string -> texttag obj option
-  method remove : texttag obj -> unit
+  method lookup : string -> texttag option
+  method remove : texttag -> unit
   method size : unit -> int
 end
 val tagtable : unit -> tagtable
 
-class buffer_signals :
-  ([> `textbuffer] as 'b) obj ->
+class buffer_signals : ([> `textbuffer] as 'b) obj ->
 object ('a)
   val after : bool
   val obj : 'b obj
@@ -171,12 +163,12 @@ object ('a)
     callback:(start:iter -> stop:iter -> unit) -> GtkSignal.id
   method end_user_action : callback:(unit -> unit) -> GtkSignal.id
   method insert_child_anchor :
-    callback:(iter -> textchildanchor obj -> unit) -> GtkSignal.id
+    callback:(iter -> textchildanchor -> unit) -> GtkSignal.id
   method insert_pixbuf :
     callback:(iter -> GdkPixbuf.pixbuf -> unit) -> GtkSignal.id
   method insert_text : callback:(iter -> string -> unit) -> GtkSignal.id
-  method mark_deleted : callback:(textmark obj -> unit) -> GtkSignal.id
-  method mark_set : callback:(iter -> textmark obj -> unit) -> GtkSignal.id
+  method mark_deleted : callback:(textmark -> unit) -> GtkSignal.id
+  method mark_set : callback:(iter -> textmark -> unit) -> GtkSignal.id
   method modified_changed : callback:(unit -> unit) -> GtkSignal.id
   method remove_tag :
     callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
@@ -184,14 +176,13 @@ end
 
 exception No_such_mark of string
 
-class buffer :
-  textbuffer obj ->
+class buffer : textbuffer ->
 object
-  val obj : textbuffer obj
+  val obj : textbuffer
   method add_selection_clipboard : Gtk.clipboard -> unit
   method apply_tag : tag -> start:iter -> stop:iter -> unit
   method apply_tag_by_name : string -> start:iter -> stop:iter -> unit
-  method as_buffer : textbuffer obj
+  method as_buffer : textbuffer
   method begin_user_action : unit -> unit
   method bounds : iter * iter
   method char_count : int
@@ -199,7 +190,7 @@ object
   method copy_clipboard : Gtk.clipboard -> unit
   method create_child_anchor : iter -> child_anchor
   method create_mark :
-    ?name:string -> ?left_gravity:bool -> iter -> textmark obj
+    ?name:string -> ?left_gravity:bool -> iter -> textmark
   method create_tag :
     ?name:string -> GtkText.Tag.property list -> tag
   method cut_clipboard : ?default_editable:bool -> Gtk.clipboard -> unit
@@ -215,7 +206,7 @@ object
   method get_iter_at_char : ?line:int -> int -> iter
   method get_iter_at_byte : line:int -> int -> iter
   method get_iter_at_mark : mark -> iter
-  method get_mark : mark -> textmark obj
+  method get_mark : mark -> textmark
   method get_oid : int
   method get_text :
     ?start:iter -> ?stop:iter -> ?slice:bool -> ?visible:bool -> unit -> string
@@ -245,12 +236,11 @@ object
   method set_modified : bool -> unit
   method set_text : string -> unit
   method start_iter : iter
-  method tag_table : texttagtable obj
+  method tag_table : texttagtable
 end
 val buffer : ?tagtable:tagtable -> ?text:string -> unit -> buffer
 
-class view_signals :
-  ([> Gtk.textview] as 'b) obj ->
+class view_signals : ([> Gtk.textview] as 'b) obj ->
 object ('a)
   val after : bool
   val obj : 'b obj
@@ -275,8 +265,7 @@ object ('a)
   method toggle_overwrite : callback:(unit -> unit) -> GtkSignal.id
 end
 
-class view :
-  textview obj ->
+class view : textview obj ->
 object
   val obj : textview obj
   method add_child_at_anchor : GObj.widget -> child_anchor -> unit

@@ -13,7 +13,7 @@ let mark_name = function
   | `SEL_BOUND -> "selection_bound"
   | `NAME s -> s
 
-type mark = [mark_name | `MARK of textmark obj]
+type mark = [mark_name | `MARK of textmark]
 
 class child_anchor obj =
 object

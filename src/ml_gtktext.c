@@ -75,14 +75,7 @@ value Val_GtkTextIter(GtkTextIter* it){
   return(Val_GtkTextIter_mine(gtk_text_iter_copy(it))); 
 }
 
-CAMLprim value ml_gtk_text_iter_copy (value tm)
-{
-  CAMLparam1(tm);
-  CAMLlocal1(res);
-  res = Val_GtkTextIter(GtkTextIter_val(tm));
-  CAMLreturn(res);
-}
-
+ML_1 (gtk_text_iter_copy, GtkTextIter_val, Val_GtkTextIter_mine)
 
 /* "Lighter" version: allocate in the ocaml heap */
 /*

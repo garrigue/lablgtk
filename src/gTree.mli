@@ -69,4 +69,123 @@ val tree :
   ?view_lines:bool ->
   ?border_width:int ->
   ?width:int ->
-  ?height:int -> ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> tree
+  ?height:int -> ?packing:(widget -> unit) -> ?show:bool -> unit -> tree
+
+
+module Data :
+  sig
+    type kind =
+      [ `BOOLEAN
+      | `BOXED
+      | `CHAR
+      | `DOUBLE
+      | `ENUM
+      | `FLAGS
+      | `FLOAT
+      | `INT
+      | `INT64
+      | `LONG
+      | `OBJECT
+      | `POINTER
+      | `STRING
+      | `UCHAR
+      | `UINT
+      | `UINT64
+      | `ULONG]
+    type 'a conv = {
+      kind : kind;
+      proj : Gobject.data_get -> 'a;
+      inj : 'a -> unit Gobject.data_set;
+    } 
+    val boolean : bool conv
+    val char : char conv
+    val uchar : char conv
+    val int : int conv
+    val uint : int conv
+    val long : int conv
+    val ulong : int conv
+    val enum : int conv
+    val flags : int conv
+    val int64 : int64 conv
+    val uint64 : int64 conv
+    val float : float conv
+    val double : float conv
+    val string : string conv
+    val string_option : string option conv
+    val pointer : Gpointer.boxed option conv
+    val boxed : Gpointer.boxed option conv
+    val gobject : 'a Gobject.obj option conv
+    val of_value : 'a conv -> Gobject.g_value -> 'a
+    val to_value : 'a conv -> 'a -> Gobject.g_value
+  end
+
+type 'a column =
+    {index: int; conv: 'a Data.conv; creator: int}
+
+class column_list :
+  object
+    method add : 'a Data.conv -> 'a column
+    method id : int
+    method kinds : Data.kind list
+    method lock : unit -> unit
+  end
+
+class model : ([> `treemodel] obj as 'a) -> id:int ->
+object
+  val obj : 'a
+  val id : int
+  method as_model : tree_model obj
+  method coerce : model
+  method get : row:tree_iter -> column:'b column -> 'b
+end
+
+class store : tree_store -> id:int ->
+  object
+    inherit model
+    val obj : tree_store
+    method as_model : tree_model obj
+    method append : ?parent:tree_iter -> unit -> tree_iter
+    method clear : unit -> unit
+    method insert : ?parent:tree_iter -> int -> tree_iter
+    method insert_after : ?parent:tree_iter -> tree_iter -> tree_iter
+    method insert_before : ?parent:tree_iter -> tree_iter -> tree_iter
+    method is_ancestor : iter:tree_iter -> descendant:tree_iter -> bool
+    method iter_depth : tree_iter -> int
+    method iter_is_valid : tree_iter -> bool
+    method move_after : iter:tree_iter -> pos:tree_iter -> bool
+    method move_before : iter:tree_iter -> pos:tree_iter -> bool
+    method prepend : ?parent:tree_iter -> unit -> tree_iter
+    method remove : tree_iter -> bool
+    method set : row:tree_iter -> column:'a column -> 'a -> unit
+    method swap : tree_iter -> tree_iter -> bool
+  end
+
+val store : column_list -> store
+
+class view_column : tree_view_column obj ->
+  object
+    inherit gtkobj
+    val obj : tree_view_column obj
+    method as_column : tree_view_column obj
+    method add_attribute : [>`cellrenderer] obj -> string -> 'a column -> unit
+    method pack :
+      ?expand:bool -> ?from:[ `END | `START] -> [>`cellrenderer] obj -> unit
+    method set_title : string -> unit
+  end
+val view_column :
+  ?title:string ->
+  ?renderer:([>`cellrenderer] obj * (string * 'a column) list) ->
+  unit -> view_column
+
+class view : ([> tree_view] as 'a) obj ->
+  object
+    inherit GContainer.container
+    val obj : 'a obj
+    method append_column : view_column -> int
+  end
+val view :
+  ?model:#model ->
+  ?border_width:int -> ?width:int -> ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> view
+
+val cell_renderer_text : unit -> cell_renderer_text obj
