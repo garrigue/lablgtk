@@ -50,14 +50,14 @@ class editor ?packing ?show () = object (self)
     Lexical.init_tags view#buffer;
     view#buffer#connect#after#insert_text ~callback:
       begin fun it s ->
-        let start = it#copy#backward_chars (String.length s) in
+        let start = it#backward_chars (String.length s) in
         Lexical.tag view#buffer
-          ~start:start#backward_line ~stop:it#copy#forward_to_line_end;
+          ~start:start#backward_line ~stop:it#forward_to_line_end;
       end;
     view#buffer#connect#after#delete_range ~callback:
       begin fun ~start ~stop ->
-        let start = start#copy#backward_line
-        and stop = start#copy#forward_to_line_end in
+        let start = start#backward_line
+        and stop = start#forward_to_line_end in
         Lexical.tag view#buffer ~start ~stop
       end;
     view#misc#modify_font (Pango.Font.from_string "monospace");

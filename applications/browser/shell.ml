@@ -92,7 +92,7 @@ object (self)
       self#insert (if dir = `previous then h#previous else h#next);
     end
   method private lex ~start ~stop =
-    if start < stop then Lexical.tag buffer ~start ~stop
+    if start#compare stop < 0 then Lexical.tag buffer ~start ~stop
   method insert text =
     buffer#insert text
   method private keypress c =
@@ -134,14 +134,14 @@ object (self)
       end;
     buffer#connect#after#insert_text ~callback:
       begin fun it s ->
-        let start = it#copy#backward_chars (String.length s) in
-        self#lex ~start:start#backward_line ~stop:it#copy#forward_to_line_end;
+        let start = it#backward_chars (String.length s) in
+        self#lex ~start:start#backward_line ~stop:it#forward_to_line_end;
         view#scroll_mark_onscreen `INSERT
       end;
     buffer#connect#after#delete_range ~callback:
       begin fun ~start ~stop ->
-        let start = start#copy#backward_line
-        and stop = start#copy#forward_to_line_end in
+        let start = start#backward_line
+        and stop = start#forward_to_line_end in
         self#lex ~start ~stop
       end;
     view#event#connect#button_press ~callback:

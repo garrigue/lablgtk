@@ -58,6 +58,7 @@ object
   method backward_chars : int -> bool
   method backward_cursor_position : bool
   method backward_cursor_positions : int -> bool
+  method backward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
   method backward_line : bool
   method backward_lines : int -> bool
   method backward_sentence_start : bool
@@ -69,6 +70,7 @@ object
   method forward_chars : int -> bool
   method forward_cursor_position : bool
   method forward_cursor_positions : int -> bool
+  method forward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
   method forward_line : bool
   method forward_lines : int -> bool
   method forward_sentence_end : bool
@@ -78,9 +80,15 @@ object
   method forward_word_end : bool
   method forward_word_ends : int -> bool
   method forward_to_line_end : bool
+  method set_line : int -> unit
+  method set_line_index : int -> unit
+  method set_line_offset : int -> unit
+  method set_offset : int -> unit
+  method set_visible_line_index : int -> unit
+  method set_visible_line_offset : int -> unit
 end 
 
-class iter :
+and iter :
   textiter ->
 object ('self)
   val it : textiter
@@ -92,7 +100,7 @@ object ('self)
   method backward_chars : int -> iter
   method backward_cursor_position : iter
   method backward_cursor_positions : int -> iter
-  method backward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
+  method backward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> iter
   method backward_line : iter
   method backward_lines : int -> iter
   method backward_search : ?flags:Gtk.Tags.text_search_flag list ->
@@ -120,7 +128,7 @@ object ('self)
   method forward_chars : int -> iter
   method forward_cursor_position : iter
   method forward_cursor_positions : int -> iter
-  method forward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
+  method forward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> iter
   method forward_line : iter
   method forward_lines : int -> iter
   method forward_search : ?flags:Gtk.Tags.text_search_flag list ->
@@ -149,12 +157,12 @@ object ('self)
   method line_offset : int
   method marks : textmark list
   method offset : int
-  method set_line : int -> unit
-  method set_line_index : int -> unit
-  method set_line_offset : int -> unit
-  method set_offset : int -> unit
-  method set_visible_line_index : int -> unit
-  method set_visible_line_offset : int -> unit
+  method set_line : int -> iter
+  method set_line_index : int -> iter
+  method set_line_offset : int -> iter
+  method set_offset : int -> iter
+  method set_visible_line_index : int -> iter
+  method set_visible_line_offset : int -> iter
   method starts_line : bool
   method starts_sentence : bool
   method starts_word : bool

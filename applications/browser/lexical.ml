@@ -20,12 +20,11 @@ let init_tags (tb : GText.buffer) =
   ()
 
 let tpos ~(start : GText.iter) pos =
-  let it = start#copy and l = pos.pos_lnum - 1 in
+  let l = pos.pos_lnum - 1 in
   if l = 0 then
-    it#set_line_index (pos.pos_cnum + it#line_index)
+    start#set_line_index (pos.pos_cnum + start#line_index)
   else
-    (it#forward_lines l)#set_line_index (pos.pos_cnum - pos.pos_bol);
-  it
+    (start#forward_lines l)#set_line_index (pos.pos_cnum - pos.pos_bol)
 
 let tag ?start ?stop (tb : GText.buffer) =
   let start = Gaux.default tb#start_iter ~opt:start
@@ -118,7 +117,7 @@ let tag ?start ?stop (tb : GText.buffer) =
       | COLON ->
           begin match !last with
             LIDENT _, lstart, lstop ->
-              if lstop = start then
+              if lstop.pos_cnum = start.pos_cnum then
                 tb#apply_tag_by_name "label"
                   ~start:(tpos lstart) ~stop:(tpos stop);
               ""

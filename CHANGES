@@ -2,6 +2,8 @@ $Id$
 
 2003.02.19
  * GdkDrawable is also a GObject
+ * split GText.iter/nocopy_iter (Benjamin)
+ * finish split (Jacques)
 
 2003.02.14
  * Added librsvg support (contributed by Olivier Andrieu)
