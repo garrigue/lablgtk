@@ -251,43 +251,25 @@ CAMLprim value ml_gtk_tree_selection_set_select_function (value s, value clos)
                                           ml_global_root_destroy);
   return Val_unit;
 }
-/*
 static void selected_foreach_func(GtkTreeModel      *model,
                                   GtkTreePath       *path,
                                   GtkTreeIter       *iter,
                                   gpointer           data)
-{
-  CAMLparam0();
-  CAMLlocal2(p,cell);
-  p = Val_GtkTreePath(path);
-  cell = alloc_small(2,0);
-  Field(cell,0) = p;
-  Field(cell,1) = *(value*)data;
-  *(value*)data = cell;
-  CAMLreturn0;
+{ 
+  value p = Val_GtkTreePath_copy(path);
+  callback(*(value*)data, p);
 }
-CAMLprim value ml_gtk_tree_selection_get_selected_rows (value s)
+CAMLprim value ml_gtk_tree_selection_selected_foreach (value s, value clos)
 {
-  CAMLparam0();
-  CAMLlocal1(res);
-  res = Val_unit;
+  CAMLparam1(clos);
   gtk_tree_selection_selected_foreach(GtkTreeSelection_val(s),
                                       selected_foreach_func,
-                                      &res);
-  CAMLreturn(res);
+                                      &clos);
+  CAMLreturn(Val_unit);
 }
-*/
 #ifdef HASGTK22
-CAMLprim value ml_gtk_tree_selection_get_selected_rows (value s)
-{
-  GtkTreeModel *m;
-  return Val_GList_free (gtk_tree_selection_get_selected_rows
-                         (GtkTreeSelection_val(s), &m),
-                         (value_in)Val_GtkTreePath);
-}
 ML_1 (gtk_tree_selection_count_selected_rows, GtkTreeSelection_val, Val_int)
 #else
-Unsupported(gtk_tree_selection_get_selected_rows)
 Unsupported(gtk_tree_selection_count_selected_rows)
 #endif
 

@@ -278,8 +278,11 @@ module TreeSelection = struct
   external set_select_function :
     tree_selection -> (tree_path -> bool -> bool) -> unit
     = "ml_gtk_tree_selection_set_select_function"
-  external get_selected_rows : tree_selection -> tree_path list
-    = "ml_gtk_tree_selection_get_selected_rows"
+  external selected_foreach : tree_selection -> (tree_path -> unit) -> unit
+    = "ml_gtk_tree_selection_selected_foreach"
+  let get_selected_rows s =
+    let l = ref [] in selected_foreach s (fun p -> l := p :: !l);
+    List.rev !l
   external count_selected_rows : tree_selection -> int
     = "ml_gtk_tree_selection_count_selected_rows"
   external select_path : tree_selection -> tree_path -> unit
