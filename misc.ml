@@ -21,15 +21,24 @@ let default x =
 let may_default f x =
   function for:None -> f x | for:Some y -> y
 
-type 'a optpointer
-
 external get_null : unit -> Obj.t = "ml_get_null"
 let null = get_null ()
+
+type 'a optpointer
 
 let optpointer : 'a option -> 'a optpointer =
   function
       None -> Obj.obj null
     | Some x -> Obj.magic x
+
+type optstring = string optpointer
+
+type 'a optboxed
+
+let optboxed : 'a option -> 'a optboxed =
+  function
+      None -> Obj.magic (0,null)
+    | Some obj -> Obj.magic obj
 
 type pointer
 
