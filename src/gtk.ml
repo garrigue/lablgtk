@@ -250,15 +250,22 @@ end
 
 module Main = struct
   external init : string array -> string array = "ml_gtk_init"
-  external exit : int -> unit = "ml_gtk_exit"
+  (* external exit : int -> unit = "ml_gtk_exit" *)
   external set_locale : unit -> string = "ml_gtk_set_locale"
-  external main : unit -> unit = "ml_gtk_main"
+  (* external main : unit -> unit = "ml_gtk_main" *)
+  let locale = set_locale ()
+  let argv = init Sys.argv
   external iteration_do : bool -> bool = "ml_gtk_main_iteration_do"
+  let main () = while not (iteration_do true) do () done
   external quit : unit -> unit = "ml_gtk_main_quit"
-  external grab_add : [> widget] obj -> unit = "ml_gtk_grab_add"
-  external grab_remove : [> widget] obj -> unit = "ml_gtk_grab_remove"
-  external grab_get_current : unit -> Widget.t = "ml_gtk_grab_get_current"
   external get_version : unit -> int * int * int = "ml_gtk_get_version"
+  let version = get_version ()
+end
+
+module Grab = struct
+  external add : [> widget] obj -> unit = "ml_gtk_grab_add"
+  external remove : [> widget] obj -> unit = "ml_gtk_grab_remove"
+  external get_current : unit -> Widget.t = "ml_gtk_grab_get_current"
 end
 
 module Arg = struct
