@@ -80,6 +80,7 @@ module Closure = struct
 
   let get_pointer arg ~pos = Value.get_pointer (nth arg ~pos)
   let get_nativeint arg ~pos = Value.get_nativeint (nth arg ~pos)
+  let get_int32 arg ~pos = Nativeint.to_int32 (get_nativeint arg ~pos)
 end
 
 external get_type : 'a obj -> g_type = "ml_G_TYPE_FROM_INSTANCE"

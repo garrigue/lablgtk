@@ -642,6 +642,8 @@ CAMLprim value ml_gdk_event_new (value event_type)
     return Val_copy(event);
 }
 
+ML_1 (gdk_event_get_time, GdkEvent_val, copy_int32)
+
 #define GdkEvent_arg(type) (GdkEvent##type*)GdkEvent_val
 
 Make_Extractor (GdkEventAny, GdkEvent_arg(Any), type, Val_gdkEventType)
@@ -656,7 +658,6 @@ Make_Extractor (GdkEventExpose, GdkEvent_arg(Expose), count, Val_int)
 Make_Extractor (GdkEventVisibility, GdkEvent_arg(Visibility), state,
                 Val_gdkVisibilityState)
 
-Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), time, copy_int32)
 Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), x, copy_double)
 Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), y, copy_double)
 static value copy_axes(double *axes)
@@ -682,7 +683,6 @@ Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), device, Val_GdkDevice)
 Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), x_root, copy_double)
 Make_Extractor (GdkEventMotion, GdkEvent_arg(Motion), y_root, copy_double)
 
-Make_Extractor (GdkEventButton, GdkEvent_arg(Button), time, copy_int32)
 Make_Extractor (GdkEventButton, GdkEvent_arg(Button), x, copy_double)
 Make_Extractor (GdkEventButton, GdkEvent_arg(Button), y, copy_double)
 Make_Extractor (GdkEventButton, GdkEvent_arg(Button), axes, copy_axes)
@@ -693,7 +693,6 @@ Make_Extractor (GdkEventButton, GdkEvent_arg(Button), x_root, copy_double)
 Make_Extractor (GdkEventButton, GdkEvent_arg(Button), y_root, copy_double)
 Make_Setter (gdk_event_button_set, GdkEvent_arg(Button), Int_val, button)
 
-Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), time, copy_int32)
 Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), x, copy_double)
 Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), y, copy_double)
 Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), state, Val_int)
@@ -703,7 +702,6 @@ Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), device, Val_GdkDevice)
 Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), x_root, copy_double)
 Make_Extractor (GdkEventScroll, GdkEvent_arg(Scroll), y_root, copy_double)
 
-Make_Extractor (GdkEventKey, GdkEvent_arg(Key), time, copy_int32)
 Make_Extractor (GdkEventKey, GdkEvent_arg(Key), state, Val_int)
 Make_Extractor (GdkEventKey, GdkEvent_arg(Key), keyval, Val_int)
 Make_Extractor (GdkEventKey, GdkEvent_arg(Key), string, Val_string)
@@ -712,7 +710,6 @@ Make_Extractor (GdkEventKey, GdkEvent_arg(Key), group, Val_int)
 
 Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing),
                 subwindow, Val_GdkWindow)
-Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), time, copy_int32)
 Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), x, copy_double)
 Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), y, copy_double)
 Make_Extractor (GdkEventCrossing, GdkEvent_arg(Crossing), x_root, copy_double)
@@ -732,16 +729,13 @@ Make_Extractor (GdkEventConfigure, GdkEvent_arg(Configure), width, Val_int)
 Make_Extractor (GdkEventConfigure, GdkEvent_arg(Configure), height, Val_int)
 
 Make_Extractor (GdkEventProperty, GdkEvent_arg(Property), atom, Val_int)
-Make_Extractor (GdkEventProperty, GdkEvent_arg(Property), time, copy_int32)
 Make_Extractor (GdkEventProperty, GdkEvent_arg(Property), state, Val_int)
 
 Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), selection, Val_int)
 Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), target, Val_int)
 Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), property, Val_int)
 Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), requestor, Val_XID)
-Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), time, copy_int32)
 
-Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity), time, copy_int32)
 Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity),
                 device, Val_GdkDevice)
 
