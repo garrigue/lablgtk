@@ -30,6 +30,7 @@ ML_3 (g_object_get_property, GObject_val, String_val, GValue_val, Unit)
 
 /* gtype.h */
 
+ML_0 (g_type_init, Unit)
 ML_1 (g_type_name, GType_val, Val_string)
 ML_1 (g_type_from_name, String_val, Val_GType)
 ML_1 (g_type_parent, GType_val, Val_GType)
