@@ -288,9 +288,10 @@ GL extension:
   You can use lablgtk in combination with LablGL
 
   * get and install lablGL 0.98 from
-    http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
-  * get and install gtkglarea-1.2.x.tar.gz from
-    http://www.student.oulu.fi/~jlof/gtkglarea/index.html
+      http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
+  * get and install gtkglarea-1.2.3.tar.gz from somewhere on the net
+      http://freeware.nekochan.net/source/gtkglarea/
+    seems to work currently
   * reconfigure: "make configure USE_GL=1"
       You can also set the GLLIBS variable to the libraries you must
       link with. The default is "-lGLU -lGL". Due to a bug in ld.so,
