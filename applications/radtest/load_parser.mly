@@ -8,10 +8,12 @@ open Utils
 %type <string> window_start
 %type <string * string> property widget_start
 %type <(string * string) list> property_list
-%type <yywidget_tree> widget window
+%type <Utils.yywidget_tree> widget window
 %type <Utils.yywidget_tree list> children window_list project
 
 %start project
+%start window
+%start widget
 
 %%
 
