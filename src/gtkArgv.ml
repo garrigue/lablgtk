@@ -100,8 +100,3 @@ let set_result_string arg = set_string (result arg)
 let set_result_pointer arg = set_pointer (result arg)
 let set_result_object arg = set_object (result arg)
 *)
-
-external string_at_pointer : ?pos:int -> ?len:int -> Gpointer.boxed -> string
-    = "ml_string_at_pointer"
-external int_at_pointer : Gpointer.boxed -> int
-    = "ml_int_at_pointer"

@@ -803,6 +803,7 @@ CAMLprim value ml_gtk_arg_set_retloc (GtkArg *arg, value val)
 }
 
 CAMLprim value ml_gtk_arg_get_nativeint(GtkArg *arg) {
+
      switch(GTK_FUNDAMENTAL_TYPE(arg->type)) {
      case GTK_TYPE_INT:
      case GTK_TYPE_UINT:
@@ -824,33 +825,16 @@ CAMLprim value ml_gtk_arg_get_pointer (GtkArg *arg)
 {
     gpointer p = NULL;
     switch (GTK_FUNDAMENTAL_TYPE(arg->type)) {
-/*
     case GTK_TYPE_STRING:
-    case GTK_TYPE_OBJECT:
-*/
     case GTK_TYPE_BOXED:
     case GTK_TYPE_POINTER:
+    case G_TYPE_OBJECT:
         p = GTK_VALUE_POINTER(*arg); break;
     default:
 	ml_raise_gtk ("GtkArgv.get_pointer : argument type mismatch");
     }
     return Val_pointer(p);
 }
-
-CAMLprim value ml_string_at_pointer (value ofs, value len, value ptr)
-{
-    char *start = ((char*)Pointer_val(ptr)) + Option_val(ofs, Int_val, 0);
-    int length = Option_val(len, Int_val, strlen(start));
-    value ret = alloc_string(length);
-    memcpy ((char*)ret, start, length);
-    return ret;
-}
-
-CAMLprim value ml_int_at_pointer (value ptr)
-{
-    return Val_int(*(int*)Pointer_val(ptr));
-}
-
 
 /* gtksignal.h */
 

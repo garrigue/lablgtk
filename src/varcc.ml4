@@ -18,7 +18,7 @@ let hash_variant s =
 
 open Genlex
 
-let lexer = make_lexer ["type"; "public"; "private"; "="; "["; "]"; "`"; "|"]
+let lexer = make_lexer ["type"; "="; "["; "]"; "`"; "|"]
 
 let may_string = parser
     [< ' String s >] -> s
@@ -35,18 +35,23 @@ let rec ident_list = parser
 
 let static = ref false
 let may_public = parser
-    [< ' Kwd "public" >] -> true
-  | [< ' Kwd "private" >] -> false
+    [< ' Ident "public" >] -> true
+  | [< ' Ident "private" >] -> false
   | [< >] -> not !static
+
+let may_noconv = parser
+    [< ' Ident "noconv" >] -> true
+  | [< >] -> false
 
 open Printf
 
 let hashes = Hashtbl.create 57
 
 let declaration ~hc ~cc = parser
-    [< ' Kwd "type"; public = may_public; ' Ident name; ' Kwd "=";
-       prefix = may_string; ' Kwd "["; _ = may_bar;
-       tags = ident_list; ' Kwd "]"; suffix = may_string >] ->
+    [< ' Kwd "type"; public = may_public; noconv = may_noconv;
+       ' Ident name; ' Kwd "="; prefix = may_string;
+       ' Kwd "["; _ = may_bar; tags = ident_list; ' Kwd "]";
+       suffix = may_string >] ->
     let oh x = fprintf hc x and oc x = fprintf cc x in
     (* Output tag values to headers *)
     let first = ref true in
@@ -64,6 +69,7 @@ let declaration ~hc ~cc = parser
           end;
 	  oh "#define MLTAG_%s\tVal_int(%d)\n" tag hash;
       end;
+    if noconv then () else
     (* compute C name *)
     let ctag tag trans =
       if trans <> "" then trans else
