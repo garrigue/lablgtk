@@ -4,21 +4,21 @@
 EXE = .exe
 TARGETS = varcc lablgtktop$(EXE) lablgtktop_t$(EXE)
 
-all: $(TARGETS)
+all:: $(TARGETS)
 
 opt: lablgtkopt
 
 depend:
-	ocamldep *.ml *.mli > .depend
+	$(CAMLDEP) *.ml *.mli > .depend
 
 COMPILER = $(CAMLC) $(MLFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 MKLIB = lib /nologo /debugtype:CV /out:
-MKDLL = link /nologo /dll "`ocamlc -where`/ocamlrun.lib" /out:
-TOPLEVEL = ocamlmktop $(MLFLAGS)
-CAMLP4 = camlp4o -I "$(LIBDIR)/camlp4" pr_o.cmo
+MKDLL = link /nologo /dll "`$(CAMLC) -where`/ocamlrun.lib" /out:
+TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
+CAMLP4 = $(CAMLP4O) -I "$(LIBDIR)/camlp4" pr_o.cmo
 CONFIG = ../config.make.nt
 DLLDIR = $(LIBDIR)/stublibs
 
@@ -52,7 +52,7 @@ endif
 .c.obj:
 	$(COMPILER) -verbose -ccopt "$(CFLAGS)" $<
 .c.d.obj:
-	$(COMPILER) -verbose -ccopt "/MD /Fo$@ $(CFLAGS)" $<
+	$(COMPILER) -verbose -ccopt "/MD /Fo$@ -DCAML_DLL $(CFLAGS)" $<
 .ml.cmo:
 	$(COMPILER) $<
 .mli.cmi:
@@ -60,7 +60,7 @@ endif
 .ml.cmx:
 	$(COMPOPT) $<
 .var.h:
-	ocamlrun ./varcc $<
+	$(CAMLRUN) ./varcc $<
 .ml4.ml:
 	$(CAMLP4) -impl $< -o $@
 
@@ -76,13 +76,19 @@ MLOBJS = gaux.cmo gpointer.cmo glib.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkMain.cmo gtkNew.cmo \
 	gDraw.cmo \
 	gObj.cmo gMain.cmo gData.cmo gContainer.cmo gPack.cmo gButton.cmo \
-	gMenu.cmo gMisc.cmo gWindow.cmo gTree.cmo gList.cmo gBin.cmo \
+	gMenu.cmo gMisc.cmo gList.cmo gWindow.cmo gTree.cmo gBin.cmo \
 	gEdit.cmo gRange.cmo gUtil.cmo gToolbox.cmo
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
 ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) $(THOBJS) \
 	$(INITOBJS) $(THINITOBJS)
+
+ifeq ($(USE_GLADE), 1)
+GTKOBJS += ml_glade.obj
+MLOBJS += glade.cmo
+all:: lablgladecc$(EXE)
+endif
 
 lablgtktop$(EXE): $(CLIBS) $(MLLIBS) $(INITOBJS)
 	$(TOPLEVEL) -o $@ $(MLLINK) -I . $(MLLIBS) $(INITOBJS)
@@ -93,6 +99,9 @@ lablgtktop_t$(EXE): $(CLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS)
 
 lablgtkopt: $(CLIBS) $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx) \
 	$(THOBJS:.cmo=.cmx)
+
+lablgladecc$(EXE): xml_lexer.cmo lablgladecc.cmo
+	$(LINKER) -o $@ $(MLLINK) xml_lexer.cmo lablgladecc.cmo
 
 install:
 	@if test -d "$(INSTALLDIR)"; then :; else mkdir -p "$(INSTALLDIR)"; fi
@@ -123,6 +132,19 @@ lablgtk.cmxa: $(MLOBJS:.cmo=.cmx)
 	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \
 	  -cclib -llablgtk -cclib "$(GTKLIBS)"
 
+liblablglade.lib: $(GLADECOBJS)
+	$(MKLIB)$@ $(GLADECOBJS)
+dlllablglade.dll: $(GLADECOBJS:.obj=.d.obj)
+	$(MKDLL)$@ $(GLADECOBJS:.obj=.d.obj) dlllablgtk.dll $(GLADELIBS) $(GTKLIBS)
+
+lablglade.cma: liblablglade.lib dlllablglade.dll $(GLADEMLOBJS)
+	$(LINKER) -a -o $@ $(MLOBJS) \
+	  -dllib -llablglade -cclib -llablglade -cclib "$(GLADELIBS)"
+lablglade.cmxa: $(MLOBJS:.cmo=.cmx)
+	$(LINKOPT) -a -o $@ $(MLOBJS:.cmo=.cmx) \
+	  -cclib -llablglade -cclib "$(GLADELIBS)"
+
+
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
@@ -132,12 +154,15 @@ gtkThread.cmi: gtkThread.mli
 gtkThread.cmx: gtkThread.ml
 	$(COMPOPT) $(THFLAGS) gtkThread.ml
 
+xml_lexer.ml: xml_lexer.mll
+	$(CAMLLEX) xml_lexer.mll
+
 varcc: varcc.cmo
 	$(LINKER) -o $@ $<
 	rm -f *_tags.h *_tags.c
 
 clean:
-	rm -f *.cm* *.obj *.lib *_tags.[ch] $(TARGETS)
+	rm -f *.cm* *.obj *.lib *.dll *_tags.[ch] $(TARGETS)
 
 $(GTKOBJS) $(GTKOBJS:.obj=.d.obj): gtk_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_glib.obj ml_glib.d.obj: glib_tags.h ml_glib.h wrappers.h

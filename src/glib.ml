@@ -16,13 +16,18 @@ module Main = struct
 end
 
 module Io = struct
+  type event_source
   type channel
   type condition = [ `IN | `OUT | `PRI | `ERR | `HUP | `NVAL ]
   external channel_of_descr : Unix.file_descr -> channel
     = "ml_g_io_channel_unix_new"   (* Unix only *)
+  external remove_source : event_source -> bool
+      = "ml_g_source_remove"
   external add_watch :
-    cond:condition -> callback:(unit -> bool) -> ?prio:int -> channel -> unit
+    cond:condition -> callback:(unit -> bool) -> ?prio:int -> channel -> event_source
     = "ml_g_io_add_watch"
+  external read : channel -> string -> int -> int -> int
+    = "ml_g_io_channel_read"
 end
 
 (*

@@ -88,6 +88,8 @@ module Screen :
   sig
     external width : unit -> int = "ml_gdk_screen_width"
     external height : unit -> int = "ml_gdk_screen_height"
+    external width_mm : unit -> int = "ml_gdk_screen_width_mm"
+    external height_mm : unit -> int = "ml_gdk_screen_height_mm"
   end
 
 module Visual :
@@ -483,4 +485,13 @@ module Cursor : sig
     fg:Color.t -> bg:Color.t -> x:int -> y:int -> cursor
     = "ml_gdk_cursor_new_from_pixmap_bc" "ml_gdk_cursor_new_from_pixmap"
   external destroy : cursor -> unit = "ml_gdk_cursor_destroy"
+end
+
+module Input : sig
+  type callback_id
+  type condition = [`READ|`WRITE|`EXCEPTION] 
+  external add : Unix.file_descr -> cond: condition -> callback: (unit -> unit) -> callback_id
+      = "ml_gdk_input_add"
+  external remove : callback_id -> unit
+      = "ml_gdk_input_remove"
 end

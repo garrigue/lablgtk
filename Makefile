@@ -12,13 +12,14 @@ endif
 CAMLMKTOP = ocamlmktop
 CAMLMKLIB = ocamlmklib
 CAMLP4O = camlp4o
+CAMLLEX = ocamllex
 # Default installation directories
 BINDIR = `$(GETLIBDIR) | sed -e 's|/lib/[^/]*$$|/bin|' -e 's|/lib$$|/bin|'`
 INSTALLDIR = $(LIBDIR)/lablgtk
 DLLDIR = $(LIBDIR)/stublibs
 
 # Autoconf
-GETLIBDIR = ocamlc -where
+GETLIBDIR = $(CAMLC) -where
 LIBDIR = `$(GETLIBDIR)`
 RANLIB = `which ranlib 2>/dev/null | sed -e 's|.*/ranlib$$|!|' -e 's/^[^!]*$$/:/' -e 's/!/ranlib/'`
 
@@ -77,6 +78,7 @@ configure:
 	@echo CAMLMKTOP=$(CAMLMKTOP) >> config.make
 	@echo CAMLMKLIB=$(CAMLMKLIB) >> config.make
 	@echo CAMLP4O=$(CAMLP4O) >> config.make
+	@echo CAMLLEX=$(CAMLLEX) >> config.make
 	@echo USE_GL=$(USE_GL) >> config.make
 	@echo USE_GNOME=$(USE_GNOME) >> config.make
 	@echo USE_GLADE=$(USE_GLADE) >> config.make

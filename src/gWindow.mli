@@ -9,8 +9,8 @@ class ['a] window_skel : 'b obj ->
     constraint 'a = 'a #window_skel
     constraint 'b = [> window]
     val obj : 'b obj
-    method activate_default : unit -> unit
-    method activate_focus : unit -> unit
+    method activate_default : unit -> bool
+    method activate_focus : unit -> bool
     method add_accel_group : accel_group -> unit
     method event : event_ops
     method as_window : Gtk.window obj
