@@ -7,4 +7,4 @@ lablgtktop_t
 lablgtkrun
 *_tags.c
 *_tags.h
-
+*.lib

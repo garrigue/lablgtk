@@ -151,17 +151,14 @@ class paned obj = object
     try ignore(Paned.child2 obj); raise(Error "GPack.paned#add2: already full")
     with _ -> Paned.add2 obj (as_widget w)
   method set_handle_size = Paned.set_handle_size obj
-  method set_gutter_size = Paned.set_gutter_size obj
   method child1 = new widget (Paned.child1 obj)
   method child2 = new widget (Paned.child2 obj)
   method handle_size = Paned.handle_size obj
-  method gutter_size = Paned.gutter_size obj
 end
 
-let paned dir ?handle_size ?gutter_size
-    ?border_width ?width ?height ?packing ?show () =
+let paned dir ?handle_size ?border_width ?width ?height ?packing ?show () =
   let w = Paned.create dir in
-  Paned.set w ?handle_size ?gutter_size;
+  Paned.set w ?handle_size;
   Container.set w ?border_width ?width ?height;
   pack_return (new paned w) ~packing ~show
 

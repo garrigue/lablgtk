@@ -184,15 +184,11 @@ module Paned = struct
       = "ml_gtk_paned_add2"
   external set_handle_size : [>`paned] obj -> int -> unit
       = "ml_gtk_paned_set_handle_size"
-  external set_gutter_size : [>`paned] obj -> int -> unit
-      = "ml_gtk_paned_set_gutter_size"
-  let set ?handle_size ?gutter_size w =
-    may ~f:(set_handle_size w) handle_size;
-    may ~f:(set_gutter_size w) gutter_size
+  let set ?handle_size w =
+    may ~f:(set_handle_size w) handle_size
   external child1 : [>`paned] obj -> widget obj = "ml_gtk_paned_child1"
   external child2 : [>`paned] obj -> widget obj = "ml_gtk_paned_child2"
   external handle_size : [>`paned] obj -> int = "ml_gtk_paned_handle_size"
-  external gutter_size : [>`paned] obj -> int = "ml_gtk_paned_handle_size"
   external hpaned_new : unit -> paned obj = "ml_gtk_hpaned_new"
   external vpaned_new : unit -> paned obj = "ml_gtk_vpaned_new"
   let create (dir : orientation) =

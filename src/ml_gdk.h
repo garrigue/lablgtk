@@ -40,7 +40,11 @@ extern value Val_GdkGC (GdkGC *);
 #define GdkVisual_val(val) ((GdkVisual*) val)
 #define Val_GdkVisual(visual) ((value) visual)
 
+#ifdef _WIN32
+#define Val_XID(id) copy_int32((long) id)
+#else
 #define Val_XID copy_int32
+#endif
 #define XID_val Int32_val
 
 extern int OptFlags_GdkModifier_val (value);

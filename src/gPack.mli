@@ -252,15 +252,12 @@ class paned :
     method event : event_ops
     method child1 : widget
     method child2 : widget
-    method gutter_size : int
     method handle_size : int
-    method set_gutter_size : int -> unit
     method set_handle_size : int -> unit
   end
 val paned :
   Tags.orientation ->
   ?handle_size:int ->
-  ?gutter_size:int ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

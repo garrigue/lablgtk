@@ -94,6 +94,12 @@ value ml_g_set_print_handler (value clos)
 
 /* Main loop handling */
 
+/* for 1.3 compatibility */
+#ifdef g_main_new
+#undef g_main_new
+#define	g_main_new(is_running)	g_main_loop_new (NULL, is_running)
+#endif
+
 #define GMainLoop_val(val) ((GMainLoop*)Addr_val(val))
 ML_1 (g_main_new, Bool_val, Val_addr)
 ML_1 (g_main_iteration, Bool_val, Val_bool)
