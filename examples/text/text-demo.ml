@@ -157,7 +157,7 @@ let insert_text (buffer:GText.buffer) =
        ".\n";
    buffer#insert ~iter
        "\n\nThis demo doesn't demonstrate all the GtkTextBuffer features; it leaves out, for example: invisible/hidden text (doesn't work in GTK 2, but planned), tab stops, application-drawn areas on the sides of the widget for displaying breakpoints and such...";
-   let start,stop = buffer#get_bounds in
+   let start,stop = buffer#bounds in
    buffer#apply_tag_by_name "word_wrap" ~start ~stop ; 
    ()
 
@@ -165,15 +165,15 @@ let insert_text (buffer:GText.buffer) =
 let find_anchor (iter:GText.iter) =
   try
     while iter#forward_char ()
-    do 
-      if iter#get_child_anchor<>None then raise Exit
+    do
+      match iter#contents with `CHILD _ -> raise Exit | _ -> ()
     done;
     false
   with Exit -> true
 
 let rec recursive_attach_view depth (view:GText.view) anchor =
   if depth <= 4 then begin
-    let child_view = GText.view ~buffer:(view#get_buffer) () in
+    let child_view = GText.view ~buffer:(view#buffer) () in
     let event_box = GBin.event_box () in
     let color = `NAME "black" in
     event_box#misc#modify_bg [`NORMAL,color];
@@ -191,7 +191,7 @@ let easter_egg_callback =
   fun () -> match !window with Some w -> w#present ()
     | None -> 
 	let buffer = GText.buffer () in
-	let iter = buffer#get_start_iter in
+	let iter = buffer#start_iter in
 	buffer#insert ~iter "This buffer is shared by a set of nested text views.\n Nested view:\n";
 	let anchor = buffer#create_child_anchor iter in
 	buffer#insert ~iter 
@@ -214,13 +214,13 @@ let easter_egg_callback =
 
 
 let attach_widgets (text_view:GText.view) =
-  let buffer = text_view#get_buffer in
-  let iter = buffer#get_start_iter in
+  let buffer = text_view#buffer in
+  let iter = buffer#start_iter in
   let i = ref 0 in
   while find_anchor iter do
-    let anchor = match iter#get_child_anchor with 
-      | Some c -> c 
-      | None -> assert false
+    let anchor = match iter#contents with 
+      | `CHILD c -> c 
+      | _ -> assert false
     in
     let widget = match !i with 
       | 0 -> let b = GButton.button ~label:"Click me!" () in
@@ -251,26 +251,19 @@ let attach_widgets (text_view:GText.view) =
   done
 
 let main () =
-  let window = GWindow.window () in
-  window#set_default_size ~width:450 ~height:450;
+  let window = GWindow.window ~width:450 ~height:450 ~title:"TextView"
+      ~border_width:0 () in
   window#connect#destroy ~callback:(fun _ -> exit 0);
-  window#set_title "TextView";  window#set_border_width 0;
-  let vpaned = GPack.paned `VERTICAL () in
-  vpaned#set_border_width 5;
-  window#add (vpaned:>GObj.widget);
+  let vpaned = GPack.paned `VERTICAL ~border_width:5 ~packing:window#add () in
   let view1 = GText.view () in
-  let buffer = view1#get_buffer in
+  let buffer = view1#buffer in
   let view2 = GText.view ~buffer () in
-  let sw = GBin.scrolled_window () in
-  sw#set_hpolicy `AUTOMATIC;
-  sw#set_vpolicy `AUTOMATIC;
-  vpaned#add1 (sw:>GObj.widget);
-  sw#add (view1:>GObj.widget);
-  let sw = GBin.scrolled_window () in
-  sw#set_hpolicy `AUTOMATIC;
-  sw#set_vpolicy `AUTOMATIC;
-  vpaned#add2 (sw:>GObj.widget);
-  sw#add (view2:>GObj.widget);
+  let sw = GBin.scrolled_window ~packing:vpaned#add1
+      ~hpolicy:`AUTOMATIC ~vpolicy:`AUTOMATIC () in
+  sw#add view1#coerce;
+  let sw = GBin.scrolled_window ~packing:vpaned#add2
+      ~hpolicy:`AUTOMATIC ~vpolicy:`AUTOMATIC () in
+  sw#add view2#coerce;
   create_tags buffer;
   insert_text buffer;  
   attach_widgets view1;

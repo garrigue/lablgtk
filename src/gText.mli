@@ -34,12 +34,18 @@ object
   method connect : tag_signals
   method event : 'a obj -> GdkEvent.any -> textiter -> bool
   method get_oid : int
-  method priority : unit -> int
+  method priority : int
   method set_priority : int -> unit
   method set_properties : GtkText.Tag.property list -> unit
   method set_property : GtkText.Tag.property -> unit
 end
 val tag : string -> tag
+
+type contents =
+  [ `CHAR of Glib.unichar
+  | `PIXBUF of GdkPixbuf.pixbuf
+  | `CHILD of child_anchor
+  | `UNKNOWN ]
 
 class iter :
   textiter ->
@@ -54,15 +60,22 @@ object
   method backward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
   method backward_line : unit -> bool
   method backward_lines : int -> bool
+  method backward_search : flag:Gtk.Tags.text_search_flag ->
+    ?limit:iter -> string -> (iter * iter) option
   method backward_sentence_start : unit -> bool
   method backward_sentence_starts : int -> bool
   method backward_to_tag_toggle : ?tag:tag -> unit -> bool
   method backward_word_start : unit -> bool
   method backward_word_starts : int -> bool
   method begins_tag : ?tag:tag -> unit -> bool
-  method can_insert : bool -> bool
+  method buffer : textbuffer obj
+  method bytes_in_line : int
+  method can_insert : default:bool -> bool
+  method char : Glib.unichar
+  method chars_in_line : int
   method compare : iter -> int
-  method editable : bool -> bool
+  method contents : contents
+  method editable : default:bool -> bool
   method ends_line : bool
   method ends_sentence : bool
   method ends_tag : ?tag:tag -> unit -> bool
@@ -75,6 +88,8 @@ object
   method forward_find_char : ?limit:iter -> (Glib.unichar -> bool) -> bool
   method forward_line : unit -> bool
   method forward_lines : int -> bool
+  method forward_search : flag:Gtk.Tags.text_search_flag ->
+    ?limit:iter -> string -> (iter * iter) option
   method forward_sentence_end : unit -> bool
   method forward_sentence_ends : int -> bool
   method forward_to_end : unit -> unit
@@ -82,23 +97,9 @@ object
   method forward_to_tag_toggle : ?tag:tag -> unit -> bool
   method forward_word_end : unit -> bool
   method forward_word_ends : int -> bool
-  method buffer : textbuffer obj
-  method bytes_in_line : int
-  method char : char
-  method chars_in_line : int
-  method child_anchor : child_anchor option
-  method line : int
-  method line_index : int
-  method line_offset : int
-  method marks : textmark obj list
-  method offset : int
-  method pixbuf : GdkPixbuf.pixbuf
   method get_slice : stop:iter -> string
-  method tags : tag list
   method get_text : stop:iter -> string
   method get_toggled_tags : bool -> tag list
-  method visible_line_index : int
-  method visible_line_offset : int
   method get_visible_slice : stop:iter -> string
   method get_visible_text : stop:iter -> string
   method has_tag : tag -> bool
@@ -108,6 +109,11 @@ object
   method is_cursor_position : bool
   method is_end : bool
   method is_start : bool
+  method line : int
+  method line_index : int
+  method line_offset : int
+  method marks : textmark obj list
+  method offset : int
   method set_line : int -> unit
   method set_line_index : int -> unit
   method set_line_offset : int -> unit
@@ -117,11 +123,10 @@ object
   method starts_line : bool
   method starts_sentence : bool
   method starts_word : bool
+  method tags : tag list
   method toggles_tag : ?tag:tag -> unit -> bool
-  method forward_search : flag:Gtk.Tags.text_search_flag ->
-    ?limit:iter -> string -> (iter * iter) option
-  method backward_search : flag:Gtk.Tags.text_search_flag ->
-    ?limit:iter -> string -> (iter * iter) option
+  method visible_line_index : int
+  method visible_line_offset : int
 end
 val as_textiter : iter -> textiter
 
@@ -188,10 +193,11 @@ object
   method apply_tag_by_name : string -> start:iter -> stop:iter -> unit
   method as_buffer : textbuffer obj
   method begin_user_action : unit -> unit
+  method bounds : iter * iter
+  method char_count : int
   method connect : buffer_signals
   method copy_clipboard : Gtk.clipboard -> unit
   method create_child_anchor : iter -> child_anchor
-  method insert_child_anchor : iter -> child_anchor -> unit
   method create_mark :
     ?name:string -> ?left_gravity:bool -> iter -> textmark obj
   method create_tag :
@@ -203,27 +209,20 @@ object
     stop:iter -> ?default_editable:bool -> unit -> bool
   method delete_mark : mark -> unit
   method delete_selection :
-    ?interactive:bool -> ?default_editable:bool -> unit -> unit
-  method end_user_action : unit -> unit
-  method bounds : iter * iter
-  method char_count : int
+    ?interactive:bool -> ?default_editable:bool -> unit -> bool
   method end_iter : iter
+  method end_user_action : unit -> unit
   method get_iter_at_char : ?line:int -> int -> iter
-  method get_iter_at_byte : ?line:int -> int -> iter
+  method get_iter_at_byte : line:int -> int -> iter
   method get_iter_at_mark : mark -> iter
-  method line_count : int
   method get_mark : mark -> textmark obj
-  method modified : bool
   method get_oid : int
-  method selection_bounds : iter * iter
-  method start_iter : iter
-  method tag_table : texttagtable obj
   method get_text :
-    ?start:iter -> ?stop:iter -> ?slice:bool ->
-    ?include_hidden:bool -> unit -> string
+    ?start:iter -> ?stop:iter -> ?slice:bool -> ?visible:bool -> unit -> string
   method insert :
     ?iter:iter -> ?tag_names:string list -> ?tags:tag list 
     -> string -> unit
+  method insert_child_anchor : iter -> child_anchor -> unit
   method insert_interactive :
     ?iter:iter -> ?default_editable:bool -> string -> bool
   method insert_pixbuf : iter:iter -> pixbuf:GdkPixbuf.pixbuf -> unit
@@ -232,6 +231,8 @@ object
   method insert_range_interactive :
     iter:iter -> start:iter -> stop:iter ->
     ?default_editable:bool -> unit -> bool
+  method line_count : int
+  method modified : bool
   method move_mark : mark -> where:iter -> unit
   method paste_clipboard : 
     ?iter:iter -> ?default_editable:bool -> Gtk.clipboard -> unit
@@ -240,8 +241,11 @@ object
   method remove_selection_clipboard : Gtk.clipboard -> unit
   method remove_tag : tag -> start:iter -> stop:iter -> unit
   method remove_tag_by_name : string -> start:iter -> stop:iter -> unit
+  method selection_bounds : iter * iter
   method set_modified : bool -> unit
   method set_text : string -> unit
+  method start_iter : iter
+  method tag_table : texttagtable obj
 end
 val buffer : ?tagtable:tagtable -> ?text:string -> unit -> buffer
 
@@ -283,40 +287,38 @@ object
   method as_widget : widget obj
   method backward_display_line : iter -> bool
   method backward_display_line_start : iter -> bool
+  method buffer : buffer
   method buffer_to_window_coords :
     tag:Tags.text_window_type -> x:int -> y:int -> int * int
   method coerce : GObj.widget
   method connect : view_signals
+  method cursor_visible : bool
   method destroy : unit -> unit
   method drag : GObj.drag_ops
+  method editable : bool
   method event : GObj.event_ops
   method forward_display_line : iter -> bool
   method forward_display_line_end : iter -> bool
   method get_border_window_size : [ `BOTTOM | `LEFT | `RIGHT | `TOP] -> int
-  method buffer : buffer
-  method cursor_visible : bool
-  method editable : bool
-  method indent : int
   method get_iter_at_location : x:int -> y:int -> iter
   method get_iter_location : iter -> Gdk.Rectangle.t
-  method justification : Tags.justification
-  method left_margin : int
   method get_line_at_y : int -> iter * int
   method get_line_yrange : iter -> int * int
   method get_oid : int
-  method pixels_above_lines : int
-  method pixels_below_lines : int
-  method pixels_inside_wrap : int
-  method right_margin : int
-  method visible_rect : Gdk.Rectangle.t
   method get_window : Tags.text_window_type -> Gdk.window option
   method get_window_type : Gdk.window -> Tags.text_window_type
-  method wrap_mode : Tags.wrap_mode
+  method indent : int
+  method justification : Tags.justification
+  method left_margin : int
   method misc : GObj.misc_ops
   method move_child : child:GObj.widget -> x:int -> y:int -> unit
   method move_mark_onscreen : mark -> bool
   method move_visually : iter -> int -> bool
+  method pixels_above_lines : int
+  method pixels_below_lines : int
+  method pixels_inside_wrap : int
   method place_cursor_onscreen : unit -> bool
+  method right_margin : int
   method scroll_mark_onscreen : mark -> unit
   method scroll_to_iter :
     ?within_margin:float ->
@@ -339,8 +341,10 @@ object
   method set_right_margin : int -> unit
   method set_wrap_mode : Tags.wrap_mode -> unit
   method starts_display_line : iter -> bool
+  method visible_rect : Gdk.Rectangle.t
   method window_to_buffer_coords :
     tag:Tags.text_window_type -> x:int -> y:int -> int * int
+  method wrap_mode : Tags.wrap_mode
 end
 val view :
   ?buffer:buffer ->

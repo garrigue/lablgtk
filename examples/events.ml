@@ -19,7 +19,7 @@ let _ =
   window#connect#destroy ~callback:Main.quit;
 
   let text = GText.view ~packing:window#add () in
-  let buffer = text#get_buffer in
+  let buffer = text#buffer in
   text#event#connect#button_press ~callback:
     begin fun ev ->
       GdkEvent.Button.button ev = 3 &&
@@ -28,7 +28,7 @@ let _ =
 	let pos = buffer#get_iter_at_mark `INSERT in
 	GdkEvent.Button.set_button ev 1;
 	text#event#send (ev :> GdkEvent.any);
-	Printf.printf "Position is %d.\n" pos#get_offset;
+	Printf.printf "Position is %d.\n" pos#offset;
 	flush stdout;
 	buffer#move_mark `INSERT ~where:pos;
         GtkSignal.stop_emit ();

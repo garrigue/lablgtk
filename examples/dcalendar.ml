@@ -178,7 +178,7 @@ let create_GUI () =
   (* Controls part *)
 
   let save_text () =
-    let data = text#get_buffer#get_text () in
+    let data = text#buffer#get_text () in
     let key = (date.year, date.mon, date.mday) in
     Hashtbl.remove schedule key;
     if data <> "" then
@@ -188,12 +188,12 @@ let create_GUI () =
 
   let restore_text () =
     try
-      text#get_buffer#set_text
+      text#buffer#set_text
  	(Hashtbl.find schedule (date.year, date.mon, date.mday));
       ()
     with Not_found -> 
-      let start,stop = text#get_buffer#get_bounds in
-      text#get_buffer#delete ~start ~stop
+      let start,stop = text#buffer#bounds in
+      text#buffer#delete ~start ~stop
   in
 
   let update_date_view () =

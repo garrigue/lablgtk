@@ -1,5 +1,8 @@
 $Id$
 
+2003.02.12
+ * API changes and bug fixes in GText (Jacques)
+
 2003.02.11
  * API changes in GText (Jacques)
  * Many bug fix in GText (Benjamin)

@@ -410,7 +410,7 @@ module Buffer = struct
     = "ml_gtk_text_buffer_get_modified"
   external set_modified : textbuffer obj -> bool -> unit
     = "ml_gtk_text_buffer_set_modified"
-  external delete_selection : textbuffer obj ->  bool -> bool -> unit
+  external delete_selection : textbuffer obj ->  bool -> bool -> bool
     = "ml_gtk_text_buffer_delete_selection"
   external get_selection_bounds : textbuffer obj ->  textiter * textiter
     = "ml_gtk_text_buffer_get_selection_bounds"
@@ -788,13 +788,13 @@ module Iter = struct
   external get_line_index : textiter -> int = "ml_gtk_text_iter_get_line_index"
   external get_visible_line_index : textiter -> int = "ml_gtk_text_iter_get_visible_line_index"
   external get_visible_line_offset : textiter -> int = "ml_gtk_text_iter_get_visible_line_offset"
-  external get_char : textiter -> char = "ml_gtk_text_iter_get_char"
+  external get_char : textiter -> Glib.unichar = "ml_gtk_text_iter_get_char"
   external get_slice : textiter -> textiter -> string = "ml_gtk_text_iter_get_slice"
   external get_text : textiter -> textiter -> string = "ml_gtk_text_iter_get_text"
   external get_visible_slice : textiter -> textiter -> string = 
 	   "ml_gtk_text_iter_get_visible_slice"
   external get_visible_text : textiter -> textiter -> string = "ml_gtk_text_iter_get_visible_text"
-  external get_pixbuf : textiter -> GdkPixbuf.pixbuf = "ml_gtk_text_iter_get_pixbuf"
+  external get_pixbuf : textiter -> GdkPixbuf.pixbuf option = "ml_gtk_text_iter_get_pixbuf"
   external get_marks : textiter -> textmark obj list = "ml_gtk_text_iter_get_marks"
   external get_toggled_tags : textiter -> bool -> texttag obj list = "ml_gtk_text_iter_get_marks"
   external get_child_anchor : textiter -> textchildanchor obj option ="ml_gtk_text_iter_get_child_anchor"
@@ -803,8 +803,8 @@ module Iter = struct
   external toggles_tag : textiter -> texttag obj option -> bool = "ml_gtk_text_iter_toggles_tag"
   external has_tag : textiter -> texttag obj -> bool = "ml_gtk_text_iter_has_tag"
   external get_tags : textiter -> texttag obj list = "ml_gtk_text_iter_get_tags"
-  external editable : textiter -> bool -> bool = "ml_gtk_text_iter_editable"
-  external can_insert : textiter -> bool -> bool = "ml_gtk_text_iter_can_insert"
+  external editable : textiter -> default:bool -> bool = "ml_gtk_text_iter_editable"
+  external can_insert : textiter -> default:bool -> bool = "ml_gtk_text_iter_can_insert"
   external starts_word : textiter -> bool = "ml_gtk_text_iter_starts_word"
   external ends_word : textiter -> bool = "ml_gtk_text_iter_ends_word"
   external inside_word : textiter -> bool = "ml_gtk_text_iter_inside_word"
