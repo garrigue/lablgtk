@@ -1,6 +1,7 @@
 (* $Id$ *)
 
-(** Interface to Glib functions *)
+(** Interface to Glib functions 
+    @gtkdoc glib index *)
 
 type unichar = int
 type unistring = unichar array
@@ -25,12 +26,14 @@ module Main : sig
   val setlocale : locale_category -> string option -> string 
 end
 
+(** @gtkdoc glib glib-The-Main-Event-Loop *)
 module Timeout : sig
   type id
   val add : ms:int -> callback:(unit -> bool) -> id
   val remove : id -> unit
 end
 
+(** @gtkdoc glib glib-The-Main-Event-Loop *)
 module Idle : sig
   type id
   val add : callback:(unit -> bool) -> id
@@ -51,6 +54,7 @@ end
 
 (** {3 Message Logging} *)
 
+(** @gtkdoc glib glib-Message-Logging *)
 module Message : sig
   (* Redirect output *)
   type print_func = string -> unit
