@@ -301,20 +301,23 @@ ML_2 (gtk_widget_set_app_paintable, GtkWidget_val, Bool_val, Unit)
 
 /* gtkdnd.h */
 
-value ml_gtk_drag_dest_set (value w, value f, value t, value n, value a)
+value ml_gtk_drag_dest_set (value w, value f, value t, value a)
 {
   GtkTargetEntry *targets;
   int n_targets, i;
   
-  n_targets = Int_val(n);
-  targets = (GtkTargetEntry *)g_malloc (n_targets * sizeof(GtkTargetEntry));
+  n_targets = Wosize_val(t);
+  if (n_targets)
+      targets = (GtkTargetEntry *)
+	  alloc (Wosize_asize(n_targets * sizeof(GtkTargetEntry)),
+		 Abstract_tag);
   for (i=0; i<n_targets; i++) {
     targets[i].target = String_val(Field(Field(t, i), 0));
     targets[i].flags = Flags_Target_flags_val(Field(Field(t, i), 1));
     targets[i].info = Int_val(Field(Field(t, i), 2));
   }
-  gtk_drag_dest_set (GtkWidget_val(w), Flags_Dest_defaults_val(f), targets, n_targets, Flags_GdkDragAction_val(a));
-  g_free (targets);
+  gtk_drag_dest_set (GtkWidget_val(w), Flags_Dest_defaults_val(f),
+		     targets, n_targets, Flags_GdkDragAction_val(a));
   return Val_unit;
 }
 ML_1 (gtk_drag_dest_unset, GtkWidget_val, Unit)
@@ -323,31 +326,40 @@ ML_4 (gtk_drag_get_data, GtkWidget_val, GdkDragContext_val, Int_val, Int_val, Un
 ML_1 (gtk_drag_get_source_widget, GdkDragContext_val, Val_GtkWidget)
 ML_1 (gtk_drag_highlight, GtkWidget_val, Unit)
 ML_1 (gtk_drag_unhighlight, GtkWidget_val, Unit)
-ML_4 (gtk_drag_set_icon_widget, GdkDragContext_val, GtkWidget_val, Int_val, Int_val, Unit)
-ML_6 (gtk_drag_set_icon_pixmap, GdkDragContext_val, GdkColormap_val,
-      GdkPixmap_val,
-      Option_val(arg4, GdkBitmap_val, NULL) Ignore, Int_val, Int_val, Unit)
+ML_4 (gtk_drag_set_icon_widget, GdkDragContext_val, GtkWidget_val,
+      Int_val, Int_val, Unit)
+ML_6 (gtk_drag_set_icon_pixmap, GdkDragContext_val,
+      Option_val(arg2, GdkColormap_val, NULL) Ignore,
+      GdkPixmap_val, Option_val(arg4, GdkBitmap_val, NULL) Ignore,
+      Int_val, Int_val, Unit)
 ML_bc6 (ml_gtk_drag_set_icon_pixmap)
 ML_1 (gtk_drag_set_icon_default, GdkDragContext_val, Unit)
-ML_5 (gtk_drag_set_default_icon, GdkColormap_val, GdkPixmap_val, GdkBitmap_val, Int_val, Int_val, Unit)
-value ml_gtk_drag_source_set (value w, value m, value t, value n, value a)
+ML_5 (gtk_drag_set_default_icon,
+      Option_val(arg1, GdkColormap_val, NULL) Ignore,
+      GdkPixmap_val, Option_val(arg3, GdkBitmap_val, NULL) Ignore,
+      Int_val, Int_val, Unit)
+value ml_gtk_drag_source_set (value w, value m, value t, value a)
 {
   GtkTargetEntry *targets;
   int n_targets, i;
   
-  n_targets = Int_val(n);
-  targets = (GtkTargetEntry *)g_malloc (n_targets * sizeof(GtkTargetEntry));
+  n_targets = Wosize_val(t);
+  if (n_targets)
+      targets = (GtkTargetEntry *)
+	  alloc (Wosize_asize(n_targets * sizeof(GtkTargetEntry)),
+		 Abstract_tag);
   for (i=0; i<n_targets; i++) {
     targets[i].target = String_val(Field(Field(t, i), 0));
     targets[i].flags = Flags_Target_flags_val(Field(Field(t, i), 1));
     targets[i].info = Int_val(Field(Field(t, i), 2));
   }
-  gtk_drag_source_set (GtkWidget_val(w), OptFlags_GdkModifier_val(m), targets, n_targets, Flags_GdkDragAction_val(a));
-  g_free (targets);
+  gtk_drag_source_set (GtkWidget_val(w), OptFlags_GdkModifier_val(m),
+		       targets, n_targets, Flags_GdkDragAction_val(a));
   return Val_unit;
 }
-ML_4 (gtk_drag_source_set_icon, GtkWidget_val, GdkColormap_val, GdkPixmap_val,
-      Option_val(arg4, GdkBitmap_val, NULL) Ignore, Unit)
+ML_4 (gtk_drag_source_set_icon, GtkWidget_val,
+      Option_val(arg2, GdkColormap_val, NULL) Ignore,
+      GdkPixmap_val, Option_val(arg4, GdkBitmap_val, NULL) Ignore, Unit)
 ML_1 (gtk_drag_source_unset, GtkWidget_val, Unit)
 
 /* gtkwidget.h / gtkselection.h */
@@ -1450,12 +1462,12 @@ ML_0 (gtk_vseparator_new, Val_GtkWidget_sink)
 value ml_gtk_init (value argv)
 {
     int argc = Wosize_val(argv);
-    value copy = (argc ? alloc_shr (argc, Abstract_tag) : Atom(0));
+    value copy = (argc ? alloc (argc, Abstract_tag) : Atom(0));
     value ret;
     int i;
     for (i = 0; i < argc; i++) Field(copy,i) = Field(argv,i);
     gtk_init (&argc, (char ***)&copy);
-    ret = (argc ? alloc_shr (argc, 0) : Atom(0));
+    ret = (argc ? alloc (argc, 0) : Atom(0));
     Begin_root (ret);
     for (i = 0; i < argc; i++) initialize(&Field(ret,i), Field(copy,i));
     End_roots ();

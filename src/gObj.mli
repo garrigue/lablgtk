@@ -106,24 +106,28 @@ class selection_data :
     method set : type:Gdk.atom -> format:int -> ?data:string -> unit
   end
 
-class widget_drag :
-  ([> widget]) obj ->
+class widget_drag : ([> widget]) obj ->
   object
     val obj : Gtk.widget obj
     method dest_set :
-      Gtk.Tags.dest_defaults list ->
-      Gtk.target_entry array -> int -> Gdk.Tags.drag_action list -> unit
+      ?flags:Tags.dest_defaults list ->
+      targets:target_entry list ->
+      actions:Gdk.Tags.drag_action list -> unit
     method dest_unset : unit -> unit
-    method get_data : Gdk.drag_context -> target:Gdk.atom -> time:int -> unit
+    method get_data :
+      drag_context -> target:Gdk.atom -> ?time:int -> unit
     method highlight : unit -> unit
-    method source_set : ?mod:Gdk.Tags.modifier list ->
-      Gtk.target_entry array -> int -> Gdk.Tags.drag_action list -> unit
-    method source_set_icon : colormap:Gdk.colormap -> GdkObj.pixmap -> unit
+    method source_set :
+      ?mod:Gdk.Tags.modifier list ->
+      targets:target_entry list ->
+      actions:Gdk.Tags.drag_action list -> unit
+    method source_set_icon :
+      ?colormap:Gdk.colormap -> GdkObj.pixmap -> unit
     method source_unset : unit -> unit
     method unhighlight : unit -> unit
   end
 
-class widget_misc :
+and widget_misc :
   ([> widget]) obj ->
   object
     val obj : Gtk.widget obj
@@ -133,7 +137,6 @@ class widget_misc :
       ?mod:Gdk.Tags.modifier list -> ?flags:Tags.accel_flag list -> unit
     method allocation : rectangle
     method colormap : Gdk.colormap
-    method drag : widget_drag
     method draw : Gdk.Rectangle.t -> unit
     method event : 'a. 'a Gdk.event -> bool
     method grab_default : unit -> unit
@@ -182,6 +185,7 @@ and widget :
     inherit gtkobj
     val obj : 'a obj
     method as_widget : Gtk.widget obj
+    method drag : widget_drag
     method misc : widget_misc
     method show : unit -> unit
   end
@@ -207,16 +211,16 @@ and widget_wrapper :
   end
 
 and drag_context :
-  context:Gdk.drag_context ->
+  Gdk.drag_context ->
   object
     val context : Gdk.drag_context
     method context : Gdk.drag_context
-    method finish : success:bool -> del:bool -> time:int -> unit
+    method finish : success:bool -> del:bool -> ?time:int -> unit
     method get_source_widget : widget_wrapper 
-    method set_icon_pixmap : colormap:Gdk.colormap ->
-      GdkObj.pixmap -> hot_x:int -> hot_y:int -> unit
+    method set_icon_pixmap :
+      ?colormap:Gdk.colormap -> GdkObj.pixmap -> hot_x:int -> hot_y:int -> unit
     method set_icon_widget : #is_widget -> hot_x:int -> hot_y:int -> unit
-    method status : Gdk.Tags.drag_action list -> time:int -> unit
+    method status : Gdk.Tags.drag_action list -> ?time:int -> unit
     method suggested_action : Gdk.Tags.drag_action
     method targets : Gdk.atom list
   end
@@ -229,19 +233,20 @@ and drag_signals :
     method beginning : callback:(drag_context -> unit) -> GtkSignal.id
     method data_delete : callback:(drag_context -> unit) -> GtkSignal.id
     method data_get :
-      callback:(drag_context -> selection_data -> int -> int -> unit) ->
-      GtkSignal.id
+      callback:(drag_context -> selection_data -> info:int -> time:int -> unit)
+      -> GtkSignal.id
     method data_received :
-      callback:(drag_context ->
-                int -> int -> selection_data -> int -> int -> unit) ->
+      callback:(drag_context -> x:int -> y:int ->
+	        selection_data -> info:int -> time:int -> unit) ->
       GtkSignal.id
     method drop :
-      callback:(drag_context -> int -> int -> int -> bool) -> GtkSignal.id
+      callback:(drag_context -> x:int -> y:int -> time:int -> bool) ->
+      GtkSignal.id
     method ending : callback:(drag_context -> unit) -> GtkSignal.id
-    method leave : callback:(drag_context -> int -> unit) -> GtkSignal.id
+    method leave : callback:(drag_context -> time:int -> unit) -> GtkSignal.id
     method motion :
-      callback:(drag_context -> int -> int -> int -> bool) -> GtkSignal.id
-
+      callback:(drag_context -> x:int -> y:int -> time:int -> bool) ->
+	GtkSignal.id
   end
 
 val pack_return :

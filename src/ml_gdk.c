@@ -251,7 +251,8 @@ ML_2 (gdk_gc_copy, GdkGC_val, GdkGC_val, Unit)
 #define PointArrayLen_val(val) Int_val(Field(val,0))
 value ml_point_array_new (value len)
 {
-    value ret = alloc_shr (1+Int_val(len)*Wosizeof(GdkPoint), Abstract_tag);
+    value ret = alloc (1 + Wosize_asize(Int_val(len)*sizeof(GdkPoint)),
+		       Abstract_tag);
     Field(ret,0) = len;
     return ret;
 }

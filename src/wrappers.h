@@ -144,7 +144,8 @@ value Val_##type##ext (type *p) \
 #define Val_addr(ptr) (1+(value)ptr)
 #define Addr_val(val) ((void*)(val-1))
 
-#define Wosizeof(x) ((sizeof(x)-1)/sizeof(value)+1)
+#define Wosize_asize(x) ((x-1)/sizeof(value)+1)
+#define Wosizeof(x) Wosize_asize(sizeof(x))
 
 #define Make_Extractor(name,conv1,field,conv2) \
 value ml_##name##_##field (value val) \
