@@ -36,7 +36,7 @@ ML_1 (Val_orientation, Int_val, Id)
 ML_1 (Val_toolbar_style, Int_val, Id)
 ML_1 (Val_state_type, Int_val, Id)
 ML_1 (Val_scroll_type, Int_val, Id)
-
+ML_1 (Response_val, Id, Val_int)
 
 static Make_Flags_val (Dest_defaults_val)
 static Make_Flags_val (Target_flags_val)
@@ -612,7 +612,10 @@ ML_3 (gtk_window_resize, GtkWindow_val, Int_val, Int_val, Unit)
 ML_1 (gtk_window_present, GtkWindow_val, Unit)
 
 /* gtkmessagedialog.h */
-ML_4 (gtk_message_dialog_new, GtkWindow_val, Insert(0) Message_type_val, Buttons_val, String_val, Val_GtkWidget_window)
+ML_4 (gtk_message_dialog_new, Option_val(arg1,GtkWindow_val,NULL) Ignore,
+      Insert(0) Message_type_val, Buttons_val,
+      Insert(String_val(arg4)[0] != 0 ? "%s" : NULL) String_val,
+      Val_GtkWidget_window)
 
 /* gtkcolorsel.h */
 

@@ -113,13 +113,25 @@ module Dialog = struct
       = "ml_gtk_dialog_set_default_response"
   external run : [>`dialog] obj -> int
       = "ml_gtk_dialog_run"
+  external std_response : Gtk.Tags.response -> int
+      = "ml_Response_val"
+  external create_message :
+      ?parent:[>`window] obj -> message_type:Gtk.Tags.message_type ->
+      buttons:Gtk.Tags.buttons -> message:string -> unit -> dialog obj
+      = "ml_gtk_message_dialog_new"
   module Signals = struct
     open GtkSignal
     let response =
       { name = "response"; classe = `dialog; marshaller = marshal_int }
+    let close =
+      { name = "close"; classe = `dialog; marshaller = marshal_unit }
   end
-  external create_message : [>`window] obj -> Gtk.Tags.message_type -> Gtk.Tags.buttons -> string -> dialog obj
-      = "ml_gtk_message_dialog_new"
+  module Properties = struct
+    open Gobject
+    let has_separator = 
+      { name = "has_separator" ; classe = `dialog ;
+        conv = Gobject.Data.boolean }
+  end
 end
 
 module InputDialog = struct

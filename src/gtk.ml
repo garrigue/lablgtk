@@ -67,11 +67,11 @@ module Tags = struct
   type button_action = [ `SELECTS|`DRAGS|`EXPANDS ]
   type calendar_display_options =
     [ `SHOW_HEADING|`SHOW_DAY_NAMES|`NO_MONTH_CHANGE|`SHOW_WEEK_NUMBERS
-     |`WEEK_START_MONDAY ]
+    | `WEEK_START_MONDAY ]
   type spin_button_update_policy = [ `ALWAYS|`IF_VALID ]
   type spin_type =
-    [ `STEP_FORWARD|`STEP_BACKWARD|`PAGE_FORWARD|`PAGE_BACKWARD
-     |`HOME|`END|`USER_DEFINED of float ]
+    [ `STEP_FORWARD | `STEP_BACKWARD | `PAGE_FORWARD | `PAGE_BACKWARD
+    | `HOME | `END | `USER_DEFINED of float ]
   type progress_bar_style = [ `CONTINUOUS|`DISCRETE ]
   type progress_bar_orientation =
     [ `LEFT_TO_RIGHT|`RIGHT_TO_LEFT|`BOTTOM_TO_TOP|`TOP_TO_BOTTOM ]
@@ -84,6 +84,9 @@ module Tags = struct
   type cell_renderer_mode = [ `INERT | `ACTIVATABLE | `EDITABLE ]
   type message_type = [ `INFO | `WARNING | `QUESTION | `ERROR ]
   type buttons = [ `NONE | `OK | `CLOSE | `CANCEL | `YES_NO | `OK_CANCEL ]
+  type response =
+    [ `NONE | `REJECT | `ACCEPT | `DELETE_EVENT
+    | `OK | `CANCEL | `CLOSE  | `YES | `NO | `APPLY | `HELP ]
 end
 open Tags
 
