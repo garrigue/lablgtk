@@ -73,7 +73,7 @@ end
 module Data = struct
   module Signals = struct
     open GtkSignal
-    let disconnect : ([> data],_) t =
+    let disconnect : ([>`data],_) t =
       { name = "disconnect"; marshaller = marshal_unit }
   end
 end
@@ -83,50 +83,51 @@ module Adjustment = struct
       value:float -> lower:float -> upper:float ->
       step_incr:float -> page_incr:float -> page_size:float -> adjustment obj
       = "ml_gtk_adjustment_new_bc" "ml_gtk_adjustment_new"
-  external set_value : [> adjustment] obj -> float -> unit
+  external set_value : [>`adjustment] obj -> float -> unit
       = "ml_gtk_adjustment_set_value"
   external clamp_page :
-      [> adjustment] obj -> lower:float -> upper:float -> unit
+      [>`adjustment] obj -> lower:float -> upper:float -> unit
       = "ml_gtk_adjustment_clamp_page"
-  external get_lower : [> adjustment] obj -> float
+  external get_lower : [>`adjustment] obj -> float
       = "ml_gtk_adjustment_get_lower"
-  external get_upper : [> adjustment] obj -> float
+  external get_upper : [>`adjustment] obj -> float
       = "ml_gtk_adjustment_get_upper"
-  external get_value : [> adjustment] obj -> float
+  external get_value : [>`adjustment] obj -> float
       = "ml_gtk_adjustment_get_value"
-  external get_step_increment : [> adjustment] obj -> float
+  external get_step_increment : [>`adjustment] obj -> float
       = "ml_gtk_adjustment_get_step_increment"
-  external get_page_increment : [> adjustment] obj -> float
+  external get_page_increment : [>`adjustment] obj -> float
       = "ml_gtk_adjustment_get_page_increment"
-  external get_page_size : [> adjustment] obj -> float
+  external get_page_size : [>`adjustment] obj -> float
       = "ml_gtk_adjustment_get_page_size"
   module Signals = struct
     open GtkSignal
-    let changed : ([> adjustment],_) t =
+    let changed : ([>`adjustment],_) t =
       { name = "changed"; marshaller = marshal_unit }
-    let value_changed : ([> adjustment],_) t =
+    let value_changed : ([>`adjustment],_) t =
       { name = "value_changed"; marshaller = marshal_unit }
   end
 end
 
 module Tooltips = struct
   external create : unit -> tooltips obj = "ml_gtk_tooltips_new"
-  external enable : [> tooltips] obj -> unit = "ml_gtk_tooltips_enable"
-  external disable : [> tooltips] obj -> unit = "ml_gtk_tooltips_disable"
-  external set_delay : [> tooltips] obj -> int -> unit
+  external enable : [>`tooltips] obj -> unit = "ml_gtk_tooltips_enable"
+  external disable : [>`tooltips] obj -> unit = "ml_gtk_tooltips_disable"
+  external set_delay : [>`tooltips] obj -> int -> unit
       = "ml_gtk_tooltips_set_delay"
   external set_tip :
-      [> tooltips] obj ->
-      [> widget] obj -> ?text:string -> ?private:string -> unit
+      [>`tooltips] obj ->
+      [>`widget] obj -> ?text:string -> ?private:string -> unit
       = "ml_gtk_tooltips_set_tip"
   external set_colors :
-      [> tooltips] obj ->
+      [>`tooltips] obj ->
       ?foreground:Gdk.Color.t -> ?background:Gdk.Color.t -> unit
       = "ml_gtk_tooltips_set_colors"
-  let set tt ?:delay ?:foreground ?:background =
+  let setter tt :cont ?:delay ?:foreground ?:background =
     may fun:(set_delay tt) delay;
     if foreground <> None || background <> None then
-      set_colors tt ?:foreground ?:background
+      set_colors tt ?:foreground ?:background;
+    cont tt
 end
 
 

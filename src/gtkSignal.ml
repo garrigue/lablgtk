@@ -8,8 +8,8 @@ external connect :
   'a obj -> name:string ->
   callback:(GtkArgv.t -> unit) -> after:bool -> id
   = "ml_gtk_signal_connect"
-let connect : 'a obj -> sig:('a, _) t -> _ =
-  fun obj sig:signal :callback ?:after [< false >] ->
+let connect : sig:('a, _) t -> callback: _ -> ?after: _ -> 'a obj -> _ =
+  fun sig:signal :callback ?:after{=false} obj ->
     connect obj name:signal.name callback:(signal.marshaller callback) :after
 external disconnect : 'a obj -> id -> unit
   = "ml_gtk_signal_disconnect"
