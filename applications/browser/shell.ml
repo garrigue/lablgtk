@@ -22,15 +22,10 @@ class ['a] history () = object
     List.nth history ((l + count - 1) mod l)
 end
 
-let set_size_chars (view : #GObj.widget) ~font:desc ~width ~height =
-  let metrics =
-    Pango.Context.get_metrics view#misc#pango_context desc
-      (Pango.Language.from_string "C") in
-  let width =
-    width * Pango.Metrics.get_approximate_digit_width metrics / Pango.scale
-  and height =
-    height * (Pango.Metrics.get_ascent metrics +
-              Pango.Metrics.get_descent metrics) / Pango.scale in
+let set_size_chars (view : #GObj.widget) ~width ~height =
+  let metrics = view#misc#pango_context#get_metrics () in
+  let width = GPango.to_pixels (width * metrics#approx_digit_width)
+  and height = GPango.to_pixels (height * (metrics#ascent+metrics#descent)) in
   view#misc#set_size_request ~width ~height
 
 (* The shell class. Now encapsulated *)
@@ -135,9 +130,8 @@ object (self)
     end
   initializer
     Lexical.init_tags buffer;
-    let desc = Pango.Font.from_string "monospace 11" in
-    view#misc#modify_font desc;
-    set_size_chars view ~font:desc ~width:80 ~height:25;
+    view#misc#modify_font_by_name "monospace 11";
+    set_size_chars view ~width:80 ~height:25;
     view#event#connect#key_press ~callback:
       begin fun ev ->
 	if GdkEvent.Key.keyval ev = _Return && GdkEvent.Key.state ev = []
