@@ -33,6 +33,10 @@ module Tags = struct
   type orientation = [ HORIZONTAL VERTICAL ]
   type toolbar_style = [ ICONS TEXT BOTH ]
   type visibility = [ NONE PARTIAL FULL ]
+  type fundamental_type =
+    [ INVALID NONE CHAR BOOL INT UINT LONG ULONG FLOAT DOUBLE
+      STRING ENUM FLAGS BOXED FOREIGN CALLBACK ARGS POINTER
+      SIGNAL C_CALLBACK OBJECT ]
 end
 open Tags
 
@@ -50,6 +54,7 @@ module Type = struct
   external get_class : t -> klass = "ml_gtk_type_class"
   external parent_class : t -> klass = "ml_gtk_type_parent_class"
   external is_a : t -> t -> bool = "ml_gtk_type_is_a"
+  external fundamental : t -> fundamental_type = "ml_gtk_type_fundamental"
 end
 
 module Object = struct
@@ -248,6 +253,7 @@ module Main = struct
   external exit : int -> unit = "ml_gtk_exit"
   external set_locale : unit -> string = "ml_gtk_set_locale"
   external main : unit -> unit = "ml_gtk_main"
+  external iteration_do : bool -> bool = "ml_gtk_main_iteration_do"
   external quit : unit -> unit = "ml_gtk_main_quit"
   external grab_add : [> widget] obj -> unit = "ml_gtk_grab_add"
   external grab_remove : [> widget] obj -> unit = "ml_gtk_grab_remove"
@@ -256,29 +262,79 @@ module Main = struct
 end
 
 module Arg = struct
+  type t
   type pointer
-  type t =
-      Invalid
-    | Unit
-    | Char of char
-    | Bool of bool
-    | Int of int
-    | Float of float
-    | String of string
-    | Enum of int
-    | Flags of int
-    | Boxed of pointer
-    | Pointer of pointer
-    | Object of unit obj
+  external shift : t -> pos:int -> t = "ml_gtk_arg_shift"
+  external get_type : t -> Type.t = "ml_gtk_arg_get_type"
+  (* Safely get an argument *)
+  external get_char : t -> char = "ml_gtk_arg_get_char"
+  external get_bool : t -> bool = "ml_gtk_arg_get_bool"
+  external get_int : t -> int = "ml_gtk_arg_get_int"
+  external get_float : t -> float = "ml_gtk_arg_get_float"
+  external get_string : t -> string = "ml_gtk_arg_get_string"
+  external get_pointer : t -> pointer = "ml_gtk_arg_get_pointer"
+  external get_object : t -> unit obj = "ml_gtk_arg_get_object"
+  (* Safely set a result
+     Beware: this is not the opposite of get, arguments and results
+     are two different ways to use GtkArg. *)
+  external set_char : t -> char -> unit = "ml_gtk_arg_set_char"
+  external set_bool : t -> bool -> unit = "ml_gtk_arg_set_bool"
+  external set_int : t -> int -> unit = "ml_gtk_arg_set_int"
+  external set_float : t -> float -> unit = "ml_gtk_arg_set_float"
+  external set_string : t -> string -> unit = "ml_gtk_arg_set_string"
+  external set_pointer : t -> pointer -> unit = "ml_gtk_arg_set_pointer"
+  external set_object : t -> unit obj -> unit = "ml_gtk_arg_set_object"
+end
+
+module Argv = struct
+  open Arg
+  type raw_obj
+  type t = { referent: raw_obj; nargs: int; args: Arg.t }
+  let nth arg :pos =
+    if pos < 0 || pos > arg.nargs then invalid_arg "Argv.nth";
+    shift arg.args :pos
+  let result arg =
+    if arg.nargs < 0 then invalid_arg "Argv.result";
+    shift arg.args pos:arg.nargs
+  external wrap_object : raw_obj -> unit obj = "Val_GtkObject"
+  let referent arg =
+    if arg.referent == Obj.magic (-1) then invalid_arg "Argv.referent";
+    wrap_object arg.referent
+  let get_result_type arg = get_type (result arg)
+  let get_type arg :pos = get_type (nth arg :pos)
+  let get_char arg :pos = get_char (nth arg :pos)
+  let get_bool arg :pos = get_bool (nth arg :pos)
+  let get_int arg :pos = get_int (nth arg :pos)
+  let get_float arg :pos = get_float (nth arg :pos)
+  let get_string arg :pos = get_string (nth arg :pos)
+  let get_pointer arg :pos = get_pointer (nth arg :pos)
+  let get_object arg :pos = get_object (nth arg :pos)
+  let set_result_char arg = set_char (result arg)
+  let set_result_bool arg = set_bool (result arg)
+  let set_result_int arg = set_int (result arg)
+  let set_result_float arg = set_float (result arg)
+  let set_result_string arg = set_string (result arg)
+  let set_result_pointer arg = set_pointer (result arg)
+  let set_result_object arg = set_object (result arg)
 end
 
 module Signal = struct
   type cb_id
+  type ('a,'b) t = { name: string; marshaller: 'b -> Argv.t -> unit }
   external connect :
-      'a obj -> name:string -> cb:(Arg.t list -> Arg.t) -> after:bool -> cb_id
+      'a obj -> name:string -> cb:(Argv.t -> unit) -> after:bool -> cb_id
       = "ml_gtk_signal_connect"
-  let connect obj :name :cb ?:after [< false >] =
-    connect obj :name :cb :after
+  let connect : 'a obj -> sig:('a, _) t -> _ =
+    fun obj sig:signal :cb ?:after [< false >] ->
+      connect obj name:signal.name cb:(signal.marshaller cb) :after
   external disconnect : 'a obj -> cb_id -> unit
       = "ml_gtk_signal_disconnect"
+  let marshal_unit f _ = f ()
+  let marshal_event f argv = Argv.set_result_bool argv (f ())
+  let clicked : ([> button],_) t =
+    { name = "clicked"; marshaller = marshal_unit }
+  let destroy : ([> widget],_) t =
+    { name = "destroy"; marshaller = marshal_unit }
+  let delete_event : ([> widget],_) t =
+    { name = "delete_event"; marshaller = marshal_event }
 end
