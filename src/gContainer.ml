@@ -31,6 +31,10 @@ class ['a] container_impl obj = object (self)
   method add w = add obj (as_widget w)
   method remove w = remove obj (as_widget w)
   method children = List.map ~f:(new widget) (children obj)
+  method all_children =
+    let l = ref [] in
+    forall obj ~f:(fun w -> l := new widget w :: !l);
+    List.rev !l
   method focus = new focus obj
 end
 
@@ -72,6 +76,10 @@ class virtual ['a] item_container obj = object (self)
   method private virtual wrap : Gtk.widget obj -> 'a
   method children : 'a list =
     List.map ~f:self#wrap (children obj)
+  method all_children =
+    let l = ref [] in
+    forall obj ~f:(fun w -> l := self#wrap w :: !l);
+    List.rev !l
   method set_border_width = set Container.P.border_width obj
   method focus = new focus obj
   method virtual insert : 'a -> pos:int -> unit

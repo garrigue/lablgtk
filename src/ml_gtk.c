@@ -516,6 +516,13 @@ CAMLprim value ml_gtk_container_foreach (value w, value clos)
 			   &clos);
     CAMLreturn(Val_unit);
 }
+CAMLprim value ml_gtk_container_forall (value w, value clos)
+{
+    CAMLparam1(clos);
+    gtk_container_forall (GtkContainer_val(w), ml_gtk_simple_callback,
+			   &clos);
+    CAMLreturn(Val_unit);
+}
 ML_2 (gtk_container_set_focus_child, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_set_focus_vadjustment, GtkContainer_val,
       GtkAdjustment_val, Unit)
