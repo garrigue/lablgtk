@@ -112,7 +112,9 @@ class widget_misc obj = object
   method set = Widget.set ?obj
   (* get functions *)
   method name = Widget.get_name obj
-  method toplevel = Widget.get_toplevel obj
+  method toplevel =
+    try new widget_wrapper (Object.unsafe_cast (Widget.get_toplevel obj))
+    with Null_pointer -> raise Not_found
   method window = Widget.window obj
   method colormap = Widget.get_colormap obj
   method visual = Widget.get_visual obj

@@ -19,7 +19,7 @@ end
 
 let main () =
 
-  let window = new GWindow.window `TOPLEVEL border_width: 10 in
+  let window = new GWindow.window border_width: 10 in
   window#connect#destroy callback:Main.quit;
 
   let table = new GPack.table rows:3 columns:2 packing: window#add in
@@ -41,7 +41,7 @@ let main () =
   button#connect#clicked callback:Main.quit;
   table#attach button left:1 top:2 expand:`NONE fill:`X shrink:`BOTH;
 
-  window#show_all ();
+  window#show ();
   Main.main ()
 
 let _ = main ()

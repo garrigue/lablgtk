@@ -4,7 +4,7 @@ open GMain
 
 let file_dialog :title :callback ?:filename =
   let sel =
-    new GWindow.file_selection :title fileop_buttons:false ?:filename in
+    new GWindow.file_selection :title modal:true ?:filename in
   sel#cancel_button#connect#clicked callback:sel#destroy;
   sel#ok_button#connect#clicked callback:
     begin fun () ->
@@ -12,8 +12,7 @@ let file_dialog :title :callback ?:filename =
       sel#destroy ();
       callback name
     end;
-  sel#show ();
-  Grab.add sel
+  sel#show ()
 
 class editor () = object (self)
   val text = new GEdit.text editable:true
@@ -53,7 +52,7 @@ end
 
 let editor = new editor ()
 
-let window = new GWindow.window `TOPLEVEL width:500 height:300 title:"editor"
+let window = new GWindow.window width:500 height:300 title:"editor"
 let vbox = new GPack.box `VERTICAL packing:window#add
 
 let menubar = new GMenu.menu_bar packing:(vbox#pack expand:false)
@@ -91,5 +90,5 @@ let _ =
 	file_menu#popup :button time:(Gdk.Event.Button.time ev); true
       end else false);
   editor#text#set_adjustment vertical:scrollbar#adjustment;
-  window#show_all ();
+  window#show ();
   Main.main ()

@@ -6,7 +6,7 @@ open GMain
 
 let main () =
 
-  let window = new GWindow.window `TOPLEVEL
+  let window = new GWindow.window
       title: "radio buttons" border_width: 0 in
   window#connect#destroy callback:Main.quit;
 
@@ -36,7 +36,7 @@ let main () =
   button#connect#clicked callback:Main.quit;
   button#grab_default ();
 
-  window#show_all ();
+  window#show ();
 
   Main.main ()
 

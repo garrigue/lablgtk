@@ -8,6 +8,8 @@ $Id$
   * added a show option to all classes, commanding whether the widget
     should be shown immediately.  It is by default true on all widgets
     except in module GWindow.
+  * moved non-OO examples to examples/old. Do "cvs update -d old" to
+    get them.
 
 1999.6.8
   * updated olabl.patch

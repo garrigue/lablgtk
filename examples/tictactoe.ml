@@ -77,8 +77,6 @@ object(self)
     let table = new GPack.table rows:3 columns:3 homogeneous:true in
     self#pack label;
     self#pack table;
-    table #show ();
-    label #show ();
     for i = 0 to 2 do
       for j = 0 to 2 do
 	buttons.(i).(j) <- new GButton.toggle_button;
@@ -86,7 +84,6 @@ object(self)
 	buttons_handlers.(i).(j) <-
 	  buttons.(i).(j) #connect#toggled callback:self#toggle;
 	buttons.(i).(j) #misc#set width:20 height:20;
-	buttons.(i).(j) #show ()
       done
     done
 end
@@ -97,7 +94,7 @@ let win (ttt : tictactoe)  _ =
 
 let essai () =
   let window =
-    new GWindow.window `TOPLEVEL title:"Tictactoe" border_width:10 in
+    new GWindow.window title:"Tictactoe" border_width:10 in
   window #connect#destroy callback:Main.quit;
   let ttt = new tictactoe in
   window#add ttt;
