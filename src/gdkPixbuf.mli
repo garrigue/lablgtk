@@ -2,7 +2,7 @@
 
 (* Types *)
 
-type pixbuf
+type pixbuf = [`pixbuf] Gobject.obj
 type colorspace = [ `RGB]
 type alpha_mode = [ `BILEVEL | `FULL]
 type interpolation = [ `BILINEAR | `HYPER | `NEAREST | `TILES]
@@ -14,6 +14,7 @@ val create :
   width:int -> height:int ->
   ?bits:int -> ?colorspace:colorspace -> ?has_alpha:bool -> unit -> pixbuf
 
+val cast : 'a Gobject.obj -> pixbuf
 external copy : pixbuf -> pixbuf = "ml_gdk_pixbuf_copy"
 external from_file : string -> pixbuf = "ml_gdk_pixbuf_new_from_file"
 external from_xpm_data : string array -> pixbuf
@@ -27,7 +28,7 @@ val get_from_drawable :
   ?dest_x:int -> ?dest_y:int ->
   ?width:int ->  ?height:int ->
   ?src_x:int -> ?src_y:int ->
-  ?colormap:Gdk.colormap -> 'a Gdk.drawable -> unit
+  ?colormap:Gdk.colormap -> [>`drawable] Gobject.obj -> unit
 
 (* Accessors *)
 
@@ -50,7 +51,7 @@ val render_alpha :
   ?height:int -> ?threshold:int -> ?src_x:int -> ?src_y:int -> pixbuf -> unit
 
 val render_to_drawable :
-  'a Gdk.drawable ->
+  [>`drawable] Gobject.obj ->
   ?gc:Gdk.gc ->
   ?dest_x:int ->
   ?dest_y:int ->
@@ -61,7 +62,7 @@ val render_to_drawable :
   ?y_dither:int -> ?src_x:int -> ?src_y:int -> pixbuf -> unit
 
 val render_to_drawable_alpha :
-  'a Gdk.drawable ->
+  [>`drawable] Gobject.obj ->
   ?dest_x:int ->
   ?dest_y:int ->
   ?width:int ->

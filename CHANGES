@@ -1,5 +1,59 @@
 $Id$
 
+2003.02.20
+ * additions to Pango
+
+2003.02.19
+ * GdkDrawable is also a GObject
+ * split GText.iter/nocopy_iter (Benjamin)
+ * finish split (Jacques)
+
+2003.02.14
+ * Added librsvg support (contributed by Olivier Andrieu)
+ * Ported applications/browser
+ * GText.iter#forward/backward return self
+
+2003.02.13
+ * Starting to add GtkTreeView. See tree2.ml.
+
+2003.02.12
+ * API changes and bug fixes in GText (Jacques)
+
+2003.02.11
+ * API changes in GText (Jacques)
+ * Many bug fix in GText (Benjamin)
+
+In lablgtk2-20030210:
+
+2003.02.10
+ * merge trunk
+ * Add gtkgl-2.0 and libglade-2.0 support
+
+2003.01.22
+ * Support for interaction between GtkTextBuffer and GtkClipboard. (Benjamin)
+ * Support for search functions in GtkTextIter. (Benjamin)
+
+2002.01.16
+ * fix memory management in ml_gdk.h
+ * GObject and GtkObject are different! fix gtk.ml
+
+2002.01.15
+  * added GtkAccelGroup and GtkClipboard support (Jacques)
+  * suppress Gdk.Tags.selection (use Gdk.Atom.primary/secondary/clipboard)
+  * time is 32-bit! (Benjamin)
+
+In lablgtk2-alpha:
+
+2002.12.26
+  * lots of changes to adapt to gtk2
+  * callback handling and property support completely rewritten
+  * many API changes
+  * new text widget interfaced by Benjamin Monate
+  * Gtk2 automatically calls setlocale in gtk_init, but we
+    revert LC_NUMERIC to C immediately after
+
+In trunk:
+
 2003.01.22
   * GtkThread.main switches GtkMain.Main.main to call GtkThread.thread_main
 

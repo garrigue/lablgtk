@@ -32,9 +32,8 @@ class menu_item_skel :
       ?modi:Gdk.Tags.modifier list ->
       ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
     method as_item : Gtk.menu_item obj
-    method configure : show_toggle:bool -> show_indicator:bool -> unit
     method remove_submenu : unit -> unit
-    method right_justify : unit -> unit
+    method set_right_justified : bool -> unit
     method set_submenu : menu -> unit
   end
 and menu_item : 'a obj ->
@@ -58,7 +57,7 @@ and menu : Gtk.menu obj ->
     method deactivate : unit -> unit
     method insert : menu_item -> pos:int -> unit
     method popdown : unit -> unit
-    method popup : button:int -> time:int -> unit
+    method popup : button:int -> time:int32 -> unit
     method prepend : menu_item -> unit
     method remove : menu_item -> unit
     method set_accel_group : accel_group -> unit
@@ -70,6 +69,7 @@ val menu :
   ?border_width:int -> ?packing:(menu -> unit) -> ?show:bool -> unit -> menu
 val menu_item :
   ?label:string ->
+  ?right_justified:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
@@ -104,6 +104,7 @@ val check_menu_item :
   ?label:string ->
   ?active:bool ->
   ?show_toggle:bool ->
+  ?right_justified:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
@@ -121,6 +122,7 @@ val radio_menu_item :
   ?label:string ->
   ?active:bool ->
   ?show_toggle:bool ->
+  ?right_justified:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

@@ -1,6 +1,7 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gtk
 open Tags
 open GtkBase
@@ -18,11 +19,6 @@ module ColorSelection = struct
       = "ml_gtk_color_selection_dialog_new"
   external set_update_policy : [>`colorsel] obj -> update_type -> unit
       = "ml_gtk_color_selection_set_update_policy"
-  external set_opacity : [>`colorsel] obj -> bool -> unit
-      = "ml_gtk_color_selection_set_opacity"
-  let set ?update_policy ?opacity w =
-    may update_policy ~f:(set_update_policy w);
-    may opacity ~f:(set_opacity w)
   external set_color :
       [>`colorsel] obj ->
       red:float -> green:float -> blue:float -> ?opacity:float -> unit
@@ -63,7 +59,7 @@ module Statusbar = struct
     open GtkSignal
     let text_pushed =
       let marshal f _ = function
-        | GtkArgv.INT ctx :: GtkArgv.STRING s :: _ ->
+        | `INT ctx :: `STRING s :: _ ->
 	    f (Obj.magic ctx : statusbar_context) s
         | _ -> invalid_arg "GtkMisc.Statusbar.Signals.marshal_text"
       in
@@ -150,12 +146,13 @@ module Misc = struct
   let set_padding w ?x ?y () =
     set_padding w ~x:(may_default get_xpad w ~opt:x)
       ~y:(may_default get_ypad w ~opt:y)
-  let set ?xalign ?yalign ?xpad ?ypad ?(width = -2) ?(height = -2) w =
+  let set ?xalign ?yalign ?xpad ?ypad ?(width = -1) ?(height = -1) w =
     if xalign <> None || yalign <> None then
       set_alignment w ?x:xalign ?y:yalign ();
     if xpad <> None || ypad <> None then
       set_padding w ?x:xpad ?y:ypad ();
-    if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height
+    if width <> -1 || height <> -1 then
+      Widget.set_size_request w ~width ~height
 end
 
 module Arrow = struct
@@ -168,21 +165,40 @@ end
 
 module Image = struct
   let cast w : image obj = Object.try_cast w "GtkImage"
-  external create : Gdk.image -> ?mask:Gdk.bitmap -> image obj
+  external create : unit -> image obj
       = "ml_gtk_image_new"
-  let create ?mask img = create img ?mask
-  external set : [>`image] obj -> Gdk.image -> ?mask:Gdk.bitmap -> unit
-      = "ml_gtk_image_set"
+  external set_image : [>`image] obj -> Gdk.image -> ?mask:Gdk.bitmap -> unit
+      = "ml_gtk_image_set_from_image"
+  external set_pixmap : [>`image] obj -> Gdk.pixmap -> ?mask:Gdk.bitmap -> unit
+      = "ml_gtk_image_set_from_pixmap"
+  external set_file : [>`image] obj -> string -> unit
+      = "ml_gtk_image_set_from_file"
+  external set_pixbuf : [>`image] obj -> GdkPixbuf.pixbuf -> unit
+      = "ml_gtk_image_set_from_pixbuf"
+  external set_stock : [>`image] obj -> string -> size:int -> unit
+      = "ml_gtk_image_set_from_stock"
+  let from_image ?mask img =
+    let w = create () in set_image w img ?mask; w
+  let from_pixmap ?mask img =
+    let w = create () in set_pixmap w img ?mask; w
+  let from_file s =
+    let w = create () in set_file w s; w
+  let from_pixbuf s =
+    let w = create () in set_pixbuf w s; w
+  let from_stock s ~size =
+    let w = create () in set_stock w s ~size; w
 end
 
 module Label = struct
   let cast w : label obj = Object.try_cast w "GtkLabel"
   external create : string -> label obj = "ml_gtk_label_new"
   external set_text : [>`label] obj -> string -> unit = "ml_gtk_label_set_text"
-  external set_justify : [>`label] obj -> justification -> unit
-      = "ml_gtk_label_set_justify"
+  external set_markup : [>`label] obj -> string -> unit = "ml_gtk_label_set_markup"
+  external set_markup_with_mnemonic : [>`label] obj -> string -> unit = "ml_gtk_label_set_markup"
   external set_pattern : [>`label] obj -> string -> unit
       = "ml_gtk_label_set_pattern"
+  external set_justify : [>`label] obj -> justification -> unit
+      = "ml_gtk_label_set_justify"
   external set_line_wrap : [>`label] obj -> bool -> unit
       = "ml_gtk_label_set_line_wrap"
   let set ?text ?justify ?line_wrap ?pattern w =
@@ -190,7 +206,8 @@ module Label = struct
     may ~f:(set_justify w) justify;
     may ~f:(set_line_wrap w) line_wrap;
     may ~f:(set_pattern w) pattern
-  external get_text : [>`label] obj -> string = "ml_gtk_label_get_label"
+  external get_label : [>`label] obj -> string = "ml_gtk_label_get_label"
+  external get_text : [>`label] obj -> string = "ml_gtk_label_get_text"
 end
 
 module TipsQuery = struct
@@ -223,7 +240,6 @@ module TipsQuery = struct
     if label_inactive <> None || label_no_tip <> None then
       set_labels w ?inactive:label_inactive ?no_tip:label_no_tip
   module Signals = struct
-    open GtkArgv
     open GtkSignal
     let start_query =
       { name = "start_query"; classe = `tipsquery; marshaller = marshal_unit }
@@ -234,7 +250,7 @@ module TipsQuery = struct
 	 widget obj option ->
 	 text:string option -> privat:string option -> unit) t =
       let marshal f _ = function
-        | OBJECT opt :: STRING text :: STRING privat :: _ ->
+        | `OBJECT opt :: `STRING text :: `STRING privat :: _ ->
 	    f (may_map ~f:Widget.cast opt) ~text ~privat
         | _ -> invalid_arg "GtkMisc.TipsQuery.Signals.marshal_entered"
       in
@@ -245,11 +261,11 @@ module TipsQuery = struct
 	 text:string option ->
 	 privat:string option -> GdkEvent.Button.t option -> bool) t =
       let marshal f argv = function
-        | OBJECT obj :: STRING text :: STRING privat :: POINTER p :: _ ->
+        | `OBJECT obj :: `STRING text :: `STRING privat :: `POINTER p :: _ ->
 	    let stop = 
 	      f (may_map ~f:Widget.cast obj) ~text ~privat
 	        (may_map ~f:GdkEvent.unsafe_copy p)
-            in set_result argv (`BOOL stop)
+            in Closure.set_result argv (`BOOL stop)
         | _ -> invalid_arg "GtkMisc.TipsQuery.Signals.marshal_selected"
       in
       { name = "widget_selected"; classe = `tipsquery; marshaller = marshal }
@@ -302,18 +318,6 @@ module FontSelection = struct
     try Some (get_font_name w) with Gpointer.Null -> None
   external set_font_name : [>`fontsel] obj -> string -> unit
       = "ml_gtk_font_selection_set_font_name"
-  external set_filter :
-    [>`fontsel] obj -> font_filter_type -> font_type list ->
-    null_terminated -> null_terminated -> null_terminated ->
-    null_terminated -> null_terminated -> null_terminated -> unit
-    = "ml_gtk_font_selection_set_filter_bc"
-      "ml_gtk_font_selection_set_filter"
-  let set_filter w ?kind:(tl=[`ALL]) ?foundry
-      ?weight ?slant ?setwidth ?spacing ?charset filter =
-    set_filter w filter tl (null_terminated foundry)
-      (null_terminated weight) (null_terminated slant)
-      (null_terminated setwidth) (null_terminated spacing)
-      (null_terminated charset)
   external get_preview_text : [>`fontsel] obj -> string
       = "ml_gtk_font_selection_get_preview_text"
   external set_preview_text : [>`fontsel] obj -> string -> unit

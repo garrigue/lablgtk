@@ -22,6 +22,17 @@ class ['a] history () = object
     List.nth history ((l + count - 1) mod l)
 end
 
+let set_size_chars (view : #GObj.widget) ~font:desc ~width ~height =
+  let metrics =
+    Pango.Context.get_metrics view#misc#pango_context desc
+      (Pango.Language.from_string "C") in
+  let width =
+    width * Pango.Metrics.get_approximate_digit_width metrics / Pango.scale
+  and height =
+    height * (Pango.Metrics.get_ascent metrics +
+              Pango.Metrics.get_descent metrics) / Pango.scale in
+  view#misc#set_size_request ~width ~height
+
 (* The shell class. Now encapsulated *)
 
 let protect f x = try f x with _ -> ()
@@ -31,19 +42,26 @@ class shell ~prog ~args ~env ?packing ?show () =
   and (in1,out2) = Unix.pipe ()
   and (err1,err2) = Unix.pipe () in
   let _ = List.iter ~f:Unix.set_nonblock [out1;in1;err1] in
+  let view = GText.view ?packing ?show () in
+  let buffer = view#buffer in
 object (self)
-  val textw = GEdit.text ~editable:true ?packing ?show ()
+  inherit GObj.widget view#as_widget
   val pid = Unix.create_process_env
       ~prog ~args ~env ~stdin:in2 ~stdout:out2 ~stderr:err2
   val out = Unix.out_channel_of_descr out1
   val h = new history ()
   val mutable alive = true
   val mutable reading = false
-  val mutable input_start = 0
-  method text = textw
+  val input_start =
+    `MARK (buffer#create_mark ~left_gravity:true buffer#start_iter)
+  method private position = buffer#get_iter `INSERT
+  method private input_start = buffer#get_iter (input_start :> GText.position)
+  method private set_input_start () =
+    buffer#move_mark input_start self#position
+  method textview = view
   method alive = alive
   method kill () =
-    textw#set_editable false;
+    view#set_editable false;
     if alive then begin
       alive <- false;
       protect close_out out;
@@ -68,77 +86,83 @@ object (self)
       let buf = String.create len in
       let len = Unix.read fd ~buf ~pos:0 ~len in
       if len > 0 then begin
-	textw#set_position textw#length;
+	buffer#place_cursor buffer#end_iter;
 	self#insert (String.sub buf ~pos:0 ~len);
-	input_start <- textw#position;
+	self#set_input_start ();
       end;
       len
     with Unix.Unix_error _ -> 0
   method history (dir : [`next|`previous]) =
     if not h#empty then begin
       if reading then begin
-	textw#delete_text ~start:input_start ~stop:textw#position;
+	buffer#delete ~start:(self#input_start) ~stop:(self#position);
       end else begin
 	reading <- true;
-	input_start <- textw#position
+	self#set_input_start ();
       end;
       self#insert (if dir = `previous then h#previous else h#next);
     end
-  val mutable lexing = false
-  method private lex ~start ~stop:e =
-    if not lexing && start < e then begin
-      lexing <- true;
-      Lexical.tag textw ~start ~stop:e;
-      lexing <- false
-    end
-  method insert ?(lex=true) text =
-    let start = Text.line_start textw in
-    textw#insert text;
-    if lex then self#lex ~start ~stop:(Text.line_end textw)
+  method private lex ~start ~stop =
+    if start#compare stop < 0 then Lexical.tag buffer ~start ~stop
+  method insert text =
+    buffer#insert text
   method private keypress c =
     if not reading & c > " " then begin
       reading <- true;
-      input_start <- textw#position
+      self#set_input_start ();
     end
   method private return () =
-    if reading then reading <- false
-    else input_start <- textw#position;
-    textw#set_position (Text.line_end textw);
-    let s = textw#get_chars ~start:input_start ~stop:textw#position in
+    if reading then reading <- false else begin
+      let rec search (it : GText.iter) =
+        match it#backward_search "# " with None -> it
+        | Some (it1, it2) ->
+            if it1#starts_line then it2
+            else search it1
+      in
+      buffer#move_mark input_start (search self#position)
+    end;
+    let stop = self#position#forward_to_line_end in
+    buffer#place_cursor stop;
+    let s = buffer#get_text ~start:(self#input_start) ~stop () in
+    buffer#place_cursor buffer#end_iter;
     h#add s;
     self#send s;
     self#send "\n"
   method private paste () =
     if not reading then begin
       reading <- true;
-      input_start <- textw#position;
+      self#set_input_start ();
     end
   initializer
-    textw#event#connect#key_press ~callback:
+    Lexical.init_tags buffer;
+    let desc = Pango.Font.from_string "monospace 11" in
+    view#misc#modify_font desc;
+    set_size_chars view ~font:desc ~width:80 ~height:25;
+    view#event#connect#key_press ~callback:
       begin fun ev ->
 	if GdkEvent.Key.keyval ev = _Return && GdkEvent.Key.state ev = []
 	then self#return ()
 	else self#keypress (GdkEvent.Key.string ev);
         false
       end;
-    textw#connect#after#insert_text ~callback:
-      begin fun s ~pos ->
-        if not lexing then
-          self#lex ~start:(Text.line_start textw ~pos:(pos - String.length s))
-            ~stop:(Text.line_end textw ~pos)
+    buffer#connect#after#insert_text ~callback:
+      begin fun it s ->
+        let start = it#backward_chars (String.length s) in
+        self#lex ~start:start#backward_line ~stop:it#forward_to_line_end;
+        view#scroll_mark_onscreen `INSERT
       end;
-    textw#connect#after#delete_text ~callback:
-      begin fun ~start:pos ~stop ->
-        if not lexing then
-          self#lex ~start:(Text.line_start textw ~pos)
-            ~stop:(Text.line_end textw ~pos)
+    buffer#connect#after#delete_range ~callback:
+      begin fun ~start ~stop ->
+        let start = start#backward_line
+        and stop = start#forward_to_line_end in
+        self#lex ~start ~stop
       end;
-    textw#event#connect#button_press ~callback:
+    view#event#connect#button_press ~callback:
       begin fun ev ->
 	if GdkEvent.Button.button ev = 2 then self#paste ();
 	false
       end;
-    textw#connect#destroy ~callback:self#kill;
+    view#connect#destroy ~callback:self#kill;
     GMain.Timeout.add ~ms:100 ~callback:
       begin fun () ->
 	if alive then begin
@@ -198,7 +222,7 @@ let f ~prog ~title =
   let args = Array.of_list (progargs @ load_path) in
   let current_dir = ref (Unix.getcwd ()) in
 
-  let tl = GWindow.window ~title ~width:500 ~height:300 () in
+  let tl = GWindow.window ~title () in
   let vbox = GPack.vbox ~packing:tl#add () in
   let menus = GMenu.menu_bar ~packing:vbox#pack () in
   let f = new GMenu.factory menus in
@@ -207,12 +231,8 @@ let f ~prog ~title =
   and history_menu = f#add_submenu "History"
   and signal_menu = f#add_submenu "Signal" in
 
-  let hbox = GPack.hbox ~packing:vbox#add () in
-  let sh = new shell ~prog ~env ~args ~packing:hbox#add () in
-  let sb =
-    GRange.scrollbar `VERTICAL ~adjustment:sh#text#vadjustment
-      ~packing:hbox#pack ()
-  in
+  let sw = GBin.scrolled_window ~hpolicy:`AUTOMATIC ~packing:vbox#add () in
+  let sh = new shell ~prog ~env ~args ~packing:sw#add () in
 
   let f = new GMenu.factory file_menu ~accel_group in
   f#add_item "Use..." ~callback:

@@ -72,52 +72,145 @@ module Tree = struct
         marshaller = Widget.Signals.marshal }
   end
 end
-(*
-module CTree = struct
-  type t
-  type node =  [`ctree] obj * t
-  let cast w : ctree obj = Object.try_cast w "GtkCTree"
-  external create : cols:int -> treecol:int -> ctree obj = "ml_gtk_ctree_new"
-  external insert_node :
-      [>`ctree] obj -> ?parent:node -> ?sibling:node ->
-      titles:optstring array ->
-      spacing:int -> ?pclosed:Gdk.pixmap -> ?mclosed:Gdk.bitmap obj ->
-      ?popened:Gdk.pixmap -> ?mopened:Gdk.bitmap obj ->
-      is_leaf:bool -> expanded:bool -> node
-      = "ml_gtk_ctree_insert_node_bc" "ml_gtk_ctree_insert_node"
-  let insert_node'
-      w ?parent ?sibling ?(spacing = 0) ?(is_leaf = true)
-      ?(expanded = false)
-      ?pclosed ?mclosed ?popened ?mopened titles =
-    let len = GtkList.CList.get_columns w in
-    if List.length titles > len then invalid_arg "CTree.insert_node";
-    let arr = Array.create ~len None in
-    List.fold_left titles ~acc:0
-      ~f:(fun ~acc text -> arr.(acc) <- Some text; acc+1);
-    insert_node w
-      ?parent ?sibling ~titles:(Array.map ~f:optstring arr)
-      ~spacing ~is_leaf ~expanded
-      ?pclosed ?mclosed ?popened ?mopened 
-  external node_set_row_data : [>`ctree] obj -> node:node -> Obj.t -> unit
-      = "ml_gtk_ctree_node_set_row_data"
-  external node_get_row_data : [>`ctree] obj -> node:node -> Obj.t
-      = "ml_gtk_ctree_node_get_row_data"
-  external set_indent : [>`ctree] obj -> int -> unit
-      = "ml_gtk_ctree_set_indent"
-  module Signals = struct
-    open GtkSignal
-    let marshal_select f argv =
-      let node : node =
-        match GtkArgv.get_pointer argv ~pos:0 with
-          Some p -> Obj.magic p
-        | None -> invalid_arg "GtkTree.CTree.Signals.marshal_select"
-      in
-      f ~node ~column:(GtkArgv.get_int argv ~pos:1)
 
-    let tree_select_row : ([>`ctree],_) t =
-      { name = "tree_select_row"; marshaller = marshal_select }
-    let tree_unselect_row : ([>`ctree],_) t =
-      { name = "tree_unselect_row"; marshaller = marshal_select }
-  end
+module TreeModel = struct
+  let cast w : tree_model obj = Object.try_cast w "GtkTreeModel"
+  external get_value :
+    [>`treemodel] obj -> row:tree_iter -> column:int -> Gobject.g_value -> unit
+    = "ml_gtk_tree_model_get_value"
+  external alloc_iter : unit -> tree_iter = "ml_alloc_GtkTreeIter"
 end
-*)
+
+module TreeStore = struct
+  open TreeModel
+  let cast w : tree_store = Object.try_cast w "GtkTreeStore"
+  external create : Gobject.g_type array -> tree_store
+    = "ml_gtk_tree_store_newv"
+  external set_value :
+    tree_store -> row:tree_iter -> column:int -> Gobject.g_value -> unit
+    = "ml_gtk_tree_store_set_value"
+  external remove : tree_store -> tree_iter -> bool
+    = "ml_gtk_tree_store_remove"
+  external insert :
+    tree_store -> iter:tree_iter -> ?parent:tree_iter -> int -> unit
+    = "ml_gtk_tree_store_insert"
+  let insert st ?parent pos =
+    let iter = alloc_iter () in insert st ~iter ?parent pos; iter
+  external insert_before :
+    tree_store -> iter:tree_iter -> ?parent:tree_iter -> tree_iter -> unit
+    = "ml_gtk_tree_store_insert_before"
+  let insert_before st ?parent pos =
+    let iter = alloc_iter () in insert_before st ~iter ?parent pos; iter
+  external insert_after :
+    tree_store -> iter:tree_iter -> ?parent:tree_iter -> tree_iter -> unit
+    = "ml_gtk_tree_store_insert_after"
+  let insert_after st ?parent pos =
+    let iter = alloc_iter () in insert_after st ~iter ?parent pos; iter
+  external append : tree_store -> iter:tree_iter -> ?parent:tree_iter -> unit
+    = "ml_gtk_tree_store_append"
+  let append st ?parent () =
+    let iter = alloc_iter () in append st ~iter ?parent; iter
+  external prepend : tree_store -> iter:tree_iter -> ?parent:tree_iter -> unit
+    = "ml_gtk_tree_store_prepend"
+  let prepend st ?parent () =
+    let iter = alloc_iter () in prepend st ~iter ?parent; iter
+  external is_ancestor :
+    tree_store -> iter:tree_iter -> descendant:tree_iter -> bool
+    = "ml_gtk_tree_store_is_ancestor"
+  external iter_depth : tree_store -> tree_iter -> int
+    = "ml_gtk_tree_store_iter_depth"
+  external clear : tree_store -> unit
+    = "ml_gtk_tree_store_clear"
+  external iter_is_valid : tree_store -> tree_iter -> bool
+    = "ml_gtk_tree_store_iter_is_valid"
+  external swap : tree_store -> tree_iter -> tree_iter -> bool
+    = "ml_gtk_tree_store_swap"
+  external move_before : tree_store -> iter:tree_iter -> pos:tree_iter -> bool
+    = "ml_gtk_tree_store_move_before"
+  external move_after : tree_store -> iter:tree_iter -> pos:tree_iter -> bool
+    = "ml_gtk_tree_store_move_after"
+end
+
+module ListStore = struct
+  open TreeModel
+  let cast w : list_store = Object.try_cast w "GtkListStore"
+  external create : Gobject.g_type array -> list_store
+    = "ml_gtk_list_store_newv"
+  external set_value :
+    list_store -> row:tree_iter -> column:int -> Gobject.g_value -> unit
+    = "ml_gtk_list_store_set_value"
+  external remove : list_store -> tree_iter -> bool
+    = "ml_gtk_list_store_remove"
+  external insert : list_store -> iter:tree_iter -> int -> unit
+    = "ml_gtk_list_store_insert"
+  let insert st pos =
+    let iter = alloc_iter () in insert st ~iter pos; iter
+  external insert_before : list_store -> iter:tree_iter -> tree_iter -> unit
+    = "ml_gtk_list_store_insert_before"
+  let insert_before st pos =
+    let iter = alloc_iter () in insert_before st ~iter pos; iter
+  external insert_after : list_store -> iter:tree_iter -> tree_iter -> unit
+    = "ml_gtk_list_store_insert_after"
+  let insert_after st pos =
+    let iter = alloc_iter () in insert_after st ~iter pos; iter
+  external append : list_store -> iter:tree_iter -> unit
+    = "ml_gtk_list_store_append"
+  let append st () =
+    let iter = alloc_iter () in append st ~iter; iter
+  external prepend : list_store -> iter:tree_iter -> unit
+    = "ml_gtk_list_store_prepend"
+  let prepend st () =
+    let iter = alloc_iter () in prepend st ~iter; iter
+  external clear : list_store -> unit
+    = "ml_gtk_list_store_clear"
+  external iter_is_valid : list_store -> tree_iter -> bool
+    = "ml_gtk_list_store_iter_is_valid"
+  external swap : list_store -> tree_iter -> tree_iter -> bool
+    = "ml_gtk_list_store_swap"
+  external move_before : list_store -> iter:tree_iter -> pos:tree_iter -> bool
+    = "ml_gtk_list_store_move_before"
+  external move_after : list_store -> iter:tree_iter -> pos:tree_iter -> bool
+    = "ml_gtk_list_store_move_after"
+end
+
+module TreeView = struct
+  let cast w : tree_view obj= Object.try_cast w "GtkTreeView"
+  external create : unit -> tree_view obj = "ml_gtk_tree_view_new"
+  external create_with_model : tree_model obj -> tree_view obj
+    = "ml_gtk_tree_view_new_with_model"
+  let create ?model () =
+    match model with None -> create ()
+    | Some model -> create_with_model model
+  external append_column : [>`treeview] obj -> [>`treeviewcolumn] obj -> int
+    = "ml_gtk_tree_view_append_column"
+end
+
+module TreeViewColumn = struct
+  let cast w : tree_view_column obj = Object.try_cast w "GtkTreeViewColumn"
+  external create : unit -> tree_view_column obj
+    = "ml_gtk_tree_view_column_new"
+  external pack_start :
+    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> bool -> unit
+    = "ml_gtk_tree_view_column_pack_start"
+  external pack_end :
+    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> bool -> unit
+    = "ml_gtk_tree_view_column_pack_end"
+  let pack obj ?(expand=true) ?(from:[`START|`END]=`START) crr =
+    (if from = `START then pack_start else pack_end)
+      obj crr expand
+  external add_attribute :
+    [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> string -> int -> unit
+    = "ml_gtk_tree_view_column_add_attribute"
+  external set_title : [>`treeviewcolumn] obj -> string -> unit
+    = "ml_gtk_tree_view_column_set_title"
+end
+
+module CellRenderer = struct
+  let cast w : cell_renderer obj = Object.try_cast w "GtkCellRenderer"
+end
+
+module CellRendererText = struct
+  let cast w : cell_renderer_text obj = Object.try_cast w "GtkCellRendererText"
+  external create : unit -> cell_renderer_text obj
+    = "ml_gtk_cell_renderer_text_new"
+end

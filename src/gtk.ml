@@ -1,22 +1,40 @@
 (* $Id$ *)
 
+open Gobject
+
 exception Error of string
-exception Warning of string
-exception Cannot_cast of string * string
-type -'a obj
+exception Critical of string
+
 type 'a optobj = 'a obj Gpointer.optboxed
 type clampf = float
 
 module Tags = struct
+  type anchor_type = [ `CENTER|`NORTH|`NW|`NE|`SOUTH|`SW|`SE|`WEST|`EAST ]
   type arrow_type = [ `UP|`DOWN|`LEFT|`RIGHT ]
   type attach_options = [ `EXPAND|`SHRINK|`FILL ]
+  type button_box_style = [ `DEFAULT_STYLE|`SPREAD|`EDGE|`START|`END ]
+  type curve_type = [ `LINEAR|`SPLINE|`FREE ]
+  type delete_type =
+    [ `CHARS|`WORD_ENDS|`WORDS|`DISPLAY_LINES|`DISPLAY_LINE_ENDS
+    | `PARAGRAPH_ENDS|`PARAGRAPHS|`WHITESPACE ]
   type direction_type = [ `TAB_FORWARD|`TAB_BACKWARD|`UP|`DOWN|`LEFT|`RIGHT ]
+  type expander_style =
+    [ `COLLAPSED|`SEMI_COLLAPSED|`SEMI_EXPANDED|`EXPANDED ]
+  type icon_size =
+    [ `INVALID|`MENU|`SMALL_TOOLBAR|`LARGE_TOOLBAR|`BUTTON|`DND|`DIALOG ]
+  type side_type = [ `TOP|`BOTTOM|`LEFT|`RIGHT ]
+  type text_direction = [ `NONE|`LTR|`RTL ]
   type justification = [ `LEFT|`RIGHT|`CENTER|`FILL ]
   type match_type = [ `ALL|`ALL_TAIL|`HEAD|`TAIL|`EXACT|`LAST ]
+  type menu_direction = [ `PARENT|`CHILD|`NEXT|`PREV ]
   type metric_type = [ `PIXELS|`INCHES|`CENTIMETERS ]
+  type movement_step =
+    [ `LOGICAL_POSITIONS|`VISUAL_POSITIONS|`WORDS|`DISPLAY_LINES
+    | `DISPLAY_LINE_ENDS|`PARAGRAPH_ENDS|`PARAGRAPHS|`PAGES|`BUFFER_ENDS ]
   type orientation = [ `HORIZONTAL|`VERTICAL ]
   type corner_type = [ `TOP_LEFT|`BOTTOM_LEFT|`TOP_RIGHT|`BOTTOM_RIGHT ]
   type pack_type = [ `START|`END ]
+  type path_priority = [ `LOWEST|`GTK|`APPLICATION|`THEME|`RC|`HIGHEST ]
   type path_type = [ `WIDGET|`WIDGET_CLASS|`CLASS ]
   type policy_type = [ `ALWAYS|`AUTOMATIC|`NEVER ]
   type position = [ `LEFT|`RIGHT|`TOP|`BOTTOM ]
@@ -25,30 +43,25 @@ module Tags = struct
   type resize_mode = [ `PARENT|`QUEUE|`IMMEDIATE ]
   type signal_run_type = [ `FIRST|`LAST|`BOTH|`NO_RECURSE|`ACTION|`NO_HOOKS ]
   type scroll_type =
-      [ `NONE|`STEP_FORWARD|`STEP_BACKWARD|`PAGE_BACKWARD|`PAGE_FORWARD|`JUMP ]
-  type selection_mode = [ `SINGLE|`BROWSE|`MULTIPLE|`EXTENDED ]
+    [ `NONE|`JUMP|`STEP_FORWARD|`STEP_BACKWARD|`PAGE_BACKWARD|`PAGE_FORWARD
+    | `STEP_UP|`STEP_DOWN|`PAGE_UP|`PAGE_DOWN|`STEP_LEFT|`STEP_RIGHT
+    | `PAGE_LEFT|`PAGE_RIGHT|`START|`END ]
+  type selection_mode = [ `NONE|`SINGLE|`BROWSE|`MULTIPLE ]
   type shadow_type = [ `NONE|`IN|`OUT|`ETCHED_IN|`ETCHED_OUT ]
   type state_type = [ `NORMAL|`ACTIVE|`PRELIGHT|`SELECTED|`INSENSITIVE ] 
   type submenu_direction = [ `LEFT|`RIGHT ]
   type submenu_placement = [ `TOP_BOTTOM|`LEFT_RIGHT ]
-  type toolbar_style = [ `ICONS|`TEXT|`BOTH ]
-  type trough_type = [ `NONE|`START|`END|`JUMP ]
+  type toolbar_style = [ `ICONS|`TEXT|`BOTH|`BOTH_HORIZ ]
   type update_type = [ `CONTINUOUS|`DISCONTINUOUS|`DELAYED ]
   type visibility = [ `NONE|`PARTIAL|`FULL ]
-  type window_position = [ `NONE|`CENTER|`MOUSE|`CENTER_ALWAYS ]
-  type window_type = [ `TOPLEVEL|`DIALOG|`POPUP ]
+  type window_position =
+    [ `NONE|`CENTER|`MOUSE|`CENTER_ALWAYS|`CENTER_ON_PARENT ]
+  type window_type = [ `TOPLEVEL|`POPUP ]
+  type wrap_mode = [ `NONE|`CHAR|`WORD ]
   type sort_type = [ `ASCENDING|`DESCENDING ]
-  type fundamental_type =
-    [ `INVALID|`NONE|`CHAR|`BOOL|`INT|`UINT|`LONG|`ULONG|`FLOAT|`DOUBLE
-     |`STRING|`ENUM|`FLAGS|`BOXED|`FOREIGN|`CALLBACK|`ARGS|`POINTER
-     |`SIGNAL|`C_CALLBACK|`OBJECT ]
 
-  type accel_flag = [ `VISIBLE|`SIGNAL_VISIBLE|`LOCKED ]
-  type button_box_style = [ `DEFAULT_STYLE|`SPREAD|`EDGE|`START|`END ]
+  type accel_flag = [ `VISIBLE|`LOCKED ]
   type expand_type = [ `X|`Y|`BOTH|`NONE ]
-  type packer_options = [ `PACK_EXPAND|`FILL_X|`FILL_Y ]
-  type side_type = [ `TOP|`BOTTOM|`LEFT|`RIGHT ]
-  type anchor_type = [ `CENTER|`NORTH|`NW|`NE|`SOUTH|`SW|`SE|`WEST|`EAST ]
   type update_policy = [ `ALWAYS|`IF_VALID|`SNAP_TO_TICKS ]
   type cell_type = [ `EMPTY|`TEXT|`PIXMAP|`PIXTEXT|`WIDGET ]
   type button_action = [ `SELECTS|`DRAGS|`EXPANDS ]
@@ -64,16 +77,17 @@ module Tags = struct
     [ `LEFT_TO_RIGHT|`RIGHT_TO_LEFT|`BOTTOM_TO_TOP|`TOP_TO_BOTTOM ]
   type dest_defaults = [ `MOTION|`HIGHLIGHT|`DROP|`ALL ]
   type target_flags = [ `SAME_APP|`SAME_WIDGET ]
-  type font_metric_type = [ `PIXELS|`POINTS ]
-  type font_type = [ `BITMAP|`SCALABLE|`SCALABLE_BITMAP|`ALL ]
-  type font_filter_type = [ `BASE|`USER ]
+  type text_window_type = [ `PRIVATE | `WIDGET | `TEXT | `LEFT
+			  | `RIGHT | `TOP | `BOTTOM]
+  type text_search_flag = [ `VISIBLE_ONLY | `TEXT_ONLY ]
+
 end
 open Tags
 
-type gtk_type
 type gtk_class
 
 type accel_group
+type clipboard
 
 type style
 type 'a group = 'a obj option
@@ -86,10 +100,9 @@ type color = { red: float; green: float; blue: float; opacity: float }
 type rectangle  = { x: int; y: int; width: int; height: int }
 type target_entry = { target: string; flags: target_flags list; info: int }
 
-type data = [`base|`data]
-type adjustment = [data|`adjustment]
-type tooltips = [data|`tooltips]
-type widget = [`base|`widget]
+type adjustment = [`gtk|`adjustment]
+type tooltips = [`gtk|`tooltips]
+type widget = [`gtk|`widget]
 type container = [widget|`container]
 type bin = [container|`bin]
 type alignment = [bin|`alignment]
@@ -158,3 +171,23 @@ type scrollbar = [widget|`range|`scrollbar]
 type ruler = [widget|`ruler]
 type separator = [widget|`separator]
 type preview = [widget|`preview]
+
+type textview = [container|`textview]
+type textbuffer = [`textbuffer] obj
+type texttagtable = [`texttagtable] obj
+type texttag = [`texttag] obj
+type textmark = [`textmark] obj
+type textchildanchor = [`textchildanchor] obj
+type textiter
+
+type tree_view = [container|`treeview]
+type tree_view_column = [`gtk|`treeviewcolumn]
+type tree_model = [`treemodel]
+type tree_store = [`treestore|`treemodel] obj
+type list_store = [`liststore|`treemodel] obj
+type tree_iter
+type cell_renderer = [`gtk|`cellrenderer]
+type cell_renderer_text = [cell_renderer|`cell_renderer_text]
+
+(* re-export Gobject.obj *)
+type 'a obj = 'a Gobject.obj

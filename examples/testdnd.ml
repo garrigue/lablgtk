@@ -293,15 +293,15 @@ class drag_handler = object
   method private beginning (_ : drag_context) = ()
   method private data_delete (_ : drag_context) = ()
   method private data_get (_ : drag_context) (_ : selection_context)
-      ~info:(_ : int) ~time:(_ : int) = ()
-  method private data_received (_ : drag_context) ~x:(_ : int) ~y:(_ : int)
-      (_ : selection_data) ~info:(_ : int) ~time:(_ : int) = ()
-  method private drop (_ : drag_context) ~x:(_ : int) ~y:(_ : int)
-      ~time:(_ : int) = false
+      ~(info : int) ~(time : int32) = ()
+  method private data_received (_ : drag_context) ~(x : int) ~(y : int)
+      (_ : selection_data) ~(info : int) ~(time : int32) = ()
+  method private drop (_ : drag_context) ~(x : int) ~(y : int)
+      ~(time : int32) = false
   method private ending (_ : drag_context) = ()
-  method private leave (_ : drag_context) ~time:(_ : int) = ()
-  method private motion (_ : drag_context) ~x:(_ : int) ~y:(_ : int)
-      ~time:(_ : int) = false
+  method private leave (_ : drag_context) ~(time : int32) = ()
+  method private motion (_ : drag_context) ~(x : int) ~(y : int)
+      ~(time : int32) = false
 end
 
 

@@ -15,7 +15,7 @@ end
 
 module Rc = Rc
 
-module Timeout = Timeout
+module Timeout = Glib.Timeout
 
 module Io = Glib.Io
 

@@ -6,9 +6,24 @@
 #include <caml/callback.h>
 #include <string.h>
 
+#include "wrappers.h"
 #include "ml_gpointer.h"
 
 CAMLprim value ml_get_null (value unit) { return 0L; }
+
+CAMLprim value ml_string_at_pointer (value ofs, value len, value ptr)
+{
+    char *start = ((char*)Pointer_val(ptr)) + Option_val(ofs, Int_val, 0);
+    int length = Option_val(len, Int_val, strlen(start));
+    value ret = alloc_string(length);
+    memcpy ((char*)ret, start, length);
+    return ret;
+}
+
+CAMLprim value ml_int_at_pointer (value ptr)
+{
+    return Val_int(*(int*)Pointer_val(ptr));
+}
 
 
 unsigned char* ml_gpointer_base (value region)

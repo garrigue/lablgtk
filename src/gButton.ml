@@ -110,17 +110,12 @@ class toolbar obj = object
 
   method set_orientation = Toolbar.set_orientation obj
   method set_style = Toolbar.set_style obj
-  method set_space_size = Toolbar.set_space_size obj
-  method set_space_style = Toolbar.set_space_style obj
   method set_tooltips = Toolbar.set_tooltips obj
-  method set_button_relief = Toolbar.set_button_relief obj
-  method button_relief = Toolbar.get_button_relief obj
 end
 
-let toolbar ?(orientation=`HORIZONTAL) ?style
-    ?space_size ?space_style ?tooltips ?button_relief
+let toolbar ?orientation ?style ?tooltips
     ?border_width ?width ?height ?packing ?show () =
-  let w = Toolbar.create orientation ?style () in
-  Toolbar.set w ?space_size ?space_style ?tooltips ?button_relief;
+  let w = Toolbar.create () in
+  Toolbar.set w ?orientation ?style ?tooltips;
   Container.set w ?border_width ?width ?height;
   pack_return (new toolbar w) ~packing ~show

@@ -27,8 +27,8 @@ class ['a] window_skel obj = object
   method set_wm_class cls = Window.set_wmclass obj ~clas:cls
   method set_allow_shrink allow_shrink = Window.set_policy obj ~allow_shrink
   method set_allow_grow allow_grow = Window.set_policy obj ~allow_grow
-  method set_auto_shrink auto_shrink = Window.set_policy obj ~auto_shrink
   method show () = Widget.show obj
+  method present () = Window.present obj
 end
 
 class window obj = object
@@ -37,11 +37,11 @@ class window obj = object
 end
 
 let window ?kind:(t=`TOPLEVEL) ?title ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y
+    ?allow_shrink ?allow_grow ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = Window.create t in
   Window.set w ?title ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y;
+    ?allow_shrink ?allow_grow ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new window w
@@ -50,7 +50,7 @@ let cast_window (w : #widget) =
   new window (GtkWindow.Window.cast w#as_widget)
 
 let toplevel (w : #widget) =
-  try Some (cast_window w#misc#toplevel) with Cannot_cast _ -> None
+  try Some (cast_window w#misc#toplevel) with Gobject.Cannot_cast _ -> None
 
 class dialog obj = object
   inherit [window] window_skel (obj : Gtk.dialog obj)
@@ -60,11 +60,11 @@ class dialog obj = object
 end
 
 let dialog ?title ?wm_name ?wm_class ?position ?allow_shrink
-    ?allow_grow ?auto_shrink ?modal ?x ?y ?border_width ?width ?height
+    ?allow_grow ?modal ?x ?y ?border_width ?width ?height
     ?(show=false) () =
   let w = Dialog.create () in
   Window.set w ?title ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y;
+    ?allow_shrink ?allow_grow ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new dialog w
@@ -84,11 +84,11 @@ end
 
 let color_selection_dialog ?(title="Pick a color")
     ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y
+    ?allow_shrink ?allow_grow ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = ColorSelection.create_dialog title in
   Window.set w ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y;
+    ?allow_shrink ?allow_grow ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new color_selection_dialog w
@@ -111,12 +111,12 @@ end
 let file_selection ?(title="Choose a file") ?filename
     ?(fileop_buttons=false)
     ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y
+    ?allow_shrink ?allow_grow ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = FileSelection.create title in
   FileSelection.set w ?filename ~fileop_buttons;
   Window.set w ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y;
+    ?allow_shrink ?allow_grow ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new file_selection w
@@ -126,6 +126,7 @@ class font_selection_dialog obj = object
   method connect = new container_signals obj
 (*
   method font = FontSelectionDialog.get_font obj
+
   method font_name = FontSelectionDialog.get_font_name obj
   method set_font_name = FontSelectionDialog.set_font_name obj
   method preview_text = FontSelectionDialog.get_preview_text obj
@@ -142,11 +143,11 @@ class font_selection_dialog obj = object
 end
 
 let font_selection_dialog ?title ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y
+    ?allow_shrink ?allow_grow ?modal ?x ?y
     ?border_width ?width ?height ?(show=false) () =
   let w = FontSelectionDialog.create ?title () in
   Window.set w ?wm_name ?wm_class ?position
-    ?allow_shrink ?allow_grow ?auto_shrink ?modal ?x ?y;
+    ?allow_shrink ?allow_grow ?modal ?x ?y;
   Container.set w ?border_width ?width ?height;
   if show then Widget.show w;
   new font_selection_dialog w

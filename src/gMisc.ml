@@ -6,9 +6,9 @@ open GtkBase
 open GtkMisc
 open GObj
 
-let separator dir ?(width = -2) ?(height = -2) ?packing ?show () =
+let separator dir ?(width = -1) ?(height = -1) ?packing ?show () =
   let w = Separator.create dir in
-  if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height;
+  if width <> -1 || height <> -1 then Widget.set_size_request w ~width ~height;
   pack_return (new widget_full w) ~packing ~show
 
 class statusbar_context obj ctx = object (self)
@@ -20,7 +20,7 @@ class statusbar_context obj ctx = object (self)
   method remove = Statusbar.remove obj context
   method flash ?(delay=1000) text =
     let msg = self#push text in
-    GtkMain.Timeout.add ~ms:delay ~callback:(fun () -> self#remove msg; false);
+    Glib.Timeout.add ~ms:delay ~callback:(fun () -> self#remove msg; false);
     ()
 end
 
@@ -71,7 +71,7 @@ end
 
 let calendar ?options ?(width = -2) ?(height = -2) ?packing ?show () =
   let w = Calendar.create () in
-  if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height;
+  if width <> -2 || height <> -2 then Widget.set_size_request w ~width ~height;
   may options ~f:(Calendar.display_options w);
   pack_return (new calendar w) ~packing ~show
 
@@ -105,22 +105,28 @@ let arrow ~kind ~shadow
 
 class image obj = object
   inherit misc obj
-  method set_image ?mask image = Image.set obj image ?mask
+  method set_image ?mask image = Image.set_image obj image ?mask
+  method set_pixmap ?mask image = Image.set_pixmap obj image ?mask
+  method set_file image = Image.set_file obj image
+  method set_pixbuf image = Image.set_pixbuf obj image
+  method set_stock = Image.set_stock obj
 end
 
-let image image ?mask
-    ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
-  let w = Image.create image ?mask in
+let image ?xalign ?yalign ?xpad ?ypad ?width ?height ?packing ?show () =
+  let w = Image.create () in
   Misc.set w ?xalign ?yalign ?xpad ?ypad ?width ?height;
   pack_return (new image w) ~packing ~show
 
 class label_skel obj = object
   inherit misc obj
   method set_text = Label.set_text obj
+  method set_markup = Label.set_markup obj
+  method set_markup_with_mnemonic = Label.set_markup_with_mnemonic obj
   method set_justify = Label.set_justify obj
   method set_pattern = Label.set_pattern obj
   method set_line_wrap = Label.set_line_wrap obj
   method text = Label.get_text obj
+  method label = Label.get_label obj
 end
 
 class label obj = object
@@ -171,16 +177,15 @@ let tips_query ?caller ?emit_always ?label_inactive ?label_no_tip
 class color_selection obj = object
   inherit GObj.widget_full (obj : Gtk.color_selection obj)
   method set_update_policy = ColorSelection.set_update_policy obj
-  method set_opacity = ColorSelection.set_opacity obj
   method set_color ~red ~green ~blue ?opacity () =
     ColorSelection.set_color obj ~red ~green ~blue ?opacity
   method get_color = ColorSelection.get_color obj
 end
 
-let color_selection ?update_policy ?opacity
+let color_selection ?update_policy
     ?border_width ?width ?height ?packing ?show () =
   let w = ColorSelection.create () in
-  ColorSelection.set w ?update_policy ?opacity;
+  may update_policy ~f:(ColorSelection.set_update_policy w);
   Container.set w ?border_width ?width ?height;
   pack_return (new color_selection w) ~packing ~show
 
@@ -195,10 +200,10 @@ class pixmap obj = object
 end
 
 let pixmap (pm : #GDraw.pixmap) ?xalign ?yalign ?xpad ?ypad
-    ?(width = -2) ?(height = -2) ?packing ?show () =
+    ?(width = -1) ?(height = -1) ?packing ?show () =
   let w = Pixmap.create pm#pixmap ?mask:pm#mask in
   Misc.set w ?xalign ?yalign ?xpad ?ypad;
-  if width <> -2 || height <> -2 then Widget.set_usize w ~width ~height;
+  if width <> -1 || height <> -1 then Widget.set_size_request w ~width ~height;
   pack_return (new pixmap w) ~packing ~show
 
 class font_selection obj = object
@@ -210,7 +215,6 @@ class font_selection obj = object
   method set_font_name = FontSelection.set_font_name obj
   method preview_text = FontSelection.get_preview_text obj
   method set_preview_text = FontSelection.set_preview_text obj
-  method set_filter = FontSelection.set_filter obj
 end
 
 let font_selection ?border_width ?width ?height ?packing ?show () =

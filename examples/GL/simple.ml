@@ -6,7 +6,8 @@ let main () =
   let w = GWindow.window ~title:"LablGL/Gtk" () in
   w#connect#destroy ~callback:Main.quit;
   let area =
-    GlGtk.area [`RGBA;`DEPTH_SIZE 1] ~width:500 ~height:500 ~packing:w#add () in
+    GlGtk.area [`RGBA;`DEPTH_SIZE 1;`DOUBLEBUFFER]
+      ~width:500 ~height:500 ~packing:w#add () in
   area#connect#realize ~callback:
     begin fun () ->
       GlMat.mode `projection;
@@ -24,7 +25,8 @@ let main () =
       GlDraw.vertex ~x:(0.5) ~y:(0.5) ();
       GlDraw.vertex ~x:(0.5) ~y:(-0.5) ();
       GlDraw.ends ();
-      Gl.flush ()
+      Gl.flush ();
+      area#swap_buffers ()
     end;
   Timeout.add ~ms:10000 ~callback:(fun () -> w#destroy ();false);
   w#show ();

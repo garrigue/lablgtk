@@ -8,6 +8,7 @@
 #include <caml/fail.h>
 
 value copy_memblock_indirected (void *src, asize_t size);
+value alloc_memblock_indirected (asize_t size);
 value ml_some (value);
 void ml_raise_null_pointer (void) Noreturn;
 value Val_pointer (void *);
@@ -23,6 +24,11 @@ value ml_lookup_from_c (lookup_info *table, int data);
 int ml_lookup_to_c (lookup_info *table, value key);
 
 /* Wrapper generators */
+
+#define Unsupported(cname) \
+ CAMLprim value ml_##cname () { \
+          failwith("Unsupported feature in Gtk 2.x < 2.2");\
+          return Val_unit;}
 
 #define ML_0(cname, conv) \
 CAMLprim value ml_##cname (value unit) { return conv (cname ()); }
@@ -176,6 +182,7 @@ CAMLprim value cname##_bc (value *argv, int argn) \
 #define Bool_ptr(x) ((long) x - 1)
 #define Char_val Int_val
 #define Float_val(x) ((float)Double_val(x))
+#define SizedString_val(x) String_val(x), string_length(x)
 
 #define Option_val(val,unwrap,default) \
 ((long)val-1 ? unwrap(Field(val,0)) : default)
@@ -254,5 +261,8 @@ int OptFlags_##conv (value list) \
 #define Val_option(v,f) (v ? ml_some(f(v)) : Val_unit)
 
 #define Check_null(v) (v ? v : (ml_raise_null_pointer (), v))
+
+#define Val_nativeint copy_nativeint
+#define Val_int64 copy_int64
 
 #endif /* _wrappers_ */

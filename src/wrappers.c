@@ -20,6 +20,14 @@ value copy_memblock_indirected (void *src, asize_t size)
     return ret;
 }
 
+value alloc_memblock_indirected (asize_t size)
+{
+    value ret = alloc (Wosize_asize(size)+2, Abstract_tag);
+    Field(ret,1) = 2;
+    return ret;
+}
+
+
 value ml_some (value v)
 {
      CAMLparam1(v);
@@ -87,7 +95,6 @@ value ml_lookup_from_c (lookup_info *table, int data)
 int ml_lookup_to_c (lookup_info *table, value key)
 {
     int first = 1, last = table[0].data, current;
-
     while (first < last) {
 	current = (first+last)/2;
 	if (table[current].key >= key) last = current;

@@ -2,6 +2,7 @@
 
 open StdLabels
 open Gaux
+open Gobject
 open Gtk
 open GtkData
 open GtkBase
@@ -11,15 +12,18 @@ open GtkBase
 class gtkobj obj = object
   val obj = obj
   method destroy () = Object.destroy obj
-  method get_id = Object.get_id obj
+  method get_oid = get_oid obj
 end
 
 class gtkobj_misc obj = object
   val obj = obj
-  method get_type = Type.name (Object.get_type obj)
+  method get_type = Type.name (get_type obj)
   method disconnect = GtkSignal.disconnect obj
   method handler_block = GtkSignal.handler_block obj
   method handler_unblock = GtkSignal.handler_unblock obj
+  method set_property = set_property obj
+  method freeze_notify () = freeze_notify obj
+  method thaw_notify () = thaw_notify obj
 end
 
 class gtkobj_signals ?(after=false) obj = object
@@ -133,9 +137,9 @@ class selection_context sel = object
     Selection.set sel ~typ ~format ~data:(Some data)
 end
 
-class drag_signals ?(after=false) obj = object
+class drag_signals obj = object
   val obj =  obj
-  val after = after
+  val after = false
   method after = {< after = true >}
   method beginning ~callback =
     GtkSignal.connect ~sgn:DnD.Signals.drag_begin ~after obj
@@ -174,7 +178,7 @@ and drag_ops obj = object
   method dest_set ?(flags=[`ALL]) ?(actions=[]) targets =
     DnD.dest_set obj ~flags ~actions ~targets:(Array.of_list targets)
   method dest_unset () = DnD.dest_unset obj
-  method get_data ~target ?(time=0) (context : drag_context) =
+  method get_data ~target ?(time=Int32.zero) (context : drag_context) =
     DnD.get_data obj context#context ~target:(Gdk.Atom.intern target) ~time
   method highlight () = DnD.highlight obj
   method unhighlight () = DnD.unhighlight obj
@@ -191,7 +195,7 @@ and drag_context context = object
   method context = context
   method finish = DnD.finish context
   method source_widget =
-    new widget (Object.unsafe_cast (DnD.get_source_widget context))
+    new widget (unsafe_cast (DnD.get_source_widget context))
   method set_icon_widget (w : widget) =
     DnD.set_icon_widget context (w#as_widget)
   method set_icon_pixmap ?(colormap = Gdk.Color.get_system_colormap ())
@@ -201,14 +205,6 @@ end
 
 and misc_signals ?after obj = object
   inherit gtkobj_signals ?after obj
-  method draw ~callback =
-    GtkSignal.connect obj ~sgn:Widget.Signals.draw ~after ~callback:
-      begin fun rect ->
-	callback
-	  { x = Gdk.Rectangle.x rect ; y = Gdk.Rectangle.y rect;
-	    width = Gdk.Rectangle.width rect;
-	    height = Gdk.Rectangle.height rect }
-      end
   method show = GtkSignal.connect ~sgn:Widget.Signals.show ~after obj
   method hide = GtkSignal.connect ~sgn:Widget.Signals.hide ~after obj
   method map = GtkSignal.connect ~sgn:Widget.Signals.map ~after obj
@@ -222,7 +218,7 @@ and misc_signals ?after obj = object
     GtkSignal.connect obj ~sgn:Widget.Signals.parent_set ~after ~callback:
       begin function
 	  None   -> callback None
-	| Some w -> callback (Some (new widget (Object.unsafe_cast w)))
+	| Some w -> callback (Some (new widget (unsafe_cast w)))
       end
   method style_set ~callback =
     GtkSignal.connect obj ~sgn:Widget.Signals.style_set ~after ~callback:
@@ -253,7 +249,7 @@ and misc_ops obj = object
   method draw = Widget.draw obj
   method activate () = Widget.activate obj
   method reparent (w : widget) =  Widget.reparent obj w#as_widget
-  method popup = Widget.popup obj
+  (* method popup = Widget.popup obj *)
   method intersect = Widget.intersect obj
   method grab_focus () = Widget.grab_focus obj
   method grab_default () = Widget.grab_default obj
@@ -262,7 +258,7 @@ and misc_ops obj = object
     Widget.add_accelerator obj ~sgn:sg group ~key ?modi ?flags
   method remove_accelerator ~group ?modi key =
     Widget.remove_accelerator obj group ~key ?modi
-  method lock_accelerators () = Widget.lock_accelerators obj
+  (* method lock_accelerators () = Widget.lock_accelerators obj *)
   method set_name = Widget.set_name obj
   method set_state = Widget.set_state obj
   method set_sensitive = Widget.set_sensitive obj
@@ -271,28 +267,37 @@ and misc_ops obj = object
   method set_geometry ?(x = -2) ?(y = -2) ?(width = -2) ?(height = -2)  () =
     if x+y <> -4 then Widget.set_uposition obj ~x ~y;
     if width+height <> -4 then Widget.set_usize obj ~width ~height
+  method set_size_request = Widget.set_size_request obj
   method set_style (style : style) = Widget.set_style obj style#as_style
+  method modify_fg = iter_setcol Widget.modify_fg obj
+  method modify_bg = iter_setcol Widget.modify_bg obj
+  method modify_text = iter_setcol Widget.modify_text obj
+  method modify_base = iter_setcol Widget.modify_base obj
+  method modify_font = Widget.modify_font obj
+  method create_pango_context () = Widget.create_pango_context obj
   (* get functions *)
   method name = Widget.get_name obj
   method toplevel =
-    try new widget (Object.unsafe_cast (Widget.get_toplevel obj))
+    try new widget (unsafe_cast (Widget.get_toplevel obj))
     with Gpointer.Null -> failwith "GObj.misc_ops#toplevel"
   method window = Widget.window obj
   method colormap = Widget.get_colormap obj
   method visual = Widget.get_visual obj
-  method visual_depth = Gdk.Window.visual_depth (Widget.get_visual obj)
+  method visual_depth = Gdk.Visual.depth (Widget.get_visual obj)
   method pointer = Widget.get_pointer obj
   method style = new style (Widget.get_style obj)
   method visible = Widget.visible obj
   method has_focus = Widget.has_focus obj
   method parent =
-    try Some (new widget (Object.unsafe_cast (Widget.parent obj)))
+    try Some (new widget (unsafe_cast (Widget.parent obj)))
     with Gpointer.Null -> None
   method set_app_paintable = Widget.set_app_paintable obj
   method allocation = Widget.allocation obj
-  method convert_selection ~target ?(time=0) sel =
+  method pango_context = Widget.get_pango_context obj
+  (* selection *)
+  method convert_selection ~target ?(time=Int32.zero) sel =
     Selection.convert obj ~sel ~target:(Gdk.Atom.intern target) ~time
-  method grab_selection ?(time=0) sel = Selection.owner_set obj ~sel ~time
+  method grab_selection ?(time=Int32.zero) sel = Selection.owner_set obj ~sel ~time
   method add_selection_target ~target ?(info=0) sel =
     Selection.add_target obj ~sel ~target:(Gdk.Atom.intern target) ~info
 end
@@ -301,15 +306,15 @@ and widget obj = object (self)
   inherit gtkobj obj
   method as_widget = (obj :> Gtk.widget obj)
   method misc = new misc_ops (obj :> Gtk.widget obj)
-  method drag = new drag_ops (Object.unsafe_cast obj : Gtk.widget obj)
+  method drag = new drag_ops (unsafe_cast obj : Gtk.widget obj)
   method coerce = (self :> widget)
 end
 
 (* just to check that GDraw.misc_ops is compatible with misc_ops *)
 let _ = fun (x : #GDraw.misc_ops) -> (x : misc_ops)
 
-class widget_signals ?after (obj : [> `widget] obj) =
-  gtkobj_signals ?after obj
+class widget_signals (obj : [> `widget] obj) =
+  gtkobj_signals obj
 
 class widget_full obj = object
   inherit widget obj

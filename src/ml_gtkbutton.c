@@ -10,6 +10,7 @@
 
 #include "wrappers.h"
 #include "ml_glib.h"
+#include "ml_gobject.h"
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
@@ -26,6 +27,8 @@ ML_1 (gtk_button_enter, GtkButton_val, Unit)
 ML_1 (gtk_button_leave, GtkButton_val, Unit)
 ML_2 (gtk_button_set_relief, GtkButton_val, Relief_style_val, Unit)
 ML_1 (gtk_button_get_relief, GtkButton_val, Val_relief_style)
+ML_2 (gtk_button_set_label, GtkButton_val, String_val, Unit)
+ML_1 (gtk_button_get_label, GtkButton_val, Val_optstring)
 
 /* gtktogglebutton.h */
 
@@ -60,7 +63,7 @@ ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, button_group_val, Unit)
 /* gtktoolbar.h */
 
 #define GtkToolbar_val(val) check_cast(GTK_TOOLBAR,val)
-ML_2 (gtk_toolbar_new, Orientation_val, Toolbar_style_val, Val_GtkWidget_sink)
+ML_0 (gtk_toolbar_new, Val_GtkWidget_sink)
 ML_2 (gtk_toolbar_insert_space, GtkToolbar_val, Int_val, Unit)
 ML_7 (gtk_toolbar_insert_element, GtkToolbar_val, Toolbar_child_val,
       Insert(NULL) Optstring_val, Optstring_val, Optstring_val, GtkWidget_val,
@@ -70,8 +73,12 @@ ML_5 (gtk_toolbar_insert_widget, GtkToolbar_val, GtkWidget_val,
       Optstring_val, Optstring_val, Int_val, Unit)
 ML_2 (gtk_toolbar_set_orientation, GtkToolbar_val, Orientation_val, Unit)
 ML_2 (gtk_toolbar_set_style, GtkToolbar_val, Toolbar_style_val, Unit)
+/*
 ML_2 (gtk_toolbar_set_space_size, GtkToolbar_val, Int_val, Unit)
 ML_2 (gtk_toolbar_set_space_style, GtkToolbar_val, Toolbar_space_style_val, Unit)
+*/
 ML_2 (gtk_toolbar_set_tooltips, GtkToolbar_val, Bool_val, Unit)
+/*
 ML_2 (gtk_toolbar_set_button_relief, GtkToolbar_val, Relief_style_val, Unit)
 ML_1 (gtk_toolbar_get_button_relief, GtkToolbar_val, Val_relief_style)
+*/

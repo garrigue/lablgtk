@@ -2,6 +2,7 @@
 
 open StdLabels
 open Gaux
+open Gobject
 open Gtk
 open Tags
 open GtkBase
@@ -10,6 +11,8 @@ module Editable = struct
   let cast w : editable obj = Object.try_cast w "GtkEditable"
   external select_region : [>`editable] obj -> start:int -> stop:int -> unit
       = "ml_gtk_editable_select_region"
+  external get_selection_bounds : [>`editable] obj -> (int * int) option
+      = "ml_gtk_editable_get_selection_bounds"
   external insert_text : [>`editable] obj -> string -> pos:int -> int
       = "ml_gtk_editable_insert_text"
   external delete_text : [>`editable] obj -> start:int -> stop:int -> unit
@@ -22,42 +25,33 @@ module Editable = struct
       = "ml_gtk_editable_copy_clipboard"
   external paste_clipboard : [>`editable] obj -> unit
       = "ml_gtk_editable_paste_clipboard"
-  external claim_selection :
-      [>`editable] obj -> claim:bool -> time:int -> unit
-      = "ml_gtk_editable_claim_selection"
   external delete_selection : [>`editable] obj -> unit
       = "ml_gtk_editable_delete_selection"
-  external changed : [>`editable] obj -> unit = "ml_gtk_editable_changed"
   external set_position : [>`editable] obj -> int -> unit
       = "ml_gtk_editable_set_position"
   external get_position : [>`editable] obj -> int
       = "ml_gtk_editable_get_position"
   external set_editable : [>`editable] obj -> bool -> unit
       = "ml_gtk_editable_set_editable"
-  external selection_start_pos : [>`editable] obj -> int
-      = "ml_gtk_editable_selection_start_pos"
-  external selection_end_pos : [>`editable] obj -> int
-      = "ml_gtk_editable_selection_end_pos"
-  external has_selection : [>`editable] obj -> bool
-      = "ml_gtk_editable_has_selection"
+  external get_editable : [>`editable] obj -> bool
+      = "ml_gtk_editable_get_editable"
   module Signals = struct
-    open GtkArgv
     open GtkSignal
     let activate =
       { name = "activate"; classe = `editable; marshaller = marshal_unit }
     let changed =
       { name = "changed"; classe = `editable; marshaller = marshal_unit }
     let marshal_insert f argv = function
-      | STRING _ :: INT len :: POINTER(Some pos) :: _ ->
+      | `STRING _ :: `INT len :: `POINTER(Some pos) :: _ ->
           (* XXX These two accesses are implementation-dependent *)
-          let s = string_at_pointer (get_pointer argv ~pos:0) ~len
-          and pos = int_at_pointer pos in
+          let s = Gpointer.peek_string (Closure.get_pointer argv ~pos:1) ~len
+          and pos = Gpointer.peek_int pos in
           f s ~pos
       | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_insert"
     let insert_text =
       { name = "insert_text"; classe = `editable; marshaller = marshal_insert }
     let marshal_delete f _ = function
-      | INT start :: INT stop :: _ ->
+      | `INT start :: `INT stop :: _ ->
           f ~start ~stop
       | _ -> invalid_arg "GtkEdit.Editable.Signals.marshal_delete"
     let delete_text =
@@ -124,14 +118,12 @@ module SpinButton = struct
       = "ml_gtk_spin_button_spin"
   external set_wrap : [>`spinbutton] obj -> bool -> unit
       = "ml_gtk_spin_button_set_wrap"
-  external set_shadow_type : [>`spinbutton] obj -> shadow_type -> unit
-      = "ml_gtk_spin_button_set_shadow_type"
   external set_snap_to_ticks : [>`spinbutton] obj -> bool -> unit
       = "ml_gtk_spin_button_set_snap_to_ticks"
   external update : [>`spinbutton] obj -> unit
       = "ml_gtk_spin_button_update"
   let set ?adjustment ?digits ?value ?update_policy
-      ?numeric ?wrap ?shadow_type ?snap_to_ticks w =
+      ?numeric ?wrap ?snap_to_ticks w =
     let may_set f = may ~f:(f w) in
     may_set set_adjustment adjustment;
     may_set set_digits digits;
@@ -139,10 +131,10 @@ module SpinButton = struct
     may_set set_update_policy update_policy;
     may_set set_numeric numeric;
     may_set set_wrap wrap;
-    may_set set_shadow_type shadow_type;
     may_set set_snap_to_ticks snap_to_ticks
 end
 
+(*
 module Text = struct
   let cast w : text obj = Object.try_cast w "GtkText"
   external create : [>`adjustment] optobj -> [>`adjustment] optobj -> text obj
@@ -176,6 +168,7 @@ module Text = struct
       set_adjustment w ?horizontal: hadjustment ?vertical: vadjustment ();
     may word_wrap ~f:(set_word_wrap w)
 end
+*)
 
 module Combo = struct
   let cast w : combo obj = Object.try_cast w "GtkCombo"

@@ -1,5 +1,6 @@
 /* $Id$ */
 
+#include <locale.h>
 #include <glib.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -11,6 +12,9 @@
 #include "glib_tags.h"
 
 #include "glib_tags.c"
+
+/* Not from glib! */
+ML_2(setlocale, Locale_category_val, String_option_val, Val_optstring)
 
 /* Utility functions */
 value copy_string_and_free (char *str)
@@ -76,6 +80,50 @@ CAMLprim value ml_g_set_print_handler (value clos)
     return old_handler;
 }
 
+/* Error handling */
+
+void ml_raise_gerror(GError *err)
+{
+  static value * exn = NULL;
+  if (exn == NULL)
+      exn = caml_named_value ("gerror");
+  raise_with_string (*exn, err->message);
+}
+
+void ml_g_log_func(const gchar *log_domain,
+                   GLogLevelFlags log_level,
+                   const gchar *message,
+                   gpointer data)
+{
+    value *clos_p = (value*)data;
+    callback2(*clos_p, Val_int(log_level), Val_string(message));
+}
+
+ML_1 (Log_level_val, , Val_int)
+
+value ml_g_log_set_handler (value domain, value levels, value clos)
+{
+    value *clos_p = ml_global_root_new (clos);
+    int id = g_log_set_handler (String_val(domain), Int_val(levels),
+                                ml_g_log_func, clos_p);
+    CAMLparam1(domain);
+    value ret = alloc_small(3,0);
+    Field(ret,0) = domain;
+    Field(ret,1) = Int_val(id);
+    Field(ret,2) = (value)clos_p;
+    CAMLreturn(ret);
+}
+
+value ml_g_log_remove_handler (value hnd)
+{
+    if (Field(hnd,2) != 0) {
+        g_log_remove_handler (String_val(Field(hnd,0)), Int_val(Field(hnd,1)));
+        ml_global_root_destroy ((value*)Field(hnd,2));
+        Field(hnd,2) = 0;
+    }
+    return Val_unit;
+}
+
 /* Main loop handling */
 
 /* for 1.3 compatibility */
@@ -92,6 +140,21 @@ ML_1 (g_main_is_running, GMainLoop_val, Val_bool)
 ML_1 (g_main_quit, GMainLoop_val, Unit)
 ML_1 (g_main_destroy, GMainLoop_val, Unit)
 
+gboolean ml_g_source_func (gpointer data)
+{
+    return Bool_val (callback (*(value*)data, Val_unit));
+}
+
+value ml_g_timeout_add (value interval, value clos)
+{
+    value *clos_p = ml_global_root_new (clos);
+    return Val_int
+        (g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, Long_val(interval),
+                             ml_g_source_func, clos_p,
+                             ml_global_root_destroy));
+}
+
+ML_1 (g_source_remove, Int_val, Unit)
 
 /* GIOChannel */
 
@@ -135,7 +198,8 @@ ML_0(gdk_threads_leave, Unit)
 */
 
 /* This is not used, but could be someday... */
-/*
+
+/* The day has come .... */
 CAMLprim value Val_GSList (GSList *list, value (*func)(gpointer))
 {
     value new_cell, result, last_cell, cell;
@@ -178,4 +242,55 @@ GSList *GSList_val (value list, gpointer (*func)(value))
     End_roots ();
     return res;
 }
-*/
+
+/* Character Set Conversion */
+
+CAMLprim value ml_g_convert(value str, value to, value from)
+{
+  gsize br=0,bw=0;
+  gchar* c_res;
+  GError *error=NULL;
+  c_res = g_convert(String_val(str),string_length(str),
+                    String_val(to),String_val(from),
+                    &br,&bw,&error);
+  if (error != NULL) ml_raise_gerror(error);
+  return Val_string(c_res);
+}
+
+#define Make_conversion(cname) \
+CAMLprim value ml_##cname(value str) { \
+  gsize br=0,bw=0; \
+  gchar* c_res; \
+  GError *error=NULL; \
+  c_res = cname(String_val(str),string_length(str),&br,&bw,&error); \
+  if (error != NULL) ml_raise_gerror(error); \
+  return Val_string(c_res); \
+}
+
+Make_conversion(g_locale_to_utf8)
+Make_conversion(g_filename_to_utf8)
+Make_conversion(g_locale_from_utf8)
+Make_conversion(g_filename_from_utf8)
+
+CAMLprim value ml_g_get_charset()
+{
+  CAMLparam0();
+  CAMLlocal1(couple);
+  gboolean r;
+  G_CONST_RETURN char *c="";
+  r = g_get_charset(&c);
+  couple = alloc_tuple(2);
+  Store_field(couple,0,Val_bool(r));
+  Store_field(couple,1,Val_string(c));
+  CAMLreturn(couple);
+}
+
+CAMLprim value ml_g_utf8_validate(value s)
+{
+  const gchar *c=NULL;
+  return Val_bool(g_utf8_validate(SizedString_val(s),&c));
+}
+
+ML_1 (g_unichar_tolower, Int_val, Val_int)
+ML_1 (g_unichar_toupper, Int_val, Val_int)
+ML_1 (g_utf8_strlen, SizedString_val, Val_int)

@@ -1,0 +1,27 @@
+(* $Id$ *)
+
+type pango_style = "PANGO_STYLE_"
+  [ `NORMAL | `OBLIQUE | `ITALIC ]
+
+type pango_weight = "PANGO_WEIGHT_"
+  [ `ULTRALIGHT | `LIGHT | `NORMAL |`BOLD | `ULTRABOLD |`HEAVY ]
+
+type pango_variant = "PANGO_VARIANT_"
+  [ `NORMAL | `SMALL_CAPS ]
+
+type pango_stretch = "PANGO_STRETCH_"
+ [ `ULTRA_CONDENSED | `EXTRA_CONDENSED | 
+`CONDENSED | 
+`SEMI_CONDENSED | 
+`NORMAL | 
+`SEMI_EXPANDED | 
+`EXPANDED | 
+`EXTRA_EXPANDED | 
+`ULTRA_EXPANDED ]
+
+type noconv pango_scale = "PANGO_SCALE_"
+  [ `XX_SMALL | `X_SMALL | `SMALL | `MEDIUM 
+  | `LARGE | `X_LARGE | `XX_LARGE | `CUSTOM ]
+
+type pango_underline = "PANGO_UNDERLINE_"
+  [ `NONE | `SINGLE | `DOUBLE | `LOW ]

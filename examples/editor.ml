@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+(* This example does not work with lablgtk2, see editor2.ml *)
+
 open StdLabels
 open GMain
 

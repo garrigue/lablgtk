@@ -1,34 +1,18 @@
 (* $Id$ *)
 
 open Gaux
+open Gobject
 open Gtk
 open Tags
 
-module Type = struct
-  external name : gtk_type -> string = "ml_gtk_type_name"
-  external from_name : string -> gtk_type = "ml_gtk_type_from_name"
-  external parent : gtk_type -> gtk_type = "ml_gtk_type_parent"
-  external get_class : gtk_type -> gtk_class = "ml_gtk_type_class"
-  external parent_class : gtk_type -> gtk_class = "ml_gtk_type_parent_class"
-  external is_a : gtk_type -> gtk_type -> bool = "ml_gtk_type_is_a"
-  external fundamental : gtk_type -> fundamental_type
-      = "ml_gtk_type_fundamental"
-end
-
 module Object = struct
-  external get_type : 'a obj -> gtk_type = "ml_gtk_object_type"
-  let is_a obj name =
-    Type.is_a (get_type obj) (Type.from_name name)
-  external destroy : 'a obj -> unit = "ml_gtk_object_destroy"
-  external unsafe_cast : 'a obj -> 'b obj = "%identity"
-  let try_cast w name =
-    if is_a w name then unsafe_cast w
-    else raise (Cannot_cast(Type.name(get_type w), name))
-  let get_id (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
+  let try_cast = Gobject.try_cast
+  external destroy : [>`gtk] obj -> unit = "ml_gtk_object_destroy"
+  let cast w : [`gtk] obj = try_cast w "GtkObject"
   module Signals = struct
     open GtkSignal
     let destroy =
-      { name = "destroy"; classe = `base; marshaller = marshal_unit }
+      { name = "destroy"; classe = `gtk; marshaller = marshal_unit }
   end
 end
 
@@ -48,18 +32,22 @@ module Widget = struct
   external queue_resize : [>`widget] obj -> unit = "ml_gtk_widget_queue_resize"
   external draw : [>`widget] obj -> Gdk.Rectangle.t option -> unit
       = "ml_gtk_widget_draw"
+(*
   external draw_focus : [>`widget] obj -> unit
       = "ml_gtk_widget_draw_focus"
   external draw_default : [>`widget] obj -> unit
       = "ml_gtk_widget_draw_default"
+*)
   external event : [>`widget] obj -> 'a Gdk.event -> bool
       = "ml_gtk_widget_event"
   external activate : [>`widget] obj -> bool
       = "ml_gtk_widget_activate"
   external reparent : [>`widget] obj -> [>`widget] obj -> unit
       = "ml_gtk_widget_reparent"
+(*
   external popup : [>`widget] obj -> x:int -> y:int -> unit
       = "ml_gtk_widget_popup"
+*)
   external intersect :
       [>`widget] obj -> Gdk.Rectangle.t -> Gdk.Rectangle.t option
       = "ml_gtk_widget_intersect"
@@ -83,6 +71,8 @@ module Widget = struct
       = "ml_gtk_widget_set_uposition"
   external set_usize : [>`widget] obj -> width:int -> height:int -> unit
       = "ml_gtk_widget_set_usize"
+  external set_size_request : [>`widget] obj -> width:int -> height:int -> unit
+      = "ml_gtk_widget_set_size_request"
   external add_events : [>`widget] obj -> Gdk.Tags.event_mask list -> unit
       = "ml_gtk_widget_add_events"
   external set_events : [>`widget] obj -> Gdk.Tags.event_mask list -> unit
@@ -92,7 +82,7 @@ module Widget = struct
       = "ml_gtk_widget_set_extension_events"
   external get_toplevel : [>`widget] obj -> widget obj
       = "ml_gtk_widget_get_toplevel"
-  external get_ancestor : [>`widget] obj -> gtk_type -> widget obj
+  external get_ancestor : [>`widget] obj -> g_type -> widget obj
       = "ml_gtk_widget_get_ancestor"
   external get_colormap : [>`widget] obj -> Gdk.colormap
       = "ml_gtk_widget_get_colormap"
@@ -104,14 +94,24 @@ module Widget = struct
       = "ml_gtk_widget_is_ancestor"
   external set_style : [>`widget] obj -> style -> unit
       = "ml_gtk_widget_set_style"
-  external set_rc_style : [>`widget] obj -> unit
-      = "ml_gtk_widget_set_rc_style"
   external ensure_style : [>`widget] obj -> unit
       = "ml_gtk_widget_ensure_style"
   external get_style : [>`widget] obj -> style
       = "ml_gtk_widget_get_style"
-  external restore_default_style : [>`widget] obj -> unit
-      = "ml_gtk_widget_restore_default_style"
+  external modify_fg : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_widget_modify_fg"
+  external modify_bg : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_widget_modify_bg"
+  external modify_text : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_widget_modify_text"
+  external modify_base : [>`widget] obj -> state_type -> Gdk.Color.t -> unit
+      = "ml_gtk_widget_modify_base"
+  external modify_font : [>`widget] obj -> Pango.font_description -> unit
+      = "ml_gtk_widget_modify_font"
+  external get_pango_context : [>`widget] obj -> Pango.context
+      = "ml_gtk_widget_get_pango_context"
+  external create_pango_context : [>`widget] obj -> Pango.context
+      = "ml_gtk_widget_create_pango_context"
   external add_accelerator :
       ([>`widget] as 'a) obj -> sgn:('a,unit->unit) GtkSignal.t ->
       accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list ->
@@ -121,12 +121,14 @@ module Widget = struct
       [>`widget] obj -> accel_group ->
       key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> unit
       = "ml_gtk_widget_remove_accelerator"
+(*
   external lock_accelerators : [>`widget] obj -> unit
       = "ml_gtk_widget_lock_accelerators"
   external unlock_accelerators : [>`widget] obj -> unit
       = "ml_gtk_widget_unlock_accelerators"
   external accelerators_locked : [>`widget] obj -> bool
       = "ml_gtk_widget_accelerators_locked"
+*)
   external window : [>`widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
   external visible : [>`widget] obj -> bool
@@ -160,22 +162,21 @@ module Widget = struct
   external pop_visual : unit -> unit
       = "ml_gtk_widget_pop_visual"
   module Signals = struct
-    open GtkArgv
     open GtkSignal
     let marshal f _ = function
-      | OBJECT(Some p) :: _ -> f (cast p)
+      | `OBJECT(Some p) :: _ -> f (cast p)
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal"
     let marshal_opt f _ = function
-      | OBJECT(Some obj) :: _ -> f (Some (cast obj))
-      | OBJECT None :: _ -> f None
+      | `OBJECT(Some obj) :: _ -> f (Some (cast obj))
+      | `OBJECT None :: _ -> f None
       | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_opt"
     let marshal_style f _ = function
-      | POINTER p :: _ -> f (Obj.magic p : Gtk.style option)
+      | `POINTER p :: _ -> f (Obj.magic p : Gtk.style option)
       | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_style"
     external allocation_at_pointer : Gpointer.boxed -> rectangle
         = "ml_Val_GtkAllocation"
     let marshal_allocation f argv = function
-      | POINTER(Some p) :: _ ->
+      | `POINTER(Some p) :: _ ->
           f (allocation_at_pointer p)
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_allocation"
     let show =
@@ -188,16 +189,6 @@ module Widget = struct
       { name = "unmap"; classe = `widget; marshaller = marshal_unit }
     let realize =
       { name = "realize"; classe = `widget; marshaller = marshal_unit }
-    let draw =
-      let marshal f _ = function
-	| POINTER(Some p) :: _ -> f (Obj.magic p : Gdk.Rectangle.t)
-	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_draw"
-      in { name = "draw"; classe = `widget; marshaller = marshal }
-    let draw_focus =
-      { name = "draw_focus"; classe = `widget; marshaller = marshal_unit }
-    let draw_default =
-      { name = "draw_default"; classe = `widget;
-        marshaller = marshal_unit }
     external val_state : int -> state_type = "ml_Val_state_type"
     let state_changed =
       let marshal f = marshal_int (fun x -> f (val_state x)) in
@@ -212,9 +203,9 @@ module Widget = struct
 
     module Event = struct
       let marshal f argv = function
-        | [POINTER(Some p)] ->
+        | [`POINTER(Some p)] ->
 	    let ev = GdkEvent.unsafe_copy p in
-            GtkArgv.set_result argv (`BOOL(f ev))
+            Closure.set_result argv (`BOOL(f ev))
 	| _ -> invalid_arg "GtkBase.Widget.Event.marshal"
       let any : ([>`widget], Gdk.Tags.event_type Gdk.event -> bool) t =
 	{ name = "event"; classe = `widget; marshaller = marshal }
@@ -287,22 +278,28 @@ module Container = struct
       = "ml_gtk_container_set_border_width"
   external set_resize_mode : [>`container] obj -> resize_mode -> unit
       = "ml_gtk_container_set_resize_mode"
+  external get_border_width : [>`container] obj -> int
+      = "ml_gtk_container_get_border_width"
+  external get_resize_mode : [>`container] obj -> resize_mode
+      = "ml_gtk_container_get_resize_mode"
   external add : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_add"
   external remove : [>`container] obj -> [>`widget] obj -> unit
       = "ml_gtk_container_remove"
-  let set ?border_width ?(width = -2) ?(height = -2) w =
+  let set ?border_width ?(width = -1) ?(height = -1) w =
     may border_width ~f:(set_border_width w);
-    if width <> -2 || height <> -2 then
-      Widget.set_usize w ?width ?height
+    if width <> -1 || height <> -1 then
+      Widget.set_size_request w ?width ?height
   external foreach : [>`container] obj -> f:(widget obj-> unit) -> unit
       = "ml_gtk_container_foreach"
   let children w =
     let l = ref [] in
     foreach w ~f:(fun c -> l := c :: !l);
     List.rev !l
+(*
   external focus : [>`container] obj -> direction_type -> bool
       = "ml_gtk_container_focus"
+*)
   (* Called by Widget.grab_focus *)
   external set_focus_child : [>`container] obj -> [>`widget] optobj -> unit
       = "ml_gtk_container_set_focus_child"
@@ -321,13 +318,13 @@ module Container = struct
       { name = "remove"; classe = `container;
         marshaller = Widget.Signals.marshal }
     let need_resize =
-      let marshal f argv _ = GtkArgv.set_result argv (`BOOL(f ())) in
+      let marshal f argv _ = Closure.set_result argv (`BOOL(f ())) in
       { name = "need_resize"; classe = `container; marshaller = marshal }
     external val_direction : int -> direction_type = "ml_Val_direction_type"
     let focus =
       let marshal f argv = function
-        | GtkArgv.INT dir :: _ ->
-            GtkArgv.set_result argv (`BOOL(f (val_direction dir)))
+        | `INT dir :: _ ->
+            Closure.set_result argv (`BOOL(f (val_direction dir)))
         | _ -> invalid_arg "GtkBase.Container.Signals.marshal_focus"
       in { name = "focus"; classe = `container; marshaller = marshal }
   end
@@ -349,8 +346,26 @@ module Item = struct
   end
 end
 
+(* Clipboard provides high-level access to Selection *)
+module Clipboard = struct
+  external get : Gdk.atom -> clipboard = "ml_gtk_clipboard_get"
+  external clear : clipboard -> unit = "ml_gtk_clipboard_clear"
+  external set_text : clipboard -> string -> unit = "ml_gtk_clipboard_set_text"
+  external wait_for_contents : clipboard -> target:Gdk.atom -> selection_data
+      = "ml_gtk_clipboard_wait_for_contents"
+  external wait_for_text : clipboard -> string option
+      = "ml_gtk_clipboard_wait_for_text"
+  external request_contents :
+      clipboard -> target:Gdk.atom -> callback:(selection_data -> unit) -> unit
+      = "ml_gtk_clipboard_request_contents"
+  external request_text :
+      clipboard -> callback:(string option -> unit) -> unit
+      = "ml_gtk_clipboard_request_text"
+end
+
+(* Use of Selection is deprecated: rather use simpler Clipboard module *)
 module Selection = struct
-  external selection : selection_data -> Gdk.Tags.selection
+  external selection : selection_data -> Gdk.atom
       = "ml_gtk_selection_data_selection"
   external target : selection_data -> Gdk.atom
       = "ml_gtk_selection_data_target"
@@ -365,28 +380,32 @@ module Selection = struct
       typ:Gdk.atom -> format:int -> data:string option -> unit
       = "ml_gtk_selection_data_set"
 
+  (* Create a memory-managed copy of the data *)
+  external copy : selection_data -> selection_data
+      = "ml_gtk_selection_data_copy"
+
   external owner_set :
-    [>`widget] obj -> sel:Gdk.Tags.selection -> time:int -> bool
+    [>`widget] obj -> sel:Gdk.atom -> time:int32 -> bool
     = "ml_gtk_selection_owner_set"
   external add_target :
-    [>`widget] obj -> sel:Gdk.Tags.selection -> target:Gdk.atom ->
+    [>`widget] obj -> sel:Gdk.atom -> target:Gdk.atom ->
     info:int -> unit
     = "ml_gtk_selection_add_target"
   external convert :
-    [> `widget] obj -> sel:Gdk.Tags.selection -> target:Gdk.atom ->
-    time:int -> bool
+    [> `widget] obj -> sel:Gdk.atom -> target:Gdk.atom ->
+    time:int32 -> bool
     = "ml_gtk_selection_convert"
   
   module Signals = struct
-    open GtkArgv
     open GtkSignal
-    let marshal_sel3 f _ = function
-      | POINTER(Some p) :: INT info :: INT time :: _ ->
-          f (Obj.magic p : selection_data) ~info ~time
+    open Gobject.Closure
+    let marshal_sel3 f argv = function
+      | `POINTER(Some p) :: `INT info :: `INT time :: _ ->
+          f (Obj.magic p : selection_data) ~info ~time:(get_int32 argv ~pos:3)
       | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_sel3"
-    let marshal_sel2 f _ = function
-      | POINTER(Some p) :: INT time :: _ ->
-          f (Obj.magic p : selection_data) ~time
+    let marshal_sel2 f argv = function
+      | `POINTER(Some p) :: `INT time :: _ ->
+          f (copy(Obj.magic p : selection_data)) ~time:(get_int32 argv ~pos:2)
       | _ -> invalid_arg "GtkBase.Widget.Signals.marshal_sel2"
     let selection_get =
       { name = "selection_get"; classe = `widget;
@@ -405,10 +424,10 @@ module DnD = struct
   external dest_unset : [>`widget] obj -> unit
       = "ml_gtk_drag_dest_unset"
   external finish :
-      Gdk.drag_context -> success:bool -> del:bool -> time:int -> unit
+      Gdk.drag_context -> success:bool -> del:bool -> time:int32 -> unit
       = "ml_gtk_drag_finish"
   external get_data :
-      [>`widget] obj -> Gdk.drag_context -> target:Gdk.atom -> time:int -> unit
+      [>`widget] obj -> Gdk.drag_context -> target:Gdk.atom -> time:int32 -> unit
       = "ml_gtk_drag_get_data"
   external get_source_widget : Gdk.drag_context -> widget obj
       = "ml_gtk_drag_get_source_widget"
@@ -439,20 +458,21 @@ module DnD = struct
       = "ml_gtk_drag_source_unset"
 (*  external dest_handle_event : [>`widget] -> *)
   module Signals = struct
-    open GtkArgv
     open GtkSignal
+    open Gobject.Closure
     open Widget.Signals
     let marshal_drag1 f _ = function
-      | POINTER(Some p) :: _ -> f (Obj.magic p : Gdk.drag_context)
+      | `OBJECT(Some p) :: _ -> f (unsafe_cast p : Gdk.drag_context)
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag1"
-    let marshal_drag2 f _ = function
-      | POINTER(Some p) :: INT time :: _ ->
-	  f (Obj.magic p : Gdk.drag_context) ~time
+    let marshal_drag2 f argv = function
+      | `OBJECT(Some p) :: `INT time :: _ ->
+	  f (unsafe_cast p : Gdk.drag_context) ~time:(get_int32 argv ~pos:2)
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag2"
     let marshal_drag3 f argv = function
-      | POINTER(Some p) :: INT x :: INT y :: INT time :: _ ->
-	  let res = f (Obj.magic p : Gdk.drag_context) ~x ~y ~time
-	  in GtkArgv.set_result argv (`BOOL res)
+      | `OBJECT(Some p) :: `INT x :: `INT y :: `INT time :: _ ->
+	  let res = f (unsafe_cast p : Gdk.drag_context) ~x ~y 
+	              ~time:(get_int32 argv ~pos:4)
+	  in Closure.set_result argv (`BOOL res)
       |	_ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag3"
     let drag_begin =
       { name = "drag_begin"; classe = `widget;
@@ -473,21 +493,21 @@ module DnD = struct
       { name = "drag_drop"; classe = `widget; marshaller = marshal_drag3 }
     let drag_data_get =
       let marshal f argv = function
-        | POINTER(Some p) :: POINTER(Some q) :: INT info :: INT time :: _ ->
-	    f (Obj.magic p : Gdk.drag_context)
+        | `OBJECT(Some p) :: `POINTER(Some q) ::
+          `INT info :: `INT time :: _ ->
+	    f (unsafe_cast p : Gdk.drag_context)
 	      (Obj.magic q : selection_data) 
-	      ~info
-	      ~time
+	      ~info ~time:(get_int32 argv ~pos:4)
 	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_get"
       in
       { name = "drag_data_get"; classe = `widget; marshaller = marshal }
     let drag_data_received =
-      let marshal f _ = function
-        | POINTER(Some p) :: INT x :: INT y :: POINTER(Some q) ::
-          INT info :: INT time :: _ ->
-	    f (Obj.magic p : Gdk.drag_context) ~x ~y
+      let marshal f argv = function
+        | `OBJECT(Some p) :: `INT x :: `INT y :: `POINTER(Some q) ::
+          `INT info :: `INT time :: _ ->
+	    f (unsafe_cast p : Gdk.drag_context) ~x ~y
               (Obj.magic q : selection_data)
-	      ~info ~time
+	      ~info ~time:(get_int32 argv ~pos:6)
 	| _ -> invalid_arg "GtkBase.Widget.Signals.marshal_drag_data_received"
       in
       { name = "drag_data_received"; classe = `widget;
