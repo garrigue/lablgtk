@@ -49,12 +49,24 @@ endif
 	$(COMPOPT) $<
 
 # Targets
-MLOBJS = xpm_window.cmo property.cmo treew.cmo
+MLOBJS = property.cmo treew.cmo load_parser.cmo \
+  load_lexer.cmo main.cmo
 
 radtest: $(MLOBJS)  libtree2.a gtree2.cma
-	$(LINKER) -o radtest -custom -cclib "-L../.. -L. \
-		-llablgtk -ltree2 $(GTKLIBS)" \
-		stdclass.cma lablgtk.cma gtree2.cma $(MLOBJS)
+	$(LINKER) -o $@ -custom -cclib "-L../.. -L. \
+	-llablgtk -ltree2 $(GTKLIBS)" \
+	stdclass.cma lablgtk.cma gtree2.cma $(MLOBJS)
+
+radtestopt: $(MLOBJS:.cmo=.cmx) libtree2.a gtree2.cmxa
+	$(LINKOPT) -o $@ -cclib "-L../.. -L. \
+	-llablgtk -ltree2 $(GTKLIBS)" \
+	stdclass.cmxa lablgtk.cmxa gtree2.cmxa $(MLOBJS:.cmo=.cmx)
+
+load_parser.ml: load_parser.mly
+	olablyacc load_parser.mly
+
+load_lexer.ml: load_lexer.mll
+	olabllex load_lexer.mll
 
 libtree2.a: gtktree2.o gtktreeitem2.o ml_gtk2.o
 	ar rc $@ gtktree2.o gtktreeitem2.o ml_gtk2.o
@@ -63,8 +75,11 @@ libtree2.a: gtktree2.o gtktreeitem2.o ml_gtk2.o
 gtree2.cma: gtkTree2.cmo gTree2.cmo
 	$(LINKER) -a -o $@ gtkTree2.cmo gTree2.cmo
 
+gtree2.cmxa: gtkTree2.cmx gTree2.cmx
+	$(LINKOPT) -a -o $@ gtkTree2.cmx gTree2.cmx
+
 clean:
-	rm -f *.cm* *.o *.a radtest
+	rm -f *.cm* *.o *.a radtest load_parser.ml load_parser.mli
 
 .depend:
 	olabldep *.ml *.mli > .depend
