@@ -64,7 +64,7 @@ let main () =
   area#connect#event#expose callback:area_expose;
   let control = new_table rows:3 columns:7 packing:vbx#add in
 
-  let abuttonClicked num lbl _ = begin
+  let abuttonClicked num (lbl : label) _ = begin
     let dialog = new_window `TOPLEVEL border_width:10 title:"Key remap" in
     let dvbx = new_box `VERTICAL packing:dialog#add in
     let entry  = new_entry max_length:1 packing: dvbx#pack in
@@ -73,7 +73,7 @@ let main () =
     let dquit = new_button label:"OK" packing: dvbx#pack in 
     dquit#connect#clicked callback: (fun _ -> let chr = entry#text.[0] in
                                               let txt2 = String.make len:1 fill:chr in
-                                              lbl#set_label txt2;
+                                              lbl#set_text txt2;
                                               keys.[num]<-chr; 
                                               dialog#destroy ());
     dialog#show_all ()
@@ -81,7 +81,7 @@ let main () =
   let new_my_button label:label left:left top:top =
       let str = String.make len:1 fill:keys.[label] in
       let btn = new_button packing:(control#attach left:left top:top) in
-      let lbl = new_label label:str packing:(btn#add) in 
+      let lbl = new_label text:str packing:(btn#add) in 
       btn#connect#clicked callback:(abuttonClicked label lbl);
       btn in
   new_my_button label:0 left:1 top:2;
@@ -95,7 +95,7 @@ let main () =
   let quit = new_button label:"Quit" packing:(control#attach left:4 top:2) in
   quit#connect#clicked callback:
    (fun _ -> window#destroy ());
-  let message = new_label label:"tron(?) game" packing:vbx#add in
+  let message = new_label text:"tron(?) game" packing:vbx#add in
 
   let game_step _ = begin
         let lx = lpos.x in let ly = lpos.y in
@@ -144,7 +144,7 @@ let main () =
      let result = safe_check() in
      if result!=0 then begin
         Timeout.remove (!timerID);
-        message#set_label ("player "^string_of_int result^" won.")
+        message#set_text ("player "^string_of_int result^" won.")
      end
      else begin
        game_step()

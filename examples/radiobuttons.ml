@@ -18,7 +18,7 @@ let main () =
   button1#connect#clicked callback:(fun () -> prerr_endline "button1");
 
   let button2 = new_radio_button
-      group:button1#group label:"button2" state:true packing: box2#pack in
+      group:button1#group label:"button2" active:true packing: box2#pack in
   button2#connect#clicked callback:(fun () -> prerr_endline "button2");
 
   let button3 = new_radio_button

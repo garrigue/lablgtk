@@ -12,7 +12,9 @@ let main () =
   in
 
   let table = new_table rows:10 columns:10
-      row_spacings: 10 col_spacings: 10 packing: scrolled_window#add in
+      row_spacings: 10 col_spacings: 10
+      packing: scrolled_window#add_with_viewport
+  in
 
   for i = 0 to 9 do
     for j = 0 to 9 do

@@ -264,7 +264,7 @@ end
 
 class check_menu_item obj = object
   inherit menu_item_skel obj
-  method set_state = CheckMenuItem.set_state obj
+  method set_active = CheckMenuItem.set_active obj
   method set_show_toggle = CheckMenuItem.set_show_toggle obj
   method active = CheckMenuItem.get_active obj
   method toggled () = CheckMenuItem.toggled obj
@@ -412,8 +412,8 @@ end
 class toggle_button obj = object
   inherit button_skel obj
   method connect = new toggle_button_signals obj
-  method active = ToggleButton.active obj
-  method set_state = ToggleButton.set_state obj
+  method active = ToggleButton.get_active obj
+  method set_active = ToggleButton.set_active obj
   method draw_indicator = ToggleButton.set_mode obj
 end
 
@@ -519,6 +519,8 @@ class scrolled_window obj = object
   method set_policy ?:horizontal ?:vertical =
     ScrolledWindow.setter obj cont:null_cont
       ?hscrollbar_policy:horizontal ?vscrollbar_policy:vertical
+  method add_with_viewport : 'a. (#has_frame as 'a) -> _ =
+    fun w -> ScrolledWindow.add_with_viewport obj w#frame
 end
 
 let new_scrolled_window () =
@@ -627,13 +629,13 @@ end
 
 class label obj = object
   inherit misc obj
-  method set_label = Label.set_label obj
+  method set_text = Label.set_text obj
   method set_justify = Label.set_justify obj
-  method label = Label.get_label obj
+  method text = Label.get_text obj
 end
 
-let new_label ?:label [< "" >] =
-  Label.setter ?(Label.create label) ?label:None
+let new_label ?:text [< "" >] =
+  Label.setter ?(Label.create text) ?text:None
     ?cont:(Misc.setter ?cont:(pack_return (new label)))
 
 class pixmap obj = object

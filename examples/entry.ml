@@ -30,11 +30,11 @@ let main () =
   let hbox = new_box `HORIZONTAL packing: vbox#add in
 
   let check =
-    new_check_button label: "Editable" state: true packing: hbox#pack in
+    new_check_button label: "Editable" active: true packing: hbox#pack in
   check#connect#toggled callback:(fun () -> entry_toggle_editable check entry);
 
   let check =
-    new_check_button label: "Visible" state: true packing: hbox#pack in
+    new_check_button label: "Visible" active: true packing: hbox#pack in
   check#connect#toggled
     callback:(fun () -> entry_toggle_visibility check entry);
 

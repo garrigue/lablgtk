@@ -2,7 +2,7 @@
 
 open GtkObj
 
-class xpm_label_box parent:(parent : #widget) :file :label =
+class xpm_label_box parent:(parent : #widget) :file :text =
   let _ = 
     if not (Sys.file_exists file) then failwith (file ^ " does not exist") in
   object
@@ -16,7 +16,7 @@ class xpm_label_box parent:(parent : #widget) :file :label =
       in
       new_pixmap pixmap :mask
 
-    val label = new_label :label
+    val label = new_label :text
 
     initializer
       box#set_size border: 2;
@@ -37,7 +37,7 @@ let main () =
   button#connect#clicked
     callback:(fun () -> prerr_endline "Hello again - cool button was pressed");
   let box =
-    new xpm_label_box parent:window file:"info.xpm" label:"cool button" in
+    new xpm_label_box parent:window file:"info.xpm" text:"cool button" in
   box#show ();
   button#add box;
   button#show ();

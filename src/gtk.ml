@@ -502,14 +502,14 @@ module Container = struct
   external draw_children : [> container] obj -> unit
       = "ml_gtk_widget_draw_children"
 *)
-  external border_width : [> container] obj -> int -> unit
-      = "ml_gtk_container_border_width"
+  external set_border_width : [> container] obj -> int -> unit
+      = "ml_gtk_container_set_border_width"
   external add : [> container] obj -> [> widget] obj -> unit
       = "ml_gtk_container_add"
   external remove : [> container] obj -> [> widget] obj -> unit
       = "ml_gtk_container_remove"
-  let setter w :cont ?border_width:border ?:width [< -1 >] ?:height [< -1 >] =
-    may border fun:(border_width w);
+  let setter w :cont ?:border_width ?:width [< -1 >] ?:height [< -1 >] =
+    may border_width fun:(set_border_width w);
     if width > -1 || height > -1 then Widget.set_usize w :width :height;
     cont w
   let set = setter cont:null_cont
@@ -731,14 +731,14 @@ module CheckMenuItem = struct
   let create ?:label ?(_ : unit option) =
     match label with None -> create ()
     | Some label -> create_with_label label
-  external set_state : [> checkmenuitem] obj -> bool -> unit
-      = "ml_gtk_check_menu_item_set_state"
+  external set_active : [> checkmenuitem] obj -> bool -> unit
+      = "ml_gtk_check_menu_item_set_active"
   external get_active : [> checkmenuitem] obj -> bool
       = "ml_gtk_check_menu_item_get_active"
   external set_show_toggle : [> checkmenuitem] obj -> bool -> unit
       = "ml_gtk_check_menu_item_set_show_toggle"
-  let setter w :cont ?:state ?:show_toggle =
-    may state fun:(set_state w);
+  let setter w :cont ?:active ?:show_toggle =
+    may active fun:(set_active w);
     may show_toggle fun:(set_show_toggle w);
     cont w
   let set = setter ?cont:Container.set
@@ -857,18 +857,21 @@ module Window = struct
       [> window] obj ->
       allow_shrink:bool -> allow_grow:bool -> auto_shrink:bool -> unit
       = "ml_gtk_window_set_policy"
+  external set_position : [> window] obj -> window_position -> unit
+      = "ml_gtk_window_set_position"
   external get_allow_shrink : [> window] obj -> bool
       = "ml_gtk_window_get_allow_shrink"
   external get_allow_grow : [> window] obj -> bool
       = "ml_gtk_window_get_allow_grow"
   external get_auto_shrink : [> window] obj -> bool
       = "ml_gtk_window_get_auto_shrink"
-  let setter w :cont ?:title ?:wmclass_name ?:wmclass_class
+  let setter w :cont ?:title ?:wmclass_name ?:wmclass_class ?:position
       ?:allow_shrink ?:allow_grow ?:auto_shrink =
     may title fun:(set_title w);
     if wmclass_name <> None || wmclass_class <> None then
       set_wmclass w name:(may_default get_wmclass_name w for:wmclass_name)
 	class:(may_default get_wmclass_class w for:wmclass_class);
+    may position fun:(set_position w);
     if allow_shrink <> None || allow_grow <> None || auto_shrink <> None then
       set_policy w
 	allow_shrink:(may_default get_allow_shrink w for:allow_shrink)
@@ -1097,15 +1100,17 @@ module ToggleButton = struct
     | Some label -> check_button_create_with_label label
   external set_mode : [> toggle] obj -> bool -> unit
       = "ml_gtk_toggle_button_set_mode"
-  external set_state : [> toggle] obj -> bool -> unit
-      = "ml_gtk_toggle_button_set_state"
-  let setter w :cont ?:draw_indicator ?:state =
+  external set_active : [> toggle] obj -> bool -> unit
+      = "ml_gtk_toggle_button_set_active"
+  let setter w :cont ?:active ?:draw_indicator =
     may fun:(set_mode w) draw_indicator;
-    may fun:(set_state w) state;
+    may fun:(set_active w) active;
     cont w
   let set = setter ?cont:Container.set
-  external active : [> toggle] obj -> bool = "ml_GtkToggleButton_active"
-  external toggled : [> toggle] obj -> unit = "ml_gtk_toggle_button_toggled"
+  external get_active : [> toggle] obj -> bool
+      = "ml_gtk_toggle_button_get_active"
+  external toggled : [> toggle] obj -> unit
+      = "ml_gtk_toggle_button_toggled"
   module Signals = struct
     open Signal
     let toggled : ([> toggle],_) t =
@@ -1413,8 +1418,8 @@ module Notebook = struct
       (* default is append to end *)
   external remove_page : [> notebook] obj -> int -> unit
       = "ml_gtk_notebook_remove_page"
-  external current_page : [> notebook] obj -> int
-      = "ml_gtk_notebook_current_page"
+  external get_current_page : [> notebook] obj -> int
+      = "ml_gtk_notebook_get_current_page"
   external set_page : [> notebook] obj -> int -> unit
       = "ml_gtk_notebook_set_page"
   external set_tab_pos : [> notebook] obj -> position -> unit
@@ -1463,13 +1468,13 @@ module Paned = struct
   let add w ?:fst ?:snd =
     may fun:(add1 w) fst;
     may fun:(add2 w) snd
-  external handle_size : [> paned] obj -> int -> unit
-      = "ml_gtk_paned_handle_size"
-  external gutter_size : [> paned] obj -> int -> unit
-      = "ml_gtk_paned_gutter_size"
-  let setter w :cont ?handle_size:handle ?gutter_size:gutter =
-    may fun:(handle_size w) handle;
-    may fun:(gutter_size w) gutter;
+  external set_handle_size : [> paned] obj -> int -> unit
+      = "ml_gtk_paned_set_handle_size"
+  external set_gutter_size : [> paned] obj -> int -> unit
+      = "ml_gtk_paned_set_gutter_size"
+  let setter w :cont ?:handle_size ?:gutter_size =
+    may fun:(set_handle_size w) handle_size;
+    may fun:(set_gutter_size w) gutter_size;
     cont w
   let set = setter ?cont:Container.set
   external hpaned_new : unit -> t obj = "ml_gtk_hpaned_new"
@@ -1505,6 +1510,8 @@ module ScrolledWindow = struct
 	vertical:(may_default get_vscrollbar_policy w for:vscrollbar_policy);
     cont w
   let set = setter ?cont:Container.set
+  external add_with_viewport : [> scrolled] obj -> [> widget] obj -> unit
+      = "ml_gtk_scrolled_window_add_with_viewport"
 end
 
 module Table = struct
@@ -1946,15 +1953,15 @@ module Label = struct
     else invalid_arg "Gtk.Label.cast"
   external coerce : [> label] obj -> t obj = "%identity"
   external create : string -> t obj = "ml_gtk_label_new"
-  external set_label : [> label] obj -> string -> unit = "ml_gtk_label_set"
+  external set_text : [> label] obj -> string -> unit = "ml_gtk_label_set_text"
   external set_justify : [> label] obj -> justification -> unit
       = "ml_gtk_label_set_justify"
-  let setter w :cont ?:label ?:justify =
-    may fun:(set_label w) label;
+  let setter w :cont ?:text ?:justify =
+    may fun:(set_text w) text;
     may fun:(set_justify w) justify;
     cont w
   let set = setter ?cont:Misc.set
-  external get_label : [> label] obj -> string = "ml_GtkLabel_label"
+  external get_text : [> label] obj -> string = "ml_gtk_label_get_label"
 end
 
 module TipsQuery = struct
@@ -2100,8 +2107,8 @@ module Scale = struct
       = "ml_gtk_scale_set_draw_value"
   external set_value_pos : [> scale] obj -> position -> unit
       = "ml_gtk_scale_set_value_pos"
-  external value_width : [> scale] obj -> int
-      = "ml_gtk_scale_value_width"
+  external get_value_width : [> scale] obj -> int
+      = "ml_gtk_scale_get_value_width"
   external draw_value : [> scale] obj -> unit
       = "ml_gtk_scale_draw_value"
   let setter w :cont ?:digits ?:draw_value ?:value_pos =

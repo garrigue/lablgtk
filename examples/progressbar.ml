@@ -6,7 +6,7 @@ class bar bar = object
   val bar : progress_bar = bar
   val mutable pstat = true
   method progress () =
-    let pvalue = bar#percent in
+    let pvalue = bar#percentage in
     let pvalue =
       if pvalue >= 1.0 || not pstat then (pstat <- true; 0.0)
       else pvalue +. 0.01
@@ -24,7 +24,7 @@ let main () =
 
   let table = new_table rows:3 columns:2 packing: window#add in
   
-  let label = new_label label:"Progress Bar Example" in
+  let label = new_label text:"Progress Bar Example" in
   table#attach label left:0 right:2 top:0 expand:`X shrink:`BOTH;
   
   let pbar = new_progress_bar () in

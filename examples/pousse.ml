@@ -116,7 +116,8 @@ module RealBoard = Board (
 
 open RealBoard
 
-class game frame:(frame : #container) :label statusbar:(bar : #statusbar) =
+class game frame:(frame : #container) label:(label : #label)
+    statusbar:(bar : #statusbar) =
 object (self)
   val cells =
     Array.init len:size
@@ -147,7 +148,7 @@ object (self)
 
   method update_label () =
     let w, b = count_cells cells in
-    label#set_label (Printf.sprintf "White: %d Black: %d " w b)
+    label#set_text (Printf.sprintf "White: %d Black: %d " w b)
 
   method play x y =
     if action cells :x :y color:current_color then begin
