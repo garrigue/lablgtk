@@ -100,6 +100,10 @@ module Image :
     external get_pixel : image -> x:int -> y:int -> int
       = "ml_gdk_image_get_pixel"
     external destroy : image -> unit = "ml_gdk_image_destroy"
+    external width : image -> int = "ml_gdk_image_width"
+    external height : image -> int = "ml_gdk_image_height"
+    external depth : image -> int = "ml_gdk_image_depth"
+    external get_visual : image -> visual = "ml_gdk_image_visual"
   end
 
 module Color :

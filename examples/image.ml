@@ -52,7 +52,7 @@ let _ =
   in
  
   let display () =
-    drawing#image image ~xsrc:0 ~ysrc:0 ~xdest:0 ~ydest:0 ~width:256 ~height:256
+    drawing#put_image image ~x:0 ~y:0
   in
 
   draw (); 
