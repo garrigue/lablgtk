@@ -123,3 +123,17 @@ let viewport ?:hadjustment ?:vadjustment ?:shadow_type
   may shadow_type fun:(Viewport.set_shadow_type w);
   Container.set w ?:border_width ?:width ?:height;
   pack_return (new viewport w) :packing :show
+
+class alignment obj = object
+  inherit container_full (obj : Gtk.alignment obj)
+  method set_alignment ?:x ?:y () = Alignment.set ?:x ?:y obj
+  method set_scale ?:x ?:y () = Alignment.set ?xscale:x ?yscale:y obj
+end
+
+let alignment ?:x ?:y ?:xscale ?:yscale
+    ?:border_width ?:width ?:height ?:packing ?:show () =
+  let w = Alignment.create ?:x ?:y ?:xscale ?:yscale () in
+  Container.set w ?:border_width ?:width ?:height;
+  pack_return (new alignment w) :packing :show
+  
+let alignment_cast w = new alignment (Alignment.cast w#as_widget)

@@ -130,3 +130,21 @@ val viewport :
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> viewport
+
+class alignment : Gtk.alignment obj ->
+  object
+    inherit container_full
+    val obj : Gtk.alignment obj
+    method set_alignment : ?x:Gtk.clampf -> ?y:Gtk.clampf -> unit -> unit
+    method set_scale : ?x:Gtk.clampf -> ?y:Gtk.clampf -> unit -> unit
+  end
+val alignment :
+  ?x:Gtk.clampf ->
+  ?y:Gtk.clampf ->
+  ?xscale:Gtk.clampf ->
+  ?yscale:Gtk.clampf ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> alignment
+val alignment_cast : < as_widget : 'a obj; .. > -> alignment

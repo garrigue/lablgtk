@@ -2,7 +2,7 @@
 
 exception Error of string
 exception Warning of string
-exception Cannot_cast of string
+exception Cannot_cast of string * string
 type 'a obj
 type 'a optobj = 'a obj Misc.optboxed
 type clampf = float

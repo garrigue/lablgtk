@@ -437,8 +437,8 @@ ML_2 (gtk_container_set_focus_hadjustment, GtkContainer_val,
 #define GtkAlignment_val(val) check_cast(GTK_ALIGNMENT,val)
 ML_4 (gtk_alignment_new, Float_val, Float_val, Float_val, Float_val,
       Val_GtkWidget_sink)
-value ml_gtk_alignment_set (value val, value x, value y,
-			   value xscale, value yscale)
+value ml_gtk_alignment_set (value x, value y,
+			   value xscale, value yscale, value val)
 {
     GtkAlignment *alignment = GtkAlignment_val(val);
     gtk_alignment_set (alignment,
