@@ -227,7 +227,7 @@ class fix_editor ~width ~height ~packing =
       	end;
       exps_id := Some (ebox#event#connect#after#expose
                          ~callback:(fun _ -> on_paint(); false));
-      draw_id := Some (ebox#misc#connect#draw ~callback:on_paint);
+      (* draw_id := Some (ebox#misc#connect#draw ~callback:on_paint); *)
       ()
     initializer
       fix#drag#dest_set ~actions:[`COPY]
