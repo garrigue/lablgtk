@@ -252,6 +252,11 @@ varcc: varcc.cmo
 clean:
 	rm -f *.cm* *.o *.a *.so *_tags.[ch] $(TARGETS) varcc.ml xml_lexer.ml
 
+
+srcdoc: $(ALLOBJS)
+	mkdir -p doc
+	$(OCAMLDOC) -html -t "Lablgtk2" -d doc -I . `ls $(ALLOBJS:.cmo=.mli) 2> /dev/null`
+
 $(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
 	    ml_gobject.h ml_glib.h wrappers.h
 ml_glib.o: glib_tags.h ml_glib.h wrappers.h
