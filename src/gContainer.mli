@@ -16,7 +16,7 @@ class focus :
 
 class container : ([> Gtk.container] as 'a) obj ->
   object
-    inherit widget
+    inherit GObj.widget
     val obj : 'a obj
     method add : widget -> unit
     method children : widget list
@@ -31,19 +31,19 @@ class container : ([> Gtk.container] as 'a) obj ->
 class ['a] container_impl :([> Gtk.container] as 'a) obj ->
   object
     inherit container
-    inherit ['a] objvar
+    inherit ['a] GObj.objvar
   end
 
 class type container_signals =
   object
-    inherit widget_signals
+    inherit GObj.widget_signals
     method add : callback:(widget -> unit) -> GtkSignal.id
     method remove : callback:(widget -> unit) -> GtkSignal.id
   end
 
 class container_signals_impl : ([> Gtk.container] as 'a) obj ->
   object
-    inherit ['a] gobject_signals
+    inherit ['a] GObj.gobject_signals
     inherit container_signals
   end
 
@@ -68,7 +68,7 @@ val pack_container :
 class virtual ['a] item_container : ([> Gtk.container] as 'c) obj ->
   object
     constraint 'a = < as_item : [>`widget] obj; .. >
-    inherit widget
+    inherit GObj.widget
     val obj : 'c obj
     method add : 'a -> unit
     method append : 'a -> unit

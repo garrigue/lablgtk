@@ -5,7 +5,7 @@ open GObj
 
 class editable_signals : [> editable] obj ->
   object
-    inherit widget_signals
+    inherit GObj.widget_signals
     method changed : callback:(unit -> unit) -> GtkSignal.id
     method delete_text :
       callback:(start:int -> stop:int -> unit) -> GtkSignal.id
@@ -15,7 +15,7 @@ class editable_signals : [> editable] obj ->
 
 class editable : 'a obj ->
   object
-    inherit widget
+    inherit GObj.widget
     constraint 'a = [> Gtk.editable]
     val obj : 'a obj
     method copy_clipboard : unit -> unit
@@ -98,7 +98,7 @@ class spin_button_signals : [> Gtk.spin_button] obj ->
 
 class spin_button : Gtk.spin_button obj ->
   object
-    inherit widget
+    inherit GObj.widget
     val obj : Gtk.spin_button obj
     method connect : spin_button_signals
     method event : GObj.event_ops
@@ -136,7 +136,7 @@ val spin_button :
 
 class combo : Gtk.combo obj ->
   object
-    inherit widget
+    inherit GObj.widget
     val obj : Gtk.combo obj
     method disable_activate : unit -> unit
     method entry : entry

@@ -6,7 +6,7 @@ open GContainer
 
 class button_skel : 'a obj ->
   object
-    inherit container
+    inherit GContainer.container
     constraint 'a = [> button]
     val obj : 'a obj
     method clicked : unit -> unit
@@ -17,7 +17,7 @@ class button_skel : 'a obj ->
   end
 class button_signals : 'b obj ->
   object ('a)
-    inherit container_signals
+    inherit GContainer.container_signals
     constraint 'b = [> button]
     val obj : 'b obj
     method clicked : callback:(unit -> unit) -> GtkSignal.id
@@ -27,6 +27,7 @@ class button_signals : 'b obj ->
     method released : callback:(unit -> unit) -> GtkSignal.id
   end
 
+(** @gtkdoc GtkButton *)
 class button : Gtk.button obj ->
   object
     inherit button_skel
@@ -97,7 +98,7 @@ val radio_button :
 class toolbar :
   Gtk.toolbar obj ->
   object
-    inherit container_full
+    inherit GContainer.container_full
     val obj : Gtk.toolbar obj
     method insert_button :
       ?text:string ->

@@ -369,7 +369,7 @@ end
 
 class view : text_view obj ->
 object
-  inherit widget
+  inherit GObj.widget
   val obj : text_view obj
   method as_view : text_view obj
   method add_child_at_anchor : GObj.widget -> child_anchor -> unit

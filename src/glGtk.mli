@@ -35,7 +35,7 @@ module GtkRaw :
 
 class area_signals : 'a obj ->
   object
-    inherit widget_signals
+    inherit GObj.widget_signals
     constraint 'a = [> gl_area]
     val obj : 'a obj
     method display : callback:(unit -> unit) -> GtkSignal.id
@@ -46,7 +46,7 @@ class area_signals : 'a obj ->
 
 class area : gl_area obj ->
   object
-    inherit widget
+    inherit GObj.widget
     val obj : gl_area obj
     method event : event_ops
     method as_area : gl_area obj
