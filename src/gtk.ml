@@ -1737,7 +1737,7 @@ module Tree = struct
       = "ml_gtk_tree_select_item"
   external unselect_item : [> tree] obj -> pos:int -> unit
       = "ml_gtk_tree_unselect_item"
-  external child_position : [> tree] obj -> [> treeitem] obj -> unit
+  external child_position : [> tree] obj -> [> treeitem] obj -> int
       = "ml_gtk_tree_child_position"
   external set_selection_mode : [> tree] obj -> selection_mode -> unit
       = "ml_gtk_tree_set_selection_mode"
@@ -1766,11 +1766,11 @@ module Tree = struct
 end
 
 module DrawingArea = struct
-  type t = [widget drawing] obj
-  let cast w : t =
+  type t = [widget drawing]
+  let cast w : t obj =
     if Object.is_a w "GtkDrawingArea" then Obj.magic w
     else invalid_arg "Gtk.DrawingArea.cast"
-  external create : unit -> t = "ml_gtk_drawing_area_new"
+  external create : unit -> t obj = "ml_gtk_drawing_area_new"
   external size : [> drawing] obj -> width:int -> height:int -> unit
       = "ml_gtk_drawing_area_size"
 end
@@ -2252,6 +2252,7 @@ module Scale = struct
   let cast w : t obj =
     if Object.is_a w "GtkScale" then Obj.magic w
     else invalid_arg "Gtk.Scale.cast"
+  external coerce : [> scale] obj -> t obj = "%identity"
   external hscale_new : [> adjustment] optobj -> t obj = "ml_gtk_hscale_new"
   external vscale_new : [> adjustment] optobj -> t obj = "ml_gtk_vscale_new"
   let create (dir : orientation) ?:adjustment =
@@ -2280,6 +2281,7 @@ module Scrollbar = struct
   let cast w : t obj =
     if Object.is_a w "GtkScrollbar" then Obj.magic w
     else invalid_arg "Gtk.Scrollbar.cast"
+  external coerce : [> scrollbar] obj -> t obj = "%identity"
   external hscrollbar_new : [> adjustment] optobj -> t obj
       = "ml_gtk_hscrollbar_new"
   external vscrollbar_new : [> adjustment] optobj -> t obj
@@ -2294,6 +2296,7 @@ module Ruler = struct
   let cast w : t obj =
     if Object.is_a w "GtkRuler" then Obj.magic w
     else invalid_arg "Gtk.Ruler.cast"
+  external coerce : [> ruler] obj -> t obj = "%identity"
   external hruler_new : unit -> t obj = "ml_gtk_hruler_new"
   external vruler_new : unit -> t obj = "ml_gtk_vruler_new"
   let create (dir : orientation) =
@@ -2325,6 +2328,7 @@ module Separator = struct
   let cast w : t obj =
     if Object.is_a w "GtkSeparator" then Obj.magic w
     else invalid_arg "Gtk.Separator.cast"
+  external coerce : [> separator] obj -> t obj = "%identity"
   external hseparator_new : unit -> t obj = "ml_gtk_hseparator_new"
   external vseparator_new : unit -> t obj = "ml_gtk_vseparator_new"
   let create (dir : orientation) =

@@ -3,6 +3,8 @@ $Id$
 1999.6.3
   * disabled gtk_caller
   * subtle hack to have GTree get the right interface
+  * switched completely to the new widget scheme (including examples)
+  * added olabl.patch to apply to olabl-2.02 to compile new sources
 
 1999.6.2
   * integrated changes from Hubert in Gtk, GtkObj and testgtk.ml

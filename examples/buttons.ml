@@ -1,12 +1,12 @@
 (* $Id$ *)
 
-open GtkObj
+open GMain
 
-class xpm_label_box parent:(parent : #widget) :file :text =
+class xpm_label_box parent:(parent : #GObj.widget) :file :text =
   let _ = 
     if not (Sys.file_exists file) then failwith (file ^ " does not exist") in
   object
-    inherit box (Gtk.Box.create `HORIZONTAL) as box
+    inherit GPack.box `HORIZONTAL border_width: 2 as box
 
     val pixmapwid =
       parent#misc#realize ();
@@ -14,13 +14,13 @@ class xpm_label_box parent:(parent : #widget) :file :text =
 	Gdk.Pixmap.create_from_xpm (parent#misc#window)
 	  transparent:(Gtk.Style.get_bg parent#misc#style) :file
       in
-      new_pixmap pixmap :mask
+      new GPix.pixmap pixmap :mask
 
-    val label = new_label :text
+    val label = new GMisc.label :text
 
     initializer
       box#set_size border: 2;
-      List.iter [(pixmapwid :> widget); (label :> widget)]
+      List.iter [(pixmapwid :> GObj.widget); (label :> GObj.widget)]
 	fun:(box#pack expand:false fill:false padding:3)
 
     method show () =
@@ -31,9 +31,9 @@ class xpm_label_box parent:(parent : #widget) :file :text =
 
 let main () =
   let window =
-    new_window `TOPLEVEL title:"Pixmap'd Buttons!" border_width:10 in
+    new GWin.window `TOPLEVEL title:"Pixmap'd Buttons!" border_width:10 in
   window#connect#destroy callback:Main.quit;
-  let button = new_button () in
+  let button = new GButton.button in
   button#connect#clicked
     callback:(fun () -> prerr_endline "Hello again - cool button was pressed");
   let box =

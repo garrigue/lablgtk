@@ -16,6 +16,8 @@ class type is_menu = object method as_menu : Menu.t obj end
 
 class type is_tree = object method as_tree : Tree.t obj end
 
+class type is_window = object method as_window : Window.t obj end
+
 (* Object *)
 
 class gtkobj obj = object

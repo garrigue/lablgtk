@@ -1,17 +1,18 @@
 (* Lissajous 図形 *)
-open GtkObj
+
+open GMain
 open GdkObj  
 
 
 let main () =
-  let window = new_window `TOPLEVEL border_width: 10 in
+  let window = new GWin.window `TOPLEVEL border_width: 10 in
   window#connect#event#delete
      callback:(fun _ -> prerr_endline "Delete event occured"; true);
   window#connect#destroy callback:Main.quit;
-  let vbx = new_box `VERTICAL packing:window#add in  
-  let quit = new_button label:"Quit" packing:vbx#add in
+  let vbx = new GPack.box `VERTICAL packing:window#add in  
+  let quit = new GButton.button label:"Quit" packing:vbx#add in
   quit#connect#clicked callback:window#destroy;
-  let area = new_drawing_area width:200 height:200 packing:vbx#add in
+  let area = new GMisc.drawing_area width:200 height:200 packing:vbx#add in
   let drawing = area#misc#realize (); new drawing (area#misc#window) in
   let m_pi = acos (-1.) in
   let c = ref 0. in

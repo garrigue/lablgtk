@@ -2,7 +2,7 @@
 
 open Gtk
 
-class item_signals :
+class tree_item_signals :
   'a[> container item treeitem widget] obj -> ?after:bool ->
   object
     inherit GCont.item_signals
@@ -11,18 +11,18 @@ class item_signals :
     method expand : callback:(unit -> unit) -> Signal.id
   end
 
-class item :
+class tree_item :
   ?label:string ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
-  ?packing:(item -> unit) ->
+  ?packing:(tree_item -> unit) ->
   object
     inherit GCont.container
     val obj : TreeItem.t obj
     method as_item : TreeItem.t obj
     method collapse : unit -> unit
-    method connect : ?after:bool -> item_signals
+    method connect : ?after:bool -> tree_item_signals
     method expand : unit -> unit
     method remove_subtree : unit -> unit
     method set_subtree : #GObj.is_tree -> unit
@@ -35,8 +35,8 @@ and tree_signals :
     inherit GCont.container_signals
     val obj : 'a obj
     method selection_changed : callback:(unit -> unit) -> Signal.id
-    method select_child : callback:(item -> unit) -> Gtk.Signal.id
-    method unselect_child : callback:(item -> unit) -> Gtk.Signal.id
+    method select_child : callback:(tree_item -> unit) -> Gtk.Signal.id
+    method unselect_child : callback:(tree_item -> unit) -> Gtk.Signal.id
   end
 
 and tree :
@@ -48,19 +48,24 @@ and tree :
   ?height:int ->
   ?packing:(tree -> unit) ->
   object
-    inherit [TreeItem.t, item] GCont.item_container
+    inherit [TreeItem.t, tree_item] GCont.item_container
     val obj : Tree.t obj
     method as_tree : Tree.t obj
-    method child_position : TreeItem.t #GObj.is_item -> unit
+    method child_position : TreeItem.t #GObj.is_item -> int
     method clear_items : start:int -> end:int -> unit
     method connect : ?after:bool -> tree_signals
     method insert : TreeItem.t #GObj.is_item -> pos:int -> unit
     method prepend : TreeItem.t #GObj.is_item -> unit
+    method remove_items : tree_item list -> unit
     method select_item : pos:int -> unit
     method unselect_item : pos:int -> unit
-    method private wrap : Widget.t obj -> item
+    method selection : tree_item list
+    method set_selection_mode : Gtk.Tags.selection_mode -> unit
+    method set_view_lines : bool -> unit
+    method set_view_mode : [ITEM LINE] -> unit
+    method private wrap : Widget.t obj -> tree_item
   end
 
-class item_wrapper : ([> treeitem] obj) -> item
+class tree_item_wrapper : ([> treeitem] obj) -> tree_item
 
 class tree_wrapper : ([> tree] obj) -> tree

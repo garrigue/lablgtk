@@ -6,16 +6,16 @@ open GUtil
 open GObj
 open GCont
 
-class item_signals obj ?:after = object
+class tree_item_signals obj ?:after = object
   inherit GCont.item_signals obj ?:after
   method expand = Signal.connect obj sig:TreeItem.Signals.expand ?:after
   method collapse = Signal.connect obj sig:TreeItem.Signals.collapse ?:after
 end
 
-class ['a] pre_item_wrapper :wrapper obj = object
+class ['a] pre_tree_item_wrapper :wrapper obj = object
   inherit container obj
   method as_item : TreeItem.t obj = obj
-  method connect = new item_signals ?obj
+  method connect = new tree_item_signals ?obj
   method set_subtree : 'b. (#is_tree as 'b) -> unit =
     fun w -> TreeItem.set_subtree obj w#as_tree
   method remove_subtree () = TreeItem.remove_subtree obj
@@ -47,33 +47,41 @@ class virtual ['a] pre_tree_wrapper obj = object (self)
   method unselect_item = Tree.unselect_item obj
   method child_position : 'b. (TreeItem.t #is_item as 'b) -> _ =
     fun w -> Tree.child_position obj w#as_item
+  method remove_items (items : 'a list) =
+    Tree.remove_items obj
+      (List.map fun:(fun (t : _ #is_item) -> t #as_item) items)
+  method set_selection_mode = Tree.set_selection_mode obj
+  method set_view_mode = Tree.set_view_mode obj
+  method set_view_lines = Tree.set_view_lines obj
+  method selection =
+    List.map fun:(fun w -> self#wrap (Widget.coerce w)) (Tree.selection obj)
 end
 
 class tree_wrapper' obj = object
-  inherit [tree_wrapper' pre_item_wrapper] pre_tree_wrapper obj
+  inherit [tree_wrapper' pre_tree_item_wrapper] pre_tree_wrapper obj
   method private wrap w =
-    new pre_item_wrapper wrapper:(new tree_wrapper') (TreeItem.cast w)
+    new pre_tree_item_wrapper wrapper:(new tree_wrapper') (TreeItem.cast w)
 end
 
-class item_wrapper obj =
-  [tree_wrapper'] pre_item_wrapper wrapper:(new tree_wrapper')
+class tree_item_wrapper obj =
+  [tree_wrapper'] pre_tree_item_wrapper wrapper:(new tree_wrapper')
     (TreeItem.coerce obj)
 
 class tree_wrapper obj = object
-  inherit [item_wrapper] pre_tree_wrapper (Tree.coerce obj)
-  method private wrap w = new item_wrapper (TreeItem.cast w)
+  inherit [tree_item_wrapper] pre_tree_wrapper (Tree.coerce obj)
+  method private wrap w = new tree_item_wrapper (TreeItem.cast w)
 end
 
 class tree_signals obj =
-  [item_wrapper] pre_tree_signals ?obj
-    ?wrapper:(fun w -> new item_wrapper (TreeItem.cast w))
+  [tree_item_wrapper] pre_tree_signals ?obj
+    ?wrapper:(fun w -> new tree_item_wrapper (TreeItem.cast w))
 
-class item ?:label ?:border_width ?:width ?:height ?:packing =
+class tree_item ?:label ?:border_width ?:width ?:height ?:packing =
   let w = TreeItem.create ?None ?:label in
   let () = Container.setter w cont:null_cont ?:border_width ?:width ?:height in
   object (self)
-    inherit item_wrapper w
-    initializer pack_return :packing (self :> item_wrapper)
+    inherit tree_item_wrapper w
+    initializer pack_return :packing (self :> tree_item_wrapper)
   end
 
 class tree ?:selection_mode ?:view_mode ?:view_lines

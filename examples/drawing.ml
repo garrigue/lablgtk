@@ -1,17 +1,17 @@
 (* $Id$ *)
 
-open GtkObj
 open GdkObj
+open GMain
 
 (* let id = Thread.create GtkThread.main () *)
-let window = new_window `TOPLEVEL
+let window = new GWin.window `TOPLEVEL
 
 let w = window#show (); window#misc#window
 let drawing = new drawing w
 
 let _ =
   window#connect#destroy callback:Main.quit;
-  window#connect#event#expose after:true callback:
+  (window#connect after:true)#event#expose callback:
     begin fun _ ->
       drawing#polygon filled:true
 	[ 10,100; 35,35; 100,10; 165,35; 190,100;
