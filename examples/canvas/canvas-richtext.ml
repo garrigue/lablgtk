@@ -12,7 +12,7 @@ let setup_text root =
 	       `X2 110. ; `Y2 50. ;
 	       `FILL_COLOR "green" ;
 	       `OUTLINE_COLOR "green" ] in
-  GnoCanvas.richtext root
+  GnoCanvas.rich_text root
     ~x:(-90.) ~y:(-50.)
     ~width:200. ~height:100.
     ~text:big_text ~props:[ `GROW_HEIGHT true ] ;
@@ -25,7 +25,7 @@ let setup_text root =
 	     `X2 200. ; `Y2 30. ;
 	     `FILL_COLOR "yellow" ;
 	     `OUTLINE_COLOR "yellow" ] ;
-  GnoCanvas.richtext root
+  GnoCanvas.rich_text root
     ~x:100. ~y:(-30.) ~width:100. ~height:60.
     ~text:"The quick brown fox jumped over the lazy dog.\n"
     ~props:[ `GROW_HEIGHT true ; 
@@ -36,7 +36,7 @@ let setup_text root =
 	     `X2 150. ; `Y2 100. ;
 	     `FILL_COLOR "pink" ;
 	     `OUTLINE_COLOR "pink" ] ;
-    GnoCanvas.richtext root
+    GnoCanvas.rich_text root
     ~x:50. ~y:70. ~width:100. ~height:30.
     ~text:"This is a test.\nI enjoy tests a great deal\nThree lines!"
     ~props:[ `CURSOR_VISIBLE true ;
