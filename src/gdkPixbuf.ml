@@ -19,6 +19,7 @@ type gdkpixbuferror =
 exception GdkPixbufError of gdkpixbuferror * string
 external _init : unit -> unit = "ml_gdkpixbuf_init"
 let () = _init () ; Callback.register_exception "gdk_pixbuf_error" (GdkPixbufError (ERROR_CORRUPT_IMAGE, ""))
+external set_marshal_use_rle : bool -> unit = "ml_gdk_pixbuf_set_marshal_use_rle"
 
 (* Accessors *)
 
@@ -55,6 +56,7 @@ external copy : pixbuf -> pixbuf = "ml_gdk_pixbuf_copy"
 external subpixbuf : pixbuf -> src_x:int -> src_y:int -> width:int -> height:int -> pixbuf 
   = "ml_gdk_pixbuf_new_subpixbuf"
 external from_file : string -> pixbuf = "ml_gdk_pixbuf_new_from_file"
+external get_file_info : string -> string * int * int = "ml_gdk_pixbuf_get_file_info"
 external from_file_at_size : string -> width:int -> height:int -> pixbuf 
   = "ml_gdk_pixbuf_new_from_file_at_size"
 external from_xpm_data : string array -> pixbuf

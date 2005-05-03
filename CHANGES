@@ -1,5 +1,10 @@
 $Id$
 
+2005.05.03 [Olivier]
+  * wrap GdkPixbuf.get_file_info (2.4)
+  * support serialization and deserialization of GdkPixbuf.pixbuf values
+  * add a gdk-pixbuf-mlsource tool to help compiling images into programs.
+
 2005.03.20 [Jacques]
   * add Gobject.Data.wrap to create new conversions
 
