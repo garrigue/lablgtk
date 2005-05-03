@@ -22,6 +22,8 @@ type gdkpixbuferror =
   | ERROR_FAILED
 exception GdkPixbufError of gdkpixbuferror * string
 
+external set_marshal_use_rle : bool -> unit = "ml_gdk_pixbuf_set_marshal_use_rle"
+
 (** {3 Creation} *)
 
 (** @gtkdoc gdk-pixbuf gdk-pixbuf-creating*)
@@ -36,6 +38,9 @@ external subpixbuf : pixbuf -> src_x:int -> src_y:int -> width:int -> height:int
 
 (** @gtkdoc gdk-pixbuf gdk-pixbuf-file-loading *)
 external from_file : string -> pixbuf = "ml_gdk_pixbuf_new_from_file"
+
+(** @since GTK 2.4 *)
+external get_file_info : string -> string * int * int = "ml_gdk_pixbuf_get_file_info"
 
 (** @since GTK 2.4
     @gtkdoc gdk-pixbuf gdk-pixbuf-file-loading *)

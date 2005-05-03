@@ -20,7 +20,7 @@ DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
 
-TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB)
+TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB) gdk-pixbuf-mlsource$(XE)
 
 all: byte
 world: byte $(CAMLBEST)
@@ -210,6 +210,9 @@ lablgtk2: Makefile $(CONFIG) lablgtk2.in
 lablgtk2.bat: lablgtk2.bat.in
 	cp lablgtk2.bat.in lablgtk2.bat
 
+gdk-pixbuf-mlsource$(XE) : lablgtk.cma gtkInit.cmo gdk-pixbuf-mlsource.ml
+	$(CAMLC) -o $@ $^
+
 lablgtkopt:: $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx)
 ifeq ($(THREADS_LIB),system)
 lablgtkopt:: $(THOBJS:.cmo=.cmx)
@@ -241,6 +244,7 @@ install:
 	cp lablgtk2$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
 	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; fi
+	cp gdk-pixbuf-mlsource$(XE) "$(BINDIR)"
 
 installdll:
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)" || \
