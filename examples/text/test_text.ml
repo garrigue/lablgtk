@@ -71,8 +71,8 @@ let t_5 () =
 
 let t_6 () = 
   let w = GWindow.window  ~title:"6)tagtable"  () in
-  let tt = GText.tagtable () in
-  let tb = GText.buffer ~tagtable:tt ~text:"un certain exemple...." () in
+  let tt = GText.tag_table () in
+  let tb = GText.buffer ~tag_table:tt ~text:"un certain exemple...." () in
   let tv = GText.view ~buffer:tb ~packing:(w#add) () in
     Printf.printf "Size = %d \n" tt#size;
     flush stdout;
@@ -80,7 +80,7 @@ let t_6 () =
 
 let t_7 () = 
   let w = GWindow.window  ~title:"7)tag"  () in
-  let tt = GText.tag "mon tag one" in
+  let tt = GText.tag ~name:"mon tag one" () in
     Printf.printf "Priority = %d \n" tt#priority;
 (*
 Not able to set it because not in a tagtable: this is normal
