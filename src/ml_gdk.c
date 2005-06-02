@@ -29,7 +29,7 @@
 #define GDK_WINDOW_TYPE_HINT_DOCK GDK_WINDOW_TYPE_HINT_NORMAL
 #endif
 
-void ml_raise_gdk (const char *errmsg)
+CAMLprim void ml_raise_gdk (const char *errmsg)
 {
   static value * exn = NULL;
   if (exn == NULL)

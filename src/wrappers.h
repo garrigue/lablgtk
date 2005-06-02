@@ -237,7 +237,7 @@ static void ml_final_##type (value val) \
 static struct custom_operations ml_custom_##type = \
 { #type"/2.0/", ml_final_##type, custom_compare_default, \
   custom_hash_default, custom_serialize_default, custom_deserialize_default };\
-value Val_##type (type *p) \
+CAMLprim value Val_##type (type *p) \
 { value ret; if (!p) ml_raise_null_pointer(); \
   ret = alloc_custom (&ml_custom_##type, sizeof(value), adv, 1000); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
@@ -248,7 +248,7 @@ static void ml_final_##type##ext (value val) \
 static struct custom_operations ml_custom_##type##ext = \
 { #type#ext"/2.0/", ml_final_##type##ext, custom_compare_default, \
   custom_hash_default, custom_serialize_default, custom_deserialize_default };\
-value Val_##type##ext (type *p) \
+CAMLprim value Val_##type##ext (type *p) \
 { value ret; if (!p) ml_raise_null_pointer(); \
   ret = alloc_custom (&ml_custom_##type##ext, sizeof(value), adv, 1000); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
@@ -261,7 +261,7 @@ static int ml_comp_##type(value v1, value v2) \
 static struct custom_operations ml_custom_##type = \
 { #type"/2.0/", ml_final_##type, ml_comp_##type, \
   custom_hash_default, custom_serialize_default, custom_deserialize_default };\
-value Val_##type (type *p) \
+CAMLprim value Val_##type (type *p) \
 { value ret; if (!p) ml_raise_null_pointer(); \
   ret = alloc_custom (&ml_custom_##type, sizeof(value), adv, 1000); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
@@ -295,14 +295,14 @@ CAMLprim value ml_##name##_##field (value val, value index, value new) \
 
 /* ML value is [flag list] */
 #define Make_Flags_val(conv) \
-int Flags_##conv (value list) \
+CAMLprim int Flags_##conv (value list) \
 { int flags = 0L; \
   while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
   return flags; }
 
 /* ML value is [flag list option] */
 #define Make_OptFlags_val(conv) \
-int OptFlags_##conv (value list) \
+CAMLprim int OptFlags_##conv (value list) \
 { int flags = 0L; \
   if Is_block(list) list = Field(list,0); \
   while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
