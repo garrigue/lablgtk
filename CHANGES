@@ -1,5 +1,9 @@
 $Id$
 
+2005.06.02 [Jacques]
+  * export all macro-generated functions (robertr)
+  * change --rpath to -rpath (better done in ocamlmklib?)
+
 2005.05.03 [Olivier]
   * wrap GdkPixbuf.get_file_info (2.4)
   * support serialization and deserialization of GdkPixbuf.pixbuf values

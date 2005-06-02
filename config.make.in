@@ -53,7 +53,7 @@ DLLDIR=$(DESTDIR)@LIBDIR@/stublibs
 LABLGLDIR=@LABLGLDIR@
 
 FILT = -Wl,--export-dynamic
-clean_libs = $(subst -pthread,-ldopt -pthread -ccopt -pthread,$(filter-out $(FILT),$(1)))
+clean_libs = $(subst -pthread,-ldopt -pthread -ccopt -pthread,$(subst --rpath,-rpath,$(filter-out $(FILT),$(1))))
 
 GTKCFLAGS=@GTKALL_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
