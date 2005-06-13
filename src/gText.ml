@@ -357,10 +357,10 @@ type position =
     | `LINECHAR of int * int | `LINEBYTE of int * int
     | `START | `END | `ITER of iter | mark ]
 
-class buffer obj = object(self)
+class buffer_skel obj = object(self)
+  val obj = (obj :> text_buffer)
   method get_oid = Gobject.get_oid obj
   method as_buffer = obj
-  method connect = new buffer_signals obj
   method line_count = Buffer.get_line_count obj
   method char_count = Buffer.get_char_count obj
   method tag_table =  Buffer.get_tag_table obj
@@ -511,6 +511,11 @@ class buffer obj = object(self)
     Buffer.remove_selection_clipboard obj (GData.as_clipboard clip)
 end
 
+class buffer obj = object
+  inherit buffer_skel obj
+  method connect = new buffer_signals obj
+end
+
 let buffer ?tag_table ?text () =
   let tag_table =
     match tag_table with None -> None | Some x -> Some x#as_tag_table in
@@ -523,12 +528,11 @@ class view_signals obj = object
   inherit text_view_sigs
 end
 
-class view obj = object (self)
-  inherit [Gtk.text_view] widget_impl obj
+class view_skel obj = object (self)
+  inherit [_] widget_impl obj
   inherit text_view_props
   method event = new GObj.event_ops obj
-  method connect = new view_signals obj
-  method as_view = obj
+  method as_view = (obj :> text_view obj)
   method set_buffer (b:buffer) = View.set_buffer obj (b#as_buffer)
   method buffer = new buffer (View.get_buffer obj)
   method scroll_to_mark 
@@ -585,6 +589,10 @@ class view obj = object (self)
     View.move_child obj child#as_widget x y
 end
 
+class view obj = object
+  inherit view_skel obj
+  method connect = new view_signals obj
+end
 
 let view ?buffer =
   View.make_params [] ~cont:(
