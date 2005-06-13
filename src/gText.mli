@@ -276,7 +276,7 @@ val tag_table : unit -> tag_table
 (** {3 GtkTextBuffer} *)
 
 (** @gtkdoc gtk GtkTextBuffer *)
-class buffer_signals : ([> `textbuffer] as 'b) obj ->
+class buffer_signals : [> `textbuffer] obj ->
 object ('a)
   method after : 'a
   method apply_tag :
@@ -307,7 +307,7 @@ type position =
 
 (** Stores attributed text for display in a {!GText.view}
    @gtkdoc gtk GtkTextBuffer *)
-class buffer : text_buffer ->
+class buffer_skel : [> `textbuffer] obj ->
 object
   method as_buffer : text_buffer
   method add_selection_clipboard : GData.clipboard -> unit
@@ -316,7 +316,6 @@ object
   method begin_user_action : unit -> unit
   method bounds : iter * iter
   method char_count : int
-  method connect : buffer_signals
   method copy_clipboard : GData.clipboard -> unit
   method create_child_anchor : iter -> child_anchor
   method create_mark :
@@ -380,13 +379,19 @@ object
   method tag_table : text_tag_table
 end
 
+class buffer : [> `textbuffer] obj ->
+object
+  inherit buffer_skel
+  method connect : buffer_signals
+end
+
 (** @gtkdoc gtk GtkTextBuffer *)
 val buffer : ?tag_table:tag_table -> ?text:string -> unit -> buffer
 
 (** {3 GtkTextView} *)
 
 (** @gtkdoc gtk GtkTextView *)
-class view_signals : ([> Gtk.text_view] as 'b) obj ->
+class view_signals : [> text_view] obj ->
 object ('a)
   method after : 'a
   method copy_clipboard : callback:(unit -> unit) -> GtkSignal.id
@@ -413,10 +418,10 @@ end
 
 (** Widget that displays a {!GText.buffer}
    @gtkdoc gtk GtkTextView *)
-class view : text_view obj ->
+class view_skel : ([> text_view] as 'a) obj ->
 object
   inherit GObj.widget
-  val obj : text_view obj
+  val obj : 'a obj
   method as_view : text_view obj
   method add_child_at_anchor : GObj.widget -> child_anchor -> unit
   method add_child_in_window :
@@ -427,7 +432,6 @@ object
   method buffer : buffer
   method buffer_to_window_coords :
     tag:Tags.text_window_type -> x:int -> y:int -> int * int
-  method connect : view_signals
   method cursor_visible : bool
   method editable : bool
   method event : GObj.event_ops
@@ -480,6 +484,13 @@ object
   method window_to_buffer_coords :
     tag:Tags.text_window_type -> x:int -> y:int -> int * int
   method wrap_mode : Tags.wrap_mode
+end
+
+class view : ([> text_view] as 'a) obj ->
+object
+  inherit view_skel
+  val obj : 'a obj
+  method connect : view_signals
 end
 
 (** @gtkdoc gtk GtkTextView *)

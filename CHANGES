@@ -1,5 +1,8 @@
 $Id$
 
+2005.06.13 [Jacques]
+  * define GText.buffer_skel and GText.view_skel
+
 2005.06.02 [Jacques]
   * export all macro-generated functions (robertr)
   * change --rpath to -rpath (better done in ocamlmklib?)
