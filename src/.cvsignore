@@ -1,5 +1,6 @@
 .depend
 check_externals
+gdk-pixbuf-mlsource
 propcc
 varcc
 lablgtk2
