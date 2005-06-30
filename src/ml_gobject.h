@@ -3,8 +3,8 @@
 /* Defined in ml_gobject.h */
 
 #define GObject_val(val) ((GObject*)Pointer_val(val))
-CAMLprim value Val_GObject (GObject *);
-CAMLprim value Val_GObject_new (GObject *);
+CAMLextern value Val_GObject (GObject *);
+CAMLextern value Val_GObject_new (GObject *);
 #define Val_GAnyObject(val) Val_GObject(G_OBJECT(val))
 #define Val_GAnyObject_new(val) Val_GObject_new(G_OBJECT(val))
 
@@ -12,16 +12,16 @@ CAMLprim value Val_GObject_new (GObject *);
 #define Val_GType Val_long
 
 #define GClosure_val(val) ((GClosure*)Pointer_val(val))
-value Val_GClosure (GClosure *);
+CAMLextern value Val_GClosure (GClosure *);
 
 #define GValueptr_val(val) ((GValue*)MLPointer_val(val))
-GValue *GValue_val(value);          /* check for NULL pointer */
-value Val_GValue_copy(GValue *);    /* copy from the stack */
+CAMLextern GValue *GValue_val(value);          /* check for NULL pointer */
+CAMLextern value Val_GValue_copy(GValue *);    /* copy from the stack */
 #define Val_GValue_wrap Val_pointer /* just wrap a pointer */
-CAMLprim value ml_g_value_new(void);
+CAMLextern value ml_g_value_new(void);
 
-value Val_gboxed(GType t, gpointer p);     /* finalized gboxed */
-value Val_gboxed_new(GType t, gpointer p); /* without copy */
+CAMLextern value Val_gboxed(GType t, gpointer p);     /* finalized gboxed */
+CAMLextern value Val_gboxed_new(GType t, gpointer p); /* without copy */
 
 /* Macro utilities for export */
 /* used in ml_gtk.h for instance */

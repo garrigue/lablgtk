@@ -114,7 +114,7 @@ Make_Extractor (GdkVisual,GdkVisual_val,blue_prec,Val_int)
 /* Image */
 
 #ifndef UnsafeImage
-GdkImage *GdkImage_val(value val)
+CAMLexport GdkImage *GdkImage_val(value val)
 {
     if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkImage");
     return check_cast(GDK_IMAGE,val);
@@ -277,7 +277,7 @@ ML_1 (gdk_cursor_destroy, GdkCursor_val, Unit)
 /* Pixmap */
 
 
-GdkPixmap *GdkPixmap_val(value val)
+CAMLexport GdkPixmap *GdkPixmap_val(value val)
 {
     if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkPixmap");
     return check_cast(GDK_PIXMAP,val);
@@ -466,7 +466,7 @@ ML_2 (gdk_property_delete, GdkWindow_val, GdkAtom_val, Unit)
 #define PointArrayLen_val(val) Int_val(Field(val,0))
 Make_Val_final_pointer (GdkRegion, Ignore, gdk_region_destroy, 0)
 #define Val_GdkRegion_copy(r) (Val_GdkRegion(gdk_region_copy(r)))
-GdkRegion *GdkRegion_val(value val)
+CAMLexport GdkRegion *GdkRegion_val(value val)
 {
     if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkRegion");
     return (GdkRegion*)(Field(val,1));
@@ -829,7 +829,7 @@ ML_3 (gdk_drag_status, GdkDragContext_val, GdkDragAction_optval, Int32_val,
       Unit)
 Make_Extractor (GdkDragContext, GdkDragContext_val, suggested_action,
                 Val_gdkDragAction)
-value val_int(gpointer i)
+static value val_int(gpointer i)
 {
   return Val_int (GPOINTER_TO_INT(i));
 }

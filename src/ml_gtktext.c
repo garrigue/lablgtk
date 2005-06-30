@@ -677,48 +677,6 @@ ML_4(gtk_text_view_move_child,GtkTextView_val,
      GtkWidget_val,Int_val,Int_val,
      Unit)
 
-/*
-ML_2(gtk_text_view_set_wrap_mode,GtkTextView_val, Wrap_mode_val,Unit)
-
-ML_1(gtk_text_view_get_wrap_mode,GtkTextView_val, Val_wrap_mode)
-
-ML_2(gtk_text_view_set_editable,GtkTextView_val, Bool_val,Unit)
-
-ML_1(gtk_text_view_get_editable,GtkTextView_val, Val_bool)
-
-ML_2(gtk_text_view_set_cursor_visible,GtkTextView_val, Bool_val,Unit)
-
-ML_1(gtk_text_view_get_cursor_visible,GtkTextView_val, Val_bool)
-
-ML_2(gtk_text_view_set_pixels_above_lines,GtkTextView_val, Int_val,Unit)
-
-ML_1(gtk_text_view_get_pixels_above_lines,GtkTextView_val, Val_int)
-
-ML_2(gtk_text_view_set_pixels_below_lines,GtkTextView_val, Int_val,Unit)
-
-ML_1(gtk_text_view_get_pixels_below_lines,GtkTextView_val, Val_int)
-
-ML_2(gtk_text_view_set_pixels_inside_wrap,GtkTextView_val, Int_val,Unit)
-
-ML_1(gtk_text_view_get_pixels_inside_wrap,GtkTextView_val, Val_int)
-
-ML_2(gtk_text_view_set_justification,GtkTextView_val, Justification_val,Unit)
-
-ML_1(gtk_text_view_get_justification,GtkTextView_val, Val_justification)
-
-ML_2(gtk_text_view_set_left_margin,GtkTextView_val, Int_val,Unit)
-
-ML_1(gtk_text_view_get_left_margin,GtkTextView_val, Val_int)
-
-ML_2(gtk_text_view_set_right_margin,GtkTextView_val, Int_val,Unit)
-
-ML_1(gtk_text_view_get_right_margin,GtkTextView_val, Val_int)
-
-ML_2(gtk_text_view_set_indent,GtkTextView_val, Int_val,Unit)
-
-ML_1(gtk_text_view_get_indent,GtkTextView_val, Val_int)
-*/
-
 /* gtktextiter */
 
 ML_1 (gtk_text_iter_get_buffer, GtkTextIter_val, Val_GtkTextBuffer)

@@ -8,8 +8,7 @@ LINKOPT = $(CAMLOPT) $(MLFLAGS)
 LIBRARIAN = $(CAMLMKLIB) -verbose
 TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
 CAMLP4 = $(CAMLP4O) pr_o.cmo
-MKLIB = lib /nologo /debugtype:CV /out:
-MKDLL = link /nologo /dll "`$(CAMLC) -where`/ocamlrun.lib" "$(GTKLIBPATH)" /out:
+
 CONFIG = ../config.make
 
 # protect against missing definitions
@@ -118,8 +117,8 @@ endif
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c $(XO) .d$(XO) .var .h .opt .def .ml4
 .c$(XO):
 	$(CCOMPILER) $<
-.c.d.obj:
-	$(COMPILER) -verbose -ccopt "/MD -DCAML_DLL /Fo$@ $(CFLAGS)" $<
+.c.d$(XO):
+	$(CCOMPILER) -MD -DCAML_DLL -Fo$@ $(CFLAGS) $<
 .ml.cmo:
 	$(COMPILER) $<
 .mli.cmi:

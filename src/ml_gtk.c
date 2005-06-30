@@ -34,7 +34,7 @@ void ml_raise_gtk (const char *errmsg)
 static Make_Flags_val (Dest_defaults_val)
 static Make_Flags_val (Target_flags_val)
 
-value Val_GtkWidget_func(gpointer w)
+CAMLexport value Val_GtkWidget_func(gpointer w)
 {
   return (Val_GtkWidget((GtkWidget*)w));
 }

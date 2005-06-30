@@ -55,7 +55,7 @@ CAMLprim value ml_set_long_at_pointer (value ptr, value n)
     return Val_unit;
 }
 
-unsigned char* ml_gpointer_base (value region)
+CAMLexport unsigned char* ml_gpointer_base (value region)
 {
     unsigned int i;
     value ptr = RegData_val(region);

@@ -34,15 +34,14 @@ CAMLprim value ml_glib_init(value unit)
 ML_2(setlocale, Locale_category_val, String_option_val, Val_optstring)
 
 /* Utility functions */
-value copy_string_g_free (char *str)
+CAMLprim value copy_string_g_free (char *str)
 {
     value res = copy_string_check (str);
     g_free (str);
     return res;
 }
 
-void ml_raise_glib (const char *errmsg) Noreturn;
-void ml_raise_glib (const char *errmsg)
+static void ml_raise_glib (const char *errmsg)
 {
   static value * exn = NULL;
   if (exn == NULL)
@@ -50,7 +49,7 @@ void ml_raise_glib (const char *errmsg)
   raise_with_string (*exn, (char*)errmsg);
 }
 
-value Val_GList (GList *list, value (*func)(gpointer))
+CAMLprim value Val_GList (GList *list, value (*func)(gpointer))
 {
   CAMLparam0 ();
   CAMLlocal4 (new_cell, result, last_cell, cell);
@@ -69,14 +68,14 @@ value Val_GList (GList *list, value (*func)(gpointer))
   CAMLreturn (cell);
 }
 
-value Val_GList_free (GList *list, value (*func)(gpointer))
+CAMLprim value Val_GList_free (GList *list, value (*func)(gpointer))
 {
   value res = Val_GList (list, func);
   g_list_free (list);
   return res;
 }
 
-GList *GList_val (value list, gpointer (*func)(value))
+CAMLprim GList *GList_val (value list, gpointer (*func)(value))
 {
     CAMLparam1(list);
     GList *res = NULL;
@@ -95,7 +94,7 @@ struct exn_data {
   value *caml_exn;
 };
 
-void ml_register_exn_map (GQuark domain, char *caml_name)
+CAMLprim void ml_register_exn_map (GQuark domain, char *caml_name)
 {
   struct exn_data *exn_data = stat_alloc (sizeof *exn_data);
   exn_data->domain = domain;
@@ -148,7 +147,7 @@ static void ml_raise_generic_gerror (GError *err)
   raise_with_arg (*exn, msg);
 }
 
-void ml_raise_gerror(GError *err)
+CAMLprim void ml_raise_gerror(GError *err)
 {
   value *caml_exn;
   g_assert (err);
@@ -320,17 +319,9 @@ CAMLprim value ml_g_io_channel_read(value io, value str, value offset,
   return Val_unit;
 }
 
-/* Thread initialization ? */
-/*
-ML_1(g_thread_init, NULL Ignore, Unit)
-ML_0(gdk_threads_enter, Unit)
-ML_0(gdk_threads_leave, Unit)
-*/
+/* single-linked lists */
 
-/* This is not used, but could be someday... */
-
-/* The day has come .... */
-value Val_GSList (GSList *list, value (*func)(gpointer))
+CAMLprim value Val_GSList (GSList *list, value (*func)(gpointer))
 {
   CAMLparam0();
   CAMLlocal4 (new_cell, result, last_cell, cell);
@@ -349,14 +340,14 @@ value Val_GSList (GSList *list, value (*func)(gpointer))
   CAMLreturn(cell);
 }
 
-value Val_GSList_free (GSList *list, value (*func)(gpointer))
+CAMLprim value Val_GSList_free (GSList *list, value (*func)(gpointer))
 {
   value res = Val_GSList (list, func);
   g_slist_free (list);
   return res;
 }
 
-GSList *GSList_val (value list, gpointer (*func)(value))
+CAMLprim GSList *GSList_val (value list, gpointer (*func)(value))
 {
     GSList *res = NULL;
     GSList **current = &res;

@@ -182,7 +182,7 @@ CAMLprim value ml_pango_layout_get_pixel_size(value layout)
   Field(res,1) = Val_int(height);
   return res;
 }
-value Val_PangoRectangle(PangoRectangle *rect)
+CAMLexport value Val_PangoRectangle(PangoRectangle *rect)
 {
   value res = alloc_tuple(4);
   Field(res,0) = Val_int(rect->x); Field(res,1) = Val_int(rect->y);
