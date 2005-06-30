@@ -19,7 +19,7 @@
 
 #define GdkCursor_val(val) ((GdkCursor*)Pointer_val(val))
 
-extern GdkPixmap *GdkPixmap_val (value);  /* check argument */
+CAMLextern GdkPixmap *GdkPixmap_val (value);  /* check argument */
 #define Val_GdkPixmap Val_GAnyObject
 #define Val_GdkPixmap_no_ref Val_GAnyObject_new
 
@@ -28,7 +28,7 @@ extern GdkPixmap *GdkPixmap_val (value);  /* check argument */
 #define Val_GdkBitmap_no_ref Val_GdkPixmap_no_ref
 
 #ifndef UnsafeImage
-extern GdkImage *GdkImage_val (value);  /* check argument */
+CAMLextern GdkImage *GdkImage_val (value);  /* check argument */
 #else
 #define GdkImage_val(val) check_cast(GDK_IMAGE,val)
 #endif
@@ -36,10 +36,10 @@ extern GdkImage *GdkImage_val (value);  /* check argument */
 #define Val_GdkImage_new Val_GAnyObject_new
 
 #define GdkFont_val(val) ((GdkFont*)Pointer_val(val))
-extern value Val_GdkFont (GdkFont *);
+CAMLextern value Val_GdkFont (GdkFont *);
 
-extern GdkRegion *GdkRegion_val (value); /* check argument */
-extern value Val_GdkRegion (GdkRegion *); /* finalizer is destroy! */
+CAMLextern GdkRegion *GdkRegion_val (value); /* check argument */
+CAMLextern value Val_GdkRegion (GdkRegion *); /* finalizer is destroy! */
 
 #define GdkGC_val(val) check_cast(GDK_GC,val)
 #define Val_GdkGC Val_GAnyObject
@@ -63,12 +63,12 @@ extern value Val_GdkRegion (GdkRegion *); /* finalizer is destroy! */
 #endif
 #define XID_val Int32_val
 
-extern int OptFlags_GdkModifier_val (value);
-extern int Flags_GdkModifier_val (value);
-extern int Flags_Event_mask_val (value);
-extern lookup_info ml_table_extension_events[];
+CAMLextern int OptFlags_GdkModifier_val (value);
+CAMLextern int Flags_GdkModifier_val (value);
+CAMLextern int Flags_Event_mask_val (value);
+CAMLextern lookup_info ml_table_extension_events[];
 #define Extension_events_val(key) ml_lookup_to_c (ml_table_extension_events, key)
 
 #define GdkDragContext_val(val) check_cast(GDK_DRAG_CONTEXT,val)
 #define Val_GdkDragContext Val_GAnyObject
-extern int Flags_GdkDragAction_val (value);
+CAMLextern int Flags_GdkDragAction_val (value);

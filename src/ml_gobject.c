@@ -34,7 +34,7 @@ ML_1 (g_object_thaw_notify, GObject_val, Unit)
 ML_2 (g_object_notify, GObject_val, String_val, Unit)
 ML_3 (g_object_set_property, GObject_val, String_val, GValue_val, Unit)
 ML_3 (g_object_get_property, GObject_val, String_val, GValue_val, Unit)
-GType my_g_object_get_property_type(GObject *obj, const char *prop)
+static GType my_g_object_get_property_type(GObject *obj, const char *prop)
 {
     GParamSpec *pspec =
         g_object_class_find_property (G_OBJECT_GET_CLASS(obj), prop);
@@ -170,7 +170,7 @@ CAMLprim value ml_g_value_new(void)
     return ret;
 }
 
-value Val_GValue_copy(GValue *gv)
+CAMLprim value Val_GValue_copy(GValue *gv)
 {
     value ret = ml_g_value_new();
     *((GValue*)&Field(ret,2)) = *gv;
@@ -184,7 +184,7 @@ CAMLprim value ml_g_value_release(value val)
     return Val_unit;
 }
 
-GValue* GValue_val(value val)
+CAMLprim GValue* GValue_val(value val)
 {
     void *v = MLPointer_val(val);
     if (v == NULL) invalid_argument("GValue_val");
@@ -214,14 +214,14 @@ static void ml_final_gboxed (value val)
 static struct custom_operations ml_custom_gboxed =
 { "gboxed/2.0/", ml_final_gboxed, custom_compare_default, custom_hash_default,
   custom_serialize_default, custom_deserialize_default };
-value Val_gboxed(GType t, gpointer p)
+CAMLprim value Val_gboxed(GType t, gpointer p)
 {
     value ret = alloc_custom(&ml_custom_gboxed, 2*sizeof(value), 10, 1000);
     Store_pointer(ret, g_boxed_copy (t,p));
     Field(ret,2) = t;
     return ret;
 }
-value Val_gboxed_new(GType t, gpointer p)
+CAMLprim value Val_gboxed_new(GType t, gpointer p)
 {
     value ret = alloc_custom(&ml_custom_gboxed, 2*sizeof(value), 10, 1000);
     Store_pointer(ret, p);
@@ -233,7 +233,7 @@ value Val_gboxed_new(GType t, gpointer p)
 
 #define DATA  (val->data[0])
 
-value g_value_get_variant (GValue *val)
+static value g_value_get_variant (GValue *val)
 {
     CAMLparam0();
     CAMLlocal1(tmp);
@@ -321,7 +321,7 @@ value g_value_get_variant (GValue *val)
 
 ML_1 (g_value_get_variant, GValue_val, ID)
 
-void g_value_set_variant (GValue *val, value arg)
+static void g_value_set_variant (GValue *val, value arg)
 {
     value tag = Field(arg,0);
     value data = Field(arg,1);

@@ -1,5 +1,8 @@
 $Id$
 
+2005.06.30 [Jacques]
+  * export same symbols under unix and windows
+
 2005.06.13 [Jacques]
   * define GText.buffer_skel and GText.view_skel
 
