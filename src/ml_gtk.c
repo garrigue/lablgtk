@@ -31,8 +31,8 @@ void ml_raise_gtk (const char *errmsg)
 
 #include "gtk_tags.c"
 
-static Make_Flags_val (Dest_defaults_val)
-static Make_Flags_val (Target_flags_val)
+Make_Flags_val (Dest_defaults_val)
+Make_Flags_val (Target_flags_val)
 
 CAMLexport value Val_GtkWidget_func(gpointer w)
 {
@@ -67,7 +67,7 @@ ML_1 (gtk_object_ref_and_sink, GtkObject_val, Unit)
 
 /* gtkaccelgroup.h */
 
-static Make_OptFlags_val (Accel_flag_val)
+Make_OptFlags_val (Accel_flag_val)
 
 #define Signal_name_val(val) String_val(Field(val,0))
 
