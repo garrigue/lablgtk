@@ -1850,10 +1850,10 @@ else
   THREADS_LIB="yes"
 fi;
 if (test "$THREADS_LIB" = yes || test "$THREADS_LIB" = system) && \
-   test -r $OCAMLLIB/threads/threads.cma; then
+   test -r "$OCAMLLIB/threads/threads.cma"; then
   THREADS_LIB="system"
 elif (test "$THREADS_LIB" = yes || test "$THREADS_LIB" = vm) && \
-   test -r $OCAMLLIB/vmthreads/stdlib.cma; then
+   test -r "$OCAMLLIB/vmthreads/stdlib.cma"; then
   THREADS_LIB="vm"
 elif test "$THREADS_LIB" = yes || test "$THREADS_LIB" = no; then
   THREADS_LIB="no"
@@ -1869,8 +1869,8 @@ echo "${ECHO_T}use $THREADS_LIB threads" >&6
 HAS_DLL_SUPPORT="no"
 echo "$as_me:$LINENO: checking for ocaml dll support" >&5
 echo $ECHO_N "checking for ocaml dll support... $ECHO_C" >&6
-if test -r $OCAMLLIB/stublibs/dllunix.so ||
-   test -r $OCAMLLIB/stublibs/dllunix.dll
+if test -r "$OCAMLLIB/stublibs/dllunix.so" ||
+   test -r "$OCAMLLIB/stublibs/dllunix.dll"
 then HAS_DLL_SUPPORT="yes"
 fi
 echo "$as_me:$LINENO: result: $HAS_DLL_SUPPORT" >&5
