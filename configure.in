@@ -166,10 +166,10 @@ AC_ARG_WITH(threads,
         THREADS_LIB="$withval",
         THREADS_LIB="yes")
 if (test "$THREADS_LIB" = yes || test "$THREADS_LIB" = system) && \
-   test -r $OCAMLLIB/threads/threads.cma; then
+   test -r "$OCAMLLIB/threads/threads.cma"; then
   THREADS_LIB="system"
 elif (test "$THREADS_LIB" = yes || test "$THREADS_LIB" = vm) && \
-   test -r $OCAMLLIB/vmthreads/stdlib.cma; then
+   test -r "$OCAMLLIB/vmthreads/stdlib.cma"; then
   THREADS_LIB="vm"
 elif test "$THREADS_LIB" = yes || test "$THREADS_LIB" = no; then
   THREADS_LIB="no"
@@ -181,8 +181,8 @@ AC_MSG_RESULT(use $THREADS_LIB threads)
 # Check for dll support
 HAS_DLL_SUPPORT="no"
 AC_MSG_CHECKING(for ocaml dll support)
-if test -r $OCAMLLIB/stublibs/dllunix.so ||
-   test -r $OCAMLLIB/stublibs/dllunix.dll
+if test -r "$OCAMLLIB/stublibs/dllunix.so" ||
+   test -r "$OCAMLLIB/stublibs/dllunix.dll"
 then HAS_DLL_SUPPORT="yes"
 fi
 AC_MSG_RESULT($HAS_DLL_SUPPORT)
