@@ -842,7 +842,7 @@ ML_3 (gtk_text_iter_in_range, GtkTextIter_val, GtkTextIter_val,
       GtkTextIter_val, Val_bool)
 ML_2 (gtk_text_iter_order, GtkTextIter_val, GtkTextIter_val, Unit)
 
-static Make_OptFlags_val(Text_search_flag_val)
+Make_OptFlags_val(Text_search_flag_val)
 
 #define Make_search(dir) \
 CAMLprim value ml_gtk_text_iter_##dir##_search (value ti_start, \

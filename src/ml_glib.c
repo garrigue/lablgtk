@@ -286,7 +286,7 @@ static gboolean ml_g_io_channel_watch(GIOChannel *s, GIOCondition c,
     return Bool_val(res);
 }
 
-static Make_Flags_val(Io_condition_val)
+Make_Flags_val(Io_condition_val)
 
 CAMLprim value ml_g_io_add_watch(value cond, value clos, value prio, value io)
 {

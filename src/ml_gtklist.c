@@ -15,7 +15,7 @@
 #include "ml_gtk.h"
 #include "gtk_tags.h"
 
-static Make_Flags_val (Button_action_val)
+Make_Flags_val (Button_action_val)
 
 /* Init all */
 

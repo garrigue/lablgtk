@@ -23,8 +23,8 @@ XO=.obj
 XS=.dll
 TOOLCHAIN=msvc
 MKLIB=lib -nologo -debugtype:CV -out:
-MKDLL=link -nologo -dll "`$(CAMLC) -where`/ocamlrun.lib" "$(GTKLIBPATH)" \
-        -out:LIBDIR=`$(CAMLC) -where`
+MKDLL=link -nologo -dll "`$(CAMLC) -where`/ocamlrun.lib" "$(GTKLIBPATH)" -out:
+LIBDIR=`$(CAMLC) -where`
 THREADS_LIB=system
 HAS_DLL_SUPPORT=yes
 
@@ -41,7 +41,7 @@ DLLDIR=$(LIBDIR)/stublibs
 ODOC_DEF=
 
 #GTKROOT=c:/GTK
-GTKROOT=c:/Home/garrigue/gtk2.4
+GTKROOT=c:/Home/garrigue/gtk-2.6.8
 GTKCFLAGS=-I$(GTKROOT)/include/glib-2.0 -I$(GTKROOT)/lib/glib-2.0/include -I$(GTKROOT)/include/gtk-2.0/ -I$(GTKROOT)/lib/gtk-2.0/include -I$(GTKROOT)/include/pango-1.0 -I$(GTKROOT)/include/atk-1.0 -I$(GTKROOT)/include 
 GTKLIBS=gtk-win32-2.0.lib gdk_pixbuf-2.0.lib gdk-win32-2.0.lib  pango-1.0.lib atk-1.0.lib glib-2.0.lib gobject-2.0.lib #gthread-2.0.lib
 GTKLIBPATH=/libpath:$(GTKROOT)/lib
