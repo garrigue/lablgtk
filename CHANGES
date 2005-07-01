@@ -1,8 +1,10 @@
 $Id$
 
+In lablgtk2-20050701:
 2005.06.30 [Jacques]
   * export same symbols under unix and windows
 
+In lablgtk2-20050613:
 2005.06.13 [Jacques]
   * define GText.buffer_skel and GText.view_skel
 
