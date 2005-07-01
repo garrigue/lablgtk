@@ -339,7 +339,7 @@ Windows port
   are always called from the main loop thread, you can freely use GTK
   in them. Also, non-graphical operations are thread-safe.
   Here is an example using the lablgtk toplevel with threads:
-	% lablgtk -thread
+	% lablgtk2 -thread
 	        Objective Caml version 3.08
 
         # open GtkThread;;	
