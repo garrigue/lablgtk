@@ -389,7 +389,7 @@ CAMLprim value ml_gdk_property_change (value window, value property, value type,
 }
 
 /* copy X11 property data */
-CAMLprim value copy_xdata (gint format, guchar *xdata, gulong nitems)
+CAMLprim value copy_xdata (gint format, void *xdata, gulong nitems)
 {
     CAMLparam0();
     CAMLlocal2(ret, data);
@@ -521,21 +521,23 @@ CAMLprim value ml_gdk_gc_set_dashes(value gc, value offset, value dashes)
   CAMLlocal1(tmp);
   int l = 0;
   int i;
-  char *cdashes;
+  gint8 *cdashes;
   for(tmp = dashes; tmp != Val_int(0); tmp = Field(tmp,1)){
     l++;
   }
   if( l == 0 ){ ml_raise_gdk("line dashes must have at least one element"); }
-  cdashes = malloc(sizeof(char) * l);
+  cdashes = stat_alloc(sizeof (gint8) * l);
   for(i=0, tmp= dashes; i<l; i++, tmp = Field(tmp,1)){
     int d;
     d = Int_val(Field(tmp,0));
-    if( d<0 && d>255 ){
+    if( d<0 || d>255 ){
+      stat_free (cdashes);
       ml_raise_gdk("line dashes must be [0..255]");
     }
-    cdashes[i] = (char)d;
+    cdashes[i] = d;
   }
   gdk_gc_set_dashes( GdkGC_val(gc), Int_val(offset), cdashes, l);
+  /* stat_free (cdashes); ? */
   CAMLreturn(Val_unit);
 }
   

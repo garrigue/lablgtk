@@ -70,7 +70,7 @@ CAMLprim value ml_rsvg_handle_write(value h, value s, value off, value len)
   GError *err = NULL;
   check_substring(s, off, len);
   rsvg_handle_write(RsvgHandle_val(h), 
-		    String_val(s)+Int_val(off), Int_val(len), &err);
+		    (guchar *) String_val(s)+Int_val(off), Int_val(len), &err);
   if (err != NULL)
     ml_raise_gerror (err);
   return Val_unit;
