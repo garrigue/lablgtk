@@ -249,3 +249,17 @@ val get_tmp_dir  : unit -> string
 val find_program_in_path : string -> string
     (** @raise Not_found if the program is not found in the path
         or is not executable *)
+
+val getenv : string -> string
+    (** @raise Not_found if the environment variable is not found. *)
+val setenv : string -> string -> bool -> unit
+    (** @raise Failure if the environment variable couldn't be set.
+        @since GTK 2.4 *)
+val unsetenv : string -> unit
+    (** @since GTK 2.4 *)
+
+val get_user_cache_dir : unit -> string (** @since GTK 2.6 *)
+val get_user_data_dir : unit -> string (** @since GTK 2.6 *)
+val get_user_config_dir : unit -> string (** @since GTK 2.6 *)
+val get_system_data_dirs : unit -> string list (** @since GTK 2.6 *)
+val get_system_config_dirs : unit -> string list (** @since GTK 2.6 *)

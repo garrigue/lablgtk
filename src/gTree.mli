@@ -94,6 +94,11 @@ class tree_sortable : ([> `treesortable|`treemodel] as 'a) obj ->
     method has_default_sort_func : bool
   end
 
+(** Special value for the [#set_sort_column_id] method of {!GTree.tree_sortable}. *)
+
+val default_sort_column_id  : int
+val unsorted_sort_column_id : int
+
 (** @gtkdoc gtk GtkTreeStore *)
 class tree_store : Gtk.tree_store ->
   object

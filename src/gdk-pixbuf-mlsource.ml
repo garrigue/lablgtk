@@ -75,7 +75,7 @@ let _ =
 	"
 let %s_data = \"%a\"
 
-let %s = lazy ((Marshal.from_string %s_data 0 : GdkPixbuf.pixbuf))
+let %s () : GdkPixbuf.pixbuf = Marshal.from_string %s_data 0
 " 
     name print_binary_string pixdata name name)
     data

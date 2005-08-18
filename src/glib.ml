@@ -308,3 +308,13 @@ external get_real_name : unit -> string = "ml_g_get_real_name"
 external get_home_dir : unit -> string option = "ml_g_get_home_dir"
 external get_tmp_dir  : unit -> string = "ml_g_get_tmp_dir"
 external find_program_in_path : string -> string = "ml_g_find_program_in_path"
+
+external getenv : string -> string = "ml_g_getenv"
+external setenv : string -> string -> bool -> unit = "ml_g_setenv"
+external unsetenv : string -> unit = "ml_g_unsetenv"
+
+external get_user_cache_dir : unit -> string = "ml_g_get_user_cache_dir"
+external get_user_data_dir : unit -> string = "ml_g_get_user_data_dir"
+external get_user_config_dir : unit -> string = "ml_g_get_user_config_dir"
+external get_system_data_dirs : unit -> string list = "ml_g_get_system_data_dirs"
+external get_system_config_dirs : unit -> string list = "ml_g_get_system_config_dirs"
