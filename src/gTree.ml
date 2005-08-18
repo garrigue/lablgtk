@@ -94,6 +94,9 @@ class tree_sortable obj = object
   method has_default_sort_func = GtkTree.TreeSortable.has_default_sort_func obj
 end
 
+let default_sort_column_id  = -1
+let unsorted_sort_column_id = -2
+
 class tree_store obj = object
   inherit tree_sortable obj
   method set : 'a. row:tree_iter -> column:'a column -> 'a -> unit =

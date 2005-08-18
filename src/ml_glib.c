@@ -34,6 +34,27 @@ CAMLprim value ml_glib_init(value unit)
 ML_2(setlocale, Locale_category_val, String_option_val, Val_optstring)
 
 /* Utility functions */
+value copy_string_v (const gchar * const *v)
+{
+  CAMLparam0();
+  CAMLlocal4(h,p,c,s);
+  h = p = Val_emptylist;
+  while (*v != NULL)
+    {
+      s = copy_string (*v);
+      c = alloc_small (2, 0);
+      Field (c, 0) = s;
+      Field (c, 1) = Val_emptylist;
+      if (p == Val_emptylist)
+	h = c;
+      else
+	Store_field(p, 1, c);
+      p = c;
+      v++;
+    }
+  CAMLreturn(h);
+}
+
 CAMLprim value copy_string_g_free (char *str)
 {
     value res = copy_string_check (str);
@@ -529,3 +550,37 @@ CAMLprim value ml_g_find_program_in_path (value p)
   g_free(s);
   return v;
 }
+
+CAMLprim value ml_g_getenv (value v)
+{
+  const gchar *s = g_getenv(String_val(v));
+  if (s == NULL) raise_not_found();
+  return copy_string(s);
+}
+
+#ifdef HASGTK24
+CAMLprim value ml_g_setenv (value v, value s, value o)
+{
+  if (! g_setenv(String_val(v), String_val(s), Bool_val(o)))
+    failwith("g_setenv");
+  return Val_unit;
+}
+ML_1 (g_unsetenv, String_val, Unit)
+#else
+Unsupported_24(g_setenv)
+Unsupported_24(g_unsetenv)
+#endif /* HASGTK24 */
+
+#ifdef HASGTK26
+ML_0 (g_get_user_cache_dir, copy_string)
+ML_0 (g_get_user_data_dir, copy_string)
+ML_0 (g_get_user_config_dir, copy_string)
+ML_0 (g_get_system_data_dirs, copy_string_v)
+ML_0 (g_get_system_config_dirs, copy_string_v)
+#else
+Unsupported_26(get_user_cache_dir)
+Unsupported_26(get_user_data_dir)
+Unsupported_26(get_user_config_dir)
+Unsupported_26(get_system_data_dirs)
+Unsupported_26(get_system_config_dirs)
+#endif /* HASGTK26 */
