@@ -273,9 +273,6 @@ class about_dialog :
     method set_version : string -> unit
     method set_website : string -> unit
     method set_website_label : string -> unit
-
-    method set_email_hook : (string -> unit) -> unit
-    method set_url_hook : (string -> unit) -> unit
   end
 
 (** Display information about an application. 
@@ -318,7 +315,6 @@ val about_dialog :
   ?wm_class:string ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> about_dialog
-
 
 (** {3 File Chooser Dialog} *)
 

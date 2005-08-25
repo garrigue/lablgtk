@@ -239,9 +239,6 @@ class AboutDialog abstract set wrap : Dialog {
   method get_authors     : "string list"
   method set_documenters : "string list -> unit"
   method get_documenters : "string list"
-
-  method set_email_hook : "(string -> unit) -> unit"
-  method set_url_hook   : "(string -> unit) -> unit"
 }
 
 class Plug abstract wrapsig : Bin {
