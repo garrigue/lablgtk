@@ -99,6 +99,9 @@ end
 module AboutDialog = struct
   include AboutDialog
   external create : unit -> Gtk.about_dialog obj = "ml_gtk_about_dialog_new"
+
+  external set_email_hook : (string -> unit) -> unit = "ml_gtk_about_dialog_set_email_hook"
+  external set_url_hook   : (string -> unit) -> unit = "ml_gtk_about_dialog_set_url_hook"
 end
 
 module FileSelection = struct

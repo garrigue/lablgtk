@@ -1,12 +1,16 @@
 $Id$
 
+2005.08.25 [Olivier]
+  * gtk_about_dialog_set_{url,email}_hook are not methods : fix the 
+    external type declaration and remove from the GWindow.about_dialog class.
+
 2005.08.18 [Olivier]
   * add special sort_column_id values in GTree to select default sort
     function or disable sorting
   * add a couple of utility functions in Glib :
       - getenv, setenv, unsetenv (2.4)
       - get_user_data_dir, etc. (2.6) 
-  * change the genertaed code of gdk-pixbuf-mlsource a bit.
+  * change the generated code of gdk-pixbuf-mlsource a bit.
 
 In lablgtk2-20050701:
 2005.06.30 [Jacques]

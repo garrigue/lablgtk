@@ -225,8 +225,6 @@ class about_dialog obj =
     method authors = AboutDialog.get_authors obj
     method set_documenters = AboutDialog.set_documenters obj
     method documenters = AboutDialog.get_documenters obj
-    method set_url_hook = AboutDialog.set_url_hook obj
-    method set_email_hook = AboutDialog.set_email_hook obj
     initializer
       tbl <- [ rclose, `CLOSE ] @ tbl
   end
