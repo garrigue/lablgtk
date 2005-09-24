@@ -736,5 +736,8 @@ module Cursor = struct
     pixmap -> mask:bitmap ->
     fg:color -> bg:color -> x:int -> y:int -> cursor
     = "ml_gdk_cursor_new_from_pixmap_bc" "ml_gdk_cursor_new_from_pixmap"
+  external create_from_pixbuf :
+    [`pixbuf] Gobject.obj -> x:int -> y:int -> cursor
+    = "ml_gdk_cursor_new_from_pixbuf" (** @since GTK 2.4 *)
   external destroy : cursor -> unit = "ml_gdk_cursor_destroy"
 end
