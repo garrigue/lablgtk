@@ -1,5 +1,8 @@
 $Id$
 
+2005.09.24 [Olivier]
+  * wrap gdk_cursor_new_from_pixbuf
+
 2005.08.25 [Olivier]
   * gtk_about_dialog_set_{url,email}_hook are not methods : fix the 
     external type declaration and remove from the GWindow.about_dialog class.

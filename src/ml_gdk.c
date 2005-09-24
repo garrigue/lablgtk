@@ -19,6 +19,7 @@
 #include "ml_gobject.h"
 #include "ml_pango.h"
 #include "ml_gdk.h"
+#include "ml_gdkpixbuf.h"
 #include "gdk_tags.h"
 
 
@@ -272,6 +273,18 @@ ML_1 (gdk_cursor_new, GdkCursorType_val, Val_GdkCursor_new)
 ML_6 (gdk_cursor_new_from_pixmap, GdkPixmap_val, GdkPixmap_val,
       GdkColor_val, GdkColor_val, Int_val, Int_val, Val_GdkCursor_new)
 ML_bc6 (ml_gdk_cursor_new_from_pixmap)
+#ifdef HASGTK24
+CAMLprim value
+ml_gdk_cursor_new_from_pixbuf (value pb, value x, value y)
+{
+  GdkCursor *c = gdk_cursor_new_from_pixbuf (gdk_display_get_default (),
+					     GdkPixbuf_val(pb),
+					     Int_val(x), Int_val(y));
+  return Val_GdkCursor_new (c);
+}
+#else
+Unsupported_24(gdk_cursor_new_from_pixbuf)
+#endif
 ML_1 (gdk_cursor_destroy, GdkCursor_val, Unit)
 
 /* Pixmap */
