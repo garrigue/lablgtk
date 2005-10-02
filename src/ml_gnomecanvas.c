@@ -370,7 +370,7 @@ CAMLprim value ml_gnome_canvas_get_points(value arg)
 }
 
 #define artvpathdash_free(d) g_free((d)->dash); g_free(d)
-Make_Val_final_pointer_ext(ArtVpathDash, _new, Ignore, artvpathdash_free, 10)
+Make_Val_final_pointer_ext(ArtVpathDash, _new, Ignore, artvpathdash_free, 1)
 CAMLprim value ml_gnome_canvas_convert_dash(value off, value dash)
 {
   ArtVpathDash *d;
@@ -400,7 +400,7 @@ CAMLprim value ml_gnome_canvas_get_dash(value dash)
 
 /* gome-canvas-path-def.h */
 
-Make_Val_final_pointer_ext(GnomeCanvasPathDef, _new, Ignore, gnome_canvas_path_def_unref, 50)
+Make_Val_final_pointer_ext(GnomeCanvasPathDef, _new, Ignore, gnome_canvas_path_def_unref, 1)
 #define GnomeCanvasPathDef_val(v) ((GnomeCanvasPathDef *)Pointer_val(v))
 
 CAMLprim value ml_gnome_canvas_path_def_new(value olen, value unit)
