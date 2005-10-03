@@ -1,5 +1,8 @@
 $Id$
 
+2005.10.03 [Olivier]
+  * fix refcounting of pixbufs in GdkPixbuf
+
 2005.09.24 [Olivier]
   * wrap gdk_cursor_new_from_pixbuf
 
