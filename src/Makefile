@@ -168,6 +168,7 @@ MLXOBJS = $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(MLOBJS3) $(MLOBJS4)
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
+EXTRAOBJS = $(INITOBJS) $(THOBJS) $(THINITOBJS)
 ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) $(GTKSPELLMLOBJS) \
 	$(INITOBJS)
@@ -209,6 +210,12 @@ lablgtk2: Makefile $(CONFIG) lablgtk2.in
 lablgtk2.bat: lablgtk2.bat.in
 	cp lablgtk2.bat.in lablgtk2.bat
 
+build.ml: Makefile $(CONFIG) build.ml.in
+	sed -e "s|@LABLGTK_MLS@|$(MLOBJS:.cmo=)|" \
+	    -e "s|@EXTRA_MLS@|$(EXTRAOBJS:.cmo=)|" \
+	    -e "s|@PROP_MLS@|$(PROPOBJS:.cmo=)|" \
+	    -e "s|@GTKLIBS@|$(GTKLIBS)|" < build.ml.in > $@
+
 gdk-pixbuf-mlsource$(XE) : lablgtk.cma gtkInit.cmo gdk-pixbuf-mlsource.ml
 	$(CAMLC) -o $@ $^
 
@@ -224,6 +231,16 @@ testcc$(XE): lablgladecc$(XE) lablgtktop
 	./lablgladecc -test > testcc.ml
 	./lablgtktop testcc.ml
 	rm -f testcc.ml
+
+preinstall: build.ml
+	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
+	cp $(MLOBJS:.cmo=.ml) $(EXTRAOBJS:.cmo=.ml) "$(INSTALLDIR)"
+	for f in $(MLOBJS:.cmo=.mli) $(EXTRAOBJS:.cmo=.mli); do \
+	  if test -f $$f; then cp $$f "$(INSTALLDIR)"; fi; done
+	cp build.ml "$(INSTALLDIR)"
+	cp lablgtk2$(XB) "$(BINDIR)"
+	cp $(CLIBS) "$(INSTALLDIR)"
+	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)"
 
 install:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
@@ -263,9 +280,9 @@ ifeq ($(TOOLCHAIN),msvc)
 liblablgtk2$(XA): $(COBJS)
 	$(MKLIB)$@ $(COBJS)
 dlllablgtk2.dll: $(COBJS:$(XO)=.d$(XO))
-	$(MKDLL)$@ $(COBJS:$(XO)=.d$(XO)) $(GTKLIBS) $(OCAMLDLL)
+	$(call MKDLL,$@) $(COBJS:$(XO)=.d$(XO)) $(GTKLIBS)
 lablgtk.cma: liblablgtk2$(XA) dlllablgtk2.dll $(MLOBJS) $(CONFIG)
-	$(LINKER) -a -o $@ $(MLOBJS) \
+	$(LINKER) -a -o $@ $(MLOBJS) $(GTKLIBS) \
 	  -cclib -llablgtk2 -dllib -llablgtk2 \
 	  -cclib "$(GTKLIBS)"
 lablgtk.cmxa: liblablgtk2$(XA) $(MLOBJS:.cmo=.cmx) $(CONFIG)
@@ -301,7 +318,8 @@ ifeq ($(TOOLCHAIN),msvc)
 liblablglade2$(XA): $(GLADECOBJS)
 	$(MKLIB)$@ $(GLADECOBJS)
 dlllablglade2.dll: $(GLADECOBJS:$(XO)=.d$(XO))
-	$(MKDLL)$@ $(GLADECOBJS:$(XO)=.d$(XO)) dlllablgtk2.lib $(GLADELIBS) $(GTKLIBS) $(OCAMLDLL)
+	$(call MKDLL,$@) $(GLADECOBJS:$(XO)=.d$(XO)) \
+		dlllablgtk2.lib $(GLADELIBS) $(GTKLIBS)
 lablglade.cma: liblablglade2$(XA) dlllablglade2.dll $(GLADEMLOBJS) $(CONFIG)
 	$(LINKER) -a -o $@ $(GLADEMLOBJS) \
 	  -cclib -llablglade2 -dllib -llablglade2 \
