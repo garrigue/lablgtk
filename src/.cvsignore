@@ -1,4 +1,5 @@
 .depend
+build.ml
 check_externals
 gdk-pixbuf-mlsource
 propcc
