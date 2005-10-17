@@ -2,7 +2,7 @@
 
 Binary installation
 
-0) Both MSVC and mingw versions of ocaml 3.07 should work.
+0) Both MSVC and mingw versions of ocaml 3.09 should work.
 
 1) Install the gtk2 libraries and dependencies. You can find them
 in a single zip file at
@@ -13,12 +13,32 @@ in a single zip file at
      stublibs/dlllablgtk2.dll -> lib/stublibs
      lablgtk2                 -> lib/lablgtk2
 
-   Only bytecode is included, custom compilation is not supported
+3) Go to the lib/lablgtk2 directory and execute
+        ocaml build.ml
+   This will compile the ocaml part of the library (the C part is
+   already compiled.)  Note that the autodection for mingw is not
+   fool-proof (lablgtk2 has to be installed directly under the ocaml
+   library), so if the OCaml port annouced by build.ml is not the
+   right one, you should specify it by hand inside build.ml.
 
-3) Test in examples
+   You must repeat this compilation step every time you upgrade OCaml.
+
+4) Test in examples
      lablgtk2 testgtk.ml
 
-Full compilation (required for native compilation)
+   For custom linking or native code, you must also have the export
+   libraries corresponding to your GTK DLLs (see below for where to
+   find them.) There is not default place to put them, so you should
+   specify that at link time:
+     ocamlopt -custom -ccopt "/link /libpath:/home/garrigue/gtk-2.6.8/lib"
+       -I +lablgtk2 lablgtk.cmxa gtkInit.cmx testgtk.ml -o testgtk.exe
+   or, on Mingw
+     ocamlopt -custom -ccopt "-L/home/garrigue/gtk-2.6.8/lib" -I +lablgtk2 \
+        lablgtk.cmxa gtkInit.cmx testgtk.ml -o testgtk.exe
+
+
+
+Full compilation (for the brave)
 
 0) You will need either the MSVC or mingw version of ocaml 3.07,
 and cygwin development tools. If you use mingw, check your 
@@ -46,7 +66,7 @@ Unzip all these in the base directory (something like X:\cygwin\ )
 Try to compile a small hello-gtk.c (see the tutorial page on 
 http://www.gtk.org) before going further.
 
-3) If you are using mingw, "./configure" should succeed.
+3) If you are using mingw, "./configure" should succeed. (Well not for me...)
 For MSVC, copy config.make.nt to config.make, and edit it to set GTKROOT.
 
 4) Simply do "make" and "make opt" for the native version.

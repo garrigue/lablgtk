@@ -1,0 +1,107 @@
+(* $Id$ *)
+(* A script to build lablgtk2 libraries *)
+
+open StdLabels
+
+let ocamlc = ref "ocamlc.opt"
+let ocamlopt = ref "ocamlopt.opt"
+let flags = ref "-thread -w s"
+let ccomp_type = ref "msvc"   (* "msvc" for MSVC++, "cc" for Mingw. Attempt ot autodetect *)
+
+let split ?(sep = [' ';'\t';'\r';'\n']) s =
+  let len = String.length s in
+  let rec loop last cur acc =
+    if cur > len then acc else
+    let next = cur+1 in
+    if cur = len || List.mem s.[cur] sep then
+      if cur > last then loop next next (String.sub s ~pos:last ~len:(cur-last) :: acc)
+      else loop next next acc
+    else loop last next acc
+  in List.rev (loop 0 0 [])
+
+let lablgtk_mls = split "@LABLGTK_MLS@"
+let extra_mls = split "@EXTRA_MLS@"
+let prop_mls = split "@PROP_MLS@"
+let gtk_libs = "@GTKLIBS@"
+
+(* Hack to check for mingw *)
+let () =
+  try
+    let ic = open_in "../Makefile.config" in
+    while true do
+      let s = input_line ic in
+      match split ~sep:[' ';'\t';'='] s with
+        "CCOMPTYPE" :: cc :: _ -> ccomp_type := cc
+      | _ -> ()
+    done
+  with _ -> ()
+
+let gtk_libs =
+  if !ccomp_type = "msvc" then gtk_libs else
+  let libs =
+    List.map (split gtk_libs) ~f:
+      (fun nm ->
+        if Filename.check_suffix nm ".lib" then "-l"^Filename.chop_extension nm^".dll"
+        else nm)
+  in String.concat " " libs
+
+let exe cmd args =
+  let cmd = String.concat " " (cmd :: !flags :: args) in
+  print_endline cmd; flush stdout;
+  let err = Sys.command cmd in
+  if err > 0 then failwith ("error "^string_of_int err)
+
+let may_remove f =
+  if Sys.file_exists f then Sys.remove f
+
+let byte () =
+  List.iter (lablgtk_mls @ extra_mls) ~f:
+    begin fun file ->
+      if Sys.file_exists (file ^ ".mli") then exe !ocamlc ["-c"; file^".mli"];
+      exe !ocamlc ["-c"; file^".ml"]
+    end;
+  let lablgtk_cmos = List.map lablgtk_mls ~f:(fun nm -> nm ^".cmo") in
+  exe !ocamlc ("-a -o lablgtk.cma -cclib -llablgtk2 -dllib -llablgtk2"
+               :: ("-cclib \""^gtk_libs^"\"") :: lablgtk_cmos);
+  List.iter lablgtk_cmos ~f:may_remove
+
+let native () =
+  List.iter (lablgtk_mls @ extra_mls)
+    ~f:(fun file -> exe !ocamlopt ["-c"; file ^".ml"]);
+  let lablgtk_cmxs = List.map lablgtk_mls ~f:(fun nm -> nm ^ ".cmx") in
+  exe !ocamlopt ("-a -o lablgtk.cmxa -cclib -llablgtk2"
+                 :: ("-cclib \""^gtk_libs^"\"") :: lablgtk_cmxs);
+  List.iter lablgtk_mls ~f:(fun nm -> may_remove (nm ^ ".obj"); may_remove (nm ^ ".o"))
+
+let () =
+  try
+    let arg = if Array.length Sys.argv > 1 then Sys.argv.(1) else "" in
+    if arg <> "" && arg <> "byte" && arg <> "opt" then begin
+      prerr_endline "ocaml build.ml [ byte | opt ]";
+      prerr_endline "  byte   build bytecode library only";
+      prerr_endline "  opt    build both bytecode and native (default)";
+      exit 2
+    end;
+    byte ();
+    if arg = "opt" || arg <> "byte" then begin
+      try native () with
+        Failure err ->
+          prerr_endline ("Native build failed: " ^ err);
+          prerr_endline "You can still use the bytecode version"
+    end;
+    List.iter prop_mls ~f:(fun nm -> may_remove (nm ^ ".cmi"); may_remove (nm ^ ".cmx"));
+    if !ccomp_type = "msvc" then begin
+      if Sys.file_exists "liblablgtk2.a" && not (Sys.file_exists "liblablgtk2.lib") then begin
+        prerr_endline "This is a MSVC port. Renaming liblablgtk2.a to liblablgtk2.lib";
+        Sys.rename "liblablgtk2.a" "liblablgtk2.lib"
+      end;
+      prerr_endline "Now ready to use on an OCaml MSVC port"
+    end else begin
+      if Sys.file_exists "liblablgtk2.lib" && not (Sys.file_exists "liblablgtk2.a") then begin
+        prerr_endline "This is a Mingw port. Renaming liblablgtk2.lib to liblablgtk2.a";
+        Sys.rename "liblablgtk2.lib" "liblablgtk2.a"
+      end;
+      prerr_endline "Now ready to use on an OCaml Mingw port"
+    end
+  with Failure err ->
+    prerr_endline ("Bytecode failed: " ^ err)
