@@ -9,7 +9,7 @@
 #define GtkStyle_val(val) check_cast(GTK_STYLE,val)
 
 /* GtkObjects */
-CAMLextern value Val_GtkObject_sink (GtkObject *w);
+CAMLexport value Val_GtkObject_sink (GtkObject *w);
 
 #define Val_GtkAny(w) (Val_GObject((GObject*)w))
 #define Val_GtkAny_sink(w) (Val_GtkObject_sink(GTK_OBJECT(w)))
@@ -17,7 +17,7 @@ CAMLextern value Val_GtkObject_sink (GtkObject *w);
 #define Val_GtkWidget_sink Val_GtkAny_sink
 
 /* For GList containing widgets */
-CAMLextern value Val_GtkWidget_func(gpointer w);
+CAMLexport value Val_GtkWidget_func(gpointer w);
 
 #define GtkObject_val(val) check_cast(GTK_OBJECT,val)
 #define GtkWidget_val(val) check_cast(GTK_WIDGET,val)

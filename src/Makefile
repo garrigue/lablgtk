@@ -36,7 +36,10 @@ CUSTOM = -custom
 #MLLINK += -cclib -lcamlrund
 MLBYTEFLAGS = -g
 else
-CFLAGS = -O -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS $(GTKCFLAGS)
+CFLAGS = -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS $(GTKCFLAGS)
+ifneq ($(TOOLCHAIN),msvc)
+CFLAGS += -O
+endif
 endif
 
 ifeq ($(THREADS_LIB),system)
