@@ -3,11 +3,11 @@
 #include "pango_tags.h"
 
 #define PangoFontDescription_val(val) ((PangoFontDescription*)Pointer_val(val))
-CAMLextern value Val_PangoFontDescription_new(PangoFontDescription* it);
+CAMLexport value Val_PangoFontDescription_new(PangoFontDescription* it);
 #define Val_PangoFontDescription(desc) \
   (Val_PangoFontDescription_new(pango_font_description_copy(desc)))
 
-CAMLextern value ml_PangoStyle_Val (value val);
+CAMLexport value ml_PangoStyle_Val (value val);
 
 #define Val_PangoLanguage Val_pointer
 #define PangoLanguage_val Pointer_val
@@ -24,4 +24,4 @@ CAMLextern value ml_PangoStyle_Val (value val);
 #define PangoLayout_val(val) check_cast(PANGO_LAYOUT, val)
 #define Val_PangoLayout Val_GAnyObject
 
-CAMLextern value Val_PangoRectangle(PangoRectangle *rect);
+CAMLexport value Val_PangoRectangle(PangoRectangle *rect);

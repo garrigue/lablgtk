@@ -5,4 +5,4 @@
 #define RegOffset_val(val) (Long_val(Field(val,2)))
 #define RegLength_val(val) (Long_val(Field(val,3)))
 
-CAMLextern unsigned char* ml_gpointer_base (value region);
+CAMLexport unsigned char* ml_gpointer_base (value region);
