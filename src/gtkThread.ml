@@ -33,8 +33,10 @@ let sync f x =
     Condition.signal c
   in
   async j x;
-  Condition.wait c m;
-  match !res with Some y -> y | None -> assert false
+  let rec result = function
+      None -> Condition.wait c m; result !res
+    | Some y -> y
+  in result None
 
 (* We check first whether there are some event pending, and run
    some iterations. We then need to delay, thus focing a thread switch. *)
