@@ -210,12 +210,6 @@ class ['a] factory
       GtkData.AccelMap.add_entry accel_path ?key ~modi:m;
       (* Register this accel path *)
       GtkBase.Widget.set_accel_path item#as_widget accel_path accel_group;
-      (* Already set by add_entry !
-	may key ~f:
-	(function key -> 
-	   item#add_accelerator ~group ~modi:m ~flags key;
-	);
-      *)
       may callback ~f:(fun callback -> item#connect#activate ~callback)
     method add_item ?key ?callback ?submenu label =
       let item = menu_item  ~use_mnemonic:true ~label () in
@@ -227,43 +221,29 @@ class ['a] factory
       let item = image_menu_item ~use_mnemonic:true ?image ?label ?stock () in
       match stock  with 
       | None -> 
-	  (match label with 
-	  | None -> 	      
-	      self#bind (item : image_menu_item :> menu_item) ?key
-	      ?callback "<NoLabel>/";
-	  | Some label ->
-	      self#bind (item : image_menu_item :> menu_item) ?key
-	      ?callback label);
+	  self#bind (item : image_menu_item :> menu_item)
+            ?key ?callback (default "<NoLabel>/" ~opt:label);
 	  item
       | Some s -> 
-	  try let st = GtkStock.Item.lookup s in
-	  (match label with 
-	   | None -> 
-	       self#bind (item : image_menu_item :> menu_item) 
-	      ?key:(if st.GtkStock.keyval=0 then key else 
-		      None)
-	      ?callback "<StockItem>/"
-	  | Some l -> 
-	      self#bind (item : image_menu_item :> menu_item) 
+	  try
+            let st = GtkStock.Item.lookup s in
+	    self#bind (item : image_menu_item :> menu_item) 
 	      ?key:(if st.GtkStock.keyval=0 then key else None)
-	      ?callback l
-	  ); item
+	      ?callback (default "<StockItem>/" ~opt:label);
+	    item
 	  with Not_found -> item
 
     method add_check_item ?active ?key ?callback label =
       let item = check_menu_item ~label ~use_mnemonic:true ?active () in
-      self#bind (item : check_menu_item :> menu_item) ?key
-	?callback:(may_map callback ~f:(fun f () -> f item#active)) label;
+      self#bind (item : check_menu_item :> menu_item) label ?key
+	?callback:(may_map callback ~f:(fun f () -> f item#active));
       item
     method add_radio_item ?group ?active ?key ?callback label =
       let item = radio_menu_item ~label ~use_mnemonic:true ?group ?active () in
-      self#bind (item : radio_menu_item :> menu_item) ?key
-	?callback:(may_map callback ~f:(fun f () -> f item#active))
-	label;
+      self#bind (item : radio_menu_item :> menu_item) label ?key
+	?callback:(may_map callback ~f:(fun f () -> f item#active));
       item
-    method add_separator () = 
-      let m = separator_item ~packing:menu_shell#append () in
-      m
+    method add_separator () = separator_item ~packing:menu_shell#append ()
     method add_submenu ?key label =
       let item = menu_item ~use_mnemonic:true ~label () in
       self#bind item ?key label;

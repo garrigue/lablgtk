@@ -1,5 +1,11 @@
 $Id$
 
+2005.10.25 [Jacques]
+  * fix GtkThread.sync (Robert Schneck-McConnell)
+
+2005.10.17 [Jacques]
+  * new recompilation approach for Windows
+
 2005.10.03 [Olivier]
   * fix refcounting of pixbufs in GdkPixbuf
 
