@@ -1,17 +1,19 @@
-        Here is a small howto about using lablgtk2 on Win32
+        Here is a small howto about installing LablGtk2 on Win32
 
 Binary installation
 
 0) Both MSVC and mingw versions of ocaml 3.09 should work.
 
 1) Install the gtk2 libraries and dependencies. You can find them
-in a single zip file at
-    http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgtk.html
+   in a single zip file gtk-2.6.8-win32-dlls.zip at
+     http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgtk.html
+   The corresponding bin directory must be in your path, and other
+   directories should not be moved relatively to bin.
 
 2) Install lablgtk2 binaries and scripts inside the OCaml distribution
-     bin/lablgtk2             -> bin
-     stublibs/dlllablgtk2.dll -> lib/stublibs
-     lablgtk2                 -> lib/lablgtk2
+     bin/lablgtk2.bat             -> bin
+     lib/stublibs/dlllablgtk2.dll -> lib/stublibs
+     lib/lablgtk2                 -> lib/lablgtk2
 
 3) Go to the lib/lablgtk2 directory and execute
         ocaml build.ml
@@ -40,7 +42,7 @@ in a single zip file at
 
 Full compilation (for the brave)
 
-0) You will need either the MSVC or mingw version of ocaml 3.07,
+0) You will need either the MSVC or mingw version of ocaml 3.07 or more,
 and cygwin development tools. If you use mingw, check your 
 installation by trying to compile a hello world C program with
     gcc -mno-cygwin  -mms-bitfields main.c
