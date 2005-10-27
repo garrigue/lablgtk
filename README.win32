@@ -26,9 +26,12 @@ Binary installation
    You must repeat this compilation step every time you upgrade OCaml.
 
 4) Test in examples
-     lablgtk2 testgtk.ml
+     lablgtk2.bat testgtk.ml
 
-   For custom linking or native code, you must also have the export
+   See also the "Windows port" section of the main LablGtk2 README for
+   important remarks on threads on Windows.
+
+5) For custom linking or native code, you must also have the export
    libraries corresponding to your GTK DLLs (see below for where to
    find them.) There is not default place to put them, so you should
    specify that at link time:
