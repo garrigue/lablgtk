@@ -149,12 +149,12 @@ let search_pos_type_decl td ~pos ~env =
     | None -> ()
     end;
     begin match td.ptype_kind with
-      Ptype_abstract -> ()
+      Ptype_abstract | Ptype_private -> ()
     | Ptype_variant (dl, priv) ->
         List.iter dl
-          ~f:(fun (_, tl) -> List.iter tl ~f:(search_pos_type ~pos ~env))
+          ~f:(fun (_, tl, _) -> List.iter tl ~f:(search_pos_type ~pos ~env))
     | Ptype_record (dl, priv) ->
-        List.iter dl ~f:(fun (_, _, t) -> search_pos_type t ~pos ~env)
+        List.iter dl ~f:(fun (_, _, t, _) -> search_pos_type t ~pos ~env)
     end;
     List.iter td.ptype_cstrs ~f:
       begin fun (t1, t2, _) ->
@@ -567,7 +567,7 @@ let view_type kind ~env =
             [Tsig_class(ident_of_path path ~default:"c", cl, Trec_not)]
       end
   | `Class (path, cty) ->
-      let cld = { cty_params = []; cty_type = cty;
+      let cld = { cty_params = []; cty_type = cty; cty_variance = [];
                   cty_path = path; cty_new = None } in
       view_signature_item ~path ~env
         [Tsig_class(ident_of_path path ~default:"c", cld, Trec_not)]
