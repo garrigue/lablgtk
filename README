@@ -101,7 +101,7 @@ How to link them:
 How to use the threaded toplevel:
 
 	% lablgtk2 -thread           (or ./lablgtktop_t before installing)
-	        Objective Caml version 3.06
+	        Objective Caml version 3.09
 	
 	# let w = GWindow.window ~show:true ();;
         # let b = GButton.button ~packing:w#add ~label:"Hello!" ();;
@@ -287,7 +287,7 @@ GL extension:
 
   You can use lablgtk in combination with LablGL
 
-  * get and install lablGL 0.99 from
+  * get and install lablGL 1.02 from
       http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
   * get and install gtkglarea-1.99.0.tar.gz from
       ftp://ftp.gnome.org/pub/gnome/sources/gtkglarea/1.99/
@@ -316,10 +316,6 @@ GnomeCanvas support:
 
 Windows port
 
-  Windows is not explicitely supported in this release, but some kind
-  souls seem to have made it work anyway. It should work pretty much
-  like on Unix.
-	
   See README.win32 for detailed information on installation.
 
   If you want to use threads, you must be aware of windows specific
@@ -339,8 +335,8 @@ Windows port
   are always called from the main loop thread, you can freely use GTK
   in them. Also, non-graphical operations are thread-safe.
   Here is an example using the lablgtk toplevel with threads:
-	% lablgtk2 -thread
-	        Objective Caml version 3.08
+	% lablgtk2.bat -thread
+	        Objective Caml version 3.09
 
         # open GtkThread;;	
 	# let w = sync (GWindow.window ~show:true) ();;
@@ -348,15 +344,15 @@ Windows port
         # b#connect#clicked (fun () -> prerr_endline "Hello");;
 
 Authors:
-	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>
+	Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
 	Benjamin Monate  <benjamin.monate@free.fr>
         Olivier Andrieu  <oandrieu@nerim.net>
-	Jun Furuse       <Jun.Furuse@inria.fr>
+	Jun Furuse       <furuse@yl.is.s.u-tokyo.ac.jp>
   For lablgtk1:
 	Hubert Fauque  <hubert.fauque@wanadoo.fr>
 	Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
 				   
 Bug reports:
-	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>
+	Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
 
 $Id$
