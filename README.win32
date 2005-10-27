@@ -31,10 +31,9 @@ Binary installation
    See also the "Windows port" section of the main LablGtk2 README for
    important remarks on threads on Windows.
 
-5) For custom linking or native code, you must also have the export
-   libraries corresponding to your GTK DLLs (see below for where to
-   find them.) There is not default place to put them, so you should
-   specify that at link time:
+5) For custom linking or native code, you need to use the export
+   libraries in the above DLL package. There is not default place to
+   put them, so you should specify that at link time:
      ocamlopt -custom -ccopt "/link /libpath:/home/garrigue/gtk-2.6.8/lib"
        -I +lablgtk2 lablgtk.cmxa gtkInit.cmx testgtk.ml -o testgtk.exe
    or, on Mingw
