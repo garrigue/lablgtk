@@ -340,6 +340,20 @@ lablglade.cmxa: liblablglade2$(XA) $(GLADEMLOBJS:.cmo=.cmx)
 	    $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
 endif
 
+ifeq ($(TOOLCHAIN),msvc)
+liblablrsvg$(XA): $(RSVGCOBJS)
+	$(MKLIB)$@ $(RSVGCOBJS)
+dlllablrsvg.dll: $(RSVGCOBJS:$(XO)=.d$(XO))
+	$(call MKDLL,$@) $(RSVGCOBJS:$(XO)=.d$(XO)) \
+		dlllablgtk2.lib $(RSVGLIBS) $(GTKLIBS)
+lablrsvg.cma: liblablrsvg$(XA) dlllablrsvg.dll $(RSVGMLOBJS) $(CONFIG)
+	$(LINKER) -a -o $@ $(RSVGMLOBJS) \
+	  -cclib -llablrsvg -dllib -llablrsvg \
+	  -cclib "$(RSVGLIBS)"
+lablrsvg.cmxa: liblablrsvg$(XA) $(RSVGMLOBJS:.cmo=.cmx) $(CONFIG)
+	$(LINKOPT) -a -o $@  $(RSVGMLOBJS:.cmo=.cmx) -cclib -llablrsvg \
+	  -cclib "$(RSVGLIBS)"
+else
 liblablrsvg$(XA): $(RSVGCOBJS)
 	$(LIBRARIAN) -o lablrsvg $(RSVGCOBJS) $(RSVGLIBS)
 lablrsvg.cma: liblablrsvg$(XA) $(RSVGMLOBJS)
@@ -347,6 +361,7 @@ lablrsvg.cma: liblablrsvg$(XA) $(RSVGMLOBJS)
 lablrsvg.cmxa: liblablrsvg$(XA) $(RSVGMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablrsvg -oc lablrsvg \
 	    $(RSVGMLOBJS:.cmo=.cmx) $(RSVGLIBS)
+endif
 
 liblablgnomecanvas$(XA): $(GNOMECANVASCOBJS)
 	$(LIBRARIAN) -o lablgnomecanvas $(GNOMECANVASCOBJS) $(GNOMECANVASLIBS)
@@ -476,7 +491,7 @@ ml_gtk$(XO) ml_gtktext$(XO): ml_pango.h
 ml_gtkgl$(XO): gtkgl_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gtkxmhtml$(XO): gtkxmhtml_tags.h ml_gtk.h ml_gdk.h wrappers.h
 ml_gpointer$(XO): ml_gpointer.h
-ml_gdkpixbuf$(XO): gdkpixbuf_tags.h ml_gdk.h gdk_tags.h \
+ml_gdkpixbuf$(XO): ml_gdkpixbuf.h gdkpixbuf_tags.h ml_gdk.h gdk_tags.h \
 	wrappers.h ml_gpointer.h
 ml_pango$(XO): pango_tags.h ml_pango.h
 ml_rsvg$(XO): ml_gobject.h ml_gdkpixbuf.h wrappers.h
