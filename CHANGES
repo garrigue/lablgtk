@@ -1,5 +1,8 @@
 $Id$
 
+2005.10.28 [Jacques]
+  * add windows support for rsvg
+
 In lablgtk2-20051027 (2.6.0):
 
 2005.10.25 [Jacques]
