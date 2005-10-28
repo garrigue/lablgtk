@@ -18,10 +18,15 @@ Binary installation
 3) Go to the lib/lablgtk2 directory and execute
         ocaml build.ml
    This will compile the ocaml part of the library (the C part is
-   already compiled.)  Note that the autodection for mingw is not
-   fool-proof (lablgtk2 has to be installed directly under the ocaml
-   library), so if the OCaml port annouced by build.ml is not the
-   right one, you should specify it by hand inside build.ml.
+   already compiled.)
+   It may fail on the native code version (using ocamlopt) if the
+   assembler is not on your path.  Look in the Objective Caml windows
+   documentation for what is needed, and check that you have a working
+   installation by compiling and linking a trivial program.
+   Note also that the autodection for mingw is not fool-proof
+   (lablgtk2 has to be installed directly under the ocaml library), so
+   if the OCaml port annouced by build.ml is not the right one, you
+   should specify it by hand inside build.ml.
 
    You must repeat this compilation step every time you upgrade OCaml.
 
@@ -34,12 +39,13 @@ Binary installation
 5) For custom linking or native code, you need to use the export
    libraries in the above DLL package. There is not default place to
    put them, so you should specify that at link time:
-     ocamlopt -custom -ccopt "/link /libpath:/home/garrigue/gtk-2.6.8/lib"
+     ocamlopt -ccopt "/link /libpath:/home/garrigue/gtk-2.6.8/lib"
        -I +lablgtk2 lablgtk.cmxa gtkInit.cmx testgtk.ml -o testgtk.exe
    or, on Mingw
-     ocamlopt -custom -ccopt "-L/home/garrigue/gtk-2.6.8/lib" -I +lablgtk2 \
+     ocamlopt -ccopt "-L/home/garrigue/gtk-2.6.8/lib" -I +lablgtk2 \
         lablgtk.cmxa gtkInit.cmx testgtk.ml -o testgtk.exe
-
+   Again, if this fails you must make sure that your ocamlopt really works,
+   and that all paths are correctly specified.
 
 
 Full compilation (for the brave)
