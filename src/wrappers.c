@@ -54,7 +54,7 @@ void ml_raise_null_pointer ()
   raise_constant (*exn);
 }   
 
-value Val_pointer (void *ptr)
+CAMLexport value Val_pointer (void *ptr)
 {
     value ret = alloc_small (2, Abstract_tag);
     if (!ptr) ml_raise_null_pointer ();
@@ -81,13 +81,13 @@ CAMLprim value *ml_global_root_new (value v)
     return p;
 }
 
-void ml_global_root_destroy (void *data)
+CAMLexport void ml_global_root_destroy (void *data)
 {
     remove_global_root ((value *)data);
     stat_free (data);
 }
 
-value ml_lookup_from_c (const lookup_info table[], int data)
+CAMLexport value ml_lookup_from_c (const lookup_info table[], int data)
 {
     int i;
     for (i = table[0].data; i > 0; i--)
@@ -95,7 +95,7 @@ value ml_lookup_from_c (const lookup_info table[], int data)
     invalid_argument ("ml_lookup_from_c");
 }
     
-int ml_lookup_to_c (const lookup_info table[], value key)
+CAMLexport int ml_lookup_to_c (const lookup_info table[], value key)
 {
     int first = 1, last = table[0].data, current;
     while (first < last) {

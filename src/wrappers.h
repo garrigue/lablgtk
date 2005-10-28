@@ -16,18 +16,18 @@ value copy_memblock_indirected (void *src, asize_t size);
 value alloc_memblock_indirected (asize_t size);
 CAMLprim value ml_some (value);
 value ml_cons (value, value);
-void ml_raise_null_pointer (void) Noreturn;
-value Val_pointer (void *);
+CAMLexport void ml_raise_null_pointer (void) Noreturn;
+CAMLexport value Val_pointer (void *);
 CAMLprim value copy_string_check (const char*);
 value copy_string_or_null (const char *);
 
 CAMLprim value *ml_global_root_new (value v);
-void ml_global_root_destroy (void *data);
+CAMLexport void ml_global_root_destroy (void *data);
 
 /* enums <-> polymorphic variants */
 typedef struct { value key; int data; } lookup_info;
-value ml_lookup_from_c (const lookup_info table[], int data);
-int ml_lookup_to_c (const lookup_info table[], value key);
+CAMLexport value ml_lookup_from_c (const lookup_info table[], int data);
+CAMLexport int ml_lookup_to_c (const lookup_info table[], value key);
 value ml_lookup_flags_getter (const lookup_info table[], int data);
 
 /* Compatibility */
