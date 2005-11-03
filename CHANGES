@@ -1,5 +1,10 @@
 $Id$
 
+2005.11.03 [Benjamin]
+  * lablgladecc : emit w#toplevel#misc#show_all instead of 
+    w#toplevel#show in check_all, because some toplevel widgets (gMenu for example)
+    do not have a show method
+
 2005.10.28 [Jacques]
   * add windows support for rsvg
 
