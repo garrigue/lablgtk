@@ -268,7 +268,7 @@ let output_check_all () =
   printf "  ignore (GMain.Main.init ());\n";
   List.iter (fun cl ->   
     printf "  let %s = new %s () in\n" cl cl;
-    printf "  if show then %s#toplevel#show ();\n" cl;
+    printf "  if show then %s#toplevel#misc#show_all ();\n" cl;
     printf "  %s#check_widgets ();\n" cl) !output_classes;
   printf "  if show then GMain.Main.main ()\n";
   printf ";;\n";
