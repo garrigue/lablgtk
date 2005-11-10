@@ -401,6 +401,11 @@ ML_1 (gtk_tree_view_expand_all, GtkTreeView_val, Unit)
 ML_1 (gtk_tree_view_collapse_all, GtkTreeView_val, Unit)
 ML_3 (gtk_tree_view_expand_row, GtkTreeView_val, GtkTreePath_val,
       Bool_val, Unit)
+#ifdef HASGTK22
+ML_2 (gtk_tree_view_expand_to_path, GtkTreeView_val, GtkTreePath_val, Unit)
+#else
+Unsupported(gtk_tree_view_expand_to_path)
+#endif
 ML_2 (gtk_tree_view_collapse_row, GtkTreeView_val, GtkTreePath_val, Unit)
 ML_2 (gtk_tree_view_row_expanded, GtkTreeView_val, GtkTreePath_val, Val_bool)
 ML_4 (gtk_tree_view_set_cursor, GtkTreeView_val, GtkTreePath_val,

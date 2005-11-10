@@ -28,7 +28,7 @@ MLLIBS = lablgtk.cma
 CLIBS = liblablgtk2$(XA)
 #MLLINK = unix.cma str.cma
 
-GTKCFLAGS += -DLOG_DOMAIN=\"LablGTK\"
+GTKCFLAGS += -DG_LOG_DOMAIN=\"LablGTK\"
 
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)

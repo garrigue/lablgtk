@@ -291,6 +291,9 @@ module TreeView = struct
   external expand_row :
     [>`treeview] obj -> tree_path -> all:bool -> unit
     = "ml_gtk_tree_view_expand_row"
+  external expand_to_path :
+    [>`treeview] obj -> tree_path -> unit
+    = "ml_gtk_tree_view_expand_to_path"
   external collapse_row : [>`treeview] obj -> tree_path -> unit
     = "ml_gtk_tree_view_collapse_row"
   external row_expanded : [>`treeview] obj -> tree_path -> bool
