@@ -1,5 +1,8 @@
 $Id$
 
+2005.11.10 [Olivier]
+  * wrap gtk_tree_view_expand_to_path (2.2)
+
 2005.11.03 [Benjamin]
   * lablgladecc : emit w#toplevel#misc#show_all instead of 
     w#toplevel#show in check_all, because some toplevel widgets (gMenu for example)

@@ -366,6 +366,7 @@ class view : tree_view obj ->
     method expand_all : unit -> unit
     method expand_row : ?all:bool -> tree_path -> unit
     (** @param all default value is [false] *)
+    method expand_to_path : tree_path -> unit (** @since GTK 2.2 *)
     method expander_column : view_column option
     method fixed_height_mode : bool
     method get_column : int -> view_column

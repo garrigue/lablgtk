@@ -369,6 +369,7 @@ class view obj = object
   method expand_all () = TreeView.expand_all obj
   method collapse_all () = TreeView.collapse_all obj
   method expand_row ?(all=false) = TreeView.expand_row obj ~all
+  method expand_to_path = TreeView.expand_to_path obj
   method collapse_row = TreeView.collapse_row obj
   method row_expanded = TreeView.row_expanded obj
   method set_cursor : 'a. ?cell:(#cell_renderer as 'a) -> _ =
