@@ -9,10 +9,14 @@ extra="yes"
 init="yes"
 toplevel="ocaml"
 libraries=""
-libpath="-I @LABLGLDIR@"
+libpath=""
 lablgtkdir="@INSTALLDIR@"
 initobjs="@INITOBJS@"
 cmd="$0"
+
+if test -n "@LABLGLDIR@"; then
+  libpath="-I @LABLGLDIR@"
+fi
 
 while test -n "$1"; do
 case $1 in
@@ -50,7 +54,6 @@ else
 fi
 
 if test $thread = yes; then
-    libpath="$libpath -I +threads"
     case "$threads_lib" in
     no)     echo "Threads are not supported on this platform"; exit 2 ;;
     system) libpath="$libpath -I +threads"
