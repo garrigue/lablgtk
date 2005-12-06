@@ -99,6 +99,7 @@ let classes = ref [
   "GtkCTree", ("GtkBase.Container", "GContainer.container");
   "GtkWindow", ("GtkWindow.Window", "GWindow.window");
   "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog_any");
+  "GtkAboutDialog", ("GtkWindow.AboutDialog", "GWindow.about_dialog");
   "GtkInputDialog", ("GtkWindow.Dialog", "GWindow.dialog");
   "GtkFileSelection", ("GtkWindow.FileSelection", "GWindow.file_selection");
   "GtkFontSelectionDialog", ("GtkWindow.FontSelectionDialog",

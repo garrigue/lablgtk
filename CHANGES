@@ -1,5 +1,8 @@
 $Id$
 
+2005.12.02 [Benjalin]
+  * lablgladecc : support for GtkAboutDialog
+
 2005.11.10 [Olivier]
   * wrap gtk_tree_view_expand_to_path (2.2)
 

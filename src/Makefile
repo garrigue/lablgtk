@@ -53,7 +53,7 @@ THLINK = unix.cma threads.cma
 ifdef USE_CC
 CCOMPILER = $(CC) -c -I$(LIBDIR) $(CFLAGS)
 else
-CCOMPILER = $(CAMLC) -c -ccopt "$(CFLAGS)"
+CCOMPILER = $(CAMLC) -c -ccopt '$(CFLAGS)'
 endif
 
 ifdef USE_GL
