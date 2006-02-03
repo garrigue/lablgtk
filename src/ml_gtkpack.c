@@ -115,6 +115,7 @@ ML_4 (gtk_layout_put, GtkLayout_val, GtkWidget_val, Int_val, Int_val, Unit)
 ML_4 (gtk_layout_move, GtkLayout_val, GtkWidget_val, Int_val, Int_val, Unit)
 ML_1 (gtk_layout_freeze, GtkLayout_val, Unit)
 ML_1 (gtk_layout_thaw, GtkLayout_val, Unit)
+Make_Extractor(gtk_layout, GtkLayout_val, bin_window, Val_GdkWindow)
 
 /* gtknotebook.h */
 

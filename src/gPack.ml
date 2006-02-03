@@ -103,6 +103,7 @@ class layout obj = object
   method hadjustment = new GData.adjustment (get Layout.P.hadjustment obj)
   method vadjustment = new GData.adjustment (get Layout.P.vadjustment obj)
   method freeze () = Layout.freeze obj
+  method bin_window = Layout.bin_window obj
   method thaw () = Layout.thaw obj
   method width = get Layout.P.width obj
   method height = get Layout.P.height obj

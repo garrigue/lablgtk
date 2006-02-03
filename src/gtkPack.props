@@ -64,6 +64,7 @@ class Layout set : Container {
   method move : "[>`widget] obj -> x:int -> y:int -> unit"
   method freeze
   method thaw
+  method bin_window : "Gdk.window"
 }
 
 conversions {
