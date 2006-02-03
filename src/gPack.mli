@@ -179,6 +179,7 @@ class layout :
     constraint 'a = [> Gtk.layout]
     val obj : 'a obj
     method event : event_ops
+    method bin_window : Gdk.window
     method freeze : unit -> unit
     method hadjustment : GData.adjustment
     method height : int

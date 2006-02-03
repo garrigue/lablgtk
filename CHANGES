@@ -1,5 +1,8 @@
 $Id$
 
+2006.02.03 [Jacques]
+  * add GLayout#bin_window
+
 2005.12.19 [Jacques]
   * lablgladecc : apply Keita Yamaguchi's patch
 
