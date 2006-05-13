@@ -7,6 +7,7 @@ CAMLexport value Val_GObject (GObject *);
 CAMLexport value Val_GObject_new (GObject *);
 #define Val_GAnyObject(val) Val_GObject(G_OBJECT(val))
 #define Val_GAnyObject_new(val) Val_GObject_new(G_OBJECT(val))
+CAMLexport void ml_g_object_unref_later (GObject *);
 
 #define GType_val Long_val
 #define Val_GType Val_long
