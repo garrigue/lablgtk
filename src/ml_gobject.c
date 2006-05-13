@@ -17,8 +17,18 @@
 
 /* gobject.h */
 
-Make_Val_final_pointer(GObject, g_object_ref, g_object_unref, 0)
-Make_Val_final_pointer_ext (GObject, _new, Ignore, g_object_unref, 20)
+static gboolean ml_g_object_unref0 (gpointer p)
+{ g_object_unref((GObject*)p); return 0; }
+
+CAMLprim void ml_g_object_unref_later (GObject *p)
+{
+    g_timeout_add_full(G_PRIORITY_HIGH_IDLE, 0, ml_g_object_unref0,
+                       (gpointer)(p), NULL);
+}
+
+
+Make_Val_final_pointer(GObject, g_object_ref, ml_g_object_unref_later, 0)
+Make_Val_final_pointer_ext (GObject, _new, Ignore, ml_g_object_unref_later, 20)
 ML_1 (G_TYPE_FROM_INSTANCE, GObject_val, Val_int)
 // ML_1 (g_object_ref, GObject_val, Unit)
 CAMLprim value ml_g_object_unref (value val)
@@ -118,9 +128,10 @@ Make_Val_final_pointer(GClosure, g_closure_ref, g_closure_unref, 0)
 Make_Val_final_pointer_ext(GClosure, _sink , g_closure_ref_and_sink,
                            g_closure_unref, 20)
 
-static void notify_destroy(gpointer clos_p, GClosure *c)
+static void notify_destroy(gpointer unit, GClosure *c)
 {
-    remove_global_root((value*)clos_p);
+    // printf("release %p\n", &c->data);
+    remove_global_root((value*)&c->data);
 }
 
 static void marshal (GClosure *closure, GValue *ret,
@@ -142,8 +153,9 @@ static void marshal (GClosure *closure, GValue *ret,
 CAMLprim value ml_g_closure_new (value clos)
 {
     GClosure* closure = g_closure_new_simple(sizeof(GClosure), (gpointer)clos);
+    // printf("register %p\n", &closure->data);
     register_global_root((value*)&closure->data);
-    g_closure_add_finalize_notifier(closure, &closure->data, notify_destroy);
+    g_closure_add_invalidate_notifier(closure, NULL, notify_destroy);
     g_closure_set_marshal(closure, marshal);
     return Val_GClosure_sink(closure);
 }

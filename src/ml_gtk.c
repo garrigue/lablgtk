@@ -61,7 +61,7 @@ CAMLprim value ml_gtkwindow_init(value unit)
 
 #define gtk_object_ref_and_sink(w) (g_object_ref(w), gtk_object_sink(w))
 Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
-                           g_object_unref, 20)
+                           ml_g_object_unref_later, 20)
 ML_1 (GTK_OBJECT_FLAGS, GtkObject_val, Val_int)
 ML_1 (gtk_object_ref_and_sink, GtkObject_val, Unit)
 
@@ -542,18 +542,25 @@ ML_1 (gtk_item_toggle, GtkItem_val, Unit)
 
 /* gtkdialog.h */
 
-static void window_unref (GtkObject *w)
+static gboolean window_unref (gpointer w)
 {
     /* If the window exists, has no parent, is still not visible,
        and has only two references (mine and toplevel_list),
        then destroy it. */
     if (GTK_WINDOW(w)->has_user_ref_count && !GTK_WIDGET_VISIBLE(w)
         && G_OBJECT(w)->ref_count == 2)
-        gtk_object_destroy (w);
-    gtk_object_unref(w);
+        gtk_object_destroy ((GtkObject*)w);
+    gtk_object_unref((GtkObject*)w);
+    return 0;
 }
-Make_Val_final_pointer_ext (GtkObject, _window, gtk_object_ref, window_unref,
-                            20)
+static void window_unref_later (GtkObject *p)
+{
+     g_timeout_add_full(G_PRIORITY_HIGH_IDLE, 0, window_unref,
+                        (gpointer)(p), NULL);
+}
+
+Make_Val_final_pointer_ext (GtkObject, _window, gtk_object_ref,
+                            window_unref_later, 20)
 #define Val_GtkWidget_window(w) Val_GtkObject_window(GTK_OBJECT(w))
 
 #define GtkDialog_val(val) check_cast(GTK_DIALOG,val)

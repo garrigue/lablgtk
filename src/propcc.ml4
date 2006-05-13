@@ -578,6 +578,19 @@ let process_file f =
         List.iter wr_meths ~f:(fun (mname,typ,_) ->
           out "@ @[<hv2>method %s %s=@ %s.%s self#obj@]"
             mname (if typ = "unit" then "() " else "") (camlizeM name) mname);
+        (*
+        out "@ @[<hv2>class virtual %s_props = object" (camlize name);
+        out "@ val virtual obj : _ obj";
+        List.iter wr_props ~f:(fun (pname,mlname,gtype,_) ->
+          out "@ @[<hv2>method set_%s =@ set %a obj@]"
+            mlname (oprop ~name ~gtype) pname);
+        List.iter rd_props ~f:(fun (pname,mlname,gtype,_) ->
+          out "@ @[<hv2>method %s =@ get %a obj@]"
+            mlname (oprop ~name ~gtype) pname);
+        List.iter wr_meths ~f:(fun (mname,typ,_) ->
+          out "@ @[<hv2>method %s %s=@ %s.%s obj@]"
+            mname (if typ = "unit" then "() " else "") (camlizeM name) mname);
+        *)
         out "@]@ end@ "
       end;
       let vset = List.mem_assoc "vset" attrs in

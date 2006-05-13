@@ -1,5 +1,8 @@
 $Id$
 
+2006.05.13 [Jacques]
+  * delay finalization functions when they may trigger a callback
+
 2006.02.03 [Jacques]
   * add GLayout#bin_window
 
