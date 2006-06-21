@@ -220,7 +220,7 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	    -e "s|@GTKLIBS@|$(GTKLIBS)|" < build.ml.in > $@
 
 gdk-pixbuf-mlsource$(XE) : lablgtk.cma gtkInit.cmo gdk-pixbuf-mlsource.ml
-	$(CAMLC) -o $@ $^
+	$(CAMLC) -o $@ -I . $^
 
 lablgtkopt:: $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx)
 ifeq ($(THREADS_LIB),system)
