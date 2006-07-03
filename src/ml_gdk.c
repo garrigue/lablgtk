@@ -406,7 +406,7 @@ CAMLprim value copy_xdata (gint format, void *xdata, gulong nitems)
 {
     CAMLparam0();
     CAMLlocal2(ret, data);
-    long tag;
+    value tag;
     unsigned int i;
     switch (format) {
     case 8:

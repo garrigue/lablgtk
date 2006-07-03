@@ -101,15 +101,15 @@ CAMLprim value ml_Pango_scale_val (value val)
 {
   double r;
   if (Is_block(val)) return Field(val,1); /* `CUSTOM */
-  switch(val)
+  switch((long)val)
     {
-    case MLTAG_XX_SMALL: r = PANGO_SCALE_XX_SMALL ;break;
-    case MLTAG_X_SMALL:	 r = PANGO_SCALE_X_SMALL ;break;
-    case MLTAG_SMALL:	 r = PANGO_SCALE_SMALL ;break;
-    case MLTAG_MEDIUM:	 r = PANGO_SCALE_MEDIUM ;break;
-    case MLTAG_LARGE:	 r = PANGO_SCALE_LARGE ;break;
-    case MLTAG_X_LARGE:	 r = PANGO_SCALE_X_LARGE ;break;
-    case MLTAG_XX_LARGE: r = PANGO_SCALE_XX_LARGE ;break;
+    case (long)MLTAG_XX_SMALL: r = PANGO_SCALE_XX_SMALL ;break;
+    case (long)MLTAG_X_SMALL:	 r = PANGO_SCALE_X_SMALL ;break;
+    case (long)MLTAG_SMALL:	 r = PANGO_SCALE_SMALL ;break;
+    case (long)MLTAG_MEDIUM:	 r = PANGO_SCALE_MEDIUM ;break;
+    case (long)MLTAG_LARGE:	 r = PANGO_SCALE_LARGE ;break;
+    case (long)MLTAG_X_LARGE:	 r = PANGO_SCALE_X_LARGE ;break;
+    case (long)MLTAG_XX_LARGE: r = PANGO_SCALE_XX_LARGE ;break;
     default: printf("Bug in ml_PangoScale_val. Please report");
       r=1;
       break;
