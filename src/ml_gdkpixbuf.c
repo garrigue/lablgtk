@@ -121,9 +121,9 @@ ML_1(gdk_pixbuf_get_rowstride, GdkPixbuf_val, Val_int)
 CAMLprim value ml_gdk_pixbuf_get_pixels (value pixbuf)
 {
     long pixels = (long)gdk_pixbuf_get_pixels (GdkPixbuf_val(pixbuf));
-    unsigned int ofs = pixels % sizeof(value);
+    unsigned int ofs = pixels & (sizeof(value)-1);
     value ret = alloc_small(2,0);
-    Field(ret,0) = pixels - ofs;
+    Field(ret,0) = (value)(pixels - ofs);
     Field(ret,1) = Val_int(ofs);
     return ret;
 }

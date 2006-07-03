@@ -269,7 +269,7 @@ CAMLprim value Val_##type (type *p) \
 #define Pointer_val(val) ((void*)Field(val,1))
 #define Store_pointer(val,p) (Field(val,1)=Val_bp(p))
 #define MLPointer_val(val) \
-        (Field(val,1) == 2 ? &Field(val,2) : (void*)Field(val,1))
+        ((int)Field(val,1) == 2 ? &Field(val,2) : (void*)Field(val,1))
 
 #define Val_addr(ptr) (1+(value)ptr)
 #define Addr_val(val) ((void*)(val-1))

@@ -177,7 +177,7 @@ CAMLprim value ml_g_value_new(void)
     value ret = alloc_custom(&ml_custom_GValue, sizeof(value)+sizeof(GValue),
                              20, 1000);
     /* create an MLPointer */
-    Field(ret,1) = 2;
+    Field(ret,1) = (value)2;
     ((GValue*)&Field(ret,2))->g_type = 0;
     return ret;
 }
@@ -220,7 +220,7 @@ CAMLprim value ml_g_value_shift (value args, value index)
 static void ml_final_gboxed (value val)
 {
     gpointer p = Pointer_val(val);
-    if (p != NULL) g_boxed_free (Field(val,2), p);
+    if (p != NULL) g_boxed_free ((GType)Field(val,2), p);
     p = NULL;
 }
 static struct custom_operations ml_custom_gboxed =
@@ -230,14 +230,14 @@ CAMLprim value Val_gboxed(GType t, gpointer p)
 {
     value ret = alloc_custom(&ml_custom_gboxed, 2*sizeof(value), 10, 1000);
     Store_pointer(ret, g_boxed_copy (t,p));
-    Field(ret,2) = t;
+    Field(ret,2) = (value)t;
     return ret;
 }
 CAMLprim value Val_gboxed_new(GType t, gpointer p)
 {
     value ret = alloc_custom(&ml_custom_gboxed, 2*sizeof(value), 10, 1000);
     Store_pointer(ret, p);
-    Field(ret,2) = t;
+    Field(ret,2) = (value)t;
     return ret;
 }
 
@@ -251,7 +251,7 @@ static value g_value_get_variant (GValue *val)
     CAMLlocal1(tmp);
     value ret = MLTAG_NONE;
     GType type;
-    int tag = -1;
+    value tag = (value)0;
 
     if (! G_IS_VALUE(val))
       invalid_argument("Gobject.Value.get");
@@ -323,7 +323,7 @@ static value g_value_get_variant (GValue *val)
       tmp = copy_int64 (DATA.v_int64);
       break;
     }
-    if (tag != -1) {
+    if ((long)tag != 0) {
         ret = alloc_small(2,0);
         Field(ret,0) = tag;
         Field(ret,1) = tmp;
@@ -360,12 +360,12 @@ static void g_value_set_variant (GValue *val, value arg)
     case G_TYPE_ULONG:
     case G_TYPE_ENUM:
     case G_TYPE_FLAGS:
-      switch (tag) {
-      case MLTAG_INT:
+      switch ((long)tag) {
+      case (long)MLTAG_INT:
 	DATA.v_long = Int_val(data); return;
-      case MLTAG_INT32:
+      case (long)MLTAG_INT32:
 	DATA.v_long = Int32_val(data); return;
-      case MLTAG_LONG:
+      case (long)MLTAG_LONG:
 	DATA.v_long = Nativeint_val(data); return;
       };
       break;
