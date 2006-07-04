@@ -125,3 +125,10 @@ value ml_lookup_flags_getter (const lookup_info table[], int data)
 
 ML_2 (ml_lookup_from_c, (lookup_info*), Int_val, 0+)
 ML_2 (ml_lookup_to_c, (lookup_info*), 0+, Val_int)
+
+#ifdef ABSVALUE
+CAMLexport intnat Long_val(value x)  { return (intnat)x >> 1; }
+CAMLexport value  Val_long(intnat x) { return (value)((x << 1) + 1); }
+CAMLexport int Is_long(value x)   { return ((intnat)(x) & 1) != 0; }
+CAMLexport int Is_block(value x)  { return ((intnat)(x) & 1) == 0; }
+#endif

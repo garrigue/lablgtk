@@ -71,7 +71,6 @@ class ['a] clist obj = object (self)
   method focus_row = CList.get_focus_row obj
   method hadjustment = new GData.adjustment (CList.get_hadjustment obj)
   method vadjustment = new GData.adjustment (CList.get_vadjustment obj)
-  method set_button_actions = CList.set_button_actions obj
   method freeze () = CList.freeze obj
   method thaw () = CList.thaw obj
   method column_title = CList.get_column_title obj

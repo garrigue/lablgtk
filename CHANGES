@@ -1,5 +1,8 @@
 $Id$
 
+2006.07.06 [Jacques]
+  * make ABSVALUE=1 to use a custom mlvalues.h where value is abstract
+
 2006.05.13 [Jacques]
   * delay finalization functions when they may trigger a callback
 

@@ -30,6 +30,11 @@ CLIBS = liblablgtk2$(XA)
 
 GTKCFLAGS += -DG_LOG_DOMAIN=\"LablGTK\"
 
+# compile using a custom version of mlvalues.h, where value is abstract
+ifdef ABSVALUE
+GTKCFLAGS += -Iabsvalue -DABSVALUE
+endif
+
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
 CUSTOM = -custom

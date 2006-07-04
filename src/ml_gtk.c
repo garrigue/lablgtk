@@ -60,8 +60,9 @@ CAMLprim value ml_gtkwindow_init(value unit)
 /* gtkobject.h */
 
 #define gtk_object_ref_and_sink(w) (g_object_ref(w), gtk_object_sink(w))
+#define ml_gtk_object_unref_later(w) ml_g_object_unref_later((GObject*)(w))
 Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
-                           ml_g_object_unref_later, 20)
+                           ml_gtk_object_unref_later, 20)
 ML_1 (GTK_OBJECT_FLAGS, GtkObject_val, Val_int)
 ML_1 (gtk_object_ref_and_sink, GtkObject_val, Unit)
 
@@ -728,6 +729,7 @@ ML_1 (gtk_window_get_role, GtkWindow_val, Val_optstring)
 
 ML_4 (gtk_message_dialog_new, Option_val(arg1,GtkWindow_val,NULL) Ignore,
       Insert(0) Message_type_val, Buttons_type_val,
+      /* The NULL below causes a spurious warning, but is correct */
       Insert(String_val(arg4)[0] != 0 ? "%s" : NULL) String_val,
       Val_GtkWidget_window)
 #ifdef HASGTK24

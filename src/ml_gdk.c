@@ -405,7 +405,8 @@ CAMLprim value ml_gdk_property_change (value window, value property, value type,
 CAMLprim value copy_xdata (gint format, void *xdata, gulong nitems)
 {
     CAMLparam0();
-    CAMLlocal2(ret, data);
+    CAMLlocal1(data);
+    value ret = MLTAG_NONE;
     value tag;
     unsigned int i;
     switch (format) {
@@ -434,7 +435,6 @@ CAMLprim value copy_xdata (gint format, void *xdata, gulong nitems)
         Field(ret,0) = tag;
         Field(ret,1) = data;
     }
-    else ret = tag;
     CAMLreturn(ret);
 }
 
@@ -804,12 +804,15 @@ Make_Extractor (GdkEventConfigure, GdkEvent_arg(Configure), y, Val_int)
 Make_Extractor (GdkEventConfigure, GdkEvent_arg(Configure), width, Val_int)
 Make_Extractor (GdkEventConfigure, GdkEvent_arg(Configure), height, Val_int)
 
-Make_Extractor (GdkEventProperty, GdkEvent_arg(Property), atom, Val_int)
+Make_Extractor (GdkEventProperty, GdkEvent_arg(Property), atom, Val_GdkAtom)
 Make_Extractor (GdkEventProperty, GdkEvent_arg(Property), state, Val_int)
 
-Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), selection, Val_int)
-Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), target, Val_int)
-Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), property, Val_int)
+Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), selection,
+                Val_GdkAtom)
+Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), target,
+                Val_GdkAtom)
+Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), property,
+                Val_GdkAtom)
 Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), requestor, Val_XID)
 
 Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity),

@@ -1,7 +1,7 @@
 /* $Id$ */
 
 #define GdkAtom_val(val) ((GdkAtom)Long_val(val))
-#define Val_GdkAtom(val) (Val_long(val))
+#define Val_GdkAtom(val) (Val_long((long)val))
 
 #define GdkColormap_val(val) check_cast(GDK_COLORMAP,val)
 #define Val_GdkColormap Val_GAnyObject

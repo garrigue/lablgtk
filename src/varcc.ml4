@@ -92,7 +92,7 @@ let declaration ~hc ~cc = parser
           if !first then begin
             oh "/* %s : tags and macros */\n" name; first := false
           end;
-	  oh "#define MLTAG_%s\tVal_int(%d)\n" tag hash;
+	  oh "#define MLTAG_%s\t((value)(%d*2+1))\n" tag hash;
       end;
     if List.mem "noconv" flags then () else
     (* compute C name *)
