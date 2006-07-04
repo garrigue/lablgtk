@@ -1,6 +1,7 @@
 
 #include <glib-object.h>
 
+#include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
 #include <caml/fail.h>

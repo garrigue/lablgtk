@@ -297,15 +297,15 @@ CAMLprim value ml_##name##_##field (value val, value index, value new) \
 #define Make_Flags_val(conv) \
 CAMLprim int Flags_##conv (value list) \
 { int flags = 0L; \
-  while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
+  while(Is_block(list)){ flags |= conv(Field(list,0)); list = Field(list,1); }\
   return flags; }
 
 /* ML value is [flag list option] */
 #define Make_OptFlags_val(conv) \
 CAMLprim int OptFlags_##conv (value list) \
 { int flags = 0L; \
-  if Is_block(list) list = Field(list,0); \
-  while Is_block(list) { flags |= conv(Field(list,0)); list = Field(list,1); }\
+  if (Is_block(list)) list = Field(list,0); \
+  while(Is_block(list)){ flags |= conv(Field(list,0)); list = Field(list,1); }\
   return flags; }
 
 #define Val_copy(val) copy_memblock_indirected (&val, sizeof(val))

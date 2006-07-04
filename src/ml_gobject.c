@@ -20,7 +20,7 @@
 static gboolean ml_g_object_unref0 (gpointer p)
 { g_object_unref((GObject*)p); return 0; }
 
-CAMLprim void ml_g_object_unref_later (GObject *p)
+CAMLexport void ml_g_object_unref_later (GObject *p)
 {
     g_timeout_add_full(G_PRIORITY_HIGH_IDLE, 0, ml_g_object_unref0,
                        (gpointer)(p), NULL);
