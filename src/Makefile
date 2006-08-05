@@ -126,7 +126,7 @@ endif
 .c$(XO):
 	$(CCOMPILER) $<
 .c.d$(XO):
-	$(CAMLC) -c -ccopt "-MD -DCAML_DLL -Fo$@ $(CFLAGS)" $<
+	$(CAMLC) -c -ccopt '-MD -DCAML_DLL -Fo$@ $(CFLAGS)' $<
 .ml.cmo:
 	$(COMPILER) $<
 .mli.cmi:
