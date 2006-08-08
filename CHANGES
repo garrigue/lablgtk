@@ -1,5 +1,8 @@
 $Id$
 
+2006.08.08 [RobertR]
+  * export copy_memblock_indirected and ml_lookup_flags_getter for Windows
+
 2006.07.06 [Jacques]
   * make ABSVALUE=1 to use a custom mlvalues.h where value is abstract
 
