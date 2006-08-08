@@ -10,7 +10,7 @@
 
 #include "wrappers.h"
 
-value copy_memblock_indirected (void *src, asize_t size)
+CAMLexport value copy_memblock_indirected (void *src, asize_t size)
 {
     mlsize_t wosize = Wosize_asize(size);
     value ret;
@@ -107,7 +107,7 @@ CAMLexport int ml_lookup_to_c (const lookup_info table[], value key)
     invalid_argument ("ml_lookup_to_c");
 }
 
-value ml_lookup_flags_getter (const lookup_info table[], int data)
+CAMLexport value ml_lookup_flags_getter (const lookup_info table[], int data)
 {
   CAMLparam0();
   CAMLlocal2(cell, l);

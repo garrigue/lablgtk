@@ -12,7 +12,7 @@
 #include <caml/custom.h>
 CAMLextern char *young_start, *young_end; /* from minor_gc.h */
 
-value copy_memblock_indirected (void *src, asize_t size);
+CAMLexport value copy_memblock_indirected (void *src, asize_t size);
 value alloc_memblock_indirected (asize_t size);
 CAMLprim value ml_some (value);
 value ml_cons (value, value);
@@ -28,7 +28,7 @@ CAMLexport void ml_global_root_destroy (void *data);
 typedef struct { value key; int data; } lookup_info;
 CAMLexport value ml_lookup_from_c (const lookup_info table[], int data);
 CAMLexport int ml_lookup_to_c (const lookup_info table[], value key);
-value ml_lookup_flags_getter (const lookup_info table[], int data);
+CAMLexport value ml_lookup_flags_getter (const lookup_info table[], int data);
 
 /* Compatibility */
 #include <gtk/gtkversion.h>
