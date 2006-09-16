@@ -106,3 +106,5 @@ module ToolButton = ToolButton
 module ToggleToolButton = ToggleToolButton
 
 module RadioToolButton = RadioToolButton
+
+module MenuToolButton = MenuToolButton

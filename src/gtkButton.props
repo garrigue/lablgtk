@@ -109,6 +109,14 @@ class RadioToolButton : ToggleToolButton {
   "group"		 GtkRadioToolButton_opt      : Write
 }
 
+classes { GtkMenu "menu obj" }
+
+class MenuToolButton : ToolButton {
+  "menu"                 GtkMenu               : Read / Write
+(*  signal show-menu *)
+  method set_arrow_tooltip : "[>`tooltips] obj -> string -> string -> unit"
+}
+
 
 class Toolbar set wrapsig : Container {
   "orientation"          GtkOrientation       : Read / Write

@@ -1,5 +1,8 @@
 $Id$
 
+2006.09.15 [Olivier]
+  * wrap GtkMenuToolButton (2.6)
+
 2006.08.08 [RobertR]
   * export copy_memblock_indirected and ml_lookup_flags_getter for Windows
 

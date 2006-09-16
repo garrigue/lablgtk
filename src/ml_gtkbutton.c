@@ -35,6 +35,9 @@ CAMLprim value ml_gtkbutton_init(value unit)
         gtk_toggle_tool_button_get_type() +
         gtk_radio_tool_button_get_type() +
 #endif
+#ifdef HASGTK26
+        gtk_menu_tool_button_get_type() +
+#endif
         0;
     return Val_GType(t);
 }
@@ -163,3 +166,10 @@ Unsupported_24(gtk_toolbar_set_drop_highlight_item)
 Unsupported_24(gtk_toolbar_get_tooltips)
 Unsupported_24(gtk_toolbar_get_relief_style)
 #endif /* HASGTK24 */
+
+#ifdef HASGTK26
+#define GtkMenuToolButton_val(val) check_cast(GTK_MENU_TOOL_BUTTON,val)
+ML_4 (gtk_menu_tool_button_set_arrow_tooltip, GtkMenuToolButton_val, GtkTooltips_val, String_val, String_val, Unit)
+#else
+Unsupported_26(gtk_menu_tool_button_set_arrow_tooltip)
+#endif /* HASGTK26 */

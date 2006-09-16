@@ -462,3 +462,27 @@ val radio_tool_button :
   ?expand:bool ->
   ?packing:(tool_item_o -> unit) ->
   ?show:bool -> unit -> radio_tool_button
+
+(** @gtkdoc gtk GtkMenuToolButton
+    @since GTK 2.6 *)
+class menu_tool_button :
+  ([> Gtk.menu_tool_button] as 'a) obj ->
+  object
+    inherit tool_button
+    val obj : 'a obj
+    method menu : Gtk.menu Gtk.obj
+    method set_menu : Gtk.menu Gtk.obj -> unit
+    method set_arrow_tooltip : GData.tooltips -> string -> string -> unit
+  end
+
+(** @gtkdoc gtk GtkMenuToolButton
+    @since GTK 2.6 *)
+val menu_tool_button :
+  ?menu:<as_menu:Gtk.menu Gtk.obj;..> ->
+  ?label:string ->
+  ?stock:GtkStock.id ->
+  ?use_underline:bool ->
+  ?homogeneous:bool ->
+  ?expand:bool ->
+  ?packing:(tool_item_o -> unit) -> 
+  ?show:bool -> unit -> menu_tool_button
