@@ -288,3 +288,19 @@ let radio_tool_button ?group =
     (may_cons RadioToolButton.P.group 
        (Gaux.may_map (fun g -> g#group) group)
        [])
+
+class menu_tool_button obj = object
+  inherit tool_button obj
+  method menu = get MenuToolButton.P.menu obj
+  method set_menu = set MenuToolButton.P.menu obj
+  method set_arrow_tooltip (t : GData.tooltips) =
+    MenuToolButton.set_arrow_tooltip obj t#as_tooltips
+end
+
+let menu_tool_button ?menu =
+  tool_button_params 
+    (fun pl -> new menu_tool_button (MenuToolButton.create pl))
+    (may_cons MenuToolButton.P.menu
+       (Gaux.may_map (fun m -> m#as_menu) menu)
+       [])
+    
