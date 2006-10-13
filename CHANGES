@@ -1,5 +1,8 @@
 $Id$
 
+2006.10.13 [Jacques]
+  * add GDraw.drawable#colormap,gc,set_gc
+
 2006.09.15 [Olivier]
   * wrap GtkMenuToolButton (2.6)
 

@@ -32,7 +32,7 @@ val optcolor : ?colormap:colormap -> optcolor -> Gdk.color option
    @gtkdoc gdk gdk-Drawing-Primitives *)
 class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
   object
-    val gc : gc
+    val mutable gc : gc
     val w : 'a
     method arc :
       x:int ->
@@ -41,7 +41,10 @@ class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
       height:int ->
       ?filled:bool -> ?start:float -> ?angle:float -> unit -> unit
     method color : color -> Gdk.color
+    method colormap : colormap
     method depth : int
+    method gc : gc
+    method set_gc : gc -> unit
     method gc_values : GC.values
     method line : x:int -> y:int -> x:int -> y:int -> unit
     method point : x:int -> y:int -> unit
