@@ -48,8 +48,11 @@ let conv_optcolor : optcolor data_conv =
 
 class drawable ?(colormap = default_colormap ()) w = object (self)
   val colormap = colormap
-  val gc = GC.create w
+  val mutable gc = GC.create w
   val w = w
+  method colormap = colormap
+  method gc = gc
+  method set_gc x = gc <- x
   method color = color ~colormap
   method set_foreground col = GC.set_foreground gc (self#color col)
   method set_background col = GC.set_background gc (self#color col)
