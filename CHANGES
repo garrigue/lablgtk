@@ -1,5 +1,9 @@
 $Id$
 
+2006.10.27 [Jacques]
+  * add Gdk.Cursor.get_image
+  * remove Gdk.Cursor.destroy (could be dangerous)
+
 2006.10.13 [Jacques]
   * add GDraw.drawable#colormap,gc,set_gc
 

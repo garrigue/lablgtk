@@ -274,21 +274,18 @@ ML_6 (gdk_cursor_new_from_pixmap, GdkPixmap_val, GdkPixmap_val,
       GdkColor_val, GdkColor_val, Int_val, Int_val, Val_GdkCursor_new)
 ML_bc6 (ml_gdk_cursor_new_from_pixmap)
 #ifdef HASGTK24
-CAMLprim value
-ml_gdk_cursor_new_from_pixbuf (value pb, value x, value y)
-{
-  GdkCursor *c = gdk_cursor_new_from_pixbuf (gdk_display_get_default (),
-					     GdkPixbuf_val(pb),
-					     Int_val(x), Int_val(y));
-  return Val_GdkCursor_new (c);
-}
+ML_3 (gdk_cursor_new_from_pixbuf, Insert(gdk_display_get_default ())
+      GdkPixbuf_val, Int_val, Int_val, Val_GdkCursor_new)
 #else
 Unsupported_24(gdk_cursor_new_from_pixbuf)
 #endif
-ML_1 (gdk_cursor_destroy, GdkCursor_val, Unit)
+#ifdef HASGTK28
+ML_1 (gdk_cursor_get_image, GdkCursor_val, Val_GdkPixbuf_new)
+#else
+Unsupported_28(gdk_cursor_get_image)
+#endif
 
 /* Pixmap */
-
 
 CAMLexport GdkPixmap *GdkPixmap_val(value val)
 {
