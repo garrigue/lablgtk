@@ -435,17 +435,25 @@ ML_4 (gtk_selection_add_target, GtkWidget_val, GdkAtom_val,
 ML_4 (gtk_selection_convert, GtkWidget_val, GdkAtom_val,
       GdkAtom_val, Int32_val, Val_bool)
 
+ML_2 (gtk_selection_clear_targets, GtkWidget_val, GdkAtom_val, Unit)
+
 /* gtkclipboard.h */
 
 ML_1 (gtk_clipboard_get, GdkAtom_val, Val_pointer)
 ML_1 (gtk_clipboard_clear, GtkClipboard_val, Unit)
 ML_2 (gtk_clipboard_set_text, GtkClipboard_val, SizedString_val, Unit)
+ML_2 (gtk_clipboard_set_image, GtkClipboard_val, GdkPixbuf_val, Unit)
 ML_2 (gtk_clipboard_wait_for_contents, GtkClipboard_val, GdkAtom_val,
       Val_GtkSelectionData)
 CAMLprim value ml_gtk_clipboard_wait_for_text (value c)
 {
   const char *res = gtk_clipboard_wait_for_text (GtkClipboard_val(c));
   return (res != NULL ? ml_some(copy_string_g_free((char*)res)) : Val_unit);
+}
+CAMLprim value ml_gtk_clipboard_wait_for_image (value c)
+{
+  GdkPixbuf *res = gtk_clipboard_wait_for_image (GtkClipboard_val(c));
+  return (res != NULL ? ml_some(Val_GdkPixbuf_new(res)) : Val_unit);
 }
 static void clipboard_received_func (GtkClipboard *clipboard,
                                      GtkSelectionData *selection_data,
@@ -491,6 +499,28 @@ static void clipboard_clear_func (GtkClipboard *clipboard, gpointer data)
   ml_global_root_destroy (data);
 }
 */
+
+CAMLprim value ml_gtk_clipboard_wait_for_targets (value c)
+{
+  CAMLparam0 ();
+  CAMLlocal3 (new_cell, result, last_cell);
+  GdkAtom *targets;
+  gint n_targets;
+
+  gtk_clipboard_wait_for_targets (GtkClipboard_val(c), &targets, &n_targets);
+  last_cell = Val_unit;
+  if (targets != NULL) {
+    while (n_targets > 0) {
+      result = Val_GdkAtom(targets[--n_targets]);
+      new_cell = alloc_small(2,0);
+      Field(new_cell,0) = result;
+      Field(new_cell,1) = last_cell;
+      last_cell = new_cell;
+    }
+  }
+  g_free(targets);
+  CAMLreturn (last_cell);
+}
 
 /* gtkcontainer.h */
 

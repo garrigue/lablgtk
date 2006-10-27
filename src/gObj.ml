@@ -313,6 +313,7 @@ and misc_ops obj = object (self)
     Selection.owner_set obj ~sel ~time
   method add_selection_target ~target ?(info=0) sel =
     Selection.add_target obj ~sel ~target:(Gdk.Atom.intern target) ~info
+  method clear_selection_targets sel = Selection.clear_targets obj ~sel
 end
 
 and widget obj = object (self)

@@ -62,6 +62,20 @@ val event_box :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> event_box
 
+class invisible : ([> Gtk.invisible] as 'a) obj ->
+  object
+    inherit GContainer.bin
+    val obj : 'a obj
+    method connect : container_signals
+    method event : event_ops
+  end
+
+val invisible :
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> invisible
+
 (** {3 GtkHandleBox} *)
 
 (** @gtkdoc gtk GtkHandleBox *)
