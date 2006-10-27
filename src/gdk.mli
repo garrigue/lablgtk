@@ -485,5 +485,6 @@ module Cursor : sig
     fg:color -> bg:color -> x:int -> y:int -> cursor
   val create_from_pixbuf :
     [`pixbuf] Gobject.obj -> x:int -> y:int -> cursor (** @since GTK 2.4 *)
-  val destroy : cursor -> unit
+  val get_image : cursor -> [`pixbuf] obj             (** @since GTK 2.8 *)
+  (* val destroy : cursor -> unit   -- done by GC *)
 end
