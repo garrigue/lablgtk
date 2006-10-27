@@ -190,6 +190,7 @@ and misc_ops : Gtk.widget obj ->
     method add_selection_target :
       target:string -> ?info:int -> Gdk.atom -> unit
     method allocation : rectangle
+    method clear_selection_targets : Gdk.atom -> unit
     method colormap : Gdk.colormap
     method connect : misc_signals
     method convert_selection : target:string -> ?time:int32 -> Gdk.atom -> bool

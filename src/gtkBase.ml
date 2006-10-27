@@ -258,10 +258,16 @@ module Clipboard = struct
   external get : Gdk.atom -> clipboard = "ml_gtk_clipboard_get"
   external clear : clipboard -> unit = "ml_gtk_clipboard_clear"
   external set_text : clipboard -> string -> unit = "ml_gtk_clipboard_set_text"
+  external set_image : clipboard -> GdkPixbuf.pixbuf -> unit
+      = "ml_gtk_clipboard_set_image"
   external wait_for_contents : clipboard -> target:Gdk.atom -> selection_data
       = "ml_gtk_clipboard_wait_for_contents"
   external wait_for_text : clipboard -> string option
       = "ml_gtk_clipboard_wait_for_text"
+  external wait_for_image : clipboard -> GdkPixbuf.pixbuf option
+      = "ml_gtk_clipboard_wait_for_image"
+  external wait_for_targets : clipboard -> Gdk.atom list
+      = "ml_gtk_clipboard_wait_for_targets"
   external request_contents :
       clipboard -> target:Gdk.atom -> callback:(selection_data -> unit) -> unit
       = "ml_gtk_clipboard_request_contents"
@@ -299,6 +305,9 @@ module Selection = struct
   external convert :
     [> `widget] obj -> sel:Gdk.atom -> target:Gdk.atom -> time:int32 -> bool
     = "ml_gtk_selection_convert"
+  external clear_targets :
+    [>`widget] obj -> sel:Gdk.atom -> unit
+    = "ml_gtk_selection_clear_targets"
 end
 
 module DnD = struct

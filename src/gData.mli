@@ -76,13 +76,25 @@ val tooltips : ?delay:int -> unit -> tooltips
 
 (** Storing data on clipboards
    @gtkdoc gtk gtk-Clipboards *)
-class clipboard : Gtk.clipboard Lazy.t ->
+class clipboard_skel : Gtk.clipboard Lazy.t ->
   object
     method as_clipboard : Gtk.clipboard
     method clear : unit -> unit
     method get_contents : target:Gdk.atom -> GObj.selection_data
+    method set_image : GdkPixbuf.pixbuf -> unit
     method set_text : string -> unit
+    method image : GdkPixbuf.pixbuf option
     method text : string option
+    method targets : Gdk.atom list
+  end
+
+class clipboard : selection:Gdk.atom ->
+  object
+    inherit clipboard_skel
+    method set_contents :
+      targets:string list ->
+      get:(GObj.selection_context -> info:int -> time:int32 -> unit) ->
+      clear:(unit -> unit) -> unit
   end
 
 (** @gtkdoc gtk gtk-Clipboards *)

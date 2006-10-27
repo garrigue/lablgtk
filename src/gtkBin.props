@@ -44,6 +44,10 @@ class AspectFrame set wrap : Frame {
 
 class EventBox : Bin {}
 
+class Invisible : Bin {
+  "screen"               GdkScreen            : Read / Write
+}
+
 class HandleBox set wrap wrapsig : Bin {
   "handle-position"      GtkPositionType      : Read / Write
   "snap-edge"            GtkPositionType      : Read / Write

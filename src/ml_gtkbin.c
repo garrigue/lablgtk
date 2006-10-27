@@ -23,6 +23,7 @@ CAMLprim value ml_gtkbin_init(value unit)
     GType t =
         gtk_alignment_get_type() +
         gtk_event_box_get_type() +
+        gtk_invisible_get_type() +
         gtk_frame_get_type() +
         gtk_aspect_frame_get_type() +
         gtk_handle_box_get_type() +

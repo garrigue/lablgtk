@@ -23,6 +23,6 @@ module Viewport = Viewport
 
 module ScrolledWindow = ScrolledWindow
 
-(* module Invisible = Invisible *)
+module Invisible = Invisible
 
 module Expander = Expander

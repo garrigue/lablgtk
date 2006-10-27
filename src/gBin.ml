@@ -36,6 +36,15 @@ end
 let event_box =
   pack_container [] ~create:(fun pl -> new event_box (EventBox.create pl))
 
+class invisible obj = object
+  inherit bin obj
+  method connect = new container_signals_impl obj
+  method event = new GObj.event_ops (obj :> Gtk.invisible obj)
+end
+
+let invisible =
+  pack_container [] ~create:(fun pl -> new invisible (Invisible.create pl))
+
 class handle_box_signals (obj : [> handle_box] obj) = object
   inherit container_signals_impl obj
   inherit handle_box_sigs
