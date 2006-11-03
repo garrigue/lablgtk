@@ -52,6 +52,9 @@ CAMLprim value ml_gtkwindow_init(value unit)
         gtk_font_selection_dialog_get_type() 
 #ifndef _WIN32
         + gtk_plug_get_type()
+        + gtk_socket_get_type()
+#endif
+
 #endif
 ;
     return Val_GType(t);
@@ -910,6 +913,14 @@ Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
 Unsupported(gtk_plug_new)
 #else
 ML_1 (gtk_plug_new, XID_val, Val_GtkWidget_window)
+#endif
+
+/* gtksocket.h */
+#ifdef _WIN32
+Unsupported(gtk_socket_steal)
+#else
+#define GtkSocket_val(val) check_cast(GTK_SOCKET,val)
+ML_2 (gtk_socket_steal, GtkSocket_val, XID_val, Unit)
 #endif
 
 /* gtkmain.h */

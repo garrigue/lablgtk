@@ -1,5 +1,9 @@
 $Id$
 
+2006.11.03 [Olivier]
+  * move GtkSocket code from ml_gtkbin.c to ml_gtk.c since it is
+    wrapped in GWindow.
+
 2006.10.27 [Jacques]
   * add Gdk.Cursor.get_image
   * remove Gdk.Cursor.destroy (could be dangerous)
