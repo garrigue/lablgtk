@@ -29,9 +29,6 @@ CAMLprim value ml_gtkbin_init(value unit)
         gtk_handle_box_get_type() +
         gtk_viewport_get_type() +
         gtk_scrolled_window_get_type() 
-#ifndef _WIN32
-        + gtk_socket_get_type()
-#endif
 #ifdef HASGTK24
         + gtk_expander_get_type()
 #endif
@@ -128,11 +125,3 @@ ML_2 (gtk_scrolled_window_set_placement, GtkScrolledWindow_val,
 */
 ML_2 (gtk_scrolled_window_add_with_viewport, GtkScrolledWindow_val,
       GtkWidget_val, Unit)
-
-/* gtksocket.h */
-#ifdef _WIN32
-Unsupported(gtk_socket_steal)
-#else
-#define GtkSocket_val(val) check_cast(GTK_SOCKET,val)
-ML_2 (gtk_socket_steal, GtkSocket_val, XID_val, Unit)
-#endif
