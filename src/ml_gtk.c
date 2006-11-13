@@ -54,8 +54,6 @@ CAMLprim value ml_gtkwindow_init(value unit)
         + gtk_plug_get_type()
         + gtk_socket_get_type()
 #endif
-
-#endif
 ;
     return Val_GType(t);
 }
