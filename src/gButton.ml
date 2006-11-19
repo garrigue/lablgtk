@@ -18,6 +18,11 @@ class button_skel obj = object (self)
     set Widget.P.can_default obj true;
     set Widget.P.has_default obj true
   method event = new GObj.event_ops obj
+
+  method unset_image () =
+    Gobject.Property.set_dyn obj 
+      GtkButtonProps.Button.P.image.Gobject.name
+      (`OBJECT None)
 end
 
 class button_signals obj = object
