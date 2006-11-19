@@ -215,11 +215,17 @@ class TreeModelFilter : GObject {
 
 
 class IconView set wrap wrapsig : Container {
+  "column-spacing"       gint                  : Read / Write / NoSet
+  "columns"              gint                  : Read / Write
+  "item-width"           gint                  : Read / Write / NoSet
+  "margin"               gint                  : Read / Write / NoSet
   "markup-column"        gint                  : Read / Write / NoWrap / NoSet
   "model"                GtkTreeModel_opt      : Read / Write / NoWrap
   "orientation"          GtkOrientation        : Read / Write
   "pixbuf-column"        gint                  : Read / Write / NoWrap / NoSet
+  "row-spacing"          gint                  : Read / Write / NoSet
   "selection-mode"       GtkSelectionMode      : Read / Write
+  "spacing"              gint                  : Read / Write / NoSet
   "text-column"          gint                  : Read / Write / NoWrap / NoSet
 
   signal item_activated : GtkTreePath

@@ -618,6 +618,18 @@ class icon_view :
     method set_orientation : GtkEnums.orientation -> unit
     method selection_mode : GtkEnums.selection_mode
     method set_selection_mode : GtkEnums.selection_mode -> unit
+    method column_spacing : int
+    method set_column_spacing : int -> unit
+    method item_width : int
+    method set_item_width : int -> unit
+    method margin : int
+    method set_margin : int -> unit
+    method columns : int
+    method set_columns : int -> unit
+    method row_spacing : int
+    method set_row_spacing : int -> unit
+    method spacing : int
+    method set_spacing : int -> unit
 
     method get_path_at_pos : int -> int -> Gtk.tree_path
     method selected_foreach : (Gtk.tree_path -> unit) -> unit
@@ -636,6 +648,7 @@ class icon_view :
     @since GTK 2.6 *)
 val icon_view :
   ?model:#model ->
+  ?columns:int ->
   ?orientation:GtkEnums.orientation ->
   ?selection_mode:GtkEnums.selection_mode ->
   ?border_width:int ->

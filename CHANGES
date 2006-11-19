@@ -1,5 +1,8 @@
 $Id$
 
+2006.11.19 [Olivier]
+  * add some missing propoerties in GtkIconView (in module GTree) (2.6)
+
 2006.11.03 [Olivier]
   * move GtkSocket code from ml_gtkbin.c to ml_gtk.c since it is
     wrapped in GWindow.
@@ -15,6 +18,7 @@ $Id$
 2006.09.15 [Olivier]
   * wrap GtkMenuToolButton (2.6)
 
+In lablgtk2-20060908:
 2006.08.08 [RobertR]
   * export copy_memblock_indirected and ml_lookup_flags_getter for Windows
 
