@@ -11,10 +11,14 @@ open GtkButtonProps
 }
 
 class Button set wrap wrapsig : Bin {
+  "focus-on-click"       gboolean             : Read / Write / NoSet
+  "image"                GtkWidget            : Read / Write / NoSet
   "label"                gchararray           : Read / Write / Construct
   "use-stock"            gboolean             : Read / Write / Construct
   "use-underline"        gboolean             : Read / Write / Construct
   "relief"               GtkReliefStyle       : Read / Write
+  "xalign"               gfloat               : Read / Write / NoSet
+  "yalign"               gfloat               : Read / Write / NoSet
   signal activate        / NoWrap
   signal clicked
   signal enter

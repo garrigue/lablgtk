@@ -25,6 +25,15 @@ class button_skel : 'a obj ->
     method use_underline : bool
     method grab_default : unit -> unit
     method event : event_ops
+    method set_focus_on_click : bool -> unit
+    method focus_on_click : bool
+    method image : GObj.widget             (** @since GTK 2.6 *)
+    method set_image : GObj.widget -> unit (** @since GTK 2.6 *)
+    method unset_image : unit -> unit      (** @since GTK 2.6 *)
+    method set_xalign : float -> unit  (** @since GTK 2.4 *)
+    method xalign     : float          (** @since GTK 2.4 *)
+    method set_yalign : float -> unit  (** @since GTK 2.4 *)
+    method yalign     : float          (** @since GTK 2.4 *)
   end
 
 (** @gtkdoc gtk GtkButton *)

@@ -1,7 +1,8 @@
 $Id$
 
 2006.11.19 [Olivier]
-  * add some missing propoerties in GtkIconView (in module GTree) (2.6)
+  * add some missing properties in GtkIconView (in module GTree) (2.6)
+  * add some missing properties in GtkButton (2.4, 2.6)
 
 2006.11.03 [Olivier]
   * move GtkSocket code from ml_gtkbin.c to ml_gtk.c since it is
