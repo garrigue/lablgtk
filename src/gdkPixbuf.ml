@@ -181,7 +181,7 @@ external _scale :
   scale_y:float -> interp:interpolation -> unit
   = "ml_gdk_pixbuf_scale_bc" "ml_gdk_pixbuf_scale"
 let scale ~dest ?(dest_x=0) ?(dest_y=0) ?width ?height ?(ofs_x=0.) ?(ofs_y=0.)
-    ?scale_x ?scale_y ?(interp=`NEAREST) src =
+    ?scale_x ?scale_y ?(interp=`BILINEAR) src =
   let width, scale_x =
     get_size width scale_x ~ssrc:(get_width src)
       ~sdest:(get_width dest) ~dest:dest_x ~ofs:ofs_x
@@ -198,7 +198,7 @@ external _composite :
   scale_y:float -> interp:interpolation -> alpha:int -> unit
   = "ml_gdk_pixbuf_composite_bc" "ml_gdk_pixbuf_composite"
 let composite ~dest ~alpha ?(dest_x=0) ?(dest_y=0) ?width ?height
-    ?(ofs_x=0.) ?(ofs_y=0.) ?scale_x ?scale_y ?(interp=`NEAREST) src =
+    ?(ofs_x=0.) ?(ofs_y=0.) ?scale_x ?scale_y ?(interp=`BILINEAR) src =
   let width, scale_x =
     get_size width scale_x ~ssrc:(get_width src)
       ~sdest:(get_width dest) ~dest:dest_x ~ofs:ofs_x

@@ -19,7 +19,7 @@ static gpointer caml_boxed_copy (gpointer boxed)
 
 GType g_caml_get_type()
 {
-  static GType type;
+  static GType type = G_TYPE_INVALID;
   if (type == G_TYPE_INVALID)
     type = g_boxed_type_register_static ("Caml",
 					 caml_boxed_copy,
