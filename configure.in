@@ -191,7 +191,7 @@ AC_PROG_RANLIB
 # get the C compiler used by ocamlc
 if test -z "$CC" ; then
   touch conftest.c
-  CC=$($CAMLC -verbose -c conftest.c 2>&1 | sed ['s/^+ \([^ ]*\) .*$/\1/'])
+  CC=$($CAMLC -verbose -c conftest.c 2>&1 | head -1 | sed ['s/^+ \([^ ]*\) .*$/\1/'])
   echo [OCaml uses $CC to compile C files]
 fi
 AC_PROG_CC
