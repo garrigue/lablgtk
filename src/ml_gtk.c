@@ -443,7 +443,6 @@ ML_2 (gtk_selection_clear_targets, GtkWidget_val, GdkAtom_val, Unit)
 ML_1 (gtk_clipboard_get, GdkAtom_val, Val_pointer)
 ML_1 (gtk_clipboard_clear, GtkClipboard_val, Unit)
 ML_2 (gtk_clipboard_set_text, GtkClipboard_val, SizedString_val, Unit)
-ML_2 (gtk_clipboard_set_image, GtkClipboard_val, GdkPixbuf_val, Unit)
 ML_2 (gtk_clipboard_wait_for_contents, GtkClipboard_val, GdkAtom_val,
       Val_GtkSelectionData)
 CAMLprim value ml_gtk_clipboard_wait_for_text (value c)
@@ -451,11 +450,17 @@ CAMLprim value ml_gtk_clipboard_wait_for_text (value c)
   const char *res = gtk_clipboard_wait_for_text (GtkClipboard_val(c));
   return (res != NULL ? ml_some(copy_string_g_free((char*)res)) : Val_unit);
 }
+#ifdef HASGTK26
+ML_2 (gtk_clipboard_set_image, GtkClipboard_val, GdkPixbuf_val, Unit)
 CAMLprim value ml_gtk_clipboard_wait_for_image (value c)
 {
   GdkPixbuf *res = gtk_clipboard_wait_for_image (GtkClipboard_val(c));
   return (res != NULL ? ml_some(Val_GdkPixbuf_new(res)) : Val_unit);
 }
+#else
+Unsupported_26(gtk_clipboard_set_image)
+Unsupported_26(gtk_clipboard_wait_for_image)
+#endif
 static void clipboard_received_func (GtkClipboard *clipboard,
                                      GtkSelectionData *selection_data,
                                      gpointer data)
