@@ -120,8 +120,21 @@ Make_Extractor(gtk_layout, GtkLayout_val, bin_window, Val_GdkWindow)
 /* gtknotebook.h */
 
 #define GtkNotebook_val(val) check_cast(GTK_NOTEBOOK,val)
-ML_5 (gtk_notebook_insert_page_menu, GtkNotebook_val, GtkWidget_val,
-      GtkWidget_val, GtkWidget_val, Int_val, Unit)
+#ifndef HASGTK24
+ML_5 (gtk_notebook_insert_page_menu, GtkNotebook_val, GtkWidget_val, GtkWidget_val, GtkWidget_val, Option_val(arg5,Int_val,(-1)) Ignore, Val_int)
+#else
+CAMLprim value ml_gtk_notebook_insert_page_menu(value nb, value w1, 
+                                                value w2, value w3, 
+                                                value pos)
+{
+  gtk_notebook_insert_page_menu(GtkNotebook_val(nb),
+                                GtkWidget_val(w1),
+                                GtkWidget_val(w2),
+                                GtkWidget_val(w3),
+                                Option_val(pos,Int_val,-1));
+  return Val_int(gtk_notebook_get_current_page(GtkNotebook_val(nb)));
+}
+#endif
 ML_2 (gtk_notebook_remove_page, GtkNotebook_val, Int_val, Unit)
 
 ML_1 (gtk_notebook_get_current_page, GtkNotebook_val, Val_int)

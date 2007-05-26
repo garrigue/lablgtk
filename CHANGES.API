@@ -1,6 +1,7 @@
 API CHANGES
 -----------
-
+GPack.notebook#append_page and GPack.notebook#insert_page :
+        return int instead of unit
 GAction.action_group#add_action :
     removed `accel' optional parameter
 GBin.alignment :
