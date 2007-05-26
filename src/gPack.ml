@@ -185,11 +185,13 @@ class notebook obj = object (self)
   inherit notebook_props
   method event = new GObj.event_ops obj
   method connect = new notebook_signals obj
-  method insert_page ?tab_label ?menu_label ~pos child =
-      Notebook.insert_page_menu obj (as_widget child) ~pos
+  method insert_page ?tab_label ?menu_label ?pos child =
+      Notebook.insert_page_menu obj (as_widget child) 
 	~tab_label:(Gpointer.may_box tab_label ~f:as_widget)
 	~menu_label:(Gpointer.may_box menu_label ~f:as_widget)
-  method append_page = self#insert_page ~pos:(-1)
+        ?pos
+  method append_page ?tab_label ?menu_label child = 
+    self#insert_page ?tab_label ?menu_label child
   method prepend_page = self#insert_page ~pos:0
   method remove_page = Notebook.remove_page obj
   method current_page = get Notebook.P.page obj

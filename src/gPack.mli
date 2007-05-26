@@ -222,7 +222,7 @@ class notebook : Gtk.notebook obj ->
     val obj : Gtk.notebook obj
     method event : event_ops
     method append_page :
-      ?tab_label:widget -> ?menu_label:widget -> widget -> unit
+      ?tab_label:widget -> ?menu_label:widget -> widget -> int
     method connect : notebook_signals
     method current_page : int
     method get_menu_label : widget -> widget
@@ -230,11 +230,11 @@ class notebook : Gtk.notebook obj ->
     method get_tab_label : widget -> widget
     method goto_page : int -> unit
     method insert_page :
-      ?tab_label:widget -> ?menu_label:widget -> pos:int -> widget -> unit
+      ?tab_label:widget -> ?menu_label:widget -> ?pos:int -> widget -> int
     method next_page : unit -> unit
     method page_num : widget -> int
     method prepend_page :
-      ?tab_label:widget -> ?menu_label:widget -> widget -> unit
+      ?tab_label:widget -> ?menu_label:widget -> widget -> int
     method previous_page : unit -> unit
     method remove_page : int -> unit
     method set_enable_popup : bool -> unit
