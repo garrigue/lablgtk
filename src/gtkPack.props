@@ -84,7 +84,7 @@ class Notebook set wrap : Container {
   "tab-vborder"          guint                : Read / Write / NoSet
   method insert_page_menu :
      "[>`widget] obj -> tab_label:[>`widget] optobj ->
-      menu_label:[>`widget] optobj -> pos:int -> unit"
+      menu_label:[>`widget] optobj -> ?pos:int -> int"
       (* default is append to end *)
   method remove_page : "int -> unit"
   method get_current_page : "int"
