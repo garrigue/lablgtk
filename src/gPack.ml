@@ -191,7 +191,7 @@ class notebook obj = object (self)
 	~menu_label:(Gpointer.may_box menu_label ~f:as_widget)
         ?pos
   method append_page ?tab_label ?menu_label child = 
-    self#insert_page ?tab_label ?menu_label child
+    self#insert_page ?tab_label ?menu_label child 
   method prepend_page = self#insert_page ~pos:0
   method remove_page = Notebook.remove_page obj
   method current_page = get Notebook.P.page obj
