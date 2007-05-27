@@ -92,6 +92,7 @@ let rec list_rassoc k = function
   | [] -> raise Not_found
 
 let resp = Dialog.std_response
+
 let rnone = resp `NONE
 and rreject = resp `REJECT
 and raccept = resp `ACCEPT
@@ -128,7 +129,15 @@ class ['a] dialog_skel obj = object
   val mutable tbl = [rdelete, `DELETE_EVENT]
   val mutable id = 0
   method private encode (v : 'a) = list_rassoc v tbl
-  method private decode r = List.assoc r tbl
+  method private decode r = 
+    try 
+      List.assoc r tbl 
+    with Not_found -> 
+      Format.eprintf 
+        "Warning: unknown response id:%d in dialog. \
+                  Please report to lablgtk dev team.@." 
+        r;
+      `DELETE_EVENT
 end
 
 class ['a] dialog_ext obj = object (self)
@@ -190,7 +199,7 @@ module Buttons = struct
   type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
   type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
   type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT]
-  type about = [`CLOSE | `DELETE_EVENT]
+  type about = [`CANCEL | `CLOSE | `DELETE_EVENT]
 end
 
 class ['a] message_dialog obj ~(buttons : 'a buttons) = object (self)
@@ -226,7 +235,7 @@ class about_dialog obj =
     method set_documenters = AboutDialog.set_documenters obj
     method documenters = AboutDialog.get_documenters obj
     initializer
-      tbl <- [ rclose, `CLOSE ] @ tbl
+      tbl <- [ rcancel, `CANCEL ; rclose, `CLOSE ] @ tbl
   end
 
 let about_dialog ?authors =

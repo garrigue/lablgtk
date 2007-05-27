@@ -198,7 +198,7 @@ module Buttons : sig
   type color_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
   type file_selection = [`OK | `CANCEL | `HELP | `DELETE_EVENT]
   type font_selection = [`OK | `CANCEL | `APPLY | `DELETE_EVENT]
-  type about = [`CLOSE | `DELETE_EVENT]
+  type about = [ `CANCEL | `CLOSE | `DELETE_EVENT ]
 end
 
 (** Convenient message window

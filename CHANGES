@@ -1,5 +1,10 @@
 $Id$
 
+2007.05.27 [Benjamin]
+   * fixed bug in GWindow.about_dialog whose callbacks raised an uncaught
+     Not_found.
+     The default Close button now responds `CANCEL and not `CLOSE.
+
 2006.11.19 [Olivier]
   * add some missing properties in GtkIconView (in module GTree) (2.6)
   * add some missing properties in GtkButton (2.4, 2.6)
