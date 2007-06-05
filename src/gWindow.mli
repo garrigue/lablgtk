@@ -276,7 +276,10 @@ class about_dialog :
   end
 
 (** Display information about an application. 
-    A default handler is already connected to the [response] signal. It simply hides the dialog.
+
+    In GTK+ 2.6.x and 2.8.x, a default handler is already connected to
+    the [response] signal. It simply hides the dialog. This is no longer
+    the case since GTK+ 2.10.x though.
     You could use it like this: 
 {[let about_dialog = ref (fun () -> raise Not_found)
 let show_dialog () =
@@ -285,6 +288,7 @@ let show_dialog () =
     let dialog = GWindow.about_dialog ~name:"..." (* etc. *) () in
     about_dialog := dialog#present ;
     dialog#show () ]}
+
     @gtkdoc gtk GtkAboutDialog 
     @since GTK 2.6 
 *)
