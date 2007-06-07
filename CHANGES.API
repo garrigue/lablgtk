@@ -28,7 +28,7 @@ GnoDruid :
 
 API ADDITIONS
 -------------
-
+GButton.link_button
 GAction.action_skel#set_accel_group
 GAction.action_group#add_action_with_accel
 GAction.ui_manager#new_merge_id

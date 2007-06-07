@@ -134,3 +134,7 @@ class Toolbar set wrapsig : Container {
   signal move_focus         : GtkDirectionType -> bool
   signal popup_context_menu : int int int -> bool
 }
+
+class LinkButton wrap : LinkButton {
+  "uri"                gchararray           : Read / Write 
+}

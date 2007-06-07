@@ -38,6 +38,9 @@ CAMLprim value ml_gtkbutton_init(value unit)
 #ifdef HASGTK26
         gtk_menu_tool_button_get_type() +
 #endif
+#ifdef HASGTK210
+        gtk_link_button_get_type () +
+#endif
         0;
     return Val_GType(t);
 }
@@ -46,7 +49,7 @@ CAMLprim value ml_gtkbutton_init(value unit)
 #define GtkButton_val(val) check_cast(GTK_BUTTON,val)
 /*
 ML_0 (gtk_button_new, Val_GtkWidget_sink)
-ML_1 (gtk_button_new_with_label, String_val, Val_GtkWidget_sink)
+ML_1 (gtk_butTon_new_with_label, String_val, Val_GtkWidget_sink)
 ML_1 (gtk_button_new_with_mnemonic, String_val, Val_GtkWidget_sink)
 ML_1 (gtk_button_new_from_stock, String_val, Val_GtkWidget_sink)
 */
@@ -173,3 +176,35 @@ ML_4 (gtk_menu_tool_button_set_arrow_tooltip, GtkMenuToolButton_val, GtkTooltips
 #else
 Unsupported_26(gtk_menu_tool_button_set_arrow_tooltip)
 #endif /* HASGTK26 */
+
+/* gtklinkbutton.h */ 
+#ifdef HASGTK210
+ML_1(gtk_link_button_new, String_val, Val_GtkWidget_sink)
+ML_2(gtk_link_button_new_with_label, String_val, String_val, Val_GtkWidget_sink)
+static void ml_g_link_button_func(GtkLinkButton *button,
+                                  const gchar *link,
+                                  gpointer user_data) {
+  value *clos = user_data;
+  CAMLparam0();
+  CAMLlocal2(ml_link,ret);
+  ml_link = Val_string(link);
+  ret = callback2_exn(*clos, Val_GtkWidget(button),ml_link);
+  if (Is_exception_result(ret)) {
+    CAML_EXN_LOG("gtk_link_button_func");
+  }
+  CAMLreturn0;
+}
+
+CAMLprim value ml_gtk_link_button_set_uri_hook (value clos) {
+  value *clos_p = ml_global_root_new (clos);
+  
+  gtk_link_button_set_uri_hook
+    (ml_g_link_button_func, 
+     clos_p,
+     ml_global_root_destroy);
+
+  return Val_unit;
+}
+#else
+Unsupported_210(gtk_link_button_set_uri_hook)
+#endif
