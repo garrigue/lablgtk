@@ -44,6 +44,9 @@ CAMLexport value ml_lookup_flags_getter (const lookup_info table[], int data);
 #if GTK_CHECK_VERSION(2,8,0) && !defined(DISABLE_GTK28)
 #define HASGTK28
 #endif
+#if GTK_CHECK_VERSION(2,10,0) && !defined(DISABLE_GTK210)
+#define HASGTK210
+#endif
 
 /* Wrapper generators */
 
@@ -59,6 +62,10 @@ CAMLprim value ml_##cname () \
 #define Unsupported_28(cname) \
 CAMLprim value ml_##cname () \
 { failwith(#cname " unsupported in Gtk 2.x < 2.8"); }
+
+#define Unsupported_210(cname) \
+CAMLprim value ml_##cname () \
+{ failwith(#cname " unsupported in Gtk 2.x < 2.10"); }
 
 #define ID(x) (x)
 

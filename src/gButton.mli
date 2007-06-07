@@ -495,3 +495,24 @@ val menu_tool_button :
   ?expand:bool ->
   ?packing:(tool_item_o -> unit) -> 
   ?show:bool -> unit -> menu_tool_button
+
+
+(** @gtkdoc gtk GtkLinkButton
+    @since GTK 2.10 *)
+class link_button :
+  ([> Gtk.link_button] as 'a) Gtk.obj ->
+  object
+    inherit button_skel
+    val obj : 'a Gtk.obj
+    method uri : string
+    method set_uri : string -> unit
+  end
+
+(** A button for URL
+    @gtkdoc gtk GtkLinkButton
+    @since GTK 2.10 *)
+
+val link_button :
+  ?label:string ->
+  string ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> link_button

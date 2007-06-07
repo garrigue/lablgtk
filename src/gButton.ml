@@ -309,3 +309,16 @@ let menu_tool_button ?menu =
        (Gaux.may_map (fun m -> m#as_menu) menu)
        [])
     
+class link_button obj = object
+  inherit button_skel obj
+  inherit link_button_props
+end
+
+let link_button ?label =
+  pack_return 
+    (fun uri -> new link_button 
+       (match label with 
+        | None -> LinkButton.create uri
+        | Some s -> LinkButton.create_with_label uri s))
+
+
