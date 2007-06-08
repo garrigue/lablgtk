@@ -314,6 +314,12 @@ GnomeCanvas support:
   See examples in examples/canvas.
   The executable must be linked with lablgnomecanvas.cma.
 
+GtkSourceView support:
+  This binding was contributed by Maxence Guesdon and Stefano Zacchiroli.
+  It requires libgtksourceview-1.x.
+  See examples in examples/sourceview.
+  The executable must be linked with lablgtksourceview.cma.
+
 Windows port
 
   See README.win32 for detailed information on installation.

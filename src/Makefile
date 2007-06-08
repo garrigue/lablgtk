@@ -28,7 +28,12 @@ MLLIBS = lablgtk.cma
 CLIBS = liblablgtk2$(XA)
 #MLLINK = unix.cma str.cma
 
-GTKCFLAGS += -DG_LOG_DOMAIN=\"LablGTK\"
+# For -DG_LOG_DOMAIN=\"LablGTK\"
+ifneq ($(TOOLCHAIN),msvc)
+GTKCFLAGS += -imacros ml_domain.h
+else
+GTKCFLAGS += /FI ml_domain.h
+endif
 
 # compile using a custom version of mlvalues.h, where value is abstract
 ifdef ABSVALUE
@@ -39,7 +44,7 @@ ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
 CUSTOM = -custom
 #MLLINK += -cclib -lcamlrund
-MLBYTEFLAGS = -g
+MLBYTEFLAGS = -g -dtypes
 else
 CFLAGS = -DG_DISABLE_ASSERT -DG_DISABLE_CAST_CHECKS $(GTKCFLAGS)
 ifneq ($(TOOLCHAIN),msvc)
@@ -121,6 +126,16 @@ GTKSPELLMLOBJS = gtkSpell.cmo
 GTKSPELLCOBJS = ml_gtkspell$(XO)
 endif
 
+ifdef USE_GTKSOURCEVIEW
+MLLIBS += lablgtksourceview.cma
+CLIBS += liblablgtksourceview$(XA)
+GTKSOURCEVIEWMLOBJS = gtkSourceView.cmo gSourceView.cmo 
+GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
+GTKPROPS +=  gtkSourceView.props	
+ENUMOBJS += sourceViewEnums.cmo
+
+endif
+
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c $(XO) .d$(XO) .var .h .opt .def .ml4
 .c$(XO):
@@ -153,12 +168,12 @@ GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkaction$(XO) \
 	ml_gtktext$(XO) ml_gtktree$(XO)
 COBJS = ml_gdkpixbuf$(XO) ml_gdk$(XO) ml_glib$(XO) ml_gobject$(XO) \
 	ml_gpointer$(XO) ml_gvaluecaml$(XO) wrappers$(XO) $(GTKOBJS)
-GTKPROPS = gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
+GTKPROPS += gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
 	gtkList.props gtkMenu.props gtkMisc.props gtkPack.props \
 	gtkRange.props gtkText.props gtkTree.props gtkFile.props \
 	gtkAction.props gtkBroken.props
 MLOBJS1 =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo
-ENUMOBJS = gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
+ENUMOBJS += gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
 MLOBJS2 = pango.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
 	gtk.cmo gtkSignal.cmo gtkStock.cmo gtkObject.cmo
 MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
@@ -179,6 +194,7 @@ THINITOBJS = gtkThInit.cmo
 EXTRAOBJS = $(INITOBJS) $(THOBJS) $(THINITOBJS)
 ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) $(GTKSPELLMLOBJS) \
+	$(GTKSOURCEVIEWMLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
@@ -189,7 +205,7 @@ opt:  $(TARGETS) lablgtkopt
 
 depend:
 	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
-	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1
+	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 USE_GTKSOURCEVIEW=1
 real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml)
 	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) *.mli > .depend
 
@@ -402,6 +418,14 @@ lablgtkspell.cmxa: liblablgtkspell$(XA) $(GTKSPELLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkspell \
 	    $(GTKSPELLMLOBJS:.cmo=.cmx) $(GTKSPELLLIBS)
 
+liblablgtksourceview$(XA): $(GTKSOURCEVIEWCOBJS)
+	$(LIBRARIAN) -o lablgtksourceview $(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWLIBS)
+lablgtksourceview.cma: liblablgtksourceview$(XA) $(GTKSOURCEVIEWMLOBJS)
+	$(LIBRARIAN) -o lablgtksourceview $(GTKSOURCEVIEWMLOBJS) $(GTKSOURCEVIEWLIBS)
+lablgtksourceview.cmxa: liblablgtksourceview$(XA) $(GTKSOURCEVIEWMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtksourceview \
+	    $(GTKSOURCEVIEWMLOBJS:.cmo=.cmx) $(GTKSOURCEVIEWLIBS)
+
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
@@ -426,7 +450,7 @@ check_externals$(XE): check_externals.cmo
 	$(LINKER) -o $@ $<
 
 clean:
-	rm -f *.cm* *.o *.a *.so *.exe *.obj *.lib *.dll *_tags.[ch] \
+	rm -f *.cm* *.o *.a *.so *.exe *.obj *.lib *.dll *_tags.[ch] *.gch \
 	  $(TARGETS) varcc.ml xml_lexer.ml \
 	  propcc$(XE) check_externals$(XE) check_externals.ml propcc.ml \
 	  *Enums.ml *Props.ml
@@ -468,6 +492,9 @@ endif
 ifdef USE_GTKSPELL
 DOCFILES += gtkSpell.mli
 endif
+ifdef USE_GTKSOURCEVIEW
+DOCFILES += gSourceView.mli
+endif
 
 OCAMLDOC = ocamldoc
 lablgtk$(XO)doc : $(DOCFILES) $(ALLOBJS)
@@ -487,6 +514,9 @@ $(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
 	    ml_gobject.h ml_glib.h wrappers.h
 $(GNOMEUICOBJS) : gnomeui_tags.h
 $(PANELCOBJS) : panel_tags.h
+$(GTKSOURCEVIEWCOBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
+			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView_tags.h wrappers.h
+
 ml_glib$(XO): glib_tags.h ml_glib.h wrappers.h
 ml_gobject$(XO): gobject_tags.h ml_gvaluecaml.h wrappers.h
 ml_gvaluecaml$(XO): ml_gobject.h wrappers.h
@@ -503,6 +533,7 @@ ml_rsvg$(XO): ml_gobject.h ml_gdkpixbuf.h wrappers.h
 ml_gnomecanvas$(XO): ml_gtk.h ml_gobject.h wrappers.h
 ml_gnomedruid$(XO): ml_gtk.h ml_gobject.h wrappers.h
 ml_panel$(XO): ml_gtk.h ml_gobject.h wrappers.h
+
 varcc.cmo: varcc.ml4
 
 include .depend

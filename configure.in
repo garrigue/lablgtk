@@ -221,9 +221,8 @@ if test $USE_$1 = yes ; then
 	PKG_CHECK_MODULES($1,$4,,[
 	if test $FORCE_$1 = yes ; then
 	  AC_MSG_ERROR($2 enforced but no support found)
-	else
-	  AC_MSG_RESULT(no)
-	USE_$1=no
+        else
+          USE_$1=no
 	fi])
 fi
 if test $USE_$1 = yes ; then
@@ -270,6 +269,8 @@ if test -n "$USE_RSVG" ; then
     ac_ocaml_libs="$LIBS"
     LIBS="$LIBS $RSVG_LIBS"
     AC_CHECK_FUNC(rsvg_handle_new_gz, [HAVE_SVGZ=-DHAVE_SVGZ], [unset HAVE_SVGZ])
+    # this tests seems broken on my ubuntu FF
+    unset HAVE_SVGZ
     LIBS="$ac_ocaml_libs"
 else
     unset HAVE_SVGZ
@@ -291,7 +292,11 @@ LABLGTK_PKG(GTKSPELL, gtkspell,
             [  --without-gtkspell      override autodetected gtkspell support],
             gtkspell-2.0)
 
-PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG)
+LABLGTK_PKG(GTKSOURCEVIEW, gtksourceview,
+            [  --without-gtksourceview      override autodetected gtksourceview support],
+            gtksourceview-1.0)
+
+PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG)
 
 AC_ARG_ENABLE(debug,
         [  --enable-debug          enable debug mode],
@@ -345,6 +350,7 @@ CONF_SUMMARY(libgnomecanvas, GNOMECANVAS)
 CONF_SUMMARY(libgnomeui, GNOMEUI)
 CONF_SUMMARY(libpanelapplet, PANEL)
 CONF_SUMMARY(gtkspell, GTKSPELL)
+CONF_SUMMARY(gtksourceview, GTKSOURCEVIEW)
 echo
 echo -n  "	debug   	"
 if test -n "$DEBUG" ; then echo "yes" ; else echo "no" ; fi

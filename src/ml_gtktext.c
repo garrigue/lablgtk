@@ -21,6 +21,7 @@
 #include "ml_gobject.h"
 #include "ml_gdkpixbuf.h"
 #include "ml_pango.h"
+#include "ml_gtktext.h"
 #include "gtk_tags.h"
 #include "gdk_tags.h"
 
@@ -39,33 +40,12 @@ CAMLprim value ml_gtktext_init(value unit)
     return Val_GType(t);
 }
 
-#define GtkTextMark_val(val) check_cast(GTK_TEXT_MARK,val)
-#define Val_GtkTextMark(val) (Val_GObject((GObject*)val))
-#define Val_GtkTextMark_new(val) (Val_GObject_new((GObject*)val))
-
-
 CAMLprim value Val_GtkTextMark_func(gpointer val){
   return(Val_GtkTextMark(val));
 }
 static value Val_GtkTextMark_opt(GtkTextMark *mrk) {
   return Val_option(mrk, Val_GtkTextMark);
 }
-        
-#define GtkTextTag_val(val) check_cast(GTK_TEXT_TAG,val)
-#define Val_GtkTextTag(val) (Val_GObject((GObject*)val))
-#define Val_GtkTextTag_new(val) (Val_GObject_new((GObject*)val))
-
-#define GtkTextTagTable_val(val) check_cast(GTK_TEXT_TAG_TABLE,val)
-#define Val_GtkTextTagTable(val)  (Val_GObject((GObject*)val))
-#define Val_GtkTextTagTable_new(val) (Val_GObject_new((GObject*)val))
-
-#define GtkTextBuffer_val(val) check_cast(GTK_TEXT_BUFFER,val)
-#define Val_GtkTextBuffer(val)  (Val_GObject((GObject*)val))
-#define Val_GtkTextBuffer_new(val) (Val_GObject_new((GObject*)val))
-
-#define GtkTextChildAnchor_val(val) check_cast(GTK_TEXT_CHILD_ANCHOR,val)
-#define Val_GtkTextChildAnchor(val)  (Val_GObject((GObject*)val))
-#define Val_GtkTextChildAnchor_new(val) (Val_GObject_new((GObject*)val))
 
 /* TextIter are not GObjects. They are stack allocated. */
 /* This is the Custom_block version for latter...
@@ -97,17 +77,11 @@ CAMLprim value Val_GtkTextIter(GtkTextIter* it){
 ML_1 (gtk_text_iter_copy, GtkTextIter_val, Val_GtkTextIter_mine)
 */
 
-/* "Lighter" version: allocate in the ocaml heap */
-#define GtkTextIter_val(val) ((GtkTextIter*)MLPointer_val(val))
-#define Val_GtkTextIter(it) (copy_memblock_indirected(it,sizeof(GtkTextIter)))
+
 CAMLprim value ml_gtk_text_iter_copy (value it) {
   /* Only valid if in old generation and compaction off */
   return Val_GtkTextIter(GtkTextIter_val(it));
 }
-#define alloc_GtkTextIter() (alloc_memblock_indirected(sizeof(GtkTextIter))
-
-#define GtkTextView_val(val) check_cast(GTK_TEXT_VIEW,val)
-
 
 /* gtktextmark */
 
