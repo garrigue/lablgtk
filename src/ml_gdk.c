@@ -2,7 +2,7 @@
 
 #include <string.h>
 #include <gdk/gdk.h>
-#if defined(_WIN32) || defined(__CYGWIN__)
+#if defined(_WIN32) || defined(__MINGW32__)
 #include <gdk/gdkwin32.h>
 #else
 #include <gdk/gdkx.h>

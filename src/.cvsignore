@@ -19,3 +19,5 @@ ogtk*Props.ml
 *.dll
 *.exp
 lablgtk.odoc
+*.gch
+*.annot

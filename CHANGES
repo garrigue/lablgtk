@@ -1,6 +1,10 @@
 $Id$
+
 2007.06.08 [Benjamin]
    * Add support for gtk_link_button
+
+2007.06.07 [Benjamin]
+   * gtksourceview support
 
 2007.05.27 [Benjamin]
    * fixed bug in GWindow.about_dialog whose callbacks raised an uncaught
