@@ -307,22 +307,58 @@ class tag_table_signals obj = object
   inherit text_tag_table_sigs
 end
 
-class tag_table obj = 
+class tag_table_skel obj = 
 object
+  val obj = (obj :> text_tag_table)
   method get_oid = Gobject.get_oid obj
   method as_tag_table : text_tag_table = obj
-  method connect = new tag_table_signals obj
   method add =  TagTable.add obj
   method remove =  TagTable.remove obj
   method lookup =  TagTable.lookup obj
   method size = TagTable.get_size obj
 end
 
+class tag_table obj = 
+object 
+  inherit tag_table_skel obj
+  method connect = new tag_table_signals obj
+end
+  
 let tag_table () = 
   new tag_table (TagTable.create [])
 
-class buffer_signals obj = object (self)
-  inherit ['a] gobject_signals obj
+class type buffer_signals_skel_type = 
+  object
+    method apply_tag :
+      callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
+    method begin_user_action : callback:(unit -> unit) -> GtkSignal.id
+    method changed : callback:(unit -> unit) -> GtkSignal.id
+    method delete_range :
+      callback:(start:iter -> stop:iter -> unit) -> GtkSignal.id
+    method end_user_action : callback:(unit -> unit) -> GtkSignal.id
+    method insert_child_anchor :
+      callback:(iter -> Gtk.text_child_anchor -> unit) -> GtkSignal.id
+    method insert_pixbuf :
+      callback:(iter -> GdkPixbuf.pixbuf -> unit) -> GtkSignal.id
+    method insert_text : callback:(iter -> string -> unit) -> GtkSignal.id
+    method mark_deleted : callback:(Gtk.text_mark -> unit) -> GtkSignal.id
+    method mark_set :
+      callback:(iter -> Gtk.text_mark -> unit) -> GtkSignal.id
+    method modified_changed : callback:(unit -> unit) -> GtkSignal.id
+    method remove_tag :
+      callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
+  end
+
+class type ['b] buffer_signals_type = 
+object ('a)
+  inherit buffer_signals_skel_type
+  method after : 'a
+  method private connect :
+    'c. ('b, 'c) GtkSignal.t -> callback:'c -> GtkSignal.id
+end
+
+class virtual buffer_signals_skel = 
+object(self)
   inherit text_buffer_sigs
   method apply_tag ~callback = 
     self#connect Buffer.S.apply_tag
@@ -348,6 +384,12 @@ class buffer_signals obj = object (self)
     self#connect Buffer.S.remove_tag
       ~callback:(fun tag start stop ->
         callback (new tag tag) ~start:(new iter start) ~stop:(new iter stop))
+end
+
+class buffer_signals obj = 
+object 
+  inherit ['a] gobject_signals obj
+  inherit buffer_signals_skel
 end
 
 exception No_such_mark of string
