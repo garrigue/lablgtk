@@ -257,17 +257,23 @@ object ('a)
   method tag_removed : callback:(text_tag -> unit) -> GtkSignal.id
 end
 
+(** @gtkdoc gtk GtkTextTagTable *)
+class tag_table_skel : [> `texttagtable] obj ->
+object
+  method get_oid : int
+  method as_tag_table : text_tag_table
+  method add : text_tag -> unit
+  method remove : text_tag -> unit
+  method lookup : string -> text_tag option
+  method size : int
+end
+
 (** Collection of tags that can be used together
    @gtkdoc gtk GtkTextTagTable *)
-class tag_table : text_tag_table ->
+class tag_table : [> `texttagtable] obj ->
 object
-  method as_tag_table : text_tag_table
+  inherit tag_table_skel 
   method connect : tag_table_signals
-  method add : text_tag -> unit
-  method get_oid : int
-  method lookup : string -> text_tag option
-  method remove : text_tag -> unit
-  method size : int
 end
 
 (** @gtkdoc gtk GtkTextTagTable *)
@@ -276,9 +282,9 @@ val tag_table : unit -> tag_table
 (** {3 GtkTextBuffer} *)
 
 (** @gtkdoc gtk GtkTextBuffer *)
+(*
 class buffer_signals : [> `textbuffer] obj ->
-object ('a)
-  method after : 'a
+object ('a)  
   method apply_tag :
     callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
   method begin_user_action : callback:(unit -> unit) -> GtkSignal.id
@@ -296,7 +302,47 @@ object ('a)
   method modified_changed : callback:(unit -> unit) -> GtkSignal.id
   method remove_tag :
     callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
+  method after : 'a
 end
+*)
+
+class type buffer_signals_skel_type = 
+  object
+    method apply_tag :
+      callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
+    method begin_user_action : callback:(unit -> unit) -> GtkSignal.id
+    method changed : callback:(unit -> unit) -> GtkSignal.id
+    method delete_range :
+      callback:(start:iter -> stop:iter -> unit) -> GtkSignal.id
+    method end_user_action : callback:(unit -> unit) -> GtkSignal.id
+    method insert_child_anchor :
+      callback:(iter -> Gtk.text_child_anchor -> unit) -> GtkSignal.id
+    method insert_pixbuf :
+      callback:(iter -> GdkPixbuf.pixbuf -> unit) -> GtkSignal.id
+    method insert_text : callback:(iter -> string -> unit) -> GtkSignal.id
+    method mark_deleted : callback:(Gtk.text_mark -> unit) -> GtkSignal.id
+    method mark_set :
+      callback:(iter -> Gtk.text_mark -> unit) -> GtkSignal.id
+    method modified_changed : callback:(unit -> unit) -> GtkSignal.id
+    method remove_tag :
+      callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
+  end
+class virtual buffer_signals_skel :
+object
+  inherit buffer_signals_skel_type
+  method private virtual connect :
+    'a. ([> `textbuffer ], 'a) GtkSignal.t -> callback:'a -> GtkSignal.id
+end
+
+class type ['b] buffer_signals_type = 
+object ('a)
+  inherit buffer_signals_skel_type
+  method after : 'a
+  method private connect :
+    'c. ('b, 'c) GtkSignal.t -> callback:'c -> GtkSignal.id
+end
+
+class buffer_signals : ([> `textbuffer ] as 'b) Gtk.obj -> ['b] buffer_signals_type
 
 exception No_such_mark of string
 

@@ -24,7 +24,7 @@
 (*********************************************************************************)
 
 open Gtk
-
+open GText
 (** {2 GtkSourceTag} *)
 
 type source_tag_property = [
@@ -117,14 +117,13 @@ class source_tag_table_signals:
   ([> GtkSourceView_types.source_tag_table] as 'b) obj ->
   object('a)
     inherit GText.tag_table_signals
-    (*method changed : callback:(unit -> unit) -> GtkSignal.id *)
-      (* tag_table_skel need in lablgtk *)
+    method changed : callback:(unit -> unit) -> GtkSignal.id
   end
 
 class source_tag_table:
   GtkSourceView_types.source_tag_table obj ->
   object
-    inherit GText.tag_table
+    inherit GText.tag_table_skel
     method as_source_tag_table : [`sourcetagtable] obj
     method connect: source_tag_table_signals
     method misc: GObj.gobject_ops
@@ -201,72 +200,74 @@ val source_language_from_file:
 
 class source_marker :
   GtkSourceView_types.source_marker Gtk.obj ->
-  object
-    method as_source_marker : GtkSourceView_types.source_marker Gtk.obj
-    method get_buffer : source_buffer
-    method get_line : int
-    method get_name : string
-    method get_type : string
-    method next : source_marker
-    method prev : source_marker
-    method set_type : string -> unit
-  end
+object
+  method as_source_marker : GtkSourceView_types.source_marker Gtk.obj
+  method get_buffer : source_buffer
+  method get_line : int
+  method get_name : string
+  method get_type : string
+  method next : source_marker
+  method prev : source_marker
+  method set_type : string -> unit
+end
 
 
 (** {2 GtkSourceBuffer} *)
 
 and source_buffer_signals:
   (GtkSourceView_types.source_buffer as 'b) obj ->
-  object ('a)
-    inherit GText.buffer_signals
-    method can_redo: callback:(bool -> unit) -> GtkSignal.id
-    method can_undo: callback:(bool -> unit) -> GtkSignal.id
-    method highlight_updated:
-      callback:(Gtk.text_iter -> Gtk.text_iter -> unit) -> GtkSignal.id
-    method marker_updated: callback:(Gtk.text_iter -> unit) -> GtkSignal.id
-  end
+object ('a)
+  inherit ['b] GText.buffer_signals_type
+  method changed : callback:(unit -> unit) -> GtkSignal.id
+  method can_redo: callback:(bool -> unit) -> GtkSignal.id
+  method can_undo: callback:(bool -> unit) -> GtkSignal.id
+  method highlight_updated:
+    callback:(Gtk.text_iter -> Gtk.text_iter -> unit) -> GtkSignal.id
+  method marker_updated: callback:(Gtk.text_iter -> unit) -> GtkSignal.id
+
+end
 
 and source_buffer:
   GtkSourceView_types.source_buffer obj ->
-  object
-    inherit GText.buffer_skel
-    method as_source_buffer: GtkSourceView_types.source_buffer obj
-    method connect: source_buffer_signals
-    method misc: GObj.gobject_ops
-    method check_brackets: bool
-    method set_check_brackets: bool -> unit
-    method set_bracket_match_style: source_tag_style -> unit
-    method highlight: bool
-    method set_highlight: bool -> unit
-    method max_undo_levels: int
-    method set_max_undo_levels: int -> unit
-    method language: source_language option
-    method set_language: source_language -> unit
-    method escape_char: Glib.unichar
-    method set_escape_char: Glib.unichar -> unit
-    method can_undo: bool
-    method can_redo: bool
-    method undo: unit -> unit
-    method redo: unit -> unit
-    method begin_not_undoable_action: unit -> unit
-    method end_not_undoable_action: unit -> unit
-    method create_marker: ?name:string -> ?typ:string -> GText.iter -> source_marker
-    method move_marker: source_marker -> GText.iter -> unit
-    method delete_marker: source_marker -> unit
+object
+  inherit GText.buffer_skel
+  method as_source_buffer: GtkSourceView_types.source_buffer obj
+  method connect: source_buffer_signals
+  method misc: GObj.gobject_ops
+  method check_brackets: bool
+  method set_check_brackets: bool -> unit
+  method set_bracket_match_style: source_tag_style -> unit
+  method highlight: bool
+  method set_highlight: bool -> unit
+  method max_undo_levels: int
+  method set_max_undo_levels: int -> unit
+  method language: source_language option
+  method set_language: source_language -> unit
+  method escape_char: Glib.unichar
+  method set_escape_char: Glib.unichar -> unit
+  method can_undo: bool
+  method can_redo: bool
+  method undo: unit -> unit
+  method redo: unit -> unit
+  method begin_not_undoable_action: unit -> unit
+  method end_not_undoable_action: unit -> unit
+  method create_marker: ?name:string -> ?typ:string -> GText.iter -> source_marker
+  method move_marker: source_marker -> GText.iter -> unit
+  method delete_marker: source_marker -> unit
 
-    (** @raise Not_found if the marker does not exist. *)
-    method get_marker: string -> source_marker
-    method get_markers_in_region:
-	start:GText.iter -> stop:GText.iter -> source_marker list
-    method get_first_marker: source_marker option
-    method get_last_marker: source_marker option
-    method get_iter_at_marker: source_marker -> GText.iter
-    method get_next_marker: GText.iter -> source_marker option
-    method get_prev_marker: GText.iter -> source_marker option
+  (** @raise Not_found if the marker does not exist. *)
+  method get_marker: string -> source_marker
+  method get_markers_in_region:
+    start:GText.iter -> stop:GText.iter -> source_marker list
+  method get_first_marker: source_marker option
+  method get_last_marker: source_marker option
+  method get_iter_at_marker: source_marker -> GText.iter
+  method get_next_marker: GText.iter -> source_marker option
+  method get_prev_marker: GText.iter -> source_marker option
 
-    method source_tag_table : source_tag_table
+  method source_tag_table : source_tag_table
 
-  end
+end
 
 val source_buffer:
   ?language:source_language ->

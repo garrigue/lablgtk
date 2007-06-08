@@ -178,18 +178,13 @@ let string_tag ~id ~name ~pat_start ~pat_end ~end_at_line_end =
 class source_tag_table_signals obj' =
 object
   inherit (['a] gobject_signals (obj' : [> GtkSourceView_types.source_tag_table] obj))
-  inherit GText.tag_table_signals obj'
-
-(* Replace by this one to remove the warning. [Benjamin]
   inherit OgtkTextProps.text_tag_table_sigs
-*)
-
-(*    inherit source_tag_table_sigs *) (* TODO: tag_table_skel needed in lablgtk *)
+  inherit source_tag_table_sigs
 end
 
 class source_tag_table (obj: GtkSourceView_types.source_tag_table obj) =
   object (self)
-    inherit GText.tag_table (obj :> [`texttagtable] obj)
+    inherit GText.tag_table_skel (obj :> [`texttagtable] obj)
     method as_source_tag_table =
       (Gobject.try_cast obj "GtkSourceTagTable" :> [`sourcetagtable] obj)
     method connect = new source_tag_table_signals obj
@@ -310,7 +305,7 @@ end
 and source_buffer_signals obj' =
 object
   inherit ['a] gobject_signals (obj' : [> GtkSourceView_types.source_buffer] obj)
-  inherit GText.buffer_signals obj'
+  inherit GText.buffer_signals_skel
   inherit source_buffer_sigs
 end
 
