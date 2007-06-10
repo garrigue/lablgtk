@@ -28,6 +28,7 @@ GnoDruid :
 
 API ADDITIONS
 -------------
+GWindow.about_dialog (set_)?wrap_licence
 GSourceView
 GButton.link_button
 GAction.action_skel#set_accel_group
