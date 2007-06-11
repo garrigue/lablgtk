@@ -207,4 +207,6 @@ CAMLprim value ml_gtk_link_button_set_uri_hook (value clos) {
 }
 #else
 Unsupported_210(gtk_link_button_set_uri_hook)
+Unsupported_210(gtk_link_button_new)
+Unsupported_210(gtk_link_button_new_with_label)
 #endif
