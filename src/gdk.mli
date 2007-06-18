@@ -20,6 +20,7 @@ type drag_context = [`dragcontext] Gobject.obj
 type cursor
 type xid = int32
 type device
+type display
 
 exception Error of string
 
@@ -487,4 +488,10 @@ module Cursor : sig
     [`pixbuf] Gobject.obj -> x:int -> y:int -> cursor (** @since GTK 2.4 *)
   val get_image : cursor -> [`pixbuf] obj             (** @since GTK 2.8 *)
   (* val destroy : cursor -> unit   -- done by GC *)
+end
+module Display : sig
+    (** @since Gtk+-2.2 *)
+
+  val default : unit -> display
+  val window_at_pointer : ?display:display -> unit -> (window * int * int) option
 end

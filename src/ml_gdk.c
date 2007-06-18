@@ -285,6 +285,34 @@ ML_1 (gdk_cursor_get_image, GdkCursor_val, Val_GdkPixbuf_new)
 Unsupported_28(gdk_cursor_get_image)
 #endif
 
+/* Display */
+#ifdef HASGTK22
+ML_0 (gdk_display_get_default, Val_GdkDisplay)
+CAMLprim value ml_gdk_display_get_window_at_pointer (value display)
+{
+  gint x;
+  gint y;
+  GdkWindow *gwin;
+
+  if (gwin = gdk_display_get_window_at_pointer
+        (GdkDisplay_val (display), &x, &y))
+  { /* return Some */
+    CAMLparam0 ();
+    CAMLlocal1(tup);
+
+    tup = alloc_tuple(3);
+    Store_field(tup,0,Val_GdkWindow(gwin));
+    Store_field(tup,1,Val_int(x));
+    Store_field(tup,2,Val_int(y));
+    CAMLreturn(ml_some (tup));
+  }
+  return Val_unit;
+}
+#else
+Unsupported_22(gdk_display_get_default)
+Unsupported_22(gdk_display_get_window_at_pointer)
+#endif
+
 /* Pixmap */
 
 CAMLexport GdkPixmap *GdkPixmap_val(value val)

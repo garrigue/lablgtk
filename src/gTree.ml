@@ -387,6 +387,8 @@ class view obj = object
     match TreeView.get_path_at_pos obj ~x ~y with
       Some (p, c, x, y) -> Some (p, new view_column c, x, y)
     | None -> None
+  method get_cell_area ?path ?col () =
+    TreeView.get_cell_area obj ?path ?col:(Gaux.may_map as_column col) ()
   method set_row_separator_func fo =
     TreeView.set_row_separator_func obj 
       (Gaux.may_map (fun f m -> f (new model m)) fo)

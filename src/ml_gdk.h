@@ -19,6 +19,9 @@
 
 #define GdkCursor_val(val) ((GdkCursor*)Pointer_val(val))
 
+#define GdkDisplay_val(val) ((GdkDisplay*) val)
+#define Val_GdkDisplay(display) ((value) display)
+
 CAMLexport GdkPixmap *GdkPixmap_val (value);  /* check argument */
 #define Val_GdkPixmap Val_GAnyObject
 #define Val_GdkPixmap_no_ref Val_GAnyObject_new

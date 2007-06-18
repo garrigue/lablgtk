@@ -129,11 +129,9 @@ endif
 ifdef USE_GTKSOURCEVIEW
 MLLIBS += lablgtksourceview.cma
 CLIBS += liblablgtksourceview$(XA)
-GTKSOURCEVIEWMLOBJS = gtkSourceView.cmo gSourceView.cmo 
+GTKSOURCEVIEWMLOBJS = sourceViewEnums.cmo gtkSourceView.cmo gSourceView.cmo 
 GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
 GTKPROPS +=  gtkSourceView.props	
-ENUMOBJS += sourceViewEnums.cmo
-
 endif
 
 # Rules
@@ -193,8 +191,8 @@ INITOBJS = gtkInit.cmo
 THINITOBJS = gtkThInit.cmo
 EXTRAOBJS = $(INITOBJS) $(THOBJS) $(THINITOBJS)
 ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
-	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) $(GTKSPELLMLOBJS) \
-	$(GTKSOURCEVIEWMLOBJS) \
+	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) \
+	$(GTKSPELLMLOBJS) $(GTKSOURCEVIEWMLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
@@ -205,7 +203,8 @@ opt:  $(TARGETS) lablgtkopt
 
 depend:
 	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
-	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 USE_GTKSOURCEVIEW=1
+	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 \
+	  USE_GTKSOURCEVIEW=1
 real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml)
 	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) *.mli > .depend
 

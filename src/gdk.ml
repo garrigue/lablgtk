@@ -22,6 +22,7 @@ type drag_context = [`dragcontext] Gobject.obj
 type cursor
 type xid = int32
 type device
+type display
 
 exception Error of string
 let _ = Callback.register_exception "gdkerror" (Error"")
@@ -741,4 +742,19 @@ module Cursor = struct
     = "ml_gdk_cursor_new_from_pixbuf" (** @since GTK 2.4 *)
   external get_image : cursor -> [`pixbuf] obj
     = "ml_gdk_cursor_get_image"       (** @since GTK 2.8 *)
+end
+
+module Display = struct
+    (* since Gtk+-2.2 *)
+
+  external default :
+    unit -> display
+    = "ml_gdk_display_get_default"
+  external get_window_at_pointer :
+    display -> (window * int * int) option
+    = "ml_gdk_display_get_window_at_pointer"
+  let window_at_pointer ?display () =
+    get_window_at_pointer
+      (match display with None -> default ()
+      | Some disp -> disp)
 end

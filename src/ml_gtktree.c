@@ -459,6 +459,21 @@ CAMLprim value ml_gtk_tree_view_get_path_at_pos(value treeview,
   return Val_unit;
 }
 
+CAMLprim value ml_gtk_tree_view_get_cell_area(value treeview,
+                                              value path,
+                                              value col)
+{
+  CAMLparam0 ();
+  GdkRectangle grect;
+
+  gtk_tree_view_get_cell_area(
+    GtkTreeView_val(treeview),
+    Option_val(path,GtkTreePath_val,NULL),
+    Option_val(col,GtkTreeViewColumn_val,NULL),
+    &grect);
+  CAMLreturn (Val_copy (grect));
+}
+
 #ifdef HASGTK26
 gboolean
 ml_gtk_row_separator_func (GtkTreeModel *model,

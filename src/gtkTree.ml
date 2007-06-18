@@ -313,6 +313,10 @@ module TreeView = struct
     [>`treeview] obj -> x:int -> y:int ->
     (tree_path * tree_view_column obj * int * int) option
     = "ml_gtk_tree_view_get_path_at_pos"
+  external get_cell_area :
+    [>`treeview] obj -> ?path:tree_path ->
+    ?col:tree_view_column obj -> unit -> Gdk.Rectangle.t
+    = "ml_gtk_tree_view_get_cell_area"
   external set_row_separator_func :
     [>`treeview] obj ->
     (Gtk.tree_model -> Gtk.tree_iter -> bool) option -> unit

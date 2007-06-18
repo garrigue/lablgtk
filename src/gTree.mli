@@ -373,6 +373,8 @@ class view : tree_view obj ->
     method get_cursor : unit -> tree_path option * view_column option
     method get_path_at_pos :
       x:int -> y:int -> (tree_path * view_column * int * int) option
+    method get_cell_area :
+        ?path:tree_path -> ?col:view_column -> unit -> Gdk.Rectangle.t
     method hadjustment : GData.adjustment
     method headers_visible : bool
     method insert_column : view_column -> int -> int
