@@ -1,3 +1,12 @@
+(**************************************************************************)
+(*    Lablgtk - Examples                                                  *)
+(*                                                                        *)
+(*    There is no specific licensing policy, but you may freely           *)
+(*    take inspiration from the code, and copy parts of it in your        *)
+(*    application.                                                        *)
+(*                                                                        *)
+(**************************************************************************)
+
 let create_tags (buffer:GText.buffer) =
   buffer#create_tag ~name:"heading" 
     [`WEIGHT `BOLD; `SIZE (15*Pango.scale)];
