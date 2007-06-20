@@ -1,3 +1,12 @@
+(**************************************************************************)
+(*    Lablgtk - Examples                                                  *)
+(*                                                                        *)
+(*    There is no specific licensing policy, but you may freely           *)
+(*    take inspiration from the code, and copy parts of it in your        *)
+(*    application.                                                        *)
+(*                                                                        *)
+(**************************************************************************)
+
 let changed_and_get_active (combo : #GEdit.combo_box) column cb =
   combo#connect#changed
     (fun () ->

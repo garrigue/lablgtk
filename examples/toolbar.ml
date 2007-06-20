@@ -1,3 +1,11 @@
+(**************************************************************************)
+(*    Lablgtk - Examples                                                  *)
+(*                                                                        *)
+(*    There is no specific licensing policy, but you may freely           *)
+(*    take inspiration from the code, and copy parts of it in your        *)
+(*    application.                                                        *)
+(*                                                                        *)
+(**************************************************************************)
 
 let change_orientation button (table : #GPack.table) toolbar () =
   let toolbar_w = (toolbar :> GObj.widget) in

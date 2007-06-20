@@ -1,3 +1,11 @@
+(**************************************************************************)
+(*    Lablgtk - Examples                                                  *)
+(*                                                                        *)
+(*    There is no specific licensing policy, but you may freely           *)
+(*    take inspiration from the code, and copy parts of it in your        *)
+(*    application.                                                        *)
+(*                                                                        *)
+(**************************************************************************)
 
 (** The XML UI description for the popup menu. Here it is a strig in the program,
    it could also be a .xml file in $prefix/share/gnome-2.0/ui

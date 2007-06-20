@@ -1,3 +1,12 @@
+(**************************************************************************)
+(*    Lablgtk - Examples                                                  *)
+(*                                                                        *)
+(*    There is no specific licensing policy, but you may freely           *)
+(*    take inspiration from the code, and copy parts of it in your        *)
+(*    application.                                                        *)
+(*                                                                        *)
+(**************************************************************************)
+
 let languages = [ "fr_FR"; "en_US"; "de_DE"; "ja_JP" ]
 
 let report_error view msg =
