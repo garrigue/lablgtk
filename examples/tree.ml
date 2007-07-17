@@ -58,6 +58,27 @@ let main () =
        assert (model#iter_is_valid it);
        model#clear ();
     );
+
+  (* Seems to be inverted *)
+  let allow_expand = ref true in
+  view#connect#test_expand_row ~callback:
+    (fun _ _ -> 
+       if !allow_expand then (Format.printf "Expansion allowed@."; 
+                              allow_expand := false; 
+                              true)
+       else (Format.printf "Expansion NOT allowed@."; 
+                              allow_expand := true; 
+                              false));
+
+  let allow_collapse = ref true in
+  view#connect#test_collapse_row ~callback:
+    (fun _ _ -> 
+       if !allow_collapse then (Format.printf "Collapse allowed@."; 
+                              allow_collapse := false; 
+                              true)
+       else (Format.printf "Collapse NOT allowed@."; 
+                              allow_collapse := true; 
+                              false));
   window#show ();
   GMain.main ()
 
