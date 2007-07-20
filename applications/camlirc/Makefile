@@ -12,14 +12,14 @@ THLIBS = unix.cma threads.cma gtkInit.cmo gtkThread.cmo
 CAMLC = ocamlc.opt
 CAMLOPT = ocamlopt.opt
 CAMLLEX = ocamllex
-COMPILER = $(CAMLC) $(MLFLAGS) -g -w ms -labels -c
+COMPILER = $(CAMLC) $(MLFLAGS) -g -w msy -labels -c
 LINKER = $(CAMLC) $(MLFLAGS) -custom $(EXTRALIB)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -w ms -labels -c
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -w msy -labels -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS) 
 
 SETLIB = 1
 LIBDIR = $(shell ocamlc -where)
-MLFLAGS = $(THFLAGS) -I $(LIBDIR)/lablgtk 
+MLFLAGS = $(THFLAGS) -I +lablgtk2 
 THOPTLIBS1 = $(THLIBS:.cma=.cmxa)
 THOPTLIBS = $(THOPTLIBS1:.cmo=.cmx)
 

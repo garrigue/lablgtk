@@ -1,5 +1,5 @@
 (**************************************************************************)
-(*     Lablgtk - Applications                                             *)
+(*     Lablgtk - Camlirc                                                  *)
 (*                                                                        *)
 (*    * You are free to do anything you want with this code as long       *)
 (*      as it is for personal use.                                        *)
@@ -12,12 +12,8 @@
 (*    restrictions on a per request basis.                                *)
 (*                                                                        *)
 (*    Authors:                                                            *)
+(*      Nobuaki Yoshida  <nyoshi@dd.iij4u.or.jp>                          *)
 (*      Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>                  *)
-(*      Benjamin Monate  <Benjamin.Monate@free.fr>                        *)
-(*      Olivier Andrieu  <oandrieu@nerim.net>                             *)
-(*      Jun Furuse       <Jun.Furuse@inria.fr>                            *)
-(*      Hubert Fauque    <hubert.fauque@wanadoo.fr>                       *)
-(*      Koji Kagawa      <kagawa@eng.kagawa-u.ac.jp>                      *)
 (*                                                                        *)
 (**************************************************************************)
 
@@ -108,7 +104,7 @@ class channel ~(handler:Message_handler.irc_message_handler)
   in
   let hb = GPack.hbox ~packing:(vb#pack ~expand:true) ()
   in
-  let view = GEdit.text ~vadjustment:adj ~packing:(hb#pack ~expand:true) ()
+  let view = GBroken.text ~vadjustment:adj ~packing:(hb#pack ~expand:true) ()
   and sb = GRange.scrollbar `VERTICAL ~adjustment:adj ~packing:hb#pack ()
   and members = new Members.members ~width:100 ~packing:hb#pack ()
   and h = handler

@@ -1,5 +1,5 @@
 (**************************************************************************)
-(*     Lablgtk - Applications                                             *)
+(*     Lablgtk - Camlirc                                                  *)
 (*                                                                        *)
 (*    * You are free to do anything you want with this code as long       *)
 (*      as it is for personal use.                                        *)
@@ -12,12 +12,8 @@
 (*    restrictions on a per request basis.                                *)
 (*                                                                        *)
 (*    Authors:                                                            *)
+(*      Nobuaki Yoshida  <nyoshi@dd.iij4u.or.jp>                          *)
 (*      Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>                  *)
-(*      Benjamin Monate  <Benjamin.Monate@free.fr>                        *)
-(*      Olivier Andrieu  <oandrieu@nerim.net>                             *)
-(*      Jun Furuse       <Jun.Furuse@inria.fr>                            *)
-(*      Hubert Fauque    <hubert.fauque@wanadoo.fr>                       *)
-(*      Koji Kagawa      <kagawa@eng.kagawa-u.ac.jp>                      *)
 (*                                                                        *)
 (**************************************************************************)
 
@@ -100,7 +96,7 @@ let connect h s = fun () ->
   GMisc.label ~text:"Server" ~packing:title#add ();
   let server_selection = 
     GEdit.combo ~popdown_strings:(s#server_names())
-      ~value_in_list:true ~packing:w#vbox#add ~ok_if_empty:true ()
+      ~value_in_list:true ~packing:w#vbox#add ~allow_empty:true ()
   and ok_button =
     GButton.button ~label:"CONNECT" ~packing:w#vbox#add ()
   in

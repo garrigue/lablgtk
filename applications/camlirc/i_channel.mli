@@ -1,5 +1,5 @@
 (**************************************************************************)
-(*     Lablgtk - Applications                                             *)
+(*     Lablgtk - Camlirc                                                  *)
 (*                                                                        *)
 (*    * You are free to do anything you want with this code as long       *)
 (*      as it is for personal use.                                        *)
@@ -12,12 +12,8 @@
 (*    restrictions on a per request basis.                                *)
 (*                                                                        *)
 (*    Authors:                                                            *)
+(*      Nobuaki Yoshida  <nyoshi@dd.iij4u.or.jp>                          *)
 (*      Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>                  *)
-(*      Benjamin Monate  <Benjamin.Monate@free.fr>                        *)
-(*      Olivier Andrieu  <oandrieu@nerim.net>                             *)
-(*      Jun Furuse       <Jun.Furuse@inria.fr>                            *)
-(*      Hubert Fauque    <hubert.fauque@wanadoo.fr>                       *)
-(*      Koji Kagawa      <kagawa@eng.kagawa-u.ac.jp>                      *)
 (*                                                                        *)
 (**************************************************************************)
 
@@ -43,7 +39,7 @@ class i_channel :
     method connect : i_channel_signals
     method destroy : unit -> unit
     method drag : GObj.drag_ops
-    method get_id : int
+    method get_oid : int
     method misc : GObj.misc_ops
     method my_message : string -> unit
     method initialize : unit -> unit
