@@ -1,5 +1,5 @@
 (**************************************************************************)
-(*     Lablgtk - Applications                                             *)
+(*     Lablgtk - Camlirc                                                  *)
 (*                                                                        *)
 (*    * You are free to do anything you want with this code as long       *)
 (*      as it is for personal use.                                        *)
@@ -12,12 +12,8 @@
 (*    restrictions on a per request basis.                                *)
 (*                                                                        *)
 (*    Authors:                                                            *)
+(*      Nobuaki Yoshida  <nyoshi@dd.iij4u.or.jp>                          *)
 (*      Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>                  *)
-(*      Benjamin Monate  <Benjamin.Monate@free.fr>                        *)
-(*      Olivier Andrieu  <oandrieu@nerim.net>                             *)
-(*      Jun Furuse       <Jun.Furuse@inria.fr>                            *)
-(*      Hubert Fauque    <hubert.fauque@wanadoo.fr>                       *)
-(*      Koji Kagawa      <kagawa@eng.kagawa-u.ac.jp>                      *)
 (*                                                                        *)
 (**************************************************************************)
 
@@ -26,15 +22,15 @@ open Str
 
 exception Illegal_format
 
-let prefix_regexp = regexp "^:\([^ \t]+\)[ \t]+\(.+\)$"
+let prefix_regexp = regexp "^:\\([^ \t]+\\)[ \t]+\\(.+\\)$"
 and prefix_loc = 1
 and rest_loc = 2
 
-let message_regexp = regexp "^\([A-Z]+\)\($\|[ \t]+\(.+\)$\)"
+let message_regexp = regexp "^\\([A-Z]+\\)\\($\\|[ \t]+\\(.+\\)$\\)"
 and message_id_loc = 1
 and message_arg_loc = 3
 
-let reply_regexp = regexp "^\([0-9][0-9][0-9]\)\($\|[ \t]+\(.+\)$\)"
+let reply_regexp = regexp "^\\([0-9][0-9][0-9]\\)\\($\\|[ \t]+\\(.+\\)$\\)"
 and reply_id_loc = 1
 and reply_arg_loc = 3
 

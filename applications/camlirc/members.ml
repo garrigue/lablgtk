@@ -1,5 +1,5 @@
 (**************************************************************************)
-(*     Lablgtk - Applications                                             *)
+(*     Lablgtk - Camlirc                                                  *)
 (*                                                                        *)
 (*    * You are free to do anything you want with this code as long       *)
 (*      as it is for personal use.                                        *)
@@ -12,12 +12,8 @@
 (*    restrictions on a per request basis.                                *)
 (*                                                                        *)
 (*    Authors:                                                            *)
+(*      Nobuaki Yoshida  <nyoshi@dd.iij4u.or.jp>                          *)
 (*      Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>                  *)
-(*      Benjamin Monate  <Benjamin.Monate@free.fr>                        *)
-(*      Olivier Andrieu  <oandrieu@nerim.net>                             *)
-(*      Jun Furuse       <Jun.Furuse@inria.fr>                            *)
-(*      Hubert Fauque    <hubert.fauque@wanadoo.fr>                       *)
-(*      Koji Kagawa      <kagawa@eng.kagawa-u.ac.jp>                      *)
 (*                                                                        *)
 (**************************************************************************)
 
@@ -31,7 +27,7 @@ class members_signals ~(selected: string GUtil.signal) =
     method selected = selected#connect ~after
   end
 
-let nick_regexp = Str.regexp "@*\(.+\)"
+let nick_regexp = Str.regexp "@*\\(.+\\)"
 
 let non_prefixed_nick nick =
   if Str.string_match nick_regexp nick 0 then
