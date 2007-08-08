@@ -281,7 +281,7 @@ class about_dialog :
     method version : string
     method website : string
     method website_label : string
-    method wrap_licence : bool
+    method wrap_license : bool
 
     method set_artists : string list -> unit
     method set_authors : string list -> unit
@@ -296,7 +296,7 @@ class about_dialog :
     method set_version : string -> unit
     method set_website : string -> unit
     method set_website_label : string -> unit
-    method set_wrap_licence : bool -> unit
+    method set_wrap_license : bool -> unit
 
   end
 
@@ -329,7 +329,7 @@ val about_dialog :
   ?version:string ->
   ?website:string ->
   ?website_label:string ->
-  ?wrap_licence:bool ->
+  ?wrap_license:bool ->
   ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->

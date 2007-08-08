@@ -423,6 +423,8 @@ type position =
 
 class buffer_skel obj = object(self)
   val obj = (obj :> text_buffer)
+  method private obj = obj
+  inherit text_buffer_props
   method get_oid = Gobject.get_oid obj
   method as_buffer = obj
   method line_count = Buffer.get_line_count obj

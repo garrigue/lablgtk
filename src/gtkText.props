@@ -42,8 +42,10 @@ class TextView wrap wrapsig : Container {
   signal toggle_overwrite
 }
 
-class TextBuffer : GObject {
+class TextBuffer wrap : GObject {
   "tag-table"            GtkTextTagTable      : Read / Write / Construct Only
+  "cursor-position"      gint                 : Read
+  "has-selection"        gboolean             : Read
   signal apply_tag : GtkTextTag GtkTextIter GtkTextIter
   signal begin_user_action                  / Wrap
   signal changed                            / Wrap

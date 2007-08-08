@@ -28,6 +28,8 @@ GnoDruid :
 
 API ADDITIONS
 -------------
+Glib.usleep
+GAssistant.*
 GWindow.about_dialog (set_)?wrap_licence
 GSourceView
 GButton.link_button

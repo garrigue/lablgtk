@@ -138,3 +138,17 @@ class Toolbar set wrapsig : Container {
 class LinkButton wrap : LinkButton {
   "uri"                gchararray           : Read / Write 
 }
+
+(* Not tested yet. For Gtk 2.12. 
+class ScaleButton wrap : ScaleButton {
+  "adjustement"         GtkAdjustment         : Read / Write 
+  "icons"               GStrv                 : Read / Write 
+  "size"                GtkIconSize           : Read / Write 
+  "value"               gdouble               : Read / Write   
+
+  signal popdown  
+  signal popup
+  signal value_changed : float -> unit
+
+}
+*)

@@ -232,7 +232,7 @@ class AboutDialog abstract set wrap : Dialog {
   "version"              gchararray            : Read / Write
   "website"              gchararray            : Read / Write
   "website-label"        gchararray            : Read / Write
-  "wrap-licence"         gboolean             : Read / Write
+  "wrap-license"         gboolean             : Read / Write
 
   method set_artists     : "string list -> unit"
   method get_artists     : "string list"

@@ -445,6 +445,8 @@ object
   method set_text : string -> unit
   method start_iter : iter
   method tag_table : text_tag_table
+  method has_selection : bool (**  since Gtk 2.10 *)
+  method cursor_position : int (**  since Gtk 2.10 *)
 end
 
 class buffer : [> `textbuffer] obj ->
