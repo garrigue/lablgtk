@@ -5,6 +5,7 @@ conversions {
   GtkFileChooserAction  "GtkEnums.file_chooser_action_conv"
   GtkFileFilter         "(gobject : Gtk.file_filter  Gtk.obj data_conv)"
   GtkFileChooserDialog  "(gobject : [>`filechooser|`dialog] Gtk.obj data_conv)"
+  GtkFileChooserConfirmation  "GtkEnums.file_chooser_confirmation_conv"
 }
 
 class FileChooser abstract wrap wrapsig {
@@ -19,10 +20,13 @@ class FileChooser abstract wrap wrapsig {
   "show-hidden"			gboolean		: Read / Write
   "use-preview-label"		gboolean		: Read / Write
 
+  "do-overwrite-confirmation"   gboolean                : Read / Write
+
   signal current_folder_changed
   signal file_activated
   signal selection_changed
   signal update_preview
+  signal confirm_overwrite :   -> GtkFileChooserConfirmation
 }
 
 class FileChooserButton wrap : HBox {

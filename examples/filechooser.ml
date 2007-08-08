@@ -36,7 +36,7 @@ let text_filter () =
 
 let ask_for_file parent =
   let dialog = GWindow.file_chooser_dialog 
-      ~action:`OPEN 
+      ~action:`OPEN
       ~title:"Open File"
       ~parent () in
   dialog#add_button_stock `CANCEL `CANCEL ;

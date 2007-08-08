@@ -172,6 +172,7 @@ class Window set wrap : Bin {
   "type"                 GtkWindowType        : Read / Write / Construct Only
   "type-hint"            GdkWindowTypeHint    : Read / Write
   "window-position"(position) GtkWindowPosition    : Read / Write
+  "urgency-hint"         gboolean             : Read / Write
   method present
   method iconify
   method deiconify

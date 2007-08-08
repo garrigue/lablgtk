@@ -225,3 +225,6 @@ type protect HASGTK24 ui_manager_item_type = "GTK_UI_MANAGER_"
 
 type protect HASGTK210 assistant_page_type = "GTK_ASSISTANT_PAGE_"
   [ `CONTENT | `INTRO | `CONFIRM | `SUMMARY | `PROGRESS ]
+
+type protect HASGTK28 file_chooser_confirmation = "GTK_FILE_CHOOSER_CONFIRMATION_"
+  [ `CONFIRM | `ACCEPT_FILENAME | `SELECT_AGAIN ]

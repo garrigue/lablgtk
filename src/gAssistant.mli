@@ -93,15 +93,16 @@ end
 
 (** @gtkdoc gtk GtkPlug *)
 val assistant : ?title:string ->
-    ?allow_grow:bool ->
-    ?allow_shrink:bool ->
-    ?icon:GdkPixbuf.pixbuf ->
-    ?modal:bool ->
-    ?resizable:bool ->
-    ?screen:Gdk.screen ->
-    ?type_hint:GdkEnums.window_type_hint ->
-    ?position:GtkEnums.window_position ->
-    ?wm_name:string ->
-    ?wm_class:string ->
-    ?border_width:int ->
-    ?width:int -> ?height:int -> ?show:bool -> unit -> assistant
+  ?allow_grow:bool ->
+  ?allow_shrink:bool ->
+  ?icon:GdkPixbuf.pixbuf ->
+  ?modal:bool ->
+  ?resizable:bool ->
+  ?screen:Gdk.screen ->
+  ?type_hint:GdkEnums.window_type_hint ->
+  ?position:GtkEnums.window_position ->
+  ?urgency_hint:bool ->
+  ?wm_name:string ->
+  ?wm_class:string ->
+  ?border_width:int ->
+  ?width:int -> ?height:int -> ?show:bool -> unit -> assistant

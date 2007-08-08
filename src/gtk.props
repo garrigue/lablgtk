@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+#### OLD STUFF SPLIT SINCE 2003.08.15
+
 header {
 open Gtk
 open Gobject

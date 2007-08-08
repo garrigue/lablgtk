@@ -2,7 +2,10 @@ $Id$
 
 2007.08.08 [Benjamin]
   * Fix typo in property "wrap-license" (was "wrap-licence") of GtkAboutDialog
-
+  * Add GtkFileChooser "do-confirm-overwrite" property support and
+     "confirm-overwrite" signal
+  * GWindow "urgency-hint" property support
+	
 2007.08.07 [Benjamin]
   * Add Glib.usleep
   * Add Stock icons for Gtk 2.10 and 2.8
