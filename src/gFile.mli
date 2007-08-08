@@ -57,6 +57,8 @@ class type chooser_signals =
     method selection_changed : callback:(unit -> unit) -> GtkSignal.id
     method update_preview : callback:(unit -> unit) -> GtkSignal.id
     method file_activated : callback:(unit -> unit) -> GtkSignal.id
+    method confirm_overwrite : 
+      callback:(unit -> GtkEnums.file_chooser_confirmation) -> GtkSignal.id (**  since Gtk 2.8 *)
   end
 
 (** @since GTK 2.4
@@ -116,6 +118,10 @@ class type chooser =
     method add_shortcut_folder_uri : string -> unit (** @raise GtkFile.FileChooser.Error if operation fails *)
     method remove_shortcut_folder_uri : string -> unit (** @raise GtkFile.FileChooser.Error if operation fails *)
     method list_shortcut_folder_uris : string list
+
+    method do_overwrite_confirmation : bool (** since Gtk 2.8 *)
+    method set_do_overwrite_confirmation : bool -> unit (** since Gtk 2.8 *)
+
   end
 
 (** @since GTK 2.4

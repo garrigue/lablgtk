@@ -205,3 +205,4 @@ Unsupported_24(gtk_file_chooser_remove_shortcut_folder_uri)
 Unsupported_24(gtk_file_chooser_list_shortcut_folder_uris)
 
 #endif /* HASGTK24 */
+

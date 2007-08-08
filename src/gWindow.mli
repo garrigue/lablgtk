@@ -91,6 +91,9 @@ class window_skel : 'a obj ->
     method skip_taskbar_hint : bool
     method title : string
     method type_hint : Gdk.Tags.window_type_hint
+    method set_urgency_hint : bool -> unit (** since Gtk 2.8 *)
+    method urgency_hint : bool (** since Gtk 2.8 *)
+
   end
 
 (** Toplevel widget which can contain other widgets
@@ -120,6 +123,7 @@ val window :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
+  ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
@@ -197,6 +201,7 @@ val dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
+  ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
@@ -252,6 +257,7 @@ val message_dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
+  ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
@@ -341,6 +347,7 @@ val about_dialog :
   ?screen:Gdk.screen ->
   ?type_hint:GdkEnums.window_type_hint ->
   ?position:GtkEnums.window_position ->
+  ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
@@ -392,6 +399,7 @@ val file_chooser_dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
+  ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
@@ -425,6 +433,7 @@ val color_selection_dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
+  ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
@@ -468,6 +477,7 @@ val file_selection :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
+  ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->
@@ -498,6 +508,7 @@ val font_selection_dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?position:Tags.window_position ->
+  ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
   ?border_width:int ->

@@ -316,8 +316,8 @@ CAMLprim value ml_gdk_display_get_window_at_pointer (value display)
   gint y;
   GdkWindow *gwin;
 
-  if (gwin = gdk_display_get_window_at_pointer
-        (GdkDisplay_val (display), &x, &y))
+  if ((gwin = gdk_display_get_window_at_pointer
+       (GdkDisplay_val (display), &x, &y)))
   { /* return Some */
     CAMLparam0 ();
     CAMLlocal1(tup);
