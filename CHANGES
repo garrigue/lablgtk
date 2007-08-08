@@ -1,5 +1,16 @@
 $Id$
 
+2007.08.08 [Benjamin]
+  * Fix typo in property "wrap-license" (was "wrap-licence") of GtkAboutDialog
+
+2007.08.07 [Benjamin]
+  * Add Glib.usleep
+  * Add Stock icons for Gtk 2.10 and 2.8
+  * Add  has_selection and cursor_position properties in GText.buffer
+
+2007.08.06 [Benjamin]
+  * Add support for GtkAssistant of Gtk 2.10
+
 2007.06.18 [Jacques]
   * merge patches by Julien Moutinho for GdkDisplay
     and gtk_tree_view_get_cell_area.

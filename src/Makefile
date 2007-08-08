@@ -160,6 +160,7 @@ endif
 # Files
 GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkaction$(XO) \
 	ml_gtkbin$(XO) ml_gtkbroken$(XO) ml_gtkbutton$(XO) \
+	ml_gtkassistant$(XO) \
 	ml_gtkedit$(XO) ml_gtkfile$(XO) ml_gtklist$(XO) \
 	ml_gtkmenu$(XO) ml_gtkmisc$(XO) \
 	ml_gtkpack$(XO) ml_gtkrange$(XO) ml_gtkstock$(XO) \
@@ -169,18 +170,20 @@ COBJS = ml_gdkpixbuf$(XO) ml_gdk$(XO) ml_glib$(XO) ml_gobject$(XO) \
 GTKPROPS += gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
 	gtkList.props gtkMenu.props gtkMisc.props gtkPack.props \
 	gtkRange.props gtkText.props gtkTree.props gtkFile.props \
-	gtkAction.props gtkBroken.props
+	gtkAction.props gtkBroken.props gtkAssistant.props
 MLOBJS1 =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo
 ENUMOBJS += gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
 MLOBJS2 = pango.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
 	gtk.cmo gtkSignal.cmo gtkStock.cmo gtkObject.cmo
 MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
+	gtkAssistant.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
 	gtkFile.cmo gtkMain.cmo gtkBroken.cmo \
 	gPango.cmo gDraw.cmo gObj.cmo gData.cmo gMain.cmo
 MLOBJS4 = gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
 	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gFile.cmo gWindow.cmo \
+	gAssistant.cmo \
 	gBin.cmo gEdit.cmo gRange.cmo gAction.cmo gBroken.cmo \
 	gUtil.cmo gToolbox.cmo
 MLOBJS =  $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(GTKPROPS:.props=Props.cmo) \

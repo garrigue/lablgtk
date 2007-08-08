@@ -63,6 +63,9 @@ CAMLprim value ml_gtkbutton_init(value unit)
 #ifdef HASGTK210
         gtk_link_button_get_type () +
 #endif
+#ifdef HASGTK212
+        gtk_scale_button_get_type () +
+#endif
         0;
     return Val_GType(t);
 }

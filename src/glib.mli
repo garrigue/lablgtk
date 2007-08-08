@@ -285,3 +285,5 @@ val get_user_data_dir : unit -> string (** @since GTK 2.6 *)
 val get_user_config_dir : unit -> string (** @since GTK 2.6 *)
 val get_system_data_dirs : unit -> string list (** @since GTK 2.6 *)
 val get_system_config_dirs : unit -> string list (** @since GTK 2.6 *)
+
+val usleep : int -> unit

@@ -606,3 +606,5 @@ Unsupported_26(g_get_user_config_dir)
 Unsupported_26(g_get_system_data_dirs)
 Unsupported_26(g_get_system_config_dirs)
 #endif /* HASGTK26 */
+
+ML_1(g_usleep,Long_val,Unit)

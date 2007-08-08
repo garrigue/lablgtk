@@ -340,3 +340,5 @@ external get_user_data_dir : unit -> string = "ml_g_get_user_data_dir"
 external get_user_config_dir : unit -> string = "ml_g_get_user_config_dir"
 external get_system_data_dirs : unit -> string list = "ml_g_get_system_data_dirs"
 external get_system_config_dirs : unit -> string list = "ml_g_get_system_config_dirs"
+
+external usleep : int -> unit = "ml_g_usleep"
