@@ -191,6 +191,7 @@ class image : 'a obj ->
     inherit misc
     constraint 'a = [> Gtk.image]
     val obj : 'a obj
+    method clear : unit -> unit (** since Gtk 2.8 *)
     method storage_type : image_type
     method set_image : Gdk.image -> unit
     method set_pixmap : GDraw.pixmap -> unit
@@ -200,10 +201,12 @@ class image : 'a obj ->
     method set_stock : GtkStock.id -> unit
     method set_icon_set : icon_set -> unit
     method set_icon_size : Tags.icon_size -> unit
+    method set_pixel_size : int -> unit
     method image : Gdk.image
     method pixmap : GDraw.pixmap
     method mask : Gdk.bitmap option
     method pixbuf : GdkPixbuf.pixbuf
+    method pixel_size : int
     method stock : GtkStock.id
     method icon_set : icon_set
     method icon_size : Tags.icon_size
@@ -214,6 +217,7 @@ val image :
   ?file:string ->
   ?image:Gdk.image ->
   ?pixbuf:GdkPixbuf.pixbuf ->
+  ?pixel_size:int ->
   ?pixmap:Gdk.pixmap ->
   ?mask:Gdk.bitmap ->
   ?stock:GtkStock.id ->

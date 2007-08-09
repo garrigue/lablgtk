@@ -120,6 +120,13 @@ ML_3 (gtk_drawing_area_size, GtkDrawingArea_val, Int_val, Int_val, Unit)
 /* gtkarrow.h */
 
 /* gtkimage.h */
+#define GtkImage_val(val) check_cast(GTK_IMAGE,val)
+
+#ifdef HASGTK28
+ML_1(gtk_image_clear, GtkImage_val, Unit)
+#else
+Unsupported28(gtk_image_clear)
+#endif 
 
 /* gtklabel.h */
 

@@ -121,6 +121,7 @@ class image obj = object (self)
   method set_pixmap (p : GDraw.pixmap) =
     set Image.P.pixmap obj p#pixmap;
     self#set_mask p#mask
+  method clear () = Image.clear obj
 end
 
 type image_type = 
