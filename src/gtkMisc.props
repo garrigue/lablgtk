@@ -80,12 +80,14 @@ class Image set wrap : Misc {
   "image"                GdkImage             : Read / Write
   "pixbuf"               GdkPixbuf            : Read / Write
   "pixbuf-animation"     GdkPixbufAnimation   : Read / Write
+  "pixel-size"           gint                 : Read / Write
   "pixmap"               GdkPixmap            : Read / Write / NoWrap
   "mask"                 GdkBitmap_opt        : Read / Write
   "stock"                GtkStock             : Read / Write
   "icon-set"             GtkIconSet           : Read / Write
   "icon-size"            GtkIconSize          : Read / Write
   "storage-type"         GtkImageType         : Read
+  method clear
 }
 
 class ColorSelection set wrap : Box {
