@@ -98,7 +98,7 @@ static unsigned long ml_GdkPixbuf_deserialize (void *dst)
       char *msg;
       GEnumClass *class = G_ENUM_CLASS (g_type_class_peek (GDK_TYPE_PIXBUF_ERROR));
       GEnumValue *val   = g_enum_get_value (class, error->code);
-      msg = val ? val->value_name : "";
+      msg = val ? (char*)val->value_name : "";
       g_error_free (error);
       deserialize_error (msg);
     }

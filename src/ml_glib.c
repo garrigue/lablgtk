@@ -120,12 +120,10 @@ CAMLprim value Val_GList_free (GList *list, value (*func)(gpointer))
 
 CAMLprim GList *GList_val (value list, gpointer (*func)(value))
 {
-    CAMLparam1(list);
     GList *res = NULL;
-    if (list == Val_unit) CAMLreturn (res);
     for (; Is_block(list); list = Field(list,1))
       res = g_list_append (res, func(Field(list,0)));
-    CAMLreturn (res);
+    return (res);
 }
 
 /* Error handling */
@@ -395,15 +393,12 @@ CAMLprim GSList *GSList_val (value list, gpointer (*func)(value))
     GSList *res = NULL;
     GSList **current = &res;
     value cell = list;
-    if (list == Val_unit) return res;
-    Begin_root (cell);
-    while (cell != Val_unit) {
+    while (Is_block(cell)) {
 	*current = g_slist_alloc ();
 	(*current)->data = func(Field(cell,0));
 	cell = Field(cell,1);
 	current = &(*current)->next;
     }
-    End_roots ();
     return res;
 }
 

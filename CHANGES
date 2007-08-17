@@ -3,6 +3,7 @@ $Id$
 2007.08.17 [Jacques]
   * some more patch by Julien Moutinho (style and Rc).
   * do not set LC_NUMERIC to C (ocaml is now ok) (Volker Grabsch).
+  * avoid some warnings in ml_gdkpixbuf and ml_glib.
 
 2007.08.09 [Benjamin]
   * GtkImage : clear support
