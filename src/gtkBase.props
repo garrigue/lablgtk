@@ -113,6 +113,7 @@ class Widget abstract : Object {
   *)
   (* methods *)
   method set_double_buffered : "bool -> unit"
+  method style_get_property : "string -> g_value"
 }
 
 class Container abstract : Widget {

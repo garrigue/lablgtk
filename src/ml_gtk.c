@@ -359,6 +359,27 @@ ML_1 (gtk_widget_push_colormap, GdkColormap_val, Unit)
 ML_0 (gtk_widget_pop_visual, Unit)
 ML_0 (gtk_widget_pop_colormap, Unit)
 
+CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
+{
+    CAMLparam2 (w, n);
+    CAMLlocal1 (ret);
+    GtkWidget *widget = GtkWidget_val (w);
+    gchar *name = String_val (n);
+    GParamSpec * pspec;
+    pspec = gtk_widget_class_find_style_property
+               (GTK_WIDGET_GET_CLASS (widget), name);
+    if (pspec) {
+        ret = ml_g_value_new ();
+        GValue *gv = GValue_val (ret);
+        g_value_init (gv, G_PARAM_SPEC_VALUE_TYPE (pspec));
+        gtk_widget_style_get_property (widget, name, gv);
+    } else {
+        invalid_argument("Gobject.Widget.style_get_property");
+    }
+    CAMLreturn (ret);
+}
+
+
 ML_4 (gtk_widget_render_icon, GtkWidget_val, String_val, Icon_size_val, String_option_val, Val_GdkPixbuf)
 
 /* gtkdnd.h */
@@ -985,6 +1006,8 @@ CAMLprim value ml_gtk_get_version (value unit)
 
 ML_0 (gtk_get_current_event_time,copy_int32)
 
-/* gtkmain.h (again) */
+/* gtkrc.h */
 
 ML_1 (gtk_rc_add_default_file, String_val, Unit)
+ML_1 (gtk_rc_parse, String_val, Unit)
+ML_1 (gtk_rc_parse_string, String_val, Unit)
