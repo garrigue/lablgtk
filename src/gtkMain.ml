@@ -71,4 +71,6 @@ end
 
 module Rc = struct
   external add_default_file : string -> unit = "ml_gtk_rc_add_default_file"
+  external parse : file:string -> unit = "ml_gtk_rc_parse"
+  external parse_string : string -> unit = "ml_gtk_rc_parse_string"
 end
