@@ -25,7 +25,7 @@
 CAMLexport value copy_string_g_free (char *str); /* for g_strings only */
 
 typedef value (*value_in)(gpointer);
-typedef gpointer (*value_out)(value);
+typedef gpointer (*value_out)(value); /* should not trigger GC */
 
 CAMLexport value Val_GList (GList *list, value_in);
 CAMLexport value Val_GList_free (GList *list, value_in);
