@@ -83,6 +83,8 @@ let classes = ref [
   "GtkTipsQuery", ("GtkMisc.TipsQuery", "GMisc.tips_query");
   "GtkPixmap", ("GtkMisc.Image", "GMisc.image");
   "GtkSeparator", ("GtkMisc.Separator", "GObj.widget_full");
+  "GtkHSeparator", ("GtkMisc.Separator", "GObj.widget_full");
+  "GtkVSeparator", ("GtkMisc.Separator", "GObj.widget_full");
   "GtkFontSelection", ("GtkMisc.FontSelection", "GMisc.font_selection");
   "GtkBox", ("GtkPack.Box", "GPack.box");
   "GtkHBox", ("GtkPack.Box", "GPack.box");

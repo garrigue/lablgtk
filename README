@@ -25,9 +25,8 @@ Status:
   utf8, it is still a good idea to validate it with
   Glib.Utf8.validate, as malformed utf8 strings may cause segmentation
   faults.
-  Note that setlocale is now always called (except if you set
-  GTK_SETLOCALE to 0 in the environment), but LC_NUMERIC is reverted
-  to "C" to avoid problems with floating point conversion in Caml.
+  Note that setlocale is now always called, except if you set
+  GTK_SETLOCALE to 0 in the environment.
 
   There are of course many other changes and additions.
 
@@ -40,7 +39,8 @@ How to compile:
 
   You should normally not need to modify Makefiles.
   
-  In case you are using the CVS version first type "aclocal && autoconf".
+  In case you are using the SVN version you may have to first type
+  "aclocal && autoconf".
   
   Type "./configure && make world && make install" to compile 
   with all supported options enabled (libgl, libglade, libgnomecanvas, 
