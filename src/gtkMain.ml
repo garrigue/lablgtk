@@ -43,7 +43,6 @@ module Main = struct
       with Error err ->
         raise (Error ("GtkMain.init: initialization failed\n" ^ err))
     in
-    if setlocale then ignore (Glib.Main.setlocale `NUMERIC (Some "C"));
     Array.blit ~src:argv ~dst:Sys.argv ~len:(Array.length argv)
       ~src_pos:0 ~dst_pos:0;
     Obj.truncate (Obj.repr Sys.argv) (Array.length argv);
