@@ -81,12 +81,24 @@ CAMLexport value Val_GdkRegion (GdkRegion *); /* finalizer is destroy! */
 #define GdkDevice_val(val) ((GdkDevice*) val)
 #define Val_GdkDevice(device) ((value) device)
 
+#if 0 
+// Future replacement for XID?
+#ifdef GDK_NATIVE_WINDOW_POINTER
+#define GdkNativeWindow_val (GdkNativeWindow*)
+#define Val_GdkNativeWindow(id) (value)
+#else
+#define Val_GdkNativeWindow(id) copy_int32((long) id)
+#define GdkNativeWindow_val Int32_val
+#endif
+#endif
+
 #ifdef _WIN32
 #define Val_XID(id) copy_int32((long) id)
 #else
 #define Val_XID copy_int32
 #endif
 #define XID_val Int32_val
+
 
 CAMLexport int OptFlags_GdkModifier_val (value);
 CAMLexport int Flags_GdkModifier_val (value);
