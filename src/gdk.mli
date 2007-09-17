@@ -517,3 +517,8 @@ module Display : sig
   val default : unit -> display
   val window_at_pointer : ?display:display -> unit -> (window * int * int) option
 end
+
+module Key : sig
+    type keyval = int
+    val val_from_name : string -> keyval
+end

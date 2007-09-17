@@ -37,6 +37,8 @@ CAMLexport value Val_GtkObject_sink (GtkObject *w);
 #define Val_GtkAny_sink(w) (Val_GtkObject_sink(GTK_OBJECT(w)))
 #define Val_GtkWidget Val_GtkAny
 #define Val_GtkWidget_sink Val_GtkAny_sink
+#define Val_GtkWidgetClass(gwc) ((value) gwc)
+#define GtkWidgetClass_val(val) ((GtkWidgetClass*) val)
 
 /* For GList containing widgets */
 CAMLexport value Val_GtkWidget_func(gpointer w);

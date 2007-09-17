@@ -77,7 +77,7 @@ let enums = [
     (* for canvas *)
     "CapStyle"; "JoinStyle"; "LineStyle"];
   "Pango", "PangoEnums",
-  [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode" ]
+  [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode"; "Alignment" ]
 ]
 
 (* These types must be registered with g_boxed_register! *)
@@ -478,7 +478,7 @@ let process_file f =
           out " pl : %s =" (type_name name ~attrs);
           may_cons_props cprops;
           if List.mem_assoc "gobject" attrs then
-            out "@ Gobject.unsafe_create"
+            out "@ Gobject.unsafe_create_from_name"
           else out "@ Object.make";
            out " \"%s\" pl@]" gtk_class;
         end

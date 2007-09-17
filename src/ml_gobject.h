@@ -31,8 +31,15 @@ CAMLexport value Val_GObject_new (GObject *);
 #define Val_GAnyObject_new(val) Val_GObject_new(G_OBJECT(val))
 CAMLexport void ml_g_object_unref_later (GObject *);
 
-#define GType_val Long_val
-#define Val_GType Val_long
+/* On several platforms a GType does not hold in an int,
+ * since it is sized after size_t.
+ * See also http://mail.gnome.org/archives/gtk-devel-list/2004-February/msg00003.html */
+#define GType_val(val) ((GType) val)
+#define Val_GType(g_type) ((value) g_type)
+
+#define GObjectClassptr_val(val) ((GObjectClass *) val)
+#define Val_GObjectClassptr(g_class) ((value) g_class)
+#define GTypeInfo_val(val) (*((GTypeInfo *)Data_custom_val(val)))
 
 #define GClosure_val(val) ((GClosure*)Pointer_val(val))
 CAMLexport value Val_GClosure (GClosure *);
@@ -45,6 +52,9 @@ CAMLexport value ml_g_value_new(void);
 
 CAMLexport value Val_gboxed(GType t, gpointer p);     /* finalized gboxed */
 CAMLexport value Val_gboxed_new(GType t, gpointer p); /* without copy */
+
+#define GParamSpec_val(val) ((GParamSpec*) val)
+#define Val_GParamSpec(pspec) ((value) pspec)
 
 /* Macro utilities for export */
 /* used in ml_gtk.h for instance */

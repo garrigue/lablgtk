@@ -29,6 +29,8 @@
 #else
 #include <gdk/gdkx.h>
 #endif
+#include <gdk/gdkkeysyms.h>
+
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
@@ -909,3 +911,13 @@ CAMLprim value ml_GdkDragContext_targets (value c)
 /* Misc */
 ML_0 (gdk_flush, Unit)
 ML_0 (gdk_beep, Unit)
+
+/* Keyval */
+CAMLprim value ml_gdk_keyval_from_name (value name)
+{
+    guint kv;
+    if ((kv = gdk_keyval_from_name(String_val(name))) == GDK_VoidSymbol)
+      raise_not_found();
+    return (Val_int(kv));
+}
+

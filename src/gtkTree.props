@@ -79,6 +79,7 @@ class CellRendererPixbuf vset : CellRenderer {
 }
 
 class CellRendererText vset : CellRenderer {
+  "alignment"            PangoAlignment       : Read / Write
   "attributes"           PangoAttrList        : Read / Write
   "background"           gchararray           : Write
   "background-gdk"       GdkColor             : Read / Write

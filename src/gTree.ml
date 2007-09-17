@@ -445,7 +445,8 @@ type cell_properties_pixbuf_only =
   | `STOCK_SIZE of Gtk.Tags.icon_size ] 
 type cell_properties_pixbuf = [ cell_properties | cell_properties_pixbuf_only ]
 type cell_properties_text_only =
-  [ `BACKGROUND of string
+  [ `ALIGNMENT of Pango.Tags.alignment
+  | `BACKGROUND of string
   | `BACKGROUND_GDK of Gdk.color
   | `BACKGROUND_SET of bool
   | `EDITABLE of bool

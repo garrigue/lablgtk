@@ -89,6 +89,7 @@ class Notebook set wrap : Container {
   method remove_page : "int -> unit"
   method get_current_page : "int"
   method get_nth_page : "int -> widget obj"
+  method get_n_pages : "int"
   method page_num : "[>`widget] obj -> int"
   method next_page
   method prev_page
