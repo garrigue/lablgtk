@@ -853,6 +853,7 @@ class CellRendererPixbuf vset : CellRenderer {
 
 class CellRendererText vset : CellRenderer {
   "attributes"           PangoAttrList        : Read / Write
+  "alignment"            PangoAlignment       : Read / Write
   "background"           gchararray           : Write
   "background-gdk"       GdkColor             : Read / Write
   "background-set"       gboolean             : Read / Write
@@ -959,6 +960,7 @@ class TextMark : GObject {
 }
 
 class TextTag vset : GObject {
+  "alignment"            PangoAlignment       : Read / Write
   "background"           gchararray           : Write
   "background-full-height" gboolean             : Read / Write
   "background-full-height-set" gboolean             : Read / Write

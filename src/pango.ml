@@ -66,6 +66,8 @@ module Tags = struct
 
   type ellipsize_mode = [ `NONE | `START | `MIDDLE | `END ]
 
+  type alignment = [ `LEFT | `CENTER | `RIGHT ]
+
   open Gpointer
   external _get_tables : unit ->
       style variant_table

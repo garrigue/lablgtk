@@ -168,6 +168,16 @@ module Widget = struct
       = "ml_gtk_widget_pop_colormap"
   external pop_visual : unit -> unit
       = "ml_gtk_widget_pop_visual"
+  external style_get_property : [>`widget] obj -> string -> g_value
+      = "ml_gtk_widget_style_get_property"
+  module Class = struct
+    external of_widget : [>`widget] obj -> gtk_widget_class
+      = "ml_GTK_WIDGET_GET_CLASS"
+    external install_style_property :
+      classe: gtk_widget_class ->
+      param: Gobject.g_param_spec -> unit
+      = "ml_gtk_widget_class_install_style_property"
+  end
   module Signals = struct
     open GtkSignal
     let marshal f _ = function
@@ -374,3 +384,4 @@ module DnD = struct
       = "ml_gtk_drag_source_unset"
 (*  external dest_handle_event : [>`widget] -> *)
 end
+

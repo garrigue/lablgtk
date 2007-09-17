@@ -122,7 +122,8 @@ module Tags = struct
 end
 open Tags
 
-type gtk_class
+type gtk_class = [`gtk] g_class
+type gtk_widget_class = [`gtk|`widget] g_class
 
 type accel_group
 type clipboard

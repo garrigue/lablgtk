@@ -483,6 +483,7 @@ type cell_properties_pixbuf =
   | `STOCK_SIZE of Tags.icon_size ] 
 type cell_properties_text =
   [ cell_properties
+  | `ALIGNMENT of Pango.Tags.alignment
   | `BACKGROUND of string
   | `BACKGROUND_GDK of Gdk.color
   | `BACKGROUND_SET of bool

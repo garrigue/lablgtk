@@ -161,6 +161,7 @@ ML_2 (gtk_notebook_remove_page, GtkNotebook_val, Int_val, Unit)
 
 ML_1 (gtk_notebook_get_current_page, GtkNotebook_val, Val_int)
 ML_2 (gtk_notebook_get_nth_page, GtkNotebook_val, Int_val, Val_GtkWidget)
+ML_1 (gtk_notebook_get_n_pages, GtkNotebook_val, Int_val)
 ML_2 (gtk_notebook_page_num, GtkNotebook_val, GtkWidget_val, Val_int)
 ML_1 (gtk_notebook_next_page, GtkNotebook_val, Unit)
 ML_1 (gtk_notebook_prev_page, GtkNotebook_val, Unit)

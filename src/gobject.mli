@@ -24,9 +24,11 @@
 
 type -'a obj
 type g_type
-type g_class
+type -'a g_type_info
+type -'a g_class
 type g_value
 type g_closure
+type g_param_spec
 type basic =
   [ `BOOL of bool
   | `CAML of Obj.t
@@ -87,7 +89,8 @@ type +'a param
 val dyn_param : string -> 'a data_set -> 'b param
 val param : ('a,'b) property -> 'b -> 'a param
 
-val unsafe_create : classe:string -> 'a param list -> 'a obj
+val unsafe_create : g_type -> 'a param list -> 'b obj
+val unsafe_create_from_name : classe:string -> 'a param list -> 'a obj
     (* This type is NOT safe *)
 val unsafe_unref : 'a obj -> unit
     (* Creates a NULL pointer; many places do not check for them! *)
@@ -109,10 +112,27 @@ module Type :
     val fundamental : g_type -> fundamental_type
     val of_fundamental : fundamental_type -> g_type
     val interface_prerequisites : g_type -> g_type list
-      
-      (* [Benjamin] Experimental stub: the new class has the same size as 
-      its parent. No init functions right now. *)
-    val register_static : parent:g_type -> name:string -> g_type
+    val of_class : 'a g_class -> g_type
+
+    val register_static :
+      parent: g_type ->
+      name: string ->
+      ?info: 'a g_type_info ->
+      unit -> g_type
+    val query : g_type -> (g_type * string * int * int)
+    (* @raise Not_found if the [g_type] is invalid *)
+
+    val create_info :
+      ?class_size: int ->
+      ?base_init: ('a g_class -> unit) ->
+      ?base_finalize: ('a g_class -> unit) ->
+      ?class_init: ('a g_class -> unit) ->
+      ?class_finalize: ('a g_class -> unit) ->
+      ?instance_size: int ->
+      ?n_preallocs: int ->
+(*      ?instance_init: TODO ->*)
+(*      ?value_table: TODO ->*)
+      unit -> 'a g_type_info
 
     val caml : g_type
   end
@@ -135,6 +155,21 @@ module Value :
     val get_nativeint : g_value -> nativeint
     val get_int32 : g_value -> int32
     val get_conv : data_kind -> g_value -> data_conv_get
+  end
+
+module Class :
+  sig
+    exception Cannot_cast of (string * string)
+    val name : 'a g_class -> string
+    val unsafe_cast : 'a g_class -> 'b g_class
+    val try_cast : 'a g_class -> g_type -> 'b g_class
+    val of_type : g_type -> 'a g_class
+      (** @raise Gpointer.Null if there was any trouble identifying the [g_type] *)
+    val peek : g_type -> 'a g_class
+      (** @raise Gpointer.Null if the class of the type passed in does not currently
+        exist (hasn't been referenced before) *)
+    val ref : g_type -> 'a g_class
+    val unref : 'a g_class -> unit
   end
 
 module Closure :
@@ -213,3 +248,28 @@ module Property :
       ('a,'b option) property -> 'b option -> 'a param list -> 'a param list
   end
 
+type param_flag =
+  [ `READABLE | `WRITABLE | `CONSTRUCT | `CONSTRUCT_ONLY | `LAX_VALIDATION
+  | `STATIC_NAME | `PRIVATE | `STATIC_NICK | `STATIC_BLURB ]
+
+module ParamSpec :
+  sig
+    val int :
+      name: string -> ?nick: string -> ?blurb: string ->
+      ?min: int -> ?max: int -> ?default: int ->
+      ?param: param_flag list -> unit -> g_param_spec
+(** @param nick default value is [name]
+    @param blurb default value is [name]
+    @param min default value is [min_int]
+    @param max default value is [max_int]
+    @param default default value is [0]
+    @param param default value is [[]] *)
+    val string :
+      name: string -> ?nick: string -> ?blurb: string ->
+      ?default: string -> ?param: param_flag list ->
+      unit -> g_param_spec
+(** @param nick default value is [name]
+    @param blurb default value is [name]
+    @param default default value is [""]
+    @param param default value is [[]] *)
+  end

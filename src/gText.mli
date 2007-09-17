@@ -41,7 +41,8 @@ val child_anchor : unit -> child_anchor
 
 (** {3 GtkTextTag} *)
 
-type tag_property = [
+type tag_property =
+  [ `ALIGNMENT of Pango.Tags.alignment
   | `BACKGROUND of string
   | `BACKGROUND_FULL_HEIGHT of bool
   | `BACKGROUND_FULL_HEIGHT_SET of bool

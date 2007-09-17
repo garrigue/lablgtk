@@ -37,6 +37,7 @@
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "ml_gdkpixbuf.h"
+#include "ml_gvaluecaml.h"
 #include "gobject_tags.h"
 #include "gdk_tags.h"
 #include "gtk_tags.h"
@@ -379,6 +380,8 @@ CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
     CAMLreturn (ret);
 }
 
+ML_1 (GTK_WIDGET_GET_CLASS, GtkWidget_val, Val_GtkWidgetClass)
+ML_2 (gtk_widget_class_install_style_property, GtkWidgetClass_val, GParamSpec_val, Unit)
 
 ML_4 (gtk_widget_render_icon, GtkWidget_val, String_val, Icon_size_val, String_option_val, Val_GdkPixbuf)
 
@@ -1011,3 +1014,4 @@ ML_0 (gtk_get_current_event_time,copy_int32)
 ML_1 (gtk_rc_add_default_file, String_val, Unit)
 ML_1 (gtk_rc_parse, String_val, Unit)
 ML_1 (gtk_rc_parse_string, String_val, Unit)
+
