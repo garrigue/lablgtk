@@ -379,6 +379,7 @@ class view : tree_view obj ->
   object
     inherit GContainer.container
     val obj : tree_view obj
+    method as_tree_view : Gtk.tree_view Gtk.obj
     method connect : view_signals
     method append_column : view_column -> int
     method collapse_all : unit -> unit
@@ -426,7 +427,9 @@ class view : tree_view obj ->
     method set_reorderable : bool -> unit
     method set_rules_hint : bool -> unit
     method set_search_column : int -> unit
+    method set_tooltip_column : int -> unit
     method set_vadjustment : GData.adjustment -> unit
+    method tooltip_column : int
     method vadjustment : GData.adjustment
 
     method hover_expand : bool (** @since GTK 2.6 *)
@@ -448,6 +451,7 @@ val view :
   ?reorderable:bool ->
   ?rules_hint:bool ->
   ?search_column:int ->
+  ?tooltip_column:int ->
   ?border_width:int -> ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> view
 (** @param enable_search default value is [true]

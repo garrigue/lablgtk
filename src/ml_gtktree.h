@@ -22,7 +22,13 @@
 
 #define GtkTreeIter_val(val) ((GtkTreeIter*)MLPointer_val(val))
 #define Val_GtkTreeIter(it) (copy_memblock_indirected(it,sizeof(GtkTreeIter)))
+#define GtkTreeIter_optval(v) Option_val(v, GtkTreeIter_val, NULL)
+#define GtkTreePath_optval(v) Option_val(v, GtkTreePath_val, NULL)
+#define GtkTreeModel_optval(v) Option_val(v, GtkTreeModel_val, NULL)
+#define GtkCellRenderer_optval(v) Option_val(v, GtkCellRenderer_val, NULL)
+#define GtkTreeViewColumn_optval(v) Option_val(v, GtkTreeViewColumn_val, NULL)
 
 gboolean ml_gtk_row_separator_func (GtkTreeModel *model,
 				    GtkTreeIter *iter,
 				    gpointer data);
+
