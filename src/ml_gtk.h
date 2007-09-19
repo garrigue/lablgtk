@@ -50,3 +50,6 @@ CAMLexport value Val_GtkWidget_func(gpointer w);
 #define GtkTooltips_val(val) check_cast(GTK_TOOLTIPS,val)
 
 #define GtkClipboard_val(val) ((GtkClipboard*)Pointer_val(val))
+#define GtkWindow_val(val) check_cast(GTK_WINDOW,val)
+#define GtkTooltip_val(val) check_cast(GTK_TOOLTIP,val)
+

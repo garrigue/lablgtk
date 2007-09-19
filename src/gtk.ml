@@ -278,7 +278,11 @@ type icon_view = [container|`iconview]
 type about_dialog = [dialog|`aboutdialog]
 type file_chooser_button = [box|`filechooserbutton|`filechooser]
 
+(* New widgets in 2.12 *)
+type tooltip = [`tooltip] obj
+
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj
   (* constraint 'a = [> `gtk] *)
   (* *Props modules break this *)
+
