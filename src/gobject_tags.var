@@ -15,6 +15,10 @@ type param_flag = "G_PARAM_"
   [ `READABLE | `WRITABLE | `CONSTRUCT | `CONSTRUCT_ONLY | `LAX_VALIDATION
   | `STATIC_NAME | `PRIVATE | `STATIC_NICK | `STATIC_BLURB ]
 
+type signal_flag = "G_SIGNAL_"
+  [ `RUN_FIRST | `RUN_LAST | `RUN_CLEANUP | `NO_RECURSE
+  | `DETAILED | `ACTION | `NO_HOOKS ]
+
 type noconv data =
   [ `NONE | `CHAR | `CAML | `BOOL | `INT | `FLOAT | `STRING
   | `OBJECT | `POINTER | `INT64 | `INT32 | `LONG ]
