@@ -30,6 +30,18 @@ type 'a marshaller = 'a -> Closure.argv -> unit
 type ('a,'b) t =
  { name: string; classe: 'a; marshaller: 'b marshaller }
 
+type signal_flag =
+  [ `RUN_FIRST | `RUN_LAST | `RUN_CLEANUP | `NO_RECURSE
+  | `DETAILED | `ACTION | `NO_HOOKS ]
+
+external create :
+  name: string ->
+  itype: g_type ->
+  ?flags: signal_flag list ->
+  ?return_type: g_type ->
+  ?params: Gobject.data_kind array ->
+  unit -> id = "ml_g_signal_new_bc" "ml_g_signal_new"
+
 let enter_callback = ref (fun () -> ())
 and exit_callback = ref (fun () -> ())
 

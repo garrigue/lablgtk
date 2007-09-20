@@ -90,6 +90,82 @@ ML_1 (G_TYPE_FUNDAMENTAL, GType_val, Val_fundamental_type)
 ML_1 (Fundamental_type_val, (value), Val_GType)
 ML_1 (G_OBJECT_CLASS_NAME, GType_val, Val_string)
 
+static GType
+g_type_of_variant (value varnt)
+{
+    GType g_type = G_TYPE_INVALID;
+    if ((long)varnt & 1) { /* polymorphic variant without data */
+        switch (varnt) {
+          case MLTAG_NONE:
+            g_type = G_TYPE_NONE;
+            break;
+          case MLTAG_BOOL:
+            g_type = G_TYPE_BOOLEAN;
+            break;
+          case MLTAG_UCHAR:
+            g_type = G_TYPE_UCHAR;
+            break;
+          case MLTAG_CHAR:
+            g_type = G_TYPE_CHAR;
+            break;
+          case MLTAG_INT:
+            g_type = G_TYPE_INT;
+            break;
+          case MLTAG_ENUM:
+            g_type = G_TYPE_ENUM;
+            break;
+          case MLTAG_FLAGS:
+            g_type = G_TYPE_FLAGS;
+            break;
+          case MLTAG_UINT:
+            g_type = G_TYPE_UINT;
+            break;
+          case MLTAG_LONG:
+            g_type = G_TYPE_LONG;
+            break;
+          case MLTAG_UINT64:
+            g_type = G_TYPE_UINT64;
+            break;
+          case MLTAG_INT64:
+            g_type = G_TYPE_INT64;
+            break;
+          case MLTAG_DOUBLE:
+            g_type = G_TYPE_DOUBLE;
+            break;
+          case MLTAG_FLOAT:
+            g_type = G_TYPE_FLOAT;
+            break;
+          case MLTAG_INTERFACE:
+            g_type = G_TYPE_INTERFACE;
+            break;
+          case MLTAG_OBJECT:
+            g_type = G_TYPE_OBJECT;
+            break;
+          case MLTAG_BOXED:
+            g_type = G_TYPE_BOXED;
+            break;
+          case MLTAG_POINTER:
+            g_type = G_TYPE_POINTER;
+            break;
+          case MLTAG_STRING:
+            g_type = G_TYPE_STRING;
+            break;
+          default:
+            /* XXX: include UINT32, INT32;
+             * I don't know what they do in data_kind,
+             * they do not even exist in G_TYPE_* */
+            break;
+        }
+    } else { /* polymorphic variant with data */
+        switch (Field(varnt, 0)) {
+          default: /* include MLTAG_OTHER */
+            g_type = Field(varnt, 1);
+            break;
+        }
+    }
+    return (g_type);
+}
+
 CAMLprim value
 ml_gtk_type_class (value type)
 {
@@ -256,7 +332,6 @@ ml_GTypeInfo_new(value class_size, value base_init, value base_finalize,
   /* Use the class_data field of the GTypeInfo as a jump table,
    * discarding incidentally its const qualifier */
   value *class_data = g_new0(value, _G_TYPE_INFO_JMPTBL_SIZE);
-  if (!class_data) {raise_out_of_memory ();}
 
   *(class_data + _G_TYPE_INFO_JMPTBL_OFFSET_CLASS_INIT)
     = Option_val(class_init,Id,(value)NULL);
@@ -712,7 +787,6 @@ CAMLprim value ml_g_object_new (value type, value params)
     for (n = 0; cell != Val_unit; cell = Field(cell,1)) n++;
     if (n > 0) {
       params_copy = g_new0(GParameter, n);
-      if (!params_copy) raise_out_of_memory();
       param = params_copy;
       for (cell = params; cell != Val_unit; cell = Field(cell,1)) {
         param->name = String_val(Field(Field(cell,0),0));
@@ -761,6 +835,9 @@ CAMLprim value ml_g_object_set_property_dyn (value vobj, value prop, value arg)
 
 /* gsignal.h */
 
+Make_Flags_val (Signal_flag_val)
+Make_OptFlags_val (Signal_flag_val)
+
 ML_4 (g_signal_connect_closure, GObject_val, String_val, GClosure_val,
       Bool_val, Val_long)
 ML_2 (g_signal_handler_block, GObject_val, Long_val, Unit)
@@ -769,13 +846,44 @@ ML_2 (g_signal_handler_disconnect, GObject_val, Long_val, Unit)
 ML_2 (g_signal_handler_is_connected, GObject_val, Long_val, Val_bool)
 ML_2 (g_signal_stop_emission_by_name, GObject_val, String_val, Unit)
 
+CAMLprim value
+ml_g_signal_new (value name, value itype, value signal_flags,
+                 /* TODO: value class_closure, value accumulator, */
+                 value return_type, value params, value unit)
+{
+    CAMLparam5(name, itype, signal_flags, return_type, params);
+    gint n_params = Option_val(params, Wosize_val, 0);
+    GType *param_types = g_new0 (GType, n_params);
+    GType *ptr = param_types;
+    gint i, id;
+    value p = Option_val(params, Id, (value)NULL);
+    
+    for (i = 0; i < n_params;)
+        *(ptr++) = g_type_of_variant(Field(p, i++));
+    
+    id = g_signal_newv (
+      String_val(name),
+      GType_val(itype),
+      OptFlags_Signal_flag_val(signal_flags),
+      (GClosure *)NULL,
+      (GSignalAccumulator)NULL,
+      (gpointer)NULL,
+      (GSignalCMarshaller)marshal,
+      Option_val(return_type, GType_val, G_TYPE_NONE),
+      n_params,
+      param_types );
+    
+    g_free (param_types);
+    CAMLreturn (Int_val(id));
+}
+ML_bc6(ml_g_signal_new)
+
 CAMLprim value ml_g_signal_emit_by_name (value obj, value sig, value params)
 {
     CAMLparam3(obj,sig,params);
     CAMLlocal1(ret);
     GObject *instance = GObject_val(obj);
     GValue *iparams = g_new0(GValue,1 + Wosize_val(params));
-    if (!iparams) raise_out_of_memory();
     GQuark detail = 0;
     GType itype = G_TYPE_FROM_INSTANCE (instance);
     GType return_type;

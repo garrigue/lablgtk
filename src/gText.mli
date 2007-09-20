@@ -462,8 +462,10 @@ val buffer : ?tag_table:tag_table -> ?text:string -> unit -> buffer
 (** {3 GtkTextView} *)
 
 (** @gtkdoc gtk GtkTextView *)
-class view_signals : [> text_view] obj ->
+class view_signals : ([> text_view] as 'b) obj ->
 object ('a)
+  method private connect :
+    'c. ('b, 'c) GtkSignal.t -> callback:'c -> GtkSignal.id
   method after : 'a
   method copy_clipboard : callback:(unit -> unit) -> GtkSignal.id
   method cut_clipboard : callback:(unit -> unit) -> GtkSignal.id
