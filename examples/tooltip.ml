@@ -12,7 +12,7 @@
  * Do:
  * ocamlc -c -I +lablgtk2 tooltip.ml
  * ocamlc -o tooltip.tpo -g -I . -I +lablgtk2 lablgtk.cma tooltip.cmo
- * ./main.tpo
+ * ./tooltip.tpo
  *
  *)
 
