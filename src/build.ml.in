@@ -40,10 +40,10 @@ let () =
     done
   with _ -> ()
 
-let gtk_libs =
-  if !ccomp_type = "msvc" then gtk_libs else
+let rename_libs libs =
+  if !ccomp_type = "msvc" then libs else
   let libs =
-    List.map (split gtk_libs) ~f:
+    List.map (split libs) ~f:
       (fun nm ->
         if Filename.check_suffix nm ".lib" then "-l"^Filename.chop_extension nm^".dll"
         else nm)
@@ -62,7 +62,7 @@ type descr = {mls: string list; extra: string list; libs: string; name: string; 
 
 let libs =
   let lib ~mls ~libs ~name ?(extra=[]) ?(cname=name) () =
-    {mls=mls; extra=extra; libs=libs; name=name; cname=cname} in
+    {mls=mls; extra=extra; libs=rename_libs libs; name=name; cname=cname} in
   [ lib ~mls:lablgtk_mls ~extra:extra_mls ~libs:gtk_libs ~name:"lablgtk" ~cname:"lablgtk2" ();
     lib ~mls:glade_mls ~libs:(gtk_libs^" "^glade_libs) ~name:"lablglade" ~cname:"lablglade2" ();
     lib ~mls:rsvg_mls ~libs:(gtk_libs^" "^rsvg_libs) ~name:"lablrsvg" () ]
@@ -80,12 +80,12 @@ let byte d =
   let msname = "lib"^d.cname^".lib" and mgname = "lib"^d.cname^".a" in
   if !ccomp_type = "msvc" then begin
     if Sys.file_exists mgname && not (Sys.file_exists msname) then begin
-      Printf.eprintf "This is a MSVC port. Renaming %s to %s\n%!" mgname msname;
+      Printf.eprintf "This is a MSVC port. Renaming %s to %s\n" mgname msname;
       Sys.rename mgname msname
     end;
   end else begin
     if Sys.file_exists msname && not (Sys.file_exists mgname) then begin
-      Printf.eprintf "This is a Mingw port. Renaming %s to %s" msname mgname;
+      Printf.eprintf "This is a Mingw port. Renaming %s to %s\n" msname mgname;
       Sys.rename msname mgname
     end;
   end

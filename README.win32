@@ -9,8 +9,9 @@ The binary distribution includes the lablglade and lablrsvg libraries.
 1) Install the gtk2 libraries and dependencies. You can use the installer from the
    "Glade for Windows" project on Sourceforge.
      http://gladewin32.sourceforge.net/modules/news/
-   The runtime environment should be sufficient. Test were done with Gtk+ 2.10.11,
-   but ulterior versions should work too.
+   The runtime environment is sufficient for bytecode, but you will need the developper
+   version if you want to link with ocamlopt.
+   Tests were done with Gtk+ 2.10.11, but ulterior versions should work too.
 
 2) Install lablgtk2 binaries and scripts inside the OCaml distribution
      bin/lablgtk2.bat             -> bin
