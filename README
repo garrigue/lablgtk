@@ -2,9 +2,8 @@
              LablGTK2 : an interface to the GIMP Tool Kit
 
 Needed:
-	ocaml-3.07 or 3.08
-	gtk+-2.x (preferably gtk+-2.4.x)
-          (avoid gtk+-2.4.0, as the GtkTree widget is broken)
+	ocaml-3.07 or more
+	gtk+-2.x (gtk+-2.10.x for full functionality)
 	GNU make (there is no standard for conditionals)
 
 Info/upgrades:
@@ -326,7 +325,7 @@ Windows port
 
   If you want to use threads, you must be aware of windows specific
   restrictions; see for instance:
-     http://groups.yahoo.com/group/gimpwin-dev/message/1828
+     http://article.gmane.org/gmane.comp.video.gimp.windows.devel/314
   I.e. all GTK related calls must occur in the same thread, the one
   that runs the main loop. If you want to call them from other threads
   you need to do some forwarding. Fortunately, with a functional
