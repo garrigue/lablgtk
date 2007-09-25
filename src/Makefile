@@ -67,7 +67,7 @@ CCOMPILER = $(CAMLC) -c -ccopt '$(CFLAGS)'
 endif
 
 ifdef USE_GL
-MLFLAGS += -I '$(LABLGLDIR)'
+MLFLAGS += -I $(LABLGLDIR)
 MLLINK += lablgl.cma
 MLLIBS += lablgtkgl.cma
 CLIBS += liblablgtkgl2$(XA)

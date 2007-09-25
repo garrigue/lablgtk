@@ -53,8 +53,7 @@ class tag_signals obj = object (self)
   method event = self#connect Tag.S.event
 end
 
-type tag_property0 =
-  [ `ALIGNMENT of Pango.Tags.alignment
+type tag_property0 = [
   | `BACKGROUND of string
   | `BACKGROUND_FULL_HEIGHT of bool
   | `BACKGROUND_FULL_HEIGHT_SET of bool

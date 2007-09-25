@@ -27,11 +27,9 @@ open Gaux
 
 type -'a obj
 type g_type
-type -'a g_type_info
-type -'a g_class
+type g_class
 type g_value
 type g_closure
-type g_param_spec
 type 'a objtype = g_type
 
 type basic =
@@ -80,10 +78,7 @@ type fundamental_type =
 
 module Type = struct
   external init : unit -> unit = "ml_g_type_init"
-  external init_info : unit -> unit = "ml_GTypeInfo_init"
-  let () =
-    init ();
-    init_info ()
+  let () = init ()
   external name : g_type -> string = "ml_g_type_name"
   external _from_name : string -> g_type = "ml_g_type_from_name"
   external parent : g_type -> g_type = "ml_g_type_parent"
@@ -95,12 +90,8 @@ module Type = struct
       = "ml_Fundamental_type_val"
   external interface_prerequisites : g_type -> g_type list
       = "ml_g_type_interface_prerequisites" (** @since GTK 2.2 *)
-  external register_static :
-    parent: g_type ->
-    name: string ->
-    ?info: 'a g_type_info ->
-    unit -> g_type
-    = "ml_g_type_register_static"
+  external register_static : parent:g_type -> name:string -> g_type
+      = "ml_g_type_register_static"
   let invalid =  of_fundamental `INVALID
   let from_name s =
     let t = _from_name s in
@@ -109,21 +100,6 @@ module Type = struct
     t
   external g_caml_get_type : unit -> g_type = "ml_g_caml_get_type"
   let caml = g_caml_get_type ()
-  external of_class : 'a g_class -> g_type = "ml_G_TYPE_FROM_CLASS"
-  external query : g_type -> (g_type * string * int * int)
-    = "ml_g_type_query"
-  external create_info :
-    ?class_size: int ->
-    ?base_init: ('a g_class -> unit) ->
-    ?base_finalize: ('a g_class -> unit) ->
-    ?class_init: ('a g_class -> unit) ->
-    ?class_finalize: ('a g_class -> unit) ->
-    ?instance_size: int ->
-    ?n_preallocs: int ->
-(*    ?instance_init: TODO ->*)
-(*    ?value_table: TODO ->*)
-    unit -> 'a g_type_info
-    = "ml_GTypeInfo_new_bc" "ml_GTypeInfo_new"
 end
 
 module Value = struct
@@ -156,20 +132,6 @@ module Value = struct
         `POINTER (try Some (get_pointer v) with Gpointer.Null -> None)
     | _ -> (get v :> data_conv_get)
     with Failure ("Gobject.get_int32"|"Gobject.get_pointer") -> `NONE
-end
-
-module Class = struct
-  exception Cannot_cast of (string * string)
-  external name : 'a g_class -> string = "ml_G_OBJECT_CLASS_NAME"
-  external unsafe_cast : 'a g_class -> 'b g_class = "%identity"
-  let try_cast klass dst_typ =
-    let src_typ = Type.of_class klass in
-    if Type.is_a src_typ dst_typ then unsafe_cast klass
-    else raise (Cannot_cast (Type.name src_typ, Type.name dst_typ))
-  external of_type : g_type -> 'a g_class = "ml_gtk_type_class"
-  external peek : g_type -> 'a g_class = "ml_g_type_class_peek"
-  external ref : g_type -> 'a g_class = "ml_g_type_class_ref"
-  external unref : 'a g_class -> unit = "ml_g_type_class_unref"
 end
 
 module Closure = struct
@@ -222,11 +184,9 @@ external coerce : 'a obj -> unit obj = "%identity"
 external coerce_option : 'a obj option -> unit obj option = "%identity"
   (* [coerce] is safe *)
 
-external unsafe_create :
-  g_type -> (string * 'a data_set) list -> 'b obj
-  = "ml_g_object_new"
+external unsafe_create : g_type -> (string * 'a data_set) list -> 'b obj
+    = "ml_g_object_new"
   (* This is dangerous! *)
-external unsafe_ref : 'a obj -> unit = "ml_g_object_ref"
 external unsafe_unref : 'a obj -> unit = "ml_g_object_unref"
 external get_ref_count : 'a obj -> int = "ml_g_object_ref_count"
 
@@ -238,8 +198,8 @@ let dyn_param prop v =
 let param (prop : ('a,'b) property) d : 'a param =
   dyn_param prop.name (prop.conv.inj d)
 
-let unsafe_create_from_name ~classe l =
-  unsafe_create (objtype_from_name ~caller:"Gobject.unsafe_create_from_name" classe) l
+let unsafe_create ~classe l =
+  unsafe_create (objtype_from_name ~caller:"Gobject.unsafe_create" classe) l
 
 let get_oid (obj : 'a obj) : int = (snd (Obj.magic obj) lor 0)
 
@@ -434,25 +394,3 @@ let set o p x = Property.set p o x
 let get o p = Property.get p o
 let set_params obj params =
   List.iter params ~f:(fun (prop,arg) -> Property.set_dyn obj prop arg)
-
-type param_flag =
-  [ `READABLE | `WRITABLE | `CONSTRUCT | `CONSTRUCT_ONLY | `LAX_VALIDATION
-  | `STATIC_NAME | `PRIVATE | `STATIC_NICK | `STATIC_BLURB ]
-
-module ParamSpec = struct
-  external int :
-    string -> string -> string ->
-    int -> int -> int ->
-    param_flag list -> g_param_spec
-    = "ml_g_param_spec_int_bc" "ml_g_param_spec_int"
-  let int
-    ~(name: string) ?(nick = name) ?(blurb = name)
-    ?(min = min_int) ?(max = max_int) ?(default = 0)
-    ?(param: param_flag list = []) ()
-    = int name nick blurb min max default param
-  external string :
-    name: string -> ?nick: string -> ?blurb: string ->
-    ?default: string -> ?param: param_flag list ->
-    unit -> g_param_spec
-    = "ml_g_param_spec_string_bc" "ml_g_param_spec_string"
-end

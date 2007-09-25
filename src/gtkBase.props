@@ -51,7 +51,6 @@ class Widget abstract : Object {
   "extension-events"     GdkExtensionMode     : Read / Write
   "has-default"          gboolean             : Read / Write
   "has-focus"            gboolean             : Read / Write
-  "has-tooltip"          gboolean             : Read / Write
   "height-request"       gint                 : Read / Write
   "is-focus"             gboolean             : Read / Write
   "name"                 gchararray           : Read / Write
@@ -59,8 +58,6 @@ class Widget abstract : Object {
   "receives-default"     gboolean             : Read / Write
   "sensitive"            gboolean             : Read / Write
   "style"                GtkStyle             : Read / Write
-  "tooltip-markup"       gchararray           : Read / Write
-  "tooltip-text"         gchararray           : Read / Write
   "visible"              gboolean             : Read / Write
   "width-request"        gint                 : Read / Write
   (* misc *)
@@ -68,7 +65,6 @@ class Widget abstract : Object {
   signal hide
   signal map
   signal unmap
-  signal query_tooltip : x:int y:int kbd:bool GtkTooltip -> bool
   signal realize
   signal unrealize
   signal state_changed : GtkStateType

@@ -369,7 +369,6 @@ open TreeView.P
 class view obj = object
   inherit [Gtk.tree_view] GContainer.container_impl obj
   inherit tree_view_props
-  method as_tree_view = (obj :> Gtk.tree_view Gtk.obj)
   method connect = new view_signals obj
   method event = new GObj.event_ops obj
   method selection = new selection (TreeView.get_selection obj)
@@ -446,8 +445,7 @@ type cell_properties_pixbuf_only =
   | `STOCK_SIZE of Gtk.Tags.icon_size ] 
 type cell_properties_pixbuf = [ cell_properties | cell_properties_pixbuf_only ]
 type cell_properties_text_only =
-  [ `ALIGNMENT of Pango.Tags.alignment
-  | `BACKGROUND of string
+  [ `BACKGROUND of string
   | `BACKGROUND_GDK of Gdk.color
   | `BACKGROUND_SET of bool
   | `EDITABLE of bool

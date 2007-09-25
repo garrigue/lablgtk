@@ -41,8 +41,7 @@ val child_anchor : unit -> child_anchor
 
 (** {3 GtkTextTag} *)
 
-type tag_property =
-  [ `ALIGNMENT of Pango.Tags.alignment
+type tag_property = [
   | `BACKGROUND of string
   | `BACKGROUND_FULL_HEIGHT of bool
   | `BACKGROUND_FULL_HEIGHT_SET of bool
@@ -462,10 +461,8 @@ val buffer : ?tag_table:tag_table -> ?text:string -> unit -> buffer
 (** {3 GtkTextView} *)
 
 (** @gtkdoc gtk GtkTextView *)
-class view_signals : ([> text_view] as 'b) obj ->
+class view_signals : [> text_view] obj ->
 object ('a)
-  method private connect :
-    'c. ('b, 'c) GtkSignal.t -> callback:'c -> GtkSignal.id
   method after : 'a
   method copy_clipboard : callback:(unit -> unit) -> GtkSignal.id
   method cut_clipboard : callback:(unit -> unit) -> GtkSignal.id
