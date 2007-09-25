@@ -271,7 +271,8 @@ preinstall: build.ml
 	for f in $(PREOBJS:.cmo=.mli); do \
 	  if test -f $$f; then cp $$f "$(INSTALLDIR)"; fi; done
 	cp build.ml "$(INSTALLDIR)"
-	cp lablgtk2$(XB) "$(BINDIR)"
+	cp lablgtk2$(XB) gdk-pixbuf-mlsource$(XE) "$(BINDIR)"
+	cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)"
 
