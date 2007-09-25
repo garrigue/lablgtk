@@ -24,6 +24,7 @@
 
 open StdLabels
 open Gtk
+open GtkMainProps
 
 let () = Callback.register_exception "gtkerror" (Error"")
 let () = Gc.set {(Gc.get()) with Gc.max_overhead = 1000000}
@@ -73,4 +74,14 @@ module Rc = struct
   external add_default_file : string -> unit = "ml_gtk_rc_add_default_file"
   external parse : file:string -> unit = "ml_gtk_rc_parse"
   external parse_string : string -> unit = "ml_gtk_rc_parse_string"
+end
+
+module Settings = struct
+  include Settings
+  external get_default :
+    unit -> Gtk.settings
+    = "ml_gtk_settings_get_default"
+  external get_for_screen :
+    Gdk.screen -> Gtk.settings
+    = "ml_gtk_settings_get_for_screen"
 end

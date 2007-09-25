@@ -380,6 +380,13 @@ CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
     CAMLreturn (ret);
 }
 
+void gtk_widget_class_ref(GtkWidgetClass *klass)
+{ g_type_class_ref(G_TYPE_FROM_CLASS(G_OBJECT_CLASS(klass))); }
+void gtk_widget_class_unref(GtkWidgetClass *klass)
+{ g_type_class_unref(G_OBJECT_CLASS(klass)); }
+
+Make_Val_final_pointer(GtkWidgetClass, gtk_widget_class_ref, gtk_widget_class_unref, 0)
+
 ML_1 (GTK_WIDGET_GET_CLASS, GtkWidget_val, Val_GtkWidgetClass)
 ML_2 (gtk_widget_class_install_style_property, GtkWidgetClass_val, GParamSpec_val, Unit)
 
@@ -1035,6 +1042,17 @@ ML_0 (gtk_get_current_event_time,copy_int32)
 ML_1 (gtk_rc_add_default_file, String_val, Unit)
 ML_1 (gtk_rc_parse, String_val, Unit)
 ML_1 (gtk_rc_parse_string, String_val, Unit)
+
+/* gtksettings.h */
+Make_Val_final_pointer(GtkSettings, Ignore, Ignore, 0)
+
+ML_1 (gtk_settings_get_default, Ignore, Val_GtkSettings)
+#ifdef HASGTK22
+ML_1 (gtk_settings_get_for_screen, GdkScreen_val, Val_GtkSettings)
+#else
+Unsupported_22(gtk_settings_get_for_screen)
+#endif /* HASGTK22 */
+ML_1 (gtk_settings_install_property, GParamSpec_val, Unit)
 
 /* gtktooltip.h */
 #ifdef HASGTK212

@@ -53,7 +53,7 @@ CAMLexport void ml_g_object_unref_later (GObject *p)
 Make_Val_final_pointer(GObject, g_object_ref, ml_g_object_unref_later, 0)
 Make_Val_final_pointer_ext (GObject, _new, Ignore, ml_g_object_unref_later, 20)
 ML_1 (G_TYPE_FROM_INSTANCE, GObject_val, Val_GType)
-ML_1 (G_TYPE_FROM_CLASS, GObjectClassptr_val, Val_GType)
+ML_1 (G_TYPE_FROM_CLASS, GObjectClass_val, Val_GType)
 ML_1 (g_object_ref, GObject_val, Unit)
 CAMLprim value ml_g_object_unref (value val)
 {
@@ -79,6 +79,28 @@ ML_2 (my_g_object_get_property_type, GObject_val, String_val, Val_GType)
 
 
 /* gtype.h */
+
+static int ml_compare_GType(value v1, value v2)
+{
+  GType t1 = (GType)Field(v1,1);
+  GType t2 = (GType)Field(v2,1);
+  if (g_type_is_a(t1, t2) && g_type_is_a(t2, t1))
+    return 0;
+  else return 1;
+}
+static struct custom_operations ml_custom_GType =
+{ "GType/2.0/", custom_finalize_default, ml_compare_GType,
+  custom_hash_default, custom_serialize_default, custom_deserialize_default };
+CAMLprim value Val_GType (GType p)
+{ value ret = alloc_custom (&ml_custom_GType, sizeof(value), 20, 1000);
+  initialize (&Field(ret,1), (value) p); return ret; }
+
+void g_class_ref(GObjectClass *klass)
+{ g_type_class_ref(G_TYPE_FROM_CLASS(G_OBJECT_CLASS(klass))); }
+void g_class_unref(GObjectClass *klass)
+{ g_type_class_unref(G_OBJECT_CLASS(klass)); }
+
+Make_Val_final_pointer(GObjectClass, g_class_ref, g_class_unref, 0)
 
 ML_0 (g_type_init, Unit)
 ML_1 (g_type_name, GType_val, Val_string)
@@ -172,7 +194,7 @@ ml_gtk_type_class (value type)
   GObjectClass *g_class;
   if (!(g_class = gtk_type_class(GType_val(type))))
     ml_raise_null_pointer();
-  return (Val_GObjectClassptr(g_class));
+  return (Val_GObjectClass(g_class));
 }
 
 CAMLprim value
@@ -181,11 +203,11 @@ ml_g_type_class_peek (value type)
   GObjectClass *g_class;
   if (!(g_class = g_type_class_peek(GType_val(type))))
     ml_raise_null_pointer();
-  return (Val_GObjectClassptr(g_class));
+  return (Val_GObjectClass(g_class));
 }
 
-ML_1 (g_type_class_ref, GType_val, Val_GObjectClassptr)
-ML_1 (g_type_class_unref, GObjectClassptr_val, Unit)
+ML_1 (g_type_class_ref, GType_val, Val_GObjectClass)
+ML_1 (g_type_class_unref, GObjectClass_val, Unit)
 
 #ifdef HASGTK22
 CAMLprim value  ml_g_type_interface_prerequisites(value type)
@@ -268,13 +290,13 @@ static struct custom_operations ml_custom_GTypeInfo =
 static void
 _g_type_info_class_init (gpointer _g_class, gconstpointer jmptbl)
 {
-  value g_class = Val_GObjectClassptr(_g_class);
+  value g_class = Val_GObjectClass(_g_class);
   callback(*((value *)jmptbl + _G_TYPE_INFO_JMPTBL_OFFSET_CLASS_INIT), g_class);
 }
 static void
 _g_type_info_class_finalize (gpointer _g_class, gconstpointer jmptbl)
 {
-  value g_class = Val_GObjectClassptr(_g_class);
+  value g_class = Val_GObjectClass(_g_class);
   callback(*((value *)jmptbl + _G_TYPE_INFO_JMPTBL_OFFSET_CLASS_FINALIZE), g_class);
 }
 
@@ -290,7 +312,7 @@ _g_type_info_base_init (gpointer _g_class)
 {
   GType gtype = G_TYPE_FROM_CLASS(_g_class);
   gpointer gptr = g_type_get_qdata(gtype, _g_type_info_base_init_quark);
-  value g_class = Val_GObjectClassptr(_g_class);
+  value g_class = Val_GObjectClass(_g_class);
   callback((value)gptr, g_class);
 }
 static char *_g_type_info_base_finalize_string = "_g_type_info_base_finalize_quark";
@@ -300,7 +322,7 @@ _g_type_info_base_finalize (gpointer _g_class)
 {
   GType gtype = G_TYPE_FROM_CLASS(_g_class);
   gpointer gptr = g_type_get_qdata(gtype, _g_type_info_base_finalize_quark);
-  value g_class = Val_GObjectClassptr(_g_class);
+  value g_class = Val_GObjectClass(_g_class);
   callback((value)gptr, g_class);
 }
 
@@ -939,6 +961,11 @@ CAMLprim value ml_g_signal_chain_from_overridden (value clos_argv)
 }
 
 /* gparamspecs.h */
+
+Make_Val_final_pointer(GParamSpec, g_param_spec_ref, g_param_spec_unref, 0)
+#define g_param_spec_ref_and_sink(w) (g_param_spec_ref(w), g_param_spec_sink(w))
+Make_Val_final_pointer_ext(GParamSpec, _sink , g_param_spec_ref_and_sink,
+                           g_param_spec_unref, 20)
 
 Make_Flags_val (Param_flag_val)
 Make_OptFlags_val (Param_flag_val)

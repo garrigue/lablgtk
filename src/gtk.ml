@@ -224,6 +224,7 @@ type scale = [widget|`range|`scale]
 type scrollbar = [widget|`range|`scrollbar]
 type ruler = [widget|`ruler]
 type separator = [widget|`separator]
+type settings = [`gtk|`settings]
 
 type text_view = [container|`textview]
 type text_buffer = [`textbuffer] obj

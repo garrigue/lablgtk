@@ -80,8 +80,8 @@ gtkTree.cmx: gtkTreeProps.cmx gtkEnums.cmx gtkBase.cmx gtk.cmx gobject.cmx \
     gdk.cmx gaux.cmx 
 gtkFile.cmo: gtkObject.cmo gtkFileProps.cmo gtkEnums.cmo gtk.cmo 
 gtkFile.cmx: gtkObject.cmx gtkFileProps.cmx gtkEnums.cmx gtk.cmx 
-gtkMain.cmo: gtk.cmo glib.cmi 
-gtkMain.cmx: gtk.cmx glib.cmx 
+gtkMain.cmo: gtkMainProps.cmo gtk.cmo glib.cmi 
+gtkMain.cmx: gtkMainProps.cmx gtk.cmx glib.cmx 
 gtkBroken.cmo: gtkBrokenProps.cmo gtkBase.cmo gtk.cmo gdk.cmi gaux.cmo 
 gtkBroken.cmx: gtkBrokenProps.cmx gtkBase.cmx gtk.cmx gdk.cmx gaux.cmx 
 gPango.cmo: pango.cmo gaux.cmo 
@@ -244,6 +244,8 @@ gtkSourceViewProps.cmo: gtkSourceView_types.cmi gtkSignal.cmi gtkObject.cmo \
     gtk.cmo gobject.cmi gdk.cmi 
 gtkSourceViewProps.cmx: gtkSourceView_types.cmi gtkSignal.cmx gtkObject.cmx \
     gtk.cmx gobject.cmx gdk.cmx 
+gtkMainProps.cmo: gtkObject.cmo gtk.cmo gobject.cmi 
+gtkMainProps.cmx: gtkObject.cmx gtk.cmx gobject.cmx 
 gtkBaseProps.cmo: gtkSignal.cmi gtkObject.cmo gtkEnums.cmo gtk.cmo \
     gpointer.cmi gobject.cmi gdkPixbuf.cmi gdkEvent.cmo gdkEnums.cmo gdk.cmi 
 gtkBaseProps.cmx: gtkSignal.cmx gtkObject.cmx gtkEnums.cmx gtk.cmx \
@@ -304,6 +306,8 @@ gtkAssistantProps.cmx: gtkSignal.cmx gtkObject.cmx gtkEnums.cmx gtk.cmx \
     gobject.cmx gdkPixbuf.cmx 
 ogtkSourceViewProps.cmo: gtkSourceViewProps.cmo gtkSignal.cmi gobject.cmi 
 ogtkSourceViewProps.cmx: gtkSourceViewProps.cmx gtkSignal.cmx gobject.cmx 
+ogtkMainProps.cmo: gtkSignal.cmi gtkMainProps.cmo gobject.cmi 
+ogtkMainProps.cmx: gtkSignal.cmx gtkMainProps.cmx gobject.cmx 
 ogtkBaseProps.cmo: gtkSignal.cmi gtkBaseProps.cmo gobject.cmi gObj.cmi 
 ogtkBaseProps.cmx: gtkSignal.cmx gtkBaseProps.cmx gobject.cmx gObj.cmx 
 ogtkBinProps.cmo: gtkSignal.cmi gtkPackProps.cmo gtkBinProps.cmo gobject.cmi \

@@ -28,9 +28,12 @@ module MessageText =
 			| _ :: `INT n :: `STRING s :: _ -> f n s
 			| _ -> assert false }
 	  end
-	class view_signals obj =
+	class view_signals obj' =
 	  object(self)
-		inherit GText.view_signals obj
+		inherit GObj.widget_signals_impl (obj' : [> Gtk.text_view] Gobject.obj)
+		(* NOTE: we must use another name for "obj" because GObj.widget_signals_impl
+		 * brings a value named "obj" that won't be accessible below *)
+		inherit GText.view_signals obj'
 		method key_press = self#connect S.key_press
 	  end
 	class view obj =
