@@ -139,7 +139,7 @@ endif
 .c$(XO):
 	$(CCOMPILER) $<
 .c.d$(XO):
-	$(CAMLC) -c -ccopt '-MD -DCAML_DLL -Fo$@ $(CFLAGS)' $<
+	$(CAMLC) -c -ccopt '-MT -DCAML_DLL -Fo$@ $(CFLAGS)' $<
 .ml.cmo:
 	$(COMPILER) $<
 .mli.cmi:
@@ -240,7 +240,12 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	sed -e "s|@LABLGTK_MLS@|$(MLOBJS:.cmo=)|" \
 	    -e "s|@EXTRA_MLS@|$(EXTRAOBJS:.cmo=)|" \
 	    -e "s|@PROP_MLS@|$(PROPOBJS:.cmo=)|" \
-	    -e "s|@GTKLIBS@|$(GTKLIBS)|" < build.ml.in > $@
+	    -e "s|@GTKLIBS@|$(GTKLIBS)|" \
+	    -e "s|@GLADE_MLS@|$(GLADEMLOBJS:.cmo=)|" \
+	    -e "s|@GLADE_LIBS@|$(GLADELIBS)|" \
+	    -e "s|@RSVG_MLS@|$(RSVGMLOBJS:.cmo=)|" \
+	    -e "s|@RSVG_LIBS@|$(RSVGLIBS)|" \
+	    < build.ml.in > $@
 
 gdk-pixbuf-mlsource$(XE) : lablgtk.cma gtkInit.cmo gdk-pixbuf-mlsource.ml
 	$(CAMLC) -o $@ -I . $^
@@ -258,10 +263,12 @@ testcc$(XE): lablgladecc$(XE) lablgtktop
 	./lablgtktop testcc.ml
 	rm -f testcc.ml
 
+PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS)
+
 preinstall: build.ml
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
-	cp $(MLOBJS:.cmo=.ml) $(EXTRAOBJS:.cmo=.ml) "$(INSTALLDIR)"
-	for f in $(MLOBJS:.cmo=.mli) $(EXTRAOBJS:.cmo=.mli); do \
+	cp $(PREOBJS:.cmo=.ml) "$(INSTALLDIR)"
+	for f in $(PREOBJS:.cmo=.mli); do \
 	  if test -f $$f; then cp $$f "$(INSTALLDIR)"; fi; done
 	cp build.ml "$(INSTALLDIR)"
 	cp lablgtk2$(XB) "$(BINDIR)"

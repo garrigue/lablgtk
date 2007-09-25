@@ -358,6 +358,8 @@ ML_1 (gtk_widget_push_visual, GdkVisual_val, Unit)
 ML_1 (gtk_widget_push_colormap, GdkColormap_val, Unit)
 ML_0 (gtk_widget_pop_visual, Unit)
 ML_0 (gtk_widget_pop_colormap, Unit)
+ML_4 (gtk_widget_render_icon, GtkWidget_val, String_val, Icon_size_val,
+      String_option_val, Val_GdkPixbuf)
 
 CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
 {
@@ -369,8 +371,8 @@ CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
     pspec = gtk_widget_class_find_style_property
                (GTK_WIDGET_GET_CLASS (widget), name);
     if (pspec) {
-        ret = ml_g_value_new ();
-        GValue *gv = GValue_val (ret);
+        value ret = ml_g_value_new ();
+        GValue *gv = GValueptr_val (ret);
         g_value_init (gv, G_PARAM_SPEC_VALUE_TYPE (pspec));
         gtk_widget_style_get_property (widget, name, gv);
     } else {
@@ -378,9 +380,6 @@ CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
     }
     CAMLreturn (ret);
 }
-
-
-ML_4 (gtk_widget_render_icon, GtkWidget_val, String_val, Icon_size_val, String_option_val, Val_GdkPixbuf)
 
 /* gtkdnd.h */
 
