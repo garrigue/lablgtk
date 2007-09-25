@@ -1,5 +1,10 @@
 $Id$
 
+In lablgtk-2.10.0:
+2007.09.25 [Jacques]
+  * Various preparations for release.
+  * Use the "Glade for Windows" distribution for win32, supporting glade and rsvg.
+
 2007.08.17 [Jacques]
   * some more patch by Julien Moutinho (style and Rc).
   * do not set LC_NUMERIC to C (ocaml is now ok) (Volker Grabsch).

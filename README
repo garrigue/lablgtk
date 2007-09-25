@@ -58,6 +58,11 @@ How to compile:
 	--with-rsvg --without-rsvg: override autodetected librsvg support
 	--with-gnomecanvas --without-gnomecanvas: 
 		override autodetected libgnomecanvas support
+        --with-gnomeui --without-gnomeui: override autodetected libgnomeui support
+        --with-panel --without-panel: override autodetected libpanelapplet support
+        --with-gtkspell --without-gtkspell: override autodetected gtkspell support
+        --with-gtksourceview --without-gtksourceview:
+                override autodetected gtksourceview support
 	--enable-debug: enable debug mode
 
   "make install DESTDIR=..." prefixes the installation
@@ -353,6 +358,8 @@ Authors:
 	Benjamin Monate  <benjamin.monate@free.fr>
         Olivier Andrieu  <oandrieu@nerim.net>
 	Jun Furuse       <furuse@yl.is.s.u-tokyo.ac.jp>
+        Maxence Guesdon  <maxence.guesdon@inria.fr>
+        Stefano Zacchiroli  <zack@cs.unibo.it>
   For lablgtk1:
 	Hubert Fauque  <hubert.fauque@wanadoo.fr>
 	Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
