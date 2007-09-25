@@ -77,7 +77,7 @@ let enums = [
     (* for canvas *)
     "CapStyle"; "JoinStyle"; "LineStyle"];
   "Pango", "PangoEnums",
-  [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode"; "Alignment" ]
+  [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode" ]
 ]
 
 (* These types must be registered with g_boxed_register! *)
@@ -89,7 +89,7 @@ let boxeds = [
 
 let classes = [
   "Gdk", [ "Image"; "Pixmap"; "Bitmap"; "Screen"; "DragContext";];
-  "Gtk", [ "Style"; "TreeStore"; "TreeModel"; "Tooltip" ]
+  "Gtk", [ "Style"; "TreeStore"; "TreeModel" ]
 ]
 
 let specials = [
@@ -478,7 +478,7 @@ let process_file f =
           out " pl : %s =" (type_name name ~attrs);
           may_cons_props cprops;
           if List.mem_assoc "gobject" attrs then
-            out "@ Gobject.unsafe_create_from_name"
+            out "@ Gobject.unsafe_create"
           else out "@ Object.make";
            out " \"%s\" pl@]" gtk_class;
         end

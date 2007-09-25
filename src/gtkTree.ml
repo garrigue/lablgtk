@@ -275,11 +275,7 @@ module TreeViewColumn = struct
     = "ml_gtk_tree_view_column_get_sort_column_id"
   external set_cell_data_func : 
     [>`treeviewcolumn] obj -> [>`cellrenderer] obj -> 
-    ([`treemodel] obj -> tree_iter -> unit) option -> unit
-  = "ml_gtk_tree_view_column_set_cell_data_func"
-  external get_button :
-    [>`treeviewcolumn] obj -> Gtk.button obj
-    = "ml_gtk_tree_view_column_get_button"
+    ([`treemodel] obj -> tree_iter -> unit) option -> unit = "ml_gtk_tree_view_column_set_cell_data_func"
 end
 
 module TreeView = struct
@@ -347,31 +343,6 @@ module TreeView = struct
     [>`treeview] obj ->
     (Gtk.tree_model -> Gtk.tree_iter -> bool) option -> unit
     = "ml_gtk_tree_view_set_row_separator_func"
-  
-  (** @since GTK 2.12 *)
-  module Tooltip = struct
-    external set_cell :
-      [>`treeview] obj -> Gtk.tooltip ->
-      ?path:Gtk.tree_path ->
-      ?col:tree_view_column obj ->
-      ?cell:[>`cellrenderer] obj ->
-      unit -> unit
-      = "ml_gtk_tree_view_set_tooltip_cell_bc" "ml_gtk_tree_view_set_tooltip_cell"
-    external set_row :
-      [>`treeview] obj -> Gtk.tooltip -> Gtk.tree_path -> unit
-      = "ml_gtk_tree_view_set_tooltip_row"
-    external get_context :
-      [>`treeview] obj ->
-      x: int -> y: int -> kbd: bool ->
-      (int * int * (Gtk.tree_model * Gtk.tree_path * Gtk.tree_iter) option)
-      = "ml_gtk_tree_view_get_tooltip_context"
-    external get_column :
-      [>`treeview] obj -> int
-      = "ml_gtk_tree_view_get_tooltip_column"
-    external set_column :
-      [>`treeview] obj -> int -> unit
-      = "ml_gtk_tree_view_set_tooltip_column"
-  end
 end
 
 module CellRenderer = CellRenderer

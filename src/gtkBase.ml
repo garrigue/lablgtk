@@ -168,47 +168,6 @@ module Widget = struct
       = "ml_gtk_widget_pop_colormap"
   external pop_visual : unit -> unit
       = "ml_gtk_widget_pop_visual"
-  external style_get_property : [>`widget] obj -> string -> g_value
-      = "ml_gtk_widget_style_get_property"
-  
-  (** @since GTK 2.12 *)
-  module Tooltip = struct
-    external get_markup :
-      [>`widget] obj -> string
-      = "ml_gtk_widget_get_tooltip_markup"
-    external set_markup :
-      [>`widget] obj -> string -> unit
-      = "ml_gtk_widget_set_tooltip_markup"
-    external get_text :
-      [>`widget] obj -> string
-      = "ml_gtk_widget_get_tooltip_text"
-    external set_text :
-      [>`widget] obj -> string -> unit
-      = "ml_gtk_widget_set_tooltip_text"
-    external get_window :
-      [>`widget] obj -> [`window] obj
-      = "ml_gtk_widget_get_tooltip_window"
-    external set_window :
-      [>`widget] obj -> [`window] obj -> unit
-      = "ml_gtk_widget_set_tooltip_window"
-    external get_has_tooltip :
-      [>`widget] obj -> bool
-      = "ml_gtk_widget_get_has_tooltip"
-    external set_has_tooltip :
-      [>`widget] obj -> bool -> unit
-      = "ml_gtk_widget_set_has_tooltip"
-    external trigger_query :
-      [>`widget] obj -> unit
-      = "ml_gtk_widget_trigger_tooltip_query"
-  end
-  module Class = struct
-    external of_widget : [>`widget] obj -> gtk_widget_class
-      = "ml_GTK_WIDGET_GET_CLASS"
-    external install_style_property :
-      classe: gtk_widget_class ->
-      param: Gobject.g_param_spec -> unit
-      = "ml_gtk_widget_class_install_style_property"
-  end
   module Signals = struct
     open GtkSignal
     let marshal f _ = function
@@ -415,31 +374,3 @@ module DnD = struct
       = "ml_gtk_drag_source_unset"
 (*  external dest_handle_event : [>`widget] -> *)
 end
-
-(** @since GTK 2.12 *)
-module Tooltip = struct
-    external set_markup :
-      tooltip -> string -> unit
-      = "ml_gtk_tooltip_set_markup"
-    external set_text :
-      tooltip -> string -> unit
-      = "ml_gtk_tooltip_set_text"
-    external set_icon :
-      tooltip -> GdkPixbuf.pixbuf -> unit
-      = "ml_gtk_tooltip_set_icon"
-    external set_icon_from_stock :
-      tooltip -> string -> Gtk.Tags.icon_size -> unit
-      = "ml_gtk_tooltip_set_icon_from_stock"
-    let set_icon_from_stock tt id =
-        set_icon_from_stock tt (GtkStock.convert_id id)
-    external set_custom :
-      tooltip -> [>`widget] obj -> unit
-      = "ml_gtk_tooltip_set_custom"
-    external trigger_query :
-      Gdk.display -> unit
-      = "ml_gtk_tooltip_trigger_tooltip_query"
-    external set_tip_area :
-      tooltip -> Gdk.Rectangle.t -> unit
-      = "ml_gtk_tooltip_set_tip_area"
-end
-

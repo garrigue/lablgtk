@@ -33,18 +33,6 @@ type ('a,'b) t =
     (** When writing marshallers, beware that the list omits the 0th
        argument of argv, which is the referent object *)
 
-type signal_flag =
-  [ `RUN_FIRST | `RUN_LAST | `RUN_CLEANUP | `NO_RECURSE
-  | `DETAILED | `ACTION | `NO_HOOKS ]
-
-val create :
-  name: string ->
-  itype: g_type ->
-  ?flags: signal_flag list ->
-  ?return_type: g_type ->
-  ?params: Gobject.data_kind array ->
-  unit -> id
-
 val stop_emit : unit -> unit
     (** Call [stop_emit ()] in a callback to prohibit further handling
        of the current signal invocation, by calling [emit_stop_by_name].

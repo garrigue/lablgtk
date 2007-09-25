@@ -780,8 +780,3 @@ module Display = struct
       (match display with None -> default ()
       | Some disp -> disp)
 end
-
-module Key = struct
-    type keyval = int
-    external val_from_name : string -> keyval = "ml_gdk_keyval_from_name"
-  end

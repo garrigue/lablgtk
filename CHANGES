@@ -1,33 +1,5 @@
 $Id$
 
-2007.09.19 [Julien]
-  Tooltip API introduced with GTK+ 2.12.
-  
-  * Add    module    GtkTree.TreeView.Tooltip
-  * Add    module    GtkBase.Widget.Tooltip
-  * Add    module    GtkBase.Tooltip
-  * Add    val       GtkTree.TreeViewColumn.get_button
-  * Update class     GTree.view
-  * Update class     GObj.misc_ops
-  * Update class     GObj.misc_signals
-
-2007.09.17 [Julien]
-  Various fixes and additions.
-  
-  * Add    val       GtkPackProps.Notebook.get_n_pages
-  * Add    type      Pango.Tags.alignment
-  * Update type      GTree.cell_properties_text_only
-  
-  * Add    module    Gdk.Key
-  
-  * Add    val       GtkBase.style_get_property
-  * Add    module    GtkBase.Class
-  
-  * Update module    Gobject
-  * Update module    Gobject.Type
-  * Add    module    Gobject.Class
-  * Add    module    Gobject.ParamSpec
-
 2007.08.17 [Jacques]
   * some more patch by Julien Moutinho (style and Rc).
   * do not set LC_NUMERIC to C (ocaml is now ok) (Volker Grabsch).
