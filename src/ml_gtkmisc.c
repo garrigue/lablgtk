@@ -125,7 +125,7 @@ ML_3 (gtk_drawing_area_size, GtkDrawingArea_val, Int_val, Int_val, Unit)
 #ifdef HASGTK28
 ML_1(gtk_image_clear, GtkImage_val, Unit)
 #else
-Unsupported28(gtk_image_clear)
+Unsupported_28(gtk_image_clear)
 #endif 
 
 /* gtklabel.h */
