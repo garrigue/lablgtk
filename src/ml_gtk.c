@@ -548,6 +548,7 @@ static void clipboard_clear_func (GtkClipboard *clipboard, gpointer data)
 }
 */
 
+#ifdef HASGTK22
 CAMLprim value ml_gtk_clipboard_wait_for_targets (value c)
 {
   CAMLparam0 ();
@@ -569,6 +570,9 @@ CAMLprim value ml_gtk_clipboard_wait_for_targets (value c)
   g_free(targets);
   CAMLreturn (last_cell);
 }
+#else
+Unsupported_22(gtk_clipboard_wait_for_targets)
+#endif
 
 /* gtkcontainer.h */
 
