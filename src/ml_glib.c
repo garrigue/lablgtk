@@ -542,7 +542,7 @@ ML_1 (g_markup_escape_text, SizedString_val, copy_string_g_free)
 
 ML_0 (g_get_prgname, copy_string_or_null)
 ML_1 (g_set_prgname, String_val, Unit)
-#ifndef DISABLE_GTK22
+#ifdef HASGTK22
 ML_0 (g_get_application_name, copy_string_or_null)
 ML_1 (g_set_application_name, String_val, Unit)
 #else

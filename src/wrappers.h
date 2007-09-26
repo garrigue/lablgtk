@@ -75,9 +75,10 @@ CAMLexport value ml_lookup_flags_getter (const lookup_info table[], int data);
 
 /* Wrapper generators */
 
-#define Unsupported(cname) \
+#define Unsupported_22(cname) \
 CAMLprim value ml_##cname () \
 { failwith(#cname " unsupported in Gtk 2.x < 2.2"); }
+#define Unsupported Unsupported_22
 #define Unsupported_24(cname) \
 CAMLprim value ml_##cname () \
 { failwith(#cname " unsupported in Gtk 2.x < 2.4"); }
