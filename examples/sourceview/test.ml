@@ -37,7 +37,7 @@ let scrolled_win = GBin.scrolled_window
     ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC
     ~packing:vbox#add ()
 let source_view =
-  GSourceview.source_view
+  GSourceView.source_view
     ~auto_indent:true
      ~insert_spaces_instead_of_tabs:true ~tabs_width:2
     ~show_line_numbers:true
@@ -47,7 +47,7 @@ let source_view =
     ()
 (* let languages_manager =
   GSourceView.source_languages_manager ~lang_files_dirs:["/etc"] () *)
-let languages_manager = GSourceview.source_languages_manager ()
+let languages_manager = GSourceView.source_languages_manager ()
 
 let lang =
   if use_mime_type then
@@ -56,14 +56,14 @@ let lang =
     | Some lang -> lang
   else
     match
-      GSourceview.source_language_from_file ~languages_manager lang_file
+      GSourceView.source_language_from_file ~languages_manager lang_file
     with
     | None -> failwith (sprintf "can't load %s" lang_file)
     | Some lang -> lang
 
 let matching_bracket () =
   let iter = source_view#source_buffer#get_iter_at_mark `INSERT in
-  match GSourceview.find_matching_bracket iter with
+  match GSourceView.find_matching_bracket iter with
   | None -> prerr_endline "no matching bracket"
   | Some iter ->
       source_view#source_buffer#place_cursor iter;
@@ -92,7 +92,7 @@ let _ =
   (* set a style for bracket matching *)
   source_view#source_buffer#set_check_brackets true;
   let _ =
-    let st = GSourceview.source_tag_style
+    let st = GSourceView.source_tag_style
 	~background_by_name:"green"
 	~foreground_by_name:"yellow"
 	~bold: true

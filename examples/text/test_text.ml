@@ -52,6 +52,7 @@ let t_2 () =
   let s = f_to_string "test.txt" in
   b#set_text s;
   GText.view ~buffer:b ~packing:(sw#add) ();
+  w#connect#destroy GMain.quit;
   w#show ();;
 
 

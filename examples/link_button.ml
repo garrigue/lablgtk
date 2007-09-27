@@ -25,6 +25,7 @@ let main () =
   Format.printf "Got:%a@." GUtil.print_widget button;
   GtkButton.LinkButton.set_uri_hook 
     (fun _ s -> Format.printf "Got url '%s'@." s;   button#set_uri "AGAIN");
+  window#connect#destroy GMain.quit;
   window#show ();
   Main.main ()
 

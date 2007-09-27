@@ -16,7 +16,7 @@ let main () =
 
   let box = GPack.vbox () 
   in
-  ignore (assistant#insert_page box#as_widget 0);
+  ignore (assistant#append_page box#as_widget);
   assistant#set_page_complete box#as_widget true;
   prerr_endline "Complete";
   assistant#set_page_type box#as_widget `SUMMARY;
@@ -28,6 +28,7 @@ let main () =
   Format.printf "Got:%a@." GUtil.print_widget button;
   GtkButton.LinkButton.set_uri_hook 
     (fun _ s -> Format.printf "Got url '%s'@." s;   button#set_uri "AGAIN");
+  assistant#connect#close GMain.quit;
   assistant#show ();
   Main.main ()
 
