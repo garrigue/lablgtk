@@ -18,7 +18,7 @@ let init () =
 
 let rot_angle = ref 0.
 
-let display () =
+let display ~area () =
   GlClear.clear [`color];
   GlDraw.color (0., 1., 0.);
   GlMat.push ();
@@ -36,7 +36,8 @@ let display () =
     GlDraw.vertex2 (-0.5, -0.5);
   GlDraw.ends ();
   GlMat.pop ();
-  Gl.flush ()
+  Gl.flush ();
+  area#swap_buffers ()
 
 let reshape ~width:w ~height:h =
   GlDraw.viewport ~x:0 ~y:0 ~w ~h;
@@ -55,18 +56,18 @@ let main () =
   let w = GWindow.window ~title:"Antialiasing/Gtk" () in
   w#connect#destroy ~callback:GMain.quit;
   let area =
-    GlGtk.area [`RGBA]
+    GlGtk.area [`RGBA;`DOUBLEBUFFER]
       ~width:500 ~height:500 ~packing:w#add () in
   area#connect#realize ~callback:init;
   area#connect#reshape ~callback:reshape;
-  area#connect#display ~callback:display;
+  area#connect#display ~callback:(display ~area);
   w#event#connect#key_press ~callback:
     begin fun ev ->
       let key = GdkEvent.Key.keyval ev in
       if key = _r || key = _R then begin
 	rot_angle := !rot_angle +. 20.;
 	if !rot_angle > 360. then rot_angle := 0.;
-	display ()
+	display ~area ()
       end;
       true
     end;
