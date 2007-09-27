@@ -974,8 +974,9 @@ ML_7 (g_param_spec_int, String_val, String_val, String_val,
       Int_val, Int_val, Int_val, Flags_Param_flag_val, Val_GParamSpec)
 ML_bc7 (ml_g_param_spec_int)
 
-CAMLprim value ml_g_param_spec_string(value name, value nick, value blurb,
-                                      value def, value param, value unit)
+CAMLprim value
+ml_g_param_spec_string(value name, value nick, value blurb,
+                       value def, value param, value unit)
 {
   gchar *_name = String_val(name);
   return (Val_GParamSpec(g_param_spec_string(_name,
@@ -985,4 +986,8 @@ CAMLprim value ml_g_param_spec_string(value name, value nick, value blurb,
                                              OptFlags_Param_flag_val(param))));
 }
 ML_bc6 (ml_g_param_spec_string)
+
+ML_7 (g_param_spec_float, String_val, String_val, String_val,
+      Float_val, Float_val, Float_val, Flags_Param_flag_val, Val_GParamSpec)
+ML_bc7 (ml_g_param_spec_float)
 

@@ -272,4 +272,14 @@ module ParamSpec :
     @param blurb default value is [name]
     @param default default value is [""]
     @param param default value is [[]] *)
+    val float :
+      name: string -> ?nick: string -> ?blurb: string ->
+      ?min: float -> ?max: float -> ?default: float ->
+      ?param: param_flag list -> unit -> g_param_spec
+(** @param nick default value is [name]
+    @param blurb default value is [name]
+    @param min default value is [min_float]
+    @param max default value is [max_float]
+    @param default default value is [0.]
+    @param param default value is [[]] *)
   end
