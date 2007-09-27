@@ -25,6 +25,7 @@
 open Gtk
 open GtkMain
 open GObj
+open OgtkMainProps
 
 module Main = Main
 
@@ -50,3 +51,21 @@ let init = init
 
 let selection = GData.clipboard Gdk.Atom.primary
 let clipboard = GData.clipboard Gdk.Atom.clipboard
+
+class settings
+  (obj: ([>Gtk.settings] as 'a) obj) = object
+    inherit gtkobj obj
+    method private obj = (obj :> 'a obj)
+    inherit settings_props
+  end
+
+let settings
+  ?screen
+  () =
+    let obj = match screen with
+    | Some screen ->
+        GtkMain.Settings.get_for_screen screen
+    | None ->
+        GtkMain.Settings.get_default () in
+    new settings obj
+

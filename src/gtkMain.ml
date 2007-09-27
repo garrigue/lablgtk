@@ -79,9 +79,9 @@ end
 module Settings = struct
   include Settings
   external get_default :
-    unit -> Gtk.settings
+    unit -> Gtk.settings obj
     = "ml_gtk_settings_get_default"
   external get_for_screen :
-    Gdk.screen -> Gtk.settings
+    Gdk.screen -> Gtk.settings obj
     = "ml_gtk_settings_get_for_screen"
 end
