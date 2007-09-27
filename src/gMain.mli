@@ -22,6 +22,10 @@
 
 (* $Id$ *)
 
+open Gtk
+open GObj
+open OgtkMainProps
+
 (** Library initialization, main event loop, and events *)
 
 (** @gtkdoc gtk gtk-General *)
@@ -82,3 +86,15 @@ module Io : sig
   val remove : id -> unit
   val read : channel -> buf:string -> pos:int -> len:int -> int
 end
+
+class settings :
+  ([>Gtk.settings] as 'a) obj -> object
+    inherit gtkobj
+    val obj : 'a obj
+    method private obj : 'a obj
+    inherit settings_props
+  end
+
+val settings :
+  ?screen:Gdk.screen ->
+  unit -> settings

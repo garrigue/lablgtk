@@ -1,6 +1,6 @@
 prefix "Gtk"
 
-class Settings abstract : Settings {
+class Settings wrap wrapsig : Settings {
   "color-hash"                      GHashTable            : Read
   "gtk-alternative-button-order"    gboolean              : Read / Write
   "gtk-alternative-sort-arrows"     gboolean              : Read / Write
