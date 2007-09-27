@@ -455,4 +455,14 @@ module ParamSpec = struct
     ?default: string -> ?param: param_flag list ->
     unit -> g_param_spec
     = "ml_g_param_spec_string_bc" "ml_g_param_spec_string"
+  external float :
+    string -> string -> string ->
+    float -> float -> float ->
+    param_flag list -> g_param_spec
+    = "ml_g_param_spec_float_bc" "ml_g_param_spec_float"
+  let float
+    ~(name: string) ?(nick = name) ?(blurb = name)
+    ?(min = min_float) ?(max = max_float) ?(default = 0.)
+    ?(param: param_flag list = []) ()
+    = float name nick blurb min max default param
 end
