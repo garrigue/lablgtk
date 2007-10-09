@@ -1,4 +1,6 @@
 $Id$
+2007.10.09 [Benjamin]
+  * add ui_manager#as_ui_manager
 
 2007.09.27 [Jacques]
   * Fix examples.
