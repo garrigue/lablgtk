@@ -271,6 +271,7 @@ class ui_manager :
   ([> Gtk.ui_manager] as 'a) Gtk.obj ->
   object
     val obj : 'a Gtk.obj
+    method as_ui_manager : Gtk.ui_manager Gtk.obj
     method add_tearoffs : bool
     method add_ui_from_file : string -> ui_id   (** @raise Glib.Markup.Error if the XML is invalid
                                                     @raise Glib.GError if an error occurs while reading the file *)

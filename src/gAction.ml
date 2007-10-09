@@ -231,7 +231,7 @@ class ui_manager obj = object
   method private obj = obj
   inherit OgtkActionProps.ui_manager_props
   method connect = new ui_manager_signals obj
-
+  method as_ui_manager = (obj:> Gtk.ui_manager Gtk.obj)
   method insert_action_group (g : action_group) = 
     UIManager.insert_action_group obj g#as_group
   method remove_action_group (g : action_group) =
