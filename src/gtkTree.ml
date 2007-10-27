@@ -372,6 +372,32 @@ module TreeView = struct
       [>`treeview] obj -> int -> unit
       = "ml_gtk_tree_view_set_tooltip_column"
   end
+  
+  module Dnd = struct
+    external get_dest_row_at_pos :
+      [>`treeview] obj ->
+      x: int -> y: int ->
+      ( Gtk.tree_path
+      * GtkEnums.tree_view_drop_position ) option
+      = "ml_gtk_tree_view_get_dest_row_at_pos"
+    external enable_model_drag_dest :
+      [>`treeview] obj ->
+      targets: target_entry array ->
+      actions: Gdk.Tags.drag_action list -> unit
+      = "ml_gtk_tree_view_enable_model_drag_dest"
+    external unset_rows_drag_dest :
+      [>`treeview] obj -> unit
+      = "ml_gtk_tree_view_unset_rows_drag_dest"
+    external enable_model_drag_source :
+      [>`treeview] obj ->
+      ?modi: Gdk.Tags.modifier list ->
+      targets: target_entry array ->
+      actions: Gdk.Tags.drag_action list -> unit
+      = "ml_gtk_tree_view_enable_model_drag_source"
+    external unset_rows_drag_source :
+      [>`treeview] obj -> unit
+      = "ml_gtk_tree_view_unset_rows_drag_source"
+  end
 end
 
 module CellRenderer = CellRenderer
