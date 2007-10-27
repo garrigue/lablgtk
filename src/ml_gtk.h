@@ -55,3 +55,5 @@ CAMLexport value Val_GtkWidget_func(gpointer w);
 
 #define GtkSettings_val(val) ((GtkSettings*)Pointer_val(val))
 
+CAMLprim int Flags_Target_flags_val (value list);
+
