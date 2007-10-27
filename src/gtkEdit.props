@@ -117,7 +117,7 @@ class EntryCompletion set gobject {
   "model"                GtkTreeModel         : Read / Write
   signal action_activated : gint
   signal match_selected   : GtkTreeModel GtkTreeIter -> gboolean
-  method get_entry : "Gtk.entry obj option"
+  method get_entry : "Gtk.entry obj"
   method complete
   method insert_action_text : "int -> string -> unit"
   method insert_action_markup : "int -> string -> unit"
