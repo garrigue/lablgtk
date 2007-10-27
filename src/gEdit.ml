@@ -72,7 +72,10 @@ class entry_completion obj = object
   method misc = new GObj.gobject_ops obj
   method connect = new entry_completion_signals obj
 
-  method get_entry = may_map (new GObj.widget) (EntryCompletion.get_entry obj)
+  method get_entry =
+    may_map (new GObj.widget)
+      (try Some (EntryCompletion.get_entry obj) with
+      | Gpointer.Null -> None)
   method complete () = EntryCompletion.complete obj
   method insert_action_text = EntryCompletion.insert_action_text obj
   method insert_action_markup = EntryCompletion.insert_action_markup obj
