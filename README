@@ -10,14 +10,9 @@ Info/upgrades:
         http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgtk.html
 
 Status:
-  LablGtk2 is now pretty stable, but it has not been as thoroughly
-  tested as LablGtk.
+  LablGtk2 is now pretty stable.
   
-  Support for the old text widget has been dropped, but it is
-  replaced by a new one, much more powerful (thanks to Benjamin
-  Monate).
-
-  Another important change in gtk-2 is the use of unicode (utf8) for
+  An important change in gtk-2 is the use of unicode (utf8) for
   all strings. If you use non-ascii strings, you must imperatively
   convert them to unicode. This can be done with the
   [Glib.Convert.locale_to_utf8] function. If your input is already in
@@ -27,12 +22,11 @@ Status:
   Note that setlocale is now always called, except if you set
   GTK_SETLOCALE to 0 in the environment.
 
-  There are of course many other changes and additions.
-
-  Note that some widgets are only supported in newer versions of GTK+
-  (post 2.3). If you use them in older versions, you will get a runtime
-  error:
+  Note that some widgets are only supported in newer versions of GTK+.
+  If you use them in older versions, you will get a runtime error:
     Failure "Gobject.unsafe_create : type GtkActionGroup is not yet defined"
+  For unsupported methods, the error message is a bit clearer:
+    Failure "gdk_pixbuf_get_file_info unsupported in Gtk 2.x < 2.4"
 
 How to compile:
 
@@ -58,9 +52,12 @@ How to compile:
 	--with-rsvg --without-rsvg: override autodetected librsvg support
 	--with-gnomecanvas --without-gnomecanvas: 
 		override autodetected libgnomecanvas support
-        --with-gnomeui --without-gnomeui: override autodetected libgnomeui support
-        --with-panel --without-panel: override autodetected libpanelapplet support
-        --with-gtkspell --without-gtkspell: override autodetected gtkspell support
+        --with-gnomeui --without-gnomeui:
+                override autodetected libgnomeui support
+        --with-panel --without-panel:
+                override autodetected libpanelapplet support
+        --with-gtkspell --without-gtkspell:
+                override autodetected gtkspell support
         --with-gtksourceview --without-gtksourceview:
                 override autodetected gtksourceview support
 	--enable-debug: enable debug mode
@@ -85,18 +82,17 @@ Contents:
 	examples/*.ml	various examples
 
         applications/browser    an ongoing port of ocamlbrowser
-        applications/unison     a patch for unison-2.9.45
+        applications/camlirc    an IRC client (by Nobuaki Yoshida)
 
 How to run the examples:
   In the examples directory just type:
 	lablgtk2 ???.ml
 
-  Before installing lablgtk2 you have to be more explicit:
-        setenv CAML_LD_LIBRARY_PATH ../src  (or export CAML..PATH=../src)
-	../src/lablgtktop -w s -I ../src ???.ml
+  Before installing lablgtk2 you have to use -localdir:
+	../src/lablgtk2 -localdir ???.ml
 
 How to link them:
-  lablgtktop contains an extra module GtkInit, whose only contents is:
+  The lablgtk2 script loads an extra module GtkInit, whose only contents is:
         let locale = GtkMain.Main.init ()
   You must either add this line, or add this module to your link,
   before calling any Gtk function.
@@ -104,7 +100,7 @@ How to link them:
 
 How to use the threaded toplevel:
 
-	% lablgtk2 -thread           (or ./lablgtktop_t before installing)
+	% lablgtk2 -thread
 	        Objective Caml version 3.09
 	
 	# let w = GWindow.window ~show:true ();;
