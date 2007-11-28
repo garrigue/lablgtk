@@ -1,6 +1,6 @@
 $Id$
 
-2002.10.30
+2003.10.30
   * add GWindow.file_selection#dir_list  (Francois Pessaux)
 
 In lablgtk-1.2.6:
