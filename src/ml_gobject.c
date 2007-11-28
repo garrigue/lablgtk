@@ -51,7 +51,7 @@ CAMLexport void ml_g_object_unref_later (GObject *p)
 
 Make_Val_final_pointer(GObject, g_object_ref, ml_g_object_unref_later, 0)
 Make_Val_final_pointer_ext (GObject, _new, Ignore, ml_g_object_unref_later, 20)
-ML_1 (G_TYPE_FROM_INSTANCE, GObject_val, Val_int)
+ML_1 (G_TYPE_FROM_INSTANCE, GObject_val, Val_GType)
 // ML_1 (g_object_ref, GObject_val, Unit)
 CAMLprim value ml_g_object_unref (value val)
 {

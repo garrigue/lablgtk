@@ -1,4 +1,8 @@
 $Id$
+
+2007.11.28 [Jacques]
+  * Fix Val_GType/GType_val (use Val_addr/Addr_val)
+
 2007.10.09 [Benjamin]
   * add ui_manager#as_ui_manager
 
