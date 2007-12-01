@@ -1,5 +1,8 @@
 $Id$
 
+2007.12.01 [Jacques]
+  * revert to setting LC_NUMERIC to C (ocaml still uses strtod)
+
 2007.11.28 [Jacques]
   * Fix Val_GType/GType_val (use Val_addr/Addr_val)
 
@@ -12,7 +15,8 @@ $Id$
 In lablgtk-2.10.0:
 2007.09.25 [Jacques]
   * Various preparations for release.
-  * Use the "Glade for Windows" distribution for win32, supporting glade and rsvg.
+  * Use the "Glade for Windows" distribution for win32,
+    supporting glade and rsvg.
 
 2007.08.17 [Jacques]
   * some more patch by Julien Moutinho (style and Rc).

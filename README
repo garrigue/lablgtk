@@ -19,8 +19,9 @@ Status:
   utf8, it is still a good idea to validate it with
   Glib.Utf8.validate, as malformed utf8 strings may cause segmentation
   faults.
-  Note that setlocale is now always called, except if you set
-  GTK_SETLOCALE to 0 in the environment.
+  Note that setlocale is now always called (except if you set
+  GTK_SETLOCALE to 0 in the environment), but LC_NUMERIC is reverted
+  to "C" to avoid problems with floating point conversion in Caml.
 
   Note that some widgets are only supported in newer versions of GTK+.
   If you use them in older versions, you will get a runtime error:
