@@ -22,15 +22,17 @@
 
 (* $Id$ *)
 
+(** {3 Utility classes for programming with GTK objects} *)
+
 open GObj
 
-(* A nice function to use with [#install_printer] *)
+(** A nice function to use with [#install_printer] *)
 val print_widget : Format.formatter -> #widget -> unit
 
-(* The memo class provides an easy way to remember the real class of
+(** The memo class provides an easy way to remember the real class of
    a widget.
-   Insert all widgets of class in one single t memo, and you can then
-   recover their original ML object with #find.
+   Insert all widgets of class in one single [t memo], and you can then
+   recover their original ML object with [#find].
 *)
 
 class ['a] memo : unit ->
@@ -42,8 +44,8 @@ class ['a] memo : unit ->
     method remove : widget -> unit
   end
 
-(* The ML signal mechanism allows one to add GTK-like signals to
-   arbitrary objects.
+(** {4 The ML signal mechanism}
+   It allows one to add GTK-like signals to arbitrary objects.
 *)
 
 val next_callback_id : unit -> GtkSignal.id
@@ -57,7 +59,8 @@ class ['a] signal :
     method connect : after:bool -> callback:('a -> unit) -> GtkSignal.id
     method disconnect : GtkSignal.id -> bool
   end
-(* As with GTK signals, you can use [GtkSignal.stop_emit] inside a
+
+(** As with GTK signals, you can use [GtkSignal.stop_emit] inside a
    callback to prevent other callbacks from being called. *)
 
 class virtual ml_signals : (GtkSignal.id -> bool) list ->
@@ -74,8 +77,8 @@ class virtual add_ml_signals :
     val mutable disconnectors : (GtkSignal.id -> bool) list
   end
 
-(* To add ML signals to a LablGTK object:
-
+(** To add ML signals to a LablGTK object:
+{[
    class mywidget_signals obj ~mysignal1 ~mysignal2 = object
      inherit somewidget_signals obj
      inherit add_ml_signals obj [mysignal1#disconnect; mysignal2#disconnect]
@@ -91,18 +94,20 @@ class virtual add_ml_signals :
      method call1 = mysignal1#call
      method call2 = mysignal2#call
    end
-
+]}
    You can also add ML signals to an arbitrary object; just inherit
    from [ml_signals] in place of [widget_signals]+[add_ml_signals].
-
-   class mysignals ~mysignal1 ~mysignal2 = object
+{[ 
+  class mysignals ~mysignal1 ~mysignal2 = object
      inherit ml_signals [mysignal1#disconnect; mysignal2#disconnect]
      method mysignal1 = mysignal1#connect ~after
      method mysignal2 = mysignal2#connect ~after
    end
+]}
 *)
 
-(* The variable class provides an easy way to propagate state modifications.
+(** {4 Propagating state modifications}
+   The variable class provides an easy way to propagate state modifications.
    A new variable is created by [new variable init]. The [#set] method just
    calls the [set] signal, which by default only calls [real_set].
    [real_set] sets the variable and calls [changed] when needed.
