@@ -135,6 +135,7 @@ type statusbar_message
 type statusbar_context
 type selection_data
 
+type requisition = int * int
 type rectangle  = { x: int; y: int; width: int; height: int }
 type target_entry = { target: string; flags: target_flags list; info: int }
 type box_packing =

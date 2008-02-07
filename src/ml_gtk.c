@@ -299,6 +299,18 @@ ML_1 (gtk_widget_get_toplevel, GtkWidget_val, Val_GtkWidget)
 ML_2 (gtk_widget_get_ancestor, GtkWidget_val, Int_val, Val_GtkWidget)
 ML_1 (gtk_widget_get_colormap, GtkWidget_val, Val_GdkColormap)
 ML_1 (gtk_widget_get_visual, GtkWidget_val, (value))
+CAMLprim value
+ml_gtk_widget_size_request (value w)
+{
+    CAMLparam1(w);
+    CAMLlocal1(ret);
+    GtkRequisition r;
+    gtk_widget_size_request (GtkWidget_val(w), &r);
+    ret = alloc_small (2,0);
+    Field(ret,0) = Val_int(r.width);
+    Field(ret,1) = Val_int(r.height);
+    CAMLreturn(ret);
+}
 CAMLprim value ml_gtk_widget_get_pointer (value w)
 {
     int x,y;
