@@ -64,6 +64,7 @@ module Widget = struct
   external unrealize : [>`widget] obj -> unit = "ml_gtk_widget_unrealize"
   external queue_draw : [>`widget] obj -> unit = "ml_gtk_widget_queue_draw"
   external queue_resize : [>`widget] obj -> unit = "ml_gtk_widget_queue_resize"
+  external size_request : [>`widget] obj -> Gtk.requisition = "ml_gtk_widget_size_request"
   external draw : [>`widget] obj -> Gdk.Rectangle.t option -> unit
       = "ml_gtk_widget_draw"
 (*
