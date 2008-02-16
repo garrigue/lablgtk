@@ -78,23 +78,6 @@ static GType my_g_object_get_property_type(GObject *obj, const char *prop)
 ML_2 (my_g_object_get_property_type, GObject_val, String_val, Val_GType)
 
 
-/* gtype.h */
-
-static int ml_compare_GType(value v1, value v2)
-{
-  GType t1 = (GType)Field(v1,1);
-  GType t2 = (GType)Field(v2,1);
-  if (g_type_is_a(t1, t2) && g_type_is_a(t2, t1))
-    return 0;
-  else return 1;
-}
-static struct custom_operations ml_custom_GType =
-{ "GType/2.0/", custom_finalize_default, ml_compare_GType,
-  custom_hash_default, custom_serialize_default, custom_deserialize_default };
-CAMLprim value Val_GType (GType p)
-{ value ret = alloc_custom (&ml_custom_GType, sizeof(value), 20, 1000);
-  initialize (&Field(ret,1), (value) p); return ret; }
-
 void g_class_ref(GObjectClass *klass)
 { g_type_class_ref(G_TYPE_FROM_CLASS(G_OBJECT_CLASS(klass))); }
 void g_class_unref(GObjectClass *klass)
