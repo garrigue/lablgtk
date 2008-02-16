@@ -33,9 +33,12 @@ CAMLexport void ml_g_object_unref_later (GObject *);
 
 /* On several platforms a GType does not hold in an int,
  * since it is sized after size_t.
- * See also http://mail.gnome.org/archives/gtk-devel-list/2004-February/msg00003.html */
-#define GType_val(val) ((GType)Pointer_val(val))
-CAMLexport value Val_GType (GType);
+ * See also:
+ *   http://mail.gnome.org/archives/gtk-devel-list/2004-February/msg00003.html
+ *   http://yquem.inria.fr/pipermail/lablgtk/2007-November/000064.html
+ */
+#define GType_val(t) ((GType)Addr_val(t))
+#define Val_GType    Val_addr
 
 #define GObjectClass_val(val) ((GObjectClass*)Pointer_val(val))
 CAMLexport value Val_GObjectClass (GObjectClass*);
