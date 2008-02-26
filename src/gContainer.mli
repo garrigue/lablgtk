@@ -92,11 +92,12 @@ val cast_container : widget -> container_full
 
 (** @gtkdoc gtk GtkContainer *)
 val pack_container :
-  create:([> Gtk.container] Gobject.param list -> (#GObj.widget as 'a)) ->
-  [> Gtk.container] Gobject.param list ->
+  create:(([> Gtk.container] as 'a) Gobject.param list ->
+          (#GObj.widget as 'b)) ->
+  'a Gobject.param list ->
   ?border_width:int ->
   ?width:int ->
-  ?height:int -> ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> 'a
+  ?height:int -> ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> 'b
 
 (** {3 GtkBin} *)
 
