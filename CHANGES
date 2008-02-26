@@ -1,5 +1,9 @@
 $Id$
 
+In lablgtk-2.10.1:
+2008.02.26 [Jacques]
+  * fix wrong type in GContainer.mli (could not compile with 3.10.2)
+
 2007.12.01 [Jacques]
   * revert to setting LC_NUMERIC to C (ocaml still uses strtod)
 
