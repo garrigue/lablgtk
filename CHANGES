@@ -1,5 +1,8 @@
 $Id$
 
+2008.03.22 [Benjamin]
+  * prepare gtksourceview 2.1 support
+
 In lablgtk-2.10.1:
 2008.02.26 [Jacques]
   * fix wrong type in GContainer.mli (could not compile with 3.10.2)

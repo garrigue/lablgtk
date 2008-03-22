@@ -21,10 +21,17 @@
 /**************************************************************************/
 
 #include <assert.h>
-
 #include <gtksourceview/gtksourceview.h>
+
+#ifdef HAS_GTKSOURCEVIEW21
+#include <gtksourceview/gtksourcelanguagemanager.h>
+//Check the name when 2.1 is out.
+#include <gtksourceview/gtksourcetag.h>
+#else
 #include <gtksourceview/gtksourcelanguagesmanager.h>
 #include <gtksourceview/gtksourcetag.h>
+#endif
+
 #include <gtksourceview/gtksourceiter.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -53,20 +60,34 @@ Make_OptFlags_val(Source_search_flag_val)
 
 CAMLprim value ml_gtk_source_tag_style_init(value unit)
 {	/* Since these are declared const, must force gcc to call them! */
+#ifdef HAS_GTKSOURCEVIEW21
+  return Val_unit;
+#else
     GType t = gtk_source_tag_style_get_type();
     return Val_GType(t);
+#endif
 }
 
 CAMLprim value ml_gtk_source_tag_init(value unit)
-{	/* Since these are declared const, must force gcc to call them! */
+{
+#ifdef HAS_GTKSOURCEVIEW21
+  return Val_unit;
+#else
+	/* Since these are declared const, must force gcc to call them! */
     GType t = gtk_source_tag_get_type();
     return Val_GType(t);
+#endif
 }
 
 CAMLprim value ml_gtk_source_tag_table_init(value unit)
-{	/* Since these are declared const, must force gcc to call them! */
+{
+#ifdef HAS_GTKSOURCEVIEW21
+  return Val_unit;
+#else
+  /* Since these are declared const, must force gcc to call them! */
     GType t = gtk_source_tag_table_get_type();
     return Val_GType(t);
+#endif
 }
 
 CAMLprim value ml_gtk_source_style_scheme_init(value unit)
@@ -83,14 +104,25 @@ CAMLprim value ml_gtk_source_language_init(value unit)
 
 CAMLprim value ml_gtk_source_languages_manager_init(value unit)
 {	/* Since these are declared const, must force gcc to call them! */
-    GType t = gtk_source_languages_manager_get_type();
+    GType t = 
+#ifdef HAS_GTKSOURCEVIEW21
+      gtk_source_language_manager_get_type();
+#else
+      gtk_source_languages_manager_get_type();
+#endif
     return Val_GType(t);
 }
 
 CAMLprim value ml_gtk_source_marker_init(value unit)
-{	/* Since these are declared const, must force gcc to call them! */
-    GType t = gtk_source_marker_get_type();
-    return Val_GType(t);
+{
+#ifdef HAS_GTKSOURCEVIEW21
+  // 2.1 version has this type
+  return Val_unit;
+#else
+  /* Since these are declared const, must force gcc to call them! */
+  GType t = gtk_source_marker_get_type();
+  return Val_GType(t);
+#endif
 }
 
 CAMLprim value ml_gtk_source_buffer_init(value unit)
