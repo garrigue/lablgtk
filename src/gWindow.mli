@@ -39,20 +39,24 @@ class window_skel : 'a obj ->
     method activate_focus : unit -> bool
     method add_accel_group : accel_group -> unit
     method as_window : Gtk.window obj
-    method event : event_ops
     method deiconify : unit -> unit
+    method event : event_ops
     method iconify : unit -> unit
     method move : x:int -> y:int -> unit
     method parse_geometry : string -> bool
     method present : unit -> unit
     method resize : width:int -> height:int -> unit
     method show : unit -> unit
+    method set_accept_focus : bool -> unit
     method set_allow_grow : bool -> unit
     method set_allow_shrink : bool -> unit
+    method set_decorated : bool -> unit
     method set_default_height : int -> unit
     method set_default_size : width:int -> height:int -> unit
     method set_default_width : int -> unit
+    method set_deletable : bool -> unit
     method set_destroy_with_parent : bool -> unit
+    method set_focus_on_map : bool -> unit
     method set_geometry_hints :
       ?min_size:int * int ->
       ?max_size:int * int ->
@@ -63,9 +67,12 @@ class window_skel : 'a obj ->
       ?pos:bool -> ?user_pos:bool -> ?user_size:bool -> GObj.widget -> unit
     method set_gravity : Gdk.Tags.gravity -> unit
     method set_icon : GdkPixbuf.pixbuf option -> unit
+    method set_icon_name : string -> unit
     method set_modal : bool -> unit
+    method set_opacity : float -> unit
     method set_position : Tags.window_position -> unit
     method set_resizable : bool -> unit
+    method set_role : string -> unit
     method set_screen : Gdk.screen -> unit
     method set_skip_pager_hint : bool -> unit
     method set_skip_taskbar_hint : bool -> unit
@@ -74,18 +81,26 @@ class window_skel : 'a obj ->
     method set_type_hint : Gdk.Tags.window_type_hint -> unit
     method set_wm_class : string -> unit
     method set_wm_name : string -> unit
+    method accept_focus : bool
     method allow_grow : bool
     method allow_shrink : bool
+    method decorated : bool
     method default_height : int
     method default_width : int
+    method deletable : bool
     method destroy_with_parent : bool
+    method focus_on_map : bool
+    method gravity : GdkEnums.gravity
     method has_toplevel_focus : bool
     method icon : GdkPixbuf.pixbuf option
+    method icon_name : string
     method is_active : bool
     method kind : Tags.window_type
     method modal : bool
+    method opacity : float
     method position : Tags.window_position
     method resizable : bool
+    method role : string
     method screen : Gdk.screen
     method skip_pager_hint : bool
     method skip_taskbar_hint : bool
@@ -117,12 +132,16 @@ val window :
   ?title:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
+  ?decorated:bool ->
+  ?deletable:bool ->
+  ?focus_on_map:bool ->
   ?icon:GdkPixbuf.pixbuf ->
+  ?icon_name:string ->
   ?modal:bool ->
+  ?position:Tags.window_position ->
   ?resizable:bool ->
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
-  ?position:Tags.window_position ->
   ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
@@ -195,12 +214,16 @@ val dialog :
   ?title:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
+  ?decorated:bool ->
+  ?deletable:bool ->
+  ?focus_on_map:bool ->
   ?icon:GdkPixbuf.pixbuf ->
+  ?icon_name:string ->
   ?modal:bool ->
+  ?position:Tags.window_position ->
   ?resizable:bool ->
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
-  ?position:Tags.window_position ->
   ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
@@ -251,12 +274,16 @@ val message_dialog :
   ?title:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
+  ?decorated:bool ->
+  ?deletable:bool ->
+  ?focus_on_map:bool ->
   ?icon:GdkPixbuf.pixbuf ->
+  ?icon_name:string ->
   ?modal:bool ->
+  ?position:Tags.window_position ->
   ?resizable:bool ->
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
-  ?position:Tags.window_position ->
   ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
@@ -341,12 +368,16 @@ val about_dialog :
   ?title:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
+  ?decorated:bool ->
+  ?deletable:bool ->
+  ?focus_on_map:bool ->
   ?icon:GdkPixbuf.pixbuf ->
+  ?icon_name:string ->
   ?modal:bool ->
+  ?position:Tags.window_position ->
   ?resizable:bool ->
   ?screen:Gdk.screen ->
-  ?type_hint:GdkEnums.window_type_hint ->
-  ?position:GtkEnums.window_position ->
+  ?type_hint:Gdk.Tags.window_type_hint ->
   ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
@@ -393,12 +424,16 @@ val file_chooser_dialog :
   ?title:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
+  ?decorated:bool ->
+  ?deletable:bool ->
+  ?focus_on_map:bool ->
   ?icon:GdkPixbuf.pixbuf ->
+  ?icon_name:string ->
   ?modal:bool ->
+  ?position:Tags.window_position ->
   ?resizable:bool ->
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
-  ?position:Tags.window_position ->
   ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
@@ -428,11 +463,15 @@ val color_selection_dialog :
   ?destroy_with_parent:bool ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
+  ?decorated:bool ->
+  ?deletable:bool ->
+  ?focus_on_map:bool ->
   ?icon:GdkPixbuf.pixbuf ->
+  ?icon_name:string ->
   ?modal:bool ->
+  ?position:Tags.window_position ->
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
-  ?position:Tags.window_position ->
   ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
@@ -471,12 +510,16 @@ val file_selection :
   ?destroy_with_parent:bool ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
+  ?decorated:bool ->
+  ?deletable:bool ->
+  ?focus_on_map:bool ->
   ?icon:GdkPixbuf.pixbuf ->
+  ?icon_name:string ->
   ?modal:bool ->
+  ?position:Tags.window_position ->
   ?resizable:bool ->
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
-  ?position:Tags.window_position ->
   ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->
@@ -502,12 +545,16 @@ val font_selection_dialog :
   ?destroy_with_parent:bool ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
+  ?decorated:bool ->
+  ?deletable:bool ->
+  ?focus_on_map:bool ->
   ?icon:GdkPixbuf.pixbuf ->
+  ?icon_name:string ->
   ?modal:bool ->
+  ?position:Tags.window_position ->
   ?resizable:bool ->
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
-  ?position:Tags.window_position ->
   ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->

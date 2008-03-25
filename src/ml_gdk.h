@@ -71,6 +71,7 @@ CAMLexport value Val_GdkRegion (GdkRegion *); /* finalizer is destroy! */
 #define Val_GdkGC_no_ref Val_GAnyObject_new
 
 #define GdkEvent_val (GdkEvent*)MLPointer_val
+CAMLexport value Val_GdkEvent (GdkEvent *);
 
 #define GdkVisual_val(val) ((GdkVisual*) val)
 #define Val_GdkVisual(visual) ((value) visual)

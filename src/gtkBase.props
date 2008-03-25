@@ -21,6 +21,7 @@ open GtkBaseProps
 conversions {
   GtkAllocation "Internal.allocation"
   GtkSelectionData_nocopy "(unsafe_pointer : Gtk.selection_data data_conv)"
+  GdkGravity "GdkEnums.gravity_conv"
 }
 
 boxed {
@@ -157,22 +158,32 @@ class Adjustment : Object {
 
 class Window set wrap : Bin {
   "title"                gchararray           : Read / Write
+  "accept-focus"         gboolean             : Read / Write / NoSet
   "allow-grow"           gboolean             : Read / Write
   "allow-shrink"         gboolean             : Read / Write
+  "decorated"            gboolean             : Read / Write
   "default-height"       gint                 : Read / Write / NoSet
   "default-width"        gint                 : Read / Write / NoSet
+  "deletable"            gboolean             : Read / Write
   "destroy-with-parent"  gboolean             : Read / Write / NoSet
+  "focus-on-map"         gboolean             : Read / Write
+  "gravity"              GdkGravity           : Read / Write / NoSet
   "has-toplevel-focus"   gboolean             : Read
   "icon"                 GdkPixbuf_opt        : Read / Write
+  "icon-name"            gchararray           : Read / Write
   "is-active"            gboolean             : Read
   "modal"                gboolean             : Read / Write
+  "window-position"(position) GtkWindowPosition    : Read / Write
+  "opacity"              gdouble              : Read / Write / NoSet
   "resizable"            gboolean             : Read / Write
+  "role"                 gchararray           : Read / Write / NoSet
   "screen"               GdkScreen            : Read / Write
   "skip-pager-hint"      gboolean             : Read / Write / NoSet
   "skip-taskbar-hint"    gboolean             : Read / Write / NoSet
+  "startup-id"           gchararray           : Write / NoWrap / NoSet
+  "transient-for"        GtkWindow_opt        : Read / Write / NoWrap / NoSet
   "type"                 GtkWindowType        : Read / Write / Construct Only
   "type-hint"            GdkWindowTypeHint    : Read / Write
-  "window-position"(position) GtkWindowPosition    : Read / Write
   "urgency-hint"         gboolean             : Read / Write
   method present
   method iconify
