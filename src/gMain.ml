@@ -35,6 +35,8 @@ module Grab = struct
   let get_current () = new widget (get_current ())
 end
 
+module Event = Event
+
 module Rc = Rc
 
 module Timeout = Glib.Timeout

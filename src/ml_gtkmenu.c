@@ -160,6 +160,28 @@ ML_1 (gtk_menu_shell_deactivate, GtkMenuShell_val, Unit)
 ML_0 (gtk_menu_new, Val_GtkWidget_sink)
 ML_5 (gtk_menu_popup, GtkMenu_val, GtkWidget_val, GtkWidget_val,
       Insert(NULL) Insert(NULL) Int_val, Int32_val, Unit)
+static void menu_popup_cb(GtkMenu *menu, gint *x, gint *y,
+                          gboolean *push_in, gpointer clos)
+{
+    value res =
+        caml_callback3(*(value*)clos, Val_int(*x), Val_int(*y),
+                       Val_bool(*push_in));
+    *x = Int_val(Field(res,0));
+    *y = Int_val(Field(res,1));
+    *push_in = Int_val(Field(res,2));
+    caml_remove_global_root(clos);
+    stat_free(clos);
+}
+CAMLprim value ml_gtk_menu_popup_at (value menu, value button,
+                                     value time, value func)
+{
+    value *clos = stat_alloc(sizeof(value));
+    *clos = func;
+    caml_register_global_root(clos);
+    gtk_menu_popup(GtkMenu_val(menu), NULL, NULL, &menu_popup_cb, clos,
+                   Option_val(button,Int_val,0), Option_val(time,Int32_val,0));
+    return Val_unit;
+}   
 ML_1 (gtk_menu_popdown, GtkMenu_val, Unit)
 ML_1 (gtk_menu_get_active, GtkMenu_val, Val_GtkWidget)
 ML_2 (gtk_menu_set_active, GtkMenu_val, Int_val, Unit)

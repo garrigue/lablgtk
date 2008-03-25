@@ -95,12 +95,16 @@ end
 val assistant : ?title:string ->
   ?allow_grow:bool ->
   ?allow_shrink:bool ->
+  ?decorated:bool ->
+  ?deletable:bool ->
+  ?focus_on_map:bool ->
   ?icon:GdkPixbuf.pixbuf ->
+  ?icon_name:string ->
   ?modal:bool ->
+  ?position:Tags.window_position ->
   ?resizable:bool ->
   ?screen:Gdk.screen ->
   ?type_hint:GdkEnums.window_type_hint ->
-  ?position:GtkEnums.window_position ->
   ?urgency_hint:bool ->
   ?wm_name:string ->
   ?wm_class:string ->

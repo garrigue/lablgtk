@@ -1,5 +1,10 @@
 $Id$
 
+2008.03.25 [Jacques]
+  * add GtkWindow properties
+  * add GMain.Event
+  * add GtkMenu.Menu.popup_at
+
 2008.03.22 [Benjamin]
   * prepare gtksourceview 2.1 support
 

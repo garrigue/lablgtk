@@ -767,10 +767,6 @@ CAMLprim value ml_gtk_window_set_geometry_hints (
   return Val_unit;
 }
 ML_bc11 (ml_gtk_window_set_geometry_hints)
-ML_2 (gtk_window_set_gravity, GtkWindow_val, Gravity_val, Unit)
-ML_1 (gtk_window_get_gravity, GtkWindow_val, Val_gravity)
-ML_2 (gtk_window_set_transient_for, GtkWindow_val, GtkWindow_val, Unit)
-ML_1 (gtk_window_get_transient_for, GtkWindow_val, Val_GtkWidget)
 static value wrap_widget (gpointer arg)
 { return Val_GtkWidget(arg); }
 CAMLprim value ml_gtk_window_list_toplevels(value unit)
@@ -1007,7 +1003,10 @@ CAMLprim value ml_gtk_get_version (value unit)
     return ret;
 }
 
-ML_0 (gtk_get_current_event_time,copy_int32)
+ML_0 (gtk_get_current_event_time, copy_int32)
+ML_0 (gtk_get_current_event, Val_GdkEvent)
+ML_1 (gtk_get_event_widget, GdkEvent_val, Val_GtkWidget)
+ML_2 (gtk_propagate_event, GtkWidget_val, GdkEvent_val, Unit)
 
 /* gtkrc.h */
 

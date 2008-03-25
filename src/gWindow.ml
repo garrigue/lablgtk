@@ -57,9 +57,8 @@ class window_skel obj = object (self)
       ?resize_inc ?win_gravity ?pos ?user_pos ?user_size w =
     Window.set_geometry_hints obj ?min_size ?max_size ?base_size ?aspect
       ?resize_inc ?win_gravity ?pos ?user_pos ?user_size (as_widget w)
-  method set_gravity = Window.set_gravity obj
-  method set_transient_for : Gtk.window obj -> unit =
-    Window.set_transient_for obj
+  method set_transient_for w =
+    set obj P.transient_for (Some w)
   method set_wm_name name = Window.set_wmclass obj ~name
   method set_wm_class cls = Window.set_wmclass obj ~clas:cls
   method show () = Widget.show obj

@@ -70,6 +70,9 @@ class Menu : MenuShell {
   method popup :
       "[>`menushell] optobj ->
        [>`menuitem] optobj -> button:int -> time:int32 -> unit"
+  method popup_at :
+      "?button:int -> ?time:int32 ->
+       (x:int -> y:int -> pushed_in:bool -> int * int * bool) -> unit"
   method popdown
   method get_active : "widget obj"
   method set_active : "int -> unit"

@@ -56,14 +56,6 @@ module Window = struct
       ?user_size: bool -> [>`widget] obj -> unit
       = "ml_gtk_window_set_geometry_hints_bc"
         "ml_gtk_window_set_geometry_hints"
-  external set_gravity : [>`window] obj -> Gdk.Tags.gravity -> unit
-      = "ml_gtk_window_set_gravity"
-  external get_gravity : [>`window] obj -> Gdk.Tags.gravity
-      = "ml_gtk_window_get_gravity"
-  external set_transient_for : [>`window] obj ->[>`window] obj -> unit
-      = "ml_gtk_window_set_transient_for"
-  external get_transient_for : [>`window] obj -> window obj
-      = "ml_gtk_window_get_transient_for"
   external list_toplevels : unit -> window obj list
       = "ml_gtk_window_list_toplevels"
   external add_mnemonic :
