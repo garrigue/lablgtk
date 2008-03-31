@@ -665,6 +665,7 @@ USE_GTKSOURCEVIEW
 GTKALL_CFLAGS
 GTKALL_LIBS
 EXE
+XS
 LIBDIR
 OCAMLBEST
 OCAMLWIN32
@@ -3422,9 +3423,11 @@ echo "${ECHO_T}$ac_ocaml_platform" >&6; }
 if test $ac_ocaml_platform = Win32 ; then
     OCAMLWIN32=yes
     EXE=.exe
+    XS=.dll
 else
     OCAMLWIN32=no
     EXE=
+    XS=.so
 fi
 
 # GTK 2 auto configuration
@@ -4913,7 +4916,7 @@ Alternatively, you may set the environment variables GTKALL_CFLAGS
 and GTKALL_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 
-To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details." >&5
 echo "$as_me: error: The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -4923,7 +4926,7 @@ Alternatively, you may set the environment variables GTKALL_CFLAGS
 and GTKALL_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 
-To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
 else
@@ -4944,6 +4947,7 @@ fi
 
 
 # substitutions to perform
+
 
 
 
@@ -5686,6 +5690,7 @@ USE_GTKSOURCEVIEW!$USE_GTKSOURCEVIEW$ac_delim
 GTKALL_CFLAGS!$GTKALL_CFLAGS$ac_delim
 GTKALL_LIBS!$GTKALL_LIBS$ac_delim
 EXE!$EXE$ac_delim
+XS!$XS$ac_delim
 LIBDIR!$LIBDIR$ac_delim
 OCAMLBEST!$OCAMLBEST$ac_delim
 OCAMLWIN32!$OCAMLWIN32$ac_delim
@@ -5694,7 +5699,6 @@ HAS_DLL_SUPPORT!$HAS_DLL_SUPPORT$ac_delim
 LABLGLDIR!$LABLGLDIR$ac_delim
 HAVE_SVGZ!$HAVE_SVGZ$ac_delim
 USE_CC!$USE_CC$ac_delim
-DEBUG!$DEBUG$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -5736,11 +5740,12 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+DEBUG!$DEBUG$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 2; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 3; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
