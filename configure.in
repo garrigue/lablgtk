@@ -204,9 +204,11 @@ AC_MSG_RESULT($ac_ocaml_platform)
 if test $ac_ocaml_platform = Win32 ; then
     OCAMLWIN32=yes
     EXE=.exe
+    XS=.dll
 else
     OCAMLWIN32=no
     EXE=
+    XS=.so
 fi
 
 # GTK 2 auto configuration
@@ -306,6 +308,7 @@ AC_ARG_ENABLE(debug,
 # substitutions to perform
 
 AC_SUBST(EXE)
+AC_SUBST(XS)
 AC_SUBST(LIBDIR)
 AC_SUBST(OCAMLBEST)
 AC_SUBST(OCAMLWIN32)

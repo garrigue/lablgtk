@@ -1,5 +1,8 @@
 $Id$
 
+2008.03.31 [Benjamin]
+  * Support mingw compilation with OCaml 3.11. Still tricky...
+
 2008.03.25 [Jacques]
   * add GtkWindow properties
   * add GMain.Event
