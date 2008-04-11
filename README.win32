@@ -82,14 +82,8 @@ Check your installation by trying to compile and run a hello world
 C program with
     gcc -mno-cygwin -mms-bitfields main.c
  
-Ensure that MT.exe from MS SDK is in your cygwin path.
-
-You must also install flexdll from 
+You must also install flexdll (at least 0.7) from 
 	http://alain.frisch.fr/flexdll.html
-If the latest version is 0.6 then you have to change line 122 of
-reloc.ml 
-from 	    [ fn; fn ^ ".lib"; fn ^ ".a"]
-to 	    [ fn; fn ^ ".lib"; fn ^ ".a"; fn ^".dll.a" ]
 
 Then compile and install all files somewhere in your cygwin path.
 
