@@ -76,6 +76,9 @@ type 'a data_conv =
 type fundamental_type =
   [ `INVALID | `NONE | `INTERFACE | `PARAM | base_data ]
 
+external do_unref : unit -> unit = "ml_g_object_do_unref"
+let unref_alarm = Gc.create_alarm do_unref
+
 module Type = struct
   external init : unit -> unit = "ml_g_type_init"
   let () = init ()
