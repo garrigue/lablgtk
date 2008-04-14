@@ -47,7 +47,7 @@
 /* custom block with serialization for GdkPixbufs */
 static void ml_final_GdkPixbuf (value val)
 { 
-  g_object_unref (GdkPixbuf_val(val)); 
+  ml_g_object_unref_later (GObject_val(val)); 
 }
 
 static gboolean pixbuf_marshal_use_rle;

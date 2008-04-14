@@ -1,5 +1,8 @@
 $Id$
 
+2008.04.14 [Olivier]
+  * use Gc.create_alarm to delay GObject finalization instead of an idle function
+
 2008.03.31 [Benjamin]
   * Support mingw compilation with OCaml 3.11. Still tricky...
 

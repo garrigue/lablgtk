@@ -39,13 +39,21 @@
 
 /* gobject.h */
 
-static gboolean ml_g_object_unref0 (gpointer p)
-{ g_object_unref((GObject*)p); return 0; }
+static GQueue objects_to_unref = G_QUEUE_INIT;
+
+CAMLprim value ml_g_object_do_unref (value unit)
+{
+  while (! g_queue_is_empty (&objects_to_unref))
+    {
+      gpointer d = g_queue_pop_tail (&objects_to_unref);
+      g_object_unref (G_OBJECT (d));
+    }
+  return Val_unit;
+}
 
 CAMLexport void ml_g_object_unref_later (GObject *p)
 {
-    g_timeout_add_full(G_PRIORITY_HIGH_IDLE, 0, ml_g_object_unref0,
-                       (gpointer)(p), NULL);
+  g_queue_push_head (&objects_to_unref, p);
 }
 
 
