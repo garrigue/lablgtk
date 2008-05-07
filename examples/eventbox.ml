@@ -7,19 +7,7 @@
 (*                                                                        *)
 (**************************************************************************)
 
-(* $Id$ *)
-
-(* This is a direct translation to Gtk2.
-   This is actually meaningless, as the new text widget lets you
-   obtain an iterator from coordinates, but this just demonstrates
-   the use of [#event#send]. *)
-(* Old comment by Benjamin:
-   I cannot translate this program directly to Gtk 2. The event generation
-   causes segfault and starts some drag-n-drop op. 
-   The default signal for left button has probably changed.*)
-(* I don't see segfaults, just Gtk-criticals. Seems the default handler
-   for button 3 is still called, and I see no way to disable that.
-   But this is not really relevant to [#event#send]. *)
+(* $Id: events.ml 1347 2007-06-20 07:40:34Z guesdon $ *)
 
 let string_of_event x = 
  match GdkEvent.get_type x with 
@@ -60,45 +48,31 @@ let string_of_event x =
   | `SETTING -> "setting"
 
 let _ =
-  let window = GWindow.window ~width:200 ~height:200 () in
-  window#connect#destroy ~callback:GMain.quit ;
-  window#event#add [`ALL_EVENTS];
-  window#event#connect#any 
+  let w = GWindow.window ~width:200 ~height:200 () in
+  w#connect#destroy ~callback:GMain.quit ;
+
+  let eb = GBin.event_box ~packing:w#add () in
+  eb#event#add [`ALL_EVENTS];
+  eb#event#connect#any 
    (fun x -> 
 	prerr_string "before "; 
 	prerr_endline (string_of_event x);
 	false);
-  window#event#connect#after#any 
+  eb#event#connect#after#any 
    (fun x -> 
 	prerr_string "after "; 
 	prerr_endline (string_of_event x);
 	false);
-  window#event#connect#configure 
+  eb#event#connect#expose
    (fun x -> 
-	prerr_string "BEFORE CONFIGURE "; 
+	prerr_string "BEFORE EXPOSE "; 
 	prerr_endline (string_of_event x);
 	false);  
-  window#event#connect#after#configure 
-   (fun x -> 
-	prerr_string "AFTER CONFIGURE "; 
+  eb#event#connect#after#expose 
+   (fun x ->
+	prerr_string "AFTER EXPOSE "; 
 	prerr_endline (string_of_event x);
 	false);
-  let text = GText.view ~packing:window#add () in
-  let buffer = text#buffer in
-  text#event#connect#button_press ~callback:
-    begin fun ev ->
-      GdkEvent.Button.button ev = 3 &&
-      GdkEvent.get_type ev = `BUTTON_PRESS &&
-      begin
-	let pos = buffer#get_iter_at_mark `INSERT in
-	GdkEvent.Button.set_button ev 1;
-	text#event#send (ev :> GdkEvent.any);
-	Printf.printf "Position is %d.\n" pos#offset;
-	flush stdout;
-	buffer#move_mark `INSERT ~where:pos;
-        GtkSignal.stop_emit ();
-	true
-      end
-    end;
-  window#show ();
+
+  w#show ();
   GMain.main ()

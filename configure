@@ -1803,7 +1803,7 @@ fi
 # we extract Ocaml version number and library path
 OCAMLVERSION=`$CAMLC -version`
 echo "ocaml version is $OCAMLVERSION"
-OCAMLLIB=`$CAMLC -where`
+OCAMLLIB=`$CAMLC -where | sed -e 's/\\r//'`
 echo "ocaml library path is $OCAMLLIB"
 LIBDIR=$OCAMLLIB
 
@@ -3527,8 +3527,8 @@ echo $ECHO_N "checking for GTK+ - version >= $min_gtk_version... $ECHO_C" >&6; }
   fi
 
   if test x"$no_gtk" = x ; then
-    GTK_CFLAGS=`$PKG_CONFIG $pkg_config_args --cflags`
-    GTK_LIBS=`$PKG_CONFIG $pkg_config_args --libs`
+    GTK_CFLAGS=`$PKG_CONFIG $pkg_config_args --cflags | sed -e 's/\\r//'`
+    GTK_LIBS=`$PKG_CONFIG $pkg_config_args --libs | sed -e 's/\\r//'`
     gtk_config_major_version=`$PKG_CONFIG --modversion gtk+-2.0 | \
            sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
     gtk_config_minor_version=`$PKG_CONFIG --modversion gtk+-2.0 | \
@@ -3887,11 +3887,10 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GTKGL" >&5
 echo $ECHO_N "checking for GTKGL... $ECHO_C" >&6; }
 
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GTKGL_CFLAGS"; then
-        pkg_cv_GTKGL_CFLAGS="$GTKGL_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GTKGL_CFLAGS"; then
+    pkg_cv_GTKGL_CFLAGS="$GTKGL_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gtkgl-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "gtkgl-2.0") 2>&5
   ac_status=$?
@@ -3901,15 +3900,13 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GTKGL_LIBS"; then
-        pkg_cv_GTKGL_LIBS="$GTKGL_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GTKGL_LIBS"; then
+    pkg_cv_GTKGL_LIBS="$GTKGL_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gtkgl-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "gtkgl-2.0") 2>&5
   ac_status=$?
@@ -3919,9 +3916,8 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
 
 
@@ -3934,9 +3930,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gtkgl-2.0"`
+	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "gtkgl-2.0" 2>&1`
         else
-	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gtkgl-2.0"`
+	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --print-errors "gtkgl-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKGL_PKG_ERRORS" >&5
@@ -4015,11 +4011,10 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GLADE" >&5
 echo $ECHO_N "checking for GLADE... $ECHO_C" >&6; }
 
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GLADE_CFLAGS"; then
-        pkg_cv_GLADE_CFLAGS="$GLADE_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GLADE_CFLAGS"; then
+    pkg_cv_GLADE_CFLAGS="$GLADE_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libglade-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "libglade-2.0") 2>&5
   ac_status=$?
@@ -4029,15 +4024,13 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GLADE_LIBS"; then
-        pkg_cv_GLADE_LIBS="$GLADE_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GLADE_LIBS"; then
+    pkg_cv_GLADE_LIBS="$GLADE_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libglade-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "libglade-2.0") 2>&5
   ac_status=$?
@@ -4047,9 +4040,8 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
 
 
@@ -4062,9 +4054,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GLADE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libglade-2.0"`
+	        GLADE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libglade-2.0" 2>&1`
         else
-	        GLADE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libglade-2.0"`
+	        GLADE_PKG_ERRORS=`$PKG_CONFIG --print-errors "libglade-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GLADE_PKG_ERRORS" >&5
@@ -4119,11 +4111,10 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for RSVG" >&5
 echo $ECHO_N "checking for RSVG... $ECHO_C" >&6; }
 
-if test -n "$PKG_CONFIG"; then
-    if test -n "$RSVG_CFLAGS"; then
-        pkg_cv_RSVG_CFLAGS="$RSVG_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$RSVG_CFLAGS"; then
+    pkg_cv_RSVG_CFLAGS="$RSVG_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"librsvg-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "librsvg-2.0") 2>&5
   ac_status=$?
@@ -4133,15 +4124,13 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$RSVG_LIBS"; then
-        pkg_cv_RSVG_LIBS="$RSVG_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$RSVG_LIBS"; then
+    pkg_cv_RSVG_LIBS="$RSVG_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"librsvg-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "librsvg-2.0") 2>&5
   ac_status=$?
@@ -4151,9 +4140,8 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
 
 
@@ -4166,9 +4154,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        RSVG_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "librsvg-2.0"`
+	        RSVG_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "librsvg-2.0" 2>&1`
         else
-	        RSVG_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "librsvg-2.0"`
+	        RSVG_PKG_ERRORS=`$PKG_CONFIG --print-errors "librsvg-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$RSVG_PKG_ERRORS" >&5
@@ -4320,11 +4308,10 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GNOMECANVAS" >&5
 echo $ECHO_N "checking for GNOMECANVAS... $ECHO_C" >&6; }
 
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GNOMECANVAS_CFLAGS"; then
-        pkg_cv_GNOMECANVAS_CFLAGS="$GNOMECANVAS_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GNOMECANVAS_CFLAGS"; then
+    pkg_cv_GNOMECANVAS_CFLAGS="$GNOMECANVAS_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgnomecanvas-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "libgnomecanvas-2.0") 2>&5
   ac_status=$?
@@ -4334,15 +4321,13 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GNOMECANVAS_LIBS"; then
-        pkg_cv_GNOMECANVAS_LIBS="$GNOMECANVAS_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GNOMECANVAS_LIBS"; then
+    pkg_cv_GNOMECANVAS_LIBS="$GNOMECANVAS_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgnomecanvas-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "libgnomecanvas-2.0") 2>&5
   ac_status=$?
@@ -4352,9 +4337,8 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
 
 
@@ -4367,9 +4351,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GNOMECANVAS_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libgnomecanvas-2.0"`
+	        GNOMECANVAS_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libgnomecanvas-2.0" 2>&1`
         else
-	        GNOMECANVAS_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgnomecanvas-2.0"`
+	        GNOMECANVAS_PKG_ERRORS=`$PKG_CONFIG --print-errors "libgnomecanvas-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GNOMECANVAS_PKG_ERRORS" >&5
@@ -4424,11 +4408,10 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GNOMEUI" >&5
 echo $ECHO_N "checking for GNOMEUI... $ECHO_C" >&6; }
 
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GNOMEUI_CFLAGS"; then
-        pkg_cv_GNOMEUI_CFLAGS="$GNOMEUI_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GNOMEUI_CFLAGS"; then
+    pkg_cv_GNOMEUI_CFLAGS="$GNOMEUI_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgnomeui-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "libgnomeui-2.0") 2>&5
   ac_status=$?
@@ -4438,15 +4421,13 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GNOMEUI_LIBS"; then
-        pkg_cv_GNOMEUI_LIBS="$GNOMEUI_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GNOMEUI_LIBS"; then
+    pkg_cv_GNOMEUI_LIBS="$GNOMEUI_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgnomeui-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "libgnomeui-2.0") 2>&5
   ac_status=$?
@@ -4456,9 +4437,8 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
 
 
@@ -4471,9 +4451,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GNOMEUI_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libgnomeui-2.0"`
+	        GNOMEUI_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libgnomeui-2.0" 2>&1`
         else
-	        GNOMEUI_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgnomeui-2.0"`
+	        GNOMEUI_PKG_ERRORS=`$PKG_CONFIG --print-errors "libgnomeui-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GNOMEUI_PKG_ERRORS" >&5
@@ -4528,11 +4508,10 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for PANEL" >&5
 echo $ECHO_N "checking for PANEL... $ECHO_C" >&6; }
 
-if test -n "$PKG_CONFIG"; then
-    if test -n "$PANEL_CFLAGS"; then
-        pkg_cv_PANEL_CFLAGS="$PANEL_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$PANEL_CFLAGS"; then
+    pkg_cv_PANEL_CFLAGS="$PANEL_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libpanelapplet-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "libpanelapplet-2.0") 2>&5
   ac_status=$?
@@ -4542,15 +4521,13 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$PANEL_LIBS"; then
-        pkg_cv_PANEL_LIBS="$PANEL_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$PANEL_LIBS"; then
+    pkg_cv_PANEL_LIBS="$PANEL_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libpanelapplet-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "libpanelapplet-2.0") 2>&5
   ac_status=$?
@@ -4560,9 +4537,8 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
 
 
@@ -4575,9 +4551,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        PANEL_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libpanelapplet-2.0"`
+	        PANEL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libpanelapplet-2.0" 2>&1`
         else
-	        PANEL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libpanelapplet-2.0"`
+	        PANEL_PKG_ERRORS=`$PKG_CONFIG --print-errors "libpanelapplet-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$PANEL_PKG_ERRORS" >&5
@@ -4632,11 +4608,10 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GTKSPELL" >&5
 echo $ECHO_N "checking for GTKSPELL... $ECHO_C" >&6; }
 
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GTKSPELL_CFLAGS"; then
-        pkg_cv_GTKSPELL_CFLAGS="$GTKSPELL_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GTKSPELL_CFLAGS"; then
+    pkg_cv_GTKSPELL_CFLAGS="$GTKSPELL_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gtkspell-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "gtkspell-2.0") 2>&5
   ac_status=$?
@@ -4646,15 +4621,13 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GTKSPELL_LIBS"; then
-        pkg_cv_GTKSPELL_LIBS="$GTKSPELL_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GTKSPELL_LIBS"; then
+    pkg_cv_GTKSPELL_LIBS="$GTKSPELL_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gtkspell-2.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "gtkspell-2.0") 2>&5
   ac_status=$?
@@ -4664,9 +4637,8 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
 
 
@@ -4679,9 +4651,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gtkspell-2.0"`
+	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "gtkspell-2.0" 2>&1`
         else
-	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gtkspell-2.0"`
+	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --print-errors "gtkspell-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKSPELL_PKG_ERRORS" >&5
@@ -4736,11 +4708,10 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GTKSOURCEVIEW" >&5
 echo $ECHO_N "checking for GTKSOURCEVIEW... $ECHO_C" >&6; }
 
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GTKSOURCEVIEW_CFLAGS"; then
-        pkg_cv_GTKSOURCEVIEW_CFLAGS="$GTKSOURCEVIEW_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GTKSOURCEVIEW_CFLAGS"; then
+    pkg_cv_GTKSOURCEVIEW_CFLAGS="$GTKSOURCEVIEW_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gtksourceview-1.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "gtksourceview-1.0") 2>&5
   ac_status=$?
@@ -4750,15 +4721,13 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GTKSOURCEVIEW_LIBS"; then
-        pkg_cv_GTKSOURCEVIEW_LIBS="$GTKSOURCEVIEW_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GTKSOURCEVIEW_LIBS"; then
+    pkg_cv_GTKSOURCEVIEW_LIBS="$GTKSOURCEVIEW_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gtksourceview-1.0\"") >&5
   ($PKG_CONFIG --exists --print-errors "gtksourceview-1.0") 2>&5
   ac_status=$?
@@ -4768,9 +4737,8 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
 
 
@@ -4783,9 +4751,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gtksourceview-1.0"`
+	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "gtksourceview-1.0" 2>&1`
         else
-	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gtksourceview-1.0"`
+	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --print-errors "gtksourceview-1.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKSOURCEVIEW_PKG_ERRORS" >&5
@@ -4830,11 +4798,10 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GTKALL" >&5
 echo $ECHO_N "checking for GTKALL... $ECHO_C" >&6; }
 
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GTKALL_CFLAGS"; then
-        pkg_cv_GTKALL_CFLAGS="$GTKALL_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GTKALL_CFLAGS"; then
+    pkg_cv_GTKALL_CFLAGS="$GTKALL_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEWPKG\"") >&5
   ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG") 2>&5
   ac_status=$?
@@ -4844,15 +4811,13 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$GTKALL_LIBS"; then
-        pkg_cv_GTKALL_LIBS="$GTKALL_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
+if test -n "$GTKALL_LIBS"; then
+    pkg_cv_GTKALL_LIBS="$GTKALL_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEWPKG\"") >&5
   ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG") 2>&5
   ac_status=$?
@@ -4862,9 +4827,8 @@ if test -n "$PKG_CONFIG"; then
 else
   pkg_failed=yes
 fi
-    fi
-else
-	pkg_failed=untried
+ else
+    pkg_failed=untried
 fi
 
 
@@ -4877,9 +4841,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG"`
+	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG" 2>&1`
         else
-	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG"`
+	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKALL_PKG_ERRORS" >&5

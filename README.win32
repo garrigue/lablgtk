@@ -133,4 +133,9 @@ Then compile and install all files somewhere in your cygwin path.
 
 5) Install ("make install") and test.
 
+The rationale behind CYGWIN=nobinmode variable for configure is that 
+pkg-config is a native windows program which outputs \r\n instead of
+usual unix \n. The CYGWIN variable forces the shell to strip down all 
+\r from command ansmwers.
+
 $Id$
