@@ -45,7 +45,7 @@ fi
 # we extract Ocaml version number and library path
 OCAMLVERSION=`$CAMLC -version`
 echo "ocaml version is $OCAMLVERSION"
-OCAMLLIB=`$CAMLC -where`
+OCAMLLIB=`$CAMLC -where | sed -e 's/\\r//'`
 echo "ocaml library path is $OCAMLLIB"
 LIBDIR=$OCAMLLIB
 
