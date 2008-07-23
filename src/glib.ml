@@ -77,6 +77,8 @@ module Io = struct
     = "ml_g_io_add_watch"
   external read : channel -> buf:string -> pos:int -> len:int -> int
     = "ml_g_io_channel_read"
+  external read_chars : channel -> buf:string -> pos:int -> len:int -> int
+    = "ml_g_io_channel_read_chars"
 end
 
 module Message = struct
