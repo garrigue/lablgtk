@@ -26,7 +26,7 @@ let () =
       if List.mem `IN c then begin
 	let buf = " " in
 	(* On Windows, you must use Io.read *)
-	let len = Io.read ch ~buf ~pos:0 ~len:1 in
+	let len = Glib.Io.read ch ~buf ~pos:0 ~len:1 in
 	len = 1 && (buffer#insert buf; true) end
       else if List.mem `HUP c then begin
 	prerr_endline "got `HUP, exiting in 5s" ;

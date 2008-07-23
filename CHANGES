@@ -1,4 +1,6 @@
 $Id$
+2008.05.09 [Benjamin]
+ * Add Glib.Io.read_chars. Other g_io_* function could be added...
 
 2008.04.14 [Olivier]
   * use Gc.create_alarm to delay GObject finalization instead of an idle function

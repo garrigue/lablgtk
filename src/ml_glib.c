@@ -304,6 +304,7 @@ Make_Val_final_pointer_ext (GIOChannel, _noref, Ignore, g_io_channel_unref, 20)
 
 #ifndef _WIN32
 ML_1 (g_io_channel_unix_new, Int_val, Val_GIOChannel_noref)
+
 #else
 CAMLprim value ml_g_io_channel_unix_new(value wh)
 {
@@ -359,6 +360,36 @@ CAMLprim value ml_g_io_channel_read(value io, value str, value offset,
   /* no one reaches here... */
   return Val_unit;
 }
+#ifdef HASGTK22
+CAMLprim value ml_g_io_channel_read_chars(value io, value str, value offset,
+                                    value count)
+{
+  gsize read;
+  GError *err = NULL;
+  GIOStatus result = 
+    g_io_channel_read_chars(GIOChannel_val(io), 
+		      String_val(str) + Int_val(offset),
+		      Int_val(count),
+		      &read, 
+		      &err);
+  if (err != NULL) ml_raise_gerror(err);
+  switch (result) {
+  case G_IO_STATUS_NORMAL:
+    return Val_int( read );
+  case G_IO_STATUS_EOF:
+    ml_raise_glib("g_io_channel_read_chars G_IO_STATUS_EOF");
+  case G_IO_STATUS_AGAIN:
+    ml_raise_glib("g_io_channel_read_chars: G_IO_STATUS_AGAIN");
+  case G_IO_STATUS_ERROR:
+  default:
+    ml_raise_glib("g_io_channel_read_chars: G_IO_STATUS_ERROR");
+  }
+  /* no one reaches here... */
+  return Val_unit;
+}
+#else
+Unsupported_22(ml_g_io_channel_read_chars)
+#endif
 
 /* single-linked lists */
 
