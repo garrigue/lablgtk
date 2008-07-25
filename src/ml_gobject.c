@@ -39,7 +39,7 @@
 
 /* gobject.h */
 
-static GQueue objects_to_unref = G_QUEUE_INIT;
+static GQueue objects_to_unref; /* initialized to zeroes (empty queue) */
 
 CAMLprim value ml_g_object_do_unref (value unit)
 {

@@ -1,5 +1,8 @@
 $Id$
 
+2008.07.25 [Olivier]
+ * don't use G_QUEUE_INIT (dependency on glib 2.14)
+
 2008.07.25 [Jacques]
  * Add [widget] to Gtk.file_chooser
  * configure did not work on FreeBSD
