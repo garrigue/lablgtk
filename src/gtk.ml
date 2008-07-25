@@ -263,7 +263,7 @@ type combo_box = [bin|`combobox|cell_layout]
 type combo_box_entry = [combo_box|`comboboxentry]
 type expander = [bin|`expander]
 type file_filter = [`gtk|`filefilter]
-type file_chooser = [ `filechooser]
+type file_chooser = [widget|`filechooser]
 type entry_completion = [`entrycompletion|cell_layout] obj
 
 type action = [`action]

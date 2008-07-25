@@ -1,4 +1,9 @@
 $Id$
+
+2008.07.25 [Jacques]
+ * Add [widget] to Gtk.file_chooser
+ * configure did not work on FreeBSD
+
 2008.05.09 [Benjamin]
  * Add Glib.Io.read_chars. Other g_io_* function could be added...
 
