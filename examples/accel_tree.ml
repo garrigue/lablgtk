@@ -1,3 +1,12 @@
+(**************************************************************************)
+(*    Lablgtk - Examples                                                  *)
+(*                                                                        *)
+(*    There is no specific licensing policy, but you may freely           *)
+(*    take inspiration from the code, and copy parts of it in your        *)
+(*    application.                                                        *)
+(*                                                                        *)
+(**************************************************************************)
+
 type accel = {
   action : string;
   mask : Gdk.Tags.modifier list;
@@ -78,6 +87,9 @@ let () =
 
 
 (*
+This code is an OCaml adaptation of the following C code from
+http://www.linuxquestions.org/linux/articles/Technical/New_GTK_Widgets_GtkCellRendererAccel
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
