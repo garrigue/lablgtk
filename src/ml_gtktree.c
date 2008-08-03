@@ -61,6 +61,9 @@ CAMLprim value ml_gtktree_init(value unit)
         + gtk_cell_renderer_combo_get_type()
         + gtk_icon_view_get_type()
 #endif
+#ifdef HASGTK210
+        + gtk_cell_renderer_accel_get_type ()
+#endif
         ;
     return Val_GType(t);
 }

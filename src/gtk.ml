@@ -250,6 +250,7 @@ type cell_renderer_text = [cell_renderer|`cellrenderertext]
 type cell_renderer_toggle = [cell_renderer|`cellrenderertoggle]
 type cell_renderer_progress = [cell_renderer|`cellrendererprogress]
 type cell_renderer_combo = [cell_renderer_text|`cellrenderercombo]
+type cell_renderer_accel = [cell_renderer_text|`cellrendereraccel]
 
 type icon_source
 type icon_set

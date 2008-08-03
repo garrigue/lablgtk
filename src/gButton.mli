@@ -52,6 +52,10 @@ class button_skel : 'a obj ->
     method image : GObj.widget             (** @since GTK 2.6 *)
     method set_image : GObj.widget -> unit (** @since GTK 2.6 *)
     method unset_image : unit -> unit      (** @since GTK 2.6 *)
+    method image_position : GtkEnums.position_type  (** @since GTK 2.10 *)
+    method set_image_position : GtkEnums.position_type -> unit 
+	(** @since GTK 2.10 *)
+ 
     method set_xalign : float -> unit  (** @since GTK 2.4 *)
     method xalign     : float          (** @since GTK 2.4 *)
     method set_yalign : float -> unit  (** @since GTK 2.4 *)

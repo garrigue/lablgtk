@@ -49,6 +49,8 @@ class action_skel :
     method set_hide_if_empty : bool -> unit
     method is_important : bool
     method set_is_important : bool -> unit
+    method icon_name : string (** @since GTK 2.10 *)
+    method set_icon_name : string -> unit (** @since GTK 2.10 *)
     method label : string
     method set_label : string -> unit
     method name : string

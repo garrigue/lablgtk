@@ -521,6 +521,12 @@ type cell_properties_combo =
   | `MODEL of model option
   | `TEXT_COLUMN of string column
   | `HAS_ENTRY of bool ]
+type cell_properties_accel = 
+ [ cell_properties_text 
+  | `KEY of Gdk.keysym
+  | `ACCEL_MODE of GtkEnums.cell_renderer_accel_mode
+  | `MODS of GdkEnums.modifier list
+  | `KEYCODE of int ]
 
 (** @gtkdoc gtk GtkCellRenderer *)
 class type ['a, 'b] cell_renderer_skel =
@@ -592,6 +598,29 @@ class cell_renderer_combo : Gtk.cell_renderer_combo obj ->
     method set_fixed_height_from_font : int -> unit
   end
 
+(** @since GTK 2.10
+    @gtkdoc gtk GtkCellRendererText *)
+class cell_renderer_accel_signals : Gtk.cell_renderer_accel obj ->
+  object
+    inherit GObj.gtkobj_signals
+    method edited : callback:(Gtk.tree_path -> string -> unit) -> GtkSignal.id
+    method accel_edited :
+      callback:(tree_path -> accel_key:int -> accel_mods:int 
+		 -> hardware_keycode:int -> unit) 
+      -> GtkSignal.id
+    method accel_cleared : callback:(tree_path -> unit) -> GtkSignal.id
+
+  end
+
+(** @since GTK 2.10
+    @gtkdoc gtk GtkCellRendererAccel *)
+class cell_renderer_accel : Gtk.cell_renderer_accel obj ->
+  object
+    inherit[Gtk.cell_renderer_accel,cell_properties_accel] cell_renderer_skel
+    method connect : cell_renderer_accel_signals
+
+  end
+
 (** @gtkdoc gtk GtkCellRendererPixbuf *)
 val cell_renderer_pixbuf : cell_properties_pixbuf list -> cell_renderer_pixbuf
 
@@ -608,6 +637,10 @@ val cell_renderer_progress : cell_properties_progress list -> cell_renderer_prog
 (** @since GTK 2.6 
     @gtkdoc gtk GtkCellRendererCombo *)
 val cell_renderer_combo : cell_properties_combo list -> cell_renderer_combo
+
+(** @since GTK 2.10
+    @gtkdoc gtk GtkCellRendererAccel *)
+val cell_renderer_accel : cell_properties_accel list -> cell_renderer_accel
 
 (** {3 GtkIconView} *)
 

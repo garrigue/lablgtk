@@ -64,7 +64,7 @@ let enums = [
     "Orientation"; "ToolbarStyle"; "IconSize"; "PolicyType";
     "CornerType"; "SelectionMode"; "SortType"; "WrapMode";
     "SpinButtonUpdatePolicy"; "UpdateType"; "ProgressBarStyle";
-    "ProgressBarOrientation"; "CellRendererMode";
+    "ProgressBarOrientation"; "CellRendererMode"; "CellRendererAccelMode";
     "TreeViewColumnSizing"; "SortType"; "TextDirection"; "SizeGroupMode";
     (* in signals *)
     "MovementStep"; "ScrollType"; "MenuDirectionType"; "DeleteType";

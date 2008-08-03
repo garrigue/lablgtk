@@ -357,6 +357,8 @@ module CellRendererProgress = CellRendererProgress
 
 module CellRendererCombo = CellRendererCombo
 
+module CellRendererAccel = CellRendererAccel
+
 module CellLayout = struct
   include GtkTreeProps.CellLayout
   let pack layout 

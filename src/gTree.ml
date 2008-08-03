@@ -487,6 +487,14 @@ type cell_properties_combo_only =
   | `HAS_ENTRY of bool ]
 type cell_properties_combo = [ cell_properties_text | cell_properties_combo_only ]
 
+type cell_properties_accel_only =
+  [ `KEY of int
+  | `ACCEL_MODE of GtkEnums.cell_renderer_accel_mode
+  | `MODS of GdkEnums.modifier list
+  | `KEYCODE of int ]
+
+type cell_properties_accel = [ cell_properties_text | cell_properties_accel_only ]
+
 let cell_renderer_pixbuf_param' = function
   | #cell_properties_pixbuf_only as x -> cell_renderer_pixbuf_param x
   | #cell_properties as x -> cell_renderer_param x
@@ -506,6 +514,16 @@ let cell_renderer_combo_param' = function
   | `MODEL (Some m : model option) -> Gobject.param CellRendererCombo.P.model (Some m#as_model)
   | `TEXT_COLUMN c -> Gobject.param CellRendererCombo.P.text_column c.index
   | `HAS_ENTRY b -> Gobject.param CellRendererCombo.P.has_entry b
+  | #cell_properties_text as x -> cell_renderer_text_param' x
+
+let cell_renderer_accel_param' = function
+  | `KEYCODE i ->  Gobject.param CellRendererAccel.P.keycode i
+  | `KEY i  -> Gobject.param CellRendererAccel.P.accel_key i
+  | `ACCEL_MODE m  -> Gobject.param CellRendererAccel.P.accel_mode m
+  | `MODS m  -> 
+      Gobject.param 
+	CellRendererAccel.P.accel_mods 
+	(Gpointer.encode_flags GdkEnums.modifier m);
   | #cell_properties_text as x -> cell_renderer_text_param' x
 
 class type ['a, 'b] cell_renderer_skel =
@@ -531,10 +549,12 @@ class cell_renderer_pixbuf obj = object
   method private param = cell_renderer_pixbuf_param'
   method connect = new gtkobj_signals_impl obj
 end
+
 class cell_renderer_text_signals obj = object (self)
-  inherit gtkobj_signals_impl (obj : Gtk.cell_renderer_text obj)
+  inherit gtkobj_signals_impl (obj:Gtk.cell_renderer_text Gtk.obj)
   method edited = self#connect CellRendererText.S.edited
 end
+
 class cell_renderer_text obj = object
   inherit [Gtk.cell_renderer_text,cell_properties_text] cell_renderer_impl obj
   method private param = cell_renderer_text_param'
@@ -569,6 +589,21 @@ class cell_renderer_combo obj = object
   method connect = new cell_renderer_text_signals (obj :> Gtk.cell_renderer_text Gtk.obj)
 end
 
+class cell_renderer_accel_signals (obj:Gtk.cell_renderer_accel Gtk.obj) = 
+object(self)
+  inherit gtkobj_signals_impl obj
+  method edited = self#connect CellRendererText.S.edited
+  method accel_edited = self#connect CellRendererAccel.S.accel_edited
+  method accel_cleared = self#connect CellRendererAccel.S.accel_cleared
+end
+
+class cell_renderer_accel obj = object
+  inherit [Gtk.cell_renderer_accel,cell_properties_accel]
+      cell_renderer_impl obj
+  method private param = cell_renderer_accel_param'
+  method connect = new cell_renderer_accel_signals obj
+end
+
 let cell_renderer_pixbuf l =
   new cell_renderer_pixbuf
     (CellRendererPixbuf.create (List.map cell_renderer_pixbuf_param' l))
@@ -584,6 +619,9 @@ let cell_renderer_progress l =
 let cell_renderer_combo l =
   new cell_renderer_combo
     (CellRendererCombo.create (List.map cell_renderer_combo_param' l))
+let cell_renderer_accel (l:cell_properties_accel list) =
+  new cell_renderer_accel
+    (CellRendererAccel.create (List.map cell_renderer_accel_param' l))
 
 
 class icon_view_signals obj = object (self)

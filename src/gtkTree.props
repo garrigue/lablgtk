@@ -137,6 +137,16 @@ class CellRendererCombo : CellRendererText {
   "has_entry"            gboolean             : Read / Write
 }
 
+class CellRendererAccel : CellRendererText {
+  "accel-key"            gint                 : Read / Write
+  "accel-mode"           GtkCellRendererAccelMode : Read / Write
+  "accel-mods"           gint                 : Read / Write
+  "keycode"              gint                 : Read / Write
+  signal accel_cleared : GtkTreePathString
+  signal accel_edited  : GtkTreePathString accel_key:int accel_mods:int hardware_keycode:int
+
+}
+
 class CellLayout abstract : Object {
   method pack_start : "Gtk.cell_renderer Gtk.obj -> expand:bool -> unit"
   method pack_end   : "Gtk.cell_renderer Gtk.obj -> expand:bool -> unit"
