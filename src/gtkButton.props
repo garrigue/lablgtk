@@ -13,6 +13,7 @@ open GtkButtonProps
 class Button set wrap wrapsig : Bin {
   "focus-on-click"       gboolean             : Read / Write / NoSet
   "image"                GtkWidget            : Read / Write / NoSet
+  "image-position"       GtkPositionType      : Read / Write / NoSet
   "label"                gchararray           : Read / Write / Construct
   "use-stock"            gboolean             : Read / Write / Construct
   "use-underline"        gboolean             : Read / Write / Construct

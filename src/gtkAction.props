@@ -9,6 +9,7 @@ class Action type "Gtk.action obj" wrap wrapsig gobject {
   "hide-if-empty"        gboolean             : Read / Write
   "is-important"         gboolean             : Read / Write
   "label"                gchararray           : Read / Write
+  "icon-name"            gchararray           : Read / Write
   "name"                 gchararray           : Read / Write / Construct Only
   "sensitive"            gboolean             : Read / Write
   "short-label"          gchararray           : Read / Write
