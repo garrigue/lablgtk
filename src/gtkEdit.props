@@ -83,6 +83,7 @@ class SpinButton set wrap wrapsig : Entry {
   signal input : -> int
   signal output : -> bool
   signal value_changed
+  signal wrapped (* GTK+ 2.10 *)
 }
 
 class Combo set wrap : Box {

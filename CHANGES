@@ -1,5 +1,8 @@
 $Id$
 
+2008.08.03 [Benjamin]
+ * Support for wrapped signal of GEdit.spin_button (Gtk 2.10)
+
 2008.08.01 [Benjamin]
  * Support for GtkRendererAccel of Gtk 2.10
 

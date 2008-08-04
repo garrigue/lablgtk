@@ -183,6 +183,9 @@ class spin_button_signals : [> Gtk.spin_button] obj ->
     method input : callback:(unit -> int) -> GtkSignal.id
     method output : callback:(unit -> bool) -> GtkSignal.id
     method value_changed : callback:(unit -> unit) -> GtkSignal.id
+
+    method wrapped : callback:(unit -> unit) -> GtkSignal.id  
+      (** @since GTK 2.10 *)
   end
 
 (** Retrieve an integer or floating-point number from the user
