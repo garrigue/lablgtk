@@ -241,15 +241,15 @@ let text_combo_get_active ((combo, (lstore, column)) : 'a text_combo) =
   | Some row -> Some (lstore#get ~row ~column)
 
 let combo_box_text ?(strings=[]) ?(use_markup=false) =
-  let (store, column) as model = GTree.store_of_list Gobject.Data.string strings in
+  let (store, column) as model =
+    GTree.store_of_list Gobject.Data.string strings in
   GtkEdit.ComboBox.make_params ~model:store#as_model [] ~cont:(
   GtkBase.Widget.size_params ~cont:(fun pl ?packing ?show () ->
     let combo = new combo_box (GtkEdit.ComboBox.create pl) in
     let r = GTree.cell_renderer_text [] in
     combo#pack r ; 
     combo#add_attribute r (if use_markup then "markup" else "text") column ;
-    GObj.pack_return combo ~packing ~show ;
-    combo, model))
+    GObj.pack_return combo ~packing ~show, model))
 
 let combo_box_entry_text ?(strings=[]) =
   let (store, column) as model = GTree.store_of_list Gobject.Data.string strings in
@@ -258,5 +258,4 @@ let combo_box_entry_text ?(strings=[]) =
     ~cont:(
   GtkBase.Widget.size_params ~cont:(fun pl ?packing ?show () ->
     let combo = new combo_box_entry (GtkEdit.ComboBoxEntry.create pl) in
-    GObj.pack_return combo ~packing ~show ;
-    combo, model))
+    GObj.pack_return combo ~packing ~show, model))
