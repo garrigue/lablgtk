@@ -1,5 +1,9 @@
 $Id$
 
+2008.08.20 [Jacques]
+ * Move model to head of properties in ComboBox
+   (bug reported by Pierre-Marie Pedrot)
+
 2008.08.03 [Benjamin]
  * Support for wrapped signal of GEdit.spin_button (Gtk 2.10)
 

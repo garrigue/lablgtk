@@ -95,12 +95,12 @@ class Combo set wrap : Box {
 }
 
 class ComboBox set wrap wrapsig : Bin {
+  "model"                GtkTreeModel         : Read / Write         / NoWrap
   "active"               gint                 : Read / Write
   "add-tearoffs"         gboolean             : Read / Write                  (* GTK+ 2.6 *)
   "column-span-column"   gint                 : Read / Write / NoSet / NoWrap
   "focus-on-click"       gboolean             : Read / Write                  (* GTK+ 2.6 *)
   "has-frame"            gboolean             : Read / Write                  (* GTK+ 2.6 *)
-  "model"                GtkTreeModel         : Read / Write         / NoWrap
   "row-span-column"      gint                 : Read / Write / NoSet / NoWrap
   "wrap-width"           gint                 : Read / Write
   signal changed
