@@ -236,6 +236,7 @@ type tree_view = [container|`treeview]
 type tree_view_column = [`gtk|`celllayout|`treeviewcolumn]
 type tree_selection = [`treeselection] obj
 type tree_model = [`treemodel] obj
+type tree_model_custom = [`custommodel|`treemodel] obj
 type tree_sortable = [`treemodel|`tree_sortable] obj
 type tree_model_sort = [`treemodelsort|`treesortable|`treemodel] obj
 type tree_model_filter = [`treemodelfilter|`treemodel] obj

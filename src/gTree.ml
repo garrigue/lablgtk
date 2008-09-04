@@ -662,3 +662,95 @@ let icon_view ?model =
   let model = Gaux.may_map (fun m -> m#as_model) model in
   IconView.make_params ?model [] ~cont:(
   GContainer.pack_container ~create:(fun p -> new icon_view (IconView.create p)))
+
+(* Custom models *)
+
+class type virtual ['obj,'row,'a,'b,'c] custom_tree_model_type = 
+object
+  inherit model
+  val obj : 'obj
+  val n_columns : int
+  val columns : Gobject.g_type array
+  method custom_n_columns : int
+  method custom_get_column_type : int -> Gobject.g_type
+
+  method connect : model_signals
+    
+  (** Signal emitters *)
+  method custom_row_changed : Gtk.tree_path -> 'row -> unit
+  method custom_row_deleted : Gtk.tree_path -> unit
+  method custom_row_has_child_toggled :
+    Gtk.tree_path -> 'row -> unit
+  method custom_row_inserted : Gtk.tree_path -> 'row -> unit
+  method custom_rows_reordered :
+    Gtk.tree_path -> 'row option -> int array -> unit
+
+  method custom_unref_node : 'row -> unit
+  method custom_ref_node : 'row -> unit
+
+
+  method virtual custom_get_iter : Gtk.tree_path -> 'row option
+  method virtual custom_get_path : 'row -> Gtk.tree_path
+  method custom_get_value :
+    'row -> int -> Gobject.g_value -> unit
+
+  method virtual custom_value : 'a. Gobject.g_type -> 'row -> column:int -> 'a Gobject.data_set
+  method virtual custom_iter_children : 'row option -> 'row option
+  method virtual custom_iter_has_child : 'row -> bool
+  method virtual custom_iter_n_children : 'row option -> int
+  method virtual custom_iter_next : 'row -> 'row option
+  method virtual custom_iter_nth_child : 'row option -> int -> 'row option
+  method virtual custom_iter_parent : 'row -> 'row option
+
+  method virtual custom_decode_iter : 'a -> 'b -> 'c -> 'row
+  method virtual custom_encode_iter : 'row -> 'a * 'b * 'c
+
+end
+
+type abstract = unit
+class virtual ['row,'a,'b,'c] custom_tree_model () obj (column_list:column_list) = object (self)
+  inherit model obj
+  method connect = new model_signals obj  
+
+  inherit ['row,'a,'b,'c] GtkTree.CustomModel.callback
+  val n_columns =  List.length column_list#types
+  val columns = Array.of_list column_list#types
+  method custom_n_columns = n_columns
+
+  method custom_get_value (row:'row) (column:int) (value:Gobject.g_value) =
+    Gobject.Value.init value (columns.(column));
+    if column >=0 && column <n_columns then
+      let value_to_set = self#custom_value columns.(column) row ~column in
+      try 
+        Gobject.Value.set value value_to_set
+      with Failure _ -> 
+        failwith 
+          ("custom_value returned a value of incompatible type for column "^string_of_int column
+           ^" of type "^ (Gobject.Type.name (Gobject.Value.get_type value)))
+    else invalid_arg ("custom_get_value: invalid column id "^string_of_int column)
+
+  method virtual custom_value : 'a. Gobject.g_type -> 'row -> column:int -> 'a Gobject.data_set
+
+  method custom_get_column_type n : Gobject.g_type = 
+    if 0 <= n && n < n_columns then columns.(n)
+    else Gobject.Type.of_fundamental `INVALID
+
+  method custom_row_inserted path (iter:'row) =
+    CustomModel.custom_row_inserted obj path iter
+  method custom_row_changed path (iter:'row) =
+    CustomModel.custom_row_changed obj path iter
+  method custom_row_has_child_toggled path (iter:'row) =
+    CustomModel.custom_row_has_child_toggled obj path iter
+  method custom_row_deleted (path:Gtk.tree_path) =
+    CustomModel.custom_row_deleted obj path
+  method custom_rows_reordered path (iter_opt:'row option) new_order =
+    CustomModel.custom_rows_reordered obj path iter_opt new_order
+
+  initializer GtkTree.CustomModel.register_callback obj self
+end
+
+let make_custom_tree_model custom_model (cols :column_list) =
+  cols#lock ();
+  let store = (GtkTree.CustomModel.create ()) in
+  Hashtbl.add model_ids(Gobject.get_oid store) cols#id;
+  custom_model () store cols

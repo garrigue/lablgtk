@@ -28,6 +28,10 @@ class TextView wrap wrapsig : Container {
   "right-margin"         gint                 : Read / Write
   "tabs"                 PangoTabArray        : Read / Write
   "wrap-mode"            GtkWrapMode          : Read / Write / Set
+
+  (* API extended in GTK 2.4 *)
+  "accepts-tab"             gboolean             : Read / Write / Set
+
   signal copy_clipboard
   signal cut_clipboard
   signal delete_from_cursor : GtkDeleteType gint

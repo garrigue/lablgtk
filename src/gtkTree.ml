@@ -374,3 +374,44 @@ module TreeSortable = TreeSortable
 module TreeModelFilter = TreeModelFilter
 
 module IconView = IconView
+
+module CustomModel = struct
+  
+  (* Do not change the name of this methods: they are hard coded in ml_gtktree.c *)
+  class virtual ['row,'a,'b,'c] callback = object
+    method virtual custom_encode_iter : 'row -> 'a * 'b * 'c
+    method virtual custom_decode_iter : 'a -> 'b -> 'c -> 'row
+
+    method private virtual custom_n_columns : int
+    method virtual custom_get_column_type : int -> Gobject.g_type
+    method virtual custom_get_iter : Gtk.tree_path -> 'row option
+    method virtual custom_get_path : 'row -> Gtk.tree_path
+    method virtual custom_get_value : 'row -> int -> Gobject.g_value -> unit
+    method virtual custom_iter_next : 'row -> 'row option
+    method virtual custom_iter_children : 'row option -> 'row option
+    method virtual custom_iter_has_child : 'row -> bool
+    method virtual custom_iter_n_children : 'row option -> int
+    method virtual custom_iter_nth_child : 'row option -> int -> 'row option
+    method virtual custom_iter_parent : 'row -> 'row option
+    method custom_ref_node (_:'row) : unit = ()
+    method custom_unref_node (_:'row) : unit = ()
+  end
+  
+  external create : unit -> tree_model_custom = "ml_custom_model_create"
+
+  external register_callback : 
+    tree_model_custom -> ('row,'a,'b,'c) #callback -> unit = 
+    "ml_register_custom_model_callback_object"
+      
+  external custom_row_inserted : tree_model_custom -> Gtk.tree_path -> 'row -> unit =
+    "ml_custom_model_row_inserted"
+  external custom_row_changed : tree_model_custom -> Gtk.tree_path -> 'row -> unit =
+    "ml_custom_model_row_changed"
+  external custom_row_has_child_toggled : tree_model_custom -> Gtk.tree_path -> 'row -> unit =
+    "ml_custom_model_row_has_child_toggled"
+  external custom_row_deleted : tree_model_custom -> 'row -> unit =
+    "ml_custom_model_row_deleted"
+  external custom_rows_reordered : tree_model_custom -> Gtk.tree_path -> 'row option -> int array -> unit =
+    "ml_custom_model_rows_reordered"
+      
+end

@@ -1,5 +1,12 @@
 $Id$
 
+2008.09.04 [Benjamin]
+ * First attempt to support custom_tree_models in GTree.
+   I need some feedback on ways to improve the safety.
+   An example of usage is given in examples/custom_tree.ml
+   Part of the code comes from Robert Schneck: he agreed by private mail 
+   on relicensing it for lablgtk2.
+
 2008.08.20 [Jacques]
  * Move model to head of properties in ComboBox
    (bug reported by Pierre-Marie Pedrot)

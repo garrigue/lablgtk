@@ -714,3 +714,64 @@ val icon_view :
   ?packing:(GObj.widget -> unit) ->
   ?show:bool ->
   unit -> icon_view
+
+
+class type virtual ['obj,'row,'a,'b,'c] custom_tree_model_type = 
+object
+  inherit model
+  val obj : 'obj
+  val n_columns : int
+  val columns : Gobject.g_type array
+  (** For internal use only. You prably do not want to override these methods. *)
+  method custom_n_columns : int
+  method custom_get_column_type : int -> Gobject.g_type
+  method custom_get_value :
+    'row -> int -> Gobject.g_value -> unit
+
+  method connect : model_signals
+    
+  (** Signal emitters *)
+  method custom_row_changed : Gtk.tree_path -> 'row -> unit
+  method custom_row_deleted : Gtk.tree_path -> unit
+  method custom_row_has_child_toggled :
+    Gtk.tree_path -> 'row -> unit
+  method custom_row_inserted : Gtk.tree_path -> 'row -> unit
+  method custom_rows_reordered :
+    Gtk.tree_path -> 'row option -> int array -> unit
+
+  (** Override these to implement a cache of rows *)
+  method custom_unref_node : 'row -> unit
+  method custom_ref_node : 'row -> unit
+
+  (** Functions of the custom model. They must act exactly as described in the documentation 
+      of Gtk orelse Gtk may emit fatal errors. *)
+  method virtual custom_get_iter : Gtk.tree_path -> 'row option
+  method virtual custom_get_path : 'row -> Gtk.tree_path
+  method virtual custom_value : 'a. Gobject.g_type -> 'row -> column:int -> 'a Gobject.data_set
+    (** [custom_value typ row ~column] is the value to set in [row] for column [column].
+        It must must be of the type [typ], i.e. the type declared for column  [column]. *)
+    
+  method virtual custom_iter_children : 'row option -> 'row option
+  method virtual custom_iter_has_child : 'row -> bool
+  method virtual custom_iter_n_children : 'row option -> int
+  method virtual custom_iter_next : 'row -> 'row option
+  method virtual custom_iter_nth_child : 'row option -> int -> 'row option
+  method virtual custom_iter_parent : 'row -> 'row option
+
+  method virtual custom_decode_iter : 'a -> 'b -> 'c -> 'row
+  method virtual custom_encode_iter : 'row -> 'a * 'b * 'c
+
+end
+
+type abstract
+(** A base class to inherit from to make a custom tree model. 
+    You cannot instantiate it directly: use [make_custom_tree_model]. *)
+class virtual ['row,'a,'b,'c] custom_tree_model : 
+  abstract 
+  -> (Gtk.tree_model_custom as 'obj) 
+  -> column_list 
+  -> ['obj,'row,'a,'b,'c] custom_tree_model_type
+  
+val make_custom_tree_model : 
+  (abstract -> (Gtk.tree_model_custom as 'obj) -> column_list ->  
+     (('obj,'row,'a,'b,'c) #custom_tree_model_type as 'model)) -> column_list ->  'model
