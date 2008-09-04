@@ -660,7 +660,7 @@ class view obj = object
   method connect = new view_signals obj
 end
 
-let view ?buffer =
+let view ?(buffer:buffer option) =
   View.make_params [] ~cont:(
   GContainer.pack_container ~create:(fun pl ->
     let w = match buffer with 

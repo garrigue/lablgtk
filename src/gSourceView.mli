@@ -333,6 +333,7 @@ val source_view:
   ?cursor_visible:bool ->
   ?justification:GtkEnums.justification ->
   ?wrap_mode:GtkEnums.wrap_mode ->
+  ?accepts_tab:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

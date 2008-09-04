@@ -793,3 +793,677 @@ Unsupported_26(gtk_icon_view_unselect_all)
 Unsupported_26(gtk_icon_view_item_activated)
 
 #endif /* HASGTK26 */
+
+/* Custom models: this code is inspired by the code of Robert Schneck <schneck@gmail.com> */
+
+extern void caml_minor_collection(void);
+
+#if 0
+char *buf1;
+char buf2[1000];
+#define USER_DATA(iter) (iter?(long)((iter)->user_data):0)
+#define USER_DATA2(iter) (iter?(long)((iter)->user_data2):0)
+#define USER_DATA3(iter) (iter?(long)((iter)->user_data3):0)
+#define PRINT4(iter) iter,USER_DATA(iter),USER_DATA2(iter),USER_DATA3(iter)
+#define PRINT4_VALID(iter) iter, (long)(iter)->user_data, (long)(iter)->user_data2, (long)(iter)->user_data3
+#define PATH_STRING(path) (buf1 = (path) ? gtk_tree_path_to_string(path) : "[]", strcpy(buf2,buf1), (path) ? g_free(buf1) : 0, buf2)
+#define debug_print printf
+#else
+#define debug_print(...)
+#endif
+
+value callback4(value closure, value arg1, value arg2, value arg3, value arg4)
+{
+  value arg[4];
+  arg[0] = arg1;
+  arg[1] = arg2;
+  arg[2] = arg3;
+  arg[3] = arg4;
+  return callbackN(closure, 4, arg);
+}
+
+/*****************************************************************************
+ * GObject stuff
+ *****************************************************************************/
+
+/* Some boilerplate GObject defines. 'klass' is used instead of 'class', because 'class' is a C++ keyword */
+#define TYPE_CUSTOM_MODEL                  (custom_model_get_type ())
+#define CUSTOM_MODEL(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_CUSTOM_MODEL, Custom_model))
+#define CUSTOM_MODEL_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass),  TYPE_CUSTOM_MODEL, Custom_model_class))
+#define IS_CUSTOM_MODEL(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CUSTOM_MODEL))
+#define IS_CUSTOM_MODEL_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass),  TYPE_CUSTOM_MODEL))
+#define CUSTOM_MODEL_GET_CLASS(obj)        (G_TYPE_INSTANCE_GET_CLASS ((obj),  TYPE_CUSTOM_MODEL, Custom_model_class))
+
+static GObjectClass *parent_class = NULL;  /* GObject stuff - nothing to worry about */
+
+typedef struct _Custom_model       Custom_model;
+typedef struct _Custom_model_class  Custom_model_class;
+
+struct _Custom_model
+{
+  GObject parent;      /* this MUST be the first member */
+
+  gint stamp;
+  value callback_object;
+};
+
+/* Custom_model_class: more boilerplate GObject stuff */
+struct _Custom_model_class
+{
+  GObjectClass parent_class;
+};
+
+/* boring declarations of local functions */
+/* GObject stuff */
+GType custom_model_get_type (void);
+static void custom_model_init (Custom_model *pkg_tree);
+static void custom_model_class_init (Custom_model_class *klass);
+static void custom_model_tree_model_init (GtkTreeModelIface *iface);
+static void custom_model_finalize (GObject *object);
+
+/* tree model stuff */
+static GtkTreeModelFlags custom_model_get_flags (GtkTreeModel *tree_model);
+static gint custom_model_get_n_columns (GtkTreeModel *tree_model);
+static GType custom_model_get_column_type (GtkTreeModel *tree_model, gint index);
+static gboolean custom_model_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreePath *path);
+static GtkTreePath *custom_model_get_path (GtkTreeModel *tree_model, GtkTreeIter *iter);
+static void custom_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, gint column, GValue *value);
+static gboolean custom_model_iter_next (GtkTreeModel *tree_model, GtkTreeIter *iter);
+static gboolean custom_model_iter_children (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreeIter *parent);
+static gboolean custom_model_iter_has_child (GtkTreeModel *tree_model, GtkTreeIter *iter);
+static gint custom_model_iter_n_children (GtkTreeModel *tree_model, GtkTreeIter *iter);
+static gboolean custom_model_iter_nth_child (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreeIter *parent, gint n);
+static gboolean custom_model_iter_parent (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreeIter *child);
+static void custom_model_ref_node (GtkTreeModel *tree_model, GtkTreeIter *iter);
+static void custom_model_unref_node (GtkTreeModel *tree_model, GtkTreeIter *iter);
+
+GType
+custom_model_get_type (void)
+{
+  /* Some boilerplate type registration stuff */
+  static GType custom_model_type = 0;
+
+  if (!custom_model_type)
+  {
+    static const GTypeInfo custom_model_info =
+    {
+      sizeof (Custom_model_class),
+      NULL,                                         /* base_init */
+      NULL,                                         /* base_finalize */
+      (GClassInitFunc) custom_model_class_init,
+      NULL,                                         /* class finalize */
+      NULL,                                         /* class_data */
+      sizeof (Custom_model),
+      0,                                           /* n_preallocs */
+      (GInstanceInitFunc) custom_model_init
+    };
+
+    static const GInterfaceInfo tree_model_info =
+    {
+      (GInterfaceInitFunc) custom_model_tree_model_init,
+      NULL,
+      NULL
+    };
+
+    custom_model_type = g_type_register_static (G_TYPE_OBJECT, "Custom_model",
+                                               &custom_model_info, (GTypeFlags)0);
+
+    /* Here we register our GtkTreeModel interface with the type system */
+    g_type_add_interface_static (custom_model_type, GTK_TYPE_TREE_MODEL, &tree_model_info);
+  }
+
+  return custom_model_type;
+}
+
+/* more boilerplate GObject stuff */
+static void
+custom_model_class_init (Custom_model_class *klass)
+{
+  GObjectClass *object_class;
+
+  parent_class = (GObjectClass*) g_type_class_peek_parent (klass);
+  object_class = (GObjectClass*) klass;
+
+  object_class->finalize = custom_model_finalize;
+}
+
+static void
+custom_model_tree_model_init (GtkTreeModelIface *iface)
+{
+  iface->get_flags       = custom_model_get_flags;
+  iface->get_n_columns   = custom_model_get_n_columns;
+  iface->get_column_type = custom_model_get_column_type;
+  iface->get_iter        = custom_model_get_iter;
+  iface->get_path        = custom_model_get_path;
+  iface->get_value       = custom_model_get_value;
+  iface->iter_next       = custom_model_iter_next;
+  iface->iter_children   = custom_model_iter_children;
+  iface->iter_has_child  = custom_model_iter_has_child;
+  iface->iter_n_children = custom_model_iter_n_children;
+  iface->iter_nth_child  = custom_model_iter_nth_child;
+  iface->iter_parent     = custom_model_iter_parent;
+  iface->ref_node        = custom_model_ref_node;
+  iface->unref_node      = custom_model_unref_node;
+}
+
+/* called every time a new custom model object is created */
+static void
+custom_model_init (Custom_model *custom_model)
+{
+  debug_print("custom_model_init %p\n",custom_model);
+  do
+    {
+      custom_model->stamp = g_random_int ();
+    }
+  while (custom_model->stamp == 0);
+}
+
+/* called just before a custom model object is destroyed */
+static void
+custom_model_finalize (GObject *object)
+{
+  /* must chain up - finalize parent */
+  (* parent_class->finalize) (object);
+}
+
+/*****************************************************************************
+ * Tree Model interface stuff 
+ *****************************************************************************/
+
+#define UNWRAP_OPTION(id,expr)			\
+  value id##_aux = expr;			\
+  value id = Option_val(id##_aux,/* blank */,0)
+
+#define decode_iter_option(custom_model,iter)			\
+  (iter ? ml_some(decode_iter(custom_model,iter)) : Val_unit)
+
+void
+encode_iter(Custom_model *custom_model, GtkTreeIter *iter, value v)
+{
+  debug_print("encode_iter %p %p %p\n",custom_model,iter,(void*)v);
+  g_return_if_fail (IS_CUSTOM_MODEL (custom_model));
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_encode_iter");
+
+  value triple = callback2(caml_get_public_method(callback_object,method_hash),callback_object,v);
+  value v1 = Field(triple,0);
+  value v2 = Field(triple,1);
+  value v3 = Field(triple,2);
+
+  /* Ideally, the user would already have ensured all these were stable...
+     and in any case, it is always up to the user to ensure that they will
+     not get garbage collected */
+  if((Is_block(v1) && (char*)v1 < (char*)caml_young_end && (char*)v1 > (char*)caml_young_start) ||
+     (Is_block(v2) && (char*)v2 < (char*)caml_young_end && (char*)v2 > (char*)caml_young_start) ||
+     (Is_block(v3) && (char*)v3 < (char*)caml_young_end && (char*)v3 > (char*)caml_young_start)) 
+    {
+      caml_register_global_root (&v1);
+      caml_register_global_root (&v2);
+      caml_register_global_root (&v3);
+      caml_minor_collection();
+      caml_remove_global_root (&v1);
+      caml_remove_global_root (&v2);
+      caml_remove_global_root (&v3);
+    }
+
+  iter->stamp = custom_model->stamp;
+  iter->user_data = (gpointer) v1;
+  iter->user_data2 = (gpointer) v2;
+  iter->user_data3 = (gpointer) v3;
+}
+
+/* a slightly relaxed version of something already in lablgtk2 */
+CAMLprim value ml_stable_copy_prime (value v)
+{
+  if (Is_block(v) && (char*)(v) < (char*)caml_young_end && (char*)(v) > (char*)caml_young_start)
+    {
+        CAMLparam1(v);
+        mlsize_t i, wosize = Wosize_val(v);
+        int tag = Tag_val(v);
+        value ret;
+        ret = alloc_shr (wosize, tag);
+        for (i=0; i < wosize; i++) Field(ret,i) = Field(v,i);
+        CAMLreturn(ret);
+    }
+    return v;
+}
+
+value
+decode_iter(Custom_model *custom_model, GtkTreeIter *iter)
+{
+  debug_print("decode_iter %p %p:%ld:%ld:%ld\n",custom_model,PRINT4(iter));
+  g_return_val_if_fail (IS_CUSTOM_MODEL (custom_model), 0);
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_decode_iter");
+  
+  return callback4(caml_get_public_method(callback_object,method_hash),callback_object,
+		      (value)iter->user_data,
+		      (value)iter->user_data2,
+		      (value)iter->user_data3);
+}
+  
+static GtkTreeModelFlags
+custom_model_get_flags (GtkTreeModel *tree_model)
+{
+  debug_print("get_flags %p\n",tree_model);
+  g_return_val_if_fail (IS_CUSTOM_MODEL (tree_model), 0);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_flags");
+
+  value flags_list = callback(caml_get_public_method(callback_object,method_hash),callback_object);
+
+  GtkTreeModelFlags flags = (GtkTreeModelFlags) 0;
+  static value iter_persist_hash=0;
+  if (iter_persist_hash==0) iter_persist_hash=caml_hash_variant("ITERS_PERSIST");
+  static value list_only_hash=0;
+  if (list_only_hash==0) list_only_hash=caml_hash_variant("LIST_ONLY");
+
+  while (flags_list != Val_int(0)) 
+    {
+      value flag = Field(flags_list,0);
+      flags_list = Field(flags_list,1);
+      if (flag == iter_persist_hash) 
+	flags = flags | GTK_TREE_MODEL_ITERS_PERSIST;
+      if (flag == list_only_hash) 
+	flags = flags | GTK_TREE_MODEL_LIST_ONLY;
+    }
+  return flags;
+}
+
+static gint
+custom_model_get_n_columns (GtkTreeModel *tree_model)
+{
+  debug_print("get_n_columns %p\n",tree_model);
+  g_return_val_if_fail (IS_CUSTOM_MODEL (tree_model), 0);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_n_columns");
+
+  value n_columns = callback(caml_get_public_method(callback_object,method_hash),callback_object);
+  return Int_val(n_columns);
+}
+
+static GType
+custom_model_get_column_type (GtkTreeModel *tree_model, gint index)
+{
+  debug_print("get_column_type %p %d\n",tree_model,index);
+  g_return_val_if_fail (IS_CUSTOM_MODEL (tree_model), G_TYPE_INVALID);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_get_column_type");
+
+  value t = callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+			   Val_int(index));
+  return GType_val(t);
+}
+
+static gboolean
+custom_model_get_iter (GtkTreeModel *tree_model,
+                      GtkTreeIter  *iter,
+                      GtkTreePath  *path)
+{
+  debug_print("get_iter %p %p %s\n",tree_model,iter,PATH_STRING(path));
+  g_return_val_if_fail (iter != NULL, FALSE);
+  g_return_val_if_fail (path != NULL, FALSE);
+  g_return_val_if_fail (IS_CUSTOM_MODEL (tree_model), FALSE);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_get_iter");
+
+  /* This copy is needed because GTK will eventually free the path;
+     and Val_GtkTreePath creates a Caml value which frees the path upon
+     finalization; don't want to free twice!  The alternative (of
+     avoiding both copy and finalization) means trusting the OCaml
+     programmer not to store the path somewhere... */
+  UNWRAP_OPTION(res,callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+			      Val_GtkTreePath(gtk_tree_path_copy(path))));
+
+  if (res) {
+    encode_iter(custom_model,iter,res);
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+static GtkTreePath *
+custom_model_get_path (GtkTreeModel *tree_model,
+                      GtkTreeIter  *iter)
+{
+  debug_print("get_path %p %p:%ld:%ld:%ld\n",tree_model,PRINT4(iter));
+  g_return_val_if_fail(iter != NULL, NULL);
+  g_return_val_if_fail (IS_CUSTOM_MODEL (tree_model), NULL);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  g_return_val_if_fail (iter->stamp == custom_model->stamp, NULL);
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_get_path");
+
+  /* This copy is needed because Caml will eventually free the path from
+     the callback when that Caml value is finalized; and GTK will eventually
+     free the path we return to it. */
+  value path = callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+			 decode_iter(custom_model,iter));
+  return gtk_tree_path_copy(GtkTreePath_val(path));
+}
+
+static void
+custom_model_get_value (GtkTreeModel *tree_model,
+                       GtkTreeIter  *iter,
+                       gint          column,
+                       GValue       *value_arg)
+{
+  debug_print("get_value %p %p:%ld:%ld:%ld %d\n",tree_model,PRINT4(iter),column);
+  g_return_if_fail(iter != NULL);
+  g_return_if_fail (IS_CUSTOM_MODEL (tree_model));
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  g_return_if_fail (iter->stamp == custom_model->stamp);
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_get_value");
+  
+  value row = decode_iter(custom_model,iter);
+  value wrap = Val_GValue_wrap(value_arg); 
+  value cb = caml_get_public_method(callback_object,method_hash);
+  callback4(cb,callback_object,
+	    row,Val_int(column),wrap);
+}
+
+static gboolean
+custom_model_iter_next (GtkTreeModel  *tree_model,
+                       GtkTreeIter   *iter)
+{
+  debug_print("iter_next %p %p:%ld:%ld:%ld\n",tree_model,PRINT4(iter));
+  g_return_val_if_fail(iter != NULL, FALSE);
+  g_return_val_if_fail(IS_CUSTOM_MODEL (tree_model),FALSE);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  g_return_val_if_fail (iter->stamp == custom_model->stamp, FALSE);
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_next");
+
+  value row = decode_iter(custom_model, iter);
+  UNWRAP_OPTION(res,callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+			      row));
+  if (res) {
+    encode_iter(custom_model,iter,res);
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+static gboolean
+custom_model_iter_children (GtkTreeModel *tree_model,
+                           GtkTreeIter  *iter,
+                           GtkTreeIter  *parent)
+{
+  debug_print("iter_children %p %p %p:%ld:%ld:%ld\n",tree_model,iter,PRINT4(parent));
+  g_return_val_if_fail (iter != NULL, FALSE);
+  g_return_val_if_fail(IS_CUSTOM_MODEL (tree_model),FALSE);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  g_return_val_if_fail (parent == NULL || parent->stamp == custom_model->stamp, FALSE);
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_children");
+
+  value arg = decode_iter_option(custom_model,parent);
+  UNWRAP_OPTION(res, callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+			       arg));
+  if (res) {
+    encode_iter(custom_model,iter,res);
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+static gboolean
+custom_model_iter_has_child (GtkTreeModel *tree_model,
+                            GtkTreeIter  *iter)
+{
+  debug_print("iter_has_child %p %p:%ld:%ld:%ld\n",tree_model,PRINT4(iter));
+  g_return_val_if_fail (iter != NULL, FALSE);
+  g_return_val_if_fail(IS_CUSTOM_MODEL (tree_model),FALSE);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  g_return_val_if_fail (iter->stamp == custom_model->stamp, FALSE);
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_has_child");
+
+  value row = decode_iter(custom_model,iter);
+  return Bool_val(callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+			    row));
+}
+
+static gint
+custom_model_iter_n_children (GtkTreeModel *tree_model,
+                             GtkTreeIter  *iter)
+{
+  debug_print("iter_n_children %p %p:%ld:%ld:%ld\n",tree_model,PRINT4(iter));
+  g_return_val_if_fail(IS_CUSTOM_MODEL (tree_model),0);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  g_return_val_if_fail (iter == NULL || iter->stamp == custom_model->stamp, 0);
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_n_children");
+
+  value arg = decode_iter_option(custom_model,iter);
+  return Int_val(callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+			   arg));
+}
+
+static gboolean
+custom_model_iter_nth_child (GtkTreeModel *tree_model,
+                            GtkTreeIter  *iter,
+                            GtkTreeIter  *parent,
+                            gint          n)
+{
+  debug_print("iter_nth_child %p %p %p:%ld:%ld:%ld %d\n",tree_model,iter,PRINT4(parent),n);
+  g_return_val_if_fail(iter != NULL, FALSE);
+  g_return_val_if_fail(IS_CUSTOM_MODEL (tree_model),FALSE);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  g_return_val_if_fail (parent == NULL || parent->stamp == custom_model->stamp, FALSE);
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_nth_child");
+
+  value arg = decode_iter_option(custom_model,parent);
+  UNWRAP_OPTION(res,callback3(caml_get_public_method(callback_object,method_hash),callback_object,
+			      arg,Val_int(n)));
+  if (res) {
+    encode_iter(custom_model,iter,res);
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+static gboolean
+custom_model_iter_parent (GtkTreeModel *tree_model,
+                         GtkTreeIter  *iter,
+                         GtkTreeIter  *child)
+{
+  debug_print("iter_parent %p %p %p:%ld:%ld:%ld\n",tree_model,iter,PRINT4(child));
+  g_return_val_if_fail(iter != NULL, FALSE);
+  g_return_val_if_fail(IS_CUSTOM_MODEL (tree_model),FALSE);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  g_return_val_if_fail (child != NULL, FALSE);
+  g_return_val_if_fail (child->stamp == custom_model->stamp, FALSE);
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_parent");
+
+  value row = decode_iter(custom_model,child);
+  UNWRAP_OPTION(res,callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+			      row));
+  if (res) {
+    encode_iter(custom_model,iter,res);
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+static void
+custom_model_ref_node (GtkTreeModel *tree_model, GtkTreeIter *iter)
+{
+  //  debug_print("ref_node %p %p:%ld:%ld:%ld\n",tree_model,PRINT4(iter));
+   g_return_if_fail(iter != NULL); 
+  g_return_if_fail (IS_CUSTOM_MODEL (tree_model));
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  g_return_if_fail (iter->stamp == custom_model->stamp);
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_ref_node");
+  value row = decode_iter(custom_model,iter);
+  callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+	    row);
+}
+
+static void
+custom_model_unref_node (GtkTreeModel *tree_model, GtkTreeIter *iter)
+{
+  debug_print("unref_node %p %p:%ld:%ld:%ld\n",tree_model,PRINT4(iter));
+  g_return_if_fail(iter != NULL);
+  g_return_if_fail (IS_CUSTOM_MODEL (tree_model));
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  g_return_if_fail (iter->stamp == custom_model->stamp);
+  value callback_object = custom_model->callback_object;
+  static value method_hash = 0;
+  if (method_hash==0) method_hash = caml_hash_variant("custom_unref_node");
+
+  value row = decode_iter(custom_model,iter);
+  callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+	    row);
+}
+
+/*****************************************************************************
+ * Creating a new custom model object
+ *****************************************************************************/
+
+Custom_model *
+custom_model_new (void)
+{
+  Custom_model *new_custom_model;
+  new_custom_model = (Custom_model*) g_object_new (TYPE_CUSTOM_MODEL, NULL);
+  g_assert( new_custom_model != NULL );
+  return new_custom_model;
+}
+
+CAMLprim value ml_custom_model_create(value unit)
+{
+  Custom_model *new_custom_model = custom_model_new();
+  return Val_GObject_new(&new_custom_model->parent);
+}
+
+CAMLprim value ml_register_custom_model_callback_object(value custom_model, 
+							value callback_object)
+{
+  GObject *obj = GObject_val(custom_model);
+  g_return_val_if_fail (IS_CUSTOM_MODEL (obj),Val_unit);
+  if(Is_block(callback_object) && 
+      (char*)callback_object < (char*)caml_young_end && 
+      (char*)callback_object > (char*)caml_young_start)
+    {
+      caml_register_global_root (&callback_object);
+      caml_minor_collection();
+      caml_remove_global_root (&callback_object);
+    }
+  debug_print("register_custom_model_callback_object %p %p\n",obj,(void*)callback_object);
+  ((Custom_model *)obj)->callback_object = callback_object;
+  return Val_unit;
+}
+
+/*****************************************************************************
+ * Caml callbacks for signals
+ *****************************************************************************/
+
+CAMLprim value ml_custom_model_row_inserted (value tree_model_val, value path, value row)
+{
+  GtkTreeModel *tree_model = GtkTreeModel_val(tree_model_val);
+  g_return_val_if_fail(IS_CUSTOM_MODEL(tree_model), Val_unit);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  GtkTreeIter iter;
+  encode_iter (custom_model,&iter,row);
+  debug_print("row_inserted %p %s %p:%ld:%ld:%ld\n",custom_model,
+              PATH_STRING(GtkTreePath_val(path)),PRINT4_VALID(&iter));
+  gtk_tree_model_row_inserted (tree_model, 
+			       GtkTreePath_val(path), 
+			       &iter);
+  return Val_unit;
+}
+
+CAMLprim value ml_custom_model_row_changed (value tree_model_val, value path, value row)
+{
+  GtkTreeModel *tree_model = GtkTreeModel_val(tree_model_val);
+  g_return_val_if_fail(IS_CUSTOM_MODEL(tree_model), Val_unit);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  GtkTreeIter iter;
+  encode_iter (custom_model,&iter,row);
+  debug_print("row_changed %p %s %p:%ld:%ld:%ld\n",
+              custom_model,PATH_STRING(GtkTreePath_val(path)),PRINT4_VALID(&iter));
+  gtk_tree_model_row_changed (tree_model, 
+			       GtkTreePath_val(path), 
+			       &iter);
+  return Val_unit;
+}
+
+CAMLprim value ml_custom_model_row_has_child_toggled (value tree_model_val, value path, value row)
+{
+  GtkTreeModel *tree_model = GtkTreeModel_val(tree_model_val);
+  g_return_val_if_fail(IS_CUSTOM_MODEL(tree_model), Val_unit);
+  Custom_model *custom_model = (Custom_model *) tree_model;
+  GtkTreeIter iter;
+  encode_iter (custom_model,&iter,row);
+  debug_print("row_has_child_toggled %p %s %p:%ld:%ld:%ld\n",custom_model,
+              PATH_STRING(GtkTreePath_val(path)),PRINT4_VALID(&iter));
+  gtk_tree_model_row_has_child_toggled (tree_model, 
+			       GtkTreePath_val(path), 
+			       &iter);
+  return Val_unit;
+}
+
+CAMLprim value ml_custom_model_row_deleted (value tree_model_val, value path)
+{
+  debug_print("row_deleted %p %s\n",(GtkTreeModel_val(tree_model_val)),PATH_STRING(GtkTreePath_val(path)));
+  gtk_tree_model_row_deleted (GtkTreeModel_val(tree_model_val), 
+			      GtkTreePath_val(path));
+  return Val_unit;
+}
+
+CAMLprim value ml_custom_model_rows_reordered (value tree_model_val, value path, value row_option, value new_order)
+{
+  debug_print("rows_reordered\n");
+  UNWRAP_OPTION(row, row_option);
+  if (row) {
+    GtkTreeModel *tree_model = GtkTreeModel_val(tree_model_val);
+    g_return_val_if_fail(IS_CUSTOM_MODEL(tree_model), Val_unit);
+    Custom_model *custom_model = (Custom_model *) tree_model;
+    GtkTreeIter iter;
+    encode_iter(custom_model,&iter,row);
+    gtk_tree_model_rows_reordered (tree_model, 
+				   GtkTreePath_val(path), 
+				   &iter,
+				   (gint*) &Field(new_order,0));
+  }
+  else {
+    gtk_tree_model_rows_reordered (GtkTreeModel_val(tree_model_val), 
+				   GtkTreePath_val(path), 
+				   NULL,
+				   (gint*) &Field(new_order,0));
+  }
+  return Val_unit;
+}

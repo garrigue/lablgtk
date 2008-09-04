@@ -493,6 +493,7 @@ object
   inherit GObj.widget
   val obj : 'a obj
   method as_view : text_view obj
+  method accepts_tab : bool
   method add_child_at_anchor : GObj.widget -> child_anchor -> unit
   method add_child_in_window :
     child:GObj.widget ->
@@ -536,6 +537,7 @@ object
     ?within_margin:float ->
     ?use_align:bool -> ?xalign:float -> ?yalign:float -> mark -> unit
   (** @param use_align default value is [false] *)
+  method set_accepts_tab : bool -> unit
   method set_border_window_size :
     typ:[ `BOTTOM | `LEFT | `RIGHT | `TOP] -> size:int -> unit
   method set_buffer : buffer -> unit
@@ -570,6 +572,7 @@ val view :
   ?cursor_visible:bool ->
   ?justification:Tags.justification ->
   ?wrap_mode:Tags.wrap_mode ->
+  ?accepts_tab:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
