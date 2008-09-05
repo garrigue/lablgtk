@@ -798,7 +798,8 @@ Unsupported_26(gtk_icon_view_item_activated)
 
 extern void caml_minor_collection(void);
 
-#if 0
+#if 0 
+/* Debugging code */
 char *buf1;
 char buf2[1000];
 #define USER_DATA(iter) (iter?(long)((iter)->user_data):0)
@@ -821,6 +822,13 @@ value callback4(value closure, value arg1, value arg2, value arg3, value arg4)
   arg[3] = arg4;
   return callbackN(closure, 4, arg);
 }
+
+#define ACCESS_PUBLIC_METHOD(method,object, name)       \
+  static value method_hash = 0; \
+  if (method_hash==0) method_hash = caml_hash_variant(name); \
+  value method = caml_get_public_method(object,method_hash); \
+  if ((void*)method == NULL) { printf("Internal error: could not access method '%s'\n", name); exit(2);};
+
 
 /*****************************************************************************
  * GObject stuff
@@ -983,10 +991,9 @@ encode_iter(Custom_model *custom_model, GtkTreeIter *iter, value v)
   debug_print("encode_iter %p %p %p\n",custom_model,iter,(void*)v);
   g_return_if_fail (IS_CUSTOM_MODEL (custom_model));
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_encode_iter");
+  ACCESS_PUBLIC_METHOD(method,callback_object,"custom_encode_iter")
 
-  value triple = callback2(caml_get_public_method(callback_object,method_hash),callback_object,v);
+  value triple = callback2(method,callback_object,v);
   value v1 = Field(triple,0);
   value v2 = Field(triple,1);
   value v3 = Field(triple,2);
@@ -1013,32 +1020,16 @@ encode_iter(Custom_model *custom_model, GtkTreeIter *iter, value v)
   iter->user_data3 = (gpointer) v3;
 }
 
-/* a slightly relaxed version of something already in lablgtk2 */
-CAMLprim value ml_stable_copy_prime (value v)
-{
-  if (Is_block(v) && (char*)(v) < (char*)caml_young_end && (char*)(v) > (char*)caml_young_start)
-    {
-        CAMLparam1(v);
-        mlsize_t i, wosize = Wosize_val(v);
-        int tag = Tag_val(v);
-        value ret;
-        ret = alloc_shr (wosize, tag);
-        for (i=0; i < wosize; i++) Field(ret,i) = Field(v,i);
-        CAMLreturn(ret);
-    }
-    return v;
-}
-
 value
 decode_iter(Custom_model *custom_model, GtkTreeIter *iter)
 {
   debug_print("decode_iter %p %p:%ld:%ld:%ld\n",custom_model,PRINT4(iter));
   g_return_val_if_fail (IS_CUSTOM_MODEL (custom_model), 0);
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_decode_iter");
-  
-  return callback4(caml_get_public_method(callback_object,method_hash),callback_object,
+
+  ACCESS_PUBLIC_METHOD(method, callback_object, "custom_decode_iter")
+
+  return callback4(method,callback_object,
 		      (value)iter->user_data,
 		      (value)iter->user_data2,
 		      (value)iter->user_data3);
@@ -1051,10 +1042,9 @@ custom_model_get_flags (GtkTreeModel *tree_model)
   g_return_val_if_fail (IS_CUSTOM_MODEL (tree_model), 0);
   Custom_model *custom_model = (Custom_model *) tree_model;
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_flags");
 
-  value flags_list = callback(caml_get_public_method(callback_object,method_hash),callback_object);
+  ACCESS_PUBLIC_METHOD(method, callback_object, "custom_flags")
+  value flags_list = callback(method, callback_object);
 
   GtkTreeModelFlags flags = (GtkTreeModelFlags) 0;
   static value iter_persist_hash=0;
@@ -1081,10 +1071,8 @@ custom_model_get_n_columns (GtkTreeModel *tree_model)
   g_return_val_if_fail (IS_CUSTOM_MODEL (tree_model), 0);
   Custom_model *custom_model = (Custom_model *) tree_model;
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_n_columns");
-
-  value n_columns = callback(caml_get_public_method(callback_object,method_hash),callback_object);
+  ACCESS_PUBLIC_METHOD(method,callback_object,"custom_n_columns")
+  value n_columns = callback(method,callback_object);
   return Int_val(n_columns);
 }
 
@@ -1095,11 +1083,10 @@ custom_model_get_column_type (GtkTreeModel *tree_model, gint index)
   g_return_val_if_fail (IS_CUSTOM_MODEL (tree_model), G_TYPE_INVALID);
   Custom_model *custom_model = (Custom_model *) tree_model;
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_get_column_type");
 
-  value t = callback2(caml_get_public_method(callback_object,method_hash),callback_object,
-			   Val_int(index));
+  ACCESS_PUBLIC_METHOD(method,callback_object,"custom_get_column_type")
+
+  value t = callback2(method,callback_object, Val_int(index));
   return GType_val(t);
 }
 
@@ -1114,15 +1101,13 @@ custom_model_get_iter (GtkTreeModel *tree_model,
   g_return_val_if_fail (IS_CUSTOM_MODEL (tree_model), FALSE);
   Custom_model *custom_model = (Custom_model *) tree_model;
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_get_iter");
-
+  ACCESS_PUBLIC_METHOD(method,callback_object,"custom_get_iter")
   /* This copy is needed because GTK will eventually free the path;
      and Val_GtkTreePath creates a Caml value which frees the path upon
      finalization; don't want to free twice!  The alternative (of
      avoiding both copy and finalization) means trusting the OCaml
      programmer not to store the path somewhere... */
-  UNWRAP_OPTION(res,callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+  UNWRAP_OPTION(res,callback2(method,callback_object,
 			      Val_GtkTreePath(gtk_tree_path_copy(path))));
 
   if (res) {
@@ -1144,13 +1129,12 @@ custom_model_get_path (GtkTreeModel *tree_model,
   Custom_model *custom_model = (Custom_model *) tree_model;
   g_return_val_if_fail (iter->stamp == custom_model->stamp, NULL);
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_get_path");
+  ACCESS_PUBLIC_METHOD(method, callback_object,"custom_get_path")
 
   /* This copy is needed because Caml will eventually free the path from
      the callback when that Caml value is finalized; and GTK will eventually
      free the path we return to it. */
-  value path = callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+  value path = callback2(method,callback_object,
 			 decode_iter(custom_model,iter));
   return gtk_tree_path_copy(GtkTreePath_val(path));
 }
@@ -1167,13 +1151,13 @@ custom_model_get_value (GtkTreeModel *tree_model,
   Custom_model *custom_model = (Custom_model *) tree_model;
   g_return_if_fail (iter->stamp == custom_model->stamp);
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_get_value");
-  
+
   value row = decode_iter(custom_model,iter);
   value wrap = Val_GValue_wrap(value_arg); 
-  value cb = caml_get_public_method(callback_object,method_hash);
-  callback4(cb,callback_object,
+
+  ACCESS_PUBLIC_METHOD(method,callback_object,"custom_get_value")
+
+  callback4(method,callback_object,
 	    row,Val_int(column),wrap);
 }
 
@@ -1187,11 +1171,9 @@ custom_model_iter_next (GtkTreeModel  *tree_model,
   Custom_model *custom_model = (Custom_model *) tree_model;
   g_return_val_if_fail (iter->stamp == custom_model->stamp, FALSE);
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_next");
-
+  ACCESS_PUBLIC_METHOD(method,callback_object,"custom_iter_next")
   value row = decode_iter(custom_model, iter);
-  UNWRAP_OPTION(res,callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+  UNWRAP_OPTION(res,callback2(method,callback_object,
 			      row));
   if (res) {
     encode_iter(custom_model,iter,res);
@@ -1213,11 +1195,9 @@ custom_model_iter_children (GtkTreeModel *tree_model,
   Custom_model *custom_model = (Custom_model *) tree_model;
   g_return_val_if_fail (parent == NULL || parent->stamp == custom_model->stamp, FALSE);
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_children");
-
+  ACCESS_PUBLIC_METHOD(method,callback_object,"custom_iter_children")
   value arg = decode_iter_option(custom_model,parent);
-  UNWRAP_OPTION(res, callback2(caml_get_public_method(callback_object,method_hash),callback_object,
+  UNWRAP_OPTION(res, callback2(method,callback_object,
 			       arg));
   if (res) {
     encode_iter(custom_model,iter,res);
@@ -1238,12 +1218,10 @@ custom_model_iter_has_child (GtkTreeModel *tree_model,
   Custom_model *custom_model = (Custom_model *) tree_model;
   g_return_val_if_fail (iter->stamp == custom_model->stamp, FALSE);
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_has_child");
+  ACCESS_PUBLIC_METHOD(method, callback_object,"custom_iter_has_child")
 
   value row = decode_iter(custom_model,iter);
-  return Bool_val(callback2(caml_get_public_method(callback_object,method_hash),callback_object,
-			    row));
+  return Bool_val(callback2(method,callback_object, row));
 }
 
 static gint
@@ -1255,12 +1233,9 @@ custom_model_iter_n_children (GtkTreeModel *tree_model,
   Custom_model *custom_model = (Custom_model *) tree_model;
   g_return_val_if_fail (iter == NULL || iter->stamp == custom_model->stamp, 0);
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_n_children");
-
+  ACCESS_PUBLIC_METHOD(method,callback_object, "custom_iter_n_children")
   value arg = decode_iter_option(custom_model,iter);
-  return Int_val(callback2(caml_get_public_method(callback_object,method_hash),callback_object,
-			   arg));
+  return Int_val(callback2(method,callback_object, arg));
 }
 
 static gboolean
@@ -1275,12 +1250,10 @@ custom_model_iter_nth_child (GtkTreeModel *tree_model,
   Custom_model *custom_model = (Custom_model *) tree_model;
   g_return_val_if_fail (parent == NULL || parent->stamp == custom_model->stamp, FALSE);
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_nth_child");
+  ACCESS_PUBLIC_METHOD(method, callback_object, "custom_iter_nth_child")
 
   value arg = decode_iter_option(custom_model,parent);
-  UNWRAP_OPTION(res,callback3(caml_get_public_method(callback_object,method_hash),callback_object,
-			      arg,Val_int(n)));
+  UNWRAP_OPTION(res,callback3(method, callback_object, arg, Val_int(n)));
   if (res) {
     encode_iter(custom_model,iter,res);
     return TRUE;
@@ -1302,12 +1275,10 @@ custom_model_iter_parent (GtkTreeModel *tree_model,
   g_return_val_if_fail (child != NULL, FALSE);
   g_return_val_if_fail (child->stamp == custom_model->stamp, FALSE);
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_iter_parent");
-
+  ACCESS_PUBLIC_METHOD(method,callback_object, "custom_iter_parent")
   value row = decode_iter(custom_model,child);
-  UNWRAP_OPTION(res,callback2(caml_get_public_method(callback_object,method_hash),callback_object,
-			      row));
+  UNWRAP_OPTION(res,callback2(method,callback_object,row));
+
   if (res) {
     encode_iter(custom_model,iter,res);
     return TRUE;
@@ -1320,17 +1291,16 @@ custom_model_iter_parent (GtkTreeModel *tree_model,
 static void
 custom_model_ref_node (GtkTreeModel *tree_model, GtkTreeIter *iter)
 {
-  //  debug_print("ref_node %p %p:%ld:%ld:%ld\n",tree_model,PRINT4(iter));
-   g_return_if_fail(iter != NULL); 
+  debug_print("ref_node %p %p:%ld:%ld:%ld\n",tree_model,PRINT4(iter));
+  g_return_if_fail(iter != NULL); 
   g_return_if_fail (IS_CUSTOM_MODEL (tree_model));
   Custom_model *custom_model = (Custom_model *) tree_model;
   g_return_if_fail (iter->stamp == custom_model->stamp);
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_ref_node");
+
+  ACCESS_PUBLIC_METHOD(method, callback_object, "custom_ref_node")
   value row = decode_iter(custom_model,iter);
-  callback2(caml_get_public_method(callback_object,method_hash),callback_object,
-	    row);
+  callback2(method, callback_object, row);
 }
 
 static void
@@ -1342,12 +1312,10 @@ custom_model_unref_node (GtkTreeModel *tree_model, GtkTreeIter *iter)
   Custom_model *custom_model = (Custom_model *) tree_model;
   g_return_if_fail (iter->stamp == custom_model->stamp);
   value callback_object = custom_model->callback_object;
-  static value method_hash = 0;
-  if (method_hash==0) method_hash = caml_hash_variant("custom_unref_node");
+  ACCESS_PUBLIC_METHOD(method, callback_object, "custom_unref_node")
 
   value row = decode_iter(custom_model,iter);
-  callback2(caml_get_public_method(callback_object,method_hash),callback_object,
-	    row);
+  callback2(method, callback_object, row);
 }
 
 /*****************************************************************************

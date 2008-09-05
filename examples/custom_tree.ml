@@ -31,10 +31,10 @@ let col_bool = column_list#add Gobject.Data.boolean;;
 let col_int = column_list#add Gobject.Data.int;;
 
 (** The custom model itself *)
-class custom_tree_class abstract model column_list =
+class custom_tree_class column_list =
 object (self)
   inherit 
-    [custom_tree,custom_tree,unit,unit] GTree.custom_tree_model abstract model column_list
+    [custom_tree,custom_tree,unit,unit] GTree.custom_tree_model column_list
 
   method custom_encode_iter cr = cr, (), ()
   method custom_decode_iter cr () () = cr
@@ -136,9 +136,7 @@ let fill_model t =
   done
 
 (* At this time making it a global root is safer. *)
-let custom_tree = GTree.make_custom_tree_model 
-  (fun a o cols -> new custom_tree_class a o cols) 
-  column_list
+let custom_tree = new custom_tree_class column_list
 
 let create_view_and_model () : GTree.view =
   fill_model custom_tree;
