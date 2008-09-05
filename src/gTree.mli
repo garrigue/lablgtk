@@ -720,16 +720,8 @@ class type virtual ['obj,'row,'a,'b,'c] custom_tree_model_type =
 object
   inherit model
   val obj : 'obj
-  val n_columns : int
-  val columns : Gobject.g_type array
-  (** For internal use only. You prably do not want to override these methods. *)
-  method custom_n_columns : int
-  method custom_get_column_type : int -> Gobject.g_type
-  method custom_get_value :
-    'row -> int -> Gobject.g_value -> unit
-
   method connect : model_signals
-    
+
   (** Signal emitters *)
   method custom_row_changed : Gtk.tree_path -> 'row -> unit
   method custom_row_deleted : Gtk.tree_path -> unit
@@ -743,11 +735,14 @@ object
   method custom_unref_node : 'row -> unit
   method custom_ref_node : 'row -> unit
 
+  method custom_flags : GtkEnums.tree_model_flags list
+
   (** Functions of the custom model. They must act exactly as described in the documentation 
       of Gtk orelse Gtk may emit fatal errors. *)
   method virtual custom_get_iter : Gtk.tree_path -> 'row option
   method virtual custom_get_path : 'row -> Gtk.tree_path
-  method virtual custom_value : 'a. Gobject.g_type -> 'row -> column:int -> 'a Gobject.data_set
+  method virtual custom_value : Gobject.g_type -> 'row -> column:int -> Gobject.basic
+
     (** [custom_value typ row ~column] is the value to set in [row] for column [column].
         It must must be of the type [typ], i.e. the type declared for column  [column]. *)
     
@@ -761,17 +756,15 @@ object
   method virtual custom_decode_iter : 'a -> 'b -> 'c -> 'row
   method virtual custom_encode_iter : 'row -> 'a * 'b * 'c
 
+  (** For internal use only. Do not override these methods. *)
+  method custom_n_columns : int
+  method custom_get_column_type : int -> Gobject.g_type
+  method custom_get_value :
+    'row -> int -> Gobject.g_value -> unit
+
 end
 
-type abstract
-(** A base class to inherit from to make a custom tree model. 
-    You cannot instantiate it directly: use [make_custom_tree_model]. *)
+(** A base class to inherit from to make a custom tree model. *)
 class virtual ['row,'a,'b,'c] custom_tree_model : 
-  abstract 
-  -> (Gtk.tree_model_custom as 'obj) 
-  -> column_list 
-  -> ['obj,'row,'a,'b,'c] custom_tree_model_type
+  column_list -> [Gtk.tree_model_custom,'row,'a,'b,'c] custom_tree_model_type
   
-val make_custom_tree_model : 
-  (abstract -> (Gtk.tree_model_custom as 'obj) -> column_list ->  
-     (('obj,'row,'a,'b,'c) #custom_tree_model_type as 'model)) -> column_list ->  'model

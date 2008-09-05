@@ -688,13 +688,14 @@ object
   method custom_unref_node : 'row -> unit
   method custom_ref_node : 'row -> unit
 
+  method custom_flags : GtkEnums.tree_model_flags list
 
   method virtual custom_get_iter : Gtk.tree_path -> 'row option
   method virtual custom_get_path : 'row -> Gtk.tree_path
   method custom_get_value :
     'row -> int -> Gobject.g_value -> unit
 
-  method virtual custom_value : 'a. Gobject.g_type -> 'row -> column:int -> 'a Gobject.data_set
+  method virtual custom_value : 'a. Gobject.g_type -> 'row -> column:int -> Gobject.basic
   method virtual custom_iter_children : 'row option -> 'row option
   method virtual custom_iter_has_child : 'row -> bool
   method virtual custom_iter_n_children : 'row option -> int
@@ -707,9 +708,10 @@ object
 
 end
 
-type abstract = unit
-class virtual ['row,'a,'b,'c] custom_tree_model () obj (column_list:column_list) = object (self)
-  inherit model obj
+class virtual ['row,'a,'b,'c] custom_tree_model (column_list:column_list) = 
+  let obj = (GtkTree.CustomModel.create ()) in
+object (self)
+  inherit model (GtkTree.CustomModel.create ())
   method connect = new model_signals obj  
 
   inherit ['row,'a,'b,'c] GtkTree.CustomModel.callback
@@ -720,7 +722,7 @@ class virtual ['row,'a,'b,'c] custom_tree_model () obj (column_list:column_list)
   method custom_get_value (row:'row) (column:int) (value:Gobject.g_value) =
     Gobject.Value.init value (columns.(column));
     if column >=0 && column <n_columns then
-      let value_to_set = self#custom_value columns.(column) row ~column in
+      let (#basic as value_to_set) = self#custom_value columns.(column) row ~column in
       try 
         Gobject.Value.set value value_to_set
       with Failure _ -> 
@@ -729,7 +731,7 @@ class virtual ['row,'a,'b,'c] custom_tree_model () obj (column_list:column_list)
            ^" of type "^ (Gobject.Type.name (Gobject.Value.get_type value)))
     else invalid_arg ("custom_get_value: invalid column id "^string_of_int column)
 
-  method virtual custom_value : 'a. Gobject.g_type -> 'row -> column:int -> 'a Gobject.data_set
+  method virtual custom_value : 'a. Gobject.g_type -> 'row -> column:int -> Gobject.basic
 
   method custom_get_column_type n : Gobject.g_type = 
     if 0 <= n && n < n_columns then columns.(n)
@@ -745,12 +747,9 @@ class virtual ['row,'a,'b,'c] custom_tree_model () obj (column_list:column_list)
     CustomModel.custom_row_deleted obj path
   method custom_rows_reordered path (iter_opt:'row option) new_order =
     CustomModel.custom_rows_reordered obj path iter_opt new_order
-
-  initializer GtkTree.CustomModel.register_callback obj self
+  method custom_flags : GtkEnums.tree_model_flags list = []
+  initializer 
+    GtkTree.CustomModel.register_callback obj self;
+    column_list#lock ();
+    Hashtbl.add model_ids(Gobject.get_oid obj) column_list#id
 end
-
-let make_custom_tree_model custom_model (cols :column_list) =
-  cols#lock ();
-  let store = (GtkTree.CustomModel.create ()) in
-  Hashtbl.add model_ids(Gobject.get_oid store) cols#id;
-  custom_model () store cols

@@ -377,12 +377,12 @@ module IconView = IconView
 
 module CustomModel = struct
   
-  (* Do not change the name of this methods: they are hard coded in ml_gtktree.c *)
+  (* Do not change the name of this methods: they are hard coded in ml_gtktree.c.
+     They must remain public. *)
   class virtual ['row,'a,'b,'c] callback = object
     method virtual custom_encode_iter : 'row -> 'a * 'b * 'c
     method virtual custom_decode_iter : 'a -> 'b -> 'c -> 'row
-
-    method private virtual custom_n_columns : int
+    method virtual custom_n_columns : int
     method virtual custom_get_column_type : int -> Gobject.g_type
     method virtual custom_get_iter : Gtk.tree_path -> 'row option
     method virtual custom_get_path : 'row -> Gtk.tree_path
