@@ -29,7 +29,7 @@
 #include <caml/memory.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
-
+#include <caml/printexc.h>
 #include "wrappers.h"
 #include "ml_glib.h"
 #include "ml_gobject.h"
@@ -372,6 +372,7 @@ ML_4 (gtk_tree_view_column_add_attribute, GtkTreeViewColumn_val,
 ML_2 (gtk_tree_view_column_set_sort_column_id, GtkTreeViewColumn_val,
       Int_val, Unit)
 ML_1 (gtk_tree_view_column_get_sort_column_id, GtkTreeViewColumn_val, Val_int)
+
 static void gtk_tree_cell_data_func(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell,
 				    GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer data)
 {
@@ -382,7 +383,7 @@ static void gtk_tree_cell_data_func(GtkTreeViewColumn *tree_column, GtkCellRende
   vit   = Val_GtkTreeIter(iter);
   ret = callback2_exn(*closure, vmod, vit);
   if (Is_exception_result(ret)) 
-    CAML_EXN_LOG("gtk_tree_cell_data_func");
+    CAML_EXN_LOG_VERBOSE("gtk_tree_cell_data_func",ret);
   CAMLreturn0;
 }
 CAMLprim value ml_gtk_tree_view_column_set_cell_data_func(value vcol, value cr, value cb)
