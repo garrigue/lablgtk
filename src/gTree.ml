@@ -65,6 +65,7 @@ class model_signals obj = object
 end
 
 let model_ids = Hashtbl.create 7
+let custom_model_ids = Hashtbl.create 7
 
 class model obj = object (self)
   val id =
@@ -82,7 +83,12 @@ class model obj = object (self)
     new row_reference (RowReference.create obj path) obj
   method get : 'a. row:tree_iter -> column:'a column -> 'a =
     fun ~row ~column ->
-      if column.creator <> id then invalid_arg "GTree.model#get: bad column";
+      if column.creator <> id then invalid_arg "GTree.mod#get: bad column";
+      (* Prevent a class derived from an ancestor of a custom model from calling 
+         get: this would be unsound. *)
+      if not (Gobject.is_a obj "Custom_model") 
+        && Hashtbl.mem custom_model_ids id 
+      then invalid_arg "GTree.model#get: embedded custom model for iterator. Please use model#get_path then custom_model#custom_get_iter.";
       let v = Value.create_empty () in
       TreeModel.get_value obj ~row ~column:column.index v;
       Data.of_value column.conv v
@@ -231,7 +237,7 @@ let model_filter ?virtual_root model =
   let o = GtkTree.TreeModelFilter.create ~child_model ?virtual_root [] in
   begin try 
     let child_id = Hashtbl.find model_ids child_oid in
-    Hashtbl.add model_ids (Gobject.get_oid o) child_id
+    Hashtbl.add model_ids (Gobject.get_oid o) child_id;
   with Not_found -> ()
   end ; 
   new model_filter o
@@ -295,16 +301,16 @@ class view_column (_obj : tree_view_column obj) = object
   method clear () = TreeViewColumn.clear obj
   method reorder :
     'a. (#cell_renderer as 'a) -> int -> unit = 
-      fun crr pos -> GtkTree.CellLayout.reorder obj crr#as_renderer pos
+    fun crr pos -> GtkTree.CellLayout.reorder obj crr#as_renderer pos
   method pack : 'a. ?expand:_ -> ?from:_ -> (#cell_renderer as 'a)-> _ =
     fun ?expand ?from  r -> TreeViewColumn.pack obj ?expand ?from r#as_renderer
   method add_attribute :
     'a 'b. (#cell_renderer as 'a) -> string -> 'b column -> unit =
-      fun crr attr col ->
-        TreeViewColumn.add_attribute obj crr#as_renderer attr col.index
+    fun crr attr col ->
+      TreeViewColumn.add_attribute obj crr#as_renderer attr col.index
   method clear_attributes : 
-      'a. (#cell_renderer as 'a) -> unit = 
-      fun crr -> TreeViewColumn.clear_attributes obj crr#as_renderer
+    'a. (#cell_renderer as 'a) -> unit = 
+    fun crr -> TreeViewColumn.clear_attributes obj crr#as_renderer
 
   method set_sort_column_id = TreeViewColumn.set_sort_column_id obj
   method get_sort_column_id = TreeViewColumn.get_sort_column_id obj
@@ -717,6 +723,9 @@ object (self)
   inherit ['row,'a,'b,'c] GtkTree.CustomModel.callback
   val n_columns =  List.length column_list#types
   val columns = Array.of_list column_list#types
+  
+  method get ~row:_ ~column:_ = failwith "get not allowed on a custom model."
+
   method custom_n_columns = n_columns
 
   method custom_get_value (row:'row) (column:int) (value:Gobject.g_value) =
@@ -751,5 +760,7 @@ object (self)
   initializer 
     GtkTree.CustomModel.register_callback obj self;
     column_list#lock ();
-    Hashtbl.add model_ids(Gobject.get_oid obj) column_list#id
+    let id = Gobject.get_oid obj in
+    Hashtbl.add model_ids id column_list#id;
+    Hashtbl.add custom_model_ids column_list#id ()
 end

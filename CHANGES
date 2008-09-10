@@ -1,5 +1,8 @@
 $Id$
 
+2008.09.10 [Benjamin]
+ * Many custom tree model bugs fixed. 
+
 2008.09.04 [Benjamin]
  * First attempt to support custom_tree_models in GTree.
    I need some feedback on ways to improve the safety.
