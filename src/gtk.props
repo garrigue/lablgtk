@@ -478,6 +478,8 @@ class Statusbar : Box {
   signal text_pushed : guint gchararray
 }
 
+class StatusIcon : Object {}
+
 class Clist "GtkCList" set wrap wrapsig abstract : Container {
   "n-columns"            guint                : Read / Write / Construct Only
   "sort-type"            GtkSortType          : Read / Write
@@ -496,7 +498,7 @@ class Clist "GtkCList" set wrap wrapsig abstract : Container {
   signal select_row :    row:gint column:gint event:GdkEventButton_opt
   signal unselect_all
   signal unselect_row :  row:gint column:gint event:GdkEventButton_opt
-  
+
 }
 
 class Fixed : Container {
@@ -673,7 +675,7 @@ class TreeView set wrap wrapsig : Container {
   signal move_cursor :   GtkMovementStep gint -> gboolean
   signal row_activated : GtkTreePath GtkTreeViewColumn          / NoWrap
   signal row_collapsed : GtkTreeIter GtkTreePath
-  signal row_expanded :  GtkTreeIter GtkTreePath 
+  signal row_expanded :  GtkTreeIter GtkTreePath
   signal select_all : -> gboolean
   signal select_cursor_parent : -> gboolean
   signal select_cursor_row : start_editing:gboolean -> gboolean
@@ -812,7 +814,7 @@ class Progress abstract : Widget {
 class ProgressBar : Widget {
   "adjustment"           GtkAdjustment        : Read / Write / Wrap
   "orientation"          GtkProgressBarOrientation : Read / Write / Set / Wrap
-  "activity-blocks"      guint                : Read / Write 
+  "activity-blocks"      guint                : Read / Write
   "activity-step"        guint                : Read / Write
   "bar-style"            GtkProgressBarStyle  : Read / Write
   "discrete-blocks"      guint                : Read / Write
@@ -911,7 +913,7 @@ class TreeViewColumn wrap : Object {
   "sizing"               GtkTreeViewColumnSizing : Read / Write
   "sort-indicator"       gboolean             : Read / Write
   "sort-order"           GtkSortType          : Read / Write
-  "title"                gchararray           : Read / Write 
+  "title"                gchararray           : Read / Write
   "visible"              gboolean             : Read / Write
   "widget"               GtkWidget_opt        : Read / Write
   "width"                gint                 : Read

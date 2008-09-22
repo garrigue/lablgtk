@@ -1,7 +1,5 @@
 (* $Id$ *)
 
-prefix "Gtk"
-
 header {
 open Gtk
 }
@@ -19,6 +17,33 @@ classes {
   GtkMenu "Gtk.menu obj"
 }
 
+prefix ""
+class GtkStatusIcon set wrap wrapsig : GObject {
+  "screen"  GdkScreen : Read / Write
+  "visible" gboolean : Read / Write
+  "blinking" gboolean : Read / Write
+  method set_from_pixbuf : "GdkPixbuf.pixbuf -> unit"
+  method set_from_file : "string -> unit"
+  method set_from_stock : "string -> unit"
+  method set_from_icon_name : "string -> unit"
+  method get_pixbuf : "GdkPixbuf.pixbuf"
+  method get_stock : "string"
+  method get_icon_name : "string"
+  method get_size : "int"
+  method set_screen : "Gdk.screen -> unit"
+  method get_screen : "Gdk.screen"
+  method set_tooltip : "string -> unit"
+  method set_visible : "bool -> unit"
+  method get_visible : "bool"
+  method set_blinking : "bool -> unit"
+  method get_blinking : "bool"
+  method is_embedded : "bool"
+  signal activate
+  signal popup_menu : guint guint
+  signal size_changed : gint
+}
+
+prefix "Gtk"
 class Misc abstract set wrap : Widget {
   "xalign"               gfloat               : Read / Write
   "yalign"               gfloat               : Read / Write
@@ -119,6 +144,7 @@ class Statusbar set : Box {
   signal text_popped : guint gchararray
   signal text_pushed : guint gchararray
 }
+
 
 class Calendar wrap wrapsig : Widget {
   "day"                  gint                  : Read / Write

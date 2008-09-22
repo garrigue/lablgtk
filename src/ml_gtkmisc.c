@@ -46,6 +46,7 @@ CAMLprim value ml_gtkmisc_init(value unit)
     GType t =
         gtk_gamma_curve_get_type() +
         gtk_statusbar_get_type() +
+        gtk_status_icon_get_type() +
         gtk_calendar_get_type() +
         gtk_drawing_area_get_type() +
         gtk_misc_get_type() +
@@ -76,6 +77,41 @@ ML_2 (gtk_statusbar_pop, GtkStatusbar_val, Int_val, Unit)
 ML_3 (gtk_statusbar_remove, GtkStatusbar_val, Int_val, Int_val, Unit)
 ML_1 (gtk_statusbar_get_has_resize_grip, GtkStatusbar_val, Val_bool)
 ML_2 (gtk_statusbar_set_has_resize_grip, GtkStatusbar_val, Bool_val, Unit)
+
+/* gtkstatusicon.h */
+
+#define GtkStatusIcon_val(val) check_cast(GTK_STATUS_ICON, val)
+#define Val_GtkStatusIcon_new(val) Val_GObject_new(val)
+ML_2 (gtk_status_icon_set_from_pixbuf, GtkStatusIcon_val, GdkPixbuf_val, Unit)
+ML_2 (gtk_status_icon_set_from_file, GtkStatusIcon_val, String_val, Unit)
+ML_2 (gtk_status_icon_set_from_stock, GtkStatusIcon_val, String_val, Unit)
+ML_2 (gtk_status_icon_set_from_icon_name, GtkStatusIcon_val, String_val, Unit)
+ML_1 (gtk_status_icon_get_pixbuf, GtkStatusIcon_val, Val_GdkPixbuf)
+ML_1 (gtk_status_icon_get_stock, GtkStatusIcon_val, Val_string)
+ML_1 (gtk_status_icon_get_icon_name, GtkStatusIcon_val, Val_string)
+ML_1 (gtk_status_icon_get_size, GtkStatusIcon_val, Val_int)
+ML_2 (gtk_status_icon_set_screen, GtkStatusIcon_val, GdkScreen_val, Unit)
+ML_1 (gtk_status_icon_get_screen, GtkStatusIcon_val, Val_GdkScreen)
+ML_2 (gtk_status_icon_set_tooltip, GtkStatusIcon_val, String_val, Unit)
+ML_2 (gtk_status_icon_set_visible, GtkStatusIcon_val, Bool_val, Unit)
+ML_1 (gtk_status_icon_get_visible, GtkStatusIcon_val, Val_bool)
+ML_2 (gtk_status_icon_set_blinking, GtkStatusIcon_val, Bool_val, Unit)
+ML_1 (gtk_status_icon_get_blinking, GtkStatusIcon_val, Val_bool)
+ML_1 (gtk_status_icon_is_embedded, GtkStatusIcon_val, Val_bool)
+/*
+void                gtk_status_icon_position_menu       (GtkMenu *menu,
+                                                         gint *x,
+                                                         gint *y,
+                                                         gboolean *push_in,
+                                                         gpointer user_data);
+gboolean            gtk_status_icon_get_geometry        (GtkStatusIcon *status_icon,
+                                                         GdkScreen **screen,
+                                                         GdkRectangle *area,
+                                                         GtkOrientation *orientation);
+guint32             gtk_status_icon_get_x11_window_id   (GtkStatusIcon *status_icon);
+*/
+
+
 
 /* gtkcalendar.h */
 
@@ -126,7 +162,7 @@ ML_3 (gtk_drawing_area_size, GtkDrawingArea_val, Int_val, Int_val, Unit)
 ML_1(gtk_image_clear, GtkImage_val, Unit)
 #else
 Unsupported_28(gtk_image_clear)
-#endif 
+#endif
 
 /* gtklabel.h */
 
@@ -144,7 +180,7 @@ CAMLprim value ml_gtk_label_get_selection_bounds (value label)
     Field(r, 1) = Val_int(e);
     r = ml_some(r);
   }
-  else 
+  else
     r = Val_unit;
   return r;
 }

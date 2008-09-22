@@ -69,6 +69,52 @@ val statusbar :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> statusbar
 
+(** {3 Status icon} *)
+
+(** @gtkdoc gtk GtkStatusIcon *)
+class status_icon_signals : Gtk.status_icon Gobject.obj ->
+  object
+    method activate : callback:(unit -> unit) -> GtkSignal.id
+    method popup_menu : callback:(int -> int -> unit) -> GtkSignal.id
+    method size_changed : callback:(int -> unit) -> GtkSignal.id
+  end
+
+(** Display an icon in the system tray.
+  @gtkdoc gtk GtkStatusIcon *)
+class status_icon : Gtk.gtk_status_icon ->
+  object
+    method obj : Gtk.status_icon Gobject.obj
+    method connect : status_icon_signals
+    method blinking : bool
+    method get_icon_name : string
+    method get_pixbuf : GdkPixbuf.pixbuf
+    method screen : Gdk.screen
+    method get_size : int
+    method get_stock : string
+    method visible : bool
+    method is_embedded : bool
+    method set_blinking : bool -> unit
+    method set_from_file : string -> unit
+    method set_from_icon_name : string -> unit
+    method set_from_pixbuf : GdkPixbuf.pixbuf -> unit
+    method set_from_stock : string -> unit
+    method set_screen : Gdk.screen -> unit
+    method set_tooltip : string -> unit
+    method set_visible : bool -> unit
+  end
+
+val status_icon :
+  ?screen:Gdk.screen -> ?visible:bool -> ?blinking:bool -> unit -> status_icon
+val status_icon_from_pixbuf :
+  ?screen:Gdk.screen -> ?visible:bool -> ?blinking:bool -> GdkPixbuf.pixbuf -> status_icon
+val status_icon_from_file :
+  ?screen:Gdk.screen -> ?visible:bool -> ?blinking:bool -> string -> status_icon
+val status_icon_from_stock :
+  ?screen:Gdk.screen -> ?visible:bool -> ?blinking:bool -> string -> status_icon
+val status_icon_from_icon_name :
+  ?screen:Gdk.screen -> ?visible:bool -> ?blinking:bool -> string -> status_icon
+
+
 (** {3 Calendar} *)
 
 (** @gtkdoc gtk GtkCalendar *)
@@ -181,7 +227,7 @@ val arrow :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> arrow
 
-type image_type = 
+type image_type =
   [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION ]
 
 (** A widget displaying an image
@@ -321,7 +367,7 @@ val label_cast : < as_widget : 'a obj ; .. > -> label
 
 (** {4 Tips query} *)
 
-(** @gtkdoc gtk GtkTipsQuery 
+(** @gtkdoc gtk GtkTipsQuery
     @deprecated . *)
 class tips_query_signals : Gtk.tips_query obj ->
   object
