@@ -38,6 +38,8 @@ module ColorSelection = ColorSelection
 
 module Statusbar = Statusbar
 
+module StatusIcon = GtkStatusIcon
+
 module Calendar = Calendar
 
 module DrawingArea = DrawingArea

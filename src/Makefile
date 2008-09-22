@@ -129,9 +129,9 @@ endif
 ifdef USE_GTKSOURCEVIEW
 MLLIBS += lablgtksourceview.cma
 CLIBS += liblablgtksourceview$(XA)
-GTKSOURCEVIEWMLOBJS = sourceViewEnums.cmo gtkSourceView.cmo gSourceView.cmo 
+GTKSOURCEVIEWMLOBJS = sourceViewEnums.cmo gtkSourceView.cmo gSourceView.cmo
 GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
-GTKPROPS +=  gtkSourceView.props	
+GTKPROPS +=  gtkSourceView.props
 endif
 
 # Rules
@@ -544,5 +544,13 @@ ml_gnomedruid$(XO): ml_gtk.h ml_gobject.h wrappers.h
 ml_panel$(XO): ml_gtk.h ml_gobject.h wrappers.h
 
 varcc.cmo: varcc.ml4
+
+OUG=/work/devel/oug/oug.x
+usage:
+	ocamldsort `ls *.ml | grep -v gtkdoc.ml` gtkSourceView_types.ml > __files
+	ls `cat __files` | grep -v gtkSourceView_types.ml | grep -v gHtml.ml | grep -v glGtk.ml | grep -v gtkNew.ml | grep -v panel.ml | grep -v gdkKeysyms.ml > __files.txt
+	$(OUG) --no-reduce -I +threads `cat __files.txt` --dump lablgtk.oug --dump-data lablgtk-data.oug
+	$(OUG) --no-reduce --load-data lablgtk-data.oug --dead-code dead_code.txt
+	$(OUG) -I +threads --load-data lablgtk-data.oug *.mli --dead-code dead_code_with_mli.txt
 
 include .depend

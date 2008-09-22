@@ -16,7 +16,7 @@ open GObj
 
 let create_bbox direction title spacing child_w child_h layout =
   let frame = GBin.frame ~label: title () in
-  let bbox = GPack.button_box direction ~border_width: 5 ~packing: frame#add 
+  let bbox = GPack.button_box direction ~border_width: 5 ~packing: frame#add
       ~layout: layout ~child_height: child_h ~child_width: child_w
       ~spacing: spacing () in
   GButton.button ~label: "OK"     ~packing: bbox#add ();
@@ -37,11 +37,11 @@ let create_button_box =
 
 	let frame_horz = GBin.frame ~label: "Horizontal Button Boxes"
 	    ~packing:(main_vbox#pack ~expand:true ~fill:true ~padding:10) () in
-	
+
 	let vbox = GPack.vbox ~border_width: 10 ~packing: frame_horz#add () in
-	
+
 	vbox#add  (create_bbox `HORIZONTAL "Spread" 40 85 20 `SPREAD);
-	vbox#pack (create_bbox `HORIZONTAL "Edge"   40 85 20 `EDGE) 
+	vbox#pack (create_bbox `HORIZONTAL "Edge"   40 85 20 `EDGE)
           ~expand: true ~fill: true ~padding: 5;
 	vbox#pack (create_bbox `HORIZONTAL "Start"  40 85 20 `START)
           ~expand: true ~fill: true ~padding: 5;
@@ -50,7 +50,7 @@ let create_button_box =
 
 	let frame_vert = GBin.frame ~label: "Vertical Button Boxes"
 	    ~packing:(main_vbox#pack ~expand:true ~fill:true ~padding:10) () in
-	
+
 	let hbox = GPack.hbox ~border_width: 10 ~packing: frame_vert#add () in
 	hbox#add  (create_bbox `VERTICAL "Spread" 30 85 20 `SPREAD);
 	hbox#pack (create_bbox `VERTICAL "Edge"   30 85 20 `EDGE)
@@ -59,7 +59,7 @@ let create_button_box =
           ~expand: true ~fill: true ~padding: 5;
 	hbox#pack (create_bbox `VERTICAL "End"    30 85 20 `END)
           ~expand: true ~fill: true ~padding: 5;
-	window #show ()	
+	window #show ()
 
     | Some window -> window #destroy ()
 in aux
@@ -81,8 +81,8 @@ let create_buttons =
 	window #connect#destroy ~callback:(fun _ -> rw := None);
 
 	let box1 = GPack.vbox ~packing:window#add () in
-	
-	let table = GPack.table ~rows:3 ~columns:3 ~homogeneous:false 
+
+	let table = GPack.table ~rows:3 ~columns:3 ~homogeneous:false
 	    ~row_spacings:3 ~col_spacings:3 ~border_width:10
 	    ~packing:box1#add () in
 
@@ -104,12 +104,12 @@ let create_buttons =
 	f 5 1 2 2 3;
 	f 6 1 2 0 1;
 	f 7 2 3 1 2;
-	button.(8) #connect#clicked ~callback:(button_window button.(0)); 
+	button.(8) #connect#clicked ~callback:(button_window button.(0));
 	table #attach button.(8)#coerce ~left:0 ~right:1 ~top:1 ~bottom:2
 	  ~xpadding:0 ~ypadding:0 ~expand:`BOTH;
 
 	GMisc.separator `HORIZONTAL ~packing:box1#pack ();
-	
+
 	let box2 = GPack.vbox ~spacing: 10 ~border_width: 10
             ~packing: box1#pack () in
 
@@ -136,14 +136,14 @@ let create_check_buttons =
 	let box1 = GPack.vbox ~packing:window#add () in
 	let box2 = GPack.vbox ~spacing: 10 ~border_width: 10
 	    ~packing: box1#pack () in
-	
+
 	for i = 1 to 3 do
 	  GButton.check_button ~label:("button" ^ (string_of_int i))
 	    ~packing: box2#add ();
 	done;
 
 	GMisc.separator `HORIZONTAL ~packing: box1#pack ();
-	
+
 	let box2 = GPack.vbox ~spacing:10 ~border_width:10
 	    ~packing: box1#pack () in
 
@@ -151,7 +151,7 @@ let create_check_buttons =
 	button #connect#clicked ~callback: window#destroy;
 	button #grab_default ();
 	window #show ()
-	
+
     | Some window ->  window #destroy ()
 in aux
 
@@ -167,21 +167,21 @@ let create_radio_buttons =
 	window #connect#destroy ~callback:(fun _ -> rw := None);
 
 	let box1 = GPack.vbox ~packing:window#add () in
-	
-	let box2 = GPack.vbox ~spacing:10 ~border_width:10 
+
+	let box2 = GPack.vbox ~spacing:10 ~border_width:10
 	    ~packing: box1#pack () in
-	
+
 	let button = GButton.radio_button ~label:"button1"
 	    ~packing: box2#add () in
 
 	let button = GButton.radio_button ~label:"button2" ~group:button#group
 	    ~packing: box2#add ~active:true () in
-	
+
 	let button = GButton.radio_button ~label:"button3" ~group:button#group
 	    ~packing: box2#add () in
 
 	GMisc.separator `HORIZONTAL ~packing: box1#pack ();
-	
+
 	let box2 = GPack.vbox ~spacing:10 ~border_width:10
             ~packing: box1#pack () in
 
@@ -189,7 +189,7 @@ let create_radio_buttons =
 	button #connect#clicked ~callback: window #destroy;
 	button #grab_default ();
 	window #show ()
-	
+
     | Some window -> window #destroy ()
 in aux
 
@@ -205,17 +205,17 @@ let create_toggle_buttons =
 	window #connect#destroy ~callback:(fun _ -> rw := None);
 
 	let box1 = GPack.vbox ~packing: window#add () in
-	
+
 	let box2 = GPack.vbox ~spacing: 10 ~border_width: 10
 	    ~packing: box1#pack () in
-	
+
 	for i = 1 to 3 do
 	  GButton.toggle_button ~label:("button" ^ (string_of_int i))
 	    ~packing: box2#add ()
 	done;
 
 	GMisc.separator `HORIZONTAL ~packing: box1#pack ();
-	
+
 	let box2 = GPack.vbox ~spacing: 10 ~border_width: 10
 	    ~packing: box1#pack () in
 
@@ -223,7 +223,7 @@ let create_toggle_buttons =
 	button #connect#clicked ~callback: window#destroy;
 	button #grab_default ();
 	window #show ()
-	
+
     | Some window -> window #destroy ()
 in aux
 
@@ -301,7 +301,7 @@ let create_menus =
 	let path = "<APPLICATION>/Open" in
 	GtkMenu.MenuItem.set_accel_path menuitem#as_item path;
 	let stock = GtkStock.Item.lookup `OPEN in
-	GtkData.AccelMap.add_entry ~key:stock.GtkStock.keyval 
+	GtkData.AccelMap.add_entry ~key:stock.GtkStock.keyval
 	  ~modi:stock.GtkStock.modifier path;
 
 	let optionmenu = GMenu.option_menu ~packing: box2#add () in
@@ -353,15 +353,15 @@ let create_modal_window () =
   let frame1 = GBin.frame ~label:"Standard dialogs in modal form"
       ~packing:(box1#pack ~expand:true ~padding:4) () in
   let box2 = GPack.vbox ~homogeneous:true ~spacing:5 ~packing:frame1#add () in
-  let btnColor = GButton.button ~label:"Color" 
+  let btnColor = GButton.button ~label:"Color"
       ~packing:(box2#pack ~padding:4) ()
-  and btnFile = GButton.button ~label:"File selection" 
+  and btnFile = GButton.button ~label:"File selection"
       ~packing:(box2#pack ~padding:4) ()
-  and btnClose = GButton.button ~label:"Close" 
+  and btnClose = GButton.button ~label:"Close"
       ~packing:(box2#pack ~padding:4) () in
   GMisc.separator `HORIZONTAL
     ~packing:(box1#pack ~padding:4) ();
-  
+
   btnClose #connect#clicked ~callback:(fun _ -> window #destroy ());
   window #connect#destroy ~callback:cmw_destroy_cb;
   btnColor #connect#clicked ~callback: (cmw_color window);
@@ -436,7 +436,7 @@ let create_scrolled_windows =
 	button #connect#clicked
 	  ~callback:(scrolled_windows_remove scrolled_window);
 	button #grab_default ();
-	
+
 	window #set_default_size ~width:300 ~height:300;
 	window #show ()
 
@@ -457,52 +457,52 @@ let make_toolbar (toolbar : GButton.toolbar) window =
     ~tooltip_private:"Toolbar/Horizontal"
     ~icon:(icon ())
     ~callback:(fun _ -> toolbar #set_orientation `HORIZONTAL) ();
-  
+
   toolbar #insert_button ~text:"Vertical"
     ~tooltip:"Vertical toolbar layout"
     ~tooltip_private:"Toolbar/Vertical"
     ~icon:(icon ())
     ~callback:(fun _ -> toolbar #set_orientation `VERTICAL) ();
-  
+
   toolbar #insert_space ();
-  
+
   toolbar #insert_button ~text:"Icons"
     ~tooltip: "Only show toolbar icons"
     ~tooltip_private:"Toolbar/IconsOnly"
     ~icon:(icon ())
     ~callback:(fun _ -> toolbar #set_style `ICONS) ();
-  
+
   toolbar #insert_button ~text:"Text"
     ~tooltip: "Only show toolbar text"
     ~tooltip_private:"Toolbar/TextOnly"
     ~icon:(icon ())
     ~callback:(fun _ -> toolbar #set_style `TEXT) ();
-  
+
   toolbar #insert_button ~text:"Both"
     ~tooltip: "Show toolbar icons and text"
     ~tooltip_private:"Toolbar/Both"
     ~icon:(icon ())
     ~callback:(fun _ -> toolbar #set_style `BOTH) ();
-  
+
   toolbar #insert_space ();
-  
+
   GEdit.entry ~packing:(toolbar #insert_widget
 			 ~tooltip:"This is an unusable GtkEntry"
 			 ~tooltip_private: "Hey don't click me!!!") ();
-  
+
   toolbar #insert_space ();
-  
+
   toolbar #insert_button ~text:"Enable"
     ~tooltip:"Enable tooltips"
     ~icon:(icon ())
     ~callback:(fun _ -> toolbar #set_tooltips true) ();
-  
+
   toolbar #insert_button ~text:"Disable"
     ~tooltip:"Disable tooltips"
     ~icon:(icon ())
     ~callback:(fun _ -> toolbar #set_tooltips false) ();
   ()
- 
+
 let create_toolbar =
   let rw = ref None in
   let aux () =
@@ -513,12 +513,12 @@ let create_toolbar =
 	rw := Some window;
 	window #connect#destroy ~callback:(fun _ -> rw := None);
 	window #misc #realize ();
-	
+
 	let toolbar = GButton.toolbar ~packing: window#add () in
 	make_toolbar toolbar window;
-	
+
 	window #show ()
-	  
+
     | Some window -> window #destroy ()
   in aux
 
@@ -573,7 +573,7 @@ let create_handle_box =
 
 	GMisc.label ~text:"Fooo!" ~packing:handle_box2#add ();
 	window #show ()
-	  
+
     | Some window -> window #destroy ()
   in aux
 
@@ -615,7 +615,7 @@ let cb_add_new_item (treeb : tree_and_buttons) _ =
   treeb #incr_nb_item_add
 
 
-let cb_remove_item (treeb : tree_and_buttons) _  = 
+let cb_remove_item (treeb : tree_and_buttons) _  =
   let tree = treeb#tree in
   match tree #selection with
   | [] -> ()
@@ -640,8 +640,8 @@ let cb_tree_changed (treeb : tree_and_buttons) _ =
     treeb # subtree_button #misc#set_sensitive (nb_selected = 1);
     treeb # add_button #misc#set_sensitive (nb_selected = 1);
   end
-  
-  
+
+
 let rec create_subtree (item : GBroken.tree_item) level nb_item_max
     recursion_level_max =
   if level = recursion_level_max then ()
@@ -772,7 +772,7 @@ let create_tree_mode_window =
 
 	let frame = GBin.frame ~label:"Selection Mode" ~packing:box3#add ()
 	in
-	
+
 	let box4 = GPack.vbox ~packing:frame#add ~border_width:5 () in
 
 	box4 #add single_button#coerce;
@@ -780,14 +780,14 @@ let create_tree_mode_window =
 	box4 #add multiple_button#coerce;
 
 	let frame = GBin.frame ~label:"Options" ~packing:box3#add () in
-	
+
 	let box4 = GPack.vbox ~packing:frame#add ~border_width:5 () in
 	box4 #add draw_line_button#coerce;
 	draw_line_button #set_active true;
-	
+
 	box4 #add view_line_button#coerce;
 	view_line_button #set_active true;
-	
+
 	box4 #add no_root_item_button#coerce;
 
 	let frame = GBin.frame ~label:"Size Parameters" ~packing:box2#add ()
@@ -799,11 +799,11 @@ let create_tree_mode_window =
 	let label = GMisc.label ~text:"Number of items : "
             ~xalign:0. ~yalign:0.5 ~packing:box5#pack () in
 	box5 #pack nb_item_spinner#coerce;
-	
+
 	let label = GMisc.label ~text:"Depth : " ~xalign:0. ~yalign:0.5
 	    ~packing:box5#pack () in
 	box5 #pack recursion_spinner#coerce;
-	
+
 	GMisc.separator `HORIZONTAL ~packing:box1#pack ();
 
 	let box2 = GPack.hbox ~homogeneous:true ~spacing:10 ~border_width:5
@@ -817,7 +817,7 @@ let create_tree_mode_window =
 	button #connect#clicked ~callback: window#destroy;
 	button #grab_default ();
 	window #show ()
-	
+
     | Some window -> window #destroy ()
   in aux
 
@@ -835,7 +835,7 @@ let tips_query_widget_entered (toggle : GButton.toggle_button)
 let tips_query_widget_selected (w : #widget option) ~text ~privat:tp _ =
   (match w with
   | None -> ()
-  | Some w -> 
+  | Some w ->
     Printf.printf "Help \"%s\" requested for <%s>\n"
 	(if tp = "" then "None" else tp)
 	(w #misc#get_type));
@@ -852,7 +852,7 @@ let create_tooltips =
 	    ~border_width:0 ~allow_shrink:false ~allow_grow:false () in
 	rw := Some window;
 	let tooltips = GData.tooltips () in
-	window #connect#destroy 
+	window #connect#destroy
 	  ~callback:(fun _ -> tooltips #destroy ();  rw := None);
 
 	let box1 = GPack.vbox ~packing:window#add () in
@@ -865,7 +865,7 @@ let create_tooltips =
 	in
 	tooltips #set_tip button#coerce ~text:"This is button1"
 	  ~privat:"ContextHelp/buttons/1";
-	
+
 	let button = GButton.toggle_button ~label:"button2"
             ~packing:box2#add ()
 	in
@@ -873,14 +873,14 @@ let create_tooltips =
 	  ~text:"This is button 2. This is also a really long tooltip which probably won't fit on a single line and will therefore need to be wrapped. Hopefully the wrapping will work correctly."
 	  ~privat:"ContextHelp/buttons/2_long";
 
-	let toggle = GButton.toggle_button ~label:"Override TipsQuery Label" 
+	let toggle = GButton.toggle_button ~label:"Override TipsQuery Label"
 	    ~packing:box2#add () in
 	tooltips #set_tip toggle#coerce ~text:"Toggle TipsQuery view."
 	  ~privat:"Hi msw! ;)";
 
 	let box3 = GPack.vbox ~spacing:5 ~border_width:5 () in
 
-	let button = GButton.button ~label:"[?]" 
+	let button = GButton.button ~label:"[?]"
 	    ~packing:box3#pack () in
 
 	let tips_query = GMisc.tips_query ~packing:box3#add () in
@@ -895,7 +895,7 @@ let create_tooltips =
 	tips_query #connect#widget_selected ~callback:tips_query_widget_selected;
 
 	let frame = GBin.frame ~label:"Tooltips Inspector"
-	    ~border_width:0 ~packing:(box2#pack ~expand:true ~padding:10) 
+	    ~border_width:0 ~packing:(box2#pack ~expand:true ~padding:10)
 	    ~label_xalign:0.5 ~label_yalign:0.0 () in
 	frame #add box3#coerce;
 
@@ -925,7 +925,7 @@ let create_labels =
 
 	let window = GWindow.window ~title:"Labels" ~border_width:5 () in
 	rw := Some window;
-	window #connect#destroy 
+	window #connect#destroy
 	  ~callback:(fun _ -> rw := None);
 
 	let hbox = GPack.hbox ~spacing:5 ~packing:window#add () in
@@ -976,7 +976,7 @@ let set_parent child old_parent =
     | None -> "(NULL)"
     | Some w -> w#misc#get_type in
   Printf.printf
-    "set parent for \"%s\": new parent: \"%s\", old parent: \"%s\"\n" 
+    "set parent for \"%s\": new parent: \"%s\", old parent: \"%s\"\n"
     child#misc#get_type
     (name_opt child#misc#parent)
     (name_opt old_parent);
@@ -1121,7 +1121,9 @@ let create_main_window () =
   button #grab_default ();
 
   window #show ();
-
+  let tray_icon = GMisc.status_icon_from_file "gnome-fs-directory.png" in
+  ignore(tray_icon#connect#activate
+   (fun () -> GToolbox.message_box "testgtk" "Tray icon activated!"));
   Main.main ()
 
 let _ = create_main_window ()

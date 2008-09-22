@@ -109,6 +109,7 @@ widget_info_array[] = {
   { sizeof(GtkHBox), sizeof(GtkHBoxClass), gtk_hbox_get_type },
   { sizeof(GtkCombo), sizeof(GtkComboClass), gtk_combo_get_type },
   { sizeof(GtkStatusbar), sizeof(GtkStatusbarClass), gtk_statusbar_get_type },
+  { sizeof(GtkStatusIcon), sizeof(GtkStatusIconClass), gtk_status_icon_get_type },
   { sizeof(GtkCList), sizeof(GtkCListClass), gtk_clist_get_type },
   { sizeof(GtkCTree), sizeof(GtkCTreeClass), gtk_ctree_get_type },
   { sizeof(GtkFixed), sizeof(GtkFixedClass), gtk_fixed_get_type },

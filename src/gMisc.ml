@@ -60,6 +60,63 @@ let statusbar =
     (GContainer.pack_container ~create:
        (fun p -> new statusbar (Statusbar.create p)))
 
+class status_icon_signals (obj : Gtk.status_icon Gobject.obj) = object
+(*    inherit [Gtk.status_icon] gobject_signals obj*)
+    inherit gtk_status_icon_sigs
+    method private connect sgn ~callback =
+      GtkSignal.connect ~sgn ~callback ~after: true obj
+end
+
+class status_icon obj = object
+  inherit gtk_status_icon_props
+  method obj : Gtk.status_icon Gobject.obj = obj
+  method connect = new status_icon_signals obj
+  method set_from_pixbuf = StatusIcon.set_from_pixbuf obj
+  method set_from_file = StatusIcon.set_from_file obj
+  method set_from_stock = StatusIcon.set_from_stock obj
+  method set_from_icon_name = StatusIcon.set_from_icon_name obj
+  method get_pixbuf = StatusIcon.get_pixbuf obj
+  method get_stock = StatusIcon.get_stock obj
+  method get_icon_name = StatusIcon.get_icon_name obj
+  method get_size = StatusIcon.get_size obj
+  method set_tooltip = StatusIcon.set_tooltip obj
+  method is_embedded= StatusIcon.is_embedded obj
+end
+
+let status_icon =
+  StatusIcon.make_params [] ~cont:
+    (fun p () -> new status_icon (StatusIcon.create p))
+
+let status_icon_from_pixbuf =
+  StatusIcon.make_params [] ~cont:
+    (fun p pb ->
+       let o = new status_icon (StatusIcon.create p) in
+       o#set_from_pixbuf pb;
+       o
+    )
+let status_icon_from_file =
+  StatusIcon.make_params [] ~cont:
+    (fun p file ->
+       let o = new status_icon (StatusIcon.create p) in
+       o#set_from_file file;
+       o
+    )
+let status_icon_from_stock =
+  StatusIcon.make_params [] ~cont:
+    (fun p s ->
+       let o = new status_icon (StatusIcon.create p) in
+       o#set_from_stock s;
+       o
+    )
+let status_icon_from_icon_name =
+  StatusIcon.make_params [] ~cont:
+    (fun p s ->
+       let o = new status_icon (StatusIcon.create p) in
+       o#set_from_icon_name s;
+       o
+    )
+
+
 class calendar_signals obj = object
   inherit widget_signals_impl obj
   inherit calendar_sigs
@@ -124,7 +181,7 @@ class image obj = object (self)
   method clear () = Image.clear obj
 end
 
-type image_type = 
+type image_type =
   [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION ]
 
 let image =

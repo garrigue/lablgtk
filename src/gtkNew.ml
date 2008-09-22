@@ -27,7 +27,7 @@ open Gtk
 
 type t
 
-(* if you modify this type modify widget_info_array 
+(* if you modify this type modify widget_info_array
    in ml_gtk.c in accordance *)
 type object_type =
   | OBJECT  | WIDGET  | MISC  | LABEL  | ACCELLABEL  | TIPSQUERY  | ARROW
@@ -38,7 +38,8 @@ type object_type =
   | INPUTDIALOG  | FILESELECTION  | FONTSELECTIONDIALOG  | PLUG
   | EVENTBOX  | HANDLEBOX  | SCROLLEDWINDOW  | VIEWPORT  | BOX
   | BUTTONBOX  | HBUTTONBOX  | VBUTTONBOX  | VBOX  | COLORSELECTION
-  | GAMMACURVE  | HBOX  | COMBO  | STATUSBAR  | CLIST  | CTREE  | FIXED
+  | GAMMACURVE  | HBOX  | COMBO  | STATUSBAR  | STATUSICON
+  | CLIST  | CTREE  | FIXED
   | NOTEBOOK  | FONTSELECTION  | PANED  | HPANED  | VPANED  | LAYOUT
   | LIST  | MENUSHELL  | MENUBAR  | MENU  | PACKER  | SOCKET  | TABLE
   | TOOLBAR  | TREE  | CALENDAR  | DRAWINGAREA  | CURVE  | EDITABLE
