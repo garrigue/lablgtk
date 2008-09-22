@@ -38,7 +38,12 @@
 #include "gtk_tags.h"
 #include "ml_gtktree.h"
 
+/* Forward declaration */
+
+GType custom_model_get_type (void);
+
 /* Init all */
+
 
 CAMLprim value ml_gtktree_init(value unit)
 {
@@ -52,7 +57,8 @@ CAMLprim value ml_gtktree_init(value unit)
         gtk_cell_renderer_toggle_get_type () +
         gtk_list_store_get_type() +
         gtk_tree_model_sort_get_type() +
-        gtk_tree_path_get_type()
+        gtk_tree_path_get_type() +
+        custom_model_get_type ()
 #ifdef HASGTK24
         + gtk_tree_model_filter_get_type()
 #endif
@@ -864,7 +870,7 @@ struct _Custom_model_class
 
 /* boring declarations of local functions */
 /* GObject stuff */
-GType custom_model_get_type (void);
+
 static void custom_model_init (Custom_model *pkg_tree);
 static void custom_model_class_init (Custom_model_class *klass);
 static void custom_model_tree_model_init (GtkTreeModelIface *iface);
