@@ -413,5 +413,4 @@ module CustomModel = struct
     "ml_custom_model_row_deleted"
   external custom_rows_reordered : tree_model_custom -> Gtk.tree_path -> 'row option -> int array -> unit =
     "ml_custom_model_rows_reordered"
-      
 end
