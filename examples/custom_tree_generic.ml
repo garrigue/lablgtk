@@ -189,10 +189,10 @@ let fill_model t =
     t#append_tree (make_tree 1 1)
   done
 
- (* At this time making it a global root is safer. *)
-let custom_tree = MODEL.custom_tree ()
+
 
 let create_view_and_model () : GTree.view =
+  let custom_tree = MODEL.custom_tree () in
   fill_model custom_tree;
   let view = GTree.view ~fixed_height_mode:true ~model:custom_tree () in
   let renderer = GTree.cell_renderer_text [] in

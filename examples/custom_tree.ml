@@ -135,10 +135,8 @@ let fill_model t =
     t#append_file {fname = ("Parent "^string_of_int i); fchecked = false} g
   done
 
-(* At this time making it a global root is safer. *)
-let custom_tree = new custom_tree_class column_list
-
 let create_view_and_model () : GTree.view =
+  let custom_tree = new custom_tree_class column_list in
   fill_model custom_tree;
   let view = GTree.view ~model:custom_tree () in
   let renderer = GTree.cell_renderer_text [] in
