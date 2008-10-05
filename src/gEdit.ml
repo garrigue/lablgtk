@@ -56,7 +56,7 @@ class entry_completion_signals obj = object (self)
   method action_activated = self#connect EntryCompletion.S.action_activated
   method match_selected ~callback = 
     self#connect EntryCompletion.S.match_selected
-      ~callback:(fun _model iter -> callback (new GTree.model _model) iter)
+      ~callback:(fun model iter -> callback (new GTree.model_filter model) iter)
 end
 
 class entry_completion obj = object
@@ -67,7 +67,11 @@ class entry_completion obj = object
   method minimum_key_length =
     Gobject.get EntryCompletion.P.minimum_key_length obj
   method set_model (m : GTree.model) = Gobject.set EntryCompletion.P.model obj m#as_model
-  method model = new GTree.model (Gobject.get EntryCompletion.P.model obj)
+  method model = 
+    new GTree.model_filter 
+      (Gobject.try_cast 
+	 (Gobject.get EntryCompletion.P.model obj)
+      "GtkTreeModelFilter")
 
   method misc = new GObj.gobject_ops obj
   method connect = new entry_completion_signals obj

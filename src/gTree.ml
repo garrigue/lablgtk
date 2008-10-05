@@ -69,7 +69,8 @@ let custom_model_ids = Hashtbl.create 7
 
 class model obj = object (self)
   val id =
-    try Hashtbl.find model_ids (Gobject.get_oid obj) with Not_found -> 0
+    try Hashtbl.find model_ids (Gobject.get_oid obj) 
+    with Not_found -> 0
   val obj = obj
   method as_model = (obj :> tree_model)
   method coerce = (self :> model)
@@ -83,7 +84,7 @@ class model obj = object (self)
     new row_reference (RowReference.create obj path) obj
   method get : 'a. row:tree_iter -> column:'a column -> 'a =
     fun ~row ~column ->
-      if column.creator <> id then invalid_arg "GTree.mod#get: bad column";
+      if column.creator <> id then invalid_arg "GTree.model#get: bad column";
       (* Prevent a class derived from an ancestor of a custom model from calling 
          get: this would be unsound. *)
       if not (Gobject.is_a obj "Custom_model") 

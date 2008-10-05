@@ -70,7 +70,7 @@ class entry_completion_signals :
     method after : 'a
     method action_activated : callback:(int -> unit) -> GtkSignal.id
     method match_selected :
-      callback:(GTree.model -> Gtk.tree_iter -> bool) -> GtkSignal.id
+      callback:(GTree.model_filter -> Gtk.tree_iter -> bool) -> GtkSignal.id
   end
 
 (** @since GTK 2.4
@@ -86,7 +86,7 @@ class entry_completion :
 
     method minimum_key_length : int
     method set_minimum_key_length : int -> unit
-    method model : GTree.model
+    method model : GTree.model_filter
     method set_model : GTree.model -> unit
 
     method get_entry : GObj.widget option
