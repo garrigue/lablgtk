@@ -115,9 +115,9 @@ class ComboBoxEntry set : ComboBox {
 
 class EntryCompletion set gobject {
   "minimum-key-length"   gint                 : Read / Write
-  "model"                GtkTreeModel         : Read / Write
+  "model"                GtkTreeModel	      : Read / Write
   signal action_activated : gint
-  signal match_selected   : GtkTreeModel GtkTreeIter -> gboolean
+  signal match_selected   : GtkTreeModelFilter GtkTreeIter -> gboolean
   method get_entry : "Gtk.entry obj option"
   method complete
   method insert_action_text : "int -> string -> unit"

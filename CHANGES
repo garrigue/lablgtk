@@ -1,5 +1,8 @@
 $Id$
-
+2008.10.05 [Benjamin]
+ * Change type of model contained in GEdit.entry_completion from
+   model to model_filter see 
+   http://bugzilla.gnome.org/show_bug.cgi?id=555087.
 2008.09.10 [Benjamin]
  * Many custom tree model bugs fixed. 
 
