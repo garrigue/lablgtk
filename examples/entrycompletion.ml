@@ -63,17 +63,17 @@ let make_complex_entry packing =
       is_prefix key str) ;
   completion#connect#match_selected
     (fun model row ->
-(* Unsafe but correct dummy column usage *)
+(* Unsafe but correct dummy column usage 
       let column = { column with
 		     GTree.conv = Gobject.Data.string ;
 		     GTree.creator = 0 } in
       entry#set_text (model#get ~row ~column) ;
-
-(* Safer but relies on internals of Gtk. *)
-(*   entry#set_text (GtkStock.convert_id (model#child_model#get 
+*)
+(* Safer but relies on Comment #1 of Gtk bug 555087. *)
+  entry#set_text (GtkStock.convert_id (model#child_model#get 
 			 ~row:(model#convert_iter_to_child_iter row)
 			 ~column));
-*)
+
       true) ;
   entry
 
