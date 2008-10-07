@@ -86,7 +86,7 @@ class entry_completion :
 
     method minimum_key_length : int
     method set_minimum_key_length : int -> unit
-    method model : GTree.model_filter
+    method model : GTree.model
     method set_model : GTree.model -> unit
 
     method get_entry : GObj.widget option

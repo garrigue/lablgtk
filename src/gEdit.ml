@@ -68,10 +68,15 @@ class entry_completion obj = object
     Gobject.get EntryCompletion.P.minimum_key_length obj
   method set_model (m : GTree.model) = Gobject.set EntryCompletion.P.model obj m#as_model
   method model = 
-    new GTree.model_filter 
+    (* not compliant with Comment #1 in Gtk bug 
+       http://bugzilla.gnome.org/show_bug.cgi?555087 
+     new GTree.model_filter 
       (Gobject.try_cast 
 	 (Gobject.get EntryCompletion.P.model obj)
       "GtkTreeModelFilter")
+      *)
+    new GTree.model
+	 (Gobject.get EntryCompletion.P.model obj)
 
   method misc = new GObj.gobject_ops obj
   method connect = new entry_completion_signals obj

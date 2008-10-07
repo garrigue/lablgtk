@@ -1,4 +1,7 @@
 $Id$
+2008.10.07 [Benjamin]
+ * Revert last change on GEdit.entry_completion according to M. Clasen.
+   Keeping the new type for the callback match_selected.
 2008.10.05 [Benjamin]
  * Change type of model contained in GEdit.entry_completion from
    model to model_filter see 
