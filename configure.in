@@ -335,17 +335,17 @@ AC_OUTPUT(config.make)
 chmod a-w config.make
 
 AC_DEFUN([CONF_SUMMARY], [
-echo -n "	$1	"
+echo $ECHO_N "	$1 $ECHO_C"
 if test -n "$USE_$2"
-then echo "yes"
+then echo "	yes"
 else if test "$FORCE_$2" = "yes"
-     then echo "disabled"
-     else echo "not found"
+     then echo "	disabled"
+     else echo "	not found"
      fi
 fi])
 
 echo ; echo "LablGTK configuration:"
-echo "	threads		$THREADS_LIB"
+echo "	threads  	$THREADS_LIB"
 CONF_SUMMARY(GtkGLArea, GTKGL)
 CONF_SUMMARY(libglade, GLADE)
 CONF_SUMMARY(librsvg , RSVG)
@@ -355,6 +355,6 @@ CONF_SUMMARY(libpanelapplet, PANEL)
 CONF_SUMMARY(gtkspell, GTKSPELL)
 CONF_SUMMARY(gtksourceview, GTKSOURCEVIEW)
 echo
-echo -n  "	debug   	"
-if test -n "$DEBUG" ; then echo "yes" ; else echo "no" ; fi
+echo $ECHO_N "	debug   $ECHO_C"
+if test -n "$DEBUG" ; then echo "	yes" ; else echo "	no" ; fi
 echo -e  "	C compiler	$CC"
