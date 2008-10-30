@@ -298,7 +298,11 @@ LABLGTK_PKG(GTKSOURCEVIEW, gtksourceview,
             [  --without-gtksourceview      override autodetected gtksourceview support],
             gtksourceview-1.0)
 
-PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG)
+LABLGTK_PKG(GTKQUARTZ, quartz,
+            [  --without-quartz      override autodetected gtksourceview support],
+            gtk+-quartz-2.0)
+
+PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG $GTKQUARTZPKG)
 
 AC_ARG_ENABLE(debug,
         [  --enable-debug          enable debug mode],
@@ -354,7 +358,9 @@ CONF_SUMMARY(libgnomeui, GNOMEUI)
 CONF_SUMMARY(libpanelapplet, PANEL)
 CONF_SUMMARY(gtkspell, GTKSPELL)
 CONF_SUMMARY(gtksourceview, GTKSOURCEVIEW)
+CONF_SUMMARY(quartz   , GTKQUARTZ)
 echo
 echo $ECHO_N "	debug   $ECHO_C"
 if test -n "$DEBUG" ; then echo "	yes" ; else echo "	no" ; fi
 echo -e  "	C compiler	$CC"
+

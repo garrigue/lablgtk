@@ -27,7 +27,10 @@
 #if defined(_WIN32) || defined(__MINGW32__)
 #include <gdk/gdkwin32.h>
 #else
+#if defined(HAS_GTKQUARTZ)
+#else
 #include <gdk/gdkx.h>
+#endif
 #endif
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -253,7 +256,7 @@ ML_1 (gdk_window_clear, GdkWindow_val, Unit)
 ML_0 (GDK_ROOT_PARENT, Val_GdkWindow)
 ML_1 (gdk_window_get_parent, GdkWindow_val, Val_GdkWindow)
 
-#if defined(_WIN32) || defined(__CYGWIN__)
+#if defined(_WIN32) || defined(__CYGWIN__) || defined(HAS_GTKQUARTZ)
 CAMLprim value ml_GDK_WINDOW_XWINDOW(value v)
 {
  ml_raise_gdk ("Not available for Win32");
@@ -488,7 +491,7 @@ CAMLprim value copy_xdata (gint format, void *xdata, gulong nitems)
 CAMLprim value ml_gdk_property_get (value window, value property,
                            value length, value pdelete)
 {
-#if defined(_WIN32) || defined(__CYGWIN__)
+#if defined(_WIN32) || defined(__CYGWIN__) || defined(HAS_GTKQUARTZ)
   return Val_unit; /* not supported */
 #else
     GdkAtom atype;

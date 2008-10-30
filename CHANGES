@@ -1,4 +1,6 @@
 $Id$
+2008.10.30 [Benjamin]
+ * Support Gtk Quartz backend compilation (thanks to Pascal Cuoq)
 2008.10.07 [Benjamin]
  * Revert last change on GEdit.entry_completion according to M. Clasen.
    Keeping the new type for the callback match_selected.

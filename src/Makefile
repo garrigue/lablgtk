@@ -134,6 +134,9 @@ GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
 GTKPROPS +=  gtkSourceView.props
 endif
 
+ifdef USE_GTKQUARTZ
+CFLAGS += -DHAS_GTKQUARTZ
+endif
 # Rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c $(XO) .d$(XO) .var .h .opt .def .ml4
 .c$(XO):
