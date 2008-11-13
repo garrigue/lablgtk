@@ -19,7 +19,7 @@ DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
 
-TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB) gdk-pixbuf-mlsource$(XE)
+TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE)
 
 all: byte
 world: byte $(CAMLBEST)
@@ -250,7 +250,7 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	    -e "s|@RSVG_LIBS@|$(RSVGLIBS)|" \
 	    < build.ml.in > $@
 
-gdk-pixbuf-mlsource$(XE) : lablgtk.cma gtkInit.cmo gdk-pixbuf-mlsource.ml
+gdk_pixbuf_mlsource$(XE) : lablgtk.cma gtkInit.cmo gdk_pixbuf_mlsource.ml
 	$(CAMLC) -o $@ -I . $^
 
 lablgtkopt:: $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx)
@@ -274,7 +274,7 @@ preinstall: build.ml
 	for f in $(PREOBJS:.cmo=.mli); do \
 	  if test -f $$f; then cp $$f "$(INSTALLDIR)"; fi; done
 	cp build.ml "$(INSTALLDIR)"
-	cp lablgtk2$(XB) gdk-pixbuf-mlsource$(XE) "$(BINDIR)"
+	cp lablgtk2$(XB) gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
 	cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)"
@@ -297,7 +297,7 @@ install:
 	cp lablgtk2$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
 	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; fi
-	cp gdk-pixbuf-mlsource$(XE) "$(BINDIR)"
+	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
 
 installdll:
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)" || \
