@@ -20,8 +20,12 @@
 (*                                                                        *)
 (**************************************************************************)
 
+(** {2 GtkSourceView interface} *)
+
 open Gtk
 open GText
+
+
 (** {2 GtkSourceTag} *)
 
 type source_tag_property = [
