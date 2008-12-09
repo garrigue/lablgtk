@@ -361,7 +361,7 @@ ML_1 (gtk_source_buffer_redo, GtkSourceBuffer_val, Unit)
 ML_1 (gtk_source_buffer_begin_not_undoable_action, GtkSourceBuffer_val, Unit)
 ML_1 (gtk_source_buffer_end_not_undoable_action, GtkSourceBuffer_val, Unit)
 ML_4 (gtk_source_buffer_create_marker, GtkSourceBuffer_val,
-      String_option_val, String_option_val, GtkTextIter_val, Val_GtkSourceMarker_new)
+      String_option_val, String_option_val, GtkTextIter_val, Val_GtkSourceMarker)
 ML_3 (gtk_source_buffer_move_marker, GtkSourceBuffer_val,
       GtkSourceMarker_val, GtkTextIter_val, Unit)
 ML_2 (gtk_source_buffer_delete_marker, GtkSourceBuffer_val,
