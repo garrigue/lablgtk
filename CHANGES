@@ -1,4 +1,8 @@
 $Id$
+
+2008.12.09 [Jacques]
+ * fix ml_gtk_source_buffer_create_marker
+
 2008.10.30 [Benjamin]
  * Support Gtk Quartz backend compilation (thanks to Pascal Cuoq)
 2008.10.07 [Benjamin]
