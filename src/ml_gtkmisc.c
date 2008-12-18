@@ -90,8 +90,13 @@ ML_1 (gtk_status_icon_get_pixbuf, GtkStatusIcon_val, Val_GdkPixbuf)
 ML_1 (gtk_status_icon_get_stock, GtkStatusIcon_val, Val_string)
 ML_1 (gtk_status_icon_get_icon_name, GtkStatusIcon_val, Val_string)
 ML_1 (gtk_status_icon_get_size, GtkStatusIcon_val, Val_int)
+#ifdef HASGTK212
 ML_2 (gtk_status_icon_set_screen, GtkStatusIcon_val, GdkScreen_val, Unit)
 ML_1 (gtk_status_icon_get_screen, GtkStatusIcon_val, Val_GdkScreen)
+#else
+Unsupported_212(gtk_status_icon_set_screen)
+Unsupported_212(gtk_status_icon_get_screen)
+#endif
 ML_2 (gtk_status_icon_set_tooltip, GtkStatusIcon_val, String_val, Unit)
 ML_2 (gtk_status_icon_set_visible, GtkStatusIcon_val, Bool_val, Unit)
 ML_1 (gtk_status_icon_get_visible, GtkStatusIcon_val, Val_bool)
