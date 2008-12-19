@@ -831,12 +831,13 @@ value callback4(value closure, value arg1, value arg2, value arg3, value arg4)
 }
 
 #define ACCESS_PUBLIC_METHOD(method,object, name, block)       \
-  { static value method_hash = 0; \
-    if (method_hash==0) method_hash = caml_hash_variant(name); \
-     { value method = caml_get_public_method(object,method_hash); \
-       if ((void*)method == NULL){ printf("Internal error: could not access method '%s'\n", name); exit(2);} \
-	   ; block ; }};
-
+  {static value method_hash = 0; \
+   if (method_hash==0) method_hash = caml_hash_variant(name); \
+    {value method = caml_get_public_method(object,method_hash); \
+     if ((void*)method == NULL) \
+      {printf("Internal error: could not access method '%s'\n", name); \
+       exit(2);}; \
+     block ; }};
 
 /*****************************************************************************
  * GObject stuff
@@ -1003,32 +1004,31 @@ encode_iter(Custom_model *custom_model, GtkTreeIter *iter, value v)
   ACCESS_PUBLIC_METHOD(method,callback_object,"custom_encode_iter",
 
   { value triple = callback2(method,callback_object,v);
-  value v1 = Field(triple,0);
-  value v2 = Field(triple,1);
-  value v3 = Field(triple,2);
-
+    value v1 = Field(triple,0);
+    value v2 = Field(triple,1);
+    value v3 = Field(triple,2);
   /* Ideally, the user would already have ensured all these were stable...
      and in any case, it is always up to the user to ensure that they will
      not get garbage collected */
-  if((Is_block(v1) && (char*)v1 < (char*)caml_young_end && (char*)v1 > (char*)caml_young_start) ||
-     (Is_block(v2) && (char*)v2 < (char*)caml_young_end && (char*)v2 > (char*)caml_young_start) ||
-     (Is_block(v3) && (char*)v3 < (char*)caml_young_end && (char*)v3 > (char*)caml_young_start))
-    {
-      caml_register_global_root (&v1);
-      caml_register_global_root (&v2);
-      caml_register_global_root (&v3);
-      caml_minor_collection();
-      caml_remove_global_root (&v1);
-      caml_remove_global_root (&v2);
-      caml_remove_global_root (&v3);
+    if((Is_block(v1) && (char*)v1 < (char*)caml_young_end && (char*)v1 > (char*)caml_young_start) ||
+       (Is_block(v2) && (char*)v2 < (char*)caml_young_end && (char*)v2 > (char*)caml_young_start) ||
+       (Is_block(v3) && (char*)v3 < (char*)caml_young_end && (char*)v3 > (char*)caml_young_start))
+      {
+	caml_register_global_root (&v1);
+	caml_register_global_root (&v2);
+	caml_register_global_root (&v3);
+	caml_minor_collection();
+	caml_remove_global_root (&v1);
+	caml_remove_global_root (&v2);
+	caml_remove_global_root (&v3);
     }
-
-  iter->stamp = custom_model->stamp;
-  iter->user_data = (gpointer) v1;
-  iter->user_data2 = (gpointer) v2;
-  iter->user_data3 = (gpointer) v3;
+    
+    iter->stamp = custom_model->stamp;
+    iter->user_data = (gpointer) v1;
+    iter->user_data2 = (gpointer) v2;
+    iter->user_data3 = (gpointer) v3;
   })
-  }
+    }
 }
 
 value
@@ -1057,25 +1057,24 @@ custom_model_get_flags (GtkTreeModel *tree_model)
 	  value callback_object = custom_model->callback_object;
 
   ACCESS_PUBLIC_METHOD(method, callback_object, "custom_flags",
-  {value flags_list = callback(method, callback_object);
-
-  GtkTreeModelFlags flags = (GtkTreeModelFlags) 0;
-  static value iter_persist_hash=0;
-  static value list_only_hash=0;
-  if (iter_persist_hash==0) iter_persist_hash=caml_hash_variant("ITERS_PERSIST");
-  if (list_only_hash==0) list_only_hash=caml_hash_variant("LIST_ONLY");
-
-  while (flags_list != Val_int(0))
-    { value flag = Field(flags_list,0);
-      flags_list = Field(flags_list,1);
-      if (flag == iter_persist_hash)
+  { value flags_list = callback(method, callback_object);
+    GtkTreeModelFlags flags = (GtkTreeModelFlags) 0;
+    static value iter_persist_hash=0;
+    static value list_only_hash=0;
+    if (iter_persist_hash==0) 
+      iter_persist_hash=caml_hash_variant("ITERS_PERSIST");
+    if (list_only_hash==0) list_only_hash=caml_hash_variant("LIST_ONLY");
+    while (flags_list != Val_int(0))
+      { value flag = Field(flags_list,0);
+	flags_list = Field(flags_list,1);
+	if (flag == iter_persist_hash)
     	  flags = flags | GTK_TREE_MODEL_ITERS_PERSIST;
-      if (flag == list_only_hash)
+	if (flag == list_only_hash)
     	  flags = flags | GTK_TREE_MODEL_LIST_ONLY;
-    }
-  return flags;
+      }
+    return flags;
   })
-  }
+    }
 }
 
 static gint
@@ -1086,8 +1085,8 @@ custom_model_get_n_columns (GtkTreeModel *tree_model)
   { Custom_model *custom_model = (Custom_model *) tree_model;
     value callback_object = custom_model->callback_object;
     ACCESS_PUBLIC_METHOD(method,callback_object,"custom_n_columns",
-    {value n_columns = callback(method,callback_object);
-    return Int_val(n_columns);})}
+    { value n_columns = callback(method,callback_object);
+      return Int_val(n_columns);})}
 }
 
 static GType
@@ -1099,8 +1098,8 @@ custom_model_get_column_type (GtkTreeModel *tree_model, gint index)
     value callback_object = custom_model->callback_object;
 
   ACCESS_PUBLIC_METHOD(method,callback_object,"custom_get_column_type",
-  {value t = callback2(method,callback_object, Val_int(index));
-  return GType_val(t);})}
+  { value t = callback2(method,callback_object, Val_int(index));
+    return GType_val(t);})}
 }
 
 static gboolean
@@ -1120,16 +1119,17 @@ custom_model_get_iter (GtkTreeModel *tree_model,
      finalization; don't want to free twice!  The alternative (of
      avoiding both copy and finalization) means trusting the OCaml
      programmer not to store the path somewhere... */
-  {UNWRAP_OPTION(res,callback2(method,callback_object,
-			      Val_GtkTreePath(gtk_tree_path_copy(path))),
-
-  if (res) {
-    encode_iter(custom_model,iter,res);
-    return TRUE;
-  }
-  else {
-    return FALSE;)
-  }})}
+  { UNWRAP_OPTION(res,
+		  callback2(method,
+			    callback_object,
+			    Val_GtkTreePath(gtk_tree_path_copy(path))),
+		  if (res) {
+		    encode_iter(custom_model,iter,res);
+		    return TRUE;
+		  }
+		  else {
+		    return FALSE;)
+		  }})}
 }
 
 static GtkTreePath *
@@ -1149,7 +1149,7 @@ custom_model_get_path (GtkTreeModel *tree_model,
      free the path we return to it. */
   { value path = callback2(method,callback_object,
 			 decode_iter(custom_model,iter));
-  return gtk_tree_path_copy(GtkTreePath_val(path));})}}
+    return gtk_tree_path_copy(GtkTreePath_val(path));})}}
 }
 
 static void
@@ -1162,16 +1162,13 @@ custom_model_get_value (GtkTreeModel *tree_model,
   g_return_if_fail(iter != NULL);
   g_return_if_fail (IS_CUSTOM_MODEL (tree_model));
   { Custom_model *custom_model = (Custom_model *) tree_model;
-  g_return_if_fail (iter->stamp == custom_model->stamp);
-  { value callback_object = custom_model->callback_object;
-
-  value row = decode_iter(custom_model,iter);
-  value wrap = Val_GValue_wrap(value_arg);
-
-  ACCESS_PUBLIC_METHOD(method,callback_object,"custom_get_value",
-
-   callback4(method,callback_object,
-	    row,Val_int(column),wrap);)}}
+    g_return_if_fail (iter->stamp == custom_model->stamp);
+    { value callback_object = custom_model->callback_object;
+      value row = decode_iter(custom_model,iter);
+      value wrap = Val_GValue_wrap(value_arg);
+      ACCESS_PUBLIC_METHOD(method,callback_object,"custom_get_value",
+      callback4(method,callback_object,
+		row,Val_int(column),wrap);)}}
 }
 
 static gboolean
@@ -1184,17 +1181,16 @@ custom_model_iter_next (GtkTreeModel  *tree_model,
   { Custom_model *custom_model = (Custom_model *) tree_model;
   g_return_val_if_fail (iter->stamp == custom_model->stamp, FALSE);
   { value callback_object = custom_model->callback_object;
-  ACCESS_PUBLIC_METHOD(method,callback_object,"custom_iter_next",
-  { value row = decode_iter(custom_model, iter);
-  UNWRAP_OPTION(res,callback2(method,callback_object,
-			      row),
-  if (res) {
-    encode_iter(custom_model,iter,res);
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  })})}}
+    ACCESS_PUBLIC_METHOD(method,callback_object,"custom_iter_next",
+    { value row = decode_iter(custom_model, iter);
+      UNWRAP_OPTION(res,callback2(method,callback_object, row),
+		    if (res) {
+		      encode_iter(custom_model,iter,res);
+		      return TRUE;
+		    }
+		    else {
+		      return FALSE;
+		    })})}}
 }
 
 static gboolean
@@ -1210,15 +1206,14 @@ custom_model_iter_children (GtkTreeModel *tree_model,
   { value callback_object = custom_model->callback_object;
   ACCESS_PUBLIC_METHOD(method,callback_object,"custom_iter_children",
   { value arg = decode_iter_option(custom_model,parent);
-  UNWRAP_OPTION(res, callback2(method,callback_object,
-			       arg),
-  if (res) {
-    encode_iter(custom_model,iter,res);
-    return TRUE;
-  }
-  else {
+    UNWRAP_OPTION(res, callback2(method,callback_object,arg),
+		  if (res) {
+		    encode_iter(custom_model,iter,res);
+		    return TRUE;
+		  }
+		  else {
     return FALSE;
-  })})}}
+		  })})}}
 }
 
 static gboolean
@@ -1233,8 +1228,8 @@ custom_model_iter_has_child (GtkTreeModel *tree_model,
   { value callback_object = custom_model->callback_object;
   ACCESS_PUBLIC_METHOD(method, callback_object,"custom_iter_has_child",
 
-  {value row = decode_iter(custom_model,iter);
-  return Bool_val(callback2(method,callback_object, row));})}}
+  { value row = decode_iter(custom_model,iter);
+    return Bool_val(callback2(method,callback_object, row));})}}
 }
 
 static gint
@@ -1247,8 +1242,8 @@ custom_model_iter_n_children (GtkTreeModel *tree_model,
   g_return_val_if_fail (iter == NULL || iter->stamp == custom_model->stamp, 0);
   { value callback_object = custom_model->callback_object;
   ACCESS_PUBLIC_METHOD(method,callback_object, "custom_iter_n_children",
-  {value arg = decode_iter_option(custom_model,iter);
-  return Int_val(callback2(method,callback_object, arg));})}}
+  { value arg = decode_iter_option(custom_model,iter);
+    return Int_val(callback2(method,callback_object, arg));})}}
 }
 
 static gboolean
@@ -1265,15 +1260,15 @@ custom_model_iter_nth_child (GtkTreeModel *tree_model,
   { value callback_object = custom_model->callback_object;
   ACCESS_PUBLIC_METHOD(method, callback_object, "custom_iter_nth_child",
 
-  {value arg = decode_iter_option(custom_model,parent);
-  UNWRAP_OPTION(res,callback3(method, callback_object, arg, Val_int(n)),
-  if (res) {
-    encode_iter(custom_model,iter,res);
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  })})}}
+  { value arg = decode_iter_option(custom_model,parent);
+    UNWRAP_OPTION(res,callback3(method, callback_object, arg, Val_int(n)),
+		  if (res) {
+		    encode_iter(custom_model,iter,res);
+		    return TRUE;
+		  }
+		  else {
+		    return FALSE;
+		  })})}}
 }
 
 static gboolean
@@ -1285,20 +1280,19 @@ custom_model_iter_parent (GtkTreeModel *tree_model,
   g_return_val_if_fail(iter != NULL, FALSE);
   g_return_val_if_fail(IS_CUSTOM_MODEL (tree_model),FALSE);
   { Custom_model *custom_model = (Custom_model *) tree_model;
-  g_return_val_if_fail (child != NULL, FALSE);
-  g_return_val_if_fail (child->stamp == custom_model->stamp, FALSE);
-  { value callback_object = custom_model->callback_object;
-  ACCESS_PUBLIC_METHOD(method,callback_object, "custom_iter_parent",
-  {value row = decode_iter(custom_model,child);
-  UNWRAP_OPTION(res,callback2(method,callback_object,row),
-
-  if (res) {
-    encode_iter(custom_model,iter,res);
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  })})}}
+    g_return_val_if_fail (child != NULL, FALSE);
+    g_return_val_if_fail (child->stamp == custom_model->stamp, FALSE);
+    { value callback_object = custom_model->callback_object;
+      ACCESS_PUBLIC_METHOD(method,callback_object, "custom_iter_parent",
+      { value row = decode_iter(custom_model,child);
+	UNWRAP_OPTION(res,callback2(method,callback_object,row),
+		      if (res) {
+			encode_iter(custom_model,iter,res);
+			return TRUE;
+		      }
+		      else {
+			return FALSE;
+		      })})}}
 }
 
 static void
@@ -1308,12 +1302,11 @@ custom_model_ref_node (GtkTreeModel *tree_model, GtkTreeIter *iter)
   g_return_if_fail(iter != NULL);
   g_return_if_fail (IS_CUSTOM_MODEL (tree_model));
   { Custom_model *custom_model = (Custom_model *) tree_model;
-  g_return_if_fail (iter->stamp == custom_model->stamp);
-  { value callback_object = custom_model->callback_object;
-
-  ACCESS_PUBLIC_METHOD(method, callback_object, "custom_ref_node",
-  {value row = decode_iter(custom_model,iter);
-  callback2(method, callback_object, row);})}}
+    g_return_if_fail (iter->stamp == custom_model->stamp);
+    { value callback_object = custom_model->callback_object;
+      ACCESS_PUBLIC_METHOD(method, callback_object, "custom_ref_node",
+      { value row = decode_iter(custom_model,iter);
+	callback2(method, callback_object, row);})}}
 }
 
 static void
@@ -1323,12 +1316,11 @@ custom_model_unref_node (GtkTreeModel *tree_model, GtkTreeIter *iter)
   g_return_if_fail(iter != NULL);
   g_return_if_fail (IS_CUSTOM_MODEL (tree_model));
   { Custom_model *custom_model = (Custom_model *) tree_model;
-  g_return_if_fail (iter->stamp == custom_model->stamp);
-  { value callback_object = custom_model->callback_object;
-  ACCESS_PUBLIC_METHOD(method, callback_object, "custom_unref_node",
-
-  {value row = decode_iter(custom_model,iter);
-  callback2(method, callback_object, row);})}}
+    g_return_if_fail (iter->stamp == custom_model->stamp);
+    { value callback_object = custom_model->callback_object;
+      ACCESS_PUBLIC_METHOD(method, callback_object, "custom_unref_node",
+      { value row = decode_iter(custom_model,iter);
+	callback2(method, callback_object, row);})}}
 }
 
 /*****************************************************************************
