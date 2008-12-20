@@ -141,6 +141,8 @@ endif
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .c $(XO) .d$(XO) .var .h .opt .def .ml4
 .c$(XO):
 	$(CCOMPILER) $<
+.cpp$(XO):
+	$(CCOMPILER) $<
 .c.d$(XO):
 	$(CAMLC) -c -ccopt '-MT -DCAML_DLL -Fo$@ $(CFLAGS)' $<
 .ml.cmo:
@@ -243,11 +245,11 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	sed -e "s|@LABLGTK_MLS@|$(MLOBJS:.cmo=)|" \
 	    -e "s|@EXTRA_MLS@|$(EXTRAOBJS:.cmo=)|" \
 	    -e "s|@PROP_MLS@|$(PROPOBJS:.cmo=)|" \
-	    -e "s|@GTKLIBS@|$(GTKLIBS)|" \
+	    -e "s|@GTKLIBS@|$(GTKLIBS0)|" \
 	    -e "s|@GLADE_MLS@|$(GLADEMLOBJS:.cmo=)|" \
-	    -e "s|@GLADE_LIBS@|$(GLADELIBS)|" \
+	    -e "s|@GLADE_LIBS@|$(GLADELIBS0)|" \
 	    -e "s|@RSVG_MLS@|$(RSVGMLOBJS:.cmo=)|" \
-	    -e "s|@RSVG_LIBS@|$(RSVGLIBS)|" \
+	    -e "s|@RSVG_LIBS@|$(RSVGLIBS0)|" \
 	    < build.ml.in > $@
 
 gdk_pixbuf_mlsource$(XE) : lablgtk.cma gtkInit.cmo gdk_pixbuf_mlsource.ml
@@ -327,11 +329,10 @@ lablgtk.cmxa: liblablgtk2$(XA) $(MLOBJS:.cmo=.cmx) $(CONFIG)
 	  -cclib "$(GTKLIBS)"
 else
 lablgtk.cma liblablgtk2$(XA): $(COBJS) $(MLOBJS)
-	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(COBJS) $(MLOBJS) \
-	     -ldopt "$(GTKLIBS)" -cclib "$(GTKLIBS)"
+	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(COBJS) $(MLOBJS) $(GTKLIBS)
 lablgtk.cmxa: $(COBJS) $(MLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(COBJS) $(MLOBJS:.cmo=.cmx) \
-	     -ldopt "$(GTKLIBS)" -cclib "$(GTKLIBS)"
+	$(LIBRARIAN) -o lablgtk -oc lablgtk2 \
+	    $(COBJS) $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
 endif
 
 liblablgtkgl2$(XA): $(GLCOBJS)
@@ -367,12 +368,10 @@ lablglade.cmxa: liblablglade2$(XA) $(GLADEMLOBJS:.cmo=.cmx) $(CONFIG)
 else
 liblablglade2$(XA) lablglade.cma: $(GLADECOBJS) $(GLADEMLOBJS)
 	$(LIBRARIAN) -o lablglade -oc lablglade2 \
-	    $(GLADECOBJS) $(GLADEMLOBJS) \
-	    -ldopt "$(GLADELIBS)" -cclib "$(GLADELIBS)"
+	    $(GLADECOBJS) $(GLADEMLOBJS) $(GLADELIBS)
 lablglade.cmxa: $(GLADECOBJS) $(GLADEMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablglade -oc lablglade2 \
-	    $(GLADECOBJS) $(GLADEMLOBJS:.cmo=.cmx) \
-	    -ldopt "$(GLADELIBS)" -cclib "$(GLADELIBS)"
+	    $(GLADECOBJS) $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
 endif
 
 ifeq ($(TOOLCHAIN),msvc310)
@@ -390,11 +389,10 @@ lablrsvg.cmxa: liblablrsvg$(XA) $(RSVGMLOBJS:.cmo=.cmx) $(CONFIG)
 	  -cclib "$(RSVGLIBS)"
 else
 liblablrsvg$(XA) lablrsvg.cma: $(RSVGCOBJS) $(RSVGMLOBJS)
-	$(LIBRARIAN) -o lablrsvg $(RSVGCOBJS) $(RSVGMLOBJS) \
-	  -ldopt "$(RSVGLIBS)" -cclib "$(RSVGLIBS)"
+	$(LIBRARIAN) -o lablrsvg $(RSVGCOBJS) $(RSVGMLOBJS) $(RSVGLIBS)
 lablrsvg.cmxa: $(RSVGCOBJS) $(RSVGMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablrsvg $(RSVGCOBJS) $(RSVGMLOBJS:.cmo=.cmx) \
-	  -ldopt "$(RSVGLIBS)" -cclib "$(RSVGLIBS)"
+	$(LIBRARIAN) -o lablrsvg \
+	  $(RSVGCOBJS) $(RSVGMLOBJS:.cmo=.cmx) $(RSVGLIBS)
 endif
 
 liblablgnomecanvas$(XA): $(GNOMECANVASCOBJS)
