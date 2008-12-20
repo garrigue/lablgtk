@@ -1,5 +1,8 @@
 $Id$
 
+2008.12.20 [Jacques]
+ * fix build process for ocaml 3.11 on MSVC and mingw.
+
 2008.12.09 [Jacques]
  * fix ml_gtk_source_buffer_create_marker
 
