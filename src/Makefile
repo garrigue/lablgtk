@@ -61,9 +61,9 @@ endif
 THLINK = unix.cma threads.cma
 
 ifdef USE_CC
-CCOMPILER = $(CC) -c -I$(LIBDIR) $(CFLAGS)
+CCOMPILER = $(CC) -c -I"$(LIBDIR)" $(CFLAGS)
 else
-CCOMPILER = $(CAMLC) -c -ccopt '$(CFLAGS)'
+CCOMPILER = $(CAMLC) -c -ccopt '$(CFLAGS)' -verbose
 endif
 
 ifdef USE_GL
@@ -313,7 +313,7 @@ installopt:
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) "$(INSTALLDIR)"; fi
 
-ifeq ($(TOOLCHAIN),msvc)
+ifeq ($(TOOLCHAIN),msvc310)
 liblablgtk2$(XA): $(COBJS)
 	$(MKLIB)$@ $(COBJS)
 dlllablgtk2.dll: $(COBJS:$(XO)=.d$(XO))
@@ -326,12 +326,12 @@ lablgtk.cmxa: liblablgtk2$(XA) $(MLOBJS:.cmo=.cmx) $(CONFIG)
 	$(LINKOPT) -a -o $@  $(MLOBJS:.cmo=.cmx) -cclib -llablgtk2 \
 	  -cclib "$(GTKLIBS)"
 else
-liblablgtk2$(XA): $(COBJS)
-	$(LIBRARIAN) -o lablgtk2 $(COBJS) $(GTKLIBS)
-lablgtk.cma: liblablgtk2$(XA) $(MLOBJS)
-	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(MLOBJS) $(GTKLIBS)
-lablgtk.cmxa: liblablgtk2$(XA) $(MLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
+lablgtk.cma liblablgtk2$(XA): $(COBJS) $(MLOBJS)
+	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(COBJS) $(MLOBJS) \
+	     -ldopt "$(GTKLIBS)" -cclib "$(GTKLIBS)"
+lablgtk.cmxa: $(COBJS) $(MLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(COBJS) $(MLOBJS:.cmo=.cmx) \
+	     -ldopt "$(GTKLIBS)" -cclib "$(GTKLIBS)"
 endif
 
 liblablgtkgl2$(XA): $(GLCOBJS)
@@ -351,7 +351,7 @@ lablgtkgl.cmxa: liblablgtkgl2$(XA) $(GLMLOBJS:.cmo=.cmx)
 #lablgnome.cmxa: liblablgnome$(XA) $(GNOMEMLOBJS:.cmo=.cmx)
 #	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) $(GNOMELIBS)
 
-ifeq ($(TOOLCHAIN),msvc)
+ifeq ($(TOOLCHAIN),msvc310)
 liblablglade2$(XA): $(GLADECOBJS)
 	$(MKLIB)$@ $(GLADECOBJS)
 dlllablglade2.dll: $(GLADECOBJS:$(XO)=.d$(XO))
@@ -365,16 +365,17 @@ lablglade.cmxa: liblablglade2$(XA) $(GLADEMLOBJS:.cmo=.cmx) $(CONFIG)
 	$(LINKOPT) -a -o $@  $(GLADEMLOBJS:.cmo=.cmx) -cclib -llablglade2 \
 	  -cclib "$(GLADELIBS)"
 else
-liblablglade2$(XA): $(GLADECOBJS)
-	$(LIBRARIAN) -o lablglade2 $(GLADECOBJS) $(GLADELIBS)
-lablglade.cma: liblablglade2$(XA) $(GLADEMLOBJS)
-	$(LIBRARIAN) -o lablglade -oc lablglade2 $(GLADEMLOBJS) $(GLADELIBS)
-lablglade.cmxa: liblablglade2$(XA) $(GLADEMLOBJS:.cmo=.cmx)
+liblablglade2$(XA) lablglade.cma: $(GLADECOBJS) $(GLADEMLOBJS)
 	$(LIBRARIAN) -o lablglade -oc lablglade2 \
-	    $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
+	    $(GLADECOBJS) $(GLADEMLOBJS) \
+	    -ldopt "$(GLADELIBS)" -cclib "$(GLADELIBS)"
+lablglade.cmxa: $(GLADECOBJS) $(GLADEMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablglade -oc lablglade2 \
+	    $(GLADECOBJS) $(GLADEMLOBJS:.cmo=.cmx) \
+	    -ldopt "$(GLADELIBS)" -cclib "$(GLADELIBS)"
 endif
 
-ifeq ($(TOOLCHAIN),msvc)
+ifeq ($(TOOLCHAIN),msvc310)
 liblablrsvg$(XA): $(RSVGCOBJS)
 	$(MKLIB)$@ $(RSVGCOBJS)
 dlllablrsvg.dll: $(RSVGCOBJS:$(XO)=.d$(XO))
@@ -388,13 +389,12 @@ lablrsvg.cmxa: liblablrsvg$(XA) $(RSVGMLOBJS:.cmo=.cmx) $(CONFIG)
 	$(LINKOPT) -a -o $@  $(RSVGMLOBJS:.cmo=.cmx) -cclib -llablrsvg \
 	  -cclib "$(RSVGLIBS)"
 else
-liblablrsvg$(XA): $(RSVGCOBJS)
-	$(LIBRARIAN) -o lablrsvg $(RSVGCOBJS) $(RSVGLIBS)
-lablrsvg.cma: liblablrsvg$(XA) $(RSVGMLOBJS)
-	$(LIBRARIAN) -o lablrsvg -oc lablrsvg $(RSVGMLOBJS) $(RSVGLIBS)
-lablrsvg.cmxa: liblablrsvg$(XA) $(RSVGMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablrsvg -oc lablrsvg \
-	    $(RSVGMLOBJS:.cmo=.cmx) $(RSVGLIBS)
+liblablrsvg$(XA) lablrsvg.cma: $(RSVGCOBJS) $(RSVGMLOBJS)
+	$(LIBRARIAN) -o lablrsvg $(RSVGCOBJS) $(RSVGMLOBJS) \
+	  -ldopt "$(RSVGLIBS)" -cclib "$(RSVGLIBS)"
+lablrsvg.cmxa: $(RSVGCOBJS) $(RSVGMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablrsvg $(RSVGCOBJS) $(RSVGMLOBJS:.cmo=.cmx) \
+	  -ldopt "$(RSVGLIBS)" -cclib "$(RSVGLIBS)"
 endif
 
 liblablgnomecanvas$(XA): $(GNOMECANVASCOBJS)
