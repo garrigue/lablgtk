@@ -315,127 +315,54 @@ installopt:
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) "$(INSTALLDIR)"; fi
 
-ifeq ($(TOOLCHAIN),msvc310)
-liblablgtk2$(XA): $(COBJS)
-	$(MKLIB)$@ $(COBJS)
-dlllablgtk2.dll: $(COBJS:$(XO)=.d$(XO))
-	$(call MKDLL,$@) $(COBJS:$(XO)=.d$(XO)) $(GTKLIBS)
-lablgtk.cma: liblablgtk2$(XA) dlllablgtk2.dll $(MLOBJS) $(CONFIG)
-	$(LINKER) -a -o $@ $(MLOBJS) $(GTKLIBS) \
-	  -cclib -llablgtk2 -dllib -llablgtk2 \
-	  -cclib "$(GTKLIBS)"
-lablgtk.cmxa: liblablgtk2$(XA) $(MLOBJS:.cmo=.cmx) $(CONFIG)
-	$(LINKOPT) -a -o $@  $(MLOBJS:.cmo=.cmx) -cclib -llablgtk2 \
-	  -cclib "$(GTKLIBS)"
-else
 lablgtk.cma liblablgtk2$(XA): $(COBJS) $(MLOBJS)
-	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $(COBJS) $(MLOBJS) $(GTKLIBS)
+	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)
 lablgtk.cmxa: $(COBJS) $(MLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtk -oc lablgtk2 \
-	    $(COBJS) $(MLOBJS:.cmo=.cmx) $(GTKLIBS)
-endif
+	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)
 
-liblablgtkgl2$(XA): $(GLCOBJS)
-	$(LIBRARIAN) -o lablgtkgl2 $(GLCOBJS) \
-	    $(GTKGLLIBS)
-lablgtkgl.cma: liblablgtkgl2$(XA) $(GLMLOBJS)
-	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $(GLMLOBJS) \
-	    $(GTKGLLIBS)
-lablgtkgl.cmxa: liblablgtkgl2$(XA) $(GLMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $(GLMLOBJS:.cmo=.cmx) \
-	    $(GTKGLLIBS)
+lablgtkgl.cma liblablgtkgl2$(XA): $(GLCOBJS) $(GLMLOBJS)
+	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $^ $(GTKGLLIBS)
+lablgtkgl.cmxa: $(GLCOBJS) $(GLMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $^ $(GTKGLLIBS)
 
-#liblablgnome$(XA): $(GNOMECOBJS)
-#	$(LIBRARIAN) -o lablgnome $(GNOMECOBJS) $(GNOMELIBS)
-#lablgnome.cma: liblablgnome$(XA) $(GNOMEMLOBJS)
-#	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS) $(GNOMELIBS)
-#lablgnome.cmxa: liblablgnome$(XA) $(GNOMEMLOBJS:.cmo=.cmx)
-#	$(LIBRARIAN) -o lablgnome $(GNOMEMLOBJS:.cmo=.cmx) $(GNOMELIBS)
-
-ifeq ($(TOOLCHAIN),msvc310)
-liblablglade2$(XA): $(GLADECOBJS)
-	$(MKLIB)$@ $(GLADECOBJS)
-dlllablglade2.dll: $(GLADECOBJS:$(XO)=.d$(XO))
-	$(call MKDLL,$@) $(GLADECOBJS:$(XO)=.d$(XO)) \
-		dlllablgtk2.lib $(GLADELIBS) $(GTKLIBS)
-lablglade.cma: liblablglade2$(XA) dlllablglade2.dll $(GLADEMLOBJS) $(CONFIG)
-	$(LINKER) -a -o $@ $(GLADEMLOBJS) \
-	  -cclib -llablglade2 -dllib -llablglade2 \
-	  -cclib "$(GLADELIBS)"
-lablglade.cmxa: liblablglade2$(XA) $(GLADEMLOBJS:.cmo=.cmx) $(CONFIG)
-	$(LINKOPT) -a -o $@  $(GLADEMLOBJS:.cmo=.cmx) -cclib -llablglade2 \
-	  -cclib "$(GLADELIBS)"
-else
-liblablglade2$(XA) lablglade.cma: $(GLADECOBJS) $(GLADEMLOBJS)
-	$(LIBRARIAN) -o lablglade -oc lablglade2 \
-	    $(GLADECOBJS) $(GLADEMLOBJS) $(GLADELIBS)
+lablglade.cma liblablglade2$(XA): $(GLADECOBJS) $(GLADEMLOBJS)
+	$(LIBRARIAN) -o lablglade -oc lablglade2 $^ $(GLADELIBS)
 lablglade.cmxa: $(GLADECOBJS) $(GLADEMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablglade -oc lablglade2 \
-	    $(GLADECOBJS) $(GLADEMLOBJS:.cmo=.cmx) $(GLADELIBS)
-endif
+	$(LIBRARIAN) -o lablglade -oc lablglade2 $^ $(GLADELIBS)
 
-ifeq ($(TOOLCHAIN),msvc310)
-liblablrsvg$(XA): $(RSVGCOBJS)
-	$(MKLIB)$@ $(RSVGCOBJS)
-dlllablrsvg.dll: $(RSVGCOBJS:$(XO)=.d$(XO))
-	$(call MKDLL,$@) $(RSVGCOBJS:$(XO)=.d$(XO)) \
-		dlllablgtk2.lib $(RSVGLIBS) $(GTKLIBS)
-lablrsvg.cma: liblablrsvg$(XA) dlllablrsvg.dll $(RSVGMLOBJS) $(CONFIG)
-	$(LINKER) -a -o $@ $(RSVGMLOBJS) \
-	  -cclib -llablrsvg -dllib -llablrsvg \
-	  -cclib "$(RSVGLIBS)"
-lablrsvg.cmxa: liblablrsvg$(XA) $(RSVGMLOBJS:.cmo=.cmx) $(CONFIG)
-	$(LINKOPT) -a -o $@  $(RSVGMLOBJS:.cmo=.cmx) -cclib -llablrsvg \
-	  -cclib "$(RSVGLIBS)"
-else
-liblablrsvg$(XA) lablrsvg.cma: $(RSVGCOBJS) $(RSVGMLOBJS)
-	$(LIBRARIAN) -o lablrsvg $(RSVGCOBJS) $(RSVGMLOBJS) $(RSVGLIBS)
+lablrsvg.cma liblablrsvg$(XA): $(RSVGCOBJS) $(RSVGMLOBJS)
+	$(LIBRARIAN) -o lablrsvg $^ $(RSVGLIBS)
 lablrsvg.cmxa: $(RSVGCOBJS) $(RSVGMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablrsvg \
-	  $(RSVGCOBJS) $(RSVGMLOBJS:.cmo=.cmx) $(RSVGLIBS)
-endif
+	$(LIBRARIAN) -o lablrsvg $^ $(RSVGLIBS)
 
-liblablgnomecanvas$(XA): $(GNOMECANVASCOBJS)
-	$(LIBRARIAN) -o lablgnomecanvas $(GNOMECANVASCOBJS) $(GNOMECANVASLIBS)
-lablgnomecanvas.cma: liblablgnomecanvas$(XA) $(GNOMECANVASMLOBJS)
-	$(LIBRARIAN) -o lablgnomecanvas $(GNOMECANVASMLOBJS) $(GNOMECANVASLIBS)
-lablgnomecanvas.cmxa: liblablgnomecanvas$(XA) $(GNOMECANVASMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgnomecanvas \
-	    $(GNOMECANVASMLOBJS:.cmo=.cmx) $(GNOMECANVASLIBS)
+lablgnomecanvas.cma liblablgnomecanvas$(XA): \
+		$(GNOMECANVASCOBJS) $(GNOMECANVASMLOBJS)
+	$(LIBRARIAN) -o lablgnomecanvas $^ $(GNOMECANVASLIBS)
+lablgnomecanvas.cmxa: $(GNOMECANVASCOBJS) $(GNOMECANVASMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgnomecanvas $^ $(GNOMECANVASLIBS)
 # gnoCanvas.cmo: COMPILER+= -i
 
-liblablgnomeui$(XA): $(GNOMEUICOBJS)
-	$(LIBRARIAN) -o lablgnomeui $(GNOMEUICOBJS) $(GNOMEUILIBS)
-lablgnomeui.cma: liblablgnomeui$(XA) $(GNOMEUIMLOBJS)
-	$(LIBRARIAN) -o lablgnomeui $(GNOMEUIMLOBJS) $(GNOMEUILIBS)
-lablgnomeui.cmxa: liblablgnomeui$(XA) $(GNOMEUIMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgnomeui \
-	    $(GNOMEUIMLOBJS:.cmo=.cmx) $(GNOMEUILIBS)
+lablgnomeui.cma liblablgnomeui$(XA): $(GNOMEUICOBJS) $(GNOMEUIMLOBJS)
+	$(LIBRARIAN) -o lablgnomeui $^ $(GNOMEUILIBS)
+lablgnomeui.cmxa: $(GNOMEUICOBJS) $(GNOMEUIMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgnomeui $^ $(GNOMEUILIBS)
 # gnoDruid.cmo: COMPILER+= -i
 
-liblablpanel$(XA): $(PANELCOBJS)
-	$(LIBRARIAN) -o lablpanel $(PANELCOBJS) $(PANELLIBS)
-lablpanel.cma: liblablpanel$(XA) $(PANELMLOBJS)
-	$(LIBRARIAN) -o lablpanel $(PANELMLOBJS) $(PANELLIBS)
-lablpanel.cmxa: liblablpanel$(XA) $(PANELMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablpanel \
-	    $(PANELMLOBJS:.cmo=.cmx) $(PANELLIBS)
+lablpanel.cma liblablpanel$(XA): $(PANELCOBJS) $(PANELMLOBJS)
+	$(LIBRARIAN) -o lablpanel $^ $(PANELLIBS)
+lablpanel.cmxa: $(PANELCOBJS) $(PANELMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablpanel $^ $(PANELLIBS)
 
-liblablgtkspell$(XA): $(GTKSPELLCOBJS)
-	$(LIBRARIAN) -o lablgtkspell $(GTKSPELLCOBJS) $(GTKSPELLLIBS)
-lablgtkspell.cma: liblablgtkspell$(XA) $(GTKSPELLMLOBJS)
-	$(LIBRARIAN) -o lablgtkspell $(GTKSPELLMLOBJS) $(GTKSPELLLIBS)
-lablgtkspell.cmxa: liblablgtkspell$(XA) $(GTKSPELLMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtkspell \
-	    $(GTKSPELLMLOBJS:.cmo=.cmx) $(GTKSPELLLIBS)
+lablgtkspell.cma liblablgtkspell$(XA): $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS)
+	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
+lablgtkspell.cmxa: $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
 
-liblablgtksourceview$(XA): $(GTKSOURCEVIEWCOBJS)
-	$(LIBRARIAN) -o lablgtksourceview $(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWLIBS)
-lablgtksourceview.cma: liblablgtksourceview$(XA) $(GTKSOURCEVIEWMLOBJS)
-	$(LIBRARIAN) -o lablgtksourceview $(GTKSOURCEVIEWMLOBJS) $(GTKSOURCEVIEWLIBS)
-lablgtksourceview.cmxa: liblablgtksourceview$(XA) $(GTKSOURCEVIEWMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtksourceview \
-	    $(GTKSOURCEVIEWMLOBJS:.cmo=.cmx) $(GTKSOURCEVIEWLIBS)
+lablgtksourceview.cma liblablgtksourceview$(XA): \
+		$(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJS)
+	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
+lablgtksourceview.cmxa: $(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
