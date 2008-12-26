@@ -64,8 +64,8 @@ let libs =
   let lib ~mls ~libs ~name ?(extra=[]) ?(cname=name) () =
     {mls=mls; extra=extra; libs=rename_libs libs; name=name; cname=cname} in
   [ lib ~mls:lablgtk_mls ~extra:extra_mls ~libs:gtk_libs ~name:"lablgtk" ~cname:"lablgtk2" ();
-    lib ~mls:glade_mls ~libs:(gtk_libs^" "^glade_libs) ~name:"lablglade" ~cname:"lablglade2" ();
-    lib ~mls:rsvg_mls ~libs:(gtk_libs^" "^rsvg_libs) ~name:"lablrsvg" () ]
+    lib ~mls:glade_mls ~libs:glade_libs ~name:"lablglade" ~cname:"lablglade2" ();
+    lib ~mls:rsvg_mls ~libs:rsvg_libs ~name:"lablrsvg" () ]
 
 let byte d =
   List.iter (d.mls @ d.extra) ~f:
