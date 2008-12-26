@@ -1,5 +1,6 @@
 $Id$
 
+In Lablgtk-2.12.0:
 2008.12.20 [Jacques]
  * fix build process for ocaml 3.11 on MSVC and mingw.
 
