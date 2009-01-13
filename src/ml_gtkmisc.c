@@ -46,7 +46,9 @@ CAMLprim value ml_gtkmisc_init(value unit)
     GType t =
         gtk_gamma_curve_get_type() +
         gtk_statusbar_get_type() +
+#ifdef HASGTK210
         gtk_status_icon_get_type() +
+#endif
         gtk_calendar_get_type() +
         gtk_drawing_area_get_type() +
         gtk_misc_get_type() +
@@ -80,6 +82,7 @@ ML_2 (gtk_statusbar_set_has_resize_grip, GtkStatusbar_val, Bool_val, Unit)
 
 /* gtkstatusicon.h */
 
+#ifdef HASGTK210
 #define GtkStatusIcon_val(val) check_cast(GTK_STATUS_ICON, val)
 #define Val_GtkStatusIcon_new(val) Val_GObject_new(val)
 ML_2 (gtk_status_icon_set_from_pixbuf, GtkStatusIcon_val, GdkPixbuf_val, Unit)
@@ -115,8 +118,24 @@ gboolean            gtk_status_icon_get_geometry        (GtkStatusIcon *status_i
                                                          GtkOrientation *orientation);
 guint32             gtk_status_icon_get_x11_window_id   (GtkStatusIcon *status_icon);
 */
-
-
+#else
+Unsupported_210(gtk_status_icon_set_from_pixbuf)
+Unsupported_210(gtk_status_icon_set_from_file)
+Unsupported_210(gtk_status_icon_set_from_stock)
+Unsupported_210(gtk_status_icon_set_from_icon_name)
+Unsupported_210(gtk_status_icon_get_pixbuf)
+Unsupported_210(gtk_status_icon_get_stock)
+Unsupported_210(gtk_status_icon_get_icon_name)
+Unsupported_210(gtk_status_icon_get_size)
+Unsupported_210(gtk_status_icon_set_screen)
+Unsupported_210(gtk_status_icon_get_screen)
+Unsupported_210(gtk_status_icon_set_tooltip)
+Unsupported_210(gtk_status_icon_set_visible)
+Unsupported_210(gtk_status_icon_get_visible)
+Unsupported_210(gtk_status_icon_set_blinking)
+Unsupported_210(gtk_status_icon_get_blinking)
+Unsupported_210(gtk_status_icon_is_embedded)
+#endif
 
 /* gtkcalendar.h */
 

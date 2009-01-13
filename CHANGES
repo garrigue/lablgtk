@@ -1,5 +1,8 @@
 $Id$
 
+2009.01.13 [Benjamin]
+ * fix compilation issues with Gtk 2.4
+
 In Lablgtk-2.12.0:
 2008.12.20 [Jacques]
  * fix build process for ocaml 3.11 on MSVC and mingw.
