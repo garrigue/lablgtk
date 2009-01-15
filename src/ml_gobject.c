@@ -78,7 +78,11 @@ static GType my_g_object_get_property_type(GObject *obj, const char *prop)
 {
     GParamSpec *pspec =
         g_object_class_find_property (G_OBJECT_GET_CLASS(obj), prop);
-    if (pspec == NULL) raise_not_found();
+    if (pspec == NULL) { 
+#if DEBUG
+      g_log ("LablGtk Debug", 0, "invalid property '%s'", prop);
+#endif
+      raise_not_found(); };
     return pspec->value_type;
 }
 ML_2 (my_g_object_get_property_type, GObject_val, String_val, Val_GType)
