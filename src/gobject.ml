@@ -332,7 +332,7 @@ module Property = struct
     = "ml_g_object_get_property"
   external get_type : 'a obj -> string -> g_type
     = "ml_my_g_object_get_property_type"
-  (* get_property_type may raise Not_found *)
+  (* [get_property_type o name] may raise [Invalid_argument name] *)
   (* Converted the following to C to avoid too many calls
   let set_dyn obj prop data =
     let t = get_type obj prop in
@@ -374,7 +374,7 @@ module Property = struct
     let _data =
       try get_dyn obj prop.name
       with
-        Not_found -> failwith (tp obj ^ " has no property " ^ prop.name)
+        Invalid_argument _ -> failwith (tp obj ^ " has no property " ^ prop.name)
       | exn ->
           prerr_endline
             ("exception while looking for " ^ tp obj ^ "->" ^ prop.name);
