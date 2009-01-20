@@ -1,5 +1,10 @@
 $Id$
 
+2009.01.20 [Benjamin]
+ * change handling of non existent properties. 
+   [Not_found] is no longer raised and [Invalid_argument prop_name] is used instead.
+   No exception is raised by unknown dynamic property setters and a GLib warning is emitted.
+   See the comments in src/gobject.mli in the local Property module.
 2009.01.13 [Benjamin]
  * fix compilation issues with Gtk 2.4
 

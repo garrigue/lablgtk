@@ -95,8 +95,12 @@ val get_ref_count : 'a obj -> int
     (* Number of references to an object (for debugging) *)
 
 val set : ('a, 'b) property -> 'a obj -> 'b -> unit
+  (* Will not raise an exception but may emit a Glib warning and
+     ignore the property if it does not exist. *)
 val get : ('a, 'b) property -> 'a obj -> 'b
+  (* [get prop o] may raise [Invalid_argument prop_name] *)
 val set_params : 'a obj -> 'a param list -> unit
+  (* May emit a Glib warning and ignore the non existent properties. *)
 
 module Type :
   sig
@@ -198,13 +202,25 @@ module Property :
     val freeze_notify : 'a obj -> unit
     val thaw_notify : 'a obj -> unit
     val notify : 'a obj -> string -> unit
+
     val set_value : 'a obj -> string -> g_value -> unit
+      (* [set_value o name] may raise [Invalid_argument name] *)
     val get_value : 'a obj -> string -> g_value -> unit
+      (* [get_value o name] may raise [Invalid_argument name] *)
     val get_type : 'a obj -> string -> g_type
+      (* [get_type o name] may raise [Invalid_argument name] *)
+
     val set_dyn : 'a obj -> string -> 'b data_set -> unit
+      (* Will not raise an exception but may emit a Glib warning and
+         ignore the property if it does not exist. *)
     val get_dyn : 'a obj -> string -> data_get
+      (* [set_type o name] may raise [Invalid_argument name] *)
     val set : 'a obj -> ('a, 'b) property -> 'b -> unit
+      (* Will not raise an exception but may emit a Glib warning and
+         ignore the property if it does not exist. *)
     val get : 'a obj -> ('a, 'b) property -> 'b
+      (* [get o prop] may raise [Invalid_argument prop_name] *)
+
     val get_some : 'a obj -> ('a, 'b option) property -> 'b
     val check : 'a obj -> ('a, 'b) property -> unit
     val may_cons :
