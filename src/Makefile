@@ -283,14 +283,17 @@ preinstall: build.ml
 
 install:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
-	cp $(ALLOBJS:.cmo=.cmi) $(THOBJS:.cmo=.cmi) "$(INSTALLDIR)"
+	cp $(ALLOBJS:.cmo=.cmi) "$(INSTALLDIR)"
 	cp -p *.mli "$(INSTALLDIR)"
 	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) "$(INSTALLDIR)"
 	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) "$(INSTALLDIR)"
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) $(CLIBS)
 	cp varcc$(XE) propcc$(XE) "$(INSTALLDIR)"
-	if test $(THREADS_LIB) != system || test $(HAS_DLL_SUPPORT) != yes; \
+	if test $(THREADS_LIB) != no; \
+	   then cp  $(ALLTHOBJS:.cmo=.cmi) $(INSTALLDIR); \
+	fi
+	if test $(THREADS_LIB) = vm || test $(HAS_DLL_SUPPORT) != yes; \
 	   then cp lablgtktop$(XE) "$(INSTALLDIR)"; \
 	fi
 	cp -p *.h "$(INSTALLDIR)"
