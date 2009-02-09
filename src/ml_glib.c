@@ -388,7 +388,7 @@ CAMLprim value ml_g_io_channel_read_chars(value io, value str, value offset,
   return Val_unit;
 }
 #else
-Unsupported_22(ml_g_io_channel_read_chars)
+Unsupported_22(g_io_channel_read_chars)
 #endif
 
 /* single-linked lists */
