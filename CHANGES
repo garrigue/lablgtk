@@ -1,5 +1,6 @@
 $Id$
-
+2009.02.09 [Benjamin]
+ * fix linking bug for older than 2.2 Gtk with g_io_channel_read_chars
 2009.01.20 [Benjamin]
  * change handling of non existent properties. 
    [Not_found] is no longer raised and [Invalid_argument prop_name] is used instead.
