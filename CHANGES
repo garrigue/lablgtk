@@ -1,65 +1,74 @@
 $Id$
+
+2009.03.19 [Jacques]
+  * In GtkAboutDialog, change internal property from "name" to "program-name"
+    if version >= 2.12. The OO interface is left unchanged, since there is
+    no conflict with #misc#name anyway.
+
 2009.02.09 [Benjamin]
- * fix linking bug for older than 2.2 Gtk with g_io_channel_read_chars
+  * fix linking bug for older than 2.2 Gtk with g_io_channel_read_chars
 2009.01.20 [Benjamin]
- * change handling of non existent properties. 
-   [Not_found] is no longer raised and [Invalid_argument prop_name] is used instead.
-   No exception is raised by unknown dynamic property setters and a GLib warning is emitted.
-   See the comments in src/gobject.mli in the local Property module.
+  * change handling of non existent properties. 
+    [Not_found] is no longer raised and [Invalid_argument prop_name] is
+    used instead.
+    No exception is raised by unknown dynamic property setters and a GLib
+    warning is emitted.
+    See the comments in src/gobject.mli in the local Property module.
 2009.01.13 [Benjamin]
- * fix compilation issues with Gtk 2.4
+  * fix compilation issues with Gtk 2.4
 
 In Lablgtk-2.12.0:
 2008.12.20 [Jacques]
- * fix build process for ocaml 3.11 on MSVC and mingw.
+  * fix build process for ocaml 3.11 on MSVC and mingw.
 
 2008.12.09 [Jacques]
- * fix ml_gtk_source_buffer_create_marker
+  * fix ml_gtk_source_buffer_create_marker
 
 2008.10.30 [Benjamin]
- * Support Gtk Quartz backend compilation (thanks to Pascal Cuoq)
+  * Support Gtk Quartz backend compilation (thanks to Pascal Cuoq)
 2008.10.07 [Benjamin]
- * Revert last change on GEdit.entry_completion according to M. Clasen.
-   Keeping the new type for the callback match_selected.
+  * Revert last change on GEdit.entry_completion according to M. Clasen.
+    Keeping the new type for the callback match_selected.
 2008.10.05 [Benjamin]
- * Change type of model contained in GEdit.entry_completion from
-   model to model_filter see 
-   http://bugzilla.gnome.org/show_bug.cgi?id=555087.
+  * Change type of model contained in GEdit.entry_completion from
+    model to model_filter see 
+    http://bugzilla.gnome.org/show_bug.cgi?id=555087.
 2008.09.10 [Benjamin]
- * Many custom tree model bugs fixed. 
+  * Many custom tree model bugs fixed. 
 
 2008.09.04 [Benjamin]
- * First attempt to support custom_tree_models in GTree.
-   I need some feedback on ways to improve the safety.
-   An example of usage is given in examples/custom_tree.ml
-   Part of the code comes from Robert Schneck: he agreed by private mail 
-   on relicensing it for lablgtk2.
+  * First attempt to support custom_tree_models in GTree.
+    I need some feedback on ways to improve the safety.
+    An example of usage is given in examples/custom_tree.ml
+    Part of the code comes from Robert Schneck: he agreed by private mail 
+    on relicensing it for lablgtk2.
 
 2008.08.20 [Jacques]
- * Move model to head of properties in ComboBox
-   (bug reported by Pierre-Marie Pedrot)
+  * Move model to head of properties in ComboBox
+    (bug reported by Pierre-Marie Pedrot)
 
 2008.08.03 [Benjamin]
- * Support for wrapped signal of GEdit.spin_button (Gtk 2.10)
+  * Support for wrapped signal of GEdit.spin_button (Gtk 2.10)
 
 2008.08.01 [Benjamin]
- * Support for GtkRendererAccel of Gtk 2.10
+  * Support for GtkRendererAccel of Gtk 2.10
 
 2008.07.26 [Benjamin]
- * Add a few 2.10 properties GAction.icon_name, GButton.image_position,
+  * Add a few 2.10 properties GAction.icon_name, GButton.image_position,
 
 2008.07.25 [Olivier]
- * don't use G_QUEUE_INIT (dependency on glib 2.14)
+  * don't use G_QUEUE_INIT (dependency on glib 2.14)
 
 2008.07.25 [Jacques]
- * Add [widget] to Gtk.file_chooser
- * configure did not work on FreeBSD
+  * Add [widget] to Gtk.file_chooser
+  * configure did not work on FreeBSD
 
 2008.05.09 [Benjamin]
- * Add Glib.Io.read_chars. Other g_io_* function could be added...
+  * Add Glib.Io.read_chars. Other g_io_* function could be added...
 
 2008.04.14 [Olivier]
-  * use Gc.create_alarm to delay GObject finalization instead of an idle function
+  * use Gc.create_alarm to delay GObject finalization instead of an idle
+    function
 
 2008.03.31 [Benjamin]
   * Support mingw compilation with OCaml 3.11. Still tricky...
@@ -174,8 +183,8 @@ In lablgtk2-20060908:
 
 2005.11.03 [Benjamin]
   * lablgladecc : emit w#toplevel#misc#show_all instead of 
-    w#toplevel#show in check_all, because some toplevel widgets (gMenu for example)
-    do not have a show method
+    w#toplevel#show in check_all, because some toplevel widgets
+    (gMenu for example) do not have a show method
 
 2005.10.28 [Jacques]
   * add windows support for rsvg

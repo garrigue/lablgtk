@@ -232,6 +232,7 @@ class MessageDialog abstract wrap : Dialog {
 }
 
 class AboutDialog abstract set wrap : Dialog {
+  "program-name" (name)  gchararray            : Read / Write / NoWrap / NoSet
 (*  "artists"              GStrv                 : Read / Write *)
 (*  "authors"              GStrv                 : Read / Write *)
   "comments"             gchararray            : Read / Write
@@ -240,7 +241,6 @@ class AboutDialog abstract set wrap : Dialog {
   "license"              gchararray            : Read / Write
   "logo"                 GdkPixbuf             : Read / Write
   "logo-icon-name"       gchararray            : Read / Write
-  "name"                 gchararray            : Read / Write
   "translator-credits"   gchararray            : Read / Write
   "version"              gchararray            : Read / Write
   "website"              gchararray            : Read / Write

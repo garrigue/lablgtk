@@ -244,11 +244,19 @@ let message_dialog ?(message="") ?(use_markup=false) ~message_type ~buttons =
 
 (** AboutDialog *)
 
+let namep =
+  if GtkMain.Main.version >= (2,12,0)
+  then GtkBaseProps.AboutDialog.P.program_name
+  else GtkBaseProps.Widget.P.name
+
 class about_dialog obj =
   object (self)
     inherit [Buttons.about] dialog_skel obj
-    inherit about_dialog_props
-    method connect : Buttons.about dialog_signals = new dialog_signals obj self#decode
+    inherit about_dialog_props as props
+    method name = Gobject.get namep self#obj
+    method set_name = Gobject.set namep self#obj
+    method connect : Buttons.about dialog_signals =
+      new dialog_signals obj self#decode
     method set_artists = AboutDialog.set_artists obj
     method artists = AboutDialog.get_artists obj
     method set_authors = AboutDialog.set_authors obj
@@ -259,8 +267,9 @@ class about_dialog obj =
       tbl <- [ rcancel, `CANCEL ; rclose, `CLOSE ] @ tbl
   end
 
-let about_dialog ?authors =
-  AboutDialog.make_params [] ~cont:(fun pl ->
+let about_dialog ?name ?authors =
+  let pl = Gobject.Property.may_cons namep name [] in
+  AboutDialog.make_params pl ~cont:(fun pl ->
     make_dialog pl ~create:(fun pl ->
       let d = AboutDialog.create () in
       Gobject.set_params d pl ;

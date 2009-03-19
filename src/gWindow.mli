@@ -309,6 +309,8 @@ class about_dialog :
     method license : string
     method logo : GdkPixbuf.pixbuf
     method logo_icon_name : string
+    (** The property [name] is left unchanged, but it will
+        access [program-name] if version is higher than 2.12 *)
     method name : string
     method translator_credits : string
     method version : string
@@ -351,13 +353,13 @@ let show_dialog () =
     @since GTK 2.6 
 *)
 val about_dialog :
+  ?name:string ->
   ?authors:string list ->
   ?comments:string ->
   ?copyright:string ->
   ?license:string ->
   ?logo:GdkPixbuf.pixbuf ->
   ?logo_icon_name:string ->
-  ?name:string ->
   ?translator_credits:string ->
   ?version:string ->
   ?website:string ->
