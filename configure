@@ -3427,7 +3427,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 { echo "$as_me:$LINENO: checking platform" >&5
 echo $ECHO_N "checking platform... $ECHO_C" >&6; }
 echo "print_endline Sys.os_type ;;" > conftest.ml
-ac_ocaml_platform=$(ocaml conftest.ml)
+ac_ocaml_platform=$(ocaml conftest.ml | tr -d '\r')
 { echo "$as_me:$LINENO: result: $ac_ocaml_platform" >&5
 echo "${ECHO_T}$ac_ocaml_platform" >&6; }
 if test $ac_ocaml_platform = Win32 ; then
