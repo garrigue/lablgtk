@@ -199,7 +199,7 @@ AC_PROG_CC
 # platform
 AC_MSG_CHECKING(platform)
 echo "print_endline Sys.os_type ;;" > conftest.ml
-ac_ocaml_platform=$(ocaml conftest.ml)
+ac_ocaml_platform=$(ocaml conftest.ml | tr -d '\r')
 AC_MSG_RESULT($ac_ocaml_platform)
 if test $ac_ocaml_platform = Win32 ; then
     OCAMLWIN32=yes

@@ -87,8 +87,10 @@ Full compilation with MSVC or mingw (for the brave)
    to set GTKROOT.
 
    Alternatively, on mingw you may run the configure script.
-	CYGWIN=nobinmode ./configure --disable-gtktest
+	./configure --disable-gtktest
 
+   If you do want to perform configuration time Gtk C tests the define
+   CYGWIN=nobinmode before running ./configure. 
    The rationale behind CYGWIN=nobinmode is that pkg-config is a
    native windows program which outputs \r\n instead of usual unix \n.
    The CYGWIN variable forces the shell to strip down all \r from
