@@ -2,7 +2,7 @@
              LablGTK2 : an interface to the GIMP Tool Kit
 
 Needed:
-	ocaml-3.07 or more
+	ocaml-3.11 or more
 	gtk+-2.x (gtk+-2.12.x for full functionality)
 	GNU make (there is no standard for conditionals)
 
