@@ -57,12 +57,10 @@ end
 
 class type ['a] objvar = object
   val obj : 'a obj
-  method private obj : 'a obj
 end
 
 class gtkobj obj = object
   val obj = obj
-  method private obj = obj
   method destroy () = Object.destroy obj
   method get_oid = get_oid obj
 end

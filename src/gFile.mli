@@ -197,7 +197,7 @@ val chooser_button :
 
 class virtual chooser_impl :
   object
-    method private virtual obj : 'b .([> Gtk.file_chooser] as 'a) Gtk.obj
+    val virtual obj : [> Gtk.file_chooser] Gtk.obj
     inherit chooser
   end
 

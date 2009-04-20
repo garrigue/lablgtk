@@ -567,6 +567,7 @@ let process_file f =
         List.filter meths ~f:(fun (_,_,attrs) -> List.mem "Wrap" attrs)
       in
       if wr_props <> [] || rd_props <> [] || wr_meths <> [] then begin
+        (* pre 3.10
         out "@ @[<hv2>class virtual %s_props = object (self)" (camlize name);
         out "@ method private virtual obj : _ obj";
         List.iter wr_props ~f:(fun (pname,mlname,gtype,_) ->
@@ -578,7 +579,8 @@ let process_file f =
         List.iter wr_meths ~f:(fun (mname,typ,_) ->
           out "@ @[<hv2>method %s %s=@ %s.%s self#obj@]"
             mname (if typ = "unit" then "() " else "") (camlizeM name) mname);
-        (*
+        *)
+        (* post 3.10 *)
         out "@ @[<hv2>class virtual %s_props = object" (camlize name);
         out "@ val virtual obj : _ obj";
         List.iter wr_props ~f:(fun (pname,mlname,gtype,_) ->
@@ -590,7 +592,6 @@ let process_file f =
         List.iter wr_meths ~f:(fun (mname,typ,_) ->
           out "@ @[<hv2>method %s %s=@ %s.%s obj@]"
             mname (if typ = "unit" then "() " else "") (camlizeM name) mname);
-        *)
         out "@]@ end@ "
       end;
       let vset = List.mem_assoc "vset" attrs in

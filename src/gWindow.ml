@@ -253,8 +253,8 @@ class about_dialog obj =
   object (self)
     inherit [Buttons.about] dialog_skel obj
     inherit about_dialog_props as props
-    method name = Gobject.get namep self#obj
-    method set_name = Gobject.set namep self#obj
+    method name = Gobject.get namep obj
+    method set_name = Gobject.set namep obj
     method connect : Buttons.about dialog_signals =
       new dialog_signals obj self#decode
     method set_artists = AboutDialog.set_artists obj
