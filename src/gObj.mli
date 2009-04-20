@@ -55,7 +55,9 @@ class ['a] gobject_signals : 'a obj ->
 
 class type ['a] objvar = object
   val obj : 'a obj
+  (* needed for pre 3.10
   method private obj : 'a obj
+  *)
 end
 
 class gtkobj : ([> `gtk] as 'a) obj ->

@@ -68,8 +68,8 @@ class status_icon_signals (obj : Gtk.status_icon Gobject.obj) = object
 end
 
 class status_icon obj = object
+  val obj : Gtk.status_icon Gobject.obj = obj
   inherit gtk_status_icon_props
-  method obj : Gtk.status_icon Gobject.obj = obj
   method connect = new status_icon_signals obj
   method set_from_pixbuf = StatusIcon.set_from_pixbuf obj
   method set_from_file = StatusIcon.set_from_file obj
@@ -197,8 +197,8 @@ let pixmap pm =
 class label_skel obj = object(self)
   inherit misc obj
   inherit label_props
-  method text = GtkMiscProps.Label.get_text self#obj
-  method set_text = GtkMiscProps.Label.set_text self#obj
+  method text = GtkMiscProps.Label.get_text obj
+  method set_text = GtkMiscProps.Label.set_text obj
   method selection_bounds = GtkMiscProps.Label.get_selection_bounds obj
   method select_region = GtkMiscProps.Label.select_region obj
 end

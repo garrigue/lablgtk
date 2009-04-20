@@ -83,7 +83,7 @@ class status_icon_signals : Gtk.status_icon Gobject.obj ->
   @gtkdoc gtk GtkStatusIcon *)
 class status_icon : Gtk.gtk_status_icon ->
   object
-    method obj : Gtk.status_icon Gobject.obj
+    val obj : Gtk.status_icon Gobject.obj
     method connect : status_icon_signals
     method blinking : bool
     method get_icon_name : string
