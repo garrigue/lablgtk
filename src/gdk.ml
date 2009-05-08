@@ -780,3 +780,8 @@ module Display = struct
       (match display with None -> default ()
       | Some disp -> disp)
 end
+
+module Windowing = struct
+  external get : unit -> [`QUARTZ | `WIN32 | `X11] = "ml_gdk_get_platform"
+  let platform = get ()
+end
