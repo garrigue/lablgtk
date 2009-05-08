@@ -2,6 +2,8 @@
 
 package "gdk"
 
+type noconv platform = [ `X11 | `WIN32 | `QUARTZ ]
+
 type event_type = "GDK_"
   [ `NOTHING | `DELETE | `DESTROY | `EXPOSE | `MOTION_NOTIFY
   | `BUTTON_PRESS | `TWO_BUTTON_PRESS "GDK_2BUTTON_PRESS"

@@ -511,9 +511,14 @@ module Cursor : sig
   val get_image : cursor -> [`pixbuf] obj             (** @since GTK 2.8 *)
   (* val destroy : cursor -> unit   -- done by GC *)
 end
+
 module Display : sig
     (** @since Gtk+-2.2 *)
 
   val default : unit -> display
   val window_at_pointer : ?display:display -> unit -> (window * int * int) option
+end
+
+module Windowing : sig
+  val platform : [`QUARTZ | `WIN32 | `X11]
 end
