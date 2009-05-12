@@ -89,7 +89,7 @@ let boxeds = [
 
 let classes = [
   "Gdk", [ "Image"; "Pixmap"; "Bitmap"; "Screen"; "DragContext";];
-  "Gtk", [ "Style"; "TreeStore"; "TreeModel" ; "TreeModelFilter" ]
+  "Gtk", [ "Style"; "TreeStore"; "TreeModel"; "TreeModelFilter"; "Tooltip" ]
 ]
 
 let specials = [

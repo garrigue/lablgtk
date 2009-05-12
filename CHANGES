@@ -1,5 +1,9 @@
 $Id$
 
+2009.05.12 [Jacques]
+  * Merge new tooltip support from Moutinho's branch r1365
+    (sorry for 1.5y delay...)
+
 2009.05.08 [Jacques]
   * Add Gdk.Windowing.platform for platform dependent applications
   * Fix bug in Clist.set_pixmap when no mask given

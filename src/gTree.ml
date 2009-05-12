@@ -376,6 +376,7 @@ open TreeView.P
 class view obj = object
   inherit [Gtk.tree_view] GContainer.container_impl obj
   inherit tree_view_props
+  method as_tree_view = (obj :> Gtk.tree_view Gtk.obj)
   method connect = new view_signals obj
   method event = new GObj.event_ops obj
   method selection = new selection (TreeView.get_selection obj)
