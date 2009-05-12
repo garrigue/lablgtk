@@ -163,3 +163,4 @@ module Tooltips = struct
       [>`widget] obj -> ?text:string -> ?privat:string -> unit
       = "ml_gtk_tooltips_set_tip"
 end
+

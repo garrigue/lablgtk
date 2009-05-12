@@ -224,6 +224,7 @@ and misc_ops : Gtk.widget obj ->
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
     method grab_selection : ?time:int32 -> Gdk.atom -> bool
+    method has_tooltip : bool
     method hide : unit -> unit
     method hide_all : unit -> unit
     method intersect : Gdk.Rectangle.t -> Gdk.Rectangle.t option
@@ -250,6 +251,7 @@ and misc_ops : Gtk.widget obj ->
     method set_can_default : bool -> unit
     method set_can_focus : bool -> unit
     method set_double_buffered : bool -> unit
+    method set_has_tooltip : bool -> unit
     method set_name : string -> unit
     method set_sensitive : bool -> unit
     method set_size_chars :
@@ -258,9 +260,13 @@ and misc_ops : Gtk.widget obj ->
     method set_state : Tags.state_type -> unit
     method set_style : style -> unit
     method set_size_request : ?width:int -> ?height:int -> unit -> unit
+    method set_tooltip_markup : string -> unit
+    method set_tooltip_text : string -> unit
     method show : unit -> unit
     method show_all : unit -> unit
     method style : style
+    method tooltip_markup : string
+    method tooltip_text : string
     method toplevel : widget
     method unmap : unit -> unit
     method unparent : unit -> unit
@@ -289,6 +295,8 @@ and misc_signals : Gtk.widget obj ->
     method hide : callback:(unit -> unit) -> GtkSignal.id
     method map : callback:(unit -> unit) -> GtkSignal.id
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id
+    method query_tooltip :
+      callback:(x:int -> y:int -> kbd:bool -> tooltip -> bool) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id
     method unrealize : callback:(unit -> unit) -> GtkSignal.id
     method selection_get :

@@ -197,8 +197,7 @@ ml_gtk_combo_box_get_active_iter(value combo)
     return Val_unit;
   return ml_some(Val_GtkTreeIter(&it));
 }
-#define GtkTreeIterOption(v) Option_val(v,GtkTreeIter_val,NULL)
-ML_2(gtk_combo_box_set_active_iter, GtkComboBox_val, GtkTreeIterOption, Unit)
+ML_2(gtk_combo_box_set_active_iter, GtkComboBox_val, GtkTreeIter_optval, Unit)
 
 /* gtkentrycompletion.h */
 #define GtkEntryCompletion_val(val) check_cast(GTK_ENTRY_COMPLETION,val)
