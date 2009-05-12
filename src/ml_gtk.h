@@ -51,3 +51,4 @@ CAMLexport value Val_GtkWidget_func(gpointer w);
 #define GtkWindow_val(val) check_cast(GTK_WINDOW,val)
 #define GtkTooltip_val(val) check_cast(GTK_TOOLTIP,val)
 
+CAMLprim int Flags_Target_flags_val (value list);
