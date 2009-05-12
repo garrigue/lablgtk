@@ -1,5 +1,9 @@
 $Id$
 
+2009.05.08 [Jacques]
+  * Add Gdk.Windowing.platform for platform dependent applications
+  * Fix bug in Clist.set_pixmap when no mask given
+
 2009.04.20 [Jacques]
   * Print backtrace if available when exception raised in signal callback.
     Requires ocaml 3.11. (suggested by Bart Jacobs)
