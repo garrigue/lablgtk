@@ -5,8 +5,8 @@ You may just compile it after having installed lablgtk.
 
 	http://www.cis.upenn.edu/~bcpierce/unison/
 
-Due to recent changes to lablgtk2, you need to apply the patch in this
-directory to compile unison-2.9.50.
+In order to circumvent a bug in GTK+OSX apply this patch to
+unison-2.27.57 (for user Quartz GTK only).
 
 Jacques Garrigue
 
