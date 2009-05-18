@@ -23,6 +23,8 @@
 #include <string.h>
 
 #include <libgnomeui/gnome-client.h>
+#include <libgnomeui/gnome-ui-init.h>
+
 #include <panel-applet.h>
 
 #include <caml/mlvalues.h>

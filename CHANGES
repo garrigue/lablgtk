@@ -1,5 +1,9 @@
 $Id$
 
+2009.05.18 [Benjamin]
+  * Make and install dynamic cmxs objects when available. 
+  * Fix compilation bug for ml_panel.c
+
 2009.05.12 [Jacques]
   * Merge new tooltip support from Moutinho's branch r1365
     (sorry for 1.5y delay...)

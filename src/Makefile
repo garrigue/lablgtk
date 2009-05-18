@@ -138,7 +138,7 @@ ifdef USE_GTKQUARTZ
 CFLAGS += -DHAS_GTKQUARTZ
 endif
 # Rules
-.SUFFIXES: .ml .mli .cmo .cmi .cmx .c $(XO) .d$(XO) .var .h .opt .def .ml4
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .cmxs .cmxa .c $(XO) .d$(XO) .var .h .opt .def .ml4
 .c$(XO):
 	$(CCOMPILER) $<
 .cpp$(XO):
@@ -153,6 +153,9 @@ endif
 	$(COMPOPT) $<
 .ml4.cmo:
 	$(CAMLC) -c -pp "$(CAMLP4O) -impl" -impl $<
+.cmxa.cmxs:
+	$(CAMLOPT) -o $@ -shared -linkall -I . $<
+
 #.ml4.ml:
 #	$(CAMLP4) -impl $< -o $@
 
@@ -260,6 +263,10 @@ ifeq ($(THREADS_LIB),system)
 lablgtkopt:: $(THOBJS:.cmo=.cmx)
 endif
 
+ifeq ($(HAS_NATIVE_DYNLINK),yes)
+lablgtkopt::  $(MLLIBS:.cma=.cmxs)
+endif
+
 lablgladecc$(XE): xml_lexer.cmo lablgladecc.cmo
 	$(LINKER) -o $@ xml_lexer.cmo lablgladecc.cmo
 
@@ -311,7 +318,7 @@ installdll:
 	  cp $(CLIBS:lib%$(XA)=dll%$(XA)) "$(INSTALLDIR)"; fi
 
 installopt:
-	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=$(XA)) "$(INSTALLDIR)"
+	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.cmxs) $(MLLIBS:.cma=$(XA)) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) $(MLLIBS:.cma=$(XA))
 	cp $(ALLOBJS:.cmo=.cmx) "$(INSTALLDIR)"
 	cp $(INITOBJS:.cmo=$(XO)) "$(INSTALLDIR)"
