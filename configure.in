@@ -211,6 +211,15 @@ else
     XS=.so
 fi
 
+# Working native Dynlink
+AC_MSG_CHECKING(native dynlink)
+echo "Dynlink.loadfile \"foo\";;" > test_dynlink.ml
+if ($CAMLOPT -shared -o test_dynlink.cmxs test_dynlink.ml) 2> /dev/null ; then
+   HAS_NATIVE_DYNLINK=yes
+else
+   HAS_NATIVE_DYNLINK=no
+fi
+
 # GTK 2 auto configuration
 
 GTKPKG=gtk+-2.0 
@@ -322,6 +331,7 @@ AC_SUBST(OCAMLLEX)
 AC_SUBST(OCAMLYACC)
 AC_SUBST(THREADS_LIB)
 AC_SUBST(HAS_DLL_SUPPORT)
+AC_SUBST(HAS_NATIVE_DYNLINK)
 
 AC_SUBST(CAMLC)
 AC_SUBST(CAMLOPT)
@@ -350,6 +360,7 @@ fi])
 
 echo ; echo "LablGTK configuration:"
 echo "	threads  	$THREADS_LIB"
+echo "	native dynlink 	$HAS_NATIVE_DYNLINK"
 CONF_SUMMARY(GtkGLArea, GTKGL)
 CONF_SUMMARY(libglade, GLADE)
 CONF_SUMMARY(librsvg , RSVG)
