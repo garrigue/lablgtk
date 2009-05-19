@@ -154,7 +154,7 @@ endif
 .ml4.cmo:
 	$(CAMLC) -c -pp "$(CAMLP4O) -impl" -impl $<
 .cmxa.cmxs:
-	$(CAMLOPT) -o $@ -shared -linkall -I . $<
+	$(CAMLOPT) -verbose -o $@ -shared -linkall -I . -ccopt '$(GTKLIBS)' $<
 
 #.ml4.ml:
 #	$(CAMLP4) -impl $< -o $@
