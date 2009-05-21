@@ -170,6 +170,7 @@ type wtree = {
     wclass: string;
     wname: string;
     wcamlname : string;
+    winternal: bool;
     wchildren: wtree list;
     mutable wrapped: bool;
   }
@@ -206,18 +207,22 @@ let is_default_name s =
 
 let is_top_widget wtree w =
   match wtree.wchildren with
-  | [w'] -> w.wcamlname = w'.wcamlname
+  | [w'] -> w.wcamlname = w'.wcamlname && not w.winternal
   | _ -> false
 
-let rec parse_widget ~wclass ~wname lexbuf =
+let rec parse_widget ~wclass ~wname ~internal lexbuf =
   let widgets = ref [] in
   while match token lexbuf with
   | Tag ("widget", attrs, closed) ->
-      widgets := parse_widget ~wclass:(List.assoc "class" attrs)
+      widgets := parse_widget ~wclass:(List.assoc "class" attrs) ~internal
 	  ~wname:(List.assoc "id" attrs) lexbuf :: !widgets;
       true
-  | Tag ("child",_,_) | Endtag "child" ->
+  | Tag ("child",attrs,_) ->
+      let is_internal =
+	try List.assoc "internal-child" attrs <> "" with Not_found -> false in
+      Stack.push is_internal internal;
       true
+  | Endtag "child" -> ignore(Stack.pop internal); true
   | Tag (tag,_,closed) ->
       if not closed then while token lexbuf <> Endtag tag do () done; true
   | Endtag "widget" ->
@@ -227,8 +232,9 @@ let rec parse_widget ~wclass ~wname lexbuf =
   | Endtag _ | EOF ->
       failwith "bad XML syntax"
   do () done;
+  let internal = try Stack.top internal with _ -> false in
   { wclass = wclass; wname = wname; wcamlname = camlize wname;
-    wchildren = List.rev !widgets; wrapped = false }
+    winternal = internal; wchildren = List.rev !widgets; wrapped = false }
 
 let rec flatten_tree w =
   let children = List.map ~f:flatten_tree w.wchildren in
@@ -290,7 +296,8 @@ let output_wrapper ~file wtree =
   begin match wtree.wchildren with
   | [w] ->
       printf "    method reparent parent =\n";
-      printf "      %s#misc#reparent parent;\n" w.wcamlname;
+      if not (is_hidden w) then
+          printf "      %s#misc#reparent parent;\n" w.wcamlname;
       printf "      toplevel#destroy ()\n";
   | _ -> ()
   end;
@@ -322,6 +329,7 @@ let parse_body ~file lexbuf =
   | Tag("widget", attrs, false) ->
       let wtree = 
 	parse_widget ~wclass:(List.assoc "class" attrs)
+	  ~internal:(Stack.create ())
 	  ~wname:(List.assoc "id" attrs) lexbuf 
       in
       let rec output_roots wtree =
@@ -371,7 +379,7 @@ let output_test () =
   List.iter !classes ~f:
     begin fun (clas, _) ->
       output_widget
-        {wname = "a"^clas; wcamlname = camlize ("a"^clas);
+        {wname = "a"^clas; wcamlname = camlize ("a"^clas); winternal=false;
 	 wclass = clas; wchildren = []; wrapped = true}
     end;
   print_string "  end\n\n";

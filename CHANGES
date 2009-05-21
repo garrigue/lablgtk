@@ -1,8 +1,11 @@
 $Id$
 
+2009.05.21 [Jacques]
+  * Apply Anil Madhavapeddy patch for lablgladecc2 -hide-default
+
 2009.05.18 [Benjamin]
   * Make and install dynamic cmxs objects when available. 
-  * Fix compilation bug for ml_panel.c
+  * Fix compilation bug for ml_panel.c (Richard Jones message of 2009-02-06)
 
 2009.05.12 [Jacques]
   * Merge new tooltip support from Moutinho's branch r1365
