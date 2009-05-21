@@ -11,7 +11,7 @@
 
 (* An experiment on using libglade in lablgtk *)
 
-(* labgladecc2 project1.glade > project1.ml *)
+(* lablgladecc2 project1.glade > project1.ml *)
 #use "project1.ml";;
 
 class editor () =
