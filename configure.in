@@ -308,7 +308,7 @@ LABLGTK_PKG(GTKSOURCEVIEW, gtksourceview,
             gtksourceview-1.0)
 
 LABLGTK_PKG(GTKQUARTZ, quartz,
-            [  --without-quartz      override autodetected gtksourceview support],
+            [  --without-quartz      override autodetected quartz support],
             gtk+-quartz-2.0)
 
 PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG $GTKQUARTZPKG)
