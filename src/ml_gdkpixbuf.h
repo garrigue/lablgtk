@@ -25,4 +25,5 @@
 #define GdkPixbuf_val(val)       (check_cast(GDK_PIXBUF, val))
 CAMLexport value Val_GdkPixbuf_ (GdkPixbuf *, gboolean);
 #define Val_GdkPixbuf(p)         Val_GdkPixbuf_(p, TRUE)
+#define Val_option_GdkPixbuf(p)         Val_option(p,Val_GdkPixbuf)
 #define Val_GdkPixbuf_new(p)     Val_GdkPixbuf_(p, FALSE)

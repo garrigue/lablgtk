@@ -77,7 +77,10 @@ let enums = [
     (* for canvas *)
     "CapStyle"; "JoinStyle"; "LineStyle"];
   "Pango", "PangoEnums",
-  [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode" ]
+  [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode" ];
+  (* GtkSourceView *)
+  "Gtk","SourceViewEnums",
+  ["SourceSmartHomeEndType"; "SourceDrawSpacesFlags"]
 ]
 
 (* These types must be registered with g_boxed_register! *)

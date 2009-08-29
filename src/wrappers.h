@@ -44,6 +44,10 @@ CAMLexport value Val_pointer (void *);
 CAMLprim value copy_string_check (const char*);
 value copy_string_or_null (const char *);
 
+value string_list_of_strv (const char * const *v);
+value string_list_of_strv2 (char **v);
+char ** strv_of_string_list (value list);
+
 CAMLprim value *ml_global_root_new (value v);
 CAMLexport void ml_global_root_destroy (void *data);
 

@@ -129,9 +129,10 @@ endif
 ifdef USE_GTKSOURCEVIEW
 MLLIBS += lablgtksourceview.cma
 CLIBS += liblablgtksourceview$(XA)
-GTKSOURCEVIEWMLOBJS = sourceViewEnums.cmo gtkSourceView.cmo gSourceView.cmo
+GTKSOURCEVIEWMLOBJS = gtkSourceView.cmo gSourceView.cmo
 GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
-GTKPROPS +=  gtkSourceView.props
+GTKSOURCEVIEWMLOBJSENUM = sourceViewEnums.cmo 
+GTKSOURCEVIEWPROPS += gtkSourceView.props
 endif
 
 ifdef USE_GTKQUARTZ
@@ -318,7 +319,10 @@ installdll:
 	  cp $(CLIBS:lib%$(XA)=dll%$(XA)) "$(INSTALLDIR)"; fi
 
 installopt:
-	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=.cmxs) $(MLLIBS:.cma=$(XA)) "$(INSTALLDIR)"
+	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=$(XA)) "$(INSTALLDIR)"
+ifeq ($(HAS_NATIVE_DYNLINK),yes)
+	cp $(MLLIBS:.cma=.cmxs) "$(INSTALLDIR)"
+endif
 	cd "$(INSTALLDIR)" && $(RANLIB) $(MLLIBS:.cma=$(XA))
 	cp $(ALLOBJS:.cmo=.cmx) "$(INSTALLDIR)"
 	cp $(INITOBJS:.cmo=$(XO)) "$(INSTALLDIR)"
@@ -369,9 +373,9 @@ lablgtkspell.cmxa: $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
 
 lablgtksourceview.cma liblablgtksourceview$(XA): \
-		$(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJS)
+	$(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmo) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEWMLOBJS)
 	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
-lablgtksourceview.cmxa: $(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJS:.cmo=.cmx)
+lablgtksourceview.cmxa: $(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM:.cmo=.cmx) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmx) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmx) $(GTKSOURCEVIEWMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
 
 gtkThread.cmo: gtkThread.ml

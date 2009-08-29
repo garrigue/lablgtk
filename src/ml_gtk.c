@@ -866,52 +866,6 @@ ml_gtk_about_dialog_set_email_hook (value hook)
   return Val_unit;
 }
 
-static gchar **
-strv_of_string_list (value list)
-{
-  gchar **str_v;
-  gsize i, len;
-  value l;
-  for (len = 0, l = list; l != Val_emptylist; len++, l = Field (l, 1))
-    ;
-  l = list;
-  str_v = g_new (gchar *, len+1);
-  for (i = 0; i < len; i++)
-    {
-      str_v[i] = g_strdup (String_val (Field (l, 0)));
-      l = Field (l, 1);
-    }
-  str_v[len] = NULL;
-  return str_v;
-}
-static value
-string_list_of_strv (const gchar * const *v)
-{
-  CAMLparam0();
-  CAMLlocal4(head, l, cell, s);
-  gsize i;
-  if (v == NULL)
-    CAMLreturn (Val_emptylist);
-  i = 0;
-  head = l = Val_emptylist;
-  while (v[i] != NULL)
-    {
-      s = copy_string (v[i]);
-      cell = alloc_small (2, Tag_cons);
-      Field (cell, 0) = s;
-      Field (cell, 1) = Val_emptylist;
-      if (l == Val_emptylist)
-	  head = l = cell;
-      else
-	{
-	  Field (l, 1) = cell;
-	  l = cell;
-	}
-      i++;
-    }
-  CAMLreturn (head);
-}
-
 #define GtkAboutDialog_val(v) (check_cast (GTK_ABOUT_DIALOG, v))
 
 CAMLprim value
