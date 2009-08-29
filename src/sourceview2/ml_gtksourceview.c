@@ -50,7 +50,6 @@
 
 Make_OptFlags_val(Source_search_flag_val)
 
-
 CAMLprim value ml_gtk_source_style_scheme_init(value unit)
 {	/* Since these are declared const, must force gcc to call them! */
     GType t = gtk_source_style_scheme_get_type();
@@ -63,7 +62,7 @@ CAMLprim value ml_gtk_source_language_init(value unit)
     return Val_GType(t);
 }
 
-CAMLprim value ml_gtk_source_languages_manager_init(value unit)
+CAMLprim value ml_gtk_source_language_manager_init(value unit)
 {	/* Since these are declared const, must force gcc to call them! */
     GType t = 
       gtk_source_language_manager_get_type();
@@ -92,22 +91,17 @@ GSList *ml_gslist_of_string_list(value list)
 	return GSList_val(list, string_val);
 }
 
-/* CAMLprim value
-ml_gtk_source_languages_manager_set_lang_files_dirs(GObject *obj, value list)
-{
-	GSList *gslist = ml_gslist_of_string_list(list);
-	g_object_set_property(obj, "lang-files-dirs", gslist);
-	return Val_unit;
-} */
-
 #define GtkSourceStyleScheme_val(val) check_cast(GTK_SOURCE_STYLE_SCHEME,val)
 #define Val_GtkSourceStyleScheme(val) (Val_GObject((GObject*)val))
 #define Val_GtkSourceStyleScheme_new(val) (Val_GObject_new((GObject*)val))
 
 #define Val_GtkSourceLanguage(val)  (Val_GObject((GObject*)val))
+#define Val_option_GtkSourceLanguage(val) Val_option(val,Val_GtkSourceLanguage)
+
 #define GtkSourceLanguage_val(val) check_cast(GTK_SOURCE_LANGUAGE,val)
 #define GtkSourceLanguageManager_val(val)\
 	check_cast(GTK_SOURCE_LANGUAGE_MANAGER,val)
+#define Val_GtkSourceLanguageManager(val)  (Val_GObject((GObject*)val))
 
 #define GtkSourceTagStyle_val(val) Pointer_val(val)
 
@@ -125,14 +119,14 @@ ml_gtk_source_languages_manager_set_lang_files_dirs(GObject *obj, value list)
 #define Val_option_GtkAny(v) Val_option(v,Val_GtkAny)
 #define string_list_of_GSList(l) Val_GSList(l, (value_in) Val_string)
 
-static value val_gtksourcemarker(gpointer v)
+static value val_gtksourcemark(gpointer v)
 {
   return Val_GtkSourceMark(v);
 }
 
 value source_marker_list_of_GSList(gpointer list)
 {
-  return Val_GSList(list, val_gtksourcemarker);
+  return Val_GSList(list, val_gtksourcemark);
 }
 
 static value val_gtksourcelanguage(gpointer v)
@@ -147,23 +141,45 @@ value source_language_list_of_GSList(gpointer list)
 
 ML_1 (gtk_source_style_scheme_get_name, GtkSourceStyleScheme_val, Val_string)
 
-ML_1 (gtk_source_language_get_name, GtkSourceLanguage_val, Val_string)
-ML_1 (gtk_source_language_get_section, GtkSourceLanguage_val, Val_string)
+ML_2 (gtk_source_language_get_metadata, GtkSourceLanguage_val, 
+      String_option_val, Val_optstring)
+
+ML_1 (gtk_source_language_get_mime_types, GtkSourceLanguage_val, 
+      string_list_of_strv2)
+ML_1 (gtk_source_language_get_globs, GtkSourceLanguage_val, 
+      string_list_of_strv2)
+
+ML_2 (gtk_source_language_get_style_name, GtkSourceLanguage_val, String_val,
+      Val_optstring)
+
+ML_1 (gtk_source_language_get_style_ids, GtkSourceLanguage_val, 
+      string_list_of_strv2)
+
 
 ML_0 (gtk_source_language_manager_new, Val_GtkAny_sink)
-ML_3 (gtk_source_language_manager_guess_language,
-                GtkSourceLanguageManager_val, String_option_val, String_option_val,
-		Val_option_GtkAny)
+
+ML_0(gtk_source_language_manager_get_default,Val_GtkSourceLanguageManager)
+
+ML_2(gtk_source_language_manager_set_search_path,GtkSourceLanguageManager_val,
+     strv_of_string_list,Unit)
+ML_1(gtk_source_language_manager_get_search_path,GtkSourceLanguageManager_val,
+     string_list_of_strv)
+ML_1(gtk_source_language_manager_get_language_ids,GtkSourceLanguageManager_val,
+     string_list_of_strv)
+ML_2(gtk_source_language_manager_get_language,GtkSourceLanguageManager_val,
+     String_val,Val_option_GtkSourceLanguage)
+ML_3 (gtk_source_language_manager_guess_language, GtkSourceLanguageManager_val,
+      String_option_val, String_option_val, Val_option_GtkSourceLanguage)
+
 
 ML_2 (gtk_source_mark_new, String_val, String_val, Val_GtkSourceMark_new)
 
 ML_1 (gtk_source_mark_get_category, GtkSourceMark_val, Val_string)
-ML_2 (gtk_source_mark_next, GtkSourceMark_val, String_option_val, Val_GtkSourceMark)
-ML_2 (gtk_source_mark_prev, GtkSourceMark_val, String_option_val, Val_GtkSourceMark)
+ML_2 (gtk_source_mark_next, GtkSourceMark_val, String_option_val, Val_option_GtkSourceMark)
+ML_2 (gtk_source_mark_prev, GtkSourceMark_val, String_option_val, Val_option_GtkSourceMark)
 
-#error "ONGOING WORK"
 
-ML_1 (gtk_source_buffer_new, GtkSourceTagTable_val, Val_GtkSourceBuffer_new)
+ML_1 (gtk_source_buffer_new, GtkTextTagTable_val, Val_GtkSourceBuffer_new)
 ML_1 (gtk_source_buffer_new_with_language, GtkSourceLanguage_val, Val_GtkAny_sink)
 ML_1 (gtk_source_buffer_can_undo, GtkSourceBuffer_val, Val_bool)
 ML_1 (gtk_source_buffer_can_redo, GtkSourceBuffer_val, Val_bool)
@@ -171,71 +187,29 @@ ML_1 (gtk_source_buffer_undo, GtkSourceBuffer_val, Unit)
 ML_1 (gtk_source_buffer_redo, GtkSourceBuffer_val, Unit)
 ML_1 (gtk_source_buffer_begin_not_undoable_action, GtkSourceBuffer_val, Unit)
 ML_1 (gtk_source_buffer_end_not_undoable_action, GtkSourceBuffer_val, Unit)
-ML_4 (gtk_source_buffer_create_marker, GtkSourceBuffer_val,
-      String_option_val, String_option_val, GtkTextIter_val, Val_GtkSourceMarker)
-ML_3 (gtk_source_buffer_move_marker, GtkSourceBuffer_val,
-      GtkSourceMarker_val, GtkTextIter_val, Unit)
-ML_2 (gtk_source_buffer_delete_marker, GtkSourceBuffer_val,
-      GtkSourceMarker_val, Unit)
-ML_2 (gtk_source_buffer_get_marker, GtkSourceBuffer_val,
-      String_val, Val_option_GtkSourceMarker)
-ML_1 (gtk_source_buffer_get_first_marker, GtkSourceBuffer_val, Val_option_GtkSourceMarker)
-ML_1 (gtk_source_buffer_get_last_marker, GtkSourceBuffer_val, Val_option_GtkSourceMarker)
-ML_2 (gtk_source_buffer_get_next_marker, GtkSourceBuffer_val, GtkTextIter_val,
-      Val_option_GtkSourceMarker)
-ML_2 (gtk_source_buffer_get_prev_marker, GtkSourceBuffer_val, GtkTextIter_val,
-      Val_option_GtkSourceMarker)
-CAMLprim value ml_gtk_source_buffer_get_iter_at_marker(value vbuf, value vmark)
-{ CAMLparam2(vbuf,vmark);
-  GtkTextIter iter;
-  gtk_source_buffer_get_iter_at_marker(GtkSourceBuffer_val(vbuf), &iter, GtkSourceMarker_val(vmark));
-  CAMLreturn(Val_GtkTextIter(&iter));
-}
-ML_3 (gtk_source_buffer_get_markers_in_region, GtkSourceBuffer_val,
-      GtkTextIter_val, GtkTextIter_val, source_marker_list_of_GSList);
-ML_2 (gtk_source_buffer_set_bracket_match_style, GtkSourceBuffer_val, GtkSourceTagStyle_val, Unit);
+ML_4 (gtk_source_buffer_create_source_mark, GtkSourceBuffer_val,
+      String_option_val, String_option_val, GtkTextIter_val, Val_GtkSourceMark)
+ML_4 (gtk_source_buffer_remove_source_marks, GtkSourceBuffer_val,
+      GtkTextIter_val, GtkTextIter_val, String_option_val, Unit)
+ML_3 (gtk_source_buffer_get_source_marks_at_iter, GtkSourceBuffer_val,
+      GtkTextIter_val,String_option_val, source_marker_list_of_GSList)
+ML_3 (gtk_source_buffer_get_source_marks_at_line, GtkSourceBuffer_val,
+      Int_val,String_option_val, source_marker_list_of_GSList)
+
+ML_3 (gtk_source_buffer_forward_iter_to_source_mark, GtkSourceBuffer_val, GtkTextIter_val, String_option_val, Val_bool)
+ML_3 (gtk_source_buffer_backward_iter_to_source_mark, GtkSourceBuffer_val, GtkTextIter_val, String_option_val, Val_bool)
+
+ML_3 (gtk_source_buffer_ensure_highlight, GtkSourceBuffer_val,
+      GtkTextIter_val, GtkTextIter_val, Unit)
+
+ML_2 (gtk_source_buffer_set_highlight_matching_brackets, GtkSourceBuffer_val, Bool_val, Unit);
 
 
 ML_0 (gtk_source_view_new, Val_GtkWidget_sink)
 ML_1 (gtk_source_view_new_with_buffer, GtkSourceBuffer_val, Val_GtkWidget_sink)
-ML_3 (gtk_source_view_set_marker_pixbuf, GtkSourceView_val, String_val, GdkPixbuf_val, Unit)
-ML_2 (gtk_source_view_get_marker_pixbuf, GtkSourceView_val, String_val, Val_GdkPixbuf)
+ML_3 (gtk_source_view_set_mark_category_pixbuf, GtkSourceView_val, String_val, Option_val(arg3,GdkPixbuf_val,NULL) Ignore, Unit)
+ML_2 (gtk_source_view_get_mark_category_pixbuf, GtkSourceView_val, String_val, Val_option_GdkPixbuf)
 
-
-ML_1 (gtk_source_iter_find_matching_bracket, GtkTextIter_val, Val_bool)
-
-#define Make_search(dir) \
-CAMLprim value ml_gtk_source_iter_##dir##_search (value ti,\
-                                                value str,\
-                                                value flag,\
-                                                value ti_stop,\
-                                                value ti_start,\
-                                                value ti_lim)\
-{ CAMLparam5(ti,str,flag,ti_start,ti_stop);\
-  CAMLxparam1(ti_lim);\
-  CAMLlocal2(res,coup);\
-  GtkTextIter* ti1,*ti2;\
-  gboolean b;\
-  ti1=gtk_text_iter_copy(GtkTextIter_val(ti_start));\
-  ti2=gtk_text_iter_copy(GtkTextIter_val(ti_stop));\
-  b=gtk_source_iter_##dir##_search(GtkTextIter_val(ti),\
-                                 String_val(str),\
-                                 OptFlags_Source_search_flag_val(flag),\
-                                 ti1,\
-                                 ti2,\
-                                 Option_val(ti_lim,GtkTextIter_val,NULL));\
-  if (!b) res = Val_unit;\
-  else \
-    { res = alloc(1,0);\
-      coup = alloc_tuple(2);\
-      Store_field(coup,0,Val_GtkTextIter(ti1));\
-      Store_field(coup,1,Val_GtkTextIter(ti2));\
-      Store_field(res,0,coup);};\
-  CAMLreturn(res);}
-Make_search(forward);
-Make_search(backward);
-ML_bc6(ml_gtk_source_iter_forward_search);
-ML_bc6(ml_gtk_source_iter_backward_search);
 
 /* This code was taken from gedit */
 /* assign a unique name */
