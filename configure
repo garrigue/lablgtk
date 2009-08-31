@@ -1384,7 +1384,7 @@ Optional Packages:
   --without-panel         override autodetected libpanelapplet support
   --without-gtkspell      override autodetected gtkspell support
   --without-gtksourceview      override autodetected gtksourceview support
-  --without-quartz      override autodetected gtksourceview support
+  --without-quartz      override autodetected quartz support
 
 Some influential environment variables:
   CC          C compiler command
@@ -5885,7 +5885,7 @@ $debug ||
 if test -n "$CONFIG_FILES"; then
 
 
-ac_cr=''
+ac_cr=''
 ac_cs_awk_cr=`$AWK 'BEGIN { print "a\rb" }' </dev/null 2>/dev/null`
 if test "$ac_cs_awk_cr" = "a${ac_cr}b"; then
   ac_cs_awk_cr='\\r'
