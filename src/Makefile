@@ -67,7 +67,9 @@ CCOMPILER = $(CAMLC) -c -ccopt '$(CFLAGS)' -verbose
 endif
 
 ifdef USE_GL
+ifdef LABLGLDIR
 MLFLAGS += -I $(LABLGLDIR)
+endif
 MLLINK += lablgl.cma
 MLLIBS += lablgtkgl.cma
 CLIBS += liblablgtkgl2$(XA)
@@ -132,7 +134,9 @@ CLIBS += liblablgtksourceview$(XA)
 GTKSOURCEVIEWMLOBJS = gtkSourceView.cmo gSourceView.cmo
 GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
 GTKSOURCEVIEWMLOBJSENUM = sourceViewEnums.cmo 
-GTKSOURCEVIEWPROPS += gtkSourceView.props
+GTKSOURCEVIEWPROPS = gtkSourceView.props
+BEFORE_DEPEND += $(GTKSOURCEVIEWPROPS:%.props=%Props.ml) $(GTKSOURCEVIEWPROPS:%.props= o%Props.ml)
+
 endif
 
 ifdef USE_GTKQUARTZ
@@ -217,8 +221,8 @@ depend:
 	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
 	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 \
 	  USE_GTKSOURCEVIEW=1
-real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml)
-	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) *.mli > .depend
+real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
+	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(BEFORE_DEPEND) *.mli > .depend
 
 ifeq ($(THREADS_LIB),no)
 lablgtktop$(XE): $(MLLIBS)
