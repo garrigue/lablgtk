@@ -129,15 +129,20 @@ GTKSPELLCOBJS = ml_gtkspell$(XO)
 endif
 
 ifdef USE_GTKSOURCEVIEW
-TARGETS += lablgtksourceview.cma lablgtksourceview.cmxa liblablgtksourceview$(XA)
-
-TARGETS += lablgladecc$(XE)
+byte:: lablgtksourceview.cma liblablgtksourceview$(XA)
+opt:: lablgtksourceview.cmxa liblablgtksourceview$(XA)
+ifeq ($(HAS_NATIVE_DYNLINK),yes)
+opt::  lablgtksourceview.cmxs
+endif
 
 ml_gtksourceview.o: CFLAGS=$(GTKSOURCEVIEWCFLAGS)
 GTKSOURCEVIEWMLOBJS = gtkSourceView.cmo gSourceView.cmo
 GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
 GTKSOURCEVIEWMLOBJSENUM = sourceViewEnums.cmo 
 GTKSOURCEVIEWPROPS = gtkSourceView.props
+CLIBS += liblablgtksourceview$(XA)
+EXTRA_MLLIBS += lablgtksourceview.cma
+EXTRA_OBJS += $(GTKSOURCEVIEWMLOBJS) $(GTKSOURCEVIEWMLOBJSENUM) 
 BEFORE_DEPEND += $(GTKSOURCEVIEWMLOBJS:%.cmo=%.ml) $(GTKSOURCEVIEWPROPS:%.props=%Props.ml) $(GTKSOURCEVIEWPROPS:%.props= o%Props.ml)
 lablgtksourceview.cma liblablgtksourceview$(XA): \
 	$(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmo) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEWMLOBJS)
@@ -155,6 +160,7 @@ GTKSOURCEVIEW2MLOBJSENUM = sourceView2Enums.cmo
 GTKSOURCEVIEW2PROPS = gtkSourceView2.props
 BEFORE_DEPEND += $(GTKSOURCEVIEW2PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW2PROPS:%.props= o%Props.ml)
 
+EXTRA_OBJS += $(GTKSOURCEVIEW2MLOBJSENUM)
 lablgtksourceview2.cma liblablgtksourceview2$(XA): \
 	$(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2MLOBJSENUM) $(GTKSOURCEVIEW2PROPS:%.props=%Props.cmo) $(GTKSOURCEVIEW2PROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEW2MLOBJS)
 	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
@@ -237,8 +243,8 @@ ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
 
 # Targets
-byte: $(TARGETS) $(INITOBJS)
-opt:  $(TARGETS) lablgtkopt
+byte:: $(TARGETS) $(INITOBJS)
+opt::  $(TARGETS) lablgtkopt
 
 depend:
 	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
@@ -318,10 +324,10 @@ preinstall: build.ml
 
 install:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
-	cp $(ALLOBJS:.cmo=.cmi) "$(INSTALLDIR)"
+	cp $(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) "$(INSTALLDIR)"
 	cp -p *.mli "$(INSTALLDIR)"
-	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) "$(INSTALLDIR)"
-	cp $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) "$(INSTALLDIR)"
+	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(EXTRA_OBJS:.cmo=.ml) "$(INSTALLDIR)"
+	cp $(EXTRA_MLLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) "$(INSTALLDIR)"
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) $(CLIBS)
 	cp varcc$(XE) propcc$(XE) "$(INSTALLDIR)"
@@ -346,12 +352,12 @@ installdll:
 	  cp $(CLIBS:lib%$(XA)=dll%$(XA)) "$(INSTALLDIR)"; fi
 
 installopt:
-	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=$(XA)) "$(INSTALLDIR)"
+	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=$(XA)) $(EXTRA_MLLIBS:.cma=.cmxa) $(EXTRA_MLLIBS:.cma=$(XA)) "$(INSTALLDIR)"
 ifeq ($(HAS_NATIVE_DYNLINK),yes)
-	cp $(MLLIBS:.cma=.cmxs) "$(INSTALLDIR)"
+	cp $(MLLIBS:.cma=.cmxs) $(EXTRA_MLLIBS:.cma=.cmxs) "$(INSTALLDIR)"
 endif
-	cd "$(INSTALLDIR)" && $(RANLIB) $(MLLIBS:.cma=$(XA))
-	cp $(ALLOBJS:.cmo=.cmx) "$(INSTALLDIR)"
+	cd "$(INSTALLDIR)" && $(RANLIB) $(MLLIBS:.cma=$(XA)) $(EXTRA_MLLIBS:.cma=$(XA))
+	cp $(ALLOBJS:.cmo=.cmx) $(EXTRA_OBJS:.cmo=.cmx) "$(INSTALLDIR)"
 	cp $(INITOBJS:.cmo=$(XO)) "$(INSTALLDIR)"
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) "$(INSTALLDIR)"; fi
