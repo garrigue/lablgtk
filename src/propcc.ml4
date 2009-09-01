@@ -79,7 +79,7 @@ let enums = [
   "Pango", "PangoEnums",
   [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode" ];
   (* GtkSourceView *)
-  "Gtk","SourceViewEnums",
+  "Gtk","SourceView2Enums",
   ["SourceSmartHomeEndType"; "SourceDrawSpacesFlags"]
 ]
 

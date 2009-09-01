@@ -1,5 +1,11 @@
 $Id$
 
+2009.09.01 [Benjamin]
+  * Support for GtkSourceView 2.6 in library "lablgtksourceview2"
+  * Support for GtkSourceView 1.x is still available in library 
+    "lablgtksourceview" but it is no longer linked into the lablgtk2 
+    default toplevel as it is not linkable with "lablgtksourceview2".
+
 2009.05.21 [Jacques]
   * Apply Anil Madhavapeddy patch for lablgladecc2 -hide-default
 

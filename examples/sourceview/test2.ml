@@ -8,7 +8,7 @@
 (**************************************************************************)
 
 (* Compile with 
-   ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview.cma gtkInit.cmo test.ml
+   ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview2.cma gtkInit.cmo test2.ml
    Run with 
    CAML_LD_LIBRARY_PATH=../../src ./viewer
 *)
@@ -24,14 +24,14 @@ let print_lang lang = prerr_endline (sprintf "language: %s"
 					  | None -> "<anonymous>"
 					  | Some n -> n))
 
-let print_lang_dirs (language_manager:GSourceView.source_language_manager) =
+let print_lang_dirs (language_manager:GSourceView2.source_language_manager) =
   let i = ref 0 in
   prerr_endline "lang_dirs:";
   List.iter
     (fun dir -> incr i; prerr_endline (sprintf "%d: %s" !i dir))
     language_manager#search_path
 
-let win = GWindow.window ~title:"LablGtkSourceView test" ()
+let win = GWindow.window ~title:"LablGtkSourceView 2 test" ()
 let vbox = GPack.vbox ~packing:win#add ()
 let hbox = GPack.hbox ~packing:(vbox#pack ~expand: false) ()
 let bracket_button = GButton.button ~label:"( ... )" ~packing:hbox#add ()
@@ -39,7 +39,7 @@ let scrolled_win = GBin.scrolled_window
     ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC
     ~packing:vbox#add ()
 let source_view =
-  GSourceView.source_view
+  GSourceView2.source_view
     ~auto_indent:true
      ~insert_spaces_instead_of_tabs:true ~tab_width:2
     ~show_line_numbers:true
@@ -48,7 +48,7 @@ let source_view =
     ~packing:scrolled_win#add ~height:500 ~width:650
     ()
 
-let language_manager = GSourceView.source_language_manager ~default:true
+let language_manager = GSourceView2.source_language_manager ~default:true
 
 let lang =
   match language_manager#guess_language ~content_type:lang_mime_type () with

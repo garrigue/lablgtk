@@ -20,12 +20,12 @@
 (*                                                                        *)
 (**************************************************************************)
 
-open GtkSourceView_types
+open GtkSourceView2_types
 open Gaux
 open Gobject
 open Gtk
 open Tags
-open GtkSourceViewProps
+open GtkSourceView2Props
 open GtkBase
 
 external _gtk_source_style_scheme_init: unit -> unit = "ml_gtk_source_style_scheme_init"

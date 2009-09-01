@@ -28,10 +28,10 @@ open GText
 (** {2 GtkSourceStyleScheme} *)
 
 class source_style_scheme :
-  GtkSourceView_types.source_style_scheme obj ->
+  GtkSourceView2_types.source_style_scheme obj ->
   object
     method as_source_style_scheme :
-      GtkSourceView_types.source_style_scheme obj
+      GtkSourceView2_types.source_style_scheme obj
     method get_name : string
 
   end
@@ -39,9 +39,9 @@ class source_style_scheme :
 (** {2 GtkSourceLanguage} *)
 
 class source_language:
-  GtkSourceView_types.source_language obj ->
+  GtkSourceView2_types.source_language obj ->
   object
-    method as_source_language: GtkSourceView_types.source_language obj
+    method as_source_language: GtkSourceView2_types.source_language obj
     method misc: GObj.gobject_ops
 
     method hidden: bool
@@ -59,11 +59,11 @@ class source_language:
 (** {2 GtkSourceLanguageManager} *)
 
 class source_language_manager:
-  GtkSourceView_types.source_language_manager obj ->
+  GtkSourceView2_types.source_language_manager obj ->
   object
     method get_oid: int
     method as_source_language_manager:
-      GtkSourceView_types.source_language_manager obj
+      GtkSourceView2_types.source_language_manager obj
     
     method set_search_path : string list -> unit
     method search_path : string list
@@ -77,7 +77,7 @@ val source_language_manager : default:bool -> source_language_manager
 
 (** {2 GtkSourceMark} *)
 
-class source_mark: ((GtkSourceView_types.source_mark obj) as 'a) ->
+class source_mark: ((GtkSourceView2_types.source_mark obj) as 'a) ->
 object
   method as_source_mark : 'a
   method category: string option
@@ -91,21 +91,21 @@ val source_mark : ?category:string -> unit -> source_mark
 (** {2 GtkSourceBuffer} *)
 
 class source_buffer_signals:
-  (GtkSourceView_types.source_buffer as 'b) obj ->
+  (GtkSourceView2_types.source_buffer as 'b) obj ->
 object ('a)
   inherit ['b] GText.buffer_signals_type
   method changed : callback:(unit -> unit) -> GtkSignal.id
   method highlight_updated:
     callback:(Gtk.text_iter -> Gtk.text_iter -> unit) -> GtkSignal.id
-  method source_mark_updated: callback:(GtkSourceView_types.source_mark obj -> unit) -> GtkSignal.id
+  method source_mark_updated: callback:(GtkSourceView2_types.source_mark obj -> unit) -> GtkSignal.id
 
 end
 
-and source_buffer: GtkSourceView_types.source_buffer obj ->
+and source_buffer: GtkSourceView2_types.source_buffer obj ->
 object
   inherit GText.buffer_skel
-  val obj: GtkSourceView_types.source_buffer obj
-  method as_source_buffer: GtkSourceView_types.source_buffer obj
+  val obj: GtkSourceView2_types.source_buffer obj
+  method as_source_buffer: GtkSourceView2_types.source_buffer obj
   method connect: source_buffer_signals
   method misc: GObj.gobject_ops
 
@@ -149,13 +149,13 @@ val source_buffer:
   ?highlight_matching_brackets:bool ->
   ?highlight_syntax:bool ->
   ?max_undo_levels:int ->
-  ?style_scheme:GtkSourceView_types.source_style_scheme Gobject.obj ->
+  ?style_scheme:GtkSourceView2_types.source_style_scheme Gobject.obj ->
   unit -> source_buffer
   
 (** {2 GtkSourceView} *)
 
 class source_view_signals:
-  ([> GtkSourceView_types.source_view ] as 'b) obj ->
+  ([> GtkSourceView2_types.source_view ] as 'b) obj ->
   object ('a)
     inherit GText.view_signals
     method redo: callback:(unit -> unit) -> GtkSignal.id
@@ -163,11 +163,11 @@ class source_view_signals:
   end
 
 class source_view:
-  GtkSourceView_types.source_view obj ->
+  GtkSourceView2_types.source_view obj ->
 object
   inherit GText.view_skel
-  inherit OgtkSourceViewProps.source_view_props
-  val obj: GtkSourceView_types.source_view obj
+  inherit OgtkSourceView2Props.source_view_props
+  val obj: GtkSourceView2_types.source_view obj
   method connect: source_view_signals
   method source_buffer: source_buffer
   method set_show_line_numbers: bool -> unit
@@ -187,7 +187,7 @@ end
 val source_view :
   ?source_buffer:source_buffer ->
   ?auto_indent:bool ->
-  ?draw_spaces:SourceViewEnums.source_draw_spaces_flags ->
+  ?draw_spaces:SourceView2Enums.source_draw_spaces_flags ->
   ?highlight_current_line:bool ->
   ?indent_on_tab:bool ->
   ?indent_width:int ->
@@ -196,7 +196,7 @@ val source_view :
   ?show_line_marks:bool ->
   ?show_line_numbers:bool ->
   ?show_right_margin:bool ->
-  ?smart_home_end:SourceViewEnums.source_smart_home_end_type ->
+  ?smart_home_end:SourceView2Enums.source_smart_home_end_type ->
   ?tab_width:int ->
   ?editable:bool ->
   ?cursor_visible:bool ->

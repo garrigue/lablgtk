@@ -129,14 +129,37 @@ GTKSPELLCOBJS = ml_gtkspell$(XO)
 endif
 
 ifdef USE_GTKSOURCEVIEW
-MLLIBS += lablgtksourceview.cma
-CLIBS += liblablgtksourceview$(XA)
+TARGETS += lablgtksourceview.cma lablgtksourceview.cmxa liblablgtksourceview$(XA)
+
+TARGETS += lablgladecc$(XE)
+
+ml_gtksourceview.o: CFLAGS=$(GTKSOURCEVIEWCFLAGS)
 GTKSOURCEVIEWMLOBJS = gtkSourceView.cmo gSourceView.cmo
 GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
 GTKSOURCEVIEWMLOBJSENUM = sourceViewEnums.cmo 
 GTKSOURCEVIEWPROPS = gtkSourceView.props
-BEFORE_DEPEND += $(GTKSOURCEVIEWPROPS:%.props=%Props.ml) $(GTKSOURCEVIEWPROPS:%.props= o%Props.ml)
+BEFORE_DEPEND += $(GTKSOURCEVIEWMLOBJS:%.cmo=%.ml) $(GTKSOURCEVIEWPROPS:%.props=%Props.ml) $(GTKSOURCEVIEWPROPS:%.props= o%Props.ml)
+lablgtksourceview.cma liblablgtksourceview$(XA): \
+	$(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmo) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEWMLOBJS)
+	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
+lablgtksourceview.cmxa: $(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM:.cmo=.cmx) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmx) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmx) $(GTKSOURCEVIEWMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
 
+endif
+ifdef USE_GTKSOURCEVIEW2
+MLLIBS += lablgtksourceview2.cma
+CLIBS += liblablgtksourceview2$(XA)
+GTKSOURCEVIEW2MLOBJS = gtkSourceView2.cmo gSourceView2.cmo
+GTKSOURCEVIEW2COBJS = ml_gtksourceview2$(XO)
+GTKSOURCEVIEW2MLOBJSENUM = sourceView2Enums.cmo 
+GTKSOURCEVIEW2PROPS = gtkSourceView2.props
+BEFORE_DEPEND += $(GTKSOURCEVIEW2PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW2PROPS:%.props= o%Props.ml)
+
+lablgtksourceview2.cma liblablgtksourceview2$(XA): \
+	$(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2MLOBJSENUM) $(GTKSOURCEVIEW2PROPS:%.props=%Props.cmo) $(GTKSOURCEVIEW2PROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEW2MLOBJS)
+	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
+lablgtksourceview2.cmxa: $(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2MLOBJSENUM:.cmo=.cmx) $(GTKSOURCEVIEW2PROPS:%.props=%Props.cmx) $(GTKSOURCEVIEW2PROPS:%.props=o%Props.cmx) $(GTKSOURCEVIEW2MLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
 endif
 
 ifdef USE_GTKQUARTZ
@@ -208,7 +231,7 @@ THINITOBJS = gtkThInit.cmo
 EXTRAOBJS = $(INITOBJS) $(THOBJS) $(THINITOBJS)
 ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) \
-	$(GTKSPELLMLOBJS) $(GTKSOURCEVIEWMLOBJS) \
+	$(GTKSPELLMLOBJS) $(GTKSOURCEVIEW2MLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
@@ -220,7 +243,7 @@ opt:  $(TARGETS) lablgtkopt
 depend:
 	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
 	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 \
-	  USE_GTKSOURCEVIEW=1
+	  USE_GTKSOURCEVIEW=1 USE_GTKSOURCEVIEW2=1
 real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
 	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(BEFORE_DEPEND) *.mli > .depend
 
@@ -376,12 +399,6 @@ lablgtkspell.cma liblablgtkspell$(XA): $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS)
 lablgtkspell.cmxa: $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
 
-lablgtksourceview.cma liblablgtksourceview$(XA): \
-	$(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmo) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEWMLOBJS)
-	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
-lablgtksourceview.cmxa: $(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM:.cmo=.cmx) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmx) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmx) $(GTKSOURCEVIEWMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
-
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 
@@ -450,6 +467,9 @@ endif
 ifdef USE_GTKSOURCEVIEW
 DOCFILES += gSourceView.mli
 endif
+ifdef USE_GTKSOURCEVIEW2
+DOCFILES += gSourceView2.mli
+endif
 
 OCAMLDOC = ocamldoc
 lablgtk$(XO)doc : $(DOCFILES) $(ALLOBJS)
@@ -471,6 +491,9 @@ $(GNOMEUICOBJS) : gnomeui_tags.h
 $(PANELCOBJS) : panel_tags.h
 $(GTKSOURCEVIEWCOBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
 			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView_tags.h wrappers.h
+
+$(GTKSOURCEVIEW2COBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
+			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView2_tags.h wrappers.h
 
 ml_glib$(XO): glib_tags.h ml_glib.h wrappers.h
 ml_gobject$(XO): gobject_tags.h ml_gvaluecaml.h wrappers.h

@@ -230,16 +230,18 @@ panel.cmx: gtkSignal.cmx gtkEnums.cmx gtk.cmx gobject.cmx gdk.cmx gObj.cmx \
     gContainer.cmx panel.cmi 
 gtkSpell.cmo: gtk.cmo gtkSpell.cmi 
 gtkSpell.cmx: gtk.cmx gtkSpell.cmi 
-gtkSourceView.cmo: gtkSourceView_types.cmi gtkSourceViewProps.cmo gtkBase.cmo \
-    gtk.cmo gobject.cmi glib.cmi gdkPixbuf.cmi gdk.cmi gaux.cmo 
-gtkSourceView.cmx: gtkSourceView_types.cmi gtkSourceViewProps.cmx gtkBase.cmx \
-    gtk.cmx gobject.cmx glib.cmx gdkPixbuf.cmx gdk.cmx gaux.cmx 
-gSourceView.cmo: ogtkTextProps.cmo ogtkSourceViewProps.cmo gtkText.cmo \
-    gtkSourceView_types.cmi gtkSourceView.cmo gtkBase.cmo gtk.cmo gobject.cmi \
-    gdk.cmi gaux.cmo gText.cmi gObj.cmi gContainer.cmi gSourceView.cmi 
-gSourceView.cmx: ogtkTextProps.cmx ogtkSourceViewProps.cmx gtkText.cmx \
-    gtkSourceView_types.cmi gtkSourceView.cmx gtkBase.cmx gtk.cmx gobject.cmx \
-    gdk.cmx gaux.cmx gText.cmx gObj.cmx gContainer.cmx gSourceView.cmi 
+gtkSourceView2.cmo: gtkSourceView2_types.cmi gtkSourceView2Props.cmo \
+    gtkBase.cmo gtk.cmo gobject.cmi gdkPixbuf.cmi gdk.cmi gaux.cmo 
+gtkSourceView2.cmx: gtkSourceView2_types.cmi gtkSourceView2Props.cmx \
+    gtkBase.cmx gtk.cmx gobject.cmx gdkPixbuf.cmx gdk.cmx gaux.cmx 
+gSourceView2.cmo: ogtkSourceView2Props.cmo gtkText.cmo \
+    gtkSourceView2_types.cmi gtkSourceView2.cmo gtkBase.cmo gtk.cmo \
+    gobject.cmi gdk.cmi gaux.cmo gText.cmi gObj.cmi gContainer.cmi \
+    gSourceView2.cmi 
+gSourceView2.cmx: ogtkSourceView2Props.cmx gtkText.cmx \
+    gtkSourceView2_types.cmi gtkSourceView2.cmx gtkBase.cmx gtk.cmx \
+    gobject.cmx gdk.cmx gaux.cmx gText.cmx gObj.cmx gContainer.cmx \
+    gSourceView2.cmi 
 gtkInit.cmo: gtkMain.cmo 
 gtkInit.cmx: gtkMain.cmx 
 gtkBaseProps.cmo: gtkSignal.cmi gtkObject.cmo gtkEnums.cmo gtk.cmo \
@@ -340,12 +342,30 @@ gtkThread.cmo: gtkMain.cmo glib.cmi gtkThread.cmi
 gtkThread.cmx: gtkMain.cmx glib.cmx gtkThread.cmi 
 gtkThInit.cmo: gtkThread.cmi 
 gtkThInit.cmx: gtkThread.cmx 
+gtkSourceView.cmo: sourceViewEnums.cmo gtkSourceView_types.cmi \
+    gtkSourceViewProps.cmo gtkBase.cmo gtk.cmo gobject.cmi glib.cmi \
+    gdkPixbuf.cmi gdk.cmi gaux.cmo 
+gtkSourceView.cmx: sourceViewEnums.cmx gtkSourceView_types.cmi \
+    gtkSourceViewProps.cmx gtkBase.cmx gtk.cmx gobject.cmx glib.cmx \
+    gdkPixbuf.cmx gdk.cmx gaux.cmx 
+gSourceView.cmo: ogtkTextProps.cmo ogtkSourceViewProps.cmo gtkText.cmo \
+    gtkSourceView_types.cmi gtkSourceView.cmo gtkBase.cmo gtk.cmo gobject.cmi \
+    gdk.cmi gaux.cmo gText.cmi gObj.cmi gContainer.cmi gSourceView.cmi 
+gSourceView.cmx: ogtkTextProps.cmx ogtkSourceViewProps.cmx gtkText.cmx \
+    gtkSourceView_types.cmi gtkSourceView.cmx gtkBase.cmx gtk.cmx gobject.cmx \
+    gdk.cmx gaux.cmx gText.cmx gObj.cmx gContainer.cmx gSourceView.cmi 
 gtkSourceViewProps.cmo: gtkSourceView_types.cmi gtkSignal.cmi gtkObject.cmo \
     gtk.cmo gobject.cmi gdk.cmi 
 gtkSourceViewProps.cmx: gtkSourceView_types.cmi gtkSignal.cmx gtkObject.cmx \
     gtk.cmx gobject.cmx gdk.cmx 
 ogtkSourceViewProps.cmo: gtkSourceViewProps.cmo gtkSignal.cmi gobject.cmi 
 ogtkSourceViewProps.cmx: gtkSourceViewProps.cmx gtkSignal.cmx gobject.cmx 
+gtkSourceView2Props.cmo: sourceView2Enums.cmo gtkSourceView2_types.cmi \
+    gtkSignal.cmi gtkObject.cmo gtk.cmo gobject.cmi 
+gtkSourceView2Props.cmx: sourceView2Enums.cmx gtkSourceView2_types.cmi \
+    gtkSignal.cmx gtkObject.cmx gtk.cmx gobject.cmx 
+ogtkSourceView2Props.cmo: gtkSourceView2Props.cmo gtkSignal.cmi gobject.cmi 
+ogtkSourceView2Props.cmx: gtkSourceView2Props.cmx gtkSignal.cmx gobject.cmx 
 gAction.cmi: gtkStock.cmo gtkSignal.cmi gtkEnums.cmo gtk.cmo gobject.cmi \
     gObj.cmi 
 gAssistant.cmi: gtkSignal.cmi gtkEnums.cmo gtk.cmo gdkPixbuf.cmi gdkEnums.cmo \
@@ -375,8 +395,11 @@ gObj.cmi: pango.cmo gtkStock.cmo gtkSignal.cmi gtk.cmo gobject.cmi \
 gPack.cmi: gtkSignal.cmi gtkPack.cmo gtkEnums.cmo gtk.cmo gdk.cmi gObj.cmi \
     gData.cmi gContainer.cmi 
 gRange.cmi: pangoEnums.cmo gtkSignal.cmi gtk.cmo gObj.cmi gData.cmi 
-gSourceView.cmi: gtkSourceView_types.cmi gtkSignal.cmi gtkEnums.cmo gtk.cmo \
-    glib.cmi gdkPixbuf.cmi gdk.cmi gText.cmi gObj.cmi 
+gSourceView.cmi: sourceViewEnums.cmo gtkSourceView_types.cmi gtkSignal.cmi \
+    gtkEnums.cmo gtk.cmo glib.cmi gdkPixbuf.cmi gdk.cmi gText.cmi gObj.cmi 
+gSourceView2.cmi: sourceView2Enums.cmo ogtkSourceView2Props.cmo \
+    gtkSourceView2_types.cmi gtkSignal.cmi gtkEnums.cmo gtk.cmo gobject.cmi \
+    gdk.cmi gText.cmi gObj.cmi 
 gText.cmi: pango.cmo gtkSignal.cmi gtk.cmo gobject.cmi glib.cmi gdkPixbuf.cmi \
     gdkEvent.cmo gdk.cmi gObj.cmi gData.cmi 
 gToolbox.cmi: gtk.cmo gText.cmi gObj.cmi gMenu.cmi gList.cmi gBroken.cmi 
@@ -398,6 +421,7 @@ gnoDruid.cmi: gtkSignal.cmi gtk.cmo gnomeDruid.cmo gdkPixbuf.cmi gdk.cmi \
 gobject.cmi: gpointer.cmi 
 gpointer.cmi: 
 gtkSignal.cmi: gobject.cmi 
+gtkSourceView2_types.cmi: gtk.cmo 
 gtkSourceView_types.cmi: gtk.cmo 
 gtkSpell.cmi: gText.cmi 
 gtkThread.cmi: 
