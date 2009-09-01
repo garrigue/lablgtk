@@ -126,7 +126,7 @@ struct
   external get_source_marks_at_iter:
     [>`sourcebuffer] obj -> Gtk.text_iter -> string option -> 
     source_mark obj list =
-    "ml_gtk_source_buffer_get_source_marks_at_line"
+    "ml_gtk_source_buffer_get_source_marks_at_iter"
   external forward_iter_to_source_mark:
     [>`sourcebuffer] obj -> Gtk.text_iter -> string option -> bool =
     "ml_gtk_source_buffer_forward_iter_to_source_mark"

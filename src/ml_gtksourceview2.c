@@ -160,8 +160,24 @@ ML_0 (gtk_source_language_manager_new, Val_GtkAny_sink)
 
 ML_0(gtk_source_language_manager_get_default,Val_GtkSourceLanguageManager)
 
+/* This function leaks the strv. It needs to be freed before returning. */
 ML_2(gtk_source_language_manager_set_search_path,GtkSourceLanguageManager_val,
      strv_of_string_list,Unit)
+
+#if 0
+// I need to find a test for this code
+CAMLprim value ml_gtk_source_language_manager_set_search_path(value lm, value sl)
+{
+  gchar** strv = strv_of_string_list(sl);
+  gchar **index = strv; 
+  gtk_source_language_manager_set_search_path(GtkSourceLanguageManager_val(lm),strv);
+  
+  while(*index != NULL) {g_free(*strv); strv++; };
+  g_free(strv);
+  return Val_unit;
+}
+#endif
+
 ML_1(gtk_source_language_manager_get_search_path,GtkSourceLanguageManager_val,
      string_list_of_strv)
 ML_1(gtk_source_language_manager_get_language_ids,GtkSourceLanguageManager_val,
