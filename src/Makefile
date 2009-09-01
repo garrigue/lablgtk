@@ -138,12 +138,13 @@ endif
 ml_gtksourceview.o: CFLAGS=$(GTKSOURCEVIEWCFLAGS)
 GTKSOURCEVIEWMLOBJS = gtkSourceView.cmo gSourceView.cmo
 GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
+ml_gtksourceview.c: pango_tags.h
 GTKSOURCEVIEWMLOBJSENUM = sourceViewEnums.cmo 
 GTKSOURCEVIEWPROPS = gtkSourceView.props
 CLIBS += liblablgtksourceview$(XA)
 EXTRA_MLLIBS += lablgtksourceview.cma
 EXTRA_OBJS += $(GTKSOURCEVIEWMLOBJS) $(GTKSOURCEVIEWMLOBJSENUM) 
-BEFORE_DEPEND += $(GTKSOURCEVIEWMLOBJS:%.cmo=%.ml) $(GTKSOURCEVIEWPROPS:%.props=%Props.ml) $(GTKSOURCEVIEWPROPS:%.props= o%Props.ml)
+BEFORE_DEPEND += $(GTKSOURCEVIEWMLOBJS:%.cmo=%.ml) $(GTKSOURCEVIEWPROPS:%.props=%Props.ml) $(GTKSOURCEVIEWPROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
 lablgtksourceview.cma liblablgtksourceview$(XA): \
 	$(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmo) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEWMLOBJS)
 	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
@@ -158,7 +159,7 @@ GTKSOURCEVIEW2MLOBJS = gtkSourceView2.cmo gSourceView2.cmo
 GTKSOURCEVIEW2COBJS = ml_gtksourceview2$(XO)
 GTKSOURCEVIEW2MLOBJSENUM = sourceView2Enums.cmo 
 GTKSOURCEVIEW2PROPS = gtkSourceView2.props
-BEFORE_DEPEND += $(GTKSOURCEVIEW2PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW2PROPS:%.props= o%Props.ml)
+BEFORE_DEPEND += $(GTKSOURCEVIEW2PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW2PROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
 
 EXTRA_OBJS += $(GTKSOURCEVIEW2MLOBJSENUM)
 lablgtksourceview2.cma liblablgtksourceview2$(XA): \
