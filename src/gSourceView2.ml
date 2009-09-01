@@ -21,12 +21,12 @@
 (**************************************************************************)
 
 open Gaux
-open GtkSourceView
+open GtkSourceView2
 open Gobject
 open Gtk
 open GtkBase
-open GtkSourceView_types
-open OgtkSourceViewProps
+open GtkSourceView2_types
+open OgtkSourceView2Props
 open GObj
 
 let get_bool = function `BOOL x -> x | _ -> assert false
@@ -67,7 +67,7 @@ let color_of_string s =
 
 (** {2 GtkSourceStyleScheme} *)
 
-class source_style_scheme (obj: GtkSourceView_types.source_style_scheme obj) =
+class source_style_scheme (obj: GtkSourceView2_types.source_style_scheme obj) =
 object(self)
   method as_source_style_scheme = obj
   method get_name = SourceStyleScheme.get_name obj
@@ -76,7 +76,7 @@ end
 
 (** {2 GtkSourceLanguage} *)
 
-class source_language (obj: GtkSourceView_types.source_language obj) =
+class source_language (obj: GtkSourceView2_types.source_language obj) =
 object (self)
   method as_source_language = obj
   val obj = obj
@@ -94,7 +94,7 @@ end
 (** {2 GtkSourceLanguageManager} *)
 
 class source_language_manager
-  (obj: GtkSourceView_types.source_language_manager obj) =
+  (obj: GtkSourceView2_types.source_language_manager obj) =
 object (self)
   method get_oid = Gobject.get_oid obj
   method as_source_language_manager = obj
@@ -121,7 +121,7 @@ let source_language_manager ~default =
 
 (** {2 GtkSourceMark} *)
 
-class source_mark  (obj: GtkSourceView_types.source_mark obj) =
+class source_mark  (obj: GtkSourceView2_types.source_mark obj) =
 object (self)
   method as_source_mark = obj
   val obj = obj
@@ -141,12 +141,12 @@ let source_mark ?category () =
 
 class source_buffer_signals obj' =
 object
-  inherit ['a] gobject_signals (obj' : [> GtkSourceView_types.source_buffer] obj)
+  inherit ['a] gobject_signals (obj' : [> GtkSourceView2_types.source_buffer] obj)
   inherit GText.buffer_signals_skel
   inherit source_buffer_sigs
 end
 
-and source_buffer (_obj: GtkSourceView_types.source_buffer obj) =
+and source_buffer (_obj: GtkSourceView2_types.source_buffer obj) =
 object (self)
   inherit GText.buffer_skel _obj as text_buffer
   val obj = _obj
@@ -222,12 +222,12 @@ let source_buffer ?(language:source_language option) ?(tag_table : GText.tag_tab
 
 class source_view_signals obj' =
 object
-  inherit widget_signals_impl (obj' : [> GtkSourceView_types.source_view] obj)
+  inherit widget_signals_impl (obj' : [> GtkSourceView2_types.source_view] obj)
   inherit GText.view_signals obj'
   inherit source_view_sigs
 end
 
-class source_view (obj': GtkSourceView_types.source_view obj) =
+class source_view (obj': GtkSourceView2_types.source_view obj) =
 object (self)
   inherit GText.view_skel obj'
   inherit source_view_props

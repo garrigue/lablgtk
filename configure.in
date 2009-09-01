@@ -307,11 +307,15 @@ LABLGTK_PKG(GTKSOURCEVIEW, gtksourceview,
             [  --without-gtksourceview      override autodetected gtksourceview support],
             gtksourceview-1.0)
 
+LABLGTK_PKG(GTKSOURCEVIEW2, gtksourceview2,
+            [  --without-gtksourceview2      override autodetected gtksourceview 2 support],
+            gtksourceview-2.0)
+
 LABLGTK_PKG(GTKQUARTZ, quartz,
             [  --without-quartz      override autodetected quartz support],
             gtk+-quartz-2.0)
 
-PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG $GTKQUARTZPKG)
+PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG)
 
 AC_ARG_ENABLE(debug,
         [  --enable-debug          enable debug mode],
@@ -368,7 +372,8 @@ CONF_SUMMARY(libgnomecanvas, GNOMECANVAS)
 CONF_SUMMARY(libgnomeui, GNOMEUI)
 CONF_SUMMARY(libpanelapplet, PANEL)
 CONF_SUMMARY(gtkspell, GTKSPELL)
-CONF_SUMMARY(gtksourceview, GTKSOURCEVIEW)
+CONF_SUMMARY(gtksourceview 1, GTKSOURCEVIEW)
+CONF_SUMMARY(gtksourceview 2, GTKSOURCEVIEW2)
 CONF_SUMMARY(quartz   , GTKQUARTZ)
 echo
 echo $ECHO_N "	debug   $ECHO_C"

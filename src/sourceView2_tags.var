@@ -23,7 +23,7 @@
 (*                                                                               *)
 (*********************************************************************************)
 
-package "sourceView"
+package "sourceView2"
 
 type source_search_flag = "GTK_SOURCE_SEARCH_"
   [ `VISIBLE_ONLY | `TEXT_ONLY | `CASE_INSENSITIVE]

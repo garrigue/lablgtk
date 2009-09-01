@@ -26,7 +26,7 @@
 prefix "Gtk"
 
 header {
-  open GtkSourceView_types
+  open GtkSourceView2_types
 }
 
 class SourceStyleScheme type "source_style_scheme obj" set wrapsig : GObject {

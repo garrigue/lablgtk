@@ -61,6 +61,8 @@ How to compile:
                 override autodetected gtkspell support
         --with-gtksourceview --without-gtksourceview:
                 override autodetected gtksourceview support
+        --with-gtksourceview2 --without-gtksourceview2:
+                override autodetected gtksourceview2 support
 	--enable-debug: enable debug mode
 
   "make install DESTDIR=..." prefixes the installation
@@ -315,11 +317,18 @@ GnomeCanvas support:
   See examples in examples/canvas.
   The executable must be linked with lablgnomecanvas.cma.
 
-GtkSourceView support:
+GtkSourceView 1 support:
   This binding was contributed by Maxence Guesdon and Stefano Zacchiroli.
   It requires libgtksourceview-1.x.
   See examples in examples/sourceview.
   The executable must be linked with lablgtksourceview.cma.
+
+GtkSourceView 2 support:
+  This binding was contributed by Benjamin Monate: it is based on 
+  the aforementioned GtksourceView 1 support.
+  It requires libgtksourceview-2.x.
+  See examples in examples/sourceview/*2.ml
+  The executable must be linked with lablgtksourceview2.cma.
 
 Windows port
 

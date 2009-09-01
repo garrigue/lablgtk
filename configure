@@ -618,6 +618,9 @@ GTKALL_CFLAGS
 USE_GTKQUARTZ
 GTKQUARTZ_LIBS
 GTKQUARTZ_CFLAGS
+USE_GTKSOURCEVIEW2
+GTKSOURCEVIEW2_LIBS
+GTKSOURCEVIEW2_CFLAGS
 USE_GTKSOURCEVIEW
 GTKSOURCEVIEW_LIBS
 GTKSOURCEVIEW_CFLAGS
@@ -717,6 +720,7 @@ with_gnomeui
 with_panel
 with_gtkspell
 with_gtksourceview
+with_gtksourceview2
 with_quartz
 enable_debug
 '
@@ -745,6 +749,8 @@ GTKSPELL_CFLAGS
 GTKSPELL_LIBS
 GTKSOURCEVIEW_CFLAGS
 GTKSOURCEVIEW_LIBS
+GTKSOURCEVIEW2_CFLAGS
+GTKSOURCEVIEW2_LIBS
 GTKQUARTZ_CFLAGS
 GTKQUARTZ_LIBS
 GTKALL_CFLAGS
@@ -1384,6 +1390,7 @@ Optional Packages:
   --without-panel         override autodetected libpanelapplet support
   --without-gtkspell      override autodetected gtkspell support
   --without-gtksourceview      override autodetected gtksourceview support
+  --without-gtksourceview2      override autodetected gtksourceview 2 support
   --without-quartz      override autodetected quartz support
 
 Some influential environment variables:
@@ -1422,6 +1429,10 @@ Some influential environment variables:
               C compiler flags for GTKSOURCEVIEW, overriding pkg-config
   GTKSOURCEVIEW_LIBS
               linker flags for GTKSOURCEVIEW, overriding pkg-config
+  GTKSOURCEVIEW2_CFLAGS
+              C compiler flags for GTKSOURCEVIEW2, overriding pkg-config
+  GTKSOURCEVIEW2_LIBS
+              linker flags for GTKSOURCEVIEW2, overriding pkg-config
   GTKQUARTZ_CFLAGS
               C compiler flags for GTKQUARTZ, overriding pkg-config
   GTKQUARTZ_LIBS
@@ -4971,6 +4982,110 @@ fi
 
 
 
+# Check whether --with-gtksourceview2 was given.
+if test "${with_gtksourceview2+set}" = set; then
+  withval=$with_gtksourceview2; USE_GTKSOURCEVIEW2=$withval; FORCE_GTKSOURCEVIEW2=yes
+else
+  USE_GTKSOURCEVIEW2=yes; FORCE_GTKSOURCEVIEW2=no
+fi
+
+if test $USE_GTKSOURCEVIEW2 = yes ; then
+
+pkg_failed=no
+{ $as_echo "$as_me:$LINENO: checking for GTKSOURCEVIEW2" >&5
+$as_echo_n "checking for GTKSOURCEVIEW2... " >&6; }
+
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GTKSOURCEVIEW2_CFLAGS"; then
+        pkg_cv_GTKSOURCEVIEW2_CFLAGS="$GTKSOURCEVIEW2_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gtksourceview-2.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "gtksourceview-2.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_GTKSOURCEVIEW2_CFLAGS=`$PKG_CONFIG --cflags "gtksourceview-2.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GTKSOURCEVIEW2_LIBS"; then
+        pkg_cv_GTKSOURCEVIEW2_LIBS="$GTKSOURCEVIEW2_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gtksourceview-2.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "gtksourceview-2.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_GTKSOURCEVIEW2_LIBS=`$PKG_CONFIG --libs "gtksourceview-2.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GTKSOURCEVIEW2_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gtksourceview-2.0"`
+        else
+	        GTKSOURCEVIEW2_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gtksourceview-2.0"`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$GTKSOURCEVIEW2_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+
+	if test $FORCE_GTKSOURCEVIEW2 = yes ; then
+	  { { $as_echo "$as_me:$LINENO: error: gtksourceview2 enforced but no support found" >&5
+$as_echo "$as_me: error: gtksourceview2 enforced but no support found" >&2;}
+   { (exit 1); exit 1; }; }
+        else
+          USE_GTKSOURCEVIEW2=no
+	fi
+elif test $pkg_failed = untried; then
+
+	if test $FORCE_GTKSOURCEVIEW2 = yes ; then
+	  { { $as_echo "$as_me:$LINENO: error: gtksourceview2 enforced but no support found" >&5
+$as_echo "$as_me: error: gtksourceview2 enforced but no support found" >&2;}
+   { (exit 1); exit 1; }; }
+        else
+          USE_GTKSOURCEVIEW2=no
+	fi
+else
+	GTKSOURCEVIEW2_CFLAGS=$pkg_cv_GTKSOURCEVIEW2_CFLAGS
+	GTKSOURCEVIEW2_LIBS=$pkg_cv_GTKSOURCEVIEW2_LIBS
+        { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+	:
+fi
+fi
+if test $USE_GTKSOURCEVIEW2 = yes ; then
+	USE_GTKSOURCEVIEW2=1
+	GTKSOURCEVIEW2PKG=gtksourceview-2.0
+else
+	unset USE_GTKSOURCEVIEW2
+fi
+
+
+
+
 # Check whether --with-quartz was given.
 if test "${with_quartz+set}" = set; then
   withval=$with_quartz; USE_GTKQUARTZ=$withval; FORCE_GTKQUARTZ=yes
@@ -5083,12 +5198,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_GTKALL_CFLAGS="$GTKALL_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEWPKG \$GTKQUARTZPKG\"") >&5
-  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG $GTKQUARTZPKG") 2>&5
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEW2PKG \$GTKQUARTZPKG\"") >&5
+  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG") 2>&5
   ac_status=$?
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_GTKALL_CFLAGS=`$PKG_CONFIG --cflags "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG $GTKQUARTZPKG" 2>/dev/null`
+  pkg_cv_GTKALL_CFLAGS=`$PKG_CONFIG --cflags "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -5101,12 +5216,12 @@ if test -n "$PKG_CONFIG"; then
         pkg_cv_GTKALL_LIBS="$GTKALL_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEWPKG \$GTKQUARTZPKG\"") >&5
-  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG $GTKQUARTZPKG") 2>&5
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEW2PKG \$GTKQUARTZPKG\"") >&5
+  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG") 2>&5
   ac_status=$?
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  pkg_cv_GTKALL_LIBS=`$PKG_CONFIG --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG $GTKQUARTZPKG" 2>/dev/null`
+  pkg_cv_GTKALL_LIBS=`$PKG_CONFIG --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -5125,14 +5240,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG $GTKQUARTZPKG"`
+	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG"`
         else
-	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG $GTKQUARTZPKG"`
+	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKALL_PKG_ERRORS" >&5
 
-	{ { $as_echo "$as_me:$LINENO: error: Package requirements ($GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG $GTKQUARTZPKG) were not met:
+	{ { $as_echo "$as_me:$LINENO: error: Package requirements ($GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG) were not met:
 
 $GTKALL_PKG_ERRORS
 
@@ -5143,7 +5258,7 @@ Alternatively, you may set the environment variables GTKALL_CFLAGS
 and GTKALL_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 " >&5
-$as_echo "$as_me: error: Package requirements ($GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEWPKG $GTKQUARTZPKG) were not met:
+$as_echo "$as_me: error: Package requirements ($GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG) were not met:
 
 $GTKALL_PKG_ERRORS
 
@@ -6406,10 +6521,19 @@ else if test "$FORCE_GTKSPELL" = "yes"
      fi
 fi
 
-echo $ECHO_N "	gtksourceview $ECHO_C"
+echo $ECHO_N "	gtksourceview 1 $ECHO_C"
 if test -n "$USE_GTKSOURCEVIEW"
 then echo "	yes"
 else if test "$FORCE_GTKSOURCEVIEW" = "yes"
+     then echo "	disabled"
+     else echo "	not found"
+     fi
+fi
+
+echo $ECHO_N "	gtksourceview 2 $ECHO_C"
+if test -n "$USE_GTKSOURCEVIEW2"
+then echo "	yes"
+else if test "$FORCE_GTKSOURCEVIEW2" = "yes"
      then echo "	disabled"
      else echo "	not found"
      fi
