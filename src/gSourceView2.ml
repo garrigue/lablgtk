@@ -154,6 +154,7 @@ let source_language_manager ~default =
 
 class source_mark  (obj: GtkSourceView2_types.source_mark obj) =
 object (self)
+  method coerce = (`MARK (GtkText.Mark.cast obj):GText.mark)
   method as_source_mark = obj
   val obj = obj
   inherit source_mark_props
