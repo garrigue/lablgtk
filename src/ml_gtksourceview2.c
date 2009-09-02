@@ -25,6 +25,7 @@
 #include <gtksourceview/gtksourcelanguagemanager.h>
 #include <gtksourceview/gtksourceiter.h>
 #include <gtksourceview/gtksourcestylescheme.h>
+#include <gtksourceview/gtksourcestyleschememanager.h>
 
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -53,6 +54,12 @@ Make_OptFlags_val(Source_search_flag_val)
 CAMLprim value ml_gtk_source_style_scheme_init(value unit)
 {	/* Since these are declared const, must force gcc to call them! */
     GType t = gtk_source_style_scheme_get_type();
+    return Val_GType(t);
+}
+
+CAMLprim value ml_gtk_source_style_scheme_manager_init(value unit)
+{	/* Since these are declared const, must force gcc to call them! */
+    GType t = gtk_source_style_scheme_manager_get_type();
     return Val_GType(t);
 }
 
@@ -94,6 +101,12 @@ GSList *ml_gslist_of_string_list(value list)
 #define GtkSourceStyleScheme_val(val) check_cast(GTK_SOURCE_STYLE_SCHEME,val)
 #define Val_GtkSourceStyleScheme(val) (Val_GObject((GObject*)val))
 #define Val_GtkSourceStyleScheme_new(val) (Val_GObject_new((GObject*)val))
+#define Val_option_GtkSourceStyleScheme(val) \
+     Val_option(val, Val_GtkSourceStyleScheme)
+
+#define GtkSourceStyleSchemeManager_val(val) \
+     check_cast(GTK_SOURCE_STYLE_SCHEME_MANAGER,val)
+#define Val_GtkSourceStyleSchemeManager(val) (Val_GObject((GObject*)val))
 
 #define Val_GtkSourceLanguage(val)  (Val_GObject((GObject*)val))
 #define Val_option_GtkSourceLanguage(val) Val_option(val,Val_GtkSourceLanguage)
@@ -119,6 +132,9 @@ GSList *ml_gslist_of_string_list(value list)
 #define Val_option_GtkAny(v) Val_option(v,Val_GtkAny)
 #define string_list_of_GSList(l) Val_GSList(l, (value_in) Val_string)
 
+#define GdkPixbuf_option_val(val) Option_val(val, GdkPixbuf_val, NULL)
+#define GdkColor_option_val(val) Option_val(val, GdkColor_val, NULL)
+
 static value val_gtksourcemark(gpointer v)
 {
   return Val_GtkSourceMark(v);
@@ -140,6 +156,31 @@ value source_language_list_of_GSList(gpointer list)
 }
 
 ML_1 (gtk_source_style_scheme_get_name, GtkSourceStyleScheme_val, Val_string)
+ML_1 (gtk_source_style_scheme_get_description, GtkSourceStyleScheme_val, Val_string)
+
+ML_0 (gtk_source_style_scheme_manager_new, Val_GtkAny_sink)
+ML_0 (gtk_source_style_scheme_manager_get_default,
+      Val_GtkSourceStyleSchemeManager)
+ML_2 (gtk_source_style_scheme_manager_get_scheme,
+      GtkSourceStyleSchemeManager_val, String_val, 
+      Val_option_GtkSourceStyleScheme)
+ML_1 (gtk_source_style_scheme_manager_get_scheme_ids,
+      GtkSourceStyleSchemeManager_val, string_list_of_strv)
+ML_1 (gtk_source_style_scheme_manager_get_search_path,
+      GtkSourceStyleSchemeManager_val, string_list_of_strv)
+ML_2 (gtk_source_style_scheme_manager_set_search_path,
+      GtkSourceStyleSchemeManager_val, strv_of_string_list, Unit)
+ML_2 (gtk_source_style_scheme_manager_prepend_search_path,
+      GtkSourceStyleSchemeManager_val, String_val, Unit)
+ML_2 (gtk_source_style_scheme_manager_append_search_path,
+      GtkSourceStyleSchemeManager_val, String_val, Unit)
+ML_1 (gtk_source_style_scheme_manager_force_rescan, 
+      GtkSourceStyleSchemeManager_val, Unit)
+
+ML_1 (gtk_source_language_get_id, GtkSourceLanguage_val, Val_string)
+ML_1 (gtk_source_language_get_name, GtkSourceLanguage_val, Val_string)
+ML_1 (gtk_source_language_get_section, GtkSourceLanguage_val, Val_string)
+ML_1 (gtk_source_language_get_hidden, GtkSourceLanguage_val, Val_bool)
 
 ML_2 (gtk_source_language_get_metadata, GtkSourceLanguage_val, 
       String_option_val, Val_optstring)
@@ -223,8 +264,44 @@ ML_2 (gtk_source_buffer_set_highlight_matching_brackets, GtkSourceBuffer_val, Bo
 
 ML_0 (gtk_source_view_new, Val_GtkWidget_sink)
 ML_1 (gtk_source_view_new_with_buffer, GtkSourceBuffer_val, Val_GtkWidget_sink)
-ML_3 (gtk_source_view_set_mark_category_pixbuf, GtkSourceView_val, String_val, Option_val(arg3,GdkPixbuf_val,NULL) Ignore, Unit)
-ML_2 (gtk_source_view_get_mark_category_pixbuf, GtkSourceView_val, String_val, Val_option_GdkPixbuf)
+
+ML_2 (gtk_source_view_get_mark_category_priority,
+      GtkSourceView_val, String_val, Val_int)
+ML_3 (gtk_source_view_set_mark_category_priority,
+      GtkSourceView_val, String_val, Int_val, Unit)
+ML_3 (gtk_source_view_set_mark_category_pixbuf, GtkSourceView_val, 
+      String_val, GdkPixbuf_option_val, Unit)
+ML_2 (gtk_source_view_get_mark_category_pixbuf, GtkSourceView_val, 
+      String_val, Val_option_GdkPixbuf)
+ML_3 (gtk_source_view_set_mark_category_background,
+      GtkSourceView_val, String_val, GdkColor_option_val, Unit)
+
+CAMLprim value ml_gtk_source_view_get_mark_category_background
+(value sv, value s, value c) {
+     CAMLparam3(sv, s, c);
+     CAMLlocal2(color, result);
+     GdkColor dest;
+
+     if (gtk_source_view_get_mark_category_background(
+	      GtkSourceView_val(sv), String_val(s), &dest)) {
+	  color = Val_copy(dest);
+	  result = alloc_small(1, 0);
+	  Field(result, 0) = color;
+     }
+     else
+	  result = Val_unit;
+
+     CAMLreturn(result);
+}
+
+Make_Flags_val(Source_draw_spaces_flags_val)
+#define Val_flags_Draw_spaces_flags(val) \
+     ml_lookup_flags_getter(ml_table_source_draw_spaces_flags, val)
+
+ML_1 (gtk_source_view_get_draw_spaces,
+      GtkSourceView_val, Val_flags_Draw_spaces_flags)
+ML_2 (gtk_source_view_set_draw_spaces, 
+      GtkSourceView_val, Flags_Source_draw_spaces_flags_val, Unit)
 
 
 /* This code was taken from gedit */
@@ -242,7 +319,7 @@ get_widget_name (GtkWidget *w)
                 static guint d = 0;
                 gchar *n;
 
-                n = g_strdup_printf ("%s_%u_%u", name, d, (guint) g_random_int);
+                n = g_strdup_printf ("%s_%u_%u", name, d, g_random_int());
                 d++;
 
                 gtk_widget_set_name (w, n);

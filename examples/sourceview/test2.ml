@@ -19,10 +19,7 @@ let lang_mime_type = "text/x-ocaml"
 let use_mime_type = false
 let font_name = "Monospace 10"
 
-let print_lang lang = prerr_endline (sprintf "language: %s" 
-				       (match lang#name with 
-					  | None -> "<anonymous>"
-					  | Some n -> n))
+let print_lang lang = prerr_endline (sprintf "language: %s" lang#name)
 
 let print_lang_dirs (language_manager:GSourceView2.source_language_manager) =
   let i = ref 0 in
@@ -44,7 +41,7 @@ let source_view =
      ~insert_spaces_instead_of_tabs:true ~tab_width:2
     ~show_line_numbers:true
     ~right_margin_position:80 ~show_right_margin:true
-(*    ~smart_home_end:true*)
+    ~smart_home_end:`ALWAYS
     ~packing:scrolled_win#add ~height:500 ~width:650
     ()
 

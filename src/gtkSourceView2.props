@@ -32,11 +32,23 @@ header {
 class SourceStyleScheme type "source_style_scheme obj" set wrapsig : GObject {
 }
 
+class SourceStyleSchemeManager type "source_style_scheme_manager obj" wrap : GObject {
+(*  "scheme-ids"          GStrv                 : Read *)
+(*  "search-path"         GStrv                 : Read / Write *)
+
+  method get_search_path : "string list"
+  method set_search_path : "string list -> unit"
+  method get_scheme_ids : "string list"
+
+  method append_search_path : "string -> unit" / Wrap
+  method prepend_search_path : "string -> unit" / Wrap
+  method get_scheme : "string -> source_style_scheme obj option"
+  method force_rescan : "unit -> unit" / Wrap
+}
+
 class SourceLanguage type "source_language obj" set wrap wrapsig : GObject {
- "hidden"                   gboolean              : Read
- "id"                       gchararray_opt        : Read
- "name"                     gchararray_opt        : Read
- "section"                  gchararray_opt        : Read
+  (* Property access is broken in gtkSourceView 2.4.1 (see Bugzilla #564142), 
+     so we use methods instead: *)
 }
 
 class SourceLanguageManager type "source_language_manager obj" set wrapsig : GObject {
@@ -65,7 +77,6 @@ class SourceBuffer type "source_buffer obj" set wrap wrapsig : GObject {
 
 class SourceView type "source_view obj" set wrap wrapsig : Widget {
   "auto-indent"          gboolean             : Read / Write
-  "draw-spaces"     GtkSourceDrawSpacesFlags  : Read / Write
   "highlight-current-line"  gboolean          : Read / Write
   "indent-on-tab"       gboolean              : Read / Write
   "indent-width"        gint                  : Read / Write
@@ -76,6 +87,23 @@ class SourceView type "source_view obj" set wrap wrapsig : Widget {
   "show-right-margin"    gboolean             : Read / Write
   "smart-home-end"  GtkSourceSmartHomeEndType : Read / Write
   "tab-width"          guint		      : Read / Write
+
+  method get_draw_spaces: "SourceView2Enums.source_draw_spaces_flags list"
+  method set_draw_spaces: "SourceView2Enums.source_draw_spaces_flags list -> unit"
+
+  method get_mark_category_priority : 
+      "category:string -> int" / Wrap
+  method set_mark_category_priority: 
+      "category:string -> int -> unit" / Wrap
+  method get_mark_category_pixbuf: 
+      "category:string -> GdkPixbuf.pixbuf option" / Wrap
+  method set_mark_category_pixbuf: 
+      "category:string -> GdkPixbuf.pixbuf option -> unit" / Wrap
+  method get_mark_category_background: 
+      "category:string -> Gdk.color option" / Wrap
+  method set_mark_category_background: 
+      "category:string -> Gdk.color option -> unit" / Wrap
+
   signal redo
   signal undo
 }

@@ -29,6 +29,7 @@ open GtkSourceView2Props
 open GtkBase
 
 external _gtk_source_style_scheme_init: unit -> unit = "ml_gtk_source_style_scheme_init"
+external _gtk_source_style_scheme_manager_init: unit -> unit = "ml_gtk_source_style_scheme_manager_init"
 external _gtk_source_language_init: unit -> unit = "ml_gtk_source_language_init"
 external _gtk_source_language_manager_init: unit -> unit =
   "ml_gtk_source_language_manager_init"
@@ -37,6 +38,7 @@ external _gtk_source_view_init: unit -> unit = "ml_gtk_source_view_init"
 
 let () =
   _gtk_source_style_scheme_init ();
+  _gtk_source_style_scheme_manager_init ();
   _gtk_source_language_init ();
   _gtk_source_language_manager_init ();
   _gtk_source_buffer_init ();
@@ -44,14 +46,35 @@ let () =
 
 module SourceStyleScheme =
 struct
-   include SourceStyleScheme
+  include SourceStyleScheme
   external get_name: source_style_scheme obj -> string =
     "ml_gtk_source_style_scheme_get_name"
+  external get_description: source_style_scheme obj -> string =
+    "ml_gtk_source_style_scheme_get_description"
+end
+
+module SourceStyleSchemeManager =
+struct
+  include SourceStyleSchemeManager
+
+  external new_ : unit -> source_style_scheme_manager obj =
+    "ml_gtk_source_style_scheme_manager_new"
+  external default : unit -> source_style_scheme_manager obj =
+    "ml_gtk_source_style_scheme_manager_get_default"
 end
 
 module SourceLanguage =
 struct
   include SourceLanguage
+
+  external get_id : [>`sourcelanguage] obj -> string
+    = "ml_gtk_source_language_get_id"
+  external get_name : [>`sourcelanguage] obj -> string
+    = "ml_gtk_source_language_get_name"
+  external get_section : [>`sourcelanguage] obj -> string
+    = "ml_gtk_source_language_get_section"
+  external get_hidden : [>`sourcelanguage] obj -> bool
+    = "ml_gtk_source_language_get_hidden"
 
   external metadata: [>`sourcelanguage] obj -> string -> string option=
     "ml_gtk_source_language_get_metadata"
@@ -63,7 +86,6 @@ struct
     "ml_gtk_source_language_get_style_name"
   external style_ids: [>`sourcelanguage] obj -> string list =
     "ml_gtk_source_language_get_style_ids"
-
 end
 
 module SourceLanguageManager =
