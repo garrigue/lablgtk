@@ -413,7 +413,7 @@ get_widget_name (GtkWidget *w)
                 static guint d = 0;
                 gchar *n;
 
-                n = g_strdup_printf ("%s_%u_%u", name, d, (guint) g_random_int);
+                n = g_strdup_printf ("%s_%u_%u", name, d, g_random_int ());
                 d++;
 
                 gtk_widget_set_name (w, n);

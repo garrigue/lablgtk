@@ -32,9 +32,27 @@ class source_style_scheme :
   object
     method as_source_style_scheme :
       GtkSourceView2_types.source_style_scheme obj
-    method get_name : string
-
+    method name : string
+    method description : string
   end
+
+
+(** {2 GtkSourceStyleSchemeManager} *)
+
+class source_style_scheme_manager : 
+  GtkSourceView2_types.source_style_scheme_manager obj ->
+  object
+    method search_path: string list
+    method set_search_path: string list -> unit
+    method append_search_path: string -> unit
+    method prepend_search_path: string -> unit
+    method style_scheme_ids: string list
+    method style_scheme: string -> source_style_scheme option
+    method force_rescan: unit -> unit
+  end
+
+val source_style_scheme_manager : default:bool -> source_style_scheme_manager
+
 
 (** {2 GtkSourceLanguage} *)
 
@@ -45,9 +63,9 @@ class source_language:
     method misc: GObj.gobject_ops
 
     method hidden: bool
-    method id: string option
-    method name: string option
-    method section: string option
+    method id: string
+    method name: string
+    method section: string
 
     method metadata: string -> string option
     method mime_types: string list
@@ -74,6 +92,7 @@ class source_language_manager:
   end
 
 val source_language_manager : default:bool -> source_language_manager
+
 
 (** {2 GtkSourceMark} *)
 
@@ -144,12 +163,12 @@ end
 
 val source_buffer:
   ?language:source_language ->
+  ?style_scheme:source_style_scheme ->
   ?tag_table:GText.tag_table ->
   ?text:string ->
   ?highlight_matching_brackets:bool ->
   ?highlight_syntax:bool ->
   ?max_undo_levels:int ->
-  ?style_scheme:GtkSourceView2_types.source_style_scheme Gobject.obj ->
   unit -> source_buffer
   
 (** {2 GtkSourceView} *)
@@ -182,12 +201,30 @@ object
   method insert_spaces_instead_of_tabs: bool
   method set_cursor_color: Gdk.color -> unit
   method set_cursor_color_by_name: string -> unit
+
+  method draw_spaces:
+    SourceView2Enums.source_draw_spaces_flags list
+  method set_draw_spaces: 
+    SourceView2Enums.source_draw_spaces_flags list -> unit
+
+  method get_mark_category_priority: 
+    category:string -> int
+  method set_mark_category_priority: 
+    category:string -> int -> unit
+  method get_mark_category_pixbuf: 
+    category:string -> GdkPixbuf.pixbuf option
+  method set_mark_category_pixbuf: 
+    category:string -> GdkPixbuf.pixbuf option -> unit
+  method get_mark_category_background: 
+    category:string -> Gdk.color option
+  method set_mark_category_background: 
+    category:string -> Gdk.color option -> unit
 end
 
 val source_view :
   ?source_buffer:source_buffer ->
+  ?draw_spaces:SourceView2Enums.source_draw_spaces_flags list ->
   ?auto_indent:bool ->
-  ?draw_spaces:SourceView2Enums.source_draw_spaces_flags ->
   ?highlight_current_line:bool ->
   ?indent_on_tab:bool ->
   ?indent_width:int ->

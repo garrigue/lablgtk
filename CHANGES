@@ -1,6 +1,18 @@
 $Id$
 
 2009.09.01 [Benjamin]
+  * Apply patch from Mike Spivey:
+    * Access to StyleSchemeManager objects
+    * Some attributes are strings and not string options.  This seems
+      sensible.
+    * Languages and style schemes are treated alike in creating buffers:
+      both arguments are wrapped.
+    * draw_spaces deals with a list of flags, not a single flag.
+    * Mark categories can have priorities, icons and backgrounds
+    * Some attributes of languages are accessed by methods instead of
+      properties to work around a GTK bug.
+
+2009.09.01 [Benjamin]
   * Support for GtkSourceView 2.6 in library "lablgtksourceview2"
   * Support for GtkSourceView 1.x is still available in library 
     "lablgtksourceview" but it is no longer linked into the lablgtk2 

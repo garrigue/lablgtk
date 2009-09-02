@@ -42,6 +42,7 @@
  *)
 
 type source_style_scheme = [`sourcestylescheme]
+type source_style_scheme_manager = [`sourcestyleschememanager]
 type source_view = [Gtk.text_view|`sourceview]
 type source_mark = [`sourcemark]
 type source_buffer = [`textbuffer|`sourcebuffer]

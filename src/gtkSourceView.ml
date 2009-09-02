@@ -70,10 +70,14 @@ struct
   include SourceLanguage
   external new_from_file: string -> [>`sourcelanguagesmanager] obj -> source_language obj option =
     "ml__gtk_source_language_new_from_file"
+  external get_id : [>`sourcelanguage] obj -> string
+    = "ml_gtk_source_language_get_id"
   external get_name: [>`sourcelanguage] obj -> string =
     "ml_gtk_source_language_get_name"
   external get_section: [>`sourcelanguage] obj -> string =
     "ml_gtk_source_language_get_section"
+  external get_hidden : [>`sourcelanguage] obj -> bool
+    = "ml_gtk_source_language_get_hidden"
   external get_tags: [>`sourcelanguage] obj -> source_tag obj list =
     "ml_gtk_source_language_get_tags"
   external get_escape_char: [>`sourcelanguage] obj -> Glib.unichar =

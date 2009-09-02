@@ -70,8 +70,35 @@ let color_of_string s =
 class source_style_scheme (obj: GtkSourceView2_types.source_style_scheme obj) =
 object(self)
   method as_source_style_scheme = obj
-  method get_name = SourceStyleScheme.get_name obj
+  method name = SourceStyleScheme.get_name obj
+  method description = SourceStyleScheme.get_description obj
 end
+
+
+(** {2 GtkSourceStyleSchemeManager} *)
+
+class source_style_scheme_manager 
+	(obj: GtkSourceView2_types.source_style_scheme_manager obj) =
+  object(self)
+    val obj = obj
+    inherit source_style_scheme_manager_props
+
+    method search_path = 
+      SourceStyleSchemeManager.get_search_path obj
+    method set_search_path =
+      SourceStyleSchemeManager.set_search_path obj
+    method style_scheme_ids =
+      SourceStyleSchemeManager.get_scheme_ids obj
+    method style_scheme s =
+      may_map (new source_style_scheme)
+	(SourceStyleSchemeManager.get_scheme obj s)
+  end
+
+let source_style_scheme_manager ~default =
+  let mgr = 
+    if default then SourceStyleSchemeManager.default () 
+    else SourceStyleSchemeManager.new_ () in
+  new source_style_scheme_manager mgr
 
 
 (** {2 GtkSourceLanguage} *)
@@ -80,15 +107,18 @@ class source_language (obj: GtkSourceView2_types.source_language obj) =
 object (self)
   method as_source_language = obj
   val obj = obj
-  inherit source_language_props
   method misc = new gobject_ops obj
   
+  method id = SourceLanguage.get_id obj
+  method name = SourceLanguage.get_name obj
+  method section = SourceLanguage.get_section obj
+  method hidden = SourceLanguage.get_hidden obj
+
   method metadata s = SourceLanguage.metadata obj s
   method mime_types = SourceLanguage.mime_types obj
   method globs = SourceLanguage.globs obj
   method style_name s = SourceLanguage.style_name obj s
   method style_ids = SourceLanguage.style_ids obj
-
 end
 
 (** {2 GtkSourceLanguageManager} *)
@@ -107,6 +137,7 @@ object (self)
     may_map
       (new source_language)
       (SourceLanguageManager.language obj id )
+
   method guess_language ?filename ?content_type () = 
     may_map 
       (new source_language)
@@ -196,13 +227,20 @@ object (self)
     SourceBuffer.ensure_highlight obj start#as_iter stop#as_iter
 end
 
-let source_buffer ?(language:source_language option) ?(tag_table : GText.tag_table option) ?text =
+let source_buffer ?(language:source_language option)
+  ?(style_scheme:source_style_scheme option)
+  ?(tag_table : GText.tag_table option) ?text =
   let language =
     match language with
     | None -> None
     | Some source_language -> Some (source_language#as_source_language)
   in
-  SourceBuffer.make_params [] ?language
+  let style_scheme =
+    match style_scheme with
+    | None -> None
+    | Some schm -> Some (schm#as_source_style_scheme)
+  in
+  SourceBuffer.make_params [] ?language ?style_scheme
     ~cont:(fun pl () ->
       let buf =
 	match tag_table with
@@ -242,9 +280,12 @@ object (self)
 
   method set_cursor_color = SourceView.set_cursor_color obj
   method set_cursor_color_by_name s = SourceView.set_cursor_color obj (color_of_string s)
+
+  method draw_spaces = SourceView.get_draw_spaces obj
+  method set_draw_spaces flags = SourceView.set_draw_spaces obj flags
 end
 
-let source_view ?source_buffer =
+let source_view ?source_buffer ?draw_spaces =
   SourceView.make_params [] ~cont:(
     GtkText.View.make_params ~cont:(
       GContainer.pack_container ~create:(fun pl ->
@@ -256,5 +297,6 @@ let source_view ?source_buffer =
           | None -> SourceView.new_ ()
         in
         Gobject.set_params (Gobject.try_cast obj "GtkSourceView") pl;
+	may (SourceView.set_draw_spaces obj) draw_spaces;
         new source_view obj)))
 

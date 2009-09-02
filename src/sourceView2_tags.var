@@ -32,4 +32,4 @@ type source_smart_home_end_type = "GTK_SOURCE_SMART_HOME_END_"
   [ `DISABLED| `BEFORE| `AFTER| `ALWAYS ]
 
 type source_draw_spaces_flags = "GTK_SOURCE_DRAW_SPACES_"
-  [ `SPACE| `TAB| `NEWLINE| `NBSP|`ALL ]
+  [ `SPACE | `TAB | `NEWLINE | `NBSP ]
