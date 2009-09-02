@@ -40,9 +40,9 @@ let source_view =
     ~auto_indent:true
      ~insert_spaces_instead_of_tabs:true ~tab_width:2
     ~show_line_numbers:true
-    ~right_margin_position:80 ~show_right_margin:true
+    ~right_margin_position:30 ~show_right_margin:true
     ~smart_home_end:`ALWAYS
-    ~packing:scrolled_win#add ~height:500 ~width:650
+    ~packing:scrolled_win#add ~height:500 ~width:900
     ()
 
 let language_manager = GSourceView2.source_language_manager ~default:true
@@ -68,14 +68,32 @@ let _ =
 
   (* set a style for bracket matching *)
   source_view#source_buffer#set_highlight_matching_brackets true;
+  source_view#set_show_line_marks true;
 
   source_view#source_buffer#set_language lang;
   source_view#source_buffer#set_highlight_syntax true;
   source_view#source_buffer#set_text text;
   ignore (win#connect#destroy (fun _ -> GMain.quit ()));
 
-(*   ignore (source_view#connect#move_cursor (fun _ _ ~extend ->
-    prerr_endline "move_cursor"));
-  ignore (source_view#connect#undo (fun _ -> prerr_endline "undo")); *)
+  let category = "current" in
+  let current_line_bookmark = 
+    source_view#source_buffer#create_source_mark 
+      ~category
+      (source_view#buffer#get_iter `START) 
+  in
+  let pixbuf =  source_view#misc#render_icon ~size:`DIALOG `DIALOG_INFO in
+  source_view#set_mark_category_background ~category (Some (GDraw.color (`NAME "light blue")));
+  source_view#set_mark_category_pixbuf ~category (Some pixbuf);
+  ignore (source_view#buffer#connect#mark_set (fun where mark ->
+                                                 if GtkText.Mark.get_name mark = Some "insert"
+                                                 then begin 
+                                                   prerr_endline "move_cursor";
+                                                   source_view#buffer#move_mark 
+                                                     current_line_bookmark#coerce
+                                                     ~where
+                                                   ;
+                                                 end));
+
+  ignore (source_view#connect#undo (fun _ -> prerr_endline "undo")); 
   win#show ();
   GMain.Main.main ()

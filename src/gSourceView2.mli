@@ -99,6 +99,7 @@ val source_language_manager : default:bool -> source_language_manager
 class source_mark: ((GtkSourceView2_types.source_mark obj) as 'a) ->
 object
   method as_source_mark : 'a
+  method coerce: GText.mark
   method category: string option
   method next: ?category:string -> unit -> source_mark option
   method prev: ?category:string -> unit -> source_mark option
