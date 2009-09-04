@@ -31,6 +31,8 @@ struct
       {finfo: A.t; 
        fidx: int (* invariant: root.(fidx)==myself *) }
         
+  module H = Hashtbl
+
   let inbound i a = i>=0 && i<Array.length a
     
   (** The custom model itself *)
@@ -42,17 +44,17 @@ struct
     method custom_encode_iter cr = cr, (), ()
     method custom_decode_iter cr () () = cr
 
-    val mutable num_roots : int = 0
-    val mutable roots : custom_list array = [||]
-
+    val mutable last_idx = 0
+    val mutable roots : (int,custom_list) H.t = H.create 19
+    method private find_opt i = 
+      try Some (H.find roots i) with Not_found -> None
+    method custom_flags = [`LIST_ONLY]
     method custom_get_iter (path:Gtk.tree_path) : custom_list option =
       let indices: int array  = GTree.Path.get_indices path in
       match indices with
       | [||] ->      
           None
-      | [|i|] -> 
-          if inbound i roots then Some (roots.(i))
-          else None
+      | [|i|] -> self#find_opt i
       | _ -> failwith "Invalid Path of depth > 1 in a list"
 
     method custom_get_path (row:custom_list) : Gtk.tree_path =
@@ -63,36 +65,34 @@ struct
 
     method custom_iter_next (row:custom_list) : custom_list option =
       let nidx = succ row.fidx in
-      if inbound nidx roots then Some roots.(nidx)
-      else None
-
+	self#find_opt nidx
+	  
     method custom_iter_children (rowopt:custom_list option) :custom_list option =
       match rowopt with
-      | None -> if inbound 0 roots then Some roots.(0) else None
+      | None -> self#find_opt 0
       | Some _ -> None
 
     method custom_iter_has_child (row:custom_list) : bool = false
 
     method custom_iter_n_children (rowopt:custom_list option) : int =
       match rowopt with
-      | None -> Array.length roots
+      | None -> H.length roots
       | Some _ -> assert false
 
     method custom_iter_nth_child (rowopt:custom_list option) (n:int) 
       : custom_list option =
       match rowopt with
-      | None when inbound n roots -> Some roots.(n)
+      | None -> self#find_opt n
       | _ -> None 
 
     method custom_iter_parent (row:custom_list) : custom_list option = None
 
-    method fill (t:A.t array) =
-      let new_roots = 
-        Array.mapi 
-          (fun i t -> {finfo=t; fidx=i})
-          t
-      in
-      roots <- new_roots
+    method insert (t:A.t) =
+      let e = {finfo=t; fidx= last_idx } in
+      self#custom_row_inserted (GTree.Path.create [last_idx]) e;
+      H.add roots last_idx e;
+      last_idx <- last_idx+1;
+
   end
 
   let custom_list () = 
@@ -120,12 +120,10 @@ end
 
 module MODEL=MAKE(L)
 
-let rec make_dummy_array n = 
-  Array.init n
-    (fun nb -> {L.lname = "Elt "^string_of_int nb; checked=nb mod 2 = 0})
-    
 let fill_model t =
-  t#fill (make_dummy_array 100000)
+  for i= 0 to 10 do
+    t#insert {L.lname = "Elt "^string_of_int i; checked=i mod 2 = 0}
+  done
 
 let create_view_and_model () : GTree.view =
   let custom_list = MODEL.custom_list () in
@@ -169,7 +167,8 @@ let create_view_and_model () : GTree.view =
                   l.L.checked <- not l.L.checked
               | _ -> ()));
   ignore (view#append_column col_tog);
-  
+  Glib.Timeout.add ~ms:10000 ~callback:(fun () -> 
+					 fill_model custom_list; false);
   view
 
 let _ =
