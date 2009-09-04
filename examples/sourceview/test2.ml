@@ -79,21 +79,28 @@ let _ =
   let current_line_bookmark = 
     source_view#source_buffer#create_source_mark 
       ~category
-      (source_view#buffer#get_iter `START) 
+      (source_view#source_buffer#get_iter `START) 
   in
   let pixbuf =  source_view#misc#render_icon ~size:`DIALOG `DIALOG_INFO in
   source_view#set_mark_category_background ~category (Some (GDraw.color (`NAME "light blue")));
   source_view#set_mark_category_pixbuf ~category (Some pixbuf);
-  ignore (source_view#buffer#connect#mark_set (fun where mark ->
-                                                 if GtkText.Mark.get_name mark = Some "insert"
-                                                 then begin 
-                                                   prerr_endline "move_cursor";
-                                                   source_view#buffer#move_mark 
-                                                     current_line_bookmark#coerce
-                                                     ~where
-                                                   ;
-                                                 end));
-
+  ignore (source_view#source_buffer#connect#mark_set 
+	    (fun where mark ->
+               if GtkText.Mark.get_name mark = Some "insert"
+               then begin 
+                 prerr_endline "move_cursor";
+                 source_view#source_buffer#move_mark 
+                   current_line_bookmark#coerce
+                   ~where
+                 ;
+               end));
   ignore (source_view#connect#undo (fun _ -> prerr_endline "undo")); 
   win#show ();
   GMain.Main.main ()
+
+
+(*
+Local Variables:
+compile-command: "ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview2.cma gtkInit.cmo test2.ml"
+End:
+*)
