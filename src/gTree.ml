@@ -719,7 +719,7 @@ end
 class virtual ['row,'a,'b,'c] custom_tree_model (column_list:column_list) = 
   let obj = (GtkTree.CustomModel.create ()) in
 object (self)
-  inherit model (GtkTree.CustomModel.create ())
+  inherit model obj
   method connect = new model_signals obj  
 
   inherit ['row,'a,'b,'c] GtkTree.CustomModel.callback
@@ -764,5 +764,8 @@ object (self)
     column_list#lock ();
     let id = Gobject.get_oid obj in
     Hashtbl.add model_ids id column_list#id;
-    Hashtbl.add custom_model_ids column_list#id ()
+    Hashtbl.add custom_model_ids column_list#id ();
+    (* Invalidate all iterators before dying...*)
+    Gc.finalise (fun m -> m#foreach (fun p _ -> m#custom_row_deleted p; false)) self
+
 end
