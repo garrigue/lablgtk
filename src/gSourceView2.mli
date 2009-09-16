@@ -39,7 +39,7 @@ class source_style_scheme :
 
 (** {2 GtkSourceStyleSchemeManager} *)
 
-class source_style_scheme_manager : 
+class source_style_scheme_manager :
   GtkSourceView2_types.source_style_scheme_manager obj ->
   object
     method search_path: string list
@@ -82,12 +82,12 @@ class source_language_manager:
     method get_oid: int
     method as_source_language_manager:
       GtkSourceView2_types.source_language_manager obj
-    
+
     method set_search_path : string list -> unit
     method search_path : string list
     method language_ids : string list
     method language : string -> source_language option
-    method guess_language: 
+    method guess_language:
       ?filename:string -> ?content_type:string -> unit -> source_language option
   end
 
@@ -146,7 +146,7 @@ object
   method begin_not_undoable_action: unit -> unit
   method end_not_undoable_action: unit -> unit
 
-  method create_source_mark: ?name:string -> ?category:string -> GText.iter 
+  method create_source_mark: ?name:string -> ?category:string -> GText.iter
     -> source_mark
   method source_marks_at_line: ?category:string -> int
     -> source_mark list
@@ -171,7 +171,7 @@ val source_buffer:
   ?highlight_syntax:bool ->
   ?max_undo_levels:int ->
   unit -> source_buffer
-  
+
 (** {2 GtkSourceView} *)
 
 class source_view_signals:
@@ -205,20 +205,20 @@ object
 
   method draw_spaces:
     SourceView2Enums.source_draw_spaces_flags list
-  method set_draw_spaces: 
+  method set_draw_spaces:
     SourceView2Enums.source_draw_spaces_flags list -> unit
 
-  method get_mark_category_priority: 
+  method get_mark_category_priority:
     category:string -> int
-  method set_mark_category_priority: 
+  method set_mark_category_priority:
     category:string -> int -> unit
-  method get_mark_category_pixbuf: 
+  method get_mark_category_pixbuf:
     category:string -> GdkPixbuf.pixbuf option
-  method set_mark_category_pixbuf: 
+  method set_mark_category_pixbuf:
     category:string -> GdkPixbuf.pixbuf option -> unit
-  method get_mark_category_background: 
+  method get_mark_category_background:
     category:string -> Gdk.color option
-  method set_mark_category_background: 
+  method set_mark_category_background:
     category:string -> Gdk.color option -> unit
 end
 
@@ -245,5 +245,22 @@ val source_view :
   ?width:int ->
   ?height:int ->
   ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> source_view
-  
-  
+
+
+(** {2 Misc} *)
+
+val iter_forward_search :
+  GText.iter ->
+  SourceViewEnums.source_search_flag list ->
+  start:< as_iter : Gtk.text_iter; .. > ->
+  stop:< as_iter : Gtk.text_iter; .. > ->
+  ?limit:< as_iter : Gtk.text_iter; .. > ->
+  string -> (GText.iter * GText.iter) option
+
+val iter_backward_search :
+  GText.iter ->
+  SourceViewEnums.source_search_flag list ->
+  start:< as_iter : Gtk.text_iter; .. > ->
+  stop:< as_iter : Gtk.text_iter; .. > ->
+  ?limit:< as_iter : Gtk.text_iter; .. > ->
+  string -> (GText.iter * GText.iter) option
