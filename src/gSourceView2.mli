@@ -131,7 +131,7 @@ object
 
   method highlight_syntax: bool
   method set_highlight_syntax: bool -> unit
-  method language: source_language
+  method language: source_language option
   method set_language: source_language -> unit
   method highlight_matching_brackets: bool
   method set_highlight_matching_brackets: bool -> unit
