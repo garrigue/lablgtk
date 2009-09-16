@@ -188,12 +188,15 @@ object (self)
   method connect = new source_buffer_signals obj
   method misc = new gobject_ops obj
   method language = may_map (new source_language) (get SourceBuffer.P.language obj)
-  method set_language (l:source_language) =
-    set SourceBuffer.P.language obj (Some l#as_source_language)
+  method set_language (l:source_language option) =
+    set SourceBuffer.P.language obj
+      (may_map (fun l -> l#as_source_language) l)
 
-  method style_scheme = new source_style_scheme (get SourceBuffer.P.style_scheme obj)
-  method set_style_scheme (l:source_style_scheme) =
-    set SourceBuffer.P.style_scheme obj l#as_source_style_scheme
+  method style_scheme =
+    may_map (new source_style_scheme) (get SourceBuffer.P.style_scheme obj)
+  method set_style_scheme (l:source_style_scheme option) =
+    set SourceBuffer.P.style_scheme obj
+      (may_map (fun l -> l#as_source_style_scheme) l)
 
   method undo () = SourceBuffer.undo obj
   method redo () = SourceBuffer.redo obj

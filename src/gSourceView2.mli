@@ -132,11 +132,11 @@ object
   method highlight_syntax: bool
   method set_highlight_syntax: bool -> unit
   method language: source_language option
-  method set_language: source_language -> unit
+  method set_language: source_language option -> unit
   method highlight_matching_brackets: bool
   method set_highlight_matching_brackets: bool -> unit
-  method style_scheme: source_style_scheme
-  method set_style_scheme: source_style_scheme -> unit
+  method style_scheme: source_style_scheme option
+  method set_style_scheme: source_style_scheme option -> unit
   method max_undo_levels: int
   method set_max_undo_levels: int -> unit
   method undo: unit -> unit
