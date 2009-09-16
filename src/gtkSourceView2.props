@@ -66,7 +66,7 @@ class SourceBuffer type "source_buffer obj" set wrap wrapsig : GObject {
   "can-undo"     gboolean		      : Read 
   "highlight-matching-brackets"   gboolean    : Read / Write
   "highlight-syntax"     gboolean             : Read / Write
-  "language"             GtkSourceLanguage    : Read / Write / NoWrap
+  "language"             GtkSourceLanguage_opt: Read / Write / NoWrap
 
   "max-undo-levels"      gint                 : Read / Write
   "style-scheme"         GtkSourceStyleScheme : Read / Write / NoWrap

@@ -171,6 +171,9 @@ let create_view_and_model () : GTree.view =
                               let row = custom_tree#custom_get_iter path in
                               match row with 
                               | Some (File {finfo=f}) -> f.fchecked <- not f.fchecked
+                              | Some (Global _ ) -> 
+                                  Format.printf "Clearing %s@." (GtkTree.TreePath.to_string path);
+                                  Format.printf "Global@."
                               | _ -> ());
   ignore (view#append_column col_tog);
   
