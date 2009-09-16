@@ -114,7 +114,7 @@ struct
     = "ml_gtk_source_language_manager_get_language"
 
   external guess_language:
-    [>`sourcelanguagemanager] obj -> 
+    [>`sourcelanguagemanager] obj ->
     string option -> string option -> source_language obj option
     = "ml_gtk_source_language_manager_guess_language"
 
@@ -139,14 +139,14 @@ struct
       source_mark obj =
       "ml_gtk_source_buffer_create_source_mark"
   external remove_source_marks:
-      [>`sourcebuffer] obj 
+      [>`sourcebuffer] obj
     -> Gtk.text_iter -> Gtk.text_iter -> string option -> unit =
     "ml_gtk_source_buffer_remove_source_marks"
   external get_source_marks_at_line:
       [>`sourcebuffer] obj -> int -> string option -> source_mark obj list =
       "ml_gtk_source_buffer_get_source_marks_at_line"
   external get_source_marks_at_iter:
-    [>`sourcebuffer] obj -> Gtk.text_iter -> string option -> 
+    [>`sourcebuffer] obj -> Gtk.text_iter -> string option ->
     source_mark obj list =
     "ml_gtk_source_buffer_get_source_marks_at_iter"
   external forward_iter_to_source_mark:
@@ -177,11 +177,25 @@ struct
     "ml_gtk_modify_cursor_color"
 end
 
-module SourceMark = 
+module SourceMark =
 struct
   include SourceMark
   external next: [> `sourcemark] obj -> string option -> source_mark obj option
     = "ml_gtk_source_mark_next"
   external prev: [> `sourcemark] obj -> string option -> source_mark obj option
     = "ml_gtk_source_mark_prev"
+end
+
+module SourceViewMisc =
+struct
+  external iter_backward_search:
+       Gtk.text_iter -> string -> SourceViewEnums.source_search_flag list ->
+	start: Gtk.text_iter -> stop: Gtk.text_iter -> Gtk.text_iter option ->
+	(Gtk.text_iter * Gtk.text_iter) option =
+    "ml_gtk_source_iter_backward_search_bc" "ml_gtk_source_iter_backward_search"
+  external iter_forward_search:
+      Gtk.text_iter -> string -> SourceViewEnums.source_search_flag list ->
+	start: Gtk.text_iter -> stop: Gtk.text_iter -> Gtk.text_iter option ->
+	(Gtk.text_iter * Gtk.text_iter) option =
+    "ml_gtk_source_iter_forward_search_bc" "ml_gtk_source_iter_forward_search"
 end

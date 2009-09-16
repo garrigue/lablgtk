@@ -77,13 +77,13 @@ end
 
 (** {2 GtkSourceStyleSchemeManager} *)
 
-class source_style_scheme_manager 
+class source_style_scheme_manager
 	(obj: GtkSourceView2_types.source_style_scheme_manager obj) =
   object(self)
     val obj = obj
     inherit source_style_scheme_manager_props
 
-    method search_path = 
+    method search_path =
       SourceStyleSchemeManager.get_search_path obj
     method set_search_path =
       SourceStyleSchemeManager.set_search_path obj
@@ -95,8 +95,8 @@ class source_style_scheme_manager
   end
 
 let source_style_scheme_manager ~default =
-  let mgr = 
-    if default then SourceStyleSchemeManager.default () 
+  let mgr =
+    if default then SourceStyleSchemeManager.default ()
     else SourceStyleSchemeManager.new_ () in
   new source_style_scheme_manager mgr
 
@@ -108,7 +108,7 @@ object (self)
   method as_source_language = obj
   val obj = obj
   method misc = new gobject_ops obj
-  
+
   method id = SourceLanguage.get_id obj
   method name = SourceLanguage.get_name obj
   method section = SourceLanguage.get_section obj
@@ -133,19 +133,19 @@ object (self)
   method search_path = SourceLanguageManager.search_path obj
   method language_ids = SourceLanguageManager.language_ids obj
 
-  method language id = 
+  method language id =
     may_map
       (new source_language)
       (SourceLanguageManager.language obj id )
 
-  method guess_language ?filename ?content_type () = 
-    may_map 
+  method guess_language ?filename ?content_type () =
+    may_map
       (new source_language)
       (SourceLanguageManager.guess_language obj filename content_type)
 end
 
 let source_language_manager ~default =
-  new source_language_manager 
+  new source_language_manager
     (if default then SourceLanguageManager.default ()
      else SourceLanguageManager.create [])
 
@@ -159,16 +159,16 @@ object (self)
   val obj = obj
   inherit source_mark_props
 
-  method next ?category () = 
+  method next ?category () =
     may_map (fun m -> new source_mark m) (SourceMark.next obj category)
-  method prev ?category () = 
+  method prev ?category () =
     may_map (fun m -> new source_mark m) (SourceMark.prev obj category)
 
 end
 
-let source_mark ?category () = 
+let source_mark ?category () =
   new source_mark (SourceMark.create ?category [])
- 
+
 (** {2 GtkSourceBuffer} *)
 
 class source_buffer_signals obj' =
@@ -188,11 +188,11 @@ object (self)
   method connect = new source_buffer_signals obj
   method misc = new gobject_ops obj
   method language = may_map (new source_language) (get SourceBuffer.P.language obj)
-  method set_language (l:source_language) = 
+  method set_language (l:source_language) =
     set SourceBuffer.P.language obj (Some l#as_source_language)
 
   method style_scheme = new source_style_scheme (get SourceBuffer.P.style_scheme obj)
-  method set_style_scheme (l:source_style_scheme) = 
+  method set_style_scheme (l:source_style_scheme) =
     set SourceBuffer.P.style_scheme obj l#as_source_style_scheme
 
   method undo () = SourceBuffer.undo obj
@@ -205,23 +205,23 @@ object (self)
   method create_source_mark ?name ?category (iter:GText.iter) =
     new source_mark(SourceBuffer.create_source_mark obj name category iter#as_iter)
 
-  method source_marks_at_line ?category line = 
-    List.map 
+  method source_marks_at_line ?category line =
+    List.map
       (fun mark -> new source_mark mark)
       (SourceBuffer.get_source_marks_at_line obj line category)
 
-  method source_marks_at_iter ?category (iter:GText.iter) = 
-    List.map 
+  method source_marks_at_iter ?category (iter:GText.iter) =
+    List.map
       (fun mark -> new source_mark mark)
       (SourceBuffer.get_source_marks_at_iter obj iter#as_iter category)
 
   method remove_source_marks ?category ~(start:GText.iter) ~(stop:GText.iter) () =
     SourceBuffer.remove_source_marks obj start#as_iter stop#as_iter category
 
-  method forward_iter_to_source_mark ?category (iter:GText.iter) = 
+  method forward_iter_to_source_mark ?category (iter:GText.iter) =
     SourceBuffer.forward_iter_to_source_mark obj iter#as_iter category
 
-  method backward_iter_to_source_mark ?category (iter:GText.iter) = 
+  method backward_iter_to_source_mark ?category (iter:GText.iter) =
     SourceBuffer.backward_iter_to_source_mark obj iter#as_iter category
 
   method ensure_highlight ~(start:GText.iter) ~(stop:GText.iter) =
@@ -301,3 +301,22 @@ let source_view ?source_buffer ?draw_spaces =
 	may (SourceView.set_draw_spaces obj) draw_spaces;
         new source_view obj)))
 
+(** {2 Misc} *)
+
+let iter_forward_search (iter:GText.iter) flags
+    ~start ~stop ?limit str =
+  let limit = map_opt (fun x -> x#as_iter) limit in
+  match SourceViewMisc.iter_forward_search iter#as_iter str
+      flags ~start: start#as_iter ~stop: stop#as_iter limit
+  with
+    None -> None
+  | Some (it1,it2) -> Some (new GText.iter it1, new GText.iter it2)
+
+let iter_backward_search (iter:GText.iter) flags
+    ~start ~stop ?limit str =
+  let limit = map_opt (fun x -> x#as_iter) limit in
+  match SourceViewMisc.iter_backward_search iter#as_iter str
+      flags ~start: start#as_iter ~stop: stop#as_iter limit
+  with
+    None -> None
+  | Some (it1,it2) -> Some (new GText.iter it1, new GText.iter it2)
