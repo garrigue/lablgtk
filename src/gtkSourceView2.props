@@ -47,12 +47,12 @@ class SourceStyleSchemeManager type "source_style_scheme_manager obj" wrap : GOb
 }
 
 class SourceLanguage type "source_language obj" set wrap wrapsig : GObject {
-  (* Property access is broken in gtkSourceView 2.4.1 (see Bugzilla #564142), 
+  (* Property access is broken in gtkSourceView 2.4.1 (see Bugzilla #564142),
      so we use methods instead: *)
 }
 
 class SourceLanguageManager type "source_language_manager obj" set wrapsig : GObject {
-(*       "search-path"      GStrv             : Read / Write 
+(*       "search-path"      GStrv             : Read / Write
        "language-ids"     GStrv             : Read / Write
 *)
 }
@@ -63,13 +63,13 @@ class SourceMark type "source_mark obj" set wrap wrapsig : GObject {
 
 class SourceBuffer type "source_buffer obj" set wrap wrapsig : GObject {
   "can-redo"     gboolean 	       	      : Read
-  "can-undo"     gboolean		      : Read 
+  "can-undo"     gboolean		      : Read
   "highlight-matching-brackets"   gboolean    : Read / Write
   "highlight-syntax"     gboolean             : Read / Write
   "language"             GtkSourceLanguage_opt: Read / Write / NoWrap
 
   "max-undo-levels"      gint                 : Read / Write
-  "style-scheme"         GtkSourceStyleScheme : Read / Write / NoWrap
+  "style-scheme"         GtkSourceStyleScheme_opt : Read / Write / NoWrap
 
   signal highlight_updated: GtkTextIter GtkTextIter
   signal source_mark_updated: GtkSourceMark
@@ -91,17 +91,17 @@ class SourceView type "source_view obj" set wrap wrapsig : Widget {
   method get_draw_spaces: "SourceView2Enums.source_draw_spaces_flags list"
   method set_draw_spaces: "SourceView2Enums.source_draw_spaces_flags list -> unit"
 
-  method get_mark_category_priority : 
+  method get_mark_category_priority :
       "category:string -> int" / Wrap
-  method set_mark_category_priority: 
+  method set_mark_category_priority:
       "category:string -> int -> unit" / Wrap
-  method get_mark_category_pixbuf: 
+  method get_mark_category_pixbuf:
       "category:string -> GdkPixbuf.pixbuf option" / Wrap
-  method set_mark_category_pixbuf: 
+  method set_mark_category_pixbuf:
       "category:string -> GdkPixbuf.pixbuf option -> unit" / Wrap
-  method get_mark_category_background: 
+  method get_mark_category_background:
       "category:string -> Gdk.color option" / Wrap
-  method set_mark_category_background: 
+  method set_mark_category_background:
       "category:string -> Gdk.color option -> unit" / Wrap
 
   signal redo
