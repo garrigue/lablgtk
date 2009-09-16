@@ -215,7 +215,7 @@ object (self)
       (fun mark -> new source_mark mark)
       (SourceBuffer.get_source_marks_at_iter obj iter#as_iter category)
 
-  method remove_source_marks ?category ~(start:GText.iter) ~(stop:GText.iter) =
+  method remove_source_marks ?category ~(start:GText.iter) ~(stop:GText.iter) () =
     SourceBuffer.remove_source_marks obj start#as_iter stop#as_iter category
 
   method forward_iter_to_source_mark ?category (iter:GText.iter) = 

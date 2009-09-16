@@ -153,7 +153,7 @@ object
   method source_marks_at_iter: ?category:string -> GText.iter
     -> source_mark list
   method remove_source_marks :
-    ?category:string -> start:GText.iter -> stop:GText.iter -> unit
+    ?category:string -> start:GText.iter -> stop:GText.iter -> unit -> unit
 
   method forward_iter_to_source_mark: ?category:string -> GText.iter -> bool
   method backward_iter_to_source_mark: ?category:string -> GText.iter -> bool
