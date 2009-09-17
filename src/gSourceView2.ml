@@ -194,9 +194,11 @@ object (self)
 
   method style_scheme =
     may_map (new source_style_scheme) (get SourceBuffer.P.style_scheme obj)
-  method set_style_scheme (l:source_style_scheme option) =
-    set SourceBuffer.P.style_scheme obj
-      (may_map (fun l -> l#as_source_style_scheme) l)
+  method set_style_scheme (s:source_style_scheme option) =
+      match s with
+        None -> ()
+      | Some scheme -> set SourceBuffer.P.style_scheme obj
+          (Some scheme#as_source_style_scheme)
 
   method undo () = SourceBuffer.undo obj
   method redo () = SourceBuffer.redo obj
