@@ -45,6 +45,9 @@ HAS_NATIVE_DYNLINK=@HAS_NATIVE_DYNLINK@
 # if using ocaml >= 3.08, add a -D OCAML_308 (for camlp4)
 ODOC_DEF=@ODOC_DEF@
 
+# if using ocaml >= 3.11, add a -D HAS_PRINTEXC_BACKTRACE (for camlp4)
+HAS_PRINTEXC_BACKTRACE=@HAS_PRINTEXC_BACKTRACE@
+
 # where to install the binaries
 prefix=@prefix@
 exec_prefix=@exec_prefix@

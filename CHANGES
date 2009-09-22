@@ -1,5 +1,6 @@
 $Id$
-
+2009.09.22 [Benjamin]
+  * Restore compatibility with pre-3.11 OCaml versions
 2009.09.01 [Benjamin]
   * Apply patch from Mike Spivey:
     * Access to StyleSchemeManager objects

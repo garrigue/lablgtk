@@ -159,6 +159,11 @@ if expr "$OCAMLVERSION" '>=' '3.08' > /dev/null ; then
 fi
 AC_SUBST(ODOC_DEF)
 
+if expr "$OCAMLVERSION" '>=' '3.11' > /dev/null ; then
+   HAS_PRINTEXC_BACKTRACE="-D HAS_PRINTEXC_BACKTRACE"
+fi
+AC_SUBST(HAS_PRINTEXC_BACKTRACE)
+
 # Check for which kind of threads is used
 AC_MSG_CHECKING(for ocaml threads)
 AC_ARG_WITH(threads,

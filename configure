@@ -656,6 +656,7 @@ LDFLAGS
 CFLAGS
 CC
 RANLIB
+HAS_PRINTEXC_BACKTRACE
 ODOC_DEF
 CAMLP4O
 CAMLMKLIB
@@ -2478,6 +2479,11 @@ fi
 
 if expr "$OCAMLVERSION" '>=' '3.08' > /dev/null ; then
    ODOC_DEF="-D OCAML_308"
+fi
+
+
+if expr "$OCAMLVERSION" '>=' '3.11' > /dev/null ; then
+   HAS_PRINTEXC_BACKTRACE="-D HAS_PRINTEXC_BACKTRACE"
 fi
 
 
