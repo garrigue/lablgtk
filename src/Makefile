@@ -406,6 +406,11 @@ lablgtkspell.cma liblablgtkspell$(XA): $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS)
 lablgtkspell.cmxa: $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
 
+gtkSignal.cmo: gtkSignal.ml
+	$(COMPILER) -pp "$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE)" $<
+gtkSignal.cmx: gtkSignal.ml
+	$(COMPOPT) -pp "$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE)" $<
+
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
 

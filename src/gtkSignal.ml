@@ -65,8 +65,11 @@ let connect  ~(sgn : ('a, _) t) ~callback ?(after=false) (obj : 'a obj) =
       with exn ->
         Printf.eprintf "In callback for signal %s, uncaught exception: %s\n"
           sgn.name (Printexc.to_string exn);
-        if Printexc.backtrace_status () then
-          Printexc.print_backtrace stderr;
+IFDEF HAS_PRINTEXC_BACKTRACE 
+THEN
+  if Printexc.backtrace_status () then
+    Printexc.print_backtrace stderr;
+END;
         flush stderr
     end;
     if pop_callback old then emit_stop_by_name obj ~name:sgn.name
