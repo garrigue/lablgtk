@@ -6,7 +6,8 @@ open StdLabels
 let ocamlc = ref "ocamlc.opt"
 let ocamlopt = ref "ocamlopt.opt"
 let flags = ref "-thread -w s"
-let ccomp_type = ref "@TOOLCHAIN@" (* "msvc" for MSVC *)
+let ccomp_orig = "@TOOLCHAIN@" (* "msvc" for MSVC *)
+let ccomp_type = ref ccomp_orig
 
 let split ?(sep = [' ';'\t';'\r';'\n']) s =
   let len = String.length s in
@@ -32,7 +33,6 @@ let canvas_mls = split "@CANVAS_MLS@"
 let canvas_libs = "@CANVAS_LIBS@"
 
 (* Hack to check for mingw *)
-(*
 let () =
   try
     let ic = open_in "../Makefile.config" in
@@ -43,17 +43,27 @@ let () =
       | _ -> ()
     done
   with _ -> ()
-*)
 
 let rename_libs libs =
-  if !ccomp_type = "msvc" then libs else
-  let libs =
-    List.map (split libs) ~f:
-      (fun nm ->
-        if Filename.check_suffix nm ".lib"
-	then "-l"^Filename.chop_extension nm^".dll"
-        else nm)
-  in String.concat " " libs
+  match ccomp_orig, !ccomp_type with
+  | "msvc", "msvc" -> libs
+  | "msvc", _ ->
+      let libs =
+	List.map (split libs) ~f:
+	  (fun nm ->
+            if Filename.check_suffix nm ".lib"
+	    then "-l"^Filename.chop_extension nm^".dll"
+            else nm)
+      in String.concat " " libs
+  | _, "msvc" ->
+      let libs =
+	List.map (split libs) ~f:
+	  (fun nm ->
+            if String.length nm > 2 && String.sub nm ~pos:0 ~len:2 = "-l"
+	    then String.sub nm ~pos:2 ~len:(String.length nm - 2) ^ ".lib"
+            else nm)
+      in String.concat " " libs
+  | _, _ -> libs
 
 let exe cmd args =
   let cmd = String.concat " " (cmd :: !flags :: args) in
@@ -122,7 +132,7 @@ let () =
   try
     let arg = if Array.length Sys.argv > 1 then Sys.argv.(1) else "" in
     if arg <> "" && arg <> "byte" && arg <> "opt" then begin
-      prerr_endline "ocaml build.ml [ byte | opt ]";
+      prerr_endline "ocaml build.ml [ byte | opt | link ]";
       prerr_endline "  byte   build bytecode library only";
       prerr_endline "  opt    build both bytecode and native (default)";
       exit 2
