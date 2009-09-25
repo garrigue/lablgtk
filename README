@@ -290,7 +290,7 @@ GL extension:
 
   You can use lablgtk in combination with LablGL
 
-  * get and install lablGL 1.02 from
+  * get and install lablGL 1.04 from
       http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
   * get and install gtkglarea-1.99.0.tar.gz from
       ftp://ftp.gnome.org/pub/gnome/sources/gtkglarea/1.99/

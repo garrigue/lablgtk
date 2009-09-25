@@ -2,16 +2,28 @@
 
 Binary installation
 
- The binary distribution includes the lablglade and lablrsvg libraries.
+ The binary distribution includes the lablglade, lablrsvg, and
+ lablgnomecanvas libraries.
 
 0) Both MSVC and mingw versions of ocaml 3.11 should work.
+   If you want to do custom linking, get a recent version of flexdll.
 
-1) Install the gtk2 libraries and dependencies. You can use the installer from the
-   "Glade for Windows" project on Sourceforge.
-     http://gladewin32.sourceforge.net/
-   The runtime environment is sufficient for bytecode, but you will need the developper
-   version if you want to link with ocamlopt.
-   Tests were done with Gtk+ 2.12.9, but ulterior versions should work too.
+1) Install the gtk2 libraries and dependencies.
+   This binary distribution was built using the "bundle" package at
+     ftp://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.16/
+   (mirrors list at: ftp://ftp.gnome.org/pub/gnome/MIRRORS)
+   Just follow the instructions in the README file inside the package.
+   If you want to use the extension libraries (currently lablglade,
+   lablrsvg and lablgnomecanvas are supported), you must also install
+   the (numerous) dependencies. Here is what was used during
+   compilation:
+    libglade (requires libxml2), libgnomecanvas (requires libart_lgpl),
+    librsvg (requires libcroco and libgsf)
+   If you want to do custom linking, you need also the dev packages.
+   All of these are available in the above win32 and
+   win32/dependencies directories.
+   The distribution was compiled using the gtk+ bundle of 20090911,
+   but other versions should work too.
 
 2) Install lablgtk2 binaries and scripts inside the OCaml distribution
      bin/lablgtk2.bat             -> bin
@@ -42,7 +54,7 @@ Binary installation
 5) For custom linking or native code, you need to use the export
    libraries in the above DLL package. There is not default place to
    put them, so you should specify that at link time:
-     ocamlopt -ccopt "-LC:/GTK/lib" -I +lablgtk2 lablgtk.cmxa \
+     ocamlopt -ccopt "-LC:/opt/gtk/lib" -I +lablgtk2 lablgtk.cmxa \
          gtkInit.cmx testgtk.ml -o testgtk.exe
    Again, if this fails you must make sure that your ocamlopt really works,
    and that all paths are correctly specified.
