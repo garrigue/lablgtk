@@ -6,7 +6,9 @@ Binary installation
  lablgnomecanvas libraries.
 
 0) Both MSVC and mingw versions of ocaml 3.11 should work.
-   If you want to do custom linking, get a recent version of flexdll.
+   If you want to do custom linking (either ocamlc -custom, or ocamlopt),
+   get a recent version of flexdll. Standard ocamlc linking only
+   requires dlls.
 
 1) Install the gtk2 libraries and dependencies.
    This binary distribution was built using the "bundle" package at
@@ -17,7 +19,8 @@ Binary installation
    lablrsvg and lablgnomecanvas are supported), you must also install
    the (numerous) dependencies. Here is what was used during
    compilation:
-    libglade (requires libxml2), libgnomecanvas (requires libart_lgpl),
+    libglade (requires libxml2)
+    libgnomecanvas (requires libart_lgpl)
     librsvg (requires libcroco and libgsf)
    If you want to do custom linking, you need also the dev packages.
    All of these are available in the above win32 and
