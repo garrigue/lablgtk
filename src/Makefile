@@ -5,7 +5,7 @@ COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
-LIBRARIAN = $(CAMLMKLIB) -verbose
+LIBRARIAN = $(CAMLMKLIB) -verbose -ocamlc "$(CAMLC)" -ocamlopt "$(CAMLOPT)"
 TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
 CAMLP4 = $(CAMLP4O) pr_o.cmo
 
@@ -283,11 +283,14 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	sed -e "s|@LABLGTK_MLS@|$(MLOBJS:.cmo=)|" \
 	    -e "s|@EXTRA_MLS@|$(EXTRAOBJS:.cmo=)|" \
 	    -e "s|@PROP_MLS@|$(PROPOBJS:.cmo=)|" \
-	    -e "s|@GTKLIBS@|$(GTKLIBS0)|" \
+	    -e "s|@GTKLIBS@|$(GTKLIBS)|" \
 	    -e "s|@GLADE_MLS@|$(GLADEMLOBJS:.cmo=)|" \
-	    -e "s|@GLADE_LIBS@|$(GLADELIBS0)|" \
+	    -e "s|@GLADE_LIBS@|$(GLADELIBS)|" \
 	    -e "s|@RSVG_MLS@|$(RSVGMLOBJS:.cmo=)|" \
-	    -e "s|@RSVG_LIBS@|$(RSVGLIBS0)|" \
+	    -e "s|@RSVG_LIBS@|$(RSVGLIBS)|" \
+	    -e "s|@CANVAS_MLS@|$(GNOMECANVASMLOBJS:.cmo=)|" \
+	    -e "s|@CANVAS_LIBS@|$(GNOMECANVASLIBS)|" \
+	    -e "s|@TOOLCHAIN@|$(TOOLCHAIN)|" \
 	    < build.ml.in > $@
 
 gdk_pixbuf_mlsource$(XE) : lablgtk.cma gtkInit.cmo gdk_pixbuf_mlsource.ml
@@ -310,7 +313,8 @@ testcc$(XE): lablgladecc$(XE) lablgtktop
 	./lablgtktop testcc.ml
 	rm -f testcc.ml
 
-PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS)
+PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) \
+	$(GNOMECANVASMLOBJS)
 
 preinstall: build.ml
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
