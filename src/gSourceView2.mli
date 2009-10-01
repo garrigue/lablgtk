@@ -251,7 +251,7 @@ val source_view :
 
 val iter_forward_search :
   GText.iter ->
-  SourceViewEnums.source_search_flag list ->
+  SourceView2Enums.source_search_flag list ->
   start:< as_iter : Gtk.text_iter; .. > ->
   stop:< as_iter : Gtk.text_iter; .. > ->
   ?limit:< as_iter : Gtk.text_iter; .. > ->
@@ -259,7 +259,7 @@ val iter_forward_search :
 
 val iter_backward_search :
   GText.iter ->
-  SourceViewEnums.source_search_flag list ->
+  SourceView2Enums.source_search_flag list ->
   start:< as_iter : Gtk.text_iter; .. > ->
   stop:< as_iter : Gtk.text_iter; .. > ->
   ?limit:< as_iter : Gtk.text_iter; .. > ->

@@ -189,12 +189,12 @@ end
 module SourceViewMisc =
 struct
   external iter_backward_search:
-       Gtk.text_iter -> string -> SourceViewEnums.source_search_flag list ->
+       Gtk.text_iter -> string -> SourceView2Enums.source_search_flag list ->
 	start: Gtk.text_iter -> stop: Gtk.text_iter -> Gtk.text_iter option ->
 	(Gtk.text_iter * Gtk.text_iter) option =
     "ml_gtk_source_iter_backward_search_bc" "ml_gtk_source_iter_backward_search"
   external iter_forward_search:
-      Gtk.text_iter -> string -> SourceViewEnums.source_search_flag list ->
+      Gtk.text_iter -> string -> SourceView2Enums.source_search_flag list ->
 	start: Gtk.text_iter -> stop: Gtk.text_iter -> Gtk.text_iter option ->
 	(Gtk.text_iter * Gtk.text_iter) option =
     "ml_gtk_source_iter_forward_search_bc" "ml_gtk_source_iter_forward_search"
