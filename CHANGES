@@ -1,6 +1,9 @@
 $Id$
 
-In Lablgtk-2.12.1:
+2009.10.01 [Jacques]
+  * Correct wrong module name SourceViewEnums -> SourceView2Enums
+
+In Lablgtk-2.14.0:
 
 2009.09.25 [Jacques]
   * Ensure compilation under windows
