@@ -337,7 +337,7 @@ install:
 	cd "$(INSTALLDIR)" && $(RANLIB) $(CLIBS)
 	cp varcc$(XE) propcc$(XE) "$(INSTALLDIR)"
 	if test $(THREADS_LIB) != no; \
-	   then cp  $(ALLTHOBJS:.cmo=.cmi) $(INSTALLDIR); \
+	   then cp  $(ALLTHOBJS:.cmo=.cmi) "$(INSTALLDIR)"; \
 	fi
 	if test $(THREADS_LIB) = vm || test $(HAS_DLL_SUPPORT) != yes; \
 	   then cp lablgtktop$(XE) "$(INSTALLDIR)"; \
