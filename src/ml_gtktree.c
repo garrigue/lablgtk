@@ -684,6 +684,7 @@ ML_1 (gtk_tree_view_get_tooltip_column, GtkTreeView_val, Val_int)
 ML_2 (gtk_tree_view_set_tooltip_column, GtkTreeView_val, Int_val, Unit)
 #else
 Unsupported_212 (gtk_tree_view_set_tooltip_cell)
+Unsupported_212 (gtk_tree_view_set_tooltip_cell_bc)
 Unsupported_212 (gtk_tree_view_set_tooltip_row)
 Unsupported_212 (gtk_tree_view_get_tooltip_context)
 Unsupported_212 (gtk_tree_view_get_tooltip_column)
