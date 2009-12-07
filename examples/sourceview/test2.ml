@@ -70,7 +70,7 @@ let _ =
   source_view#source_buffer#set_highlight_matching_brackets true;
   source_view#set_show_line_marks true;
 
-  source_view#source_buffer#set_language lang;
+  source_view#source_buffer#set_language (Some lang);
   source_view#source_buffer#set_highlight_syntax true;
   source_view#source_buffer#set_text text;
   ignore (win#connect#destroy (fun _ -> GMain.quit ()));
