@@ -189,7 +189,8 @@ endif
 .ml4.cmo:
 	$(CAMLC) -c -pp "$(CAMLP4O) -impl" -impl $<
 .cmxa.cmxs:
-	$(CAMLOPT) -verbose -o $@ -shared -linkall -I . -ccopt '$(GTK_LIBS)' $<
+	$(CAMLOPT) -verbose -o $@ -shared -linkall -I . \
+        -ccopt '$(filter -L%, $(DYNLINKLIBS))' $<
 
 #.ml4.ml:
 #	$(CAMLP4) -impl $< -o $@
@@ -371,21 +372,25 @@ lablgtk.cma liblablgtk2$(XA): $(COBJS) $(MLOBJS)
 	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)
 lablgtk.cmxa: $(COBJS) $(MLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)
+lablgtk.cmxs: DYNLINKLIBS=$(GTK_LIBS)
 
 lablgtkgl.cma liblablgtkgl2$(XA): $(GLCOBJS) $(GLMLOBJS)
 	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $^ $(GTKGLLIBS)
 lablgtkgl.cmxa: $(GLCOBJS) $(GLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $^ $(GTKGLLIBS)
+lablgtkgl.cmxs: DYNLINKLIBS=$(GTKGL_LIBS)
 
 lablglade.cma liblablglade2$(XA): $(GLADECOBJS) $(GLADEMLOBJS)
 	$(LIBRARIAN) -o lablglade -oc lablglade2 $^ $(GLADELIBS)
 lablglade.cmxa: $(GLADECOBJS) $(GLADEMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablglade -oc lablglade2 $^ $(GLADELIBS)
+lablglade.cmxs: DYNLINKLIBS=$(GLADE_LIBS)
 
 lablrsvg.cma liblablrsvg$(XA): $(RSVGCOBJS) $(RSVGMLOBJS)
 	$(LIBRARIAN) -o lablrsvg $^ $(RSVGLIBS)
 lablrsvg.cmxa: $(RSVGCOBJS) $(RSVGMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablrsvg $^ $(RSVGLIBS)
+lablrsvg.cmxs: DYNLINKLIBS=$(RSVG_LIBS)
 
 lablgnomecanvas.cma liblablgnomecanvas$(XA): \
 		$(GNOMECANVASCOBJS) $(GNOMECANVASMLOBJS)
@@ -393,22 +398,26 @@ lablgnomecanvas.cma liblablgnomecanvas$(XA): \
 lablgnomecanvas.cmxa: $(GNOMECANVASCOBJS) $(GNOMECANVASMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgnomecanvas $^ $(GNOMECANVASLIBS)
 # gnoCanvas.cmo: COMPILER+= -i
+lablgnomecanvas.cmxs: DYNLINKLIBS=$(GNOMECANVAS_LIBS)
 
 lablgnomeui.cma liblablgnomeui$(XA): $(GNOMEUICOBJS) $(GNOMEUIMLOBJS)
 	$(LIBRARIAN) -o lablgnomeui $^ $(GNOMEUILIBS)
 lablgnomeui.cmxa: $(GNOMEUICOBJS) $(GNOMEUIMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgnomeui $^ $(GNOMEUILIBS)
 # gnoDruid.cmo: COMPILER+= -i
+lablgnomeui.cmxs: DYNLINKLIBS=$(GNOMEUI_LIBS)
 
 lablpanel.cma liblablpanel$(XA): $(PANELCOBJS) $(PANELMLOBJS)
 	$(LIBRARIAN) -o lablpanel $^ $(PANELLIBS)
 lablpanel.cmxa: $(PANELCOBJS) $(PANELMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablpanel $^ $(PANELLIBS)
+lablpanel.cmxs: DYNLINKLIBS=$(PANEL_LIBS)
 
 lablgtkspell.cma liblablgtkspell$(XA): $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS)
 	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
 lablgtkspell.cmxa: $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
+labgtkspell.cmxs: DYNLINKLIBS=$(GTKSPELL_LIBS)
 
 gtkSignal.cmo: gtkSignal.ml
 	$(COMPILER) -pp "$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE)" $<

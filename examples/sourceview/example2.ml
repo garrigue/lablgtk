@@ -92,7 +92,7 @@ let () =
   win#set_allow_shrink true;
   source_view#misc#modify_font_by_name font_name;
   source_view#source_buffer#set_highlight_matching_brackets true;
-  source_view#source_buffer#set_language lang;
+  source_view#source_buffer#set_language (Some lang);
   source_view#source_buffer#set_highlight_syntax true;
 
   source_view#set_smart_home_end `AFTER;
