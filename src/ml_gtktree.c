@@ -1579,3 +1579,17 @@ CAMLprim value ml_custom_model_rows_reordered (value tree_model_val, value path,
   }
   return Val_unit;)
 }
+
+CAMLprim value ml_gtk_tree_view_get_visible_range(value treeview) {
+     CAMLparam1(treeview);
+     CAMLlocal1(result);
+     GtkTreePath *startp, *endp;
+     if (! gtk_tree_view_get_visible_range(GtkTreeView_val(treeview),
+					   &startp, &endp))
+	  CAMLreturn(Val_unit);
+     result = alloc_tuple(2);
+     Store_field(result, 0, Val_GtkTreePath(startp));
+     Store_field(result, 1, Val_GtkTreePath(endp));
+     CAMLreturn(ml_some(result));
+}
+	  

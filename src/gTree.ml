@@ -419,6 +419,8 @@ class view obj = object
     | None -> None
   method get_cell_area ?path ?col () =
     TreeView.get_cell_area obj ?path ?col:(Gaux.may_map as_column col) ()
+  method get_visible_range () =
+    TreeView.get_visible_range obj
   method set_row_separator_func fo =
     TreeView.set_row_separator_func obj 
       (Gaux.may_map (fun f m -> f (new model m)) fo)

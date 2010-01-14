@@ -398,6 +398,7 @@ class view : tree_view obj ->
       x:int -> y:int -> (tree_path * view_column * int * int) option
     method get_cell_area :
         ?path:tree_path -> ?col:view_column -> unit -> Gdk.Rectangle.t
+    method get_visible_range : unit -> (tree_path * tree_path) option
     method hadjustment : GData.adjustment
     method headers_visible : bool
     method insert_column : view_column -> int -> int
