@@ -1,4 +1,7 @@
 $Id$
+2010.01.14 [Benjamin]
+  * Apply patch from Mike Spivey to support get_visible range in Gtree
+  * Fixed incorrect target labgtkspell.cmxs in Makefile
 
 2009.10.01 [Jacques]
   * Correct wrong module name SourceViewEnums -> SourceView2Enums

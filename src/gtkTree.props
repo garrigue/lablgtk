@@ -36,6 +36,7 @@ class TreeView set wrap wrapsig : Container {
   "hover-selection"      gboolean              : Read / Write / NoSet
   (* new properties in GTK+ 2.12 *)
   "tooltip-column"       gint                 : Read / Write
+  method get_visible_range : "(tree_path * tree_path) option"
   signal columns_changed
   signal cursor_changed
   signal expand_collapse_cursor_row :

@@ -417,7 +417,7 @@ lablgtkspell.cma liblablgtkspell$(XA): $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS)
 	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
 lablgtkspell.cmxa: $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
-labgtkspell.cmxs: DYNLINKLIBS=$(GTKSPELL_LIBS)
+lablgtkspell.cmxs: DYNLINKLIBS=$(GTKSPELL_LIBS)
 
 gtkSignal.cmo: gtkSignal.ml
 	$(COMPILER) -pp "$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE)" $<
