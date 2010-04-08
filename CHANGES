@@ -1,4 +1,8 @@
 $Id$
+
+2010.04.08 [Jacques]
+  * remove useless methods (discovered by ocaml 3.12)
+
 2010.01.14 [Benjamin]
   * Apply patch from Mike Spivey to support get_visible range in Gtree
   * Fixed incorrect target labgtkspell.cmxs in Makefile

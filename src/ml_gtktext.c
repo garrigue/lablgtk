@@ -181,8 +181,8 @@ ML_1 (gtk_text_buffer_get_line_count,GtkTextBuffer_val,Val_int)
 
 ML_1 (gtk_text_buffer_get_char_count,GtkTextBuffer_val,Val_int)
 
-ML_1 (gtk_text_buffer_get_tag_table,GtkTextBuffer_val,Val_GtkTextTagTable)
-
+/* ML_1 (gtk_text_buffer_get_tag_table,GtkTextBuffer_val,Val_GtkTextTagTable)
+*/
 
 
 /* [Benjamin] 
@@ -229,7 +229,7 @@ By the way, I had problems with "light" textiters for the same reason.
 Now the above code is OK, but replacing [full_major] by [compact] it will fail,
 as will do most code... Disabling compaction is essential.
 
-Note that I also allocat stable strings in the old generation now, to avoid
+Note that I also allocate stable strings in the old generation now, to avoid
 problems with alloca on Linux.
 
 */

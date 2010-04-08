@@ -102,7 +102,6 @@ class virtual ['a] item_container obj = object (self)
     let l = ref [] in
     forall obj ~f:(fun w -> l := self#wrap w :: !l);
     List.rev !l
-  method set_border_width = set Container.P.border_width obj
   method focus = new focus obj
   method virtual insert : 'a -> pos:int -> unit
   method append (w : 'a) = self#insert w ~pos:(-1)
