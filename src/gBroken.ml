@@ -113,7 +113,7 @@ class text obj = object (self)
   inherit text_props
   method connect = new old_editable_signals obj
   method event = new GObj.event_ops obj
-  method get_chars ~start ~stop:e =
+  method! get_chars ~start ~stop:e =
     if start < 0 || e > Text.get_length obj || e < start then
       invalid_arg "GBroken.text#get_chars";
     super#get_chars ~start ~stop:e

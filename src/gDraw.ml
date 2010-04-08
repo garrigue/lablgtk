@@ -121,33 +121,33 @@ class pixmap ?colormap ?mask pm = object
   val mask : Gdk.bitmap option = mask
   method pixmap : Gdk.pixmap = w
   method mask = mask
-  method set_line_attributes ?width ?style ?cap ?join () =
+  method! set_line_attributes ?width ?style ?cap ?join () =
     pixmap#set_line_attributes ?width ?style ?cap ?join ();
     may bitmap ~f:(fun m -> m#set_line_attributes ?width ?style ?cap ?join ())
-  method point ~x ~y =
+  method! point ~x ~y =
     pixmap#point ~x ~y;
     may bitmap ~f:(fun m -> m#point ~x ~y)
-  method line ~x ~y ~x:x' ~y:y' =
+  method! line ~x ~y ~x:x' ~y:y' =
     pixmap#line ~x ~y ~x:x' ~y:y';
     may bitmap ~f:(fun m -> m#line ~x ~y ~x:x' ~y:y')
-  method rectangle ~x ~y ~width ~height ?filled () =
+  method! rectangle ~x ~y ~width ~height ?filled () =
     pixmap#rectangle ~x ~y ~width ~height ?filled ();
     may bitmap ~f:(fun m -> m#rectangle ~x ~y ~width ~height ?filled ())
-  method arc ~x ~y ~width ~height ?filled ?start ?angle () =
+  method! arc ~x ~y ~width ~height ?filled ?start ?angle () =
     pixmap#arc ~x ~y ~width ~height ?filled ?start ?angle ();
     may bitmap
       ~f:(fun m -> m#arc ~x ~y ~width ~height ?filled ?start ?angle ());
-  method polygon ?filled l =
+  method! polygon ?filled l =
     pixmap#polygon ?filled l;
     may bitmap ~f:(fun m -> m#polygon ?filled l)
-  method string s ~font ~x ~y =
+  method! string s ~font ~x ~y =
     pixmap#string s ~font ~x ~y;
     may bitmap ~f:(fun m -> m#string s ~font ~x ~y)
-  method points pts = pixmap#points pts; may bitmap ~f:(fun m -> m#points pts)
-  method lines pts = pixmap#lines pts; may bitmap ~f:(fun m -> m#lines pts)
-  method segments lns =
+  method! points pts = pixmap#points pts; may bitmap ~f:(fun m -> m#points pts)
+  method! lines pts = pixmap#lines pts; may bitmap ~f:(fun m -> m#lines pts)
+  method! segments lns =
     pixmap#segments lns; may bitmap ~f:(fun m -> m#segments lns)
-  method put_layout ~x ~y ?fore ?back lay =
+  method! put_layout ~x ~y ?fore ?back lay =
     pixmap#put_layout ~x ~y ?fore ?back lay;
     may bitmap ~f:(fun (m : #drawable) -> m#put_layout ~x ~y lay)
 end

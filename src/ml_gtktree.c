@@ -646,7 +646,6 @@ ml_gtk_tree_view_set_tooltip_cell (value treeview, value tooltip,
     GtkCellRenderer_optval(cell) );
   return (Val_unit);
 } /* All those lines because of that: http://caml.inria.fr/mantis/view.php?id=4396 */
-ML_bc6(ml_gtk_tree_view_set_tooltip_cell)
 ML_3 (gtk_tree_view_set_tooltip_row, GtkTreeView_val, GtkTooltip_val, GtkTreePath_val, Unit)
 CAMLprim value
 ml_gtk_tree_view_get_tooltip_context (value treeview, value x, value y, value kbd)
@@ -684,12 +683,12 @@ ML_1 (gtk_tree_view_get_tooltip_column, GtkTreeView_val, Val_int)
 ML_2 (gtk_tree_view_set_tooltip_column, GtkTreeView_val, Int_val, Unit)
 #else
 Unsupported_212 (gtk_tree_view_set_tooltip_cell)
-Unsupported_212 (gtk_tree_view_set_tooltip_cell_bc)
 Unsupported_212 (gtk_tree_view_set_tooltip_row)
 Unsupported_212 (gtk_tree_view_get_tooltip_context)
 Unsupported_212 (gtk_tree_view_get_tooltip_column)
 Unsupported_212 (gtk_tree_view_set_tooltip_column)
 #endif /* HASGTK212 */
+ML_bc6(ml_gtk_tree_view_set_tooltip_cell)
 
 /* GtkCellLayout */
 #ifdef HASGTK24

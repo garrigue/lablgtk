@@ -171,7 +171,7 @@ class paned obj = object
   inherit paned_props
   method connect = new container_signals_impl obj
   method event = new GObj.event_ops obj
-  method add w =
+  method! add w =
     if List.length (Container.children obj) = 2 then
       raise(Error "Gpack.paned#add: already full");
     Container.add obj (as_widget w)
