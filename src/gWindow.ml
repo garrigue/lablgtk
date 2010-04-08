@@ -46,7 +46,6 @@ class window_skel obj = object (self)
   method activate_focus () = Window.activate_focus obj
   method activate_default () = Window.activate_default obj
   method add_accel_group = Window.add_accel_group obj
-  method set_modal = set obj P.modal
   method set_default_size ~width ~height =
     set obj P.default_width width;
     set obj P.default_height height
