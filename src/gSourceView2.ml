@@ -267,7 +267,7 @@ let source_buffer ?(language:source_language option)
 class source_view_signals obj' =
 object
   inherit widget_signals_impl (obj' : [> GtkSourceView2_types.source_view] obj)
-  inherit GText.view_signals obj'
+  inherit! GText.view_signals obj'
   inherit source_view_sigs
 end
 

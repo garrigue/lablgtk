@@ -114,7 +114,7 @@ class clipboard ~selection = object (self)
 
   method private call_get context ~info ~time =
     get_cb context ~info ~time
-  method private call_clear =
+  method! private call_clear =
     match clear_cb with
       None -> ()
     | Some cb ->

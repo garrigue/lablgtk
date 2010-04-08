@@ -728,7 +728,7 @@ object (self)
   val n_columns =  List.length column_list#types
   val columns = Array.of_list column_list#types
   
-  method get ~row:_ ~column:_ = failwith "get not allowed on a custom model."
+  method! get ~row:_ ~column:_ = failwith "get not allowed on a custom model."
 
   method custom_n_columns = n_columns
 
