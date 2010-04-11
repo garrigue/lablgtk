@@ -27,6 +27,7 @@ open Gobject
 
 type context = [`pangocontext] obj
 type font = [`pangofont] obj
+type font_map = [`pangofontmap] obj
 type font_description
 type font_metrics
 type language
@@ -141,6 +142,11 @@ module Font = struct
     "ml_pango_font_metrics_get_approximate_digit_width"
 end
 
+module FontMap = struct
+  external load_font : font_map -> context -> font_description -> font
+    = "ml_pango_font_map_load_font"
+end
+
 module Language = struct
   external from_string : string -> language = "ml_pango_language_from_string"
   external to_string : language -> string = "ml_pango_language_to_string"
@@ -181,6 +187,8 @@ module Layout = struct
   external set_markup : layout -> string -> unit = "ml_pango_layout_set_markup"
   external set_markup_with_accel : layout -> string -> Glib.unichar -> unit
     = "ml_pango_layout_set_markup_with_accel"
+  external set_font_description : layout -> font_description -> unit
+    = "ml_pango_layout_set_font_description"
   external get_width : layout -> int = "ml_pango_layout_get_width"
   external set_width : layout -> int -> unit = "ml_pango_layout_set_width"
   external get_indent : layout -> int = "ml_pango_layout_get_indent"
