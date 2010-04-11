@@ -46,4 +46,7 @@ CAMLexport value ml_PangoStyle_Val (value val);
 #define PangoLayout_val(val) check_cast(PANGO_LAYOUT, val)
 #define Val_PangoLayout Val_GAnyObject
 
+#define PangoFontMap_val(val) check_cast(PANGO_FONT_MAP, val)
+#define Val_PangoFontMap Val_GAnyObject
+
 CAMLexport value Val_PangoRectangle(PangoRectangle *rect);
