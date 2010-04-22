@@ -31,5 +31,6 @@ type source_search_flag = "GTK_SOURCE_SEARCH_"
 type source_smart_home_end_type = "GTK_SOURCE_SMART_HOME_END_"
   [ `DISABLED| `BEFORE| `AFTER| `ALWAYS ]
 
+(* Only NBSP is supported *)
 type source_draw_spaces_flags = "GTK_SOURCE_DRAW_SPACES_"
   [ `SPACE | `TAB | `NEWLINE | `NBSP ]
