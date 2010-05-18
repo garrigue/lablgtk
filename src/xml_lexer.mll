@@ -106,7 +106,9 @@ and chars = parse
 
 and entity = parse
   | '#'
-      { String.make 1 (Char.chr (charref lexbuf)) }
+      { let s = Gutf8.from_unichar (charref lexbuf) in
+        String.iter (fun c -> Printf.eprintf "%x" (Char.code c)) s;
+        prerr_endline ""; s }
   | name ';'
       { let l = Lexing.lexeme lexbuf in
         let s = String.sub l 0 (String.length l - 1) in
