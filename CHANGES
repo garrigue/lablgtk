@@ -1,5 +1,11 @@
 $Id$
 
+2010.05.18 [Jacques]
+  * rename gtkSignal.ml to gtkSignal.ml4 and fix depend target
+  * move Glib.Utf8 code to gutf8.ml, so that it can be used in xml_lexer
+    to fix a bug report by Pascal Brisset (multibyte entities of the form
+    &#x25CF; in glade files).
+
 2010.04.08 [Jacques]
   * remove useless methods (discovered by ocaml 3.12)
 

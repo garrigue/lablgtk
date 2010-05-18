@@ -206,102 +206,20 @@ module Unichar = struct
 end
 
 module Utf8 = struct
+  include Gutf8
+
   external validate : string -> bool = "ml_g_utf8_validate"
   external length : string -> int = "ml_g_utf8_strlen"
 
-  let rec log64 n =
-    if n = 0 then 0 else
-    1 + log64 (n lsr 5)
-  
-  let utf8_storage_len n =
-    if n < 0x80 then 1 else
-    log64 (n lsr 1)
-
-  (* this function is not exported, so it's OK to do a few 'unsafe' things *)
-  let write_unichar s ~pos (c : unichar) =
-    let len = utf8_storage_len c in
-    let p = !pos in
-    if len = 1 then
-      String.unsafe_set s p (Char.unsafe_chr c)
-    else begin
-      String.unsafe_set s p (Char.unsafe_chr (((1 lsl len - 1) lsl (8-len)) lor (c lsr ((len-1)*6))));
-      for i = 1 to len-1 do
-	String.unsafe_set s (p+i) 
-	  (Char.unsafe_chr (((c lsr ((len-1-i)*6)) land 0x3f) lor 0x80))
-      done ;
-    end ;
-    pos := p + len
-
-  let from_unichar (n : unichar) =
-    let s = String.create 6 and pos = ref 0 in
-    write_unichar s ~pos n;
-    String.sub s 0 !pos
-
-  let from_unistring (s : unistring) =
-    let len = Array.length s in
-    let r = String.create (len*6) in
-    let pos = ref 0 in
-    for i = 0 to len-1 do write_unichar r ~pos s.(i) done;
-    String.sub r 0 !pos
-
-  let rec hi_bits n =
-    if n land 0x80 = 0 then 0 else
-    1 + hi_bits (n lsl 1)
-
-  let to_unichar s ~pos : unichar =
-    let c = Char.code s.[!pos] in
-    incr pos;
-    let n = hi_bits c in
-    if n = 0 then c else (* if string is valid then 2 <= n <= 6 *)
-    let u = ref (c land (1 lsl (7-n) - 1)) in
-    for i = 1 to n-1 do
-      let c = Char.code s.[!pos] in
-      u := !u lsl 6 + c land 0x3f ;
-      incr pos
-    done;
-    !u
-
-  let to_unichar_validated s ~pos : unichar =
-    let c = Char.code s.[!pos] in
-    incr pos ;
-    let n = hi_bits c in
-    if n = 0 then c else begin
-      if n = 1 || n > 6 then Convert.raise_bad_utf8 () ;
-      if !pos + n > String.length s then
-	raise (Convert.Error (Convert.PARTIAL_INPUT, "partial UTF-8 character")) ;
-      let u = ref (c land (1 lsl (7-n) - 1)) in
-      for i = 1 to n-1 do
-	let c = Char.code s.[!pos] in
-	if c lsr 6 <> 0b10 then Convert.raise_bad_utf8 () ;
-	u := !u lsl 6 + c land 0x3f ;
-	incr pos
-      done;
-      let v = !u in
-      (* reject overlong sequences && invalid values *)
-      if utf8_storage_len v <> n || not (Unichar.validate v)
-      then Convert.raise_bad_utf8 () ;
-      v
-    end
-
-  let to_unistring s : unistring =
-    let len = length s in
-    let us = Array.create len 0 in
-    let pos = ref 0 in
-    for i = 0 to len - 1 do
-      us.(i) <- to_unichar s ~pos
-    done;
-    us
-
-  let first_char s =
-    to_unichar s ~pos:(ref 0)
-
-  external offset_to_pos : string -> pos:int -> off:int -> int = "ml_g_utf8_offset_to_pointer" "noalloc"
+  external offset_to_pos : string -> pos:int -> off:int -> int
+      = "ml_g_utf8_offset_to_pointer" "noalloc"
 
   external uppercase : string -> string = "ml_g_utf8_strup"
   external lowercase : string -> string = "ml_g_utf8_strdown"
 
   type normalize_mode = [ `DEFAULT | `DEFAULT_COMPOSE | `ALL | `ALL_COMPOSE ]
-  external normalize : string -> normalize_mode -> string = "ml_g_utf8_normalize"
+  external normalize : string -> normalize_mode -> string
+      = "ml_g_utf8_normalize"
 
   external casefold : string -> string = "ml_g_utf8_casefold"
   external collate : string -> string -> int = "ml_g_utf8_collate"

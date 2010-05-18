@@ -216,7 +216,7 @@ GTKPROPS += gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
 	gtkList.props gtkMenu.props gtkMisc.props gtkPack.props \
 	gtkRange.props gtkText.props gtkTree.props gtkFile.props \
 	gtkAction.props gtkBroken.props gtkAssistant.props
-MLOBJS1 =  gaux.cmo gpointer.cmo glib.cmo gobject.cmo
+MLOBJS1 =  gaux.cmo gpointer.cmo gutf8.cmo glib.cmo gobject.cmo
 ENUMOBJS += gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
 MLOBJS2 = pango.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
 	gtk.cmo gtkSignal.cmo gtkStock.cmo gtkObject.cmo
@@ -244,6 +244,7 @@ ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
+BEFORE_DEPEND += gtkSignal.ml
 
 # Targets
 byte:: $(TARGETS) $(INITOBJS)
@@ -254,7 +255,8 @@ depend:
 	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 \
 	  USE_GTKSOURCEVIEW=1 USE_GTKSOURCEVIEW2=1
 real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
-	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(BEFORE_DEPEND) *.mli > .depend
+	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) \
+	  $(ALLTHOBJS:.cmo=.ml) $(BEFORE_DEPEND) *.mli > .depend
 
 ifeq ($(THREADS_LIB),no)
 lablgtktop$(XE): $(MLLIBS)
@@ -307,8 +309,10 @@ ifeq ($(HAS_NATIVE_DYNLINK),yes)
 lablgtkopt::  $(MLLIBS:.cma=.cmxs)
 endif
 
-lablgladecc$(XE): xml_lexer.cmo lablgladecc.cmo
-	$(LINKER) -o $@ xml_lexer.cmo lablgladecc.cmo
+LABLGLADECCOBJS = gutf8.cmo xml_lexer.cmo lablgladecc.cmo
+
+lablgladecc$(XE): $(LABLGLADECCOBJS)
+	$(LINKER) -o $@ $(LABLGLADECCOBJS)
 
 testcc$(XE): lablgladecc$(XE) lablgtktop
 	./lablgladecc -test > testcc.ml
@@ -420,10 +424,8 @@ lablgtkspell.cmxa: $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
 lablgtkspell.cmxs: DYNLINKLIBS=$(GTKSPELL_LIBS)
 
-gtkSignal.cmo: gtkSignal.ml
-	$(COMPILER) -pp "$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE)" $<
-gtkSignal.cmx: gtkSignal.ml
-	$(COMPOPT) -pp "$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE)" $<
+gtkSignal.ml: gtkSignal.ml4
+	$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE) -impl $< -o $@
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml
