@@ -98,7 +98,7 @@ let first_char s =
   to_unichar s ~pos:(ref 0)
 
 let validate c =
-  c < 0x110000 && (c land 0xFFFFF800) <> 0xD800 &&
+  c < 0x110000 && (c land 0x7FFFF800) <> 0xD800 &&
   (c < 0xFDD0 || c > 0xFDEF) && (c land 0xFFFE) <> 0xFFFE
 
 let to_unichar_validated s ~pos : unichar =
