@@ -5,8 +5,8 @@ You may just compile it after having installed lablgtk.
 
 	http://www.cis.upenn.edu/~bcpierce/unison/
 
-In order to circumvent a bug in GTK+OSX apply this patch to
-unison-2.27.57 (for user Quartz GTK only).
+In order to circumvent bugs in GTK+OSX apply those patches to
+unison-2.27.57 and unison-2.40.16 (concerns only users of Quartz GTK).
 
 Jacques Garrigue
 
