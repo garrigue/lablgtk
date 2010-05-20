@@ -1,5 +1,10 @@
 $Id$
 
+In Lablgtk-2.14.1:
+
+2010.05.20 [Jacques]
+  * update unison patch to 2.40.16 (for Quartz users)
+
 2010.05.18 [Jacques]
   * rename gtkSignal.ml to gtkSignal.ml4 and fix depend target
   * move Glib.Utf8 code to gutf8.ml, so that it can be used in xml_lexer
