@@ -104,7 +104,6 @@ MLLIBS += lablgnomeui.cma
 CLIBS += liblablgnomeui$(XA)
 GNOMEUIMLOBJS = gnomeDruid.cmo gnoDruid.cmo
 GNOMEUICOBJS = ml_gnomedruid$(XO)
-endif
 
 ifdef USE_PANEL
 MLLIBS += lablpanel.cma
@@ -112,6 +111,8 @@ CLIBS += liblablpanel$(XA)
 PANELMLOBJS = panel.cmo
 PANELCOBJS = ml_panel$(XO)
 endif
+endif
+
 
 ifdef USE_RSVG
 MLLIBS += lablrsvg.cma
