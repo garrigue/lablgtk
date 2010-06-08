@@ -180,9 +180,10 @@ and canvas : GnomeCanvas.canvas Gtk.obj ->
   end
 
 (** @gtkdoc libgnomecanvas GnomeCanvasItem *)
-class ['p] item : [> GnomeCanvas.item] Gtk.obj -> 
+class ['p] item : ([> GnomeCanvas.item] as 'a) Gtk.obj -> 
   object
     inherit base_item
+    val obj : 'a Gtk.obj
     constraint 'p = [< items_properties]
     method set : 'p list -> unit
   end

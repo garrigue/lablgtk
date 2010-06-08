@@ -171,7 +171,7 @@ class ['a] dialog_ext obj = object (self)
 end
 
 class ['a] dialog obj = object (self)
-  inherit ['a] dialog_ext obj
+  inherit ['a] dialog_ext (obj :> Gtk.dialog obj)
   method connect : 'a dialog_signals = new dialog_signals obj (self#decode)
 end
 
@@ -193,7 +193,7 @@ let dialog ?(no_separator=false) =
 type any_response = [GtkEnums.response | `OTHER of int]
 
 class dialog_any obj = object (self)
-  inherit [any_response] dialog_base obj
+  inherit [any_response] dialog_base (obj :> Gtk.dialog obj)
   method private encode = function
       `OTHER n -> n
     | #GtkEnums.response as v -> Dialog.std_response v

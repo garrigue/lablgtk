@@ -1,5 +1,9 @@
 $Id$
 
+2010.06.08 [Jacques]
+  * correct interfaces due to the fixing of an unsoundness bug in ocaml 3.12
+    (cf. http://caml.inria.fr/mantis/view.php?id=4824) 
+
 In Lablgtk-2.14.1:
 
 2010.05.20 [Jacques]
