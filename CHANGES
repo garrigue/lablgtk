@@ -2,7 +2,8 @@ $Id$
 
 2010.06.25 [Jacques]
   * remove gtkInit.cmo from gdk_pixbuf_mlsource, no need to
-    initialize Gtk as Gobject is sufficient 
+    initialize Gtk as Gobject is sufficient
+  * in GtkThread, add a timeout to allow thread switch in Gtk
 
 2010.06.08 [Jacques]
   * correct interfaces due to the fixing of an unsoundness bug in ocaml 3.12
