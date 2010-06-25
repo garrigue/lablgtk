@@ -24,6 +24,10 @@
 
 open GtkMain
 
+(* Behaviour depends on kind of threads *)
+
+let threads_lib = "@THREADS_LIB@"
+
 (* Job handling for Windows *)
 
 let jobs : (unit -> unit) Queue.t = Queue.create ()
@@ -83,10 +87,21 @@ let thread_main_real () =
 let thread_main () =
   sync thread_main_real ()
 
+let timeout = ref None
+let timeout_func () =
+  Thread.delay 0.001;
+  for i = 1 to n_jobs () do do_next_job () done;
+  true
+
 let main () =
+  (* When using system threads, also start a timeout
+     in case someone uses the original main function *)
+  if !timeout = None && threads_lib = "system" then 
+    timeout := Some (Glib.Timeout.add ~ms:100 ~callback:timeout_func);
+  (* At least set this for call through lablgtk *)
   GtkMain.Main.main_func := thread_main;
   thread_main ()
-      
+    
 let start () =
   reset ();
   Thread.create main ()
