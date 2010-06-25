@@ -47,6 +47,9 @@ val user_handler : (exn -> unit) ref
     (** A hook to allow changing the behaviour of exceptions in callbacks
        The default behaviour of printing the exception and ignoring it
        is obtained when [user_handler] is set to [Pervasives.raise] *)
+val safe_call : ?where:string -> ('a -> unit) -> 'a -> unit
+    (** Safe wrapper for function calls. Tries to handle exceptions
+        with user_handler, and reports an error otherwise. *)
 
 external connect_by_name :
   'a obj -> name:string -> callback:g_closure -> after:bool -> id

@@ -342,8 +342,8 @@ ogtkBrokenProps.cmo: gtkSignal.cmi gtkBrokenProps.cmo gobject.cmi gData.cmi
 ogtkBrokenProps.cmx: gtkSignal.cmx gtkBrokenProps.cmx gobject.cmx gData.cmx
 ogtkAssistantProps.cmo: gtkSignal.cmi gtkAssistantProps.cmo gobject.cmi
 ogtkAssistantProps.cmx: gtkSignal.cmx gtkAssistantProps.cmx gobject.cmx
-gtkThread.cmo: gtkMain.cmo glib.cmi gtkThread.cmi
-gtkThread.cmx: gtkMain.cmx glib.cmx gtkThread.cmi
+gtkThread.cmo: gtkSignal.cmi gtkMain.cmo glib.cmi gtkThread.cmi
+gtkThread.cmx: gtkSignal.cmx gtkMain.cmx glib.cmx gtkThread.cmi
 gtkThInit.cmo: gtkThread.cmi
 gtkThInit.cmx: gtkThread.cmx
 gtkSourceView.cmo: sourceViewEnums.cmo gtkSourceView_types.cmi \
@@ -376,8 +376,6 @@ sourceViewEnums.cmo: gpointer.cmi gobject.cmi
 sourceViewEnums.cmx: gpointer.cmx gobject.cmx
 gtkSignal.cmo: gobject.cmi gtkSignal.cmi
 gtkSignal.cmx: gobject.cmx gtkSignal.cmi
-gtkThread.cmo: gtkMain.cmo glib.cmi gtkThread.cmi
-gtkThread.cmx: gtkMain.cmx glib.cmx gtkThread.cmi
 gAction.cmi: gtkStock.cmo gtkSignal.cmi gtkEnums.cmo gtk.cmo gobject.cmi \
     gObj.cmi
 gAssistant.cmi: gtkSignal.cmi gtkEnums.cmo gtk.cmo gdkPixbuf.cmi gdkEnums.cmo \

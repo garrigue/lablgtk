@@ -54,3 +54,8 @@ val sync : ('a -> 'b) -> 'a -> 'b
 (** Whether it is safe to call most GTK functions directly from
     the current thread *)
 val gui_safe : unit -> bool
+(** Allow other threads to run, and process the message queue.
+    The following ensures that messages will be processed even
+    if another main loop is running:
+      [Glib.Timeout.add ~ms:100 ~callback:GtkThread.do_jobs] *)
+val do_jobs : unit -> bool
