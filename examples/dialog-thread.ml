@@ -9,7 +9,7 @@
 
 (* $Id$ *)
 
-(* lablgtk2 -thread dialog-thread.ml *)
+(* lablgtk2 -thread -nothinit dialog-thread.ml *)
 
 let window = GWindow.window ~border_width: 10 ()
 
@@ -31,7 +31,7 @@ let main () =
     in match dialog#run () with
       `YES -> GMain.quit ()
     | `NO | `DELETE_EVENT -> dialog#destroy ());
-  GtkThread.async window#show ();
-  Thread.join GtkThInit.thread
+  window#show ();
+  GtkThread.main ()
 
 let _ = Printexc.print main ()

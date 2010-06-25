@@ -24,4 +24,5 @@
 
 (* Start the main thread in a threaded toplevel *)
 
+(* When using the Quartz backend, one must init in the same thread *)
 let thread = GtkThread.start ()
