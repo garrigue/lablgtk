@@ -245,7 +245,7 @@ ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
-BEFORE_DEPEND += gtkSignal.ml gtkThread.ml
+BEFORE_DEPEND += gtkSignal.ml
 
 # Targets
 byte:: $(TARGETS) $(INITOBJS)
@@ -427,9 +427,6 @@ lablgtkspell.cmxs: DYNLINKLIBS=$(GTKSPELL_LIBS)
 
 gtkSignal.ml: gtkSignal.ml4
 	$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE) -impl $< -o $@
-
-gtkThread.ml: gtkThread.mlp
-	sed -e "s|@THREADS_LIB@|$(THREADS_LIB)|" < $< > $@
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml

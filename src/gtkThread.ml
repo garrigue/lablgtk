@@ -24,10 +24,6 @@
 
 open GtkMain
 
-(* Behaviour depends on kind of threads *)
-
-let threads_lib = "@THREADS_LIB@"
-
 (* Job handling for Windows *)
 
 let jobs : (unit -> unit) Queue.t = Queue.create ()
@@ -47,20 +43,30 @@ let gui_safe () =
 let has_jobs () = not (with_jobs Queue.is_empty)
 let n_jobs () = with_jobs Queue.length
 let do_next_job () = with_jobs Queue.take ()
-let async j x = with_jobs (Queue.add (fun () -> j x))
+let async j x = with_jobs
+    (Queue.add (fun () ->
+      GtkSignal.safe_call j x ~where:"asynchronous call"))
+type 'a result = Val of 'a | Exn of exn | NA
 let sync f x =
   if cannot_sync () then f x else
   let m = Mutex.create () in
-  let res = ref None in
+  let res = ref NA in
   Mutex.lock m;
   let c = Condition.create () in
   let j x =
-    let y = f x in Mutex.lock m; res := Some y; Mutex.unlock m;
+    let y = try Val (f x) with e -> Exn e in
+    Mutex.lock m; res := y; Mutex.unlock m;
     Condition.signal c
   in
   async j x;
-  while !res = None do Condition.wait c m done;
-  match !res with Some y -> y | None -> assert false
+  while !res = NA do Condition.wait c m done;
+  match !res with Val y -> y | Exn e -> raise e | NA -> assert false
+
+let do_jobs () =
+  Thread.delay 0.0001;
+  for i = 1 to n_jobs () do do_next_job () done;
+  true
+  
 
 (* We check first whether there are some event pending, and run
    some iterations. We then need to delay, thus focing a thread switch. *)
@@ -76,8 +82,7 @@ let thread_main_real () =
 	Glib.Main.iteration true;
 	incr i
       done;
-      Thread.delay 0.001;
-      for i = 1 to n_jobs () do do_next_job () done
+      do_jobs ()
     done;
     Main.loops := List.tl !Main.loops;
   with exn ->
@@ -87,21 +92,10 @@ let thread_main_real () =
 let thread_main () =
   sync thread_main_real ()
 
-let timeout = ref None
-let timeout_func () =
-  Thread.delay 0.001;
-  for i = 1 to n_jobs () do do_next_job () done;
-  true
-
 let main () =
-  (* When using system threads, also start a timeout
-     in case someone uses the original main function *)
-  if !timeout = None && threads_lib = "system" then 
-    timeout := Some (Glib.Timeout.add ~ms:100 ~callback:timeout_func);
-  (* At least set this for call through lablgtk *)
   GtkMain.Main.main_func := thread_main;
   thread_main ()
-    
+      
 let start () =
   reset ();
   Thread.create main ()
