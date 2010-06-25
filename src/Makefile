@@ -298,7 +298,7 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	    -e "s|@TOOLCHAIN@|$(TOOLCHAIN)|" \
 	    < build.ml.in > $@
 
-gdk_pixbuf_mlsource$(XE) : lablgtk.cma gtkInit.cmo gdk_pixbuf_mlsource.ml
+gdk_pixbuf_mlsource$(XE) : lablgtk.cma gdk_pixbuf_mlsource.ml
 	$(CAMLC) -o $@ -I . $^
 
 lablgtkopt:: $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx)
