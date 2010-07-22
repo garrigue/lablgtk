@@ -1,5 +1,8 @@
 $Id$
 
+2010.07.23 [Jacques]
+  * copy GtkTreePath arguments in callbacks, as reported by Benjamin.
+
 2010.06.25 [Jacques]
   * remove gtkInit.cmo from gdk_pixbuf_mlsource, no need to
     initialize Gtk as Gobject is sufficient 
