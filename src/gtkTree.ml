@@ -58,7 +58,10 @@ module TreePath = struct
   let () =
     Internal.tree_path_string :=
       {kind=`STRING; inj=(fun x -> string.inj (to_string x));
-       proj=(fun x -> from_string (string.proj x))}
+       proj=(fun x -> from_string (string.proj x))};
+    Internal.tree_path_copy :=
+      {kind=`POINTER; inj=unsafe_pointer.inj;
+       proj=(fun x -> copy (unsafe_pointer.proj x))}
 end
 
 module RowReference = struct
