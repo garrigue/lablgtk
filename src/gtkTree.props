@@ -140,6 +140,7 @@ class CellRendererCombo : CellRendererText {
   "model"                GtkTreeModel_opt     : Read / Write / NoWrap
   "text_column"          gint                 : Read / Write / NoWrap
   "has_entry"            gboolean             : Read / Write
+  signal changed       : GtkTreePathString GtkTreeIter 
 }
 
 class CellRendererAccel : CellRendererText {
