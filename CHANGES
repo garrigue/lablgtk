@@ -1,5 +1,8 @@
 $Id$
 
+2010.07.25 [Jacques]
+  * add changed signal to cell_renderer_combo (reported by Dmitry Bely)
+
 2010.07.23 [Jacques]
   * copy GtkTreePath arguments in callbacks, as reported by Benjamin.
 
