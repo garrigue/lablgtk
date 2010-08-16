@@ -1,5 +1,9 @@
 $Id$
 
+2010.08.16 [Jacques]
+  * rename g_value_{get,set}_variant, as the name is used by recent
+    versions of glib (reported by Florent Monnier)
+
 2010.07.25 [Jacques]
   * add changed signal to cell_renderer_combo (reported by Dmitry Bely)
 
