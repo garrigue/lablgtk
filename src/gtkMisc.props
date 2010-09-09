@@ -174,14 +174,16 @@ class DrawingArea : Widget {
   method size : "width:int -> height:int -> unit"
 }
 
-(*
-class Curve {
+class Curve set wrap : DrawingArea {
   "curve-type"           GtkCurveType         : Read / Write
   "max-x"                gfloat               : Read / Write
   "max-y"                gfloat               : Read / Write
   "min-x"                gfloat               : Read / Write
   "min-y"                gfloat               : Read / Write
+  method reset
+  method set_gamma  : "int -> unit"
+  method set_vector : "float array -> unit"
+  method get_vector : "int -> float array"
 }
-*)
 
 class Separator hv : Widget {}

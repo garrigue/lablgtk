@@ -1,5 +1,8 @@
 $Id$
 
+2010.09.09 [Jacques]
+  * add GtkCurve (but it is deprecated since 2.20)
+
 2010.08.16 [Jacques]
   * rename g_value_{get,set}_variant, as the name is used by recent
     versions of glib (reported by Florent Monnier)
