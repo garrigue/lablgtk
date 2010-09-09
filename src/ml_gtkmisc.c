@@ -184,24 +184,24 @@ ML_2 (gtk_curve_set_gamma, GtkCurve_val, Float_val, Unit)
 value ml_gtk_curve_set_vector (value curve, value points)
 {
   guint len = Wosize_val(points) / Double_wosize;
-  gfloat* vect = caml_stat_alloc(len * sizeof(gfloat));
+  gfloat* vect = g_malloc(len * sizeof(gfloat));
   int i;
   for (i = 0; i < len; i++)
-    vect[i] = Double_field(points,i);
+    vect[i] = (gfloat)Double_field(points,i);
   gtk_curve_set_vector(GtkCurve_val(curve), len, vect);
-  caml_stat_free(vect);
+  g_free(vect);
   return Val_unit;
 }
-value ml_gtk_curve_get_vector (value curve, value len)
+value ml_gtk_curve_get_vector (value curve, value vlen)
 {
-  gfloat* vect = caml_stat_alloc(len * sizeof(gfloat));
+  int i, len = Int_val(vlen);
+  gfloat* vect = g_malloc(len * sizeof(gfloat));
   value ret;
-  int i;
-  gtk_curve_get_vector(GtkCurve_val(curve), Int_val(len), vect);
-  ret = caml_alloc(Int_val(len)*Double_wosize, Double_array_tag);
+  gtk_curve_get_vector(GtkCurve_val(curve), len, vect);
+  ret = caml_alloc(len*Double_wosize, Double_array_tag);
   for (i = 0; i < len; i++)
     Store_double_field(ret, i, vect[i]);
-  caml_stat_free(vect);
+  g_free(vect);
   return ret;
 }
 
