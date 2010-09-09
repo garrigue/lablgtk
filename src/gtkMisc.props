@@ -6,6 +6,7 @@ open Gtk
 
 conversions {
   GtkStock "GtkStock.conv"
+  GtkCurveType "GtkEnums.curve_type_conv"
 }
 
 boxed {

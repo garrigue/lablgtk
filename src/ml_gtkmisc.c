@@ -177,6 +177,7 @@ CAMLprim value ml_gtk_calendar_is_day_marked (value c, value d)
 ML_3 (gtk_drawing_area_size, GtkDrawingArea_val, Int_val, Int_val, Unit)
 
 /* gtkcurve.h */
+#include <stdio.h>
 
 #define GtkCurve_val(val) check_cast(GTK_CURVE,val)
 ML_1 (gtk_curve_reset, GtkCurve_val, Unit)
@@ -187,7 +188,7 @@ value ml_gtk_curve_set_vector (value curve, value points)
   gfloat* vect = g_malloc(len * sizeof(gfloat));
   int i;
   for (i = 0; i < len; i++)
-    vect[i] = (gfloat)Double_field(points,i);
+    vect[i] = Double_field(points,i);
   gtk_curve_set_vector(GtkCurve_val(curve), len, vect);
   g_free(vect);
   return Val_unit;

@@ -191,13 +191,16 @@ class curve : Gtk.curve obj ->
   object
     inherit drawing_area
     val obj : Gtk.curve obj
+    method reset : unit -> unit
     method set_gamma : int -> unit
     method set_vector : float array -> unit
     method get_vector : int -> float array
+    method curve_type : GtkEnums.curve_type
     method max_x : float
     method max_y : float
     method min_x : float
     method min_y : float
+    method set_curve_type : GtkEnums.curve_type -> unit
     method set_max_x : float -> unit
     method set_max_y : float -> unit
     method set_min_x : float -> unit
@@ -207,6 +210,7 @@ class curve : Gtk.curve obj ->
 (** @gtkdoc gtk GtkCurve *)
 val curve :
   ?width:int -> ?height:int ->
+  ?curve_type:GtkEnums.curve_type ->
   ?max_x:float -> ?max_y:float ->
   ?min_x:float -> ?min_y:float ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> curve
