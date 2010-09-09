@@ -44,20 +44,7 @@ module Calendar = Calendar
 
 module DrawingArea = DrawingArea
 
-(* Does not seem very useful ...
-module Curve = struct
-  type t = [widget drawing curve] obj
-  let cast w : t = Object.try_cast w "GtkCurve"
-  external create : unit -> t = "ml_gtk_curve_new"
-  external reset : [>`curve] obj -> unit = "ml_gtk_curve_reset"
-  external set_gamma : [>`curve] obj -> float -> unit
-      = "ml_gtk_curve_set_gamma"
-  external set_range :
-      [>`curve] obj -> min_x:float -> max_x:float ->
-      min_y:float -> max_y:float -> unit
-      = "ml_gtk_curve_set_gamma"
-end
-*)
+module Curve = Curve
 
 module Misc = struct
   include Misc

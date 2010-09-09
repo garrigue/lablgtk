@@ -51,6 +51,7 @@ CAMLprim value ml_gtkmisc_init(value unit)
 #endif
         gtk_calendar_get_type() +
         gtk_drawing_area_get_type() +
+        gtk_curve_get_type() +
         gtk_misc_get_type() +
         gtk_arrow_get_type() +
         gtk_image_get_type() +
@@ -174,6 +175,35 @@ CAMLprim value ml_gtk_calendar_is_day_marked (value c, value d)
 
 #define GtkDrawingArea_val(val) check_cast(GTK_DRAWING_AREA,val)
 ML_3 (gtk_drawing_area_size, GtkDrawingArea_val, Int_val, Int_val, Unit)
+
+/* gtkcurve.h */
+
+#define GtkCurve_val(val) check_cast(GTK_CURVE,val)
+ML_1 (gtk_curve_reset, GtkCurve_val, Unit)
+ML_2 (gtk_curve_set_gamma, GtkCurve_val, Float_val, Unit)
+value ml_gtk_curve_set_vector (value curve, value points)
+{
+  guint len = Wosize_val(points) / Double_wosize;
+  gfloat* vect = caml_stat_alloc(len * sizeof(gfloat));
+  int i;
+  for (i = 0; i < len; i++)
+    vect[i] = Double_field(points,i);
+  gtk_curve_set_vector(GtkCurve_val(curve), len, vect);
+  caml_stat_free(vect);
+  return Val_unit;
+}
+value ml_gtk_curve_get_vector (value curve, value len)
+{
+  gfloat* vect = caml_stat_alloc(len * sizeof(gfloat));
+  value ret;
+  int i;
+  gtk_curve_get_vector(GtkCurve_val(curve), Int_val(len), vect);
+  ret = caml_alloc(Int_val(len)*Double_wosize, Double_array_tag);
+  for (i = 0; i < len; i++)
+    Store_double_field(ret, i, vect[i]);
+  caml_stat_free(vect);
+  return ret;
+}
 
 /* gtkmisc.h */
 
