@@ -7,7 +7,9 @@ let show_vector _ =
   Printf.printf "%g %g %g %g %g\n%!"
     vect.(0) vect.(1) vect.(2) vect.(3) vect.(4)
 let () =
-  curve#set_vector [|0.; 5.; 4.; 6.|];
+  curve#set_vector [|0.; 5.; 4.; 6.; 9.|];
+  (* curve#reset (); *) (* works *)
+  (* curve#set_curve_type `SPLINE; *) (* doesn't work with quartz... *)
   show_vector ();
   curve#event#connect#after_any ~callback:show_vector;
   w#connect#destroy ~callback:GMain.quit;

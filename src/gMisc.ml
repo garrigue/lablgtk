@@ -162,6 +162,7 @@ let drawing_area ?width ?height ?packing ?show () =
 class curve obj = object
   inherit drawing_area (obj : Gtk.curve obj)
   inherit curve_props
+  method reset () = Curve.reset obj
   method set_gamma = Curve.set_gamma obj
   method set_vector = Curve.set_vector obj
   method get_vector = Curve.get_vector obj
