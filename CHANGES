@@ -1,5 +1,7 @@
 $Id$
 
+In Lablgtk-2.14.2:
+
 2010.09.09 [Jacques]
   * add GtkCurve (but it is deprecated since 2.20)
 
