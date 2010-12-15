@@ -28,12 +28,18 @@
     This changes [GMain.main] to call [threaded_main] rather than
     [GtkMain.Main.default_main], so subsequent calls will work.
     The first call sets the GUI thread, and subsequent calls
-    to [main] will be automatically routed through [sync] *)
-val main : unit -> unit
+    to [main] will be automatically routed through [sync]
+    @param set_delay_db can be used to specify a function called
+    at the beginning of the main event-handling loop, so that
+    the {!do_jobs} delay can be made adaptative. The callback is
+    only passed to the "main" {!thread_main}, not the one registered
+    in GMain.main.
+    *)
+val main : ?set_delay_cb: (unit -> unit) -> unit -> unit
 (** Start the main loop in a new GUI thread. Do not use recursively. *)
 val start : unit -> Thread.t
 (** The real main function *)
-val thread_main : unit -> unit
+val thread_main : ?set_delay_cb: (unit -> unit) -> unit -> unit
 (** Forget the current GUI thread. The next call to [main]
     will register its caller as GUI thread. *)
 val reset : unit -> unit
@@ -59,3 +65,11 @@ val gui_safe : unit -> bool
     if another main loop is running:
       [Glib.Timeout.add ~ms:100 ~callback:GtkThread.do_jobs] *)
 val do_jobs : unit -> bool
+
+(** Set the delay used in the do_jobs function above.
+  Higher value will make the application less CPU-consuming,
+  but (relatively) less reactive.
+  Default value is [0.013] .*)
+val set_do_jobs_delay : float -> unit
+
+
