@@ -30,7 +30,7 @@
     The first call sets the GUI thread, and subsequent calls
     to [main] will be automatically routed through [sync]
     @param set_delay_db can be used to specify a function called
-    at the beginning of the main event-handling loop, so that
+    at the end of the main event-handling loop, so that
     the {!do_jobs} delay can be made adaptative. The callback is
     only passed to the "main" {!thread_main}, not the one registered
     in GMain.main.
