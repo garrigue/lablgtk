@@ -62,16 +62,18 @@ let sync f x =
   while !res = NA do Condition.wait c m done;
   match !res with Val y -> y | Exn e -> raise e | NA -> assert false
 
+let do_jobs_delay = ref 0.013;;
+let set_do_jobs_delay d = do_jobs_delay := max 0. d;;
 let do_jobs () =
-  Thread.delay 0.0001;
+  Thread.delay !do_jobs_delay;
   for i = 1 to n_jobs () do do_next_job () done;
   true
-  
+
 
 (* We check first whether there are some event pending, and run
    some iterations. We then need to delay, thus focing a thread switch. *)
 
-let thread_main_real () =
+let thread_main_real ?(set_delay_cb=(fun()->())) () =
   try
     let loop = (Glib.Main.create true) in
     Main.loops := loop :: !Main.loops;
@@ -79,9 +81,10 @@ let thread_main_real () =
     while Glib.Main.is_running loop do
       let i = ref 0 in
       while !i < 100 && Glib.Main.pending () do
-	Glib.Main.iteration true;
-	incr i
+        Glib.Main.iteration true;
+        incr i
       done;
+      set_delay_cb();
       do_jobs ()
     done;
     Main.loops := List.tl !Main.loops;
@@ -89,13 +92,13 @@ let thread_main_real () =
     Main.loops := List.tl !Main.loops;
     raise exn
 
-let thread_main () =
-  sync thread_main_real ()
+let thread_main ?set_delay_cb () =
+  sync (thread_main_real ?set_delay_cb) ()
 
-let main () =
+let main ?set_delay_cb () =
   GtkMain.Main.main_func := thread_main;
-  thread_main ()
-      
+  thread_main ?set_delay_cb ()
+
 let start () =
   reset ();
   Thread.create main ()
