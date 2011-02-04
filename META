@@ -1,8 +1,42 @@
-requires=""
-version="2.12.0"
-archive(byte)="lablgtk.cma"
-archive(byte,init)="lablgtk.cma gtkInit.cmo"
-archive(native)="lablgtk.cmxa"
-archive(native,init)="lablgtk.cmxa gtkInit.cmx"
-linkopts=""
-directory="+lablgtk2"
+description = "Bindings for gtk2"
+requires = ""
+version = "2.12.0"
+
+archive(byte) = "lablgtk.cma gtkInit.cmo"
+archive(native) = "lablgtk.cmxa gtkInit.cmx"
+archive(byte,mt) += "gtkThread.cmo"
+archive(native,mt) += "gtkThread.cmx"
+archive(toploop,mt) += "gtkThInit.cmo"
+
+package "glade" (
+  exists_if = "lablglade.cma,lablglade.cmxa,lablglade.cmxs"
+  description = "Bindings for glade"
+  requires = "lablgtk2"
+  archive(byte) = "lablglade.cma"
+  archive(native) = "lablglade.cmxa"
+)
+
+package "rsvg" (
+  exists_if = "lablrsvg.cma,lablrsvg.cmxa,lablrsvg.cmxs"
+  description = "Bindings for rsvg"
+  requires = "lablgtk2"
+  archive(byte) = "lablrsvg.cma"
+  archive(native) = "lablrsvg.cmxa"
+)
+
+package "gtkspell" (
+  exists_if = "lablspell.cma,lablspell.cmxa,lablspell.cmxs"
+  description = "Bindings for gtkspell"
+  requires = "lablgtk2"
+  archive(byte) = "lablgtkspell.cma"
+  archive(native) = "lablgtkspell.cmxa"
+)
+
+package "gl" (
+  exists_if = "lablgtkgtl.cma,lablgtkgtl.cmxa,lablgtkgtl.cmxs"
+  description = "Bindings for gtkGL"
+  requires = "lablgtk2"
+  archive(byte) = "lablgtkgl.cma"
+  archive(native) = "lablgtkgl.cmxa"
+)
+
