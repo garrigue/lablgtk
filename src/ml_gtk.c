@@ -635,6 +635,10 @@ ML_1 (gtk_container_get_resize_mode, GtkContainer_val, Val_resize_mode)
 ML_2 (gtk_container_add, GtkContainer_val, GtkWidget_val, Unit)
 ML_2 (gtk_container_remove, GtkContainer_val, GtkWidget_val, Unit)
 ML_1 (gtk_container_check_resize, GtkContainer_val, Unit)
+ML_4 (gtk_container_child_get_property, GtkContainer_val, GtkWidget_val,
+      String_val, GValue_val, Unit)
+ML_4 (gtk_container_child_set_property, GtkContainer_val, GtkWidget_val,
+      String_val, GValue_val, Unit)
 static void ml_gtk_simple_callback (GtkWidget *w, gpointer data)
 {
     value val, *clos = (value*)data;
