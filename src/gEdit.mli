@@ -123,6 +123,7 @@ class entry : ([> Gtk.entry] as 'a) obj ->
   object
     inherit editable
     inherit ['a] GObj.objvar
+    method as_entry : Gtk.entry Gtk.obj
     method connect : entry_signals
     method event : event_ops
     method append_text : string -> unit
