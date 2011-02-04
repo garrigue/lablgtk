@@ -107,6 +107,7 @@ class entry obj = object
   inherit editable obj
   method connect = new entry_signals obj
   inherit entry_props
+  method as_entry = (obj :> Gtk.entry obj)
   method event = new GObj.event_ops obj
   method append_text = Entry.append_text obj
   method prepend_text = Entry.prepend_text obj
