@@ -1,7 +1,11 @@
+*.cm*
+*.o
+*.a
+*.so
 .depend
 build.ml
 check_externals
-gdk-pixbuf-mlsource
+gdk_pixbuf_mlsource
 propcc
 varcc
 lablgtk2
@@ -10,6 +14,7 @@ lablgtktop_t
 lablgtkrun
 lablgladecc
 xml_lexer.ml
+gtkSignal.ml
 gtk*Props.ml
 ogtk*Props.ml
 *_tags.c
