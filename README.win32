@@ -114,5 +114,3 @@ Full compilation with MSVC or mingw (for the brave)
 4) Simply do "make" and "make opt" for the native version.
 
 5) Install ("make install") and test.
-
-$Id$
