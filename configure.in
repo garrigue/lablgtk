@@ -224,6 +224,7 @@ if ($CAMLOPT -shared -o test_dynlink.cmxs test_dynlink.ml) 2> /dev/null ; then
 else
    HAS_NATIVE_DYNLINK=no
 fi
+rm test_dynlink.*
 
 # GTK 2 auto configuration
 
