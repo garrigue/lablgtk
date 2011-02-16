@@ -1,9 +1,9 @@
 # $Id$
 # Makefile for lablgtk.
 
-COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
+COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c -I .
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c -I .
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 LIBRARIAN = $(CAMLMKLIB) -verbose -ocamlc "$(CAMLC)" -ocamlopt "$(CAMLOPT)"
 TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
@@ -445,8 +445,10 @@ varcc$(XE): varcc.cmo
 	$(LINKER) -o $@ $<
 	rm -f *_tags.h *_tags.c
 
-propcc$(XE): propcc.cmo
-	$(LINKER) -o $@ $<
+propcc.cmo: propcc_parsing.cmo
+
+propcc$(XE): propcc_parsing.cmo propcc.cmo 
+	$(LINKER) -o $@ $^
 
 check_externals$(XE): check_externals.cmo
 	$(LINKER) -o $@ $<
@@ -454,7 +456,7 @@ check_externals$(XE): check_externals.cmo
 clean:
 	rm -f *.cm* *.o *.a *.so *.exe *.obj *.lib *.dll *_tags.[ch] *.gch \
 	  $(TARGETS) varcc.ml gtkSignal.ml xml_lexer.ml \
-	  propcc$(XE) check_externals$(XE) check_externals.ml propcc.ml \
+	  propcc$(XE) check_externals$(XE) check_externals.ml \
 	  *Enums.ml *Props.ml
 	rm -f \#*\# *~
 
