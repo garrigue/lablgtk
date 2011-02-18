@@ -168,7 +168,14 @@ let process_file f =
             end else
               defprop ~name ~mlname:(camlize name) ~gtype ~tag
           end;
-        out "@]@ end"
+        out "@]@ end";
+        out "@ @[<hv2>module FunctionalP (FRP_S : GtkSignal.GlibPropertyAsSignal) = struct";
+        List.iter props ~f:
+          begin fun (name, _, gtype, attrs) ->
+            let name = camlize name in
+            out "@ let %s x = FRP_S.connect x P.%s" name name
+          end;
+        out "@]@ end";
       end;
       if sigs <> [] then begin
         out "@ @[<hv2>module S = struct@ open GtkSignal";
