@@ -127,3 +127,25 @@ val exit_callback : (unit -> unit) ref
 type saved_state
 val push_callback : unit -> saved_state
 val pop_callback : saved_state -> bool
+
+module type GlibPropertyAsSignal = sig
+  type 'a u
+  val connect : 'a Gobject.obj ->
+      ('a, 'b) Gobject.property -> id * 'b u
+  val disconnect : 'a Gobject.obj -> id -> unit
+end
+
+module type GlibPropertyAsEvent = sig
+  type 'a u
+    val connect : 'a Gobject.obj ->
+      ('a, 'b) Gobject.property -> id * 'b u
+    val disconnect : 'a Gobject.obj -> id -> unit
+end
+
+module type GlibSignalAsEvent = sig
+  type 'a u
+  val connect : 'a Gobject.obj ->
+    ('a, 'b) t -> (('c -> unit) -> 'b) -> id * 'c u
+  val disconnect : 'a Gobject.obj -> id -> unit
+end
+

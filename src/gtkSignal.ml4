@@ -189,3 +189,24 @@ let connect_property ~(prop:('a, _) property) ~callback (obj : 'a obj) =
   let name = "notify::" ^ prop.Gobject.name in
   connect_aux ~name ~marshaller:marshal_unit ~callback obj
 
+module type GlibPropertyAsSignal = sig
+  type 'a u
+  val connect : 'a Gobject.obj ->
+      ('a, 'b) Gobject.property -> id * 'b u
+  val disconnect : 'a Gobject.obj -> id -> unit
+end
+
+module type GlibPropertyAsEvent = sig
+  type 'a u
+    val connect : 'a Gobject.obj ->
+      ('a, 'b) Gobject.property -> id * 'b u
+    val disconnect : 'a Gobject.obj -> id -> unit
+end
+
+module type GlibSignalAsEvent = sig
+  type 'a u
+  val connect : 'a Gobject.obj ->
+    ('a, 'b) t -> (('c -> unit) -> 'b) -> id * 'c u
+  val disconnect : 'a Gobject.obj -> id -> unit
+end
+
