@@ -169,11 +169,18 @@ let process_file f =
               defprop ~name ~mlname:(camlize name) ~gtype ~tag
           end;
         out "@]@ end";
-        out "@ @[<hv2>module FunctionalP (FRP_S : GtkSignal.GlibPropertyAsSignal) = struct";
+        out "@ @[<hv2>module P_S (FRP_S : GtkSignal.GlibPropertyAsSignal) = struct";
         List.iter props ~f:
           begin fun (name, _, gtype, attrs) ->
             let name = camlize name in
             out "@ let %s x = FRP_S.connect x P.%s" name name
+          end;
+        out "@]@ end";
+        out "@ @[<hv2>module P_E (FRP_E : GtkSignal.GlibPropertyAsEvent) = struct";
+        List.iter props ~f:
+          begin fun (name, _, gtype, attrs) ->
+            let name = camlize name in
+            out "@ let %s x = FRP_E.connect x P.%s" name name
           end;
         out "@]@ end";
       end;
@@ -195,6 +202,36 @@ let process_file f =
                   (l, List.map (Hashtbl.find conversions) tyl, ret)
             end;
             out "}@]@]";
+          end;
+        out "@]@ end";
+        out "@ @[<hv2>module S_E (FRP_E : GtkSignal.GlibSignalAsEvent) = struct";
+        List.iter sigs ~f:
+          begin fun (name, marshaller, _) ->
+            begin match marshaller with
+            | Types (_, _, "") ->
+                out "@ @[<hv2>let %s o = FRP_E.connect o S.%s " name name
+            | Types (_, _, _) ->
+                out "@ @[<hv2>let %s ~cb o = FRP_E.connect_ret ~cb o S.%s " name name
+            | _ -> Printf.eprintf "Functional signal for `%s' skipped.\n" name
+            end;
+            begin match marshaller with
+            | Types ([], tyl, "")
+            | Types ([ "" ], tyl, "") -> out "GtkSignal.apply%d" (List.length tyl)
+            | Types ([], tyl, _)
+            | Types ([ "" ], tyl, _) -> out "GtkSignal.apply%d_ret" (List.length tyl)
+            | Types (l, _, ret) ->
+                if ret = "" then out "(fun ~f " else out "(fun ~f ~cb ";
+                let i = ref 0 in
+                List.iter l ~f:(fun p -> incr i; if p = "" then out "x%d " !i else out "~%s " p);
+                i := 0;
+                let l = List.map l ~f:
+                  (fun p -> incr i; if p = "" then Printf.sprintf "x%d" !i else Printf.sprintf "%s" p)
+                in
+                out "-> let x = (%s) in f x" (String.concat ", " l);
+                if ret = "" then out ")" else out "; cb x)"
+            | _ -> ()
+            end;
+            out "@]";
           end;
         out "@]@ end";
       end;

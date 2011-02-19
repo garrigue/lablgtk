@@ -145,7 +145,32 @@ end
 module type GlibSignalAsEvent = sig
   type 'a u
   val connect : 'a Gobject.obj ->
-    ('a, 'b) t -> (('c -> unit) -> 'b) -> id * 'c u
+    ('a, 'b) t -> (f:('c -> unit) -> 'b) -> id * 'c u
+  val connect_ret : 'a Gobject.obj ->
+    ('a, 'b) t -> cb:('c -> 'd) -> (f:('c -> unit) -> cb:('c -> 'd) ->
+      'b) -> id * 'c u
   val disconnect : 'a Gobject.obj -> id -> unit
 end
+
+val apply0 : f:(unit -> unit) -> unit -> unit
+val apply1 : f:('a -> 'b) -> 'a -> 'b
+val apply2 : f:('a * 'b -> 'c) -> 'a -> 'b -> 'c
+val apply3 : f:('a * 'b * 'c -> 'd) -> 'a -> 'b -> 'c -> 'd
+val apply4 : f:('a * 'b * 'c * 'd -> 'e) -> 'a -> 'b -> 'c -> 'd -> 'e
+val apply5 : f:('a * 'b * 'c * 'd * 'e -> 'f) ->
+  'a -> 'b -> 'c -> 'd -> 'e -> 'f
+val apply6 : f:('a * 'b * 'c * 'd * 'e * 'f -> 'g) ->
+  'a -> 'b -> 'c -> 'd -> 'e -> 'f -> 'g
+val apply0_ret : f:(unit -> 'b) -> cb:(unit -> 'c) -> unit -> 'c
+val apply1_ret : f:('a -> 'b) -> cb:('a -> 'c) -> 'a -> 'c
+val apply2_ret : f:('a * 'b -> 'c) -> cb:('a * 'b -> 'd) -> 'a -> 'b -> 'd
+val apply3_ret : f:('a * 'b * 'c -> 'd) ->
+  cb:('a * 'b * 'c -> 'e) -> 'a -> 'b -> 'c -> 'e
+val apply4_ret : f:('a * 'b * 'c * 'd -> 'e) ->
+  cb:('a * 'b * 'c * 'd -> 'f) -> 'a -> 'b -> 'c -> 'd -> 'f
+val apply5_ret : f:('a * 'b * 'c * 'd * 'e -> 'f) ->
+  cb:('a * 'b * 'c * 'd * 'e -> 'g) -> 'a -> 'b -> 'c -> 'd -> 'e -> 'g
+val apply6_ret : f:('a * 'b * 'c * 'd * 'e * 'f -> 'g) ->
+  cb:('a * 'b * 'c * 'd * 'e * 'f -> 'h) ->
+    'a -> 'b -> 'c -> 'd -> 'e -> 'f -> 'h
 
