@@ -205,6 +205,7 @@ end
 class notebook obj = object (self)
   inherit [Gtk.notebook] GContainer.container_impl obj
   inherit notebook_props
+  method as_notebook = (obj :> Gtk.notebook obj)
   method event = new GObj.event_ops obj
   method connect = new notebook_signals obj
   method insert_page ?tab_label ?menu_label ?pos child =
