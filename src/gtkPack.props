@@ -98,6 +98,13 @@ class Notebook set wrap wrapsig : Container {
   method set_menu_label : "[>`widget] obj -> [>`widget] obj -> unit"
   method reorder_child : "[>`widget] obj -> int -> unit"
   signal switch_page : Pointer gint      / NoWrap
+  signal select_page : gboolean
+  signal reorder_tab : GtkDirectionType gboolean
+  signal change_current_page : gint
+  signal move_focus_out : GtkDirectionType
+  signal page_added : GtkWidget guint gpointer
+  signal page_removed : GtkWidget guint gpointer
+  signal page_reordered : GtkWidget guint gpointer
   (* omit others *)
 }
 
