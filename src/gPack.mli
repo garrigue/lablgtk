@@ -242,6 +242,7 @@ class notebook : Gtk.notebook obj ->
   object
     inherit GContainer.container
     val obj : Gtk.notebook obj
+    method as_notebook : Gtk.notebook Gtk.obj
     method event : event_ops
     method append_page :
       ?tab_label:widget -> ?menu_label:widget -> widget -> int
