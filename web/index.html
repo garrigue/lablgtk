@@ -1,0 +1,279 @@
+<html>
+<head>
+<Title>LablGTK</Title>
+</head>
+<body>
+<H1><img src=gtk-logo-half.gif>LablGtk</H1>
+
+<div style="color: red; font-size: 16pt">
+Warning: This web page is under construction. We are moving from Gna.org to OCaml forge.
+</div>
+<p>
+LablGtk is an <a
+href="http://caml.inria.fr/index-eng.html">Objective
+Caml</a> interface to <a href="http://www.gtk.org/">gtk+</a>.
+It comes in two flavors: LablGtk1 for gtk+-1.2 and LablGtk2 for
+gtk+-2.0 to gtk+-2.16.
+<p>
+
+It uses the rich type system of Objective Caml 3 to provide a strongly
+typed, yet very comfortable, object-oriented interface to gtk+. This
+is not that easy if you know the dynamic typing approach taken by
+gtk+.
+<p>
+
+It is still under development, but already fully functional.
+All widgets (but one) are available, with almost all their methods.
+The GLArea widget is also supported in combination with <a
+href="http://www.math.nagoya-u.ac.jp/~garrigue/soft/olabl/lablgl.html">LablGL</a>.
+LibGlade and GdkPixbuf support is also included for both versions.
+LablGtk2 adds support for gnomecanvas, librsvg and libpanel
+Many examples are provided.
+<p>
+
+Objective Caml threads are supported, including for the toplevel,
+which allows for interactive use of the library.
+<p>
+
+LablGtk also works under Windows. See the README for details about how
+to build it for Win32.
+<p>
+
+Since release 1.2.1, LablGtk contains support for rapid development with
+glade, through an interface wrapper compiler, and a libglade binding.
+You can also find code generators in the <a href="#tools">tools</a>
+section.
+<p>
+
+
+Here are the READMEs for the currents versions:
+<ul>
+<li> <a href="lablgtk.txt">Lablgtk</a> and its <a href="changes.txt">changelog</a>
+<li> <a href="lablgtk2.txt">Lablgtk2</a> and its <a href="changes2.txt">changelog</a>
+</ul>
+
+Here is the ocamldoc generated documentation:
+<ul>
+<li> <a href="refdoc/">Lablgtk2</a>
+</ul>
+
+The project is <a href="https://forge.ocamlcore.org/projects/lablgtk/">developped on the OCaml Forge</a>.
+
+<h3>Download</h3>
+
+<DL>
+<DT> <A href="https://forge.ocamlcore.org/scm/?group_id=220">Git access</A>
+<DD> The working sources of LablGtk are available from the Caml forge. The
+main branch is for lablgtk2, you need to use the branch lablgtk1 for
+the old version.
+
+<DT><a href="https://forge.ocamlcore.org/frs/?group_id=220">Download area</a>
+<DD>Where you can browse and download all available releases from.
+
+<DT> <a href="https://forge.ocamlcore.org/frs/download.php/561/lablgtk-2.14.2.tar.gz">lablgtk-2.14.2.tar.gz</a>
+<DD> Latest release of LablGtk2. It fixes a number of bugs, including
+  an incompatibility between ocaml 3.12 and previous versions. See
+  the <a href="changes2.txt">changes</a> for the details.
+
+<DT> <a href="https://forge.ocamlcore.org/frs/download.php/562/lablgtk-2.14.0-win32.zip">lablgtk-2.14.0-win32.zip</a>
+<DD> Compiled version for Windows. Can be used only with the Objective Caml
+3.11 distribution (msvc or mingw).
+Required Gtk+ dlls are available from the
+<a href="ftp://ftp.gnome.org/pub/gnome/binaries/win32/">Gnome distribution</a>.
+Supports both bytecode and native code. The runtime environment is
+enough for bytecode, but you need the development
+environment for native linking. Here are
+the <a href="install-win32.txt">installation instructions</a>.
+Note that this release was compiled with mingw, so there are no extra
+dependencies.
+
+<DT> <a href="https://forge.ocamlcore.org/frs/download.php/563/lablgtk-2.12.0.tar.gz">lablgtk-2.12.0.tar.gz</a>
+<DD> 5th release of LablGtk2.
+
+<DT> <a href="https://forge.ocamlcore.org/frs/download.php/564/lablgtk-2.12.0-win32.zip">lablgtk-2.12.0-win32.zip</a>
+<DD> Compiled version for Windows. Can be used only with the Objective Caml
+3.11 distribution (msvc or mingw).
+Required Gtk+ dlls are available from the
+<a href="http://gladewin32.sourceforge.net/">Glade for Windows Project</a>.
+Supports both bytecode and native code. The runtime environment is
+enough for bytecode, but you need the development
+environment for native linking. Here are
+the <a href="install-win32.txt">installation instructions</a>.
+<DD> Note: the dlls included in this package were compiled with VC++
+  8.0, as a result they require msvcr90.dll. If it is not already
+  installed on your system, you should install
+<a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=9b2da534-3e03-4391-8a4d-074b9f2bc1bf&displaylang=en">Microsoft Visual C++ 2008 Redistributable Package (x86)</a>.
+
+<DT> <a href="https://forge.ocamlcore.org/frs/download.php/565/lablgtk-2.10.1.tar.gz">lablgtk-2.10.1.tar.gz</a>
+<DD> Fixes some bugs in lablgtk-2.10.0, the 4th release of
+  LablGtk2. Here are the <a href="changes2.txt">changes</a>.
+
+<DT> <a href="https://forge.ocamlcore.org/frs/download.php/566/lablgtk-2.10.1-win32.zip">lablgtk-2.10.1-win32.zip</a>
+<DD> Compiled version for Windows. Can be used with the Objective Caml
+3.08 to 3.10 distribution (msvc or mingw), without any extra tools.
+Required Gtk+ dlls are available from the
+<a href="http://gladewin32.sourceforge.net/">Glade for Windows Project</a>.
+Supports both bytecode and native code. The runtime environment is
+enough for bytecode, but you need the development
+environment for native linking. Here are
+the <a href="install-win32.txt">installation instructions</a>.
+
+<DT> <a href="https://forge.ocamlcore.org/frs/download.php/567/lablgtk-2.10.1-dlls-3.11.zip">lablgtk-2.10.1-dlls-3.11.zip</a>
+<DD> New stub DLLs for using then win32 binary distribution with OCaml 3.11.
+     You should just put them in lib/stublibs in place of those in
+     lablgtk-2.10.1-win32.zip.
+
+<!--
+<DT> <a href="dist/lablgtk2-20060908.tar.gz">lablgtk2-20060908.tar.gz</a>
+<DD> Snapshot of the CVS version.
+
+<DT> <a href="dist/lablgtk-2.6.0.tar.gz">lablgtk-2.6.0.tar.gz</a>
+<DD> Third release of LablGtk2.
+
+<DT> <a href="dist/lablgtk-2.6.0-win32.zip">lablgtk-2.6.0-win32.zip</a>
+<DD> Compiled version for Windows. Can be used with the Objective Caml
+3.08 or 3.09 distribution (msvc or mingw), without any extra tools.
+Required Gtk+ dlls are available as <a
+href="dist/gtk-2.6.8-dlls-win32.zip">gtk-2.6.8-dlls-win32.zip</a>.
+Supports both bytecode and native code, but you need the Gtk+
+export libs (not included with the above dlls) for native linking.
+<br>
+Additional support for librsvg is provided as
+<a href="dist/lablrsvg-2.0-win32.zip">lablrsvg-2.0-win32.zip</a> and
+<a href="dist/librsvg-2.4.0-dlls-win32.zip">librsvg-2.4.0-dlls-win32.zip</a>.
+
+<DT> <a href="dist/lablgtk-2.4.0.tar.gz">lablgtk-2.4.0.tar.gz</a>
+<DD> Second release of LablGtk2.
+
+<DT> <a
+href="dist/lablgtk-2.4.0-ocamlwin-3.08.zip">lablgtk-2.4.0-ocamlwin-3.08.zip</a>
+<DD> Compiled version for windows. Can be used with the Objective Caml
+3.08 distribution (msvc or mingw), without any extra tools.
+Required Gtk+ dlls are available as <a
+href="dist/gtk-2.4.3-dlls-win32.zip">gtk-2.4.3-dlls-win32.zip</a>.
+Supports only bytecode linking (you need to compile from source for
+custom and native code.)
+--->
+
+<DT> <a href="https://forge.ocamlcore.org/frs/download.php/571/lablgtk-1.2.7.tar.gz">lablgtk-1.2.7.tar.gz</a>
+<DD> New release for Objective Caml 3.05 and up. Only a few additions
+     and fixes.
+<DT> <a
+href="https://forge.ocamlcore.org/frs/download.php/569/lablgtk-1.2.7-ocamlwin-3.08.zip">lablgtk-1.2.7-ocamlwin-3.08.zip</a>
+<DD> Compiled version for windows. Can be used with the Objective Caml
+3.08 distribution, without any extra tools. Required Gtk+ dlls are available
+as <a
+href="https://forge.ocamlcore.org/frs/download.php/570/gtk-1.3.0-dlls-win32.zip">gtk-1.3.0-dlls-win32.zip</a>.
+Supports only bytecode linking.
+
+<!--
+<DT> <a
+href="dist/lablgtk-2.2.0-ocamlwin-3.07.zip">lablgtk-2.2.0-ocamlwin-3.07.zip</a>
+and <a
+href="dist/lablgtk-1.2.6-ocamlwin-3.07.zip">lablgtk-1.2.6-ocamlwin-3.07.zip</a>
+<DD> Same thing for ocamlwin 3.07.
+
+<DT> <a
+href="dist/lablgtk-1.2.5-ocamlwin-3.06.zip">lablgtk-1.2.5-ocamlwin-3.06.zip</a>
+<DD> Same thing for ocamlwin 3.06.
+
+<DD> Here is a <a href="dist/lablgtk-20010523.diffs.gz">patch</a>
+     with respect to release 1.2.0.
+<DT> <a href="dist/lablgtk-1.2.1.tar.gz">lablgtk-1.2.1.tar.gz</a>
+<DD> Release version for <a href="http://caml.inria.fr/ocaml/">Objective
+Caml 3.01 and 3.02</a>. (411 Kbytes)
+<DD> You can also download it from <a href="ftp://ftp.inria.fr/lang/caml-light/bazar-ocaml/">INRIA</a>
+<DT> <a href="dist/lablgtk-1.00.tar.gz">lablgtk-1.00.tar.gz</a>
+<DD> Older version for <a href="http://caml.inria.fr/ocaml/">Objective
+Caml 3.00</a>. (396 Kbytes)
+<DT> <a href="dist/lablgtk-b1.tar.gz">lablgtk-b1.tar.gz</a>
+<DD> Older development version for <a
+href="http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/">Objective Label 2.04</a>.
+(368 Kbytes)
+-->
+
+</DL>
+
+
+<!--
+<h3>Contributed ports</h3>
+
+<dl>
+<dt> <a
+href="dist/lablgtk-1.2.5-cygwin-3.06.tgz">lablgtk-1.2.5-cygwin-3.06.tgz</a>
+<dd> A compiled cygwin port of lablgtk 1.2.5, contributed by Emmanuel
+Dieul.
+<dt> <a href="http://www.taglib.co.kr/ocaml/win32.html">OCaml
+Mingw</a>
+<dd> SooHyoung Oh provides modified sources for compilation with the
+Mingw toolchain. LablGL is available too.
+<dt> <a
+href="http://www.cis.upenn.edu/~bcpierce/unison/download/resources/">LablGtk
+on Windows</a>
+<dd> The <a
+href="http://www.cis.upenn.edu/~bcpierce/unison/">Unison</a> team
+provides compiled version of LablGtk on Windows. Look for
+lablgtk-x.x.x-cygwin.tar.gz.
+<dt> <a href="http://storm.boblycat.org/~malc/code/patches/">Patch for
+static Gtk+ on Win32</a>
+<dd> Provided by <a href="http://storm.boblycat.org/~malc/">malc</a>
+</dl>
+-->
+
+<h3><a name=tools>Software and Links</a></h3>
+
+Lots of stuff is included in the distribution, but here are some more
+from external contributors.
+<dl>
+<dt> <a
+href="http://plus.kaist.ac.kr/~shoh/ocaml/lablgtk2/lablgtk2-tutorial/">
+LablGtk2 Tutorial</a> by SooHyoung Oh
+<dd> A nice lablgtk translation of the Gtk+ Tutorial.
+See also the <a
+href="http://plus.kaist.ac.kr/~shoh/ocaml/lablgtk2/treeview-tutorial/">
+Tree View Tutorial</a> (in progress).
+<dt> <a href="http://www.cis.upenn.edu/~bcpierce/unison/">Unison</a>
+by Benjamin Pierce et al.
+<dd> A file synchronizer. Uses LablGtk for its GUI.
+<!--
+<dt> <a
+href="http://www.lix.polytechnique.fr/~monate/mlglade/introduction.html">
+MLglade</a> by Benjamin Monate
+<dd> An extension to glade, for generating LablGtk code.
+-->
+<dt> <a href="http://gtk-extras.forge.ocamlcore.org/index.en.html">LablGtk-extras</a>
+by Maxence Guesdon
+<dd> Additional tools and libraries to develop LablGtk2 applications.</dd>
+<dt> <a href="http://home.gna.org/cameleon/">Cameleon2</a>
+by Maxence Guesdon
+<dd> An IDE for OCaml, written itself in LablGtk.
+<dt> <a href="http://cristal.inria.fr/camlimages/eng.html">CamlImages</a>
+<dd> A library to handle various image formats in Caml. Includes
+support for LablGtk.
+<dt> <a href="http://storm.boblycat.org/~malc/motazaar">Motazaar</a> by malc
+<dd> A 3D viewer, using also lablGL.
+<!--
+<dt> <a
+href="http://www.cs.unibo.it/helm/mml-widget/index.html">LablGtkMathView</a>
+<dd> A Gtk Widget to Render MathML, and its lablGtk wrapper.
+-->
+</dl>
+
+<h2>Mailing list</h2>
+
+Here is the
+<a href="https://lists.forge.ocamlcore.org/cgi-bin/listinfo/lablgtk-list">web
+  interface</a> to the lablgtk mailing list (for subscription, etc...)
+<p>
+The archives are available <a href="https://lists.forge.ocamlcore.org/pipermail/lablgtk-list/">here</a>.
+<p>
+Here are the old
+<a href="http://www.math.nagoya-u.ac.jp/~garrigue/soft/olabl/lablgtk-list/">
+  archives</a>. (The above web interface only keeps messages since june 2007.)
+
+<P>
+
+<HR>
+
+<Address><A href=http://www.math.nagoya-u.ac.jp/~garrigue/>Jacques
+Garrigue</A>, 2010.9.18.</Address>
