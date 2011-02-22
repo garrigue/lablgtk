@@ -510,7 +510,7 @@ DOC_URI=file:///usr/share/gtk-doc/html
 DOC_BASE_URI=$(if $(DOC_URI),-base-uri $(DOC_URI))
 doc : lablgtk$(XO)doc gtkdoc.cmo
 	mkdir -p $(DOCDIR)/html
-	$(OCAMLDOC) -g ./gtkdoc.cmo $(DOC_BASE_URI) -v -t LablGTK -d $(DOCDIR)/html -load $<
+	$(OCAMLDOC) -sort -g ./gtkdoc.cmo $(DOC_BASE_URI) -v -t LablGTK -d $(DOCDIR)/html -load $<
 doc_texi : lablgtk$(XO)doc
 	$(OCAMLDOC) -texi -v -t LablGTK -o $(DOCDIR)/lablgtk2.texi -load $<
 
