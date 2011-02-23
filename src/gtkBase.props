@@ -134,8 +134,8 @@ class Container abstract : Widget {
   method set_focus_child : "[>`widget] optobj -> unit"
   method set_focus_vadjustment : "[>`adjustment] optobj -> unit"
   method set_focus_hadjustment : "[>`adjustment] optobj -> unit"
-  method child_set_property : "[>`container] obj -> [>`widget] obj -> string -> unit"
-  method child_get_property : "[>`container] obj -> [>`widget] obj -> string -> unit"
+  method child_set_property : "[>`widget] obj -> string -> g_value -> unit"
+  method child_get_property : "[>`widget] obj -> string -> g_value -> unit"
   signal add :       GtkWidget   / Wrap
   signal remove :    GtkWidget   / Wrap
   signal check_resize
