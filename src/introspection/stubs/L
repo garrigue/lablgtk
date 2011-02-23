@@ -1,0 +1,862 @@
+In file included from ml_stubs_Gtk.c:4:0:
+../ml_gobject.h:27:39: error: expected ‘)’ before ‘*’ token
+../ml_gobject.h:28:43: error: expected ‘)’ before ‘*’ token
+../ml_gobject.h:31:50: error: expected ‘)’ before ‘*’ token
+../ml_gobject.h:37:41: error: expected ‘)’ before ‘*’ token
+../ml_gobject.h:40:19: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+../ml_gobject.h:41:41: error: expected ‘)’ before ‘*’ token
+../ml_gobject.h:45:35: error: expected ‘)’ before ‘t’
+../ml_gobject.h:46:39: error: expected ‘)’ before ‘t’
+ml_stubs_Gtk.c:255:0: warning: "GClosure_val" redefined
+../ml_gobject.h:36:0: note: this is the location of the previous definition
+ml_stubs_Gtk.c: In function ‘ml_gtk_window_group_list_windows’:
+ml_stubs_Gtk.c:3235:1: warning: implicit declaration of function ‘Val_GObject’
+ml_stubs_Gtk.c: In function ‘ml_gtk_window_set_icon_list’:
+ml_stubs_Gtk.c:3265:1: warning: implicit declaration of function ‘G_LIST’
+ml_stubs_Gtk.c:3265:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_window_propagate_key_event’:
+ml_stubs_Gtk.c:3285:1: warning: implicit declaration of function ‘GDK_EVENT_KEY’
+ml_stubs_Gtk.c:3285:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_window_activate_key’:
+ml_stubs_Gtk.c:3324:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_window_set_default_icon_list’:
+ml_stubs_Gtk.c:3328:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_prepend_type’:
+ml_stubs_Gtk.c:3338:1: warning: implicit declaration of function ‘GTK_WIDGET_PATH’
+ml_stubs_Gtk.c:3338:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_length’:
+ml_stubs_Gtk.c:3339:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_set_object_type’:
+ml_stubs_Gtk.c:3340:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_set_name’:
+ml_stubs_Gtk.c:3341:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_remove_region’:
+ml_stubs_Gtk.c:3342:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_remove_class’:
+ml_stubs_Gtk.c:3343:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_list_regions’:
+ml_stubs_Gtk.c:3344:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_list_classes’:
+ml_stubs_Gtk.c:3345:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_has_qname’:
+ml_stubs_Gtk.c:3346:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_has_qclass’:
+ml_stubs_Gtk.c:3347:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_has_name’:
+ml_stubs_Gtk.c:3348:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_has_class’:
+ml_stubs_Gtk.c:3349:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_get_object_type’:
+ml_stubs_Gtk.c:3350:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_get_name’:
+ml_stubs_Gtk.c:3351:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_clear_regions’:
+ml_stubs_Gtk.c:3352:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_clear_classes’:
+ml_stubs_Gtk.c:3353:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_iter_add_class’:
+ml_stubs_Gtk.c:3354:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_is_type’:
+ml_stubs_Gtk.c:3355:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_has_parent’:
+ml_stubs_Gtk.c:3356:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_get_object_type’:
+ml_stubs_Gtk.c:3357:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_free’:
+ml_stubs_Gtk.c:3358:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_copy’:
+ml_stubs_Gtk.c:3359:1: warning: implicit declaration of function ‘Val_GObject_new’
+ml_stubs_Gtk.c:3359:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_path_append_type’:
+ml_stubs_Gtk.c:3360:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_style_get_property’:
+ml_stubs_Gtk.c:3374:1: warning: implicit declaration of function ‘G_VALUE’
+ml_stubs_Gtk.c:3374:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_shape_combine_region’:
+ml_stubs_Gtk.c:3379:1: warning: implicit declaration of function ‘cAIRO_REGION_T’
+ml_stubs_Gtk.c:3379:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_region_intersect’:
+ml_stubs_Gtk.c:3421:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_queue_draw_region’:
+ml_stubs_Gtk.c:3425:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_override_symbolic_color’:
+ml_stubs_Gtk.c:3429:1: warning: implicit declaration of function ‘GDK_R_G_B_A’
+ml_stubs_Gtk.c:3429:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_override_font’:
+ml_stubs_Gtk.c:3430:1: warning: implicit declaration of function ‘PANGO_FONT_DESCRIPTION’
+ml_stubs_Gtk.c:3430:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_override_cursor’:
+ml_stubs_Gtk.c:3431:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3431:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_modify_font’:
+ml_stubs_Gtk.c:3433:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_modify_cursor’:
+ml_stubs_Gtk.c:3434:1: warning: implicit declaration of function ‘GDK_COLOR’
+ml_stubs_Gtk.c:3434:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3434:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_input_shape_combine_region’:
+ml_stubs_Gtk.c:3445:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_widget_draw’:
+ml_stubs_Gtk.c:3508:1: warning: implicit declaration of function ‘cAIRO_T’
+ml_stubs_Gtk.c:3508:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_drag_source_set_target_list’:
+ml_stubs_Gtk.c:3511:1: warning: implicit declaration of function ‘GTK_TARGET_LIST’
+ml_stubs_Gtk.c:3511:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_drag_dest_set_target_list’:
+ml_stubs_Gtk.c:3522:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_view_set_tooltip_row’:
+ml_stubs_Gtk.c:3652:1: warning: implicit declaration of function ‘GTK_TREE_PATH’
+ml_stubs_Gtk.c:3652:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_view_set_tooltip_cell’:
+ml_stubs_Gtk.c:3654:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_view_set_cursor_on_cell’:
+ml_stubs_Gtk.c:3671:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_view_set_cursor’:
+ml_stubs_Gtk.c:3672:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_view_row_expanded’:
+ml_stubs_Gtk.c:3674:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_view_row_activated’:
+ml_stubs_Gtk.c:3675:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_view_expand_to_path’:
+ml_stubs_Gtk.c:3702:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_view_expand_row’:
+ml_stubs_Gtk.c:3703:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_view_create_row_drag_icon’:
+ml_stubs_Gtk.c:3705:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_view_collapse_row’:
+ml_stubs_Gtk.c:3707:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_store_swap’:
+ml_stubs_Gtk.c:3716:1: warning: implicit declaration of function ‘GTK_TREE_ITER’
+ml_stubs_Gtk.c:3716:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3716:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_store_set_value’:
+ml_stubs_Gtk.c:3717:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3717:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_store_remove’:
+ml_stubs_Gtk.c:3718:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_store_move_before’:
+ml_stubs_Gtk.c:3719:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3719:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_store_move_after’:
+ml_stubs_Gtk.c:3720:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3720:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_store_iter_is_valid’:
+ml_stubs_Gtk.c:3721:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_store_iter_depth’:
+ml_stubs_Gtk.c:3722:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_store_is_ancestor’:
+ml_stubs_Gtk.c:3723:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3723:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_selection_unselect_range’:
+ml_stubs_Gtk.c:3733:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3733:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_selection_unselect_path’:
+ml_stubs_Gtk.c:3734:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_selection_unselect_iter’:
+ml_stubs_Gtk.c:3735:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_selection_select_range’:
+ml_stubs_Gtk.c:3737:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3737:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_selection_select_path’:
+ml_stubs_Gtk.c:3738:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_selection_select_iter’:
+ml_stubs_Gtk.c:3739:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_selection_path_is_selected’:
+ml_stubs_Gtk.c:3741:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_selection_iter_is_selected’:
+ml_stubs_Gtk.c:3742:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_row_reference_valid’:
+ml_stubs_Gtk.c:3747:1: warning: implicit declaration of function ‘GTK_TREE_ROW_REFERENCE’
+ml_stubs_Gtk.c:3747:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_row_reference_get_path’:
+ml_stubs_Gtk.c:3748:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_row_reference_free’:
+ml_stubs_Gtk.c:3749:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_row_reference_copy’:
+ml_stubs_Gtk.c:3750:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_up’:
+ml_stubs_Gtk.c:3753:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_to_string’:
+ml_stubs_Gtk.c:3754:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_prev’:
+ml_stubs_Gtk.c:3755:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_prepend_index’:
+ml_stubs_Gtk.c:3756:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_next’:
+ml_stubs_Gtk.c:3757:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_is_descendant’:
+ml_stubs_Gtk.c:3758:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3758:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_is_ancestor’:
+ml_stubs_Gtk.c:3759:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3759:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_get_depth’:
+ml_stubs_Gtk.c:3760:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_free’:
+ml_stubs_Gtk.c:3761:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_down’:
+ml_stubs_Gtk.c:3762:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_copy’:
+ml_stubs_Gtk.c:3763:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_compare’:
+ml_stubs_Gtk.c:3764:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:3764:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_path_append_index’:
+ml_stubs_Gtk.c:3765:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_model_sort_iter_is_valid’:
+ml_stubs_Gtk.c:3773:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_model_sort_convert_path_to_child_path’:
+ml_stubs_Gtk.c:3774:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_model_sort_convert_child_path_to_path’:
+ml_stubs_Gtk.c:3775:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_model_filter_convert_path_to_child_path’:
+ml_stubs_Gtk.c:3787:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_model_filter_convert_child_path_to_path’:
+ml_stubs_Gtk.c:3788:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_iter_free’:
+ml_stubs_Gtk.c:3792:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tree_iter_copy’:
+ml_stubs_Gtk.c:3793:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_tool_palette_get_drag_item’:
+ml_stubs_Gtk.c:3841:1: warning: implicit declaration of function ‘GTK_SELECTION_DATA’
+ml_stubs_Gtk.c:3841:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_theming_engine_get_style_property’:
+ml_stubs_Gtk.c:3945:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_view_starts_display_line’:
+ml_stubs_Gtk.c:3957:1: warning: implicit declaration of function ‘GTK_TEXT_ITER’
+ml_stubs_Gtk.c:3957:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_view_set_tabs’:
+ml_stubs_Gtk.c:3958:1: warning: implicit declaration of function ‘PANGO_TAB_ARRAY’
+ml_stubs_Gtk.c:3958:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_view_scroll_to_iter’:
+ml_stubs_Gtk.c:3972:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_view_move_visually’:
+ml_stubs_Gtk.c:3977:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_view_im_context_filter_keypress’:
+ml_stubs_Gtk.c:3980:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_view_forward_display_line_end’:
+ml_stubs_Gtk.c:3996:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_view_forward_display_line’:
+ml_stubs_Gtk.c:3997:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_view_backward_display_line_start’:
+ml_stubs_Gtk.c:3998:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_view_backward_display_line’:
+ml_stubs_Gtk.c:3999:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_toggles_tag’:
+ml_stubs_Gtk.c:4031:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_starts_word’:
+ml_stubs_Gtk.c:4032:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_starts_sentence’:
+ml_stubs_Gtk.c:4033:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_starts_line’:
+ml_stubs_Gtk.c:4034:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_set_visible_line_offset’:
+ml_stubs_Gtk.c:4035:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_set_visible_line_index’:
+ml_stubs_Gtk.c:4036:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_set_offset’:
+ml_stubs_Gtk.c:4037:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_set_line_offset’:
+ml_stubs_Gtk.c:4038:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_set_line_index’:
+ml_stubs_Gtk.c:4039:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_set_line’:
+ml_stubs_Gtk.c:4040:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_order’:
+ml_stubs_Gtk.c:4041:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4041:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_is_start’:
+ml_stubs_Gtk.c:4042:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_is_end’:
+ml_stubs_Gtk.c:4043:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_is_cursor_position’:
+ml_stubs_Gtk.c:4044:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_inside_word’:
+ml_stubs_Gtk.c:4045:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_inside_sentence’:
+ml_stubs_Gtk.c:4046:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_in_range’:
+ml_stubs_Gtk.c:4047:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4047:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4047:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_has_tag’:
+ml_stubs_Gtk.c:4048:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_visible_text’:
+ml_stubs_Gtk.c:4049:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4049:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_visible_slice’:
+ml_stubs_Gtk.c:4050:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4050:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_visible_line_offset’:
+ml_stubs_Gtk.c:4051:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_visible_line_index’:
+ml_stubs_Gtk.c:4052:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_toggled_tags’:
+ml_stubs_Gtk.c:4053:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_text’:
+ml_stubs_Gtk.c:4054:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4054:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_tags’:
+ml_stubs_Gtk.c:4055:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_slice’:
+ml_stubs_Gtk.c:4056:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4056:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_pixbuf’:
+ml_stubs_Gtk.c:4057:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_offset’:
+ml_stubs_Gtk.c:4058:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_marks’:
+ml_stubs_Gtk.c:4059:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_line_offset’:
+ml_stubs_Gtk.c:4060:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_line_index’:
+ml_stubs_Gtk.c:4061:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_line’:
+ml_stubs_Gtk.c:4062:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_language’:
+ml_stubs_Gtk.c:4063:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_child_anchor’:
+ml_stubs_Gtk.c:4064:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_chars_in_line’:
+ml_stubs_Gtk.c:4065:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_char’:
+ml_stubs_Gtk.c:4066:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_bytes_in_line’:
+ml_stubs_Gtk.c:4067:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_get_buffer’:
+ml_stubs_Gtk.c:4068:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_free’:
+ml_stubs_Gtk.c:4069:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_word_ends’:
+ml_stubs_Gtk.c:4070:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_word_end’:
+ml_stubs_Gtk.c:4071:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_visible_word_ends’:
+ml_stubs_Gtk.c:4072:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_visible_word_end’:
+ml_stubs_Gtk.c:4073:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_visible_lines’:
+ml_stubs_Gtk.c:4074:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_visible_line’:
+ml_stubs_Gtk.c:4075:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_visible_cursor_positions’:
+ml_stubs_Gtk.c:4076:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_visible_cursor_position’:
+ml_stubs_Gtk.c:4077:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_to_tag_toggle’:
+ml_stubs_Gtk.c:4078:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_to_line_end’:
+ml_stubs_Gtk.c:4079:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_to_end’:
+ml_stubs_Gtk.c:4080:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_sentence_ends’:
+ml_stubs_Gtk.c:4081:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_sentence_end’:
+ml_stubs_Gtk.c:4082:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_lines’:
+ml_stubs_Gtk.c:4083:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_line’:
+ml_stubs_Gtk.c:4084:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_cursor_positions’:
+ml_stubs_Gtk.c:4085:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_cursor_position’:
+ml_stubs_Gtk.c:4086:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_chars’:
+ml_stubs_Gtk.c:4087:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_forward_char’:
+ml_stubs_Gtk.c:4088:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_equal’:
+ml_stubs_Gtk.c:4089:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4089:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_ends_word’:
+ml_stubs_Gtk.c:4090:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_ends_tag’:
+ml_stubs_Gtk.c:4091:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_ends_sentence’:
+ml_stubs_Gtk.c:4092:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_ends_line’:
+ml_stubs_Gtk.c:4093:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_editable’:
+ml_stubs_Gtk.c:4094:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_copy’:
+ml_stubs_Gtk.c:4095:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_compare’:
+ml_stubs_Gtk.c:4096:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4096:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_can_insert’:
+ml_stubs_Gtk.c:4097:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_begins_tag’:
+ml_stubs_Gtk.c:4098:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_word_starts’:
+ml_stubs_Gtk.c:4099:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_word_start’:
+ml_stubs_Gtk.c:4100:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_visible_word_starts’:
+ml_stubs_Gtk.c:4101:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_visible_word_start’:
+ml_stubs_Gtk.c:4102:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_visible_lines’:
+ml_stubs_Gtk.c:4103:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_visible_line’:
+ml_stubs_Gtk.c:4104:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_visible_cursor_positions’:
+ml_stubs_Gtk.c:4105:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_visible_cursor_position’:
+ml_stubs_Gtk.c:4106:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_to_tag_toggle’:
+ml_stubs_Gtk.c:4107:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_sentence_starts’:
+ml_stubs_Gtk.c:4108:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_sentence_start’:
+ml_stubs_Gtk.c:4109:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_lines’:
+ml_stubs_Gtk.c:4110:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_line’:
+ml_stubs_Gtk.c:4111:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_cursor_positions’:
+ml_stubs_Gtk.c:4112:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_cursor_position’:
+ml_stubs_Gtk.c:4113:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_chars’:
+ml_stubs_Gtk.c:4114:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_iter_backward_char’:
+ml_stubs_Gtk.c:4115:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_select_range’:
+ml_stubs_Gtk.c:4130:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4130:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_remove_tag_by_name’:
+ml_stubs_Gtk.c:4131:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4131:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_remove_tag’:
+ml_stubs_Gtk.c:4132:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4132:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_remove_all_tags’:
+ml_stubs_Gtk.c:4134:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4134:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_place_cursor’:
+ml_stubs_Gtk.c:4135:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_paste_clipboard’:
+ml_stubs_Gtk.c:4136:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_move_mark_by_name’:
+ml_stubs_Gtk.c:4137:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_move_mark’:
+ml_stubs_Gtk.c:4138:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_insert_range_interactive’:
+ml_stubs_Gtk.c:4139:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4139:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4139:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_insert_range’:
+ml_stubs_Gtk.c:4140:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4140:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4140:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_insert_pixbuf’:
+ml_stubs_Gtk.c:4141:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_insert_interactive’:
+ml_stubs_Gtk.c:4143:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_insert_child_anchor’:
+ml_stubs_Gtk.c:4144:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_insert’:
+ml_stubs_Gtk.c:4146:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_get_text’:
+ml_stubs_Gtk.c:4147:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4147:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_get_slice’:
+ml_stubs_Gtk.c:4149:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4149:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_delete_interactive’:
+ml_stubs_Gtk.c:4163:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4163:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_delete’:
+ml_stubs_Gtk.c:4164:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4164:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_create_mark’:
+ml_stubs_Gtk.c:4166:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_create_child_anchor’:
+ml_stubs_Gtk.c:4167:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_backspace’:
+ml_stubs_Gtk.c:4170:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_apply_tag_by_name’:
+ml_stubs_Gtk.c:4171:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4171:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_apply_tag’:
+ml_stubs_Gtk.c:4172:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4172:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_buffer_add_mark’:
+ml_stubs_Gtk.c:4174:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_attributes_unref’:
+ml_stubs_Gtk.c:4179:1: warning: implicit declaration of function ‘GTK_TEXT_ATTRIBUTES’
+ml_stubs_Gtk.c:4179:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_attributes_ref’:
+ml_stubs_Gtk.c:4180:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_attributes_copy_values’:
+ml_stubs_Gtk.c:4181:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4181:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_text_attributes_copy’:
+ml_stubs_Gtk.c:4182:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_target_list_unref’:
+ml_stubs_Gtk.c:4193:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_target_list_ref’:
+ml_stubs_Gtk.c:4194:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_target_list_add_uri_targets’:
+ml_stubs_Gtk.c:4195:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_target_list_add_text_targets’:
+ml_stubs_Gtk.c:4196:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_target_list_add_rich_text_targets’:
+ml_stubs_Gtk.c:4197:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_target_list_add_image_targets’:
+ml_stubs_Gtk.c:4198:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_target_entry_free’:
+ml_stubs_Gtk.c:4201:1: warning: implicit declaration of function ‘GTK_TARGET_ENTRY’
+ml_stubs_Gtk.c:4201:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_target_entry_copy’:
+ml_stubs_Gtk.c:4202:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_symbolic_color_unref’:
+ml_stubs_Gtk.c:4227:1: warning: implicit declaration of function ‘GTK_SYMBOLIC_COLOR’
+ml_stubs_Gtk.c:4227:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_symbolic_color_ref’:
+ml_stubs_Gtk.c:4228:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_symbolic_color_new_shade’:
+ml_stubs_Gtk.c:4229:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_symbolic_color_new_mix’:
+ml_stubs_Gtk.c:4230:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4230:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_symbolic_color_new_alpha’:
+ml_stubs_Gtk.c:4231:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_style_properties_map_color’:
+ml_stubs_Gtk.c:4247:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_style_context_set_path’:
+ml_stubs_Gtk.c:4255:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_style_context_get_style_property’:
+ml_stubs_Gtk.c:4268:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_style_get_style_property’:
+ml_stubs_Gtk.c:4279:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_stock_item_free’:
+ml_stubs_Gtk.c:4285:1: warning: implicit declaration of function ‘GTK_STOCK_ITEM’
+ml_stubs_Gtk.c:4285:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_stock_item_copy’:
+ml_stubs_Gtk.c:4286:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_settings_set_property_value’:
+ml_stubs_Gtk.c:4385:1: warning: implicit declaration of function ‘GTK_SETTINGS_VALUE’
+ml_stubs_Gtk.c:4385:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_targets_include_uri’:
+ml_stubs_Gtk.c:4411:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_targets_include_text’:
+ml_stubs_Gtk.c:4412:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_targets_include_rich_text’:
+ml_stubs_Gtk.c:4413:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_targets_include_image’:
+ml_stubs_Gtk.c:4414:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_set_text’:
+ml_stubs_Gtk.c:4415:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_set_pixbuf’:
+ml_stubs_Gtk.c:4416:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_get_pixbuf’:
+ml_stubs_Gtk.c:4417:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_get_length’:
+ml_stubs_Gtk.c:4418:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_get_format’:
+ml_stubs_Gtk.c:4419:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_get_display’:
+ml_stubs_Gtk.c:4420:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_get_data’:
+ml_stubs_Gtk.c:4421:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4421:1: warning: pointer targets in passing argument 1 of ‘copy_string_check’ differ in signedness
+../wrappers.h:44:16: note: expected ‘const char *’ but argument is of type ‘const guchar *’
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_free’:
+ml_stubs_Gtk.c:4422:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_selection_data_copy’:
+ml_stubs_Gtk.c:4423:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_requisition_free’:
+ml_stubs_Gtk.c:4475:1: warning: implicit declaration of function ‘GTK_REQUISITION’
+ml_stubs_Gtk.c:4475:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_requisition_copy’:
+ml_stubs_Gtk.c:4476:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_manager_add_full’:
+ml_stubs_Gtk.c:4488:1: warning: implicit declaration of function ‘GTK_RECENT_DATA’
+ml_stubs_Gtk.c:4488:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_unref’:
+ml_stubs_Gtk.c:4492:1: warning: implicit declaration of function ‘GTK_RECENT_INFO’
+ml_stubs_Gtk.c:4492:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_ref’:
+ml_stubs_Gtk.c:4493:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_match’:
+ml_stubs_Gtk.c:4494:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4494:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_last_application’:
+ml_stubs_Gtk.c:4495:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_is_local’:
+ml_stubs_Gtk.c:4496:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_has_group’:
+ml_stubs_Gtk.c:4497:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_has_application’:
+ml_stubs_Gtk.c:4498:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_get_uri_display’:
+ml_stubs_Gtk.c:4499:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_get_uri’:
+ml_stubs_Gtk.c:4500:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_get_short_name’:
+ml_stubs_Gtk.c:4501:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_get_private_hint’:
+ml_stubs_Gtk.c:4502:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_get_mime_type’:
+ml_stubs_Gtk.c:4503:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_get_icon’:
+ml_stubs_Gtk.c:4504:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_get_display_name’:
+ml_stubs_Gtk.c:4505:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_get_description’:
+ml_stubs_Gtk.c:4506:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_get_age’:
+ml_stubs_Gtk.c:4507:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_info_exists’:
+ml_stubs_Gtk.c:4508:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_recent_filter_filter’:
+ml_stubs_Gtk.c:4515:1: warning: implicit declaration of function ‘GTK_RECENT_FILTER_INFO’
+ml_stubs_Gtk.c:4515:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_radio_tool_button_set_group’:
+ml_stubs_Gtk.c:4596:1: warning: implicit declaration of function ‘G_S_LIST’
+ml_stubs_Gtk.c:4596:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_radio_menu_item_set_group’:
+ml_stubs_Gtk.c:4606:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_radio_button_set_group’:
+ml_stubs_Gtk.c:4617:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_radio_action_set_group’:
+ml_stubs_Gtk.c:4629:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_print_settings_to_key_file’:
+ml_stubs_Gtk.c:4654:1: warning: implicit declaration of function ‘G_KEY_FILE’
+ml_stubs_Gtk.c:4654:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_print_settings_set_paper_size’:
+ml_stubs_Gtk.c:4662:1: warning: implicit declaration of function ‘GTK_PAPER_SIZE’
+ml_stubs_Gtk.c:4662:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_print_context_set_cairo_context’:
+ml_stubs_Gtk.c:4734:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_paper_size_to_key_file’:
+ml_stubs_Gtk.c:4754:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4754:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_paper_size_is_equal’:
+ml_stubs_Gtk.c:4755:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4755:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_paper_size_is_custom’:
+ml_stubs_Gtk.c:4756:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_paper_size_get_ppd_name’:
+ml_stubs_Gtk.c:4757:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_paper_size_get_name’:
+ml_stubs_Gtk.c:4758:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_paper_size_get_display_name’:
+ml_stubs_Gtk.c:4759:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_paper_size_free’:
+ml_stubs_Gtk.c:4760:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_paper_size_copy’:
+ml_stubs_Gtk.c:4761:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_page_setup_to_key_file’:
+ml_stubs_Gtk.c:4779:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_page_setup_set_paper_size_and_default_margins’:
+ml_stubs_Gtk.c:4780:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_page_setup_set_paper_size’:
+ml_stubs_Gtk.c:4781:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_list_store_swap’:
+ml_stubs_Gtk.c:4973:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4973:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_list_store_set_value’:
+ml_stubs_Gtk.c:4974:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4974:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_list_store_remove’:
+ml_stubs_Gtk.c:4975:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_list_store_move_before’:
+ml_stubs_Gtk.c:4976:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4976:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_list_store_move_after’:
+ml_stubs_Gtk.c:4977:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:4977:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_list_store_iter_is_valid’:
+ml_stubs_Gtk.c:4978:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_label_set_attributes’:
+ml_stubs_Gtk.c:5027:1: warning: implicit declaration of function ‘PANGO_ATTR_LIST’
+ml_stubs_Gtk.c:5027:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_view_unselect_path’:
+ml_stubs_Gtk.c:5101:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_view_set_tooltip_item’:
+ml_stubs_Gtk.c:5103:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_view_set_tooltip_cell’:
+ml_stubs_Gtk.c:5105:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_view_set_cursor’:
+ml_stubs_Gtk.c:5115:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_view_select_path’:
+ml_stubs_Gtk.c:5118:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_view_path_is_selected’:
+ml_stubs_Gtk.c:5120:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_view_item_activated’:
+ml_stubs_Gtk.c:5121:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_view_get_item_row’:
+ml_stubs_Gtk.c:5133:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_view_get_item_column’:
+ml_stubs_Gtk.c:5135:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_view_create_drag_icon’:
+ml_stubs_Gtk.c:5138:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_set_state_wildcarded’:
+ml_stubs_Gtk.c:5157:1: warning: implicit declaration of function ‘GTK_ICON_SOURCE’
+ml_stubs_Gtk.c:5157:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_set_size_wildcarded’:
+ml_stubs_Gtk.c:5158:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_set_pixbuf’:
+ml_stubs_Gtk.c:5159:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_set_icon_name’:
+ml_stubs_Gtk.c:5160:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_set_direction_wildcarded’:
+ml_stubs_Gtk.c:5161:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_get_state_wildcarded’:
+ml_stubs_Gtk.c:5162:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_get_size_wildcarded’:
+ml_stubs_Gtk.c:5163:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_get_pixbuf’:
+ml_stubs_Gtk.c:5164:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_get_icon_name’:
+ml_stubs_Gtk.c:5165:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_get_direction_wildcarded’:
+ml_stubs_Gtk.c:5166:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_free’:
+ml_stubs_Gtk.c:5167:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_source_copy’:
+ml_stubs_Gtk.c:5168:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_set_unref’:
+ml_stubs_Gtk.c:5171:1: warning: implicit declaration of function ‘GTK_ICON_SET’
+ml_stubs_Gtk.c:5171:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_set_ref’:
+ml_stubs_Gtk.c:5172:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_set_copy’:
+ml_stubs_Gtk.c:5173:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_set_add_source’:
+ml_stubs_Gtk.c:5174:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:5174:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_info_set_raw_coordinates’:
+ml_stubs_Gtk.c:5177:1: warning: implicit declaration of function ‘GTK_ICON_INFO’
+ml_stubs_Gtk.c:5177:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_info_get_display_name’:
+ml_stubs_Gtk.c:5178:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_info_get_builtin_pixbuf’:
+ml_stubs_Gtk.c:5179:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_info_get_base_size’:
+ml_stubs_Gtk.c:5180:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_info_free’:
+ml_stubs_Gtk.c:5181:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_info_copy’:
+ml_stubs_Gtk.c:5182:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_icon_factory_add’:
+ml_stubs_Gtk.c:5192:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_im_context_filter_keypress’:
+ml_stubs_Gtk.c:5221:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_gradient_unref’:
+ml_stubs_Gtk.c:5280:1: warning: implicit declaration of function ‘GTK_GRADIENT’
+ml_stubs_Gtk.c:5280:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_gradient_ref’:
+ml_stubs_Gtk.c:5281:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_gradient_add_color_stop’:
+ml_stubs_Gtk.c:5282:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:5282:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_file_filter_filter’:
+ml_stubs_Gtk.c:5358:1: warning: implicit declaration of function ‘GTK_FILE_FILTER_INFO’
+ml_stubs_Gtk.c:5358:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_entry_set_inner_border’:
+ml_stubs_Gtk.c:5475:1: warning: implicit declaration of function ‘GTK_BORDER’
+ml_stubs_Gtk.c:5475:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_entry_im_context_filter_keypress’:
+ml_stubs_Gtk.c:5484:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_container_class_find_child_property’:
+ml_stubs_Gtk.c:5537:1: warning: passing argument 1 of ‘gtk_container_class_find_child_property’ from incompatible pointer type
+/usr/include/gtk-3.0/gtk/gtkcontainer.h:167:14: note: expected ‘struct GObjectClass *’ but argument is of type ‘struct GtkContainerClass *’
+ml_stubs_Gtk.c: In function ‘ml_gtk_container_set_focus_chain’:
+ml_stubs_Gtk.c:5545:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_container_propagate_draw’:
+ml_stubs_Gtk.c:5549:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_container_child_set_property’:
+ml_stubs_Gtk.c:5557:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_container_child_get_property’:
+ml_stubs_Gtk.c:5558:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_combo_box_set_active_iter’:
+ml_stubs_Gtk.c:5591:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_color_selection_set_previous_rgba’:
+ml_stubs_Gtk.c:5623:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_color_selection_set_previous_color’:
+ml_stubs_Gtk.c:5624:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_color_selection_set_current_rgba’:
+ml_stubs_Gtk.c:5628:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_color_selection_set_current_color’:
+ml_stubs_Gtk.c:5629:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_color_button_set_rgba’:
+ml_stubs_Gtk.c:5644:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_color_button_set_color’:
+ml_stubs_Gtk.c:5645:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_cell_view_set_displayed_row’:
+ml_stubs_Gtk.c:5688:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_cell_view_set_background_rgba’:
+ml_stubs_Gtk.c:5689:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_cell_view_set_background_color’:
+ml_stubs_Gtk.c:5690:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_cell_area_cell_set_property’:
+ml_stubs_Gtk.c:5810:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_cell_area_cell_get_property’:
+ml_stubs_Gtk.c:5811:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_border_free’:
+ml_stubs_Gtk.c:5889:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_border_copy’:
+ml_stubs_Gtk.c:5890:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_accel_map_load_scanner’:
+ml_stubs_Gtk.c:6105:1: warning: implicit declaration of function ‘G_SCANNER’
+ml_stubs_Gtk.c:6105:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_accel_label_set_accel_closure’:
+ml_stubs_Gtk.c:6116:1: warning: implicit declaration of function ‘G_CLOSURE’
+ml_stubs_Gtk.c:6116:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_accel_group_disconnect’:
+ml_stubs_Gtk.c:6133:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_accel_group_connect_by_path’:
+ml_stubs_Gtk.c:6134:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_accel_group_from_accel_closure’:
+ml_stubs_Gtk.c:6135:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_render_option’:
+ml_stubs_Gtk.c:6180:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_render_line’:
+ml_stubs_Gtk.c:6182:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_render_layout’:
+ml_stubs_Gtk.c:6184:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_render_handle’:
+ml_stubs_Gtk.c:6185:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_render_frame’:
+ml_stubs_Gtk.c:6187:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_render_focus’:
+ml_stubs_Gtk.c:6189:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_render_expander’:
+ml_stubs_Gtk.c:6191:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_render_check’:
+ml_stubs_Gtk.c:6193:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_render_background’:
+ml_stubs_Gtk.c:6195:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_render_arrow’:
+ml_stubs_Gtk.c:6197:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_render_activity’:
+ml_stubs_Gtk.c:6199:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_rc_property_parse_requisition’:
+ml_stubs_Gtk.c:6207:1: warning: implicit declaration of function ‘G_STRING’
+ml_stubs_Gtk.c:6207:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:6207:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_rc_property_parse_flags’:
+ml_stubs_Gtk.c:6208:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:6208:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_rc_property_parse_enum’:
+ml_stubs_Gtk.c:6209:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:6209:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_rc_property_parse_color’:
+ml_stubs_Gtk.c:6210:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:6210:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_rc_property_parse_border’:
+ml_stubs_Gtk.c:6211:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c:6211:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_drag_set_icon_surface’:
+ml_stubs_Gtk.c:6243:1: warning: implicit declaration of function ‘cAIRO_SURFACE_T’
+ml_stubs_Gtk.c:6243:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_distribute_natural_allocation’:
+ml_stubs_Gtk.c:6250:1: warning: implicit declaration of function ‘GTK_REQUESTED_SIZE’
+ml_stubs_Gtk.c:6250:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_cairo_transform_to_window’:
+ml_stubs_Gtk.c:6256:1: warning: pointer/integer type mismatch in conditional expression
+ml_stubs_Gtk.c: In function ‘ml_gtk_cairo_should_draw_window’:
+ml_stubs_Gtk.c:6257:1: warning: pointer/integer type mismatch in conditional expression
