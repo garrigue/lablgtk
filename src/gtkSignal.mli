@@ -145,7 +145,7 @@ end
 module type GlibSignalAsEvent = sig
   type 'a u
   val connect : 'a Gobject.obj ->
-    ('a, 'b) t -> (f:('c -> unit) -> 'b) -> ((unit -> 'a) -> 'a) -> id * 'c u
+    ('a, 'b) t -> (f:('c -> unit) -> 'b) -> id * 'c u
   val connect_ret : 'a Gobject.obj ->
     ('a, 'b) t -> cb:('c -> 'd) -> (f:('c -> unit) -> cb:('c -> 'd) ->
       'b) -> id * 'c u
