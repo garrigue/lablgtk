@@ -206,28 +206,55 @@ end
 module type GlibSignalAsEvent = sig
   type 'a u
   val connect : 'a Gobject.obj ->
-    ('a, 'b) t -> (f:('c -> unit) -> 'b) -> id * 'c u
+    ('a, 'b) t -> (f:('c -> unit) -> 'b) -> ((unit -> 'a) -> 'a) -> id * 'c u
   val connect_ret : 'a Gobject.obj ->
     ('a, 'b) t -> cb:('c -> 'd) -> (f:('c -> unit) -> cb:('c -> 'd) ->
       'b) -> id * 'c u
   val disconnect : 'a Gobject.obj -> id -> unit
 end
 
-let apply0 ~f = fun () -> f ()
-let apply1 ~f = fun a1 -> f a1
-let apply2 ~f = fun a1 a2 -> f (a1, a2)
-let apply3 ~f = fun a1 a2 a3 -> f (a1, a2, a3)
-let apply4 ~f = fun a1 a2 a3 a4 -> f (a1, a2, a3, a4)
-let apply5 ~f = fun a1 a2 a3 a4 a5 -> f (a1, a2, a3, a4, a5)
-let apply6 ~f = fun a1 a2 a3 a4 a5 a6 -> f (a1, a2, a3, a4, a5, a6)
+module type Mutex = sig
+  type t
+  val create : unit -> t
+  val lock : t -> unit
+  val try_lock : t -> bool
+  val unlock : t -> unit
+  val mutex : t
+  val with_lock : (unit -> 'a) -> 'a
+end
 
-let apply0_ret ~f ~cb = fun () -> f (); cb ()
-let apply1_ret ~f ~cb = fun a1 -> f a1; cb a1
-let apply2_ret ~f ~cb = fun a1 a2 -> let x = a1, a2 in f x; cb x
-let apply3_ret ~f ~cb = fun a1 a2 a3 -> let x = a1, a2, a3 in f x; cb x
-let apply4_ret ~f ~cb = fun a1 a2 a3 a4 -> let x = a1, a2, a3, a4 in f x; cb x
-let apply5_ret ~f ~cb =
-  fun a1 a2 a3 a4 a5 -> let x = a1, a2, a3, a4, a5 in f x; cb x
-let apply6_ret ~f ~cb =
-  fun a1 a2 a3 a4 a5 a6 -> let x = a1, a2, a3, a4, a5, a6 in f x; cb x
+module Apply (Mutex : Mutex) = struct
+  let with_lock = Mutex.with_lock
+  let apply0 ~f =
+    fun () -> with_lock f
+  let apply1 ~f =
+    fun a1 -> with_lock (fun () -> f a1)
+  let apply2 ~f =
+    fun a1 a2 -> with_lock (fun () -> f (a1, a2))
+  let apply3 ~f =
+    fun a1 a2 a3 -> with_lock (fun () -> f (a1, a2, a3))
+  let apply4 ~f =
+    fun a1 a2 a3 a4 -> with_lock (fun () -> f (a1, a2, a3, a4))
+  let apply5 ~f =
+    fun a1 a2 a3 a4 a5 -> with_lock (fun () -> f (a1, a2, a3, a4, a5))
+  let apply6 ~f =
+    fun a1 a2 a3 a4 a5 a6 -> with_lock (fun () -> f (a1, a2, a3, a4, a5, a6))
+
+  let apply0_ret ~f ~cb =
+    fun () -> with_lock (fun () -> f (); cb ())
+  let apply1_ret ~f ~cb =
+    fun a1 -> with_lock (fun () -> f a1; cb a1)
+  let apply2_ret ~f ~cb =
+    fun a1 a2 -> with_lock (fun () -> let x = a1, a2 in f x; cb x)
+  let apply3_ret ~f ~cb =
+    fun a1 a2 a3 -> with_lock (fun () -> let x = a1, a2, a3 in f x; cb x)
+  let apply4_ret ~f ~cb =
+    fun a1 a2 a3 a4 -> with_lock (fun () -> let x = a1, a2, a3, a4 in f x; cb x)
+  let apply5_ret ~f ~cb =
+    fun a1 a2 a3 a4 a5 -> with_lock (fun () -> let x = a1, a2, a3, a4, a5
+    in f x; cb x)
+  let apply6_ret ~f ~cb =
+    fun a1 a2 a3 a4 a5 a6 -> with_lock (fun () -> let x = a1, a2, a3, a4, a5, a6
+    in f x; cb x)
+end
 

@@ -204,7 +204,8 @@ let process_file f =
             out "}@]@]";
           end;
         out "@]@ end";
-        out "@ @[<hv2>module S_E (FRP_E : GtkSignal.GlibSignalAsEvent) = struct";
+        out "@ @[<hv2>module S_E (Mutex : GtkSignal.Mutex) (FRP_E : GtkSignal.GlibSignalAsEvent) = struct";
+        out "@ @[<hv2>module Apply = GtkSignal.Apply (Mutex)@]";
         List.iter sigs ~f:
           begin fun (name, marshaller, _) ->
             begin match marshaller with
@@ -216,19 +217,20 @@ let process_file f =
             end;
             begin match marshaller with
             | Types ([], tyl, "")
-            | Types ([ "" ], tyl, "") -> out "GtkSignal.apply%d" (List.length tyl)
+            | Types ([ "" ], tyl, "") -> out "Apply.apply%d" (List.length tyl)
             | Types ([], tyl, _)
-            | Types ([ "" ], tyl, _) -> out "GtkSignal.apply%d_ret" (List.length tyl)
+            | Types ([ "" ], tyl, _) -> out "Apply.apply%d_ret" (List.length tyl)
             | Types (l, _, ret) ->
                 if ret = "" then out "(fun ~f " else out "(fun ~f ~cb ";
                 let i = ref 0 in
-                List.iter l ~f:(fun p -> incr i; if p = "" then out "x%d " !i else out "~%s " p);
+                List.iter l ~f:
+                  (fun p -> incr i; if p = "" then out "x%d " !i else out "~%s " p);
                 i := 0;
                 let l = List.map l ~f:
-                  (fun p -> incr i; if p = "" then Printf.sprintf "x%d" !i else Printf.sprintf "%s" p)
+                  (fun p -> incr i; if p = "" then Printf.sprintf "x%d" !i else p)
                 in
-                out "-> let x = (%s) in f x" (String.concat ", " l);
-                if ret = "" then out ")" else out "; cb x)"
+                out "-> let x = %s in Mutex.with_lock (fun () -> f x" (String.concat ", " l);
+                if ret = "" then out "))" else out "; cb x))"
             | _ -> ()
             end;
             out "@]";
