@@ -175,6 +175,10 @@ ML_3 (gtk_notebook_set_menu_label, GtkNotebook_val, GtkWidget_val,
       GtkWidget_val, Unit)
 ML_3 (gtk_notebook_reorder_child, GtkNotebook_val, GtkWidget_val,
       Int_val, Unit)
+ML_3 (gtk_notebook_set_tab_reorderable, GtkNotebook_val, GtkWidget_val,
+      Bool_val, Unit)
+ML_2 (gtk_notebook_get_tab_reorderable, GtkNotebook_val, GtkWidget_val,
+      Val_bool)
 
 /* gtkpaned.h */
 
