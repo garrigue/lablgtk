@@ -233,6 +233,10 @@ class notebook obj = object (self)
       ~f:(fun lbl -> Notebook.set_tab_label obj child (as_widget lbl));
     may menu_label
       ~f:(fun lbl -> Notebook.set_menu_label obj child (as_widget lbl))
+  method set_tab_reorderable (w : widget) = Notebook.set_tab_reorderable obj
+  (as_widget w)
+  method get_tab_reorderable (w : widget) = Notebook.get_tab_reorderable obj
+  (as_widget w)
 end
 
 let notebook =

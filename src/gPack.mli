@@ -251,6 +251,7 @@ class notebook : Gtk.notebook obj ->
     method get_menu_label : widget -> widget
     method get_nth_page : int -> widget
     method get_tab_label : widget -> widget
+    method get_tab_reorderable : widget -> bool
     method goto_page : int -> unit
     method insert_page :
       ?tab_label:widget -> ?menu_label:widget -> ?pos:int -> widget -> int
@@ -269,6 +270,7 @@ class notebook : Gtk.notebook obj ->
     method set_show_tabs : bool -> unit
     method set_tab_border : int -> unit
     method set_tab_hborder : int -> unit
+    method set_tab_reorderable : widget -> bool -> unit
     method set_tab_vborder : int -> unit
     method set_tab_pos : Tags.position -> unit
     method enable_popup : bool
