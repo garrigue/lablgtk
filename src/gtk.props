@@ -781,6 +781,7 @@ class Range abstract set wrap wrapsig : Widget {
   "update-policy"        GtkUpdateType        : Read / Write
   signal adjust_bounds : gdouble
   signal move_slider : GtkScrollType
+  signal change_value : GtkScrollType gdouble
   signal value_changed
 }
 

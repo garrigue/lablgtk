@@ -69,6 +69,7 @@ class range_signals : [> Gtk.range] obj ->
     inherit GObj.widget_signals
     method adjust_bounds : callback:(float -> unit) -> GtkSignal.id
     method move_slider : callback:(Tags.scroll_type -> unit) -> GtkSignal.id
+    method change_value : callback:(Tags.scroll_type -> float -> unit) -> GtkSignal.id
     method value_changed : callback:(unit -> unit) -> GtkSignal.id
   end
 
