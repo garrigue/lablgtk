@@ -22,6 +22,7 @@ let incB = GButton.button ~label:"Inc" ~packing:hb#add ()
 let adj =
   GData.adjustment ~lower:0. ~upper:100. ~step_incr:1. ~page_incr:10. ()
 let sc = GRange.scale `HORIZONTAL ~adjustment:adj ~draw_value:false
+    ~update_policy:`DISCONTINUOUS
     ~packing:vb#pack ()
 
 let counter = new GUtil.variable 0
@@ -33,6 +34,8 @@ let _ =
     ~callback:(fun () -> adj#set_value (float(counter#get-1)));
   incB#connect#clicked
     ~callback:(fun () -> adj#set_value (float(counter#get+1)));
+  sc#connect#change_value
+    ~callback:(fun _ v -> Printf.printf "drag: %i\n%!" (truncate v));
   adj#connect#value_changed
     ~callback:(fun () -> counter#set (truncate adj#value));
   counter#connect#changed ~callback:(fun n -> lbl#set_text (string_of_int n));
