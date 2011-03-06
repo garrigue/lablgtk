@@ -204,8 +204,8 @@ let process_file f =
             out "}@]@]";
           end;
         out "@]@ end";
-        out "@ @[<hv2>module S_E (Mutex : GtkSignal.Mutex) (FRP_E : GtkSignal.GlibSignalAsEvent) = struct";
-        out "@ @[<hv2>module Apply = GtkSignal.Apply (Mutex)@]";
+        out "@ @[<hv2>module S_E (Semaphore : GtkSignal.Semaphore) (FRP_E : GtkSignal.GlibSignalAsEvent) = struct";
+        out "@ @[<hv2>module Apply = GtkSignal.Apply (Semaphore)@]";
         List.iter sigs ~f:
           begin fun (name, marshaller, _) ->
             begin match marshaller with
@@ -229,8 +229,8 @@ let process_file f =
                 let l = List.map l ~f:
                   (fun p -> incr i; if p = "" then Printf.sprintf "x%d" !i else p)
                 in
-                out "-> let x = %s in Mutex.with_lock (fun () -> f x" (String.concat ", " l);
-                if ret = "" then out "))" else out "; cb x))"
+                out "-> let x = %s in Semaphore.with_lock (fun x -> f x" (String.concat ", " l);
+                if ret = "" then out ") x)" else out "; cb x) x)"
             | _ -> ()
             end;
             out "@]";

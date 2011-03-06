@@ -213,48 +213,44 @@ module type GlibSignalAsEvent = sig
   val disconnect : 'a Gobject.obj -> id -> unit
 end
 
-module type Mutex = sig
+module type Semaphore = sig
   type t
-  val create : unit -> t
-  val lock : t -> unit
-  val try_lock : t -> bool
-  val unlock : t -> unit
-  val mutex : t
-  val with_lock : (unit -> 'a) -> 'a
+  val sem : t
+  val post : t -> unit
+  val wait : t -> unit
+  val with_lock : ('a -> 'b) -> 'a -> 'b
 end
 
-module Apply (Mutex : Mutex) = struct
-  let with_lock = Mutex.with_lock
+module Apply (Semaphore : Semaphore) = struct
+  let with_lock = Semaphore.with_lock
   let apply0 ~f =
-    fun () -> with_lock f
+    fun () -> with_lock f ()
   let apply1 ~f =
-    fun a1 -> with_lock (fun () -> f a1)
+    fun a1 -> with_lock f a1
   let apply2 ~f =
-    fun a1 a2 -> with_lock (fun () -> f (a1, a2))
+    fun a1 a2 -> with_lock f (a1, a2)
   let apply3 ~f =
-    fun a1 a2 a3 -> with_lock (fun () -> f (a1, a2, a3))
+    fun a1 a2 a3 -> with_lock f (a1, a2, a3)
   let apply4 ~f =
-    fun a1 a2 a3 a4 -> with_lock (fun () -> f (a1, a2, a3, a4))
+    fun a1 a2 a3 a4 -> with_lock f (a1, a2, a3, a4)
   let apply5 ~f =
-    fun a1 a2 a3 a4 a5 -> with_lock (fun () -> f (a1, a2, a3, a4, a5))
+    fun a1 a2 a3 a4 a5 -> with_lock f (a1, a2, a3, a4, a5)
   let apply6 ~f =
-    fun a1 a2 a3 a4 a5 a6 -> with_lock (fun () -> f (a1, a2, a3, a4, a5, a6))
+    fun a1 a2 a3 a4 a5 a6 -> with_lock f (a1, a2, a3, a4, a5, a6)
 
   let apply0_ret ~f ~cb =
-    fun () -> with_lock (fun () -> f (); cb ())
+    fun () -> with_lock (fun () -> f (); cb ()) ()
   let apply1_ret ~f ~cb =
-    fun a1 -> with_lock (fun () -> f a1; cb a1)
+    fun a1 -> with_lock (fun a1 -> f a1; cb a1) a1
   let apply2_ret ~f ~cb =
-    fun a1 a2 -> with_lock (fun () -> let x = a1, a2 in f x; cb x)
+    fun a1 a2 -> with_lock (fun x -> f x; cb x) (a1, a2)
   let apply3_ret ~f ~cb =
-    fun a1 a2 a3 -> with_lock (fun () -> let x = a1, a2, a3 in f x; cb x)
+    fun a1 a2 a3 -> with_lock (fun x -> f x; cb x) (a1, a2, a3)
   let apply4_ret ~f ~cb =
-    fun a1 a2 a3 a4 -> with_lock (fun () -> let x = a1, a2, a3, a4 in f x; cb x)
+    fun a1 a2 a3 a4 -> with_lock (fun x -> f x; cb x) (a1, a2, a3, a4)
   let apply5_ret ~f ~cb =
-    fun a1 a2 a3 a4 a5 -> with_lock (fun () -> let x = a1, a2, a3, a4, a5
-    in f x; cb x)
+    fun a1 a2 a3 a4 a5 -> with_lock (fun x -> f x; cb x) (a1, a2, a3, a4, a5)
   let apply6_ret ~f ~cb =
-    fun a1 a2 a3 a4 a5 a6 -> with_lock (fun () -> let x = a1, a2, a3, a4, a5, a6
-    in f x; cb x)
+    fun a1 a2 a3 a4 a5 a6 -> with_lock (fun x -> f x; cb x) (a1, a2, a3, a4, a5, a6)
 end
 

@@ -152,17 +152,15 @@ module type GlibSignalAsEvent = sig
   val disconnect : 'a Gobject.obj -> id -> unit
 end
 
-module type Mutex = sig
+module type Semaphore = sig
   type t
-  val create : unit -> t
-  val lock : t -> unit
-  val try_lock : t -> bool
-  val unlock : t -> unit
-  val mutex : t
-  val with_lock : (unit -> 'a) -> 'a
+  val sem : t
+  val post : t -> unit
+  val wait : t -> unit
+  val with_lock : ('a -> 'b) -> 'a -> 'b
 end
 
-module Apply : functor (Mutex : Mutex) -> sig
+module Apply : functor (Semaphore : Semaphore) -> sig
   val apply0 : f:(unit -> unit) -> unit -> unit
   val apply1 : f:('a -> 'b) -> 'a -> 'b
   val apply2 : f:('a * 'b -> 'c) -> 'a -> 'b -> 'c
