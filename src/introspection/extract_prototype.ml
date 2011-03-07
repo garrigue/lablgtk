@@ -9,21 +9,26 @@ let add_ml_header s = Buffer.add_string ml_header s
 let () = add_ml_header "type -'a obj\n"
 let c_header= Buffer.create 99
 let add_c_header s = Buffer.add_string c_header s
-let () = add_c_header
-  "#include <gtk/gtk.h>
-#define GTK_TEXT_USE_INTERNAL_UNSUPPORTED_API
-#include <gtk/gtktextdisplay.h>
-#include <gdk/gdkprivate.h>
-#include <glib/gstdio.h>
-#include <caml/mlvalues.h>
-#include <caml/alloc.h>
-#include \"../lablgtk/src/wrappers.h\"
-#include \"../lablgtk/src/ml_gobject.h\"
-#define Val_double(val) caml_copy_double(val)
-#define Val_string_new(val) caml_copy_string(val)
-#define Val_int32(val) caml_copy_int32(val)
-#define Val_int32_new(val) caml_copy_int32(val)
-"
+let pre_fill_header () = add_c_header
+"#include <caml/mlvalues.h>\n\
+#include <caml/alloc.h>\n\
+#define Val_double(val) caml_copy_double(val)\n\
+#define Val_string_new(val) caml_copy_string(val)\n\
+#define Val_int32(val) caml_copy_int32(val)\n\
+#define Val_int32_new(val) caml_copy_int32(val)\n"
+let () = pre_fill_header ()
+let reset_headers () = 
+  Buffer.clear ml_header;
+  Buffer.clear c_header; 
+  pre_fill_header ()
+
+(*  
+    #include <gtk/gtk.h>
+    #define GTK_TEXT_USE_INTERNAL_UNSUPPORTED_API
+    #include <gtk/gtktextdisplay.h>
+    #include <gdk/gdkprivate.h>
+    #include <glib/gstdio.h>
+*)
 
 module SSet=
   Set.Make(struct type t = string let compare = Pervasives.compare end)
@@ -182,68 +187,6 @@ module Pretty = struct
     | [] -> ()
     | (n,v)::r -> Format.fprintf fmt "'%s'='%s'%s" n v sep;
 	pp_args sep fmt r
-
-  let c_stub fmt s = match s with 
-    | Simple s -> 
-	Format.fprintf fmt "ML_%d(%s,%a%s)@\n" s.cs_nb_arg s.cs_c_name
-	  (pp_list ", ") s.cs_params
-	  s.cs_ret;
-	if s.cs_nb_arg>=6 then 
-	  Format.fprintf fmt "ML_bc%d(ml_%s)@ " s.cs_nb_arg s.cs_c_name
-    | Complex s -> Format.fprintf fmt "%s@." s
-	
-  let ml_stub fmt s = 
-    Format.fprintf fmt "external %s: %a%s = \"%s\"@ "
-      s.ms_ml_name
-      (pp_list " -> ") s.ms_params 
-      s.ms_ret
-      s.ms_c_name
-
-  let stub fmt s = 
-    Format.fprintf fmt "=====@.%a%a@." c_stub s.stub_c ml_stub s.stub_external
-
-  let may_ml_stub fmt s = match s with
-    | Some s -> ml_stub fmt s.stub_external 
-    | None -> ()
-
-  let may_c_stub fmt s = match s with 
-    | Some s -> c_stub fmt s.stub_c 
-    | None -> ()
-
-  let klass ~ml ~c (k_name,methods,functions) = 
-    Format.fprintf ml "@[<hv 2>module %s = struct@\n"
-      k_name;
-    List.iter (may_ml_stub ml) methods;
-    List.iter (may_ml_stub ml) functions;
-    Format.fprintf ml "@]end@\n";
-
-    Format.fprintf c "@[/* Module %s */@\n" k_name;
-    List.iter (may_c_stub c) methods;
-    List.iter (may_c_stub c) functions;
-    Format.fprintf c "@]/* end of %s */@\n" k_name
-      
-  let functions ~ml ~c f = 
-    Format.fprintf ml "@[(* Global functions *)@\n";
-    List.iter (may_ml_stub ml) f;
-    Format.fprintf ml "(* End of global functions *)@]@\n";
-
-    Format.fprintf c "@[/* Global functions */@\n";
-    List.iter (may_c_stub c) f;
-    Format.fprintf c "/* End of global functions */@]@\n"
-
-  let namespace n = 
-    let stub_ml_channel = open_out ("stubs_"^n.ns_name^".ml") in
-    let ml = Format.formatter_of_out_channel stub_ml_channel in
-    let stub_c_channel = open_out ("ml_stubs_"^n.ns_name^".c") in
-    let c = Format.formatter_of_out_channel stub_c_channel in
-    Format.fprintf ml "%s@\n" (Buffer.contents ml_header);
-    Format.fprintf c "%s@\n" (Buffer.contents c_header);
-(*    List.iter (klass ~ml ~c) (emit_klass n.ns_klass);*)
-(*    functions ~ml ~c n.ns_functions;*)
-    Format.fprintf ml "@.";
-    Format.fprintf c "@.";
-    close_out stub_ml_channel;
-    close_out stub_c_channel
 end
 
 let dummy_bfm () = { bfm_c_identifier="";bfm_value="";bfm_name=""}
@@ -474,123 +417,206 @@ module Translations = struct
 	    done;
 	    Buffer.contents buff
 
-  let add_klass c_typ = 
-    let val_of = "Val_"^c_typ in
-    let of_val = c_typ^"_val" in
-    add_c_header 
-      (Format.sprintf "#define %s(val) check_cast(%s,val)@." 
-	 of_val 
-	 (to_type_macro c_typ));
-    add_c_header 
-      (Format.sprintf "#define %s(val) Val_GObject((GObject*)val)@." 
+  let add_klass_type ~is_record c_typ = 
+    if c_typ <> "" then 
+      let val_of = "Val_"^c_typ in
+      let of_val = c_typ^"_val" in
+      if is_record then begin
+        add_c_header 
+          (Format.sprintf "/*TODO: conversion for record '%s' */@." c_typ)
+      end else begin 
+        add_c_header 
+          (Format.sprintf "#define %s(val) check_cast(%s,val)@." 
+	     of_val 
+	     (to_type_macro c_typ));
+        add_c_header 
+          (Format.sprintf "#define %s(val) Val_GObject((GObject*)val)@." 
+	     val_of);
+        add_c_header 
+          (Format.sprintf "#define %s_new(val) Val_GObject_new((GObject*)val)@." 
 	 val_of);
-    add_c_header 
-      (Format.sprintf "#define %s_new(val) Val_GObject_new((GObject*)val)@." 
-	 val_of);
-    Hashtbl.add tbl (c_typ^"*") 
-      (val_of,of_val,
-       fun variance ->
-	 Format.sprintf "[%c`%s] obj" variance (String.lowercase c_typ))
+      end;
+      Hashtbl.add tbl (c_typ^"*") 
+        (val_of,of_val,
+         fun variance ->
+	   Format.sprintf "[%c`%s] obj" variance (String.lowercase c_typ))
 end    
-
-let emit_parameter rank p = match p.p_typ with
-  | NoType -> fail_emit "NoType(p)"
-  | Array _ -> fail_emit "Array(TODO)"
-  | Typ ct -> 
-      match p.p_direction with 
-	| DIn | DDefault ->
-	    let ctyp = match p.p_ownership with 
-	      | OFull -> ct.t_c_typ ^"*"
-	      | _ -> ct.t_c_typ
-	    in
-	    let _,c_base,ml_base = Translations.find ctyp in
-	    let ml_base = ml_base '>' in
-	    if p.p_allow_none then 
-	      Format.sprintf "Option_val(arg%d,%s,NULL) Ignore" rank c_base,
-	    ml_base^" option"
-	    else c_base,ml_base
-	| DOut | DInOut -> fail_emit "(out)" 
-
-let emit_parameters throws l = 
-  let l = if throws then 
-    let gerror = dummy_parameter()in
-    let t = dummy_c_typ () in
-    t.t_c_typ<-"GError**";
-    gerror.p_name<-"error";
-    gerror.p_typ<-Typ t;
-    l@[gerror]
-  else l
-  in
-  let counter = ref 0 in
-  List.split (List.map (fun p -> incr counter;emit_parameter !counter p) l)
-
-let emit_return_value r = 
-  match r.r_typ with
-    | NoType -> fail_emit "NoType"
-    | Array _ -> fail_emit "Array"
-    | Typ ct -> 
-	let c_typ,_,ml_typ = Translations.find ct.t_c_typ in
-	match r.r_ownership with
-	  | OFull -> c_typ ^ "_new",ml_typ
-	  | ONone | ODefault | OContainer -> c_typ,ml_typ
-
-let emit_prototype f = 
-  let nb_args = List.length f.parameters in
-  let c_params,ml_params = emit_parameters f.throws f.parameters in
-  let c_ret,ml_ret = emit_return_value f.return_value in
-  let ml_ret = ml_ret '<' in
-  {stub_c=Simple {cs_nb_arg=nb_args;
-		  cs_c_name=f.c_identifier;
-		  cs_ret=c_ret;
-		  cs_params=c_params};
-   stub_external={ms_c_name="ml_"^f.c_identifier;
-		  ms_ml_name=f.f_name;
-			   ms_ret=ml_ret;
-			   ms_params= match ml_params with 
-			     | [] -> ["unit"]
-			     | _ -> ml_params;}}
-    
-let emit_method k m = 
-  try 
-    let self = dummy_parameter()in
-    let t = dummy_c_typ () in
-    t.t_c_typ<-k.c_c_type^"*";
-    self.p_name<-"self";
-    self.p_typ<-Typ t;
-    let nb_args = List.length m.parameters+1 in
-    let c_params,ml_params = emit_parameters m.throws (self::m.parameters) in
-    let c_ret,ml_ret = emit_return_value m.return_value in
-    let ml_ret = ml_ret '<' in
-    Some {stub_c=Simple {cs_nb_arg=nb_args;
-		    cs_c_name=m.c_identifier;
-		    cs_ret=c_ret;
-		    cs_params=c_params};
-     stub_external={ms_c_name="ml_"^m.c_identifier;
-		    ms_ml_name=m.f_name;
-		    ms_ret=ml_ret;
-		    ms_params=ml_params;}}
-  with Cannot_emit s ->  
-    Format.printf "Cannot emit method %s::%S '%s'@." 
-      k.c_name
-      m.f_name
-      s;
-    None
-
-let emit_function p = 
-  try Some (emit_prototype p)
-  with Cannot_emit s -> Format.printf "Cannot emit function %s:'%s'@." 
-    p.c_identifier s; None
 
 let repositories = ref []
 let register_reposirory n =
   repositories:=n::!repositories
 let get_repositories () = List.rev !repositories
 
-let emit_klass k = 
-  let methods = List.map (emit_method k) k.c_methods in
-  let functions = List.map  emit_function k.c_functions in
-  k.c_name,methods,functions
+module Emit = struct
 
+  let emit_parameter rank p = match p.p_typ with
+  | NoType -> fail_emit "NoType(p)"
+  | Array _ -> fail_emit "Array(TODO)"
+  | Typ ct -> 
+    match p.p_direction with 
+    | DIn | DDefault ->
+      let ctyp = match p.p_ownership with 
+      | OFull -> ct.t_c_typ ^"*"
+      | _ -> ct.t_c_typ
+      in
+      let _,c_base,ml_base = Translations.find ctyp in
+      let ml_base = ml_base '>' in
+      if p.p_allow_none then 
+	Format.sprintf "Option_val(arg%d,%s,NULL) Ignore" rank c_base,
+	ml_base^" option"
+      else c_base,ml_base
+    | DOut | DInOut -> fail_emit "(out)" 
+
+  let emit_parameters throws l = 
+    let l = if throws then 
+        let gerror = dummy_parameter()in
+        let t = dummy_c_typ () in
+        t.t_c_typ<-"GError**";
+        gerror.p_name<-"error";
+        gerror.p_typ<-Typ t;
+        l@[gerror]
+      else l
+    in
+    let counter = ref 0 in
+    List.split (List.map (fun p -> incr counter;emit_parameter !counter p) l)
+
+  let emit_return_value r = 
+    match r.r_typ with
+    | NoType -> fail_emit "NoType"
+    | Array _ -> fail_emit "Array"
+    | Typ ct -> 
+      let c_typ,_,ml_typ = Translations.find ct.t_c_typ in
+      match r.r_ownership with
+      | OFull -> c_typ ^ "_new",ml_typ
+      | ONone | ODefault | OContainer -> c_typ,ml_typ
+
+  let emit_prototype f = 
+    let nb_args = List.length f.parameters in
+    let c_params,ml_params = emit_parameters f.throws f.parameters in
+    let c_ret,ml_ret = emit_return_value f.return_value in
+    let ml_ret = ml_ret '<' in
+    {stub_c=Simple {cs_nb_arg=nb_args;
+		    cs_c_name=f.c_identifier;
+		    cs_ret=c_ret;
+		    cs_params=c_params};
+     stub_external={ms_c_name="ml_"^f.c_identifier;
+		    ms_ml_name=f.f_name;
+		    ms_ret=ml_ret;
+		    ms_params= match ml_params with 
+		    | [] -> ["unit"]
+		    | _ -> ml_params;}}
+    
+  let emit_method k m = 
+    try 
+      let self = dummy_parameter()in
+      let t = dummy_c_typ () in
+      t.t_c_typ<-k.c_c_type^"*";
+      self.p_name<-"self";
+      self.p_typ<-Typ t;
+      let nb_args = List.length m.parameters+1 in
+      let c_params,ml_params = emit_parameters m.throws (self::m.parameters) in
+      let c_ret,ml_ret = emit_return_value m.return_value in
+      let ml_ret = ml_ret '<' in
+      Some {stub_c=Simple {cs_nb_arg=nb_args;
+		           cs_c_name=m.c_identifier;
+		           cs_ret=c_ret;
+		           cs_params=c_params};
+            stub_external={ms_c_name="ml_"^m.c_identifier;
+		           ms_ml_name=m.f_name;
+		           ms_ret=ml_ret;
+		           ms_params=ml_params;}}
+    with Cannot_emit s ->  
+      Format.printf "Cannot emit method %s::%S '%s'@." 
+        k.c_name
+        m.f_name
+        s;
+      None
+
+  let emit_function p = 
+    try Some (emit_prototype p)
+    with Cannot_emit s -> Format.printf "Cannot emit function %s:'%s'@." 
+      p.c_identifier s; None
+
+  let emit_klass k = 
+    let methods = List.map (emit_method k) k.c_methods in
+    let functions = List.map  emit_function k.c_functions in
+    k.c_name,methods,functions
+
+  module Print = struct
+  open Pretty
+  let c_stub fmt s = match s with 
+    | Simple s -> 
+	Format.fprintf fmt "ML_%d(%s,%a%s)@\n" s.cs_nb_arg s.cs_c_name
+	  (pp_list ", ") s.cs_params
+	  s.cs_ret;
+	if s.cs_nb_arg>=6 then 
+	  Format.fprintf fmt "ML_bc%d(ml_%s)@ " s.cs_nb_arg s.cs_c_name
+    | Complex s -> Format.fprintf fmt "%s@." s
+	
+  let ml_stub fmt s = 
+    Format.fprintf fmt "external %s: %a%s = \"%s\"@ "
+      s.ms_ml_name
+      (pp_list " -> ") s.ms_params 
+      s.ms_ret
+      s.ms_c_name
+
+  let stub fmt s = 
+    Format.fprintf fmt "=====@.%a%a@." c_stub s.stub_c ml_stub s.stub_external
+
+  let may_ml_stub fmt s = match s with
+    | Some s -> ml_stub fmt s.stub_external 
+    | None -> ()
+
+  let may_c_stub fmt s = match s with 
+    | Some s -> c_stub fmt s.stub_c 
+    | None -> ()
+
+  let klass ~ml ~c (k_name,methods,functions) = 
+    Format.fprintf ml "@[<hv 2>module %s = struct@\n"
+      k_name;
+    List.iter (may_ml_stub ml) methods;
+    List.iter (may_ml_stub ml) functions;
+    Format.fprintf ml "@]end@\n";
+
+    Format.fprintf c "@[/* Module %s */@\n" k_name;
+    List.iter (may_c_stub c) methods;
+    List.iter (may_c_stub c) functions;
+    Format.fprintf c "@]/* end of %s */@\n" k_name
+      
+  let functions ~ml ~c f = 
+    Format.fprintf ml "@[(* Global functions *)@\n";
+    List.iter (may_ml_stub ml) f;
+    Format.fprintf ml "(* End of global functions *)@]@\n";
+
+    Format.fprintf c "@[/* Global functions */@\n";
+    List.iter (may_c_stub c) f;
+    Format.fprintf c "/* End of global functions */@]@\n"
+
+  let repository r = 
+    let n = r.rep_namespace in
+    let stub_ml_channel = open_out ("stubs/stubs_"^n.ns_name^".ml") in
+    let ml = Format.formatter_of_out_channel stub_ml_channel in
+    let stub_c_channel = open_out ("stubs/ml_stubs_"^n.ns_name^".c") in
+    let c = Format.formatter_of_out_channel stub_c_channel in
+    Format.fprintf ml "%s@\n" (Buffer.contents ml_header);
+    Format.fprintf c "%s@\n" (Buffer.contents c_header);
+    Format.fprintf c "#include <%s>@." r.rep_c_include.c_inc_name;
+    Format.fprintf c "#include \"../wrappers.h\"@\n\
+                      #include \"../ml_gobject.h\"@.";
+
+    List.iter (klass ~ml ~c) (List.map emit_klass n.ns_klass);
+    functions ~ml ~c (List.map emit_function n.ns_functions);
+    Format.fprintf ml "@.";
+    Format.fprintf c "@.";
+    close_out stub_ml_channel;
+    close_out stub_c_channel
+
+    
+
+
+  end
+
+end
 let debug_all () = 
   Format.printf "ALL REPOSITORIES:@.";
   List.iter 
@@ -873,7 +899,7 @@ let parse_constructor set attrs children =
 let parse_method set attrs children = 
   parse_function set attrs children
 
-let parse_klass set attrs children = 
+let parse_klass ~is_record set attrs children = 
   let k = dummy_klass () in
   List.iter (fun (key,v) -> match key with 
 	       | "name" -> k.c_name <- v
@@ -891,6 +917,7 @@ let parse_klass set attrs children =
 		     k.c_name 
 		     other)
     attrs;
+  Translations.add_klass_type ~is_record k.c_c_type;
   List.iter (function 
 	       | PCData s -> 
 		   Format.printf "Ignoring PCData in klass %s:%s@." k.c_name s
@@ -1052,9 +1079,16 @@ and parse_namespace set attrs children =
 			     children
 		       | "alias" -> 
 			   parse_alias attrs children
-		       | "record" | "class" -> 
-			   parse_klass (fun k -> n.ns_klass <- k::n.ns_klass)
-			     attrs children
+		       | "record" -> 
+			   parse_klass ~is_record:true
+                             (fun k -> n.ns_klass <- k::n.ns_klass)
+			     attrs 
+                             children
+		       | "class" -> 
+			   parse_klass ~is_record:false
+                             (fun k -> n.ns_klass <- k::n.ns_klass)
+			     attrs 
+                             children
 		       | "bitfield" -> 
 			   parse_bf (fun k -> n.ns_bf <- k::n.ns_bf)
 			     attrs children
@@ -1087,7 +1121,9 @@ and parse dir f =
      let dir = Filename.dirname Sys.argv.(i) in
      parse dir name
    done;
-   debug_all()
+   debug_all();
+   List.iter Emit.Print.repository (get_repositories ())
+     
 (*  let funcs,klass = emit_all () in
   let stub_ml_channel = open_out "stubs.ml" in
   let ml = Format.formatter_of_out_channel stub_ml_channel in
