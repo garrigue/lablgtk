@@ -64,6 +64,8 @@ THEN
 END;
     flush stderr
 
+external signal_new : unit -> unit = "ml_g_signal_new_me"
+
 external connect_by_name :
   'a obj -> name:string -> callback:g_closure -> after:bool -> id
   = "ml_g_signal_connect_closure"
