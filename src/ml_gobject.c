@@ -578,10 +578,11 @@ CAMLprim value ml_g_object_set_property_dyn (value vobj, value prop, value arg)
 
 #include "gtk/gtknotebook.h"
 #include "gtk/gtkmarshal.h"
+#include "stdio.h"
 
 CAMLprim value g_signal_new_me() {
   const gchar* name = "create-new-page";
-  GType itype = G_OBJECT_CLASS_TYPE (GTK_TYPE_NOTEBOOK);
+  GType itype = G_OBJECT_CLASS_TYPE (gtk_notebook_get_type ());
   GSignalFlags signal_flags = GTK_RUN_LAST | GTK_RUN_ACTION;
   guint class_offset = 0;
   GSignalAccumulator accumulator = NULL;
@@ -589,8 +590,9 @@ CAMLprim value g_signal_new_me() {
   GSignalCMarshaller marshaller = gtk_marshal_NONE__POINTER;
   GType return_type = GTK_TYPE_NONE;
   guint nparams = 0;
-  g_signal_new (name, itype, signal_flags, class_offset, accumulator, accu_data,
+  int i = g_signal_new (name, itype, signal_flags, class_offset, accumulator, accu_data,
       marshaller, return_type, nparams);
+  printf("id : %u\n", i);
   return (Val_int(0));
 }
 
