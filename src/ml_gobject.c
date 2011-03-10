@@ -579,7 +579,6 @@ CAMLprim value ml_g_object_set_property_dyn (value vobj, value prop, value arg)
 #include "gtk/gtknotebook.h"
 #include "gtk/gtkmarshal.h"
 #include "stdio.h"
-#include "gtk_tags.h"
 
 CAMLprim value g_signal_new_me(GSignalFlags signal_flags) {
   const gchar* name = "create-new-page";
