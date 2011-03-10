@@ -582,8 +582,7 @@ CAMLprim value ml_g_object_set_property_dyn (value vobj, value prop, value arg)
 
 Make_Flags_val (Signal_type_val)
 
-CAMLprim value g_signal_new_me(GSignalFlags signal_flags) {
-  const gchar* name = "create-new-page";
+CAMLprim value g_signal_new_me(const gchar* name, GSignalFlags signal_flags) {
   GType itype = G_OBJECT_CLASS_TYPE (g_type_class_ref (gtk_notebook_get_type ()));
   guint class_offset = 0;
   GSignalAccumulator accumulator = NULL;
@@ -597,7 +596,7 @@ CAMLprim value g_signal_new_me(GSignalFlags signal_flags) {
   return (Val_int(0));
 }
 
-ML_1 (g_signal_new_me, Flags_Signal_type_val, Unit)
+ML_2 (g_signal_new_me, String_val, Flags_Signal_type_val, Unit)
 
 ML_4 (g_signal_connect_closure, GObject_val, String_val, GClosure_val,
       Bool_val, Val_long)
