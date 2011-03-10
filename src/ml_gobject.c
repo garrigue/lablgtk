@@ -595,7 +595,7 @@ CAMLprim value g_signal_new_me(GSignalFlags signal_flags) {
   return (Val_int(0));
 }
 
-ML_1 (g_signal_new_me, Signal_run_type_val, Unit)
+ML_1 (g_signal_new_me, Signal_type_val, Unit)
 
 ML_4 (g_signal_connect_closure, GObject_val, String_val, GClosure_val,
       Bool_val, Val_long)
