@@ -76,6 +76,9 @@ type 'a data_conv =
 type fundamental_type =
   [ `INVALID | `NONE | `INTERFACE | `PARAM | base_data ]
 
+type signal_type =
+  [ `RUN_FIRST | `RUN_LAST | `NO_RECURSE | `ACTION | `NO_HOOKS ]
+
 external do_unref : unit -> unit = "ml_g_object_do_unref"
 let unref_alarm = Gc.create_alarm do_unref
 
