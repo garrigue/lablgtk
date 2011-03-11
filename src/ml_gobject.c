@@ -582,8 +582,11 @@ CAMLprim value ml_g_object_set_property_dyn (value vobj, value prop, value arg)
 
 Make_Flags_val (Signal_type_val)
 
-CAMLprim value g_signal_new_me(const gchar* name, GSignalFlags signal_flags) {
-  GType itype = G_OBJECT_CLASS_TYPE (g_type_class_ref (gtk_notebook_get_type ()));
+CAMLprim value ml_g_signal_new_me(value o_name, value o_classe, value o_signal_flags) {
+  const gchar* name = String_val(o_name);
+  GSignalFlags signal_flags = Flags_Signal_type_val(o_signal_flags);
+  GType itype = Val_int(o_classe);
+
   guint class_offset = 0;
   GSignalAccumulator accumulator = NULL;
   gpointer accu_data = NULL;
@@ -595,8 +598,6 @@ CAMLprim value g_signal_new_me(const gchar* name, GSignalFlags signal_flags) {
   printf("id : %u\n", i);
   return (Val_int(0));
 }
-
-ML_2 (g_signal_new_me, String_val, Flags_Signal_type_val, Unit)
 
 ML_4 (g_signal_connect_closure, GObject_val, String_val, GClosure_val,
       Bool_val, Val_long)

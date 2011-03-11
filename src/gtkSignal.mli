@@ -51,7 +51,7 @@ val safe_call : ?where:string -> ('a -> unit) -> 'a -> unit
     (** Safe wrapper for function calls. Tries to handle exceptions
         with user_handler, and reports an error otherwise. *)
 
-external signal_new : string -> Gobject.signal_type list -> unit = "ml_g_signal_new_me"
+external signal_new : string -> g_type -> Gobject.signal_type list -> unit = "ml_g_signal_new_me"
 
 external connect_by_name :
   'a obj -> name:string -> callback:g_closure -> after:bool -> id
