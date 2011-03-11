@@ -34,7 +34,7 @@ module SSet=
   Set.Make(struct type t = string let compare = Pervasives.compare end)
 
 let caml_avoid = List.fold_right SSet.add 
-  ["let";"external";"open";"true";"false";"exit"] 
+  ["let";"external";"open";"true";"false";"exit"; "match"] 
   SSet.empty
 let is_caml_avoid s = 
   s.[0] <- Char.lowercase s.[0];
