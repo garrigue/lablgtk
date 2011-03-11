@@ -228,7 +228,7 @@ rm test_dynlink.*
 
 # GTK 2 auto configuration
 
-GTKPKG=gtk+-2.0 
+GTKPKG=gtk+-3.0 
 AM_PATH_GTK_2_0(2.0.0, :, AC_MSG_ERROR(GTK+ is required))
 
 dnl LABLGTK_PKG(variable, autoconf package, help string, pkgconfig package)
