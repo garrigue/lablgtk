@@ -586,6 +586,7 @@ CAMLprim value ml_g_signal_new_me(value o_name, value o_classe, value o_signal_f
   const gchar* name = String_val(o_name);
   GSignalFlags signal_flags = Flags_Signal_type_val(o_signal_flags);
   GType itype = Val_int(o_classe);
+  itype = G_OBJECT_CLASS_TYPE (g_type_class_ref (gtk_notebook_get_type ()));
 
   guint class_offset = 0;
   GSignalAccumulator accumulator = NULL;
