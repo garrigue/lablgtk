@@ -576,10 +576,6 @@ CAMLprim value ml_g_object_set_property_dyn (value vobj, value prop, value arg)
 
 /* gsignal.h */
 
-#include "gtk/gtknotebook.h"
-#include "gtk/gtkmarshal.h"
-#include "stdio.h"
-
 Make_Flags_val (Signal_type_val)
 
 CAMLprim value ml_g_signal_new_me(value o_name, value o_classe, value o_signal_flags) {
@@ -590,12 +586,11 @@ CAMLprim value ml_g_signal_new_me(value o_name, value o_classe, value o_signal_f
   guint class_offset = 0;
   GSignalAccumulator accumulator = NULL;
   gpointer accu_data = NULL;
-  GSignalCMarshaller marshaller = gtk_marshal_NONE__POINTER;
-  GType return_type = GTK_TYPE_NONE;
+  GSignalCMarshaller marshaller = g_cclosure_marshal_VOID__POINTER;
+  GType return_type = G_TYPE_NONE;
   guint nparams = 0;
-  int i = g_signal_new (name, itype, signal_flags, class_offset, accumulator, accu_data,
+  g_signal_new (name, itype, signal_flags, class_offset, accumulator, accu_data,
       marshaller, return_type, nparams);
-  printf("id : %u\n", i);
   return (Val_int(0));
 }
 
