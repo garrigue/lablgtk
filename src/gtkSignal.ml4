@@ -214,10 +214,6 @@ module type GlibSignalAsEvent = sig
 end
 
 module type Semaphore = sig
-  type t
-  val sem : t
-  val post : t -> unit
-  val wait : t -> unit
   val with_lock : ('a -> 'b) -> 'a -> 'b
 end
 
