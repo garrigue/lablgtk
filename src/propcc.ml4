@@ -15,15 +15,15 @@ let camlize id =
   for i = 0 to String.length id - 1 do
     match id.[i] with
     | 'A' .. 'Z' as c ->
-	if i > 0 && 
-	  (is_not_uppercase id.[i-1] || 
-	  (i < String.length id - 1 && is_not_uppercase id.[i+1]))
-	then Buffer.add_char b '_' ;
-	Buffer.add_char b (Char.lowercase c)
+        if i > 0 && 
+          (is_not_uppercase id.[i-1] || 
+          (i < String.length id - 1 && is_not_uppercase id.[i+1]))
+        then Buffer.add_char b '_' ;
+        Buffer.add_char b (Char.lowercase c)
     | '-' ->
-	Buffer.add_char b '_'
+        Buffer.add_char b '_'
     | c ->
-	Buffer.add_char b c
+        Buffer.add_char b c
   done;
   let s = Buffer.contents b in
   try List.assoc s caml_keywords with Not_found -> s
