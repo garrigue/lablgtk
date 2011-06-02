@@ -221,7 +221,7 @@ let process_file f =
             | Types ([], tyl, _)
             | Types ([ "" ], tyl, _) -> out "Apply.apply%d_ret" (List.length tyl)
             | Types (l, _, ret) ->
-                if ret = "" then out "(fun ~f " else out "(fun ~f ~cb ";
+                if ret = "" then out "(fun ~f " else out "(fun ~cb ~f ";
                 let i = ref 0 in
                 List.iter l ~f:
                   (fun p -> incr i; if p = "" then out "x%d " !i else out "~%s " p);

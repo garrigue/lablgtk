@@ -191,26 +191,22 @@ let connect_property ~(prop:('a, _) property) ~callback (obj : 'a obj) =
 
 module type GlibPropertyAsSignal = sig
   type 'a u
-  val connect : 'a Gobject.obj ->
-      ('a, 'b) Gobject.property -> id * 'b u
-  val disconnect : 'a Gobject.obj -> id -> unit
+  val connect : ([> `gtk ] as 'a) Gobject.obj ->
+      ('a, 'b) Gobject.property -> (unit -> unit) * 'b u
 end
 
 module type GlibPropertyAsEvent = sig
   type 'a u
-    val connect : 'a Gobject.obj ->
-      ('a, 'b) Gobject.property -> id * 'b u
-    val disconnect : 'a Gobject.obj -> id -> unit
+    val connect : ([> `gtk ] as 'a) Gobject.obj ->
+      ('a, 'b) Gobject.property -> (unit -> unit) * 'b u
 end
 
 module type GlibSignalAsEvent = sig
   type 'a u
-  val connect : 'a Gobject.obj ->
-    ('a, 'b) t -> (f:('c -> unit) -> 'b) -> id * 'c u
-  val connect_ret : 'a Gobject.obj ->
-    ('a, 'b) t -> cb:('c -> 'd) -> (f:('c -> unit) -> cb:('c -> 'd) ->
-      'b) -> id * 'c u
-  val disconnect : 'a Gobject.obj -> id -> unit
+  val connect : ([> `gtk ] as 'a) Gobject.obj ->
+    ('a, 'b) t -> (f:('c -> unit) -> 'b) -> (unit -> unit) * 'c u
+  val connect_ret : ([> `gtk ] as 'a) Gobject.obj -> ('a, 'b) t ->
+    cb:'c -> (cb:'c -> f:('d -> unit) -> 'b) -> (unit -> unit) * 'd u
 end
 
 module type Semaphore = sig
@@ -234,19 +230,19 @@ module Apply (Semaphore : Semaphore) = struct
   let apply6 ~f =
     fun a1 a2 a3 a4 a5 a6 -> with_lock f (a1, a2, a3, a4, a5, a6)
 
-  let apply0_ret ~f ~cb =
+  let apply0_ret ~cb ~f =
     fun () -> with_lock (fun () -> f (); cb ()) ()
-  let apply1_ret ~f ~cb =
+  let apply1_ret ~cb ~f =
     fun a1 -> with_lock (fun a1 -> f a1; cb a1) a1
-  let apply2_ret ~f ~cb =
+  let apply2_ret ~cb ~f =
     fun a1 a2 -> with_lock (fun x -> f x; cb x) (a1, a2)
-  let apply3_ret ~f ~cb =
+  let apply3_ret ~cb ~f =
     fun a1 a2 a3 -> with_lock (fun x -> f x; cb x) (a1, a2, a3)
-  let apply4_ret ~f ~cb =
+  let apply4_ret ~cb ~f =
     fun a1 a2 a3 a4 -> with_lock (fun x -> f x; cb x) (a1, a2, a3, a4)
-  let apply5_ret ~f ~cb =
+  let apply5_ret ~cb ~f =
     fun a1 a2 a3 a4 a5 -> with_lock (fun x -> f x; cb x) (a1, a2, a3, a4, a5)
-  let apply6_ret ~f ~cb =
+  let apply6_ret ~cb ~f =
     fun a1 a2 a3 a4 a5 a6 -> with_lock (fun x -> f x; cb x) (a1, a2, a3, a4, a5, a6)
 end
 
