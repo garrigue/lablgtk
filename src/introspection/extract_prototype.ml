@@ -1,6 +1,7 @@
 open Xml
 
 let debug = ref false
+let may f x = match x with None -> () | Some x -> f x
 
 let included_modules = Hashtbl.create 17
 
@@ -34,11 +35,12 @@ module SSet=
   Set.Make(struct type t = string let compare = Pervasives.compare end)
 
 let caml_avoid = List.fold_right SSet.add 
-  ["let";"external";"open";"true";"false";"exit"; "match"] 
+  ["let";"external";"open";"true";"false";"exit"; "match";"ref";"end"] 
   SSet.empty
-let is_caml_avoid s = 
+let camlize s =
+  let s = String.copy s in
   s.[0] <- Char.lowercase s.[0];
-  SSet.mem s caml_avoid
+  if SSet.mem s caml_avoid then s^"_" else s
 
 type c_simple_stub = {cs_nb_arg:int;
 		      cs_c_name:string;
@@ -60,6 +62,7 @@ type direction = DDefault | DIn | DOut | DInOut
 type c_typ = {
   mutable t_name:string;
   mutable t_c_typ:string;
+  mutable t_target:string;
   mutable t_content: c_typ option
 }
 type c_array = {
@@ -126,6 +129,7 @@ type property = {
   mutable pr_readable:bool;
   mutable pr_construct:bool;
   mutable pr_construct_only:bool;
+  mutable pr_transfer_ownership:transfer_ownership;
   mutable pr_doc:string;
   mutable pr_typ:typ;}
 
@@ -173,7 +177,7 @@ type repository = {
   mutable rep_xmlns_glib:string;
   mutable rep_includes: included list;
   mutable rep_package: package;
-  mutable rep_c_include: c_include;
+  mutable rep_c_include: c_include option;
   mutable rep_namespace: namespace;
 }
 module Pretty = struct
@@ -193,7 +197,7 @@ let dummy_bfm () = { bfm_c_identifier="";bfm_value="";bfm_name=""}
 let dummy_bf () = { bf_name="";bf_ctype="";bf_members=[] }
 let dummy_ownership () = ODefault
 let dummy_typ () = NoType
-let dummy_c_typ () = {t_name="";t_c_typ="";t_content=None}
+let dummy_c_typ () = {t_name="";t_c_typ="";t_target="";t_content=None}
 let dummy_array () =
   {a_c_typ="";
    a_fixed_size="";
@@ -215,6 +219,7 @@ let dummy_property () =
    pr_readable=true;
    pr_construct=false;
    pr_construct_only=false;
+   pr_transfer_ownership=dummy_ownership();
    pr_doc="";}
 
 let dummy_return_value () = {r_ownership=dummy_ownership ();
@@ -264,7 +269,7 @@ let dummy_repository () = {
   rep_xmlns_glib = "";
   rep_includes = [];
   rep_package = dummy_package ();
-  rep_c_include = dummy_c_include ();
+  rep_c_include = None;
   rep_namespace = dummy_namespace ();
 }
 let debug_ownership fmt o = 
@@ -277,7 +282,8 @@ let debug_array fmt a =
   Format.fprintf fmt "ARRAY"
 
 let debug_ctyp fmt t = 
-  Format.fprintf fmt "@[tname:%s@]@ @[t_c_typ:%s@]" t.t_name t.t_c_typ
+  Format.fprintf fmt "@[tname:%s@]@ @[t_c_typ:%s@]@ @[t_target:%s@]" 
+    t.t_name t.t_c_typ t.t_target
 
 let debug_typ fmt t = 
   match t with 
@@ -318,18 +324,19 @@ let debug_function fmt l =
     l.f_name l.c_identifier l.version l.deprecated_version l.deprecated
     debug_return_value l.return_value
     debug_parameters l.parameters
-    
-let debug_property fmt p = 
-  Format.fprintf fmt 
+
+let debug_property fmt p =
+  Format.fprintf fmt
     "@[Name='%s'@ Version:'%s'@ Writable:%b Readable:%b@\n\
-      Type: @[%a@]@]" 
-    p.pr_name  p.pr_version 
+      Type: @[%a@] @[transfer_ownership:%a@]@]"
+    p.pr_name  p.pr_version
     p.pr_writable p.pr_readable
-      debug_typ p.pr_typ
-    
-let debug_klass fmt k = 
+    debug_typ p.pr_typ
+    debug_ownership p.pr_transfer_ownership
+
+let debug_klass fmt k =
   Format.fprintf fmt "@[<hov 1>Class: '%s'@ Parent:'%s'@ Abstract:%b@ \
-                      C type:'%s'@ get_type:'%s'" 
+                      C type:'%s'@ get_type:'%s'"
     k.c_name
     k.c_parent
     k.c_abstract
@@ -364,25 +371,29 @@ module Translations = struct
   let base_translation  =
     [
       ["gboolean"],("Val_bool","Bool_val",fun _ ->"bool");
-      
-      [ "int"; "gint";"guint";"guint8";"gint8";
-	"guint16";"gint16"; "gushort";
+
+      [ "int"; "gint";"guint";
+	"uint8";"guint8";"gint8";
+	"uint16";"guint16";"gint16"; "gushort";
 	"char";"gchar";"guchar";
 	"gssize";"gsize"],
       ("Val_int","Int_val",fun _ -> "int");
-      
-      [ "gint32";"guint32";"gunichar"],
+
+      [ "uint32"; "int32"; "gint32";"guint32";"gunichar"],
       ("Val_int32","Int32_val",fun _ -> "int32");
-      
-      [ "gint64";"guint64";],
+
+      [ "uint64"; "int64";"gint64";"guint64";],
       ("Val_int64","Int64_val",fun _ -> "int64");
-      
+
+      [ "long"; "ulong";"gulong";"glong";],
+      ("Val_long","Long_val",fun _ -> "int");
+
       [ "void" ] , ("Unit","void_param????",fun _ -> "unit");
-      
+
       ["gdouble"; "long double"; "glong"; "gulong" ; "double"] , 
       ("Val_double","Double_val",fun _ -> "float");
-      
-      [ "gchar*";"char*"; "guchar*" ], 
+
+      [ "gchararray";"gchar*";"char*"; "guchar*" ], 
       ("Val_string","String_val",fun _ -> "string");
     ]
   let () = 
@@ -425,16 +436,19 @@ module Translations = struct
         add_c_header 
           (Format.sprintf "/*TODO: conversion for record '%s' */@." c_typ)
       end else begin 
-        add_c_header 
-          (Format.sprintf "#define %s(val) check_cast(%s,val)@." 
-	     of_val 
+	if of_val<> "GObject_val" then
+          add_c_header 
+            (Format.sprintf "#define %s(val) check_cast(%s,val)@." 
+	       of_val 
 	     (to_type_macro c_typ));
-        add_c_header 
-          (Format.sprintf "#define %s(val) Val_GObject((GObject*)val)@." 
+        if val_of<> "Val_GObject" then begin
+	  add_c_header
+            (Format.sprintf "#define %s(val) Val_GObject((GObject*)val)@."
 	     val_of);
-        add_c_header 
-          (Format.sprintf "#define %s_new(val) Val_GObject_new((GObject*)val)@." 
-	 val_of);
+          add_c_header
+            (Format.sprintf "#define %s_new(val) Val_GObject_new((GObject*)val)@."
+	       val_of);
+	end;
       end;
       Hashtbl.add tbl (c_typ^"*") 
         (val_of,of_val,
@@ -450,22 +464,22 @@ let get_repositories () = List.rev !repositories
 module Emit = struct
 
   let emit_parameter rank p = match p.p_typ with
-  | NoType -> fail_emit "NoType(p)"
-  | Array _ -> fail_emit "Array(TODO)"
-  | Typ ct -> 
-    match p.p_direction with 
-    | DIn | DDefault ->
-      let ctyp = match p.p_ownership with 
-      | OFull -> ct.t_c_typ ^"*"
-      | _ -> ct.t_c_typ
-      in
-      let _,c_base,ml_base = Translations.find ctyp in
-      let ml_base = ml_base '>' in
-      if p.p_allow_none then 
-	Format.sprintf "Option_val(arg%d,%s,NULL) Ignore" rank c_base,
-	ml_base^" option"
-      else c_base,ml_base
-    | DOut | DInOut -> fail_emit "(out)" 
+    | NoType -> fail_emit "NoType(p)"
+    | Array _ -> fail_emit "Array(TODO)"
+    | Typ ct -> 
+      match p.p_direction with 
+	| DIn | DDefault ->
+	  let ctyp = match p.p_ownership with 
+	    | OFull -> ct.t_c_typ ^"*"
+	    | _ -> ct.t_c_typ
+	  in
+	  let _,c_base,ml_base = Translations.find ctyp in
+	  let ml_base = ml_base '>' in
+	  if p.p_allow_none then 
+	    Format.sprintf "Option_val(arg%d,%s,NULL) Ignore" rank c_base,
+	    ml_base^" option"
+	  else c_base,ml_base
+	| DOut | DInOut -> fail_emit "(out)" 
 
   let emit_parameters throws l = 
     let l = if throws then 
@@ -505,9 +519,9 @@ module Emit = struct
 		    ms_params= match ml_params with 
 		    | [] -> ["unit"]
 		    | _ -> ml_params;}}
-    
-  let emit_method k m = 
-    try 
+
+  let emit_method k m =
+    try
       let self = dummy_parameter()in
       let t = dummy_c_typ () in
       t.t_c_typ<-k.c_c_type^"*";
@@ -546,13 +560,13 @@ module Emit = struct
   open Pretty
   let c_stub fmt s = match s with 
     | Simple s -> 
-	Format.fprintf fmt "ML_%d(%s,%a%s)@\n" s.cs_nb_arg s.cs_c_name
-	  (pp_list ", ") s.cs_params
-	  s.cs_ret;
-	if s.cs_nb_arg>=6 then 
-	  Format.fprintf fmt "ML_bc%d(ml_%s)@ " s.cs_nb_arg s.cs_c_name
+      Format.fprintf fmt "ML_%d(%s,%a%s)@\n" s.cs_nb_arg s.cs_c_name
+	(pp_list ", ") s.cs_params
+	s.cs_ret;
+      if s.cs_nb_arg>=6 then 
+	Format.fprintf fmt "ML_bc%d(ml_%s)@ " s.cs_nb_arg s.cs_c_name
     | Complex s -> Format.fprintf fmt "%s@." s
-	
+
   let ml_stub fmt s = 
     Format.fprintf fmt "external %s: %a%s = \"%s\"@ "
       s.ms_ml_name
@@ -572,17 +586,20 @@ module Emit = struct
     | None -> ()
 
   let klass ~ml ~c (k_name,methods,functions) = 
-    Format.fprintf ml "@[<hv 2>module %s = struct@\n"
-      k_name;
-    List.iter (may_ml_stub ml) methods;
-    List.iter (may_ml_stub ml) functions;
-    Format.fprintf ml "@]end@\n";
+    if methods <> [] || functions <> [] then begin
+      Format.fprintf ml "@[<hv 2>module %s = struct@\n"
+	k_name;
+      List.iter (may_ml_stub ml) methods;
+      List.iter (may_ml_stub ml) functions;
+      Format.fprintf ml "@]end@\n";
 
-    Format.fprintf c "@[/* Module %s */@\n" k_name;
-    List.iter (may_c_stub c) methods;
-    List.iter (may_c_stub c) functions;
-    Format.fprintf c "@]/* end of %s */@\n" k_name
-      
+      Format.fprintf c "@[/* Module %s */@\n" k_name;
+      List.iter (may_c_stub c) methods;
+      List.iter (may_c_stub c) functions;
+      Format.fprintf c "@]/* end of %s */@\n" k_name
+    end 
+    else Format.printf "Ignoring empty module %s@." k_name
+
   let functions ~ml ~c f = 
     Format.fprintf ml "@[(* Global functions *)@\n";
     List.iter (may_ml_stub ml) f;
@@ -600,7 +617,8 @@ module Emit = struct
     let c = Format.formatter_of_out_channel stub_c_channel in
     Format.fprintf ml "%s@\n" (Buffer.contents ml_header);
     Format.fprintf c "%s@\n" (Buffer.contents c_header);
-    Format.fprintf c "#include <%s>@." r.rep_c_include.c_inc_name;
+    may (fun x -> Format.fprintf c "#include <%s>@." x.c_inc_name)
+      r.rep_c_include;
     Format.fprintf c "#include \"../wrappers.h\"@\n\
                       #include \"../ml_gobject.h\"@.";
 
@@ -611,39 +629,36 @@ module Emit = struct
     close_out stub_ml_channel;
     close_out stub_c_channel
 
-    
-
-
   end
 
 end
-let debug_all () = 
+let debug_all () =
   Format.printf "ALL REPOSITORIES:@.";
-  List.iter 
-    (fun ns -> debug_repository Format.std_formatter ns) 
+  List.iter
+    (fun ns -> debug_repository Format.std_formatter ns)
     (get_repositories ())
-    
 
-let rec parse_c_typ set attrs children = 
+let rec parse_c_typ set attrs children =
   let typ = dummy_c_typ () in
-  List.iter (fun (key,v) -> match key with 
-	       | "name" -> typ.t_name <- v
-	       | "c:type" -> typ.t_c_typ <- v
-	       | other -> 
-		   Format.printf "Ignoring attribute in typ:%s@." other)
+  List.iter (fun (key,v) -> match key with
+    | "name" -> typ.t_name <- v
+    | "c:type" -> typ.t_c_typ <- v
+    | "target" -> typ.t_target <- v
+    | other ->
+      Format.printf "Ignoring attribute in typ:%s@." other)
     attrs;
   List.iter (function
-	       | PCData s ->
-		   Format.printf "Ignoring PCData in type:%s@." s
-	       | Element (key,attrs,children) ->
-		 match key with
-		   | "type" ->
-		       parse_c_typ
-			 (fun t ->
-			    typ.t_content <- Some t)
-			 attrs children
-		   | other ->
-		       Format.printf "Ignoring child in typ:%s@." other)
+    | PCData s ->
+      Format.printf "Ignoring PCData in type:%s@." s
+    | Element (key,attrs,children) ->
+      match key with
+	| "type" ->
+	  parse_c_typ
+	    (fun t ->
+	      typ.t_content <- Some t)
+	    attrs children
+	| other ->
+	  Format.printf "Ignoring child in typ:%s@." other)
     children;
   set typ
 
@@ -652,6 +667,7 @@ let parse_type_name set attrs =
   List.iter (fun (key,v) -> match key with
 	       | "name" -> typ.t_name <- v
 	       | "c:type" -> typ.t_c_typ <- v
+	       | "target" -> typ.t_target <- v
 	       | other ->
 		   Format.printf "Ignoring attribute in basic typ %s:%s@."
 		     typ.t_name
@@ -679,7 +695,11 @@ let parse_alias attrs children =
 			   !fresh.t_name other))
     children;
   if !debug then Format.printf "Parsing alias: %s@." !fresh.t_name;
-  let old_trans = Translations.find !old.t_c_typ in
+  let old_trans =
+    try Translations.find !old.t_c_typ
+    with Cannot_emit _ when !fresh.t_target <> "" ->
+      Translations.find !fresh.t_target
+  in
   Hashtbl.add Translations.tbl !fresh.t_c_typ old_trans
 
 let parse_constant set attrs children =
@@ -773,6 +793,8 @@ let parse_property set attrs children =
 	       | "readable" -> p.pr_readable <- v="1"
 	       | "construct" -> p.pr_construct <- v="1"
 	       | "construct-only" -> p.pr_construct_only <- v="1"
+	       | "transfer-ownership" -> parse_ownership
+		 (fun o -> p.pr_transfer_ownership <- o) v
 	       | other -> Format.printf
 		   "Ignoring attribute in property:%s@." other)
     attrs;
@@ -873,8 +895,7 @@ let parse_function set attrs children =
 	       | other -> 
 		   Format.printf "Ignoring attribute in fct: %s@." other) 
     attrs;
-  if is_caml_avoid fct.f_name then
-    fct.f_name <- fct.c_identifier;
+  fct.f_name <- camlize fct.f_name;
   List.iter (function 
 	       | PCData s -> Format.printf "Ignoring PCData in fct:%s@." s
 	       | Element (key,attrs,children) -> 
@@ -1009,7 +1030,7 @@ let rec parse_repository set dir attrs children =
 		     | "c:include" -> 
                        assert (children=[]);
 		       parse_c_include 
-			 (fun f -> k.rep_c_include <- f)
+			 (fun f -> k.rep_c_include <- Some f)
 			 attrs
 		     | "namespace" -> 
 			 parse_namespace 

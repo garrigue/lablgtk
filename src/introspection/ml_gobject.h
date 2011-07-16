@@ -21,7 +21,6 @@
 /**************************************************************************/
 
 /* Defined in ml_gobject.h */
-
 #define GObject_val(val) ((GObject*)Pointer_val(val))
 CAMLexport value Val_GObject (GObject *);
 CAMLexport value Val_GObject_new (GObject *);
