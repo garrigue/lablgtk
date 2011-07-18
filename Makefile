@@ -1,4 +1,4 @@
-# Toplevel makefile for LablGtk2
+# Toplevel makefile for LablGtk3
 
 all opt doc install byte world: config.make
 all opt doc install byte clean depend world:

@@ -99,10 +99,6 @@ value ml_gdk_get_platform()
 #endif
 }
 
-/* Colormap */
-
-ML_0 (gdk_colormap_get_system, Val_GdkColormap)
-
 /* Screen geometry */
 
 ML_0 (gdk_screen_width, Val_int)

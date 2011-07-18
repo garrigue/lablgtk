@@ -5,7 +5,7 @@ package "gdk"
 type noconv platform = [ `X11 | `WIN32 | `QUARTZ ]
 
 type event_type = "GDK_"
-  [ `NOTHING | `DELETE | `DESTROY | `EXPOSE | `MOTION_NOTIFY
+  [ `NOTHING | `DELETE | `DESTROY | `MOTION_NOTIFY
   | `BUTTON_PRESS | `TWO_BUTTON_PRESS "GDK_2BUTTON_PRESS"
   | `THREE_BUTTON_PRESS "GDK_3BUTTON_PRESS" | `BUTTON_RELEASE
   | `KEY_PRESS | `KEY_RELEASE
@@ -15,7 +15,7 @@ type event_type = "GDK_"
   | `PROXIMITY_IN | `PROXIMITY_OUT
   | `DRAG_ENTER | `DRAG_LEAVE | `DRAG_MOTION | `DRAG_STATUS
   | `DROP_START | `DROP_FINISHED | `CLIENT_EVENT | `VISIBILITY_NOTIFY
-  | `NO_EXPOSE | `SCROLL | `WINDOW_STATE | `SETTING ]
+  | `SCROLL | `WINDOW_STATE | `SETTING ]
 
 type flags event_mask = "GDK_"
   [ `EXPOSURE
@@ -54,49 +54,16 @@ type setting_action "gdkSettingAction" = "GDK_SETTING_ACTION_"
 type window_state "gdkWindowState" = "GDK_WINDOW_STATE_"
   [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY | `FULLSCREEN ]
 
-type fill_rule = "GDK_"
-  [ `EVEN_ODD_RULE | `WINDING_RULE ]
-
-type overlap_type = "GDK_OVERLAP_RECTANGLE_"
-  [ `IN | `OUT | `PART ]
-
-type function_type = "GDK_"
-  [ `COPY | `INVERT | `XOR ]
-
-type fill = "GDK_"
-  [ `SOLID | `TILED | `STIPPLED | `OPAQUE_STIPPLED ]
-
-type subwindow_mode = "GDK_"
-  [ `CLIP_BY_CHILDREN | `INCLUDE_INFERIORS ]
-
-type line_style = "GDK_LINE_"
-  [ `SOLID | `ON_OFF_DASH | `DOUBLE_DASH ]
-
-type cap_style = "GDK_CAP_"
-  [ `NOT_LAST | `BUTT | `ROUND | `PROJECTING ]
-
-type join_style = "GDK_JOIN_"
-  [ `MITER | `ROUND | `BEVEL ]
-
 type modifier "gdkModifier" = "GDK_"
   [ `SHIFT | `LOCK | `CONTROL | `MOD1 | `MOD2 | `MOD3 | `MOD4 | `MOD5
   | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 ] "_MASK"
-
-type image_type "gdkImageType" = "GDK_IMAGE_"
-  [ `NORMAL | `SHARED | `FASTEST ]
 
 type visual_type "gdkVisualType" = "GDK_VISUAL_"
   [ `STATIC_GRAY | `GRAYSCALE | `STATIC_COLOR | `PSEUDO_COLOR
   | `TRUE_COLOR | `DIRECT_COLOR ]
 
-type font_type = "GDK_FONT_"
-  [ `FONT | `FONTSET ]
-
 type drag_action "gdkDragAction" = "GDK_ACTION_"
   [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
-
-type rgb_dither "gdkRgbDither" = "GDK_RGB_DITHER_"
-  [ `NONE | `NORMAL | `MAX ]
 
 type xdata =
   [ `BYTES "8" | `SHORTS "16" | `INT32S "32" | `NONE "0" ]

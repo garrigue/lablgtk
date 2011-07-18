@@ -44,27 +44,10 @@
 #define GdkDisplay_val(val) ((GdkDisplay*) val)
 #define Val_GdkDisplay(display) ((value) display)
 
-CAMLexport GdkPixmap *GdkPixmap_val (value);  /* check argument */
-#define Val_GdkPixmap Val_GAnyObject
-#define Val_GdkPixmap_no_ref Val_GAnyObject_new
-
 #define GdkBitmap_val(val) ((GdkBitmap*)GdkPixmap_val(val))
 #define Val_GdkBitmap Val_GdkPixmap
 #define Val_GdkBitmap_no_ref Val_GdkPixmap_no_ref
 
-#ifndef UnsafeImage
-CAMLexport GdkImage *GdkImage_val (value);  /* check argument */
-#else
-#define GdkImage_val(val) check_cast(GDK_IMAGE,val)
-#endif
-#define Val_GdkImage Val_GAnyObject
-#define Val_GdkImage_new Val_GAnyObject_new
-
-#define GdkFont_val(val) ((GdkFont*)Pointer_val(val))
-CAMLexport value Val_GdkFont (GdkFont *);
-
-CAMLexport GdkRegion *GdkRegion_val (value); /* check argument */
-CAMLexport value Val_GdkRegion (GdkRegion *); /* finalizer is destroy! */
 
 #define GdkGC_val(val) check_cast(GDK_GC,val)
 #define Val_GdkGC Val_GAnyObject

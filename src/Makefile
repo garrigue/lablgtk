@@ -14,18 +14,18 @@ CONFIG = ../config.make
 # protect against missing definitions
 BINDIR = ""
 LIBDIR = ""
-INSTALLDIR = $(LIBDIR)/lablgtk2
+INSTALLDIR = $(LIBDIR)/lablgtk3
 DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
 
-TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE)
+TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk3$(XB) gdk_pixbuf_mlsource$(XE)
 
 all: byte
 world: byte $(CAMLBEST)
 
 MLLIBS = lablgtk.cma
-CLIBS = liblablgtk2$(XA)
+CLIBS = liblablgtk3$(XA)
 #MLLINK = unix.cma str.cma
 
 # For -DG_LOG_DOMAIN=\"LablGTK\"
@@ -268,7 +268,7 @@ lablgtktop$(XE): $(MLLIBS) $(ALLTHOBJS)
 	   -I . $(MLLIBS) $(THOBJS)
 endif
 
-lablgtk2: Makefile $(CONFIG) lablgtk2.in
+lablgtk3: Makefile $(CONFIG) lablgtk3.in
 	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
 	    -e "s|@LABLGLDIR@|$(LABLGLDIR)|g" \
 	    -e "s|@LIBDIR@|$(LIBDIR)|g" \
@@ -278,11 +278,11 @@ lablgtk2: Makefile $(CONFIG) lablgtk2.in
 	    -e "s|@THINITOBJS@|$(THINITOBJS)|g" \
 	    -e "s|@USEDLL@|$(HAS_DLL_SUPPORT)|g" \
 	    -e "s|@THREADS_LIB@|$(THREADS_LIB)|g" \
-	    < lablgtk2.in > $@
+	    < lablgtk3.in > $@
 	chmod 755 $@
 
-lablgtk2.bat: lablgtk2.bat.in
-	cp lablgtk2.bat.in lablgtk2.bat
+lablgtk3.bat: lablgtk3.bat.in
+	cp lablgtk3.bat.in lablgtk3.bat
 
 build.ml: Makefile $(CONFIG) build.ml.in
 	sed -e "s|@LABLGTK_MLS@|$(MLOBJS:.cmo=)|" \
@@ -329,7 +329,7 @@ preinstall: build.ml
 	for f in $(PREOBJS:.cmo=.mli); do \
 	  if test -f $$f; then cp $$f "$(INSTALLDIR)"; fi; done
 	cp build.ml "$(INSTALLDIR)"
-	cp lablgtk2$(XB) gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
+	cp lablgtk3$(XB) gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
 	cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)"
@@ -351,8 +351,8 @@ install:
 	fi
 	cp -p *.h "$(INSTALLDIR)"
 	@if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
-	@if test -f dlllablgtk2$(XS); then $(MAKE) installdll; fi
-	cp lablgtk2$(XB) "$(BINDIR)"
+	@if test -f dlllablgtk3$(XS); then $(MAKE) installdll; fi
+	cp lablgtk3$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
 	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; fi
 	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
@@ -360,7 +360,7 @@ install:
 installdll:
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)" || \
 	   echo "Couldn't install dlls in default location: $(DLLDIR)"
-	if test -f dlllablgtk2$(XA); then \
+	if test -f dlllablgtk3$(XA); then \
 	  cp $(CLIBS:lib%$(XA)=dll%$(XA)) "$(INSTALLDIR)"; fi
 
 installopt:
@@ -374,10 +374,10 @@ endif
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) "$(INSTALLDIR)"; fi
 
-lablgtk.cma liblablgtk2$(XA): $(COBJS) $(MLOBJS)
-	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)
+lablgtk.cma liblablgtk3$(XA): $(COBJS) $(MLOBJS)
+	$(LIBRARIAN) -o lablgtk -oc lablgtk3 $^ $(GTKLIBS)
 lablgtk.cmxa: $(COBJS) $(MLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)
+	$(LIBRARIAN) -o lablgtk -oc lablgtk3 $^ $(GTKLIBS)
 lablgtk.cmxs: DYNLINKLIBS=$(GTK_LIBS)
 
 lablgtkgl.cma liblablgtkgl2$(XA): $(GLCOBJS) $(GLMLOBJS)
@@ -512,7 +512,7 @@ doc : lablgtk$(XO)doc gtkdoc.cmo
 	mkdir -p $(DOCDIR)/html
 	$(OCAMLDOC) -sort -g ./gtkdoc.cmo $(DOC_BASE_URI) -v -t LablGTK -d $(DOCDIR)/html -load $<
 doc_texi : lablgtk$(XO)doc
-	$(OCAMLDOC) -texi -v -t LablGTK -o $(DOCDIR)/lablgtk2.texi -load $<
+	$(OCAMLDOC) -texi -v -t LablGTK -o $(DOCDIR)/lablgtk3.texi -load $<
 
 $(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
 	    ml_gobject.h ml_glib.h wrappers.h
