@@ -306,6 +306,9 @@ module Window = struct
   external set_cursor : window -> cursor -> unit = 
     "ml_gdk_window_set_cursor"
   external clear : window -> unit = "ml_gdk_window_clear"
+  external clear_area :
+    window -> x:int -> y:int -> width:int -> height:int -> unit
+    = "ml_gdk_window_clear"
   external get_xwindow : [>`drawable] obj -> xid = "ml_GDK_WINDOW_XWINDOW"
 
   let set_back_pixmap w pix = 
