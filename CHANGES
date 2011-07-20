@@ -2,7 +2,8 @@ $Id$
 
 2011.07.20 [Jacques]
   * add gtk_accelerator_name/get_label (for Pierre Boutillier)
-  * add gtk_accel_map_foreach/change_entry (ib)
+  * add gtk_accel_map_foreach/change_entry (ibid)
+  * add gdk_window_clear_area (for DDR)
 
 In Lablgtk-2.14.2:
 

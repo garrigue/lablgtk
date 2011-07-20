@@ -221,6 +221,8 @@ module Window :
     val get_pointer_location : window -> int * int
     val root_parent : unit -> window
     val clear : window -> unit
+    val clear_area :
+        window -> x:int -> y:int -> width:int -> height:int -> unit
     val get_xwindow : [>`drawable] obj -> xid
     type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP of pixmap ]
     val set_back_pixmap : window -> background_pixmap -> unit
