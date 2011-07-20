@@ -4,6 +4,7 @@ $Id$
   * add gtk_accelerator_name/get_label (for Pierre Boutillier)
   * add gtk_accel_map_foreach/change_entry (ibid)
   * add gdk_window_clear_area (for DDR)
+  * make gtk_tree_view_get_visible_range version dependent (Thomas Ripoche)
 
 In Lablgtk-2.14.2:
 

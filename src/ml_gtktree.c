@@ -1580,6 +1580,7 @@ CAMLprim value ml_custom_model_rows_reordered (value tree_model_val, value path,
   return Val_unit;)
 }
 
+#ifdef HASGTK28
 CAMLprim value ml_gtk_tree_view_get_visible_range(value treeview) {
      CAMLparam1(treeview);
      CAMLlocal1(result);
@@ -1592,4 +1593,7 @@ CAMLprim value ml_gtk_tree_view_get_visible_range(value treeview) {
      Store_field(result, 1, Val_GtkTreePath(endp));
      CAMLreturn(ml_some(result));
 }
-	  
+#else
+Unsupported_28(gtk_tree_view_get_visible_range)
+#endif
+
