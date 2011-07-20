@@ -134,92 +134,10 @@ CAMLprim value ml_gdk_visual_get_best (value depth, value type)
      return Val_GdkVisual(vis);
 }
 
-Make_Extractor (GdkVisual,GdkVisual_val,type,Val_gdkVisualType)
-Make_Extractor (GdkVisual,GdkVisual_val,depth,Val_int)
-Make_Extractor (GdkVisual,GdkVisual_val,red_mask,Val_int)
-Make_Extractor (GdkVisual,GdkVisual_val,red_shift,Val_int)
-Make_Extractor (GdkVisual,GdkVisual_val,red_prec,Val_int)
-Make_Extractor (GdkVisual,GdkVisual_val,green_mask,Val_int)
-Make_Extractor (GdkVisual,GdkVisual_val,green_shift,Val_int)
-Make_Extractor (GdkVisual,GdkVisual_val,green_prec,Val_int)
-Make_Extractor (GdkVisual,GdkVisual_val,blue_mask,Val_int)
-Make_Extractor (GdkVisual,GdkVisual_val,blue_shift,Val_int)
-Make_Extractor (GdkVisual,GdkVisual_val,blue_prec,Val_int)
+ML_1(gdk_visual_get_visual_type,GdkVisual_val,Val_gdkVisualType)
+ML_1(gdk_visual_get_depth,GdkVisual_val,Val_int)
 
-/* Image */
-
-#ifndef UnsafeImage
-CAMLexport GdkImage *GdkImage_val(value val)
-{
-    if (!Field(val,1)) ml_raise_gdk ("attempt to use destroyed GdkImage");
-    return check_cast(GDK_IMAGE,val);
-}
-#endif
-
-/* Broken in 2.0
-ML_4 (gdk_image_new_bitmap, GdkVisual_val, String_val, Int_val, Int_val,
-      Val_GdkImage)
-*/
-ML_4 (gdk_image_new, GdkImageType_val, GdkVisual_val, Int_val, Int_val,
-      Val_GdkImage_new)
-ML_5 (gdk_drawable_get_image, GdkDrawable_val, Int_val, Int_val, Int_val,
-      Int_val, Val_GdkImage_new)
-ML_4 (gdk_image_put_pixel, GdkImage_val, Int_val, Int_val, Int_val, Unit)
-ML_3 (gdk_image_get_pixel, GdkImage_val, Int_val, Int_val, Val_int)
-Make_Extractor(gdk_image, GdkImage_val, visual, Val_GdkVisual)
-Make_Extractor(gdk_image, GdkImage_val, width, Val_int)
-Make_Extractor(gdk_image, GdkImage_val, height, Val_int)
-Make_Extractor(gdk_image, GdkImage_val, depth, Val_int)
-
-/*
-Make_Extractor(gdk_image, GdkImage_val, bpp, Val_int)
-Make_Extractor(gdk_image, GdkImage_val, bpl, Val_int)
-Make_Extractor(gdk_image, GdkImage_val, mem, Val_pointer)
-*/
-
-/* Color */
-
-ML_2 (gdk_colormap_new, GdkVisual_val, Bool_val, Val_GdkColormap)
-ML_1 (gdk_colormap_get_visual, GdkColormap_val, Val_GdkVisual)
-
-CAMLprim value ml_gdk_color_white (value cmap)
-{
-    GdkColor color;
-    gdk_color_white (GdkColormap_val(cmap), &color);
-    return Val_copy(color);
-}
-    
-CAMLprim value ml_gdk_color_black (value cmap)
-{
-    GdkColor color;
-    gdk_color_black (GdkColormap_val(cmap), &color);
-    return Val_copy(color);
-}
-
-CAMLprim value ml_gdk_color_parse (char *spec)
-{
-    GdkColor color;
-    if (!gdk_color_parse (spec, &color))
-        ml_raise_gdk ("color_parse");
-    return Val_copy(color);
-}
-
-ML_2 (gdk_color_alloc, GdkColormap_val, GdkColor_val, Val_bool)
-
-CAMLprim value ml_GdkColor (value red, value green, value blue)
-{
-    GdkColor color;
-    color.red = Int_val(red);
-    color.green = Int_val(green);
-    color.blue = Int_val(blue);
-    color.pixel = 0;
-    return Val_copy(color);
-}
-
-Make_Extractor (GdkColor, GdkColor_val, red, Val_int)
-Make_Extractor (GdkColor, GdkColor_val, green, Val_int)
-Make_Extractor (GdkColor, GdkColor_val, blue, Val_int)
-Make_Extractor (GdkColor, GdkColor_val, pixel, Val_int)
+/*TODO: gdk_visual_get_red_pixel_details */
 
 /* Rectangle */
 
@@ -237,25 +155,6 @@ Make_Extractor (GdkRectangle, GdkRectangle_val, x, Val_int)
 Make_Extractor (GdkRectangle, GdkRectangle_val, y, Val_int)
 Make_Extractor (GdkRectangle, GdkRectangle_val, width, Val_int)
 Make_Extractor (GdkRectangle, GdkRectangle_val, height, Val_int)
-
-/* Drawable */
-
-ML_1 (gdk_drawable_get_visual, GdkDrawable_val, Val_GdkVisual)
-ML_1 (gdk_drawable_get_colormap, GdkDrawable_val, Val_GdkColormap)
-ML_1 (gdk_drawable_get_depth, GdkDrawable_val, Val_int)
-
-CAMLprim value ml_gdk_drawable_get_size (value drawable)
-{
-  int x, y;
-  value ret;
-
-  gdk_drawable_get_size (GdkDrawable_val(drawable), &x, &y);
-  
-  ret = alloc_small (2,0);
-  Field(ret,0) = Val_int(x);
-  Field(ret,1) = Val_int(y);
-  return ret;
-}
 
 /* Window */
 
