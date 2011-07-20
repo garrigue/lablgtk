@@ -125,4 +125,10 @@ let _ =
       end else false);
   window#show ();
   let () = GtkData.AccelMap.load "test.accel" in
+  GtkData.AccelMap.foreach
+    (fun ~path ~key ~modi ~changed ->
+      if modi = [`CONTROL] then
+      if GtkData.AccelMap.change_entry path ~key ~modi:[`MOD1]
+      then prerr_endline ("Changed " ^ path)
+      else prerr_endline ("Could not change "^path));
   GMain.main ()
