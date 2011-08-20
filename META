@@ -33,7 +33,7 @@ package "gtkspell" (
 )
 
 package "gl" (
-  exists_if = "lablgtkgtl.cma,lablgtkgtl.cmxa,lablgtkgtl.cmxs"
+  exists_if = "lablgtkgl.cma,lablgtkgl.cmxa,lablgtkgl.cmxs"
   description = "Bindings for gtkGL"
   requires = "lablgtk2"
   archive(byte) = "lablgtkgl.cma"
