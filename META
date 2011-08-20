@@ -8,6 +8,14 @@ archive(byte,mt) += "gtkThread.cmo"
 archive(native,mt) += "gtkThread.cmx"
 archive(toploop,mt) += "gtkThInit.cmo"
 
+package "init" (
+  exists_if = "gtkInit.cmo,gtkInit.cmx"
+  description = "Auto-initialization of GTK"
+  requires = "lablgtk2"
+  archive(byte) = "gtkInit.cmo"
+  archive(native) = "gtkInit.cmx"
+)
+
 package "glade" (
   exists_if = "lablglade.cma,lablglade.cmxa,lablglade.cmxs"
   description = "Bindings for glade"
