@@ -40,3 +40,51 @@ package "gl" (
   archive(native) = "lablgtkgl.cmxa"
 )
 
+package "gnomecanvas" (
+  exists_if = "lablgnomecanvas.cma,lablgnomecanvas.cmxa,lablgnomecanvas.cmxs"
+  description = "Bindings for gnomecanvas"
+  requires = "lablgtk2"
+  archive(byte) = "lablgnomecanvas.cma"
+  archive(native) = "lablgnomecanvas.cmxa"
+)
+
+package "gnomeui" (
+  exists_if = "lablgnomeui.cma,lablgnomeui.cmxa,lablgnomeui.cmxs"
+  description = "Bindings for gnomeui"
+  requires = "lablgtk2"
+  archive(byte) = "lablgnomeui.cma"
+  archive(native) = "lablgnomeui.cmxa"
+)
+
+package "panel" (
+  exists_if = "lablpanel.cma,lablpanel.cmxa,lablpanel.cmxs"
+  description = "Bindings for panelapplet"
+  requires = "lablgtk2"
+  archive(byte) = "lablpanel.cma"
+  archive(native) = "lablpanel.cmxa"
+)
+
+package "sourceview2" (
+  exists_if = "lablgtksourceview2.cma,lablgtksourceview2.cmxa,lablgtksourceview2.cmxs"
+  description = "Bindings for gtksourceview2"
+  requires = "lablgtk2"
+  archive(byte) = "lablgtksourceview2.cma"
+  archive(native) = "lablgtksourceview2.cmxa"
+)
+
+package "sourceview" (
+  exists_if = "lablgtksourceview.cma,lablgtksourceview.cmxa,lablgtksourceview.cmxs"
+  description = "Bindings for gtksourceview"
+  requires = "lablgtk2"
+  archive(byte) = "lablgtksourceview.cma"
+  archive(native) = "lablgtksourceview.cmxa"
+)
+
+package "gnomehtml" (
+  exists_if = "lablgnome.cma,lablgnome.cmxa,lablgnome.cmxs"
+  description = "Bindings for gnome html"
+  requires = "lablgtk2"
+  archive(byte) = "lablgnome.cma"
+  archive(native) = "lablgnome.cmxa"
+)
+
