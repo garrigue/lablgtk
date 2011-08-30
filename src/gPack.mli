@@ -39,7 +39,7 @@ class box_skel : ([> box] as 'a) obj ->
       ?from:Tags.pack_type ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> widget -> unit
    (** @param from default value is [`START]
-       @param expand default vaue is [false]
+       @param expand default value is [false]
        @param fill default value is [true], ignored if [expand] is [false] *)
     method reorder_child : widget -> pos:int -> unit
     method set_child_packing :
