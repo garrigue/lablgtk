@@ -33,6 +33,15 @@ type ('a,'b) t =
     (** When writing marshallers, beware that the list omits the 0th
        argument of argv, which is the referent object *)
 
+type query = {
+  id : int;
+  signal_name : string;
+  itype : string;
+  flags : int;
+  return : string;
+  params : string array;
+}
+
 val stop_emit : unit -> unit
     (** Call [stop_emit ()] in a callback to prohibit further handling
        of the current signal invocation, by calling [emit_stop_by_name].
@@ -52,6 +61,9 @@ val safe_call : ?where:string -> ('a -> unit) -> 'a -> unit
         with user_handler, and reports an error otherwise. *)
 
 external signal_new : string -> g_type -> Gobject.signal_type list -> unit = "ml_g_signal_new_me"
+
+external list_ids : g_type -> int array = "ml_g_signal_list_ids"
+external query : int -> query = "ml_g_signal_query"
 
 external connect_by_name :
   'a obj -> name:string -> callback:g_closure -> after:bool -> id
