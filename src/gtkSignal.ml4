@@ -29,6 +29,14 @@ type id
 type 'a marshaller = 'a -> Closure.argv -> unit
 type ('a,'b) t =
  { name: string; classe: 'a; marshaller: 'b marshaller }
+type query = {
+  id : int;
+  signal_name : string;
+  itype : string;
+  flags : int;
+  return : string;
+  params : string array;
+}
 
 let enter_callback = ref (fun () -> ())
 and exit_callback = ref (fun () -> ())
@@ -65,6 +73,9 @@ END;
     flush stderr
 
 external signal_new : string -> g_type -> Gobject.signal_type list -> unit = "ml_g_signal_new_me"
+
+external query : int -> query = "ml_g_signal_query"
+external list_ids : g_type -> int array = "ml_g_signal_list_ids"
 
 external connect_by_name :
   'a obj -> name:string -> callback:g_closure -> after:bool -> id
