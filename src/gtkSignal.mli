@@ -53,7 +53,7 @@ val connect :
     (** You may use [stop_emit] inside the callback *)
 
 val connect_property : prop:('a, 'b) Gobject.property ->
-  callback:(unit -> unit) -> 'a Gobject.obj -> id
+  callback:('b -> unit) -> 'a Gobject.obj -> id
     (** Connect to the "notify::foo" signal associated with a property. These
        are emitted each time the property "foo" is changed *)
 
