@@ -258,7 +258,7 @@ Memory management:
   destroy toplevel widgets.
 
   IMPORTANT: Some Gtk data structures are allocated in the Caml heap,
-  and there use in signals (Gtk functions internally cally callbacks)
+  and their use in signals (Gtk functions internally cally callbacks)
   relies on their address being stable during a function call. For
   this reason automatic compation is disabled in GtkMain. If you need
   it, you may use compaction through Gc.compact where it is safe
