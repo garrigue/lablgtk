@@ -55,7 +55,8 @@ val connect :
 val connect_property : prop:('a, 'b) Gobject.property ->
   callback:('b -> unit) -> 'a Gobject.obj -> id
     (** Connect to the "notify::foo" signal associated with a property. These
-       are emitted each time the property "foo" is changed *)
+       are emitted each time the property "foo" is set (including when it is
+       set to the same value). *)
 
 val user_handler : (exn -> unit) ref
     (** A hook to allow changing the behaviour of exceptions in callbacks

@@ -595,7 +595,19 @@ let process_file f =
         List.iter wr_meths ~f:(fun (mname,typ,_) ->
           out "@ @[<hv2>method %s %s=@ %s.%s obj@]"
             mname (if typ = "unit" then "() " else "") (camlizeM name) mname);
-        out "@]@ end@ "
+        out "@]@ end@ ";
+        (* #notify: easy connection to the "foo::notify" signal for the "foo"
+         * properties. *)
+        out "@ @[<hv2>class virtual %s_notify obj = object (self)" (camlize name);
+        out "@ val obj : 'a obj = obj";
+        out "@ method private notify : 'b. ('a, 'b) property ->";
+        out "@   callback:('b -> unit) -> _ =";
+        out "@ fun prop ~callback -> GtkSignal.connect_property obj";
+        out "@   ~prop ~callback";
+        List.iter rd_props ~f:(fun (pname, mlname, gtype, _) ->
+          out "@ @[<hv2>method %s =@ self#notify %a@]"
+          mlname (oprop ~name ~gtype) pname);
+        out "@]@ end@ ";
       end;
       let vset = List.mem_assoc "vset" attrs in
       let vprops =
