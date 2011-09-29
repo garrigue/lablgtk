@@ -114,6 +114,14 @@ class clist_signals : 'a obj ->
       callback:(Tags.scroll_type -> pos:clampf -> unit) -> GtkSignal.id
     method scroll_vertical :
       callback:(Tags.scroll_type -> pos:clampf -> unit) -> GtkSignal.id
+    method notify_n_columns : callback:(int -> unit) -> GtkSignal.id
+    method notify_reorderable : callback:(bool -> unit) -> GtkSignal.id
+    method notify_row_height : callback:(int -> unit) -> GtkSignal.id
+    method notify_selection_mode : callback:(GtkEnums.selection_mode -> unit) -> GtkSignal.id
+    method notify_shadow_type : callback:(GtkEnums.shadow_type -> unit) -> GtkSignal.id
+    method notify_sort_type : callback:(GtkEnums.sort_type -> unit) -> GtkSignal.id
+    method notify_titles_active : callback:(bool -> unit) -> GtkSignal.id
+    method notify_use_drag_icons : callback:(bool -> unit) -> GtkSignal.id
   end
 
 (** A multi-columned scrolling list widget

@@ -371,6 +371,17 @@ class view_signals : [> tree_view] obj ->
       callback:(tree_iter -> tree_path -> bool) -> GtkSignal.id
     method toggle_cursor_row : callback:(unit -> bool) -> GtkSignal.id
     method unselect_all : callback:(unit -> bool) -> GtkSignal.id
+    method notify_enable_search : callback:(bool -> unit) -> GtkSignal.id
+    method notify_fixed_height_mode : callback:(bool -> unit) -> GtkSignal.id
+    method notify_hadjustment : callback:(GData.adjustment -> unit) -> GtkSignal.id
+    method notify_headers_visible : callback:(bool -> unit) -> GtkSignal.id
+    method notify_hover_expand : callback:(bool -> unit) -> GtkSignal.id
+    method notify_hover_selection : callback:(bool -> unit) -> GtkSignal.id
+    method notify_reorderable : callback:(bool -> unit) -> GtkSignal.id
+    method notify_rules_hint : callback:(bool -> unit) -> GtkSignal.id
+    method notify_search_column : callback:(int -> unit) -> GtkSignal.id
+    method notify_tooltip_column : callback:(int -> unit) -> GtkSignal.id
+    method notify_vadjustment : callback:(GData.adjustment -> unit) -> GtkSignal.id
   end
 
 (** A widget for displaying both trees and lists
@@ -667,6 +678,14 @@ class icon_view_signals : [> Gtk.icon_view] Gtk.obj ->
     inherit GContainer.container_signals
     method item_activated : callback:(Gtk.tree_path -> unit) -> GtkSignal.id
     method selection_changed : callback:(unit -> unit) -> GtkSignal.id
+    method notify_column_spacing : callback:(int -> unit) -> GtkSignal.id
+    method notify_columns : callback:(int -> unit) -> GtkSignal.id
+    method notify_item_width : callback:(int -> unit) -> GtkSignal.id
+    method notify_margin : callback:(int -> unit) -> GtkSignal.id
+    method notify_orientation : callback:(GtkEnums.orientation -> unit) -> GtkSignal.id
+    method notify_row_spacing : callback:(int -> unit) -> GtkSignal.id
+    method notify_selection_mode : callback:(GtkEnums.selection_mode -> unit) -> GtkSignal.id
+    method notify_spacing : callback:(int -> unit) -> GtkSignal.id
   end
 
 (** A widget which displays a list of icons in a grid

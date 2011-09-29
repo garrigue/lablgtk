@@ -65,6 +65,8 @@ class status_icon_signals (obj : Gtk.status_icon Gobject.obj) = object
     inherit gtk_status_icon_sigs
     method private connect sgn ~callback =
       GtkSignal.connect ~sgn ~callback ~after: true obj
+    method private notify prop ~callback =
+      GtkSignal.connect_property obj ~prop ~callback
 end
 
 class status_icon obj = object
