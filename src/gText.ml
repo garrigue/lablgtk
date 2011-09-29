@@ -369,6 +369,9 @@ class type buffer_signals_skel_type =
     method modified_changed : callback:(unit -> unit) -> GtkSignal.id
     method remove_tag :
       callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
+    method notify_cursor_position : callback:(int -> unit) -> GtkSignal.id
+    method notify_has_selection : callback:(bool -> unit) -> GtkSignal.id
+    method notify_tag_table : callback:(Gtk.text_tag_table -> unit) -> GtkSignal.id
   end
 
 class type ['b] buffer_signals_type = 
@@ -377,9 +380,11 @@ object ('a)
   method after : 'a
   method private connect :
     'c. ('b, 'c) GtkSignal.t -> callback:'c -> GtkSignal.id
+  method private notify :
+    'c. ('b, 'c) Gobject.property -> callback:('c -> unit) -> GtkSignal.id
 end
 
-class virtual buffer_signals_skel = 
+class virtual buffer_signals_skel =
 object(self)
   inherit text_buffer_sigs
   method apply_tag ~callback = 

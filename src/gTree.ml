@@ -369,7 +369,6 @@ class view_signals obj = object (self)
   method row_activated ~callback =
     self#connect TreeView.S.row_activated
       ~callback:(fun it vc -> callback it (new view_column vc))
-
 end
 
 open TreeView.P

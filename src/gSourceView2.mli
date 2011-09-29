@@ -118,7 +118,11 @@ object ('a)
   method highlight_updated:
     callback:(Gtk.text_iter -> Gtk.text_iter -> unit) -> GtkSignal.id
   method source_mark_updated: callback:(GtkSourceView2_types.source_mark obj -> unit) -> GtkSignal.id
-
+  method notify_can_redo : callback:(bool -> unit) -> GtkSignal.id
+  method notify_can_undo : callback:(bool -> unit) -> GtkSignal.id
+  method notify_highlight_matching_brackets : callback:(bool -> unit) -> GtkSignal.id
+  method notify_highlight_syntax : callback:(bool -> unit) -> GtkSignal.id
+  method notify_max_undo_levels : callback:(int -> unit) -> GtkSignal.id
 end
 
 and source_buffer: GtkSourceView2_types.source_buffer obj ->
@@ -180,6 +184,19 @@ class source_view_signals:
     inherit GText.view_signals
     method redo: callback:(unit -> unit) -> GtkSignal.id
     method undo: callback:(unit -> unit) -> GtkSignal.id
+    method notify_auto_indent : callback:(bool -> unit) -> GtkSignal.id
+    method notify_highlight_current_line : callback:(bool -> unit) -> GtkSignal.id
+    method notify_indent_on_tab : callback:(bool -> unit) -> GtkSignal.id
+    method notify_indent_width : callback:(int -> unit) -> GtkSignal.id
+    method notify_insert_spaces_instead_of_tabs : callback:(bool -> unit) -> GtkSignal.id
+    method notify_right_margin_position : callback:(int -> unit) -> GtkSignal.id
+    method notify_show_line_marks : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_line_numbers : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_right_margin : callback:(bool -> unit) -> GtkSignal.id
+    method notify_smart_home_end :
+      callback:(SourceView2Enums.source_smart_home_end_type -> unit) -> GtkSignal.id
+    method notify_tab_width : callback:(int -> unit) -> GtkSignal.id
+
   end
 
 class source_view:

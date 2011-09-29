@@ -634,6 +634,8 @@ let process_file f =
         out "@ @[<hv2>class virtual %s_sigs = object (self)" (camlize name);
         out "@ @[<hv2>method private virtual connect :";
         out "@ 'b. ('a,'b) GtkSignal.t -> callback:'b -> GtkSignal.id@]";
+        out "@ @[<hv2>method private virtual notify :";
+        out "@ 'b. ('a,'b) property -> callback:('b -> unit) -> GtkSignal.id@]";
         List.iter wsigs ~f:
           begin fun (sname, types,_) ->
             match types with Types(l, tyl,ret)
@@ -651,7 +653,13 @@ let process_file f =
                 out "@ @[<hv2>method %s =@ self#connect %s.S.%s@]"
                   sname (camlizeM name) sname
           end;
-        out "@]@ end@ "
+        (* notify: easy connection to "foo::notify" signals for "foo"
+         * properties. *)
+        List.iter rd_props ~f:(fun (pname, mlname, gtype, _) ->
+          out "@ @[<hov2>method notify_%s ~callback =" mlname;
+          out "@ @[<hov1>self#notify %a ~callback@]@]"
+          (oprop ~name ~gtype) pname);
+        out "@]@ end@ ";
       end
     end;
   out "@.";

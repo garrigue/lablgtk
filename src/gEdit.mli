@@ -115,6 +115,15 @@ class entry_signals : [> Gtk.entry] obj ->
     method paste_clipboard : callback:(unit -> unit) -> GtkSignal.id
     method populate_popup : callback:(GMenu.menu -> unit) -> GtkSignal.id
     method toggle_overwrite : callback:(unit -> unit) -> GtkSignal.id
+    method notify_activates_default : callback:(bool -> unit) -> GtkSignal.id
+    method notify_has_frame : callback:(bool -> unit) -> GtkSignal.id
+    method notify_invisible_char : callback:(int -> unit) -> GtkSignal.id
+    method notify_max_length : callback:(int -> unit) -> GtkSignal.id
+    method notify_scroll_offset : callback:(int -> unit) -> GtkSignal.id
+    method notify_text : callback:(string -> unit) -> GtkSignal.id
+    method notify_visibility : callback:(bool -> unit) -> GtkSignal.id
+    method notify_width_chars : callback:(int -> unit) -> GtkSignal.id
+    method notify_xalign : callback:(float -> unit) -> GtkSignal.id
   end
 
 (** A single line text entry field
@@ -187,6 +196,15 @@ class spin_button_signals : [> Gtk.spin_button] obj ->
 
     method wrapped : callback:(unit -> unit) -> GtkSignal.id  
       (** @since GTK 2.10 *)
+    method notify_adjustment : callback:(GData.adjustment -> unit) -> GtkSignal.id
+    method notify_digits : callback:(int -> unit) -> GtkSignal.id
+    method notify_numeric : callback:(bool -> unit) -> GtkSignal.id
+    method notify_rate : callback:(float -> unit) -> GtkSignal.id
+    method notify_snap_to_ticks : callback:(bool -> unit) -> GtkSignal.id
+    method notify_update_policy : callback:(GtkEnums.spin_button_update_policy -> unit) -> GtkSignal.id
+    method notify_value : callback:(float -> unit) -> GtkSignal.id
+    method notify_wrap : callback:(bool -> unit) -> GtkSignal.id
+
   end
 
 (** Retrieve an integer or floating-point number from the user
@@ -272,6 +290,11 @@ class combo_box_signals : [> Gtk.combo_box] Gtk.obj ->
   object
     inherit GContainer.container_signals
     method changed : callback:(unit -> unit) -> GtkSignal.id
+    method notify_active : callback:(int -> unit) -> GtkSignal.id
+    method notify_add_tearoffs : callback:(bool -> unit) -> GtkSignal.id
+    method notify_focus_on_click : callback:(bool -> unit) -> GtkSignal.id
+    method notify_has_frame : callback:(bool -> unit) -> GtkSignal.id
+    method notify_wrap_width : callback:(int -> unit) -> GtkSignal.id
   end
 
 (** @since GTK 2.4
