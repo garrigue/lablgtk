@@ -122,10 +122,37 @@ CAMLprim value ml_gtk_accelerator_parse(value acc)
   Field(tup, 1) = vmods;
   CAMLreturn(tup);
 }
+ML_2(gtk_accelerator_name, Int_val, OptFlags_GdkModifier_val,
+     copy_string_g_free)
+ML_2(gtk_accelerator_get_label, Int_val, OptFlags_GdkModifier_val,
+     copy_string_g_free)
 
 ML_1(gtk_accel_map_load,String_val,Unit)
 ML_1(gtk_accel_map_save,String_val,Unit)
 ML_3(gtk_accel_map_add_entry,String_val,Int_val, OptFlags_GdkModifier_val, Unit)
+ML_4(gtk_accel_map_change_entry,String_val,Int_val, OptFlags_GdkModifier_val,
+     Int_val, Val_bool)
+static void accel_map_func (gpointer data,
+                            const gchar *accel_path,
+                            guint accel_key,
+                            GdkModifierType accel_mods,
+                            gboolean changed)
+{
+    value args[4];
+    args[0] = Val_string (accel_path);
+    args[1] = Val_int(accel_key);
+    Begin_roots1(args[0]);
+    args[2] = Val_GdkModifier_flags(accel_mods);
+    End_roots();
+    args[3] = Val_int(changed);
+    callbackN_exn (*(value*)data, 4, args);
+}
+CAMLprim value ml_gtk_accel_map_foreach(value func)
+{
+    CAMLparam1(func);
+    gtk_accel_map_foreach (&func, accel_map_func);
+    CAMLreturn(Val_unit);
+}
 
 /* gtkstyle.h */
 
@@ -983,7 +1010,7 @@ CAMLprim value ml_gtk_get_version (value unit)
 }
 
 ML_0 (gtk_get_current_event_time, copy_int32)
-ML_0 (gtk_get_current_event, Check_null(Val_GdkEvent))
+ML_0 (gtk_get_current_event, Val_GdkEvent)
 ML_1 (gtk_get_event_widget, GdkEvent_val, Val_GtkWidget)
 ML_2 (gtk_propagate_event, GtkWidget_val, GdkEvent_val, Unit)
 

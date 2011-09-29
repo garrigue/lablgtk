@@ -34,25 +34,33 @@ module AccelGroup = struct
       = "ml_gtk_accel_group_lock"
   external unlock : accel_group -> unit
       = "ml_gtk_accel_group_unlock"
-  external connect_ :
+  external connect :
       accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list ->
       ?flags:accel_flag list ->  callback:g_closure -> unit
       = "ml_gtk_accel_group_connect"
   let connect ~key ?modi ?flags ~callback g =
-    connect_ g ~key ?modi ?flags
+    connect g ~key ?modi ?flags
       ~callback:(Closure.create (fun _ -> callback ()))
   external disconnect :
       accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> bool
       = "ml_gtk_accel_group_disconnect_key"
+  let disconnect ~key ?modi g = disconnect g ~key ?modi
   external groups_activate :
       'a obj -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> bool
       = "ml_gtk_accel_groups_activate"
+  let groups_activate ~key ?modi obj = groups_activate obj ~key ?modi
+  (* XXX In the following functions, optional arguments are useless! *)
+  (* Should remove the key label in lablgtk3 ? *)
   external valid : key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> bool
       = "ml_gtk_accelerator_valid"
   external set_default_mod_mask : Gdk.Tags.modifier list option -> unit
       = "ml_gtk_accelerator_set_default_mod_mask"
   external parse : string -> Gdk.keysym * Gdk.Tags.modifier list
       = "ml_gtk_accelerator_parse"
+  external name : key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> string
+      = "ml_gtk_accelerator_name"
+  external get_label : key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list -> string
+      = "ml_gtk_accelerator_get_label"
 end
 
 module AccelMap = struct
@@ -61,9 +69,21 @@ module AccelMap = struct
   external add_entry : 
     string -> 
     key:Gdk.keysym -> 
+    ?modi:Gdk.Tags.modifier list -> unit
+    = "ml_gtk_accel_map_add_entry"
+  let add_entry  ?(key=0) ?modi s = add_entry s ~key ?modi
+  external change_entry : 
+    string -> 
+    key:Gdk.keysym -> 
     ?modi:Gdk.Tags.modifier list ->
-    unit = "ml_gtk_accel_map_add_entry"
-  let add_entry  ?(key=0) ?modi s = add_entry s ~key ?modi	     
+    replace:bool -> bool
+    = "ml_gtk_accel_map_add_entry"
+  let change_entry ?(key=0) ?modi ?(replace=true) s =
+    change_entry s ~key ?modi ~replace
+  external foreach :
+    (path:string -> key:int ->
+     modi:Gdk.Tags.modifier list -> changed:bool -> unit) -> unit
+    = "ml_gtk_accel_map_foreach"
 end
 
 module Style = struct
