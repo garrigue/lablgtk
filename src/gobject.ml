@@ -396,7 +396,7 @@ module Property = struct
     match x with Some _ -> param prop x :: l | None -> l
 end
 
-let set o p x = Property.set p o x
-let get o p = Property.get p o
+let set p o x = Property.set o p x
+let get p o = Property.get o p
 let set_params obj params =
   List.iter params ~f:(fun (prop,arg) -> Property.set_dyn obj prop arg)

@@ -200,6 +200,7 @@ let connect ~sgn: ((sgn:('a, _) t)) ~callback ?after (obj : 'a obj) =
 
 let connect_property ~(prop:('a, _) property) ~callback (obj : 'a obj) =
   let name = "notify::" ^ prop.Gobject.name in
+  let callback = fun () -> callback (get prop obj) in
   let marshaller = marshal1 prop.conv name in
-  connect_aux ~name ~marshaller ~callback obj
+  connect_aux ~name ~marshaller:marshal_unit ~callback obj
 
