@@ -610,7 +610,7 @@ CAMLprim value ml_g_signal_query(value ml_i) {
   CAMLparam1(ml_i);
   CAMLlocal2(ml_query, ml_query_params);
   GSignalQuery* query;
-  uint i = Int_val(ml_i);
+  guint i = Int_val(ml_i);
 
   query = malloc(sizeof(GSignalQuery));
   g_signal_query(i, query);
@@ -626,8 +626,8 @@ CAMLprim value ml_g_signal_list_ids(value type)
 {
     CAMLparam1(type);
     CAMLlocal1(ret);
-    uint n_ids;
-    uint *ids;
+    guint n_ids;
+    guint *ids;
     ids = g_signal_list_ids(GType_val(type), &n_ids);
     Copy_array(ret, n_ids, ids, Val_int);
     free(ids);

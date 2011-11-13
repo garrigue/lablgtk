@@ -82,6 +82,7 @@ class range : ([> Gtk.range] as 'a) obj ->
   object
     inherit GObj.widget
     val obj : 'a obj
+    method as_range : Gtk.range Gtk.obj
     method connect : range_signals
     method event : GObj.event_ops
     method set_adjustment : GData.adjustment -> unit
