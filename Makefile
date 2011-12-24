@@ -2,7 +2,7 @@
 
 all opt doc install byte world: config.make
 all opt doc install byte clean depend world:
-	$(MAKE) -C src $@
+	$(MAKE) -C src $@ -j1
 
 arch-clean:
 	@rm -f config.status config.make config.cache config.log
