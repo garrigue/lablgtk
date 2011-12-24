@@ -277,6 +277,7 @@ class notebook : Gtk.notebook obj ->
       ?tab_label:widget -> ?menu_label:widget -> widget -> int
     method previous_page : unit -> unit
     method remove_page : int -> unit
+    method reorder_child : widget -> int -> unit
     method set_enable_popup : bool -> unit
     method set_homogeneous_tabs : bool -> unit
     method set_page :
