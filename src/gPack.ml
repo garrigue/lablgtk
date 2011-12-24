@@ -198,8 +198,7 @@ let paned dir =
 
 class notebook_signals obj = object (self)
   inherit container_signals_impl obj
-  method switch_page ~callback = 
-    self#connect Notebook.S.switch_page (fun _ arg1 -> callback arg1)
+  inherit notebook_sigs
 end
 
 class notebook obj = object (self)

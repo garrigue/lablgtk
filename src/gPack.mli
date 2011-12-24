@@ -233,7 +233,23 @@ val layout :
 class notebook_signals : [> Gtk.notebook] obj ->
   object
     inherit GContainer.container_signals
-    method switch_page : callback:(int -> unit) -> GtkSignal.id
+    method change_current_page : callback:(int -> unit) -> GtkSignal.id
+    method create_window : callback:(page:GObj.widget -> x:int -> y:int -> unit) -> GtkSignal.id
+    method move_focus_out : callback:(GtkEnums.direction_type -> unit) -> GtkSignal.id
+    method notify_enable_popup : callback:(bool -> unit) -> GtkSignal.id
+    method notify_homogeneous_tabs : callback:(bool -> unit) -> GtkSignal.id
+    method notify_scrollable : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_border : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_tabs : callback:(bool -> unit) -> GtkSignal.id
+    method notify_tab_hborder : callback:(int -> unit) -> GtkSignal.id
+    method notify_tab_pos : callback:(GtkEnums.position_type -> unit) -> GtkSignal.id
+    method notify_tab_vborder : callback:(int -> unit) -> GtkSignal.id
+    method page_added : callback:(GObj.widget -> int -> unit) -> GtkSignal.id
+    method page_removed : callback:(GObj.widget -> int -> unit) -> GtkSignal.id
+    method page_reordered : callback:(GObj.widget -> int -> unit) -> GtkSignal.id
+    method reorder_tab : callback:(GtkEnums.direction_type -> bool -> unit) -> GtkSignal.id
+    method select_page : callback:(bool -> unit) -> GtkSignal.id
+    method switch_page : callback:(Gpointer.boxed option -> int -> unit) -> GtkSignal.id
   end
 
 (** A tabbed notebook container

@@ -104,10 +104,10 @@ class Notebook set wrap wrapsig : Container {
   signal reorder_tab : GtkDirectionType gboolean
   signal change_current_page : gint
   signal move_focus_out : GtkDirectionType
-  signal page_added : GtkWidget guint
-  signal page_removed : GtkWidget guint
-  signal page_reordered : GtkWidget guint
-  (* omit others *)
+  signal page_added : GtkWidget guint (* GTK+ 2.10 *)
+  signal page_removed : GtkWidget guint (* GTK+ 2.10 *)
+  signal page_reordered : GtkWidget guint (* GTK+ 2.10 *)
+  signal create_window : page:GtkWidget x:gint y:gint (* GTK+ 2.12 *)
 }
 
 class Table set wrap :Container {
