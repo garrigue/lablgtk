@@ -101,15 +101,14 @@ GSList *ml_gslist_of_string_list(value list)
 #define GtkSourceStyleScheme_val(val) check_cast(GTK_SOURCE_STYLE_SCHEME,val)
 #define Val_GtkSourceStyleScheme(val) (Val_GObject((GObject*)val))
 #define Val_GtkSourceStyleScheme_new(val) (Val_GObject_new((GObject*)val))
-#define Val_option_GtkSourceStyleScheme(val) \
-     Val_option(val, Val_GtkSourceStyleScheme)
+static Make_Val_option(GtkSourceStyleScheme)
 
 #define GtkSourceStyleSchemeManager_val(val) \
      check_cast(GTK_SOURCE_STYLE_SCHEME_MANAGER,val)
 #define Val_GtkSourceStyleSchemeManager(val) (Val_GObject((GObject*)val))
 
 #define Val_GtkSourceLanguage(val)  (Val_GObject((GObject*)val))
-#define Val_option_GtkSourceLanguage(val) Val_option(val,Val_GtkSourceLanguage)
+static Make_Val_option(GtkSourceLanguage)
 
 #define GtkSourceLanguage_val(val) check_cast(GTK_SOURCE_LANGUAGE,val)
 #define GtkSourceLanguageManager_val(val)\
@@ -121,7 +120,7 @@ GSList *ml_gslist_of_string_list(value list)
 #define GtkSourceMark_val(val) check_cast(GTK_SOURCE_MARK,val)
 #define Val_GtkSourceMark(val)  (Val_GObject((GObject*)val))
 #define Val_GtkSourceMark_new(val) (Val_GObject_new((GObject*)val))
-#define Val_option_GtkSourceMark(val) Val_option(val,Val_GtkSourceMark)
+static Make_Val_option(GtkSourceMark)
 
 #define GtkSourceBuffer_val(val) check_cast(GTK_SOURCE_BUFFER,val)
 #define Val_GtkSourceBuffer(val) (Val_GObject((GObject*)val))
@@ -129,7 +128,6 @@ GSList *ml_gslist_of_string_list(value list)
 #define GtkSourceView_val(val) check_cast(GTK_SOURCE_VIEW,val)
 #define GtkTextIter_val(val) ((GtkTextIter*)MLPointer_val(val))
 #define Val_GtkTextIter(it) (copy_memblock_indirected(it,sizeof(GtkTextIter)))
-#define Val_option_GtkAny(v) Val_option(v,Val_GtkAny)
 #define string_list_of_GSList(l) Val_GSList(l, (value_in) Val_string)
 
 #define GdkPixbuf_option_val(val) Option_val(val, GdkPixbuf_val, NULL)

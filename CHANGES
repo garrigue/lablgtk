@@ -1,5 +1,8 @@
 $Id$
 
+2012.03.07 [Jacques]
+  * add Make_Val_option to wrappers.h
+
 2011.07.20 [Jacques]
   * add gtk_accelerator_name/get_label (for Pierre Boutillier)
   * add gtk_accel_map_foreach/change_entry (ibid)

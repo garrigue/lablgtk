@@ -360,6 +360,8 @@ CAMLprim int OptFlags_##conv (value list) \
 #define Val_optstring copy_string_or_null
 #define Optstring_val(v) (string_length(v) ? String_val(v) : (char*)NULL)
 #define Val_option(v,f) (v ? ml_some(f(v)) : Val_unit)
+#define Make_Val_option(T) \
+value Val_option_##T(T* v) { return Val_option(v,Val_##T); }
 
 #define Check_null(v) (v ? v : (ml_raise_null_pointer (), v))
 

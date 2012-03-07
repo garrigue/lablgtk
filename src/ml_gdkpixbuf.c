@@ -125,6 +125,8 @@ value Val_GdkPixbuf_ (GdkPixbuf *pb, gboolean ref)
   return ret; 
 }
 
+Make_Val_option(GdkPixbuf)
+
 CAMLprim value ml_gdkpixbuf_init(value unit)
 {
   ml_register_exn_map (GDK_PIXBUF_ERROR, "gdk_pixbuf_error");

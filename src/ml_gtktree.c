@@ -884,9 +884,11 @@ Unsupported_24 (gtk_tree_model_filter_convert_iter_to_child_iter)
 /* GtkIconView */
 #ifdef HASGTK26
 #define GtkIconView_val(val) check_cast(GTK_ICON_VIEW,val)
-#define Val_option_GtkTreePath(v) Val_option(v,Val_GtkTreePath)
-ML_3 (gtk_icon_view_get_path_at_pos, GtkIconView_val, Int_val, Int_val, Val_option_GtkTreePath)
-static void ml_iconview_foreach (GtkIconView *icon_view, GtkTreePath *path, gpointer data)
+static Make_Val_option(GtkTreePath)
+ML_3 (gtk_icon_view_get_path_at_pos, GtkIconView_val, Int_val, Int_val,
+      Val_option_GtkTreePath)
+static void ml_iconview_foreach (GtkIconView *icon_view, GtkTreePath *path,
+				 gpointer data)
 {
   value *cb = data;
   value p;
