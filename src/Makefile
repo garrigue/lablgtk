@@ -140,11 +140,11 @@ ml_gtksourceview.o: CFLAGS=$(GTKSOURCEVIEWCFLAGS)
 GTKSOURCEVIEWMLOBJS = gtkSourceView.cmo gSourceView.cmo
 GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
 ml_gtksourceview.c: pango_tags.h
-GTKSOURCEVIEWMLOBJSENUM = sourceViewEnums.cmo 
+GTKSOURCEVIEWMLOBJSENUM = sourceViewEnums.cmo
 GTKSOURCEVIEWPROPS = gtkSourceView.props
 CLIBS += liblablgtksourceview$(XA)
 EXTRA_MLLIBS += lablgtksourceview.cma
-EXTRA_OBJS += $(GTKSOURCEVIEWMLOBJS) $(GTKSOURCEVIEWMLOBJSENUM) 
+EXTRA_OBJS += $(GTKSOURCEVIEWMLOBJS) $(GTKSOURCEVIEWMLOBJSENUM)
 BEFORE_DEPEND += $(GTKSOURCEVIEWMLOBJS:%.cmo=%.ml) $(GTKSOURCEVIEWPROPS:%.props=%Props.ml) $(GTKSOURCEVIEWPROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
 lablgtksourceview.cma liblablgtksourceview$(XA): \
 	$(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmo) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEWMLOBJS)
@@ -158,7 +158,7 @@ MLLIBS += lablgtksourceview2.cma
 CLIBS += liblablgtksourceview2$(XA)
 GTKSOURCEVIEW2MLOBJS = gtkSourceView2.cmo gSourceView2.cmo
 GTKSOURCEVIEW2COBJS = ml_gtksourceview2$(XO)
-GTKSOURCEVIEW2MLOBJSENUM = sourceView2Enums.cmo 
+GTKSOURCEVIEW2MLOBJSENUM = sourceView2Enums.cmo
 GTKSOURCEVIEW2PROPS = gtkSourceView2.props
 BEFORE_DEPEND += $(GTKSOURCEVIEW2PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW2PROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
 
@@ -373,6 +373,43 @@ endif
 	cp $(INITOBJS:.cmo=$(XO)) "$(INSTALLDIR)"
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) "$(INSTALLDIR)"; fi
+
+findlib-install: build.ml
+	mkdir -p "$(BINDIR)"
+	ocamlfind install lablgtk2 ../META \
+		$(PREOBJS:.cmo=.ml) \
+		`for f in $(PREOBJS:.cmo=.mli); do \
+	  if test -f $$f; then echo $$f ; fi; done` \
+		build.ml \
+		$(CLIBS) \
+		$(CLIBS:lib%$(XA)=dll%$(XS)) \
+		$(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) \
+		*.mli \
+		$(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(EXTRA_OBJS:.cmo=.ml) \
+		$(EXTRA_MLLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) \
+		varcc$(XE) propcc$(XE) \
+		`if test $(THREADS_LIB) != no; \
+	   then echo  $(ALLTHOBJS:.cmo=.cmi) ; \
+		fi` \
+		`if test $(THREADS_LIB) = vm || test $(HAS_DLL_SUPPORT) != yes; \
+	   then echo lablgtktop$(XE) ; \
+		fi` \
+		*.h
+
+	cp lablgtk2$(XB) gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
+	cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"
+
+	cd `ocamlfind query lablgtk2` && $(RANLIB) $(CLIBS)
+
+	@if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
+	@if test -f dlllablgtk2$(XS); then $(MAKE) installdll; fi
+	cp lablgtk2$(XB) "$(BINDIR)"
+	if test -f lablgladecc$(XE); then \
+	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; fi
+	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
+
+uninstall:
+	ocamlfind remove lablgtk2
 
 lablgtk.cma liblablgtk2$(XA): $(COBJS) $(MLOBJS)
 	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)

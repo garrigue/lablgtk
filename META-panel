@@ -1,0 +1,7 @@
+package "panel" (
+  exists_if = "lablpanel.cma,lablpanel.cmxa,lablpanel.cmxs"
+  description = "Bindings for panelapplet"
+  requires = "lablgtk2"
+  archive(byte) = "lablpanel.cma"
+  archive(native) = "lablpanel.cmxa"
+)

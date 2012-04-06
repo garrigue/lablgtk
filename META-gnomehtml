@@ -1,0 +1,7 @@
+package "gnomehtml" (
+  exists_if = "lablgnome.cma,lablgnome.cmxa,lablgnome.cmxs"
+  description = "Bindings for gnome html"
+  requires = "lablgtk2"
+  archive(byte) = "lablgnome.cma"
+  archive(native) = "lablgnome.cmxa"
+)
