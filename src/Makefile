@@ -391,14 +391,28 @@ findlib-install: build.ml
 		`if test $(THREADS_LIB) = vm || test $(HAS_DLL_SUPPORT) != yes; \
 	   then echo lablgtktop$(XE) ; \
 		fi` \
-		*.h
+		*.h \
+		`if test -f lablgtk.cmxa; \
+		   then \
+		     echo $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=$(XA)) \
+		       $(EXTRA_MLLIBS:.cma=.cmxa) $(EXTRA_MLLIBS:.cma=$(XA)) ; \
+		   if test "$(HAS_NATIVE_DYNLINK)" = "yes" ; \
+		     then echo $(MLLIBS:.cma=.cmxs) $(EXTRA_MLLIBS:.cma=.cmxs) ; \
+		   fi; \
+		  echo  $(ALLOBJS:.cmo=.cmx) $(EXTRA_OBJS:.cmo=.cmx) ; \
+		  echo $(INITOBJS:.cmo=$(XO)) ; \
+		  if test -f gtkThread.cmx; then \
+  	    echo $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) ; \
+  	  fi ; \
+  	fi`
+
+	cd `ocamlfind query lablgtk2` && $(RANLIB) $(CLIBS)
+	@if test -f lablgtk.cmxa; \
+	  then (cd `ocamlfind query lablgtk2` && $(RANLIB) $(MLLIBS:.cma=$(XA)) $(EXTRA_MLLIBS:.cma=$(XA)) ); fi
 
 	cp lablgtk2$(XB) gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
 	cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"
 
-	cd `ocamlfind query lablgtk2` && $(RANLIB) $(CLIBS)
-
-	@if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
 	@if test -f dlllablgtk2$(XS); then $(MAKE) installdll; fi
 	cp lablgtk2$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
