@@ -1,0 +1,7 @@
+package "gnomeui" (
+  exists_if = "lablgnomeui.cma,lablgnomeui.cmxa,lablgnomeui.cmxs"
+  description = "Bindings for gnomeui"
+  requires = "lablgtk2"
+  archive(byte) = "lablgnomeui.cma"
+  archive(native) = "lablgnomeui.cmxa"
+)

@@ -2,16 +2,16 @@
 # autoconf input for Objective Caml programs
 # Modified by the lablgtk2 development team
 # Original copyright (C) 2001 Jean-Christophe Filliâtre
-#   from a first script by Georges Mariano 
-# 
+#   from a first script by Georges Mariano
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Library General Public
 # License version 2, as published by the Free Software Foundation.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# 
+#
 # See the GNU Library General Public License version 2 for more details
 # (enclosed in the file LGPL).
 
@@ -20,7 +20,7 @@
 #    CAMLC        "ocamlc" if present in the path, or a failure
 #                 or "ocamlc.opt" if present with same version number as ocamlc
 #    CAMLOPT      "ocamlopt" (or "ocamlopt.opt" if present), or "no"
-#   OCAMLBEST     either "byte" if no native compiler was found, 
+#   OCAMLBEST     either "byte" if no native compiler was found,
 #                 or "opt" otherwise
 #   OCAMLDEP      "ocamldep"
 #   OCAMLLEX      "ocamllex" (or "ocamllex.opt" if present)
@@ -30,7 +30,7 @@
 #   OCAMLWIN32    "yes"/"no" depending on Sys.os_type = "Win32"
 #   EXE           ".exe" if OCAMLWIN32=yes, "" otherwise
 
-# check for one particular file of the sources 
+# check for one particular file of the sources
 # ADAPT THE FOLLOWING LINE TO YOUR SOURCES!
 AC_INIT(src/gtk.ml)
 
@@ -53,12 +53,12 @@ AC_ARG_WITH(libdir,
 	[  --with-libdir=/path     install libs in /path/lablgtk2 and /path/stublibs],
 	LIBDIR=$withval
 	echo "Install dirs are : $LIBDIR/lablgtk2 and $LIBDIR/stublibs"
-	echo "	Compile with 
-		ocamlc -I $LIBDIR/lablgtk2 
-	and add $LIBDIR/stublibs either to OCAMLLIB/ld.conf or 
-	to CAML_LD_LIBRARY_PATH", 
+	echo "	Compile with
+		ocamlc -I $LIBDIR/lablgtk2
+	and add $LIBDIR/stublibs either to OCAMLLIB/ld.conf or
+	to CAML_LD_LIBRARY_PATH",
 	echo "Default install dirs are : $LIBDIR/lablgtk2 and $LIBDIR/stublibs"
-	echo "Compile with ocamlc -I +lablgtk2" 
+	echo "Compile with ocamlc -I +lablgtk2"
 	)
 
 # then we look for ocamlopt; if not present, we issue a warning
@@ -228,7 +228,7 @@ rm test_dynlink.*
 
 # GTK 2 auto configuration
 
-GTKPKG=gtk+-2.0 
+GTKPKG=gtk+-2.0
 AM_PATH_GTK_2_0(2.0.0, :, AC_MSG_ERROR(GTK+ is required))
 
 dnl LABLGTK_PKG(variable, autoconf package, help string, pkgconfig package)
@@ -361,26 +361,27 @@ chmod a-w config.make
 AC_DEFUN([CONF_SUMMARY], [
 echo $ECHO_N "	$1 $ECHO_C"
 if test -n "$USE_$2"
-then echo "	yes"
+then ( echo "	yes"; if test -n "$3" ; then cat "$3" >> META ; fi)
 else if test "$FORCE_$2" = "yes"
      then echo "	disabled"
      else echo "	not found"
      fi
 fi])
 
+cat META-base > META
 echo ; echo "LablGTK configuration:"
 echo "	threads  	$THREADS_LIB"
 echo "	native dynlink 	$HAS_NATIVE_DYNLINK"
-CONF_SUMMARY(GtkGLArea, GTKGL)
-CONF_SUMMARY(libglade, GLADE)
-CONF_SUMMARY(librsvg , RSVG)
-CONF_SUMMARY(libgnomecanvas, GNOMECANVAS)
-CONF_SUMMARY(libgnomeui, GNOMEUI)
-CONF_SUMMARY(libpanelapplet, PANEL)
-CONF_SUMMARY(gtkspell, GTKSPELL)
-CONF_SUMMARY(gtksourceview 1, GTKSOURCEVIEW)
-CONF_SUMMARY(gtksourceview 2, GTKSOURCEVIEW2)
-CONF_SUMMARY(quartz   , GTKQUARTZ)
+CONF_SUMMARY(GtkGLArea, GTKGL, META-gl)
+CONF_SUMMARY(libglade, GLADE, META-glade)
+CONF_SUMMARY(librsvg , RSVG, META-rsvg)
+CONF_SUMMARY(libgnomecanvas, GNOMECANVAS, META-gnomecanvas)
+CONF_SUMMARY(libgnomeui, GNOMEUI, META-gnomeui)
+CONF_SUMMARY(libpanelapplet, PANEL, META-panel)
+CONF_SUMMARY(gtkspell, GTKSPELL, META-gtkspell)
+CONF_SUMMARY(gtksourceview 1, GTKSOURCEVIEW, META-sourceview)
+CONF_SUMMARY(gtksourceview 2, GTKSOURCEVIEW2, META-sourceview2)
+CONF_SUMMARY(quartz   , GTKQUARTZ, "")
 echo
 echo $ECHO_N "	debug   $ECHO_C"
 if test -n "$DEBUG" ; then echo "	yes" ; else echo "	no" ; fi

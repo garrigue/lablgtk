@@ -1,0 +1,7 @@
+package "gnomecanvas" (
+  exists_if = "lablgnomecanvas.cma,lablgnomecanvas.cmxa,lablgnomecanvas.cmxs"
+  description = "Bindings for gnomecanvas"
+  requires = "lablgtk2"
+  archive(byte) = "lablgnomecanvas.cma"
+  archive(native) = "lablgnomecanvas.cmxa"
+)

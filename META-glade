@@ -1,0 +1,7 @@
+package "glade" (
+  exists_if = "lablglade.cma,lablglade.cmxa,lablglade.cmxs"
+  description = "Bindings for glade"
+  requires = "lablgtk2"
+  archive(byte) = "lablglade.cma"
+  archive(native) = "lablglade.cmxa"
+)

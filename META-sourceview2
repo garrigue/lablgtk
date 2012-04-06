@@ -1,0 +1,7 @@
+package "sourceview2" (
+  exists_if = "lablgtksourceview2.cma,lablgtksourceview2.cmxa,lablgtksourceview2.cmxs"
+  description = "Bindings for gtksourceview2"
+  requires = "lablgtk2"
+  archive(byte) = "lablgtksourceview2.cma"
+  archive(native) = "lablgtksourceview2.cmxa"
+)

@@ -1,0 +1,7 @@
+package "gtkspell" (
+  exists_if = "lablspell.cma,lablspell.cmxa,lablspell.cmxs"
+  description = "Bindings for gtkspell"
+  requires = "lablgtk2"
+  archive(byte) = "lablgtkspell.cma"
+  archive(native) = "lablgtkspell.cmxa"
+)
