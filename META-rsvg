@@ -1,7 +1,0 @@
-package "rsvg" (
-  exists_if = "lablrsvg.cma,lablrsvg.cmxa,lablrsvg.cmxs"
-  description = "Bindings for rsvg"
-  requires = "lablgtk2"
-  archive(byte) = "lablrsvg.cma"
-  archive(native) = "lablrsvg.cmxa"
-)

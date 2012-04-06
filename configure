@@ -6298,14 +6298,13 @@ chmod a-w config.make
 
 
 
-cat META-base > META
 echo ; echo "LablGTK configuration:"
 echo "	threads  	$THREADS_LIB"
 echo "	native dynlink 	$HAS_NATIVE_DYNLINK"
 
 echo $ECHO_N "	GtkGLArea $ECHO_C"
 if test -n "$USE_GTKGL"
-then ( echo "	yes"; if test -n "META-gl" ; then cat "META-gl" >> META ; fi)
+then echo "	yes"
 else if test "$FORCE_GTKGL" = "yes"
      then echo "	disabled"
      else echo "	not found"
@@ -6314,7 +6313,7 @@ fi
 
 echo $ECHO_N "	libglade $ECHO_C"
 if test -n "$USE_GLADE"
-then ( echo "	yes"; if test -n "META-glade" ; then cat "META-glade" >> META ; fi)
+then echo "	yes"
 else if test "$FORCE_GLADE" = "yes"
      then echo "	disabled"
      else echo "	not found"
@@ -6323,7 +6322,7 @@ fi
 
 echo $ECHO_N "	librsvg  $ECHO_C"
 if test -n "$USE_RSVG"
-then ( echo "	yes"; if test -n "META-rsvg" ; then cat "META-rsvg" >> META ; fi)
+then echo "	yes"
 else if test "$FORCE_RSVG" = "yes"
      then echo "	disabled"
      else echo "	not found"
@@ -6332,7 +6331,7 @@ fi
 
 echo $ECHO_N "	libgnomecanvas $ECHO_C"
 if test -n "$USE_GNOMECANVAS"
-then ( echo "	yes"; if test -n "META-gnomecanvas" ; then cat "META-gnomecanvas" >> META ; fi)
+then echo "	yes"
 else if test "$FORCE_GNOMECANVAS" = "yes"
      then echo "	disabled"
      else echo "	not found"
@@ -6341,7 +6340,7 @@ fi
 
 echo $ECHO_N "	libgnomeui $ECHO_C"
 if test -n "$USE_GNOMEUI"
-then ( echo "	yes"; if test -n "META-gnomeui" ; then cat "META-gnomeui" >> META ; fi)
+then echo "	yes"
 else if test "$FORCE_GNOMEUI" = "yes"
      then echo "	disabled"
      else echo "	not found"
@@ -6350,7 +6349,7 @@ fi
 
 echo $ECHO_N "	libpanelapplet $ECHO_C"
 if test -n "$USE_PANEL"
-then ( echo "	yes"; if test -n "META-panel" ; then cat "META-panel" >> META ; fi)
+then echo "	yes"
 else if test "$FORCE_PANEL" = "yes"
      then echo "	disabled"
      else echo "	not found"
@@ -6359,7 +6358,7 @@ fi
 
 echo $ECHO_N "	gtkspell $ECHO_C"
 if test -n "$USE_GTKSPELL"
-then ( echo "	yes"; if test -n "META-gtkspell" ; then cat "META-gtkspell" >> META ; fi)
+then echo "	yes"
 else if test "$FORCE_GTKSPELL" = "yes"
      then echo "	disabled"
      else echo "	not found"
@@ -6368,7 +6367,7 @@ fi
 
 echo $ECHO_N "	gtksourceview 1 $ECHO_C"
 if test -n "$USE_GTKSOURCEVIEW"
-then ( echo "	yes"; if test -n "META-sourceview" ; then cat "META-sourceview" >> META ; fi)
+then echo "	yes"
 else if test "$FORCE_GTKSOURCEVIEW" = "yes"
      then echo "	disabled"
      else echo "	not found"
@@ -6377,7 +6376,7 @@ fi
 
 echo $ECHO_N "	gtksourceview 2 $ECHO_C"
 if test -n "$USE_GTKSOURCEVIEW2"
-then ( echo "	yes"; if test -n "META-sourceview2" ; then cat "META-sourceview2" >> META ; fi)
+then echo "	yes"
 else if test "$FORCE_GTKSOURCEVIEW2" = "yes"
      then echo "	disabled"
      else echo "	not found"
@@ -6386,7 +6385,7 @@ fi
 
 echo $ECHO_N "	quartz    $ECHO_C"
 if test -n "$USE_GTKQUARTZ"
-then ( echo "	yes"; if test -n """" ; then cat """" >> META ; fi)
+then echo "	yes"
 else if test "$FORCE_GTKQUARTZ" = "yes"
      then echo "	disabled"
      else echo "	not found"

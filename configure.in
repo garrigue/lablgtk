@@ -361,27 +361,26 @@ chmod a-w config.make
 AC_DEFUN([CONF_SUMMARY], [
 echo $ECHO_N "	$1 $ECHO_C"
 if test -n "$USE_$2"
-then ( echo "	yes"; if test -n "$3" ; then cat "$3" >> META ; fi)
+then echo "	yes"
 else if test "$FORCE_$2" = "yes"
      then echo "	disabled"
      else echo "	not found"
      fi
 fi])
 
-cat META-base > META
 echo ; echo "LablGTK configuration:"
 echo "	threads  	$THREADS_LIB"
 echo "	native dynlink 	$HAS_NATIVE_DYNLINK"
-CONF_SUMMARY(GtkGLArea, GTKGL, META-gl)
-CONF_SUMMARY(libglade, GLADE, META-glade)
-CONF_SUMMARY(librsvg , RSVG, META-rsvg)
-CONF_SUMMARY(libgnomecanvas, GNOMECANVAS, META-gnomecanvas)
-CONF_SUMMARY(libgnomeui, GNOMEUI, META-gnomeui)
-CONF_SUMMARY(libpanelapplet, PANEL, META-panel)
-CONF_SUMMARY(gtkspell, GTKSPELL, META-gtkspell)
-CONF_SUMMARY(gtksourceview 1, GTKSOURCEVIEW, META-sourceview)
-CONF_SUMMARY(gtksourceview 2, GTKSOURCEVIEW2, META-sourceview2)
-CONF_SUMMARY(quartz   , GTKQUARTZ, "")
+CONF_SUMMARY(GtkGLArea, GTKGL)
+CONF_SUMMARY(libglade, GLADE)
+CONF_SUMMARY(librsvg , RSVG)
+CONF_SUMMARY(libgnomecanvas, GNOMECANVAS)
+CONF_SUMMARY(libgnomeui, GNOMEUI)
+CONF_SUMMARY(libpanelapplet, PANEL)
+CONF_SUMMARY(gtkspell, GTKSPELL)
+CONF_SUMMARY(gtksourceview 1, GTKSOURCEVIEW)
+CONF_SUMMARY(gtksourceview 2, GTKSOURCEVIEW2)
+CONF_SUMMARY(quartz   , GTKQUARTZ)
 echo
 echo $ECHO_N "	debug   $ECHO_C"
 if test -n "$DEBUG" ; then echo "	yes" ; else echo "	no" ; fi
