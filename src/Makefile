@@ -377,12 +377,9 @@ endif
 findlib-install: build.ml
 	mkdir -p "$(BINDIR)"
 	ocamlfind install lablgtk2 ../META \
-		$(PREOBJS:.cmo=.ml) \
-		`for f in $(PREOBJS:.cmo=.mli); do \
-	  if test -f $$f; then echo $$f ; fi; done` \
 		build.ml \
 		$(CLIBS) \
-		$(CLIBS:lib%$(XA)=dll%$(XS)) \
+		-dll $(CLIBS:lib%$(XA)=dll%$(XS)) -nodll \
 		$(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) \
 		*.mli \
 		$(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(EXTRA_OBJS:.cmo=.ml) \
