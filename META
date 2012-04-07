@@ -51,7 +51,7 @@ package "gnomeui" (
   archive(native) = "lablgnomeui.cmxa"
 )
 package "gtkspell" (
-  exists_if = "lablspell.cma,lablspell.cmxa,lablspell.cmxs"
+  exists_if = "lablgtkspell.cma,lablgtkspell.cmxa,lablgtkspell.cmxs"
   description = "Bindings for gtkspell"
   requires = "lablgtk2"
   archive(byte) = "lablgtkspell.cma"
