@@ -379,7 +379,6 @@ findlib-install: build.ml
 	ocamlfind install lablgtk2 ../META \
 		build.ml \
 		$(CLIBS) \
-		-dll $(CLIBS:lib%$(XA)=dll%$(XS)) -nodll \
 		$(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) \
 		*.mli \
 		$(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(EXTRA_OBJS:.cmo=.ml) \
@@ -404,16 +403,20 @@ findlib-install: build.ml
 		  if test -f gtkThread.cmx; then \
   	    echo $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) ; \
   	  fi ; \
-  	fi`
-
+  	fi` \
+  	`if test -f dlllablgtk2$(XS); \
+  	  then \
+			  echo "-dll $(CLIBS:lib%$(XA)=dll%$(XS)) -nodll" ; \
+     fi` \
+  	`if test -f dlllablgtk2$(XA); \
+  	  then \
+			  echo "-dll $(CLIBS:lib%$(XA)=dll%$(XA)) -nodll" ; \
+     fi`
 	cd `ocamlfind query lablgtk2` && $(RANLIB) $(CLIBS)
 	@if test -f lablgtk.cmxa; \
 	  then (cd `ocamlfind query lablgtk2` && $(RANLIB) $(MLLIBS:.cma=$(XA)) $(EXTRA_MLLIBS:.cma=$(XA)) ); fi
-
 	cp lablgtk2$(XB) gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
 	cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"
-
-	@if test -f dlllablgtk2$(XS); then $(MAKE) installdll; fi
 	cp lablgtk2$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
 	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; fi
