@@ -323,7 +323,7 @@ testcc$(XE): lablgladecc$(XE) lablgtktop
 PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) \
 	$(GNOMECANVASMLOBJS)
 
-preinstall: build.ml
+ocamllib-preinstall: build.ml
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
 	cp $(PREOBJS:.cmo=.ml) "$(INSTALLDIR)"
 	for f in $(PREOBJS:.cmo=.mli); do \
@@ -334,7 +334,7 @@ preinstall: build.ml
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)"
 
-install:
+ocamllib-install:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
 	cp $(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) "$(INSTALLDIR)"
 	cp -p *.mli "$(INSTALLDIR)"
@@ -350,20 +350,20 @@ install:
 	   then cp lablgtktop$(XE) "$(INSTALLDIR)"; \
 	fi
 	cp -p *.h "$(INSTALLDIR)"
-	@if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
-	@if test -f dlllablgtk2$(XS); then $(MAKE) installdll; fi
+	@if test -f lablgtk.cmxa; then $(MAKE) ocamllib-installopt; fi
+	@if test -f dlllablgtk2$(XS); then $(MAKE) ocamllib-installdll; fi
 	cp lablgtk2$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
 	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; fi
 	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
 
-installdll:
+ocamllib-installdll:
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)" || \
 	   echo "Couldn't install dlls in default location: $(DLLDIR)"
 	if test -f dlllablgtk2$(XA); then \
 	  cp $(CLIBS:lib%$(XA)=dll%$(XA)) "$(INSTALLDIR)"; fi
 
-installopt:
+ocamllib-installopt:
 	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=$(XA)) $(EXTRA_MLLIBS:.cma=.cmxa) $(EXTRA_MLLIBS:.cma=$(XA)) "$(INSTALLDIR)"
 ifeq ($(HAS_NATIVE_DYNLINK),yes)
 	cp $(MLLIBS:.cma=.cmxs) $(EXTRA_MLLIBS:.cma=.cmxs) "$(INSTALLDIR)"
@@ -374,7 +374,7 @@ endif
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) "$(INSTALLDIR)"; fi
 
-findlib-install: build.ml
+install: build.ml
 	mkdir -p "$(BINDIR)"
 	ocamlfind install lablgtk2 ../META \
 		build.ml \
