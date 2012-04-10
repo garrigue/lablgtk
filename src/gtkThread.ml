@@ -96,7 +96,7 @@ let thread_main ?set_delay_cb () =
   sync (thread_main_real ?set_delay_cb) ()
 
 let main ?set_delay_cb () =
-  GtkMain.Main.main_func := thread_main;
+  GtkMain.Main.main_func := (thread_main ?set_delay_cb);
   thread_main ?set_delay_cb ()
 
 let start () =
