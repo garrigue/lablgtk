@@ -415,8 +415,6 @@ install: build.ml
 	cd `ocamlfind query lablgtk2` && $(RANLIB) $(CLIBS)
 	@if test -f lablgtk.cmxa; \
 	  then (cd `ocamlfind query lablgtk2` && $(RANLIB) $(MLLIBS:.cma=$(XA)) $(EXTRA_MLLIBS:.cma=$(XA)) ); fi
-	cp lablgtk2$(XB) gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
-	cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"
 	cp lablgtk2$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
 	  cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; \
@@ -425,6 +423,9 @@ install: build.ml
 
 uninstall:
 	ocamlfind remove lablgtk2
+	rm "$(BINDIR)"/lablgladecc2$(XE)
+	rm "$(BINDIR)"/lablgtk2$(XB)
+	rm "$(BINDIR)"/gdk_pixbuf_mlsource$(XE)
 
 lablgtk.cma liblablgtk2$(XA): $(COBJS) $(MLOBJS)
 	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)
