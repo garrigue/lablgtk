@@ -4,14 +4,15 @@
 Needed:
 	ocaml-3.11 or more
 	gtk+-2.x (gtk+-2.12.x for full functionality)
+	findlib 1.2.1 or more
 	GNU make (there is no standard for conditionals)
 
 Info/upgrades:
-        http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgtk.html
+        http://lablgtk.forge.ocamlcore.org/
 
 Status:
   LablGtk2 is now pretty stable.
-  
+
   An important change in gtk-2 is the use of unicode (utf8) for
   all strings. If you use non-ascii strings, you must imperatively
   convert them to unicode. This can be done with the
@@ -32,26 +33,26 @@ Status:
 How to compile:
 
   You should normally not need to modify Makefiles.
-  
+
   In case you are using the SVN version you may have to first type
   "aclocal && autoconf".
-  
-  Type "./configure && make world && make install" to compile 
-  with all supported options enabled (libgl, libglade, libgnomecanvas, 
+
+  Type "./configure && make world && make install" to compile
+  with all supported options enabled (libgl, libglade, libgnomecanvas,
   librsvg, native compilation, thread support).
-  
-  You may use "./configure --help" to check for the different 
+
+  You may use "./configure --help" to check for the different
   configuration options.
 
   Lablgtk2 specific options are:
 
-	--with-libdir=/path: install libs in /path/lablgtk2 
+	--with-libdir=/path: install libs in /path/lablgtk2
 			     and /path/stublibs
-	--with-gl --without-gl: override autodetected GtkGLArea support. 
+	--with-gl --without-gl: override autodetected GtkGLArea support.
 				Requires LablGL
 	--with-glade --without-glade: override autodetected libglade support
 	--with-rsvg --without-rsvg: override autodetected librsvg support
-	--with-gnomecanvas --without-gnomecanvas: 
+	--with-gnomecanvas --without-gnomecanvas:
 		override autodetected libgnomecanvas support
         --with-gnomeui --without-gnomeui:
                 override autodetected libgnomeui support
@@ -68,9 +69,20 @@ How to compile:
   "make install DESTDIR=..." prefixes the installation
   directories with DESTDIR.
 
-  A META file for findlib is provided, but it only handles the
-  base library: I have no idea on how to avoid a combinatorial
-  explosion with the various extensions.
+  The library is installed with findlib, providing the following
+  packages (some depend on configuration):
+  lablgtk2
+  lablgtk2.init
+  lablgkt2.gl
+  lablgtk2.glade
+  lablgtk2.gnomecanvas
+  lablgtk2.gnomehtml
+  lablgtk2.gnomeui
+  lablgtk2.gtkspell
+  lablgtk2.panel
+  lablgtk2.rsvg
+  lablgtk2.sourceview
+  lablgtk2.sourceview2
 
 Contents:
 
@@ -105,7 +117,7 @@ How to use the threaded toplevel:
 
 	% lablgtk2 -thread
 	        Objective Caml version 3.09
-	
+
 	# let w = GWindow.window ~show:true ();;
         # let b = GButton.button ~packing:w#add ~label:"Hello!" ();;
 
@@ -324,7 +336,7 @@ GtkSourceView 1 support:
   The executable must be linked with lablgtksourceview.cma.
 
 GtkSourceView 2 support:
-  This binding was contributed by Benjamin Monate: it is based on 
+  This binding was contributed by Benjamin Monate: it is based on
   the aforementioned GtksourceView 1 support.
   It requires libgtksourceview-2.x.
   See examples in examples/sourceview/*2.ml
@@ -354,7 +366,7 @@ Windows port
 	% lablgtk2.bat -thread
 	        Objective Caml version 3.09
 
-        # open GtkThread;;	
+        # open GtkThread;;
 	# let w = sync (GWindow.window ~show:true) ();;
         # let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
         # b#connect#clicked (fun () -> prerr_endline "Hello");;
@@ -362,14 +374,14 @@ Windows port
 Authors:
 	Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
 	Benjamin Monate  <benjamin.monate@free.fr>
-        Olivier Andrieu  <oandrieu@nerim.net>
+  Olivier Andrieu  <oandrieu@nerim.net>
 	Jun Furuse       <furuse@yl.is.s.u-tokyo.ac.jp>
-        Maxence Guesdon  <maxence.guesdon@inria.fr>
-        Stefano Zacchiroli  <zack@cs.unibo.it>
+  Maxence Guesdon  <maxence.guesdon@inria.fr>
+  Stefano Zacchiroli  <zack@cs.unibo.it>
   For lablgtk1:
 	Hubert Fauque  <hubert.fauque@wanadoo.fr>
 	Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
-				   
+
 Bug reports:
 	Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
 
