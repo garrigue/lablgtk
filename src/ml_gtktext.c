@@ -585,7 +585,7 @@ CAMLprim value ml_gtk_text_view_buffer_to_window_coords (value tv,
   int bx,by = 0;
 
   gtk_text_view_buffer_to_window_coords(GtkTextView_val(tv),
-					(GtkTextWindowType)tt,
+					Text_window_type_val(tt),
 					Int_val(x),Int_val(y),
 					&bx,&by);
 
