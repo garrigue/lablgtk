@@ -1,0 +1,531 @@
+<?xml version="1.0"?>
+<!-- This file was automatically generated from C sources - DO NOT EDIT!
+To affect the contents of this file, edit the original C definitions,
+and/or use gtk-doc annotations.  -->
+<repository version="1.2"
+            xmlns="http://www.gtk.org/introspection/core/1.0"
+            xmlns:c="http://www.gtk.org/introspection/c/1.0"
+            xmlns:glib="http://www.gtk.org/introspection/glib/1.0">
+  <include name="GLib" version="2.0"/>
+  <include name="GObject" version="2.0"/>
+  <include name="Pango" version="1.0"/>
+  <include name="PangoFT2" version="1.0"/>
+  <include name="cairo" version="1.0"/>
+  <include name="fontconfig" version="2.0"/>
+  <include name="freetype2" version="2.0"/>
+  <include name="xft" version="2.0"/>
+  <include name="xlib" version="2.0"/>
+  <package name="pangoxft"/>
+  <c:include name="pango/pangoxft.h"/>
+  <namespace name="PangoXft"
+             version="1.0"
+             shared-library="libpangoxft-1.0.so.0"
+             c:identifier-prefixes="PangoXft"
+             c:symbol-prefixes="pango_xft">
+    <class name="Font"
+           c:symbol-prefix="font"
+           c:type="PangoXftFont"
+           parent="Pango.Font"
+           glib:type-name="PangoXftFont"
+           glib:get-type="pango_xft_font_get_type">
+    </class>
+    <class name="FontMap"
+           c:symbol-prefix="font_map"
+           c:type="PangoXftFontMap"
+           parent="Pango.FontMap"
+           glib:type-name="PangoXftFontMap"
+           glib:get-type="pango_xft_font_map_get_type">
+    </class>
+    <class name="Renderer"
+           c:symbol-prefix="renderer"
+           c:type="PangoXftRenderer"
+           version="1.8"
+           parent="Pango.Renderer"
+           glib:type-name="PangoXftRenderer"
+           glib:get-type="pango_xft_renderer_get_type"
+           glib:type-struct="RendererClass">
+      <doc xml:whitespace="preserve">#PangoXftRenderer is a subclass of #PangoRenderer used for rendering
+with Pango's Xft backend. It can be used directly, or it can be
+further subclassed to modify exactly how drawing of individual
+elements occurs.</doc>
+      <constructor name="new"
+                   c:identifier="pango_xft_renderer_new"
+                   version="1.8">
+        <doc xml:whitespace="preserve">Create a new #PangoXftRenderer to allow rendering Pango objects
+with the Xft library. You must call pango_xft_renderer_set_draw() before
+using the renderer.
+
+be freed with g_object_unref().</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">the newly created #PangoXftRenderer, which should</doc>
+          <type name="Pango.Renderer" c:type="PangoRenderer*"/>
+        </return-value>
+        <parameters>
+          <parameter name="display" transfer-ownership="none">
+            <doc xml:whitespace="preserve">an X display</doc>
+            <type name="xlib.Display" c:type="Display*"/>
+          </parameter>
+          <parameter name="screen" transfer-ownership="none">
+            <doc xml:whitespace="preserve">the index of the screen for @display to which rendering will be done</doc>
+            <type name="gint" c:type="int"/>
+          </parameter>
+        </parameters>
+      </constructor>
+      <virtual-method name="composite_glyphs">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="xft_font" transfer-ownership="none">
+            <type name="xft.Font" c:type="XftFont*"/>
+          </parameter>
+          <parameter name="glyphs" transfer-ownership="none">
+            <type name="xft.GlyphSpec" c:type="XftGlyphSpec*"/>
+          </parameter>
+          <parameter name="n_glyphs" transfer-ownership="none">
+            <type name="gint" c:type="int"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="composite_trapezoids">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="part" transfer-ownership="none">
+            <type name="Pango.RenderPart" c:type="PangoRenderPart"/>
+          </parameter>
+          <parameter name="trapezoids" transfer-ownership="none">
+            <type name="xlib.XTrapezoid" c:type="XTrapezoid*"/>
+          </parameter>
+          <parameter name="n_trapezoids" transfer-ownership="none">
+            <type name="gint" c:type="int"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <method name="set_default_color"
+              c:identifier="pango_xft_renderer_set_default_color"
+              version="1.8">
+        <doc xml:whitespace="preserve">Sets the default foreground color for a #XftRenderer.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="default_color" transfer-ownership="none">
+            <doc xml:whitespace="preserve">the default foreground color</doc>
+            <type name="Pango.Color" c:type="PangoColor*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_draw"
+              c:identifier="pango_xft_renderer_set_draw"
+              version="1.8">
+        <doc xml:whitespace="preserve">Sets the #XftDraw object that the renderer is drawing to.
+The renderer must not be currently active.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="draw" transfer-ownership="none">
+            <doc xml:whitespace="preserve">a #XftDraw</doc>
+            <type name="xft.Draw" c:type="XftDraw*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <property name="display"
+                readable="0"
+                writable="1"
+                construct-only="1"
+                transfer-ownership="none">
+        <type name="gpointer"/>
+      </property>
+      <property name="screen"
+                readable="0"
+                writable="1"
+                construct-only="1"
+                transfer-ownership="none">
+        <type name="gint"/>
+      </property>
+      <field name="parent_instance" readable="0" private="1">
+        <type name="Pango.Renderer" c:type="PangoRenderer"/>
+      </field>
+      <field name="display" readable="0" private="1">
+        <type name="xlib.Display" c:type="Display*"/>
+      </field>
+      <field name="screen" readable="0" private="1">
+        <type name="gint" c:type="int"/>
+      </field>
+      <field name="draw" readable="0" private="1">
+        <type name="xft.Draw" c:type="XftDraw*"/>
+      </field>
+      <field name="priv" readable="0" private="1">
+        <type name="RendererPrivate" c:type="PangoXftRendererPrivate*"/>
+      </field>
+    </class>
+    <record name="RendererClass"
+            c:type="PangoXftRendererClass"
+            glib:is-gtype-struct-for="Renderer"
+            version="1.8">
+      <doc xml:whitespace="preserve">The class structure for #PangoXftRenderer</doc>
+      <field name="parent_class" readable="0" private="1">
+        <type name="Pango.RendererClass" c:type="PangoRendererClass"/>
+      </field>
+      <field name="composite_trapezoids">
+        <callback name="composite_trapezoids">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="xftrenderer" transfer-ownership="none">
+              <type name="Renderer" c:type="PangoXftRenderer*"/>
+            </parameter>
+            <parameter name="part" transfer-ownership="none">
+              <type name="Pango.RenderPart" c:type="PangoRenderPart"/>
+            </parameter>
+            <parameter name="trapezoids" transfer-ownership="none">
+              <type name="xlib.XTrapezoid" c:type="XTrapezoid*"/>
+            </parameter>
+            <parameter name="n_trapezoids" transfer-ownership="none">
+              <type name="gint" c:type="int"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="composite_glyphs">
+        <callback name="composite_glyphs">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="xftrenderer" transfer-ownership="none">
+              <type name="Renderer" c:type="PangoXftRenderer*"/>
+            </parameter>
+            <parameter name="xft_font" transfer-ownership="none">
+              <type name="xft.Font" c:type="XftFont*"/>
+            </parameter>
+            <parameter name="glyphs" transfer-ownership="none">
+              <type name="xft.GlyphSpec" c:type="XftGlyphSpec*"/>
+            </parameter>
+            <parameter name="n_glyphs" transfer-ownership="none">
+              <type name="gint" c:type="int"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+    </record>
+    <record name="RendererPrivate"
+            c:type="PangoXftRendererPrivate"
+            disguised="1">
+    </record>
+    <callback name="SubstituteFunc" c:type="PangoXftSubstituteFunc">
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="pattern" transfer-ownership="none">
+          <type name="fontconfig.Pattern" c:type="FcPattern*"/>
+        </parameter>
+        <parameter name="data" transfer-ownership="none">
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+      </parameters>
+    </callback>
+    <function name="get_context"
+              c:identifier="pango_xft_get_context"
+              introspectable="0"
+              deprecated="Use pango_xft_get_font_map() followed by"
+              deprecated-version="1.22">
+      <doc xml:whitespace="preserve">Retrieves a #PangoContext appropriate for rendering with
+Xft fonts on the given screen of the given display.
+
+
+pango_font_map_create_context() instead.</doc>
+      <return-value>
+        <doc xml:whitespace="preserve">the new #PangoContext.</doc>
+        <type name="Pango.Context" c:type="PangoContext*"/>
+      </return-value>
+      <parameters>
+        <parameter name="display" transfer-ownership="none">
+          <doc xml:whitespace="preserve">an X display.</doc>
+          <type name="xlib.Display" c:type="Display*"/>
+        </parameter>
+        <parameter name="screen" transfer-ownership="none">
+          <doc xml:whitespace="preserve">an X screen.</doc>
+          <type name="gint" c:type="int"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="get_font_map"
+              c:identifier="pango_xft_get_font_map"
+              version="1.2">
+      <doc xml:whitespace="preserve">Returns the #PangoXftFontmap for the given display and screen.
+The fontmap is owned by Pango and will be valid until
+the display is closed.</doc>
+      <return-value transfer-ownership="none">
+        <doc xml:whitespace="preserve">a #PangoFontMap object, owned by Pango.</doc>
+        <type name="Pango.FontMap" c:type="PangoFontMap*"/>
+      </return-value>
+      <parameters>
+        <parameter name="display" transfer-ownership="none">
+          <doc xml:whitespace="preserve">an X display</doc>
+          <type name="xlib.Display" c:type="Display*"/>
+        </parameter>
+        <parameter name="screen" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the screen number of a screen within @display</doc>
+          <type name="gint" c:type="int"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="picture_render" c:identifier="pango_xft_picture_render">
+      <doc xml:whitespace="preserve">Renders a #PangoGlyphString onto an Xrender &lt;type&gt;Picture&lt;/type&gt; object.</doc>
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="display" transfer-ownership="none">
+          <doc xml:whitespace="preserve">an X display</doc>
+          <type name="xlib.Display" c:type="Display*"/>
+        </parameter>
+        <parameter name="src_picture" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the source picture to draw the string with</doc>
+          <type name="xlib.Picture" c:type="Picture"/>
+        </parameter>
+        <parameter name="dest_picture" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the destination picture to draw the string onto</doc>
+          <type name="xlib.Picture" c:type="Picture"/>
+        </parameter>
+        <parameter name="font" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the font in which to draw the string</doc>
+          <type name="Pango.Font" c:type="PangoFont*"/>
+        </parameter>
+        <parameter name="glyphs" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the glyph string to draw</doc>
+          <type name="Pango.GlyphString" c:type="PangoGlyphString*"/>
+        </parameter>
+        <parameter name="x" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the x position of start of string (in pixels)</doc>
+          <type name="gint" c:type="gint"/>
+        </parameter>
+        <parameter name="y" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the y position of baseline (in pixels)</doc>
+          <type name="gint" c:type="gint"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="render" c:identifier="pango_xft_render">
+      <doc xml:whitespace="preserve">Renders a #PangoGlyphString onto an &lt;type&gt;XftDraw&lt;/type&gt; object wrapping an X drawable.</doc>
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="draw" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the &lt;type&gt;XftDraw&lt;/type&gt; object.</doc>
+          <type name="xft.Draw" c:type="XftDraw*"/>
+        </parameter>
+        <parameter name="color" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the color in which to draw the string</doc>
+          <type name="xft.Color" c:type="XftColor*"/>
+        </parameter>
+        <parameter name="font" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the font in which to draw the string</doc>
+          <type name="Pango.Font" c:type="PangoFont*"/>
+        </parameter>
+        <parameter name="glyphs" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the glyph string to draw</doc>
+          <type name="Pango.GlyphString" c:type="PangoGlyphString*"/>
+        </parameter>
+        <parameter name="x" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the x position of start of string (in pixels)</doc>
+          <type name="gint" c:type="gint"/>
+        </parameter>
+        <parameter name="y" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the y position of baseline (in pixels)</doc>
+          <type name="gint" c:type="gint"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="render_layout"
+              c:identifier="pango_xft_render_layout"
+              version="1.8">
+      <doc xml:whitespace="preserve">Render a #PangoLayout onto a #XftDraw</doc>
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="draw" transfer-ownership="none">
+          <doc xml:whitespace="preserve">an #XftDraw</doc>
+          <type name="xft.Draw" c:type="XftDraw*"/>
+        </parameter>
+        <parameter name="color" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the foreground color in which to draw the layout (may be overridden by color attributes)</doc>
+          <type name="xft.Color" c:type="XftColor*"/>
+        </parameter>
+        <parameter name="layout" transfer-ownership="none">
+          <doc xml:whitespace="preserve">a #PangoLayout</doc>
+          <type name="Pango.Layout" c:type="PangoLayout*"/>
+        </parameter>
+        <parameter name="x" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the X position of the left of the layout (in Pango units)</doc>
+          <type name="gint" c:type="int"/>
+        </parameter>
+        <parameter name="y" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the Y position of the top of the layout (in Pango units)</doc>
+          <type name="gint" c:type="int"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="render_layout_line"
+              c:identifier="pango_xft_render_layout_line"
+              version="1.8">
+      <doc xml:whitespace="preserve">Render a #PangoLayoutLine onto a #XftDraw</doc>
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="draw" transfer-ownership="none">
+          <doc xml:whitespace="preserve">an #XftDraw</doc>
+          <type name="xft.Draw" c:type="XftDraw*"/>
+        </parameter>
+        <parameter name="color" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the foreground color in which to draw the layout line (may be overridden by color attributes)</doc>
+          <type name="xft.Color" c:type="XftColor*"/>
+        </parameter>
+        <parameter name="line" transfer-ownership="none">
+          <doc xml:whitespace="preserve">a #PangoLayoutLine</doc>
+          <type name="Pango.LayoutLine" c:type="PangoLayoutLine*"/>
+        </parameter>
+        <parameter name="x" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the x position of start of string (in Pango units)</doc>
+          <type name="gint" c:type="int"/>
+        </parameter>
+        <parameter name="y" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the y position of baseline (in Pango units)</doc>
+          <type name="gint" c:type="int"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="render_transformed"
+              c:identifier="pango_xft_render_transformed"
+              version="1.8">
+      <doc xml:whitespace="preserve">Renders a #PangoGlyphString onto a #XftDraw, possibly
+transforming the layed-out coordinates through a transformation
+matrix. Note that the transformation matrix for @font is not
+changed, so to produce correct rendering results, the @font
+must have been loaded using a #PangoContext with an identical
+transformation matrix to that passed in to this function.</doc>
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="draw" transfer-ownership="none">
+          <doc xml:whitespace="preserve">an #XftDraw</doc>
+          <type name="xft.Draw" c:type="XftDraw*"/>
+        </parameter>
+        <parameter name="color" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the color in which to draw the glyphs</doc>
+          <type name="xft.Color" c:type="XftColor*"/>
+        </parameter>
+        <parameter name="matrix" transfer-ownership="none">
+          <doc xml:whitespace="preserve">a #PangoMatrix, or %NULL to use an identity transformation</doc>
+          <type name="Pango.Matrix" c:type="PangoMatrix*"/>
+        </parameter>
+        <parameter name="font" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the font in which to draw the string</doc>
+          <type name="Pango.Font" c:type="PangoFont*"/>
+        </parameter>
+        <parameter name="glyphs" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the glyph string to draw</doc>
+          <type name="Pango.GlyphString" c:type="PangoGlyphString*"/>
+        </parameter>
+        <parameter name="x" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the x position of the start of the string (in Pango units in user space coordinates)</doc>
+          <type name="gint" c:type="int"/>
+        </parameter>
+        <parameter name="y" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the y position of the baseline (in Pango units in user space coordinates)</doc>
+          <type name="gint" c:type="int"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="set_default_substitute"
+              c:identifier="pango_xft_set_default_substitute"
+              version="1.2">
+      <doc xml:whitespace="preserve">Sets a function that will be called to do final configuration
+substitution on a #FcPattern before it is used to load
+the font. This function can be used to do things like set
+hinting and antialiasing options.</doc>
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="display" transfer-ownership="none">
+          <doc xml:whitespace="preserve">an X Display</doc>
+          <type name="xlib.Display" c:type="Display*"/>
+        </parameter>
+        <parameter name="screen" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the screen number of a screen within @display</doc>
+          <type name="gint" c:type="int"/>
+        </parameter>
+        <parameter name="func"
+                   transfer-ownership="none"
+                   scope="notified"
+                   closure="3"
+                   destroy="4">
+          <doc xml:whitespace="preserve">function to call to to do final config tweaking on #FcPattern objects.</doc>
+          <type name="SubstituteFunc" c:type="PangoXftSubstituteFunc"/>
+        </parameter>
+        <parameter name="data" transfer-ownership="none">
+          <doc xml:whitespace="preserve">data to pass to @func</doc>
+          <type name="gpointer" c:type="gpointer"/>
+        </parameter>
+        <parameter name="notify" transfer-ownership="none" scope="async">
+          <doc xml:whitespace="preserve">function to call when @data is no longer used.</doc>
+          <type name="GLib.DestroyNotify" c:type="GDestroyNotify"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="shutdown_display"
+              c:identifier="pango_xft_shutdown_display"
+              version="1.2">
+      <doc xml:whitespace="preserve">Release any resources that have been cached for the
+combination of @display and @screen. Note that when the
+X display is closed, resources are released automatically,
+without needing to call this function.</doc>
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="display" transfer-ownership="none">
+          <doc xml:whitespace="preserve">an X display</doc>
+          <type name="xlib.Display" c:type="Display*"/>
+        </parameter>
+        <parameter name="screen" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the screen number of a screen within @display</doc>
+          <type name="gint" c:type="int"/>
+        </parameter>
+      </parameters>
+    </function>
+    <function name="substitute_changed"
+              c:identifier="pango_xft_substitute_changed"
+              version="1.2">
+      <doc xml:whitespace="preserve">Call this function any time the results of the
+default substitution function set with
+pango_xft_set_default_substitute() change.
+That is, if your substitution function will return different
+results for the same input pattern, you must call this function.</doc>
+      <return-value transfer-ownership="none">
+        <type name="none" c:type="void"/>
+      </return-value>
+      <parameters>
+        <parameter name="display" transfer-ownership="none">
+          <doc xml:whitespace="preserve">an X Display</doc>
+          <type name="xlib.Display" c:type="Display*"/>
+        </parameter>
+        <parameter name="screen" transfer-ownership="none">
+          <doc xml:whitespace="preserve">the screen number of a screen within @display</doc>
+          <type name="gint" c:type="int"/>
+        </parameter>
+      </parameters>
+    </function>
+  </namespace>
+</repository>

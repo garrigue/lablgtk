@@ -1,0 +1,3 @@
+gcc: erreur: ml_stubs_Gtk.c: Aucun fichier ou dossier de ce type
+gcc: erreur fatale: pas de fichier à l'entrée
+compilation terminée.

@@ -1,0 +1,975 @@
+<?xml version="1.0"?>
+<!-- This file was automatically generated from C sources - DO NOT EDIT!
+To affect the contents of this file, edit the original C definitions,
+and/or use gtk-doc annotations.  -->
+<repository version="1.2"
+            xmlns="http://www.gtk.org/introspection/core/1.0"
+            xmlns:c="http://www.gtk.org/introspection/c/1.0"
+            xmlns:glib="http://www.gtk.org/introspection/glib/1.0">
+  <include name="Atk" version="1.0"/>
+  <include name="GLib" version="2.0"/>
+  <include name="GModule" version="2.0"/>
+  <include name="GObject" version="2.0"/>
+  <include name="Gdk" version="2.0"/>
+  <include name="GdkPixbuf" version="2.0"/>
+  <include name="Gio" version="2.0"/>
+  <include name="Gtk" version="2.0"/>
+  <include name="Pango" version="1.0"/>
+  <include name="cairo" version="1.0"/>
+  <c:include name="libappindicator/app-indicator.h"/>
+  <namespace name="AppIndicator"
+             version="0.1"
+             shared-library="libappindicator.so.1"
+             c:identifier-prefixes="App"
+             c:symbol-prefixes="app">
+    <constant name="INDICATOR_SIGNAL_CONNECTION_CHANGED"
+              value="connection-changed"
+              c:type="APP_INDICATOR_SIGNAL_CONNECTION_CHANGED">
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
+    <constant name="INDICATOR_SIGNAL_NEW_ATTENTION_ICON"
+              value="new-attention-icon"
+              c:type="APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON">
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
+    <constant name="INDICATOR_SIGNAL_NEW_ICON"
+              value="new-icon"
+              c:type="APP_INDICATOR_SIGNAL_NEW_ICON">
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
+    <constant name="INDICATOR_SIGNAL_NEW_ICON_THEME_PATH"
+              value="new-icon-theme-path"
+              c:type="APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH">
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
+    <constant name="INDICATOR_SIGNAL_NEW_LABEL"
+              value="new-label"
+              c:type="APP_INDICATOR_SIGNAL_NEW_LABEL">
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
+    <constant name="INDICATOR_SIGNAL_NEW_STATUS"
+              value="new-status"
+              c:type="APP_INDICATOR_SIGNAL_NEW_STATUS">
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
+    <constant name="INDICATOR_SIGNAL_SCROLL_EVENT"
+              value="scroll-event"
+              c:type="APP_INDICATOR_SIGNAL_SCROLL_EVENT">
+      <type name="utf8" c:type="gchar*"/>
+    </constant>
+    <class name="Indicator"
+           c:symbol-prefix="indicator"
+           c:type="AppIndicator"
+           parent="GObject.Object"
+           glib:type-name="AppIndicator"
+           glib:get-type="app_indicator_get_type"
+           glib:type-struct="IndicatorClass">
+      <doc xml:whitespace="preserve">A application indicator represents the values that are needed to show a
+unique status in the panel for an application.  In general, applications
+should try to fit in the other indicators that are available on the
+panel before using this.  But, sometimes it is necissary.
+
+Private fields</doc>
+      <constructor name="new" c:identifier="app_indicator_new">
+        <doc xml:whitespace="preserve">Creates a new #AppIndicator setting the properties:
+#AppIndicator:id with @id, #AppIndicator:category with @category
+and #AppIndicator:icon-name with @icon_name.</doc>
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">A pointer to a new #AppIndicator object.</doc>
+          <type name="Indicator" c:type="AppIndicator*"/>
+        </return-value>
+        <parameters>
+          <parameter name="id" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The unique id of the indicator to create.</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="icon_name" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The icon name for this indicator</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="category" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The category of indicator.</doc>
+            <type name="IndicatorCategory" c:type="AppIndicatorCategory"/>
+          </parameter>
+        </parameters>
+      </constructor>
+      <constructor name="new_with_path"
+                   c:identifier="app_indicator_new_with_path">
+        <return-value transfer-ownership="full">
+          <doc xml:whitespace="preserve">A pointer to a new #AppIndicator object.</doc>
+          <type name="Indicator" c:type="AppIndicator*"/>
+        </return-value>
+        <parameters>
+          <parameter name="id" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The unique id of the indicator to create.</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="icon_name" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The icon name for this indicator</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="category" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The category of indicator.</doc>
+            <type name="IndicatorCategory" c:type="AppIndicatorCategory"/>
+          </parameter>
+          <parameter name="icon_theme_path" transfer-ownership="none">
+            <doc xml:whitespace="preserve">A custom path for finding icons. Creates a new #AppIndicator setting the properties: #AppIndicator:id with @id, #AppIndicator:category with @category, #AppIndicator:icon-name with @icon_name and #AppIndicator:icon-theme-path with @icon_theme_path.</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+        </parameters>
+      </constructor>
+      <virtual-method name="connection_changed">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="connected" transfer-ownership="none">
+            <type name="gboolean" c:type="gboolean"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none" closure="1">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="fallback" introspectable="0">
+        <return-value>
+          <type name="Gtk.StatusIcon" c:type="GtkStatusIcon*"/>
+        </return-value>
+      </virtual-method>
+      <virtual-method name="new_attention_icon">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="user_data" transfer-ownership="none" closure="0">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="new_icon">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="user_data" transfer-ownership="none" closure="0">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="new_icon_theme_path">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="icon_theme_path" transfer-ownership="none">
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none" closure="1">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="new_label">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="label" transfer-ownership="none">
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="guide" transfer-ownership="none">
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none" closure="2">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="new_status">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="status" transfer-ownership="none">
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none" closure="1">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="scroll_event">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="delta" transfer-ownership="none">
+            <type name="gint" c:type="gint"/>
+          </parameter>
+          <parameter name="direction" transfer-ownership="none">
+            <type name="Gdk.ScrollDirection" c:type="GdkScrollDirection"/>
+          </parameter>
+          <parameter name="user_data" transfer-ownership="none" closure="2">
+            <type name="gpointer" c:type="gpointer"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <virtual-method name="unfallback">
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="status_icon" transfer-ownership="none">
+            <type name="Gtk.StatusIcon" c:type="GtkStatusIcon*"/>
+          </parameter>
+        </parameters>
+      </virtual-method>
+      <method name="build_menu_from_desktop"
+              c:identifier="app_indicator_build_menu_from_desktop">
+        <doc xml:whitespace="preserve">This function allows for building the Application Indicator menu
+from a static desktop file.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="desktop_file" transfer-ownership="none">
+            <doc xml:whitespace="preserve">A path to the desktop file to build the menu from</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="desktop_profile" transfer-ownership="none">
+            <doc xml:whitespace="preserve">Which entries should be used from the desktop file</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="get_attention_icon"
+              c:identifier="app_indicator_get_attention_icon">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:attention-icon-name.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current attention icon name.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+      </method>
+      <method name="get_attention_icon_desc"
+              c:identifier="app_indicator_get_attention_icon_desc">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:attention-icon-desc.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current attention icon description.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+      </method>
+      <method name="get_category" c:identifier="app_indicator_get_category">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:category.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current category.</doc>
+          <type name="IndicatorCategory" c:type="AppIndicatorCategory"/>
+        </return-value>
+      </method>
+      <method name="get_icon" c:identifier="app_indicator_get_icon">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:icon-name.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current icon name.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+      </method>
+      <method name="get_icon_desc" c:identifier="app_indicator_get_icon_desc">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:icon-desc.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current icon description.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+      </method>
+      <method name="get_icon_theme_path"
+              c:identifier="app_indicator_get_icon_theme_path">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:icon-theme-path.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current icon theme path.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+      </method>
+      <method name="get_id" c:identifier="app_indicator_get_id">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:id.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current ID</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+      </method>
+      <method name="get_label" c:identifier="app_indicator_get_label">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:label.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current label.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+      </method>
+      <method name="get_label_guide"
+              c:identifier="app_indicator_get_label_guide">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:label-guide.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current label guide.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+      </method>
+      <method name="get_menu" c:identifier="app_indicator_get_menu">
+        <doc xml:whitespace="preserve">Gets the menu being used for this application indicator.
+Wrapper function for property #AppIndicator:menu.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">A #GtkMenu object or %NULL if one hasn't been set.</doc>
+          <type name="Gtk.Menu" c:type="GtkMenu*"/>
+        </return-value>
+      </method>
+      <method name="get_ordering_index"
+              c:identifier="app_indicator_get_ordering_index">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:ordering-index.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current ordering index.</doc>
+          <type name="guint32" c:type="guint32"/>
+        </return-value>
+      </method>
+      <method name="get_secondary_activate_target"
+              c:identifier="app_indicator_get_secondary_activate_target">
+        <doc xml:whitespace="preserve">Gets the menuitem being called on secondary-activate event.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">A #GtkWidget object or %NULL if none has been set.</doc>
+          <type name="Gtk.Widget" c:type="GtkWidget*"/>
+        </return-value>
+      </method>
+      <method name="get_status" c:identifier="app_indicator_get_status">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:status.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current status.</doc>
+          <type name="IndicatorStatus" c:type="AppIndicatorStatus"/>
+        </return-value>
+      </method>
+      <method name="get_title"
+              c:identifier="app_indicator_get_title"
+              version="0.5">
+        <doc xml:whitespace="preserve">Gets the title of the application indicator.  See the function
+app_indicator_set_title() for information on the title.</doc>
+        <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">The current title.</doc>
+          <type name="utf8" c:type="gchar*"/>
+        </return-value>
+      </method>
+      <method name="set_attention_icon"
+              c:identifier="app_indicator_set_attention_icon"
+              deprecated="Use app_indicator_set_attention_icon_full() instead.">
+        <doc xml:whitespace="preserve">Wrapper for app_indicator_set_attention_icon_full() with a NULL
+description.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="icon_name" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The name of the attention icon to set for this indicator</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_attention_icon_full"
+              c:identifier="app_indicator_set_attention_icon_full">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:attention-icon-name.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="icon_name" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The name of the attention icon to set for this indicator</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="icon_desc" transfer-ownership="none">
+            <doc xml:whitespace="preserve">A textual description of the icon</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_icon"
+              c:identifier="app_indicator_set_icon"
+              deprecated="Use app_indicator_set_icon_full()">
+        <doc xml:whitespace="preserve">Wrapper function for app_indicator_set_icon_full() with a NULL
+description.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="icon_name" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The icon name to set.</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_icon_full" c:identifier="app_indicator_set_icon_full">
+        <doc xml:whitespace="preserve">Sets the default icon to use when the status is active but
+not set to attention.  In most cases, this should be the
+application icon for the program.
+
+Wrapper function for property #AppIndicator:icon-name and
+#AppIndicator::icon-desc.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="icon_name" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The icon name to set.</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="icon_desc" transfer-ownership="none">
+            <doc xml:whitespace="preserve">A textual description of the icon for accessibility</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_icon_theme_path"
+              c:identifier="app_indicator_set_icon_theme_path">
+        <doc xml:whitespace="preserve">Sets the path to use when searching for icons.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="icon_theme_path" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The icon theme path to set.</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_label" c:identifier="app_indicator_set_label">
+        <doc xml:whitespace="preserve">This is a wrapper function for the #AppIndicator:label and
+#AppIndicator:guide properties.  This function can take #NULL
+as either @label or @guide and will clear the entries.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="label" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The label to show next to the icon.</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+          <parameter name="guide" transfer-ownership="none">
+            <doc xml:whitespace="preserve">A guide to size the label correctly.</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_menu" c:identifier="app_indicator_set_menu">
+        <doc xml:whitespace="preserve">Sets the menu that should be shown when the Application Indicator
+is clicked on in the panel.  An application indicator will not
+be rendered unless it has a menu.
+
+Wrapper function for property #AppIndicator:menu.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="menu" transfer-ownership="none" allow-none="1">
+            <doc xml:whitespace="preserve">A #GtkMenu to set</doc>
+            <type name="Gtk.Menu" c:type="GtkMenu*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_ordering_index"
+              c:identifier="app_indicator_set_ordering_index">
+        <doc xml:whitespace="preserve">Sets the ordering index for the app indicator which effects the
+placement of it on the panel.  For almost all app indicator
+this is not the function you're looking for.
+
+Wrapper function for property #AppIndicator:ordering-index.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="ordering_index" transfer-ownership="none">
+            <doc xml:whitespace="preserve">A value for the ordering of this app indicator</doc>
+            <type name="guint32" c:type="guint32"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_secondary_activate_target"
+              c:identifier="app_indicator_set_secondary_activate_target">
+        <doc xml:whitespace="preserve">Set the @menuitem to be activated when a secondary activation event (i.e. a
+middle-click) is emitted over the #AppIndicator icon/label.
+
+The @menuitem can be also a complex #GtkWidget, but to get activated when
+a secondary activation occurs in the #Appindicator, it must be a visible and
+active child (or inner-child) of the #AppIndicator:menu.
+
+Setting @menuitem to %NULL causes to disable this feature.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="menuitem" transfer-ownership="none" allow-none="1">
+            <doc xml:whitespace="preserve">A #GtkWidget to be activated on secondary activation</doc>
+            <type name="Gtk.Widget" c:type="GtkWidget*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_status" c:identifier="app_indicator_set_status">
+        <doc xml:whitespace="preserve">Wrapper function for property #AppIndicator:status.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="status" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The status to set for this indicator</doc>
+            <type name="IndicatorStatus" c:type="AppIndicatorStatus"/>
+          </parameter>
+        </parameters>
+      </method>
+      <method name="set_title"
+              c:identifier="app_indicator_set_title"
+              version="0.5">
+        <doc xml:whitespace="preserve">Sets the title of the application indicator, or how it should be referred
+in a human readable form.  This string should be UTF-8 and localized as it
+expected that users will set it.
+
+In the Unity desktop the most prominent place that this is show will be
+in the HUD.  HUD listings for this application indicator will start with
+the title as the first part of the line for the menu items.
+
+Setting @title to %NULL removes the title.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none" c:type="void"/>
+        </return-value>
+        <parameters>
+          <parameter name="title" transfer-ownership="none" allow-none="1">
+            <doc xml:whitespace="preserve">Title of the app indicator</doc>
+            <type name="utf8" c:type="gchar*"/>
+          </parameter>
+        </parameters>
+      </method>
+      <property name="attention-icon-desc"
+                writable="1"
+                transfer-ownership="none">
+        <doc xml:whitespace="preserve">If the indicator sets it's status to %APP_INDICATOR_STATUS_ATTENTION
+then this textual description of the icon shown.</doc>
+        <type name="utf8"/>
+      </property>
+      <property name="attention-icon-name"
+                writable="1"
+                transfer-ownership="none">
+        <doc xml:whitespace="preserve">If the indicator sets it's status to %APP_INDICATOR_STATUS_ATTENTION
+then this icon is shown.</doc>
+        <type name="utf8"/>
+      </property>
+      <property name="category"
+                writable="1"
+                construct-only="1"
+                transfer-ownership="none">
+        <doc xml:whitespace="preserve">The type of indicator that this represents.  Please don't use 'Other'. 
+Defaults to 'ApplicationStatus'.</doc>
+        <type name="utf8"/>
+      </property>
+      <property name="connected" transfer-ownership="none">
+        <doc xml:whitespace="preserve">Pretty simple, %TRUE if we have a reasonable expectation of being 
+displayed through this object. You should hide your TrayIcon if so.</doc>
+        <type name="gboolean"/>
+      </property>
+      <property name="dbus-menu-server"
+                introspectable="0"
+                writable="1"
+                transfer-ownership="none">
+        <doc xml:whitespace="preserve">A way to get the internal dbusmenu server if it is available.
+This should only be used for testing.</doc>
+        <type/>
+      </property>
+      <property name="icon-desc" writable="1" transfer-ownership="none">
+        <doc xml:whitespace="preserve">The description of the regular icon that is shown for the indicator.</doc>
+        <type name="utf8"/>
+      </property>
+      <property name="icon-name" writable="1" transfer-ownership="none">
+        <doc xml:whitespace="preserve">The name of the regular icon that is shown for the indicator.</doc>
+        <type name="utf8"/>
+      </property>
+      <property name="icon-theme-path"
+                writable="1"
+                construct="1"
+                transfer-ownership="none">
+        <doc xml:whitespace="preserve">An additional place to look for icon names that may be installed by the
+application.</doc>
+        <type name="utf8"/>
+      </property>
+      <property name="id"
+                writable="1"
+                construct-only="1"
+                transfer-ownership="none">
+        <doc xml:whitespace="preserve">The ID for this indicator, which should be unique, but used consistently
+by this program and its indicator.</doc>
+        <type name="utf8"/>
+      </property>
+      <property name="label" writable="1" transfer-ownership="none">
+        <doc xml:whitespace="preserve">A label that can be shown next to the string in the application
+indicator.  The label will not be shown unless there is an icon
+as well.  The label is useful for numerical and other frequently
+updated information.  In general, it shouldn't be shown unless a
+user requests it as it can take up a significant amount of space
+on the user's panel.  This may not be shown in all visualizations.</doc>
+        <type name="utf8"/>
+      </property>
+      <property name="label-guide" writable="1" transfer-ownership="none">
+        <doc xml:whitespace="preserve">An optional string to provide guidance to the panel on how big
+the #AppIndicator:label string could get.  If this is set correctly
+then the panel should never 'jiggle' as the string adjusts through
+out the range of options.  For instance, if you were providing a
+percentage like "54% thrust" in #AppIndicator:label you'd want to
+set this string to "100% thrust" to ensure space when Scotty can
+get you enough power.</doc>
+        <type name="utf8"/>
+      </property>
+      <property name="ordering-index" writable="1" transfer-ownership="none">
+        <doc xml:whitespace="preserve">The ordering index is an odd parameter, and if you think you don't need
+it you're probably right.  In general, the application indicator try
+to place the applications in a recreatable place taking into account
+which category they're in to try and group them.  But, there are some
+cases where you'd want to ensure indicators are next to each other.
+To do that you can override the generated ordering index and replace it
+with a new one.  Again, you probably don't want to be doing this, but
+in case you do, this is the way.</doc>
+        <type name="guint"/>
+      </property>
+      <property name="status" writable="1" transfer-ownership="none">
+        <doc xml:whitespace="preserve">Whether the indicator is shown or requests attention. Defaults to
+'Passive'.</doc>
+        <type name="utf8"/>
+      </property>
+      <property name="title" writable="1" transfer-ownership="none">
+        <doc xml:whitespace="preserve">Provides a way to refer to this application indicator in a human
+readable form.  This is used in the Unity desktop in the HUD as
+the first part of the menu entries to distinguish them from the
+focused application's entries.</doc>
+        <type name="utf8"/>
+      </property>
+      <field name="parent">
+        <type name="GObject.Object" c:type="GObject"/>
+      </field>
+      <field name="priv">
+        <type name="IndicatorPrivate" c:type="AppIndicatorPrivate*"/>
+      </field>
+      <glib:signal name="connection-changed" when="last">
+        <doc xml:whitespace="preserve">Signaled when we connect to a watcher, or when it drops away.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none"/>
+        </return-value>
+        <parameters>
+          <parameter name="arg1" transfer-ownership="none">
+            <doc xml:whitespace="preserve">Whether we're connected or not</doc>
+            <type name="gboolean"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+      <glib:signal name="new-attention-icon" when="last">
+        <doc xml:whitespace="preserve">Emitted when #AppIndicator:attention-icon-name is changed</doc>
+        <return-value transfer-ownership="none">
+          <type name="none"/>
+        </return-value>
+      </glib:signal>
+      <glib:signal name="new-icon" when="last">
+        <doc xml:whitespace="preserve">when #AppIndicator:icon-name is changed</doc>
+        <return-value transfer-ownership="none">
+          <type name="none"/>
+        </return-value>
+      </glib:signal>
+      <glib:signal name="new-icon-theme-path" when="last">
+        <doc xml:whitespace="preserve">Signaled when there is a new icon set for the
+object.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none"/>
+        </return-value>
+        <parameters>
+          <parameter name="object" transfer-ownership="none">
+            <type name="utf8"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+      <glib:signal name="new-label" when="last">
+        <doc xml:whitespace="preserve">Emitted when either #AppIndicator:label or #AppIndicator:label-guide are
+changed.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none"/>
+        </return-value>
+        <parameters>
+          <parameter name="object" transfer-ownership="none">
+            <type name="utf8"/>
+          </parameter>
+          <parameter name="p0" transfer-ownership="none">
+            <type name="utf8"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+      <glib:signal name="new-status" when="last">
+        <doc xml:whitespace="preserve">Emitted when #AppIndicator:status is changed</doc>
+        <return-value transfer-ownership="none">
+          <type name="none"/>
+        </return-value>
+        <parameters>
+          <parameter name="arg1" transfer-ownership="none">
+            <doc xml:whitespace="preserve">The string value of the #AppIndicatorStatus enum.</doc>
+            <type name="utf8"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+      <glib:signal name="scroll-event" when="last">
+        <doc xml:whitespace="preserve">Signaled when the #AppIndicator receives a scroll event.</doc>
+        <return-value transfer-ownership="none">
+          <type name="none"/>
+        </return-value>
+        <parameters>
+          <parameter name="arg1" transfer-ownership="none">
+            <doc xml:whitespace="preserve">How many steps the scroll wheel has taken</doc>
+            <type name="gint"/>
+          </parameter>
+          <parameter name="arg2" transfer-ownership="none">
+            <doc xml:whitespace="preserve">(type Gdk.ScrollDirection) Which direction the wheel went in</doc>
+            <type name="guint"/>
+          </parameter>
+        </parameters>
+      </glib:signal>
+    </class>
+    <enumeration name="IndicatorCategory" c:type="AppIndicatorCategory">
+      <doc xml:whitespace="preserve">The category provides grouping for the indicators so that
+users can find indicators that are similar together.</doc>
+      <member name="application_status"
+              value="0"
+              c:identifier="APP_INDICATOR_CATEGORY_APPLICATION_STATUS"/>
+      <member name="communications"
+              value="1"
+              c:identifier="APP_INDICATOR_CATEGORY_COMMUNICATIONS"/>
+      <member name="system_services"
+              value="2"
+              c:identifier="APP_INDICATOR_CATEGORY_SYSTEM_SERVICES"/>
+      <member name="hardware"
+              value="3"
+              c:identifier="APP_INDICATOR_CATEGORY_HARDWARE"/>
+      <member name="other"
+              value="4"
+              c:identifier="APP_INDICATOR_CATEGORY_OTHER"/>
+    </enumeration>
+    <record name="IndicatorClass"
+            c:type="AppIndicatorClass"
+            glib:is-gtype-struct-for="Indicator">
+      <doc xml:whitespace="preserve">The signals and external functions that make up the #AppIndicator
+class object.</doc>
+      <field name="parent_class">
+        <type name="GObject.ObjectClass" c:type="GObjectClass"/>
+      </field>
+      <field name="new_icon">
+        <callback name="new_icon">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="indicator" transfer-ownership="none">
+              <type name="Indicator" c:type="AppIndicator*"/>
+            </parameter>
+            <parameter name="user_data" transfer-ownership="none" closure="1">
+              <type name="gpointer" c:type="gpointer"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="new_attention_icon">
+        <callback name="new_attention_icon">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="indicator" transfer-ownership="none">
+              <type name="Indicator" c:type="AppIndicator*"/>
+            </parameter>
+            <parameter name="user_data" transfer-ownership="none" closure="1">
+              <type name="gpointer" c:type="gpointer"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="new_status">
+        <callback name="new_status">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="indicator" transfer-ownership="none">
+              <type name="Indicator" c:type="AppIndicator*"/>
+            </parameter>
+            <parameter name="status" transfer-ownership="none">
+              <type name="utf8" c:type="gchar*"/>
+            </parameter>
+            <parameter name="user_data" transfer-ownership="none" closure="2">
+              <type name="gpointer" c:type="gpointer"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="new_icon_theme_path">
+        <callback name="new_icon_theme_path">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="indicator" transfer-ownership="none">
+              <type name="Indicator" c:type="AppIndicator*"/>
+            </parameter>
+            <parameter name="icon_theme_path" transfer-ownership="none">
+              <type name="utf8" c:type="gchar*"/>
+            </parameter>
+            <parameter name="user_data" transfer-ownership="none" closure="2">
+              <type name="gpointer" c:type="gpointer"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="new_label">
+        <callback name="new_label">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="indicator" transfer-ownership="none">
+              <type name="Indicator" c:type="AppIndicator*"/>
+            </parameter>
+            <parameter name="label" transfer-ownership="none">
+              <type name="utf8" c:type="gchar*"/>
+            </parameter>
+            <parameter name="guide" transfer-ownership="none">
+              <type name="utf8" c:type="gchar*"/>
+            </parameter>
+            <parameter name="user_data" transfer-ownership="none" closure="3">
+              <type name="gpointer" c:type="gpointer"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="connection_changed">
+        <callback name="connection_changed">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="indicator" transfer-ownership="none">
+              <type name="Indicator" c:type="AppIndicator*"/>
+            </parameter>
+            <parameter name="connected" transfer-ownership="none">
+              <type name="gboolean" c:type="gboolean"/>
+            </parameter>
+            <parameter name="user_data" transfer-ownership="none" closure="2">
+              <type name="gpointer" c:type="gpointer"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="scroll_event">
+        <callback name="scroll_event">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="indicator" transfer-ownership="none">
+              <type name="Indicator" c:type="AppIndicator*"/>
+            </parameter>
+            <parameter name="delta" transfer-ownership="none">
+              <type name="gint" c:type="gint"/>
+            </parameter>
+            <parameter name="direction" transfer-ownership="none">
+              <type name="Gdk.ScrollDirection" c:type="GdkScrollDirection"/>
+            </parameter>
+            <parameter name="user_data" transfer-ownership="none" closure="3">
+              <type name="gpointer" c:type="gpointer"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="app_indicator_reserved_ats">
+        <callback name="app_indicator_reserved_ats">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="fallback" introspectable="0">
+        <callback name="fallback" introspectable="0">
+          <return-value>
+            <type name="Gtk.StatusIcon" c:type="GtkStatusIcon*"/>
+          </return-value>
+          <parameters>
+            <parameter name="indicator" transfer-ownership="none">
+              <type name="Indicator" c:type="AppIndicator*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="unfallback">
+        <callback name="unfallback">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+          <parameters>
+            <parameter name="indicator" transfer-ownership="none">
+              <type name="Indicator" c:type="AppIndicator*"/>
+            </parameter>
+            <parameter name="status_icon" transfer-ownership="none">
+              <type name="Gtk.StatusIcon" c:type="GtkStatusIcon*"/>
+            </parameter>
+          </parameters>
+        </callback>
+      </field>
+      <field name="app_indicator_reserved_1">
+        <callback name="app_indicator_reserved_1">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="app_indicator_reserved_2">
+        <callback name="app_indicator_reserved_2">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="app_indicator_reserved_3">
+        <callback name="app_indicator_reserved_3">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="app_indicator_reserved_4">
+        <callback name="app_indicator_reserved_4">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="app_indicator_reserved_5">
+        <callback name="app_indicator_reserved_5">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+      <field name="app_indicator_reserved_6">
+        <callback name="app_indicator_reserved_6">
+          <return-value transfer-ownership="none">
+            <type name="none" c:type="void"/>
+          </return-value>
+        </callback>
+      </field>
+    </record>
+    <record name="IndicatorPrivate" c:type="AppIndicatorPrivate" disguised="1">
+      <doc xml:whitespace="preserve">Private Fields</doc>
+    </record>
+    <enumeration name="IndicatorStatus" c:type="AppIndicatorStatus">
+      <doc xml:whitespace="preserve">These are the states that the indicator can be on in
+the user's panel.  The indicator by default starts
+in the state @APP_INDICATOR_STATUS_PASSIVE and can be
+shown by setting it to @APP_INDICATOR_STATUS_ACTIVE.</doc>
+      <member name="passive"
+              value="0"
+              c:identifier="APP_INDICATOR_STATUS_PASSIVE"/>
+      <member name="active"
+              value="1"
+              c:identifier="APP_INDICATOR_STATUS_ACTIVE"/>
+      <member name="attention"
+              value="2"
+              c:identifier="APP_INDICATOR_STATUS_ATTENTION"/>
+    </enumeration>
+  </namespace>
+</repository>

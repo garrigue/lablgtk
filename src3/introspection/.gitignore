@@ -1,0 +1,5 @@
+extract_stubs
+*.cm*
+*.mli
+*.o
+stubs/*
