@@ -172,6 +172,26 @@ struct
 
 end
 
+module SourceUndoManager =
+struct
+  include SourceUndoManager
+
+  type undo_manager = {
+    can_undo : unit -> bool;
+    can_redo : unit -> bool;
+    undo : unit -> unit;
+    redo : unit -> unit;
+    begin_not_undoable_action : unit -> unit;
+    end_not_undoable_action : unit -> unit;
+    can_undo_changed : unit -> unit;
+    can_redo_changed : unit -> unit;
+  }
+
+  external new_ : undo_manager -> [`sourceundomanager] obj =
+    "ml_custom_undo_manager_new"
+
+end
+
 module SourceBuffer =
 struct
   include SourceBuffer

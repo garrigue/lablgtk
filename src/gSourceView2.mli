@@ -299,6 +299,43 @@ end
 
 val source_mark : ?category:string -> unit -> source_mark
 
+(** {2 GtkSourceUndoManager} *)
+
+class source_undo_manager_signals :
+  (GtkSourceView2_types.source_undo_manager as 'b) obj ->
+object ('a)
+  method after : 'a
+  method can_redo_changed : callback:(unit -> unit) -> GtkSignal.id
+  method can_undo_changed : callback:(unit -> unit) -> GtkSignal.id
+end
+
+class source_undo_manager: (GtkSourceView2_types.source_undo_manager as 'b) obj ->
+  object
+    val obj : 'b obj
+    method as_source_undo_manager : GtkSourceView2_types.source_undo_manager obj
+    method begin_not_undoable_action : unit -> unit
+    method connect : source_undo_manager_signals
+    method can_redo : bool
+    method can_redo_changed : unit -> unit
+    method can_undo : bool
+    method can_undo_changed : unit -> unit
+    method end_not_undoable_action : unit -> unit
+    method redo : unit -> unit
+    method undo : unit -> unit
+  end
+
+type custom_undo_manager = {
+  can_undo : unit -> bool;
+  can_redo : unit -> bool;
+  undo : unit -> unit;
+  redo : unit -> unit;
+  begin_not_undoable_action : unit -> unit;
+  end_not_undoable_action : unit -> unit;
+  can_undo_changed : unit -> unit;
+  can_redo_changed : unit -> unit;
+}
+
+val source_undo_manager : custom_undo_manager -> source_undo_manager
 
 (** {2 GtkSourceBuffer} *)
 
@@ -352,6 +389,10 @@ object
 
   method ensure_highlight: start:GText.iter -> stop:GText.iter -> unit
 
+  method undo_manager : source_undo_manager
+
+  method set_undo_manager : source_undo_manager -> unit
+
 end
 
 val source_buffer:
@@ -359,6 +400,7 @@ val source_buffer:
   ?style_scheme:source_style_scheme ->
   ?tag_table:GText.tag_table ->
   ?text:string ->
+  ?undo_manager:source_undo_manager ->
   ?highlight_matching_brackets:bool ->
   ?highlight_syntax:bool ->
   ?max_undo_levels:int ->
