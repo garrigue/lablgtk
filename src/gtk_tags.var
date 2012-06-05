@@ -89,6 +89,10 @@ type resize_mode = "GTK_RESIZE_"
 type signal_run_type = "GTK_RUN_"
   [ `FIRST | `LAST | `BOTH | `NO_RECURSE | `ACTION | `NO_HOOKS ]
 
+type scroll_step = "GTK_SCROLL_"
+  [ `STEPS | `PAGES | `END
+  | `HORIZONTAL_STEPS | `HORIZONTAL_PAGES | `HORIZONTAL_ENDS ]
+
 type scroll_type = "GTK_SCROLL_"
   [ `NONE | `JUMP | `STEP_FORWARD | `STEP_BACKWARD
   | `PAGE_BACKWARD | `PAGE_FORWARD | `STEP_UP | `STEP_DOWN

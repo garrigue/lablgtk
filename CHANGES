@@ -1,5 +1,8 @@
 $Id$
 
+2012.06.05 [Jacques]
+  * merge GtkSourceView2 additions by Pierre-Marie Pedrot
+
 2012.03.07 [Jacques]
   * add Make_Val_option to wrappers.h
 

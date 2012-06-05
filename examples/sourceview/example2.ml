@@ -100,9 +100,15 @@ let () =
 
   source_view#set_draw_spaces [`SPACE; `NEWLINE];
 
-  List.iter (function `SPACE -> print_string " space"
-      | `TAB -> print_string " tab" | `NEWLINE -> print_string " newline"
-      | `NBSP -> print_string " nbsp")
+  List.iter
+    (function
+      | `SPACE -> print_string " space"
+      | `TAB -> print_string " tab"
+      | `NEWLINE -> print_string " newline"
+      | `NBSP -> print_string " nbsp"
+      | `LEADING -> print_string "leading"
+      | `TEXT -> print_string "text"
+      | `TRAILING -> print_string "trailing")
     source_view#draw_spaces;
   print_newline ();
 
