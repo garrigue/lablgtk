@@ -164,6 +164,10 @@ static Make_Val_option(GtkSourceLanguage)
 #define Val_GtkSourceMark_new(val) (Val_GObject_new((GObject*)val))
 static Make_Val_option(GtkSourceMark)
 
+#define GtkSourceUndoManager_val(val) check_cast(GTK_SOURCE_UNDO_MANAGER,val)
+#define Val_GtkSourceUndoManager(val) (Val_GObject((GObject*)val))
+#define Val_GtkSourceUndoManager_new(val) (Val_GObject_new((GObject*)val))
+
 #define GtkSourceBuffer_val(val) check_cast(GTK_SOURCE_BUFFER,val)
 #define Val_GtkSourceBuffer(val) (Val_GObject((GObject*)val))
 #define Val_GtkSourceBuffer_new(val) (Val_GObject_new((GObject*)val))
@@ -203,16 +207,16 @@ Make_Flags_val(Source_completion_activation_flags_val)
 
 // Completion provider
 
-typedef struct _CustomCompletionProvider CustomCompletionProvider;
-typedef struct _CustomCompletionProviderClass CustomCompletionProviderClass;
+typedef struct _CustomObject CustomCompletionProvider;
+typedef struct _CustomObjectClass CustomCompletionProviderClass;
 
-struct _CustomCompletionProvider
+struct _CustomObject
 {
   GObject parent;      /* this MUST be the first member */
   value caml_object;
 };
 
-struct _CustomCompletionProviderClass
+struct _CustomObjectClass
 {
   GObjectClass parent;      /* this MUST be the first member */
 };
@@ -573,6 +577,153 @@ ML_1 (gtk_source_mark_get_category, GtkSourceMark_val, Val_string)
 ML_2 (gtk_source_mark_next, GtkSourceMark_val, String_option_val, Val_option_GtkSourceMark)
 ML_2 (gtk_source_mark_prev, GtkSourceMark_val, String_option_val, Val_option_GtkSourceMark)
 
+// SourceUndoManager
+
+// Defining a custom one: boilerplate
+
+typedef struct _CustomObject CustomUndoManager;
+typedef struct _CustomObjectClass CustomUndoManagerClass;
+
+GType custom_undo_manager_get_type();
+
+#define TYPE_CUSTOM_UNDO_MANAGER (custom_undo_manager_get_type ())
+#define IS_CUSTOM_UNDO_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CUSTOM_UNDO_MANAGER))
+
+CAMLprim value ml_custom_undo_manager_new (value obj) {
+  CAMLparam1(obj);
+  CustomUndoManager* p = (CustomUndoManager*) g_object_new (TYPE_CUSTOM_UNDO_MANAGER, NULL);
+  g_assert (p != NULL);
+  if(Is_block(obj) &&
+      (char*)obj < (char*)caml_young_end &&
+      (char*)obj > (char*)caml_young_start)
+    {
+      caml_register_global_root (&obj);
+      caml_minor_collection();
+      caml_remove_global_root (&obj);
+    }
+
+  p->caml_object = obj;
+
+  CAMLreturn (Val_GtkSourceUndoManager_new(p));
+
+}
+
+gboolean custom_undo_manager_can_undo (GtkSourceUndoManager* p) {
+  g_return_val_if_fail (IS_CUSTOM_UNDO_MANAGER(p), FALSE);
+  CustomUndoManager *obj = (CustomUndoManager *) p;
+  return Bool_val (METHOD1(obj, 0, Val_unit));
+}
+
+gboolean custom_undo_manager_can_redo (GtkSourceUndoManager* p) {
+  g_return_val_if_fail (IS_CUSTOM_UNDO_MANAGER(p), FALSE);
+  CustomUndoManager *obj = (CustomUndoManager *) p;
+  return Bool_val (METHOD1(obj, 1, Val_unit));
+}
+
+void custom_undo_manager_undo (GtkSourceUndoManager* p) {
+  g_return_if_fail (IS_CUSTOM_UNDO_MANAGER(p));
+  CustomUndoManager *obj = (CustomUndoManager *) p;
+  METHOD1(obj, 2, Val_unit);
+}
+
+void custom_undo_manager_redo (GtkSourceUndoManager* p) {
+  g_return_if_fail (IS_CUSTOM_UNDO_MANAGER(p));
+  CustomUndoManager *obj = (CustomUndoManager *) p;
+  METHOD1(obj, 3, Val_unit);
+}
+
+void custom_undo_manager_begin_not_undoable_action (GtkSourceUndoManager* p) {
+  g_return_if_fail (IS_CUSTOM_UNDO_MANAGER(p));
+  CustomUndoManager *obj = (CustomUndoManager *) p;
+  METHOD1(obj, 4, Val_unit);
+}
+
+void custom_undo_manager_end_not_undoable_action (GtkSourceUndoManager* p) {
+  g_return_if_fail (IS_CUSTOM_UNDO_MANAGER(p));
+  CustomUndoManager *obj = (CustomUndoManager *) p;
+  METHOD1(obj, 5, Val_unit);
+}
+
+void custom_undo_manager_can_undo_changed (GtkSourceUndoManager* p) {
+  g_return_if_fail (IS_CUSTOM_UNDO_MANAGER(p));
+  CustomUndoManager *obj = (CustomUndoManager *) p;
+  METHOD1(obj, 6, Val_unit);
+}
+
+void custom_undo_manager_can_redo_changed (GtkSourceUndoManager* p) {
+  g_return_if_fail (IS_CUSTOM_UNDO_MANAGER(p));
+  CustomUndoManager *obj = (CustomUndoManager *) p;
+  METHOD1(obj, 7, Val_unit);
+}
+
+void custom_undo_manager_class_init (CustomUndoManagerClass* c) {
+  GObjectClass *object_class;
+  GObjectClass *parent_class;
+
+  parent_class = (GObjectClass*) g_type_class_peek_parent (c);
+  object_class = (GObjectClass*) c;
+  object_class->finalize = parent_class->finalize;
+}
+
+void custom_undo_manager_interface_init (GtkSourceUndoManagerIface *iface, gpointer data) {
+  iface->can_undo = custom_undo_manager_can_undo;
+  iface->can_redo = custom_undo_manager_can_redo;
+  iface->undo = custom_undo_manager_undo;
+  iface->redo = custom_undo_manager_redo;
+  iface->begin_not_undoable_action = custom_undo_manager_begin_not_undoable_action;
+  iface->end_not_undoable_action = custom_undo_manager_end_not_undoable_action;
+  iface->can_undo_changed = custom_undo_manager_can_undo_changed;
+  iface->can_redo_changed = custom_undo_manager_can_redo_changed;
+}
+
+GType custom_undo_manager_get_type (void)
+{
+  /* Some boilerplate type registration stuff */
+  static GType custom_undo_manager_type = 0;
+
+  if (custom_undo_manager_type == 0)
+  {
+    const GTypeInfo custom_undo_manager_info =
+    {
+      sizeof (CustomUndoManagerClass),
+      NULL,                                         /* base_init */
+      NULL,                                         /* base_finalize */
+      (GClassInitFunc) custom_undo_manager_class_init,
+      NULL,                                         /* class finalize */
+      NULL,                                         /* class_data */
+      sizeof (CustomUndoManager),
+      0,                                           /* n_preallocs */
+      NULL
+    };
+
+    static const GInterfaceInfo source_undo_manager_info =
+    {
+      (GInterfaceInitFunc) custom_undo_manager_interface_init,
+      NULL,
+      NULL
+    };
+
+    custom_undo_manager_type = g_type_register_static (G_TYPE_OBJECT, "custom_undo_manager",
+                                               &custom_undo_manager_info, (GTypeFlags)0);
+
+    /* Here we register our GtkTreeModel interface with the type system */
+    g_type_add_interface_static (custom_undo_manager_type, GTK_TYPE_SOURCE_UNDO_MANAGER, &source_undo_manager_info);
+  }
+
+  return custom_undo_manager_type;
+}
+
+
+ML_1 (gtk_source_undo_manager_can_undo, GtkSourceUndoManager_val, Val_bool)
+ML_1 (gtk_source_undo_manager_can_redo, GtkSourceUndoManager_val, Val_bool)
+ML_1 (gtk_source_undo_manager_undo, GtkSourceUndoManager_val, Unit)
+ML_1 (gtk_source_undo_manager_redo, GtkSourceUndoManager_val, Unit)
+ML_1 (gtk_source_undo_manager_begin_not_undoable_action, GtkSourceUndoManager_val, Unit)
+ML_1 (gtk_source_undo_manager_end_not_undoable_action, GtkSourceUndoManager_val, Unit)
+ML_1 (gtk_source_undo_manager_can_undo_changed, GtkSourceUndoManager_val, Unit)
+ML_1 (gtk_source_undo_manager_can_redo_changed, GtkSourceUndoManager_val, Unit)
+
+// SourceBuffer
 
 ML_1 (gtk_source_buffer_new, GtkTextTagTable_val, Val_GtkSourceBuffer_new)
 ML_1 (gtk_source_buffer_new_with_language, GtkSourceLanguage_val, Val_GtkAny_sink)

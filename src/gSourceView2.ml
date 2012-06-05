@@ -361,6 +361,37 @@ end
 let source_mark ?category () =
   new source_mark (SourceMark.create ?category [])
 
+(** {2 GtkSourceUndoManager} *)
+
+class source_undo_manager_signals obj' =
+object (self)
+  inherit ['a] gobject_signals (obj' : [> GtkSourceView2_types.source_undo_manager] obj)
+  inherit source_undo_manager_sigs
+end
+
+class source_undo_manager
+  (obj : GtkSourceView2_types.source_undo_manager obj) =
+  object
+    val obj = obj
+    inherit source_undo_manager_props
+    method as_source_undo_manager = obj
+    method connect = new source_undo_manager_signals obj
+  end
+
+type custom_undo_manager = {
+  can_undo : unit -> bool;
+  can_redo : unit -> bool;
+  undo : unit -> unit;
+  redo : unit -> unit;
+  begin_not_undoable_action : unit -> unit;
+  end_not_undoable_action : unit -> unit;
+  can_undo_changed : unit -> unit;
+  can_redo_changed : unit -> unit;
+}
+
+let source_undo_manager manager =
+  new source_undo_manager (SourceUndoManager.new_ (Obj.magic manager))
+
 (** {2 GtkSourceBuffer} *)
 
 class source_buffer_signals obj' =
@@ -423,11 +454,20 @@ object (self)
 
   method ensure_highlight ~(start:GText.iter) ~(stop:GText.iter) =
     SourceBuffer.ensure_highlight obj start#as_iter stop#as_iter
+
+  method set_undo_manager (manager : source_undo_manager) =
+    let manager = manager#as_source_undo_manager in
+    Gobject.set SourceBuffer.P.undo_manager obj manager
+
+  method undo_manager =
+    let manager = Gobject.get SourceBuffer.P.undo_manager obj in
+    new source_undo_manager manager
+
 end
 
 let source_buffer ?(language:source_language option)
   ?(style_scheme:source_style_scheme option)
-  ?(tag_table : GText.tag_table option) ?text =
+  ?(tag_table : GText.tag_table option) ?text ?(undo_manager : source_undo_manager option)  =
   let language =
     match language with
     | None -> None
@@ -438,7 +478,12 @@ let source_buffer ?(language:source_language option)
     | None -> None
     | Some schm -> Some (schm#as_source_style_scheme)
   in
-  SourceBuffer.make_params [] ?language ?style_scheme
+  let undo_manager =
+    match undo_manager with
+    | None -> None
+    | Some manager -> Some (manager#as_source_undo_manager)
+  in
+  SourceBuffer.make_params [] ?language ?style_scheme ?undo_manager
     ~cont:(fun pl () ->
       let buf =
 	match tag_table with

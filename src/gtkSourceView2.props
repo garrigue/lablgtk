@@ -163,6 +163,21 @@ class SourceMark type "source_mark obj" set wrap wrapsig : GObject {
  "category"                 gchararray_opt  : Read / Write / Construct Only
 }
 
+class SourceUndoManager type "source_undo_manager obj" set wrap wrapsig : GObject {
+
+  method can_undo : "bool" / Wrap
+  method can_redo : "bool" / Wrap
+  method undo : "unit" / Wrap
+  method redo : "unit" / Wrap
+  method begin_not_undoable_action : "unit" / Wrap
+  method end_not_undoable_action : "unit" / Wrap
+  method can_undo_changed : "unit" / Wrap
+  method can_redo_changed : "unit" / Wrap
+
+  signal can_redo_changed
+  signal can_undo_changed
+}
+
 class SourceBuffer type "source_buffer obj" set wrap wrapsig : GObject {
   "can-redo"     gboolean 	       	      : Read
   "can-undo"     gboolean		      : Read
@@ -172,6 +187,7 @@ class SourceBuffer type "source_buffer obj" set wrap wrapsig : GObject {
 
   "max-undo-levels"      gint                 : Read / Write
   "style-scheme"         GtkSourceStyleScheme_opt : Read / Write / NoWrap
+  "undo-manager"             GtkSourceUndoManager  : Read / Write / Construct / NoWrap
 
   signal highlight_updated: GtkTextIter GtkTextIter
   signal source_mark_updated: GtkSourceMark
