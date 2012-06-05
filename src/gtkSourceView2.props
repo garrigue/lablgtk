@@ -27,6 +27,15 @@ prefix "Gtk"
 
 header {
   open GtkSourceView2_types
+  open SourceView2Enums
+}
+
+boxed {
+  GdkEvent    "GdkEvent.any"
+}
+
+classes {
+  GdkPixbuf "GdkPixbuf.pixbuf"
 }
 
 class SourceStyleScheme type "source_style_scheme obj" set wrapsig : GObject {
@@ -44,6 +53,99 @@ class SourceStyleSchemeManager type "source_style_scheme_manager obj" wrap : GOb
   method prepend_search_path : "string -> unit" / Wrap
   method get_scheme : "string -> source_style_scheme obj option"
   method force_rescan : "unit -> unit" / Wrap
+}
+
+class SourceCompletionInfo type "source_completion_info obj" wrap wrapsig : GtkWidget {
+  "max-height"               gint                  : Read / Write / Construct
+  "max-width"                gint                  : Read / Write / Construct
+  "shrink-height"            gboolean              : Read / Write / Construct
+  "shrink-width"             gboolean              : Read / Write / Construct
+
+  method move_to_iter : "Gtk.text_view obj -> Gtk.text_iter -> unit"
+  method set_sizing :
+    "width:int -> height:int -> shrink_width:bool -> shrink_height:bool -> unit" / Wrap
+  method set_widget : "Gtk.widget obj -> unit"
+  method get_widget : "Gtk.widget obj"
+  method process_resize : "unit" / Wrap
+
+  signal before_show
+}
+
+class SourceCompletionProposal type "source_completion_proposal obj" wrap wrapsig : GObject {
+  "icon"                     GdkPixbuf           : Read
+  "info"                     string               : Read
+  "label"                    string              : Read
+  "markup"                   string                : Read
+  "text"                     string               : Read
+
+  signal changed
+}
+
+class SourceCompletionItem type "source_completion_proposal obj" tag "sourcecompletionproposal" wrap wrapsig : GObject {
+  "icon"                     GdkPixbuf           : Read / Write
+  "info"                     string               : Read / Write
+  "label"                    string              : Read / Write
+  "markup"                   string                : Read / Write
+  "text"                     string               : Read / Write
+
+  signal changed
+}
+
+class SourceCompletionProvider type "source_completion_provider obj" abstract wrap wrapsig : GObject {
+  method get_name : "string"
+  method get_icon : "GdkPixbuf.pixbuf option"
+  method populate : "source_completion_context obj -> unit"
+  method get_activation : "source_completion_activation_flags list"
+  (* method match : "source_completion_context obj -> bool" *)
+  method get_info_widget : "source_completion_proposal obj -> Gtk.widget obj option"
+  method update_info : "source_completion_proposal obj -> source_completion_info obj -> unit"
+  method get_start_iter : "source_completion_context obj -> source_completion_proposal obj -> Gtk.text_iter"
+  method activate_proposal : "source_completion_proposal obj -> Gtk.text_iter -> bool"
+  method get_interactive_delay : "int"
+  method get_priority : "int"
+
+}
+
+class SourceCompletionContext type "source_completion_context obj" wrap wrapsig : GObject {
+  "completion"               GtkSourceCompletion  : Read / Write / Construct Only / NoWrap
+  "iter"                     GtkTextIter          : Read / Write / NoWrap
+
+
+  method get_activation : "source_completion_activation_flags list"
+  method set_activation : "source_completion_activation_flags list -> unit" / Wrap
+  method add_proposals :  "source_completion_provider obj -> source_completion_proposal obj list -> bool -> unit"
+
+  signal cancelled
+
+}
+
+class SourceCompletion type "source_completion obj" wrap wrapsig : GObject {
+  "accelerators"             guint                 : Read / Write / Construct
+  "auto-complete-delay"      guint                 : Read / Write / Construct
+  "proposal-page-size"       guint                 : Read / Write / Construct
+  "provider-page-size"       guint                 : Read / Write / Construct
+  "remember-info-visibility" gboolean              : Read / Write / Construct
+  "select-on-show"           gboolean              : Read / Write / Construct
+  "show-headers"             gboolean              : Read / Write / Construct
+  "show-icons"               gboolean              : Read / Write / Construct
+  "view"                     GtkSourceView        : Read / Write / Construct Only / NoWrap
+
+  method add_provider : "source_completion_provider obj -> bool"
+  method remove_provider : "source_completion_provider obj -> bool"
+  method block_interactive : "unit" / Wrap
+  method get_providers : "source_completion_provider obj list"
+  method create_context : "Gtk.text_iter -> source_completion_context obj"
+  method hide : "unit" / Wrap
+  method move_window : "Gtk.text_iter -> unit"
+  method show : "source_completion_provider obj list -> source_completion_context obj -> bool"
+  method unblock_interactive : "unit" / Wrap
+
+  signal activate_proposal
+  signal hide
+  signal move_cursor: GtkScrollStep gint
+  signal move_page: GtkScrollStep gint
+  signal populate_context : GtkSourceCompletionContext / NoWrap
+  signal show
 }
 
 class SourceLanguage type "source_language obj" set wrap wrapsig : GObject {
@@ -88,8 +190,10 @@ class SourceView type "source_view obj" set wrap wrapsig : Widget {
   "smart-home-end"  GtkSourceSmartHomeEndType : Read / Write
   "tab-width"          guint		      : Read / Write
 
-  method get_draw_spaces: "SourceView2Enums.source_draw_spaces_flags list"
-  method set_draw_spaces: "SourceView2Enums.source_draw_spaces_flags list -> unit"
+  method get_completion : "source_completion obj"
+
+  method get_draw_spaces : "source_draw_spaces_flags list"
+  method set_draw_spaces : "source_draw_spaces_flags list -> unit"
 
   method get_mark_category_priority :
       "category:string -> int" / Wrap
@@ -104,6 +208,11 @@ class SourceView type "source_view obj" set wrap wrapsig : Widget {
   method set_mark_category_background:
       "category:string -> Gdk.color option -> unit" / Wrap
 
+  signal line_mark_activated : GtkTextIter GdkEvent
+  signal move_lines : gboolean gint
+  signal move_words : gint
   signal redo
+  signal show_completion
+  signal smart_home_end : GtkTextIter gint
   signal undo
 }

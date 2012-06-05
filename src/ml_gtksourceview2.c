@@ -22,6 +22,7 @@
 
 #include <assert.h>
 #include <gtksourceview/gtksourceview.h>
+#include <gtksourceview/gtksourcecompletionitem.h>
 #include <gtksourceview/gtksourcelanguagemanager.h>
 #include <gtksourceview/gtksourceiter.h>
 #include <gtksourceview/gtksourcestylescheme.h>
@@ -50,6 +51,25 @@
 #include "sourceView2_tags.c"
 
 Make_OptFlags_val(Source_search_flag_val)
+
+CAMLprim value ml_gtk_source_completion_init(value unit)
+{       /* Since these are declared const, must force gcc to call them! */
+    GType t =
+      gtk_source_completion_get_type() +
+      gtk_source_completion_context_get_type() +
+      gtk_source_completion_provider_get_type() +
+      gtk_source_completion_proposal_get_type() +
+      gtk_source_completion_info_get_type() +
+      gtk_source_completion_item_get_type()
+;
+    return Val_GType(t);
+}
+
+CAMLprim value ml_gtk_source_completion_provider_init(value unit)
+{       /* Since these are declared const, must force gcc to call them! */
+    GType t = gtk_source_completion_provider_get_type();
+    return Val_GType(t);
+}
 
 CAMLprim value ml_gtk_source_style_scheme_init(value unit)
 {	/* Since these are declared const, must force gcc to call them! */
@@ -97,6 +117,28 @@ GSList *ml_gslist_of_string_list(value list)
 {
 	return GSList_val(list, string_val);
 }
+
+#define GtkSourceCompletionProvider_val(val) check_cast(GTK_SOURCE_COMPLETION_PROVIDER,val)
+#define Val_GtkSourceCompletionProvider(val) (Val_GObject((GObject*)val))
+#define Val_GtkSourceCompletionProvider_new(val) (Val_GObject_new((GObject*)val))
+
+#define GtkSourceCompletionProposal_val(val) check_cast(GTK_SOURCE_COMPLETION_PROPOSAL,val)
+#define Val_GtkSourceCompletionProposal(val) (Val_GObject((GObject*)val))
+#define Val_GtkSourceCompletionProposal_new(val) (Val_GObject_new((GObject*)val))
+
+#define GtkSourceCompletionInfo_val(val) check_cast(GTK_SOURCE_COMPLETION_INFO,val)
+#define Val_GtkSourceCompletionInfo(val) (Val_GObject((GObject*)val))
+#define Val_GtkSourceCompletionInfo_new(val) (Val_GObject_new((GObject*)val))
+
+#define GtkSourceCompletionContext_val(val) check_cast(GTK_SOURCE_COMPLETION_CONTEXT,val)
+#define Val_GtkSourceCompletionContext(val) (Val_GObject((GObject*)val))
+#define Val_GtkSourceCompletionContext_new(val) (Val_GObject_new((GObject*)val))
+// static Make_Val_option(GtkSourceCompletionContext)
+
+#define GtkSourceCompletion_val(val) check_cast(GTK_SOURCE_COMPLETION,val)
+#define Val_GtkSourceCompletion(val) (Val_GObject((GObject*)val))
+#define Val_GtkSourceCompletion_new(val) (Val_GObject_new((GObject*)val))
+// static Make_Val_option(GtkSourceCompletion)
 
 #define GtkSourceStyleScheme_val(val) check_cast(GTK_SOURCE_STYLE_SCHEME,val)
 #define Val_GtkSourceStyleScheme(val) (Val_GObject((GObject*)val))
@@ -152,6 +194,304 @@ value source_language_list_of_GSList(gpointer list)
 {
   return Val_GSList(list, val_gtksourcelanguage);
 }
+
+// Completion
+
+Make_Flags_val(Source_completion_activation_flags_val)
+#define Val_Activation_flags(val) \
+     ml_lookup_flags_getter(ml_table_source_completion_activation_flags, val)
+
+// Completion provider
+
+typedef struct _CustomCompletionProvider CustomCompletionProvider;
+typedef struct _CustomCompletionProviderClass CustomCompletionProviderClass;
+
+struct _CustomCompletionProvider
+{
+  GObject parent;      /* this MUST be the first member */
+  value caml_object;
+};
+
+struct _CustomCompletionProviderClass
+{
+  GObjectClass parent;      /* this MUST be the first member */
+};
+
+GType custom_completion_provider_get_type();
+
+#define TYPE_CUSTOM_COMPLETION_PROVIDER (custom_completion_provider_get_type ())
+#define IS_CUSTOM_COMPLETION_PROVIDER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CUSTOM_COMPLETION_PROVIDER))
+#define METHOD(obj, n) (Field(obj->caml_object, n))
+// #define METHOD(obj, name) (callback(caml_get_public_method(obj->caml_object, hash_variant(name)), obj->caml_object))
+#define METHOD1(obj, n, arg1) (callback(Field(obj->caml_object, n), arg1))
+#define METHOD2(obj, n, arg1, arg2) (callback2(Field(obj->caml_object, n), arg1, arg2))
+#define METHOD3(obj, n, arg1, arg2, arg3) (callback3(Field(obj->caml_object, n), arg1, arg2, arg3))
+
+extern void caml_minor_collection(void);
+
+CAMLprim value ml_custom_completion_provider_new (value obj) {
+  CAMLparam1(obj);
+  CustomCompletionProvider* p = (CustomCompletionProvider*) g_object_new (TYPE_CUSTOM_COMPLETION_PROVIDER, NULL);
+  g_assert (p != NULL);
+  if(Is_block(obj) &&
+      (char*)obj < (char*)caml_young_end &&
+      (char*)obj > (char*)caml_young_start)
+    {
+      caml_register_global_root (&obj);
+      caml_minor_collection();
+      caml_remove_global_root (&obj);
+    }
+
+  p->caml_object = obj;
+
+  CAMLreturn (Val_GtkSourceCompletionProvider_new(p));
+
+}
+
+CAMLprim value ml_custom_completion_provider_proj (value obj) {
+  CAMLparam1(obj);
+  CustomCompletionProvider* p = (CustomCompletionProvider *) GtkSourceCompletionProvider_val(obj);
+  CAMLreturn (p->caml_object);
+}
+
+gchar* custom_completion_provider_get_name (GtkSourceCompletionProvider* p) {
+  g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), NULL);
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  return g_strdup(string_val (METHOD(obj, 0)));
+}
+
+GdkPixbuf* custom_completion_provider_get_icon (GtkSourceCompletionProvider* p) {
+  g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), NULL);
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  return GdkPixbuf_option_val (METHOD(obj, 1));
+}
+
+void custom_completion_provider_populate (GtkSourceCompletionProvider* p, GtkSourceCompletionContext *context) {
+  g_return_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p));
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  METHOD1(obj, 2, Val_GtkSourceCompletionContext(context));
+}
+
+gboolean custom_completion_provider_match (GtkSourceCompletionProvider* p, GtkSourceCompletionContext *context) {
+  g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), FALSE);
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  return Bool_val (METHOD1(obj, 3, Val_GtkSourceCompletionContext(context)));
+}
+
+GtkSourceCompletionActivation custom_completion_provider_get_activation (GtkSourceCompletionProvider* p) {
+  g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), 0);
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  return Flags_Source_completion_activation_flags_val (METHOD(obj, 4));
+}
+
+GtkWidget* custom_completion_provider_get_info_widget (GtkSourceCompletionProvider* p, GtkSourceCompletionProposal *proposal) {
+  g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), NULL);
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  return Option_val (METHOD(obj, 5), GtkWidget_val, NULL);
+}
+
+void custom_completion_provider_update_info
+  (GtkSourceCompletionProvider* p, GtkSourceCompletionProposal *proposal, GtkSourceCompletionInfo *info) {
+  g_return_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p));
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  METHOD2(obj, 6, Val_GtkSourceCompletionProposal(proposal), Val_GtkSourceCompletionInfo(info));
+}
+
+gboolean custom_completion_provider_get_start_iter
+  (GtkSourceCompletionProvider* p, GtkSourceCompletionContext *context, GtkSourceCompletionProposal *proposal, GtkTextIter *iter) {
+  g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), FALSE);
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  return Bool_val (METHOD3(obj, 7, Val_GtkSourceCompletionContext(context), Val_GtkSourceCompletionProposal(proposal), Val_GtkTextIter(iter)));
+}
+
+gboolean custom_completion_provider_activate_proposal
+  (GtkSourceCompletionProvider* p, GtkSourceCompletionProposal *proposal, GtkTextIter *iter) {
+  g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), FALSE);
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  return Bool_val (METHOD2(obj, 8, Val_GtkSourceCompletionProposal(proposal), Val_GtkTextIter(iter)));
+}
+
+gint custom_completion_provider_get_interactive_delay (GtkSourceCompletionProvider* p) {
+  g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), 0);
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  return Int_val (METHOD(obj, 9));
+}
+
+gint custom_completion_provider_get_priority (GtkSourceCompletionProvider* p) {
+  g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), 0);
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  return Int_val (METHOD(obj, 10));
+}
+
+static void custom_completion_provider_interface_init (GtkSourceCompletionProviderIface *iface, gpointer data)
+{
+  iface->get_name = custom_completion_provider_get_name;
+  iface->get_icon = custom_completion_provider_get_icon;
+  iface->populate = custom_completion_provider_populate;
+  iface->match = custom_completion_provider_match;
+  iface->get_activation = custom_completion_provider_get_activation;
+  iface->get_info_widget = custom_completion_provider_get_info_widget;
+  iface->update_info = custom_completion_provider_update_info;
+  iface->get_start_iter = custom_completion_provider_get_start_iter;
+  iface->activate_proposal = custom_completion_provider_activate_proposal;
+  iface->get_interactive_delay = custom_completion_provider_get_interactive_delay;
+  iface->get_priority = custom_completion_provider_get_priority;
+}
+
+static void custom_completion_provider_class_init (CustomCompletionProviderClass *c)
+{
+  GObjectClass *object_class;
+  GObjectClass *parent_class;
+
+  parent_class = (GObjectClass*) g_type_class_peek_parent (c);
+  object_class = (GObjectClass*) c;
+  object_class->finalize = parent_class->finalize;
+}
+
+GType custom_completion_provider_get_type (void)
+{
+  /* Some boilerplate type registration stuff */
+  static GType custom_completion_provider_type = 0;
+
+  if (custom_completion_provider_type == 0)
+  {
+    const GTypeInfo custom_completion_provider_info =
+    {
+      sizeof (CustomCompletionProviderClass),
+      NULL,                                         /* base_init */
+      NULL,                                         /* base_finalize */
+      (GClassInitFunc) custom_completion_provider_class_init,
+      NULL,                                         /* class finalize */
+      NULL,                                         /* class_data */
+      sizeof (CustomCompletionProvider),
+      0,                                           /* n_preallocs */
+      NULL
+    };
+
+    static const GInterfaceInfo source_completion_provider_info =
+    {
+      (GInterfaceInitFunc) custom_completion_provider_interface_init,
+      NULL,
+      NULL
+    };
+
+    custom_completion_provider_type = g_type_register_static (G_TYPE_OBJECT, "custom_completion_provider",
+                                               &custom_completion_provider_info, (GTypeFlags)0);
+
+    /* Here we register our GtkTreeModel interface with the type system */
+    g_type_add_interface_static (custom_completion_provider_type, GTK_TYPE_SOURCE_COMPLETION_PROVIDER, &source_completion_provider_info);
+  }
+
+  return custom_completion_provider_type;
+}
+
+
+ML_1 (gtk_source_completion_provider_get_name, GtkSourceCompletionProvider_val, Val_string)
+ML_1 (gtk_source_completion_provider_get_icon, GtkSourceCompletionProvider_val, Val_option_GdkPixbuf)
+ML_2 (gtk_source_completion_provider_populate, GtkSourceCompletionProvider_val, GtkSourceCompletionContext_val, Unit)
+ML_1 (gtk_source_completion_provider_get_activation, GtkSourceCompletionProvider_val,
+      Val_Activation_flags)
+ML_2 (gtk_source_completion_provider_match, GtkSourceCompletionProvider_val,
+      GtkSourceCompletionContext_val, Val_bool)
+// FIXME : this should return a widget option?
+ML_2 (gtk_source_completion_provider_get_info_widget,
+      GtkSourceCompletionProvider_val, GtkSourceCompletionProposal_val, Val_GtkWidget)
+ML_3 (gtk_source_completion_provider_update_info, GtkSourceCompletionProvider_val,
+      GtkSourceCompletionProposal_val, GtkSourceCompletionInfo_val, Unit)
+CAMLprim value ml_gtk_source_completion_provider_get_start_iter (value provider, value context, value proposal) {
+  CAMLparam3(provider, context, proposal);
+  GtkTextIter res;
+  gtk_source_completion_provider_get_start_iter(GtkSourceCompletionProvider_val(provider),
+    GtkSourceCompletionContext_val(context), GtkSourceCompletionProposal_val(proposal), &res);
+  CAMLreturn(Val_GtkTextIter(&res));
+}
+ML_3 (gtk_source_completion_provider_activate_proposal, GtkSourceCompletionProvider_val,
+      GtkSourceCompletionProposal_val, GtkTextIter_val, Val_bool)
+ML_1 (gtk_source_completion_provider_get_interactive_delay, GtkSourceCompletionProvider_val,
+      Val_int)
+ML_1 (gtk_source_completion_provider_get_priority, GtkSourceCompletionProvider_val,
+      Val_int)
+
+// Completion proposal
+
+ML_4 (gtk_source_completion_item_new, String_val, String_val, 
+      GdkPixbuf_option_val, String_option_val, Val_GtkSourceCompletionProposal_new)
+ML_4 (gtk_source_completion_item_new_with_markup, String_val, String_val, 
+      GdkPixbuf_option_val, String_option_val, Val_GtkSourceCompletionProposal_new)
+ML_4 (gtk_source_completion_item_new_from_stock, String_val, String_val, 
+      String_val, String_val, Val_GtkSourceCompletionProposal_new)
+
+// Completion info
+
+ML_3 (gtk_source_completion_info_move_to_iter,
+      GtkSourceCompletionInfo_val, GtkTextView_val, GtkTextIter_val, Unit)
+ML_5 (gtk_source_completion_info_set_sizing,
+      GtkSourceCompletionInfo_val, Int_val, Int_val, Bool_val, Bool_val, Unit)
+ML_2 (gtk_source_completion_info_set_widget,
+      GtkSourceCompletionInfo_val, GtkWidget_val, Unit)
+ML_1 (gtk_source_completion_info_get_widget,
+      GtkSourceCompletionInfo_val, Val_GtkWidget)
+ML_1 (gtk_source_completion_info_process_resize,
+      GtkSourceCompletionInfo_val, Unit)
+
+// Completion context
+
+CAMLexport value Val_GtkSourceCompletionProposal_func(gpointer w) {
+  return Val_GtkSourceCompletionProvider(w);
+}
+
+CAMLexport gpointer GtkSourceCompletionProposal_val_func(value val) {
+  return GtkSourceCompletionProvider_val(val);
+}
+
+#define Val_Proposals(val) Val_GList(val, Val_GtkSourceCompletionProposal_func)
+#define Proposals_val(val) GList_val(val, GtkSourceCompletionProposal_val_func)
+
+CAMLexport value ml_gtk_source_completion_context_set_activation (value context, value flags) {
+  g_object_set (GtkSourceCompletionContext_val(context),
+                "activation", Flags_Source_completion_activation_flags_val(flags), NULL);
+  return Val_unit;
+}
+
+ML_1 (gtk_source_completion_context_get_activation,
+      GtkSourceCompletionContext_val, Val_Activation_flags)
+ML_4 (gtk_source_completion_context_add_proposals,
+      GtkSourceCompletionContext_val, GtkSourceCompletionProvider_val, Proposals_val, Bool_val, Unit)
+
+ML_1 (gtk_source_completion_block_interactive, GtkSourceCompletion_val, Unit)
+
+CAMLexport value Val_GtkSourceCompletionProvider_func(gpointer w) {
+  return Val_GtkSourceCompletionProvider(w);
+}
+
+CAMLexport gpointer GtkSourceCompletionProvider_val_func(value val) {
+  return GtkSourceCompletionProvider_val(val);
+}
+
+#define Val_Providers(val) Val_GList(val, Val_GtkSourceCompletionProvider_func)
+#define Providers_val(val) GList_val(val, GtkSourceCompletionProvider_val_func)
+
+CAMLexport value ml_gtk_source_completion_add_provider (value completion, value provider) {
+  return Val_bool (gtk_source_completion_add_provider
+    (GtkSourceCompletion_val(completion), GtkSourceCompletionProvider_val(provider), NULL));
+}
+
+CAMLexport value ml_gtk_source_completion_remove_provider (value completion, value provider) {
+  return Val_bool (gtk_source_completion_remove_provider
+    (GtkSourceCompletion_val(completion), GtkSourceCompletionProvider_val(provider), NULL));
+}
+
+ML_1 (gtk_source_completion_get_providers, GtkSourceCompletion_val, Val_Providers)
+ML_3 (gtk_source_completion_show, GtkSourceCompletion_val,
+      Providers_val, GtkSourceCompletionContext_val, Val_bool)
+ML_1 (gtk_source_completion_hide, GtkSourceCompletion_val, Unit)
+// gtk_source_completion_get_info_window
+ML_1 (gtk_source_completion_get_view, GtkSourceCompletion_val, Val_GtkSourceBuffer)
+ML_2 (gtk_source_completion_create_context, GtkSourceCompletion_val, GtkTextIter_val, Val_GtkSourceCompletionContext_new)
+ML_2 (gtk_source_completion_move_window, GtkSourceCompletion_val, GtkTextIter_val, Unit)
+ML_1 (gtk_source_completion_unblock_interactive, GtkSourceCompletion_val, Unit)
+
+// Style
 
 ML_1 (gtk_source_style_scheme_get_name, GtkSourceStyleScheme_val, Val_string)
 ML_1 (gtk_source_style_scheme_get_description, GtkSourceStyleScheme_val, Val_string)
@@ -291,6 +631,8 @@ CAMLprim value ml_gtk_source_view_get_mark_category_background
 
      CAMLreturn(result);
 }
+
+ML_1 (gtk_source_view_get_completion, GtkSourceView_val, Val_GtkSourceCompletion)
 
 Make_Flags_val(Source_draw_spaces_flags_val)
 #define Val_flags_Draw_spaces_flags(val) \
