@@ -33,4 +33,7 @@ type source_smart_home_end_type = "GTK_SOURCE_SMART_HOME_END_"
 
 (* Only NBSP is supported *)
 type source_draw_spaces_flags = "GTK_SOURCE_DRAW_SPACES_"
-  [ `SPACE | `TAB | `NEWLINE | `NBSP ]
+  [ `SPACE | `TAB | `NEWLINE | `NBSP | `LEADING | `TEXT | `TRAILING ]
+
+type source_completion_activation_flags = "GTK_SOURCE_COMPLETION_ACTIVATION_"
+  [ `INTERACTIVE | `USER_REQUESTED ]

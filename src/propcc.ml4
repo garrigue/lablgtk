@@ -67,8 +67,8 @@ let enums = [
     "ProgressBarOrientation"; "CellRendererMode"; "CellRendererAccelMode";
     "TreeViewColumnSizing"; "SortType"; "TextDirection"; "SizeGroupMode";
     (* in signals *)
-    "MovementStep"; "ScrollType"; "MenuDirectionType"; "DeleteType";
-    "StateType";
+    "MovementStep"; "ScrollStep"; "ScrollType"; "MenuDirectionType";
+    "DeleteType"; "StateType";
     (* for canvas *)
     "AnchorType"; "DirectionType"; 
   ];

@@ -163,7 +163,7 @@ and eq = parse
       { raise (Error(Attribute_expected, Lexing.lexeme_start lexbuf)) }
 
 and attribute_data = parse
-  | '"'
+  | '\"'
       { reset_string lexbuf; dq_string lexbuf }
   | '''
       { reset_string lexbuf;  q_string lexbuf }
@@ -192,7 +192,7 @@ and q_string = parse
 	q_string lexbuf }
 
 and dq_string = parse
-  | '"'
+  | '\"'
       { Buffer.contents buffer }
   | '&'
       { Buffer.add_string buffer (entity lexbuf); 
@@ -220,7 +220,7 @@ and skip_prolog_or_pi = parse
       { skip_prolog_or_pi lexbuf }
 
 and skip_doctype = parse
-  | '"' [^ '"' ]* '"'
+  | '\"' [^ '\"' ]* '\"'
       { skip_doctype lexbuf }
   | ''' [^ ''' ]* '''
       { skip_doctype lexbuf }
@@ -230,17 +230,17 @@ and skip_doctype = parse
       { () }
   | eof
       { raise_unterminated "DOCTYPE" }
-  | [^ ''' '"' '[' '>']+
+  | [^ ''' '\"' '[' '>']+
       { skip_doctype lexbuf }
 
 and skip_intsubset = parse
   | ']' | eof
       { () }
-  | '"' [^ '"' ]* '"'
+  | '\"' [^ '\"' ]* '\"'
       { skip_intsubset lexbuf }
   | ''' [^ ''' ]* '''
       { skip_intsubset lexbuf }
-  | [^ ''' '"' ']']+
+  | [^ ''' '\"' ']']+
       { skip_intsubset lexbuf }
 
 

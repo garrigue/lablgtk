@@ -22,6 +22,7 @@
 
 open Gaux
 open GtkSourceView2
+open SourceView2Enums
 open Gobject
 open Gtk
 open GtkBase
@@ -100,6 +101,197 @@ let source_style_scheme_manager ~default =
     else SourceStyleSchemeManager.new_ () in
   new source_style_scheme_manager mgr
 
+(** {2 GtkSourceCompletionInfo} *)
+
+class source_completion_info_signals
+  (obj' : GtkSourceView2_types.source_completion_info obj) =
+  object
+    inherit GContainer.container_signals_impl obj'
+    inherit source_completion_info_sigs
+  end
+
+class source_completion_info 
+  (obj' : ([> GtkSourceView2_types.source_completion_info ] as 'a) obj) =
+  object
+    inherit GWindow.window obj'
+    inherit source_completion_info_props
+    method as_source_completion_info =
+      (obj :> GtkSourceView2_types.source_completion_info obj)
+    method widget =
+      new GObj.widget (SourceCompletionInfo.get_widget obj)
+    method set_widget (w : GObj.widget) =
+      SourceCompletionInfo.set_widget obj w#as_widget
+  end
+
+(** {2 GtkSourceCompletionProposal} *)
+
+class source_completion_proposal_signals
+  (obj' : GtkSourceView2_types.source_completion_proposal obj) =
+  object
+    inherit ['a] gobject_signals (obj' : [> GtkSourceView2_types.source_completion_proposal ] obj)
+    inherit source_completion_proposal_sigs
+  end
+
+class source_completion_proposal 
+  (obj : GtkSourceView2_types.source_completion_proposal obj) =
+  object
+    val obj = obj
+    method connect = new source_completion_proposal_signals obj
+    method as_source_completion_proposal = obj
+    inherit source_completion_proposal_props
+  end
+
+class source_completion_item
+  (obj : GtkSourceView2_types.source_completion_proposal obj) =
+  object
+    inherit source_completion_proposal obj
+    inherit source_completion_item_props
+  end
+
+let source_completion_item ?(label = "") ?(text = "") ?icon ?info () =
+  new source_completion_item (SourceCompletionItem.new_ label text icon info)
+
+let source_completion_item_with_markup ?(label = "") ?(text = "") ?icon ?info () =
+  new source_completion_item (SourceCompletionItem.new_with_markup label text icon info)
+
+let source_completion_item_from_stock ?(label = "") ?(text = "") ~stock ~info () =
+  let stock = GtkStock.Item.lookup stock in
+  let id = stock.GtkStock.stock_id in
+  new source_completion_item (SourceCompletionItem.new_from_stock label text id info)
+
+(** {2 GtkSourceCompletionProvider} *)
+
+class source_completion_provider
+  (obj' : GtkSourceView2_types.source_completion_provider obj) =
+  object
+    val obj = obj'
+    val provider = SourceCompletionProvider.proj obj'
+    method as_source_completion_provider = obj
+    method icon = SourceCompletionProvider.get_icon obj
+    method name = SourceCompletionProvider.get_name obj
+    method populate (context : source_completion_context) =
+      SourceCompletionProvider.populate obj context#as_source_completion_context
+    method activation =
+      SourceCompletionProvider.get_activation obj
+    method matched (context : source_completion_context) =
+      SourceCompletionProvider.match_ obj context#as_source_completion_context
+    method info_widget (proposal : source_completion_proposal) =
+      let widget = SourceCompletionProvider.get_info_widget obj proposal#as_source_completion_proposal in
+      match widget with
+      | None -> None
+      | Some widget -> Some (new GObj.widget widget)
+    method update_info (proposal : source_completion_proposal) (info : source_completion_info) =
+      SourceCompletionProvider.update_info obj proposal#as_source_completion_proposal info#as_source_completion_info
+    method start_iter (context : source_completion_context) (proposal : source_completion_proposal) =
+      let iter = 
+        SourceCompletionProvider.get_start_iter obj
+          context#as_source_completion_context proposal#as_source_completion_proposal 
+      in
+      new GText.iter iter
+
+    method activate_proposal (proposal : source_completion_proposal) (iter : GText.iter) =
+      SourceCompletionProvider.activate_proposal obj proposal#as_source_completion_proposal iter#as_iter
+
+    method interactive_delay =
+      SourceCompletionProvider.get_interactive_delay obj 
+
+    method priority =
+      SourceCompletionProvider.get_priority obj 
+
+  end
+
+(** {2 GtkSourceCompletionContext} *)
+
+and source_completion_context_signals
+  (obj' : GtkSourceView2_types.source_completion_context obj) =
+  object
+    inherit ['a] gobject_signals (obj' : [> GtkSourceView2_types.source_completion_context ] obj)
+    inherit source_completion_context_sigs
+  end
+
+and source_completion_context
+  (obj' : GtkSourceView2_types.source_completion_context obj) =
+  object
+    val obj = obj'
+    val iter_prop = {
+      Gobject.name = "iter";
+      conv = Gobject.Data.unsafe_pointer
+    }
+    inherit source_completion_context_props
+    method as_source_completion_context = obj
+    method activation = SourceCompletionContext.get_activation obj
+    method add_proposals
+      (provider : source_completion_provider) (proposals : source_completion_proposal list) b =
+      let proposals = List.map (fun obj -> obj#as_source_completion_proposal) proposals in
+      SourceCompletionContext.add_proposals obj
+      provider#as_source_completion_provider proposals b
+    method connect = new source_completion_context_signals obj'
+    method iter =
+      new GText.iter (Gobject.get iter_prop obj)
+
+    method set_iter (iter : GText.iter) =
+      Gobject.set iter_prop obj (iter#as_iter)
+  end
+
+type provider = {
+  mutable provider_name : string;
+  mutable provider_icon : GdkPixbuf.pixbuf option;
+  provider_populate : GtkSourceView2_types.source_completion_context obj -> unit;
+  provider_match : GtkSourceView2_types.source_completion_context obj -> bool;
+  mutable provider_activation : source_completion_activation_flags list;
+  provider_info_widget : GtkSourceView2_types.source_completion_proposal obj -> Gtk.widget obj option;
+  provider_update_info : GtkSourceView2_types.source_completion_proposal obj -> GtkSourceView2_types.source_completion_info obj -> unit;
+  provider_start_iter : GtkSourceView2_types.source_completion_context obj -> GtkSourceView2_types.source_completion_proposal obj -> text_iter -> bool;
+  provider_activate_proposal : GtkSourceView2_types.source_completion_proposal obj -> text_iter -> bool;
+  mutable provider_interactive_delay : int;
+  mutable provider_priority : int;
+}
+
+let source_completion_provider p =
+  let obj = SourceCompletionProvider.new_ (Obj.magic p) in
+  new source_completion_provider obj
+
+(** {2 GtkSourceCompletion} *)
+
+class source_completion_signals obj' =
+object (self)
+  inherit ['a] gobject_signals (obj' : [> GtkSourceView2_types.source_completion] obj)
+  inherit source_completion_sigs
+  method populate_context ~callback =
+    let callback obj = callback (new source_completion_context obj) in
+    self#connect SourceCompletion.S.populate_context ~callback
+end
+
+class source_completion
+  (obj : GtkSourceView2_types.source_completion obj) =
+  object
+    val obj = obj
+    inherit source_completion_props as super
+    method as_source_completion = obj
+    method connect = new source_completion_signals obj
+
+    method create_context (iter : GText.iter) =
+      let obj = SourceCompletion.create_context obj (iter#as_iter) in
+      new source_completion_context obj
+
+    method move_window (iter : GText.iter) =
+      SourceCompletion.move_window obj (iter#as_iter)
+
+    method show (prs : source_completion_provider list) (ctx : source_completion_context) =
+      let prs = List.map (fun pr -> pr#as_source_completion_provider) prs in
+      SourceCompletion.show obj prs ctx#as_source_completion_context
+
+    method providers =
+      let prs = SourceCompletion.get_providers obj in
+      List.map (fun pr -> new source_completion_provider pr) prs
+
+    method add_provider (pr : source_completion_provider) =
+      SourceCompletion.add_provider obj (pr#as_source_completion_provider)
+
+    method remove_provider (pr : source_completion_provider) =
+      SourceCompletion.remove_provider obj (pr#as_source_completion_provider)
+
+  end
 
 (** {2 GtkSourceLanguage} *)
 
@@ -169,6 +361,37 @@ end
 let source_mark ?category () =
   new source_mark (SourceMark.create ?category [])
 
+(** {2 GtkSourceUndoManager} *)
+
+class source_undo_manager_signals obj' =
+object (self)
+  inherit ['a] gobject_signals (obj' : [> GtkSourceView2_types.source_undo_manager] obj)
+  inherit source_undo_manager_sigs
+end
+
+class source_undo_manager
+  (obj : GtkSourceView2_types.source_undo_manager obj) =
+  object
+    val obj = obj
+    inherit source_undo_manager_props
+    method as_source_undo_manager = obj
+    method connect = new source_undo_manager_signals obj
+  end
+
+type custom_undo_manager = {
+  can_undo : unit -> bool;
+  can_redo : unit -> bool;
+  undo : unit -> unit;
+  redo : unit -> unit;
+  begin_not_undoable_action : unit -> unit;
+  end_not_undoable_action : unit -> unit;
+  can_undo_changed : unit -> unit;
+  can_redo_changed : unit -> unit;
+}
+
+let source_undo_manager manager =
+  new source_undo_manager (SourceUndoManager.new_ (Obj.magic manager))
+
 (** {2 GtkSourceBuffer} *)
 
 class source_buffer_signals obj' =
@@ -231,11 +454,20 @@ object (self)
 
   method ensure_highlight ~(start:GText.iter) ~(stop:GText.iter) =
     SourceBuffer.ensure_highlight obj start#as_iter stop#as_iter
+
+  method set_undo_manager (manager : source_undo_manager) =
+    let manager = manager#as_source_undo_manager in
+    Gobject.set SourceBuffer.P.undo_manager obj manager
+
+  method undo_manager =
+    let manager = Gobject.get SourceBuffer.P.undo_manager obj in
+    new source_undo_manager manager
+
 end
 
 let source_buffer ?(language:source_language option)
   ?(style_scheme:source_style_scheme option)
-  ?(tag_table : GText.tag_table option) ?text =
+  ?(tag_table : GText.tag_table option) ?text ?(undo_manager : source_undo_manager option)  =
   let language =
     match language with
     | None -> None
@@ -246,7 +478,12 @@ let source_buffer ?(language:source_language option)
     | None -> None
     | Some schm -> Some (schm#as_source_style_scheme)
   in
-  SourceBuffer.make_params [] ?language ?style_scheme
+  let undo_manager =
+    match undo_manager with
+    | None -> None
+    | Some manager -> Some (manager#as_source_undo_manager)
+  in
+  SourceBuffer.make_params [] ?language ?style_scheme ?undo_manager
     ~cont:(fun pl () ->
       let buf =
 	match tag_table with
@@ -289,6 +526,9 @@ object (self)
 
   method draw_spaces = SourceView.get_draw_spaces obj
   method set_draw_spaces flags = SourceView.set_draw_spaces obj flags
+
+  method completion = new source_completion (SourceView.get_completion obj)
+
 end
 
 let source_view ?source_buffer ?draw_spaces =
