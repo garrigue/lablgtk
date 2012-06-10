@@ -63,6 +63,52 @@ let gtkdoc = function
 open Odoc_info.Value
 open Odoc_info.Module
 
+IFDEF OCAML_400
+THEN
+module Generator (G : Odoc_html.Html_generator) =
+struct
+class html =
+  object (self)
+    inherit G.html as super
+
+    method html_of_value b v =
+      v.val_code <- None ;
+      super#html_of_value b v
+
+    method html_of_attribute b a =
+      a.att_value.val_code <- None ;
+      super#html_of_attribute b a
+
+    method html_of_method b m =
+      m.met_value.val_code <- None ;
+      super#html_of_method b m 
+
+    method generate_for_module pre post modu =
+      modu.m_code <- None ;
+      super#generate_for_module pre post modu
+
+    method prepare_header module_list =
+      header <-
+        make_prepare_header style self#index module_list
+
+    method html_of_class b ?complete ?with_link c =
+      super#html_of_class b ?complete ?with_link c ;
+      Buffer.add_string b "<br>"
+
+    initializer
+      tag_functions <- ("gtkdoc", gtkdoc) :: tag_functions 
+  end
+end
+
+let _ = 
+  Odoc_args.add_option
+    ("-base-uri", Arg.String ((:=) base_uri), 
+     "base URI of the GTK/GNOME documentation") ;
+  Odoc_args.extend_html_generator 
+    (module Generator : Odoc_gen.Html_functor)
+
+ELSE
+
 IFDEF OCAML_308 
 THEN
 class gtkdoc =
@@ -134,3 +180,5 @@ let _ =
      "base URI of the GTK/GNOME documentation") ;
   Odoc_info.Args.set_doc_generator 
     (Some (new gtkdoc :> Odoc_info.Args.doc_generator))
+
+END
