@@ -2608,7 +2608,9 @@ if test "$CAMLP4O" = no ; then
 	as_fn_error $? "Cannot find camlp4o." "$LINENO" 5
 fi
 
-if expr "$OCAMLVERSION" '>=' '3.08' > /dev/null ; then
+if expr "$OCAMLVERSION" '>=' '4' > /dev/null ; then
+   ODOC_DEF="-D OCAML_400"
+elif expr "$OCAMLVERSION" '>=' '3.08' > /dev/null ; then
    ODOC_DEF="-D OCAML_308"
 fi
 
