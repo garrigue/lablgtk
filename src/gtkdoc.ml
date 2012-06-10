@@ -20,8 +20,8 @@
 (*                                                                        *)
 (**************************************************************************)
 
-let base_uri =
-  ref "http://developer.gnome.org/doc/API/2.0"
+let default_base_uri = "http://developer.gnome.org"
+let base_uri = ref default_base_uri 
 let _ = 
   Odoc_args.add_option
     ("-base-uri", Arg.String ((:=) base_uri), 
@@ -58,6 +58,10 @@ let gtkdoc = function
   | Odoc_info.Raw name :: _ ->
       begin match Str.split (Str.regexp "[ \t]+") name with
       | dir :: widget :: _ ->
+          let dir =
+            if !base_uri = default_base_uri
+            then dir ^ "/stable"
+            else dir in
 	  Printf.sprintf
 	    "<small>GTK documentation:&nbsp;\
                <a href=\"%s/%s/%s.html\">%s</a>\
