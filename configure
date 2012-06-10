@@ -2610,8 +2610,6 @@ fi
 
 if expr "$OCAMLVERSION" '>=' '4' > /dev/null ; then
    ODOC_DEF="-D OCAML_400"
-elif expr "$OCAMLVERSION" '>=' '3.08' > /dev/null ; then
-   ODOC_DEF="-D OCAML_308"
 fi
 
 
