@@ -404,13 +404,27 @@ module Translations = struct
       p::(parents pp)
     else 
       [p]
-    
-   let rec format_parents l = match l with
-  | [] -> ""
-  | [t] -> let s = (String.lowercase t) in
-    if List.mem s type_except then "" else
-        "`" ^ if List.mem_assoc s type_assoc then List.assoc s type_assoc else s
-  | t::q -> "`" ^ (String.lowercase t) ^ " | " ^ (format_parents q)
+   
+   let rename_variant str = 
+    let str = 
+      if List.mem_assoc str type_assoc then 
+        List.assoc str type_assoc 
+      else 
+        str
+    in
+    if String.contains str '.' then begin
+      let buf = Buffer.create (String.length str) in
+      String.iter (fun s -> if s='.' then Buffer.add_char buf '_' else Buffer.add_char buf s) str;
+      Buffer.contents buf
+    end else 
+      str
+        
+
+  let rec format_parents l = 
+    match List.filter (fun t -> not (List.mem t type_except)) (List.map String.lowercase l) with
+      | [] -> ""
+      | [t] -> "`" ^ (rename_variant t)
+      | t::q -> "`" ^ (rename_variant t) ^ " | " ^ (format_parents q)
     
 
   let to_type_macro s = 
@@ -464,7 +478,7 @@ module Translations = struct
         (val_of,of_val,
          fun variance ->
      if c_parent= "" then
-       Format.sprintf "[%c`%s] obj" variance (String.lowercase c_typ)
+       Format.sprintf "[%c`%s] obj" variance (rename_variant (String.lowercase c_typ))
      else
        Format.sprintf "[%c%s] obj" variance (format_parents (parents c_typ)))
 end    
@@ -475,6 +489,10 @@ let register_reposirory n =
 let get_repositories () = List.rev !repositories
 
 module Emit = struct
+
+  let emit_property p =
+    p
+    
 
   let emit_parameter rank p = match p.p_typ with
   | NoType -> fail_emit "NoType(p)"
@@ -559,6 +577,8 @@ module Emit = struct
         s;
       None
 
+  let emit_constructor k m = emit_method k m
+
   let emit_function p = 
     try Some (emit_prototype p)
     with Cannot_emit s -> Format.printf "Cannot emit function %s:'%s'@." 
@@ -566,8 +586,10 @@ module Emit = struct
 
   let emit_klass k = 
     let methods = List.map (emit_method k) k.c_methods in
+    (*let constructor = List.map (emit_constructor k) k.c_constructors in*)
+    let properties = List.map emit_property k.c_properties in
     let functions = List.map  emit_function k.c_functions in
-    k.c_name,methods,functions
+    k.c_name,properties,methods,functions
 
   module Print = struct
   open Pretty
@@ -610,18 +632,80 @@ module Emit = struct
   let may_c_stub fmt s = match s with 
     | Some s -> c_stub fmt s.stub_c 
     | None -> ()
+    
+    
+    
+    
+    
+  let caml_keywords = ["type","kind"; "class","classe"; "list", "liste"]
+  let caml_modules = ["List", "Liste"]
+  let is_not_uppercase = function
+  | 'A' .. 'Z' -> false
+  | _ -> true
+let camlize id =
+  let b = Buffer.create (String.length id + 4) in
+  for i = 0 to String.length id - 1 do
+    match id.[i] with
+    | 'A' .. 'Z' as c ->
+	if i > 0 && 
+	  (is_not_uppercase id.[i-1] || 
+	  (i < String.length id - 1 && is_not_uppercase id.[i+1]))
+	then Buffer.add_char b '_' ;
+	Buffer.add_char b (Char.lowercase c)
+    | '-' ->
+	Buffer.add_char b '_'
+    | c ->
+	Buffer.add_char b c
+  done;
+  let s = Buffer.contents b in
+  try List.assoc s caml_keywords with Not_found -> s
+  let conversions = Hashtbl.create 17
+  let () =
+  List.iter (fun t -> Hashtbl.add conversions ("g"^t) t)
+    [ "boolean"; "char"; "uchar"; "int"; "uint"; "long"; "ulong";
+      "int32"; "uint32"; "int64"; "uint64"; "float"; "double" ];
+  List.iter (fun (gtype,conv) -> Hashtbl.add conversions gtype conv)
+    [ "gchararray", "string";
+      "gchararray_opt", "string_option";
+      "string", "string"; "utf8","string";"bool", "boolean"; "int", "int";
+      "int32", "int32"; "float", "float";
+    ]
+    
+  let convert_type c_typ=
+  if Hashtbl.mem conversions c_typ then
+    Hashtbl.find conversions c_typ
+  else begin
+    print_string ("Type non connu "^ c_typ ^ "\n");
+    c_typ
+  end
+  let print_properties fmt k_name p = match p.pr_typ with
+     | Typ(c_typ) when Hashtbl.mem conversions c_typ.t_name ->
+     Format.fprintf fmt "let %s : ([>`%s],_) property = {name=\"%s\"; conv=%s}@ "
+      (camlize p.pr_name) (String.lowercase k_name) p.pr_name (convert_type c_typ.t_name)
+     | Typ(c_typ) -> print_string ("Type non connu "^ c_typ.t_name ^ "\n");
+     | _ -> ()
 
-  let klass ~ml ~c (k_name,methods,functions) = 
+  let rename_klass str=
+    if str.[0]='_' then
+      str.[0] <- 'U';
+    str
+
+  let klass ~ml ~c (k_name,properties,methods,functions) = 
     Format.fprintf ml "@[<hv 2>module %s = struct@\n"
-      k_name;
+      (rename_klass k_name);
+    Format.fprintf ml "@[<hv 2>module P = struct@\n";
+    List.iter (print_properties ml k_name) properties;
+    Format.fprintf ml "@]end@\n";
     List.iter (may_ml_stub ml) methods;
+    (*List.iter (may_ml_stub ml) constructors;*)
     List.iter (may_ml_stub ml) functions;
     Format.fprintf ml "@]end@\n";
 
-    Format.fprintf c "@[/* Module %s */@\n" k_name;
+    Format.fprintf c "@[/* Module %s */@\n" (rename_klass k_name);
     List.iter (may_c_stub c) methods;
+    (*List.iter (may_c_stub c) constructors;*)
     List.iter (may_c_stub c) functions;
-    Format.fprintf c "@]/* end of %s */@\n" k_name
+    Format.fprintf c "@]/* end of %s */@\n" (rename_klass k_name)
       
   let functions ~ml ~c f = 
     Format.fprintf ml "@[(* Global functions *)@\n";
@@ -931,7 +1015,8 @@ let parse_function set attrs children =
          | "doc" when not !debug -> ()
          | other -> Format.printf "Ignoring fct child: %s@." other) 
     children;
-  set fct
+  if fct.deprecated = "" then
+    set fct
 
 let parse_constructor set attrs children = 
   parse_function set attrs children
