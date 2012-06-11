@@ -249,7 +249,7 @@ class notebook_signals : [> Gtk.notebook] obj ->
     method page_reordered : callback:(GObj.widget -> int -> unit) -> GtkSignal.id
     method reorder_tab : callback:(GtkEnums.direction_type -> bool -> unit) -> GtkSignal.id
     method select_page : callback:(bool -> unit) -> GtkSignal.id
-    method switch_page : callback:(Gobj.widget -> int -> unit) -> GtkSignal.id
+    method switch_page : callback:(GObj.widget -> int -> unit) -> GtkSignal.id
   end
 
 (** A tabbed notebook container
