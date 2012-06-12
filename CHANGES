@@ -1,4 +1,17 @@
 $Id$
+2012.06.12 [Adrien]
+  * add several #as_foo methods: entry, notebook, range
+  * new signals for notebook: select_page, reorder_tab,
+    change_current_page, move_focus_out, page_{added,removed,reordered}
+  * add gtk_container_child_{set,get}_property
+  * add gtk_notebook_{set,get}_tab_reorderable
+  * add gtk_signal_new which can be used to create custom keyboard shortcuts
+  * add g_signal_list and g_signal_query
+  * add functions to connect to notify::foo signals which indicate when an
+    object property changes
+  * add foo#connect#notify_bar methods to add callbacks on changes of
+    the "bar" property of the object "foo".
+
 2012.04.11 [Maxence]
   * use findlib to install (see README for the list of installed packages)
 
