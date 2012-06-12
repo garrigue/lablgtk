@@ -61,6 +61,10 @@ class source_completion_info_signals :
   object ('a)
     inherit GContainer.container_signals
     method before_show : callback:(unit -> unit) -> GtkSignal.id
+    method notify_max_height : callback:(int -> unit) -> GtkSignal.id
+    method notify_max_width : callback:(int -> unit) -> GtkSignal.id
+    method notify_shrink_height : callback:(bool -> unit) -> GtkSignal.id
+    method notify_shrink_width : callback:(bool -> unit) -> GtkSignal.id
   end
 
 class source_completion_info :
@@ -92,6 +96,11 @@ class source_completion_proposal_signals :
   object ('a)
     method after : 'a
     method changed : callback:(unit -> unit) -> GtkSignal.id
+    method notify_icon : callback:(GdkPixbuf.pixbuf -> unit) -> GtkSignal.id
+    method notify_info : callback:(string -> unit) -> GtkSignal.id
+    method notify_label : callback:(string -> unit) -> GtkSignal.id
+    method notify_markup : callback:(string -> unit) -> GtkSignal.id
+    method notify_text : callback:(string -> unit) -> GtkSignal.id
   end
 
 class source_completion_proposal :
@@ -198,20 +207,27 @@ val source_completion_provider : provider -> source_completion_provider
 
 class source_completion_signals :
   GtkSourceView2_types.source_completion obj ->
-object ('a)
-  method after : 'a
-  method activate_proposal :
-    callback:(unit -> unit) -> GtkSignal.id
-  method hide : callback:(unit -> unit) -> GtkSignal.id
-  method move_cursor :
-    callback:(GtkEnums.scroll_step -> int -> unit) -> GtkSignal.id
-  method move_page :
-    callback:(GtkEnums.scroll_step -> int -> unit) -> GtkSignal.id
-  method populate_context :
-    callback:(source_completion_context -> unit) ->
-    GtkSignal.id
-  method show : callback:(unit -> unit) -> GtkSignal.id
-end
+  object ('a)
+    method after : 'a
+    method activate_proposal : callback:(unit -> unit) -> GtkSignal.id
+    method hide : callback:(unit -> unit) -> GtkSignal.id
+    method move_cursor :
+      callback:(GtkEnums.scroll_step -> int -> unit) -> GtkSignal.id
+    method move_page :
+      callback:(GtkEnums.scroll_step -> int -> unit) -> GtkSignal.id
+    method populate_context :
+      callback:(source_completion_context -> unit) -> GtkSignal.id
+    method show : callback:(unit -> unit) -> GtkSignal.id
+    method notify_accelerators : callback:(int -> unit) -> GtkSignal.id
+    method notify_auto_complete_delay : callback:(int -> unit) -> GtkSignal.id
+    method notify_proposal_page_size : callback:(int -> unit) -> GtkSignal.id
+    method notify_provider_page_size : callback:(int -> unit) -> GtkSignal.id
+    method notify_remember_info_visibility :
+      callback:(bool -> unit) -> GtkSignal.id
+    method notify_select_on_show : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_headers : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_icons : callback:(bool -> unit) -> GtkSignal.id
+  end
 
 class source_completion :
   GtkSourceView2_types.source_completion obj ->
