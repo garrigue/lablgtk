@@ -338,13 +338,14 @@ ocamllib-install:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
 	cp $(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) "$(INSTALLDIR)"
 	cp -p *.mli "$(INSTALLDIR)"
-	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(EXTRA_OBJS:.cmo=.ml) "$(INSTALLDIR)"
-	cp $(EXTRA_MLLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) "$(INSTALLDIR)"
+	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) \
+	      $(EXTRA_OBJS:.cmo=.ml) "$(INSTALLDIR)"
+	cp $(EXTRA_MLLIBS) $(MLLIBS) $(INITOBJS) "$(INSTALLDIR)"
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) $(CLIBS)
 	cp varcc$(XE) propcc$(XE) "$(INSTALLDIR)"
 	if test $(THREADS_LIB) != no; \
-	   then cp  $(ALLTHOBJS:.cmo=.cmi) "$(INSTALLDIR)"; \
+	   then cp $(ALLTHOBJS) $(ALLTHOBJS:.cmo=.cmi) "$(INSTALLDIR)"; \
 	fi
 	if test $(THREADS_LIB) = vm || test $(HAS_DLL_SUPPORT) != yes; \
 	   then cp lablgtktop$(XE) "$(INSTALLDIR)"; \
@@ -382,10 +383,10 @@ install: build.ml
     $(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) \
     *.mli \
     $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(EXTRA_OBJS:.cmo=.ml) \
-    $(EXTRA_MLLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) \
+    $(EXTRA_MLLIBS) $(MLLIBS) $(INITOBJS) \
     varcc$(XE) propcc$(XE) \
     `if test $(THREADS_LIB) != no; \
-      then echo  $(ALLTHOBJS:.cmo=.cmi) ; \
+      then echo $(ALLTHOBJS) $(ALLTHOBJS:.cmo=.cmi) ; \
     fi` \
     `if test $(THREADS_LIB) = vm || test $(HAS_DLL_SUPPORT) != yes; \
       then echo lablgtktop$(XE) ; \
