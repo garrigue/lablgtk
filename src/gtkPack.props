@@ -71,7 +71,7 @@ conversions {
   Pointer
 }
 
-class Notebook set wrap : Container {
+class Notebook set wrap wrapsig : Container {
   "enable-popup"         gboolean             : Read / Write
   "homogeneous"(homogeneous_tabs) gboolean    : Read / Write
   "page"                 gint                 : Read / Write / NoSet / NoWrap
@@ -97,7 +97,7 @@ class Notebook set wrap : Container {
   method get_menu_label : "[>`widget] obj -> widget obj"
   method set_menu_label : "[>`widget] obj -> [>`widget] obj -> unit"
   method reorder_child : "[>`widget] obj -> int -> unit"
-  signal switch_page : Pointer gint
+  signal switch_page : Pointer gint      / NoWrap
   (* omit others *)
 }
 

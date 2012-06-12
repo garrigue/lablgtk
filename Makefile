@@ -1,7 +1,7 @@
 # Toplevel makefile for LablGtk2
 
-all opt doc install uninstall byte world: config.make
-all opt doc install uninstall byte clean depend world:
+all opt doc install uninstall byte world ocamllib-install: config.make
+all opt doc install uninstall byte clean depend world ocamllib-install:
 	$(MAKE) -C src $@
 
 arch-clean:
