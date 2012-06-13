@@ -97,8 +97,17 @@ class Notebook set wrap wrapsig : Container {
   method get_menu_label : "[>`widget] obj -> widget obj"
   method set_menu_label : "[>`widget] obj -> [>`widget] obj -> unit"
   method reorder_child : "[>`widget] obj -> int -> unit"
+  method set_tab_reorderable : "[>`widget] obj -> bool -> unit"
+  method get_tab_reorderable : "[>`widget] obj -> bool"
   signal switch_page : Pointer gint      / NoWrap
-  (* omit others *)
+  signal select_page : gboolean
+  signal reorder_tab : GtkDirectionType gboolean
+  signal change_current_page : gint
+  signal move_focus_out : GtkDirectionType
+  signal page_added : GtkWidget guint (* GTK+ 2.10 *)
+  signal page_removed : GtkWidget guint (* GTK+ 2.10 *)
+  signal page_reordered : GtkWidget guint (* GTK+ 2.10 *)
+  signal create_window : page:GtkWidget x:gint y:gint (* GTK+ 2.12 *)
 }
 
 class Table set wrap :Container {

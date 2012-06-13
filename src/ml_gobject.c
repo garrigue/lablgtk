@@ -576,6 +576,64 @@ CAMLprim value ml_g_object_set_property_dyn (value vobj, value prop, value arg)
 
 /* gsignal.h */
 
+#define Copy_GSignalQuery(ml_query, ml_params, query) \
+  ml_query = alloc_small(6, 0); \
+  ml_params = caml_alloc(query->n_params, 0); \
+  Store_field(ml_query, 0, Val_int(query->signal_id)); \
+  Store_field(ml_query, 1, caml_copy_string (query->signal_name)); \
+  Store_field(ml_query, 2, caml_copy_string (g_type_name(query->itype))); \
+  Store_field(ml_query, 3, Val_int(query->signal_flags)); \
+  Store_field(ml_query, 4, caml_copy_string (g_type_name(query->return_type)));\
+  for (i = 0; i < query->n_params; i++) \
+    Store_field(ml_params, i, Val_string(g_type_name(query->param_types[i]))); \
+  Store_field(ml_query, 5, ml_params)
+
+Make_Flags_val (Signal_type_val)
+
+CAMLprim value ml_g_signal_new_me(value o_name, value o_classe, value o_signal_flags) {
+  const gchar* name = String_val(o_name);
+  GSignalFlags signal_flags = Flags_Signal_type_val(o_signal_flags);
+  GType itype = GType_val(o_classe);
+
+  guint class_offset = 0;
+  GSignalAccumulator accumulator = NULL;
+  gpointer accu_data = NULL;
+  GSignalCMarshaller marshaller = g_cclosure_marshal_VOID__POINTER;
+  GType return_type = G_TYPE_NONE;
+  guint nparams = 0;
+  g_signal_new (name, itype, signal_flags, class_offset, accumulator, accu_data,
+      marshaller, return_type, nparams);
+  return (Val_int(0));
+}
+
+CAMLprim value ml_g_signal_query(value ml_i) {
+  CAMLparam1(ml_i);
+  CAMLlocal2(ml_query, ml_query_params);
+  GSignalQuery* query;
+  guint i = Int_val(ml_i);
+
+  query = malloc(sizeof(GSignalQuery));
+  g_signal_query(i, query);
+  if (query->signal_id == 0) invalid_argument("g_signal_query");
+
+  Copy_GSignalQuery(ml_query, ml_query_params, query);
+  free(query);
+
+  CAMLreturn(ml_query);
+}
+
+CAMLprim value ml_g_signal_list_ids(value type)
+{
+    CAMLparam1(type);
+    CAMLlocal1(ret);
+    guint n_ids;
+    guint *ids;
+    ids = g_signal_list_ids(GType_val(type), &n_ids);
+    Copy_array(ret, n_ids, ids, Val_int);
+    free(ids);
+    CAMLreturn(ret);
+}
+
 ML_4 (g_signal_connect_closure, GObject_val, String_val, GClosure_val,
       Bool_val, Val_long)
 ML_2 (g_signal_handler_block, GObject_val, Long_val, Unit)

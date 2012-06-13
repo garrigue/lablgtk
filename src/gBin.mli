@@ -108,6 +108,9 @@ class handle_box_signals : 'a obj ->
     val obj : 'a obj
     method child_attached : callback:(widget -> unit) -> GtkSignal.id
     method child_detached : callback:(widget -> unit) -> GtkSignal.id
+    method notify_handle_position : callback:(GtkEnums.position_type -> unit) -> GtkSignal.id
+    method notify_shadow_type : callback:(GtkEnums.shadow_type -> unit) -> GtkSignal.id
+    method notify_snap_edge : callback:(GtkEnums.position_type -> unit) -> GtkSignal.id
   end
 
 (** A widget for detachable window portions
@@ -283,6 +286,11 @@ class expander_signals : ([> Gtk.expander] as 'a) Gtk.obj ->
     inherit GContainer.container_signals
     val obj : 'a obj
     method activate : callback:(unit -> unit) -> GtkSignal.id
+    method notify_expanded : callback:(bool -> unit) -> GtkSignal.id
+    method notify_label : callback:(string -> unit) -> GtkSignal.id
+    method notify_label_widget : callback:(GObj.widget -> unit) -> GtkSignal.id
+    method notify_spacing : callback:(int -> unit) -> GtkSignal.id
+    method notify_use_underline : callback:(bool -> unit) -> GtkSignal.id
   end
 
 (** @since GTK 2.4

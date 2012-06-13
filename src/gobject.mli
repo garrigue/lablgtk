@@ -71,6 +71,9 @@ type ('a, 'b) property = { name : string; conv : 'b data_conv }
 type fundamental_type =
   [ `INVALID | `NONE | `INTERFACE | `PARAM | base_data ]
 
+type signal_type =
+  [ `RUN_FIRST | `RUN_LAST | `NO_RECURSE | `ACTION | `NO_HOOKS ]
+
 exception Cannot_cast of string * string
 
 val get_type : 'a obj -> g_type

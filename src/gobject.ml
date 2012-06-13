@@ -76,6 +76,9 @@ type 'a data_conv =
 type fundamental_type =
   [ `INVALID | `NONE | `INTERFACE | `PARAM | base_data ]
 
+type signal_type =
+  [ `RUN_FIRST | `RUN_LAST | `NO_RECURSE | `ACTION | `NO_HOOKS ]
+
 external do_unref : unit -> unit = "ml_g_object_do_unref"
 let unref_alarm = Gc.create_alarm do_unref
 
@@ -393,7 +396,7 @@ module Property = struct
     match x with Some _ -> param prop x :: l | None -> l
 end
 
-let set o p x = Property.set p o x
-let get o p = Property.get p o
+let set p o x = Property.set o p x
+let get p o = Property.get o p
 let set_params obj params =
   List.iter params ~f:(fun (prop,arg) -> Property.set_dyn obj prop arg)

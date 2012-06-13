@@ -61,6 +61,10 @@ class source_completion_info_signals :
   object ('a)
     inherit GContainer.container_signals
     method before_show : callback:(unit -> unit) -> GtkSignal.id
+    method notify_max_height : callback:(int -> unit) -> GtkSignal.id
+    method notify_max_width : callback:(int -> unit) -> GtkSignal.id
+    method notify_shrink_height : callback:(bool -> unit) -> GtkSignal.id
+    method notify_shrink_width : callback:(bool -> unit) -> GtkSignal.id
   end
 
 class source_completion_info :
@@ -92,6 +96,11 @@ class source_completion_proposal_signals :
   object ('a)
     method after : 'a
     method changed : callback:(unit -> unit) -> GtkSignal.id
+    method notify_icon : callback:(GdkPixbuf.pixbuf -> unit) -> GtkSignal.id
+    method notify_info : callback:(string -> unit) -> GtkSignal.id
+    method notify_label : callback:(string -> unit) -> GtkSignal.id
+    method notify_markup : callback:(string -> unit) -> GtkSignal.id
+    method notify_text : callback:(string -> unit) -> GtkSignal.id
   end
 
 class source_completion_proposal :
@@ -198,20 +207,27 @@ val source_completion_provider : provider -> source_completion_provider
 
 class source_completion_signals :
   GtkSourceView2_types.source_completion obj ->
-object ('a)
-  method after : 'a
-  method activate_proposal :
-    callback:(unit -> unit) -> GtkSignal.id
-  method hide : callback:(unit -> unit) -> GtkSignal.id
-  method move_cursor :
-    callback:(GtkEnums.scroll_step -> int -> unit) -> GtkSignal.id
-  method move_page :
-    callback:(GtkEnums.scroll_step -> int -> unit) -> GtkSignal.id
-  method populate_context :
-    callback:(source_completion_context -> unit) ->
-    GtkSignal.id
-  method show : callback:(unit -> unit) -> GtkSignal.id
-end
+  object ('a)
+    method after : 'a
+    method activate_proposal : callback:(unit -> unit) -> GtkSignal.id
+    method hide : callback:(unit -> unit) -> GtkSignal.id
+    method move_cursor :
+      callback:(GtkEnums.scroll_step -> int -> unit) -> GtkSignal.id
+    method move_page :
+      callback:(GtkEnums.scroll_step -> int -> unit) -> GtkSignal.id
+    method populate_context :
+      callback:(source_completion_context -> unit) -> GtkSignal.id
+    method show : callback:(unit -> unit) -> GtkSignal.id
+    method notify_accelerators : callback:(int -> unit) -> GtkSignal.id
+    method notify_auto_complete_delay : callback:(int -> unit) -> GtkSignal.id
+    method notify_proposal_page_size : callback:(int -> unit) -> GtkSignal.id
+    method notify_provider_page_size : callback:(int -> unit) -> GtkSignal.id
+    method notify_remember_info_visibility :
+      callback:(bool -> unit) -> GtkSignal.id
+    method notify_select_on_show : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_headers : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_icons : callback:(bool -> unit) -> GtkSignal.id
+  end
 
 class source_completion :
   GtkSourceView2_types.source_completion obj ->
@@ -347,7 +363,11 @@ object ('a)
   method highlight_updated:
     callback:(Gtk.text_iter -> Gtk.text_iter -> unit) -> GtkSignal.id
   method source_mark_updated: callback:(GtkSourceView2_types.source_mark obj -> unit) -> GtkSignal.id
-
+  method notify_can_redo : callback:(bool -> unit) -> GtkSignal.id
+  method notify_can_undo : callback:(bool -> unit) -> GtkSignal.id
+  method notify_highlight_matching_brackets : callback:(bool -> unit) -> GtkSignal.id
+  method notify_highlight_syntax : callback:(bool -> unit) -> GtkSignal.id
+  method notify_max_undo_levels : callback:(int -> unit) -> GtkSignal.id
 end
 
 and source_buffer: GtkSourceView2_types.source_buffer obj ->
@@ -421,6 +441,19 @@ class source_view_signals:
     method smart_home_end :
       callback:(Gtk.text_iter -> int -> unit) -> GtkSignal.id
     method undo: callback:(unit -> unit) -> GtkSignal.id
+    method notify_auto_indent : callback:(bool -> unit) -> GtkSignal.id
+    method notify_highlight_current_line : callback:(bool -> unit) -> GtkSignal.id
+    method notify_indent_on_tab : callback:(bool -> unit) -> GtkSignal.id
+    method notify_indent_width : callback:(int -> unit) -> GtkSignal.id
+    method notify_insert_spaces_instead_of_tabs : callback:(bool -> unit) -> GtkSignal.id
+    method notify_right_margin_position : callback:(int -> unit) -> GtkSignal.id
+    method notify_show_line_marks : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_line_numbers : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_right_margin : callback:(bool -> unit) -> GtkSignal.id
+    method notify_smart_home_end :
+      callback:(SourceView2Enums.source_smart_home_end_type -> unit) -> GtkSignal.id
+    method notify_tab_width : callback:(int -> unit) -> GtkSignal.id
+
   end
 
 class source_view:

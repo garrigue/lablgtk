@@ -46,6 +46,15 @@ class type chooser_signals = object
   method update_preview : callback:(unit -> unit) -> GtkSignal.id
   method confirm_overwrite : 
     callback:(unit -> GtkEnums.file_chooser_confirmation) -> GtkSignal.id
+  method notify_action : callback:(GtkEnums.file_chooser_action -> unit) -> GtkSignal.id
+  method notify_do_overwrite_confirmation : callback:(bool -> unit) -> GtkSignal.id
+  method notify_extra_widget : callback:(GObj.widget -> unit) -> GtkSignal.id
+  method notify_local_only : callback:(bool -> unit) -> GtkSignal.id
+  method notify_preview_widget : callback:(GObj.widget -> unit) -> GtkSignal.id
+  method notify_preview_widget_active : callback:(bool -> unit) -> GtkSignal.id
+  method notify_select_multiple : callback:(bool -> unit) -> GtkSignal.id
+  method notify_show_hidden : callback:(bool -> unit) -> GtkSignal.id
+  method notify_use_preview_label : callback:(bool -> unit) -> GtkSignal.id
 end
 
 class type chooser =
