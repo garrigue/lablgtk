@@ -149,6 +149,26 @@ val tree_selection_dialog :
   ?width:int -> ?height:int ->
   ?show:bool -> unit -> 'a option
 
+(** {2 Keyboard shortcuts} *)
+(** A keyboard shorcut: a combination of Alt, Control and Shift and a letter. *)
+type key_combination = [ `A | `C | `S ] list * char
+
+(** A shortcut specification: name of a GTK+ signal to emit, keyboard shortcuts
+   and the corresponding callback which has to be unit -> unit (at least for
+   now). *)
+type shortcut_specification = {
+  name : string;
+  keys : key_combination list;
+  callback : unit -> unit;
+}
+
+(** Setup the given shortcut spec list for the given window and callback.
+ * This create the GTK+ signal, associate the keyboard shortcuts to it, make the
+ * window listen to these shortcuts and eventually call them. *)
+val create_shortcuts : #GWindow.window_skel -> shortcut_specification list ->
+  unit
+
+
 (** {2 Miscellaneous functions} *)
 
 (** Resize the columns of a clist according to the length of the 
