@@ -311,3 +311,46 @@ let autosize_clist wlist =
   wlist#columns_autosize ();
   (* remove the inserted row *)
   ignore (wlist#remove ~row: 0)
+
+
+(** Shortcuts *)
+
+type key_combination = [ `A | `C | `S ] list * char
+
+type shortcut_specification = {
+  name : string;
+  keys : key_combination list;
+  callback : unit -> unit;
+}
+
+let mk_keys (mods, c) =
+  let mods = List.map (function `A -> "<Alt>" | `C -> "<Control>" | `S ->
+    "<Shift>") mods in
+  (String.concat "" mods) ^ (String.make 1 (Char.uppercase c))
+
+let make_gtkrc_string g_type shortcuts =
+  let sp = Printf.sprintf in
+  let b = Buffer.create 4000 in
+  Buffer.add_string b "binding \"Shortcuts\" {";
+  StdLabels.List.iter shortcuts ~f:(fun t ->
+    ListLabels.iter t.keys ~f:(fun keys ->
+      let keys = mk_keys keys in
+      Buffer.add_string b (sp "bind \"%s\" { \"%s\" () }" keys
+      t.name)
+    )
+  );
+  Buffer.add_string b "}";
+  let classname = Gobject.Type.name g_type in
+  Buffer.add_string b (sp "class \"%s\" binding \"Shortcuts\"" classname);
+  Buffer.contents b
+
+let create_shortcuts (obj : #GWindow.window_skel) shortcuts =
+  let g_type = Gobject.get_type obj#as_window in
+  GtkMain.Rc.parse_string (make_gtkrc_string g_type shortcuts);
+  ListLabels.iter shortcuts ~f:(fun t ->
+    let sgn = { GtkSignal.name = t.name; classe = `window; marshaller =
+      GtkSignal.marshal_unit } in
+    GtkSignal.signal_new t.name g_type [ `ACTION; `RUN_FIRST ];
+    ignore (GtkSignal.connect ~sgn ~callback:t.callback obj#as_window)
+  )
+

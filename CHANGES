@@ -1,4 +1,6 @@
 $Id$
+2012.06.19 [Adrien]
+  * add a high-level API to create keyboard shortcuts.
 2012.06.12 [Adrien]
   * add several #as_foo methods: entry, notebook, range
   * new signals for notebook: select_page, reorder_tab,
