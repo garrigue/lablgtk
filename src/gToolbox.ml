@@ -317,17 +317,21 @@ let autosize_clist wlist =
 
 type key_combination = [ `A | `C | `S ] list * char
 
-type shortcut_specification = {
+type 'a shortcut_specification = {
   name : string;
   keys : key_combination list;
-  callback : unit -> unit;
+  message : 'a;
 }
 
+(* mk_keys turns keys from a key_combination into a format which can be used in
+* a GTK+ RC file. *)
 let mk_keys (mods, c) =
   let mods = List.map (function `A -> "<Alt>" | `C -> "<Control>" | `S ->
     "<Shift>") mods in
   (String.concat "" mods) ^ (String.make 1 (Char.uppercase c))
 
+(* Signal creation for shortcuts unfortunately requires us to create an
+ * in-memory gtkrc file which this function do. *)
 let make_gtkrc_string g_type shortcuts =
   let sp = Printf.sprintf in
   let b = Buffer.create 4000 in
@@ -344,13 +348,14 @@ let make_gtkrc_string g_type shortcuts =
   Buffer.add_string b (sp "class \"%s\" binding \"Shortcuts\"" classname);
   Buffer.contents b
 
-let create_shortcuts (obj : #GWindow.window_skel) shortcuts =
-  let g_type = Gobject.get_type obj#as_window in
+let create_shortcuts ~window:(win : #GWindow.window_skel) ~shortcuts ~callback =
+  let win = win#as_window in
+  let g_type = Gobject.get_type win in
   GtkMain.Rc.parse_string (make_gtkrc_string g_type shortcuts);
   ListLabels.iter shortcuts ~f:(fun t ->
     let sgn = { GtkSignal.name = t.name; classe = `window; marshaller =
       GtkSignal.marshal_unit } in
     GtkSignal.signal_new t.name g_type [ `ACTION; `RUN_FIRST ];
-    ignore (GtkSignal.connect ~sgn ~callback:t.callback obj#as_window)
+    ignore (GtkSignal.connect ~sgn ~callback:(fun () -> callback t.message) win)
   )
 
