@@ -413,9 +413,9 @@ install: build.ml
       then \
         echo "-dll $(CLIBS:lib%$(XA)=dll%$(XA)) -nodll" ; \
     fi`
-	cd `ocamlfind query lablgtk2` && $(RANLIB) $(CLIBS)
+	$(RANLIB) $(CLIBS:%="`ocamlfind query lablgtk2 | tr -d '\r'`"/%)
 	@if test -f lablgtk.cmxa; \
-	  then (cd `ocamlfind query lablgtk2` && $(RANLIB) $(MLLIBS:.cma=$(XA)) $(EXTRA_MLLIBS:.cma=$(XA)) ); fi
+	  then ($(RANLIB) $(MLLIBS:%.cma="`ocamlfind query lablgtk2 | tr -d '\r'`"/%$(XA)) $(EXTRA_MLLIBS:%.cma="`ocamlfind query lablgtk2 | tr -d '\r'`"/%$(XA)) ); fi
 	cp lablgtk2$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
 	  cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; \
