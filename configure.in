@@ -192,6 +192,8 @@ then HAS_DLL_SUPPORT="yes"
 fi
 AC_MSG_RESULT($HAS_DLL_SUPPORT)
 
+RANLIB=`$CAMLC -config | grep ranlib | sed -e "s/ranlib: \(.*\)/\1/" `
+
 AC_PROG_RANLIB
 # get the C compiler used by ocamlc
 if test -z "$CC" ; then

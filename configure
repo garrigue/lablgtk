@@ -2654,6 +2654,8 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $HAS_DLL_SUPPORT" >&5
 $as_echo "$HAS_DLL_SUPPORT" >&6; }
 
+RANLIB=`$CAMLC -config | grep ranlib | sed -e "s/ranlib: \(.*\)/\1/" `
+
 if test -n "$ac_tool_prefix"; then
   # Extract the first word of "${ac_tool_prefix}ranlib", so it can be a program name with args.
 set dummy ${ac_tool_prefix}ranlib; ac_word=$2
