@@ -188,17 +188,17 @@ and source_completion_context :
 (** Ad-hoc structure to implement source_completion_provider from OCaml *)
 
 type provider = {
-  mutable provider_name : string;
-  mutable provider_icon : GdkPixbuf.pixbuf option;
+  provider_name : unit -> string;
+  provider_icon : unit -> GdkPixbuf.pixbuf option;
   provider_populate : GtkSourceView2_types.source_completion_context obj -> unit;
   provider_match : GtkSourceView2_types.source_completion_context obj -> bool;
-  mutable provider_activation : source_completion_activation_flags list;
+  provider_activation : unit -> source_completion_activation_flags list;
   provider_info_widget : GtkSourceView2_types.source_completion_proposal obj -> Gtk.widget obj option;
   provider_update_info : GtkSourceView2_types.source_completion_proposal obj -> GtkSourceView2_types.source_completion_info obj -> unit;
   provider_start_iter : GtkSourceView2_types.source_completion_context obj -> GtkSourceView2_types.source_completion_proposal obj -> text_iter -> bool;
   provider_activate_proposal : GtkSourceView2_types.source_completion_proposal obj -> text_iter -> bool;
-  mutable provider_interactive_delay : int;
-  mutable provider_priority : int;
+  provider_interactive_delay : unit -> int;
+  provider_priority : unit -> int;
 }
 
 val source_completion_provider : provider -> source_completion_provider
