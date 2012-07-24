@@ -452,6 +452,15 @@ object (self)
   method backward_iter_to_source_mark ?category (iter:GText.iter) =
     SourceBuffer.backward_iter_to_source_mark obj iter#as_iter category
 
+  method iter_has_context_class (iter:GText.iter) context_class =
+    SourceBuffer.iter_has_context_class obj iter#as_iter context_class
+
+  method iter_forward_to_context_class_toggle (iter:GText.iter) context_class =
+    SourceBuffer.iter_forward_to_context_class_toggle obj iter#as_iter context_class
+
+  method iter_backward_to_context_class_toggle (iter:GText.iter) context_class =
+    SourceBuffer.iter_backward_to_context_class_toggle obj iter#as_iter context_class
+
   method ensure_highlight ~(start:GText.iter) ~(stop:GText.iter) =
     SourceBuffer.ensure_highlight obj start#as_iter stop#as_iter
 
