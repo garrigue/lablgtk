@@ -1,6 +1,13 @@
-$Id$
+LablGTK changes log
+
+In Lablgtk-2.16.0:
+
+2012.07.24 [Jacques]
+  * can still install using old-install.
+
 2012.06.19 [Adrien]
   * add a high-level API to create keyboard shortcuts.
+
 2012.06.12 [Adrien]
   * add several #as_foo methods: entry, notebook, range
   * new signals for notebook: select_page, reorder_tab,
@@ -1549,4 +1556,3 @@ In lablgtk-1.00:
 1998.11.22
   * added gtkObj.ml and examples/*_obj.ml
   * various modifications in gtk.ml
-

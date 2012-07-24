@@ -1,11 +1,11 @@
 
-             LablGTK2 : an interface to the GIMP Tool Kit
+             LablGTK2 2.16.0 : an interface to the GIMP Tool Kit
 
 Needed:
-	ocaml-3.11 or more
-	gtk+-2.x (gtk+-2.12.x for full functionality)
-	findlib 1.2.1 or more
-	GNU make (there is no standard for conditionals)
+        ocaml-3.11 or more
+        gtk+-2.x (gtk+-2.12.x for full functionality)
+        findlib 1.2.1 or more (for default install)
+        GNU make (there is no standard for conditionals)
 
 Info/upgrades:
         http://lablgtk.forge.ocamlcore.org/
@@ -37,23 +37,24 @@ How to compile:
   In case you are using the SVN version you may have to first type
   "aclocal && autoconf".
 
-  Type "./configure && make world && make install" to compile
-  with all supported options enabled (libgl, libglade, libgnomecanvas,
-  librsvg, native compilation, thread support).
+  Type
+        ./configure && make world
+  to compile with all supported options enabled (libgl, libglade,
+  libgnomecanvas, librsvg, native compilation, thread support).
 
   You may use "./configure --help" to check for the different
   configuration options.
 
   Lablgtk2 specific options are:
 
-	--with-libdir=/path: install libs in /path/lablgtk2
-			     and /path/stublibs
-	--with-gl --without-gl: override autodetected GtkGLArea support.
-				Requires LablGL
-	--with-glade --without-glade: override autodetected libglade support
-	--with-rsvg --without-rsvg: override autodetected librsvg support
-	--with-gnomecanvas --without-gnomecanvas:
-		override autodetected libgnomecanvas support
+        --with-libdir=/path: install libs in /path/lablgtk2
+                             and /path/stublibs
+        --with-gl --without-gl: override autodetected GtkGLArea support.
+                                Requires LablGL
+        --with-glade --without-glade: override autodetected libglade support
+        --with-rsvg --without-rsvg: override autodetected librsvg support
+        --with-gnomecanvas --without-gnomecanvas:
+                override autodetected libgnomecanvas support
         --with-gnomeui --without-gnomeui:
                 override autodetected libgnomeui support
         --with-panel --without-panel:
@@ -64,47 +65,54 @@ How to compile:
                 override autodetected gtksourceview support
         --with-gtksourceview2 --without-gtksourceview2:
                 override autodetected gtksourceview2 support
-	--enable-debug: enable debug mode
+        --enable-debug: enable debug mode
 
-  "make install DESTDIR=..." prefixes the installation
-  directories with DESTDIR.
+  Type "make install" or "make install DESTDIR=..." to install using
+  findlib. The commands lablgtk2, gdk_pixbuf_mlsource, and
+  lablgladecc2, are copied directly to the configured executable
+  directory. Installation paths are prefixed by DESTDIR when given.
 
-  The library is installed with findlib, providing the following
-  packages (some depend on configuration):
-  lablgtk2
-  lablgtk2.init
-  lablgkt2.gl
-  lablgtk2.glade
-  lablgtk2.gnomecanvas
-  lablgtk2.gnomehtml
-  lablgtk2.gnomeui
-  lablgtk2.gtkspell
-  lablgtk2.panel
-  lablgtk2.rsvg
-  lablgtk2.sourceview
-  lablgtk2.sourceview2
+  The following findlib packages are provided (according to configuration):
+
+        lablgtk2
+        lablgtk2.init
+        lablgtk2.gl
+        lablgtk2.glade
+        lablgtk2.gnomecanvas
+        lablgtk2.gnomehtml
+        lablgtk2.gnomeui
+        lablgtk2.gtkspell
+        lablgtk2.panel
+        lablgtk2.rsvg
+        lablgtk2.sourceview
+        lablgtk2.sourceview2
+
+  You can alternatively use "make old-install" to use the old
+  installation procedure, which does not rely on findlib.
+  By default, the library is installed at +lablgtk2.
+  Again, installation paths are prefixed by DESTDIR when given.
 
 Contents:
 
-	gdk.ml		low-level interface to the General Drawing Kit
-	gtk.ml		low-level interface to the GIMP Tool Kit
-	gtkThread.ml	main loop for threaded version
-	g[A-Z]*.ml	object-oriented interface to GTK
-	gdkObj.ml	object-oriented interface to GDK
+        gdk.ml          low-level interface to the General Drawing Kit
+        gtk.ml          low-level interface to the GIMP Tool Kit
+        gtkThread.ml    main loop for threaded version
+        g[A-Z]*.ml      object-oriented interface to GTK
+        gdkObj.ml       object-oriented interface to GDK
 
-	lablgtk2	toplevel
+        lablgtk2        toplevel
 
-	examples/*.ml	various examples
+        examples/*.ml   various examples
 
         applications/browser    an ongoing port of ocamlbrowser
         applications/camlirc    an IRC client (by Nobuaki Yoshida)
 
 How to run the examples:
   In the examples directory just type:
-	lablgtk2 ???.ml
+        lablgtk2 ???.ml
 
   Before installing lablgtk2 you have to use -localdir:
-	../src/lablgtk2 -localdir ???.ml
+        ../src/lablgtk2 -localdir ???.ml
 
 How to link them:
   The lablgtk2 script loads an extra module GtkInit, whose only contents is:
@@ -115,10 +123,10 @@ How to link them:
 
 How to use the threaded toplevel:
 
-	% lablgtk2 -thread
-	        Objective Caml version 3.09
+        % lablgtk2 -thread
+                Objective Caml version 3.09
 
-	# let w = GWindow.window ~show:true ();;
+        # let w = GWindow.window ~show:true ();;
         # let b = GButton.button ~packing:w#add ~label:"Hello!" ();;
 
   You should at once see a window appear, and then a button.
@@ -149,24 +157,24 @@ Structure of the G[A-Z]* modules:
 
   GPango        Pango font handling
   GDraw         Gdk pixmaps, etc...
-  GObj		gtkobj, widget, style
-  GData		data, adjustment, tooltips
-  GContainer	container, item_container
-  GWindow	window, dialog, color_selection_dialog, file_selection, plug
-  GPack		box, button_box, table, fixed, layout, packer, paned, notebook
-  GBin  	scrolled_window, event_box, handle_box, frame,
-		aspect_frame, viewport, socket
-  GButton	button, toggle_button, check_button, radio_button, toolbar
-  GMenu		menu_item, tearoff_item, check_menu_item, radio_menu_item,
-		menu_shell, menu, option_menu, menu_bar, factory
-  GMisc		separator, statusbar, calendar, drawing_area,
-		misc, arrow, image, pixmap, label, tips_query,
+  GObj          gtkobj, widget, style
+  GData         data, adjustment, tooltips
+  GContainer    container, item_container
+  GWindow       window, dialog, color_selection_dialog, file_selection, plug
+  GPack         box, button_box, table, fixed, layout, packer, paned, notebook
+  GBin          scrolled_window, event_box, handle_box, frame,
+                aspect_frame, viewport, socket
+  GButton       button, toggle_button, check_button, radio_button, toolbar
+  GMenu         menu_item, tearoff_item, check_menu_item, radio_menu_item,
+                menu_shell, menu, option_menu, menu_bar, factory
+  GMisc         separator, statusbar, calendar, drawing_area,
+                misc, arrow, image, pixmap, label, tips_query,
                 color_selection, font_selection
-  GTree		tree_item, tree, view (also tree/list_store, model)
-  GList		list_item, liste, clist
-  GEdit		editable, entry, spin_button, combo
-  GRange	progress, progress_bar, range, scale, scrollbar
-  GText		view (also buffer, iter, mark, tag, tagtable)
+  GTree         tree_item, tree, view (also tree/list_store, model)
+  GList         list_item, liste, clist
+  GEdit         editable, entry, spin_button, combo
+  GRange        progress, progress_bar, range, scale, scrollbar
+  GText         view (also buffer, iter, mark, tag, tagtable)
 
   While subtyping follows the Gtk widget hierarchy, you cannot always
   use width subtyping (i.e. #super is not unifiable with all the
@@ -363,26 +371,25 @@ Windows port
   are always called from the main loop thread, you can freely use GTK
   in them. Also, non-graphical operations are thread-safe.
   Here is an example using the lablgtk toplevel with threads:
-	% lablgtk2.bat -thread
-	        Objective Caml version 3.09
+        % lablgtk2.bat -thread
+                Objective Caml version 3.09
 
         # open GtkThread;;
-	# let w = sync (GWindow.window ~show:true) ();;
+        # let w = sync (GWindow.window ~show:true) ();;
         # let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
         # b#connect#clicked (fun () -> prerr_endline "Hello");;
 
 Authors:
-	Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
-	Benjamin Monate  <benjamin.monate@free.fr>
-  Olivier Andrieu  <oandrieu@nerim.net>
-	Jun Furuse       <furuse@yl.is.s.u-tokyo.ac.jp>
-  Maxence Guesdon  <maxence.guesdon@inria.fr>
-  Stefano Zacchiroli  <zack@cs.unibo.it>
+        Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
+        Benjamin Monate  <benjamin.monate@free.fr>
+        Olivier Andrieu  <oandrieu@nerim.net>
+        Adrien Nader     <camaradetux@gmail.com>
+        Jun Furuse       <jun.furuse@gmail.com>
+        Maxence Guesdon  <maxence.guesdon@inria.fr>
+        Stefano Zacchiroli  <zack@cs.unibo.it>
   For lablgtk1:
-	Hubert Fauque  <hubert.fauque@wanadoo.fr>
-	Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
+        Hubert Fauque  <hubert.fauque@wanadoo.fr>
+        Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
 
 Bug reports:
-	Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
-
-$Id$
+        http://forge.ocamlcore.org/tracker/?group_id=220

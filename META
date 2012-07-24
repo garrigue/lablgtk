@@ -1,6 +1,6 @@
 description = "Bindings for gtk2"
 requires = ""
-version = "2.14.2"
+version = "2.16.0"
 
 archive(byte) = "lablgtk.cma"
 archive(native) = "lablgtk.cmxa"

@@ -1,4 +1,3 @@
-# $Id$
 # Makefile for lablgtk.
 
 COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
@@ -323,7 +322,8 @@ testcc$(XE): lablgladecc$(XE) lablgtktop
 PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) \
 	$(GNOMECANVASMLOBJS)
 
-ocamllib-preinstall: build.ml
+# Install ml sources and C binaries, can then rebuild using build.ml
+preinstall: build.ml
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
 	cp $(PREOBJS:.cmo=.ml) "$(INSTALLDIR)"
 	for f in $(PREOBJS:.cmo=.mli); do \
@@ -334,7 +334,8 @@ ocamllib-preinstall: build.ml
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)"
 
-ocamllib-install:
+# Install directly to $(INSTALLDIR), without using ocamlfind
+old-install:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
 	cp $(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) "$(INSTALLDIR)"
 	cp -p *.mli "$(INSTALLDIR)"
@@ -351,20 +352,20 @@ ocamllib-install:
 	   then cp lablgtktop$(XE) "$(INSTALLDIR)"; \
 	fi
 	cp -p *.h "$(INSTALLDIR)"
-	@if test -f lablgtk.cmxa; then $(MAKE) ocamllib-installopt; fi
-	@if test -f dlllablgtk2$(XS); then $(MAKE) ocamllib-installdll; fi
+	@if test -f lablgtk.cmxa; then $(MAKE) old-installopt; fi
+	@if test -f dlllablgtk2$(XS); then $(MAKE) old-installdll; fi
 	cp lablgtk2$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
 	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; fi
 	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
 
-ocamllib-installdll:
+old-installdll:
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)" || \
 	   echo "Couldn't install dlls in default location: $(DLLDIR)"
 	if test -f dlllablgtk2$(XA); then \
 	  cp $(CLIBS:lib%$(XA)=dll%$(XA)) "$(INSTALLDIR)"; fi
 
-ocamllib-installopt:
+old-installopt:
 	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=$(XA)) $(EXTRA_MLLIBS:.cma=.cmxa) $(EXTRA_MLLIBS:.cma=$(XA)) "$(INSTALLDIR)"
 ifeq ($(HAS_NATIVE_DYNLINK),yes)
 	cp $(MLLIBS:.cma=.cmxs) $(EXTRA_MLLIBS:.cma=.cmxs) "$(INSTALLDIR)"
@@ -375,6 +376,7 @@ endif
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) "$(INSTALLDIR)"; fi
 
+# Install using ocamlfind
 install: build.ml
 	mkdir -p "$(BINDIR)"
 	ocamlfind install lablgtk2 ../META \
