@@ -407,6 +407,10 @@ object
   method forward_iter_to_source_mark: ?category:string -> GText.iter -> bool
   method backward_iter_to_source_mark: ?category:string -> GText.iter -> bool
 
+  method iter_has_context_class: GText.iter -> string -> bool
+  method iter_forward_to_context_class_toggle: GText.iter -> string -> bool
+  method iter_backward_to_context_class_toggle: GText.iter -> string -> bool
+
   method ensure_highlight: start:GText.iter -> stop:GText.iter -> unit
 
   method undo_manager : source_undo_manager

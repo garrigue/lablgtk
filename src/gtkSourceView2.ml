@@ -228,6 +228,17 @@ struct
     [>`sourcebuffer] obj -> Gtk.text_iter -> string option -> bool =
     "ml_gtk_source_buffer_backward_iter_to_source_mark"
 
+  external iter_has_context_class:
+    [>`sourcebuffer] obj -> Gtk.text_iter -> string -> bool =
+    "ml_gtk_source_buffer_iter_has_context_class"
+  external iter_forward_to_context_class_toggle:
+    [>`sourcebuffer] obj -> Gtk.text_iter -> string -> bool =
+    "ml_gtk_source_buffer_iter_forward_to_context_class_toggle"
+  external iter_backward_to_context_class_toggle:
+    [>`sourcebuffer] obj -> Gtk.text_iter -> string -> bool =
+    "ml_gtk_source_buffer_iter_backward_to_context_class_toggle"
+
+
   external ensure_highlight:
     [>`sourcebuffer] obj -> Gtk.text_iter -> Gtk.text_iter -> unit =
     "ml_gtk_source_buffer_ensure_highlight"

@@ -751,6 +751,13 @@ ML_3 (gtk_source_buffer_get_source_marks_at_line, GtkSourceBuffer_val,
 ML_3 (gtk_source_buffer_forward_iter_to_source_mark, GtkSourceBuffer_val, GtkTextIter_val, String_option_val, Val_bool)
 ML_3 (gtk_source_buffer_backward_iter_to_source_mark, GtkSourceBuffer_val, GtkTextIter_val, String_option_val, Val_bool)
 
+ML_3 (gtk_source_buffer_iter_has_context_class, GtkSourceBuffer_val,
+      GtkTextIter_val, String_val, Val_bool)
+ML_3 (gtk_source_buffer_iter_forward_to_context_class_toggle,
+      GtkSourceBuffer_val, GtkTextIter_val, String_val, Val_bool)
+ML_3 (gtk_source_buffer_iter_backward_to_context_class_toggle,
+      GtkSourceBuffer_val, GtkTextIter_val, String_val, Val_bool)
+
 ML_3 (gtk_source_buffer_ensure_highlight, GtkSourceBuffer_val,
       GtkTextIter_val, GtkTextIter_val, Unit)
 
