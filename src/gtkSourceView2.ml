@@ -77,17 +77,17 @@ struct
   include SourceCompletionProvider
 
   type provider = {
-    mutable provider_name : string;
-    mutable provider_icon : GdkPixbuf.pixbuf option;
+    provider_name : unit -> string;
+    provider_icon : unit -> GdkPixbuf.pixbuf option;
     provider_populate : source_completion_context obj -> unit;
-    mutable provider_activation : source_completion_activation_flags list;
+    provider_activation : unit -> source_completion_activation_flags list;
     provider_match : source_completion_context obj -> bool;
     provider_info_widget : source_completion_proposal obj -> widget obj option;
     provider_update_info : source_completion_proposal obj -> source_completion_info obj -> unit;
     provider_start_iter : source_completion_context obj -> source_completion_proposal obj -> text_iter -> bool;
     provider_activate_proposal : source_completion_proposal obj -> text_iter -> bool;
-    mutable provider_interactive_delay : int;
-    mutable provider_priority : int;
+    provider_interactive_delay : unit -> int;
+    provider_priority : unit -> int;
   }
 
   external match_ : source_completion_provider obj -> source_completion_context obj -> bool =
