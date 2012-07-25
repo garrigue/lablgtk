@@ -22,37 +22,18 @@
 
 /* $Id$ */
 
-/* Defined in ml_gobject.h */
+CAMLexport value copy_string_g_free (char *str); /* for g_strings only */
 
-#define GObject_val(val) ((GObject*)Pointer_val(val))
-CAMLexport value Val_GObject (GObject *);
-CAMLexport value Val_GObject_new (GObject *);
-#define Val_GAnyObject(val) Val_GObject(G_OBJECT(val))
-#define Val_GAnyObject_new(val) Val_GObject_new(G_OBJECT(val))
-CAMLexport void ml_g_object_unref_later (GObject *);
+typedef value (*value_in)(gpointer);
+typedef gpointer (*value_out)(value); /* should not trigger GC */
 
-#define GType_val(t) ((GType)Addr_val(t))
-#define Val_GType    Val_addr
+CAMLexport value Val_GList (GList *list, value_in);
+CAMLexport value Val_GList_free (GList *list, value_in);
+CAMLexport GList *GList_val (value list, value_out);
 
-#define GClosure_val(val) ((GClosure*)Pointer_val(val))
-CAMLexport value Val_GClosure (GClosure *);
+CAMLexport value Val_GSList (GSList *list, value_in);
+CAMLexport value Val_GSList_free (GSList *list, value_in);
+CAMLexport GSList *GSList_val (value list, value_out);
 
-#define GValueptr_val(val) ((GValue*)MLPointer_val(val))
-CAMLexport GValue *GValue_val(value);          /* check for NULL pointer */
-CAMLexport value Val_GValue_copy(GValue *);    /* copy from the stack */
-#define Val_GValue_wrap Val_pointer /* just wrap a pointer */
-CAMLexport value ml_g_value_new(void);
-
-CAMLexport value Val_gboxed(GType t, gpointer p);     /* finalized gboxed */
-CAMLexport value Val_gboxed_new(GType t, gpointer p); /* without copy */
-
-/* Macro utilities for export */
-/* used in ml_gtk.h for instance */
-
-#ifdef G_DISABLE_CAST_CHECKS
-#define check_cast(f,v) f(Pointer_val(v))
-#else
-#define check_cast(f,v) (Pointer_val(v) == NULL ? NULL : f(Pointer_val(v)))
-#endif
-
-#define GtkObject_val(val) check_cast(GTK_OBJECT,val)
+CAMLexport void ml_register_exn_map (GQuark domain, char *caml_name);
+CAMLexport void ml_raise_gerror(GError *) Noreturn;

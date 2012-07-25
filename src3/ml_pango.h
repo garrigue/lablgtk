@@ -22,37 +22,31 @@
 
 /* $Id$ */
 
-/* Defined in ml_gobject.h */
+#include "pango_tags.h"
 
-#define GObject_val(val) ((GObject*)Pointer_val(val))
-CAMLexport value Val_GObject (GObject *);
-CAMLexport value Val_GObject_new (GObject *);
-#define Val_GAnyObject(val) Val_GObject(G_OBJECT(val))
-#define Val_GAnyObject_new(val) Val_GObject_new(G_OBJECT(val))
-CAMLexport void ml_g_object_unref_later (GObject *);
+#define PangoFontDescription_val(val) ((PangoFontDescription*)Pointer_val(val))
+CAMLexport value Val_PangoFontDescription_new(PangoFontDescription* it);
+#define Val_PangoFontDescription(desc) \
+  (Val_PangoFontDescription_new(pango_font_description_copy(desc)))
 
-#define GType_val(t) ((GType)Addr_val(t))
-#define Val_GType    Val_addr
+CAMLexport value ml_PangoStyle_Val (value val);
 
-#define GClosure_val(val) ((GClosure*)Pointer_val(val))
-CAMLexport value Val_GClosure (GClosure *);
+#define Val_PangoLanguage Val_pointer
+#define PangoLanguage_val Pointer_val
 
-#define GValueptr_val(val) ((GValue*)MLPointer_val(val))
-CAMLexport GValue *GValue_val(value);          /* check for NULL pointer */
-CAMLexport value Val_GValue_copy(GValue *);    /* copy from the stack */
-#define Val_GValue_wrap Val_pointer /* just wrap a pointer */
-CAMLexport value ml_g_value_new(void);
+#define PangoContext_val(val) check_cast(PANGO_CONTEXT,val)
+#define Val_PangoContext Val_GAnyObject
+#define Val_PangoContext_new Val_GAnyObject_new
 
-CAMLexport value Val_gboxed(GType t, gpointer p);     /* finalized gboxed */
-CAMLexport value Val_gboxed_new(GType t, gpointer p); /* without copy */
+#define PangoFont_val(val) check_cast(PANGO_FONT, val)
+#define Val_PangoFont Val_GAnyObject
 
-/* Macro utilities for export */
-/* used in ml_gtk.h for instance */
+#define PangoFontMetrics_val(val) ((PangoFontMetrics*)Pointer_val(val))
 
-#ifdef G_DISABLE_CAST_CHECKS
-#define check_cast(f,v) f(Pointer_val(v))
-#else
-#define check_cast(f,v) (Pointer_val(v) == NULL ? NULL : f(Pointer_val(v)))
-#endif
+#define PangoLayout_val(val) check_cast(PANGO_LAYOUT, val)
+#define Val_PangoLayout Val_GAnyObject
 
-#define GtkObject_val(val) check_cast(GTK_OBJECT,val)
+#define PangoFontMap_val(val) check_cast(PANGO_FONT_MAP, val)
+#define Val_PangoFontMap Val_GAnyObject
+
+CAMLexport value Val_PangoRectangle(PangoRectangle *rect);

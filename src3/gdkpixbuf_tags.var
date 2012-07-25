@@ -1,0 +1,7 @@
+(* $Id$ *)
+
+(* package "gdkPixbuf" *)
+
+type colorspace = "GDK_COLORSPACE_" [ `RGB ]
+type alpha_mode = "GDK_PIXBUF_ALPHA_" [ `BILEVEL | `FULL ]
+type interpolation = "GDK_INTERP_" [ `NEAREST | `TILES | `BILINEAR | `HYPER ]
