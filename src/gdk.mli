@@ -81,7 +81,9 @@ module Tags : sig
   type window_state = [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY ]
   type modifier =
     [ `SHIFT | `LOCK | `CONTROL | `MOD1 | `MOD2 | `MOD3 | `MOD4 | `MOD5
-    | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 ]
+    | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 | `SUPER
+    | `HYPER | `META | `RELEASE ]
+
   type drag_action = [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
   type rgb_dither = [ `NONE | `NORMAL | `MAX]
   type property_state = [ `NEW_VALUE | `DELETE ]
