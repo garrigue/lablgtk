@@ -1,7 +1,7 @@
 
 OCAMLC=ocamlc
 OPT=-g -dtypes
-INCLUDES= -I xml-light xml-light.cma 
+INCLUDES= -I xml-light xml-light.cma str.cma
 extract_stubs: extract_prototype.ml xml-light/xml-light.cma
 	$(OCAMLC) $(OPT) $(INCLUDES) -o $@ $^
 

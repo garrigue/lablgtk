@@ -6,12 +6,12 @@ let included_modules = Hashtbl.create 17
 
 let ml_header = Buffer.create 99
 let add_ml_header s = Buffer.add_string ml_header s
-let () = add_ml_header "type -'a obj\n"
+(*let () = add_ml_header "type -'a obj\n"*)
 let c_header= Buffer.create 99
 let add_c_header s = Buffer.add_string c_header s
 let pre_fill_header () = add_c_header
-"#include <caml/mlvalues.h>\n\
-#include <caml/alloc.h>\n\
+"//#include <caml/mlvalues.h>\n\
+//#include <caml/alloc.h>\n\
 #define Val_double(val) caml_copy_double(val)\n\
 #define Val_string_new(val) caml_copy_string(val)\n\
 #define Val_int32(val) caml_copy_int32(val)\n\
@@ -21,6 +21,8 @@ let reset_headers () =
   Buffer.clear ml_header;
   Buffer.clear c_header; 
   pre_fill_header ()
+  
+let ns = ref "" (* on met à jours le nom du namespace courant *)
 
 (*  
     #include <gtk/gtk.h>
@@ -34,12 +36,70 @@ module SSet=
   Set.Make(struct type t = string let compare = Pervasives.compare end)
 
 let caml_avoid = List.fold_right SSet.add 
-  ["let";"external";"open";"true";"false";"exit"; "match";"new";"end"] 
+  ["let";"external";"open";"true";"false";"exit"; "match";"new";"end";"done";"object";"unit"] 
   SSet.empty
+let caml_keywords = ["let","set";"external","extern";"open","op";"true","T";"false","F";"exit","quit"; "match","fit";"new","create";"end","finish";"type","kind";"class","classe";"list","liste";"done","done_";"object","object_";"unit","unit_"]
+let caml_modules = ["List", "Liste"]
 let is_caml_avoid s = 
   (*s.[0] <- Char.lowercase s.[0];*)
   let ss=String.uncapitalize s in
   SSet.mem ss caml_avoid
+let caml_escape s = try List.assoc s caml_keywords with Not_found -> s
+let check_suffix s suff =
+  let len1 = String.length s and len2 = String.length suff in
+  len1 > len2 && String.sub s (len1-len2) len2 = suff
+let caml_modules = ["List", "Liste"]
+let is_not_uppercase = function
+  | 'A' .. 'Z' -> false
+  | _ -> true
+let camlize id =
+  let b = Buffer.create (String.length id + 4) in
+  ignore (match id.[0] with
+  | '0' .. '9' -> Buffer.add_char b '_'
+  | _ -> ());
+  for i = 0 to String.length id - 1 do
+    match id.[i] with
+    | 'A' .. 'Z' as c ->
+	if i > 0 && 
+	  (is_not_uppercase id.[i-1] || 
+	  (i < String.length id - 1 && is_not_uppercase id.[i+1]))
+	then Buffer.add_char b '_' ;
+	Buffer.add_char b (Char.lowercase c)
+    | '-' ->
+	Buffer.add_char b '_'
+    | c ->
+	Buffer.add_char b c
+  done;
+  let s = Buffer.contents b in
+  try List.assoc s caml_keywords with Not_found -> s
+
+
+  let hash_variant s =
+  let accu = ref 0 in
+  for i = 0 to String.length s - 1 do
+    accu := 223 * !accu + Char.code s.[i]
+  done;
+  (* reduce to 31 bits *)
+  accu := !accu land (1 lsl 31 - 1);
+  (* make it signed for 64 bits architectures *)
+  if !accu > 0x3FFFFFFF then !accu - (1 lsl 31) else !accu
+  
+  
+  
+  
+  
+  
+  
+  
+  type data = {
+    mutable data_ml_header:string;
+    mutable data_c_header:string;
+    mutable data_ml_function:string;
+    mutable data_c_function:string;
+  }
+  
+  
+  
 
 type c_simple_stub = {cs_nb_arg:int;
           cs_c_name:string;
@@ -80,6 +140,19 @@ type bf = {
   mutable bf_ctype:string;
   mutable bf_members: bf_member list
 }
+type enum_member = {
+  mutable m_name:string;
+  mutable m_value:string;
+  mutable m_c_identifier:string;
+  mutable m_nick:string;
+}
+type enumeration = {
+  mutable e_name:string;
+  mutable e_type_name:string;
+  mutable e_get_type:string;
+  mutable e_c_type:string ;
+  mutable e_members: enum_member list
+}
 
 type typ = NoType | Array of c_array | Typ of c_typ
 type parameter = {
@@ -100,6 +173,7 @@ type return_value = {
   mutable r_typ : typ;
   mutable r_doc : string;
 }
+
 type function_ = {
   mutable f_name:string;
   mutable c_identifier:string;
@@ -130,7 +204,13 @@ type property = {
   mutable pr_doc:string;
   mutable pr_typ:typ;}
 
-type signal
+type signal = {mutable sig_name:string;
+  mutable sig_when:string;
+  mutable sig_version:string;
+  mutable sig_return_value: return_value;
+  mutable sig_parameters: parameter list;
+  mutable sig_ownership:transfer_ownership;
+  }
 
 type klass = {mutable c_name:string;
         mutable c_c_type:string;
@@ -158,6 +238,7 @@ type namespace = {
   mutable ns_functions: function_ list;
   mutable ns_bf: bf list;
   mutable ns_shared_library: string;
+  mutable ns_enum:enumeration list
 }
 
 type included = {
@@ -168,6 +249,7 @@ type included = {
 type package = { mutable pack_name: string; }
 type c_include = { mutable c_inc_name: string; }
 type repository = {
+  mutable rep_data: data;
   mutable rep_version:string;
   mutable rep_xmlns:string;
   mutable rep_xmlns_c:string;
@@ -190,6 +272,24 @@ module Pretty = struct
   pp_args sep fmt r
 end
 
+let dummy_enum_member() = {
+  m_name="";
+  m_value="";
+  m_c_identifier="";
+  m_nick="";
+}
+let dummy_enumeration() = {
+  e_name="";
+  e_type_name="";
+  e_get_type="";
+  e_c_type="";
+  e_members=[]
+}
+let dummy_data () = {
+  data_ml_header="";
+  data_c_header="";
+  data_ml_function="";
+  data_c_function=""}
 let dummy_bfm () = { bfm_c_identifier="";bfm_value="";bfm_name=""}
 let dummy_bf () = { bf_name="";bf_ctype="";bf_members=[] }
 let dummy_ownership () = ODefault
@@ -221,6 +321,14 @@ let dummy_property () =
 let dummy_return_value () = {r_ownership=dummy_ownership ();
            r_typ=dummy_typ();
            r_doc=""}
+let dummy_signal () = { 
+  sig_name="";
+  sig_when="";
+  sig_version="";
+  sig_return_value=dummy_return_value ();
+  sig_ownership=dummy_ownership();
+  sig_parameters=[]
+  }
 let dummy_function () = { f_name="";c_identifier="";version="";doc="";
          return_value=dummy_return_value ();
          parameters= [];deprecated="";
@@ -254,11 +362,13 @@ let dummy_namespace () = {
   ns_constants= [];
   ns_shared_library = "";
   ns_bf=[];
+  ns_enum=[]
 }
 
 let dummy_package () = {pack_name = "<dummy>";}
 let dummy_c_include () = { c_inc_name = "<dummy>";}
 let dummy_repository () = {
+  rep_data=dummy_data();
   rep_version="";
   rep_xmlns = "";
   rep_xmlns_c = "";
@@ -360,9 +470,92 @@ let debug_repository fmt rep =
 exception Cannot_emit of string
 let fail_emit s = raise (Cannot_emit s)
 
+
+let parent = Hashtbl.create 17
+let type_assoc=[("gobject.initiallyunowned","giu")]
+let type_except=["gobject.object"]
+let rec parents p = 
+  if Hashtbl.mem parent p then
+    let pp =Hashtbl.find parent p in
+    p::(parents pp)
+  else 
+    [p]
+let rename_variant str = 
+ let str = 
+   if List.mem_assoc str type_assoc then 
+     List.assoc str type_assoc 
+   else 
+     caml_escape str
+ in
+ if String.contains str '.' then begin
+   let buf = Buffer.create (String.length str) in
+   String.iter (fun s -> if s='.' then Buffer.add_char buf '_' else Buffer.add_char buf s) str;
+   Buffer.contents buf
+ end else 
+   str
+     
+
+let rec format_parents l = 
+  match List.filter (fun t -> not (List.mem t type_except)) (List.map String.lowercase l) with
+    | [] -> ""
+    | [t] -> "`" ^ (rename_variant t)
+    | t::q -> "`" ^ (rename_variant t) ^ " | " ^ (format_parents q)
+
 module Translations = struct
+  let conversions = Hashtbl.create 17
+
+  (* These types must be registered with g_boxed_register! *)
+  let boxeds = [
+    "Gdk", ["Color"; "Font";];
+    "Pango", ["FontDescription";];
+    "Gtk", ["IconSet";"SelectionData";"TextIter";"TreePath"; "TreeIter";];
+  ]
+
+  let classes = [
+    "Gdk", [ "Image"; "Pixmap"; "Bitmap"; "Screen"; "DragContext";];
+    "Gtk", [ "Style"; "TreeStore"; "TreeModel"; "TreeModelFilter"; "Tooltip" ]
+  ]
+
+  let specials = [
+    "GtkWidget", "GObj.conv_widget";
+    "GtkWidget_opt", "GObj.conv_widget_option";
+    "GtkAdjustment", "GData.conv_adjustment";
+    "GtkAdjustment_opt", "GData.conv_adjustment_option";
+  ]
+  let add_pointer conv gtk name =
+    Hashtbl.add conversions gtk
+      (Printf.sprintf "(%s : %s data_conv)" conv name);
+    Hashtbl.add conversions (gtk ^ "_opt")
+      (Printf.sprintf "(%s_option : %s option data_conv)" conv name)
+
+  let add_object = add_pointer "gobject"
+  let add_boxed = add_pointer "unsafe_pointer" (* the type is not used *)
+
+  let () =
+    List.iter (fun t -> Hashtbl.add conversions ("g"^t) t)
+      [ "boolean"; "char"; "uchar"; "int"; "uint"; "long"; "ulong";
+        "int32"; "uint32"; "int64"; "uint64"; "float"; "double" ];
+    List.iter (fun (gtype,conv) -> Hashtbl.add conversions gtype conv)
+      [ "gchararray", "string";
+        "gchararray_opt", "string_option";
+        "string", "string"; "utf8","string";"bool", "boolean"; "int", "int";
+        "int32", "int32"; "float", "float";
+      ];
+
+  
+ 
+  List.iter (fun (pre, l) ->
+    List.iter (fun name -> add_boxed (pre^name) (pre^"."^camlize name)) l;
+    List.iter (fun name -> add_boxed name (pre^"."^camlize name)) l) boxeds;
+  List.iter (fun (pre,l) ->
+    List.iter (fun t -> add_object (pre^t) (pre^"."^camlize t)) l;
+    List.iter (fun t -> add_object t (pre^"."^camlize t)) l)  classes;
+  add_object "GObject" "unit obj";
+  add_object "GtkWidget" "Gtk.widget obj"
+  
+  
+  
   let tbl = Hashtbl.create 17
-  let parent = Hashtbl.create 17
   let base_translation  =
     [
       ["gboolean"],("Val_bool","Bool_val",fun _ ->"bool");
@@ -396,35 +589,8 @@ module Translations = struct
   let find k = try Hashtbl.find tbl k with Not_found -> 
     fail_emit ("Cannot translate type " ^k)
     
-  let type_assoc=[("gobject.initiallyunowned","giu")]
-  let type_except=["gobject.object"]
-  let rec parents p = 
-    if Hashtbl.mem parent p then
-      let pp =Hashtbl.find parent p in
-      p::(parents pp)
-    else 
-      [p]
-   
-   let rename_variant str = 
-    let str = 
-      if List.mem_assoc str type_assoc then 
-        List.assoc str type_assoc 
-      else 
-        str
-    in
-    if String.contains str '.' then begin
-      let buf = Buffer.create (String.length str) in
-      String.iter (fun s -> if s='.' then Buffer.add_char buf '_' else Buffer.add_char buf s) str;
-      Buffer.contents buf
-    end else 
-      str
-        
 
-  let rec format_parents l = 
-    match List.filter (fun t -> not (List.mem t type_except)) (List.map String.lowercase l) with
-      | [] -> ""
-      | [t] -> "`" ^ (rename_variant t)
-      | t::q -> "`" ^ (rename_variant t) ^ " | " ^ (format_parents q)
+
     
 
   let to_type_macro s = 
@@ -451,10 +617,10 @@ module Translations = struct
       done;
       Buffer.contents buff
 
-  let add_klass_type ?parent:(c_parent="") ~is_record c_typ = 
-    if c_typ <> "" then 
+  let add_klass_type ?name:(c_name="") ?parent:(c_parent="") ~is_record c_typ = 
+    if c_name <> "" then 
       if c_parent<> "" then
-  Hashtbl.add parent c_typ c_parent;
+  Hashtbl.add parent c_name c_parent;
       let val_of = "Val_"^c_typ in
       let of_val = c_typ^"_val" in
       if is_record then begin
@@ -474,13 +640,16 @@ module Translations = struct
           (Format.sprintf "#define %s_new(val) Val_GObject_new((GObject*)val)@." 
    val_of);
       end;
-      Hashtbl.add tbl (c_typ^"*") 
-        (val_of,of_val,
-         fun variance ->
-     if c_parent= "" then
-       Format.sprintf "[%c`%s] obj" variance (rename_variant (String.lowercase c_typ))
+        let typ=fun variance -> if c_parent= "" then
+       Format.sprintf "[%c`%s] obj" variance (rename_variant (String.lowercase c_name))
      else
-       Format.sprintf "[%c%s] obj" variance (format_parents (parents c_typ)))
+       Format.sprintf "[%c%s] obj" variance (format_parents (parents  c_name)) in
+        let trans = (val_of,of_val,
+          typ) in
+       Hashtbl.add tbl (c_typ^"*") trans;
+       Hashtbl.add tbl (!ns^"."^c_name) trans;
+       Hashtbl.add conversions (c_typ^"*") ("(gobject : "^typ '>' ^" data_conv)");
+       Hashtbl.add conversions (!ns^"."^c_name) ("(gobject : "^typ '>' ^" data_conv)")
 end    
 
 let repositories = ref []
@@ -492,6 +661,8 @@ module Emit = struct
 
   let emit_property p =
     p
+    
+  let emit_signal s = s
     
 
   let emit_parameter rank p = match p.p_typ with
@@ -588,8 +759,9 @@ module Emit = struct
     let methods = List.map (emit_method k) k.c_methods in
     (*let constructor = List.map (emit_constructor k) k.c_constructors in*)
     let properties = List.map emit_property k.c_properties in
+    let signals = List.map emit_signal k.c_glib_signals in
     let functions = List.map  emit_function k.c_functions in
-    k.c_name,properties,methods,functions
+    k,properties,signals,methods,functions
 
   module Print = struct
   open Pretty
@@ -635,103 +807,271 @@ module Emit = struct
     
     
     
-    
-    
-  let caml_keywords = ["type","kind"; "class","classe"; "list", "liste"]
-  let caml_modules = ["List", "Liste"]
-  let is_not_uppercase = function
-  | 'A' .. 'Z' -> false
-  | _ -> true
-let camlize id =
-  let b = Buffer.create (String.length id + 4) in
-  for i = 0 to String.length id - 1 do
-    match id.[i] with
-    | 'A' .. 'Z' as c ->
-	if i > 0 && 
-	  (is_not_uppercase id.[i-1] || 
-	  (i < String.length id - 1 && is_not_uppercase id.[i+1]))
-	then Buffer.add_char b '_' ;
-	Buffer.add_char b (Char.lowercase c)
-    | '-' ->
-	Buffer.add_char b '_'
-    | c ->
-	Buffer.add_char b c
-  done;
-  let s = Buffer.contents b in
-  try List.assoc s caml_keywords with Not_found -> s
-  let conversions = Hashtbl.create 17
-  let () =
-  List.iter (fun t -> Hashtbl.add conversions ("g"^t) t)
-    [ "boolean"; "char"; "uchar"; "int"; "uint"; "long"; "ulong";
-      "int32"; "uint32"; "int64"; "uint64"; "float"; "double" ];
-  List.iter (fun (gtype,conv) -> Hashtbl.add conversions gtype conv)
-    [ "gchararray", "string";
-      "gchararray_opt", "string_option";
-      "string", "string"; "utf8","string";"bool", "boolean"; "int", "int";
-      "int32", "int32"; "float", "float";
-    ]
-    
   let convert_type c_typ=
-  if Hashtbl.mem conversions c_typ then
-    Hashtbl.find conversions c_typ
-  else begin
-    print_string ("Type non connu "^ c_typ ^ "\n");
-    c_typ
-  end
-  let print_properties fmt k_name p = match p.pr_typ with
-     | Typ(c_typ) when Hashtbl.mem conversions c_typ.t_name ->
+  try
+    Hashtbl.find Translations.conversions c_typ
+  with Not_found ->
+  try
+    Hashtbl.find Translations.conversions ( !ns ^"."^c_typ)
+  with Not_found ->
+    try 
+      let (_,_,t) = Translations.find c_typ in
+      t ' '
+    with Cannot_emit(s)->
+    try 
+      let (_,_,t) = Translations.find (!ns^"."^c_typ) in
+      t ' '
+    with Cannot_emit(s)->
+    print_string ("Type non connu "^ c_typ ^"\n");
+    raise (Cannot_emit s)
+    (*failwith "Type non connu"*)
+  
+  let may_cons_props ml properties = 
+    try 
+    List.iter (fun p -> 
+      let _ = match p.pr_typ with 
+        | Typ(typ) -> convert_type typ.t_name 
+        | _ -> print_string ("Type non connu  may_cons_props\n");
+          failwith "Type non connu" in ()) properties;
+    Format.fprintf ml "let pl = @ ";
+    List.iter (fun p -> 
+      let gtype=match p.pr_typ with Typ(typ) -> convert_type typ.t_name | _ -> "" in
+       let op = if check_suffix gtype "_opt" then "may_cons_opt" else "may_cons" in
+       Format.fprintf ml "(@;<0>%s P.%s %s " op (camlize p.pr_name) (camlize p.pr_name))
+    properties;
+    Format.fprintf ml "pl";
+    for k = 1 to List.length properties do Format.fprintf ml ")" done;
+    Format.fprintf ml " in@\n"
+    with Failure("Type non connu") -> ()
+  
+  
+  let print_properties fmt props k_name p = match p.pr_typ with
+     | Typ(c_typ) ->(try 
      Format.fprintf fmt "let %s : ([>`%s],_) property = {name=\"%s\"; conv=%s}@ "
-      (camlize p.pr_name) (String.lowercase k_name) p.pr_name (convert_type c_typ.t_name)
-     | Typ(c_typ) -> print_string ("Type non connu "^ c_typ.t_name ^ "\n");
+      (camlize p.pr_name) (String.lowercase k_name) p.pr_name (convert_type c_typ.t_name);
+      props:=p:: !props;
+      with Cannot_emit(_)->())
+     | Array(typ) -> print_string ("ddddsdsd "^p. pr_name^" "^typ.a_typ.t_name^"\n")
      | _ -> ()
+
+let rec min_labelled = function
+  | [] -> []
+  | a :: l ->
+      let l = min_labelled l in
+      if l = [] && a = "" then [] else a::l
+let omarshaller ~gtk_class ~name ppf (l,tyl,ret) =
+    let out fmt = Format.fprintf ppf fmt in
+    out "fun f -> marshal%d" (List.length l);
+    if ret <> "" then
+      out "_ret ~ret:%s" (ret);
+    List.iter (fun ty -> out " %s" ty) tyl;
+    if l<>[] then
+    out " \"%s::%s\"" gtk_class name;
+    if List.for_all ((=) "") l then out " f" else begin
+      let l = min_labelled l in
+      out " (fun ";
+      for i = 1 to List.length l do out "x%d " i done;
+      out "-> f";
+      let i = ref 0 in
+      List.iter
+        (fun p ->
+          incr i; if p="" then out " x%d" !i else out " ~%s:x%d" p !i)
+        l;
+      out ")";
+    end
+
+
+  let print_signals fmt sigs k s = match s.sig_return_value.r_typ with
+    | Typ(c_typ) when c_typ.t_name = "none" -> 
+      Format.fprintf fmt "let %s = {name=\"%s\"; classe=`%s; marshaller=marshal_unit}@ "
+      (camlize s.sig_name) s.sig_name (String.lowercase k.c_name);
+      sigs:=s:: !sigs
+    | Typ(c_typ) -> (
+      try
+        let l = List.map (fun p -> caml_escape (p.p_name)) s.sig_parameters
+        and tyl = List.map (fun p -> match p.p_typ with Typ(typ) -> typ.t_name | Array(typ) -> typ.a_c_typ | _ -> failwith "Brzz") s.sig_parameters
+        and ret = c_typ.t_name in
+        let map =List.map convert_type tyl 
+        and ret = if ret <> "" then convert_type ret else ret in
+         Format.fprintf fmt "let %s = {name=\"%s\"; classe=`%s; marshaller="
+        (camlize s.sig_name) s.sig_name (String.lowercase k.c_name) ;
+        omarshaller ~gtk_class:k.c_c_type ~name:s.sig_name fmt
+                (l, map, ret);
+        Format.fprintf fmt "}@ ";
+        sigs:=s:: !sigs;
+      with Cannot_emit(_) -> ()
+      )
+    | _ -> ()
 
   let rename_klass str=
     if str.[0]='_' then
       str.[0] <- 'U';
     str
 
-  let klass ~ml ~c (k_name,properties,methods,functions) = 
-    Format.fprintf ml "@[<hv 2>module %s = struct@\n"
-      (rename_klass k_name);
-    Format.fprintf ml "@[<hv 2>module P = struct@\n";
-    List.iter (print_properties ml k_name) properties;
-    Format.fprintf ml "@]end@\n";
+  let klass ~ml ~c (k,properties,signals,methods,functions) =
+    Format.fprintf ml "@[<hv 2>module %s = struct@ "
+      (rename_klass k.c_name);
+    Format.fprintf ml "let cast w : [>%s] obj = try_cast w \"%s\"@ " 
+      (format_parents (parents k.c_name)) k.c_c_type;
+    let props=ref [] and sigs = ref [] in
+    if properties <> [] then (
+      Format.fprintf ml "@[<hv 2>module P = struct@ ";
+      List.iter (print_properties ml props k.c_name) properties;
+      Format.fprintf ml "@]end@\n";
+    );
+    if signals <> [] then (
+      Format.fprintf ml "@[<hv 2>module S = struct@ ";
+      Format.fprintf ml "open GtkSignal@ ";
+      List.iter (print_signals ml sigs k) signals;
+      Format.fprintf ml "@]end@ ";
+    );
+    let props= !props and sigs= !sigs in
+    if not k.c_abstract then (
+      let cprops = List.filter (fun p -> p.pr_construct_only) props  in
+      Format.fprintf ml "@[<hv 2>let create";
+      List.iter (fun p -> Format.fprintf ml " ?%s" (camlize p.pr_name)) cprops;
+       Format.fprintf ml " pl =@\n"; (* à caster *)
+      may_cons_props ml cprops;
+      (* tester si Gobject est parent *)
+      Format.fprintf ml "@]Object.make \"%s\" pl@ " k.c_c_type;
+      if props<> [] then begin
+        Format.fprintf ml "@[<hov4>let make_params ~cont pl";
+        List.iter (fun p -> Format.fprintf ml " ?%s" (camlize p.pr_name)) props;
+        Format.fprintf ml  "=@ ";
+        may_cons_props ml props;
+        Format.fprintf ml  "@ cont pl@]\n";
+      end;
+    );
+    if props<> [] || sigs<> []  then (
+      if k.c_abstract then
+        Format.fprintf ml "@[<hv2>let check w ="
+      else begin
+        Format.fprintf ml "@[<hv2>let check () =";
+         if props<> [] then Format.fprintf ml "@ let w = create [] in"
+      end;
+      if props<> [] then Format.fprintf ml "@ let c p = Property.check w p in";
+      (*if sigs <> [] then begin
+        Format.fprintf ml "@ let closure = Closure.create ignore in";
+        Format.fprintf ml "@ let s name = GtkSignal.connect_by_name";
+        Format.fprintf ml " w ~name ~closure ~after:false in";
+      end;*)
+      List.iter (fun p -> if p.pr_readable then 
+        Format.fprintf ml "@ c P.%s;" (camlize p.pr_name)) props;
+      (*List.iter (fun s -> Format.fprintf ml "@ s %s;" (camlize s.sig_name)) sigs;*)
+      Format.fprintf ml "@ ()@]\n";
+    );
     List.iter (may_ml_stub ml) methods;
     (*List.iter (may_ml_stub ml) constructors;*)
     List.iter (may_ml_stub ml) functions;
     Format.fprintf ml "@]end@\n";
 
-    Format.fprintf c "@[/* Module %s */@\n" (rename_klass k_name);
+    Format.fprintf c "@[/* Module %s */@ " (rename_klass k.c_name);
     List.iter (may_c_stub c) methods;
     (*List.iter (may_c_stub c) constructors;*)
     List.iter (may_c_stub c) functions;
-    Format.fprintf c "@]/* end of %s */@\n" (rename_klass k_name)
+    Format.fprintf c "@]/* end of %s */@ " (rename_klass k.c_name)
       
   let functions ~ml ~c f = 
-    Format.fprintf ml "@[(* Global functions *)@\n";
+    Format.fprintf ml "@[(* Global functions *)@ ";
     List.iter (may_ml_stub ml) f;
-    Format.fprintf ml "(* End of global functions *)@]@\n";
+    Format.fprintf ml "(* End of global functions *)@]@ ";
 
-    Format.fprintf c "@[/* Global functions */@\n";
+    Format.fprintf c "@[/* Global functions */@ ";
     List.iter (may_c_stub c) f;
-    Format.fprintf c "/* End of global functions */@]@\n"
+    Format.fprintf c "/* End of global functions */@]@ "
+    
+  let hashes = Hashtbl.create 57
+  let print_enumeration ~tagsml ~tagsc ~tagsh e = 
+    let mlname = (camlize e.e_name) in
+    Format.fprintf tagsml "type %s = [\n" mlname;
+    ignore (match e.e_members with
+      | [] ->()
+      | m::q -> Format.fprintf tagsml "`%s" (String.uppercase (camlize m.m_name));
+    List.iter (fun m ->
+      Format.fprintf tagsml "|`%s@ " (String.uppercase (camlize m.m_name))) q);
+    Format.fprintf tagsml "]@\n";
+    List.iter (fun m ->
+      let tag = String.uppercase (camlize m.m_name) in
+      let hash = hash_variant tag in
+      try
+        let tag' = Hashtbl.find hashes hash in
+        if tag <> tag' then
+          failwith (String.concat " " ["Doublon tag:";tag;"and";tag'])
+      with Not_found ->
+        Hashtbl.add hashes hash tag;
+      Format.fprintf tagsh "#define MLTAG_%s ((value)(%d*2+1))@\n" tag hash) 
+    e.e_members;
+    Format.fprintf tagsh "extern const lookup_info ml_table_%s_%s[];@ " (camlize !ns) mlname;
+    Format.fprintf tagsc "const lookup_info ml_table_%s_%s[] = {@ " (camlize !ns) mlname;
+    Format.fprintf tagsc "  {0,%d},@\n" (List.length e.e_members);
+    List.iter (fun m ->
+      Format.fprintf tagsc "  { MLTAG_%s, %s },\n" (String.uppercase (camlize m.m_name)) m.m_c_identifier) 
+    e.e_members;
+    Format.fprintf tagsc "};@\n";
+    Format.fprintf tagsh "#define Val_%s_%s(data) ml_lookup_from_c (ml_table_%s_%s, data)\n" (camlize !ns) mlname (camlize !ns) mlname;
+    Format.fprintf tagsh "#define %s_%s_val(key) ml_lookup_to_c (ml_table_%s_%s, key)\n\n" (String.capitalize mlname) (camlize !ns) (camlize !ns) mlname
+      
 
   let repository r = 
     let n = r.rep_namespace in
+    ns:=n.ns_name;
     let stub_ml_channel = open_out ("stubs/stubs_"^n.ns_name^".ml") in
     let ml = Format.formatter_of_out_channel stub_ml_channel in
     let stub_c_channel = open_out ("stubs/ml_stubs_"^n.ns_name^".c") in
     let c = Format.formatter_of_out_channel stub_c_channel in
+    let tagsc_channel = open_out ("stubs/tags_"^n.ns_name^".c") in
+    let tagsh_channel = open_out ("stubs/tags_"^n.ns_name^".h") in
+    let tagsml_channel = open_out ("stubs/tags_"^n.ns_name^".ml") in
+    let tagsc = Format.formatter_of_out_channel tagsc_channel in
+    let tagsh = Format.formatter_of_out_channel tagsh_channel in
+    let tagsml = Format.formatter_of_out_channel tagsml_channel in
     Format.fprintf ml "%s@\n" (Buffer.contents ml_header);
+    List.iter (fun i -> Format.fprintf ml "open Tags_%s@\n" i.inc_name) (List.rev r.rep_includes);
+    Format.fprintf ml "open Tags_%s@\n" n.ns_name;
+    Format.fprintf ml "%s@\n" r.rep_data.data_ml_header;
+    Format.fprintf tagsml "open Gpointer@\n";
+    List.iter (print_enumeration ~tagsml ~tagsc ~tagsh) n.ns_enum;
+    let _ = match n.ns_enum with
+      [] ->()
+      | e::q->
+          Format.fprintf tagsc "CAMLprim value ml_%s_get_tables ()\n{\n  static const lookup_info *ml_lookup_tables[] = {\n  ml_table_%s_%s,@\n" (camlize !ns) (camlize !ns) (camlize e.e_name);
+          Format.fprintf tagsml "external _get_tables : unit ->\n    %s variant_table@\n"  (camlize e.e_name);
+          List.iter (fun e -> Format.fprintf tagsc "ml_table_%s_%s,@\n" (camlize !ns) (camlize e.e_name);  
+          Format.fprintf tagsml "    * %s variant_table@\n"  (camlize e.e_name);) q;
+          Format.fprintf tagsc "};\nreturn (value)ml_lookup_tables;}@\n";
+          Format.fprintf tagsml "= \"ml_%s_get_tables\"@\n\nlet " (camlize !ns);
+          Format.fprintf tagsml " %s@ " (camlize e.e_name);
+          List.iter (fun e ->   Format.fprintf tagsml ", %s@ " (camlize e.e_name)) q; 
+          Format.fprintf tagsml " =  _get_tables ()\n\nlet _make_enum = Gobject.Data.enum@\n";
+          List.iter (fun e -> Format.fprintf tagsml "let %s_conv = _make_enum %s@\n" (camlize e.e_name) (camlize e.e_name)) n.ns_enum;
+      in
+    Format.fprintf c "%s@\n" r.rep_data.data_c_header;
     Format.fprintf c "%s@\n" (Buffer.contents c_header);
     Format.fprintf c "#include <%s>@." r.rep_c_include.c_inc_name;
     Format.fprintf c "#include \"../wrappers.h\"@\n\
                       #include \"../ml_gobject.h\"@.";
-
+    List.iter (fun i -> Format.fprintf c "#include \"tags_%s.h\"@\n" i.inc_name) (List.rev r.rep_includes);
+    Format.fprintf c "#include \"tags_%s.h\"@\n" n.ns_name;
+    List.iter (fun i -> Format.fprintf c "#include \"tags_%s.c\"@\n" i.inc_name) (List.rev r.rep_includes);
+    Format.fprintf c "#include \"tags_%s.c\"@\n" n.ns_name;
     List.iter (klass ~ml ~c) (List.map emit_klass n.ns_klass);
     functions ~ml ~c (List.map emit_function n.ns_functions);
+    
+    let get_type = List.map (fun k -> k.c_glib_get_type) n.ns_klass in
+    Format.fprintf c "CAMLprim value ml_init_type(value unit){@ ";
+    Format.fprintf c "GType t =@ ";
+    List.iter (fun t -> if t<>"" then Format.fprintf c "%s() +@ " t) get_type;
+    Format.fprintf c "0;@ ";
+    Format.fprintf c "return Val_GType(t);}@ ";
+    Format.fprintf ml "external init_type : unit -> int = \"ml_init_type\"@ ";
+    
+    Format.fprintf ml "%s@\n" r.rep_data.data_ml_function;
+    Format.fprintf c "%s@\n" r.rep_data.data_c_function;
     Format.fprintf ml "@.";
     Format.fprintf c "@.";
+    Format.fprintf tagsc "@.";
+    Format.fprintf tagsh "@.";
+    Format.fprintf tagsml "@.";
     close_out stub_ml_channel;
     close_out stub_c_channel
 
@@ -982,6 +1322,86 @@ let parse_parameters set attrs children =
 let parse_bf set attrs children =
   let bf = dummy_bf () in
   set bf
+let parse_enum_member set attrs children =
+    let n=dummy_enum_member() in
+    List.iter (fun (key,v) -> match key with
+      | "name"->n.m_name<-v
+      | "value"->n.m_value<-v
+      | "c:identifier"->n.m_c_identifier<-v
+      | "glib:nick"->n.m_nick<-v
+      | other -> Format.printf "Ignoring attribute in member: %s@." other)
+      attrs;
+    List.iter (function
+         | PCData s ->
+       Format.printf "Ignoring PCData in signal:%s@." s
+         | Element (key,attrs,children) ->
+       match key with
+         | "doc" when not !debug -> ()
+         | other -> Format.printf
+       "Ignoring child in signal:%s@." other)
+    children;
+  set n
+let parse_enum set attrs children = 
+  let n=dummy_enumeration() in
+  List.iter (fun (key,v) -> match key with
+        | "name" ->n.e_name<-v
+        | "glib:type-name" ->n.e_type_name<-v
+        | "glib:get-type" ->n.e_get_type<-v
+        | "c:type" ->n.e_c_type<-v
+        | other -> Format.printf "Ignoring attribute in enumeration: %s@." other)
+    attrs;
+  List.iter (function
+         | PCData s ->
+       Format.printf "Ignoring PCData in signal:%s@." s
+         | Element (key,attrs,children) ->
+       match key with
+         | "member" -> parse_enum_member 
+           (fun m -> n.e_members<- m::n.e_members)
+           attrs children
+         | "doc" when not !debug -> ()
+         | other -> Format.printf
+       "Ignoring child in signal:%s@." other)
+    children;
+  Hashtbl.add Translations.tbl n.e_c_type ("Val_"^(camlize !ns)^"_"^(camlize n.e_name),(String.capitalize (camlize n.e_name))^"_"^(camlize !ns)^"_val",fun _ ->(camlize n.e_name));
+  Hashtbl.add Translations.tbl (!ns^"."^n.e_name) ("Val_"^(camlize !ns)^"_"^(camlize n.e_name),(String.capitalize (camlize n.e_name))^"_"^(camlize !ns)^"_val",fun _ ->(camlize n.e_name));
+  Hashtbl.add Translations.conversions  n.e_c_type ((camlize n.e_name)^"_conv");
+  Hashtbl.add Translations.conversions  (!ns^"."^n.e_name) ((camlize n.e_name)^"_conv");
+  set n
+  
+  
+let parse_signal set attrs children = 
+  let s = dummy_signal () in
+  List.iter (fun (key,v) -> match key with
+        | "name" -> s.sig_name <-v
+        | "when" -> s.sig_when <- v
+        | "version" -> s.sig_version <- v;
+        | "transfer-ownership" ->
+       parse_ownership
+         (fun o -> s.sig_ownership <- o)
+         v
+        | other ->
+       Format.printf "Ignoring attribute in signal: %s@." other)
+    attrs;
+  List.iter (function
+         | PCData s ->
+       Format.printf "Ignoring PCData in signal:%s@." s
+         | Element (key,attrs,children) ->
+       match key with
+         | "return-value" -> 
+       parse_return_value 
+         (fun r -> s.sig_return_value <- r)
+         attrs 
+         children
+         | "parameters" -> 
+          parse_parameters (fun l -> s.sig_parameters <- l)
+         attrs
+         children
+         | "doc" when not !debug -> ()
+         | other -> Format.printf
+       "Ignoring child in signal:%s@." other)
+    children;
+  set s
+        
 
 let parse_function set attrs children =
   let fct = dummy_function () in
@@ -1042,7 +1462,7 @@ let parse_klass ~is_record set attrs children =
          k.c_name 
          other)
     attrs;
-  Translations.add_klass_type ~parent:k.c_parent ~is_record k.c_c_type;
+  Translations.add_klass_type ~name:k.c_name ~parent:k.c_parent ~is_record k.c_c_type;
   List.iter (function 
          | PCData s -> 
        Format.printf "Ignoring PCData in klass %s:%s@." k.c_name s
@@ -1068,6 +1488,11 @@ let parse_klass ~is_record set attrs children =
          (fun f -> k.c_properties <- f::k.c_properties)
          attrs
          children
+         | "glib:signal" -> 
+       parse_signal 
+          (fun f -> k.c_glib_signals <- f::k.c_glib_signals)
+          attrs
+          children
          | "field"|"implements"|"virtual-method"|"doc" -> 
        if !debug then 
          Format.printf
@@ -1103,8 +1528,9 @@ let parse_c_include set attrs =
     attrs;
   set k
   
-let rec parse_repository set dir attrs children = 
+let rec parse_repository set dir attrs children data = 
   let k = dummy_repository () in
+  k.rep_data<-data;
   List.iter (fun (key,v) -> match key with 
          | "version" -> k.rep_version <- v
          | "xmlns" -> k.rep_xmlns <- v
@@ -1147,11 +1573,11 @@ let rec parse_repository set dir attrs children =
     children;
   set k
 
-and parse_xml dir x = 
+and parse_xml dir data x= 
   match x with 
     | PCData c -> Format.printf "CDATA: %S@ " c
     | Element ("repository",attrs,children) -> 
-      parse_repository register_reposirory dir attrs children
+      parse_repository register_reposirory dir attrs children data
     | Element (key,attrs,children) -> 
   let children =
     begin match key with 
@@ -1159,7 +1585,7 @@ and parse_xml dir x =
     Format.printf "Ignoring toplevel child:%s@." other;
     children
     end
-  in List.iter (parse_xml dir) children
+  in List.iter (parse_xml dir data) children
 and parse_include set dir args = 
   match args with
     | ["name",name;"version",version] ->
@@ -1172,10 +1598,10 @@ and parse_include set dir args =
     | _ -> Format.printf "Cannot parse include: %a@."  
   (Pretty.pp_args ";") args 
 
-and parse_namespace set attrs children =
+and parse_namespace set attrs children=
   let n = dummy_namespace () in
   List.iter (fun (key,v) -> match key with 
-         | "name" -> n.ns_name <- v
+         | "name" -> n.ns_name <- v; ns:=v;
          | "version" -> n.ns_version <- v
          | "shared-library" -> n.ns_shared_library <- v
          | "c:identifier-prefixes" -> n.ns_c_identifier_prefixes <- v
@@ -1217,6 +1643,10 @@ and parse_namespace set attrs children =
            | "bitfield" -> 
          parse_bf (fun k -> n.ns_bf <- k::n.ns_bf)
            attrs children
+           | "enumeration" ->
+         parse_enum (fun k -> n.ns_enum<-k::n.ns_enum)
+            attrs children  
+           
            | other -> 
          Format.printf "Ignoring child in namespace %s: %s@."
            n.ns_name
@@ -1229,25 +1659,55 @@ and parse_namespace set attrs children =
     children;
   set n
     
+and parse_data s data = match data with
+  | Xml.Element (key,attr,children) ->
+    ( match key with
+        | "repository" -> List.iter (parse_data s) children;
+        | "ml_header" -> (match children with 
+              | [Xml.PCData str] -> s.data_ml_header <- str;
+              | _ -> ()
+              )
+        | "c_header" -> (match children with 
+              | [Xml.PCData str] -> s.data_c_header <- str;
+              | _ -> ()
+              )
+        | "ml_function" -> (match children with 
+              | [Xml.PCData str] -> s.data_ml_function <- str;
+              | _ -> ()
+              )
+        | "c_function" -> (match children with 
+              | [Xml.PCData str] -> s.data_c_function <- str;
+              | _ -> ()
+              )
+        | _ -> ()
+      )
+    | _ -> ()
+        
 
 and parse dir f = 
   try 
     let full = Filename.concat dir f in 
+    let data_file = Str.global_replace (Str.regexp "gir$") "xml" f in
+    let data_path = Filename.concat "../data/" data_file in
+    let data = dummy_data () in
+    let _=parse_data data (Xml.parse_file data_path) in
     Format.printf "Parsing '%s'@." full;
     let xml = Xml.parse_file full in
-    parse_xml dir xml
+    parse_xml dir data xml
   with Xml.Error m -> 
     Format.printf "XML error:%s@." (Xml.error m);
     exit 1
 
  let () = 
-   for i=1 to Array.length Sys.argv - 1 do
-     let name=Filename.basename Sys.argv.(i) in
-     let dir = Filename.dirname Sys.argv.(i) in
-     parse dir name
-   done;
-   debug_all();
-   List.iter Emit.Print.repository (get_repositories ())
+  for i=1 to Array.length Sys.argv - 1 do
+    let name=Filename.basename Sys.argv.(i) in
+    let dir = Filename.dirname Sys.argv.(i) in
+      parse dir name
+  done;
+  if !debug then
+    debug_all();
+  List.iter (Emit.Print.repository) (get_repositories ());
+  
 
 (*  let funcs,klass = emit_all () in
   let stub_ml_channel = open_out "stubs.ml" in
