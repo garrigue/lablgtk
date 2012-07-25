@@ -131,7 +131,8 @@ ML_1(gtk_accel_map_load,String_val,Unit)
 ML_1(gtk_accel_map_save,String_val,Unit)
 ML_3(gtk_accel_map_add_entry,String_val,Int_val, OptFlags_GdkModifier_val, Unit)
 ML_4(gtk_accel_map_change_entry,String_val,Int_val, OptFlags_GdkModifier_val,
-     Int_val, Val_bool)
+     Bool_val, Val_bool)
+
 static void accel_map_func (gpointer data,
                             const gchar *accel_path,
                             guint accel_key,
@@ -145,8 +146,9 @@ static void accel_map_func (gpointer data,
     args[2] = Val_GdkModifier_flags(accel_mods);
     End_roots();
     args[3] = Val_int(changed);
-    callbackN_exn (*(value*)data, 4, args);
+    caml_callbackN_exn (*(value*)data, 4, args);
 }
+
 CAMLprim value ml_gtk_accel_map_foreach(value func)
 {
     CAMLparam1(func);
