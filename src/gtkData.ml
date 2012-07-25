@@ -72,14 +72,10 @@ module AccelMap = struct
     ?modi:Gdk.Tags.modifier list -> unit
     = "ml_gtk_accel_map_add_entry"
   let add_entry  ?(key=0) ?modi s = add_entry s ~key ?modi
-  external change_entry : 
-    string -> 
-    key:Gdk.keysym -> 
-    ?modi:Gdk.Tags.modifier list ->
-    replace:bool -> bool
-    = "ml_gtk_accel_map_add_entry"
+  external change_entry : string -> Gdk.keysym -> Gdk.Tags.modifier list option -> bool -> bool
+    = "ml_gtk_accel_map_change_entry"
   let change_entry ?(key=0) ?modi ?(replace=true) s =
-    change_entry s ~key ?modi ~replace
+    change_entry s key modi replace
   external foreach :
     (path:string -> key:int ->
      modi:Gdk.Tags.modifier list -> changed:bool -> unit) -> unit
