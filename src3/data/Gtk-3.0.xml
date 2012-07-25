@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<repository>
+<types>
+  <conv c="a" ml="b"/>
+</types>
+<ml_header>
+open Gobject
+open Data
+module Object = GtkObject
+let may_cons = Property.may_cons
+let may_cons_opt = Property.may_cons_opt
+</ml_header>
+<c_header>
+#include &lt;string.h&gt;
+#include &lt;gtk/gtk.h&gt;
+#include &lt;caml/mlvalues.h&gt;
+#include &lt;caml/alloc.h&gt;
+#include &lt;caml/memory.h&gt;
+#include &lt;caml/callback.h&gt;
+#include &lt;caml/fail.h&gt;
+
+//#include "../../wrappers.h"
+//#include "../../ml_gobject.h"
+</c_header>
+<ml_function>
+
+module Main = struct
+  open StdLabels
+  open Gtk
+  let () = Callback.register_exception "gtkerror" (Error"")
+  let () = Gc.set {(Gc.get()) with Gc.max_overhead = 1000000}
+  external init : string array -&gt; string array = "ml_gtk_init"
+  (* external set_locale : unit -&gt; string = "ml_gtk_set_locale" *)
+  external disable_setlocale : unit -&gt; unit = "ml_gtk_disable_setlocale"
+  (* external main : unit -&gt; unit = "ml_gtk_main" *)
+  let init ?(setlocale=true) () =
+    let setlocale =
+      try Sys.getenv "GTK_SETLOCALE" &lt;&gt; "0" with Not_found -&gt; setlocale in
+    if not setlocale then disable_setlocale ();
+    let argv =
+      try
+	init Sys.argv
+      with Error err -&gt;
+        raise (Error ("GtkMain.init: initialization failed\n" ^ err))
+    in
+    if setlocale then ignore (Glib.Main.setlocale `NUMERIC (Some "C"));
+    Array.blit ~src:argv ~dst:Sys.argv ~len:(Array.length argv)
+      ~src_pos:0 ~dst_pos:0;
+    Obj.truncate (Obj.repr Sys.argv) (Array.length argv);
+    if setlocale then Glib.Main.setlocale `ALL None else ""
+  open Glib
+  let loops = ref []
+  let default_main () =
+    let loop = (Main.create true) in
+    loops := loop :: !loops;
+    while Main.is_running loop do Main.iteration true done;
+    if !loops &lt;&gt; [] then loops := List.tl !loops
+  let main_func = ref default_main
+  let main () = !main_func ()
+  let quit () = if !loops &lt;&gt; [] then Main.quit (List.hd !loops)
+  external get_current_event_time : unit -&gt; int32
+    = "ml_gtk_get_current_event_time"
+end
+</ml_function>
+<c_function>
+void ml_raise_gtk (const char *errmsg)
+{
+  static value * exn = NULL;
+  if (exn == NULL)
+      exn = caml_named_value ("gtkerror");
+  raise_with_string (*exn, (char*)errmsg);
+}
+
+
+CAMLprim value ml_gtk_init (value argv)
+{
+    CAMLparam1 (argv);
+    int argc = Wosize_val(argv), i;
+    CAMLlocal1 (copy);
+
+    copy = (argc ? alloc (argc, Abstract_tag) : Atom(0));
+    for (i = 0; i &lt; argc; i++) Field(copy,i) = Field(argv,i);
+    if( !gtk_init_check (&amp;argc, (char ***)&amp;copy) ){
+      ml_raise_gtk ("ml_gtk_init: initialization failed");
+    }
+
+    argv = (argc ? alloc (argc, 0) : Atom(0));
+    for (i = 0; i &lt; argc; i++) modify(&amp;Field(argv,i), Field(copy,i));
+    CAMLreturn (argv);
+}
+</c_function>
+</repository>
