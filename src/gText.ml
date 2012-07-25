@@ -153,6 +153,8 @@ type contents =
 class nocopy_iter it =
 object(self)
   val it = (it:text_iter)
+  method as_iter = it
+  method assign (r : nocopy_iter) = Iter.assign it r#as_iter
   method forward_char = Iter.forward_char it
   method backward_char = Iter.backward_char it
   method forward_chars n = Iter.forward_chars it n

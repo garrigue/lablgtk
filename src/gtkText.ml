@@ -230,6 +230,7 @@ end
 
 module Iter = struct
   external copy : text_iter -> text_iter = "ml_gtk_text_iter_copy"
+  external assign : text_iter -> text_iter -> unit = "ml_gtk_text_iter_assign"
   external get_buffer : text_iter -> text_buffer = "ml_gtk_text_iter_get_buffer"
   external get_offset : text_iter -> int = "ml_gtk_text_iter_get_offset"
   external get_line : text_iter -> int = "ml_gtk_text_iter_get_line"

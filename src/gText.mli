@@ -148,6 +148,8 @@ type contents =
 (** @gtkdoc gtk gtk-GtkTextIter *)
 class nocopy_iter :  text_iter -> 
 object
+  method as_iter : text_iter
+  method assign : nocopy_iter -> unit
   method backward_char : bool
   method backward_chars : int -> bool
   method backward_cursor_position : bool
