@@ -185,23 +185,22 @@ and source_completion_context :
     method set_activation : source_completion_activation_flags list -> unit
   end
 
-(** Ad-hoc structure to implement source_completion_provider from OCaml *)
+class type custom_completion_provider =
+  object
+    method name : string
+    method icon : GdkPixbuf.pixbuf option
+    method populate : source_completion_context -> unit
+    method matched : source_completion_context -> bool
+    method activation : source_completion_activation_flags list
+    method info_widget : source_completion_proposal -> GObj.widget option
+    method update_info : source_completion_proposal -> source_completion_info -> unit
+    method start_iter : source_completion_context -> source_completion_proposal -> GText.iter -> bool
+    method activate_proposal : source_completion_proposal -> GText.iter -> bool
+    method interactive_delay : int
+    method priority : int
+  end
 
-type provider = {
-  provider_name : unit -> string;
-  provider_icon : unit -> GdkPixbuf.pixbuf option;
-  provider_populate : GtkSourceView2_types.source_completion_context obj -> unit;
-  provider_match : GtkSourceView2_types.source_completion_context obj -> bool;
-  provider_activation : unit -> source_completion_activation_flags list;
-  provider_info_widget : GtkSourceView2_types.source_completion_proposal obj -> Gtk.widget obj option;
-  provider_update_info : GtkSourceView2_types.source_completion_proposal obj -> GtkSourceView2_types.source_completion_info obj -> unit;
-  provider_start_iter : GtkSourceView2_types.source_completion_context obj -> GtkSourceView2_types.source_completion_proposal obj -> text_iter -> bool;
-  provider_activate_proposal : GtkSourceView2_types.source_completion_proposal obj -> text_iter -> bool;
-  provider_interactive_delay : unit -> int;
-  provider_priority : unit -> int;
-}
-
-val source_completion_provider : provider -> source_completion_provider
+val source_completion_provider : custom_completion_provider -> source_completion_provider
 
 (** {2 GtkSourceCompletion} *)
 
@@ -340,16 +339,17 @@ class source_undo_manager: (GtkSourceView2_types.source_undo_manager as 'b) obj 
     method undo : unit -> unit
   end
 
-type custom_undo_manager = {
-  can_undo : unit -> bool;
-  can_redo : unit -> bool;
-  undo : unit -> unit;
-  redo : unit -> unit;
-  begin_not_undoable_action : unit -> unit;
-  end_not_undoable_action : unit -> unit;
-  can_undo_changed : unit -> unit;
-  can_redo_changed : unit -> unit;
-}
+class type custom_undo_manager =
+  object
+    method can_undo : bool
+    method can_redo : bool
+    method undo : unit -> unit
+    method redo : unit -> unit
+    method begin_not_undoable_action : unit -> unit
+    method end_not_undoable_action : unit -> unit
+    method can_undo_changed : unit -> unit
+    method can_redo_changed : unit -> unit
+  end
 
 val source_undo_manager : custom_undo_manager -> source_undo_manager
 

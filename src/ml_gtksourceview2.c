@@ -219,7 +219,7 @@ typedef struct _CustomObjectClass CustomCompletionProviderClass;
 struct _CustomObject
 {
   GObject parent;      /* this MUST be the first member */
-  value caml_object;
+  value* caml_object;
 };
 
 struct _CustomObjectClass
@@ -227,41 +227,33 @@ struct _CustomObjectClass
   GObjectClass parent;      /* this MUST be the first member */
 };
 
+typedef struct _CustomObject CustomObject;
+typedef struct _CustomObjectClass CustomObjectClass;
+
+static void custom_object_finalize (GObject *object) {
+  GObjectClass *parent_class;
+  CustomObject* custom = (CustomObject*) object;
+  parent_class = (GObjectClass*) g_type_class_peek_parent (object);
+  ml_global_root_destroy(custom->caml_object);
+  (*parent_class->finalize)(object);
+}
+
 GType custom_completion_provider_get_type();
 
 #define TYPE_CUSTOM_COMPLETION_PROVIDER (custom_completion_provider_get_type ())
 #define IS_CUSTOM_COMPLETION_PROVIDER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_CUSTOM_COMPLETION_PROVIDER))
-#define METHOD(obj, n) (Field(obj->caml_object, n))
+#define METHOD(obj, n) (Field(*(obj->caml_object), n))
 // #define METHOD(obj, name) (callback(caml_get_public_method(obj->caml_object, hash_variant(name)), obj->caml_object))
-#define METHOD1(obj, n, arg1) (callback(Field(obj->caml_object, n), arg1))
-#define METHOD2(obj, n, arg1, arg2) (callback2(Field(obj->caml_object, n), arg1, arg2))
-#define METHOD3(obj, n, arg1, arg2, arg3) (callback3(Field(obj->caml_object, n), arg1, arg2, arg3))
-
-extern void caml_minor_collection(void);
+#define METHOD1(obj, n, arg1) (callback(Field(*(obj->caml_object), n), arg1))
+#define METHOD2(obj, n, arg1, arg2) (callback2(Field(*(obj->caml_object), n), arg1, arg2))
+#define METHOD3(obj, n, arg1, arg2, arg3) (callback3(Field(*(obj->caml_object), n), arg1, arg2, arg3))
 
 CAMLprim value ml_custom_completion_provider_new (value obj) {
   CAMLparam1(obj);
   CustomCompletionProvider* p = (CustomCompletionProvider*) g_object_new (TYPE_CUSTOM_COMPLETION_PROVIDER, NULL);
   g_assert (p != NULL);
-  if(Is_block(obj) &&
-      (char*)obj < (char*)caml_young_end &&
-      (char*)obj > (char*)caml_young_start)
-    {
-      caml_register_global_root (&obj);
-      caml_minor_collection();
-      caml_remove_global_root (&obj);
-    }
-
-  p->caml_object = obj;
-
+  p->caml_object = ml_global_root_new(obj);
   CAMLreturn (Val_GtkSourceCompletionProvider_new(p));
-
-}
-
-CAMLprim value ml_custom_completion_provider_proj (value obj) {
-  CAMLparam1(obj);
-  CustomCompletionProvider* p = (CustomCompletionProvider *) GtkSourceCompletionProvider_val(obj);
-  CAMLreturn (p->caml_object);
 }
 
 gchar* custom_completion_provider_get_name (GtkSourceCompletionProvider* p) {
@@ -282,16 +274,16 @@ void custom_completion_provider_populate (GtkSourceCompletionProvider* p, GtkSou
   METHOD1(obj, 2, Val_GtkSourceCompletionContext(context));
 }
 
-gboolean custom_completion_provider_match (GtkSourceCompletionProvider* p, GtkSourceCompletionContext *context) {
-  g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), FALSE);
-  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
-  return Bool_val (METHOD1(obj, 3, Val_GtkSourceCompletionContext(context)));
-}
-
 GtkSourceCompletionActivation custom_completion_provider_get_activation (GtkSourceCompletionProvider* p) {
   g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), 0);
   CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
-  return Flags_Source_completion_activation_flags_val (METHOD1(obj, 4, Val_unit));
+  return Flags_Source_completion_activation_flags_val (METHOD1(obj, 3, Val_unit));
+}
+
+gboolean custom_completion_provider_match (GtkSourceCompletionProvider* p, GtkSourceCompletionContext *context) {
+  g_return_val_if_fail (IS_CUSTOM_COMPLETION_PROVIDER(p), FALSE);
+  CustomCompletionProvider *obj = (CustomCompletionProvider *) p;
+  return Bool_val (METHOD1(obj, 4, Val_GtkSourceCompletionContext(context)));
 }
 
 GtkWidget* custom_completion_provider_get_info_widget (GtkSourceCompletionProvider* p, GtkSourceCompletionProposal *proposal) {
@@ -351,11 +343,8 @@ static void custom_completion_provider_interface_init (GtkSourceCompletionProvid
 static void custom_completion_provider_class_init (CustomCompletionProviderClass *c)
 {
   GObjectClass *object_class;
-  GObjectClass *parent_class;
-
-  parent_class = (GObjectClass*) g_type_class_peek_parent (c);
   object_class = (GObjectClass*) c;
-  object_class->finalize = parent_class->finalize;
+  object_class->finalize = custom_object_finalize;
 }
 
 GType custom_completion_provider_get_type (void)
@@ -394,7 +383,6 @@ GType custom_completion_provider_get_type (void)
 
   return custom_completion_provider_type;
 }
-
 
 ML_1 (gtk_source_completion_provider_get_name, GtkSourceCompletionProvider_val, Val_string)
 ML_1 (gtk_source_completion_provider_get_icon, GtkSourceCompletionProvider_val, Val_option_GdkPixbuf)
@@ -451,7 +439,8 @@ CAMLexport value Val_GtkSourceCompletionProposal_func(gpointer w) {
 }
 
 CAMLexport gpointer GtkSourceCompletionProposal_val_func(value val) {
-  return GtkSourceCompletionProposal_val(val);
+  CAMLparam1(val);
+  CAMLreturnT (gpointer, GtkSourceCompletionProvider_val(val));
 }
 
 #define Val_Proposals(val) Val_GList(val, Val_GtkSourceCompletionProposal_func)
@@ -599,19 +588,8 @@ CAMLprim value ml_custom_undo_manager_new (value obj) {
   CAMLparam1(obj);
   CustomUndoManager* p = (CustomUndoManager*) g_object_new (TYPE_CUSTOM_UNDO_MANAGER, NULL);
   g_assert (p != NULL);
-  if(Is_block(obj) &&
-      (char*)obj < (char*)caml_young_end &&
-      (char*)obj > (char*)caml_young_start)
-    {
-      caml_register_global_root (&obj);
-      caml_minor_collection();
-      caml_remove_global_root (&obj);
-    }
-
-  p->caml_object = obj;
-
+  p->caml_object = ml_global_root_new(obj);
   CAMLreturn (Val_GtkSourceUndoManager_new(p));
-
 }
 
 gboolean custom_undo_manager_can_undo (GtkSourceUndoManager* p) {
@@ -664,11 +642,8 @@ void custom_undo_manager_can_redo_changed (GtkSourceUndoManager* p) {
 
 void custom_undo_manager_class_init (CustomUndoManagerClass* c) {
   GObjectClass *object_class;
-  GObjectClass *parent_class;
-
-  parent_class = (GObjectClass*) g_type_class_peek_parent (c);
   object_class = (GObjectClass*) c;
-  object_class->finalize = parent_class->finalize;
+  object_class->finalize = custom_object_finalize;
 }
 
 void custom_undo_manager_interface_init (GtkSourceUndoManagerIface *iface, gpointer data) {

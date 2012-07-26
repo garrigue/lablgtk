@@ -91,11 +91,9 @@ struct
   }
 
   external match_ : source_completion_provider obj -> source_completion_context obj -> bool =
-    "ml_gtk_source_completion_provider_get_activation"
+    "ml_gtk_source_completion_provider_match"
   external new_ : provider -> source_completion_provider obj =
     "ml_custom_completion_provider_new"
-  external proj : source_completion_provider obj -> provider =
-    "ml_custom_completion_provider_proj"
 
 end
 

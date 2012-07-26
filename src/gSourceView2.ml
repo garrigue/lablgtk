@@ -165,7 +165,6 @@ class source_completion_provider
   (obj' : GtkSourceView2_types.source_completion_provider obj) =
   object
     val obj = obj'
-    val provider = SourceCompletionProvider.proj obj'
     method as_source_completion_provider = obj
     method icon = SourceCompletionProvider.get_icon obj
     method name = SourceCompletionProvider.get_name obj
@@ -233,22 +232,44 @@ and source_completion_context
       Gobject.set iter_prop obj (iter#as_iter)
   end
 
-type provider = {
-  provider_name : unit -> string;
-  provider_icon : unit -> GdkPixbuf.pixbuf option;
-  provider_populate : GtkSourceView2_types.source_completion_context obj -> unit;
-  provider_match : GtkSourceView2_types.source_completion_context obj -> bool;
-  provider_activation : unit -> source_completion_activation_flags list;
-  provider_info_widget : GtkSourceView2_types.source_completion_proposal obj -> Gtk.widget obj option;
-  provider_update_info : GtkSourceView2_types.source_completion_proposal obj -> GtkSourceView2_types.source_completion_info obj -> unit;
-  provider_start_iter : GtkSourceView2_types.source_completion_context obj -> GtkSourceView2_types.source_completion_proposal obj -> text_iter -> bool;
-  provider_activate_proposal : GtkSourceView2_types.source_completion_proposal obj -> text_iter -> bool;
-  provider_interactive_delay : unit -> int;
-  provider_priority : unit -> int;
-}
+class type custom_completion_provider =
+  object
+    method name : string
+    method icon : GdkPixbuf.pixbuf option
+    method populate : source_completion_context -> unit
+    method matched : source_completion_context -> bool
+    method activation : source_completion_activation_flags list
+    method info_widget : source_completion_proposal -> GObj.widget option
+    method update_info : source_completion_proposal -> source_completion_info -> unit
+    method start_iter : source_completion_context -> source_completion_proposal -> GText.iter -> bool
+    method activate_proposal : source_completion_proposal -> GText.iter -> bool
+    method interactive_delay : int
+    method priority : int
+  end
 
-let source_completion_provider p =
-  let obj = SourceCompletionProvider.new_ (Obj.magic p) in
+let source_completion_provider (p : custom_completion_provider) : source_completion_provider =
+  let of_context ctx = new source_completion_context ctx in
+  let of_proposal prop = new source_completion_proposal prop in
+  let of_info info = new source_completion_info info in
+  let of_iter iter = new GText.iter iter in
+  let as_opt_widget = function
+  | None -> None
+  | Some obj -> Some obj#as_widget
+  in
+  let completion_provider = {
+    SourceCompletionProvider.provider_name = (fun () -> p#name);
+    provider_icon = (fun () -> p#icon);
+    provider_populate = (fun ctx -> p#populate (of_context ctx));
+    provider_match = (fun ctx -> p#matched (of_context ctx));
+    provider_activation = (fun () -> p#activation);
+    provider_info_widget = (fun prop -> as_opt_widget (p#info_widget (of_proposal prop)));
+    provider_update_info = (fun prop info -> p#update_info (of_proposal prop) (of_info info));
+    provider_start_iter = (fun ctx prop iter -> p#start_iter (of_context ctx) (of_proposal prop) (of_iter iter));
+    provider_activate_proposal = (fun prop iter -> p#activate_proposal (of_proposal prop) (of_iter iter));
+    provider_interactive_delay = (fun () -> p#interactive_delay);
+    provider_priority = (fun () -> p#priority);
+  } in
+  let obj = SourceCompletionProvider.new_ completion_provider in
   new source_completion_provider obj
 
 (** {2 GtkSourceCompletion} *)
@@ -378,19 +399,31 @@ class source_undo_manager
     method connect = new source_undo_manager_signals obj
   end
 
-type custom_undo_manager = {
-  can_undo : unit -> bool;
-  can_redo : unit -> bool;
-  undo : unit -> unit;
-  redo : unit -> unit;
-  begin_not_undoable_action : unit -> unit;
-  end_not_undoable_action : unit -> unit;
-  can_undo_changed : unit -> unit;
-  can_redo_changed : unit -> unit;
-}
+class type custom_undo_manager =
+  object
+    method can_undo : bool
+    method can_redo : bool
+    method undo : unit -> unit
+    method redo : unit -> unit
+    method begin_not_undoable_action : unit -> unit
+    method end_not_undoable_action : unit -> unit
+    method can_undo_changed : unit -> unit
+    method can_redo_changed : unit -> unit
+  end
 
-let source_undo_manager manager =
-  new source_undo_manager (SourceUndoManager.new_ (Obj.magic manager))
+let source_undo_manager (manager : custom_undo_manager) : source_undo_manager =
+  let undo_manager = {
+    SourceUndoManager.can_undo = (fun () -> manager#can_undo);
+    can_redo = (fun () -> manager#can_redo);
+    undo = manager#undo;
+    redo = manager#redo;
+    begin_not_undoable_action = manager#begin_not_undoable_action;
+    end_not_undoable_action = manager#end_not_undoable_action;
+    can_undo_changed = manager#can_undo_changed;
+    can_redo_changed = manager#can_redo_changed;
+  } in
+  let obj = SourceUndoManager.new_ undo_manager in
+  new source_undo_manager obj
 
 (** {2 GtkSourceBuffer} *)
 
