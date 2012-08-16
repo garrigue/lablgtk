@@ -104,8 +104,8 @@ class channel ~(handler:Message_handler.irc_message_handler)
   in
   let hb = GPack.hbox ~packing:(vb#pack ~expand:true) ()
   in
-  let view = GBroken.text ~vadjustment:adj ~packing:(hb#pack ~expand:true) ()
-  and sb = GRange.scrollbar `VERTICAL ~adjustment:adj ~packing:hb#pack ()
+  let sw = GBin.scrolled_window ~hpolicy:`AUTOMATIC ~packing:hb#add () in
+  let view = GText.view ~packing:sw#add ()
   and members = new Members.members ~width:100 ~packing:hb#pack ()
   and h = handler
   in
@@ -116,9 +116,9 @@ class channel ~(handler:Message_handler.irc_message_handler)
   in
   let colormap = view#misc#colormap
   in
-  let red   = Gdk.Color.alloc ~colormap (`RGB(0xffff,0,0))
-  and green = Gdk.Color.alloc ~colormap (`RGB(0,0xffff,0))
-  and blue  = Gdk.Color.alloc ~colormap (`RGB(0,0,0xffff))
+  let red   = view#buffer#create_tag [`FOREGROUND "red"]
+  and green = view#buffer#create_tag [`FOREGROUND "green"]
+  and blue  = view#buffer#create_tag [`FOREGROUND "blue"]
   in
   let part =  new GUtil.signal ()
   in
@@ -126,26 +126,26 @@ class channel ~(handler:Message_handler.irc_message_handler)
     match m with
       (Some (name,_,_) , Message.MSG_PRIVATE, Some [c;m]) -> 
 	if c = channel_name then
-	  print_text ~u_foreground:(`COLOR red) ~emit:(server#auto_url_open())
+	  print_text ~u_tags:[red] ~emit:(server#auto_url_open())
 	    view (message_text name m)
 	else if name = channel_name then
-	  print_text ~u_foreground:(`COLOR red) ~emit:(server#auto_url_open())
+	  print_text ~u_tags:[red] ~emit:(server#auto_url_open())
 	    view (message_text name m)
     | (None , Message.MSG_PRIVATE, Some [c;m]) -> 
 	if c = channel_name then
-	  print_text ~u_foreground:(`COLOR red) view 
+	  print_text ~u_tags:[red] view 
 	    (message_text channel_name m)
     | (Some (name,_,_), Message.MSG_TOPIC, Some [c;t]) ->
 	if c = channel_name then 
 	  begin 
 	    set_topic label channel_name t;
-	    print_text ~foreground:(`COLOR green) view 
+	    print_text ~tags:[green] view 
 	      ("Topic set by "^name^": "^t)
 	  end
     | (Some (n, _, _), Message.MSG_JOIN, Some [c]) ->
 	if c = channel_name then 
 	  (members#append n; 
-	   print_text ~foreground:(`COLOR red)
+	   print_text ~tags:[red]
 	     view ("***  "^n^" has joined "^c); 
 	   ())
     | (Some (n, _, _), Message.MSG_PART, Some [c; m]) ->
@@ -153,7 +153,7 @@ class channel ~(handler:Message_handler.irc_message_handler)
 	  if c = channel_name then 
 	    begin
 	      (members#remove n;
-	       print_text ~foreground:(`COLOR red)
+	       print_text ~tags:[red]
 		 view ("***  "^n^" has left "^c^" ("^m^")"); ());
 	      if n = server#nick () then
 		part#call ((handler#server)#part_message ());
@@ -163,19 +163,19 @@ class channel ~(handler:Message_handler.irc_message_handler)
 	if members#check n then 
 	  begin
 	    members#remove n;
-	    print_text ~foreground:(`COLOR red)
+	    print_text ~tags:[red]
 	      view ("***  "^n^" has left IRC. ("^m^")"); ()
 	  end
     | (Some (n, _, _), Message.MSG_NICK, Some [new_n]) ->
 	begin
-	  print_text ~foreground:(`COLOR blue)
+	  print_text ~tags:[blue]
 	    view ("***  "^n^" is now known as "^new_n^"."); 
 	  members#change n new_n
 	end
     | (Some (n, _, _), Message.MSG_MODE, Some (c::t)) ->
 	if c = channel_name then 
 	  begin
-	    print_text ~foreground:(`COLOR blue) view 
+	    print_text ~tags:[blue] view 
 	      ("New mode set by "^n^":"^(mode_string t));
 	    let
 		need_names = check_channel_string t cf false
@@ -194,7 +194,7 @@ class channel ~(handler:Message_handler.irc_message_handler)
 	      if c = channel_name then 
 		begin
 		  set_topic label channel_name t; 
-		  print_text ~foreground:(`COLOR green) view 
+		  print_text ~tags:[green] view 
 		    ("Topic for this channel: "^t)
 		end
 	  | (_, Reply.RPL_NAMREPLY, Some [_;_;c;t]) -> 
@@ -238,7 +238,7 @@ class channel ~(handler:Message_handler.irc_message_handler)
     method channelname = channelname
     method initialize () = ()
     method my_message = 
-      (fun x -> print_text ~u_foreground:(`COLOR red) view 
+      (fun x -> print_text ~u_tags:[red] view 
 	  (my_message_text (server#nick ()) x))
     initializer
       h#connect#message ~callback:m_check;
