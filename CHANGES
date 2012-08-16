@@ -2,6 +2,11 @@ LablGTK changes log
 
 In Lablgtk-2.16.0:
 
+2012.07.26 [Pierre-Marie]
+  * improvements to GtkSourceView2.
+  * add cast and assignation functions to GText.nocopy_iter.
+  * add Gtk 2.10 missing key modifiers.
+
 2012.07.24 [Jacques]
   * can still install using old-install.
 
