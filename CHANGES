@@ -2,6 +2,10 @@ LablGTK changes log
 
 In Lablgtk-2.16.0:
 
+2012.08.16 [Jacques]
+  * update applications/browser for OCaml 4.00
+  * update applications/camlirc to use GText instead of GBroken.text
+
 2012.07.26 [Pierre-Marie]
   * improvements to GtkSourceView2.
   * add cast and assignation functions to GText.nocopy_iter.

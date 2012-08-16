@@ -14,8 +14,7 @@ RANLIB = ranlib
 
 include ../../config.make
 
-MLFLAGS = -I ../../src -I ocaml-src/utils -I ocaml-src/parsing \
-	-I ocaml-src/typing -I ocaml-src/toplevel
+MLFLAGS = -I ../../src -I +compiler-libs
 ifdef DEBUG
 MLFLAGS += -custom -g -ccopt -g #-cclib -lcamlrund
 endif
@@ -35,7 +34,7 @@ MLOBJS =  list2.cmo jg_memo.cmo jg_message.cmo file.cmo \
 	shell.cmo editor.cmo
 
 browser: $(MLOBJS)
-	$(LINKER) -o $@	toplevellib.cma str.cma unix.cma \
+	$(LINKER) -o $@	ocamlcommon.cma str.cma unix.cma \
 	    lablgtk.cma	$(MLOBJS)
 
 clean:

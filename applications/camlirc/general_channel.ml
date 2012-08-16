@@ -36,7 +36,6 @@ class general_channel ~(handler:Message_handler.irc_message_handler)
   let server = handler#server
   in
   let vb = GPack.vbox ?packing ?show ()
-  and adj = GData.adjustment ()
   and channel_name = server#nick ()
   in
   let topic_hb = GPack.hbox ~packing:vb#pack ()
@@ -45,8 +44,9 @@ class general_channel ~(handler:Message_handler.irc_message_handler)
       ~packing:topic_hb#pack ()
   and hb = GPack.hbox ~packing:(vb#pack ~expand:true) () 
   in
-  let view = GBroken.text ~vadjustment:adj ~packing:(hb#pack ~expand:true) ()
-  and sb = GRange.scrollbar `VERTICAL ~adjustment:adj ~packing:hb#pack ()
+  let sw = GBin.scrolled_window ~hpolicy:`AUTOMATIC ~packing:hb#add ()
+  in
+  let view = GText.view ~packing:sw#add ()
   and members = GList.clist ~columns:1 ~titles:["nickname"] 
       ~width:100 ~packing:hb#pack ()
   and h = handler
