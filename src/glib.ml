@@ -41,6 +41,7 @@ module Main = struct
     [ `ALL | `COLLATE | `CTYPE | `MESSAGES | `MONETARY | `NUMERIC | `TIME ]
   external setlocale : locale_category -> string option -> string 
     = "ml_setlocale"
+  external wrap_poll_func : unit -> unit = "ml_g_wrap_poll_func"
 end
 
 let int_of_priority = function

@@ -8,6 +8,8 @@ In Lablgtk-2.16.0:
   * support threaded toplevel with Quartz backend, using gtkThTop.ml
     (runs the toplevel loop in another thread)
   * remove GtkThInit from META (not portable)
+  * avoid busy waiting by using g_main_context_set_poll_func to
+    make polling non-blocking
 
 2012.08.16 [Jacques]
   * update applications/browser for OCaml 4.00

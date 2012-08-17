@@ -45,6 +45,7 @@ module Main : sig
   type locale_category =
     [ `ALL | `COLLATE | `CTYPE | `MESSAGES | `MONETARY | `NUMERIC | `TIME ]
   val setlocale : locale_category -> string option -> string 
+  val wrap_poll_func : unit -> unit
 end
 
 val int_of_priority : [< `HIGH | `DEFAULT | `HIGH_IDLE | `DEFAULT_IDLE | `LOW] -> int
