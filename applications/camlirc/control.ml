@@ -276,7 +276,7 @@ class config_dialog ~(settings : Server.server_info_list) () =
   let buttons = GPack.hbox ~packing:w#vbox#add ~homogeneous:true ()
   in
   let new_b = GButton.button  ~label:"New" ~packing:buttons#pack ()
-  and finish_b = GButton.button  ~label:"Quit" ~packing:buttons#pack ()
+  and finish_b = GButton.button  ~label:"Finish" ~packing:buttons#pack ()
   and delete_b = GButton.button  ~label:"Delete" ~packing:buttons#pack ()
   and cancel_b = GButton.button  ~label:"Cancel" ~packing:buttons#pack ()
   in
