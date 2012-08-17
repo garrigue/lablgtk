@@ -36,7 +36,9 @@
     in GMain.main.
     *)
 val main : ?set_delay_cb: (unit -> unit) -> unit -> unit
-(** Start the main loop in a new GUI thread. Do not use recursively. *)
+(** Start the main loop in a new GUI thread. Do not use recursively.
+    Do not use with the Quartz backend, as the GUI must imperatively
+    run in the main thread. *)
 val start : unit -> Thread.t
 (** The real main function *)
 val thread_main : ?set_delay_cb: (unit -> unit) -> unit -> unit
