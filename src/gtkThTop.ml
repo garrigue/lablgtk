@@ -20,8 +20,12 @@
 (*                                                                        *)
 (**************************************************************************)
 
-(* GtkThInit: Start the main thread in a threaded toplevel *)
-(* Never use with the Quartz backend, as the GUI must run in the main thread *)
-(* See GtkThTop for another way to obtain the same result *)
+(* GtkThTop: alternative to GtkThInit. *)
+(* Runs the main loop in the main thread, and the toplevel loop in
+   another thread, since the GUI must run in the main thread when
+   using the Quartz backend. *)
 
-let thread = GtkThread.start ()
+open GtkThread
+
+let thread = Thread.create (fun () -> Toploop.loop Format.std_formatter) ()
+and () = main ();;

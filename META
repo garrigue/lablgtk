@@ -6,7 +6,6 @@ archive(byte) = "lablgtk.cma"
 archive(native) = "lablgtk.cmxa"
 archive(byte,mt) += "gtkThread.cmo"
 archive(native,mt) += "gtkThread.cmx"
-archive(toploop,mt) += "gtkThInit.cmo"
 
 package "init" (
   exists_if = "gtkInit.cmo,gtkInit.cmx"
