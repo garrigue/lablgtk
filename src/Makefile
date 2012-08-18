@@ -387,7 +387,7 @@ old-uninstall:
 	for f in $(CLIBS:lib%$(XA)=dll%$(XS)); \
 	  do rm "$(DLLDIR)"/$$f; done
 	for f in lablgladecc2$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE); \
-	  do rm "$(BINDIR)"/$$f; done
+	  do rm -f "$(BINDIR)"/$$f; done
 
 # Install using ocamlfind
 findlib-install: build.ml
@@ -442,7 +442,7 @@ findlib-install: build.ml
 findlib-uninstall:
 	ocamlfind remove lablgtk2
 	for f in lablgladecc2$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE); \
-	  do rm "$(BINDIR)"/$$f; done
+	  do rm -f "$(BINDIR)"/$$f; done
 
 lablgtk.cma liblablgtk2$(XA): $(COBJS) $(MLOBJS)
 	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)
