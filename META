@@ -7,7 +7,7 @@ archive(native) = "lablgtk.cmxa"
 archive(byte,mt) += "gtkThread.cmo"
 archive(native,mt) += "gtkThread.cmx"
 
-package "init" (
+package "auto-init" (
   exists_if = "gtkInit.cmo,gtkInit.cmx"
   description = "Auto-initialization of GTK"
   requires = "lablgtk2"
