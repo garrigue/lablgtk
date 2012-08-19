@@ -35,8 +35,10 @@ module SSet=
   Set.Make(struct type t = string let compare = Pervasives.compare end)
 
 let caml_avoid = List.fold_right SSet.add 
-  ["let";"external";"open";"true";"false";"exit"; "match";"ref";"end"] 
+  ["let";"external";"open";"true";"false";"exit"; "match";"ref";"end";
+   "module";"type";"begin"] 
   SSet.empty
+
 let camlize s =
   let s = String.copy s in
   s.[0] <- Char.lowercase s.[0];
@@ -113,6 +115,7 @@ type function_ = {
   mutable deprecated_version:string;
   mutable throws: bool;
   mutable introspectable: bool;
+  mutable moved_to: string
 }
 
 type constant = { mutable const_name:string;
@@ -225,10 +228,11 @@ let dummy_property () =
 let dummy_return_value () = {r_ownership=dummy_ownership ();
 			     r_typ=dummy_typ();
 			     r_doc=""}
-let dummy_function () = { f_name="";c_identifier="";version="";doc="";
+let dummy_function () = { f_name="#####";c_identifier="";version="";doc="";
 		     return_value=dummy_return_value ();
 		     parameters= [];deprecated="";
-		     deprecated_version="";throws=false;introspectable=true;}
+		     deprecated_version="";throws=false;introspectable=true;
+		     moved_to="";}
 let dummy_constant () = {const_name="";const_type=dummy_c_typ();const_value=""}
 
 let dummy_klass () = { 
@@ -434,7 +438,12 @@ module Translations = struct
       let of_val = c_typ^"_val" in
       if is_record then begin
         add_c_header 
-          (Format.sprintf "/*TODO: conversion for record '%s' */@." c_typ)
+          (Format.sprintf "/* conversion for record '%s' */@." c_typ);
+        add_c_header 
+          (Format.sprintf "#define %s(val) ((%s*)val)@." 
+	     of_val 
+	     c_typ);
+	  
       end else begin 
 	if of_val<> "GObject_val" then
           add_c_header 
@@ -521,7 +530,8 @@ module Emit = struct
 		    | _ -> ml_params;}}
 
   let emit_method k m =
-    try
+    if m.deprecated_version<>"" || m.moved_to<>"" then None
+    else try
       let self = dummy_parameter()in
       let t = dummy_c_typ () in
       t.t_c_typ<-k.c_c_type^"*";
@@ -547,10 +557,12 @@ module Emit = struct
       None
 
   let emit_function p = 
-    try Some (emit_prototype p)
-    with Cannot_emit s -> Format.printf "Cannot emit function %s:'%s'@." 
+    if p.deprecated_version<>"" || p.moved_to<>"" then None 
+    else
+      try Some (emit_prototype p)
+      with Cannot_emit s -> Format.printf "Cannot emit function %s:'%s'@." 
       p.c_identifier s; None
-
+	
   let emit_klass k = 
     let methods = List.map (emit_method k) k.c_methods in
     let functions = List.map  emit_function k.c_functions in
@@ -884,7 +896,7 @@ let parse_bf set attrs children =
 let parse_function set attrs children =
   let fct = dummy_function () in
   List.iter (fun (key,v) -> match key with
-	       | "name" -> fct.f_name <- v
+	       | "name" when v<>"" -> fct.f_name <- v
 	       | "c:identifier" -> fct.c_identifier <- v
 	       | "version" -> fct.version <- v
 	       | "doc" -> fct.doc <- v
@@ -892,6 +904,7 @@ let parse_function set attrs children =
 	       | "deprecated-version" -> fct.deprecated_version <- v
 	       | "throws" -> fct.throws <- v="1"
 	       | "introspectable" -> fct.introspectable <- v="1"
+	       | "moved-to" -> fct.moved_to <- v
 	       | other -> 
 		   Format.printf "Ignoring attribute in fct: %s@." other) 
     attrs;
@@ -1056,6 +1069,7 @@ and parse_xml dir x =
 		children
 	  end
 	in List.iter (parse_xml dir) children
+
 and parse_include set dir args = 
   match args with
     | ["name",name;"version",version] ->
@@ -1095,7 +1109,10 @@ and parse_namespace set attrs children =
 			     attrs children
 		       | "function" -> 
 			   parse_function 
-			     (fun f -> n.ns_functions <- f::n.ns_functions)
+			     (fun f -> 
+			       if !debug then 
+				 Format.printf "Global function:%S@." f.f_name;
+			       n.ns_functions <- f::n.ns_functions)
 			     attrs
 			     children
 		       | "alias" -> 
@@ -1124,7 +1141,6 @@ and parse_namespace set attrs children =
 		       s)
     children;
   set n
-    
 
 and parse dir f = 
   try 
@@ -1144,18 +1160,3 @@ and parse dir f =
    done;
    debug_all();
    List.iter Emit.Print.repository (get_repositories ())
-     
-(*  let funcs,klass = emit_all () in
-  let stub_ml_channel = open_out "stubs.ml" in
-  let ml = Format.formatter_of_out_channel stub_ml_channel in
-  let stub_c_channel = open_out "ml_stubs.c" in
-  let c = Format.formatter_of_out_channel stub_c_channel in
-  Format.fprintf ml "%s@\n" (Buffer.contents ml_header);
-  Format.fprintf c "%s@\n" (Buffer.contents c_header);
-  List.iter (Pretty.klass ~ml ~c) klass;
-  Pretty.functions ~ml ~c funcs;
-  Format.fprintf ml "@.";
-  Format.fprintf c "@.";
-  close_out stub_ml_channel;
-  close_out stub_c_channel;
-*)

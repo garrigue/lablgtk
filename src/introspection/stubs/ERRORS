@@ -1,0 +1,21 @@
+ml_stubs_Gtk.c: In function ‘ml_gtk_style_lookup_icon_set’:
+ml_stubs_Gtk.c:3510:1: warning: ‘gtk_style_lookup_icon_set’ is deprecated (declared at /usr/include/gtk-3.0/gtk/deprecated/gtkstyle.h:394): Use 'GtkStyleContext' instead [-Wdeprecated-declarations]
+ml_stubs_Gtk.c: In function ‘ml_gtk_style_get_style_property’:
+ml_stubs_Gtk.c:3512:1: warning: ‘gtk_style_get_style_property’ is deprecated (declared at /usr/include/gtk-3.0/gtk/deprecated/gtkstyle.h:635): Use 'GtkStyleContext' instead [-Wdeprecated-declarations]
+ml_stubs_Gtk.c: In function ‘ml_gtk_style_detach’:
+ml_stubs_Gtk.c:3513:1: warning: ‘gtk_style_detach’ is deprecated (declared at /usr/include/gtk-3.0/gtk/deprecated/gtkstyle.h:378): Use 'GtkStyleContext' instead [-Wdeprecated-declarations]
+ml_stubs_Gtk.c: In function ‘ml_gtk_style_copy’:
+ml_stubs_Gtk.c:3514:1: warning: ‘gtk_style_copy’ is deprecated (declared at /usr/include/gtk-3.0/gtk/deprecated/gtkstyle.h:373): Use 'GtkStyleContext' instead [-Wdeprecated-declarations]
+ml_stubs_Gtk.c: In function ‘ml_gtk_style_attach’:
+ml_stubs_Gtk.c:3515:1: warning: ‘gtk_style_attach’ is deprecated (declared at /usr/include/gtk-3.0/gtk/deprecated/gtkstyle.h:375): Use 'GtkStyleContext' instead [-Wdeprecated-declarations]
+ml_stubs_Gtk.c: In function ‘ml_gtk_container_class_find_child_property’:
+ml_stubs_Gtk.c:4431:1: warning: passing argument 1 of ‘gtk_container_class_find_child_property’ from incompatible pointer type [enabled by default]
+/usr/include/gtk-3.0/gtk/gtkcontainer.h:164:14: note: expected ‘struct GObjectClass *’ but argument is of type ‘struct GtkContainerClass *’
+ml_stubs_Gtk.c: In function ‘ml_gtk_rc_scanner_new’:
+ml_stubs_Gtk.c:4909:1: warning: ‘gtk_rc_scanner_new’ is deprecated (declared at /usr/include/gtk-3.0/gtk/deprecated/gtkrc.h:291): Use 'GtkStyleContext' instead [-Wdeprecated-declarations]
+ml_stubs_Gtk.c: In function ‘ml_gtk_rc_get_style_by_paths’:
+ml_stubs_Gtk.c:4915:1: warning: ‘gtk_rc_get_style_by_paths’ is deprecated (declared at /usr/include/gtk-3.0/gtk/deprecated/gtkrc.h:155): Use 'GtkStyleContext' instead [-Wdeprecated-declarations]
+ml_stubs_Gtk.c: In function ‘ml_gtk_rc_get_style’:
+ml_stubs_Gtk.c:4916:1: warning: ‘gtk_rc_get_style’ is deprecated (declared at /usr/include/gtk-3.0/gtk/deprecated/gtkrc.h:153): Use 'GtkStyleContext' instead [-Wdeprecated-declarations]
+ml_stubs_Gtk.c: In function ‘ml_gtk_rc_add_default_file’:
+ml_stubs_Gtk.c:4917:1: warning: ‘gtk_rc_add_default_file’ is deprecated (declared at /usr/include/gtk-3.0/gtk/deprecated/gtkrc.h:147): Use 'GtkStyleContext' instead [-Wdeprecated-declarations]
