@@ -75,7 +75,7 @@ How to compile:
   The following findlib packages are provided (according to configuration):
 
         lablgtk2
-        lablgtk2.init
+        lablgtk2.auto-init
         lablgtk2.gl
         lablgtk2.glade
         lablgtk2.gnomecanvas
