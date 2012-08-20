@@ -111,15 +111,16 @@ How to run the examples:
   In the examples directory just type:
         lablgtk2 ???.ml
 
-  Before installing lablgtk2 you have to use -localdir:
+  If you want to run them before installing lablgtk2 you have to use -localdir:
         ../src/lablgtk2 -localdir ???.ml
 
 How to link them:
   The lablgtk2 script loads an extra module GtkInit, whose only contents is:
         let locale = GtkMain.Main.init ()
-  You must either add this line, or add this module to your link,
-  before calling any Gtk function.
-  ocamlc -I +lablgtk2 -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
+  You must either add this line, or add this module to your link, before
+  calling any Gtk function. With ocamlfind, simply use
+  "-package lablgtk2.auto-init". Otherwise, use something similar to:
+        ocamlc -I +lablgtk2 -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
 
 How to use the threaded toplevel:
 
