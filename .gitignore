@@ -9,3 +9,5 @@ test_dynlink.*
 *.cm*
 *.o
 *.annot
+*~
+*.sw[po]
