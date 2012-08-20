@@ -6,3 +6,5 @@ configure.lineno
 aclocal.m4
 autom4te.cache
 test_dynlink.*
+*~
+*.sw[po]
