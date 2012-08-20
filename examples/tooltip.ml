@@ -10,8 +10,8 @@
 (* This file demonstrates how one can use the tooltip API
  * introduced with GTK+ 2.12.
  * Do:
- * ocamlc -c -I +lablgtk2 tooltip.ml
- * ocamlc -o tooltip.tpo -g -I . -I +lablgtk2 lablgtk.cma tooltip.cmo
+ * ocamlc -c -I ../src tooltip.ml
+ * ocamlc -o tooltip.tpo -g -I . -I ../src lablgtk.cma tooltip.cmo
  * ./main.tpo
  *
  *)
