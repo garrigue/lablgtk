@@ -2,7 +2,7 @@
              LablGTK2 2.16.0 : an interface to the GIMP Tool Kit
 
 Needed:
-        ocaml-3.11 or more
+        ocaml-3.11 or more (4.00 is preferred)
         gtk+-2.x (gtk+-2.12.x for full functionality)
         findlib 1.2.1 or more (for default install)
         GNU make (there is no standard for conditionals)
@@ -133,17 +133,22 @@ How to use the threaded toplevel:
   You should at once see a window appear, and then a button.
   The GTK main loop is running in a separate thread. Any command
   is immediately reflected by the system.
-  Beware that with bytecode threads, you cannot switch threads within
+  For Windows and OSX/Quartz, there are restrictions on which
+  commands can be used in which thread. See the windows port section
+  lower for how to use them.
+
+  When using threads in a stand-alone application, you must link with
+  gtkThread.cmo and call GtkThread.main in place of GMain.main.
+
+  Since 2.16.0, busy waiting is no longer necessary with systems
+  threads. (I.e., CPU usage is 0% if nothing occurs.)
+  If you use VM threads, you have to enable busy waiting by hand,
+  otherwise other threads won't be executed (cf. gtkThread.mli).
+  Beware that with VM threads, you cannot switch threads within
   a callback. The only thread related command you may use in a
   callback is Thread.create. Calling blocking operations may cause
   deadlocks. On the other hand, all newly created threads will be run
   outside of the callback, so they can use all thread operations.
-  There is no such problem for posix and win32 threads, but win32
-  threads have problems of their own. See the windows port section
-  lower.
-
-  When using threads in a stand-alone application, you must link with
-  gtkThread.cmo and call GtkThread.main in place of GMain.main.
 
 Structure of the (raw) Gtk* modules:
 
@@ -251,11 +256,6 @@ ML-side signals:
   signals, just like GTK signals. This proved very efficient to
   develop complex applications, abstracting the plumbing between
   various components. Explanations are provided in GUtil.mli.
-
-Comments on some widgets:
-  GText has changed a lot since the alpha release. In particular, most
-  movements with GText.iter are now functional. You can still modify
-  destructively by using the #nocopy interface.
 
 Contributed components:
 
@@ -379,6 +379,15 @@ Windows port
         # let w = sync (GWindow.window ~show:true) ();;
         # let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
         # b#connect#clicked (fun () -> prerr_endline "Hello");;
+
+OSX/Quartz port
+
+  Since Darwin is Unix, this port compiles as usual.
+  Note however that Quartz imposes even stronger restrictions than
+  Windows on threads: only the main thread of the application can do
+  GUI work. Just apply the same techniques as described above, being
+  careful to ensure that your first call to GtkThread.main occurs in
+  the main thread. This is done automatically in the threaded toplvel.
 
 Authors:
         Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
