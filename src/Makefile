@@ -19,7 +19,7 @@ DLLDIR = $(LIBDIR)/stublibs
 include $(CONFIG)
 
 TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE) \
-	$(THINITOBJS)
+	$(THINITOBJS) build.ml
 
 all: byte
 world: byte $(CAMLBEST)
@@ -328,7 +328,7 @@ PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) \
 	$(GNOMECANVASMLOBJS)
 
 # Install ml sources and C binaries, can then rebuild using build.ml
-preinstall: build.ml
+preinstall:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
 	cp $(PREOBJS:.cmo=.ml) "$(INSTALLDIR)"
 	for f in $(PREOBJS:.cmo=.mli); do \
@@ -345,7 +345,7 @@ old-install:
 	cp $(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) "$(INSTALLDIR)"
 	cp -p *.mli "$(INSTALLDIR)"
 	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) \
-	      $(EXTRA_OBJS:.cmo=.ml) "$(INSTALLDIR)"
+	      $(EXTRA_OBJS:.cmo=.ml) build.ml "$(INSTALLDIR)"
 	cp $(EXTRA_MLLIBS) $(MLLIBS) $(INITOBJS) "$(INSTALLDIR)"
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) $(CLIBS)
@@ -389,7 +389,7 @@ old-uninstall:
 	  do rm -f "$(BINDIR)"/$$f; done
 
 # Install using ocamlfind
-findlib-install: build.ml
+findlib-install:
 	mkdir -p "$(BINDIR)"
 	ocamlfind install lablgtk2 ../META \
     build.ml \

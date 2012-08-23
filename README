@@ -118,8 +118,9 @@ How to link them:
   The lablgtk2 script loads an extra module GtkInit, whose only contents is:
         let locale = GtkMain.Main.init ()
   You must either add this line, or add this module to your link, before
-  calling any Gtk function. With ocamlfind, simply use
-  "-package lablgtk2.auto-init". Otherwise, use something similar to:
+  calling any Gtk function. With ocamlfind, use
+        ocamlfind ocamlc -package lablgtk2.auto-init -linkpkg -w s ???.ml -o ???
+  Otherwise, use something similar to:
         ocamlc -I +lablgtk2 -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
 
 How to use the threaded toplevel:
