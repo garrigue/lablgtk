@@ -265,10 +265,10 @@ real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
 	  $(ALLTHOBJS:.cmo=.ml) $(BEFORE_DEPEND) *.mli > .depend
 
 ifeq ($(THREADS_LIB),no)
-lablgtktop$(XE): $(MLLIBS)
+lablgtktop$(XE): $(MLLIBS) $(CONFIG)
 	$(TOPLEVEL) $(CUSTOM) -o $@ $(MLLINK) -I . $(MLLIBS)
 else
-lablgtktop$(XE): $(MLLIBS) $(THOBJS)
+lablgtktop$(XE): $(MLLIBS) $(THOBJS) $(CONFIG)
 	$(TOPLEVEL) $(THFLAGS) $(CUSTOM) -o $@ $(THLINK) $(MLLINK) \
 	   -I . $(MLLIBS) $(THOBJS)
 endif
@@ -497,16 +497,16 @@ lablgtkspell.cmxs: DYNLINKLIBS=$(GTKSPELL_LIBS)
 gtkSignal.ml: gtkSignal.ml4
 	$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE) -impl $< -o $@
 
-gtkThread.cmo: gtkThread.ml
+gtkThread.cmo: gtkThread.ml $(CONFIG)
 	$(COMPILER) $(THFLAGS) $<
 
-gtkThread.cmi: gtkThread.mli
+gtkThread.cmi: gtkThread.mli $(CONFIG)
 	$(COMPILER) $(THFLAGS) $<
 
-gtkThread.cmx: gtkThread.ml
+gtkThread.cmx: gtkThread.ml $(CONFIG)
 	$(COMPOPT) $(THFLAGS) $<
 
-gtkThTop.cmo: gtkThTop.ml
+gtkThTop.cmo: gtkThTop.ml $(CONFIG)
 	$(COMPILER) $(THFLAGS) -I +compiler-libs $<
 
 xml_lexer.ml: xml_lexer.mll
