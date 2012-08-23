@@ -36,6 +36,10 @@ Binary installation
    Also, do not forget to add this binary directory to your path.
    Open Control Panel/User account/Environment variables, and edit
    either the personal or system variable Path to add c:\Gtk\bin.
+   If you cannot modify system variables directly, you can override
+   them by adding a fresh variable to your own environment:
+   	Variable name:	  Path
+	Value:	 	  c:\Gtk\bin;%Path%
 
 2) Install lablgtk2 binaries and scripts inside the OCaml distribution
      bin/*             	     -> bin
