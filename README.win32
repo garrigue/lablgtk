@@ -12,44 +12,52 @@ Binary installation
 
 1) Install the gtk2 libraries and dependencies.
    This binary distribution was built using the "bundle" package at
-     ftp://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.16/
+     ftp://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/
    (mirrors list at: ftp://ftp.gnome.org/pub/gnome/MIRRORS)
    Just follow the instructions in the README file inside the package.
    If you want to use the extension libraries (currently lablglade,
    lablrsvg and lablgnomecanvas are supported), you must also install
    the (numerous) dependencies. Here is what was used during
    compilation:
-    libglade (requires libxml2)
-    libgnomecanvas (requires libart_lgpl)
-    librsvg (requires libcroco and libgsf)
+    libglade-2.6.4 (requires libxml2)
+    libgnomecanvas-2.30.1 (requires libart_lgpl)
+    librsvg-2.32.1 (requires libcroco and libgsf)
    If you want to do custom linking, you need also the dev packages.
    All of these are available in the above win32 and
    win32/dependencies directories.
-   The distribution was compiled using the gtk+ bundle of 20090911,
+   The distribution was compiled using the gtk+ bundle of 20120208,
    but other versions should work too.
 
-2) Install lablgtk2 binaries and scripts inside the OCaml distribution
-     bin/lablgtk2.bat             -> bin
-     lib/stublibs/dlllablgtk2.dll -> lib/stublibs
-     lib/lablgtk2                 -> lib/lablgtk2
+   After unzipping all those archives in a common location (e.g. c:\Gtk),
+   it may be a good idea to go to c:\Gtk\bin and run
+      chmod +x *.dll
+   as some of the exta DLL's do not have the execution flag set.
 
-3) Go to the lib/lablgtk2 directory and execute
+2) Install lablgtk2 binaries and scripts inside the OCaml distribution
+     bin/*             	     -> bin
+     lib/site-lib/lablgtk2   -> lib/site-lib/lablgtk2
+   Then edit lib/ld.conf, and add the line
+     <path to ocaml>\lib\site-lib\lablgtk2
+
+3) If your distribution is newer than 4.00.0, go to the
+   lib/site-lib/lablgtk2 directory and execute
+
         ocaml build.ml
-   This will compile the ocaml part of the library (the C part is
+
+   You must also do that everytime you update your OCaml distribution.
+   This will recompile the ocaml part of the library (the C part is
    already compiled.)
    It may fail on the native code version (using ocamlopt) if the
    assembler is not on your path.  Look in the Objective Caml windows
    documentation for what is needed, and check that you have a working
    installation by compiling and linking a trivial program.
    Note also that the autodection for mingw is not fool-proof
-   (lablgtk2 has to be installed directly under the ocaml library), so
+   (lablgtk2 has to be installed at the expected location), so
    if the OCaml port annouced by build.ml is not the right one, you
    should specify it by hand inside build.ml.
 
-   You must repeat this compilation step every time you upgrade OCaml.
-
 4) Test in examples
-     lablgtk2.bat testgtk.ml
+     lablgtk2 testgtk.ml
 
    See also the "Windows port" section of the main LablGtk2 README for
    important remarks on threads on Windows.
@@ -57,7 +65,7 @@ Binary installation
 5) For custom linking or native code, you need to use the export
    libraries in the above DLL package. There is not default place to
    put them, so you should specify that at link time:
-     ocamlopt -ccopt "-LC:/opt/gtk/lib" -I +lablgtk2 lablgtk.cmxa \
+     ocamlopt -ccopt "-LC:/gtk/lib" -I +lablgtk2 lablgtk.cmxa \
          gtkInit.cmx testgtk.ml -o testgtk.exe
    Again, if this fails you must make sure that your ocamlopt really works,
    and that all paths are correctly specified.
