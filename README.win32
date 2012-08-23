@@ -73,14 +73,15 @@ Binary installation
 
 Full compilation with MSVC or mingw (for the brave)
 
-0) You will need the MSVC version of ocaml 3.11 or more,
+0) You will need the MSVC or mingw version of ocaml 3.11 or more,
   and cygwin development tools. You must also install flexdll
   (at least 0.7) from
        http://alain.frisch.fr/flexdll.html
+  (Flexdll is already included in the OCaml 4.00.0 installer)
 
 1) Install Gtk 2: use the precompiled binaries available at 
 
-     http://gladewin32.sourceforge.net/
+     ftp://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/
 
   This time you need the developper version.
   Do NOT even try to compile it yourself from scratch.
@@ -106,10 +107,10 @@ Full compilation with MSVC or mingw (for the brave)
    pkg-config --libs gtksourceview-1.0
   and see if an error is reported.
 
-3) Copy config.make.msvc or config.make.mingw to config.make, and edit it
+3) For MSVC, copy config.make.msvc to config.make, and edit it
    to set GTKROOT.
 
-   Alternatively, on mingw you may run the configure script.
+   On Mingw you should be able to run the configure script:
 	./configure --disable-gtktest
 
    If you do want to perform configuration time Gtk C tests the define
@@ -117,8 +118,8 @@ Full compilation with MSVC or mingw (for the brave)
    The rationale behind CYGWIN=nobinmode is that pkg-config is a
    native windows program which outputs \r\n instead of usual unix \n.
    The CYGWIN variable forces the shell to strip down all \r from
-   command answers.
+   command answers. (But the tests may still fail for other reasons.)
 
 4) Simply do "make" and "make opt" for the native version.
 
-5) Install ("make install") and test.
+5) Install ("make install" or "make old-install") and test.
