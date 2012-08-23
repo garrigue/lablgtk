@@ -96,37 +96,42 @@ let compile ~comp file =
   exe comp (opts @ ["-c"; file ^ ".ml"])
 
 let byte d =
-  List.iter (d.mls @ d.extra) ~f:
-    begin fun file ->
-      if Sys.file_exists (file ^ ".mli") then exe !ocamlc ["-c"; file^".mli"];
-      compile !ocamlc file
-    end;
-  let lib_cmos = List.map d.mls ~f:(fun nm -> nm ^".cmo") in
-  exe !ocamlc
-    (Printf.sprintf "-a -o %s.cma -cclib -l%s -dllib -l%s"
-       d.name d.cname d.cname
-     :: ("-cclib \""^d.libs^"\"") :: lib_cmos);
-  List.iter lib_cmos ~f:may_remove;
-  let msname = "lib"^d.cname^".lib" and mgname = "lib"^d.cname^".a" in
-  if !ccomp_type = "msvc" then begin
-    if Sys.file_exists mgname && not (Sys.file_exists msname) then begin
-      Printf.eprintf "This is a MSVC port. Renaming %s to %s\n" mgname msname;
-      Sys.rename mgname msname
-    end;
-  end else begin
-    if Sys.file_exists msname && not (Sys.file_exists mgname) then begin
-      Printf.eprintf "This is a Mingw port. Renaming %s to %s\n" msname mgname;
-      Sys.rename msname mgname
-    end;
+  if d.mls <> [] then begin
+    List.iter (d.mls @ d.extra) ~f:
+      begin fun file ->
+	if Sys.file_exists (file ^ ".mli") then exe !ocamlc ["-c"; file^".mli"];
+	compile !ocamlc file
+      end;
+    let lib_cmos = List.map d.mls ~f:(fun nm -> nm ^".cmo") in
+    exe !ocamlc
+      (Printf.sprintf "-a -o %s.cma -cclib -l%s -dllib -l%s"
+	 d.name d.cname d.cname
+       :: ("-cclib \""^d.libs^"\"") :: lib_cmos);
+    List.iter lib_cmos ~f:may_remove;
+    let msname = "lib"^d.cname^".lib" and mgname = "lib"^d.cname^".a" in
+    if !ccomp_type = "msvc" then begin
+      if Sys.file_exists mgname && not (Sys.file_exists msname) then begin
+	Printf.eprintf "This is a MSVC port. Renaming %s to %s\n" mgname msname;
+	Sys.rename mgname msname
+      end;
+    end else begin
+      if Sys.file_exists msname && not (Sys.file_exists mgname) then begin
+	Printf.eprintf "This is a Mingw port. Renaming %s to %s\n"
+	  msname mgname;
+	Sys.rename msname mgname
+      end;
+    end
   end
 
 let native d =
-  List.iter (d.mls @ d.extra) ~f:(compile ~comp:!ocamlopt);
-  let lib_cmxs = List.map d.mls ~f:(fun nm -> nm ^ ".cmx") in
-  exe !ocamlopt (Printf.sprintf "-a -o %s.cmxa -cclib -l%s" d.name d.cname
-                 :: ("-cclib \""^d.libs^"\"") :: lib_cmxs);
-  List.iter d.mls
-    ~f:(fun nm -> may_remove (nm ^ ".obj"); may_remove (nm ^ ".o"))
+  if d.mls <> [] then begin
+    List.iter (d.mls @ d.extra) ~f:(compile ~comp:!ocamlopt);
+    let lib_cmxs = List.map d.mls ~f:(fun nm -> nm ^ ".cmx") in
+    exe !ocamlopt (Printf.sprintf "-a -o %s.cmxa -cclib -l%s" d.name d.cname
+                   :: ("-cclib \""^d.libs^"\"") :: lib_cmxs);
+    List.iter d.mls
+      ~f:(fun nm -> may_remove (nm ^ ".obj"); may_remove (nm ^ ".o"))
+  end
 
 let () =
   try
