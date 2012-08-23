@@ -2,6 +2,12 @@ LablGTK changes log
 
 In Lablgtk-2.16.0:
 
+2012.08.23 [Jacques]
+  * update Windows port, compiles fine on mingw with
+    ./configure --disable-gtktest
+  * lablgtk2 script does not load extra libraries by default
+    (use flag -all to load all extensions)
+
 2012.08.17 [Jacques]
   * generate correct lablgtk2 script for findlib.
   * add old-uninstall target.
