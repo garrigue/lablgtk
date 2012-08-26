@@ -155,15 +155,19 @@ if test "$CAMLP4O" = no ; then
 fi
 
 AC_CHECK_PROG(OCAMLFIND,ocamlfind,ocamlfind,no)
+if test "`$OCAMLFIND printconf stdlib`" != "`$CAMLC -where`"; then
+  AC_MSG_WARN(Ignoring ocamlfind, it uses a different OCaml installation.)
+  OCAMLFIND=no
+fi
 
 if test "$OCAMLFIND" = no; then
 FINDLIBDIR=""
 OCAMLLDCONF=""
 else
 FINDLIBDIR="`ocamlfind printconf destdir | tr -d '\\r'`"
-echo "ocamlfind library path is $FINDLIBDIR"
+echo "$OCAMLFIND library path is $FINDLIBDIR"
 OCAMLLDCONF="`ocamlfind printconf ldconf | tr -d '\\r'`"
-echo "ocamlfind ldconf path is $OCAMLLDCONF"
+echo "$OCAMLFIND ldconf path is $OCAMLLDCONF"
 fi
 
 if expr "$OCAMLVERSION" '>=' '4' > /dev/null ; then

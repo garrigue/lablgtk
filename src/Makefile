@@ -390,11 +390,14 @@ old-uninstall:
 
 # Install using ocamlfind
 findlib-install:
+	@if test "$(OCAMLFIND)" = no; then \
+	  echo "Cannot use ocamlfind, use old-install."; \
+	  exit 2; fi
 	mkdir -p "$(BINDIR)"
 	mkdir -p "$(DESTDIR)$(FINDLIBDIR)"
-	if test -f "$(DESTDIR)$(OCAMLLDCONF)"; then :; else \
+	@if test -f "$(DESTDIR)$(OCAMLLDCONF)"; then :; else \
 	  touch "$(DESTDIR)$(OCAMLLDCONF)"; fi
-	ocamlfind install -destdir "$(DESTDIR)$(FINDLIBDIR)" \
+	$(OCAMLFIND) install -destdir "$(DESTDIR)$(FINDLIBDIR)" \
 	  -ldconf "$(DESTDIR)$(OCAMLLDCONF)" \
     lablgtk2 ../META \
     build.ml \
@@ -447,7 +450,7 @@ findlib-install:
 	 fi
 
 findlib-uninstall:
-	ocamlfind remove lablgtk2
+	$(OCAMLFIND) remove lablgtk2
 	for f in lablgladecc2$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE); \
 	  do rm -f "$(BINDIR)"/$$f; done
 
