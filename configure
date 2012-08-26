@@ -2667,15 +2667,20 @@ $as_echo "no" >&6; }
 fi
 
 
+if test "`$OCAMLFIND printconf stdlib`" != "`$CAMLC -where`"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Ignoring ocamlfind" >&5
+$as_echo "$as_me: WARNING: Ignoring ocamlfind" >&2;}
+  OCAMLFIND=no
+fi
 
 if test "$OCAMLFIND" = no; then
 FINDLIBDIR=""
 OCAMLLDCONF=""
 else
 FINDLIBDIR="`ocamlfind printconf destdir | tr -d '\\r'`"
-echo "ocamlfind library path is $FINDLIBDIR"
+echo "$OCAMLFIND library path is $FINDLIBDIR"
 OCAMLLDCONF="`ocamlfind printconf ldconf | tr -d '\\r'`"
-echo "ocamlfind ldconf path is $OCAMLLDCONF"
+echo "$OCAMLFIND ldconf path is $OCAMLLDCONF"
 fi
 
 if expr "$OCAMLVERSION" '>=' '4' > /dev/null ; then
