@@ -343,7 +343,7 @@ preinstall:
 old-install:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
 	cp $(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) "$(INSTALLDIR)"
-	cp -p *.mli "$(INSTALLDIR)"
+	cp -p ../META *.mli "$(INSTALLDIR)"
 	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) \
 	      $(EXTRA_OBJS:.cmo=.ml) build.ml "$(INSTALLDIR)"
 	cp $(EXTRA_MLLIBS) $(MLLIBS) $(INITOBJS) "$(INSTALLDIR)"
@@ -427,16 +427,22 @@ findlib-install:
       then \
         echo $(CLIBS:lib%$(XA)=dll%$(XA)) ; \
     fi`
-	$(RANLIB) $(CLIBS:%="`ocamlfind query lablgtk2 | tr -d '\r'`"/%)
-	@if test -f lablgtk.cmxa; \
-	  then ($(RANLIB) $(MLLIBS:%.cma="`ocamlfind query lablgtk2 | tr -d '\r'`"/%$(XA)) $(EXTRA_MLLIBS:%.cma="`ocamlfind query lablgtk2 | tr -d '\r'`"/%$(XA)) ); fi
-	rm lablgtk2$(XB)
-	$(MAKE) INSTALLDIR=`ocamlfind query lablgtk2 | tr -d '\r'` lablgtk2$(XB)
+	rm -f lablgtk2
+	$(MAKE) findlib-postinstall \
+	  INSTALLDIR="`ocamlfind query lablgtk2 | tr -d '\r'`"
+
+findlib-postinstall: lablgtk2
 	cp lablgtk2$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
 	  cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; \
 	fi
 	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
+	$(RANLIB) $(CLIBS:%=$(INSTALLDIR)/%)
+	@if test -f lablgtk.cmxa; then \
+	  echo "Execute $(RANLIB) in $(INSTALLDIR)"; \
+	  $(RANLIB) $(MLLIBS:%.cma=$(INSTALLDIR)/%$(XA)) \
+		    $(EXTRA_MLLIBS:%.cma=$(INSTALLDIR)/%$(XA)) ; \
+	 fi
 
 findlib-uninstall:
 	ocamlfind remove lablgtk2
