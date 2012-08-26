@@ -9,6 +9,9 @@ OCAMLDOC=@OCAMLDOC@
 CAMLMKTOP=@CAMLMKTOP@
 CAMLMKLIB=@CAMLMKLIB@
 CAMLP4O=@CAMLP4O@
+OCAMLFIND=@OCAMLFIND@
+FINDLIBDIR=@FINDLIBDIR@
+OCAMLLDCONF=@OCAMLLDCONF@
 CAMLBEST=@OCAMLBEST@
 CAMLWIN32=@OCAMLWIN32@
 CAMLDEP=@OCAMLDEP@
@@ -56,9 +59,11 @@ BINDIR=$(DESTDIR)@bindir@
 # where to install the man page
 MANDIR=$(DESTDIR)@mandir@
 
+LABLGTKDIR=@LIBDIR@/lablgtk2
 INSTALLDIR=$(DESTDIR)@LIBDIR@/lablgtk2
 DLLDIR=$(DESTDIR)@LIBDIR@/stublibs
 LABLGLDIR=@LABLGLDIR@
+FLINSTALLDIR=$(DESTDIR)$(FINDLIBDIR)/lablgtk2
 
 FILT = -Wl,--export-dynamic
 clean_libs = $(subst -pthread,-ldopt -pthread -ccopt -pthread,$(subst --rpath,-rpath,$(filter-out $(FILT),$(1))))
