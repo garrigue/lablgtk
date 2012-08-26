@@ -139,6 +139,8 @@ CAMLprim value ml_gtk_stock_lookup(value id)
   TESTANDCONS(MOD4); TESTANDCONS(MOD5);
   TESTANDCONS(BUTTON1); TESTANDCONS(BUTTON2); TESTANDCONS(BUTTON3);  
   TESTANDCONS(BUTTON4); TESTANDCONS(BUTTON5);
+  TESTANDCONS(SUPER); TESTANDCONS(HYPER);
+  TESTANDCONS(META); TESTANDCONS(RELEASE);
   stock_result = alloc_tuple(4);
   Store_field(stock_result,0,Val_string(r.stock_id));
   Store_field(stock_result,1,Val_string(r.label));

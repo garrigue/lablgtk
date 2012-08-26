@@ -137,7 +137,8 @@ module Convert = struct
       = "ml_test_GdkModifier_val"
   let modifier i =
     List.filter [`SHIFT;`LOCK;`CONTROL;`MOD1;`MOD2;`MOD3;`MOD4;`MOD5;
-		 `BUTTON1;`BUTTON2;`BUTTON3;`BUTTON4;`BUTTON5]
+		 `BUTTON1;`BUTTON2;`BUTTON3;`BUTTON4;`BUTTON5;`SUPER;
+                 `HYPER;`META;`RELEASE]
       ~f:(fun m -> test_modifier m i)
   external test_window_state : window_state -> int -> bool
       = "ml_test_GdkWindowState_val"
