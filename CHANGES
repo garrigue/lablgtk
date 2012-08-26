@@ -1,6 +1,10 @@
 LablGTK changes log
 
 2012.08.26 [Jacques]
+  * detect findlib during configuration
+  * support DESTDIR with findlib-install
+
+2012.08.26 [Jacques]
   * indicate that only old-install supports DESTDIR
   * have old-install copy the META file too
   * cleanup the two phases of findlib-install
