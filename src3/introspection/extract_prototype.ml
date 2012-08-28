@@ -96,6 +96,7 @@ let camlize id =
     mutable data_c_header:string;
     mutable data_ml_function:string;
     mutable data_c_function:string;
+    mutable data_enume_badtag: string list;
   }
   
   
@@ -289,7 +290,8 @@ let dummy_data () = {
   data_ml_header="";
   data_c_header="";
   data_ml_function="";
-  data_c_function=""}
+  data_c_function="";
+  data_enume_badtag=[]}
 let dummy_bfm () = { bfm_c_identifier="";bfm_value="";bfm_name=""}
 let dummy_bf () = { bf_name="";bf_ctype="";bf_members=[] }
 let dummy_ownership () = ODefault
@@ -710,7 +712,7 @@ module Emit = struct
     let nb_args = List.length f.parameters in
     let c_params,ml_params = emit_parameters f.throws f.parameters in
     let c_ret,ml_ret = emit_return_value f.return_value in
-    let ml_ret = ml_ret '<' in
+    let ml_ret = ml_ret ' ' in
     {stub_c=Simple {cs_nb_arg=nb_args;
         cs_c_name=f.c_identifier;
         cs_ret=c_ret;
@@ -732,7 +734,7 @@ module Emit = struct
       let nb_args = List.length m.parameters+1 in
       let c_params,ml_params = emit_parameters m.throws (self::m.parameters) in
       let c_ret,ml_ret = emit_return_value m.return_value in
-      let ml_ret = ml_ret '<' in
+      let ml_ret = ml_ret ' ' in
       Some {stub_c=Simple {cs_nb_arg=nb_args;
                cs_c_name=m.c_identifier;
                cs_ret=c_ret;
@@ -925,7 +927,7 @@ let omarshaller ~gtk_class ~name ppf (l,tyl,ret) =
       List.iter (print_signals ml sigs k) signals;
       Format.fprintf ml "@]end@ ";
     );
-    let props= !props and sigs= !sigs in
+    let props= !props (*and sigs= !sigs*) in
     if not k.c_abstract then (
       let cprops = List.filter (fun p -> p.pr_construct_only) props  in
       Format.fprintf ml "@[<hv 2>let create";
@@ -936,30 +938,31 @@ let omarshaller ~gtk_class ~name ppf (l,tyl,ret) =
       Format.fprintf ml "@]Object.make \"%s\" pl@ " k.c_c_type;
       if props<> [] then begin
         Format.fprintf ml "@[<hov4>let make_params ~cont pl";
-        List.iter (fun p -> Format.fprintf ml " ?%s" (camlize p.pr_name)) props;
+        let pprops = List.filter (fun p -> not p.pr_construct_only) props in
+        List.iter (fun p -> Format.fprintf ml " ?%s" (camlize p.pr_name)) pprops;
         Format.fprintf ml  "=@ ";
-        may_cons_props ml props;
+        may_cons_props ml pprops;
         Format.fprintf ml  "@ cont pl@]\n";
       end;
     );
-    if props<> [] || sigs<> []  then (
+    (*if props<> [] || sigs<> []  then (
       if k.c_abstract then
         Format.fprintf ml "@[<hv2>let check w ="
       else begin
         Format.fprintf ml "@[<hv2>let check () =";
-         if props<> [] then Format.fprintf ml "@ let w = create [] in"
+        Format.fprintf ml "@ let w = create [] in"
       end;
       if props<> [] then Format.fprintf ml "@ let c p = Property.check w p in";
-      (*if sigs <> [] then begin
+      if sigs <> [] then begin
         Format.fprintf ml "@ let closure = Closure.create ignore in";
         Format.fprintf ml "@ let s name = GtkSignal.connect_by_name";
-        Format.fprintf ml " w ~name ~closure ~after:false in";
-      end;*)
+        Format.fprintf ml " w ~name ~callback:closure ~after:false in";
+      end;
       List.iter (fun p -> if p.pr_readable then 
         Format.fprintf ml "@ c P.%s;" (camlize p.pr_name)) props;
-      (*List.iter (fun s -> Format.fprintf ml "@ s %s;" (camlize s.sig_name)) sigs;*)
+      List.iter (fun s -> Format.fprintf ml "@ s %s;" (camlize s.sig_name)) sigs;
       Format.fprintf ml "@ ()@]\n";
-    );
+    );*)
     List.iter (may_ml_stub ml) methods;
     (*List.iter (may_ml_stub ml) constructors;*)
     List.iter (may_ml_stub ml) functions;
@@ -981,9 +984,10 @@ let omarshaller ~gtk_class ~name ppf (l,tyl,ret) =
     Format.fprintf c "/* End of global functions */@]@ "
     
   let hashes = Hashtbl.create 57
-  let print_enumeration ~tagsml ~tagsc ~tagsh e = 
+  let print_enumeration ~tagsml ~tagsc ~tagsh r e = 
     let mlname = (camlize e.e_name) in
     Format.fprintf tagsml "type %s = [\n" mlname;
+    e.e_members<-List.filter (fun m -> not (List.mem m.m_c_identifier r.rep_data.data_enume_badtag)) e.e_members;
     ignore (match e.e_members with
       | [] ->()
       | m::q -> Format.fprintf tagsml "`%s" (String.uppercase (camlize m.m_name));
@@ -1030,7 +1034,7 @@ let omarshaller ~gtk_class ~name ppf (l,tyl,ret) =
     Format.fprintf ml "open Tags_%s@\n" n.ns_name;
     Format.fprintf ml "%s@\n" r.rep_data.data_ml_header;
     Format.fprintf tagsml "open Gpointer@\n";
-    List.iter (print_enumeration ~tagsml ~tagsc ~tagsh) n.ns_enum;
+    List.iter (print_enumeration ~tagsml ~tagsc ~tagsh r) n.ns_enum;
     let _ = match n.ns_enum with
       [] ->()
       | e::q->
@@ -1045,11 +1049,11 @@ let omarshaller ~gtk_class ~name ppf (l,tyl,ret) =
           Format.fprintf tagsml " =  _get_tables ()\n\nlet _make_enum = Gobject.Data.enum@\n";
           List.iter (fun e -> Format.fprintf tagsml "let %s_conv = _make_enum %s@\n" (camlize e.e_name) (camlize e.e_name)) n.ns_enum;
       in
-    Format.fprintf c "%s@\n" r.rep_data.data_c_header;
-    Format.fprintf c "%s@\n" (Buffer.contents c_header);
     Format.fprintf c "#include <%s>@." r.rep_c_include.c_inc_name;
     Format.fprintf c "#include \"../wrappers.h\"@\n\
-                      #include \"../ml_gobject.h\"@.";
+                      #include \"../../ml_gobject.h\"@.";
+    Format.fprintf c "%s@\n" r.rep_data.data_c_header;
+    Format.fprintf c "%s@\n" (Buffer.contents c_header);    
     List.iter (fun i -> Format.fprintf c "#include \"tags_%s.h\"@\n" i.inc_name) (List.rev r.rep_includes);
     Format.fprintf c "#include \"tags_%s.h\"@\n" n.ns_name;
     List.iter (fun i -> Format.fprintf c "#include \"tags_%s.c\"@\n" i.inc_name) (List.rev r.rep_includes);
@@ -1679,6 +1683,23 @@ and parse_data s data = match data with
               | [Xml.PCData str] -> s.data_c_function <- str;
               | _ -> ()
               )
+        | "enumeration" -> 
+          List.iter (fun child -> 
+            (match child with 
+              | Element (key,attrs,children) -> 
+                (match key with 
+                  | "badtag"->
+                    List.iter (fun (key,value) -> 
+                      (match key with
+                        | "cname" -> s.data_enume_badtag<- value::s.data_enume_badtag;
+                        | _ ->()
+                      )
+                    ) attrs;
+                  | _ ->();
+                )
+              | _ ->();
+            )
+          ) children;
         | _ -> ()
       )
     | _ -> ()

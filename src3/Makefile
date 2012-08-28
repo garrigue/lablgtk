@@ -407,8 +407,11 @@ lablgtkspell.cmxa: $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
 lablgtkspell.cmxs: DYNLINKLIBS=$(GTKSPELL_LIBS)
 
-gtkSignal.ml: gtkSignal.ml4
+gtkSignal.ml: gtkSignal.ml4 gtkSignal.cmi
 	$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE) -impl $< -o $@
+
+gtkSignal.cmi: gtkSignal.mli
+	$(COMPILER) $(THFLAGS) gtkSignal.mli
 
 gtkThread.cmo: gtkThread.ml
 	$(COMPILER) $(THFLAGS) gtkThread.ml

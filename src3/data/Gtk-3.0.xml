@@ -89,4 +89,7 @@ CAMLprim value ml_gtk_init (value argv)
     CAMLreturn (argv);
 }
 </c_function>
+<enumeration>
+  <badtag cname="GTK_CELL_RENDERER_ACCEL_MODE_MODIFIER_TAP"/>
+</enumeration>
 </repository>

@@ -4,3 +4,6 @@ extract_stubs
 *.mli
 *.o
 stubs/*
+*.annot
+LOG
+compile.sh
