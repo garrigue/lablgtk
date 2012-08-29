@@ -14,3 +14,7 @@ type fundamental_type = "G_TYPE_"
 type noconv data =
   [ `NONE | `CHAR | `CAML | `BOOL | `INT | `FLOAT | `STRING
   | `OBJECT | `POINTER | `INT64 | `INT32 | `LONG ]
+
+type signal_type = "G_SIGNAL_"
+  [ `RUN_FIRST | `RUN_LAST | `NO_RECURSE | `ACTION | `NO_HOOKS ]
+

@@ -20,14 +20,21 @@
 (*                                                                        *)
 (**************************************************************************)
 
-let base_uri =
-  ref "http://developer.gnome.org/doc/API/2.0"
+let default_base_uri = "http://developer.gnome.org"
+let base_uri = ref default_base_uri 
+let _ = 
+  Odoc_args.add_option
+    ("-base-uri", Arg.String ((:=) base_uri), 
+     "base URI of the GTK/GNOME documentation")
 
 let may ov f = 
   match ov with
   | None -> ()
   | Some v -> f v
 
+(* ocamldoc generates tons of <link> tags. This seriously inflates the
+   size of the HTML pages so here we redefine the function to only define the
+   'Start' 'next' and 'Up' links. *)
 let make_prepare_header style index module_list =
   fun b ?(nav=None) ?(comments=[]) t ->
     let link l dest =
@@ -51,6 +58,10 @@ let gtkdoc = function
   | Odoc_info.Raw name :: _ ->
       begin match Str.split (Str.regexp "[ \t]+") name with
       | dir :: widget :: _ ->
+          let dir =
+            if !base_uri = default_base_uri
+            then dir ^ "/stable"
+            else dir in
 	  Printf.sprintf
 	    "<small>GTK documentation:&nbsp;\
                <a href=\"%s/%s/%s.html\">%s</a>\
@@ -63,8 +74,33 @@ let gtkdoc = function
 open Odoc_info.Value
 open Odoc_info.Module
 
-IFDEF OCAML_308 
+IFDEF OCAML_400
 THEN
+module Generator (G : Odoc_html.Html_generator) =
+struct
+class html =
+  object (self)
+    inherit G.html as super
+
+    method prepare_header module_list =
+      header <-
+        make_prepare_header style self#index module_list
+
+    method html_of_class b ?complete ?with_link c =
+      super#html_of_class b ?complete ?with_link c ;
+      Buffer.add_string b "<br>"
+
+    initializer
+      tag_functions <- ("gtkdoc", gtkdoc) :: tag_functions 
+  end
+end
+
+let _ = 
+  Odoc_args.extend_html_generator 
+    (module Generator : Odoc_gen.Html_functor)
+
+ELSE
+
 class gtkdoc =
   object (self)
     inherit Odoc_html.html as super
@@ -97,40 +133,8 @@ class gtkdoc =
       tag_functions <- ("gtkdoc", gtkdoc) :: tag_functions 
   end
 
-ELSE
-class gtkdoc =
-  object (self)
-    inherit Odoc_html.html as super
-
-    method html_of_value v =
-      v.val_code <- None ;
-      super#html_of_value v
-
-    method html_of_attribute a =
-      a.att_value.val_code <- None ;
-      super#html_of_attribute a
-
-    method html_of_method m =
-      m.met_value.val_code <- None ;
-      super#html_of_method m 
-
-    method prepare_header module_list =
-      header <-
-    	let b = Buffer.create 1024 in
-    	fun ?nav ?comments t ->
-    	  Buffer.clear b ;
-    	  make_prepare_header style index module_list b ?nav ?comments t ;
-    	  Buffer.contents b
-
-    initializer
-      tag_functions <- ("gtkdoc", gtkdoc) :: tag_functions 
-  end
-END
-
-
 let _ = 
-  Odoc_info.Args.add_option
-    ("-base-uri", Arg.String ((:=) base_uri), 
-     "base URI of the GTK/GNOME documentation") ;
   Odoc_info.Args.set_doc_generator 
     (Some (new gtkdoc :> Odoc_info.Args.doc_generator))
+
+END

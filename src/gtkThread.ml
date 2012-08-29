@@ -43,9 +43,15 @@ let gui_safe () =
 let has_jobs () = not (with_jobs Queue.is_empty)
 let n_jobs () = with_jobs Queue.length
 let do_next_job () = with_jobs Queue.take ()
+let has_timeout = ref false
 let async j x = with_jobs
-    (Queue.add (fun () ->
-      GtkSignal.safe_call j x ~where:"asynchronous call"))
+    (fun jobs ->
+      Queue.add (fun () ->
+        GtkSignal.safe_call j x ~where:"asynchronous call") jobs;
+      if not !has_timeout then begin
+        has_timeout := true;
+        ignore (Glib.Timeout.add 1 (fun () -> has_timeout := false; false))
+      end)
 type 'a result = Val of 'a | Exn of exn | NA
 let sync f x =
   if cannot_sync () then f x else
@@ -65,7 +71,6 @@ let sync f x =
 let do_jobs_delay = ref 0.013;;
 let set_do_jobs_delay d = do_jobs_delay := max 0. d;;
 let do_jobs () =
-  Thread.delay !do_jobs_delay;
   for i = 1 to n_jobs () do do_next_job () done;
   true
 
@@ -73,18 +78,27 @@ let do_jobs () =
 (* We check first whether there are some event pending, and run
    some iterations. We then need to delay, thus focing a thread switch. *)
 
-let thread_main_real ?(set_delay_cb=(fun()->())) () =
+let busy_waiting =
+  ref (try Sys.getenv "LABLGTK_BUSY_WAIT" <> "0" with _ -> false)
+
+let thread_main_real () =
   try
     let loop = (Glib.Main.create true) in
     Main.loops := loop :: !Main.loops;
+    Glib.Main.wrap_poll_func (); (* mark polling as blocking *)
     loop_id := Some (Thread.id (Thread.self ()));
     while Glib.Main.is_running loop do
-      let i = ref 0 in
-      while !i < 100 && Glib.Main.pending () do
-        Glib.Main.iteration true;
-        incr i
-      done;
-      set_delay_cb();
+      if not !busy_waiting then
+        ignore (Glib.Main.iteration true) (* blocking *)
+      else begin
+        let i = ref 0 in
+        (* Non blocking busy waiting *)
+        Thread.delay !do_jobs_delay;
+        while !i < 100 && Glib.Main.pending () do
+          Glib.Main.iteration true;
+          incr i
+        done
+      end;
       do_jobs ()
     done;
     Main.loops := List.tl !Main.loops;
@@ -92,12 +106,12 @@ let thread_main_real ?(set_delay_cb=(fun()->())) () =
     Main.loops := List.tl !Main.loops;
     raise exn
 
-let thread_main ?set_delay_cb () =
-  sync (thread_main_real ?set_delay_cb) ()
+let thread_main () =
+  sync thread_main_real ()
 
-let main ?set_delay_cb () =
+let main () =
   GtkMain.Main.main_func := thread_main;
-  thread_main ?set_delay_cb ()
+  thread_main ()
 
 let start () =
   reset ();

@@ -48,12 +48,11 @@ let privmsg arg =
 
 let http_regexp = Str.regexp "http:/[a-zA-Z0-9./&=~?-_]*"
 
-let print_text_sub ?font ?foreground ?background 
-    ?u_foreground ?u_background ?(emit=false) view s =
+let print_text_sub ?tags ?u_tags ?(emit=false) (view : GText.view) s =
   match s with 
     Str.Text s -> 
       begin
-	view#insert ?font ?foreground ?background s
+	view#buffer#insert ?tags s
       end
   | Str.Delim s -> 
       begin
@@ -61,20 +60,17 @@ let print_text_sub ?font ?foreground ?background
 	  begin
 	    url_emit#url#call s
 	  end;
-	view#insert ?font ?foreground:u_foreground 
-	  ?background:u_background s;
+	view#buffer#insert ?tags:u_tags s;
       end
 
-let print_text ?font ?foreground ?background 
-    ?u_foreground ?u_background ?emit view s =
+let print_text ?tags ?u_tags ?emit (view : GText.view) s =
   let t = Unix.localtime (Unix.time ())
   and slist =  Str.full_split http_regexp s
   in
-  view#insert ?font ?foreground ?background 
+  view#buffer#insert ?tags
     (Printf.sprintf "%02d:%02d " t.Unix.tm_hour t.Unix.tm_min);
-  List.map (print_text_sub ?font ?foreground ?background 
-	      ?u_foreground ?u_background ?emit view) slist;
-  view#insert ?font ?foreground ?background "\n"
+  List.map (print_text_sub ?tags ?u_tags ?emit view) slist;
+  view#buffer#insert ?tags "\n"
 
 let one_config ~title ~text ~default ?visibility ?max_length addfun =
   let w = GWindow.dialog ~title ~modal:true ~position:`CENTER ()

@@ -5,7 +5,7 @@ localdir="no"
 usedll="@USEDLL@"
 threads_lib="@THREADS_LIB@"
 verbose="no"
-extra="yes"
+extra="no"
 init="yes"
 toplevel="ocaml"
 libraries=""
@@ -24,7 +24,7 @@ case $1 in
 -help)
     echo "Usage: lablgtk2 <options> <ocaml options> [script-file]"
     echo "  -thread   use the threaded version of the toplevel"
-    echo "  -noextra  do not load extensions (i.e. only lablgtk.cma)"
+    echo "  -all      load all extensions"
     echo "  -noinit   do not initialize gtk"
     echo "  -localdir use libraries in the same directory (before install)"
     echo "  -verbose  show actions executed"
@@ -32,7 +32,7 @@ case $1 in
     ;;
 -thread)   thread=yes ;;
 -localdir) localdir=yes ;;
--noextra)  extra=no ;;
+-all)      extra=yes ;;
 -noinit)   init=no ;;
 -nothinit) thinitobjs="" ;;
 -verbose)  verbose=yes ;;

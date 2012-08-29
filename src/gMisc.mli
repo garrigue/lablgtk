@@ -77,6 +77,9 @@ class status_icon_signals : Gtk.status_icon Gobject.obj ->
     method activate : callback:(unit -> unit) -> GtkSignal.id
     method popup_menu : callback:(int -> int -> unit) -> GtkSignal.id
     method size_changed : callback:(int -> unit) -> GtkSignal.id
+    method notify_blinking : callback:(bool -> unit) -> GtkSignal.id
+    method notify_screen : callback:(Gdk.screen -> unit) -> GtkSignal.id
+    method notify_visible : callback:(bool -> unit) -> GtkSignal.id
   end
 
 (** Display an icon in the system tray.
@@ -131,6 +134,9 @@ class calendar_signals : 'a obj ->
     method next_year : callback:(unit -> unit) -> GtkSignal.id
     method prev_month : callback:(unit -> unit) -> GtkSignal.id
     method prev_year : callback:(unit -> unit) -> GtkSignal.id
+    method notify_day : callback:(int -> unit) -> GtkSignal.id
+    method notify_month : callback:(int -> unit) -> GtkSignal.id
+    method notify_year : callback:(int -> unit) -> GtkSignal.id
   end
 
 (** Display a calendar and/or allow the user to select a date
@@ -414,6 +420,10 @@ class tips_query_signals : Gtk.tips_query obj ->
       callback:(widget option -> text:string -> privat:string ->
                 GdkEvent.Button.t -> bool) ->
       GtkSignal.id
+    method notify_caller : callback:(GObj.widget option -> unit) -> GtkSignal.id
+    method notify_emit_always : callback:(bool -> unit) -> GtkSignal.id
+    method notify_label_inactive : callback:(string -> unit) -> GtkSignal.id
+    method notify_label_no_tip : callback:(string -> unit) -> GtkSignal.id
   end
 
 (** Displays help about widgets in the user interface

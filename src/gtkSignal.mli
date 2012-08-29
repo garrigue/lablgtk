@@ -33,6 +33,15 @@ type ('a,'b) t =
     (** When writing marshallers, beware that the list omits the 0th
        argument of argv, which is the referent object *)
 
+type query = {
+  id : int;
+  signal_name : string;
+  itype : string;
+  flags : int;
+  return : string;
+  params : string array;
+}
+
 val stop_emit : unit -> unit
     (** Call [stop_emit ()] in a callback to prohibit further handling
        of the current signal invocation, by calling [emit_stop_by_name].
@@ -43,6 +52,12 @@ val connect :
   sgn:('a, 'b) t -> callback:'b -> ?after:bool -> 'a obj -> id
     (** You may use [stop_emit] inside the callback *)
 
+val connect_property : prop:('a, 'b) Gobject.property ->
+  callback:('b -> unit) -> 'a Gobject.obj -> id
+    (** Connect to the "notify::foo" signal associated with a property. These
+       are emitted each time the property "foo" is set (including when it is
+       set to the same value). *)
+
 val user_handler : (exn -> unit) ref
     (** A hook to allow changing the behaviour of exceptions in callbacks
        The default behaviour of printing the exception and ignoring it
@@ -50,6 +65,11 @@ val user_handler : (exn -> unit) ref
 val safe_call : ?where:string -> ('a -> unit) -> 'a -> unit
     (** Safe wrapper for function calls. Tries to handle exceptions
         with user_handler, and reports an error otherwise. *)
+
+external signal_new : string -> g_type -> Gobject.signal_type list -> unit = "ml_g_signal_new_me"
+
+external list_ids : g_type -> int array = "ml_g_signal_list_ids"
+external query : int -> query = "ml_g_signal_query"
 
 external connect_by_name :
   'a obj -> name:string -> callback:g_closure -> after:bool -> id

@@ -79,6 +79,7 @@ let () =
   let treeview = GTree.view ~model:store ~packing:scrolled_win#add () in
   setup_tree_view store treeview;
   window#show ();
+  window#connect#destroy GMain.quit;
   GMain.main ()
 
 

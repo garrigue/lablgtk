@@ -37,6 +37,18 @@ class action_signals :
     val after : bool
     method after : < after : 'a; .. > as 'a
     method activate : callback:(unit -> unit) -> GtkSignal.id
+    method notify_hide_if_empty : callback:(bool -> unit) -> GtkSignal.id
+    method notify_icon_name : callback:(string -> unit) -> GtkSignal.id
+    method notify_is_important : callback:(bool -> unit) -> GtkSignal.id
+    method notify_label : callback:(string -> unit) -> GtkSignal.id
+    method notify_name : callback:(string -> unit) -> GtkSignal.id
+    method notify_sensitive : callback:(bool -> unit) -> GtkSignal.id
+    method notify_short_label : callback:(string -> unit) -> GtkSignal.id
+    method notify_stock_id : callback:(GtkStock.id -> unit) -> GtkSignal.id
+    method notify_tooltip : callback:(string -> unit) -> GtkSignal.id
+    method notify_visible : callback:(bool -> unit) -> GtkSignal.id
+    method notify_visible_horizontal : callback:(bool -> unit) -> GtkSignal.id
+    method notify_visible_vertical : callback:(bool -> unit) -> GtkSignal.id
   end
 
 (** @since GTK 2.4
@@ -112,6 +124,7 @@ class toggle_action_signals :
     inherit action_signals
     val obj : 'b obj
     method toggled : callback:(unit -> unit) -> GtkSignal.id
+    method notify_draw_as_radio : callback:(bool -> unit) -> GtkSignal.id
   end
 
 (** @since GTK 2.4
@@ -266,6 +279,8 @@ class ui_manager_signals :
     method disconnect_proxy : callback:(action -> GObj.widget -> unit) -> GtkSignal.id
     method post_activate : callback:(action -> unit) -> GtkSignal.id
     method pre_activate : callback:(action -> unit) -> GtkSignal.id
+    method notify_add_tearoffs : callback:(bool -> unit) -> GtkSignal.id
+    method notify_ui : callback:(string -> unit) -> GtkSignal.id
   end
 
 type ui_id

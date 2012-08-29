@@ -35,11 +35,9 @@ class global_view ~(handler:Message_handler.irc_message_handler)
     ?packing ?show () =
   let vb = GPack.vbox ?packing ?show ()
   in
-  let hb = GPack.hbox ~packing:vb#pack ()
-  and adj = GData.adjustment ()
+  let sw = GBin.scrolled_window ~hpolicy:`AUTOMATIC ~packing:vb#add ()
   in
-  let view = GBroken.text ~vadjustment:adj ~packing:(hb#pack ~expand:true) ()
-  and sb = GRange.scrollbar `VERTICAL ~adjustment:adj ~packing:hb#pack ()
+  let view = GText.view ~packing:sw#add ()
   and h = handler
   and status_frame = GBin.frame ~shadow_type:`IN ~packing:vb#pack ()
   in
@@ -115,7 +113,7 @@ class global_view ~(handler:Message_handler.irc_message_handler)
     | Reply.Error _ -> ()
   in      
   object (self)
-    inherit GObj.widget hb#as_widget
+    inherit GObj.widget vb#as_widget
     val view = view
     val mutable messigid = None
     val mutable repsigid = None
@@ -149,7 +147,8 @@ class global_view ~(handler:Message_handler.irc_message_handler)
 		  end
 	      | None -> ()
 	    end;
-	    view#delete_text ~start:0 ~stop:view#length;
+            let buf = view#buffer in
+	    buf#delete ~start:buf#start_iter ~stop:buf#end_iter;
 	  end);
       ()
   end

@@ -81,7 +81,9 @@ module Tags : sig
   type window_state = [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY ]
   type modifier =
     [ `SHIFT | `LOCK | `CONTROL | `MOD1 | `MOD2 | `MOD3 | `MOD4 | `MOD5
-    | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 ]
+    | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 | `SUPER
+    | `HYPER | `META | `RELEASE ]
+
   type drag_action = [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
   type rgb_dither = [ `NONE | `NORMAL | `MAX]
   type property_state = [ `NEW_VALUE | `DELETE ]
@@ -221,6 +223,8 @@ module Window :
     val get_pointer_location : window -> int * int
     val root_parent : unit -> window
     val clear : window -> unit
+    val clear_area :
+        window -> x:int -> y:int -> width:int -> height:int -> unit
     val get_xwindow : [>`drawable] obj -> xid
     type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP of pixmap ]
     val set_back_pixmap : window -> background_pixmap -> unit

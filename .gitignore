@@ -6,11 +6,10 @@ configure.lineno
 aclocal.m4
 autom4te.cache
 test_dynlink.*
-
 examples/text/unicode_table
 examples/text/unicode_viewer
-
 *~
 *.sw[po]
 *.cm[ixoa]
 *.cmx[as]
+

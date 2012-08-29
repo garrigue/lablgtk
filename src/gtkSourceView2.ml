@@ -25,9 +25,11 @@ open Gaux
 open Gobject
 open Gtk
 open Tags
+open SourceView2Enums
 open GtkSourceView2Props
 open GtkBase
 
+external _gtk_source_completion_init: unit -> unit = "ml_gtk_source_completion_init"
 external _gtk_source_style_scheme_init: unit -> unit = "ml_gtk_source_style_scheme_init"
 external _gtk_source_style_scheme_manager_init: unit -> unit = "ml_gtk_source_style_scheme_manager_init"
 external _gtk_source_language_init: unit -> unit = "ml_gtk_source_language_init"
@@ -37,6 +39,7 @@ external _gtk_source_buffer_init: unit -> unit = "ml_gtk_source_buffer_init"
 external _gtk_source_view_init: unit -> unit = "ml_gtk_source_view_init"
 
 let () =
+  _gtk_source_completion_init ();
   _gtk_source_style_scheme_init ();
   _gtk_source_style_scheme_manager_init ();
   _gtk_source_language_init ();
@@ -52,6 +55,53 @@ struct
   external get_description: source_style_scheme obj -> string =
     "ml_gtk_source_style_scheme_get_description"
 end
+
+module SourceCompletionItem =
+struct
+  include SourceCompletionItem
+
+  external new_:
+    string -> string -> GdkPixbuf.pixbuf option -> string option -> source_completion_proposal obj =
+    "ml_gtk_source_completion_item_new"
+  external new_with_markup:
+    string -> string -> GdkPixbuf.pixbuf option -> string option -> source_completion_proposal obj =
+    "ml_gtk_source_completion_item_new_with_markup"
+  external new_from_stock:
+    string -> string -> string -> string -> source_completion_proposal obj =
+    "ml_gtk_source_completion_item_new_from_stock" 
+
+end
+
+module SourceCompletionProvider =
+struct
+  include SourceCompletionProvider
+
+  type provider = {
+    provider_name : unit -> string;
+    provider_icon : unit -> GdkPixbuf.pixbuf option;
+    provider_populate : source_completion_context obj -> unit;
+    provider_activation : unit -> source_completion_activation_flags list;
+    provider_match : source_completion_context obj -> bool;
+    provider_info_widget : source_completion_proposal obj -> widget obj option;
+    provider_update_info : source_completion_proposal obj -> source_completion_info obj -> unit;
+    provider_start_iter : source_completion_context obj -> source_completion_proposal obj -> text_iter -> bool;
+    provider_activate_proposal : source_completion_proposal obj -> text_iter -> bool;
+    provider_interactive_delay : unit -> int;
+    provider_priority : unit -> int;
+  }
+
+  external match_ : source_completion_provider obj -> source_completion_context obj -> bool =
+    "ml_gtk_source_completion_provider_match"
+  external new_ : provider -> source_completion_provider obj =
+    "ml_custom_completion_provider_new"
+
+end
+
+module SourceCompletionContext = SourceCompletionContext
+
+module SourceCompletionInfo = SourceCompletionInfo
+
+module SourceCompletion = SourceCompletion
 
 module SourceStyleSchemeManager =
 struct
@@ -120,6 +170,26 @@ struct
 
 end
 
+module SourceUndoManager =
+struct
+  include SourceUndoManager
+
+  type undo_manager = {
+    can_undo : unit -> bool;
+    can_redo : unit -> bool;
+    undo : unit -> unit;
+    redo : unit -> unit;
+    begin_not_undoable_action : unit -> unit;
+    end_not_undoable_action : unit -> unit;
+    can_undo_changed : unit -> unit;
+    can_redo_changed : unit -> unit;
+  }
+
+  external new_ : undo_manager -> [`sourceundomanager] obj =
+    "ml_custom_undo_manager_new"
+
+end
+
 module SourceBuffer =
 struct
   include SourceBuffer
@@ -155,6 +225,17 @@ struct
   external backward_iter_to_source_mark:
     [>`sourcebuffer] obj -> Gtk.text_iter -> string option -> bool =
     "ml_gtk_source_buffer_backward_iter_to_source_mark"
+
+  external iter_has_context_class:
+    [>`sourcebuffer] obj -> Gtk.text_iter -> string -> bool =
+    "ml_gtk_source_buffer_iter_has_context_class"
+  external iter_forward_to_context_class_toggle:
+    [>`sourcebuffer] obj -> Gtk.text_iter -> string -> bool =
+    "ml_gtk_source_buffer_iter_forward_to_context_class_toggle"
+  external iter_backward_to_context_class_toggle:
+    [>`sourcebuffer] obj -> Gtk.text_iter -> string -> bool =
+    "ml_gtk_source_buffer_iter_backward_to_context_class_toggle"
+
 
   external ensure_highlight:
     [>`sourcebuffer] obj -> Gtk.text_iter -> Gtk.text_iter -> unit =

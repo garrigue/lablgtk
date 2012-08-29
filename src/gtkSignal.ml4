@@ -29,6 +29,14 @@ type id
 type 'a marshaller = 'a -> Closure.argv -> unit
 type ('a,'b) t =
  { name: string; classe: 'a; marshaller: 'b marshaller }
+type query = {
+  id : int;
+  signal_name : string;
+  itype : string;
+  flags : int;
+  return : string;
+  params : string array;
+}
 
 let enter_callback = ref (fun () -> ())
 and exit_callback = ref (fun () -> ())
@@ -64,19 +72,16 @@ THEN
 END;
     flush stderr
 
+external signal_new : string -> g_type -> Gobject.signal_type list -> unit = "ml_g_signal_new_me"
+
+external query : int -> query = "ml_g_signal_query"
+external list_ids : g_type -> int array = "ml_g_signal_list_ids"
+
 external connect_by_name :
   'a obj -> name:string -> callback:g_closure -> after:bool -> id
   = "ml_g_signal_connect_closure"
 external emit_stop_by_name : 'a obj -> name:string -> unit
   = "ml_g_signal_stop_emission_by_name"
-let connect  ~(sgn : ('a, _) t) ~callback ?(after=false) (obj : 'a obj) =
-  let callback argv =
-    let old = push_callback () in
-    safe_call (sgn.marshaller callback) argv
-      ~where:("callback for signal " ^ sgn.name);
-    if pop_callback old then emit_stop_by_name obj ~name:sgn.name
-  in
-  connect_by_name obj ~name:sgn.name ~callback:(Closure.create callback) ~after
 external handler_block : 'a obj -> id -> unit
   = "ml_g_signal_handler_block"
 external handler_unblock : 'a obj -> id -> unit
@@ -180,3 +185,21 @@ external _override_class_closure :
 let override_class_closure { name = name } t c = _override_class_closure name t c
 
 external chain_from_overridden : Closure.argv -> unit = "ml_g_signal_chain_from_overridden"
+
+let connect_aux ~name ~marshaller ~callback ?(after = false) (obj : 'a obj) =
+  let callback argv =
+    let old = push_callback ()
+    in
+      (safe_call (marshaller callback) argv
+         ~where: ("callback for signal " ^ name);
+       if pop_callback old then emit_stop_by_name obj ~name else ())
+  in connect_by_name obj ~name ~callback: (Closure.create callback) ~after
+
+let connect ~sgn: ((sgn:('a, _) t)) ~callback ?after (obj : 'a obj) =
+  connect_aux ~name:sgn.name ~marshaller:sgn.marshaller ~callback ?after obj
+
+let connect_property ~(prop:('a, _) property) ~callback (obj : 'a obj) =
+  let name = "notify::" ^ prop.Gobject.name in
+  let marshaller = marshal1 prop.conv name in
+  connect_aux ~name ~marshaller ~callback obj
+

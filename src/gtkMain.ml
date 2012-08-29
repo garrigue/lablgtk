@@ -53,6 +53,7 @@ module Main = struct
   let default_main () =
     let loop = (Main.create true) in
     loops := loop :: !loops;
+    Glib.Main.wrap_poll_func (); (* mark polling as blocking *)
     while Main.is_running loop do Main.iteration true done;
     if !loops <> [] then loops := List.tl !loops
   let main_func = ref default_main

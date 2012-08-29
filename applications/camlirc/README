@@ -2,11 +2,25 @@
 	   an IRC (Internet Relay Chat) client written in Ocaml
 
 Requirements:
-	ocaml-3.04
-	lablgtk-1.2.3
-	gmake
+	ocaml-3.12 or 4.00
+	lablgtk-2.*
 	
 How to compile:
 	In this directory, just type 'make'.
 
-$Id$
+How to use:
+  Run camlirc.
+  You first need to create a server:
+  * open Configure/Server
+  * press New
+  * input configuration name, press OK
+  * input sever address and configuration
+    example: irc.freenode.net
+  * press Finish
+  Then connect to server:
+  * open File/Connect
+  * choose server, press CONNECT
+  Enter chatroom
+  * open Operation/Join
+  * enter channel name, press OK
+  * input messages in the entry field in the middle of the window

@@ -70,6 +70,9 @@ class type container_signals =
     inherit GObj.widget_signals
     method add : callback:(widget -> unit) -> GtkSignal.id
     method remove : callback:(widget -> unit) -> GtkSignal.id
+    method notify_border_width : callback:(int -> unit) -> GtkSignal.id
+    method notify_resize_mode : callback:(GtkEnums.resize_mode -> unit) ->
+      GtkSignal.id
   end
 
 (** @gtkdoc gtk GtkContainer *)

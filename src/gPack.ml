@@ -200,11 +200,13 @@ class notebook_signals obj = object (self)
   inherit container_signals_impl obj
   method switch_page ~callback = 
     self#connect Notebook.S.switch_page (fun _ arg1 -> callback arg1)
+  inherit notebook_sigs
 end
 
 class notebook obj = object (self)
   inherit [Gtk.notebook] GContainer.container_impl obj
   inherit notebook_props
+  method as_notebook = (obj :> Gtk.notebook obj)
   method event = new GObj.event_ops obj
   method connect = new notebook_signals obj
   method insert_page ?tab_label ?menu_label ?pos child =
@@ -226,12 +228,18 @@ class notebook obj = object (self)
     new widget (Notebook.get_tab_label obj (as_widget w))
   method get_menu_label w =
     new widget (Notebook.get_menu_label obj (as_widget w))
+  method reorder_child (w : widget) i =
+    Notebook.reorder_child obj (as_widget w) i
   method set_page ?tab_label ?menu_label page =
     let child = as_widget page in
     may tab_label
       ~f:(fun lbl -> Notebook.set_tab_label obj child (as_widget lbl));
     may menu_label
       ~f:(fun lbl -> Notebook.set_menu_label obj child (as_widget lbl))
+  method set_tab_reorderable (w : widget) = Notebook.set_tab_reorderable obj
+  (as_widget w)
+  method get_tab_reorderable (w : widget) = Notebook.get_tab_reorderable obj
+  (as_widget w)
 end
 
 let notebook =

@@ -1,17 +1,18 @@
 
-             LablGTK2 : an interface to the GIMP Tool Kit
+             LablGTK2 2.16.0 : an interface to the GIMP Tool Kit
 
 Needed:
-	ocaml-3.11 or more
-	gtk+-2.x (gtk+-2.12.x for full functionality)
-	GNU make (there is no standard for conditionals)
+        ocaml-3.11 or more (4.00 is preferred)
+        gtk+-2.x (gtk+-2.12.x for full functionality)
+        findlib 1.2.1 or more (for default install)
+        GNU make (there is no standard for conditionals)
 
 Info/upgrades:
-        http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgtk.html
+        http://lablgtk.forge.ocamlcore.org/
 
 Status:
   LablGtk2 is now pretty stable.
-  
+
   An important change in gtk-2 is the use of unicode (utf8) for
   all strings. If you use non-ascii strings, you must imperatively
   convert them to unicode. This can be done with the
@@ -32,27 +33,28 @@ Status:
 How to compile:
 
   You should normally not need to modify Makefiles.
-  
+
   In case you are using the SVN version you may have to first type
   "aclocal && autoconf".
-  
-  Type "./configure && make world && make install" to compile 
-  with all supported options enabled (libgl, libglade, libgnomecanvas, 
-  librsvg, native compilation, thread support).
-  
-  You may use "./configure --help" to check for the different 
+
+  Type
+        ./configure && make world
+  to compile with all supported options enabled (libgl, libglade,
+  libgnomecanvas, librsvg, native compilation, thread support).
+
+  You may use "./configure --help" to check for the different
   configuration options.
 
   Lablgtk2 specific options are:
 
-	--with-libdir=/path: install libs in /path/lablgtk2 
-			     and /path/stublibs
-	--with-gl --without-gl: override autodetected GtkGLArea support. 
-				Requires LablGL
-	--with-glade --without-glade: override autodetected libglade support
-	--with-rsvg --without-rsvg: override autodetected librsvg support
-	--with-gnomecanvas --without-gnomecanvas: 
-		override autodetected libgnomecanvas support
+        --with-libdir=/path: install libs in /path/lablgtk2
+                             and /path/stublibs
+        --with-gl --without-gl: override autodetected GtkGLArea support.
+                                Requires LablGL
+        --with-glade --without-glade: override autodetected libglade support
+        --with-rsvg --without-rsvg: override autodetected librsvg support
+        --with-gnomecanvas --without-gnomecanvas:
+                override autodetected libgnomecanvas support
         --with-gnomeui --without-gnomeui:
                 override autodetected libgnomeui support
         --with-panel --without-panel:
@@ -63,66 +65,91 @@ How to compile:
                 override autodetected gtksourceview support
         --with-gtksourceview2 --without-gtksourceview2:
                 override autodetected gtksourceview2 support
-	--enable-debug: enable debug mode
+        --enable-debug: enable debug mode
 
-  "make install DESTDIR=..." prefixes the installation
-  directories with DESTDIR.
+  Type "make install" to install using findlib.
+  The commands lablgtk2, gdk_pixbuf_mlsource, and lablgladecc2,
+  are copied directly to the configured executable directory.
 
-  A META file for findlib is provided, but it only handles the
-  base library: I have no idea on how to avoid a combinatorial
-  explosion with the various extensions.
+  The following findlib packages are provided (according to configuration):
+
+        lablgtk2
+        lablgtk2.auto-init
+        lablgtk2.gl
+        lablgtk2.glade
+        lablgtk2.gnomecanvas
+        lablgtk2.gnomehtml
+        lablgtk2.gnomeui
+        lablgtk2.gtkspell
+        lablgtk2.panel
+        lablgtk2.rsvg
+        lablgtk2.sourceview
+        lablgtk2.sourceview2
+
+  You can alternatively use "make old-install" or
+  "make old-install DESTDIR=/my/prefix" to use the old
+  installation procedure, which does not rely on findlib.
+  By default, the library is installed at +lablgtk2.
+  All installation paths are prefixed by DESTDIR when given.
 
 Contents:
 
-	gdk.ml		low-level interface to the General Drawing Kit
-	gtk.ml		low-level interface to the GIMP Tool Kit
-	gtkThread.ml	main loop for threaded version
-	g[A-Z]*.ml	object-oriented interface to GTK
-	gdkObj.ml	object-oriented interface to GDK
+        gdk.ml          low-level interface to the General Drawing Kit
+        gtk.ml          low-level interface to the GIMP Tool Kit
+        gtkThread.ml    main loop for threaded version
+        g[A-Z]*.ml      object-oriented interface to GTK
+        gdkObj.ml       object-oriented interface to GDK
 
-	lablgtk2	toplevel
+        lablgtk2        toplevel
 
-	examples/*.ml	various examples
+        examples/*.ml   various examples
 
         applications/browser    an ongoing port of ocamlbrowser
         applications/camlirc    an IRC client (by Nobuaki Yoshida)
 
 How to run the examples:
   In the examples directory just type:
-	lablgtk2 ???.ml
+        lablgtk2 ???.ml
 
-  Before installing lablgtk2 you have to use -localdir:
-	../src/lablgtk2 -localdir ???.ml
+  If you want to run them before installing lablgtk2 you have to use -localdir:
+        ../src/lablgtk2 -localdir ???.ml
 
 How to link them:
   The lablgtk2 script loads an extra module GtkInit, whose only contents is:
         let locale = GtkMain.Main.init ()
-  You must either add this line, or add this module to your link,
-  before calling any Gtk function.
-  ocamlc -I +lablgtk2 -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
+  You must either add this line, or add this module to your link, before
+  calling any Gtk function. With ocamlfind, use
+        ocamlfind ocamlc -package lablgtk2.auto-init -linkpkg -w s ???.ml -o ???
+  Otherwise, use something similar to:
+        ocamlc -I +lablgtk2 -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
 
 How to use the threaded toplevel:
 
-	% lablgtk2 -thread
-	        Objective Caml version 3.09
-	
-	# let w = GWindow.window ~show:true ();;
+        % lablgtk2 -thread
+                Objective Caml version 3.09
+
+        # let w = GWindow.window ~show:true ();;
         # let b = GButton.button ~packing:w#add ~label:"Hello!" ();;
 
   You should at once see a window appear, and then a button.
   The GTK main loop is running in a separate thread. Any command
   is immediately reflected by the system.
-  Beware that with bytecode threads, you cannot switch threads within
+  For Windows and OSX/Quartz, there are restrictions on which
+  commands can be used in which thread. See the windows port section
+  lower for how to use them.
+
+  When using threads in a stand-alone application, you must link with
+  gtkThread.cmo and call GtkThread.main in place of GMain.main.
+
+  Since 2.16.0, busy waiting is no longer necessary with systems
+  threads. (I.e., CPU usage is 0% if nothing occurs.)
+  If you use VM threads, you have to enable busy waiting by hand,
+  otherwise other threads won't be executed (cf. gtkThread.mli).
+  Beware that with VM threads, you cannot switch threads within
   a callback. The only thread related command you may use in a
   callback is Thread.create. Calling blocking operations may cause
   deadlocks. On the other hand, all newly created threads will be run
   outside of the callback, so they can use all thread operations.
-  There is no such problem for posix and win32 threads, but win32
-  threads have problems of their own. See the windows port section
-  lower.
-
-  When using threads in a stand-alone application, you must link with
-  gtkThread.cmo and call GtkThread.main in place of GMain.main.
 
 Structure of the (raw) Gtk* modules:
 
@@ -137,24 +164,24 @@ Structure of the G[A-Z]* modules:
 
   GPango        Pango font handling
   GDraw         Gdk pixmaps, etc...
-  GObj		gtkobj, widget, style
-  GData		data, adjustment, tooltips
-  GContainer	container, item_container
-  GWindow	window, dialog, color_selection_dialog, file_selection, plug
-  GPack		box, button_box, table, fixed, layout, packer, paned, notebook
-  GBin  	scrolled_window, event_box, handle_box, frame,
-		aspect_frame, viewport, socket
-  GButton	button, toggle_button, check_button, radio_button, toolbar
-  GMenu		menu_item, tearoff_item, check_menu_item, radio_menu_item,
-		menu_shell, menu, option_menu, menu_bar, factory
-  GMisc		separator, statusbar, calendar, drawing_area,
-		misc, arrow, image, pixmap, label, tips_query,
+  GObj          gtkobj, widget, style
+  GData         data, adjustment, tooltips
+  GContainer    container, item_container
+  GWindow       window, dialog, color_selection_dialog, file_selection, plug
+  GPack         box, button_box, table, fixed, layout, packer, paned, notebook
+  GBin          scrolled_window, event_box, handle_box, frame,
+                aspect_frame, viewport, socket
+  GButton       button, toggle_button, check_button, radio_button, toolbar
+  GMenu         menu_item, tearoff_item, check_menu_item, radio_menu_item,
+                menu_shell, menu, option_menu, menu_bar, factory
+  GMisc         separator, statusbar, calendar, drawing_area,
+                misc, arrow, image, pixmap, label, tips_query,
                 color_selection, font_selection
-  GTree		tree_item, tree, view (also tree/list_store, model)
-  GList		list_item, liste, clist
-  GEdit		editable, entry, spin_button, combo
-  GRange	progress, progress_bar, range, scale, scrollbar
-  GText		view (also buffer, iter, mark, tag, tagtable)
+  GTree         tree_item, tree, view (also tree/list_store, model)
+  GList         list_item, liste, clist
+  GEdit         editable, entry, spin_button, combo
+  GRange        progress, progress_bar, range, scale, scrollbar
+  GText         view (also buffer, iter, mark, tag, tagtable)
 
   While subtyping follows the Gtk widget hierarchy, you cannot always
   use width subtyping (i.e. #super is not unifiable with all the
@@ -231,11 +258,6 @@ ML-side signals:
   develop complex applications, abstracting the plumbing between
   various components. Explanations are provided in GUtil.mli.
 
-Comments on some widgets:
-  GText has changed a lot since the alpha release. In particular, most
-  movements with GText.iter are now functional. You can still modify
-  destructively by using the #nocopy interface.
-
 Contributed components:
 
   The GToolbox module contains contributed components to help you build
@@ -258,7 +280,7 @@ Memory management:
   destroy toplevel widgets.
 
   IMPORTANT: Some Gtk data structures are allocated in the Caml heap,
-  and there use in signals (Gtk functions internally cally callbacks)
+  and their use in signals (Gtk functions internally cally callbacks)
   relies on their address being stable during a function call. For
   this reason automatic compation is disabled in GtkMain. If you need
   it, you may use compaction through Gc.compact where it is safe
@@ -324,7 +346,7 @@ GtkSourceView 1 support:
   The executable must be linked with lablgtksourceview.cma.
 
 GtkSourceView 2 support:
-  This binding was contributed by Benjamin Monate: it is based on 
+  This binding was contributed by Benjamin Monate: it is based on
   the aforementioned GtksourceView 1 support.
   It requires libgtksourceview-2.x.
   See examples in examples/sourceview/*2.ml
@@ -351,26 +373,34 @@ Windows port
   are always called from the main loop thread, you can freely use GTK
   in them. Also, non-graphical operations are thread-safe.
   Here is an example using the lablgtk toplevel with threads:
-	% lablgtk2.bat -thread
-	        Objective Caml version 3.09
+        % lablgtk2.bat -thread
+                Objective Caml version 3.09
 
-        # open GtkThread;;	
-	# let w = sync (GWindow.window ~show:true) ();;
+        # open GtkThread;;
+        # let w = sync (GWindow.window ~show:true) ();;
         # let b = sync (GButton.button ~packing:w#add ~label:"Hello!") ();;
         # b#connect#clicked (fun () -> prerr_endline "Hello");;
 
+OSX/Quartz port
+
+  Since Darwin is Unix, this port compiles as usual.
+  Note however that Quartz imposes even stronger restrictions than
+  Windows on threads: only the main thread of the application can do
+  GUI work. Just apply the same techniques as described above, being
+  careful to ensure that your first call to GtkThread.main occurs in
+  the main thread. This is done automatically in the threaded toplvel.
+
 Authors:
-	Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
-	Benjamin Monate  <benjamin.monate@free.fr>
+        Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
+        Benjamin Monate  <benjamin.monate@free.fr>
         Olivier Andrieu  <oandrieu@nerim.net>
-	Jun Furuse       <furuse@yl.is.s.u-tokyo.ac.jp>
+        Adrien Nader     <camaradetux@gmail.com>
+        Jun Furuse       <jun.furuse@gmail.com>
         Maxence Guesdon  <maxence.guesdon@inria.fr>
         Stefano Zacchiroli  <zack@cs.unibo.it>
   For lablgtk1:
-	Hubert Fauque  <hubert.fauque@wanadoo.fr>
-	Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
-				   
-Bug reports:
-	Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
+        Hubert Fauque  <hubert.fauque@wanadoo.fr>
+        Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
 
-$Id$
+Bug reports:
+        http://forge.ocamlcore.org/tracker/?group_id=220

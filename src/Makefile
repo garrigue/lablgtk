@@ -1,4 +1,3 @@
-# $Id$
 # Makefile for lablgtk.
 
 COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
@@ -19,10 +18,13 @@ DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
 
-TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE)
+TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE) \
+	$(THINITOBJS) build.ml
 
 all: byte
 world: byte $(CAMLBEST)
+install: findlib-install
+uninstall: findlib-uninstall
 
 MLLIBS = lablgtk.cma
 CLIBS = liblablgtk2$(XA)
@@ -140,11 +142,11 @@ ml_gtksourceview.o: CFLAGS=$(GTKSOURCEVIEWCFLAGS)
 GTKSOURCEVIEWMLOBJS = gtkSourceView.cmo gSourceView.cmo
 GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
 ml_gtksourceview.c: pango_tags.h
-GTKSOURCEVIEWMLOBJSENUM = sourceViewEnums.cmo 
+GTKSOURCEVIEWMLOBJSENUM = sourceViewEnums.cmo
 GTKSOURCEVIEWPROPS = gtkSourceView.props
 CLIBS += liblablgtksourceview$(XA)
 EXTRA_MLLIBS += lablgtksourceview.cma
-EXTRA_OBJS += $(GTKSOURCEVIEWMLOBJS) $(GTKSOURCEVIEWMLOBJSENUM) 
+EXTRA_OBJS += $(GTKSOURCEVIEWMLOBJS) $(GTKSOURCEVIEWMLOBJSENUM)
 BEFORE_DEPEND += $(GTKSOURCEVIEWMLOBJS:%.cmo=%.ml) $(GTKSOURCEVIEWPROPS:%.props=%Props.ml) $(GTKSOURCEVIEWPROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
 lablgtksourceview.cma liblablgtksourceview$(XA): \
 	$(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmo) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEWMLOBJS)
@@ -158,7 +160,7 @@ MLLIBS += lablgtksourceview2.cma
 CLIBS += liblablgtksourceview2$(XA)
 GTKSOURCEVIEW2MLOBJS = gtkSourceView2.cmo gSourceView2.cmo
 GTKSOURCEVIEW2COBJS = ml_gtksourceview2$(XO)
-GTKSOURCEVIEW2MLOBJSENUM = sourceView2Enums.cmo 
+GTKSOURCEVIEW2MLOBJSENUM = sourceView2Enums.cmo
 GTKSOURCEVIEW2PROPS = gtkSourceView2.props
 BEFORE_DEPEND += $(GTKSOURCEVIEW2PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW2PROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
 
@@ -234,12 +236,15 @@ MLOBJS4 = gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
 	gUtil.cmo gToolbox.cmo
 MLOBJS =  $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(GTKPROPS:.props=Props.cmo) \
 	$(MLOBJS3) $(GTKPROPS:%.props=o%Props.cmo) $(MLOBJS4)
-MLXOBJS = $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(MLOBJS3) $(MLOBJS4)
 THOBJS = gtkThread.cmo
 INITOBJS = gtkInit.cmo
+ifdef USE_GTKQUARTZ
+THINITOBJS = gtkThTop.cmo
+else
 THINITOBJS = gtkThInit.cmo
+endif
 EXTRAOBJS = $(INITOBJS) $(THOBJS) $(THINITOBJS)
-ALLOBJS = $(MLXOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
+ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) \
 	$(GTKSPELLMLOBJS) $(GTKSOURCEVIEW2MLOBJS) \
 	$(INITOBJS)
@@ -260,18 +265,17 @@ real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
 	  $(ALLTHOBJS:.cmo=.ml) $(BEFORE_DEPEND) *.mli > .depend
 
 ifeq ($(THREADS_LIB),no)
-lablgtktop$(XE): $(MLLIBS)
+lablgtktop$(XE): $(MLLIBS) $(CONFIG)
 	$(TOPLEVEL) $(CUSTOM) -o $@ $(MLLINK) -I . $(MLLIBS)
 else
-lablgtktop$(XE): $(MLLIBS) $(ALLTHOBJS)
+lablgtktop$(XE): $(MLLIBS) $(THOBJS) $(CONFIG)
 	$(TOPLEVEL) $(THFLAGS) $(CUSTOM) -o $@ $(THLINK) $(MLLINK) \
 	   -I . $(MLLIBS) $(THOBJS)
 endif
 
 lablgtk2: Makefile $(CONFIG) lablgtk2.in
-	sed -e "s|@INSTALLDIR@|$(INSTALLDIR)|g" \
+	sed -e "s|@INSTALLDIR@|$(LABLGTKDIR)|g" \
 	    -e "s|@LABLGLDIR@|$(LABLGLDIR)|g" \
-	    -e "s|@LIBDIR@|$(LIBDIR)|g" \
 	    -e "s|@MLLIBS@|$(MLLINK) $(MLLIBS)|g" \
 	    -e "s|@INITOBJS@|$(INITOBJS)|g" \
 	    -e "s|@THOBJS@|$(THOBJS)|g" \
@@ -323,7 +327,8 @@ testcc$(XE): lablgladecc$(XE) lablgtktop
 PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) \
 	$(GNOMECANVASMLOBJS)
 
-preinstall: build.ml
+# Install ml sources and C binaries, can then rebuild using build.ml
+preinstall:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
 	cp $(PREOBJS:.cmo=.ml) "$(INSTALLDIR)"
 	for f in $(PREOBJS:.cmo=.mli); do \
@@ -334,36 +339,38 @@ preinstall: build.ml
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)"
 
-install:
+# Install directly to $(INSTALLDIR), without using ocamlfind
+old-install:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
 	cp $(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) "$(INSTALLDIR)"
-	cp -p *.mli "$(INSTALLDIR)"
-	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(EXTRA_OBJS:.cmo=.ml) "$(INSTALLDIR)"
-	cp $(EXTRA_MLLIBS) $(MLLIBS) $(THOBJS) $(INITOBJS) $(THINITOBJS) "$(INSTALLDIR)"
+	cp -p ../META *.mli "$(INSTALLDIR)"
+	cp -p $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) \
+	      $(EXTRA_OBJS:.cmo=.ml) build.ml "$(INSTALLDIR)"
+	cp $(EXTRA_MLLIBS) $(MLLIBS) $(INITOBJS) "$(INSTALLDIR)"
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cd "$(INSTALLDIR)" && $(RANLIB) $(CLIBS)
 	cp varcc$(XE) propcc$(XE) "$(INSTALLDIR)"
 	if test $(THREADS_LIB) != no; \
-	   then cp  $(ALLTHOBJS:.cmo=.cmi) "$(INSTALLDIR)"; \
+	   then cp $(ALLTHOBJS) $(ALLTHOBJS:.cmo=.cmi) "$(INSTALLDIR)"; \
 	fi
 	if test $(THREADS_LIB) = vm || test $(HAS_DLL_SUPPORT) != yes; \
 	   then cp lablgtktop$(XE) "$(INSTALLDIR)"; \
 	fi
 	cp -p *.h "$(INSTALLDIR)"
-	@if test -f lablgtk.cmxa; then $(MAKE) installopt; fi
-	@if test -f dlllablgtk2$(XS); then $(MAKE) installdll; fi
+	@if test -f lablgtk.cmxa; then $(MAKE) old-installopt; fi
+	@if test -f dlllablgtk2$(XS); then $(MAKE) old-installdll; fi
 	cp lablgtk2$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
 	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; fi
 	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
 
-installdll:
+old-installdll:
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)" || \
 	   echo "Couldn't install dlls in default location: $(DLLDIR)"
 	if test -f dlllablgtk2$(XA); then \
 	  cp $(CLIBS:lib%$(XA)=dll%$(XA)) "$(INSTALLDIR)"; fi
 
-installopt:
+old-installopt:
 	cp $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=$(XA)) $(EXTRA_MLLIBS:.cma=.cmxa) $(EXTRA_MLLIBS:.cma=$(XA)) "$(INSTALLDIR)"
 ifeq ($(HAS_NATIVE_DYNLINK),yes)
 	cp $(MLLIBS:.cma=.cmxs) $(EXTRA_MLLIBS:.cma=.cmxs) "$(INSTALLDIR)"
@@ -373,6 +380,79 @@ endif
 	cp $(INITOBJS:.cmo=$(XO)) "$(INSTALLDIR)"
 	if test -f gtkThread.cmx; then \
 	   cp $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) "$(INSTALLDIR)"; fi
+
+old-uninstall:
+	rm -r "$(INSTALLDIR)"
+	for f in $(CLIBS:lib%$(XA)=dll%$(XS)); \
+	  do rm "$(DLLDIR)"/$$f; done
+	for f in lablgladecc2$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE); \
+	  do rm -f "$(BINDIR)"/$$f; done
+
+# Install using ocamlfind
+findlib-install:
+	@if test "$(OCAMLFIND)" = no; then \
+	  echo "Cannot use ocamlfind, use old-install."; \
+	  exit 2; fi
+	mkdir -p "$(BINDIR)"
+	mkdir -p "$(DESTDIR)$(FINDLIBDIR)"
+	@if test -f "$(DESTDIR)$(OCAMLLDCONF)"; then :; else \
+	  touch "$(DESTDIR)$(OCAMLLDCONF)"; fi
+	$(OCAMLFIND) install -destdir "$(DESTDIR)$(FINDLIBDIR)" \
+	  -ldconf "$(DESTDIR)$(OCAMLLDCONF)" \
+    lablgtk2 ../META \
+    build.ml \
+    $(CLIBS) \
+    $(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) \
+    *.mli \
+    $(ALLOBJS:.cmo=.ml) $(ALLTHOBJS:.cmo=.ml) $(EXTRA_OBJS:.cmo=.ml) \
+    $(EXTRA_MLLIBS) $(MLLIBS) $(INITOBJS) \
+    varcc$(XE) propcc$(XE) \
+    `if test $(THREADS_LIB) != no; \
+      then echo $(ALLTHOBJS) $(ALLTHOBJS:.cmo=.cmi) ; \
+    fi` \
+    `if test $(THREADS_LIB) = vm || test $(HAS_DLL_SUPPORT) != yes; \
+      then echo lablgtktop$(XE) ; \
+    fi` \
+    *.h \
+    `if test -f lablgtk.cmxa; \
+      then \
+        echo $(MLLIBS:.cma=.cmxa) $(MLLIBS:.cma=$(XA)) \
+          $(EXTRA_MLLIBS:.cma=.cmxa) $(EXTRA_MLLIBS:.cma=$(XA)) ; \
+          if test "$(HAS_NATIVE_DYNLINK)" = "yes" ; \
+            then echo $(MLLIBS:.cma=.cmxs) $(EXTRA_MLLIBS:.cma=.cmxs) ; \
+          fi; \
+        echo  $(ALLOBJS:.cmo=.cmx) $(EXTRA_OBJS:.cmo=.cmx) ; \
+        echo $(INITOBJS:.cmo=$(XO)) ; \
+        if test -f gtkThread.cmx; then \
+          echo $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) ; \
+        fi ; \
+    fi` \
+    `if test -f dlllablgtk2$(XS); \
+      then \
+        echo "-dll $(CLIBS:lib%$(XA)=dll%$(XS)) -nodll" ; \
+    fi` \
+    `if test -f dlllablgtk2$(XA); \
+      then \
+        echo $(CLIBS:lib%$(XA)=dll%$(XA)) ; \
+    fi`
+	rm -f lablgtk2
+	$(MAKE) lablgtk2 LABLGTKDIR="$(FINDLIBDIR)/lablgtk2"
+	cp lablgtk2$(XB) "$(BINDIR)"
+	if test -f lablgladecc$(XE); then \
+	  cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; \
+	fi
+	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
+	$(RANLIB) $(CLIBS:%=$(FLINSTALLDIR)/%)
+	@if test -f lablgtk.cmxa; then \
+	  echo "Execute $(RANLIB) in $(FLINSTALLDIR)"; \
+	  $(RANLIB) $(MLLIBS:%.cma=$(FLINSTALLDIR)/%$(XA)) \
+		    $(EXTRA_MLLIBS:%.cma=$(FLINSTALLDIR)/%$(XA)) ; \
+	 fi
+
+findlib-uninstall:
+	$(OCAMLFIND) remove lablgtk2
+	for f in lablgladecc2$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE); \
+	  do rm -f "$(BINDIR)"/$$f; done
 
 lablgtk.cma liblablgtk2$(XA): $(COBJS) $(MLOBJS)
 	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)
@@ -428,14 +508,17 @@ lablgtkspell.cmxs: DYNLINKLIBS=$(GTKSPELL_LIBS)
 gtkSignal.ml: gtkSignal.ml4
 	$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE) -impl $< -o $@
 
-gtkThread.cmo: gtkThread.ml
-	$(COMPILER) $(THFLAGS) gtkThread.ml
+gtkThread.cmo: gtkThread.ml $(CONFIG)
+	$(COMPILER) $(THFLAGS) $<
 
-gtkThread.cmi: gtkThread.mli
-	$(COMPILER) $(THFLAGS) gtkThread.mli
+gtkThread.cmi: gtkThread.mli $(CONFIG)
+	$(COMPILER) $(THFLAGS) $<
 
-gtkThread.cmx: gtkThread.ml
-	$(COMPOPT) $(THFLAGS) gtkThread.ml
+gtkThread.cmx: gtkThread.ml $(CONFIG)
+	$(COMPOPT) $(THFLAGS) $<
+
+gtkThTop.cmo: gtkThTop.ml $(CONFIG)
+	$(COMPILER) $(THFLAGS) -I +compiler-libs $<
 
 xml_lexer.ml: xml_lexer.mll
 	$(CAMLLEX) xml_lexer.mll

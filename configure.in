@@ -2,16 +2,16 @@
 # autoconf input for Objective Caml programs
 # Modified by the lablgtk2 development team
 # Original copyright (C) 2001 Jean-Christophe Filliâtre
-#   from a first script by Georges Mariano 
-# 
+#   from a first script by Georges Mariano
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Library General Public
 # License version 2, as published by the Free Software Foundation.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# 
+#
 # See the GNU Library General Public License version 2 for more details
 # (enclosed in the file LGPL).
 
@@ -20,7 +20,7 @@
 #    CAMLC        "ocamlc" if present in the path, or a failure
 #                 or "ocamlc.opt" if present with same version number as ocamlc
 #    CAMLOPT      "ocamlopt" (or "ocamlopt.opt" if present), or "no"
-#   OCAMLBEST     either "byte" if no native compiler was found, 
+#   OCAMLBEST     either "byte" if no native compiler was found,
 #                 or "opt" otherwise
 #   OCAMLDEP      "ocamldep"
 #   OCAMLLEX      "ocamllex" (or "ocamllex.opt" if present)
@@ -30,7 +30,7 @@
 #   OCAMLWIN32    "yes"/"no" depending on Sys.os_type = "Win32"
 #   EXE           ".exe" if OCAMLWIN32=yes, "" otherwise
 
-# check for one particular file of the sources 
+# check for one particular file of the sources
 # ADAPT THE FOLLOWING LINE TO YOUR SOURCES!
 AC_INIT(src/gtk.ml)
 
@@ -53,12 +53,12 @@ AC_ARG_WITH(libdir,
 	[  --with-libdir=/path     install libs in /path/lablgtk2 and /path/stublibs],
 	LIBDIR=$withval
 	echo "Install dirs are : $LIBDIR/lablgtk2 and $LIBDIR/stublibs"
-	echo "	Compile with 
-		ocamlc -I $LIBDIR/lablgtk2 
-	and add $LIBDIR/stublibs either to OCAMLLIB/ld.conf or 
-	to CAML_LD_LIBRARY_PATH", 
+	echo "	Compile with
+		ocamlc -I $LIBDIR/lablgtk2
+	and add $LIBDIR/stublibs either to OCAMLLIB/ld.conf or
+	to CAML_LD_LIBRARY_PATH",
 	echo "Default install dirs are : $LIBDIR/lablgtk2 and $LIBDIR/stublibs"
-	echo "Compile with ocamlc -I +lablgtk2" 
+	echo "Compile with ocamlc -I +lablgtk2"
 	)
 
 # then we look for ocamlopt; if not present, we issue a warning
@@ -154,8 +154,24 @@ if test "$CAMLP4O" = no ; then
 	AC_MSG_ERROR(Cannot find camlp4o.)
 fi
 
-if expr "$OCAMLVERSION" '>=' '3.08' > /dev/null ; then
-   ODOC_DEF="-D OCAML_308"
+AC_CHECK_PROG(OCAMLFIND,ocamlfind,ocamlfind,no)
+if test "`$OCAMLFIND printconf stdlib`" != "`$CAMLC -where`"; then
+  AC_MSG_WARN(Ignoring ocamlfind, it uses a different OCaml installation.)
+  OCAMLFIND=no
+fi
+
+if test "$OCAMLFIND" = no; then
+FINDLIBDIR=""
+OCAMLLDCONF=""
+else
+FINDLIBDIR="`ocamlfind printconf destdir | tr -d '\\r'`"
+echo "$OCAMLFIND library path is $FINDLIBDIR"
+OCAMLLDCONF="`ocamlfind printconf ldconf | tr -d '\\r'`"
+echo "$OCAMLFIND ldconf path is $OCAMLLDCONF"
+fi
+
+if expr "$OCAMLVERSION" '>=' '4' > /dev/null ; then
+   ODOC_DEF="-D OCAML_400"
 fi
 AC_SUBST(ODOC_DEF)
 
@@ -191,6 +207,8 @@ if test -r "$OCAMLLIB/stublibs/dllunix.so" ||
 then HAS_DLL_SUPPORT="yes"
 fi
 AC_MSG_RESULT($HAS_DLL_SUPPORT)
+
+RANLIB=`$CAMLC -config | grep ranlib | sed -e "s/ranlib: \(.*\)/\1/" `
 
 AC_PROG_RANLIB
 # get the C compiler used by ocamlc
@@ -228,7 +246,7 @@ rm test_dynlink.*
 
 # GTK 2 auto configuration
 
-GTKPKG=gtk+-2.0 
+GTKPKG=gtk+-2.0
 AM_PATH_GTK_2_0(2.0.0, :, AC_MSG_ERROR(GTK+ is required))
 
 dnl LABLGTK_PKG(variable, autoconf package, help string, pkgconfig package)
@@ -349,6 +367,9 @@ AC_SUBST(OCAMLDOC)
 AC_SUBST(CAMLMKTOP)
 AC_SUBST(CAMLMKLIB)
 AC_SUBST(CAMLP4O)
+AC_SUBST(OCAMLFIND)
+AC_SUBST(FINDLIBDIR)
+AC_SUBST(OCAMLLDCONF)
 AC_SUBST(LABLGLDIR)
 AC_SUBST(HAVE_SVGZ)
 AC_SUBST(USE_CC)

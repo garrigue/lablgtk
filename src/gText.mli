@@ -148,6 +148,8 @@ type contents =
 (** @gtkdoc gtk gtk-GtkTextIter *)
 class nocopy_iter :  text_iter -> 
 object
+  method as_iter : text_iter
+  method assign : nocopy_iter -> unit
   method backward_char : bool
   method backward_chars : int -> bool
   method backward_cursor_position : bool
@@ -348,20 +350,29 @@ class type buffer_signals_skel_type =
     method modified_changed : callback:(unit -> unit) -> GtkSignal.id
     method remove_tag :
       callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
+    method notify_cursor_position : callback:(int -> unit) -> GtkSignal.id
+    method notify_has_selection : callback:(bool -> unit) -> GtkSignal.id
+    method notify_tag_table : callback:(text_tag_table -> unit) -> GtkSignal.id
   end
-class virtual buffer_signals_skel :
-object
-  inherit buffer_signals_skel_type
-  method private virtual connect :
-    'a. ([> `textbuffer ], 'a) GtkSignal.t -> callback:'a -> GtkSignal.id
-end
 
-class type ['b] buffer_signals_type = 
+class type ['b] buffer_signals_type =
 object ('a)
   inherit buffer_signals_skel_type
   method after : 'a
   method private connect :
     'c. ('b, 'c) GtkSignal.t -> callback:'c -> GtkSignal.id
+  method private notify :
+    'c. ('b, 'c) Gobject.property -> callback:('c -> unit) -> GtkSignal.id
+end
+
+class virtual buffer_signals_skel :
+object
+  constraint 'c = [> `textbuffer ]
+  inherit buffer_signals_skel_type
+  method private virtual connect :
+    'a. ('c, 'a) GtkSignal.t -> callback:'a -> GtkSignal.id
+  method private virtual notify :
+    'b. ('c, 'b) Gobject.property -> callback:('b -> unit) -> GtkSignal.id
 end
 
 class buffer_signals : ([> `textbuffer ] as 'b) Gtk.obj -> ['b] buffer_signals_type
@@ -484,6 +495,18 @@ object ('a)
     callback:(GData.adjustment option -> GData.adjustment option -> unit)
     -> GtkSignal.id
   method toggle_overwrite : callback:(unit -> unit) -> GtkSignal.id
+  method notify_accepts_tab : callback:(bool -> unit) -> GtkSignal.id
+  method notify_cursor_visible : callback:(bool -> unit) -> GtkSignal.id
+  method notify_editable : callback:(bool -> unit) -> GtkSignal.id
+  method notify_indent : callback:(int -> unit) -> GtkSignal.id
+  method notify_justification : callback:(GtkEnums.justification -> unit) -> GtkSignal.id
+  method notify_left_margin : callback:(int -> unit) -> GtkSignal.id
+  method notify_pixels_above_lines : callback:(int -> unit) -> GtkSignal.id
+  method notify_pixels_below_lines : callback:(int -> unit) -> GtkSignal.id
+  method notify_pixels_inside_wrap : callback:(int -> unit) -> GtkSignal.id
+  method notify_right_margin : callback:(int -> unit) -> GtkSignal.id
+  method notify_wrap_mode : callback:(GtkEnums.wrap_mode -> unit) -> GtkSignal.id
+
 end
 
 (** Widget that displays a {!GText.buffer}

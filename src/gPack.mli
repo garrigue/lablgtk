@@ -39,7 +39,7 @@ class box_skel : ([> box] as 'a) obj ->
       ?from:Tags.pack_type ->
       ?expand:bool -> ?fill:bool -> ?padding:int -> widget -> unit
    (** @param from default value is [`START]
-       @param expand default vaue is [false]
+       @param expand default value is [false]
        @param fill default value is [true], ignored if [expand] is [false] *)
     method reorder_child : widget -> pos:int -> unit
     method set_child_packing :
@@ -233,6 +233,22 @@ val layout :
 class notebook_signals : [> Gtk.notebook] obj ->
   object
     inherit GContainer.container_signals
+    method change_current_page : callback:(int -> unit) -> GtkSignal.id
+    method create_window : callback:(page:GObj.widget -> x:int -> y:int -> unit) -> GtkSignal.id
+    method move_focus_out : callback:(GtkEnums.direction_type -> unit) -> GtkSignal.id
+    method notify_enable_popup : callback:(bool -> unit) -> GtkSignal.id
+    method notify_homogeneous_tabs : callback:(bool -> unit) -> GtkSignal.id
+    method notify_scrollable : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_border : callback:(bool -> unit) -> GtkSignal.id
+    method notify_show_tabs : callback:(bool -> unit) -> GtkSignal.id
+    method notify_tab_hborder : callback:(int -> unit) -> GtkSignal.id
+    method notify_tab_pos : callback:(GtkEnums.position_type -> unit) -> GtkSignal.id
+    method notify_tab_vborder : callback:(int -> unit) -> GtkSignal.id
+    method page_added : callback:(GObj.widget -> int -> unit) -> GtkSignal.id
+    method page_removed : callback:(GObj.widget -> int -> unit) -> GtkSignal.id
+    method page_reordered : callback:(GObj.widget -> int -> unit) -> GtkSignal.id
+    method reorder_tab : callback:(GtkEnums.direction_type -> bool -> unit) -> GtkSignal.id
+    method select_page : callback:(bool -> unit) -> GtkSignal.id
     method switch_page : callback:(int -> unit) -> GtkSignal.id
   end
 
@@ -242,6 +258,7 @@ class notebook : Gtk.notebook obj ->
   object
     inherit GContainer.container
     val obj : Gtk.notebook obj
+    method as_notebook : Gtk.notebook Gtk.obj
     method event : event_ops
     method append_page :
       ?tab_label:widget -> ?menu_label:widget -> widget -> int
@@ -250,6 +267,7 @@ class notebook : Gtk.notebook obj ->
     method get_menu_label : widget -> widget
     method get_nth_page : int -> widget
     method get_tab_label : widget -> widget
+    method get_tab_reorderable : widget -> bool
     method goto_page : int -> unit
     method insert_page :
       ?tab_label:widget -> ?menu_label:widget -> ?pos:int -> widget -> int
@@ -259,6 +277,7 @@ class notebook : Gtk.notebook obj ->
       ?tab_label:widget -> ?menu_label:widget -> widget -> int
     method previous_page : unit -> unit
     method remove_page : int -> unit
+    method reorder_child : widget -> int -> unit
     method set_enable_popup : bool -> unit
     method set_homogeneous_tabs : bool -> unit
     method set_page :
@@ -268,6 +287,7 @@ class notebook : Gtk.notebook obj ->
     method set_show_tabs : bool -> unit
     method set_tab_border : int -> unit
     method set_tab_hborder : int -> unit
+    method set_tab_reorderable : widget -> bool -> unit
     method set_tab_vborder : int -> unit
     method set_tab_pos : Tags.position -> unit
     method enable_popup : bool

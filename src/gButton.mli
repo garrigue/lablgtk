@@ -73,6 +73,16 @@ class button_signals : 'b obj ->
     method leave : callback:(unit -> unit) -> GtkSignal.id
     method pressed : callback:(unit -> unit) -> GtkSignal.id
     method released : callback:(unit -> unit) -> GtkSignal.id
+    method notify_focus_on_click : callback:(bool -> unit) -> GtkSignal.id
+    method notify_image : callback:(GObj.widget -> unit) -> GtkSignal.id
+    method notify_image_position : callback:(GtkEnums.position_type -> unit) -> GtkSignal.id
+    method notify_label : callback:(string -> unit) -> GtkSignal.id
+    method notify_relief : callback:(GtkEnums.relief_style -> unit) -> GtkSignal.id
+    method notify_use_stock : callback:(bool -> unit) -> GtkSignal.id
+    method notify_use_underline : callback:(bool -> unit) -> GtkSignal.id
+    method notify_xalign : callback:(float -> unit) -> GtkSignal.id
+    method notify_yalign : callback:(float -> unit) -> GtkSignal.id
+
   end
 
 (** A widget that creates a signal when clicked on

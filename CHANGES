@@ -1,4 +1,75 @@
-$Id$
+LablGTK changes log
+
+2012.08.26 [Jacques]
+  * detect findlib during configuration
+  * support DESTDIR with findlib-install
+
+2012.08.26 [Jacques]
+  * indicate that only old-install supports DESTDIR
+  * have old-install copy the META file too
+  * cleanup the two phases of findlib-install
+
+In Lablgtk-2.16.0:
+
+2012.08.23 [Jacques]
+  * update Windows port, compiles fine on mingw with
+    ./configure --disable-gtktest
+  * lablgtk2 script does not load extra libraries by default
+    (use flag -all to load all extensions)
+
+2012.08.17 [Jacques]
+  * generate correct lablgtk2 script for findlib.
+  * add old-uninstall target.
+  * support threaded toplevel with Quartz backend, using gtkThTop.ml
+    (runs the toplevel loop in another thread)
+  * remove GtkThInit from META (not portable)
+  * avoid busy waiting by using g_main_context_set_poll_func to
+    make polling non-blocking.
+    busy waiting is still needed for VM threads, and can be activated
+    by setting the environment variable LABLGTK_BUSY_WAIT.
+
+2012.08.16 [Jacques]
+  * update applications/browser for OCaml 4.00
+  * update applications/camlirc to use GText instead of GBroken.text
+
+2012.07.26 [Pierre-Marie]
+  * improvements to GtkSourceView2.
+  * add cast and assignation functions to GText.nocopy_iter.
+  * add Gtk 2.10 missing key modifiers.
+
+2012.07.24 [Jacques]
+  * can still install using old-install.
+
+2012.06.19 [Adrien]
+  * add a high-level API to create keyboard shortcuts.
+
+2012.06.12 [Adrien]
+  * add several #as_foo methods: entry, notebook, range
+  * new signals for notebook: select_page, reorder_tab,
+    change_current_page, move_focus_out, page_{added,removed,reordered}
+  * add gtk_container_child_{set,get}_property
+  * add gtk_notebook_{set,get}_tab_reorderable
+  * add gtk_signal_new which can be used to create custom keyboard shortcuts
+  * add g_signal_list and g_signal_query
+  * add functions to connect to notify::foo signals which indicate when an
+    object property changes
+  * add foo#connect#notify_bar methods to add callbacks on changes of
+    the "bar" property of the object "foo".
+
+2012.04.11 [Maxence]
+  * use findlib to install (see README for the list of installed packages)
+
+2012.06.05 [Jacques]
+  * merge GtkSourceView2 additions by Pierre-Marie Pedrot
+
+2012.03.07 [Jacques]
+  * add Make_Val_option to wrappers.h
+
+2011.07.20 [Jacques]
+  * add gtk_accelerator_name/get_label (for Pierre Boutillier)
+  * add gtk_accel_map_foreach/change_entry (ibid)
+  * add gdk_window_clear_area (for DDR)
+  * make gtk_tree_view_get_visible_range version dependent (Thomas Ripoche)
 
 In Lablgtk-2.14.2:
 
@@ -17,7 +88,7 @@ In Lablgtk-2.14.2:
 
 2010.06.25 [Jacques]
   * remove gtkInit.cmo from gdk_pixbuf_mlsource, no need to
-    initialize Gtk as Gobject is sufficient 
+    initialize Gtk as Gobject is sufficient
   * protect GtkThread callbacks against exceptions, and provide a
     function to process messages inside a different main loop.
   * add -nothinit option to lablgtk2, since Quartz cannot run the main
@@ -26,7 +97,7 @@ In Lablgtk-2.14.2:
 
 2010.06.08 [Jacques]
   * correct interfaces due to the fixing of an unsoundness bug in ocaml 3.12
-    (cf. http://caml.inria.fr/mantis/view.php?id=4824) 
+    (cf. http://caml.inria.fr/mantis/view.php?id=4824)
 
 In Lablgtk-2.14.1:
 
@@ -70,15 +141,15 @@ In Lablgtk-2.14.0:
 
 2009.09.01 [Benjamin]
   * Support for GtkSourceView 2.6 in library "lablgtksourceview2"
-  * Support for GtkSourceView 1.x is still available in library 
-    "lablgtksourceview" but it is no longer linked into the lablgtk2 
+  * Support for GtkSourceView 1.x is still available in library
+    "lablgtksourceview" but it is no longer linked into the lablgtk2
     default toplevel as it is not linkable with "lablgtksourceview2".
 
 2009.05.21 [Jacques]
   * Apply Anil Madhavapeddy patch for lablgladecc2 -hide-default
 
 2009.05.18 [Benjamin]
-  * Make and install dynamic cmxs objects when available. 
+  * Make and install dynamic cmxs objects when available.
   * Fix compilation bug for ml_panel.c (Richard Jones message of 2009-02-06)
 
 2009.05.12 [Jacques]
@@ -103,7 +174,7 @@ In Lablgtk-2.14.0:
 2009.02.09 [Benjamin]
   * fix linking bug for older than 2.2 Gtk with g_io_channel_read_chars
 2009.01.20 [Benjamin]
-  * change handling of non existent properties. 
+  * change handling of non existent properties.
     [Not_found] is no longer raised and [Invalid_argument prop_name] is
     used instead.
     No exception is raised by unknown dynamic property setters and a GLib
@@ -126,16 +197,16 @@ In Lablgtk-2.12.0:
     Keeping the new type for the callback match_selected.
 2008.10.05 [Benjamin]
   * Change type of model contained in GEdit.entry_completion from
-    model to model_filter see 
+    model to model_filter see
     http://bugzilla.gnome.org/show_bug.cgi?id=555087.
 2008.09.10 [Benjamin]
-  * Many custom tree model bugs fixed. 
+  * Many custom tree model bugs fixed.
 
 2008.09.04 [Benjamin]
   * First attempt to support custom_tree_models in GTree.
     I need some feedback on ways to improve the safety.
     An example of usage is given in examples/custom_tree.ml
-    Part of the code comes from Robert Schneck: he agreed by private mail 
+    Part of the code comes from Robert Schneck: he agreed by private mail
     on relicensing it for lablgtk2.
 
 2008.08.20 [Jacques]
@@ -205,13 +276,13 @@ In lablgtk-2.10.0:
 
 2007.08.09 [Benjamin]
   * GtkImage : clear support
-	
+
 2007.08.08 [Benjamin]
   * Fix typo in property "wrap-license" (was "wrap-licence") of GtkAboutDialog
   * Add GtkFileChooser "do-confirm-overwrite" property support and
      "confirm-overwrite" signal
   * GWindow "urgency-hint" property support
-	
+
 2007.08.07 [Benjamin]
   * Add Glib.usleep
   * Add Stock icons for Gtk 2.10 and 2.8
@@ -277,7 +348,7 @@ In lablgtk2-20060908:
   * wrap gtk_tree_view_expand_to_path (2.2)
 
 2005.11.03 [Benjamin]
-  * lablgladecc : emit w#toplevel#misc#show_all instead of 
+  * lablgladecc : emit w#toplevel#misc#show_all instead of
     w#toplevel#show in check_all, because some toplevel widgets
     (gMenu for example) do not have a show method
 
@@ -299,7 +370,7 @@ In lablgtk2-20051027 (2.6.0):
   * wrap gdk_cursor_new_from_pixbuf
 
 2005.08.25 [Olivier]
-  * gtk_about_dialog_set_{url,email}_hook are not methods : fix the 
+  * gtk_about_dialog_set_{url,email}_hook are not methods : fix the
     external type declaration and remove from the GWindow.about_dialog class.
 
 2005.08.18 [Olivier]
@@ -307,7 +378,7 @@ In lablgtk2-20051027 (2.6.0):
     function or disable sorting
   * add a couple of utility functions in Glib :
       - getenv, setenv, unsetenv (2.4)
-      - get_user_data_dir, etc. (2.6) 
+      - get_user_data_dir, etc. (2.6)
   * change the generated code of gdk-pixbuf-mlsource a bit.
 
 In lablgtk2-20050701:
@@ -351,7 +422,7 @@ In lablgtk2-20050218:
   * new stock items
   * add PangoEllipsizeMode for PangoLayout
   * new GtkLabel properties
-  * new GtkProgressbar::ellipsize property 
+  * new GtkProgressbar::ellipsize property
   * new GtkTreeView properties and separator rows
 
 2005.01.02 [Olivier]
@@ -426,12 +497,12 @@ In lablgtk2-20041119:
   * add GText.buffer#select_range
 
 2004.09.14 [Olivier]
-  * add a few unicode-related functions 
+  * add a few unicode-related functions
 
 2004.09.08 [Olivier]
   * add GAction.ui_manager#add_ui
   * have #get_widget and #get_action raise Not_found instead of
-    Null_pointer. 
+    Null_pointer.
 
 2004.09.03 [Olivier]
   * in GAction.action_group, do not merge #add_action and
@@ -448,7 +519,7 @@ In lablgtk2-20041119:
 2004.08.24 [Olivier]
   * add GWindow.message_dialog#set_markup (2.4)
   * add override of default signal handlers
-    (GtkSignal.override_class_closure, GtkSignal.chain_from_overridden) 
+    (GtkSignal.override_class_closure, GtkSignal.chain_from_overridden)
 
 2004.08.23 [Olivier]
   * wrap some 2.4 additions in GdkPixbuf (from_file_at_size,
@@ -502,7 +573,7 @@ In lablgtk2-20040716 (2.4.0):
 
 2004.06.10 [Olivier]
   * add #event method for GtkComboBox (and descendants), and
-    GtkFileChooserWidget 
+    GtkFileChooserWidget
 
 2004.06.06 [Olivier]
   * changed methods returning a char* or NULL in GFile: now they
@@ -544,7 +615,7 @@ In lablgtk2-20040319:
 
 2004.03.17 [Olivier]
   * add GFile.filter#add_custom
-  * add special methods for adding open/save button in 
+  * add special methods for adding open/save button in
     GWindow.file_chooser_dialog
 
 2004.03.15 [Jacques]
@@ -591,7 +662,7 @@ In lablgtk2-20040304:
 2004.01.15 [Olivier]
   * add gtk_tree_view_column_set_cell_data_func
   * log error messages if ml_gtktree callbacks raise exceptions
-  * fix the types of some callbacks in GtkTreeSortable 
+  * fix the types of some callbacks in GtkTreeSortable
     and GtkTreeModelFilter
 
 In lablgtk2-20040113:
@@ -633,7 +704,7 @@ In lablgtk2-20040113:
   * added GtkData.AccelGroup.parse
 
 2003.12.10 [Olivier]
-  * support for GTK 2.4 widgets: 
+  * support for GTK 2.4 widgets:
     GtkComboBox, GtkExpander, GtkFileChooser
 
 2003.11.30 [Olivier]
@@ -647,7 +718,7 @@ In lablgtk2-20040113:
   * add GWindow.plug_signals
 
 2003.10.28 [Olivier]
-  * make Panel.applet inherit GContainer.bin; 
+  * make Panel.applet inherit GContainer.bin;
     remove the unit arg for getters
 
 2003.10.20 [Jacques]
@@ -666,7 +737,7 @@ In lablgtk-2.2.0:
 
 2003.10.09 [Benjamin]
   * doc: correct GtkAjustement link to the right Gtk doc
-  * doc: fix Makefile for doc (use of OCAML instead of CAMLC and mkdir ../doc/html) 
+  * doc: fix Makefile for doc (use of OCAML instead of CAMLC and mkdir ../doc/html)
 
 2003.10.07 [Jacques]
   * add Gpointer.{peek,poke}_nativeint
@@ -674,7 +745,7 @@ In lablgtk-2.2.0:
 2003.09.27 [Olivier]
   * remove `NONE response in dialogs
   * improved ocamldoc documentation
-    (custom generator with links to 
+    (custom generator with links to
      GTK+ API reference)
 
 2003.09.22 [Jacques] (request F.Pottier)
@@ -699,7 +770,7 @@ In lablgtk-2.2.0:
   * split gtk.props in small pieces, to allow more generation
 
 2003.08.06 [Olivier]
-  * in GWindow: color_selection_dialog, file_selection and 
+  * in GWindow: color_selection_dialog, file_selection and
     font_selection_dialog now inherit from GWindow.dialog
 
 2003.08.05 [Olivier]
@@ -709,7 +780,7 @@ In lablgtk-2.2.0:
       gdkpixbuf-specific errors
 
 2003.07.18 [Benjamin]
-  * New Glib.Unichar module 
+  * New Glib.Unichar module
 
 2003.07.17 [Benjamin]
   * Fix Win32 compilation
@@ -719,9 +790,9 @@ In lablgtk-2.2.0:
   * Internal widgets are now also accessible by instance variables.
     The user can use simply widget names inside sub-class definitions,
     instead writing self#widget_name.
-  * A flag -hide-default hides all the widget with default names 
+  * A flag -hide-default hides all the widget with default names
     come from glade, like label123.
-  * Added check_all function to the output so that one can check 
+  * Added check_all function to the output so that one can check
     all the widgets really exist.
   * reparent method is added to facilitate to embed one glade toplevel
     widget into a container.
@@ -729,12 +800,12 @@ In lablgtk-2.2.0:
 2003.07.09 [Jacques]
   * ?width and ?height in GWindow back to setting size_request
     (default size did not work properly)
-  * backward compatibility: GMisc.label has two exclusive parameters, 
+  * backward compatibility: GMisc.label has two exclusive parameters,
     ?text and ?markup (and no ?use_markup).
 
 2003.07.07 [Benjamin]
-  * Fixed confusion between text/label in a Label. Now GMisc.label expects 
-    ~label instead of ~text. This is consistant with the semantic of text and 
+  * Fixed confusion between text/label in a Label. Now GMisc.label expects
+    ~label instead of ~text. This is consistant with the semantic of text and
     label properties (label may contain pango makups/text never do)
 
 
@@ -752,7 +823,7 @@ In lablgtk2-20030707:
   * Fix deps in Makefile
   * Fix generation of an incorrect lablgtk2 when debug is enabled
   * Fix Gtk 2.0 compatibility
-  
+
 2003.06.24 [Jacques]
   * finish going to generation, add missing signals
   * wrap clipboard and cell renderers
@@ -775,7 +846,7 @@ In lablgtk2-20030707:
 
 2003.06.16 [Benjamin]
   * Fix dependencies in Makefile. Now make -j works.
-  * Add "world" target in Makefile. 
+  * Add "world" target in Makefile.
 
 2003.06.15 [Jacques]
   * Starting automatic generation of code. Should reduce need to write
@@ -814,7 +885,7 @@ In lablgtk2-20030707:
   * fixed incorrect type of trreview#connect#row_activated
 
 2003.05.21 [Jun Furuse]
-  * fixed a problem of SpinButton.get_value_as_int for the case of 
+  * fixed a problem of SpinButton.get_value_as_int for the case of
     the value is minus' src/gtkEdit.ml
 
 2003.05.14 [Benjamin]
@@ -842,7 +913,7 @@ In lablgtk2-20030423:
  * add GWindow.message_dialog, add methods in GWindow.dialog
 
 2003.04.11 [Jun]
- * add GtkWindow.Window.resize and its C interface 
+ * add GtkWindow.Window.resize and its C interface
 
 2003.04.08 [Jacques]
  * lots of change in GtkTree*, add examples/tree_store.ml
@@ -904,7 +975,7 @@ In lablgtk2-beta:
 
 2003.02.21
  * Support for GTK 2.0 and librsvg 2.0 compilation (O. Andrieu) [Benjamin]
- 
+
 
 In lablgtk2-20030221:
 
@@ -917,7 +988,7 @@ In lablgtk2-20030221:
  * additions to Pango [Jacques]
 [Benjamin]:
  * added set_stock to GMisc.image
- * In GMisc.label_skel : 
+ * In GMisc.label_skel :
 	added : #set_markup #set_markup_with_mnemonic #label
 	changed : semantic of #text (returns text with markups and mnemonics)
 		old semantic available with #label.
@@ -1301,7 +1372,7 @@ In lablgtk-1.00:
   * bugfixes in Makefile, radtest and lv
 
 1999.10.6
-  * added Gdk.X.flush and Gdk.X.beep 
+  * added Gdk.X.flush and Gdk.X.beep
   * Gdk.X.flush is exported in GtkMain.Main
 
 1999.9.9
@@ -1473,7 +1544,7 @@ In lablgtk-1.00:
   * moved some non standard classes to GtkExt
 
 1998.12.8
-  * added the first application, xxaplay, Playstation audio track 
+  * added the first application, xxaplay, Playstation audio track
     player for linux. (How architecture specific!) (Furuse)
 
 1998.12.8
@@ -1502,7 +1573,7 @@ In lablgtk-1.00:
 	the module Arg in the standard library
   * Makefile : native code compilation added
   (Furuse)
- 
+
 1998.11.29
   * renamed widget_ops sub-object to misc
   * various improvements of set functions
@@ -1520,4 +1591,3 @@ In lablgtk-1.00:
 1998.11.22
   * added gtkObj.ml and examples/*_obj.ml
   * various modifications in gtk.ml
-

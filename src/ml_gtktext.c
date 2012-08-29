@@ -105,6 +105,17 @@ CAMLprim value ml_gtk_text_iter_copy (value it) {
   return Val_GtkTextIter(GtkTextIter_val(it));
 }
 
+/* Defined from Gtk 3.2 onwards, and explicitely written for bindings */
+CAMLprim value ml_gtk_text_iter_assign (value it1, value it2) {
+  CAMLparam2(it1, it2);
+  GtkTextIter* iter = GtkTextIter_val(it1);
+  GtkTextIter* other = GtkTextIter_val(it2);
+  g_return_val_if_fail (iter != NULL, Val_unit);
+  g_return_val_if_fail (other != NULL, Val_unit);
+  *iter = *other;
+  CAMLreturn(Val_unit);
+}
+
 /* gtktextmark */
 
 ML_2(gtk_text_mark_set_visible, GtkTextMark_val, Bool_val, Unit)
@@ -585,7 +596,7 @@ CAMLprim value ml_gtk_text_view_buffer_to_window_coords (value tv,
   int bx,by = 0;
 
   gtk_text_view_buffer_to_window_coords(GtkTextView_val(tv),
-					(GtkTextWindowType)tt,
+					Text_window_type_val(tt),
 					Int_val(x),Int_val(y),
 					&bx,&by);
 
