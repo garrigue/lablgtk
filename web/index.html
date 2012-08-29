@@ -1,6 +1,7 @@
 <html>
 <head>
 <Title>LablGtk</Title>
+<link rel="stylesheet" type="text/css" href="style.css"/>
 </head>
 <body>
 <h1><img src=gtk-logo-half.gif>LablGtk</h1>
@@ -14,10 +15,23 @@ It provides a strongly-typed, yet comfortable, object-oriented interface
 compatible with GTK+'s dynamic typing through OCaml's rich type system. Most
 widgets and methods are available, along with many examples.</p>
 
-<p>LablGtk also provides bindings to libglade (and can generate OCaml code from
-  .glade files), gdk-pixbuf, gnomecanvas, librsvg, libpanel and the GLArea
-  widget (in combination with <a
-  href="http://www.math.nagoya-u.ac.jp/~garrigue/soft/olabl/lablgl.html">LablGL</a>). The toplevel can be used for interactive development.</p>
+<p>LablGtk also provides bindings to
+</p>
+<ul>
+<li>gdk-pixbuf,</li>
+<li>the GLArea widget (in combination with
+  <a href="http://www.math.nagoya-u.ac.jp/~garrigue/soft/olabl/lablgl.html">LablGL</a>),
+</li>
+<li>gnomecanvas,</li>
+<li>gnomeui,</li>
+<li>gtksourceview 1&amp;2,</li>
+<li>gtkspell,</li>
+<li>libglade (and can generate OCaml code from .glade files),</li>
+<li>libpanel,</li>
+<li>librsvg,</li>
+<li>quartz.</li>
+</ul>
+<p>The toplevel can be used for interactive development.</p>
 
 <h3>Tutorials And Introduction Material</h3>
 <ul>
@@ -90,6 +104,12 @@ static Gtk+ on Win32</a>
   <li> <a href="http://forge.ocamlcore.org/projects/ocaml-boxes/">OCaml-boxes</a>
   A library to graphically manipulate boxes linked with edges; it can be used to edit graphs, diagrams, ...
   <li> <a href="http://coq.inria.fr/">The Coq Proof Assistant</a>
+  <li> <a href="http://zoggy.github.com/chamo/index.html">Chamo</a>, a source code editor with
+  OCaml being the equivalent of Elisp of Emacs.</li>
+  <li> <a href="http://zoggy.github.com/gtktop/">Gtktop</a>, a small OCaml library to
+  ease the creation of graphical toplevels. </li>
+  <li> <a href="http://zoggy.github.com/ocamltop-gtk/">OCamltop-gtk</a>,
+  a Gtk2 graphical interface for the OCaml toplevel.</li>
   <a href="http://storm.boblycat.org/~malc/motazaar">Motazaar</a>
   by malc
   A 3D animation player for the Outcast game; it also uses lablGL.
