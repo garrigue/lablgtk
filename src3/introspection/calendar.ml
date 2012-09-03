@@ -3,9 +3,8 @@ Main.init();;
 init_type();;
  let w =Window.create (Window.make_params 
 	~cont:(fun pl -> fun _ ->pl) 
-	~title:"Caendar" 
-	~default_width:300 
-	~default_height:100 [] ()
+	~title:"Calendar" 
+	 [] ()
 	);;
  let _ = GtkSignal.connect w 
 	~sgn:Widget.S.destroy 
