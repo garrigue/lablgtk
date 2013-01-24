@@ -112,11 +112,11 @@ let read_xml s =
 		let dtd = s.xparser.resolve file in
 		Xml_lexer.restore pos;
 		let x = read_node s in
-		Dtd.prove dtd root x
+		Dtd_ops.prove dtd root x
 	| true, Xml_lexer.DocType (root, Xml_lexer.DTDData dtd) ->
-		let dtd = Dtd.check dtd in
+		let dtd = Dtd_ops.check dtd in
 		let x = read_node s in
-		Dtd.prove dtd root x
+		Dtd_ops.prove dtd root x
 	| false, Xml_lexer.DocType _ ->
 		read_node s
 	| _, t ->

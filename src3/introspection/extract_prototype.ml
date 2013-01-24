@@ -1711,12 +1711,12 @@ and parse dir f =
     let data_file = Str.global_replace (Str.regexp "gir$") "xml" f in
     let data_path = Filename.concat "../data/" data_file in
     let data = dummy_data () in
-    let _=parse_data data (Xml.parse_file data_path) in
+    let _=parse_data data (Xml_ops.parse_file data_path) in
     Format.printf "Parsing '%s'@." full;
-    let xml = Xml.parse_file full in
+    let xml = Xml_ops.parse_file full in
     parse_xml dir data xml
   with Xml.Error m -> 
-    Format.printf "XML error:%s@." (Xml.error m);
+    Format.printf "XML error:%s@." (Xml_ops.error m);
     exit 1
 
  let () = 

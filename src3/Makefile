@@ -66,111 +66,6 @@ else
 CCOMPILER = $(CAMLC) -c -ccopt '$(CFLAGS)' -verbose
 endif
 
-ifdef USE_GL
-ifdef LABLGLDIR
-MLFLAGS += -I $(LABLGLDIR)
-endif
-MLLINK += lablgl.cma
-MLLIBS += lablgtkgl.cma
-CLIBS += liblablgtkgl2$(XA)
-GLMLOBJS = glGtk.cmo
-GLCOBJS = ml_gtkgl$(XO)
-endif
-
-#ifdef USE_GNOME
-#MLLIBS += lablgnome.cma
-#CLIBS += liblablgnome$(XA)
-#GNOMEMLOBJS = gtkXmHTML.cmo gHtml.cmo
-#GNOMECOBJS = ml_gtkxmhtml$(XO)
-#endif
-
-#~ ifdef USE_GLADE
-#~ MLLIBS += lablglade.cma
-#~ CLIBS += liblablglade2$(XA)
-#~ GLADEMLOBJS = glade.cmo
-#~ GLADECOBJS = ml_glade$(XO)
-#~ TARGETS += lablgladecc$(XE)
-#~ endif
-
-ifdef USE_GNOMECANVAS
-MLLIBS += lablgnomecanvas.cma
-CLIBS += liblablgnomecanvas$(XA)
-GNOMECANVASMLOBJS = gnomeCanvas.cmo gnoCanvas.cmo
-GNOMECANVASCOBJS = ml_gnomecanvas$(XO)
-endif
-
-ifdef USE_GNOMEUI
-MLLIBS += lablgnomeui.cma
-CLIBS += liblablgnomeui$(XA)
-GNOMEUIMLOBJS = gnomeDruid.cmo gnoDruid.cmo
-GNOMEUICOBJS = ml_gnomedruid$(XO)
-
-ifdef USE_PANEL
-MLLIBS += lablpanel.cma
-CLIBS += liblablpanel$(XA)
-PANELMLOBJS = panel.cmo
-PANELCOBJS = ml_panel$(XO)
-endif
-endif
-
-
-ifdef USE_RSVG
-MLLIBS += lablrsvg.cma
-CLIBS += liblablrsvg$(XA)
-RSVGMLOBJS = rsvg.cmo
-RSVGCOBJS = ml_rsvg$(XO)
-$(RSVGCOBJS) : CFLAGS+=$(HAVE_SVGZ)
-endif
-
-#~ ifdef USE_GTKSPELL
-#~ MLLIBS += lablgtkspell.cma
-#~ CLIBS += liblablgtkspell$(XA)
-#~ GTKSPELLMLOBJS = gtkSpell.cmo
-#~ GTKSPELLCOBJS = ml_gtkspell$(XO)
-#~ endif
-
-ifdef USE_GTKSOURCEVIEW
-byte:: lablgtksourceview.cma liblablgtksourceview$(XA)
-opt:: lablgtksourceview.cmxa liblablgtksourceview$(XA)
-ifeq ($(HAS_NATIVE_DYNLINK),yes)
-opt::  lablgtksourceview.cmxs
-endif
-
-ml_gtksourceview.o: CFLAGS=$(GTKSOURCEVIEWCFLAGS)
-GTKSOURCEVIEWMLOBJS = gtkSourceView.cmo gSourceView.cmo
-GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
-ml_gtksourceview.c: pango_tags.h
-GTKSOURCEVIEWMLOBJSENUM = sourceViewEnums.cmo 
-GTKSOURCEVIEWPROPS = gtkSourceView.props
-CLIBS += liblablgtksourceview$(XA)
-EXTRA_MLLIBS += lablgtksourceview.cma
-EXTRA_OBJS += $(GTKSOURCEVIEWMLOBJS) $(GTKSOURCEVIEWMLOBJSENUM) 
-BEFORE_DEPEND += $(GTKSOURCEVIEWMLOBJS:%.cmo=%.ml) $(GTKSOURCEVIEWPROPS:%.props=%Props.ml) $(GTKSOURCEVIEWPROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
-lablgtksourceview.cma liblablgtksourceview$(XA): \
-	$(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmo) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEWMLOBJS)
-	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
-lablgtksourceview.cmxa: $(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM:.cmo=.cmx) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmx) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmx) $(GTKSOURCEVIEWMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
-
-endif
-ifdef USE_GTKSOURCEVIEW2
-MLLIBS += lablgtksourceview2.cma
-CLIBS += liblablgtksourceview2$(XA)
-GTKSOURCEVIEW2MLOBJS = gtkSourceView2.cmo gSourceView2.cmo
-GTKSOURCEVIEW2COBJS = ml_gtksourceview2$(XO)
-GTKSOURCEVIEW2MLOBJSENUM = sourceView2Enums.cmo 
-GTKSOURCEVIEW2PROPS = gtkSourceView2.props
-BEFORE_DEPEND += $(GTKSOURCEVIEW2PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW2PROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
-
-EXTRA_OBJS += $(GTKSOURCEVIEW2MLOBJSENUM)
-lablgtksourceview2.cma liblablgtksourceview2$(XA): \
-	$(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2MLOBJSENUM) $(GTKSOURCEVIEW2PROPS:%.props=%Props.cmo) $(GTKSOURCEVIEW2PROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEW2MLOBJS)
-	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
-lablgtksourceview2.cmxa: $(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2MLOBJSENUM:.cmo=.cmx) $(GTKSOURCEVIEW2PROPS:%.props=%Props.cmx) $(GTKSOURCEVIEW2PROPS:%.props=o%Props.cmx) $(GTKSOURCEVIEW2MLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
-lablgtksourceview2.cmxs: DYNLINKLIBS=$(GTKSOURCEVIEW2_LIBS)
-endif
-
 ifdef USE_GTKQUARTZ
 CFLAGS += -DHAS_GTKQUARTZ
 endif
@@ -237,7 +132,7 @@ depend:
 	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
 	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 \
 	  USE_GTKSOURCEVIEW=1 USE_GTKSOURCEVIEW2=1
-real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
+real-depend .depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
 	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) \
 	  $(ALLTHOBJS:.cmo=.ml) $(BEFORE_DEPEND) *.mli > .depend
 
@@ -407,7 +302,7 @@ lablgtkspell.cmxa: $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
 lablgtkspell.cmxs: DYNLINKLIBS=$(GTKSPELL_LIBS)
 
-gtkSignal.ml: gtkSignal.ml4 gtkSignal.cmi
+gtkSignal.ml: gtkSignal.ml4
 	$(CAMLP4O) pa_macro.cmo $(HAS_PRINTEXC_BACKTRACE) -impl $< -o $@
 
 gtkSignal.cmi: gtkSignal.mli
