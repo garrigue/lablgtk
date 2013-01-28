@@ -1,9 +1,10 @@
 
 OCAMLC=ocamlc
 OPT=-g -dtypes
-INCLUDES= -I xml-light xml-light.cma str.cma
-extract_stubs: extract_prototype.ml xml-light/xml-light.cma
-	$(OCAMLC) $(OPT) $(INCLUDES) -o $@ $^
+INCLUDES= -I `ocamlfind query xml-light`
+LIBS=xml-light.cma str.cma
+extract_stubs: extract_prototype.ml
+	$(OCAMLC) $(OPT) $(INCLUDES) $(LIBS) -o $@ $^
 
 test: extract_stubs
 	./extract_stubs /usr/share/gir-1.0/Gtk-3.0.gir > LOG
