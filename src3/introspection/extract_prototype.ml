@@ -1210,6 +1210,10 @@ module Emit = struct
           Format.fprintf tagsc "@.";
           Format.fprintf tagsh "@.";
           Format.fprintf tagsml "@.";
+
+          close_out tagsc_channel ;
+          close_out tagsh_channel ;
+          close_out tagsml_channel ;
           close_out stub_ml_channel ;
           close_out stub_c_channel
       end
