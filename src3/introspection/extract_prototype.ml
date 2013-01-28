@@ -1573,69 +1573,81 @@ let parse_enum set attrs children =
 
 let parse_signal set attrs children =
   let s = dummy_signal () in
-  List.iter (fun (key,v) -> match key with
-     | "name" -> s.sig_name <-v
-     | "when" -> s.sig_when <- v
-     | "version" -> s.sig_version <- v ;
-     | "transfer-ownership" ->
-         parse_ownership
-           (fun o -> s.sig_ownership <- o)
-           v
-     | other ->
-         Format.printf "Ignoring attribute in signal: %s@." other)
-    attrs ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in signal:%s@." s
-   | Element (key,attrs,children) ->
+  List.iter
+    (fun (key, v) ->
        match key with
-       | "return-value" ->
-           parse_return_value
-             (fun r -> s.sig_return_value <- r)
-             attrs
-             children
-       | "parameters" ->
-           parse_parameters (fun l -> s.sig_parameters <- l)
-             attrs
-             children
-       | "doc" when not !debug -> ()
-       | other -> Format.printf
-           "Ignoring child in signal:%s@." other)
+       | "name" -> s.sig_name <-v
+       | "when" -> s.sig_when <- v
+       | "version" -> s.sig_version <- v ;
+       | "transfer-ownership" ->
+           parse_ownership
+             (fun o -> s.sig_ownership <- o)
+             v
+       | other ->
+           Format.printf "Ignoring attribute in signal: %s@." other
+    )
+    attrs ;
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in signal:%s@." s
+     | Element (key, attrs, children) ->
+         match key with
+         | "return-value" ->
+             parse_return_value
+               (fun r -> s.sig_return_value <- r)
+               attrs
+               children
+         | "parameters" ->
+             parse_parameters (fun l -> s.sig_parameters <- l)
+               attrs
+               children
+         | "doc" when not !debug -> ()
+         | other ->
+             Format.printf
+               "Ignoring child in signal:%s@." other
+    )
     children ;
   set s
 
-
 let parse_function set attrs children =
   let fct = dummy_function () in
-  List.iter (fun (key,v) -> match key with
-     | "name" -> fct.f_name <- v
-     | "c:identifier" -> fct.c_identifier <- v
-     | "version" -> fct.version <- v
-     | "doc" -> fct.doc <- v
-     | "deprecated" -> fct.deprecated <- v
-     | "deprecated-version" -> fct.deprecated_version <- v
-     | "throws" -> fct.throws <- v="1"
-     | "introspectable" -> fct.introspectable <- v="1"
-     | other ->
-         Format.printf "Ignoring attribute in fct: %s@." other)
+  List.iter
+    (fun (key, v) ->
+       match key with
+       | "name" -> fct.f_name <- v
+       | "c:identifier" -> fct.c_identifier <- v
+       | "version" -> fct.version <- v
+       | "doc" -> fct.doc <- v
+       | "deprecated" -> fct.deprecated <- v
+       | "deprecated-version" -> fct.deprecated_version <- v
+       | "throws" -> fct.throws <- v="1"
+       | "introspectable" -> fct.introspectable <- v="1"
+       | other ->
+           Format.printf "Ignoring attribute in fct: %s@." other
+    )
     attrs ;
+
   if is_caml_avoid fct.f_name then
     fct.f_name <- fct.c_identifier ;
-  List.iter (function
-   | PCData s -> Format.printf "Ignoring PCData in fct:%s@." s
-   | Element (key,attrs,children) ->
-       match key with
-       | "return-value" ->
-           parse_return_value
-             (fun r -> fct.return_value <- r)
-             attrs
-             children
-       | "parameters" ->
-           parse_parameters (fun l -> fct.parameters <- l)
-             attrs
-             children
-       | "doc" when not !debug -> ()
-       | other -> Format.printf "Ignoring fct child: %s@." other)
+
+  List.iter
+    (function
+     | PCData s -> Format.printf "Ignoring PCData in fct:%s@." s
+     | Element (key, attrs, children) ->
+         match key with
+         | "return-value" ->
+             parse_return_value
+               (fun r -> fct.return_value <- r)
+               attrs
+               children
+         | "parameters" ->
+             parse_parameters (fun l -> fct.parameters <- l)
+               attrs
+               children
+         | "doc" when not !debug -> ()
+         | other -> Format.printf "Ignoring fct child: %s@." other
+    )
     children ;
   if fct.deprecated = "" then
     set fct
@@ -1648,256 +1660,297 @@ let parse_method set attrs children =
 
 let parse_klass ~is_record set attrs children =
   let k = dummy_klass () in
-  List.iter (fun (key,v) -> match key with
-     | "name" -> k.c_name <- v
-     | "c:type" -> k.c_c_type <- v
-     | "doc" -> k.c_doc <- v
-     | "parent" -> k.c_parent <- v
-     | "glib:type-name" -> k.c_glib_type_name <- v
-     | "glib:get-type" -> k.c_glib_get_type <- v
-     | "glib:type-struct" -> k.c_glib_type_struct <- v
-     | "abstract" -> k.c_abstract<- v="1"
-     | "disguised" -> k.c_disguised<- v="1"
-     | "version" when not !debug -> ()
-     | other ->
-         Format.printf "Ignoring attribute in klass %s: %s@."
-           k.c_name
-           other)
-    attrs ;
-  Translations.add_klass_type ~name:k.c_name ~parent:k.c_parent ~is_record k.c_c_type ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in klass %s:%s@." k.c_name s
-   | Element (key,attrs,children) ->
+  List.iter
+    (fun (key, v) ->
        match key with
-       | "function" ->
-           parse_function
-             (fun f -> k.c_functions <- f::k.c_functions)
-             attrs
-             children
-       | "constructor" ->
-           parse_constructor
-             (fun f -> k.c_constructors <- f::k.c_constructors)
-             attrs
-             children
-       | "method" ->
-           parse_method
-             (fun f -> k.c_methods <- f::k.c_methods)
-             attrs
-             children
-       | "property" ->
-           parse_property
-             (fun f -> k.c_properties <- f::k.c_properties)
-             attrs
-             children
-       | "glib:signal" ->
-           parse_signal
-             (fun f -> k.c_glib_signals <- f::k.c_glib_signals)
-             attrs
-             children
-       | "field"|"implements"|"virtual-method"|"doc" ->
-           if !debug then
-             Format.printf
-               "Ignoring unused child in klass %s: %s@."
-               k.c_name
-               key
-
+       | "name" -> k.c_name <- v
+       | "c:type" -> k.c_c_type <- v
+       | "doc" -> k.c_doc <- v
+       | "parent" -> k.c_parent <- v
+       | "glib:type-name" -> k.c_glib_type_name <- v
+       | "glib:get-type" -> k.c_glib_get_type <- v
+       | "glib:type-struct" -> k.c_glib_type_struct <- v
+       | "abstract" -> k.c_abstract<- v="1"
+       | "disguised" -> k.c_disguised<- v="1"
+       | "version" when not !debug -> ()
        | other ->
-           Format.printf "Ignoring child in klass %s: %s@."
+           Format.printf "Ignoring attribute in klass %s: %s@."
              k.c_name
-             other)
+             other
+    )
+    attrs ;
+  Translations.add_klass_type
+    ~name:k.c_name
+    ~parent:k.c_parent
+    ~is_record k.c_c_type ;
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in klass %s:%s@." k.c_name s
+     | Element (key, attrs, children) ->
+         match key with
+         | "function" ->
+             parse_function
+               (fun f -> k.c_functions <- f :: k.c_functions)
+               attrs
+             children
+         | "constructor" ->
+             parse_constructor
+               (fun f -> k.c_constructors <- f :: k.c_constructors)
+               attrs
+               children
+         | "method" ->
+             parse_method
+               (fun f -> k.c_methods <- f :: k.c_methods)
+               attrs
+               children
+         | "property" ->
+             parse_property
+               (fun f -> k.c_properties <- f :: k.c_properties)
+               attrs
+               children
+         | "glib:signal" ->
+             parse_signal
+               (fun f -> k.c_glib_signals <- f :: k.c_glib_signals)
+               attrs
+               children
+         | "field"|"implements"|"virtual-method"|"doc" ->
+             if !debug then
+               Format.printf
+                 "Ignoring unused child in klass %s: %s@."
+                 k.c_name
+                 key
+         | other ->
+             Format.printf "Ignoring child in klass %s: %s@."
+               k.c_name
+               other
+    )
     children ;
   set k
+
 let parse_package set attrs =
   let k = dummy_package () in
-  List.iter (fun (key,v) -> match key with
-     | "name" -> k.pack_name <- v
-     | other ->
-         Format.printf "Ignoring attribute in package %s: %s@."
-           k.pack_name
-           other)
+  List.iter
+    (fun (key, v) ->
+       match key with
+       | "name" -> k.pack_name <- v
+       | other ->
+           Format.printf "Ignoring attribute in package %s: %s@."
+             k.pack_name
+             other
+    )
     attrs ;
   set k
 
 let parse_c_include set attrs =
   let k = dummy_c_include () in
-  List.iter (fun (key,v) -> match key with
-     | "name" -> k.c_inc_name <- v
-     | other ->
-         Format.printf "Ignoring attribute in c_include %s: %s@."
-           k.c_inc_name
-           other)
+  List.iter
+    (fun (key, v) ->
+       match key with
+       | "name" -> k.c_inc_name <- v
+       | other ->
+           Format.printf "Ignoring attribute in c_include %s: %s@."
+             k.c_inc_name
+             other
+    )
     attrs ;
   set k
 
 let rec parse_repository set dir attrs children data =
   let k = dummy_repository () in
-  k.rep_data<-data ;
-  List.iter (fun (key,v) -> match key with
-     | "version" -> k.rep_version <- v
-     | "xmlns" -> k.rep_xmlns <- v
-     | "xmlns:c" -> k.rep_xmlns_c <- v
-     | "xmlns:glib" -> k.rep_xmlns_glib <- v
-     | other ->
-         Format.printf "Ignoring attribute in repository: %s@."
-           other)
-    attrs ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in repository:%s@."
-         s
-   | Element (key,attrs,children) ->
+  k.rep_data <- data ;
+  List.iter
+    (fun (key, v) ->
        match key with
-       | "include" ->
-           assert (children = []);
-           parse_include
-             (fun f -> k.rep_includes <- f::k.rep_includes)
-             dir
-             attrs
-       | "package" ->
-           assert (children = []);
-           parse_package
-             (fun f -> k.rep_package <- f)
-             attrs
-       | "c:include" ->
-           assert (children=[]);
-           parse_c_include
-             (fun f -> k.rep_c_include <- f)
-             attrs
-       | "namespace" ->
-           parse_namespace
-             (fun f -> k.rep_namespace <- f)
-             attrs
-             children
+       | "version" -> k.rep_version <- v
+       | "xmlns" -> k.rep_xmlns <- v
+       | "xmlns:c" -> k.rep_xmlns_c <- v
+       | "xmlns:glib" -> k.rep_xmlns_glib <- v
        | other ->
-           Format.printf "Ignoring child in repository: %s@."
-             other)
+           Format.printf "Ignoring attribute in repository: %s@."
+             other
+    )
+    attrs ;
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in repository:%s@."
+           s
+     | Element (key, attrs, children) ->
+         match key with
+         | "include" ->
+             assert (children = []);
+             parse_include
+               (fun f -> k.rep_includes <- f :: k.rep_includes)
+               dir
+               attrs
+       | "package" ->
+             assert (children = []);
+             parse_package
+               (fun f -> k.rep_package <- f)
+               attrs
+         | "c:include" ->
+             assert (children = []);
+             parse_c_include
+               (fun f -> k.rep_c_include <- f)
+               attrs
+         | "namespace" ->
+             parse_namespace
+               (fun f -> k.rep_namespace <- f)
+               attrs
+               children
+         | other ->
+             Format.printf "Ignoring child in repository: %s@."
+               other
+    )
     children ;
   set k
 
 and parse_xml dir data x=
   match x with
   | PCData c -> Format.printf "CDATA: %S@ " c
-  | Element ("repository",attrs,children) ->
+  | Element ("repository", attrs, children) ->
       parse_repository register_reposirory dir attrs children data
-  | Element (key,attrs,children) ->
+  | Element (key, attrs, children) ->
       let children =
-        begin match key with
+        begin
+          match key with
           | other ->
               Format.printf "Ignoring toplevel child:%s@." other ;
               children
         end
-      in List.iter (parse_xml dir data) children
+      in
+      List.iter (parse_xml dir data) children
+
 and parse_include set dir args =
   match args with
-  | ["name",name;"version",version] ->
-
-      if not (Hashtbl.mem included_modules name) then begin
+  | ["name", name ; "version", version] ->
+      if not (Hashtbl.mem included_modules name) then
+        begin
           Hashtbl.add included_modules name ();
           Format.printf "Including %s@." name ;
-          parse dir (name^"-"^version^".gir") end ;
-      set { inc_name = name; inc_version = version;}
-  | _ -> Format.printf "Cannot parse include: %a@."
-      (Pretty.pp_args ";") args
+          parse dir (name^"-"^version^".gir")
+        end ;
+      set { inc_name = name; inc_version = version ; }
+  | _ ->
+      Format.printf "Cannot parse include: %a@."
+        (Pretty.pp_args ";") args
 
-and parse_namespace set attrs children=
-      let n = dummy_namespace () in
-      List.iter (fun (key,v) -> match key with
-         | "name" -> n.ns_name <- v; ns:=v ;
-         | "version" -> n.ns_version <- v
-         | "shared-library" -> n.ns_shared_library <- v
-         | "c:identifier-prefixes" -> n.ns_c_identifier_prefixes <- v
-         | "c:symbol-prefixes" -> n.ns_c_symbol_prefixes <- v
-         | other ->
-             Format.printf "Ignoring attribute in namespace %s: %s@."
-               n.ns_name
-               other)
+and parse_namespace set attrs children =
+  let n = dummy_namespace () in
+  List.iter
+        (fun (key, v) ->
+           match key with
+           | "name" -> n.ns_name <- v; ns := v ;
+           | "version" -> n.ns_version <- v
+           | "shared-library" -> n.ns_shared_library <- v
+           | "c:identifier-prefixes" -> n.ns_c_identifier_prefixes <- v
+           | "c:symbol-prefixes" -> n.ns_c_symbol_prefixes <- v
+           | other ->
+               Format.printf "Ignoring attribute in namespace %s: %s@."
+                 n.ns_name
+                 other
+        )
         attrs ;
-      List.iter (function
-       | PCData s -> Format.printf
-           "Ignoring PCData in namespace %s:%s@."
-             n.ns_name
-             s
-       | Element (key,attrs,children) ->
-           try
-             match key with
-             | "constant" ->
-                 parse_constant
-                   (fun c -> n.ns_constants <- c::n.ns_constants)
-                   attrs children
-             | "function" ->
-                 parse_function
-                   (fun f -> n.ns_functions <- f::n.ns_functions)
-                   attrs
-                   children
-             | "alias" ->
-                 parse_alias attrs children
-             | "record" ->
-                 parse_klass ~is_record:true
-                   (fun k -> n.ns_klass <- k::n.ns_klass)
-                   attrs
-                   children
-             | "class" ->
-                 parse_klass ~is_record:false
-                   (fun k -> n.ns_klass <- k::n.ns_klass)
-                   attrs
-                   children
+  List.iter
+        (function
+         | PCData s -> Format.printf
+             "Ignoring PCData in namespace %s:%s@."
+               n.ns_name
+               s
+         | Element (key, attrs, children) ->
+             try
+               match key with
+               | "constant" ->
+                   parse_constant
+                     (fun c -> n.ns_constants <- c :: n.ns_constants)
+                     attrs children
+               | "function" ->
+                   parse_function
+                     (fun f -> n.ns_functions <- f :: n.ns_functions)
+                     attrs
+                     children
+               | "alias" ->
+                   parse_alias attrs children
+               | "record" ->
+                   parse_klass ~is_record: true
+                     (fun k -> n.ns_klass <- k :: n.ns_klass)
+                     attrs
+                     children
+               | "class" ->
+                   parse_klass ~is_record: false
+                     (fun k -> n.ns_klass <- k :: n.ns_klass)
+                     attrs
+                     children
              | "bitfield" ->
-                 parse_bf (fun k -> n.ns_bf <- k::n.ns_bf)
-                   attrs children
-             | "enumeration" ->
-                 parse_enum (fun k -> n.ns_enum<-k::n.ns_enum)
-                   attrs children
+                   parse_bf (fun k -> n.ns_bf <- k :: n.ns_bf)
+                     attrs children
+               | "enumeration" ->
+                   parse_enum (fun k -> n.ns_enum <- k :: n.ns_enum)
+                     attrs children
 
              | other ->
-                 Format.printf "Ignoring child in namespace %s: %s@."
-                   n.ns_name
-                   other
-           with Cannot_emit s ->
-               Format.printf "Could not emit %s(%a) because %s@."
-                 key
-                 (Pretty.pp_args ";") attrs
-                 s)
+                   Format.printf "Ignoring child in namespace %s: %s@."
+                     n.ns_name
+                     other
+             with Cannot_emit s ->
+                 Format.printf "Could not emit %s(%a) because %s@."
+                   key
+                   (Pretty.pp_args ";") attrs
+                   s
+        )
         children ;
       set n
 
-and parse_data s data = match data with
-  | Xml.Element (key,attr,children) ->
-      ( match key with
+and parse_data s data =
+  match data with
+  | Xml.Element (key, attr, children) ->
+      (
+       match key with
        | "repository" -> List.iter (parse_data s) children ;
-       | "ml_header" -> (match children with
+       | "ml_header" ->
+           (
+            match children with
             | [Xml.PCData str] -> s.data_ml_header <- str ;
             | _ -> ()
            )
-       | "c_header" -> (match children with
+       | "c_header" ->
+           (
+            match children with
             | [Xml.PCData str] -> s.data_c_header <- str ;
             | _ -> ()
            )
-       | "ml_function" -> (match children with
+       | "ml_function" ->
+           (
+            match children with
             | [Xml.PCData str] -> s.data_ml_function <- str ;
             | _ -> ()
            )
-       | "c_function" -> (match children with
+       | "c_function" ->
+           (
+            match children with
             | [Xml.PCData str] -> s.data_c_function <- str ;
             | _ -> ()
            )
        | "enumeration" ->
-           List.iter (fun child ->
-              (match child with
-               | Element (key,attrs,children) ->
-                   (match key with
-                    | "badtag"->
-                        List.iter (fun (key,value) ->
-                           (match key with
-                            | "cname" -> s.data_enume_badtag<- value::s.data_enume_badtag ;
-                            | _ ->()
-                           )
-                        ) attrs ;
-                    | _ ->();
-                   )
-               | _ ->();
-              )
-           ) children ;
+           List.iter
+             (fun child ->
+                (match child with
+                 | Element (key, attrs, children) ->
+                     (match key with
+                      | "badtag"->
+                          List.iter
+                            (fun (key,value) ->
+                               match key with
+                               | "cname" -> s.data_enume_badtag<- value::s.data_enume_badtag ;
+                               | _ ->()
+                            )
+                            attrs
+                      | _ ->();
+                     )
+                 | _ ->();
+                )
+             ) children ;
        | _ -> ()
       )
   | _ -> ()
@@ -1909,7 +1962,7 @@ and parse dir f =
     let data_file = Str.global_replace (Str.regexp "gir$") "xml" f in
     let data_path = Filename.concat "../data/" data_file in
     let data = dummy_data () in
-    let _=parse_data data (Xml_ops.parse_file data_path) in
+    ignore(parse_data data (Xml_ops.parse_file data_path));
     Format.printf "Parsing '%s'@." full ;
     let xml = Xml_ops.parse_file full in
     parse_xml dir data xml
@@ -1917,15 +1970,14 @@ and parse dir f =
       Format.printf "XML error:%s@." (Xml_ops.error m);
       exit 1
 
-      let () =
-        for i=1 to Array.length Sys.argv - 1 do
-          let name = Filename.basename Sys.argv.(i) in
-          let dir = Filename.dirname Sys.argv.(i) in
-          parse dir name
-        done ;
-        if !debug then
-          debug_all();
-        List.iter (Emit.Print.repository) (get_repositories ());
+let () =
+  for i=1 to Array.length Sys.argv - 1 do
+    let name = Filename.basename Sys.argv.(i) in
+    let dir = Filename.dirname Sys.argv.(i) in
+    parse dir name
+  done ;
+  if !debug then debug_all ();
+  List.iter (Emit.Print.repository) (get_repositories ());
 
 
         (*  let funcs,klass = emit_all () in
