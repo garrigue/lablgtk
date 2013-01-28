@@ -1,0 +1,12 @@
+extract_stubs
+*.out
+*.cm*
+*.mli
+*.o
+*.so
+*.a
+.depend
+varcc
+propcc
+gdk_pixbuf_mlsource
+lablgtktop

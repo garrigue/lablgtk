@@ -2998,7 +2998,7 @@ time of more than 5 seconds).</doc>
               c:type="GCopyFunc"
               version="2.4"
               introspectable="0">
-      <doc xml:whitespace="preserve">A function of this signature is used to copy the node data 
+      <doc xml:whitespace="preserve">A function of this signature is used to copy the node data
 when doing a deep-copy of a tree.</doc>
       <return-value>
         <doc xml:whitespace="preserve">A pointer to the copy</doc>
@@ -3032,7 +3032,7 @@ when doing a deep-copy of a tree.</doc>
     <constant name="DIR_SEPARATOR" value="92" c:type="G_DIR_SEPARATOR">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="DIR_SEPARATOR_S" value="\" c:type="G_DIR_SEPARATOR_S">
+    <constant name="DIR_SEPARATOR_S" value="\\" c:type="G_DIR_SEPARATOR_S">
       <type name="utf8" c:type="gchar*"/>
     </constant>
     <record name="Data" c:type="GData" disguised="1">
@@ -12563,7 +12563,7 @@ occurred, in which case @error should be set with g_set_error()</doc>
     </callback>
     <record name="OptionContext" c:type="GOptionContext" disguised="1">
       <doc xml:whitespace="preserve">A &lt;structname&gt;GOptionContext&lt;/structname&gt; struct defines which options
-are accepted by the commandline option parser. The struct has only private 
+are accepted by the commandline option parser. The struct has only private
 fields and should not be directly accessed.</doc>
       <method name="add_group"
               c:identifier="g_option_context_add_group"
@@ -13156,7 +13156,7 @@ to a #GOptionContext or freed with g_option_group_free().</doc>
       </function>
     </record>
     <callback name="OptionParseFunc" c:type="GOptionParseFunc" throws="1">
-      <doc xml:whitespace="preserve">The type of function that can be called before and after parsing. 
+      <doc xml:whitespace="preserve">The type of function that can be called before and after parsing.
 
 occurred, in which case @error should be set with g_set_error()</doc>
       <return-value transfer-ownership="none">

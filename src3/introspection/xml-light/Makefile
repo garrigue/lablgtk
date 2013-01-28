@@ -6,8 +6,11 @@ INSTALLDIR=`ocamlc -where`
 CFLAGS=
 LFLAGS= -a
 LIBS=
+OBJS= dtd.cmo xml_parser.cmo xml_lexer.cmo dtd_ops.cmo xmlParser.cmo \
+	xml.cmo xml_ops.cmo
+GENERATED= xml_lexer.ml xml_parser.ml
 
-all: xml-light.cma 
+all: $(GENERATED) xml-light.cma 
 # test.exe doc
 
 opt: xml-light.cmxa
@@ -26,48 +29,22 @@ test.exe: xml-light.cma
 test_opt.exe: xml-light.cmxa
 	ocamlopt xml-light.cmxa test.ml -o test_opt.exe
 
-xml-light.cma: xml_parser.cmo xml_lexer.cmo dtd.cmo xmlParser.cmo xml.cmo 
-	ocamlc -o xml-light.cma $(LFLAGS) $(LIBS) xml_parser.cmo xml_lexer.cmo dtd.cmo xmlParser.cmo xml.cmo
+xml-light.cma: $(OBJS)
+	ocamlc -o xml-light.cma $(LFLAGS) $(LIBS) $(OBJS)
 
-xml-light.cmxa: xml_parser.cmx xml_lexer.cmx dtd.cmx xmlParser.cmx xml.cmx 
-	ocamlopt -o xml-light.cmxa $(LFLAGS) $(LIBS) xml_parser.cmx xml_lexer.cmx dtd.cmx xmlParser.cmx xml.cmx
-
-dtd.cmo: xml.cmi xml_lexer.cmi dtd.cmi
-
-dtd.cmx: xml.cmi xml_lexer.cmi dtd.cmi
-
-xml.cmo: dtd.cmi xmlParser.cmi xml_lexer.cmi xml.cmi
-
-xml.cmx: dtd.cmi xmlParser.cmi xml_lexer.cmi xml.cmi
-
-xmlParser.cmo: dtd.cmi xml.cmi xml_lexer.cmi xmlParser.cmi
-
-xmlParser.cmx: dtd.cmi xml.cmi xml_lexer.cmi xmlParser.cmi
-
-dtd.cmi: xml.cmi
-
-xml.cmi: 
-
-xmlParser.cmi: dtd.cmi xml.cmi
-
-xml_lexer.cmi: dtd.cmi
-
-xml_parser.cmo: xml_parser.ml dtd.cmi xml_parser.mli xml_parser.cmi
-xml_parser.cmi: xml_parser.ml xml_parser.mli
-
-xml_parser.cmx: xml_parser.ml dtd.cmi xml_parser.mli xml_parser.cmi
-
-xml_lexer.cmo: xml_lexer.ml xml_lexer.cmi
-
-xml_lexer.cmx: xml_lexer.ml xml_lexer.cmi
+xml-light.cmxa: $(OBJS:.cmo=.cmx)
+	ocamlopt -o xml-light.cmxa $(LFLAGS) $(LIBS) $(OBJS:.cmo=.cmx)
 
 clean:
-	rm -f xml-light.cma test.exe dtd.cmo dtd.cmi test.cmo test.cmi xml.cmo xml.cmi xmlParser.cmo xmlParser.cmi dtd.cmi xml.cmi xmlParser.cmi xml_lexer.cmi xml_lexer.cmo xml_lexer.ml xml_parser.mli xml_parser.cmi xml_parser.ml xml_parser.cmo
-	rm -f xml_light.lib xml_light.a xml-light.cmxa test_opt.exe dtd.cmx dtd.obj dtd.o test.cmx test.obj test.o xml.cmx xml.obj xml.o xmlParser.cmx xmlParser.obj xmlParser.o xml_lexer.cmx xml_lexer.obj xml_lexer.o xml_parser.cmx xml_parser.obj xml_parser.o
+	rm -f xml-light.cma test.exe *.cmo *.cmi xml_parser.ml xml_parser.mli
+	rm -f xml_light.lib xml_light.a xml-light.cmxa test_opt.exe *.cmx *.o
 
 wclean:
 	-@del xml-light.cma test.exe dtd.cmo dtd.cmi test.cmo test.cmi xml.cmo xml.cmi xmlParser.cmo xmlParser.cmi dtd.cmi xml.cmi xmlParser.cmi xml_lexer.cmi xml_lexer.cmo xml_lexer.ml xml_parser.mli xml_parser.cmi xml_parser.ml xml_parser.cmo 2>NUL
 	-@del xml_light.lib xml_light.a xml-light.cmxa test_opt.exe dtd.cmx dtd.obj dtd.o test.cmx test.obj test.o xml.cmx xml.obj xml.o xmlParser.cmx xmlParser.obj xmlParser.o xml_lexer.cmx xml_lexer.obj xml_lexer.o xml_parser.cmx xml_parser.obj xml_parser.o 2>NUL
+
+.depend: $(GENERATED)
+	ocamldep *.ml *.mli > .depend
 
 # SUFFIXES
 .ml.cmo:
@@ -77,7 +54,7 @@ wclean:
 	ocamlopt $(CFLAGS) -c $<
 
 .mli.cmi:
-	ocamlc $(CFLAGS) $<
+	ocamlc $(CFLAGS) -c $<
 
 .mll.ml:
 	ocamllex $<
@@ -85,3 +62,4 @@ wclean:
 .mly.ml:
 	ocamlyacc $<
 
+include .depend
