@@ -853,9 +853,10 @@ module Emit = struct
                   Format.fprintf fmt "ML_%d(%s,%a%s)@\n" s.cs_nb_arg s.cs_c_name
                     (pp_list ", ") s.cs_params
                     s.cs_ret ;
-                  if s.cs_nb_arg>=6 then
+                  if s.cs_nb_arg >= 6 then
                     Format.fprintf fmt "ML_bc%d(ml_%s)@ " s.cs_nb_arg s.cs_c_name ;
-                  functions_done:=StringSet.add  s.cs_c_name !functions_done ;
+
+                  functions_done := StringSet.add s.cs_c_name !functions_done ;
                 end
           | Complex s -> Format.fprintf fmt "%s@." s
 
@@ -965,7 +966,7 @@ module Emit = struct
               let i = ref 0 in
               List.iter
                 (fun p ->
-                   incr i; if p="" then out " x%d" !i else out " ~%s: x%d" p !i
+                   incr i; if p = "" then out " x%d" !i else out " ~%s: x%d" p !i
                 )
                 l ;
               out ")";
@@ -973,8 +974,9 @@ module Emit = struct
 
         let print_signals fmt sigs k s =
           match s.sig_return_value.r_typ with
-          | Typ(c_typ) when c_typ.t_name = "none" ->
-              Format.fprintf fmt "let %s = {name=\"%s\"; classe=`%s; marshaller = marshal_unit}@ "
+          | Typ c_typ when c_typ.t_name = "none" ->
+              Format.fprintf fmt
+                "let %s = {name=\"%s\"; classe=`%s; marshaller = marshal_unit}@ "
                 (camlize s.sig_name)
                 s.sig_name
                 (String.lowercase k.c_name) ;
@@ -982,7 +984,7 @@ module Emit = struct
           | Typ c_typ ->
               begin
                 try
-                  let l = List.map (fun p -> caml_escape (p.p_name)) s.sig_parameters
+                  let l = List.map (fun p -> caml_escape p.p_name) s.sig_parameters
                   and tyl = List.map
                     (fun p ->
                        match p.p_typ with
@@ -1011,12 +1013,12 @@ module Emit = struct
             str.[0] <- 'U';
           str
 
-        let klass ~ml ~c (k,properties,signals,methods,functions) =
+        let klass ~ml ~c (k, properties, signals, methods, functions) =
           Format.fprintf ml "@[<hv 2>module %s = struct@ "
             (rename_klass k.c_name);
           Format.fprintf ml "let cast w : [>%s] obj = try_cast w \"%s\"@ "
             (format_parents (parents k.c_name)) k.c_c_type ;
-        let props = ref [] and sigs = ref [] in
+          let props = ref [] and sigs = ref [] in
           if properties <> [] then (
              Format.fprintf ml "@[<hv 2>module P = struct@ ";
              List.iter (print_properties ml props k.c_name) properties ;
@@ -1028,19 +1030,20 @@ module Emit = struct
              List.iter (print_signals ml sigs k) signals ;
              Format.fprintf ml "@]end@ ";
             );
-        let props= !props (*and sigs= !sigs*) in
-          if not k.c_abstract then (
-        let cprops = List.filter (fun p -> p.pr_construct_only) props  in
-        Format.fprintf ml "@[<hv 2>let create";
+          let props= !props (*and sigs= !sigs*) in
+          if not k.c_abstract then
+            (
+             let cprops = List.filter (fun p -> p.pr_construct_only) props  in
+             Format.fprintf ml "@[<hv 2>let create";
              List.iter (fun p -> Format.fprintf ml " ?%s" (camlize p.pr_name)) cprops ;
-             Format.fprintf ml " pl =@\n"; (* à caster *)
+             Format.fprintf ml " pl =@\n"; (* a caster *)
              may_cons_props ml cprops ;
              (* tester si Gobject est parent *)
              Format.fprintf ml "@]Object.make \"%s\" pl@ " k.c_c_type ;
-             if props<> [] then begin
+             if props <> [] then begin
                  Format.fprintf ml "@[<hov4>let make_params ~cont pl";
-        let pprops = List.filter (fun p -> not p.pr_construct_only) props in
-        List.iter (fun p -> Format.fprintf ml " ?%s" (camlize p.pr_name)) pprops ;
+                 let pprops = List.filter (fun p -> not p.pr_construct_only) props in
+                 List.iter (fun p -> Format.fprintf ml " ?%s" (camlize p.pr_name)) pprops ;
                  Format.fprintf ml  "=@ ";
                  may_cons_props ml pprops ;
                  Format.fprintf ml  "@ cont pl@]\n";
@@ -1086,86 +1089,116 @@ module Emit = struct
 
         let hashes = Hashtbl.create 57
         let print_enumeration ~tagsml ~tagsc ~tagsh r e =
-        let mlname = (camlize e.e_name) in
-        Format.fprintf tagsml "type %s = [\n" mlname ;
-          e.e_members<-List.filter (fun m -> not (List.mem m.m_c_identifier r.rep_data.data_enume_badtag)) e.e_members ;
-          ignore (match e.e_members with
-           | [] ->()
-           | m::q -> Format.fprintf tagsml "`%s" (String.uppercase (camlize m.m_name));
-               List.iter (fun m ->
-                  Format.fprintf tagsml "|`%s@ " (String.uppercase (camlize m.m_name))) q);
+          let mlname = (camlize e.e_name) in
+          Format.fprintf tagsml "type %s = [\n" mlname ;
+          e.e_members <- List.filter
+            (fun m -> not (List.mem m.m_c_identifier r.rep_data.data_enume_badtag))
+            e.e_members ;
+          ignore
+            (match e.e_members with
+             | [] ->()
+             | m::q ->
+                 Format.fprintf tagsml "`%s" (String.uppercase (camlize m.m_name));
+                 List.iter (fun m ->
+                    Format.fprintf tagsml "|`%s@ " (String.uppercase (camlize m.m_name))) q
+            );
           Format.fprintf tagsml "]@\n";
-          List.iter (fun m ->
-        let tag = String.uppercase (camlize m.m_name) in
-        let hash = hash_variant tag in
-        try
-        let tag' = Hashtbl.find hashes hash in
-          if tag <> tag' then
-            failwith (String.concat " " ["Doublon tag:"; tag;"and"; tag'])
-        with Not_found ->
-            Hashtbl.add hashes hash tag ;
-            Format.fprintf tagsh "#define MLTAG_%s ((value)(%d*2+1))@\n" tag hash)
+          List.iter
+            (fun m ->
+               let tag = String.uppercase (camlize m.m_name) in
+               let hash = hash_variant tag in
+               try
+                 let tag' = Hashtbl.find hashes hash in
+                 if tag <> tag' then
+                   failwith (String.concat " " ["Doublon tag:"; tag;"and"; tag'])
+               with Not_found ->
+                   Hashtbl.add hashes hash tag ;
+                   Format.fprintf tagsh "#define MLTAG_%s ((value)(%d*2+1))@\n" tag hash
+            )
             e.e_members ;
           Format.fprintf tagsh "extern const lookup_info ml_table_%s_%s[];@ " (camlize !ns) mlname ;
           Format.fprintf tagsc "const lookup_info ml_table_%s_%s[] = {@ " (camlize !ns) mlname ;
           Format.fprintf tagsc "  {0,%d},@\n" (List.length e.e_members);
-          List.iter (fun m ->
-             Format.fprintf tagsc "  { MLTAG_%s, %s },\n" (String.uppercase (camlize m.m_name)) m.m_c_identifier)
+          List.iter
+            (fun m ->
+               Format.fprintf tagsc
+                 "  { MLTAG_%s, %s },\n"
+                 (String.uppercase (camlize m.m_name))
+                 m.m_c_identifier
+            )
             e.e_members ;
           Format.fprintf tagsc "};@\n";
           Format.fprintf tagsh "#define Val_%s_%s(data) ml_lookup_from_c (ml_table_%s_%s, data)\n" (camlize !ns) mlname (camlize !ns) mlname ;
           Format.fprintf tagsh "#define %s_%s_val(key) ml_lookup_to_c (ml_table_%s_%s, key)\n\n" (String.capitalize mlname) (camlize !ns) (camlize !ns) mlname
 
-
         let repository r =
-        let n = r.rep_namespace in
-        ns:=n.ns_name ;
-        let stub_ml_channel = open_out ("stubs/stubs_"^n.ns_name^".ml") in
-        let ml = Format.formatter_of_out_channel stub_ml_channel in
-        let stub_c_channel = open_out ("stubs/ml_stubs_"^n.ns_name^".c") in
-        let c = Format.formatter_of_out_channel stub_c_channel in
-        let tagsc_channel = open_out ("stubs/tags_"^n.ns_name^".c") in
-        let tagsh_channel = open_out ("stubs/tags_"^n.ns_name^".h") in
-        let tagsml_channel = open_out ("stubs/tags_"^n.ns_name^".ml") in
-        let tagsc = Format.formatter_of_out_channel tagsc_channel in
-        let tagsh = Format.formatter_of_out_channel tagsh_channel in
-        let tagsml = Format.formatter_of_out_channel tagsml_channel in
-        Format.fprintf ml "%s@\n" (Buffer.contents ml_header);
+          let n = r.rep_namespace in
+          ns := n.ns_name ;
+          let stub_ml_channel = open_out ("stubs/stubs_"^n.ns_name^".ml") in
+          let ml = Format.formatter_of_out_channel stub_ml_channel in
+          let stub_c_channel = open_out ("stubs/ml_stubs_"^n.ns_name^".c") in
+          let c = Format.formatter_of_out_channel stub_c_channel in
+          let tagsc_channel = open_out ("stubs/tags_"^n.ns_name^".c") in
+          let tagsh_channel = open_out ("stubs/tags_"^n.ns_name^".h") in
+          let tagsml_channel = open_out ("stubs/tags_"^n.ns_name^".ml") in
+          let tagsc = Format.formatter_of_out_channel tagsc_channel in
+          let tagsh = Format.formatter_of_out_channel tagsh_channel in
+          let tagsml = Format.formatter_of_out_channel tagsml_channel in
+          Format.fprintf ml "%s@\n" (Buffer.contents ml_header);
           List.iter (fun i -> Format.fprintf ml "open Tags_%s@\n" i.inc_name) (List.rev r.rep_includes);
           Format.fprintf ml "open Tags_%s@\n" n.ns_name ;
           Format.fprintf ml "%s@\n" r.rep_data.data_ml_header ;
           Format.fprintf tagsml "open Gpointer@\n";
           List.iter (print_enumeration ~tagsml ~tagsc ~tagsh r) n.ns_enum ;
-        let _ = match n.ns_enum with
-            [] ->()
-          | e::q->
+          let _ = match n.ns_enum with
+              [] ->()
+            | e :: q->
               Format.fprintf tagsc "CAMLprim value ml_%s_get_tables ()\n{\n  static const lookup_info *ml_lookup_tables[] = {\n  ml_table_%s_%s,@\n" (camlize !ns) (camlize !ns) (camlize e.e_name);
               Format.fprintf tagsml "external _get_tables : unit ->\n    %s variant_table@\n"  (camlize e.e_name);
-              List.iter (fun e -> Format.fprintf tagsc "ml_table_%s_%s,@\n" (camlize !ns) (camlize e.e_name);
-                 Format.fprintf tagsml "    * %s variant_table@\n"  (camlize e.e_name);) q ;
-              Format.fprintf tagsc "};\nreturn (value)ml_lookup_tables;}@\n";
-              Format.fprintf tagsml "= \"ml_%s_get_tables\"@\n\nlet " (camlize !ns);
-              Format.fprintf tagsml " %s@ " (camlize e.e_name);
-              List.iter (fun e ->   Format.fprintf tagsml ", %s@ " (camlize e.e_name)) q ;
-              Format.fprintf tagsml " =  _get_tables ()\n\nlet _make_enum = Gobject.Data.enum@\n";
-              List.iter (fun e -> Format.fprintf tagsml "let %s_conv = _make_enum %s@\n" (camlize e.e_name) (camlize e.e_name)) n.ns_enum ;
-        in
-        Format.fprintf c "#include <%s>@." r.rep_c_include.c_inc_name ;
+              List.iter
+                  (fun e -> Format.fprintf tagsc "ml_table_%s_%s,@\n"
+                     (camlize !ns) (camlize e.e_name);
+                     Format.fprintf tagsml "    * %s variant_table@\n"  (camlize e.e_name)
+                  )
+                  q ;
+                Format.fprintf tagsc "};\nreturn (value)ml_lookup_tables;}@\n";
+                Format.fprintf tagsml "= \"ml_%s_get_tables\"@\n\nlet " (camlize !ns);
+                Format.fprintf tagsml " %s@ " (camlize e.e_name);
+                List.iter
+                  (fun e ->   Format.fprintf tagsml ", %s@ " (camlize e.e_name))
+                  q ;
+                Format.fprintf tagsml " =  _get_tables ()\n\nlet _make_enum = Gobject.Data.enum@\n";
+                List.iter
+                  (fun e ->
+                     Format.fprintf tagsml
+                       "let %s_conv = _make_enum %s@\n"
+                       (camlize e.e_name)
+                       (camlize e.e_name)
+                  )
+                  n.ns_enum ;
+          in
+          Format.fprintf c "#include <%s>@." r.rep_c_include.c_inc_name ;
           Format.fprintf c "#include \"../wrappers.h\"@\n\
                       #include \"../../ml_gobject.h\"@.";
           Format.fprintf c "%s@\n" r.rep_data.data_c_header ;
-          Format.fprintf c "%s@\n" (Buffer.contents c_header);
-          List.iter (fun i -> Format.fprintf c "#include \"tags_%s.h\"@\n" i.inc_name) (List.rev r.rep_includes);
+          Format.fprintf c "%s@\n" (Buffer.contents c_header) ;
+          List.iter
+            (fun i -> Format.fprintf c "#include \"tags_%s.h\"@\n" i.inc_name)
+            (List.rev r.rep_includes);
           Format.fprintf c "#include \"tags_%s.h\"@\n" n.ns_name ;
-          List.iter (fun i -> Format.fprintf c "#include \"tags_%s.c\"@\n" i.inc_name) (List.rev r.rep_includes);
+          List.iter
+            (fun i -> Format.fprintf c "#include \"tags_%s.c\"@\n" i.inc_name)
+            (List.rev r.rep_includes);
           Format.fprintf c "#include \"tags_%s.c\"@\n" n.ns_name ;
           List.iter (klass ~ml ~c) (List.map emit_klass n.ns_klass);
           functions ~ml ~c (List.map emit_function n.ns_functions);
 
-        let get_type = List.map (fun k -> k.c_glib_get_type) n.ns_klass in
-        Format.fprintf c "CAMLprim value ml_init_type(value unit){@ ";
+          let get_type = List.map (fun k -> k.c_glib_get_type) n.ns_klass in
+          Format.fprintf c "CAMLprim value ml_init_type(value unit){@ ";
           Format.fprintf c "GType t =@ ";
-          List.iter (fun t -> if t<>"" then Format.fprintf c "%s() +@ " t) get_type ;
+          List.iter
+            (fun t -> if t <> "" then Format.fprintf c "%s() +@ " t)
+            get_type ;
           Format.fprintf c "0;@ ";
           Format.fprintf c "return Val_GType(t);}@ ";
           Format.fprintf ml "external init_type : unit -> int = \"ml_init_type\"@ ";
@@ -1179,52 +1212,54 @@ module Emit = struct
           Format.fprintf tagsml "@.";
           close_out stub_ml_channel ;
           close_out stub_c_channel
-
-
-
-
       end
 
   end
+
 let debug_all () =
   Format.printf "ALL REPOSITORIES:@.";
   List.iter
     (fun ns -> debug_repository Format.std_formatter ns)
     (get_repositories ())
 
-
 let rec parse_c_typ set attrs children =
   let typ = dummy_c_typ () in
-  List.iter (fun (key,v) -> match key with
-     | "name" -> typ.t_name <- v
-     | "c:type" -> typ.t_c_typ <- v
-     | other ->
-         Format.printf "Ignoring attribute in typ:%s@." other)
-    attrs ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in type:%s@." s
-   | Element (key,attrs,children) ->
-       match key with
-       | "type" ->
-           parse_c_typ
-             (fun t ->
-                typ.t_content <- Some t)
-             attrs children
+  List.iter
+    (fun (key, v) -> match key with
+       | "name" -> typ.t_name <- v
+       | "c:type" -> typ.t_c_typ <- v
        | other ->
-           Format.printf "Ignoring child in typ:%s@." other)
+           Format.printf "Ignoring attribute in typ:%s@." other
+    )
+    attrs ;
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in type:%s@." s
+     | Element (key,attrs,children) ->
+         match key with
+         | "type" ->
+             parse_c_typ
+               (fun t -> typ.t_content <- Some t)
+               attrs children
+         | other ->
+             Format.printf "Ignoring child in typ:%s@." other
+    )
     children ;
   set typ
 
 let parse_type_name set attrs =
   let typ = dummy_c_typ () in
-  List.iter (fun (key,v) -> match key with
-     | "name" -> typ.t_name <- v
-     | "c:type" -> typ.t_c_typ <- v
-     | other ->
-         Format.printf "Ignoring attribute in basic typ %s:%s@."
-           typ.t_name
-           other)
+  List.iter
+    (fun (key, v) ->
+       match key with
+       | "name" -> typ.t_name <- v
+       | "c:type" -> typ.t_c_typ <- v
+       | other ->
+           Format.printf "Ignoring attribute in basic typ %s:%s@."
+             typ.t_name
+             other
+    )
     attrs ;
   set typ
 
@@ -1232,20 +1267,22 @@ let parse_alias attrs children =
   let fresh = ref (dummy_c_typ ()) in
   parse_type_name (fun t -> fresh := t) attrs ;
   let old = ref (dummy_c_typ ()) in
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in type alias %s:%s@."
-         !fresh.t_name s
-   | Element (key,attrs,children) ->
-       (match key with
-        | "type" ->
-            parse_type_name
-              (fun t -> old := t)
-              attrs
-        | "doc" when not !debug -> ()
-        | other ->
-            Format.printf "Ignoring child in type alias %s:%s@."
-              !fresh.t_name other))
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in type alias %s:%s@."
+           !fresh.t_name s
+     | Element (key, attrs, children) ->
+         match key with
+         | "type" ->
+             parse_type_name
+               (fun t -> old := t)
+               attrs
+         | "doc" when not !debug -> ()
+         | other ->
+             Format.printf "Ignoring child in type alias %s:%s@."
+               !fresh.t_name other
+    )
     children ;
   if !debug then Format.printf "Parsing alias: %s@." !fresh.t_name ;
   let old_trans = Translations.find !old.t_c_typ in
@@ -1253,27 +1290,32 @@ let parse_alias attrs children =
 
 let parse_constant set attrs children =
   let result = dummy_constant () in
-  List.iter (fun (key,v) -> match key with
-     | "name" -> result.const_name <- v
-     | "value" -> result.const_value <- v
-     | other ->
-         Format.printf "Ignoring attribute in constant %s:%s@."
-           result.const_name
-           other)
+  List.iter
+    (fun (key,v) ->
+       match key with
+       | "name" -> result.const_name <- v
+       | "value" -> result.const_value <- v
+       | other ->
+           Format.printf "Ignoring attribute in constant %s:%s@."
+             result.const_name
+             other
+    )
     attrs ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in constant %s:%s@."
-         result.const_name s
-   | Element (key,attrs,children) ->
-       (match key with
-        | "type" ->
-            parse_type_name
-              (fun t -> result.const_type <- t)
-              attrs
-        | other ->
-            Format.printf "Ignoring child in constant %s:%s@."
-              result.const_name other))
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in constant %s:%s@."
+           result.const_name s
+     | Element (key, attrs, children) ->
+         match key with
+         | "type" ->
+             parse_type_name
+               (fun t -> result.const_type <- t)
+               attrs
+         | other ->
+             Format.printf "Ignoring child in constant %s:%s@."
+               result.const_name other
+    )
     children ;
   set result
 
@@ -1283,194 +1325,249 @@ let parse_ownership set s =
   | "container" -> set OContainer
   | s -> Format.printf "Ignoring ownership transfer '%s'@." s
 
-
 let parse_array set attrs children =
   let r = dummy_array () in
-  List.iter (fun (key,v) -> match key with
-     | "c:type" -> r.a_c_typ <- v
-     | "length" -> r.a_length <- v
-     | "name" when not !debug -> ()
-     | other ->
-         Format.printf "Ignoring attribute in array: %s@." other)
-    attrs ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in array:%s@." s
-   | Element (key,attrs,children) ->
+  List.iter
+    (fun (key, v) ->
        match key with
-       | "type" -> parse_c_typ
-           (fun t -> r.a_typ <-t) attrs children
-       | other -> Format.printf
-           "Ignoring child in array:%s@." other)
+       | "c:type" -> r.a_c_typ <- v
+       | "length" -> r.a_length <- v
+       | "name" when not !debug -> ()
+       | other ->
+           Format.printf "Ignoring attribute in array: %s@." other
+    )
+    attrs ;
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in array:%s@." s
+     | Element (key, attrs, children) ->
+         match key with
+         | "type" -> parse_c_typ
+             (fun t -> r.a_typ <-t) attrs children
+         | other -> Format.printf
+             "Ignoring child in array:%s@." other
+    )
     children ;
   set r
 
 let parse_return_value set attrs children =
   let r = dummy_return_value () in
-  List.iter (fun (key,v) -> match key with
-     | "transfer-ownership" ->
-         parse_ownership (fun o -> r.r_ownership <-o) v
-     | "doc" -> r.r_doc <- v
-     | other -> Format.printf
-         "Ignoring attribute in return-value:%s@." other)
-    attrs ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in return-value:%s@." s
-   | Element (key,attrs,children) ->
+  List.iter
+    (fun (key, v) ->
        match key with
-       | "type" -> parse_c_typ (fun t ->
-              assert (r.r_typ= NoType);
-              r.r_typ <-Typ t)
-           attrs children
-       | "array" -> parse_array
-           (fun t -> assert (r.r_typ= NoType);
-              r.r_typ <- Array t) attrs children
-       | "doc" when not !debug -> ()
+       | "transfer-ownership" ->
+           parse_ownership (fun o -> r.r_ownership <-o) v
+       | "doc" -> r.r_doc <- v
        | other -> Format.printf
-           "Ignoring child in return-value:%s@." other)
+           "Ignoring attribute in return-value:%s@." other
+    )
+    attrs ;
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in return-value:%s@." s
+     | Element (key, attrs, children) ->
+         match key with
+         | "type" ->
+             parse_c_typ
+               (fun t -> assert (r.r_typ= NoType); r.r_typ <-Typ t)
+               attrs children
+         | "array" ->
+             parse_array
+               (fun t -> assert (r.r_typ= NoType); r.r_typ <- Array t)
+               attrs children
+         | "doc" when not !debug -> ()
+         | other -> Format.printf
+             "Ignoring child in return-value:%s@." other
+    )
     children ;
   set r
 
 let parse_property set attrs children =
   let p = dummy_property () in
-  List.iter (fun (key,v) -> match key with
-     | "name" -> p.pr_name <- v
-     | "doc" -> p.pr_doc <- v
-     | "version" -> p.pr_version <- v
-     | "writable" -> p.pr_writable <- v="1"
-     | "readable" -> p.pr_readable <- v="1"
-     | "construct" -> p.pr_construct <- v="1"
-     | "construct-only" -> p.pr_construct_only <- v="1"
-     | other -> Format.printf
-         "Ignoring attribute in property:%s@." other)
-    attrs ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in property:%s@." s
-   | Element (key,attrs,children) ->
+  List.iter
+    (fun (key, v) ->
        match key with
-       | "type" -> parse_c_typ (fun t ->
-              assert (p.pr_typ = NoType);
-              p.pr_typ <-Typ t)
-           attrs children
-       | "array" -> parse_array
-           (fun t -> assert (p.pr_typ= NoType);
-              p.pr_typ <- Array t) attrs children
+       | "name" -> p.pr_name <- v
+       | "doc" -> p.pr_doc <- v
+       | "version" -> p.pr_version <- v
+       | "writable" -> p.pr_writable <- v="1"
+       | "readable" -> p.pr_readable <- v="1"
+       | "construct" -> p.pr_construct <- v="1"
+       | "construct-only" -> p.pr_construct_only <- v="1"
        | other -> Format.printf
-           "Ignoring child in property:%s@." other)
+           "Ignoring attribute in property:%s@." other
+    )
+    attrs ;
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in property:%s@." s
+     | Element (key, attrs, children) ->
+         match key with
+         | "type" ->
+             parse_c_typ
+               (fun t -> assert (p.pr_typ = NoType); p.pr_typ <-Typ t)
+               attrs children
+         | "array" ->
+             parse_array
+               (fun t -> assert (p.pr_typ= NoType); p.pr_typ <- Array t)
+               attrs children
+         | other -> Format.printf
+             "Ignoring child in property:%s@." other
+    )
     children ;
   set p
 
 let parse_parameter set attrs children =
   let r = dummy_parameter () in
-  List.iter (fun (key,v) -> match key with
-     | "name" -> r.p_name <- v
-     | "transfer-ownership" ->
-         parse_ownership
-           (fun o -> r.p_ownership <- o)
-           v
-     | "scope" -> r.p_scope <- v
-     | "closure" -> r.p_closure <- v
-     | "destroy" -> r.p_destroy <- v
-     | "direction" ->
-         begin match v with
-           | "in" -> r.p_direction <- DIn
-           | "out" -> r.p_direction <- DOut
-           | "inout" -> r.p_direction <- DInOut
-           | s ->
-               Format.printf
-                 "Ignoring direction in parameter: %s@." s
-         end
-     | "allow-none" -> r.p_allow_none <- v="1"
-     | "caller-allocates" -> r.p_caller_allocates <- v="1"
-     | "doc" -> r.p_doc <- v
-     | other ->
-         Format.printf "Ignoring attribute in parameter: %s@." other)
-    attrs ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in parameter:%s@." s
-   | Element (key,attrs,children) ->
+  List.iter
+    (fun (key, v) ->
        match key with
-       | "type" -> parse_c_typ
-           (fun t -> r.p_typ <- Typ t) attrs children
-       | "varargs" -> r.p_varargs <- true
-       | "array" -> parse_array
-           (fun t -> r.p_typ <- Array t) attrs children
-       | "doc" when not !debug -> ()
-       | other -> Format.printf
-           "Ignoring child in parameter:%s@." other)
+       | "name" -> r.p_name <- v
+       | "transfer-ownership" ->
+           parse_ownership
+             (fun o -> r.p_ownership <- o)
+             v
+       | "scope" -> r.p_scope <- v
+       | "closure" -> r.p_closure <- v
+       | "destroy" -> r.p_destroy <- v
+       | "direction" ->
+           begin
+             match v with
+             | "in" -> r.p_direction <- DIn
+             | "out" -> r.p_direction <- DOut
+             | "inout" -> r.p_direction <- DInOut
+             | s ->
+                 Format.printf
+                   "Ignoring direction in parameter: %s@." s
+           end
+       | "allow-none" -> r.p_allow_none <- v="1"
+       | "caller-allocates" -> r.p_caller_allocates <- v="1"
+       | "doc" -> r.p_doc <- v
+       | other ->
+           Format.printf "Ignoring attribute in parameter: %s@." other
+    )
+    attrs ;
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in parameter:%s@." s
+     | Element (key,attrs,children) ->
+         match key with
+         | "type" -> parse_c_typ
+             (fun t -> r.p_typ <- Typ t) attrs children
+         | "varargs" -> r.p_varargs <- true
+         | "array" -> parse_array
+             (fun t -> r.p_typ <- Array t) attrs children
+         | "doc" when not !debug -> ()
+         | other -> Format.printf
+             "Ignoring child in parameter:%s@." other
+    )
     children ;
   set r
 
-
 let parse_parameters set attrs children =
   let r = ref [] in
-  List.iter (fun (key,v) -> match key with
-     | other -> Format.printf
-         "Ignoring attribute in parameters:%s@." other)
-    attrs ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in parameters:%s@." s
-   | Element (key,attrs,children) ->
+  List.iter
+    (fun (key, v) ->
        match key with
-       | "parameter" -> parse_parameter
-           (fun t -> r := t::!r) attrs children
-       | "doc" when not !debug -> ()
        | other -> Format.printf
-           "Ignoring child in parameters:%s@." other)
+           "Ignoring attribute in parameters:%s@." other
+    )
+    attrs ;
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in parameters:%s@." s
+     | Element (key, attrs, children) ->
+         match key with
+         | "parameter" ->
+             parse_parameter
+               (fun t -> r := t::!r)
+               attrs children
+         | "doc" when not !debug -> ()
+         | other ->
+             Format.printf
+               "Ignoring child in parameters:%s@." other
+    )
     children ;
   set (List.rev !r)
 
 let parse_bf set attrs children =
   let bf = dummy_bf () in
   set bf
+
 let parse_enum_member set attrs children =
   let n = dummy_enum_member() in
-  List.iter (fun (key,v) -> match key with
-     | "name"->n.m_name<-v
-     | "value"->n.m_value<-v
-     | "c:identifier"->n.m_c_identifier<-v
-     | "glib:nick"->n.m_nick<-v
-     | other -> Format.printf "Ignoring attribute in member: %s@." other)
-    attrs ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in signal:%s@." s
-   | Element (key,attrs,children) ->
+  List.iter
+    (fun (key, v) ->
        match key with
-       | "doc" when not !debug -> ()
-       | other -> Format.printf
-           "Ignoring child in signal:%s@." other)
+       | "name" -> n.m_name <- v
+       | "value" -> n.m_value <- v
+       | "c:identifier" -> n.m_c_identifier <- v
+       | "glib:nick" -> n.m_nick <- v
+       | other -> Format.printf "Ignoring attribute in member: %s@." other
+    )
+    attrs ;
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in signal:%s@." s
+     | Element (key, attrs, children) ->
+         match key with
+         | "doc" when not !debug -> ()
+         | other ->
+             Format.printf
+               "Ignoring child in signal:%s@." other
+    )
     children ;
   set n
+
 let parse_enum set attrs children =
   let n = dummy_enumeration() in
-  List.iter (fun (key,v) -> match key with
-     | "name" ->n.e_name<-v
-     | "glib:type-name" ->n.e_type_name<-v
-     | "glib:get-type" ->n.e_get_type<-v
-     | "c:type" ->n.e_c_type<-v
-     | other -> Format.printf "Ignoring attribute in enumeration: %s@." other)
-    attrs ;
-  List.iter (function
-   | PCData s ->
-       Format.printf "Ignoring PCData in signal:%s@." s
-   | Element (key,attrs,children) ->
+  List.iter
+    (fun (key, v) ->
        match key with
-       | "member" -> parse_enum_member
-           (fun m -> n.e_members<- m::n.e_members)
-             attrs children
-       | "doc" when not !debug -> ()
-       | other -> Format.printf
-           "Ignoring child in signal:%s@." other)
+       | "name" -> n.e_name <- v
+       | "glib:type-name" -> n.e_type_name <- v
+       | "glib:get-type" -> n.e_get_type <- v
+       | "c:type" -> n.e_c_type <- v
+       | other -> Format.printf "Ignoring attribute in enumeration: %s@." other
+    )
+    attrs ;
+  List.iter
+    (function
+     | PCData s ->
+         Format.printf "Ignoring PCData in signal:%s@." s
+     | Element (key, attrs, children) ->
+         match key with
+         | "member" ->
+             parse_enum_member
+               (fun m -> n.e_members <- m :: n.e_members)
+               attrs children
+         | "doc" when not !debug -> ()
+         | other ->
+             Format.printf "Ignoring child in signal:%s@." other
+    )
     children ;
-  Hashtbl.add Translations.tbl n.e_c_type ("Val_"^(camlize !ns)^"_"^(camlize n.e_name),(String.capitalize (camlize n.e_name))^"_"^(camlize !ns)^"_val",fun _ ->(camlize n.e_name));
-  Hashtbl.add Translations.tbl (!ns^"."^n.e_name) ("Val_"^(camlize !ns)^"_"^(camlize n.e_name),(String.capitalize (camlize n.e_name))^"_"^(camlize !ns)^"_val",fun _ ->(camlize n.e_name));
-  Hashtbl.add Translations.conversions  n.e_c_type ((camlize n.e_name)^"_conv");
-  Hashtbl.add Translations.conversions  (!ns^"."^n.e_name) ((camlize n.e_name)^"_conv");
+  Hashtbl.add Translations.tbl
+    n.e_c_type
+    ( "Val_" ^ (camlize !ns) ^ "_" ^ (camlize n.e_name),
+      (String.capitalize (camlize n.e_name)) ^ "_" ^ (camlize !ns) ^ "_val",
+      fun _ -> camlize n.e_name
+    ) ;
+  Hashtbl.add Translations.tbl
+    (!ns ^ "." ^ n.e_name)
+    ( "Val_" ^ (camlize !ns) ^ "_" ^ (camlize n.e_name),
+     (String.capitalize (camlize n.e_name)) ^ "_" ^ (camlize !ns) ^ "_val",
+     fun _ -> camlize n.e_name
+    );
+  Hashtbl.add Translations.conversions
+    n.e_c_type ((camlize n.e_name) ^ "_conv");
+  Hashtbl.add Translations.conversions
+    (!ns ^ "." ^ n.e_name) ((camlize n.e_name) ^ "_conv");
   set n
 
 
