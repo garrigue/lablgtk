@@ -8,3 +8,4 @@ autom4te.cache
 test_dynlink.*
 *.cm*
 *.o
+*.annot
