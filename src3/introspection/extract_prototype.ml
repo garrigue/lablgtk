@@ -116,7 +116,7 @@ let hash_variant s =
 
 type data = {
     mutable data_ml_header : string ;
-    mutable data_c_header : string;
+    mutable data_c_header : string ;
     mutable data_ml_function : string ;
     mutable data_c_function : string ;
     mutable data_enume_badtag: string list ;
@@ -162,7 +162,7 @@ type bf_member = {
 type bf = {
     mutable bf_name : string ;
     mutable bf_ctype : string ;
-    mutable bf_members: bf_member list
+    mutable bf_members: bf_member list ;
   }
 type enum_member = {
     mutable m_name : string ;
@@ -175,14 +175,14 @@ type enumeration = {
     mutable e_type_name : string ;
     mutable e_get_type : string ;
     mutable e_c_type : string ;
-    mutable e_members: enum_member list
+    mutable e_members: enum_member list ;
   }
 
 type typ = NoType | Array of c_array | Typ of c_typ
 type parameter = {
     mutable p_name : string ;
-    mutable p_ownership: transfer_ownership ;
-    mutable p_typ: typ ;
+    mutable p_ownership : transfer_ownership ;
+    mutable p_typ : typ ;
     mutable p_scope : string ;
     mutable p_closure : string ;
     mutable p_destroy : string ;
@@ -193,7 +193,7 @@ type parameter = {
     mutable p_varargs : bool ;
   }
 type return_value = {
-    mutable r_ownership: transfer_ownership ;
+    mutable r_ownership : transfer_ownership ;
     mutable r_typ : typ ;
     mutable r_doc : string ;
   }
@@ -203,12 +203,12 @@ type function_ = {
     mutable c_identifier : string ;
     mutable version : string ;
     mutable doc : string ;
-    mutable return_value: return_value ;
-    mutable parameters: parameter list ;
-    mutable deprecated: string ;
+    mutable return_value : return_value ;
+    mutable parameters : parameter list ;
+    mutable deprecated:  string ;
     mutable deprecated_version : string ;
-    mutable throws: bool ;
-    mutable introspectable: bool ;
+    mutable throws : bool ;
+    mutable introspectable : bool ;
   }
 
 type constant = { mutable const_name : string ;
@@ -226,13 +226,14 @@ type property = {
     mutable pr_construct : bool ;
     mutable pr_construct_only : bool ;
     mutable pr_doc : string ;
-    mutable pr_typ : typ;}
+    mutable pr_typ : typ ;
+  }
 
 type signal = {mutable sig_name : string ;
     mutable sig_when : string ;
     mutable sig_version : string ;
-    mutable sig_return_value: return_value ;
-    mutable sig_parameters: parameter list ;
+    mutable sig_return_value : return_value ;
+    mutable sig_parameters : parameter list ;
     mutable sig_ownership : transfer_ownership ;
   }
 
@@ -244,45 +245,46 @@ type klass = {mutable c_name : string ;
     mutable c_glib_type_name : string ;
     mutable c_glib_get_type : string ;
     mutable c_glib_type_struct : string ;
-    mutable c_constructors: constructor list ;
-    mutable c_methods: c_method list ;
-    mutable c_functions: function_ list ;
+    mutable c_constructors : constructor list ;
+    mutable c_methods : c_method list ;
+    mutable c_functions : function_ list ;
     mutable c_properties : property list ;
     mutable c_glib_signals : signal list ;
-    mutable c_disguised : bool
+    mutable c_disguised : bool ;
   }
 
 type namespace = {
-    mutable ns_name: string ;
-    mutable ns_c_symbol_prefixes: string ;
-    mutable ns_c_identifier_prefixes: string ;
-    mutable ns_version: string ;
-    mutable ns_constants: constant list ;
-    mutable ns_klass: klass list ;
-    mutable ns_functions: function_ list ;
-    mutable ns_bf: bf list ;
-    mutable ns_shared_library: string ;
-    mutable ns_enum : enumeration list
+    mutable ns_name : string ;
+    mutable ns_c_symbol_prefixes : string ;
+    mutable ns_c_identifier_prefixes : string ;
+    mutable ns_version : string ;
+    mutable ns_constants : constant list ;
+    mutable ns_klass : klass list ;
+    mutable ns_functions : function_ list ;
+    mutable ns_bf : bf list ;
+    mutable ns_shared_library : string ;
+    mutable ns_enum : enumeration list ;
   }
 
 type included = {
-    mutable inc_name: string ;
-    mutable inc_version: string ;
+    mutable inc_name : string ;
+    mutable inc_version : string ;
   }
 
-type package = { mutable pack_name: string; }
-type c_include = { mutable c_inc_name: string; }
+type package = { mutable pack_name : string ; }
+type c_include = { mutable c_inc_name : string ; }
 type repository = {
-    mutable rep_data: data ;
+    mutable rep_data : data ;
     mutable rep_version : string ;
     mutable rep_xmlns : string ;
     mutable rep_xmlns_c : string ;
     mutable rep_xmlns_glib : string ;
-    mutable rep_includes: included list ;
-    mutable rep_package: package ;
-    mutable rep_c_include: c_include ;
-    mutable rep_namespace: namespace ;
+    mutable rep_includes : included list ;
+    mutable rep_package : package ;
+    mutable rep_c_include : c_include ;
+    mutable rep_namespace : namespace ;
   }
+
 module Pretty = struct
 
     let rec pp_list sep fmt l = match l with
@@ -297,104 +299,128 @@ module Pretty = struct
   end
 
 let dummy_enum_member() = {
-    m_name="";
-    m_value="";
-    m_c_identifier="";
-    m_nick="";
+    m_name = "" ;
+    m_value = "" ;
+    m_c_identifier = "" ;
+    m_nick = "" ;
   }
 let dummy_enumeration() = {
-    e_name="";
-    e_type_name="";
-    e_get_type="";
-    e_c_type="";
-    e_members=[]
+    e_name = "" ;
+    e_type_name = "" ;
+    e_get_type = "" ;
+    e_c_type = "" ;
+    e_members = [] ;
   }
 let dummy_data () = {
-    data_ml_header="";
-    data_c_header="";
-    data_ml_function="";
-    data_c_function="";
-    data_enume_badtag=[]}
-let dummy_bfm () = { bfm_c_identifier="";bfm_value="";bfm_name=""}
-let dummy_bf () = { bf_name="";bf_ctype="";bf_members=[] }
+    data_ml_header = "" ;
+    data_c_header = "" ;
+    data_ml_function = "" ;
+    data_c_function = "" ;
+    data_enume_badtag = [] ;
+  }
+let dummy_bfm () = { bfm_c_identifier = "" ; bfm_value = "" ; bfm_name = "" ; }
+let dummy_bf () = { bf_name = "" ; bf_ctype = "" ; bf_members = [] }
 let dummy_ownership () = ODefault
 let dummy_typ () = NoType
-let dummy_c_typ () = {t_name="";t_c_typ="";t_content = None}
+let dummy_c_typ () = {t_name = "" ; t_c_typ = "" ; t_content = None ; }
 let dummy_array () =
-  {a_c_typ="";
-    a_fixed_size="";
-    a_zero_terminated="";
-    a_length="";
-    a_typ= dummy_c_typ();
+  {a_c_typ = "" ;
+    a_fixed_size = "" ;
+    a_zero_terminated = "" ;
+    a_length = "" ;
+    a_typ= dummy_c_typ() ;
   }
 
 let dummy_parameter () =
-  {p_name="";p_ownership = dummy_ownership ();
-    p_typ = dummy_typ ();
-    p_scope="";p_closure="";p_destroy="";p_direction = DDefault ;
+  { p_name = "" ;
+    p_ownership = dummy_ownership () ;
+    p_typ = dummy_typ () ;
+    p_scope = "" ;
+    p_closure = "" ;
+    p_destroy = "" ;
+    p_direction = DDefault ;
     p_caller_allocates = true ;
-    p_allow_none = false;p_doc="";p_varargs = false;}
+    p_allow_none = false ;
+    p_doc = "" ;
+    p_varargs = false ;
+  }
 let dummy_property () =
-  {pr_name="";pr_version="";
-    pr_typ = dummy_typ ();
+  { pr_name = "" ;
+    pr_version = "" ;
+    pr_typ = dummy_typ () ;
     pr_writable = false ;
     pr_readable = true ;
     pr_construct = false ;
     pr_construct_only = false ;
-    pr_doc="";}
-
-let dummy_return_value () = {r_ownership = dummy_ownership ();
-    r_typ = dummy_typ();
-    r_doc=""}
-let dummy_signal () = {
-    sig_name="";
-    sig_when="";
-    sig_version="";
-    sig_return_value = dummy_return_value ();
-    sig_ownership = dummy_ownership();
-    sig_parameters=[]
+    pr_doc = "" ;
   }
-let dummy_function () = { f_name="";c_identifier="";version="";doc="";
-    return_value = dummy_return_value ();
-    parameters= [];deprecated="";
-    deprecated_version="";throws = false;introspectable = true;}
-let dummy_constant () = {const_name="";const_type = dummy_c_typ();const_value=""}
+
+let dummy_return_value () = {
+    r_ownership = dummy_ownership () ;
+    r_typ = dummy_typ() ;
+    r_doc = "" ;
+  }
+let dummy_signal () = {
+    sig_name = "" ;
+    sig_when = "" ;
+    sig_version = "" ;
+    sig_return_value = dummy_return_value () ;
+    sig_ownership = dummy_ownership() ;
+    sig_parameters = [] ;
+  }
+let dummy_function () = {
+    f_name = "" ;
+    c_identifier = "" ;
+    version = "" ;
+    doc = "" ;
+    return_value = dummy_return_value () ;
+    parameters= [];
+    deprecated = "" ;
+    deprecated_version = "" ;
+    throws = false ;
+    introspectable = true ;
+  }
+let dummy_constant () = {
+    const_name = "" ;
+    const_type = dummy_c_typ() ;
+    const_value = "" ;
+  }
 
 let dummy_klass () = {
-    c_name="";
+    c_name = "" ;
     c_c_type = "";
     c_abstract = false ;
     c_disguised = false ;
     c_doc = "";
-    c_parent="";
-    c_glib_type_name="";
-    c_glib_get_type="";
-    c_glib_type_struct="";
-    c_constructors=[];
-    c_methods=[];
-    c_functions=[];
-    c_properties=[];
-    c_glib_signals=[];
+    c_parent = "" ;
+    c_glib_type_name = "" ;
+    c_glib_get_type = "" ;
+    c_glib_type_struct = "" ;
+    c_constructors = [] ;
+    c_methods = [] ;
+    c_functions = [] ;
+    c_properties = [] ;
+    c_glib_signals = [] ;
   }
 
 let dummy_namespace () = {
-    ns_name="<dummy>";
-    ns_c_symbol_prefixes="";
-    ns_c_identifier_prefixes="";
-    ns_version="0";
-    ns_klass = [];
-    ns_functions = [];
-    ns_constants= [];
-    ns_shared_library = "";
-    ns_bf=[];
-    ns_enum=[]
+    ns_name ="<dummy>" ;
+    ns_c_symbol_prefixes = "" ;
+    ns_c_identifier_prefixes = "" ;
+    ns_version = "0" ;
+    ns_klass = [] ;
+    ns_functions = [] ;
+    ns_constants= [] ;
+    ns_shared_library = "" ;
+    ns_bf = [] ;
+    ns_enum = [] ;
   }
 
-let dummy_package () = {pack_name = "<dummy>";}
-let dummy_c_include () = { c_inc_name = "<dummy>";}
+let dummy_package () = {pack_name = "<dummy>"; }
+let dummy_c_include () = { c_inc_name = "<dummy>"; }
 let dummy_repository () = {
-    rep_data = dummy_data();
-    rep_version="";
+    rep_data = dummy_data() ;
+    rep_version = "" ;
     rep_xmlns = "";
     rep_xmlns_c = "";
     rep_xmlns_glib = "";
@@ -721,7 +747,7 @@ module Emit = struct
       else l
     in
     let counter = ref 0 in
-    List.split (List.map (fun p -> incr counter;emit_parameter !counter p) l)
+    List.split (List.map (fun p -> incr counter; emit_parameter !counter p) l)
 
     let emit_return_value r =
       match r.r_typ with
@@ -1025,7 +1051,7 @@ module Emit = struct
         try
         let tag' = Hashtbl.find hashes hash in
           if tag <> tag' then
-            failwith (String.concat " " ["Doublon tag:";tag;"and";tag'])
+            failwith (String.concat " " ["Doublon tag:"; tag;"and"; tag'])
         with Not_found ->
             Hashtbl.add hashes hash tag ;
             Format.fprintf tagsh "#define MLTAG_%s ((value)(%d*2+1))@\n" tag hash)
