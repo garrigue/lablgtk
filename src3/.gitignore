@@ -10,3 +10,5 @@ varcc
 propcc
 gdk_pixbuf_mlsource
 lablgtktop
+*_tags.h
+*_tags.c

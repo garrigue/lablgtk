@@ -1,8 +1,7 @@
 .ml4.ml:
 	$(CAMLP4) -impl $< -o $@
 
-%_tags.h %_tags.c %Enums.ml: %_tags.var varcc$(XE)
-	./varcc $<
+
 
 %Props.ml o%Props.ml: %.props propcc$(XE)
 	./propcc $<
@@ -224,10 +223,6 @@ xml_lexer.ml: xml_lexer.mll
 	$(CAMLLEX) xml_lexer.mll
 xml_lexer.cmo xml_lexer.cmx : xml_lexer.cmi
 
-varcc$(XE): varcc.cmo
-	$(LINKER) -o $@ $<
-	rm -f *_tags.h *_tags.c
-
 propcc$(XE): propcc.cmo
 	$(LINKER) -o $@ $<
 
@@ -324,4 +319,3 @@ ml_gnomecanvas$(XO): ml_gtk.h ml_gobject.h wrappers.h
 ml_gnomedruid$(XO): ml_gtk.h ml_gobject.h wrappers.h
 ml_panel$(XO): ml_gtk.h ml_gobject.h wrappers.h
 
-varcc.cmo: varcc.ml4

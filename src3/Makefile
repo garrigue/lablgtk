@@ -136,9 +136,23 @@ lablgtk.cmxa: $(COBJS) $(MLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtk -oc lablgtk3 $^ $(GTKLIBS)
 lablgtk.cmxs: DYNLINKLIBS=$(GTK_LIBS)
 
+# Bulding C
+
+varcc$(XE): varcc.cmo
+	$(LINKER) -o $@ $<
+	rm -f *_tags.h *_tags.c
+
+varcc.cmo: varcc.ml4
+
+%_tags.h %_tags.c %Enums.ml: %_tags.var varcc$(XE)
+	./varcc$(XE) $<
+
+ml_gobject$(XO): gobject_tags.h  ml_gvaluecaml.h wrappers.h
+
 
 clean:
 	rm -f *.cm* *.a *.so *.o *.exe *.obj *.dll *.lib *.gch
+	rm -f varcc$(XE) *_tags.[ch]
 	rm -f  \#*\# *~
 
 include .depend
