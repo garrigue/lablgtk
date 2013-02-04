@@ -1,0 +1,4 @@
+Gio-2.0.gir:
+
+specifies additional included, but provides absolute path for them.
+Is it portable ?

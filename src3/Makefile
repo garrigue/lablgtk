@@ -108,12 +108,13 @@ STUBCOBJS= \
 	stubs/ml_stubs_GModule.o \
 	stubs/ml_stubs_GObject.o \
 	stubs/ml_stubs_Gdk.o \
-	stubs/ml_stubs_GdkPixbuf.o \
 	stubs/ml_stubs_Gio.o \
 	stubs/ml_stubs_Gtk.o \
 	stubs/ml_stubs_Pango.o \
 	stubs/ml_stubs_cairo.o \
 	stubs/ml_stubs_xlib.o
+
+#	stubs/ml_stubs_GdkPixbuf.o \
 
 STUBMLOBJS= \
 	stubs/tags_Atk.cmo \

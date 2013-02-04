@@ -288,7 +288,7 @@ type repository = {
     mutable rep_xmlns_glib : string ;
     mutable rep_includes : included list ;
     mutable rep_package : package ;
-    mutable rep_c_include : c_include ;
+    mutable rep_c_includes : c_include list ;
     mutable rep_namespace : namespace ;
   }
 
@@ -433,7 +433,7 @@ let dummy_repository () = {
     rep_xmlns_glib = "";
     rep_includes = [];
     rep_package = dummy_package ();
-    rep_c_include = dummy_c_include ();
+    rep_c_includes = [] ;
     rep_namespace = dummy_namespace ();
   }
 let debug_ownership fmt o =
@@ -1121,13 +1121,15 @@ module Emit = struct
             (fun m ->
                let tag = String.uppercase (camlize m.m_name) in
                let hash = hash_variant tag in
-               try
-                 let tag' = Hashtbl.find hashes hash in
-                 if tag <> tag' then
-                   failwith (String.concat " " ["Doublon tag:"; tag;"and"; tag'])
-               with Not_found ->
-                   Hashtbl.add hashes hash tag ;
-                   Format.fprintf tagsh "#define MLTAG_%s ((value)(%d*2+1))@\n" tag hash
+               begin
+                 try
+                   let tag' = Hashtbl.find hashes hash in
+                   if tag <> tag' then
+                     failwith (String.concat " " ["Doublon tag:"; tag;"and"; tag'])
+                 with Not_found ->
+                     Hashtbl.add hashes hash tag
+               end;
+               Format.fprintf tagsh "#define MLTAG_%s ((value)(%d*2+1))@\n" tag hash
             )
             e.e_members ;
           Format.fprintf tagsh "extern const lookup_info ml_table_%s_%s[];@ " (camlize !ns) mlname ;
@@ -1193,16 +1195,17 @@ module Emit = struct
                   )
                   n.ns_enum ;
           in
-          (* HACK: atk include is missing; in case of missing filename to include,
+          (* HACK: atk include is missing; in case of missing filenames to include,
             use the lowercased repository name n in <n/n.h> *)
-          let fname =
-            if r.rep_c_include.c_inc_name = "" then
-              let s = String.lowercase r.rep_package.pack_name in
-              Printf.sprintf "%s/%s.h" s s
-            else
-              r.rep_c_include.c_inc_name
+          let includes =
+            match r.rep_c_includes with
+              [] ->
+                let s = String.lowercase r.rep_package.pack_name in
+                [ Printf.sprintf "%s/%s.h" s s ]
+            | incs -> List.map (fun i -> i.c_inc_name) incs
           in
-          Format.fprintf c "#include <%s>@." fname;
+          List.iter
+            (fun fname -> Format.fprintf c "#include <%s>@." fname) includes;
           Format.fprintf c "#include \"wrappers.h\"@\n\
                       #include \"ml_gobject.h\"@.";
           Format.fprintf c "%s@\n" r.rep_data.data_c_header ;
@@ -1823,7 +1826,7 @@ let rec parse_repository set dir attrs children data =
          | "c:include" ->
              assert (children = []);
              parse_c_include
-               (fun f -> k.rep_c_include <- f)
+               (fun f -> k.rep_c_includes <- f :: k.rep_c_includes)
                attrs
          | "namespace" ->
              parse_namespace

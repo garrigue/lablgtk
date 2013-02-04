@@ -31,6 +31,7 @@
 
 #include <caml/misc.h>
 #include <caml/mlvalues.h>
+#include <caml/memory.h>
 #include <caml/fail.h>
 #include <caml/custom.h>
 CAMLextern char *young_start, *young_end; /* from minor_gc.h */
@@ -161,6 +162,19 @@ CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
 		      conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8), \
 		      conv9(arg9), conv10(arg10), conv11(arg11), \
 		      conv12(arg12), conv13(arg13))); }
+#define ML_17(cname, conv1, conv2, conv3, conv4, conv5, conv6, conv7, conv8, \
+	      conv9, conv10, conv11, conv12, conv13, conv14, conv15, conv16, conv17, conv) \
+CAMLprim value ml_##cname (value arg1, value arg2, value arg3, value arg4, \
+                           value arg5, value arg6, value arg7, value arg8, \
+                           value arg9, value arg10, value arg11, value arg12, \
+                           value arg13, value arg14, value arg15, value arg16, \
+                           value arg17) \
+{ return conv (cname (conv1(arg1), conv2(arg2), conv3(arg3), conv4(arg4), \
+		      conv5(arg5), conv6(arg6), conv7(arg7), conv8(arg8), \
+		      conv9(arg9), conv10(arg10), conv11(arg11), \
+		      conv12(arg12), conv13(arg13), conv14(arg14), conv15(arg15), \
+		      conv16(arg16), conv17(arg17))); }
+
 
 /* Use with care: needs the argument index */
 #define Ignore(x)
