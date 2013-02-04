@@ -181,7 +181,7 @@ fi
 AC_SUBST(HAS_PRINTEXC_BACKTRACE)
 
 # Check for which kind of threads is used
-AC_MSG_CHECKING(for ocaml threads)
+AC_MSG_CHECKING("for ocaml threads")
 AC_ARG_WITH(threads,
         [  --with-threads=(yes|system|vm|no)  which threads to use ],
         THREADS_LIB="$withval",
@@ -201,7 +201,7 @@ AC_MSG_RESULT(use $THREADS_LIB threads)
 
 # Check for dll support
 HAS_DLL_SUPPORT="no"
-AC_MSG_CHECKING(for ocaml dll support)
+AC_MSG_CHECKING("for ocaml dll support")
 if test -r "$OCAMLLIB/stublibs/dllunix.so" ||
    test -r "$OCAMLLIB/stublibs/dllunix.dll"
 then HAS_DLL_SUPPORT="yes"
@@ -244,8 +244,73 @@ else
 fi
 rm test_dynlink.*
 
+# GTK 3 auto configuration
+# put it first, because GTK AM macros use GTK_ prefix, conflicting with
+# checks run for Gtk2
+
+echo "
+
+=== Checking for Gtk3
+"
+
+GTK3PKG=gtk+-3.0
+AM_PATH_GTK_3_0(3.0.0, :, AC_MSG_ERROR(GTK+ 3.x is required))
+
+dnl LABLGTK3_PKG(variable, autoconf package, help string, pkgconfig package)
+AC_DEFUN([LABLGTK3_PKG], [
+AC_ARG_WITH($2,[$3],USE_$1=$withval; FORCE_$1=yes, USE_$1=yes; FORCE_$1=no)
+if test $USE_$1 = yes ; then
+	PKG_CHECK_MODULES($1,$4,,[
+	if test $FORCE_$1 = yes ; then
+	  AC_MSG_ERROR($2 enforced but no support found)
+        else
+          USE_$1=no
+	fi])
+fi
+if test $USE_$1 = yes ; then
+	USE_$1=1
+	$1[]PKG=$4
+else
+	unset USE_$1
+fi
+AC_SUBST(USE_$1)])
+
+LABLGTK3_PKG(GTKGL, gl3,
+	    [  --without-gl3            override autodetected GtkGLArea support. Requires LablGL3],
+	    gtkgl-3.0)
+# Check for LablGL
+if test -n "$USE_GTK3GL" ; then
+      AC_MSG_CHECKING(lablGL3 directory)
+      cat > conftest.ml << EOF
+      open Raw
+EOF
+      if $CAMLC -c -I "${LABLGLDIR:=+lablGL3}" conftest.ml > /dev/null 2>&1 ; then
+        AC_MSG_RESULT($LABLGL3DIR)
+      else
+        if test $FORCE_GTKGL3 = yes ; then
+      	  AC_MSG_ERROR(gtkgl3 enforced but lablGL3 not found)
+      	else
+	        AC_MSG_RESULT(no)
+      	  unset USE_GTKGL3
+	        unset GTK3GLPKG
+          unset LABLGL3DIR
+      	fi
+      fi
+fi
+
+PKG_CHECK_MODULES(GTK3ALL,$GTK3PKG) # $GTK3GLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG)
+
+GTK3_LIBS=$GTK_LIBS
+AC_SUBST(GTK3_LIBS)
+
+GTK_LIBS=
 
 # GTK 2 auto configuration
+
+echo "
+
+=== Checking for Gtk2
+"
 
 GTKPKG=gtk+-2.0
 AM_PATH_GTK_2_0(2.0.0, :, AC_MSG_ERROR(GTK+ is required))
@@ -343,29 +408,9 @@ LABLGTK_PKG(GTKQUARTZ, quartz,
 PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG)
 
 
-# GTK 3 auto configuration
 
-GTK3PKG=gtk+-3.0
-AM_PATH_GTK_3_0(3.0.0, :, AC_MSG_ERROR(GTK+ 3.x is required))
 
-dnl LABLGTK_PKG(variable, autoconf package, help string, pkgconfig package)
-AC_DEFUN([LABLGTK3_PKG], [
-AC_ARG_WITH($2,[$3],USE_$1=$withval; FORCE_$1=yes, USE_$1=yes; FORCE_$1=no)
-if test $USE_$1 = yes ; then
-	PKG_CHECK_MODULES($1,$4,,[
-	if test $FORCE_$1 = yes ; then
-	  AC_MSG_ERROR($2 enforced but no support found)
-        else
-          USE_$1=no
-	fi])
-fi
-if test $USE_$1 = yes ; then
-	USE_$1=1
-	$1[]PKG=$4
-else
-	unset USE_$1
-fi
-AC_SUBST(USE_$1)])
+# debug
 
 AC_ARG_ENABLE(debug,
         [  --enable-debug          enable debug mode],
@@ -415,6 +460,11 @@ else if test "$FORCE_$2" = "yes"
      fi
 fi])
 
+echo ; echo "LablGtk3 configuration:"
+echo "	threads  	$THREADS_LIB"
+echo "	native dynlink 	$HAS_NATIVE_DYNLINK"
+CONF_SUMMARY(Gtk3GLArea, GTK3GL)
+echo
 echo ; echo "LablGtk2 configuration:"
 echo "	threads  	$THREADS_LIB"
 echo "	native dynlink 	$HAS_NATIVE_DYNLINK"
@@ -429,10 +479,7 @@ CONF_SUMMARY(gtksourceview 1, GTKSOURCEVIEW)
 CONF_SUMMARY(gtksourceview 2, GTKSOURCEVIEW2)
 CONF_SUMMARY(quartz   , GTKQUARTZ)
 echo
-echo ; echo "LablGtk3 configuration:"
-echo "	threads  	$THREADS_LIB"
-echo "	native dynlink 	$HAS_NATIVE_DYNLINK"
-echo
+
 echo $ECHO_N "	debug   $ECHO_C"
 if test -n "$DEBUG" ; then echo "	yes" ; else echo "	no" ; fi
 echo -e  "	C compiler	$CC"
