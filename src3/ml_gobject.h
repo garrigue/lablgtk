@@ -22,6 +22,9 @@
 
 /* $Id$ */
 
+#include <glib-object.h>
+#include "gobject_tags.h"
+
 /* Defined in ml_gobject.h */
 
 #define GObject_val(val) ((GObject*)Pointer_val(val))

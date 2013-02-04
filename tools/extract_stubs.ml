@@ -411,7 +411,7 @@ let dummy_klass () = {
   }
 
 let dummy_namespace () = {
-    ns_name ="<dummy>" ;
+    ns_name = ""; (*"<dummy>" ; *)
     ns_c_symbol_prefixes = "" ;
     ns_c_identifier_prefixes = "" ;
     ns_version = "0" ;
@@ -423,8 +423,8 @@ let dummy_namespace () = {
     ns_enum = [] ;
   }
 
-let dummy_package () = {pack_name = "<dummy>"; }
-let dummy_c_include () = { c_inc_name = "<dummy>"; }
+let dummy_package () = {pack_name = "" ; (* "<dummy>"; *) }
+let dummy_c_include () = { c_inc_name = "" ; (* "<dummy>"; *)  }
 let dummy_repository () = {
     rep_data = dummy_data() ;
     rep_version = "" ;
@@ -1163,6 +1163,8 @@ module Emit = struct
           Format.fprintf ml "open Tags_%s@\n" n.ns_name ;
           Format.fprintf ml "%s@\n" r.rep_data.data_ml_header ;
           Format.fprintf tagsml "open Gpointer@\n";
+
+          Format.fprintf tagsc "#include \"tags_%s.h\"\n" n.ns_name;
           List.iter (print_enumeration ~tagsml ~tagsc ~tagsh r) n.ns_enum ;
           let _ = match n.ns_enum with
               [] ->()
@@ -1191,9 +1193,18 @@ module Emit = struct
                   )
                   n.ns_enum ;
           in
-          Format.fprintf c "#include <%s>@." r.rep_c_include.c_inc_name ;
-          Format.fprintf c "#include \"../wrappers.h\"@\n\
-                      #include \"../../ml_gobject.h\"@.";
+          (* HACK: atk include is missing; in case of missing filename to include,
+            use the lowercased repository name n in <n/n.h> *)
+          let fname =
+            if r.rep_c_include.c_inc_name = "" then
+              let s = String.lowercase r.rep_package.pack_name in
+              Printf.sprintf "%s/%s.h" s s
+            else
+              r.rep_c_include.c_inc_name
+          in
+          Format.fprintf c "#include <%s>@." fname;
+          Format.fprintf c "#include \"wrappers.h\"@\n\
+                      #include \"ml_gobject.h\"@.";
           Format.fprintf c "%s@\n" r.rep_data.data_c_header ;
           Format.fprintf c "%s@\n" (Buffer.contents c_header) ;
           List.iter
@@ -1751,7 +1762,9 @@ let parse_package set attrs =
   List.iter
     (fun (key, v) ->
        match key with
-       | "name" -> k.pack_name <- v
+       | "name" ->
+           Format.printf "Setting package name: %s@." v;
+           k.pack_name <- v
        | other ->
            Format.printf "Ignoring attribute in package %s: %s@."
              k.pack_name
