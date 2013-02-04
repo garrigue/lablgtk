@@ -1242,14 +1242,14 @@ module Emit = struct
           functions ~ml ~c (List.map emit_function n.ns_functions);
 
           let get_type = List.map (fun k -> k.c_glib_get_type) n.ns_klass in
-          Format.fprintf c "CAMLprim value ml_init_type(value unit){@ ";
+          Format.fprintf c "CAMLprim value ml_init_type_%s(value unit){@ " n.ns_name;
           Format.fprintf c "GType t =@ ";
           List.iter
             (fun t -> if t <> "" then Format.fprintf c "%s() +@ " t)
             get_type ;
           Format.fprintf c "0;@ ";
           Format.fprintf c "return Val_GType(t);}@ ";
-          Format.fprintf ml "external init_type : unit -> int = \"ml_init_type\"@ ";
+          Format.fprintf ml "external init_type : unit -> int = \"ml_init_type_%s\"@ " n.ns_name;
 
           Format.fprintf ml "%s@\n" r.rep_data.data_ml_function ;
           Format.fprintf c "%s@\n" r.rep_data.data_c_function ;
