@@ -1,6 +1,6 @@
 # Makefile for lablgtk.
 
-COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
+COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -I . -I stubs -w s -c
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
@@ -109,16 +109,16 @@ STUBCOBJS= \
 	stubs/ml_stubs_GObject.o \
 	stubs/ml_stubs_Gdk.o \
 	stubs/ml_stubs_Gio.o \
-	stubs/ml_stubs_Gtk.o \
-	stubs/ml_stubs_Pango.o \
-	stubs/ml_stubs_cairo.o \
-	stubs/ml_stubs_xlib.o
+	stubs/ml_stubs_Gtk.o
 
+#	stubs/ml_stubs_xlib.o \
+#	stubs/ml_stubs_Pango.o \
+#	stubs/ml_stubs_cairo.o \
 #	stubs/ml_stubs_GdkPixbuf.o \
 
 STUBMLOBJS= \
-	stubs/tags_Atk.cmo \
 	stubs/tags_GLib.cmo \
+	stubs/tags_Atk.cmo \
 	stubs/tags_GModule.cmo \
 	stubs/tags_GObject.cmo \
 	stubs/tags_Gdk.cmo \
@@ -145,6 +145,11 @@ COBJS= \
 	ml_gpointer$(XO) \
 	ml_gvaluecaml$(XO) \
 	wrappers$(XO) \
+	gpointer.cmo \
+	gobject.cmo \
+	gtk.cmo \
+	gtkObject.cmo \
+	gtkSignal.cmo \
 	$(STUBCOBJS)
 
 MLOBJS=$(STUBMLOBJS)
@@ -154,6 +159,8 @@ MLOBJS=$(STUBMLOBJS)
 .SUFFIXES: .ml .mli .cmo .cmi .cmx .cmxs .cmxa .c $(XO) .d$(XO) .var .h .opt .def .ml4
 .c$(XO):
 	$(CCOMPILER) -I . $<
+stubs/%$(XO): stubs/%.c
+	(cd stubs && $(CC) -c -fPIC $(GTKCFLAGS) -I .. `basename $<`)
 .cpp$(XO):
 	$(CCOMPILER) $<
 .c.d$(XO):
@@ -191,10 +198,9 @@ ml_gobject$(XO): gobject_tags.h  ml_gvaluecaml.h wrappers.h
 
 
 
-
-
 clean:
 	rm -f *.cm* *.a *.so *.o *.exe *.obj *.dll *.lib *.gch
+	(cd stubs && rm -f *.cm* *.a *.so *.o *.obj)
 	rm -f varcc$(XE) *_tags.[ch]
 	rm -f  \#*\# *~
 

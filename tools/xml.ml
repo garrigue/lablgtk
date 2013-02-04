@@ -38,7 +38,7 @@ let error msg = raise (Error msg)
 let xml_of_source s_source source =
  try
     let ns s = Some s in
-    let input = Xmlm.make_input  ~strip: true ~ns ~enc: (Some `UTF_8) source in
+    let input = Xmlm.make_input  ~strip: false ~ns ~enc: (Some `UTF_8) source in
     let el (tag, atts) childs =
       E
         (name_of_xmlm_name tag,

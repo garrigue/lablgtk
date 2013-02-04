@@ -10,17 +10,16 @@ module Object = GtkObject
 let may_cons = Property.may_cons
 let may_cons_opt = Property.may_cons_opt
 </ml_header>
-<c_header>
-#include &lt;string.h&gt;
-#include &lt;gdk/gdk.h&gt;
-#include &lt;caml/mlvalues.h&gt;
-#include &lt;caml/alloc.h&gt;
-#include &lt;caml/memory.h&gt;
-#include &lt;caml/callback.h&gt;
-#include &lt;caml/fail.h&gt;
+<c_header><![CDATA[
+#include <string.h>
+#include <caml/mlvalues.h>
+#include <caml/alloc.h>
+#include <caml/memory.h>
+#include <caml/callback.h>
+#include <caml/fail.h>
 #include "tags_Atk.h";
 
-</c_header>
+]]></c_header>
 <ml_function>
 </ml_function>
 <c_function>

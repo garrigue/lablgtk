@@ -18,12 +18,13 @@ let c_header= Buffer.create 99
 let add_c_header s = Buffer.add_string c_header s
 
 let pre_fill_header () = add_c_header
-  "//#include <caml/mlvalues.h>\n\
-//#include <caml/alloc.h>\n\
-#define Val_double(val) caml_copy_double(val)\n\
-#define Val_string_new(val) caml_copy_string(val)\n\
-#define Val_int32(val) caml_copy_int32(val)\n\
-#define Val_int32_new(val) caml_copy_int32(val)\n"
+"//#include <caml/mlvalues.h>
+//#include <caml/alloc.h>
+#define Val_double(val) caml_copy_double(val)
+#define Val_string_new(val) caml_copy_string(val)
+#define Val_int32(val) caml_copy_int32(val)
+#define Val_int32_new(val) caml_copy_int32(val)
+"
 
 let () = pre_fill_header ()
 
@@ -31,6 +32,8 @@ let reset_headers () =
   Buffer.clear ml_header;
   Buffer.clear c_header;
   pre_fill_header ()
+;;
+
 
 let ns = ref "" (* on met a jour le nom du namespace courant *)
 
@@ -67,6 +70,8 @@ let caml_keywords =
     "done", "done_" ;
     "object", "object_" ;
     "unit", "unit_" ;
+    "private", "private_";
+    "module", "module_";
   ]
 let caml_modules = ["List", "Liste"]
 
@@ -596,10 +601,10 @@ module Translations = struct
     let add_boxed = add_pointer "unsafe_pointer" (* the type is not used *)
 
     let () =
-      List.iter (fun t -> Hashtbl.add conversions ("g"^t) t)
+      List.iter (fun t -> Hashtbl.add conversions ("g"^t) ("Gobject.Data."^t))
         [ "boolean"; "char"; "uchar"; "int"; "uint"; "long"; "ulong";
           "int32"; "uint32"; "int64"; "uint64"; "float"; "double" ];
-      List.iter (fun (gtype,conv) -> Hashtbl.add conversions gtype conv)
+      List.iter (fun (gtype,conv) -> Hashtbl.add conversions gtype ("Gobject.Data."^conv))
         [ "gchararray", "string";
           "gchararray_opt", "string_option";
           "string", "string"; "utf8","string";"bool", "boolean"; "int", "int";
@@ -715,8 +720,8 @@ module Translations = struct
          let trans = (val_of,of_val, typ) in
          Hashtbl.add tbl (c_typ^"*") trans ;
          Hashtbl.add tbl (!ns^"."^c_name) trans ;
-         Hashtbl.add conversions (c_typ^"*") ("(gobject : "^typ '>' ^" data_conv)");
-         Hashtbl.add conversions (!ns^"."^c_name) ("(gobject : "^typ '>' ^" data_conv)")
+         Hashtbl.add conversions (c_typ^"*") ("(Gobject.Data.gobject : "^typ '>' ^" data_conv)");
+         Hashtbl.add conversions (!ns^"."^c_name) ("(Gobject.Data.gobject : "^typ '>' ^" data_conv)")
         )
   end
 
@@ -927,7 +932,12 @@ module Emit = struct
                    match p.pr_typ with
                      Typ typ -> convert_type typ.t_name | _ -> ""
                  in
-                 let op = if check_suffix gtype "_opt" then "may_cons_opt" else "may_cons" in
+                 let op =
+                   if check_suffix gtype "_opt" then
+                     "Gobject.Property.may_cons_opt"
+                   else
+                     "Gobject.Property.may_cons"
+                 in
                  Format.fprintf ml "(@;<0>%s P.%s %s " op (camlize p.pr_name) (camlize p.pr_name)
               )
               properties ;
@@ -944,7 +954,7 @@ module Emit = struct
                   Format.fprintf fmt
                     "let %s : ([>`%s],_) property = {name=\"%s\"; conv=%s}@ "
                     (camlize p.pr_name)
-                    (String.lowercase k_name)
+                    (camlize (String.lowercase k_name))
                     p.pr_name
                     (convert_type c_typ.t_name) ;
                   props := p :: !props
@@ -990,7 +1000,7 @@ module Emit = struct
                 "let %s = {name=\"%s\"; classe=`%s; marshaller = marshal_unit}@ "
                 (camlize s.sig_name)
                 s.sig_name
-                (String.lowercase k.c_name) ;
+                (camlize (String.lowercase k.c_name)) ;
               sigs := s :: !sigs
           | Typ c_typ ->
               begin
@@ -1053,7 +1063,7 @@ module Emit = struct
              Format.fprintf ml " pl =@\n"; (* a caster *)
              may_cons_props ml cprops ;
              (* tester si Gobject est parent *)
-             Format.fprintf ml "@]Object.make \"%s\" pl@ " k.c_c_type ;
+             Format.fprintf ml "@]GtkObject.make \"%s\" pl@ " k.c_c_type ;
              if props <> [] then begin
                  Format.fprintf ml "@[<hov4>let make_params ~cont pl";
                  let pprops = List.filter (fun p -> not p.pr_construct_only) props in
@@ -1161,6 +1171,12 @@ module Emit = struct
           let tagsh = Format.formatter_of_out_channel tagsh_channel in
           let tagsml = Format.formatter_of_out_channel tagsml_channel in
           Format.fprintf ml "%s@\n" (Buffer.contents ml_header);
+
+          (* to get the try_cast *)
+          Format.fprintf ml "open Gobject@\n" ;
+          (* to get the obj type *)
+          Format.fprintf ml "open Gtk@\n" ;
+
           List.iter (fun i -> Format.fprintf ml "open Tags_%s@\n" i.inc_name) (List.rev r.rep_includes);
           Format.fprintf ml "open Tags_%s@\n" n.ns_name ;
           Format.fprintf ml "%s@\n" r.rep_data.data_ml_header ;
@@ -1208,8 +1224,9 @@ module Emit = struct
             (fun fname -> Format.fprintf c "#include <%s>@." fname) includes;
           Format.fprintf c "#include \"wrappers.h\"@\n\
                       #include \"ml_gobject.h\"@.";
-          Format.fprintf c "%s@\n" r.rep_data.data_c_header ;
+          Format.fprintf c "%s@." r.rep_data.data_c_header;
           Format.fprintf c "%s@\n" (Buffer.contents c_header) ;
+
           List.iter
             (fun i -> Format.fprintf c "#include \"tags_%s.h\"@\n" i.inc_name)
             (List.rev r.rep_includes);
