@@ -1238,9 +1238,9 @@ let rec parse_c_typ set attrs children =
     attrs ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in type:%s@." s
-     | Element (key,attrs,children) ->
+     | D s ->
+         Format.printf "Ignoring D in type:%s@." s
+     | E (key,attrs,children) ->
          match key with
          | "type" ->
              parse_c_typ
@@ -1273,10 +1273,10 @@ let parse_alias attrs children =
   let old = ref (dummy_c_typ ()) in
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in type alias %s:%s@."
+     | D s ->
+         Format.printf "Ignoring D in type alias %s:%s@."
            !fresh.t_name s
-     | Element (key, attrs, children) ->
+     | E (key, attrs, children) ->
          match key with
          | "type" ->
              parse_type_name
@@ -1307,10 +1307,10 @@ let parse_constant set attrs children =
     attrs ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in constant %s:%s@."
+     | D s ->
+         Format.printf "Ignoring D in constant %s:%s@."
            result.const_name s
-     | Element (key, attrs, children) ->
+     | E (key, attrs, children) ->
          match key with
          | "type" ->
              parse_type_name
@@ -1343,9 +1343,9 @@ let parse_array set attrs children =
     attrs ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in array:%s@." s
-     | Element (key, attrs, children) ->
+     | D s ->
+         Format.printf "Ignoring D in array:%s@." s
+     | E (key, attrs, children) ->
          match key with
          | "type" -> parse_c_typ
              (fun t -> r.a_typ <-t) attrs children
@@ -1369,9 +1369,9 @@ let parse_return_value set attrs children =
     attrs ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in return-value:%s@." s
-     | Element (key, attrs, children) ->
+     | D s ->
+         Format.printf "Ignoring D in return-value:%s@." s
+     | E (key, attrs, children) ->
          match key with
          | "type" ->
              parse_c_typ
@@ -1406,9 +1406,9 @@ let parse_property set attrs children =
     attrs ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in property:%s@." s
-     | Element (key, attrs, children) ->
+     | D s ->
+         Format.printf "Ignoring D in property:%s@." s
+     | E (key, attrs, children) ->
          match key with
          | "type" ->
              parse_c_typ
@@ -1456,9 +1456,9 @@ let parse_parameter set attrs children =
     attrs ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in parameter:%s@." s
-     | Element (key,attrs,children) ->
+     | D s ->
+         Format.printf "Ignoring D in parameter:%s@." s
+     | E (key,attrs,children) ->
          match key with
          | "type" -> parse_c_typ
              (fun t -> r.p_typ <- Typ t) attrs children
@@ -1483,9 +1483,9 @@ let parse_parameters set attrs children =
     attrs ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in parameters:%s@." s
-     | Element (key, attrs, children) ->
+     | D s ->
+         Format.printf "Ignoring D in parameters:%s@." s
+     | E (key, attrs, children) ->
          match key with
          | "parameter" ->
              parse_parameter
@@ -1517,9 +1517,9 @@ let parse_enum_member set attrs children =
     attrs ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in signal:%s@." s
-     | Element (key, attrs, children) ->
+     | D s ->
+         Format.printf "Ignoring D in signal:%s@." s
+     | E (key, attrs, children) ->
          match key with
          | "doc" when not !debug -> ()
          | other ->
@@ -1543,9 +1543,9 @@ let parse_enum set attrs children =
     attrs ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in signal:%s@." s
-     | Element (key, attrs, children) ->
+     | D s ->
+         Format.printf "Ignoring D in signal:%s@." s
+     | E (key, attrs, children) ->
          match key with
          | "member" ->
              parse_enum_member
@@ -1593,9 +1593,9 @@ let parse_signal set attrs children =
     attrs ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in signal:%s@." s
-     | Element (key, attrs, children) ->
+     | D s ->
+         Format.printf "Ignoring D in signal:%s@." s
+     | E (key, attrs, children) ->
          match key with
          | "return-value" ->
              parse_return_value
@@ -1637,8 +1637,8 @@ let parse_function set attrs children =
 
   List.iter
     (function
-     | PCData s -> Format.printf "Ignoring PCData in fct:%s@." s
-     | Element (key, attrs, children) ->
+     | D s -> Format.printf "Ignoring D in fct:%s@." s
+     | E (key, attrs, children) ->
          match key with
          | "return-value" ->
              parse_return_value
@@ -1689,9 +1689,9 @@ let parse_klass ~is_record set attrs children =
     ~is_record k.c_c_type ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in klass %s:%s@." k.c_name s
-     | Element (key, attrs, children) ->
+     | D s ->
+         Format.printf "Ignoring D in klass %s:%s@." k.c_name s
+     | E (key, attrs, children) ->
          match key with
          | "function" ->
              parse_function
@@ -1777,10 +1777,10 @@ let rec parse_repository set dir attrs children data =
     attrs ;
   List.iter
     (function
-     | PCData s ->
-         Format.printf "Ignoring PCData in repository:%s@."
+     | D s ->
+         Format.printf "Ignoring D in repository:%s@."
            s
-     | Element (key, attrs, children) ->
+     | E (key, attrs, children) ->
          match key with
          | "include" ->
              assert (children = []);
@@ -1812,10 +1812,10 @@ let rec parse_repository set dir attrs children data =
 
 and parse_xml dir data x=
   match x with
-  | PCData c -> Format.printf "CDATA: %S@ " c
-  | Element ("repository", attrs, children) ->
+  | D c -> Format.printf "CDATA: %S@ " c
+  | E ("repository", attrs, children) ->
       parse_repository register_reposirory dir attrs children data
-  | Element (key, attrs, children) ->
+  | E (key, attrs, children) ->
       let children =
         begin
           match key with
@@ -1858,11 +1858,11 @@ and parse_namespace set attrs children =
         attrs ;
   List.iter
         (function
-         | PCData s -> Format.printf
-             "Ignoring PCData in namespace %s:%s@."
+         | D s -> Format.printf
+             "Ignoring D in namespace %s:%s@."
                n.ns_name
                s
-         | Element (key, attrs, children) ->
+         | E (key, attrs, children) ->
              try
                match key with
                | "constant" ->
@@ -1908,39 +1908,39 @@ and parse_namespace set attrs children =
 
 and parse_data s data =
   match data with
-  | Xml.Element (key, attr, children) ->
+  | Xml.E (key, attr, children) ->
       (
        match key with
        | "repository" -> List.iter (parse_data s) children ;
        | "ml_header" ->
            (
             match children with
-            | [Xml.PCData str] -> s.data_ml_header <- str ;
+            | [Xml.D str] -> s.data_ml_header <- str ;
             | _ -> ()
            )
        | "c_header" ->
            (
             match children with
-            | [Xml.PCData str] -> s.data_c_header <- str ;
+            | [Xml.D str] -> s.data_c_header <- str ;
             | _ -> ()
            )
        | "ml_function" ->
            (
             match children with
-            | [Xml.PCData str] -> s.data_ml_function <- str ;
+            | [Xml.D str] -> s.data_ml_function <- str ;
             | _ -> ()
            )
        | "c_function" ->
            (
             match children with
-            | [Xml.PCData str] -> s.data_c_function <- str ;
+            | [Xml.D str] -> s.data_c_function <- str ;
             | _ -> ()
            )
        | "enumeration" ->
            List.iter
              (fun child ->
                 (match child with
-                 | Element (key, attrs, children) ->
+                 | E (key, attrs, children) ->
                      (match key with
                       | "badtag"->
                           List.iter
@@ -1966,12 +1966,12 @@ and parse dir f =
     let data_file = Str.global_replace (Str.regexp "gir$") "xml" f in
     let data_path = Filename.concat "../data/" data_file in
     let data = dummy_data () in
-    ignore(parse_data data (Xml_ops.parse_file data_path));
+    ignore(parse_data data (Xml.xml_of_file data_path));
     Format.printf "Parsing '%s'@." full ;
-    let xml = Xml_ops.parse_file full in
+    let xml = Xml.xml_of_file full in
     parse_xml dir data xml
-  with Xml.Error m ->
-      Format.printf "XML error:%s@." (Xml_ops.error m);
+  with Xml.Error msg ->
+      Format.printf "XML error:%s@." msg;
       exit 1
 
 let () =
