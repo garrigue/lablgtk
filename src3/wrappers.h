@@ -57,50 +57,6 @@ CAMLexport value ml_lookup_from_c (const lookup_info table[], int data);
 CAMLexport int ml_lookup_to_c (const lookup_info table[], value key);
 CAMLexport value ml_lookup_flags_getter (const lookup_info table[], int data);
 
-/* Compatibility */
-#include <gtk/gtkversion.h>
-#if GTK_CHECK_VERSION(2,2,0) && !defined(DISABLE_GTK22)
-#define HASGTK22
-#endif
-#if GTK_CHECK_VERSION(2,4,0) && !defined(DISABLE_GTK24)
-#define HASGTK24
-#endif
-#if GTK_CHECK_VERSION(2,5,3) && !defined(DISABLE_GTK26)
-#define HASGTK26
-#endif
-#if GTK_CHECK_VERSION(2,8,0) && !defined(DISABLE_GTK28)
-#define HASGTK28
-#endif
-#if GTK_CHECK_VERSION(2,10,0) && !defined(DISABLE_GTK210)
-#define HASGTK210
-#endif
-#if GTK_CHECK_VERSION(2,12,0) && !defined(DISABLE_GTK212)
-#define HASGTK212
-#endif
-
-/* Wrapper generators */
-
-#define Unsupported_22(cname) \
-CAMLprim value ml_##cname () \
-{ failwith(#cname " unsupported in Gtk 2.x < 2.2"); }
-#define Unsupported Unsupported_22
-#define Unsupported_24(cname) \
-CAMLprim value ml_##cname () \
-{ failwith(#cname " unsupported in Gtk 2.x < 2.4"); }
-#define Unsupported_26(cname) \
-CAMLprim value ml_##cname () \
-{ failwith(#cname " unsupported in Gtk 2.x < 2.6"); }
-#define Unsupported_28(cname) \
-CAMLprim value ml_##cname () \
-{ failwith(#cname " unsupported in Gtk 2.x < 2.8"); }
-
-#define Unsupported_210(cname) \
-CAMLprim value ml_##cname () \
-{ failwith(#cname " unsupported in Gtk 2.x < 2.10"); }
-#define Unsupported_212(cname) \
-CAMLprim value ml_##cname () \
-{ failwith(#cname " unsupported in Gtk 2.x < 2.12"); }
-
 #define ID(x) (x)
 
 #define ML_0(cname, conv) \
@@ -360,8 +316,6 @@ CAMLprim int OptFlags_##conv (value list) \
 #define Val_optstring copy_string_or_null
 #define Optstring_val(v) (string_length(v) ? String_val(v) : (char*)NULL)
 #define Val_option(v,f) (v ? ml_some(f(v)) : Val_unit)
-#define Make_Val_option(T) \
-value Val_option_##T(T* v) { return Val_option(v,Val_##T); }
 
 #define Check_null(v) (v ? v : (ml_raise_null_pointer (), v))
 

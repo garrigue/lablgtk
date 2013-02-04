@@ -31,7 +31,7 @@
 #include <caml/fail.h>
 
 #include "wrappers.h"
-#include "ml_glib.h"
+//#include "ml_glib.h"
 #include "ml_gobject.h"
 #include "ml_gvaluecaml.h"
 #include "gobject_tags.h"
@@ -71,7 +71,7 @@ CAMLprim value ml_g_object_unref (value val)
     return Val_unit;
 }
 Make_Extractor(g_object, GObject_val, ref_count, Val_int)
-    
+
 ML_1 (g_object_freeze_notify, GObject_val, Unit)
 ML_1 (g_object_thaw_notify, GObject_val, Unit)
 ML_2 (g_object_notify, GObject_val, String_val, Unit)
@@ -81,8 +81,8 @@ static GType my_g_object_get_property_type(GObject *obj, const char *prop)
 {
     GParamSpec *pspec =
         g_object_class_find_property (G_OBJECT_GET_CLASS(obj), prop);
-    if (pspec == NULL) { 
-      g_warning("LablGtk tried to access the unsupported property %s",prop); 
+    if (pspec == NULL) {
+      g_warning("LablGtk tried to access the unsupported property %s",prop);
       caml_invalid_argument(prop);
       }
     return pspec->value_type;
@@ -93,7 +93,7 @@ static GType internal_g_object_get_property_type(GObject *obj, const char *prop)
 {
     GParamSpec *pspec =
         g_object_class_find_property (G_OBJECT_GET_CLASS(obj), prop);
-    if (pspec == NULL) { 
+    if (pspec == NULL) {
       g_warning("LablGtk tried to access the unsupported property %s",prop);
       return G_TYPE_INVALID;
       }
@@ -112,7 +112,6 @@ ML_2 (g_type_is_a, GType_val, GType_val, Val_bool)
 ML_1 (G_TYPE_FUNDAMENTAL, GType_val, Val_fundamental_type)
 ML_1 (Fundamental_type_val, (value), Val_GType)
 
-#ifdef HASGTK22
 CAMLprim value  ml_g_type_interface_prerequisites(value type)
 {
     value res = Val_unit;
@@ -128,9 +127,6 @@ CAMLprim value  ml_g_type_interface_prerequisites(value type)
     }
     CAMLreturn(res);
 }
-#else
-Unsupported(g_type_interface_prerequisites)
-#endif
 
 CAMLprim value ml_g_type_register_static(value parent_type, value type_name)
 {
@@ -153,10 +149,10 @@ CAMLprim value ml_g_type_register_static(value parent_type, value type_name)
 	query.instance_size,
 	0,    /* n_preallocs */
 	NULL, /* instance_init */
-	NULL }; 
+	NULL };
 
     /* the contents of the GTypeInfo struct seem to be copied,
-       so it should be ok to use a not really static one 
+       so it should be ok to use a not really static one
        (ie one on the stack) */
     derived = g_type_register_static(parent,
 				     String_val(type_name),
@@ -645,20 +641,4 @@ CAMLprim value ml_g_signal_chain_from_overridden (value clos_argv)
   g_signal_chain_from_overridden (args, ret);
   CAMLreturn(Val_unit);
 }
-
-/* gtkobject.h */
-
-#define gtk_object_ref_and_sink(w) (g_object_ref_sink (w))
-#define ml_gtk_object_unref_later(w) ml_g_object_unref_later((GObject*)(w))
-Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
-                           ml_gtk_object_unref_later, 20)
-ML_1 (GTK_OBJECT_FLAGS, GtkObject_val, Val_int)
-ML_1 (gtk_object_ref_and_sink, GtkObject_val, Unit)
-
-/* gtkaccelgroup.h */
-
-/* gtkobject.h */
-
-//ML_1 (gtk_object_destroy, GtkObject_val, Unit)
-ML_1 (g_object_ref_sink, GtkObject_val, Unit)
 
