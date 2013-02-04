@@ -2,6 +2,10 @@ open Xml
 
 let debug = ref false
 
+let datadir = ref "data"
+
+let outdir = ref "stubs"
+
 let included_modules = Hashtbl.create 17
 
 let ml_header = Buffer.create 99
@@ -82,11 +86,14 @@ let is_not_uppercase = function
 
 let camlize id =
   let b = Buffer.create (String.length id + 4) in
-  ignore
-    (match id.[0] with
-     | '0' .. '9' -> Buffer.add_char b '_'
-     | _ -> ()
-    );
+  begin
+    match id with
+      "" -> Buffer.add_char b '_'
+    | _ ->
+        match id.[0] with
+        | '0' .. '9' -> Buffer.add_char b '_'
+        | _ -> ()
+  end;
   for i = 0 to String.length id - 1 do
     match id.[i] with
     | 'A' .. 'Z' as c ->
@@ -718,6 +725,10 @@ let repositories = ref []
 let register_reposirory n = repositories := n :: !repositories
 let get_repositories () = List.rev !repositories
 
+let open_out_stub file =
+  open_out (Filename.concat !outdir file)
+;;
+
 module Emit = struct
 
     let emit_property p = p
@@ -1008,10 +1019,13 @@ module Emit = struct
               end
           | _ -> ()
 
-        let rename_klass str=
-          if str.[0]='_' then
-            str.[0] <- 'U';
-          str
+        let rename_klass str =
+          match str with
+            "" -> "U"
+          | _ ->
+              if str.[0]='_' then
+                str.[0] <- 'U';
+              str
 
         let klass ~ml ~c (k, properties, signals, methods, functions) =
           Format.fprintf ml "@[<hv 2>module %s = struct@ "
@@ -1134,13 +1148,13 @@ module Emit = struct
         let repository r =
           let n = r.rep_namespace in
           ns := n.ns_name ;
-          let stub_ml_channel = open_out ("stubs/stubs_"^n.ns_name^".ml") in
+          let stub_ml_channel = open_out_stub ("stubs_"^n.ns_name^".ml") in
           let ml = Format.formatter_of_out_channel stub_ml_channel in
-          let stub_c_channel = open_out ("stubs/ml_stubs_"^n.ns_name^".c") in
+          let stub_c_channel = open_out_stub ("ml_stubs_"^n.ns_name^".c") in
           let c = Format.formatter_of_out_channel stub_c_channel in
-          let tagsc_channel = open_out ("stubs/tags_"^n.ns_name^".c") in
-          let tagsh_channel = open_out ("stubs/tags_"^n.ns_name^".h") in
-          let tagsml_channel = open_out ("stubs/tags_"^n.ns_name^".ml") in
+          let tagsc_channel = open_out_stub ("tags_"^n.ns_name^".c") in
+          let tagsh_channel = open_out_stub ("tags_"^n.ns_name^".h") in
+          let tagsml_channel = open_out_stub ("tags_"^n.ns_name^".ml") in
           let tagsc = Format.formatter_of_out_channel tagsc_channel in
           let tagsh = Format.formatter_of_out_channel tagsh_channel in
           let tagsml = Format.formatter_of_out_channel tagsml_channel in
@@ -1810,7 +1824,7 @@ let rec parse_repository set dir attrs children data =
     children ;
   set k
 
-and parse_xml dir data x=
+and parse_xml dir data x =
   match x with
   | D c -> Format.printf "CDATA: %S@ " c
   | E ("repository", attrs, children) ->
@@ -1856,7 +1870,7 @@ and parse_namespace set attrs children =
                  other
         )
         attrs ;
-  List.iter
+   List.iter
         (function
          | D s -> Format.printf
              "Ignoring D in namespace %s:%s@."
@@ -1964,7 +1978,7 @@ and parse dir f =
   try
     let full = Filename.concat dir f in
     let data_file = Str.global_replace (Str.regexp "gir$") "xml" f in
-    let data_path = Filename.concat "../data/" data_file in
+    let data_path = Filename.concat !datadir data_file in
     let data = dummy_data () in
     ignore(parse_data data (Xml.xml_of_file data_path));
     Format.printf "Parsing '%s'@." full ;
@@ -1974,14 +1988,39 @@ and parse dir f =
       Format.printf "XML error:%s@." msg;
       exit 1
 
+let options =
+  [
+    "--outdir", Arg.Set_string outdir,
+    "<d> generate stubs in <d> instead of "^ !outdir ;
+
+    "--datadir", Arg.Set_string datadir,
+    "<d> use additional data from <d> instead of "^ !datadir ;
+  ]
+
+let usage =
+  Printf.sprintf "Usage: %s [options] <gir files>\nwhere options are:" Sys.argv.(0)
+;;
+
 let () =
-  for i=1 to Array.length Sys.argv - 1 do
-    let name = Filename.basename Sys.argv.(i) in
-    let dir = Filename.dirname Sys.argv.(i) in
-    parse dir name
-  done ;
-  if !debug then debug_all ();
-  List.iter (Emit.Print.repository) (get_repositories ());
+  let args = ref [] in
+  Arg.parse options (fun s -> args := s :: !args) usage;
+  match List.rev !args with
+    [] ->
+      prerr_endline "Please give at least one gir file";
+      exit 1
+  | files ->
+      let f file =
+        let name = Filename.basename file in
+        let dir = Filename.dirname file in
+        parse dir name
+      in
+      List.iter f files;
+      if !debug then debug_all ();
+      let repos = get_repositories () in
+      List.iter (Emit.Print.repository) repos ;
+      print_endline
+        (Printf.sprintf "stubs generated fro %d repositories" (List.length repos))
+;;
 
 
         (*  let funcs,klass = emit_all () in

@@ -4,10 +4,24 @@
 type name = string
 type attribute = string * string
 
+let map_ns = function
+| "http://www.gtk.org/introspection/core/1.0" -> ""
+| "http://www.gtk.org/introspection/c/1.0" -> "c:"
+| "http://www.gtk.org/introspection/glib/1.0" -> "glib:"
+| "http://www.w3.org/2001/XInclude" -> "xi:"
+| "" -> ""
+| "http://www.w3.org/XML/1998/namespace" -> "xmlns"
+| "http://www.w3.org/2000/xmlns/" -> "xmlns"
+| s ->
+  prerr_endline ("Namespace: "^s);
+  s
+
 let name_of_xmlm_name (pref,s) =
-  match pref with
-    "" -> s
-  | p -> p ^":" ^ s
+  match map_ns pref with
+  | "" -> s
+  | "xmlns" when s = "xmlns" -> "xmlns"
+  | "xmlns" -> "xmlns:"^s
+  | p -> p^s
 ;;
 
 let atts_of_xmlm_atts =
@@ -24,7 +38,7 @@ let error msg = raise (Error msg)
 let xml_of_source s_source source =
  try
     let ns s = Some s in
-    let input = Xmlm.make_input ~ns ~enc: (Some `UTF_8) source in
+    let input = Xmlm.make_input  ~strip: true ~ns ~enc: (Some `UTF_8) source in
     let el (tag, atts) childs =
       E
         (name_of_xmlm_name tag,

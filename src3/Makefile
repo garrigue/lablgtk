@@ -8,6 +8,7 @@ LIBRARIAN = $(CAMLMKLIB) -verbose -ocamlc "$(CAMLC)" -ocamlopt "$(CAMLOPT)"
 TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
 CAMLP4 = $(CAMLP4O) pr_o.cmo
 
+GIRDIR=/usr/share/gir-1.0
 EXTRACT_STUBS=../tools/extract_stubs$(XE)
 
 CONFIG = ../config.make
@@ -48,6 +49,8 @@ byte:: lablgtk.cma
 opt::  lablgtk.cmxa # lablgtkopt
 
 stubs: $(EXTRACT_STUBS)
+	mkdir -p stubs
+	$(EXTRACT_STUBS)  --outdir stubs --datadir data $(GIRDIR)/Gtk-3.0.gir > LOG
 
 $(EXTRACT_STUBS):
 	cd ../tools && $(MAKE) extract_stubs$(XE)
@@ -154,5 +157,7 @@ clean:
 	rm -f *.cm* *.a *.so *.o *.exe *.obj *.dll *.lib *.gch
 	rm -f varcc$(XE) *_tags.[ch]
 	rm -f  \#*\# *~
+
+.PHONY: stubs
 
 include .depend
