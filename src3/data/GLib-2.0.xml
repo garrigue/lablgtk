@@ -1,3 +1,7 @@
 <?xml version="1.0"?>
 <repository>
+<c_header><![CDATA[
+#include <glib/gstdio.h>
+]]>
+</c_header>
 </repository>

@@ -51,6 +51,7 @@ module SSet=
 let caml_avoid = List.fold_right SSet.add
   ["let" ; "external" ; "open" ; "true" ; "false" ; "exit" ;
     "match" ; "new" ; "end" ; "done" ; "object" ; "unit" ;
+    "private" ; "module" ;
   ]
     SSet.empty
 

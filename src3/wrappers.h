@@ -32,6 +32,7 @@
 #include <caml/misc.h>
 #include <caml/mlvalues.h>
 #include <caml/memory.h>
+#include <caml/alloc.h>
 #include <caml/fail.h>
 #include <caml/custom.h>
 CAMLextern char *young_start, *young_end; /* from minor_gc.h */

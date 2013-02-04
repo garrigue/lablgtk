@@ -1,4 +1,13 @@
-Gio-2.0.gir:
+* Gio-2.0.gir:
 
 specifies additional included, but provides absolute path for them.
 Is it portable ?
+
+* Atk-1.0.gir:
+
+extract_stubs produces a ATK_G_OBJECT_ACCESSIBLE id, not found in Atk-1.0.gir:
+#define AtkGObjectAccessible_val(val) check_cast(ATK_G_OBJECT_ACCESSIBLE,val)
+
+* Glib-2.0.gir:
+
+manque d'info sur les paramètres de g_iconv_close => warning de cast à la compil
