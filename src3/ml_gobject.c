@@ -35,7 +35,7 @@
 #include "ml_gobject.h"
 #include "ml_gvaluecaml.h"
 #include "gobject_tags.h"
-#include "gobject_tags.c"
+//#include "gobject_tags.c"
 #include <gtk/gtk.h>
 //#include "gtk_tags.h"
 //#include "gtk_tags.c"

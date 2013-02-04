@@ -160,7 +160,7 @@ MLOBJS=$(STUBMLOBJS)
 .c$(XO):
 	$(CCOMPILER) -I . $<
 stubs/%$(XO): stubs/%.c
-	(cd stubs && $(CC) -c -fPIC $(GTKCFLAGS) -I .. `basename $<`)
+	(cd stubs && $(CCOMPILER) -I .. `basename $<` 2>&1 | grep -v "is deprecated")
 .cpp$(XO):
 	$(CCOMPILER) $<
 .c.d$(XO):

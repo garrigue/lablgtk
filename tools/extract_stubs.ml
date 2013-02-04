@@ -1231,10 +1231,12 @@ module Emit = struct
             (fun i -> Format.fprintf c "#include \"tags_%s.h\"@\n" i.inc_name)
             (List.rev r.rep_includes);
           Format.fprintf c "#include \"tags_%s.h\"@\n" n.ns_name ;
+          (*
           List.iter
             (fun i -> Format.fprintf c "#include \"tags_%s.c\"@\n" i.inc_name)
             (List.rev r.rep_includes);
-          Format.fprintf c "#include \"tags_%s.c\"@\n" n.ns_name ;
+          *)
+          (*Format.fprintf c "#include \"tags_%s.c\"@\n" n.ns_name ;*)
           List.iter (klass ~ml ~c) (List.map emit_klass n.ns_klass);
           functions ~ml ~c (List.map emit_function n.ns_functions);
 
