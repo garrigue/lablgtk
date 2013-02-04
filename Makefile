@@ -2,8 +2,11 @@
 
 all opt doc install uninstall byte world old-install old-uninstall: config.make
 all opt doc install uninstall byte clean depend world old-install old-uninstall:
-	$(MAKE) -C src $@
 	$(MAKE) -C src3 $@
+	$(MAKE) -C src $@
+
+tools:
+	cd tools && $(MAKE)
 
 arch-clean:
 	@rm -f config.status config.make config.cache config.log
@@ -18,7 +21,7 @@ config.make: config.make.in
 	@echo config.make is not up to date. Execute ./configure first.
 	@exit 2
 
-.PHONY: all opt doc install byte world clean depend arch-clean headers
+.PHONY: all opt doc install byte world clean depend arch-clean headers tools
 
 headers:
 	find examples -name "*.ml" -exec headache -h header_examples {} \;

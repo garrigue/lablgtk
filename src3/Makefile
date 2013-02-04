@@ -1,4 +1,3 @@
-# $Id$
 # Makefile for lablgtk.
 
 COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
@@ -99,16 +98,16 @@ endif
 	./propcc $<
 
 # Files
-GTKOBJS =  ml_pango$(XO) 
+GTKOBJS =  ml_pango$(XO)
 COBJS = ml_gdkpixbuf$(XO) ml_gdk$(XO) ml_glib$(XO) ml_gobject$(XO) \
 	ml_gpointer$(XO) ml_gvaluecaml$(XO) wrappers$(XO) $(GTKOBJS)
-GTKPROPS += 
+GTKPROPS +=
 MLOBJS1 =  gaux.cmo gpointer.cmo gutf8.cmo glib.cmo gobject.cmo
 ENUMOBJS += gdkEnums.cmo pangoEnums.cmo
 MLOBJS2 = pango.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
   gtk.cmo gtkSignal.cmo gtkObject.cmo
-MLOBJS3 = 
-MLOBJS4 = 
+MLOBJS3 =
+MLOBJS4 =
 MLOBJS =  $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(GTKPROPS:.props=Props.cmo) \
 	$(MLOBJS3) $(GTKPROPS:%.props=o%Props.cmo) $(MLOBJS4)
 MLXOBJS = $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(MLOBJS3) $(MLOBJS4)
