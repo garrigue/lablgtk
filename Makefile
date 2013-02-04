@@ -3,6 +3,7 @@
 all opt doc install uninstall byte world old-install old-uninstall: config.make
 all opt doc install uninstall byte clean depend world old-install old-uninstall:
 	$(MAKE) -C src $@
+	$(MAKE) -C src3 $@
 
 arch-clean:
 	@rm -f config.status config.make config.cache config.log
@@ -27,3 +28,8 @@ headers:
 	find src -name "*.mli" -exec headache -h header {} \;
 	find src -name "*.c" -exec headache -h header {} \;
 	find src -name "*.h" -exec headache -h header {} \;
+	find src3 -name "*.ml" -exec headache -h header {} \;
+	find src3 -name "*.mli" -exec headache -h header {} \;
+	find src3 -name "*.c" -exec headache -h header {} \;
+	find src3 -name "*.h" -exec headache -h header {} \;
+	find tools -name "*.ml" -exec headache -h header {} \;

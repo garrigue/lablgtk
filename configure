@@ -627,12 +627,15 @@ RSVG_CFLAGS
 USE_GLADE
 GLADE_LIBS
 GLADE_CFLAGS
-GTK3_LIBS
-GTK3ALL_LIBS
-GTK3ALL_CFLAGS
 USE_GTKGL
 GTKGL_LIBS
 GTKGL_CFLAGS
+GTK3_LIBS
+GTK3ALL_LIBS
+GTK3ALL_CFLAGS
+USE_GTKGL3
+GTKGL3_LIBS
+GTKGL3_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 GTK_LIBS
@@ -729,10 +732,12 @@ CPPFLAGS
 PKG_CONFIG
 PKG_CONFIG_PATH
 PKG_CONFIG_LIBDIR
-GTKGL_CFLAGS
-GTKGL_LIBS
+GTKGL3_CFLAGS
+GTKGL3_LIBS
 GTK3ALL_CFLAGS
 GTK3ALL_LIBS
+GTKGL_CFLAGS
+GTKGL_LIBS
 GLADE_CFLAGS
 GLADE_LIBS
 RSVG_CFLAGS
@@ -1393,13 +1398,16 @@ Some influential environment variables:
               directories to add to pkg-config's search path
   PKG_CONFIG_LIBDIR
               path overriding pkg-config's built-in search path
-  GTKGL_CFLAGS
-              C compiler flags for GTKGL, overriding pkg-config
-  GTKGL_LIBS  linker flags for GTKGL, overriding pkg-config
+  GTKGL3_CFLAGS
+              C compiler flags for GTKGL3, overriding pkg-config
+  GTKGL3_LIBS linker flags for GTKGL3, overriding pkg-config
   GTK3ALL_CFLAGS
               C compiler flags for GTK3ALL, overriding pkg-config
   GTK3ALL_LIBS
               linker flags for GTK3ALL, overriding pkg-config
+  GTKGL_CFLAGS
+              C compiler flags for GTKGL, overriding pkg-config
+  GTKGL_LIBS  linker flags for GTKGL, overriding pkg-config
   GLADE_CFLAGS
               C compiler flags for GLADE, overriding pkg-config
   GLADE_LIBS  linker flags for GLADE, overriding pkg-config
@@ -4055,19 +4063,19 @@ fi
 
 # Check whether --with-gl3 was given.
 if test "${with_gl3+set}" = set; then :
-  withval=$with_gl3; USE_GTKGL=$withval; FORCE_GTKGL=yes
+  withval=$with_gl3; USE_GTKGL3=$withval; FORCE_GTKGL3=yes
 else
-  USE_GTKGL=yes; FORCE_GTKGL=no
+  USE_GTKGL3=yes; FORCE_GTKGL3=no
 fi
 
-if test $USE_GTKGL = yes ; then
+if test $USE_GTKGL3 = yes ; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GTKGL" >&5
-$as_echo_n "checking for GTKGL... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GTKGL3" >&5
+$as_echo_n "checking for GTKGL3... " >&6; }
 
-if test -n "$GTKGL_CFLAGS"; then
-    pkg_cv_GTKGL_CFLAGS="$GTKGL_CFLAGS"
+if test -n "$GTKGL3_CFLAGS"; then
+    pkg_cv_GTKGL3_CFLAGS="$GTKGL3_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkgl-3.0\""; } >&5
@@ -4075,7 +4083,7 @@ if test -n "$GTKGL_CFLAGS"; then
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKGL_CFLAGS=`$PKG_CONFIG --cflags "gtkgl-3.0" 2>/dev/null`
+  pkg_cv_GTKGL3_CFLAGS=`$PKG_CONFIG --cflags "gtkgl-3.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -4083,8 +4091,8 @@ fi
  else
     pkg_failed=untried
 fi
-if test -n "$GTKGL_LIBS"; then
-    pkg_cv_GTKGL_LIBS="$GTKGL_LIBS"
+if test -n "$GTKGL3_LIBS"; then
+    pkg_cv_GTKGL3_LIBS="$GTKGL3_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkgl-3.0\""; } >&5
@@ -4092,7 +4100,7 @@ if test -n "$GTKGL_LIBS"; then
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKGL_LIBS=`$PKG_CONFIG --libs "gtkgl-3.0" 2>/dev/null`
+  pkg_cv_GTKGL3_LIBS=`$PKG_CONFIG --libs "gtkgl-3.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -4113,45 +4121,45 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtkgl-3.0" 2>&1`
+	        GTKGL3_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtkgl-3.0" 2>&1`
         else
-	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtkgl-3.0" 2>&1`
+	        GTKGL3_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtkgl-3.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
-	echo "$GTKGL_PKG_ERRORS" >&5
+	echo "$GTKGL3_PKG_ERRORS" >&5
 
 
-	if test $FORCE_GTKGL = yes ; then
+	if test $FORCE_GTKGL3 = yes ; then
 	  as_fn_error $? "gl3 enforced but no support found" "$LINENO" 5
         else
-          USE_GTKGL=no
+          USE_GTKGL3=no
 	fi
 elif test $pkg_failed = untried; then
      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
-	if test $FORCE_GTKGL = yes ; then
+	if test $FORCE_GTKGL3 = yes ; then
 	  as_fn_error $? "gl3 enforced but no support found" "$LINENO" 5
         else
-          USE_GTKGL=no
+          USE_GTKGL3=no
 	fi
 else
-	GTKGL_CFLAGS=$pkg_cv_GTKGL_CFLAGS
-	GTKGL_LIBS=$pkg_cv_GTKGL_LIBS
+	GTKGL3_CFLAGS=$pkg_cv_GTKGL3_CFLAGS
+	GTKGL3_LIBS=$pkg_cv_GTKGL3_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
 fi
 fi
-if test $USE_GTKGL = yes ; then
-	USE_GTKGL=1
-	GTKGLPKG=gtkgl-3.0
+if test $USE_GTKGL3 = yes ; then
+	USE_GTKGL3=1
+	GTKGL3PKG=gtkgl-3.0
 else
-	unset USE_GTKGL
+	unset USE_GTKGL3
 fi
 
 # Check for LablGL
-if test -n "$USE_GTK3GL" ; then
+if test -n "$USE_GTKGL3" ; then
       { $as_echo "$as_me:${as_lineno-$LINENO}: checking lablGL3 directory" >&5
 $as_echo_n "checking lablGL3 directory... " >&6; }
       cat > conftest.ml << EOF
@@ -4167,7 +4175,7 @@ $as_echo "$LABLGL3DIR" >&6; }
 	        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
       	  unset USE_GTKGL3
-	        unset GTK3GLPKG
+	        unset GTKGL3PKG
           unset LABLGL3DIR
       	fi
       fi

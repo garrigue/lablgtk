@@ -275,11 +275,11 @@ else
 fi
 AC_SUBST(USE_$1)])
 
-LABLGTK3_PKG(GTKGL, gl3,
+LABLGTK3_PKG(GTKGL3, gl3,
 	    [  --without-gl3            override autodetected GtkGLArea support. Requires LablGL3],
 	    gtkgl-3.0)
 # Check for LablGL
-if test -n "$USE_GTK3GL" ; then
+if test -n "$USE_GTKGL3" ; then
       AC_MSG_CHECKING(lablGL3 directory)
       cat > conftest.ml << EOF
       open Raw
@@ -292,7 +292,7 @@ EOF
       	else
 	        AC_MSG_RESULT(no)
       	  unset USE_GTKGL3
-	        unset GTK3GLPKG
+	        unset GTKGL3PKG
           unset LABLGL3DIR
       	fi
       fi
