@@ -59,4 +59,4 @@ CAMLexport value Val_gboxed_new(GType t, gpointer p); /* without copy */
 #define check_cast(f,v) (Pointer_val(v) == NULL ? NULL : f(Pointer_val(v)))
 #endif
 
-#define GtkObject_val(val) check_cast(GTK_OBJECT,val)
+#define GtkWidget_val(val) check_cast(GTK_WIDGET,val)

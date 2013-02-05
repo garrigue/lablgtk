@@ -15,3 +15,10 @@ manque d'info sur les paramètres de g_iconv_close => warning de cast à la comp
 * GLib:
 
 How to handle locale now ?
+
+* GtkObject is gone
+ and GtkWidget must be used instead.
+ I renamed gtkObject.ml to gtkWidget.ml.
+ In the stub generator, GtkObject.make was used to create objects, even
+ in the GLib stubs. Now GtkWidget.make is used instead, but I wonder
+ if this is the right way to go.

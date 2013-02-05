@@ -168,8 +168,8 @@ let objtype_from_name ~caller name =
   let f = Type.fundamental t in
   if f = `INVALID then
     failwith (caller ^ " : type " ^ name ^ " is not yet defined");
-  if f <> `OBJECT then
-    failwith (caller ^ " : " ^ name ^ " is not an object type");
+(*  if f <> `OBJECT then
+    failwith (caller ^ " : " ^ name ^ " is not an object type");*)
   t
 
 external get_type : 'a obj -> g_type = "ml_G_TYPE_FROM_INSTANCE"
@@ -326,7 +326,7 @@ module Property = struct
   external freeze_notify : 'a obj -> unit = "ml_g_object_freeze_notify"
   external thaw_notify : 'a obj -> unit = "ml_g_object_thaw_notify"
   external notify : 'a obj -> string -> unit = "ml_g_object_notify"
-  external set_value : 'a obj -> string -> g_value -> unit 
+  external set_value : 'a obj -> string -> g_value -> unit
     = "ml_g_object_set_property"
   external get_value : 'a obj -> string -> g_value -> unit
     = "ml_g_object_get_property"

@@ -1,3 +1,5 @@
+
+Stubs_GLib.init_type();;
 open Stubs_Gtk;;
 Main.init();;
 init_type();;

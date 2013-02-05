@@ -6,7 +6,7 @@
 <ml_header>
 open Gobject
 open Data
-module Object = GtkObject
+module Object = GtkWidget
 let may_cons = Property.may_cons
 let may_cons_opt = Property.may_cons_opt
 </ml_header>

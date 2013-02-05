@@ -642,18 +642,12 @@ CAMLprim value ml_g_signal_chain_from_overridden (value clos_argv)
   CAMLreturn(Val_unit);
 }
 
-/* gtkobject.h */
 
-#define gtk_object_ref_and_sink(w) (g_object_ref_sink (w))
-#define ml_gtk_object_unref_later(w) ml_g_object_unref_later((GObject*)(w))
-//Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
-//                           ml_gtk_object_unref_later, 20)
+#define gtk_widget_ref_and_sink(w) (g_object_ref_sink (w))
+#define ml_gtk_widget_unref_later(w) ml_g_object_unref_later((GObject*)(w))
+Make_Val_final_pointer_ext(GtkWidget, _sink , gtk_widget_ref_and_sink,
+                           ml_gtk_widget_unref_later, 20)
 //ML_1 (GTK_OBJECT_FLAGS, GtkObject_val, Val_int)
-ML_1 (gtk_object_ref_and_sink, GtkObject_val, Unit)
+ML_1 (gtk_widget_ref_and_sink, GtkWidget_val, Unit)
 
-/* gtkaccelgroup.h */
-
-/* gtkobject.h */
-
-//ML_1 (gtk_object_destroy, GtkObject_val, Unit)
-ML_1 (g_object_ref_sink, GtkObject_val, Unit)
+ML_1 (g_object_ref_sink, GtkWidget_val, Unit)

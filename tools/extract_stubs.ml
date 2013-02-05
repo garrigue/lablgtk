@@ -807,15 +807,20 @@ module Emit = struct
         }
       }
 
-    let emit_method k m =
+    let emit_method ?(constructor=false) k m =
       try
         let self = dummy_parameter()in
         let t = dummy_c_typ () in
         t.t_c_typ <- k.c_c_type ^ "*" ;
         self.p_name <- "self" ;
         self.p_typ <- Typ t ;
-        let nb_args = List.length m.parameters + 1 in
-        let (c_params, ml_params) = emit_parameters m.throws (self :: m.parameters) in
+        let parameters =
+          (* constructors do not take self as first parameter *)
+          if constructor then m.parameters else (self :: m.parameters)
+        in
+        let nb_args = List.length parameters in
+        let (c_params, ml_params) = emit_parameters m.throws parameters in
+        let ml_params = match ml_params with [] -> ["unit"] | _ -> ml_params in
         let (c_ret, ml_ret) = emit_return_value m.return_value in
         let ml_ret = ml_ret ' ' in
         Some {
@@ -839,7 +844,7 @@ module Emit = struct
             s ;
           None
 
-    let emit_constructor k m = emit_method k m
+    let emit_constructor k m = emit_method ~constructor: true k m
 
     let emit_function p =
       try Some (emit_prototype p)
@@ -847,12 +852,15 @@ module Emit = struct
           p.c_identifier s; None
 
     let emit_klass k =
-    let methods = List.map (emit_method k) k.c_methods in
-    (*let constructor = List.map (emit_constructor k) k.c_constructors in*)
-    let properties = List.map emit_property k.c_properties in
-    let signals = List.map emit_signal k.c_glib_signals in
-    let functions = List.map  emit_function k.c_functions in
-    (k, properties, signals, methods, functions)
+      let methods = List.map (emit_method k) k.c_methods in
+
+      (* Maxence: put back this *)
+      let constructors = List.map (emit_constructor k) k.c_constructors in
+
+      let properties = List.map emit_property k.c_properties in
+      let signals = List.map emit_signal k.c_glib_signals in
+      let functions = List.map  emit_function k.c_functions in
+      (k, properties, signals, methods, functions, constructors)
 
     module Print = struct
         open Pretty
@@ -1045,7 +1053,7 @@ module Emit = struct
                 str.[0] <- 'U';
               str
 
-        let klass ~ml ~c (k, properties, signals, methods, functions) =
+        let klass ~ml ~c (k, properties, signals, methods, functions, constructors) =
           Format.fprintf ml "@[<hv 2>module %s = struct@ "
             (rename_klass k.c_name);
           Format.fprintf ml "let cast w : [>%s] obj = try_cast w \"%s\"@ "
@@ -1071,7 +1079,7 @@ module Emit = struct
              Format.fprintf ml " pl =@\n"; (* a caster *)
              may_cons_props ml cprops ;
              (* tester si Gobject est parent *)
-             Format.fprintf ml "@]GtkObject.make \"%s\" pl@ " k.c_c_type ;
+             Format.fprintf ml "@]GtkWidget.make \"%s\" pl@ " k.c_c_type ;
              if props <> [] then begin
                  Format.fprintf ml "@[<hov4>let make_params ~cont pl";
                  let pprops = List.filter (fun p -> not p.pr_construct_only) props in
@@ -1100,24 +1108,24 @@ module Emit = struct
              Format.fprintf ml "@ ()@]\n";
              );*)
           List.iter (may_ml_stub ml) methods ;
-          (*List.iter (may_ml_stub ml) constructors;*)
           List.iter (may_ml_stub ml) functions ;
+          List.iter (may_ml_stub ml) constructors;
           Format.fprintf ml "@]end@\n";
 
           Format.fprintf c "@[/* Module %s */@ " (rename_klass k.c_name);
           List.iter (may_c_stub c) methods ;
-          (*List.iter (may_c_stub c) constructors;*)
           List.iter (may_c_stub c) functions ;
+          List.iter (may_c_stub c) constructors;
           Format.fprintf c "@]/* end of %s */@ " (rename_klass k.c_name)
 
         let functions ~ml ~c f =
-          Format.fprintf ml "@[(* Global functions *)@ ";
+          Format.fprintf ml "@[(* Global functions *)@.";
           List.iter (may_ml_stub ml) f ;
-          Format.fprintf ml "(* End of global functions *)@]@ ";
+          Format.fprintf ml "(* End of global functions *)@]@.";
 
-          Format.fprintf c "@[/* Global functions */@ ";
+          Format.fprintf c "@[/* Global functions */@.";
           List.iter (may_c_stub c) f ;
-          Format.fprintf c "/* End of global functions */@]@ "
+          Format.fprintf c "/* End of global functions */@]@. "
 
         let hashes = Hashtbl.create 57
         let print_enumeration ~tagsml ~tagsc ~tagsh r e =
@@ -1717,7 +1725,10 @@ let parse_function set attrs children =
     )
     children ;
   if fct.deprecated = "" then
+   (
+    Printf.printf "adding function %s=%s\n" fct.f_name fct.c_identifier;
     set fct
+    )
 
 let parse_constructor set attrs children =
   parse_function set attrs children

@@ -22,9 +22,9 @@
 
 open Gobject
 
-let cast w : [`gtk] obj = try_cast w "GtkObject"
+let cast w : [`gtk] obj = try_cast w "GtkWidget"
 external _ref_and_sink : [>`gtk] obj -> unit
-    = "ml_gtk_object_ref_and_sink"
+    = "ml_gtk_widget_ref_and_sink"
 let make ~classe params =
   let obj = unsafe_create ~classe params in _ref_and_sink obj;
   obj

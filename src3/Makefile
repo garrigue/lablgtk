@@ -1,8 +1,8 @@
 # Makefile for lablgtk.
 
-COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -I . -I stubs -w s -c
+COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -annot -I . -I stubs -w s -c
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c -I stubs
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -annot -w s -c -I stubs
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 LIBRARIAN = $(CAMLMKLIB) -verbose -ocamlc "$(CAMLC)" -ocamlopt "$(CAMLOPT)"
 TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
@@ -51,6 +51,7 @@ opt:  lablgtk.cmxa # lablgtkopt
 stubs: $(EXTRACT_STUBS)
 	mkdir -p stubs
 	$(EXTRACT_STUBS)  --outdir stubs --datadir data $(GIRDIR)/Gtk-3.0.gir > LOG
+	sed -i "s/intern()/g_variant_get_type/g" stubs/ml_stubs_GLib.c
 
 $(EXTRACT_STUBS):
 	cd ../tools && $(MAKE) extract_stubs$(XE)
@@ -164,7 +165,7 @@ MLOBJS= \
 	gpointer.cmo \
 	gobject.cmo \
 	gtk.cmo \
-	gtkObject.cmo \
+	gtkWidget.cmo \
 	gtkSignal.cmo \
 	$(STUBMLOBJS)
 

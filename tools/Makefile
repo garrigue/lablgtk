@@ -2,7 +2,7 @@
 include ../config.make
 
 extract_stubs$(XE): xml.ml extract_stubs.ml
-	$(OCAMLFIND) ocamlopt -g -o $@ -package str,xmlm -linkpkg $^
+	$(OCAMLFIND) ocamlopt -annot -g -o $@ -package str,xmlm -linkpkg $^
 
 clean:
 	rm -f *.cm* extract_stubs$(XE)
