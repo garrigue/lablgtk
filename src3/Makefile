@@ -42,7 +42,7 @@ TARGETS = lablgtktop$(XE)
 
 # Targets
 
-all: byte
+all: byte opt
 world: byte $(CAMLBEST)
 
 byte: lablgtk.cma
