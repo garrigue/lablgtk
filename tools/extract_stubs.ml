@@ -878,12 +878,19 @@ module Emit = struct
           | Complex s -> Format.fprintf fmt "%s@." s
 
         let ml_stub fmt s =
-          Format.fprintf fmt "external %s: %a%s = \"%s\"@ "
+          let snd_fun =
+            if List.length s.ms_params > 5 then
+              Printf.sprintf " \"" ^ s.ms_c_name ^"_bc\""
+            else
+              ""
+          in
+          Format.fprintf fmt "external %s: %a%s = %S%s@ "
             s.ms_ml_name
             (pp_list " -> ")
             s.ms_params
             s.ms_ret
             s.ms_c_name
+            snd_fun
 
         let stub fmt s =
           Format.fprintf fmt "=====@.%a%a@." c_stub s.stub_c ml_stub s.stub_external

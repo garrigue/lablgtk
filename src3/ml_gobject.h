@@ -27,9 +27,8 @@
 
 /* Defined in ml_gobject.h */
 
-/* Since every generated stub produces this macro, comment it out
 #define GObject_val(val) ((GObject*)Pointer_val(val))
-*/
+
 CAMLexport value Val_GObject (GObject *);
 CAMLexport value Val_GObject_new (GObject *);
 #define Val_GAnyObject(val) Val_GObject(G_OBJECT(val))

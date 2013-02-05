@@ -2,7 +2,7 @@
 
 COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -I . -I stubs -w s -c
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c -I stubs
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 LIBRARIAN = $(CAMLMKLIB) -verbose -ocamlc "$(CAMLC)" -ocamlopt "$(CAMLOPT)"
 TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
@@ -103,13 +103,13 @@ CFLAGS += -DHAS_GTKQUARTZ
 endif
 
 STUBCOBJS= \
-	stubs/ml_stubs_Atk.o \
-	stubs/ml_stubs_GLib.o \
-	stubs/ml_stubs_GModule.o \
-	stubs/ml_stubs_GObject.o \
-	stubs/ml_stubs_Gdk.o \
-	stubs/ml_stubs_Gio.o \
 	stubs/ml_stubs_Gtk.o
+#	stubs/ml_stubs_Atk.o \
+#	stubs/ml_stubs_GLib.o \
+#	stubs/ml_stubs_GModule.o \
+#	stubs/ml_stubs_GObject.o \
+#	stubs/ml_stubs_Gdk.o \
+#	stubs/ml_stubs_Gio.o \
 
 #	stubs/ml_stubs_xlib.o \
 #	stubs/ml_stubs_Pango.o \
@@ -119,26 +119,27 @@ STUBCOBJS= \
 STUBMLOBJS= \
 	stubs/tags_GLib.cmo \
 	stubs/tags_Atk.cmo \
-	stubs/tags_GModule.cmo \
-	stubs/tags_GObject.cmo \
 	stubs/tags_Gdk.cmo \
 	stubs/tags_GdkPixbuf.cmo \
+	stubs/tags_GObject.cmo \
+	stubs/tags_GModule.cmo \
 	stubs/tags_Gio.cmo \
-	stubs/tags_Gtk.cmo \
 	stubs/tags_Pango.cmo \
 	stubs/tags_cairo.cmo \
 	stubs/tags_xlib.cmo \
-	stubs/stubs_Atk.cmo \
-	stubs/stubs_GLib.cmo \
-	stubs/stubs_GModule.cmo \
-	stubs/stubs_GObject.cmo \
-	stubs/stubs_Gdk.cmo \
-	stubs/stubs_GdkPixbuf.cmo \
-	stubs/stubs_Gio.cmo \
+	stubs/tags_Gtk.cmo \
 	stubs/stubs_Gtk.cmo \
-	stubs/stubs_Pango.cmo \
-	stubs/stubs_cairo.cmo \
-	stubs/stubs_xlib.cmo
+
+#	stubs/stubs_Atk.cmo \
+#	stubs/stubs_GLib.cmo \
+#	stubs/stubs_GModule.cmo \
+#	stubs/stubs_GObject.cmo \
+#	stubs/stubs_Gdk.cmo \
+#	stubs/stubs_GdkPixbuf.cmo \
+#	stubs/stubs_Gio.cmo \
+#	stubs/stubs_Pango.cmo \
+#	stubs/stubs_cairo.cmo \
+#	stubs/stubs_xlib.cmo
 
 COBJS= \
 	ml_gobject$(XO) \
