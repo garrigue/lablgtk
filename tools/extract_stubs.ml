@@ -1074,7 +1074,12 @@ module Emit = struct
           if not k.c_abstract then
             (
              let cprops = List.filter (fun p -> p.pr_construct_only) props  in
-             Format.fprintf ml "@[<hv 2>let create";
+             (
+              match constructors with
+              | Some s :: _ -> ml_stub ml { s.stub_external with ms_ml_name = "create" }
+              | _ -> ()
+             );
+             Format.fprintf ml "@[<hv 2>let create_with_params";
              List.iter (fun p -> Format.fprintf ml " ?%s" (camlize p.pr_name)) cprops ;
              Format.fprintf ml " pl =@\n"; (* a caster *)
              may_cons_props ml cprops ;

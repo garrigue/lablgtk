@@ -48,9 +48,9 @@ module Main = struct
     Obj.truncate (Obj.repr Sys.argv) (Array.length argv)
 (*     if setlocale then Glib.Main.setlocale `ALL None else ""*)
 
-  let loops = ref ([] : [`mainloop | `gtk] obj list)
+  let loops = ref ([] : [`mainloop] obj list)
   let default_main () =
-    let loop = (Stubs_GLib.MainLoop.create []) in
+    let loop = (Stubs_GLib.MainLoop.create None true) in
     loops := loop :: !loops;
     while Stubs_GLib.MainLoop.is_running loop do
        Stubs_GLib.MainContext.iteration (Stubs_GLib.MainLoop.get_context loop) true

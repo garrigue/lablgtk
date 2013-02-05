@@ -5,7 +5,7 @@ Main.init();;
 init_type();;
 
 let main () =
-  let w = Window.create
+  let w = Window.create_with_params
     (Window.make_params
      ~cont:(fun pl -> fun _ -> pl)
        ~title:"Hello world"
@@ -13,7 +13,7 @@ let main () =
        ~default_height:100 [] ()
     )
   in
-  let b = Button.create
+  let b = Button.create_with_params
     (Button.make_params
      ~cont:(fun pl -> fun _ -> pl)
        ~label:"Hello World" [] ()
