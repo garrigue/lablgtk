@@ -1269,7 +1269,14 @@ module Emit = struct
           List.iter (klass ~ml ~c) (List.map emit_klass n.ns_klass);
           functions ~ml ~c (List.map emit_function n.ns_functions);
 
-          let get_type = List.map (fun k -> k.c_glib_get_type) n.ns_klass in
+          let get_type =
+            List.fold_right
+              (fun k acc ->
+                match k.c_glib_get_type with
+                   "intern" -> acc
+                 | s -> s :: acc
+              ) n.ns_klass []
+          in
           Format.fprintf c "CAMLprim value ml_init_type_%s(value unit){@ " n.ns_name;
           Format.fprintf c "GType t =@ ";
           List.iter
