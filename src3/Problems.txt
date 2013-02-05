@@ -11,3 +11,7 @@ extract_stubs produces a ATK_G_OBJECT_ACCESSIBLE id, not found in Atk-1.0.gir:
 * Glib-2.0.gir:
 
 manque d'info sur les paramètres de g_iconv_close => warning de cast à la compil
+
+* GLib:
+
+How to handle locale now ?

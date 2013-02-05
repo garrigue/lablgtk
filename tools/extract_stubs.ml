@@ -1195,7 +1195,9 @@ module Emit = struct
           let _ = match n.ns_enum with
               [] ->()
             | e :: q->
-              Format.fprintf tagsc "CAMLprim value ml_%s_get_tables ()\n{\n  static const lookup_info *ml_lookup_tables[] = {\n  ml_table_%s_%s,@\n" (camlize !ns) (camlize !ns) (camlize e.e_name);
+              Format.fprintf tagsc
+                  "CAMLprim value ml_%s_get_tables ()\n{\n  static const lookup_info *ml_lookup_tables[] = {\n  ml_table_%s_%s,@\n"
+                  (camlize !ns) (camlize !ns) (camlize e.e_name);
               Format.fprintf tagsml "external _get_tables : unit ->\n    %s variant_table@\n"  (camlize e.e_name);
               List.iter
                   (fun e -> Format.fprintf tagsc "ml_table_%s_%s,@\n"

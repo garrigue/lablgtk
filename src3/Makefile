@@ -103,9 +103,9 @@ CFLAGS += -DHAS_GTKQUARTZ
 endif
 
 STUBCOBJS= \
-	stubs/ml_stubs_Gtk.o
+	stubs/ml_stubs_Gtk.o \
+	stubs/ml_stubs_GLib.o \
 #	stubs/ml_stubs_Atk.o \
-#	stubs/ml_stubs_GLib.o \
 #	stubs/ml_stubs_GModule.o \
 #	stubs/ml_stubs_GObject.o \
 #	stubs/ml_stubs_Gdk.o \
@@ -128,10 +128,10 @@ STUBMLOBJS= \
 	stubs/tags_cairo.cmo \
 	stubs/tags_xlib.cmo \
 	stubs/tags_Gtk.cmo \
+	stubs/stubs_GLib.cmo \
 	stubs/stubs_Gtk.cmo \
 
 #	stubs/stubs_Atk.cmo \
-#	stubs/stubs_GLib.cmo \
 #	stubs/stubs_GModule.cmo \
 #	stubs/stubs_GObject.cmo \
 #	stubs/stubs_Gdk.cmo \
@@ -146,14 +146,16 @@ COBJS= \
 	ml_gpointer$(XO) \
 	ml_gvaluecaml$(XO) \
 	wrappers$(XO) \
+	$(STUBCOBJS)
+
+MLOBJS= \
+	gaux.cmo \
 	gpointer.cmo \
 	gobject.cmo \
 	gtk.cmo \
 	gtkObject.cmo \
 	gtkSignal.cmo \
-	$(STUBCOBJS)
-
-MLOBJS=$(STUBMLOBJS)
+	$(STUBMLOBJS)
 
 
 # Rules
@@ -197,7 +199,12 @@ varcc.cmo: varcc.ml4
 
 ml_gobject$(XO): gobject_tags.h  ml_gvaluecaml.h wrappers.h
 
+# building tests programs
 
+tests:
+	cd tests && $(MAKE)
+
+# cleaning
 
 clean:
 	rm -f *.cm* *.a *.so *.o *.exe *.obj *.dll *.lib *.gch
@@ -205,6 +212,6 @@ clean:
 	rm -f varcc$(XE) *_tags.[ch]
 	rm -f  \#*\# *~
 
-.PHONY: stubs
+.PHONY: stubs tests
 
 include .depend
