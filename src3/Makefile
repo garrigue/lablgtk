@@ -103,8 +103,19 @@ CFLAGS += -DHAS_GTKQUARTZ
 endif
 
 STUBCOBJS= \
-	stubs/ml_stubs_Gtk.o \
-	stubs/ml_stubs_GLib.o \
+	stubs/mltags_Atk$(XO) \
+	stubs/mltags_GLib$(XO) \
+	stubs/mltags_Gdk$(XO) \
+	stubs/mltags_GdkPixbuf$(XO) \
+	stubs/mltags_GObject$(XO) \
+	stubs/mltags_GModule$(XO) \
+	stubs/mltags_Gio$(XO) \
+	stubs/mltags_Pango$(XO) \
+	stubs/mltags_Gtk$(XO) \
+	stubs/ml_stubs_Gtk$(XO) \
+	stubs/ml_stubs_GLib$(XO) \
+#	stubs/mltags_cairo$(XO) \
+#	stubs/mltags_xlib$(XO) \
 #	stubs/ml_stubs_Atk.o \
 #	stubs/ml_stubs_GModule.o \
 #	stubs/ml_stubs_GObject.o \

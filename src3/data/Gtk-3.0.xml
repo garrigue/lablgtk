@@ -27,18 +27,18 @@ module Main = struct
   open Gtk
   let () = Callback.register_exception "gtkerror" (Error"")
   let () = Gc.set {(Gc.get()) with Gc.max_overhead = 1000000}
-  external init : string array -&gt; string array = "ml_gtk_init"
-  (* external set_locale : unit -&gt; string = "ml_gtk_set_locale" *)
-  external disable_setlocale : unit -&gt; unit = "ml_gtk_disable_setlocale"
-  (* external main : unit -&gt; unit = "ml_gtk_main" *)
+  external init : string array -> string array = "ml_gtk_init"
+  (* external set_locale : unit -> string = "ml_gtk_set_locale" *)
+  external disable_setlocale : unit -> unit = "ml_gtk_disable_setlocale"
+  (* external main : unit -> unit = "ml_gtk_main" *)
   let init ?(setlocale=true) () =
     let setlocale =
-      try Sys.getenv "GTK_SETLOCALE" &lt;&gt; "0" with Not_found -&gt; setlocale in
+      try Sys.getenv "GTK_SETLOCALE" <> "0" with Not_found -> setlocale in
     if not setlocale then disable_setlocale ();
     let argv =
       try
 	init Sys.argv
-      with Error err -&gt;
+      with Error err ->
         raise (Error ("GtkMain.init: initialization failed\n" ^ err))
     in
 (*    if setlocale then ignore (Glib.Main.setlocale `NUMERIC (Some "C"));*)
@@ -63,7 +63,7 @@ module Main = struct
     = "ml_gtk_get_current_event_time"
 end
 ]]></ml_function>
-<c_function>
+<c_function><![CDATA[
 void ml_raise_gtk (const char *errmsg)
 {
   static value * exn = NULL;
@@ -80,15 +80,16 @@ CAMLprim value ml_gtk_init (value argv)
     CAMLlocal1 (copy);
 
     copy = (argc ? alloc (argc, Abstract_tag) : Atom(0));
-    for (i = 0; i &lt; argc; i++) Field(copy,i) = Field(argv,i);
-    if( !gtk_init_check (&amp;argc, (char ***)&amp;copy) ){
+    for (i = 0; i < argc; i++) Field(copy,i) = Field(argv,i);
+    if( !gtk_init_check (&argc, (char ***)&copy) ){
       ml_raise_gtk ("ml_gtk_init: initialization failed");
     }
 
     argv = (argc ? alloc (argc, 0) : Atom(0));
-    for (i = 0; i &lt; argc; i++) modify(&amp;Field(argv,i), Field(copy,i));
+    for (i = 0; i < argc; i++) modify(&Field(argv,i), Field(copy,i));
     CAMLreturn (argv);
 }
+]]>
 </c_function>
 <enumeration>
   <badtag cname="GTK_CELL_RENDERER_ACCEL_MODE_MODIFIER_TAP"/>

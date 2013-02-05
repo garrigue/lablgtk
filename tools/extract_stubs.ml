@@ -1172,12 +1172,23 @@ module Emit = struct
           let ml = Format.formatter_of_out_channel stub_ml_channel in
           let stub_c_channel = open_out_stub ("ml_stubs_"^n.ns_name^".c") in
           let c = Format.formatter_of_out_channel stub_c_channel in
-          let tagsc_channel = open_out_stub ("tags_"^n.ns_name^".c") in
-          let tagsh_channel = open_out_stub ("tags_"^n.ns_name^".h") in
+          let tagsc_channel = open_out_stub ("mltags_"^n.ns_name^".c") in
+          let tagsh_channel = open_out_stub ("mltags_"^n.ns_name^".h") in
           let tagsml_channel = open_out_stub ("tags_"^n.ns_name^".ml") in
           let tagsc = Format.formatter_of_out_channel tagsc_channel in
           let tagsh = Format.formatter_of_out_channel tagsh_channel in
           let tagsml = Format.formatter_of_out_channel tagsml_channel in
+
+          (* HACK: atk include is missing; in case of missing filenames to include,
+            use the lowercased repository name n in <n/n.h> *)
+          let includes =
+            match r.rep_c_includes with
+              [] ->
+                let s = String.lowercase r.rep_package.pack_name in
+                [ Printf.sprintf "%s/%s.h" s s ]
+            | incs -> List.map (fun i -> i.c_inc_name) incs
+          in
+
           Format.fprintf ml "%s@\n" (Buffer.contents ml_header);
 
           (* to get the try_cast *)
@@ -1190,7 +1201,10 @@ module Emit = struct
           Format.fprintf ml "%s@\n" r.rep_data.data_ml_header ;
           Format.fprintf tagsml "open Gpointer@\n";
 
-          Format.fprintf tagsc "#include \"tags_%s.h\"\n" n.ns_name;
+          List.iter
+            (fun fname -> Format.fprintf tagsc "#include <%s>@." fname) includes;
+          Format.fprintf tagsc "#include \"wrappers.h\"\n" ;
+          Format.fprintf tagsc "#include \"mltags_%s.h\"\n" n.ns_name;
           List.iter (print_enumeration ~tagsml ~tagsc ~tagsh r) n.ns_enum ;
           let _ = match n.ns_enum with
               [] ->()
@@ -1221,15 +1235,7 @@ module Emit = struct
                   )
                   n.ns_enum ;
           in
-          (* HACK: atk include is missing; in case of missing filenames to include,
-            use the lowercased repository name n in <n/n.h> *)
-          let includes =
-            match r.rep_c_includes with
-              [] ->
-                let s = String.lowercase r.rep_package.pack_name in
-                [ Printf.sprintf "%s/%s.h" s s ]
-            | incs -> List.map (fun i -> i.c_inc_name) incs
-          in
+
           List.iter
             (fun fname -> Format.fprintf c "#include <%s>@." fname) includes;
           Format.fprintf c "#include \"wrappers.h\"@\n\
@@ -1238,15 +1244,15 @@ module Emit = struct
           Format.fprintf c "%s@\n" (Buffer.contents c_header) ;
 
           List.iter
-            (fun i -> Format.fprintf c "#include \"tags_%s.h\"@\n" i.inc_name)
+            (fun i -> Format.fprintf c "#include \"mltags_%s.h\"@\n" i.inc_name)
             (List.rev r.rep_includes);
-          Format.fprintf c "#include \"tags_%s.h\"@\n" n.ns_name ;
+          Format.fprintf c "#include \"mltags_%s.h\"@\n" n.ns_name ;
           (*
           List.iter
-            (fun i -> Format.fprintf c "#include \"tags_%s.c\"@\n" i.inc_name)
+            (fun i -> Format.fprintf c "#include \"mltags_%s.c\"@\n" i.inc_name)
             (List.rev r.rep_includes);
           *)
-          (*Format.fprintf c "#include \"tags_%s.c\"@\n" n.ns_name ;*)
+          (*Format.fprintf c "#include \"mltags_%s.c\"@\n" n.ns_name ;*)
           List.iter (klass ~ml ~c) (List.map emit_klass n.ns_klass);
           functions ~ml ~c (List.map emit_function n.ns_functions);
 
