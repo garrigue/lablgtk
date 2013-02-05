@@ -174,7 +174,7 @@ type bf_member = {
   }
 type bf = {
     mutable bf_name : string ;
-    mutable bf_ctype : string ;
+    mutable bf_c_type : string ;
     mutable bf_members: bf_member list ;
   }
 type enum_member = {
@@ -332,7 +332,7 @@ let dummy_data () = {
     data_enume_badtag = [] ;
   }
 let dummy_bfm () = { bfm_c_identifier = "" ; bfm_value = "" ; bfm_name = "" ; }
-let dummy_bf () = { bf_name = "" ; bf_ctype = "" ; bf_members = [] }
+let dummy_bf () = { bf_name = "" ; bf_c_type = "" ; bf_members = [] }
 let dummy_ownership () = ODefault
 let dummy_typ () = NoType
 let dummy_c_typ () = {t_name = "" ; t_c_typ = "" ; t_content = None ; }
@@ -656,7 +656,9 @@ module Translations = struct
         (fun (kl,v) -> List.iter (fun k -> Hashtbl.add tbl k v) kl)
         base_translation
 
-    let find k = try Hashtbl.find tbl k with Not_found ->
+    let find k =
+      try Hashtbl.find tbl k
+      with Not_found ->
           fail_emit ("Cannot translate type " ^k)
 
     let to_type_macro s =
@@ -690,7 +692,7 @@ module Translations = struct
            (
             Hashtbl.add parent c_name c_parent
            ) ;
-        let val_of = "Val_"^c_typ in
+         let val_of = "Val_"^c_typ in
          let of_val = c_typ^"_val" in
          if is_record then
            begin
@@ -718,7 +720,7 @@ module Translations = struct
            else
              Format.sprintf "[%c%s] obj" variance (format_parents (parents  c_name))
          in
-         let trans = (val_of,of_val, typ) in
+         let trans = (val_of, of_val, typ) in
          Hashtbl.add tbl (c_typ^"*") trans ;
          Hashtbl.add tbl (!ns^"."^c_name) trans ;
          Hashtbl.add conversions (c_typ^"*") ("(Gobject.Data.gobject : "^typ '>' ^" data_conv)");
@@ -1582,8 +1584,72 @@ let parse_parameters set attrs children =
     children ;
   set (List.rev !r)
 
+let parse_bf_member set attrs children =
+  let m = dummy_bfm () in
+  List.iter
+    (fun (key, v) ->
+       match key with
+       | "name" -> m.bfm_name <- v
+       | "value" -> m.bfm_value <- v
+       | "c:identifier" -> m.bfm_c_identifier <- v
+       | other -> Format.printf "Ignoring attribute in bitfield member: %s@." other
+    )
+    attrs ;
+  List.iter
+    (function
+     | D s ->
+         Format.printf "Ignoring D in signal:%s@." s
+     | E (key, attrs, children) ->
+         match key with
+         | "doc" when not !debug -> ()
+         | other ->
+             Format.printf
+               "Ignoring child in signal:%s@." other
+    )
+    children ;
+  set m
+
 let parse_bf set attrs children =
   let bf = dummy_bf () in
+  List.iter
+    (fun (key, v) ->
+       match key with
+       | "name" -> bf.bf_name <- v
+       | "c:type" -> bf.bf_c_type <- v
+       | other -> Format.printf "Ignoring attribute in bitfield: %s@." other
+    )
+    attrs ;
+  List.iter
+    (function
+     | D s ->
+         Format.printf "Ignoring D in signal:%s@." s
+     | E (key, attrs, children) ->
+         match key with
+         | "member" ->
+             parse_bf_member
+               (fun m -> bf.bf_members <- m :: bf.bf_members)
+               attrs children
+         | "doc" when not !debug -> ()
+         | other ->
+             Format.printf "Ignoring child in bitfield:%s@." other
+    )
+    children ;
+  Hashtbl.add Translations.tbl
+    bf.bf_c_type
+    ( "Val_" ^ (camlize !ns) ^ "_" ^ (camlize bf.bf_name),
+      (String.capitalize (camlize bf.bf_name)) ^ "_" ^ (camlize !ns) ^ "_val",
+      fun _ -> camlize bf.bf_name
+    ) ;
+  Hashtbl.add Translations.tbl
+    (!ns ^ "." ^ bf.bf_name)
+    ( "Val_" ^ (camlize !ns) ^ "_" ^ (camlize bf.bf_name),
+     (String.capitalize (camlize bf.bf_name)) ^ "_" ^ (camlize !ns) ^ "_val",
+     fun _ -> camlize bf.bf_name
+    );
+  Hashtbl.add Translations.conversions
+    bf.bf_c_type ((camlize bf.bf_name) ^ "_conv");
+  Hashtbl.add Translations.conversions
+    (!ns ^ "." ^ bf.bf_name) ((camlize bf.bf_name) ^ "_conv");
   set bf
 
 let parse_enum_member set attrs children =
