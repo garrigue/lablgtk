@@ -113,8 +113,8 @@ module Type :
     val fundamental : g_type -> fundamental_type
     val of_fundamental : fundamental_type -> g_type
     val interface_prerequisites : g_type -> g_type list
-      
-      (* [Benjamin] Experimental stub: the new class has the same size as 
+
+      (* [Benjamin] Experimental stub: the new class has the same size as
       its parent. No init functions right now. *)
     val register_static : parent:g_type -> name:string -> g_type
 

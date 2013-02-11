@@ -168,8 +168,8 @@ let objtype_from_name ~caller name =
   let f = Type.fundamental t in
   if f = `INVALID then
     failwith (caller ^ " : type " ^ name ^ " is not yet defined");
-(*  if f <> `OBJECT then
-    failwith (caller ^ " : " ^ name ^ " is not an object type");*)
+  if f <> `OBJECT then
+    failwith (caller ^ " : " ^ name ^ " is not an object type");
   t
 
 external get_type : 'a obj -> g_type = "ml_G_TYPE_FROM_INSTANCE"

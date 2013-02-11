@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
 <repository>
+<c_header><![CDATA[
+#include <gdk-pixbuf/gdk-pixdata.h>
+]]></c_header>
 </repository>
 

@@ -17,7 +17,7 @@ let may_cons_opt = Property.may_cons_opt
 #include <caml/memory.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
-#include "tags_Atk.h";
+#include "mltags_Atk.h"
 
 ]]></c_header>
 <ml_function>

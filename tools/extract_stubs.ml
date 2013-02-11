@@ -171,9 +171,11 @@ type bf_member = {
     mutable bfm_name : string ;
     mutable bfm_value : string ;
     mutable bfm_c_identifier : string ;
+    mutable bfm_nick : string ;
   }
 type bf = {
     mutable bf_name : string ;
+    mutable bf_type_name : string ;
     mutable bf_c_type : string ;
     mutable bf_members: bf_member list ;
   }
@@ -331,8 +333,8 @@ let dummy_data () = {
     data_c_function = "" ;
     data_enume_badtag = [] ;
   }
-let dummy_bfm () = { bfm_c_identifier = "" ; bfm_value = "" ; bfm_name = "" ; }
-let dummy_bf () = { bf_name = "" ; bf_c_type = "" ; bf_members = [] }
+let dummy_bfm () = { bfm_c_identifier = "" ; bfm_value = "" ; bfm_name = "" ; bfm_nick = "" ;}
+let dummy_bf () = { bf_name = "" ; bf_type_name = "" ; bf_c_type = "" ; bf_members = [] ;}
 let dummy_ownership () = ODefault
 let dummy_typ () = NoType
 let dummy_c_typ () = {t_name = "" ; t_c_typ = "" ; t_content = None ; }
@@ -1194,6 +1196,24 @@ module Emit = struct
           let tagsh = Format.formatter_of_out_channel tagsh_channel in
           let tagsml = Format.formatter_of_out_channel tagsml_channel in
 
+          (* generate bit fields the same way as enumerations *)
+          let bf_member_to_enum_member bfm =
+            { m_c_identifier = bfm.bfm_c_identifier ;
+              m_value = bfm.bfm_value ; m_name = bfm.bfm_name ;
+              m_nick = bfm.bfm_nick ;
+            }
+          in
+          let bf_as_enum = List.map
+            (fun bf ->
+               { e_name = bf.bf_name ; e_type_name = bf.bf_type_name ;
+                 e_c_type = bf.bf_c_type ; e_get_type = "" ;
+                 e_members = List.map bf_member_to_enum_member bf.bf_members
+                }
+            )
+              n.ns_bf
+          in
+          n.ns_enum <- n.ns_enum @ bf_as_enum;
+
           (* HACK: atk include is missing; in case of missing filenames to include,
             use the lowercased repository name n in <n/n.h> *)
           let includes =
@@ -1220,7 +1240,9 @@ module Emit = struct
             (fun fname -> Format.fprintf tagsc "#include <%s>@." fname) includes;
           Format.fprintf tagsc "#include \"wrappers.h\"\n" ;
           Format.fprintf tagsc "#include \"mltags_%s.h\"\n" n.ns_name;
+          Format.fprintf tagsc "%s@." r.rep_data.data_c_header;
           List.iter (print_enumeration ~tagsml ~tagsc ~tagsh r) n.ns_enum ;
+
           let _ = match n.ns_enum with
               [] ->()
             | e :: q->
@@ -1592,6 +1614,7 @@ let parse_bf_member set attrs children =
        | "name" -> m.bfm_name <- v
        | "value" -> m.bfm_value <- v
        | "c:identifier" -> m.bfm_c_identifier <- v
+       | "glib:nick" -> m.bfm_nick <- v
        | other -> Format.printf "Ignoring attribute in bitfield member: %s@." other
     )
     attrs ;
@@ -1615,6 +1638,7 @@ let parse_bf set attrs children =
     (fun (key, v) ->
        match key with
        | "name" -> bf.bf_name <- v
+       | "glib:type-name" -> bf.bf_type_name <- v
        | "c:type" -> bf.bf_c_type <- v
        | other -> Format.printf "Ignoring attribute in bitfield: %s@." other
     )
@@ -2040,7 +2064,7 @@ and parse_namespace set attrs children =
                      (fun k -> n.ns_klass <- k :: n.ns_klass)
                      attrs
                      children
-             | "bitfield" ->
+               | "bitfield" ->
                    parse_bf (fun k -> n.ns_bf <- k :: n.ns_bf)
                      attrs children
                | "enumeration" ->

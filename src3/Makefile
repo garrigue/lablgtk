@@ -51,7 +51,7 @@ opt:  lablgtk.cmxa # lablgtkopt
 stubs: $(EXTRACT_STUBS)
 	mkdir -p stubs
 	$(EXTRACT_STUBS)  --outdir stubs --datadir data $(GIRDIR)/Gtk-3.0.gir > LOG
-	sed -i "s/intern()/g_variant_get_type/g" stubs/ml_stubs_GLib.c
+#	sed -i "s/intern()/g_variant_get_type/g" stubs/ml_stubs_GLib.c
 
 $(EXTRACT_STUBS):
 	cd ../tools && $(MAKE) extract_stubs$(XE)
@@ -115,11 +115,11 @@ STUBCOBJS= \
 	stubs/mltags_Gtk$(XO) \
 	stubs/ml_stubs_Gtk$(XO) \
 	stubs/ml_stubs_GLib$(XO) \
+#	stubs/ml_stubs_GObject$(XO) \
 #	stubs/mltags_cairo$(XO) \
 #	stubs/mltags_xlib$(XO) \
 #	stubs/ml_stubs_Atk.o \
 #	stubs/ml_stubs_GModule.o \
-#	stubs/ml_stubs_GObject.o \
 #	stubs/ml_stubs_Gdk.o \
 #	stubs/ml_stubs_Gio.o \
 
@@ -143,9 +143,9 @@ STUBMLOBJS= \
 	stubs/stubs_GLib.cmo \
 	stubs/stubs_Gtk.cmo \
 
+#	stubs/stubs_GObject.cmo \
 #	stubs/stubs_Atk.cmo \
 #	stubs/stubs_GModule.cmo \
-#	stubs/stubs_GObject.cmo \
 #	stubs/stubs_Gdk.cmo \
 #	stubs/stubs_GdkPixbuf.cmo \
 #	stubs/stubs_Gio.cmo \
@@ -167,7 +167,8 @@ MLOBJS= \
 	gtk.cmo \
 	gtkWidget.cmo \
 	gtkSignal.cmo \
-	$(STUBMLOBJS)
+	$(STUBMLOBJS) \
+#	gObj.cmo
 
 
 # Rules
