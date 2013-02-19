@@ -87,9 +87,9 @@ end
 
 class menu_item_skel = [menu_item] pre_menu_item_skel
 
-let pack_item self ~packing ~show =
+let pack_item ?packing ?(show=true) self =
   may packing ~f:(fun f -> (f (self :> menu_item) : unit));
-  if show <> Some false then self#misc#show ();
+  if show then self#misc#show ();
   self
 
 let menu_item ?use_mnemonic ?label ?right_justified ?packing ?show () =

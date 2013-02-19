@@ -179,7 +179,7 @@ let chooser_widget ~action ?backend ?packing ?show () =
 	 FileChooser.P.file_system_backend backend
 	 [ Gobject.param FileChooser.P.action action ]) in
   let o = new chooser_widget w in
-  GObj.pack_return o ?packing ?show
+  GObj.pack_return o ~packing ~show
 
 class chooser_button_signals obj = object
   inherit GContainer.container_signals_impl obj
