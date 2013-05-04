@@ -25,8 +25,7 @@
 open StdLabels
 open Gaux
 
-type ghidden
-type -'a obj = private GOBJ of ghidden * ghidden
+type -'a obj
 type g_type
 type g_class
 type g_value
