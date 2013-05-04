@@ -22,7 +22,8 @@
 
 (* $Id$ *)
 
-type -'a obj
+type ghidden
+type -'a obj = private GOBJ of ghidden * ghidden
 type g_type
 type g_class
 type g_value
