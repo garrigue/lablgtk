@@ -104,21 +104,21 @@ let marshal_string f argv =
 let marshal1 conv1 name f argv =
   let arg1 =
     try Data.of_value conv1 (Closure.nth argv 1)
-    with _ -> failwith ("GtkSignal.marhsal1 : " ^ name)
+    with _ -> failwith ("GtkSignal.marshal1 : " ^ name)
   in f arg1
 
 let marshal2 conv1 conv2 name f argv =
   let get conv pos = Data.of_value conv (Closure.nth argv ~pos) in
   let arg1, arg2 =
     try get conv1 1, get conv2 2
-    with _ -> failwith ("GtkSignal.marhsal2 : " ^ name)
+    with _ -> failwith ("GtkSignal.marshal2 : " ^ name)
   in f arg1 arg2
 
 let marshal3 conv1 conv2 conv3 name f argv =
   let get conv pos = Data.of_value conv (Closure.nth argv ~pos) in
   let arg1, arg2, arg3 =
     try get conv1 1, get conv2 2, get conv3 3
-    with _ -> failwith ("GtkSignal.marhsal3 : " ^ name)
+    with _ -> failwith ("GtkSignal.marshal3 : " ^ name)
   in f arg1 arg2 arg3
 
 let marshal4 conv1 conv2 conv3 conv4 name f argv =
@@ -126,7 +126,7 @@ let marshal4 conv1 conv2 conv3 conv4 name f argv =
   let arg1, arg2, arg3, arg4 =
     try
       get conv1 1, get conv2 2, get conv3 3, get conv4 4
-    with _ -> failwith ("GtkSignal.marhsal4 : " ^ name)
+    with _ -> failwith ("GtkSignal.marshal4 : " ^ name)
   in f arg1 arg2 arg3 arg4
 
 let marshal5 conv1 conv2 conv3 conv4 conv5 name f argv =
@@ -134,7 +134,7 @@ let marshal5 conv1 conv2 conv3 conv4 conv5 name f argv =
   let arg1, arg2, arg3, arg4, arg5 =
     try
       get conv1 1, get conv2 2, get conv3 3, get conv4 4, get conv5 5
-    with _ -> failwith ("GtkSignal.marhsal5 : " ^ name)
+    with _ -> failwith ("GtkSignal.marshal5 : " ^ name)
   in f arg1 arg2 arg3 arg4 arg5
 
 let marshal6 conv1 conv2 conv3 conv4 conv5 conv6 name f argv =
@@ -143,7 +143,7 @@ let marshal6 conv1 conv2 conv3 conv4 conv5 conv6 name f argv =
     try
       get conv1 1, get conv2 2, get conv3 3, get conv4 4, get conv5 5,
       get conv6 6
-    with _ -> failwith ("GtkSignal.marhsal6 : " ^ name)
+    with _ -> failwith ("GtkSignal.marshal6 : " ^ name)
   in f arg1 arg2 arg3 arg4 arg5 arg6
 
 let set_result conv argv res =
