@@ -7,17 +7,6 @@ Info/upgrades:
 Status:
   LablGtk2 is now pretty stable.
 
-  An important change in gtk-2 is the use of unicode (utf8) for
-  all strings. If you use non-ascii strings, you must imperatively
-  convert them to unicode. This can be done with the
-  [Glib.Convert.locale_to_utf8] function. If your input is already in
-  utf8, it is still a good idea to validate it with
-  Glib.Utf8.validate, as malformed utf8 strings may cause segmentation
-  faults.
-  Note that setlocale is now always called (except if you set
-  GTK_SETLOCALE to 0 in the environment), but LC_NUMERIC is reverted
-  to "C" to avoid problems with floating point conversion in Caml.
-
   Note that some widgets are only supported in newer versions of GTK+.
   If you use them in older versions, you will get a runtime error:
     Failure "Gobject.unsafe_create : type GtkActionGroup is not yet defined"
@@ -217,6 +206,18 @@ Memory management:
   this reason automatic compation is disabled in GtkMain. If you need
   it, you may use compaction through Gc.compact where it is safe
   (timeouts, other threads...), but do not enable automatic compaction.
+
+Unicode:
+  An important change in gtk-2 is the use of unicode (utf8) for
+  all strings. If you use non-ascii strings, you must imperatively
+  convert them to unicode. This can be done with the
+  [Glib.Convert.locale_to_utf8] function. If your input is already in
+  utf8, it is still a good idea to validate it with
+  Glib.Utf8.validate, as malformed utf8 strings may cause segmentation
+  faults.
+  Note that setlocale is now always called (except if you set
+  GTK_SETLOCALE to 0 in the environment), but LC_NUMERIC is reverted
+  to "C" to avoid problems with floating point conversion in Caml.
 
 LibGlade support:
 
