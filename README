@@ -5,8 +5,6 @@ Info/upgrades:
         http://lablgtk.forge.ocamlcore.org/
 
 Status:
-  LablGtk2 is now pretty stable.
-
   Note that some widgets are only supported in newer versions of GTK+.
   If you use them in older versions, you will get a runtime error:
     Failure "Gobject.unsafe_create : type GtkActionGroup is not yet defined"
@@ -14,7 +12,6 @@ Status:
     Failure "gdk_pixbuf_get_file_info unsupported in Gtk 2.x < 2.4"
 
 Contents:
-
         gdk.ml          low-level interface to the General Drawing Kit
         gtk.ml          low-level interface to the GIMP Tool Kit
         gtkThread.ml    main loop for threaded version
@@ -57,7 +54,7 @@ How to use the threaded toplevel:
   is immediately reflected by the system.
   For Windows and OSX/Quartz, there are restrictions on which
   commands can be used in which thread. See the windows port section
-  lower for how to use them.
+  below for how to use them.
 
   When using threads in a stand-alone application, you must link with
   gtkThread.cmo and call GtkThread.main in place of GMain.main.
@@ -117,7 +114,7 @@ Structure of the G[A-Z]* modules:
   * a get_oid method, the equivalent of Oo.id for Gtk objects.
   * a connect sub-object, allowing one to widget specific
     signals (this is what prevents width subtyping in subclasses.)
-  * a misc sub-object, giving access to miscellanous functionality of
+  * a misc sub-object, giving access to miscellaneous functionality of
     the basic gtkwidget class, and a misc#connect sub-object.
   * an event sub-object, for Xevent related functions (only if the widget
     has an Xwindow), and an event#connect sub-object.
@@ -147,7 +144,7 @@ Structure of the G[A-Z]* modules:
   You create a widget by [<Module>.<widget name> options ... ()].
   Many optional arguments are admitted. The last two of them, packing:
   and show:, allow you respectively to call a function on your newly
-  created widget, and to decide wether to show it immediately or not.
+  created widget, and to decide whether to show it immediately or not.
   By default all widgets except toplevel windows (GWindow module) are
   shown immediately.
 
@@ -195,15 +192,15 @@ Memory management:
   should get an error rather than a core dump.
   The case of Gtk objects deserves special care. Since they are
   interactive, we cannot just destroy them when they are no longer
-  referenced. They have to be explicitely destroyed. If a widget was
+  referenced. They have to be explicitly destroyed. If a widget was
   added to a container widget, it will automatically be destroyed when
   its last container is destroyed. For this reason you need only
   destroy toplevel widgets.
 
   IMPORTANT: Some Gtk data structures are allocated in the Caml heap,
-  and their use in signals (Gtk functions internally cally callbacks)
+  and their use in signals (Gtk functions internally calling callbacks)
   relies on their address being stable during a function call. For
-  this reason automatic compation is disabled in GtkMain. If you need
+  this reason automatic compaction is disabled in GtkMain. If you need
   it, you may use compaction through Gc.compact where it is safe
   (timeouts, other threads...), but do not enable automatic compaction.
 
