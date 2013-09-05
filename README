@@ -1,12 +1,6 @@
 
              LablGTK2 2.18.0 : an interface to the GIMP Tool Kit
 
-Needed:
-        ocaml-3.11 or more (4.01 is preferred)
-        gtk+-2.x (gtk+-2.16.x for full functionality)
-        findlib 1.2.1 or more (for default install)
-        GNU make (there is no standard for conditionals)
-
 Info/upgrades:
         http://lablgtk.forge.ocamlcore.org/
 
@@ -29,68 +23,6 @@ Status:
     Failure "Gobject.unsafe_create : type GtkActionGroup is not yet defined"
   For unsupported methods, the error message is a bit clearer:
     Failure "gdk_pixbuf_get_file_info unsupported in Gtk 2.x < 2.4"
-
-How to compile:
-
-  You should normally not need to modify Makefiles.
-
-  In case you are using the SVN version you may have to first type
-  "aclocal && autoconf".
-
-  Type
-        ./configure && make world
-  to compile with all supported options enabled (libgl, libglade,
-  libgnomecanvas, librsvg, native compilation, thread support).
-
-  You may use "./configure --help" to check for the different
-  configuration options.
-
-  Lablgtk2 specific options are:
-
-        --with-libdir=/path: install libs in /path/lablgtk2
-                             and /path/stublibs
-        --with-gl --without-gl: override autodetected GtkGLArea support.
-                                Requires LablGL
-        --with-glade --without-glade: override autodetected libglade support
-        --with-rsvg --without-rsvg: override autodetected librsvg support
-        --with-gnomecanvas --without-gnomecanvas:
-                override autodetected libgnomecanvas support
-        --with-gnomeui --without-gnomeui:
-                override autodetected libgnomeui support
-        --with-panel --without-panel:
-                override autodetected libpanelapplet support
-        --with-gtkspell --without-gtkspell:
-                override autodetected gtkspell support
-        --with-gtksourceview --without-gtksourceview:
-                override autodetected gtksourceview support
-        --with-gtksourceview2 --without-gtksourceview2:
-                override autodetected gtksourceview2 support
-        --enable-debug: enable debug mode
-
-  Type "make install" to install using findlib.
-  The commands lablgtk2, gdk_pixbuf_mlsource, and lablgladecc2,
-  are copied directly to the configured executable directory.
-
-  The following findlib packages are provided (according to configuration):
-
-        lablgtk2
-        lablgtk2.auto-init
-        lablgtk2.gl
-        lablgtk2.glade
-        lablgtk2.gnomecanvas
-        lablgtk2.gnomehtml
-        lablgtk2.gnomeui
-        lablgtk2.gtkspell
-        lablgtk2.panel
-        lablgtk2.rsvg
-        lablgtk2.sourceview
-        lablgtk2.sourceview2
-
-  You can alternatively use "make old-install" or
-  "make old-install DESTDIR=/my/prefix" to use the old
-  installation procedure, which does not rely on findlib.
-  By default, the library is installed at +lablgtk2.
-  All installation paths are prefixed by DESTDIR when given.
 
 Contents:
 
