@@ -3920,7 +3920,6 @@ rm -f core conftest.err conftest.$ac_objext \
 
 
 
-
 if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
 	if test -n "$ac_tool_prefix"; then
   # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
@@ -4059,7 +4058,6 @@ if test -n "$GTKGL_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKGL_CFLAGS=`$PKG_CONFIG --cflags "gtkgl-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4076,7 +4074,6 @@ if test -n "$GTKGL_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKGL_LIBS=`$PKG_CONFIG --libs "gtkgl-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4096,9 +4093,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtkgl-2.0" 2>&1`
+	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "gtkgl-2.0" 2>&1`
         else
-	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtkgl-2.0" 2>&1`
+	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --print-errors "gtkgl-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKGL_PKG_ERRORS" >&5
@@ -4181,7 +4178,6 @@ if test -n "$GLADE_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GLADE_CFLAGS=`$PKG_CONFIG --cflags "libglade-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4198,7 +4194,6 @@ if test -n "$GLADE_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GLADE_LIBS=`$PKG_CONFIG --libs "libglade-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4218,9 +4213,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GLADE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libglade-2.0" 2>&1`
+	        GLADE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libglade-2.0" 2>&1`
         else
-	        GLADE_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libglade-2.0" 2>&1`
+	        GLADE_PKG_ERRORS=`$PKG_CONFIG --print-errors "libglade-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GLADE_PKG_ERRORS" >&5
@@ -4281,7 +4276,6 @@ if test -n "$RSVG_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_RSVG_CFLAGS=`$PKG_CONFIG --cflags "librsvg-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4298,7 +4292,6 @@ if test -n "$RSVG_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_RSVG_LIBS=`$PKG_CONFIG --libs "librsvg-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4318,9 +4311,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        RSVG_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "librsvg-2.0" 2>&1`
+	        RSVG_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "librsvg-2.0" 2>&1`
         else
-	        RSVG_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "librsvg-2.0" 2>&1`
+	        RSVG_PKG_ERRORS=`$PKG_CONFIG --print-errors "librsvg-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$RSVG_PKG_ERRORS" >&5
@@ -4398,7 +4391,6 @@ if test -n "$GNOMECANVAS_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GNOMECANVAS_CFLAGS=`$PKG_CONFIG --cflags "libgnomecanvas-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4415,7 +4407,6 @@ if test -n "$GNOMECANVAS_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GNOMECANVAS_LIBS=`$PKG_CONFIG --libs "libgnomecanvas-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4435,9 +4426,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GNOMECANVAS_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libgnomecanvas-2.0" 2>&1`
+	        GNOMECANVAS_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libgnomecanvas-2.0" 2>&1`
         else
-	        GNOMECANVAS_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libgnomecanvas-2.0" 2>&1`
+	        GNOMECANVAS_PKG_ERRORS=`$PKG_CONFIG --print-errors "libgnomecanvas-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GNOMECANVAS_PKG_ERRORS" >&5
@@ -4498,7 +4489,6 @@ if test -n "$GNOMEUI_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GNOMEUI_CFLAGS=`$PKG_CONFIG --cflags "libgnomeui-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4515,7 +4505,6 @@ if test -n "$GNOMEUI_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GNOMEUI_LIBS=`$PKG_CONFIG --libs "libgnomeui-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4535,9 +4524,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GNOMEUI_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libgnomeui-2.0" 2>&1`
+	        GNOMEUI_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libgnomeui-2.0" 2>&1`
         else
-	        GNOMEUI_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libgnomeui-2.0" 2>&1`
+	        GNOMEUI_PKG_ERRORS=`$PKG_CONFIG --print-errors "libgnomeui-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GNOMEUI_PKG_ERRORS" >&5
@@ -4598,7 +4587,6 @@ if test -n "$PANEL_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_PANEL_CFLAGS=`$PKG_CONFIG --cflags "libpanelapplet-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4615,7 +4603,6 @@ if test -n "$PANEL_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_PANEL_LIBS=`$PKG_CONFIG --libs "libpanelapplet-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4635,9 +4622,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        PANEL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libpanelapplet-2.0" 2>&1`
+	        PANEL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libpanelapplet-2.0" 2>&1`
         else
-	        PANEL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libpanelapplet-2.0" 2>&1`
+	        PANEL_PKG_ERRORS=`$PKG_CONFIG --print-errors "libpanelapplet-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$PANEL_PKG_ERRORS" >&5
@@ -4698,7 +4685,6 @@ if test -n "$GTKSPELL_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKSPELL_CFLAGS=`$PKG_CONFIG --cflags "gtkspell-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4715,7 +4701,6 @@ if test -n "$GTKSPELL_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKSPELL_LIBS=`$PKG_CONFIG --libs "gtkspell-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4735,9 +4720,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtkspell-2.0" 2>&1`
+	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "gtkspell-2.0" 2>&1`
         else
-	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtkspell-2.0" 2>&1`
+	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --print-errors "gtkspell-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKSPELL_PKG_ERRORS" >&5
@@ -4798,7 +4783,6 @@ if test -n "$GTKSOURCEVIEW_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKSOURCEVIEW_CFLAGS=`$PKG_CONFIG --cflags "gtksourceview-1.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4815,7 +4799,6 @@ if test -n "$GTKSOURCEVIEW_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKSOURCEVIEW_LIBS=`$PKG_CONFIG --libs "gtksourceview-1.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4835,9 +4818,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtksourceview-1.0" 2>&1`
+	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "gtksourceview-1.0" 2>&1`
         else
-	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtksourceview-1.0" 2>&1`
+	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --print-errors "gtksourceview-1.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKSOURCEVIEW_PKG_ERRORS" >&5
@@ -4898,7 +4881,6 @@ if test -n "$GTKSOURCEVIEW2_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKSOURCEVIEW2_CFLAGS=`$PKG_CONFIG --cflags "gtksourceview-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4915,7 +4897,6 @@ if test -n "$GTKSOURCEVIEW2_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKSOURCEVIEW2_LIBS=`$PKG_CONFIG --libs "gtksourceview-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -4935,9 +4916,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKSOURCEVIEW2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtksourceview-2.0" 2>&1`
+	        GTKSOURCEVIEW2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "gtksourceview-2.0" 2>&1`
         else
-	        GTKSOURCEVIEW2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtksourceview-2.0" 2>&1`
+	        GTKSOURCEVIEW2_PKG_ERRORS=`$PKG_CONFIG --print-errors "gtksourceview-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKSOURCEVIEW2_PKG_ERRORS" >&5
@@ -4998,7 +4979,6 @@ if test -n "$GTKQUARTZ_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKQUARTZ_CFLAGS=`$PKG_CONFIG --cflags "gtk+-quartz-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -5015,7 +4995,6 @@ if test -n "$GTKQUARTZ_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKQUARTZ_LIBS=`$PKG_CONFIG --libs "gtk+-quartz-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -5035,9 +5014,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKQUARTZ_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtk+-quartz-2.0" 2>&1`
+	        GTKQUARTZ_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "gtk+-quartz-2.0" 2>&1`
         else
-	        GTKQUARTZ_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtk+-quartz-2.0" 2>&1`
+	        GTKQUARTZ_PKG_ERRORS=`$PKG_CONFIG --print-errors "gtk+-quartz-2.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKQUARTZ_PKG_ERRORS" >&5
@@ -5088,7 +5067,6 @@ if test -n "$GTKALL_CFLAGS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKALL_CFLAGS=`$PKG_CONFIG --cflags "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -5105,7 +5083,6 @@ if test -n "$GTKALL_LIBS"; then
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTKALL_LIBS=`$PKG_CONFIG --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
 fi
@@ -5125,9 +5102,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>&1`
+	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>&1`
         else
-	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>&1`
+	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKALL_PKG_ERRORS" >&5
