@@ -8,3 +8,4 @@ autom4te.cache
 test_dynlink.*
 *~
 *.sw[po]
+doc/html
