@@ -1,12 +1,16 @@
 # Toplevel makefile for LablGtk2
 
 all opt doc install uninstall byte world old-install old-uninstall: config.make
-all opt doc install uninstall byte clean depend world old-install old-uninstall:
+all opt install uninstall byte clean depend world old-install old-uninstall:
 	$(MAKE) -C src $@
 
 preinstall:
 	$(MAKE) -C src $@
 	$(MAKE) -f Makefile.pre
+
+doc:
+	$(MAKE) -C src $@
+	asciidoc -o web/README.html README || true
 
 arch-clean:
 	@rm -f config.status config.make config.cache config.log
