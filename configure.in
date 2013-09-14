@@ -23,6 +23,8 @@
 #   OCAMLBEST     either "byte" if no native compiler was found,
 #                 or "opt" otherwise
 #   OCAMLDEP      "ocamldep"
+#   OCAMLDOC      "ocamldoc.opt" if available, otherwise "ocamldoc" if
+#                 available, otherwise "no".
 #   OCAMLLEX      "ocamllex" (or "ocamllex.opt" if present)
 #   OCAMLYACC     "ocamlyac"
 #   OCAMLLIB      the path to the ocaml standard library
@@ -113,9 +115,15 @@ if test "$OCAMLDEP" = no ; then
 	AC_MSG_ERROR(Cannot find ocamldep.)
 fi
 
-AC_CHECK_PROG(OCAMLDOC,ocamldoc,ocamldoc,no)
+AC_CHECK_PROG(OCAMLDOCOPT,ocamldoc.opt,ocamldoc.opt,no)
+if test "$OCAMLDOCOPT" = no ; then
+	AC_CHECK_PROG(OCAMLDOC,ocamldoc,ocamldoc,no)
+else
+  OCAMLDOC="$OCAMLDOCOPT"
+fi
+
 if test "$OCAMLDOC" = no ; then
-	AC_MSG_RESULT(Cannot find ocamldoc.)
+	AC_MSG_RESULT(Cannot find ocamldoc nor ocamldoc.opt.)
 fi
 
 AC_CHECK_PROG(OCAMLLEX,ocamllex,ocamllex,no)
