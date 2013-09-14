@@ -583,17 +583,23 @@ ifdef USE_GTKSOURCEVIEW2
 DOCFILES += gSourceView2.mli
 endif
 
-OCAMLDOC = ocamldoc
 lablgtk$(XO)doc : $(DOCFILES) $(ALLOBJS)
 	$(OCAMLDOC) -dump $@ -v $(if $(LABLGLDIR),-I $(LABLGLDIR)) $(DOCFILES)
+
 gtkdoc.cmo : gtkdoc.ml
 	$(CAMLC) -I +ocamldoc -pp "$(CAMLP4O) pa_macro.cmo $(ODOC_DEF)" -c $<
+
+gtkdoc.cmxs : gtkdoc.ml
+	$(CAMLOPT) -I +ocamldoc -pp "$(CAMLP4O) pa_macro.cmo $(ODOC_DEF)" -shared -o $@ $<
+
 DOCDIR=../doc
 DOC_URI=file:///usr/share/gtk-doc/html
 DOC_BASE_URI=$(if $(DOC_URI),-base-uri $(DOC_URI))
-doc : lablgtk$(XO)doc gtkdoc.cmo
+DOC_DYNLINK=$(if $(filter %.opt,$(OCAMLDOC)),gtkdoc.cmxs,gtkdoc.cmo)
+
+doc : lablgtk$(XO)doc $(DOC_DYNLINK)
 	mkdir -p $(DOCDIR)/html
-	$(OCAMLDOC) -sort -g ./gtkdoc.cmo $(DOC_BASE_URI) -v -t LablGTK -d $(DOCDIR)/html -load $<
+	$(OCAMLDOC) -sort -g $(DOC_DYNLINK) $(DOC_BASE_URI) -v -t LablGTK -d $(DOCDIR)/html -load $<
 doc_texi : lablgtk$(XO)doc
 	$(OCAMLDOC) -texi -v -t LablGTK -o $(DOCDIR)/lablgtk2.texi -load $<
 
