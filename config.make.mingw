@@ -3,7 +3,6 @@
 datarootdir = ${prefix}/share
 CAMLC=ocamlc.opt
 CAMLOPT=ocamlopt.opt
-CAMLRUN=ocamlrun
 CAMLDEP=ocamldep
 OCAMLDOC=ocamldoc
 CAMLMKTOP=ocamlmktop
