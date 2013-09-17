@@ -558,14 +558,14 @@ let process_file f =
         List.filter props ~f:
           (fun (_,_,_,set) ->
             let has = List.mem ~set in
-            (wrapset || has "Wrap" || has "WrapSet") && has "Write" &&
-            not (has "ConstructOnly" || has "NoWrap" || has "WrapGet"))
+            (wrapset || has "Wrap") && has "Write" &&
+            not (has "ConstructOnly" || has "NoWrap"))
       and rd_props =
         List.filter props ~f:
           (fun (_,_,_,set) ->
             let has = List.mem ~set in
-            (wrap || has "Wrap" || has "WrapGet") && has "Read" &&
-            not (has "NoWrap" || has "WrapSet"))
+            (wrap || has "Wrap") && has "Read" &&
+            not (has "NoWrap" || has "NoGet"))
       and wr_meths =
         List.filter meths ~f:(fun (_,_,attrs) -> List.mem "Wrap" attrs)
       in

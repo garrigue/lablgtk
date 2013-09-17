@@ -372,6 +372,9 @@ class view_signals : [> tree_view] obj ->
     method toggle_cursor_row : callback:(unit -> bool) -> GtkSignal.id
     method unselect_all : callback:(unit -> bool) -> GtkSignal.id
     method notify_enable_search : callback:(bool -> unit) -> GtkSignal.id
+    method notify_enable_tree_lines : callback:(bool -> unit) -> GtkSignal.id
+    method notify_enable_grid_lines :
+      callback:(GtkEnums.tree_view_grid_lines -> unit) -> GtkSignal.id
     method notify_fixed_height_mode : callback:(bool -> unit) -> GtkSignal.id
     method notify_hadjustment : callback:(GData.adjustment -> unit) -> GtkSignal.id
     method notify_headers_visible : callback:(bool -> unit) -> GtkSignal.id
@@ -381,7 +384,8 @@ class view_signals : [> tree_view] obj ->
     method notify_rules_hint : callback:(bool -> unit) -> GtkSignal.id
     method notify_search_column : callback:(int -> unit) -> GtkSignal.id
     method notify_tooltip_column : callback:(int -> unit) -> GtkSignal.id
-    method notify_vadjustment : callback:(GData.adjustment -> unit) -> GtkSignal.id
+    method notify_vadjustment :
+      callback:(GData.adjustment -> unit) -> GtkSignal.id
   end
 
 (** A widget for displaying both trees and lists
@@ -448,8 +452,16 @@ class view : tree_view obj ->
     method set_hover_expand : bool -> unit (** @since GTK 2.6 *)
     method hover_selection : bool (** @since GTK 2.6 *)
     method set_hover_selection : bool -> unit (** @since GTK 2.6 *)
-    method set_row_separator_func : (model -> tree_iter -> bool) option -> unit (** @since GTK 2.6 *)
-  end
+    method set_row_separator_func :
+        (model -> tree_iter -> bool) option -> unit (** @since GTK 2.6 *)
+    method enable_grid_lines : GtkEnums.tree_view_grid_lines
+        (** @since GTK 2.10 *)
+    method enable_tree_lines : bool (** @since GTK 2.10 *)
+    method set_enable_grid_lines : GtkEnums.tree_view_grid_lines -> unit
+        (** @since GTK 2.10 *)
+    method set_enable_tree_lines : bool -> unit
+        (** @since GTK 2.10 *)
+    end
 
 (** @gtkdoc gtk GtkTreeView *)
 val view :

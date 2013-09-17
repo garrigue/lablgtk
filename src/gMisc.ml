@@ -202,7 +202,8 @@ class image obj = object (self)
 end
 
 type image_type =
-  [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION ]
+  [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION
+  | `ICON_NAME | `GICON ]
 
 let image =
   Image.make_params [] ~cont:(

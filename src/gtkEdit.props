@@ -15,9 +15,19 @@ oheader{
 open GtkEditProps
 }
 
+conversions {
+  GtkEntryIconPosition "GtkEnums.entry_icon_position_conv"
+  GtkStock "GtkStock.conv"  
+}
+
+boxed {
+  GdkEventButton    "GdkEvent.Button.t"
+}
+
 classes {
   GtkAdjustment "Gtk.adjustment obj"
   GtkMenu "Gtk.menu obj"
+  GdkPixbuf "GdkPixbuf.pixbuf"
 }
 
 class Editable abstract wrapsig : Widget { (* actually an interface *)
@@ -52,6 +62,23 @@ class Entry set wrap wrapsig : Editable {
   "selection-bound"      gint                 : Read / NoWrap
   "width-chars"          gint                 : Read / Write
   "xalign"		 gfloat		      : Read / Write
+  (* Since 2.14 *)
+  "overwrite-mode"       gboolean             : Read / Write / NoSet
+  (* Since 2.16 *)
+  "primary-icon-activatable" gboolean         : Read / Write / NoSet
+  "primary-icon-name"        gchararray_opt   : Read / Write / NoSet / NoWrap
+  "primary-icon-pixbuf"      GdkPixbuf        : Read / Write / NoSet / NoGet
+  "primary-icon-sensitive"   gboolean         : Read / Write / NoSet
+  "primary-icon-stock"       GtkStock         : Read / Write / NoSet / NoGet
+  "primary-icon-tooltip-markup" gchararray    : Read / Write / NoSet / NoGet
+  "primary-icon-tooltip-text" gchararray      : Read / Write / NoSet / NoGet
+  "secondary-icon-activatable" gboolean       : Read / Write / NoSet
+  "secondary-icon-name"        gchararray_opt : Read / Write / NoSet / NoWrap
+  "secondary-icon-pixbuf"      GdkPixbuf      : Read / Write / NoSet / NoGet
+  "secondary-icon-sensitive"   gboolean       : Read / Write / NoSet
+  "secondary-icon-stock"       GtkStock       : Read / Write / NoSet / NoGet
+  "secondary-icon-tooltip-markup" gchararray  : Read / Write / NoSet / NoGet
+  "secondary-icon-tooltip-text" gchararray    : Read / Write / NoSet / NoGet
   method append_text : "string -> unit"
   method prepend_text : "string -> unit"
   method text_length : "int"
@@ -66,6 +93,9 @@ class Entry set wrap wrapsig : Editable {
   signal paste_clipboard
   signal populate_popup : GtkMenu       / NoWrap
   signal toggle_overwrite
+  (* Since 2.16 *)
+  signal icon_press    : GtkEntryIconPosition GdkEventButton
+  signal icon_released : GtkEntryIconPosition GdkEventButton
 }
 
 class SpinButton set wrap wrapsig : Entry {

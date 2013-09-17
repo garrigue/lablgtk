@@ -36,6 +36,7 @@
 #include <caml/alloc.h>
 #include <caml/memory.h>
 #include <caml/callback.h>
+#include <caml/threads.h>
 
 #include "wrappers.h"
 #include "ml_glib.h"

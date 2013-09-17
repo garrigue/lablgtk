@@ -13,6 +13,7 @@ end
 conversions {
   GtkTreePathString "!Internal.tree_path_string"
   GtkTreePathCopy "!Internal.tree_path_copy"
+  GtkTreeViewGridLines "GtkEnums.tree_view_grid_lines_conv"
 }
 
 classes {
@@ -34,8 +35,11 @@ class TreeView set wrap wrapsig : Container {
   "search-column"        gint                 : Read / Write
   "vadjustment"          GtkAdjustment        : Read / Write
   (* new properties in GTK+ 2.6 *)
-  "hover-expand"         gboolean              : Read / Write / NoSet
-  "hover-selection"      gboolean              : Read / Write / NoSet
+  "hover-expand"         gboolean             : Read / Write / NoSet
+  "hover-selection"      gboolean             : Read / Write / NoSet
+  (* new properties in GTK+ 2.10 *)
+  "enable-grid-lines"    GtkTreeViewGridLines : Read / Write / NoSet
+  "enable-tree-lines"    gboolean             : Read / Write / NoSet
   (* new properties in GTK+ 2.12 *)
   "tooltip-column"       gint                 : Read / Write
   method get_visible_range : "(tree_path * tree_path) option"

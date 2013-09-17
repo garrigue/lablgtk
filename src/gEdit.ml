@@ -112,9 +112,14 @@ class entry obj = object
   method append_text = Entry.append_text obj
   method prepend_text = Entry.prepend_text obj
   method text_length = Entry.text_length obj
-  method get_completion = may_map (new entry_completion) (Entry.get_completion obj)
+  method get_completion =
+    may_map (new entry_completion) (Entry.get_completion obj)
   method set_completion (c : entry_completion) = 
     Entry.set_completion obj c#as_entry_completion
+  method set_primary_icon_name s =
+    set Entry.P.primary_icon_name obj (if s = "" then None else Some s)
+  method set_secondary_icon_name s =
+    set Entry.P.secondary_icon_name obj (if s = "" then None else Some s)
 end
 
 let pack_sized ~create pl =

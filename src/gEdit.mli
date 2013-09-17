@@ -124,6 +124,22 @@ class entry_signals : [> Gtk.entry] obj ->
     method notify_visibility : callback:(bool -> unit) -> GtkSignal.id
     method notify_width_chars : callback:(int -> unit) -> GtkSignal.id
     method notify_xalign : callback:(float -> unit) -> GtkSignal.id
+    method notify_overwrite_mode :
+      callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.14 *)
+    method icon_press :
+      callback:(GtkEnums.entry_icon_position -> GdkEvent.Button.t -> unit) ->
+        GtkSignal.id (** @Since GTK 2.16 *)
+    method icon_released :
+      callback:(GtkEnums.entry_icon_position -> GdkEvent.Button.t -> unit) ->
+        GtkSignal.id (** @Since GTK 2.16 *)
+    method notify_primary_icon_activatable :
+      callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.16 *)
+    method notify_primary_icon_sensitive :
+      callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.16 *)
+    method notify_secondary_icon_activatable :
+      callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.16 *)
+    method notify_secondary_icon_sensitive :
+      callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.16 *)
   end
 
 (** A single line text entry field
@@ -160,6 +176,34 @@ class entry : ([> Gtk.entry] as 'a) obj ->
 
     method set_completion : entry_completion -> unit (** @since GTK 2.4 *)
     method get_completion : entry_completion option  (** @since GTK 2.4 *)
+
+    method overwrite_mode : bool (** @Since GTK 2.14 *)
+    method set_overwrite_mode : bool -> unit (** @Since GTK 2.14 *)
+    method primary_icon_activatable : bool (** @Since GTK 2.16 *)
+    method primary_icon_sensitive : bool (** @Since GTK 2.16 *)
+    method set_primary_icon_activatable : bool -> unit (** @Since GTK 2.16 *)
+    method set_primary_icon_name : string -> unit
+        (** @Since GTK 2.16, empty string to delete *)
+    method set_primary_icon_pixbuf : GdkPixbuf.pixbuf -> unit
+        (** @Since GTK 2.16 *)
+    method set_primary_icon_sensitive : bool -> unit (** @Since GTK 2.16 *)
+    method set_primary_icon_stock : GtkStock.id -> unit (** @Since GTK 2.16 *)
+    method set_primary_icon_tooltip_markup : string -> unit
+        (** @Since GTK 2.16 *)
+    method set_primary_icon_tooltip_text : string -> unit (** @Since GTK 2.16 *)
+    method secondary_icon_activatable : bool (** @Since GTK 2.16 *)
+    method secondary_icon_sensitive : bool (** @Since GTK 2.16 *)
+    method set_secondary_icon_activatable : bool -> unit (** @Since GTK 2.16 *)
+    method set_secondary_icon_name : string -> unit
+        (** @Since GTK 2.16, empty string to delete *)
+    method set_secondary_icon_pixbuf : GdkPixbuf.pixbuf -> unit
+        (** @Since GTK 2.16 *)
+    method set_secondary_icon_sensitive : bool -> unit (** @Since GTK 2.16 *)
+    method set_secondary_icon_stock : GtkStock.id -> unit (** @Since GTK 2.16 *)
+    method set_secondary_icon_tooltip_markup : string -> unit
+        (** @Since GTK 2.16 *)
+    method set_secondary_icon_tooltip_text : string -> unit
+        (** @Since GTK 2.16 *)
   end
 
 (** @gtkdoc gtk GtkEntry *)

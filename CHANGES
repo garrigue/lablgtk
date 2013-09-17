@@ -1,5 +1,11 @@
 LablGTK changes log
 
+2013.9.17 [Jacques]
+  * add some GTK enumerations and update stock icon list
+  * add properties GtkTreeView.enable_{tree,grid}_lines
+  * add properties GtkEntry.{primary,secondary}_icon_{stock,name,pixbuf},
+    see examples/entry2.ml for usage
+
 2013.2.19 [Jacques]
   * fix compatibility with ocaml 4.01 (?lab for non-optional arguments)
 

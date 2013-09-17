@@ -267,7 +267,8 @@ val arrow :
   ?packing:(widget -> unit) -> ?show:bool -> unit -> arrow
 
 type image_type =
-  [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION ]
+  [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION
+  | `ICON_NAME | `GICON ]
 
 (** A widget displaying an image
     @gtkdoc gtk GtkImage *)

@@ -6,6 +6,10 @@ header {
 open Gtk
 }
 
+conversions {
+  GtkPackDirection "GtkEnums.pack_direction_conv"
+}
+
 class OptionMenu : Button {
   "menu"                 GtkMenu              : Read / Write
   method remove_menu
@@ -64,7 +68,12 @@ class MenuShell abstract : Container {
   signal move_current : GtkMenuDirectionType
   signal selection_done
 }
-class MenuBar : MenuShell {}
+class MenuBar : MenuShell {
+  "child-pack-direction"     GtkPackDirection      : Read / Write
+  "pack-direction"           GtkPackDirection      : Read / Write
+  "internal-padding"         gint                  : Read
+  "shadow-type"              GtkShadowType         : Read
+}
 class Menu : MenuShell {
   "tearoff-title"        gchararray           : Read / Write
   method popup :

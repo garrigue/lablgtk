@@ -48,6 +48,7 @@ module Tags = struct
   type justification = [ `LEFT|`RIGHT|`CENTER|`FILL ]
   type match_type = [ `ALL|`ALL_TAIL|`HEAD|`TAIL|`EXACT|`LAST ]
   type menu_direction = [ `PARENT|`CHILD|`NEXT|`PREV ]
+  type message_type = [ `INFO | `WARNING | `QUESTION | `ERROR | `OTHER ]
   type metric_type = [ `PIXELS|`INCHES|`CENTIMETERS ]
   type movement_step =
     [ `LOGICAL_POSITIONS|`VISUAL_POSITIONS|`WORDS|`DISPLAY_LINES
@@ -78,8 +79,9 @@ module Tags = struct
   type window_position =
     [ `NONE|`CENTER|`MOUSE|`CENTER_ALWAYS|`CENTER_ON_PARENT ]
   type window_type = [ `TOPLEVEL|`POPUP ]
-  type wrap_mode = [ `NONE|`CHAR|`WORD ]
+  type wrap_mode = [ `NONE|`CHAR|`WORD|`WORD_CHAR ]
   type sort_type = [ `ASCENDING|`DESCENDING ]
+  type pack_direction = [ `LTR | `RTL | `TTB | `BTT ]
 
   type expand_type = [ `X|`Y|`BOTH|`NONE ]
   type update_policy = [ `ALWAYS|`IF_VALID|`SNAP_TO_TICKS ]
@@ -106,7 +108,6 @@ module Tags = struct
   type text_search_flag = [ `VISIBLE_ONLY | `TEXT_ONLY ]
   type tree_view_column_sizing = [ `GROW_ONLY | `AUTOSIZE | `FIXED ]
   type cell_renderer_mode = [ `INERT | `ACTIVATABLE | `EDITABLE ]
-  type message_type = [ `INFO | `WARNING | `QUESTION | `ERROR ]
   type buttons = [ `NONE | `OK | `CLOSE | `CANCEL | `YES_NO | `OK_CANCEL ]
   type response =
     [ `NONE | `REJECT | `ACCEPT | `DELETE_EVENT

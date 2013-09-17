@@ -31,18 +31,12 @@ external _gtkstock_init : unit -> unit = "ml_gtkstock_init"
 let () = _gtkstock_init ()
 
 type gtk_stock_id = [
-  | `DIALOG_AUTHENTICATION	(** since GTK 2.4 *)
-  | `DIALOG_INFO 
-  | `DIALOG_WARNING 
-  | `DIALOG_ERROR 
-  | `DIALOG_QUESTION 
-  | `DND 
-  | `DND_MULTIPLE 
   | `ABOUT 			(** since GTK 2.6 *)
   | `ADD 
   | `APPLY 
   | `BOLD 
-  | `CANCEL 
+  | `CANCEL
+  | `CAPS_LOCK_WARNING          (** since GTK 2.16 *) 
   | `CDROM 
   | `CLEAR 
   | `CLOSE 
@@ -52,8 +46,15 @@ type gtk_stock_id = [
   | `COPY 
   | `CUT 
   | `DELETE 
+  | `DIALOG_AUTHENTICATION	(** since GTK 2.4 *)
+  | `DIALOG_INFO 
+  | `DIALOG_WARNING 
+  | `DIALOG_ERROR 
+  | `DIALOG_QUESTION 
   | `DIRECTORY 			(** since GTK 2.6 *)
   | `DISCONNECT 		(** since GTK 2.6 *)
+  | `DND 
+  | `DND_MULTIPLE 
   | `EDIT 			(** since GTK 2.6 *)
   | `EXECUTE 
   | `FILE 			(** since GTK 2.6 *)
@@ -74,7 +75,6 @@ type gtk_stock_id = [
   | `HOME 
   | `INDEX 
   | `INDENT 			(** since GTK 2.4 *)
-  | `UNINDENT 			(** since GTK 2.4 *)
   | `INFO                       (** since GTK 2.8 *)
   | `ITALIC 
   | `JUMP_TO 
@@ -101,10 +101,15 @@ type gtk_stock_id = [
   | `ORIENTATION_PORTRAIT       (** since GTK 2.10 *)
   | `ORIENTATION_REVERSE_LANDSCAPE (** since GTK 2.10 *)
   | `ORIENTATION_REVERSE_PORTRAIT (** since GTK 2.10 *)
+  | `PAGE_SETUP                 (** since GTK 2.14 *)
   | `PASTE 
   | `PREFERENCES 
   | `PRINT 
-  | `PRINT_PREVIEW 
+  | `PRINT_ERROR
+  | `PRINT_PAUSED
+  | `PRINT_PREVIEW
+  | `PRINT_REPORT
+  | `PRINT_WARNING
   | `PROPERTIES 
   | `QUIT 
   | `REDO 
@@ -124,6 +129,7 @@ type gtk_stock_id = [
   | `UNDELETE 
   | `UNDERLINE 
   | `UNDO 
+  | `UNINDENT 			(** since GTK 2.4 *)
   | `YES 
   | `ZOOM_100 
   | `ZOOM_FIT 
@@ -162,6 +168,7 @@ let () =
       `APPLY, "gtk-apply";
       `BOLD, "gtk-bold";
       `CANCEL, "gtk-cancel";
+      `CAPS_LOCK_WARNING, "gtk-caps-lock-warning";
       `CDROM, "gtk-cdrom";
       `CLEAR, "gtk-clear";
       `CLOSE, "gtk-close";
@@ -194,7 +201,6 @@ let () =
       `INDEX, "gtk-index";
       `INDENT, "gtk-indent";
       `INFO, "gtk-info";
-      `UNINDENT, "gtk-unindent";
       `ITALIC, "gtk-italic";
       `JUMP_TO, "gtk-jump-to";
       `JUSTIFY_CENTER, "gtk-justify-center";
@@ -220,10 +226,15 @@ let () =
       `ORIENTATION_LANDSCAPE, "gtk-orientation-landscape";
       `ORIENTATION_REVERSE_LANDSCAPE, "gtk-orientation-reverse-landscape";
       `ORIENTATION_REVERSE_PORTRAIT, "gtk-orientation-reverse-portrait";
+      `PAGE_SETUP, "gtk-page-setup";
       `PASTE, "gtk-paste";
       `PREFERENCES, "gtk-preferences";
       `PRINT, "gtk-print";
+      `PRINT_ERROR, "gtk-print-error";
+      `PRINT_PAUSED, "gtk-print-paused";
       `PRINT_PREVIEW, "gtk-print-preview";
+      `PRINT_REPORT, "gtk-print-report";
+      `PRINT_WARNING, "gtk-print-warning";
       `PROPERTIES, "gtk-properties";
       `QUIT, "gtk-quit";
       `REDO, "gtk-redo";
@@ -243,6 +254,7 @@ let () =
       `UNDELETE, "gtk-undelete";
       `UNDERLINE, "gtk-underline";
       `UNDO, "gtk-undo";
+      `UNINDENT, "gtk-unindent";
       `YES, "gtk-yes";
       `ZOOM_100, "gtk-zoom-100";
       `ZOOM_FIT, "gtk-zoom-fit";
