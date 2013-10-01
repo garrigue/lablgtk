@@ -4,6 +4,10 @@ all opt doc install uninstall byte world old-install old-uninstall: config.make
 all opt doc install uninstall byte clean depend world old-install old-uninstall:
 	$(MAKE) -C src $@
 
+preinstall:
+	$(MAKE) -C src $@
+	$(MAKE) -f Makefile.pre
+
 arch-clean:
 	@rm -f config.status config.make config.cache config.log
 	@rm -f \#*\# *~ aclocal.m4
