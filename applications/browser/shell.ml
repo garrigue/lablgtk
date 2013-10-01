@@ -119,7 +119,7 @@ object (self)
   method insert text =
     buffer#insert text
   method private keypress c =
-    if not reading & c > " " then begin
+    if not reading && c > " " then begin
       reading <- true;
       self#set_input_start ();
     end
@@ -262,8 +262,8 @@ let f ~prog ~title =
       File.dialog ~title:"Load File" ~filename:(!current_dir ^ "/") () ~callback:
 	begin fun name ->
 	  current_dir := Filename.dirname name;
-	  if Filename.check_suffix name ".cmo" or
-	    Filename.check_suffix name ".cma"
+	  if Filename.check_suffix name ".cmo"
+          || Filename.check_suffix name ".cma"
 	  then
 	    let cmd = Printf.sprintf "#load \"%s\";;\n" name in
 	    sh#insert cmd;

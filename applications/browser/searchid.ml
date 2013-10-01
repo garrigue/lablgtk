@@ -214,7 +214,7 @@ let mkpath = function
       ~f:(fun acc x -> Pdot (acc, x, 0))
 
 let get_fields ~prefix ~sign self =
-  let env = open_signature (mkpath prefix) sign initial in
+  let env = open_signature Override (mkpath prefix) sign initial in
   match (expand_head env self).desc with
     Tobject (ty_obj, _) ->
       let l,_ = flatten_fields ty_obj in l
@@ -299,11 +299,11 @@ let search_string_type text ~mode =
         end in
       try (Typemod.transl_signature env sexp).sig_type
       with Env.Error err -> []
-      | Typemod.Error (l,_) ->
+      | Typemod.Error (l,_,_) ->
           let start_c = l.loc_start.Lexing.pos_cnum in
           let end_c = l.loc_end.Lexing.pos_cnum in
           raise (Error (start_c - 8, end_c - 8))
-      | Typetexp.Error (l,_) ->
+      | Typetexp.Error (l,_,_) ->
           let start_c = l.loc_start.Lexing.pos_cnum in
           let end_c = l.loc_end.Lexing.pos_cnum in
           raise (Error (start_c - 8, end_c - 8))
