@@ -1,13 +1,21 @@
 LablGTK changes log
 
+In Lablgtk-2.18.0:
+
 2013.9.17 [Jacques]
   * add some GTK enumerations and update stock icon list
   * add properties GtkTreeView.enable_{tree,grid}_lines
   * add properties GtkEntry.{primary,secondary}_icon_{stock,name,pixbuf},
     see examples/entry2.ml for usage
 
+2013.7.29 [Pierre-Marie]
+  * add tags in GtkMovementStep
+
 2013.2.19 [Jacques]
   * fix compatibility with ocaml 4.01 (?lab for non-optional arguments)
+
+2012.08.26 [Pierre-Marie]
+  * add handling of new modifiers
 
 2012.08.26 [Jacques]
   * detect findlib during configuration
