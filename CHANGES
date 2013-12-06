@@ -7,6 +7,11 @@ In Lablgtk-2.18.1:
 
 In Lablgtk-2.18.0:
 
+2013.10.01 [Jacques]
+  * prepare release
+  * update applications for 4.01
+  * various fixes in windows port
+
 2013.9.17 [Jacques]
   * add some GTK enumerations and update stock icon list
   * add properties GtkTreeView.enable_{tree,grid}_lines

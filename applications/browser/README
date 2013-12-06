@@ -1,6 +1,6 @@
 	Browser: the beginning of a port of the OCamlBrowser
 
-This version of Browser is only compatible with OCaml 4.00.
+This version of Browser is only compatible with OCaml 4.01.
 For older versions of OCaml, use the sources from a previous
 distribution of LablGTK (they shall be compatible with newer
 versions of the library).

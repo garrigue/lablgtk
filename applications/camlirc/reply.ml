@@ -376,15 +376,15 @@ and get_connection_reply n =
 
 
 let get_reply_id n =
-  if 200 <= n & n <= 399 then Command_reply (get_command_reply n)
-  else if 400 <= n & n <= 599 then Error_reply (get_error_reply n)
+  if 200 <= n && n <= 399 then Command_reply (get_command_reply n)
+  else if 400 <= n && n <= 599 then Error_reply (get_error_reply n)
   else if n < 100 then Connection_reply (get_connection_reply n)
   else raise (Unknown_Reply n)
 
 and check_reply_type n = 
   if n < 100 then Type_connection
-  else if 200 <= n & n <= 399 then Type_command
-  else if 400 <= n & n <= 599 then Type_error
+  else if 200 <= n && n <= 399 then Type_command
+  else if 400 <= n && n <= 599 then Type_error
   else raise (Unknown_Reply n)
       
 let get_reply_id_from_string = function 
