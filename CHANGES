@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2013.12.6 [Jacques]
+  * add gtksourceview2 to windows binaries
+
 In Lablgtk-2.18.0:
 
 2013.9.17 [Jacques]
