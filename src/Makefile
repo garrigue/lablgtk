@@ -185,7 +185,7 @@ endif
 .c.d$(XO):
 	$(CAMLC) -c -ccopt '-MT -DCAML_DLL -Fo$@ $(CFLAGS)' $<
 .ml.cmo:
-	$(COMPILER) $<
+	$(COMPILER) $(PRINCIPAL) $<
 .mli.cmi:
 	$(COMPILER) $<
 .ml.cmx:
