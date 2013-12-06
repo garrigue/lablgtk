@@ -31,6 +31,8 @@ let rsvg_mls = split "@RSVG_MLS@"
 let rsvg_libs = "@RSVG_LIBS@"
 let canvas_mls = split "@CANVAS_MLS@"
 let canvas_libs = "@CANVAS_LIBS@"
+let sourceview2_mls = split "@SOURCEVIEW2_MLS@"
+let sourceview2_libs = "@SOURCEVIEW2_LIBS@"
 
 (* Hack to check for mingw *)
 let () =
@@ -75,21 +77,24 @@ let may_remove f =
   if Sys.file_exists f then Sys.remove f
 
 type descr =
-    { mls: string list; extra: string list; libs: string;
+    { mlis: string list; mls: string list; extra: string list; libs: string;
       name: string; cname: string }
 
 let libs =
-  let lib ~mls ~libs ~name ?(extra=[]) ?(cname=name) () =
-    {mls=mls; extra=extra; libs=rename_libs libs; name=name; cname=cname} in
+  let lib ~mls ~libs ~name ?(extra=[]) ?(mlis=[]) ?(cname=name) () =
+    {mlis; mls; extra; libs=rename_libs libs; name; cname} in
   [ lib ~mls:lablgtk_mls ~extra:extra_mls ~libs:gtk_libs ~name:"lablgtk"
        ~cname:"lablgtk2" ();
     lib ~mls:glade_mls ~libs:glade_libs ~name:"lablglade"
        ~cname:"lablglade2" ();
     lib ~mls:rsvg_mls ~libs:rsvg_libs ~name:"lablrsvg" ();
-    lib ~mls:canvas_mls ~libs:canvas_libs ~name:"lablgnomecanvas" ()]
+    lib ~mls:canvas_mls ~libs:canvas_libs ~name:"lablgnomecanvas" ();
+    lib ~mls:sourceview2_mls ~libs:sourceview2_libs
+        ~name:"lablgtksourceview2" ~mlis:["gtkSourceView2_types"] ()]
 
-let compopts =
-  ["gtkSignal", ["-pp"; "\"camlp4o pa_macro.cmo -D HAS_PRINTEXC_BACKTRACE\""]]
+let compopts = []
+  (*["gtkSignal",
+    ["-pp"; "\"camlp4o pa_macro.cmo -D HAS_PRINTEXC_BACKTRACE\""]] *)
 
 let compile ~comp file =
   let opts = try List.assoc file compopts with Not_found -> [] in
@@ -97,6 +102,7 @@ let compile ~comp file =
 
 let byte d =
   if d.mls <> [] then begin
+    List.iter d.mlis ~f:(fun file -> exe !ocamlc ["-c"; file^".mli"]);
     List.iter (d.mls @ d.extra) ~f:
       begin fun file ->
 	if Sys.file_exists (file ^ ".mli") then exe !ocamlc ["-c"; file^".mli"];

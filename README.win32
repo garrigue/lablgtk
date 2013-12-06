@@ -22,6 +22,7 @@ Binary installation
     libglade-2.6.4 (requires libxml2)
     libgnomecanvas-2.30.1 (requires libart_lgpl)
     librsvg-2.32.1 (requires libcroco and libgsf)
+    gtksourceview-2.10
    If you want to do custom linking, you need also the dev packages.
    All of these are available in the above win32 and
    win32/dependencies directories.

@@ -193,10 +193,11 @@ let rec search_pos_signature l ~pos ~env =
   List.fold_left l ~init:env ~f:
   begin fun env pt ->
     let env = match pt.psig_desc with
-      Psig_open id ->
+      Psig_open (_, id) ->
         let path, mt = lookup_module id.txt env in
         begin match mt with
-          Mty_signature sign -> open_signature path sign env
+          Mty_signature sign ->
+            open_signature Override path sign env
         | _ -> env
         end
     | sign_item ->
@@ -226,7 +227,8 @@ let rec search_pos_signature l ~pos ~env =
           List.iter l
             ~f:(fun ci -> search_pos_class_type ci.pci_expr ~pos ~env)
       (* The last cases should not happen in generated interfaces *)
-      | Psig_open lid -> add_found_sig (`Module, lid.txt) ~env ~loc:pt.psig_loc
+      | Psig_open (_,lid) ->
+          add_found_sig (`Module, lid.txt) ~env ~loc:pt.psig_loc
       | Psig_include t -> search_pos_module t ~pos ~env
       end;
     env
@@ -323,7 +325,7 @@ let top_widgets = ref []
 let rec view_signature ?title ?path ?(env = !start_env) ?(detach=false) sign =
   let env =
     match path with None -> env
-    | Some path -> Env.open_signature path sign env in
+    | Some path -> Env.open_signature Override path sign env in
   let title =
     match title, path with Some title, _ -> title
     | None, Some path -> string_of_path path
@@ -398,10 +400,11 @@ let rec view_signature ?title ?path ?(env = !start_env) ?(detach=false) sign =
       with Syntaxerr.Error e ->
         let l =
           match e with
-            Syntaxerr.Unclosed(l,_,_,_) -> l
-          | Syntaxerr.Applicative_path l -> l
-          | Syntaxerr.Other l -> l
-          | Syntaxerr.Variable_in_scope (l, _) -> l
+            Unclosed(l,_,_,_) -> l
+          | Applicative_path l -> l
+          | Other l -> l
+          | Variable_in_scope (l, _) -> l
+          | Expecting(l,_) -> l
         in
         tb#apply_tag_by_name "error"
           ~start:(tpos l.loc_start)
@@ -769,14 +772,14 @@ and search_pos_expr ~pos exp =
         search_pos_expr exp ~pos
       end
   | Texp_tuple l -> List.iter l ~f:(search_pos_expr ~pos)
-  | Texp_construct (_,_,_,l,_) -> List.iter l ~f:(search_pos_expr ~pos)
+  | Texp_construct (_,_,l,_) -> List.iter l ~f:(search_pos_expr ~pos)
   | Texp_variant (_, None) -> ()
   | Texp_variant (_, Some exp) -> search_pos_expr exp ~pos
   | Texp_record (l, opt) ->
-      List.iter l ~f:(fun (_,_,_,exp) -> search_pos_expr exp ~pos);
+      List.iter l ~f:(fun (_,_,exp) -> search_pos_expr exp ~pos);
       (match opt with None -> () | Some exp -> search_pos_expr exp ~pos)
-  | Texp_field (exp,_,_,_) -> search_pos_expr exp ~pos
-  | Texp_setfield (a,_,_,_,b) ->
+  | Texp_field (exp,_,_) -> search_pos_expr exp ~pos
+  | Texp_setfield (a,_,_,b) ->
       search_pos_expr a ~pos; search_pos_expr b ~pos
   | Texp_array l -> List.iter l ~f:(search_pos_expr ~pos)
   | Texp_ifthenelse (a, b, c) ->
@@ -834,12 +837,12 @@ and search_pos_pat ~pos ~env pat =
       add_found_str (`Exp(`Const, pat.pat_type)) ~env ~loc:pat.pat_loc
   | Tpat_tuple l ->
       List.iter l ~f:(search_pos_pat ~pos ~env)
-  | Tpat_construct (_, _, _, l, _) ->
+  | Tpat_construct (_, _, l, _) ->
       List.iter l ~f:(search_pos_pat ~pos ~env)
   | Tpat_variant (_, None, _) -> ()
   | Tpat_variant (_, Some pat, _) -> search_pos_pat pat ~pos ~env
   | Tpat_record (l, _) ->
-      List.iter l ~f:(fun (_,_,_,pat) -> search_pos_pat pat ~pos ~env)
+      List.iter l ~f:(fun (_,_,pat) -> search_pos_pat pat ~pos ~env)
   | Tpat_array l ->
       List.iter l ~f:(search_pos_pat ~pos ~env)
   | Tpat_or (a, b, None) ->

@@ -163,12 +163,15 @@ GTKSOURCEVIEW2COBJS = ml_gtksourceview2$(XO)
 GTKSOURCEVIEW2MLOBJSENUM = sourceView2Enums.cmo
 GTKSOURCEVIEW2PROPS = gtkSourceView2.props
 BEFORE_DEPEND += $(GTKSOURCEVIEW2PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW2PROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
-
 EXTRA_OBJS += $(GTKSOURCEVIEW2MLOBJSENUM)
+GTKSOURCEVIEW2ALLMLOBJS = $(GTKSOURCEVIEW2MLOBJSENUM) \
+	$(GTKSOURCEVIEW2PROPS:%.props=%Props.cmo) \
+	$(GTKSOURCEVIEW2PROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEW2MLOBJS)
 lablgtksourceview2.cma liblablgtksourceview2$(XA): \
-	$(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2MLOBJSENUM) $(GTKSOURCEVIEW2PROPS:%.props=%Props.cmo) $(GTKSOURCEVIEW2PROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEW2MLOBJS)
+  $(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2ALLMLOBJS)
 	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
-lablgtksourceview2.cmxa: $(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2MLOBJSENUM:.cmo=.cmx) $(GTKSOURCEVIEW2PROPS:%.props=%Props.cmx) $(GTKSOURCEVIEW2PROPS:%.props=o%Props.cmx) $(GTKSOURCEVIEW2MLOBJS:.cmo=.cmx)
+lablgtksourceview2.cmxa: \
+  $(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2ALLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
 lablgtksourceview2.cmxs: DYNLINKLIBS=$(GTKSOURCEVIEW2_LIBS)
 endif
@@ -299,6 +302,8 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	    -e "s|@RSVG_LIBS@|$(RSVGLIBS)|" \
 	    -e "s|@CANVAS_MLS@|$(GNOMECANVASMLOBJS:.cmo=)|" \
 	    -e "s|@CANVAS_LIBS@|$(GNOMECANVASLIBS)|" \
+	    -e "s|@SOURCEVIEW2_MLS@|$(GTKSOURCEVIEW2ALLMLOBJS:.cmo=)|" \
+	    -e "s|@SOURCEVIEW2_LIBS@|$(GTKSOURCEVIEW2LIBS)|" \
 	    -e "s|@TOOLCHAIN@|$(TOOLCHAIN)|" \
 	    < build.ml.in > $@
 
@@ -325,12 +330,12 @@ testcc$(XE): lablgladecc$(XE) lablgtktop
 	rm -f testcc.ml
 
 PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) \
-	$(GNOMECANVASMLOBJS)
+	$(GNOMECANVASMLOBJS) $(GTKSOURCEVIEW2ALLMLOBJS)
 
 # Install ml sources and C binaries, can then rebuild using build.ml
 preinstall:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
-	cp $(PREOBJS:.cmo=.ml) "$(INSTALLDIR)"
+	cp $(PREOBJS:.cmo=.ml) gtkSourceView2_types.mli "$(INSTALLDIR)"
 	for f in $(PREOBJS:.cmo=.mli); do \
 	  if test -f $$f; then cp $$f "$(INSTALLDIR)"; fi; done
 	cp build.ml "$(INSTALLDIR)"
