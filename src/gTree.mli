@@ -735,7 +735,7 @@ class icon_view :
     method spacing : int
     method set_spacing : int -> unit
 
-    method get_path_at_pos : int -> int -> Gtk.tree_path
+    method get_path_at_pos : int -> int -> Gtk.tree_path option
     method selected_foreach : (Gtk.tree_path -> unit) -> unit
     method get_selected_items : Gtk.tree_path list
     method path_is_selected : Gtk.tree_path -> bool

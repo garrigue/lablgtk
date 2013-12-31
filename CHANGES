@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2013.12.31 [Jacques]
+  * fix GtkTree.IconView.get_path_at_pos (Thomas Leonard)
+
 In Lablgtk-2.18.1:
 
 2013.12.6 [Jacques]

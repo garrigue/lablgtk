@@ -252,7 +252,7 @@ class IconView set wrap wrapsig : Container {
   signal selection_changed
   (* signal set_scroll_adjustments : GtkAdjustment GtkAdjustment *)
 
-  method get_path_at_pos : "int -> int -> Gtk.tree_path"
+  method get_path_at_pos : "int -> int -> Gtk.tree_path option"
   method selected_foreach : "(Gtk.tree_path -> unit) -> unit"
   method select_path : "Gtk.tree_path -> unit"
   method unselect_path : "Gtk.tree_path -> unit"
