@@ -88,8 +88,9 @@ let libs =
     lib ~mls:rsvg_mls ~libs:rsvg_libs ~name:"lablrsvg" ();
     lib ~mls:canvas_mls ~libs:canvas_libs ~name:"lablgnomecanvas" ()]
 
-let compopts =
-  ["gtkSignal", ["-pp"; "\"camlp4o pa_macro.cmo -D HAS_PRINTEXC_BACKTRACE\""]]
+let compopts = []
+  (*["gtkSignal",
+    ["-pp"; "\"camlp4o pa_macro.cmo -D HAS_PRINTEXC_BACKTRACE\""]] *)
 
 let compile ~comp file =
   let opts = try List.assoc file compopts with Not_found -> [] in

@@ -1,0 +1,234 @@
+= LablGTK2 Tutorial =
+:toc:
+
+This guide assumes you have a working ocamlfind-enabled lablgtk2 installation
+on your system. If you've installed lablgtk2 in 2013 or later, you should be
+fine.
+// If
+// you don't, first check your package manager and if it doesn't provide
+// lablgtk2, have a look at link:README.html#
+
+This tutorial explains how to create a window, add two buttons in it and print
+some text when they're clicked.
+
+== GTK+ Concepts ==
+* Object
+* Widget
+* Container
+* Signal
+* Callback
+* Property
+* Mainloop
+
+== Creating A Window ==
+
+.Create a window
+------------------------------------------------------------------------
+let () =
+  GMain.init ();                        (* Initialize Glib *)
+  let w = GWindow.window () in          (* Create the window widget *)
+  w#show ();                            (* show the window *)
+  GMain.main ()                         (* start the mainloop *)
+------------------------------------------------------------------------
+image::Create_a_window.png[align="center"]
+
+== Setting Widget Properties ==
+In order to change the size of the window, we can use the `resize` method; to
+change the title we have the `set_title` method:
+
+.Set the window properties
+------------------------------------------------------------------------
+let () =
+  GMain.init ();
+
+  let w = GWindow.window () in
+  w#resize 320 240;
+  w#set_title "My First WinForms^WLablgtk2 Application";
+
+  w#show ();
+  GMain.main ()
+------------------------------------------------------------------------
+image::Set_the_window_properties.png[align="center"]
+
+This looks a lot like typical C GTK+ code and doesn't take much advantage of
+OCaml features.
+
+== Containers ==
+Now that the window is ready, we need to add a few widget in it.
+
+GTK+ has the notion of "containers": widget which have other widgets inside
+them. There are different kinds of containers, each of them arranges its
+children in a different way. We're going to use windows and boxes below.
+
+.1. Add a box inside the window
+------------------------------------------------------------------------
+let () =
+  GMain.init ();
+
+  let w = GWindow.window () in
+  w#resize 320 240;
+  w#set_title "My First WinForms^WLablgtk2 Application";
+
+  let box = GPack.vbox () in
+  w#add box#coerce;
+
+  w#show ();
+  GMain.main ()
+------------------------------------------------------------------------
+image::1._Add_a_box_inside_the_window.png[align="center"]
+
+.2. Create two buttons
+------------------------------------------------------------------------
+let () =
+  GMain.init ();
+
+  let w = GWindow.window () in
+  w#resize 320 240;
+  w#set_title "My First WinForms^WLablgtk2 Application";
+
+  let box = GPack.vbox () in
+  w#add box#coerce;
+
+  let button_click_me = GButton.button () in
+  button_click_me#set_label "Click me!";
+
+  let button_dont_click = GButton.button () in
+  button_dont_click#set_label "Don't click me!";
+
+  w#show ();
+  GMain.main ()
+------------------------------------------------------------------------
+image::2._Create_two_buttons.png[align="center"]
+
+.3. Add the buttons in the box
+------------------------------------------------------------------------
+let () =
+  GMain.init ();
+
+  let w = GWindow.window () in
+  w#resize 320 240;
+  w#set_title "My First WinForms^WLablgtk2 Application";
+
+  let box = GPack.vbox () in
+  w#add box#coerce;
+
+  let button_click_me = GButton.button () in
+  button_click_me#set_label "Click me!";
+  box#pack button_click_me#coerce;
+
+  let button_dont_click = GButton.button () in
+  button_dont_click#set_label "Don't click me!";
+  box#pack button_dont_click#coerce;
+
+  w#show ();
+  GMain.main ()
+------------------------------------------------------------------------
+image::3._Add_the_buttons_in_the_box.png[align="center"]
+
+== Callbacks ==
+
+Our last step is to make clicking on the button trigger something. In GTK+,
+this is done through callbacks: functions which are called when some signal is
+fired.
+
+This is achieved through the `connect` method to widgets: it returns an object
+which has a method for each available signal for the corresponding widget.
+Therefore we will call `button#connect#clicked` and give it out callback.
+
+.Add callbacks
+------------------------------------------------------------------------
+let () =
+  GMain.init ();
+
+  let w = GWindow.window () in
+  w#resize 320 240;
+  w#set_title "My First WinForms^WLablgtk2 Application";
+
+  let box = GPack.vbox () in
+  w#add box#coerce;
+
+  let button_click_me = GButton.button () in
+  button_click_me#set_label "Click me!";
+  box#pack button_click_me#coerce;
+
+  let button_dont_click = GButton.button () in
+  button_dont_click#set_label "Don't click me!";
+  box#pack button_dont_click#coerce;
+
+  ignore (button_click_me#connect#clicked (fun _ -> print_endline "Yeah! =)"));
+  ignore (button_dont_click#connect#clicked (fun _ -> print_endline "No! ='("));
+
+  w#show ();
+  GMain.main ()
+------------------------------------------------------------------------
+image::Add_callbacks.png[align="center"]
+
+NOTE: The functions which add callbacks return an `id` which can later be used
+to remove the callback. In our case we don't need it so we just ignore it.
+
+=== Using Optional And Labelled Arguments ===
+
+Lablgtk has optional and labelled arguments in almost every function. For
+instance, the GWindow.window function has 21 optional arguments: there is one
+for each property of the object.
+
+Without using optional arguments, we have to write:
+
+------------------------------------------------------------------------
+  let w = GWindow.window () in
+  w#resize 320 240;
+  w#set_title "My First WinForms^WLablgtk2 Application";
+------------------------------------------------------------------------
+
+If we leverage them, we can write:
+
+------------------------------------------------------------------------
+  let w = GWindow.window
+    ~width:320
+    ~height:240
+    ~title:"My First WinForms^WLablgtk2 Application"
+    ()
+------------------------------------------------------------------------
+
+For our full example, our code becomes:
+
+.Use optional and labelled arguments
+------------------------------------------------------------------------
+let () =
+  GMain.init ();
+  let w = GWindow.window
+    ~width:320
+    ~height:240
+    ~title:"My First WinForms^WLablgtk2 Application"
+    ()
+  in
+  let box = GPack.vbox ~packing:w#add () in
+  let button_click_me = GButton.button
+    ~label:"Click me!"
+    ~packing:box#pack
+    ()
+  in
+  let button_dont_click = GButton.button
+    ~label:"Don't click me!"
+    ~packing:box#pack
+    ()
+  in
+  ignore (button_click_me#connect#clicked (fun _ -> print_endline "Yeah! =)"));
+  ignore (button_dont_click#connect#clicked (fun _ -> print_endline "No! ='("));
+  w#show ();
+  GMain.main ()
+------------------------------------------------------------------------
+image::Use_optional_and_labelled_arguments.png[align="center"]
+
+While the number of lines is roughly the same, this code doesn't repeat most
+of the widget names which saves boilerplate and makes it both easier to read
+and to understand.
+
+NOTE: you can save lines by putting most optional arguments on a single line
+but with 5 or 6 of them, this quickly becomes difficult to read.
+
+NOTE: The default values for optional arguments are most often sensible. One
+of the very few that needs some thinking is `show`: it defaults to `true` for
+every type of widget except for windows, which is why a separate call to the
+`show` method is needed.
+

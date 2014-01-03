@@ -19,7 +19,7 @@ LINKOPT = $(CAMLOPT) $(MLFLAGS)
 
 SETLIB = 1
 LIBDIR = $(shell ocamlc -where)
-MLFLAGS = $(THFLAGS) -I +lablgtk2 
+MLFLAGS = $(THFLAGS) -I ../../src
 THOPTLIBS1 = $(THLIBS:.cma=.cmxa)
 THOPTLIBS = $(THOPTLIBS1:.cmo=.cmx)
 

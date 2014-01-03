@@ -1,0 +1,11 @@
+include config.make
+ROOT=$(DESTDIR)$(prefix)
+SAMPLES=$(ROOT)/examples/lablgtk2
+
+all:
+	cp README $(ROOT)/Lablgtk.txt
+	cp README.win32 $(ROOT)/Lablgtk-install.txt
+	cp CHANGES $(ROOT)/Lablgtk-changes.txt
+	mkdir -p $(SAMPLES)/{glade,rsvg,text,canvas}
+	for i in . glade rsvg text canvas; do \
+	  (cd examples/$$i; cp * $(SAMPLES)/$$i); done
