@@ -28,26 +28,25 @@ open Gtk
 open GtkBase
 open GtkData
 open GObj
+open OgtkBaseProps
 
 class adjustment_signals obj = object (self)
   inherit gtkobj_signals_impl obj
-  method changed = self#connect Adjustment.S.changed
-  method value_changed = self#connect Adjustment.S.value_changed
+  inherit adjustment_sigs
 end
 
-class adjustment obj = object
+class adjustment obj = object (self)
   inherit gtkobj obj
+  inherit adjustment_props
   method as_adjustment : Gtk.adjustment obj = obj
   method connect = new adjustment_signals obj
-  method set_value = Adjustment.set_value obj
   method clamp_page = Adjustment.clamp_page obj
-  method lower = Adjustment.get_lower obj
-  method upper = Adjustment.get_upper obj
-  method value = Adjustment.get_value obj
-  method step_increment = Adjustment.get_step_increment obj
-  method page_increment = Adjustment.get_page_increment obj
-  method page_size = Adjustment.get_page_size obj
-  method set_bounds = Adjustment.set_bounds obj
+  method set_bounds ?lower ?upper ?step_incr ?page_incr ?page_size () =
+    may self#set_lower lower;
+    may self#set_upper upper;
+    may self#set_step_increment step_incr;
+    may self#set_page_increment page_incr;
+    may self#set_page_size page_size
 end
 
 let adjustment ?(value=0.) ?(lower=0.) ?(upper=100.)

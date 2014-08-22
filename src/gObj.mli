@@ -209,8 +209,8 @@ and misc_ops : Gtk.widget obj ->
     inherit gobject_ops
     val obj : Gtk.widget obj
     method activate : unit -> bool
-    method add_accelerator :
-      sgn:(Gtk.widget, unit -> unit) GtkSignal.t ->
+    method add_accelerator : 'a.
+      sgn:('a, unit -> unit) GtkSignal.t ->
       group:accel_group -> ?modi:Gdk.Tags.modifier list ->
       ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
     method add_selection_target :

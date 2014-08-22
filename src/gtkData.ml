@@ -143,30 +143,9 @@ module Adjustment = struct
       value:float -> lower:float -> upper:float ->
       step_incr:float -> page_incr:float -> page_size:float -> adjustment obj
       = "ml_gtk_adjustment_new_bc" "ml_gtk_adjustment_new"
-  external set_value : [>`adjustment] obj -> float -> unit
-      = "ml_gtk_adjustment_set_value"
   external clamp_page :
       [>`adjustment] obj -> lower:float -> upper:float -> unit
       = "ml_gtk_adjustment_clamp_page"
-  external get_lower : [>`adjustment] obj -> float
-      = "ml_gtk_adjustment_get_lower"
-  external get_upper : [>`adjustment] obj -> float
-      = "ml_gtk_adjustment_get_upper"
-  external get_value : [>`adjustment] obj -> float
-      = "ml_gtk_adjustment_get_value"
-  external get_step_increment : [>`adjustment] obj -> float
-      = "ml_gtk_adjustment_get_step_increment"
-  external get_page_increment : [>`adjustment] obj -> float
-      = "ml_gtk_adjustment_get_page_increment"
-  external get_page_size : [>`adjustment] obj -> float
-      = "ml_gtk_adjustment_get_page_size"
-  external set : ?lower:float -> ?upper:float -> ?step_incr:float ->
-      ?page_incr:float -> ?page_size:float -> [>`adjustment] obj -> unit
-      =  "ml_gtk_adjustment_set_bc" "ml_gtk_adjustment_set"
-  let set_bounds adj ?lower ?upper ?step_incr ?page_incr ?page_size () =
-    set adj ?lower ?upper ?step_incr ?page_incr ?page_size;
-    GtkSignal.emit_unit adj ~sgn:S.changed;
-    set_value adj (get_value adj)
 end
 
 module Tooltips = struct

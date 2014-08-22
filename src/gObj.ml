@@ -278,8 +278,10 @@ and misc_ops obj = object (self)
   method grab_focus () = set P.has_focus obj true
   method grab_default () = set P.has_default obj true
   method is_ancestor (w : widget) = Widget.is_ancestor obj w#as_widget
-  method add_accelerator ~sgn:sg ~group ?modi ?flags key =
-    Widget.add_accelerator obj ~sgn:sg group ~key ?modi ?flags
+  method add_accelerator : 'a. sgn:('a, unit -> unit) GtkSignal.t -> _ =
+    fun ~sgn:sg ~group ?modi ?flags key ->
+      let sg = {sg with GtkSignal.classe = `widget} in
+      Widget.add_accelerator obj ~sgn:sg group ~key ?modi ?flags
   method remove_accelerator ~group ?modi key =
     Widget.remove_accelerator obj group ~key ?modi
   (* method lock_accelerators () = lock_accelerators obj *)

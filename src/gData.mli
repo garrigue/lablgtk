@@ -34,6 +34,12 @@ class adjustment_signals : [> adjustment] obj ->
     inherit GObj.gtkobj_signals
     method changed : callback:(unit -> unit) -> GtkSignal.id
     method value_changed : callback:(unit -> unit) -> GtkSignal.id
+    method notify_lower : callback:(float -> unit) -> GtkSignal.id
+    method notify_page_increment : callback:(float -> unit) -> GtkSignal.id
+    method notify_page_size : callback:(float -> unit) -> GtkSignal.id
+    method notify_step_increment : callback:(float -> unit) -> GtkSignal.id
+    method notify_upper : callback:(float -> unit) -> GtkSignal.id
+    method notify_value : callback:(float -> unit) -> GtkSignal.id
   end
 
 (** A GtkObject representing an adjustable bounded value
@@ -55,6 +61,12 @@ class adjustment : Gtk.adjustment obj ->
     method set_bounds :
       ?lower:float -> ?upper:float -> ?step_incr:float ->
       ?page_incr:float -> ?page_size:float -> unit -> unit
+    method set_lower : float -> unit
+    method set_page_increment : float -> unit
+    method set_page_size : float -> unit
+    method set_step_increment : float -> unit
+    method set_upper : float -> unit
+    method set_value : float -> unit
   end
 
 (** @gtkdoc gtk GtkAdjustment 

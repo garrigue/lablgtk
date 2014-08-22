@@ -155,7 +155,13 @@ class Item abstract wrapsig : Bin {
   signal toggle
 }
 
-class Adjustment : Object {
+class Adjustment set wrap wrapsig : Object {
+  "lower"               gdouble        : Read / Write
+  "page-increment"      gdouble	       : Read / Write
+  "page-size"           gdouble        : Read / Write
+  "step-increment"      gdouble	       : Read / Write
+  "upper"               gdouble        : Read / Write
+  "value"               gdouble        : Read / Write
   signal changed
   signal value_changed
 }

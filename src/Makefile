@@ -231,8 +231,8 @@ MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo gtkList.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
 	gtkFile.cmo gtkMain.cmo gtkBroken.cmo \
-	gPango.cmo gDraw.cmo gObj.cmo gData.cmo gMain.cmo
-MLOBJS4 = gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
+	gPango.cmo gDraw.cmo gObj.cmo ogtkBaseProps.cmo gData.cmo
+MLOBJS4 = gMain.cmo gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
 	gMenu.cmo gMisc.cmo gTree.cmo gList.cmo gFile.cmo gWindow.cmo \
 	gAssistant.cmo \
 	gBin.cmo gEdit.cmo gRange.cmo gAction.cmo gBroken.cmo \

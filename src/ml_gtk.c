@@ -231,9 +231,10 @@ ML_1 (gtk_object_sink, GtkObject_val, Unit)
 ML_6 (gtk_adjustment_new, Float_val, Float_val, Float_val, Float_val,
       Float_val, Float_val, Val_GtkObject_sink)
 ML_bc6 (ml_gtk_adjustment_new)
-ML_2 (gtk_adjustment_set_value, GtkAdjustment_val, Float_val, Unit)
 ML_3 (gtk_adjustment_clamp_page, GtkAdjustment_val,
       Float_val, Float_val, Unit)
+/*
+ML_2 (gtk_adjustment_set_value, GtkAdjustment_val, Float_val, Unit)
 Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, lower, copy_double)
 Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, upper, copy_double)
 Make_Extractor (gtk_adjustment_get, GtkAdjustment_val, value, copy_double)
@@ -247,7 +248,7 @@ CAMLprim value ml_gtk_adjustment_set(value lower, value upper,
                             value page_size, value adjustment)
 {
     GtkAdjustment *adj = GtkAdjustment_val(adjustment);
-#define Update_field(name) adj->name = Option_val(name,Double_val,adj->name)
+#define Update_field(name) (adj->name = Option_val(name,Double_val,adj->name)
     Update_field(lower);
     Update_field(upper);
     Update_field(step_increment);
@@ -257,6 +258,7 @@ CAMLprim value ml_gtk_adjustment_set(value lower, value upper,
     return Val_unit;
 }
 ML_bc6(ml_gtk_adjustment_set)
+*/
 
 /* gtktooltips.h */
 
