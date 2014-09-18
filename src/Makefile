@@ -447,11 +447,11 @@ findlib-install:
 	  cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; \
 	fi
 	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
-	$(RANLIB) $(CLIBS:%=$(FLINSTALLDIR)/%)
+	$(RANLIB) $(CLIBS:%="$(FLINSTALLDIR)"/%)
 	@if test -f lablgtk.cmxa; then \
 	  echo "Execute $(RANLIB) in $(FLINSTALLDIR)"; \
-	  $(RANLIB) $(MLLIBS:%.cma=$(FLINSTALLDIR)/%$(XA)) \
-		    $(EXTRA_MLLIBS:%.cma=$(FLINSTALLDIR)/%$(XA)) ; \
+	  $(RANLIB) $(MLLIBS:%.cma="$(FLINSTALLDIR)"/%$(XA)) \
+		    $(EXTRA_MLLIBS:%.cma="$(FLINSTALLDIR)"/%$(XA)) ; \
 	 fi
 
 findlib-uninstall:

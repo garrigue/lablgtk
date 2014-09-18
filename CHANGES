@@ -1,7 +1,11 @@
 LablGTK changes log
 
+In Lablgtk-2.18.2:
+
 2014.09.17 [Jacques]
   * Revert old commit which broke notify signals
+  * Quote $(FLINSTALLDIR) in Makefile (cf PR#1342)
+  * Update applications/browser for 4.02
 
 2014.08.22 [Jacques]
   * Make Float_val an alias for Double_val, since it was used
