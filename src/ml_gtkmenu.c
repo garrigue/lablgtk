@@ -62,16 +62,8 @@ ML_0 (gtk_tearoff_menu_item_new, Val_GtkWidget_sink)
 ML_1 (gtk_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
 ML_1 (gtk_menu_item_new_with_mnemonic, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_menu_item_set_submenu, GtkMenuItem_val, GtkWidget_val, Unit)
-
-CAMLprim value ml_gtk_menu_item_get_submenu(value sm)
-{
-  CAMLparam1(sm);
-  CAMLlocal1(res);
-  res = Val_option(gtk_menu_item_get_submenu(GtkMenuItem_val(sm)),
-		   Val_GtkWidget);
-  CAMLreturn(res);
-}
-
+Make_Val_option(GtkWidget)
+ML_1 (gtk_menu_item_get_submenu, GtkMenuItem_val, Val_option_GtkWidget)
 ML_1 (gtk_menu_item_remove_submenu, GtkMenuItem_val, Unit)
 ML_2 (gtk_menu_item_set_accel_path, GtkMenuItem_val, String_val, Unit)
 ML_1 (gtk_menu_item_activate, GtkMenuItem_val, Unit)

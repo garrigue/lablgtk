@@ -99,7 +99,7 @@ static gboolean ml_gtk_file_filter_func (const GtkFileFilterInfo *filter_info,
 {
   value *cb = data;
   CAMLparam0();
-  CAMLlocal5(r, l, v, t, s);
+  CAMLlocal4(r, l, v, s);
   l = Val_emptylist;
 #define CONS_MEMBER(memb, flag) \
   if (filter_info->contains & GTK_FILE_FILTER_##flag) {	\

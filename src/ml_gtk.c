@@ -402,7 +402,7 @@ CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
     pspec = gtk_widget_class_find_style_property
                (GTK_WIDGET_GET_CLASS (widget), name);
     if (pspec) {
-        value ret = ml_g_value_new ();
+        ret = ml_g_value_new ();
         GValue *gv = GValueptr_val (ret);
         g_value_init (gv, G_PARAM_SPEC_VALUE_TYPE (pspec));
         gtk_widget_style_get_property (widget, name, gv);
@@ -737,8 +737,9 @@ CAMLprim value ml_gtk_file_selection_get_selections (value sel)
   gchar** selections =
     gtk_file_selection_get_selections(GtkFileSelection_val(sel));
   gchar** orig = selections;
-  CAMLparam0();
-  CAMLlocal3(ret,prev,next);
+  value ret = Val_unit;
+  CAMLparam1(ret);
+  CAMLlocal2(prev,next);
   for (prev = (value)((&ret)-1); *selections != NULL; selections++) {
     next = alloc(2,0);
     Store_field(prev, 1, next);

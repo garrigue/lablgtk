@@ -61,8 +61,7 @@ CAMLprim value ml_some (value v)
 value ml_cons (value v, value l)
 {
   CAMLparam2(v, l);
-  CAMLlocal1(cell);
-  cell = alloc_small(2, Tag_cons);
+  value cell = alloc_small(2, Tag_cons);
   Field(cell, 0) = v;
   Field(cell, 1) = l;
   CAMLreturn(cell);
@@ -94,6 +93,9 @@ value copy_string_or_null (const char*str)
 {
     return copy_string (str ? (char*) str : "");
 }
+
+value Val_option_string (const char *s)
+{ return Val_option (s, Val_string); }
 
 CAMLprim value *ml_global_root_new (value v)
 {

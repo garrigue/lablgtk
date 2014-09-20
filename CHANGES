@@ -1,5 +1,10 @@
 LablGTK changes log
 
+2014.09.20 [Jacques]
+  * CAMLparam initializes with Val_unit rather than 0 since ocaml 4.02.
+    Fix a related problem in ml_gobject (Christopher Zimmermann, PR#1425)
+  * Also factorize some code to use Val_option_*
+
 In Lablgtk-2.18.2:
 
 2014.09.17 [Jacques]

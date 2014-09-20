@@ -643,8 +643,8 @@ ML_2 (g_signal_handler_is_connected, GObject_val, Long_val, Val_bool)
 ML_2 (g_signal_stop_emission_by_name, GObject_val, String_val, Unit)
 CAMLprim value ml_g_signal_emit_by_name (value obj, value sig, value params)
 {
-    CAMLparam3(obj,sig,params);
-    CAMLlocal1(ret);
+    value ret = Val_unit;
+    CAMLparam4(obj,sig,params,ret);
     GObject *instance = GObject_val(obj);
     GValue *iparams = (GValue*)calloc(1 + Wosize_val(params), sizeof(GValue));
     GQuark detail = 0;
@@ -671,11 +671,11 @@ CAMLprim value ml_g_signal_emit_by_name (value obj, value sig, value params)
                       query.param_types[i] & ~G_SIGNAL_TYPE_STATIC_SCOPE);
         g_value_set_mlvariant (&iparams[i+1], Field(params,i));
     }
-    g_signal_emitv (iparams, signal_id, detail, (ret ? GValue_val(ret) : 0));
+    g_signal_emitv (iparams, signal_id, detail,
+                    (ret == Val_unit ? 0 : GValue_val(ret)));
     for (i = 0; i < query.n_params + 1; i++)
         g_value_unset (iparams + i);
     free (iparams);
-    if (!ret) ret = Val_unit;
     CAMLreturn(ret);
 }
 
