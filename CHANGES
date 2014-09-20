@@ -4,6 +4,8 @@ LablGTK changes log
   * CAMLparam initializes with Val_unit rather than 0 since ocaml 4.02.
     Fix a related problem in ml_gobject (Christopher Zimmermann, PR#1425)
   * Also factorize some code to use Val_option_*
+  * Replace XID by GdkNativeWindow where required.
+    You may need to insert calls to Gdk.Window.native_of_xid in some places.
 
 In Lablgtk-2.18.2:
 

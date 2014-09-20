@@ -585,7 +585,7 @@ class plug : Gtk.plug obj ->
 
 (** @gtkdoc gtk GtkPlug *)
 val plug :
-  window:Gdk.xid ->
+  window:Gdk.native_window ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> plug
 
@@ -607,7 +607,7 @@ class socket : Gtk.socket obj ->
     inherit GContainer.container
     val obj : Gtk.socket obj
     method connect : socket_signals
-    method steal : Gdk.xid -> unit
+    method steal : Gdk.native_window -> unit
     (** @deprecated "inherently unreliable" *)
     method xwindow : Gdk.xid
   end

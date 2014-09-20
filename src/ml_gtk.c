@@ -968,7 +968,7 @@ Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
 #ifdef _WIN32
 Unsupported(gtk_plug_new)
 #else
-ML_1 (gtk_plug_new, XID_val, Val_GtkWidget_window)
+ML_1 (gtk_plug_new, GdkNativeWindow_val, Val_GtkWidget_window)
 #endif
 
 /* gtksocket.h */
@@ -976,7 +976,7 @@ ML_1 (gtk_plug_new, XID_val, Val_GtkWidget_window)
 Unsupported(gtk_socket_steal)
 #else
 #define GtkSocket_val(val) check_cast(GTK_SOCKET,val)
-ML_2 (gtk_socket_steal, GtkSocket_val, XID_val, Unit)
+ML_2 (gtk_socket_steal, GtkSocket_val, GdkNativeWindow_val, Unit)
 #endif
 
 /* gtkmain.h */

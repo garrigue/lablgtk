@@ -25,7 +25,6 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <librsvg/rsvg.h>
-#include <librsvg/librsvg-features.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>

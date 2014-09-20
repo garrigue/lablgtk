@@ -41,6 +41,7 @@ type +'a event
 type drag_context = [`dragcontext] Gobject.obj
 type cursor
 type xid = int32
+type native_window
 type device
 type display
 
@@ -226,6 +227,8 @@ module Window :
     val clear_area :
         window -> x:int -> y:int -> width:int -> height:int -> unit
     val get_xwindow : [>`drawable] obj -> xid
+    val native_of_xid : xid -> native_window
+    val xid_of_native : native_window -> xid
     type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP of pixmap ]
     val set_back_pixmap : window -> background_pixmap -> unit
     val set_cursor : window -> cursor -> unit

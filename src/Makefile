@@ -17,7 +17,7 @@ INSTALLDIR = $(LIBDIR)/lablgtk2
 DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
-#GTKCFLAGS += -Werror
+#GTKCFLAGS += -Werror -Wno-error=deprecated-declarations
 
 TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE) \
 	$(THINITOBJS) build.ml

@@ -163,7 +163,7 @@ end
 
 module Plug = struct
   include Plug
-  external create : Gdk.xid -> plug obj = "ml_gtk_plug_new"
+  external create : Gdk.native_window -> plug obj = "ml_gtk_plug_new"
 end
 
 module Socket = Socket

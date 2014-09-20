@@ -82,15 +82,13 @@ CAMLexport value Val_GdkEvent (GdkEvent *);
 #define GdkDevice_val(val) ((GdkDevice*) val)
 #define Val_GdkDevice(device) ((value) device)
 
-#if 0 
 // Future replacement for XID?
 #ifdef GDK_NATIVE_WINDOW_POINTER
-#define GdkNativeWindow_val (GdkNativeWindow*)
-#define Val_GdkNativeWindow(id) (value)
+#define GdkNativeWindow_val Pointer_val
+#define Val_GdkNativeWindow Val_pointer
 #else
-#define Val_GdkNativeWindow(id) copy_int32((long) id)
+#define Val_GdkNativeWindow copy_int32
 #define GdkNativeWindow_val Int32_val
-#endif
 #endif
 
 #ifdef _WIN32
