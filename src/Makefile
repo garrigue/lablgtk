@@ -1,8 +1,8 @@
 # Makefile for lablgtk.
 
-COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
+COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c -safe-string
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
+COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c -safe-string
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 LIBRARIAN = $(CAMLMKLIB) -verbose -ocamlc "$(CAMLC)" -ocamlopt "$(CAMLOPT)"
 TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
