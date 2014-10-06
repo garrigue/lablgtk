@@ -303,6 +303,7 @@ end
 
 module Window = struct
   let cast w : window = Gobject.try_cast w "GdkWindow"
+  external create_foreign : native_window -> window = "ml_gdk_window_foreign_new"
   type background_pixmap = [ `NONE | `PARENT_RELATIVE | `PIXMAP of pixmap]
   external get_parent : window -> window = "ml_gdk_window_get_parent"
   external get_position : window -> int * int = "ml_gdk_window_get_position"
@@ -336,6 +337,8 @@ module Window = struct
   let native_of_xid (id : xid) : native_window =
     if Windowing.platform = `X11 then Obj.magic id else
     failwith "Gdk.Window.native_of_xid only allowed for X11"
+
+  external set_transient_for : window -> window -> unit = "ml_gdk_window_set_transient_for"
 end
 
 module PointArray = struct

@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2014.10.06 [Jacques]
+  * add Gdk.Window.create_foreign and set_transient_for functions (Tim Cuthbertson)
+
 2014.09.20 [Jacques]
   * CAMLparam initializes with Val_unit rather than 0 since ocaml 4.02.
     Fix a related problem in ml_gobject (Christopher Zimmermann, PR#1425)

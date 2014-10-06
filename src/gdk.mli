@@ -219,6 +219,7 @@ end
 module Window :
   sig
     val cast : 'a obj -> window
+    val create_foreign : native_window -> window
     val get_parent : window -> window
     val get_position : window -> int * int
     val get_pointer_location : window -> int * int
@@ -232,6 +233,7 @@ module Window :
     type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP of pixmap ]
     val set_back_pixmap : window -> background_pixmap -> unit
     val set_cursor : window -> cursor -> unit
+    val set_transient_for : window -> window -> unit
 
     (* for backward compatibility for lablgtk1 programs *)	  
     val get_visual : window -> visual
