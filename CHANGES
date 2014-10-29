@@ -1,11 +1,15 @@
 LablGTK changes log
 
+In Lablgtk-2.18.3:
+
 2014.10.06 [Jacques]
   * add Gdk.Window.create_foreign and set_transient_for functions (Tim Cuthbertson)
 
 2014.09.20 [Jacques]
   * CAMLparam initializes with Val_unit rather than 0 since ocaml 4.02.
-    Fix a related problem in ml_gobject (Christopher Zimmermann, PR#1425)
+    Fix a related problem in ml_gobject.
+    This caused random crashes with unison (Christopher Zimmermann, PR#1425)
+    
   * Also factorize some code to use Val_option_*
   * Replace XID by GdkNativeWindow where required.
     You may need to insert calls to Gdk.Window.native_of_xid in some places.
