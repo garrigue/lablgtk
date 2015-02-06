@@ -1,9 +1,13 @@
 LablGTK changes log
 
+2015.02.06 [Jacques]
+  * add get_image and get_pixbuf to GDraw.drawable.
+
 In Lablgtk-2.18.3:
 
 2014.10.06 [Jacques]
-  * add Gdk.Window.create_foreign and set_transient_for functions (Tim Cuthbertson)
+  * add Gdk.Window.create_foreign and set_transient_for functions
+    (Tim Cuthbertson)
 
 2014.09.20 [Jacques]
   * CAMLparam initializes with Val_unit rather than 0 since ocaml 4.02.

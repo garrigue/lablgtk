@@ -102,9 +102,13 @@ class drawable ?(colormap = default_colormap ()) w = object (self)
     Draw.layout w gc ~x ~y lay
       ?fore:(may_map self#color fore) ?back:(may_map self#color back)
   method put_image ~x ~y = Draw.image w gc ~xdest:x ~ydest:y
+  method get_image = Image.get w
   method put_pixmap ~x ~y = Draw.pixmap w gc ~xdest:x ~ydest:y
   method put_rgb_data = Rgb.draw_image w gc
   method put_pixbuf ~x ~y = GdkPixbuf.draw_pixbuf w gc ~dest_x:x ~dest_y:y
+  method get_pixbuf ?dest_x ?dest_y ?width ?height ?src_x ?src_y dest =
+    GdkPixbuf.get_from_drawable
+      ~dest ?dest_x ?dest_y ?width ?height ?src_x ?src_y ~colormap w
   method points = Draw.points w gc
   method lines = Draw.lines w gc
   method segments = Draw.segments w gc

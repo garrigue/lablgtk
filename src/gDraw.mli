@@ -68,6 +68,10 @@ class drawable : ?colormap:colormap -> ([>`drawable] Gobject.obj as 'a) ->
     method gc : gc
     method set_gc : gc -> unit
     method gc_values : GC.values
+    method get_image : x:int -> y:int -> width:int -> height:int -> image
+    method get_pixbuf :
+      ?dest_x:int -> ?dest_y:int -> ?width:int ->  ?height:int ->
+      ?src_x:int -> ?src_y:int -> GdkPixbuf.pixbuf -> unit
     method line : x:int -> y:int -> x:int -> y:int -> unit
     method point : x:int -> y:int -> unit
     method polygon : ?filled:bool -> (int * int) list -> unit
