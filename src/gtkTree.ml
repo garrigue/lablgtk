@@ -74,7 +74,7 @@ module RowReference = struct
 end
 
 module TreeModel = struct
-  let cast w : tree_model obj = Object.try_cast w "GtkTreeModel"
+  let cast w : tree_model = Object.try_cast w "GtkTreeModel"
   external get_flags : [>`treemodel] obj -> GtkEnums.tree_model_flags list
     = "ml_gtk_tree_model_get_flags"
   external get_n_columns : [>`treemodel] obj -> int

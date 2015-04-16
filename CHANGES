@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2015.04.16 [Jacques]
+  * fix GtkTree.TreeModel.cast
+
 2015.02.06 [Jacques]
   * add get_image and get_pixbuf to GDraw.drawable.
 
