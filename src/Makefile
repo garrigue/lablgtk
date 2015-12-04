@@ -1,6 +1,6 @@
 # Makefile for lablgtk.
 
-COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s -c
+COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s-3+52 -warn-error A-52 -c
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
@@ -591,17 +591,17 @@ endif
 
 OCAMLDOC = ocamldoc
 lablgtk$(XO)doc : $(DOCFILES) $(ALLOBJS)
-	$(OCAMLDOC) -dump $@ -v $(if $(LABLGLDIR),-I $(LABLGLDIR)) $(DOCFILES)
+	$(OCAMLDOC) -dump $@ $(if $(LABLGLDIR),-I $(LABLGLDIR)) $(DOCFILES)
 gtkdoc.cmo : gtkdoc.ml
 	$(CAMLC) -I +ocamldoc -pp "$(CAMLP4O) pa_macro.cmo $(ODOC_DEF)" -c $<
 DOCDIR=../doc
-DOC_URI=file:///usr/share/gtk-doc/html
+#DOC_URI=file:///usr/share/gtk-doc/html
 DOC_BASE_URI=$(if $(DOC_URI),-base-uri $(DOC_URI))
 doc : lablgtk$(XO)doc gtkdoc.cmo
 	mkdir -p $(DOCDIR)/html
-	$(OCAMLDOC) -sort -g ./gtkdoc.cmo $(DOC_BASE_URI) -v -t LablGTK -d $(DOCDIR)/html -load $<
+	$(OCAMLDOC) -sort -g ./gtkdoc.cmo $(DOC_BASE_URI) -t LablGTK -d $(DOCDIR)/html -load $<
 doc_texi : lablgtk$(XO)doc
-	$(OCAMLDOC) -texi -v -t LablGTK -o $(DOCDIR)/lablgtk2.texi -load $<
+	$(OCAMLDOC) -texi -t LablGTK -o $(DOCDIR)/lablgtk2.texi -load $<
 
 $(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
 	    ml_gobject.h ml_glib.h wrappers.h
