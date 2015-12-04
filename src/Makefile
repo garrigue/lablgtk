@@ -590,17 +590,17 @@ DOCFILES += gSourceView2.mli
 endif
 
 OCAMLDOC = ocamldoc
-lablgtk$(XO)doc : $(DOCFILES) $(ALLOBJS)
+lablgtk.odoc : $(DOCFILES) $(ALLOBJS)
 	$(OCAMLDOC) -dump $@ $(if $(LABLGLDIR),-I $(LABLGLDIR)) $(DOCFILES)
 gtkdoc.cmo : gtkdoc.ml
 	$(CAMLC) -I +ocamldoc -pp "$(CAMLP4O) pa_macro.cmo $(ODOC_DEF)" -c $<
 DOCDIR=../doc
 #DOC_URI=file:///usr/share/gtk-doc/html
 DOC_BASE_URI=$(if $(DOC_URI),-base-uri $(DOC_URI))
-doc : lablgtk$(XO)doc gtkdoc.cmo
+doc : lablgtk.odoc gtkdoc.cmo
 	mkdir -p $(DOCDIR)/html
 	$(OCAMLDOC) -sort -g ./gtkdoc.cmo $(DOC_BASE_URI) -t LablGTK -d $(DOCDIR)/html -load $<
-doc_texi : lablgtk$(XO)doc
+doc_texi : lablgtk.odoc
 	$(OCAMLDOC) -texi -t LablGTK -o $(DOCDIR)/lablgtk2.texi -load $<
 
 $(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
