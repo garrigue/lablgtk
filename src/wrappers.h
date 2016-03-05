@@ -37,6 +37,8 @@ CAMLextern char *young_start, *young_end; /* from minor_gc.h */
 
 CAMLexport value copy_memblock_indirected (void *src, asize_t size);
 value alloc_memblock_indirected (asize_t size);
+CAMLexport value ml_alloc_custom(struct custom_operations * ops,
+                                 uintnat size, mlsize_t mem, mlsize_t max);
 CAMLprim value ml_some (value);
 value ml_cons (value, value);
 CAMLexport void ml_raise_null_pointer (void) Noreturn;
@@ -288,7 +290,7 @@ static struct custom_operations ml_custom_##type = \
   custom_hash_default, custom_serialize_default, custom_deserialize_default };\
 CAMLprim value Val_##type (type *p) \
 { value ret; if (!p) ml_raise_null_pointer(); \
-  ret = alloc_custom (&ml_custom_##type, sizeof(value), adv, 1000); \
+  ret = ml_alloc_custom (&ml_custom_##type, sizeof(value), adv, 1000); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
 #define Make_Val_final_pointer_ext(type, ext, init, final, adv) \
@@ -299,7 +301,7 @@ static struct custom_operations ml_custom_##type##ext = \
   custom_hash_default, custom_serialize_default, custom_deserialize_default };\
 CAMLprim value Val_##type##ext (type *p) \
 { value ret; if (!p) ml_raise_null_pointer(); \
-  ret = alloc_custom (&ml_custom_##type##ext, sizeof(value), adv, 1000); \
+  ret = ml_alloc_custom (&ml_custom_##type##ext, sizeof(value), adv, 1000); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
 #define Make_Val_final_pointer_compare(type, init, comp, final, adv) \
@@ -312,7 +314,7 @@ static struct custom_operations ml_custom_##type = \
   custom_hash_default, custom_serialize_default, custom_deserialize_default };\
 CAMLprim value Val_##type (type *p) \
 { value ret; if (!p) ml_raise_null_pointer(); \
-  ret = alloc_custom (&ml_custom_##type, sizeof(value), adv, 1000); \
+  ret = ml_alloc_custom (&ml_custom_##type, sizeof(value), adv, 1000); \
   initialize (&Field(ret,1), (value) p); init(p); return ret; }
 
 #define Pointer_val(val) ((void*)Field(val,1))

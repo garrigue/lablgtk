@@ -118,8 +118,8 @@ value Val_GdkPixbuf_ (GdkPixbuf *pb, gboolean ref)
   GdkPixbuf **p;
   value ret; 
   if (pb == NULL) ml_raise_null_pointer(); 
-  ret = alloc_custom (&ml_custom_GdkPixbuf, sizeof pb, 
-		      100, 1000);
+  ret = ml_alloc_custom (&ml_custom_GdkPixbuf, sizeof pb, 
+                         100, 1000);
   p = Data_custom_val (ret);
   *p = ref ? g_object_ref (pb) : pb;
   return ret; 

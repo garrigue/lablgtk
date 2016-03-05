@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2016.03.04 [Jacques]
+  * use own definition of alloc_custom, to be sure to allocate in the heap
+
 2015.04.16 [Jacques]
   * fix GtkTree.TreeModel.cast
 

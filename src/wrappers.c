@@ -50,6 +50,23 @@ value alloc_memblock_indirected (asize_t size)
     return ret;
 }
 
+/* Reimplement the old behaviour of alloc_custom, to be sure that
+   values do not move around */
+CAMLexport value ml_alloc_custom(struct custom_operations * ops,
+                                 uintnat size,
+                                 mlsize_t mem,
+                                 mlsize_t max)
+{
+  mlsize_t wosize;
+  value result;
+
+  wosize = 1 + (size + sizeof(value) - 1) / sizeof(value);  
+  result = caml_alloc_shr(wosize, Custom_tag);
+  Custom_ops_val(result) = ops;
+  caml_adjust_gc_speed(mem, max);
+  return caml_check_urgent_gc(result);
+}
+
 CAMLprim value ml_some (value v)
 {
      CAMLparam1(v);
