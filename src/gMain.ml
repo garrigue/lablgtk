@@ -39,6 +39,8 @@ module Event = Event
 
 module Rc = Rc
 
+module Gc = Gc
+
 module Timeout = Glib.Timeout
 
 module Idle = Glib.Idle

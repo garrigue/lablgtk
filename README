@@ -279,6 +279,12 @@ Memory management:
   its last container is destroyed. For this reason you need only
   destroy toplevel widgets.
 
+  Since too frequent GC can severely degrade performance, since 2.18.4
+  it is possible to change the contribution of custom blocks to the
+  GC cycle, using the function GMain.Gc.set_speed. The default is 10%
+  of what it was in 2.18.3. If you set it to 0, custom block allocation
+  has no impact, and you should consider running the Gc by hand.
+
   IMPORTANT: Some Gtk data structures are allocated in the Caml heap,
   and their use in signals (Gtk functions internally cally callbacks)
   relies on their address being stable during a function call. For

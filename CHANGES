@@ -2,6 +2,8 @@ LablGTK changes log
 
 2016.03.06 [Jacques]
   * remove build dependency on camlp4 (still need for distribution)
+  * allow to change the GC speed (i.e. the impact of custom blocks)
+    see GMain.GC.set_speed.
 
 2016.03.04 [Jacques]
   * use own definition of alloc_custom, to be sure to allocate in the heap

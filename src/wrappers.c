@@ -50,6 +50,19 @@ value alloc_memblock_indirected (asize_t size)
     return ret;
 }
 
+static long gc_speed = 10;
+
+CAMLprim value ml_set_gc_speed(value percent)
+{
+  gc_speed = Int_val(percent);
+  return Val_unit;
+}
+
+CAMLprim value ml_get_gc_speed(value unit)
+{
+  return Val_int(gc_speed);
+}
+
 /* Reimplement the old behaviour of alloc_custom, to be sure that
    values do not move around */
 CAMLexport value ml_alloc_custom(struct custom_operations * ops,
@@ -63,7 +76,7 @@ CAMLexport value ml_alloc_custom(struct custom_operations * ops,
   wosize = 1 + (size + sizeof(value) - 1) / sizeof(value);  
   result = caml_alloc_shr(wosize, Custom_tag);
   Custom_ops_val(result) = ops;
-  caml_adjust_gc_speed(mem, max);
+  caml_adjust_gc_speed(mem*gc_speed, max*100);
   return caml_check_urgent_gc(result);
 }
 
