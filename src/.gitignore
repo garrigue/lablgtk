@@ -14,7 +14,6 @@ lablgtktop_t
 lablgtkrun
 lablgladecc
 xml_lexer.ml
-gtkSignal.ml
 gtk*Props.ml
 ogtk*Props.ml
 *_tags.c

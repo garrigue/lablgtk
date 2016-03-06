@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2016.03.06 [Jacques]
+  * remove build dependency on camlp4 (still need for distribution)
+
 2016.03.04 [Jacques]
   * use own definition of alloc_custom, to be sure to allocate in the heap
 

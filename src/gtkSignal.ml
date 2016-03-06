@@ -20,8 +20,6 @@
 (*                                                                        *)
 (**************************************************************************)
 
-(* $Id: gtkSignal.ml 1485 2009-09-22 21:39:32Z ben_99_9 $ *)
-
 open StdLabels
 open Gobject
 
@@ -65,11 +63,8 @@ let safe_call ?(where="function call") f x =
   with exn ->
     Printf.eprintf "In %s, uncaught exception: %s\n"
       where (Printexc.to_string exn);
-IFDEF HAS_PRINTEXC_BACKTRACE 
-THEN
   if Printexc.backtrace_status () then
     Printexc.print_backtrace stderr;
-END;
     flush stderr
 
 external signal_new : string -> g_type -> Gobject.signal_type list -> unit = "ml_g_signal_new_me"
