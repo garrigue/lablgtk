@@ -2626,7 +2626,8 @@ fi
 
 
 if test "$CAMLP4O" = no ; then
-	as_fn_error $? "Cannot find camlp4o." "$LINENO" 5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Cannot find camlp4o; please do not modify .ml4 files." >&5
+$as_echo "$as_me: WARNING: Cannot find camlp4o; please do not modify .ml4 files." >&2;}
 fi
 
 # Extract the first word of "ocamlfind", so it can be a program name with args.
@@ -6461,5 +6462,7 @@ fi
 echo
 echo $ECHO_N "	debug   $ECHO_C"
 if test -n "$DEBUG" ; then echo "	yes" ; else echo "	no" ; fi
-echo -e  "	C compiler	$CC"
+echo  "	C compiler	$CC"
+echo  "	Camlp4		$CAMLP4O"
+
 

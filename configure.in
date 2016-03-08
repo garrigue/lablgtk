@@ -151,7 +151,7 @@ fi
 
 AC_CHECK_PROG(CAMLP4O,camlp4o,camlp4o,no)
 if test "$CAMLP4O" = no ; then
-	AC_MSG_ERROR(Cannot find camlp4o.)
+	AC_MSG_WARN(Cannot find camlp4o; please do not modify .ml4 files.)
 fi
 
 AC_CHECK_PROG(OCAMLFIND,ocamlfind,ocamlfind,no)
@@ -405,5 +405,7 @@ CONF_SUMMARY(quartz   , GTKQUARTZ)
 echo
 echo $ECHO_N "	debug   $ECHO_C"
 if test -n "$DEBUG" ; then echo "	yes" ; else echo "	no" ; fi
-echo -e  "	C compiler	$CC"
+echo  "	C compiler	$CC"
+echo  "	Camlp4		$CAMLP4O"
+
 
