@@ -541,8 +541,7 @@ check_externals$(XE): check_externals.cmo
 
 clean:
 	rm -f *.cm* *.o *.a *.so *.exe *.obj *.lib *.dll *_tags.[ch] *.gch \
-	  $(TARGETS) varcc.ml gtkSignal.ml xml_lexer.ml \
-	  propcc$(XE) check_externals$(XE) check_externals.ml propcc.ml \
+	  $(TARGETS) xml_lexer.ml propcc$(XE) check_externals$(XE) \
 	  *Enums.ml *Props.ml
 	rm -f \#*\# *~
 
