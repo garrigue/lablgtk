@@ -176,7 +176,7 @@ CAMLprim value ml_gnome_canvas_w2c_d(value c, value wx, value wy)
 CAMLprim value ml_gnome_canvas_c2w(value c, value cx, value cy)
 {
   double wx, wy;
-  gnome_canvas_w2c_d(GnomeCanvas_val(c), Int_val(cx), Int_val(cy), &wx, &wy);
+  gnome_canvas_c2w(GnomeCanvas_val(c), Int_val(cx), Int_val(cy), &wx, &wy);
   return copy_two_doubles(wx, wy);
 }
 
