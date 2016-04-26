@@ -246,7 +246,7 @@ and canvas_t =
     inherit GPack.layout
     val obj : GnomeCanvas.canvas Gtk.obj
     method aa : bool
-    method c2w : cx:float -> cy:float -> float * float
+    method c2w : cx:int -> cy:int -> float * float
     method get_center_scroll_region : bool
     method get_item_at : x:float -> y:float -> base_item_t
     method get_scroll_offsets : int * int

@@ -60,7 +60,7 @@ external get_item_at : [> canvas] Gobject.obj -> x:float -> y:float -> item Gobj
 external w2c_affine : [> canvas] Gobject.obj -> float array = "ml_gnome_canvas_w2c_affine"
 external w2c : [> canvas] Gobject.obj -> wx:float -> wy:float -> int * int = "ml_gnome_canvas_w2c"
 external w2c_d : [> canvas] Gobject.obj -> wx:float -> wy:float -> float * float = "ml_gnome_canvas_w2c_d"
-external c2w : [> canvas] Gobject.obj -> cx:float -> cy:float -> float * float = "ml_gnome_canvas_c2w"
+external c2w : [> canvas] Gobject.obj -> cx:int -> cy:int -> float * float = "ml_gnome_canvas_c2w"
 external window_to_world : [> canvas] Gobject.obj -> winx:float -> winy:float -> float * float = "ml_gnome_canvas_window_to_world"
 external world_to_window : [> canvas] Gobject.obj -> wox:float -> woy:float -> float * float = "ml_gnome_canvas_world_to_window"
 
