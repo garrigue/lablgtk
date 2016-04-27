@@ -39,7 +39,7 @@ module Event = Event
 
 module Rc = Rc
 
-module Gc = Gc
+module Gc_custom = Gc_custom
 
 module Timeout = Glib.Timeout
 

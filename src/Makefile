@@ -194,8 +194,10 @@ endif
 	$(COMPILER) $<
 .ml.cmx:
 	$(COMPOPT) $<
+ifneq ($(CAMLP4O),no)
 .ml4.ml:
 	$(CAMLP4O) -impl $< -o $@
+endif
 #.ml4.cmo:
 #	$(CAMLC) -c -pp "$(CAMLP4O) -impl" -impl $<
 .cmxa.cmxs:

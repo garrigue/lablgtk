@@ -93,7 +93,7 @@ module Io : sig
   val read_chars : channel -> buf:string -> pos:int -> len:int -> int
 end
 
-module Gc : sig
+module Gc_custom : sig
   val set_speed : int -> unit
     (** make the allocation of custom blocks contribute more or less to
         the GC cycle. 0 means do nothing, 100 is as in lablgtk 2.18.3.

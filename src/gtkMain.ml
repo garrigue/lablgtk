@@ -91,7 +91,7 @@ module Rc = struct
   external parse_string : string -> unit = "ml_gtk_rc_parse_string"
 end
 
-module Gc = struct
+module Gc_custom = struct
   external set_speed : int -> unit = "ml_set_gc_speed"
   external get_speed : unit -> int = "ml_get_gc_speed"
 end

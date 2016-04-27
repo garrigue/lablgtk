@@ -1,10 +1,17 @@
 LablGTK changes log
 
+In Lablgtk-2.18.4:
+
+2016.04.27 [Jacques]
+  * disable camlp4 make rule when no camlp4o available
+  * update applications
+  * rename GC module to GMain.Gc_custom
+
 2016.04.11 [Jacques]
   * Fix ml_gnome_canvas_c2w (Didier Le Botlan)
 
 2016.03.06 [Jacques]
-  * remove build dependency on camlp4 (still need for distribution)
+  * remove build dependency on camlp4 (still needed for tree version)
   * allow to change the GC speed (i.e. the impact of custom blocks)
     see GMain.GC.set_speed.
 
