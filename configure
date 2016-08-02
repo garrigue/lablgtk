@@ -590,6 +590,7 @@ HAVE_SVGZ
 LABLGLDIR
 OCAMLLDCONF
 FINDLIBDIR
+OCAML_CC_EXTRA_FLAGS
 HAS_NATIVE_DYNLINK
 HAS_DLL_SUPPORT
 THREADS_LIB
@@ -3620,6 +3621,44 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
+OCAML_CC_EXTRA_FLAGS=
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -fno-unwind-tables" >&5
+$as_echo_n "checking whether C compiler accepts -fno-unwind-tables... " >&6; }
+if ${ax_cv_check_cflags___fno_unwind_tables+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -fno-unwind-tables"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___fno_unwind_tables=yes
+else
+  ax_cv_check_cflags___fno_unwind_tables=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___fno_unwind_tables" >&5
+$as_echo "$ax_cv_check_cflags___fno_unwind_tables" >&6; }
+if test "x$ax_cv_check_cflags___fno_unwind_tables" = xyes; then :
+  OCAML_CC_EXTRA_FLAGS=-fno-unwind-tables
+else
+  :
+fi
+
+
 # platform
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking platform" >&5
 $as_echo_n "checking platform... " >&6; }
@@ -3651,7 +3690,6 @@ rm test_dynlink.*
 # GTK 2 auto configuration
 
 GTKPKG=gtk+-2.0
-
 # Check whether --enable-gtktest was given.
 if test "${enable_gtktest+set}" = set; then :
   enableval=$enable_gtktest;
@@ -5176,6 +5214,7 @@ fi
 
 
 # substitutions to perform
+
 
 
 

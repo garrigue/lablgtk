@@ -2,6 +2,8 @@ LablGTK changes log
 
 2016.08.02 [Jacques]
   * add CAMLparam before CAMLlocal (report by Francois Bobot)
+  * add -fno-unwind-tables to GTKCFLAGS if the compiler allows it
+    (suggested by Bart Jacobs)
 
 In Lablgtk-2.18.4:
 

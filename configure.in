@@ -219,6 +219,24 @@ if test -z "$CC" ; then
 fi
 AC_PROG_CC
 
+AC_DEFUN([AX_CHECK_COMPILE_FLAG],
+[AC_PREREQ(2.64)dnl for _AC_LANG_PREFIX and AS_VAR_IF
+AS_VAR_PUSHDEF([CACHEVAR],[ax_cv_check_[]_AC_LANG_ABBREV[]flags_$4_$1])dnl
+AC_CACHE_CHECK([whether _AC_LANG compiler accepts $1], CACHEVAR, [
+  ax_check_save_flags=$[]_AC_LANG_PREFIX[]FLAGS
+  _AC_LANG_PREFIX[]FLAGS="$[]_AC_LANG_PREFIX[]FLAGS $4 $1"
+  AC_COMPILE_IFELSE([m4_default([$5],[AC_LANG_PROGRAM()])],
+    [AS_VAR_SET(CACHEVAR,[yes])],
+    [AS_VAR_SET(CACHEVAR,[no])])
+  _AC_LANG_PREFIX[]FLAGS=$ax_check_save_flags])
+AS_VAR_IF(CACHEVAR,yes,
+  [m4_default([$2], :)],
+  [m4_default([$3], :)])
+AS_VAR_POPDEF([CACHEVAR])dnl
+])dnl AX_CHECK_COMPILE_FLAGS
+OCAML_CC_EXTRA_FLAGS=
+AX_CHECK_COMPILE_FLAG(-fno-unwind-tables,[OCAML_CC_EXTRA_FLAGS=-fno-unwind-tables])
+
 # platform
 AC_MSG_CHECKING(platform)
 echo "print_endline Sys.os_type ;;" > conftest.ml
@@ -360,6 +378,7 @@ AC_SUBST(OCAMLYACC)
 AC_SUBST(THREADS_LIB)
 AC_SUBST(HAS_DLL_SUPPORT)
 AC_SUBST(HAS_NATIVE_DYNLINK)
+AC_SUBST(OCAML_CC_EXTRA_FLAGS)
 
 AC_SUBST(CAMLC)
 AC_SUBST(CAMLOPT)

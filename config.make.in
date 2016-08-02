@@ -68,7 +68,7 @@ FLINSTALLDIR=$(DESTDIR)$(FINDLIBDIR)/lablgtk2
 FILT = -Wl,--export-dynamic
 clean_libs = $(subst -pthread,-ldopt -pthread -ccopt -pthread,$(subst --rpath,-rpath,$(filter-out $(FILT),$(1))))
 
-GTKCFLAGS=@GTKALL_CFLAGS@
+GTKCFLAGS=@OCAML_CC_EXTRA_FLAGS@ @GTKALL_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 GTKLIBS:=$(call clean_libs,$(GTK_LIBS))
 GTKGL_LIBS = @GTKGL_LIBS@
