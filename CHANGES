@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2016.08.02 [Jacques]
+  * add CAMLparam before CAMLlocal (report by Francois Bobot)
+
 In Lablgtk-2.18.4:
 
 2016.04.27 [Jacques]
