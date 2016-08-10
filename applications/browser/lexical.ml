@@ -126,7 +126,7 @@ let tag ?start ?stop (tb : GText.buffer) =
       | INFIXOP3 _
       | INFIXOP4 _
       | PREFIXOP _
-      | SHARP
+      | HASH
           -> "infix"
       | LABEL _
       | OPTLABEL _

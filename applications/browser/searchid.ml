@@ -449,6 +449,7 @@ let rec bound_variables pat =
   | Ppat_lazy pat -> bound_variables pat
   | Ppat_extension _ -> []
   | Ppat_exception pat -> bound_variables pat
+  | Ppat_open (_, pat) -> bound_variables pat
 
 let search_structure str ~name ~kind ~prefix =
   let loc = ref 0 in

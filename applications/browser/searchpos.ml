@@ -163,12 +163,15 @@ let rec search_pos_class_type cl ~pos ~env =
     | Pcty_extension _ -> ()
     end
 
-let search_pos_args args ~pos ~env =
-  match args with
-    Pcstr_tuple l ->
-      List.iter l ~f:(search_pos_type ~pos ~env)
-  | Pcstr_record dl ->
-      List.iter dl ~f:(fun pld -> search_pos_type pld.pld_type ~pos ~env)
+let search_pos_arguments ~pos ~env = function
+    Pcstr_tuple l -> List.iter l ~f:(search_pos_type ~pos ~env)
+  | Pcstr_record l -> List.iter l ~f:(fun ld -> search_pos_type ld.pld_type ~pos ~env)
+
+let search_pos_constructor pcd ~pos ~env =
+  if in_loc ~pos pcd.pcd_loc then begin
+    Misc.may (search_pos_type ~pos ~env) pcd.pcd_res;
+    search_pos_arguments ~pos ~env pcd.pcd_args
+  end
 
 let search_pos_type_decl td ~pos ~env =
   if in_loc ~pos td.ptype_loc then begin
@@ -180,13 +183,7 @@ let search_pos_type_decl td ~pos ~env =
       Ptype_abstract
     | Ptype_open -> ()
     | Ptype_variant dl ->
-        List.iter dl ~f:
-          begin fun pcd ->
-            search_pos_args pcd.pcd_args ~pos ~env;
-            match pcd.pcd_res with
-              Some t -> search_pos_type t ~pos ~env
-            | None -> ()
-          end
+        List.iter dl ~f:(search_pos_constructor ~pos ~env)
     | Ptype_record dl ->
         List.iter dl ~f:(fun pld -> search_pos_type pld.pld_type ~pos ~env) in
     search_tkind td.ptype_kind;
@@ -199,7 +196,7 @@ let search_pos_type_decl td ~pos ~env =
 
 let search_pos_extension ext ~pos ~env =
   begin match ext.pext_kind with
-    Pext_decl (l, _) -> search_pos_args l ~pos ~env
+    Pext_decl (l, _) -> search_pos_arguments l ~pos ~env
   | Pext_rebind _ -> ()
   end
   
@@ -501,7 +498,7 @@ and view_type_decl path ~env =
       [Sig_type(ident_of_path path ~default:"t", td, Trec_first)]
 
 and view_type_id li ~env =
-  let path, decl = lookup_type li env in
+  let path = lookup_type li env in
   view_type_decl path ~env
 
 and view_class_id li ~env =
@@ -544,7 +541,7 @@ and view_decl lid ~kind ~env =
 and view_decl_menu lid ~kind ~env =
   let path, kname =
     try match kind with
-      `Type -> fst (lookup_type lid env), "Type"
+      `Type -> lookup_type lid env, "Type"
     | `Class -> fst (lookup_class lid env), "Class"
     | `Module -> lookup_module ~load:true lid env, "Module"
     | `Modtype -> fst (lookup_modtype lid env), "Module type"
@@ -704,7 +701,7 @@ let rec search_pos_structure ~pos str =
   | Tstr_recmodule bindings ->
       List.iter bindings ~f:(fun mb -> search_pos_module_expr mb.mb_expr ~pos)
   | Tstr_class l ->
-      List.iter l ~f:(fun (cl, _) -> search_pos_class_expr cl.ci_expr ~pos)
+      List.iter l ~f:(fun (ci, _) -> search_pos_class_expr ci.ci_expr ~pos)
   | Tstr_include {incl_mod=m} -> search_pos_module_expr m ~pos
   | Tstr_primitive _
   | Tstr_type _
@@ -801,8 +798,9 @@ and search_pos_expr ~pos exp =
   | Texp_construct (_, _, l) -> List.iter l ~f:(search_pos_expr ~pos)
   | Texp_variant (_, None) -> ()
   | Texp_variant (_, Some exp) -> search_pos_expr exp ~pos
-  | Texp_record (l, opt) ->
-      List.iter l ~f:(fun (_, _, exp) -> search_pos_expr exp ~pos);
+  | Texp_record {fields=l; extended_expression=opt} ->
+      Array.iter l ~f:
+        (function (_,Overridden(_,exp)) -> search_pos_expr exp ~pos | _ -> ());
       (match opt with None -> () | Some exp -> search_pos_expr exp ~pos)
   | Texp_field (exp, _, _) -> search_pos_expr exp ~pos
   | Texp_setfield (a, _, _, b) ->
@@ -847,6 +845,8 @@ and search_pos_expr ~pos exp =
       ()
   | Texp_extension_constructor _ ->
       ()
+  | Texp_letexception (_, exp) ->
+      search_pos_expr exp ~pos
   end;
   add_found_str (`Exp(`Expr, exp.exp_type)) ~env:exp.exp_env ~loc:exp.exp_loc
   end
