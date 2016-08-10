@@ -1,5 +1,10 @@
 LablGTK changes log
 
+In Lablgtk-2.18.5:
+
+2016.08.10 [Jacques]
+  * update applications/browser for 4.04
+
 2016.08.02 [Jacques]
   * add CAMLparam before CAMLlocal (report by Francois Bobot)
   * add -fno-unwind-tables to GTKCFLAGS if the compiler allows it
