@@ -76,9 +76,9 @@ module Io = struct
   external add_watch :
     cond:condition list -> callback:(condition list -> bool) -> ?prio:int -> channel -> id
     = "ml_g_io_add_watch"
-  external read : channel -> buf:string -> pos:int -> len:int -> int
+  external read : channel -> buf:bytes -> pos:int -> len:int -> int
     = "ml_g_io_channel_read"
-  external read_chars : channel -> buf:string -> pos:int -> len:int -> int
+  external read_chars : channel -> buf:bytes -> pos:int -> len:int -> int
     = "ml_g_io_channel_read_chars"
 end
 
@@ -189,7 +189,7 @@ module Unichar = struct
   external digit_value : unichar -> int = "ml_g_unichar_digit_value"
   external xdigit_value : unichar -> int = "ml_g_unichar_xdigit_value"
 
-  external validate : unichar -> bool = "ml_g_unichar_validate" "noalloc"
+  external validate : unichar -> bool = "ml_g_unichar_validate" [@@noalloc]
   external isalnum : unichar -> bool = "ml_g_unichar_isalnum"
   external isalpha : unichar -> bool = "ml_g_unichar_isalpha"
   external iscntrl : unichar -> bool = "ml_g_unichar_iscntrl"
@@ -213,7 +213,7 @@ module Utf8 = struct
   external length : string -> int = "ml_g_utf8_strlen"
 
   external offset_to_pos : string -> pos:int -> off:int -> int
-      = "ml_g_utf8_offset_to_pointer" "noalloc"
+      = "ml_g_utf8_offset_to_pointer" [@@noalloc]
 
   external uppercase : string -> string = "ml_g_utf8_strup"
   external lowercase : string -> string = "ml_g_utf8_strdown"

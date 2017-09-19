@@ -82,7 +82,7 @@ external set_default_dpi : float -> unit = "ml_rsvg_set_default_dpi"
 
 type input = 
   | Rsvg_SubString of string * int * int
-  | Rsvg_Buffer of int * (string -> int)
+  | Rsvg_Buffer of int * (bytes -> int)
 
 let render ?(gz=false) ?dpi ?size_cb input =
   let h = if gz then new_handle_gz () else new_handle () in
@@ -93,10 +93,10 @@ let render ?(gz=false) ?dpi ?size_cb input =
     | Rsvg_SubString (s, off, len) ->
 	write h s ~off ~len
     | Rsvg_Buffer (len, fill) ->
-	let buff = String.create len in
+	let buff = Bytes.create len in
 	let c = ref (fill buff) in
 	while !c > 0 do
-	  write h buff 0 !c ;
+	  write h (Bytes.unsafe_to_string buff) 0 !c ;
 	  c := fill buff
 	done
     end ;
@@ -118,7 +118,7 @@ let render_from_file ?(gz=false) ?dpi ?size_cb fname =
   let pb = 
     try 
       render ~gz ?dpi ?size_cb
-	(Rsvg_Buffer (4096, (fun b -> input ic b 0 (String.length b))))
+	(Rsvg_Buffer (4096, (fun b -> input ic b 0 (Bytes.length b))))
     with exn ->
       close_in ic ; raise exn in
   close_in ic ;

@@ -15,19 +15,21 @@ open Gdk
 (* load image *)
 let load_image file =
   print_endline "Load as string";
-  let buf = String.create (256*256*3) in
+  let buf = Bytes.create (256*256*3) in
   let ic = open_in_bin file in
   really_input ic buf 0 (256*256*3);
   close_in ic;
   buf
 
+let (.![]) = Bytes.get
+
 let rgb_at buf x y =
   let offset = (y * 256 + x) * 3 in
-  (int_of_char buf.[offset  ],
-   int_of_char buf.[offset+1],
-   int_of_char buf.[offset+2])
+  (int_of_char (buf.![offset  ]),
+   int_of_char (buf.![offset+1]),
+   int_of_char (buf.![offset+2]))
 
-let create_region = Gpointer.region_of_string
+let create_region = Gpointer.region_of_bytes
 
 (* alternate approach: map the file *)
 (* Requires bigarray.cma, but needed for Rgb.draw_image *)

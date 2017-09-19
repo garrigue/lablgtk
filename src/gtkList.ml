@@ -185,7 +185,7 @@ module CList = struct
   let insert w ~row texts =
     let len = get_columns w in
     if List.length texts > len then invalid_arg "CList.insert";
-    let arr = Array.create (get_columns w) None in
+    let arr = Array.make (get_columns w) None in
     List.fold_left texts ~init:0
       ~f:(fun pos text -> arr.(pos) <- text; pos+1);
     let r = insert w ~row (Array.map ~f:Gpointer.optstring arr) in

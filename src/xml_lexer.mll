@@ -94,7 +94,7 @@ rule token = parse
 and chars = parse
   | [ ^ '&' '<' ] +
       { let len = lexbuf.Lexing.lex_curr_pos - lexbuf.Lexing.lex_start_pos in
-	Buffer.add_substring buffer lexbuf.Lexing.lex_buffer lexbuf.Lexing.lex_start_pos len ;
+	Buffer.add_subbytes buffer lexbuf.Lexing.lex_buffer lexbuf.Lexing.lex_start_pos len ;
         chars lexbuf }
   | '&'
       { Buffer.add_string buffer (entity lexbuf) ;

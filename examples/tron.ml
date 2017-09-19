@@ -23,7 +23,7 @@ let main () =
 (* Game State *)
   let gameSize = 64 in
   let gameState =
-    Array.create_matrix (gameSize+2) (gameSize+2) 0 in
+    Array.make_matrix (gameSize+2) (gameSize+2) 0 in
   let gameInit _ = 
     for i=1 to gameSize do
       for j=1 to gameSize do
@@ -41,7 +41,7 @@ let main () =
   let lspeed = {x=0; y=1} in
   let rpos = {x=gameSize-3; y=gameSize-3} in
   let rspeed = {x=0; y= -1} in
-  let keys = "asdfhjkl" in
+  let keys = Bytes.of_string "asdfhjkl" in
   let keyMapL = [|(-1, 0); (0, -1); (0, 1); (1, 0)|] in
   let keyMapR = [|(-1, 0); (0, 1); (0, -1); (1, 0)|] in
 
@@ -84,7 +84,7 @@ let main () =
     let dialog = GWindow.window ~border_width:10 ~title:"Key remap" () in
     let dvbx = GPack.box `VERTICAL ~packing:dialog#add () in
     let entry  = GEdit.entry ~max_length:1 ~packing: dvbx#add () in
-    let txt = String.make 1 keys.[num] in
+    let txt = String.make 1 (Bytes.get keys num) in
     entry#set_text txt;
     let dquit = GButton.button ~label:"OK" ~packing: dvbx#add () in 
     dquit#connect#clicked ~callback:
@@ -92,14 +92,14 @@ let main () =
 	let chr = entry#text.[0] in
         let txt2 = String.make 1 chr in
         lbl#set_text txt2;
-        keys.[num]<-chr; 
+        Bytes.set keys num chr;
         dialog#destroy ()
       end;
     dialog#show ()
   end in
   let attach = control#attach ~expand:`BOTH in
   let new_my_button ~label:label ~left:left ~top:top =
-      let str = String.make 1 keys.[label] in
+      let str = String.make 1 (Bytes.get keys label) in
       let btn = GButton.button ~packing:(attach ~left:left ~top:top) () in
       let lbl = GMisc.label ~text:str ~packing:(btn#add) () in
       btn#connect#clicked ~callback:(abuttonClicked label lbl);
@@ -133,13 +133,13 @@ let main () =
     let key = GdkEvent.Key.keyval ev in
     for i=0 to (Array.length keyMapL)-1 do
        let (x, y) = keyMapL.(i) in
-       let k = keys.[i] in
+       let k = Bytes.get keys i in
        if key = Char.code k then begin
          lspeed.x <- x;
          lspeed.y <- y 
        end;
        let (x, y) = keyMapR.(i) in
-       let k = keys.[i+4] in
+       let k = Bytes.get keys (i+4) in
        if key = Char.code k then begin
          rspeed.x <- x;
          rspeed.y <- y 

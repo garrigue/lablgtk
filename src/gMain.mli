@@ -89,8 +89,8 @@ module Io : sig
   val add_watch :
     cond:condition list -> callback:(condition list -> bool) -> ?prio:int -> channel -> id
   val remove : id -> unit
-  val read : channel -> buf:string -> pos:int -> len:int -> int
-  val read_chars : channel -> buf:string -> pos:int -> len:int -> int
+  val read : channel -> buf:bytes -> pos:int -> len:int -> int
+  val read_chars : channel -> buf:bytes -> pos:int -> len:int -> int
 end
 
 module Gc_custom : sig

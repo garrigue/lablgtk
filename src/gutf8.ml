@@ -54,28 +54,28 @@ let write_unichar s ~pos (c : unichar) =
   let len = utf8_storage_len c in
   let p = !pos in
   if len = 1 then
-    String.unsafe_set s p (Char.unsafe_chr c)
+    Bytes.unsafe_set s p (Char.unsafe_chr c)
   else begin
-    String.unsafe_set s p
+    Bytes.unsafe_set s p
       (Char.unsafe_chr (((1 lsl len - 1) lsl (8-len)) lor (c lsr ((len-1)*6))));
     for i = 1 to len-1 do
-      String.unsafe_set s (p+i) 
+      Bytes.unsafe_set s (p+i) 
 	(Char.unsafe_chr (((c lsr ((len-1-i)*6)) land 0x3f) lor 0x80))
     done;
   end;
   pos := p + len
 
 let from_unichar (n : unichar) =
-  let s = String.create 6 and pos = ref 0 in
+  let s = Bytes.create 6 and pos = ref 0 in
   write_unichar s ~pos n;
-  String.sub s 0 !pos
+  Bytes.sub_string s 0 !pos
 
 let from_unistring (s : unistring) =
   let len = Array.length s in
-  let r = String.create (len*6) in
+  let r = Bytes.create (len*6) in
   let pos = ref 0 in
   for i = 0 to len-1 do write_unichar r ~pos s.(i) done;
-  String.sub r 0 !pos
+  Bytes.sub_string r 0 !pos
 
 let rec hi_bits n =
   if n land 0x80 = 0 then 0 else
@@ -142,7 +142,7 @@ let length s =
 
 let to_unistring s : unistring =
   let len = length s in
-  let us = Array.create len 0 in
+  let us = Array.make len 0 in
   let pos = ref 0 in
   for i = 0 to len - 1 do
     us.(i) <- to_unichar s ~pos

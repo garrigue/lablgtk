@@ -328,7 +328,7 @@ type 'a shortcut_specification = {
 let mk_keys (mods, c) =
   let mods = List.map (function `A -> "<Alt>" | `C -> "<Control>" | `S ->
     "<Shift>") mods in
-  (String.concat "" mods) ^ (String.make 1 (Char.uppercase c))
+  (String.concat "" mods) ^ (String.make 1 (Char.uppercase_ascii c))
 
 (* Signal creation for shortcuts unfortunately requires us to create an
  * in-memory gtkrc file which this function do. *)
