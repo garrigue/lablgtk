@@ -20,7 +20,7 @@
 (*                                                                        *)
 (**************************************************************************)
 
-(* $Id$ *)
+open StdLabels
 
 type unichar = int
 type unistring = unichar array
@@ -68,14 +68,14 @@ let write_unichar s ~pos (c : unichar) =
 let from_unichar (n : unichar) =
   let s = Bytes.create 6 and pos = ref 0 in
   write_unichar s ~pos n;
-  Bytes.sub_string s 0 !pos
+  Bytes.sub_string s ~pos:0 ~len:!pos
 
 let from_unistring (s : unistring) =
   let len = Array.length s in
   let r = Bytes.create (len*6) in
   let pos = ref 0 in
   for i = 0 to len-1 do write_unichar r ~pos s.(i) done;
-  Bytes.sub_string r 0 !pos
+  Bytes.sub_string r ~pos:0 ~len:!pos
 
 let rec hi_bits n =
   if n land 0x80 = 0 then 0 else

@@ -7,6 +7,7 @@
 (*                                                                        *)
 (**************************************************************************)
 
+open StdLabels
 open GMain
 
 (* On Windows, the channel will be set to non blocking mode. 
@@ -24,7 +25,7 @@ let channel_redirector channel callback =
       try if List.mem `IN cond then begin
 	(* On Windows, you must use Io.read *)
 	let len = Io.read channel ~buf ~pos:0 ~len in
-	len >= 1 && (callback (Bytes.sub_string buf 0 len)) 
+	len >= 1 && (callback (Bytes.sub_string buf ~pos:0 ~len)) 
       end
       else false
       with e -> callback 

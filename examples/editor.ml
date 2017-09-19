@@ -40,7 +40,7 @@ class editor ?packing ?show () = object (self)
       text#delete_text ~start:0 ~stop:text#length;
       let buf = Bytes.create 1024 and len = ref 0 in
       while len := input ic buf 0 1024; !len > 0 do
-        text#insert (Bytes.sub_string buf 0 !len)
+        text#insert (Bytes.sub_string buf ~pos:0 ~len:!len)
       done;
       text#set_point 0;
       text#thaw ();
