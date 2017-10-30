@@ -95,11 +95,11 @@ object (self)
     with Sys_error _ -> ()
   method private read ~fd ~len =
     try
-      let buf = String.create len in
+      let buf = Bytes.create len in
       let len = Unix.read fd ~buf ~pos:0 ~len in
       if len > 0 then begin
 	buffer#place_cursor buffer#end_iter;
-	self#insert (String.sub buf ~pos:0 ~len);
+	self#insert (Bytes.sub_string buf ~pos:0 ~len);
 	self#set_input_start ();
       end;
       len

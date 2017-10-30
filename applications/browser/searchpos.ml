@@ -126,7 +126,8 @@ let rec search_pos_type t ~pos ~env =
       List.iter tl ~f:(search_pos_type ~pos ~env);
       add_found_sig (`Type, lid.txt) ~env ~loc:t.ptyp_loc
   | Ptyp_object (fl, _) ->
-      List.iter fl ~f:(fun (_, _, ty) -> search_pos_type ty ~pos ~env)
+      List.iter fl ~f:
+        (function Oinherit ty | Otag (_, _, ty) -> search_pos_type ty ~pos ~env)
   | Ptyp_class (lid, tl) ->
       List.iter tl ~f:(search_pos_type ~pos ~env);
       add_found_sig (`Type, lid.txt) ~env ~loc:t.ptyp_loc
@@ -161,6 +162,8 @@ let rec search_pos_class_type cl ~pos ~env =
         search_pos_type ty ~pos ~env;
         search_pos_class_type cty ~pos ~env
     | Pcty_extension _ -> ()
+    | Pcty_open (_, _, cty) ->
+        search_pos_class_type cty ~pos ~env
     end
 
 let search_pos_arguments ~pos ~env = function
@@ -207,9 +210,9 @@ let rec search_pos_signature l ~pos ~env =
     let env = match pt.psig_desc with
       Psig_open {popen_override=ovf; popen_lid=id} ->
         let path, mt = Typetexp.find_module env Location.none id.txt in
-        begin match mt.md_type with
-          Mty_signature sign -> open_signature ovf path sign env
-        | _ -> env
+        begin match open_signature ovf path env with
+          Some env -> env
+        | None -> env
         end
     | sign_item ->
         try add_signature (Typemod.transl_signature env [pt]).sig_type env
@@ -347,7 +350,10 @@ let dummy_item =
 let rec view_signature ?title ?path ?(env = !start_env) ?(detach=false) sign =
   let env =
     match path with None -> env
-    | Some path -> Env.open_signature Fresh path sign env in
+    | Some path ->
+        match Env.open_signature Fresh path env with None -> env
+        | Some env -> env
+  in
   let title =
     match title, path with Some title, _ -> title
     | None, Some path -> string_of_path path
@@ -752,6 +758,7 @@ and search_pos_class_expr ~pos cl =
           end;
         List.iter iel ~f:(fun (_,_, exp) -> search_pos_expr exp ~pos);
         search_pos_class_expr cl ~pos
+    | Tcl_open (_, _, _, _, cl)
     | Tcl_constraint (cl, _, _, _, _) ->
         search_pos_class_expr cl ~pos
     end;
@@ -783,7 +790,7 @@ and search_pos_expr ~pos exp =
         search_pos_expr exp' ~pos
       end;
       search_pos_expr exp ~pos
-  | Texp_function (_, l, _) ->
+  | Texp_function {cases=l; _} ->
       List.iter l ~f:(search_case ~pos)
   | Texp_apply (exp, l) ->
       List.iter l ~f:(fun (_, x) -> Misc.may (search_pos_expr ~pos) x);
