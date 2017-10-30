@@ -1,5 +1,7 @@
 LablGTK changes log
 
+In Lablgtk-2.18.6:
+
 2017.09.19 [Jacques]
   * prepare for 4.06: -safe-string transition and warnings
 
