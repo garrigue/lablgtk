@@ -668,26 +668,25 @@ static gboolean window_unref (gpointer w)
     /* If the window exists, has no parent, is still not visible,
        and has only two references (mine and toplevel_list),
        then destroy it. */
-    if (GTK_WINDOW(w)->has_user_ref_count && !GTK_WIDGET_VISIBLE(w)
-        && G_OBJECT(w)->ref_count == 2)
-        gtk_object_destroy ((GtkObject*)w);
-    gtk_object_unref((GtkObject*)w);
+    if (/* GTK_WINDOW(w)->has_user_ref_count && */
+        !gtk_widget_get_visible(w) && G_OBJECT(w)->ref_count == 2)
+        gtk_widget_destroy ((GtkWidget*)w);
+    g_object_unref((GObject*)w);
     return 0;
 }
-static void window_unref_later (GtkObject *p)
+static void window_unref_later (GtkWidget *p)
 {
      g_timeout_add_full(G_PRIORITY_HIGH_IDLE, 0, window_unref,
                         (gpointer)(p), NULL);
 }
 
-Make_Val_final_pointer_ext (GtkObject, _window, gtk_object_ref,
+Make_Val_final_pointer_ext (GtkWidget, _window, g_object_ref,
                             window_unref_later, 20)
-#define Val_GtkWidget_window(w) Val_GtkObject_window(GTK_OBJECT(w))
 
 #define GtkDialog_val(val) check_cast(GTK_DIALOG,val)
 /* ML_0 (gtk_dialog_new, Val_GtkWidget_window) */
-Make_Extractor (GtkDialog, GtkDialog_val, action_area, Val_GtkWidget)
-Make_Extractor (GtkDialog, GtkDialog_val, vbox, Val_GtkWidget)
+ML_1 (gtk_dialog_get_action_area, GtkDialog_val, Val_GtkWidget)
+ML_1 (gtk_dialog_get_content_area, GtkDialog_val, Val_GtkWidget)
 ML_2 (gtk_dialog_response, GtkDialog_val, Int_val, Unit)
 ML_3 (gtk_dialog_add_button, GtkDialog_val, String_val, Int_val, Unit)
 ML_3 (gtk_dialog_set_response_sensitive, GtkDialog_val, Int_val, Bool_val, Unit)
@@ -700,8 +699,9 @@ ML_1 (gtk_dialog_run, GtkDialog_val, Val_int)
 ML_1 (gtk_window_new, Window_type_val, Val_GtkWidget_window)
 /* ML_2 (gtk_window_set_title, GtkWindow_val, String_val, Unit) */
 ML_3 (gtk_window_set_wmclass, GtkWindow_val, String_val, String_val, Unit)
+/* not in 3
 Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_name, Val_optstring)
-Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_class, Val_optstring)
+Make_Extractor (gtk_window_get, GtkWindow_val, wmclass_class, Val_optstring) */
 ML_2 (gtk_window_add_accel_group, GtkWindow_val,
       GtkAccelGroup_val, Unit)
 ML_2 (gtk_window_remove_accel_group, GtkWindow_val,
@@ -816,6 +816,7 @@ ml_activate_link_func (GtkAboutDialog *about, const gchar *link, gpointer data)
   callback_exn (*closure, v_link);
 }
 
+/* not in 3
 CAMLprim value
 ml_gtk_about_dialog_set_url_hook (value hook)
 {
@@ -833,6 +834,7 @@ ml_gtk_about_dialog_set_email_hook (value hook)
 				   ml_global_root_destroy);
   return Val_unit;
 }
+*/
 
 #define GtkAboutDialog_val(v) (check_cast (GTK_ABOUT_DIALOG, v))
 
@@ -889,7 +891,9 @@ ML_1 (gtk_plug_new, GdkNativeWindow_val, Val_GtkWidget_window)
 Unsupported(gtk_socket_steal)
 #else
 #define GtkSocket_val(val) check_cast(GTK_SOCKET,val)
-ML_2 (gtk_socket_steal, GtkSocket_val, GdkNativeWindow_val, Unit)
+ML_2 (gtk_socket_add_id, GtkSocket_val, GdkNativeWindow_val, Unit)
+ML_1 (gtk_socket_get_id, GtkSocket_val, Val_GdkNativeWindow)
+ML_1 (gtk_socket_get_plug_window, GtkSocket_val, Val_GdkWindow)
 #endif
 
 /* gtkmain.h */
@@ -910,7 +914,8 @@ CAMLprim value ml_gtk_init (value argv)
     for (i = 0; i < argc; i++) modify(&Field(argv,i), Field(copy,i));
     CAMLreturn (argv);
 }
-ML_0 (gtk_set_locale, Val_string)
+/* not in 3
+ML_0 (gtk_set_locale, Val_string) */
 ML_0 (gtk_disable_setlocale, Unit)
 ML_0 (gtk_main, Unit)
 ML_1 (gtk_main_iteration_do, Bool_val, Val_bool)

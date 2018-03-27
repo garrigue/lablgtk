@@ -121,12 +121,6 @@ type update_type = "GTK_UPDATE_"
 
 type visibility = "GTK_VISIBILITY_"
   [ `NONE | `PARTIAL | `FULL ]
-
-type window_position = "GTK_WIN_POS_"
-  [ `NONE | `CENTER | `MOUSE | `CENTER_ALWAYS | `CENTER_ON_PARENT ]
-
-type window_type = "GTK_WINDOW_"
-  [ `TOPLEVEL | `POPUP ]
 *)
 
 type wrap_mode = "GTK_WRAP_"
@@ -309,6 +303,13 @@ type response = "GTK_RESPONSE_"
 (* gtkwidget.h *)
 type widget_help_type = "GTK_WIDGET_HELP_"
   [ `TOOLTIP | `WHATS_THIS ]
+
+(* gtkwindow.h *)
+type window_position = "GTK_WIN_POS_"
+  [ `NONE | `CENTER | `MOUSE | `CENTER_ALWAYS | `CENTER_ON_PARENT ]
+
+type window_type = "GTK_WINDOW_"
+  [ `TOPLEVEL | `POPUP ]
 
 (* gtkimage.h *)
 type image_type = "GTK_IMAGE_"

@@ -31,7 +31,7 @@ CAMLexport value Val_GObject_sink (GInitiallyUnowned *);
 #define Val_GAnyObject(val) Val_GObject(G_OBJECT(val))
 #define Val_GAnyObject_new(val) Val_GObject_new(G_OBJECT(val))
 #define Val_GAnyObject_sink(val) Val_GObject_sink(G_INITIALLY_UNOWNED(val))
-/* CAMLexport void ml_g_object_unref_later (GObject *); */
+CAMLexport void ml_g_object_unref_later (GObject *);
 
 #define GType_val(t) ((GType)Addr_val(t))
 #define Val_GType    Val_addr
