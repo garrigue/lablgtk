@@ -204,17 +204,9 @@ module Visual = struct
 
   external get_best : ?depth:int -> ?kind:visual_type -> unit -> visual
       = "ml_gdk_visual_get_best"
-  external get_type : visual -> visual_type = "ml_GdkVisual_type"
-  external depth : visual -> int = "ml_GdkVisual_depth"
-  external red_mask : visual -> int = "ml_GdkVisual_red_mask"
-  external red_shift : visual -> int = "ml_GdkVisual_red_shift"
-  external red_prec : visual -> int = "ml_GdkVisual_red_prec"
-  external green_mask : visual -> int = "ml_GdkVisual_green_mask"
-  external green_shift : visual -> int = "ml_GdkVisual_green_shift"
-  external green_prec : visual -> int = "ml_GdkVisual_green_prec"
-  external blue_mask : visual -> int = "ml_GdkVisual_blue_mask"
-  external blue_shift : visual -> int = "ml_GdkVisual_blue_shift"
-  external blue_prec : visual -> int = "ml_GdkVisual_blue_prec"
+  external get_screen : visual -> screen = "ml_gdk_visual_get_screen"
+  external get_type : visual -> visual_type = "ml_gdk_visual_get_type"
+  external depth : visual -> int = "ml_gdk_visual_get_depth"
 end
 
 module Image = struct

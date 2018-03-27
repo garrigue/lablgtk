@@ -262,10 +262,10 @@ else
 fi
 rm test_dynlink.*
 
-# GTK 2 auto configuration
+# GTK 3 auto configuration
 
-GTKPKG=gtk+-2.0
-AM_PATH_GTK_2_0(2.0.0, :, AC_MSG_ERROR(GTK+ is required))
+GTKPKG=gtk+-3.0
+AM_PATH_GTK_3_0(3.0.0, :, AC_MSG_ERROR(GTK+ is required))
 
 dnl LABLGTK_PKG(variable, autoconf package, help string, pkgconfig package)
 AC_DEFUN([LABLGTK_PKG], [
@@ -312,11 +312,11 @@ fi
 
 LABLGTK_PKG(GLADE, glade,
             [  --without-glade         override autodetected libglade support],
-            libglade-2.0)
+            libglade-3.0)
 
 LABLGTK_PKG(RSVG, rsvg,
             [  --without-rsvg          override autodetected librsvg support],
-            librsvg-2.0)
+            librsvg-3.0)
 # Check for SVGZ support
 if test -n "$USE_RSVG" ; then
     ac_ocaml_libs="$LIBS"
@@ -331,11 +331,11 @@ fi
 
 LABLGTK_PKG(GNOMECANVAS, gnomecanvas,
             [  --without-gnomecanvas   override autodetected libgnomecanvas support],
-            libgnomecanvas-2.0)
+            libgnomecanvas-3.0)
 
 LABLGTK_PKG(GNOMEUI, gnomeui,
             [  --without-gnomeui       override autodetected libgnomeui support],
-            libgnomeui-2.0)
+            libgnomeui-3.0)
 
 LABLGTK_PKG(PANEL, panel,
             [  --without-panel         override autodetected libpanelapplet support],
@@ -343,19 +343,15 @@ LABLGTK_PKG(PANEL, panel,
 
 LABLGTK_PKG(GTKSPELL, gtkspell,
             [  --without-gtkspell      override autodetected gtkspell support],
-            gtkspell-2.0)
+            gtkspell-3.0)
 
-LABLGTK_PKG(GTKSOURCEVIEW, gtksourceview,
-            [  --without-gtksourceview      override autodetected gtksourceview support],
-            gtksourceview-1.0)
-
-LABLGTK_PKG(GTKSOURCEVIEW2, gtksourceview2,
-            [  --without-gtksourceview2      override autodetected gtksourceview 2 support],
-            gtksourceview-2.0)
+LABLGTK_PKG(GTKSOURCEVIEW, gtksourceview3,
+            [  --without-gtksourceview3      override autodetected gtksourceview 2 support],
+            gtksourceview-3.0)
 
 LABLGTK_PKG(GTKQUARTZ, quartz,
             [  --without-quartz      override autodetected quartz support],
-            gtk+-quartz-2.0)
+            gtk+-quartz-3.0)
 
 PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG)
 
@@ -418,8 +414,7 @@ CONF_SUMMARY(libgnomecanvas, GNOMECANVAS)
 CONF_SUMMARY(libgnomeui, GNOMEUI)
 CONF_SUMMARY(libpanelapplet, PANEL)
 CONF_SUMMARY(gtkspell, GTKSPELL)
-CONF_SUMMARY(gtksourceview 1, GTKSOURCEVIEW)
-CONF_SUMMARY(gtksourceview 2, GTKSOURCEVIEW2)
+CONF_SUMMARY(gtksourceview 3, GTKSOURCEVIEW)
 CONF_SUMMARY(quartz   , GTKQUARTZ)
 echo
 echo $ECHO_N "	debug   $ECHO_C"

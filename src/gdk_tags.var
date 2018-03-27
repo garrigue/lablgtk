@@ -4,6 +4,7 @@ package "gdk"
 
 type noconv platform = [ `X11 | `WIN32 | `QUARTZ ]
 
+(* gdkevents.h *)
 type event_type = "GDK_"
   [ `NOTHING | `DELETE | `DESTROY | `EXPOSE | `MOTION_NOTIFY
   | `BUTTON_PRESS | `TWO_BUTTON_PRESS "GDK_2BUTTON_PRESS"
@@ -15,7 +16,145 @@ type event_type = "GDK_"
   | `PROXIMITY_IN | `PROXIMITY_OUT
   | `DRAG_ENTER | `DRAG_LEAVE | `DRAG_MOTION | `DRAG_STATUS
   | `DROP_START | `DROP_FINISHED | `CLIENT_EVENT | `VISIBILITY_NOTIFY
-  | `NO_EXPOSE | `SCROLL | `WINDOW_STATE | `SETTING ]
+  | `SCROLL | `WINDOW_STATE | `SETTING
+  | `OWNER_CHANGE | `GRAB_BROKEN | `DAMAGE
+  | `TOUCH_BEGIN | `TOUCH_UPDATE | `TOUCH_END | `TOUCH_CANCEL
+  | `TOUCHPAD_SWIPE | `TOUCHPAD_PINCH
+  | `PAD_BUTTON_PRESS | `PAD_BUTTON_RELEASE
+  | `PAD_RING | `PAD_STRIP | `PAD_GROUP_MODE
+ ]
+
+type visibility_state "gdkVisibilityState" = "GDK_VISIBILITY_"
+  [ `UNOBSCURED | `PARTIAL | `FULLY_OBSCURED ]
+
+type touchpad_gesture_phase "GdkTouchpadGesturePhase" =
+  "GDK_TOUCHPAD_GESTURE_PHASE_"
+  [ `BEGIN | `UPDATE | `END | `CANCEL ]
+
+type scroll_direction "gdkScrollDirection" = "GDK_SCROLL_"
+  [ `UP | `DOWN | `LEFT | `RIGHT | `SMOOTH ]
+
+type crossing_mode "gdkCrossingMode" = "GDK_CROSSING_"
+  [ `NORMAL | `GRAB | `UNGRAB | `GTK_GRAB | `GTK_UNGRAB
+  | `STATE_CHANGED | `TOUCH_BEGIN | `TOUCH_END | `DEVICE_SWITCH ]
+
+type notify_type "gdkNotifyType" = "GDK_NOTIFY_"
+  [ `ANCESTOR | `VIRTUAL | `INFERIOR | `NONLINEAR | `NONLINEAR_VIRTUAL
+  | `UNKNOWN ]
+
+type setting_action "gdkSettingAction" = "GDK_SETTING_ACTION_"
+  [ `NEW | `CHANGED | `DELETED ]
+
+type owner_change "GdkOwnerChange" = "GDK_OWNER_CHANGE_"
+  [ `NEW_OWNER | `DESTROY | `CLOSE ]
+
+type window_state "gdkWindowState" = "GDK_WINDOW_STATE_"
+  [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY | `FULLSCREEN
+  | `ABOVE | `BELOW | `FOCUSED | `TILED | `TOP_TILED | `TOP_RESIZABLE
+  | `RIGHT_TILED | `RIGHT_RESIZABLE | `BOTTOM_TILED
+  | `BOTTOM_RESIZABLE | `LEFT_TILED | `LEFT_RESIZABLE ]
+
+(* gdkdevice.h *)
+type input_source "gdkInputSource" = "GDK_SOURCE_"
+  [ `MOUSE | `PEN | `ERASER | `CURSOR
+  | `KEYBOARD | `TOUCHSCREEN | `TOUCHPAD
+  | `TRACKPOINT | `TABLET_PAD ]
+
+type input_mode "gdkInputMode" = "GDK_MODE_"
+  [ `DISABLED | `SCREEN | `WINDOW ]
+
+type device_type "gdkDeviceType" = "GDK_DEVICE_TYPE_"
+  [ `MASTER | `SLAVE | `FLOATING ]
+
+(* gdkvisual.h *)
+type visual_type "gdkVisualType" = "GDK_VISUAL_"
+  [ `STATIC_GRAY | `GRAYSCALE | `STATIC_COLOR | `PSEUDO_COLOR
+  | `TRUE_COLOR | `DIRECT_COLOR ]
+
+(* gdkdnd.h *)
+type drag_action "gdkDragAction" = "GDK_ACTION_"
+  [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
+
+type drag_cancel_reason "GdkDragCancelReason" = "GDK_DRAG_CANCEL_"
+  [ `NO_TARGET | `USER_CANCELLED | `ERROR ]
+
+type drag_protocol "gdkDragProtocol" = "GDK_DRAG_PROTO_"
+  [ `NONE | `MOTIF | `XDND | `ROOTWIN | `WIN32_DROPFILES
+  | `OLE2 | `LOCAL | `WAYLAND ]
+
+type xdata =
+  [ `BYTES "8" | `SHORTS "16" | `INT32S "32" | `NONE "0" ]
+
+type property_state = "GDK_PROPERTY_"
+  [ `NEW_VALUE | `DELETE ]
+
+(* gdkproperty.h *)
+type property_mode = "GDK_PROP_MODE_"
+  [ `REPLACE | `PREPEND | `APPEND ]
+
+(* gdkwindow.h *)
+type window_class "GdkWindowWindowClass" = "GDK_"
+  [ `INPUT_OUTPUT | `INPUT_ONLY ]
+
+type window_type "GdkWindowType" = "GDK_WINDOW_"
+  [ `ROOT | `TOPLEVEL | `CHILD | `TEMP | `FOREIGN | `OFFSCREEN | `SUBSURFACE ]
+
+type window_attributes_type = "GDK_WA_"
+  [ `TITLE | `X | `Y | `CURSOR | `VISUAL | `WMCLASS | `NOREDIR | `TYPE_HINT ]
+
+type window_hints = "GDK_HINT_"
+  [ `POS | `MIN_SIZE | `MAX_SIZE | `BASE_SIZE | `ASPECT
+  | `RESIZE_INC | `WIN_GRAVITY | `USER_POS | `USER_SIZE ]
+
+type wm_decoration "GdkWMdecoration" = "GDK_DECOR_"
+  [ `ALL | `BORDER | `RESIZEH | `TITLE | `MENU | `MINIMIZE | `MAXIMIZE ]
+
+type wm_function "GdkWMFunction" = "GDK_FUNC_"
+  [ `ALL | `RESIZE | `MOVE | `MINIMIZE | `MAXIMIZE | `CLOSE ]
+
+type gravity = "GDK_GRAVITY_"
+  [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `CENTER | `EAST
+  | `SOUTH_WEST | `SOUTH | `SOUTH_EAST | `STATIC ]
+
+type anchor_hints = "GDK_ANCHOR_"
+  [ `FLIP_X | `FLIP_Y | `SLIDE_X | `SLIDE_Y | `RESIZE_X | `RESIZE_Y
+  | `FLIP | `SLIDE | `RESIZE ]
+
+type window_edge = "GDK_WINDOW_EDGE_"
+  [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `EAST
+  | `SOUTH_WEST | `SOUTH | `SOUTH_EAST ]
+
+type fullscreen_mode = "GDK_FULLSCREEN_"
+  [ `ON_CURRENT_MONITOR | `ON_ALL_MONITORS ]
+
+(* gdktypes.h *)
+type modifier "gdkModifier" = "GDK_"
+  [ `SHIFT | `LOCK | `CONTROL | `MOD1 | `MOD2 | `MOD3 | `MOD4 | `MOD5
+  | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 | `SUPER
+  | `HYPER | `META | `RELEASE ] "_MASK"
+
+type modifier_intent "gtkModifierIntent" = "GDK_MODIFIER_INTENT_"
+  [ `PRIMARY_ACCELERATOR
+  | `CONTEXT_MENU
+  | `EXTEND_SELECTION
+  | `MODIFY_SELECTION
+  | `NO_TEXT_INPUT
+  | `SHIFT_GROUP
+  | `DEFAULT_MOD_MASK ]
+
+type status = "GDK_"
+  [ `OK | `ERROR | `ERROR_PARAM | `ERROR_FILE | `ERROR_MEM ]
+
+type grab_status = "GDK_GRAB_"
+  [ `SUCCESS
+  | `ALREADY_GRABBED
+  | `INVALID_TIME
+  | `NOT_VIEWABLE
+  | `FROZEN
+  | `FAILED ]
+
+type grab_ownership = "GDK_OWNERSHIP_"
+  [ `NONE | `WINDOW | `APPLICATION ]
 
 type flags event_mask = "GDK_"
   [ `EXPOSURE
@@ -27,95 +166,28 @@ type flags event_mask = "GDK_"
   | `STRUCTURE | `PROPERTY_CHANGE | `VISIBILITY_NOTIFY
   | `PROXIMITY_IN | `PROXIMITY_OUT
   | `SUBSTRUCTURE | `SCROLL
+  | `TOUCH | `SMOOTH_SCROLL | `TOUCHPAD_GESTURE | `TABLET_PAD
   | `ALL_EVENTS ] "_MASK"
 
-type extension_mode = "GDK_EXTENSION_EVENTS_"
-  [ `NONE | `ALL | `CURSOR ]
-
-type visibility_state "gdkVisibilityState" = "GDK_VISIBILITY_"
-  [ `UNOBSCURED | `PARTIAL | `FULLY_OBSCURED ]
-
-type input_source "gdkInputSource" = "GDK_SOURCE_"
-  [ `MOUSE | `PEN | `ERASER | `CURSOR ]
-
-type scroll_direction "gdkScrollDirection" = "GDK_SCROLL_"
-  [ `UP | `DOWN | `LEFT | `RIGHT ]
-
-type crossing_mode "gdkCrossingMode" = "GDK_CROSSING_"
-  [ `NORMAL | `GRAB | `UNGRAB ]
-
-type notify_type "gdkNotifyType" = "GDK_NOTIFY_"
-  [ `ANCESTOR | `VIRTUAL | `INFERIOR | `NONLINEAR | `NONLINEAR_VIRTUAL
-  | `UNKNOWN ]
-
-type setting_action "gdkSettingAction" = "GDK_SETTING_ACTION_"
-  [ `NEW | `CHANGED | `DELETED ]
-
-type window_state "gdkWindowState" = "GDK_WINDOW_STATE_"
-  [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY | `FULLSCREEN ]
-
-type fill_rule = "GDK_"
-  [ `EVEN_ODD_RULE | `WINDING_RULE ]
-
-type overlap_type = "GDK_OVERLAP_RECTANGLE_"
-  [ `IN | `OUT | `PART ]
-
-type function_type = "GDK_"
-  [ `COPY | `INVERT | `XOR ]
-
-type fill = "GDK_"
-  [ `SOLID | `TILED | `STIPPLED | `OPAQUE_STIPPLED ]
-
-type subwindow_mode = "GDK_"
-  [ `CLIP_BY_CHILDREN | `INCLUDE_INFERIORS ]
-
-type line_style = "GDK_LINE_"
-  [ `SOLID | `ON_OFF_DASH | `DOUBLE_DASH ]
-
-type cap_style = "GDK_CAP_"
-  [ `NOT_LAST | `BUTT | `ROUND | `PROJECTING ]
-
-type join_style = "GDK_JOIN_"
-  [ `MITER | `ROUND | `BEVEL ]
-
-type modifier "gdkModifier" = "GDK_"
-  [ `SHIFT | `LOCK | `CONTROL | `MOD1 | `MOD2 | `MOD3 | `MOD4 | `MOD5
-  | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 | `SUPER
-  | `HYPER | `META | `RELEASE ] "_MASK"
-
-type image_type "gdkImageType" = "GDK_IMAGE_"
-  [ `NORMAL | `SHARED | `FASTEST ]
-
-type visual_type "gdkVisualType" = "GDK_VISUAL_"
-  [ `STATIC_GRAY | `GRAYSCALE | `STATIC_COLOR | `PSEUDO_COLOR
-  | `TRUE_COLOR | `DIRECT_COLOR ]
-
-type font_type = "GDK_FONT_"
-  [ `FONT | `FONTSET ]
-
-type drag_action "gdkDragAction" = "GDK_ACTION_"
-  [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
-
-type rgb_dither "gdkRgbDither" = "GDK_RGB_DITHER_"
-  [ `NONE | `NORMAL | `MAX ]
-
-type xdata =
-  [ `BYTES "8" | `SHORTS "16" | `INT32S "32" | `NONE "0" ]
-
-type property_state = "GDK_PROPERTY_"
-  [ `NEW_VALUE | `DELETE ]
-
-type property_mode = "GDK_PROP_MODE_"
-  [ `REPLACE | `PREPEND | `APPEND ]
-
-type gravity = "GDK_GRAVITY_"
-  [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `CENTER | `EAST
-  | `SOUTH_WEST | `SOUTH | `SOUTH_EAST | `STATIC ]
+type gl_error = "GDK_GL_ERROR_"
+  [ `NOT_AVAILABLE
+  | `UNSUPPORTED_FORMAT
+  | `UNSUPPORTED_PROFILE ]
 
 type window_type_hint = "GDK_WINDOW_TYPE_HINT_"
   [ `NORMAL | `DIALOG | `MENU | `TOOLBAR | `SPLASHSCREEN | `UTILITY
-  | `DOCK | `DESKTOP ]
+  | `DOCK | `DESKTOP
+  | `DROPDOWN_MENU | `POPUP_MENU | `TOOLTIP | `NOTIFICATION | `COMBO | `DND ]
 
+type axis_use = "GDK_AXIS_"
+  [ `IGNORE | `X | `Y | `PRESSURE | `XTILT | `YTILT
+  | `WHEEL | `DISTANCE | `ROTATION | `SLIDER | `LAST ]
+
+type flags axis_flags = "GDK_AXIS_FLAG_"
+  [ `X | `Y | `PRESSURE | `XTILT | `YTILT
+  | `WHEEL | `DISTANCE | `ROTATION | `SLIDER ]
+
+(* gdkcursor.h *)
 type cursor_type "gdkCursorType" = "GDK_" [
   | `X_CURSOR
   | `ARROW

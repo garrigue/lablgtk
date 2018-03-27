@@ -229,48 +229,6 @@ ML_bc8(ml_gdk_pixbuf_copy_area)
 /* Create a sub-region */
 ML_5(gdk_pixbuf_new_subpixbuf, GdkPixbuf_val, Int_val, Int_val, Int_val, Int_val, Val_GdkPixbuf_new)
 
-/* Rendering to a drawable */
-ML_9(gdk_pixbuf_render_threshold_alpha, GdkPixbuf_val, GdkBitmap_val,
-     Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Int_val, Unit)
-ML_bc9(ml_gdk_pixbuf_render_threshold_alpha)
-ML_12(gdk_pixbuf_render_to_drawable, GdkPixbuf_val, GdkDrawable_val,
-      GdkGC_val, Int_val, Int_val, Int_val, Int_val, Int_val, Int_val,
-      GdkRgbDither_val, Int_val, Int_val, Unit)
-ML_bc12(ml_gdk_pixbuf_render_to_drawable)
-ML_13(gdk_pixbuf_render_to_drawable_alpha, GdkPixbuf_val, GdkDrawable_val,
-      Int_val, Int_val, Int_val, Int_val, Int_val, Int_val,
-      Alpha_mode_val, Int_val, GdkRgbDither_val, Int_val, Int_val, Unit)
-ML_bc13(ml_gdk_pixbuf_render_to_drawable_alpha)
-/* Not available before 2.2
-ML_12(gdk_draw_pixbuf, GdkDrawable_val, GdkGC_val, GdkPixbuf_val,
-      Int_val, Int_val, Int_val, Int_val, Int_val, Int_val,
-      GdkRgbDither_val, Int_val, Int_val, Unit)
-ML_bc12(ml_gdk_draw_pixbuf)
-*/
-
-CAMLprim value ml_gdk_pixbuf_render_pixmap_and_mask (value pixbuf, value thr)
-{
-    CAMLparam0();
-    CAMLlocal2(vpm,vmask);
-    value ret;
-    GdkPixmap *pm;
-    GdkBitmap *mask;
-    gdk_pixbuf_render_pixmap_and_mask(GdkPixbuf_val(pixbuf), &pm, &mask,
-				      Int_val(thr));
-    vpm = Val_GdkPixmap_no_ref(pm);
-    vmask = Val_option(mask,Val_GdkBitmap_no_ref);
-    ret = alloc_small(2,0);
-    Field(ret,0) = vpm;
-    Field(ret,1) = vmask;
-    CAMLreturn(ret);
-}
-
-/* Fetching a region from a drawable */
-ML_9(gdk_pixbuf_get_from_drawable, GdkPixbuf_val, GdkDrawable_val,
-     GdkColormap_val, Int_val, Int_val, Int_val, Int_val, Int_val, Int_val,
-     Unit)
-ML_bc9(ml_gdk_pixbuf_get_from_drawable)
-
 /* Scaling */
 ML_11(gdk_pixbuf_scale, GdkPixbuf_val, GdkPixbuf_val, Int_val, Int_val,
       Int_val, Int_val, Double_val, Double_val, Double_val, Double_val,

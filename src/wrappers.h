@@ -61,25 +61,17 @@ CAMLexport int ml_lookup_to_c (const lookup_info table[], value key);
 CAMLexport value ml_lookup_flags_getter (const lookup_info table[], int data);
 
 /* Compatibility */
-#include <gtk/gtkversion.h>
+/* #include <gtk/gtk.h>
 #if GTK_CHECK_VERSION(2,2,0) && !defined(DISABLE_GTK22)
 #define HASGTK22
 #endif
-#if GTK_CHECK_VERSION(2,4,0) && !defined(DISABLE_GTK24)
+*/
+#define HASGTK22
 #define HASGTK24
-#endif
-#if GTK_CHECK_VERSION(2,5,3) && !defined(DISABLE_GTK26)
 #define HASGTK26
-#endif
-#if GTK_CHECK_VERSION(2,8,0) && !defined(DISABLE_GTK28)
 #define HASGTK28
-#endif
-#if GTK_CHECK_VERSION(2,10,0) && !defined(DISABLE_GTK210)
 #define HASGTK210
-#endif
-#if GTK_CHECK_VERSION(2,12,0) && !defined(DISABLE_GTK212)
 #define HASGTK212
-#endif
 
 /* Wrapper generators */
 
