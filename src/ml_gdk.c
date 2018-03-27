@@ -48,13 +48,6 @@
 #include "gdk_tags.h"
 
 
-#ifndef HASGTK22
-#define GDK_WINDOW_TYPE_HINT_SPLASHSCREEN GDK_WINDOW_TYPE_HINT_NORMAL
-#define GDK_WINDOW_TYPE_HINT_DESKTOP GDK_WINDOW_TYPE_HINT_NORMAL
-#define GDK_WINDOW_TYPE_HINT_UTILITY GDK_WINDOW_TYPE_HINT_NORMAL
-#define GDK_WINDOW_TYPE_HINT_DOCK GDK_WINDOW_TYPE_HINT_NORMAL
-#endif
-
 CAMLprim void ml_raise_gdk (const char *errmsg)
 {
   static value * exn = NULL;
@@ -235,13 +228,13 @@ ML_2 (gdk_window_set_transient_for, GdkWindow_val, GdkWindow_val, Unit)
 ML_1 (gdk_window_foreign_new, GdkNativeWindow_val, Val_GdkWindow)
 
 #if defined(_WIN32) || defined(__CYGWIN__) || defined(HAS_GTKQUARTZ)
-CAMLprim value ml_GDK_WINDOW_XWINDOW(value v)
+CAMLprim value ml_GDK_WINDOW_XID(value v)
 {
- ml_raise_gdk ("ml_GDK_WINDOW_XWINDOW: only for X11");
+ ml_raise_gdk ("ml_GDK_WINDOW_XID: only for X11");
  return Val_unit;
 }
 #else
-ML_1 (GDK_WINDOW_XWINDOW, GdkDrawable_val, Val_XID)
+ML_1 (GDK_WINDOW_XID, GdkWindow_val, Val_XID)
 #endif
 CAMLprim value ml_gdk_window_get_position (value window)
 {

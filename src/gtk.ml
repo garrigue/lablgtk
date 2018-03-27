@@ -141,9 +141,9 @@ type target_entry = { target: string; flags: target_flags list; info: int }
 type box_packing =
     { expand: bool; fill: bool; padding: int; pack_type: pack_type }
 
-type adjustment = [`gtk|`adjustment]
-type tooltips = [`gtk|`tooltips]
-type widget = [`gtk|`widget]
+type adjustment = [`giu|`adjustment]
+type tooltips = [`giu|`tooltips]
+type widget = [`giu|`widget]
 type container = [widget|`container]
 type bin = [container|`bin]
 type alignment = [bin|`alignment]
@@ -238,7 +238,7 @@ type text_child_anchor = [`textchildanchor] obj
 type text_iter
 
 type tree_view = [container|`treeview]
-type tree_view_column = [`gtk|`celllayout|`treeviewcolumn]
+type tree_view_column = [`giu|`celllayout|`treeviewcolumn]
 type tree_selection = [`treeselection] obj
 type tree_model = [`treemodel] obj
 type tree_model_custom = [`custommodel|`treemodel] obj
@@ -250,7 +250,7 @@ type list_store = [`liststore|`treesortable|`treemodel] obj
 type tree_iter
 type tree_path
 type row_reference
-type cell_renderer = [`gtk|`cellrenderer]
+type cell_renderer = [`giu|`cellrenderer]
 type cell_renderer_pixbuf = [cell_renderer|`cellrendererpixbuf]
 type cell_renderer_text = [cell_renderer|`cellrenderertext]
 type cell_renderer_toggle = [cell_renderer|`cellrenderertoggle]
@@ -269,7 +269,7 @@ type cell_layout = [`celllayout]
 type combo_box = [bin|`combobox|cell_layout]
 type combo_box_entry = [combo_box|`comboboxentry]
 type expander = [bin|`expander]
-type file_filter = [`gtk|`filefilter]
+type file_filter = [`giu|`filefilter]
 type file_chooser = [widget|`filechooser]
 type entry_completion = [`entrycompletion|cell_layout] obj
 
@@ -289,6 +289,6 @@ type tooltip = [`tooltip] obj
 
 (* re-export Gobject.obj *)
 type 'a obj = 'a Gobject.obj
-  (* constraint 'a = [> `gtk] *)
+  (* constraint 'a = [> `giu] *)
   (* *Props modules break this *)
 

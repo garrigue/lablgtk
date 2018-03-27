@@ -30,15 +30,11 @@ type visual
 type screen = [`gdkscreen] obj
 type region
 type gc
-type window = [`drawable|`gdkwindow] obj
-type pixmap = [`drawable|`gdkpixmap] obj
-type bitmap = [`drawable|`gdkpixmap|`gdkbitmap] obj
-type font
-type image = [`gdkimage] obj
+type window = [`gdkwindow] obj
 type atom
 type keysym = int
 type +'a event
-type drag_context = [`dragcontext] Gobject.obj
+type drag_context = [`dragcontext] obj
 type cursor
 type xid = int32
 type native_window
@@ -48,6 +44,7 @@ type display
 exception Error of string
 
 module Tags : sig
+  (* gdkevents.h *)
   type event_type =
     [ `NOTHING | `DELETE | `DESTROY | `EXPOSE | `MOTION_NOTIFY
     | `BUTTON_PRESS | `TWO_BUTTON_PRESS | `THREE_BUTTON_PRESS | `BUTTON_RELEASE
@@ -58,10 +55,140 @@ module Tags : sig
     | `PROXIMITY_IN | `PROXIMITY_OUT
     | `DRAG_ENTER | `DRAG_LEAVE | `DRAG_MOTION | `DRAG_STATUS
     | `DROP_START | `DROP_FINISHED | `CLIENT_EVENT | `VISIBILITY_NOTIFY
-    | `NO_EXPOSE | `SCROLL | `WINDOW_STATE | `SETTING ]
+    | `SCROLL | `WINDOW_STATE | `SETTING
+    | `OWNER_CHANGE | `GRAB_BROKEN | `DAMAGE
+    | `TOUCH_BEGIN | `TOUCH_UPDATE | `TOUCH_END | `TOUCH_CANCEL
+    | `TOUCHPAD_SWIPE | `TOUCHPAD_PINCH
+    | `PAD_BUTTON_PRESS | `PAD_BUTTON_RELEASE
+    | `PAD_RING | `PAD_STRIP | `PAD_GROUP_MODE ]
+  
+  type visibility_state =
+    [ `UNOBSCURED | `PARTIAL | `FULLY_OBSCURED ]
+
+  type touchpad_gesture_phase =
+    [ `BEGIN | `UPDATE | `END | `CANCEL ]
+
+  type scroll_direction =
+    [ `UP | `DOWN | `LEFT | `RIGHT | `SMOOTH ]
+
+  type crossing_mode =
+    [ `NORMAL | `GRAB | `UNGRAB | `GTK_GRAB | `GTK_UNGRAB
+    | `STATE_CHANGED | `TOUCH_BEGIN | `TOUCH_END | `DEVICE_SWITCH ]
+
+  type notify_type =
+    [ `ANCESTOR | `VIRTUAL | `INFERIOR | `NONLINEAR | `NONLINEAR_VIRTUAL
+    | `UNKNOWN ]
+
+  type setting_action =
+    [ `NEW | `CHANGED | `DELETED ]
+
+  type owner_change =
+    [ `NEW_OWNER | `DESTROY | `CLOSE ]
+
+  type window_state =
+    [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY | `FULLSCREEN
+    | `ABOVE | `BELOW | `FOCUSED | `TILED | `TOP_TILED | `TOP_RESIZABLE
+    | `RIGHT_TILED | `RIGHT_RESIZABLE | `BOTTOM_TILED
+    | `BOTTOM_RESIZABLE | `LEFT_TILED | `LEFT_RESIZABLE ]
+
+  (* gdkdevice.h *)
+  type input_source =
+    [ `MOUSE | `PEN | `ERASER | `CURSOR | `KEYBOARD
+    | `TOUCHSCREEN | `TOUCHPAD | `TRACKPOINT | `TABLET_PAD ]
+
+  type input_mode =
+    [ `DISABLED | `SCREEN | `WINDOW ]
+
+  type device_type =
+    [ `MASTER | `SLAVE | `FLOATING ]
+
+  (* gdkvisual.h *)
+  type visual_type =
+    [ `STATIC_GRAY | `GRAYSCALE | `STATIC_COLOR | `PSEUDO_COLOR
+    | `TRUE_COLOR | `DIRECT_COLOR ]
+
+  (* gdkdnd.h *)
+  type drag_action =
+    [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
+
+  type drag_cancel_reason =
+    [ `NO_TARGET | `USER_CANCELLED | `ERROR ]
+
+  type drag_protocol =
+    [ `NONE | `MOTIF | `XDND | `ROOTWIN | `WIN32_DROPFILES
+    | `OLE2 | `LOCAL | `WAYLAND ]
+
+  type property_state =
+    [ `NEW_VALUE | `DELETE ]
+
+  type xdata =
+    [ `BYTES of string
+    | `SHORTS of int array
+    | `INT32S of int32 array ]
+
+  type xdata_ret = [ xdata | `NONE ]
+
+  (* gdkproperty.h *)
+  type property_mode = "GDK_PROP_MODE_"
+    [ `REPLACE | `PREPEND | `APPEND ]
+
+  (* gdkwindow.h *)
+  type window_class =
+    [ `INPUT_OUTPUT | `INPUT_ONLY ]
+
+  type window_type =
+    [ `ROOT | `TOPLEVEL | `CHILD | `TEMP | `FOREIGN | `OFFSCREEN | `SUBSURFACE ]
+
+  type window_attributes_type =
+    [ `TITLE | `X | `Y | `CURSOR | `VISUAL | `WMCLASS | `NOREDIR | `TYPE_HINT ]
+
+  type window_hints =
+    [ `POS | `MIN_SIZE | `MAX_SIZE | `BASE_SIZE | `ASPECT
+    | `RESIZE_INC | `WIN_GRAVITY | `USER_POS | `USER_SIZE ]
+
+  type wm_decoration =
+    [ `ALL | `BORDER | `RESIZEH | `TITLE | `MENU | `MINIMIZE | `MAXIMIZE ]
+
+  type wm_function =
+    [ `ALL | `RESIZE | `MOVE | `MINIMIZE | `MAXIMIZE | `CLOSE ]
+
+  type gravity =
+    [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `CENTER | `EAST
+    | `SOUTH_WEST | `SOUTH | `SOUTH_EAST | `STATIC ]
+
+  type anchor_hints =
+    [ `FLIP_X | `FLIP_Y | `SLIDE_X | `SLIDE_Y | `RESIZE_X | `RESIZE_Y
+    | `FLIP | `SLIDE | `RESIZE ]
+
+  type window_edge =
+    [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `EAST
+    | `SOUTH_WEST | `SOUTH | `SOUTH_EAST ]
+
+  type fullscreen_mode =
+    [ `ON_CURRENT_MONITOR | `ON_ALL_MONITORS ]
+
+  (* gdktypes.h *)
+  type modifier =
+    [ `SHIFT | `LOCK | `CONTROL | `MOD1 | `MOD2 | `MOD3 | `MOD4 | `MOD5
+    | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 | `SUPER
+    | `HYPER | `META | `RELEASE ]
+
+  type modifier_intent =
+    [ `PRIMARY_ACCELERATOR | `CONTEXT_MENU | `EXTEND_SELECTION
+    | `MODIFY_SELECTION | `NO_TEXT_INPUT | `SHIFT_GROUP | `DEFAULT_MOD_MASK ]
+
+  type status =
+    [ `OK | `ERROR | `ERROR_PARAM | `ERROR_FILE | `ERROR_MEM ]
+
+  type grab_status =
+    [ `SUCCESS | `ALREADY_GRABBED | `INVALID_TIME | `NOT_VIEWABLE | `FROZEN
+    | `FAILED ]
+
+  type grab_ownership =
+    [ `NONE | `WINDOW | `APPLICATION ]
+
   type event_mask =
-    [ `EXPOSURE
-    | `POINTER_MOTION | `POINTER_MOTION_HINT
+    [ `EXPOSURE | `POINTER_MOTION | `POINTER_MOTION_HINT
     | `BUTTON_MOTION | `BUTTON1_MOTION | `BUTTON2_MOTION | `BUTTON3_MOTION
     | `BUTTON_PRESS | `BUTTON_RELEASE
     | `KEY_PRESS | `KEY_RELEASE
@@ -69,37 +196,24 @@ module Tags : sig
     | `STRUCTURE | `PROPERTY_CHANGE | `VISIBILITY_NOTIFY
     | `PROXIMITY_IN | `PROXIMITY_OUT
     | `SUBSTRUCTURE | `SCROLL
+    | `TOUCH | `SMOOTH_SCROLL | `TOUCHPAD_GESTURE | `TABLET_PAD
     | `ALL_EVENTS ]
-  type extension_mode = [ `NONE | `ALL | `CURSOR ]
-  type visibility_state = [ `UNOBSCURED | `PARTIAL | `FULLY_OBSCURED ]
-  type input_source = [ `MOUSE | `PEN | `ERASER | `CURSOR ]
-  type scroll_direction = [ `UP | `DOWN | `LEFT | `RIGHT ]
-  type notify_type =
-    [ `ANCESTOR | `VIRTUAL | `INFERIOR | `NONLINEAR
-    | `NONLINEAR_VIRTUAL | `UNKNOWN ] 
-  type crossing_mode = [ `NORMAL | `GRAB | `UNGRAB ]
-  type setting_action = [ `NEW | `CHANGED | `DELETED ]
-  type window_state = [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY ]
-  type modifier =
-    [ `SHIFT | `LOCK | `CONTROL | `MOD1 | `MOD2 | `MOD3 | `MOD4 | `MOD5
-    | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 | `SUPER
-    | `HYPER | `META | `RELEASE ]
 
-  type drag_action = [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
-  type rgb_dither = [ `NONE | `NORMAL | `MAX]
-  type property_state = [ `NEW_VALUE | `DELETE ]
-  type property_mode = [ `REPLACE | `PREPEND | `APPEND ]
-  type xdata =
-    [ `BYTES of string
-    | `SHORTS of int array
-    | `INT32S of int32 array ]
-  type xdata_ret = [ xdata | `NONE ]
-  type gravity =
-    [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `CENTER | `EAST
-    | `SOUTH_WEST | `SOUTH | `SOUTH_EAST | `STATIC ]
+  type gl_error =
+    [ `NOT_AVAILABLE | `UNSUPPORTED_FORMAT | `UNSUPPORTED_PROFILE ]
+
   type window_type_hint =
     [ `NORMAL | `DIALOG | `MENU | `TOOLBAR | `SPLASHSCREEN | `UTILITY
-    | `DOCK | `DESKTOP ]
+    | `DOCK | `DESKTOP
+    | `DROPDOWN_MENU | `POPUP_MENU | `TOOLTIP | `NOTIFICATION | `COMBO | `DND ]
+
+  type axis_use =
+    [ `IGNORE | `X | `Y | `PRESSURE | `XTILT | `YTILT
+    | `WHEEL | `DISTANCE | `ROTATION | `SLIDER | `LAST ]
+
+  type axis_flags =
+    [ `X | `Y | `PRESSURE | `XTILT | `YTILT
+    | `WHEEL | `DISTANCE | `ROTATION | `SLIDER ]
 end
 
 module Convert :
@@ -149,32 +263,6 @@ module Visual :
     val get_best : ?depth:int -> ?kind:visual_type -> unit -> visual
     val get_type : visual -> visual_type
     val depth : visual -> int
-    val red_mask : visual -> int
-    val red_shift : visual -> int
-    val red_prec : visual -> int
-    val green_mask : visual -> int
-    val green_shift : visual -> int
-    val green_prec : visual -> int
-    val blue_mask : visual -> int
-    val blue_shift : visual -> int
-    val blue_prec : visual -> int
-  end
-
-module Image :
-  sig
-    type image_type = [ `FASTEST|`NORMAL|`SHARED ]
-    val create :
-      kind:image_type ->
-      visual:visual -> width:int -> height:int -> image
-    val get :
-      [>`drawable] obj -> x:int -> y:int -> width:int -> height:int -> image
-    val put_pixel : image -> x:int -> y:int -> pixel:int -> unit
-    val get_pixel : image -> x:int -> y:int -> int
-    val destroy : image -> unit
-    val width : image -> int
-    val height : image -> int
-    val depth : image -> int
-    val get_visual : image -> visual
   end
 
 module Color :

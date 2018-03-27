@@ -57,7 +57,6 @@ module Widget = struct
   external show_now : [>`widget] obj -> unit = "ml_gtk_widget_show_now"
   external show_all : [>`widget] obj -> unit = "ml_gtk_widget_show_all"
   external hide : [>`widget] obj -> unit = "ml_gtk_widget_hide"
-  external hide_all : [>`widget] obj -> unit = "ml_gtk_widget_hide_all"
   external map : [>`widget] obj -> unit = "ml_gtk_widget_map"
   external unmap : [>`widget] obj -> unit = "ml_gtk_widget_unmap"
   external realize : [>`widget] obj -> unit = "ml_gtk_widget_realize"
@@ -147,9 +146,9 @@ module Widget = struct
   external window : [>`widget] obj -> Gdk.window
       = "ml_GtkWidget_window"
   external allocation : [>`widget] obj -> rectangle
-      = "ml_gtk_widget_allocation"
-  external set_colormap : [>`widget] obj -> Gdk.colormap -> unit
-      = "ml_gtk_widget_set_colormap"
+      = "ml_gtk_widget_get_allocation"
+  (* external set_colormap : [>`widget] obj -> Gdk.colormap -> unit
+      = "ml_gtk_widget_set_colormap" *)
   external set_visual : [>`widget] obj -> Gdk.visual -> unit
       = "ml_gtk_widget_set_visual"
   external set_default_colormap : Gdk.colormap -> unit

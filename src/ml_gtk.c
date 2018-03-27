@@ -24,6 +24,9 @@
 
 #include <string.h>
 #include <gtk/gtk.h>
+#ifndef _WIN32
+#include <gtk/gtkx.h>
+#endif
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
@@ -68,10 +71,6 @@ CAMLprim value ml_gtkwindow_init(value unit)
     /* Since these are declared const, must force gcc to call them! */
     GType t =
         gtk_message_dialog_get_type() +
-        gtk_input_dialog_get_type() +
-        gtk_color_selection_dialog_get_type() +
-        gtk_file_selection_get_type() +
-        gtk_font_selection_dialog_get_type() 
 #ifndef _WIN32
         + gtk_plug_get_type()
         + gtk_socket_get_type()
@@ -79,15 +78,6 @@ CAMLprim value ml_gtkwindow_init(value unit)
 ;
     return Val_GType(t);
 }
-
-/* gtkobject.h */
-
-#define gtk_object_ref_and_sink(w) (g_object_ref(w), gtk_object_sink(w))
-#define ml_gtk_object_unref_later(w) ml_g_object_unref_later((GObject*)(w))
-Make_Val_final_pointer_ext(GtkObject, _sink , gtk_object_ref_and_sink,
-                           ml_gtk_object_unref_later, 20)
-ML_1 (GTK_OBJECT_FLAGS, GtkObject_val, Val_int)
-ML_1 (gtk_object_ref_and_sink, GtkObject_val, Unit)
 
 /* gtkaccelgroup.h */
 
@@ -158,6 +148,7 @@ CAMLprim value ml_gtk_accel_map_foreach(value func)
 
 /* gtkstyle.h */
 
+/* deprecated
 #define Val_GtkStyle_new(val) (Val_GObject_new(&val->parent_instance))
 ML_0 (gtk_style_new, Val_GtkStyle_new)
 ML_1 (gtk_style_copy, GtkStyle_val, Val_GtkStyle_new)
@@ -203,7 +194,6 @@ Make_Extractor (gtk_style_get, GtkStyle_val, colormap, Val_GdkColormap)
 Make_Extractor (gtk_style_get, GtkStyle_val, depth, Val_int)
 ML_1 (gtk_style_get_font, GtkStyle_val, Val_GdkFont)
 ML_2 (gtk_style_set_font, GtkStyle_val, GdkFont_val, Unit)
-/*
 CAMLprim value ml_gtk_style_set_font (value st, value font)
 {
     GtkStyle *style = GtkStyle_val(st);
@@ -219,17 +209,12 @@ Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,  dark_gc, Val
 Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,  light_gc, Val_GdkGC)
 */
 
-/* gtkobject.h */
-
-ML_1 (gtk_object_destroy, GtkObject_val, Unit)
-ML_1 (gtk_object_sink, GtkObject_val, Unit)
-
 /* gtkdata.h */
 
 /* gtkadjustment.h */
 
 ML_6 (gtk_adjustment_new, Float_val, Float_val, Float_val, Float_val,
-      Float_val, Float_val, Val_GtkObject_sink)
+      Float_val, Float_val, Val_GAnyObject_sink)
 ML_bc6 (ml_gtk_adjustment_new)
 ML_3 (gtk_adjustment_clamp_page, GtkAdjustment_val,
       Float_val, Float_val, Unit)
@@ -260,38 +245,22 @@ CAMLprim value ml_gtk_adjustment_set(value lower, value upper,
 ML_bc6(ml_gtk_adjustment_set)
 */
 
-/* gtktooltips.h */
-
-#define GtkTooltips_val(val) check_cast(GTK_TOOLTIPS,val)
-ML_0 (gtk_tooltips_new, Val_GtkAny)
-ML_1 (gtk_tooltips_enable, GtkTooltips_val, Unit)
-ML_1 (gtk_tooltips_disable, GtkTooltips_val, Unit)
-ML_2 (gtk_tooltips_set_delay, GtkTooltips_val, Int_val, Unit)
-ML_4 (gtk_tooltips_set_tip, GtkTooltips_val, GtkWidget_val,
-      String_option_val, String_option_val, Unit)
-/*
-ML_3 (gtk_tooltips_set_colors, GtkTooltips_val,
-      Option_val(arg2, GdkColor_val, NULL) Ignore,
-      Option_val(arg3, GdkColor_val, NULL) Ignore,
-      Unit)
-*/
-
 /* gtkwidget.h */
 
+ML_1 (gtk_widget_destroy, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unparent, GtkWidget_val, Unit)
 ML_1 (gtk_widget_show, GtkWidget_val, Unit)
 ML_1 (gtk_widget_show_now, GtkWidget_val, Unit)
 ML_1 (gtk_widget_show_all, GtkWidget_val, Unit)
 ML_1 (gtk_widget_hide, GtkWidget_val, Unit)
-ML_1 (gtk_widget_hide_all, GtkWidget_val, Unit)
 ML_1 (gtk_widget_map, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unmap, GtkWidget_val, Unit)
 ML_1 (gtk_widget_realize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unrealize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_draw, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_resize, GtkWidget_val, Unit)
-ML_2 (gtk_widget_draw, GtkWidget_val,
-      Option_val(arg2,GdkRectangle_val,NULL) Ignore, Unit)
+/* ML_2 (gtk_widget_draw, GtkWidget_val,
+      Option_val(arg2,GdkRectangle_val,NULL) Ignore, Unit) */
 /*
 ML_1 (gtk_widget_draw_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_draw_default, GtkWidget_val, Unit)
@@ -299,7 +268,8 @@ ML_1 (gtk_widget_draw_children, GtkWidget_val, Unit)
 */
 ML_2 (gtk_widget_event, GtkWidget_val, GdkEvent_val, Val_bool)
 ML_1 (gtk_widget_activate, GtkWidget_val, Val_bool)
-ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit)
+/* deprecated
+ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit) */
 /* ML_3 (gtk_widget_popup, GtkWidget_val, Int_val, Int_val, Unit) */
 CAMLprim value ml_gtk_widget_intersect (value w, value area)
 {
@@ -322,12 +292,15 @@ ML_1 (gtk_widget_get_style, GtkWidget_val, Val_GtkStyle)
 ML_3 (gtk_widget_set_usize, GtkWidget_val, Int_val, Int_val, Unit)
 ML_3 (gtk_widget_set_size_request, GtkWidget_val, Int_val, Int_val, Unit)
 */
-ML_2 (gtk_widget_set_state, GtkWidget_val, State_type_val, Unit)
-ML_3 (gtk_widget_set_uposition, GtkWidget_val, Int_val, Int_val, Unit)
+/* deprecated
+ML_2 (gtk_widget_set_state, GtkWidget_val, State_type_val, Unit) */
+/* not in 3
+ML_3 (gtk_widget_set_uposition, GtkWidget_val, Int_val, Int_val, Unit) */
 ML_2 (gtk_widget_add_events, GtkWidget_val, Flags_Event_mask_val, Unit)
 ML_1 (gtk_widget_get_toplevel, GtkWidget_val, Val_GtkWidget)
 ML_2 (gtk_widget_get_ancestor, GtkWidget_val, Int_val, Val_GtkWidget)
-ML_1 (gtk_widget_get_colormap, GtkWidget_val, Val_GdkColormap)
+/* not in 3
+ML_1 (gtk_widget_get_colormap, GtkWidget_val, Val_GdkColormap) */
 ML_1 (gtk_widget_get_visual, GtkWidget_val, (value))
 CAMLprim value ml_gtk_widget_get_pointer (value w)
 {
@@ -341,12 +314,14 @@ CAMLprim value ml_gtk_widget_get_pointer (value w)
 }
 ML_2 (gtk_widget_is_ancestor, GtkWidget_val, GtkWidget_val, Val_bool)
 
+/* deprecated
 ML_1 (gtk_widget_ensure_style, GtkWidget_val, Unit)
 ML_3 (gtk_widget_modify_fg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_bg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_text, GtkWidget_val, State_type_val, GdkColor_val,Unit)
 ML_3 (gtk_widget_modify_base, GtkWidget_val, State_type_val, GdkColor_val,Unit)
 ML_2 (gtk_widget_modify_font, GtkWidget_val, PangoFontDescription_val, Unit)
+*/
 ML_1 (gtk_widget_get_pango_context, GtkWidget_val, Val_PangoContext)
 ML_1 (gtk_widget_create_pango_context, GtkWidget_val, Val_PangoContext_new)
 ML_6 (gtk_widget_add_accelerator, GtkWidget_val, Signal_name_val,
@@ -364,8 +339,8 @@ ML_1 (gtk_widget_unlock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_accelerators_locked, GtkWidget_val, Val_bool)
 */
 
-Make_Extractor (GtkWidget, GtkWidget_val, window, Val_GdkWindow)
-Make_Extractor (gtk_widget, GtkWidget_val, parent, Val_GtkWidget)
+ML_1 (gtk_widget_get_window, GtkWidget_val, Val_GdkWindow)
+ML_1 (gtk_widget_get_parent, GtkWidget_val, Val_GtkWidget)
 static value Val_GtkAllocation (GtkAllocation allocation)
 {
     value ret = alloc_small (4, 0);
@@ -375,11 +350,17 @@ static value Val_GtkAllocation (GtkAllocation allocation)
     Field(ret,3) = Val_int(allocation.height);
     return ret;
 }
-Make_Extractor (gtk_widget, GtkWidget_val, allocation, Val_GtkAllocation)
+CAMLprim value ml_gtk_widget_get_allocation(value w)
+{
+    GtkAllocation all;
+    gtk_widget_get_allocation(GtkWidget_val(w), &all);
+    return Val_GtkAllocation(all);
+}
 ML_1(Val_GtkAllocation, *(GtkAllocation*)Pointer_val, (value))
 
 ML_2 (gtk_widget_set_double_buffered, GtkWidget_val, Bool_val, Unit)
 ML_2 (gtk_widget_set_visual, GtkWidget_val, GdkVisual_val, Unit)
+/* not int 3
 ML_2 (gtk_widget_set_colormap, GtkWidget_val, GdkColormap_val, Unit)
 ML_1 (gtk_widget_set_default_visual, GdkVisual_val, Unit)
 ML_1 (gtk_widget_set_default_colormap, GdkColormap_val, Unit)
@@ -388,7 +369,8 @@ ML_0 (gtk_widget_get_default_colormap, Val_GdkColormap)
 ML_1 (gtk_widget_push_visual, GdkVisual_val, Unit)
 ML_1 (gtk_widget_push_colormap, GdkColormap_val, Unit)
 ML_0 (gtk_widget_pop_visual, Unit)
-ML_0 (gtk_widget_pop_colormap, Unit)
+ML_0 (gtk_widget_pop_colormap, Unit) */
+/* deprecated
 ML_4 (gtk_widget_render_icon, GtkWidget_val, String_val, Icon_size_val,
       String_option_val, Val_GdkPixbuf)
 
@@ -411,6 +393,7 @@ CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
     }
     CAMLreturn (ret);
 }
+*/
 
 #ifdef HASGTK212
 ML_1 (gtk_widget_get_tooltip_markup, GtkWidget_val, Val_string)
@@ -465,14 +448,16 @@ ML_1 (gtk_drag_highlight, GtkWidget_val, Unit)
 ML_1 (gtk_drag_unhighlight, GtkWidget_val, Unit)
 ML_4 (gtk_drag_set_icon_widget, GdkDragContext_val, GtkWidget_val,
       Int_val, Int_val, Unit)
+/* not in 3
 ML_6 (gtk_drag_set_icon_pixmap, GdkDragContext_val, GdkColormap_val,
       GdkPixmap_val, Option_val(arg4, GdkBitmap_val, NULL) Ignore,
       Int_val, Int_val, Unit)
-ML_bc6 (ml_gtk_drag_set_icon_pixmap)
+ML_bc6 (ml_gtk_drag_set_icon_pixmap) */
 ML_1 (gtk_drag_set_icon_default, GdkDragContext_val, Unit)
+/* not in 3
 ML_5 (gtk_drag_set_default_icon, GdkColormap_val,
       GdkPixmap_val, Option_val(arg3, GdkBitmap_val, NULL) Ignore,
-      Int_val, Int_val, Unit)
+      Int_val, Int_val, Unit) */
 CAMLprim value ml_gtk_drag_source_set (value w, value m, value t, value a)
 {
   GtkTargetEntry *targets = (GtkTargetEntry *)Val_unit;
@@ -493,8 +478,9 @@ CAMLprim value ml_gtk_drag_source_set (value w, value m, value t, value a)
 		       targets, n_targets, Flags_GdkDragAction_val(a));
   CAMLreturn(Val_unit);
 }
+/* not in 3
 ML_4 (gtk_drag_source_set_icon, GtkWidget_val, GdkColormap_val,
-      GdkPixmap_val, Option_val(arg4, GdkBitmap_val, NULL) Ignore, Unit)
+      GdkPixmap_val, Option_val(arg4, GdkBitmap_val, NULL) Ignore, Unit) */
 ML_1 (gtk_drag_source_unset, GtkWidget_val, Unit)
 
 /* gtkwidget.h / gtkselection.h */
@@ -502,19 +488,20 @@ ML_1 (gtk_drag_source_unset, GtkWidget_val, Unit)
 Make_Val_final_pointer(GtkSelectionData, Ignore, gtk_selection_data_free, 20)
 #define GtkSelectionData_val(val) ((GtkSelectionData *)Pointer_val(val))
 
-Make_Extractor (gtk_selection_data, GtkSelectionData_val, selection,
-                Val_GdkAtom)
-Make_Extractor (gtk_selection_data, GtkSelectionData_val, target, Val_GdkAtom)
-Make_Extractor (gtk_selection_data, GtkSelectionData_val, type, Val_GdkAtom)
-Make_Extractor (gtk_selection_data, GtkSelectionData_val, format, Val_int)
+ML_1 (gtk_selection_data_get_selection, GtkSelectionData_val, Val_GdkAtom)
+ML_1 (gtk_selection_data_get_target, GtkSelectionData_val, Val_GdkAtom)
+ML_1 (gtk_selection_data_get_data_type, GtkSelectionData_val, Val_GdkAtom)
+ML_1 (gtk_selection_data_get_format, GtkSelectionData_val, Val_int)
 CAMLprim value ml_gtk_selection_data_get_data (value val)
 {
     value ret;
-    GtkSelectionData *data = GtkSelectionData_val(val);
+    GtkSelectionData *sel = GtkSelectionData_val(val);
+    gint length;
+    const guchar *data = gtk_selection_data_get_data_with_length(sel, &length);
 
-    if (data->length < 0) ml_raise_null_pointer();
-    ret = alloc_string (data->length);
-    if (data->length) memcpy ((void*)ret, data->data, data->length);
+    if (length < 0) ml_raise_null_pointer();
+    ret = alloc_string (length);
+    if (length) memcpy ((void*)ret, data, length);
     return ret;
 }
 ML_1 (gtk_selection_data_copy, GtkSelectionData_val, Val_GtkSelectionData)
@@ -674,12 +661,6 @@ ML_2 (gtk_container_set_focus_hadjustment, GtkContainer_val,
 #define GtkBin_val(val) check_cast(GTK_BIN,val)
 ML_1 (gtk_bin_get_child, GtkBin_val, Val_GtkWidget)
 
-/* gtkitem.h */
-
-ML_1 (gtk_item_select, GtkItem_val, Unit)
-ML_1 (gtk_item_deselect, GtkItem_val, Unit)
-ML_1 (gtk_item_toggle, GtkItem_val, Unit)
-
 /* gtkdialog.h */
 
 static gboolean window_unref (gpointer w)
@@ -713,55 +694,6 @@ ML_3 (gtk_dialog_set_response_sensitive, GtkDialog_val, Int_val, Bool_val, Unit)
 ML_2 (gtk_dialog_set_default_response, GtkDialog_val, Int_val, Unit)
 ML_1 (gtk_dialog_run, GtkDialog_val, Val_int)
      /* gtk_dialog_add_action_widget */
-
-/* gtkinputdialog.h */
-
-/* ML_0 (gtk_input_dialog_new, Val_GtkWidget_window) */
-
-/* gtkfileselection.h */
-
-#define GtkFileSelection_val(val) check_cast(GTK_FILE_SELECTION,val)
-ML_1 (gtk_file_selection_new, String_val, Val_GtkWidget_window)
-ML_2 (gtk_file_selection_complete, GtkFileSelection_val, String_val, Unit)
-/* properties
-ML_2 (gtk_file_selection_set_filename, GtkFileSelection_val, String_val, Unit)
-ML_1 (gtk_file_selection_get_filename, GtkFileSelection_val, Val_string)
-ML_1 (gtk_file_selection_show_fileop_buttons, GtkFileSelection_val, Unit)
-ML_1 (gtk_file_selection_hide_fileop_buttons, GtkFileSelection_val, Unit)
-ML_2 (gtk_file_selection_set_select_multiple, GtkFileSelection_val, Bool_val,
-      Unit)
-ML_1 (gtk_file_selection_get_select_multiple, GtkFileSelection_val, Val_bool)
-*/
-CAMLprim value ml_gtk_file_selection_get_selections (value sel)
-{
-  gchar** selections =
-    gtk_file_selection_get_selections(GtkFileSelection_val(sel));
-  gchar** orig = selections;
-  value ret = Val_unit;
-  CAMLparam1(ret);
-  CAMLlocal2(prev,next);
-  for (prev = (value)((&ret)-1); *selections != NULL; selections++) {
-    next = alloc(2,0);
-    Store_field(prev, 1, next);
-    Store_field(next, 0, Val_string(*selections));
-    prev = next;
-  }
-  Field(prev,1) = Val_unit;
-  g_strfreev(orig);
-  CAMLreturn(ret);
-}
-    
-Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, ok_button,
-		Val_GtkWidget)
-Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, cancel_button,
-		Val_GtkWidget)
-Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, help_button,
-		Val_GtkWidget)
-Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, file_list,
-		Val_GtkWidget)
-Make_Extractor (gtk_file_selection_get, GtkFileSelection_val, dir_list,
-		Val_GtkWidget)
-
 
 /* gtkwindow.h */
 
@@ -944,25 +876,6 @@ Unsupported_26(gtk_about_dialog_set_documenters)
 Unsupported_26(gtk_about_dialog_get_documenters)
 Unsupported_26(gtk_about_dialog_new)
 #endif
-
-/* gtkcolorsel.h */
-#define GtkColorSelectionDialog_val(val) check_cast(GTK_COLOR_SELECTION_DIALOG,val)
-Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, ok_button, Val_GtkWidget)
-Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, cancel_button, Val_GtkWidget)
-Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, help_button, Val_GtkWidget)
-Make_Extractor (gtk_color_selection_dialog, GtkColorSelectionDialog_val, colorsel, Val_GtkWidget)
-
-/* gtkfontsel.h */
-#define GtkFontSelectionDialog_val(val) \
-   check_cast(GTK_FONT_SELECTION_DIALOG,val)
-Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
-                fontsel, Val_GtkWidget)
-Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
-		ok_button, Val_GtkWidget)
-Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
-		apply_button, Val_GtkWidget)
-Make_Extractor (gtk_font_selection_dialog, GtkFontSelectionDialog_val,
-		cancel_button, Val_GtkWidget)
 
 /* gtkplug.h */
 #ifdef _WIN32

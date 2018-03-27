@@ -4,20 +4,14 @@ package "gtk"
 
 (* gtkenums.h *)
 
-type anchor_type = "GTK_ANCHOR_"
-  [ `CENTER | `NORTH | `NW | `NE | `SOUTH | `SW | `SE | `WEST | `EAST ]
+type align = "GTK_ALIGN_"
+  [ `FILL | `START | `END | `CENTER | `BASELINE ]
 
 type arrow_type = "GTK_ARROW_"
-  [ `UP | `DOWN | `LEFT | `RIGHT ]
+  [ `UP | `DOWN | `LEFT | `RIGHT | `NONE ]
 
-type attach_options = "GTK_"
-  [ `EXPAND | `SHRINK | `FILL ]
-
-type button_box_style = "GTK_BUTTONBOX_"
-  [ `DEFAULT_STYLE | `SPREAD | `EDGE | `START | `END ]
-
-type curve_type = "GTK_CURVE_TYPE_"
-  [ `LINEAR | `SPLINE | `FREE ]
+type baseline_position = "GTK_BASELINE_POSITION_"
+  [ `TOP | `CENTER | `BOTTOM ]
 
 type delete_type = "GTK_DELETE_"
   [ `CHARS | `WORD_ENDS | `WORDS
@@ -28,15 +22,12 @@ type delete_type = "GTK_DELETE_"
 type direction_type = "GTK_DIR_"
   [ `TAB_FORWARD | `TAB_BACKWARD | `UP | `DOWN | `LEFT | `RIGHT ]
 
-type expander_style = "GTK_EXPANDER_"
-  [ `COLLAPSED | `SEMI_COLLAPSED | `SEMI_EXPANDED | `EXPANDED ]
-
 type icon_size = "GTK_ICON_SIZE_"
   [ `INVALID | `MENU | `SMALL_TOOLBAR | `LARGE_TOOLBAR
   | `BUTTON | `DND | `DIALOG ]
 
-type side_type = "GTK_SIDE_"
-  [ `TOP | `BOTTOM | `LEFT | `RIGHT ]
+type gtk_sensitivity_type = "GTK_SENSITIVITY_"
+  [ `AUTO | `ON | `OFF ]
 
 type text_direction = "GTK_TEXT_DIR_"
   [ `NONE | `LTR | `RTL ]
@@ -44,17 +35,14 @@ type text_direction = "GTK_TEXT_DIR_"
 type justification = "GTK_JUSTIFY_"
   [ `LEFT | `RIGHT | `CENTER | `FILL ]
 
-type match_type = "GTK_MATCH_"
-  [ `ALL | `ALL_TAIL | `HEAD | `TAIL | `EXACT | `LAST ]
-
 type menu_direction_type = "GTK_MENU_DIR_"
   [ `PARENT | `CHILD | `NEXT | `PREV ]
 
 type message_type = "GTK_MESSAGE_"
   [ `INFO | `WARNING | `QUESTION | `ERROR | `OTHER ]
 
-type metric_type = "GTK_"
-  [ `PIXELS | `INCHES | `CENTIMETERS ]
+(* type metric_type = "GTK_"
+  [ `PIXELS | `INCHES | `CENTIMETERS ] *)
 
 type movement_step = "GTK_MOVEMENT_"
   [ `LOGICAL_POSITIONS | `VISUAL_POSITIONS | `WORDS
@@ -64,12 +52,10 @@ type movement_step = "GTK_MOVEMENT_"
 type orientation = "GTK_ORIENTATION_"
   [ `HORIZONTAL | `VERTICAL ]
 
-type corner_type = "GTK_CORNER_"
-  [ `TOP_LEFT | `BOTTOM_LEFT | `TOP_RIGHT | `BOTTOM_RIGHT ]
-
 type pack_type = "GTK_PACK_"
   [ `START | `END ]
 
+(*
 type path_priority = "GTK_PATH_PRIO_"
   [ `LOWEST | `GTK | `APPLICATION | `THEME | `RC | `HIGHEST ]
 
@@ -78,21 +64,26 @@ type path_type = "GTK_PATH_"
 
 type policy_type = "GTK_POLICY_"
   [ `ALWAYS | `AUTOMATIC | `NEVER ]
+*)
 
 type position_type = "GTK_POS_"
   [ `LEFT | `RIGHT | `TOP | `BOTTOM ]
 
+(*
 type preview_type = "GTK_PREVIEW_"
   [ `COLOR | `GRAYSCALE ]
+*)
 
 type relief_style = "GTK_RELIEF_"
   [ `NORMAL | `HALF | `NONE ]
 
+(*
 type resize_mode = "GTK_RESIZE_"
   [ `PARENT | `QUEUE | `IMMEDIATE ]
 
 type signal_run_type = "GTK_RUN_"
   [ `FIRST | `LAST | `BOTH | `NO_RECURSE | `ACTION | `NO_HOOKS ]
+*)
 
 type scroll_step = "GTK_SCROLL_"
   [ `STEPS | `PAGES | `END
@@ -111,17 +102,20 @@ type shadow_type = "GTK_SHADOW_"
   [ `NONE | `IN | `OUT | `ETCHED_IN | `ETCHED_OUT ]
 
 type state_type = "GTK_STATE_"
-  [ `NORMAL | `ACTIVE | `PRELIGHT | `SELECTED | `INSENSITIVE ] 
+  [ `NORMAL | `ACTIVE | `PRELIGHT | `SELECTED | `INSENSITIVE
+  | `INCONSISTENT | `FOCUSED ] 
 
+(*
 type submenu_direction = "GTK_DIRECTION_"
   [ `LEFT | `RIGHT ]
 
 type submenu_placement = "GTK_"
   [ `TOP_BOTTOM | `LEFT_RIGHT ]
-
+*)
 type toolbar_style = "GTK_TOOLBAR_"
   [ `ICONS | `TEXT | `BOTH | `BOTH_HORIZ ]
 
+(*
 type update_type = "GTK_UPDATE_"
   [ `CONTINUOUS | `DISCONTINUOUS | `DELAYED ]
 
@@ -133,6 +127,7 @@ type window_position = "GTK_WIN_POS_"
 
 type window_type = "GTK_WINDOW_"
   [ `TOPLEVEL | `POPUP ]
+*)
 
 type wrap_mode = "GTK_WRAP_"
   [ `NONE | `CHAR | `WORD | `WORD_CHAR ]
@@ -143,29 +138,109 @@ type sort_type = "GTK_SORT_"
 type pack_direction = "GTK_PACK_DIRECTION_"
   [ `LTR | `RTL | `TTB | `BTT ]
 
-type protect HASGTK210 tree_view_grid_lines = "GTK_TREE_VIEW_GRID_LINES_"
+type print_pages = "GTK_PRINT_PAGES_"
+  [ `ALL | `CURRENT | `RANGES | `SELECTION ]
+
+type page_set = "GTK_PAGE_SET_"
+  [ `ALL | `EVEN | `ODD ]
+
+type number_up_layout = "GTK_NUMBER_UP_LAYOUT_"
+  [ `LEFT_TO_RIGHT_TOP_TO_BOTTOM
+  | `LEFT_TO_RIGHT_BOTTOM_TO_TOP
+  | `RIGHT_TO_LEFT_TOP_TO_BOTTOM
+  | `RIGHT_TO_LEFT_BOTTOM_TO_TOP
+  | `TOP_TO_BOTTOM_LEFT_TO_RIGHT
+  | `TOP_TO_BOTTOM_RIGHT_TO_LEFT
+  | `BOTTOM_TO_TOP_LEFT_TO_RIGHT
+  | `BOTTOM_TO_TOP_RIGHT_TO_LEFT ]
+
+type page_orientation = "GTK_PAGE_ORIENTATION_"
+  [ `PORTRAIT | `LANDSCAPE | `REVERSE_PORTRAIT | `REVERSE_LANDSCAPE ]
+
+type print_quality = "GTK_PRINT_QUALITY_"
+  [ `LOW | `NORMAL | `HIGH | `DRAFT ]
+
+type print_duplex = "GTK_PRINT_DUPLEX_"
+  [ `SIMPLEX | `HORIZONTAL | `VERTICAL ]
+
+type gtk_unit = "GTK_UNIT_"
+  [ `NONE | `POINTS | `INCH | `MM | `PIXEL ]
+
+type tree_view_grid_lines = "GTK_TREE_VIEW_GRID_LINES_"
   [ `NONE | `HORIZONTAL | `VERTICAL | `BOTH ]
 
-(* gtkclist.h *)
-type cell_type = "GTK_CELL_"
-  [ `EMPTY | `TEXT | `PIXMAP | `PIXTEXT | `WIDGET ]
+type drag_result = "GTK_DRAG_RESULT_"
+  [ `SUCCESS | `NO_TARGET | `USER_CANCELLED | `TIMEOUT_EXPIRED
+  | `GRAB_BROKEN | `ERROR ]
+
+type size_group_mode = "GTK_SIZE_GROUP_"
+  [ `NONE | `HORIZONTAL | `VERTICAL | `BOTH ]
+
+type size_request_mode = "GTK_SIZE_REQUEST_"
+  [ `HEIGHT_FOR_WIDTH | `WIDTH_FOR_HEIGHT | `CONSTANT_SIZE ]
+
+type scrollable_policy = "GTK_SCROLL_"
+  [ `MINIMUM | `NATURAL ]
+
+type flags state_flag = "GTK_STATE_FLAG_"
+  [ `NORMAL | `ACTIVE | `PRELIGHT | `SELECTED | `INSENSITIVE | `INCONSISTENT
+  | `FOCUSED | `BACKDROP | `DIR_LTR | `DIR_RTL | `LINK | `VISITED | `CHECKED
+  (* 3.20 | `DROP_ACTIVE *) ]
+
+type flags region_flag = "GTK_REGION_"
+  [ `EVEN | `ODD | `FIRST | `LAST | `ONLY | `SORTED ]
+
+type junction_sides = "GTK_JUNCTION_"
+  [ `NONE | `CORNER_TOPLEFT | `CORNER_TOPRIGHT | `CORNER_BOTTOMLEFT
+  | `CORNER_BOTTOMRIGHT | `TOP | `BOTTOM | `LEFT | `RIGHT ]
+
+type border_style = "GTK_BORDER_STYLE_"
+  [ `NONE | `SOLID | `INSET | `OUTSET | `HIDDEN
+  | `DOTTED | `DASHED | `DOUBLE | `GROOVE | `RIDGE ]
+
+type level_bar_mode = "GTK_LEVEL_BAR_MODE_"
+  [ `CONTINUOUS | `DISCRETE ]
+
+type input_purpose = "GTK_INPUT_PURPOSE_"
+  [ `FREE_FORM | `ALPHA | `DIGITS | `NUMBER
+  | `PHONE | `URL | `EMAIL | `NAME | `PASSWORD | `PIN ]
+
+type input_hints = "GTK_INPUT_HINT_"
+  [ `NONE | `SPELLCHECK | `NO_SPELLCHECK | `WORD_COMPLETION
+  | `LOWERCASE | `UPPERCASE_CHARS | `UPPERCASE_WORDS | `UPPERCASE_SENTENCES
+  | `INHIBIT_OSK
+  (* >= 3.18 | `VERTICAL_WRITING *)
+  (* >= 3.22 | `EMOJI | `NO_EMOJI *) ]
+
+type propagation_phase = "GTK_PHASE_"
+  [ `NONE | `CAPTURE | `BUBBLE | `TARGET ]
+
+type event_sequence_state = "GTK_EVENT_SEQUENCE_"
+  [ `NONE | `CLAIMED | `DENIED ]
+
+type pan_direction = "GTK_PAN_DIRECTION_"
+  [ `LEFT | `RIGHT | `UP | `DOWN ]
+
+(* >= 3.20
+type popover_constraint = "GTK_POPOVER_CONSTRAINT_"
+  [ `NONE | `WINDOW ] *)
 
 (* gtktextview.h *)
 type text_window_type = "GTK_TEXT_WINDOW_"
   [ `PRIVATE | `WIDGET | `TEXT | `LEFT 
   | `RIGHT | `TOP | `BOTTOM ]
 
+type text_view_layer = "GTK_TEXT_VIEW_LAYER_"
+  [ `BELOW | `ABOVE | `BELOW_TEXT | `ABOVE_TEXT ]
+
+type text_extend_selection = "GTK_TEXT_EXTEND_SELECTION_"
+  [ `WORD | `LINE ]
+
 (* gtktextiter.h *)
 type text_search_flag = "GTK_TEXT_SEARCH_"
-  [ `VISIBLE_ONLY | `TEXT_ONLY ]
-
-type button_action = "GTK_BUTTON_"
-  [ `SELECTS | `DRAGS | `EXPANDS ]
+  [ `VISIBLE_ONLY | `TEXT_ONLY | `CASE_INSENSITIVE ]
 
 (* gtktoolbar.h *)
-type toolbar_child = "GTK_TOOLBAR_CHILD_"
-  [ `SPACE | `BUTTON | `TOGGLEBUTTON | `RADIOBUTTON | `WIDGET ]
-
 type toolbar_space_style = "GTK_TOOLBAR_SPACE_"
   [ `EMPTY | `LINE ]
 
@@ -184,25 +259,15 @@ type accel_flag = "GTK_ACCEL_"
 (* gtkcalendar.h *)
 type calendar_display_options = "GTK_CALENDAR_"
   [ `SHOW_HEADING | `SHOW_DAY_NAMES | `NO_MONTH_CHANGE | `SHOW_WEEK_NUMBERS
-  | `WEEK_START_MONDAY ]
+  | `SHOW_DETAILS ]
 
-(* gtkprogressbar.h *)
-type progress_bar_style = "GTK_PROGRESS_"
-  [ `CONTINUOUS | `DISCRETE ]
-
-type progress_bar_orientation = "GTK_PROGRESS_"
-  [ `LEFT_TO_RIGHT | `RIGHT_TO_LEFT | `BOTTOM_TO_TOP | `TOP_TO_BOTTOM ]
-
-(* gtkdnd.h *)
+(* gtkdragdest.h *)
 type dest_defaults = "GTK_DEST_DEFAULT_"
   [ `MOTION | `HIGHLIGHT | `DROP | `ALL ]
 
+(* gtkselection.h *)
 type target_flags = "GTK_TARGET_"
-  [ `SAME_APP | `SAME_WIDGET ]
-
-(* gtktree.h *)
-type noconv tree_view_mode = "GTK_TREE_VIEW_"
-  [ `LINE | `ITEM ]
+  [ `SAME_APP | `SAME_WIDGET | `OTHER_APP | `OTHER_WIDGET ]
 
 (* gtktreemodel.h *)
 type tree_model_flags = "GTK_TREE_MODEL_"
@@ -217,12 +282,15 @@ type tree_view_column_sizing = "GTK_TREE_VIEW_COLUMN_"
   [ `GROW_ONLY | `AUTOSIZE | `FIXED ]
 
 (* gtkcellrenderer.h *)
+type cell_renderer_state = "GTK_CELL_RENDERER_"
+  [ `SELECTED | `PRELIT | `INSENSITIVE | `SORTED | `FOCUSED
+  | `EXPANDABLE | `EXPANDED ]
+
 type cell_renderer_mode = "GTK_CELL_RENDERER_MODE_"
   [ `INERT | `ACTIVATABLE | `EDITABLE ]
 
 (* gtkcellrendereraccel.h *)
-type protect HASGTK210 cell_renderer_accel_mode = 
-	"GTK_CELL_RENDERER_ACCEL_MODE_"
+type cell_renderer_accel_mode = "GTK_CELL_RENDERER_ACCEL_MODE_"
   [ `GTK | `OTHER ]
 
 (* gtkmessagedialog.h *)
@@ -231,49 +299,40 @@ type buttons_type = "GTK_BUTTONS_"
   | `CANCEL | `YES_NO | `OK_CANCEL ]
 
 (* gtkdialog.h *)
+type dialog_flag = "GTK_DIALOG_"
+  [ `MODAL | `DESTROY_WITH_PARENT | `USE_HEADER_BAR ]
+
 type response = "GTK_RESPONSE_"
   [ `NONE | `REJECT | `ACCEPT | `DELETE_EVENT
   | `OK | `CANCEL | `CLOSE  | `YES | `NO | `APPLY | `HELP ]
 
 (* gtkwidget.h *)
-type widget_flags = "GTK_"
-  [ `IN_DESTRUCTION | `FLOATING
-  | `TOPLEVEL | `NO_WINDOW | `REALIZED | `MAPPED | `VISIBLE
-  | `SENSITIVE | `PARENT_SENSITIVE | `CAN_FOCUS | `HAS_FOCUS
-  | `CAN_DEFAULT | `HAS_DEFAULT | `HAS_GRAB | `RC_STYLE | `COMPOSITE_CHILD
-  | `NO_REPARENT | `APP_PAINTABLE | `RECEIVES_DEFAULT | `DOUBLE_BUFFERED ]
+type widget_help_type = "GTK_WIDGET_HELP_"
+  [ `TOOLTIP | `WHATS_THIS ]
 
 (* gtkimage.h *)
 type image_type = "GTK_IMAGE_"
-  [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION
-  | `ICON_NAME | `GICON ]
-
-(* gtksizegroup.h *)
-type size_group_mode = "GTK_SIZE_GROUP_"
-  [ `NONE | `HORIZONTAL | `VERTICAL | `BOTH ]
+  [ `EMPTY | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION
+  | `ICON_NAME | `GICON | `SURFACE ]
 
 (* gtkfilechooser.h *)
-type protect HASGTK24 file_chooser_action = "GTK_FILE_CHOOSER_ACTION_"
+type file_chooser_action = "GTK_FILE_CHOOSER_ACTION_"
   [ `OPEN | `SAVE | `SELECT_FOLDER | `CREATE_FOLDER ]
 
-type protect HASGTK28 file_chooser_confirmation =
-  "GTK_FILE_CHOOSER_CONFIRMATION_"
+type file_chooser_confirmation = "GTK_FILE_CHOOSER_CONFIRMATION_"
   [ `CONFIRM | `ACCEPT_FILENAME | `SELECT_AGAIN ]
 
-(* gtkfilefilter.h *)
-type protect HASGTK24 file_filter_flags = "GTK_FILE_FILTER_"
-  [ `FILENAME | `URI | `DISPLAY_NAME | `MIME_TYPE ]
+type file_chooser_errot = "GTK_FILE_CHOOSER_ERROR_"
+  [ `NONEXISTENT | `BAD_FILENAME | `ALREADY_EXISTS | `INCOMPLETE_HOSTNAME ]
 
-(* gtkuimanager.h *)
-type protect HASGTK24 ui_manager_item_type = "GTK_UI_MANAGER_"
-  [ `AUTO | `MENUBAR | `MENU | `TOOLBAR | `PLACEHOLDER
-  | `POPUP | `MENUITEM | `TOOLITEM | `SEPARATOR | `ACCELERATOR
-  | `POPUP_WITH_ACCELS ]
+(* gtkfilefilter.h *)
+type file_filter_flags = "GTK_FILE_FILTER_"
+  [ `FILENAME | `URI | `DISPLAY_NAME | `MIME_TYPE ]
 
 (* gtkassistant.h *)
 type protect HASGTK210 assistant_page_type = "GTK_ASSISTANT_PAGE_"
-  [ `CONTENT | `INTRO | `CONFIRM | `SUMMARY | `PROGRESS ]
+  [ `CONTENT | `INTRO | `CONFIRM | `SUMMARY | `PROGRESS | `CUSTOM ]
 
 (* gtkentry.h *)
-type protect HASGTK216 entry_icon_position = "GTK_ENTRY_ICON_"
+type entry_icon_position = "GTK_ENTRY_ICON_"
   [ `PRIMARY | `SECONDARY ]

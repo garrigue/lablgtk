@@ -31,10 +31,8 @@
 #define GtkStyle_val(val) check_cast(GTK_STYLE,val)
 
 /* GtkObjects */
-CAMLexport value Val_GtkObject_sink (GtkObject *w);
-
 #define Val_GtkAny(w) (Val_GObject((GObject*)w))
-#define Val_GtkAny_sink(w) (Val_GtkObject_sink(GTK_OBJECT(w)))
+#define Val_GtkAny_sink(w) (Val_GObject_sink(G_INITIALLY_UNOWNED(w)))
 #define Val_GtkWidget Val_GtkAny
 #define Val_GtkWidget_sink Val_GtkAny_sink
 
