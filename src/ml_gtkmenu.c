@@ -44,10 +44,9 @@ CAMLprim value ml_gtkmenu_init(value unit)
     /* Since these are declared const, must force gcc to call them! */
     GType t =
         gtk_menu_item_get_type() +
-        gtk_image_menu_item_get_type() +
+        // gtk_image_menu_item_get_type() +
         gtk_check_menu_item_get_type() +
         gtk_radio_menu_item_get_type() +
-        gtk_option_menu_get_type() +
         gtk_menu_bar_get_type() +
         gtk_menu_get_type();
     return Val_GType(t);
@@ -58,19 +57,22 @@ CAMLprim value ml_gtkmenu_init(value unit)
 #define GtkMenuItem_val(val) check_cast(GTK_MENU_ITEM,val)
 ML_0 (gtk_menu_item_new, Val_GtkWidget_sink)
 ML_0 (gtk_separator_menu_item_new, Val_GtkWidget_sink)
-ML_0 (gtk_tearoff_menu_item_new, Val_GtkWidget_sink)
+/* deprecated
+ML_0 (gtk_tearoff_menu_item_new, Val_GtkWidget_sink) */
 ML_1 (gtk_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
 ML_1 (gtk_menu_item_new_with_mnemonic, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_menu_item_set_submenu, GtkMenuItem_val, GtkWidget_val, Unit)
 Make_Val_option(GtkWidget)
 ML_1 (gtk_menu_item_get_submenu, GtkMenuItem_val, Val_option_GtkWidget)
-ML_1 (gtk_menu_item_remove_submenu, GtkMenuItem_val, Unit)
+/* not in 3
+ML_1 (gtk_menu_item_remove_submenu, GtkMenuItem_val, Unit) */
 ML_2 (gtk_menu_item_set_accel_path, GtkMenuItem_val, String_val, Unit)
 ML_1 (gtk_menu_item_activate, GtkMenuItem_val, Unit)
 ML_1 (gtk_menu_item_select, GtkMenuItem_val, Unit)
 ML_1 (gtk_menu_item_deselect, GtkMenuItem_val, Unit)
+/* deprecated
 ML_2 (gtk_menu_item_set_right_justified, GtkMenuItem_val, Bool_val, Unit)
-ML_1 (gtk_menu_item_get_right_justified, GtkMenuItem_val, Val_bool)
+ML_1 (gtk_menu_item_get_right_justified, GtkMenuItem_val, Val_bool) */
 
 CAMLprim value ml_gtk_menu_item_toggle_size_request(value sm,value i)
 {
@@ -85,6 +87,7 @@ CAMLprim value ml_gtk_menu_item_toggle_size_request(value sm,value i)
 ML_2 (gtk_menu_item_toggle_size_allocate, GtkMenuItem_val, Int_val, Unit)
 
 /* gtkimagemenuitem.h */
+/* deprecated
 #define GtkImageMenuItem_val(val) check_cast(GTK_IMAGE_MENU_ITEM,val)
 ML_0 (gtk_image_menu_item_new, Val_GtkWidget_sink)
 ML_1 (gtk_image_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
@@ -93,7 +96,7 @@ ML_1 (gtk_image_menu_item_new_with_mnemonic, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_image_menu_item_new_from_stock, String_val, Option_val(arg2,GtkAccelGroup_val,NULL) Ignore, Val_GtkWidget_sink)
 ML_2 (gtk_image_menu_item_set_image, GtkImageMenuItem_val, GtkWidget_val, Unit)
 ML_1 (gtk_image_menu_item_get_image, GtkImageMenuItem_val, Val_GtkWidget)
-
+*/
 
 /* gtkcheckmenuitem.h */
 
@@ -101,15 +104,14 @@ ML_1 (gtk_image_menu_item_get_image, GtkImageMenuItem_val, Val_GtkWidget)
 ML_0 (gtk_check_menu_item_new, Val_GtkWidget_sink)
 ML_1 (gtk_check_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
 ML_1 (gtk_check_menu_item_new_with_mnemonic, String_val, Val_GtkWidget_sink)
-
+/* properties
 ML_2 (gtk_check_menu_item_set_active, GtkCheckMenuItem_val, Bool_val, Unit)
 ML_2 (gtk_check_menu_item_set_inconsistent, GtkCheckMenuItem_val, Bool_val, Unit)
 ML_1 (gtk_check_menu_item_get_inconsistent, GtkCheckMenuItem_val, Val_bool)
 ML_2 (gtk_check_menu_item_set_show_toggle, GtkCheckMenuItem_val,
       Bool_val, Unit)
+*/
 ML_1 (gtk_check_menu_item_toggled, GtkCheckMenuItem_val, Unit)
-Make_Extractor (gtk_check_menu_item_get, GtkCheckMenuItem_val,
-		active, Val_bool)
 
 /* gtkradiomenuitem.h */
 
@@ -126,17 +128,6 @@ ML_2 (gtk_radio_menu_item_new_with_mnemonic, item_group_val,
       String_val, Val_GtkWidget_sink)
 ML_2 (gtk_radio_menu_item_set_group, GtkRadioMenuItem_val,
       item_group_val, Unit)
-
-/* gtkoptionmenu.h */
-
-#define GtkOptionMenu_val(val) check_cast(GTK_OPTION_MENU,val)
-/*
-ML_0 (gtk_option_menu_new, Val_GtkWidget_sink)
-ML_1 (gtk_option_menu_get_menu, GtkOptionMenu_val, Val_GtkWidget_sink)
-ML_2 (gtk_option_menu_set_menu, GtkOptionMenu_val, GtkWidget_val, Unit)
-*/
-ML_1 (gtk_option_menu_remove_menu, GtkOptionMenu_val, Unit)
-ML_2 (gtk_option_menu_set_history, GtkOptionMenu_val, Int_val, Unit)
 
 /* gtkmenushell.h */
 

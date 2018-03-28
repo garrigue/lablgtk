@@ -6,7 +6,6 @@ open Gtk
 
 conversions {
   GtkStock "GtkStock.conv"
-  GtkCurveType "GtkEnums.curve_type_conv"
 }
 
 boxed {
@@ -82,6 +81,7 @@ class Label set wrap : Misc {
   signal populate_popup : GtkMenu
 }
 
+(* not in 3
 class TipsQuery set wrap wrapsig : Label {
   "caller"               GtkWidget_opt        : Read / Write
   "emit-always"          gboolean             : Read / Write
@@ -95,6 +95,7 @@ class TipsQuery set wrap wrapsig : Label {
   signal widget_selected :
     GtkWidget_opt text:string privat:string GdkEventButton -> bool
 }
+*)
 
 class Arrow set wrap : Misc {
   "arrow-type"(kind)     GtkArrowType         : Read / Write
@@ -130,10 +131,6 @@ class FontSelection set wrap : Box {
   "preview-text"         gchararray           : Read / Write
 }
 
-class GammaCurve : Box {
-  method get_gamma : "float"
-}
-
 class Statusbar set : Box {
  "has-resize-grip"      gboolean             : Read / Write (* 2.4 *)
   method get_has_resize_grip : "bool"
@@ -156,12 +153,10 @@ class Calendar wrap wrapsig : Widget {
   method mark_day : "int -> unit"
   method unmark_day : "int -> unit"
   method get_num_marked_dates : "int"
-  method is_day_marked : "int -> bool"
+  method day_is_marked : "int -> bool"
   method clear_marks
-  method display_options : "Gtk.Tags.calendar_display_options list -> unit"
+  method set_display_options : "Gtk.Tags.calendar_display_options list -> unit"
   method get_date : "int * int * int" (* year * month * day *)
-  method freeze
-  method thaw
   signal day_selected
   signal day_selected_double_click
   signal month_changed
@@ -175,16 +170,5 @@ class DrawingArea : Widget {
   method size : "width:int -> height:int -> unit"
 }
 
-class Curve set wrap : DrawingArea {
-  "curve-type"           GtkCurveType         : Read / Write
-  "max-x"                gfloat               : Read / Write
-  "max-y"                gfloat               : Read / Write
-  "min-x"                gfloat               : Read / Write
-  "min-y"                gfloat               : Read / Write
-  method reset
-  method set_gamma  : "int -> unit"
-  method set_vector : "float array -> unit"
-  method get_vector : "int -> float array"
-}
-
-class Separator hv : Widget {}
+(* deprecated 3.4
+class Separator hv : Widget {} *)

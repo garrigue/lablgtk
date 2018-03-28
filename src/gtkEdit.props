@@ -51,6 +51,7 @@ class Editable abstract wrapsig : Widget { (* actually an interface *)
 
 class Entry set wrap wrapsig : Editable {
   "text"                 gchararray           : Read / Write
+  “text-length”          guint                : Read
   "visibility"           gboolean             : Read / Write
   "max-length"           gint                 : Read / Write
   "activates-default"    gboolean             : Read / Write

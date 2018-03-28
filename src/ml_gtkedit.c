@@ -45,14 +45,9 @@ CAMLprim value ml_gtkedit_init(value unit)
     /* Since these are declared const, must force gcc to call them! */
     GType t =
         gtk_spin_button_get_type() +
-        gtk_combo_get_type() +
-#ifdef HASGTK24
         gtk_combo_box_get_type() +
-        gtk_combo_box_entry_get_type() +
+        gtk_combo_box_text_get_type() +
         gtk_entry_completion_get_type();
-#else
-        0;
-#endif
     return Val_GType(t);
 }
 
@@ -96,11 +91,8 @@ ML_2 (gtk_editable_set_editable, GtkEditable_val, Bool_val, Unit)
 ML_1 (gtk_editable_get_editable, GtkEditable_val, Val_bool)
 
 /* gtkentry.h */
-
+/* only properties */
 #define GtkEntry_val(val) check_cast(GTK_ENTRY,val)
-ML_2 (gtk_entry_append_text, GtkEntry_val, String_val, Unit)
-ML_2 (gtk_entry_prepend_text, GtkEntry_val, String_val, Unit)
-Make_Extractor (gtk_entry, GtkEntry_val, text_length, Val_int)
 /*
 ML_0 (gtk_entry_new, Val_GtkWidget_sink)
 ML_1 (gtk_entry_new_with_max_length, (gint16)Long_val, Val_GtkWidget_sink)
@@ -167,25 +159,6 @@ ML_2 (gtk_text_forward_delete, GtkText_val, Int_val, Val_int)
 ML_2 (gtk_text_backward_delete, GtkText_val, Int_val, Val_int)
 */
 
-/* gtkcombo.h */
-
-#define GtkCombo_val(val) check_cast(GTK_COMBO,val)
-/*
-ML_0 (gtk_combo_new, Val_GtkWidget_sink)
-ML_3 (gtk_combo_set_value_in_list, GtkCombo_val,
-      Option_val(arg2, Bool_val, GtkCombo_val(arg1)->value_in_list) Ignore,
-      Option_val(arg3, Bool_val, GtkCombo_val(arg1)->ok_if_empty) Ignore,
-      Unit)
-ML_2 (gtk_combo_set_use_arrows, GtkCombo_val, Bool_val, Unit)
-ML_2 (gtk_combo_set_use_arrows_always, GtkCombo_val, Bool_val, Unit)
-ML_2 (gtk_combo_set_case_sensitive, GtkCombo_val, Bool_val, Unit)
-*/
-ML_3 (gtk_combo_set_item_string, GtkCombo_val, GtkItem_val, String_val, Unit)
-ML_1 (gtk_combo_disable_activate, GtkCombo_val, Unit)
-Make_Extractor (gtk_combo, GtkCombo_val, entry, Val_GtkWidget)
-Make_Extractor (gtk_combo, GtkCombo_val, list, Val_GtkWidget)
-
-#ifdef HASGTK24
 /* gtkcombobox.h */
 #define GtkComboBox_val(val) check_cast(GTK_COMBO_BOX,val)
 
@@ -239,28 +212,12 @@ CAMLprim value ml_gtk_entry_get_completion(value entry)
   GtkEntryCompletion *c = gtk_entry_get_completion(GtkEntry_val(entry));
   return c ? ml_some(Val_GAnyObject(c)) : Val_unit;
 }
-#else
-Unsupported_24(gtk_combo_box_get_active_iter)
-Unsupported_24(gtk_combo_box_set_active_iter)
 
-Unsupported_24(gtk_entry_completion_get_entry)
-Unsupported_24(gtk_entry_completion_complete)
-Unsupported_24(gtk_entry_completion_insert_action_text)
-Unsupported_24(gtk_entry_completion_insert_action_markup)
-Unsupported_24(gtk_entry_completion_delete_action)
-Unsupported_24(gtk_entry_completion_set_text_column)
-Unsupported_24(gtk_entry_completion_set_match_func)
-
-Unsupported_24(gtk_entry_get_completion)
-Unsupported_24(gtk_entry_set_completion)
-#endif /* HASGTK24 */
-
-#ifdef HASGTK26
 CAMLprim value
 ml_gtk_combo_box_set_row_separator_func (value cb, value fun_o)
 {
   gpointer data;
-  GtkDestroyNotify dnotify;
+  GDestroyNotify dnotify;
   GtkTreeViewRowSeparatorFunc func;
   if (Is_long (fun_o))
     {
@@ -277,6 +234,3 @@ ml_gtk_combo_box_set_row_separator_func (value cb, value fun_o)
   gtk_combo_box_set_row_separator_func (GtkComboBox_val (cb), func, data, dnotify);
   return Val_unit;
 }
-#else
-Unsupported_26 (gtk_combo_box_set_row_separator_func)
-#endif /* HASGTK26 */
