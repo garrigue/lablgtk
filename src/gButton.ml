@@ -148,11 +148,11 @@ class toolbar obj = object
   method get_nth_item = Toolbar.get_nth_item obj
   method unset_style = Toolbar.unset_style obj
   method get_drop_index = Toolbar.get_drop_index obj
-  method set_drop_highlight_item =
+  method set_drop_highlight_item : 'a.((#tool_item_o as 'a) * int) option -> _ =
     function 
       | None -> Toolbar.set_drop_highlight_item obj None 0
-      | Some ((i : Gtk.tool_item obj), pos) ->
-          Toolbar.set_drop_highlight_item obj (Some i) pos
+      | Some (i, pos) ->
+          Toolbar.set_drop_highlight_item obj (Some i#as_tool_item) pos
   method relief_style = Toolbar.get_relief_style obj
 end
 

@@ -290,6 +290,13 @@ class toolbar :
     inherit GContainer.container
     val obj : Gtk.toolbar obj
     method connect : toolbar_signals
+    method insert : ?pos:int -> #tool_item_o -> unit 
+    (** @param pos default value is [-1] i.e. end of the toolbar *)
+    method get_n_items : int
+    method get_nth_item : int -> Gtk.tool_item obj
+    method get_item_index : Gtk.tool_item obj -> int
+    method set_drop_highlight_item : (#tool_item_o * int) option -> unit
+    method get_drop_index : int -> int -> int
     method orientation : Tags.orientation
     method set_orientation : Tags.orientation -> unit
     method toolbar_style : Tags.toolbar_style
@@ -302,13 +309,6 @@ class toolbar :
     method show_arrow : bool
     method set_show_arrow : bool -> unit
     method relief_style : Tags.relief_style
-    method get_drop_index : int -> int -> int
-    method set_drop_highlight_item : (Gtk.tool_item obj * int) option -> unit
-    method get_item_index : Gtk.tool_item obj -> int
-    method get_n_items : int
-    method get_nth_item : int -> Gtk.tool_item obj
-    method insert : ?pos:int -> #tool_item_o -> unit 
-    (** @param pos default value is [-1] i.e. end of the toolbar *)
   end
 
 (** @gtkdoc gtk GtkToolbar *)
