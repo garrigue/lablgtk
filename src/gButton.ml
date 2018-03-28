@@ -141,7 +141,8 @@ class toolbar obj = object
   inherit toolbar_props
   inherit OgtkBaseProps.orientable_props
   method connect = new toolbar_signals obj
-  method insert ?(pos = -1) (it : Gtk.tool_item obj) = Toolbar.insert obj it pos
+  method insert : 'a. ?pos:int -> (#tool_item_o as 'a) -> unit =
+    fun ?(pos = -1) it -> Toolbar.insert obj it#as_tool_item pos
   method get_item_index : Gtk.tool_item obj -> _ = Toolbar.get_item_index obj
   method get_n_items = Toolbar.get_n_items obj
   method get_nth_item = Toolbar.get_nth_item obj
