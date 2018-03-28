@@ -31,7 +31,7 @@ open GObj
 open OgtkBaseProps
 
 class adjustment_signals obj = object (self)
-  inherit gtkobj_signals_impl obj
+  inherit [_] gobject_signals obj
   inherit adjustment_sigs
 end
 
@@ -70,22 +70,6 @@ let conv_adjustment =
            | `OBJECT None -> raise Gpointer.Null
            | _ -> failwith "GObj.get_object");
     inj = (fun c -> `OBJECT (Some (unwrap_adjustment c))) }
-
-class tooltips obj = object
-  inherit gtkobj (obj : Gtk.tooltips obj)
-  method as_tooltips = obj
-  method connect = new gtkobj_signals_impl obj
-  method enable () = Tooltips.enable obj
-  method disable () = Tooltips.disable obj
-  method set_tip ?text ?privat w =
-    Tooltips.set_tip obj (as_widget w) ?text ?privat
-  method set_delay = Tooltips.set_delay obj
-end
-
-let tooltips ?delay () =
-  let tt = Tooltips.create () in
-  may delay ~f:(Tooltips.set_delay tt);
-  new tooltips tt
 
 class clipboard_skel clip = object (self)
   method as_clipboard = Lazy.force clip

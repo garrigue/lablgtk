@@ -76,12 +76,14 @@ val from_data :
   ?bits:int -> ?rowstride:int -> ?has_alpha:bool -> Gpointer.region -> pixbuf
 
 (** @gtkdoc gdk gdk-Pixbufs *)
+(*
 val get_from_drawable :
   dest:pixbuf ->
   ?dest_x:int -> ?dest_y:int ->
   ?width:int ->  ?height:int ->
   ?src_x:int -> ?src_y:int ->
   ?colormap:Gdk.colormap -> [>`drawable] Gobject.obj -> unit
+*)
 
 (** {3 Accessors} *)
 
@@ -96,6 +98,7 @@ val get_pixels : pixbuf -> Gpointer.region
 
 (** {3 Rendering} *)
 
+(*
 (** @gtkdoc gdk gdk-Drawing-Primitives *)
 val draw_pixbuf :
   [>`drawable] Gobject.obj ->
@@ -146,6 +149,7 @@ val render_to_drawable_alpha :
 
 (** @gtkdoc gdk gdk-Pixbufs *)
 val create_pixmap : ?threshold:int -> pixbuf -> Gdk.pixmap * Gdk.bitmap option
+*)
 
 (** {3 Transform} *)
 

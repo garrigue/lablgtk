@@ -93,8 +93,6 @@ class button_box : ([> Gtk.button_box] as 'a) obj ->
   object
     inherit box
     val obj : 'a obj
-    method set_child_ipadding : ?x:int -> ?y:int -> unit -> unit (** @deprecated . *)
-    method set_child_size : ?width:int -> ?height:int -> unit -> unit (** @deprecated . *)
     method set_layout : Gtk.Tags.button_box_style -> unit
     method layout : Gtk.Tags.button_box_style
     method get_child_secondary : widget -> bool (** @since GTK 2.4 *)
@@ -104,67 +102,11 @@ class button_box : ([> Gtk.button_box] as 'a) obj ->
 (** @gtkdoc gtk GtkButtonBox *)
 val button_box :
   Tags.orientation ->
-  ?spacing:int ->
-  ?child_width:int ->
-  ?child_height:int ->
-  ?child_ipadx:int ->
-  ?child_ipady:int ->
-  ?layout:GtkPack.BBox.bbox_style ->
+  ?layout:Gtk.Tags.button_box_style ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> button_box
-
-(** {3 GtkTable} *)
-
-(** Pack widgets in regular patterns
-   @gtkdoc gtk GtkTable *)
-class table :
-  Gtk.table obj ->
-  object
-    inherit GContainer.container_full
-    val obj : Gtk.table obj
-    method attach :
-      left:int ->
-      top:int ->
-      ?right:int ->
-      ?bottom:int ->
-      ?expand:Tags.expand_type ->
-      ?fill:Tags.expand_type ->
-      ?shrink:Tags.expand_type ->
-      ?xpadding:int -> ?ypadding:int -> widget -> unit
-    (** @param left column number to attach the left side of the widget to
-        @param top  row number to attach the top of the widget to
-        @param right default value is [left+1]
-        @param bottom default value is [top+1]
-        @param expand default value is [`NONE]
-        @param fill default value is [`BOTH]
-        @param shrink default value is [`NONE] *)
-    method col_spacings : int
-    method columns : int
-    method homogeneous : bool
-    method row_spacings : int
-    method rows : int
-    method set_col_spacing : int -> int -> unit
-    method set_col_spacings : int -> unit
-    method set_columns : int -> unit
-    method set_homogeneous : bool -> unit
-    method set_row_spacing : int -> int -> unit
-    method set_row_spacings : int -> unit
-    method set_rows : int -> unit
-  end
-
-(** @gtkdoc gtk GtkTable *)
-val table :
-  ?columns:int ->
-  ?rows:int ->
-  ?homogeneous:bool ->
-  ?row_spacings:int ->
-  ?col_spacings:int ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> table
 
 (** {3 GtkFixed} *)
 
@@ -178,13 +120,10 @@ class fixed :
     method event : event_ops
     method move : widget -> x:int -> y:int -> unit
     method put : widget -> x:int -> y:int -> unit
-    method set_has_window : bool -> unit
-    method has_window : bool
   end
 
 (** @gtkdoc gtk GtkFixed *)
 val fixed :
-  ?has_window: bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
@@ -202,7 +141,6 @@ class layout :
     val obj : 'a obj
     method event : event_ops
     method bin_window : Gdk.window
-    method freeze : unit -> unit
     method hadjustment : GData.adjustment
     method height : int
     method move : widget -> x:int -> y:int -> unit
@@ -211,7 +149,6 @@ class layout :
     method set_height : int -> unit
     method set_vadjustment : GData.adjustment -> unit
     method set_width : int -> unit
-    method thaw : unit -> unit
     method vadjustment : GData.adjustment
     method width : int
   end
@@ -289,14 +226,14 @@ class notebook : Gtk.notebook obj ->
     method set_tab_hborder : int -> unit
     method set_tab_reorderable : widget -> bool -> unit
     method set_tab_vborder : int -> unit
-    method set_tab_pos : Tags.position -> unit
+    method set_tab_pos : Tags.position_type -> unit
     method enable_popup : bool
     method homogeneous_tabs : bool
     method scrollable : bool
     method show_border : bool
     method show_tabs : bool
     method tab_hborder : int
-    method tab_pos : GtkEnums.position_type
+    method tab_pos : Tags.position_type
     method tab_vborder : int
   end
 
@@ -308,7 +245,7 @@ val notebook :
   ?show_border:bool ->
   ?show_tabs:bool ->
   ?tab_border:int ->
-  ?tab_pos:Tags.position ->
+  ?tab_pos:Tags.position_type ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

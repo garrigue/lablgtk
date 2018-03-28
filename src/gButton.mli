@@ -261,15 +261,25 @@ class toolbar_signals :
   ([> Gtk.toolbar] as 'a) obj ->
   object
     inherit GContainer.container_signals
-    method orientation_changed :
-        callback:(GtkEnums.orientation -> unit) -> GtkSignal.id
     method style_changed :
         callback:(GtkEnums.toolbar_style -> unit) -> GtkSignal.id
-    method focus_home_or_end : callback:(bool -> bool) -> GtkSignal.id (** @since GTK 2.4 *)
+    method focus_home_or_end : callback:(bool -> bool) -> GtkSignal.id
     method move_focus :
-        callback:(GtkEnums.direction_type -> bool) -> GtkSignal.id (** @since GTK 2.4 *)
+        callback:(GtkEnums.direction_type -> bool) -> GtkSignal.id
     method popup_context_menu :
-        callback:(int -> int -> int -> bool) -> GtkSignal.id (** @since GTK 2.4 *)
+        callback:(int -> int -> int -> bool) -> GtkSignal.id
+    method notify_border_width :
+        callback:(int -> unit) -> GtkSignal.id
+    method notify_icon_size :
+        callback:(GtkEnums.icon_size -> unit) -> GtkSignal.id
+    method notify_icon_size_set :
+        callback:(bool -> unit) -> GtkSignal.id
+    method notify_resize_mode :
+        callback:(GtkEnums.resize_mode -> unit) -> GtkSignal.id
+    method notify_show_arrow :
+        callback:(bool -> unit) -> GtkSignal.id
+    method notify_toolbar_style :
+        callback:(GtkEnums.toolbar_style -> unit) -> GtkSignal.id
   end
 
 (** Create bars of buttons and other widgets 
@@ -280,50 +290,24 @@ class toolbar :
     inherit GContainer.container
     val obj : Gtk.toolbar obj
     method connect : toolbar_signals
-    method insert_button :
-      ?text:string ->
-      ?tooltip:string ->
-      ?tooltip_private:string ->
-      ?icon:widget ->
-      ?pos:int -> ?callback:(unit -> unit) -> unit -> button
-    method insert_radio_button :
-      ?text:string ->
-      ?tooltip:string ->
-      ?tooltip_private:string ->
-      ?icon:widget ->
-      ?pos:int -> ?callback:(unit -> unit) -> unit -> radio_button
-    method insert_space : ?pos:int -> unit -> unit
-    method insert_toggle_button :
-      ?text:string ->
-      ?tooltip:string ->
-      ?tooltip_private:string ->
-      ?icon:widget ->
-      ?pos:int -> ?callback:(unit -> unit) -> unit -> toggle_button
-    method insert_widget :
-      ?tooltip:string ->
-      ?tooltip_private:string -> ?pos:int -> widget -> unit
     method orientation : Tags.orientation
     method set_orientation : Tags.orientation -> unit
-    method style : Tags.toolbar_style
-    method set_style : Tags.toolbar_style -> unit
-    method unset_style : unit -> unit
+    method toolbar_style : Tags.toolbar_style
+    method set_toolbar_style : Tags.toolbar_style -> unit
+    method unset_style : unit
     method icon_size : Tags.icon_size
     method set_icon_size : Tags.icon_size -> unit
-    method unset_icon_size : unit -> unit
-    method get_tooltips : bool
-    method set_tooltips : bool -> unit
-
-    (** Extended API, available in GTK 2.4 *)
-
-    method show_arrow : bool (** @since GTK 2.4 *)
-    method set_show_arrow : bool -> unit (** @since GTK 2.4 *)
-    method relief_style : Tags.relief_style (** @since GTK 2.4 *)
-    method get_drop_index : int -> int -> int (** @since GTK 2.4 *)
-    method set_drop_highlight_item : (#tool_item_o * int) option -> unit (** @since GTK 2.4 *)
-    method get_item_index : #tool_item_o -> int (** @since GTK 2.4 *)
-    method get_n_items : int (** @since GTK 2.4 *)
-    method get_nth_item : int -> [`toolitem ] Gtk.obj (** @since GTK 2.4 *)
-    method insert : ?pos:int -> #tool_item_o -> unit 
+    method icon_size_set : bool
+    method set_icon_size_set : bool -> unit
+    method show_arrow : bool
+    method set_show_arrow : bool -> unit
+    method relief_style : Tags.relief_style
+    method get_drop_index : int -> int -> int
+    method set_drop_highlight_item : (Gtk.tool_item obj * int) option -> unit
+    method get_item_index : Gtk.tool_item obj -> int
+    method get_n_items : int
+    method get_nth_item : int -> Gtk.tool_item obj
+    method insert : ?pos:int -> Gtk.tool_item obj -> unit 
     (** @since GTK 2.4 
         @param pos default value is [-1] i.e. end of the toolbar *)
   end
@@ -332,7 +316,6 @@ class toolbar :
 val toolbar :
   ?orientation:Tags.orientation ->
   ?style:Tags.toolbar_style ->
-  ?tooltips:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->
@@ -359,7 +342,6 @@ class tool_item_skel :
     method get_homogeneous : bool
     method set_expand : bool -> unit
     method get_expand : bool
-    method set_tooltip : GData.tooltips -> string -> string -> unit
     method set_use_drag_window : bool -> unit
     method get_use_drag_window : bool
 end
@@ -519,7 +501,6 @@ class menu_tool_button :
     val obj : 'a obj
     method menu : Gtk.menu Gtk.obj
     method set_menu : Gtk.menu Gtk.obj -> unit
-    method set_arrow_tooltip : GData.tooltips -> string -> string -> unit
   end
 
 (** @gtkdoc gtk GtkMenuToolButton

@@ -86,26 +86,6 @@ val as_adjustment : adjustment -> Gtk.adjustment obj
 val conv_adjustment : adjustment Gobject.data_conv
 val conv_adjustment_option : adjustment option Gobject.data_conv
 
-(** {3 Tooltips} *)
-
-(** Add tips to your widgets
-   @gtkdoc gtk GtkTooltips *)
-class tooltips :
-  Gtk.tooltips obj ->
-  object
-    inherit GObj.gtkobj
-    val obj : Gtk.tooltips obj
-    method as_tooltips : Gtk.tooltips obj
-    method connect : GObj.gtkobj_signals
-    method disable : unit -> unit
-    method enable : unit -> unit
-    method set_delay : int -> unit
-    method set_tip : ?text:string -> ?privat:string -> GObj.widget -> unit
-  end
-
-(** @gtkdoc gtk GtkTooltips *)
-val tooltips : ?delay:int -> unit -> tooltips
-
 (** {3 Clipboards} *)
 
 (** Storing data on clipboards

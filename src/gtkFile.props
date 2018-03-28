@@ -2,10 +2,8 @@
 prefix "Gtk"
 
 conversions {
-  GtkFileChooserAction  "GtkEnums.file_chooser_action_conv"
   GtkFileFilter         "(gobject : Gtk.file_filter  Gtk.obj data_conv)"
   GtkFileChooserDialog  "(gobject : [>`filechooser|`dialog] Gtk.obj data_conv)"
-  GtkFileChooserConfirmation  "GtkEnums.file_chooser_confirmation_conv"
 }
 
 class FileChooser abstract wrap wrapsig {

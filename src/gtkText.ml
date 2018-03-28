@@ -185,7 +185,8 @@ module View = struct
 	   "ml_gtk_text_view_place_cursor_onscreen"
   external get_visible_rect : [>`textview] obj -> Gdk.Rectangle.t = 
 	   "ml_gtk_text_view_get_visible_rect"
-  external get_iter_location : [>`textview] obj -> text_iter -> Gdk.Rectangle.t = 
+  external get_iter_location :
+      [>`textview] obj -> text_iter -> Gdk.Rectangle.t = 
 	   "ml_gtk_text_view_get_iter_location"
   external get_line_at_y : [>`textview] obj -> int -> text_iter*int = 
 	   "ml_gtk_text_view_get_line_at_y"
@@ -193,17 +194,23 @@ module View = struct
 	   "ml_gtk_text_view_get_line_yrange"
   external get_iter_at_location : [>`textview] obj -> int -> int -> text_iter = 
 	   "ml_gtk_text_view_get_iter_at_location"
-  external buffer_to_window_coords : [>`textview] obj -> Gtk.Tags.text_window_type -> int -> int -> int*int =
+  external buffer_to_window_coords :
+      [>`textview] obj -> Gtk.Tags.text_window_type -> int -> int -> int*int =
 	   "ml_gtk_text_view_buffer_to_window_coords"
-  external window_to_buffer_coords : [>`textview] obj -> Gtk.Tags.text_window_type -> int -> int -> int*int =
+  external window_to_buffer_coords :
+      [>`textview] obj -> Gtk.Tags.text_window_type -> int -> int -> int*int =
 	   "ml_gtk_text_view_window_to_buffer_coords"
-  external get_window : [>`textview] obj -> Gtk.Tags.text_window_type -> Gdk.window option =
+  external get_window :
+      [>`textview] obj -> Gtk.Tags.text_window_type -> Gdk.window option =
 	   "ml_gtk_text_view_get_window"
-  external get_window_type : [>`textview] obj -> Gdk.window -> Gtk.Tags.text_window_type =
+  external get_window_type :
+      [>`textview] obj -> Gdk.window -> Gtk.Tags.text_window_type =
 	   "ml_gtk_text_view_get_window_type"
-  external set_border_window_size : [>`textview] obj -> Gtk.Tags.side_type -> int -> unit =
+  external set_border_window_size :
+      [>`textview] obj -> Gtk.Tags.text_window_type -> int -> unit =
            "ml_gtk_text_view_set_border_window_size"
-  external get_border_window_size : [>`textview] obj ->  Gtk.Tags.side_type -> int =
+  external get_border_window_size :
+      [>`textview] obj -> Gtk.Tags.text_window_type -> int =
 	   "ml_gtk_text_view_get_border_window_size"
   external forward_display_line : [>`textview] obj -> text_iter -> bool =
 	   "ml_gtk_text_view_forward_display_line"

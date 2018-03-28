@@ -10,18 +10,15 @@ classes {
   GtkAdjustment "Gtk.adjustment obj"
 }
 
-class Ruler hv set wrap : Widget {
-  "lower"                gdouble              : Read / Write
-  "upper"                gdouble              : Read / Write
-  "max-size"             gdouble              : Read / Write
-  "position"             gdouble              : Read / Write
-  method set_metric : "Tags.metric_type -> unit"
-}
-
 class Range abstract set wrap wrapsig : Widget {
   "adjustment"           GtkAdjustment        : Read / Write / Construct
+  "fill-level"           gdouble              :	Read / Write
   "inverted"             gboolean             : Read / Write
-  "update-policy"        GtkUpdateType        : Read / Write
+  "restrict-to-fill-level" gboolean           : Read / Write
+  "round-digits"         gint                 :	Read / Write
+  "show-fill-level"      gboolean             :	Read / Write
+  "lower-stepper-sensitivity" GtkSensitivityType : Read / Write
+  "upper-stepper-sensitivity" GtkSensitivityType : Read / Write
   signal adjust_bounds : gdouble
   signal move_slider : GtkScrollType
   signal change_value : GtkScrollType gdouble
@@ -31,6 +28,7 @@ class Range abstract set wrap wrapsig : Widget {
 class Scale hv set wrap : Range {
   "digits"               gint                 : Read / Write
   "draw-value"           gboolean             : Read / Write
+  "has-origin"           gboolean             :	Read / Write
   "value-pos"            GtkPositionType      : Read / Write
   signal format_value : gdouble -> string
 }
@@ -46,15 +44,11 @@ class Progress abstract : Widget {
 } *)
 
 class ProgressBar : Widget {
-  "adjustment"           GtkAdjustment        : Read / Write / Wrap
-  "orientation"          GtkProgressBarOrientation : Read / Write / Set / Wrap
-  "activity-blocks"      guint                : Read / Write 
-  "activity-step"        guint                : Read / Write
-  "bar-style"            GtkProgressBarStyle  : Read / Write
-  "discrete-blocks"      guint                : Read / Write
   "fraction"             gdouble              : Read / Write / Wrap
+  "inverted"             gboolean             :	Read / Write / Wrap
+  "show-text"            gboolean             :	Read / Write / Wrap
   "pulse-step"           gdouble              : Read / Write / Set / Wrap
   "text"                 gchararray           : Read / Write / Wrap
-  "ellipsize"            PangoEllipsizeMode    : Read / Write / Wrap
+  "ellipsize"            PangoEllipsizeMode   : Read / Write / Wrap
   method pulse
 }

@@ -30,97 +30,8 @@ type 'a optobj = 'a obj Gpointer.optboxed
 type clampf = float
 
 module Tags = struct
-  type anchor_type = [ `CENTER|`NORTH|`NW|`NE|`SOUTH|`SW|`SE|`WEST|`EAST ]
-  type arrow_type = [ `UP|`DOWN|`LEFT|`RIGHT ]
-  type attach_options = [ `EXPAND|`SHRINK|`FILL ]
-  type button_box_style = [ `DEFAULT_STYLE|`SPREAD|`EDGE|`START|`END ]
-  type curve_type = [ `LINEAR|`SPLINE|`FREE ]
-  type delete_type =
-    [ `CHARS|`WORD_ENDS|`WORDS|`DISPLAY_LINES|`DISPLAY_LINE_ENDS
-    | `PARAGRAPH_ENDS|`PARAGRAPHS|`WHITESPACE ]
-  type direction_type = [ `TAB_FORWARD|`TAB_BACKWARD|`UP|`DOWN|`LEFT|`RIGHT ]
-  type expander_style =
-    [ `COLLAPSED|`SEMI_COLLAPSED|`SEMI_EXPANDED|`EXPANDED ]
-  type icon_size =
-    [ `INVALID|`MENU|`SMALL_TOOLBAR|`LARGE_TOOLBAR|`BUTTON|`DND|`DIALOG ]
-  type side_type = [ `TOP|`BOTTOM|`LEFT|`RIGHT ]
-  type text_direction = [ `NONE|`LTR|`RTL ]
-  type justification = [ `LEFT|`RIGHT|`CENTER|`FILL ]
-  type match_type = [ `ALL|`ALL_TAIL|`HEAD|`TAIL|`EXACT|`LAST ]
-  type menu_direction = [ `PARENT|`CHILD|`NEXT|`PREV ]
-  type message_type = [ `INFO | `WARNING | `QUESTION | `ERROR | `OTHER ]
-  type metric_type = [ `PIXELS|`INCHES|`CENTIMETERS ]
-  type movement_step =
-    [ `LOGICAL_POSITIONS|`VISUAL_POSITIONS|`WORDS|`DISPLAY_LINES
-    | `DISPLAY_LINE_ENDS|`PARAGRAPH_ENDS|`PARAGRAPHS|`PAGES|`BUFFER_ENDS
-    | `HORIZONTAL_PAGES ]
-  type orientation = [ `HORIZONTAL|`VERTICAL ]
-  type corner_type = [ `TOP_LEFT|`BOTTOM_LEFT|`TOP_RIGHT|`BOTTOM_RIGHT ]
-  type pack_type = [ `START|`END ]
-  type path_priority = [ `LOWEST|`GTK|`APPLICATION|`THEME|`RC|`HIGHEST ]
-  type path_type = [ `WIDGET|`WIDGET_CLASS|`CLASS ]
-  type policy_type = [ `ALWAYS|`AUTOMATIC|`NEVER ]
-  type position = [ `LEFT|`RIGHT|`TOP|`BOTTOM ]
-  type relief_style = [ `NORMAL|`HALF|`NONE ]
-  type resize_mode = [ `PARENT|`QUEUE|`IMMEDIATE ]
-  type signal_run_type = [ `FIRST|`LAST|`BOTH|`NO_RECURSE|`ACTION|`NO_HOOKS ]
-  type scroll_type =
-    [ `NONE|`JUMP|`STEP_FORWARD|`STEP_BACKWARD|`PAGE_BACKWARD|`PAGE_FORWARD
-    | `STEP_UP|`STEP_DOWN|`PAGE_UP|`PAGE_DOWN|`STEP_LEFT|`STEP_RIGHT
-    | `PAGE_LEFT|`PAGE_RIGHT|`START|`END ]
-  type selection_mode = [ `NONE|`SINGLE|`BROWSE|`MULTIPLE ]
-  type shadow_type = [ `NONE|`IN|`OUT|`ETCHED_IN|`ETCHED_OUT ]
-  type state_type = [ `NORMAL|`ACTIVE|`PRELIGHT|`SELECTED|`INSENSITIVE ]
-  type submenu_direction = [ `LEFT|`RIGHT ]
-  type submenu_placement = [ `TOP_BOTTOM|`LEFT_RIGHT ]
-  type toolbar_style = [ `ICONS|`TEXT|`BOTH|`BOTH_HORIZ ]
-  type update_type = [ `CONTINUOUS|`DISCONTINUOUS|`DELAYED ]
-  type visibility = [ `NONE|`PARTIAL|`FULL ]
-  type window_position =
-    [ `NONE|`CENTER|`MOUSE|`CENTER_ALWAYS|`CENTER_ON_PARENT ]
-  type window_type = [ `TOPLEVEL|`POPUP ]
-  type wrap_mode = [ `NONE|`CHAR|`WORD|`WORD_CHAR ]
-  type sort_type = [ `ASCENDING|`DESCENDING ]
-  type pack_direction = [ `LTR | `RTL | `TTB | `BTT ]
-
-  type expand_type = [ `X|`Y|`BOTH|`NONE ]
-  type update_policy = [ `ALWAYS|`IF_VALID|`SNAP_TO_TICKS ]
-  type cell_type = [ `EMPTY|`TEXT|`PIXMAP|`PIXTEXT|`WIDGET ]
-  type toolbar_child =
-      [ `SPACE | `BUTTON | `TOGGLEBUTTON | `RADIOBUTTON | `WIDGET ]
-  type toolbar_space_style = [ `EMPTY | `LINE ]
-  type spin_type =
-    [ `STEP_FORWARD | `STEP_BACKWARD | `PAGE_FORWARD | `PAGE_BACKWARD
-    | `HOME | `END | `USER_DEFINED of float ]
-  type accel_flag = [ `VISIBLE|`LOCKED ]
-  type button_action = [ `SELECTS|`DRAGS|`EXPANDS ]
-  type calendar_display_options =
-    [ `SHOW_HEADING|`SHOW_DAY_NAMES|`NO_MONTH_CHANGE|`SHOW_WEEK_NUMBERS
-    | `WEEK_START_MONDAY ]
-  type spin_button_update_policy = [ `ALWAYS|`IF_VALID ]
-  type progress_bar_style = [ `CONTINUOUS|`DISCRETE ]
-  type progress_bar_orientation =
-    [ `LEFT_TO_RIGHT|`RIGHT_TO_LEFT|`BOTTOM_TO_TOP|`TOP_TO_BOTTOM ]
-  type dest_defaults = [ `MOTION|`HIGHLIGHT|`DROP|`ALL ]
-  type target_flags = [ `SAME_APP|`SAME_WIDGET ]
-  type text_window_type = [ `PRIVATE | `WIDGET | `TEXT | `LEFT
-			  | `RIGHT | `TOP | `BOTTOM]
-  type text_search_flag = [ `VISIBLE_ONLY | `TEXT_ONLY ]
-  type tree_view_column_sizing = [ `GROW_ONLY | `AUTOSIZE | `FIXED ]
-  type cell_renderer_mode = [ `INERT | `ACTIVATABLE | `EDITABLE ]
-  type buttons = [ `NONE | `OK | `CLOSE | `CANCEL | `YES_NO | `OK_CANCEL ]
-  type response =
-    [ `NONE | `REJECT | `ACCEPT | `DELETE_EVENT
-    | `OK | `CANCEL | `CLOSE  | `YES | `NO | `APPLY | `HELP ]
-  type gtkobj_flags =
-    [ `IN_DESTRUCTION | `FLOATING ]
-  type widget_flags =
-    [ gtkobj_flags | `TOPLEVEL | `NO_WINDOW | `REALIZED | `MAPPED | `VISIBLE
-    | `SENSITIVE | `PARENT_SENSITIVE | `CAN_FOCUS | `HAS_FOCUS
-    | `CAN_DEFAULT | `HAS_DEFAULT | `HAS_GRAB | `RC_STYLE | `COMPOSITE_CHILD
-    | `NO_REPARENT | `APP_PAINTABLE | `RECEIVES_DEFAULT | `DOUBLE_BUFFERED ]
-  type size_group_mode =
-    [ `NONE | `HORIZONTAL | `VERTICAL | `BOTH ]
+  include (GtkEnums : module type of GtkEnums
+                      with module Conv := GtkEnums.Conv)
 end
 open Tags
 
@@ -141,6 +52,7 @@ type target_entry = { target: string; flags: target_flags list; info: int }
 type box_packing =
     { expand: bool; fill: bool; padding: int; pack_type: pack_type }
 
+type orientable = [`orientable]
 type adjustment = [`giu|`adjustment]
 type tooltips = [`giu|`tooltips]
 type widget = [`giu|`widget]
@@ -173,24 +85,15 @@ type window = [bin|`window]
 type assistant = [window|`assistant]
 type dialog = [window|`dialog]
 type message_dialog = [dialog|`messagedialog]
-type color_selection_dialog = [dialog|`colorselectiondialog]
-type input_dialog = [dialog|`inputdialog]
-type file_selection = [dialog|`fileselection]
-type font_selection_dialog = [dialog|`fontselectiondialog]
 type plug = [window|`plug]
 type box = [container|`box]
 type button_box = [container|`box|`buttonbox]
-type gamma_curve = [container|`buttonbox|`gamma]
-type color_selection = [container|`box|`colorselection]
-type font_selection = [container|`box|`fontselection]
 type combo = [container|`box|`combo]
 type statusbar = [container|`box|`statusbar]
 type status_icon = [`gtkstatusicon]
 type gtk_status_icon = status_icon obj
-type clist = [container|`clist]
 type fixed = [container|`fixed]
 type layout = [container|`layout]
-type liste = [container|`list]
 type menu_shell = [container|`menushell]
 type menu = [container|`menushell|`menu]
 type menu_bar = [container|`menushell|`menubar]
@@ -198,8 +101,7 @@ type notebook = [container|`notebook]
 type packer = [container|`packer]
 type paned = [container|`paned]
 type socket = [container|`socket]
-type table = [container|`table]
-type toolbar = [container|`toolbar]
+type toolbar = [container|`toolbar|`orientable]
 type tool_item = [bin|`toolitem]
 type separator_tool_item = [tool_item|`separatortoolitem]
 type tool_button = [tool_item|`toolbutton]

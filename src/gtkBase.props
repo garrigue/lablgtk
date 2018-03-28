@@ -21,7 +21,6 @@ open GtkBaseProps
 conversions {
   GtkAllocation "Internal.allocation"
   GtkSelectionData_nocopy "(unsafe_pointer : Gtk.selection_data data_conv)"
-  GdkGravity "GdkEnums.gravity_conv"
 }
 
 boxed {
@@ -49,21 +48,40 @@ class Widget abstract : Object {
   "can-focus"            gboolean             : Read / Write
   "composite-child"      gboolean             : Read
   "events"               GdkEventMask         : Read / Write
-  "extension-events"     GdkExtensionMode     : Read / Write
+  "expand"               gboolean             :	Read / Write
+  "focus-on-click"       gboolean             :	Read / Write
+  "halign"               GtkAlign             :	Read / Write
   "has-default"          gboolean             : Read / Write
   "has-focus"            gboolean             : Read / Write
   "has-tooltip"          gboolean             : Read / Write
   "height-request"       gint                 : Read / Write
+  "hexpand"              gboolean             :	Read / Write
+  "hexpand-set"          gboolean             :	Read / Write
   "is-focus"             gboolean             : Read / Write
+  "margin"               gint                 : Read / Write
+  "margin-bottom"        gint                 : Read / Write
+  "margin-end"           gint                 : Read / Write
+  "margin-left"          gint                 : Read / Write
+  "margin-right"         gint                 : Read / Write
+  "margin-start"         gint                 : Read / Write
+  "margin-top"           gint                 : Read / Write
   "name"                 gchararray           : Read / Write
+  "no-show-all"          gboolean             : Read / Write
+  "opacity"              gdouble              : Read / Write
   "parent"               GtkContainer_opt     : Read / Write
   "receives-default"     gboolean             : Read / Write
+  "scale-factor"         gint                 : Read
   "sensitive"            gboolean             : Read / Write
   "style"                GtkStyle             : Read / Write
   "tooltip-markup"       gchararray           : Read / Write
   "tooltip-text"         gchararray           : Read / Write
+  "valign"               GtkAlign             : Read / Write
+  "vexpand"              gboolean             : Read / Write
+  "vexpand-set"          gboolean             : Read / Write
   "visible"              gboolean             : Read / Write
   "width-request"        gint                 : Read / Write
+  "window"               GdkWindow_opt        : Read
+  signal destroy
   (* misc *)
   signal show
   signal hide
@@ -166,6 +184,10 @@ class Adjustment set wrap wrapsig : Object {
   signal value_changed
 }
 
+class Orientable abstract wrap : Object {
+  "orientation"  GtkOrientation  : Read / Write
+}
+
 (* Window and Dialogs *)
 
 class Window set wrap : Bin {
@@ -228,6 +250,7 @@ class Dialog wrap : Window {
   signal response : gint
 }
 
+(*
 class FileSelection abstract set wrap : Dialog {
   "filename"             gchararray           : Read / Write
   "select-multiple"      gboolean             : Read / Write
@@ -236,11 +259,17 @@ class FileSelection abstract set wrap : Dialog {
 
 class ColorSelectionDialog : Dialog {}
 class FontSelectionDialog : Dialog {}
-(* class InputDialog : Dialog {} *)
+class InputDialog : Dialog {} *)
 
-class MessageDialog abstract wrap : Dialog {
+class MessageDialog wrap : Dialog {
   "buttons"              GtkButtonsType       : Write / Construct Only
-  "message-type"         GtkMessageType       : Read / Write / Construct
+  "message-type"         GtkMessageType       : Read / Write / Construct / Set
+  "image"                GtkWidget            : Read / Write
+  "message-area"         GtkWidget            : Read
+  "secondary-text"       gchararray           : Read / Write
+  "secondary-use-markup" gboolean             : Read / Write
+  "text"                 gchararray           : Read / Write / Set
+  "use-markup"           gboolean             : Read / Write / Set
 }
 
 class AboutDialog abstract set wrap : Dialog {

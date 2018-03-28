@@ -345,8 +345,8 @@ let process ic ~hc ~cc =
                   let ppf = Format.formatter_of_out_channel mlc in
                   let out fmt = Format.fprintf ppf fmt
                   in
-                    (out "(** %s enums *)\n\n" !package;
-                     out "open Gpointer\n@.";
+                    (out "(** %s enums *)\n@." !package;
+                     out "@[";
                      List.iter convs
                        ~f:
                          (fun (_, name, tags, _) ->
@@ -354,25 +354,27 @@ let process ic ~hc ~cc =
                                (fst (List.hd tags));
                              List.iter (List.tl tags)
                                ~f: (fun (s, _) -> out "@ | `%s" s);
-                             out " ]@]@]@."));
-                     out "\n(**/**)\n";
-                     out "\nexternal _get_tables : unit ->\n";
+                             out " ]@]@]@ "));
+                     out "@]@.\n(**/**)\n@.";
+                     out "@[<v2>module Conv = struct@ ";
+                     out "open Gpointer\n@ ";
+                     out "external _get_tables : unit ->@ ";
                      let (_, name0, _, _) = List.hd convs
                      in
-                       (out "    %s variant_table\n" name0;
+                       (out "    %s variant_table@ " name0;
                         List.iter (List.tl convs)
                           ~f:
                             (fun (_, s, _, _) ->
-                               out "  * %s variant_table\n" s);
-                        out "  = \"ml_%s_get_tables\"\n\n" (camlize !package);
-                        out "@[<hov 4>let %s" name0;
+                               out "  * %s variant_table@ " s);
+                        out "  = \"ml_%s_get_tables\"\n@ " (camlize !package);
+                        out "@[<hov 4>let %s_tbl" name0;
                         List.iter (List.tl convs)
-                          ~f: (fun (_, s, _, _) -> out ",@ %s" s);
-                        out " = _get_tables ()@]\n@.";
+                          ~f: (fun (_, s, _, _) -> out ",@ %s_tbl" s);
+                        out " = _get_tables ()@]\n";
                         let enum =
                           if (List.length convs) > 10
                           then
-                            (out "let _make_enum = Gobject.Data.enum@.";
+                            (out "@ let _make_enum = Gobject.Data.enum";
                              "_make_enum")
                           else "Gobject.Data.enum"
                         in
@@ -383,7 +385,8 @@ let process ic ~hc ~cc =
                                     if List.mem "flags" flags
                                     then "Gobject.Data.flags"
                                     else enum
-                                  in out "let %s_conv = %s %s@." s conv s);
+                                  in out "@ let %s = %s %s_tbl" s conv s);
+                           out "@]@.end@.";
                            close_out mlc))))))
          else ()
      | Stream.Error err ->

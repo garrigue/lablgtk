@@ -50,176 +50,14 @@ external _gdk_init : unit -> unit = "ml_gdk_init"
 let () = _gdk_init ()
 
 module Tags = struct
-  (* gdkevents.h *)
-  type event_type =
-    [ `NOTHING | `DELETE | `DESTROY | `EXPOSE | `MOTION_NOTIFY
-    | `BUTTON_PRESS | `TWO_BUTTON_PRESS | `THREE_BUTTON_PRESS | `BUTTON_RELEASE
-    | `KEY_PRESS | `KEY_RELEASE
-    | `ENTER_NOTIFY | `LEAVE_NOTIFY | `FOCUS_CHANGE
-    | `CONFIGURE | `MAP | `UNMAP | `PROPERTY_NOTIFY
-    | `SELECTION_CLEAR | `SELECTION_REQUEST | `SELECTION_NOTIFY
-    | `PROXIMITY_IN | `PROXIMITY_OUT
-    | `DRAG_ENTER | `DRAG_LEAVE | `DRAG_MOTION | `DRAG_STATUS
-    | `DROP_START | `DROP_FINISHED | `CLIENT_EVENT | `VISIBILITY_NOTIFY
-    | `SCROLL | `WINDOW_STATE | `SETTING
-    | `OWNER_CHANGE | `GRAB_BROKEN | `DAMAGE
-    | `TOUCH_BEGIN | `TOUCH_UPDATE | `TOUCH_END | `TOUCH_CANCEL
-    | `TOUCHPAD_SWIPE | `TOUCHPAD_PINCH
-    | `PAD_BUTTON_PRESS | `PAD_BUTTON_RELEASE
-    | `PAD_RING | `PAD_STRIP | `PAD_GROUP_MODE ]
-  
-  type visibility_state =
-    [ `UNOBSCURED | `PARTIAL | `FULLY_OBSCURED ]
-
-  type touchpad_gesture_phase =
-    [ `BEGIN | `UPDATE | `END | `CANCEL ]
-
-  type scroll_direction =
-    [ `UP | `DOWN | `LEFT | `RIGHT | `SMOOTH ]
-
-  type crossing_mode =
-    [ `NORMAL | `GRAB | `UNGRAB | `GTK_GRAB | `GTK_UNGRAB
-    | `STATE_CHANGED | `TOUCH_BEGIN | `TOUCH_END | `DEVICE_SWITCH ]
-
-  type notify_type =
-    [ `ANCESTOR | `VIRTUAL | `INFERIOR | `NONLINEAR | `NONLINEAR_VIRTUAL
-    | `UNKNOWN ]
-
-  type setting_action =
-    [ `NEW | `CHANGED | `DELETED ]
-
-  type owner_change =
-    [ `NEW_OWNER | `DESTROY | `CLOSE ]
-
-  type window_state =
-    [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY | `FULLSCREEN
-    | `ABOVE | `BELOW | `FOCUSED | `TILED | `TOP_TILED | `TOP_RESIZABLE
-    | `RIGHT_TILED | `RIGHT_RESIZABLE | `BOTTOM_TILED
-    | `BOTTOM_RESIZABLE | `LEFT_TILED | `LEFT_RESIZABLE ]
-
-  (* gdkdevice.h *)
-  type input_source =
-    [ `MOUSE | `PEN | `ERASER | `CURSOR | `KEYBOARD
-    | `TOUCHSCREEN | `TOUCHPAD | `TRACKPOINT | `TABLET_PAD ]
-
-  type input_mode =
-    [ `DISABLED | `SCREEN | `WINDOW ]
-
-  type device_type =
-    [ `MASTER | `SLAVE | `FLOATING ]
-
-  (* gdkvisual.h *)
-  type visual_type =
-    [ `STATIC_GRAY | `GRAYSCALE | `STATIC_COLOR | `PSEUDO_COLOR
-    | `TRUE_COLOR | `DIRECT_COLOR ]
-
-  (* gdkdnd.h *)
-  type drag_action =
-    [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
-
-  type drag_cancel_reason =
-    [ `NO_TARGET | `USER_CANCELLED | `ERROR ]
-
-  type drag_protocol =
-    [ `NONE | `MOTIF | `XDND | `ROOTWIN | `WIN32_DROPFILES
-    | `OLE2 | `LOCAL | `WAYLAND ]
-
-  type property_state =
-    [ `NEW_VALUE | `DELETE ]
-
+  include (GdkEnums : module type of GdkEnums
+           with module Conv := GdkEnums.Conv and type xdata := GdkEnums.xdata)
   type xdata =
     [ `BYTES of string
     | `SHORTS of int array
     | `INT32S of int32 array ]
 
   type xdata_ret = [ xdata | `NONE ]
-
-  (* gdkproperty.h *)
-  type property_mode = "GDK_PROP_MODE_"
-    [ `REPLACE | `PREPEND | `APPEND ]
-
-  (* gdkwindow.h *)
-  type window_class =
-    [ `INPUT_OUTPUT | `INPUT_ONLY ]
-
-  type window_type =
-    [ `ROOT | `TOPLEVEL | `CHILD | `TEMP | `FOREIGN | `OFFSCREEN | `SUBSURFACE ]
-
-  type window_attributes_type =
-    [ `TITLE | `X | `Y | `CURSOR | `VISUAL | `WMCLASS | `NOREDIR | `TYPE_HINT ]
-
-  type window_hints =
-    [ `POS | `MIN_SIZE | `MAX_SIZE | `BASE_SIZE | `ASPECT
-    | `RESIZE_INC | `WIN_GRAVITY | `USER_POS | `USER_SIZE ]
-
-  type wm_decoration =
-    [ `ALL | `BORDER | `RESIZEH | `TITLE | `MENU | `MINIMIZE | `MAXIMIZE ]
-
-  type wm_function =
-    [ `ALL | `RESIZE | `MOVE | `MINIMIZE | `MAXIMIZE | `CLOSE ]
-
-  type gravity =
-    [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `CENTER | `EAST
-    | `SOUTH_WEST | `SOUTH | `SOUTH_EAST | `STATIC ]
-
-  type anchor_hints =
-    [ `FLIP_X | `FLIP_Y | `SLIDE_X | `SLIDE_Y | `RESIZE_X | `RESIZE_Y
-    | `FLIP | `SLIDE | `RESIZE ]
-
-  type window_edge =
-    [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `EAST
-    | `SOUTH_WEST | `SOUTH | `SOUTH_EAST ]
-
-  type fullscreen_mode =
-    [ `ON_CURRENT_MONITOR | `ON_ALL_MONITORS ]
-
-  (* gdktypes.h *)
-  type modifier =
-    [ `SHIFT | `LOCK | `CONTROL | `MOD1 | `MOD2 | `MOD3 | `MOD4 | `MOD5
-    | `BUTTON1 | `BUTTON2 | `BUTTON3 | `BUTTON4 | `BUTTON5 | `SUPER
-    | `HYPER | `META | `RELEASE ]
-
-  type modifier_intent =
-    [ `PRIMARY_ACCELERATOR | `CONTEXT_MENU | `EXTEND_SELECTION
-    | `MODIFY_SELECTION | `NO_TEXT_INPUT | `SHIFT_GROUP | `DEFAULT_MOD_MASK ]
-
-  type status =
-    [ `OK | `ERROR | `ERROR_PARAM | `ERROR_FILE | `ERROR_MEM ]
-
-  type grab_status =
-    [ `SUCCESS | `ALREADY_GRABBED | `INVALID_TIME | `NOT_VIEWABLE | `FROZEN
-    | `FAILED ]
-
-  type grab_ownership =
-    [ `NONE | `WINDOW | `APPLICATION ]
-
-  type event_mask =
-    [ `EXPOSURE | `POINTER_MOTION | `POINTER_MOTION_HINT
-    | `BUTTON_MOTION | `BUTTON1_MOTION | `BUTTON2_MOTION | `BUTTON3_MOTION
-    | `BUTTON_PRESS | `BUTTON_RELEASE
-    | `KEY_PRESS | `KEY_RELEASE
-    | `ENTER_NOTIFY | `LEAVE_NOTIFY | `FOCUS_CHANGE
-    | `STRUCTURE | `PROPERTY_CHANGE | `VISIBILITY_NOTIFY
-    | `PROXIMITY_IN | `PROXIMITY_OUT
-    | `SUBSTRUCTURE | `SCROLL
-    | `TOUCH | `SMOOTH_SCROLL | `TOUCHPAD_GESTURE | `TABLET_PAD
-    | `ALL_EVENTS ]
-
-  type gl_error =
-    [ `NOT_AVAILABLE | `UNSUPPORTED_FORMAT | `UNSUPPORTED_PROFILE ]
-
-  type window_type_hint =
-    [ `NORMAL | `DIALOG | `MENU | `TOOLBAR | `SPLASHSCREEN | `UTILITY
-    | `DOCK | `DESKTOP
-    | `DROPDOWN_MENU | `POPUP_MENU | `TOOLTIP | `NOTIFICATION | `COMBO | `DND ]
-
-  type axis_use =
-    [ `IGNORE | `X | `Y | `PRESSURE | `XTILT | `YTILT
-    | `WHEEL | `DISTANCE | `ROTATION | `SLIDER | `LAST ]
-
-  type axis_flags =
-    [ `X | `Y | `PRESSURE | `XTILT | `YTILT
-    | `WHEEL | `DISTANCE | `ROTATION | `SLIDER ]
 end
 open Tags
 
@@ -299,29 +137,6 @@ module Visual = struct
   external depth : visual -> int = "ml_gdk_visual_get_depth"
 end
 
-module Image = struct
-  type image_type =
-    [ `NORMAL|`SHARED|`FASTEST ]
-
-  let cast w : image = Gobject.try_cast w "GdkImage"
-  let destroy = Gobject.unsafe_unref
-
-  external create : kind: image_type -> visual: visual -> 
-    width: int -> height: int -> image
-      = "ml_gdk_image_new"
-  external get :
-      [>`drawable] obj -> x: int -> y: int -> width: int -> height: int -> image
-      = "ml_gdk_drawable_get_image"
-  external put_pixel : image -> x: int -> y: int -> pixel: int -> unit
-    = "ml_gdk_image_put_pixel"
-  external get_pixel : image -> x: int -> y: int -> int
-    = "ml_gdk_image_get_pixel"
-  external width : image -> int = "ml_gdk_image_width"
-  external height : image -> int = "ml_gdk_image_height"
-  external depth : image -> int = "ml_gdk_image_depth"
-  external get_visual : image -> visual = "ml_gdk_image_visual"
-end
-
 module Color = struct
   external color_white : colormap -> color = "ml_gdk_color_white"
   external color_black : colormap -> color = "ml_gdk_color_black"
@@ -366,18 +181,6 @@ module Rectangle = struct
   external height : t -> int = "ml_GdkRectangle_height"
 end
 
-module Drawable = struct
-  let cast w : [`drawable] obj = Gobject.try_cast w "GdkDrawable"
-  external get_visual : [>`drawable] obj -> visual
-    = "ml_gdk_drawable_get_visual"
-  external get_depth : [>`drawable] obj -> int
-    = "ml_gdk_drawable_get_depth"
-  external get_colormap : [>`drawable] obj -> colormap
-    = "ml_gdk_drawable_get_colormap"
-  external get_size : [>`drawable] obj -> int * int
-    = "ml_gdk_drawable_get_size"
-end
-
 module Windowing = struct
   external get : unit -> [`QUARTZ | `WIN32 | `X11] = "ml_gdk_get_platform"
   let platform = get ()
@@ -386,7 +189,6 @@ end
 module Window = struct
   let cast w : window = Gobject.try_cast w "GdkWindow"
   external create_foreign : native_window -> window = "ml_gdk_window_foreign_new"
-  type background_pixmap = [ `NONE | `PARENT_RELATIVE | `PIXMAP of pixmap]
   external get_parent : window -> window = "ml_gdk_window_get_parent"
   external get_position : window -> int * int = "ml_gdk_window_get_position"
   external get_pointer_location : window -> int * int =
@@ -402,6 +204,7 @@ module Window = struct
     = "ml_gdk_window_clear"
   external get_xid : window -> xid = "ml_GDK_WINDOW_XID"
   let get_xwindow = get_xid
+  external get_visual : window -> visual = "ml_gdk_window_get_visual"
 
   (* let set_back_pixmap w pix = 
     let null_pixmap = (Obj.magic Gpointer.boxed_null : pixmap) in
@@ -410,9 +213,6 @@ module Window = struct
     | `PARENT_RELATIVE -> set_back_pixmap w null_pixmap 1
     | `PIXMAP(pixmap) -> set_back_pixmap w pixmap 0 
        (* anything OK, Maybe... *) *)
-
-  (* for backward compatibility for lablgtk1 programs *)	  
-  let get_visual = Drawable.get_visual
 
   let xid_of_native (w : native_window) : xid =
     if Windowing.platform = `X11 then Obj.magic w else
@@ -457,6 +257,7 @@ module DnD = struct
       = "ml_gdk_drag_context_get_targets"
 end
 
+(*
 module Truecolor = struct
   (* Truecolor quick color query *) 
 
@@ -512,6 +313,7 @@ module Truecolor = struct
 	  ((pixel lsr shift_prec.blue_shift) lsl blue_lsr) land mask
     | _ -> raise (Invalid_argument "Gdk.Truecolor.color_parser")
 end
+*)
 
 module X = struct
   (* X related functions *)
@@ -602,10 +404,6 @@ module Cursor = struct
     | `XTERM
   ]
   external create : cursor_type -> cursor = "ml_gdk_cursor_new"
-  external create_from_pixmap :
-    pixmap -> mask:bitmap ->
-    fg:color -> bg:color -> x:int -> y:int -> cursor
-    = "ml_gdk_cursor_new_from_pixmap_bc" "ml_gdk_cursor_new_from_pixmap"
   external create_from_pixbuf :
     [`pixbuf] obj -> x:int -> y:int -> cursor
     = "ml_gdk_cursor_new_from_pixbuf" (** @since GTK 2.4 *)

@@ -58,29 +58,28 @@ let conversions = Hashtbl.create 17
 
 let enums = [
   "Gtk", "GtkEnums",
-  [ "Justification"; "ArrowType"; "ShadowType"; "ResizeMode";
+  [ "Justification"; "Align"; "ArrowType"; "ShadowType"; "ResizeMode";
     "ReliefStyle"; "ImageType"; "WindowType"; "WindowPosition";
     "ButtonsType"; "MessageType"; "ButtonBoxStyle"; "PositionType";
-    "Orientation"; "ToolbarStyle"; "IconSize"; "PolicyType";
-    "CornerType"; "SelectionMode"; "SortType"; "WrapMode";
-    "SpinButtonUpdatePolicy"; "UpdateType"; "ProgressBarStyle";
-    "ProgressBarOrientation"; "CellRendererMode"; "CellRendererAccelMode";
-    "TreeViewColumnSizing"; "SortType"; "TextDirection"; "SizeGroupMode";
-    (* in signals *)
+    "Orientation"; "ToolbarStyle"; "IconSize"; "PolicyType"; "CornerType";
+    "SelectionMode"; "SortType"; "WrapMode"; "SpinButtonUpdatePolicy";
+    "UpdateType"; "ProgressBarStyle"; "ProgressBarOrientation";
+    "CellRendererMode"; "CellRendererAccelMode"; "TreeViewColumnSizing";
+    "SortType"; "TextDirection"; "SizeGroupMode"; (* in signals *)
     "MovementStep"; "ScrollStep"; "ScrollType"; "MenuDirectionType";
-    "DeleteType"; "StateType";
-    (* for canvas *)
-    "AnchorType"; "DirectionType"; 
+    "DeleteType"; "StateType"; (* for canvas *) "AnchorType";
+    "DirectionType"; "SensitivityType"; "InputHints"; "InputPurpose";
+    "EntryIconPosition"; "PackDirection"; "TreeViewGridLines";
+    "FileChooserAction"; "FileChooserConfirmation"; "Response"
   ];
   "Gdk", "GdkEnums",
-  [ "ExtensionMode"; "WindowTypeHint"; "EventMask";
-    (* for canvas *)
-    "CapStyle"; "JoinStyle"; "LineStyle"];
+  [ "ExtensionMode"; "WindowTypeHint"; "EventMask"; "Gravity";
+    (* for canvas *) "CapStyle"; "JoinStyle"; "LineStyle" ];
   "Pango", "PangoEnums",
   [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode" ];
   (* GtkSourceView *)
-  "Gtk","SourceView2Enums",
-  ["SourceSmartHomeEndType"; "SourceDrawSpacesFlags"]
+  "Gtk", "SourceView2Enums",
+  [ "SourceSmartHomeEndType"; "SourceDrawSpacesFlags" ]
 ]
 
 (* These types must be registered with g_boxed_register! *)
@@ -125,7 +124,7 @@ let () =
     List.iter l ~f:
       begin fun name ->
         Hashtbl.add conversions (pre ^ name)
-          (Printf.sprintf "%s.%s_conv" modu (camlize name))
+          (Printf.sprintf "%s.Conv.%s" modu (camlize name))
       end);
   List.iter boxeds ~f:(fun (pre, l) ->
     List.iter l ~f:(fun name -> add_boxed (pre^name) (pre^"."^camlize name)));
@@ -598,6 +597,7 @@ let process_file f =
         out "@]@ end@ ";
         (* #notify: easy connection to the "foo::notify" signal for the "foo"
          * properties. *)
+        (*
         out "@ @[<hv2>class virtual %s_notify obj = object (self)" (camlize name);
         out "@ val obj : 'a obj = obj";
         out "@ method private notify : 'b. ('a, 'b) property ->";
@@ -608,6 +608,7 @@ let process_file f =
           out "@ @[<hv2>method %s =@ self#notify %a@]"
           mlname (oprop ~name ~gtype) pname);
         out "@]@ end@ ";
+        *)
       end;
       let vset = List.mem_assoc "vset" attrs in
       let vprops =

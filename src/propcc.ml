@@ -68,7 +68,7 @@ let conversions = Hashtbl.create 17
   
 let enums =
   [ ("Gtk", "GtkEnums",
-     [ "Justification"; "ArrowType"; "ShadowType"; "ResizeMode";
+     [ "Justification"; "Align"; "ArrowType"; "ShadowType"; "ResizeMode";
        "ReliefStyle"; "ImageType"; "WindowType"; "WindowPosition";
        "ButtonsType"; "MessageType"; "ButtonBoxStyle"; "PositionType";
        "Orientation"; "ToolbarStyle"; "IconSize"; "PolicyType"; "CornerType";
@@ -78,10 +78,12 @@ let enums =
        "SortType"; "TextDirection"; "SizeGroupMode"; (* in signals *)
        "MovementStep"; "ScrollStep"; "ScrollType"; "MenuDirectionType";
        "DeleteType"; "StateType"; (* for canvas *) "AnchorType";
-       "DirectionType" ]);
+       "DirectionType"; "SensitivityType"; "InputHints"; "InputPurpose";
+       "EntryIconPosition"; "PackDirection"; "TreeViewGridLines";
+       "FileChooserAction"; "FileChooserConfirmation"; "Response" ]);
     ("Gdk", "GdkEnums",
-     [ "ExtensionMode"; "WindowTypeHint"; "EventMask"; (* for canvas *)
-       "CapStyle"; "JoinStyle"; "LineStyle" ]);
+     [ "ExtensionMode"; "WindowTypeHint"; "EventMask"; "Gravity";
+       (* for canvas *) "CapStyle"; "JoinStyle"; "LineStyle" ]);
     ("Pango", "PangoEnums",
      [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode" ]);
     (* GtkSourceView *)
@@ -131,7 +133,7 @@ let () =
             ~f:
               (fun name ->
                  Hashtbl.add conversions (pre ^ name)
-                   (Printf.sprintf "%s.%s_conv" modu (camlize name))));
+                   (Printf.sprintf "%s.Conv.%s" modu (camlize name))));
    List.iter boxeds
      ~f:
        (fun (pre, l) ->
@@ -953,6 +955,18 @@ let process_file f =
                          (* post 3.10 *)
                          (* #notify: easy connection to the "foo::notify" signal for the "foo"
          * properties. *)
+                         (*
+        out "@ @[<hv2>class virtual %s_notify obj = object (self)" (camlize name);
+        out "@ val obj : 'a obj = obj";
+        out "@ method private notify : 'b. ('a, 'b) property ->";
+        out "@   callback:('b -> unit) -> _ =";
+        out "@ fun prop ~callback -> GtkSignal.connect_property obj";
+        out "@   ~prop ~callback";
+        List.iter rd_props ~f:(fun (pname, mlname, gtype, _) ->
+          out "@ @[<hv2>method %s =@ self#notify %a@]"
+          mlname (oprop ~name ~gtype) pname);
+        out "@]@ end@ ";
+        *)
                          (* notify: easy connection to "foo::notify" signals for "foo"
          * properties. *)
                          (List.iter decls
@@ -1023,24 +1037,6 @@ let process_file f =
                                                  then "() "
                                                  else "")
                                                 (camlizeM name) mname);
-                                       out "@]@ end@ ";
-                                       out
-                                         "@ @[<hv2>class virtual %s_notify obj = object (self)"
-                                         (camlize name);
-                                       out "@ val obj : 'a obj = obj";
-                                       out
-                                         "@ method private notify : 'b. ('a, 'b) property ->";
-                                       out "@   callback:('b -> unit) -> _ =";
-                                       out
-                                         "@ fun prop ~callback -> GtkSignal.connect_property obj";
-                                       out "@   ~prop ~callback";
-                                       List.iter rd_props
-                                         ~f:
-                                           (fun (pname, mlname, gtype, _) ->
-                                              out
-                                                "@ @[<hv2>method %s =@ self#notify %a@]"
-                                                mlname (oprop ~name ~gtype)
-                                                pname);
                                        out "@]@ end@ ")
                                     else ();
                                     let vset = List.mem_assoc "vset" attrs in

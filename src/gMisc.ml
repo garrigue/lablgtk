@@ -194,26 +194,17 @@ let arrow =
 class image obj = object (self)
   inherit misc obj
   inherit image_props
-  method pixmap = new GDraw.pixmap (get Image.P.pixmap obj) ?mask:self#mask
-  method set_pixmap (p : GDraw.pixmap) =
-    set Image.P.pixmap obj p#pixmap;
-    self#set_mask p#mask
   method clear () = Image.clear obj
 end
 
 type image_type =
-  [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION
-  | `ICON_NAME | `GICON ]
+  [ `EMPTY | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION | `ICON_NAME | `GICON
+  | `SURFACE ]
 
 let image =
   Image.make_params [] ~cont:(
   Misc.all_params ~cont:(fun p ?packing ?show () ->
     pack_return (new image (Image.create p)) ~packing ~show))
-
-let pixmap pm =
-  let pl = [param Image.P.pixmap pm#pixmap; param Image.P.mask pm#mask] in
-  Misc.all_params pl ~cont:(fun pl ?packing ?show () ->
-    pack_return (new image (Image.create pl)) ~packing ~show)
 
 class label_skel obj = object(self)
   inherit misc obj
@@ -239,47 +230,3 @@ let label ?text ?markup ?use_underline ?mnemonic_widget =
     pack_return (new label (Label.create p)) ~packing ~show))
 
 let label_cast w = new label (Label.cast w#as_widget)
-
-class tips_query_signals obj = object
-  inherit widget_signals_impl (obj : Gtk.tips_query obj)
-  inherit tips_query_sigs
-end
-
-class tips_query obj = object
-  inherit label_skel obj
-  method start () = TipsQuery.start_query obj
-  method stop () = TipsQuery.stop_query obj
-  inherit tips_query_props
-  method connect = new tips_query_signals obj
-end
-
-let tips_query ?caller =
-  let caller = may_map (fun w -> w#as_widget) caller in
-  TipsQuery.make_params [] ?caller ~cont:(
-  Misc.all_params ~cont:(fun p ?packing ?show () ->
-    pack_return (new tips_query (TipsQuery.create p)) ~packing ~show))
-
-class color_selection obj = object
-  inherit [Gtk.color_selection] GObj.widget_impl obj
-  method connect = new GObj.widget_signals_impl obj
-  method set_border_width = set Container.P.border_width obj
-  inherit color_selection_props
-end
-
-let color_selection =
-  ColorSelection.make_params [] ~cont:(
-  GContainer.pack_container ~create:
-    (fun p -> new color_selection (ColorSelection.create p)))
-
-class font_selection obj = object
-  inherit [Gtk.font_selection] widget_impl obj
-  inherit font_selection_props
-  method event = new event_ops obj
-  method connect = new GObj.widget_signals_impl obj
-  method set_border_width = set Container.P.border_width obj
-end
-
-let font_selection =
-  FontSelection.make_params [] ~cont:(
-  GContainer.pack_container ~create:
-    (fun p -> new font_selection (FontSelection.create p)))

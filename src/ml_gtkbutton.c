@@ -130,82 +130,43 @@ ML_2 (gtk_radio_button_set_group, GtkRadioButton_val, button_group_val, Unit)
 /* gtktoolbar.h */
 
 #define GtkToolbar_val(val) check_cast(GTK_TOOLBAR,val)
-/* ML_0 (gtk_toolbar_new, Val_GtkWidget_sink) */
-ML_2 (gtk_toolbar_insert_space, GtkToolbar_val, Int_val, Unit)
-ML_7 (gtk_toolbar_insert_element, GtkToolbar_val, Toolbar_child_val,
-      Insert(NULL) Optstring_val, Optstring_val, Optstring_val, GtkWidget_val,
-      Insert(NULL) Insert(NULL) Int_val, Val_GtkWidget)
-ML_bc7 (ml_gtk_toolbar_insert_element)
-ML_5 (gtk_toolbar_insert_widget, GtkToolbar_val, GtkWidget_val,
-      Optstring_val, Optstring_val, Int_val, Unit)
-/*
-ML_2 (gtk_toolbar_set_orientation, GtkToolbar_val, Orientation_val, Unit)
-ML_2 (gtk_toolbar_set_style, GtkToolbar_val, Toolbar_style_val, Unit)
-ML_2 (gtk_toolbar_set_space_size, GtkToolbar_val, Int_val, Unit)
-ML_2 (gtk_toolbar_set_space_style, GtkToolbar_val, Toolbar_space_style_val, Unit)
-*/
-ML_1 (gtk_toolbar_unset_style, GtkToolbar_val, Unit)
-ML_2 (gtk_toolbar_set_tooltips, GtkToolbar_val, Bool_val, Unit)
-ML_1 (gtk_toolbar_get_icon_size, GtkToolbar_val, Val_icon_size)
-ML_2 (gtk_toolbar_set_icon_size, GtkToolbar_val, Icon_size_val, Unit)
-ML_1 (gtk_toolbar_unset_icon_size, GtkToolbar_val, Unit)
-
-/* extended API in GTK 2.4 */
-#ifdef HASGTK24
 #define GtkToolItem_val(val) check_cast(GTK_TOOL_ITEM,val)
-ML_2 (gtk_tool_item_set_homogeneous, GtkToolItem_val, Bool_val, Unit)
-ML_1 (gtk_tool_item_get_homogeneous, GtkToolItem_val, Val_bool)
-ML_2 (gtk_tool_item_set_expand, GtkToolItem_val, Bool_val, Unit)
-ML_1 (gtk_tool_item_get_expand, GtkToolItem_val, Val_bool)
-ML_2 (gtk_tool_item_set_use_drag_window, GtkToolItem_val, Bool_val, Unit)
-ML_1 (gtk_tool_item_get_use_drag_window, GtkToolItem_val, Val_bool)
-ML_4 (gtk_tool_item_set_tooltip, GtkToolItem_val, GtkTooltips_val, String_val, String_val, Unit)
-
-#define GtkToggleToolButton_val(val) check_cast(GTK_TOGGLE_TOOL_BUTTON,val)
-ML_2 (gtk_toggle_tool_button_set_active, GtkToggleToolButton_val, Bool_val, Unit)
-ML_1 (gtk_toggle_tool_button_get_active, GtkToggleToolButton_val, Val_bool)
-
+/* ML_0 (gtk_toolbar_new, Val_GtkWidget_sink) */
+ML_1 (gtk_toolbar_unset_style, GtkToolbar_val, Unit)
 ML_3 (gtk_toolbar_insert, GtkToolbar_val, GtkToolItem_val, Int_val, Unit)
 ML_2 (gtk_toolbar_get_item_index, GtkToolbar_val, GtkToolItem_val, Val_int)
 ML_1 (gtk_toolbar_get_n_items, GtkToolbar_val, Val_int)
 ML_2 (gtk_toolbar_get_nth_item, GtkToolbar_val, Int_val, Val_GtkWidget)
 ML_3 (gtk_toolbar_get_drop_index, GtkToolbar_val, Int_val, Int_val, Val_int)
 #define OptGtkToolItem_val(i) Option_val(i,GtkToolItem_val,NULL)
-ML_3 (gtk_toolbar_set_drop_highlight_item, GtkToolbar_val, OptGtkToolItem_val, Int_val, Unit)
-ML_1 (gtk_toolbar_get_tooltips, GtkToolbar_val, Val_bool)
+ML_3 (gtk_toolbar_set_drop_highlight_item, GtkToolbar_val, OptGtkToolItem_val,
+      Int_val, Unit)
 ML_1 (gtk_toolbar_get_relief_style, GtkToolbar_val, Val_relief_style)
 
-#else
-Unsupported_24(gtk_tool_item_set_homogeneous)
-Unsupported_24(gtk_tool_item_get_homogeneous)
-Unsupported_24(gtk_tool_item_set_expand)
-Unsupported_24(gtk_tool_item_get_expand)
-Unsupported_24(gtk_tool_item_set_use_drag_window)
-Unsupported_24(gtk_tool_item_get_use_drag_window)
-Unsupported_24(gtk_tool_item_set_tooltip)
-Unsupported_24(gtk_toggle_tool_button_set_active)
-Unsupported_24(gtk_toggle_tool_button_get_active)
-Unsupported_24(gtk_toolbar_insert)
-Unsupported_24(gtk_toolbar_get_item_index)
-Unsupported_24(gtk_toolbar_get_n_items)
-Unsupported_24(gtk_toolbar_get_nth_item)
-Unsupported_24(gtk_toolbar_get_drop_index)
-Unsupported_24(gtk_toolbar_set_drop_highlight_item)
-Unsupported_24(gtk_toolbar_get_tooltips)
-Unsupported_24(gtk_toolbar_get_relief_style)
-#endif /* HASGTK24 */
+/* gtktoolitem.h */
+ML_2 (gtk_tool_item_set_homogeneous, GtkToolItem_val, Bool_val, Unit)
+ML_1 (gtk_tool_item_get_homogeneous, GtkToolItem_val, Val_bool)
+ML_2 (gtk_tool_item_set_expand, GtkToolItem_val, Bool_val, Unit)
+ML_1 (gtk_tool_item_get_expand, GtkToolItem_val, Val_bool)
+ML_2 (gtk_tool_item_set_use_drag_window, GtkToolItem_val, Bool_val, Unit)
+ML_1 (gtk_tool_item_get_use_drag_window, GtkToolItem_val, Val_bool)
+/* not in 3
+ML_4 (gtk_tool_item_set_tooltip, GtkToolItem_val, GtkTooltips_val, String_val, String_val, Unit) */
 
-#ifdef HASGTK26
+#define GtkToggleToolButton_val(val) check_cast(GTK_TOGGLE_TOOL_BUTTON,val)
+ML_2 (gtk_toggle_tool_button_set_active, GtkToggleToolButton_val, Bool_val, Unit)
+ML_1 (gtk_toggle_tool_button_get_active, GtkToggleToolButton_val, Val_bool)
+
 #define GtkMenuToolButton_val(val) check_cast(GTK_MENU_TOOL_BUTTON,val)
-ML_4 (gtk_menu_tool_button_set_arrow_tooltip, GtkMenuToolButton_val, GtkTooltips_val, String_val, String_val, Unit)
-#else
-Unsupported_26(gtk_menu_tool_button_set_arrow_tooltip)
-#endif /* HASGTK26 */
+ML_2 (gtk_menu_tool_button_set_arrow_tooltip_text, GtkMenuToolButton_val,
+      String_val, Unit)
+ML_2 (gtk_menu_tool_button_set_arrow_tooltip_markup, GtkMenuToolButton_val,
+      String_val, Unit)
 
 /* gtklinkbutton.h */ 
-#ifdef HASGTK210
 ML_1(gtk_link_button_new, String_val, Val_GtkWidget_sink)
 ML_2(gtk_link_button_new_with_label, String_val, String_val, Val_GtkWidget_sink)
+/* not in 3
 static void ml_g_link_button_func(GtkLinkButton *button,
                                   const gchar *link,
                                   gpointer user_data) {
@@ -230,8 +191,4 @@ CAMLprim value ml_gtk_link_button_set_uri_hook (value clos) {
 
   return Val_unit;
 }
-#else
-Unsupported_210(gtk_link_button_set_uri_hook)
-Unsupported_210(gtk_link_button_new)
-Unsupported_210(gtk_link_button_new_with_label)
-#endif
+*/

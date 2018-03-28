@@ -267,8 +267,8 @@ val arrow :
   ?packing:(widget -> unit) -> ?show:bool -> unit -> arrow
 
 type image_type =
-  [ `EMPTY | `PIXMAP | `IMAGE | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION
-  | `ICON_NAME | `GICON ]
+  [ `EMPTY | `PIXBUF | `STOCK | `ICON_SET | `ANIMATION | `ICON_NAME | `GICON
+  | `SURFACE ]
 
 (** A widget displaying an image
     @gtkdoc gtk GtkImage *)
@@ -279,18 +279,12 @@ class image : 'a obj ->
     val obj : 'a obj
     method clear : unit -> unit (** since Gtk 2.8 *)
     method storage_type : image_type
-    method set_image : Gdk.image -> unit
-    method set_pixmap : GDraw.pixmap -> unit
-    method set_mask : Gdk.bitmap option -> unit
     method set_file : string -> unit
     method set_pixbuf : GdkPixbuf.pixbuf -> unit
     method set_stock : GtkStock.id -> unit
     method set_icon_set : icon_set -> unit
     method set_icon_size : Tags.icon_size -> unit
     method set_pixel_size : int -> unit
-    method image : Gdk.image
-    method pixmap : GDraw.pixmap
-    method mask : Gdk.bitmap option
     method pixbuf : GdkPixbuf.pixbuf
     method pixel_size : int
     method stock : GtkStock.id
@@ -304,22 +298,9 @@ val image :
   ?image:Gdk.image ->
   ?pixbuf:GdkPixbuf.pixbuf ->
   ?pixel_size:int ->
-  ?pixmap:Gdk.pixmap ->
-  ?mask:Gdk.bitmap ->
   ?stock:GtkStock.id ->
   ?icon_set:icon_set ->
   ?icon_size:Tags.icon_size ->
-  ?xalign:float ->
-  ?yalign:float ->
-  ?xpad:int ->
-  ?ypad:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> image
-
-(* Use an image as a pixmap... *)
-val pixmap :
-  #GDraw.pixmap ->
   ?xalign:float ->
   ?yalign:float ->
   ?xpad:int ->

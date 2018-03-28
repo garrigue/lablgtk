@@ -176,28 +176,30 @@ let process ic ~hc ~cc =
       let mlc = open_out (!package ^ "Enums.ml") in
       let ppf = Format.formatter_of_out_channel mlc in
       let out fmt = Format.fprintf ppf fmt in
-      out "(** %s enums *)\n\n" !package ;
-      out "open Gpointer\n@.";
+      out "(** %s enums *)\n@." !package ;
+      out "@[";
       List.iter convs ~f:
         begin fun (_,name,tags,_) ->
           out "@[<hv 2>type %s =@ @[<hov>[ `%s" name (fst (List.hd tags));
           List.iter (List.tl tags) ~f:
             (fun (s,_) -> out "@ | `%s" s);
-          out " ]@]@]@."
+          out " ]@]@]@ "
         end;
-      out "\n(**/**)\n" ;
-      out "\nexternal _get_tables : unit ->\n";
+      out "@]@.\n(**/**)\n@." ;
+      out "@[<v2>module Conv = struct@ ";
+      out "open Gpointer\n@ ";
+      out "external _get_tables : unit ->@ ";
       let (_,name0,_,_) = List.hd convs in
-      out "    %s variant_table\n" name0;
+      out "    %s variant_table@ " name0;
       List.iter (List.tl convs) ~f:
-        (fun (_,s,_,_) -> out "  * %s variant_table\n" s);
-      out "  = \"ml_%s_get_tables\"\n\n" (camlize !package);
-      out "@[<hov 4>let %s" name0;
-      List.iter (List.tl convs) ~f:(fun (_,s,_,_) -> out ",@ %s" s);
-      out " = _get_tables ()@]\n@.";
+        (fun (_,s,_,_) -> out "  * %s variant_table@ " s);
+      out "  = \"ml_%s_get_tables\"\n@ " (camlize !package);
+      out "@[<hov 4>let %s_tbl" name0;
+      List.iter (List.tl convs) ~f:(fun (_,s,_,_) -> out ",@ %s_tbl" s);
+      out " = _get_tables ()@]\n";
       let enum =
         if List.length convs > 10 then begin
-          out "let _make_enum = Gobject.Data.enum@.";
+          out "@ let _make_enum = Gobject.Data.enum";
           "_make_enum"
         end else "Gobject.Data.enum"
       in
@@ -205,8 +207,9 @@ let process ic ~hc ~cc =
         begin fun (_,s,_,flags) ->
           let conv =
             if List.mem "flags" flags then "Gobject.Data.flags" else enum in
-          out "let %s_conv = %s %s@." s conv s
+          out "@ let %s = %s %s_tbl" s conv s
         end;
+      out "@]@.end@.";
       close_out mlc
     end
   | Stream.Error err ->

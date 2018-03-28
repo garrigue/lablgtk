@@ -119,7 +119,7 @@ ML_1 (gtk_check_menu_item_toggled, GtkCheckMenuItem_val, Unit)
 static GSList* item_group_val(value val)
 {
     return (val == Val_unit ? NULL :
-            gtk_radio_menu_item_group(GtkRadioMenuItem_val(Field(val,0))));
+            gtk_radio_menu_item_get_group(GtkRadioMenuItem_val(Field(val,0))));
 }
 ML_1 (gtk_radio_menu_item_new, item_group_val, Val_GtkWidget_sink)
 ML_2 (gtk_radio_menu_item_new_with_label, item_group_val,

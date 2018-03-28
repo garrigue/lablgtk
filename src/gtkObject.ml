@@ -23,9 +23,9 @@
 open Gtk
 open Gobject
 
-let cast w : [`gtk] obj = try_cast w "GtkObject"
-external _ref_and_sink : [>`gtk] obj -> unit
-    = "ml_gtk_object_ref_and_sink"
+let cast w : [`giu] obj = try_cast w "GInitiallyUnowned"
+external _ref_sink : [>`giu] obj -> unit
+    = "ml_g_object_ref_sink"
 let make ~classe params =
-  let obj = unsafe_create ~classe params in _ref_and_sink obj;
+  let obj = unsafe_create ~classe params in _ref_sink obj;
   obj

@@ -26,7 +26,7 @@ type icon_size = "GTK_ICON_SIZE_"
   [ `INVALID | `MENU | `SMALL_TOOLBAR | `LARGE_TOOLBAR
   | `BUTTON | `DND | `DIALOG ]
 
-type gtk_sensitivity_type = "GTK_SENSITIVITY_"
+type sensitivity_type = "GTK_SENSITIVITY_"
   [ `AUTO | `ON | `OFF ]
 
 type text_direction = "GTK_TEXT_DIR_"
@@ -250,10 +250,18 @@ type spin_type = "GTK_SPIN_"
 type accel_flag = "GTK_ACCEL_"
   [ `VISIBLE | `LOCKED ]
 
+(* gtkbbox.h *)
+type button_box_style = "GTK_BUTTONBOX_"
+  [ `SPREAD | `EDGE | `START | `END | `CENTER | `EXPAND ]
+
 (* gtkcalendar.h *)
 type calendar_display_options = "GTK_CALENDAR_"
   [ `SHOW_HEADING | `SHOW_DAY_NAMES | `NO_MONTH_CHANGE | `SHOW_WEEK_NUMBERS
   | `SHOW_DETAILS ]
+
+(* gtkcontainer.h *)
+type resize_mode = "GTK_RESIZE_"
+  [ `PARENT | `QUEUE | `IMMEDIATE ]
 
 (* gtkdragdest.h *)
 type dest_defaults = "GTK_DEST_DEFAULT_"
@@ -262,6 +270,13 @@ type dest_defaults = "GTK_DEST_DEFAULT_"
 (* gtkselection.h *)
 type target_flags = "GTK_TARGET_"
   [ `SAME_APP | `SAME_WIDGET | `OTHER_APP | `OTHER_WIDGET ]
+
+(* gtkscrolledwindow.h *)
+type corner_type = "GTK_CORNER_"
+  [ `TOP_LEFT | `BOTTOM_LEFT | `TOP_RIGHT | `BOTTOM_RIGHT ]
+
+type policy_type = "GTK_POLICY_"
+  [ `ALWAYS | `AUTOMATIC | `NEVER | `EXTERNAL ]
 
 (* gtktreemodel.h *)
 type tree_model_flags = "GTK_TREE_MODEL_"

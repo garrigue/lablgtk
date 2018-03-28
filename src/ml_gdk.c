@@ -93,8 +93,8 @@ value ml_gdk_get_platform()
 }
 
 /* Colormap */
-
-ML_0 (gdk_colormap_get_system, Val_GdkColormap)
+/* not in 3
+ML_0 (gdk_colormap_get_system, Val_GdkColormap) */
 
 /* Screen geometry */
 
@@ -135,8 +135,11 @@ ML_1 (gdk_visual_get_screen, GdkVisual_val, Val_GdkScreen)
 ML_1 (gdk_visual_get_visual_type, GdkVisual_val, Val_gdkVisualType)
 ML_1 (gdk_visual_get_depth, GdkVisual_val, Val_int)
 
-/* Color */
+/* RGBA */
+/* TODO */
 
+/* Color */
+/* not in 3
 ML_2 (gdk_colormap_new, GdkVisual_val, Bool_val, Val_GdkColormap)
 ML_1 (gdk_colormap_get_visual, GdkColormap_val, Val_GdkVisual)
 
@@ -178,6 +181,7 @@ Make_Extractor (GdkColor, GdkColor_val, red, Val_int)
 Make_Extractor (GdkColor, GdkColor_val, green, Val_int)
 Make_Extractor (GdkColor, GdkColor_val, blue, Val_int)
 Make_Extractor (GdkColor, GdkColor_val, pixel, Val_int)
+*/
 
 /* Rectangle */
 
@@ -197,7 +201,7 @@ Make_Extractor (GdkRectangle, GdkRectangle_val, width, Val_int)
 Make_Extractor (GdkRectangle, GdkRectangle_val, height, Val_int)
 
 /* Drawable */
-
+/* not in 3
 ML_1 (gdk_drawable_get_visual, GdkDrawable_val, Val_GdkVisual)
 ML_1 (gdk_drawable_get_colormap, GdkDrawable_val, Val_GdkColormap)
 ML_1 (gdk_drawable_get_depth, GdkDrawable_val, Val_int)
@@ -214,18 +218,22 @@ CAMLprim value ml_gdk_drawable_get_size (value drawable)
   Field(ret,1) = Val_int(y);
   return ret;
 }
+*/
 
 /* Window */
 
 //ML_3 (gdk_window_set_back_pixmap, GdkWindow_val, GdkPixmap_val, Int_val, Unit)
 ML_2 (gdk_window_set_cursor, GdkWindow_val, GdkCursor_val, Unit)
+ML_1 (gdk_window_get_parent, GdkWindow_val, Val_GdkWindow)
+ML_2 (gdk_window_set_transient_for, GdkWindow_val, GdkWindow_val, Unit)
+ML_1 (gdk_window_get_visual, GdkWindow_val, Val_GdkVisual)
+/* not in 3
 ML_1 (gdk_window_clear, GdkWindow_val, Unit)
 ML_5 (gdk_window_clear_area, GdkWindow_val, Int_val, Int_val, Int_val, Int_val,
       Unit)
 ML_0 (GDK_ROOT_PARENT, Val_GdkWindow)
-ML_1 (gdk_window_get_parent, GdkWindow_val, Val_GdkWindow)
-ML_2 (gdk_window_set_transient_for, GdkWindow_val, GdkWindow_val, Unit)
 ML_1 (gdk_window_foreign_new, GdkNativeWindow_val, Val_GdkWindow)
+*/
 
 #if defined(_WIN32) || defined(__CYGWIN__) || defined(HAS_GTKQUARTZ)
 CAMLprim value ml_GDK_WINDOW_XID(value v)
@@ -415,13 +423,14 @@ CAMLprim value ml_gdk_property_get (value window, value property,
 ML_2 (gdk_property_delete, GdkWindow_val, GdkAtom_val, Unit)
 
 /* RGB */
-
+/* not in 3
 ML_0 (gdk_rgb_init, Unit)
 ML_0 (gdk_rgb_get_visual, Val_GdkVisual)
 ML_0 (gdk_rgb_get_cmap, Val_GdkColormap)
 ML_9 (gdk_draw_rgb_image, GdkDrawable_val, GdkGC_val, Int_val, Int_val,
       Int_val, Int_val, GdkRgbDither_val, ml_gpointer_base, Int_val, Unit)
 ML_bc9 (ml_gdk_draw_rgb_image)
+*/
 
 /* Events */
 
@@ -458,8 +467,8 @@ Make_Setter (gdk_event_set, GdkEvent_arg(Any), Event_type_val, type)
 Make_Setter (gdk_event_set, GdkEvent_arg(Any), GdkWindow_val, window)
 
 Make_Extractor (GdkEventExpose, GdkEvent_arg(Expose), area, Val_copy)
-Make_Extractor (GdkEventExpose, GdkEvent_arg(Expose), region,
-                Val_GdkRegion_copy)
+/* Make_Extractor (GdkEventExpose, GdkEvent_arg(Expose), region,
+                Val_GdkRegion_copy) */
 Make_Extractor (GdkEventExpose, GdkEvent_arg(Expose), count, Val_int)
 
 Make_Extractor (GdkEventVisibility, GdkEvent_arg(Visibility), state,
@@ -545,7 +554,7 @@ Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), target,
 Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), property,
                 Val_GdkAtom)
 Make_Extractor (GdkEventSelection, GdkEvent_arg(Selection), requestor,
-                Val_GdkNativeWindow)
+                Val_GdkWindow)
 
 Make_Extractor (GdkEventProximity, GdkEvent_arg(Proximity),
                 device, Val_GdkDevice)
@@ -572,7 +581,8 @@ static value val_int(gpointer i)
 }
 CAMLprim value ml_GdkDragContext_targets (value c)
 {
-  return Val_GList (gdk_drag_context_get_targets(c), val_int);
+  return Val_GList (gdk_drag_context_list_targets(GdkDragContext_val(c)),
+                    val_int);
 }
 
 /* Misc */

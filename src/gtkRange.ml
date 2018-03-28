@@ -39,4 +39,3 @@ module Scale = Scale
 
 module Scrollbar = Scrollbar
 
-module Ruler = Ruler

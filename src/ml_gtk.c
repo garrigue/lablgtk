@@ -669,6 +669,7 @@ static gboolean window_unref (gpointer w)
        and has only two references (mine and toplevel_list),
        then destroy it. */
     if (/* GTK_WINDOW(w)->has_user_ref_count && */
+        !gtk_widget_in_destruction(w) &&
         !gtk_widget_get_visible(w) && G_OBJECT(w)->ref_count == 2)
         gtk_widget_destroy ((GtkWidget*)w);
     g_object_unref((GObject*)w);
@@ -799,11 +800,6 @@ ML_4 (gtk_message_dialog_new, Option_val(arg1,GtkWindow_val,NULL) Ignore,
       /* The NULL below causes a spurious warning, but is correct */
       Insert(String_val(arg4)[0] != 0 ? "%s" : NULL) String_val,
       Val_GtkWidget_window)
-#ifdef HASGTK24
-ML_2 (gtk_message_dialog_set_markup, GtkMessageDialog_val, String_val, Unit)
-#else
-Unsupported_24(gtk_message_dialog_set_markup)
-#endif
 
 /* gtkaboutdialog.h */
 #ifdef HASGTK26

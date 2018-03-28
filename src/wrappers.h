@@ -242,7 +242,7 @@ CAMLprim value cname##_bc (value *argv, int argn) \
 	       argv[7],argv[8],argv[9],argv[10],argv[11],argv[12]); }
 
 /* result conversion */
-#define Unit(x) ((x), Val_unit)
+#define Unit(x) (((void)x), Val_unit)
 #define Id(x) x
 #define Val_char Val_int
 

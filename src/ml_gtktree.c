@@ -407,10 +407,7 @@ ml_gtk_tree_view_column_set_cell_data_func(value vcol, value cr, value cb)
         ml_global_root_destroy);
   return Val_unit;
 }
-CAMLprim value ml_gtk_tree_view_column_get_button (value vcol)
-{
-  return (Val_GtkWidget(GtkTreeViewColumn_val(vcol)->button));
-}
+ML_1 (gtk_tree_view_column_get_button, GtkTreeViewColumn_val, Val_GtkWidget)
 
 /* GtkTreeView */
 
@@ -611,7 +608,7 @@ CAMLprim value
 ml_gtk_tree_view_set_row_separator_func (value cb, value fun_o)
 {
   gpointer data;
-  GtkDestroyNotify dnotify;
+  GDestroyNotify dnotify;
   GtkTreeViewRowSeparatorFunc func;
   if (Is_long (fun_o))
     {

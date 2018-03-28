@@ -62,7 +62,7 @@ Make_Val_final_pointer_ext (GObject, _new, Ignore, ml_g_object_unref_later, 20)
 Make_Val_final_pointer_ext(GObject, _sink , g_object_ref_sink,
                            ml_g_object_unref_later, 20)
 ML_1 (G_TYPE_FROM_INSTANCE, GObject_val, Val_GType)
-// ML_1 (g_object_ref, GObject_val, Unit)
+ML_1 (g_object_ref_sink, GObject_val, Unit)
 CAMLprim value ml_g_object_unref (value val)
 {
     if (Field(val,1)) g_object_unref (GObject_val(val));

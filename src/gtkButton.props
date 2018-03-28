@@ -119,21 +119,27 @@ classes { GtkMenu "menu obj" }
 class MenuToolButton : ToolButton {
   "menu"                 GtkMenu               : Read / Write
 (*  signal show-menu *)
-  method set_arrow_tooltip : "[>`tooltips] obj -> string -> string -> unit"
+  method set_arrow_tooltip_text   : "string -> unit"
+  method set_arrow_tooltip_markup : "string -> unit"
 }
 
-
-class Toolbar set wrapsig : Container {
-  "orientation"          GtkOrientation       : Read / Write
+class Toolbar set wrap wrapsig : Container {
+  "icon-size"            GtkIconSize          :	Read / Write
+  "icon-size-set"        gboolean             :	Read / Write
+  "show-arrow"           gboolean             :	Read / Write
   "toolbar-style"        GtkToolbarStyle      : Read / Write
-  signal orientation_changed : GtkOrientation
-  signal style_changed :       GtkToolbarStyle
-
-  (* API extended in GTK 2.4 *)
-  "show-arrow"           gboolean             : Read / Write
+  signal style_changed      : GtkToolbarStyle
   signal focus_home_or_end  : bool -> bool
   signal move_focus         : GtkDirectionType -> bool
   signal popup_context_menu : int int int -> bool
+  method insert         : "[> `toolitem] obj -> int -> unit"
+  method get_item_index : "[> `toolitem] obj -> int"
+  method get_n_items    : "int"
+  method get_nth_item   : "int -> tool_item obj"
+  method unset_style    : "unit"
+  method get_drop_index : "int -> int -> int"
+  method set_drop_highlight_item : "[>`toolitem] obj option -> int -> unit"
+  method get_relief_style : "GtkEnums.relief_style"
 }
 
 class LinkButton wrap : LinkButton {

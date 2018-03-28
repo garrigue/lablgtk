@@ -97,17 +97,16 @@ module Dialog = struct
       = "ml_gtk_dialog_set_default_response"
   external run : [>`dialog] obj -> int
       = "ml_gtk_dialog_run"
-  let std_response = Gpointer.encode_variant GtkEnums.response
-  let decode_response = Gpointer.decode_variant GtkEnums.response
+  let std_response = Gpointer.encode_variant GtkEnums.Conv.response_tbl
+  let decode_response = Gpointer.decode_variant GtkEnums.Conv.response_tbl
 end
 
 module MessageDialog = struct
   include MessageDialog
   external create :
       ?parent:[>`window] obj -> message_type:Gtk.Tags.message_type ->
-      buttons:Gtk.Tags.buttons -> message:string -> unit -> message_dialog obj
+      buttons:Gtk.Tags.buttons_type -> string -> message_dialog obj
       = "ml_gtk_message_dialog_new"
-  external set_markup : [>`messagedialog] obj -> string -> unit = "ml_gtk_message_dialog_set_markup"
 end
 
 module AboutDialog = struct
@@ -116,49 +115,6 @@ module AboutDialog = struct
 
   external set_email_hook : (string -> unit) -> unit = "ml_gtk_about_dialog_set_email_hook"
   external set_url_hook   : (string -> unit) -> unit = "ml_gtk_about_dialog_set_url_hook"
-end
-
-module FileSelection = struct
-  include FileSelection
-  external create : string -> file_selection obj = "ml_gtk_file_selection_new"
-  external complete : [>`fileselection] obj -> filter:string -> unit
-      = "ml_gtk_file_selection_complete"
-  external get_ok_button : [>`fileselection] obj -> button obj
-      = "ml_gtk_file_selection_get_ok_button"
-  external get_cancel_button : [>`fileselection] obj -> button obj
-      = "ml_gtk_file_selection_get_cancel_button"
-  external get_help_button : [>`fileselection] obj -> button obj
-      = "ml_gtk_file_selection_get_help_button"
-  external get_file_list : [>`fileselection] obj -> clist obj
-      = "ml_gtk_file_selection_get_file_list"
-  external get_dir_list : [>`fileselection] obj -> clist obj
-      = "ml_gtk_file_selection_get_dir_list"
-  external get_selections : [>`fileselection] obj -> string list
-      = "ml_gtk_file_selection_get_selections"
-end
-
-module ColorSelectionDialog = struct
-  include ColorSelectionDialog
-  external ok_button : [>`colorselectiondialog] obj -> button obj =
-    "ml_gtk_color_selection_dialog_ok_button"
-  external cancel_button : [>`colorselectiondialog] obj -> button obj =
-    "ml_gtk_color_selection_dialog_cancel_button"
-  external help_button : [>`colorselectiondialog] obj -> button obj =
-    "ml_gtk_color_selection_dialog_help_button"
-  external colorsel : [>`colorselectiondialog] obj -> color_selection obj =
-    "ml_gtk_color_selection_dialog_colorsel"
-end
-
-module FontSelectionDialog = struct
-  include FontSelectionDialog
-  external font_selection : [>`fontselectiondialog] obj -> font_selection obj
-      = "ml_gtk_font_selection_dialog_fontsel"
-  external ok_button : [>`fontselectiondialog] obj -> button obj
-      = "ml_gtk_font_selection_dialog_ok_button"
-  external apply_button : [>`fontselectiondialog] obj -> button obj
-      = "ml_gtk_font_selection_dialog_apply_button"
-  external cancel_button : [>`fontselectiondialog] obj -> button obj
-      = "ml_gtk_font_selection_dialog_cancel_button"
 end
 
 module Plug = struct

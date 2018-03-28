@@ -129,7 +129,7 @@ module Tags : sig
   type xdata_ret = [ xdata | `NONE ]
 
   (* gdkproperty.h *)
-  type property_mode = "GDK_PROP_MODE_"
+  type property_mode =
     [ `REPLACE | `PREPEND | `APPEND ]
 
   (* gdkwindow.h *)
@@ -294,16 +294,6 @@ module Rectangle :
     val height : t -> int
   end
 
-module Drawable :
-  sig
-    val cast : 'a obj -> [`drawable] obj
-    val get_visual : [>`drawable] obj -> visual
-    val get_depth : [>`drawable] obj -> int
-    val get_colormap : [>`drawable] obj -> colormap
-    val get_size : [>`drawable] obj -> int * int
-end
-
-
 module Window :
   sig
     val cast : 'a obj -> window
@@ -315,11 +305,9 @@ module Window :
     val clear : window -> unit
     val clear_area :
         window -> x:int -> y:int -> width:int -> height:int -> unit
-    val get_xwindow : [>`drawable] obj -> xid
+    val get_xwindow : window -> xid
     val native_of_xid : xid -> native_window
     val xid_of_native : native_window -> xid
-    type background_pixmap = [ `NONE|`PARENT_RELATIVE|`PIXMAP of pixmap ]
-    val set_back_pixmap : window -> background_pixmap -> unit
     val set_cursor : window -> cursor -> unit
     val set_transient_for : window -> window -> unit
 
@@ -334,162 +322,6 @@ module PointArray :
     val set : t -> pos:int -> x:int -> y:int -> unit
   end
 
-module Region :
-  sig
-    type gdkFillRule = [ `EVEN_ODD_RULE|`WINDING_RULE ]
-    type gdkOverlapType = [ `IN|`OUT|`PART ]
-    val create : unit -> region
-    val destroy : region -> unit
-    val polygon : (int * int) list -> gdkFillRule -> region 
-    val intersect : region -> region -> region
-    val union : region -> region -> region 
-    val subtract : region -> region -> region 
-    val xor : region -> region -> region 
-    val union_with_rect : region -> Rectangle.t -> region
-    val offset : region -> x:int -> y:int -> unit
-    val shrink : region -> x:int -> y:int -> unit
-    val empty : region -> bool
-    val equal : region -> region -> bool
-    val point_in : region -> x:int -> y:int -> bool 
-    val rect_in : region -> Rectangle.t -> gdkOverlapType
-    val get_clipbox : region -> Rectangle.t -> unit
-  end
-
-module GC :
-  sig
-    type gdkFunction = [ `COPY|`INVERT|`XOR ]
-    type gdkFill = [ `SOLID|`TILED|`STIPPLED|`OPAQUE_STIPPLED ]
-    type gdkSubwindowMode = [ `CLIP_BY_CHILDREN|`INCLUDE_INFERIORS ]
-    type gdkLineStyle = [ `SOLID|`ON_OFF_DASH|`DOUBLE_DASH ]
-    type gdkCapStyle = [ `NOT_LAST|`BUTT|`ROUND|`PROJECTING ]
-    type gdkJoinStyle = [ `MITER|`ROUND|`BEVEL ]
-    val create : [>`drawable] obj -> gc
-    val set_foreground : gc -> color -> unit
-    val set_background : gc -> color -> unit
-    val set_font : gc -> font -> unit
-    val set_function : gc -> gdkFunction -> unit
-    val set_fill : gc -> gdkFill -> unit
-    val set_tile : gc -> pixmap -> unit
-    val set_stipple : gc -> pixmap -> unit
-    val set_ts_origin : gc -> x:int -> y:int -> unit
-    val set_clip_origin : gc -> x:int -> y:int -> unit
-    val set_clip_mask : gc -> bitmap -> unit
-    val set_clip_rectangle : gc -> Rectangle.t -> unit
-    val set_clip_region : gc -> region -> unit
-    val set_subwindow : gc -> gdkSubwindowMode -> unit
-    val set_exposures : gc -> bool -> unit
-    val set_line_attributes :
-      gc ->
-      width:int ->
-      style:gdkLineStyle -> cap:gdkCapStyle -> join:gdkJoinStyle -> unit
-    val set_dashes : gc -> offset:int -> int list -> unit
-    val copy : dst:gc -> gc -> unit
-    type values = {
-        foreground : color;
-        background : color;
-        font : font option;
-        fonction : gdkFunction;
-        fill : gdkFill;
-        tile : pixmap option;
-        stipple : pixmap option;
-        clip_mask : bitmap option;
-        subwindow_mode : gdkSubwindowMode;
-        ts_x_origin : int;
-        ts_y_origin : int;
-        clip_x_origin : int;
-        clip_y_origin : int;
-        graphics_exposures : bool;
-        line_width : int;
-        line_style : gdkLineStyle;
-        cap_style : gdkCapStyle;
-        join_style : gdkJoinStyle;
-      }
-    val get_values : gc -> values
-  end
-
-module Pixmap :
-  sig
-    val cast : 'a obj -> pixmap
-    val destroy : [> `gdkpixmap] obj -> unit
-    val create :
-      ?window:window -> width:int -> height:int -> ?depth:int -> unit -> pixmap
-    val create_from_data :
-      ?window:window -> width:int -> height:int ->
-      ?depth:int -> fg:color -> bg:color -> string -> pixmap
-    val create_from_xpm :
-      ?window:window -> ?colormap:colormap -> ?transparent:color ->
-      file:string -> unit -> pixmap * bitmap
-    val create_from_xpm_d :
-      ?window:window -> ?colormap:colormap -> ?transparent:color ->
-      data:string array -> unit -> pixmap * bitmap
-  end
-
-module Bitmap :
-  sig
-    val cast : 'a obj -> bitmap
-    val create : ?window:window -> width:int -> height:int -> unit -> bitmap
-    val create_from_data :
-      ?window:window -> width:int -> height:int -> string -> bitmap
-  end
-
-module Font :
-  sig
-    val load : string -> font
-    val load_fontset : string -> font
-    val string_width : font -> string -> int
-    val char_width : font -> char -> int
-    val string_height : font -> string -> int
-    val char_height : font -> char -> int
-    val string_measure : font -> string -> int
-    val char_measure : font -> char -> int
-    val get_type : font -> [`FONT | `FONTSET]
-    val ascent : font -> int
-    val descent : font -> int
-  end
-
-module Draw :
-  sig
-    val point : [>`drawable] obj -> gc -> x:int -> y:int -> unit
-    val line :
-      [>`drawable] obj -> gc -> x:int -> y:int -> x:int -> y:int -> unit
-    val rectangle :
-      [>`drawable] obj -> gc ->
-      x:int -> y:int -> width:int -> height:int -> ?filled:bool -> unit -> unit
-    val arc :
-      [>`drawable] obj -> gc ->
-      x:int -> y:int -> width:int -> height:int ->
-      ?filled:bool -> ?start:float -> ?angle:float -> unit -> unit
-    val polygon :
-      [>`drawable] obj -> gc -> ?filled:bool ->(int * int) list -> unit
-    val string :
-      [>`drawable] obj ->
-      font:font -> gc -> x:int -> y:int -> string -> unit
-    val layout :
-      [>`drawable] obj -> gc -> x: int -> y: int -> Pango.layout ->
-      ?fore:color -> ?back:color -> unit
-    val image :
-      [>`drawable] obj -> gc -> ?xsrc:int -> ?ysrc:int ->
-      ?xdest:int -> ?ydest:int -> ?width:int -> ?height:int -> image -> unit
-    val pixmap :
-      [>`drawable] obj -> gc -> ?xsrc:int -> ?ysrc:int ->
-      ?xdest:int -> ?ydest:int -> ?width:int -> ?height:int -> pixmap -> unit
-    val points : [>`drawable] obj -> gc -> (int * int) list -> unit
-    val lines : [>`drawable] obj -> gc -> (int * int) list -> unit
-    val segments :
-      [>`drawable] obj -> gc -> ((int * int) * (int * int)) list -> unit
-  end
-
-module Rgb :
-  sig
-    val init : unit -> unit
-    val get_visual : unit -> visual
-    val get_cmap : unit -> colormap
-    val draw_image :
-      [>`drawable] obj -> gc -> width:int -> height:int -> ?x:int -> ?y:int ->
-      ?dither:Tags.rgb_dither -> ?row_stride:int -> Gpointer.region -> unit
-    (* [row_stride] defaults to [width*3] *)
-  end
-
 module DnD :
   sig
     val drag_status :
@@ -498,6 +330,7 @@ module DnD :
     val drag_context_targets : drag_context -> atom list
   end
 
+(*
 module Truecolor :
   sig
     val color_creator : visual -> (red: int -> green: int -> blue: int -> int)
@@ -511,6 +344,7 @@ module Truecolor :
 
     val color_parser : visual -> int -> int * int * int
   end
+*)
 
 module X :
   (* X related functions *)
@@ -600,9 +434,6 @@ module Cursor : sig
     | `XTERM
   ]
   val create : cursor_type -> cursor
-  val create_from_pixmap :
-    pixmap -> mask:bitmap ->
-    fg:color -> bg:color -> x:int -> y:int -> cursor
   val create_from_pixbuf :
     [`pixbuf] Gobject.obj -> x:int -> y:int -> cursor (** @since GTK 2.4 *)
   val get_image : cursor -> [`pixbuf] obj             (** @since GTK 2.8 *)

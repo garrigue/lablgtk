@@ -96,6 +96,7 @@ let from_data ~width ~height ?(bits=8) ?rowstride ?(has_alpha=false) data =
   then invalid_arg "GdkPixbuf.from_data";
   _from_data data ~has_alpha ~bits ~width ~height ~rowstride
 
+(*
 external _get_from_drawable :
   pixbuf -> [>`drawable] obj -> colormap -> src_x:int -> src_y:int ->
   dest_x:int -> dest_y:int -> width:int -> height:int -> unit
@@ -160,6 +161,7 @@ let render_to_drawable_alpha dw ?(dest_x=0) ?(dest_y=0) ?width ?height
 external _create_pixmap : pixbuf -> threshold:int -> pixmap * bitmap option
   = "ml_gdk_pixbuf_render_pixmap_and_mask"
 let create_pixmap ?(threshold=128) pb = _create_pixmap pb ~threshold
+*)
 
 (* Transform *)
 

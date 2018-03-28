@@ -53,60 +53,6 @@ module SpinButton = struct
   let get_value_as_int w = truncate (floor (get P.value w +. 0.5))
 end
 
-(*
-module Text = struct
-  let cast w : text obj = Object.try_cast w "GtkText"
-  external create : [>`adjustment] optobj -> [>`adjustment] optobj -> text obj
-      = "ml_gtk_text_new"
-  let create ?hadjustment ?vadjustment () =
-    create (Gpointer.optboxed hadjustment) (Gpointer.optboxed vadjustment)
-  external set_word_wrap : [>`text] obj -> bool -> unit
-      = "ml_gtk_text_set_word_wrap"
-  external set_line_wrap : [>`text] obj -> bool -> unit
-      = "ml_gtk_text_set_line_wrap"
-  external set_adjustment :
-      [>`text] obj -> ?horizontal:[>`adjustment] obj ->
-      ?vertical:[>`adjustment] obj -> unit -> unit
-      = "ml_gtk_text_set_adjustments"
-  external get_hadjustment : [>`text] obj -> adjustment obj
-      = "ml_gtk_text_get_hadj"
-  external get_vadjustment : [>`text] obj -> adjustment obj
-      = "ml_gtk_text_get_vadj"
-  external set_point : [>`text] obj -> int -> unit
-      = "ml_gtk_text_set_point"
-  external get_point : [>`text] obj -> int = "ml_gtk_text_get_point"
-  external get_length : [>`text] obj -> int = "ml_gtk_text_get_length"
-  external freeze : [>`text] obj -> unit = "ml_gtk_text_freeze"
-  external thaw : [>`text] obj -> unit = "ml_gtk_text_thaw"
-  external insert :
-      [>`text] obj -> ?font:Gdk.font -> ?foreground:Gdk.Color.t ->
-      ?background:Gdk.Color.t -> string -> unit
-      = "ml_gtk_text_insert"
-  let set ?hadjustment ?vadjustment ?word_wrap w =
-    if hadjustment <> None || vadjustment <> None then
-      set_adjustment w ?horizontal: hadjustment ?vertical: vadjustment ();
-    may word_wrap ~f:(set_word_wrap w)
-end
-*)
-
-module Combo = struct
-  include Combo
-  external entry : [>`combo] obj -> entry obj = "ml_gtk_combo_entry"
-  external list : [>`combo] obj -> liste obj = "ml_gtk_combo_list"
-  let set_popdown_strings combo strings =
-    GtkList.Liste.clear_items (list combo) ~start:0 ~stop:(-1);
-    List.iter strings ~f:
-      begin fun s ->
-	let li = GtkList.ListItem.create_with_label s in
-	Widget.show li;
-	Container.add (list combo) li
-      end
-  external disable_activate : [>`combo] obj -> unit
-      = "ml_gtk_combo_disable_activate"
-  external set_item_string : [>`combo] obj -> [>`item] obj -> string -> unit
-      = "ml_gtk_combo_set_item_string"
-end
-
 module ComboBox = GtkEditProps.ComboBox
 
 module ComboBoxEntry = GtkEditProps.ComboBoxEntry

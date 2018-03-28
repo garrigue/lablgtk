@@ -63,53 +63,27 @@ class button_box obj = object
   method connect = new container_signals_impl obj
   method set_layout  = set BBox.P.layout_style  obj
   method layout  = get BBox.P.layout_style  obj
-  method set_child_size = BBox.set_child_size obj
-  method set_child_ipadding = BBox.set_child_ipadding obj
-  method get_child_secondary (w : widget) = BBox.get_child_secondary obj w#as_widget
-  method set_child_secondary (w : widget) = BBox.set_child_secondary obj w#as_widget
+  method get_child_secondary (w : widget) =
+    BBox.get_child_secondary obj w#as_widget
+  method set_child_secondary (w : widget) =
+    BBox.set_child_secondary obj w#as_widget
 end
 
-let button_box dir ?spacing ?child_width ?child_height ?child_ipadx
-    ?child_ipady ?layout =
+let button_box dir ?layout =
   pack_container [] ~create:(fun p ->
-    let p =
-      Property.may_cons Box.P.spacing spacing (
-      Property.may_cons BBox.P.layout_style layout p) in
+    let p = Property.may_cons BBox.P.layout_style layout p in
     let w = BBox.create dir p in
-    BBox.set w ?child_width ?child_height ?child_ipadx
-      ?child_ipady ?layout;
     new button_box w)
-
-class table obj = object
-  inherit container_full (obj : Gtk.table obj)
-  method private obj = obj
-  inherit table_props
-  method attach ~left ~top ?right ?bottom ?expand ?fill ?shrink
-      ?xpadding ?ypadding w =
-    Table.attach obj (as_widget w) ~left ~top ?right ?bottom ?expand
-      ?fill ?shrink ?xpadding ?ypadding
-  method set_row_spacing = Table.set_row_spacing obj
-  method set_col_spacing = Table.set_col_spacing obj
-end
-
-let table =
-  Table.make_params [] ~cont:(
-  pack_container ~create:(fun p -> new table (Table.create p)))
 
 class fixed obj = object
   inherit container_full (obj : Gtk.fixed obj)
   method event = new GObj.event_ops obj
   method put w = Fixed.put obj (as_widget w)
   method move w = Fixed.move obj (as_widget w)
-  method set_has_window = Fixed.set_has_window obj
-  method has_window = Fixed.get_has_window obj
 end
 
-let fixed ?has_window =
-  pack_container [] ~create:(fun p ->
-    let w = new fixed (Fixed.create p) in
-    may has_window ~f:w#set_has_window;
-    w)
+let fixed =
+  pack_container [] ~create:(fun p -> new fixed (Fixed.create p))
 
 class layout obj = object
   inherit container_full obj
@@ -124,9 +98,7 @@ class layout obj = object
   method set_height = set Layout.P.height obj
   method hadjustment = new GData.adjustment (get Layout.P.hadjustment obj)
   method vadjustment = new GData.adjustment (get Layout.P.vadjustment obj)
-  method freeze () = Layout.freeze obj
   method bin_window = Layout.bin_window obj
-  method thaw () = Layout.thaw obj
   method width = get Layout.P.width obj
   method height = get Layout.P.height obj
 end
@@ -166,6 +138,16 @@ let packer ?spacing ?border_width ?width ?height ?packing ?show () =
   pack_return (new packer w) ~packing ~show
 *)
 
+let check1 obj =
+  try ignore(Paned.get_child1 obj);
+    raise(Error "GPack.paned#add1: already full")
+  with _ -> ()
+
+let check2 obj =
+  try ignore(Paned.get_child1 obj);
+    raise(Error "GPack.paned#add1: already full")
+  with _ -> ()
+
 class paned obj = object
   inherit [Gtk.paned] container_impl obj
   inherit paned_props
@@ -175,22 +157,14 @@ class paned obj = object
     if List.length (Container.children obj) = 2 then
       raise(Error "Gpack.paned#add: already full");
     Container.add obj (as_widget w)
-  method add1 w =
-    try ignore(Paned.child1 obj); raise(Error "GPack.paned#add1: already full")
-    with _ -> Paned.add1 obj (as_widget w)
-  method add2 w =
-    try ignore(Paned.child2 obj); raise(Error "GPack.paned#add2: already full")
-    with _ -> Paned.add2 obj (as_widget w)
+  method add1 w = check1 obj; Paned.add1 obj (as_widget w)
+  method add2 w = check2 obj; Paned.add2 obj (as_widget w)
   method pack1 ?(resize=false) ?(shrink=false) w =
-    try ignore(Paned.child1 obj);
-      raise(Error "GPack.paned#pack1: already full")
-    with _ -> Paned.pack1 obj (as_widget w) ~resize ~shrink
+    check1 obj; Paned.pack1 obj (as_widget w) ~resize ~shrink
   method pack2 ?(resize=false) ?(shrink=false) w =
-    try ignore(Paned.child2 obj);
-      raise(Error "GPack.paned#pack2: already full")
-    with _ -> Paned.pack2 obj (as_widget w) ~resize ~shrink
-  method child1 = new widget (Paned.child1 obj)
-  method child2 = new widget (Paned.child2 obj)
+    check2 obj; Paned.pack2 obj (as_widget w) ~resize ~shrink
+  method child1 = new widget (Paned.get_child1 obj)
+  method child2 = new widget (Paned.get_child2 obj)
 end
 
 let paned dir =

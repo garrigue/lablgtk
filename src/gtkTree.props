@@ -13,7 +13,6 @@ end
 conversions {
   GtkTreePathString "!Internal.tree_path_string"
   GtkTreePathCopy "!Internal.tree_path_copy"
-  GtkTreeViewGridLines "GtkEnums.tree_view_grid_lines_conv"
 }
 
 classes {
