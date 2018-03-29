@@ -61,7 +61,8 @@ ML_0 (gtk_separator_menu_item_new, Val_GtkWidget_sink)
 ML_0 (gtk_tearoff_menu_item_new, Val_GtkWidget_sink) */
 ML_1 (gtk_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
 ML_1 (gtk_menu_item_new_with_mnemonic, String_val, Val_GtkWidget_sink)
-ML_2 (gtk_menu_item_set_submenu, GtkMenuItem_val, GtkWidget_val, Unit)
+ML_2 (gtk_menu_item_set_submenu, GtkMenuItem_val,
+      Option_val(arg2,GtkWidget_val,NULL) Ignore, Unit)
 Make_Val_option(GtkWidget)
 ML_1 (gtk_menu_item_get_submenu, GtkMenuItem_val, Val_option_GtkWidget)
 /* not in 3

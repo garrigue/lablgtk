@@ -69,17 +69,3 @@ let scrollbar dir ?adjustment =
   Range.make_params [] ?adjustment:(may_map GData.as_adjustment adjustment)
     ~cont:(fun pl ?packing ?show params ->
       pack_return (new range (Scrollbar.create dir pl)) ~packing ~show)
-
-class ruler obj = object
-  inherit ['a] widget_impl obj
-  method connect = new widget_signals_impl obj
-  method event = new GObj.event_ops obj
-  inherit ruler_props
-  method set_metric = Ruler.set_metric obj
-end
-
-let ruler dir ?metric =
-  Ruler.make_params [] ~cont:(fun pl ?packing ?show params ->
-    let w = new ruler (Ruler.create dir pl) in
-    may w#set_metric metric;
-    pack_return w ~packing ~show)

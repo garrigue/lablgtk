@@ -53,9 +53,9 @@ module Widget = struct
   external unrealize : [>`widget] obj -> unit = "ml_gtk_widget_unrealize"
   external queue_draw : [>`widget] obj -> unit = "ml_gtk_widget_queue_draw"
   external queue_resize : [>`widget] obj -> unit = "ml_gtk_widget_queue_resize"
+(*
   external draw : [>`widget] obj -> Gdk.Rectangle.t option -> unit
       = "ml_gtk_widget_draw"
-(*
   external draw_focus : [>`widget] obj -> unit
       = "ml_gtk_widget_draw_focus"
   external draw_default : [>`widget] obj -> unit
@@ -65,34 +65,34 @@ module Widget = struct
       = "ml_gtk_widget_event"
   external activate : [>`widget] obj -> bool
       = "ml_gtk_widget_activate"
+(*
   external reparent : [>`widget] obj -> [>`widget] obj -> unit
       = "ml_gtk_widget_reparent"
-(*
   external popup : [>`widget] obj -> x:int -> y:int -> unit
       = "ml_gtk_widget_popup"
 *)
   external intersect :
       [>`widget] obj -> Gdk.Rectangle.t -> Gdk.Rectangle.t option
       = "ml_gtk_widget_intersect"
-  external set_state : [>`widget] obj -> state_type -> unit
+  (*external set_state : [>`widget] obj -> state_type -> unit
       = "ml_gtk_widget_set_state"
   external set_uposition : [>`widget] obj -> x:int -> y:int -> unit
-      = "ml_gtk_widget_set_uposition"
+      = "ml_gtk_widget_set_uposition"*)
   external add_events : [>`widget] obj -> Gdk.Tags.event_mask list -> unit
       = "ml_gtk_widget_add_events"
   external get_toplevel : [>`widget] obj -> widget obj
       = "ml_gtk_widget_get_toplevel"
   external get_ancestor : [>`widget] obj -> g_type -> widget obj
       = "ml_gtk_widget_get_ancestor"
-  external get_colormap : [>`widget] obj -> Gdk.colormap
-      = "ml_gtk_widget_get_colormap"
+  (*external get_colormap : [>`widget] obj -> Gdk.colormap
+      = "ml_gtk_widget_get_colormap"*)
   external get_visual : [>`widget] obj -> Gdk.visual
       = "ml_gtk_widget_get_visual"
   external get_pointer : [>`widget] obj -> int * int
       = "ml_gtk_widget_get_pointer"
   external is_ancestor : [>`widget] obj -> [>`widget] obj -> bool
       = "ml_gtk_widget_is_ancestor"
-  external ensure_style : [>`widget] obj -> unit
+  (*external ensure_style : [>`widget] obj -> unit
       = "ml_gtk_widget_ensure_style"
   external modify_fg : [>`widget] obj -> state_type -> Gdk.color -> unit
       = "ml_gtk_widget_modify_fg"
@@ -103,15 +103,11 @@ module Widget = struct
   external modify_base : [>`widget] obj -> state_type -> Gdk.color -> unit
       = "ml_gtk_widget_modify_base"
   external modify_font : [>`widget] obj -> Pango.font_description -> unit
-      = "ml_gtk_widget_modify_font"
+      = "ml_gtk_widget_modify_font"*)
   external get_pango_context : [>`widget] obj -> Pango.context
       = "ml_gtk_widget_get_pango_context"
   external create_pango_context : [>`widget] obj -> Pango.context
       = "ml_gtk_widget_create_pango_context"
-  external render_icon : 
-      [>`widget] obj -> string -> 
-      Gtk.Tags.icon_size -> string option -> GdkPixbuf.pixbuf
-      = "ml_gtk_widget_render_icon"
   external add_accelerator :
       ([>`widget] as 'a) obj -> sgn:('a,unit->unit) GtkSignal.t ->
       accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list ->
@@ -134,14 +130,14 @@ module Widget = struct
       = "ml_gtk_widget_accelerators_locked"
 *)
   external window : [>`widget] obj -> Gdk.window
-      = "ml_GtkWidget_window"
+      = "ml_gtk_widget_get_window"
   external allocation : [>`widget] obj -> rectangle
       = "ml_gtk_widget_get_allocation"
   (* external set_colormap : [>`widget] obj -> Gdk.colormap -> unit
       = "ml_gtk_widget_set_colormap" *)
   external set_visual : [>`widget] obj -> Gdk.visual -> unit
       = "ml_gtk_widget_set_visual"
-  external set_default_colormap : Gdk.colormap -> unit
+  (* external set_default_colormap : Gdk.colormap -> unit
       = "ml_gtk_widget_set_default_colormap"
   external set_default_visual : Gdk.visual -> unit
       = "ml_gtk_widget_set_default_visual"
@@ -156,7 +152,7 @@ module Widget = struct
   external pop_colormap : unit -> unit
       = "ml_gtk_widget_pop_colormap"
   external pop_visual : unit -> unit
-      = "ml_gtk_widget_pop_visual"
+      = "ml_gtk_widget_pop_visual" *)
   
   (** @since GTK 2.12 *)
   module Tooltip = struct
@@ -260,9 +256,6 @@ module Widget = struct
       let proximity_out : ([>`widget], GdkEvent.Proximity.t -> bool) t =
 	{ name = "proximity_out_event"; classe = `widget;
           marshaller = marshal }
-      let client : ([>`widget], GdkEvent.Client.t -> bool) t =
-	{ name = "client_event"; classe = `widget;
-          marshaller = marshal }
       let visibility_notify : ([>`widget], GdkEvent.Visibility.t -> bool) t =
 	{ name = "visibility_notify_event"; classe = `widget;
           marshaller = marshal }
@@ -288,8 +281,6 @@ end
 module Orientable = Orientable
 
 module Bin = Bin
-
-module Item = Item
 
 (* Clipboard provides high-level access to Selection *)
 module Clipboard = struct
@@ -317,13 +308,13 @@ end
 (* Use of Selection is deprecated: rather use simpler Clipboard module *)
 module Selection = struct
   external selection : selection_data -> Gdk.atom
-      = "ml_gtk_selection_data_selection"
+      = "ml_gtk_selection_data_get_selection"
   external target : selection_data -> Gdk.atom
-      = "ml_gtk_selection_data_target"
+      = "ml_gtk_selection_data_get_target"
   external seltype : selection_data -> Gdk.atom
-      = "ml_gtk_selection_data_type"
+      = "ml_gtk_selection_data_get_data_type"
   external format : selection_data -> int
-      = "ml_gtk_selection_data_format"
+      = "ml_gtk_selection_data_get_format"
   external get_data : selection_data -> string
       = "ml_gtk_selection_data_get_data"       (* May raise Gpointer.null *)
   external set :

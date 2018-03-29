@@ -36,20 +36,20 @@ class progress_bar : Gtk.progress_bar obj ->
   object
     inherit GObj.widget_full
     val obj : Gtk.progress_bar Gtk.obj
-    method adjustment : GData.adjustment
     method event : GObj.event_ops
+    method inverted : bool
     method pulse : unit -> unit
-    method set_adjustment : GData.adjustment -> unit
+    method set_inverted : bool -> unit
     method set_fraction : float -> unit
-    method set_orientation : Tags.progress_bar_orientation -> unit
     method set_pulse_step : float -> unit
+    method set_show_text : bool -> unit
     method set_text : string -> unit
+    method show_text : bool
     method fraction : float
-    method orientation : Tags.progress_bar_orientation
     method pulse_step : float
     method text : string
-    method ellipsize : PangoEnums.ellipsize_mode (** @since GTK 2.6 *)
-    method set_ellipsize : PangoEnums.ellipsize_mode -> unit (** @since GTK 2.6 *)
+    method ellipsize : PangoEnums.ellipsize_mode
+    method set_ellipsize : PangoEnums.ellipsize_mode -> unit
   end
 
 (** @gtkdoc gtk GtkProgress
@@ -57,7 +57,6 @@ class progress_bar : Gtk.progress_bar obj ->
     @param orientation default value is [`LEFT_TO_RIGHT]
     @param pulse_step default value is [0.1] *)
 val progress_bar :
-  ?orientation:Tags.progress_bar_orientation ->
   ?pulse_step:float ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> progress_bar
 
@@ -68,12 +67,23 @@ class range_signals : [> Gtk.range] obj ->
   object
     inherit GObj.widget_signals
     method adjust_bounds : callback:(float -> unit) -> GtkSignal.id
-    method move_slider : callback:(Tags.scroll_type -> unit) -> GtkSignal.id
-    method change_value : callback:(Tags.scroll_type -> float -> unit) -> GtkSignal.id
+    method move_slider :
+        callback:(Tags.scroll_type -> unit) -> GtkSignal.id
+    method change_value :
+        callback:(Tags.scroll_type -> float -> unit) -> GtkSignal.id
     method value_changed : callback:(unit -> unit) -> GtkSignal.id
-    method notify_adjustment : callback:(GData.adjustment -> unit) -> GtkSignal.id
+    method notify_adjustment :
+        callback:(GData.adjustment -> unit) -> GtkSignal.id
+    method notify_fill_level : callback:(float -> unit) -> GtkSignal.id
     method notify_inverted : callback:(bool -> unit) -> GtkSignal.id
-    method notify_update_policy : callback:(GtkEnums.update_type -> unit) -> GtkSignal.id
+    method notify_lower_stepper_sensitivity :
+        callback:(Tags.sensitivity_type -> unit) -> GtkSignal.id
+    method notify_restrict_to_fill_level :
+        callback:(bool -> unit) -> GtkSignal.id
+    method notify_round_digits : callback:(int -> unit) -> GtkSignal.id
+    method notify_show_fill_level : callback:(bool -> unit) -> GtkSignal.id
+    method notify_upper_stepper_sensitivity :
+        callback:(Tags.sensitivity_type -> unit) -> GtkSignal.id
   end
 
 (** Base class for widgets which visualize an adjustment
@@ -85,12 +95,22 @@ class range : ([> Gtk.range] as 'a) obj ->
     method as_range : Gtk.range Gtk.obj
     method connect : range_signals
     method event : GObj.event_ops
-    method set_adjustment : GData.adjustment -> unit
-    method set_inverted : bool -> unit
-    method set_update_policy : Tags.update_type -> unit
     method adjustment : GData.adjustment
+    method fill_level : float
     method inverted : bool
-    method update_policy : Tags.update_type
+    method lower_stepper_sensitivity : Tags.sensitivity_type
+    method restrict_to_fill_level : bool
+    method round_digits : int
+    method set_adjustment : GData.adjustment -> unit
+    method set_fill_level : float -> unit
+    method set_inverted : bool -> unit
+    method set_lower_stepper_sensitivity : Tags.sensitivity_type -> unit
+    method set_restrict_to_fill_level : bool -> unit
+    method set_round_digits : int -> unit
+    method set_show_fill_level : bool -> unit
+    method set_upper_stepper_sensitivity : Tags.sensitivity_type -> unit
+    method show_fill_level : bool
+    method upper_stepper_sensitivity : Tags.sensitivity_type
   end
 
 (** A slider widget for selecting a value from a range
@@ -103,10 +123,12 @@ class scale : Gtk.scale obj ->
     val obj : Gtk.scale obj
     method set_digits : int -> unit
     method set_draw_value : bool -> unit
-    method set_value_pos : Tags.position -> unit
+    method set_has_origin : bool -> unit
+    method set_value_pos : Tags.position_type -> unit
     method digits : int
     method draw_value : bool
-    method value_pos : Tags.position
+    method has_origin : bool
+    method value_pos : Tags.position_type
   end
 
 (** @gtkdoc gtk GtkScale
@@ -122,9 +144,15 @@ val scale :
   ?adjustment:GData.adjustment ->
   ?digits:int ->
   ?draw_value:bool ->
-  ?value_pos:Tags.position ->
+  ?has_origin:bool ->
+  ?value_pos:Tags.position_type ->
+  ?fill_level:float ->
   ?inverted:bool ->
-  ?update_policy:Tags.update_type ->
+  ?restrict_to_fill_level:bool ->
+  ?round_digits:int ->
+  ?show_fill_level:bool ->
+  ?lower_stepper_sensitivity:Tags.sensitivity_type ->
+  ?upper_stepper_sensitivity:Tags.sensitivity_type ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> scale
 
 (** @gtkdoc gtk GtkScrollbar
@@ -135,42 +163,11 @@ val scale :
 val scrollbar :
   Tags.orientation ->
   ?adjustment:GData.adjustment ->
+  ?fill_level:float ->
   ?inverted:bool ->
-  ?update_policy:Tags.update_type ->
+  ?restrict_to_fill_level:bool ->
+  ?round_digits:int ->
+  ?show_fill_level:bool ->
+  ?lower_stepper_sensitivity:Tags.sensitivity_type ->
+  ?upper_stepper_sensitivity:Tags.sensitivity_type ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> range
-
-(** {3 GtkRuler} *)
-
-(** @gtkdoc gtk GtkRuler
-    @gtkdoc gtk GtkHRuler
-    @gtkdoc gtk GtkVRuler *)
-class ruler :
-  ([> Gtk.ruler] as 'a) Gtk.obj ->
-  object
-    inherit GObj.widget_full
-    val obj : 'a Gtk.obj
-    method event : GObj.event_ops
-    method set_metric : Tags.metric_type -> unit
-    method set_lower : float -> unit
-    method set_max_size : float -> unit
-    method set_metric : Gtk.Tags.metric_type -> unit
-    method set_position : float -> unit
-    method set_upper : float -> unit
-    method lower : float
-    method max_size : float
-    method position : float
-    method upper : float
-  end
-
-(** @gtkdoc gtk GtkRuler
-    @gtkdoc gtk GtkHRuler
-    @gtkdoc gtk GtkVRuler
-    @param metric default value is [`PIXELS] *)
-val ruler :
-  Tags.orientation ->
-  ?metric:Tags.metric_type ->
-  ?lower:float ->
-  ?upper:float ->
-  ?max_size:float ->
-  ?position:float ->
-  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> ruler

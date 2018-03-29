@@ -55,6 +55,6 @@ end
 
 module ComboBox = GtkEditProps.ComboBox
 
-module ComboBoxEntry = GtkEditProps.ComboBoxEntry
+module ComboBoxText = GtkEditProps.ComboBoxText
 
 module EntryCompletion = GtkEditProps.EntryCompletion

@@ -21,12 +21,7 @@
 /**************************************************************************/
 
 #include <assert.h>
-#include <gtksourceview/gtksourceview.h>
-#include <gtksourceview/gtksourcecompletionitem.h>
-#include <gtksourceview/gtksourcelanguagemanager.h>
-#include <gtksourceview/gtksourceiter.h>
-#include <gtksourceview/gtksourcestylescheme.h>
-#include <gtksourceview/gtksourcestyleschememanager.h>
+#include <gtksourceview/gtksource.h>
 
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>

@@ -207,10 +207,10 @@ module View = struct
       [>`textview] obj -> Gdk.window -> Gtk.Tags.text_window_type =
 	   "ml_gtk_text_view_get_window_type"
   external set_border_window_size :
-      [>`textview] obj -> Gtk.Tags.text_window_type -> int -> unit =
+      [>`textview] obj -> [ `BOTTOM | `LEFT | `RIGHT | `TOP] -> int -> unit =
            "ml_gtk_text_view_set_border_window_size"
   external get_border_window_size :
-      [>`textview] obj -> Gtk.Tags.text_window_type -> int =
+      [>`textview] obj -> [ `BOTTOM | `LEFT | `RIGHT | `TOP] -> int =
 	   "ml_gtk_text_view_get_border_window_size"
   external forward_display_line : [>`textview] obj -> text_iter -> bool =
 	   "ml_gtk_text_view_forward_display_line"

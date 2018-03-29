@@ -98,7 +98,7 @@ class layout obj = object
   method set_height = set Layout.P.height obj
   method hadjustment = new GData.adjustment (get Layout.P.hadjustment obj)
   method vadjustment = new GData.adjustment (get Layout.P.vadjustment obj)
-  method bin_window = Layout.bin_window obj
+  method bin_window = Layout.get_bin_window obj
   method width = get Layout.P.width obj
   method height = get Layout.P.height obj
 end

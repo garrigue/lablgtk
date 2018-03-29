@@ -30,10 +30,6 @@ open GtkMisc
 open OgtkMiscProps
 open GObj
 
-let separator dir ?packing ?show () =
-  let w = Separator.create dir [] in
-  pack_return (new widget_full w) ~packing ~show
-
 class statusbar_context obj ctx = object (self)
   val obj : statusbar obj = obj
   val context : Gtk.statusbar_context = ctx
@@ -49,8 +45,6 @@ end
 
 class statusbar obj = object
   inherit GPack.box (obj : Gtk.statusbar obj)
-  method has_resize_grip = Statusbar.get_has_resize_grip obj
-  method set_has_resize_grip v = Statusbar.set_has_resize_grip obj v
   method new_context ~name =
     new statusbar_context obj (Statusbar.get_context_id obj name)
 end
@@ -81,7 +75,6 @@ class status_icon obj = object
   method get_stock = StatusIcon.get_stock obj
   method get_icon_name = StatusIcon.get_icon_name obj
   method get_size = StatusIcon.get_size obj
-  method set_tooltip = StatusIcon.set_tooltip obj
   method is_embedded= StatusIcon.is_embedded obj
 end
 
@@ -133,48 +126,25 @@ class calendar obj = object
   method select_day = Calendar.select_day obj
   method mark_day = Calendar.mark_day obj
   method unmark_day = Calendar.unmark_day obj
+  method day_is_marked = Calendar.get_day_is_marked obj
   method clear_marks = Calendar.clear_marks obj
-  method display_options = Calendar.display_options obj
   method date = Calendar.get_date obj
-  method freeze () = Calendar.freeze obj
-  method thaw () = Calendar.thaw obj
-  method num_marked_dates = Calendar.get_num_marked_dates obj
-  method is_day_marked = Calendar.is_day_marked obj
-end
+  method set_display_options = Calendar.set_display_options obj
+ end
 
 let calendar ?options ?packing ?show () =
   let w = Calendar.create [] in
-  may options ~f:(Calendar.display_options w);
+  may options ~f:(Calendar.set_display_options w);
   pack_return (new calendar w) ~packing ~show
 
 class drawing_area obj = object
   inherit widget_full (obj : [> Gtk.drawing_area] obj)
   method event = new GObj.event_ops obj
-  method set_size = DrawingArea.size obj
 end
 
-let may_set_size ?(width=0) ?(height=0) w =
-  if width <> 0 || height <> 0 then DrawingArea.size w ~width ~height
-
-let drawing_area ?width ?height ?packing ?show () =
+let drawing_area ?packing ?show () =
   let w = DrawingArea.create [] in
-  may_set_size w ?width ?height;
   pack_return (new drawing_area w) ~packing ~show
-
-class curve obj = object
-  inherit drawing_area (obj : Gtk.curve obj)
-  inherit curve_props
-  method reset () = Curve.reset obj
-  method set_gamma = Curve.set_gamma obj
-  method set_vector = Curve.set_vector obj
-  method get_vector = Curve.get_vector obj
-end
-
-let curve ?width ?height =
-  Curve.make_params [] ~cont:(fun pl ?packing ?show () ->
-    let w = Curve.create pl in
-    may_set_size w ?width ?height;
-    pack_return (new curve w) ~packing ~show)
 
 class misc obj = object
   inherit ['a] widget_impl obj

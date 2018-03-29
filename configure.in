@@ -345,7 +345,11 @@ LABLGTK_PKG(GTKSPELL, gtkspell,
             [  --without-gtkspell      override autodetected gtkspell support],
             gtkspell-3.0)
 
-LABLGTK_PKG(GTKSOURCEVIEW, gtksourceview3,
+LABLGTK_PKG(GTKSOURCEVIEW, gtksourceview,
+            [  --without-gtksourceview      override autodetected gtksourceview support],
+            gtksourceview-1.0)
+
+LABLGTK_PKG(GTKSOURCEVIEW2, gtksourceview2,
             [  --without-gtksourceview3      override autodetected gtksourceview 2 support],
             gtksourceview-3.0)
 
@@ -414,12 +418,11 @@ CONF_SUMMARY(libgnomecanvas, GNOMECANVAS)
 CONF_SUMMARY(libgnomeui, GNOMEUI)
 CONF_SUMMARY(libpanelapplet, PANEL)
 CONF_SUMMARY(gtkspell, GTKSPELL)
-CONF_SUMMARY(gtksourceview 3, GTKSOURCEVIEW)
+CONF_SUMMARY(gtksourceview 1, GTKSOURCEVIEW)
+CONF_SUMMARY(gtksourceview 3, GTKSOURCEVIEW2)
 CONF_SUMMARY(quartz   , GTKQUARTZ)
 echo
 echo $ECHO_N "	debug   $ECHO_C"
 if test -n "$DEBUG" ; then echo "	yes" ; else echo "	no" ; fi
 echo  "	C compiler	$CC"
 echo  "	Camlp4		$CAMLP4O"
-
-

@@ -107,8 +107,3 @@ class virtual ['a] item_container obj = object (self)
   method append (w : 'a) = self#insert w ~pos:(-1)
   method prepend (w : 'a) = self#insert w ~pos:0
 end
-
-class item_signals obj = object
-  inherit container_signals_impl (obj : [> Gtk.item] obj)
-  inherit item_sigs
-end

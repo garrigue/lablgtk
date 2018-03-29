@@ -169,7 +169,7 @@ type size_group = [`sizegroup] obj
 (* New widgets in 2.4 *)
 type cell_layout = [`celllayout]
 type combo_box = [bin|`combobox|cell_layout]
-type combo_box_entry = [combo_box|`comboboxentry]
+type combo_box_text = [combo_box|`comboboxtext]
 type expander = [bin|`expander]
 type file_filter = [`giu|`filefilter]
 type file_chooser = [widget|`filechooser]

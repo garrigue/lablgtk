@@ -133,10 +133,11 @@ module Visual = struct
   external get_best : ?depth:int -> ?kind:visual_type -> unit -> visual
       = "ml_gdk_visual_get_best"
   external get_screen : visual -> screen = "ml_gdk_visual_get_screen"
-  external get_type : visual -> visual_type = "ml_gdk_visual_get_type"
+  external get_type : visual -> visual_type = "ml_gdk_visual_get_visual_type"
   external depth : visual -> int = "ml_gdk_visual_get_depth"
 end
 
+(*
 module Color = struct
   external color_white : colormap -> color = "ml_gdk_color_white"
   external color_black : colormap -> color = "ml_gdk_color_black"
@@ -170,6 +171,7 @@ module Color = struct
   external green : color -> int = "ml_GdkColor_green"
   external pixel : color -> int = "ml_GdkColor_pixel"
 end
+*)
 
 module Rectangle = struct
   type t
@@ -188,20 +190,21 @@ end
 
 module Window = struct
   let cast w : window = Gobject.try_cast w "GdkWindow"
-  external create_foreign : native_window -> window = "ml_gdk_window_foreign_new"
+  external create_foreign : display -> xid -> window =
+    "ml_gdk_x11_window_foreign_new_for_display"
   external get_parent : window -> window = "ml_gdk_window_get_parent"
   external get_position : window -> int * int = "ml_gdk_window_get_position"
   external get_pointer_location : window -> int * int =
     "ml_gdk_window_get_pointer_location"
-  external root_parent : unit -> window = "ml_GDK_ROOT_PARENT"
+  (* external root_parent : unit -> window = "ml_GDK_ROOT_PARENT" *)
   (* external set_back_pixmap : window -> pixmap -> int -> unit = 
     "ml_gdk_window_set_back_pixmap" *)
   external set_cursor : window -> cursor -> unit = 
     "ml_gdk_window_set_cursor"
-  external clear : window -> unit = "ml_gdk_window_clear"
+  (* external clear : window -> unit = "ml_gdk_window_clear"
   external clear_area :
     window -> x:int -> y:int -> width:int -> height:int -> unit
-    = "ml_gdk_window_clear"
+    = "ml_gdk_window_clear" *)
   external get_xid : window -> xid = "ml_GDK_WINDOW_XID"
   let get_xwindow = get_xid
   external get_visual : window -> visual = "ml_gdk_window_get_visual"
@@ -224,37 +227,13 @@ module Window = struct
   external set_transient_for : window -> window -> unit = "ml_gdk_window_set_transient_for"
 end
 
-module PointArray = struct
-  type t = { len: int}
-  external create : len:int -> t = "ml_point_array_new"
-  external set : t -> pos:int -> x:int -> y:int -> unit = "ml_point_array_set"
-  let set arr ~pos =
-    if pos < 0 || pos >= arr.len then invalid_arg "PointArray.set";
-    set arr ~pos
-end
-
-module SegmentArray = struct
-  type t = { len: int}
-  external create : len:int -> t = "ml_segment_array_new"
-  external set : t -> pos:int -> x1:int -> y1:int -> x2:int -> y2: int -> unit = "ml_segment_array_set_bc" "ml_segment_array_set"
-  let set arr ~pos =
-    if pos < 0 || pos >= arr.len then invalid_arg "SegmentArray.set";
-    set arr ~pos
-end
-
-module Rgb = struct
-  external init : unit -> unit = "ml_gdk_rgb_init"
-  external get_visual : unit -> visual = "ml_gdk_rgb_get_visual"
-  external get_cmap : unit -> colormap = "ml_gdk_rgb_get_cmap"
-end
-
 module DnD = struct
   external drag_status : drag_context -> drag_action option -> time:int32 -> unit
       = "ml_gdk_drag_status"
   external drag_context_suggested_action : drag_context -> drag_action
       = "ml_gdk_drag_context_get_suggested_action"
   external drag_context_targets : drag_context -> atom list
-      = "ml_gdk_drag_context_get_targets"
+      = "ml_gdk_drag_context_list_targets"
 end
 
 (*

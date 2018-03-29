@@ -83,7 +83,6 @@ class event_signals : [> widget] obj ->
     method button_press : callback:(GdkEvent.Button.t -> bool) -> GtkSignal.id
     method button_release :
 	callback:(GdkEvent.Button.t -> bool) -> GtkSignal.id
-    method client : callback:(GdkEvent.Client.t -> bool) -> GtkSignal.id
     method configure : callback:(GdkEvent.Configure.t -> bool) -> GtkSignal.id
     method delete : callback:([`DELETE] Gdk.event -> bool) -> GtkSignal.id
     method destroy : callback:([`DESTROY] Gdk.event -> bool) -> GtkSignal.id
@@ -182,11 +181,9 @@ and misc_ops : Gtk.widget obj ->
       target:string -> ?info:int -> Gdk.atom -> unit
     method allocation : rectangle
     method clear_selection_targets : Gdk.atom -> unit
-    method colormap : Gdk.colormap
     method connect : misc_signals
     method convert_selection : target:string -> ?time:int32 -> Gdk.atom -> bool
     method create_pango_context : GPango.context_rw
-    method draw : Gdk.Rectangle.t option -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
     method grab_selection : ?time:int32 -> Gdk.atom -> bool
@@ -210,10 +207,6 @@ and misc_ops : Gtk.widget obj ->
     method realize : unit -> unit
     method remove_accelerator :
       group:accel_group -> ?modi:Gdk.Tags.modifier list -> Gdk.keysym -> unit
-    method render_icon :
-       ?detail:string -> size:Gtk.Tags.icon_size ->
-       GtkStock.id -> GdkPixbuf.pixbuf
-    method reparent : widget -> unit
     method set_app_paintable : bool -> unit
     method set_can_default : bool -> unit
     method set_can_focus : bool -> unit
@@ -224,7 +217,6 @@ and misc_ops : Gtk.widget obj ->
     method set_size_chars :
       ?desc:Pango.font_description ->
       ?lang:string -> ?width:int -> ?height:int -> unit -> unit
-    method set_state : Tags.state_type -> unit
     method set_size_request : ?width:int -> ?height:int -> unit -> unit
     method set_tooltip_markup : string -> unit
     method set_tooltip_text : string -> unit
@@ -251,6 +243,7 @@ and widget : ([> Gtk.widget] as 'a) obj ->
     method coerce : widget
     (* method drag : drag_ops *)
     method misc : misc_ops
+    method destroy : unit -> unit
   end
 
 (** @gtkdoc gtk GtkWidget *)

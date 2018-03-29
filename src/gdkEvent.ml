@@ -63,7 +63,7 @@ module Expose = struct
   type t = [ `EXPOSE ] event
   let cast ev : t = cast ev ~kind:[`EXPOSE]
   external area : t -> Rectangle.t = "ml_GdkEventExpose_area"
-  external region : t -> region = "ml_GdkEventExpose_region"
+  (*external region : t -> region = "ml_GdkEventExpose_region"*)
   external count : t -> int = "ml_GdkEventExpose_count"
 end
 
@@ -189,14 +189,6 @@ module Proximity = struct
   let cast ev : t = cast ev ~kind:[`PROXIMITY_IN;`PROXIMITY_OUT]
   let time = get_time
   external device : t -> device = "ml_GdkEventProximity_device"
-end
-
-module Client = struct
-  type t = [ `CLIENT_EVENT ] event
-  let cast ev : t = cast ev ~kind:[`CLIENT_EVENT]
-  external window : t -> window = "ml_GdkEventClient_window"
-  external message_type : t -> atom = "ml_GdkEventClient_message_type"
-  external data : t -> xdata_ret = "ml_GdkEventClient_data"
 end
 
 module Setting = struct

@@ -79,12 +79,10 @@ class Entry set wrap wrapsig : Editable {
   "secondary-icon-stock"       GtkStock       : Read / Write / NoSet / NoGet
   "secondary-icon-tooltip-markup" gchararray  : Read / Write / NoSet / NoGet
   "secondary-icon-tooltip-text" gchararray    : Read / Write / NoSet / NoGet
-  method append_text : "string -> unit"
-  method prepend_text : "string -> unit"
-  method text_length : "int"
   method get_completion : "Gtk.entry_completion option"
   method set_completion : "Gtk.entry_completion -> unit"
   signal activate
+  signal backspace
   signal copy_clipboard
   signal cut_clipboard
   signal delete_from_cursor : GtkDeleteType int
@@ -139,8 +137,7 @@ class ComboBox set wrap wrapsig : Bin {
   method set_row_separator_func : "(Gtk.tree_model -> Gtk.tree_iter -> bool) option -> unit" (* GTK+ 2.6 *)
 }
 
-class ComboBoxEntry set : ComboBox {
-  "text-column"          gint                 : Read / Write / NoSet
+class ComboBoxText set : ComboBox {
 }
 
 class EntryCompletion set gobject {

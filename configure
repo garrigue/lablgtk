@@ -604,6 +604,9 @@ GTKALL_CFLAGS
 USE_GTKQUARTZ
 GTKQUARTZ_LIBS
 GTKQUARTZ_CFLAGS
+USE_GTKSOURCEVIEW2
+GTKSOURCEVIEW2_LIBS
+GTKSOURCEVIEW2_CFLAGS
 USE_GTKSOURCEVIEW
 GTKSOURCEVIEW_LIBS
 GTKSOURCEVIEW_CFLAGS
@@ -707,7 +710,8 @@ with_gnomecanvas
 with_gnomeui
 with_panel
 with_gtkspell
-with_gtksourceview3
+with_gtksourceview
+with_gtksourceview2
 with_quartz
 enable_debug
 '
@@ -738,6 +742,8 @@ GTKSPELL_CFLAGS
 GTKSPELL_LIBS
 GTKSOURCEVIEW_CFLAGS
 GTKSOURCEVIEW_LIBS
+GTKSOURCEVIEW2_CFLAGS
+GTKSOURCEVIEW2_LIBS
 GTKQUARTZ_CFLAGS
 GTKQUARTZ_LIBS
 GTKALL_CFLAGS
@@ -1364,6 +1370,7 @@ Optional Packages:
   --without-gnomeui       override autodetected libgnomeui support
   --without-panel         override autodetected libpanelapplet support
   --without-gtkspell      override autodetected gtkspell support
+  --without-gtksourceview      override autodetected gtksourceview support
   --without-gtksourceview3      override autodetected gtksourceview 2 support
   --without-quartz      override autodetected quartz support
 
@@ -1407,6 +1414,10 @@ Some influential environment variables:
               C compiler flags for GTKSOURCEVIEW, overriding pkg-config
   GTKSOURCEVIEW_LIBS
               linker flags for GTKSOURCEVIEW, overriding pkg-config
+  GTKSOURCEVIEW2_CFLAGS
+              C compiler flags for GTKSOURCEVIEW2, overriding pkg-config
+  GTKSOURCEVIEW2_LIBS
+              linker flags for GTKSOURCEVIEW2, overriding pkg-config
   GTKQUARTZ_CFLAGS
               C compiler flags for GTKQUARTZ, overriding pkg-config
   GTKQUARTZ_LIBS
@@ -4801,9 +4812,9 @@ fi
 
 
 
-# Check whether --with-gtksourceview3 was given.
-if test "${with_gtksourceview3+set}" = set; then :
-  withval=$with_gtksourceview3; USE_GTKSOURCEVIEW=$withval; FORCE_GTKSOURCEVIEW=yes
+# Check whether --with-gtksourceview was given.
+if test "${with_gtksourceview+set}" = set; then :
+  withval=$with_gtksourceview; USE_GTKSOURCEVIEW=$withval; FORCE_GTKSOURCEVIEW=yes
 else
   USE_GTKSOURCEVIEW=yes; FORCE_GTKSOURCEVIEW=no
 fi
@@ -4811,19 +4822,19 @@ fi
 if test $USE_GTKSOURCEVIEW = yes ; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtksourceview-3.0" >&5
-$as_echo_n "checking for gtksourceview-3.0... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtksourceview-1.0" >&5
+$as_echo_n "checking for gtksourceview-1.0... " >&6; }
 
 if test -n "$GTKSOURCEVIEW_CFLAGS"; then
     pkg_cv_GTKSOURCEVIEW_CFLAGS="$GTKSOURCEVIEW_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtksourceview-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtksourceview-3.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtksourceview-1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gtksourceview-1.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKSOURCEVIEW_CFLAGS=`$PKG_CONFIG --cflags "gtksourceview-3.0" 2>/dev/null`
+  pkg_cv_GTKSOURCEVIEW_CFLAGS=`$PKG_CONFIG --cflags "gtksourceview-1.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -4835,12 +4846,12 @@ if test -n "$GTKSOURCEVIEW_LIBS"; then
     pkg_cv_GTKSOURCEVIEW_LIBS="$GTKSOURCEVIEW_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtksourceview-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtksourceview-3.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtksourceview-1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gtksourceview-1.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKSOURCEVIEW_LIBS=`$PKG_CONFIG --libs "gtksourceview-3.0" 2>/dev/null`
+  pkg_cv_GTKSOURCEVIEW_LIBS=`$PKG_CONFIG --libs "gtksourceview-1.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -4861,16 +4872,16 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtksourceview-3.0" 2>&1`
+	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtksourceview-1.0" 2>&1`
         else
-	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtksourceview-3.0" 2>&1`
+	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtksourceview-1.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKSOURCEVIEW_PKG_ERRORS" >&5
 
 
 	if test $FORCE_GTKSOURCEVIEW = yes ; then
-	  as_fn_error $? "gtksourceview3 enforced but no support found" "$LINENO" 5
+	  as_fn_error $? "gtksourceview enforced but no support found" "$LINENO" 5
         else
           USE_GTKSOURCEVIEW=no
 	fi
@@ -4879,7 +4890,7 @@ elif test $pkg_failed = untried; then
 $as_echo "no" >&6; }
 
 	if test $FORCE_GTKSOURCEVIEW = yes ; then
-	  as_fn_error $? "gtksourceview3 enforced but no support found" "$LINENO" 5
+	  as_fn_error $? "gtksourceview enforced but no support found" "$LINENO" 5
         else
           USE_GTKSOURCEVIEW=no
 	fi
@@ -4893,9 +4904,109 @@ fi
 fi
 if test $USE_GTKSOURCEVIEW = yes ; then
 	USE_GTKSOURCEVIEW=1
-	GTKSOURCEVIEWPKG=gtksourceview-3.0
+	GTKSOURCEVIEWPKG=gtksourceview-1.0
 else
 	unset USE_GTKSOURCEVIEW
+fi
+
+
+
+
+# Check whether --with-gtksourceview2 was given.
+if test "${with_gtksourceview2+set}" = set; then :
+  withval=$with_gtksourceview2; USE_GTKSOURCEVIEW2=$withval; FORCE_GTKSOURCEVIEW2=yes
+else
+  USE_GTKSOURCEVIEW2=yes; FORCE_GTKSOURCEVIEW2=no
+fi
+
+if test $USE_GTKSOURCEVIEW2 = yes ; then
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtksourceview-3.0" >&5
+$as_echo_n "checking for gtksourceview-3.0... " >&6; }
+
+if test -n "$GTKSOURCEVIEW2_CFLAGS"; then
+    pkg_cv_GTKSOURCEVIEW2_CFLAGS="$GTKSOURCEVIEW2_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtksourceview-3.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gtksourceview-3.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GTKSOURCEVIEW2_CFLAGS=`$PKG_CONFIG --cflags "gtksourceview-3.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$GTKSOURCEVIEW2_LIBS"; then
+    pkg_cv_GTKSOURCEVIEW2_LIBS="$GTKSOURCEVIEW2_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtksourceview-3.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gtksourceview-3.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GTKSOURCEVIEW2_LIBS=`$PKG_CONFIG --libs "gtksourceview-3.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GTKSOURCEVIEW2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtksourceview-3.0" 2>&1`
+        else
+	        GTKSOURCEVIEW2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtksourceview-3.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$GTKSOURCEVIEW2_PKG_ERRORS" >&5
+
+
+	if test $FORCE_GTKSOURCEVIEW2 = yes ; then
+	  as_fn_error $? "gtksourceview2 enforced but no support found" "$LINENO" 5
+        else
+          USE_GTKSOURCEVIEW2=no
+	fi
+elif test $pkg_failed = untried; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+	if test $FORCE_GTKSOURCEVIEW2 = yes ; then
+	  as_fn_error $? "gtksourceview2 enforced but no support found" "$LINENO" 5
+        else
+          USE_GTKSOURCEVIEW2=no
+	fi
+else
+	GTKSOURCEVIEW2_CFLAGS=$pkg_cv_GTKSOURCEVIEW2_CFLAGS
+	GTKSOURCEVIEW2_LIBS=$pkg_cv_GTKSOURCEVIEW2_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+fi
+fi
+if test $USE_GTKSOURCEVIEW2 = yes ; then
+	USE_GTKSOURCEVIEW2=1
+	GTKSOURCEVIEW2PKG=gtksourceview-3.0
+else
+	unset USE_GTKSOURCEVIEW2
 fi
 
 
@@ -6360,9 +6471,9 @@ else if test "$FORCE_GTKSPELL" = "yes"
 fi
 
 echo $ECHO_N "	gtksourceview 3 $ECHO_C"
-if test -n "$USE_GTKSOURCEVIEW"
+if test -n "$USE_GTKSOURCEVIEW2"
 then echo "	yes"
-else if test "$FORCE_GTKSOURCEVIEW" = "yes"
+else if test "$FORCE_GTKSOURCEVIEW2" = "yes"
      then echo "	disabled"
      else echo "	not found"
      fi
@@ -6381,5 +6492,3 @@ echo $ECHO_N "	debug   $ECHO_C"
 if test -n "$DEBUG" ; then echo "	yes" ; else echo "	no" ; fi
 echo  "	C compiler	$CC"
 echo  "	Camlp4		$CAMLP4O"
-
-

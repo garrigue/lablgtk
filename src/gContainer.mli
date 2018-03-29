@@ -142,12 +142,3 @@ class virtual ['a] item_container : ([> Gtk.container] as 'c) obj ->
     method resize_mode : Tags.resize_mode
     method private virtual wrap : Gtk.widget obj -> 'a
   end
-
-(** @gtkdoc gtk GtkItem *)
-class item_signals : [> Gtk.item] obj ->
-  object
-    inherit container_signals
-    method deselect : callback:(unit -> unit) -> GtkSignal.id
-    method select : callback:(unit -> unit) -> GtkSignal.id
-    method toggle : callback:(unit -> unit) -> GtkSignal.id
-  end

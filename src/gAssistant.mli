@@ -106,7 +106,6 @@ val assistant : ?title:string ->
   ?screen:Gdk.screen ->
   ?type_hint:GdkEnums.window_type_hint ->
   ?urgency_hint:bool ->
-  ?wm_name:string ->
-  ?wm_class:string ->
+  ?wmclass:(string * string) ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> assistant

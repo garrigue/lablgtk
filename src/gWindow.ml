@@ -58,8 +58,7 @@ class window_skel obj = object (self)
       ?resize_inc ?win_gravity ?pos ?user_pos ?user_size (as_widget w)
   method set_transient_for w =
     set obj P.transient_for (Some w)
-  method set_wm_name name = Window.set_wmclass obj ~name
-  method set_wm_class cls = Window.set_wmclass obj ~clas:cls
+  method set_wmclass = Window.set_wmclass obj
   method show () = Widget.show obj
   method present () = Window.present obj
   method iconify () = Window.iconify obj
@@ -78,11 +77,10 @@ class window obj = object
 end
 
 let make_window ~create =
-  Window.make_params ~cont:(fun pl ?wm_name ?wm_class ->
+  Window.make_params ~cont:(fun pl ?wmclass ->
     Container.make_params pl ~cont:(fun pl ?(show=false) () ->
       let (w : #window_skel) = create pl in
-      may w#set_wm_name wm_name;
-      may w#set_wm_class wm_class;
+      may (fun (name,clas) -> w#set_wmclass ~name ~clas) wmclass;
       if show then w#show ();
       w))
 
@@ -210,7 +208,7 @@ end
 
 (** MessageDialog **)
 
-type 'a buttons = Gtk.Tags.buttons * (int * 'a) list
+type 'a buttons = Gtk.Tags.buttons_type * (int * 'a) list
 module Buttons = struct
   let ok = `OK, [ rok, `OK ]
   let close = `CLOSE, [ rclose, `CLOSE ]
@@ -226,19 +224,15 @@ class ['a] message_dialog obj ~(buttons : 'a buttons) = object (self)
   inherit ['a] dialog_skel obj
   inherit message_dialog_props
   method connect : 'a dialog_signals = new dialog_signals obj self#decode
-  method set_markup = MessageDialog.set_markup obj
   initializer
     tbl <- snd buttons @ tbl
 end
 
-let message_dialog ?(message="") ?(use_markup=false) ~message_type ~buttons =
-  make_dialog [] ~create:(fun pl ->
-    let w = 
-      let message = if use_markup then "" else message in
-      MessageDialog.create ~message_type ~buttons:(fst buttons) ~message () in 
-    Gobject.set_params w pl;
-    if use_markup then MessageDialog.set_markup w message ;
-    new message_dialog ~buttons w)
+let message_dialog ~buttons ?message_type ?message =
+  MessageDialog.make_params [] ?message_type ?text:message ~cont:(fun pl ->
+    make_dialog pl ~create:(fun pl ->
+      let w = MessageDialog.create ~buttons:(fst buttons) pl in
+      new message_dialog ~buttons w))
 
 
 (** AboutDialog *)
@@ -275,75 +269,6 @@ let about_dialog ?name ?authors =
       may (AboutDialog.set_authors d) authors ;
       new about_dialog d))
 
-(** ColorSelectionDialog **)
-
-class color_selection_dialog obj = object (self)
-  inherit [Buttons.color_selection] dialog_skel (obj : Gtk.color_selection_dialog obj)
-  method connect : 'a dialog_signals = new dialog_signals obj self#decode
-  method ok_button =
-    new GButton.button (ColorSelectionDialog.ok_button obj)
-  method cancel_button =
-    new GButton.button (ColorSelectionDialog.cancel_button obj)
-  method help_button =
-    new GButton.button (ColorSelectionDialog.help_button obj)
-  method colorsel =
-    new GMisc.color_selection (ColorSelectionDialog.colorsel obj)
-  initializer
-    tbl <- [ rok, `OK ; rcancel, `CANCEL ; rhelp, `HELP ] @ tbl
-end
-
-let color_selection_dialog ?(title="Pick a color") =
-  make_dialog [] ~title ~resizable:false ~create:(fun pl ->
-    new color_selection_dialog (ColorSelectionDialog.create pl))
-
-
-(** FileSelection **)
-class file_selection obj = object (self)
-  inherit [Buttons.file_selection] dialog_skel (obj : Gtk.file_selection obj)
-  inherit file_selection_props
-  method connect : 'a dialog_signals = new dialog_signals obj self#decode
-  method complete = FileSelection.complete obj
-  method get_selections = FileSelection.get_selections obj
-  method ok_button = new GButton.button (FileSelection.get_ok_button obj)
-  method cancel_button =
-    new GButton.button (FileSelection.get_cancel_button obj)
-  method help_button = new GButton.button (FileSelection.get_help_button obj)
-  method file_list : string GList.clist =
-    new GList.clist (FileSelection.get_file_list obj)
-  method dir_list : string GList.clist =
-    new GList.clist (FileSelection.get_dir_list obj)
-  initializer
-    tbl <- [ rok, `OK ; rcancel, `CANCEL ; rhelp, `HELP ] @ tbl
-end
-
-let file_selection ?(title="Choose a file") ?(show_fileops=false) =
-  FileSelection.make_params [] ~show_fileops ~cont:(
-  make_dialog ?title:None ~create:(fun pl ->
-    let w = FileSelection.create title in
-    Gobject.set_params w pl;
-    new file_selection w))
-
-
-(** FontSelectionDialog **)
-
-class font_selection_dialog obj = object (self)
-  inherit [Buttons.font_selection] dialog_skel (obj : Gtk.font_selection_dialog obj)
-  method connect : 'a dialog_signals = new dialog_signals obj self#decode
-  method selection =
-    new GMisc.font_selection (FontSelectionDialog.font_selection obj)
-  method ok_button =  new GButton.button (FontSelectionDialog.ok_button obj)
-  method apply_button =
-    new GButton.button (FontSelectionDialog.apply_button obj)
-  method cancel_button =
-    new GButton.button (FontSelectionDialog.cancel_button obj)
-  initializer
-    tbl <- [ rok, `OK ; rcancel, `CANCEL ; rapply, `APPLY ] @ tbl
-end
-
-let font_selection_dialog ?title =
-  make_dialog [] ?title ~create:(fun pl ->
-    new font_selection_dialog (FontSelectionDialog.create pl))
-
 
 (** Plug **)
 
@@ -374,7 +299,6 @@ end
 class socket obj = object (self)
   inherit container (obj : Gtk.socket obj)
   method connect = new socket_signals obj
-  method steal = Socket.steal obj
   method xwindow =
     self#misc#realize ();
     Gdk.Window.get_xwindow self#misc#window

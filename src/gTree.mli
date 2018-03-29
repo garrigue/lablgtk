@@ -577,7 +577,7 @@ class virtual ['a, 'b] cell_renderer_impl : ([>Gtk.cell_renderer] as 'a) obj ->
 class cell_renderer_pixbuf : Gtk.cell_renderer_pixbuf obj ->
   object
     inherit[Gtk.cell_renderer_pixbuf,cell_properties_pixbuf] cell_renderer_skel
-    method connect : GObj.gtkobj_signals_impl
+    method connect : GObj.gtkobj_signals
   end
 
 (** @gtkdoc gtk GtkCellRendererText *)
@@ -614,8 +614,9 @@ class cell_renderer_toggle : Gtk.cell_renderer_toggle obj ->
     @gtkdoc gtk GtkCellRendererProgress *)
 class cell_renderer_progress : Gtk.cell_renderer_progress obj ->
   object
-    inherit[Gtk.cell_renderer_progress,cell_properties_progress] cell_renderer_skel
-    method connect : GObj.gtkobj_signals_impl
+    inherit[Gtk.cell_renderer_progress,cell_properties_progress]
+        cell_renderer_skel
+    method connect : GObj.gtkobj_signals
   end
 
 (** @since GTK 2.6

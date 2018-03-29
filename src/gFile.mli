@@ -22,6 +22,8 @@
 
 (** The new file chooser widget *)
 
+open Gtk
+
 (** {3 GtkFileFilter} *)
 
 (** @since GTK 2.4
@@ -34,8 +36,8 @@ class filter :
     method as_file_filter : Gtk.file_filter Gtk.obj
     method add_mime_type : string -> unit
     method add_pattern : string -> unit
-    method add_custom : GtkEnums.file_filter_flags list -> 
-      callback:((GtkEnums.file_filter_flags * string) list -> bool) -> unit
+    method add_custom : Tags.file_filter_flags list -> 
+      callback:((Tags.file_filter_flags * string) list -> bool) -> unit
     method name : string
     method set_name : string -> unit
   end
@@ -58,8 +60,8 @@ class type chooser_signals =
     method update_preview : callback:(unit -> unit) -> GtkSignal.id
     method file_activated : callback:(unit -> unit) -> GtkSignal.id
     method confirm_overwrite : 
-      callback:(unit -> GtkEnums.file_chooser_confirmation) -> GtkSignal.id (**  since Gtk 2.8 *)
-  method notify_action : callback:(GtkEnums.file_chooser_action -> unit) -> GtkSignal.id
+      callback:(unit -> Tags.file_chooser_confirmation) -> GtkSignal.id (**  since Gtk 2.8 *)
+  method notify_action : callback:(Tags.file_chooser_action -> unit) -> GtkSignal.id
   method notify_do_overwrite_confirmation : callback:(bool -> unit) -> GtkSignal.id
   method notify_extra_widget : callback:(GObj.widget -> unit) -> GtkSignal.id
   method notify_local_only : callback:(bool -> unit) -> GtkSignal.id
@@ -74,8 +76,8 @@ class type chooser_signals =
     @gtkdoc gtk GtkFileChooser *)
 class type chooser =
   object
-    method set_action : GtkEnums.file_chooser_action -> unit
-    method action : GtkEnums.file_chooser_action
+    method set_action : Tags.file_chooser_action -> unit
+    method action : Tags.file_chooser_action
     method set_local_only : bool -> unit
     method local_only : bool
     method set_select_multiple : bool -> unit
@@ -157,7 +159,7 @@ class chooser_widget :
 (** @since GTK 2.4
     @gtkdoc gtk GtkFileChooserWidget *)
 val chooser_widget : 
-  action:GtkEnums.file_chooser_action ->
+  action:Tags.file_chooser_action ->
   ?backend:string ->
   ?packing:(GObj.widget -> unit) -> 
   ?show:bool ->
@@ -182,7 +184,6 @@ class chooser_button :
     inherit chooser
     val obj : 'a Gtk.obj
     method connect : chooser_button_signals
-
     method title : string
     method set_title : string -> unit
     method width_chars : int
@@ -190,7 +191,7 @@ class chooser_button :
   end
 
 val chooser_button :
-  action:GtkEnums.file_chooser_action ->
+  action:Tags.file_chooser_action ->
   ?title:string ->
   ?width_chars:int ->
   ?backend:string ->

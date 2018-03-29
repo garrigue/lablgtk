@@ -31,8 +31,7 @@ type menu_entry =
   [ `I of string * (unit -> unit)
   | `C of string * bool * (bool -> unit)
   | `R of (string * bool * (bool -> unit)) list
-  | `M of string * menu_entry list
-  | `S ]
+  | `M of string * menu_entry list ]
 
 (** Build a menu from a tree description *)
 val build_menu : GMenu.menu -> entries: menu_entry list -> unit
@@ -96,7 +95,7 @@ val input_text :
     title:string ->
       ?ok:string -> ?cancel:string -> ?text:string -> string -> string option
 
-
+(*
 (**This function allows the user to select a file and returns the
    selected file name.
    A VOIR : multi-selection ?
@@ -148,6 +147,7 @@ val tree_selection_dialog :
   ?ok:string -> ?cancel:string ->
   ?width:int -> ?height:int ->
   ?show:bool -> unit -> 'a option
+*)
 
 (** {2 Keyboard shortcuts}
 Associate messages to key combinations. *)
@@ -170,10 +170,3 @@ val create_shortcuts : window:#GWindow.window_skel ->
   shortcuts:'a shortcut_specification list ->
   callback:('a -> unit) ->
   unit
-
-
-(** {2 Miscellaneous functions} *)
-
-(** Resize the columns of a clist according to the length of the 
-   content and the title of each column.*)
-val autosize_clist : 'a GList.clist -> unit

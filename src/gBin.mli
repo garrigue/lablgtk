@@ -108,9 +108,12 @@ class handle_box_signals : 'a obj ->
     val obj : 'a obj
     method child_attached : callback:(widget -> unit) -> GtkSignal.id
     method child_detached : callback:(widget -> unit) -> GtkSignal.id
-    method notify_handle_position : callback:(GtkEnums.position_type -> unit) -> GtkSignal.id
-    method notify_shadow_type : callback:(GtkEnums.shadow_type -> unit) -> GtkSignal.id
-    method notify_snap_edge : callback:(GtkEnums.position_type -> unit) -> GtkSignal.id
+    method notify_handle_position :
+        callback:(Tags.position_type -> unit) -> GtkSignal.id
+    method notify_shadow_type :
+        callback:(Tags.shadow_type -> unit) -> GtkSignal.id
+    method notify_snap_edge :
+        callback:(Tags.position_type -> unit) -> GtkSignal.id
   end
 
 (** A widget for detachable window portions
@@ -121,18 +124,18 @@ class handle_box : Gtk.handle_box obj ->
     val obj : Gtk.handle_box obj
     method event : event_ops
     method connect : handle_box_signals
-    method set_handle_position : Tags.position -> unit
+    method set_handle_position : Tags.position_type -> unit
     method set_shadow_type : Tags.shadow_type -> unit
-    method set_snap_edge : Tags.position -> unit
-    method handle_position : Tags.position
+    method set_snap_edge : Tags.position_type -> unit
+    method handle_position : Tags.position_type
     method shadow_type : Tags.shadow_type
-    method snap_edge : Tags.position
+    method snap_edge : Tags.position_type
   end
 
 (** @gtkdoc gtk GtkHandleBox *)
 val handle_box :
-  ?handle_position:Tags.position ->
-  ?snap_edge:Tags.position ->
+  ?handle_position:Tags.position_type ->
+  ?snap_edge:Tags.position_type ->
   ?shadow_type:Tags.shadow_type ->
   ?border_width:int ->
   ?width:int ->

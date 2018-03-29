@@ -38,7 +38,7 @@ class menu_shell_signals : [> menu_shell] obj ->
 (** @gtkdoc gtk GtkMenuItem *)
 class menu_item_signals : [> menu_item] obj ->
   object
-    inherit GContainer.item_signals
+    inherit GContainer.container_signals
     method activate : callback:(unit -> unit) -> GtkSignal.id
   end
 
@@ -56,10 +56,8 @@ class menu_item_skel :
       ?flags:Tags.accel_flag list -> Gdk.keysym -> unit
     method as_item : Gtk.menu_item obj
     method remove_submenu : unit -> unit
-    method set_right_justified : bool -> unit
     method select : unit -> unit
     method deselect : unit -> unit
-    method right_justified : bool
     method set_submenu : menu -> unit
     method get_submenu : GObj.widget option
 
@@ -109,38 +107,7 @@ val menu :
 val menu_item :
   ?use_mnemonic:bool ->
   ?label:string ->
-  ?right_justified:bool ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
-
-(** @gtkdoc gtk GtkTearoffMenuItem *)
-val tearoff_item :
-  ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
-
-(** @gtkdoc gtk GtkSeparatorMenuItem *)
-val separator_item :
-  ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
-
-(** A menu item with an icon
-   @gtkdoc gtk GtkImageMenuItem *)
-class image_menu_item : 'a obj ->
-object
-  inherit menu_item_skel
-  constraint 'a =  Gtk.image_menu_item
-  val obj : 'a obj
-  method event : event_ops
-  method connect : menu_item_signals
-  method image : widget
-  method set_image : widget -> unit
-end
-
-(** @gtkdoc gtk GtkImageMenuItem *)
-val image_menu_item :
-  ?image:#widget ->
-  ?label:string ->
-  ?use_mnemonic:bool ->
-  ?stock:GtkStock.id ->
-  ?right_justified:bool ->
-  ?packing:(menu_item -> unit) -> ?show:bool -> unit -> image_menu_item
 
 (** @gtkdoc gtk GtkCheckMenuItem *)
 class check_menu_item_signals : [> check_menu_item] obj ->
@@ -162,7 +129,6 @@ class check_menu_item : 'a obj ->
     method set_active : bool -> unit
     method set_inconsistent : bool -> unit
     method inconsistent : bool
-    method set_show_toggle : bool -> unit
     method toggled : unit -> unit
   end
 
@@ -171,8 +137,6 @@ val check_menu_item :
   ?label:string ->
   ?use_mnemonic:bool ->
   ?active:bool ->
-  ?show_toggle:bool ->
-  ?right_justified:bool ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> check_menu_item
 
 (** A choice from multiple check menu items
@@ -191,8 +155,6 @@ val radio_menu_item :
   ?label:string ->
   ?use_mnemonic:bool ->
   ?active:bool ->
-  ?show_toggle:bool ->
-  ?right_justified:bool ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> radio_menu_item
 
 (** @gtkdoc gtk GtkMenuShell *)
@@ -214,29 +176,6 @@ val menu_bar :
   ?width:int ->
   ?height:int ->
   ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> menu_shell
-
-(** A widget used to choose from a list of valid choices
-   @gtkdoc gtk GtkOptionMenu *)
-class option_menu : 'a obj ->
-  object
-    inherit GButton.button_skel
-    constraint 'a = [> Gtk.option_menu]
-    val obj : 'a obj
-    method event : event_ops
-    method connect : GButton.button_signals
-    method get_menu : menu
-    method remove_menu : unit -> unit
-    method set_history : int -> unit
-    method set_menu : menu -> unit
-  end
-
-(** @gtkdoc gtk GtkOptionMenu *)
-val option_menu :
-  ?menu:#menu ->
-  ?border_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> option_menu
 
 
 (** A factory for menus
@@ -262,19 +201,12 @@ class ['a] factory :
       ?key:Gdk.keysym ->
       ?callback:(unit -> unit) ->
       ?submenu:menu -> string -> menu_item
-    method add_image_item :
-      ?image:widget ->
-      ?key:Gdk.keysym ->
-      ?callback:(unit -> unit) ->
-      ?stock:GtkStock.id -> ?label:string -> unit -> image_menu_item
     method add_radio_item :
       ?group:Gtk.radio_menu_item group ->
       ?active:bool ->
       ?key:Gdk.keysym ->
       ?callback:(bool -> unit) -> string -> radio_menu_item
-    method add_separator : unit -> menu_item
     method add_submenu : ?key:Gdk.keysym -> string -> menu
-    method add_tearoff : unit -> menu_item
     method private bind :
       ?modi:Gdk.Tags.modifier list -> 
       ?key:Gdk.keysym -> 

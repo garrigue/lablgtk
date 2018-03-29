@@ -21,7 +21,6 @@ prefix ""
 class GtkStatusIcon set wrap wrapsig : GObject {
   "screen"  GdkScreen : Read / Write
   "visible" gboolean : Read / Write
-  "blinking" gboolean : Read / Write
   method set_from_pixbuf : "GdkPixbuf.pixbuf -> unit"
   method set_from_file : "string -> unit"
   method set_from_stock : "string -> unit"
@@ -32,11 +31,8 @@ class GtkStatusIcon set wrap wrapsig : GObject {
   method get_size : "int"
   method set_screen : "Gdk.screen -> unit"
   method get_screen : "Gdk.screen"
-  method set_tooltip : "string -> unit"
   method set_visible : "bool -> unit"
   method get_visible : "bool"
-  method set_blinking : "bool -> unit"
-  method get_blinking : "bool"
   method is_embedded : "bool"
   signal activate
   signal popup_menu : guint guint
@@ -121,8 +117,6 @@ class Image set wrap : Misc {
 
 class Statusbar set : Box {
  "has-resize-grip"      gboolean             : Read / Write (* 2.4 *)
-  method get_has_resize_grip : "bool"
-  method set_has_resize_grip : "bool -> unit"
   method get_context_id : "string -> statusbar_context"
   method push : "statusbar_context -> text:string -> statusbar_message"
   method pop : "statusbar_context ->  unit"
@@ -140,8 +134,7 @@ class Calendar wrap wrapsig : Widget {
   method select_day : "int -> unit"
   method mark_day : "int -> unit"
   method unmark_day : "int -> unit"
-  method get_num_marked_dates : "int"
-  method day_is_marked : "int -> bool"
+  method get_day_is_marked : "int -> bool"
   method clear_marks
   method set_display_options : "Gtk.Tags.calendar_display_options list -> unit"
   method get_date : "int * int * int" (* year * month * day *)
@@ -155,7 +148,6 @@ class Calendar wrap wrapsig : Widget {
 }
 
 class DrawingArea : Widget {
-  method size : "width:int -> height:int -> unit"
 }
 
 (* deprecated 3.4

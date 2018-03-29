@@ -81,7 +81,6 @@ class event_signals obj = object (self)
   method after_any = self#connect Signals.event_after
   method button_press = self#connect Event.button_press
   method button_release = self#connect Event.button_release
-  method client = self#connect Event.client
   method configure = self#connect Event.configure
   method delete = self#connect Event.delete
   method destroy = self#connect Event.destroy
@@ -227,10 +226,10 @@ and misc_ops obj = object (self)
   method unmap () = Widget.unmap obj
   method realize () = Widget.realize obj
   method unrealize () = Widget.unrealize obj
-  method draw = Widget.draw obj
+  (* method draw = Widget.draw obj *)
   method activate () = Widget.activate obj
-  method reparent (w : widget) =  Widget.reparent obj w#as_widget
-  (* method popup = popup obj *)
+  (* method reparent (w : widget) =  Widget.reparent obj w#as_widget
+  method popup = popup obj *)
   method intersect = Widget.intersect obj
   method grab_focus () = set P.has_focus obj true
   method grab_default () = set P.has_default obj true
@@ -243,7 +242,6 @@ and misc_ops obj = object (self)
     Widget.remove_accelerator obj group ~key ?modi
   (* method lock_accelerators () = lock_accelerators obj *)
   method set_name = set P.name obj
-  method set_state = Widget.set_state obj
   method set_sensitive = set P.sensitive obj
   method set_can_default = set P.can_default obj
   method set_can_focus = set P.can_focus obj
@@ -277,7 +275,6 @@ and misc_ops obj = object (self)
     try new widget (unsafe_cast (Widget.get_toplevel obj))
     with Gpointer.Null -> failwith "GObj.misc_ops#toplevel"
   method window = Widget.window obj
-  method colormap = Widget.get_colormap obj
   method visual = Widget.get_visual obj
   method visual_depth = Gdk.Visual.depth (Widget.get_visual obj)
   method pointer = Widget.get_pointer obj
@@ -286,9 +283,6 @@ and misc_ops obj = object (self)
     may_map (fun w -> new widget (unsafe_cast w)) (get P.parent obj)
   method allocation = Widget.allocation obj
   method pango_context = new GPango.context (Widget.get_pango_context obj)
-  (* icon *)
-  method render_icon ?detail ~size id =
-    Widget.render_icon obj (GtkStock.convert_id id) size detail
   (* selection *)
   method convert_selection ~target ?(time=Int32.zero) sel =
     Selection.convert obj ~sel ~target:(Gdk.Atom.intern target) ~time
@@ -312,6 +306,7 @@ and widget obj = object (self)
   method misc = new misc_ops (obj :> Gtk.widget obj)
   (* method drag = new drag_ops (unsafe_cast obj : Gtk.widget obj) *)
   method coerce = (self :> widget)
+  method destroy () = Widget.destroy obj
 end
 
 class widget_signals_impl obj = object (self)

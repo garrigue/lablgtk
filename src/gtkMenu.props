@@ -9,22 +9,12 @@ open Gtk
 conversions {
 }
 
-class OptionMenu : Button {
-  "menu"                 GtkMenu              : Read / Write
-  method remove_menu
-  method set_history : "int -> unit"
-  signal changed
-}
-
 class MenuItem : Item {
-  method set_submenu : "[>`menu] obj -> unit"
+  method set_submenu : "[>`menu] obj option -> unit"
   method get_submenu : "widget obj option"
-  method remove_submenu
   method activate
   method select
   method deselect
-  method set_right_justified : "bool -> unit"
-  method get_right_justified : "bool"
   method set_accel_path : "string -> unit"
   method toggle_size_request : "int -> unit"
   method toggle_size_allocate : "int -> unit"
@@ -37,7 +27,6 @@ class MenuItem : Item {
 class CheckMenuItem : MenuItem {
   "active"               gboolean             : Read / Write
   "inconsistent"         gboolean             : Read / Write
-  method set_show_toggle : "bool -> unit"
   method toggled
   signal toggled
 }
@@ -46,11 +35,10 @@ class RadioMenuItem abstract : CheckMenuItem {
   method set_group : "radio_menu_item group -> unit"
 }
 
+(*
 class ImageMenuItem : MenuItem {
   "image"                GtkWidget            : Read / Write
 }
-
-(*
 class SeparatorMenuItem {}
 class TearoffMenuItem {}
 *)

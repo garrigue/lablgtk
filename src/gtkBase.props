@@ -135,6 +135,7 @@ class Widget abstract : Object {
   signal proximity_out_event : GdkEventProximity -> bool
   *)
   (* methods *)
+  method destroy : "unit"
   method set_double_buffered : "bool -> unit"
   method style_get_property : "string -> g_value"
 }
@@ -162,15 +163,6 @@ class Container abstract : Widget {
 
 class Bin abstract : Container {
   method get_child : "widget obj"
-}
-
-class Item abstract wrapsig : Bin {
-  method select
-  method deselect
-  method toggle
-  signal select
-  signal deselect
-  signal toggle
 }
 
 class Adjustment set wrap wrapsig : Object {
@@ -264,8 +256,8 @@ class InputDialog : Dialog {} *)
 class MessageDialog wrap : Dialog {
   "buttons"              GtkButtonsType       : Write / Construct Only
   "message-type"         GtkMessageType       : Read / Write / Construct / Set
-  "image"                GtkWidget            : Read / Write
-  "message-area"         GtkWidget            : Read
+  "image"                GtkWidget            : Read / Write / NoWrap
+  "message-area"         GtkWidget            : Read / NoWrap
   "secondary-text"       gchararray           : Read / Write
   "secondary-use-markup" gboolean             : Read / Write
   "text"                 gchararray           : Read / Write / Set

@@ -62,7 +62,7 @@ class Layout set : Container {
   "width"                guint                : Read / Write
   method put : "[>`widget] obj -> x:int -> y:int -> unit"
   method move : "[>`widget] obj -> x:int -> y:int -> unit"
-  method bin_window : "Gdk.window"
+  method get_bin_window : "Gdk.window"
 }
 
 conversions {

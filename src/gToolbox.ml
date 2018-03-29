@@ -30,8 +30,7 @@ type menu_entry =
   [ `I of string * (unit -> unit)
   | `C of string * bool * (bool -> unit)
   | `R of (string * bool * (bool -> unit)) list
-  | `M of string * menu_entry list
-  | `S ]
+  | `M of string * menu_entry list ]
 
 let rec build_menu menu ~(entries : menu_entry list) =
   let f = new GMenu.factory menu in
@@ -52,8 +51,6 @@ let rec build_menu menu ~(entries : menu_entry list) =
     | `M (label, entries) ->
         let m = f#add_submenu label in
         build_menu m ~entries
-    | `S ->
-        ignore (f#add_separator ())
     end
 
 let popup_menu ~entries =
@@ -179,7 +176,7 @@ let input_text ~title ?ok ?cancel ?(text="") message =
     ~get_text: wview_chaine#buffer#get_text
     ~bind_ok:false ~expand: true ~title ?ok ?cancel message
 
-
+(*
 (**This variable contains the last directory where the user selected a file.*)
 let last_dir = ref ""
 
@@ -311,7 +308,7 @@ let autosize_clist wlist =
   wlist#columns_autosize ();
   (* remove the inserted row *)
   ignore (wlist#remove ~row: 0)
-
+*)
 
 (** Shortcuts *)
 

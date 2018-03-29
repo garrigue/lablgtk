@@ -30,7 +30,7 @@ class TextView wrap wrapsig : Container {
   "wrap-mode"            GtkWrapMode          : Read / Write / Set
   "accepts-tab"          gboolean             : Read / Write / Set
   "bottom-margin"        gint                 : Read / Write
-  "buffer"               GtkTextBuffer        : Read / Write
+  "buffer"               GtkTextBuffer        : Read / Write / NoWrap
   "im-module"            gchararray           : Read / Write
   "input-hints"          GtkInputHints        : Read / Write
   "input-purpose"        GtkInputPurpose      : Read / Write

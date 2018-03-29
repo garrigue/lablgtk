@@ -36,10 +36,6 @@ module Window = struct
   include Window
   external set_wmclass : [>`window] obj -> name:string -> clas:string -> unit
       = "ml_gtk_window_set_wmclass"
-  external get_wmclass_name : [>`window] obj -> string
-      = "ml_gtk_window_get_wmclass_name"
-  external get_wmclass_class : [>`window] obj -> string
-      = "ml_gtk_window_get_wmclass_class"
   external add_accel_group : [>`window] obj -> accel_group -> unit
       = "ml_gtk_window_add_accel_group"
   external remove_accel_group : [>`window] obj -> accel_group -> unit
@@ -75,10 +71,6 @@ module Window = struct
   external set_default : [>`window] obj -> [>`widget] obj -> unit
       = "ml_gtk_window_set_default"
   (* see gtk.props for others *)
-
-  let set_wmclass ?name ?clas:wm_class w =
-    set_wmclass w ~name:(may_default get_wmclass_name w ~opt:name)
-      ~clas:(may_default get_wmclass_class w ~opt:wm_class)
 end
 
 module Dialog = struct
@@ -101,20 +93,11 @@ module Dialog = struct
   let decode_response = Gpointer.decode_variant GtkEnums.Conv.response_tbl
 end
 
-module MessageDialog = struct
-  include MessageDialog
-  external create :
-      ?parent:[>`window] obj -> message_type:Gtk.Tags.message_type ->
-      buttons:Gtk.Tags.buttons_type -> string -> message_dialog obj
-      = "ml_gtk_message_dialog_new"
-end
+module MessageDialog = MessageDialog
 
 module AboutDialog = struct
   include AboutDialog
   external create : unit -> Gtk.about_dialog obj = "ml_gtk_about_dialog_new"
-
-  external set_email_hook : (string -> unit) -> unit = "ml_gtk_about_dialog_set_email_hook"
-  external set_url_hook   : (string -> unit) -> unit = "ml_gtk_about_dialog_set_url_hook"
 end
 
 module Plug = struct

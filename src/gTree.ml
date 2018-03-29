@@ -284,7 +284,7 @@ class cell_layout obj = object
 end
 
 class view_column_signals obj = object (self)
-  inherit gtkobj_signals_impl obj
+  inherit [_] gobject_signals obj
   method clicked = self#connect TreeViewColumn.S.clicked
 end
 
@@ -532,7 +532,7 @@ let cell_renderer_accel_param' = function
   | `MODS m  -> 
       Gobject.param 
 	CellRendererAccel.P.accel_mods 
-	(Gpointer.encode_flags GdkEnums.modifier m);
+	(Gpointer.encode_flags GdkEnums.Conv.modifier_tbl m);
   | #cell_properties_text as x -> cell_renderer_text_param' x
 
 class type ['a, 'b] cell_renderer_skel =
@@ -556,11 +556,11 @@ class cell_renderer_pixbuf obj = object
   inherit [Gtk.cell_renderer_pixbuf,cell_properties_pixbuf]
       cell_renderer_impl obj
   method private param = cell_renderer_pixbuf_param'
-  method connect = new gtkobj_signals_impl obj
+  method connect = new gobject_signals obj
 end
 
 class cell_renderer_text_signals obj = object (self)
-  inherit gtkobj_signals_impl (obj : [>Gtk.cell_renderer_text] obj)
+  inherit [_] gobject_signals (obj : [>Gtk.cell_renderer_text] obj)
   method edited = self#connect CellRendererText.S.edited
 end
 
@@ -572,7 +572,7 @@ class cell_renderer_text obj = object
   method connect = new cell_renderer_text_signals obj
 end
 class cell_renderer_toggle_signals obj = object (self)
-  inherit gtkobj_signals_impl (obj : Gtk.cell_renderer_toggle obj)
+  inherit [_] gobject_signals (obj : Gtk.cell_renderer_toggle obj)
   method toggled = self#connect CellRendererToggle.S.toggled
 end
 class cell_renderer_toggle obj = object
@@ -586,7 +586,7 @@ class cell_renderer_progress obj = object
   inherit [Gtk.cell_renderer_progress,cell_properties_progress]
       cell_renderer_impl obj
   method private param = cell_renderer_progress_param'
-  method connect = new gtkobj_signals_impl obj
+  method connect = new gobject_signals obj
 end
 
 class cell_renderer_combo_signals obj = object (self)
@@ -606,7 +606,7 @@ end
 
 class cell_renderer_accel_signals (obj:Gtk.cell_renderer_accel Gtk.obj) = 
 object(self)
-  inherit gtkobj_signals_impl obj
+  inherit [_] gobject_signals obj
   method edited = self#connect CellRendererText.S.edited
   method accel_edited = self#connect CellRendererAccel.S.accel_edited
   method accel_cleared = self#connect CellRendererAccel.S.accel_cleared

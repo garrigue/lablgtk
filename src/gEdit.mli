@@ -104,6 +104,7 @@ class entry_signals : [> Gtk.entry] obj ->
   object
     inherit editable_signals
     method activate : callback:(unit -> unit) -> GtkSignal.id
+    method backspace : callback:(unit -> unit) -> GtkSignal.id
     method copy_clipboard : callback:(unit -> unit) -> GtkSignal.id
     method cut_clipboard : callback:(unit -> unit) -> GtkSignal.id
     method delete_from_cursor :
@@ -121,16 +122,17 @@ class entry_signals : [> Gtk.entry] obj ->
     method notify_max_length : callback:(int -> unit) -> GtkSignal.id
     method notify_scroll_offset : callback:(int -> unit) -> GtkSignal.id
     method notify_text : callback:(string -> unit) -> GtkSignal.id
+    method notify_text_length : callback:(int -> unit) -> GtkSignal.id
     method notify_visibility : callback:(bool -> unit) -> GtkSignal.id
     method notify_width_chars : callback:(int -> unit) -> GtkSignal.id
     method notify_xalign : callback:(float -> unit) -> GtkSignal.id
     method notify_overwrite_mode :
       callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.14 *)
     method icon_press :
-      callback:(GtkEnums.entry_icon_position -> GdkEvent.Button.t -> unit) ->
+      callback:(Tags.entry_icon_position -> GdkEvent.Button.t -> unit) ->
         GtkSignal.id (** @Since GTK 2.16 *)
     method icon_released :
-      callback:(GtkEnums.entry_icon_position -> GdkEvent.Button.t -> unit) ->
+      callback:(Tags.entry_icon_position -> GdkEvent.Button.t -> unit) ->
         GtkSignal.id (** @Since GTK 2.16 *)
     method notify_primary_icon_activatable :
       callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.16 *)
@@ -151,8 +153,6 @@ class entry : ([> Gtk.entry] as 'a) obj ->
     method as_entry : Gtk.entry Gtk.obj
     method connect : entry_signals
     method event : event_ops
-    method append_text : string -> unit
-    method prepend_text : string -> unit
     method scroll_offset : int
     method text : string
     method text_length : int
@@ -174,36 +174,31 @@ class entry : ([> Gtk.entry] as 'a) obj ->
     method width_chars : int
     method xalign : float
 
-    method set_completion : entry_completion -> unit (** @since GTK 2.4 *)
-    method get_completion : entry_completion option  (** @since GTK 2.4 *)
+    method set_completion : entry_completion -> unit
+    method get_completion : entry_completion option
 
-    method overwrite_mode : bool (** @Since GTK 2.14 *)
-    method set_overwrite_mode : bool -> unit (** @Since GTK 2.14 *)
-    method primary_icon_activatable : bool (** @Since GTK 2.16 *)
-    method primary_icon_sensitive : bool (** @Since GTK 2.16 *)
-    method set_primary_icon_activatable : bool -> unit (** @Since GTK 2.16 *)
+    method overwrite_mode : bool
+    method set_overwrite_mode : bool -> unit
+    method primary_icon_activatable : bool
+    method primary_icon_sensitive : bool
+    method set_primary_icon_activatable : bool -> unit
     method set_primary_icon_name : string -> unit
-        (** @Since GTK 2.16, empty string to delete *)
+        (** empty string to delete *)
     method set_primary_icon_pixbuf : GdkPixbuf.pixbuf -> unit
-        (** @Since GTK 2.16 *)
-    method set_primary_icon_sensitive : bool -> unit (** @Since GTK 2.16 *)
-    method set_primary_icon_stock : GtkStock.id -> unit (** @Since GTK 2.16 *)
+    method set_primary_icon_sensitive : bool -> unit
+    method set_primary_icon_stock : GtkStock.id -> unit
     method set_primary_icon_tooltip_markup : string -> unit
-        (** @Since GTK 2.16 *)
-    method set_primary_icon_tooltip_text : string -> unit (** @Since GTK 2.16 *)
-    method secondary_icon_activatable : bool (** @Since GTK 2.16 *)
-    method secondary_icon_sensitive : bool (** @Since GTK 2.16 *)
-    method set_secondary_icon_activatable : bool -> unit (** @Since GTK 2.16 *)
+    method set_primary_icon_tooltip_text : string -> unit
+    method secondary_icon_activatable : bool
+    method secondary_icon_sensitive : bool
+    method set_secondary_icon_activatable : bool -> unit
     method set_secondary_icon_name : string -> unit
-        (** @Since GTK 2.16, empty string to delete *)
+        (** empty string to delete *)
     method set_secondary_icon_pixbuf : GdkPixbuf.pixbuf -> unit
-        (** @Since GTK 2.16 *)
-    method set_secondary_icon_sensitive : bool -> unit (** @Since GTK 2.16 *)
-    method set_secondary_icon_stock : GtkStock.id -> unit (** @Since GTK 2.16 *)
+    method set_secondary_icon_sensitive : bool -> unit
+    method set_secondary_icon_stock : GtkStock.id -> unit
     method set_secondary_icon_tooltip_markup : string -> unit
-        (** @Since GTK 2.16 *)
     method set_secondary_icon_tooltip_text : string -> unit
-        (** @Since GTK 2.16 *)
   end
 
 (** @gtkdoc gtk GtkEntry *)
@@ -239,13 +234,14 @@ class spin_button_signals : [> Gtk.spin_button] obj ->
     method value_changed : callback:(unit -> unit) -> GtkSignal.id
 
     method wrapped : callback:(unit -> unit) -> GtkSignal.id  
-      (** @since GTK 2.10 *)
-    method notify_adjustment : callback:(GData.adjustment -> unit) -> GtkSignal.id
+    method notify_adjustment :
+        callback:(GData.adjustment -> unit) -> GtkSignal.id
     method notify_digits : callback:(int -> unit) -> GtkSignal.id
     method notify_numeric : callback:(bool -> unit) -> GtkSignal.id
     method notify_rate : callback:(float -> unit) -> GtkSignal.id
     method notify_snap_to_ticks : callback:(bool -> unit) -> GtkSignal.id
-    method notify_update_policy : callback:(GtkEnums.spin_button_update_policy -> unit) -> GtkSignal.id
+    method notify_update_policy :
+        callback:(Tags.spin_button_update_policy -> unit) -> GtkSignal.id
     method notify_value : callback:(float -> unit) -> GtkSignal.id
     method notify_wrap : callback:(bool -> unit) -> GtkSignal.id
 
@@ -292,39 +288,6 @@ val spin_button :
   ?wrap:bool ->
   ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> spin_button
-
-(** {3 GtkCombo} *)
-
-(** A text entry field with a dropdown list
-   @gtkdoc gtk GtkCombo *)
-class combo : Gtk.combo obj ->
-  object
-    inherit GObj.widget
-    val obj : Gtk.combo obj
-    method disable_activate : unit -> unit
-    method entry : entry
-    method list : GList.liste
-    method set_item_string : GList.list_item -> string -> unit
-    method set_popdown_strings : string list -> unit
-    method set_allow_empty : bool -> unit
-    method set_case_sensitive : bool -> unit
-    method set_enable_arrow_keys : bool -> unit
-    method set_value_in_list : bool -> unit
-    method allow_empty : bool
-    method case_sensitive : bool
-    method enable_arrow_keys : bool
-    method value_in_list : bool
-  end
-
-(** @gtkdoc gtk GtkCombo *)
-val combo :
-  ?popdown_strings:string list ->
-  ?allow_empty:bool ->
-  ?case_sensitive:bool ->
-  ?enable_arrow_keys:bool ->
-  ?value_in_list:bool ->
-  ?border_width:int -> ?width:int -> ?height:int ->
-  ?packing:(widget -> unit) -> ?show:bool -> unit -> combo
 
 (** {3 GtkComboBox} *)
 
@@ -385,34 +348,6 @@ val combo_box :
   ?show:bool ->
   unit -> combo_box
 
-(** @since GTK 2.4
-    @gtkdoc gtk GtkComboBoxEntry *)
-class combo_box_entry : 
-  ([> Gtk.combo_box_entry] as 'a) Gtk.obj ->
-    object
-      inherit combo_box
-      val obj : 'a Gtk.obj
-      method text_column : string GTree.column
-      method set_text_column : string GTree.column -> unit
-      method entry : entry
-    end
-
-(** @since GTK 2.4
-    @gtkdoc gtk GtkComboBoxEntry *)
-val combo_box_entry :
-  ?model:#GTree.model ->
-  ?text_column:string GTree.column ->
-  ?active:int ->
-  ?add_tearoffs:bool ->
-  ?focus_on_click:bool ->
-  ?has_frame:bool ->
-  ?wrap_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(GObj.widget -> unit) ->
-  ?show:bool ->
-  unit -> combo_box_entry
-
 (** {4 Convenience API for text-only ComboBoxes} *)
 
 type 'a text_combo = 'a * (GTree.list_store * string GTree.column)
@@ -440,19 +375,3 @@ val combo_box_text :
   ?packing:(GObj.widget -> unit) ->
   ?show:bool ->
   unit -> combo_box text_combo
-
-(** A convenience function. See {!GEdit.combo_box_text}
-    @since GTK 2.4
-    @gtkdoc gtk GtkComboBoxEntry *)
-val combo_box_entry_text :
-  ?strings:string list ->
-  ?active:int ->
-  ?add_tearoffs:bool ->
-  ?focus_on_click:bool ->
-  ?has_frame:bool ->
-  ?wrap_width:int ->
-  ?width:int ->
-  ?height:int ->
-  ?packing:(GObj.widget -> unit) ->
-  ?show:bool ->
-  unit -> combo_box_entry text_combo

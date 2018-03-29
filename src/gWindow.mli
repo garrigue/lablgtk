@@ -79,8 +79,7 @@ class window_skel : 'a obj ->
     method set_title : string -> unit
     method set_transient_for : Gtk.window obj -> unit
     method set_type_hint : Gdk.Tags.window_type_hint -> unit
-    method set_wm_class : string -> unit
-    method set_wm_name : string -> unit
+    method set_wmclass : name:string -> clas:string -> unit
     method accept_focus : bool
     method allow_grow : bool
     method allow_shrink : bool
@@ -143,8 +142,7 @@ val window :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?urgency_hint:bool ->
-  ?wm_name:string ->
-  ?wm_class:string ->
+  ?wmclass:(string * string) ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> window
 (** @param kind default value is [`TOPLEVEL]
@@ -227,8 +225,7 @@ val dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?urgency_hint:bool ->
-  ?wm_name:string ->
-  ?wm_class:string ->
+  ?wmclass:(string * string) ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> 'a dialog
 (** @param no_separator default value is [false]
@@ -259,17 +256,24 @@ class type ['a] message_dialog =
     inherit ['a] dialog_skel
     val obj : [> Gtk.message_dialog] obj
     method connect : 'a dialog_signals
-    method set_markup : string -> unit (** @since GTK 2.4 *)
     method message_type : Tags.message_type
     method set_message_type : Tags.message_type -> unit
+    method text : string
+    method set_text : string -> unit
+    method use_markup : bool
+    method set_use_markup : bool -> unit
+    method secondary_text : string
+    method set_secondary_text : string -> unit
+    method secondary_use_markup : bool
+    method set_secondary_use_markup : bool -> unit
   end
 
 (** @gtkdoc gtk GtkMessageDialog *)
 val message_dialog :
+  buttons:'a buttons ->
+  ?message_type:Tags.message_type ->
   ?message:string ->
   ?use_markup:bool ->
-  message_type:Tags.message_type ->
-  buttons:'a buttons ->
   ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->
@@ -286,8 +290,7 @@ val message_dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?urgency_hint:bool ->
-  ?wm_name:string ->
-  ?wm_class:string ->
+  ?wmclass:(string * string) ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> 'a message_dialog
 
@@ -382,8 +385,7 @@ val about_dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?urgency_hint:bool ->
-  ?wm_name:string ->
-  ?wm_class:string ->
+  ?wmclass:(string * string) ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> about_dialog
 
@@ -438,131 +440,10 @@ val file_chooser_dialog :
   ?screen:Gdk.screen ->
   ?type_hint:Gdk.Tags.window_type_hint ->
   ?urgency_hint:bool ->
-  ?wm_name:string ->
-  ?wm_class:string ->
+  ?wmclass:(string * string) ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> 'a file_chooser_dialog
-  
 
-
-(** {3 Selection Dialogs} *)
-
-(** @gtkdoc gtk GtkColorSelectionDialog *)
-class color_selection_dialog : Gtk.color_selection_dialog obj ->
-  object
-    inherit [Buttons.color_selection] dialog_skel
-    val obj : Gtk.color_selection_dialog obj
-    method connect : Buttons.color_selection dialog_signals
-    method cancel_button : GButton.button
-    method colorsel : GMisc.color_selection
-    method help_button : GButton.button
-    method ok_button : GButton.button
-  end
-
-(** @gtkdoc gtk GtkColorSelectionDialog *)
-val color_selection_dialog :
-  ?title:string ->
-  ?parent:#window_skel ->
-  ?destroy_with_parent:bool ->
-  ?allow_grow:bool ->
-  ?allow_shrink:bool ->
-  ?decorated:bool ->
-  ?deletable:bool ->
-  ?focus_on_map:bool ->
-  ?icon:GdkPixbuf.pixbuf ->
-  ?icon_name:string ->
-  ?modal:bool ->
-  ?position:Tags.window_position ->
-  ?screen:Gdk.screen ->
-  ?type_hint:Gdk.Tags.window_type_hint ->
-  ?urgency_hint:bool ->
-  ?wm_name:string ->
-  ?wm_class:string ->
-  ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> color_selection_dialog
-
-
-(** @gtkdoc gtk GtkFileSelection *)
-class file_selection : Gtk.file_selection obj ->
-  object
-    inherit [Buttons.file_selection] dialog_skel
-    val obj : Gtk.file_selection obj
-    method connect : Buttons.file_selection dialog_signals
-    method cancel_button : GButton.button
-    method complete : filter:string -> unit
-    method filename : string
-    method get_selections : string list
-    method help_button : GButton.button
-    method ok_button : GButton.button
-    method file_list : string GList.clist
-    method dir_list : string GList.clist	
-    method select_multiple : bool
-    method show_fileops : bool
-    method set_filename : string -> unit
-    method set_show_fileops : bool -> unit
-    method set_select_multiple : bool -> unit
-  end
-
-(** @gtkdoc gtk GtkFileSelection *)
-val file_selection :
-  ?title:string ->
-  ?show_fileops:bool ->
-  ?filename:string ->
-  ?select_multiple:bool ->
-  ?parent:#window_skel ->
-  ?destroy_with_parent:bool ->
-  ?allow_grow:bool ->
-  ?allow_shrink:bool ->
-  ?decorated:bool ->
-  ?deletable:bool ->
-  ?focus_on_map:bool ->
-  ?icon:GdkPixbuf.pixbuf ->
-  ?icon_name:string ->
-  ?modal:bool ->
-  ?position:Tags.window_position ->
-  ?resizable:bool ->
-  ?screen:Gdk.screen ->
-  ?type_hint:Gdk.Tags.window_type_hint ->
-  ?urgency_hint:bool ->
-  ?wm_name:string ->
-  ?wm_class:string ->
-  ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> file_selection
-
-(** @gtkdoc gtk GtkFontSelectionDialog*)
-class font_selection_dialog : Gtk.font_selection_dialog obj ->
-  object
-    inherit [Buttons.font_selection] dialog_skel
-    val obj : Gtk.font_selection_dialog obj
-    method connect : Buttons.font_selection dialog_signals
-    method apply_button : GButton.button
-    method cancel_button : GButton.button
-    method selection : GMisc.font_selection
-    method ok_button : GButton.button
-  end
-
-(** @gtkdoc gtk GtkFontSelectionDialog*)
-val font_selection_dialog :
-  ?title:string ->
-  ?parent:#window_skel ->
-  ?destroy_with_parent:bool ->
-  ?allow_grow:bool ->
-  ?allow_shrink:bool ->
-  ?decorated:bool ->
-  ?deletable:bool ->
-  ?focus_on_map:bool ->
-  ?icon:GdkPixbuf.pixbuf ->
-  ?icon_name:string ->
-  ?modal:bool ->
-  ?position:Tags.window_position ->
-  ?resizable:bool ->
-  ?screen:Gdk.screen ->
-  ?type_hint:Gdk.Tags.window_type_hint ->
-  ?urgency_hint:bool ->
-  ?wm_name:string ->
-  ?wm_class:string ->
-  ?border_width:int ->
-  ?width:int -> ?height:int -> ?show:bool -> unit -> font_selection_dialog
 
 (** {3 GtkPlug} *)
 
@@ -607,7 +488,6 @@ class socket : Gtk.socket obj ->
     inherit GContainer.container
     val obj : Gtk.socket obj
     method connect : socket_signals
-    method steal : Gdk.native_window -> unit
     (** @deprecated "inherently unreliable" *)
     method xwindow : Gdk.xid
   end

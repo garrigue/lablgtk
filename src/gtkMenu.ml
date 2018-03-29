@@ -37,36 +37,10 @@ module MenuItem = struct
       = "ml_gtk_menu_item_new_with_label"
   external create_with_mnemonic : string -> menu_item obj
       = "ml_gtk_menu_item_new_with_mnemonic"
-  external separator_create : unit -> menu_item obj
-      = "ml_gtk_separator_menu_item_new"
-  external tearoff_create : unit -> menu_item obj
-      = "ml_gtk_tearoff_menu_item_new"
   let create ?(use_mnemonic=false) ?label () =
     match label with None -> create []
     | Some label -> if use_mnemonic then 
 	create_with_mnemonic label else create_with_label label
-end
-
-module ImageMenuItem = struct
-  include ImageMenuItem
-  external create_with_label : string -> image_menu_item obj
-      = "ml_gtk_image_menu_item_new_with_label"
-  external create_with_mnemonic : string -> image_menu_item obj
-      = "ml_gtk_image_menu_item_new_with_mnemonic"
-  external create_from_stock : string -> accel_group option 
-    -> image_menu_item obj = "ml_gtk_image_menu_item_new_from_stock"
-  let create_from_stock ?accel_group s = 
-    create_from_stock (GtkStock.convert_id s) accel_group
-  let create ?label ?(use_mnemonic=false) ?stock ?accel_group () = 
-    match stock with 
-    | None -> 
-	begin match label with
-	| None -> create []
-	| Some l -> 
-	    if use_mnemonic then create_with_mnemonic l 
-	    else create_with_label l 
-	end
-    | Some s -> create_from_stock ?accel_group s
 end
 
 module CheckMenuItem = struct
@@ -80,10 +54,8 @@ module CheckMenuItem = struct
     | Some label -> if use_mnemonic then 
 	create_with_mnemonic label
       else create_with_label label
-  let set ?active ?show_toggle ?right_justified w =
-    may active ~f:(set P.active w);
-    may show_toggle ~f:(set_show_toggle w);
-    may right_justified ~f:(MenuItem.set_right_justified w)
+  let set ?active w =
+    may active ~f:(set P.active w)
 end
 
 module RadioMenuItem = struct
@@ -102,8 +74,6 @@ module RadioMenuItem = struct
 	if use_mnemonic then create_with_mnemonic group label
 	else create_with_label group label
 end
-
-module OptionMenu = OptionMenu
 
 module MenuShell = MenuShell
 

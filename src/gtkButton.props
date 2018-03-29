@@ -68,7 +68,6 @@ class ToolItem wrap : Bin {
   method get_homogeneous : "bool"
   method set_expand : "bool -> unit"
   method get_expand : "bool"
-  method set_tooltip : "[>`tooltips] obj -> string -> string -> unit"
   method set_use_drag_window : "bool -> unit"
   method get_use_drag_window : "bool"
 

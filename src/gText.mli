@@ -47,8 +47,6 @@ type tag_property = [
   | `BACKGROUND_FULL_HEIGHT_SET of bool
   | `BACKGROUND_GDK of Gdk.color
   | `BACKGROUND_SET of bool
-  | `BACKGROUND_STIPPLE of Gdk.bitmap
-  | `BACKGROUND_STIPPLE_SET of bool
   | `DIRECTION of Tags.text_direction
   | `EDITABLE of bool
   | `EDITABLE_SET of bool
@@ -59,8 +57,6 @@ type tag_property = [
   | `FOREGROUND of string
   | `FOREGROUND_GDK of Gdk.color
   | `FOREGROUND_SET of bool
-  | `FOREGROUND_STIPPLE of Gdk.bitmap
-  | `FOREGROUND_STIPPLE_SET of bool
   | `INDENT of int
   | `INDENT_SET of bool
   | `INVISIBLE of bool
@@ -496,16 +492,28 @@ object ('a)
     -> GtkSignal.id
   method toggle_overwrite : callback:(unit -> unit) -> GtkSignal.id
   method notify_accepts_tab : callback:(bool -> unit) -> GtkSignal.id
+  method notify_bottom_margin : callback:(int -> unit) -> GtkSignal.id
   method notify_cursor_visible : callback:(bool -> unit) -> GtkSignal.id
   method notify_editable : callback:(bool -> unit) -> GtkSignal.id
+  method notify_im_module : callback:(string -> unit) -> GtkSignal.id
   method notify_indent : callback:(int -> unit) -> GtkSignal.id
-  method notify_justification : callback:(GtkEnums.justification -> unit) -> GtkSignal.id
+  method notify_input_hints :
+      callback:(GtkEnums.input_hints -> unit) -> GtkSignal.id
+  method notify_input_purpose :
+      callback:(GtkEnums.input_purpose -> unit) -> GtkSignal.id
+  method notify_justification :
+      callback:(GtkEnums.justification -> unit) -> GtkSignal.id
   method notify_left_margin : callback:(int -> unit) -> GtkSignal.id
+  method notify_monospace : callback:(bool -> unit) -> GtkSignal.id
+  method notify_overwrite : callback:(bool -> unit) -> GtkSignal.id
   method notify_pixels_above_lines : callback:(int -> unit) -> GtkSignal.id
   method notify_pixels_below_lines : callback:(int -> unit) -> GtkSignal.id
   method notify_pixels_inside_wrap : callback:(int -> unit) -> GtkSignal.id
+  method notify_populate_all : callback:(bool -> unit) -> GtkSignal.id
   method notify_right_margin : callback:(int -> unit) -> GtkSignal.id
-  method notify_wrap_mode : callback:(GtkEnums.wrap_mode -> unit) -> GtkSignal.id
+  method notify_top_margin : callback:(int -> unit) -> GtkSignal.id
+  method notify_wrap_mode :
+      callback:(GtkEnums.wrap_mode -> unit) -> GtkSignal.id
 
 end
 
@@ -523,6 +531,7 @@ object
     which_window:Tags.text_window_type -> x:int -> y:int -> unit
   method backward_display_line : iter -> bool
   method backward_display_line_start : iter -> bool
+  method bottom_margin : int
   method buffer : buffer
   method buffer_to_window_coords :
     tag:Tags.text_window_type -> x:int -> y:int -> int * int
@@ -538,17 +547,23 @@ object
   method get_line_yrange : iter -> int * int
   method get_window : Tags.text_window_type -> Gdk.window option
   method get_window_type : Gdk.window -> Tags.text_window_type
+  method im_module : string
   method indent : int
+  method input_hints : GtkEnums.input_hints
+  method input_purpose : GtkEnums.input_purpose
   method justification : Tags.justification
   method left_margin : int
   method misc : GObj.misc_ops
+  method monospace : bool
   method move_child : child:GObj.widget -> x:int -> y:int -> unit
   method move_mark_onscreen : mark -> bool
   method move_visually : iter -> int -> bool
+  method overwrite : bool
   method pixels_above_lines : int
   method pixels_below_lines : int
   method pixels_inside_wrap : int
   method place_cursor_onscreen : unit -> bool
+  method populate_all : bool
   method right_margin : int
   method scroll_mark_onscreen : mark -> unit
   method scroll_to_iter :
@@ -564,17 +579,26 @@ object
   method set_border_window_size :
     typ:[ `BOTTOM | `LEFT | `RIGHT | `TOP] -> size:int -> unit
   method set_buffer : buffer -> unit
+  method set_bottom_margin : int -> unit
   method set_cursor_visible : bool -> unit
   method set_editable : bool -> unit
+  method set_im_module : string -> unit
   method set_indent : int -> unit
+  method set_input_hints : GtkEnums.input_hints -> unit
+  method set_input_purpose : GtkEnums.input_purpose -> unit
   method set_justification : Tags.justification -> unit
   method set_left_margin : int -> unit
+  method set_monospace : bool -> unit
+  method set_overwrite : bool -> unit
   method set_pixels_above_lines : int -> unit
   method set_pixels_below_lines : int -> unit
   method set_pixels_inside_wrap : int -> unit
+  method set_populate_all : bool -> unit
   method set_right_margin : int -> unit
+  method set_top_margin : int -> unit
   method set_wrap_mode : Tags.wrap_mode -> unit
   method starts_display_line : iter -> bool
+  method top_margin : int
   method visible_rect : Gdk.Rectangle.t
   method window_to_buffer_coords :
     tag:Tags.text_window_type -> x:int -> y:int -> int * int

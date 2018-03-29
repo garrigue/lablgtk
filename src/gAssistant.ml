@@ -78,11 +78,10 @@ end
 *)
 
 let make_assistant ~create =
-  GtkWindow.Window.make_params ~cont:(fun pl ?wm_name ?wm_class ->
+  GtkWindow.Window.make_params ~cont:(fun pl ?wmclass ->
     Container.make_params pl ~cont:(fun pl ?(show=false) () ->
       let (w : #GWindow.window_skel) = create pl in
-      may w#set_wm_name wm_name;
-      may w#set_wm_class wm_class;
+      may (fun (name,clas) -> w#set_wmclass ~name ~clas) wmclass;
       if show then w#show ();
       w))
 
