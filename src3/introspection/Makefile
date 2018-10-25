@@ -1,12 +1,13 @@
 OCAMLC=ocamlc
-OPT=-g -dtypes
-INCLUDES=-I xml-light -I `ocamlfind query xml-light`
+OPT=-g -dtypes -unsafe-string
+INCLUDES=-I xml-light #-I `ocamlfind query xml-light`
 LIBS=xml-light.cma str.cma
 
 extract_stubs: extract_prototype.ml
 	$(OCAMLC) $(OPT) $(INCLUDES) $(LIBS) -o $@ $^
 
-GIRDIR=/usr/share/gir-1.0
+#GIRDIR=/usr/share/gir-1.0
+GIRDIR=/opt/local/share/gir-1.0
 
 all: stubs/lablgtk3
 
