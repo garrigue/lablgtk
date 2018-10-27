@@ -42,6 +42,7 @@ val child_anchor : unit -> child_anchor
 (** {3 GtkTextTag} *)
 
 type tag_property = [
+  | `ACCUMULATIVE_MARGIN of bool
   | `BACKGROUND of string
   | `BACKGROUND_FULL_HEIGHT of bool
   | `BACKGROUND_FULL_HEIGHT_SET of bool
@@ -139,14 +140,14 @@ type contents =
   | `UNKNOWN ]
 
 (** Movement functions returning an iter are truly functional i.e. the
-   returned iter shares nothing with the originale one.  
+   returned iter shares nothing with the originale one.
 
    If you need to move some iter in an imperative way use
-   [#nocopy#...].  
+   [#nocopy#...].
 *)
 
 (** @gtkdoc gtk gtk-GtkTextIter *)
-class nocopy_iter :  text_iter -> 
+class nocopy_iter :  text_iter ->
 object
   method as_iter : text_iter
   method assign : nocopy_iter -> unit
@@ -182,7 +183,7 @@ object
   method set_offset : int -> unit
   method set_visible_line_index : int -> unit
   method set_visible_line_offset : int -> unit
-end 
+end
 
 (** @gtkdoc gtk gtk-GtkTextIter *)
 and iter : text_iter ->
@@ -296,7 +297,7 @@ end
    @gtkdoc gtk GtkTextTagTable *)
 class tag_table : [> `texttagtable] obj ->
 object
-  inherit tag_table_skel 
+  inherit tag_table_skel
   method connect : tag_table_signals
 end
 
@@ -308,7 +309,7 @@ val tag_table : unit -> tag_table
 (** @gtkdoc gtk GtkTextBuffer *)
 (*
 class buffer_signals : [> `textbuffer] obj ->
-object ('a)  
+object ('a)
   method apply_tag :
     callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
   method begin_user_action : callback:(unit -> unit) -> GtkSignal.id
@@ -330,7 +331,7 @@ object ('a)
 end
 *)
 
-class type buffer_signals_skel_type = 
+class type buffer_signals_skel_type =
   object
     method apply_tag :
       callback:(tag -> start:iter -> stop:iter -> unit) -> GtkSignal.id
@@ -423,10 +424,10 @@ object
   method get_oid : int
   method get_text :
     ?start:iter -> ?stop:iter -> ?slice:bool -> ?visible:bool -> unit -> string
-  (** @param slice default value is [false] 
+  (** @param slice default value is [false]
       @param visible default value is [false] *)
   method insert :
-    ?iter:iter -> ?tag_names:string list -> ?tags:tag list 
+    ?iter:iter -> ?tag_names:string list -> ?tags:tag list
     -> string -> unit
   method insert_child_anchor : iter -> child_anchor -> unit
   method insert_interactive :
@@ -442,7 +443,7 @@ object
   method line_count : int
   method modified : bool
   method move_mark : mark -> where:iter -> unit
-  method paste_clipboard : 
+  method paste_clipboard :
     ?iter:iter -> ?default_editable:bool -> GData.clipboard -> unit
   (** @param default_editable default value is [true] *)
   method place_cursor : where:iter -> unit
