@@ -75,14 +75,16 @@ class source_completion_info :
     method as_source_completion_info : GtkSourceView2_types.source_completion_info obj
     method max_height : int
     method max_width : int
-    method process_resize : unit -> unit
+(*    method process_resize : unit -> unit*)
     method set_max_height : int -> unit
     method set_max_width : int -> unit
     method set_shrink_height : bool -> unit
     method set_shrink_width : bool -> unit
+(*
     method set_sizing :
       width:int ->
       height:int -> shrink_width:bool -> shrink_height:bool -> unit
+*)
     method set_widget : GObj.widget -> unit
     method shrink_height : bool
     method shrink_width : bool
@@ -480,13 +482,14 @@ object
   method set_insert_spaces_instead_of_tabs: bool -> unit
   method insert_spaces_instead_of_tabs: bool
   method set_cursor_color: Gdk.color -> unit
-  method set_cursor_color_by_name: string -> unit
+(*  method set_cursor_color_by_name: string -> unit*)
 
   method draw_spaces:
     source_draw_spaces_flags list
   method set_draw_spaces:
     source_draw_spaces_flags list -> unit
 
+(*
   method get_mark_category_priority:
     category:string -> int
   method set_mark_category_priority:
@@ -499,6 +502,7 @@ object
     category:string -> Gdk.color option
   method set_mark_category_background:
     category:string -> Gdk.color option -> unit
+*)
 end
 
 val source_view :
@@ -528,6 +532,7 @@ val source_view :
 
 (** {2 Misc} *)
 
+(*
 val iter_forward_search :
   GText.iter ->
   source_search_flag list ->
@@ -543,3 +548,4 @@ val iter_backward_search :
   stop:< as_iter : Gtk.text_iter; .. > ->
   ?limit:< as_iter : Gtk.text_iter; .. > ->
   string -> (GText.iter * GText.iter) option
+*)

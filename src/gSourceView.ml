@@ -442,7 +442,7 @@ object (self)
   method set_marker_pixbuf = SourceView.set_marker_pixbuf obj
   method marker_pixbuf = SourceView.get_marker_pixbuf obj
   method set_cursor_color = SourceView.set_cursor_color obj
-  method set_cursor_color_by_name s = SourceView.set_cursor_color obj (color_of_string s)
+(*  method set_cursor_color_by_name s = SourceView.set_cursor_color obj (color_of_string s)*)
 end
 
 let source_view ?source_buffer =

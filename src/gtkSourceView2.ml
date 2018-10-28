@@ -248,10 +248,12 @@ struct
   external new_: unit -> source_view obj = "ml_gtk_source_view_new"
   external new_with_buffer: [>`sourcebuffer] obj -> source_view obj =
     "ml_gtk_source_view_new_with_buffer"
+(*
   external set_mark_category_pixbuf:  [>`sourceview] obj -> string -> GdkPixbuf.pixbuf option -> unit =
     "ml_gtk_source_view_set_mark_category_pixbuf"
   external get_mark_category_pixbuf:  [>`sourceview] obj -> string -> GdkPixbuf.pixbuf option =
     "ml_gtk_source_view_get_mark_category_pixbuf"
+*)
 
   (* Should probably not exist *)
   external set_cursor_color:   [>`sourceview] obj -> Gdk.color -> unit =
@@ -269,6 +271,7 @@ end
 
 module SourceViewMisc =
 struct
+(*
   external iter_backward_search:
        Gtk.text_iter -> string -> SourceView2Enums.source_search_flag list ->
 	start: Gtk.text_iter -> stop: Gtk.text_iter -> Gtk.text_iter option ->
@@ -279,4 +282,5 @@ struct
 	start: Gtk.text_iter -> stop: Gtk.text_iter -> Gtk.text_iter option ->
 	(Gtk.text_iter * Gtk.text_iter) option =
     "ml_gtk_source_iter_forward_search_bc" "ml_gtk_source_iter_forward_search"
+*)
 end
