@@ -465,10 +465,12 @@ class plug : Gtk.plug obj ->
   end
 
 (** @gtkdoc gtk GtkPlug *)
+(*
 val plug :
   window:Gdk.native_window ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> plug
+*)
 
 (** {3 GtkSocket} *)
 

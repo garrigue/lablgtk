@@ -282,12 +282,14 @@ class plug (obj : Gtk.plug obj) = object
   method connect = new plug_signals obj
 end
 
+(*
 let plug ~window:xid =
   Container.make_params [] ~cont:(fun pl ?(show=false) () ->
     let w = Plug.create xid in
     Gobject.set_params w pl;
     if show then Widget.show w;
     new plug w)
+*)
 
 (** Socket **)
 
