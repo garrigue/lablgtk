@@ -110,6 +110,9 @@ class TextTag vset : GObject {
   "left-margin"          gint                 : Read / Write
   "left-margin-set"      gboolean             : Read / Write
   "name"                 gchararray           : Read / Write / Construct Only
+  "paragraph-background" gchararray           : Read / Write
+  "paragraph-background-gdk" GdkColor         : Read / Write
+  "paragraph-background-set" gboolean         : Read / Write
   "pixels-above-lines"   gint                 : Read / Write
   "pixels-above-lines-set" gboolean           : Read / Write
   "pixels-below-lines"   gint                 : Read / Write
