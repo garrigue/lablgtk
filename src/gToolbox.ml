@@ -70,9 +70,9 @@ let popup_menu ~entries =
 let mOk = "Ok"
 let mCancel = "Cancel"
 
-let question_box ~title  ~buttons ?(default=1) ?icon message =
+let question_box ?parent ?destroy_with_parent ~title  ~buttons ?(default=1) ?icon message =
   let button_nb = ref 0 in
-  let window = GWindow.dialog ~modal:true ~title () in
+  let window = GWindow.dialog ?parent ?destroy_with_parent ~modal:true ~title () in
   let hbox = GPack.hbox ~border_width:10 ~packing:window#vbox#add () in
   let bbox = window#action_area in
   begin match icon with
@@ -103,8 +103,8 @@ let question_box ~title  ~buttons ?(default=1) ?icon message =
   !button_nb
 
 
-let message_box ~title ?icon ?(ok=mOk) message =
-  ignore (question_box ?icon ~title message ~buttons:[ ok ])
+let message_box ?parent ?destroy_with_parent ~title ?icon ?(ok=mOk) message =
+  ignore (question_box ?parent ?destroy_with_parent ?icon ~title message ~buttons:[ ok ])
 
 
 let input_widget ~widget ~event ~get_text ~bind_ok ~expand
