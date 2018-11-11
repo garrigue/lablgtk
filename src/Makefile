@@ -176,6 +176,29 @@ lablgtksourceview2.cmxa: \
   $(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2ALLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
 lablgtksourceview2.cmxs: DYNLINKLIBS=$(GTKSOURCEVIEW2_LIBS)
+GTKSOURCEVIEWINSTALL=gtkSourceView2_types.mli
+endif
+ifdef USE_GTKSOURCEVIEW3
+ml_gtksourceview3.o: CFLAGS=$(GTKSOURCEVIEW3CFLAGS)
+MLLIBS += lablgtksourceview3.cma
+CLIBS += liblablgtksourceview3$(XA)
+GTKSOURCEVIEW3MLOBJS = gtkSourceView3.cmo gSourceView3.cmo
+GTKSOURCEVIEW3COBJS = ml_gtksourceview3$(XO)
+GTKSOURCEVIEW3MLOBJSENUM = sourceView3Enums.cmo
+GTKSOURCEVIEW3PROPS = gtkSourceView3.props
+BEFORE_DEPEND += $(GTKSOURCEVIEW3PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW3PROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
+EXTRA_OBJS += $(GTKSOURCEVIEW3MLOBJSENUM)
+GTKSOURCEVIEW3ALLMLOBJS = $(GTKSOURCEVIEW3MLOBJSENUM) \
+	$(GTKSOURCEVIEW3PROPS:%.props=%Props.cmo) \
+	$(GTKSOURCEVIEW3PROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEW3MLOBJS)
+lablgtksourceview3.cma liblablgtksourceview3$(XA): \
+  $(GTKSOURCEVIEW3COBJS) $(GTKSOURCEVIEW3ALLMLOBJS)
+	$(LIBRARIAN) -o lablgtksourceview3 $^ $(GTKSOURCEVIEW3LIBS)
+lablgtksourceview3.cmxa: \
+  $(GTKSOURCEVIEW3COBJS) $(GTKSOURCEVIEW3ALLMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtksourceview3 $^ $(GTKSOURCEVIEW3LIBS)
+lablgtksourceview3.cmxs: DYNLINKLIBS=$(GTKSOURCEVIEW3_LIBS)
+GTKSOURCEVIEWINSTALL=gtkSourceView3_types.mli
 endif
 
 ifdef USE_GTKQUARTZ
@@ -252,7 +275,7 @@ endif
 EXTRAOBJS = $(INITOBJS) $(THOBJS) $(THINITOBJS)
 ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) \
-	$(GTKSPELLMLOBJS) $(GTKSOURCEVIEW2MLOBJS) \
+	$(GTKSPELLMLOBJS) $(GTKSOURCEVIEW2MLOBJS) $(GTKSOURCEVIEW3MLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
@@ -265,7 +288,7 @@ opt::  $(TARGETS) lablgtkopt
 depend:
 	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
 	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 \
-	  USE_GTKSOURCEVIEW=1 USE_GTKSOURCEVIEW2=1
+	  USE_GTKSOURCEVIEW=1 USE_GTKSOURCEVIEW2=1 USE_GTKSOURCEVIEW3=1
 real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
 	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) \
 	  $(ALLTHOBJS:.cmo=.ml) $(BEFORE_DEPEND) *.mli > .depend
@@ -307,6 +330,8 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	    -e "s|@CANVAS_LIBS@|$(GNOMECANVASLIBS)|" \
 	    -e "s|@SOURCEVIEW2_MLS@|$(GTKSOURCEVIEW2ALLMLOBJS:.cmo=)|" \
 	    -e "s|@SOURCEVIEW2_LIBS@|$(GTKSOURCEVIEW2LIBS)|" \
+	    -e "s|@SOURCEVIEW3_MLS@|$(GTKSOURCEVIEW3ALLMLOBJS:.cmo=)|" \
+	    -e "s|@SOURCEVIEW3_LIBS@|$(GTKSOURCEVIEW3LIBS)|" \
 	    -e "s|@TOOLCHAIN@|$(TOOLCHAIN)|" \
 	    < build.ml.in > $@
 
@@ -338,7 +363,7 @@ PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) \
 # Install ml sources and C binaries, can then rebuild using build.ml
 preinstall:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
-	cp $(PREOBJS:.cmo=.ml) gtkSourceView2_types.mli "$(INSTALLDIR)"
+	cp $(PREOBJS:.cmo=.ml) $(GTKSOURCEVIEWINSTALL) "$(INSTALLDIR)"
 	for f in $(PREOBJS:.cmo=.mli); do \
 	  if test -f $$f; then cp $$f "$(INSTALLDIR)"; fi; done
 	cp build.ml "$(INSTALLDIR)"
@@ -593,6 +618,9 @@ endif
 ifdef USE_GTKSOURCEVIEW2
 DOCFILES += gSourceView2.mli
 endif
+ifdef USE_GTKSOURCEVIEW3
+DOCFILES += gSourceView3.mli
+endif
 
 OCAMLDOC = ocamldoc
 lablgtk.odoc : $(DOCFILES) $(ALLOBJS)
@@ -617,6 +645,9 @@ $(GTKSOURCEVIEWCOBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h 
 
 $(GTKSOURCEVIEW2COBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
 			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView2_tags.h wrappers.h
+
+$(GTKSOURCEVIEW3COBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
+			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView3_tags.h wrappers.h
 
 ml_glib$(XO): glib_tags.h ml_glib.h wrappers.h
 ml_gobject$(XO): gobject_tags.h ml_gvaluecaml.h wrappers.h
