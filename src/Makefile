@@ -176,6 +176,7 @@ lablgtksourceview2.cmxa: \
   $(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2ALLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
 lablgtksourceview2.cmxs: DYNLINKLIBS=$(GTKSOURCEVIEW2_LIBS)
+GTKSOURCEVIEWINSTALL=gtkSourceView2_types.mli
 endif
 ifdef USE_GTKSOURCEVIEW3
 ml_gtksourceview3.o: CFLAGS=$(GTKSOURCEVIEW3CFLAGS)
@@ -197,6 +198,7 @@ lablgtksourceview3.cmxa: \
   $(GTKSOURCEVIEW3COBJS) $(GTKSOURCEVIEW3ALLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtksourceview3 $^ $(GTKSOURCEVIEW3LIBS)
 lablgtksourceview3.cmxs: DYNLINKLIBS=$(GTKSOURCEVIEW3_LIBS)
+GTKSOURCEVIEWINSTALL=gtkSourceView3_types.mli
 endif
 
 ifdef USE_GTKQUARTZ
@@ -273,7 +275,7 @@ endif
 EXTRAOBJS = $(INITOBJS) $(THOBJS) $(THINITOBJS)
 ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) \
-	$(GTKSPELLMLOBJS) $(GTKSOURCEVIEW2MLOBJS) \
+	$(GTKSPELLMLOBJS) $(GTKSOURCEVIEW2MLOBJS) $(GTKSOURCEVIEW3MLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
@@ -286,7 +288,7 @@ opt::  $(TARGETS) lablgtkopt
 depend:
 	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
 	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 \
-	  USE_GTKSOURCEVIEW=1 USE_GTKSOURCEVIEW2=1
+	  USE_GTKSOURCEVIEW=1 USE_GTKSOURCEVIEW2=1 USE_GTKSOURCEVIEW3=1
 real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
 	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) \
 	  $(ALLTHOBJS:.cmo=.ml) $(BEFORE_DEPEND) *.mli > .depend
@@ -361,7 +363,7 @@ PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) \
 # Install ml sources and C binaries, can then rebuild using build.ml
 preinstall:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
-	cp $(PREOBJS:.cmo=.ml) gtkSourceView2_types.mli "$(INSTALLDIR)"
+	cp $(PREOBJS:.cmo=.ml) $(GTKSOURCEVIEWINSTALL) "$(INSTALLDIR)"
 	for f in $(PREOBJS:.cmo=.mli); do \
 	  if test -f $$f; then cp $$f "$(INSTALLDIR)"; fi; done
 	cp build.ml "$(INSTALLDIR)"
@@ -615,6 +617,9 @@ DOCFILES += gSourceView.mli
 endif
 ifdef USE_GTKSOURCEVIEW2
 DOCFILES += gSourceView2.mli
+endif
+ifdef USE_GTKSOURCEVIEW3
+DOCFILES += gSourceView3.mli
 endif
 
 OCAMLDOC = ocamldoc

@@ -26,8 +26,8 @@
 prefix "Gtk"
 
 header {
-  open GtkSourceView2_types
-  open SourceView2Enums
+  open GtkSourceView3_types
+  open SourceView3Enums
 }
 
 boxed {
@@ -62,11 +62,13 @@ class SourceCompletionInfo type "source_completion_info obj" wrap wrapsig : GtkW
   "shrink-width"             gboolean              : Read / Write / Construct
 
   method move_to_iter : "Gtk.text_view obj -> Gtk.text_iter -> unit"
+(*
   method set_sizing :
     "width:int -> height:int -> shrink_width:bool -> shrink_height:bool -> unit" / Wrap
+*)
   method set_widget : "Gtk.widget obj -> unit"
   method get_widget : "Gtk.widget obj"
-  method process_resize : "unit" / Wrap
+(*  method process_resize : "unit" / Wrap*)
 
   signal before_show
 }
@@ -203,7 +205,7 @@ class SourceView type "source_view obj" set wrap wrapsig : Widget {
   "show-line-marks"      gboolean             : Read / Write
   "show-line-numbers"    gboolean             : Read / Write
   "show-right-margin"    gboolean             : Read / Write
-  "smart-home-end"  GtkSourceSmartHomeEndType : Read / Write
+  "smart-home-end"  Gtk3SourceSmartHomeEndType : Read / Write
   "tab-width"          guint		      : Read / Write
 
   method get_completion : "source_completion obj"
@@ -211,6 +213,7 @@ class SourceView type "source_view obj" set wrap wrapsig : Widget {
   method get_draw_spaces : "source_draw_spaces_flags list"
   method set_draw_spaces : "source_draw_spaces_flags list -> unit"
 
+(*
   method get_mark_category_priority :
       "category:string -> int" / Wrap
   method set_mark_category_priority:
@@ -223,6 +226,7 @@ class SourceView type "source_view obj" set wrap wrapsig : Widget {
       "category:string -> Gdk.color option" / Wrap
   method set_mark_category_background:
       "category:string -> Gdk.color option -> unit" / Wrap
+*)
 
   signal line_mark_activated : GtkTextIter GdkEvent
   signal move_lines : gboolean gint

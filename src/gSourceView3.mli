@@ -29,10 +29,10 @@ open SourceView3Enums
 (** {2 GtkSourceStyleScheme} *)
 
 class source_style_scheme :
-  GtkSourceView2_types.source_style_scheme obj ->
+  GtkSourceView3_types.source_style_scheme obj ->
   object
     method as_source_style_scheme :
-      GtkSourceView2_types.source_style_scheme obj
+      GtkSourceView3_types.source_style_scheme obj
     method name : string
     method description : string
   end
@@ -41,7 +41,7 @@ class source_style_scheme :
 (** {2 GtkSourceStyleSchemeManager} *)
 
 class source_style_scheme_manager :
-  GtkSourceView2_types.source_style_scheme_manager obj ->
+  GtkSourceView3_types.source_style_scheme_manager obj ->
   object
     method search_path: string list
     method set_search_path: string list -> unit
@@ -57,7 +57,7 @@ val source_style_scheme_manager : default:bool -> source_style_scheme_manager
 (** {2 GtkSourceCompletionInfo} *)
 
 class source_completion_info_signals :
-  (GtkSourceView2_types.source_completion_info as 'b) obj ->
+  (GtkSourceView3_types.source_completion_info as 'b) obj ->
   object ('a)
     inherit GContainer.container_signals
     method before_show : callback:(unit -> unit) -> GtkSignal.id
@@ -68,21 +68,23 @@ class source_completion_info_signals :
   end
 
 class source_completion_info :
-  ([> GtkSourceView2_types.source_completion_info ] as 'a) obj ->
+  ([> GtkSourceView3_types.source_completion_info ] as 'a) obj ->
   object
     inherit GWindow.window
     val obj : 'a obj
-    method as_source_completion_info : GtkSourceView2_types.source_completion_info obj
+    method as_source_completion_info : GtkSourceView3_types.source_completion_info obj
     method max_height : int
     method max_width : int
-    method process_resize : unit -> unit
+(*    method process_resize : unit -> unit*)
     method set_max_height : int -> unit
     method set_max_width : int -> unit
     method set_shrink_height : bool -> unit
     method set_shrink_width : bool -> unit
+(*
     method set_sizing :
       width:int ->
       height:int -> shrink_width:bool -> shrink_height:bool -> unit
+*)
     method set_widget : GObj.widget -> unit
     method shrink_height : bool
     method shrink_width : bool
@@ -92,7 +94,7 @@ class source_completion_info :
 (** {2 GtkSourceCompletionProposal} *)
 
 class source_completion_proposal_signals :
-  GtkSourceView2_types.source_completion_proposal obj ->
+  GtkSourceView3_types.source_completion_proposal obj ->
   object ('a)
     method after : 'a
     method changed : callback:(unit -> unit) -> GtkSignal.id
@@ -104,9 +106,9 @@ class source_completion_proposal_signals :
   end
 
 class source_completion_proposal :
-  GtkSourceView2_types.source_completion_proposal obj ->
+  GtkSourceView3_types.source_completion_proposal obj ->
   object
-    method as_source_completion_proposal : GtkSourceView2_types.source_completion_proposal obj
+    method as_source_completion_proposal : GtkSourceView3_types.source_completion_proposal obj
     method connect : source_completion_proposal_signals
     method icon : GdkPixbuf.pixbuf
     method info : string
@@ -116,7 +118,7 @@ class source_completion_proposal :
   end
 
 class source_completion_item :
-  GtkSourceView2_types.source_completion_proposal obj ->
+  GtkSourceView3_types.source_completion_proposal obj ->
   object
     inherit source_completion_proposal
     method set_icon : GdkPixbuf.pixbuf -> unit
@@ -146,9 +148,9 @@ val source_completion_item_from_stock :
 (** {2 GtkSourceCompletionProvider} *)
 
 class source_completion_provider :
-  GtkSourceView2_types.source_completion_provider obj ->
+  GtkSourceView3_types.source_completion_provider obj ->
   object
-    method as_source_completion_provider : GtkSourceView2_types.source_completion_provider obj
+    method as_source_completion_provider : GtkSourceView3_types.source_completion_provider obj
     method icon : GdkPixbuf.pixbuf option
     method name : string
     method populate : source_completion_context -> unit
@@ -165,16 +167,16 @@ class source_completion_provider :
 (** {2 GtkSourceCompletionContext} *)
 
 and source_completion_context_signals :
-  GtkSourceView2_types.source_completion_context obj ->
+  GtkSourceView3_types.source_completion_context obj ->
   object ('a)
     method after : 'a
     method cancelled : callback:(unit -> unit) -> GtkSignal.id
   end
 
 and source_completion_context :
-  GtkSourceView2_types.source_completion_context obj ->
+  GtkSourceView3_types.source_completion_context obj ->
   object
-    method as_source_completion_context : GtkSourceView2_types.source_completion_context obj
+    method as_source_completion_context : GtkSourceView3_types.source_completion_context obj
     method activation : source_completion_activation_flags list
     method add_proposals :
       source_completion_provider ->
@@ -205,7 +207,7 @@ val source_completion_provider : custom_completion_provider -> source_completion
 (** {2 GtkSourceCompletion} *)
 
 class source_completion_signals :
-  GtkSourceView2_types.source_completion obj ->
+  GtkSourceView3_types.source_completion obj ->
   object ('a)
     method after : 'a
     method activate_proposal : callback:(unit -> unit) -> GtkSignal.id
@@ -229,11 +231,11 @@ class source_completion_signals :
   end
 
 class source_completion :
-  GtkSourceView2_types.source_completion obj ->
+  GtkSourceView3_types.source_completion obj ->
   object
     method accelerators : int
     method add_provider : source_completion_provider -> bool
-    method as_source_completion : GtkSourceView2_types.source_completion obj
+    method as_source_completion : GtkSourceView3_types.source_completion obj
     method auto_complete_delay : int
     method block_interactive : unit -> unit
     method connect : source_completion_signals
@@ -264,9 +266,9 @@ class source_completion :
 (** {2 GtkSourceLanguage} *)
 
 class source_language:
-  GtkSourceView2_types.source_language obj ->
+  GtkSourceView3_types.source_language obj ->
   object
-    method as_source_language: GtkSourceView2_types.source_language obj
+    method as_source_language: GtkSourceView3_types.source_language obj
     method misc: GObj.gobject_ops
 
     method hidden: bool
@@ -284,11 +286,11 @@ class source_language:
 (** {2 GtkSourceLanguageManager} *)
 
 class source_language_manager:
-  GtkSourceView2_types.source_language_manager obj ->
+  GtkSourceView3_types.source_language_manager obj ->
   object
     method get_oid: int
     method as_source_language_manager:
-      GtkSourceView2_types.source_language_manager obj
+      GtkSourceView3_types.source_language_manager obj
 
     method set_search_path : string list -> unit
     method search_path : string list
@@ -303,7 +305,7 @@ val source_language_manager : default:bool -> source_language_manager
 
 (** {2 GtkSourceMark} *)
 
-class source_mark: ((GtkSourceView2_types.source_mark obj) as 'a) ->
+class source_mark: ((GtkSourceView3_types.source_mark obj) as 'a) ->
 object
   method as_source_mark : 'a
   method coerce: GText.mark
@@ -317,17 +319,17 @@ val source_mark : ?category:string -> unit -> source_mark
 (** {2 GtkSourceUndoManager} *)
 
 class source_undo_manager_signals :
-  (GtkSourceView2_types.source_undo_manager as 'b) obj ->
+  (GtkSourceView3_types.source_undo_manager as 'b) obj ->
 object ('a)
   method after : 'a
   method can_redo_changed : callback:(unit -> unit) -> GtkSignal.id
   method can_undo_changed : callback:(unit -> unit) -> GtkSignal.id
 end
 
-class source_undo_manager: (GtkSourceView2_types.source_undo_manager as 'b) obj ->
+class source_undo_manager: (GtkSourceView3_types.source_undo_manager as 'b) obj ->
   object
     val obj : 'b obj
-    method as_source_undo_manager : GtkSourceView2_types.source_undo_manager obj
+    method as_source_undo_manager : GtkSourceView3_types.source_undo_manager obj
     method begin_not_undoable_action : unit -> unit
     method connect : source_undo_manager_signals
     method can_redo : bool
@@ -356,13 +358,13 @@ val source_undo_manager : custom_undo_manager -> source_undo_manager
 (** {2 GtkSourceBuffer} *)
 
 class source_buffer_signals:
-  (GtkSourceView2_types.source_buffer as 'b) obj ->
+  (GtkSourceView3_types.source_buffer as 'b) obj ->
 object ('a)
   inherit ['b] GText.buffer_signals_type
   method changed : callback:(unit -> unit) -> GtkSignal.id
   method highlight_updated:
     callback:(Gtk.text_iter -> Gtk.text_iter -> unit) -> GtkSignal.id
-  method source_mark_updated: callback:(GtkSourceView2_types.source_mark obj -> unit) -> GtkSignal.id
+  method source_mark_updated: callback:(GtkSourceView3_types.source_mark obj -> unit) -> GtkSignal.id
   method notify_can_redo : callback:(bool -> unit) -> GtkSignal.id
   method notify_can_undo : callback:(bool -> unit) -> GtkSignal.id
   method notify_highlight_matching_brackets : callback:(bool -> unit) -> GtkSignal.id
@@ -370,11 +372,11 @@ object ('a)
   method notify_max_undo_levels : callback:(int -> unit) -> GtkSignal.id
 end
 
-and source_buffer: GtkSourceView2_types.source_buffer obj ->
+and source_buffer: GtkSourceView3_types.source_buffer obj ->
 object
   inherit GText.buffer_skel
-  val obj: GtkSourceView2_types.source_buffer obj
-  method as_source_buffer: GtkSourceView2_types.source_buffer obj
+  val obj: GtkSourceView3_types.source_buffer obj
+  method as_source_buffer: GtkSourceView3_types.source_buffer obj
   method connect: source_buffer_signals
   method misc: GObj.gobject_ops
 
@@ -433,7 +435,7 @@ val source_buffer:
 (** {2 GtkSourceView} *)
 
 class source_view_signals:
-  ([> GtkSourceView2_types.source_view ] as 'b) obj ->
+  ([> GtkSourceView3_types.source_view ] as 'b) obj ->
   object ('a)
     inherit GText.view_signals
     method line_mark_activated :
@@ -455,17 +457,17 @@ class source_view_signals:
     method notify_show_line_numbers : callback:(bool -> unit) -> GtkSignal.id
     method notify_show_right_margin : callback:(bool -> unit) -> GtkSignal.id
     method notify_smart_home_end :
-      callback:(SourceView2Enums.source_smart_home_end_type -> unit) -> GtkSignal.id
+      callback:(SourceView3Enums.source_smart_home_end_type -> unit) -> GtkSignal.id
     method notify_tab_width : callback:(int -> unit) -> GtkSignal.id
 
   end
 
 class source_view:
-  GtkSourceView2_types.source_view obj ->
+  GtkSourceView3_types.source_view obj ->
 object
   inherit GText.view_skel
-  inherit OgtkSourceView2Props.source_view_props
-  val obj: GtkSourceView2_types.source_view obj
+  inherit OgtkSourceView3Props.source_view_props
+  val obj: GtkSourceView3_types.source_view obj
   method completion : source_completion
   method connect: source_view_signals
   method source_buffer: source_buffer
@@ -480,13 +482,14 @@ object
   method set_insert_spaces_instead_of_tabs: bool -> unit
   method insert_spaces_instead_of_tabs: bool
   method set_cursor_color: Gdk.color -> unit
-  method set_cursor_color_by_name: string -> unit
+(*  method set_cursor_color_by_name: string -> unit*)
 
   method draw_spaces:
     source_draw_spaces_flags list
   method set_draw_spaces:
     source_draw_spaces_flags list -> unit
 
+(*
   method get_mark_category_priority:
     category:string -> int
   method set_mark_category_priority:
@@ -499,6 +502,7 @@ object
     category:string -> Gdk.color option
   method set_mark_category_background:
     category:string -> Gdk.color option -> unit
+*)
 end
 
 val source_view :
@@ -528,6 +532,7 @@ val source_view :
 
 (** {2 Misc} *)
 
+(*
 val iter_forward_search :
   GText.iter ->
   source_search_flag list ->
@@ -543,3 +548,4 @@ val iter_backward_search :
   stop:< as_iter : Gtk.text_iter; .. > ->
   ?limit:< as_iter : Gtk.text_iter; .. > ->
   string -> (GText.iter * GText.iter) option
+*)

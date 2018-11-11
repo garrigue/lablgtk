@@ -84,3 +84,10 @@ package "sourceview2" (
   archive(byte) = "lablgtksourceview2.cma"
   archive(native) = "lablgtksourceview2.cmxa"
 )
+package "sourceview3" (
+  exists_if = "lablgtksourceview3.cma,lablgtksourceview3.cmxa,lablgtksourceview3.cmxs"
+  description = "Bindings for gtksourceview3"
+  requires = "lablgtk2"
+  archive(byte) = "lablgtksourceview3.cma"
+  archive(native) = "lablgtksourceview3.cmxa"
+)
