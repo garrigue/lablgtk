@@ -33,6 +33,8 @@ let canvas_mls = split "@CANVAS_MLS@"
 let canvas_libs = "@CANVAS_LIBS@"
 let sourceview2_mls = split "@SOURCEVIEW2_MLS@"
 let sourceview2_libs = "@SOURCEVIEW2_LIBS@"
+let sourceview3_mls = split "@SOURCEVIEW3_MLS@"
+let sourceview3_libs = "@SOURCEVIEW3_LIBS@"
 
 (* Hack to check for mingw *)
 let () =
@@ -90,7 +92,9 @@ let libs =
     lib ~mls:rsvg_mls ~libs:rsvg_libs ~name:"lablrsvg" ();
     lib ~mls:canvas_mls ~libs:canvas_libs ~name:"lablgnomecanvas" ();
     lib ~mls:sourceview2_mls ~libs:sourceview2_libs
-        ~name:"lablgtksourceview2" ~mlis:["gtkSourceView2_types"] ()]
+        ~name:"lablgtksourceview2" ~mlis:["gtkSourceView2_types";
+    lib ~mls:sourceview3_mls ~libs:sourceview3_libs
+        ~name:"lablgtksourceview3" ~mlis:["gtkSourceView3_types"] ()]
 
 let compopts = []
   (*["gtkSignal",

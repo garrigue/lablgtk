@@ -177,6 +177,27 @@ lablgtksourceview2.cmxa: \
 	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
 lablgtksourceview2.cmxs: DYNLINKLIBS=$(GTKSOURCEVIEW2_LIBS)
 endif
+ifdef USE_GTKSOURCEVIEW3
+ml_gtksourceview3.o: CFLAGS=$(GTKSOURCEVIEW3CFLAGS)
+MLLIBS += lablgtksourceview3.cma
+CLIBS += liblablgtksourceview3$(XA)
+GTKSOURCEVIEW3MLOBJS = gtkSourceView3.cmo gSourceView3.cmo
+GTKSOURCEVIEW3COBJS = ml_gtksourceview3$(XO)
+GTKSOURCEVIEW3MLOBJSENUM = sourceView3Enums.cmo
+GTKSOURCEVIEW3PROPS = gtkSourceView3.props
+BEFORE_DEPEND += $(GTKSOURCEVIEW3PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW3PROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
+EXTRA_OBJS += $(GTKSOURCEVIEW3MLOBJSENUM)
+GTKSOURCEVIEW3ALLMLOBJS = $(GTKSOURCEVIEW3MLOBJSENUM) \
+	$(GTKSOURCEVIEW3PROPS:%.props=%Props.cmo) \
+	$(GTKSOURCEVIEW3PROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEW3MLOBJS)
+lablgtksourceview3.cma liblablgtksourceview3$(XA): \
+  $(GTKSOURCEVIEW3COBJS) $(GTKSOURCEVIEW3ALLMLOBJS)
+	$(LIBRARIAN) -o lablgtksourceview3 $^ $(GTKSOURCEVIEW3LIBS)
+lablgtksourceview3.cmxa: \
+  $(GTKSOURCEVIEW3COBJS) $(GTKSOURCEVIEW3ALLMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtksourceview3 $^ $(GTKSOURCEVIEW3LIBS)
+lablgtksourceview3.cmxs: DYNLINKLIBS=$(GTKSOURCEVIEW3_LIBS)
+endif
 
 ifdef USE_GTKQUARTZ
 CFLAGS += -DHAS_GTKQUARTZ
@@ -307,6 +328,8 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	    -e "s|@CANVAS_LIBS@|$(GNOMECANVASLIBS)|" \
 	    -e "s|@SOURCEVIEW2_MLS@|$(GTKSOURCEVIEW2ALLMLOBJS:.cmo=)|" \
 	    -e "s|@SOURCEVIEW2_LIBS@|$(GTKSOURCEVIEW2LIBS)|" \
+	    -e "s|@SOURCEVIEW3_MLS@|$(GTKSOURCEVIEW3ALLMLOBJS:.cmo=)|" \
+	    -e "s|@SOURCEVIEW3_LIBS@|$(GTKSOURCEVIEW3LIBS)|" \
 	    -e "s|@TOOLCHAIN@|$(TOOLCHAIN)|" \
 	    < build.ml.in > $@
 
@@ -617,6 +640,9 @@ $(GTKSOURCEVIEWCOBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h 
 
 $(GTKSOURCEVIEW2COBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
 			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView2_tags.h wrappers.h
+
+$(GTKSOURCEVIEW3COBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
+			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView3_tags.h wrappers.h
 
 ml_glib$(XO): glib_tags.h ml_glib.h wrappers.h
 ml_gobject$(XO): gobject_tags.h ml_gvaluecaml.h wrappers.h
