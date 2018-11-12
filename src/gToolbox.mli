@@ -47,6 +47,8 @@ val popup_menu : entries: menu_entry list -> button: int -> time: int32 -> unit
    with a parametrized list of buttons. The function returns the number
    of the clicked button (starting at 1), or 0 if the window is 
    savagedly destroyed.
+   @param parent the parent window in the front of which it should be displayed
+   @param destroy_with_parent relevant when the box has a parent (default is false)
    @param title the title of the dialog
    @param buttons the list of button labels.
    @param default the index of the default answer
@@ -55,12 +57,16 @@ val popup_menu : entries: menu_entry list -> button: int -> time: int32 -> unit
    @param message the text to display
 *)
 val question_box :
+    ?parent:#GWindow.window_skel ->
+    ?destroy_with_parent:bool ->
     title:string ->
     buttons:string list ->
     ?default:int -> ?icon:#GObj.widget -> string -> int
 
 (**This function is used to display a message in a dialog box with just an Ok button.
    We use [question_box] with just an ok button.
+   @param parent the parent window in the front of which it should be displayed
+   @param destroy_with_parent relevant when the box has a parent (default is false)
    @param title the title of the dialog
    @param icon a widget (usually a pixmap) which can be displayed on the left
      of the window.
@@ -68,6 +74,7 @@ val question_box :
    @param message the text to display
 *)
 val message_box :
+    ?parent:#GWindow.window_skel -> ?destroy_with_parent:bool ->
     title:string -> ?icon:#GObj.widget -> ?ok:string -> string -> unit
 
 (** Make the user type in a string. 
