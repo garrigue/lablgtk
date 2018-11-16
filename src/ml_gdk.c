@@ -156,7 +156,7 @@ CAMLprim value ml_gdk_color_black (value cmap)
     gdk_color_black (GdkColormap_val(cmap), &color);
     return Val_copy(color);
 }
-
+*/
 CAMLprim value ml_gdk_color_parse (char *spec)
 {
     GdkColor color;
@@ -165,6 +165,9 @@ CAMLprim value ml_gdk_color_parse (char *spec)
     return Val_copy(color);
 }
 
+ML_1 (gdk_color_to_string, GdkColor_val, Val_string)
+
+/*
 ML_2 (gdk_color_alloc, GdkColormap_val, GdkColor_val, Val_bool)
 
 CAMLprim value ml_GdkColor (value red, value green, value blue)
