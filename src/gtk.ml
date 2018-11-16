@@ -30,6 +30,7 @@ type 'a optobj = 'a obj Gpointer.optboxed
 type clampf = float
 
 module Tags = struct
+  type expand_type = [ `X|`Y|`BOTH|`NONE ]
   include (GtkEnums : module type of GtkEnums
                       with module Conv := GtkEnums.Conv)
 end
@@ -101,6 +102,7 @@ type notebook = [container|`notebook]
 type packer = [container|`packer]
 type paned = [container|`paned]
 type socket = [container|`socket]
+type table = [container|`table]
 type toolbar = [container|`toolbar|`orientable]
 type tool_item = [bin|`toolitem]
 type separator_tool_item = [tool_item|`separatortoolitem]

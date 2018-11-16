@@ -108,6 +108,18 @@ class Notebook set wrap wrapsig : Container {
   signal create_window : page:GtkWidget x:gint y:gint (* GTK+ 2.12 *)
 }
 
+class Table set wrap :Container {
+  "n-columns"(columns)   guint                : Read / Write
+  "n-rows"(rows)         guint                : Read / Write
+  "homogeneous"          gboolean             : Read / Write
+  "row-spacing"(row_spacings) guint           : Read / Write
+  "column-spacing"(col_spacings) guint        : Read / Write
+  method attach :
+    "[>`widget] obj -> left:int -> right:int -> top:int -> bottom:int ->
+     xoptions:Tags.attach_options list -> yoptions:Tags.attach_options list ->
+     xpadding:int -> ypadding:int -> unit"
+}
+
 class SizeGroup : GObject {
   "mode"                 GtkSizeGroupMode     : Read / Write
   method add_widget : "[>`widget] obj -> unit"

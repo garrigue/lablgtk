@@ -37,6 +37,8 @@
 #include "ml_gtk.h"
 #include "gtk_tags.h"
 
+Make_Flags_val (Attach_options_val)
+
 /* Init all */
 
 CAMLprim value ml_gtkpack_init(value unit)
@@ -52,6 +54,7 @@ CAMLprim value ml_gtkpack_init(value unit)
         gtk_notebook_get_type() +
         gtk_hpaned_get_type() +
         gtk_vpaned_get_type() +
+        gtk_table_get_type() +
         gtk_size_group_get_type();
     return Val_GType(t);
 }
@@ -180,7 +183,6 @@ ML_1 (gtk_paned_get_child1, GtkPaned_val, Val_GtkWidget)
 ML_1 (gtk_paned_get_child2, GtkPaned_val, Val_GtkWidget)
 
 /* gtktable.h */
-/* not in 3
 #define GtkTable_val(val) check_cast(GTK_TABLE,val)
 ML_10 (gtk_table_attach, GtkTable_val, GtkWidget_val,
        Int_val, Int_val, Int_val, Int_val,
@@ -189,7 +191,6 @@ ML_10 (gtk_table_attach, GtkTable_val, GtkWidget_val,
 ML_bc10 (ml_gtk_table_attach)
 ML_3 (gtk_table_set_row_spacing, GtkTable_val, Int_val, Int_val, Unit)
 ML_3 (gtk_table_set_col_spacing, GtkTable_val, Int_val, Int_val, Unit)
-*/
 
 /* gtksizegroup.h */
 #define GtkSizeGroup_val(val) check_cast(GTK_SIZE_GROUP,val)

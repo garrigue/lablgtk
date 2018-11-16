@@ -10,6 +10,9 @@ type align = "GTK_ALIGN_"
 type arrow_type = "GTK_ARROW_"
   [ `UP | `DOWN | `LEFT | `RIGHT | `NONE ]
 
+type attach_options = "GTK_"
+  [ `EXPAND | `SHRINK | `FILL ]
+
 type baseline_position = "GTK_BASELINE_POSITION_"
   [ `TOP | `CENTER | `BOTTOM ]
 
