@@ -697,6 +697,14 @@ ML_2 (gtk_dialog_set_default_response, GtkDialog_val, Int_val, Unit)
 ML_1 (gtk_dialog_run, GtkDialog_val, Val_int)
      /* gtk_dialog_add_action_widget */
 
+/* gtkorientable.h */
+
+#define GtkOrientable_val(val) check_cast(GTK_ORIENTABLE,val)
+#define Val_GtkOrientable(val) (Val_GObject((GObject*)val))
+
+ML_1 (gtk_orientable_get_orientation, GtkOrientable_val, Val_orientation)
+ML_2 (gtk_orientable_set_orientation, GtkOrientable_val, Orientation_val, Unit)
+
 /* gtkwindow.h */
 
 ML_1 (gtk_window_new, Window_type_val, Val_GtkWidget_window)

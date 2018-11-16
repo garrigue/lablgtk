@@ -53,7 +53,7 @@ type target_entry = { target: string; flags: target_flags list; info: int }
 type box_packing =
     { expand: bool; fill: bool; padding: int; pack_type: pack_type }
 
-type orientable = [`orientable]
+type orientable = [`giu|`orientable]
 type adjustment = [`giu|`adjustment]
 type tooltips = [`giu|`tooltips]
 type widget = [`giu|`widget]
