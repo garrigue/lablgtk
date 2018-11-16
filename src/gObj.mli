@@ -149,7 +149,7 @@ class selection_context :
   end
 
 (** @gtkdoc gtk gtk-Drag-and-Drop *)
-(*
+
 class drag_ops : Gtk.widget obj ->
   object
     method connect : drag_signals
@@ -165,7 +165,6 @@ class drag_ops : Gtk.widget obj ->
     method source_unset : unit -> unit
     method unhighlight : unit -> unit
   end
-*)
 
 (** @gtkdoc gtk GtkWidget *)
 and misc_ops : Gtk.widget obj ->
@@ -248,7 +247,7 @@ and widget : ([> Gtk.widget] as 'a) obj ->
     val obj : 'a obj
     method as_widget : Gtk.widget obj
     method coerce : widget
-    (* method drag : drag_ops *)
+    method drag : drag_ops
     method misc : misc_ops
     method destroy : unit -> unit
   end
@@ -277,7 +276,6 @@ and misc_signals : Gtk.widget obj ->
     method unmap : callback:(unit -> unit) -> GtkSignal.id
   end
 
-(*
 (** @gtkdoc gtk gtk-Drag-and-Drop *)
 and drag_context :
   Gdk.drag_context ->
@@ -319,7 +317,6 @@ and drag_signals :
       callback:(drag_context -> x:int -> y:int -> time:int32 -> bool) ->
       GtkSignal.id
   end
-*)
 
 (** @gtkdoc gtk GtkWidget *)
 class ['a] widget_impl : ([> Gtk.widget] as 'a) obj ->
