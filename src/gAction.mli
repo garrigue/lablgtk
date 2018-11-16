@@ -90,15 +90,19 @@ class action_skel :
     method is_sensitive : bool
     method is_visible : bool
     method activate : unit -> unit
+(*
     method connect_proxy : GObj.widget -> unit
     method disconnect_proxy : GObj.widget -> unit
+*)
     method get_proxies : GObj.widget list
     method connect_accelerator : unit -> unit
     method disconnect_accelerator : unit -> unit
     method set_accel_path : string -> unit
     method set_accel_group : Gtk.accel_group -> unit
+(*
     method block_activate_from   : GObj.widget -> unit
     method unblock_activate_from : GObj.widget -> unit
+*)
   end
 
 (** @since GTK 2.4
