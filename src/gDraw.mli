@@ -36,6 +36,7 @@ type color =
   | `NAME of string
   | `RGB of int * int * int]
 
+(*
 val color : ?colormap:colormap -> color -> Gdk.color
 
 type optcolor =
@@ -149,6 +150,7 @@ val pixmap_from_xpm_d :
   data:string array ->
   ?window:< misc : #misc_ops; .. > ->
   ?colormap:colormap -> ?transparent:color -> unit -> pixmap
+*)
 
 (** {3 GdkDragContext} *)
 

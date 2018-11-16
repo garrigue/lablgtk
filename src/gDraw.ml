@@ -34,6 +34,7 @@ type color = [
   | `RGB of int * int * int
 ]
 
+(*
 let default_colormap = GtkBase.Widget.get_default_colormap
 
 let color ?(colormap = default_colormap ()) (c : color) =
@@ -212,6 +213,7 @@ let pixmap_from_xpm_d ~data ?window ?colormap ?transparent () =
     Pixmap.create_from_xpm_d ~data ?colormap ?window
       ?transparent:(may_map transparent ~f:(fun c -> color c)) () in
   new pixmap pm ?colormap ~mask
+*)
 
 class drag_context context = object
   val context = context
