@@ -62,8 +62,8 @@ CAMLprim value ml_gtkaction_init(value unit)
 /* gtkaction.h */
 #define GtkAction_val(val) check_cast(GTK_ACTION, val)
 ML_1 (gtk_action_activate, GtkAction_val, Unit)
-ML_2 (gtk_action_connect_proxy, GtkAction_val, GtkWidget_val, Unit)
-ML_2 (gtk_action_disconnect_proxy, GtkAction_val, GtkWidget_val, Unit)
+/*ML_2 (gtk_action_connect_proxy, GtkAction_val, GtkWidget_val, Unit)*/
+/*ML_2 (gtk_action_disconnect_proxy, GtkAction_val, GtkWidget_val, Unit)*/
 ML_1 (gtk_action_get_proxies, GtkAction_val, gobject_list_of_GSList)
 ML_1 (gtk_action_connect_accelerator, GtkAction_val, Unit)
 ML_1 (gtk_action_disconnect_accelerator, GtkAction_val, Unit)
@@ -71,8 +71,8 @@ ML_2 (gtk_action_set_accel_path, GtkAction_val, String_val, Unit)
 ML_2 (gtk_action_set_accel_group, GtkAction_val, GtkAccelGroup_val, Unit)
 ML_1 (gtk_action_is_sensitive, GtkAction_val, Val_bool)
 ML_1 (gtk_action_is_visible, GtkAction_val, Val_bool)
-ML_2 (gtk_action_block_activate_from, GtkAction_val, GtkWidget_val, Unit)
-ML_2 (gtk_action_unblock_activate_from, GtkAction_val, GtkWidget_val, Unit)
+/*ML_2 (gtk_action_block_activate_from, GtkAction_val, GtkWidget_val, Unit)*/
+/*ML_2 (gtk_action_unblock_activate_from, GtkAction_val, GtkWidget_val, Unit)*/
 
 /* gtktoggleaction.h */
 #define GtkToggleAction_val(val) check_cast(GTK_TOGGLE_ACTION, val)
