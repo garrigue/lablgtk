@@ -100,10 +100,11 @@ module Widget = struct
       = "ml_gtk_widget_modify_bg"
   external modify_text : [>`widget] obj -> state_type -> Gdk.color -> unit
       = "ml_gtk_widget_modify_text"
+*)
   external modify_base : [>`widget] obj -> state_type -> Gdk.color -> unit
       = "ml_gtk_widget_modify_base"
   external modify_font : [>`widget] obj -> Pango.font_description -> unit
-      = "ml_gtk_widget_modify_font"*)
+      = "ml_gtk_widget_modify_font"
   external get_pango_context : [>`widget] obj -> Pango.context
       = "ml_gtk_widget_get_pango_context"
   external create_pango_context : [>`widget] obj -> Pango.context

@@ -320,9 +320,9 @@ ML_1 (gtk_widget_ensure_style, GtkWidget_val, Unit)
 ML_3 (gtk_widget_modify_fg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_bg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_text, GtkWidget_val, State_type_val, GdkColor_val,Unit)
+*/
 ML_3 (gtk_widget_modify_base, GtkWidget_val, State_type_val, GdkColor_val,Unit)
 ML_2 (gtk_widget_modify_font, GtkWidget_val, PangoFontDescription_val, Unit)
-*/
 ML_1 (gtk_widget_get_pango_context, GtkWidget_val, Val_PangoContext)
 ML_1 (gtk_widget_create_pango_context, GtkWidget_val, Val_PangoContext_new)
 ML_6 (gtk_widget_add_accelerator, GtkWidget_val, Signal_name_val,

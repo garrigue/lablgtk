@@ -194,10 +194,14 @@ and misc_ops : Gtk.widget obj ->
     method map : unit -> unit
     (*
     method modify_bg : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    *)
     method modify_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    (*
     method modify_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    *)
     method modify_font : Pango.font_description -> unit
+    (*
     method modify_font_by_name : string -> unit
     *)
     method name : string
