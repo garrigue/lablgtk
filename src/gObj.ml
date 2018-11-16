@@ -168,7 +168,6 @@ class selection_context sel = object
     Selection.set sel ~typ ~format ~data:(Some data)
 end
 
-(*
 class drag_signals obj = object (self)
   inherit ['a] gobject_signals obj
   method private connect_drag : 'b. ('a, Gdk.drag_context -> 'b) GtkSignal.t ->
@@ -217,13 +216,14 @@ and drag_context context = object
     new widget (unsafe_cast (DnD.get_source_widget context))
   method set_icon_widget (w : widget) =
     DnD.set_icon_widget context (w#as_widget)
+(*
   method set_icon_pixmap ?(colormap = Gdk.Color.get_system_colormap ())
       (pix : GDraw.pixmap) =
     DnD.set_icon_pixmap context ~colormap pix#pixmap ?mask:pix#mask
-end
 *)
+end
 
-class misc_signals obj = object (self)
+and misc_signals obj = object (self)
   inherit [_] gobject_signals obj
   method show = self#connect Signals.show
   method hide = self#connect Signals.hide

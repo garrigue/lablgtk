@@ -149,7 +149,7 @@ class selection_context :
   end
 
 (** @gtkdoc gtk gtk-Drag-and-Drop *)
-(*
+
 class drag_ops : Gtk.widget obj ->
   object
     method connect : drag_signals
@@ -165,7 +165,6 @@ class drag_ops : Gtk.widget obj ->
     method source_unset : unit -> unit
     method unhighlight : unit -> unit
   end
-*)
 
 (** @gtkdoc gtk GtkWidget *)
 and misc_ops : Gtk.widget obj ->
@@ -182,6 +181,7 @@ and misc_ops : Gtk.widget obj ->
     method allocation : rectangle
     method clear_selection_targets : Gdk.atom -> unit
     method connect : misc_signals
+
     method convert_selection : target:string -> ?time:int32 -> Gdk.atom -> bool
     method create_pango_context : GPango.context_rw
     method grab_default : unit -> unit
@@ -277,7 +277,6 @@ and misc_signals : Gtk.widget obj ->
     method unmap : callback:(unit -> unit) -> GtkSignal.id
   end
 
-(*
 (** @gtkdoc gtk gtk-Drag-and-Drop *)
 and drag_context :
   Gdk.drag_context ->
@@ -319,7 +318,6 @@ and drag_signals :
       callback:(drag_context -> x:int -> y:int -> time:int32 -> bool) ->
       GtkSignal.id
   end
-*)
 
 (** @gtkdoc gtk GtkWidget *)
 class ['a] widget_impl : ([> Gtk.widget] as 'a) obj ->
