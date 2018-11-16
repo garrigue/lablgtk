@@ -270,6 +270,7 @@ and misc_signals : Gtk.widget obj ->
     method size_allocate : callback:(Gtk.rectangle -> unit) -> GtkSignal.id
     method state_changed :
       callback:(Gtk.Tags.state_type -> unit) -> GtkSignal.id
+    method style_set : callback:(unit -> unit) -> GtkSignal.id
     method unmap : callback:(unit -> unit) -> GtkSignal.id
   end
 
