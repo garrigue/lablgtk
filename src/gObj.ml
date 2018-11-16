@@ -112,6 +112,16 @@ class event_ops obj = object
   method send : Gdk.Tags.event_type Gdk.event -> bool = Widget.event obj
 end
 
+let get_color = function
+   | `COLOR col -> col
+   | `WHITE -> Gdk.Color.color_parse "white"
+   | `BLACK -> Gdk.Color.color_parse "black"
+   | `NAME s -> Gdk.Color.color_parse s
+   | `RGB (r,g,b) -> Gdk.Color.color_parse (Printf.sprintf "#%04X%04X%04X" r g b)
+
+let iter_setcol set style =
+  List.iter ~f:(fun (state, color) -> set style state (get_color (color:GDraw.color)))
+
 class selection_input (sel : Gtk.selection_data) = object
   val sel = sel
   method selection = Selection.selection sel
@@ -262,8 +272,10 @@ and misc_ops obj = object (self)
   method modify_fg = iter_setcol Widget.modify_fg obj
   method modify_bg = iter_setcol Widget.modify_bg obj
   method modify_text = iter_setcol Widget.modify_text obj
+  *)
   method modify_base = iter_setcol Widget.modify_base obj
   method modify_font = Widget.modify_font obj
+  (*
   method modify_font_by_name s =
     Widget.modify_font obj (Pango.Font.from_string s)
   *)
