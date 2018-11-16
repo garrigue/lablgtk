@@ -293,7 +293,7 @@ class toolbar :
     method insert : ?pos:int -> #tool_item_o -> unit 
     (** @param pos default value is [-1] i.e. end of the toolbar *)
     method get_n_items : int
-    method get_nth_item : int -> Gtk.tool_item obj
+    method get_nth_item : int -> [`toolitem] obj
     method get_item_index : Gtk.tool_item obj -> int
     method set_drop_highlight_item : (#tool_item_o * int) option -> unit
     method get_drop_index : int -> int -> int
