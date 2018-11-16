@@ -108,6 +108,55 @@ val button_box :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> button_box
 
+(** {3 GtkTable} *)
+
+(** Pack widgets in regular patterns
+   @gtkdoc gtk GtkTable *)
+class table :
+  Gtk.table obj ->
+  object
+    inherit GContainer.container_full
+    val obj : Gtk.table obj
+    method attach :
+      left:int ->
+      top:int ->
+      ?right:int ->
+      ?bottom:int ->
+      ?expand:Tags.expand_type ->
+      ?fill:Tags.expand_type ->
+      ?shrink:Tags.expand_type ->
+      ?xpadding:int -> ?ypadding:int -> widget -> unit
+    (** @param left column number to attach the left side of the widget to
+        @param top  row number to attach the top of the widget to
+        @param right default value is [left+1]
+        @param bottom default value is [top+1]
+        @param expand default value is [`NONE]
+        @param fill default value is [`BOTH]
+        @param shrink default value is [`NONE] *)
+    method col_spacings : int
+    method columns : int
+    method homogeneous : bool
+    method row_spacings : int
+    method rows : int
+    method set_col_spacings : int -> unit
+    method set_columns : int -> unit
+    method set_homogeneous : bool -> unit
+    method set_row_spacings : int -> unit
+    method set_rows : int -> unit
+  end
+
+(** @gtkdoc gtk GtkTable *)
+val table :
+  ?columns:int ->
+  ?rows:int ->
+  ?homogeneous:bool ->
+  ?row_spacings:int ->
+  ?col_spacings:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> table
+
 (** {3 GtkFixed} *)
 
 (** A container which allows you to position widgets at fixed coordinates

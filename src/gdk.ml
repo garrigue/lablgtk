@@ -137,11 +137,14 @@ module Visual = struct
   external depth : visual -> int = "ml_gdk_visual_get_depth"
 end
 
-(*
 module Color = struct
+(*
   external color_white : colormap -> color = "ml_gdk_color_white"
   external color_black : colormap -> color = "ml_gdk_color_black"
+*)
   external color_parse : string -> color = "ml_gdk_color_parse"
+  external color_to_string : color -> string = "ml_gdk_color_to_string"
+(*
   external color_alloc : colormap -> color -> bool = "ml_gdk_color_alloc"
   external color_create : red:int -> green:int -> blue:int -> color
       = "ml_GdkColor"
@@ -170,8 +173,8 @@ module Color = struct
   external blue : color -> int = "ml_GdkColor_blue"
   external green : color -> int = "ml_GdkColor_green"
   external pixel : color -> int = "ml_GdkColor_pixel"
-end
 *)
+end
 
 module Rectangle = struct
   type t

@@ -265,9 +265,9 @@ module Visual :
     val depth : visual -> int
   end
 
-(*
 module Color :
   sig
+(*
     val get_system_colormap : unit -> colormap
     val get_colormap : ?privat:bool -> visual -> colormap
     val get_visual : colormap -> visual
@@ -283,8 +283,10 @@ module Color :
     val blue : color -> int
     val green : color -> int
     val pixel : color -> int
-  end
 *)
+    val color_parse : string -> color
+    val color_to_string : color -> string
+  end
 
 module Rectangle :
   sig

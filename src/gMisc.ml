@@ -52,7 +52,9 @@ end
 let statusbar =
   Statusbar.make_params [] ~cont:
     (GContainer.pack_container ~create:
-       (fun p -> new statusbar (Statusbar.create p)))
+       (fun p ->
+    Printf.printf "Coucui\n%!";
+ new statusbar (Statusbar.create p)))
 
 class status_icon_signals (obj : Gtk.status_icon Gobject.obj) = object
 (*    inherit [Gtk.status_icon] gobject_signals obj*)
