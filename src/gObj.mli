@@ -211,6 +211,9 @@ and misc_ops : Gtk.widget obj ->
     method realize : unit -> unit
     method remove_accelerator :
       group:accel_group -> ?modi:Gdk.Tags.modifier list -> Gdk.keysym -> unit
+    method render_icon :
+       size:Gtk.Tags.icon_size -> GtkStock.id -> GdkPixbuf.pixbuf
+    method reparent : widget -> unit
     method set_app_paintable : bool -> unit
     method set_can_default : bool -> unit
     method set_can_focus : bool -> unit

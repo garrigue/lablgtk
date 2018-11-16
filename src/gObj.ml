@@ -323,6 +323,9 @@ and misc_ops obj = object (self)
     may_map (fun w -> new widget (unsafe_cast w)) (get P.parent obj)
   method allocation = Widget.allocation obj
   method pango_context = new GPango.context (Widget.get_pango_context obj)
+  (* icon *)
+  method render_icon ~size id =
+    Widget.render_icon obj (GtkStock.convert_id id) size
   (* selection *)
   method convert_selection ~target ?(time=Int32.zero) sel =
     Selection.convert obj ~sel ~target:(Gdk.Atom.intern target) ~time

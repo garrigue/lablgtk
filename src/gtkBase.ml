@@ -109,6 +109,10 @@ module Widget = struct
       = "ml_gtk_widget_get_pango_context"
   external create_pango_context : [>`widget] obj -> Pango.context
       = "ml_gtk_widget_create_pango_context"
+  external render_icon :
+      [>`widget] obj -> string ->
+      Gtk.Tags.icon_size -> GdkPixbuf.pixbuf
+      = "ml_gtk_widget_render_icon_pixbuf"
   external add_accelerator :
       ([>`widget] as 'a) obj -> sgn:('a,unit->unit) GtkSignal.t ->
       accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list ->
