@@ -272,8 +272,8 @@ ML_1 (gtk_widget_draw_children, GtkWidget_val, Unit)
 */
 ML_2 (gtk_widget_event, GtkWidget_val, GdkEvent_val, Val_bool)
 ML_1 (gtk_widget_activate, GtkWidget_val, Val_bool)
-/* deprecated
-ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit) */
+ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit)
+/* deprecated */
 /* ML_3 (gtk_widget_popup, GtkWidget_val, Int_val, Int_val, Unit) */
 CAMLprim value ml_gtk_widget_intersect (value w, value area)
 {
