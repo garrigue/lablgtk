@@ -126,6 +126,7 @@ widget_info_array[] = {
   { sizeof(GtkPacker), sizeof(GtkPackerClass), gtk_packer_get_type },
   { sizeof(GtkSocket), sizeof(GtkSocketClass), gtk_socket_get_type },
   { sizeof(GtkTable), sizeof(GtkTableClass), gtk_table_get_type },
+  { sizeof(GtkGrid), sizeof(GtkGridClass), gtk_grid_get_type },
   { sizeof(GtkToolbar), sizeof(GtkToolbarClass), gtk_toolbar_get_type },
   { sizeof(GtkTree), sizeof(GtkTreeClass), gtk_tree_get_type },
   { sizeof(GtkCalendar), sizeof(GtkCalendarClass), gtk_calendar_get_type },

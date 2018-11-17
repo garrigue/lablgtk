@@ -67,6 +67,12 @@ module Table = struct
       ~xpadding ~ypadding
 end
 
+module Grid = struct
+  include Grid
+  let attach t ~left ~top ?(width=1) ?(height=1) w =
+    attach t w ~left ~top ~width ~height
+end
+
 module Notebook = Notebook
 
 module SizeGroup = SizeGroup

@@ -89,6 +89,18 @@ let table =
   Table.make_params [] ~cont:(
   pack_container ~create:(fun p -> new table (Table.create p)))
 
+class grid obj = object
+  inherit container_full (obj : Gtk.grid obj)
+  method private obj = obj
+  inherit grid_props
+  method attach ~left ~top ?width ?height w =
+    Grid.attach obj (as_widget w) ~left ~top ?width ?height
+end
+
+let grid =
+  Grid.make_params [] ~cont:(
+  pack_container ~create:(fun p -> new grid (Grid.create p)))
+
 class fixed obj = object
   inherit container_full (obj : Gtk.fixed obj)
   method event = new GObj.event_ops obj

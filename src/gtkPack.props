@@ -120,6 +120,16 @@ class Table set wrap :Container {
      xpadding:int -> ypadding:int -> unit"
 }
 
+class Grid set wrap : Container {
+  "baseline-row"(baseline_row) guint          : Read / Write
+  "row-homogeneous"(row_homogeneous) gboolean : Read / Write
+  "column-homogeneous"(col_homogeneous) gboolean : Read / Write
+  "row-spacing"(row_spacings) guint           : Read / Write
+  "column-spacing"(col_spacings) guint        : Read / Write
+  method attach :
+    "[>`widget] obj -> left:int -> top:int -> width:int -> height:int -> unit"
+}
+
 class SizeGroup : GObject {
   "mode"                 GtkSizeGroupMode     : Read / Write
   method add_widget : "[>`widget] obj -> unit"

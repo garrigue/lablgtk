@@ -157,6 +157,49 @@ val table :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> table
 
+(** {3 GtkGrid} *)
+
+(** Pack widgets in regular patterns
+   @gtkdoc gtk GtkGrid *)
+class grid :
+  Gtk.grid obj ->
+  object
+    inherit GContainer.container_full
+    val obj : Gtk.grid obj
+    method attach :
+      left:int ->
+      top:int ->
+      ?width:int ->
+      ?height:int ->
+      GObj.widget -> unit
+    (** @param left column number to attach the left side of the widget to
+        @param top  row number to attach the top of the widget to
+        @param width default value is [1]
+        @param height default value is [1] *)
+    method set_baseline_row : int -> unit
+    method set_col_homogeneous : bool -> unit
+    method set_col_spacings : int -> unit
+    method set_row_homogeneous : bool -> unit
+    method set_row_spacings : int -> unit
+    method baseline_row : int
+    method col_homogeneous : bool
+    method col_spacings : int
+    method row_homogeneous : bool
+    method row_spacings : int
+end
+
+(** @gtkdoc gtk GtkGrid *)
+val grid :
+  ?baseline_row:int ->
+  ?row_homogeneous:bool ->
+  ?col_homogeneous:bool ->
+  ?row_spacings:int ->
+  ?col_spacings:int ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> grid
+
 (** {3 GtkFixed} *)
 
 (** A container which allows you to position widgets at fixed coordinates
