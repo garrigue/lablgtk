@@ -31,6 +31,9 @@
 #define GdkColor_val(val) ((GdkColor*)MLPointer_val(val))
 #define Val_GdkColor Val_pointer
 
+#define GdkRGBA_val(val) ((GdkRGBA*)MLPointer_val(val))
+#define Val_GdkRGBA Val_pointer
+
 #define GdkRectangle_val(val) ((GdkRectangle*)MLPointer_val(val))
 #define Val_GdkRectangle Val_pointer
 

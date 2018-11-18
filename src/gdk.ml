@@ -27,6 +27,7 @@ open Gaux
 open Gobject
 
 type color
+type rgba
 type colormap
 type visual
 type screen = [`gdkscreen] obj
