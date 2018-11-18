@@ -192,6 +192,10 @@ class color_button :
     method set_alpha : int -> unit
     method color : Gdk.color
     method set_color : Gdk.color -> unit
+    method rgba : Gdk.rgba
+    method set_rgba : Gdk.rgba -> unit
+    method show_editor : bool
+    method set_show_editor : bool -> unit
     method title : string
     method set_title : string -> unit
     method use_alpha : bool
@@ -203,7 +207,8 @@ class color_button :
     @gtkdoc gtk GtkColorButton
     @since GTK 2.4 *)
 val color_button :
-  ?color:Gdk.color ->
+  ?color:Gdk.color -> (** @deprecated GTK 3.4; exclusive of rgba *)
+  ?rgba:Gdk.rgba -> (** @since GTK 3.0 *)
   ?title:string ->
   ?packing:(GObj.widget -> unit) -> ?show:bool -> unit -> color_button
 

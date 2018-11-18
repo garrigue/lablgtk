@@ -569,6 +569,7 @@ CAMLprim value ml_g_object_set_property_dyn (value vobj, value prop, value arg)
   GType tp = internal_g_object_get_property_type(obj, String_val(prop));
   GValue val = {0};
   if (tp == G_TYPE_INVALID) return Val_unit; /* Silently ignore this error */
+  if (tp == G_TYPE_INVALID) printf("---- ERROR SET PROPERTY ----\n");
   g_value_init (&val, tp);
   g_value_set_mlvariant (&val, arg);
   g_object_set_property (obj, String_val(prop), &val);

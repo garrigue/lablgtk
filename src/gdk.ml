@@ -27,6 +27,7 @@ open Gaux
 open Gobject
 
 type color
+type rgba
 (* Removed in gtk3
 type colormap
 *)
