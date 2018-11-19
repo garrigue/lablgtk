@@ -318,14 +318,15 @@ CAMLprim value ml_gtk_widget_get_pointer (value w)
 }
 ML_2 (gtk_widget_is_ancestor, GtkWidget_val, GtkWidget_val, Val_bool)
 
-/* deprecated
+/* deprecated since 3.0 */
 ML_1 (gtk_widget_ensure_style, GtkWidget_val, Unit)
 ML_3 (gtk_widget_modify_fg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_bg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_text, GtkWidget_val, State_type_val, GdkColor_val,Unit)
-*/
 ML_3 (gtk_widget_modify_base, GtkWidget_val, State_type_val, GdkColor_val,Unit)
 ML_2 (gtk_widget_modify_font, GtkWidget_val, PangoFontDescription_val, Unit)
+/* end deprecated since 3.0 */
+
 ML_1 (gtk_widget_get_pango_context, GtkWidget_val, Val_PangoContext)
 ML_1 (gtk_widget_create_pango_context, GtkWidget_val, Val_PangoContext_new)
 ML_6 (gtk_widget_add_accelerator, GtkWidget_val, Signal_name_val,
@@ -337,7 +338,7 @@ ML_4 (gtk_widget_remove_accelerator, GtkWidget_val, GtkAccelGroup_val,
 
 ML_3 (gtk_widget_set_accel_path, 
       GtkWidget_val, String_val, GtkAccelGroup_val, Unit)
-/*
+/* deprecated since 2.0 (?)
 ML_1 (gtk_widget_lock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unlock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_accelerators_locked, GtkWidget_val, Val_bool)

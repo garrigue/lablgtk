@@ -191,18 +191,14 @@ and misc_ops : Gtk.widget obj ->
     method intersect : Gdk.Rectangle.t -> Gdk.Rectangle.t option
     method is_ancestor : widget -> bool
     method map : unit -> unit
-    (*
+    (* Deprecated since 3.0 *)
     method modify_bg : (Gtk.Tags.state_type * GDraw.color) list -> unit
-    *)
     method modify_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
-    (*
     method modify_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
-    *)
     method modify_font : Pango.font_description -> unit
-    (*
     method modify_font_by_name : string -> unit
-    *)
+    (* End deprecated since 3.0 *)
     method name : string
     method parent : widget option
     method pango_context : GPango.context
