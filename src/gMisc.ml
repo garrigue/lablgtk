@@ -200,3 +200,28 @@ let label ?text ?markup ?use_underline ?mnemonic_widget =
     pack_return (new label (Label.create p)) ~packing ~show))
 
 let label_cast w = new label (Label.cast w#as_widget)
+
+class color_selection obj = object
+  inherit [Gtk.color_selection] GObj.widget_impl obj
+  method connect = new GObj.widget_signals_impl obj
+  method set_border_width = set Container.P.border_width obj
+  inherit color_selection_props
+end
+
+let color_selection =
+  ColorSelection.make_params [] ~cont:(
+  GContainer.pack_container ~create:
+    (fun p -> new color_selection (ColorSelection.create p)))
+
+class font_selection obj = object
+  inherit [Gtk.font_selection] widget_impl obj
+  inherit font_selection_props
+  method event = new event_ops obj
+  method connect = new GObj.widget_signals_impl obj
+  method set_border_width = set Container.P.border_width obj
+end
+
+let font_selection =
+  FontSelection.make_params [] ~cont:(
+  GContainer.pack_container ~create:
+    (fun p -> new font_selection (FontSelection.create p)))
