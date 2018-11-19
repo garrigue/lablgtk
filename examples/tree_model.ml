@@ -151,6 +151,7 @@ let inspect_data_2 column (model : GTree.model) =
 
 	
 let main =
+  GMain.init ();
   let w = GWindow.window ~title:"GtkListStore test" () in
   w#connect#destroy GMain.quit ;
 
