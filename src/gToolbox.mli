@@ -48,7 +48,6 @@ val popup_menu : entries: menu_entry list -> button: int -> time: int32 -> unit
    of the clicked button (starting at 1), or 0 if the window is 
    savagedly destroyed.
    @param parent the parent window in the front of which it should be displayed
-   @param destroy_with_parent relevant when the box has a parent (default is false)
    @param title the title of the dialog
    @param buttons the list of button labels.
    @param default the index of the default answer
@@ -58,7 +57,6 @@ val popup_menu : entries: menu_entry list -> button: int -> time: int32 -> unit
 *)
 val question_box :
     ?parent:#GWindow.window_skel ->
-    ?destroy_with_parent:bool ->
     title:string ->
     buttons:string list ->
     ?default:int -> ?icon:#GObj.widget -> string -> int
@@ -66,7 +64,6 @@ val question_box :
 (**This function is used to display a message in a dialog box with just an Ok button.
    We use [question_box] with just an ok button.
    @param parent the parent window in the front of which it should be displayed
-   @param destroy_with_parent relevant when the box has a parent (default is false)
    @param title the title of the dialog
    @param icon a widget (usually a pixmap) which can be displayed on the left
      of the window.
@@ -74,12 +71,13 @@ val question_box :
    @param message the text to display
 *)
 val message_box :
-    ?parent:#GWindow.window_skel -> ?destroy_with_parent:bool ->
+    ?parent:#GWindow.window_skel ->
     title:string -> ?icon:#GObj.widget -> ?ok:string -> string -> unit
 
 (** Make the user type in a string. 
    @return [None] if the user clicked on cancel, or [Some s] if the user
    clicked on the ok button.
+   @param parent the parent window in the front of which it should be displayed
    @param title the title of the dialog
    @param ok the text for the confirmation button (default is "Ok")
    @param cancel the text for the cancel button (default is "Cancel")
@@ -87,12 +85,14 @@ val message_box :
    @param message the text to display
 *)
 val input_string :
+    ?parent:#GWindow.window_skel ->
     title:string ->
     ?ok:string -> ?cancel:string -> ?text:string -> string -> string option
 
 (** Make the user type in a text.
    @return [None] if the user clicked on cancel, or [Some s] if the user
    clicked on the ok button.
+   @param parent the parent window in the front of which it should be displayed
    @param title the title of the dialog
    @param ok the text for the confirmation button (default is "Ok")
    @param cancel the text for the cancel button (default is "Cancel")
@@ -100,6 +100,7 @@ val input_string :
    @param message the text to display
 *)
 val input_text :
+    ?parent:#GWindow.window_skel ->
     title:string ->
       ?ok:string -> ?cancel:string -> ?text:string -> string -> string option
 
@@ -148,6 +149,7 @@ class ['a] tree_selection :
    if the user canceled the selection.
 *)
 val tree_selection_dialog :
+  ?parent:#GWindow.window_skel ->
   tree:'a tree ->
   label:('a -> string) ->
   info:('a -> string) ->

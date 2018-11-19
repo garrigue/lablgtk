@@ -70,8 +70,9 @@ let popup_menu ~entries =
 let mOk = "Ok"
 let mCancel = "Cancel"
 
-let question_box ?parent ?destroy_with_parent ~title  ~buttons ?(default=1) ?icon message =
+let question_box ?parent ~title  ~buttons ?(default=1) ?icon message =
   let button_nb = ref 0 in
+  let destroy_with_parent = Gaux.may_map ~f:(fun _ -> true) parent in
   let window = GWindow.dialog ?parent ?destroy_with_parent ~modal:true ~title () in
   let hbox = GPack.hbox ~border_width:10 ~packing:window#vbox#add () in
   let bbox = window#action_area in
@@ -103,14 +104,15 @@ let question_box ?parent ?destroy_with_parent ~title  ~buttons ?(default=1) ?ico
   !button_nb
 
 
-let message_box ?parent ?destroy_with_parent ~title ?icon ?(ok=mOk) message =
-  ignore (question_box ?parent ?destroy_with_parent ?icon ~title message ~buttons:[ ok ])
+let message_box ?parent ~title ?icon ?(ok=mOk) message =
+  ignore (question_box ?parent ?icon ~title message ~buttons:[ ok ])
 
 
-let input_widget ~widget ~event ~get_text ~bind_ok ~expand
+let input_widget ?parent ~widget ~event ~get_text ~bind_ok ~expand
     ~title ?(ok=mOk) ?(cancel=mCancel) message =
   let retour = ref None in
-  let window = GWindow.dialog ~title ~modal:true () in
+  let destroy_with_parent = Gaux.may_map ~f:(fun _ -> true) parent in
+  let window = GWindow.dialog ?parent ?destroy_with_parent ~title ~modal:true () in
   window#connect#destroy ~callback: GMain.Main.quit;
   let main_box = window#vbox in
   let hbox_boutons = window#action_area in
@@ -152,17 +154,17 @@ let input_widget ~widget ~event ~get_text ~bind_ok ~expand
 
   !retour
 
-let input_string ~title ?ok ?cancel ?(text="") message =
+let input_string ?parent ~title ?ok ?cancel ?(text="") message =
   let we_chaine = GEdit.entry ~text () in
   if text <> "" then
     we_chaine#select_region 0 (we_chaine#text_length);
-  input_widget ~widget:we_chaine#coerce ~event:we_chaine#event
+  input_widget ?parent ~widget:we_chaine#coerce ~event:we_chaine#event
     ~get_text:(fun () -> we_chaine#text) ~bind_ok:true
     ~expand: false
     ~title ?ok ?cancel message
 
 
-let input_text ~title ?ok ?cancel ?(text="") message =
+let input_text ?parent ~title ?ok ?cancel ?(text="") message =
   let wscroll = GBin.scrolled_window
       ~vpolicy: `AUTOMATIC
       ~hpolicy: `AUTOMATIC
@@ -175,7 +177,7 @@ let input_text ~title ?ok ?cancel ?(text="") message =
       `SEL_BOUND
       ~where:wview_chaine#buffer#start_iter;
   end;
-  input_widget ~widget:wscroll#coerce ~event:wview_chaine#event
+  input_widget ?parent ~widget:wscroll#coerce ~event:wview_chaine#event
     ~get_text: wview_chaine#buffer#get_text
     ~bind_ok:false ~expand: true ~title ?ok ?cancel message
 
@@ -264,10 +266,11 @@ class ['a] tree_selection ~tree ~label ~info ?packing ?show () =
       insert_node wtree tree
   end
 
-let tree_selection_dialog ~tree ~label ~info ~title
+let tree_selection_dialog ?parent ~tree ~label ~info ~title
     ?(ok=mOk) ?(cancel=mCancel) ?(width=300) ?(height=400)
     ?show () =
-  let window = GWindow.dialog ~modal:true ~title ~width ~height ?show () in
+  let destroy_with_parent = Gaux.may_map ~f:(fun _ -> true) parent in
+  let window = GWindow.dialog ?parent ?destroy_with_parent ~modal:true ~title ~width ~height ?show () in
   (* the tree selection box *)
   let ts = new tree_selection ~tree ~label ~info
       ~packing:window#vbox#add () 
