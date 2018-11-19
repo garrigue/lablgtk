@@ -72,6 +72,9 @@ type tag_property = [
   | `LANGUAGE_SET of bool
   | `LEFT_MARGIN of int
   | `LEFT_MARGIN_SET of bool
+  | `PARAGRAPH_BACKGROUND of string
+  | `PARAGRAPH_BACKGROUND_GDK of Gdk.color
+  | `PARAGRAPH_BACKGROUND_SET of bool
   | `PIXELS_ABOVE_LINES of int
   | `PIXELS_ABOVE_LINES_SET of bool
   | `PIXELS_BELOW_LINES of int
