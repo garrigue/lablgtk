@@ -1,5 +1,14 @@
 LablGTK changes log
 
+2018.11.19 [Hugo Herbelin]
+  * In GToolbox, add support for declaring dialogs transient for a parent.
+
+2018.11.12 [Maxence]
+  * Add some properties to GText.tag
+
+2018.08.25 [Francois Bobot]
+  * Add require for threads in META
+
 In Lablgtk-2.18.6:
 
 2017.10.30 [Jacques]
