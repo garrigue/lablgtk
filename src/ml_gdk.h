@@ -41,6 +41,9 @@
 
 #define GdkDrawable_val(val) check_cast(GDK_DRAWABLE,val)
 
+#define Cairo_val(val) ((cairo_t*)MLPointer_val(val))
+#define Val_Cairo Val_pointer
+
 #define GdkWindow_val(val) check_cast(GDK_WINDOW,val)
 #define Val_GdkWindow Val_GAnyObject
 

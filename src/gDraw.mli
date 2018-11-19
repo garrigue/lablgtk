@@ -152,6 +152,10 @@ val pixmap_from_xpm_d :
   ?colormap:colormap -> ?transparent:color -> unit -> pixmap
 *)
 
+module Cairo : sig
+  val create : window -> cairo
+end
+
 (** {3 GdkDragContext} *)
 
 (** @gtkdoc gdk gdk-Drag-and-Drop *)

@@ -215,6 +215,8 @@ let pixmap_from_xpm_d ~data ?window ?colormap ?transparent () =
   new pixmap pm ?colormap ~mask
 *)
 
+module Cairo = Cairo
+
 class drag_context context = object
   val context = context
   method status ?(time=Int32.zero) act = DnD.drag_status context act ~time

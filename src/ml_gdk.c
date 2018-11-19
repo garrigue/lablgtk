@@ -327,6 +327,10 @@ Unsupported_22(gdk_display_get_default)
 Unsupported_22(gdk_display_get_window_at_pointer)
 #endif
 
+/* Cairo */
+
+ML_1 (gdk_cairo_create, GdkWindow_val, Val_Cairo)
+
 /* Properties */
 
 ML_2 (gdk_atom_intern, String_val, Int_val, Val_GdkAtom)

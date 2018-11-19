@@ -36,6 +36,7 @@ type screen = [`gdkscreen] obj
 type region
 type gc
 type window = [`gdkwindow] obj
+type cairo
 type atom
 type keysym = int
 type +'a event
@@ -414,4 +415,10 @@ module Display = struct
     get_window_at_pointer
       (match display with None -> default ()
       | Some disp -> disp)
+end
+
+module Cairo = struct
+  external create :
+    window -> cairo
+    = "ml_gdk_cairo_create"
 end

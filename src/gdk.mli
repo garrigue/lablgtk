@@ -34,6 +34,7 @@ type screen = [`gdkscreen] obj
 type region
 type gc
 type window = [`gdkwindow] obj
+type cairo
 type atom
 type keysym = int
 type +'a event
@@ -449,4 +450,8 @@ end
 
 module Windowing : sig
   val platform : [`QUARTZ | `WIN32 | `X11]
+end
+
+module Cairo : sig
+  val create : window -> cairo
 end
