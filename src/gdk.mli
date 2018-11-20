@@ -25,7 +25,9 @@
 open Gobject
 
 type color
+(* Removed in gtk3
 type colormap
+*)
 type visual
 type screen = [`gdkscreen] obj
 type region
@@ -265,9 +267,9 @@ module Visual :
     val depth : visual -> int
   end
 
-(*
 module Color :
   sig
+(* Removed in GdkColor 3.0
     val get_system_colormap : unit -> colormap
     val get_colormap : ?privat:bool -> visual -> colormap
     val get_visual : colormap -> visual
@@ -279,12 +281,14 @@ module Color :
       | `WHITE
     ]
     val alloc : colormap:colormap -> spec -> color
+*)
     val red : color -> int
     val blue : color -> int
     val green : color -> int
     val pixel : color -> int
+    val color_parse : string -> color
+    val color_to_string : color -> string
   end
-*)
 
 module Rectangle :
   sig

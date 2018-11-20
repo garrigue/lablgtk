@@ -25,8 +25,10 @@
 #define GdkAtom_val(val) ((GdkAtom)Long_val(val))
 #define Val_GdkAtom(val) (Val_long((long)val))
 
+/* Removed in gtk3
 #define GdkColormap_val(val) check_cast(GDK_COLORMAP,val)
 #define Val_GdkColormap Val_GAnyObject
+*/
 
 #define GdkColor_val(val) ((GdkColor*)MLPointer_val(val))
 #define Val_GdkColor Val_pointer
