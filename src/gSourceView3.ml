@@ -62,9 +62,11 @@ let text_tag_property_of_source_tag_property = function
   | `STRIKETHROUGH p -> `STRIKETHROUGH p
   | `UNDERLINE p -> `UNDERLINE (if p then `SINGLE else `NONE)
 
+(* Gtk.Color deactivated
 let color_of_string s =
   Gdk.Color.alloc ~colormap: (Gdk.Color.get_system_colormap())
     (`NAME s)
+*)
 
 (** {2 GtkSourceStyleScheme} *)
 
@@ -564,7 +566,7 @@ object (self)
   method connect = new source_view_signals obj'
 
   method set_cursor_color = SourceView.set_cursor_color obj
-  method set_cursor_color_by_name s = SourceView.set_cursor_color obj (color_of_string s)
+(*  method set_cursor_color_by_name s = SourceView.set_cursor_color obj (color_of_string s)*)
 
   method draw_spaces = SourceView.get_draw_spaces obj
   method set_draw_spaces flags = SourceView.set_draw_spaces obj flags
@@ -590,6 +592,7 @@ let source_view ?source_buffer ?draw_spaces =
 
 (** {2 Misc} *)
 
+(*
 let iter_forward_search (iter:GText.iter) flags
     ~start ~stop ?limit str =
   let limit = map_opt (fun x -> x#as_iter) limit in
@@ -607,3 +610,4 @@ let iter_backward_search (iter:GText.iter) flags
   with
     None -> None
   | Some (it1,it2) -> Some (new GText.iter it1, new GText.iter it2)
+*)
