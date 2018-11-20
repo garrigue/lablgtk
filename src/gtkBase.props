@@ -293,9 +293,11 @@ class Plug abstract wrapsig : Bin {
 }
 
 class Socket wrapsig : Container {
+(*
   method add_id : "Gdk.native_window -> unit"
   method get_id : "Gdk.native_window"
   method get_plug_window : "Gdk.window"
+*)
   signal plug_added
   signal plug_removed
 }
