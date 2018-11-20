@@ -41,9 +41,9 @@
 #include "ml_gtktext.h"
 #include "gtk_tags.h"
 #include "gdk_tags.h"
-#include "sourceView2_tags.h"
+#include "sourceView3_tags.h"
 #include <string.h>
-#include "sourceView2_tags.c"
+#include "sourceView3_tags.c"
 
 Make_OptFlags_val(Source_search_flag_val)
 

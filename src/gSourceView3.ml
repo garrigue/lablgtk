@@ -22,7 +22,7 @@
 
 open Gaux
 open GtkSourceView3
-open SourceView2Enums
+open SourceView3Enums
 open Gobject
 open Gtk
 open GtkBase
@@ -68,7 +68,7 @@ let color_of_string s =
 
 (** {2 GtkSourceStyleScheme} *)
 
-class source_style_scheme (obj: GtkSourceView2_types.source_style_scheme obj) =
+class source_style_scheme (obj: GtkSourceView3_types.source_style_scheme obj) =
 object(self)
   method as_source_style_scheme = obj
   method name = SourceStyleScheme.get_name obj
@@ -79,7 +79,7 @@ end
 (** {2 GtkSourceStyleSchemeManager} *)
 
 class source_style_scheme_manager
-	(obj: GtkSourceView2_types.source_style_scheme_manager obj) =
+	(obj: GtkSourceView3_types.source_style_scheme_manager obj) =
   object(self)
     val obj = obj
     inherit source_style_scheme_manager_props
@@ -104,19 +104,19 @@ let source_style_scheme_manager ~default =
 (** {2 GtkSourceCompletionInfo} *)
 
 class source_completion_info_signals
-  (obj' : GtkSourceView2_types.source_completion_info obj) =
+  (obj' : GtkSourceView3_types.source_completion_info obj) =
   object
     inherit GContainer.container_signals_impl obj'
     inherit source_completion_info_sigs
   end
 
 class source_completion_info 
-  (obj' : ([> GtkSourceView2_types.source_completion_info ] as 'a) obj) =
+  (obj' : ([> GtkSourceView3_types.source_completion_info ] as 'a) obj) =
   object
     inherit GWindow.window obj'
     inherit source_completion_info_props
     method as_source_completion_info =
-      (obj :> GtkSourceView2_types.source_completion_info obj)
+      (obj :> GtkSourceView3_types.source_completion_info obj)
     method widget =
       new GObj.widget (SourceCompletionInfo.get_widget obj)
     method set_widget (w : GObj.widget) =
@@ -126,14 +126,14 @@ class source_completion_info
 (** {2 GtkSourceCompletionProposal} *)
 
 class source_completion_proposal_signals
-  (obj' : GtkSourceView2_types.source_completion_proposal obj) =
+  (obj' : GtkSourceView3_types.source_completion_proposal obj) =
   object
-    inherit ['a] gobject_signals (obj' : [> GtkSourceView2_types.source_completion_proposal ] obj)
+    inherit ['a] gobject_signals (obj' : [> GtkSourceView3_types.source_completion_proposal ] obj)
     inherit source_completion_proposal_sigs
   end
 
 class source_completion_proposal 
-  (obj : GtkSourceView2_types.source_completion_proposal obj) =
+  (obj : GtkSourceView3_types.source_completion_proposal obj) =
   object
     val obj = obj
     method connect = new source_completion_proposal_signals obj
@@ -142,7 +142,7 @@ class source_completion_proposal
   end
 
 class source_completion_item
-  (obj : GtkSourceView2_types.source_completion_proposal obj) =
+  (obj : GtkSourceView3_types.source_completion_proposal obj) =
   object
     inherit source_completion_proposal obj
     inherit source_completion_item_props
@@ -162,7 +162,7 @@ let source_completion_item_from_stock ?(label = "") ?(text = "") ~stock ~info ()
 (** {2 GtkSourceCompletionProvider} *)
 
 class source_completion_provider
-  (obj' : GtkSourceView2_types.source_completion_provider obj) =
+  (obj' : GtkSourceView3_types.source_completion_provider obj) =
   object
     val obj = obj'
     method as_source_completion_provider = obj
@@ -202,14 +202,14 @@ class source_completion_provider
 (** {2 GtkSourceCompletionContext} *)
 
 and source_completion_context_signals
-  (obj' : GtkSourceView2_types.source_completion_context obj) =
+  (obj' : GtkSourceView3_types.source_completion_context obj) =
   object
-    inherit ['a] gobject_signals (obj' : [> GtkSourceView2_types.source_completion_context ] obj)
+    inherit ['a] gobject_signals (obj' : [> GtkSourceView3_types.source_completion_context ] obj)
     inherit source_completion_context_sigs
   end
 
 and source_completion_context
-  (obj' : GtkSourceView2_types.source_completion_context obj) =
+  (obj' : GtkSourceView3_types.source_completion_context obj) =
   object
     val obj = obj'
     val iter_prop = {
@@ -276,7 +276,7 @@ let source_completion_provider (p : custom_completion_provider) : source_complet
 
 class source_completion_signals obj' =
 object (self)
-  inherit ['a] gobject_signals (obj' : [> GtkSourceView2_types.source_completion] obj)
+  inherit ['a] gobject_signals (obj' : [> GtkSourceView3_types.source_completion] obj)
   inherit source_completion_sigs
   method populate_context ~callback =
     let callback obj = callback (new source_completion_context obj) in
@@ -284,7 +284,7 @@ object (self)
 end
 
 class source_completion
-  (obj : GtkSourceView2_types.source_completion obj) =
+  (obj : GtkSourceView3_types.source_completion obj) =
   object
     val obj = obj
     inherit source_completion_props as super
@@ -316,7 +316,7 @@ class source_completion
 
 (** {2 GtkSourceLanguage} *)
 
-class source_language (obj: GtkSourceView2_types.source_language obj) =
+class source_language (obj: GtkSourceView3_types.source_language obj) =
 object (self)
   method as_source_language = obj
   val obj = obj
@@ -337,7 +337,7 @@ end
 (** {2 GtkSourceLanguageManager} *)
 
 class source_language_manager
-  (obj: GtkSourceView2_types.source_language_manager obj) =
+  (obj: GtkSourceView3_types.source_language_manager obj) =
 object (self)
   method get_oid = Gobject.get_oid obj
   method as_source_language_manager = obj
@@ -365,7 +365,7 @@ let source_language_manager ~default =
 
 (** {2 GtkSourceMark} *)
 
-class source_mark  (obj: GtkSourceView2_types.source_mark obj) =
+class source_mark  (obj: GtkSourceView3_types.source_mark obj) =
 object (self)
   method coerce = (`MARK (GtkText.Mark.cast obj):GText.mark)
   method as_source_mark = obj
@@ -386,12 +386,12 @@ let source_mark ?category () =
 
 class source_undo_manager_signals obj' =
 object (self)
-  inherit ['a] gobject_signals (obj' : [> GtkSourceView2_types.source_undo_manager] obj)
+  inherit ['a] gobject_signals (obj' : [> GtkSourceView3_types.source_undo_manager] obj)
   inherit source_undo_manager_sigs
 end
 
 class source_undo_manager
-  (obj : GtkSourceView2_types.source_undo_manager obj) =
+  (obj : GtkSourceView3_types.source_undo_manager obj) =
   object
     val obj = obj
     inherit source_undo_manager_props
@@ -429,12 +429,12 @@ let source_undo_manager (manager : custom_undo_manager) : source_undo_manager =
 
 class source_buffer_signals obj' =
 object
-  inherit ['a] gobject_signals (obj' : [> GtkSourceView2_types.source_buffer] obj)
+  inherit ['a] gobject_signals (obj' : [> GtkSourceView3_types.source_buffer] obj)
   inherit GText.buffer_signals_skel
   inherit source_buffer_sigs
 end
 
-and source_buffer (_obj: GtkSourceView2_types.source_buffer obj) =
+and source_buffer (_obj: GtkSourceView3_types.source_buffer obj) =
 object (self)
   inherit GText.buffer_skel _obj as text_buffer
   val obj = _obj
@@ -545,12 +545,12 @@ let source_buffer ?(language:source_language option)
 
 class source_view_signals obj' =
 object
-  inherit widget_signals_impl (obj' : [> GtkSourceView2_types.source_view] obj)
+  inherit widget_signals_impl (obj' : [> GtkSourceView3_types.source_view] obj)
   inherit GText.view_signals obj'
   inherit source_view_sigs
 end
 
-class source_view (obj': GtkSourceView2_types.source_view obj) =
+class source_view (obj': GtkSourceView3_types.source_view obj) =
 object (self)
   inherit GText.view_skel obj'
   inherit source_view_props

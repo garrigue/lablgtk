@@ -26,8 +26,8 @@
 prefix "Gtk"
 
 header {
-  open GtkSourceView2_types
-  open SourceView2Enums
+  open GtkSourceView3_types
+  open SourceView3Enums
 }
 
 boxed {
