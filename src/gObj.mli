@@ -251,7 +251,7 @@ and widget : ([> Gtk.widget] as 'a) obj ->
 (** @gtkdoc gtk GtkWidget *)
 and misc_signals : Gtk.widget obj ->
   object ('b)
-    inherit [Gtk.widget] gobject_signals
+    inherit gtkobj_signals
     method hide : callback:(unit -> unit) -> GtkSignal.id
     method map : callback:(unit -> unit) -> GtkSignal.id
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id
