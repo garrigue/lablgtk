@@ -33,6 +33,7 @@ module Tags = struct
   type expand_type = [ `X|`Y|`BOTH|`NONE ]
   include (GtkEnums : module type of GtkEnums
                       with module Conv := GtkEnums.Conv)
+  type position = position_type
 end
 open Tags
 
