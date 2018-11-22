@@ -112,15 +112,8 @@ class event_ops obj = object
   method send : Gdk.Tags.event_type Gdk.event -> bool = Widget.event obj
 end
 
-let get_color = function
-   | `COLOR col -> col
-   | `WHITE -> Gdk.Color.color_parse "white"
-   | `BLACK -> Gdk.Color.color_parse "black"
-   | `NAME s -> Gdk.Color.color_parse s
-   | `RGB (r,g,b) -> Gdk.Color.color_parse (Printf.sprintf "#%04X%04X%04X" r g b)
-
 let iter_setcol set style =
-  List.iter ~f:(fun (state, color) -> set style state (get_color (color:GDraw.color)))
+  List.iter ~f:(fun (state, color) -> set style state (GDraw.color color))
 
 class style st = object
   val style = st
@@ -128,7 +121,6 @@ class style st = object
   method copy = {< style = Style.copy style >}
 (*  method colormap = Style.get_colormap style*)
 (*  method font = Style.get_font style*)
-(*
   method bg = Style.get_bg style
   method set_bg = iter_setcol Style.set_bg style
   method fg = Style.get_fg style
@@ -143,7 +135,6 @@ class style st = object
   method set_base = iter_setcol Style.set_base style
   method text = Style.get_text style
   method set_text = iter_setcol Style.set_text style
-*)
 (*  method set_font = Style.set_font style*)
  end
 
@@ -264,7 +255,7 @@ and misc_ops obj = object (self)
   method unmap () = Widget.unmap obj
   method realize () = Widget.realize obj
   method unrealize () = Widget.unrealize obj
-  (* method draw = Widget.draw obj *)
+  method draw = Widget.draw obj
   method activate () = Widget.activate obj
   method reparent (w : widget) =  Widget.reparent obj w#as_widget
 (*  method popup = popup obj *)
@@ -295,9 +286,7 @@ and misc_ops obj = object (self)
     and height = may_map height ~f:
         (fun h -> h * GPango.to_pixels (metrics#ascent+metrics#descent)) in
     self#set_size_request ?width ?height ()
-  (*
   method set_style (style : style) = set P.style obj style#as_style
-  *)
   (* Deprecated since 3.0 *)
   method modify_fg = iter_setcol Widget.modify_fg obj
   method modify_bg = iter_setcol Widget.modify_bg obj
@@ -318,6 +307,7 @@ and misc_ops obj = object (self)
   method visual = Widget.get_visual obj
   method visual_depth = Gdk.Visual.depth (Widget.get_visual obj)
   method pointer = Widget.get_pointer obj
+  method style = new style (get P.style obj)
   method visible = get P.visible obj
   method parent =
     may_map (fun w -> new widget (unsafe_cast w)) (get P.parent obj)

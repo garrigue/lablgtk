@@ -148,7 +148,6 @@ class Calendar wrap wrapsig : Widget {
   method select_day : "int -> unit"
   method mark_day : "int -> unit"
   method unmark_day : "int -> unit"
-  method get_day_is_marked : "int -> bool"
   method clear_marks
   method set_display_options : "Gtk.Tags.calendar_display_options list -> unit"
   method get_date : "int * int * int" (* year * month * day *)
@@ -164,5 +163,4 @@ class Calendar wrap wrapsig : Widget {
 class DrawingArea : Widget {
 }
 
-(* deprecated 3.4
-class Separator hv : Widget {} *)
+class Separator hv : Widget {}

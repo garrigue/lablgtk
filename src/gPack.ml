@@ -83,6 +83,8 @@ class table obj = object
       ?xpadding ?ypadding w =
     Table.attach obj (as_widget w) ~left ~top ?right ?bottom ?expand
       ?fill ?shrink ?xpadding ?ypadding
+  method set_row_spacing = Table.set_row_spacing obj
+  method set_col_spacing = Table.set_col_spacing obj
 end
 
 let table =

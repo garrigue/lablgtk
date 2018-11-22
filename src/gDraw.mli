@@ -36,9 +36,9 @@ type color =
   | `NAME of string
   | `RGB of int * int * int]
 
-(*
-val color : ?colormap:colormap -> color -> Gdk.color
+val color : color -> Gdk.color
 
+(*
 type optcolor =
   [ `COLOR of Gdk.color
   | `WHITE

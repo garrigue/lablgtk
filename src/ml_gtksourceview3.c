@@ -45,9 +45,13 @@
 #include <string.h>
 #include "sourceView3_tags.c"
 
-/*Make_OptFlags_val(Source_search_flag_val)*/
+/* Not in gtksourceview 3.0
+Make_OptFlags_val(Source_search_flag_val)
+*/
 
+/* Already in ml_gobject.c
 Make_Val_final_pointer_ext(GObject, _sink, g_object_ref_sink, ml_g_object_unref_later, 20)
+*/
 
 CAMLprim value ml_gtk_source_completion_init(value unit)
 {       /* Since these are declared const, must force gcc to call them! */
@@ -861,6 +865,7 @@ gtk_modify_cursor_color (GtkWidget *textview,
 
 ML_2(gtk_modify_cursor_color,GtkWidget_val,GdkColor_val,Unit);
 
+/* Not anymore in gtksourceview3; ml_gtk_source_iter_*_search told to be now in gtk+
 #define Make_search(dir) \
 CAMLprim value ml_gtk_source_iter_##dir##_search (value ti,\
                                                 value str,\
@@ -889,7 +894,7 @@ CAMLprim value ml_gtk_source_iter_##dir##_search (value ti,\
       Store_field(coup,1,Val_GtkTextIter(ti2));\
       Store_field(res,0,coup);};\
   CAMLreturn(res);}
-/* Told to be now in gtk+
+
 Make_search(forward);
 Make_search(backward);
 ML_bc6(ml_gtk_source_iter_forward_search);

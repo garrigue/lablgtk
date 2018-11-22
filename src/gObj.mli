@@ -126,6 +126,37 @@ class event_ops : [> widget] obj ->
     method send : GdkEvent.any -> bool
   end
 
+(** @gtkdoc gtk GtkStyle *)
+class style : Gtk.style ->
+  object ('a)
+    val style : Gtk.style
+    method as_style : Gtk.style
+    method base : Gtk.Tags.state_type -> Gdk.color
+    method bg : Gtk.Tags.state_type -> Gdk.color
+(*
+    method colormap : Gdk.colormap
+*)
+    method copy : 'a
+    method dark : Gtk.Tags.state_type -> Gdk.color
+    method fg : Gtk.Tags.state_type -> Gdk.color
+(*
+    method font : Gdk.font
+*)
+    method light : Gtk.Tags.state_type -> Gdk.color
+    method mid : Gtk.Tags.state_type -> Gdk.color
+    method set_bg : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_dark : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
+(*
+    method set_font : Gdk.font -> unit
+*)
+    method set_light : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_mid : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method text : Gtk.Tags.state_type -> Gdk.color
+  end
+
 (** @gtkdoc gtk gtk-Selections *)
 class selection_data :
   Gtk.selection_data ->
@@ -183,6 +214,7 @@ and misc_ops : Gtk.widget obj ->
     method connect : misc_signals
     method convert_selection : target:string -> ?time:int32 -> Gdk.atom -> bool
     method create_pango_context : GPango.context_rw
+    method draw : Gdk.Rectangle.t option -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
     method grab_selection : ?time:int32 -> Gdk.atom -> bool
@@ -219,11 +251,13 @@ and misc_ops : Gtk.widget obj ->
     method set_size_chars :
       ?desc:Pango.font_description ->
       ?lang:string -> ?width:int -> ?height:int -> unit -> unit
+    method set_style : style -> unit
     method set_size_request : ?width:int -> ?height:int -> unit -> unit
     method set_tooltip_markup : string -> unit
     method set_tooltip_text : string -> unit
     method show : unit -> unit
     method show_all : unit -> unit
+    method style : style
     method tooltip_markup : string
     method tooltip_text : string
     method toplevel : widget

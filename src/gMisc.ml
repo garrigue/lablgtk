@@ -30,6 +30,10 @@ open GtkMisc
 open OgtkMiscProps
 open GObj
 
+let separator dir ?packing ?show () =
+  let w = Separator.create dir [] in
+  pack_return (new widget_full w) ~packing ~show
+
 class statusbar_context obj ctx = object (self)
   val obj : statusbar obj = obj
   val context : Gtk.statusbar_context = ctx
@@ -126,7 +130,6 @@ class calendar obj = object
   method select_day = Calendar.select_day obj
   method mark_day = Calendar.mark_day obj
   method unmark_day = Calendar.unmark_day obj
-  method day_is_marked = Calendar.get_day_is_marked obj
   method clear_marks = Calendar.clear_marks obj
   method date = Calendar.get_date obj
   method set_display_options = Calendar.set_display_options obj

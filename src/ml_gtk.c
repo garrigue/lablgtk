@@ -70,7 +70,9 @@ CAMLprim value ml_gtkwindow_init(value unit)
 {
     /* Since these are declared const, must force gcc to call them! */
     GType t =
-        gtk_message_dialog_get_type()
+        gtk_message_dialog_get_type() +
+        gtk_color_selection_dialog_get_type() +
+        gtk_font_selection_dialog_get_type() 
 /*
 #ifndef _WIN32
         + gtk_plug_get_type()
@@ -157,7 +159,7 @@ ML_2 (gtk_style_attach, GtkStyle_val, GdkWindow_val, Val_GtkStyle)
 ML_1 (gtk_style_detach, GtkStyle_val, Unit)
 ML_3 (gtk_style_set_background, GtkStyle_val, GdkWindow_val, State_type_val,
       Unit)
-/*
+/* removed in 3.0
 ML_6 (gtk_draw_hline, GtkStyle_val, GdkWindow_val, State_type_val,
       Int_val, Int_val, Int_val, Unit)
 ML_bc6 (ml_gtk_draw_hline)
@@ -165,7 +167,6 @@ ML_6 (gtk_draw_vline, GtkStyle_val, GdkWindow_val, State_type_val,
       Int_val, Int_val, Int_val, Unit)
 ML_bc6 (ml_gtk_draw_vline)
 */
-/*
 Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,
                       bg, Val_copy)
 Make_Array_Setter (gtk_style_set, GtkStyle_val, State_type_val,
@@ -194,6 +195,7 @@ Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,
                       text, Val_copy)
 Make_Array_Setter (gtk_style_set, GtkStyle_val, State_type_val,
                    *GdkColor_val, text)
+/* removed in 3.0
 Make_Extractor (gtk_style_get, GtkStyle_val, colormap, Val_GdkColormap)
 Make_Extractor (gtk_style_get, GtkStyle_val, depth, Val_int)
 ML_1 (gtk_style_get_font, GtkStyle_val, Val_GdkFont)
@@ -263,8 +265,8 @@ ML_1 (gtk_widget_realize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unrealize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_draw, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_resize, GtkWidget_val, Unit)
-/* ML_2 (gtk_widget_draw, GtkWidget_val,
-      Option_val(arg2,GdkRectangle_val,NULL) Ignore, Unit) */
+ML_2 (gtk_widget_draw, GtkWidget_val,
+      Option_val(arg2,GdkRectangle_val,NULL) Ignore, Unit)
 /*
 ML_1 (gtk_widget_draw_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_draw_default, GtkWidget_val, Unit)

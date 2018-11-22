@@ -54,4 +54,6 @@ module Image = Image
 
 module Label = Label
 
+module Separator = Separator
+
 module FontSelection = FontSelection

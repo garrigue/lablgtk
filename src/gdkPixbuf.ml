@@ -96,7 +96,8 @@ let from_data ~width ~height ?(bits=8) ?rowstride ?(has_alpha=false) data =
   then invalid_arg "GdkPixbuf.from_data";
   _from_data data ~has_alpha ~bits ~width ~height ~rowstride
 
-(*
+(* GtkPixbuf removed in gtk3
+
 external _get_from_drawable :
   pixbuf -> [>`drawable] obj -> colormap -> src_x:int -> src_y:int ->
   dest_x:int -> dest_y:int -> width:int -> height:int -> unit

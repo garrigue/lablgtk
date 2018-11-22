@@ -62,6 +62,7 @@ class type chooser_signals =
     method confirm_overwrite : 
       callback:(unit -> Tags.file_chooser_confirmation) -> GtkSignal.id (**  since Gtk 2.8 *)
   method notify_action : callback:(Tags.file_chooser_action -> unit) -> GtkSignal.id
+  method notify_create_folders : callback:(bool -> unit) -> GtkSignal.id
   method notify_do_overwrite_confirmation : callback:(bool -> unit) -> GtkSignal.id
   method notify_extra_widget : callback:(GObj.widget -> unit) -> GtkSignal.id
   method notify_local_only : callback:(bool -> unit) -> GtkSignal.id
@@ -78,6 +79,8 @@ class type chooser =
   object
     method set_action : Tags.file_chooser_action -> unit
     method action : Tags.file_chooser_action
+    method set_create_folders : bool -> unit
+    method create_folders : bool
     method set_local_only : bool -> unit
     method local_only : bool
     method set_select_multiple : bool -> unit
@@ -160,7 +163,7 @@ class chooser_widget :
     @gtkdoc gtk GtkFileChooserWidget *)
 val chooser_widget : 
   action:Tags.file_chooser_action ->
-  ?backend:string ->
+  ?filename:string ->
   ?packing:(GObj.widget -> unit) -> 
   ?show:bool ->
   unit ->
@@ -194,7 +197,7 @@ val chooser_button :
   action:Tags.file_chooser_action ->
   ?title:string ->
   ?width_chars:int ->
-  ?backend:string ->
+  ?filename:string ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

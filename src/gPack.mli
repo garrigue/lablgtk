@@ -138,9 +138,11 @@ class table :
     method homogeneous : bool
     method row_spacings : int
     method rows : int
+    method set_col_spacing : int -> int -> unit
     method set_col_spacings : int -> unit
     method set_columns : int -> unit
     method set_homogeneous : bool -> unit
+    method set_row_spacing : int -> int -> unit
     method set_row_spacings : int -> unit
     method set_rows : int -> unit
   end
@@ -266,13 +268,11 @@ class notebook_signals : [> Gtk.notebook] obj ->
     method create_window : callback:(page:GObj.widget -> x:int -> y:int -> unit) -> GtkSignal.id
     method move_focus_out : callback:(GtkEnums.direction_type -> unit) -> GtkSignal.id
     method notify_enable_popup : callback:(bool -> unit) -> GtkSignal.id
-    method notify_homogeneous_tabs : callback:(bool -> unit) -> GtkSignal.id
     method notify_scrollable : callback:(bool -> unit) -> GtkSignal.id
     method notify_show_border : callback:(bool -> unit) -> GtkSignal.id
     method notify_show_tabs : callback:(bool -> unit) -> GtkSignal.id
-    method notify_tab_hborder : callback:(int -> unit) -> GtkSignal.id
     method notify_tab_pos : callback:(GtkEnums.position_type -> unit) -> GtkSignal.id
-    method notify_tab_vborder : callback:(int -> unit) -> GtkSignal.id
+    method notify_group_name : callback:(string -> unit) -> GtkSignal.id
     method page_added : callback:(GObj.widget -> int -> unit) -> GtkSignal.id
     method page_removed : callback:(GObj.widget -> int -> unit) -> GtkSignal.id
     method page_reordered : callback:(GObj.widget -> int -> unit) -> GtkSignal.id
@@ -308,35 +308,29 @@ class notebook : Gtk.notebook obj ->
     method remove_page : int -> unit
     method reorder_child : widget -> int -> unit
     method set_enable_popup : bool -> unit
-    method set_homogeneous_tabs : bool -> unit
+    method set_group_name : string -> unit
     method set_page :
       ?tab_label:widget -> ?menu_label:widget -> widget -> unit
     method set_scrollable : bool -> unit
     method set_show_border : bool -> unit
     method set_show_tabs : bool -> unit
-    method set_tab_border : int -> unit
-    method set_tab_hborder : int -> unit
     method set_tab_reorderable : widget -> bool -> unit
-    method set_tab_vborder : int -> unit
     method set_tab_pos : Tags.position_type -> unit
+    method group_name : string
     method enable_popup : bool
-    method homogeneous_tabs : bool
     method scrollable : bool
     method show_border : bool
     method show_tabs : bool
-    method tab_hborder : int
     method tab_pos : Tags.position_type
-    method tab_vborder : int
   end
 
 (** @gtkdoc gtk GtkNotebook *)
 val notebook :
   ?enable_popup:bool ->
-  ?homogeneous_tabs:bool ->
+  ?group_name:string ->
   ?scrollable:bool ->
   ?show_border:bool ->
   ?show_tabs:bool ->
-  ?tab_border:int ->
   ?tab_pos:Tags.position_type ->
   ?border_width:int ->
   ?width:int ->

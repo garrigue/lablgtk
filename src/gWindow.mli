@@ -423,7 +423,7 @@ class ['a] file_chooser_dialog :
     @gtkdoc gtk GtkFileChooserDialog *)
 val file_chooser_dialog :
   action:GtkEnums.file_chooser_action ->
-  ?backend:string ->
+  ?filename:string ->
   ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->

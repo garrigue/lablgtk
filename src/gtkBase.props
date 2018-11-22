@@ -244,16 +244,7 @@ class Dialog wrap : Window {
   signal response : gint
 }
 
-(*
-class FileSelection abstract set wrap : Dialog {
-  "filename"             gchararray           : Read / Write
-  "select-multiple"      gboolean             : Read / Write
-  "show-fileops"         gboolean             : Read / Write
-}
-
-class ColorSelectionDialog : Dialog {}
-class FontSelectionDialog : Dialog {}
-class InputDialog : Dialog {} *)
+(* class InputDialog : Dialog {} *)
 
 class MessageDialog wrap : Dialog {
   "buttons"              GtkButtonsType       : Write / Construct Only

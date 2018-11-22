@@ -327,11 +327,11 @@ class ['a] file_chooser_dialog obj = object (self)
     self#add_select_button (GtkStock.convert_id s_id) v
 end
 
-let file_chooser_dialog ~action ?backend =
+let file_chooser_dialog ~action ?filename =
   make_dialog 
-    (Gobject.Property.may_cons 
-       GtkFile.FileChooser.P.file_system_backend backend
-       [ Gobject.param GtkFile.FileChooser.P.action action ])
+     [ Gobject.param GtkFile.FileChooser.P.action action ]
     ~create:(fun pl ->
       let w = GtkFile.FileChooser.dialog_create pl in
-      new file_chooser_dialog w)
+      let o = new file_chooser_dialog w in
+      Gaux.may ~f:o#set_filename filename;
+      o)

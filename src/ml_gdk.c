@@ -164,7 +164,6 @@ CAMLprim value ml_gdk_color_parse (char *spec)
         ml_raise_gdk ("color_parse");
     return Val_copy(color);
 }
-
 ML_1 (gdk_color_to_string, GdkColor_val, Val_string)
 
 /* Removed in GdkColor 3.0

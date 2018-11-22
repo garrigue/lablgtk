@@ -28,6 +28,13 @@ open GContainer
 
 (** Miscellaneous widgets *)
 
+(** @gtkdoc gtk GtkSeparator
+    @gtkdoc gtk GtkHSeparator
+    @gtkdoc gtk GtkVSeparator *)
+val separator :
+  Tags.orientation ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> widget_full
+
 (** {3 Statusbar} *)
 
 class statusbar_context :
@@ -146,7 +153,6 @@ class calendar : Gtk.calendar obj ->
     method select_day : int -> unit
     method select_month : month:int -> year:int -> unit
     method unmark_day : int -> unit
-    method day_is_marked : int -> bool
     method set_display_options : Tags.calendar_display_options list -> unit
   end
 
