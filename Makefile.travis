@@ -3,6 +3,7 @@
 build:
 	dune build
 
+# This also builds examples
 build-all:
 	dune build @all
 

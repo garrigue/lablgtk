@@ -18,6 +18,7 @@ let rec fix ~f ~eq x =
 let eq_float x y = abs_float (x -. y) < 1e-13
 
 let _ =
+  let _ = Main.init () in
   let top = GWindow.window () in
   top#connect#destroy ~callback:Main.quit;
   let vbox = GPack.vbox ~packing: top#add () in

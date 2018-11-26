@@ -274,6 +274,7 @@ let window1 () =
 
     
 let main () =
+  let _ = Main.init () in
   window1 ();
   dnd_source_window ();
   Main.main ()

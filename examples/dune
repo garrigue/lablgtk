@@ -12,8 +12,7 @@
    editor2 ; editor
    entry2 entrycompletion ; entry
    eventbox events2 events expander
-   fifteen filechooser ; fixed_editor
-   ; fixpoint
+   fifteen filechooser ; fixed_editor fixpoint
    gioredirect giotest hello iconview ; image kaimono
    ; label link_button lissajous
    nihongo notebook
