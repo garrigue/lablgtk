@@ -1,0 +1,53 @@
+; copy test.xpm
+
+(executables
+ (names
+   about ; accel_tree
+   action ; assistant
+   assistant_tutorial
+   ; buttons
+   calc calendar cgets ; clist
+   combobox ; combo counter dcalendar
+   dialog-thread drawing ; druid
+   editor2 ; editor
+   entry2 entrycompletion ; entry
+   eventbox events2 events expander
+   fifteen filechooser ; fixed_editor
+   ; fixpoint
+   gioredirect giotest hello iconview ; image kaimono
+   ; label link_button lissajous
+   nihongo notebook
+   ; pixview pousse
+   progressbar radiobuttons ; rpn
+   ; runthread
+   scrolledwin ; seppala signal_override slide_show
+   socket spin
+   ; testdnd testgtk
+   testthread ; timer toolbar
+   tooltip tree tree_model tree_store ; tron
+ )
+ (modules
+   about accel_tree action assistant assistant_tutorial
+   buttons calc calendar cgets clist combobox combo counter
+   dcalendar dialog-thread drawing druid
+   editor2 editor
+   entry2 entrycompletion entry eventbox events2 events expander
+   fifteen filechooser fixed_editor fixpoint
+   gioredirect giotest hello iconview image kaimono
+   label link_button lissajous
+   nihongo notebook
+   pixview pousse progressbar radiobuttons rpn
+   runthread
+   scrolledwin seppala signal_override slide_show socket spin
+   testdnd ; testgtk
+   testthread timer toolbar tooltip tree tree_model tree_store tron
+ )
+ (flags :standard -w -3-6-7-10-24-26-27-33-35 -no-strict-sequence)
+ (libraries lablgtk3))
+
+; Missing gtkspell in lablgtk3
+; (executables
+;  (names spell)
+;  (modules spell)
+;  (flags :standard -w -6)
+;  (libraries lablgtk2.gspell))

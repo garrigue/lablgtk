@@ -1,0 +1,45 @@
+# NB: image names can be found at
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted
+
+variables:
+  NJOBS: "2"
+  OPAMYES: "true"
+  BASE_OPAM: "dune cairo2"
+
+jobs:
+- job: macOS
+  pool:
+    vmImage: 'macOS-10.13'
+
+  steps:
+  - checkout: self
+    fetchDepth: 10
+
+  - script: |
+      set -e
+      brew update
+      brew install gnu-time opam pkg-config gtk+3 gtksourceview3
+
+      opam init -a -j "$NJOBS" --compiler=$COMPILER
+      opam switch set $COMPILER
+      eval $(opam env)
+      opam update
+      opam install -j "$NJOBS" $BASE_OPAM
+      opam list
+    displayName: 'Install dependencies'
+    env:
+      COMPILER: "4.07.1"
+
+  - script: |
+      set -e
+
+      eval $(opam env)
+      export LABLGTK_EXTRA_FLAGS="-DHAS_GTKQUARTZ"
+      dune build
+    displayName: 'Build lablgtk3 [base]'
+
+  - script: |
+      eval $(opam env)
+      export LABLGTK_EXTRA_FLAGS="-DHAS_GTKQUARTZ"
+      dune build @all
+    displayName: 'Build lablgtk3 [all]'

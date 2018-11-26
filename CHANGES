@@ -58,6 +58,9 @@ In Lablgtk-3.0.beta2:
   * add memory management for cairo_t
   * update support for GtkSpell
 
+2018.11.26 [Emilio J. Gallego Arias]
+  * add support for building with Dune
+
 2018.11.20 [Hugo Herbelin]
   * restore deprecated by still alive widgets and methods
   * various fixes to make gtksourceview3 work with CoqIDE

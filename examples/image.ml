@@ -20,6 +20,7 @@ let load_image file =
   close_in ic;
   buf
 
+(* This doesn't work in OCaml 4.05 *)
 let (.![]) = Bytes.get
 
 let rgb_at buf x y =
