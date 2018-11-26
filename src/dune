@@ -1,0 +1,244 @@
+; Dune build file for lablgtk2
+; Written by EJGA, (c) 2018 MINES ParisTech
+; This file is in the public domain
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Common setup and tools                                               ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(executable
+ (name dune_config)
+ (modules dune_config)
+ (libraries dune.configurator))
+
+(executable
+ (name varcc)
+ (modules varcc)
+ (flags :standard -w -3-6))
+
+(executable
+ (name propcc)
+ (modules propcc)
+ (flags :standard -w -3-6-27-35))
+
+; Maybe auto-generate?
+(include dune-enum.sexp)
+(include dune-prop.sexp)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Base lablgtk                                                         ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(rule
+ (targets
+   cflag-gtk+-2.0.sexp
+   clink-gtk+-2.0.sexp)
+ (action (run ./dune_config.exe -pkg gtk+-2.0)))
+
+(library
+ (name lablgtk2)
+ (public_name lablgtk2)
+ (flags :standard -w -6-7-9-10-27-32-33-34-35-36-50 -no-strict-sequence)
+ (wrapped false)
+ (modules
+   gtkBrokenProps ogtkBrokenProps gtkBroken gBroken
+   gToolbox
+   gpointer gobject gutf8 gaux glib
+   gdkPixbuf pangoEnums pango
+   gdkEnums gdk gdkEvent gdkKeysyms
+   gtkEnums gtk gtkObject gtkSignal
+   gtkStock
+   gPango gDraw
+   gObj gUtil
+   gtkMain gMain
+   gtkThread
+   gtkWindow gWindow
+   gtkData gData
+   gContainer
+
+   gtkActionProps    ogtkActionProps                 gAction
+   gtkAssistantProps ogtkAssistantProps gtkAssistant gAssistant
+   gtkBaseProps      ogtkBaseProps      gtkBase
+   gtkBinProps       ogtkBinProps       gtkBin       gBin
+   gtkButtonProps    ogtkButtonProps    gtkButton    gButton
+   gtkEditProps      ogtkEditProps      gtkEdit      gEdit
+   gtkFileProps      ogtkFileProps      gtkFile      gFile
+   gtkListProps      ogtkListProps      gtkList      gList
+   gtkMenuProps      ogtkMenuProps      gtkMenu      gMenu
+   gtkMiscProps      ogtkMiscProps      gtkMisc      gMisc
+   gtkPackProps      ogtkPackProps      gtkPack      gPack
+   gtkRangeProps     ogtkRangeProps     gtkRange     gRange
+   gtkTextProps      ogtkTextProps      gtkText      gText
+   gtkTreeProps      ogtkTreeProps      gtkTree      gTree
+
+ )
+ (c_names
+   wrappers
+   ml_glib ml_gvaluecaml ml_gpointer ml_gobject
+   ml_pango
+   ml_gdk ml_gdkpixbuf
+   ml_gtk ml_gtkmisc
+
+   ml_gtkaction ml_gtkbin ml_gtkbutton ml_gtktext ml_gtkedit
+   ml_gtkmenu ml_gtkfile ml_gtktree ml_gtkpack ml_gtkbroken
+   ml_gtklist ml_gtkstock ml_gtkrange ml_gtkassistant
+ )
+ (c_flags         (:include cflag-gtk+-2.0.sexp))
+ (c_library_flags (:include clink-gtk+-2.0.sexp))
+ (libraries threads))
+
+; Fixup for compatibility
+(install
+ (section lib)
+ (package lablgtk2)
+ (files (lablgtk2.cmxa as lablgtk.cmxa)))
+
+(install
+ (section lib)
+ (package lablgtk2)
+ (files (lablgtk2.cma as lablgtk.cma)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk-sourceview2                                                  ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(rule
+ (targets
+   cflag-gtksourceview-2.0.sexp
+   clink-gtksourceview-2.0.sexp)
+ (action (run ./dune_config.exe -pkg gtksourceview-2.0)))
+
+(library
+ (name lablgtk2_sourceview2)
+ (public_name lablgtk2-sourceview2)
+ (flags :standard -w -6-7-27-32-33-34-36)
+ (wrapped false)
+ (modules_without_implementation
+   gtkSourceView2_types)
+ (modules
+   sourceView2Enums gtkSourceView2_types gtkSourceView2Props
+   ogtkSourceView2Props gtkSourceView2 gSourceView2)
+ (c_names ml_gtksourceview2)
+ (c_flags         (:include cflag-gtksourceview-2.0.sexp))
+ (c_library_flags (:include clink-gtksourceview-2.0.sexp))
+ (libraries lablgtk2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk-sourceview2                                                  ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(rule
+ (targets
+   cflag-gtkspell-2.0.sexp
+   clink-gtkspell-2.0.sexp)
+ (action (run ./dune_config.exe -pkg gtkspell-2.0)))
+
+(library
+ (name lablgtk2_gspell)
+ (public_name lablgtk2-gspell)
+ (flags :standard -w -6-50)
+ (wrapped false)
+ (modules gtkSpell)
+ (c_names ml_gtkspell)
+ (c_flags         (:include cflag-gtkspell-2.0.sexp))
+ (c_library_flags (:include clink-gtkspell-2.0.sexp))
+ (libraries lablgtk2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk-gl                                                           ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(rule
+ (targets
+   cflag-gtkgl-2.0.sexp
+   clink-gtkgl-2.0.sexp)
+ (action (run ./dune_config.exe -pkg gtkgl-2.0)))
+
+(library
+ (name lablgtk2_gl)
+ (public_name lablgtk2-gl)
+ (flags :standard -w -6-27-33-50)
+ (wrapped false)
+ (modules glGtk)
+ (c_names ml_gtkgl)
+ (c_flags         (:include cflag-gtkgl-2.0.sexp))
+ (c_library_flags (:include clink-gtkgl-2.0.sexp))
+ (libraries lablgl lablgtk2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk-gnomeui                                                      ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(rule
+ (targets
+   cflag-libgnomeui-2.0.sexp
+   clink-libgnomeui-2.0.sexp)
+ (action (run ./dune_config.exe -pkg libgnomeui-2.0)))
+
+(library
+ (name lablgtk2_gnome)
+ (public_name lablgtk2-gnome)
+ (flags :standard -w -6-27-50)
+ (wrapped false)
+ (modules gnomeDruid   gnoDruid)
+ (c_names ml_gnomedruid)
+ (c_flags         (:include cflag-libgnomeui-2.0.sexp))
+ (c_library_flags (:include clink-libgnomeui-2.0.sexp))
+ (libraries lablgtk2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk-glade                                                        ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(rule
+ (targets
+   cflag-libglade-2.0.sexp
+   clink-libglade-2.0.sexp)
+ (action (run ./dune_config.exe -pkg libglade-2.0)))
+
+; Parse error in props
+(library
+ (name lablgtk2_glade)
+ (public_name lablgtk2-glade)
+ (flags :standard -w -6-27-50)
+ (wrapped false)
+ (modules glade)
+ (c_names ml_glade)
+ (c_flags         (:include cflag-libglade-2.0.sexp))
+ (c_library_flags (:include clink-libglade-2.0.sexp))
+ (libraries lablgtk2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk-glade                                                        ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(rule
+ (targets
+   cflag-librsvg-2.0.sexp
+   clink-librsvg-2.0.sexp)
+ (action (run ./dune_config.exe -pkg librsvg-2.0)))
+
+; Parse error in props
+(library
+ (name lablgtk2_rsvg)
+ (public_name lablgtk2-rsvg)
+ (flags :standard -w -6-27-50)
+ (wrapped false)
+ (modules rsvg)
+ (c_names ml_rsvg)
+ (c_flags         (:include cflag-gtk+-2.0.sexp) (:include cflag-librsvg-2.0.sexp))
+ (c_library_flags (:include clink-librsvg-2.0.sexp))
+ (libraries lablgtk2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk-gnomecanvas                                                  ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(rule
+ (targets
+   cflag-libgnomecanvas-2.0.sexp
+   clink-libgnomecanvas-2.0.sexp)
+ (action (run ./dune_config.exe -pkg libgnomecanvas-2.0)))
+
+(library
+ (name lablgtk2_gnomecanvas)
+ (public_name lablgtk2-gnomecanvas)
+ (flags :standard -w -6-27-50)
+ (wrapped false)
+ (modules gnomeCanvas  gnoCanvas)
+ (c_names ml_gnomecanvas)
+ (c_flags         (:include cflag-libgnomecanvas-2.0.sexp))
+ (c_library_flags (:include clink-libgnomecanvas-2.0.sexp))
+ (libraries lablgtk2))
