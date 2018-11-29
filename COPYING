@@ -9,16 +9,15 @@ executable file containing portions of the Library, and distribute
 that executable file under terms of your choice, without any of the
 additional requirements listed in clause 6 of the GNU Library General
 Public License.  By "a publicly distributed version of the Library",
-we mean either the unmodified Library as distributed by INRIA, or a
-modified version of the Library that is distributed under the
+we mean either the unmodified Library as distributed by the authors, or
+a modified version of the Library that is distributed under the
 conditions defined in clause 3 of the GNU Library General Public
 License.  This exception does not however invalidate any other reasons
 why the executable file might be covered by the GNU Library General
 Public License.
 
-For the examples subdirectory, there is no specific licensing policy,
-but you may freely take inspiration from the code, and copy parts of
-it in your application.
+For the examples subdirectory, the code is in the public domain.
+You may freely copy parts of it in your application.
 
 For the applications subdirectory, stricter rules apply:
 
@@ -33,7 +32,7 @@ The authors may choose to remove any of the above restrictions on a
 per request basis.
 
 Authors:
-	Jacques Garrigue <garrigue@kurims.kyoto-u.ac.jp>
+	Jacques Garrigue <garrigue@math.nagoya-u.ac.jp>
 	Benjamin Monate  <Benjamin.Monate@free.fr>
         Olivier Andrieu  <oandrieu@nerim.net>
 	Jun Furuse       <Jun.Furuse@inria.fr>
