@@ -1,5 +1,9 @@
 LablGTK changes log
 
+2018.11.30 [Jacques]
+  * ensure we compile on ocaml 4.05 (report by Ralf Treinen)
+  * put examples explicitly in the public domain (report by Ralf Treinen)
+
 2018.11.29 [Jacques]
   * create a banch called "lablgtk3", based on lablgtk2on3
     (the old lablgtk3 branch of 2011 is renamed lablgtk3_monate)
