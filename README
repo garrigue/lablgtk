@@ -2,7 +2,7 @@
              LablGTK3 3.00 : an interface to the GIMP Tool Kit
 
 Needed:
-        ocaml-3.11 or more (4.07 is preferred)
+        ocaml-4.05 or more
         gtk+-3.x
         findlib 1.2.1 or more (for default install)
         GNU make (there is no standard for conditionals)
