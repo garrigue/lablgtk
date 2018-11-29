@@ -328,7 +328,9 @@ Unsupported_22(gdk_display_get_window_at_pointer)
 
 /* Cairo */
 
-ML_1 (gdk_cairo_create, GdkWindow_val, Val_Cairo)
+Make_Val_final_pointer(cairo_t, cairo_reference, cairo_destroy, 1)
+Make_Val_final_pointer_ext(cairo_t, _new, Ignore, cairo_destroy, 5)
+ML_1 (gdk_cairo_create, GdkWindow_val, Val_cairo_t_new)
 
 /* Properties */
 

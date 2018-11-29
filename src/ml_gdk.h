@@ -42,7 +42,9 @@
 #define GdkDrawable_val(val) check_cast(GDK_DRAWABLE,val)
 
 #define Cairo_val(val) ((cairo_t*)MLPointer_val(val))
-#define Val_Cairo Val_pointer
+CAMLexport value Val_cairo_t (cairo_t *);
+CAMLexport value Val_cairo_t_new (cairo_t *);
+#define Val_Cairo Val_cairo_t
 
 #define GdkWindow_val(val) check_cast(GDK_WINDOW,val)
 #define Val_GdkWindow Val_GAnyObject
