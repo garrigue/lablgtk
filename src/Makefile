@@ -20,7 +20,7 @@ include $(CONFIG)
 #GTKCFLAGS += -Werror -Wno-error=deprecated-declarations
 GTKCFLAGS += -Wno-deprecated-declarations
 
-TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk3$(XB) gdk_pixbuf_mlsource$(XE) \
+TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk3$(XB) gdk_pixbuf_mlsource3$(XE) \
 	$(THINITOBJS) build.ml
 
 all: dist byte
@@ -288,7 +288,7 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	    -e "s|@TOOLCHAIN@|$(TOOLCHAIN)|" \
 	    < build.ml.in > $@
 
-gdk_pixbuf_mlsource$(XE) : lablgtk.cma gdk_pixbuf_mlsource.ml
+gdk_pixbuf_mlsource3$(XE) : lablgtk.cma gdk_pixbuf_mlsource.ml
 	$(CAMLC) -o $@ -I . $^
 
 lablgtkopt:: $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx)
@@ -320,7 +320,7 @@ preinstall:
 	for f in $(PREOBJS:.cmo=.mli); do \
 	  if test -f $$f; then cp $$f "$(INSTALLDIR)"; fi; done
 	cp build.ml "$(INSTALLDIR)"
-	cp lablgtk3$(XB) gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
+	cp lablgtk3$(XB) gdk_pixbuf_mlsource3$(XE) "$(BINDIR)"
 	cp lablgladecc$(XE) "$(BINDIR)/lablgladecc3$(XE)"
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)"
@@ -348,7 +348,7 @@ old-install:
 	cp lablgtk3$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
 	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc3$(XE)"; fi
-	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
+	cp gdk_pixbuf_mlsource3$(XE) "$(BINDIR)"
 
 old-installdll:
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)" || \
@@ -371,7 +371,7 @@ old-uninstall:
 	rm -r "$(INSTALLDIR)"
 	for f in $(CLIBS:lib%$(XA)=dll%$(XS)); \
 	  do rm "$(DLLDIR)"/$$f; done
-	for f in lablgladecc3$(XE) lablgtk3$(XB) gdk_pixbuf_mlsource$(XE); \
+	for f in lablgladecc3$(XE) lablgtk3$(XB) gdk_pixbuf_mlsource3$(XE); \
 	  do rm -f "$(BINDIR)"/$$f; done
 
 # Install using ocamlfind
@@ -427,7 +427,7 @@ findlib-install:
 	if test -f lablgladecc$(XE); then \
 	  cp lablgladecc$(XE) "$(BINDIR)/lablgladecc3$(XE)"; \
 	fi
-	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
+	cp gdk_pixbuf_mlsource3$(XE) "$(BINDIR)"
 	$(RANLIB) $(CLIBS:%="$(FLINSTALLDIR)"/%)
 	@if test -f lablgtk.cmxa; then \
 	  echo "Execute $(RANLIB) in $(FLINSTALLDIR)"; \
@@ -437,7 +437,7 @@ findlib-install:
 
 findlib-uninstall:
 	$(OCAMLFIND) remove lablgtk3
-	for f in lablgladecc3$(XE) lablgtk3$(XB) gdk_pixbuf_mlsource$(XE); \
+	for f in lablgladecc3$(XE) lablgtk3$(XB) gdk_pixbuf_mlsource3$(XE); \
 	  do rm -f "$(BINDIR)"/$$f; done
 
 lablgtk.cma liblablgtk3$(XA): $(COBJS) $(MLOBJS)
