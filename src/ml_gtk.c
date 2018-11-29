@@ -265,8 +265,7 @@ ML_1 (gtk_widget_realize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unrealize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_draw, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_resize, GtkWidget_val, Unit)
-ML_2 (gtk_widget_draw, GtkWidget_val,
-      Option_val(arg2,GdkRectangle_val,NULL) Ignore, Unit)
+ML_2 (gtk_widget_draw, GtkWidget_val, Cairo_val, Unit)
 /*
 ML_1 (gtk_widget_draw_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_draw_default, GtkWidget_val, Unit)
@@ -889,15 +888,15 @@ Unsupported_26(gtk_about_dialog_new)
 #endif
 
 /* gtkplug.h */
-#ifdef _WIN32
-/* Unsupported(gtk_plug_new) */
+#if defined(GDK_WINDOWING_WIN32) || defined(GDK_WINDOWING_QUARTZ)
+Unsupported(gtk_plug_new)
 #else
-/* ML_1 (gtk_plug_new, GdkNativeWindow_val, Val_GtkWidget_window) */
+ML_1 (gtk_plug_new, GdkNativeWindow_val, Val_GtkWidget_window)
 #endif
 
 /* gtksocket.h */
-/*
-#ifdef _WIN32
+
+#if defined(GDK_WINDOWING_WIN32) || defined(GDK_WINDOWING_QUARTZ)
 Unsupported(gtk_socket_steal)
 #else
 #define GtkSocket_val(val) check_cast(GTK_SOCKET,val)
@@ -905,7 +904,6 @@ ML_2 (gtk_socket_add_id, GtkSocket_val, GdkNativeWindow_val, Unit)
 ML_1 (gtk_socket_get_id, GtkSocket_val, Val_GdkNativeWindow)
 ML_1 (gtk_socket_get_plug_window, GtkSocket_val, Val_GdkWindow)
 #endif
-*/
 
 /* gtkmain.h */
 

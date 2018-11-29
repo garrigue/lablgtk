@@ -214,7 +214,7 @@ and misc_ops : Gtk.widget obj ->
     method connect : misc_signals
     method convert_selection : target:string -> ?time:int32 -> Gdk.atom -> bool
     method create_pango_context : GPango.context_rw
-    method draw : Gdk.Rectangle.t option -> unit
+    method draw : Gdk.cairo -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
     method grab_selection : ?time:int32 -> Gdk.atom -> bool
