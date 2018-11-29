@@ -1,5 +1,9 @@
 LablGTK changes log
 
+2018.11.30 [Jacques]
+  * ensure we compile on ocaml 4.05 (report by Ralf Treinen)
+  * put examples explicitly in the public domain (report by Ralf Treinen)
+
 2018.11.19 [Hugo Herbelin]
   * In GToolbox, add support for declaring dialogs transient for a parent.
 
