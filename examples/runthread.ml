@@ -1,11 +1,10 @@
-(* runthread.ml: Test threads *)
-(* lablgtk2 -localdir -thread -noinit runthread.ml *)
-
-open GtkThread
-
-let locale = GMain.init ()
-let w = GWindow.window ()
-let vbox = GPack.vbox ~packing:w#add ()
+(**************************************************************************)
+(*    Lablgtk - Examples                                                  *)
+(*                                                                        *)
+(*    This code is in the public domain.                                  *)
+(*    You may freely copy parts of it in your application.                *)
+(*                                                                        *)
+(**************************************************************************)
 let start = GButton.button ~label:"Start" ~packing:vbox#pack ()
 let stop = GButton.button ~label:"Stop" ~packing:vbox#pack ()
 let text = GEdit.entry ~packing:vbox#pack ()

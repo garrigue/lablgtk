@@ -1,11 +1,10 @@
-(* #require "lablgtksourceview2.gtksourceview2";; *)
-
-let provider =
-  let open GSourceView2 in
-  let provider_ref = ref None in
-  let provided_list = ["toto"; "titi"; "tata"] in
-  let do_provider () = match !provider_ref with None -> assert false | Some x -> x in
-  let populate context =
+(**************************************************************************)
+(*    Lablgtk - Examples                                                  *)
+(*                                                                        *)
+(*    This code is in the public domain.                                  *)
+(*    You may freely copy parts of it in your application.                *)
+(*                                                                        *)
+(**************************************************************************)
     let ctx = new source_completion_context context in
     let item s = source_completion_item ~label:s ~text:s () in
     let proposal s = (item s :> source_completion_proposal) in

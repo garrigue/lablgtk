@@ -1,9 +1,8 @@
 (**************************************************************************)
 (*    Lablgtk - Examples                                                  *)
 (*                                                                        *)
-(*    There is no specific licensing policy, but you may freely           *)
-(*    take inspiration from the code, and copy parts of it in your        *)
-(*    application.                                                        *)
+(*    This code is in the public domain.                                  *)
+(*    You may freely copy parts of it in your application.                *)
 (*                                                                        *)
 (**************************************************************************)
 
