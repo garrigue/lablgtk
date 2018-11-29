@@ -28,6 +28,13 @@ open GContainer
 
 (** Miscellaneous widgets *)
 
+(** @gtkdoc gtk GtkSeparator
+    @gtkdoc gtk GtkHSeparator
+    @gtkdoc gtk GtkVSeparator *)
+val separator :
+  Tags.orientation ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> widget_full
+
 (** {3 Statusbar} *)
 
 class statusbar_context :
@@ -146,7 +153,6 @@ class calendar : Gtk.calendar obj ->
     method select_day : int -> unit
     method select_month : month:int -> year:int -> unit
     method unmark_day : int -> unit
-    method day_is_marked : int -> bool
     method set_display_options : Tags.calendar_display_options list -> unit
   end
 
@@ -341,3 +347,58 @@ val label :
   ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> label
 val label_cast : < as_widget : 'a obj ; .. > -> label
+
+(** {3 Color and font selection} *)
+
+(** Deprecated since 3.0 *)
+
+(** A widget used to select a color
+    @gtkdoc gtk GtkColorSelection *)
+class color_selection : Gtk.color_selection obj ->
+  object
+    inherit GObj.widget_full
+    val obj : Gtk.color_selection obj
+    method alpha : int
+    method color : Gdk.color
+    method set_alpha : int -> unit
+    method set_border_width : int -> unit
+    method set_color : Gdk.color -> unit
+    method set_has_opacity_control : bool -> unit
+    method set_has_palette : bool -> unit
+    method has_opacity_control : bool
+    method has_palette : bool
+  end
+
+(** @gtkdoc gtk GtkColorSelection *)
+val color_selection :
+  ?alpha:int ->
+  ?color:Gdk.color ->
+  ?has_opacity_control:bool ->
+  ?has_palette:bool ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> color_selection
+
+(** A widget for selecting fonts.
+    @gtkdoc gtk GtkFontSelection *)
+class font_selection : Gtk.font_selection obj ->
+  object
+    inherit GObj.widget_full
+    val obj : Gtk.font_selection obj
+    method event : event_ops
+    method font_name : string
+    method preview_text : string
+    method set_border_width : int -> unit
+    method set_font_name : string -> unit
+    method set_preview_text : string -> unit
+  end
+
+(** @gtkdoc gtk GtkFontSelection *)
+val font_selection :
+  ?font_name:string ->
+  ?preview_text:string ->
+  ?border_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(widget -> unit) -> ?show:bool -> unit -> font_selection

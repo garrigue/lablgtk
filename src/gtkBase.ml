@@ -53,9 +53,9 @@ module Widget = struct
   external unrealize : [>`widget] obj -> unit = "ml_gtk_widget_unrealize"
   external queue_draw : [>`widget] obj -> unit = "ml_gtk_widget_queue_draw"
   external queue_resize : [>`widget] obj -> unit = "ml_gtk_widget_queue_resize"
-(*
   external draw : [>`widget] obj -> Gdk.Rectangle.t option -> unit
       = "ml_gtk_widget_draw"
+(*
   external draw_focus : [>`widget] obj -> unit
       = "ml_gtk_widget_draw_focus"
   external draw_default : [>`widget] obj -> unit
@@ -65,9 +65,9 @@ module Widget = struct
       = "ml_gtk_widget_event"
   external activate : [>`widget] obj -> bool
       = "ml_gtk_widget_activate"
-(*
   external reparent : [>`widget] obj -> [>`widget] obj -> unit
       = "ml_gtk_widget_reparent"
+(*
   external popup : [>`widget] obj -> x:int -> y:int -> unit
       = "ml_gtk_widget_popup"
 *)
@@ -92,7 +92,8 @@ module Widget = struct
       = "ml_gtk_widget_get_pointer"
   external is_ancestor : [>`widget] obj -> [>`widget] obj -> bool
       = "ml_gtk_widget_is_ancestor"
-  (*external ensure_style : [>`widget] obj -> unit
+  (* Deprecated since 3.0 *)
+  external ensure_style : [>`widget] obj -> unit
       = "ml_gtk_widget_ensure_style"
   external modify_fg : [>`widget] obj -> state_type -> Gdk.color -> unit
       = "ml_gtk_widget_modify_fg"
@@ -103,11 +104,16 @@ module Widget = struct
   external modify_base : [>`widget] obj -> state_type -> Gdk.color -> unit
       = "ml_gtk_widget_modify_base"
   external modify_font : [>`widget] obj -> Pango.font_description -> unit
-      = "ml_gtk_widget_modify_font"*)
+      = "ml_gtk_widget_modify_font"
+  (* End deprecated since 3.0 *)
   external get_pango_context : [>`widget] obj -> Pango.context
       = "ml_gtk_widget_get_pango_context"
   external create_pango_context : [>`widget] obj -> Pango.context
       = "ml_gtk_widget_create_pango_context"
+  external render_icon :
+      [>`widget] obj -> string ->
+      Gtk.Tags.icon_size -> GdkPixbuf.pixbuf
+      = "ml_gtk_widget_render_icon_pixbuf"
   external add_accelerator :
       ([>`widget] as 'a) obj -> sgn:('a,unit->unit) GtkSignal.t ->
       accel_group -> key:Gdk.keysym -> ?modi:Gdk.Tags.modifier list ->

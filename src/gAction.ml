@@ -40,15 +40,19 @@ class action_skel obj = object
   method activate () = Action.activate obj
   method is_sensitive = Action.is_sensitive obj
   method is_visible = Action.is_visible obj
+(*
   method connect_proxy w = Action.connect_proxy obj (GObj.as_widget w)
   method disconnect_proxy w = Action.disconnect_proxy obj (GObj.as_widget w)
+*)
   method get_proxies = List.map (new GObj.widget) (Action.get_proxies obj)
   method connect_accelerator () = Action.connect_accelerator obj
   method disconnect_accelerator () = Action.disconnect_accelerator obj
   method set_accel_path = Action.set_accel_path obj
   method set_accel_group = Action.set_accel_group obj
+(*
   method block_activate_from (w : GObj.widget) = Action.block_activate_from obj w#as_widget
   method unblock_activate_from (w : GObj.widget) = Action.unblock_activate_from obj w#as_widget
+*)
 end
 
 class action obj = object

@@ -423,7 +423,7 @@ class ['a] file_chooser_dialog :
     @gtkdoc gtk GtkFileChooserDialog *)
 val file_chooser_dialog :
   action:GtkEnums.file_chooser_action ->
-  ?backend:string ->
+  ?filename:string ->
   ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->
@@ -465,10 +465,12 @@ class plug : Gtk.plug obj ->
   end
 
 (** @gtkdoc gtk GtkPlug *)
+(*
 val plug :
   window:Gdk.native_window ->
   ?border_width:int ->
   ?width:int -> ?height:int -> ?show:bool -> unit -> plug
+*)
 
 (** {3 GtkSocket} *)
 

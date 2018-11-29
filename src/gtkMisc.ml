@@ -32,6 +32,8 @@ open GtkBase
 external _gtkmisc_init : unit -> unit = "ml_gtkmisc_init"
 let () = _gtkmisc_init ()
 
+module ColorSelection = ColorSelection
+
 module Statusbar = Statusbar
 
 module StatusIcon = GtkStatusIcon
@@ -52,3 +54,6 @@ module Image = Image
 
 module Label = Label
 
+module Separator = Separator
+
+module FontSelection = FontSelection

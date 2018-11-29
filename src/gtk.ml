@@ -30,8 +30,10 @@ type 'a optobj = 'a obj Gpointer.optboxed
 type clampf = float
 
 module Tags = struct
+  type expand_type = [ `X|`Y|`BOTH|`NONE ]
   include (GtkEnums : module type of GtkEnums
                       with module Conv := GtkEnums.Conv)
+  type position = position_type
 end
 open Tags
 
@@ -52,7 +54,7 @@ type target_entry = { target: string; flags: target_flags list; info: int }
 type box_packing =
     { expand: bool; fill: bool; padding: int; pack_type: pack_type }
 
-type orientable = [`orientable]
+type orientable = [`giu|`orientable]
 type adjustment = [`giu|`adjustment]
 type tooltips = [`giu|`tooltips]
 type widget = [`giu|`widget]
@@ -85,9 +87,15 @@ type window = [bin|`window]
 type assistant = [window|`assistant]
 type dialog = [window|`dialog]
 type message_dialog = [dialog|`messagedialog]
+type color_selection_dialog = [dialog|`colorselectiondialog]
+type input_dialog = [dialog|`inputdialog]
+type file_selection = [dialog|`fileselection]
+type font_selection_dialog = [dialog|`fontselectiondialog]
 type plug = [window|`plug]
 type box = [container|`box]
 type button_box = [container|`box|`buttonbox]
+type color_selection = [container|`box|`colorselection]
+type font_selection = [container|`box|`fontselection]
 type combo = [container|`box|`combo]
 type statusbar = [container|`box|`statusbar]
 type status_icon = [`gtkstatusicon]
@@ -101,6 +109,8 @@ type notebook = [container|`notebook]
 type packer = [container|`packer]
 type paned = [container|`paned]
 type socket = [container|`socket]
+type table = [container|`table]
+type grid = [container|`grid]
 type toolbar = [container|`toolbar|`orientable]
 type tool_item = [bin|`toolitem]
 type separator_tool_item = [tool_item|`separatortoolitem]

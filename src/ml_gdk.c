@@ -156,7 +156,7 @@ CAMLprim value ml_gdk_color_black (value cmap)
     gdk_color_black (GdkColormap_val(cmap), &color);
     return Val_copy(color);
 }
-
+*/
 CAMLprim value ml_gdk_color_parse (char *spec)
 {
     GdkColor color;
@@ -164,8 +164,11 @@ CAMLprim value ml_gdk_color_parse (char *spec)
         ml_raise_gdk ("color_parse");
     return Val_copy(color);
 }
+ML_1 (gdk_color_to_string, GdkColor_val, Val_string)
 
+/* Removed in GdkColor 3.0
 ML_2 (gdk_color_alloc, GdkColormap_val, GdkColor_val, Val_bool)
+*/
 
 CAMLprim value ml_GdkColor (value red, value green, value blue)
 {
@@ -177,11 +180,11 @@ CAMLprim value ml_GdkColor (value red, value green, value blue)
     return Val_copy(color);
 }
 
+/* Deprecated: 3.14: Use #GdkRGBA */
 Make_Extractor (GdkColor, GdkColor_val, red, Val_int)
 Make_Extractor (GdkColor, GdkColor_val, green, Val_int)
 Make_Extractor (GdkColor, GdkColor_val, blue, Val_int)
 Make_Extractor (GdkColor, GdkColor_val, pixel, Val_int)
-*/
 
 /* Rectangle */
 
@@ -322,6 +325,10 @@ CAMLprim value ml_gdk_display_get_window_at_pointer (value display)
 Unsupported_22(gdk_display_get_default)
 Unsupported_22(gdk_display_get_window_at_pointer)
 #endif
+
+/* Cairo */
+
+ML_1 (gdk_cairo_create, GdkWindow_val, Val_Cairo)
 
 /* Properties */
 

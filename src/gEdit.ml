@@ -190,6 +190,30 @@ let combo_box ?model =
     let c = new combo_box (GtkEdit.ComboBox.create pl) in
     GObj.pack_return c ~packing ~show))
 
+class combo_box_entry _obj = object (self)
+  inherit combo_box _obj
+  method entry = new entry (GtkEdit.Entry.cast self#child#as_widget)
+end
+
+let combo_box_entry ?model ?text_column =
+  let model = Gaux.may_map (fun m -> m#as_model) model in
+  let column = Gaux.may_map (fun c -> c.GTree.index) text_column in
+  GtkEdit.ComboBox.make_params ?model
+    ~has_entry:true ?entry_text_column:column [] ~cont:(
+  GtkBase.Widget.size_params ~cont:(fun pl ?packing ?show () ->
+    GObj.pack_return
+      (new combo_box_entry (GtkEdit.ComboBox.create pl))
+      ~packing ~show ))
+
+let combo_box_entry_text ?(strings=[]) =
+  let (store, column) as model = GTree.store_of_list Gobject.Data.string strings in
+  GtkEdit.ComboBox.make_params ~model:store#as_model
+    ~has_entry:true ~entry_text_column:column.GTree.index []
+    ~cont:(
+  GtkBase.Widget.size_params ~cont:(fun pl ?packing ?show () ->
+    let combo = new combo_box_entry (GtkEdit.ComboBox.create pl) in
+    GObj.pack_return combo ~packing ~show, model))
+
 type 'a text_combo = 'a * (GTree.list_store * string GTree.column) 
   constraint 'a = #combo_box
 

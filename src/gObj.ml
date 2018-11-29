@@ -112,6 +112,32 @@ class event_ops obj = object
   method send : Gdk.Tags.event_type Gdk.event -> bool = Widget.event obj
 end
 
+let iter_setcol set style =
+  List.iter ~f:(fun (state, color) -> set style state (GDraw.color color))
+
+class style st = object
+  val style = st
+  method as_style = style
+  method copy = {< style = Style.copy style >}
+(*  method colormap = Style.get_colormap style*)
+(*  method font = Style.get_font style*)
+  method bg = Style.get_bg style
+  method set_bg = iter_setcol Style.set_bg style
+  method fg = Style.get_fg style
+  method set_fg = iter_setcol Style.set_fg style
+  method light = Style.get_light style
+  method set_light = iter_setcol Style.set_light style
+  method dark = Style.get_dark style
+  method set_dark = iter_setcol Style.set_dark style
+  method mid = Style.get_mid style
+  method set_mid = iter_setcol Style.set_mid style
+  method base = Style.get_base style
+  method set_base = iter_setcol Style.set_base style
+  method text = Style.get_text style
+  method set_text = iter_setcol Style.set_text style
+(*  method set_font = Style.set_font style*)
+ end
+
 class selection_input (sel : Gtk.selection_data) = object
   val sel = sel
   method selection = Selection.selection sel
@@ -133,7 +159,6 @@ class selection_context sel = object
     Selection.set sel ~typ ~format ~data:(Some data)
 end
 
-(*
 class drag_signals obj = object (self)
   inherit ['a] gobject_signals obj
   method private connect_drag : 'b. ('a, Gdk.drag_context -> 'b) GtkSignal.t ->
@@ -182,13 +207,14 @@ and drag_context context = object
     new widget (unsafe_cast (DnD.get_source_widget context))
   method set_icon_widget (w : widget) =
     DnD.set_icon_widget context (w#as_widget)
+(*
   method set_icon_pixmap ?(colormap = Gdk.Color.get_system_colormap ())
       (pix : GDraw.pixmap) =
     DnD.set_icon_pixmap context ~colormap pix#pixmap ?mask:pix#mask
-end
 *)
+end
 
-class misc_signals obj = object (self)
+and misc_signals obj = object (self)
   inherit [_] gobject_signals obj
   method show = self#connect Signals.show
   method hide = self#connect Signals.hide
@@ -205,6 +231,9 @@ class misc_signals obj = object (self)
 	  None   -> callback None
 	| Some w -> callback (Some (new widget (unsafe_cast w)))
       end
+  method style_set ~callback =
+    self#connect Signals.style_set ~callback:
+      (fun opt -> callback (may opt ~f:(new style)))
   method selection_get ~callback =
     self#connect Signals.selection_get ~callback:
       begin fun seldata ~info ~time ->
@@ -226,10 +255,10 @@ and misc_ops obj = object (self)
   method unmap () = Widget.unmap obj
   method realize () = Widget.realize obj
   method unrealize () = Widget.unrealize obj
-  (* method draw = Widget.draw obj *)
+  method draw = Widget.draw obj
   method activate () = Widget.activate obj
-  (* method reparent (w : widget) =  Widget.reparent obj w#as_widget
-  method popup = popup obj *)
+  method reparent (w : widget) =  Widget.reparent obj w#as_widget
+(*  method popup = popup obj *)
   method intersect = Widget.intersect obj
   method grab_focus () = set P.has_focus obj true
   method grab_default () = set P.has_default obj true
@@ -257,8 +286,8 @@ and misc_ops obj = object (self)
     and height = may_map height ~f:
         (fun h -> h * GPango.to_pixels (metrics#ascent+metrics#descent)) in
     self#set_size_request ?width ?height ()
-  (*
   method set_style (style : style) = set P.style obj style#as_style
+  (* Deprecated since 3.0 *)
   method modify_fg = iter_setcol Widget.modify_fg obj
   method modify_bg = iter_setcol Widget.modify_bg obj
   method modify_text = iter_setcol Widget.modify_text obj
@@ -266,7 +295,7 @@ and misc_ops obj = object (self)
   method modify_font = Widget.modify_font obj
   method modify_font_by_name s =
     Widget.modify_font obj (Pango.Font.from_string s)
-  *)
+  (* End deprecated since 3.0 *)
   method create_pango_context =
     new GPango.context_rw (Widget.create_pango_context obj)
   (* get functions *)
@@ -278,11 +307,15 @@ and misc_ops obj = object (self)
   method visual = Widget.get_visual obj
   method visual_depth = Gdk.Visual.depth (Widget.get_visual obj)
   method pointer = Widget.get_pointer obj
+  method style = new style (get P.style obj)
   method visible = get P.visible obj
   method parent =
     may_map (fun w -> new widget (unsafe_cast w)) (get P.parent obj)
   method allocation = Widget.allocation obj
   method pango_context = new GPango.context (Widget.get_pango_context obj)
+  (* icon *)
+  method render_icon ~size id =
+    Widget.render_icon obj (GtkStock.convert_id id) size
   (* selection *)
   method convert_selection ~target ?(time=Int32.zero) sel =
     Selection.convert obj ~sel ~target:(Gdk.Atom.intern target) ~time
@@ -304,7 +337,7 @@ and widget obj = object (self)
   inherit gtkobj obj
   method as_widget = (obj :> Gtk.widget obj)
   method misc = new misc_ops (obj :> Gtk.widget obj)
-  (* method drag = new drag_ops (unsafe_cast obj : Gtk.widget obj) *)
+  method drag = new drag_ops (unsafe_cast obj : Gtk.widget obj)
   method coerce = (self :> widget)
   method destroy () = Widget.destroy obj
 end

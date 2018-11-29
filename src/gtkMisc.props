@@ -115,6 +115,20 @@ class Image set wrap : Misc {
   method clear
 }
 
+class ColorSelection set wrap : Box {
+  "current-alpha"(alpha) guint                : Read / Write
+  "current-color"(color) GdkColor             : Read / Write
+  "has-opacity-control"  gboolean             : Read / Write
+  "has-palette"          gboolean             : Read / Write
+  signal color_changed
+}
+
+class FontSelection set wrap : Box {
+  (* bug in Gtk: "font"                 GdkFont_opt          : Read *)
+  "font-name"            gchararray           : Read / Write
+  "preview-text"         gchararray           : Read / Write
+}
+
 class Statusbar set : Box {
  "has-resize-grip"      gboolean             : Read / Write (* 2.4 *)
   method get_context_id : "string -> statusbar_context"
@@ -134,7 +148,6 @@ class Calendar wrap wrapsig : Widget {
   method select_day : "int -> unit"
   method mark_day : "int -> unit"
   method unmark_day : "int -> unit"
-  method get_day_is_marked : "int -> bool"
   method clear_marks
   method set_display_options : "Gtk.Tags.calendar_display_options list -> unit"
   method get_date : "int * int * int" (* year * month * day *)
@@ -150,5 +163,4 @@ class Calendar wrap wrapsig : Widget {
 class DrawingArea : Widget {
 }
 
-(* deprecated 3.4
-class Separator hv : Widget {} *)
+class Separator hv : Widget {}

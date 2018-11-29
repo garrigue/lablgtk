@@ -26,8 +26,10 @@ class Action type "Gtk.action obj" wrap wrapsig gobject {
 
   method activate
 
+(*
   method connect_proxy    : "Gtk.widget Gtk.obj -> unit"
   method disconnect_proxy : "Gtk.widget Gtk.obj -> unit"
+*)
   method get_proxies      : "Gtk.widget Gtk.obj list"
 
   method connect_accelerator
@@ -35,8 +37,10 @@ class Action type "Gtk.action obj" wrap wrapsig gobject {
   method set_accel_path : "string -> unit"
   method set_accel_group : "Gtk.accel_group -> unit"
 
+(*
   method block_activate_from : "Gtk.widget Gtk.obj -> unit"
   method unblock_activate_from : "Gtk.widget Gtk.obj -> unit"
+*)
 
 }
 

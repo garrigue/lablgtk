@@ -34,13 +34,19 @@ type color = [
   | `RGB of int * int * int
 ]
 
+(*
 let default_colormap = GtkBase.Widget.get_default_colormap
+*)
 
-let color ?(colormap = default_colormap ()) (c : color) =
+let color (c : color) =
   match c with
   | `COLOR col -> col
-  | #Gdk.Color.spec as def -> Color.alloc ~colormap def
+  | `WHITE -> Gdk.Color.color_parse "white"
+  | `BLACK -> Gdk.Color.color_parse "black"
+  | `NAME s -> Gdk.Color.color_parse s
+  | `RGB (r,g,b) -> Gdk.Color.color_parse (Printf.sprintf "#%04X%04X%04X" r g b)
 
+(*
 let conv_color : color data_conv =
   { kind = `POINTER;
     proj = (function `POINTER (Some c) -> `COLOR (Obj.magic c)
@@ -212,6 +218,9 @@ let pixmap_from_xpm_d ~data ?window ?colormap ?transparent () =
     Pixmap.create_from_xpm_d ~data ?colormap ?window
       ?transparent:(may_map transparent ~f:(fun c -> color c)) () in
   new pixmap pm ?colormap ~mask
+*)
+
+module Cairo = Cairo
 
 class drag_context context = object
   val context = context

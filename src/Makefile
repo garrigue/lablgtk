@@ -176,6 +176,29 @@ lablgtksourceview2.cmxa: \
   $(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2ALLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
 lablgtksourceview2.cmxs: DYNLINKLIBS=$(GTKSOURCEVIEW2_LIBS)
+GTKSOURCEVIEWINSTALL=gtkSourceView2_types.mli
+endif
+ifdef USE_GTKSOURCEVIEW3
+ml_gtksourceview3.o: CFLAGS=$(GTKSOURCEVIEW3CFLAGS)
+MLLIBS += lablgtksourceview3.cma
+CLIBS += liblablgtksourceview3$(XA)
+GTKSOURCEVIEW3MLOBJS = gtkSourceView3.cmo gSourceView3.cmo
+GTKSOURCEVIEW3COBJS = ml_gtksourceview3$(XO)
+GTKSOURCEVIEW3MLOBJSENUM = sourceView3Enums.cmo
+GTKSOURCEVIEW3PROPS = gtkSourceView3.props
+BEFORE_DEPEND += $(GTKSOURCEVIEW3PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW3PROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
+EXTRA_OBJS += $(GTKSOURCEVIEW3MLOBJSENUM)
+GTKSOURCEVIEW3ALLMLOBJS = $(GTKSOURCEVIEW3MLOBJSENUM) \
+	$(GTKSOURCEVIEW3PROPS:%.props=%Props.cmo) \
+	$(GTKSOURCEVIEW3PROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEW3MLOBJS)
+lablgtksourceview3.cma liblablgtksourceview3$(XA): \
+  $(GTKSOURCEVIEW3COBJS) $(GTKSOURCEVIEW3ALLMLOBJS)
+	$(LIBRARIAN) -o lablgtksourceview3 $^ $(GTKSOURCEVIEW3LIBS)
+lablgtksourceview3.cmxa: \
+  $(GTKSOURCEVIEW3COBJS) $(GTKSOURCEVIEW3ALLMLOBJS:.cmo=.cmx)
+	$(LIBRARIAN) -o lablgtksourceview3 $^ $(GTKSOURCEVIEW3LIBS)
+lablgtksourceview3.cmxs: DYNLINKLIBS=$(GTKSOURCEVIEW3_LIBS)
+GTKSOURCEVIEWINSTALL=gtkSourceView3_types.mli
 endif
 
 ifdef USE_GTKQUARTZ
@@ -212,7 +235,7 @@ endif
 	./propcc $<
 
 # Files
-GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) \
+GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkaction$(XO) \
 	ml_gtkbin$(XO) ml_gtkbutton$(XO) \
 	ml_gtkassistant$(XO) \
 	ml_gtkedit$(XO) ml_gtkfile$(XO) \
@@ -224,7 +247,7 @@ COBJS = ml_gdkpixbuf$(XO) ml_gdk$(XO) ml_glib$(XO) ml_gobject$(XO) \
 GTKPROPS += gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
 	gtkMenu.props gtkMisc.props gtkPack.props \
 	gtkRange.props gtkText.props gtkTree.props gtkFile.props \
-	gtkAssistant.props
+	gtkAction.props gtkAssistant.props
 MLOBJS1 =  gaux.cmo gpointer.cmo gutf8.cmo glib.cmo gobject.cmo
 ENUMOBJS += gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
 MLOBJS2 = pango.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
@@ -234,11 +257,11 @@ MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
 	gtkFile.cmo gtkMain.cmo \
-	gPango.cmo gObj.cmo ogtkBaseProps.cmo gData.cmo
+	gPango.cmo gDraw.cmo gObj.cmo ogtkBaseProps.cmo gData.cmo
 MLOBJS4 = gMain.cmo gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
 	gMenu.cmo gMisc.cmo gTree.cmo gFile.cmo gWindow.cmo \
 	gAssistant.cmo \
-	gBin.cmo gEdit.cmo gRange.cmo \
+	gBin.cmo gEdit.cmo gRange.cmo gAction.cmo \
 	gUtil.cmo gToolbox.cmo
 MLOBJS =  $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(GTKPROPS:.props=Props.cmo) \
 	$(MLOBJS3) $(GTKPROPS:%.props=o%Props.cmo) $(MLOBJS4)
@@ -252,7 +275,7 @@ endif
 EXTRAOBJS = $(INITOBJS) $(THOBJS) $(THINITOBJS)
 ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) \
-	$(GTKSPELLMLOBJS) $(GTKSOURCEVIEW2MLOBJS) \
+	$(GTKSPELLMLOBJS) $(GTKSOURCEVIEW2MLOBJS) $(GTKSOURCEVIEW3MLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
@@ -265,7 +288,7 @@ opt::  $(TARGETS) lablgtkopt
 depend:
 	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
 	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 \
-	  USE_GTKSOURCEVIEW=1 USE_GTKSOURCEVIEW2=1
+	  USE_GTKSOURCEVIEW=1 USE_GTKSOURCEVIEW2=1 USE_GTKSOURCEVIEW3=1
 real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
 	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) \
 	  $(ALLTHOBJS:.cmo=.ml) $(BEFORE_DEPEND) *.mli > .depend
@@ -307,6 +330,8 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	    -e "s|@CANVAS_LIBS@|$(GNOMECANVASLIBS)|" \
 	    -e "s|@SOURCEVIEW2_MLS@|$(GTKSOURCEVIEW2ALLMLOBJS:.cmo=)|" \
 	    -e "s|@SOURCEVIEW2_LIBS@|$(GTKSOURCEVIEW2LIBS)|" \
+	    -e "s|@SOURCEVIEW3_MLS@|$(GTKSOURCEVIEW3ALLMLOBJS:.cmo=)|" \
+	    -e "s|@SOURCEVIEW3_LIBS@|$(GTKSOURCEVIEW3LIBS)|" \
 	    -e "s|@TOOLCHAIN@|$(TOOLCHAIN)|" \
 	    < build.ml.in > $@
 
@@ -338,7 +363,7 @@ PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) \
 # Install ml sources and C binaries, can then rebuild using build.ml
 preinstall:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
-	cp $(PREOBJS:.cmo=.ml) gtkSourceView2_types.mli "$(INSTALLDIR)"
+	cp $(PREOBJS:.cmo=.ml) $(GTKSOURCEVIEWINSTALL) "$(INSTALLDIR)"
 	for f in $(PREOBJS:.cmo=.mli); do \
 	  if test -f $$f; then cp $$f "$(INSTALLDIR)"; fi; done
 	cp build.ml "$(INSTALLDIR)"
@@ -553,10 +578,10 @@ dist-clean:
 	rm -f $(ML4SRC)
 
 
-DOCFILES = gPango.ml gObj.mli gMain.mli gData.mli \
+DOCFILES = gPango.ml gDraw.mli gObj.mli gMain.mli gData.mli \
 	gContainer.mli gBin.mli gPack.mli gButton.mli gText.mli \
         gMenu.mli gMisc.mli gTree.mli gFile.mli gWindow.mli \
-        gEdit.mli gRange.mli gUtil.mli gToolbox.mli \
+        gEdit.mli gRange.mli gAction.mli gUtil.mli gToolbox.mli \
 	gaux.ml gpointer.mli glib.mli gobject.mli \
         gdkEnums.ml pangoEnums.ml gtkEnums.ml \
         gdk.mli gdkEvent.ml gdkPixbuf.mli \
@@ -593,6 +618,9 @@ endif
 ifdef USE_GTKSOURCEVIEW2
 DOCFILES += gSourceView2.mli
 endif
+ifdef USE_GTKSOURCEVIEW3
+DOCFILES += gSourceView3.mli
+endif
 
 OCAMLDOC = ocamldoc
 lablgtk.odoc : $(DOCFILES) $(ALLOBJS)
@@ -617,6 +645,9 @@ $(GTKSOURCEVIEWCOBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h 
 
 $(GTKSOURCEVIEW2COBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
 			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView2_tags.h wrappers.h
+
+$(GTKSOURCEVIEW3COBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
+			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView3_tags.h wrappers.h
 
 ml_glib$(XO): glib_tags.h ml_glib.h wrappers.h
 ml_gobject$(XO): gobject_tags.h ml_gvaluecaml.h wrappers.h

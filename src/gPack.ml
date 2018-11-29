@@ -75,6 +75,34 @@ let button_box dir ?layout =
     let w = BBox.create dir p in
     new button_box w)
 
+class table obj = object
+  inherit container_full (obj : Gtk.table obj)
+  method private obj = obj
+  inherit table_props
+  method attach ~left ~top ?right ?bottom ?expand ?fill ?shrink
+      ?xpadding ?ypadding w =
+    Table.attach obj (as_widget w) ~left ~top ?right ?bottom ?expand
+      ?fill ?shrink ?xpadding ?ypadding
+  method set_row_spacing = Table.set_row_spacing obj
+  method set_col_spacing = Table.set_col_spacing obj
+end
+
+let table =
+  Table.make_params [] ~cont:(
+  pack_container ~create:(fun p -> new table (Table.create p)))
+
+class grid obj = object
+  inherit container_full (obj : Gtk.grid obj)
+  method private obj = obj
+  inherit grid_props
+  method attach ~left ~top ?width ?height w =
+    Grid.attach obj (as_widget w) ~left ~top ?width ?height
+end
+
+let grid =
+  Grid.make_params [] ~cont:(
+  pack_container ~create:(fun p -> new grid (Grid.create p)))
+
 class fixed obj = object
   inherit container_full (obj : Gtk.fixed obj)
   method event = new GObj.event_ops obj

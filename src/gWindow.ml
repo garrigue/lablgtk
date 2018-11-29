@@ -282,12 +282,14 @@ class plug (obj : Gtk.plug obj) = object
   method connect = new plug_signals obj
 end
 
+(*
 let plug ~window:xid =
   Container.make_params [] ~cont:(fun pl ?(show=false) () ->
     let w = Plug.create xid in
     Gobject.set_params w pl;
     if show then Widget.show w;
     new plug w)
+*)
 
 (** Socket **)
 
@@ -325,11 +327,11 @@ class ['a] file_chooser_dialog obj = object (self)
     self#add_select_button (GtkStock.convert_id s_id) v
 end
 
-let file_chooser_dialog ~action ?backend =
+let file_chooser_dialog ~action ?filename =
   make_dialog 
-    (Gobject.Property.may_cons 
-       GtkFile.FileChooser.P.file_system_backend backend
-       [ Gobject.param GtkFile.FileChooser.P.action action ])
+     [ Gobject.param GtkFile.FileChooser.P.action action ]
     ~create:(fun pl ->
       let w = GtkFile.FileChooser.dialog_create pl in
-      new file_chooser_dialog w)
+      let o = new file_chooser_dialog w in
+      Gaux.may ~f:o#set_filename filename;
+      o)

@@ -25,16 +25,24 @@
 #define GdkAtom_val(val) ((GdkAtom)Long_val(val))
 #define Val_GdkAtom(val) (Val_long((long)val))
 
+/* Removed in gtk3
 #define GdkColormap_val(val) check_cast(GDK_COLORMAP,val)
 #define Val_GdkColormap Val_GAnyObject
+*/
 
 #define GdkColor_val(val) ((GdkColor*)MLPointer_val(val))
 #define Val_GdkColor Val_pointer
+
+#define GdkRGBA_val(val) ((GdkRGBA*)MLPointer_val(val))
+#define Val_GdkRGBA Val_pointer
 
 #define GdkRectangle_val(val) ((GdkRectangle*)MLPointer_val(val))
 #define Val_GdkRectangle Val_pointer
 
 #define GdkDrawable_val(val) check_cast(GDK_DRAWABLE,val)
+
+#define Cairo_val(val) ((cairo_t*)MLPointer_val(val))
+#define Val_Cairo Val_pointer
 
 #define GdkWindow_val(val) check_cast(GDK_WINDOW,val)
 #define Val_GdkWindow Val_GAnyObject

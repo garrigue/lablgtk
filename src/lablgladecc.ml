@@ -98,6 +98,7 @@ let classes = ref [
   "GtkHPaned", ("GtkPack.Paned", "GPack.paned");
   "GtkVPaned", ("GtkPack.Paned", "GPack.paned");
   "GtkTable", ("GtkPack.Table", "GPack.table");
+  "GtkGrid", ("GtkPack.Grid", "GPack.grid");
   "GtkNotebook", ("GtkPack.Notebook", "GPack.notebook");
 (*   "GtkProgress", ("GtkRange.Progress", "GRange.progress"); *)
   "GtkProgressBar", ("GtkRange.ProgressBar", "GRange.progress_bar");

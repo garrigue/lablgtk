@@ -128,6 +128,8 @@ class ComboBox set wrap wrapsig : Bin {
   "add-tearoffs"         gboolean             : Read / Write                  (* GTK+ 2.6 *)
   "column-span-column"   gint                 : Read / Write / NoSet / NoWrap
   "focus-on-click"       gboolean             : Read / Write                  (* GTK+ 2.6 *)
+  "entry-text-column"    gint                 : Read / Write                  (* GTK+ 2.24 *)
+  "has-entry"            gboolean             : Read / Write                  (* GTK+ 2.24 *)
   "has-frame"            gboolean             : Read / Write                  (* GTK+ 2.6 *)
   "row-span-column"      gint                 : Read / Write / NoSet / NoWrap
   "wrap-width"           gint                 : Read / Write

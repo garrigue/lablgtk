@@ -300,6 +300,8 @@ class combo_box_signals : [> Gtk.combo_box] Gtk.obj ->
     method notify_active : callback:(int -> unit) -> GtkSignal.id
     method notify_add_tearoffs : callback:(bool -> unit) -> GtkSignal.id
     method notify_focus_on_click : callback:(bool -> unit) -> GtkSignal.id
+    method notify_entry_text_column : callback:(int -> unit) -> GtkSignal.id
+    method notify_has_entry : callback:(bool -> unit) -> GtkSignal.id
     method notify_has_frame : callback:(bool -> unit) -> GtkSignal.id
     method notify_wrap_width : callback:(int -> unit) -> GtkSignal.id
   end
@@ -328,6 +330,10 @@ class combo_box :
     method set_add_tearoffs : bool -> unit (** @since GTK 2.6 *)
     method focus_on_click : bool (** @since GTK 2.6 *)
     method set_focus_on_click : bool -> unit (** @since GTK 2.6 *)
+    method entry_text_column : int
+    method set_entry_text_column : int -> unit
+    method has_entry : bool
+    method set_has_entry : bool -> unit
     method has_frame : bool (** @since GTK 2.6 *)
     method set_has_frame : bool -> unit (** @since GTK 2.6 *)
     method set_row_separator_func : (GTree.model -> Gtk.tree_iter -> bool) option -> unit (** @since GTK 2.6 *)
@@ -340,6 +346,8 @@ val combo_box :
   ?active:int ->
   ?add_tearoffs:bool ->
   ?focus_on_click:bool ->
+  ?entry_text_column:int ->
+  ?has_entry:bool ->
   ?has_frame:bool ->
   ?wrap_width:int ->
   ?width:int ->
@@ -347,6 +355,30 @@ val combo_box :
   ?packing:(GObj.widget -> unit) ->
   ?show:bool ->
   unit -> combo_box
+
+(** {4 Convenience API simulating Gtk+ 2} *)
+
+class combo_box_entry : 
+  ([> Gtk.combo_box] as 'a) Gtk.obj ->
+    object
+      inherit combo_box
+      val obj : 'a Gtk.obj
+      method entry : entry
+    end
+
+val combo_box_entry :
+  ?model:#GTree.model ->
+  ?text_column:string GTree.column ->
+  ?active:int ->
+  ?add_tearoffs:bool ->
+  ?focus_on_click:bool ->
+  ?has_frame:bool ->
+  ?wrap_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) ->
+  ?show:bool ->
+  unit -> combo_box_entry
 
 (** {4 Convenience API for text-only ComboBoxes} *)
 
@@ -368,6 +400,8 @@ val combo_box_text :
   ?active:int ->
   ?add_tearoffs:bool ->
   ?focus_on_click:bool ->
+  ?entry_text_column:int ->
+  ?has_entry:bool ->
   ?has_frame:bool ->
   ?wrap_width:int ->
   ?width:int ->
@@ -375,3 +409,19 @@ val combo_box_text :
   ?packing:(GObj.widget -> unit) ->
   ?show:bool ->
   unit -> combo_box text_combo
+
+(** A convenience function. See {!GEdit.combo_box_text}
+    @since GTK 2.4
+    @gtkdoc gtk GtkComboBoxEntry *)
+val combo_box_entry_text :
+  ?strings:string list ->
+  ?active:int ->
+  ?add_tearoffs:bool ->
+  ?focus_on_click:bool ->
+  ?has_frame:bool ->
+  ?wrap_width:int ->
+  ?width:int ->
+  ?height:int ->
+  ?packing:(GObj.widget -> unit) ->
+  ?show:bool ->
+  unit -> combo_box_entry text_combo

@@ -8,8 +8,8 @@ conversions {
 
 class FileChooser abstract wrap wrapsig {
   "action"			GtkFileChooserAction	: Read / Write
+  "create-folders"		gboolean		: Read / Write
   "extra-widget"		GtkWidget		: Read / Write
-  "file-system-backend"		gchararray		: Write / Construct Only
   "filter"			GtkFileFilter		: Read / Write / NoWrap
   "local-only"			gboolean		: Read / Write
   "preview-widget" 		GtkWidget		: Read / Write

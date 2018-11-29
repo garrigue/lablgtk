@@ -44,7 +44,7 @@ CAMLprim value ml_gtkmenu_init(value unit)
     /* Since these are declared const, must force gcc to call them! */
     GType t =
         gtk_menu_item_get_type() +
-        // gtk_image_menu_item_get_type() +
+        gtk_image_menu_item_get_type() +
         gtk_check_menu_item_get_type() +
         gtk_radio_menu_item_get_type() +
         gtk_menu_bar_get_type() +
@@ -88,7 +88,6 @@ CAMLprim value ml_gtk_menu_item_toggle_size_request(value sm,value i)
 ML_2 (gtk_menu_item_toggle_size_allocate, GtkMenuItem_val, Int_val, Unit)
 
 /* gtkimagemenuitem.h */
-/* deprecated
 #define GtkImageMenuItem_val(val) check_cast(GTK_IMAGE_MENU_ITEM,val)
 ML_0 (gtk_image_menu_item_new, Val_GtkWidget_sink)
 ML_1 (gtk_image_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
@@ -97,7 +96,7 @@ ML_1 (gtk_image_menu_item_new_with_mnemonic, String_val, Val_GtkWidget_sink)
 ML_2 (gtk_image_menu_item_new_from_stock, String_val, Option_val(arg2,GtkAccelGroup_val,NULL) Ignore, Val_GtkWidget_sink)
 ML_2 (gtk_image_menu_item_set_image, GtkImageMenuItem_val, GtkWidget_val, Unit)
 ML_1 (gtk_image_menu_item_get_image, GtkImageMenuItem_val, Val_GtkWidget)
-*/
+
 
 /* gtkcheckmenuitem.h */
 
@@ -105,13 +104,12 @@ ML_1 (gtk_image_menu_item_get_image, GtkImageMenuItem_val, Val_GtkWidget)
 ML_0 (gtk_check_menu_item_new, Val_GtkWidget_sink)
 ML_1 (gtk_check_menu_item_new_with_label, String_val, Val_GtkWidget_sink)
 ML_1 (gtk_check_menu_item_new_with_mnemonic, String_val, Val_GtkWidget_sink)
-/* properties
+
 ML_2 (gtk_check_menu_item_set_active, GtkCheckMenuItem_val, Bool_val, Unit)
 ML_2 (gtk_check_menu_item_set_inconsistent, GtkCheckMenuItem_val, Bool_val, Unit)
 ML_1 (gtk_check_menu_item_get_inconsistent, GtkCheckMenuItem_val, Val_bool)
-ML_2 (gtk_check_menu_item_set_show_toggle, GtkCheckMenuItem_val,
-      Bool_val, Unit)
-*/
+/*ML_2 (gtk_check_menu_item_set_show_toggle, GtkCheckMenuItem_val,
+      Bool_val, Unit)*/
 ML_1 (gtk_check_menu_item_toggled, GtkCheckMenuItem_val, Unit)
 
 /* gtkradiomenuitem.h */

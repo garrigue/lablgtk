@@ -25,12 +25,16 @@
 open Gobject
 
 type color
+type rgba
+(* Removed in gtk3
 type colormap
+*)
 type visual
 type screen = [`gdkscreen] obj
 type region
 type gc
 type window = [`gdkwindow] obj
+type cairo
 type atom
 type keysym = int
 type +'a event
@@ -265,9 +269,9 @@ module Visual :
     val depth : visual -> int
   end
 
-(*
 module Color :
   sig
+(* Removed in GdkColor 3.0
     val get_system_colormap : unit -> colormap
     val get_colormap : ?privat:bool -> visual -> colormap
     val get_visual : colormap -> visual
@@ -279,12 +283,14 @@ module Color :
       | `WHITE
     ]
     val alloc : colormap:colormap -> spec -> color
+*)
     val red : color -> int
     val blue : color -> int
     val green : color -> int
     val pixel : color -> int
+    val color_parse : string -> color
+    val color_to_string : color -> string
   end
-*)
 
 module Rectangle :
   sig
@@ -444,4 +450,8 @@ end
 
 module Windowing : sig
   val platform : [`QUARTZ | `WIN32 | `X11]
+end
+
+module Cairo : sig
+  val create : window -> cairo
 end

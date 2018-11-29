@@ -47,6 +47,7 @@ class type chooser_signals = object
   method confirm_overwrite : 
     callback:(unit -> GtkEnums.file_chooser_confirmation) -> GtkSignal.id
   method notify_action : callback:(GtkEnums.file_chooser_action -> unit) -> GtkSignal.id
+  method notify_create_folders : callback:(bool -> unit) -> GtkSignal.id
   method notify_do_overwrite_confirmation : callback:(bool -> unit) -> GtkSignal.id
   method notify_extra_widget : callback:(GObj.widget -> unit) -> GtkSignal.id
   method notify_local_only : callback:(bool -> unit) -> GtkSignal.id
@@ -61,6 +62,8 @@ class type chooser =
   object
     method set_action : GtkEnums.file_chooser_action -> unit
     method action : GtkEnums.file_chooser_action
+    method set_create_folders : bool -> unit
+    method create_folders : bool
     method set_local_only : bool -> unit
     method local_only : bool
     method set_select_multiple : bool -> unit
@@ -173,12 +176,11 @@ end
 
 let may_cons = Gobject.Property.may_cons 
 
-let chooser_widget ~action ?backend ?packing ?show () =
+let chooser_widget ~action ?filename ?packing ?show () =
   let w = FileChooser.widget_create 
-      (may_cons 
-	 FileChooser.P.file_system_backend backend
-	 [ Gobject.param FileChooser.P.action action ]) in
+	 [ Gobject.param FileChooser.P.action action ] in
   let o = new chooser_widget w in
+  Gaux.may ~f:o#set_filename filename;
   GObj.pack_return o ~packing ~show
 
 class chooser_button_signals obj = object
@@ -194,10 +196,12 @@ class chooser_button obj = object
   method connect = new chooser_button_signals obj
 end
 
-let chooser_button ~action ?title ?width_chars ?backend =
+let chooser_button ~action ?title ?width_chars ?filename =
   GContainer.pack_container
     (Gobject.param FileChooser.P.action action ::
-     (may_cons FileChooser.P.file_system_backend backend (
-      may_cons FileChooserButton.P.title title (
-      may_cons FileChooserButton.P.width_chars width_chars []))))
-    ~create:(fun pl -> new chooser_button (FileChooserButton.create pl))
+     (may_cons FileChooserButton.P.title title (
+      may_cons FileChooserButton.P.width_chars width_chars [])))
+    ~create:(fun pl ->
+      let o = new chooser_button (FileChooserButton.create pl) in
+      Gaux.may ~f:o#set_filename filename;
+      o)

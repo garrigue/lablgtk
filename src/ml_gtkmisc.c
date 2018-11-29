@@ -52,6 +52,8 @@ CAMLprim value ml_gtkmisc_init(value unit)
         gtk_arrow_get_type() +
         gtk_image_get_type() +
         gtk_label_get_type() +
+        gtk_hseparator_get_type() +
+        gtk_vseparator_get_type() +
         gtk_font_selection_get_type() +
         gtk_color_selection_get_type();
     return Val_GType(t);
@@ -169,3 +171,5 @@ CAMLprim value ml_gtk_label_get_selection_bounds (value label)
   return r;
 }
 
+
+/* gtk[hv]separator.h */

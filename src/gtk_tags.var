@@ -10,6 +10,9 @@ type align = "GTK_ALIGN_"
 type arrow_type = "GTK_ARROW_"
   [ `UP | `DOWN | `LEFT | `RIGHT | `NONE ]
 
+type attach_options = "GTK_"
+  [ `EXPAND | `SHRINK | `FILL ]
+
 type baseline_position = "GTK_BASELINE_POSITION_"
   [ `TOP | `CENTER | `BOTTOM ]
 
@@ -344,6 +347,12 @@ type file_chooser_errot = "GTK_FILE_CHOOSER_ERROR_"
 (* gtkfilefilter.h *)
 type file_filter_flags = "GTK_FILE_FILTER_"
   [ `FILENAME | `URI | `DISPLAY_NAME | `MIME_TYPE ]
+
+(* gtkuimanager.h *)
+type protect HASGTK24 ui_manager_item_type = "GTK_UI_MANAGER_"
+  [ `AUTO | `MENUBAR | `MENU | `TOOLBAR | `PLACEHOLDER
+  | `POPUP | `MENUITEM | `TOOLITEM | `SEPARATOR | `ACCELERATOR
+  | `POPUP_WITH_ACCELS ]
 
 (* gtkassistant.h *)
 type protect HASGTK210 assistant_page_type = "GTK_ASSISTANT_PAGE_"

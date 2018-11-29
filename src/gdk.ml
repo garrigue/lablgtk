@@ -27,12 +27,16 @@ open Gaux
 open Gobject
 
 type color
+type rgba
+(* Removed in gtk3
 type colormap
+*)
 type visual
 type screen = [`gdkscreen] obj
 type region
 type gc
 type window = [`gdkwindow] obj
+type cairo
 type atom
 type keysym = int
 type +'a event
@@ -137,20 +141,26 @@ module Visual = struct
   external depth : visual -> int = "ml_gdk_visual_get_depth"
 end
 
-(*
 module Color = struct
+(* Removed in GdkColor 3.0
   external color_white : colormap -> color = "ml_gdk_color_white"
   external color_black : colormap -> color = "ml_gdk_color_black"
+*)
   external color_parse : string -> color = "ml_gdk_color_parse"
+  external color_to_string : color -> string = "ml_gdk_color_to_string"
+(* Removed in GdkColor 3.0
   external color_alloc : colormap -> color -> bool = "ml_gdk_color_alloc"
+*)
   external color_create : red:int -> green:int -> blue:int -> color
       = "ml_GdkColor"
 
+(* Removed in GdkColor 3.0
   external get_system_colormap : unit -> colormap
       = "ml_gdk_colormap_get_system"
   external colormap_new : visual -> privat:bool -> colormap
       = "ml_gdk_colormap_new"
   let get_colormap ?(privat=false) vis = colormap_new vis ~privat
+
   external get_visual : colormap -> visual
       = "ml_gdk_colormap_get_visual"
 
@@ -165,13 +175,15 @@ module Color = struct
     | `NAME s -> color_alloc ~colormap (color_parse s)
     | `RGB (red,green,blue) ->
 	color_alloc ~colormap (color_create ~red ~green ~blue)
+*)
 
+  (* deprecated in 3.14 in favor of RGBA *)
   external red : color -> int = "ml_GdkColor_red"
   external blue : color -> int = "ml_GdkColor_blue"
   external green : color -> int = "ml_GdkColor_green"
   external pixel : color -> int = "ml_GdkColor_pixel"
+
 end
-*)
 
 module Rectangle = struct
   type t
@@ -403,4 +415,10 @@ module Display = struct
     get_window_at_pointer
       (match display with None -> default ()
       | Some disp -> disp)
+end
+
+module Cairo = struct
+  external create :
+    window -> cairo
+    = "ml_gdk_cairo_create"
 end

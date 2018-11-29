@@ -88,11 +88,13 @@ let enums =
      [ "Stretch"; "Style"; "Underline"; "Variant"; "EllipsizeMode" ]);
     (* GtkSourceView *)
     ("Gtk", "SourceView2Enums",
+     [ "SourceSmartHomeEndType"; "SourceDrawSpacesFlags" ]);
+    ("Gtk3", "SourceView3Enums",
      [ "SourceSmartHomeEndType"; "SourceDrawSpacesFlags" ]) ]
   
 (* These types must be registered with g_boxed_register! *)
 let boxeds =
-  [ ("Gdk", [ "Color"; "Font" ]); ("Pango", [ "FontDescription" ]);
+  [ ("Gdk", [ "Color"; "Font"; "RGBA" ]); ("Pango", [ "FontDescription" ]);
     ("Gtk",
      [ "IconSet"; "SelectionData"; "TextIter"; "TreePath"; "TreeIter" ]) ]
   

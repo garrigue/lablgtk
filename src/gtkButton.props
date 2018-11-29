@@ -44,6 +44,8 @@ class RadioButton : ToggleButton {
 class ColorButton wrap : Button {
   "alpha"                guint                : Read / Write
   "color"                GdkColor             : Read / Write / Set
+  "rgba"                 GdkRGBA              : Read / Write / Set
+  "show-editor"          gboolean             : Read / Write
   "title"                gchararray           : Read / Write / Set
   "use-alpha"            gboolean             : Read / Write
   signal color_set

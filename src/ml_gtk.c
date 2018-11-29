@@ -71,10 +71,13 @@ CAMLprim value ml_gtkwindow_init(value unit)
     /* Since these are declared const, must force gcc to call them! */
     GType t =
         gtk_message_dialog_get_type() +
+        gtk_color_selection_dialog_get_type() +
+        gtk_font_selection_dialog_get_type() 
+/*
 #ifndef _WIN32
         + gtk_plug_get_type()
         + gtk_socket_get_type()
-#endif
+#endif*/
 ;
     return Val_GType(t);
 }
@@ -148,7 +151,7 @@ CAMLprim value ml_gtk_accel_map_foreach(value func)
 
 /* gtkstyle.h */
 
-/* deprecated
+/* deprecated since 3.0 */
 #define Val_GtkStyle_new(val) (Val_GObject_new(&val->parent_instance))
 ML_0 (gtk_style_new, Val_GtkStyle_new)
 ML_1 (gtk_style_copy, GtkStyle_val, Val_GtkStyle_new)
@@ -156,12 +159,14 @@ ML_2 (gtk_style_attach, GtkStyle_val, GdkWindow_val, Val_GtkStyle)
 ML_1 (gtk_style_detach, GtkStyle_val, Unit)
 ML_3 (gtk_style_set_background, GtkStyle_val, GdkWindow_val, State_type_val,
       Unit)
+/* removed in 3.0
 ML_6 (gtk_draw_hline, GtkStyle_val, GdkWindow_val, State_type_val,
       Int_val, Int_val, Int_val, Unit)
 ML_bc6 (ml_gtk_draw_hline)
 ML_6 (gtk_draw_vline, GtkStyle_val, GdkWindow_val, State_type_val,
       Int_val, Int_val, Int_val, Unit)
 ML_bc6 (ml_gtk_draw_vline)
+*/
 Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,
                       bg, Val_copy)
 Make_Array_Setter (gtk_style_set, GtkStyle_val, State_type_val,
@@ -190,6 +195,7 @@ Make_Array_Extractor (gtk_style_get, GtkStyle_val, State_type_val,
                       text, Val_copy)
 Make_Array_Setter (gtk_style_set, GtkStyle_val, State_type_val,
                    *GdkColor_val, text)
+/* removed in 3.0
 Make_Extractor (gtk_style_get, GtkStyle_val, colormap, Val_GdkColormap)
 Make_Extractor (gtk_style_get, GtkStyle_val, depth, Val_int)
 ML_1 (gtk_style_get_font, GtkStyle_val, Val_GdkFont)
@@ -259,8 +265,8 @@ ML_1 (gtk_widget_realize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unrealize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_draw, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_resize, GtkWidget_val, Unit)
-/* ML_2 (gtk_widget_draw, GtkWidget_val,
-      Option_val(arg2,GdkRectangle_val,NULL) Ignore, Unit) */
+ML_2 (gtk_widget_draw, GtkWidget_val,
+      Option_val(arg2,GdkRectangle_val,NULL) Ignore, Unit)
 /*
 ML_1 (gtk_widget_draw_focus, GtkWidget_val, Unit)
 ML_1 (gtk_widget_draw_default, GtkWidget_val, Unit)
@@ -268,8 +274,8 @@ ML_1 (gtk_widget_draw_children, GtkWidget_val, Unit)
 */
 ML_2 (gtk_widget_event, GtkWidget_val, GdkEvent_val, Val_bool)
 ML_1 (gtk_widget_activate, GtkWidget_val, Val_bool)
-/* deprecated
-ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit) */
+ML_2 (gtk_widget_reparent, GtkWidget_val, GtkWidget_val, Unit)
+/* deprecated */
 /* ML_3 (gtk_widget_popup, GtkWidget_val, Int_val, Int_val, Unit) */
 CAMLprim value ml_gtk_widget_intersect (value w, value area)
 {
@@ -314,14 +320,15 @@ CAMLprim value ml_gtk_widget_get_pointer (value w)
 }
 ML_2 (gtk_widget_is_ancestor, GtkWidget_val, GtkWidget_val, Val_bool)
 
-/* deprecated
+/* deprecated since 3.0 */
 ML_1 (gtk_widget_ensure_style, GtkWidget_val, Unit)
 ML_3 (gtk_widget_modify_fg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_bg, GtkWidget_val, State_type_val, GdkColor_val, Unit)
 ML_3 (gtk_widget_modify_text, GtkWidget_val, State_type_val, GdkColor_val,Unit)
 ML_3 (gtk_widget_modify_base, GtkWidget_val, State_type_val, GdkColor_val,Unit)
 ML_2 (gtk_widget_modify_font, GtkWidget_val, PangoFontDescription_val, Unit)
-*/
+/* end deprecated since 3.0 */
+
 ML_1 (gtk_widget_get_pango_context, GtkWidget_val, Val_PangoContext)
 ML_1 (gtk_widget_create_pango_context, GtkWidget_val, Val_PangoContext_new)
 ML_6 (gtk_widget_add_accelerator, GtkWidget_val, Signal_name_val,
@@ -333,7 +340,7 @@ ML_4 (gtk_widget_remove_accelerator, GtkWidget_val, GtkAccelGroup_val,
 
 ML_3 (gtk_widget_set_accel_path, 
       GtkWidget_val, String_val, GtkAccelGroup_val, Unit)
-/*
+/* deprecated since 2.0 (?)
 ML_1 (gtk_widget_lock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unlock_accelerators, GtkWidget_val, Unit)
 ML_1 (gtk_widget_accelerators_locked, GtkWidget_val, Val_bool)
@@ -370,10 +377,9 @@ ML_1 (gtk_widget_push_visual, GdkVisual_val, Unit)
 ML_1 (gtk_widget_push_colormap, GdkColormap_val, Unit)
 ML_0 (gtk_widget_pop_visual, Unit)
 ML_0 (gtk_widget_pop_colormap, Unit) */
-/* deprecated
-ML_4 (gtk_widget_render_icon, GtkWidget_val, String_val, Icon_size_val,
-      String_option_val, Val_GdkPixbuf)
-*/
+/* depredated >= 3.10 */
+ML_3 (gtk_widget_render_icon_pixbuf, GtkWidget_val, String_val, Icon_size_val,
+      Val_GdkPixbuf)
 CAMLprim value ml_gtk_widget_style_get_property (value w, value n)
 {
     CAMLparam2 (w, n);
@@ -694,6 +700,14 @@ ML_2 (gtk_dialog_set_default_response, GtkDialog_val, Int_val, Unit)
 ML_1 (gtk_dialog_run, GtkDialog_val, Val_int)
      /* gtk_dialog_add_action_widget */
 
+/* gtkorientable.h */
+
+#define GtkOrientable_val(val) check_cast(GTK_ORIENTABLE,val)
+#define Val_GtkOrientable(val) (Val_GObject((GObject*)val))
+
+ML_1 (gtk_orientable_get_orientation, GtkOrientable_val, Val_orientation)
+ML_2 (gtk_orientable_set_orientation, GtkOrientable_val, Orientation_val, Unit)
+
 /* gtkwindow.h */
 
 ML_1 (gtk_window_new, Window_type_val, Val_GtkWidget_window)
@@ -876,12 +890,13 @@ Unsupported_26(gtk_about_dialog_new)
 
 /* gtkplug.h */
 #ifdef _WIN32
-Unsupported(gtk_plug_new)
+/* Unsupported(gtk_plug_new) */
 #else
-ML_1 (gtk_plug_new, GdkNativeWindow_val, Val_GtkWidget_window)
+/* ML_1 (gtk_plug_new, GdkNativeWindow_val, Val_GtkWidget_window) */
 #endif
 
 /* gtksocket.h */
+/*
 #ifdef _WIN32
 Unsupported(gtk_socket_steal)
 #else
@@ -890,6 +905,7 @@ ML_2 (gtk_socket_add_id, GtkSocket_val, GdkNativeWindow_val, Unit)
 ML_1 (gtk_socket_get_id, GtkSocket_val, Val_GdkNativeWindow)
 ML_1 (gtk_socket_get_plug_window, GtkSocket_val, Val_GdkWindow)
 #endif
+*/
 
 /* gtkmain.h */
 

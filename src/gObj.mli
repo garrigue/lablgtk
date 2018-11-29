@@ -126,6 +126,37 @@ class event_ops : [> widget] obj ->
     method send : GdkEvent.any -> bool
   end
 
+(** @gtkdoc gtk GtkStyle *)
+class style : Gtk.style ->
+  object ('a)
+    val style : Gtk.style
+    method as_style : Gtk.style
+    method base : Gtk.Tags.state_type -> Gdk.color
+    method bg : Gtk.Tags.state_type -> Gdk.color
+(*
+    method colormap : Gdk.colormap
+*)
+    method copy : 'a
+    method dark : Gtk.Tags.state_type -> Gdk.color
+    method fg : Gtk.Tags.state_type -> Gdk.color
+(*
+    method font : Gdk.font
+*)
+    method light : Gtk.Tags.state_type -> Gdk.color
+    method mid : Gtk.Tags.state_type -> Gdk.color
+    method set_bg : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_dark : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
+(*
+    method set_font : Gdk.font -> unit
+*)
+    method set_light : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_mid : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method set_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
+    method text : Gtk.Tags.state_type -> Gdk.color
+  end
+
 (** @gtkdoc gtk gtk-Selections *)
 class selection_data :
   Gtk.selection_data ->
@@ -149,7 +180,7 @@ class selection_context :
   end
 
 (** @gtkdoc gtk gtk-Drag-and-Drop *)
-(*
+
 class drag_ops : Gtk.widget obj ->
   object
     method connect : drag_signals
@@ -165,7 +196,6 @@ class drag_ops : Gtk.widget obj ->
     method source_unset : unit -> unit
     method unhighlight : unit -> unit
   end
-*)
 
 (** @gtkdoc gtk GtkWidget *)
 and misc_ops : Gtk.widget obj ->
@@ -184,6 +214,7 @@ and misc_ops : Gtk.widget obj ->
     method connect : misc_signals
     method convert_selection : target:string -> ?time:int32 -> Gdk.atom -> bool
     method create_pango_context : GPango.context_rw
+    method draw : Gdk.Rectangle.t option -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit
     method grab_selection : ?time:int32 -> Gdk.atom -> bool
@@ -192,14 +223,14 @@ and misc_ops : Gtk.widget obj ->
     method intersect : Gdk.Rectangle.t -> Gdk.Rectangle.t option
     method is_ancestor : widget -> bool
     method map : unit -> unit
-    (*
+    (* Deprecated since 3.0 *)
     method modify_bg : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_font : Pango.font_description -> unit
     method modify_font_by_name : string -> unit
-    *)
+    (* End deprecated since 3.0 *)
     method name : string
     method parent : widget option
     method pango_context : GPango.context
@@ -207,6 +238,9 @@ and misc_ops : Gtk.widget obj ->
     method realize : unit -> unit
     method remove_accelerator :
       group:accel_group -> ?modi:Gdk.Tags.modifier list -> Gdk.keysym -> unit
+    method render_icon :
+       size:Gtk.Tags.icon_size -> GtkStock.id -> GdkPixbuf.pixbuf
+    method reparent : widget -> unit
     method set_app_paintable : bool -> unit
     method set_can_default : bool -> unit
     method set_can_focus : bool -> unit
@@ -217,11 +251,13 @@ and misc_ops : Gtk.widget obj ->
     method set_size_chars :
       ?desc:Pango.font_description ->
       ?lang:string -> ?width:int -> ?height:int -> unit -> unit
+    method set_style : style -> unit
     method set_size_request : ?width:int -> ?height:int -> unit -> unit
     method set_tooltip_markup : string -> unit
     method set_tooltip_text : string -> unit
     method show : unit -> unit
     method show_all : unit -> unit
+    method style : style
     method tooltip_markup : string
     method tooltip_text : string
     method toplevel : widget
@@ -241,7 +277,7 @@ and widget : ([> Gtk.widget] as 'a) obj ->
     val obj : 'a obj
     method as_widget : Gtk.widget obj
     method coerce : widget
-    (* method drag : drag_ops *)
+    method drag : drag_ops
     method misc : misc_ops
     method destroy : unit -> unit
   end
@@ -249,7 +285,7 @@ and widget : ([> Gtk.widget] as 'a) obj ->
 (** @gtkdoc gtk GtkWidget *)
 and misc_signals : Gtk.widget obj ->
   object ('b)
-    inherit [Gtk.widget] gobject_signals
+    inherit gtkobj_signals
     method hide : callback:(unit -> unit) -> GtkSignal.id
     method map : callback:(unit -> unit) -> GtkSignal.id
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id
@@ -266,10 +302,10 @@ and misc_signals : Gtk.widget obj ->
     method size_allocate : callback:(Gtk.rectangle -> unit) -> GtkSignal.id
     method state_changed :
       callback:(Gtk.Tags.state_type -> unit) -> GtkSignal.id
+    method style_set : callback:(unit -> unit) -> GtkSignal.id
     method unmap : callback:(unit -> unit) -> GtkSignal.id
   end
 
-(*
 (** @gtkdoc gtk gtk-Drag-and-Drop *)
 and drag_context :
   Gdk.drag_context ->
@@ -311,7 +347,6 @@ and drag_signals :
       callback:(drag_context -> x:int -> y:int -> time:int32 -> bool) ->
       GtkSignal.id
   end
-*)
 
 (** @gtkdoc gtk GtkWidget *)
 class ['a] widget_impl : ([> Gtk.widget] as 'a) obj ->

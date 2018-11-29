@@ -176,8 +176,10 @@ class Adjustment set wrap wrapsig : Object {
   signal value_changed
 }
 
-class Orientable abstract wrap : Object {
+class Orientable wrap : Object {
   "orientation"  GtkOrientation  : Read / Write
+  method get_orientation : "GtkEnums.orientation"
+  method set_orientation : "GtkEnums.orientation -> unit"
 }
 
 (* Window and Dialogs *)
@@ -242,16 +244,7 @@ class Dialog wrap : Window {
   signal response : gint
 }
 
-(*
-class FileSelection abstract set wrap : Dialog {
-  "filename"             gchararray           : Read / Write
-  "select-multiple"      gboolean             : Read / Write
-  "show-fileops"         gboolean             : Read / Write
-}
-
-class ColorSelectionDialog : Dialog {}
-class FontSelectionDialog : Dialog {}
-class InputDialog : Dialog {} *)
+(* class InputDialog : Dialog {} *)
 
 class MessageDialog wrap : Dialog {
   "buttons"              GtkButtonsType       : Write / Construct Only
@@ -293,9 +286,11 @@ class Plug abstract wrapsig : Bin {
 }
 
 class Socket wrapsig : Container {
+(*
   method add_id : "Gdk.native_window -> unit"
   method get_id : "Gdk.native_window"
   method get_plug_window : "Gdk.window"
+*)
   signal plug_added
   signal plug_removed
 }
