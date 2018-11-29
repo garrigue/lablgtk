@@ -32,46 +32,48 @@
 CAMLprim value
 ml_gtkspell_init (value unit)
 {
-  ml_register_exn_map (GTKSPELL_ERROR, "gtkspell_error");
+  ml_register_exn_map (GTK_SPELL_ERROR, "gtkspell_error");
   return Val_unit;
 }
 
 CAMLprim value
-ml_gtkspell_new_attach (value textview, value lang)
+ml_gtkspell_new_attach (value textview)
 {
-  GError *err = NULL;
-  gtkspell_new_attach (check_cast(GTK_TEXT_VIEW, textview), 
-		       String_option_val (lang), &err);
-  if (err) ml_raise_gerror (err);
-  return Val_unit;
+  GtkSpellChecker *sc = gtk_spell_checker_new();
+  if (!gtk_spell_checker_attach (sc, check_cast(GTK_TEXT_VIEW, textview))) {
+    g_object_unref(sc);
+    failwith("GtkSpell.attach");
+  }
+  return Val_GAnyObject(sc);
 }
 
 CAMLprim value
 ml_gtkspell_is_attached (value textview)
 {
-  return Val_bool (gtkspell_get_from_text_view (check_cast(GTK_TEXT_VIEW, textview)) != NULL);
+  return Val_bool (gtk_spell_checker_get_from_text_view
+                     (check_cast(GTK_TEXT_VIEW, textview)));
 } 
 
 CAMLprim value
 ml_gtkspell_get_from_text_view (value view)
 {
-  GtkSpell *s;
-  s = gtkspell_get_from_text_view (check_cast(GTK_TEXT_VIEW, view));
-  return s ? ml_some (Val_pointer (s)) : Val_unit;
+  GtkSpellChecker *s;
+  s = gtk_spell_checker_get_from_text_view (check_cast(GTK_TEXT_VIEW, view));
+  return s ? ml_some (Val_GAnyObject (s)) : Val_unit;
 }
 
-#define GtkSpell_val(v) (GtkSpell *)Pointer_val(v)
+#define GtkSpell_val(v) (GtkSpellChecker *)GObject_val(v)
 
-ML_1 (gtkspell_detach, GtkSpell_val, Unit)
+ML_1 (gtk_spell_checker_detach, GtkSpell_val, Unit)
 
 CAMLprim value
 ml_gtkspell_set_language (value spell, value lang)
 {
   GError *err = NULL;
-  if (! gtkspell_set_language (GtkSpell_val (spell), 
+  if (! gtk_spell_checker_set_language (GtkSpell_val (spell),
 			       String_option_val (lang), &err))
     ml_raise_gerror (err);
   return Val_unit;
 }
 
-ML_1 (gtkspell_recheck_all, GtkSpell_val, Unit)
+ML_1 (gtk_spell_checker_recheck_all, GtkSpell_val, Unit)
