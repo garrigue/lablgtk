@@ -13,14 +13,14 @@ CONFIG = ../config.make
 # protect against missing definitions
 BINDIR = ""
 LIBDIR = ""
-INSTALLDIR = $(LIBDIR)/lablgtk2
+INSTALLDIR = $(LIBDIR)/lablgtk3
 DLLDIR = $(LIBDIR)/stublibs
 
 include $(CONFIG)
 #GTKCFLAGS += -Werror -Wno-error=deprecated-declarations
 GTKCFLAGS += -Wno-deprecated-declarations
 
-TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE) \
+TARGETS = varcc$(XE) lablgtktop$(XE) lablgtk3$(XB) gdk_pixbuf_mlsource$(XE) \
 	$(THINITOBJS) build.ml
 
 all: dist byte
@@ -29,7 +29,7 @@ install: findlib-install
 uninstall: findlib-uninstall
 
 MLLIBS = lablgtk.cma
-CLIBS = liblablgtk2$(XA)
+CLIBS = liblablgtk3$(XA)
 #MLLINK = unix.cma str.cma
 
 # For -DG_LOG_DOMAIN=\"LablGTK\"
@@ -76,7 +76,7 @@ MLFLAGS += -I $(LABLGLDIR)
 endif
 MLLINK += lablgl.cma
 MLLIBS += lablgtkgl.cma
-CLIBS += liblablgtkgl2$(XA)
+CLIBS += liblablgtkgl3$(XA)
 GLMLOBJS = glGtk.cmo
 GLCOBJS = ml_gtkgl$(XO)
 endif
@@ -90,7 +90,7 @@ endif
 
 ifdef USE_GLADE
 MLLIBS += lablglade.cma
-CLIBS += liblablglade2$(XA)
+CLIBS += liblablglade3$(XA)
 GLADEMLOBJS = glade.cmo
 GLADECOBJS = ml_glade$(XO)
 TARGETS += lablgladecc$(XE)
@@ -128,56 +128,11 @@ endif
 
 ifdef USE_GTKSPELL
 MLLIBS += lablgtkspell.cma
-CLIBS += liblablgtkspell$(XA)
+CLIBS += liblablgtkspell3$(XA)
 GTKSPELLMLOBJS = gtkSpell.cmo
 GTKSPELLCOBJS = ml_gtkspell$(XO)
 endif
 
-ifdef USE_GTKSOURCEVIEW
-byte:: lablgtksourceview.cma liblablgtksourceview$(XA)
-opt:: lablgtksourceview.cmxa liblablgtksourceview$(XA)
-ifeq ($(HAS_NATIVE_DYNLINK),yes)
-opt::  lablgtksourceview.cmxs
-endif
-
-ml_gtksourceview.o: CFLAGS=$(GTKSOURCEVIEWCFLAGS)
-GTKSOURCEVIEWMLOBJS = gtkSourceView.cmo gSourceView.cmo
-GTKSOURCEVIEWCOBJS = ml_gtksourceview$(XO)
-ml_gtksourceview.c: pango_tags.h
-GTKSOURCEVIEWMLOBJSENUM = sourceViewEnums.cmo
-GTKSOURCEVIEWPROPS = gtkSourceView.props
-CLIBS += liblablgtksourceview$(XA)
-EXTRA_MLLIBS += lablgtksourceview.cma
-EXTRA_OBJS += $(GTKSOURCEVIEWMLOBJS) $(GTKSOURCEVIEWMLOBJSENUM)
-BEFORE_DEPEND += $(GTKSOURCEVIEWMLOBJS:%.cmo=%.ml) $(GTKSOURCEVIEWPROPS:%.props=%Props.ml) $(GTKSOURCEVIEWPROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
-lablgtksourceview.cma liblablgtksourceview$(XA): \
-	$(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmo) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEWMLOBJS)
-	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
-lablgtksourceview.cmxa: $(GTKSOURCEVIEWCOBJS) $(GTKSOURCEVIEWMLOBJSENUM:.cmo=.cmx) $(GTKSOURCEVIEWPROPS:%.props=%Props.cmx) $(GTKSOURCEVIEWPROPS:%.props=o%Props.cmx) $(GTKSOURCEVIEWMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtksourceview $^ $(GTKSOURCEVIEWLIBS)
-
-endif
-ifdef USE_GTKSOURCEVIEW2
-MLLIBS += lablgtksourceview2.cma
-CLIBS += liblablgtksourceview2$(XA)
-GTKSOURCEVIEW2MLOBJS = gtkSourceView2.cmo gSourceView2.cmo
-GTKSOURCEVIEW2COBJS = ml_gtksourceview2$(XO)
-GTKSOURCEVIEW2MLOBJSENUM = sourceView2Enums.cmo
-GTKSOURCEVIEW2PROPS = gtkSourceView2.props
-BEFORE_DEPEND += $(GTKSOURCEVIEW2PROPS:%.props=%Props.ml) $(GTKSOURCEVIEW2PROPS:%.props= o%Props.ml) $(GTKSOURCEVIEWMLOBJSENUM:%.cmo=%.ml)
-EXTRA_OBJS += $(GTKSOURCEVIEW2MLOBJSENUM)
-GTKSOURCEVIEW2ALLMLOBJS = $(GTKSOURCEVIEW2MLOBJSENUM) \
-	$(GTKSOURCEVIEW2PROPS:%.props=%Props.cmo) \
-	$(GTKSOURCEVIEW2PROPS:%.props=o%Props.cmo) $(GTKSOURCEVIEW2MLOBJS)
-lablgtksourceview2.cma liblablgtksourceview2$(XA): \
-  $(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2ALLMLOBJS)
-	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
-lablgtksourceview2.cmxa: \
-  $(GTKSOURCEVIEW2COBJS) $(GTKSOURCEVIEW2ALLMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtksourceview2 $^ $(GTKSOURCEVIEW2LIBS)
-lablgtksourceview2.cmxs: DYNLINKLIBS=$(GTKSOURCEVIEW2_LIBS)
-GTKSOURCEVIEWINSTALL=gtkSourceView2_types.mli
-endif
 ifdef USE_GTKSOURCEVIEW3
 ml_gtksourceview3.o: CFLAGS=$(GTKSOURCEVIEW3CFLAGS)
 MLLIBS += lablgtksourceview3.cma
@@ -275,7 +230,7 @@ endif
 EXTRAOBJS = $(INITOBJS) $(THOBJS) $(THINITOBJS)
 ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) \
-	$(GTKSPELLMLOBJS) $(GTKSOURCEVIEW2MLOBJS) $(GTKSOURCEVIEW3MLOBJS) \
+	$(GTKSOURCEVIEW3MLOBJS) $(GTKSPELLMLOBJS) \
 	$(INITOBJS)
 ALLTHOBJS = $(THOBJS) $(THINITOBJS)
 PROPOBJS = $(GTKPROPS:%.props=%Props.cmo) $(GTKPROPS:%.props=o%Props.cmo)
@@ -288,7 +243,7 @@ opt::  $(TARGETS) lablgtkopt
 depend:
 	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
 	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 \
-	  USE_GTKSOURCEVIEW=1 USE_GTKSOURCEVIEW2=1 USE_GTKSOURCEVIEW3=1
+	  USE_GTKSOURCEVIEW3=1
 real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
 	ocamldep $(ALLOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) \
 	  $(ALLTHOBJS:.cmo=.ml) $(BEFORE_DEPEND) *.mli > .depend
@@ -302,7 +257,7 @@ lablgtktop$(XE): $(MLLIBS) $(THOBJS) $(CONFIG)
 	   -I . $(MLLIBS) $(THOBJS)
 endif
 
-lablgtk2: Makefile $(CONFIG) lablgtk2.in
+lablgtk3: Makefile $(CONFIG) lablgtk3.in
 	sed -e "s|@INSTALLDIR@|$(LABLGTKDIR)|g" \
 	    -e "s|@LABLGLDIR@|$(LABLGLDIR)|g" \
 	    -e "s|@MLLIBS@|$(MLLINK) $(MLLIBS)|g" \
@@ -311,11 +266,11 @@ lablgtk2: Makefile $(CONFIG) lablgtk2.in
 	    -e "s|@THINITOBJS@|$(THINITOBJS)|g" \
 	    -e "s|@USEDLL@|$(HAS_DLL_SUPPORT)|g" \
 	    -e "s|@THREADS_LIB@|$(THREADS_LIB)|g" \
-	    < lablgtk2.in > $@
+	    < lablgtk3.in > $@
 	chmod 755 $@
 
-lablgtk2.bat: lablgtk2.bat.in
-	cp lablgtk2.bat.in lablgtk2.bat
+lablgtk3.bat: lablgtk3.bat.in
+	cp lablgtk3.bat.in lablgtk3.bat
 
 build.ml: Makefile $(CONFIG) build.ml.in
 	sed -e "s|@LABLGTK_MLS@|$(MLOBJS:.cmo=)|" \
@@ -328,8 +283,6 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	    -e "s|@RSVG_LIBS@|$(RSVGLIBS)|" \
 	    -e "s|@CANVAS_MLS@|$(GNOMECANVASMLOBJS:.cmo=)|" \
 	    -e "s|@CANVAS_LIBS@|$(GNOMECANVASLIBS)|" \
-	    -e "s|@SOURCEVIEW2_MLS@|$(GTKSOURCEVIEW2ALLMLOBJS:.cmo=)|" \
-	    -e "s|@SOURCEVIEW2_LIBS@|$(GTKSOURCEVIEW2LIBS)|" \
 	    -e "s|@SOURCEVIEW3_MLS@|$(GTKSOURCEVIEW3ALLMLOBJS:.cmo=)|" \
 	    -e "s|@SOURCEVIEW3_LIBS@|$(GTKSOURCEVIEW3LIBS)|" \
 	    -e "s|@TOOLCHAIN@|$(TOOLCHAIN)|" \
@@ -363,12 +316,12 @@ PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) \
 # Install ml sources and C binaries, can then rebuild using build.ml
 preinstall:
 	mkdir -p "$(INSTALLDIR)" "$(BINDIR)" "$(DLLDIR)"
-	cp $(PREOBJS:.cmo=.ml) $(GTKSOURCEVIEWINSTALL) "$(INSTALLDIR)"
+	cp $(PREOBJS:.cmo=.ml) $(GTKSOURCEVIEW3INSTALL) "$(INSTALLDIR)"
 	for f in $(PREOBJS:.cmo=.mli); do \
 	  if test -f $$f; then cp $$f "$(INSTALLDIR)"; fi; done
 	cp build.ml "$(INSTALLDIR)"
-	cp lablgtk2$(XB) gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
-	cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"
+	cp lablgtk3$(XB) gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
+	cp lablgladecc$(XE) "$(BINDIR)/lablgladecc3$(XE)"
 	cp $(CLIBS) "$(INSTALLDIR)"
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)"
 
@@ -391,16 +344,16 @@ old-install:
 	fi
 	cp -p *.h "$(INSTALLDIR)"
 	@if test -f lablgtk.cmxa; then $(MAKE) old-installopt; fi
-	@if test -f dlllablgtk2$(XS); then $(MAKE) old-installdll; fi
-	cp lablgtk2$(XB) "$(BINDIR)"
+	@if test -f dlllablgtk3$(XS); then $(MAKE) old-installdll; fi
+	cp lablgtk3$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
-	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; fi
+	   cp lablgladecc$(XE) "$(BINDIR)/lablgladecc3$(XE)"; fi
 	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
 
 old-installdll:
 	cp $(CLIBS:lib%$(XA)=dll%$(XS)) "$(DLLDIR)" || \
 	   echo "Couldn't install dlls in default location: $(DLLDIR)"
-	if test -f dlllablgtk2$(XA); then \
+	if test -f dlllablgtk3$(XA); then \
 	  cp $(CLIBS:lib%$(XA)=dll%$(XA)) "$(INSTALLDIR)"; fi
 
 old-installopt:
@@ -418,7 +371,7 @@ old-uninstall:
 	rm -r "$(INSTALLDIR)"
 	for f in $(CLIBS:lib%$(XA)=dll%$(XS)); \
 	  do rm "$(DLLDIR)"/$$f; done
-	for f in lablgladecc2$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE); \
+	for f in lablgladecc3$(XE) lablgtk3$(XB) gdk_pixbuf_mlsource$(XE); \
 	  do rm -f "$(BINDIR)"/$$f; done
 
 # Install using ocamlfind
@@ -432,7 +385,7 @@ findlib-install:
 	  touch "$(DESTDIR)$(OCAMLLDCONF)"; fi
 	$(OCAMLFIND) install -destdir "$(DESTDIR)$(FINDLIBDIR)" \
 	  -ldconf "$(DESTDIR)$(OCAMLLDCONF)" \
-    lablgtk2 ../META \
+    lablgtk3 ../META \
     build.ml \
     $(CLIBS) \
     $(ALLOBJS:.cmo=.cmi) $(EXTRA_OBJS:.cmo=.cmi) \
@@ -460,19 +413,19 @@ findlib-install:
           echo $(THOBJS:.cmo=.cmx) $(THOBJS:.cmo=$(XO)) ; \
         fi ; \
     fi` \
-    `if test -f dlllablgtk2$(XS); \
+    `if test -f dlllablgtk3$(XS); \
       then \
         echo "-dll $(CLIBS:lib%$(XA)=dll%$(XS)) -nodll" ; \
     fi` \
-    `if test -f dlllablgtk2$(XA); \
+    `if test -f dlllablgtk3$(XA); \
       then \
         echo $(CLIBS:lib%$(XA)=dll%$(XA)) ; \
     fi`
-	rm -f lablgtk2
-	$(MAKE) lablgtk2 LABLGTKDIR="$(FINDLIBDIR)/lablgtk2"
-	cp lablgtk2$(XB) "$(BINDIR)"
+	rm -f lablgtk3
+	$(MAKE) lablgtk3 LABLGTKDIR="$(FINDLIBDIR)/lablgtk3"
+	cp lablgtk3$(XB) "$(BINDIR)"
 	if test -f lablgladecc$(XE); then \
-	  cp lablgladecc$(XE) "$(BINDIR)/lablgladecc2$(XE)"; \
+	  cp lablgladecc$(XE) "$(BINDIR)/lablgladecc3$(XE)"; \
 	fi
 	cp gdk_pixbuf_mlsource$(XE) "$(BINDIR)"
 	$(RANLIB) $(CLIBS:%="$(FLINSTALLDIR)"/%)
@@ -483,26 +436,26 @@ findlib-install:
 	 fi
 
 findlib-uninstall:
-	$(OCAMLFIND) remove lablgtk2
-	for f in lablgladecc2$(XE) lablgtk2$(XB) gdk_pixbuf_mlsource$(XE); \
+	$(OCAMLFIND) remove lablgtk3
+	for f in lablgladecc3$(XE) lablgtk3$(XB) gdk_pixbuf_mlsource$(XE); \
 	  do rm -f "$(BINDIR)"/$$f; done
 
-lablgtk.cma liblablgtk2$(XA): $(COBJS) $(MLOBJS)
-	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)
+lablgtk.cma liblablgtk3$(XA): $(COBJS) $(MLOBJS)
+	$(LIBRARIAN) -o lablgtk -oc lablgtk3 $^ $(GTKLIBS)
 lablgtk.cmxa: $(COBJS) $(MLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtk -oc lablgtk2 $^ $(GTKLIBS)
+	$(LIBRARIAN) -o lablgtk -oc lablgtk3 $^ $(GTKLIBS)
 lablgtk.cmxs: DYNLINKLIBS=$(GTK_LIBS)
 
-lablgtkgl.cma liblablgtkgl2$(XA): $(GLCOBJS) $(GLMLOBJS)
-	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $^ $(GTKGLLIBS)
+lablgtkgl.cma liblablgtkgl3$(XA): $(GLCOBJS) $(GLMLOBJS)
+	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl3 $^ $(GTKGLLIBS)
 lablgtkgl.cmxa: $(GLCOBJS) $(GLMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl2 $^ $(GTKGLLIBS)
+	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl3 $^ $(GTKGLLIBS)
 lablgtkgl.cmxs: DYNLINKLIBS=$(GTKGL_LIBS)
 
-lablglade.cma liblablglade2$(XA): $(GLADECOBJS) $(GLADEMLOBJS)
-	$(LIBRARIAN) -o lablglade -oc lablglade2 $^ $(GLADELIBS)
+lablglade.cma liblablglade3$(XA): $(GLADECOBJS) $(GLADEMLOBJS)
+	$(LIBRARIAN) -o lablglade -oc lablglade3 $^ $(GLADELIBS)
 lablglade.cmxa: $(GLADECOBJS) $(GLADEMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablglade -oc lablglade2 $^ $(GLADELIBS)
+	$(LIBRARIAN) -o lablglade -oc lablglade3 $^ $(GLADELIBS)
 lablglade.cmxs: DYNLINKLIBS=$(GLADE_LIBS)
 
 lablrsvg.cma liblablrsvg$(XA): $(RSVGCOBJS) $(RSVGMLOBJS)
@@ -533,9 +486,9 @@ lablpanel.cmxa: $(PANELCOBJS) $(PANELMLOBJS:.cmo=.cmx)
 lablpanel.cmxs: DYNLINKLIBS=$(PANEL_LIBS)
 
 lablgtkspell.cma liblablgtkspell$(XA): $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS)
-	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
+	$(LIBRARIAN) -o lablgtkspell -oc lablgtkspell3 $^ $(GTKSPELLLIBS)
 lablgtkspell.cmxa: $(GTKSPELLCOBJS) $(GTKSPELLMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablgtkspell $^ $(GTKSPELLLIBS)
+	$(LIBRARIAN) -o lablgtkspell -oc lablgtkspell3 $^ $(GTKSPELLLIBS)
 lablgtkspell.cmxs: DYNLINKLIBS=$(GTKSPELL_LIBS)
 
 #gtkSignal.ml: gtkSignal.ml4
@@ -612,12 +565,6 @@ endif
 ifdef USE_GTKSPELL
 DOCFILES += gtkSpell.mli
 endif
-ifdef USE_GTKSOURCEVIEW
-DOCFILES += gSourceView.mli
-endif
-ifdef USE_GTKSOURCEVIEW2
-DOCFILES += gSourceView2.mli
-endif
 ifdef USE_GTKSOURCEVIEW3
 DOCFILES += gSourceView3.mli
 endif
@@ -634,18 +581,12 @@ doc : lablgtk.odoc gtkdoc.cmo
 	mkdir -p $(DOCDIR)/html
 	$(OCAMLDOC) -sort -g ./gtkdoc.cmo $(DOC_BASE_URI) -t LablGTK -d $(DOCDIR)/html -load $<
 doc_texi : lablgtk.odoc
-	$(OCAMLDOC) -texi -t LablGTK -o $(DOCDIR)/lablgtk2.texi -load $<
+	$(OCAMLDOC) -texi -t LablGTK -o $(DOCDIR)/lablgtk3.texi -load $<
 
 $(GTKOBJS): pango_tags.h gtk_tags.h ml_gtk.h gdk_tags.h ml_gdk.h \
 	    ml_gobject.h ml_glib.h wrappers.h
 $(GNOMEUICOBJS) : gnomeui_tags.h
 $(PANELCOBJS) : panel_tags.h
-$(GTKSOURCEVIEWCOBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
-			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView_tags.h wrappers.h
-
-$(GTKSOURCEVIEW2COBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
-			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView2_tags.h wrappers.h
-
 $(GTKSOURCEVIEW3COBJS):  ml_glib.h ml_gdk.h ml_gtk.h ml_gobject.h ml_gdkpixbuf.h ml_pango.h \
 			gtk_tags.h gdk_tags.h ml_gtktext.h sourceView3_tags.h wrappers.h
 

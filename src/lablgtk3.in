@@ -22,7 +22,7 @@ fi
 while test -n "$1"; do
 case $1 in
 -help)
-    echo "Usage: lablgtk2 <options> <ocaml options> [script-file]"
+    echo "Usage: lablgtk3 <options> <ocaml options> [script-file]"
     echo "  -thread   use the threaded version of the toplevel"
     echo "  -all      load all extensions"
     echo "  -noinit   do not initialize gtk"

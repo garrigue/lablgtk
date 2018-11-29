@@ -607,24 +607,9 @@ GTKQUARTZ_CFLAGS
 USE_GTKSOURCEVIEW3
 GTKSOURCEVIEW3_LIBS
 GTKSOURCEVIEW3_CFLAGS
-USE_GTKSOURCEVIEW2
-GTKSOURCEVIEW2_LIBS
-GTKSOURCEVIEW2_CFLAGS
-USE_GTKSOURCEVIEW
-GTKSOURCEVIEW_LIBS
-GTKSOURCEVIEW_CFLAGS
 USE_GTKSPELL
 GTKSPELL_LIBS
 GTKSPELL_CFLAGS
-USE_PANEL
-PANEL_LIBS
-PANEL_CFLAGS
-USE_GNOMEUI
-GNOMEUI_LIBS
-GNOMEUI_CFLAGS
-USE_GNOMECANVAS
-GNOMECANVAS_LIBS
-GNOMECANVAS_CFLAGS
 USE_RSVG
 RSVG_LIBS
 RSVG_CFLAGS
@@ -634,10 +619,10 @@ GLADE_CFLAGS
 USE_GTKGL
 GTKGL_LIBS
 GTKGL_CFLAGS
-PKG_CONFIG_LIBDIR
-PKG_CONFIG_PATH
 GTK_LIBS
 GTK_CFLAGS
+PKG_CONFIG_LIBDIR
+PKG_CONFIG_PATH
 PKG_CONFIG
 OBJEXT
 EXEEXT
@@ -709,12 +694,7 @@ enable_gtktest
 with_gl
 with_glade
 with_rsvg
-with_gnomecanvas
-with_gnomeui
-with_panel
 with_gtkspell
-with_gtksourceview
-with_gtksourceview2
 with_gtksourceview3
 with_quartz
 enable_debug
@@ -736,18 +716,8 @@ GLADE_CFLAGS
 GLADE_LIBS
 RSVG_CFLAGS
 RSVG_LIBS
-GNOMECANVAS_CFLAGS
-GNOMECANVAS_LIBS
-GNOMEUI_CFLAGS
-GNOMEUI_LIBS
-PANEL_CFLAGS
-PANEL_LIBS
 GTKSPELL_CFLAGS
 GTKSPELL_LIBS
-GTKSOURCEVIEW_CFLAGS
-GTKSOURCEVIEW_LIBS
-GTKSOURCEVIEW2_CFLAGS
-GTKSOURCEVIEW2_LIBS
 GTKSOURCEVIEW3_CFLAGS
 GTKSOURCEVIEW3_LIBS
 GTKQUARTZ_CFLAGS
@@ -1367,18 +1337,13 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-libdir=/path     install libs in /path/lablgtk2 and /path/stublibs
+  --with-libdir=/path     install libs in /path/lablgtk3 and /path/stublibs
   --with-threads=(yes|system|vm|no)  which threads to use
   --without-gl            override autodetected GtkGLArea support. Requires LablGL
   --without-glade         override autodetected libglade support
   --without-rsvg          override autodetected librsvg support
-  --without-gnomecanvas   override autodetected libgnomecanvas support
-  --without-gnomeui       override autodetected libgnomeui support
-  --without-panel         override autodetected libpanelapplet support
   --without-gtkspell      override autodetected gtkspell support
-  --without-gtksourceview      override autodetected gtksourceview support
-  --without-gtksourceview2     override autodetected gtksourceview 2 support
-  --without-gtksourceview3     override autodetected gtksourceview 3 support
+  --without-gtksourceview3      override autodetected gtksourceview 3 support
   --without-quartz      override autodetected quartz support
 
 Some influential environment variables:
@@ -1402,29 +1367,10 @@ Some influential environment variables:
   GLADE_LIBS  linker flags for GLADE, overriding pkg-config
   RSVG_CFLAGS C compiler flags for RSVG, overriding pkg-config
   RSVG_LIBS   linker flags for RSVG, overriding pkg-config
-  GNOMECANVAS_CFLAGS
-              C compiler flags for GNOMECANVAS, overriding pkg-config
-  GNOMECANVAS_LIBS
-              linker flags for GNOMECANVAS, overriding pkg-config
-  GNOMEUI_CFLAGS
-              C compiler flags for GNOMEUI, overriding pkg-config
-  GNOMEUI_LIBS
-              linker flags for GNOMEUI, overriding pkg-config
-  PANEL_CFLAGS
-              C compiler flags for PANEL, overriding pkg-config
-  PANEL_LIBS  linker flags for PANEL, overriding pkg-config
   GTKSPELL_CFLAGS
               C compiler flags for GTKSPELL, overriding pkg-config
   GTKSPELL_LIBS
               linker flags for GTKSPELL, overriding pkg-config
-  GTKSOURCEVIEW_CFLAGS
-              C compiler flags for GTKSOURCEVIEW, overriding pkg-config
-  GTKSOURCEVIEW_LIBS
-              linker flags for GTKSOURCEVIEW, overriding pkg-config
-  GTKSOURCEVIEW2_CFLAGS
-              C compiler flags for GTKSOURCEVIEW2, overriding pkg-config
-  GTKSOURCEVIEW2_LIBS
-              linker flags for GTKSOURCEVIEW2, overriding pkg-config
   GTKSOURCEVIEW3_CFLAGS
               C compiler flags for GTKSOURCEVIEW3, overriding pkg-config
   GTKSOURCEVIEW3_LIBS
@@ -2118,14 +2064,14 @@ LIBDIR=$OCAMLLIB
 # Check whether --with-libdir was given.
 if test "${with_libdir+set}" = set; then :
   withval=$with_libdir; LIBDIR=$withval
-	echo "Install dirs are : $LIBDIR/lablgtk2 and $LIBDIR/stublibs"
+	echo "Install dirs are : $LIBDIR/lablgtk3 and $LIBDIR/stublibs"
 	echo "	Compile with
-		ocamlc -I $LIBDIR/lablgtk2
+		ocamlc -I $LIBDIR/lablgtk3
 	and add $LIBDIR/stublibs either to OCAMLLIB/ld.conf or
 	to CAML_LD_LIBRARY_PATH"
 else
-  echo "Default install dirs are : $LIBDIR/lablgtk2 and $LIBDIR/stublibs"
-	echo "Compile with ocamlc -I +lablgtk2"
+  echo "Default install dirs are : $LIBDIR/lablgtk3 and $LIBDIR/stublibs"
+	echo "Compile with ocamlc -I +lablgtk3"
 
 fi
 
@@ -3723,8 +3669,17 @@ fi
 
   no_gtk=""
 
-  # Extract the first word of "pkg-config", so it can be a program name with args.
-set dummy pkg-config; ac_word=$2
+
+
+
+
+
+
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
 if ${ac_cv_path_PKG_CONFIG+:} false; then :
@@ -3750,7 +3705,6 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_PKG_CONFIG" && ac_cv_path_PKG_CONFIG="no"
   ;;
 esac
 fi
@@ -3764,23 +3718,86 @@ $as_echo "no" >&6; }
 fi
 
 
+fi
+if test -z "$ac_cv_path_PKG_CONFIG"; then
+  ac_pt_PKG_CONFIG=$PKG_CONFIG
+  # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_PKG_CONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
 
-  if test x$PKG_CONFIG != xno ; then
-    if $PKG_CONFIG --atleast-pkgconfig-version 0.7 ; then
-      :
-    else
-      echo "*** pkg-config too old; version 0.7 or better required."
-      no_gtk=yes
-      PKG_CONFIG=no
-    fi
+  ;;
+esac
+fi
+ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
+if test -n "$ac_pt_PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_PKG_CONFIG" >&5
+$as_echo "$ac_pt_PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_PKG_CONFIG" = x; then
+    PKG_CONFIG=""
   else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    PKG_CONFIG=$ac_pt_PKG_CONFIG
+  fi
+else
+  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
+fi
+
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=0.16
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking pkg-config is at least version $_pkg_min_version" >&5
+$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	else
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+		PKG_CONFIG=""
+	fi
+fi
+
+  if test -z "$PKG_CONFIG"; then
     no_gtk=yes
   fi
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GTK+ - version >= $min_gtk_version" >&5
 $as_echo_n "checking for GTK+ - version >= $min_gtk_version... " >&6; }
 
-  if test x$PKG_CONFIG != xno ; then
+  if test -n "$PKG_CONFIG"; then
     ## don't try to run the test against uninstalled libtool libs
     if $PKG_CONFIG --uninstalled $pkg_config_args; then
 	  echo "Will use uninstalled version of GTK+ found in PKG_CONFIG_PATH"
@@ -3904,7 +3921,7 @@ $as_echo "yes (version $gtk_config_major_version.$gtk_config_minor_version.$gtk_
   else
      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-     if test "$PKG_CONFIG" = "no" ; then
+     if test -z "$PKG_CONFIG"; then
        echo "*** A new enough version of pkg-config was not found."
        echo "*** See http://pkgconfig.sourceforge.net"
      else
@@ -3964,126 +3981,6 @@ rm -f core conftest.err conftest.$ac_objext \
 
 
 
-
-
-
-
-
-if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
-	if test -n "$ac_tool_prefix"; then
-  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
-set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_PKG_CONFIG+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $PKG_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-PKG_CONFIG=$ac_cv_path_PKG_CONFIG
-if test -n "$PKG_CONFIG"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
-$as_echo "$PKG_CONFIG" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-fi
-if test -z "$ac_cv_path_PKG_CONFIG"; then
-  ac_pt_PKG_CONFIG=$PKG_CONFIG
-  # Extract the first word of "pkg-config", so it can be a program name with args.
-set dummy pkg-config; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_ac_pt_PKG_CONFIG+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $ac_pt_PKG_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
-if test -n "$ac_pt_PKG_CONFIG"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_PKG_CONFIG" >&5
-$as_echo "$ac_pt_PKG_CONFIG" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-  if test "x$ac_pt_PKG_CONFIG" = x; then
-    PKG_CONFIG=""
-  else
-    case $cross_compiling:$ac_tool_warned in
-yes:)
-{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
-$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
-ac_tool_warned=yes ;;
-esac
-    PKG_CONFIG=$ac_pt_PKG_CONFIG
-  fi
-else
-  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
-fi
-
-fi
-if test -n "$PKG_CONFIG"; then
-	_pkg_min_version=0.9.0
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking pkg-config is at least version $_pkg_min_version" >&5
-$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
-	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	else
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-		PKG_CONFIG=""
-	fi
-fi
-
-
 # Check whether --with-gl was given.
 if test "${with_gl+set}" = set; then :
   withval=$with_gl; USE_GTKGL=$withval; FORCE_GTKGL=yes
@@ -4094,19 +3991,19 @@ fi
 if test $USE_GTKGL = yes ; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtkgl-2.0" >&5
-$as_echo_n "checking for gtkgl-2.0... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtkgl-3.0" >&5
+$as_echo_n "checking for gtkgl-3.0... " >&6; }
 
 if test -n "$GTKGL_CFLAGS"; then
     pkg_cv_GTKGL_CFLAGS="$GTKGL_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkgl-2.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtkgl-2.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkgl-3.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gtkgl-3.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKGL_CFLAGS=`$PKG_CONFIG --cflags "gtkgl-2.0" 2>/dev/null`
+  pkg_cv_GTKGL_CFLAGS=`$PKG_CONFIG --cflags "gtkgl-3.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -4118,12 +4015,12 @@ if test -n "$GTKGL_LIBS"; then
     pkg_cv_GTKGL_LIBS="$GTKGL_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkgl-2.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtkgl-2.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkgl-3.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gtkgl-3.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKGL_LIBS=`$PKG_CONFIG --libs "gtkgl-2.0" 2>/dev/null`
+  pkg_cv_GTKGL_LIBS=`$PKG_CONFIG --libs "gtkgl-3.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -4144,9 +4041,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtkgl-2.0" 2>&1`
+	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtkgl-3.0" 2>&1`
         else
-	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtkgl-2.0" 2>&1`
+	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtkgl-3.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKGL_PKG_ERRORS" >&5
@@ -4176,7 +4073,7 @@ fi
 fi
 if test $USE_GTKGL = yes ; then
 	USE_GTKGL=1
-	GTKGLPKG=gtkgl-2.0
+	GTKGLPKG=gtkgl-3.0
 else
 	unset USE_GTKGL
 fi
@@ -4423,306 +4320,6 @@ fi
 
 
 
-# Check whether --with-gnomecanvas was given.
-if test "${with_gnomecanvas+set}" = set; then :
-  withval=$with_gnomecanvas; USE_GNOMECANVAS=$withval; FORCE_GNOMECANVAS=yes
-else
-  USE_GNOMECANVAS=yes; FORCE_GNOMECANVAS=no
-fi
-
-if test $USE_GNOMECANVAS = yes ; then
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libgnomecanvas-3.0" >&5
-$as_echo_n "checking for libgnomecanvas-3.0... " >&6; }
-
-if test -n "$GNOMECANVAS_CFLAGS"; then
-    pkg_cv_GNOMECANVAS_CFLAGS="$GNOMECANVAS_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libgnomecanvas-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libgnomecanvas-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GNOMECANVAS_CFLAGS=`$PKG_CONFIG --cflags "libgnomecanvas-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$GNOMECANVAS_LIBS"; then
-    pkg_cv_GNOMECANVAS_LIBS="$GNOMECANVAS_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libgnomecanvas-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libgnomecanvas-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GNOMECANVAS_LIBS=`$PKG_CONFIG --libs "libgnomecanvas-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        GNOMECANVAS_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libgnomecanvas-3.0" 2>&1`
-        else
-	        GNOMECANVAS_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libgnomecanvas-3.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$GNOMECANVAS_PKG_ERRORS" >&5
-
-
-	if test $FORCE_GNOMECANVAS = yes ; then
-	  as_fn_error $? "gnomecanvas enforced but no support found" "$LINENO" 5
-        else
-          USE_GNOMECANVAS=no
-	fi
-elif test $pkg_failed = untried; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-	if test $FORCE_GNOMECANVAS = yes ; then
-	  as_fn_error $? "gnomecanvas enforced but no support found" "$LINENO" 5
-        else
-          USE_GNOMECANVAS=no
-	fi
-else
-	GNOMECANVAS_CFLAGS=$pkg_cv_GNOMECANVAS_CFLAGS
-	GNOMECANVAS_LIBS=$pkg_cv_GNOMECANVAS_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-fi
-if test $USE_GNOMECANVAS = yes ; then
-	USE_GNOMECANVAS=1
-	GNOMECANVASPKG=libgnomecanvas-3.0
-else
-	unset USE_GNOMECANVAS
-fi
-
-
-
-
-# Check whether --with-gnomeui was given.
-if test "${with_gnomeui+set}" = set; then :
-  withval=$with_gnomeui; USE_GNOMEUI=$withval; FORCE_GNOMEUI=yes
-else
-  USE_GNOMEUI=yes; FORCE_GNOMEUI=no
-fi
-
-if test $USE_GNOMEUI = yes ; then
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libgnomeui-3.0" >&5
-$as_echo_n "checking for libgnomeui-3.0... " >&6; }
-
-if test -n "$GNOMEUI_CFLAGS"; then
-    pkg_cv_GNOMEUI_CFLAGS="$GNOMEUI_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libgnomeui-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libgnomeui-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GNOMEUI_CFLAGS=`$PKG_CONFIG --cflags "libgnomeui-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$GNOMEUI_LIBS"; then
-    pkg_cv_GNOMEUI_LIBS="$GNOMEUI_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libgnomeui-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libgnomeui-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GNOMEUI_LIBS=`$PKG_CONFIG --libs "libgnomeui-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        GNOMEUI_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libgnomeui-3.0" 2>&1`
-        else
-	        GNOMEUI_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libgnomeui-3.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$GNOMEUI_PKG_ERRORS" >&5
-
-
-	if test $FORCE_GNOMEUI = yes ; then
-	  as_fn_error $? "gnomeui enforced but no support found" "$LINENO" 5
-        else
-          USE_GNOMEUI=no
-	fi
-elif test $pkg_failed = untried; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-	if test $FORCE_GNOMEUI = yes ; then
-	  as_fn_error $? "gnomeui enforced but no support found" "$LINENO" 5
-        else
-          USE_GNOMEUI=no
-	fi
-else
-	GNOMEUI_CFLAGS=$pkg_cv_GNOMEUI_CFLAGS
-	GNOMEUI_LIBS=$pkg_cv_GNOMEUI_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-fi
-if test $USE_GNOMEUI = yes ; then
-	USE_GNOMEUI=1
-	GNOMEUIPKG=libgnomeui-3.0
-else
-	unset USE_GNOMEUI
-fi
-
-
-
-
-# Check whether --with-panel was given.
-if test "${with_panel+set}" = set; then :
-  withval=$with_panel; USE_PANEL=$withval; FORCE_PANEL=yes
-else
-  USE_PANEL=yes; FORCE_PANEL=no
-fi
-
-if test $USE_PANEL = yes ; then
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libpanelapplet-2.0" >&5
-$as_echo_n "checking for libpanelapplet-2.0... " >&6; }
-
-if test -n "$PANEL_CFLAGS"; then
-    pkg_cv_PANEL_CFLAGS="$PANEL_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libpanelapplet-2.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libpanelapplet-2.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_PANEL_CFLAGS=`$PKG_CONFIG --cflags "libpanelapplet-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$PANEL_LIBS"; then
-    pkg_cv_PANEL_LIBS="$PANEL_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libpanelapplet-2.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libpanelapplet-2.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_PANEL_LIBS=`$PKG_CONFIG --libs "libpanelapplet-2.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        PANEL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libpanelapplet-2.0" 2>&1`
-        else
-	        PANEL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libpanelapplet-2.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$PANEL_PKG_ERRORS" >&5
-
-
-	if test $FORCE_PANEL = yes ; then
-	  as_fn_error $? "panel enforced but no support found" "$LINENO" 5
-        else
-          USE_PANEL=no
-	fi
-elif test $pkg_failed = untried; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-	if test $FORCE_PANEL = yes ; then
-	  as_fn_error $? "panel enforced but no support found" "$LINENO" 5
-        else
-          USE_PANEL=no
-	fi
-else
-	PANEL_CFLAGS=$pkg_cv_PANEL_CFLAGS
-	PANEL_LIBS=$pkg_cv_PANEL_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-fi
-if test $USE_PANEL = yes ; then
-	USE_PANEL=1
-	PANELPKG=libpanelapplet-2.0
-else
-	unset USE_PANEL
-fi
-
-
-
-
 # Check whether --with-gtkspell was given.
 if test "${with_gtkspell+set}" = set; then :
   withval=$with_gtkspell; USE_GTKSPELL=$withval; FORCE_GTKSPELL=yes
@@ -4733,19 +4330,19 @@ fi
 if test $USE_GTKSPELL = yes ; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtkspell-3.0" >&5
-$as_echo_n "checking for gtkspell-3.0... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtkspell3-3.0" >&5
+$as_echo_n "checking for gtkspell3-3.0... " >&6; }
 
 if test -n "$GTKSPELL_CFLAGS"; then
     pkg_cv_GTKSPELL_CFLAGS="$GTKSPELL_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkspell-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtkspell-3.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkspell3-3.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gtkspell3-3.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKSPELL_CFLAGS=`$PKG_CONFIG --cflags "gtkspell-3.0" 2>/dev/null`
+  pkg_cv_GTKSPELL_CFLAGS=`$PKG_CONFIG --cflags "gtkspell3-3.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -4757,12 +4354,12 @@ if test -n "$GTKSPELL_LIBS"; then
     pkg_cv_GTKSPELL_LIBS="$GTKSPELL_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkspell-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtkspell-3.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkspell3-3.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gtkspell3-3.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKSPELL_LIBS=`$PKG_CONFIG --libs "gtkspell-3.0" 2>/dev/null`
+  pkg_cv_GTKSPELL_LIBS=`$PKG_CONFIG --libs "gtkspell3-3.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -4783,9 +4380,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtkspell-3.0" 2>&1`
+	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtkspell3-3.0" 2>&1`
         else
-	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtkspell-3.0" 2>&1`
+	        GTKSPELL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtkspell3-3.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKSPELL_PKG_ERRORS" >&5
@@ -4815,209 +4412,9 @@ fi
 fi
 if test $USE_GTKSPELL = yes ; then
 	USE_GTKSPELL=1
-	GTKSPELLPKG=gtkspell-3.0
+	GTKSPELLPKG=gtkspell3-3.0
 else
 	unset USE_GTKSPELL
-fi
-
-
-
-
-# Check whether --with-gtksourceview was given.
-if test "${with_gtksourceview+set}" = set; then :
-  withval=$with_gtksourceview; USE_GTKSOURCEVIEW=$withval; FORCE_GTKSOURCEVIEW=yes
-else
-  USE_GTKSOURCEVIEW=yes; FORCE_GTKSOURCEVIEW=no
-fi
-
-if test $USE_GTKSOURCEVIEW = yes ; then
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtksourceview-1.0" >&5
-$as_echo_n "checking for gtksourceview-1.0... " >&6; }
-
-if test -n "$GTKSOURCEVIEW_CFLAGS"; then
-    pkg_cv_GTKSOURCEVIEW_CFLAGS="$GTKSOURCEVIEW_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtksourceview-1.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtksourceview-1.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GTKSOURCEVIEW_CFLAGS=`$PKG_CONFIG --cflags "gtksourceview-1.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$GTKSOURCEVIEW_LIBS"; then
-    pkg_cv_GTKSOURCEVIEW_LIBS="$GTKSOURCEVIEW_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtksourceview-1.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtksourceview-1.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GTKSOURCEVIEW_LIBS=`$PKG_CONFIG --libs "gtksourceview-1.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtksourceview-1.0" 2>&1`
-        else
-	        GTKSOURCEVIEW_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtksourceview-1.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$GTKSOURCEVIEW_PKG_ERRORS" >&5
-
-
-	if test $FORCE_GTKSOURCEVIEW = yes ; then
-	  as_fn_error $? "gtksourceview enforced but no support found" "$LINENO" 5
-        else
-          USE_GTKSOURCEVIEW=no
-	fi
-elif test $pkg_failed = untried; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-	if test $FORCE_GTKSOURCEVIEW = yes ; then
-	  as_fn_error $? "gtksourceview enforced but no support found" "$LINENO" 5
-        else
-          USE_GTKSOURCEVIEW=no
-	fi
-else
-	GTKSOURCEVIEW_CFLAGS=$pkg_cv_GTKSOURCEVIEW_CFLAGS
-	GTKSOURCEVIEW_LIBS=$pkg_cv_GTKSOURCEVIEW_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-fi
-if test $USE_GTKSOURCEVIEW = yes ; then
-	USE_GTKSOURCEVIEW=1
-	GTKSOURCEVIEWPKG=gtksourceview-1.0
-else
-	unset USE_GTKSOURCEVIEW
-fi
-
-
-
-
-# Check whether --with-gtksourceview2 was given.
-if test "${with_gtksourceview2+set}" = set; then :
-  withval=$with_gtksourceview2; USE_GTKSOURCEVIEW2=$withval; FORCE_GTKSOURCEVIEW2=yes
-else
-  USE_GTKSOURCEVIEW2=yes; FORCE_GTKSOURCEVIEW2=no
-fi
-
-if test $USE_GTKSOURCEVIEW2 = yes ; then
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtksourceview-3.0" >&5
-$as_echo_n "checking for gtksourceview-3.0... " >&6; }
-
-if test -n "$GTKSOURCEVIEW2_CFLAGS"; then
-    pkg_cv_GTKSOURCEVIEW2_CFLAGS="$GTKSOURCEVIEW2_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtksourceview-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtksourceview-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GTKSOURCEVIEW2_CFLAGS=`$PKG_CONFIG --cflags "gtksourceview-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$GTKSOURCEVIEW2_LIBS"; then
-    pkg_cv_GTKSOURCEVIEW2_LIBS="$GTKSOURCEVIEW2_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtksourceview-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtksourceview-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GTKSOURCEVIEW2_LIBS=`$PKG_CONFIG --libs "gtksourceview-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        GTKSOURCEVIEW2_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtksourceview-3.0" 2>&1`
-        else
-	        GTKSOURCEVIEW2_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtksourceview-3.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$GTKSOURCEVIEW2_PKG_ERRORS" >&5
-
-
-	if test $FORCE_GTKSOURCEVIEW2 = yes ; then
-	  as_fn_error $? "gtksourceview2 enforced but no support found" "$LINENO" 5
-        else
-          USE_GTKSOURCEVIEW2=no
-	fi
-elif test $pkg_failed = untried; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-	if test $FORCE_GTKSOURCEVIEW2 = yes ; then
-	  as_fn_error $? "gtksourceview2 enforced but no support found" "$LINENO" 5
-        else
-          USE_GTKSOURCEVIEW2=no
-	fi
-else
-	GTKSOURCEVIEW2_CFLAGS=$pkg_cv_GTKSOURCEVIEW2_CFLAGS
-	GTKSOURCEVIEW2_LIBS=$pkg_cv_GTKSOURCEVIEW2_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-fi
-if test $USE_GTKSOURCEVIEW2 = yes ; then
-	USE_GTKSOURCEVIEW2=1
-	GTKSOURCEVIEW2PKG=gtksourceview-3.0
-else
-	unset USE_GTKSOURCEVIEW2
 fi
 
 
@@ -5033,8 +4430,8 @@ fi
 if test $USE_GTKSOURCEVIEW3 = yes ; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GTKSOURCEVIEW3" >&5
-$as_echo_n "checking for GTKSOURCEVIEW3... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtksourceview-3.0" >&5
+$as_echo_n "checking for gtksourceview-3.0... " >&6; }
 
 if test -n "$GTKSOURCEVIEW3_CFLAGS"; then
     pkg_cv_GTKSOURCEVIEW3_CFLAGS="$GTKSOURCEVIEW3_CFLAGS"
@@ -5074,7 +4471,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -5097,7 +4494,7 @@ fi
           USE_GTKSOURCEVIEW3=no
 	fi
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 	if test $FORCE_GTKSOURCEVIEW3 = yes ; then
@@ -5230,12 +4627,12 @@ if test -n "$GTKALL_CFLAGS"; then
     pkg_cv_GTKALL_CFLAGS="$GTKALL_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEW2PKG \$GTKSOURCEVIEW3PKG \$GTKQUARTZPKG\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEW2PKG \$GTKQUARTZPKG\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKALL_CFLAGS=`$PKG_CONFIG --cflags "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG" 2>/dev/null`
+  pkg_cv_GTKALL_CFLAGS=`$PKG_CONFIG --cflags "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -5247,12 +4644,12 @@ if test -n "$GTKALL_LIBS"; then
     pkg_cv_GTKALL_LIBS="$GTKALL_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEW2PKG \$GTKSOURCEVIEW3PKG \$GTKQUARTZPKG\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEW2PKG \$GTKQUARTZPKG\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKALL_LIBS=`$PKG_CONFIG --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG" 2>/dev/null`
+  pkg_cv_GTKALL_LIBS=`$PKG_CONFIG --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -6545,24 +5942,6 @@ else if test "$FORCE_RSVG" = "yes"
      fi
 fi
 
-echo $ECHO_N "	libgnomecanvas $ECHO_C"
-if test -n "$USE_GNOMECANVAS"
-then echo "	yes"
-else if test "$FORCE_GNOMECANVAS" = "yes"
-     then echo "	disabled"
-     else echo "	not found"
-     fi
-fi
-
-echo $ECHO_N "	libgnomeui $ECHO_C"
-if test -n "$USE_GNOMEUI"
-then echo "	yes"
-else if test "$FORCE_GNOMEUI" = "yes"
-     then echo "	disabled"
-     else echo "	not found"
-     fi
-fi
-
 echo $ECHO_N "	libpanelapplet $ECHO_C"
 if test -n "$USE_PANEL"
 then echo "	yes"
@@ -6581,16 +5960,7 @@ else if test "$FORCE_GTKSPELL" = "yes"
      fi
 fi
 
-echo $ECHO_N "	gtksourceview 2 $ECHO_C"
-if test -n "$USE_GTKSOURCEVIEW2"
-then echo "	yes"
-else if test "$FORCE_GTKSOURCEVIEW2" = "yes"
-     then echo "	disabled"
-     else echo "	not found"
-     fi
-fi
-
-echo $ECHO_N "	gtksourceview 3 $ECHO_C"
+echo $ECHO_N "	gtksourceview3 $ECHO_C"
 if test -n "$USE_GTKSOURCEVIEW3"
 then echo "	yes"
 else if test "$FORCE_GTKSOURCEVIEW3" = "yes"

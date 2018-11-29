@@ -50,15 +50,15 @@ echo "ocaml library path is $OCAMLLIB"
 LIBDIR=$OCAMLLIB
 
 AC_ARG_WITH(libdir,
-	[  --with-libdir=/path     install libs in /path/lablgtk2 and /path/stublibs],
+	[  --with-libdir=/path     install libs in /path/lablgtk3 and /path/stublibs],
 	LIBDIR=$withval
-	echo "Install dirs are : $LIBDIR/lablgtk2 and $LIBDIR/stublibs"
+	echo "Install dirs are : $LIBDIR/lablgtk3 and $LIBDIR/stublibs"
 	echo "	Compile with
-		ocamlc -I $LIBDIR/lablgtk2
+		ocamlc -I $LIBDIR/lablgtk3
 	and add $LIBDIR/stublibs either to OCAMLLIB/ld.conf or
 	to CAML_LD_LIBRARY_PATH",
-	echo "Default install dirs are : $LIBDIR/lablgtk2 and $LIBDIR/stublibs"
-	echo "Compile with ocamlc -I +lablgtk2"
+	echo "Default install dirs are : $LIBDIR/lablgtk3 and $LIBDIR/stublibs"
+	echo "Compile with ocamlc -I +lablgtk3"
 	)
 
 # then we look for ocamlopt; if not present, we issue a warning
@@ -289,7 +289,7 @@ AC_SUBST(USE_$1)])
 
 LABLGTK_PKG(GTKGL, gl,
 	    [  --without-gl            override autodetected GtkGLArea support. Requires LablGL],
-	    gtkgl-2.0)
+	    gtkgl-3.0)
 # Check for LablGL
 if test -n "$USE_GTKGL" ; then
       AC_MSG_CHECKING(lablGL directory)
@@ -329,28 +329,12 @@ else
     unset HAVE_SVGZ
 fi
 
-LABLGTK_PKG(GNOMECANVAS, gnomecanvas,
-            [  --without-gnomecanvas   override autodetected libgnomecanvas support],
-            libgnomecanvas-3.0)
-
-LABLGTK_PKG(GNOMEUI, gnomeui,
-            [  --without-gnomeui       override autodetected libgnomeui support],
-            libgnomeui-3.0)
-
-LABLGTK_PKG(PANEL, panel,
-            [  --without-panel         override autodetected libpanelapplet support],
-            libpanelapplet-2.0)
-
 LABLGTK_PKG(GTKSPELL, gtkspell,
             [  --without-gtkspell      override autodetected gtkspell support],
-            gtkspell-3.0)
+            gtkspell3-3.0)
 
-LABLGTK_PKG(GTKSOURCEVIEW, gtksourceview,
-            [  --without-gtksourceview      override autodetected gtksourceview support],
-            gtksourceview-1.0)
-
-LABLGTK_PKG(GTKSOURCEVIEW2, gtksourceview2,
-            [  --without-gtksourceview3      override autodetected gtksourceview 2 support],
+LABLGTK_PKG(GTKSOURCEVIEW3, gtksourceview3,
+            [  --without-gtksourceview3      override autodetected gtksourceview 3 support],
             gtksourceview-3.0)
 
 LABLGTK_PKG(GTKQUARTZ, quartz,
@@ -414,12 +398,9 @@ echo "	native dynlink 	$HAS_NATIVE_DYNLINK"
 CONF_SUMMARY(GtkGLArea, GTKGL)
 CONF_SUMMARY(libglade, GLADE)
 CONF_SUMMARY(librsvg , RSVG)
-CONF_SUMMARY(libgnomecanvas, GNOMECANVAS)
-CONF_SUMMARY(libgnomeui, GNOMEUI)
 CONF_SUMMARY(libpanelapplet, PANEL)
 CONF_SUMMARY(gtkspell, GTKSPELL)
-CONF_SUMMARY(gtksourceview 1, GTKSOURCEVIEW)
-CONF_SUMMARY(gtksourceview 3, GTKSOURCEVIEW2)
+CONF_SUMMARY(gtksourceview3, GTKSOURCEVIEW3)
 CONF_SUMMARY(quartz   , GTKQUARTZ)
 echo
 echo $ECHO_N "	debug   $ECHO_C"

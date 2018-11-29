@@ -1,19 +1,21 @@
 
-             LablGTK2 2.18.6 : an interface to the GIMP Tool Kit
+             LablGTK3 3.00 : an interface to the GIMP Tool Kit
 
 Needed:
-        ocaml-3.11 or more (4.06 is preferred)
-        gtk+-2.x (gtk+-2.16.x for full functionality)
+        ocaml-3.11 or more (4.07 is preferred)
+        gtk+-3.x
         findlib 1.2.1 or more (for default install)
         GNU make (there is no standard for conditionals)
 
 Info/upgrades:
         http://lablgtk.forge.ocamlcore.org/
+        https://github.com/garrigue/lablgtk
 
 Status:
-  LablGtk2 is now pretty stable.
+  LablGtk3 is still an experimental port of LablGtk2 to Gtk-3.
+  Currently it is more or less a subset of LablGtk2.
 
-  An important change in gtk-2 is the use of unicode (utf8) for
+  An important change in gtk-2 was the use of unicode (utf8) for
   all strings. If you use non-ascii strings, you must imperatively
   convert them to unicode. This can be done with the
   [Glib.Convert.locale_to_utf8] function. If your input is already in
@@ -24,8 +26,8 @@ Status:
   GTK_SETLOCALE to 0 in the environment), but LC_NUMERIC is reverted
   to "C" to avoid problems with floating point conversion in Caml.
 
-  Note that some widgets are only supported in newer versions of GTK+.
-  If you use them in older versions, you will get a runtime error:
+  Some widgets may be unsupported on your version of Gtk.
+  If you use them, you will get a runtime error:
     Failure "Gobject.unsafe_create : type GtkActionGroup is not yet defined"
   For unsupported methods, the error message is a bit clearer:
     Failure "gdk_pixbuf_get_file_info unsupported in Gtk 2.x < 2.4"
@@ -49,22 +51,10 @@ How to compile:
 
         --with-libdir=/path: install libs in /path/lablgtk2
                              and /path/stublibs
-        --with-gl --without-gl: override autodetected GtkGLArea support.
-                                Requires LablGL
-        --with-glade --without-glade: override autodetected libglade support
-        --with-rsvg --without-rsvg: override autodetected librsvg support
-        --with-gnomecanvas --without-gnomecanvas:
-                override autodetected libgnomecanvas support
-        --with-gnomeui --without-gnomeui:
-                override autodetected libgnomeui support
-        --with-panel --without-panel:
-                override autodetected libpanelapplet support
         --with-gtkspell --without-gtkspell:
                 override autodetected gtkspell support
-        --with-gtksourceview --without-gtksourceview:
-                override autodetected gtksourceview support
-        --with-gtksourceview2 --without-gtksourceview2:
-                override autodetected gtksourceview2 support
+        --with-gtksourceview3 --without-gtksourceview3:
+                override autodetected gtksourceview3 support
         --enable-debug: enable debug mode
 
   Type "make install" to install using findlib.
@@ -73,23 +63,15 @@ How to compile:
 
   The following findlib packages are provided (according to configuration):
 
-        lablgtk2
-        lablgtk2.auto-init
-        lablgtk2.gl
-        lablgtk2.glade
-        lablgtk2.gnomecanvas
-        lablgtk2.gnomehtml
-        lablgtk2.gnomeui
-        lablgtk2.gtkspell
-        lablgtk2.panel
-        lablgtk2.rsvg
-        lablgtk2.sourceview
-        lablgtk2.sourceview2
+        lablgtk3
+        lablgtk3.auto-init
+        lablgtk3.gtkspell
+        lablgtk3.sourceview3
 
   You can alternatively use "make old-install" or
   "make old-install DESTDIR=/my/prefix" to use the old
   installation procedure, which does not rely on findlib.
-  By default, the library is installed at +lablgtk2.
+  By default, the library is installed at +lablgtk3.
   All installation paths are prefixed by DESTDIR when given.
 
 Contents:
@@ -100,7 +82,7 @@ Contents:
         g[A-Z]*.ml      object-oriented interface to GTK
         gdkObj.ml       object-oriented interface to GDK
 
-        lablgtk2        toplevel
+        lablgtk3        toplevel
 
         examples/*.ml   various examples
 
@@ -109,24 +91,24 @@ Contents:
 
 How to run the examples:
   In the examples directory just type:
-        lablgtk2 ???.ml
+        lablgtk3 ???.ml
 
-  If you want to run them before installing lablgtk2 you have to use -localdir:
-        ../src/lablgtk2 -localdir ???.ml
+  If you want to run them before installing lablgtk3 you have to use -localdir:
+        ../src/lablgtk3 -localdir ???.ml
 
 How to link them:
-  The lablgtk2 script loads an extra module GtkInit, whose only contents is:
+  The lablgtk3 script loads an extra module GtkInit, whose only contents is:
         let locale = GtkMain.Main.init ()
   You must either add this line, or add this module to your link, before
   calling any Gtk function. With ocamlfind, use
-        ocamlfind ocamlc -package lablgtk2.auto-init -linkpkg -w s ???.ml -o ???
+        ocamlfind ocamlc -package lablgtk3.auto-init -linkpkg -w s ???.ml -o ???
   Otherwise, use something similar to:
-        ocamlc -I +lablgtk2 -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
+        ocamlc -I +lablgtk3 -w s lablgtk.cma gtkInit.cmo ???.ml -o ???
 
 How to use the threaded toplevel:
 
-        % lablgtk2 -thread
-                Objective Caml version 3.09
+        % lablgtk3 -thread
+                Objective Caml version 4.07.1
 
         # let w = GWindow.window ~show:true ();;
         # let b = GButton.button ~packing:w#add ~label:"Hello!" ();;
@@ -292,71 +274,16 @@ Memory management:
   it, you may use compaction through Gc.compact where it is safe
   (timeouts, other threads...), but do not enable automatic compaction.
 
-LibGlade support:
-
-  There is support for Glade generated XML UI description files, using
-  libglade. You can read in a file, access to widgets, and define
-  callbacks.
-  A tool for extracting widget definitions from glade description is
-  provided. It generates a wrapper class, and you can then generate an
-  object corresponding to the intended layout, and access individual
-  widgets through its methods. Example:
-
-        % lablgladecc2 project1.glade > project1.ml
-        % lablgtk2 -thread
-        # #use "project1.ml" ;;
-        class window1 : ...
-        # let w1 = new window1 () ;;
-        # w1#bind ~name:"on_paste1_activate"
-            ~callback:(fun () -> w1#text1#insert "some text\n");;
-
-  See lablgladecc2 -help for other features (tracing and source
-  embedding).
-  The executable must be linked with lablglade.cma.
-
-GL extension:
-
-  You can use lablgtk in combination with LablGL
-
-  * get and install lablGL 1.05 from
-      http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
-  * get and install gtkglarea-1.99.0.tar.gz from
-      ftp://ftp.gnome.org/pub/gnome/sources/gtkglarea/1.99/
-    or any other gnome mirror site
-  * reconfigure
-
-  You can then use the widget GlGtk.gl_area as an OpenGL window.
-  Some examples are in examples/GL, but basically any LablGL example
-  can be easily ported.
-  The executable must be linked with both lablgl.cma and
-  lablgtkgl.cma.
-
-SVG support:
-
-  This binding was contributed by Olivier Andrieu.
-  It requires librsvg-2.x (preferably 2.2.x).
-  See an example in examples/rsvg.
-  The executable must be linked with lablrsvg.cma.
-
-GnomeCanvas support:
-
-  This binding was also contributed by Olivier Andrieu.
-  It requires libgnomecanvas-2.x.
-  See examples in examples/canvas.
-  The executable must be linked with lablgnomecanvas.cma.
-
-GtkSourceView 1 support:
-  This binding was contributed by Maxence Guesdon and Stefano Zacchiroli.
-  It requires libgtksourceview-1.x.
-  See examples in examples/sourceview.
-  The executable must be linked with lablgtksourceview.cma.
-
-GtkSourceView 2 support:
-  This binding was contributed by Benjamin Monate: it is based on
-  the aforementioned GtksourceView 1 support.
-  It requires libgtksourceview-2.x.
+LibGlade support: not available in Gtk3
+GL extension: not available in Gtk3
+SVG support: not available in Gtk3
+GnomeCanvas support: not available in Gtk3
+GtkSourceView 3 support:
+  This binding was contributed by Benjamin Monate, and
+  adapted by Hugo Herbelin.
+  It requires libgtksourceview-3.x.
   See examples in examples/sourceview/*2.ml
-  The executable must be linked with lablgtksourceview2.cma.
+  The executable must be linked with lablgtksourceview3.cma.
 
 Windows port
 
@@ -379,7 +306,7 @@ Windows port
   are always called from the main loop thread, you can freely use GTK
   in them. Also, non-graphical operations are thread-safe.
   Here is an example using the lablgtk toplevel with threads:
-        % lablgtk2.bat -thread
+        % lablgtk3.bat -thread
                 Objective Caml version 3.09
 
         # open GtkThread;;
@@ -404,9 +331,10 @@ Authors:
         Jun Furuse       <jun.furuse@gmail.com>
         Maxence Guesdon  <maxence.guesdon@inria.fr>
         Stefano Zacchiroli  <zack@cs.unibo.it>
+        Hugo Herbelin    <Hugo.Herbelin@inria.fr>
   For lablgtk1:
         Hubert Fauque  <hubert.fauque@wanadoo.fr>
         Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
 
 Bug reports:
-        http://forge.ocamlcore.org/tracker/?group_id=220
+        https://github.com/garrigue/lablgtk/issues
