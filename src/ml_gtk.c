@@ -73,11 +73,10 @@ CAMLprim value ml_gtkwindow_init(value unit)
         gtk_message_dialog_get_type() +
         gtk_color_selection_dialog_get_type() +
         gtk_font_selection_dialog_get_type() 
-/*
-#ifndef _WIN32
+#if !defined(GDK_WINDOWING_WIN32) && !defined(GDK_WINDOWING_QUARTZ)
         + gtk_plug_get_type()
         + gtk_socket_get_type()
-#endif*/
+#endif
 ;
     return Val_GType(t);
 }
