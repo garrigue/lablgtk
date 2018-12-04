@@ -1,0 +1,48 @@
+dist: xenial
+sudo: required
+language: c
+cache:
+  apt: true
+  directories:
+  - $HOME/.opam
+addons:
+  apt:
+    packages:
+    - librsvg2-dev
+    - freeglut3-dev
+    - libgtkglext1-dev
+    - libgtkgl2.0-dev
+    - libglade2-dev
+    - libgnomeui-dev
+    - libgnome2-dev
+    - libgtkspell-dev
+    - libgtksourceview2.0-dev
+env:
+  global:
+  - OPAMJOBS="2"
+  - OPAMROOTISOK="true"
+  - OPAMYES="true"
+  - COMPILER="4.06.1"
+  - BASE_OPAM="dune lablgl"
+
+  # Main test suite
+  matrix:
+  - TEST_TARGET="build"   COMPILER="4.05.0"
+  - TEST_TARGET="build"   COMPILER="4.06.1"
+  - TEST_TARGET="build"   COMPILER="4.07.1"
+
+install:
+- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.1/opam-2.0.1-x86_64-linux -o /usr/bin/opam
+- sudo chmod 755 /usr/bin/opam
+- opam init -c "$COMPILER" --disable-sandboxing
+- opam switch set "$COMPILER"
+- eval $(opam env)
+- opam install $BASE_OPAM
+- opam list
+
+script:
+- set -e
+- echo 'Building LablGtk...' && echo -en 'travis_fold:start:lablgtk.build\\r'
+- dune "$TEST_TARGET"
+- ls -l
+- echo -en 'travis_fold:end:lablgtk.build\\r'
