@@ -403,6 +403,7 @@ findlib-install:
 	mkdir -p "$(BINDIR)"
 	mkdir -p "$(DESTDIR)$(FINDLIBDIR)"
 	@if test -f "$(DESTDIR)$(OCAMLLDCONF)"; then :; else \
+	  mkdir -p "`dirname $(DESTDIR)$(OCAMLLDCONF)`"; \
 	  touch "$(DESTDIR)$(OCAMLLDCONF)"; fi
 	$(OCAMLFIND) install -destdir "$(DESTDIR)$(FINDLIBDIR)" \
 	  -ldconf "$(DESTDIR)$(OCAMLLDCONF)" \
