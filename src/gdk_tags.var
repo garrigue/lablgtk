@@ -50,9 +50,11 @@ type owner_change "GdkOwnerChange" = "GDK_OWNER_CHANGE_"
 
 type window_state "gdkWindowState" = "GDK_WINDOW_STATE_"
   [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY | `FULLSCREEN
-  | `ABOVE | `BELOW | `FOCUSED | `TILED | `TOP_TILED | `TOP_RESIZABLE
+  | `ABOVE | `BELOW | `FOCUSED | `TILED ]
+(* The following are only available since 3.22.23
+  | `TOP_TILED | `TOP_RESIZABLE
   | `RIGHT_TILED | `RIGHT_RESIZABLE | `BOTTOM_TILED
-  | `BOTTOM_RESIZABLE | `LEFT_TILED | `LEFT_RESIZABLE ]
+  | `BOTTOM_RESIZABLE | `LEFT_TILED | `LEFT_RESIZABLE ] *)
 
 (* gdkdevice.h *)
 type input_source "gdkInputSource" = "GDK_SOURCE_"

@@ -91,9 +91,10 @@ module Tags : sig
 
   type window_state =
     [ `WITHDRAWN | `ICONIFIED | `MAXIMIZED | `STICKY | `FULLSCREEN
-    | `ABOVE | `BELOW | `FOCUSED | `TILED | `TOP_TILED | `TOP_RESIZABLE
+    | `ABOVE | `BELOW | `FOCUSED | `TILED ]
+    (* | `TOP_TILED | `TOP_RESIZABLE
     | `RIGHT_TILED | `RIGHT_RESIZABLE | `BOTTOM_TILED
-    | `BOTTOM_RESIZABLE | `LEFT_TILED | `LEFT_RESIZABLE ]
+    | `BOTTOM_RESIZABLE | `LEFT_TILED | `LEFT_RESIZABLE ] *)
 
   (* gdkdevice.h *)
   type input_source =
