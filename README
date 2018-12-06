@@ -3,7 +3,7 @@
 
 Needed:
         ocaml-4.05 or more
-        gtk+-3.x
+        gtk+-3.18 or more
         findlib 1.2.1 or more (for default install)
         GNU make (there is no standard for conditionals)
 

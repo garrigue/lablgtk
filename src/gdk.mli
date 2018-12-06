@@ -62,9 +62,10 @@ module Tags : sig
     | `SCROLL | `WINDOW_STATE | `SETTING
     | `OWNER_CHANGE | `GRAB_BROKEN | `DAMAGE
     | `TOUCH_BEGIN | `TOUCH_UPDATE | `TOUCH_END | `TOUCH_CANCEL
-    | `TOUCHPAD_SWIPE | `TOUCHPAD_PINCH
+    | `TOUCHPAD_SWIPE | `TOUCHPAD_PINCH ]
+    (* Since 3.22:
     | `PAD_BUTTON_PRESS | `PAD_BUTTON_RELEASE
-    | `PAD_RING | `PAD_STRIP | `PAD_GROUP_MODE ]
+    | `PAD_RING | `PAD_STRIP | `PAD_GROUP_MODE ] *)
   
   type visibility_state =
     [ `UNOBSCURED | `PARTIAL | `FULLY_OBSCURED ]
@@ -99,7 +100,8 @@ module Tags : sig
   (* gdkdevice.h *)
   type input_source =
     [ `MOUSE | `PEN | `ERASER | `CURSOR | `KEYBOARD
-    | `TOUCHSCREEN | `TOUCHPAD | `TRACKPOINT | `TABLET_PAD ]
+    | `TOUCHSCREEN | `TOUCHPAD ]
+    (* Since 3.22: | `TRACKPOINT | `TABLET_PAD *)
 
   type input_mode =
     [ `DISABLED | `SCREEN | `WINDOW ]
@@ -116,8 +118,9 @@ module Tags : sig
   type drag_action =
     [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
 
+  (* Since 3.22:
   type drag_cancel_reason =
-    [ `NO_TARGET | `USER_CANCELLED | `ERROR ]
+    [ `NO_TARGET | `USER_CANCELLED | `ERROR ] *)
 
   type drag_protocol =
     [ `NONE | `MOTIF | `XDND | `ROOTWIN | `WIN32_DROPFILES
@@ -161,9 +164,10 @@ module Tags : sig
     [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `CENTER | `EAST
     | `SOUTH_WEST | `SOUTH | `SOUTH_EAST | `STATIC ]
 
+  (* Since 3.22:
   type anchor_hints =
     [ `FLIP_X | `FLIP_Y | `SLIDE_X | `SLIDE_Y | `RESIZE_X | `RESIZE_Y
-    | `FLIP | `SLIDE | `RESIZE ]
+    | `FLIP | `SLIDE | `RESIZE ] *)
 
   type window_edge =
     [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `EAST
@@ -201,7 +205,8 @@ module Tags : sig
     | `STRUCTURE | `PROPERTY_CHANGE | `VISIBILITY_NOTIFY
     | `PROXIMITY_IN | `PROXIMITY_OUT
     | `SUBSTRUCTURE | `SCROLL
-    | `TOUCH | `SMOOTH_SCROLL | `TOUCHPAD_GESTURE | `TABLET_PAD
+    | `TOUCH | `SMOOTH_SCROLL | `TOUCHPAD_GESTURE
+    (* Since 3.22: | `TABLET_PAD *)
     | `ALL_EVENTS ]
 
   type gl_error =
@@ -213,12 +218,13 @@ module Tags : sig
     | `DROPDOWN_MENU | `POPUP_MENU | `TOOLTIP | `NOTIFICATION | `COMBO | `DND ]
 
   type axis_use =
-    [ `IGNORE | `X | `Y | `PRESSURE | `XTILT | `YTILT
-    | `WHEEL | `DISTANCE | `ROTATION | `SLIDER | `LAST ]
+    [ `IGNORE | `X | `Y | `PRESSURE | `XTILT | `YTILT | `WHEEL
+    | (* Since 3.22: `DISTANCE | `ROTATION | `SLIDER | *) `LAST ]
 
+  (* Since 3.22:
   type axis_flags =
     [ `X | `Y | `PRESSURE | `XTILT | `YTILT
-    | `WHEEL | `DISTANCE | `ROTATION | `SLIDER ]
+    | `WHEEL | `DISTANCE | `ROTATION | `SLIDER ] *)
 end
 
 module Convert :

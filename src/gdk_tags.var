@@ -20,8 +20,9 @@ type event_type = "GDK_"
   | `OWNER_CHANGE | `GRAB_BROKEN | `DAMAGE
   | `TOUCH_BEGIN | `TOUCH_UPDATE | `TOUCH_END | `TOUCH_CANCEL
   | `TOUCHPAD_SWIPE | `TOUCHPAD_PINCH
+  (* Since 3.22:
   | `PAD_BUTTON_PRESS | `PAD_BUTTON_RELEASE
-  | `PAD_RING | `PAD_STRIP | `PAD_GROUP_MODE
+  | `PAD_RING | `PAD_STRIP | `PAD_GROUP_MODE *)
  ]
 
 type visibility_state "gdkVisibilityState" = "GDK_VISIBILITY_"
@@ -60,7 +61,7 @@ type window_state "gdkWindowState" = "GDK_WINDOW_STATE_"
 type input_source "gdkInputSource" = "GDK_SOURCE_"
   [ `MOUSE | `PEN | `ERASER | `CURSOR
   | `KEYBOARD | `TOUCHSCREEN | `TOUCHPAD
-  | `TRACKPOINT | `TABLET_PAD ]
+  (* Since 3.22: | `TRACKPOINT | `TABLET_PAD *) ]
 
 type input_mode "gdkInputMode" = "GDK_MODE_"
   [ `DISABLED | `SCREEN | `WINDOW ]
@@ -77,8 +78,10 @@ type visual_type "gdkVisualType" = "GDK_VISUAL_"
 type drag_action "gdkDragAction" = "GDK_ACTION_"
   [ `DEFAULT | `COPY | `MOVE | `LINK | `PRIVATE | `ASK ]
 
+(* Since 3.20:
 type drag_cancel_reason "GdkDragCancelReason" = "GDK_DRAG_CANCEL_"
   [ `NO_TARGET | `USER_CANCELLED | `ERROR ]
+*)
 
 type drag_protocol "gdkDragProtocol" = "GDK_DRAG_PROTO_"
   [ `NONE | `MOTIF | `XDND | `ROOTWIN | `WIN32_DROPFILES
@@ -118,9 +121,11 @@ type gravity = "GDK_GRAVITY_"
   [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `CENTER | `EAST
   | `SOUTH_WEST | `SOUTH | `SOUTH_EAST | `STATIC ]
 
+(* Since 3.22:
 type anchor_hints = "GDK_ANCHOR_"
   [ `FLIP_X | `FLIP_Y | `SLIDE_X | `SLIDE_Y | `RESIZE_X | `RESIZE_Y
   | `FLIP | `SLIDE | `RESIZE ]
+*)
 
 type window_edge = "GDK_WINDOW_EDGE_"
   [ `NORTH_WEST | `NORTH | `NORTH_EAST | `WEST | `EAST
@@ -168,7 +173,8 @@ type flags event_mask = "GDK_"
   | `STRUCTURE | `PROPERTY_CHANGE | `VISIBILITY_NOTIFY
   | `PROXIMITY_IN | `PROXIMITY_OUT
   | `SUBSTRUCTURE | `SCROLL
-  | `TOUCH | `SMOOTH_SCROLL | `TOUCHPAD_GESTURE | `TABLET_PAD
+  | `TOUCH | `SMOOTH_SCROLL | `TOUCHPAD_GESTURE
+  (* Since 3.22: | `TABLET_PAD *)
   | `ALL_EVENTS ] "_MASK"
 
 type gl_error = "GDK_GL_ERROR_"
@@ -182,12 +188,14 @@ type window_type_hint = "GDK_WINDOW_TYPE_HINT_"
   | `DROPDOWN_MENU | `POPUP_MENU | `TOOLTIP | `NOTIFICATION | `COMBO | `DND ]
 
 type axis_use = "GDK_AXIS_"
-  [ `IGNORE | `X | `Y | `PRESSURE | `XTILT | `YTILT
-  | `WHEEL | `DISTANCE | `ROTATION | `SLIDER | `LAST ]
+  [ `IGNORE | `X | `Y | `PRESSURE | `XTILT | `YTILT | `WHEEL
+  (* Since 3.22: | `DISTANCE | `ROTATION | `SLIDER *) | `LAST ]
 
+(* Since 3.22:
 type flags axis_flags = "GDK_AXIS_FLAG_"
-  [ `X | `Y | `PRESSURE | `XTILT | `YTILT
-  | `WHEEL | `DISTANCE | `ROTATION | `SLIDER ]
+  [ `X | `Y | `PRESSURE | `XTILT | `YTILT | `WHEEL
+  | `DISTANCE | `ROTATION | `SLIDER ]
+*)
 
 (* gdkcursor.h *)
 type cursor_type "gdkCursorType" = "GDK_" [
