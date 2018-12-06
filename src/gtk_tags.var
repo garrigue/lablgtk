@@ -228,7 +228,7 @@ type text_window_type = "GTK_TEXT_WINDOW_"
   | `RIGHT | `TOP | `BOTTOM ]
 
 type text_view_layer = "GTK_TEXT_VIEW_LAYER_"
-  [ `BELOW | `ABOVE | `BELOW_TEXT | `ABOVE_TEXT ]
+  [ `BELOW | `ABOVE (* Since 3.20: | `BELOW_TEXT | `ABOVE_TEXT *) ]
 
 type text_extend_selection = "GTK_TEXT_EXTEND_SELECTION_"
   [ `WORD | `LINE ]

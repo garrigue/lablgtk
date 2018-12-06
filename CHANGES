@@ -1,7 +1,7 @@
 LablGTK changes log
 
 2018.12.6 [Jacques]
-  * allow compiling with Gtk 3.20 (april 2016)
+  * allow compiling with Gtk 3.18 (for ubuntu 16.04)
 
 2018.11.30 [Jacques]
   * ensure we compile on ocaml 4.05 (report by Ralf Treinen)
