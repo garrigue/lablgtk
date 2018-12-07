@@ -69,9 +69,11 @@ class button_box obj = object
     BBox.set_child_secondary obj w#as_widget
 end
 
-let button_box dir ?layout =
+let button_box dir ?spacing ?layout =
   pack_container [] ~create:(fun p ->
-    let p = Property.may_cons BBox.P.layout_style layout p in
+    let p =
+      Property.may_cons Box.P.spacing spacing (
+      Property.may_cons BBox.P.layout_style layout p) in
     let w = BBox.create dir p in
     new button_box w)
 
