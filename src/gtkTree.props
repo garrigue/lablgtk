@@ -170,6 +170,7 @@ class CellLayout abstract : Object {
 class TreeViewColumn wrap : Object {
   "alignment"            gfloat               : Read / Write
   "clickable"            gboolean             : Read / Write
+  "expand"               gboolean             : Read / Write
   "fixed-width"          gint                 : Read / Write
   "max-width"            gint                 : Read / Write
   "min-width"            gint                 : Read / Write

@@ -305,6 +305,7 @@ class view_column : tree_view_column obj ->
     method alignment : float
     method clickable : bool
     method connect : view_column_signals
+    method expand : bool
     method fixed_width : int
     method get_sort_column_id : int
     method max_width : int
@@ -313,6 +314,7 @@ class view_column : tree_view_column obj ->
     method resizable : bool
     method set_alignment : float -> unit
     method set_clickable : bool -> unit
+    method set_expand : bool -> unit
     method set_fixed_width : int -> unit
     method set_max_width : int -> unit
     method set_min_width : int -> unit
