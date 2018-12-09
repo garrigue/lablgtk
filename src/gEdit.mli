@@ -142,6 +142,8 @@ class entry_signals : [> Gtk.entry] obj ->
       callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.16 *)
     method notify_secondary_icon_sensitive :
       callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.16 *)
+    method notify_placeholder_text :
+      callback:(string -> unit) -> GtkSignal.id (** @Since GTK 3.2 *)
   end
 
 (** A single line text entry field
@@ -161,6 +163,7 @@ class entry : ([> Gtk.entry] as 'a) obj ->
     method set_has_frame : bool -> unit
     method set_invisible_char : int -> unit
     method set_max_length : int -> unit
+    method set_placeholder_text : string -> unit
     method set_text : string -> unit
     method set_visibility : bool -> unit
     method set_width_chars : int -> unit
@@ -170,6 +173,7 @@ class entry : ([> Gtk.entry] as 'a) obj ->
     method has_frame : bool
     method invisible_char : int
     method max_length : int
+    method placeholder_text : string
     method visibility : bool
     method width_chars : int
     method xalign : float
@@ -211,6 +215,7 @@ val entry :
   ?has_frame:bool ->
   ?width_chars:int ->
   ?xalign:float ->
+  ?placeholder_text:string ->
   ?width:int -> ?height:int ->
   ?packing:(widget -> unit) -> ?show:bool -> unit -> entry
 

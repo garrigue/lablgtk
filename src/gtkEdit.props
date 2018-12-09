@@ -79,6 +79,8 @@ class Entry set wrap wrapsig : Editable {
   "secondary-icon-stock"       GtkStock       : Read / Write / NoSet / NoGet
   "secondary-icon-tooltip-markup" gchararray  : Read / Write / NoSet / NoGet
   "secondary-icon-tooltip-text" gchararray    : Read / Write / NoSet / NoGet
+  (* Since 3.2 *)
+  "placeholder-text"     gchararray           : Read / Write
   method get_completion : "Gtk.entry_completion option"
   method set_completion : "Gtk.entry_completion -> unit"
   signal activate
