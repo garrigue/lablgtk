@@ -48,8 +48,6 @@ class window_skel : 'a obj ->
     method resize : width:int -> height:int -> unit
     method show : unit -> unit
     method set_accept_focus : bool -> unit
-    method set_allow_grow : bool -> unit
-    method set_allow_shrink : bool -> unit
     method set_decorated : bool -> unit
     method set_default_height : int -> unit
     method set_default_size : width:int -> height:int -> unit
@@ -81,8 +79,6 @@ class window_skel : 'a obj ->
     method set_type_hint : Gdk.Tags.window_type_hint -> unit
     method set_wmclass : name:string -> clas:string -> unit
     method accept_focus : bool
-    method allow_grow : bool
-    method allow_shrink : bool
     method decorated : bool
     method default_height : int
     method default_width : int
@@ -129,8 +125,6 @@ class window : ([> Gtk.window] as 'a) obj ->
 val window :
   ?kind:Tags.window_type ->
   ?title:string ->
-  ?allow_grow:bool ->
-  ?allow_shrink:bool ->
   ?decorated:bool ->
   ?deletable:bool ->
   ?focus_on_map:bool ->
@@ -212,8 +206,6 @@ val dialog :
   ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->
-  ?allow_grow:bool ->
-  ?allow_shrink:bool ->
   ?decorated:bool ->
   ?deletable:bool ->
   ?focus_on_map:bool ->
@@ -277,8 +269,6 @@ val message_dialog :
   ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->
-  ?allow_grow:bool ->
-  ?allow_shrink:bool ->
   ?decorated:bool ->
   ?deletable:bool ->
   ?focus_on_map:bool ->
@@ -372,8 +362,6 @@ val about_dialog :
   ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->
-  ?allow_grow:bool ->
-  ?allow_shrink:bool ->
   ?decorated:bool ->
   ?deletable:bool ->
   ?focus_on_map:bool ->
@@ -427,8 +415,6 @@ val file_chooser_dialog :
   ?parent:#window_skel ->
   ?destroy_with_parent:bool ->
   ?title:string ->
-  ?allow_grow:bool ->
-  ?allow_shrink:bool ->
   ?decorated:bool ->
   ?deletable:bool ->
   ?focus_on_map:bool ->

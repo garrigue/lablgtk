@@ -93,8 +93,6 @@ end
 
 (** @gtkdoc gtk GtkPlug *)
 val assistant : ?title:string ->
-  ?allow_grow:bool ->
-  ?allow_shrink:bool ->
   ?decorated:bool ->
   ?deletable:bool ->
   ?focus_on_map:bool ->

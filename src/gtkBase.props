@@ -187,8 +187,6 @@ class Orientable wrap : Object {
 class Window set wrap : Bin {
   "title"                gchararray           : Read / Write
   "accept-focus"         gboolean             : Read / Write / NoSet
-  "allow-grow"           gboolean             : Read / Write
-  "allow-shrink"         gboolean             : Read / Write
   "decorated"            gboolean             : Read / Write
   "default-height"       gint                 : Read / Write / NoSet
   "default-width"        gint                 : Read / Write / NoSet
