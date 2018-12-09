@@ -102,6 +102,7 @@ class button_box : ([> Gtk.button_box] as 'a) obj ->
 (** @gtkdoc gtk GtkButtonBox *)
 val button_box :
   Tags.orientation ->
+  ?spacing:int ->
   ?layout:Gtk.Tags.button_box_style ->
   ?border_width:int ->
   ?width:int ->
