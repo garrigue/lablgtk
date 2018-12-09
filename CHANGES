@@ -1,5 +1,12 @@
 LablGTK changes log
 
+2018.12.9 [Guillaume Melquiond]
+  * Support property "expand" of GtkTreeViewColumn
+  * Support property "placeholder-text" of GtkEntry
+  * Restore GPack.button_box ?spacing argument
+  * Restore GtkMenu.MenuItem.separator_create
+  * Remove properties allow-grow and allow-shrink from GtkWindow
+
 2018.12.6 [Jacques]
   * allow compiling with Gtk 3.18 (for ubuntu 16.04)
 
