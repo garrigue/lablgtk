@@ -1,6 +1,6 @@
 description = "Bindings for gtk3"
 requires = ""
-version = "3.00"
+version = "3.0.beta2"
 
 archive(byte) = "lablgtk.cma"
 archive(native) = "lablgtk.cmxa"

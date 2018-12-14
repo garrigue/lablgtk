@@ -286,49 +286,6 @@ else
 fi
 AC_SUBST(USE_$1)])
 
-
-LABLGTK_PKG(GTKGL, gl,
-	    [  --without-gl            override autodetected GtkGLArea support. Requires LablGL],
-	    gtkgl-3.0)
-# Check for LablGL
-if test -n "$USE_GTKGL" ; then
-      AC_MSG_CHECKING(lablGL directory)
-      cat > conftest.ml << EOF
-      open Raw
-EOF
-      if $CAMLC -c -I "${LABLGLDIR:=+lablGL}" conftest.ml > /dev/null 2>&1 ; then
-        AC_MSG_RESULT($LABLGLDIR)
-      else
-        if test $FORCE_GTKGL = yes ; then
-	  AC_MSG_ERROR(gtkgl enforced but lablGL not found)
-	else
-	  AC_MSG_RESULT(no)
-      	  unset USE_GTKGL
-	  unset GTKGLPKG
-          unset LABLGLDIR
-	fi
-      fi
-fi
-
-LABLGTK_PKG(GLADE, glade,
-            [  --without-glade         override autodetected libglade support],
-            libglade-3.0)
-
-LABLGTK_PKG(RSVG, rsvg,
-            [  --without-rsvg          override autodetected librsvg support],
-            librsvg-3.0)
-# Check for SVGZ support
-if test -n "$USE_RSVG" ; then
-    ac_ocaml_libs="$LIBS"
-    LIBS="$LIBS $RSVG_LIBS"
-    AC_CHECK_FUNC(rsvg_handle_new_gz, [HAVE_SVGZ=-DHAVE_SVGZ], [unset HAVE_SVGZ])
-    # this tests seems broken on my ubuntu FF
-    unset HAVE_SVGZ
-    LIBS="$ac_ocaml_libs"
-else
-    unset HAVE_SVGZ
-fi
-
 LABLGTK_PKG(GTKSPELL, gtkspell,
             [  --without-gtkspell      override autodetected gtkspell support],
             gtkspell3-3.0)
@@ -341,7 +298,7 @@ LABLGTK_PKG(GTKQUARTZ, quartz,
             [  --without-quartz      override autodetected quartz support],
             gtk+-quartz-3.0)
 
-PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG)
+PKG_CHECK_MODULES(GTKALL,$GTKPKG $GTKSPELLPKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG)
 
 AC_ARG_ENABLE(debug,
         [  --enable-debug          enable debug mode],
@@ -395,10 +352,6 @@ fi])
 echo ; echo "LablGTK configuration:"
 echo "	threads  	$THREADS_LIB"
 echo "	native dynlink 	$HAS_NATIVE_DYNLINK"
-CONF_SUMMARY(GtkGLArea, GTKGL)
-CONF_SUMMARY(libglade, GLADE)
-CONF_SUMMARY(librsvg , RSVG)
-CONF_SUMMARY(libpanelapplet, PANEL)
 CONF_SUMMARY(gtkspell, GTKSPELL)
 CONF_SUMMARY(gtksourceview3, GTKSOURCEVIEW3)
 CONF_SUMMARY(quartz   , GTKQUARTZ)

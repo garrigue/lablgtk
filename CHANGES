@@ -1,5 +1,10 @@
 LablGTK changes log
 
+In Lablgtk-3.0.beta2:
+
+2018.12.14 [Jacques]
+  * Remove unsupported extensions from configure
+
 2018.12.9 [Guillaume Melquiond]
   * Support property "expand" of GtkTreeViewColumn
   * Support property "placeholder-text" of GtkEntry
@@ -88,7 +93,7 @@ In Lablgtk-2.18.3:
   * CAMLparam initializes with Val_unit rather than 0 since ocaml 4.02.
     Fix a related problem in ml_gobject.
     This caused random crashes with unison (Christopher Zimmermann, PR#1425)
-    
+
   * Also factorize some code to use Val_option_*
   * Replace XID by GdkNativeWindow where required.
     You may need to insert calls to Gdk.Window.native_of_xid in some places.

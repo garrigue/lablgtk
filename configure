@@ -610,15 +610,6 @@ GTKSOURCEVIEW3_CFLAGS
 USE_GTKSPELL
 GTKSPELL_LIBS
 GTKSPELL_CFLAGS
-USE_RSVG
-RSVG_LIBS
-RSVG_CFLAGS
-USE_GLADE
-GLADE_LIBS
-GLADE_CFLAGS
-USE_GTKGL
-GTKGL_LIBS
-GTKGL_CFLAGS
 GTK_LIBS
 GTK_CFLAGS
 PKG_CONFIG_LIBDIR
@@ -691,9 +682,6 @@ enable_option_checking
 with_libdir
 with_threads
 enable_gtktest
-with_gl
-with_glade
-with_rsvg
 with_gtkspell
 with_gtksourceview3
 with_quartz
@@ -710,12 +698,6 @@ CPPFLAGS
 PKG_CONFIG
 PKG_CONFIG_PATH
 PKG_CONFIG_LIBDIR
-GTKGL_CFLAGS
-GTKGL_LIBS
-GLADE_CFLAGS
-GLADE_LIBS
-RSVG_CFLAGS
-RSVG_LIBS
 GTKSPELL_CFLAGS
 GTKSPELL_LIBS
 GTKSOURCEVIEW3_CFLAGS
@@ -1339,9 +1321,6 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-libdir=/path     install libs in /path/lablgtk3 and /path/stublibs
   --with-threads=(yes|system|vm|no)  which threads to use
-  --without-gl            override autodetected GtkGLArea support. Requires LablGL
-  --without-glade         override autodetected libglade support
-  --without-rsvg          override autodetected librsvg support
   --without-gtkspell      override autodetected gtkspell support
   --without-gtksourceview3      override autodetected gtksourceview 3 support
   --without-quartz      override autodetected quartz support
@@ -1359,14 +1338,6 @@ Some influential environment variables:
               directories to add to pkg-config's search path
   PKG_CONFIG_LIBDIR
               path overriding pkg-config's built-in search path
-  GTKGL_CFLAGS
-              C compiler flags for GTKGL, overriding pkg-config
-  GTKGL_LIBS  linker flags for GTKGL, overriding pkg-config
-  GLADE_CFLAGS
-              C compiler flags for GLADE, overriding pkg-config
-  GLADE_LIBS  linker flags for GLADE, overriding pkg-config
-  RSVG_CFLAGS C compiler flags for RSVG, overriding pkg-config
-  RSVG_LIBS   linker flags for RSVG, overriding pkg-config
   GTKSPELL_CFLAGS
               C compiler flags for GTKSPELL, overriding pkg-config
   GTKSPELL_LIBS
@@ -1588,73 +1559,6 @@ fi
   as_fn_set_status $ac_retval
 
 } # ac_fn_c_try_link
-
-# ac_fn_c_check_func LINENO FUNC VAR
-# ----------------------------------
-# Tests whether FUNC exists, setting the cache variable VAR accordingly
-ac_fn_c_check_func ()
-{
-  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
-$as_echo_n "checking for $2... " >&6; }
-if eval \${$3+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-/* Define $2 to an innocuous variant, in case <limits.h> declares $2.
-   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
-#define $2 innocuous_$2
-
-/* System header to define __stub macros and hopefully few prototypes,
-    which can conflict with char $2 (); below.
-    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-    <limits.h> exists even on freestanding compilers.  */
-
-#ifdef __STDC__
-# include <limits.h>
-#else
-# include <assert.h>
-#endif
-
-#undef $2
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char $2 ();
-/* The GNU C library defines this for functions which it implements
-    to always fail with ENOSYS.  Some functions are actually named
-    something starting with __ and the normal name is an alias.  */
-#if defined __stub_$2 || defined __stub___$2
-choke me
-#endif
-
-int
-main ()
-{
-return $2 ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  eval "$3=yes"
-else
-  eval "$3=no"
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-fi
-eval ac_res=\$$3
-	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-$as_echo "$ac_res" >&6; }
-  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
-
-} # ac_fn_c_check_func
 cat >config.log <<_ACEOF
 This file contains any messages produced by compilers while
 running configure, to aid debugging if configure makes a mistake.
@@ -3980,346 +3884,6 @@ rm -f core conftest.err conftest.$ac_objext \
 
 
 
-
-# Check whether --with-gl was given.
-if test "${with_gl+set}" = set; then :
-  withval=$with_gl; USE_GTKGL=$withval; FORCE_GTKGL=yes
-else
-  USE_GTKGL=yes; FORCE_GTKGL=no
-fi
-
-if test $USE_GTKGL = yes ; then
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gtkgl-3.0" >&5
-$as_echo_n "checking for gtkgl-3.0... " >&6; }
-
-if test -n "$GTKGL_CFLAGS"; then
-    pkg_cv_GTKGL_CFLAGS="$GTKGL_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkgl-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtkgl-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GTKGL_CFLAGS=`$PKG_CONFIG --cflags "gtkgl-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$GTKGL_LIBS"; then
-    pkg_cv_GTKGL_LIBS="$GTKGL_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtkgl-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtkgl-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GTKGL_LIBS=`$PKG_CONFIG --libs "gtkgl-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtkgl-3.0" 2>&1`
-        else
-	        GTKGL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtkgl-3.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$GTKGL_PKG_ERRORS" >&5
-
-
-	if test $FORCE_GTKGL = yes ; then
-	  as_fn_error $? "gl enforced but no support found" "$LINENO" 5
-        else
-          USE_GTKGL=no
-	fi
-elif test $pkg_failed = untried; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-	if test $FORCE_GTKGL = yes ; then
-	  as_fn_error $? "gl enforced but no support found" "$LINENO" 5
-        else
-          USE_GTKGL=no
-	fi
-else
-	GTKGL_CFLAGS=$pkg_cv_GTKGL_CFLAGS
-	GTKGL_LIBS=$pkg_cv_GTKGL_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-fi
-if test $USE_GTKGL = yes ; then
-	USE_GTKGL=1
-	GTKGLPKG=gtkgl-3.0
-else
-	unset USE_GTKGL
-fi
-
-# Check for LablGL
-if test -n "$USE_GTKGL" ; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking lablGL directory" >&5
-$as_echo_n "checking lablGL directory... " >&6; }
-      cat > conftest.ml << EOF
-      open Raw
-EOF
-      if $CAMLC -c -I "${LABLGLDIR:=+lablGL}" conftest.ml > /dev/null 2>&1 ; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LABLGLDIR" >&5
-$as_echo "$LABLGLDIR" >&6; }
-      else
-        if test $FORCE_GTKGL = yes ; then
-	  as_fn_error $? "gtkgl enforced but lablGL not found" "$LINENO" 5
-	else
-	  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-      	  unset USE_GTKGL
-	  unset GTKGLPKG
-          unset LABLGLDIR
-	fi
-      fi
-fi
-
-
-
-# Check whether --with-glade was given.
-if test "${with_glade+set}" = set; then :
-  withval=$with_glade; USE_GLADE=$withval; FORCE_GLADE=yes
-else
-  USE_GLADE=yes; FORCE_GLADE=no
-fi
-
-if test $USE_GLADE = yes ; then
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libglade-3.0" >&5
-$as_echo_n "checking for libglade-3.0... " >&6; }
-
-if test -n "$GLADE_CFLAGS"; then
-    pkg_cv_GLADE_CFLAGS="$GLADE_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libglade-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libglade-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GLADE_CFLAGS=`$PKG_CONFIG --cflags "libglade-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$GLADE_LIBS"; then
-    pkg_cv_GLADE_LIBS="$GLADE_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libglade-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libglade-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_GLADE_LIBS=`$PKG_CONFIG --libs "libglade-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        GLADE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libglade-3.0" 2>&1`
-        else
-	        GLADE_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libglade-3.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$GLADE_PKG_ERRORS" >&5
-
-
-	if test $FORCE_GLADE = yes ; then
-	  as_fn_error $? "glade enforced but no support found" "$LINENO" 5
-        else
-          USE_GLADE=no
-	fi
-elif test $pkg_failed = untried; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-	if test $FORCE_GLADE = yes ; then
-	  as_fn_error $? "glade enforced but no support found" "$LINENO" 5
-        else
-          USE_GLADE=no
-	fi
-else
-	GLADE_CFLAGS=$pkg_cv_GLADE_CFLAGS
-	GLADE_LIBS=$pkg_cv_GLADE_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-fi
-if test $USE_GLADE = yes ; then
-	USE_GLADE=1
-	GLADEPKG=libglade-3.0
-else
-	unset USE_GLADE
-fi
-
-
-
-
-# Check whether --with-rsvg was given.
-if test "${with_rsvg+set}" = set; then :
-  withval=$with_rsvg; USE_RSVG=$withval; FORCE_RSVG=yes
-else
-  USE_RSVG=yes; FORCE_RSVG=no
-fi
-
-if test $USE_RSVG = yes ; then
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for librsvg-3.0" >&5
-$as_echo_n "checking for librsvg-3.0... " >&6; }
-
-if test -n "$RSVG_CFLAGS"; then
-    pkg_cv_RSVG_CFLAGS="$RSVG_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"librsvg-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "librsvg-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_RSVG_CFLAGS=`$PKG_CONFIG --cflags "librsvg-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$RSVG_LIBS"; then
-    pkg_cv_RSVG_LIBS="$RSVG_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"librsvg-3.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "librsvg-3.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_RSVG_LIBS=`$PKG_CONFIG --libs "librsvg-3.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        RSVG_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "librsvg-3.0" 2>&1`
-        else
-	        RSVG_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "librsvg-3.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$RSVG_PKG_ERRORS" >&5
-
-
-	if test $FORCE_RSVG = yes ; then
-	  as_fn_error $? "rsvg enforced but no support found" "$LINENO" 5
-        else
-          USE_RSVG=no
-	fi
-elif test $pkg_failed = untried; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-	if test $FORCE_RSVG = yes ; then
-	  as_fn_error $? "rsvg enforced but no support found" "$LINENO" 5
-        else
-          USE_RSVG=no
-	fi
-else
-	RSVG_CFLAGS=$pkg_cv_RSVG_CFLAGS
-	RSVG_LIBS=$pkg_cv_RSVG_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-fi
-if test $USE_RSVG = yes ; then
-	USE_RSVG=1
-	RSVGPKG=librsvg-3.0
-else
-	unset USE_RSVG
-fi
-
-# Check for SVGZ support
-if test -n "$USE_RSVG" ; then
-    ac_ocaml_libs="$LIBS"
-    LIBS="$LIBS $RSVG_LIBS"
-    ac_fn_c_check_func "$LINENO" "rsvg_handle_new_gz" "ac_cv_func_rsvg_handle_new_gz"
-if test "x$ac_cv_func_rsvg_handle_new_gz" = xyes; then :
-  HAVE_SVGZ=-DHAVE_SVGZ
-else
-  unset HAVE_SVGZ
-fi
-
-    # this tests seems broken on my ubuntu FF
-    unset HAVE_SVGZ
-    LIBS="$ac_ocaml_libs"
-else
-    unset HAVE_SVGZ
-fi
-
-
-
 # Check whether --with-gtkspell was given.
 if test "${with_gtkspell+set}" = set; then :
   withval=$with_gtkspell; USE_GTKSPELL=$withval; FORCE_GTKSPELL=yes
@@ -4620,19 +4184,19 @@ fi
 
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" >&5
-$as_echo_n "checking for $GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $GTKPKG $GTKSPELLPKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG" >&5
+$as_echo_n "checking for $GTKPKG $GTKSPELLPKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG... " >&6; }
 
 if test -n "$GTKALL_CFLAGS"; then
     pkg_cv_GTKALL_CFLAGS="$GTKALL_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEW2PKG \$GTKQUARTZPKG\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKSPELLPKG \$GTKSOURCEVIEW3PKG \$GTKQUARTZPKG\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKSPELLPKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKALL_CFLAGS=`$PKG_CONFIG --cflags "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>/dev/null`
+  pkg_cv_GTKALL_CFLAGS=`$PKG_CONFIG --cflags "$GTKPKG $GTKSPELLPKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -4644,12 +4208,12 @@ if test -n "$GTKALL_LIBS"; then
     pkg_cv_GTKALL_LIBS="$GTKALL_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKGLPKG \$GLADEPKG \$RSVGPKG \$GNOMECANVASPKG \$GNOMEUIPKG \$PANELPKG \$GTKSPELLPKG \$GTKSOURCEVIEW2PKG \$GTKQUARTZPKG\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\$GTKPKG \$GTKSPELLPKG \$GTKSOURCEVIEW3PKG \$GTKQUARTZPKG\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "$GTKPKG $GTKSPELLPKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_GTKALL_LIBS=`$PKG_CONFIG --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>/dev/null`
+  pkg_cv_GTKALL_LIBS=`$PKG_CONFIG --libs "$GTKPKG $GTKSPELLPKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -4670,14 +4234,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>&1`
+	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "$GTKPKG $GTKSPELLPKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG" 2>&1`
         else
-	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "$GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG" 2>&1`
+	        GTKALL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "$GTKPKG $GTKSPELLPKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKALL_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements ($GTKPKG $GTKGLPKG $GLADEPKG $RSVGPKG $GNOMECANVASPKG $GNOMEUIPKG $PANELPKG $GTKSPELLPKG $GTKSOURCEVIEW2PKG $GTKQUARTZPKG) were not met:
+	as_fn_error $? "Package requirements ($GTKPKG $GTKSPELLPKG $GTKSOURCEVIEW3PKG $GTKQUARTZPKG) were not met:
 
 $GTKALL_PKG_ERRORS
 
@@ -5914,42 +5478,6 @@ chmod a-w config.make
 echo ; echo "LablGTK configuration:"
 echo "	threads  	$THREADS_LIB"
 echo "	native dynlink 	$HAS_NATIVE_DYNLINK"
-
-echo $ECHO_N "	GtkGLArea $ECHO_C"
-if test -n "$USE_GTKGL"
-then echo "	yes"
-else if test "$FORCE_GTKGL" = "yes"
-     then echo "	disabled"
-     else echo "	not found"
-     fi
-fi
-
-echo $ECHO_N "	libglade $ECHO_C"
-if test -n "$USE_GLADE"
-then echo "	yes"
-else if test "$FORCE_GLADE" = "yes"
-     then echo "	disabled"
-     else echo "	not found"
-     fi
-fi
-
-echo $ECHO_N "	librsvg  $ECHO_C"
-if test -n "$USE_RSVG"
-then echo "	yes"
-else if test "$FORCE_RSVG" = "yes"
-     then echo "	disabled"
-     else echo "	not found"
-     fi
-fi
-
-echo $ECHO_N "	libpanelapplet $ECHO_C"
-if test -n "$USE_PANEL"
-then echo "	yes"
-else if test "$FORCE_PANEL" = "yes"
-     then echo "	disabled"
-     else echo "	not found"
-     fi
-fi
 
 echo $ECHO_N "	gtkspell $ECHO_C"
 if test -n "$USE_GTKSPELL"

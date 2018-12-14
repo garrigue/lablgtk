@@ -19,10 +19,10 @@ CAMLLEX=@OCAMLLEX@
 CAMLYACC=@OCAMLYACC@
 EXE=@EXE@
 
-USE_GL=@USE_GTKGL@
+USE_GL=			# disable in gtk3
 USE_GLADE=		# disable in gtk3
-USE_RSVG=@USE_RSVG@
-HAVE_SVGZ=@HAVE_SVGZ@
+USE_RSVG=		# disable in gtk3
+HAVE_SVGZ=		# disable in gtk3
 USE_GNOMECANVAS= 	# disable in gtk3
 USE_GNOMEUI= 		# disable in gtk3
 USE_PANEL= 		# disable in gtk3
