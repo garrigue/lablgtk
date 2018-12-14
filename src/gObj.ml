@@ -270,6 +270,7 @@ and misc_ops obj = object (self)
   method remove_accelerator ~group ?modi key =
     Widget.remove_accelerator obj group ~key ?modi
   (* method lock_accelerators () = lock_accelerators obj *)
+  method sensitive = get P.sensitive obj
   method set_name = set P.name obj
   method set_sensitive = set P.sensitive obj
   method set_can_default = set P.can_default obj
