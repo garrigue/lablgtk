@@ -241,6 +241,7 @@ and misc_ops : Gtk.widget obj ->
     method render_icon :
        size:Gtk.Tags.icon_size -> GtkStock.id -> GdkPixbuf.pixbuf
     method reparent : widget -> unit
+    method sensitive : bool
     method set_app_paintable : bool -> unit
     method set_can_default : bool -> unit
     method set_can_focus : bool -> unit
