@@ -1,0 +1,8 @@
+(* $Id$ *)
+
+prefix "Gtk"
+
+class Builder set wrap wrapsig : Object {
+  "translation-domain"   string           : Read / Write
+  method get_object : "string -> 'a obj"
+}
