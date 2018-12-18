@@ -25,8 +25,6 @@ let lablgtk_mls = split "@LABLGTK_MLS@"
 let extra_mls = split "@EXTRA_MLS@"
 let prop_mls = split "@PROP_MLS@"
 let gtk_libs = "@GTKLIBS@"
-let glade_mls = split "@GLADE_MLS@"
-let glade_libs = "@GLADE_LIBS@"
 let rsvg_mls = split "@RSVG_MLS@"
 let rsvg_libs = "@RSVG_LIBS@"
 let canvas_mls = split "@CANVAS_MLS@"
@@ -87,8 +85,6 @@ let libs =
     {mlis; mls; extra; libs=rename_libs libs; name; cname} in
   [ lib ~mls:lablgtk_mls ~extra:extra_mls ~libs:gtk_libs ~name:"lablgtk"
        ~cname:"lablgtk2" ();
-    lib ~mls:glade_mls ~libs:glade_libs ~name:"lablglade"
-       ~cname:"lablglade2" ();
     lib ~mls:rsvg_mls ~libs:rsvg_libs ~name:"lablrsvg" ();
     lib ~mls:canvas_mls ~libs:canvas_libs ~name:"lablgnomecanvas" ();
     lib ~mls:sourceview2_mls ~libs:sourceview2_libs

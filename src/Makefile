@@ -88,13 +88,7 @@ endif
 #GNOMECOBJS = ml_gtkxmhtml$(XO)
 #endif
 
-ifdef USE_GLADE
-MLLIBS += lablglade.cma
-CLIBS += liblablglade3$(XA)
-GLADEMLOBJS = glade.cmo
-GLADECOBJS = ml_glade$(XO)
 TARGETS += lablgladecc$(XE)
-endif
 
 ifdef USE_GNOMECANVAS
 MLLIBS += lablgnomecanvas.cma
@@ -228,7 +222,7 @@ else
 THINITOBJS = gtkThInit.cmo
 endif
 EXTRAOBJS = $(INITOBJS) $(THOBJS) $(THINITOBJS)
-ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) $(GLADEMLOBJS) \
+ALLOBJS = $(MLOBJS) $(GLMLOBJS) $(GNOMEMLOBJS) \
 	$(RSVGMLOBJS) $(GNOMECANVASMLOBJS) $(GNOMEUIMLOBJS) $(PANELMLOBJS) \
 	$(GTKSOURCEVIEW3MLOBJS) $(GTKSPELLMLOBJS) \
 	$(INITOBJS)
@@ -241,7 +235,7 @@ byte:: $(TARGETS) $(INITOBJS)
 opt::  $(TARGETS) lablgtkopt
 
 depend:
-	$(MAKE) real-depend USE_GL=1 USE_GLADE=1 USE_RSVG=1 \
+	$(MAKE) real-depend USE_GL=1 USE_RSVG=1 \
 	  USE_GNOMECANVAS=1 USE_GNOMEUI=1 USE_PANEL=1 USE_GTKSPELL=1 \
 	  USE_GTKSOURCEVIEW3=1
 real-depend: $(ENUMOBJS:.cmo=.ml) $(PROPOBJS:.cmo=.ml) $(BEFORE_DEPEND)
@@ -277,8 +271,6 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	    -e "s|@EXTRA_MLS@|$(EXTRAOBJS:.cmo=)|" \
 	    -e "s|@PROP_MLS@|$(PROPOBJS:.cmo=)|" \
 	    -e "s|@GTKLIBS@|$(GTKLIBS)|" \
-	    -e "s|@GLADE_MLS@|$(GLADEMLOBJS:.cmo=)|" \
-	    -e "s|@GLADE_LIBS@|$(GLADELIBS)|" \
 	    -e "s|@RSVG_MLS@|$(RSVGMLOBJS:.cmo=)|" \
 	    -e "s|@RSVG_LIBS@|$(RSVGLIBS)|" \
 	    -e "s|@CANVAS_MLS@|$(GNOMECANVASMLOBJS:.cmo=)|" \
@@ -310,7 +302,7 @@ testcc$(XE): lablgladecc$(XE) lablgtktop
 	./lablgtktop testcc.ml
 	rm -f testcc.ml
 
-PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(GLADEMLOBJS) $(RSVGMLOBJS) \
+PREOBJS= $(MLOBJS) $(EXTRAOBJS) $(RSVGMLOBJS) \
 	$(GNOMECANVASMLOBJS) $(GTKSOURCEVIEW2ALLMLOBJS)
 
 # Install ml sources and C binaries, can then rebuild using build.ml
@@ -453,12 +445,6 @@ lablgtkgl.cmxa: $(GLCOBJS) $(GLMLOBJS:.cmo=.cmx)
 	$(LIBRARIAN) -o lablgtkgl -oc lablgtkgl3 $^ $(GTKGLLIBS)
 lablgtkgl.cmxs: DYNLINKLIBS=$(GTKGL_LIBS)
 
-lablglade.cma liblablglade3$(XA): $(GLADECOBJS) $(GLADEMLOBJS)
-	$(LIBRARIAN) -o lablglade -oc lablglade3 $^ $(GLADELIBS)
-lablglade.cmxa: $(GLADECOBJS) $(GLADEMLOBJS:.cmo=.cmx)
-	$(LIBRARIAN) -o lablglade -oc lablglade3 $^ $(GLADELIBS)
-lablglade.cmxs: DYNLINKLIBS=$(GLADE_LIBS)
-
 lablrsvg.cma liblablrsvg$(XA): $(RSVGCOBJS) $(RSVGMLOBJS)
 	$(LIBRARIAN) -o lablrsvg $^ $(RSVGLIBS)
 lablrsvg.cmxa: $(RSVGCOBJS) $(RSVGMLOBJS:.cmo=.cmx)
@@ -545,9 +531,7 @@ DOCFILES = gPango.ml gDraw.mli gObj.mli gMain.mli gData.mli \
         gtkEdit.ml gtkRange.ml gtkText.ml gtkTree.ml gtkBuilder.ml \
         gtkFile.ml gtkMain.ml \
         $(GTKPROPS:%.props=%Props.ml)
-ifdef USE_GLADE
-DOCFILES += glade.mli xml_lexer.mli
-endif
+DOCFILES += xml_lexer.mli
 ifdef USE_GL
 DOCFILES += glGtk.mli
 endif
