@@ -92,6 +92,7 @@ let classes = ref [
   "GtkBBox", ("GtkPack.BBox", "GPack.button_box");
   "GtkHButtonBox", ("GtkPack.BBox", "GPack.button_box");
   "GtkVButtonBox", ("GtkPack.BBox", "GPack.button_box");
+  "GtkButtonBox", ("GtkPack.BBox", "GPack.button_box");
   "GtkFixed", ("GtkPack.Fixed", "GPack.fixed");
   "GtkLayout", ("GtkPack.Layout", "GPack.layout");
 (*  "GtkPacker", ("GtkPack.Packer", "GPack.packer"); *)
@@ -150,8 +151,8 @@ open Xml_lexer
 
 let parse_header lexbuf =
   match token lexbuf with 
-  | Tag ("glade-interface",_,_) -> ()
-  | _ -> failwith "no glade-interface declaration" 
+  | Tag ("interface",_,_) -> ()
+  | _ -> failwith "no interface declaration" 
 
 let parse_field lexbuf ~tag =
   let b = Buffer.create 80 and first = ref true in
@@ -212,22 +213,33 @@ let is_top_widget wtree w =
   | [w'] -> w.wcamlname = w'.wcamlname && not w.winternal
   | _ -> false
 
-let rec parse_widget ~wclass ~wname ~internal lexbuf =
+let rec skip_to_endtag lexbuf =
+ match token lexbuf with
+  | Tag(t,_,true) -> skip_to_endtag lexbuf
+  | Tag(t,_,false) -> skip_to_endtag lexbuf ; skip_to_endtag lexbuf
+  | Chars _ -> skip_to_endtag lexbuf
+  | Endtag t -> ()
+  | EOF -> assert false
+
+let rec parse_widget ~closed ~wclass ~wname ~internal lexbuf =
   let widgets = ref [] in
-  while match token lexbuf with
-  | Tag ("widget", attrs, closed) ->
-      widgets := parse_widget ~wclass:(List.assoc "class" attrs) ~internal
+  while (not closed) && match token lexbuf with
+  | Tag ("object", attrs, closed) ->
+     (try
+       widgets := parse_widget ~closed ~wclass:(List.assoc "class" attrs) ~internal
 	  ~wname:(List.assoc "id" attrs) lexbuf :: !widgets;
+      with Not_found -> (* id can be missing *) if not closed then skip_to_endtag lexbuf) ;
       true
-  | Tag ("child",attrs,_) ->
+  | Tag ("child",attrs,true) -> assert false
+  | Tag ("child",attrs,false) ->
       let is_internal =
 	try List.assoc "internal-child" attrs <> "" with Not_found -> false in
       Stack.push is_internal internal;
       true
   | Endtag "child" -> ignore(Stack.pop internal); true
   | Tag (tag,_,closed) ->
-      if not closed then while token lexbuf <> Endtag tag do () done; true
-  | Endtag "widget" ->
+      if not closed then skip_to_endtag lexbuf ; true
+  | Endtag "object" ->
       false
   | Chars _ ->
       true
@@ -256,9 +268,7 @@ let output_widget w =
   
     if !debug then 
       printf "      prerr_endline \"creating %s:%s\";\n" w.wclass w.wcamlname;
-    printf "      new %s (%s.cast\n" clas modul;
-    printf "        (%s ~name:\"%s\" ~info:\"%s\" xmldata))\n"
-      "Glade.get_widget_msg" w.wname w.wclass;
+    printf "      new %s (builder#get_object \"%s\")\n" clas w.wname;
     printf "    method %s = %s\n" w.wcamlname w.wcamlname
   with Not_found -> 
     warning (sprintf "Widget %s::%s is not supported" w.wname w.wclass)
@@ -270,19 +280,9 @@ let trace = ref false
 let output_classes = ref []
 let check_all = ref false
 
-let output_wrapper ~file wtree =
-  printf "class %s %s?domain ?autoconnect(*=true*) () =\n"
-    wtree.wcamlname
-    (if !embed then "" else
-    if file = "<stdin>" then "~file " else "?(file=\"" ^ file ^ "\") ");
+let output_wrapper ~file wtree = printf "class %s =\n" wtree.wcamlname ;
   output_classes := wtree.wcamlname :: !output_classes;
-  printf "  let xmldata = Glade.create %s ~root:\"%s\" ?domain () in\n" 
-    (if !embed then "~data " else "~file ")
-    wtree.wname;
-  print_string "  object (self)\n";
-  printf
-    "    inherit Glade.xml %s?autoconnect xmldata\n"
-    (if !trace then "~trace:stderr " else "");
+  print_string "  object\n";
   let widgets = {wtree with wcamlname= "toplevel"} :: flatten_tree wtree in
   
   let is_hidden w = 
@@ -303,13 +303,6 @@ let output_wrapper ~file wtree =
       printf "      toplevel#destroy ()\n";
   | _ -> ()
   end;
-  
-  printf "    method check_widgets () = ()\n";
-  (* useless, since they are already built anyway
-  List.iter widgets ~f:
-    (fun w ->
-      if w.wrapped then printf "      ignore self#%s;\n" w.wcamlname);
-  *)
   printf "  end\n"
 
 let output_check_all () =
@@ -325,12 +318,9 @@ let output_check_all () =
  
 let parse_body ~file lexbuf =
   while match token lexbuf with
-    Tag("project", _, closed) ->
-      if not closed then while token lexbuf <> Endtag "project" do () done;
-      true
-  | Tag("widget", attrs, false) ->
+  | Tag("object", attrs, closed) ->
       let wtree = 
-	parse_widget ~wclass:(List.assoc "class" attrs)
+	parse_widget ~closed ~wclass:(List.assoc "class" attrs)
 	  ~internal:(Stack.create ())
 	  ~wname:(List.assoc "id" attrs) lexbuf 
       in
@@ -342,10 +332,10 @@ let parse_body ~file lexbuf =
       else output_roots wtree;
       true
   | Tag(tag, _, closed) ->
-      if not closed then while token lexbuf <> Endtag tag do () done; true
+      if not closed then skip_to_endtag lexbuf ; true
   | Chars _ -> true
-  | Endtag "glade-interface" -> false
-  | Endtag _ -> failwith "bad XML syntax"
+  | Endtag "interface" -> false
+  | Endtag et -> failwith ("bad XML syntax" ^ et)
   | EOF -> false
   do () done
 
@@ -368,6 +358,7 @@ let process ?(file="<stdin>") chan =
     parse_header lexbuf;
     printf "(* Automatically generated from %s by lablgladecc *)\n\n"
       file;
+    printf "let builder = GBuilder.builder_new_from_file \"%s\";;\n\n" file;
     if !embed then printf "let data = \"%s\"\n\n" (String.escaped data);
     parse_body ~file lexbuf;
     if !check_all then output_check_all ()
