@@ -10,17 +10,20 @@
 
 open StdLabels
 
-let file_dialog ~title ~callback ?filename () =
-  let sel =
-    GWindow.file_selection ~title ~modal:true ?filename () in
-  sel#cancel_button#connect#clicked ~callback:sel#destroy;
-  sel#ok_button#connect#clicked ~callback:
-    begin fun () ->
-      let name = sel#filename in
-      sel#destroy ();
-      callback name
-    end;
-  sel#show ()
+type action = [`OPEN|`SAVE|`DELETE_EVENT|`CANCEL]
+
+let file_dialog ~(action:[`OPEN|`SAVE]) ~callback ?filename () =
+  let dialog =
+    GWindow.file_chooser_dialog ~action:(action :> GtkEnums.file_chooser_action)
+      ~modal:true ?filename () in
+  dialog#add_button_stock `CANCEL `CANCEL ;
+  dialog#add_select_button_stock (action :> GtkStock.id) (action :> action)  ;
+  begin match dialog#run () with
+  | `OPEN | `SAVE ->
+      begin match dialog#filename with None -> () | Some s -> callback s end
+  | `DELETE_EVENT | `CANCEL -> ()
+  end ;
+  dialog#destroy ()
 
 let input_channel b ic =
   let buf = Bytes.create 1024 and len = ref 0 in
@@ -50,10 +53,10 @@ class editor ?packing ?show () = object (self)
       n_buff#place_cursor n_buff#start_iter
     with _ -> prerr_endline "Load failed"
 
-  method open_file () = file_dialog ~title:"Open" ~callback:self#load_file ()
+  method open_file () = file_dialog ~action:`OPEN ~callback:self#load_file ()
 
   method save_dialog () =
-    file_dialog ~title:"Save" ?filename
+    file_dialog ~action:`SAVE ?filename
       ~callback:(fun file -> self#output ~file) ()
 
   method save_file () =
@@ -97,7 +100,7 @@ let _ =
   factory#add_item "Open" ~key:_O ~callback:editor#open_file;
   factory#add_item "Save" ~key:_S ~callback:editor#save_file;
   factory#add_item "Save as..." ~callback:editor#save_dialog;
-  factory#add_separator ();
+  (*factory#add_separator ();*)
   factory#add_item "Quit" ~key:_Q ~callback:window#destroy;
   let factory = new GMenu.factory ~accel_path:"<EDITOR2 File>///" edit_menu ~accel_group in
   factory#add_item "Copy" ~key:_C ~callback:
@@ -108,7 +111,7 @@ let _ =
   factory#add_item "Paste" ~key:_V ~callback:
     (fun () -> GtkSignal.emit_unit
         editor#text#as_view GtkText.View.S.paste_clipboard);
-  factory#add_separator ();
+  (*factory#add_separator ();*)
   factory#add_check_item "Word wrap" ~active:false ~callback:
     (fun b -> editor#text#set_wrap_mode (if b then `WORD else `NONE));
   factory#add_check_item "Read only" ~active:false
