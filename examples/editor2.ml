@@ -100,7 +100,7 @@ let _ =
   factory#add_item "Open" ~key:_O ~callback:editor#open_file;
   factory#add_item "Save" ~key:_S ~callback:editor#save_file;
   factory#add_item "Save as..." ~callback:editor#save_dialog;
-  (*factory#add_separator ();*)
+  factory#add_separator ();
   factory#add_item "Quit" ~key:_Q ~callback:window#destroy;
   let factory = new GMenu.factory ~accel_path:"<EDITOR2 File>///" edit_menu ~accel_group in
   factory#add_item "Copy" ~key:_C ~callback:
@@ -111,7 +111,7 @@ let _ =
   factory#add_item "Paste" ~key:_V ~callback:
     (fun () -> GtkSignal.emit_unit
         editor#text#as_view GtkText.View.S.paste_clipboard);
-  (*factory#add_separator ();*)
+  factory#add_separator ();
   factory#add_check_item "Word wrap" ~active:false ~callback:
     (fun b -> editor#text#set_wrap_mode (if b then `WORD else `NONE));
   factory#add_check_item "Read only" ~active:false

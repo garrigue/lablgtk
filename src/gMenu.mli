@@ -109,6 +109,10 @@ val menu_item :
   ?label:string ->
   ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
 
+(** @gtkdoc gtk GtkSeparatorMenuItem *)
+val separator_item :
+  ?packing:(menu_item -> unit) -> ?show:bool -> unit -> menu_item
+
 (** @gtkdoc gtk GtkCheckMenuItem *)
 class check_menu_item_signals : [> check_menu_item] obj ->
   object
@@ -206,6 +210,7 @@ class ['a] factory :
       ?active:bool ->
       ?key:Gdk.keysym ->
       ?callback:(bool -> unit) -> string -> radio_menu_item
+    method add_separator : unit -> menu_item
     method add_submenu : ?key:Gdk.keysym -> string -> menu
     method private bind :
       ?modi:Gdk.Tags.modifier list -> 

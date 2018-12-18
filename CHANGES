@@ -1,5 +1,9 @@
 LablGTK changes log
 
+2018.12.19 [Jacques]
+  * Resurect GMenu.separator_item
+  * fix examples eventbox.ml, events.ml, editor2.ml
+
 In Lablgtk-3.0.beta2:
 
 2018.12.14 [Jacques]

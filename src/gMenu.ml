@@ -93,6 +93,10 @@ let menu_item ?use_mnemonic ?label ?packing ?show () =
   let w = MenuItem.create ?use_mnemonic ?label () in
   pack_item (new menu_item w) ?packing ?show
 
+let separator_item ?packing ?show () =
+  let w = MenuItem.separator_create () in
+  pack_item (new menu_item w) ?packing ?show
+
 class check_menu_item_signals obj = object (self)
   inherit menu_item_signals obj
   method toggled = self#connect CheckMenuItem.S.toggled
@@ -197,6 +201,7 @@ class ['a] factory
       self#bind (item : radio_menu_item :> menu_item) label ?key
 	?callback:(may_map callback ~f:(fun f () -> f item#active));
       item
+    method add_separator () = separator_item ~packing:menu_shell#append ()
     method add_submenu ?key label =
       let item = menu_item ~use_mnemonic:true ~label () in
       self#bind item ?key label;
