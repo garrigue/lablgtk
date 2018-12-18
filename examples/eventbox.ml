@@ -45,6 +45,15 @@ let string_of_event x =
   | `SCROLL -> "scroll"
   | `WINDOW_STATE -> "window-state"
   | `SETTING -> "setting"
+  | `OWNER_CHANGE -> "owner-change"
+  | `GRAB_BROKEN -> "grab-broken"
+  | `DAMAGE -> "damage"
+  | `TOUCH_BEGIN -> "touch-begin"
+  | `TOUCH_UPDATE -> "touch-update"
+  | `TOUCH_END -> "touch-end"
+  | `TOUCH_CANCEL -> "touch-cancel"
+  | `TOUCHPAD_SWIPE -> "touchpad-swipe"
+  | `TOUCHPAD_PINCH -> "touchpad-pinch"
 
 let _ =
   let w = GWindow.window ~width:200 ~height:200 () in
