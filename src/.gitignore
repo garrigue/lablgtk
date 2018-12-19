@@ -5,10 +5,10 @@
 .depend
 build.ml
 check_externals
-gdk_pixbuf_mlsource
+gdk_pixbuf_mlsource3
 propcc
 varcc
-lablgtk2
+lablgtk3
 lablgtktop
 lablgtktop_t
 lablgtkrun
