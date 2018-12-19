@@ -57,17 +57,14 @@ let classes = ref [
   "GtkEditable", ("GtkEdit.Editable", "GEdit.editable");
   "GtkEntry", ("GtkEdit.Entry", "GEdit.entry");
   "GtkSpinButton", ("GtkEdit.SpinButton", "GEdit.spin_button");
-  "GtkCombo", ("GtkEdit.Combo", "GEdit.combo");
-  "GtkListItem", ("GtkList.ListItem", "GList.list_item");
+  (*"GtkListItem", ("GtkList.ListItem", "GList.list_item");
   "GtkList", ("GtkList.Liste", "GList.liste");
-  "GtkCList", ("GtkList.CList", "GList.clist");
+  "GtkCList", ("GtkList.CList", "GList.clist");*)
   "GtkMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
   "GtkSeparatorMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
   "GtkTearoffMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
   "GtkCheckMenuItem", ("GtkMenu.CheckMenuItem", "GMenu.check_menu_item");
   "GtkRadioMenuItem", ("GtkMenu.RadioMenuItem", "GMenu.radio_menu_item");
-  "GtkImageMenuItem", ("GtkMenu.ImageMenuItem", "GMenu.image_menu_item");
-  "GtkOptionMenu", ("GtkMenu.OptionMenu", "GMenu.option_menu");
   "GtkMenuShell", ("GtkMenu.MenuShell", "GMenu.menu_shell");
   "GtkMenu", ("GtkMenu.Menu", "GMenu.menu");
   "GtkMenuBar", ("GtkMenu.MenuBar", "GMenu.menu_shell");
@@ -80,7 +77,6 @@ let classes = ref [
   "GtkArrow", ("GtkMisc.Arrow", "GMisc.arrow");
   "GtkImage", ("GtkMisc.Image", "GMisc.image");
   "GtkLabel", ("GtkMisc.Label", "GMisc.label");
-  "GtkTipsQuery", ("GtkMisc.TipsQuery", "GMisc.tips_query");
   "GtkPixmap", ("GtkMisc.Image", "GMisc.image");
   "GtkSeparator", ("GtkMisc.Separator", "GObj.widget_full");
   "GtkHSeparator", ("GtkMisc.Separator", "GObj.widget_full");
@@ -95,13 +91,11 @@ let classes = ref [
   "GtkButtonBox", ("GtkPack.BBox", "GPack.button_box");
   "GtkFixed", ("GtkPack.Fixed", "GPack.fixed");
   "GtkLayout", ("GtkPack.Layout", "GPack.layout");
-(*  "GtkPacker", ("GtkPack.Packer", "GPack.packer"); *)
   "GtkHPaned", ("GtkPack.Paned", "GPack.paned");
   "GtkVPaned", ("GtkPack.Paned", "GPack.paned");
   "GtkTable", ("GtkPack.Table", "GPack.table");
   "GtkGrid", ("GtkPack.Grid", "GPack.grid");
   "GtkNotebook", ("GtkPack.Notebook", "GPack.notebook");
-(*   "GtkProgress", ("GtkRange.Progress", "GRange.progress"); *)
   "GtkProgressBar", ("GtkRange.ProgressBar", "GRange.progress_bar");
   "GtkRange", ("GtkRange.Range", "GRange.range");
   "GtkScale", ("GtkRange.Scale", "GRange.scale");
@@ -110,28 +104,15 @@ let classes = ref [
   "GtkScrollbar", ("GtkRange.Scrollbar", "GRange.range");
   "GtkHScrollbar", ("GtkRange.Scrollbar", "GRange.range");
   "GtkVScrollbar", ("GtkRange.Scrollbar", "GRange.range");
-  "GtkRuler", ("GtkRange.Ruler", "GRange.ruler");
-  "GtkHRuler", ("GtkRange.Ruler", "GRange.ruler");
-  "GtkVRuler", ("GtkRange.Ruler", "GRange.ruler");
-(*   "GtkTextMark", ("GtkText.Mark", "GText.mark"); *)
   "GtkTextTag", ("GtkText.Tag", "GText.tag");
-(*   "GtkTextTagTable", ("GtkText.TagTable", "GText.tag_table");*)
   "GtkTextBuffer", ("GtkText.Buffer", "GText.buffer");
-(*   "GtkTextChildAnchor", ("GtkText.ChildAnchor", "GText.child_anchor");*)
   "GtkTextView", ("GtkText.View", "GText.view");
-  "GtkTreeItem", ("GtkTree.TreeItem", "GTree.tree_item");
   "GtkTreeView", ("GtkTree.TreeView", "GTree.view");
-  "GtkTree", ("GtkTree.Tree", "GTree.tree");
   "GtkCTree", ("GtkBase.Container", "GContainer.container");
   "GtkWindow", ("GtkWindow.Window", "GWindow.window");
   "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog_any");
-  "GtkMessageDialog", ("GtWindow.MessageDialog", "GWindow.message_dialog");
   "GtkAboutDialog", ("GtkWindow.AboutDialog", "GWindow.about_dialog");
   "GtkInputDialog", ("GtkWindow.Dialog", "GWindow.dialog");
-  "GtkFileSelection", ("GtkWindow.FileSelection", "GWindow.file_selection");
-  "GtkFontSelectionDialog", ("GtkWindow.FontSelectionDialog",
-                             "GWindow.font_selection_dialog");
-  "GtkColorSelectionDialog", ("GtkWindow.ColorSelectionDialog", "GWindow.color_selection_dialog");
   "GtkPlug", ("GtkWindow.Plug", "GWindow.plug");
   "GtkFileChooserButton", ("GtkFile.FileChooserButton", "GFile.chooser_button");
   "GtkColorButton", ("GtkButton.ColorButton", "GButton.color_button");
@@ -260,8 +241,10 @@ let output_widget w =
     w.wrapped <- true;
     
     begin match clas with
-    | "GList.clist" ->
-  	printf "    val %s : int %s =\n" w.wcamlname clas
+    (*| "GList.clist" ->
+  	printf "    val %s : int %s =\n" w.wcamlname clas*)
+    | "GWindow.dialog" ->
+  	printf "    val %s : [`DELETE_EVENT] %s =\n" w.wcamlname clas
     | _ ->
         printf "    val %s =\n" w.wcamlname
     end;
@@ -370,7 +353,8 @@ let process ?(file="<stdin>") chan =
 
 let output_test () =
   print_string "(* Test class definitions *)\n\n";
-  print_string "class test xmldata =\n  object\n";
+  print_string "let builder = GBuilder.builder_new ();;\n\n";
+  print_string "class test () =\n  object\n";
   List.iter !classes ~f:
     begin fun (clas, _) ->
       output_widget
