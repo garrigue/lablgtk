@@ -35,12 +35,16 @@ class builder :
     method translation_domain : string
     method set_translation_domain : string -> unit
 
+    method add_from_file : string -> unit
     method get_object : 'a. string -> 'a obj
   end
 
 (** Build an interface from an XML UI definition.
     @gtkdoc gtk GtkBuilder
     @since GTK 3.10 *)
-val builder_new_from_file :
-  ?translation_domain:string ->
-  string -> builder
+val builder_new : ?translation_domain:string -> unit -> builder
+
+(** Build an interface from an XML UI definition.
+    @gtkdoc gtk GtkBuilder
+    @since GTK 3.10 *)
+val builder_new_from_file : ?translation_domain:string -> string -> builder

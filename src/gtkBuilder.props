@@ -4,5 +4,6 @@ prefix "Gtk"
 
 class Builder set wrap wrapsig : Object {
   "translation-domain"   string           : Read / Write
+  method add_from_file : "string -> unit"
   method get_object : "string -> 'a obj"
 }

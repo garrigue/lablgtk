@@ -52,5 +52,14 @@ CAMLprim value ml_gtkbuilder_init(value unit)
 //#define GtkBuilder_val(val) ((GtkBuilder*)Pointer_val(val))
 #define Val_GtkBuilder(val) Val_GObject((GObject*)val)
 
+ML_0 (gtk_builder_new, Val_GtkBuilder)
 ML_1 (gtk_builder_new_from_file, String_val, Val_GtkBuilder)
 ML_2 (gtk_builder_get_object, GtkBuilder_val, String_val, Val_GObject)
+
+CAMLprim value ml_gtk_builder_add_from_file(value w, value f)
+{
+  GError *err = NULL;
+  gtk_builder_add_from_file(GtkBuilder_val(w), String_val(f), &err);
+  if (err) ml_raise_gerror(err);
+  return Val_unit;
+}
