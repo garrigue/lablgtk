@@ -36,6 +36,7 @@ class builder :
     method set_translation_domain : string -> unit
 
     method add_from_file : string -> unit
+    method add_objects_from_file : string -> string list -> unit
     method get_object : 'a. string -> 'a obj
   end
 

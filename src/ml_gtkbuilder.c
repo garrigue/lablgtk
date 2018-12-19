@@ -63,3 +63,13 @@ CAMLprim value ml_gtk_builder_add_from_file(value w, value f)
   if (err) ml_raise_gerror(err);
   return Val_unit;
 }
+
+CAMLprim value ml_gtk_builder_add_objects_from_file(value w, value f, value l)
+{
+  GError *err = NULL;
+  gchar **s_l = strv_of_string_list (l);
+  gtk_builder_add_objects_from_file(GtkBuilder_val(w), String_val(f), (gchar **) s_l, &err);
+  g_strfreev (s_l);
+  if (err) ml_raise_gerror(err);
+  return Val_unit;
+}
