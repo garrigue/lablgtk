@@ -280,8 +280,10 @@ let trace = ref false
 let output_classes = ref []
 let check_all = ref false
 
-let output_wrapper ~file wtree = printf "class %s =\n" wtree.wcamlname ;
+let output_wrapper ~file wtree = printf "class %s () =\n" wtree.wcamlname ;
   output_classes := wtree.wcamlname :: !output_classes;
+  printf " let _ = builder#add_objects_from_file \"%s\" [\"%s\"] in\n"
+   file wtree.wname;
   print_string "  object\n";
   let widgets = {wtree with wcamlname= "toplevel"} :: flatten_tree wtree in
   
@@ -358,7 +360,7 @@ let process ?(file="<stdin>") chan =
     parse_header lexbuf;
     printf "(* Automatically generated from %s by lablgladecc *)\n\n"
       file;
-    printf "let builder = GBuilder.builder_new_from_file \"%s\";;\n\n" file;
+    printf "let builder = GBuilder.builder_new ();;\n\n";
     if !embed then printf "let data = \"%s\"\n\n" (String.escaped data);
     parse_body ~file lexbuf;
     if !check_all then output_check_all ()
