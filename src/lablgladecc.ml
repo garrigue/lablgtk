@@ -250,21 +250,26 @@ let is_top_widget wtree w =
 
 let rec skip_to_endtag lexbuf =
  match token lexbuf with
+  | Tag("object",_,_) ->
+     (* CSC: if this can happen, then the code logic (coming from
+        lablgtk2 code) needs to be rewritten completely. *)
+     assert false
   | Tag(t,_,true) -> skip_to_endtag lexbuf
   | Tag(t,_,false) -> skip_to_endtag lexbuf ; skip_to_endtag lexbuf
   | Chars _ -> skip_to_endtag lexbuf
   | Endtag t -> ()
   | EOF -> assert false
 
+let assoc_opt x l = try Some (List.assoc x l) with Not_found -> None
+
 let rec parse_widget ~closed ~wclass ~wname ~internal lexbuf =
   let widgets = ref [] in
   while (not closed) && match token lexbuf with
   | Tag ("object", attrs, closed) ->
-     (try
-       widgets := parse_widget ~closed ~wclass:(List.assoc "class" attrs) ~internal
-	  ~wname:(List.assoc "id" attrs) lexbuf :: !widgets;
-      with Not_found -> (* id can be missing *) if not closed then skip_to_endtag lexbuf) ;
-      true
+     widgets := parse_widget ~closed ~wclass:(assoc_opt "class" attrs)
+                 ~internal ~wname:(assoc_opt "id" attrs) lexbuf
+               @ !widgets;
+     true
   | Tag ("child",attrs,true) -> assert false
   | Tag ("child",attrs,false) ->
       let is_internal =
@@ -282,8 +287,12 @@ let rec parse_widget ~closed ~wclass ~wname ~internal lexbuf =
       failwith "bad XML syntax"
   do () done;
   let internal = try Stack.top internal with _ -> false in
-  { wclass = wclass; wname = wname; wcamlname = camlize wname;
-    winternal = internal; wchildren = List.rev !widgets; wrapped = false }
+  match wclass,wname with
+     Some wclass, Some wname ->
+      [{ wclass = wclass; wname = wname; wcamlname = camlize wname;
+         winternal = internal; wchildren = List.rev !widgets;
+         wrapped = false }]
+   | _,_ -> []
 
 let rec flatten_tree w =
   let children = List.map ~f:flatten_tree w.wchildren in
@@ -351,24 +360,25 @@ let output_wrapper ~file wtree =
 let parse_body ~file lexbuf =
   while match token lexbuf with
   | Tag("object", attrs, closed) ->
-      let wtree = 
-	parse_widget ~closed ~wclass:(List.assoc "class" attrs)
+     (match
+	parse_widget ~closed ~wclass:(assoc_opt "class" attrs)
 	  ~internal:(Stack.create ())
-	  ~wname:(List.assoc "id" attrs) lexbuf 
-      in
-      let rec output_roots wtree =
-        if List.mem wtree.wname ~set:!roots then output_wrapper ~file wtree;
-        List.iter ~f:output_roots wtree.wchildren
-      in
-      if !roots = [] then output_wrapper ~file wtree
-      else output_roots wtree;
+	  ~wname:(assoc_opt "id" attrs) lexbuf 
+      with
+       | _::_::_ -> assert false
+       | [] -> ()
+       | [wtree] ->
+          let rec output_roots wtree =
+           if List.mem wtree.wname ~set:!roots then
+            output_wrapper ~file wtree;
+           List.iter ~f:output_roots wtree.wchildren
+          in
+          if !roots = [] then output_wrapper ~file wtree
+          else output_roots wtree) ;
       true
-  | Tag(tag, _, closed) ->
-      if not closed then skip_to_endtag lexbuf ; true
-  | Chars _ -> true
+  | Tag(tag, _, true) -> true
   | Endtag "interface" -> false
-  | Endtag et -> failwith ("bad XML syntax" ^ et)
-  | EOF -> false
+  | Tag(_, _, false) | Chars _ | EOF | Endtag _ -> failwith "bad XML syntax"
   do () done
 
 let process ?(file="<stdin>") chan =
