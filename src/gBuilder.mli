@@ -36,7 +36,9 @@ class builder :
     method set_translation_domain : string -> unit
 
     method add_from_file : string -> unit
+    method add_from_string : string -> unit
     method add_objects_from_file : string -> string list -> unit
+    method add_objects_from_string : string -> string list -> unit
     method get_object : string -> unit obj
   end
 
@@ -49,3 +51,8 @@ val builder_new : ?translation_domain:string -> unit -> builder
     @gtkdoc gtk GtkBuilder
     @since GTK 3.10 *)
 val builder_new_from_file : ?translation_domain:string -> string -> builder
+
+(** Build an interface from an XML UI definition.
+    @gtkdoc gtk GtkBuilder
+    @since GTK 3.10 *)
+val builder_new_from_string : ?translation_domain:string -> string -> builder

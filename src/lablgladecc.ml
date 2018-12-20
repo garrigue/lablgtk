@@ -319,8 +319,12 @@ let output_wrapper ~file wtree =
   printf "class %s ?translation_domain () =\n" wtree.wcamlname ;
   output_classes := wtree.wcamlname :: !output_classes;
   printf " let builder = GBuilder.builder_new ?translation_domain () in\n";
-  printf " let _ = builder#add_objects_from_file \"%s\" [\"%s\"] in\n"
-   file wtree.wname;
+  if !embed then
+   printf " let _ = builder#add_objects_from_string data [\"%s\"] in\n"
+    wtree.wname
+  else
+   printf " let _ = builder#add_objects_from_file \"%s\" [\"%s\"] in\n"
+    file wtree.wname ;
   print_string "  object\n";
   let widgets = {wtree with wcamlname= "toplevel"} :: flatten_tree wtree in
   
