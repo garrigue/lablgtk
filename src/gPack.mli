@@ -53,6 +53,17 @@ class box_skel : ([> box] as 'a) obj ->
 
 (** A base class for box containers
    @gtkdoc gtk GtkBox *)
+class size_group : ([> `sizegroup ] as 'a) Gtk.obj ->
+  object
+    val obj : 'a obj
+    method get_oid : int
+    method add_widget : #widget -> unit
+    method remove_widget : #widget -> unit
+  end
+
+
+(** A base class for box containers
+   @gtkdoc gtk GtkBox *)
 class box : ([> Gtk.box] as 'a) obj ->
   object
     inherit box_skel

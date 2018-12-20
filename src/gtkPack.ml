@@ -48,6 +48,11 @@ module Layout = Layout
 
 module Paned = Paned
 
+module SizeGroup = struct
+  include SizeGroup
+  external new_ : unit -> size_group = "ml_gtk_size_group_new"
+end
+
 module Table = struct
   include Table
   let has_x : expand_type -> bool =
@@ -74,5 +79,3 @@ module Grid = struct
 end
 
 module Notebook = Notebook
-
-module SizeGroup = SizeGroup

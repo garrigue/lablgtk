@@ -203,5 +203,7 @@ ML_2 (gtk_grid_set_column_spacing, GtkGrid_val, Int_val, Unit)
 
 /* gtksizegroup.h */
 #define GtkSizeGroup_val(val) check_cast(GTK_SIZE_GROUP,val)
+#define Val_GtkSizeGroup(val) Val_GObject((GObject*)val)
+ML_1 (gtk_size_group_new, Size_group_mode_val, Val_GtkSizeGroup)
 ML_2 (gtk_size_group_add_widget, GtkSizeGroup_val, GtkWidget_val, Unit)
 ML_2 (gtk_size_group_remove_widget, GtkSizeGroup_val, GtkWidget_val, Unit)
