@@ -313,9 +313,7 @@ let output_widget w =
 
 let roots = ref []
 let embed = ref false
-let trace = ref false
 let output_classes = ref []
-let check_all = ref false
 
 let output_wrapper ~file wtree = printf "class %s () =\n" wtree.wcamlname ;
   output_classes := wtree.wcamlname :: !output_classes;
@@ -344,17 +342,6 @@ let output_wrapper ~file wtree = printf "class %s () =\n" wtree.wcamlname ;
   end;
   printf "  end\n"
 
-let output_check_all () =
-  printf "\nlet check_all ?(show=false) () =\n";
-  printf "  ignore (GMain.Main.init ());\n";
-  List.iter (fun cl ->   
-    printf "  let %s = new %s () in\n" cl cl;
-    printf "  if show then %s#toplevel#misc#show_all ();\n" cl;
-    printf "  %s#check_widgets ();\n" cl) !output_classes;
-  printf "  if show then GMain.Main.main ()\n";
-  printf ";;\n";
-;;
- 
 let parse_body ~file lexbuf =
   while match token lexbuf with
   | Tag("object", attrs, closed) ->
@@ -400,7 +387,6 @@ let process ?(file="<stdin>") chan =
     printf "let builder = GBuilder.builder_new ();;\n\n";
     if !embed then printf "let data = \"%s\"\n\n" (String.escaped data);
     parse_body ~file lexbuf;
-    if !check_all then output_check_all ()
   with Failure s ->
     eprintf "lablgladecc: in %s, before char %d, %s\n"
       file (Lexing.lexeme_start lexbuf) s
@@ -423,13 +409,11 @@ let main () =
   Arg.parse
     [ "-test", Arg.Set test, " check lablgladecc (takes no input)";
       "-embed", Arg.Set embed, " embed input file into generated program";
-      "-trace", Arg.Set trace, " trace calls to handlers";
       "-debug", Arg.Set debug, " add debug code";
       "-root", Arg.String (fun s -> roots := s :: !roots),
       "<widget>  generate only a wrapper for <widget> and its children";
       "-hide-default", Arg.Set hide_default_names, 
         " hide widgets with default names like 'label23'";
-      "-check-all", Arg.Set check_all, " create check_all function";
     ]
     (fun s -> files := s :: !files)
     "lablgladecc2 [<options>] [<file.glade>]";
