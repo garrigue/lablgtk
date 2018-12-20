@@ -315,8 +315,10 @@ let roots = ref []
 let embed = ref false
 let output_classes = ref []
 
-let output_wrapper ~file wtree = printf "class %s () =\n" wtree.wcamlname ;
+let output_wrapper ~file wtree =
+  printf "class %s ?translation_domain () =\n" wtree.wcamlname ;
   output_classes := wtree.wcamlname :: !output_classes;
+  printf " let builder = GBuilder.builder_new ?translation_domain () in\n";
   printf " let _ = builder#add_objects_from_file \"%s\" [\"%s\"] in\n"
    file wtree.wname;
   print_string "  object\n";
@@ -384,7 +386,6 @@ let process ?(file="<stdin>") chan =
     parse_header lexbuf;
     printf "(* Automatically generated from %s by lablgladecc *)\n\n"
       file;
-    printf "let builder = GBuilder.builder_new ();;\n\n";
     if !embed then printf "let data = \"%s\"\n\n" (String.escaped data);
     parse_body ~file lexbuf;
   with Failure s ->
