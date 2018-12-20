@@ -32,7 +32,7 @@ class builder (obj : [> Gtk.builder] obj) = object
 
   method add_from_file : string -> unit = Builder.add_from_file obj
   method add_objects_from_file : string -> string list -> unit = Builder.add_objects_from_file obj
-  method get_object : 'a. string -> 'a obj = Builder.get_object obj
+  method get_object : string -> unit obj = Builder.get_object obj
 end
 
 let builder_new ?translation_domain () =

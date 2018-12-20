@@ -251,7 +251,7 @@ let output_widget w =
   
     if !debug then 
       printf "      prerr_endline \"creating %s:%s\";\n" w.wclass w.wcamlname;
-    printf "      new %s (builder#get_object \"%s\")\n" clas w.wname;
+    printf "      new %s (%s.cast (builder#get_object \"%s\"))\n" clas modul w.wname;
     printf "    method %s = %s\n" w.wcamlname w.wcamlname
   with Not_found -> 
     warning (sprintf "Widget %s::%s is not supported" w.wname w.wclass)

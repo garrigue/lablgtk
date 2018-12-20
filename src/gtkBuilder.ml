@@ -28,6 +28,7 @@ external _gtkbuilder_init : unit -> unit = "ml_gtkbuilder_init"
 let () = _gtkbuilder_init ()
 
 module Builder = struct
+  include GtkBuilderProps.Builder
   external new_ : unit -> builder obj = "ml_gtk_builder_new"
   external new_from_file : string -> builder obj = "ml_gtk_builder_new_from_file"
 end
