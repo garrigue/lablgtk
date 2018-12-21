@@ -41,7 +41,7 @@ How to compile:
 
   Type
         ./configure && make world
-  to compile with all supported options enabled (libgl, libglade,
+  to compile with all supported options enabled (libgl,
   libgnomecanvas, librsvg, native compilation, thread support).
 
   You may use "./configure --help" to check for the different
@@ -58,7 +58,7 @@ How to compile:
         --enable-debug: enable debug mode
 
   Type "make install" to install using findlib.
-  The commands lablgtk2, gdk_pixbuf_mlsource, and lablgladecc2,
+  The commands lablgtk2, gdk_pixbuf_mlsource, and lablgladecc3,
   are copied directly to the configured executable directory.
 
   The following findlib packages are provided (according to configuration):
@@ -274,7 +274,7 @@ Memory management:
   it, you may use compaction through Gc.compact where it is safe
   (timeouts, other threads...), but do not enable automatic compaction.
 
-LibGlade support: not available in Gtk3
+LibGlade support: not available in Gtk3 (replaced by GtkBuilder)
 GL extension: not available in Gtk3
 SVG support: not available in Gtk3
 GnomeCanvas support: not available in Gtk3
@@ -332,6 +332,7 @@ Authors:
         Maxence Guesdon  <maxence.guesdon@inria.fr>
         Stefano Zacchiroli  <zack@cs.unibo.it>
         Hugo Herbelin    <Hugo.Herbelin@inria.fr>
+        Claudio Sacerdoti Coen <claudio.sacerdoticoen@inria.fr>
   For lablgtk1:
         Hubert Fauque  <hubert.fauque@wanadoo.fr>
         Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>

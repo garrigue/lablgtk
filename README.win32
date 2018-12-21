@@ -2,7 +2,7 @@
 
 Binary installation
 
- The binary distribution includes the lablglade, lablrsvg, and
+ The binary distribution includes the lablrsvg, and
  lablgnomecanvas libraries.
 
 0) Both MSVC and mingw versions of ocaml 3.11 should work.
@@ -15,11 +15,10 @@ Binary installation
      ftp://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/
    (mirrors list at: ftp://ftp.gnome.org/pub/gnome/MIRRORS)
    Just follow the instructions in the README file inside the package.
-   If you want to use the extension libraries (currently lablglade,
+   If you want to use the extension libraries (currently
    lablrsvg and lablgnomecanvas are supported), you must also install
    the (numerous) dependencies. Here is what was used during
    compilation:
-    libglade-2.6.4 (requires libxml2)
     libgnomecanvas-2.30.1 (requires libart_lgpl)
     librsvg-2.32.1 (requires libcroco and libgsf)
     gtksourceview-2.10
