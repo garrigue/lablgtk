@@ -45,14 +45,14 @@ class builder :
 (** Build an interface from an XML UI definition.
     @gtkdoc gtk GtkBuilder
     @since GTK 3.10 *)
-val builder_new : ?translation_domain:string -> unit -> builder
+val builder : ?translation_domain:string -> unit -> builder
 
 (** Build an interface from an XML UI definition.
     @gtkdoc gtk GtkBuilder
     @since GTK 3.10 *)
-val builder_new_from_file : ?translation_domain:string -> string -> builder
+val builder_from_file : ?translation_domain:string -> string -> builder
 
 (** Build an interface from an XML UI definition.
     @gtkdoc gtk GtkBuilder
     @since GTK 3.10 *)
-val builder_new_from_string : ?translation_domain:string -> string -> builder
+val builder_from_string : ?translation_domain:string -> string -> builder

@@ -37,14 +37,14 @@ class builder (obj : [> Gtk.builder] obj) = object
   method get_object : string -> unit obj = Builder.get_object obj
 end
 
-let builder_new ?translation_domain () =
+let builder ?translation_domain () =
   Builder.make_params ?translation_domain [] ~cont:(
-  fun _ -> new builder (GtkBuilder.Builder.new_ ()))
+  fun _ -> new builder (GtkBuilder.Builder.create ()))
 
-let builder_new_from_file ?translation_domain filename =
+let builder_from_file ?translation_domain filename =
   Builder.make_params ?translation_domain [] ~cont:(
-  fun _ -> new builder (GtkBuilder.Builder.new_from_file filename))
+  fun _ -> new builder (GtkBuilder.Builder.create_from_file filename))
 
-let builder_new_from_string ?translation_domain s =
+let builder_from_string ?translation_domain s =
   Builder.make_params ?translation_domain [] ~cont:(
-  fun _ -> new builder (GtkBuilder.Builder.new_from_string s))
+  fun _ -> new builder (GtkBuilder.Builder.create_from_string s))
