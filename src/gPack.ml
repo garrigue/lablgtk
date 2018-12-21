@@ -200,6 +200,16 @@ end
 let paned dir =
   pack_container [] ~create:(fun p -> new paned (Paned.create dir p))
 
+class size_group (obj : [> `sizegroup] obj) = object
+ inherit GObj.gtkobj obj
+ method add_widget : 'a. (#widget as 'a) -> _ = fun w -> SizeGroup.add_widget obj w#as_widget
+ method remove_widget : 'a. (#widget as 'a) -> _ = fun w -> SizeGroup.remove_widget obj w#as_widget
+end
+
+let size_group_new ?mode () =
+  GtkPack.SizeGroup.make_params ?mode [] ~cont:(
+  fun _ -> new size_group (GtkPack.SizeGroup.new_ ()))
+
 class notebook_signals obj = object (self)
   inherit container_signals_impl obj
   method switch_page ~callback = 

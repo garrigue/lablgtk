@@ -36,7 +36,6 @@
 #include "ml_gdk.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
-#include "ml_gtkbuilder.h"
 
 /* Init all */
 
@@ -52,5 +51,48 @@ CAMLprim value ml_gtkbuilder_init(value unit)
 //#define GtkBuilder_val(val) ((GtkBuilder*)Pointer_val(val))
 #define Val_GtkBuilder(val) Val_GObject((GObject*)val)
 
+ML_0 (gtk_builder_new, Val_GtkBuilder)
 ML_1 (gtk_builder_new_from_file, String_val, Val_GtkBuilder)
 ML_2 (gtk_builder_get_object, GtkBuilder_val, String_val, Val_GObject)
+
+CAMLprim value ml_gtk_builder_new_from_string(value s)
+{
+  GtkBuilder *res = gtk_builder_new_from_string(String_val(s),-1);
+  return Val_GtkBuilder(res);
+}
+
+CAMLprim value ml_gtk_builder_add_from_file(value w, value f)
+{
+  GError *err = NULL;
+  gtk_builder_add_from_file(GtkBuilder_val(w), String_val(f), &err);
+  if (err) ml_raise_gerror(err);
+  return Val_unit;
+}
+
+CAMLprim value ml_gtk_builder_add_from_string(value w, value s)
+{
+  GError *err = NULL;
+  gtk_builder_add_from_string(GtkBuilder_val(w), String_val(s), -1, &err);
+  if (err) ml_raise_gerror(err);
+  return Val_unit;
+}
+
+CAMLprim value ml_gtk_builder_add_objects_from_file(value w, value f, value l)
+{
+  GError *err = NULL;
+  gchar **s_l = strv_of_string_list (l);
+  gtk_builder_add_objects_from_file(GtkBuilder_val(w), String_val(f), (gchar **) s_l, &err);
+  g_strfreev (s_l);
+  if (err) ml_raise_gerror(err);
+  return Val_unit;
+}
+
+CAMLprim value ml_gtk_builder_add_objects_from_string(value w, value s, value l)
+{
+  GError *err = NULL;
+  gchar **s_l = strv_of_string_list (l);
+  gtk_builder_add_objects_from_string(GtkBuilder_val(w), String_val(s), -1, (gchar **) s_l, &err);
+  g_strfreev (s_l);
+  if (err) ml_raise_gerror(err);
+  return Val_unit;
+}

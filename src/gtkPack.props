@@ -129,7 +129,7 @@ class Grid set wrap : Container {
     "[>`widget] obj -> left:int -> top:int -> width:int -> height:int -> unit"
 }
 
-class SizeGroup : GObject {
+class SizeGroup set wrap : GObject {
   "mode"                 GtkSizeGroupMode     : Read / Write
   method add_widget : "[>`widget] obj -> unit"
   method remove_widget : "[>`widget] obj -> unit"

@@ -35,123 +35,159 @@ let warning s = prerr_string "Warning: "; prerr_endline s
 (* But you also need to do some post-editing. Do not forget H and V classes *)
 
 let classes = ref [
-  "GtkWidget", ("GtkBase.Widget", "GObj.widget_full");
-  "GtkContainer", ("GtkBase.Container", "GContainer.container");
-  "GtkBin", ("GtkBase.Container", "GContainer.container");
-  "GtkItem", ("GtkBase.Container", "GContainer.container");
-  "GtkAlignment", ("GtkBin.Alignment", "GBin.alignment");
-  "GtkEventBox", ("GtkBin.EventBox", "GBin.event_box");
-  "GtkFrame", ("GtkBin.Frame", "GBin.frame");
-  "GtkAspectFrame", ("GtkBin.AspectFrame", "GBin.aspect_frame");
-  "GtkHandleBox", ("GtkBin.HandleBox", "GBin.handle_box");
-  "GtkViewport", ("GtkBin.Viewport", "GBin.viewport");
-  "GtkScrolledWindow", ("GtkBin.ScrolledWindow", "GBin.scrolled_window");
-  "GtkSocket", ("GtkWindow.Socket", "GWindow.socket");
-  "GtkInvisible", ("GtkBase.Container", "GContainer.container");
-  "GtkButton", ("GtkButton.Button", "GButton.button");
-  "button", ("GtkButton.Button", "GButton.button");
-  "GtkToggleButton", ("GtkButton.ToggleButton", "GButton.toggle_button");
-  "GtkCheckButton", ("GtkButton.ToggleButton", "GButton.toggle_button");
-  "GtkRadioButton", ("GtkButton.RadioButton", "GButton.radio_button");
-  "GtkToolbar", ("GtkButton.Toolbar", "GButton.toolbar");
-  "GtkEditable", ("GtkEdit.Editable", "GEdit.editable");
-  "GtkEntry", ("GtkEdit.Entry", "GEdit.entry");
-  "GtkSpinButton", ("GtkEdit.SpinButton", "GEdit.spin_button");
-  "GtkCombo", ("GtkEdit.Combo", "GEdit.combo");
+  (* CSC: GLists no longer bound
   "GtkListItem", ("GtkList.ListItem", "GList.list_item");
   "GtkList", ("GtkList.Liste", "GList.liste");
-  "GtkCList", ("GtkList.CList", "GList.clist");
-  "GtkMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
-  "GtkSeparatorMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
-  "GtkTearoffMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
+  "GtkCList", ("GtkList.CList", "GList.clist");*)
+  (* CSC: I have no idea how to biind GWindow.message_dialog that has a
+     Construct Only ~buttons parameter
+  "GtkMessageDialog", ("GtkWindow.MessageDialog", "GWindow.message_dialog");*)
+  (* CSC: for some reason GtkComboBoxText functionality has been replicated
+     by hand instead of using the existent machinery
+  "GtkComboBoxText", ("GtkEdit.ComboBoxText", "GEdit.combo_box_text");*)
+(* CSC: GtkOrientable is not fully implemented
+  "GtkOrientable", ("", "");*)
+  "GtkAboutDialog", ("GtkWindow.AboutDialog", "GWindow.about_dialog");
+  "GtkAction", ("GtkActionProps.Action", "GAction.action");
+  "GtkActionGroup", ("GtkActionProps.ActionGroup", "GAction.action_group");
+  "GtkAdjustment", ("GtkBaseProps.Adjustment", "GData.adjustment");
+  "GtkAlignment", ("GtkBin.Alignment", "GBin.alignment");
+  "GtkArrow", ("GtkMisc.Arrow", "GMisc.arrow");
+  "GtkAspectFrame", ("GtkBin.AspectFrame", "GBin.aspect_frame");
+  "GtkAssistant", ("GtkAssistant.Assistant", "GAssistant.assistant");
+  "GtkBBox", ("GtkPack.BBox", "GPack.button_box");
+  "GtkBin", ("GtkBase.Container", "GContainer.container");
+  "GtkBox", ("GtkPack.Box", "GPack.box");
+  "GtkBuilder", ("GtkBuilder.Builder", "GBuilder.builder");
+  "GtkButton", ("GtkButton.Button", "GButton.button");
+  "GtkButtonBox", ("GtkPack.BBox", "GPack.button_box");
+  "GtkCTree", ("GtkBase.Container", "GContainer.container");
+  "GtkCalendar", ("GtkMisc.Calendar", "GMisc.calendar");
+  "GtkCellLayout", ("GtkTree.CellLayout", "GTree.cell_layout");
+  "GtkCellRendererAccel", ("GtkTree.CellRendererAccel", "GTree.cell_renderer_accel");
+  "GtkCellRendererCombo", ("GtkTree.CellRendererCombo", "GTree.cell_renderer_combo");
+  "GtkCellRendererPixbuf", ("GtkTree.CellRendererPixbuf", "GTree.cell_renderer_pixbuf");
+  "GtkCellRendererProgress", ("GtkTree.CellRendererProgress", "GTree.cell_renderer_progress");
+  "GtkCellRendererText", ("GtkTree.CellRendererText", "GTree.cell_renderer_text");
+  "GtkCellRendererToggle", ("GtkTree.CellRendererToggle", "GTree.cell_renderer_toggle");
+  "GtkCheckButton", ("GtkButton.ToggleButton", "GButton.toggle_button");
   "GtkCheckMenuItem", ("GtkMenu.CheckMenuItem", "GMenu.check_menu_item");
-  "GtkRadioMenuItem", ("GtkMenu.RadioMenuItem", "GMenu.radio_menu_item");
-  "GtkImageMenuItem", ("GtkMenu.ImageMenuItem", "GMenu.image_menu_item");
-  "GtkOptionMenu", ("GtkMenu.OptionMenu", "GMenu.option_menu");
-  "GtkMenuShell", ("GtkMenu.MenuShell", "GMenu.menu_shell");
+  "GtkColorButton", ("GtkButton.ColorButton", "GButton.color_button");
+  "GtkColorSelection", ("GtkMisc.ColorSelection", "GMisc.color_selection");
+  "GtkComboBox", ("GtkEdit.ComboBox", "GEdit.combo_box");
+  "GtkContainer", ("GtkBase.Container", "GContainer.container");
+  "GtkCurve", ("GtkMisc.DrawingArea", "GMisc.drawing_area");
+  "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog_any");
+  "GtkDrawingArea", ("GtkMisc.DrawingArea", "GMisc.drawing_area");
+  "GtkEditable", ("GtkEdit.Editable", "GEdit.editable");
+  "GtkEntry", ("GtkEdit.Entry", "GEdit.entry");
+  "GtkEntryCompletion", ("GtkEdit.EntryCompletion", "GEdit.entry_completion");
+  "GtkEventBox", ("GtkBin.EventBox", "GBin.event_box");
+  "GtkExpander", ("GtkBin.Expander", "GBin.expander");
+  "GtkFileChooserButton", ("GtkFile.FileChooserButton", "GFile.chooser_button");
+  "GtkFixed", ("GtkPack.Fixed", "GPack.fixed");
+  "GtkFontButton", ("GtkButton.FontButton", "GButton.font_button");
+  "GtkFontSelection", ("GtkMisc.FontSelection", "GMisc.font_selection");
+  "GtkFrame", ("GtkBin.Frame", "GBin.frame");
+  "GtkGrid", ("GtkPack.Grid", "GPack.grid");
+  "GtkHBox", ("GtkPack.Box", "GPack.box");
+  "GtkHButtonBox", ("GtkPack.BBox", "GPack.button_box");
+  "GtkHPaned", ("GtkPack.Paned", "GPack.paned");
+  "GtkHScale", ("GtkRange.Scale", "GRange.scale");
+  "GtkHScrollbar", ("GtkRange.Scrollbar", "GRange.range");
+  "GtkHSeparator", ("GtkMisc.Separator", "GObj.widget_full");
+  "GtkHandleBox", ("GtkBin.HandleBox", "GBin.handle_box");
+  "GtkIconView", ("GtkTree.IconView", "GTree.icon_view");
+  "GtkImage", ("GtkMisc.Image", "GMisc.image");
+  "GtkInputDialog", ("GtkWindow.Dialog", "GWindow.dialog");
+  "GtkInvisible", ("GtkBase.Container", "GContainer.container");
+  "GtkItem", ("GtkBase.Container", "GContainer.container");
+  "GtkLabel", ("GtkMisc.Label", "GMisc.label");
+  "GtkLayout", ("GtkPack.Layout", "GPack.layout");
+  "GtkLinkButton", ("GtkButton.LinkButton", "GButton.link_button");
+  "GtkListStore", ("GtkTree.ListStore", "GTree.list_store");
   "GtkMenu", ("GtkMenu.Menu", "GMenu.menu");
   "GtkMenuBar", ("GtkMenu.MenuBar", "GMenu.menu_shell");
-  "GtkColorSelection", ("GtkMisc.ColorSelection", "GMisc.color_selection");
-  "GtkStatusbar", ("GtkMisc.Statusbar", "GMisc.statusbar");
-  "GtkCalendar", ("GtkMisc.Calendar", "GMisc.calendar");
-  "GtkDrawingArea", ("GtkMisc.DrawingArea", "GMisc.drawing_area");
-  "GtkCurve", ("GtkMisc.DrawingArea", "GMisc.drawing_area");
+  "GtkMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
+  "GtkMenuShell", ("GtkMenu.MenuShell", "GMenu.menu_shell");
+  "GtkMenuToolButton", ("GtkButton.MenuToolButton", "GButton.menu_tool_button");
   "GtkMisc", ("GtkMisc.Misc", "GMisc.misc");
-  "GtkArrow", ("GtkMisc.Arrow", "GMisc.arrow");
-  "GtkImage", ("GtkMisc.Image", "GMisc.image");
-  "GtkLabel", ("GtkMisc.Label", "GMisc.label");
-  "GtkTipsQuery", ("GtkMisc.TipsQuery", "GMisc.tips_query");
-  "GtkPixmap", ("GtkMisc.Image", "GMisc.image");
-  "GtkSeparator", ("GtkMisc.Separator", "GObj.widget_full");
-  "GtkHSeparator", ("GtkMisc.Separator", "GObj.widget_full");
-  "GtkVSeparator", ("GtkMisc.Separator", "GObj.widget_full");
-  "GtkFontSelection", ("GtkMisc.FontSelection", "GMisc.font_selection");
-  "GtkBox", ("GtkPack.Box", "GPack.box");
-  "GtkHBox", ("GtkPack.Box", "GPack.box");
-  "GtkVBox", ("GtkPack.Box", "GPack.box");
-  "GtkBBox", ("GtkPack.BBox", "GPack.button_box");
-  "GtkHButtonBox", ("GtkPack.BBox", "GPack.button_box");
-  "GtkVButtonBox", ("GtkPack.BBox", "GPack.button_box");
-  "GtkFixed", ("GtkPack.Fixed", "GPack.fixed");
-  "GtkLayout", ("GtkPack.Layout", "GPack.layout");
-(*  "GtkPacker", ("GtkPack.Packer", "GPack.packer"); *)
-  "GtkHPaned", ("GtkPack.Paned", "GPack.paned");
-  "GtkVPaned", ("GtkPack.Paned", "GPack.paned");
-  "GtkTable", ("GtkPack.Table", "GPack.table");
-  "GtkGrid", ("GtkPack.Grid", "GPack.grid");
   "GtkNotebook", ("GtkPack.Notebook", "GPack.notebook");
-(*   "GtkProgress", ("GtkRange.Progress", "GRange.progress"); *)
+  "GtkPaned", ("GtkPack.Paned", "GPack.paned");
+  "GtkPixmap", ("GtkMisc.Image", "GMisc.image");
+  "GtkPlug", ("GtkWindow.Plug", "GWindow.plug");
   "GtkProgressBar", ("GtkRange.ProgressBar", "GRange.progress_bar");
+  "GtkRadioAction", ("GtkActionProps.RadioAction", "GAction.radio_action");
+  "GtkRadioButton", ("GtkButton.RadioButton", "GButton.radio_button");
+  "GtkRadioMenuItem", ("GtkMenu.RadioMenuItem", "GMenu.radio_menu_item");
+  "GtkRadioToolButton", ("GtkButton.RadioToolButton", "GButton.radio_tool_button");
   "GtkRange", ("GtkRange.Range", "GRange.range");
   "GtkScale", ("GtkRange.Scale", "GRange.scale");
-  "GtkHScale", ("GtkRange.Scale", "GRange.scale");
-  "GtkVScale", ("GtkRange.Scale", "GRange.scale");
   "GtkScrollbar", ("GtkRange.Scrollbar", "GRange.range");
-  "GtkHScrollbar", ("GtkRange.Scrollbar", "GRange.range");
-  "GtkVScrollbar", ("GtkRange.Scrollbar", "GRange.range");
-  "GtkRuler", ("GtkRange.Ruler", "GRange.ruler");
-  "GtkHRuler", ("GtkRange.Ruler", "GRange.ruler");
-  "GtkVRuler", ("GtkRange.Ruler", "GRange.ruler");
-(*   "GtkTextMark", ("GtkText.Mark", "GText.mark"); *)
-  "GtkTextTag", ("GtkText.Tag", "GText.tag");
-(*   "GtkTextTagTable", ("GtkText.TagTable", "GText.tag_table");*)
-  "GtkTextBuffer", ("GtkText.Buffer", "GText.buffer");
-(*   "GtkTextChildAnchor", ("GtkText.ChildAnchor", "GText.child_anchor");*)
-  "GtkTextView", ("GtkText.View", "GText.view");
-  "GtkTreeItem", ("GtkTree.TreeItem", "GTree.tree_item");
-  "GtkTreeView", ("GtkTree.TreeView", "GTree.view");
-  "GtkTree", ("GtkTree.Tree", "GTree.tree");
-  "GtkCTree", ("GtkBase.Container", "GContainer.container");
-  "GtkWindow", ("GtkWindow.Window", "GWindow.window");
-  "GtkDialog", ("GtkWindow.Dialog", "GWindow.dialog_any");
-  "GtkMessageDialog", ("GtWindow.MessageDialog", "GWindow.message_dialog");
-  "GtkAboutDialog", ("GtkWindow.AboutDialog", "GWindow.about_dialog");
-  "GtkInputDialog", ("GtkWindow.Dialog", "GWindow.dialog");
-  "GtkFileSelection", ("GtkWindow.FileSelection", "GWindow.file_selection");
-  "GtkFontSelectionDialog", ("GtkWindow.FontSelectionDialog",
-                             "GWindow.font_selection_dialog");
-  "GtkColorSelectionDialog", ("GtkWindow.ColorSelectionDialog", "GWindow.color_selection_dialog");
-  "GtkPlug", ("GtkWindow.Plug", "GWindow.plug");
-  "GtkFileChooserButton", ("GtkFile.FileChooserButton", "GFile.chooser_button");
-  "GtkColorButton", ("GtkButton.ColorButton", "GButton.color_button");
-  "GtkFontButton", ("GtkButton.FontButton", "GButton.font_button");
-  "GtkExpander", ("GtkBin.Expander", "GBin.expander");
-  "GtkToolItem", ("GtkButton.ToolItem", "GButton.tool_item");
-  "GtkToolButton", ("GtkButton.ToolButton", "GButton.tool_button");
-  "GtkToggleToolButton", ("GtkButton.ToggleToolButton", "GButton.toggle_tool_button");
-  "GtkRadioToolButton", ("GtkButton.RadioToolButton", "GButton.radio_tool_button");
+  "GtkScrolledWindow", ("GtkBin.ScrolledWindow", "GBin.scrolled_window");
+  "GtkSeparator", ("GtkMisc.Separator", "GObj.widget_full");
+  "GtkSeparatorMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
   "GtkSeparatorToolItem", ("GtkButton.SeparatorToolItem", "GButton.separator_tool_item");
-  "GtkIconView", ("GtkTree.IconView", "GTree.icon_view");
-  "GtkComboBox", ("GtkEdit.ComboBox", "GEdit.combo_box");
-  "GtkComboBoxEntry", ("GtkEdit.ComboBoxEntry", "GEdit.combo_box_entry");
+  "GtkSizeGroup", ("GtkPack.SizeGroup", "GPack.size_group");
+  "GtkSocket", ("GtkWindow.Socket", "GWindow.socket");
+  "GtkSourceBuffer", ("GtkSourceView3.SourceBuffer", "GSourceView3.source_buffer");
+  "GtkSourceCompletion", ("GtkSourceView3.SourceCompletion", "GSourceView3.source_completion");
+  "GtkSourceCompletionContext", ("GtkSourceView3.SourceCompletionContext", "GSourceView3.source_completion_context");
+  "GtkSourceCompletionInfo", ("GtkSourceView3.SourceCompletionInfo", "GSourceView3.source_completion_info");
+  "GtkSourceCompletionItem", ("GtkSourceView3.SourceCompletionItem", "GSourceView3.source_completion_item");
+  "GtkSourceCompletionProposal", ("GtkSourceView3Props.SourceCompletionProposal", "GSourceView3.source_completion_proposal");
+  "GtkSourceCompletionProvider", ("GtkSourceView3.SourceCompletionProvider", "GSourceView3.source_completion_provider");
+  "GtkSourceLanguage", ("GtkSourceView3.SourceLanguage", "GSourceView3.source_language");
+  "GtkSourceLanguageManager", ("GtkSourceView3.SourceLanguageManager", "GSourceView3.source_language_manager");
+  "GtkSourceMark", ("GtkSourceView3.SourceMark", "GSourceView3.source_mark");
+  "GtkSourceStyleScheme", ("GtkSourceView3.SourceStyleScheme", "GSourceView3.source_style_scheme");
+  "GtkSourceStyleSchemeManager", ("GtkSourceView3.SourceStyleSchemeManager", "GSourceView3.source_style_scheme_manager");
+  "GtkSourceUndoManager", ("GtkSourceView3.SourceUndoManager", "GSourceView3.source_undo_manager");
+  "GtkSourceView", ("GtkSourceView3.SourceView", "GSourceView3.source_view");
+  "GtkSpinButton", ("GtkEdit.SpinButton", "GEdit.spin_button");
+  "GtkStatusIcon", ("GtkMisc.StatusIcon", "GMisc.status_icon");
+  "GtkStatusbar", ("GtkMisc.Statusbar", "GMisc.statusbar");
+  "GtkTable", ("GtkPack.Table", "GPack.table");
+  "GtkTearoffMenuItem", ("GtkMenu.MenuItem", "GMenu.menu_item");
+  "GtkTextBuffer", ("GtkText.Buffer", "GText.buffer");
+  "GtkTextChildAnchor", ("GtkText.ChildAnchor", "GText.child_anchor");
+  "GtkTextTag", ("GtkText.Tag", "GText.tag");
+  "GtkTextTagTable", ("GtkText.TagTable", "GText.tag_table");
+  "GtkTextView", ("GtkText.View", "GText.view");
+  "GtkToggleAction", ("GtkActionProps.ToggleAction", "GAction.toggle_action");
+  "GtkToggleButton", ("GtkButton.ToggleButton", "GButton.toggle_button");
+  "GtkToggleToolButton", ("GtkButton.ToggleToolButton", "GButton.toggle_tool_button");
+  "GtkToolButton", ("GtkButton.ToolButton", "GButton.tool_button");
+  "GtkToolItem", ("GtkButton.ToolItem", "GButton.tool_item");
+  "GtkToolbar", ("GtkButton.Toolbar", "GButton.toolbar");
+  "GtkTreeModel", ("GtkTree.TreeModel", "GTree.model");
+  "GtkTreeModelFilter", ("GtkTree.TreeModelFilter", "GTree.model_filter");
+  "GtkTreeModelSort", ("GtkTree.TreeModelSort", "GTree.model_sort");
+  "GtkTreeSelection", ("GtkTree.TreeSelection", "GTree.selection");
+  "GtkTreeSortable", ("GtkTree.TreeSortable", "GTree.tree_sortable");
+  "GtkTreeStore", ("GtkTree.TreeStore", "GTree.tree_store");
+  "GtkTreeView", ("GtkTree.TreeView", "GTree.view");
+  "GtkTreeViewColumn", ("GtkTree.TreeViewColumn", "GTree.view_column");
+  "GtkUIManager", ("GtkActionProps.UIManager", "GAction.ui_manager");
+  "GtkVBox", ("GtkPack.Box", "GPack.box");
+  "GtkVButtonBox", ("GtkPack.BBox", "GPack.button_box");
+  "GtkVPaned", ("GtkPack.Paned", "GPack.paned");
+  "GtkVScale", ("GtkRange.Scale", "GRange.scale");
+  "GtkVScrollbar", ("GtkRange.Scrollbar", "GRange.range");
+  "GtkVSeparator", ("GtkMisc.Separator", "GObj.widget_full");
+  "GtkViewport", ("GtkBin.Viewport", "GBin.viewport");
+  "GtkWidget", ("GtkBase.Widget", "GObj.widget_full");
+  "GtkWindow", ("GtkWindow.Window", "GWindow.window");
+  "PangoContext", ("Pango.Context", "GPango.context");
+  "button", ("GtkButton.Button", "GButton.button");
 ] 
 
 open Xml_lexer
 
 let parse_header lexbuf =
   match token lexbuf with 
-  | Tag ("glade-interface",_,_) -> ()
-  | _ -> failwith "no glade-interface declaration" 
+  | Tag ("interface",_,_) -> ()
+  | _ -> failwith "no interface declaration" 
 
 let parse_field lexbuf ~tag =
   let b = Buffer.create 80 and first = ref true in
@@ -212,22 +248,38 @@ let is_top_widget wtree w =
   | [w'] -> w.wcamlname = w'.wcamlname && not w.winternal
   | _ -> false
 
-let rec parse_widget ~wclass ~wname ~internal lexbuf =
+let rec skip_to_endtag lexbuf =
+ match token lexbuf with
+  | Tag("object",_,_) ->
+     (* CSC: if this can happen, then the code logic (coming from
+        lablgtk2 code) needs to be rewritten completely. *)
+     assert false
+  | Tag(t,_,true) -> skip_to_endtag lexbuf
+  | Tag(t,_,false) -> skip_to_endtag lexbuf ; skip_to_endtag lexbuf
+  | Chars _ -> skip_to_endtag lexbuf
+  | Endtag t -> ()
+  | EOF -> assert false
+
+let assoc_opt x l = try Some (List.assoc x l) with Not_found -> None
+
+let rec parse_widget ~closed ~wclass ~wname ~internal lexbuf =
   let widgets = ref [] in
-  while match token lexbuf with
-  | Tag ("widget", attrs, closed) ->
-      widgets := parse_widget ~wclass:(List.assoc "class" attrs) ~internal
-	  ~wname:(List.assoc "id" attrs) lexbuf :: !widgets;
-      true
-  | Tag ("child",attrs,_) ->
+  while (not closed) && match token lexbuf with
+  | Tag ("object", attrs, closed) ->
+     widgets := parse_widget ~closed ~wclass:(assoc_opt "class" attrs)
+                 ~internal ~wname:(assoc_opt "id" attrs) lexbuf
+               @ !widgets;
+     true
+  | Tag ("child",attrs,true) -> assert false
+  | Tag ("child",attrs,false) ->
       let is_internal =
 	try List.assoc "internal-child" attrs <> "" with Not_found -> false in
       Stack.push is_internal internal;
       true
   | Endtag "child" -> ignore(Stack.pop internal); true
   | Tag (tag,_,closed) ->
-      if not closed then while token lexbuf <> Endtag tag do () done; true
-  | Endtag "widget" ->
+      if not closed then skip_to_endtag lexbuf ; true
+  | Endtag "object" ->
       false
   | Chars _ ->
       true
@@ -235,8 +287,12 @@ let rec parse_widget ~wclass ~wname ~internal lexbuf =
       failwith "bad XML syntax"
   do () done;
   let internal = try Stack.top internal with _ -> false in
-  { wclass = wclass; wname = wname; wcamlname = camlize wname;
-    winternal = internal; wchildren = List.rev !widgets; wrapped = false }
+  match wclass,wname with
+     Some wclass, Some wname ->
+      [{ wclass = wclass; wname = wname; wcamlname = camlize wname;
+         winternal = internal; wchildren = List.rev !widgets;
+         wrapped = false }]
+   | _,_ -> []
 
 let rec flatten_tree w =
   let children = List.map ~f:flatten_tree w.wchildren in
@@ -248,17 +304,17 @@ let output_widget w =
     w.wrapped <- true;
     
     begin match clas with
-    | "GList.clist" ->
-  	printf "    val %s : int %s =\n" w.wcamlname clas
+    (*| "GList.clist" ->
+  	printf "    val %s : int %s =\n" w.wcamlname clas*)
+    | "GWindow.dialog" ->
+  	printf "    val %s : [`DELETE_EVENT] %s =\n" w.wcamlname clas
     | _ ->
         printf "    val %s =\n" w.wcamlname
     end;
   
     if !debug then 
       printf "      prerr_endline \"creating %s:%s\";\n" w.wclass w.wcamlname;
-    printf "      new %s (%s.cast\n" clas modul;
-    printf "        (%s ~name:\"%s\" ~info:\"%s\" xmldata))\n"
-      "Glade.get_widget_msg" w.wname w.wclass;
+    printf "      new %s (%s.cast (builder#get_object \"%s\"))\n" clas modul w.wname;
     printf "    method %s = %s\n" w.wcamlname w.wcamlname
   with Not_found -> 
     warning (sprintf "Widget %s::%s is not supported" w.wname w.wclass)
@@ -266,23 +322,19 @@ let output_widget w =
 
 let roots = ref []
 let embed = ref false
-let trace = ref false
 let output_classes = ref []
-let check_all = ref false
 
 let output_wrapper ~file wtree =
-  printf "class %s %s?domain ?autoconnect(*=true*) () =\n"
-    wtree.wcamlname
-    (if !embed then "" else
-    if file = "<stdin>" then "~file " else "?(file=\"" ^ file ^ "\") ");
+  printf "class %s ?translation_domain () =\n" wtree.wcamlname ;
   output_classes := wtree.wcamlname :: !output_classes;
-  printf "  let xmldata = Glade.create %s ~root:\"%s\" ?domain () in\n" 
-    (if !embed then "~data " else "~file ")
-    wtree.wname;
-  print_string "  object (self)\n";
-  printf
-    "    inherit Glade.xml %s?autoconnect xmldata\n"
-    (if !trace then "~trace:stderr " else "");
+  printf " let builder = GBuilder.builder_new ?translation_domain () in\n";
+  if !embed then
+   printf " let _ = builder#add_objects_from_string data [\"%s\"] in\n"
+    wtree.wname
+  else
+   printf " let _ = builder#add_objects_from_file \"%s\" [\"%s\"] in\n"
+    file wtree.wname ;
+  print_string "  object\n";
   let widgets = {wtree with wcamlname= "toplevel"} :: flatten_tree wtree in
   
   let is_hidden w = 
@@ -303,50 +355,30 @@ let output_wrapper ~file wtree =
       printf "      toplevel#destroy ()\n";
   | _ -> ()
   end;
-  
-  printf "    method check_widgets () = ()\n";
-  (* useless, since they are already built anyway
-  List.iter widgets ~f:
-    (fun w ->
-      if w.wrapped then printf "      ignore self#%s;\n" w.wcamlname);
-  *)
   printf "  end\n"
 
-let output_check_all () =
-  printf "\nlet check_all ?(show=false) () =\n";
-  printf "  ignore (GMain.Main.init ());\n";
-  List.iter (fun cl ->   
-    printf "  let %s = new %s () in\n" cl cl;
-    printf "  if show then %s#toplevel#misc#show_all ();\n" cl;
-    printf "  %s#check_widgets ();\n" cl) !output_classes;
-  printf "  if show then GMain.Main.main ()\n";
-  printf ";;\n";
-;;
- 
 let parse_body ~file lexbuf =
   while match token lexbuf with
-    Tag("project", _, closed) ->
-      if not closed then while token lexbuf <> Endtag "project" do () done;
-      true
-  | Tag("widget", attrs, false) ->
-      let wtree = 
-	parse_widget ~wclass:(List.assoc "class" attrs)
+  | Tag("object", attrs, closed) ->
+     (match
+	parse_widget ~closed ~wclass:(assoc_opt "class" attrs)
 	  ~internal:(Stack.create ())
-	  ~wname:(List.assoc "id" attrs) lexbuf 
-      in
-      let rec output_roots wtree =
-        if List.mem wtree.wname ~set:!roots then output_wrapper ~file wtree;
-        List.iter ~f:output_roots wtree.wchildren
-      in
-      if !roots = [] then output_wrapper ~file wtree
-      else output_roots wtree;
+	  ~wname:(assoc_opt "id" attrs) lexbuf 
+      with
+       | _::_::_ -> assert false
+       | [] -> ()
+       | [wtree] ->
+          let rec output_roots wtree =
+           if List.mem wtree.wname ~set:!roots then
+            output_wrapper ~file wtree;
+           List.iter ~f:output_roots wtree.wchildren
+          in
+          if !roots = [] then output_wrapper ~file wtree
+          else output_roots wtree) ;
       true
-  | Tag(tag, _, closed) ->
-      if not closed then while token lexbuf <> Endtag tag do () done; true
-  | Chars _ -> true
-  | Endtag "glade-interface" -> false
-  | Endtag _ -> failwith "bad XML syntax"
-  | EOF -> false
+  | Tag(tag, _, true) -> true
+  | Endtag "interface" -> false
+  | Tag(_, _, false) | Chars _ | EOF | Endtag _ -> failwith "bad XML syntax"
   do () done
 
 let process ?(file="<stdin>") chan =
@@ -370,14 +402,14 @@ let process ?(file="<stdin>") chan =
       file;
     if !embed then printf "let data = \"%s\"\n\n" (String.escaped data);
     parse_body ~file lexbuf;
-    if !check_all then output_check_all ()
   with Failure s ->
     eprintf "lablgladecc: in %s, before char %d, %s\n"
       file (Lexing.lexeme_start lexbuf) s
 
 let output_test () =
   print_string "(* Test class definitions *)\n\n";
-  print_string "class test xmldata =\n  object\n";
+  print_string "let builder = GBuilder.builder_new ();;\n\n";
+  print_string "class test () =\n  object\n";
   List.iter !classes ~f:
     begin fun (clas, _) ->
       output_widget
@@ -392,13 +424,11 @@ let main () =
   Arg.parse
     [ "-test", Arg.Set test, " check lablgladecc (takes no input)";
       "-embed", Arg.Set embed, " embed input file into generated program";
-      "-trace", Arg.Set trace, " trace calls to handlers";
       "-debug", Arg.Set debug, " add debug code";
       "-root", Arg.String (fun s -> roots := s :: !roots),
       "<widget>  generate only a wrapper for <widget> and its children";
       "-hide-default", Arg.Set hide_default_names, 
         " hide widgets with default names like 'label23'";
-      "-check-all", Arg.Set check_all, " create check_all function";
     ]
     (fun s -> files := s :: !files)
     "lablgladecc2 [<options>] [<file.glade>]";

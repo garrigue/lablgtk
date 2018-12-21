@@ -30,9 +30,21 @@ class builder (obj : [> Gtk.builder] obj) = object
   inherit GObj.gtkobj obj
   inherit OgtkBuilderProps.builder_props
 
-  method get_object : 'a. string -> 'a obj = Builder.get_object obj
+  method add_from_file : string -> unit = Builder.add_from_file obj
+  method add_from_string : string -> unit = Builder.add_from_string obj
+  method add_objects_from_file : string -> string list -> unit = Builder.add_objects_from_file obj
+  method add_objects_from_string : string -> string list -> unit = Builder.add_objects_from_string obj
+  method get_object : string -> unit obj = Builder.get_object obj
 end
+
+let builder_new ?translation_domain () =
+  Builder.make_params ?translation_domain [] ~cont:(
+  fun _ -> new builder (GtkBuilder.Builder.new_ ()))
 
 let builder_new_from_file ?translation_domain filename =
   Builder.make_params ?translation_domain [] ~cont:(
   fun _ -> new builder (GtkBuilder.Builder.new_from_file filename))
+
+let builder_new_from_string ?translation_domain s =
+  Builder.make_params ?translation_domain [] ~cont:(
+  fun _ -> new builder (GtkBuilder.Builder.new_from_string s))
