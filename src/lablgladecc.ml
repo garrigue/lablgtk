@@ -327,7 +327,7 @@ let output_classes = ref []
 let output_wrapper ~file wtree =
   printf "class %s ?translation_domain () =\n" wtree.wcamlname ;
   output_classes := wtree.wcamlname :: !output_classes;
-  printf " let builder = GBuilder.builder_new ?translation_domain () in\n";
+  printf " let builder = GBuilder.builder ?translation_domain () in\n";
   if !embed then
    printf " let _ = builder#add_objects_from_string data [\"%s\"] in\n"
     wtree.wname
@@ -408,7 +408,7 @@ let process ?(file="<stdin>") chan =
 
 let output_test () =
   print_string "(* Test class definitions *)\n\n";
-  print_string "let builder = GBuilder.builder_new ();;\n\n";
+  print_string "let builder = GBuilder.builder ();;\n\n";
   print_string "class test () =\n  object\n";
   List.iter !classes ~f:
     begin fun (clas, _) ->

@@ -2,6 +2,9 @@ LablGTK changes log
 
 In Lablgtk-3.0.beta3:
 
+2018.12.22 [Claudio Sacerdoti Coen]
+  * update examples/glade and README
+
 2018.12.21 [Jacques]
   * adjust some function names
   * merge GtkBuilder support and new lablgladecc by Claudio Sacerdoti Coen
