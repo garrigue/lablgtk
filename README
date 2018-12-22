@@ -1,5 +1,5 @@
 
-             LablGTK3 3.0.beta2 : an interface to the GIMP Tool Kit
+             LablGTK3 3.0.beta3 : an interface to the GIMP Tool Kit
 
 Needed:
         ocaml-4.05 or more
@@ -47,9 +47,9 @@ How to compile:
   You may use "./configure --help" to check for the different
   configuration options.
 
-  Lablgtk2 specific options are:
+  Lablgtk3 specific options are:
 
-        --with-libdir=/path: install libs in /path/lablgtk2
+        --with-libdir=/path: install libs in /path/lablgtk3
                              and /path/stublibs
         --with-gtkspell --without-gtkspell:
                 override autodetected gtkspell support
@@ -58,7 +58,7 @@ How to compile:
         --enable-debug: enable debug mode
 
   Type "make install" to install using findlib.
-  The commands lablgtk2, gdk_pixbuf_mlsource, and lablgladecc3,
+  The commands lablgtk3, gdk_pixbuf_mlsource3, and lablgladecc3,
   are copied directly to the configured executable directory.
 
   The following findlib packages are provided (according to configuration):
@@ -307,7 +307,7 @@ Windows port
   in them. Also, non-graphical operations are thread-safe.
   Here is an example using the lablgtk toplevel with threads:
         % lablgtk3.bat -thread
-                Objective Caml version 3.09
+                Objective Caml version 4.07.1
 
         # open GtkThread;;
         # let w = sync (GWindow.window ~show:true) ();;
