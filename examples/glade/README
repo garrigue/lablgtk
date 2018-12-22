@@ -1,0 +1,18 @@
+=============================
+  A text editor skeleton
+=============================
+- the project1.ui XML file has been generated using glade
+- use "lablgladecc3 project1.ui > project1.ml" to automatically
+  generated OCaml code to access the widgets
+- run the example with "lablgtk3 glade_demo.ml"
+
+
+
+
+=============================
+     A simple calculator
+=============================
+- the project2.ui XML file has been generated using glade
+- use "lablgladecc3 project2.ui > project2.ml" to automatically
+  generated OCaml code to access the widgets
+- run the example with "lablgtk3 gladecal.ml"

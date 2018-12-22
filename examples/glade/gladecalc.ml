@@ -10,7 +10,7 @@
 
 open StdLabels
 
-(* lablgladecc2 project2.glade > project2.ml *)
+(* lablgladecc3 project2.ui > project2.ml *)
 #use "project2.ml";;
 
 let w1 = new window1 ()
@@ -45,6 +45,7 @@ let equals () =
   state := Result
 
 let _ =
+  w1#toplevel#connect#destroy ~callback:GMain.quit;
   for i = 0 to 9 do
     numbers.(i)#connect#clicked ~callback:(fun () -> insert_digit i)
   done;
