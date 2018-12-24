@@ -216,6 +216,7 @@ end
 
 and misc_signals obj = object (self)
   inherit [_] gobject_signals obj
+  method destroy = self#connect Signals.destroy
   method show = self#connect Signals.show
   method hide = self#connect Signals.hide
   method map = self#connect Signals.map
