@@ -94,7 +94,7 @@ let enums =
   
 (* These types must be registered with g_boxed_register! *)
 let boxeds =
-  [ ("Gdk", [ "Color"; "Font"; "RGBA" ]); ("Pango", [ "FontDescription" ]);
+  [ ("Gdk", [ "Color"; "Font"; "RGBA" ; "Cairo" ]); ("Pango", [ "FontDescription" ]);
     ("Gtk",
      [ "IconSet"; "SelectionData"; "TextIter"; "TreePath"; "TreeIter" ]) ]
   

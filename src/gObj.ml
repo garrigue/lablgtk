@@ -221,6 +221,7 @@ and misc_signals obj = object (self)
   method hide = self#connect Signals.hide
   method map = self#connect Signals.map
   method unmap = self#connect Signals.unmap
+  method draw = self#connect Signals.draw
   method query_tooltip = self#connect Signals.query_tooltip
   method realize = self#connect Signals.realize
   method unrealize = self#connect Signals.unrealize
