@@ -183,6 +183,7 @@ class label_skel obj = object(self)
   inherit label_props
   method text = GtkMiscProps.Label.get_text obj
   method set_text = GtkMiscProps.Label.set_text obj
+  method get_layout = GtkMiscProps.Label.get_layout obj
   method selection_bounds = GtkMiscProps.Label.get_selection_bounds obj
   method select_region = GtkMiscProps.Label.select_region obj
 end
