@@ -12,23 +12,16 @@ open Cairo
 
 let polygon = 
     [ 10,100; 35,35; 100,10; 165,35; 190,100;
-      165,165; 100,190; 35,165; 10,100 ];;
+      165,165; 100,190; 35,165; 10,100 ]
 
-let rec draw_polygon ?(first=true) cr =
- function
-    [] when first -> assert false
-  | [] ->
-     set_source_rgba cr 0.5 0. 0. 0.5;
-     fill cr
+let draw_polygon cr = function
+    [] -> ()
   | (x,y)::tl ->
-      let x = float_of_int x in
-      let y = float_of_int y in
-      if first then begin
-        set_source_rgba cr 0. 0. 0. 1.;
-        move_to cr x y
-      end else line_to cr x y;
-      draw_polygon ~first:false cr tl
-;;
+      set_source_rgba cr 0. 0. 0. 1.;
+      move_to cr (float x) (float y);
+      List.iter (fun (x,y) -> line_to cr (float x) (float y)) tl;
+      set_source_rgba cr 0.5 0. 0. 0.5;
+      fill cr
 
 let expose drawing_area cr =
   draw_polygon cr polygon ;
