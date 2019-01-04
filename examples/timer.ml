@@ -19,7 +19,7 @@ let check_cache ~cond ~create ~destroy = function
   | None -> create ()
 
 class timer ?packing ?show () =
-  let da = GMisc.drawing_area ~width:200 ~height:200 ?packing ?show () in
+  let da = GMisc.drawing_area (*~width:200 ~height:200*) ?packing ?show () in
   let context = da#misc#create_pango_context in
   object (self)
     inherit GObj.widget_full da#as_widget

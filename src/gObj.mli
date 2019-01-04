@@ -228,7 +228,7 @@ and misc_ops : Gtk.widget obj ->
     method modify_base : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_fg : (Gtk.Tags.state_type * GDraw.color) list -> unit
     method modify_text : (Gtk.Tags.state_type * GDraw.color) list -> unit
-    method modify_font : Pango.font_description -> unit
+    method modify_font : GPango.font_description -> unit
     method modify_font_by_name : string -> unit
     (* End deprecated since 3.0 *)
     method name : string
@@ -250,7 +250,7 @@ and misc_ops : Gtk.widget obj ->
     method set_name : string -> unit
     method set_sensitive : bool -> unit
     method set_size_chars :
-      ?desc:Pango.font_description ->
+      ?desc:GPango.font_description ->
       ?lang:string -> ?width:int -> ?height:int -> unit -> unit
     method set_style : style -> unit
     method set_size_request : ?width:int -> ?height:int -> unit -> unit
