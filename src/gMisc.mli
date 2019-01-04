@@ -61,7 +61,6 @@ class statusbar : Gtk.statusbar obj ->
 
 (** @gtkdoc gtk GtkStatusbar *)
 val statusbar :
-  ?has_resize_grip:bool ->
   ?border_width:int ->
   ?width:int ->
   ?height:int ->

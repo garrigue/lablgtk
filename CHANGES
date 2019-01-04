@@ -2,6 +2,10 @@ LablGTK changes log
 
 In Lablgtk-3.0.beta3:
 
+2019.01.04 [Jacques]
+  * merge draw signal PR by Claudio
+  * remove incorrect statusbar properties
+
 2018.12.22 [Claudio Sacerdoti Coen]
   * update examples/glade and README
 

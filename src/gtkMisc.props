@@ -130,7 +130,7 @@ class FontSelection set wrap : Box {
 }
 
 class Statusbar set : Box {
- "has-resize-grip"      gboolean             : Read / Write (* 2.4 *)
+ "shadow-type"           GtkShadowType        : Read
   method get_context_id : "string -> statusbar_context"
   method push : "statusbar_context -> text:string -> statusbar_message"
   method pop : "statusbar_context ->  unit"
