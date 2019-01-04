@@ -2,6 +2,13 @@ LablGTK changes log
 
 In Lablgtk-3.0.beta3:
 
+2019.01.04 [Claudio Sacerdoti Coen]
+  * added hard dependency on cairo2 (aka ocaml-cairo)
+  * Gdk.cairo is now equal to Cairo.context
+  * code of cairo-pango (part of ocaml-cairo) by Christophe Troestler
+    moved into lablgtk3
+  * added new examples {cairo,pango1,pango2}.ml
+
 2019.01.04 [Jacques]
   * merge draw signal PR by Claudio
   * remove incorrect statusbar properties
