@@ -33,6 +33,7 @@
 #include "ml_glib.h"
 #include "ml_gobject.h"
 #include "ml_gdk.h"
+#include "ml_pango.h"
 #include "ml_gdkpixbuf.h"
 #include "ml_gtk.h"
 #include "gtk_tags.h"
@@ -155,6 +156,7 @@ Unsupported_28(gtk_image_clear)
 #define GtkLabel_val(val) check_cast(GTK_LABEL,val)
 ML_2 (gtk_label_set_text, GtkLabel_val, String_val, Unit)
 ML_1 (gtk_label_get_text, GtkLabel_val, Val_string)
+ML_1 (gtk_label_get_layout, GtkLabel_val, Val_PangoLayout)
 ML_3 (gtk_label_select_region, GtkLabel_val, Int_val, Int_val, Unit)
 CAMLprim value ml_gtk_label_get_selection_bounds (value label)
 {

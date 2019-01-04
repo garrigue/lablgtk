@@ -311,6 +311,7 @@ class label_skel : 'a obj ->
     method set_width_chars : int -> unit (** @since GTK 2.6 *)
     method ellipsize : PangoEnums.ellipsize_mode (** @since GTK 2.6 *)
     method set_ellipsize : PangoEnums.ellipsize_mode -> unit (** @since GTK 2.6 *)
+    method get_layout : Pango.layout
   end
 
 (** A widget that displays a small to medium amount of text

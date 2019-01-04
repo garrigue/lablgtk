@@ -72,6 +72,7 @@ class Label set wrap : Misc {
   method set_text : "string -> unit"
   method select_region : "int -> int -> unit"
   method get_selection_bounds : "(int * int) option"
+  method get_layout : "Pango.layout"
   signal copy_clipboard
   signal move_cursor : GtkMovementStep gint gboolean
   signal populate_popup : GtkMenu
