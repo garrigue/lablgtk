@@ -81,32 +81,32 @@ else
 fi
 
 # checking for ocamlc.opt
-AC_CHECK_PROG(OCAMLCDOTOPT,ocamlc.opt,ocamlc.opt,no)
-if test "$OCAMLCDOTOPT" != no ; then
-	AC_MSG_CHECKING(ocamlc.opt version)
-	TMPVERSION=`$OCAMLCDOTOPT -version`
-	if test "$TMPVERSION" != "$OCAMLVERSION" ; then
-	    AC_MSG_RESULT(differs from ocamlc; ocamlc.opt discarded.)
-	else
-	    AC_MSG_RESULT(ok)
-	    CAMLC=$OCAMLCDOTOPT
-	fi
-fi
+#AC_CHECK_PROG(OCAMLCDOTOPT,ocamlc.opt,ocamlc.opt,no)
+#if test "$OCAMLCDOTOPT" != no ; then
+	#AC_MSG_CHECKING(ocamlc.opt version)
+	#TMPVERSION=`$OCAMLCDOTOPT -version`
+	#if test "$TMPVERSION" != "$OCAMLVERSION" ; then
+	    #AC_MSG_RESULT(differs from ocamlc; ocamlc.opt discarded.)
+	#else
+	    #AC_MSG_RESULT(ok)
+	    #CAMLC=$OCAMLCDOTOPT
+	#fi
+#fi
 
 # checking for ocamlopt.opt
-if test "$CAMLOPT" != no ; then
-    AC_CHECK_PROG(OCAMLOPTDOTOPT,ocamlopt.opt,ocamlopt.opt,no)
-    if test "$OCAMLOPTDOTOPT" != no ; then
-	AC_MSG_CHECKING(ocamlc.opt version)
-	TMPVER=`$OCAMLOPTDOTOPT -version`
-	if test "$TMPVER" != "$OCAMLVERSION" ; then
-	    AC_MSG_RESULT(differs from ocamlc; ocamlopt.opt discarded.)
-	else
-	    AC_MSG_RESULT(ok)
-	    CAMLOPT=$OCAMLOPTDOTOPT
-	fi
-    fi
-fi
+#if test "$CAMLOPT" != no ; then
+    #AC_CHECK_PROG(OCAMLOPTDOTOPT,ocamlopt.opt,ocamlopt.opt,no)
+    #if test "$OCAMLOPTDOTOPT" != no ; then
+	#AC_MSG_CHECKING(ocamlc.opt version)
+	#TMPVER=`$OCAMLOPTDOTOPT -version`
+	#if test "$TMPVER" != "$OCAMLVERSION" ; then
+	    #AC_MSG_RESULT(differs from ocamlc; ocamlopt.opt discarded.)
+	#else
+	    #AC_MSG_RESULT(ok)
+	    #CAMLOPT=$OCAMLOPTDOTOPT
+	#fi
+    #fi
+#fi
 
 # ocamlrun, ocamldep, ocamllex and ocamlyacc should also be present in the path
 AC_CHECK_PROG(OCAMLRUN,ocamlrun,ocamlrun,no)

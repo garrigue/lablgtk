@@ -1,18 +1,19 @@
 # Makefile for lablgtk.
 
-COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s-3+52 -warn-error A-52 -c
+OCAMLFINDDEPS = -package cairo2
+COMPILER = $(OCAMLFIND) $(CAMLC) $(OCAMLFINDDEPS) $(MLFLAGS) $(MLBYTEFLAGS) -w s-3+52 -warn-error A-52 -c
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
-COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
+COMPOPT = $(OCAMLFIND) $(CAMLOPT) $(OCAMLFINDDEPS) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
 LIBRARIAN = $(CAMLMKLIB) -verbose -ocamlc "$(CAMLC)" -ocamlopt "$(CAMLOPT)"
-TOPLEVEL = $(CAMLMKTOP) $(MLFLAGS)
+TOPLEVEL = $(OCAMLFIND) $(CAMLMKTOP) $(OCAMLFINDDEPS) cairo.cma $(MLFLAGS)
 CAMLP4 = $(CAMLP4O) pr_o.cmo
 
 CONFIG = ../config.make
 
 # protect against missing definitions
 BINDIR = ""
-LIBDIR = ""
+LIBDIR = `ocamlfind query cairo2`
 INSTALLDIR = $(LIBDIR)/lablgtk3
 DLLDIR = $(LIBDIR)/stublibs
 
@@ -43,6 +44,8 @@ endif
 ifdef ABSVALUE
 GTKCFLAGS += -Iabsvalue -DABSVALUE
 endif
+
+GTKCFLAGS += -I`ocamlfind query cairo2`
 
 ifdef DEBUG
 CFLAGS = -g $(GTKCFLAGS)
@@ -192,7 +195,8 @@ GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkaction$(XO) \
 	ml_gtkpack$(XO) ml_gtkrange$(XO) ml_gtkstock$(XO) \
 	ml_gtktext$(XO) ml_gtktree$(XO) ml_gtkbuilder$(XO)
 COBJS = ml_gdkpixbuf$(XO) ml_gdk$(XO) ml_glib$(XO) ml_gobject$(XO) \
-	ml_gpointer$(XO) ml_gvaluecaml$(XO) wrappers$(XO) $(GTKOBJS)
+	ml_gpointer$(XO) ml_gvaluecaml$(XO) wrappers$(XO) $(GTKOBJS) \
+        cairo_pango_stubs$(XO)
 GTKPROPS += gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
 	gtkMenu.props gtkMisc.props gtkPack.props \
 	gtkRange.props gtkText.props gtkTree.props gtkFile.props \
@@ -211,7 +215,7 @@ MLOBJS4 = gMain.cmo gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
 	gMenu.cmo gMisc.cmo gTree.cmo gFile.cmo gWindow.cmo \
 	gAssistant.cmo gBuilder.cmo \
 	gBin.cmo gEdit.cmo gRange.cmo gAction.cmo \
-	gUtil.cmo gToolbox.cmo
+	gUtil.cmo gToolbox.cmo cairo_pango.cmo
 MLOBJS =  $(MLOBJS1) $(ENUMOBJS) $(MLOBJS2) $(GTKPROPS:.props=Props.cmo) \
 	$(MLOBJS3) $(GTKPROPS:%.props=o%Props.cmo) $(MLOBJS4)
 THOBJS = gtkThread.cmo
@@ -281,7 +285,7 @@ build.ml: Makefile $(CONFIG) build.ml.in
 	    < build.ml.in > $@
 
 gdk_pixbuf_mlsource3$(XE) : lablgtk.cma gdk_pixbuf_mlsource.ml
-	$(CAMLC) -o $@ -I . $^
+	$(OCAMLFIND) $(CAMLC) $(OCAMLFINDDEPS) -o $@ -I . cairo.cma $^
 
 lablgtkopt:: $(MLLIBS:.cma=.cmxa) $(INITOBJS:.cmo=.cmx)
 ifeq ($(THREADS_LIB),system)

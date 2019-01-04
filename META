@@ -1,5 +1,5 @@
 description = "Bindings for gtk3"
-requires = ""
+requires = "cairo2"
 version = "3.0.beta3"
 
 archive(byte) = "lablgtk.cma"
