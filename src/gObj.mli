@@ -291,6 +291,7 @@ and misc_signals : Gtk.widget obj ->
     method hide : callback:(unit -> unit) -> GtkSignal.id
     method map : callback:(unit -> unit) -> GtkSignal.id
     method parent_set : callback:(widget option -> unit) -> GtkSignal.id
+    method draw : callback:(Gdk.cairo -> bool) -> GtkSignal.id
     method query_tooltip :
       callback:(x:int -> y:int -> kbd:bool -> tooltip -> bool) -> GtkSignal.id
     method realize : callback:(unit -> unit) -> GtkSignal.id

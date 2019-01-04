@@ -87,6 +87,7 @@ class Widget abstract : Object {
   signal hide
   signal map
   signal unmap
+  signal draw : GdkCairo -> bool
   signal query_tooltip : x:int y:int kbd:bool GtkTooltip -> bool
   signal realize
   signal unrealize
