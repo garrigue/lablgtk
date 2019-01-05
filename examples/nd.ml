@@ -69,10 +69,13 @@ let rec layout_nd_tree cr t =
  { ndl_conclusion = { layout ; width ; height }
  ; ndl_premises ; ndl_padding ; ndl_width }
 
-(* if centered=true then (x,y) is the middle-point below the conclusion;
+(* where the conclusions are printed *)
+type area = { x : float ; y : float ; w : float ; h : float }
+
+(* If centered=true then (x,y) is the middle-point below the conclusion;
    otherwise it is the lowermost-leftmost point of the bounded box of the
-   tree *)
-let rec draw_nd_tree_layout ?(centered = true) cr x y t =
+   tree. It returns a list of areas. *)
+let rec draw_nd_tree_layout ?(map = []) ?(centered = true) cr x y t =
  let cw = t.ndl_conclusion.width in
  let ch = t.ndl_conclusion.height in
  let pw = t.ndl_width in
@@ -81,8 +84,9 @@ let rec draw_nd_tree_layout ?(centered = true) cr x y t =
  let y = y -. ch in
  Cairo.move_to cr (x -.  cw /. 2.) y ;
  Cairo_pango.show_layout cr t.ndl_conclusion.layout#as_layout ;
+ let map = {x = x -. cw /. 2. ; y ; w=cw ; h=ch}::map in
  match t.ndl_premises with
-    None -> ()
+    None -> map
   | Some l ->
      if t.ndl_padding = 0. then begin
       let fst = List.hd l in
@@ -97,22 +101,60 @@ let rec draw_nd_tree_layout ?(centered = true) cr x y t =
       Cairo.line_to cr (x +. cw /. 2.) y ;
       Cairo.stroke cr ;
      end ;
-     draw_premises cr (x -. pw /. 2. +. t.ndl_padding /. 2.) y l
+     draw_premises ~map cr (x -. pw /. 2. +. t.ndl_padding /. 2.) y l
 
-and draw_premises cr x y tl =
- ignore (
+and draw_premises ~map cr x y tl =
+ fst (
   List.fold_left
-   (fun x t ->
-     draw_nd_tree_layout cr ~centered:false x y t ;
-     x +. t.ndl_width +. pad)
-   x tl)
+   (fun (map,x) t ->
+     let map = draw_nd_tree_layout ~map cr ~centered:false x y t in
+     map,x +. t.ndl_width +. pad)
+   (map,x) tl)
 
-let expose drawing_area cr =
+let areas = ref []
+
+let inside x b w = b <= x && x <= b+.w
+
+let look_for_area x y =
+ List.find_opt
+  (fun area -> inside x area.x area.w && inside y area.y area.h) !areas
+
+let highlighted = ref None
+let pressed = ref false
+
+let draw drawing_area cr =
  let allocation = drawing_area#misc#allocation in
  let w = float allocation.Gtk.width in
  let h = float allocation.Gtk.height in
  let l = layout_nd_tree cr test in
- draw_nd_tree_layout cr (w /. 2.) h l ;
+ areas := draw_nd_tree_layout cr (w /. 2.) h l ;
+ (match !highlighted with
+     None -> ()
+   | Some {x;y;w;h} ->
+      if !pressed then
+       Cairo.set_source_rgba cr 0. 1. 0. 0.5
+      else
+       Cairo.set_source_rgba cr 1. 0. 0. 0.5;
+      Cairo.rectangle cr x y ~w ~h;
+      Cairo.fill cr;
+      Cairo.set_source_rgba cr 0. 0. 0. 1.
+ );
+ true
+
+let button_press d b =
+ let x = GdkEvent.Button.x b in
+ let y = GdkEvent.Button.y b in
+ highlighted := look_for_area x y;
+ pressed := true;
+ d#misc#queue_draw ();
+ true
+
+let motion_notify d b =
+ let x = GdkEvent.Motion.x b in
+ let y = GdkEvent.Motion.y b in
+ highlighted := look_for_area x y;
+ pressed := false;
+ d#misc#queue_draw ();
  true
 
 let () =
@@ -120,7 +162,10 @@ let () =
   ignore(w#connect#destroy ~callback:GMain.quit);
 
   let d = GMisc.drawing_area ~packing:w#add () in
-  ignore(d#misc#connect#draw ~callback:(expose d));
+  ignore(d#misc#connect#draw ~callback:(draw d));
+  ignore(d#event#connect#button_press ~callback:(button_press d));
+  ignore(d#event#connect#motion_notify ~callback:(motion_notify d));
+  d#set_events [`BUTTON_PRESS ; `POINTER_MOTION];
 
   w#show();
   GMain.main()
