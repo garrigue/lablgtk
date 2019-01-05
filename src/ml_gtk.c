@@ -263,6 +263,7 @@ ML_1 (gtk_widget_unmap, GtkWidget_val, Unit)
 ML_1 (gtk_widget_realize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_unrealize, GtkWidget_val, Unit)
 ML_1 (gtk_widget_queue_draw, GtkWidget_val, Unit)
+ML_5 (gtk_widget_queue_draw_area, GtkWidget_val, Int_val, Int_val, Int_val, Int_val, Unit)
 ML_1 (gtk_widget_queue_resize, GtkWidget_val, Unit)
 ML_2 (gtk_widget_draw, GtkWidget_val, Cairo_val, Unit)
 /*

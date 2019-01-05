@@ -235,6 +235,8 @@ and misc_ops : Gtk.widget obj ->
     method parent : widget option
     method pango_context : GPango.context
     method pointer : int * int
+    method queue_draw : unit -> unit
+    method queue_draw_area : int -> int -> int -> int -> unit
     method realize : unit -> unit
     method remove_accelerator :
       group:accel_group -> ?modi:Gdk.Tags.modifier list -> Gdk.keysym -> unit

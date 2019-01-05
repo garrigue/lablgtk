@@ -54,6 +54,7 @@ module Widget = struct
   external queue_draw : [>`widget] obj -> unit = "ml_gtk_widget_queue_draw"
   external queue_resize : [>`widget] obj -> unit = "ml_gtk_widget_queue_resize"
   external draw : [>`widget] obj -> Gdk.cairo -> unit = "ml_gtk_widget_draw"
+  external queue_draw_area : [>`widget] obj -> int -> int -> int -> int -> unit = "ml_gtk_widget_queue_draw_area"
 (*
   external draw_focus : [>`widget] obj -> unit
       = "ml_gtk_widget_draw_focus"
