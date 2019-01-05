@@ -278,11 +278,84 @@ and widget : ([> Gtk.widget] as 'a) obj ->
   object
     inherit gtkobj
     val obj : 'a obj
+    method app_paintable : bool
     method as_widget : Gtk.widget obj
+    method can_default : bool
+    method can_focus : bool
     method coerce : widget
+    method composite_child : bool
+    method destroy : unit -> unit
     method drag : drag_ops
+    method events : GdkEnums.event_mask list
+    method expand : bool
+    method focus_on_click : bool
+    method halign : GtkEnums.align
+    method has_default : bool
+    method has_focus : bool
+    method has_tooltip : bool
+    method height_request : int
+    method hexpand : bool
+    method hexpand_set : bool
+    method is_focus : bool
+    method margin : int
+    method margin_bottom : int
+    method margin_end : int
+    method margin_left : int
+    method margin_right : int
+    method margin_start : int
+    method margin_top : int
     method misc : misc_ops
     method destroy : unit -> unit
+    method name : string
+    method no_show_all : bool
+    method opacity : float
+    method parent : Gtk.container Gtk.obj option
+    method receives_default : bool
+    method scale_factor : int
+    method sensitive : bool
+    method set_app_paintable : bool -> unit
+    method set_can_default : bool -> unit
+    method set_can_focus : bool -> unit
+    method set_events : GdkEnums.event_mask list -> unit
+    method set_expand : bool -> unit
+    method set_focus_on_click : bool -> unit
+    method set_halign : GtkEnums.align -> unit
+    method set_has_default : bool -> unit
+    method set_has_focus : bool -> unit
+    method set_has_tooltip : bool -> unit
+    method set_height_request : int -> unit
+    method set_hexpand : bool -> unit
+    method set_hexpand_set : bool -> unit
+    method set_is_focus : bool -> unit
+    method set_margin : int -> unit
+    method set_margin_bottom : int -> unit
+    method set_margin_end : int -> unit
+    method set_margin_left : int -> unit
+    method set_margin_right : int -> unit
+    method set_margin_start : int -> unit
+    method set_margin_top : int -> unit
+    method set_name : string -> unit
+    method set_no_show_all : bool -> unit
+    method set_opacity : float -> unit
+    method set_parent : Gtk.container Gtk.obj option -> unit
+    method set_receives_default : bool -> unit
+    method set_sensitive : bool -> unit
+    method set_style : Gtk.style -> unit
+    method set_tooltip_markup : string -> unit
+    method set_tooltip_text : string -> unit
+    method set_valign : GtkEnums.align -> unit
+    method set_vexpand : bool -> unit
+    method set_vexpand_set : bool -> unit
+    method set_visible : bool -> unit
+    method set_width_request : int -> unit
+    method style : Gtk.style
+    method tooltip_markup : string
+    method tooltip_text : string
+    method valign : GtkEnums.align
+    method vexpand : bool
+    method vexpand_set : bool
+    method visible : bool
+    method width_request : int
   end
 
 (** @gtkdoc gtk GtkWidget *)

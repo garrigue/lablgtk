@@ -197,20 +197,20 @@ GTKOBJS =  ml_gtk$(XO) ml_pango$(XO) ml_gtkaction$(XO) \
 COBJS = ml_gdkpixbuf$(XO) ml_gdk$(XO) ml_glib$(XO) ml_gobject$(XO) \
 	ml_gpointer$(XO) ml_gvaluecaml$(XO) wrappers$(XO) $(GTKOBJS) \
         cairo_pango_stubs$(XO)
-GTKPROPS += gtkBase.props gtkBin.props gtkButton.props gtkEdit.props \
-	gtkMenu.props gtkMisc.props gtkPack.props \
+GTKPROPS += gtkBase.props gtkContainers.props gtkBin.props gtkButton.props \
+        gtkEdit.props gtkMenu.props gtkMisc.props gtkPack.props \
 	gtkRange.props gtkText.props gtkTree.props gtkFile.props \
 	gtkAction.props gtkAssistant.props gtkBuilder.props
 MLOBJS1 =  gaux.cmo gpointer.cmo gutf8.cmo glib.cmo gobject.cmo
 ENUMOBJS += gdkEnums.cmo pangoEnums.cmo gtkEnums.cmo
 MLOBJS2 = pango.cmo gdk.cmo gdkEvent.cmo gdkKeysyms.cmo gdkPixbuf.cmo \
 	gtk.cmo gtkSignal.cmo gtkStock.cmo gtkObject.cmo
-MLOBJS3 = gtkData.cmo gtkBase.cmo gtkPack.cmo gtkButton.cmo \
+MLOBJS3 = gtkData.cmo gtkBase.cmo gtkContainers.cmo gtkPack.cmo gtkButton.cmo \
 	gtkAssistant.cmo \
 	gtkMenu.cmo gtkMisc.cmo gtkWindow.cmo \
 	gtkBin.cmo gtkEdit.cmo gtkRange.cmo gtkText.cmo gtkTree.cmo \
 	gtkBuilder.cmo gtkFile.cmo gtkMain.cmo \
-	gPango.cmo gDraw.cmo gObj.cmo ogtkBaseProps.cmo gData.cmo
+	gPango.cmo gDraw.cmo ogtkBaseProps.cmo gObj.cmo gData.cmo
 MLOBJS4 = gMain.cmo gContainer.cmo gPack.cmo gButton.cmo gText.cmo \
 	gMenu.cmo gMisc.cmo gTree.cmo gFile.cmo gWindow.cmo \
 	gAssistant.cmo gBuilder.cmo \

@@ -272,18 +272,6 @@ module Widget = struct
   end
 end
 
-module Container = struct
-  include Container
-  let make_params ~cont pl ?border_width =
-    Widget.size_params pl ~cont:(fun p ->
-      cont (Property.may_cons P.border_width border_width p))
-
-  let children w =
-    let l = ref [] in
-    foreach w ~f:(fun c -> l := c :: !l);
-    List.rev !l
-end
-
 module Orientable = Orientable
 
 module Bin = Bin

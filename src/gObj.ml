@@ -340,6 +340,7 @@ end
 
 and widget obj = object (self)
   inherit gtkobj obj
+  inherit OgtkBaseProps.widget_props
   method as_widget = (obj :> Gtk.widget obj)
   method misc = new misc_ops (obj :> Gtk.widget obj)
   method drag = new drag_ops (unsafe_cast obj : Gtk.widget obj)
