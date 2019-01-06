@@ -213,7 +213,7 @@ and misc_ops : Gtk.widget obj ->
     method clear_selection_targets : Gdk.atom -> unit
     method connect : misc_signals
     method convert_selection : target:string -> ?time:int32 -> Gdk.atom -> bool
-    method create_pango_context : GPango.context_rw
+    method create_pango_context : GPango.context
     method draw : Gdk.cairo -> unit
     method grab_default : unit -> unit
     method grab_focus : unit -> unit

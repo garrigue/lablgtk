@@ -180,6 +180,8 @@ ML_4 (pango_layout_set_markup_with_accel, PangoLayout_val, SizedString_val,
       Int_val, NULL Ignore, Unit)
 ML_2 (pango_layout_set_font_description, PangoLayout_val,
       PangoFontDescription_val, Unit)
+ML_1 (pango_layout_get_font_description, PangoLayout_val,
+      Val_PangoFontDescription)
 ML_2 (pango_layout_set_width, PangoLayout_val, Int_val, Unit)
 ML_1 (pango_layout_get_width, PangoLayout_val, Val_int)
 ML_2 (pango_layout_set_wrap, PangoLayout_val, Pango_wrap_mode_val, Unit)

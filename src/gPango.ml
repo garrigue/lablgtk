@@ -63,6 +63,7 @@ class layout obj = object
   method set_markup s = Layout.set_markup obj s
   method set_markup_with_accel s c = Layout.set_markup_with_accel obj s c
   method set_font_description (fd : font_description) = Layout.set_font_description obj fd#fd
+  method get_font_description = new font_description (Layout.get_font_description obj)
   method get_width = Layout.get_width obj
   method set_width w = Layout.set_width obj w
   method get_indent = Layout.get_indent obj
@@ -100,10 +101,6 @@ and context obj = object (self)
       ?(desc = self#font_description) ?(lang = self#language) () =
     new metrics (get_metrics obj (desc#fd) (Some (Language.from_string lang)))
   method create_layout = new layout (Layout.create obj)
-end
-
-class context_rw obj = object
-  inherit context obj
   method set_font_description (desc : font_description) =
     set_font_description obj desc#fd
   method set_font_by_name desc =

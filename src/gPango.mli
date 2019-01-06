@@ -64,6 +64,7 @@ class layout :
     method get_context : context
     method get_ellipsize : Pango.Tags.ellipsize_mode
     method get_extent : Pango.rectangle
+    method get_font_description : font_description
     method get_indent : int
     method get_justify : bool
     method get_pixel_extent : Pango.rectangle
@@ -103,13 +104,6 @@ and context :
     method load_font : string -> Pango.font
     method load_fontset :
       ?desc:font_description -> ?lang:string -> unit -> Pango.font
-  end
-
-class context_rw :
-  Pango.context ->
-  object
-    inherit context
-    val obj : Pango.context
     method set_font_by_name : string -> unit
     method set_font_description : font_description -> unit
     method set_language : string -> unit

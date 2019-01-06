@@ -2,6 +2,10 @@ LablGTK changes log
 
 In Lablgtk-3.0.beta3:
 
+2019.01.06 [Claudio Sacerdoti Coen]
+  * GPango.context#get_font_description added
+  * GPango.context_rw merged into GPango.context
+
 2019.01.04 [Claudio Sacerdoti Coen]
   * added hard dependency on cairo2 (aka ocaml-cairo)
   * Gdk.cairo is now equal to Cairo.context

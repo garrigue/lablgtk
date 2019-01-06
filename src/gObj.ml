@@ -302,7 +302,7 @@ and misc_ops obj = object (self)
     Widget.modify_font obj (Pango.Font.from_string s)
   (* End deprecated since 3.0 *)
   method create_pango_context =
-    new GPango.context_rw (Widget.create_pango_context obj)
+    new GPango.context (Widget.create_pango_context obj)
   (* get functions *)
   method name = get P.name obj
   method toplevel =
