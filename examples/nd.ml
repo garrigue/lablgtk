@@ -43,34 +43,59 @@ type nd_tree_layout =
  ; ndl_premises : nd_tree_layout list option
  ; ndl_padding : float
  ; ndl_width : float       (* total width of tree *)
+ ; ndl_height : float      (* total height of tree *)
  }
 
 let map_opt f = function None -> None | Some x -> Some (f x)
 let map_opt_d d f = function None -> d | Some x -> f x
 let rec last = function [] -> assert false | [x] -> x | _::tl -> last tl
 
-let pad = 10.
+(* where the conclusions are printed *)
+type area = { x : float ; y : float ; w : float ; h : float }
+
+let font_size = ref 100
+let highlighted = ref None
+let pressed = ref false
+
+let pad () = float !font_size /. 10.
+
+let resize a d () =
+ font_size := int_of_float a#value ;
+ highlighted := None ;
+ pressed := false ;
+ d#misc#queue_draw ()
+
+let leave d _ =
+ highlighted := None ;
+ pressed := false ;
+ d#misc#queue_draw () ;
+ true
 
 (* turn a nd_tree into a nd_tree_layout by recursively computing all relevant
    sizes and by engraving strings into Pango layouts *)
 let rec layout_nd_tree cr t =
  let ndl_premises = map_opt (List.map (layout_nd_tree cr)) t.premises in
  let layout = new GPango.layout (Cairo_pango.create_layout cr) in
+ let pango_context = layout#get_context in
+ let fd = pango_context#font_description in
+ fd#modify ~size:(fd#size * !font_size / 100) () ;
+ pango_context#set_font_description fd ;
  layout#set_markup t.conclusion ;
  let width,height = layout#get_pixel_size in
  let width = float width in
  let height = float height in
- let padding = float (max 0 (map_opt_d 0 List.length ndl_premises - 1)) *. pad in
+ let padding = float (max 0 (map_opt_d 0 List.length ndl_premises - 1)) *. pad () in
  let premises_width =
   map_opt_d 0. (List.fold_left (fun acc x -> acc +. x.ndl_width) 0.) ndl_premises
    +. padding in
  let ndl_width = max width premises_width in
+ let ndl_height =
+  height +.
+   (map_opt_d 0. (List.fold_left (fun x p -> max x p.ndl_height) 0.) ndl_premises)
+ in
  let ndl_padding = max 0. (ndl_width -. premises_width) in
  { ndl_conclusion = { layout ; width ; height }
- ; ndl_premises ; ndl_padding ; ndl_width }
-
-(* where the conclusions are printed *)
-type area = { x : float ; y : float ; w : float ; h : float }
+ ; ndl_premises ; ndl_padding ; ndl_width ; ndl_height }
 
 (* If centered=true then (x,y) is the middle-point below the conclusion;
    otherwise it is the lowermost-leftmost point of the bounded box of the
@@ -108,7 +133,7 @@ and draw_premises ~map cr x y tl =
   List.fold_left
    (fun (map,x) t ->
      let map = draw_nd_tree_layout ~map cr ~centered:false x y t in
-     map,x +. t.ndl_width +. pad)
+     map,x +. t.ndl_width +. pad ())
    (map,x) tl)
 
 let areas = ref []
@@ -119,14 +144,18 @@ let look_for_area x y =
  List.find_opt
   (fun area -> inside x area.x area.w && inside y area.y area.h) !areas
 
-let highlighted = ref None
-let pressed = ref false
-
-let draw drawing_area cr =
+let draw (drawing_area : #GMisc.drawing_area) cr =
+ 
+ let l = layout_nd_tree cr test in
+ drawing_area#misc#set_size_request ~width:(int_of_float l.ndl_width)
+  ~height:(int_of_float l.ndl_height) ();
  let allocation = drawing_area#misc#allocation in
  let w = float allocation.Gtk.width in
  let h = float allocation.Gtk.height in
- let l = layout_nd_tree cr test in
+ Cairo.set_source_rgba cr 1. 1. 1. 1.;
+ Cairo.rectangle cr 0. 0. w h ;
+ Cairo.fill cr ;
+ Cairo.set_source_rgba cr 0. 0. 0. 1.;
  areas := draw_nd_tree_layout cr (w /. 2.) h l ;
  (match !highlighted with
      None -> ()
@@ -158,14 +187,26 @@ let motion_notify d b =
  true
 
 let () =
-  let w = GWindow.window ~title:"Natural deduction demo" ~width:500 ~height:400 () in
+  let w = GWindow.window ~title:"Natural deduction demo" () in
+  w#set_default_size ~width:(-1) ~height:(Gdk.Screen.height () * 3 / 4);
   ignore(w#connect#destroy ~callback:GMain.quit);
 
-  let d = GMisc.drawing_area ~packing:w#add () in
+  let b = GPack.box `VERTICAL ~packing:w#add () in
+
+  let a = GData.adjustment ~lower:50. ~value:100. ~upper:210. () in
+  let f =
+   GRange.scale `HORIZONTAL ~draw_value:false ~adjustment:a ~digits:0
+    ~packing:b#pack () in
+
+  let s = GBin.scrolled_window ~packing:b#add () in
+
+  let d = GMisc.drawing_area ~packing:s#add () in
   ignore(d#misc#connect#draw ~callback:(draw d));
   ignore(d#event#connect#button_press ~callback:(button_press d));
   ignore(d#event#connect#motion_notify ~callback:(motion_notify d));
-  d#set_events [`BUTTON_PRESS ; `POINTER_MOTION];
+  ignore(f#connect#value_changed ~callback:(resize a d));
+  ignore(d#event#connect#leave_notify ~callback:(leave d));
+  d#set_events [`BUTTON_PRESS ; `POINTER_MOTION ; `LEAVE_NOTIFY ];
 
   w#show();
   GMain.main()
