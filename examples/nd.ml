@@ -6,40 +6,53 @@
 
 type nd_tree =
  { conclusion: string
+ ; rule : string
  ; premises: nd_tree list option
  }
 
 let test =
  { conclusion = "(A ∨ D ⇒ B) ⇒ (A ⇒ C) ⇒ A ⇒ B ∧ C"
+ ; rule = "⇒<sub>i</sub>"
  ; premises = Some
    [ { conclusion = "(A ⇒ C) ⇒ A ⇒ B ∧ C"
+     ; rule = "⇒i"
      ; premises = Some
        [ { conclusion = "A ⇒ B ∧ C"
+         ; rule = "⇒i"
          ; premises = Some
            [ { conclusion = "B ∧ C"
+             ; rule = "∧i"
              ; premises = Some
                [ { conclusion = "B"
+                 ; rule = "⇒e"
                  ; premises = Some
                    [ { conclusion = "[A ∨ D ⇒ B]"
+                     ; rule = ""
                      ; premises = None }
                    ; { conclusion = "A ∨ D"
+                     ; rule = "∨i<sub>l</sub>"
                      ; premises = Some
                        [ { conclusion = "[A]"
+                         ; rule = ""
                          ; premises = None } ] } ] }
                ; { conclusion = "C"
+                 ; rule = "⇒e"
                  ; premises = Some
                    [ { conclusion = "[A ⇒ C]"
+                     ; rule = ""
                      ; premises = None }
                    ; { conclusion = "[A]"
+                     ; rule = ""
                      ; premises = None } ] } ] } ] } ] } ] }
 
-type conclusion_layout =
+type sized_layout =
  { layout : GPango.layout
  ; width : float
  ; height : float }
 
 type nd_tree_layout =
- { ndl_conclusion : conclusion_layout
+ { ndl_conclusion : sized_layout
+ ; ndl_rule : sized_layout
  ; ndl_premises : nd_tree_layout list option
  ; ndl_padding : float
  ; ndl_width : float       (* total width of tree *)
@@ -57,7 +70,10 @@ let font_size = ref 100
 let highlighted = ref None
 let pressed = ref false
 
-let pad () = float !font_size /. 10.
+(* the pad must leave enough space for rule names *)
+let pad () = float !font_size *. 3. /. 10.
+(* the minipad is put between the inference rule and the rule name *)
+let minipad () = pad () /. 70.
 
 let resize a d () =
  font_size := int_of_float a#value ;
@@ -71,19 +87,22 @@ let leave d _ =
  d#misc#queue_draw () ;
  true
 
+let layout_text cr ?(percent=100) text =
+ let layout = new GPango.layout (Cairo_pango.create_layout cr) in
+ let pango_context = layout#get_context in
+ let fd = pango_context#font_description in
+ fd#modify ~size:(fd#size * !font_size * percent / 10000) () ;
+ pango_context#set_font_description fd ;
+ layout#set_markup text ;
+ let width,height = layout#get_pixel_size in
+ { layout; width = float width ; height = float height }
+
 (* turn a nd_tree into a nd_tree_layout by recursively computing all relevant
    sizes and by engraving strings into Pango layouts *)
 let rec layout_nd_tree cr t =
  let ndl_premises = map_opt (List.map (layout_nd_tree cr)) t.premises in
- let layout = new GPango.layout (Cairo_pango.create_layout cr) in
- let pango_context = layout#get_context in
- let fd = pango_context#font_description in
- fd#modify ~size:(fd#size * !font_size / 100) () ;
- pango_context#set_font_description fd ;
- layout#set_markup t.conclusion ;
- let width,height = layout#get_pixel_size in
- let width = float width in
- let height = float height in
+ let {layout;width;height} = layout_text cr t.conclusion in
+ let ndl_rule = layout_text cr ~percent:75 t.rule in
  let padding = float (max 0 (map_opt_d 0 List.length ndl_premises - 1)) *. pad () in
  let premises_width =
   map_opt_d 0. (List.fold_left (fun acc x -> acc +. x.ndl_width) 0.) ndl_premises
@@ -93,8 +112,8 @@ let rec layout_nd_tree cr t =
   height +.
    (map_opt_d 0. (List.fold_left (fun x p -> max x p.ndl_height) 0.) ndl_premises)
  in
- let ndl_padding = max 0. (ndl_width -. premises_width) in
- { ndl_conclusion = { layout ; width ; height }
+ let ndl_padding = max 0. (width -. premises_width) in
+ { ndl_conclusion = { layout ; width ; height } ; ndl_rule
  ; ndl_premises ; ndl_padding ; ndl_width ; ndl_height }
 
 (* If centered=true then (x,y) is the middle-point below the conclusion;
@@ -113,19 +132,24 @@ let rec draw_nd_tree_layout ?(map = []) ?(centered = true) cr x y t =
  match t.ndl_premises with
     None -> map
   | Some l ->
-     if t.ndl_padding = 0. then begin
+     if l <> [] && let fst = List.hd l in let lst = last l in
+        2. *. pw -. fst.ndl_width -. lst.ndl_width
+        +. fst.ndl_conclusion.width +. lst.ndl_conclusion.width
+     >= 2. *. cw
+     then begin
       let fst = List.hd l in
       let lst = last l in
       Cairo.move_to cr
         (x -. (pw -. fst.ndl_width +. fst.ndl_conclusion.width) /. 2.) y ;
       Cairo.line_to cr
         (x +. (pw -. lst.ndl_width +. lst.ndl_conclusion.width) /. 2.) y ;
-      Cairo.stroke cr ;
      end else begin
       Cairo.move_to cr (x -. cw /. 2.) y ;
       Cairo.line_to cr (x +. cw /. 2.) y ;
-      Cairo.stroke cr ;
      end ;
+     Cairo.rel_move_to cr (minipad ()) (-. t.ndl_rule.height /. 2.) ;
+     Cairo_pango.show_layout cr t.ndl_rule.layout#as_layout ;
+     Cairo.stroke cr ;
      draw_premises ~map cr (x -. pw /. 2. +. t.ndl_padding /. 2.) y l
 
 and draw_premises ~map cr x y tl =
@@ -188,7 +212,7 @@ let motion_notify d b =
 
 let () =
   let w = GWindow.window ~title:"Natural deduction demo" () in
-  w#set_default_size ~width:(-1) ~height:(Gdk.Screen.height () * 3 / 4);
+  w#set_default_size ~width:400 ~height:(Gdk.Screen.height () * 3 / 4);
   ignore(w#connect#destroy ~callback:GMain.quit);
 
   let b = GPack.box `VERTICAL ~packing:w#add () in
