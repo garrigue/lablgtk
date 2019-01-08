@@ -384,6 +384,20 @@ end
 let source_mark ?category () =
   new source_mark (SourceMark.create ?category [])
 
+(** {2 GtkSourceMarkAttributes} *)
+
+class source_mark_attributes (obj: GtkSourceView3_types.source_mark_attributes obj)
+=
+object (self)
+  method as_source_mark_attributes = obj
+  val obj = obj
+  inherit source_mark_attributes_props
+end
+
+let source_mark_attributes () =
+  let obj = SourceMarkAttributes.create [] in
+  new source_mark_attributes obj
+
 (** {2 GtkSourceUndoManager} *)
 
 class source_undo_manager_signals obj' =
@@ -572,6 +586,10 @@ object (self)
   method set_draw_spaces flags = SourceView.set_draw_spaces obj flags
 
   method completion = new source_completion (SourceView.get_completion obj)
+
+  method set_mark_attributes ~category (attrs: source_mark_attributes) priority =
+    SourceView.set_mark_attributes
+      obj ~category attrs#as_source_mark_attributes priority
 
 end
 

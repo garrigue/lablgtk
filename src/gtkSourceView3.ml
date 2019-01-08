@@ -35,6 +35,8 @@ external _gtk_source_style_scheme_manager_init: unit -> unit = "ml_gtk_source_st
 external _gtk_source_language_init: unit -> unit = "ml_gtk_source_language_init"
 external _gtk_source_language_manager_init: unit -> unit =
   "ml_gtk_source_language_manager_init"
+external _gtk_source_mark_attributes_init: unit -> unit =
+  "ml_gtk_source_mark_attributes_init"
 external _gtk_source_buffer_init: unit -> unit = "ml_gtk_source_buffer_init"
 external _gtk_source_view_init: unit -> unit = "ml_gtk_source_view_init"
 
@@ -44,6 +46,7 @@ let () =
   _gtk_source_style_scheme_manager_init ();
   _gtk_source_language_init ();
   _gtk_source_language_manager_init ();
+  _gtk_source_mark_attributes_init ();
   _gtk_source_buffer_init ();
   _gtk_source_view_init ()
 
@@ -267,6 +270,13 @@ struct
     = "ml_gtk_source_mark_next"
   external prev: [> `sourcemark] obj -> string option -> source_mark obj option
     = "ml_gtk_source_mark_prev"
+end
+
+module SourceMarkAttributes =
+struct
+  include SourceMarkAttributes
+  external new_attribute: unit -> source_mark_attributes obj =
+    "ml_gtk_source_mark_attributes_new"
 end
 
 module SourceViewMisc =

@@ -97,6 +97,13 @@ CAMLprim value ml_gtk_source_language_manager_init(value unit)
     return Val_GType(t);
 }
 
+CAMLprim value ml_gtk_source_mark_attributes_init(value unit)
+{	/* Since these are declared const, must force gcc to call them! */
+    GType t =
+      gtk_source_mark_attributes_get_type();
+    return Val_GType(t);
+}
+
 CAMLprim value ml_gtk_source_buffer_init(value unit)
 {	/* Since these are declared const, must force gcc to call them! */
     GType t = gtk_source_buffer_get_type();
@@ -169,6 +176,10 @@ static Make_Val_option(GtkSourceLanguage)
 #define Val_GtkSourceMark_new(val) (Val_GObject_new((GObject*)val))
 static Make_Val_option(GtkSourceMark)
 
+#define GtkSourceMarkAttributes_val(val) check_cast(GTK_SOURCE_MARK_ATTRIBUTES,val)
+#define Val_GtkSourceMarkAttributes(val)  (Val_GObject((GObject*)val))
+#define Val_GtkSourceMarkAttributes_new(val) (Val_GObject_new((GObject*)val))
+
 #define GtkSourceUndoManager_val(val) check_cast(GTK_SOURCE_UNDO_MANAGER,val)
 #define Val_GtkSourceUndoManager(val) (Val_GObject((GObject*)val))
 #define Val_GtkSourceUndoManager_new(val) (Val_GObject_new((GObject*)val))
@@ -187,6 +198,11 @@ static Make_Val_option(GtkSourceMark)
 static value val_gtksourcemark(gpointer v)
 {
   return Val_GtkSourceMark(v);
+}
+
+static value val_gtksourcemarkattributes(gpointer v)
+{
+  return Val_GtkSourceMarkAttributes(v);
 }
 
 value source_marker_list_of_GSList(gpointer list)
@@ -574,6 +590,12 @@ ML_2 (gtk_source_mark_new, String_val, String_val, Val_GtkSourceMark_new)
 ML_1 (gtk_source_mark_get_category, GtkSourceMark_val, Val_string)
 ML_2 (gtk_source_mark_next, GtkSourceMark_val, String_option_val, Val_option_GtkSourceMark)
 ML_2 (gtk_source_mark_prev, GtkSourceMark_val, String_option_val, Val_option_GtkSourceMark)
+
+// SourceMarkAttributes
+
+ML_0(gtk_source_mark_attributes_new,GtkSourceMarkAttributes_val)
+ML_4(gtk_source_view_set_mark_attributes, GtkSourceView_val, String_val,
+     GtkSourceMarkAttributes_val, Int_val, Unit)
 
 // SourceUndoManager
 
