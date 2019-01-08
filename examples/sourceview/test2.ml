@@ -7,7 +7,7 @@
 (**************************************************************************)
 
 (* Compile with 
-   ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview2.cma gtkInit.cmo test2.ml
+   ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview3.cma gtkInit.cmo test2.ml
    Run with 
    CAML_LD_LIBRARY_PATH=../../src ./viewer
 *)
@@ -20,7 +20,7 @@ let font_name = "Monospace 10"
 
 let print_lang lang = prerr_endline (sprintf "language: %s" lang#name)
 
-let print_lang_dirs (language_manager:GSourceView2.source_language_manager) =
+let print_lang_dirs (language_manager:GSourceView3.source_language_manager) =
   let i = ref 0 in
   prerr_endline "lang_dirs:";
   List.iter
@@ -35,7 +35,7 @@ let scrolled_win = GBin.scrolled_window
     ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC
     ~packing:vbox#add ()
 let source_view =
-  GSourceView2.source_view
+  GSourceView3.source_view
     ~auto_indent:true
      ~insert_spaces_instead_of_tabs:true ~tab_width:2
     ~show_line_numbers:true
@@ -44,7 +44,7 @@ let source_view =
     ~packing:scrolled_win#add ~height:500 ~width:900
     ()
 
-let language_manager = GSourceView2.source_language_manager ~default:true
+let language_manager = GSourceView3.source_language_manager ~default:true
 
 let lang =
   match language_manager#guess_language ~content_type:lang_mime_type () with
@@ -55,12 +55,11 @@ let _ =
   let text =
     let ic = open_in "test.ml" in
     let size = in_channel_length ic in
-    let buf = String.create size in
+    let buf = Bytes.create size in
     really_input ic buf 0 size;
     close_in ic;
-    buf
+    Bytes.to_string buf
   in
-  win#set_allow_shrink true;
   source_view#misc#modify_font_by_name font_name;
   print_lang_dirs language_manager;
   print_lang lang;
@@ -75,31 +74,31 @@ let _ =
   ignore (win#connect#destroy (fun _ -> GMain.quit ()));
 
   let category = "current" in
+  let attributes = GSourceView3.source_mark_attributes () in
+  let pixbuf =  source_view#misc#render_icon ~size:`DIALOG `DIALOG_INFO in
+  attributes#set_pixbuf pixbuf;
+  source_view#set_mark_attributes ~category attributes 10;
   let current_line_bookmark = 
     source_view#source_buffer#create_source_mark 
       ~category
       (source_view#source_buffer#get_iter `START) 
   in
-  let pixbuf =  source_view#misc#render_icon ~size:`DIALOG `DIALOG_INFO in
-  source_view#set_mark_category_background ~category (Some (GDraw.color (`NAME "light blue")));
-  source_view#set_mark_category_pixbuf ~category (Some pixbuf);
   ignore (source_view#source_buffer#connect#mark_set 
 	    (fun where mark ->
                if GtkText.Mark.get_name mark = Some "insert"
-               then begin 
-                 prerr_endline "move_cursor";
+               then begin
+                 let where = where#set_line_offset 0 in
                  source_view#source_buffer#move_mark 
                    current_line_bookmark#coerce
-                   ~where
-                 ;
+                   ~where;
                end));
-  ignore (source_view#connect#undo (fun _ -> prerr_endline "undo")); 
+  ignore (source_view#connect#undo (fun _ -> prerr_endline "undo"));
   win#show ();
   GMain.Main.main ()
 
 
 (*
 Local Variables:
-compile-command: "ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview2.cma gtkInit.cmo test2.ml"
+compile-command: "ocamlc -o viewer -I ../../src/ lablgtk.cma lablgtksourceview3.cma gtkInit.cmo test2.ml"
 End:
 *)
