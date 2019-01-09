@@ -200,11 +200,6 @@ static value val_gtksourcemark(gpointer v)
   return Val_GtkSourceMark(v);
 }
 
-static value val_gtksourcemarkattributes(gpointer v)
-{
-  return Val_GtkSourceMarkAttributes(v);
-}
-
 value source_marker_list_of_GSList(gpointer list)
 {
   return Val_GSList(list, val_gtksourcemark);
