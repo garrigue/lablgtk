@@ -591,6 +591,13 @@ object (self)
     SourceView.set_mark_attributes
       obj ~category attrs#as_source_mark_attributes priority
 
+  method get_mark_attributes ~category =
+    match SourceView.get_mark_attributes obj category with
+    | Some obj -> Some (new source_mark_attributes obj)
+    | None -> None
+
+  method get_mark_priority ~category = SourceView.get_mark_priority obj category
+
 end
 
 let source_view ?source_buffer ?draw_spaces =

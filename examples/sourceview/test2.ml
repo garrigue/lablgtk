@@ -87,6 +87,14 @@ let _ =
 	    (fun where mark ->
                if GtkText.Mark.get_name mark = Some "insert"
                then begin
+                 let prio = source_view#get_mark_priority ~category in
+                 Printf.eprintf "priority is %d\n%!" prio;
+                 (match source_view#get_mark_attributes ~category with
+                  | Some _ -> prerr_endline "has attributes"
+                  | None -> prerr_endline "no attribute");
+                 (match source_view#get_mark_attributes ~category:"nonexistent" with
+                  | Some _ -> prerr_endline "shouldn't have attributes"
+                  | None -> prerr_endline "no attribute as expected");
                  let where = where#set_line_offset 0 in
                  source_view#source_buffer#move_mark 
                    current_line_bookmark#coerce

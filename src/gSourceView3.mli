@@ -507,6 +507,11 @@ object
   method set_mark_attributes:
     category:string -> source_mark_attributes -> int -> unit
 
+  method get_mark_attributes:
+    category:string -> source_mark_attributes option
+
+  method get_mark_priority: category:string -> int
+
 (*
   method get_mark_category_priority:
     category:string -> int

@@ -258,6 +258,13 @@ struct
     "ml_gtk_source_view_get_mark_category_pixbuf"
 *)
 
+  external get_mark_attributes:
+    [>`sourceview] obj -> category:string -> source_mark_attributes obj option =
+    "ml_gtk_source_view_get_mark_attributes"
+
+  external get_mark_priority: [>`sourceview] obj -> category:string -> int =
+    "ml_gtk_source_view_get_mark_priority"
+
   (* Should probably not exist *)
   external set_cursor_color:   [>`sourceview] obj -> Gdk.color -> unit =
     "ml_gtk_modify_cursor_color"

@@ -592,6 +592,34 @@ ML_0(gtk_source_mark_attributes_new,GtkSourceMarkAttributes_val)
 ML_4(gtk_source_view_set_mark_attributes, GtkSourceView_val, String_val,
      GtkSourceMarkAttributes_val, Int_val, Unit)
 
+CAMLprim value ml_gtk_source_view_get_mark_attributes(
+  value obj, value category) {
+  CAMLparam2(obj,category);
+  CAMLlocal2(attr_opt,result);
+  GtkSourceMarkAttributes* attributes;
+  int prio;
+  attributes =
+    gtk_source_view_get_mark_attributes(
+      GtkSourceView_val(obj), String_val(category), &prio);
+  if (attributes) {
+    attr_opt = Val_copy(attributes);
+    result = alloc_small(1,0);
+    Field(result,0) = attr_opt;
+  }
+  else
+    result = Val_unit;
+  CAMLreturn(result);
+}
+
+CAMLprim value ml_gtk_source_view_get_mark_priority(
+  value obj, value category) {
+  CAMLparam2(obj, category);
+  int prio = 0;
+  gtk_source_view_get_mark_attributes(
+    GtkSourceView_val(obj), String_val(category), &prio);
+  CAMLreturn(Val_int(prio));
+}
+
 // SourceUndoManager
 
 // Defining a custom one: boilerplate
