@@ -4,6 +4,7 @@ In Lablgtk-3.0.beta3:
 
 2019.01.11 [Jacques]
   * Update propcc.ml4 as suggested by Virgile Prevosto
+  * Merge Lablgtk3 source mark attributes #35 by Virgile Prevosto
 
 2019.01.11 [Claudio Sacerdoti Coen]
   * added hard dependency on cairo2 (aka ocaml-cairo)
