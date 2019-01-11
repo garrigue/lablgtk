@@ -32,6 +32,7 @@ header {
 
 boxed {
   GdkEvent    "GdkEvent.any"
+  GdkRGBA     "Gdk.rgba"
 }
 
 classes {
@@ -165,6 +166,13 @@ class SourceMark type "source_mark obj" set wrap wrapsig : GObject {
  "category"                 gchararray_opt  : Read / Write / Construct Only
 }
 
+class SourceMarkAttributes type "source_mark_attributes obj" set wrap wrapsig: GObject {
+"background" GdkRGBA  : Read / Write
+(* "icon" GIcon does not seem to have been ported in lablgtk *)
+"icon-name" string : Read / Write
+"pixbuf" GdkPixbuf : Read / Write
+}
+
 class SourceUndoManager type "source_undo_manager obj" set wrap wrapsig : GObject {
 
   method can_undo : "bool" / Wrap
@@ -212,6 +220,9 @@ class SourceView type "source_view obj" set wrap wrapsig : Widget {
 
   method get_draw_spaces : "source_draw_spaces_flags list"
   method set_draw_spaces : "source_draw_spaces_flags list -> unit"
+
+  method set_mark_attributes:
+   "category:string -> source_mark_attributes obj -> int -> unit"
 
 (*
   method get_mark_category_priority :

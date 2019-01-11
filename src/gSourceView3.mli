@@ -316,6 +316,21 @@ end
 
 val source_mark : ?category:string -> unit -> source_mark
 
+(** {2 GtkSourceMarkAttributes} *)
+class source_mark_attributes:
+  ((GtkSourceView3_types.source_mark_attributes obj) as 'a) ->
+  object
+    method as_source_mark_attributes: 'a
+    method set_background: Gdk.rgba -> unit
+    method set_icon_name: string -> unit
+    method set_pixbuf: GdkPixbuf.pixbuf -> unit
+    method background: Gdk.rgba
+    method icon_name: string
+    method pixbuf: GdkPixbuf.pixbuf
+  end
+
+val source_mark_attributes: unit -> source_mark_attributes
+
 (** {2 GtkSourceUndoManager} *)
 
 class source_undo_manager_signals :
@@ -488,6 +503,14 @@ object
     source_draw_spaces_flags list
   method set_draw_spaces:
     source_draw_spaces_flags list -> unit
+
+  method set_mark_attributes:
+    category:string -> source_mark_attributes -> int -> unit
+
+  method get_mark_attributes:
+    category:string -> source_mark_attributes option
+
+  method get_mark_priority: category:string -> int
 
 (*
   method get_mark_category_priority:
