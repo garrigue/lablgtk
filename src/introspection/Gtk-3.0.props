@@ -1,0 +1,3889 @@
+class AboutDialog set wrap wrapsig : Dialog {
+  method add_credit_section : "utf8 ->  -> none"
+  method get_artists : ""
+  method get_authors : ""
+  method get_comments : "utf8"
+  method get_copyright : "utf8"
+  method get_documenters : ""
+  method get_license : "utf8"
+  method get_license_type : "License"
+  method get_logo : "GdkPixbuf.Pixbuf"
+  method get_logo_icon_name : "utf8"
+  method get_program_name : "utf8"
+  method get_translator_credits : "utf8"
+  method get_version : "utf8"
+  method get_website : "utf8"
+  method get_website_label : "utf8"
+  method get_wrap_license : "gboolean"
+  method set_artists : " -> none"
+  method set_authors : " -> none"
+  method set_comments : "utf8 -> none"
+  method set_copyright : "utf8 -> none"
+  method set_documenters : " -> none"
+  method set_license : "utf8 -> none"
+  method set_license_type : "License -> none"
+  method set_logo : "GdkPixbuf.Pixbuf -> none"
+  method set_logo_icon_name : "utf8 -> none"
+  method set_program_name : "utf8 -> none"
+  method set_translator_credits : "utf8 -> none"
+  method set_version : "utf8 -> none"
+  method set_website : "utf8 -> none"
+  method set_website_label : "utf8 -> none"
+  method set_wrap_license : "gboolean -> none"
+  "artists"  : Read / Write
+  "authors"  : Read / Write
+  "comments" utf8 : Read / Write
+  "copyright" utf8 : Read / Write
+  "documenters"  : Read / Write
+  "license" utf8 : Read / Write
+  "license-type" License : Read / Write
+  "logo" GdkPixbuf.Pixbuf : Read / Write
+  "logo-icon-name" utf8 : Read / Write
+  "program-name" utf8 : Read / Write
+  "translator-credits" utf8 : Read / Write
+  "version" utf8 : Read / Write
+  "website" utf8 : Read / Write
+  "website-label" utf8 : Read / Write
+  "wrap-license" gboolean : Read / Write
+  signal activate_link : utf8 -> gboolean
+}
+
+class AccelLabel set wrap wrapsig : Label {
+  method get_accel : "guint -> Gdk.ModifierType -> none"
+  method get_accel_widget : "Widget"
+  method get_accel_width : "guint"
+  method refetch : "gboolean"
+  method set_accel : "guint -> Gdk.ModifierType -> none"
+  method set_accel_closure : "GObject.Closure -> none"
+  method set_accel_widget : "Widget -> none"
+  "accel-closure" GObject.Closure : Read / Write
+  "accel-widget" Widget : Read / Write
+}
+
+class Accessible set wrap wrapsig : Atk.Object {
+  method connect_widget_destroyed : "none"
+  method get_widget : "Widget"
+  method set_widget : "Widget -> none"
+  "widget" Widget : Read / Write
+}
+
+class ActionBar set wrap wrapsig : Bin {
+  method get_center_widget : "Widget"
+  method pack_end : "Widget -> none"
+  method pack_start : "Widget -> none"
+  method set_center_widget : "Widget -> none"
+}
+
+class Adjustment set wrap wrapsig : GObject.InitiallyUnowned {
+  method changed : "none"
+  method clamp_page : "gdouble -> gdouble -> none"
+  method configure : "gdouble -> gdouble -> gdouble -> gdouble -> gdouble -> gdouble -> none"
+  method get_lower : "gdouble"
+  method get_minimum_increment : "gdouble"
+  method get_page_increment : "gdouble"
+  method get_page_size : "gdouble"
+  method get_step_increment : "gdouble"
+  method get_upper : "gdouble"
+  method get_value : "gdouble"
+  method set_lower : "gdouble -> none"
+  method set_page_increment : "gdouble -> none"
+  method set_page_size : "gdouble -> none"
+  method set_step_increment : "gdouble -> none"
+  method set_upper : "gdouble -> none"
+  method set_value : "gdouble -> none"
+  method value_changed : "none"
+  "lower" gdouble : Read / Write
+  "page-increment" gdouble : Read / Write
+  "page-size" gdouble : Read / Write
+  "step-increment" gdouble : Read / Write
+  "upper" gdouble : Read / Write
+  "value" gdouble : Read / Write
+  signal changed :  -> none
+  signal value_changed :  -> none
+}
+
+class Alignment set wrap wrapsig : Bin {
+  method get_padding : "guint -> guint -> guint -> guint -> none"
+  method set : "gfloat -> gfloat -> gfloat -> gfloat -> none"
+  method set_padding : "guint -> guint -> guint -> guint -> none"
+  "bottom-padding" guint : Read / Write
+  "left-padding" guint : Read / Write
+  "right-padding" guint : Read / Write
+  "top-padding" guint : Read / Write
+  "xalign" gfloat : Read / Write
+  "xscale" gfloat : Read / Write
+  "yalign" gfloat : Read / Write
+  "yscale" gfloat : Read / Write
+}
+
+class AppChooserButton set wrap wrapsig : ComboBox {
+  method append_custom_item : "utf8 -> utf8 -> Gio.Icon -> none"
+  method append_separator : "none"
+  method get_heading : "utf8"
+  method get_show_default_item : "gboolean"
+  method get_show_dialog_item : "gboolean"
+  method set_active_custom_item : "utf8 -> none"
+  method set_heading : "utf8 -> none"
+  method set_show_default_item : "gboolean -> none"
+  method set_show_dialog_item : "gboolean -> none"
+  "heading" utf8 : Read / Write
+  "show-default-item" gboolean : Read / Write
+  "show-dialog-item" gboolean : Read / Write
+  signal custom_item_activated : utf8 -> none
+}
+
+class AppChooserDialog set wrap wrapsig : Dialog {
+  method get_heading : "utf8"
+  method get_widget : "Widget"
+  method set_heading : "utf8 -> none"
+  "gfile" Gio.File : Read / Write
+  "heading" utf8 : Read / Write
+}
+
+class AppChooserWidget set wrap wrapsig : Box {
+  method get_default_text : "utf8"
+  method get_show_all : "gboolean"
+  method get_show_default : "gboolean"
+  method get_show_fallback : "gboolean"
+  method get_show_other : "gboolean"
+  method get_show_recommended : "gboolean"
+  method set_default_text : "utf8 -> none"
+  method set_show_all : "gboolean -> none"
+  method set_show_default : "gboolean -> none"
+  method set_show_fallback : "gboolean -> none"
+  method set_show_other : "gboolean -> none"
+  method set_show_recommended : "gboolean -> none"
+  "default-text" utf8 : Read / Write
+  "show-all" gboolean : Read / Write
+  "show-default" gboolean : Read / Write
+  "show-fallback" gboolean : Read / Write
+  "show-other" gboolean : Read / Write
+  "show-recommended" gboolean : Read / Write
+  signal application_activated : Gio.AppInfo -> none
+  signal application_selected : Gio.AppInfo -> none
+  signal populate_popup : MenuGio.AppInfo -> none
+}
+
+class Application set wrap wrapsig : Gio.Application {
+  method add_accelerator : "utf8 -> utf8 -> GLib.Variant -> none"
+  method add_window : "Window -> none"
+  method get_accels_for_action : "utf8 -> "
+  method get_actions_for_accel : "utf8 -> "
+  method get_active_window : "Window"
+  method get_app_menu : "Gio.MenuModel"
+  method get_menu_by_id : "utf8 -> Gio.Menu"
+  method get_menubar : "Gio.MenuModel"
+  method get_window_by_id : "guint -> Window"
+  method get_windows : "GLib.List"
+  method inhibit : "Window -> ApplicationInhibitFlags -> utf8 -> guint"
+  method is_inhibited : "ApplicationInhibitFlags -> gboolean"
+  method list_action_descriptions : ""
+  method prefers_app_menu : "gboolean"
+  method remove_accelerator : "utf8 -> GLib.Variant -> none"
+  method remove_window : "Window -> none"
+  method set_accels_for_action : "utf8 ->  -> none"
+  method set_app_menu : "Gio.MenuModel -> none"
+  method set_menubar : "Gio.MenuModel -> none"
+  method uninhibit : "guint -> none"
+  "active-window" Window : Read
+  "app-menu" Gio.MenuModel : Read / Write
+  "menubar" Gio.MenuModel : Read / Write
+  "register-session" gboolean : Read / Write
+  "screensaver-active" gboolean : Read
+  signal window_added : Window -> none
+  signal window_removed : Window -> none
+}
+
+class ApplicationWindow set wrap wrapsig : Window {
+  method get_help_overlay : "ShortcutsWindow"
+  method get_id : "guint"
+  method get_show_menubar : "gboolean"
+  method set_help_overlay : "ShortcutsWindow -> none"
+  method set_show_menubar : "gboolean -> none"
+  "show-menubar" gboolean : Read / Write
+}
+
+class Arrow set wrap wrapsig : Misc {
+  method set : "ArrowType -> ShadowType -> none"
+  "arrow-type" ArrowType : Read / Write
+  "shadow-type" ShadowType : Read / Write
+}
+
+class ArrowAccessible set wrap wrapsig : WidgetAccessible {
+}
+
+class AspectFrame set wrap wrapsig : Frame {
+  method set : "gfloat -> gfloat -> gfloat -> gboolean -> none"
+  "obey-child" gboolean : Read / Write
+  "ratio" gfloat : Read / Write
+  "xalign" gfloat : Read / Write
+  "yalign" gfloat : Read / Write
+}
+
+class Assistant set wrap wrapsig : Window {
+  method add_action_widget : "Widget -> none"
+  method append_page : "Widget -> gint"
+  method commit : "none"
+  method get_current_page : "gint"
+  method get_n_pages : "gint"
+  method get_nth_page : "gint -> Widget"
+  method get_page_complete : "Widget -> gboolean"
+  method get_page_has_padding : "Widget -> gboolean"
+  method get_page_header_image : "Widget -> GdkPixbuf.Pixbuf"
+  method get_page_side_image : "Widget -> GdkPixbuf.Pixbuf"
+  method get_page_title : "Widget -> utf8"
+  method get_page_type : "Widget -> AssistantPageType"
+  method insert_page : "Widget -> gint -> gint"
+  method next_page : "none"
+  method prepend_page : "Widget -> gint"
+  method previous_page : "none"
+  method remove_action_widget : "Widget -> none"
+  method remove_page : "gint -> none"
+  method set_current_page : "gint -> none"
+  method set_forward_page_func : "AssistantPageFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_page_complete : "Widget -> gboolean -> none"
+  method set_page_has_padding : "Widget -> gboolean -> none"
+  method set_page_header_image : "Widget -> GdkPixbuf.Pixbuf -> none"
+  method set_page_side_image : "Widget -> GdkPixbuf.Pixbuf -> none"
+  method set_page_title : "Widget -> utf8 -> none"
+  method set_page_type : "Widget -> AssistantPageType -> none"
+  method update_buttons_state : "none"
+  "use-header-bar" gint : Read / Write
+  signal apply :  -> none
+  signal cancel :  -> none
+  signal close :  -> none
+  signal escape :  -> none
+  signal prepare : Widget -> none
+}
+
+class Bin abstract set wrap wrapsig : Container {
+  method get_child : "Widget"
+}
+
+class BooleanCellAccessible set wrap wrapsig : RendererCellAccessible {
+}
+
+class Box set wrap wrapsig : Container {
+  method get_baseline_position : "BaselinePosition"
+  method get_center_widget : "Widget"
+  method get_homogeneous : "gboolean"
+  method get_spacing : "gint"
+  method pack_end : "Widget -> gboolean -> gboolean -> guint -> none"
+  method pack_start : "Widget -> gboolean -> gboolean -> guint -> none"
+  method query_child_packing : "Widget -> gboolean -> gboolean -> guint -> PackType -> none"
+  method reorder_child : "Widget -> gint -> none"
+  method set_baseline_position : "BaselinePosition -> none"
+  method set_center_widget : "Widget -> none"
+  method set_child_packing : "Widget -> gboolean -> gboolean -> guint -> PackType -> none"
+  method set_homogeneous : "gboolean -> none"
+  method set_spacing : "gint -> none"
+  "baseline-position" BaselinePosition : Read / Write
+  "homogeneous" gboolean : Read / Write
+  "spacing" gint : Read / Write
+}
+
+class Button set wrap wrapsig : Bin {
+  method clicked : "none"
+  method enter : "none"
+  method get_alignment : "gfloat -> gfloat -> none"
+  method get_always_show_image : "gboolean"
+  method get_event_window : "Gdk.Window"
+  method get_focus_on_click : "gboolean"
+  method get_image : "Widget"
+  method get_image_position : "PositionType"
+  method get_label : "utf8"
+  method get_relief : "ReliefStyle"
+  method get_use_stock : "gboolean"
+  method get_use_underline : "gboolean"
+  method leave : "none"
+  method pressed : "none"
+  method released : "none"
+  method set_alignment : "gfloat -> gfloat -> none"
+  method set_always_show_image : "gboolean -> none"
+  method set_focus_on_click : "gboolean -> none"
+  method set_image : "Widget -> none"
+  method set_image_position : "PositionType -> none"
+  method set_label : "utf8 -> none"
+  method set_relief : "ReliefStyle -> none"
+  method set_use_stock : "gboolean -> none"
+  method set_use_underline : "gboolean -> none"
+  "always-show-image" gboolean : Read / Write
+  "image" Widget : Read / Write
+  "image-position" PositionType : Read / Write
+  "label" utf8 : Read / Write
+  "relief" ReliefStyle : Read / Write
+  "use-stock" gboolean : Read / Write
+  "use-underline" gboolean : Read / Write
+  "xalign" gfloat : Read / Write
+  "yalign" gfloat : Read / Write
+  signal activate :  -> none
+  signal clicked :  -> none
+  signal enter :  -> none
+  signal leave :  -> none
+  signal pressed :  -> none
+  signal released :  -> none
+}
+
+class ButtonAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class ButtonBox set wrap wrapsig : Box {
+  method get_child_non_homogeneous : "Widget -> gboolean"
+  method get_child_secondary : "Widget -> gboolean"
+  method get_layout : "ButtonBoxStyle"
+  method set_child_non_homogeneous : "Widget -> gboolean -> none"
+  method set_child_secondary : "Widget -> gboolean -> none"
+  method set_layout : "ButtonBoxStyle -> none"
+  "layout-style" ButtonBoxStyle : Read / Write
+}
+
+class Calendar set wrap wrapsig : Widget {
+  method clear_marks : "none"
+  method get_date : "guint -> guint -> guint -> none"
+  method get_day_is_marked : "guint -> gboolean"
+  method get_detail_height_rows : "gint"
+  method get_detail_width_chars : "gint"
+  method get_display_options : "CalendarDisplayOptions"
+  method mark_day : "guint -> none"
+  method select_day : "guint -> none"
+  method select_month : "guint -> guint -> none"
+  method set_detail_func : "CalendarDetailFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_detail_height_rows : "gint -> none"
+  method set_detail_width_chars : "gint -> none"
+  method set_display_options : "CalendarDisplayOptions -> none"
+  method unmark_day : "guint -> none"
+  "day" gint : Read / Write
+  "detail-height-rows" gint : Read / Write
+  "detail-width-chars" gint : Read / Write
+  "month" gint : Read / Write
+  "no-month-change" gboolean : Read / Write
+  "show-day-names" gboolean : Read / Write
+  "show-details" gboolean : Read / Write
+  "show-heading" gboolean : Read / Write
+  "show-week-numbers" gboolean : Read / Write
+  "year" gint : Read / Write
+  signal day_selected :  -> none
+  signal day_selected_double_click :  -> none
+  signal month_changed :  -> none
+  signal next_month :  -> none
+  signal next_year :  -> none
+  signal prev_month :  -> none
+  signal prev_year :  -> none
+}
+
+class CellAccessible set wrap wrapsig : Accessible {
+}
+
+class CellArea abstract set wrap wrapsig : GObject.InitiallyUnowned {
+  method activate : "CellAreaContext -> Widget -> Gdk.Rectangle -> CellRendererState -> gboolean -> gboolean"
+  method activate_cell : "Widget -> CellRenderer -> Gdk.Event -> Gdk.Rectangle -> CellRendererState -> gboolean"
+  method add : "CellRenderer -> none"
+  method add_focus_sibling : "CellRenderer -> CellRenderer -> none"
+  method add_with_properties : "CellRenderer -> utf8 ->  -> none"
+  method apply_attributes : "TreeModel -> TreeIter -> gboolean -> gboolean -> none"
+  method attribute_connect : "CellRenderer -> utf8 -> gint -> none"
+  method attribute_disconnect : "CellRenderer -> utf8 -> none"
+  method attribute_get_column : "CellRenderer -> utf8 -> gint"
+  method cell_get : "CellRenderer -> utf8 ->  -> none"
+  method cell_get_property : "CellRenderer -> utf8 -> GObject.Value -> none"
+  method cell_get_valist : "CellRenderer -> utf8 -> va_list -> none"
+  method cell_set : "CellRenderer -> utf8 ->  -> none"
+  method cell_set_property : "CellRenderer -> utf8 -> GObject.Value -> none"
+  method cell_set_valist : "CellRenderer -> utf8 -> va_list -> none"
+  method copy_context : "CellAreaContext -> CellAreaContext"
+  method create_context : "CellAreaContext"
+  method event : "CellAreaContext -> Widget -> Gdk.Event -> Gdk.Rectangle -> CellRendererState -> gint"
+  method focus : "DirectionType -> gboolean"
+  method foreach : "CellCallback -> gpointer -> none"
+  method foreach_alloc : "CellAreaContext -> Widget -> Gdk.Rectangle -> Gdk.Rectangle -> CellAllocCallback -> gpointer -> none"
+  method get_cell_allocation : "CellAreaContext -> Widget -> CellRenderer -> Gdk.Rectangle -> Gdk.Rectangle -> none"
+  method get_cell_at_position : "CellAreaContext -> Widget -> Gdk.Rectangle -> gint -> gint -> Gdk.Rectangle -> CellRenderer"
+  method get_current_path_string : "utf8"
+  method get_edit_widget : "CellEditable"
+  method get_edited_cell : "CellRenderer"
+  method get_focus_cell : "CellRenderer"
+  method get_focus_from_sibling : "CellRenderer -> CellRenderer"
+  method get_focus_siblings : "CellRenderer -> GLib.List"
+  method get_preferred_height : "CellAreaContext -> Widget -> gint -> gint -> none"
+  method get_preferred_height_for_width : "CellAreaContext -> Widget -> gint -> gint -> gint -> none"
+  method get_preferred_width : "CellAreaContext -> Widget -> gint -> gint -> none"
+  method get_preferred_width_for_height : "CellAreaContext -> Widget -> gint -> gint -> gint -> none"
+  method get_request_mode : "SizeRequestMode"
+  method has_renderer : "CellRenderer -> gboolean"
+  method inner_cell_area : "Widget -> Gdk.Rectangle -> Gdk.Rectangle -> none"
+  method is_activatable : "gboolean"
+  method is_focus_sibling : "CellRenderer -> CellRenderer -> gboolean"
+  method remove : "CellRenderer -> none"
+  method remove_focus_sibling : "CellRenderer -> CellRenderer -> none"
+  method render : "CellAreaContext -> Widget -> cairo.Context -> Gdk.Rectangle -> Gdk.Rectangle -> CellRendererState -> gboolean -> none"
+  method request_renderer : "CellRenderer -> Orientation -> Widget -> gint -> gint -> gint -> none"
+  method set_focus_cell : "CellRenderer -> none"
+  method stop_editing : "gboolean -> none"
+  "edit-widget" CellEditable : Read
+  "edited-cell" CellRenderer : Read
+  "focus-cell" CellRenderer : Read / Write
+  signal add_editable : CellRendererCellEditableGdk.Rectangleutf8 -> none
+  signal apply_attributes : TreeModelTreeItergbooleangboolean -> none
+  signal focus_changed : CellRendererutf8 -> none
+  signal remove_editable : CellRendererCellEditable -> none
+}
+
+class CellAreaBox set wrap wrapsig : CellArea {
+  method get_spacing : "gint"
+  method pack_end : "CellRenderer -> gboolean -> gboolean -> gboolean -> none"
+  method pack_start : "CellRenderer -> gboolean -> gboolean -> gboolean -> none"
+  method set_spacing : "gint -> none"
+  "spacing" gint : Read / Write
+}
+
+class CellRenderer abstract set wrap wrapsig : GObject.InitiallyUnowned {
+  method activate : "Gdk.Event -> Widget -> utf8 -> Gdk.Rectangle -> Gdk.Rectangle -> CellRendererState -> gboolean"
+  method get_aligned_area : "Widget -> CellRendererState -> Gdk.Rectangle -> Gdk.Rectangle -> none"
+  method get_alignment : "gfloat -> gfloat -> none"
+  method get_fixed_size : "gint -> gint -> none"
+  method get_padding : "gint -> gint -> none"
+  method get_preferred_height : "Widget -> gint -> gint -> none"
+  method get_preferred_height_for_width : "Widget -> gint -> gint -> gint -> none"
+  method get_preferred_size : "Widget -> Requisition -> Requisition -> none"
+  method get_preferred_width : "Widget -> gint -> gint -> none"
+  method get_preferred_width_for_height : "Widget -> gint -> gint -> gint -> none"
+  method get_request_mode : "SizeRequestMode"
+  method get_sensitive : "gboolean"
+  method get_size : "Widget -> Gdk.Rectangle -> gint -> gint -> gint -> gint -> none"
+  method get_state : "Widget -> CellRendererState -> StateFlags"
+  method get_visible : "gboolean"
+  method is_activatable : "gboolean"
+  method render : "cairo.Context -> Widget -> Gdk.Rectangle -> Gdk.Rectangle -> CellRendererState -> none"
+  method set_alignment : "gfloat -> gfloat -> none"
+  method set_fixed_size : "gint -> gint -> none"
+  method set_padding : "gint -> gint -> none"
+  method set_sensitive : "gboolean -> none"
+  method set_visible : "gboolean -> none"
+  method start_editing : "Gdk.Event -> Widget -> utf8 -> Gdk.Rectangle -> Gdk.Rectangle -> CellRendererState -> CellEditable"
+  method stop_editing : "gboolean -> none"
+  "cell-background" utf8 : Write
+  "cell-background-gdk" Gdk.Color : Read / Write
+  "cell-background-rgba" Gdk.RGBA : Read / Write
+  "cell-background-set" gboolean : Read / Write
+  "editing" gboolean : Read
+  "height" gint : Read / Write
+  "is-expanded" gboolean : Read / Write
+  "is-expander" gboolean : Read / Write
+  "mode" CellRendererMode : Read / Write
+  "sensitive" gboolean : Read / Write
+  "visible" gboolean : Read / Write
+  "width" gint : Read / Write
+  "xalign" gfloat : Read / Write
+  "xpad" guint : Read / Write
+  "yalign" gfloat : Read / Write
+  "ypad" guint : Read / Write
+  signal editing_canceled :  -> none
+  signal editing_started : CellEditableutf8 -> none
+}
+
+class CellRendererAccel set wrap wrapsig : CellRendererText {
+  "accel-key" guint : Read / Write
+  "accel-mode" CellRendererAccelMode : Read / Write
+  "accel-mods" Gdk.ModifierType : Read / Write
+  "keycode" guint : Read / Write
+  signal accel_cleared : utf8 -> none
+  signal accel_edited : utf8guintGdk.ModifierTypeguint -> none
+}
+
+class CellRendererCombo set wrap wrapsig : CellRendererText {
+  "has-entry" gboolean : Read / Write
+  "model" TreeModel : Read / Write
+  "text-column" gint : Read / Write
+  signal changed : utf8TreeIter -> none
+}
+
+class CellRendererPixbuf set wrap wrapsig : CellRenderer {
+  "follow-state" gboolean : Read / Write
+  "gicon" Gio.Icon : Read / Write
+  "icon-name" utf8 : Read / Write
+  "pixbuf" GdkPixbuf.Pixbuf : Read / Write
+  "pixbuf-expander-closed" GdkPixbuf.Pixbuf : Read / Write
+  "pixbuf-expander-open" GdkPixbuf.Pixbuf : Read / Write
+  "stock-detail" utf8 : Read / Write
+  "stock-id" utf8 : Read / Write
+  "stock-size" guint : Read / Write
+  "surface" cairo.Surface : Read / Write
+}
+
+class CellRendererProgress set wrap wrapsig : CellRenderer {
+  "inverted" gboolean : Read / Write
+  "pulse" gint : Read / Write
+  "text" utf8 : Read / Write
+  "text-xalign" gfloat : Read / Write
+  "text-yalign" gfloat : Read / Write
+  "value" gint : Read / Write
+}
+
+class CellRendererSpin set wrap wrapsig : CellRendererText {
+  "adjustment" Adjustment : Read / Write
+  "climb-rate" gdouble : Read / Write
+  "digits" guint : Read / Write
+}
+
+class CellRendererSpinner set wrap wrapsig : CellRenderer {
+  "active" gboolean : Read / Write
+  "pulse" guint : Read / Write
+  "size" IconSize : Read / Write
+}
+
+class CellRendererText set wrap wrapsig : CellRenderer {
+  method set_fixed_height_from_font : "gint -> none"
+  "align-set" gboolean : Read / Write
+  "alignment" Pango.Alignment : Read / Write
+  "attributes" Pango.AttrList : Read / Write
+  "background" utf8 : Write
+  "background-gdk" Gdk.Color : Read / Write
+  "background-rgba" Gdk.RGBA : Read / Write
+  "background-set" gboolean : Read / Write
+  "editable" gboolean : Read / Write
+  "editable-set" gboolean : Read / Write
+  "ellipsize" Pango.EllipsizeMode : Read / Write
+  "ellipsize-set" gboolean : Read / Write
+  "family" utf8 : Read / Write
+  "family-set" gboolean : Read / Write
+  "font" utf8 : Read / Write
+  "font-desc" Pango.FontDescription : Read / Write
+  "foreground" utf8 : Write
+  "foreground-gdk" Gdk.Color : Read / Write
+  "foreground-rgba" Gdk.RGBA : Read / Write
+  "foreground-set" gboolean : Read / Write
+  "language" utf8 : Read / Write
+  "language-set" gboolean : Read / Write
+  "markup" utf8 : Write
+  "max-width-chars" gint : Read / Write
+  "placeholder-text" utf8 : Read / Write
+  "rise" gint : Read / Write
+  "rise-set" gboolean : Read / Write
+  "scale" gdouble : Read / Write
+  "scale-set" gboolean : Read / Write
+  "single-paragraph-mode" gboolean : Read / Write
+  "size" gint : Read / Write
+  "size-points" gdouble : Read / Write
+  "size-set" gboolean : Read / Write
+  "stretch" Pango.Stretch : Read / Write
+  "stretch-set" gboolean : Read / Write
+  "strikethrough" gboolean : Read / Write
+  "strikethrough-set" gboolean : Read / Write
+  "style" Pango.Style : Read / Write
+  "style-set" gboolean : Read / Write
+  "text" utf8 : Read / Write
+  "underline" Pango.Underline : Read / Write
+  "underline-set" gboolean : Read / Write
+  "variant" Pango.Variant : Read / Write
+  "variant-set" gboolean : Read / Write
+  "weight" gint : Read / Write
+  "weight-set" gboolean : Read / Write
+  "width-chars" gint : Read / Write
+  "wrap-mode" Pango.WrapMode : Read / Write
+  "wrap-width" gint : Read / Write
+  signal edited : utf8utf8 -> none
+}
+
+class CellRendererToggle set wrap wrapsig : CellRenderer {
+  method get_activatable : "gboolean"
+  method get_active : "gboolean"
+  method get_radio : "gboolean"
+  method set_activatable : "gboolean -> none"
+  method set_active : "gboolean -> none"
+  method set_radio : "gboolean -> none"
+  "activatable" gboolean : Read / Write
+  "active" gboolean : Read / Write
+  "inconsistent" gboolean : Read / Write
+  "indicator-size" gint : Read / Write
+  "radio" gboolean : Read / Write
+  signal toggled : utf8 -> none
+}
+
+class CellView set wrap wrapsig : Widget {
+  method get_displayed_row : "TreePath"
+  method get_draw_sensitive : "gboolean"
+  method get_fit_model : "gboolean"
+  method get_model : "TreeModel"
+  method get_size_of_row : "TreePath -> Requisition -> gboolean"
+  method set_background_color : "Gdk.Color -> none"
+  method set_background_rgba : "Gdk.RGBA -> none"
+  method set_displayed_row : "TreePath -> none"
+  method set_draw_sensitive : "gboolean -> none"
+  method set_fit_model : "gboolean -> none"
+  method set_model : "TreeModel -> none"
+  "background" utf8 : Write
+  "background-gdk" Gdk.Color : Read / Write
+  "background-rgba" Gdk.RGBA : Read / Write
+  "background-set" gboolean : Read / Write
+  "cell-area" CellArea : Read / Write
+  "cell-area-context" CellAreaContext : Read / Write
+  "draw-sensitive" gboolean : Read / Write
+  "fit-model" gboolean : Read / Write
+  "model" TreeModel : Read / Write
+}
+
+class CheckButton set wrap wrapsig : ToggleButton {
+}
+
+class CheckMenuItem set wrap wrapsig : MenuItem {
+  method get_active : "gboolean"
+  method get_draw_as_radio : "gboolean"
+  method get_inconsistent : "gboolean"
+  method set_active : "gboolean -> none"
+  method set_draw_as_radio : "gboolean -> none"
+  method set_inconsistent : "gboolean -> none"
+  method toggled : "none"
+  "active" gboolean : Read / Write
+  "draw-as-radio" gboolean : Read / Write
+  "inconsistent" gboolean : Read / Write
+  signal toggled :  -> none
+}
+
+class CheckMenuItemAccessible set wrap wrapsig : MenuItemAccessible {
+}
+
+class ColorButton set wrap wrapsig : Button {
+  method get_alpha : "guint16"
+  method get_color : "Gdk.Color -> none"
+  method get_rgba : "Gdk.RGBA -> none"
+  method get_title : "utf8"
+  method get_use_alpha : "gboolean"
+  method set_alpha : "guint16 -> none"
+  method set_color : "Gdk.Color -> none"
+  method set_rgba : "Gdk.RGBA -> none"
+  method set_title : "utf8 -> none"
+  method set_use_alpha : "gboolean -> none"
+  "alpha" guint : Read / Write
+  "color" Gdk.Color : Read / Write
+  "rgba" Gdk.RGBA : Read / Write
+  "show-editor" gboolean : Read / Write
+  "title" utf8 : Read / Write
+  "use-alpha" gboolean : Read / Write
+  signal color_set :  -> none
+}
+
+class ColorChooserDialog set wrap wrapsig : Dialog {
+  "show-editor" gboolean : Read / Write
+}
+
+class ColorChooserWidget set wrap wrapsig : Box {
+  "show-editor" gboolean : Read / Write
+}
+
+class ColorSelection set wrap wrapsig : Box {
+  method get_current_alpha : "guint16"
+  method get_current_color : "Gdk.Color -> none"
+  method get_current_rgba : "Gdk.RGBA -> none"
+  method get_has_opacity_control : "gboolean"
+  method get_has_palette : "gboolean"
+  method get_previous_alpha : "guint16"
+  method get_previous_color : "Gdk.Color -> none"
+  method get_previous_rgba : "Gdk.RGBA -> none"
+  method is_adjusting : "gboolean"
+  method set_current_alpha : "guint16 -> none"
+  method set_current_color : "Gdk.Color -> none"
+  method set_current_rgba : "Gdk.RGBA -> none"
+  method set_has_opacity_control : "gboolean -> none"
+  method set_has_palette : "gboolean -> none"
+  method set_previous_alpha : "guint16 -> none"
+  method set_previous_color : "Gdk.Color -> none"
+  method set_previous_rgba : "Gdk.RGBA -> none"
+  "current-alpha" guint : Read / Write
+  "current-color" Gdk.Color : Read / Write
+  "current-rgba" Gdk.RGBA : Read / Write
+  "has-opacity-control" gboolean : Read / Write
+  "has-palette" gboolean : Read / Write
+  signal color_changed :  -> none
+}
+
+class ColorSelectionDialog set wrap wrapsig : Dialog {
+  method get_color_selection : "Widget"
+  "cancel-button" Widget : Read
+  "color-selection" Widget : Read
+  "help-button" Widget : Read
+  "ok-button" Widget : Read
+}
+
+class ComboBox set wrap wrapsig : Bin {
+  method get_active : "gint"
+  method get_active_id : "utf8"
+  method get_active_iter : "TreeIter -> gboolean"
+  method get_add_tearoffs : "gboolean"
+  method get_button_sensitivity : "SensitivityType"
+  method get_column_span_column : "gint"
+  method get_entry_text_column : "gint"
+  method get_focus_on_click : "gboolean"
+  method get_has_entry : "gboolean"
+  method get_id_column : "gint"
+  method get_model : "TreeModel"
+  method get_popup_accessible : "Atk.Object"
+  method get_popup_fixed_width : "gboolean"
+  method get_row_separator_func : "TreeViewRowSeparatorFunc"
+  method get_row_span_column : "gint"
+  method get_title : "utf8"
+  method get_wrap_width : "gint"
+  method popdown : "none"
+  method popup : "none"
+  method popup_for_device : "Gdk.Device -> none"
+  method set_active : "gint -> none"
+  method set_active_id : "utf8 -> gboolean"
+  method set_active_iter : "TreeIter -> none"
+  method set_add_tearoffs : "gboolean -> none"
+  method set_button_sensitivity : "SensitivityType -> none"
+  method set_column_span_column : "gint -> none"
+  method set_entry_text_column : "gint -> none"
+  method set_focus_on_click : "gboolean -> none"
+  method set_id_column : "gint -> none"
+  method set_model : "TreeModel -> none"
+  method set_popup_fixed_width : "gboolean -> none"
+  method set_row_separator_func : "TreeViewRowSeparatorFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_row_span_column : "gint -> none"
+  method set_title : "utf8 -> none"
+  method set_wrap_width : "gint -> none"
+  "active" gint : Read / Write
+  "active-id" utf8 : Read / Write
+  "add-tearoffs" gboolean : Read / Write
+  "button-sensitivity" SensitivityType : Read / Write
+  "cell-area" CellArea : Read / Write
+  "column-span-column" gint : Read / Write
+  "entry-text-column" gint : Read / Write
+  "has-entry" gboolean : Read / Write
+  "has-frame" gboolean : Read / Write
+  "id-column" gint : Read / Write
+  "model" TreeModel : Read / Write
+  "popup-fixed-width" gboolean : Read / Write
+  "popup-shown" gboolean : Read
+  "row-span-column" gint : Read / Write
+  "tearoff-title" utf8 : Read / Write
+  "wrap-width" gint : Read / Write
+  signal changed :  -> none
+  signal format_entry_text : utf8 -> utf8
+  signal move_active : ScrollType -> none
+  signal popdown :  -> gboolean
+  signal popup :  -> none
+}
+
+class ComboBoxAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class ComboBoxText set wrap wrapsig : ComboBox {
+  method append : "utf8 -> utf8 -> none"
+  method append_text : "utf8 -> none"
+  method get_active_text : "utf8"
+  method insert : "gint -> utf8 -> utf8 -> none"
+  method insert_text : "gint -> utf8 -> none"
+  method prepend : "utf8 -> utf8 -> none"
+  method prepend_text : "utf8 -> none"
+  method remove : "gint -> none"
+  method remove_all : "none"
+}
+
+class Container abstract set wrap wrapsig : Widget {
+  method add : "Widget -> none"
+  method add_with_properties : "Widget -> utf8 ->  -> none"
+  method check_resize : "none"
+  method child_get : "Widget -> utf8 ->  -> none"
+  method child_get_property : "Widget -> utf8 -> GObject.Value -> none"
+  method child_get_valist : "Widget -> utf8 -> va_list -> none"
+  method child_notify : "Widget -> utf8 -> none"
+  method child_notify_by_pspec : "Widget -> GObject.ParamSpec -> none"
+  method child_set : "Widget -> utf8 ->  -> none"
+  method child_set_property : "Widget -> utf8 -> GObject.Value -> none"
+  method child_set_valist : "Widget -> utf8 -> va_list -> none"
+  method child_type : "GType"
+  method forall : "Callback -> gpointer -> none"
+  method foreach : "Callback -> gpointer -> none"
+  method get_border_width : "guint"
+  method get_children : "GLib.List"
+  method get_focus_chain : "GLib.List -> gboolean"
+  method get_focus_child : "Widget"
+  method get_focus_hadjustment : "Adjustment"
+  method get_focus_vadjustment : "Adjustment"
+  method get_path_for_child : "Widget -> WidgetPath"
+  method get_resize_mode : "ResizeMode"
+  method propagate_draw : "Widget -> cairo.Context -> none"
+  method remove : "Widget -> none"
+  method resize_children : "none"
+  method set_border_width : "guint -> none"
+  method set_focus_chain : "GLib.List -> none"
+  method set_focus_child : "Widget -> none"
+  method set_focus_hadjustment : "Adjustment -> none"
+  method set_focus_vadjustment : "Adjustment -> none"
+  method set_reallocate_redraws : "gboolean -> none"
+  method set_resize_mode : "ResizeMode -> none"
+  method unset_focus_chain : "none"
+  "border-width" guint : Read / Write
+  "child" Widget : Write
+  "resize-mode" ResizeMode : Read / Write
+  signal add : Widget -> none
+  signal check_resize :  -> none
+  signal remove : Widget -> none
+  signal set_focus_child : Widget -> none
+}
+
+class ContainerAccessible set wrap wrapsig : WidgetAccessible {
+}
+
+class ContainerCellAccessible set wrap wrapsig : CellAccessible {
+  method add_child : "CellAccessible -> none"
+  method get_children : "GLib.List"
+  method remove_child : "CellAccessible -> none"
+}
+
+class Dialog set wrap wrapsig : Window {
+  method add_action_widget : "Widget -> gint -> none"
+  method add_button : "utf8 -> gint -> Widget"
+  method add_buttons : "utf8 ->  -> none"
+  method get_action_area : "Widget"
+  method get_content_area : "Box"
+  method get_header_bar : "Widget"
+  method get_response_for_widget : "Widget -> gint"
+  method get_widget_for_response : "gint -> Widget"
+  method response : "gint -> none"
+  method run : "gint"
+  method set_alternative_button_order : "gint ->  -> none"
+  method set_alternative_button_order_from_array : "gint ->  -> none"
+  method set_default_response : "gint -> none"
+  method set_response_sensitive : "gint -> gboolean -> none"
+  "use-header-bar" gint : Read / Write
+  signal close :  -> none
+  signal response : gint -> none
+}
+
+class DrawingArea set wrap wrapsig : Widget {
+}
+
+class Entry set wrap wrapsig : Widget {
+  method get_activates_default : "gboolean"
+  method get_alignment : "gfloat"
+  method get_attributes : "Pango.AttrList"
+  method get_buffer : "EntryBuffer"
+  method get_completion : "EntryCompletion"
+  method get_current_icon_drag_source : "gint"
+  method get_cursor_hadjustment : "Adjustment"
+  method get_has_frame : "gboolean"
+  method get_icon_activatable : "EntryIconPosition -> gboolean"
+  method get_icon_area : "EntryIconPosition -> Gdk.Rectangle -> none"
+  method get_icon_at_pos : "gint -> gint -> gint"
+  method get_icon_gicon : "EntryIconPosition -> Gio.Icon"
+  method get_icon_name : "EntryIconPosition -> utf8"
+  method get_icon_pixbuf : "EntryIconPosition -> GdkPixbuf.Pixbuf"
+  method get_icon_sensitive : "EntryIconPosition -> gboolean"
+  method get_icon_stock : "EntryIconPosition -> utf8"
+  method get_icon_storage_type : "EntryIconPosition -> ImageType"
+  method get_icon_tooltip_markup : "EntryIconPosition -> utf8"
+  method get_icon_tooltip_text : "EntryIconPosition -> utf8"
+  method get_inner_border : "Border"
+  method get_input_hints : "InputHints"
+  method get_input_purpose : "InputPurpose"
+  method get_invisible_char : "gunichar"
+  method get_layout : "Pango.Layout"
+  method get_layout_offsets : "gint -> gint -> none"
+  method get_max_length : "gint"
+  method get_max_width_chars : "gint"
+  method get_overwrite_mode : "gboolean"
+  method get_placeholder_text : "utf8"
+  method get_progress_fraction : "gdouble"
+  method get_progress_pulse_step : "gdouble"
+  method get_tabs : "Pango.TabArray"
+  method get_text : "utf8"
+  method get_text_area : "Gdk.Rectangle -> none"
+  method get_text_length : "guint16"
+  method get_visibility : "gboolean"
+  method get_width_chars : "gint"
+  method grab_focus_without_selecting : "none"
+  method im_context_filter_keypress : "Gdk.EventKey -> gboolean"
+  method layout_index_to_text_index : "gint -> gint"
+  method progress_pulse : "none"
+  method reset_im_context : "none"
+  method set_activates_default : "gboolean -> none"
+  method set_alignment : "gfloat -> none"
+  method set_attributes : "Pango.AttrList -> none"
+  method set_buffer : "EntryBuffer -> none"
+  method set_completion : "EntryCompletion -> none"
+  method set_cursor_hadjustment : "Adjustment -> none"
+  method set_has_frame : "gboolean -> none"
+  method set_icon_activatable : "EntryIconPosition -> gboolean -> none"
+  method set_icon_drag_source : "EntryIconPosition -> TargetList -> Gdk.DragAction -> none"
+  method set_icon_from_gicon : "EntryIconPosition -> Gio.Icon -> none"
+  method set_icon_from_icon_name : "EntryIconPosition -> utf8 -> none"
+  method set_icon_from_pixbuf : "EntryIconPosition -> GdkPixbuf.Pixbuf -> none"
+  method set_icon_from_stock : "EntryIconPosition -> utf8 -> none"
+  method set_icon_sensitive : "EntryIconPosition -> gboolean -> none"
+  method set_icon_tooltip_markup : "EntryIconPosition -> utf8 -> none"
+  method set_icon_tooltip_text : "EntryIconPosition -> utf8 -> none"
+  method set_inner_border : "Border -> none"
+  method set_input_hints : "InputHints -> none"
+  method set_input_purpose : "InputPurpose -> none"
+  method set_invisible_char : "gunichar -> none"
+  method set_max_length : "gint -> none"
+  method set_max_width_chars : "gint -> none"
+  method set_overwrite_mode : "gboolean -> none"
+  method set_placeholder_text : "utf8 -> none"
+  method set_progress_fraction : "gdouble -> none"
+  method set_progress_pulse_step : "gdouble -> none"
+  method set_tabs : "Pango.TabArray -> none"
+  method set_text : "utf8 -> none"
+  method set_visibility : "gboolean -> none"
+  method set_width_chars : "gint -> none"
+  method text_index_to_layout_index : "gint -> gint"
+  method unset_invisible_char : "none"
+  "activates-default" gboolean : Read / Write
+  "attributes" Pango.AttrList : Read / Write
+  "buffer" EntryBuffer : Read / Write
+  "caps-lock-warning" gboolean : Read / Write
+  "completion" EntryCompletion : Read / Write
+  "cursor-position" gint : Read
+  "editable" gboolean : Read / Write
+  "enable-emoji-completion" gboolean : Read / Write
+  "has-frame" gboolean : Read / Write
+  "im-module" utf8 : Read / Write
+  "inner-border" Border : Read / Write
+  "input-hints" InputHints : Read / Write
+  "input-purpose" InputPurpose : Read / Write
+  "invisible-char" guint : Read / Write
+  "invisible-char-set" gboolean : Read / Write
+  "max-length" gint : Read / Write
+  "max-width-chars" gint : Read / Write
+  "overwrite-mode" gboolean : Read / Write
+  "placeholder-text" utf8 : Read / Write
+  "populate-all" gboolean : Read / Write
+  "primary-icon-activatable" gboolean : Read / Write
+  "primary-icon-gicon" Gio.Icon : Read / Write
+  "primary-icon-name" utf8 : Read / Write
+  "primary-icon-pixbuf" GdkPixbuf.Pixbuf : Read / Write
+  "primary-icon-sensitive" gboolean : Read / Write
+  "primary-icon-stock" utf8 : Read / Write
+  "primary-icon-storage-type" ImageType : Read
+  "primary-icon-tooltip-markup" utf8 : Read / Write
+  "primary-icon-tooltip-text" utf8 : Read / Write
+  "progress-fraction" gdouble : Read / Write
+  "progress-pulse-step" gdouble : Read / Write
+  "scroll-offset" gint : Read
+  "secondary-icon-activatable" gboolean : Read / Write
+  "secondary-icon-gicon" Gio.Icon : Read / Write
+  "secondary-icon-name" utf8 : Read / Write
+  "secondary-icon-pixbuf" GdkPixbuf.Pixbuf : Read / Write
+  "secondary-icon-sensitive" gboolean : Read / Write
+  "secondary-icon-stock" utf8 : Read / Write
+  "secondary-icon-storage-type" ImageType : Read
+  "secondary-icon-tooltip-markup" utf8 : Read / Write
+  "secondary-icon-tooltip-text" utf8 : Read / Write
+  "selection-bound" gint : Read
+  "shadow-type" ShadowType : Read / Write
+  "show-emoji-icon" gboolean : Read / Write
+  "tabs" Pango.TabArray : Read / Write
+  "text" utf8 : Read / Write
+  "text-length" guint : Read
+  "truncate-multiline" gboolean : Read / Write
+  "visibility" gboolean : Read / Write
+  "width-chars" gint : Read / Write
+  "xalign" gfloat : Read / Write
+  signal activate :  -> none
+  signal backspace :  -> none
+  signal copy_clipboard :  -> none
+  signal cut_clipboard :  -> none
+  signal delete_from_cursor : DeleteTypegint -> none
+  signal icon_press : EntryIconPositionGdk.EventButton -> none
+  signal icon_release : EntryIconPositionGdk.EventButton -> none
+  signal insert_at_cursor : utf8 -> none
+  signal insert_emoji :  -> none
+  signal move_cursor : MovementStepgintgboolean -> none
+  signal paste_clipboard :  -> none
+  signal populate_popup : Widget -> none
+  signal preedit_changed : utf8 -> none
+  signal toggle_overwrite :  -> none
+}
+
+class EntryAccessible set wrap wrapsig : WidgetAccessible {
+}
+
+class EntryIconAccessible set wrap wrapsig : Atk.Object {
+}
+
+class EventBox set wrap wrapsig : Bin {
+  method get_above_child : "gboolean"
+  method get_visible_window : "gboolean"
+  method set_above_child : "gboolean -> none"
+  method set_visible_window : "gboolean -> none"
+  "above-child" gboolean : Read / Write
+  "visible-window" gboolean : Read / Write
+}
+
+class EventControllerKey set wrap wrapsig : EventController {
+  method forward : "Widget -> gboolean"
+  method get_group : "guint"
+  method get_im_context : "IMContext"
+  method set_im_context : "IMContext -> none"
+  signal focus_in :  -> none
+  signal focus_out :  -> none
+  signal im_update :  -> none
+  signal key_pressed : guintguintGdk.ModifierType -> gboolean
+  signal key_released : guintguintGdk.ModifierType -> none
+  signal modifiers : Gdk.ModifierType -> gboolean
+}
+
+class EventControllerMotion set wrap wrapsig : EventController {
+  signal enter : gdoublegdouble -> none
+  signal leave :  -> none
+  signal motion : gdoublegdouble -> none
+}
+
+class EventControllerScroll set wrap wrapsig : EventController {
+  method get_flags : "EventControllerScrollFlags"
+  method set_flags : "EventControllerScrollFlags -> none"
+  "flags" EventControllerScrollFlags : Read / Write
+  signal decelerate : gdoublegdouble -> none
+  signal scroll : gdoublegdouble -> none
+  signal scroll_begin :  -> none
+  signal scroll_end :  -> none
+}
+
+class Expander set wrap wrapsig : Bin {
+  method get_expanded : "gboolean"
+  method get_label : "utf8"
+  method get_label_fill : "gboolean"
+  method get_label_widget : "Widget"
+  method get_resize_toplevel : "gboolean"
+  method get_spacing : "gint"
+  method get_use_markup : "gboolean"
+  method get_use_underline : "gboolean"
+  method set_expanded : "gboolean -> none"
+  method set_label : "utf8 -> none"
+  method set_label_fill : "gboolean -> none"
+  method set_label_widget : "Widget -> none"
+  method set_resize_toplevel : "gboolean -> none"
+  method set_spacing : "gint -> none"
+  method set_use_markup : "gboolean -> none"
+  method set_use_underline : "gboolean -> none"
+  "expanded" gboolean : Read / Write
+  "label" utf8 : Read / Write
+  "label-fill" gboolean : Read / Write
+  "label-widget" Widget : Read / Write
+  "resize-toplevel" gboolean : Read / Write
+  "spacing" gint : Read / Write
+  "use-markup" gboolean : Read / Write
+  "use-underline" gboolean : Read / Write
+  signal activate :  -> none
+}
+
+class ExpanderAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class FileChooserButton set wrap wrapsig : Box {
+  method get_focus_on_click : "gboolean"
+  method get_title : "utf8"
+  method get_width_chars : "gint"
+  method set_focus_on_click : "gboolean -> none"
+  method set_title : "utf8 -> none"
+  method set_width_chars : "gint -> none"
+  "dialog" FileChooser : Write
+  "title" utf8 : Read / Write
+  "width-chars" gint : Read / Write
+  signal file_set :  -> none
+}
+
+class FileChooserDialog set wrap wrapsig : Dialog {
+}
+
+class FileChooserNative set wrap wrapsig : NativeDialog {
+  method get_accept_label : "utf8"
+  method get_cancel_label : "utf8"
+  method set_accept_label : "utf8 -> none"
+  method set_cancel_label : "utf8 -> none"
+  "accept-label" utf8 : Read / Write
+  "cancel-label" utf8 : Read / Write
+}
+
+class FileChooserWidget set wrap wrapsig : Box {
+  "search-mode" gboolean : Read / Write
+  "subtitle" utf8 : Read
+  signal desktop_folder :  -> none
+  signal down_folder :  -> none
+  signal home_folder :  -> none
+  signal location_popup : utf8 -> none
+  signal location_popup_on_paste :  -> none
+  signal location_toggle_popup :  -> none
+  signal places_shortcut :  -> none
+  signal quick_bookmark : gint -> none
+  signal recent_shortcut :  -> none
+  signal search_shortcut :  -> none
+  signal show_hidden :  -> none
+  signal up_folder :  -> none
+}
+
+class FileFilter set wrap wrapsig : GObject.InitiallyUnowned {
+  method add_custom : "FileFilterFlags -> FileFilterFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method add_mime_type : "utf8 -> none"
+  method add_pattern : "utf8 -> none"
+  method add_pixbuf_formats : "none"
+  method filter : "FileFilterInfo -> gboolean"
+  method get_name : "utf8"
+  method get_needed : "FileFilterFlags"
+  method set_name : "utf8 -> none"
+  method to_gvariant : "GLib.Variant"
+}
+
+class Fixed set wrap wrapsig : Container {
+  method move : "Widget -> gint -> gint -> none"
+  method put : "Widget -> gint -> gint -> none"
+}
+
+class FlowBox set wrap wrapsig : Container {
+  method bind_model : "Gio.ListModel -> FlowBoxCreateWidgetFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method get_activate_on_single_click : "gboolean"
+  method get_child_at_index : "gint -> FlowBoxChild"
+  method get_child_at_pos : "gint -> gint -> FlowBoxChild"
+  method get_column_spacing : "guint"
+  method get_homogeneous : "gboolean"
+  method get_max_children_per_line : "guint"
+  method get_min_children_per_line : "guint"
+  method get_row_spacing : "guint"
+  method get_selected_children : "GLib.List"
+  method get_selection_mode : "SelectionMode"
+  method insert : "Widget -> gint -> none"
+  method invalidate_filter : "none"
+  method invalidate_sort : "none"
+  method select_all : "none"
+  method select_child : "FlowBoxChild -> none"
+  method selected_foreach : "FlowBoxForeachFunc -> gpointer -> none"
+  method set_activate_on_single_click : "gboolean -> none"
+  method set_column_spacing : "guint -> none"
+  method set_filter_func : "FlowBoxFilterFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_hadjustment : "Adjustment -> none"
+  method set_homogeneous : "gboolean -> none"
+  method set_max_children_per_line : "guint -> none"
+  method set_min_children_per_line : "guint -> none"
+  method set_row_spacing : "guint -> none"
+  method set_selection_mode : "SelectionMode -> none"
+  method set_sort_func : "FlowBoxSortFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_vadjustment : "Adjustment -> none"
+  method unselect_all : "none"
+  method unselect_child : "FlowBoxChild -> none"
+  "activate-on-single-click" gboolean : Read / Write
+  "column-spacing" guint : Read / Write
+  "homogeneous" gboolean : Read / Write
+  "max-children-per-line" guint : Read / Write
+  "min-children-per-line" guint : Read / Write
+  "row-spacing" guint : Read / Write
+  "selection-mode" SelectionMode : Read / Write
+  signal activate_cursor_child :  -> none
+  signal child_activated : FlowBoxChild -> none
+  signal move_cursor : MovementStepgint -> gboolean
+  signal select_all :  -> none
+  signal selected_children_changed :  -> none
+  signal toggle_cursor_child :  -> none
+  signal unselect_all :  -> none
+}
+
+class FlowBoxAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class FlowBoxChild set wrap wrapsig : Bin {
+  method changed : "none"
+  method get_index : "gint"
+  method is_selected : "gboolean"
+  signal activate :  -> none
+}
+
+class FlowBoxChildAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class FontButton set wrap wrapsig : Button {
+  method get_font_name : "utf8"
+  method get_show_size : "gboolean"
+  method get_show_style : "gboolean"
+  method get_title : "utf8"
+  method get_use_font : "gboolean"
+  method get_use_size : "gboolean"
+  method set_font_name : "utf8 -> gboolean"
+  method set_show_size : "gboolean -> none"
+  method set_show_style : "gboolean -> none"
+  method set_title : "utf8 -> none"
+  method set_use_font : "gboolean -> none"
+  method set_use_size : "gboolean -> none"
+  "font-name" utf8 : Read / Write
+  "show-size" gboolean : Read / Write
+  "show-style" gboolean : Read / Write
+  "title" utf8 : Read / Write
+  "use-font" gboolean : Read / Write
+  "use-size" gboolean : Read / Write
+  signal font_set :  -> none
+}
+
+class FontChooserDialog set wrap wrapsig : Dialog {
+}
+
+class FontChooserWidget set wrap wrapsig : Box {
+  "tweak-action" Gio.Action : Read
+}
+
+class FontSelection set wrap wrapsig : Box {
+  method get_face : "Pango.FontFace"
+  method get_face_list : "Widget"
+  method get_family : "Pango.FontFamily"
+  method get_family_list : "Widget"
+  method get_font_name : "utf8"
+  method get_preview_entry : "Widget"
+  method get_preview_text : "utf8"
+  method get_size : "gint"
+  method get_size_entry : "Widget"
+  method get_size_list : "Widget"
+  method set_font_name : "utf8 -> gboolean"
+  method set_preview_text : "utf8 -> none"
+  "font-name" utf8 : Read / Write
+  "preview-text" utf8 : Read / Write
+}
+
+class FontSelectionDialog set wrap wrapsig : Dialog {
+  method get_cancel_button : "Widget"
+  method get_font_name : "utf8"
+  method get_font_selection : "Widget"
+  method get_ok_button : "Widget"
+  method get_preview_text : "utf8"
+  method set_font_name : "utf8 -> gboolean"
+  method set_preview_text : "utf8 -> none"
+}
+
+class Frame set wrap wrapsig : Bin {
+  method get_label : "utf8"
+  method get_label_align : "gfloat -> gfloat -> none"
+  method get_label_widget : "Widget"
+  method get_shadow_type : "ShadowType"
+  method set_label : "utf8 -> none"
+  method set_label_align : "gfloat -> gfloat -> none"
+  method set_label_widget : "Widget -> none"
+  method set_shadow_type : "ShadowType -> none"
+  "label" utf8 : Read / Write
+  "label-widget" Widget : Read / Write
+  "label-xalign" gfloat : Read / Write
+  "label-yalign" gfloat : Read / Write
+  "shadow-type" ShadowType : Read / Write
+}
+
+class FrameAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class GLArea set wrap wrapsig : Widget {
+  method attach_buffers : "none"
+  method get_auto_render : "gboolean"
+  method get_context : "Gdk.GLContext"
+  method get_error : "GLib.Error"
+  method get_has_alpha : "gboolean"
+  method get_has_depth_buffer : "gboolean"
+  method get_has_stencil_buffer : "gboolean"
+  method get_required_version : "gint -> gint -> none"
+  method get_use_es : "gboolean"
+  method make_current : "none"
+  method queue_render : "none"
+  method set_auto_render : "gboolean -> none"
+  method set_error : "GLib.Error -> none"
+  method set_has_alpha : "gboolean -> none"
+  method set_has_depth_buffer : "gboolean -> none"
+  method set_has_stencil_buffer : "gboolean -> none"
+  method set_required_version : "gint -> gint -> none"
+  method set_use_es : "gboolean -> none"
+  "auto-render" gboolean : Read / Write
+  "context" Gdk.GLContext : Read
+  "has-alpha" gboolean : Read / Write
+  "has-depth-buffer" gboolean : Read / Write
+  "has-stencil-buffer" gboolean : Read / Write
+  "use-es" gboolean : Read / Write
+  signal create_context :  -> Gdk.GLContext
+  signal render : Gdk.GLContext -> gboolean
+  signal resize : gintgint -> none
+}
+
+class Gesture abstract set wrap wrapsig : EventController {
+  method get_bounding_box : "Gdk.Rectangle -> gboolean"
+  method get_bounding_box_center : "gdouble -> gdouble -> gboolean"
+  method get_device : "Gdk.Device"
+  method get_group : "GLib.List"
+  method get_last_event : "Gdk.EventSequence -> Gdk.Event"
+  method get_last_updated_sequence : "Gdk.EventSequence"
+  method get_point : "Gdk.EventSequence -> gdouble -> gdouble -> gboolean"
+  method get_sequence_state : "Gdk.EventSequence -> EventSequenceState"
+  method get_sequences : "GLib.List"
+  method get_window : "Gdk.Window"
+  method group : "Gesture -> none"
+  method handles_sequence : "Gdk.EventSequence -> gboolean"
+  method is_active : "gboolean"
+  method is_grouped_with : "Gesture -> gboolean"
+  method is_recognized : "gboolean"
+  method set_sequence_state : "Gdk.EventSequence -> EventSequenceState -> gboolean"
+  method set_state : "EventSequenceState -> gboolean"
+  method set_window : "Gdk.Window -> none"
+  method ungroup : "none"
+  "n-points" guint : Read / Write
+  "window" Gdk.Window : Read / Write
+  signal begin : Gdk.EventSequence -> none
+  signal cancel : Gdk.EventSequence -> none
+  signal end : Gdk.EventSequence -> none
+  signal sequence_state_changed : Gdk.EventSequenceEventSequenceState -> none
+  signal update : Gdk.EventSequence -> none
+}
+
+class GestureDrag set wrap wrapsig : GestureSingle {
+  method get_offset : "gdouble -> gdouble -> gboolean"
+  method get_start_point : "gdouble -> gdouble -> gboolean"
+  signal drag_begin : gdoublegdouble -> none
+  signal drag_end : gdoublegdouble -> none
+  signal drag_update : gdoublegdouble -> none
+}
+
+class GestureLongPress set wrap wrapsig : GestureSingle {
+  "delay-factor" gdouble : Read / Write
+  signal cancelled :  -> none
+  signal pressed : gdoublegdouble -> none
+}
+
+class GestureMultiPress set wrap wrapsig : GestureSingle {
+  method get_area : "Gdk.Rectangle -> gboolean"
+  method set_area : "Gdk.Rectangle -> none"
+  signal pressed : gintgdoublegdouble -> none
+  signal released : gintgdoublegdouble -> none
+  signal stopped :  -> none
+}
+
+class GesturePan set wrap wrapsig : GestureDrag {
+  method get_orientation : "Orientation"
+  method set_orientation : "Orientation -> none"
+  "orientation" Orientation : Read / Write
+  signal pan : PanDirectiongdouble -> none
+}
+
+class GestureRotate set wrap wrapsig : Gesture {
+  method get_angle_delta : "gdouble"
+  signal angle_changed : gdoublegdouble -> none
+}
+
+class GestureSingle set wrap wrapsig : Gesture {
+  method get_button : "guint"
+  method get_current_button : "guint"
+  method get_current_sequence : "Gdk.EventSequence"
+  method get_exclusive : "gboolean"
+  method get_touch_only : "gboolean"
+  method set_button : "guint -> none"
+  method set_exclusive : "gboolean -> none"
+  method set_touch_only : "gboolean -> none"
+  "button" guint : Read / Write
+  "exclusive" gboolean : Read / Write
+  "touch-only" gboolean : Read / Write
+}
+
+class GestureStylus set wrap wrapsig : GestureSingle {
+  method get_axes : " ->  -> gboolean"
+  method get_axis : "Gdk.AxisUse -> gdouble -> gboolean"
+  method get_device_tool : "Gdk.DeviceTool"
+  signal down : gdoublegdouble -> none
+  signal motion : gdoublegdouble -> none
+  signal proximity : gdoublegdouble -> none
+  signal up : gdoublegdouble -> none
+}
+
+class GestureSwipe set wrap wrapsig : GestureSingle {
+  method get_velocity : "gdouble -> gdouble -> gboolean"
+  signal swipe : gdoublegdouble -> none
+}
+
+class GestureZoom set wrap wrapsig : Gesture {
+  method get_scale_delta : "gdouble"
+  signal scale_changed : gdouble -> none
+}
+
+class Grid set wrap wrapsig : Container {
+  method attach : "Widget -> gint -> gint -> gint -> gint -> none"
+  method attach_next_to : "Widget -> Widget -> PositionType -> gint -> gint -> none"
+  method get_baseline_row : "gint"
+  method get_child_at : "gint -> gint -> Widget"
+  method get_column_homogeneous : "gboolean"
+  method get_column_spacing : "guint"
+  method get_row_baseline_position : "gint -> BaselinePosition"
+  method get_row_homogeneous : "gboolean"
+  method get_row_spacing : "guint"
+  method insert_column : "gint -> none"
+  method insert_next_to : "Widget -> PositionType -> none"
+  method insert_row : "gint -> none"
+  method remove_column : "gint -> none"
+  method remove_row : "gint -> none"
+  method set_baseline_row : "gint -> none"
+  method set_column_homogeneous : "gboolean -> none"
+  method set_column_spacing : "guint -> none"
+  method set_row_baseline_position : "gint -> BaselinePosition -> none"
+  method set_row_homogeneous : "gboolean -> none"
+  method set_row_spacing : "guint -> none"
+  "baseline-row" gint : Read / Write
+  "column-homogeneous" gboolean : Read / Write
+  "column-spacing" gint : Read / Write
+  "row-homogeneous" gboolean : Read / Write
+  "row-spacing" gint : Read / Write
+}
+
+class HBox set wrap wrapsig : Box {
+}
+
+class HButtonBox set wrap wrapsig : ButtonBox {
+}
+
+class HPaned set wrap wrapsig : Paned {
+}
+
+class HSV set wrap wrapsig : Widget {
+  method get_color : "gdouble -> gdouble -> gdouble -> none"
+  method get_metrics : "gint -> gint -> none"
+  method is_adjusting : "gboolean"
+  method set_color : "gdouble -> gdouble -> gdouble -> none"
+  method set_metrics : "gint -> gint -> none"
+  signal changed :  -> none
+  signal move : DirectionType -> none
+}
+
+class HScale set wrap wrapsig : Scale {
+}
+
+class HScrollbar set wrap wrapsig : Scrollbar {
+}
+
+class HSeparator set wrap wrapsig : Separator {
+}
+
+class HandleBox set wrap wrapsig : Bin {
+  method get_child_detached : "gboolean"
+  method get_handle_position : "PositionType"
+  method get_shadow_type : "ShadowType"
+  method get_snap_edge : "PositionType"
+  method set_handle_position : "PositionType -> none"
+  method set_shadow_type : "ShadowType -> none"
+  method set_snap_edge : "PositionType -> none"
+  "child-detached" gboolean : Read
+  "handle-position" PositionType : Read / Write
+  "shadow-type" ShadowType : Read / Write
+  "snap-edge" PositionType : Read / Write
+  "snap-edge-set" gboolean : Read / Write
+  signal child_attached : Widget -> none
+  signal child_detached : Widget -> none
+}
+
+class HeaderBar set wrap wrapsig : Container {
+  method get_custom_title : "Widget"
+  method get_decoration_layout : "utf8"
+  method get_has_subtitle : "gboolean"
+  method get_show_close_button : "gboolean"
+  method get_subtitle : "utf8"
+  method get_title : "utf8"
+  method pack_end : "Widget -> none"
+  method pack_start : "Widget -> none"
+  method set_custom_title : "Widget -> none"
+  method set_decoration_layout : "utf8 -> none"
+  method set_has_subtitle : "gboolean -> none"
+  method set_show_close_button : "gboolean -> none"
+  method set_subtitle : "utf8 -> none"
+  method set_title : "utf8 -> none"
+  "custom-title" Widget : Read / Write
+  "decoration-layout" utf8 : Read / Write
+  "decoration-layout-set" gboolean : Read / Write
+  "has-subtitle" gboolean : Read / Write
+  "show-close-button" gboolean : Read / Write
+  "spacing" gint : Read / Write
+  "subtitle" utf8 : Read / Write
+  "title" utf8 : Read / Write
+}
+
+class IMContextSimple set wrap wrapsig : IMContext {
+  method add_compose_file : "utf8 -> none"
+  method add_table : " -> gint -> gint -> none"
+}
+
+class IMMulticontext set wrap wrapsig : IMContext {
+  method append_menuitems : "MenuShell -> none"
+  method get_context_id : "utf8"
+  method set_context_id : "utf8 -> none"
+}
+
+class IconView set wrap wrapsig : Container {
+  method convert_widget_to_bin_window_coords : "gint -> gint -> gint -> gint -> none"
+  method create_drag_icon : "TreePath -> cairo.Surface"
+  method enable_model_drag_dest : " -> gint -> Gdk.DragAction -> none"
+  method enable_model_drag_source : "Gdk.ModifierType ->  -> gint -> Gdk.DragAction -> none"
+  method get_activate_on_single_click : "gboolean"
+  method get_cell_rect : "TreePath -> CellRenderer -> Gdk.Rectangle -> gboolean"
+  method get_column_spacing : "gint"
+  method get_columns : "gint"
+  method get_cursor : "TreePath -> CellRenderer -> gboolean"
+  method get_dest_item_at_pos : "gint -> gint -> TreePath -> IconViewDropPosition -> gboolean"
+  method get_drag_dest_item : "TreePath -> IconViewDropPosition -> none"
+  method get_item_at_pos : "gint -> gint -> TreePath -> CellRenderer -> gboolean"
+  method get_item_column : "TreePath -> gint"
+  method get_item_orientation : "Orientation"
+  method get_item_padding : "gint"
+  method get_item_row : "TreePath -> gint"
+  method get_item_width : "gint"
+  method get_margin : "gint"
+  method get_markup_column : "gint"
+  method get_model : "TreeModel"
+  method get_path_at_pos : "gint -> gint -> TreePath"
+  method get_pixbuf_column : "gint"
+  method get_reorderable : "gboolean"
+  method get_row_spacing : "gint"
+  method get_selected_items : "GLib.List"
+  method get_selection_mode : "SelectionMode"
+  method get_spacing : "gint"
+  method get_text_column : "gint"
+  method get_tooltip_column : "gint"
+  method get_tooltip_context : "gint -> gint -> gboolean -> TreeModel -> TreePath -> TreeIter -> gboolean"
+  method get_visible_range : "TreePath -> TreePath -> gboolean"
+  method item_activated : "TreePath -> none"
+  method path_is_selected : "TreePath -> gboolean"
+  method scroll_to_path : "TreePath -> gboolean -> gfloat -> gfloat -> none"
+  method select_all : "none"
+  method select_path : "TreePath -> none"
+  method selected_foreach : "IconViewForeachFunc -> gpointer -> none"
+  method set_activate_on_single_click : "gboolean -> none"
+  method set_column_spacing : "gint -> none"
+  method set_columns : "gint -> none"
+  method set_cursor : "TreePath -> CellRenderer -> gboolean -> none"
+  method set_drag_dest_item : "TreePath -> IconViewDropPosition -> none"
+  method set_item_orientation : "Orientation -> none"
+  method set_item_padding : "gint -> none"
+  method set_item_width : "gint -> none"
+  method set_margin : "gint -> none"
+  method set_markup_column : "gint -> none"
+  method set_model : "TreeModel -> none"
+  method set_pixbuf_column : "gint -> none"
+  method set_reorderable : "gboolean -> none"
+  method set_row_spacing : "gint -> none"
+  method set_selection_mode : "SelectionMode -> none"
+  method set_spacing : "gint -> none"
+  method set_text_column : "gint -> none"
+  method set_tooltip_cell : "Tooltip -> TreePath -> CellRenderer -> none"
+  method set_tooltip_column : "gint -> none"
+  method set_tooltip_item : "Tooltip -> TreePath -> none"
+  method unselect_all : "none"
+  method unselect_path : "TreePath -> none"
+  method unset_model_drag_dest : "none"
+  method unset_model_drag_source : "none"
+  "activate-on-single-click" gboolean : Read / Write
+  "cell-area" CellArea : Read / Write
+  "column-spacing" gint : Read / Write
+  "columns" gint : Read / Write
+  "item-orientation" Orientation : Read / Write
+  "item-padding" gint : Read / Write
+  "item-width" gint : Read / Write
+  "margin" gint : Read / Write
+  "markup-column" gint : Read / Write
+  "model" TreeModel : Read / Write
+  "pixbuf-column" gint : Read / Write
+  "reorderable" gboolean : Read / Write
+  "row-spacing" gint : Read / Write
+  "selection-mode" SelectionMode : Read / Write
+  "spacing" gint : Read / Write
+  "text-column" gint : Read / Write
+  "tooltip-column" gint : Read / Write
+  signal activate_cursor_item :  -> gboolean
+  signal item_activated : TreePath -> none
+  signal move_cursor : MovementStepgint -> gboolean
+  signal select_all :  -> none
+  signal select_cursor_item :  -> none
+  signal selection_changed :  -> none
+  signal toggle_cursor_item :  -> none
+  signal unselect_all :  -> none
+}
+
+class IconViewAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class Image set wrap wrapsig : Misc {
+  method clear : "none"
+  method get_animation : "GdkPixbuf.PixbufAnimation"
+  method get_gicon : "Gio.Icon -> gint -> none"
+  method get_icon_name : "utf8 -> gint -> none"
+  method get_icon_set : "IconSet -> gint -> none"
+  method get_pixbuf : "GdkPixbuf.Pixbuf"
+  method get_pixel_size : "gint"
+  method get_stock : "utf8 -> gint -> none"
+  method get_storage_type : "ImageType"
+  method set_from_animation : "GdkPixbuf.PixbufAnimation -> none"
+  method set_from_file : "filename -> none"
+  method set_from_gicon : "Gio.Icon -> gint -> none"
+  method set_from_icon_name : "utf8 -> gint -> none"
+  method set_from_icon_set : "IconSet -> gint -> none"
+  method set_from_pixbuf : "GdkPixbuf.Pixbuf -> none"
+  method set_from_resource : "utf8 -> none"
+  method set_from_stock : "utf8 -> gint -> none"
+  method set_from_surface : "cairo.Surface -> none"
+  method set_pixel_size : "gint -> none"
+  "file" utf8 : Read / Write
+  "gicon" Gio.Icon : Read / Write
+  "icon-name" utf8 : Read / Write
+  "icon-set" IconSet : Read / Write
+  "icon-size" gint : Read / Write
+  "pixbuf" GdkPixbuf.Pixbuf : Read / Write
+  "pixbuf-animation" GdkPixbuf.PixbufAnimation : Read / Write
+  "pixel-size" gint : Read / Write
+  "resource" utf8 : Read / Write
+  "stock" utf8 : Read / Write
+  "storage-type" ImageType : Read
+  "surface" cairo.Surface : Read / Write
+  "use-fallback" gboolean : Read / Write
+}
+
+class ImageAccessible set wrap wrapsig : WidgetAccessible {
+}
+
+class ImageCellAccessible set wrap wrapsig : RendererCellAccessible {
+}
+
+class ImageMenuItem set wrap wrapsig : MenuItem {
+  method get_always_show_image : "gboolean"
+  method get_image : "Widget"
+  method get_use_stock : "gboolean"
+  method set_accel_group : "AccelGroup -> none"
+  method set_always_show_image : "gboolean -> none"
+  method set_image : "Widget -> none"
+  method set_use_stock : "gboolean -> none"
+  "accel-group" AccelGroup : Write
+  "always-show-image" gboolean : Read / Write
+  "image" Widget : Read / Write
+  "use-stock" gboolean : Read / Write
+}
+
+class InfoBar set wrap wrapsig : Box {
+  method add_action_widget : "Widget -> gint -> none"
+  method add_button : "utf8 -> gint -> Button"
+  method add_buttons : "utf8 ->  -> none"
+  method get_action_area : "Widget"
+  method get_content_area : "Widget"
+  method get_message_type : "MessageType"
+  method get_revealed : "gboolean"
+  method get_show_close_button : "gboolean"
+  method response : "gint -> none"
+  method set_default_response : "gint -> none"
+  method set_message_type : "MessageType -> none"
+  method set_response_sensitive : "gint -> gboolean -> none"
+  method set_revealed : "gboolean -> none"
+  method set_show_close_button : "gboolean -> none"
+  "message-type" MessageType : Read / Write
+  "revealed" gboolean : Read / Write
+  "show-close-button" gboolean : Read / Write
+  signal close :  -> none
+  signal response : gint -> none
+}
+
+class Invisible set wrap wrapsig : Widget {
+  method get_screen : "Gdk.Screen"
+  method set_screen : "Gdk.Screen -> none"
+  "screen" Gdk.Screen : Read / Write
+}
+
+class Label set wrap wrapsig : Misc {
+  method get_angle : "gdouble"
+  method get_attributes : "Pango.AttrList"
+  method get_current_uri : "utf8"
+  method get_ellipsize : "Pango.EllipsizeMode"
+  method get_justify : "Justification"
+  method get_label : "utf8"
+  method get_layout : "Pango.Layout"
+  method get_layout_offsets : "gint -> gint -> none"
+  method get_line_wrap : "gboolean"
+  method get_line_wrap_mode : "Pango.WrapMode"
+  method get_lines : "gint"
+  method get_max_width_chars : "gint"
+  method get_mnemonic_keyval : "guint"
+  method get_mnemonic_widget : "Widget"
+  method get_selectable : "gboolean"
+  method get_selection_bounds : "gint -> gint -> gboolean"
+  method get_single_line_mode : "gboolean"
+  method get_text : "utf8"
+  method get_track_visited_links : "gboolean"
+  method get_use_markup : "gboolean"
+  method get_use_underline : "gboolean"
+  method get_width_chars : "gint"
+  method get_xalign : "gfloat"
+  method get_yalign : "gfloat"
+  method select_region : "gint -> gint -> none"
+  method set_angle : "gdouble -> none"
+  method set_attributes : "Pango.AttrList -> none"
+  method set_ellipsize : "Pango.EllipsizeMode -> none"
+  method set_justify : "Justification -> none"
+  method set_label : "utf8 -> none"
+  method set_line_wrap : "gboolean -> none"
+  method set_line_wrap_mode : "Pango.WrapMode -> none"
+  method set_lines : "gint -> none"
+  method set_markup : "utf8 -> none"
+  method set_markup_with_mnemonic : "utf8 -> none"
+  method set_max_width_chars : "gint -> none"
+  method set_mnemonic_widget : "Widget -> none"
+  method set_pattern : "utf8 -> none"
+  method set_selectable : "gboolean -> none"
+  method set_single_line_mode : "gboolean -> none"
+  method set_text : "utf8 -> none"
+  method set_text_with_mnemonic : "utf8 -> none"
+  method set_track_visited_links : "gboolean -> none"
+  method set_use_markup : "gboolean -> none"
+  method set_use_underline : "gboolean -> none"
+  method set_width_chars : "gint -> none"
+  method set_xalign : "gfloat -> none"
+  method set_yalign : "gfloat -> none"
+  "angle" gdouble : Read / Write
+  "attributes" Pango.AttrList : Read / Write
+  "cursor-position" gint : Read
+  "ellipsize" Pango.EllipsizeMode : Read / Write
+  "justify" Justification : Read / Write
+  "label" utf8 : Read / Write
+  "lines" gint : Read / Write
+  "max-width-chars" gint : Read / Write
+  "mnemonic-keyval" guint : Read
+  "mnemonic-widget" Widget : Read / Write
+  "pattern" utf8 : Write
+  "selectable" gboolean : Read / Write
+  "selection-bound" gint : Read
+  "single-line-mode" gboolean : Read / Write
+  "track-visited-links" gboolean : Read / Write
+  "use-markup" gboolean : Read / Write
+  "use-underline" gboolean : Read / Write
+  "width-chars" gint : Read / Write
+  "wrap" gboolean : Read / Write
+  "wrap-mode" Pango.WrapMode : Read / Write
+  "xalign" gfloat : Read / Write
+  "yalign" gfloat : Read / Write
+  signal activate_current_link :  -> none
+  signal activate_link : utf8 -> gboolean
+  signal copy_clipboard :  -> none
+  signal move_cursor : MovementStepgintgboolean -> none
+  signal populate_popup : Menu -> none
+}
+
+class LabelAccessible set wrap wrapsig : WidgetAccessible {
+}
+
+class Layout set wrap wrapsig : Container {
+  method get_bin_window : "Gdk.Window"
+  method get_hadjustment : "Adjustment"
+  method get_size : "guint -> guint -> none"
+  method get_vadjustment : "Adjustment"
+  method move : "Widget -> gint -> gint -> none"
+  method put : "Widget -> gint -> gint -> none"
+  method set_hadjustment : "Adjustment -> none"
+  method set_size : "guint -> guint -> none"
+  method set_vadjustment : "Adjustment -> none"
+  "height" guint : Read / Write
+  "width" guint : Read / Write
+}
+
+class LevelBar set wrap wrapsig : Widget {
+  method add_offset_value : "utf8 -> gdouble -> none"
+  method get_inverted : "gboolean"
+  method get_max_value : "gdouble"
+  method get_min_value : "gdouble"
+  method get_mode : "LevelBarMode"
+  method get_offset_value : "utf8 -> gdouble -> gboolean"
+  method get_value : "gdouble"
+  method remove_offset_value : "utf8 -> none"
+  method set_inverted : "gboolean -> none"
+  method set_max_value : "gdouble -> none"
+  method set_min_value : "gdouble -> none"
+  method set_mode : "LevelBarMode -> none"
+  method set_value : "gdouble -> none"
+  "inverted" gboolean : Read / Write
+  "max-value" gdouble : Read / Write
+  "min-value" gdouble : Read / Write
+  "mode" LevelBarMode : Read / Write
+  "value" gdouble : Read / Write
+  signal offset_changed : utf8 -> none
+}
+
+class LevelBarAccessible set wrap wrapsig : WidgetAccessible {
+}
+
+class LinkButton set wrap wrapsig : Button {
+  method get_uri : "utf8"
+  method get_visited : "gboolean"
+  method set_uri : "utf8 -> none"
+  method set_visited : "gboolean -> none"
+  "uri" utf8 : Read / Write
+  "visited" gboolean : Read / Write
+  signal activate_link :  -> gboolean
+}
+
+class LinkButtonAccessible set wrap wrapsig : ButtonAccessible {
+}
+
+class ListBox set wrap wrapsig : Container {
+  method bind_model : "Gio.ListModel -> ListBoxCreateWidgetFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method drag_highlight_row : "ListBoxRow -> none"
+  method drag_unhighlight_row : "none"
+  method get_activate_on_single_click : "gboolean"
+  method get_adjustment : "Adjustment"
+  method get_row_at_index : "gint -> ListBoxRow"
+  method get_row_at_y : "gint -> ListBoxRow"
+  method get_selected_row : "ListBoxRow"
+  method get_selected_rows : "GLib.List"
+  method get_selection_mode : "SelectionMode"
+  method insert : "Widget -> gint -> none"
+  method invalidate_filter : "none"
+  method invalidate_headers : "none"
+  method invalidate_sort : "none"
+  method prepend : "Widget -> none"
+  method select_all : "none"
+  method select_row : "ListBoxRow -> none"
+  method selected_foreach : "ListBoxForeachFunc -> gpointer -> none"
+  method set_activate_on_single_click : "gboolean -> none"
+  method set_adjustment : "Adjustment -> none"
+  method set_filter_func : "ListBoxFilterFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_header_func : "ListBoxUpdateHeaderFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_placeholder : "Widget -> none"
+  method set_selection_mode : "SelectionMode -> none"
+  method set_sort_func : "ListBoxSortFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method unselect_all : "none"
+  method unselect_row : "ListBoxRow -> none"
+  "activate-on-single-click" gboolean : Read / Write
+  "selection-mode" SelectionMode : Read / Write
+  signal activate_cursor_row :  -> none
+  signal move_cursor : MovementStepgint -> none
+  signal row_activated : ListBoxRow -> none
+  signal row_selected : ListBoxRow -> none
+  signal select_all :  -> none
+  signal selected_rows_changed :  -> none
+  signal toggle_cursor_row :  -> none
+  signal unselect_all :  -> none
+}
+
+class ListBoxAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class ListBoxRow set wrap wrapsig : Bin {
+  method changed : "none"
+  method get_activatable : "gboolean"
+  method get_header : "Widget"
+  method get_index : "gint"
+  method get_selectable : "gboolean"
+  method is_selected : "gboolean"
+  method set_activatable : "gboolean -> none"
+  method set_header : "Widget -> none"
+  method set_selectable : "gboolean -> none"
+  "activatable" gboolean : Read / Write
+  "selectable" gboolean : Read / Write
+  signal activate :  -> none
+}
+
+class ListBoxRowAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class LockButton set wrap wrapsig : Button {
+  method get_permission : "Gio.Permission"
+  method set_permission : "Gio.Permission -> none"
+  "permission" Gio.Permission : Read / Write
+  "text-lock" utf8 : Read / Write
+  "text-unlock" utf8 : Read / Write
+  "tooltip-lock" utf8 : Read / Write
+  "tooltip-not-authorized" utf8 : Read / Write
+  "tooltip-unlock" utf8 : Read / Write
+}
+
+class LockButtonAccessible set wrap wrapsig : ButtonAccessible {
+}
+
+class Menu set wrap wrapsig : MenuShell {
+  method attach : "Widget -> guint -> guint -> guint -> guint -> none"
+  method attach_to_widget : "Widget -> MenuDetachFunc -> none"
+  method detach : "none"
+  method get_accel_group : "AccelGroup"
+  method get_accel_path : "utf8"
+  method get_active : "Widget"
+  method get_attach_widget : "Widget"
+  method get_monitor : "gint"
+  method get_reserve_toggle_size : "gboolean"
+  method get_tearoff_state : "gboolean"
+  method get_title : "utf8"
+  method place_on_monitor : "Gdk.Monitor -> none"
+  method popdown : "none"
+  method popup : "Widget -> Widget -> MenuPositionFunc -> gpointer -> guint -> guint32 -> none"
+  method popup_at_pointer : "Gdk.Event -> none"
+  method popup_at_rect : "Gdk.Window -> Gdk.Rectangle -> Gdk.Gravity -> Gdk.Gravity -> Gdk.Event -> none"
+  method popup_at_widget : "Widget -> Gdk.Gravity -> Gdk.Gravity -> Gdk.Event -> none"
+  method popup_for_device : "Gdk.Device -> Widget -> Widget -> MenuPositionFunc -> gpointer -> GLib.DestroyNotify -> guint -> guint32 -> none"
+  method reorder_child : "Widget -> gint -> none"
+  method reposition : "none"
+  method set_accel_group : "AccelGroup -> none"
+  method set_accel_path : "utf8 -> none"
+  method set_active : "guint -> none"
+  method set_monitor : "gint -> none"
+  method set_reserve_toggle_size : "gboolean -> none"
+  method set_screen : "Gdk.Screen -> none"
+  method set_tearoff_state : "gboolean -> none"
+  method set_title : "utf8 -> none"
+  "accel-group" AccelGroup : Read / Write
+  "accel-path" utf8 : Read / Write
+  "active" gint : Read / Write
+  "anchor-hints" Gdk.AnchorHints : Read / Write
+  "attach-widget" Widget : Read / Write
+  "menu-type-hint" Gdk.WindowTypeHint : Read / Write
+  "monitor" gint : Read / Write
+  "rect-anchor-dx" gint : Read / Write
+  "rect-anchor-dy" gint : Read / Write
+  "reserve-toggle-size" gboolean : Read / Write
+  "tearoff-state" gboolean : Read / Write
+  "tearoff-title" utf8 : Read / Write
+  signal move_scroll : ScrollType -> none
+  signal popped_up : gpointergpointergbooleangboolean -> none
+}
+
+class MenuAccessible set wrap wrapsig : MenuShellAccessible {
+}
+
+class MenuBar set wrap wrapsig : MenuShell {
+  method get_child_pack_direction : "PackDirection"
+  method get_pack_direction : "PackDirection"
+  method set_child_pack_direction : "PackDirection -> none"
+  method set_pack_direction : "PackDirection -> none"
+  "child-pack-direction" PackDirection : Read / Write
+  "pack-direction" PackDirection : Read / Write
+}
+
+class MenuButton set wrap wrapsig : ToggleButton {
+  method get_align_widget : "Widget"
+  method get_direction : "ArrowType"
+  method get_menu_model : "Gio.MenuModel"
+  method get_popover : "Popover"
+  method get_popup : "Menu"
+  method get_use_popover : "gboolean"
+  method set_align_widget : "Widget -> none"
+  method set_direction : "ArrowType -> none"
+  method set_menu_model : "Gio.MenuModel -> none"
+  method set_popover : "Widget -> none"
+  method set_popup : "Widget -> none"
+  method set_use_popover : "gboolean -> none"
+  "align-widget" Container : Read / Write
+  "direction" ArrowType : Read / Write
+  "menu-model" Gio.MenuModel : Read / Write
+  "popover" Popover : Read / Write
+  "popup" Menu : Read / Write
+  "use-popover" gboolean : Read / Write
+}
+
+class MenuButtonAccessible set wrap wrapsig : ToggleButtonAccessible {
+}
+
+class MenuItem set wrap wrapsig : Bin {
+  method activate : "none"
+  method deselect : "none"
+  method get_accel_path : "utf8"
+  method get_label : "utf8"
+  method get_reserve_indicator : "gboolean"
+  method get_right_justified : "gboolean"
+  method get_submenu : "Widget"
+  method get_use_underline : "gboolean"
+  method select : "none"
+  method set_accel_path : "utf8 -> none"
+  method set_label : "utf8 -> none"
+  method set_reserve_indicator : "gboolean -> none"
+  method set_right_justified : "gboolean -> none"
+  method set_submenu : "Menu -> none"
+  method set_use_underline : "gboolean -> none"
+  method toggle_size_allocate : "gint -> none"
+  method toggle_size_request : "gint -> none"
+  "accel-path" utf8 : Read / Write
+  "label" utf8 : Read / Write
+  "right-justified" gboolean : Read / Write
+  "submenu" Menu : Read / Write
+  "use-underline" gboolean : Read / Write
+  signal activate :  -> none
+  signal activate_item :  -> none
+  signal deselect :  -> none
+  signal select :  -> none
+  signal toggle_size_allocate : gint -> none
+  signal toggle_size_request : gpointer -> none
+}
+
+class MenuItemAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class MenuShell abstract set wrap wrapsig : Container {
+  method activate_item : "Widget -> gboolean -> none"
+  method append : "MenuItem -> none"
+  method bind_model : "Gio.MenuModel -> utf8 -> gboolean -> none"
+  method cancel : "none"
+  method deactivate : "none"
+  method deselect : "none"
+  method get_parent_shell : "Widget"
+  method get_selected_item : "Widget"
+  method get_take_focus : "gboolean"
+  method insert : "Widget -> gint -> none"
+  method prepend : "Widget -> none"
+  method select_first : "gboolean -> none"
+  method select_item : "Widget -> none"
+  method set_take_focus : "gboolean -> none"
+  "take-focus" gboolean : Read / Write
+  signal activate_current : gboolean -> none
+  signal cancel :  -> none
+  signal cycle_focus : DirectionType -> none
+  signal deactivate :  -> none
+  signal insert : Widgetgint -> none
+  signal move_current : MenuDirectionType -> none
+  signal move_selected : gint -> gboolean
+  signal selection_done :  -> none
+}
+
+class MenuShellAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class MenuToolButton set wrap wrapsig : ToolButton {
+  method get_menu : "Widget"
+  method set_arrow_tooltip_markup : "utf8 -> none"
+  method set_arrow_tooltip_text : "utf8 -> none"
+  method set_menu : "Widget -> none"
+  "menu" Menu : Read / Write
+  signal show_menu :  -> none
+}
+
+class MessageDialog set wrap wrapsig : Dialog {
+  method format_secondary_markup : "utf8 ->  -> none"
+  method format_secondary_text : "utf8 ->  -> none"
+  method get_image : "Widget"
+  method get_message_area : "Widget"
+  method set_image : "Widget -> none"
+  method set_markup : "utf8 -> none"
+  "buttons" ButtonsType : Write
+  "image" Widget : Read / Write
+  "message-area" Widget : Read
+  "message-type" MessageType : Read / Write
+  "secondary-text" utf8 : Read / Write
+  "secondary-use-markup" gboolean : Read / Write
+  "text" utf8 : Read / Write
+  "use-markup" gboolean : Read / Write
+}
+
+class Misc abstract set wrap wrapsig : Widget {
+  method get_alignment : "gfloat -> gfloat -> none"
+  method get_padding : "gint -> gint -> none"
+  method set_alignment : "gfloat -> gfloat -> none"
+  method set_padding : "gint -> gint -> none"
+  "xalign" gfloat : Read / Write
+  "xpad" gint : Read / Write
+  "yalign" gfloat : Read / Write
+  "ypad" gint : Read / Write
+}
+
+class ModelButton set wrap wrapsig : Button {
+  "active" gboolean : Read / Write
+  "centered" gboolean : Read / Write
+  "icon" Gio.Icon : Read / Write
+  "iconic" gboolean : Read / Write
+  "inverted" gboolean : Read / Write
+  "menu-name" utf8 : Read / Write
+  "role" ButtonRole : Read / Write
+  "text" utf8 : Read / Write
+  "use-markup" gboolean : Read / Write
+}
+
+class MountOperation set wrap wrapsig : Gio.MountOperation {
+  method get_parent : "Window"
+  method get_screen : "Gdk.Screen"
+  method is_showing : "gboolean"
+  method set_parent : "Window -> none"
+  method set_screen : "Gdk.Screen -> none"
+  "is-showing" gboolean : Read
+  "parent" Window : Read / Write
+  "screen" Gdk.Screen : Read / Write
+}
+
+class Notebook set wrap wrapsig : Container {
+  method append_page : "Widget -> Widget -> gint"
+  method append_page_menu : "Widget -> Widget -> Widget -> gint"
+  method detach_tab : "Widget -> none"
+  method get_action_widget : "PackType -> Widget"
+  method get_current_page : "gint"
+  method get_group_name : "utf8"
+  method get_menu_label : "Widget -> Widget"
+  method get_menu_label_text : "Widget -> utf8"
+  method get_n_pages : "gint"
+  method get_nth_page : "gint -> Widget"
+  method get_scrollable : "gboolean"
+  method get_show_border : "gboolean"
+  method get_show_tabs : "gboolean"
+  method get_tab_detachable : "Widget -> gboolean"
+  method get_tab_hborder : "guint16"
+  method get_tab_label : "Widget -> Widget"
+  method get_tab_label_text : "Widget -> utf8"
+  method get_tab_pos : "PositionType"
+  method get_tab_reorderable : "Widget -> gboolean"
+  method get_tab_vborder : "guint16"
+  method insert_page : "Widget -> Widget -> gint -> gint"
+  method insert_page_menu : "Widget -> Widget -> Widget -> gint -> gint"
+  method next_page : "none"
+  method page_num : "Widget -> gint"
+  method popup_disable : "none"
+  method popup_enable : "none"
+  method prepend_page : "Widget -> Widget -> gint"
+  method prepend_page_menu : "Widget -> Widget -> Widget -> gint"
+  method prev_page : "none"
+  method remove_page : "gint -> none"
+  method reorder_child : "Widget -> gint -> none"
+  method set_action_widget : "Widget -> PackType -> none"
+  method set_current_page : "gint -> none"
+  method set_group_name : "utf8 -> none"
+  method set_menu_label : "Widget -> Widget -> none"
+  method set_menu_label_text : "Widget -> utf8 -> none"
+  method set_scrollable : "gboolean -> none"
+  method set_show_border : "gboolean -> none"
+  method set_show_tabs : "gboolean -> none"
+  method set_tab_detachable : "Widget -> gboolean -> none"
+  method set_tab_label : "Widget -> Widget -> none"
+  method set_tab_label_text : "Widget -> utf8 -> none"
+  method set_tab_pos : "PositionType -> none"
+  method set_tab_reorderable : "Widget -> gboolean -> none"
+  "enable-popup" gboolean : Read / Write
+  "group-name" utf8 : Read / Write
+  "page" gint : Read / Write
+  "scrollable" gboolean : Read / Write
+  "show-border" gboolean : Read / Write
+  "show-tabs" gboolean : Read / Write
+  "tab-pos" PositionType : Read / Write
+  signal change_current_page : gint -> gboolean
+  signal create_window : Widgetgintgint -> Notebook
+  signal focus_tab : NotebookTab -> gboolean
+  signal move_focus_out : DirectionType -> none
+  signal page_added : Widgetguint -> none
+  signal page_removed : Widgetguint -> none
+  signal page_reordered : Widgetguint -> none
+  signal reorder_tab : DirectionTypegboolean -> gboolean
+  signal select_page : gboolean -> gboolean
+  signal switch_page : Widgetguint -> none
+}
+
+class NotebookAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class NotebookPageAccessible set wrap wrapsig : Atk.Object {
+  method invalidate : "none"
+}
+
+class NumerableIcon set wrap wrapsig : Gio.EmblemedIcon {
+  method get_background_gicon : "Gio.Icon"
+  method get_background_icon_name : "utf8"
+  method get_count : "gint"
+  method get_label : "utf8"
+  method get_style_context : "StyleContext"
+  method set_background_gicon : "Gio.Icon -> none"
+  method set_background_icon_name : "utf8 -> none"
+  method set_count : "gint -> none"
+  method set_label : "utf8 -> none"
+  method set_style_context : "StyleContext -> none"
+  "background-icon" Gio.Icon : Read / Write
+  "background-icon-name" utf8 : Read / Write
+  "count" gint : Read / Write
+  "label" utf8 : Read / Write
+  "style-context" StyleContext : Read / Write
+}
+
+class OffscreenWindow set wrap wrapsig : Window {
+  method get_pixbuf : "GdkPixbuf.Pixbuf"
+  method get_surface : "cairo.Surface"
+}
+
+class Overlay set wrap wrapsig : Bin {
+  method add_overlay : "Widget -> none"
+  method get_overlay_pass_through : "Widget -> gboolean"
+  method reorder_overlay : "Widget -> gint -> none"
+  method set_overlay_pass_through : "Widget -> gboolean -> none"
+  signal get_child_position : WidgetGdk.Rectangle -> gboolean
+}
+
+class PadController set wrap wrapsig : EventController {
+  method set_action : "PadActionType -> gint -> gint -> utf8 -> utf8 -> none"
+  method set_action_entries : " -> gint -> none"
+  "action-group" Gio.ActionGroup : Read / Write
+  "pad" Gdk.Device : Read / Write
+}
+
+class Paned set wrap wrapsig : Container {
+  method add1 : "Widget -> none"
+  method add2 : "Widget -> none"
+  method get_child1 : "Widget"
+  method get_child2 : "Widget"
+  method get_handle_window : "Gdk.Window"
+  method get_position : "gint"
+  method get_wide_handle : "gboolean"
+  method pack1 : "Widget -> gboolean -> gboolean -> none"
+  method pack2 : "Widget -> gboolean -> gboolean -> none"
+  method set_position : "gint -> none"
+  method set_wide_handle : "gboolean -> none"
+  "max-position" gint : Read
+  "min-position" gint : Read
+  "position" gint : Read / Write
+  "position-set" gboolean : Read / Write
+  "wide-handle" gboolean : Read / Write
+  signal accept_position :  -> gboolean
+  signal cancel_position :  -> gboolean
+  signal cycle_child_focus : gboolean -> gboolean
+  signal cycle_handle_focus : gboolean -> gboolean
+  signal move_handle : ScrollType -> gboolean
+  signal toggle_handle_focus :  -> gboolean
+}
+
+class PanedAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class PlacesSidebar set wrap wrapsig : ScrolledWindow {
+  method add_shortcut : "Gio.File -> none"
+  method get_local_only : "gboolean"
+  method get_location : "Gio.File"
+  method get_nth_bookmark : "gint -> Gio.File"
+  method get_open_flags : "PlacesOpenFlags"
+  method get_show_connect_to_server : "gboolean"
+  method get_show_desktop : "gboolean"
+  method get_show_enter_location : "gboolean"
+  method get_show_other_locations : "gboolean"
+  method get_show_recent : "gboolean"
+  method get_show_starred_location : "gboolean"
+  method get_show_trash : "gboolean"
+  method list_shortcuts : "GLib.SList"
+  method remove_shortcut : "Gio.File -> none"
+  method set_drop_targets_visible : "gboolean -> Gdk.DragContext -> none"
+  method set_local_only : "gboolean -> none"
+  method set_location : "Gio.File -> none"
+  method set_open_flags : "PlacesOpenFlags -> none"
+  method set_show_connect_to_server : "gboolean -> none"
+  method set_show_desktop : "gboolean -> none"
+  method set_show_enter_location : "gboolean -> none"
+  method set_show_other_locations : "gboolean -> none"
+  method set_show_recent : "gboolean -> none"
+  method set_show_starred_location : "gboolean -> none"
+  method set_show_trash : "gboolean -> none"
+  "local-only" gboolean : Read / Write
+  "location" Gio.File : Read / Write
+  "open-flags" PlacesOpenFlags : Read / Write
+  "populate-all" gboolean : Read / Write
+  "show-connect-to-server" gboolean : Read / Write
+  "show-desktop" gboolean : Read / Write
+  "show-enter-location" gboolean : Read / Write
+  "show-other-locations" gboolean : Read / Write
+  "show-recent" gboolean : Read / Write
+  "show-starred-location" gboolean : Read / Write
+  "show-trash" gboolean : Read / Write
+  signal drag_action_ask : gint -> gint
+  signal drag_action_requested : Gdk.DragContextGio.FileGLib.List -> gint
+  signal drag_perform_drop : Gio.FileGLib.Listgint -> none
+  signal mount : Gio.MountOperation -> none
+  signal open_location : Gio.FilePlacesOpenFlags -> none
+  signal populate_popup : WidgetGio.FileGio.Volume -> none
+  signal show_connect_to_server :  -> none
+  signal show_enter_location :  -> none
+  signal show_error_message : utf8utf8 -> none
+  signal show_other_locations :  -> none
+  signal show_other_locations_with_flags : PlacesOpenFlags -> none
+  signal show_starred_location : PlacesOpenFlags -> none
+  signal unmount : Gio.MountOperation -> none
+}
+
+class Plug set wrap wrapsig : Window {
+  method construct : "xlib.Window -> none"
+  method construct_for_display : "Gdk.Display -> xlib.Window -> none"
+  method get_embedded : "gboolean"
+  method get_id : "xlib.Window"
+  method get_socket_window : "Gdk.Window"
+  "embedded" gboolean : Read
+  "socket-window" Gdk.Window : Read
+  signal embedded :  -> none
+}
+
+class Popover set wrap wrapsig : Bin {
+  method bind_model : "Gio.MenuModel -> utf8 -> none"
+  method get_constrain_to : "PopoverConstraint"
+  method get_default_widget : "Widget"
+  method get_modal : "gboolean"
+  method get_pointing_to : "Gdk.Rectangle -> gboolean"
+  method get_position : "PositionType"
+  method get_relative_to : "Widget"
+  method get_transitions_enabled : "gboolean"
+  method popdown : "none"
+  method popup : "none"
+  method set_constrain_to : "PopoverConstraint -> none"
+  method set_default_widget : "Widget -> none"
+  method set_modal : "gboolean -> none"
+  method set_pointing_to : "Gdk.Rectangle -> none"
+  method set_position : "PositionType -> none"
+  method set_relative_to : "Widget -> none"
+  method set_transitions_enabled : "gboolean -> none"
+  "constrain-to" PopoverConstraint : Read / Write
+  "modal" gboolean : Read / Write
+  "pointing-to" Gdk.Rectangle : Read / Write
+  "position" PositionType : Read / Write
+  "relative-to" Widget : Read / Write
+  "transitions-enabled" gboolean : Read / Write
+  signal closed :  -> none
+}
+
+class PopoverAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class PopoverMenu set wrap wrapsig : Popover {
+  method open_submenu : "utf8 -> none"
+  "visible-submenu" utf8 : Read / Write
+}
+
+class ProgressBar set wrap wrapsig : Widget {
+  method get_ellipsize : "Pango.EllipsizeMode"
+  method get_fraction : "gdouble"
+  method get_inverted : "gboolean"
+  method get_pulse_step : "gdouble"
+  method get_show_text : "gboolean"
+  method get_text : "utf8"
+  method pulse : "none"
+  method set_ellipsize : "Pango.EllipsizeMode -> none"
+  method set_fraction : "gdouble -> none"
+  method set_inverted : "gboolean -> none"
+  method set_pulse_step : "gdouble -> none"
+  method set_show_text : "gboolean -> none"
+  method set_text : "utf8 -> none"
+  "ellipsize" Pango.EllipsizeMode : Read / Write
+  "fraction" gdouble : Read / Write
+  "inverted" gboolean : Read / Write
+  "pulse-step" gdouble : Read / Write
+  "show-text" gboolean : Read / Write
+  "text" utf8 : Read / Write
+}
+
+class ProgressBarAccessible set wrap wrapsig : WidgetAccessible {
+}
+
+class RadioAction set wrap wrapsig : ToggleAction {
+  method get_current_value : "gint"
+  method get_group : "GLib.SList"
+  method join_group : "RadioAction -> none"
+  method set_current_value : "gint -> none"
+  method set_group : "GLib.SList -> none"
+  "current-value" gint : Read / Write
+  "group" RadioAction : Write
+  "value" gint : Read / Write
+  signal changed : RadioAction -> none
+}
+
+class RadioButton set wrap wrapsig : CheckButton {
+  method get_group : "GLib.SList"
+  method join_group : "RadioButton -> none"
+  method set_group : "GLib.SList -> none"
+  "group" RadioButton : Write
+  signal group_changed :  -> none
+}
+
+class RadioButtonAccessible set wrap wrapsig : ToggleButtonAccessible {
+}
+
+class RadioMenuItem set wrap wrapsig : CheckMenuItem {
+  method get_group : "GLib.SList"
+  method join_group : "RadioMenuItem -> none"
+  method set_group : "GLib.SList -> none"
+  "group" RadioMenuItem : Write
+  signal group_changed :  -> none
+}
+
+class RadioMenuItemAccessible set wrap wrapsig : CheckMenuItemAccessible {
+}
+
+class RadioToolButton set wrap wrapsig : ToggleToolButton {
+  method get_group : "GLib.SList"
+  method set_group : "GLib.SList -> none"
+  "group" RadioToolButton : Write
+}
+
+class Range abstract set wrap wrapsig : Widget {
+  method get_adjustment : "Adjustment"
+  method get_fill_level : "gdouble"
+  method get_flippable : "gboolean"
+  method get_inverted : "gboolean"
+  method get_lower_stepper_sensitivity : "SensitivityType"
+  method get_min_slider_size : "gint"
+  method get_range_rect : "Gdk.Rectangle -> none"
+  method get_restrict_to_fill_level : "gboolean"
+  method get_round_digits : "gint"
+  method get_show_fill_level : "gboolean"
+  method get_slider_range : "gint -> gint -> none"
+  method get_slider_size_fixed : "gboolean"
+  method get_upper_stepper_sensitivity : "SensitivityType"
+  method get_value : "gdouble"
+  method set_adjustment : "Adjustment -> none"
+  method set_fill_level : "gdouble -> none"
+  method set_flippable : "gboolean -> none"
+  method set_increments : "gdouble -> gdouble -> none"
+  method set_inverted : "gboolean -> none"
+  method set_lower_stepper_sensitivity : "SensitivityType -> none"
+  method set_min_slider_size : "gint -> none"
+  method set_range : "gdouble -> gdouble -> none"
+  method set_restrict_to_fill_level : "gboolean -> none"
+  method set_round_digits : "gint -> none"
+  method set_show_fill_level : "gboolean -> none"
+  method set_slider_size_fixed : "gboolean -> none"
+  method set_upper_stepper_sensitivity : "SensitivityType -> none"
+  method set_value : "gdouble -> none"
+  "adjustment" Adjustment : Read / Write
+  "fill-level" gdouble : Read / Write
+  "inverted" gboolean : Read / Write
+  "lower-stepper-sensitivity" SensitivityType : Read / Write
+  "restrict-to-fill-level" gboolean : Read / Write
+  "round-digits" gint : Read / Write
+  "show-fill-level" gboolean : Read / Write
+  "upper-stepper-sensitivity" SensitivityType : Read / Write
+  signal adjust_bounds : gdouble -> none
+  signal change_value : ScrollTypegdouble -> gboolean
+  signal move_slider : ScrollType -> none
+  signal value_changed :  -> none
+}
+
+class RangeAccessible set wrap wrapsig : WidgetAccessible {
+}
+
+class RecentAction set wrap wrapsig : Action {
+  method get_show_numbers : "gboolean"
+  method set_show_numbers : "gboolean -> none"
+  "show-numbers" gboolean : Read / Write
+}
+
+class RecentChooserDialog set wrap wrapsig : Dialog {
+}
+
+class RecentChooserMenu set wrap wrapsig : Menu {
+  method get_show_numbers : "gboolean"
+  method set_show_numbers : "gboolean -> none"
+  "show-numbers" gboolean : Read / Write
+}
+
+class RecentChooserWidget set wrap wrapsig : Box {
+}
+
+class RecentFilter set wrap wrapsig : GObject.InitiallyUnowned {
+  method add_age : "gint -> none"
+  method add_application : "utf8 -> none"
+  method add_custom : "RecentFilterFlags -> RecentFilterFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method add_group : "utf8 -> none"
+  method add_mime_type : "utf8 -> none"
+  method add_pattern : "utf8 -> none"
+  method add_pixbuf_formats : "none"
+  method filter : "RecentFilterInfo -> gboolean"
+  method get_name : "utf8"
+  method get_needed : "RecentFilterFlags"
+  method set_name : "utf8 -> none"
+}
+
+class RendererCellAccessible set wrap wrapsig : CellAccessible {
+  "renderer" CellRenderer : Read / Write
+}
+
+class Revealer set wrap wrapsig : Bin {
+  method get_child_revealed : "gboolean"
+  method get_reveal_child : "gboolean"
+  method get_transition_duration : "guint"
+  method get_transition_type : "RevealerTransitionType"
+  method set_reveal_child : "gboolean -> none"
+  method set_transition_duration : "guint -> none"
+  method set_transition_type : "RevealerTransitionType -> none"
+  "child-revealed" gboolean : Read
+  "reveal-child" gboolean : Read / Write
+  "transition-duration" guint : Read / Write
+  "transition-type" RevealerTransitionType : Read / Write
+}
+
+class Scale set wrap wrapsig : Range {
+  method add_mark : "gdouble -> PositionType -> utf8 -> none"
+  method clear_marks : "none"
+  method get_digits : "gint"
+  method get_draw_value : "gboolean"
+  method get_has_origin : "gboolean"
+  method get_layout : "Pango.Layout"
+  method get_layout_offsets : "gint -> gint -> none"
+  method get_value_pos : "PositionType"
+  method set_digits : "gint -> none"
+  method set_draw_value : "gboolean -> none"
+  method set_has_origin : "gboolean -> none"
+  method set_value_pos : "PositionType -> none"
+  "digits" gint : Read / Write
+  "draw-value" gboolean : Read / Write
+  "has-origin" gboolean : Read / Write
+  "value-pos" PositionType : Read / Write
+  signal format_value : gdouble -> utf8
+}
+
+class ScaleAccessible set wrap wrapsig : RangeAccessible {
+}
+
+class ScaleButton set wrap wrapsig : Button {
+  method get_adjustment : "Adjustment"
+  method get_minus_button : "Button"
+  method get_plus_button : "Button"
+  method get_popup : "Widget"
+  method get_value : "gdouble"
+  method set_adjustment : "Adjustment -> none"
+  method set_icons : " -> none"
+  method set_value : "gdouble -> none"
+  "adjustment" Adjustment : Read / Write
+  "icons"  : Read / Write
+  "size" IconSize : Read / Write
+  "value" gdouble : Read / Write
+  signal popdown :  -> none
+  signal popup :  -> none
+  signal value_changed : gdouble -> none
+}
+
+class ScaleButtonAccessible set wrap wrapsig : ButtonAccessible {
+}
+
+class Scrollbar set wrap wrapsig : Range {
+}
+
+class ScrolledWindow set wrap wrapsig : Bin {
+  method add_with_viewport : "Widget -> none"
+  method get_capture_button_press : "gboolean"
+  method get_hadjustment : "Adjustment"
+  method get_hscrollbar : "Widget"
+  method get_kinetic_scrolling : "gboolean"
+  method get_max_content_height : "gint"
+  method get_max_content_width : "gint"
+  method get_min_content_height : "gint"
+  method get_min_content_width : "gint"
+  method get_overlay_scrolling : "gboolean"
+  method get_placement : "CornerType"
+  method get_policy : "PolicyType -> PolicyType -> none"
+  method get_propagate_natural_height : "gboolean"
+  method get_propagate_natural_width : "gboolean"
+  method get_shadow_type : "ShadowType"
+  method get_vadjustment : "Adjustment"
+  method get_vscrollbar : "Widget"
+  method set_capture_button_press : "gboolean -> none"
+  method set_hadjustment : "Adjustment -> none"
+  method set_kinetic_scrolling : "gboolean -> none"
+  method set_max_content_height : "gint -> none"
+  method set_max_content_width : "gint -> none"
+  method set_min_content_height : "gint -> none"
+  method set_min_content_width : "gint -> none"
+  method set_overlay_scrolling : "gboolean -> none"
+  method set_placement : "CornerType -> none"
+  method set_policy : "PolicyType -> PolicyType -> none"
+  method set_propagate_natural_height : "gboolean -> none"
+  method set_propagate_natural_width : "gboolean -> none"
+  method set_shadow_type : "ShadowType -> none"
+  method set_vadjustment : "Adjustment -> none"
+  method unset_placement : "none"
+  "hadjustment" Adjustment : Read / Write
+  "hscrollbar-policy" PolicyType : Read / Write
+  "kinetic-scrolling" gboolean : Read / Write
+  "max-content-height" gint : Read / Write
+  "max-content-width" gint : Read / Write
+  "min-content-height" gint : Read / Write
+  "min-content-width" gint : Read / Write
+  "overlay-scrolling" gboolean : Read / Write
+  "propagate-natural-height" gboolean : Read / Write
+  "propagate-natural-width" gboolean : Read / Write
+  "shadow-type" ShadowType : Read / Write
+  "vadjustment" Adjustment : Read / Write
+  "vscrollbar-policy" PolicyType : Read / Write
+  "window-placement" CornerType : Read / Write
+  "window-placement-set" gboolean : Read / Write
+  signal edge_overshot : PositionType -> none
+  signal edge_reached : PositionType -> none
+  signal move_focus_out : DirectionType -> none
+  signal scroll_child : ScrollTypegboolean -> gboolean
+}
+
+class ScrolledWindowAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class SearchBar set wrap wrapsig : Bin {
+  method connect_entry : "Entry -> none"
+  method get_search_mode : "gboolean"
+  method get_show_close_button : "gboolean"
+  method handle_event : "Gdk.Event -> gboolean"
+  method set_search_mode : "gboolean -> none"
+  method set_show_close_button : "gboolean -> none"
+  "search-mode-enabled" gboolean : Read / Write
+  "show-close-button" gboolean : Read / Write
+}
+
+class SearchEntry set wrap wrapsig : Entry {
+  method handle_event : "Gdk.Event -> gboolean"
+  signal next_match :  -> none
+  signal previous_match :  -> none
+  signal search_changed :  -> none
+  signal stop_search :  -> none
+}
+
+class Separator set wrap wrapsig : Widget {
+}
+
+class SeparatorMenuItem set wrap wrapsig : MenuItem {
+}
+
+class SeparatorToolItem set wrap wrapsig : ToolItem {
+  method get_draw : "gboolean"
+  method set_draw : "gboolean -> none"
+  "draw" gboolean : Read / Write
+}
+
+class ShortcutLabel set wrap wrapsig : Box {
+  method get_accelerator : "utf8"
+  method get_disabled_text : "utf8"
+  method set_accelerator : "utf8 -> none"
+  method set_disabled_text : "utf8 -> none"
+  "accelerator" utf8 : Read / Write
+  "disabled-text" utf8 : Read / Write
+}
+
+class ShortcutsGroup set wrap wrapsig : Box {
+  "accel-size-group" SizeGroup : Write
+  "height" guint : Read
+  "title" utf8 : Read / Write
+  "title-size-group" SizeGroup : Write
+  "view" utf8 : Read / Write
+}
+
+class ShortcutsSection set wrap wrapsig : Box {
+  "max-height" guint : Read / Write
+  "section-name" utf8 : Read / Write
+  "title" utf8 : Read / Write
+  "view-name" utf8 : Read / Write
+  signal change_current_page : gint -> gboolean
+}
+
+class ShortcutsShortcut set wrap wrapsig : Box {
+  "accel-size-group" SizeGroup : Write
+  "accelerator" utf8 : Read / Write
+  "action-name" utf8 : Read / Write
+  "direction" TextDirection : Read / Write
+  "icon" Gio.Icon : Read / Write
+  "icon-set" gboolean : Read / Write
+  "shortcut-type" ShortcutType : Read / Write
+  "subtitle" utf8 : Read / Write
+  "subtitle-set" gboolean : Read / Write
+  "title" utf8 : Read / Write
+  "title-size-group" SizeGroup : Write
+}
+
+class ShortcutsWindow set wrap wrapsig : Window {
+  "section-name" utf8 : Read / Write
+  "view-name" utf8 : Read / Write
+  signal close :  -> none
+  signal search :  -> none
+}
+
+class Socket set wrap wrapsig : Container {
+  method add_id : "xlib.Window -> none"
+  method get_id : "xlib.Window"
+  method get_plug_window : "Gdk.Window"
+  signal plug_added :  -> none
+  signal plug_removed :  -> gboolean
+}
+
+class SpinButton set wrap wrapsig : Entry {
+  method configure : "Adjustment -> gdouble -> guint -> none"
+  method get_adjustment : "Adjustment"
+  method get_digits : "guint"
+  method get_increments : "gdouble -> gdouble -> none"
+  method get_numeric : "gboolean"
+  method get_range : "gdouble -> gdouble -> none"
+  method get_snap_to_ticks : "gboolean"
+  method get_update_policy : "SpinButtonUpdatePolicy"
+  method get_value : "gdouble"
+  method get_value_as_int : "gint"
+  method get_wrap : "gboolean"
+  method set_adjustment : "Adjustment -> none"
+  method set_digits : "guint -> none"
+  method set_increments : "gdouble -> gdouble -> none"
+  method set_numeric : "gboolean -> none"
+  method set_range : "gdouble -> gdouble -> none"
+  method set_snap_to_ticks : "gboolean -> none"
+  method set_update_policy : "SpinButtonUpdatePolicy -> none"
+  method set_value : "gdouble -> none"
+  method set_wrap : "gboolean -> none"
+  method spin : "SpinType -> gdouble -> none"
+  method update : "none"
+  "adjustment" Adjustment : Read / Write
+  "climb-rate" gdouble : Read / Write
+  "digits" guint : Read / Write
+  "numeric" gboolean : Read / Write
+  "snap-to-ticks" gboolean : Read / Write
+  "update-policy" SpinButtonUpdatePolicy : Read / Write
+  "value" gdouble : Read / Write
+  "wrap" gboolean : Read / Write
+  signal change_value : ScrollType -> none
+  signal input : gdouble -> gint
+  signal output :  -> gboolean
+  signal value_changed :  -> none
+  signal wrapped :  -> none
+}
+
+class SpinButtonAccessible set wrap wrapsig : EntryAccessible {
+}
+
+class Spinner set wrap wrapsig : Widget {
+  method start : "none"
+  method stop : "none"
+  "active" gboolean : Read / Write
+}
+
+class SpinnerAccessible set wrap wrapsig : WidgetAccessible {
+}
+
+class Stack set wrap wrapsig : Container {
+  method add_named : "Widget -> utf8 -> none"
+  method add_titled : "Widget -> utf8 -> utf8 -> none"
+  method get_child_by_name : "utf8 -> Widget"
+  method get_hhomogeneous : "gboolean"
+  method get_homogeneous : "gboolean"
+  method get_interpolate_size : "gboolean"
+  method get_transition_duration : "guint"
+  method get_transition_running : "gboolean"
+  method get_transition_type : "StackTransitionType"
+  method get_vhomogeneous : "gboolean"
+  method get_visible_child : "Widget"
+  method get_visible_child_name : "utf8"
+  method set_hhomogeneous : "gboolean -> none"
+  method set_homogeneous : "gboolean -> none"
+  method set_interpolate_size : "gboolean -> none"
+  method set_transition_duration : "guint -> none"
+  method set_transition_type : "StackTransitionType -> none"
+  method set_vhomogeneous : "gboolean -> none"
+  method set_visible_child : "Widget -> none"
+  method set_visible_child_full : "utf8 -> StackTransitionType -> none"
+  method set_visible_child_name : "utf8 -> none"
+  "hhomogeneous" gboolean : Read / Write
+  "homogeneous" gboolean : Read / Write
+  "interpolate-size" gboolean : Read / Write
+  "transition-duration" guint : Read / Write
+  "transition-running" gboolean : Read
+  "transition-type" StackTransitionType : Read / Write
+  "vhomogeneous" gboolean : Read / Write
+  "visible-child" Widget : Read / Write
+  "visible-child-name" utf8 : Read / Write
+}
+
+class StackAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class StackSidebar set wrap wrapsig : Bin {
+  method get_stack : "Stack"
+  method set_stack : "Stack -> none"
+  "stack" Stack : Read / Write
+}
+
+class StackSwitcher set wrap wrapsig : Box {
+  method get_stack : "Stack"
+  method set_stack : "Stack -> none"
+  "icon-size" gint : Read / Write
+  "stack" Stack : Read / Write
+}
+
+class Statusbar set wrap wrapsig : Box {
+  method get_context_id : "utf8 -> guint"
+  method get_message_area : "Box"
+  method pop : "guint -> none"
+  method push : "guint -> utf8 -> guint"
+  method remove : "guint -> guint -> none"
+  method remove_all : "guint -> none"
+  signal text_popped : guintutf8 -> none
+  signal text_pushed : guintutf8 -> none
+}
+
+class StatusbarAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class Switch set wrap wrapsig : Widget {
+  method get_active : "gboolean"
+  method get_state : "gboolean"
+  method set_active : "gboolean -> none"
+  method set_state : "gboolean -> none"
+  "active" gboolean : Read / Write
+  "state" gboolean : Read / Write
+  signal activate :  -> none
+  signal state_set : gboolean -> gboolean
+}
+
+class SwitchAccessible set wrap wrapsig : WidgetAccessible {
+}
+
+class Table set wrap wrapsig : Container {
+  method attach : "Widget -> guint -> guint -> guint -> guint -> AttachOptions -> AttachOptions -> guint -> guint -> none"
+  method attach_defaults : "Widget -> guint -> guint -> guint -> guint -> none"
+  method get_col_spacing : "guint -> guint"
+  method get_default_col_spacing : "guint"
+  method get_default_row_spacing : "guint"
+  method get_homogeneous : "gboolean"
+  method get_row_spacing : "guint -> guint"
+  method get_size : "guint -> guint -> none"
+  method resize : "guint -> guint -> none"
+  method set_col_spacing : "guint -> guint -> none"
+  method set_col_spacings : "guint -> none"
+  method set_homogeneous : "gboolean -> none"
+  method set_row_spacing : "guint -> guint -> none"
+  method set_row_spacings : "guint -> none"
+  "column-spacing" guint : Read / Write
+  "homogeneous" gboolean : Read / Write
+  "n-columns" guint : Read / Write
+  "n-rows" guint : Read / Write
+  "row-spacing" guint : Read / Write
+}
+
+class TearoffMenuItem set wrap wrapsig : MenuItem {
+}
+
+class TextCellAccessible set wrap wrapsig : RendererCellAccessible {
+}
+
+class TextView set wrap wrapsig : Container {
+  method add_child_at_anchor : "Widget -> TextChildAnchor -> none"
+  method add_child_in_window : "Widget -> TextWindowType -> gint -> gint -> none"
+  method backward_display_line : "TextIter -> gboolean"
+  method backward_display_line_start : "TextIter -> gboolean"
+  method buffer_to_window_coords : "TextWindowType -> gint -> gint -> gint -> gint -> none"
+  method forward_display_line : "TextIter -> gboolean"
+  method forward_display_line_end : "TextIter -> gboolean"
+  method get_accepts_tab : "gboolean"
+  method get_border_window_size : "TextWindowType -> gint"
+  method get_bottom_margin : "gint"
+  method get_buffer : "TextBuffer"
+  method get_cursor_locations : "TextIter -> Gdk.Rectangle -> Gdk.Rectangle -> none"
+  method get_cursor_visible : "gboolean"
+  method get_default_attributes : "TextAttributes"
+  method get_editable : "gboolean"
+  method get_hadjustment : "Adjustment"
+  method get_indent : "gint"
+  method get_input_hints : "InputHints"
+  method get_input_purpose : "InputPurpose"
+  method get_iter_at_location : "TextIter -> gint -> gint -> gboolean"
+  method get_iter_at_position : "TextIter -> gint -> gint -> gint -> gboolean"
+  method get_iter_location : "TextIter -> Gdk.Rectangle -> none"
+  method get_justification : "Justification"
+  method get_left_margin : "gint"
+  method get_line_at_y : "TextIter -> gint -> gint -> none"
+  method get_line_yrange : "TextIter -> gint -> gint -> none"
+  method get_monospace : "gboolean"
+  method get_overwrite : "gboolean"
+  method get_pixels_above_lines : "gint"
+  method get_pixels_below_lines : "gint"
+  method get_pixels_inside_wrap : "gint"
+  method get_right_margin : "gint"
+  method get_tabs : "Pango.TabArray"
+  method get_top_margin : "gint"
+  method get_vadjustment : "Adjustment"
+  method get_visible_rect : "Gdk.Rectangle -> none"
+  method get_window : "TextWindowType -> Gdk.Window"
+  method get_window_type : "Gdk.Window -> TextWindowType"
+  method get_wrap_mode : "WrapMode"
+  method im_context_filter_keypress : "Gdk.EventKey -> gboolean"
+  method move_child : "Widget -> gint -> gint -> none"
+  method move_mark_onscreen : "TextMark -> gboolean"
+  method move_visually : "TextIter -> gint -> gboolean"
+  method place_cursor_onscreen : "gboolean"
+  method reset_cursor_blink : "none"
+  method reset_im_context : "none"
+  method scroll_mark_onscreen : "TextMark -> none"
+  method scroll_to_iter : "TextIter -> gdouble -> gboolean -> gdouble -> gdouble -> gboolean"
+  method scroll_to_mark : "TextMark -> gdouble -> gboolean -> gdouble -> gdouble -> none"
+  method set_accepts_tab : "gboolean -> none"
+  method set_border_window_size : "TextWindowType -> gint -> none"
+  method set_bottom_margin : "gint -> none"
+  method set_buffer : "TextBuffer -> none"
+  method set_cursor_visible : "gboolean -> none"
+  method set_editable : "gboolean -> none"
+  method set_indent : "gint -> none"
+  method set_input_hints : "InputHints -> none"
+  method set_input_purpose : "InputPurpose -> none"
+  method set_justification : "Justification -> none"
+  method set_left_margin : "gint -> none"
+  method set_monospace : "gboolean -> none"
+  method set_overwrite : "gboolean -> none"
+  method set_pixels_above_lines : "gint -> none"
+  method set_pixels_below_lines : "gint -> none"
+  method set_pixels_inside_wrap : "gint -> none"
+  method set_right_margin : "gint -> none"
+  method set_tabs : "Pango.TabArray -> none"
+  method set_top_margin : "gint -> none"
+  method set_wrap_mode : "WrapMode -> none"
+  method starts_display_line : "TextIter -> gboolean"
+  method window_to_buffer_coords : "TextWindowType -> gint -> gint -> gint -> gint -> none"
+  "accepts-tab" gboolean : Read / Write
+  "bottom-margin" gint : Read / Write
+  "buffer" TextBuffer : Read / Write
+  "cursor-visible" gboolean : Read / Write
+  "editable" gboolean : Read / Write
+  "im-module" utf8 : Read / Write
+  "indent" gint : Read / Write
+  "input-hints" InputHints : Read / Write
+  "input-purpose" InputPurpose : Read / Write
+  "justification" Justification : Read / Write
+  "left-margin" gint : Read / Write
+  "monospace" gboolean : Read / Write
+  "overwrite" gboolean : Read / Write
+  "pixels-above-lines" gint : Read / Write
+  "pixels-below-lines" gint : Read / Write
+  "pixels-inside-wrap" gint : Read / Write
+  "populate-all" gboolean : Read / Write
+  "right-margin" gint : Read / Write
+  "tabs" Pango.TabArray : Read / Write
+  "top-margin" gint : Read / Write
+  "wrap-mode" WrapMode : Read / Write
+  signal backspace :  -> none
+  signal copy_clipboard :  -> none
+  signal cut_clipboard :  -> none
+  signal delete_from_cursor : DeleteTypegint -> none
+  signal extend_selection : TextExtendSelectionTextIterTextIterTextIter -> gboolean
+  signal insert_at_cursor : utf8 -> none
+  signal insert_emoji :  -> none
+  signal move_cursor : MovementStepgintgboolean -> none
+  signal move_viewport : ScrollStepgint -> none
+  signal paste_clipboard :  -> none
+  signal populate_popup : Widget -> none
+  signal preedit_changed : utf8 -> none
+  signal select_all : gboolean -> none
+  signal set_anchor :  -> none
+  signal toggle_cursor_visible :  -> none
+  signal toggle_overwrite :  -> none
+}
+
+class TextViewAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class ToggleAction set wrap wrapsig : Action {
+  method get_active : "gboolean"
+  method get_draw_as_radio : "gboolean"
+  method set_active : "gboolean -> none"
+  method set_draw_as_radio : "gboolean -> none"
+  method toggled : "none"
+  "active" gboolean : Read / Write
+  "draw-as-radio" gboolean : Read / Write
+  signal toggled :  -> none
+}
+
+class ToggleButton set wrap wrapsig : Button {
+  method get_active : "gboolean"
+  method get_inconsistent : "gboolean"
+  method get_mode : "gboolean"
+  method set_active : "gboolean -> none"
+  method set_inconsistent : "gboolean -> none"
+  method set_mode : "gboolean -> none"
+  method toggled : "none"
+  "active" gboolean : Read / Write
+  "draw-indicator" gboolean : Read / Write
+  "inconsistent" gboolean : Read / Write
+  signal toggled :  -> none
+}
+
+class ToggleButtonAccessible set wrap wrapsig : ButtonAccessible {
+}
+
+class ToggleToolButton set wrap wrapsig : ToolButton {
+  method get_active : "gboolean"
+  method set_active : "gboolean -> none"
+  "active" gboolean : Read / Write
+  signal toggled :  -> none
+}
+
+class ToolButton set wrap wrapsig : ToolItem {
+  method get_icon_name : "utf8"
+  method get_icon_widget : "Widget"
+  method get_label : "utf8"
+  method get_label_widget : "Widget"
+  method get_stock_id : "utf8"
+  method get_use_underline : "gboolean"
+  method set_icon_name : "utf8 -> none"
+  method set_icon_widget : "Widget -> none"
+  method set_label : "utf8 -> none"
+  method set_label_widget : "Widget -> none"
+  method set_stock_id : "utf8 -> none"
+  method set_use_underline : "gboolean -> none"
+  "icon-name" utf8 : Read / Write
+  "icon-widget" Widget : Read / Write
+  "label" utf8 : Read / Write
+  "label-widget" Widget : Read / Write
+  "stock-id" utf8 : Read / Write
+  "use-underline" gboolean : Read / Write
+  signal clicked :  -> none
+}
+
+class ToolItem set wrap wrapsig : Bin {
+  method get_ellipsize_mode : "Pango.EllipsizeMode"
+  method get_expand : "gboolean"
+  method get_homogeneous : "gboolean"
+  method get_icon_size : "gint"
+  method get_is_important : "gboolean"
+  method get_orientation : "Orientation"
+  method get_proxy_menu_item : "utf8 -> Widget"
+  method get_relief_style : "ReliefStyle"
+  method get_text_alignment : "gfloat"
+  method get_text_orientation : "Orientation"
+  method get_text_size_group : "SizeGroup"
+  method get_toolbar_style : "ToolbarStyle"
+  method get_use_drag_window : "gboolean"
+  method get_visible_horizontal : "gboolean"
+  method get_visible_vertical : "gboolean"
+  method rebuild_menu : "none"
+  method retrieve_proxy_menu_item : "Widget"
+  method set_expand : "gboolean -> none"
+  method set_homogeneous : "gboolean -> none"
+  method set_is_important : "gboolean -> none"
+  method set_proxy_menu_item : "utf8 -> Widget -> none"
+  method set_tooltip_markup : "utf8 -> none"
+  method set_tooltip_text : "utf8 -> none"
+  method set_use_drag_window : "gboolean -> none"
+  method set_visible_horizontal : "gboolean -> none"
+  method set_visible_vertical : "gboolean -> none"
+  method toolbar_reconfigured : "none"
+  "is-important" gboolean : Read / Write
+  "visible-horizontal" gboolean : Read / Write
+  "visible-vertical" gboolean : Read / Write
+  signal create_menu_proxy :  -> gboolean
+  signal toolbar_reconfigured :  -> none
+}
+
+class ToolItemGroup set wrap wrapsig : Container {
+  method get_collapsed : "gboolean"
+  method get_drop_item : "gint -> gint -> ToolItem"
+  method get_ellipsize : "Pango.EllipsizeMode"
+  method get_header_relief : "ReliefStyle"
+  method get_item_position : "ToolItem -> gint"
+  method get_label : "utf8"
+  method get_label_widget : "Widget"
+  method get_n_items : "guint"
+  method get_nth_item : "guint -> ToolItem"
+  method insert : "ToolItem -> gint -> none"
+  method set_collapsed : "gboolean -> none"
+  method set_ellipsize : "Pango.EllipsizeMode -> none"
+  method set_header_relief : "ReliefStyle -> none"
+  method set_item_position : "ToolItem -> gint -> none"
+  method set_label : "utf8 -> none"
+  method set_label_widget : "Widget -> none"
+  "collapsed" gboolean : Read / Write
+  "ellipsize" Pango.EllipsizeMode : Read / Write
+  "header-relief" ReliefStyle : Read / Write
+  "label" utf8 : Read / Write
+  "label-widget" Widget : Read / Write
+}
+
+class ToolPalette set wrap wrapsig : Container {
+  method add_drag_dest : "Widget -> DestDefaults -> ToolPaletteDragTargets -> Gdk.DragAction -> none"
+  method get_drag_item : "SelectionData -> Widget"
+  method get_drop_group : "gint -> gint -> ToolItemGroup"
+  method get_drop_item : "gint -> gint -> ToolItem"
+  method get_exclusive : "ToolItemGroup -> gboolean"
+  method get_expand : "ToolItemGroup -> gboolean"
+  method get_group_position : "ToolItemGroup -> gint"
+  method get_hadjustment : "Adjustment"
+  method get_icon_size : "gint"
+  method get_style : "ToolbarStyle"
+  method get_vadjustment : "Adjustment"
+  method set_drag_source : "ToolPaletteDragTargets -> none"
+  method set_exclusive : "ToolItemGroup -> gboolean -> none"
+  method set_expand : "ToolItemGroup -> gboolean -> none"
+  method set_group_position : "ToolItemGroup -> gint -> none"
+  method set_icon_size : "gint -> none"
+  method set_style : "ToolbarStyle -> none"
+  method unset_icon_size : "none"
+  method unset_style : "none"
+  "icon-size" IconSize : Read / Write
+  "icon-size-set" gboolean : Read / Write
+  "toolbar-style" ToolbarStyle : Read / Write
+}
+
+class Toolbar set wrap wrapsig : Container {
+  method get_drop_index : "gint -> gint -> gint"
+  method get_icon_size : "IconSize"
+  method get_item_index : "ToolItem -> gint"
+  method get_n_items : "gint"
+  method get_nth_item : "gint -> ToolItem"
+  method get_relief_style : "ReliefStyle"
+  method get_show_arrow : "gboolean"
+  method get_style : "ToolbarStyle"
+  method insert : "ToolItem -> gint -> none"
+  method set_drop_highlight_item : "ToolItem -> gint -> none"
+  method set_icon_size : "IconSize -> none"
+  method set_show_arrow : "gboolean -> none"
+  method set_style : "ToolbarStyle -> none"
+  method unset_icon_size : "none"
+  method unset_style : "none"
+  "icon-size" IconSize : Read / Write
+  "icon-size-set" gboolean : Read / Write
+  "show-arrow" gboolean : Read / Write
+  "toolbar-style" ToolbarStyle : Read / Write
+  signal focus_home_or_end : gboolean -> gboolean
+  signal orientation_changed : Orientation -> none
+  signal popup_context_menu : gintgintgint -> gboolean
+  signal style_changed : ToolbarStyle -> none
+}
+
+class ToplevelAccessible set wrap wrapsig : Atk.Object {
+  method get_children : "GLib.List"
+}
+
+class TreeView set wrap wrapsig : Container {
+  method append_column : "TreeViewColumn -> gint"
+  method collapse_all : "none"
+  method collapse_row : "TreePath -> gboolean"
+  method columns_autosize : "none"
+  method convert_bin_window_to_tree_coords : "gint -> gint -> gint -> gint -> none"
+  method convert_bin_window_to_widget_coords : "gint -> gint -> gint -> gint -> none"
+  method convert_tree_to_bin_window_coords : "gint -> gint -> gint -> gint -> none"
+  method convert_tree_to_widget_coords : "gint -> gint -> gint -> gint -> none"
+  method convert_widget_to_bin_window_coords : "gint -> gint -> gint -> gint -> none"
+  method convert_widget_to_tree_coords : "gint -> gint -> gint -> gint -> none"
+  method create_row_drag_icon : "TreePath -> cairo.Surface"
+  method enable_model_drag_dest : " -> gint -> Gdk.DragAction -> none"
+  method enable_model_drag_source : "Gdk.ModifierType ->  -> gint -> Gdk.DragAction -> none"
+  method expand_all : "none"
+  method expand_row : "TreePath -> gboolean -> gboolean"
+  method expand_to_path : "TreePath -> none"
+  method get_activate_on_single_click : "gboolean"
+  method get_background_area : "TreePath -> TreeViewColumn -> Gdk.Rectangle -> none"
+  method get_bin_window : "Gdk.Window"
+  method get_cell_area : "TreePath -> TreeViewColumn -> Gdk.Rectangle -> none"
+  method get_column : "gint -> TreeViewColumn"
+  method get_columns : "GLib.List"
+  method get_cursor : "TreePath -> TreeViewColumn -> none"
+  method get_dest_row_at_pos : "gint -> gint -> TreePath -> TreeViewDropPosition -> gboolean"
+  method get_drag_dest_row : "TreePath -> TreeViewDropPosition -> none"
+  method get_enable_search : "gboolean"
+  method get_enable_tree_lines : "gboolean"
+  method get_expander_column : "TreeViewColumn"
+  method get_fixed_height_mode : "gboolean"
+  method get_grid_lines : "TreeViewGridLines"
+  method get_hadjustment : "Adjustment"
+  method get_headers_clickable : "gboolean"
+  method get_headers_visible : "gboolean"
+  method get_hover_expand : "gboolean"
+  method get_hover_selection : "gboolean"
+  method get_level_indentation : "gint"
+  method get_model : "TreeModel"
+  method get_n_columns : "guint"
+  method get_path_at_pos : "gint -> gint -> TreePath -> TreeViewColumn -> gint -> gint -> gboolean"
+  method get_reorderable : "gboolean"
+  method get_row_separator_func : "TreeViewRowSeparatorFunc"
+  method get_rubber_banding : "gboolean"
+  method get_rules_hint : "gboolean"
+  method get_search_column : "gint"
+  method get_search_entry : "Entry"
+  method get_search_equal_func : "TreeViewSearchEqualFunc"
+  method get_search_position_func : "TreeViewSearchPositionFunc"
+  method get_selection : "TreeSelection"
+  method get_show_expanders : "gboolean"
+  method get_tooltip_column : "gint"
+  method get_tooltip_context : "gint -> gint -> gboolean -> TreeModel -> TreePath -> TreeIter -> gboolean"
+  method get_vadjustment : "Adjustment"
+  method get_visible_range : "TreePath -> TreePath -> gboolean"
+  method get_visible_rect : "Gdk.Rectangle -> none"
+  method insert_column : "TreeViewColumn -> gint -> gint"
+  method insert_column_with_attributes : "gint -> utf8 -> CellRenderer ->  -> gint"
+  method insert_column_with_data_func : "gint -> utf8 -> CellRenderer -> TreeCellDataFunc -> gpointer -> GLib.DestroyNotify -> gint"
+  method is_blank_at_pos : "gint -> gint -> TreePath -> TreeViewColumn -> gint -> gint -> gboolean"
+  method is_rubber_banding_active : "gboolean"
+  method map_expanded_rows : "TreeViewMappingFunc -> gpointer -> none"
+  method move_column_after : "TreeViewColumn -> TreeViewColumn -> none"
+  method remove_column : "TreeViewColumn -> gint"
+  method row_activated : "TreePath -> TreeViewColumn -> none"
+  method row_expanded : "TreePath -> gboolean"
+  method scroll_to_cell : "TreePath -> TreeViewColumn -> gboolean -> gfloat -> gfloat -> none"
+  method scroll_to_point : "gint -> gint -> none"
+  method set_activate_on_single_click : "gboolean -> none"
+  method set_column_drag_function : "TreeViewColumnDropFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_cursor : "TreePath -> TreeViewColumn -> gboolean -> none"
+  method set_cursor_on_cell : "TreePath -> TreeViewColumn -> CellRenderer -> gboolean -> none"
+  method set_destroy_count_func : "TreeDestroyCountFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_drag_dest_row : "TreePath -> TreeViewDropPosition -> none"
+  method set_enable_search : "gboolean -> none"
+  method set_enable_tree_lines : "gboolean -> none"
+  method set_expander_column : "TreeViewColumn -> none"
+  method set_fixed_height_mode : "gboolean -> none"
+  method set_grid_lines : "TreeViewGridLines -> none"
+  method set_hadjustment : "Adjustment -> none"
+  method set_headers_clickable : "gboolean -> none"
+  method set_headers_visible : "gboolean -> none"
+  method set_hover_expand : "gboolean -> none"
+  method set_hover_selection : "gboolean -> none"
+  method set_level_indentation : "gint -> none"
+  method set_model : "TreeModel -> none"
+  method set_reorderable : "gboolean -> none"
+  method set_row_separator_func : "TreeViewRowSeparatorFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_rubber_banding : "gboolean -> none"
+  method set_rules_hint : "gboolean -> none"
+  method set_search_column : "gint -> none"
+  method set_search_entry : "Entry -> none"
+  method set_search_equal_func : "TreeViewSearchEqualFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_search_position_func : "TreeViewSearchPositionFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_show_expanders : "gboolean -> none"
+  method set_tooltip_cell : "Tooltip -> TreePath -> TreeViewColumn -> CellRenderer -> none"
+  method set_tooltip_column : "gint -> none"
+  method set_tooltip_row : "Tooltip -> TreePath -> none"
+  method set_vadjustment : "Adjustment -> none"
+  method unset_rows_drag_dest : "none"
+  method unset_rows_drag_source : "none"
+  "activate-on-single-click" gboolean : Read / Write
+  "enable-grid-lines" TreeViewGridLines : Read / Write
+  "enable-search" gboolean : Read / Write
+  "enable-tree-lines" gboolean : Read / Write
+  "expander-column" TreeViewColumn : Read / Write
+  "fixed-height-mode" gboolean : Read / Write
+  "headers-clickable" gboolean : Read / Write
+  "headers-visible" gboolean : Read / Write
+  "hover-expand" gboolean : Read / Write
+  "hover-selection" gboolean : Read / Write
+  "level-indentation" gint : Read / Write
+  "model" TreeModel : Read / Write
+  "reorderable" gboolean : Read / Write
+  "rubber-banding" gboolean : Read / Write
+  "rules-hint" gboolean : Read / Write
+  "search-column" gint : Read / Write
+  "show-expanders" gboolean : Read / Write
+  "tooltip-column" gint : Read / Write
+  signal columns_changed :  -> none
+  signal cursor_changed :  -> none
+  signal expand_collapse_cursor_row : gbooleangbooleangboolean -> gboolean
+  signal move_cursor : MovementStepgint -> gboolean
+  signal row_activated : TreePathTreeViewColumn -> none
+  signal row_collapsed : TreeIterTreePath -> none
+  signal row_expanded : TreeIterTreePath -> none
+  signal select_all :  -> gboolean
+  signal select_cursor_parent :  -> gboolean
+  signal select_cursor_row : gboolean -> gboolean
+  signal start_interactive_search :  -> gboolean
+  signal test_collapse_row : TreeIterTreePath -> gboolean
+  signal test_expand_row : TreeIterTreePath -> gboolean
+  signal toggle_cursor_row :  -> gboolean
+  signal unselect_all :  -> gboolean
+}
+
+class TreeViewAccessible set wrap wrapsig : ContainerAccessible {
+}
+
+class TreeViewColumn set wrap wrapsig : GObject.InitiallyUnowned {
+  method add_attribute : "CellRenderer -> utf8 -> gint -> none"
+  method cell_get_position : "CellRenderer -> gint -> gint -> gboolean"
+  method cell_get_size : "Gdk.Rectangle -> gint -> gint -> gint -> gint -> none"
+  method cell_is_visible : "gboolean"
+  method cell_set_cell_data : "TreeModel -> TreeIter -> gboolean -> gboolean -> none"
+  method clear : "none"
+  method clear_attributes : "CellRenderer -> none"
+  method clicked : "none"
+  method focus_cell : "CellRenderer -> none"
+  method get_alignment : "gfloat"
+  method get_button : "Widget"
+  method get_clickable : "gboolean"
+  method get_expand : "gboolean"
+  method get_fixed_width : "gint"
+  method get_max_width : "gint"
+  method get_min_width : "gint"
+  method get_reorderable : "gboolean"
+  method get_resizable : "gboolean"
+  method get_sizing : "TreeViewColumnSizing"
+  method get_sort_column_id : "gint"
+  method get_sort_indicator : "gboolean"
+  method get_sort_order : "SortType"
+  method get_spacing : "gint"
+  method get_title : "utf8"
+  method get_tree_view : "Widget"
+  method get_visible : "gboolean"
+  method get_widget : "Widget"
+  method get_width : "gint"
+  method get_x_offset : "gint"
+  method pack_end : "CellRenderer -> gboolean -> none"
+  method pack_start : "CellRenderer -> gboolean -> none"
+  method queue_resize : "none"
+  method set_alignment : "gfloat -> none"
+  method set_attributes : "CellRenderer ->  -> none"
+  method set_cell_data_func : "CellRenderer -> TreeCellDataFunc -> gpointer -> GLib.DestroyNotify -> none"
+  method set_clickable : "gboolean -> none"
+  method set_expand : "gboolean -> none"
+  method set_fixed_width : "gint -> none"
+  method set_max_width : "gint -> none"
+  method set_min_width : "gint -> none"
+  method set_reorderable : "gboolean -> none"
+  method set_resizable : "gboolean -> none"
+  method set_sizing : "TreeViewColumnSizing -> none"
+  method set_sort_column_id : "gint -> none"
+  method set_sort_indicator : "gboolean -> none"
+  method set_sort_order : "SortType -> none"
+  method set_spacing : "gint -> none"
+  method set_title : "utf8 -> none"
+  method set_visible : "gboolean -> none"
+  method set_widget : "Widget -> none"
+  "alignment" gfloat : Read / Write
+  "cell-area" CellArea : Read / Write
+  "clickable" gboolean : Read / Write
+  "expand" gboolean : Read / Write
+  "fixed-width" gint : Read / Write
+  "max-width" gint : Read / Write
+  "min-width" gint : Read / Write
+  "reorderable" gboolean : Read / Write
+  "resizable" gboolean : Read / Write
+  "sizing" TreeViewColumnSizing : Read / Write
+  "sort-column-id" gint : Read / Write
+  "sort-indicator" gboolean : Read / Write
+  "sort-order" SortType : Read / Write
+  "spacing" gint : Read / Write
+  "title" utf8 : Read / Write
+  "visible" gboolean : Read / Write
+  "widget" Widget : Read / Write
+  "width" gint : Read
+  "x-offset" gint : Read
+  signal clicked :  -> none
+}
+
+class VBox set wrap wrapsig : Box {
+}
+
+class VButtonBox set wrap wrapsig : ButtonBox {
+}
+
+class VPaned set wrap wrapsig : Paned {
+}
+
+class VScale set wrap wrapsig : Scale {
+}
+
+class VScrollbar set wrap wrapsig : Scrollbar {
+}
+
+class VSeparator set wrap wrapsig : Separator {
+}
+
+class Viewport set wrap wrapsig : Bin {
+  method get_bin_window : "Gdk.Window"
+  method get_hadjustment : "Adjustment"
+  method get_shadow_type : "ShadowType"
+  method get_vadjustment : "Adjustment"
+  method get_view_window : "Gdk.Window"
+  method set_hadjustment : "Adjustment -> none"
+  method set_shadow_type : "ShadowType -> none"
+  method set_vadjustment : "Adjustment -> none"
+  "shadow-type" ShadowType : Read / Write
+}
+
+class VolumeButton set wrap wrapsig : ScaleButton {
+  "use-symbolic" gboolean : Read / Write
+}
+
+class Widget abstract set wrap wrapsig : GObject.InitiallyUnowned {
+  method activate : "gboolean"
+  method add_accelerator : "utf8 -> AccelGroup -> guint -> Gdk.ModifierType -> AccelFlags -> none"
+  method add_device_events : "Gdk.Device -> Gdk.EventMask -> none"
+  method add_events : "gint -> none"
+  method add_mnemonic_label : "Widget -> none"
+  method add_tick_callback : "TickCallback -> gpointer -> GLib.DestroyNotify -> guint"
+  method can_activate_accel : "guint -> gboolean"
+  method child_focus : "DirectionType -> gboolean"
+  method child_notify : "utf8 -> none"
+  method class_path : "guint -> utf8 -> utf8 -> none"
+  method compute_expand : "Orientation -> gboolean"
+  method create_pango_context : "Pango.Context"
+  method create_pango_layout : "utf8 -> Pango.Layout"
+  method destroy : "none"
+  method destroyed : "Widget -> none"
+  method device_is_shadowed : "Gdk.Device -> gboolean"
+  method drag_begin : "TargetList -> Gdk.DragAction -> gint -> Gdk.Event -> Gdk.DragContext"
+  method drag_begin_with_coordinates : "TargetList -> Gdk.DragAction -> gint -> Gdk.Event -> gint -> gint -> Gdk.DragContext"
+  method drag_check_threshold : "gint -> gint -> gint -> gint -> gboolean"
+  method drag_dest_add_image_targets : "none"
+  method drag_dest_add_text_targets : "none"
+  method drag_dest_add_uri_targets : "none"
+  method drag_dest_find_target : "Gdk.DragContext -> TargetList -> Gdk.Atom"
+  method drag_dest_get_target_list : "TargetList"
+  method drag_dest_get_track_motion : "gboolean"
+  method drag_dest_set : "DestDefaults ->  -> gint -> Gdk.DragAction -> none"
+  method drag_dest_set_proxy : "Gdk.Window -> Gdk.DragProtocol -> gboolean -> none"
+  method drag_dest_set_target_list : "TargetList -> none"
+  method drag_dest_set_track_motion : "gboolean -> none"
+  method drag_dest_unset : "none"
+  method drag_get_data : "Gdk.DragContext -> Gdk.Atom -> guint32 -> none"
+  method drag_highlight : "none"
+  method drag_source_add_image_targets : "none"
+  method drag_source_add_text_targets : "none"
+  method drag_source_add_uri_targets : "none"
+  method drag_source_get_target_list : "TargetList"
+  method drag_source_set : "Gdk.ModifierType ->  -> gint -> Gdk.DragAction -> none"
+  method drag_source_set_icon_gicon : "Gio.Icon -> none"
+  method drag_source_set_icon_name : "utf8 -> none"
+  method drag_source_set_icon_pixbuf : "GdkPixbuf.Pixbuf -> none"
+  method drag_source_set_icon_stock : "utf8 -> none"
+  method drag_source_set_target_list : "TargetList -> none"
+  method drag_source_unset : "none"
+  method drag_unhighlight : "none"
+  method draw : "cairo.Context -> none"
+  method ensure_style : "none"
+  method error_bell : "none"
+  method event : "Gdk.Event -> gboolean"
+  method freeze_child_notify : "none"
+  method get_accessible : "Atk.Object"
+  method get_action_group : "utf8 -> Gio.ActionGroup"
+  method get_allocated_baseline : "gint"
+  method get_allocated_height : "gint"
+  method get_allocated_size : "Allocation -> gint -> none"
+  method get_allocated_width : "gint"
+  method get_allocation : "Allocation -> none"
+  method get_ancestor : "GType -> Widget"
+  method get_app_paintable : "gboolean"
+  method get_can_default : "gboolean"
+  method get_can_focus : "gboolean"
+  method get_child_requisition : "Requisition -> none"
+  method get_child_visible : "gboolean"
+  method get_clip : "Allocation -> none"
+  method get_clipboard : "Gdk.Atom -> Clipboard"
+  method get_composite_name : "utf8"
+  method get_device_enabled : "Gdk.Device -> gboolean"
+  method get_device_events : "Gdk.Device -> Gdk.EventMask"
+  method get_direction : "TextDirection"
+  method get_display : "Gdk.Display"
+  method get_double_buffered : "gboolean"
+  method get_events : "gint"
+  method get_focus_on_click : "gboolean"
+  method get_font_map : "Pango.FontMap"
+  method get_font_options : "cairo.FontOptions"
+  method get_frame_clock : "Gdk.FrameClock"
+  method get_halign : "Align"
+  method get_has_tooltip : "gboolean"
+  method get_has_window : "gboolean"
+  method get_hexpand : "gboolean"
+  method get_hexpand_set : "gboolean"
+  method get_mapped : "gboolean"
+  method get_margin_bottom : "gint"
+  method get_margin_end : "gint"
+  method get_margin_left : "gint"
+  method get_margin_right : "gint"
+  method get_margin_start : "gint"
+  method get_margin_top : "gint"
+  method get_modifier_mask : "Gdk.ModifierIntent -> Gdk.ModifierType"
+  method get_modifier_style : "RcStyle"
+  method get_name : "utf8"
+  method get_no_show_all : "gboolean"
+  method get_opacity : "gdouble"
+  method get_pango_context : "Pango.Context"
+  method get_parent : "Widget"
+  method get_parent_window : "Gdk.Window"
+  method get_path : "WidgetPath"
+  method get_pointer : "gint -> gint -> none"
+  method get_preferred_height : "gint -> gint -> none"
+  method get_preferred_height_and_baseline_for_width : "gint -> gint -> gint -> gint -> gint -> none"
+  method get_preferred_height_for_width : "gint -> gint -> gint -> none"
+  method get_preferred_size : "Requisition -> Requisition -> none"
+  method get_preferred_width : "gint -> gint -> none"
+  method get_preferred_width_for_height : "gint -> gint -> gint -> none"
+  method get_realized : "gboolean"
+  method get_receives_default : "gboolean"
+  method get_request_mode : "SizeRequestMode"
+  method get_requisition : "Requisition -> none"
+  method get_root_window : "Gdk.Window"
+  method get_scale_factor : "gint"
+  method get_screen : "Gdk.Screen"
+  method get_sensitive : "gboolean"
+  method get_settings : "Settings"
+  method get_size_request : "gint -> gint -> none"
+  method get_state : "StateType"
+  method get_state_flags : "StateFlags"
+  method get_style : "Style"
+  method get_style_context : "StyleContext"
+  method get_support_multidevice : "gboolean"
+  method get_template_child : "GType -> utf8 -> GObject.Object"
+  method get_tooltip_markup : "utf8"
+  method get_tooltip_text : "utf8"
+  method get_tooltip_window : "Window"
+  method get_toplevel : "Widget"
+  method get_valign : "Align"
+  method get_valign_with_baseline : "Align"
+  method get_vexpand : "gboolean"
+  method get_vexpand_set : "gboolean"
+  method get_visible : "gboolean"
+  method get_visual : "Gdk.Visual"
+  method get_window : "Gdk.Window"
+  method grab_add : "none"
+  method grab_default : "none"
+  method grab_focus : "none"
+  method grab_remove : "none"
+  method has_default : "gboolean"
+  method has_focus : "gboolean"
+  method has_grab : "gboolean"
+  method has_rc_style : "gboolean"
+  method has_screen : "gboolean"
+  method has_visible_focus : "gboolean"
+  method hide : "none"
+  method hide_on_delete : "gboolean"
+  method in_destruction : "gboolean"
+  method init_template : "none"
+  method input_shape_combine_region : "cairo.Region -> none"
+  method insert_action_group : "utf8 -> Gio.ActionGroup -> none"
+  method intersect : "Gdk.Rectangle -> Gdk.Rectangle -> gboolean"
+  method is_ancestor : "Widget -> gboolean"
+  method is_composited : "gboolean"
+  method is_drawable : "gboolean"
+  method is_focus : "gboolean"
+  method is_sensitive : "gboolean"
+  method is_toplevel : "gboolean"
+  method is_visible : "gboolean"
+  method keynav_failed : "DirectionType -> gboolean"
+  method list_accel_closures : "GLib.List"
+  method list_action_prefixes : ""
+  method list_mnemonic_labels : "GLib.List"
+  method map : "none"
+  method mnemonic_activate : "gboolean -> gboolean"
+  method modify_base : "StateType -> Gdk.Color -> none"
+  method modify_bg : "StateType -> Gdk.Color -> none"
+  method modify_cursor : "Gdk.Color -> Gdk.Color -> none"
+  method modify_fg : "StateType -> Gdk.Color -> none"
+  method modify_font : "Pango.FontDescription -> none"
+  method modify_style : "RcStyle -> none"
+  method modify_text : "StateType -> Gdk.Color -> none"
+  method override_background_color : "StateFlags -> Gdk.RGBA -> none"
+  method override_color : "StateFlags -> Gdk.RGBA -> none"
+  method override_cursor : "Gdk.RGBA -> Gdk.RGBA -> none"
+  method override_font : "Pango.FontDescription -> none"
+  method override_symbolic_color : "utf8 -> Gdk.RGBA -> none"
+  method path : "guint -> utf8 -> utf8 -> none"
+  method queue_allocate : "none"
+  method queue_compute_expand : "none"
+  method queue_draw : "none"
+  method queue_draw_area : "gint -> gint -> gint -> gint -> none"
+  method queue_draw_region : "cairo.Region -> none"
+  method queue_resize : "none"
+  method queue_resize_no_redraw : "none"
+  method realize : "none"
+  method region_intersect : "cairo.Region -> cairo.Region"
+  method register_window : "Gdk.Window -> none"
+  method remove_accelerator : "AccelGroup -> guint -> Gdk.ModifierType -> gboolean"
+  method remove_mnemonic_label : "Widget -> none"
+  method remove_tick_callback : "guint -> none"
+  method render_icon : "utf8 -> gint -> utf8 -> GdkPixbuf.Pixbuf"
+  method render_icon_pixbuf : "utf8 -> gint -> GdkPixbuf.Pixbuf"
+  method reparent : "Widget -> none"
+  method reset_rc_styles : "none"
+  method reset_style : "none"
+  method send_expose : "Gdk.Event -> gint"
+  method send_focus_change : "Gdk.Event -> gboolean"
+  method set_accel_path : "utf8 -> AccelGroup -> none"
+  method set_allocation : "Allocation -> none"
+  method set_app_paintable : "gboolean -> none"
+  method set_can_default : "gboolean -> none"
+  method set_can_focus : "gboolean -> none"
+  method set_child_visible : "gboolean -> none"
+  method set_clip : "Allocation -> none"
+  method set_composite_name : "utf8 -> none"
+  method set_device_enabled : "Gdk.Device -> gboolean -> none"
+  method set_device_events : "Gdk.Device -> Gdk.EventMask -> none"
+  method set_direction : "TextDirection -> none"
+  method set_double_buffered : "gboolean -> none"
+  method set_events : "gint -> none"
+  method set_focus_on_click : "gboolean -> none"
+  method set_font_map : "Pango.FontMap -> none"
+  method set_font_options : "cairo.FontOptions -> none"
+  method set_halign : "Align -> none"
+  method set_has_tooltip : "gboolean -> none"
+  method set_has_window : "gboolean -> none"
+  method set_hexpand : "gboolean -> none"
+  method set_hexpand_set : "gboolean -> none"
+  method set_mapped : "gboolean -> none"
+  method set_margin_bottom : "gint -> none"
+  method set_margin_end : "gint -> none"
+  method set_margin_left : "gint -> none"
+  method set_margin_right : "gint -> none"
+  method set_margin_start : "gint -> none"
+  method set_margin_top : "gint -> none"
+  method set_name : "utf8 -> none"
+  method set_no_show_all : "gboolean -> none"
+  method set_opacity : "gdouble -> none"
+  method set_parent : "Widget -> none"
+  method set_parent_window : "Gdk.Window -> none"
+  method set_realized : "gboolean -> none"
+  method set_receives_default : "gboolean -> none"
+  method set_redraw_on_allocate : "gboolean -> none"
+  method set_sensitive : "gboolean -> none"
+  method set_size_request : "gint -> gint -> none"
+  method set_state : "StateType -> none"
+  method set_state_flags : "StateFlags -> gboolean -> none"
+  method set_style : "Style -> none"
+  method set_support_multidevice : "gboolean -> none"
+  method set_tooltip_markup : "utf8 -> none"
+  method set_tooltip_text : "utf8 -> none"
+  method set_tooltip_window : "Window -> none"
+  method set_valign : "Align -> none"
+  method set_vexpand : "gboolean -> none"
+  method set_vexpand_set : "gboolean -> none"
+  method set_visible : "gboolean -> none"
+  method set_visual : "Gdk.Visual -> none"
+  method set_window : "Gdk.Window -> none"
+  method shape_combine_region : "cairo.Region -> none"
+  method show : "none"
+  method show_all : "none"
+  method show_now : "none"
+  method size_allocate : "Allocation -> none"
+  method size_allocate_with_baseline : "Allocation -> gint -> none"
+  method size_request : "Requisition -> none"
+  method style_attach : "none"
+  method style_get : "utf8 ->  -> none"
+  method style_get_property : "utf8 -> GObject.Value -> none"
+  method style_get_valist : "utf8 -> va_list -> none"
+  method thaw_child_notify : "none"
+  method translate_coordinates : "Widget -> gint -> gint -> gint -> gint -> gboolean"
+  method trigger_tooltip_query : "none"
+  method unmap : "none"
+  method unparent : "none"
+  method unrealize : "none"
+  method unregister_window : "Gdk.Window -> none"
+  method unset_state_flags : "StateFlags -> none"
+  "app-paintable" gboolean : Read / Write
+  "can-default" gboolean : Read / Write
+  "can-focus" gboolean : Read / Write
+  "composite-child" gboolean : Read
+  "double-buffered" gboolean : Read / Write
+  "events" Gdk.EventMask : Read / Write
+  "expand" gboolean : Read / Write
+  "focus-on-click" gboolean : Read / Write
+  "halign" Align : Read / Write
+  "has-default" gboolean : Read / Write
+  "has-focus" gboolean : Read / Write
+  "has-tooltip" gboolean : Read / Write
+  "height-request" gint : Read / Write
+  "hexpand" gboolean : Read / Write
+  "hexpand-set" gboolean : Read / Write
+  "is-focus" gboolean : Read / Write
+  "margin" gint : Read / Write
+  "margin-bottom" gint : Read / Write
+  "margin-end" gint : Read / Write
+  "margin-left" gint : Read / Write
+  "margin-right" gint : Read / Write
+  "margin-start" gint : Read / Write
+  "margin-top" gint : Read / Write
+  "name" utf8 : Read / Write
+  "no-show-all" gboolean : Read / Write
+  "opacity" gdouble : Read / Write
+  "parent" Container : Read / Write
+  "receives-default" gboolean : Read / Write
+  "scale-factor" gint : Read
+  "sensitive" gboolean : Read / Write
+  "style" Style : Read / Write
+  "tooltip-markup" utf8 : Read / Write
+  "tooltip-text" utf8 : Read / Write
+  "valign" Align : Read / Write
+  "vexpand" gboolean : Read / Write
+  "vexpand-set" gboolean : Read / Write
+  "visible" gboolean : Read / Write
+  "width-request" gint : Read / Write
+  "window" Gdk.Window : Read
+  signal accel_closures_changed :  -> none
+  signal button_press_event : Gdk.EventButton -> gboolean
+  signal button_release_event : Gdk.EventButton -> gboolean
+  signal can_activate_accel : guint -> gboolean
+  signal child_notify : GObject.ParamSpec -> none
+  signal composited_changed :  -> none
+  signal configure_event : Gdk.EventConfigure -> gboolean
+  signal damage_event : Gdk.EventExpose -> gboolean
+  signal delete_event : Gdk.Event -> gboolean
+  signal destroy :  -> none
+  signal destroy_event : Gdk.Event -> gboolean
+  signal direction_changed : TextDirection -> none
+  signal drag_begin : Gdk.DragContext -> none
+  signal drag_data_delete : Gdk.DragContext -> none
+  signal drag_data_get : Gdk.DragContextSelectionDataguintguint -> none
+  signal drag_data_received : Gdk.DragContextgintgintSelectionDataguintguint -> none
+  signal drag_drop : Gdk.DragContextgintgintguint -> gboolean
+  signal drag_end : Gdk.DragContext -> none
+  signal drag_failed : Gdk.DragContextDragResult -> gboolean
+  signal drag_leave : Gdk.DragContextguint -> none
+  signal drag_motion : Gdk.DragContextgintgintguint -> gboolean
+  signal draw : cairo.Context -> gboolean
+  signal enter_notify_event : Gdk.EventCrossing -> gboolean
+  signal event : Gdk.Event -> gboolean
+  signal event_after : Gdk.Event -> none
+  signal focus : DirectionType -> gboolean
+  signal focus_in_event : Gdk.EventFocus -> gboolean
+  signal focus_out_event : Gdk.EventFocus -> gboolean
+  signal grab_broken_event : Gdk.EventGrabBroken -> gboolean
+  signal grab_focus :  -> none
+  signal grab_notify : gboolean -> none
+  signal hide :  -> none
+  signal hierarchy_changed : Widget -> none
+  signal key_press_event : Gdk.EventKey -> gboolean
+  signal key_release_event : Gdk.EventKey -> gboolean
+  signal keynav_failed : DirectionType -> gboolean
+  signal leave_notify_event : Gdk.EventCrossing -> gboolean
+  signal map :  -> none
+  signal map_event : Gdk.EventAny -> gboolean
+  signal mnemonic_activate : gboolean -> gboolean
+  signal motion_notify_event : Gdk.EventMotion -> gboolean
+  signal move_focus : DirectionType -> none
+  signal parent_set : Widget -> none
+  signal popup_menu :  -> gboolean
+  signal property_notify_event : Gdk.EventProperty -> gboolean
+  signal proximity_in_event : Gdk.EventProximity -> gboolean
+  signal proximity_out_event : Gdk.EventProximity -> gboolean
+  signal query_tooltip : gintgintgbooleanTooltip -> gboolean
+  signal realize :  -> none
+  signal screen_changed : Gdk.Screen -> none
+  signal scroll_event : Gdk.EventScroll -> gboolean
+  signal selection_clear_event : Gdk.EventSelection -> gboolean
+  signal selection_get : SelectionDataguintguint -> none
+  signal selection_notify_event : Gdk.EventSelection -> gboolean
+  signal selection_received : SelectionDataguint -> none
+  signal selection_request_event : Gdk.EventSelection -> gboolean
+  signal show :  -> none
+  signal show_help : WidgetHelpType -> gboolean
+  signal size_allocate : Allocation -> none
+  signal state_changed : StateType -> none
+  signal state_flags_changed : StateFlags -> none
+  signal style_set : Style -> none
+  signal style_updated :  -> none
+  signal touch_event : Gdk.Event -> gboolean
+  signal unmap :  -> none
+  signal unmap_event : Gdk.EventAny -> gboolean
+  signal unrealize :  -> none
+  signal visibility_notify_event : Gdk.EventVisibility -> gboolean
+  signal window_state_event : Gdk.EventWindowState -> gboolean
+}
+
+class WidgetAccessible set wrap wrapsig : Accessible {
+}
+
+class Window set wrap wrapsig : Bin {
+  method activate_default : "gboolean"
+  method activate_focus : "gboolean"
+  method activate_key : "Gdk.EventKey -> gboolean"
+  method add_accel_group : "AccelGroup -> none"
+  method add_mnemonic : "guint -> Widget -> none"
+  method begin_move_drag : "gint -> gint -> gint -> guint32 -> none"
+  method begin_resize_drag : "Gdk.WindowEdge -> gint -> gint -> gint -> guint32 -> none"
+  method close : "none"
+  method deiconify : "none"
+  method fullscreen : "none"
+  method fullscreen_on_monitor : "Gdk.Screen -> gint -> none"
+  method get_accept_focus : "gboolean"
+  method get_application : "Application"
+  method get_attached_to : "Widget"
+  method get_decorated : "gboolean"
+  method get_default_size : "gint -> gint -> none"
+  method get_default_widget : "Widget"
+  method get_deletable : "gboolean"
+  method get_destroy_with_parent : "gboolean"
+  method get_focus : "Widget"
+  method get_focus_on_map : "gboolean"
+  method get_focus_visible : "gboolean"
+  method get_gravity : "Gdk.Gravity"
+  method get_group : "WindowGroup"
+  method get_has_resize_grip : "gboolean"
+  method get_hide_titlebar_when_maximized : "gboolean"
+  method get_icon : "GdkPixbuf.Pixbuf"
+  method get_icon_list : "GLib.List"
+  method get_icon_name : "utf8"
+  method get_mnemonic_modifier : "Gdk.ModifierType"
+  method get_mnemonics_visible : "gboolean"
+  method get_modal : "gboolean"
+  method get_opacity : "gdouble"
+  method get_position : "gint -> gint -> none"
+  method get_resizable : "gboolean"
+  method get_resize_grip_area : "Gdk.Rectangle -> gboolean"
+  method get_role : "utf8"
+  method get_screen : "Gdk.Screen"
+  method get_size : "gint -> gint -> none"
+  method get_skip_pager_hint : "gboolean"
+  method get_skip_taskbar_hint : "gboolean"
+  method get_title : "utf8"
+  method get_titlebar : "Widget"
+  method get_transient_for : "Window"
+  method get_type_hint : "Gdk.WindowTypeHint"
+  method get_urgency_hint : "gboolean"
+  method get_window_type : "WindowType"
+  method has_group : "gboolean"
+  method has_toplevel_focus : "gboolean"
+  method iconify : "none"
+  method is_active : "gboolean"
+  method is_maximized : "gboolean"
+  method maximize : "none"
+  method mnemonic_activate : "guint -> Gdk.ModifierType -> gboolean"
+  method move : "gint -> gint -> none"
+  method parse_geometry : "utf8 -> gboolean"
+  method present : "none"
+  method present_with_time : "guint32 -> none"
+  method propagate_key_event : "Gdk.EventKey -> gboolean"
+  method remove_accel_group : "AccelGroup -> none"
+  method remove_mnemonic : "guint -> Widget -> none"
+  method reshow_with_initial_size : "none"
+  method resize : "gint -> gint -> none"
+  method resize_grip_is_visible : "gboolean"
+  method resize_to_geometry : "gint -> gint -> none"
+  method set_accept_focus : "gboolean -> none"
+  method set_application : "Application -> none"
+  method set_attached_to : "Widget -> none"
+  method set_decorated : "gboolean -> none"
+  method set_default : "Widget -> none"
+  method set_default_geometry : "gint -> gint -> none"
+  method set_default_size : "gint -> gint -> none"
+  method set_deletable : "gboolean -> none"
+  method set_destroy_with_parent : "gboolean -> none"
+  method set_focus : "Widget -> none"
+  method set_focus_on_map : "gboolean -> none"
+  method set_focus_visible : "gboolean -> none"
+  method set_geometry_hints : "Widget -> Gdk.Geometry -> Gdk.WindowHints -> none"
+  method set_gravity : "Gdk.Gravity -> none"
+  method set_has_resize_grip : "gboolean -> none"
+  method set_has_user_ref_count : "gboolean -> none"
+  method set_hide_titlebar_when_maximized : "gboolean -> none"
+  method set_icon : "GdkPixbuf.Pixbuf -> none"
+  method set_icon_from_file : "filename -> gboolean"
+  method set_icon_list : "GLib.List -> none"
+  method set_icon_name : "utf8 -> none"
+  method set_keep_above : "gboolean -> none"
+  method set_keep_below : "gboolean -> none"
+  method set_mnemonic_modifier : "Gdk.ModifierType -> none"
+  method set_mnemonics_visible : "gboolean -> none"
+  method set_modal : "gboolean -> none"
+  method set_opacity : "gdouble -> none"
+  method set_position : "WindowPosition -> none"
+  method set_resizable : "gboolean -> none"
+  method set_role : "utf8 -> none"
+  method set_screen : "Gdk.Screen -> none"
+  method set_skip_pager_hint : "gboolean -> none"
+  method set_skip_taskbar_hint : "gboolean -> none"
+  method set_startup_id : "utf8 -> none"
+  method set_title : "utf8 -> none"
+  method set_titlebar : "Widget -> none"
+  method set_transient_for : "Window -> none"
+  method set_type_hint : "Gdk.WindowTypeHint -> none"
+  method set_urgency_hint : "gboolean -> none"
+  method set_wmclass : "utf8 -> utf8 -> none"
+  method stick : "none"
+  method unfullscreen : "none"
+  method unmaximize : "none"
+  method unstick : "none"
+  "accept-focus" gboolean : Read / Write
+  "application" Application : Read / Write
+  "attached-to" Widget : Read / Write
+  "decorated" gboolean : Read / Write
+  "default-height" gint : Read / Write
+  "default-width" gint : Read / Write
+  "deletable" gboolean : Read / Write
+  "destroy-with-parent" gboolean : Read / Write
+  "focus-on-map" gboolean : Read / Write
+  "focus-visible" gboolean : Read / Write
+  "gravity" Gdk.Gravity : Read / Write
+  "has-resize-grip" gboolean : Read / Write
+  "has-toplevel-focus" gboolean : Read
+  "hide-titlebar-when-maximized" gboolean : Read / Write
+  "icon" GdkPixbuf.Pixbuf : Read / Write
+  "icon-name" utf8 : Read / Write
+  "is-active" gboolean : Read
+  "is-maximized" gboolean : Read
+  "mnemonics-visible" gboolean : Read / Write
+  "modal" gboolean : Read / Write
+  "resizable" gboolean : Read / Write
+  "resize-grip-visible" gboolean : Read
+  "role" utf8 : Read / Write
+  "screen" Gdk.Screen : Read / Write
+  "skip-pager-hint" gboolean : Read / Write
+  "skip-taskbar-hint" gboolean : Read / Write
+  "startup-id" utf8 : Write
+  "title" utf8 : Read / Write
+  "transient-for" Window : Read / Write
+  "type" WindowType : Read / Write
+  "type-hint" Gdk.WindowTypeHint : Read / Write
+  "urgency-hint" gboolean : Read / Write
+  "window-position" WindowPosition : Read / Write
+  signal activate_default :  -> none
+  signal activate_focus :  -> none
+  signal enable_debugging : gboolean -> gboolean
+  signal keys_changed :  -> none
+  signal set_focus : Widget -> none
+}
+
+class WindowAccessible set wrap wrapsig : ContainerAccessible {
+}
+

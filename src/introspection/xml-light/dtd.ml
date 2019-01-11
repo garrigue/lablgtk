@@ -200,18 +200,18 @@ let check dtd =
 	in
 	let check_item = function
 		| DTDAttribute (tag,aname,atype,adef) ->
-			let utag = String.uppercase tag in
+			let utag = String.uppercase_ascii tag in
 			ftodo utag None;
-			fattrib utag (String.uppercase aname) (atype,adef)
+			fattrib utag (String.uppercase_ascii aname) (atype,adef)
 		| DTDElement (tag,etype) ->
-			let utag = String.uppercase tag in
+			let utag = String.uppercase_ascii tag in
 			fdone utag etype;
 			let check_type = function
 				| DTDEmpty -> ()
 				| DTDAny -> ()
 				| DTDChild x ->
 					let rec check_child = function
-						| DTDTag s -> ftodo (String.uppercase s) (Some utag)
+						| DTDTag s -> ftodo (String.uppercase_ascii s) (Some utag)
 						| DTDPCData -> ()
 						| DTDOptional c
 						| DTDZeroOrMore c
@@ -248,7 +248,7 @@ let start_prove dtd root =
 		curtag = "_root";
 	} in
 	try
-		ignore(Hashtbl.find d.elements (String.uppercase root));
+		ignore(Hashtbl.find d.elements (String.uppercase_ascii root));
 		d
 	with
 		Not_found -> raise (Check_error (ElementNotDeclared root))
@@ -276,7 +276,7 @@ let prove_child dtd tag =
 		| DTDTag s ->
 			(match tag with
 			| None -> DTDNotMatched
-			| Some t when t = String.uppercase s -> DTDMatched
+			| Some t when t = String.uppercase_ascii s -> DTDMatched
 			| Some _ -> DTDNotMatched)
 		| DTDPCData ->
 			(match tag with
@@ -374,8 +374,8 @@ let rec do_prove dtd = function
 		prove_child dtd None;
 		PCData s
 	| Element (tag,attr,childs) ->
-		let utag = String.uppercase tag in
-		let uattr = List.map (fun (aname,aval) -> String.uppercase aname , aval) attr in
+		let utag = String.uppercase_ascii tag in
+		let uattr = List.map (fun (aname,aval) -> String.uppercase_ascii aname , aval) attr in
 		prove_child dtd (Some utag);
 		Stack.push (dtd.curtag,dtd.current) dtd.state;
 		let elt = (try Hashtbl.find dtd.elements utag with Not_found -> raise (Prove_error (UnexpectedTag tag))) in

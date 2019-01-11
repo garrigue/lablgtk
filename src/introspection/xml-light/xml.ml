@@ -120,8 +120,8 @@ let attrib x att =
 	match x with
 	| Element (_,attr,_) ->
 		(try
-			let att = String.lowercase att in
-			snd (List.find (fun (n,_) -> String.lowercase n = att) attr)
+			let att = String.lowercase_ascii att in
+			snd (List.find (fun (n,_) -> String.lowercase_ascii n = att) attr)
 		with
 			Not_found ->
 				raise (No_attribute att))

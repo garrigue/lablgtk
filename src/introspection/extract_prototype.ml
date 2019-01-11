@@ -37,7 +37,10 @@ let caml_avoid = List.fold_right SSet.add
   ["let";"external";"open";"true";"false";"exit"; "match"] 
   SSet.empty
 let is_caml_avoid s = 
-  s.[0] <- Char.lowercase s.[0];
+  let c = Char.lowercase_ascii (s.[0]) in
+  let s = Bytes.of_string s in
+  Bytes.set s 0 c ;
+  let s = Bytes.to_string s in
   SSet.mem s caml_avoid
 
 type c_simple_stub = {cs_nb_arg:int;
@@ -405,7 +408,7 @@ module Translations = struct
       | "GdkGC" -> "GDK_GC"
       | _ -> 
 	  let length = String.length s in
-	  if length <= 1 then String.uppercase s
+	  if length <= 1 then String.uppercase_ascii s
 	  else
 	    let buff = Buffer.create (length+3) in
 	    Buffer.add_char buff s.[0];
@@ -413,7 +416,7 @@ module Translations = struct
 	      if 'A'<=s.[i] && s.[i]<='Z' then begin
 		Buffer.add_char buff '_';
 		Buffer.add_char buff s.[i]
-	      end else Buffer.add_char buff (Char.uppercase s.[i])
+	      end else Buffer.add_char buff (Char.uppercase_ascii s.[i])
 	    done;
 	    Buffer.contents buff
 
@@ -439,7 +442,7 @@ module Translations = struct
       Hashtbl.add tbl (c_typ^"*") 
         (val_of,of_val,
          fun variance ->
-	   Format.sprintf "[%c`%s] obj" variance (String.lowercase c_typ))
+	   Format.sprintf "[%c`%s] obj" variance (String.lowercase_ascii c_typ))
 end    
 
 let repositories = ref []
