@@ -28,6 +28,8 @@ open Gobject
 open Gtk
 open GtkBase
 open OgtkBaseProps
+open GtkContainers
+open OgtkContainersProps
 open GObj
 open GData
 

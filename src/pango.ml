@@ -187,6 +187,8 @@ module Layout = struct
   external set_markup : layout -> string -> unit = "ml_pango_layout_set_markup"
   external set_markup_with_accel : layout -> string -> Glib.unichar -> unit
     = "ml_pango_layout_set_markup_with_accel"
+  external get_font_description : layout -> font_description
+    = "ml_pango_layout_get_font_description"
   external set_font_description : layout -> font_description -> unit
     = "ml_pango_layout_set_font_description"
   external get_width : layout -> int = "ml_pango_layout_get_width"

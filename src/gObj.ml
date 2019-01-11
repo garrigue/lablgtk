@@ -258,6 +258,8 @@ and misc_ops obj = object (self)
   method realize () = Widget.realize obj
   method unrealize () = Widget.unrealize obj
   method draw = Widget.draw obj
+  method queue_draw () = Widget.queue_draw obj
+  method queue_draw_area = Widget.queue_draw_area obj
   method activate () = Widget.activate obj
   method reparent (w : widget) =  Widget.reparent obj w#as_widget
 (*  method popup = popup obj *)
@@ -295,12 +297,12 @@ and misc_ops obj = object (self)
   method modify_bg = iter_setcol Widget.modify_bg obj
   method modify_text = iter_setcol Widget.modify_text obj
   method modify_base = iter_setcol Widget.modify_base obj
-  method modify_font = Widget.modify_font obj
+  method modify_font (f : GPango.font_description) = Widget.modify_font obj f#fd
   method modify_font_by_name s =
     Widget.modify_font obj (Pango.Font.from_string s)
   (* End deprecated since 3.0 *)
   method create_pango_context =
-    new GPango.context_rw (Widget.create_pango_context obj)
+    new GPango.context (Widget.create_pango_context obj)
   (* get functions *)
   method name = get P.name obj
   method toplevel =
@@ -338,6 +340,7 @@ end
 
 and widget obj = object (self)
   inherit gtkobj obj
+  inherit OgtkBaseProps.widget_props
   method as_widget = (obj :> Gtk.widget obj)
   method misc = new misc_ops (obj :> Gtk.widget obj)
   method drag = new drag_ops (unsafe_cast obj : Gtk.widget obj)

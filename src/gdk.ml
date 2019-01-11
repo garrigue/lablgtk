@@ -36,7 +36,7 @@ type screen = [`gdkscreen] obj
 type region
 type gc
 type window = [`gdkwindow] obj
-type cairo
+type cairo = Cairo.context
 type atom
 type keysym = int
 type +'a event

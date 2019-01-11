@@ -39,10 +39,10 @@ boxed {
 
 classes {
   GdkPixbuf "GdkPixbuf.pixbuf"
-  GtkStyle "Gtk.style"
+  GtkContainer "Gtk.container'"
 }
 
-class Widget abstract : Object {
+class Widget abstract wrap : Object {
   "app-paintable"        gboolean             : Read / Write
   "can-default"          gboolean             : Read / Write
   "can-focus"            gboolean             : Read / Write
@@ -139,27 +139,6 @@ class Widget abstract : Object {
   method destroy : "unit"
   method set_double_buffered : "bool -> unit"
   method style_get_property : "string -> g_value"
-}
-
-class Container abstract : Widget {
-  "border-width"         guint                : Read / Write / Wrap
-  "child"                GtkWidget            : Write
-  "resize-mode"          GtkResizeMode        : Read / Write / Wrap
-  method check_resize
-  method add : "[>`widget] obj -> unit"
-  method remove : "[>`widget] obj -> unit"
-  method forall : "f:(widget obj -> unit) -> unit"
-  method foreach : "f:(widget obj -> unit) -> unit"
-  (* Called by Widget.grab_focus *)
-  method set_focus_child : "[>`widget] optobj -> unit"
-  method set_focus_vadjustment : "[>`adjustment] optobj -> unit"
-  method set_focus_hadjustment : "[>`adjustment] optobj -> unit"
-  method child_set_property : "[>`widget] obj -> string -> g_value -> unit"
-  method child_get_property : "[>`widget] obj -> string -> g_value -> unit"
-  signal add :       GtkWidget   / Wrap
-  signal remove :    GtkWidget   / Wrap
-  signal check_resize
-  signal set_focus : GtkWidget_opt
 }
 
 class Bin abstract : Container {

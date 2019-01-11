@@ -59,6 +59,7 @@ type adjustment = [`giu|`adjustment]
 type tooltips = [`giu|`tooltips]
 type widget = [`giu|`widget]
 type container = [widget|`container]
+type container' = container obj
 type bin = [container|`bin]
 type alignment = [bin|`alignment]
 type button = [bin|`button]

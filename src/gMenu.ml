@@ -27,6 +27,7 @@ open Gobject
 open Gtk
 open GtkData
 open GtkBase
+open GtkContainers
 open GtkMenu
 open OgtkBaseProps
 open OgtkMenuProps

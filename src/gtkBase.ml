@@ -54,6 +54,7 @@ module Widget = struct
   external queue_draw : [>`widget] obj -> unit = "ml_gtk_widget_queue_draw"
   external queue_resize : [>`widget] obj -> unit = "ml_gtk_widget_queue_resize"
   external draw : [>`widget] obj -> Gdk.cairo -> unit = "ml_gtk_widget_draw"
+  external queue_draw_area : [>`widget] obj -> int -> int -> int -> int -> unit = "ml_gtk_widget_queue_draw_area"
 (*
   external draw_focus : [>`widget] obj -> unit
       = "ml_gtk_widget_draw_focus"
@@ -269,18 +270,6 @@ module Widget = struct
           marshaller = marshal }
     end
   end
-end
-
-module Container = struct
-  include Container
-  let make_params ~cont pl ?border_width =
-    Widget.size_params pl ~cont:(fun p ->
-      cont (Property.may_cons P.border_width border_width p))
-
-  let children w =
-    let l = ref [] in
-    foreach w ~f:(fun c -> l := c :: !l);
-    List.rev !l
 end
 
 module Orientable = Orientable

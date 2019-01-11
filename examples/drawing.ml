@@ -8,22 +8,31 @@
 
 (* $Id$ *)
 
-open GMain
+open Cairo
 
-let window = GWindow.window ()
-let area = GMisc.drawing_area ~packing:window#add ()
-
-let w = area#misc#realize (); area#misc#window
-let drawing = new GDraw.drawable w
-
-let redraw _ =
-  drawing#polygon ~filled:true
+let polygon = 
     [ 10,100; 35,35; 100,10; 165,35; 190,100;
-      165,165; 100,190; 35,165; 10,100 ];
-  false
+      165,165; 100,190; 35,165; 10,100 ]
 
-let _ =
-  window#connect#destroy ~callback:Main.quit;
-  area#event#connect#expose ~callback:redraw;
-  window#show ();
-  Main.main ()
+let draw_polygon cr = function
+    [] -> ()
+  | (x,y)::tl ->
+      set_source_rgba cr 0. 0. 0. 1.;
+      move_to cr (float x) (float y);
+      List.iter (fun (x,y) -> line_to cr (float x) (float y)) tl;
+      set_source_rgba cr 0.5 0. 0. 0.5;
+      fill cr
+
+let expose drawing_area cr =
+  draw_polygon cr polygon ;
+  true
+
+let () =
+  let w = GWindow.window ~title:"Drawing demo" ~width:500 ~height:400 () in
+  ignore(w#connect#destroy ~callback:GMain.quit);
+
+  let d = GMisc.drawing_area ~packing:w#add () in
+  ignore(d#misc#connect#draw ~callback:(expose d));
+
+  w#show();
+  GMain.Main.main()

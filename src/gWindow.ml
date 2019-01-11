@@ -25,6 +25,7 @@
 open Gaux
 open Gtk
 open GtkBase
+open GtkContainers
 open GtkWindow
 open GtkMisc
 open GObj
