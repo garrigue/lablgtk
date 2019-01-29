@@ -1,0 +1,9 @@
+.PHONY: build opam
+
+build:
+	dune build
+
+opam:
+	opam pin lablgtk .
+	opam pin lablgtk-gl .
+	opam pin lablgtk-sourceview2 .

@@ -1,0 +1,22 @@
+opam-version: "2.0"
+
+description: "OCaml interface to GTK+, gtkgl library"
+synopsis: "OCaml interface to GTK+"
+
+maintainer: "garrigue@math.nagoya-u.ac.jp"
+authors: ["Jacques Garrigue et al., Nagoya University"]
+homepage: "http://lablgtk.forge.ocamlcore.org/"
+bug-reports: "https://github.com/garrigue/lablgtk/issues"
+dev-repo: "git+https://github.com/garrigue/lablgtk.git"
+doc: "https://garrige.github.io/lablgtk/lablgtk-gl"
+license: "LGPL with linking exception"
+
+depends: [
+  "ocaml"     {         >= "4.05.0" }
+  "dune"      { build & >= "1.4.0"  }
+  "lablgtk"   { build & >= "2.18.0" }
+]
+
+build: [
+  [ "dune" "build" "-p" name "-j" jobs ]
+]
