@@ -1,0 +1,7 @@
+; (executable
+;  (name newmain)
+;  (flags :standard -w -3-9-10-26-27-33 -no-strict-sequence)
+;  (modules_without_implementation i_channel)
+;  (libraries str lablgtk3))
+
+; (ocamllex xml_lexer)

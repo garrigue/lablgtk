@@ -8,3 +8,8 @@ autom4te.cache
 test_dynlink.*
 *~
 *.sw[po]
+
+# Dune stuff
+_build
+.merlin
+*.install

@@ -1,0 +1,5 @@
+; (executable
+;  (name editor)
+; (public_name browser)
+; (flags :standard -w -6-10-27 -no-strict-sequence)
+; (libraries str compiler-libs.common lablgtk3))
