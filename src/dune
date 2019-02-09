@@ -29,6 +29,19 @@
  (action (with-outputs-to cflag-extraflags.sexp (echo "(%{env:LABLGTK_EXTRA_FLAGS=})"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Helper executables                                                   ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(executable
+ (name lablgladecc)
+ (public_name lablgladecc3)
+ (package lablgtk3)
+ (modules xml_lexer lablgladecc)
+ (flags :standard -w -3-6-27)
+ (libraries lablgtk3))
+
+(ocamllex xml_lexer)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Base lablgtk3                                                        ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (rule
