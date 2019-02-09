@@ -2,10 +2,9 @@
 
 ## Dependencies
 
-- ocaml-4.05 or more
-- gtk+-3.18 or more
-- findlib 1.2.1 or more (for default install)
-- GNU make (there is no standard for conditionals)
+- ocaml >= 4.05.0
+- gtk+ >= 3.18
+- dune >= 1.4
 
 ## Info/upgrades
 
@@ -38,57 +37,25 @@ For unsupported methods, the error message is a bit clearer:
 Failure "gdk_pixbuf_get_file_info unsupported in Gtk 2.x < 2.4"
 ```
 
-## Building
+## How to compile:
 
-There are two ways to compile: `dune` or `make`.
-
-For dune, just do `dune build && dune install`.  If you want also to
-build examples, do `dune build @all`. If you are in OSX please be
-aware that you may need to set the `PKG_CONFIG_PATH` variable, for
-example `brew` needs `PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig`.
-
-The following details the instructions for make.
-
-You should normally not need to modify Makefiles.
-
-In case you are using the SVN version you may have to first type
-`aclocal && autoconf`.
-
-Type
-```sh
-./configure && make world
+  Type
 ```
-to compile with all supported options enabled (libgl,
-libgnomecanvas, librsvg, native compilation, thread support).
-
-You may use `./configure --help` to check for the different
-configuration options.
-
-Lablgtk3 specific options are:
+        dune build
 ```
---with-libdir=/path: install libs in /path/lablgtk3
-					 and /path/stublibs
---with-gtkspell --without-gtkspell:
-		override autodetected gtkspell support
---with-gtksourceview3 --without-gtksourceview3:
-		override autodetected gtksourceview3 support
---enable-debug: enable debug mode
+  to compile with all supported options enabled (libgl,
+  libgnomecanvas, librsvg, native compilation, thread support).
+
+  You can build individual packages using
 ```
-Type `make install` to install using findlib.
-The commands `lablgtk3`, `gdk_pixbuf_mlsource3`, and `lablgladecc3`,
-are copied directly to the configured executable directory.
-
-The following findlib packages are provided (according to configuration):
-- **lablgtk3**
-- **lablgtk3.auto-init**
-- **lablgtk3.gtkspell**
-- **lablgtk3.sourceview3**
-
-You can alternatively use `make old-install` or
-`make old-install DESTDIR=/my/prefix` to use the old
-installation procedure, which does not rely on findlib.
-By default, the library is installed at +lablgtk3.
-All installation paths are prefixed by `DESTDIR` when given.
+        dune build $package.install
+```
+  The following packages / libraries are provided:
+```
+        lablgtk3
+        lablgtk3-sourceview3
+        lablgtk3-gtkspell3
+```
 
 ## Contents
 
@@ -104,14 +71,8 @@ All installation paths are prefixed by `DESTDIR` when given.
 
 ### How to run the examples
 
-In the examples directory just type:
-```
-lablgtk3 ???.ml
-```
-If you want to run them before installing lablgtk3 you have to use `-localdir`:
-```
-../src/lablgtk3 -localdir ???.ml
-```
+The examples are compiled by calling `dune build @all`, you can build
+`lablgtk3` applications using a standard dune / ocamlfind workflow.
 
 ### How to link them
 
@@ -377,7 +338,7 @@ the main thread. This is done automatically in the threaded toplvel.
 - Hugo Herbelin    <Hugo.Herbelin@inria.fr>
 - Claudio Sacerdoti Coen <claudio.sacerdoticoen@inria.fr>
 - Christophe Troestler <Christophe.Troestler@umons.ac.be>
-- Emilio Gallego   <e@x80.org>
+- Emilio Jesús Gallego Arias <e@x80.org>
 
 ### For lablgtk1
 - Hubert Fauque  <hubert.fauque@wanadoo.fr>

@@ -1,33 +1,15 @@
-# Toplevel makefile for LablGtk2
+.PHONY: build build-all opam
 
-all opt doc install uninstall byte world old-install old-uninstall: config.make
-all opt doc install uninstall byte clean depend world old-install old-uninstall:
-	$(MAKE) -C src $@
+build:
+	dune build
 
-preinstall:
-	$(MAKE) -C src $@
-	$(MAKE) -f Makefile.pre
+# This also builds examples
+build-all:
+	dune build @all
 
-arch-clean:
-	@rm -f config.status config.make config.cache config.log
-	@rm -f \#*\# *~ aclocal.m4
-	@rm -rf autom4te*.cache
-
-configure: configure.in
-	aclocal
-	autoconf
-
-config.make: config.make.in
-	@echo config.make is not up to date. Execute ./configure first.
-	@exit 2
-
-.PHONY: all opt doc install byte world clean depend arch-clean headers
-
-headers:
-	find examples -name "*.ml" -exec headache -h header_examples {} \;
-	find applications -name "*.ml" -exec headache -h header_apps {} \;
-	find applications -name "*.mli" -exec headache -h header_apps {} \;
-	find src -name "*.ml" -exec headache -h header {} \;
-	find src -name "*.mli" -exec headache -h header {} \;
-	find src -name "*.c" -exec headache -h header {} \;
-	find src -name "*.h" -exec headache -h header {} \;
+# We first pin lablgtk3 as to avoid problems with parallel make
+opam:
+	opam pin add lablgtk3 . --kind=path -y
+	opam install lablgtk3
+	opam pin add lablgtk3-sourceview3 . --kind=path -y
+	opam install lablgtk3-sourceview3

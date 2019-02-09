@@ -2,8 +2,12 @@ LablGTK changes log
 
 ## In Lablgtk-3.0.beta7
 
-2019.07.07 [Emilio]
+2019.08.12 [Emilio J. Gallego Arias]
+  * Remove stale makefiles, lablgtk must be built using Dune now.
+2019.07.07 [Emilio J. Gallego Arias]
   * Include extended Cairo Support from #33 in the Dune build.
+2019.06.27 [Anton Kochkov]
+  * Upgrade CI to OCaml 4.08
 
 ## In Lablgtk-3.0.beta6
 
@@ -14,11 +18,11 @@ LablGTK changes log
 
 ## In Lablgtk-3.0.beta5:
 
-2019.02.20 [Emilio]
+2019.02.20 [Emilio J. Gallego Arias]
   * Add GtkBuilder back to the build (#54, #55), fix #53, reported by
     C. Sacerdoti
 
-2019.02.12 [Emilio]
+2019.02.12 [Emilio J. Gallego Arias]
   * Update OPAM files so they work better with dune-release (#48)
 
 ## In Lablgtk-3.0.beta4:
