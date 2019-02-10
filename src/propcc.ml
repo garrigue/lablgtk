@@ -407,6 +407,8 @@ let headers = ref []
   
 let oheaders = ref []
   
+let initializers = ref []
+  
 let checks = ref false
   
 let class_qualifiers =
@@ -459,6 +461,12 @@ let process_phrase ~chars (__strm : _ Stream.t) =
                                    !decls)
                         | _ -> raise (Stream.Error "")))
                 | _ -> raise (Stream.Error "")))
+        | _ -> raise (Stream.Error "")))
+  | Some (Ident "initializer") ->
+      (Stream.junk __strm;
+       (match Stream.peek __strm with
+        | Some (String func) ->
+            (Stream.junk __strm; initializers := !initializers @ [ func ])
         | _ -> raise (Stream.Error "")))
   | Some (Ident "header") ->
       (Stream.junk __strm;
@@ -607,6 +615,11 @@ let process_file f =
            let out fmt = Format.fprintf ppf fmt
            in
              (List.iter !headers ~f: (fun s -> out "%s@." s);
+              List.iter !initializers
+                ~f:
+                  (fun s ->
+                     (out "external %s : unit -> unit = \"%s\"@." s s;
+                      out "let () = %s ()@." s));
               let decls =
                 List.map decls
                   ~f:

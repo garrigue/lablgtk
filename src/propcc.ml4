@@ -240,6 +240,7 @@ let tagprefix = ref ""
 let decls = ref []
 let headers = ref []
 let oheaders = ref []
+let initializers = ref []
 let checks = ref false
 let class_qualifiers =
   ["abstract";"notype";"hv";"set";"wrap";"wrapset";"vset";"tag";"wrapsig";
@@ -257,6 +258,8 @@ let process_phrase ~chars = parser
            if parent = "GObject" then ("gobject","")::attrs else attrs in
          let props, meths, sigs = split_fields fields in
          decls := (name, gtk_name, attrs, props, meths, sigs) :: !decls
+  | [< ' Ident"initializer"; ' String func >] ->
+      initializers := !initializers @ [func]
   | [< ' Ident"header"; ' Kwd"{" >] ->
       let h = verbatim (Buffer.create 1000) chars in
       headers := !headers @ [h]
@@ -329,6 +332,10 @@ let process_file f =
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
   List.iter !headers ~f:(fun s -> out "%s@." s);
+  List.iter !initializers ~f:
+    (fun s ->
+      out "external %s : unit -> unit = \"%s\"@." s s;
+      out "let () = %s ()@." s);
   let decls =
     List.map decls ~f:
       begin fun (name, gtk_name, attrs, props, meths, sigs) ->

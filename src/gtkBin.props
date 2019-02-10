@@ -1,6 +1,7 @@
 (* $Id$ *)
 
 prefix "Gtk"
+initializer "ml_gtkbin_init"
 
 header {
 open Gtk

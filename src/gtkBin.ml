@@ -28,8 +28,10 @@ open Tags
 open GtkBinProps
 open GtkBase
 
+(*
 external _gtkbin_init : unit -> unit = "ml_gtkbin_init"
 let () = _gtkbin_init ()
+*)
 
 module Alignment = Alignment
 

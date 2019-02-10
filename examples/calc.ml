@@ -110,6 +110,8 @@ class calculator ?packing ?show () =
 
 (* Finally start everything *)
 
+let _ = Main.init ()
+
 let w = GWindow.window ()
 
 let applet = new calculator ~packing: w#add ()
