@@ -41,6 +41,13 @@
 
 (ocamllex xml_lexer)
 
+(executable
+ (name gdk_pixbuf_mlsource)
+ (public_name gdk_pixbuf_mlsource3)
+ (package lablgtk3)
+ (modules gdk_pixbuf_mlsource)
+ (libraries lablgtk3))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Base lablgtk3                                                        ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
