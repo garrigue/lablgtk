@@ -28,9 +28,6 @@ open Tags
 open GtkTreeProps
 open GtkBase
 
-external _gtktree_init : unit -> unit = "ml_gtktree_init"
-let () = _gtktree_init ()
-
 module TreePath = struct
   external create_ : unit -> tree_path = "ml_gtk_tree_path_new"
   external from_string : string -> tree_path

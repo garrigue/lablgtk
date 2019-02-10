@@ -24,9 +24,6 @@
 
 open Gtk
 
-external _gtkbuilder_init : unit -> unit = "ml_gtkbuilder_init"
-let () = _gtkbuilder_init ()
-
 module Builder = struct
   include GtkBuilderProps.Builder
   external create : unit -> builder obj = "ml_gtk_builder_new"

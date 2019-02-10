@@ -30,9 +30,6 @@ open Tags
 open GtkEditProps
 open GtkBase
 
-external _gtkedit_init : unit -> unit = "ml_gtkedit_init"
-let () = _gtkedit_init ()
-
 module Editable = struct
   include Editable
   let marshal_insert f argv =

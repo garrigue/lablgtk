@@ -4,6 +4,8 @@ In Lablgtk-3.0.beta4:
 
 2019.02.10 [Emilio Gallego]
   * Add dune support (cf GPR#38,#41,#42,#44)
+  * Move initialization functions to Props files, to avoid problem with
+    -no-alias-deps (cf GPR#39)
 
 In Lablgtk-3.0.beta3:
 

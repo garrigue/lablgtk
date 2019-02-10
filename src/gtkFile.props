@@ -1,5 +1,5 @@
-
 prefix "Gtk"
+initializer "ml_gtkfile_init"
 
 conversions {
   GtkFileFilter         "(gobject : Gtk.file_filter  Gtk.obj data_conv)"

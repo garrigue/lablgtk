@@ -1,6 +1,7 @@
 (* $Id$ *)
 
 prefix "Gtk"
+initializer "ml_gtkbuilder_init"
 
 class Builder set wrap wrapsig : Object {
   "translation-domain"   string           : Read / Write

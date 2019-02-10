@@ -53,7 +53,7 @@ Make_OptFlags_val(Source_search_flag_val)
 Make_Val_final_pointer_ext(GObject, _sink, g_object_ref_sink, ml_g_object_unref_later, 20)
 */
 
-CAMLprim value ml_gtk_source_completion_init(value unit)
+CAMLprim value ml_gtk_source_view_init(value unit)
 {       /* Since these are declared const, must force gcc to call them! */
     GType t =
       gtk_source_completion_get_type() +
@@ -61,58 +61,15 @@ CAMLprim value ml_gtk_source_completion_init(value unit)
       gtk_source_completion_provider_get_type() +
       gtk_source_completion_proposal_get_type() +
       gtk_source_completion_info_get_type() +
-      gtk_source_completion_item_get_type()
-;
-    return Val_GType(t);
-}
-
-CAMLprim value ml_gtk_source_completion_provider_init(value unit)
-{       /* Since these are declared const, must force gcc to call them! */
-    GType t = gtk_source_completion_provider_get_type();
-    return Val_GType(t);
-}
-
-CAMLprim value ml_gtk_source_style_scheme_init(value unit)
-{	/* Since these are declared const, must force gcc to call them! */
-    GType t = gtk_source_style_scheme_get_type();
-    return Val_GType(t);
-}
-
-CAMLprim value ml_gtk_source_style_scheme_manager_init(value unit)
-{	/* Since these are declared const, must force gcc to call them! */
-    GType t = gtk_source_style_scheme_manager_get_type();
-    return Val_GType(t);
-}
-
-CAMLprim value ml_gtk_source_language_init(value unit)
-{	/* Since these are declared const, must force gcc to call them! */
-    GType t = gtk_source_language_get_type();
-    return Val_GType(t);
-}
-
-CAMLprim value ml_gtk_source_language_manager_init(value unit)
-{	/* Since these are declared const, must force gcc to call them! */
-    GType t =
-      gtk_source_language_manager_get_type();
-    return Val_GType(t);
-}
-
-CAMLprim value ml_gtk_source_mark_attributes_init(value unit)
-{	/* Since these are declared const, must force gcc to call them! */
-    GType t =
-      gtk_source_mark_attributes_get_type();
-    return Val_GType(t);
-}
-
-CAMLprim value ml_gtk_source_buffer_init(value unit)
-{	/* Since these are declared const, must force gcc to call them! */
-    GType t = gtk_source_buffer_get_type();
-    return Val_GType(t);
-}
-
-CAMLprim value ml_gtk_source_view_init(value unit)
-{	/* Since these are declared const, must force gcc to call them! */
-    GType t = gtk_source_view_get_type();
+      gtk_source_completion_item_get_type() +
+      gtk_source_completion_provider_get_type() +
+      gtk_source_style_scheme_get_type() +
+      gtk_source_style_scheme_manager_get_type() +
+      gtk_source_language_get_type() +
+      gtk_source_language_manager_get_type() +
+      gtk_source_mark_attributes_get_type() +
+      gtk_source_buffer_get_type() +
+      gtk_source_view_get_type();
     return Val_GType(t);
 }
 

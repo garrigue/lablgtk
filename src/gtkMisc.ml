@@ -29,9 +29,6 @@ open Tags
 open GtkMiscProps
 open GtkBase
 
-external _gtkmisc_init : unit -> unit = "ml_gtkmisc_init"
-let () = _gtkmisc_init ()
-
 module ColorSelection = ColorSelection
 
 module Statusbar = Statusbar

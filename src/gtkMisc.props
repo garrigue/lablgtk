@@ -1,5 +1,7 @@
 (* $Id$ *)
 
+initializer "ml_gtkmisc_init"
+
 header {
 open Gtk
 }
@@ -40,6 +42,7 @@ class GtkStatusIcon set wrap wrapsig : GObject {
 }
 
 prefix "Gtk"
+
 class Misc abstract set wrap : Widget {
   "xalign"               gfloat               : Read / Write
   "yalign"               gfloat               : Read / Write

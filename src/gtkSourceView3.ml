@@ -29,27 +29,6 @@ open SourceView3Enums
 open GtkSourceView3Props
 open GtkBase
 
-external _gtk_source_completion_init: unit -> unit = "ml_gtk_source_completion_init"
-external _gtk_source_style_scheme_init: unit -> unit = "ml_gtk_source_style_scheme_init"
-external _gtk_source_style_scheme_manager_init: unit -> unit = "ml_gtk_source_style_scheme_manager_init"
-external _gtk_source_language_init: unit -> unit = "ml_gtk_source_language_init"
-external _gtk_source_language_manager_init: unit -> unit =
-  "ml_gtk_source_language_manager_init"
-external _gtk_source_mark_attributes_init: unit -> unit =
-  "ml_gtk_source_mark_attributes_init"
-external _gtk_source_buffer_init: unit -> unit = "ml_gtk_source_buffer_init"
-external _gtk_source_view_init: unit -> unit = "ml_gtk_source_view_init"
-
-let () =
-  _gtk_source_completion_init ();
-  _gtk_source_style_scheme_init ();
-  _gtk_source_style_scheme_manager_init ();
-  _gtk_source_language_init ();
-  _gtk_source_language_manager_init ();
-  _gtk_source_mark_attributes_init ();
-  _gtk_source_buffer_init ();
-  _gtk_source_view_init ()
-
 module SourceStyleScheme =
 struct
   include SourceStyleScheme

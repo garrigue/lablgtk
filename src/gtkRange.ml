@@ -28,9 +28,6 @@ open Tags
 open GtkRangeProps
 open GtkBase
 
-external _gtkrange_init : unit -> unit = "ml_gtkrange_init"
-let () = _gtkrange_init ()
-
 module ProgressBar = ProgressBar
 
 module Range = Range

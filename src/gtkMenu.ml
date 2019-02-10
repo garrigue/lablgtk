@@ -28,9 +28,6 @@ open Gtk
 open GtkMenuProps
 open GtkBase
 
-external _gtkmenu_init : unit -> unit = "ml_gtkmenu_init"
-let () = _gtkmenu_init ()
-
 module MenuItem = struct
   include MenuItem
   external create_with_label : string -> menu_item obj

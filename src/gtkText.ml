@@ -29,9 +29,6 @@ open Tags
 open GtkTextProps
 open GtkBase
 
-external _gtktext_init : unit -> unit = "ml_gtktext_init"
-let () = _gtktext_init ()
-
 exception No_such_mark of string
 
 module Mark = TextMark

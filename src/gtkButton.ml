@@ -29,9 +29,6 @@ open Tags
 open GtkButtonProps
 open GtkBase
 
-external _gtkbutton_init : unit -> unit = "ml_gtkbutton_init"
-let () = _gtkbutton_init ()
-
 module Button = struct
   include Button
   let make_params ~cont p ?label ?use_mnemonic ?stock =

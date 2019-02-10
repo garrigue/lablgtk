@@ -29,9 +29,6 @@ open Tags
 open GtkPackProps
 open GtkBase
 
-external _gtkpack_init : unit -> unit = "ml_gtkpack_init"
-let () = _gtkpack_init ()
-
 module Box = struct
   include Box
   let pack box ?from:( dir = (`START : pack_type))

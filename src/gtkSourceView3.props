@@ -24,6 +24,7 @@
 (*********************************************************************************)
 
 prefix "Gtk"
+initializer "ml_gtk_source_view_init"
 
 header {
   open GtkSourceView3_types
