@@ -37,6 +37,9 @@ How to compile:
   There are two ways to compile: dune or make.
 
   For dune, just do "dune build && dune install".
+  The only exception is for users of the Quartz version of Gtk-3 on MacOS,
+  who need to set this flag first:
+    export LABLGTK_EXTRA_FLAGS="-DHAS_GTKQUARTZ"
 
   The following details the instructions for make.
 
