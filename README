@@ -1,5 +1,5 @@
 
-             LablGTK3 3.0.beta3 : an interface to the GIMP Tool Kit
+             LablGTK3 3.0.beta4 : an interface to the GIMP Tool Kit
 
 Needed:
         ocaml-4.05 or more
@@ -33,6 +33,12 @@ Status:
     Failure "gdk_pixbuf_get_file_info unsupported in Gtk 2.x < 2.4"
 
 How to compile:
+
+  There are two ways to compile: dune or make.
+
+  For dune, just do "dune build && dune install".
+
+  The following details the instructions for make.
 
   You should normally not need to modify Makefiles.
 
@@ -334,6 +340,7 @@ Authors:
         Hugo Herbelin    <Hugo.Herbelin@inria.fr>
         Claudio Sacerdoti Coen <claudio.sacerdoticoen@inria.fr>
         Christophe Troestler <Christophe.Troestler@umons.ac.be>
+        Emilio Gallego   <e@x80.org>
   For lablgtk1:
         Hubert Fauque  <hubert.fauque@wanadoo.fr>
         Koji Kagawa    <kagawa@eng.kagawa-u.ac.jp>
