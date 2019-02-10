@@ -14,7 +14,7 @@ env:
   - OPAMJOBS="2"
   - OPAMROOTISOK="true"
   - OPAMYES="true"
-  - COMPILER="4.06.1"
+  - COMPILER="4.07.1"
   - BASE_OPAM="dune cairo2"
 
   # Main test suite, some examples don't work in 4.05.0
@@ -24,18 +24,34 @@ env:
   - TEST_TARGET="build-all"   COMPILER="4.07.1"
   - TEST_TARGET="opam"        COMPILER="4.07.1"
 
-install:
-- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.1/opam-2.0.1-x86_64-linux -o /usr/bin/opam
-- sudo chmod 755 /usr/bin/opam
-- opam init -c "$COMPILER" --disable-sandboxing
-- opam switch set "$COMPILER"
-- eval $(opam env)
-- opam install $BASE_OPAM
-- opam list
+matrix:
+  include:
+    - os: osx
+      cache:
+        ccache: true
+        directories:
+          - $HOME/.opam
+          - $HOME/Library/Caches/Homebrew
+      before_cache:
+        - brew cleanup
+      before_install: |
+        set -e
+        brew update
+        brew install ccache opam pkg-config gtk+3 gtksourceview3 gtkspell3
+
+before_install: |
+  sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.1/opam-2.0.1-x86_64-linux -o /usr/bin/opam
+  sudo chmod 755 /usr/bin/opam
+
+install: |
+  opam init -c "$COMPILER" --disable-sandboxing
+  opam switch set "$COMPILER"
+  eval $(opam env)
+  opam install $BASE_OPAM
+  opam list
 
 script:
 - set -e
 - echo 'Building LablGtk...' && echo -en 'travis_fold:start:lablgtk.build\\r'
 - make -f Makefile.travis "$TEST_TARGET"
-- ls -l
 - echo -en 'travis_fold:end:lablgtk.build\\r'
