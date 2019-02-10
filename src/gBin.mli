@@ -257,12 +257,19 @@ class alignment : Gtk.alignment obj ->
     method xscale : Gtk.clampf
     method yscale : Gtk.clampf
     method set_top_padding    : int -> unit (** @since GTK 2.4 *)
+
     method set_bottom_padding : int -> unit (** @since GTK 2.4 *)
+
     method set_left_padding   : int -> unit (** @since GTK 2.4 *)
+
     method set_right_padding  : int -> unit (** @since GTK 2.4 *)
+
     method top_padding    : int             (** @since GTK 2.4 *)
+
     method bottom_padding : int             (** @since GTK 2.4 *)
+
     method left_padding   : int             (** @since GTK 2.4 *)
+
     method right_padding  : int             (** @since GTK 2.4 *)
   end
 

@@ -33,7 +33,7 @@ open OgtkBaseProps
 open GContainer
 
 let set = Gobject.Property.set
-let get = Gobject.Property.get
+let _get = Gobject.Property.get
 
 (** Window **)
 
@@ -81,7 +81,7 @@ let make_window ~create =
   Window.make_params ~cont:(fun pl ?wmclass ->
     Container.make_params pl ~cont:(fun pl ?(show=false) () ->
       let (w : #window_skel) = create pl in
-      may (fun (name,clas) -> w#set_wmclass ~name ~clas) wmclass;
+      may ~f:(fun (name,clas) -> w#set_wmclass ~name ~clas) wmclass;
       if show then w#show ();
       w))
 
@@ -113,7 +113,7 @@ let rec list_rassoc k = function
 let resp = Dialog.std_response
 
 let rnone = resp `NONE
-and rreject = resp `REJECT
+and _rreject = resp `REJECT
 and raccept = resp `ACCEPT
 and rdelete = resp `DELETE_EVENT
 and rok = resp `OK
@@ -121,8 +121,8 @@ and rcancel = resp `CANCEL
 and rclose = resp `CLOSE
 and ryes = resp `YES
 and rno = resp `NO
-and rapply = resp `APPLY
-and rhelp = resp `HELP
+and _rapply = resp `APPLY
+and _rhelp = resp `HELP
 
 class virtual ['a] dialog_base obj = object (self)
   inherit window_skel obj
@@ -240,7 +240,7 @@ let namep =
 class about_dialog obj =
   object (self)
     inherit [Buttons.about] dialog_skel obj
-    inherit about_dialog_props as props
+    inherit about_dialog_props as _props
     method name = Gobject.get namep obj
     method set_name = Gobject.set namep obj
     method connect : Buttons.about dialog_signals =

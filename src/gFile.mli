@@ -61,6 +61,7 @@ class type chooser_signals =
     method file_activated : callback:(unit -> unit) -> GtkSignal.id
     method confirm_overwrite : 
       callback:(unit -> Tags.file_chooser_confirmation) -> GtkSignal.id (**  since Gtk 2.8 *)
+
   method notify_action : callback:(Tags.file_chooser_action -> unit) -> GtkSignal.id
   method notify_create_folders : callback:(bool -> unit) -> GtkSignal.id
   method notify_do_overwrite_confirmation : callback:(bool -> unit) -> GtkSignal.id
@@ -127,13 +128,18 @@ class type chooser =
     method filter : filter
 
     method add_shortcut_folder : string -> unit (** @raise GtkFile.FileChooser.Error if operation fails *)
+
     method remove_shortcut_folder : string -> unit (** @raise GtkFile.FileChooser.Error if operation fails *)
+
     method list_shortcut_folders : string list
     method add_shortcut_folder_uri : string -> unit (** @raise GtkFile.FileChooser.Error if operation fails *)
+
     method remove_shortcut_folder_uri : string -> unit (** @raise GtkFile.FileChooser.Error if operation fails *)
+
     method list_shortcut_folder_uris : string list
 
     method do_overwrite_confirmation : bool (** since Gtk 2.8 *)
+
     method set_do_overwrite_confirmation : bool -> unit (** since Gtk 2.8 *)
 
   end

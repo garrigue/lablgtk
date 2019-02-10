@@ -30,7 +30,7 @@ type g_type
 type g_class
 type g_value
 type g_closure
-type 'a objtype = g_type
+type 'a _objtype = g_type
 
 type basic =
   [ `CHAR of char
@@ -80,7 +80,7 @@ type signal_type =
   [ `RUN_FIRST | `RUN_LAST | `NO_RECURSE | `ACTION | `NO_HOOKS ]
 
 external do_unref : unit -> unit = "ml_g_object_do_unref"
-let unref_alarm = Gc.create_alarm do_unref
+let _unref_alarm = Gc.create_alarm do_unref
 
 module Type = struct
   external init : unit -> unit = "ml_g_type_init"
@@ -96,6 +96,7 @@ module Type = struct
       = "ml_Fundamental_type_val"
   external interface_prerequisites : g_type -> g_type list
       = "ml_g_type_interface_prerequisites" (** @since GTK 2.2 *)
+
   external register_static : parent:g_type -> name:string -> g_type
       = "ml_g_type_register_static"
   let invalid =  of_fundamental `INVALID

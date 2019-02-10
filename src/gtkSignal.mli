@@ -62,6 +62,7 @@ val user_handler : (exn -> unit) ref
     (** A hook to allow changing the behaviour of exceptions in callbacks
        The default behaviour of printing the exception and ignoring it
        is obtained when [user_handler] is set to [Pervasives.raise] *)
+
 val safe_call : ?where:string -> ('a -> unit) -> 'a -> unit
     (** Safe wrapper for function calls. Tries to handle exceptions
         with user_handler, and reports an error otherwise. *)
@@ -79,6 +80,7 @@ external disconnect : 'a obj -> id -> unit
 external emit_stop_by_name : 'a obj -> name:string -> unit
   = "ml_g_signal_stop_emission_by_name"
     (** Unsafe: use [stop_emit] instead. *)
+
 external handler_block : 'a obj -> id -> unit
   = "ml_g_signal_handler_block"
 external handler_unblock : 'a obj -> id -> unit

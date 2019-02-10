@@ -102,6 +102,7 @@ class window_skel : 'a obj ->
     method title : string
     method type_hint : Gdk.Tags.window_type_hint
     method set_urgency_hint : bool -> unit (** since Gtk 2.8 *)
+
     method urgency_hint : bool (** since Gtk 2.8 *)
 
   end
@@ -114,9 +115,11 @@ class window : ([> Gtk.window] as 'a) obj ->
     val obj : 'a obj
     method connect : GContainer.container_signals
     method fullscreen : unit -> unit (** @since GTK 2.2 *)
+
     method maximize : unit -> unit
     method stick : unit -> unit
     method unfullscreen : unit -> unit (** @since GTK 2.2 *)
+
     method unmaximize : unit -> unit
     method unstick : unit -> unit
   end
@@ -300,6 +303,7 @@ class about_dialog :
     method license : string
     method logo : GdkPixbuf.pixbuf
     method logo_icon_name : string
+
     (** The property [name] is left unchanged, but it will
         access [program-name] if version is higher than 2.12 *)
     method name : string
@@ -474,6 +478,7 @@ class socket : Gtk.socket obj ->
     val obj : Gtk.socket obj
     method connect : socket_signals
     (** @deprecated "inherently unreliable" *)
+
     method xwindow : Gdk.xid
   end
 

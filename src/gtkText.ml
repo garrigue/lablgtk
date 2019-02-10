@@ -22,12 +22,9 @@
 
 (* $Id$ *)
 
-open Gaux
-open Gobject
 open Gtk
 open Tags
 open GtkTextProps
-open GtkBase
 
 exception No_such_mark of string
 

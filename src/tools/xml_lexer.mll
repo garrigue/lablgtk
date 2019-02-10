@@ -72,7 +72,7 @@ rule token = parse
       { reset_string lexbuf ;
 	match cdata lexbuf with
 	| "" -> token lexbuf
-	| s  -> Chars (cdata lexbuf) }
+	| _s  -> Chars (cdata lexbuf) }
   | "<?"
       { reset_pos lexbuf; skip_prolog_or_pi lexbuf; token lexbuf }
   | "</"

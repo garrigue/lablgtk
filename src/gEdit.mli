@@ -128,20 +128,27 @@ class entry_signals : [> Gtk.entry] obj ->
     method notify_xalign : callback:(float -> unit) -> GtkSignal.id
     method notify_overwrite_mode :
       callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.14 *)
+
     method icon_press :
       callback:(Tags.entry_icon_position -> GdkEvent.Button.t -> unit) ->
         GtkSignal.id (** @Since GTK 2.16 *)
+
     method icon_released :
       callback:(Tags.entry_icon_position -> GdkEvent.Button.t -> unit) ->
         GtkSignal.id (** @Since GTK 2.16 *)
+
     method notify_primary_icon_activatable :
       callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.16 *)
+
     method notify_primary_icon_sensitive :
       callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.16 *)
+
     method notify_secondary_icon_activatable :
       callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.16 *)
+
     method notify_secondary_icon_sensitive :
       callback:(bool -> unit) -> GtkSignal.id (** @Since GTK 2.16 *)
+
     method notify_placeholder_text :
       callback:(string -> unit) -> GtkSignal.id (** @Since GTK 3.2 *)
   end
@@ -188,6 +195,7 @@ class entry : ([> Gtk.entry] as 'a) obj ->
     method set_primary_icon_activatable : bool -> unit
     method set_primary_icon_name : string -> unit
         (** empty string to delete *)
+
     method set_primary_icon_pixbuf : GdkPixbuf.pixbuf -> unit
     method set_primary_icon_sensitive : bool -> unit
     method set_primary_icon_stock : GtkStock.id -> unit
@@ -198,6 +206,7 @@ class entry : ([> Gtk.entry] as 'a) obj ->
     method set_secondary_icon_activatable : bool -> unit
     method set_secondary_icon_name : string -> unit
         (** empty string to delete *)
+
     method set_secondary_icon_pixbuf : GdkPixbuf.pixbuf -> unit
     method set_secondary_icon_sensitive : bool -> unit
     method set_secondary_icon_stock : GtkStock.id -> unit
@@ -332,15 +341,21 @@ class combo_box :
     method set_wrap_width : int -> unit
     method wrap_width : int
     method add_tearoffs : bool (** @since GTK 2.6 *)
+
     method set_add_tearoffs : bool -> unit (** @since GTK 2.6 *)
+
     method focus_on_click : bool (** @since GTK 2.6 *)
+
     method set_focus_on_click : bool -> unit (** @since GTK 2.6 *)
+
     method entry_text_column : int
     method set_entry_text_column : int -> unit
     method has_entry : bool
     method set_has_entry : bool -> unit
     method has_frame : bool (** @since GTK 2.6 *)
+
     method set_has_frame : bool -> unit (** @since GTK 2.6 *)
+
     method set_row_separator_func : (GTree.model -> Gtk.tree_iter -> bool) option -> unit (** @since GTK 2.6 *)
   end
 

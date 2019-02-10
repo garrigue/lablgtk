@@ -133,7 +133,7 @@ let region_of_bytes =
 let bytes_of_region reg =
   let s = Bytes.create reg.length in
   let reg' = region_of_bytes s in
-  unsafe_blit reg reg';
+  unsafe_blit ~src:reg ~dst:reg';
   s
 
 (* Access bigarrays breaking the abstraction... dirty *)

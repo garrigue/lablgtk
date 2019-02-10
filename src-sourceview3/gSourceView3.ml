@@ -30,22 +30,22 @@ open GtkSourceView3_types
 open OgtkSourceView3Props
 open GObj
 
-let get_bool = function `BOOL x -> x | _ -> assert false
-let bool x = `BOOL x
-let get_uint = function `INT x -> x | _ -> assert false
-let uint x = `INT x
-let get_int = function `INT x -> x | _ -> assert false
-let int x = `INT x
-let get_gobject = function `OBJECT x -> x | _ -> assert false
-let gobject x = `OBJECT (Some x)
+let _get_bool = function `BOOL x -> x | _ -> assert false
+let _bool x = `BOOL x
+let _get_uint = function `INT x -> x | _ -> assert false
+let _uint x = `INT x
+let _get_int = function `INT x -> x | _ -> assert false
+let _int x = `INT x
+let _get_gobject = function `OBJECT x -> x | _ -> assert false
+let _gobject x = `OBJECT (Some x)
 
-let map_opt f = function
+let _map_opt f = function
     None -> None
   | Some x -> Some (f x)
 
 (** {2 GtkSourceTag} *)
 
-type source_tag_property = [
+type _source_tag_property = [
   | `BACKGROUND of Gdk.color
   | `BOLD of bool
   | `FOREGROUND of Gdk.color
@@ -54,7 +54,7 @@ type source_tag_property = [
   | `UNDERLINE of bool
 ]
 
-let text_tag_property_of_source_tag_property = function
+let _text_tag_property_of_source_tag_property = function
   | `BACKGROUND p -> `BACKGROUND_GDK p
   | `BOLD p -> `WEIGHT (if p then `BOLD else `NORMAL)
   | `FOREGROUND p -> `FOREGROUND_GDK p
@@ -71,7 +71,7 @@ let color_of_string s =
 (** {2 GtkSourceStyleScheme} *)
 
 class source_style_scheme (obj: GtkSourceView3_types.source_style_scheme obj) =
-object(self)
+object(_self)
   method as_source_style_scheme = obj
   method name = SourceStyleScheme.get_name obj
   method description = SourceStyleScheme.get_description obj
@@ -82,7 +82,7 @@ end
 
 class source_style_scheme_manager
 	(obj: GtkSourceView3_types.source_style_scheme_manager obj) =
-  object(self)
+  object(_self)
     val obj = obj
     inherit source_style_scheme_manager_props
 
@@ -93,7 +93,7 @@ class source_style_scheme_manager
     method style_scheme_ids =
       SourceStyleSchemeManager.get_scheme_ids obj
     method style_scheme s =
-      may_map (new source_style_scheme)
+      may_map ~f:(new source_style_scheme)
 	(SourceStyleSchemeManager.get_scheme obj s)
   end
 
@@ -289,7 +289,7 @@ class source_completion
   (obj : GtkSourceView3_types.source_completion obj) =
   object
     val obj = obj
-    inherit source_completion_props as super
+    inherit source_completion_props as _super
     method as_source_completion = obj
     method connect = new source_completion_signals obj
 
@@ -319,7 +319,7 @@ class source_completion
 (** {2 GtkSourceLanguage} *)
 
 class source_language (obj: GtkSourceView3_types.source_language obj) =
-object (self)
+object (_self)
   method as_source_language = obj
   val obj = obj
   method misc = new gobject_ops obj
@@ -340,7 +340,7 @@ end
 
 class source_language_manager
   (obj: GtkSourceView3_types.source_language_manager obj) =
-object (self)
+object (_self)
   method get_oid = Gobject.get_oid obj
   method as_source_language_manager = obj
 
@@ -350,12 +350,12 @@ object (self)
 
   method language id =
     may_map
-      (new source_language)
+      ~f:(new source_language)
       (SourceLanguageManager.language obj id )
 
   method guess_language ?filename ?content_type () =
     may_map
-      (new source_language)
+      ~f:(new source_language)
       (SourceLanguageManager.guess_language obj filename content_type)
 end
 
@@ -368,7 +368,7 @@ let source_language_manager ~default =
 (** {2 GtkSourceMark} *)
 
 class source_mark  (obj: GtkSourceView3_types.source_mark obj) =
-object (self)
+object (_self)
   method coerce = (`MARK (GtkText.Mark.cast obj):GText.mark)
   method as_source_mark = obj
   val obj = obj
@@ -388,7 +388,7 @@ let source_mark ?category () =
 
 class source_mark_attributes (obj: GtkSourceView3_types.source_mark_attributes obj)
 =
-object (self)
+object (_self)
   method as_source_mark_attributes = obj
   val obj = obj
   inherit source_mark_attributes_props
@@ -401,7 +401,7 @@ let source_mark_attributes () =
 (** {2 GtkSourceUndoManager} *)
 
 class source_undo_manager_signals obj' =
-object (self)
+object (_self)
   inherit ['a] gobject_signals (obj' : [> GtkSourceView3_types.source_undo_manager] obj)
   inherit source_undo_manager_sigs
 end
@@ -451,8 +451,8 @@ object
 end
 
 and source_buffer (_obj: GtkSourceView3_types.source_buffer obj) =
-object (self)
-  inherit GText.buffer_skel _obj as text_buffer
+object (_self)
+  inherit GText.buffer_skel _obj as _text_buffer
   val obj = _obj
   method private obj = _obj
   inherit source_buffer_props
@@ -567,7 +567,7 @@ object
 end
 
 class source_view (obj': GtkSourceView3_types.source_view obj) =
-object (self)
+object (_self)
   inherit GText.view_skel obj'
   inherit source_view_props
 

@@ -23,7 +23,6 @@
 (* $Id: $ *)
 
 open Gtk
-open GObj
 
 (** Assistants *)
 

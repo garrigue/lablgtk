@@ -22,8 +22,6 @@
 
 (* $Id$ *)
 
-open Gaux
-open Gobject
 open Gdk
 
 type color = [

@@ -28,10 +28,9 @@
  (name lablgtk3_sourceview3)
  (public_name lablgtk3-sourceview3)
  (wrapped false)
- (flags :standard -w -6-7-27-32-33-34-36)
+ (flags :standard -w -6-7-33)
  (modules_without_implementation gtkSourceView3_types)
  (c_names ml_gtksourceview3)
  (c_flags         (:include cflag-gtksourceview-3.0.sexp) (:include cflag-extraflags.sexp) -Wno-deprecated-declarations)
  (c_library_flags (:include clink-gtksourceview-3.0.sexp))
  (libraries lablgtk3))
-

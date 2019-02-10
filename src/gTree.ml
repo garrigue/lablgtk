@@ -383,7 +383,7 @@ class view obj = object
   method set_expander_column c =
     set expander_column obj (may_map as_column c)
   method model = new model (Property.get_some obj model)
-  method set_model m = set model obj (may_map (fun (m:model) -> m#as_model) m)
+  method set_model m = set model obj (may_map ~f:(fun (m:model) -> m#as_model) m)
   method append_column col = TreeView.append_column obj (as_column col)
   method remove_column col = TreeView.remove_column obj (as_column col)
   method insert_column col = TreeView.insert_column obj (as_column col)

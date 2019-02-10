@@ -66,7 +66,9 @@ class action_skel :
     method is_important : bool
     method set_is_important : bool -> unit
     method icon_name : string (** @since GTK 2.10 *)
+
     method set_icon_name : string -> unit (** @since GTK 2.10 *)
+
     method label : string
     method set_label : string -> unit
     method name : string
@@ -301,14 +303,17 @@ class ui_manager :
     method add_tearoffs : bool
     method add_ui_from_file : string -> ui_id   (** @raise Glib.Markup.Error if the XML is invalid
                                                     @raise Glib.GError if an error occurs while reading the file *)
-    method add_ui_from_string : string -> ui_id (** @raise Glib.Markup.Error if the XML is invalid *) 
-						    
+
+    method add_ui_from_string : string -> ui_id (** @raise Glib.Markup.Error if the XML is invalid *)
+
     method connect : ui_manager_signals
     method ensure_update : unit -> unit
     method get_accel_group : Gtk.accel_group
     method get_action : string -> action      (** @raise Not_found if no widget exist at the given path *)
+
     method get_action_groups : action_group list
     method get_widget : string -> GObj.widget (** @raise Not_found if no widget exist at the given path *)
+
     method get_toplevels : GtkEnums.ui_manager_item_type list -> GObj.widget list
     method insert_action_group : action_group -> int -> unit
     method new_merge_id : unit -> ui_id

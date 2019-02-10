@@ -22,12 +22,8 @@
 
 (* $Id$ *)
 
-open Gaux
-open Gobject
 open Gtk
-open Tags
 open GtkBaseProps
-open GtkBase
 
 external _gtkwindow_init : unit -> unit = "ml_gtkwindow_init"
 let () = _gtkwindow_init ()

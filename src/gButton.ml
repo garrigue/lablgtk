@@ -142,7 +142,7 @@ class toolbar obj = object
   inherit OgtkBaseProps.orientable_props
   method connect = new toolbar_signals obj
   method insert : 'a. ?pos:int -> (#tool_item_o as 'a) -> unit =
-    fun ?(pos = -1) it -> Toolbar.insert obj it#as_tool_item pos
+    fun ?(pos = -1) it -> Toolbar.insert obj it#as_tool_item ~pos
   method get_item_index : Gtk.tool_item obj -> _ = Toolbar.get_item_index obj
   method get_n_items = Toolbar.get_n_items obj
   method get_nth_item = Toolbar.get_nth_item obj
@@ -185,9 +185,9 @@ end
 
 let tool_item_params create pl ?homogeneous ?expand ?packing ?show () = 
   let item = create pl in
-  Gaux.may item#set_homogeneous homogeneous ;
-  Gaux.may item#set_expand expand ;
-  Gaux.may (fun f -> (f (item :> tool_item_o) : unit)) packing ;
+  Gaux.may ~f:item#set_homogeneous homogeneous ;
+  Gaux.may ~f:item#set_expand expand ;
+  Gaux.may ~f:(fun f -> (f (item :> tool_item_o) : unit)) packing ;
   if show <> Some false then item#misc#show () ;
   item
 
@@ -250,7 +250,7 @@ let toggle_tool_button_params create pl ?active =
   tool_button_params
     (fun pl -> 
       let o = create pl in
-      Gaux.may o#set_active active ;
+      Gaux.may ~f:o#set_active active ;
       o)
     pl
 
@@ -269,7 +269,7 @@ let radio_tool_button ?group =
   toggle_tool_button_params
     (fun pl -> new radio_tool_button (RadioToolButton.create pl))
     (may_cons RadioToolButton.P.group 
-       (Gaux.may_map (fun g -> g#group) group)
+       (Gaux.may_map ~f:(fun g -> g#group) group)
        [])
 
 class menu_tool_button obj = object
@@ -282,7 +282,7 @@ let menu_tool_button ?menu =
   tool_button_params 
     (fun pl -> new menu_tool_button (MenuToolButton.create pl))
     (may_cons MenuToolButton.P.menu
-       (Gaux.may_map (fun m -> m#as_menu) menu)
+       (Gaux.may_map ~f:(fun m -> m#as_menu) menu)
        [])
     
 class link_button_signals obj = object (self)

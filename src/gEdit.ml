@@ -81,7 +81,7 @@ class entry_completion obj = object
   method misc = new GObj.gobject_ops obj
   method connect = new entry_completion_signals obj
 
-  method get_entry = may_map (new GObj.widget) (EntryCompletion.get_entry obj)
+  method get_entry = may_map ~f:(new GObj.widget) (EntryCompletion.get_entry obj)
   method complete () = EntryCompletion.complete obj
   method insert_action_text = EntryCompletion.insert_action_text obj
   method insert_action_markup = EntryCompletion.insert_action_markup obj
@@ -110,7 +110,7 @@ class entry obj = object
   method as_entry = (obj :> Gtk.entry obj)
   method event = new GObj.event_ops obj
   method get_completion =
-    may_map (new entry_completion) (Entry.get_completion obj)
+    may_map ~f:(new entry_completion) (Entry.get_completion obj)
   method set_completion (c : entry_completion) = 
     Entry.set_completion obj c#as_entry_completion
   method set_primary_icon_name s =
@@ -129,10 +129,10 @@ let entry =
 
 let entry_completion ?model =
   EntryCompletion.make_params []
-    ?model:(may_map (fun m -> m#as_model) model)
-    ~cont:(fun pl ?entry () -> 
+    ?model:(may_map ~f:(fun m -> m#as_model) model)
+    ~cont:(fun pl ?entry () ->
       let c = new entry_completion (EntryCompletion.create pl) in
-      may (fun e -> e#set_completion c) entry ;
+      may ~f:(fun e -> e#set_completion c) entry ;
       c)
 
 class spin_button_signals obj = object
@@ -180,11 +180,11 @@ class combo_box _obj = object
     GtkEdit.ComboBox.set_active_iter obj
   method set_row_separator_func fo =
     GtkEdit.ComboBox.set_row_separator_func obj 
-      (Gaux.may_map (fun f m -> f (new GTree.model m)) fo)
+      (Gaux.may_map ~f:(fun f m -> f (new GTree.model m)) fo)
 end
 
 let combo_box ?model =
-  let model = Gaux.may_map (fun m -> m#as_model) model in
+  let model = Gaux.may_map ~f:(fun m -> m#as_model) model in
   GtkEdit.ComboBox.make_params ?model [] ~cont:(
   GtkBase.Widget.size_params ~cont:(fun pl ?packing ?show () ->
     let c = new combo_box (GtkEdit.ComboBox.create pl) in
@@ -196,8 +196,8 @@ class combo_box_entry _obj = object (self)
 end
 
 let combo_box_entry ?model ?text_column =
-  let model = Gaux.may_map (fun m -> m#as_model) model in
-  let column = Gaux.may_map (fun c -> c.GTree.index) text_column in
+  let model = Gaux.may_map ~f:(fun m -> m#as_model) model in
+  let column = Gaux.may_map ~f:(fun c -> c.GTree.index) text_column in
   GtkEdit.ComboBox.make_params ?model
     ~has_entry:true ?entry_text_column:column [] ~cont:(
   GtkBase.Widget.size_params ~cont:(fun pl ?packing ?show () ->

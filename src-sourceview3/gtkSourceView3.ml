@@ -21,13 +21,9 @@
 (**************************************************************************)
 
 open GtkSourceView3_types
-open Gaux
-open Gobject
 open Gtk
-open Tags
 open SourceView3Enums
 open GtkSourceView3Props
-open GtkBase
 
 module SourceStyleScheme =
 struct

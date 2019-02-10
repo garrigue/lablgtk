@@ -22,7 +22,6 @@
 
 (* $Id$ *)
 
-open Gaux
 open Gtk
 open Tags
 open GtkTreeProps
@@ -105,7 +104,7 @@ module TreeModel = struct
     = "ml_gtk_tree_model_iter_nth_child"
   let iter_children m ?(nth=0) p =
     let i = alloc_iter () in
-    if iter_nth_child m i p nth then i
+    if iter_nth_child m i ~parent:p nth then i
     else invalid_arg "GtkTree.TreeModel.iter_children"
   external iter_parent :
     [>`treemodel] obj -> tree_iter -> child:tree_iter -> bool

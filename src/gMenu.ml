@@ -68,7 +68,7 @@ class ['a] pre_menu_item_skel obj = object
     MenuItem.set_submenu obj (Some w#as_menu)
   method remove_submenu () = MenuItem.set_submenu obj None
   method get_submenu =
-    may_map (new GObj.widget) (MenuItem.get_submenu obj)
+    may_map ~f:(new GObj.widget) (MenuItem.get_submenu obj)
   method activate () = MenuItem.activate obj
   method select () = MenuItem.select obj
   method deselect () = MenuItem.deselect obj

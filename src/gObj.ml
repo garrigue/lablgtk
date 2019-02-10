@@ -148,6 +148,7 @@ let css_provider () = new css_provider (CssProvider.create ())
 
 class style_context ctxt = object
   val ctxt = ctxt
+
   (** Does not cascade!! StyleContext.add_provider_for_screen does cascade. *)
   method add_provider (provider: css_provider) = StyleContext.add_provider ctxt (provider#as_css_provider)
 end
@@ -178,7 +179,7 @@ class drag_signals obj = object (self)
   method private connect_drag : 'b. ('a, Gdk.drag_context -> 'b) GtkSignal.t ->
     callback:(drag_context -> 'b) -> _ =
       fun sgn ~callback ->
-        self#connect sgn (fun context -> callback (new drag_context context))
+        self#connect sgn ~callback:(fun context -> callback (new drag_context context))
   method beginning = self#connect_drag Signals.drag_begin
   method ending = self#connect_drag Signals.drag_end
   method data_delete = self#connect_drag Signals.drag_data_delete
@@ -330,7 +331,7 @@ and misc_ops obj = object (self)
   method style_context = new style_context (Widget.get_style_context obj)
   method visible = get P.visible obj
   method parent =
-    may_map (fun w -> new widget (unsafe_cast w)) (get P.parent obj)
+    may_map ~f:(fun w -> new widget (unsafe_cast w)) (get P.parent obj)
   method allocation = Widget.allocation obj
   method pango_context = new GPango.context (Widget.get_pango_context obj)
   (* icon *)

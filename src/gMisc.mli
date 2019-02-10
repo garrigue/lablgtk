@@ -24,7 +24,6 @@
 
 open Gtk
 open GObj
-open GContainer
 
 (** Miscellaneous widgets *)
 
@@ -45,6 +44,7 @@ class statusbar_context :
     method context : Gtk.statusbar_context
     method flash : ?delay:int -> string -> unit
     (** @param delay default value is [1000] ms *)
+
     method pop : unit -> unit
     method push : string -> statusbar_message
     method remove : statusbar_message -> unit
@@ -242,6 +242,7 @@ class image : 'a obj ->
     constraint 'a = [> Gtk.image]
     val obj : 'a obj
     method clear : unit -> unit (** since Gtk 2.8 *)
+
     method storage_type : image_type
     method set_file : string -> unit
     method set_pixbuf : GdkPixbuf.pixbuf -> unit
@@ -313,15 +314,25 @@ class label_skel : 'a obj ->
     method use_underline : bool
 
     method angle : float (** @since GTK 2.6 *)
+
     method set_angle : float -> unit (** @since GTK 2.6 *)
+
     method max_width_chars : int (** @since GTK 2.6 *)
+
     method set_max_width_chars : int -> unit (** @since GTK 2.6 *)
+
     method single_line_mode : bool (** @since GTK 2.6 *)
+
     method set_single_line_mode : bool -> unit (** @since GTK 2.6 *)
+
     method width_chars : int (** @since GTK 2.6 *)
+
     method set_width_chars : int -> unit (** @since GTK 2.6 *)
+
     method ellipsize : PangoEnums.ellipsize_mode (** @since GTK 2.6 *)
+
     method set_ellipsize : PangoEnums.ellipsize_mode -> unit (** @since GTK 2.6 *)
+
     method get_layout : Pango.layout
   end
 

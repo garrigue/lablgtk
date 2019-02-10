@@ -22,9 +22,7 @@
 
 (* $Id$ *)
 
-open Gaux
 open Gobject
-open Gdk
 
 type pixbuf = [`pixbuf] obj
 type colorspace = [ `RGB ]

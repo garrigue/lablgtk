@@ -22,11 +22,7 @@
 
 (* $Id$ *)
 
-open Gaux
-open Gtk
-open Tags
 open GtkRangeProps
-open GtkBase
 
 module ProgressBar = ProgressBar
 

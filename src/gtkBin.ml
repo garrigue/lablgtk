@@ -22,11 +22,7 @@
 
 (* $Id$ *)
 
-open Gaux
-open Gtk
-open Tags
 open GtkBinProps
-open GtkBase
 
 module Alignment = Alignment
 

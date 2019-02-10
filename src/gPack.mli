@@ -24,7 +24,6 @@
 
 open Gtk
 open GObj
-open GContainer
 
 (** Several container widgets *)
 
@@ -41,6 +40,7 @@ class box_skel : ([> box] as 'a) obj ->
    (** @param from default value is [`START]
        @param expand default value is [false]
        @param fill default value is [true], ignored if [expand] is [false] *)
+
     method reorder_child : widget -> pos:int -> unit
     method set_child_packing :
       ?from:Tags.pack_type ->
@@ -109,6 +109,7 @@ class button_box : ([> Gtk.button_box] as 'a) obj ->
     method set_layout : Gtk.Tags.button_box_style -> unit
     method layout : Gtk.Tags.button_box_style
     method get_child_secondary : widget -> bool (** @since GTK 2.4 *)
+
     method set_child_secondary : widget -> bool -> unit (** @since GTK 2.4 *)
   end
 
@@ -147,6 +148,7 @@ class table :
         @param expand default value is [`NONE]
         @param fill default value is [`BOTH]
         @param shrink default value is [`NONE] *)
+
     method col_spacings : int
     method columns : int
     method homogeneous : bool
@@ -192,6 +194,7 @@ class grid :
         @param top  row number to attach the top of the widget to
         @param width default value is [1]
         @param height default value is [1] *)
+
     method set_baseline_row : int -> unit
     method set_col_homogeneous : bool -> unit
     method set_col_spacings : int -> unit
@@ -366,9 +369,11 @@ class paned :
     method pack1 : ?resize:bool -> ?shrink:bool -> widget -> unit
     (** @param resize default value is [false]
         @param shrink default value is [false] *)
+
     method pack2 : ?resize:bool -> ?shrink:bool -> widget -> unit
     (** @param resize default value is [false]
         @param shrink default value is [false] *)
+
     method child1 : widget
     method child2 : widget
     method set_orientation : Gtk.Tags.orientation -> unit
@@ -376,6 +381,7 @@ class paned :
     method set_position : int -> unit
     method position : int
     method max_position : int (** @since GTK 2.4 *)
+
     method min_position : int (** @since GTK 2.4 *)
   end
 
@@ -392,7 +398,7 @@ val paned :
 (** @gtkdoc gtk GtkStack *)
 class stack : ([> Gtk.stack] as 'a) obj ->
   object
-    inherit container
+    inherit GContainer.container
     val obj : 'a obj
     method as_stack : Gtk.stack obj
     method add_named : widget -> string -> unit
@@ -441,6 +447,7 @@ class stack_switcher : ([> Gtk.stack_switcher] as 'a) obj ->
     method set_stack : Gtk.stack Gtk.obj -> unit
     method icon_size : int
       (** @since GTK 3.20 *)
+
     method set_icon_size : int -> unit
       (** @since GTK 3.20 *)
   end
