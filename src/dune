@@ -10,15 +10,23 @@
  (modules dune_config)
  (libraries dune.configurator))
 
-(executable
- (name varcc)
- (modules varcc)
- (flags :standard -w -3-6))
+; We use a bash rule to ensure we call the byte version and thus we
+; avoid the auto-printer selection in Camlp4AutoPrinter.
+(rule
+ (targets varcc.ml)
+ (deps (:source varcc.ml4))
+ (mode promote)
+ (action (bash "camlp4o pr_o.cmo -impl %{source} -o %{targets}")))
 
-(executable
- (name propcc)
- (modules propcc)
- (flags :standard -w -3-6-27-35))
+(rule
+ (targets propcc.ml)
+ (deps (:source propcc.ml4))
+ (mode promote)
+ (action (bash "camlp4o pr_o.cmo -impl %{source} -o %{targets}")))
+
+(executables
+ (names varcc propcc)
+ (modules varcc propcc))
 
 ; Maybe auto-generate?
 (include dune-enum.sexp)

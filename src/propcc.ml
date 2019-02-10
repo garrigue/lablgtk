@@ -24,7 +24,7 @@ let camlize id =
                        (is_not_uppercase id.[i + 1])))
              then Buffer.add_char b '_'
              else ();
-             Buffer.add_char b (Char.lowercase c))
+             Buffer.add_char b (Char.lowercase_ascii c))
         | '-' -> Buffer.add_char b '_'
         | c -> Buffer.add_char b c)
      done;
@@ -36,7 +36,7 @@ let camlizeM s = try List.assoc s caml_modules with | Not_found -> s
 let check_suffix s suff =
   let len1 = String.length s
   and len2 = String.length suff
-  in (len1 > len2) && ((String.sub s (len1 - len2) len2) = suff)
+  in (len1 > len2) && ((String.sub s ~pos: (len1 - len2) ~len: len2) = suff)
   
 (* Arity of a caml type. Doesn't handle object types... *)
 let arity s =
@@ -111,10 +111,10 @@ let specials =
     ("GtkAdjustment_opt", "GData.conv_adjustment_option") ]
   
 let add_pointer conv gtk name =
-  (Hashtbl.add conversions gtk
-     (Printf.sprintf "(%s : %s data_conv)" conv name);
-   Hashtbl.add conversions (gtk ^ "_opt")
-     (Printf.sprintf "(%s_option : %s option data_conv)" conv name))
+  (Hashtbl.add conversions ~key: gtk
+     ~data: (Printf.sprintf "(%s : %s data_conv)" conv name);
+   Hashtbl.add conversions ~key: (gtk ^ "_opt")
+     ~data: (Printf.sprintf "(%s_option : %s option data_conv)" conv name))
   
 let add_object = add_pointer "gobject"
   
@@ -122,10 +122,12 @@ let add_boxed = add_pointer "unsafe_pointer"
   
 (* the type is not used *)
 let () =
-  (List.iter ~f: (fun t -> Hashtbl.add conversions ("g" ^ t) t)
+  (List.iter ~f: (fun t -> Hashtbl.add conversions ~key: ("g" ^ t) ~data: t)
      [ "boolean"; "char"; "uchar"; "int"; "uint"; "long"; "ulong"; "int32";
        "uint32"; "int64"; "uint64"; "float"; "double" ];
-   List.iter ~f: (fun (gtype, conv) -> Hashtbl.add conversions gtype conv)
+   List.iter
+     ~f:
+       (fun (gtype, conv) -> Hashtbl.add conversions ~key: gtype ~data: conv)
      [ ("gchararray", "string"); ("gchararray_opt", "string_option");
        ("string", "string"); ("bool", "boolean"); ("int", "int");
        ("int32", "int32"); ("float", "float") ];
@@ -135,8 +137,8 @@ let () =
           List.iter l
             ~f:
               (fun name ->
-                 Hashtbl.add conversions (pre ^ name)
-                   (Printf.sprintf "%s.Conv.%s" modu (camlize name))));
+                 Hashtbl.add conversions ~key: (pre ^ name)
+                   ~data: (Printf.sprintf "%s.Conv.%s" modu (camlize name))));
    List.iter boxeds
      ~f:
        (fun (pre, l) ->
@@ -446,7 +448,7 @@ let process_phrase ~chars (__strm : _ Stream.t) =
                                List.exists attrs
                                  ~f:
                                    (fun (x, _) ->
-                                      not (List.mem x class_qualifiers))
+                                      not (List.mem x ~set: class_qualifiers))
                              then raise (Stream.Error "bad qualifier")
                              else ();
                              let attrs = ("parent", parent) :: attrs in
@@ -516,8 +518,9 @@ let process_phrase ~chars (__strm : _ Stream.t) =
                        List.iter l
                          ~f:
                            (fun (k, d) ->
-                              Hashtbl.add conversions (pre1 ^ k)
-                                (if pre2 = "" then d else pre2 ^ ("." ^ d))))
+                              Hashtbl.add conversions ~key: (pre1 ^ k)
+                                ~data:
+                                  (if pre2 = "" then d else pre2 ^ ("." ^ d))))
                   | _ -> raise (Stream.Error "")))
           | _ -> raise (Stream.Error "")))
   | Some (Ident "classes") ->
@@ -563,7 +566,7 @@ let ooutfile = ref ""
   
 let process_file f =
   let base = Filename.chop_extension f in
-  let baseM = String.capitalize base
+  let baseM = String.capitalize_ascii base
   in
     (* Input *)
     (* Redefining saves space in bytecode! *)
@@ -591,7 +594,7 @@ let process_file f =
           try List.assoc "type" attrs
           with
           | Not_found ->
-              if List.mem_assoc "gobject" attrs
+              if List.mem_assoc "gobject" ~map: attrs
               then camlize name
               else
                 if !prefix <> ""
@@ -602,7 +605,7 @@ let process_file f =
           List.filter decls
             ~f:
               (fun (_, _, attrs, _, _, _) ->
-                 not (List.mem_assoc "notype" attrs))
+                 not (List.mem_assoc "notype" ~map: attrs))
         in
           (* Output modules *)
           (List.iter decls
@@ -636,8 +639,9 @@ let process_file f =
                                      in (incr count; true)
                                    with
                                    | Not_found ->
-                                       (Hashtbl.add all_props (name, gtype)
-                                          ((ref 1), (ref ""));
+                                       (Hashtbl.add all_props
+                                          ~key: (name, gtype)
+                                          ~data: ((ref 1), (ref ""));
                                         true))
                                 with
                                 | Not_found ->
@@ -684,7 +688,9 @@ let process_file f =
                           let pname =
                             if Hashtbl.mem all_pnames pname
                             then pname ^ ("_" ^ gtype)
-                            else (Hashtbl.add all_pnames pname (); pname)
+                            else
+                              (Hashtbl.add all_pnames ~key: pname ~data: ();
+                               pname)
                           in
                             (rpname := "PrivateProps." ^ pname;
                              (pname, name, gtype) :: acc)))
@@ -693,7 +699,7 @@ let process_file f =
                 (if shared_props <> []
                  then
                    (out "@[<hv2>module PrivateProps = struct";
-                    List.iter (List.sort compare shared_props)
+                    List.iter (List.sort ~cmp: compare shared_props)
                       ~f:
                         (fun (pname, name, gtype) ->
                            defprop ~name ~mlname: pname ~gtype ~tag: "gtk");
@@ -716,7 +722,7 @@ let process_file f =
                                out "(@;<0>%s P.%s %s " op (camlize name)
                                  mlname);
                       out "pl";
-                      for k = 1 to List.length props do out ")" done;
+                      for _k = 1 to List.length props do out ")" done;
                       out " in@]")
                    else () in
                  let omarshaller ~gtk_class ~name ppf (l, tyl, ret) =
@@ -760,14 +766,14 @@ let process_file f =
                               try List.assoc "tag" attrs
                               with
                               | Not_found ->
-                                  !tagprefix ^ (String.lowercase name)
+                                  !tagprefix ^ (String.lowercase_ascii name)
                             in
                               (if props <> []
                                then
                                  (out "@ @[<hv2>module P = struct";
                                   List.iter props
                                     ~f:
-                                      (fun (name, _, gtype, attrs) ->
+                                      (fun (name, _, gtype, _attrs) ->
                                          let (count, rpname) =
                                            Hashtbl.find all_props
                                              (name, gtype)
@@ -809,28 +815,30 @@ let process_file f =
                                                  ppf
                                                  (l,
                                                   (List.map
-                                                     (Hashtbl.find
-                                                        conversions)
+                                                     ~f:
+                                                       (Hashtbl.find
+                                                          conversions)
                                                      tyl),
                                                   ret));
                                           out "}@]@]"));
                                   out "@]@ end")
                                else ();
-                               if not (List.mem_assoc "abstract" attrs)
+                               if not (List.mem_assoc "abstract" ~map: attrs)
                                then
                                  (let cprops =
                                     List.filter props
                                       ~f:
                                         (fun (_, _, _, a) ->
-                                           (List.mem "ConstructOnly" a) &&
-                                             (not (List.mem "NoSet" a)))
+                                           (List.mem "ConstructOnly" ~set: a)
+                                             &&
+                                             (not (List.mem "NoSet" ~set: a)))
                                   in
                                     (out "@ @[<hv2>let create";
                                      List.iter cprops
                                        ~f:
                                          (fun (_, name, _, _) ->
                                             out " ?%s" name);
-                                     if List.mem_assoc "hv" attrs
+                                     if List.mem_assoc "hv" ~map: attrs
                                      then
                                        (out
                                           " (dir : Gtk.Tags.orientation) pl : %s ="
@@ -845,14 +853,16 @@ let process_file f =
                                        (out " pl : %s ="
                                           (type_name name ~attrs);
                                         may_cons_props cprops;
-                                        if List.mem_assoc "gobject" attrs
+                                        if
+                                          List.mem_assoc "gobject"
+                                            ~map: attrs
                                         then out "@ Gobject.unsafe_create"
                                         else out "@ Object.make";
                                         out " \"%s\" pl@]" gtk_class)))
                                else ();
                                List.iter meths
                                  ~f:
-                                   (fun (name, typ, attrs) ->
+                                   (fun (name, typ, _attrs) ->
                                       (out "@ @[<hov2>external %s :" name;
                                        out "@ @[<hv>[>`%s] obj ->@ %s@]" tag
                                          typ;
@@ -866,17 +876,20 @@ let process_file f =
                                           else ();
                                           out "%s\"@]" cname)));
                                let set_props =
-                                 let set = List.mem_assoc "set" attrs
+                                 let set = List.mem_assoc "set" ~map: attrs
                                  in
                                    List.filter props
                                      ~f:
                                        (fun (_, _, _, a) ->
-                                          (set || (List.mem "Set" a)) &&
-                                            ((List.mem "Write" a) &&
+                                          (set || (List.mem "Set" ~set: a))
+                                            &&
+                                            ((List.mem "Write" ~set: a) &&
                                                (not
                                                   ((List.mem "ConstructOnly"
-                                                      a)
-                                                     || (List.mem "NoSet" a)))))
+                                                      ~set: a)
+                                                     ||
+                                                     (List.mem "NoSet"
+                                                        ~set: a)))))
                                in
                                  (if set_props <> []
                                   then
@@ -896,12 +909,12 @@ let process_file f =
                                     !checks &&
                                       ((props <> []) || (sigs <> []))
                                   then
-                                    (if List.mem_assoc "abstract" attrs
+                                    (if List.mem_assoc "abstract" ~map: attrs
                                      then out "@ @[<hv2>let check w ="
                                      else
                                        (out "@ @[<hv2>let check () =";
                                         out "@ let w = create%s [] in"
-                                          (if List.mem_assoc "hv" attrs
+                                          (if List.mem_assoc "hv" ~map: attrs
                                            then " `HORIZONTAL"
                                            else ""));
                                      if props <> []
@@ -921,8 +934,8 @@ let process_file f =
                                      out "@ @[<hov>";
                                      List.iter props
                                        ~f:
-                                         (fun (name, _, gtype, attrs) ->
-                                            if List.mem "Read" attrs
+                                         (fun (name, _, _gtype, attrs) ->
+                                            if List.mem "Read" ~set: attrs
                                             then
                                               out "c P.%s;@ " (camlize name)
                                             else ());
@@ -941,7 +954,7 @@ let process_file f =
                     in
                       (List.iter !oheaders ~f: (fun s -> out "%s@." s);
                        out "open %s@."
-                         (String.capitalize
+                         (String.capitalize_ascii
                             (Filename.chop_extension !outfile));
                        out "@[<hv>";
                        let oprop ~name ~gtype ppf pname =
@@ -990,9 +1003,11 @@ let process_file f =
                               (fun
                                  (name, gtk_class, attrs, props, meths, sigs)
                                  ->
-                                 let wrap = List.mem_assoc "wrap" attrs in
+                                 let wrap =
+                                   List.mem_assoc "wrap" ~map: attrs in
                                  let wrapset =
-                                   wrap || (List.mem_assoc "wrapset" attrs) in
+                                   wrap ||
+                                     (List.mem_assoc "wrapset" ~map: attrs) in
                                  let wr_props =
                                    List.filter props
                                      ~f:
@@ -1019,7 +1034,7 @@ let process_file f =
                                    List.filter meths
                                      ~f:
                                        (fun (_, _, attrs) ->
-                                          List.mem "Wrap" attrs)
+                                          List.mem "Wrap" ~set: attrs)
                                  in
                                    (if
                                       (wr_props <> []) ||
@@ -1055,7 +1070,8 @@ let process_file f =
                                                 (camlizeM name) mname);
                                        out "@]@ end@ ")
                                     else ();
-                                    let vset = List.mem_assoc "vset" attrs in
+                                    let vset =
+                                      List.mem_assoc "vset" ~map: attrs in
                                     let vprops =
                                       List.filter props
                                         ~f:
@@ -1079,21 +1095,23 @@ let process_file f =
                                                  ->
                                                  out
                                                    "@ @[<hv4>| `%s p ->@ param %a p@]"
-                                                   (String.uppercase mlname)
+                                                   (String.uppercase_ascii
+                                                      mlname)
                                                    (oprop ~name ~gtype) pname);
                                           out "@]@ ")
                                        else ();
                                        let wsig =
-                                         List.mem_assoc "wrapsig" attrs in
+                                         List.mem_assoc "wrapsig" ~map: attrs in
                                        let wsigs =
                                          List.filter sigs
                                            ~f:
                                              (fun (_, _, attrs) ->
-                                                (List.mem "Wrap" attrs) ||
+                                                (List.mem "Wrap" ~set: attrs)
+                                                  ||
                                                   (wsig &&
                                                      (not
                                                         (List.mem "NoWrap"
-                                                           attrs))))
+                                                           ~set: attrs))))
                                        in
                                          if wsigs <> []
                                          then
