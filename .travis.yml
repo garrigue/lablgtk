@@ -9,6 +9,7 @@ addons:
   apt:
     packages:
     - libgtksourceview-3.0-dev
+    - libgtkspell3-3-dev
 env:
   global:
   - OPAMJOBS="2"

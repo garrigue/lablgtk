@@ -45,9 +45,8 @@
  (flags :standard -w -3-6-7-10-24-26-27-33-35 -no-strict-sequence)
  (libraries lablgtk3))
 
-; Missing gtkspell in lablgtk3
-; (executables
-;  (names spell)
-;  (modules spell)
-;  (flags :standard -w -6)
-;  (libraries lablgtk2.gspell))
+(executables
+ (names spell)
+ (modules spell)
+ (flags :standard -w -6)
+ (libraries lablgtk3-gtkspell3))

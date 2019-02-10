@@ -136,3 +136,23 @@
  (c_flags         (:include cflag-gtksourceview-3.0.sexp) (:include cflag-extraflags.sexp) -Wno-deprecated-declarations)
  (c_library_flags (:include clink-gtksourceview-3.0.sexp))
  (libraries lablgtk3))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; lablgtk3-gtkspell                                                    ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(rule
+ (targets
+   cflag-gtkspell3-3.0.sexp
+   clink-gtkspell3-3.0.sexp)
+ (action (run ./dune_config.exe -pkg gtkspell3-3.0 -version 3.0.4)))
+
+(library
+ (name lablgtk3_gtkspell3)
+ (public_name lablgtk3-gtkspell3)
+ (flags :standard -w -6-50)
+ (wrapped false)
+ (modules gtkSpell)
+ (c_names ml_gtkspell)
+ (c_flags         (:include cflag-gtkspell3-3.0.sexp))
+ (c_library_flags (:include clink-gtkspell3-3.0.sexp))
+ (libraries lablgtk3))
