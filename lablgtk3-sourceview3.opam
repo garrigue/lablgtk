@@ -8,7 +8,7 @@ authors: ["Jacques Garrigue et al., Nagoya University"]
 homepage: "http://lablgtk.forge.ocamlcore.org/"
 bug-reports: "https://github.com/garrigue/lablgtk/issues"
 dev-repo: "git+https://github.com/garrigue/lablgtk.git"
-doc: "https://garrige.github.io/lablgtk/lablgtk-sourceview"
+doc: "https://garrigue.github.io/lablgtk/lablgtk-sourceview"
 license: "LGPL with linking exception"
 
 depends: [
