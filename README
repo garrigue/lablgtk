@@ -37,6 +37,7 @@ How to compile:
   There are two ways to compile: dune or make.
 
   For dune, just do "dune build && dune install".
+  If you want also to build examples, do "dune build @all".
 
   The following details the instructions for make.
 

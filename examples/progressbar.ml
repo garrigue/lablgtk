@@ -12,6 +12,7 @@ open GMain
 
 let main () =
 
+  GMain.init ();
   let window = GWindow.window ~border_width: 10 () in
   window#connect#destroy ~callback:Main.quit;
 

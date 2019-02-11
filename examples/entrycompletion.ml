@@ -78,6 +78,7 @@ let make_complex_entry packing =
 
 
 let main () = 
+  GMain.init ();
   let w = GWindow.window ~title:"GtkEntryCompletion demo" () in
   w#connect#destroy GMain.quit ;
   begin

@@ -11,6 +11,7 @@
 open GMain
 
 let main () =
+  GMain.init ();
   let window = GWindow.dialog ~title: "dialog"
       ~border_width: 10 ~width: 300 ~height: 300 () in
   window#connect#destroy ~callback:Main.quit;

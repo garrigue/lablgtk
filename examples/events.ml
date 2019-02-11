@@ -68,6 +68,7 @@ let string_of_event x =
   | `TOUCHPAD_PINCH -> "touchpad-pinch"
 
 let _ =
+  GMain.init ();
   let window = GWindow.window ~width:200 ~height:200 () in
   window#connect#destroy ~callback:GMain.quit ;
   window#event#add [`ALL_EVENTS];

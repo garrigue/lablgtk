@@ -65,6 +65,7 @@ let assistant_close assistant () =
 
 
 let main () =
+  GMain.init ();
   let assistant = GAssistant.assistant () in
   assistant#misc#set_size_request ~width:450 ~height:300 ();
   assistant#set_title "GtkAssistant Example";

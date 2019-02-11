@@ -102,6 +102,7 @@ let setup_combobox_separator packing =
   ()
 
 let main () =
+  GMain.init () ;
   let window = GWindow.window ~border_width:5 () in
   window#connect#destroy GMain.quit ;
   

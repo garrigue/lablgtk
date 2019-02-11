@@ -10,6 +10,7 @@
 open GMain
 
 let main () =
+  GMain.init ();
 
   let assistant = GAssistant.assistant () in
 

@@ -12,6 +12,7 @@
 
 open GMain
 
+let _ = GMain.init ()
 let window = GWindow.window ()
 let box = GPack.vbox ~packing: window#add ()
 let text = GText.view ~packing: box#add ()

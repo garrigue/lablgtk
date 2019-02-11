@@ -52,6 +52,7 @@ let game_init () = (* generate initial puzzle state *)
   game_aux [] (from 15) 0
       
 let _ = Random.init (int_of_float (Sys.time () *. 1000.))
+let _ = GMain.init ()
 let window = GWindow.window ()
 let _ = window#connect#destroy ~callback:GMain.Main.quit
 

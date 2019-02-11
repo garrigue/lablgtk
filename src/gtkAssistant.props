@@ -1,6 +1,7 @@
 (* $Id: gtkButton.props 1341 2007-06-07 22:19:31Z monate $ *)
 
 prefix "Gtk"
+initializer "ml_gtkassistant_init"
 
 header {
 open Gtk

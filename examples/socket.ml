@@ -11,6 +11,7 @@
 open GMain
 
 let main () =
+  GMain.init ();
   let w = GWindow.window ~title:"Socket example" () in
   w#connect#destroy ~callback:Main.quit;
   let vbox = GPack.vbox ~packing:w#add () in

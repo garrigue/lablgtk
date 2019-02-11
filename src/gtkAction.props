@@ -1,5 +1,5 @@
-
 prefix "Gtk"
+initializer "ml_gtkaction_init"
 
 conversions {
   GtkStockId             "GtkStock.conv"

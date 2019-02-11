@@ -28,6 +28,7 @@ let expose drawing_area cr =
   true
 
 let () =
+  GMain.init ();
   let w = GWindow.window ~title:"Drawing demo" ~width:500 ~height:400 () in
   ignore(w#connect#destroy ~callback:GMain.quit);
 

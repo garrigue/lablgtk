@@ -11,6 +11,7 @@
 open GMain
 
 let main () =
+  GMain.init ();
   let window = GWindow.window ~title:"Notebook" ~border_width:10 () in
   window#connect#destroy ~callback:Main.quit;
   let notebook = GPack.notebook ~packing:window#add () in

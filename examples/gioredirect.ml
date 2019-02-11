@@ -33,7 +33,7 @@ let channel_redirector channel callback =
      end
 
 let () = 
-  let _l = Main.init () in
+  let _l = GMain.init () in
   let w = GWindow.window ~width:300 ~height:200 () in
   let notebook = GPack.notebook ~packing:w#add () in
   let redirect channel name = 

@@ -73,6 +73,7 @@ let setup packing =
 
 
 let main =
+  GMain.init ();
   let w = GWindow.window 
       ~title:"GtkSpell demo" 
       ~border_width:10

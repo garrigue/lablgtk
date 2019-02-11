@@ -20,9 +20,6 @@
 (*                                                                        *)
 (**************************************************************************)
 
-external init : unit -> unit = "ml_gtkaction_init"
-let () = init ()
-
 module GtkAction = GtkActionProps
 open GtkAction
 

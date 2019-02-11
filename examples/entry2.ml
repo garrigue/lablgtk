@@ -6,6 +6,7 @@
 (*                                                                        *)
 (**************************************************************************)
 
+let _ = GMain.init ()
 let w = GWindow.window ~show:true ()
 let e = GEdit.entry ~packing:w#add ()
 

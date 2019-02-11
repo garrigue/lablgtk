@@ -135,7 +135,8 @@ let setup_ui window =
   b#misc#set_can_default true ;
   b#misc#grab_default ()
 
-let main () = 
+let main () =
+  GMain.init () ;
   let w = GWindow.window ~title:"UI Manager" () in
   w#connect#destroy GMain.quit ;
   setup_stock () ;

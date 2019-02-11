@@ -16,6 +16,7 @@ let setup_expander packing =
       (if e#expanded then "Hide image" else "Show image"))
 
 let main () = 
+  GMain.init ();
   let w = GWindow.window ~title:"GtkExpander demo" () in
   w#connect#destroy GMain.quit ;
 

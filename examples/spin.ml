@@ -7,6 +7,7 @@
 (**************************************************************************)
 
 let run () =
+  GMain.init ();
   let w = GWindow.dialog  ~title:"Go to page" ~modal:true ~position:`CENTER () 
   in
   ignore (GMisc.label ~text:"Page: " ~packing:w#vbox#add ());

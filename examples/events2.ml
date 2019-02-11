@@ -13,6 +13,7 @@
 open GMain
 
 let _ =
+  GMain.init ();
   let window = GWindow.window () in
   window#connect#destroy ~callback:Main.quit;
 

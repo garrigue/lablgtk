@@ -49,6 +49,7 @@ let get_targets () =
   ()
 
 let main () =
+  GMain.init ();
   (* Create the toplevel window *)
   let window = GWindow.window ~title:"Clipboard" ~border_width:10 () in
   window#connect#destroy ~callback:GMain.quit;

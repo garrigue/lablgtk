@@ -10,6 +10,7 @@
 
 (* lablgtk2 -thread -nothinit dialog-thread.ml *)
 
+let _ = GMain.init ()
 let window = GWindow.window ~border_width: 10 ()
 
 let button = GButton.button ~label:"Open Dialog" ~packing: window#add ()

@@ -178,6 +178,7 @@ let add_columns ~(view : GTree.view) ~model =
     end
 
 let do_tree_store () =
+  GMain.init ();
   let window = GWindow.window ~title:"Card planning sheet" () in
   window#connect#destroy ~callback:GMain.quit;
   let vbox = GPack.vbox ~border_width:8 ~spacing:8 ~packing:window#add () in

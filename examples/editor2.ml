@@ -75,6 +75,7 @@ class editor ?packing ?show () = object (self)
     with _ -> prerr_endline "Save failed"
 end
 
+let _ = GMain.init ()
 let window = GWindow.window ~width:500 ~height:300 ~title:"editor" ()
 let vbox = GPack.vbox ~packing:window#add ()
 

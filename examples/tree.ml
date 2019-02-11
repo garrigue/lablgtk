@@ -31,6 +31,7 @@ let create_model () =
   store
 
 let main () =
+  GMain.init ();
   let model = create_model () in
   let window = GWindow.window () in
   window#connect#destroy ~callback:GMain.quit;

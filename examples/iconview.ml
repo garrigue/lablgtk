@@ -145,6 +145,7 @@ let do_iconview window =
   | _ -> ()
   
 let main = 
+  GMain.init ();
   let w = GWindow.window ~title:"GtkIconView demo" ~width:650 ~height:400 () in
   w#connect#destroy GMain.quit ;
   do_iconview w ;

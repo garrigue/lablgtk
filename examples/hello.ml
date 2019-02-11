@@ -10,6 +10,8 @@
 
 open GMain
 
+let _ = GMain.init ()
+
 let window = GWindow.window ~border_width: 10 ()
 
 let button = GButton.button ~label:"Hello World" ~packing: window#add ()

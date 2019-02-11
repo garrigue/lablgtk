@@ -12,6 +12,7 @@ open GMain
 
 let main () =
 
+  GMain.init ();
   let window = GWindow.window ~title: "radio buttons" ~border_width: 0 () in
   window#connect#destroy ~callback:Main.quit;
 

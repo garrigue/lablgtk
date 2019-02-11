@@ -53,6 +53,7 @@ let ask_for_file parent =
   dialog#destroy ()
 
 let main () =
+  GMain.init ();
   let w = GWindow.window ~title:"FileChooser demo" () in
   w#connect#destroy GMain.quit ;
 
