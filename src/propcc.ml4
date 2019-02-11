@@ -19,7 +19,7 @@ let camlize id =
 	  (is_not_uppercase id.[i-1] || 
 	  (i < String.length id - 1 && is_not_uppercase id.[i+1]))
 	then Buffer.add_char b '_' ;
-	Buffer.add_char b (Char.lowercase c)
+	Buffer.add_char b (Char.lowercase_ascii c)
     | '-' ->
 	Buffer.add_char b '_'
     | c ->
@@ -33,7 +33,7 @@ let camlizeM s =
 
 let check_suffix s suff =
   let len1 = String.length s and len2 = String.length suff in
-  len1 > len2 && String.sub s (len1-len2) len2 = suff
+  len1 > len2 && String.sub s ~pos:(len1-len2) ~len:len2 = suff
 
 (* Arity of a caml type. Doesn't handle object types... *)
 let arity s =
@@ -105,19 +105,19 @@ let specials = [
 ]
 
 let add_pointer conv gtk name =
-  Hashtbl.add conversions gtk
-    (Printf.sprintf "(%s : %s data_conv)" conv name);
-  Hashtbl.add conversions (gtk ^ "_opt")
-    (Printf.sprintf "(%s_option : %s option data_conv)" conv name)
+  Hashtbl.add conversions ~key:gtk
+    ~data:(Printf.sprintf "(%s : %s data_conv)" conv name);
+  Hashtbl.add conversions ~key:(gtk ^ "_opt")
+    ~data:(Printf.sprintf "(%s_option : %s option data_conv)" conv name)
 
 let add_object = add_pointer "gobject"
 let add_boxed = add_pointer "unsafe_pointer" (* the type is not used *)
 
 let () =
-  List.iter ~f:(fun t -> Hashtbl.add conversions ("g"^t) t)
+  List.iter ~f:(fun t -> Hashtbl.add conversions ~key:("g"^t) ~data:t)
     [ "boolean"; "char"; "uchar"; "int"; "uint"; "long"; "ulong";
       "int32"; "uint32"; "int64"; "uint64"; "float"; "double" ];
-  List.iter ~f:(fun (gtype,conv) -> Hashtbl.add conversions gtype conv)
+  List.iter ~f:(fun (gtype,conv) -> Hashtbl.add conversions ~key:gtype ~data:conv)
     [ "gchararray", "string";
       "gchararray_opt", "string_option";
       "string", "string"; "bool", "boolean"; "int", "int";
@@ -126,8 +126,8 @@ let () =
   List.iter enums ~f:(fun (pre, modu, l) ->
     List.iter l ~f:
       begin fun name ->
-        Hashtbl.add conversions (pre ^ name)
-          (Printf.sprintf "%s.Conv.%s" modu (camlize name))
+        Hashtbl.add conversions ~key:(pre ^ name)
+          ~data:(Printf.sprintf "%s.Conv.%s" modu (camlize name))
       end);
   List.iter boxeds ~f:(fun (pre, l) ->
     List.iter l ~f:(fun name -> add_boxed (pre^name) (pre^"."^camlize name)));
@@ -251,7 +251,7 @@ let process_phrase ~chars = parser
        attrs = star qualifier; parent = may_colon ident "";
        ' Kwd"{"; fields = star field; ' Kwd"}" >] ->
          if List.exists attrs ~f:
-             (fun (x,_) -> not (List.mem x class_qualifiers))
+             (fun (x,_) -> not (List.mem x ~set:class_qualifiers))
          then raise (Stream.Error "bad qualifier");
          let attrs = ("parent",parent) :: attrs in
          let attrs =
@@ -273,7 +273,7 @@ let process_phrase ~chars = parser
   | [< ' Ident"conversions"; pre1 = may_string ""; pre2 = may_string pre1;
        ' Kwd"{"; l = star read_pair; ' Kwd"}" >] ->
       List.iter l ~f:(fun (k,d) ->
-        Hashtbl.add conversions (pre1^k) (if pre2="" then d else pre2^"."^d))
+        Hashtbl.add conversions ~key:(pre1^k) ~data:(if pre2="" then d else pre2^"."^d))
   | [< ' Ident"classes"; ' Kwd"{"; l = star read_pair; ' Kwd"}" >] ->
       List.iter l ~f:(fun (k,d) -> add_object k d)
   | [< ' Ident"boxed"; ' Kwd"{"; l = star read_pair; ' Kwd"}" >] ->
@@ -290,7 +290,7 @@ let ooutfile = ref ""
 
 let process_file f =
   let base = Filename.chop_extension f in
-  let baseM = String.capitalize base in
+  let baseM = String.capitalize_ascii base in
   prefix := baseM;
   (* Input *)
   (* Redefining saves space in bytecode! *)
@@ -315,14 +315,14 @@ let process_file f =
   (* Preproccess *)
   let type_name name ~attrs =
     try List.assoc "type" attrs with Not_found ->
-      if List.mem_assoc "gobject" attrs then camlize name
+      if List.mem_assoc "gobject" ~map:attrs then camlize name
       else if !prefix <> ""
       then !prefix ^ "." ^ camlize name ^ " obj"
       else camlize name ^ " obj"
   in
   let decls = List.rev !decls in
   let decls = List.filter decls
-      ~f:(fun (_,_,attrs,_,_,_) -> not (List.mem_assoc "notype" attrs)) in
+      ~f:(fun (_,_,attrs,_,_,_) -> not (List.mem_assoc "notype" ~map:attrs)) in
   List.iter decls ~f:
     (fun (name, gtk_name, attrs, _, _, _) ->
       add_object gtk_name (type_name name ~attrs));
@@ -348,7 +348,7 @@ let process_file f =
                  incr count;
                  true
                with Not_found ->
-                 Hashtbl.add all_props (name,gtype) (ref 1, ref ""); true
+                 Hashtbl.add all_props ~key:(name,gtype) ~data:(ref 1, ref ""); true
              with Not_found ->
                prerr_endline ("Warning: no conversion for type " ^ gtype ^
                               " in class " ^ gtk_name);
@@ -380,14 +380,14 @@ let process_file f =
         let pname = camlize name in
         let pname =
           if Hashtbl.mem all_pnames pname then pname ^ "_" ^ gtype
-          else (Hashtbl.add all_pnames pname (); pname) in
+          else (Hashtbl.add all_pnames ~key:pname ~data:(); pname) in
         rpname := "PrivateProps." ^ pname;
         (pname,name,gtype) :: acc
       end
   in
   if shared_props <> [] then begin
     out "@[<hv2>module PrivateProps = struct";
-    List.iter (List.sort compare shared_props) ~f:
+    List.iter (List.sort ~cmp:compare shared_props) ~f:
       (fun (pname,name,gtype) ->
         defprop ~name ~mlname:pname ~gtype ~tag:"gtk");
     out "@]\nend\n@.";
@@ -406,7 +406,7 @@ let process_file f =
           out "(@;<0>%s P.%s %s " op (camlize name) mlname;
         end;
       out "pl";
-      for k = 1 to List.length props do out ")" done;
+      for _k = 1 to List.length props do out ")" done;
       out " in@]"
     end
   in
@@ -437,12 +437,12 @@ let process_file f =
         (type_name name ~attrs) gtk_class;
       let tag =
         try List.assoc "tag" attrs
-        with Not_found -> !tagprefix ^ String.lowercase name
+        with Not_found -> !tagprefix ^ String.lowercase_ascii name
       in
       if props <> [] then begin
         out "@ @[<hv2>module P = struct";
         List.iter props ~f:
-          begin fun (name, _, gtype, attrs) ->
+          begin fun (name, _, gtype, _attrs) ->
             let count, rpname = Hashtbl.find all_props (name,gtype) in
             if !count > 1 then begin
               out "@ let %s : ([>`%s],_) property = %s"
@@ -467,18 +467,18 @@ let process_file f =
                   (Hashtbl.find conversions ret)
             | Types (l, tyl, ret) ->
                 omarshaller ~gtk_class ~name ppf
-                  (l, List.map (Hashtbl.find conversions) tyl, ret)
+                  (l, List.map ~f:(Hashtbl.find conversions) tyl, ret)
             end;
             out "}@]@]";
           end;
         out "@]@ end";
       end;
-      if not (List.mem_assoc "abstract" attrs) then begin
+      if not (List.mem_assoc "abstract" ~map:attrs) then begin
         let cprops = List.filter props ~f:(fun (_,_,_,a) ->
-          List.mem "ConstructOnly" a && not (List.mem "NoSet" a)) in
+          List.mem "ConstructOnly" ~set:a && not (List.mem "NoSet" ~set:a)) in
         out "@ @[<hv2>let create";
         List.iter cprops ~f:(fun (_,name,_,_) -> out " ?%s" name);
-        if List.mem_assoc "hv" attrs then begin
+        if List.mem_assoc "hv" ~map:attrs then begin
           out " (dir : Gtk.Tags.orientation) pl : %s ="
             (type_name name ~attrs);
           may_cons_props cprops;
@@ -489,14 +489,14 @@ let process_file f =
         end else begin
           out " pl : %s =" (type_name name ~attrs);
           may_cons_props cprops;
-          if List.mem_assoc "gobject" attrs then
+          if List.mem_assoc "gobject" ~map:attrs then
             out "@ Gobject.unsafe_create"
           else out "@ Object.make";
            out " \"%s\" pl@]" gtk_class;
         end
       end;
       List.iter meths ~f:
-        begin fun (name, typ, attrs) ->
+        begin fun (name, typ, _attrs) ->
           out "@ @[<hov2>external %s :" name;
           out "@ @[<hv>[>`%s] obj ->@ %s@]" tag typ;
           let cname = camlize ("ml" ^ gtk_class) ^ "_" ^ name in
@@ -505,11 +505,11 @@ let process_file f =
           out "%s\"@]" cname;
         end;
       let set_props =
-        let set = List.mem_assoc "set" attrs in
+        let set = List.mem_assoc "set" ~map:attrs in
         List.filter props ~f:
           (fun (_,_,_,a) ->
-            (set || List.mem "Set" a) && List.mem "Write" a &&
-            not (List.mem "ConstructOnly" a || List.mem "NoSet" a))
+            (set || List.mem "Set" ~set:a) && List.mem "Write" ~set:a &&
+            not (List.mem "ConstructOnly" ~set:a || List.mem "NoSet" ~set:a))
       in
       if set_props <> [] then begin
         let props = set_props in
@@ -520,12 +520,12 @@ let process_file f =
         out "@ cont pl@]";
       end;
       if !checks && (props <> [] || sigs <> []) then begin
-        if List.mem_assoc "abstract" attrs then 
+        if List.mem_assoc "abstract" ~map:attrs then 
           out "@ @[<hv2>let check w ="
         else begin
           out "@ @[<hv2>let check () =";
           out "@ let w = create%s [] in"
-            (if List.mem_assoc "hv" attrs then " `HORIZONTAL" else "");
+            (if List.mem_assoc "hv" ~map:attrs then " `HORIZONTAL" else "");
         end;
         if props <> [] then out "@ let c p = Property.check w p in";
         if sigs <> [] then begin
@@ -535,8 +535,8 @@ let process_file f =
         end;
         out "@ @[<hov>";
         List.iter props ~f:
-          (fun (name,_,gtype,attrs) ->
-            if List.mem "Read" attrs then out "c P.%s;@ " (camlize name));
+          (fun (name,_,_gtype,attrs) ->
+            if List.mem "Read" ~set:attrs then out "c P.%s;@ " (camlize name));
         List.iter sigs ~f:(fun (name,_,_) -> out "s %s;@ " name);
         out "()@]";
       end;
@@ -549,7 +549,7 @@ let process_file f =
   let ppf = Format.formatter_of_out_channel oc in
   let out fmt = Format.fprintf ppf fmt in
   List.iter !oheaders ~f:(fun s -> out "%s@." s);
-  out "open %s@." (String.capitalize (Filename.chop_extension !outfile));
+  out "open %s@." (String.capitalize_ascii (Filename.chop_extension !outfile));
   out "@[<hv>";
   let oprop ~name ~gtype ppf pname =
     try
@@ -561,8 +561,8 @@ let process_file f =
   in
   List.iter decls ~f:
     begin fun (name, gtk_class, attrs, props, meths, sigs) ->
-      let wrap = List.mem_assoc "wrap" attrs in
-      let wrapset = wrap || List.mem_assoc "wrapset" attrs in
+      let wrap = List.mem_assoc "wrap" ~map:attrs in
+      let wrapset = wrap || List.mem_assoc "wrapset" ~map:attrs in
       let wr_props =
         List.filter props ~f:
           (fun (_,_,_,set) ->
@@ -576,7 +576,7 @@ let process_file f =
             (wrap || has "Wrap") && has "Read" &&
             not (has "NoWrap" || has "NoGet"))
       and wr_meths =
-        List.filter meths ~f:(fun (_,_,attrs) -> List.mem "Wrap" attrs)
+        List.filter meths ~f:(fun (_,_,attrs) -> List.mem "Wrap" ~set:attrs)
       in
       if wr_props <> [] || rd_props <> [] || wr_meths <> [] then begin
         (* pre 3.10
@@ -620,7 +620,7 @@ let process_file f =
         out "@]@ end@ ";
         *)
       end;
-      let vset = List.mem_assoc "vset" attrs in
+      let vset = List.mem_assoc "vset" ~map:attrs in
       let vprops =
         List.filter props ~f:
           (fun (_,_,_,set) ->
@@ -632,14 +632,14 @@ let process_file f =
         out "@ @[<hv2>let %s_param = function" (camlize name);
         List.iter vprops ~f:(fun (pname,mlname,gtype,_) ->
           out "@ @[<hv4>| `%s p ->@ param %a p@]"
-            (String.uppercase mlname) (oprop ~name ~gtype) pname);
+            (String.uppercase_ascii mlname) (oprop ~name ~gtype) pname);
         out "@]@ ";
       end;
-      let wsig = List.mem_assoc "wrapsig" attrs in
+      let wsig = List.mem_assoc "wrapsig" ~map:attrs in
       let wsigs =
         List.filter sigs ~f:
           (fun (_,_,attrs) ->
-            List.mem "Wrap" attrs || wsig && not (List.mem "NoWrap" attrs))
+            List.mem "Wrap" ~set:attrs || wsig && not (List.mem "NoWrap" ~set:attrs))
       in
       if wsigs <> [] then begin
         out "@ @[<hv2>class virtual %s_sigs = object (self)" (camlize name);

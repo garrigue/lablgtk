@@ -22,7 +22,7 @@ let camlize id =
        if (id.[i] >= 'A') && (id.[i] <= 'Z')
        then
          (if i > 0 then Buffer.add_char b '_' else ();
-          Buffer.add_char b (Char.lowercase id.[i]))
+          Buffer.add_char b (Char.lowercase_ascii id.[i]))
        else Buffer.add_char b id.[i]
      done;
      Buffer.contents b)
@@ -178,7 +178,7 @@ let declaration ~hc ~cc (__strm : _ Stream.t) =
                                                         oh
                                                           "#define MLTAG_%s\t((value)(%d*2+1))\n"
                                                           tag hash));
-                                          if List.mem "noconv" flags
+                                          if List.mem "noconv" ~set: flags
                                           then ()
                                           else (* compute C name *)
                                             (let ctag tag trans =
@@ -218,19 +218,20 @@ let declaration ~hc ~cc (__strm : _ Stream.t) =
                                                     | (Some '#', prefix) ->
                                                         prefix ^
                                                           ((String.
-                                                              uncapitalize
+                                                              uncapitalize_ascii
                                                               tag)
                                                              ^ suffix)
                                                     | (Some '^', prefix) ->
                                                         prefix ^
-                                                          ((String.uppercase
+                                                          ((String.
+                                                              uppercase_ascii
                                                               tag)
                                                              ^ suffix)
                                                     | _ ->
                                                         prefix ^
                                                           (tag ^ suffix))
                                              and cname =
-                                               String.capitalize name
+                                               String.capitalize_ascii name
                                              in
                                                (all_convs :=
                                                   (name, mlname, tags, flags) ::
@@ -254,10 +255,10 @@ let declaration ~hc ~cc (__strm : _ Stream.t) =
                                                           (not
                                                              (List.mem
                                                                 "public"
-                                                                flags)))
+                                                                ~set: flags)))
                                                          ||
                                                          (List.mem "private"
-                                                            flags)
+                                                            ~set: flags)
                                                      then "static "
                                                      else ""
                                                    in
@@ -382,7 +383,7 @@ let process ic ~hc ~cc =
                              ~f:
                                (fun (_, s, _, flags) ->
                                   let conv =
-                                    if List.mem "flags" flags
+                                    if List.mem "flags" ~set: flags
                                     then "Gobject.Data.flags"
                                     else enum
                                   in out "@ let %s = %s %s_tbl" s conv s);

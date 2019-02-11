@@ -22,7 +22,7 @@ let camlize id =
   for i = 0 to String.length id - 1 do
     if id.[i] >= 'A' && id.[i] <= 'Z' then begin
       if i > 0 then Buffer.add_char b '_';
-      Buffer.add_char b (Char.lowercase id.[i])
+      Buffer.add_char b (Char.lowercase_ascii id.[i])
     end
     else Buffer.add_char b id.[i]
   done;
@@ -94,7 +94,7 @@ let declaration ~hc ~cc = parser
           end;
 	  oh "#define MLTAG_%s\t((value)(%d*2+1))\n" tag hash;
       end;
-    if List.mem "noconv" flags then () else
+    if List.mem "noconv" ~set:flags then () else
     (* compute C name *)
     let ctag tag trans =
       if trans <> "" then trans else
@@ -110,13 +110,13 @@ let declaration ~hc ~cc = parser
 	  String.sub prefix ~pos:0 ~len:(String.length prefix - 1)
       with
 	Some '#', prefix ->
-	  prefix ^ String.uncapitalize tag ^ suffix
+	  prefix ^ String.uncapitalize_ascii tag ^ suffix
       |	Some '^', prefix ->
-	  prefix ^ String.uppercase tag ^ suffix
+	  prefix ^ String.uppercase_ascii tag ^ suffix
       |	_ ->
 	  prefix ^ tag ^ suffix
     and cname =
-      String.capitalize name
+      String.capitalize_ascii name
     in
     all_convs := (name, mlname, tags, flags) :: !all_convs;
     let tags =
@@ -127,7 +127,7 @@ let declaration ~hc ~cc = parser
     (* Output table to code file *)
     oc "/* %s : conversion table */\n" name;
     let static =
-      if !static && not (List.mem "public" flags) || List.mem "private" flags
+      if !static && not (List.mem "public" ~set:flags) || List.mem "private" ~set:flags
       then "static " else "" in
     oc "%sconst lookup_info ml_table_%s[] = {\n" static name;
     may guard
@@ -206,7 +206,7 @@ let process ic ~hc ~cc =
       List.iter convs ~f:
         begin fun (_,s,_,flags) ->
           let conv =
-            if List.mem "flags" flags then "Gobject.Data.flags" else enum in
+            if List.mem "flags" ~set:flags then "Gobject.Data.flags" else enum in
           out "@ let %s = %s %s_tbl" s conv s
         end;
       out "@]@.end@.";
