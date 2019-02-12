@@ -54,5 +54,6 @@ install: |
 script:
 - set -e
 - echo 'Building LablGtk...' && echo -en 'travis_fold:start:lablgtk.build\\r'
+- pkg-config --list-all
 - make -f Makefile.travis "$TEST_TARGET"
 - echo -en 'travis_fold:end:lablgtk.build\\r'

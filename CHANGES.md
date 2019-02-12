@@ -1,6 +1,11 @@
-# LablGTK changes log
+LablGTK changes log
 
-In Lablgtk-3.0.beta4:
+## In Lablgtk-3.0.beta5:
+
+2019.02.12 [Emilio]
+  * Update OPAM files so they work better with dune-release
+
+## In Lablgtk-3.0.beta4:
 
 2019.02.11 [Jacques]
   * More dune related PRs (#39, #43, #45, #46) [Emilio]
@@ -11,7 +16,7 @@ In Lablgtk-3.0.beta4:
   * Move initialization functions to Props files, to avoid problem with
     -no-alias-deps (cf GPR#39)
 
-In Lablgtk-3.0.beta3:
+## In Lablgtk-3.0.beta3:
 
 2019.01.11 [Jacques]
   * Update propcc.ml4 as suggested by Virgile Prevosto
@@ -42,7 +47,7 @@ In Lablgtk-3.0.beta3:
   * Resurect GMenu.separator_item
   * fix examples eventbox.ml, events.ml, editor2.ml
 
-In Lablgtk-3.0.beta2:
+## In Lablgtk-3.0.beta2:
 
 2018.12.14 [Jacques]
   * Remove unsupported extensions from configure
@@ -85,7 +90,7 @@ In Lablgtk-3.0.beta2:
 2018.08.25 [Francois Bobot]
   * Add require for threads in META
 
-In Lablgtk-2.18.6:
+## In Lablgtk-2.18.6:
 
 2017.10.30 [Jacques]
   * prepare release
