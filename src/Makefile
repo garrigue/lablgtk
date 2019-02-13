@@ -1,6 +1,6 @@
 # Makefile for lablgtk.
 
-COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s-3+52 -warn-error A-52 -c
+COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s-3+52 -warn-error A-52-61 -c
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
