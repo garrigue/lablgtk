@@ -68,7 +68,7 @@
 (library
  (name lablgtk3)
  (public_name lablgtk3)
- (flags :standard -w -6-7-9-10-27-32-33-34-35-36-50 -no-strict-sequence)
+ (flags :standard -w -6-7-9-10-27-32-33-34-35-36-50-52 -no-strict-sequence)
  (wrapped false)
  (modules
    ; gtkBrokenProps ogtkBrokenProps gtkBroken gBroken
