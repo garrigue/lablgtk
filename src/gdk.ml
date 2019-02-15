@@ -342,7 +342,7 @@ module Window = struct
 end
 
 module PointArray = struct
-  type t = { len: int}
+  type t = { len: int} [@@ boxed]
   external create : len:int -> t = "ml_point_array_new"
   external set : t -> pos:int -> x:int -> y:int -> unit = "ml_point_array_set"
   let set arr ~pos =
@@ -351,7 +351,7 @@ module PointArray = struct
 end
 
 module SegmentArray = struct
-  type t = { len: int}
+  type t = { len: int} [@@ boxed]
   external create : len:int -> t = "ml_segment_array_new"
   external set : t -> pos:int -> x1:int -> y1:int -> x2:int -> y2: int -> unit = "ml_segment_array_set_bc" "ml_segment_array_set"
   let set arr ~pos =
