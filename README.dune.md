@@ -38,6 +38,13 @@ auto-generated in the future using Dune's promote mechanism.
 The preferred workflow to release a new set of OPAM packages is to use
 `dune-release`.
 
+### Format of the CHANGES.md file
+
+`dune-release` will take each top-level markdown item as the changelog
+for the current version, thus be aware of not introducing `#` markers.
+
+### Detailed notes
+
 The first (and most important) step is to tag the release and push it
 to the main repository.
 
