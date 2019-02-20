@@ -12,6 +12,9 @@ LablGTK changes log
   * Add initialization to all examples
 
 2019.02.10 [Jacques]
+  * BREAKING CHANGE: ocamlfind names for extra libraries such as
+    lablgtk3.sourceview3 have been renamed to lablgtk3-sourceview3
+    as these now live in their own package
   * Add dune support (cf GPR#38,#41,#42,#44) [Emilio]
   * Move initialization functions to Props files, to avoid problem with
     -no-alias-deps (cf GPR#39)
