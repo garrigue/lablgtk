@@ -19,6 +19,10 @@
  (targets gtkBinProps.ml ogtkBinProps.ml)
  (action (run ./propcc.exe %{dep:gtkBin.props})))
 
+(rule
+ (targets gtkBuilderProps.ml ogtkBuilderProps.ml)
+ (action (run ./propcc.exe %{dep:gtkBuilder.props})))
+
 ; (rule
 ;  (targets gtkBrokenProps.ml ogtkBrokenProps.ml)
 ;  (action (run ./propcc.exe %{dep:gtkBroken.props})))

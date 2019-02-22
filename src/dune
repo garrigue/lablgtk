@@ -86,8 +86,9 @@
    gtkData gData
    gContainer
 
+   gtkBuilderProps    ogtkBuilderProps    gtkBuilder   gBuilder
    gtkContainersProps ogtkContainersProps gtkContainers
-   gtkActionProps     ogtkActionProps                 gAction
+   gtkActionProps     ogtkActionProps                  gAction
    gtkAssistantProps  ogtkAssistantProps  gtkAssistant gAssistant
    gtkBaseProps       ogtkBaseProps       gtkBase
    gtkBinProps        ogtkBinProps        gtkBin       gBin
