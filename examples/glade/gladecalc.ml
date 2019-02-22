@@ -11,7 +11,8 @@
 open StdLabels
 
 (* lablgladecc3 project2.ui > project2.ml *)
-#use "project2.ml";;
+(* #use "project2.ml";; *)
+open Project2
 
 let w1 = new window1 ()
 

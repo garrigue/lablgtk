@@ -111,6 +111,7 @@
    ml_gdk ml_gdkpixbuf
    ml_gtk ml_gtkmisc
 
+   ml_gtkbuilder
    ml_gtkaction ml_gtkbin ml_gtkbutton ml_gtktext ml_gtkedit
    ml_gtkmenu ml_gtkfile ml_gtktree ml_gtkpack
    ; ml_gtkbroken ml_gtklist
