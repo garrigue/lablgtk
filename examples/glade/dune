@@ -1,0 +1,19 @@
+(executables
+ (names glade_demo)
+ (modules project1 glade_demo)
+ (flags :standard -no-strict-sequence -warn-error -10)
+ (libraries lablgtk3))
+
+(executables
+ (names gladecalc)
+ (modules project2 gladecalc)
+ (flags :standard -no-strict-sequence -warn-error -10)
+ (libraries lablgtk3))
+
+(rule
+ (targets project1.ml)
+ (action (with-stdout-to %{targets} (run lablgladecc3 project1.ui))))
+
+(rule
+ (targets project2.ml)
+ (action (with-stdout-to %{targets} (run lablgladecc3 project2.ui))))

@@ -11,7 +11,9 @@
 (* An experiment on using libglade in lablgtk *)
 
 (* lablgladecc3 project1.ui > project1.ml *)
-#use "project1.ml";;
+(* #use "project1.ml";; *)
+
+open Project1
 
 let load_file f =
   let ic = open_in f in
