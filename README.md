@@ -1,5 +1,5 @@
 
-             LablGTK3 3.0.beta4 : an interface to the GIMP Tool Kit
+             LablGTK3 3.0.beta5 : an interface to the GIMP Tool Kit
 
 Needed:
         ocaml-4.05 or more
