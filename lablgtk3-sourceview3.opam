@@ -12,7 +12,7 @@ authors: ["Jacques Garrigue et al., Nagoya University"]
 homepage: "https://github.com/garrigue/lablgtk"
 bug-reports: "https://github.com/garrigue/lablgtk/issues"
 dev-repo: "git+https://github.com/garrigue/lablgtk.git"
-doc: "https://garrigue.github.io/lablgtk/lablgtk-sourceview"
+doc: "https://garrigue.github.io/lablgtk/lablgtk3-sourceview3"
 license: "LGPL with linking exception"
 
 depends: [
@@ -20,7 +20,7 @@ depends: [
   "dune"                 { build & >= "1.4.0"
                                  & != "1.7.0"
                                  & != "1.7.1"     } # Due to dune/dune#1833
-  "lablgtk3"             {         >= "3.0.beta4" }
+  "lablgtk3"             {         >= "3.0.beta5" }
   "conf-gtksourceview3"  { build & >= "0"         }
 ]
 
