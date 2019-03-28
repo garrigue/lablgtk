@@ -220,4 +220,6 @@ module Layout = struct
     = "ml_pango_layout_get_ellipsize"
   external get_baseline : layout -> int = "ml_pango_layout_get_baseline"
   external get_line_count : layout -> int = "ml_pango_layout_get_line_count"
+  external is_wrapped : layout -> bool = "ml_pango_layout_is_wrapped"
+  external is_ellipsized : layout -> bool = "ml_pango_layout_is_ellipsized"
 end
