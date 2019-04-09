@@ -315,6 +315,7 @@ module Window :
     val create_foreign : display -> xid -> window
     val get_parent : window -> window
     val get_position : window -> int * int
+    val get_origin : window -> int * int
     val get_pointer_location : window -> int * int
     (* val root_parent : unit -> window
     val clear : window -> unit
