@@ -67,6 +67,8 @@ module Tags = struct
 
   type ellipsize_mode = [ `NONE | `START | `MIDDLE | `END ]
 
+  type alignment = [ `LEFT | `CENTER | `RIGHT ]
+
   open Gpointer
   external _get_tables : unit ->
       style variant_table
@@ -218,4 +220,12 @@ module Layout = struct
     = "ml_pango_layout_set_ellipsize"
   external get_ellipsize : layout -> ellipsize_mode
     = "ml_pango_layout_get_ellipsize"
+  external get_baseline : layout -> int = "ml_pango_layout_get_baseline"
+  external get_line_count : layout -> int = "ml_pango_layout_get_line_count"
+  external is_wrapped : layout -> bool = "ml_pango_layout_is_wrapped"
+  external is_ellipsized : layout -> bool = "ml_pango_layout_is_ellipsized"
+  external get_alignment : layout -> alignment
+    = "ml_pango_layout_get_alignment"
+  external set_alignment : layout -> alignment -> unit
+    = "ml_pango_layout_set_alignment"
 end

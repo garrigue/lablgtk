@@ -35,3 +35,6 @@ type wrap_mode = "PANGO_WRAP_"
 type protect HASGTK26 ellipsize_mode = "PANGO_ELLIPSIZE_"
   [ `NONE | `START | `MIDDLE | `END ]
 (* this enum was introduced in Pango 1.6 / GTK+ 2.6 *)
+
+type alignment = "PANGO_ALIGN_"
+  [ `LEFT | `CENTER | `RIGHT ]

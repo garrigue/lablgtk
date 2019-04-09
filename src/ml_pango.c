@@ -193,6 +193,12 @@ ML_1 (pango_layout_get_justify, PangoLayout_val, Val_bool)
 ML_2 (pango_layout_set_single_paragraph_mode, PangoLayout_val, Bool_val, Unit)
 ML_1 (pango_layout_get_single_paragraph_mode, PangoLayout_val, Val_bool)
 ML_1 (pango_layout_context_changed, PangoLayout_val, Unit)
+ML_1 (pango_layout_get_baseline, PangoLayout_val, Val_int)
+ML_1 (pango_layout_get_line_count, PangoLayout_val, Val_int)
+ML_1 (pango_layout_is_wrapped, PangoLayout_val, Val_bool)
+ML_1 (pango_layout_is_ellipsized, PangoLayout_val, Val_bool)
+ML_1 (pango_layout_get_alignment, PangoLayout_val, Val_pango_alignment)
+ML_2 (pango_layout_set_alignment, PangoLayout_val, Pango_alignment_val, Unit)
 CAMLprim value ml_pango_layout_get_size(value layout)
 {
   int width, height;
