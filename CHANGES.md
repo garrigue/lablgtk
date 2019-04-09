@@ -6,8 +6,11 @@ LablGTK changes log
 
 ## In Lablgtk-3.0.beta5:
 
+2019.02.20 [Emilio]
+  * Add GtkBuilder back to the build (#54, #55), fix #53, reported by
+    C. Sacerdoti
 2019.02.12 [Emilio]
-  * Update OPAM files so they work better with dune-release
+  * Update OPAM files so they work better with dune-release (#48)
 
 ## In Lablgtk-3.0.beta4:
 
