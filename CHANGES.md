@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2019.04.09 [Pierre-Marie]
+  * Add gdk_window_get_origin binding (#60)
+
 ## In Lablgtk-3.0.beta5:
 
 2019.02.12 [Emilio]
