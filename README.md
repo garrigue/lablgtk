@@ -42,8 +42,10 @@ Failure "gdk_pixbuf_get_file_info unsupported in Gtk 2.x < 2.4"
 
 There are two ways to compile: `dune` or `make`.
 
-For dune, just do `dune build && dune install`.
-If you want also to build examples, do `dune build @all`.
+For dune, just do `dune build && dune install`.  If you want also to
+build examples, do `dune build @all`. If you are in OSX please be
+aware that you may need to set the `PKG_CONFIG_PATH` variable, for
+example `brew` needs `PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig`.
 
 The following details the instructions for make.
 
