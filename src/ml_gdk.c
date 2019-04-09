@@ -267,6 +267,19 @@ CAMLprim value ml_gdk_window_get_position (value window)
   return ret;
 }
 
+CAMLprim value ml_gdk_window_get_origin (value window)
+{
+  int x, y;
+  value ret;
+
+  gdk_window_get_origin (GdkWindow_val(window), &x, &y);
+
+  ret = alloc_small (2,0);
+  Field(ret,0) = Val_int(x);
+  Field(ret,1) = Val_int(y);
+  return ret;
+}
+
 CAMLprim value ml_gdk_window_get_pointer_location (value window)
 {
   int x = 0;

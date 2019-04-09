@@ -206,6 +206,7 @@ module Window = struct
     "ml_gdk_x11_window_foreign_new_for_display"
   external get_parent : window -> window = "ml_gdk_window_get_parent"
   external get_position : window -> int * int = "ml_gdk_window_get_position"
+  external get_origin : window -> int * int = "ml_gdk_window_get_origin"
   external get_pointer_location : window -> int * int =
     "ml_gdk_window_get_pointer_location"
   (* external root_parent : unit -> window = "ml_GDK_ROOT_PARENT" *)
