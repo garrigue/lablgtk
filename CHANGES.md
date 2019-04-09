@@ -3,12 +3,14 @@ LablGTK changes log
 2019.04.09 [Jacques]
   * Add gdk_window_get_origin binding (#60) [Pierre-Marie Pedrot]
   * Convert README to markdown (#57) [Anton Kochkov]
+  * Add additional Pango.Layout functions (#58) [Milo Turner]
 
 ## In Lablgtk-3.0.beta5:
 
 2019.02.20 [Emilio]
   * Add GtkBuilder back to the build (#54, #55), fix #53, reported by
     C. Sacerdoti
+
 2019.02.12 [Emilio]
   * Update OPAM files so they work better with dune-release (#48)
 
