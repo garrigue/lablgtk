@@ -411,7 +411,7 @@ CAMLexport value Val_GtkSourceCompletionProposal_func(gpointer w) {
 
 CAMLexport gpointer GtkSourceCompletionProposal_val_func(value val) {
   CAMLparam1(val);
-  CAMLreturnT (gpointer, GtkSourceCompletionProvider_val(val));
+  CAMLreturnT (gpointer, GtkSourceCompletionProposal_val(val));
 }
 
 #define Val_Proposals(val) Val_GList(val, Val_GtkSourceCompletionProposal_func)
