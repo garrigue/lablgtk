@@ -1,6 +1,6 @@
 # Makefile for lablgtk.
 
-COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s-3+52 -warn-error A-52 -c
+COMPILER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS) -w s-3+52 -c
 LINKER = $(CAMLC) $(MLFLAGS) $(MLBYTEFLAGS)
 COMPOPT = $(CAMLOPT) $(MLFLAGS) -w s -c
 LINKOPT = $(CAMLOPT) $(MLFLAGS)
@@ -44,6 +44,7 @@ GTKCFLAGS += -Iabsvalue -DABSVALUE
 endif
 
 ifdef DEBUG
+COMPILER += -warn-error A-52
 CFLAGS = -g $(GTKCFLAGS)
 CUSTOM = -custom
 #MLLINK += -cclib -lcamlrund

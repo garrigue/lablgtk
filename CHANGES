@@ -1,5 +1,8 @@
 LablGTK changes log
 
+2019.4.12 [Jacques]
+  * remove -warn-error to allow compilation on future versions of ocaml
+
 2019.2.15 [Jacques]
   * mark Gdk.PointArray.t and Gdk.SegmentArray.t as [@@ boxed]
     (report by Andre Maroneze)
