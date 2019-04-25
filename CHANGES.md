@@ -1,5 +1,7 @@
 LablGTK changes log
 
+## In Lablgtk-3.0.beta6
+
 2019.04.09 [Jacques]
   * Add gdk_window_get_origin binding (#60) [Pierre-Marie Pedrot]
   * Convert README to markdown (#57) [Anton Kochkov]
