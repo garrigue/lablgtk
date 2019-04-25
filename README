@@ -1,5 +1,5 @@
 
-             LablGTK2 2.18.7 : an interface to the GIMP Tool Kit
+             LablGTK2 2.18.8 : an interface to the GIMP Tool Kit
 
 Needed:
         ocaml-4.05 or more
@@ -9,6 +9,7 @@ Needed:
 
 Info/upgrades:
         http://lablgtk.forge.ocamlcore.org/
+        https://github.com/garrigue/lablgtk
 
 Status:
   LablGtk2 is now pretty stable.

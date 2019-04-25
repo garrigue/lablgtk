@@ -1,5 +1,10 @@
 LablGTK changes log
 
+In Lablgtk-2.18.8:
+
+2019.4.25 [Jacques]
+  * release new version, as 2.18.7 fails on 4.08 (boxing problem)
+
 2019.4.12 [Jacques]
   * remove -warn-error to allow compilation on future versions of ocaml
 
